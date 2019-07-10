@@ -26,6 +26,7 @@ public class ItemRowDto {
 	 private boolean update;
 	 private Object defValue;
 	 private String defText;
+	 private boolean error;
 	 
 	 public ItemRowDto(String itemCode, String itemName, Object value, String textValue, int itemOrder, List<ComboBoxObject> lstComboBoxValue, String defValue, String defText) {
 		 this.itemCode = itemCode;

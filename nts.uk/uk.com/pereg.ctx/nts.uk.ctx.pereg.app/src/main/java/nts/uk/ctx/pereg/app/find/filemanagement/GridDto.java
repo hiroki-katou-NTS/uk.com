@@ -13,7 +13,7 @@ public class GridDto {
 	// danh sách employees, dữ liệu từng dòng
 	private List<EmployeeRowDto> employees;
 	// danh sách những item bị lỗi
-	private List<ItemRowDto> errorItems;
+	private List<ItemError> errorItems;
 	
 
 }

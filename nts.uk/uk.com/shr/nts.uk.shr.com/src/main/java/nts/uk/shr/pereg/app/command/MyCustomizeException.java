@@ -3,8 +3,9 @@ package nts.uk.shr.pereg.app.command;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.Getter;
 import nts.arc.error.BusinessException;
-
+@Getter
 public class MyCustomizeException extends BusinessException {
 
 	/**

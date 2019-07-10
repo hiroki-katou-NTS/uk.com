@@ -4,7 +4,6 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -15,11 +14,15 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.file.storage.StoredFileStreamService;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.gul.excel.ExcelFileTypeException;
 import nts.gul.excel.NtsExcelCell;
 import nts.gul.excel.NtsExcelHeader;
@@ -34,10 +37,10 @@ import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.pereg.app.find.common.ComboBoxRetrieveFactory;
-import nts.uk.ctx.pereg.app.find.layout.dto.EmpMaintLayoutDto;
+import nts.uk.ctx.pereg.app.find.layout.dto.EmpMainCategoryDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.ActionRole;
+import nts.uk.ctx.pereg.app.find.layoutdef.classification.GridEmpBody;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.GridEmpHead;
-import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoValueDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.DataTypeStateDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.DateItemDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.ItemTypeStateDto;
@@ -74,7 +77,8 @@ import nts.uk.shr.com.validate.constraint.implement.TimeConstraint;
 import nts.uk.shr.com.validate.constraint.implement.TimePointConstraint;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.ItemValueType;
-import nts.uk.shr.pereg.app.find.PeregQuery;
+import nts.uk.shr.pereg.app.find.PeregEmpInfoQuery;
+import nts.uk.shr.pereg.app.find.PeregQueryByListEmp;
 
 @Stateless
 public class CheckFileFinder {
@@ -99,9 +103,6 @@ public class CheckFileFinder {
 	@Inject
 	private ComboBoxRetrieveFactory comboBoxRetrieveFactory;
 	
-//	@Inject
-//	private ManagedParallelWithContext parallel;
-	
 	@Inject
 	private PeregProcessor layoutProcessor;
 	
@@ -110,35 +111,9 @@ public class CheckFileFinder {
 	
 	private static String header;
 	
-//	private final static List<String> itemSpecialLst = Arrays.asList("IS00003","IS00004");
+	private final static List<String> itemSpecialLst = Arrays.asList("IS00003","IS00004");
 	
-	private static final Map<String, String> startDateItemCodes;
-	static {
-		Map<String, String> aMap = new HashMap<>();
-		
-		// 所属会社履歴
-		aMap.put("CS00003", "IS00020");
-		// 分類１
-		aMap.put("CS00004", "IS00026");
-		// 雇用
-		aMap.put("CS00014", "IS00066");
-		// 職位本務
-		aMap.put("CS00016", "IS00077");
-		// 職場
-		aMap.put("CS00017", "IS00082");
-		// 休職休業
-		aMap.put("CS00018", "IS00087");
-		// 短時間勤務
-		aMap.put("CS00019", "IS00102");
-		// 労働条件
-		aMap.put("CS00020", "IS00119");
-		// 勤務種別
-		aMap.put("CS00021", "IS00255");
-		// 労働条件２
-		aMap.put("CS00070", "IS00781");
-
-		startDateItemCodes = Collections.unmodifiableMap(aMap);
-	} 
+	private static int index;
 	
 	@SuppressWarnings("unused")
 	private static GeneralDate valueStartCode;
@@ -168,12 +143,13 @@ public class CheckFileFinder {
 			List<NtsExcelHeader> header = excelReader.headers(); 
 			List<NtsExcelRow> rows = excelReader.rows();
 			List<GridEmpHead> headerDb = this.getHeaderData(ctgOptional.get(), params.getColumnChange());
-			
+			Map<String, Periods> peroidByCategory = createPeriod();
 			// columns
 			List<String> colums = this.getColumsChange(header, headerDb);
 			List<EmployeeDataMngInfo> employees = this.getEmployeeIds(rows, params.getSids());
-			String startCode = startDateItemCodes.get(ctgOptional.get().getCategoryCode().toString());
-			GridDto dto = this.getGridInfo(excelReader, headerDb, ctgOptional.get(), employees, startCode, updateMode); 
+			Periods period = peroidByCategory.get(ctgOptional.get().getCategoryCode().toString());
+			//GridDto dto = this.getGridInfo(excelReader, headerDb, ctgOptional.get(), employees, period == null? null: period.periods.get(0).getItem(), updateMode); 
+			GridDto dto = this.getGridInfo(excelReader, headerDb, ctgOptional.get(), employees, period, updateMode); 
 			//受入するファイルの列に、メイン画面の「個人情報一覧（A3_001）」に表示している可変列で更新可能な項目が１件でも存在するかチェックする
 			//check xem các header của item trong file import có khớp với màn hình A 
 			if (colums.size() == 0) {
@@ -292,120 +268,138 @@ public class CheckFileFinder {
 	 * @param employees
 	 * @return
 	 */
-	private GridDto getGridInfo(NtsExcelImport excelReader, List<GridEmpHead> headerReal, PersonInfoCategory category, List<EmployeeDataMngInfo> employees, String startCode, UpdateMode updateMode) {
+	private GridDto getGridInfo(NtsExcelImport excelReader, List<GridEmpHead> headerReal, PersonInfoCategory category, List<EmployeeDataMngInfo> employees, Periods period, UpdateMode updateMode) {
 		/* lien quan den bodyData*/
 		List<GridEmpHead> headerRemain = new ArrayList<>();
 		List<GridEmpHead> header =  new ArrayList<GridEmpHead>();
 		header.addAll(headerReal);
 		HashMap<String, Object> contraintList = generateContraint(header);
-		List<EmployeeRowDto> employeeDtos = Collections.synchronizedList(new ArrayList<>());
-		List<ItemRowDto> itemErrors = new ArrayList<>();
+		List<EmployeeRowDto> employeeDtos = new ArrayList<>();
+		List<ItemError> itemErrors = new ArrayList<>();
 		List<NtsExcelRow> rows = excelReader.rows();
 		// đọc dữ liệu từ file import
-		readEmployeeFromFile(category,rows, employees, headerReal, contraintList, headerRemain,  employeeDtos, startCode);
+		//readEmployeeFromFile(category,rows, employees, headerReal, contraintList, headerRemain,  employeeDtos, startCode, itemErrors);
+		readEmployeeFromFile(category,rows, employees, headerReal, contraintList, headerRemain,  employeeDtos, period, itemErrors);
 		
-		List<EmployeeRowDto> result = Collections.synchronizedList(new ArrayList<>());
+		List<EmployeeRowDto> result = new ArrayList<>();
 		// lấy ra những item bị thiếu không file import ko có trong setting ở màn hình A, set RecordId, set actionRole
 		headerReal.removeAll(headerRemain);
+		index = 0;
+		PeregQueryByListEmp lquery = PeregQueryByListEmp.createQueryLayout(category.getPersonInfoCategoryId(),
+				category.getCategoryCode().v(), GeneralDate.today(),
+				employees.stream().map(m -> new PeregEmpInfoQuery(m.getPersonId(), m.getEmployeeId())).collect(Collectors.toList()));
 		
-		employeeDtos.parallelStream().forEach(pdt -> {
-
-			// Miss infoId (get infoId by baseDate)
-			PeregQuery subq = PeregQuery.createQueryCategory(null, category.getCategoryCode().v(),
-					pdt.getEmployeeId(), pdt.getPersonId());
-			List<ItemRowDto> itemDtos = new ArrayList<>();
-			subq.setCategoryId(category.getPersonInfoCategoryId());
-			subq.setStandardDate(GeneralDate.today());
+		List<EmpMainCategoryDto> layouts = layoutProcessor.getCategoryDetailByListEmp(lquery);
+		employeeDtos.stream().forEach(pdt -> {
+			List<ItemError> errors = itemErrors.stream().filter(error -> error.getIndex() == index).collect(Collectors.toList());
 			// lấy full value của các item
-			EmpMaintLayoutDto empDto = layoutProcessor.getCategoryDetail(subq);
-			List<LayoutPersonInfoValueDto> items = empDto.getClassificationItems().stream()
-					.flatMap(f -> f.getItems().stream()).collect(Collectors.toList());
-			// thực hiện lấy những item được hiển thị trên màn hình A mà  ko có trong import 
-			//・上書き保存モードの場合、・t/h mode overwrite_Save、				
-			//受入した項目のみ更新して、受入してない項目は変更しない update chỉ cac item đa import, cac item chưa import thi ko thay đổi.
-			//・新規履歴追加モードの場合、・t/h mode  them lịch sử mới、
-			//基準日時点の履歴の情報をベースにして、受入した項目のみ変更、lấy thong tin lịch sử tại thời điểm baseDate lam chuẩn, chỉ thay đổi item đa import、
-			//受入していない項目は基準日時点の情報で追加する cac item chưa import thi them thong tin tại thời điểm baseDate
-			//※更新権限がない項目は受入（値の変更）をしない。※item ko co quyền update thi ko import（thay đổi value）
-			headerReal.stream().forEach(h ->{
-				items.stream().forEach(item ->{
-					if(h.getItemId().equals(item.getItemDefId())) {
-						// trường hợp ghi đè, item ko có trong file import thì sẽ chỉ được view thôi, ko được update giá trị
-						ItemRowDto dto = new ItemRowDto(h.getItemCode(), h.getItemName(), item.getType(),item.getValue(),
-								item.getTextValue(), item.getRecordId(),h.getItemOrder(), updateMode == UpdateMode.OVERIDED? ActionRole.VIEW_ONLY: item.getActionRole(),item.getLstComboBoxValue(), false,"","");
-						itemDtos.add(dto);
-					}
-				});
-			});
-			
-			if(itemDtos.size() > 0) {
-				pdt.getItems().addAll(itemDtos);
-			}
-			//lấy thông tin recordId và actionRole
-			items.stream().forEach(item -> {
-				pdt.getItems().stream().forEach(itemDto -> {
-					if (itemDto.getItemCode().equals(item.getItemCode())) {
-						itemDto.setRecordId(item.getRecordId());
-						// trường hợp ghi đè, item ko có trong file import thì sẽ chỉ được view thôi, ko được update giá trị
-						if(itemDto.getActionRole() == null) {
-							itemDto.setActionRole(item.getActionRole());
-						}
-						// trường hợp tạo mới lịch sử, item có trong file import nhưng không có quyền update thì sẽ lấy giá trị từ database
-						if(item.getActionRole() == ActionRole.VIEW_ONLY || item.getActionRole() == ActionRole.HIDDEN) {
-							itemDto.setValue(item.getValue());
-						}
-						if(item.getType()== 1 || item.getType()== 3) return; 
-						Object valueDb = item.getValue() == null? null: this.convertValue(item.getItem().getDataTypeValue(), item.getValue().toString());
-						Object valueExcel = itemDto.getValue() == null? null: this.convertValue(item.getItem().getDataTypeValue(), itemDto.getValue().toString());
-						if(isEqual(valueExcel, valueDb, item.getItem().getDataTypeValue()) == true) {
-							itemDto.setUpdate(false);
-							itemDto.setDefValue(itemDto.getValue());
-							DataValueAttribute attr = converType(item.getItem().getDataTypeValue());
-							if (item.getItem().getDataTypeValue() == 6 || item.getItem().getDataTypeValue() == 7
-									|| item.getItem().getDataTypeValue() == 8) {
-								Optional<ComboBoxObject> textOpt = item.getLstComboBoxValue().stream().filter(combo -> combo.getOptionValue().equals(item.getValue() == null? "":itemDto.getValue().toString())).findFirst();
-								if(textOpt.isPresent()) {
-									itemDto.setTextValue(textOpt.get().getOptionText());
-									itemDto.setDefText(textOpt.get().getOptionText());
-								}
-							
-							} else {
-								itemDto.setTextValue(attr.format(valueDb));
-								itemDto.setDefText(attr.format(valueDb));
+			List<ItemRowDto> itemDtos = new ArrayList<>();
+			List<EmpMainCategoryDto> empDtos = layouts.stream().filter(l -> l.getEmployeeId().equals(pdt.getEmployeeId())).collect(Collectors.toList());
+			empDtos.stream().forEach(emp  ->{
+				List<GridEmpBody> items = emp.getItems();
+				// thực hiện lấy những item được hiển thị trên màn hình A mà  ko có trong import 
+				//・上書き保存モードの場合、・t/h mode overwrite_Save、				
+				//受入した項目のみ更新して、受入してない項目は変更しない update chỉ cac item đa import, cac item chưa import thi ko thay đổi.
+				//・新規履歴追加モードの場合、・t/h mode  them lịch sử mới、
+				//基準日時点の履歴の情報をベースにして、受入した項目のみ変更、lấy thong tin lịch sử tại thời điểm baseDate lam chuẩn, chỉ thay đổi item đa import、
+				//受入していない項目は基準日時点の情報で追加する cac item chưa import thi them thong tin tại thời điểm baseDate
+				//※更新権限がない項目は受入（値の変更）をしない。※item ko co quyền update thi ko import（thay đổi value）
+				headerReal.stream().forEach(h ->{
+					items.stream().forEach(item ->{
+						if(h.getItemCode().equals(item.getItemCode())) {
+							// trường hợp ghi đè, item ko có trong file import thì sẽ chỉ được view thôi, ko được update giá trị
+							int dataType = 0;
+							if(h.getItemTypeState().getItemType() == 2) {
+								SingleItemDto singleDto = (SingleItemDto) h.getItemTypeState();
+								dataType = singleDto.getDataTypeState().getDataTypeValue();
 							}
-							
-						}else {
-							itemDto.setUpdate(true);
-							itemDto.setDefValue(item.getValue());
-							DataValueAttribute attr = converType(item.getItem().getDataTypeValue());
-							if (item.getItem().getDataTypeValue() == 6 || item.getItem().getDataTypeValue() == 7
-									|| item.getItem().getDataTypeValue() == 8) {
-								Optional<ComboBoxObject> textOpt = item.getLstComboBoxValue().stream().filter(combo -> combo.getOptionValue().equals(item.getValue() == null? "":item.getValue().toString())).findFirst();
-								Optional<ComboBoxObject> defTextOpt = item.getLstComboBoxValue().stream().filter(combo -> combo.getOptionValue().equals(itemDto.getValue() == null?"": itemDto.getValue().toString())).findFirst();
-								if(textOpt.isPresent()) {
-									itemDto.setTextValue(textOpt.get().getOptionText());
+							ItemRowDto dto = new ItemRowDto(h.getItemCode(), h.getItemName(), dataType ,item.getValue(),
+									item.getTextValue(), item.getRecordId(),h.getItemOrder(), updateMode == UpdateMode.OVERIDED? ActionRole.VIEW_ONLY: item.getActionRole(),item.getLstComboBoxValue(), false,"","", false);
+							itemDtos.add(dto);
+						}
+					});
+				});
+				
+				if(itemDtos.size() > 0) {
+					pdt.getItems().addAll(itemDtos);
+				}
+				// đếm số item bị lỗi của một employee
+				List<ItemRowDto>  itemErrorLst = pdt.getItems().stream().filter(x -> x.isError() == true).collect(Collectors.toList());
+				pdt.setNumberOfError(itemErrorLst.size());
+				//lấy thông tin recordId và actionRole
+				items.stream().forEach(item -> {
+					pdt.getItems().stream().forEach(itemDto -> {
+						if (itemDto.getItemCode().equals(item.getItemCode())) {
+							Optional<ItemError> itemError = errors.stream().filter(e -> e.getColumnKey().equals(itemDto.getItemCode())).findFirst();
+							if(itemError.isPresent()) {
+								itemError.get().setRecordId(item.getRecordId());
+							}
+							itemDto.setRecordId(item.getRecordId());
+							// trường hợp ghi đè, item ko có trong file import thì sẽ chỉ được view thôi, ko được update giá trị
+							if(itemDto.getActionRole() == null) {
+								itemDto.setActionRole(item.getActionRole());
+							}
+							// trường hợp tạo mới lịch sử, item có trong file import nhưng không có quyền update thì sẽ lấy giá trị từ database
+							if(item.getActionRole() == ActionRole.VIEW_ONLY || item.getActionRole() == ActionRole.HIDDEN) {
+								itemDto.setValue(item.getValue());
+							}
+							if(itemDto.getDataType() == 0) return; 
+							Object valueDb = item.getValue() == null? null: this.convertValue(itemDto.getDataType(), item.getValue().toString());
+							Object valueExcel = itemDto.getValue() == null? null: this.convertValue(itemDto.getDataType(), itemDto.getValue().toString());
+							if(isEqual(valueExcel, valueDb, itemDto.getDataType()) == true) {
+								itemDto.setUpdate(false);
+								itemDto.setDefValue(itemDto.getValue());
+								DataValueAttribute attr = converType(itemDto.getDataType());
+								if (itemDto.getDataType() == 6 || itemDto.getDataType() == 7
+										|| itemDto.getDataType() == 8) {
+									Optional<ComboBoxObject> textOpt = item.getLstComboBoxValue().stream().filter(combo -> combo.getOptionValue().equals(item.getValue() == null? "":itemDto.getValue().toString())).findFirst();
+									if(textOpt.isPresent()) {
+										itemDto.setTextValue(textOpt.get().getOptionText());
+										itemDto.setDefText(textOpt.get().getOptionText());
+									}
+								
+								} else {
+									itemDto.setTextValue(attr.format(valueDb));
+									itemDto.setDefText(attr.format(valueDb));
 								}
 								
-								if(defTextOpt.isPresent()) {
-									itemDto.setDefText(defTextOpt.get().getOptionText());
+							}else {
+								itemDto.setUpdate(true);
+								itemDto.setDefValue(item.getValue());
+								DataValueAttribute attr = converType(itemDto.getDataType());
+								if (itemDto.getDataType() == 6 || itemDto.getDataType() == 7
+										|| itemDto.getDataType() == 8) {
+									Optional<ComboBoxObject> textOpt = item.getLstComboBoxValue().stream().filter(combo -> combo.getOptionValue().equals(item.getValue() == null? "":item.getValue().toString())).findFirst();
+									Optional<ComboBoxObject> defTextOpt = item.getLstComboBoxValue().stream().filter(combo -> combo.getOptionValue().equals(itemDto.getValue() == null?"": itemDto.getValue().toString())).findFirst();
+									if(textOpt.isPresent()) {
+										itemDto.setTextValue(textOpt.get().getOptionText());
+									}
+									
+									if(defTextOpt.isPresent()) {
+										itemDto.setDefText(defTextOpt.get().getOptionText());
+									}
+								} else {
+									try {
+										itemDto.setDefText(attr.format(valueDb));
+										itemDto.setTextValue(attr.format(valueExcel));
+									} catch (Exception e) {
+										itemDto.setTextValue(valueExcel.toString());
+									}
 								}
-							} else {
-								itemDto.setDefText(attr.format(valueDb));
-								itemDto.setTextValue(attr.format(valueExcel));
 							}
 						}
-					}
-				});
+					});
+				});				
 			});
-			// đếm số item bị lỗi của một employee
-			pdt.setNumberOfError(itemErrors.size());
+
 			pdt.getItems().sort(Comparator.comparing(ItemRowDto::getItemOrder, Comparator.naturalOrder()));
 			result.add(pdt);
+			index++;
 		});
 		
 		// sắp xếp lại vị trí item theo số tự lỗi - エクセル受入データを並び替える - エラーの件数　DESC、社員コード　ASC
-		result.sort(Comparator.comparing(EmployeeRowDto::getEmployeeCode)
-				.thenComparing(EmployeeRowDto::getNumberOfError, Comparator.naturalOrder()).reversed());
+		result.sort(Comparator.comparing(EmployeeRowDto::getEmployeeCode));
+		result.sort(SORT_BY_DISPORDER);
 		return new GridDto(header, result, itemErrors);
 	}
 	
@@ -421,8 +415,8 @@ public class CheckFileFinder {
 	 */
 	private void readEmployeeFromFile(PersonInfoCategory category, List<NtsExcelRow> rows,
 			List<EmployeeDataMngInfo> employees, List<GridEmpHead> headerReal, HashMap<String, Object> contraintList,
-			List<GridEmpHead> headerRemain, List<EmployeeRowDto> employeeDtos, String startCode) {
-
+			List<GridEmpHead> headerRemain, List<EmployeeRowDto> employeeDtos, Periods period, List<ItemError> itemErrors) {
+		index = 0;
 		rows.stream().forEach( row ->{
 			List<NtsExcelCell> cells = row.cells();		
 			EmployeeRowDto employeeDto = new EmployeeRowDto();
@@ -432,21 +426,25 @@ public class CheckFileFinder {
 				String[] itemChilds = cell.getHeader().getMain().getValue().getText().split("＿");
 				String header = cell.getHeader().getMain().getValue().getText();
 				String headerTemp = itemChilds.length > 0? itemChilds[itemChilds.length - 1]: header;
-				setValueItemDto(category, employees, cell, employeeDto, header, headerTemp,  headerReal, contraintList, items,  headerRemain, startCode);
+				//setValueItemDto(category, employees, cell, employeeDto, header, headerTemp,  headerReal, contraintList, items,  headerRemain, period, itemErrors, index);
+				setValueItemDto(category, employees, cell, employeeDto, header, headerTemp,  headerReal, contraintList, items,  headerRemain, period, itemErrors, index);
 			});
 			employeeDto.setItems(items);
 			if(employeeDto.getEmployeeCode()!= null) {
 				employeeDtos.add(employeeDto);
 			}
-			
+			if(category.isHistoryCategory()) {
+				if(period.getPeriods().get(0).getValue() != null && period.getPeriods().get(1).getValue() != null) {
+					
+				}
+			}
+			index++;
 		});
 
 	}
 	
 	private void setValueItemDto(PersonInfoCategory category, List<EmployeeDataMngInfo> employees, NtsExcelCell cell, EmployeeRowDto employeeDto,String header, String headerTemp,  List<GridEmpHead> headerReal,
-			 HashMap<String, Object> contraintList, List<ItemRowDto> items, List<GridEmpHead> headerRemain, String startCode) {
-
-
+			 HashMap<String, Object> contraintList, List<ItemRowDto> items, List<GridEmpHead> headerRemain, Periods period, List<ItemError> itemErrors, int index) {
 		// lấy emloyeeCode, employeeName
 		if (header.equals(TextResource.localize("CPS003_28"))) {
 			// employeeId
@@ -504,15 +502,22 @@ public class CheckFileFinder {
 				GridEmpHead headerGrid = headerGridOpt.get();
 				Object contraint = contraintList.get(headerGrid.getItemCode());
 				// trường hợp lấy ra baseDate theo file import, lấy startDate
-				if(headerGrid.getItemCode().equals(startCode)) {
-					DateConstraint dateContraint = (DateConstraint) contraint;
-					Optional<String> error = dateContraint.validateString(value == null ? "" : value);
-					if (category.isHistoryCategory()) {
+				if (category.isHistoryCategory()) {
+					if (headerGrid.getItemCode().equals(period.getPeriods().get(0).getItem())) {
+						DateConstraint dateContraint = (DateConstraint) contraint;
+						Optional<String> error = dateContraint.validateString(value == null ? "" : value);
+
 						if (error.isPresent()) {
 							valueStartCode = GeneralDate.today();
+						} else {
+							valueStartCode = value == null ? GeneralDate.today()
+									: GeneralDate.fromString(value, "yyyy/MM/dd");
 						}
-						valueStartCode = cell.getValue() == null ? GeneralDate.today()
-								: GeneralDate.fromString(value, "yyyy/MM/dd");
+						period.getPeriods().get(0).setValue(value);
+					}
+					
+					if (headerGrid.getItemCode().equals(period.getPeriods().get(1).getItem())) {
+						period.getPeriods().get(1).setValue(value);
 					}
 				}
 				ItemRowDto empBody = new ItemRowDto();
@@ -548,7 +553,7 @@ public class CheckFileFinder {
 						empBody.setItemName(headerGrid.getItemName());
 						empBody.setItemOrder(headerGrid.getItemOrder());
 						convertValue(empBody, headerGrid,
-								cell.getValue() == null ? null : value, contraint);
+								cell.getValue() == null ? null : value, contraint, itemErrors, index);
 						empBody.setTextValue(empBody.getValue() == null ? "" : empBody.getValue().toString());
 						items.add(empBody);
 					}
@@ -632,9 +637,11 @@ public class CheckFileFinder {
 					break;
 				case 2:
 					NumericItemDto numericItemDto = (NumericItemDto) singleDto.getDataTypeState();
-					
+					double max = Math.pow(10, numericItemDto.getIntegerPart()) - Math.pow(10, -(numericItemDto.getDecimalPart() == null? 0:numericItemDto.getDecimalPart().intValue()));
+					double minItem = numericItemDto.getNumericItemMin() == null? (numericItemDto.getNumericItemMinus() == 1? -max :  0) : numericItemDto.getNumericItemMin().doubleValue();
+					double maxItem = numericItemDto.getNumericItemMax() == null? max : numericItemDto.getNumericItemMax().doubleValue();
 					obj = new NumericConstraint(0, numericItemDto.getNumericItemMinus() == 0 ? true : false,
-							numericItemDto.getNumericItemMin(), numericItemDto.getNumericItemMax(),
+							new BigDecimal(minItem), new BigDecimal(maxItem),
 							numericItemDto.getIntegerPart(),
 							numericItemDto.getDecimalPart() == null ? 0 : numericItemDto.getDecimalPart().intValue());
 					contraintList.put(c.getItemCode(), obj);
@@ -694,7 +701,7 @@ public class CheckFileFinder {
 	 * @param value
 	 * @param contraint
 	 */
-	private void convertValue(ItemRowDto itemDto, GridEmpHead gridHead, String value, Object contraint) {
+	private void convertValue(ItemRowDto itemDto, GridEmpHead gridHead, String value, Object contraint, List<ItemError> itemErrors, int index) {
 		if (gridHead.getItemTypeState().getItemType() == 2) {
 			SingleItemDto singleDto = (SingleItemDto) gridHead.getItemTypeState();
 			DataTypeStateDto dataTypeState = (DataTypeStateDto) singleDto.getDataTypeState();
@@ -702,50 +709,192 @@ public class CheckFileFinder {
 			itemDto.setDataType(dataTypeState.getDataTypeValue());
 			switch (itemValueType) {
 			case STRING:
-				itemDto.setValue(value == null? null: value); break;
-			case NUMERIC:
-			case NUMBERIC_BUTTON:
-				itemDto.setValue(value == null || value == "" ? null : new BigDecimal(value)); break;
-			case DATE:
-				itemDto.setValue(value == null || value == "" ? null : value); break;
-			case TIME:
+				itemDto.setValue(value == null ? null : value);
+				StringConstraint stringContraint = (StringConstraint) contraint;
 				if (gridHead.isRequired()) {
-						if (value != null  && value != "") {
-						String[] stringSplit = value.split(":");
-						if(stringSplit.length >= 1  && stringSplit.length < 3) {
-							if(isNumeric(stringSplit[0]) && isNumeric(stringSplit[1])) {
-								itemDto.setValue(new BigDecimal(MinutesBasedTimeParser.parse(value).asDuration()));
-							}else {
-								itemDto.setValue(value);
+					if (value == null) {
+						ItemError error = new ItemError("", index, itemDto.getItemCode(), "FND_E_REQ_INPUT");
+						itemDto.setError(true);
+						itemErrors.add(error);
+						break;
+					} else {
+						Optional<String> string = stringContraint.validateString(value.toString());
+						if (itemSpecialLst.contains(itemDto.getItemCode())) {
+							ItemError error = new ItemError();
+							validateItemOfCS0002(itemDto, value.toString(), error, index);
+							if (error != null)
+								itemErrors.add(error);
+							break;
+						} else {
+							if (string.isPresent()) {
+								itemDto.setError(true);
+								ItemError error = new ItemError("", index, itemDto.getItemCode(), string.get());
+								itemErrors.add(error);
+								break;
 							}
-						}else {
-							itemDto.setValue(value);
 						}
 					}
 				} else {
-					if (value != null && value != "") {
-						String[] stringSplit = value.split(":");
-						if(stringSplit.length >= 1 && stringSplit.length < 3) {
-							if(isNumeric(stringSplit[0]) && isNumeric(stringSplit[1])) {
-								itemDto.setValue(new BigDecimal(MinutesBasedTimeParser.parse(value).asDuration()));
-							}else {
-								itemDto.setValue(value);
+					if (value != null) {
+						Optional<String> string = stringContraint.validateString(value.toString());
+						if (itemSpecialLst.contains(itemDto.getItemCode())) {
+							ItemError error = new ItemError();
+							validateItemOfCS0002(itemDto, value.toString(), error, index);
+							if (error != null)
+								itemErrors.add(error);
+							break;
+						} else {
+							if (string.isPresent()) {
+								itemDto.setError(true);
+								ItemError error = new ItemError("", index, itemDto.getItemCode(), string.get());
+								itemErrors.add(error);
+								break;
 							}
-						}else {
-							itemDto.setValue(value);
+
 						}
 					}
 				}
 				break;
+			case NUMERIC:
+			case NUMBERIC_BUTTON:
+				itemDto.setValue(value == null || value == "" ? null : new BigDecimal(value)); 
+				NumericConstraint numberContraint = (NumericConstraint) contraint;
+				if (gridHead.isRequired()) {
+					if (itemDto.getValue() == null) {
+						itemDto.setError(true);
+						ItemError error = new ItemError("", index, itemDto.getItemCode(), "FND_E_REQ_INPUT");
+						itemErrors.add(error);
+						break;
+					} else {
+						Optional<String> string = numberContraint.validateString(value.toString());
+						if (string.isPresent()) {
+							itemDto.setError(true);
+							ItemError error = new ItemError("", index, itemDto.getItemCode(), string.get());
+							itemErrors.add(error);
+							break;
+						}
+					}
+				} else {
+					if (itemDto.getValue() != null) {
+						Optional<String> string = numberContraint.validateString(value.toString());
+						if (string.isPresent()) {
+							itemDto.setError(true);
+							ItemError error = new ItemError("", index, itemDto.getItemCode(), string.get());
+							itemErrors.add(error);
+							break;
+						}
+					}
+				}
+				break;
+			case DATE:
+				itemDto.setValue(value == null || value == "" ? null : value); 
+				DateConstraint dateContraint = (DateConstraint) contraint;
+				if (gridHead.isRequired()) {
+					if (itemDto.getValue() == null) {
+						itemDto.setError(true);
+						ItemError error = new ItemError("", index, itemDto.getItemCode(), "FND_E_REQ_INPUT");
+						itemErrors.add(error);
+						break;
+					} else {
+						Optional<String>  string = dateContraint.validateString(value.toString());
+						if (string.isPresent()) {
+							itemDto.setError(true);
+							ItemError error = new ItemError("", index, itemDto.getItemCode(), string.get());
+							itemErrors.add(error);
+							break;
+						}
+					}
+				} else {
+					if (itemDto.getValue() != null) {
+						Optional<String>  string = dateContraint.validateString(value.toString());
+						if (string.isPresent()) {
+							itemDto.setError(true);
+							ItemError error = new ItemError("", index, itemDto.getItemCode(), string.get());
+							itemErrors.add(error);
+							break;
+						}
+					}
+				}
+				break;
+			case TIME:
+				TimeConstraint timeContraint = (TimeConstraint) contraint;
+				if (gridHead.isRequired()) {
+					if (value == null || value =="") {
+						itemDto.setError(true);
+						ItemError error = new ItemError("", index, itemDto.getItemCode(), "FND_E_REQ_INPUT");
+						itemErrors.add(error);
+						break;
+					} else if (value != null  && value != "") {
+						String[] stringSplit = value.split(":");
+						if(stringSplit.length == 2) {
+							if(isNumeric(stringSplit[0]) && isNumeric(stringSplit[1])) {
+								itemDto.setValue(new BigDecimal(MinutesBasedTimeParser.parse(value).asDuration()));
+							}else {
+								itemDto.setValue(value);
+							}
+						}else {
+							itemDto.setValue(value);
+						}
+						
+						Optional<String> string = timeContraint.validateString(value.toString());
+						if (string.isPresent()) {
+							itemDto.setError(true);
+							ItemError error = new ItemError("", index, itemDto.getItemCode(), string.get());
+							itemErrors.add(error);
+							break;
+						}
+					}
+				} else {
+					if (value != null && value != "") {
+						String[] stringSplit = value.split(":");
+						if(stringSplit.length == 2) {
+							if(isNumeric(stringSplit[0]) && isNumeric(stringSplit[1])) {
+								itemDto.setValue(new BigDecimal(MinutesBasedTimeParser.parse(value).asDuration()));
+							}else {
+								itemDto.setValue(value);
+							}
+						}else {
+							itemDto.setValue(value);
+						}
+						
+						Optional<String> string = timeContraint.validateString(value.toString());
+						if (string.isPresent()) {
+							itemDto.setError(true);
+							ItemError error = new ItemError("", index, itemDto.getItemCode(), string.get());
+							itemErrors.add(error);
+							break;
+						}
+						
+					}
+				}
+				
+				break;
 			case TIMEPOINT:
+				TimePointConstraint timePointContraint = (TimePointConstraint) contraint;
 				if (gridHead.isRequired()) {
 					if (value != null && value != "") {
-						itemDto.setValue(convertTimepoint(value)); break;
+						itemDto.setValue(convertTimepoint(value)); 
+						Optional<String> string = timePointContraint.validateString(value.toString());
+						if (string.isPresent()) {
+							itemDto.setError(true);
+							ItemError error = new ItemError("", index, itemDto.getItemCode(), string.get());
+							itemErrors.add(error);
+							break;
+						}
+					}else {
+						itemDto.setError(true);
 					} 
 					
 				} else {
 					if (value != null && value != "") {
-						itemDto.setValue(convertTimepoint(value)); break;
+						itemDto.setValue(convertTimepoint(value));
+						Optional<String> string = timePointContraint.validateString(value.toString());
+						if (string.isPresent()) {
+							itemDto.setError(true);
+							ItemError error = new ItemError("", index, itemDto.getItemCode(), string.get());
+							itemErrors.add(error);
+							break;
+						}
 					}
 				}
 				break;
@@ -765,23 +914,26 @@ public class CheckFileFinder {
 	  return str.matches("-?\\d+(\\.\\d+)?");  //match a number with optional '-' and decimal.
 	}
 	
-//	/**
-//	 * validate những item đặc biệt của category CS0002
-//	 * validateItemOfCS0002
-//	 * @param itemDto
-//	 * @param value
-//	 */
-//	private void validateItemOfCS0002(ItemRowDto itemDto, String value){
-//		for (String itemCode : itemSpecialLst) {
-//			if (itemDto.getItemCode().equals(itemCode)) {
-//				if (value.startsWith(JP_SPACE) || value.endsWith(JP_SPACE)
-//						|| !value.contains(JP_SPACE)) {
-//					//itemDto.setError(true);
-//					break;
-//				}
-//			}
-//		}
-//	}
+	/**
+	 * validate những item đặc biệt của category CS0002
+	 * validateItemOfCS0002
+	 * @param itemDto
+	 * @param value
+	*/
+	private void validateItemOfCS0002(ItemRowDto itemDto, String value, ItemError error, int index){
+		for (String itemCode : itemSpecialLst) {
+			if (itemDto.getItemCode().equals(itemCode)) {
+				if (value.startsWith(JP_SPACE) || value.endsWith(JP_SPACE)
+						|| !value.contains(JP_SPACE)) {
+					itemDto.setError(true);
+					error = new ItemError("", index, itemDto.getItemCode(), "Msg_924");
+					break;
+				}else {
+					error = null;
+				}
+			}
+		}
+	}
 	
 	/**
 	 * danh cho item kieu timepoint - 5
@@ -807,9 +959,7 @@ public class CheckFileFinder {
 				
 				}catch(RuntimeException re){
 					 return value;
-					
 				}
-
 			}
 		}
 		return value;
@@ -846,9 +996,7 @@ public class CheckFileFinder {
 	}
 	
 	private DataValueAttribute converType(int valueType) {
-		
 		ItemValueType itemValueType = EnumAdaptor.valueOf(valueType, ItemValueType.class);
-		
 		switch (itemValueType) {
 		case STRING:
 		case SELECTION: 
@@ -900,12 +1048,83 @@ public class CheckFileFinder {
 				if(valueExcel == null && valueDb == null){ 
 					return true;
 				}
-
 				return valueDb.equals(valueExcel);
 			}
 		}
 
 	}
+	
+	private Map<String, Periods> createPeriod(){
+		Map<String, Periods> aMap = new HashMap<>();
+		// 所属会社履歴
+		aMap.put("CS00003", new Periods(Arrays.asList(new Period("IS00020", null), new Period("IS00021", null))));
+		// 分類１
+		aMap.put("CS00004", new Periods(Arrays.asList(new Period("IS00026", null), new Period("IS00027", null))));
+		// 雇用
+		aMap.put("CS00014", new Periods(Arrays.asList(new Period("IS00066", null), new Period("IS00067", null))));
+		// 職位本務
+		aMap.put("CS00016", new Periods(Arrays.asList(new Period("IS00077", null), new Period("IS00078", null))));
+		// 職場
+		aMap.put("CS00017", new Periods(Arrays.asList(new Period("IS00082", null), new Period("IS00083", null))));
+		// 休職休業
+		aMap.put("CS00018", new Periods(Arrays.asList(new Period("IS00087", null), new Period("IS00088", null))));
+		// 短時間勤務
+		aMap.put("CS00019", new Periods(Arrays.asList(new Period("IS00102", null), new Period("IS00103", null))));
+		// 労働条件
+		aMap.put("CS00020", new Periods(Arrays.asList(new Period("IS00119", null), new Period("IS00120", null))));
+		// 勤務種別
+		aMap.put("CS00021", new Periods(Arrays.asList(new Period("IS00255", null), new Period("IS00256", null))));
+		// 労働条件２
+		aMap.put("CS00070", new Periods(Arrays.asList(new Period("IS00781", null), new Period("IS00782", null))));
+		return aMap;
+	}
+	private static Comparator<EmployeeRowDto> SORT_BY_DISPORDER = (o1, o2) -> {
+		return o2.getNumberOfError() - o1.getNumberOfError();
+	};
+	
+	@AllArgsConstructor
+	@Getter
+	public class Periods{
+		private List<Period> periods;
+		
+		private boolean compare() {
+			if(CollectionUtil.isEmpty(periods)) {
+				return false;
+			}
+			Period start = periods.get(0);
+			Period end = periods.get(1);
+			
+			
+			return false;
+		}
+		
+	}
+	
+	@AllArgsConstructor
+	@Getter
+	@Setter
+	public class Period{
+		private String item;
+		private Object value;
+		public boolean equal(Period other) {
+			if (this.item == other.item &&  this.value == other.value) return true;
+			if(this.item == other.item ) {
+				if(value == null && other.value == null) return true;
+//				if(value != null && other.value  == null) {}
+			}
+//			if (obj == null) return false;
+//			if (getClass() != obj.getClass()) return false;
+//			return  equals((Object) obj);
+			return false;
+		}
+		
+		public boolean equals() {
+			
+			return true;
+		}
+	}
+	
+	
 	
 	@RequiredArgsConstructor
 	public enum UpdateMode {
