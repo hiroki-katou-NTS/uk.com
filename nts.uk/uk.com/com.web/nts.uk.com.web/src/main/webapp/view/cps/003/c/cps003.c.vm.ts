@@ -51,12 +51,16 @@ module cps003.c.vm {
             self.perInfoCatePermission(param.perInfoCatePermission);
             
             if (paramB && paramB.headDatas) {
-                self.convertData(paramB).done(() => {
+                self.convertData(paramB).done((errs) => {
                     self.loadGrid();
                     self.initDs = _.cloneDeep(self.gridOptions.dataSource);
                     let $grid = $("#grid");
-                    $grid.mGrid("validate", null, () => true);
-                    self.validateSpecial(null, self.gridOptions.dataSource);
+//                    $grid.mGrid("validate", null, () => true);
+//                    self.validateSpecial(null, self.gridOptions.dataSource);
+                    if (errs && errs.length > 0) {
+                        $grid.mGrid("setErrors", errs);
+                    }
+                    
                     let errors = $grid.mGrid("errors");
                     if (errors.length > 0) {
                         let errGroup = _.groupBy(errors, "rowId");
@@ -288,6 +292,12 @@ module cps003.c.vm {
                     self.gridOptions.dataSource.push(record);
                 });
                 
+                let errors = _.map(data.errorItems, e => {
+                    let column = find(self.gridOptions.columns, col => col.key === e.columnKey);
+                    let itemName = column ? column.headerText : "";
+                    return { id: e.recordId, index: e.index, columnKey: e.columnKey, message: nts.uk.resource.getMessage(e.message, [ itemName ]) };
+                });
+                
                 if (workTimeCodes.length > 0) {
                     cps003.control.fetch.check_mt_se({ workTimeCodes: workTimeCodes }).done(mt => {
                         _.forEach(workTimeCodes, (c, i) => {
@@ -325,9 +335,9 @@ module cps003.c.vm {
                             }
                         });
                         
-                        dfd.resolve();
+                        dfd.resolve(errors);
                     });
-                } else dfd.resolve();
+                } else dfd.resolve(errors);
                 
                 _.forEach(nullWorkTimeCodes, (c, i) => {
                     let itemCode = nullWorkTimeItems[i],
