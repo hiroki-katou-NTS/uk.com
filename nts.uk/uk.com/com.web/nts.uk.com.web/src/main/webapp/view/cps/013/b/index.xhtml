@@ -1,0 +1,114 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 550,
+					height : 270
+				};
+			</script>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="cps013.b.style.css" />
+			<com:scriptfile path="cps013.b.service.js" />
+			<com:scriptfile path="cps013.b.start.js" />
+			<com:scriptfile path="cps013.b.service.js" />
+			<com:scriptfile path="cps013.b.vm.js" />
+		</ui:define>
+		<ui:define name="content">
+			<div id="contents-area" style="display: none" data-bind="visible: true" >
+				<div class="contentSchedule" tabindex="-1">
+					
+					<table class="tableSchedule" tabindex="-1">
+						<tr tabindex="-1">
+							<!-- B1_002 -->
+							<td class="bg-green titleScheduleSetting">#{i18n.getText('CPS013_36')}</td>
+							<td class="valueScheduleSetting" data-bind="text: executionStartDate"></td>
+						</tr>
+						
+						<tr tabindex="-1">
+							<!-- B1_004 -->
+							<td class="bg-green titleScheduleSetting">#{i18n.getText('CPS013_38')}</td>
+							<td class="valueScheduleSetting" data-bind="text: executionEndDate"></td>
+						</tr>
+						
+						<tr tabindex="-1">
+							<!-- B1_006 -->
+							<td class="bg-green titleScheduleSetting" >#{i18n.getText('CPS013_39')}</td>
+							<td class="valueScheduleSetting" ><ul class="countdown">
+										<!-- <li><span class="days">00</span>
+											<p class="days_ref">days</p></li>
+										<li class="seperator">.</li> -->
+										<li><span class="hours">00</span>
+											<!-- <p class="hours_ref">hours</p> --></li>
+										<li class="seperator">:</li>
+										<li><span class="minutes">00</span>
+											<!-- <p class="minutes_ref">minutes</p> --></li>
+										<li class="seperator">:</li>
+										<li><span class="seconds">00</span>
+											<!-- <p class="seconds_ref">seconds</p> --></li>
+									</ul></td>
+						</tr>
+						<tr tabindex="-1">
+							<!-- B1_008 -->
+							<td  class="bg-green titleScheduleSetting">#{i18n.getText('CPS013_41')}</td>
+							<td class="valueScheduleSetting">
+								<!-- data-bind="text: executionTotal" -->
+								<span class="label"></span>
+								<!-- data-bind="text: scheduleExecutionLogModel.completionStatus" --> 
+								<span class="label"></span>
+								<!-- B1_010 -->
+								<span class="label"></span>
+								
+							</td>
+						</tr>
+					</table>
+					
+					<com:ko tag="if" bind="error()">
+						<div class="buttonErrorOutput cf">
+						<!-- data-bind ="click: exportFileError"
+							<button tabindex="1" id="exportButton">#{i18n.getText('KSC001_54')}</button> -->
+						</div>
+						<div tabindex="-1" class="tableErrorLog cf">
+							<table  tabindex="-1" id="tableShowError" data-bind="ntsGridList: {								
+								height: 350,
+								dataSource: errorLogs,
+								primaryKey: 'noID',
+								columns: columns,
+								multiple: false,
+								enable: false,
+								value: currentCode,
+								rows: 15
+							}"></table>
+						</div>
+					</com:ko>
+					
+				</div>
+			</div>
+			<div id="functions-area-bottom">
+ 				<com:ko tag="if" bind="finish() &amp; error()">
+ 					<!-- B3_001 -->
+ 					<button id = "button3001" tabindex="1" class="large" data-bind="click: cancel">#{i18n.getText('CPS013_22')}</button>
+ 					<!-- B3_002 -->
+ 					<button tabindex="2" class="large" data-bind="click: cancel">#{i18n.getText('CPS013_23')}</button>
+ 					<!-- B3_003 -->
+ 					<button tabindex="3" class="large" data-bind="click: cancel">#{i18n.getText('CPS013_24')}</button>
+ 				</com:ko>
+ 				<com:ko tag="if" bind="!finish()">
+ 					<!-- B3_003 -->
+					<button id="btn-f-close" tabindex="3" class="large" data-bind="click: cancel">#{i18n.getText('CPS013_24')}</button>
+				</com:ko>
+				<com:ko tag="if" bind="finish()  &amp; !error()">
+					<!-- B3_004 -->
+					<button id="btn-f-stop" tabindex="2" class="large" data-bind="click: stop">#{i18n.getText('CPS013_50')}</button>
+ 				</com:ko>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
