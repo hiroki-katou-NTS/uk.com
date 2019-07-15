@@ -162,6 +162,19 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 			"AND 0 != (SELECT COUNT(c.ppemtPersonItemAuthPk.roleId) FROM PpemtPersonItemAuth c WHERE c.ppemtPersonItemAuthPk.roleId = :roleId",
 			"AND c.ppemtPersonItemAuthPk.personInfoCategoryAuthId = ca.ppemtPerInfoCtgPK.perInfoCtgId AND (0 = :otherAuth or (1 = :otherAuth and c.otherPersonAuthType != 1))",
 			"AND (0 = :selfAuth OR (1 = :selfAuth AND c.selfAuthType != 1)))");
+	
+	private final static String GET_ALL_CATEGORY_FOR_CPS013 = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId,"
+			+ " ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
+			+ " co.categoryParentCd, co.categoryType, co.personEmployeeType, co.fixedAtr, po.disporder,"
+			+ " co.addItemObjCls, co.initValMasterObjCls, co.canAbolition, co.salaryUseAtr, co.personnelUseAtr, co.employmentUseAtr"
+			+ " FROM PpemtPerInfoCtg ca "
+			+ " INNER JOIN PpemtPerInfoCtgCm co ON ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd"
+			+ " INNER JOIN PpemtPerInfoCtgOrder po ON ca.cid = po.cid AND"
+			+ " ca.ppemtPerInfoCtgPK.perInfoCtgId = po.ppemtPerInfoCtgPK.perInfoCtgId"
+			+ " WHERE ca.cid = :cid AND ca.abolitionAtr = 0 AND co.categoryParentCd IS NULL "
+			+ " AND 0 != (SELECT COUNT(i.perInfoCtgId) FROM PpemtPerInfoItem i WHERE i.abolitionAtr = 0 AND i.perInfoCtgId = ca.ppemtPerInfoCtgPK.perInfoCtgId) "
+			+ " AND ((co.salaryUseAtr = 1 AND :forPayroll = 1) OR (co.personnelUseAtr = 1 AND :forPersonnel = 1) OR (co.employmentUseAtr = 1 AND :forAttendance = 1))"
+			+ " OR (:forPayroll =  0 AND :forPersonnel = 0 AND :forAttendance = 0)" + " ORDER BY po.disporder";
 
 	private final static String SELECT_CATEGORY_BY_COMPANY_ID_USED = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId,"
 			+ " ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
@@ -642,4 +655,16 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 			return null;
 		}).filter(f -> f != null).collect(Collectors.toList());
 	}
+
+	@Override
+	public List<PersonInfoCategory> getAllCategoryForCPS013(String companyId, int forAttendance, int forPayroll,
+			int forPersonnel  ) {
+		return this.queryProxy().query(GET_ALL_CATEGORY_FOR_CPS013, Object[].class)
+				.setParameter("cid", companyId)
+				.setParameter("forAttendance", forAttendance)
+				.setParameter("forPayroll", forPayroll)
+				.setParameter("forPersonnel", forPersonnel).getList(c -> {
+					return createDomainVer3FromEntity(c);
+				});
+	};
 }

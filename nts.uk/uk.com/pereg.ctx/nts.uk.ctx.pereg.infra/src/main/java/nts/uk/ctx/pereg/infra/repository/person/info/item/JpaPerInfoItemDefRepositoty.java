@@ -73,6 +73,8 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	
 	private final static String COMMON_CONDITION = "ic.ppemtPerInfoItemCmPK.contractCd = :contractCd AND i.perInfoCtgId = :perInfoCtgId AND ic.itemParentCd IS NULL ORDER BY io.disporder";
 	
+	private final static String CONDITION_CPS013 = "ic.ppemtPerInfoItemCmPK.contractCd = :contractCd AND i.perInfoCtgId = :perInfoCtgId AND i.abolitionAtr = 0 ORDER BY io.disporder";
+	
 	private final static String CONDITION_FOR_007008 = "ic.ppemtPerInfoItemCmPK.contractCd = :contractCd AND i.perInfoCtgId IN :lstPerInfoCategoryId AND i.abolitionAtr = 0 AND (ic.itemParentCd IS NULL OR ic.itemParentCd = '')  ORDER BY io.disporder";
 	
 	private final static String CONDITION = "ic.ppemtPerInfoItemCmPK.contractCd = :contractCd AND i.perInfoCtgId = :perInfoCtgId AND i.abolitionAtr = 0  ORDER BY io.disporder";
@@ -85,6 +87,9 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	
 	private final static String SELECT_ALL_ITEMS_BY_CATEGORY_ID = String.join(" ", SELECT_NO_WHERE, "WHERE",
 			CONDITION);
+	
+	private final static String SELECT_ITEMS_BY_CATEGORY_ID_QUERY_CPS013 = String.join(" ", SELECT_NO_WHERE, "WHERE",
+			CONDITION_CPS013);
 
 	private final static String SELECT_ITEM_BY_CTG_WITH_AUTH = String.join(" ", SELECT_NO_WHERE,
 			"INNER JOIN PpemtPersonItemAuth au",
@@ -1266,6 +1271,17 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 		});
 		
 		return mapValues;
+	}
+	
+	@Override
+	public List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryIdCPS013(String perInfoCategoryId,
+			String contractCd) {
+		return this.queryProxy().query(SELECT_ITEMS_BY_CATEGORY_ID_QUERY_CPS013, Object[].class)
+				.setParameter("contractCd", contractCd)
+				.setParameter("perInfoCtgId", perInfoCategoryId).getList(i -> {
+					List<String> items = getChildIds(contractCd, perInfoCategoryId, String.valueOf(i[1]));
+					return createDomainFromEntity(i, items);
+				});
 	}
 }
 

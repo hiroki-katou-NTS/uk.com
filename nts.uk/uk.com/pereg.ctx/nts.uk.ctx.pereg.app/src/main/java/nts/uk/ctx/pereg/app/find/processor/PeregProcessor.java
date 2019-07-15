@@ -215,7 +215,7 @@ public class PeregProcessor {
 		}).collect(Collectors.toList());
 	}
 	
-	private List<LayoutPersonInfoClsDto> getDataClassItemList(PeregQuery query, PersonInfoCategory perInfoCtg,
+	public List<LayoutPersonInfoClsDto> getDataClassItemList(PeregQuery query, PersonInfoCategory perInfoCtg,
 			List<PerInfoItemDefForLayoutDto> lstPerInfoItemDef) {
 		
 		// combo-box sẽ lấy dựa theo các ngày startDate của từng category

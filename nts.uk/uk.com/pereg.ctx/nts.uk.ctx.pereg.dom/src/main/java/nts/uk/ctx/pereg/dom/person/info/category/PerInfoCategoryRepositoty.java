@@ -79,4 +79,6 @@ public interface PerInfoCategoryRepositoty {
 	List<String> getAllCtgId(List<String> ctgCd, String companyId);
 	
 	List<DateRangeDto> dateRangeCode();
+	
+	List<PersonInfoCategory> getAllCategoryForCPS013(String companyId, int forAttendance , int forPayroll, int forPersonnel  );
 }
