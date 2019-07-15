@@ -31,12 +31,12 @@
     <h6 class="mt-2">{{'selected_value' | i18n}}</h6>
     <template v-if="single">
         <ul class="list-group mt-2 mb-2">
-            <li class="list-group-item p-1">{{selected.text}}</li>
+            <li class="list-group-item p-1">{{selected.name}}</li>
         </ul>
     </template>
     <template v-else>
         <ul class="list-group mt-2 mb-2">
-            <li class="list-group-item p-1" v-for="(item, k) in selecteds" v-bind:key="k">{{item.text}}</li>
+            <li class="list-group-item p-1" v-for="(item, k) in selecteds" v-bind:key="k">{{item.name}}</li>
         </ul>
     </template>
     <hr />
