@@ -1,7 +1,7 @@
 import { $, obj, auth } from '@app/utils';
 import { Vue, VueConstructor } from '@app/provider';
 
-import { $dialog } from '@app/plugins';
+import { $dialog } from '@app/plugins/dialog';
 
 interface IFetchOption {
     url: string;
@@ -296,4 +296,4 @@ const WEB_APP_NAME = {
     }
 };
 
-export { ajax };
+Vue.use(ajax, 'webapi');

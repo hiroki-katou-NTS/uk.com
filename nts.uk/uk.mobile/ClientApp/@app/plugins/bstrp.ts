@@ -281,4 +281,4 @@ const bstrp = {
     }
 };
 
-export { bstrp };
+Vue.use(bstrp);

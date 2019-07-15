@@ -58,7 +58,7 @@ const $dialog = () => ({
 
                                 obj.extend(params, { type: $type, style });
 
-                                return ( this as Vue).$modal($dialog(), params, option);
+                                return (this as Vue).$modal($dialog(), params, option);
                             }.bind(self);
                         });
 
@@ -68,4 +68,6 @@ const $dialog = () => ({
         }
     };
 
-export { dialog, $dialog };
+Vue.use(dialog);
+
+export { $dialog };

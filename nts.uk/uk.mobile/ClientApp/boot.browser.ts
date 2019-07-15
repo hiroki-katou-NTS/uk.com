@@ -1,45 +1,12 @@
 import '@app/index';
 import '@views/index';
-
-import { router } from '@app/core/router';
-import { Vue, Vuex, VueRouter, _ } from '@app/provider';
-import {
-    tojs,
-    bstrp,
-    ajax,
-    auth,
-    resources,
-    i18n,
-    mask,
-    goto,
-    modal,
-    dialog,
-    picker,
-    datetime,
-    validate,
-    Language,
-    LanguageBar
-} from '@app/plugins';
+import '@app/plugins';
 
 import { obj, browser } from '@app/utils';
+import { router } from '@app/core/router';
+import { Vue, Vuex, VueRouter, _ } from '@app/provider';
 import { SideMenuBar, NavMenuBar, SideMenu } from '@app/components';
-
-// use ajax request
-Vue.use(ajax, 'webapi');
-// use aut
-Vue.use(auth);
-
-Vue.use(tojs);
-Vue.use(bstrp);
-Vue.use(goto);
-Vue.use(modal);
-Vue.use(dialog);
-
-Vue.use(i18n);
-Vue.use(mask);
-Vue.use(picker);
-Vue.use(datetime);
-Vue.use(validate);
+import { resources, Language, LanguageBar, } from '@app/plugins/i18n';
 
 Vue.use(Vuex);
 Vue.use(VueRouter);

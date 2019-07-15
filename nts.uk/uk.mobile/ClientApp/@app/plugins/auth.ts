@@ -7,7 +7,7 @@ import { Vue, VueConstructor } from '@app/provider';
  * Method: login, logout
  * Properity: user, token
  */
-export const auth = {
+const auth = {
     install: (vue: VueConstructor<Vue>) => {
         // clear cookie method
         let clearAuthentication = () => {
@@ -126,3 +126,5 @@ export const auth = {
         });
     }
 };
+
+Vue.use(auth);

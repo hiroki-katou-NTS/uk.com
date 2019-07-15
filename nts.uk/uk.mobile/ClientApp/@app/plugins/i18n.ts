@@ -208,4 +208,6 @@ const getText: any = (resource: string | number, params?: string | string[] | { 
     return '';
 };
 
-export { i18n, Language, resources, LanguageBar };
+Vue.use(i18n);
+
+export { Language, resources, LanguageBar };

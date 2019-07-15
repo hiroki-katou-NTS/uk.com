@@ -1,7 +1,7 @@
 import { obj } from '@app/utils';
 import { Vue, VueConstructor } from '@app/provider';
 
-export const tojs = {
+const tojs = {
     install(vue: VueConstructor<Vue>) {
         vue.prototype.toJS = obj.cloneObject;
 
@@ -15,3 +15,5 @@ export const tojs = {
         });
     }
 };
+
+Vue.use(tojs);

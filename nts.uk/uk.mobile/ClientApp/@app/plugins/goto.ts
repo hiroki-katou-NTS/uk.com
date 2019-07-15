@@ -1,7 +1,7 @@
 import { Vue, VueConstructor } from '@app/provider';
 import { obj } from '@app/utils';
 
-export const goto = {
+const goto = {
     install(vue: VueConstructor<Vue>) {
         vue.mixin({
             beforeMount() {
@@ -91,3 +91,5 @@ export const goto = {
         };
     }
 };
+
+Vue.use(goto);

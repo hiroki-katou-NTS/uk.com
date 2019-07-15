@@ -1,6 +1,6 @@
 import { Vue } from '@app/provider';
 import { dom, browser, $ } from '@app/utils';
-import { LanguageBar } from '@app/plugins';
+import { LanguageBar } from '@app/plugins/i18n';
 import { component, Watch } from '@app/core/component';
 
 // tslint:disable-next-line: variable-name

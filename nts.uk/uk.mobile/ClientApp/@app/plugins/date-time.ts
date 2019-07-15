@@ -1,7 +1,7 @@
 import { _, Vue, VueConstructor, moment } from '@app/provider';
 import { TimeWithDay, TimePoint, TimeDuration } from '@app/utils/time';
 
-export const datetime = {
+const datetime = {
     install(vue: VueConstructor<Vue>) {
 
         vue.mixin({
@@ -44,3 +44,5 @@ export const datetime = {
         });
     }
 };
+
+Vue.use(datetime);

@@ -278,4 +278,4 @@ const modal = {
     }
 };
 
-export { modal };
+Vue.use(modal);

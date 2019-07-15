@@ -123,4 +123,4 @@ const vm = Vue.extend({
     }
 };
 
-export { mask };
+Vue.use(mask);

@@ -120,4 +120,5 @@ const vm = Vue
         }
     };
 
-export { picker };
+
+Vue.use(picker);

@@ -528,4 +528,4 @@ const DIRTY = 'dirty',
         }
     };
 
-export { validate };
+Vue.use(validate);

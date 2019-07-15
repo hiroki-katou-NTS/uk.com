@@ -1,5 +1,5 @@
 import { Vue, _ } from '@app/provider';
-import { Language } from '@app/plugins';
+import { Language } from '@app/plugins/i18n';
 import { dom, browser, storage } from '@app/utils';
 import { component, Watch } from '@app/core/component';
 

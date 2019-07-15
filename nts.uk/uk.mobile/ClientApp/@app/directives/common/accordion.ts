@@ -1,6 +1,6 @@
 import { obj, dom, browser } from '@app/utils';
 import { Vue, DirectiveBinding } from '@app/provider';
-import { Language } from '@app/plugins';
+import { Language } from '@app/plugins/i18n';
 
 const toggleDisable = (container: HTMLElement, disable?: { next?: boolean; preview?: boolean }) => {
     let show = container.querySelector('.card.show'),
