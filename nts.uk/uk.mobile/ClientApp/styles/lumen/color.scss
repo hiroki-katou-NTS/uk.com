@@ -191,7 +191,7 @@ $uk-status-color: (
     }
 
     .uk-bg-#{$color-name} {        
-        background-color: #{$hex-value};
+        background-color: #{$hex-value} !important;
         &.uk-color-swatch {
             &:before {
                 content: '#{$hex-value}';
