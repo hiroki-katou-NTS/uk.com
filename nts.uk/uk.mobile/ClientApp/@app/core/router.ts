@@ -71,6 +71,12 @@ router.afterEach((to: Route, from: Route) => {
             }
         });
     }
+    
+    setTimeout(() => {
+        if (!document.body.querySelectorAll('.modal.show, .modal-back-drop.show').length) {
+            document.body.classList.remove('modal-open');
+        }
+    }, 500);
 
     // scroll to top
     document.scrollingElement.scrollTop = 0;
