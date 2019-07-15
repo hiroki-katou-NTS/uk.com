@@ -1,6 +1,7 @@
 import { Vue, VueConstructor, ComponentOptions } from '@app/provider';
 import { obj, dom, browser } from '@app/utils';
 import { IModalOptions } from 'declarations';
+import { RootApp } from '@app/core';
 
 const modal = {
     install(vue: VueConstructor<Vue>) {
@@ -105,7 +106,7 @@ const modal = {
                         });
 
                         let dlg = dom.create('div'),
-                            vm = Vue.extend({
+                            vm = RootApp.extend({
                                 components: {
                                     'nts-dialog': component
                                 },

@@ -1,28 +1,25 @@
-import '@app/index';
 import '@views/index';
+
+import '@app/index';
 import '@app/plugins';
 
+import { Vue } from '@app/provider';
+import { RootApp } from '@app/core';
 import { obj, browser } from '@app/utils';
-import { router } from '@app/core/router';
-import { Vue, Vuex, VueRouter, _ } from '@app/provider';
+
 import { SideMenuBar, NavMenuBar, SideMenu } from '@app/components';
 import { resources, Language, LanguageBar, } from '@app/plugins/i18n';
-
-Vue.use(Vuex);
-Vue.use(VueRouter);
 
 Vue.config.silent = true;
 Vue.config.devtools = true;
 Vue.config.productionTip = false;
 
-new Vue({
-    router,
+new (RootApp.extend({
     components: {
         'nav-bar': NavMenuBar,
         'side-bar': SideMenuBar,
         'language-bar': LanguageBar
     },
-    el: document.querySelector('body>#app_uk_mobile'),
     computed: {
         pgName: {
             get() {
@@ -72,4 +69,4 @@ new Vue({
                 self.$mask('hide');
             });
     }
-});
+}))().$mount(document.querySelector('body>#app_uk_mobile'));

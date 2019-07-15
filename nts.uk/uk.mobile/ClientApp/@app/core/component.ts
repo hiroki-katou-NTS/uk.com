@@ -1,10 +1,11 @@
 import { routes } from '@app/core/routes';
 import { Vue, ComponentOptions } from '@app/provider';
 
-import { $, browser, dom } from '@app/utils';
+import { $, browser } from '@app/utils';
 import { resources, Language } from '@app/plugins/i18n';
 import { cssbeautify } from '@app/utils/css';
 import classDecorator from 'vue-class-component';
+
 import { Prop, Watch, Model, Provide, Emit, Mixins, Inject } from 'vue-property-decorator';
 
 declare type VueClass<V> = {
