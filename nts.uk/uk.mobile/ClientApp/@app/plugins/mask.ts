@@ -70,7 +70,7 @@ const vm = Vue.extend({
 
         document.body.removeChild(self.$el);
 
-        if (!dom.modals.length) {
+        if (dom.modals.length <= 1) {
             dom.removeClass(document.body, 'modal-open');
         }
     }
