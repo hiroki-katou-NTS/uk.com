@@ -5772,6 +5772,28 @@ div .ex-area-line.x-stay {
   overflow: auto;
 }
 
+/* line 1, ../sass/frame/_guide.scss */
+.nts-guide-link {
+  float: right;
+  margin-right: 20px;
+  color: #0066CC;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* line 9, ../sass/frame/_guide.scss */
+.nts-guide-area {
+  width: calc(100% - 20px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  margin: 5px;
+  padding: 0px 5px 3px;
+  line-height: 20px;
+  border: solid 1px #D2DFB5;
+  background-color: #EDF3DD;
+  color: #0066CC;
+}
+
 /* line 1, ../sass/components/_monthdays.scss */
 .ntsMonthDays_Component {
   float: left;
@@ -5977,12 +5999,12 @@ div .ex-area-line.x-stay {
   padding-left: 0px;
 }
 
-/* line 54, ../sass/base.scss */
+/* line 55, ../sass/base.scss */
 html {
   font-size: 14px;
 }
 
-/* line 58, ../sass/base.scss */
+/* line 59, ../sass/base.scss */
 body * {
   font-size: 1rem;
   font-family: "Meiryo UI";
