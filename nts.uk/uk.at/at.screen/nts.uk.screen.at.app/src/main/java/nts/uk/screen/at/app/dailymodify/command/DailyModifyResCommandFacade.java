@@ -52,6 +52,7 @@ import nts.uk.ctx.at.record.dom.service.TimeOffRemainErrorInputParam;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.CheckShortage;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.CheckShortageFlex;
+import nts.uk.ctx.at.record.dom.workrecord.actualsituation.approvalsituationmanagement.export.clearapprovalconfirm.ClearConfirmApprovalService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
@@ -159,6 +160,9 @@ public class DailyModifyResCommandFacade {
 	
 	@Inject
 	private CheckShortageFlex checkShortageFlex;
+	
+	@Inject
+	private ClearConfirmApprovalService clearConfirmApprovalService;
 
 	public RCDailyCorrectionResult handleUpdate(List<DailyRecordDto> dtoOlds,
 			List<DailyRecordDto> dtoNews, List<DailyRecordWorkCommand> commandNew, List<DailyRecordWorkCommand> commandOld, List<DailyItemValue> dailyItems, UpdateMonthDailyParam month, int mode,
@@ -580,6 +584,10 @@ public class DailyModifyResCommandFacade {
 				// insert approval
 				insertApproval(dataParent.getDataCheckApproval(), updated);
 
+				//SPR連携時の確認承認解除
+				if(dataParent.getSpr() != null ) {
+					clearConfirmApprovalService.clearConfirmApproval(dataParent.getSpr().getEmployeeId(), Arrays.asList(dataParent.getSpr().getDate()));
+				}
 				if (dataParent.getSpr() != null && !lstResultReturnDailyError.containsKey(Pair.of(dataParent.getSpr().getEmployeeId(), dataParent.getSpr().getDate()))) {
 					processor.insertStampSourceInfo(dataParent.getSpr().getEmployeeId(), dataParent.getSpr().getDate(),
 							dataParent.getSpr().isChange31(), dataParent.getSpr().isChange34());
