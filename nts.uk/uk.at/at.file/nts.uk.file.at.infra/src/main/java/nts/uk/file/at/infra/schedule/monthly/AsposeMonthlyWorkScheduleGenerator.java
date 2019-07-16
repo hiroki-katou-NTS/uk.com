@@ -2991,7 +2991,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
             Cell employeeTagCell = cells.get(currentRow, 0);
             employeeTagCell.setValue(WorkScheOutputConstants.EMPLOYEE + "　" + employeeReportData.employeeCode
                     + "　" + employeeReportData.employeeName + "　" + WorkScheOutputConstants.EMPLOYMENT + "　"
-                    + employeeReportData.employmentName + "　" + WorkScheOutputConstants.POSITION + "　"
+                    + (employeeReportData.employmentName == null ? "" : (employeeReportData.employmentName + "　")) + WorkScheOutputConstants.POSITION + "　"
                     + employeeReportData.position);
             currentRow++;
         }
