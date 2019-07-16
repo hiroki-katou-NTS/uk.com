@@ -76,7 +76,7 @@ module nts.uk.com.view.cps013.a.viewmodel {
                     { headerText: nts.uk.resource.getText("CPS013_14"), key: 'name', dataType: 'string', width: '200px', ntsControl: 'SwitchButtons' },
                 ], 
                 features: [],
-                ntsControls: [{ name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
+                ntsControls: [{ name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true }],
             });
                 dfd.resolve();
             return dfd.promise();
