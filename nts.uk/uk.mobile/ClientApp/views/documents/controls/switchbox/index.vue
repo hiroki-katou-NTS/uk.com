@@ -17,11 +17,10 @@
     <div>
         <nts-label v-bind:constraint="{}">{{ 'switch_button' | i18n }}</nts-label>
         <div>
-            <nts-switchbox v-for="option in datasource" 
+            <nts-switchbox v-for="(option, k) in datasource" 
+                v-bind:key="k"
                 v-model="switchbox2" 
-                v-bind:value="option.id">
-                    {{option.name}}
-            </nts-switchbox>
+                v-bind:value="option.id">{{option.name}}</nts-switchbox>
         </div>
         Selected code: {{switchbox2}}
     </div>
