@@ -13,6 +13,7 @@ import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.PeregQueryByListEmp;
 import nts.uk.shr.pereg.app.find.dto.DataClassification;
+import nts.uk.shr.pereg.app.find.dto.GridPeregDomainBySidDto;
 import nts.uk.shr.pereg.app.find.dto.GridPeregDomainDto;
 import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 
@@ -68,6 +69,12 @@ public class WidowHistoryFinder implements PeregFinder<WidowHistoryDto>{
 
 	@Override
 	public List<GridPeregDomainDto> getAllData(PeregQueryByListEmp query) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<GridPeregDomainBySidDto> getListData(PeregQueryByListEmp query) {
 		// TODO Auto-generated method stub
 		return null;
 	}

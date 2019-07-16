@@ -26,7 +26,8 @@ public class EmpUserDefDataFinder implements PeregEmpOptRepository{
 	@Override
 	public Map<String, List<OptionalItemDataDto>> getDatas(List<String> recordIds) {
 		// TODO Auto-generated method stub
-		List<OptionalItemDataDto> itemDataLst = this.empInfoItemDataRepository.getAllInfoItemByRecordId(recordIds).stream().map(c -> c.genToPeregDto()).collect(Collectors.toList());
+		List<OptionalItemDataDto> itemDataLst = this.empInfoItemDataRepository.getAllInfoItemByRecordId(recordIds)
+				.stream().map(c -> c.genToPeregDto()).collect(Collectors.toList());
 		
 		return itemDataLst.stream().collect(Collectors.groupingBy(x -> x.getRecordId()));
 	}

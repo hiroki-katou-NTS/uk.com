@@ -16,6 +16,7 @@ import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.PeregQueryByListEmp;
 import nts.uk.shr.pereg.app.find.dto.DataClassification;
+import nts.uk.shr.pereg.app.find.dto.GridPeregDomainBySidDto;
 import nts.uk.shr.pereg.app.find.dto.GridPeregDomainDto;
 import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 
@@ -96,5 +97,11 @@ public class CareLeaveInfoFinder implements PeregFinder<CareLeaveInfoDto> {
 		});
 		
 		return result;
+	}
+
+	@Override
+	public List<GridPeregDomainBySidDto> getListData(PeregQueryByListEmp query) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

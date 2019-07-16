@@ -19,6 +19,8 @@ import nts.uk.shr.pereg.app.find.PeregPerOptRepository;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.PeregQueryByListEmp;
 import nts.uk.shr.pereg.app.find.dto.DataClassification;
+import nts.uk.shr.pereg.app.find.dto.GridPeregBySidDto;
+import nts.uk.shr.pereg.app.find.dto.GridPeregDomainBySidDto;
 import nts.uk.shr.pereg.app.find.dto.GridPeregDomainDto;
 import nts.uk.shr.pereg.app.find.dto.GridPeregDto;
 import nts.uk.shr.pereg.app.find.dto.OptionalItemDataDto;
@@ -161,5 +163,61 @@ public class LayoutingProcessor {
 		} else {
 			return empOptRepo.getDatas(recordIds);
 		}
+	}
+	
+	
+	/**
+	 * find all by sids
+	 * @param query
+	 * @return
+	 */
+	public List<GridPeregBySidDto> getAllDataBySid(PeregQueryByListEmp query) {
+		List<GridPeregBySidDto> result = new ArrayList<>();
+		
+		if (query.getEmpInfos().size() == 0) {
+			return new ArrayList<>();
+		}
+		
+		// get domain data
+		val finderClass = this.finders.get(query.getCategoryCode());
+
+		if (finderClass == null)
+			return null;
+
+		List<GridPeregDomainBySidDto> objectDto = finderClass.getAllDatas(query);
+
+		if (objectDto.size() == 0) {
+			return new ArrayList<>();
+		}
+		
+		//lấy recordId
+		List<String> recordIds = new ArrayList<>();
+		objectDto.stream().filter(c -> c!= null).forEach(c ->{
+			c.getPeregDomainDto().forEach(d ->{
+				Optional<PeregDomainDto> peregDto = Optional.ofNullable(d);
+				if(peregDto.isPresent()) {
+					if(peregDto.get().getRecordId() != "" && peregDto.get().getRecordId() != null) {
+						recordIds.add(peregDto.get().getRecordId());
+					}
+				}
+			});
+			
+		});
+
+		// get optional data
+		Map<String, List<OptionalItemDataDto>> optionalItems = getUserDefData(finderClass.dataType(), recordIds);
+
+		objectDto.stream().forEach(c -> {
+			List<PeregDto> peregDtoLst = new ArrayList<>();
+			c.getPeregDomainDto().stream().forEach(d ->{
+				List<OptionalItemDataDto> itemData = optionalItems.get(Optional.ofNullable(d).map(m  -> m.getRecordId()).orElse(""));
+				PeregDto peregDto = new PeregDto(d, finderClass.dtoClass(), itemData);
+				peregDtoLst.add(peregDto);
+			});
+			GridPeregBySidDto gridDto = new GridPeregBySidDto(c.getEmployeeId(), c.getPersonId(), peregDtoLst);
+			result.add(gridDto);
+		});
+
+		return result;
 	}
 }
