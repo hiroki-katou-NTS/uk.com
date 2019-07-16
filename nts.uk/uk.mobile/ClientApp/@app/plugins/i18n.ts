@@ -188,7 +188,7 @@ const getText: any = (resource: string | number, params?: string | string[] | { 
     resource = resource.toString();
 
     if (resource) {
-        [].slice.call(resource.match(/(#.+)|(#{.+})|({#.+})|({\d+})/g) || [])
+        [].slice.call(resource.match(/(#{[a-zA-z0-9_]+})|({#[a-zA-z0-9_]+})|({\d+})/g) || [])
             .map((match: string) => match.replace(/[\#\{\}]/g, ''))
             .forEach((key: string) => {
                 if (!obj.has(groups, key)) {
@@ -196,7 +196,7 @@ const getText: any = (resource: string | number, params?: string | string[] | { 
                 }
             });
         let result = (i18lang[resource] || resource)
-            .replace(/(#.+)|(#{.+})|({#.+})|({\d+})/g, (match: string) => {
+            .replace(/(#{[a-zA-z0-9_-]+})|({#[a-zA-z0-9_-]+})|({\d+})/g, (match: string) => {
                 let key = match.replace(/[\#\{\}]/g, '');
 
                 return getText((groups[key] || key), groups);
