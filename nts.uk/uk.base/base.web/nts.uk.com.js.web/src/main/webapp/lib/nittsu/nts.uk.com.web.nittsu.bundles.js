@@ -33359,7 +33359,7 @@ var nts;
 /// <reference path="ui/ko-ext/legendbutton-ko-ext.ts"/>
 /// <reference path="ui/ko-ext/charset-setting-ko-ext.ts"/>
 /// <reference path="ui/function-wrap/contextmenu.ts"/>
-/// <reference path="ui/mgrid.ts"/> 
+/// <reference path="ui/mgrid.ts"/>
 /// <reference path="../reference.ts"/>
 var nts;
 (function (nts) {
@@ -45095,6 +45095,110 @@ var nts;
                 }());
                 ko.bindingHandlers['ntsTreeDragAndDrop'] = new NtsTreeDragAndDropBindingHandler();
             })(koExtentions = ui_33.koExtentions || (ui_33.koExtentions = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+/// <reference path="../reference.ts"/>
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            var guide;
+            (function (guide) {
+                var ROW_HEIGHT = 20;
+                var resource;
+                (function (resource) {
+                    resource.linkHide = "操作ガイド　非表示";
+                    resource.linkShow = "操作ガイド　表示";
+                })(resource || (resource = {}));
+                function operate(path, page) {
+                    nts.uk.request.ajax("com", path).done(function (config) {
+                        var op = new OperationGuide(config);
+                        op.setPosition(page);
+                    });
+                }
+                guide.operate = operate;
+                var OperationGuide = /** @class */ (function () {
+                    function OperationGuide(config) {
+                        this.isUsed = config.isUsed;
+                        this.lineCount = config.lineCount;
+                        this.content = config.content;
+                    }
+                    OperationGuide.prototype.link = function (top) {
+                        var self = this;
+                        self.display = true;
+                        var $link = $("<a/>").addClass("nts-guide-link").text(resource.linkHide);
+                        $link.css("margin-top", top);
+                        $link.on("click", function () {
+                            if (self.display) {
+                                $(".nts-guide-link").text(resource.linkShow);
+                                $(".nts-guide-area").hide();
+                                self.display = !self.display;
+                                return;
+                            }
+                            $(".nts-guide-link").text(resource.linkHide);
+                            $(".nts-guide-area").show();
+                            self.display = !self.display;
+                        });
+                        return $link;
+                    };
+                    OperationGuide.prototype.textArea = function () {
+                        var self = this;
+                        var $area = $("<div/>").addClass("nts-guide-area");
+                        $area.height(ROW_HEIGHT * self.lineCount);
+                        var content = self.content.split('\n').join("<br/>");
+                        $area.html(content);
+                        return $area;
+                    };
+                    OperationGuide.prototype.setPosition = function (page) {
+                        var self = this;
+                        switch (page) {
+                            case Page.NORMAL:
+                            default:
+                                var $functionsArea = $("#functions-area");
+                                if ($functionsArea.length == 0)
+                                    return;
+                                if ($functionsArea.find(".nts-guide-link").length == 0) {
+                                    var top = ($functionsArea.height() - 18) / 2;
+                                    $functionsArea.append(self.link(top));
+                                }
+                                if (!$functionsArea.next().is(".nts-guide-area")) {
+                                    $functionsArea.after(self.textArea());
+                                }
+                                break;
+                            case Page.SIDEBAR:
+                                var $contentHeader = $(".sidebar-content-header");
+                                if ($contentHeader.length > 0) {
+                                    $contentHeader.each(function () {
+                                        var $header = $(this);
+                                        if ($header.find(".nts-guide-link").length == 0) {
+                                            var top = ($header.height() - 18) / 2;
+                                            $header.append(self.link(top));
+                                        }
+                                    });
+                                    $contentHeader.each(function () {
+                                        var $header = $(this);
+                                        if (!$header.next().is(".nts-guide-area")) {
+                                            $header.after(self.textArea());
+                                        }
+                                    });
+                                }
+                                break;
+                            case Page.FREE_LAYOUT:
+                                break;
+                        }
+                    };
+                    return OperationGuide;
+                }());
+                var Page;
+                (function (Page) {
+                    Page[Page["NORMAL"] = 0] = "NORMAL";
+                    Page[Page["SIDEBAR"] = 1] = "SIDEBAR";
+                    Page[Page["FREE_LAYOUT"] = 2] = "FREE_LAYOUT";
+                })(Page || (Page = {}));
+            })(guide = ui.guide || (ui.guide = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
