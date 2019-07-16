@@ -1,22 +1,9 @@
-﻿/*!@license
-* Infragistics.Web.ClientUI Rating localization resources 16.2.20162.2040
+/*!@license
+* Infragistics.Web.ClientUI Rating localization resources 19.1.20
 *
-* Copyright (c) 2011-2016 Infragistics Inc.
+* Copyright (c) 2011-2019 Infragistics Inc.
 *
 * http://www.infragistics.com/
 *
 */
-
-(function ($) {
-    $.ig = $.ig || {};
-
-    if (!$.ig.Rating) {
-	    $.ig.Rating = {};
-
-	    $.extend($.ig.Rating, {
-		    locale: {
-			    setOptionError: 'Динамические изменения следующей опции не поддерживаются: '
-		    }
-	    });
-    }
-})(jQuery);
+(function(factory){if(typeof define==="function"&&define.amd){define(["jquery"],factory)}else{return factory(jQuery)}})(function($){$.ig=$.ig||{};$.ig.Rating=$.ig.Rating||{};$.ig.locale=$.ig.locale||{};$.ig.locale.ru=$.ig.locale.ru||{};$.ig.locale.ru.Rating={setOptionError:"Динамические изменения следующей опции не поддерживаются: "};$.ig.Rating.locale=$.ig.Rating.locale||$.ig.locale.ru.Rating;return $.ig.locale.ru.Rating});
