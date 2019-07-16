@@ -205,12 +205,18 @@ module nts.uk.ui.koExtentions {
                 $tree.find("a").removeClass("ui-state-active");
             } else {
                 let getOffset = function($node){
-                    let offset = $node[0].offsetTop, parent = $node[0].offsetParent;
-                    while(!_.isNil(parent) && parent.tagName.toLowerCase() != "ul"){
-                        offset+= parent.offsetTop;
-                        parent = parent.offsetParent;
-                    }
-                    return offset;           
+                    var offset = 0, siblings = $node.prevAll(), parent = $node;
+//                    var offset = $node[0].offsetTop, parent = $node[0].offsetParent;
+                    while (true) {   
+                        siblings.each(function(idx, el) {
+                            offset += $(el).height();
+                        });
+                        parent = $tree.igTree("parentNode", parent);
+                        if(_.isNil(parent)){
+                            return offset;
+                        }
+                        siblings = parent.prevAll();
+                    }   
                 }
                 if (multiple) {
                     $tree.find("a").removeClass("ui-state-active");
@@ -221,22 +227,31 @@ module nts.uk.ui.koExtentions {
                             let $checkbox = $node.find("span[data-role=checkbox]:first").find(".ui-icon-check");
                             if($node.length > 0 && $tree.igTree("checkState", $node) === "off"){
                                 $tree.igTree("toggleCheckstate", $node);
-                            }   
+                            }  
+                            $tree.igTree("expandToNode", $node);
                         }
                     });
-                    if(selectedValues.length > 0){
-                       let $selectingNode = $tree.igTree("nodesByValue", selectedValues[0]);
-                        if ($selectingNode.length > 0) {
-                            $tree.scrollTop(getOffset($selectingNode));  
+                    if (selectedValues.length > 0) {
+                        var lastV = $tree.data("values");
+                        if(!_.isNil(lastV)) {
+                            var newV = _.difference(selectedValues, lastV),
+                                scrollTo = newV.length === 0 ? selectedValues[0] : newV[0],
+                                $selectingNode = $tree.igTree("nodesByValue", scrollTo);
+                            
+                            if ($selectingNode.length > 0) {
+                                $tree[0].scrollTop  = (getOffset($selectingNode));
+                            }
                         }
+                        $tree.data("values", selectedValues);
+                        
                     }
                 } else {
                     $tree.igTree("clearSelection");
-                    let $selectingNode = $tree.igTree("nodesByValue", singleValue);
+                    var $selectingNode = $tree.igTree("nodesByValue", singleValue);
                     if ($selectingNode.length > 0) {
                         $tree.igTree("select", $selectingNode);
                         $tree.igTree("expandToNode", $selectingNode);
-                        $tree.scrollTop(getOffset($selectingNode));  
+                        $tree[0].scrollTop  = getOffset($selectingNode);
                     }
                 }
             }
