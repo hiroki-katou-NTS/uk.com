@@ -2412,7 +2412,7 @@ module nts.uk.ui.mgrid {
                         let info = _vessel().checkedErrors[ei];
                         if (rData[_pk] === info.id && key === info.columnKey) {
                             info.element = td;
-                            khl.set(info, info.message, 1);
+                            khl.set(info, info.message, 1, true);
                             _vessel().checkedErrors.splice(ei, 1);
                             break;
                         }
@@ -2749,7 +2749,7 @@ module nts.uk.ui.mgrid {
                         let info = _vessel().checkedErrors[ei];
                         if (rData[_pk] === info.id && key === info.columnKey) {
                             info.element = td;
-                            khl.set(info, info.message);
+                            khl.set(info, info.message, null, true);
                             _vessel().checkedErrors.splice(ei, 1);
                             break;
                         }
@@ -9961,7 +9961,7 @@ module nts.uk.ui.mgrid {
         /**
          * Set.
          */
-        export function set(cell: any, message: string, setType?: any) {
+        export function set(cell: any, message: string, setType?: any, rendered:? any) {
             if (!cell || ((!setType || setType === 1) && (!cell.element || any(cell)))) return;
             if (!setType || setType === 1) {
                 let $cell = cell.element;
@@ -9983,9 +9983,9 @@ module nts.uk.ui.mgrid {
             if (_.isFunction(notice)) {
                 if (_.isNil(cell.index)) {
                     let index = _.findIndex(_dataSource, d => d[_pk] === cell.id);
-                    if (index !== -1) notice(cell.id, cell.columnKey, _dataSource[index]);
+                    if (index !== -1) notice(cell.id, cell.columnKey, _dataSource[index], rendered);
                 } else {
-                    notice(cell.id, cell.columnKey, _dataSource[cell.index]);
+                    notice(cell.id, cell.columnKey, _dataSource[cell.index], rendered);
                 }
             }
         }
