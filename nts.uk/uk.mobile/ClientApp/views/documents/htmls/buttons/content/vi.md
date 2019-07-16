@@ -106,11 +106,11 @@ Button mặc định sẽ hiển thị kích thưởng ở dạng `vừa`.
 ---
 ##### 7. Selection button (full width)
 
-<button type="button" class="btn btn-selection">
+<button type="button" class="btn btn-selection border mb-2">
     <span class="badge badge-secondary">0001</span>
     <span>Name of selection</span>
 </button>
-<button type="button" class="btn btn-selection mt-2 mb-2">
+<button type="button" class="btn btn-selection border mb-2">
     <span class="badge badge-secondary">0001</span>
     <span>Name of selection</span>
     <span class="d-block mt-1">2010~2019</span>
@@ -123,11 +123,11 @@ Trong button có sử dụng Code, để tạo nó hãy sử dụng thẻ span v
 Button thứ 2 có phần constraint(2010~2019). Để tạo nó hãy sử dụng thẻ span với class là `d-block mt-1`.
 
 ```html
-<button type="button" class="btn btn-selection">
+<button type="button" class="btn btn-selection border">
     <span class="badge badge-secondary">0001</span>
     <span>Name of selection</span>
 </button>
-<button type="button" class="btn btn-selection">
+<button type="button" class="btn btn-selection border">
     <span class="badge badge-secondary">0001</span>
     <span>Name of selection</span>
     <span class="d-block mt-1">2010~2019</span>
