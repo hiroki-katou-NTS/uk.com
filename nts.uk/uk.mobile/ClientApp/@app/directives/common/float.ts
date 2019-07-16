@@ -6,13 +6,17 @@ Vue.directive('float-action', {
         let $vm = vnode.context;
 
         $vm.$mask('hide');
+
+        if (document.body.contains(el)) {
+            el.remove();
+        }
     },
     inserted(el: HTMLElement, binding: DirectiveBinding, vnode: VNode, oldVnode: VNode) {
         let $vm = vnode.context,
             params: { icon?: string; background?: string; forceground?: string; } = binding.value || {};
 
         el.appendChild(dom.create('a', {
-            html: `${ params && params.icon ? `<i class="${params.icon} ${params.forceground}"></i>` : '' }<i class="fas fa-plus ${params.forceground}"></i>`,
+            html: `${params && params.icon ? `<i class="${params.icon} ${params.forceground}"></i>` : ''}<i class="fas fa-plus ${params.forceground}"></i>`,
             'class': `btn btn-danger ${params.background} btn-lg btn-floating`
         }));
 
@@ -45,6 +49,11 @@ Vue.directive('float-action', {
             });
 
             dom.registerGlobalEventHandler(el, 'click', 'li.btn-floating', () => $vm.$mask('hide'));
+        }
+
+        if (el.closest('.modal.show')) {
+            el.style.zIndex = '1051';
+            document.body.appendChild(el);
         }
     }
 });
