@@ -9,6 +9,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.app.find.jobtitle.affiliate.AffJobTitleDto;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItem;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsHistRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsItemRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
@@ -134,7 +136,39 @@ public class TempAbsHisFinder implements PeregFinder<TempAbsHisItemDto> {
 
 	@Override
 	public List<GridPeregDomainBySidDto> getListData(PeregQueryByListEmp query) {
-		// TODO Auto-generated method stub
-		return null;
+		String cid = AppContexts.user().companyId();
+
+		List<GridPeregDomainBySidDto> result = new ArrayList<>();
+
+		List<String> sids = query.getEmpInfos().stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
+
+		query.getEmpInfos().forEach(c -> {
+			result.add(new GridPeregDomainBySidDto(c.getEmployeeId(), c.getPersonId(), new ArrayList<>()));
+		});
+		
+		List<DateHistoryItem> histories = tempAbsHistRepo.getListByListSidsNoWithPeriod(cid, sids);
+		
+		List<String> histIds = histories.stream().map(c -> c.identifier()).collect(Collectors.toList());
+		
+		List<TempAbsenceHisItem> histItems = tempAbsItemRepo.getItemByHitoryIdList(histIds);
+		
+		result.stream().forEach(c -> {
+			List<TempAbsenceHisItem> listHistItem = histItems.stream()
+					.filter(emp -> emp.getEmployeeId().equals(c.getEmployeeId())).collect(Collectors.toList());
+			
+			if (!listHistItem.isEmpty()) {
+				List<PeregDomainDto> listPeregDomainDto = new ArrayList<>();
+				listHistItem.forEach(h -> {
+					Optional<DateHistoryItem> dateHistoryItem = histories.stream().filter(i -> i.identifier().equals(h.getHistoryId())).findFirst();
+					if (dateHistoryItem.isPresent()) {
+						listPeregDomainDto.add(TempAbsHisItemDto.createFromDomain(dateHistoryItem.get(), h));
+					}
+				});
+				if (!listPeregDomainDto.isEmpty()) {
+					c.setPeregDomainDto(listPeregDomainDto);
+				}
+			}
+		});
+		return result.stream().distinct().collect(Collectors.toList());
 	}
 }

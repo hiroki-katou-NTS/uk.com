@@ -128,4 +128,7 @@ public interface TempAbsHistRepository {
 	 * @return
 	 */
 	List<TempAbsenceHistory> getBySidsAndCid(String cid, List<String> employeeIds);
+    
+	// get data cps013
+	List<DateHistoryItem> getListByListSidsNoWithPeriod(String cid, List<String> sids);
 }

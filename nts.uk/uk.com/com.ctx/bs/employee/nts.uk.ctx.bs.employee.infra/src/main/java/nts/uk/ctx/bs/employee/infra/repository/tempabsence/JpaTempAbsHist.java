@@ -323,6 +323,32 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 		});
 		return tempAbsenceHistory;
 	}
+	
+	@Override
+	public List<DateHistoryItem> getListByListSidsNoWithPeriod(String cid, List<String> sids) {
+		
+		List<DateHistoryItem> result = new ArrayList<>();
+		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
+			String sql = "SELECT * FROM BSYMT_TEMP_ABS_HISTORY" + " WHERE CID = ?  AND SID IN (" + NtsStatement.In.createParamsString(subList) + ")"
+					+" ORDER BY START_DATE ASC";
+
+			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+				stmt.setString(1, cid);
+				for (int i = 0; i < subList.size(); i++) {
+					stmt.setString(2 + i, subList.get(i));
+				}
+				
+				List<DateHistoryItem> lstObj = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
+					return new DateHistoryItem(rec.getString("HIST_ID"),
+							new DatePeriod(rec.getGeneralDate("START_DATE"), rec.getGeneralDate("END_DATE")));
+				}).stream().collect(Collectors.toList());
+				result.addAll(lstObj);
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+		});
+		return result;
+	}
 
 	@Override
 	public void addAll(Map<String, DateHistoryItem> dateHistItemsMap) {
