@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -45,8 +46,10 @@ import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuth;
 import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuthRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
+import nts.uk.shr.pereg.app.find.PeregEmpInfoQuery;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.PeregQueryByListEmp;
+import nts.uk.shr.pereg.app.find.dto.GridPeregBySidDto;
 import nts.uk.shr.pereg.app.find.dto.GridPeregDto;
 import nts.uk.shr.pereg.app.find.dto.OptionalItemDataDto;
 import nts.uk.shr.pereg.app.find.dto.PeregDto;
@@ -158,6 +161,33 @@ public class PeregProcessor {
 	}
 	
 	/**
+	 * get full thông tin của nhân viên
+	 * @param empInfos
+	 * @param categories
+	 * @return
+	 */
+	public Map<String, List<GridLayoutPersonInfoClsDto>> getFullCategoryDetailByListEmp(List<PeregEmpInfoQuery> empInfos, Map<PersonInfoCategory, List<PersonInfoItemDefinition>> categories) {
+		Map<String, List<GridLayoutPersonInfoClsDto>> classItemList = getDataClassItemListForCps013(empInfos, categories);
+		List<PersonInfoCategory> categoryLst = new ArrayList<>(categories.keySet());
+		int digit = stampCardLength.getDigitOfStamp();
+		classItemList.entrySet().stream().forEach(f -> {
+			Optional<PersonInfoCategory> categoryOpt = categoryLst.stream().filter(c -> c.getCategoryCode().v().equals(f.getKey())).findFirst();
+			f.getValue().forEach(i ->{
+				// set default value
+				initDefaultValue.setDefaultValue(i.getLayoutDtos());
+				// special process with category CS00069 item IS00779. change string length
+				if(categoryOpt.isPresent()) {
+					stampCardLength.updateLength(categoryOpt.get(), i.getLayoutDtos(), digit);
+				}
+				
+			});
+
+		});
+		return classItemList;
+	}
+	
+	
+	/**
 	 * Processor for layout in cps003
 	 * @param query
 	 * @return
@@ -256,6 +286,56 @@ public class PeregProcessor {
 				comboBoxStandardDate);
 
 		return classItemList;
+	}
+	
+	// key categoryCodem, List<GridLayoutPersonInfoClsDto> -> list này bao gồm nhiều thông tin của một nhân viên 
+	private Map<String, List<GridLayoutPersonInfoClsDto>> getDataClassItemListForCps013(List<PeregEmpInfoQuery> empInfos, Map<PersonInfoCategory, List<PersonInfoItemDefinition>> categories) {
+		//List<PerInfoItemDefForLayoutDto> perItems
+		Map<String, List<GridLayoutPersonInfoClsDto>> result = new HashMap<>();
+		categories.entrySet().stream().forEach(c ->{
+			if (c.getKey().isFixed()) {
+				//List<PerInfoItemDefForLayoutDto> perItems 
+				List<PerInfoItemDefForLayoutDto> perItems = getPerItemDefForLayoutForCps013(c.getKey(), c.getValue());
+				PeregQueryByListEmp query = PeregQueryByListEmp.createQueryLayout(c.getKey().getPersonInfoCategoryId(), c.getKey().getCategoryCode().v(), null, empInfos);
+				List<GridPeregBySidDto> peregDtoLst = layoutingProcessor.getAllDataBySid(query);
+				if (!CollectionUtil.isEmpty(peregDtoLst)) {
+					List<GridLayoutPersonInfoClsDto> resultsSync = Collections.synchronizedList(new ArrayList<>());
+					parallel.forEach(peregDtoLst, m -> {
+						m.getPeregDto().stream().forEach(d ->{
+							// combo-box sẽ lấy dựa theo các ngày startDate của từng category
+							GeneralDate comboBoxStandardDate = GeneralDate.today();
+							
+							GridLayoutPersonInfoClsDto dto = new GridLayoutPersonInfoClsDto(m.getEmployeeId(), m.getPersonId(), creatClassItemList(perItems, c.getKey()));
+							
+							MappingFactory.mapListItemClassCPS003(d, dto.getLayoutDtos());
+
+							Map<String, Object> itemValueMap = MappingFactory.getFullDtoValue(d);
+							
+							List<String> standardDateItemCodes = Arrays.asList("IS00020", "IS00077", "IS00082", "IS00119", "IS00781");
+							
+							for (String itemCode : standardDateItemCodes) {
+								if (itemValueMap.containsKey(itemCode)) {
+									comboBoxStandardDate = (GeneralDate) itemValueMap.get(itemCode);
+									break;
+								}
+							}
+							
+							// get Combo-Box List
+							layoutControlComboBox.getComboBoxListForSelectionItems(m.getEmployeeId(), c.getKey(), dto.getLayoutDtos(),
+									comboBoxStandardDate);
+							
+							resultsSync.add(dto);		
+						});			
+					});
+					
+					result.put(c.getKey().getCategoryParentCode().v(), resultsSync);
+				}
+			}else {
+				//TODO
+				System.out.println("Chưa làm");
+			}
+		});
+		return result;
 	}
 	
 	private List<GridLayoutPersonInfoClsDto> getDataClassItemListForGrid(PeregQueryByListEmp query, PersonInfoCategory perInfoCtg, HashMap<Boolean, List<PerInfoItemDefForLayoutDto>> perItems) {
@@ -373,6 +453,37 @@ public class PeregProcessor {
 		
 		MappingFactory.matchOptionalItemData(recordId, classItemList, perOptionItemData);
 	}	
+	
+	/**
+	 * dùng cho cps013
+	 * @param category
+	 * @param contractCode
+	 * @param roleId
+	 * @return
+	 */
+	private List<PerInfoItemDefForLayoutDto> getPerItemDefForLayoutForCps013(PersonInfoCategory category, List<PersonInfoItemDefinition> fullItemDefinitionList) {
+
+		List<PersonInfoItemDefinition> parentItemDefinitionList = fullItemDefinitionList.stream()
+				.filter(item -> item.haveNotParentCode()).collect(Collectors.toList());
+
+		List<PerInfoItemDefForLayoutDto> ỉtemLst = new ArrayList<>();
+
+		for (int i = 0; i < parentItemDefinitionList.size(); i++) {
+			PersonInfoItemDefinition itemDefinition = parentItemDefinitionList.get(i);
+
+				PerInfoItemDefForLayoutDto itemDto = itemForLayoutFinder.createItemLayoutDto(category, itemDefinition,
+						i, ActionRole.EDIT);
+
+				// get and convert childrenItems
+				List<PerInfoItemDefForLayoutDto> childrenItems = itemForLayoutFinder
+						.getChildrenItems(fullItemDefinitionList, category, itemDefinition, i, ActionRole.EDIT);
+
+				itemDto.setLstChildItemDef(childrenItems);
+
+				ỉtemLst.add(itemDto);
+		}
+		return ỉtemLst;
+	}
 
 	private HashMap<Boolean, List<PerInfoItemDefForLayoutDto>> getPerItemDefForLayout(PersonInfoCategory category, String contractCode,
 			String roleId) {
