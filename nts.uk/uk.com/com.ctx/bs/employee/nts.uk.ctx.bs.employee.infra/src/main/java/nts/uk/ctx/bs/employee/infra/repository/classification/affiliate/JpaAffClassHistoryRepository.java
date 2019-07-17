@@ -224,6 +224,38 @@ public class JpaAffClassHistoryRepository extends JpaRepository implements AffCl
 
 		return result;
 	}
+	
+	@Override
+	@SneakyThrows
+	public List<DateHistoryItem> getByEmployeeListNoWithPeriod(String cid, List<String> employeeIds) {
+		
+		List<DateHistoryItem> result = new ArrayList<>();
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			String sql = "SELECT * FROM BSYMT_AFF_CLASS_HISTORY" 
+					+ " WHERE  CID = ?" 
+					+ " AND SID IN (" + NtsStatement.In.createParamsString(subList) + ")";
+			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+				stmt.setString(1, cid);
+				for (int i = 0; i < subList.size(); i++) {
+					stmt.setString(2 + i, subList.get(i));
+				}
+				List<DateHistoryItem> lstObj = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
+					BsymtAffClassHistory history = new BsymtAffClassHistory();
+					history.historyId = rec.getString("HIST_ID");
+					history.cid = rec.getString("CID");
+					history.sid = rec.getString("SID");
+					history.startDate = rec.getGeneralDate("START_DATE");
+					history.endDate = rec.getGeneralDate("END_DATE");
+					return new DateHistoryItem(history.historyId, new DatePeriod(history.startDate, history.endDate));
+				}).stream().collect(Collectors.toList());
+				result.addAll(lstObj);
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+		});
+		
+		return null;
+	}
 
 	@Override
 	public List<AffClassHistory> getBySidsWithCid(String cid, List<String> sids) {

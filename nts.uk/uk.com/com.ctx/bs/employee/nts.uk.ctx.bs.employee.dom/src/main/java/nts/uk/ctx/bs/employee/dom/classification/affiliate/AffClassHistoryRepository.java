@@ -108,4 +108,6 @@ public interface AffClassHistoryRepository {
 	 * @author lanlt
 	 */
 	void updateAll(List<DateHistoryItem> domains);
+
+	List<DateHistoryItem> getByEmployeeListNoWithPeriod(String cid, List<String> employeeIds );
 }

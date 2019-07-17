@@ -139,7 +139,39 @@ public class AffClassificationFinder implements PeregFinder<AffClassificationDto
 
 	@Override
 	public List<GridPeregDomainBySidDto> getListData(PeregQueryByListEmp query) {
-		// TODO Auto-generated method stub
-		return null;
+		String cid = AppContexts.user().companyId();
+
+		List<GridPeregDomainBySidDto> result = new ArrayList<>();
+
+		List<String> sids = query.getEmpInfos().stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
+
+		query.getEmpInfos().forEach(c -> {
+			result.add(new GridPeregDomainBySidDto(c.getEmployeeId(), c.getPersonId(), new ArrayList<>()));
+		});
+		
+		List<DateHistoryItem> histories = affClassHistRepo.getByEmployeeListNoWithPeriod(cid, sids);
+		
+		List<String> histIds = histories.stream().map(c -> c.identifier()).collect(Collectors.toList());
+		
+		List<AffClassHistItem> histItems = affClassHistItemRepo.getByHistoryIds(histIds);
+		
+		result.stream().forEach(c -> {
+			List<AffClassHistItem> listHistItem = histItems.stream()
+					.filter(emp -> emp.getEmployeeId().equals(c.getEmployeeId())).collect(Collectors.toList());
+			
+			if (!listHistItem.isEmpty()) {
+				List<PeregDomainDto> listPeregDomainDto = new ArrayList<>();
+				listHistItem.forEach(h -> {
+					Optional<DateHistoryItem> dateHistoryItem = histories.stream().filter(i -> i.identifier().equals(h.getHistoryId())).findFirst();
+					if (dateHistoryItem.isPresent()) {
+						listPeregDomainDto.add(AffClassificationDto.createFromDomain(h, dateHistoryItem.get()));
+					}
+				});
+				if (!listPeregDomainDto.isEmpty()) {
+					c.setPeregDomainDto(listPeregDomainDto);
+				}
+			}
+		});
+		return result.stream().distinct().collect(Collectors.toList());
 	}
 }
