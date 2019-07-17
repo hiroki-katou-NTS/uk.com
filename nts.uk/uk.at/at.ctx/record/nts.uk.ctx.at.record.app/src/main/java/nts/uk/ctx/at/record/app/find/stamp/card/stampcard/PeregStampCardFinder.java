@@ -104,6 +104,47 @@ public class PeregStampCardFinder implements PeregFinder<PeregStampCardDto> {
 		return result;
 	}
 	
+	@Override
+	public List<GridPeregDomainBySidDto> getListData(PeregQueryByListEmp query) {
+		List<GridPeregDomainBySidDto> result = new ArrayList<>();
+		List<GridPeregDomainBySidDto> resultDataExist = new ArrayList<>();
+		List<String> sids = query.getEmpInfos().stream().map(m -> m.getEmployeeId()).collect(Collectors.toList());
+		Map<String, List<StampCard>> domains = stampCardRepo.getLstStampCardByLstSid(sids).stream().collect(Collectors.groupingBy(c -> c.getEmployeeId()));
+		
+		domains.entrySet().forEach(d ->{
+			String pid = query.getEmpInfos().stream()
+					.filter(f -> f.getEmployeeId().equals(d.getKey()))
+					.findFirst()
+					.map(m -> m.getPersonId())
+					.orElse("");
+			List<PeregDomainDto>  peregDto = new ArrayList<>();
+			
+			d.getValue().forEach(s ->{
+				peregDto.add(PeregStampCardDto.createFromDomain(s));
+			});
+			
+			resultDataExist.add(new GridPeregDomainBySidDto(d.getKey(), pid, peregDto));
+		});
+		
+		if(!CollectionUtil.isEmpty(resultDataExist)) {
+			result.addAll(resultDataExist);
+		}
+		
+		List<GridPeregDomainBySidDto> resultDistinct = resultDataExist.stream()
+				.filter(distinctByKey(GridPeregDomainBySidDto::getEmployeeId)).collect(Collectors.toList());
+		
+		query.getEmpInfos().stream().forEach(c -> {
+			Optional<GridPeregDomainBySidDto> gridDto = resultDistinct.stream().filter(r -> r.getEmployeeId().equals(c.getEmployeeId())).findFirst();
+			
+			if(!gridDto.isPresent()) {
+				GridPeregDomainBySidDto dto = new GridPeregDomainBySidDto(c.getEmployeeId(), c.getPersonId(), new ArrayList<>());
+				result.add(dto);
+			}
+		});
+		
+		return result;
+	}
+	
 	/**
 	 * 
 	 * @param keyExtractor
@@ -112,11 +153,6 @@ public class PeregStampCardFinder implements PeregFinder<PeregStampCardDto> {
 	private static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
 		Map<Object, Boolean> map = new ConcurrentHashMap<>();
 		return t -> map.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
-	}
-
-	@Override
-	public List<GridPeregDomainBySidDto> getListData(PeregQueryByListEmp query) {
-		return null;
 	}
 
 }
