@@ -8,13 +8,17 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.xml.ws.EndpointReference;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.app.find.jobtitle.affiliate.AffJobTitleDto;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItem;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
@@ -138,9 +142,43 @@ public class AffWorlplaceHistItemFinder implements PeregFinder<AffWorlplaceHistI
 		return result;
 	}
 
+	// get data cps013
 	@Override
 	public List<GridPeregDomainBySidDto> getListData(PeregQueryByListEmp query) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		String cid = AppContexts.user().companyId();
+
+		List<GridPeregDomainBySidDto> result = new ArrayList<>();
+
+		List<String> sids = query.getEmpInfos().stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
+
+		query.getEmpInfos().forEach(c -> {
+			result.add(new GridPeregDomainBySidDto(c.getEmployeeId(), c.getPersonId(), new ArrayList<>()));
+		});
+		
+		List<DateHistoryItem> histories = affWrkplcHistRepo.getListByListSidsNoWithPeriod(cid, sids);
+		
+		List<String> histIds = histories.stream().map(c -> c.identifier()).collect(Collectors.toList());
+		
+		List<AffWorkplaceHistoryItem> histItems = affWrkplcHistItemRepo.findByHistIds(histIds);
+		
+		result.stream().forEach(c -> {
+			List<AffWorkplaceHistoryItem> listHistItem = histItems.stream()
+					.filter(emp -> emp.getEmployeeId().equals(c.getEmployeeId())).collect(Collectors.toList());
+			
+			if (!listHistItem.isEmpty()) {
+				List<PeregDomainDto> listPeregDomainDto = new ArrayList<>();
+				listHistItem.forEach(h -> {
+					Optional<DateHistoryItem> dateHistoryItem = histories.stream().filter(i -> i.identifier().equals(h.getHistoryId())).findFirst();
+					if (dateHistoryItem.isPresent()) {
+						listPeregDomainDto.add(AffWorlplaceHistItemDto.getBaseOnDateHist(h, dateHistoryItem.get().start(), dateHistoryItem.get().end()));
+					}
+				});
+				if (!listPeregDomainDto.isEmpty()) {
+					c.setPeregDomainDto(listPeregDomainDto);
+				}
+			}
+		});
+		return result.stream().distinct().collect(Collectors.toList());
 	}
 }

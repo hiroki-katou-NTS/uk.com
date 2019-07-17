@@ -141,6 +141,7 @@ public class AffJobTitleFinder implements PeregFinder<AffJobTitleDto> {
 
 	@Override
 	public List<GridPeregDomainBySidDto> getListData(PeregQueryByListEmp query) {
+		
 		String cid = AppContexts.user().companyId();
 
 		List<GridPeregDomainBySidDto> result = new ArrayList<>();

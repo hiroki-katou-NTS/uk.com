@@ -459,6 +459,32 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements A
 		});
 		return result;
 	}
+	
+	// get data cps013
+	@Override
+	public List<DateHistoryItem> getListByListSidsNoWithPeriod(String cid, List<String> sids) {
+		
+		List<DateHistoryItem> result = new ArrayList<>();
+		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			try (PreparedStatement statement = this.connection().prepareStatement(
+						"SELECT * from BSYMT_AFF_WORKPLACE_HIST h"
+						+ " WHERE h.CID = ? AND h.SID IN (" + subList.stream().map(s -> "?").collect(Collectors.joining(",")) + ")")) {
+				statement.setString(1, cid);
+				for (int i = 0; i < subList.size(); i++) {
+					statement.setString( 2 + i, subList.get(i));
+				}
+				List<DateHistoryItem> lstObj = new NtsResultSet(statement.executeQuery()).getList(rec -> {
+					return new DateHistoryItem(rec.getString("HIST_ID"),
+							new DatePeriod(rec.getGeneralDate("START_DATE"), rec.getGeneralDate("END_DATE")));
+				}).stream().collect(Collectors.toList());
+				result.addAll(lstObj);
+				
+			}catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		});
+		return result;
+ 	}
 
 	@Override
 	@SneakyThrows

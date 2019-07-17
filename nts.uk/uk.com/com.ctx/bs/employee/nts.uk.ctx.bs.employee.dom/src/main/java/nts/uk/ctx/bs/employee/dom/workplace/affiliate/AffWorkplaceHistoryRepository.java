@@ -107,4 +107,7 @@ public interface AffWorkplaceHistoryRepository {
 	 */
 	List<AffWorkplaceHistory> getWorkplaceHistoryBySidsAndDateV2(GeneralDate baseDate, List<String> employeeIds);
 
+	// get data cps013
+	List<DateHistoryItem> getListByListSidsNoWithPeriod(String cid, List<String> sids);
+
 }
