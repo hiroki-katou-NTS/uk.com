@@ -70,6 +70,7 @@ public class PerInfoValidChkCtgWebservice {
 	@POST
 	@Path("getError")
 	public List<DataEmployeeToCheck> getError(CheckDataFromUI query) {
-		return this.process.checkDataEmployee(query);
+		return null;
+		//return this.process.checkDataEmployee(query);
 	}
 }

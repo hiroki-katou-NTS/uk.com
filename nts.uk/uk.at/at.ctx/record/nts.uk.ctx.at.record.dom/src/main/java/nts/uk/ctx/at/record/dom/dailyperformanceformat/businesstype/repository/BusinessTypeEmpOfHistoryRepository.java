@@ -96,6 +96,9 @@ public interface BusinessTypeEmpOfHistoryRepository {
 	 * @author lanlt
 	 */
 	List<DateHistoryItem> getDateHistItemByCidAndSidsAndBaseDate(String cid, List<String> sIds, GeneralDate baseDate);
+
+	// get data cps013
+	List<DateHistoryItem> getListByListSidsNoWithPeriod(String cid, List<String> sids);
 	
 
 }
