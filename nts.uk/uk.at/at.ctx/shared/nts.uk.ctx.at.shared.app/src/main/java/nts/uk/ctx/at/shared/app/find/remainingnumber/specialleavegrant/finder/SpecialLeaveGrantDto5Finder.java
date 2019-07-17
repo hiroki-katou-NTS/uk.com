@@ -62,7 +62,6 @@ public class SpecialLeaveGrantDto5Finder implements PeregFinder<SpecialLeaveGran
 
 	@Override
 	public List<GridPeregDomainBySidDto> getListData(PeregQueryByListEmp query) {
-		// TODO Auto-generated method stub
-		return null;
+		return specialLeaveGrantFinder.getListData(query, SpecialLeaveGrantCode.CS00043.value);
 	}
 }
