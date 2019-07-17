@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.app.find.remainingnumber.annualleave;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -66,8 +67,6 @@ public class AnnualLeaveFinder implements PeregFinder<AnnualLeaveDto> {
 		String companyId = AppContexts.user().companyId();
 		String employeeId = query.getEmployeeId();
 		AnnualLeaveDto dto = new AnnualLeaveDto(employeeId);
-		
-		
 		
 		// 年休残数
 		List<AnnualLeaveGrantRemainingData> annualLeaveDataList = annLeaDataRepo.findNotExp(employeeId);
@@ -192,7 +191,84 @@ public class AnnualLeaveFinder implements PeregFinder<AnnualLeaveDto> {
 
 	@Override
 	public List<GridPeregDomainBySidDto> getListData(PeregQueryByListEmp query) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		String cid = AppContexts.user().companyId();
+		
+		List<GridPeregDomainBySidDto> result = new ArrayList<>();
+		
+		List<String> sids = query.getEmpInfos().stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
+		
+		query.getEmpInfos().forEach(c -> {
+			result.add(new GridPeregDomainBySidDto(c.getEmployeeId(), c.getPersonId(), new ArrayList<>()));
+		});
+		
+		List<AnnualLeaveDto> resultDto = new ArrayList<>();
+		
+		setEmployeeId(sids, resultDto);
+		
+		// 年休残数
+		Map<String, List<AnnualLeaveGrantRemainingData>> annualLeaveDataList = annLeaDataRepo
+				.findByCidAndSids(cid, sids).stream().collect(Collectors.groupingBy(c -> c.getEmployeeId()));
+
+		resultDto.stream().forEach(c -> {
+			List<AnnualLeaveGrantRemainingData> data = annualLeaveDataList.get(c.getRecordId());
+			if (data == null) {
+				annualLeaveDataList.put(c.getRecordId(), new ArrayList<>());
+			}
+		});
+
+		Map<String, String> numFormatLst = annLeaDomainService.calculateAnnLeaNumWithFormat(cid, annualLeaveDataList);
+
+		Map<String, String> lastGrantDateLst = annLeaDomainService.calculateLastGrantDate(cid, sids);
+
+		// 年休社員基本情報
+		Map<String, List<AnnualLeaveEmpBasicInfo>> basicInfoOptLst = annLeaBasicInfoRepo.getAll(cid, sids).stream()
+				.collect(Collectors.groupingBy(c -> c.getEmployeeId()));
+
+		// 年休上限データ
+		Map<String, List<AnnualLeaveMaxData>> maxDataOptLst = maxDataRepo.getAll(cid, sids).stream()
+				.collect(Collectors.groupingBy(c -> c.getEmployeeId()));
+
+		// 積立年休残数
+		Map<String, List<ReserveLeaveGrantRemainingData>> rervLeaveDataList = rervLeaDataRepo.getAll(cid, sids).stream()
+				.collect(Collectors.groupingBy(c -> c.getEmployeeId()));
+		
+		resultDto.stream().forEach(c -> {			
+			// 積立年休残数
+			List<ReserveLeaveGrantRemainingData> rervLeaveData = rervLeaveDataList.get(c.getRecordId());
+			if(rervLeaveData == null) {
+				rervLeaveDataList.put(c.getRecordId(), new ArrayList<>());
+			}
+		});
+		
+		resultDto.stream().forEach(c -> {
+
+			c.setAnnualLeaveNumber(numFormatLst.get(c.getRecordId()));
+
+			c.setLastGrantDate(lastGrantDateLst.get(c.getRecordId()));
+
+			// 年休社員基本情報
+			List<AnnualLeaveEmpBasicInfo> basicInfo = basicInfoOptLst.get(c.getRecordId());
+			if (basicInfo != null) {
+				c.pullDataFromBasicInfo(basicInfo.get(0));
+			}
+
+			// 年休上限データ
+			List<AnnualLeaveMaxData> maxData = maxDataOptLst.get(c.getRecordId());
+			if (maxData != null) {
+				c.pullDataFromMaxData(maxData.get(0));
+			}
+
+			// 積立年休残数
+			List<ReserveLeaveGrantRemainingData> rervLeaveData = rervLeaveDataList.get(c.getRecordId());
+			c.setResvLeaRemainNumber(annLeaDomainService.calculateRervLeaveNumber(rervLeaveData));
+		});
+		
+		result.stream().forEach(c ->{
+			AnnualLeaveDto annualLeaveDto = resultDto.stream().filter(dto -> dto.getRecordId().equals(c.getEmployeeId())).findFirst().get();
+			c.setPeregDomainDto(Arrays.asList(annualLeaveDto));
+		});
+		
+		return result;
 	}
 }
