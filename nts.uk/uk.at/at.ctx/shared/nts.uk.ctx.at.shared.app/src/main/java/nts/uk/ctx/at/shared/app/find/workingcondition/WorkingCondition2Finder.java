@@ -15,6 +15,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
@@ -131,7 +132,52 @@ public class WorkingCondition2Finder implements PeregFinder<WorkingCondition2Dto
 
 	@Override
 	public List<GridPeregDomainBySidDto> getListData(PeregQueryByListEmp query) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		String cid = AppContexts.user().companyId();
+
+		List<GridPeregDomainBySidDto> result = new ArrayList<>();
+
+		List<String> sids = query.getEmpInfos().stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
+
+		query.getEmpInfos().forEach(c -> {
+			result.add(new GridPeregDomainBySidDto(c.getEmployeeId(), c.getPersonId(), new ArrayList<>()));
+		});
+		
+		List<WorkingCondition>  workingCondiditions = wcRepo.getBySidsAndCid(cid, sids);
+		
+		Map<String, List<DateHistoryItem>> dateHistLst = workingCondiditions.stream().collect(Collectors.toMap(WorkingCondition::getEmployeeId, WorkingCondition::getDateHistoryItem));
+
+		List<String> historyIds =  new ArrayList<>();
+		
+		dateHistLst.values().stream().forEach(c -> {
+			historyIds.addAll(c.stream().map(h -> h.identifier()).collect(Collectors.toList()));
+		});
+		
+		List<WorkingConditionItem> workingCondiditionItems = wcItemRepo.getByListHistoryID(historyIds.stream().distinct().collect(Collectors.toList()));
+		
+		result.stream().forEach(c -> {
+			
+			List<WorkingConditionItem> histItemLst = workingCondiditionItems.stream()
+					.filter(emp -> emp.getEmployeeId().equals(c.getEmployeeId())).collect(Collectors.toList());
+			
+			if (!CollectionUtil.isEmpty(histItemLst)) {
+				
+				List<PeregDomainDto> workingCondition2DtoLst = new ArrayList<>();
+				
+				List<DateHistoryItem> dateHistItemLst = dateHistLst.get(c.getEmployeeId());
+				
+				histItemLst.stream().forEach(h ->{
+					
+					Optional<DateHistoryItem> histItemOpt = dateHistItemLst.stream().filter(d -> d.identifier().equals(h.getHistoryId())).findFirst();
+					
+					if(histItemOpt.isPresent()) {
+						workingCondition2DtoLst.add(WorkingCondition2Dto.createWorkingConditionDto(histItemOpt.get(), h));
+					}
+				});
+				
+				c.setPeregDomainDto(workingCondition2DtoLst);
+			}
+		});
+		return result;
 	}
 }
