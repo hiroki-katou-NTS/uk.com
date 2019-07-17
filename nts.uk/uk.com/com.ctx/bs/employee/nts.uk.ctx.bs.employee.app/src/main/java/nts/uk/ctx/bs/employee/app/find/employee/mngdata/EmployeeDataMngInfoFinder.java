@@ -1,6 +1,7 @@
 package nts.uk.ctx.bs.employee.app.find.employee.mngdata;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -81,9 +82,26 @@ public class EmployeeDataMngInfoFinder implements PeregFinder<EmployeeDataMngInf
 		return result;
 	}
 
+	// get data to check cps013
 	@Override
 	public List<GridPeregDomainBySidDto> getListData(PeregQueryByListEmp query) {
-		// TODO Auto-generated method stub
-		return null;
+		String cid = AppContexts.user().companyId();
+		
+		List<GridPeregDomainBySidDto> result = new ArrayList<>();
+		
+		List<String> sids = query.getEmpInfos().stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
+		
+		query.getEmpInfos().forEach(c -> {
+			result.add(new GridPeregDomainBySidDto(c.getEmployeeId(), c.getPersonId(), null));
+		});
+
+		List<EmployeeDataMngInfo> domains = edMngRepo.findByListEmployeeId(cid, sids);
+		
+		result.stream().forEach(c ->{
+			Optional<EmployeeDataMngInfo> empOpt = domains.stream().filter(emp -> emp.getEmployeeId().equals(c.getEmployeeId())).findFirst();
+			c.setPeregDomainDto(empOpt.isPresent() == true ? Arrays.asList(EmployeeDataMngInfoDto.fromDomain(empOpt.get())) : null);
+		});
+		
+		return result;
 	}
 }
