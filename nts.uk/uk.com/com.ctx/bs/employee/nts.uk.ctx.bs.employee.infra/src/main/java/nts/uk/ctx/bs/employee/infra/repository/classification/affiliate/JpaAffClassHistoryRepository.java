@@ -233,7 +233,7 @@ public class JpaAffClassHistoryRepository extends JpaRepository implements AffCl
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			String sql = "SELECT * FROM BSYMT_AFF_CLASS_HISTORY" 
 					+ " WHERE  CID = ?" 
-					+ " AND SID IN (" + NtsStatement.In.createParamsString(subList) + ")";
+					+ " AND SID IN (" + NtsStatement.In.createParamsString(subList) + ")" + " ORDER BY START_DATE ASC";
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 				stmt.setString(1, cid);
 				for (int i = 0; i < subList.size(); i++) {
