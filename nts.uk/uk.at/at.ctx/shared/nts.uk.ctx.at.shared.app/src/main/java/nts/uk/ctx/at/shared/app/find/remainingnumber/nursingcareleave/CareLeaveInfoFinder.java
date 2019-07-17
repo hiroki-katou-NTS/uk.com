@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.app.find.remainingnumber.nursingcareleave;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -101,7 +102,33 @@ public class CareLeaveInfoFinder implements PeregFinder<CareLeaveInfoDto> {
 
 	@Override
 	public List<GridPeregDomainBySidDto> getListData(PeregQueryByListEmp query) {
-		// TODO Auto-generated method stub
-		return null;
+		String cid = AppContexts.user().companyId();
+		
+		List<GridPeregDomainBySidDto> result = new ArrayList<>();
+		
+		List<String> sids = query.getEmpInfos().stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
+		
+		query.getEmpInfos().forEach(c -> {
+			result.add(new GridPeregDomainBySidDto(c.getEmployeeId(), c.getPersonId(), new ArrayList<>()));
+		});
+		
+		if(sids.isEmpty()) {
+			return new ArrayList<>();
+		}
+		List<CareLeaveDataInfo> data = careInfoRepo.getAllCareInfoDataBysId(cid, sids);
+		
+		result.stream().forEach(c ->{
+			Optional<CareLeaveDataInfo> careInfoOpt = data.parallelStream().filter(item -> item.getCareInfo().getSId().equals(c.getEmployeeId())).findFirst();
+			if(careInfoOpt.isPresent()) {
+				CareLeaveDataInfo careInfo = careInfoOpt.get();
+				c.setPeregDomainDto(Arrays.asList(CareLeaveInfoDto.createFromDomain(
+						c.getEmployeeId(),
+						Optional.ofNullable(careInfo.getChildCareLeaveRemainingInfo()),
+						Optional.ofNullable(careInfo.getChildCareLeaveRemainingData()),
+						Optional.ofNullable(careInfo.getCareInfo()),
+						Optional.ofNullable(careInfo.getCareData()))));
+			}
+		});
+		return result;
 	}
 }
