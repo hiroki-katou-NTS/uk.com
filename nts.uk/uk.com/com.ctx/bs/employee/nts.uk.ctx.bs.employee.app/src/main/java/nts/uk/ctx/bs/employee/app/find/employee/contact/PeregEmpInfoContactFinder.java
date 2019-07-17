@@ -1,6 +1,7 @@
 package nts.uk.ctx.bs.employee.app.find.employee.contact;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -83,7 +84,22 @@ public class PeregEmpInfoContactFinder implements PeregFinder<EmpInfoContactDto>
 
 	@Override
 	public List<GridPeregDomainBySidDto> getListData(PeregQueryByListEmp query) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		List<GridPeregDomainBySidDto> result = new ArrayList<>();
+		
+		List<String> sids = query.getEmpInfos().stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
+		
+		query.getEmpInfos().forEach(c -> {
+			result.add(new GridPeregDomainBySidDto(c.getEmployeeId(), c.getPersonId(), new ArrayList<>()));
+		});
+		
+		List<EmployeeInfoContact> empInfoContact = empInfoContactRepo.findByListEmpId(sids);
+		
+		result.stream().forEach(c ->{
+			Optional<EmployeeInfoContact> empOpt = empInfoContact.stream().filter(emp -> emp.getSid().equals(c.getEmployeeId())).findFirst();
+			c.setPeregDomainDto(empOpt.isPresent() == true ? Arrays.asList(EmpInfoContactDto.fromDomain(empOpt.get())) : new ArrayList<>());
+		});
+		
+		return result;
 	}
 }
