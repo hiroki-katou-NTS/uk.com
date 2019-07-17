@@ -90,7 +90,17 @@ public interface EmploymentHistoryRepository {
 	 * @return
 	 */
 	List<DateHistoryItem>  getByEmployeeIdAndStandardDate(String cid, List<String> sids, GeneralDate standardDate);
+	/**
+	 * @author lanlt
+	 * get list Employee by sids, cid, standar
+	 * @param cid
+	 * @param sids
+	 * @param standardDate
+	 * @return
+	 */
+	List<DateHistoryItem>  getByEmployeeIdAndNoStandardDate(String cid, List<String> sids );
 	
+
 	/**
 	 * @author lanlt
 	 * get all by cid and sids

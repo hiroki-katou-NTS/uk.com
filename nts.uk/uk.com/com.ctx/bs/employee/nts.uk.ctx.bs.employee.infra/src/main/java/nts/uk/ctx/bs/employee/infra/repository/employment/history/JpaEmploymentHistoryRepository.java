@@ -340,8 +340,9 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 			GeneralDate standardDate) {
 		List<DateHistoryItem> result = new ArrayList<>();
 		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String sql = "SELECT * FROM BSYMT_EMPLOYMENT_HIST WHERE CID =? and START_DATE < ? AND END_DATE > ? AND SID IN ( "+ NtsStatement.In.createParamsString(subList)+")"
-					;
+			String sql = "SELECT * FROM BSYMT_EMPLOYMENT_HIST "
+					+ "WHERE CID =? and START_DATE < ? "
+					+ "AND END_DATE > ? AND SID IN ( "+ NtsStatement.In.createParamsString(subList)+")";
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 				GeneralDate baseDate = standardDate.addDays(1);
 				stmt.setString(1, cid);
@@ -360,6 +361,31 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 				throw new RuntimeException(e);
 			}
 			
+		});
+		return result;
+	}
+	
+	@Override
+	public List<DateHistoryItem> getByEmployeeIdAndNoStandardDate(String cid, List<String> sids) {
+		
+		List<DateHistoryItem> result = new ArrayList<>();
+		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			String sql = "SELECT * FROM BSYMT_EMPLOYMENT_HIST WHERE CID = ? AND SID IN ("
+					+ NtsStatement.In.createParamsString(subList) + ")" + " ORDER BY START_DATE";
+
+			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+				stmt.setString(1, cid);
+				for (int i = 0; i < subList.size(); i++) {
+					stmt.setString(2 + i, subList.get(i));
+				}
+
+				new NtsResultSet(stmt.executeQuery()).forEach(rec -> {
+					result.add(new DateHistoryItem(rec.getString("HIST_ID"), new DatePeriod(rec.getGeneralDate("START_DATE"),  rec.getGeneralDate("END_DATE"))));
+				});
+
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
 		});
 		return result;
 	}
@@ -509,4 +535,5 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 		int  records = this.getEntityManager().createNativeQuery(sb.toString()).executeUpdate();
 		System.out.println(records);
 	}
+
 }
