@@ -18,7 +18,7 @@
       <button class="btn btn-secondary" v-on:click="removeBottomItem">Remove bottom</button>
     </div>
     <ul class="list-group list-group-tree">
-      <li class="list-group-item" v-for="(item, k) in flatten" v-bind:key="k" v-tree="item" v-on:click="selected = item" v-bind:class="{ 'active': single ? item === selected : selecteds.indexOf(item) > -1 }">
+      <li class="list-group-item" v-for="(item, k) in flatten" v-bind:key="k" v-tree="item" v-bind:single="single" v-on:click="selected = item" v-bind:class="{ 'active': single ? item === selected : selecteds.indexOf(item) > -1 }">
         <span>{{item.code}} {{item.name}}</span>
         <template v-if="single">
             <input class="selection" type="radio" v-model="selected" v-bind:value="item">

@@ -23,7 +23,7 @@ const bind = (el: HTMLElement, binding: DirectiveBinding, vnode: VNode) => {
             dom.removeClass(el, 'd-none');
         }
 
-        if (item.$h.childs.length) {
+        if (item.$h.childs.length && el.getAttribute('single') !== 'true') {
             let $col = dom.create('i', {
                 class: `fas ${item.$h.collapse ? 'fa-chevron-down' : 'fa-chevron-right'} collapse`
             });
