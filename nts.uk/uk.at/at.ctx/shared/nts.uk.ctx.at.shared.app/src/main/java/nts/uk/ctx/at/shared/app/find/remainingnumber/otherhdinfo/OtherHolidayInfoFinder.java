@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.app.find.remainingnumber.otherhdinfo;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -183,6 +184,61 @@ public class OtherHolidayInfoFinder implements PeregFinder<OtherHolidayInfoDto> 
 		});
 		return result;
 	}
+
+	@Override
+	public List<GridPeregDomainBySidDto> getListData(PeregQueryByListEmp query) {
+		String cid = AppContexts.user().companyId();
+		List<GridPeregDomainBySidDto> result = new ArrayList<>();
+		List<String> listEmp = query.getEmpInfos().stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
+		Map<String, List<PublicHolidayRemain>> listHolidayRemainMap = publicHolidayRemainRepository.getAll(cid, listEmp)
+				.parallelStream().collect(Collectors.groupingBy(c -> c.getSID()));
+		Map<String, List<ExcessLeaveInfo>> listExcessLeaveMap = excessLeaveInfoRepository.getAll(listEmp, cid)
+				.parallelStream().collect(Collectors.groupingBy(c -> c.getSID()));
+		Map<String, Double> leaveMaDataMap = leaveManaDataRepository.getAllBySidWithsubHDAtr(cid, listEmp,
+				DigestionAtr.UNUSED.value);
+		Map<String, Double> comDayManaData = comDayOffManaDataRepository.getAllBySidWithReDay(cid, listEmp);
+		Map<String, Double> payoutMangement = payoutManagementDataRepository.getAllSidWithCod(cid, listEmp,
+				DigestionAtr.UNUSED.value);
+		Map<String, Double> subOfHDManagementData = substitutionOfHDManaDataRepository.getAllBysiDRemCod(cid, listEmp);
+		Map<String, Double> exHolidayManagement = excessHolidayManaDataRepository.getAllBySidWithExpCond(cid, listEmp,
+				LeaveExpirationStatus.AVAILABLE.value);
+		query.getEmpInfos().stream().forEach(c -> {
+			List<PublicHolidayRemain> listHolidayRemain = listHolidayRemainMap.get(c.getEmployeeId());
+			List<ExcessLeaveInfo> listExcessLeave = listExcessLeaveMap.get(c.getEmployeeId());
+			PublicHolidayRemain publicHolidayRemain = null;
+			ExcessLeaveInfo excessLeaveInfo = null;
+			if (listHolidayRemain != null) {
+				publicHolidayRemain = listHolidayRemain.get(0);
+			}
+			if (listExcessLeave != null) {
+				excessLeaveInfo = listExcessLeave.get(0);
+			}
+
+			OtherHolidayInfoDto dto = OtherHolidayInfoDto.createFromDomain(Optional.ofNullable(publicHolidayRemain),
+					Optional.ofNullable(excessLeaveInfo));
+			// Item IS00366 --------------
+			// 取得した「休出管理データ」の未使用日数を合計
+			Double sumUnUsedDay = leaveMaDataMap.get(c.getEmployeeId());
+			Double sumRemain = comDayManaData.get(c.getEmployeeId());
+			Double result_1 = subTractObject(sumUnUsedDay, sumRemain);
+			dto.setRemainNumber(result_1 == null? null: new BigDecimal(result_1));
+			
+			// Item IS00366 --------------
+			// 取得した「休出管理データ」の未使用日数を合計
+			Double payoutData = payoutMangement.get(c.getEmployeeId());
+			Double subOfHdData  = subOfHDManagementData.get(c.getEmployeeId());
+			Double result_2 = subTractObject(payoutData, subOfHdData);
+			dto.setRemainsLeft(result_2 == null? null: new BigDecimal(result_2));
+			
+			if (!exHolidayManagement.isEmpty()) {
+				dto.setExtraHours(
+						OtherHolidayInfoDto.convertTime(exHolidayManagement.get(c.getEmployeeId()).intValue()));
+			}
+			result.add(new GridPeregDomainBySidDto(c.getEmployeeId(), c.getPersonId(), Arrays.asList(dto)));
+		});
+		return result;
+	}
+	
 	
 	private Double subTractObject(Double sobitru, Double sotru) {
 		if(sobitru == null && sotru != null) {
@@ -197,10 +253,5 @@ public class OtherHolidayInfoFinder implements PeregFinder<OtherHolidayInfoDto> 
 		
 	}
 
-	@Override
-	public List<GridPeregDomainBySidDto> getListData(PeregQueryByListEmp query) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 }
