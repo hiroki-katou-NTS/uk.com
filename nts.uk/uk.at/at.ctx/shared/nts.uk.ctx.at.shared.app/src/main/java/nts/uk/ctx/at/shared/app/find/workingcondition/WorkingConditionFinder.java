@@ -173,7 +173,6 @@ public class WorkingConditionFinder implements PeregFinder<WorkingConditionDto>{
 					Optional<DateHistoryItem> histItemOpt = dateHistItemLst.stream().filter(d -> d.identifier().equals(h.getHistoryId())).findFirst();
 					
 					if(histItemOpt.isPresent()) {
-						
 						workingConditionDtoLst.add(WorkingConditionDto.createWorkingConditionDto(histItemOpt.get(), h));
 					}
 				});
