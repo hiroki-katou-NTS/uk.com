@@ -240,13 +240,8 @@ public class JpaAffClassHistoryRepository extends JpaRepository implements AffCl
 					stmt.setString(2 + i, subList.get(i));
 				}
 				List<DateHistoryItem> lstObj = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
-					BsymtAffClassHistory history = new BsymtAffClassHistory();
-					history.historyId = rec.getString("HIST_ID");
-					history.cid = rec.getString("CID");
-					history.sid = rec.getString("SID");
-					history.startDate = rec.getGeneralDate("START_DATE");
-					history.endDate = rec.getGeneralDate("END_DATE");
-					return new DateHistoryItem(history.historyId, new DatePeriod(history.startDate, history.endDate));
+					return new DateHistoryItem(rec.getString("HIST_ID"),
+							new DatePeriod(rec.getGeneralDate("START_DATE"), rec.getGeneralDate("END_DATE")));
 				}).stream().collect(Collectors.toList());
 				result.addAll(lstObj);
 			} catch (SQLException e) {
