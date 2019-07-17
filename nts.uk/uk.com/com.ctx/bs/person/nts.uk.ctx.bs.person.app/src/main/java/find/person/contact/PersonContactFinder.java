@@ -1,6 +1,7 @@
 package find.person.contact;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -83,7 +84,22 @@ public class PersonContactFinder implements PeregFinder<PersonContactDto>{
 
 	@Override
 	public List<GridPeregDomainBySidDto> getListData(PeregQueryByListEmp query) {
-		// TODO Auto-generated method stub
-		return null;
+		List<GridPeregDomainBySidDto> result = new ArrayList<>();
+
+		List<String> pids = query.getEmpInfos().stream().map(c -> c.getPersonId()).collect(Collectors.toList());
+
+		query.getEmpInfos().forEach(c -> {
+			result.add(new GridPeregDomainBySidDto(c.getEmployeeId(), c.getPersonId(), new ArrayList<>()));
+		});
+		
+		List<PersonContact> personContactLst = perContactRepo.getByPersonIdList(pids);
+
+		result.stream().forEach(c -> {
+			Optional<PersonContact> perOpt = personContactLst.stream()
+					.filter(emp -> emp.getPersonId().equals(c.getPersonId())).findFirst();
+			c.setPeregDomainDto(perOpt.isPresent() == true ? Arrays.asList(PersonContactDto.createFromDomain(perOpt.get())) : new ArrayList<>());
+		});
+
+		return result;
 	}
 }
