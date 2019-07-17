@@ -62,7 +62,6 @@ public class Specialleave2InformationFinder implements PeregFinder<Specialleave2
 
 	@Override
 	public List<GridPeregDomainBySidDto> getListData(PeregQueryByListEmp query) {
-		// TODO Auto-generated method stub
-		return null;
+		return specialleaveInformationFinder.getListData(query, SpecialLeaveCode.CS00026.value);
 	}
 }
