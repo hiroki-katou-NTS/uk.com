@@ -565,6 +565,8 @@ public class JpaWorkingConditionRepository extends JpaRepository implements Work
 
 			// set where to SQL
 			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+			// Order by start date ASC
+			cq.orderBy(criteriaBuilder.asc(root.get(KshmtWorkingCond_.strD)));
 
 			// creat query
 			TypedQuery<KshmtWorkingCond> query = em.createQuery(cq);
