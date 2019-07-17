@@ -1,6 +1,7 @@
 package find.person.info;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -82,9 +83,25 @@ public class PeregPersonFinder implements PeregFinder<PersonDto>{
 		return result;
 	}
 
+	// get data for cps013
 	@Override
 	public List<GridPeregDomainBySidDto> getListData(PeregQueryByListEmp query) {
-		// TODO Auto-generated method stub
-		return null;
+		List<GridPeregDomainBySidDto> result = new ArrayList<>();
+
+		List<String> pids = query.getEmpInfos().stream().map(c -> c.getPersonId()).collect(Collectors.toList());
+
+		query.getEmpInfos().forEach(c -> {
+			result.add(new GridPeregDomainBySidDto(c.getEmployeeId(), c.getPersonId(), null));
+		});
+		
+		List<Person> domains = personRepository.getFullPersonByPersonIds(pids);
+		
+		result.stream().forEach(c ->{
+			Optional<Person> domainOpt = domains.stream().filter(p -> p.getPersonId().equals(c.getPersonId())).findFirst();
+			c.setPeregDomainDto(domainOpt.isPresent() == true ? Arrays.asList(PersonDto.createFromDomain(domainOpt.get())): null);
+			
+		});
+		
+		return result;
 	}
 }
