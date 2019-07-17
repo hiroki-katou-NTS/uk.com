@@ -10,6 +10,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.SpecialLeaveCode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfoRepository;
@@ -17,6 +18,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremain
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.PeregQueryByListEmp;
+import nts.uk.shr.pereg.app.find.dto.GridPeregDomainBySidDto;
 import nts.uk.shr.pereg.app.find.dto.GridPeregDomainDto;
 import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 
@@ -462,5 +464,307 @@ public class SpecialleaveInformationFinder {
 			break;
 		}
 		return result;
+	}
+	
+	public List<GridPeregDomainBySidDto> getListData(PeregQueryByListEmp query,  int specialLeaveCD){
+		String cid = AppContexts.user().companyId();
+		List<GridPeregDomainBySidDto> result = new ArrayList<>();
+
+		List<String> sids = query.getEmpInfos().stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
+
+		query.getEmpInfos().forEach(c -> {
+			result.add(new GridPeregDomainBySidDto(c.getEmployeeId(), c.getPersonId(), new ArrayList<>()));
+		});
+
+		Map<String, List<SpecialLeaveBasicInfo>> spLeaBasicInfoLst = specialLeaveBasicInfoRepository
+				.getAllBySidsLeaveCd(cid, sids, specialLeaveCD).stream()
+				.collect(Collectors.groupingBy(c -> c.getSID()));
+
+		Map<String, String> dayTimeMap = specialLeaveGrantRemainService.calDayTime(cid, sids, specialLeaveCD);
+
+		switch (EnumAdaptor.valueOf(specialLeaveCD, SpecialLeaveCode.class)) {
+		case CS00025:
+			result.stream().forEach(c -> {
+				List<PeregDomainDto> peregDto = new ArrayList<>();
+				List<SpecialLeaveBasicInfo> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
+				if(!CollectionUtil.isEmpty(spLeaBasicInfo)) {
+					spLeaBasicInfo.stream().forEach(s ->{
+						Specialleave1InformationDto dto = Specialleave1InformationDto.createFromDomain(s);
+						dto.setSpHDRemain(dayTimeMap.get(c.getEmployeeId()));
+						peregDto.add(dto);
+					});
+				}
+				c.setPeregDomainDto(peregDto);
+			});
+			return result;
+		case CS00026:
+			result.stream().forEach(c -> {
+				List<PeregDomainDto> peregDto = new ArrayList<>();
+				List<SpecialLeaveBasicInfo> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
+				if(!CollectionUtil.isEmpty(spLeaBasicInfo)) {
+					spLeaBasicInfo.stream().forEach(s ->{
+						Specialleave2informationDto dto = Specialleave2informationDto.createFromDomain(s);
+						dto.setSpHDRemain(dayTimeMap.get(c.getEmployeeId()));
+						peregDto.add(dto);
+					});
+				}
+				c.setPeregDomainDto(peregDto);
+			});
+			return result;
+		case CS00027:
+			result.stream().forEach(c -> {
+				List<PeregDomainDto> peregDto = new ArrayList<>();
+				List<SpecialLeaveBasicInfo> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
+				if(!CollectionUtil.isEmpty(spLeaBasicInfo)) {
+					spLeaBasicInfo.stream().forEach(s ->{
+						Specialleave3informationDto dto = Specialleave3informationDto.createFromDomain(s);
+						dto.setSpHDRemain(dayTimeMap.get(c.getEmployeeId()));
+						peregDto.add(dto);
+					});
+				}
+				c.setPeregDomainDto(peregDto);
+			});
+			return result;
+		case CS00028:
+			result.stream().forEach(c -> {
+				List<PeregDomainDto> peregDto = new ArrayList<>();
+				List<SpecialLeaveBasicInfo> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
+				if(!CollectionUtil.isEmpty(spLeaBasicInfo)) {
+					spLeaBasicInfo.stream().forEach(s ->{
+						Specialleave4informationDto dto = Specialleave4informationDto.createFromDomain(s);
+						dto.setSpHDRemain(dayTimeMap.get(c.getEmployeeId()));
+						peregDto.add(dto);
+					});
+				}
+				c.setPeregDomainDto(peregDto);
+			});
+			return result;
+		case CS00029:
+			result.stream().forEach(c -> {
+				List<PeregDomainDto> peregDto = new ArrayList<>();
+				List<SpecialLeaveBasicInfo> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
+				if(!CollectionUtil.isEmpty(spLeaBasicInfo)) {
+					spLeaBasicInfo.stream().forEach(s ->{
+						Specialleave5informationDto dto = Specialleave5informationDto.createFromDomain(s);
+						dto.setSpHDRemain(dayTimeMap.get(c.getEmployeeId()));
+						peregDto.add(dto);
+					});
+				}
+				c.setPeregDomainDto(peregDto);
+			});
+			return result;
+		case CS00030:
+			result.stream().forEach(c -> {
+				List<PeregDomainDto> peregDto = new ArrayList<>();
+				List<SpecialLeaveBasicInfo> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
+				if(!CollectionUtil.isEmpty(spLeaBasicInfo)) {
+					spLeaBasicInfo.stream().forEach(s ->{
+						Specialleave6informationDto dto = Specialleave6informationDto.createFromDomain(s);
+						dto.setSpHDRemain(dayTimeMap.get(c.getEmployeeId()));
+						peregDto.add(dto);
+					});
+				}
+				c.setPeregDomainDto(peregDto);
+			});
+			return result;
+		case CS00031:
+			result.stream().forEach(c -> {
+				List<PeregDomainDto> peregDto = new ArrayList<>();
+				List<SpecialLeaveBasicInfo> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
+				if(!CollectionUtil.isEmpty(spLeaBasicInfo)) {
+					spLeaBasicInfo.stream().forEach(s ->{
+						Specialleave7informationDto dto = Specialleave7informationDto.createFromDomain(s);
+						dto.setSpHDRemain(dayTimeMap.get(c.getEmployeeId()));
+						peregDto.add(dto);
+					});
+				}
+				c.setPeregDomainDto(peregDto);
+			});
+			return result;
+		case CS00032:
+			result.stream().forEach(c -> {
+				List<PeregDomainDto> peregDto = new ArrayList<>();
+				List<SpecialLeaveBasicInfo> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
+				if(!CollectionUtil.isEmpty(spLeaBasicInfo)) {
+					spLeaBasicInfo.stream().forEach(s ->{
+						Specialleave8informationDto dto = Specialleave8informationDto.createFromDomain(s);
+						dto.setSpHDRemain(dayTimeMap.get(c.getEmployeeId()));
+						peregDto.add(dto);
+					});
+				}
+				c.setPeregDomainDto(peregDto);
+			});
+			return result;
+		case CS00033:
+			result.stream().forEach(c -> {
+				List<PeregDomainDto> peregDto = new ArrayList<>();
+				List<SpecialLeaveBasicInfo> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
+				if(!CollectionUtil.isEmpty(spLeaBasicInfo)) {
+					spLeaBasicInfo.stream().forEach(s ->{
+						Specialleave9informationDto dto = Specialleave9informationDto.createFromDomain(s);
+						dto.setSpHDRemain(dayTimeMap.get(c.getEmployeeId()));
+						peregDto.add(dto);
+					});
+				}
+				c.setPeregDomainDto(peregDto);
+			});
+			return result;
+		case CS00034:
+			result.stream().forEach(c -> {
+				List<PeregDomainDto> peregDto = new ArrayList<>();
+				List<SpecialLeaveBasicInfo> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
+				if(!CollectionUtil.isEmpty(spLeaBasicInfo)) {
+					spLeaBasicInfo.stream().forEach(s ->{
+						Specialleave10informationDto dto = Specialleave10informationDto.createFromDomain(s);
+						dto.setSpHDRemain(dayTimeMap.get(c.getEmployeeId()));
+						peregDto.add(dto);
+					});
+				}
+				c.setPeregDomainDto(peregDto);
+			});
+			return result;
+		case CS00049:
+			result.stream().forEach(c -> {
+				List<PeregDomainDto> peregDto = new ArrayList<>();
+				List<SpecialLeaveBasicInfo> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
+				if(!CollectionUtil.isEmpty(spLeaBasicInfo)) {
+					spLeaBasicInfo.stream().forEach(s ->{
+						Specialleave11informationDto dto = Specialleave11informationDto.createFromDomain(s);
+						dto.setSpHDRemain(dayTimeMap.get(c.getEmployeeId()));
+						peregDto.add(dto);
+					});
+				}
+				c.setPeregDomainDto(peregDto);
+			});
+			return result;
+		case CS00050:
+			result.stream().forEach(c -> {
+				List<PeregDomainDto> peregDto = new ArrayList<>();
+				List<SpecialLeaveBasicInfo> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
+				if(!CollectionUtil.isEmpty(spLeaBasicInfo)) {
+					spLeaBasicInfo.stream().forEach(s ->{
+						Specialleave12informationDto dto = Specialleave12informationDto.createFromDomain(s);
+						dto.setSpHDRemain(dayTimeMap.get(c.getEmployeeId()));
+						peregDto.add(dto);
+					});
+				}
+				c.setPeregDomainDto(peregDto);
+			});
+			return result;
+		case CS00051:
+			result.stream().forEach(c -> {
+				List<PeregDomainDto> peregDto = new ArrayList<>();
+				List<SpecialLeaveBasicInfo> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
+				if(!CollectionUtil.isEmpty(spLeaBasicInfo)) {
+					spLeaBasicInfo.stream().forEach(s ->{
+						Specialleave13informationDto dto = Specialleave13informationDto.createFromDomain(s);
+						dto.setSpHDRemain(dayTimeMap.get(c.getEmployeeId()));
+						peregDto.add(dto);
+					});
+				}
+				c.setPeregDomainDto(peregDto);
+			});
+			return result;
+		case CS00052:
+			result.stream().forEach(c -> {
+				List<PeregDomainDto> peregDto = new ArrayList<>();
+				List<SpecialLeaveBasicInfo> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
+				if(!CollectionUtil.isEmpty(spLeaBasicInfo)) {
+					spLeaBasicInfo.stream().forEach(s ->{
+						Specialleave14informationDto dto = Specialleave14informationDto.createFromDomain(s);
+						dto.setSpHDRemain(dayTimeMap.get(c.getEmployeeId()));
+						peregDto.add(dto);
+					});
+				}
+				c.setPeregDomainDto(peregDto);
+			});
+			return result;
+		case CS00053:
+			result.stream().forEach(c -> {
+				List<PeregDomainDto> peregDto = new ArrayList<>();
+				List<SpecialLeaveBasicInfo> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
+				if(!CollectionUtil.isEmpty(spLeaBasicInfo)) {
+					spLeaBasicInfo.stream().forEach(s ->{
+						Specialleave15informationDto dto = Specialleave15informationDto.createFromDomain(s);
+						dto.setSpHDRemain(dayTimeMap.get(c.getEmployeeId()));
+						peregDto.add(dto);
+					});
+				}
+				c.setPeregDomainDto(peregDto);
+			});
+			return result;
+		case CS00054:
+			result.stream().forEach(c -> {
+				List<PeregDomainDto> peregDto = new ArrayList<>();
+				List<SpecialLeaveBasicInfo> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
+				if(!CollectionUtil.isEmpty(spLeaBasicInfo)) {
+					spLeaBasicInfo.stream().forEach(s ->{
+						Specialleave16informationDto dto = Specialleave16informationDto.createFromDomain(s);
+						dto.setSpHDRemain(dayTimeMap.get(c.getEmployeeId()));
+						peregDto.add(dto);
+					});
+				}
+				c.setPeregDomainDto(peregDto);
+			});
+			return result;
+		case CS00055:
+			result.stream().forEach(c -> {
+				List<PeregDomainDto> peregDto = new ArrayList<>();
+				List<SpecialLeaveBasicInfo> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
+				if(!CollectionUtil.isEmpty(spLeaBasicInfo)) {
+					spLeaBasicInfo.stream().forEach(s ->{
+						Specialleave17informationDto dto = Specialleave17informationDto.createFromDomain(s);
+						dto.setSpHDRemain(dayTimeMap.get(c.getEmployeeId()));
+						peregDto.add(dto);
+					});
+				}
+				c.setPeregDomainDto(peregDto);
+			});
+			return result;
+		case CS00056:
+			result.stream().forEach(c -> {
+				List<PeregDomainDto> peregDto = new ArrayList<>();
+				List<SpecialLeaveBasicInfo> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
+				if(!CollectionUtil.isEmpty(spLeaBasicInfo)) {
+					spLeaBasicInfo.stream().forEach(s ->{
+						Specialleave18informationDto dto = Specialleave18informationDto.createFromDomain(s);
+						dto.setSpHDRemain(dayTimeMap.get(c.getEmployeeId()));
+						peregDto.add(dto);
+					});
+				}
+				c.setPeregDomainDto(peregDto);
+			});
+			return result;
+		case CS00057:
+			result.stream().forEach(c -> {
+				List<PeregDomainDto> peregDto = new ArrayList<>();
+				List<SpecialLeaveBasicInfo> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
+				if(!CollectionUtil.isEmpty(spLeaBasicInfo)) {
+					spLeaBasicInfo.stream().forEach(s ->{
+						Specialleave19informationDto dto = Specialleave19informationDto.createFromDomain(s);
+						dto.setSpHDRemain(dayTimeMap.get(c.getEmployeeId()));
+						peregDto.add(dto);
+					});
+				}
+				c.setPeregDomainDto(peregDto);
+			});
+			return result;
+		case CS00058:
+			result.stream().forEach(c -> {
+				List<PeregDomainDto> peregDto = new ArrayList<>();
+				List<SpecialLeaveBasicInfo> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
+				if(!CollectionUtil.isEmpty(spLeaBasicInfo)) {
+					spLeaBasicInfo.stream().forEach(s ->{
+						Specialleave20informationDto dto = Specialleave20informationDto.createFromDomain(s);
+						dto.setSpHDRemain(dayTimeMap.get(c.getEmployeeId()));
+						peregDto.add(dto);
+					});
+				}
+				c.setPeregDomainDto(peregDto);
+			});
+			return result;
+		default:
+			return result;
+		}
 	}
 }
