@@ -24,8 +24,6 @@ public class UkRequestFilterCollector implements RequestFilterCollector {
 		static final String ALL_WEB_APIS = ".*/webapi/.*";
 		static final String BATCH_WEB_APIS = ".*/webapi/batch/.*";
 		static final String LOGIN_SCREENS = ".*/view/ccg/007/.*";
-		
-		static final String SPR_LOGIN = ".*/webapi/public/spr/01/loginfromspr";
 	}
 	
 	private static final List<RequestFilterMapping> FILTERS = new ArrayList<>();
@@ -41,7 +39,6 @@ public class UkRequestFilterCollector implements RequestFilterCollector {
 				FILTERS.add(RequestFilterMapping.map(PathPattern.ALL_REQUESTS, new RequestPerformancePoolFilter()));
 			}
 			
-			FILTERS.add(RequestFilterMapping.map(PathPattern.SPR_LOGIN, new Utf8FormRequestFilter()));
 			//RequestFilterMapping.map(PathPattern.ALL_SCREENS, new ScreenLoginSessionValidator()),
 			FILTERS.add(RequestFilterMapping.map(PathPattern.ALL_WEB_APIS, new WebApiLoginSessionValidator()));
 			FILTERS.add(RequestFilterMapping.map(PathPattern.LOGIN_SCREENS, new WindowsAccountCatcher()));
