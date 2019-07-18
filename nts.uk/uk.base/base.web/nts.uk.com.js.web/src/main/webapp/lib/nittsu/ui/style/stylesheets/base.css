@@ -5794,6 +5794,12 @@ div .ex-area-line.x-stay {
   color: #0066CC;
 }
 
+/* line 21, ../sass/frame/_guide.scss */
+.nts-guide-area.nts-bottom {
+  position: absolute;
+  bottom: 72px;
+}
+
 /* line 1, ../sass/components/_monthdays.scss */
 .ntsMonthDays_Component {
   float: left;

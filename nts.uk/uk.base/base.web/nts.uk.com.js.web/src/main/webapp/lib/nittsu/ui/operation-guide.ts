@@ -49,9 +49,13 @@ module nts.uk.ui.guide {
             return $link;
         }
         
-        textArea() {
+        textArea(position: Position) {
             let self = this;
             let $area = $("<div/>").addClass("nts-guide-area");
+            if (position === Position.BOTTOM) {
+                $area.addClass("nts-bottom");
+            }
+            
             $area.height(ROW_HEIGHT * self.lineCount);
             let content = self.content.split('\n').join("<br/>");
             $area.html(content);
@@ -65,9 +69,22 @@ module nts.uk.ui.guide {
                 case Page.NORMAL:
                 default:
                     let $functionsArea = $("#functions-area");
-                    if ($functionsArea.length == 0) return;
+                    if ($functionsArea.length == 0) {
+                        $functionsArea = $("#functions-area-bottom");
+                        if ($functionsArea.find(".nts-guide-link").length == 0) {
+                            let top = ($functionsArea.height() - 24) / 2;
+                            $functionsArea.append(self.link(top));
+                        }
+                        
+                        if (!$functionsArea.prev().is(".nts-guide-area")) {
+                            $functionsArea.before(self.textArea(Position.BOTTOM));
+                        }
+                        
+                        return;
+                    }
+                    
                     if ($functionsArea.find(".nts-guide-link").length == 0) {
-                        let top = ($functionsArea.height() - 18) / 2;
+                        let top = ($functionsArea.height() - 22) / 2;
                         $functionsArea.append(self.link(top));
                     }
                     
@@ -106,5 +123,10 @@ module nts.uk.ui.guide {
         NORMAL = 0,
         SIDEBAR = 1,
         FREE_LAYOUT = 2
+    }
+    
+    enum Position {
+        TOP = 0,
+        BOTTOM = 1
     }
 }
