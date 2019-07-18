@@ -48,6 +48,7 @@ module nts.uk.ui.koExtentions {
             
             let $tree = $(element);
             
+            $tree.data("dataSource", _.cloneDeep(options));
 //            let template = "{{if ${"+optionsValue+"}.indexOf('1') >= 0}} <img src='http://igniteui.com/images/samples/tree/book.png'>" + 
 //                " {{elseif ${"+optionsValue+"}.indexOf('2') >= 0}}<img src='http://igniteui.com/images/samples/tree/coins.png'>" +
 //                "{{else}}<img src='http://igniteui.com/images/samples/tree/documents-folder.png'/>{{/if}}${"+optionsValue+"}"
@@ -193,8 +194,9 @@ module nts.uk.ui.koExtentions {
             let multiple = data.multiple != undefined ? ko.unwrap(data.multiple) : false;
             
             // Update datasource.
-            let originalSource = $tree.igTree('option', 'dataSource').__ds;
+            let originalSource = $tree.data("dataSource");
             if (!_.isEqual(originalSource, options)) {
+                $tree.data("dataSource", _.cloneDeep(options));
                 $tree.igTree("option", "dataSource", _.cloneDeep(options));
                 $tree.igTree("dataBind");
             }
