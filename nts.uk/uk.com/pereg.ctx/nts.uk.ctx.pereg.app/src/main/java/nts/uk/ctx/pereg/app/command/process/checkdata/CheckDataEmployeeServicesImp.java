@@ -5,15 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-
-import org.apache.logging.log4j.core.appender.rolling.action.IfFileName;
 
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
@@ -108,6 +105,9 @@ public class CheckDataEmployeeServicesImp implements CheckDataEmployeeServices {
 		
 		// アルゴリズム「個人情報カテゴリ取得」を実行する (Thực hiện thuật toán 「Lấy PersonInfoCategory」)
 		Map<PersonInfoCategory, List<PersonInfoItemDefinition>> mapCategoryWithListItemDf = this.getAllCategory(AppContexts.user().companyId());
+		
+		
+		
 		
 		// システム日時を取得する (lấy system date)
 		dataSetter.setData("startTime", GeneralDateTime.now().toString());

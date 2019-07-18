@@ -9,56 +9,11 @@ import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.AsyncCommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
-import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
-import nts.uk.ctx.pereg.app.find.employee.category.EmpCtgFinder;
-import nts.uk.ctx.pereg.app.find.processor.LayoutingProcessor;
-import nts.uk.ctx.pereg.app.find.processor.PeregProcessor;
-import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
-import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
-import nts.uk.ctx.pereg.dom.person.setting.validatecheck.PerInfoValidChkCtgRepository;
-import nts.uk.query.model.employee.RegulationInfoEmployeeRepository;
 import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
 @Stateless
 public class CheckDataEmpCommandHandler extends AsyncCommandHandler<CheckDataFromUI>{
-
-	@Inject
-	private RegulationInfoEmployeeRepository regulationInfoEmployeeRepo;
-
-	@Inject
-	private PerInfoCategoryRepositoty perInfoCtgRepo;
-
-	@Inject
-	private PerInfoValidChkCtgRepository perInfoCheckCtgRepo;
-
-	@Inject
-	private PerInfoItemDefRepositoty perInfotemDfRepo;
-
-	@Inject
-	private PeregProcessor peregProcessor;
-
-	@Inject
-	private EmployeeDataMngInfoRepository empDataMngRepo;
-
-	@Inject
-	private EmployeeFinderCtg employeeFinderCtg;
-
-	@Inject
-	private LayoutingProcessor layoutingProcessor;
-
-	@Inject
-	I18NResourcesForUK ukResouce;
-	
-	@Inject
-	private EmpCtgFinder empCtgFinder;
-	
-	@Inject
-	private ClosureEmploymentRepository closureEmploymentRepository;
-	
-	@Inject
-	private BasicScheduleService basicScheduleService;
+	@Inject I18NResourcesForUK ukResouce;
 	
 	@Inject CheckDataEmployeeServices checkdataServices;
 	
