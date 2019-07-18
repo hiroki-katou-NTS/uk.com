@@ -249,7 +249,7 @@ public class JpaAffClassHistoryRepository extends JpaRepository implements AffCl
 			}
 		});
 		
-		return null;
+		return result;
 	}
 
 	@Override

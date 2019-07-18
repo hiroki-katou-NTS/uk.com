@@ -92,7 +92,7 @@ public class EmployeeDataMngInfoFinder implements PeregFinder<EmployeeDataMngInf
 		List<String> sids = query.getEmpInfos().stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
 		
 		query.getEmpInfos().forEach(c -> {
-			result.add(new GridPeregDomainBySidDto(c.getEmployeeId(), c.getPersonId(), null));
+			result.add(new GridPeregDomainBySidDto(c.getEmployeeId(), c.getPersonId(), new ArrayList<>()));
 		});
 
 		List<EmployeeDataMngInfo> domains = edMngRepo.findByListEmployeeId(cid, sids);

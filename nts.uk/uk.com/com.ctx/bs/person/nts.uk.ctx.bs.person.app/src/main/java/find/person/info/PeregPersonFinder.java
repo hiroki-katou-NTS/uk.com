@@ -91,7 +91,7 @@ public class PeregPersonFinder implements PeregFinder<PersonDto>{
 		List<String> pids = query.getEmpInfos().stream().map(c -> c.getPersonId()).collect(Collectors.toList());
 
 		query.getEmpInfos().forEach(c -> {
-			result.add(new GridPeregDomainBySidDto(c.getEmployeeId(), c.getPersonId(), null));
+			result.add(new GridPeregDomainBySidDto(c.getEmployeeId(), c.getPersonId(), new ArrayList<>()));
 		});
 		
 		List<Person> domains = personRepository.getFullPersonByPersonIds(pids);

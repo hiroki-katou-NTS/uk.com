@@ -155,7 +155,7 @@ public class AffCompanyHistInfoFinder implements PeregFinder<AffCompanyHistInfoD
 		List<String> sids = query.getEmpInfos().stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
 
 		query.getEmpInfos().forEach(c -> {
-			result.add(new GridPeregDomainBySidDto(c.getEmployeeId(), c.getPersonId(), null));
+			result.add(new GridPeregDomainBySidDto(c.getEmployeeId(), c.getPersonId(), new ArrayList<>()));
 		});
 		
 		List<AffCompanyHist> affComHistDomainLst = this.achFinder.getAffComHistOfEmployeeListAndNoBaseDateV3(sids);
