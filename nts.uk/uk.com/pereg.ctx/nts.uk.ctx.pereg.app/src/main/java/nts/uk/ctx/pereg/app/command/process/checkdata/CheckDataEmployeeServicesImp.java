@@ -10,7 +10,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.enterprise.inject.New;
 import javax.inject.Inject;
+import javax.swing.text.html.HTMLDocument.HTMLReader.PreAction;
 
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
@@ -28,6 +30,7 @@ import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.pereg.app.find.employee.category.EmpCtgFinder;
 import nts.uk.ctx.pereg.app.find.layout.dto.EmpMaintLayoutDto;
+import nts.uk.ctx.pereg.app.find.layoutdef.classification.GridLayoutPersonInfoClsDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoValueDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.DataTypeStateDto;
@@ -55,7 +58,9 @@ import nts.uk.shr.com.system.config.InstalledProduct;
 import nts.uk.shr.com.system.config.ProductType;
 import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 import nts.uk.shr.pereg.app.ComboBoxObject;
+import nts.uk.shr.pereg.app.find.PeregEmpInfoQuery;
 import nts.uk.shr.pereg.app.find.PeregQuery;
+import nts.uk.shr.pereg.app.find.dto.GridPeregDto;
 import nts.uk.shr.pereg.app.find.dto.PeregDto;
 
 @Stateless
@@ -85,7 +90,8 @@ public class CheckDataEmployeeServicesImp implements CheckDataEmployeeServices {
 	private ClosureEmploymentRepository closureEmploymentRepository;
 	@Inject
 	private  BasicScheduleService basicScheduleService;
-
+	
+	@Inject EmployeeDataMngInfoRepository empDataMngInfoRepo;
 	/** The Constant TIME_DAY_START. */
 	public static final String TIME_DAY_START = " 00:00:00";
 
@@ -103,11 +109,25 @@ public class CheckDataEmployeeServicesImp implements CheckDataEmployeeServices {
 		// (thực thi thuật toán 「Search employee theo điều kiện thông tin cá nhân, và thay đổi thứ tự」
 		List<EmployeeResultDto> listEmp = this.findEmployeesInfo(excuteCommand);
 		
+		List<String> sids = listEmp.stream().map(mapper -> mapper.sid).collect(Collectors.toList());
+		
+		List<EmployeeDataMngInfo> listEmpData = this.empDataMngInfoRepo.findByListEmployeeId(sids);
+		// map personid vs sid
+		Map<String, String> mapPidWithSid = new HashMap<>();
+		
+		listEmpData.forEach(emp -> {
+			mapPidWithSid.put(emp.getEmployeeId(), emp.getPersonId());
+		});
+		
+		List<PeregEmpInfoQuery> empInfos =  listEmp.stream().map(mapper -> {
+			String pid = mapPidWithSid.get(mapper.sid);
+			return new PeregEmpInfoQuery(pid, mapper.sid, null);
+		}).collect(Collectors.toList());
+		
 		// アルゴリズム「個人情報カテゴリ取得」を実行する (Thực hiện thuật toán 「Lấy PersonInfoCategory」)
 		Map<PersonInfoCategory, List<PersonInfoItemDefinition>> mapCategoryWithListItemDf = this.getAllCategory(AppContexts.user().companyId());
 		
-		
-		
+		Map<String, List<GridLayoutPersonInfoClsDto>> dataOfEmpoee =  this.peregProcessor.getFullCategoryDetailByListEmp(empInfos, mapCategoryWithListItemDf);
 		
 		// システム日時を取得する (lấy system date)
 		dataSetter.setData("startTime", GeneralDateTime.now().toString());
