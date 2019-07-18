@@ -21,20 +21,26 @@ module nts.uk.at.view.ktg030.a.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             block.invisible();
-           self.selectedSwitch(windows.getShared("currentOrNextMonth") == undefined ? 0 : windows.getShared("currentOrNextMonth"));
-                service.getData(self.selectedSwitch()).done((data) => {
-                    //console.log(data);
-                    if (data) {
-                        self.text = ko.observable(getText('KTG030_4'));
-                        self.visible = ko.observable(true);
-                    } else {
-                        self.text = ko.observable(getText('KTG030_5'));
-                        self.visible = ko.observable(false);
-                    }
-                    dfd.resolve();
-                }).always(function() {
-                    nts.uk.ui.block.clear();
-                });
+            let cacheCcg008 = windows.getShared("cache");
+            let closureId = 1;
+            if(!cacheCcg008 || !cacheCcg008.currentOrNextMonth){
+                self.selectedSwitch(0);
+            }else{
+                self.selectedSwitch(cacheCcg008.currentOrNextMonth);
+                closureId = cacheCcg008.closureId;
+            }
+            service.getData(self.selectedSwitch(), closureId).done((data) => {
+                if (data.approve) {
+                    self.text = ko.observable(getText('KTG030_4'));
+                    self.visible = ko.observable(true);
+                } else {
+                    self.text = ko.observable(getText('KTG030_5'));
+                    self.visible = ko.observable(false);
+                }
+                dfd.resolve();
+            }).always(function() {
+                nts.uk.ui.block.clear();
+            });
            
             return dfd.promise();
         }

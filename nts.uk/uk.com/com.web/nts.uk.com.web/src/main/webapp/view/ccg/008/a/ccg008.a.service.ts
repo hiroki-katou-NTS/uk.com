@@ -3,7 +3,8 @@ module nts.uk.com.view.ccg008.a.service {
 
     var paths = {
         getTopPage: "topageselfsetting/gettoppage/{0}",
-        getCache: "screen/com/ccg008/get-cache"
+        getCache: "screen/com/ccg008/get-cache",
+        getClosure: "screen/com/ccg008/get-closure"
     }
         
     export function getTopPageByCode(screen: string, code: string):JQueryPromise<any>{
@@ -15,4 +16,7 @@ module nts.uk.com.view.ccg008.a.service {
         return nts.uk.request.ajax("com",paths.getCache);
     }
     
+    export function getClosure():JQueryPromise<any>{
+        return nts.uk.request.ajax("com",paths.getClosure);
+    }
 }
