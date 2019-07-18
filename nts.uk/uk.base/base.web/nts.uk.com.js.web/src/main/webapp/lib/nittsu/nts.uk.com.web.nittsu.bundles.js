@@ -45144,9 +45144,12 @@ var nts;
                         });
                         return $link;
                     };
-                    OperationGuide.prototype.textArea = function () {
+                    OperationGuide.prototype.textArea = function (position) {
                         var self = this;
                         var $area = $("<div/>").addClass("nts-guide-area");
+                        if (position === Position.BOTTOM) {
+                            $area.addClass("nts-bottom");
+                        }
                         $area.height(ROW_HEIGHT * self.lineCount);
                         var content = self.content.split('\n').join("<br/>");
                         $area.html(content);
@@ -45158,10 +45161,19 @@ var nts;
                             case Page.NORMAL:
                             default:
                                 var $functionsArea = $("#functions-area");
-                                if ($functionsArea.length == 0)
+                                if ($functionsArea.length == 0) {
+                                    $functionsArea = $("#functions-area-bottom");
+                                    if ($functionsArea.find(".nts-guide-link").length == 0) {
+                                        var top = ($functionsArea.height() - 24) / 2;
+                                        $functionsArea.append(self.link(top));
+                                    }
+                                    if (!$functionsArea.prev().is(".nts-guide-area")) {
+                                        $functionsArea.before(self.textArea(Position.BOTTOM));
+                                    }
                                     return;
+                                }
                                 if ($functionsArea.find(".nts-guide-link").length == 0) {
-                                    var top = ($functionsArea.height() - 18) / 2;
+                                    var top = ($functionsArea.height() - 22) / 2;
                                     $functionsArea.append(self.link(top));
                                 }
                                 if (!$functionsArea.next().is(".nts-guide-area")) {
@@ -45198,6 +45210,11 @@ var nts;
                     Page[Page["SIDEBAR"] = 1] = "SIDEBAR";
                     Page[Page["FREE_LAYOUT"] = 2] = "FREE_LAYOUT";
                 })(Page || (Page = {}));
+                var Position;
+                (function (Position) {
+                    Position[Position["TOP"] = 0] = "TOP";
+                    Position[Position["BOTTOM"] = 1] = "BOTTOM";
+                })(Position || (Position = {}));
             })(guide = ui.guide || (ui.guide = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
