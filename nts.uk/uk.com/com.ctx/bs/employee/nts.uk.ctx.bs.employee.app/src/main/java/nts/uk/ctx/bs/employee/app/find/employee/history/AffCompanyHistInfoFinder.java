@@ -3,11 +3,13 @@ package nts.uk.ctx.bs.employee.app.find.employee.history;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.task.parallel.ParallelExceptions.Item;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
@@ -16,6 +18,7 @@ import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyInfo;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyInfoRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
@@ -143,9 +146,62 @@ public class AffCompanyHistInfoFinder implements PeregFinder<AffCompanyHistInfoD
 		return result;
 	}
 
+	// finder cps013
 	@Override
 	public List<GridPeregDomainBySidDto> getListData(PeregQueryByListEmp query) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		List<GridPeregDomainBySidDto> result = new ArrayList<>();
+
+		List<String> sids = query.getEmpInfos().stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
+
+		query.getEmpInfos().forEach(c -> {
+			result.add(new GridPeregDomainBySidDto(c.getEmployeeId(), c.getPersonId(), null));
+		});
+		
+		List<AffCompanyHist> affComHistDomainLst = this.achFinder.getAffComHistOfEmployeeListAndNoBaseDateV3(sids);
+
+		List<AffCompanyHistByEmployee> listAffComHistByEmp = new ArrayList<>();
+		List<AffCompanyHistItem> listAffComHistItem = new ArrayList<>();
+		
+		affComHistDomainLst.forEach(c -> {
+			List<AffCompanyHistByEmployee> affByEmp = c.getLstAffCompanyHistByEmployee();
+			if (!affByEmp.isEmpty()) {
+				listAffComHistByEmp.addAll(affByEmp);
+				affByEmp.forEach(emp -> {
+					if (!emp.getLstAffCompanyHistoryItem().isEmpty()) {
+						listAffComHistItem.addAll(emp.getLstAffCompanyHistoryItem());
+					}
+				});
+			}
+		});
+
+		List<String> histIds = new ArrayList<>();
+		
+		listAffComHistItem.stream().forEach(h ->{
+			if (h != null) {
+				histIds.add(h.getHistoryId());
+			}
+		});
+		
+		List<AffCompanyInfo> affCompanyInfo = aciFinder.getAffCompanyInfoByHistId(histIds);
+		
+		result.stream().forEach(c -> {
+			Optional<AffCompanyHistByEmployee> affComHistByEmpOpt = listAffComHistByEmp.stream().filter(i -> i.getSId().equals(c.getEmployeeId())).findFirst();
+			List<PeregDomainDto> listHistInfoDto = new ArrayList<>();
+			if (affComHistByEmpOpt.isPresent()) {
+				List<AffCompanyHistItem> listHistItemByEmp = affComHistByEmpOpt.get().items();
+				if (!listHistItemByEmp.isEmpty()) {
+					listHistItemByEmp.forEach(itemHis -> {
+						AffCompanyInfo affCompanyInfoByHistId = affCompanyInfo.stream().filter(comInfo -> comInfo.getHistoryId().equals(itemHis.getHistoryId())).findFirst().get();
+						listHistInfoDto.add(AffCompanyHistInfoDto.fromDomain(itemHis, affCompanyInfoByHistId));
+					});
+				}
+			}
+			
+			if (!listHistInfoDto.isEmpty()) {
+				c.setPeregDomainDto(listHistInfoDto);
+			}
+		});
+		return result;
 	}
 }

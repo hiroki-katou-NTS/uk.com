@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface AffCompanyHistRepository {
@@ -89,4 +90,7 @@ public interface AffCompanyHistRepository {
 	 * @param items
 	 */
 	void updateAll(List<AffCompanyHistItem> items);
+
+	// get data cps013
+	List<AffCompanyHist> getAffComHistOfEmployeeListAndNoBaseDateV3(List<String> sids);
 }

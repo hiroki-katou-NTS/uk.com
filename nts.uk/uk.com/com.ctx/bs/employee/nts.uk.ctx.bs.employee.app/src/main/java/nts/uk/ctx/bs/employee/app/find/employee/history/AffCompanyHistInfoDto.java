@@ -58,6 +58,15 @@ public class AffCompanyHistInfoDto extends PeregDomainDto {
 		return new AffCompanyHistInfoDto(histItem.getHistoryId(), histItem.getDatePeriod().start(),
 				histItem.getDatePeriod().end(), info.getAdoptionDate(), info.getRecruitmentClassification().v(),
 				info.getRetirementAllowanceCalcStartDate());
+	}
+	
+	public static AffCompanyHistInfoDto fromDomain(AffCompanyHistItem histItem, AffCompanyInfo info) {
+		if (histItem == null) {
+			return null;
+		}
 
+		return new AffCompanyHistInfoDto(histItem.getHistoryId(), histItem.getDatePeriod().start(),
+				histItem.getDatePeriod().end(), info.getAdoptionDate(), info.getRecruitmentClassification().v(),
+				info.getRetirementAllowanceCalcStartDate());
 	}
 }
