@@ -141,7 +141,39 @@ public class ShortWorkTimeFinder implements PeregFinder<ShortWorkTimeDto> {
 
 	@Override
 	public List<GridPeregDomainBySidDto> getListData(PeregQueryByListEmp query) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		String cid = AppContexts.user().companyId();
+
+		List<GridPeregDomainBySidDto> result = new ArrayList<>();
+
+		List<String> sids = query.getEmpInfos().stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
+
+		query.getEmpInfos().forEach(c -> {
+			result.add(new GridPeregDomainBySidDto(c.getEmployeeId(), c.getPersonId(), new ArrayList<>()));
+		});
+		
+		List<DateHistoryItem> dateHistItems = shortTimeHistoryRepo.getByEmployeeListNoWithPeriod(cid, sids);
+		
+		List<ShortWorkTimeHistoryItem> hisItemLst = this.shortTimeHistoryItemRepo
+				.findByHistIds(dateHistItems.stream().map(c -> c.identifier()).collect(Collectors.toList()));
+		
+		result.stream().forEach(c -> {
+			List<ShortWorkTimeHistoryItem> listHistItem = hisItemLst.stream()
+					.filter(emp -> emp.getEmployeeId().equals(c.getEmployeeId())).collect(Collectors.toList());
+			
+			if (!listHistItem.isEmpty()) {
+				List<PeregDomainDto> listPeregDomainDto = new ArrayList<>();
+				listHistItem.forEach(h -> {
+					Optional<DateHistoryItem> dateHistoryItem = dateHistItems.stream().filter(i -> i.identifier().equals(h.getHistoryId())).findFirst();
+					if (dateHistoryItem.isPresent()) {
+						listPeregDomainDto.add(ShortWorkTimeDto.createShortWorkTimeDto(dateHistoryItem.get() , h));
+					}
+				});
+				if (!listPeregDomainDto.isEmpty()) {
+					c.setPeregDomainDto(listPeregDomainDto);
+				}
+			}
+		});
+		return result.stream().distinct().collect(Collectors.toList());
 	}
 }

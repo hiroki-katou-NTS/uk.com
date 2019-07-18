@@ -91,4 +91,7 @@ public interface SWorkTimeHistoryRepository {
 	 * @return
 	 */
 	List <ShortWorkTimeHistory> getBySidsAndCid(String cid, List<String> sids);
+
+	// for cps013
+	List<DateHistoryItem> getByEmployeeListNoWithPeriod(String cid, List<String> sids);
 }
