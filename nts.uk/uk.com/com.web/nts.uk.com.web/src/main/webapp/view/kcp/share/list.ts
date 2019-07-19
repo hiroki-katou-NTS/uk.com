@@ -500,7 +500,8 @@ module kcp.share.list {
             });
 
             self.selectedCodes.subscribe(() => {
-                if (gridList.length > 0) {
+                // can not use "gridList" variable here. must to use $('#' + self.componentGridId)
+                if ($('#' + self.componentGridId).length > 0) {
                     var selectedValues = gridList.ntsGridList("getSelectedValue");
                     var selectedIds = self.isMultipleSelect ? _.map(selectedValues, o => o.id) : selectedValues.id;
                     if(!_.isEqual(self.selectedCodes(), selectedIds)){
