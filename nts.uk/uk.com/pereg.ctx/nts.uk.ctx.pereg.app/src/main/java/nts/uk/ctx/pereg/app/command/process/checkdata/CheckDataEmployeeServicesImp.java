@@ -128,7 +128,7 @@ public class CheckDataEmployeeServicesImp implements CheckDataEmployeeServices {
 		Map<PersonInfoCategory, List<PersonInfoItemDefinition>> mapCategoryWithListItemDf = this.getAllCategory(AppContexts.user().companyId());
 		
 		Map<String, List<GridLayoutPersonInfoClsDto>> dataOfEmpoee =  this.peregProcessor.getFullCategoryDetailByListEmp(empInfos, mapCategoryWithListItemDf);
-		
+		System.out.println(dataOfEmpoee);
 		// システム日時を取得する (lấy system date)
 		dataSetter.setData("startTime", GeneralDateTime.now().toString());
 		
@@ -217,7 +217,7 @@ public class CheckDataEmployeeServicesImp implements CheckDataEmployeeServices {
 		// チェック対象項目件数をチェックする
 		// (Check số data item đối tượng check)
 		if (lstCtg.isEmpty()) {
-			throw new BusinessException(new RawErrorMessage("Msg_930"));
+			throw new BusinessException("Msg_930");
 		}
 
 		List<String> listCategoryCode = lstCtg.stream().map(i -> i.getCategoryCode().toString())

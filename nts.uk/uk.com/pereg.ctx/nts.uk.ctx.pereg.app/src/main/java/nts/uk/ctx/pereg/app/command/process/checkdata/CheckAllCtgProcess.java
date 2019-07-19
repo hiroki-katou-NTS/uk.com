@@ -7,7 +7,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.arc.error.RawErrorMessage;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
@@ -85,7 +84,7 @@ public class CheckAllCtgProcess {
 		// チェック対象項目件数をチェックする
 		// (Check số data item đối tượng check)
 		if (lstCtgCheck.isEmpty()) {
-			throw new BusinessException(new RawErrorMessage("Msg_930"));
+			throw new BusinessException("Msg_930");
 		}
 
 		List<CategoryInfo>  ctgInfo = lstCtgCheck.stream().map(ctgSetting -> {

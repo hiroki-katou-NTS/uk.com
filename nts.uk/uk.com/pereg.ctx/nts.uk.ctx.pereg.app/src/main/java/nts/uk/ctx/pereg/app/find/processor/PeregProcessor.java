@@ -299,8 +299,8 @@ public class PeregProcessor {
 				PeregQueryByListEmp query = PeregQueryByListEmp.createQueryLayout(c.getKey().getPersonInfoCategoryId(), c.getKey().getCategoryCode().v(), null, empInfos);
 				List<GridPeregBySidDto> peregDtoLst = layoutingProcessor.getAllDataBySid(query);
 				if (!CollectionUtil.isEmpty(peregDtoLst)) {
-					List<GridLayoutPersonInfoClsDto> resultsSync = Collections.synchronizedList(new ArrayList<>());
-					parallel.forEach(peregDtoLst, m -> {
+					List<GridLayoutPersonInfoClsDto> resultsSync = new ArrayList<>();
+					peregDtoLst.stream().forEach( m -> {
 						m.getPeregDto().stream().forEach(d ->{
 							// combo-box sẽ lấy dựa theo các ngày startDate của từng category
 							GeneralDate comboBoxStandardDate = GeneralDate.today();
@@ -328,7 +328,7 @@ public class PeregProcessor {
 						});			
 					});
 					
-					result.put(c.getKey().getCategoryParentCode().v(), resultsSync);
+					result.put(c.getKey().getCategoryCode().v(), resultsSync);
 				}
 			}else {
 				//TODO
