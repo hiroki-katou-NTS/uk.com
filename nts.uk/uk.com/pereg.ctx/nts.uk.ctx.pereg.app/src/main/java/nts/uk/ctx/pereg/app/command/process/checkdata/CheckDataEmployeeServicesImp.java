@@ -1,6 +1,7 @@
 package nts.uk.ctx.pereg.app.command.process.checkdata;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,15 +11,12 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.enterprise.inject.New;
 import javax.inject.Inject;
-import javax.swing.text.html.HTMLDocument.HTMLReader.PreAction;
 
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.arc.error.BusinessException;
-import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
@@ -60,7 +58,6 @@ import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregEmpInfoQuery;
 import nts.uk.shr.pereg.app.find.PeregQuery;
-import nts.uk.shr.pereg.app.find.dto.GridPeregDto;
 import nts.uk.shr.pereg.app.find.dto.PeregDto;
 
 @Stateless
@@ -91,7 +88,12 @@ public class CheckDataEmployeeServicesImp implements CheckDataEmployeeServices {
 	@Inject
 	private  BasicScheduleService basicScheduleService;
 	
-	@Inject EmployeeDataMngInfoRepository empDataMngInfoRepo;
+	@Inject 
+	private EmployeeDataMngInfoRepository empDataMngInfoRepo;
+	
+	@Inject 
+	private CheckPersonInfoProcess checkPersonInfoProcess;
+	
 	/** The Constant TIME_DAY_START. */
 	public static final String TIME_DAY_START = " 00:00:00";
 
@@ -109,26 +111,39 @@ public class CheckDataEmployeeServicesImp implements CheckDataEmployeeServices {
 		// (thực thi thuật toán 「Search employee theo điều kiện thông tin cá nhân, và thay đổi thứ tự」
 		List<EmployeeResultDto> listEmp = this.findEmployeesInfo(excuteCommand);
 		
+		Map<String, String> mapSIdWthBussinessName = listEmp.stream().collect(Collectors.toMap(e -> e.sid, e -> e.bussinessName));
+		
 		List<String> sids = listEmp.stream().map(mapper -> mapper.sid).collect(Collectors.toList());
 		
 		List<EmployeeDataMngInfo> listEmpData = this.empDataMngInfoRepo.findByListEmployeeId(sids);
-		// map personid vs sid
-		Map<String, String> mapPidWithSid = new HashMap<>();
 		
-		listEmpData.forEach(emp -> {
-			mapPidWithSid.put(emp.getEmployeeId(), emp.getPersonId());
-		});
-		
-		List<PeregEmpInfoQuery> empInfos =  listEmp.stream().map(mapper -> {
-			String pid = mapPidWithSid.get(mapper.sid);
-			return new PeregEmpInfoQuery(pid, mapper.sid, null);
+		List<PeregEmpInfoQuery> empInfos =  listEmpData.stream().map(mapper -> {
+			return new PeregEmpInfoQuery(mapper.getPersonId(), mapper.getEmployeeId(), null);
 		}).collect(Collectors.toList());
 		
 		// アルゴリズム「個人情報カテゴリ取得」を実行する (Thực hiện thuật toán 「Lấy PersonInfoCategory」)
 		Map<PersonInfoCategory, List<PersonInfoItemDefinition>> mapCategoryWithListItemDf = this.getAllCategory(AppContexts.user().companyId());
 		
-		Map<String, List<GridLayoutPersonInfoClsDto>> dataOfEmpoee =  this.peregProcessor.getFullCategoryDetailByListEmp(empInfos, mapCategoryWithListItemDf);
-		System.out.println(dataOfEmpoee);
+		List<ErrorInfoCPS013> listError = new ArrayList<>();
+		
+		//アルゴリズム「整合性チェック処理」を実行する (Thực hiện thuật toán 「Xử lý check tính hợp lệ」)
+		for (int i = 0; i < listEmpData.size(); i++) {
+			
+			EmployeeDataMngInfo employee = listEmpData.get(i);
+			
+			String bussinessName = mapSIdWthBussinessName.get(employee.getEmployeeId());
+			
+			PeregEmpInfoQuery empCheck = new PeregEmpInfoQuery(employee.getPersonId(), employee.getEmployeeId(), null);
+			
+			//チェック対象データ取得 (Lấy data đối tượng check)
+			Map<String, List<GridLayoutPersonInfoClsDto>> dataOfEmployee =  this.peregProcessor.getFullCategoryDetailByListEmp(Arrays.asList(empCheck), mapCategoryWithListItemDf);
+			
+			List<ErrorInfoCPS013> errors = checkDataOfEmp(empCheck, dataOfEmployee, excuteCommand, mapCategoryWithListItemDf, employee, bussinessName);
+			
+			listError.addAll(errors);
+		}
+		
+		
 		// システム日時を取得する (lấy system date)
 		dataSetter.setData("startTime", GeneralDateTime.now().toString());
 		
@@ -138,7 +153,7 @@ public class CheckDataEmployeeServicesImp implements CheckDataEmployeeServices {
 		dataSetter.setData("numberEmpChecked", 0);
 		dataSetter.setData("countEmp", listEmp.size());
 		dataSetter.setData("statusCheck", ExecutionStatusCps013.PROCESSING.name);
-		List<ErrorInfoCPS013> listError = new ArrayList<>();
+		//List<ErrorInfoCPS013> listError = new ArrayList<>();
 		
 		for (int i = 0; i < listEmp.size(); i++) {
 			System.out.println("==== t");
@@ -165,6 +180,32 @@ public class CheckDataEmployeeServicesImp implements CheckDataEmployeeServices {
 		}else{
 			dataSetter.setData("statusCheck", ExecutionStatusCps013.DONE_WITH_ERROR.name);
 		}
+		
+	}
+
+	private List<ErrorInfoCPS013> checkDataOfEmp(PeregEmpInfoQuery empCheck, Map<String, List<GridLayoutPersonInfoClsDto>> dataOfEmployee, 
+			CheckDataFromUI excuteCommand,Map<PersonInfoCategory, List<PersonInfoItemDefinition>> mapCategoryWithListItemDf, EmployeeDataMngInfo employee, String bussinessName) {
+		
+		List<ErrorInfoCPS013> result = new ArrayList<>();
+		
+		if (excuteCommand.isMasterCheck() && excuteCommand.isPerInfoCheck()) {
+			result = checkMasterAndPersonInfo(empCheck, dataOfEmployee, excuteCommand, mapCategoryWithListItemDf, employee, bussinessName);
+		} else if (excuteCommand.isPerInfoCheck()) {
+			result = this.checkPersonInfoProcess.checkPersonInfo2(empCheck, dataOfEmployee, excuteCommand, mapCategoryWithListItemDf, employee, bussinessName);
+		} else if (excuteCommand.isMasterCheck()) {
+			result = checkMaster2(empCheck, dataOfEmployee, excuteCommand, mapCategoryWithListItemDf, employee, bussinessName);
+		}
+		return result;
+	}
+
+	private List<ErrorInfoCPS013> checkMaster2(PeregEmpInfoQuery empCheck, Map<String, List<GridLayoutPersonInfoClsDto>> dataOfEmployee, 
+			CheckDataFromUI excuteCommand, Map<PersonInfoCategory, List<PersonInfoItemDefinition>> mapCategoryWithListItemDf, EmployeeDataMngInfo employee, String bussinessName) {
+				return null;
+	}
+
+	private List<ErrorInfoCPS013> checkMasterAndPersonInfo(PeregEmpInfoQuery empCheck, Map<String, List<GridLayoutPersonInfoClsDto>> dataOfEmployee,
+			CheckDataFromUI excuteCommand, Map<PersonInfoCategory, List<PersonInfoItemDefinition>> mapCategoryWithListItemDf, EmployeeDataMngInfo employee, String bussinessName) {
+				return null;
 		
 	}
 

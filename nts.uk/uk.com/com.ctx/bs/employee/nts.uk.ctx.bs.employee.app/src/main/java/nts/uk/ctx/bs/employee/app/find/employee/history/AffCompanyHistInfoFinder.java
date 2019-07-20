@@ -175,28 +175,22 @@ public class AffCompanyHistInfoFinder implements PeregFinder<AffCompanyHistInfoD
 			}
 		});
 
-		List<String> histIds = new ArrayList<>();
-		
-		listAffComHistItem.stream().forEach(h ->{
-			if (h != null) {
-				histIds.add(h.getHistoryId());
-			}
-		});
+		List<String> histIds = listAffComHistItem.stream().filter( h -> h != null).map( i -> i.identifier()).collect(Collectors.toList());
 		
 		List<AffCompanyInfo> affCompanyInfo = aciFinder.getAffCompanyInfoByHistId(histIds);
 		
 		result.stream().forEach(c -> {
-			Optional<AffCompanyHistByEmployee> affComHistByEmpOpt = listAffComHistByEmp.stream().filter(i -> i.getSId().equals(c.getEmployeeId())).findFirst();
+			List<AffCompanyHistByEmployee> affComHistByEmpOpt = listAffComHistByEmp.stream().filter(i -> i.getSId().equals(c.getEmployeeId())).collect(Collectors.toList());
 			List<PeregDomainDto> listHistInfoDto = new ArrayList<>();
-			if (affComHistByEmpOpt.isPresent()) {
-				List<AffCompanyHistItem> listHistItemByEmp = affComHistByEmpOpt.get().items();
+			affComHistByEmpOpt.forEach(hisEmp -> {
+				List<AffCompanyHistItem> listHistItemByEmp = hisEmp.items();
 				if (!listHistItemByEmp.isEmpty()) {
 					listHistItemByEmp.forEach(itemHis -> {
 						AffCompanyInfo affCompanyInfoByHistId = affCompanyInfo.stream().filter(comInfo -> comInfo.getHistoryId().equals(itemHis.getHistoryId())).findFirst().get();
 						listHistInfoDto.add(AffCompanyHistInfoDto.fromDomain(itemHis, affCompanyInfoByHistId));
 					});
 				}
-			}
+			});
 			
 			if (!listHistInfoDto.isEmpty()) {
 				c.setPeregDomainDto(listHistInfoDto);
