@@ -472,21 +472,14 @@ const DIRTY = 'dirty',
             });
 
             vue.component('v-errors', {
-                props: ['value', 'data', 'name'],
+                props: ['value', 'name'],
                 template: `<span class="invalid-feedback">{{ resource | i18n(params) }}</span>`,
                 computed: {
                     params() {
                         let self = this,
-                            data = self.data,
                             value = self.value;
 
-                        if (data) {
-                            if (!$.isArray(data)) {
-                                return [];
-                            } else {
-                                return data.slice(1);
-                            }
-                        } else if (value) {
+                        if (value) {
                             let $msg = value[Object.keys(value)[0]];
 
                             if (!$.isArray($msg)) {
@@ -499,12 +492,9 @@ const DIRTY = 'dirty',
                         return [];
                     },
                     resource() {
-                        let $dta = this.data,
-                            value = this.value;
+                        let value = this.value;
 
-                        if ($dta) {
-                            return $.isString($dta) ? $dta : ($.isArray($dta) ? $dta[0] : '');
-                        } else if (value) {
+                        if (value) {
                             let $msg = value[Object.keys(value)[0]];
 
                             return $.isString($msg) ? $msg : ($.isArray($msg) ? $msg[0] : '');
