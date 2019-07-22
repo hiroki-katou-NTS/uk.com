@@ -93,6 +93,27 @@ export class ViewModelSample extends Vue {
 ```
 > Kết quả của đoạn ví dụ trên là validations sẽ bỏ qua model checked, không gọi các validator đã khai báo để validate model này nữa.
 
+##### 5. Bật cảnh báo đỏ ở input control.
+> Với một số control (formcheck: `checkbox`, `radio`, `switch-button`), developer sẽ tự hiển thị thông báo lỗi lỗi và bôi đỏ control thông qua directive `v-validate` và component `v-errors` do các control này là một tập (tổ hợp) các control riêng biệt.
+
+> **v-validate**: đây là directive có tham số là `$errors` model và được gắn trực tiếp vào input control.
+
+> **v-errors**: đây là component có model là `$errors` model và được gắn vào dưới input control.
+
+```html
+<!-- v-validate="$errors.checked" -->
+<!-- directive này sẽ chuyển màu viền control từ màu bình thường sang màu đỏ để kích thích thị giác người dùng -->
+<nts-radio 
+    v-for="(radio, k) in radios"
+    v-model="checked"
+    v-validate="$errors.checked"
+    v-bind:value="radio.id" v-bind:key="k" class="form-check-inline">
+    {{radio.name}}
+</nts-radio>
+<!-- component này sẽ hiển thị lỗi cảnh báo ngay dưới control -->
+<!-- chú ý: để hiển thị được, component này cần 2 class d-block và mt-0 -->
+<v-errors v-model="$errors.checked" v-bind:name="'name_of_control'" class="d-block mt-0" />
+```
 
 > Document writer: **Nguyễn Văn Vương**
 
