@@ -2,6 +2,7 @@ package nts.uk.ctx.pereg.app.command.process.checkdata;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -46,6 +47,11 @@ public class CheckPersonInfoProcess {
 	final List<String> listPersistentResidentHisAndPersistentHisCtg = Arrays.asList("CS00004","CS00014","CS00016","CS00017","CS00020","CS00021","CS00070");
 	
 	final List<String> listItemToCheckSpace =  Arrays.asList("IS00003","IS00004","IS00015","IS00016");
+	
+	final List<String> listItem_Master_History = Arrays.asList("IS00084","IS00085","IS00079");
+	
+	final List<String> standardDateItemCodes = Arrays.asList("IS00020", "IS00077", "IS00082", "IS00119", "IS00781");
+	
 	@Inject
 	private ClosureEmploymentRepository closureEmploymentRepository;
 	@Inject
@@ -375,7 +381,151 @@ public class CheckPersonInfoProcess {
 			Map<String, List<GridLayoutPersonInfoClsDto>> dataOfEmployee, CheckDataFromUI excuteCommand,
 			Map<PersonInfoCategory, List<PersonInfoItemDefinition>> mapCategoryWithListItemDf,
 			List<ErrorInfoCPS013> result, EmployeeDataMngInfo employee, String bussinessName) {
+		Map<String, List<PersonInfoItemDefinition>> itemCodesByCtg = new HashMap<>();
+		Map<String, String> itemStartCode = new HashMap<>();
+		mapCategoryWithListItemDf.entrySet().forEach(c -> {
+			List<PersonInfoItemDefinition> itemDefined = c.getValue().stream().filter(i -> i.isSelection())
+					.collect(Collectors.toList());
+			Optional<String> itemDefinedStartCode = c.getValue().stream()
+					.filter(i -> standardDateItemCodes.contains(i.getItemCode().v())).map(i -> i.getItemCode().v())
+					.findFirst();
+			if (!CollectionUtil.isEmpty(itemDefined)) {
+				itemCodesByCtg.put(c.getKey().getCategoryCode().v(), itemDefined);
+			}
+
+			if (itemDefinedStartCode.isPresent()) {
+				itemStartCode.put(c.getKey().getCategoryCode().v(), itemDefinedStartCode.get());
+			}
+		});
+
+		if (itemCodesByCtg.isEmpty())
+			return;
+
+		itemCodesByCtg.entrySet().forEach(c -> {
+			List<GridLayoutPersonInfoClsDto> empData = dataOfEmployee.get(c.getKey());
+			if (CollectionUtil.isEmpty(empData))
+				return;
+			empData.stream().forEach(emp -> {
+				List<LayoutPersonInfoClsDto> clsDto = emp.getLayoutDtos();
+				clsDto.stream().forEach(cls -> {
+					List<LayoutPersonInfoValueDto> items = cls.getItems();
+					c.getValue().forEach(item -> {
+						Optional<LayoutPersonInfoValueDto> itemOpt = items.stream()
+								.filter(i -> i.getItemCode().equals(item.getItemCode().v())).findFirst();
+						setError(item, c.getKey(), itemStartCode, items, result, employee, bussinessName, itemOpt);
+					});
+				});
+
+			});
+		});
 	}
+	
+	/**
+	 * setError
+	 * @param item
+	 * @param categoryCode
+	 * @param itemStartCode
+	 * @param items
+	 * @param result
+	 * @param employee
+	 * @param bussinessName
+	 * @param itemDtoOpt
+	 */
+	public void setError(PersonInfoItemDefinition item, String categoryCode, Map<String, String> itemStartCode, List<LayoutPersonInfoValueDto> items, List<ErrorInfoCPS013> result, EmployeeDataMngInfo employee, String bussinessName, Optional<LayoutPersonInfoValueDto> itemDtoOpt) {
+		if (itemDtoOpt.isPresent()) {
+			if (item.isEnum()) {
+				checkErrorEnum(result, employee, bussinessName, itemDtoOpt.get());
+			} else if (item.isDesignateMaster()) {
+				String itemCodeStart = itemStartCode.get(categoryCode);
+				if (itemCodeStart != null) {
+					Optional<LayoutPersonInfoValueDto> itemStart = items.stream()
+							.filter(i -> i.getItemCode().equals(itemCodeStart)).findFirst();
+					if (itemStart.isPresent()) {
+						checkDesignateMaster(result, employee, bussinessName, itemDtoOpt.get(),
+								itemStart.get().getValue());
+					}
+
+				} else {
+					checkDesignateMaster(result, employee, bussinessName, itemDtoOpt.get(), null);
+
+				}
+			} else if (item.isCodeName()) {
+				checkCodeName(result, employee, bussinessName, itemDtoOpt.get());
+			}
+		}
+	}
+	
+	/**
+	 * Enum参照する場合 ( TH tham chiếu Enum)
+	 * @param result
+	 * @param employee
+	 * @param bussinessName
+	 * @param item
+	 */
+	public void checkErrorEnum(List<ErrorInfoCPS013> result, EmployeeDataMngInfo employee, String bussinessName, LayoutPersonInfoValueDto item) {
+		 String value = (String) item.getValue();
+		 List<String> comboxValue = item.getLstComboBoxValue().stream().map(c -> c.getOptionValue()).sorted().collect(Collectors.toList());
+		if (comboxValue.size() >0 && !comboxValue.contains(value)) {
+			String max = comboxValue.size() == 0? " ": comboxValue.get(comboxValue.size() - 1);
+			//{0} : 項目名, {1} : データの値, {2} : Enum値の最小値 (giá trị max của list combox)
+			ErrorInfoCPS013 error = new ErrorInfoCPS013(employee.getEmployeeId(), item.getCategoryId(),
+					employee.getEmployeeCode().v(), bussinessName, chekPersonInfoType, item.getCategoryName(),
+					TextResource.localize("Msg_949", item.getItemName(), value, max));
+			result.add(error);
+		}
+	}
+	
+	/**
+	 * 個人情報選択項目マスタ参照する場合 ( TH tham chiếu Personal Information Selection Item Master)
+	 * @param result
+	 * @param employee
+	 * @param bussinessName
+	 * @param item
+	 */
+	public void checkCodeName(List<ErrorInfoCPS013> result, EmployeeDataMngInfo employee, String bussinessName, LayoutPersonInfoValueDto item) {
+		 String value = (String) item.getValue();
+		 List<String> comboxValue = item.getLstComboBoxValue().stream().map(c -> c.getOptionValue()).sorted().collect(Collectors.toList());
+		if (comboxValue.size() >0 && !comboxValue.contains(value)) {
+			//{0} : 項目名, {1} : データの値
+			ErrorInfoCPS013 error = new ErrorInfoCPS013(employee.getEmployeeId(), item.getCategoryId(),
+					employee.getEmployeeCode().v(), bussinessName, chekPersonInfoType, item.getCategoryName(),
+					TextResource.localize("Msg_950", item.getItemName(), value));
+			result.add(error);
+		}
+	}
+	
+	/**
+	 * check master item
+	 * マスタ未登録チェックする
+	 * @param result
+	 * @param employee
+	 * @param bussinessName
+	 * @param item
+	 * @param startValue
+	 */
+	public void checkDesignateMaster(List<ErrorInfoCPS013> result, EmployeeDataMngInfo employee, String bussinessName, LayoutPersonInfoValueDto item, Object startValue) {
+		 String value = (String) item.getValue();
+		 List<String> comboxValue = item.getLstComboBoxValue().stream().map(c -> c.getOptionValue()).sorted().collect(Collectors.toList());
+		if (comboxValue.size() >0 && !comboxValue.contains(value)) {
+			//TODO
+			//String masterName  = 
+			//履歴ありマスタの場合 (TH master có history)
+			if(listItem_Master_History.contains(item.getItemCode())) {
+				ErrorInfoCPS013 error = new ErrorInfoCPS013(employee.getEmployeeId(), item.getCategoryId(),
+						employee.getEmployeeCode().v(), bussinessName, chekPersonInfoType, item.getCategoryName(),
+						TextResource.localize("Msg_938", item.getItemName(), value,"", startValue.toString() ));
+				result.add(error);
+			}else {
+				//TODO
+				//履歴なしマスタの場合 ( TH master không có history)
+				ErrorInfoCPS013 error = new ErrorInfoCPS013(employee.getEmployeeId(), item.getCategoryId(),
+						employee.getEmployeeCode().v(), bussinessName, chekPersonInfoType, item.getCategoryName(),
+						TextResource.localize("Msg_937", item.getItemName(), value,""));
+				result.add(error);
+			}
+		}
+	}
+
 
 	/**
 	 * システム必須チェック (Kiểm tra required system)
