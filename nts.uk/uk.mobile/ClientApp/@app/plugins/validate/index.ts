@@ -388,53 +388,129 @@ const DIRTY = 'dirty',
 
             vue.directive('validate', {
                 update(el, binding: any) {
-                    // if arg is always, skip all errors
-                    if (!($.has(binding.value, 'always') && $.has(binding.value, 'errors'))) {
-                        if (binding.arg !== 'always') {
-                            if (el.getAttribute('disabled')) {
-                                vue.set(binding, 'value', {});
+                    setTimeout(() => {
+                        // if arg is always, skip all errors
+                        if (!($.has(binding.value, 'always') && $.has(binding.value, 'errors'))) {
+                            if (binding.arg !== 'always') {
+                                if (el.getAttribute('disabled')) {
+                                    vue.set(binding, 'value', {});
+                                }
                             }
-                        }
 
-                        // toggle class css error
-                        if ($.size(binding.value)) {
-                            dom.addClass(el, 'is-invalid');
-                        } else {
-                            dom.removeClass(el, 'is-invalid');
-                        }
-                    } else if ($.has(binding.value, 'always') && $.has(binding.value, 'errors')) {
-                        if (!binding.value.always) {
-                            if (el.getAttribute('disabled')) {
-                                vue.set(binding.value, 'errors', {});
+                            // toggle class css error
+                            if ($.size(binding.value)) {
+                                if (el.tagName == 'INPUT') {
+                                    dom.addClass(el, 'is-invalid');
+                                } else if (dom.hasClass(el, 'btn')) {
+                                    dom.removeClass(el, 'btn-primary');
+                                    dom.removeClass(el, 'btn-secondary');
+                                    dom.addClass(el, 'btn-outline-danger');
+                                } else if (dom.hasClass(el, 'form-check')) {
+                                    dom.addClass(el, 'form-check-danger');
+                                    dom.addClass(el, 'text-danger');
+                                }
+                            } else {
+                                if (el.tagName == 'INPUT') {
+                                    dom.removeClass(el, 'is-invalid');
+                                } else if (dom.hasClass(el, 'btn')) {
+                                    dom.removeClass(el, 'btn-outline-danger');
+
+                                    const $inp = el.querySelector('input') as HTMLInputElement;
+                                    if ($inp) {
+                                        if ($inp.checked) {
+                                            dom.addClass(el, 'btn-primary');
+                                        } else {
+                                            dom.addClass(el, 'btn-secondary');
+                                        }
+                                    }
+                                } else if (dom.hasClass(el, 'form-check')) {
+                                    dom.removeClass(el, 'form-check-danger');
+                                    dom.removeClass(el, 'text-danger');
+                                }
                             }
-                        }
+                        } else if ($.has(binding.value, 'always') && $.has(binding.value, 'errors')) {
+                            if (!binding.value.always) {
+                                if (el.getAttribute('disabled')) {
+                                    vue.set(binding.value, 'errors', {});
+                                }
+                            }
 
-                        // toggle class css error
-                        if ($.size(binding.value.errors)) {
-                            dom.addClass(el, 'is-invalid');
-                        } else {
-                            dom.removeClass(el, 'is-invalid');
+                            // toggle class css error
+                            if ($.size(binding.value.errors)) {
+                                if (el.tagName == 'INPUT') {
+                                    dom.addClass(el, 'is-invalid');
+                                } else if (dom.hasClass(el, 'btn')) {
+                                    dom.removeClass(el, 'btn-primary');
+                                    dom.removeClass(el, 'btn-secondary');
+                                    dom.addClass(el, 'btn-outline-danger');
+                                } else if (dom.hasClass(el, 'form-check')) {
+                                    dom.addClass(el, 'form-check-danger');
+                                    dom.addClass(el, 'text-danger');
+                                }
+                            } else {
+                                if (el.tagName == 'INPUT') {
+                                    dom.removeClass(el, 'is-invalid');
+                                } else if (dom.hasClass(el, 'btn')) {
+                                    dom.removeClass(el, 'btn-outline-danger');
+
+                                    const $inp = el.querySelector('input') as HTMLInputElement;
+                                    if ($inp) {
+                                        if ($inp.checked) {
+                                            dom.addClass(el, 'btn-primary');
+                                        } else {
+                                            dom.addClass(el, 'btn-secondary');
+                                        }
+                                    }
+                                } else if (dom.hasClass(el, 'form-check')) {
+                                    dom.removeClass(el, 'form-check-danger');
+                                    dom.removeClass(el, 'text-danger');
+                                }
+                            } 
                         }
-                    }
+                    }, 5);
                 }
             });
 
             vue.component('v-errors', {
-                props: ['data', 'name'],
+                props: ['validate', 'data', 'name'],
                 template: `<span class="invalid-feedback">{{ resource | i18n(params) }}</span>`,
                 computed: {
                     params() {
                         let self = this,
-                            data = self.data;
+                            data = self.data,
+                            validate = self.validate;
 
-                        if (!$.isArray(data)) {
-                            return [];
-                        } else {
-                            return data.slice(1);
+                        if (data) {
+                            if (!$.isArray(data)) {
+                                return [];
+                            } else {
+                                return data.slice(1);
+                            }
+                        } else if (validate) {
+                            let $msg = validate[Object.keys(validate)[0]];
+
+                            if (!$.isArray($msg)) {
+                                return [];
+                            } else {
+                                return $msg.slice(1);
+                            }
                         }
+
+                        return [];
                     },
                     resource() {
-                        return $.isString(this.data) ? this.data : ($.isArray(this.data) ? this.data[0] : '');
+                        if (this.data) {
+                            let $dta = this.data;
+
+                            return $.isString($dta) ? $dta : ($.isArray($dta) ? $dta[0] : '');
+                        } else if (this.validate) {
+                            let $validate = this.validate,
+                                $msg = $validate[Object.keys($validate)[0]];
+
+                            return $.isString($msg) ? $msg : ($.isArray($msg) ? $msg[0] : '');
+                        }
+
+                        return '';
                     }
                 }
             });
