@@ -78,18 +78,15 @@ public class CheckPersonInfoProcess {
 		
 		List<PersonInfoCategory> listCategory = new ArrayList<>(mapCategoryWithListItemDf.keySet());
 		
-		// list nay để check work time
-		List<PersonInfoCategory> categoryWorkingCondition = listCategory.stream().filter(
-				ctg -> ctg.getCategoryCode().v().equals("CS00070") || ctg.getCategoryCode().v().equals("CS00020"))
-				.collect(Collectors.toList());
-
+		boolean isExitCS00020 = listCategory.stream().filter( ctg -> ctg.getCategoryCode().v().equals("CS00020")).findFirst().isPresent();
+		boolean isExitCS00070 = listCategory.stream().filter( ctg -> ctg.getCategoryCode().v().equals("CS00070")).findFirst().isPresent();
+		
 		for (int i = 0; i < listCategory.size(); i++) {
 			PersonInfoCategory category =  listCategory.get(i);
 			List<GridLayoutPersonInfoClsDto> listDataEmpOfCtg = dataOfEmployee.get(category.getCategoryCode().v());
 			List<LayoutPersonInfoValueDto> itemsOfWorkingCondition1 = new ArrayList<>();
 			List<LayoutPersonInfoValueDto> itemsOfWorkingCondition2 = new ArrayList<>();
-			boolean isExitCS00020 = false;
-			boolean isExitCS00070 = false;
+		
 			listDataEmpOfCtg.forEach(data -> {
 				List<LayoutPersonInfoValueDto> items = new ArrayList<>();
 				List<LayoutPersonInfoClsDto> layoutDtos = data.getLayoutDtos();
@@ -251,6 +248,9 @@ public class CheckPersonInfoProcess {
 			Map<String, List<GridLayoutPersonInfoClsDto>> dataOfEmployee, CheckDataFromUI excuteCommand,
 			Map<PersonInfoCategory, List<PersonInfoItemDefinition>> mapCategoryWithListItemDf,
 			List<ErrorInfoCPS013> result, EmployeeDataMngInfo employee, String bussinessName) {
+		
+		
+		
 		
 	}
 
