@@ -10,6 +10,17 @@ body {
             }
         }
     }
+    &.modal-open,
+    &.show-side-bar {
+        .wrapper {
+            .sidebar {
+                &+.container,
+                &+.container-fluid {
+                    position: fixed;
+                }
+            }
+        }
+    }
 }
 
 @media (min-width: 992px) {
