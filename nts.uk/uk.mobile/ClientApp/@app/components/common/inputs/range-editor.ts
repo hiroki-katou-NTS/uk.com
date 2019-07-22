@@ -49,7 +49,7 @@ const range = (tagName: string) => component({
             </div>
         </div>
         <template v-if="showError" v-bind:key="'showError'">
-            <v-errors v-for="(error, k) in ($errors || errorsAlways || {})" v-bind:key="k" v-bind:data="error" v-bind:name="name" />
+            <v-errors v-model="$errors" v-bind:name="name" />
         </template>
         <template v-else v-bind:key="'hideError'"></template>
     </div>

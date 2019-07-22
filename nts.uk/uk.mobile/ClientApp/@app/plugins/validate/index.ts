@@ -465,20 +465,20 @@ const DIRTY = 'dirty',
                                     dom.removeClass(el, 'form-check-danger');
                                     dom.removeClass(el, 'text-danger');
                                 }
-                            } 
+                            }
                         }
                     }, 5);
                 }
             });
 
             vue.component('v-errors', {
-                props: ['validate', 'data', 'name'],
+                props: ['value', 'data', 'name'],
                 template: `<span class="invalid-feedback">{{ resource | i18n(params) }}</span>`,
                 computed: {
                     params() {
                         let self = this,
                             data = self.data,
-                            validate = self.validate;
+                            value = self.value;
 
                         if (data) {
                             if (!$.isArray(data)) {
@@ -486,8 +486,8 @@ const DIRTY = 'dirty',
                             } else {
                                 return data.slice(1);
                             }
-                        } else if (validate) {
-                            let $msg = validate[Object.keys(validate)[0]];
+                        } else if (value) {
+                            let $msg = value[Object.keys(value)[0]];
 
                             if (!$.isArray($msg)) {
                                 return [];
@@ -499,13 +499,13 @@ const DIRTY = 'dirty',
                         return [];
                     },
                     resource() {
-                        if (this.data) {
-                            let $dta = this.data;
+                        let $dta = this.data,
+                            value = this.value;
 
+                        if ($dta) {
                             return $.isString($dta) ? $dta : ($.isArray($dta) ? $dta[0] : '');
-                        } else if (this.validate) {
-                            let $validate = this.validate,
-                                $msg = $validate[Object.keys($validate)[0]];
+                        } else if (value) {
+                            let $msg = value[Object.keys(value)[0]];
 
                             return $.isString($msg) ? $msg : ($.isArray($msg) ? $msg[0] : '');
                         }
@@ -518,8 +518,7 @@ const DIRTY = 'dirty',
             // define $validate instance method
             vue.prototype.$validate = function (field?: string | 'clear') {
                 let self: Vue = this,
-                    errors = Vue.toJS(self.$errors),
-                    validations = Vue.toJS(self.validations);
+                    errors = Vue.toJS(self.$errors);
 
                 if (field) { // check match field name
                     if (field === 'clear') {
