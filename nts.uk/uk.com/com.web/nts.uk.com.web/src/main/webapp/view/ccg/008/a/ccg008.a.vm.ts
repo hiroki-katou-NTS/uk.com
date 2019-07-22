@@ -17,6 +17,8 @@ module nts.uk.com.view.ccg008.a.viewmodel {
         dateSwitch: KnockoutObservableArray<any>;
         selectedSwitch: KnockoutObservable<any>;
         switchVisible: KnockoutObservable<boolean>;
+        closureSelected: KnockoutObservable<number> = ko.observable(1);
+        lstClosure: KnockoutObservableArray<model.ItemCbbModel> = ko.observableArray([]);
         constructor() {
             var self = this;
             self.isStart = true;
@@ -36,7 +38,7 @@ module nts.uk.com.view.ccg008.a.viewmodel {
                                                     { code: '0', name: nts.uk.resource.getText('CCG008_14')},
                                                     { code: '1', name: nts.uk.resource.getText('CCG008_15')}
                                                 ]);
-            self.selectedSwitch = ko.observable(0);
+            self.selectedSwitch = ko.observable(null);
             self.switchVisible = ko.observable(true);
             self.selectedTab.subscribe(function(codeChange) {
                 let time = 0;
@@ -57,8 +59,12 @@ module nts.uk.com.view.ccg008.a.viewmodel {
             });
             // ver4 current month or next month
             self.selectedSwitch.subscribe(function(value){
-                character.save('currentOrNextMonth', value);
-                nts.uk.ui.windows.setShared('currentOrNextMonth', value);
+                character.save('cache', new model.Cache(self.closureSelected(), value));
+                service.getCache().done((data: any) => {
+                    console.log(data);
+                })
+                
+                nts.uk.ui.windows.setShared('cache', new model.Cache(self.closureSelected(), value));
                 var transferData = __viewContext.transferred.value;
                 var fromScreen = transferData && transferData.screen ? transferData.screen : "other";
                 service.getTopPageByCode(fromScreen, self.topPageCode()).done((data: model.LayoutAllDto) => {
@@ -70,6 +76,10 @@ module nts.uk.com.view.ccg008.a.viewmodel {
                     }
                 });
             });
+            
+            self.closureSelected.subscribe(function(value){
+                self.selectedSwitch.valueHasMutated();
+            });
         }
         start(): JQueryPromise<any> {
             var self = this;
@@ -80,45 +90,57 @@ module nts.uk.com.view.ccg008.a.viewmodel {
             //var fromScreen = "login"; 
             if(fromScreen == "login"){
                 service.getCache().done((data: any) => {
-                    character.save('currentOrNextMonth', data.currentOrNextMonth);
-                    console.log(data.currentOrNextMonth);
+                    character.save('cache', data);
                 })  
             }
             self.topPageCode(code);
-            _.defer(() => { 
-                character.restore('currentOrNextMonth').done((obj)=>{
+                character.restore('cache').done((obj)=>{
                     if(obj){
-                        self.selectedSwitch(obj);
+                        setTimeout(function() { 
+                            if(obj.currentOrNextMonth){
+                                self.selectedSwitch(obj.currentOrNextMonth);
+                            }else{
+                                self.selectedSwitch(null);    
+                            }
+                            self.closureSelected(obj.closureId)
+                            nts.uk.ui.windows.setShared('cache', obj);
+                        }, 2000);
+                    }else{
+                        self.closureSelected(1);
+                        self.selectedSwitch(null);
                     }
-                    nts.uk.ui.windows.setShared('currentOrNextMonth', self.selectedSwitch());
-                })
-            });
+                });
             
-            service.getTopPageByCode(fromScreen, self.topPageCode()).done((data: model.LayoutAllDto) => {
-                self.dataSource(data);
-                var topPageUrl = "/view/ccg/008/a/index.xhtml";
-                if (data.topPage != null && data.topPage.standardMenuUrl != null) {//hien thi standardmenu
-                    var res = "/" + data.topPage.standardMenuUrl.split("web/")[1];
-                    if (res && topPageUrl != res.trim()) { 
-                        if (_.includes(data.topPage.standardMenuUrl, ".at.")) { 
-                            nts.uk.request.jump("at", res);
-                        } else {
-                            nts.uk.request.jump(res);
+            // 会社の締めを取得する - Lấy closure company
+            service.getClosure().done((data: any) => {
+//                console.log(data);
+                self.lstClosure(data);
+                service.getTopPageByCode(fromScreen, self.topPageCode()).done((data: model.LayoutAllDto) => {
+                    self.dataSource(data);
+                    var topPageUrl = "/view/ccg/008/a/index.xhtml";
+                    if (data.topPage != null && data.topPage.standardMenuUrl != null) {//hien thi standardmenu
+                        var res = "/" + data.topPage.standardMenuUrl.split("web/")[1];
+                        if (res && topPageUrl != res.trim()) { 
+                            if (_.includes(data.topPage.standardMenuUrl, ".at.")) { 
+                                nts.uk.request.jump("at", res);
+                            } else {
+                                nts.uk.request.jump(res);
+                            }
                         }
                     }
-                }
-                if (data.checkMyPage == false) {//k hien thi my page
-                    self.visibleMyPage(false);
-                }
-                if (data.check == true) {//hien thi top page truoc
-                    self.selectedTab('tab-1');
-                } else {
-                    self.selectedTab('tab-2');
-                }
-                if (data.checkMyPage == false && data.checkTopPage == false) {
-                    self.displayButton = false;
-                }
-                dfd.resolve();
+                    if (data.checkMyPage == false) {//k hien thi my page
+                        self.visibleMyPage(false);
+                    }
+                    if (data.check == true) {//hien thi top page truoc
+                        self.selectedTab('tab-1');
+                    } else {
+                        self.selectedTab('tab-2');
+                    }
+                    if (data.checkMyPage == false && data.checkTopPage == false) {
+                        self.displayButton = false;
+                    }
+                    dfd.resolve();
+                });
             });
             return dfd.promise();
         }
@@ -307,6 +329,24 @@ module nts.uk.com.view.ccg008.a.viewmodel {
                 this.topPagePartID = topPagePartID;
                 this.partType = partType;
                 
+            }
+        }
+        
+        export class ItemCbbModel {
+            closureId: number;
+            closureName: string;
+            constructor(closureId: number, closureName: string) {
+                this.closureId = closureId;
+                this.closureName = closureName;
+            }
+        }
+        
+        export class Cache {
+            closureId: number;
+            currentOrNextMonth: number;
+            constructor(closureId: number, currentOrNextMonth: number) {
+                this.closureId = closureId;
+                this.currentOrNextMonth = currentOrNextMonth;
             }
         }
         /** Server LayoutDto */
