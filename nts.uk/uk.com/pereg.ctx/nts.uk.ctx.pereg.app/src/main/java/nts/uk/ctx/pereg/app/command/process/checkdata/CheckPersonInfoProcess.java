@@ -244,16 +244,32 @@ public class CheckPersonInfoProcess {
 		}
 	}
 
+	/**
+	 * 参照項目チェック処理 (Check item tham chiếu)
+	 * @param empCheck
+	 * @param dataOfEmployee
+	 * @param excuteCommand
+	 * @param mapCategoryWithListItemDf
+	 * @param result
+	 * @param employee
+	 * @param bussinessName
+	 */
 	private void checkReferenceItem(PeregEmpInfoQuery empCheck,
 			Map<String, List<GridLayoutPersonInfoClsDto>> dataOfEmployee, CheckDataFromUI excuteCommand,
 			Map<PersonInfoCategory, List<PersonInfoItemDefinition>> mapCategoryWithListItemDf,
 			List<ErrorInfoCPS013> result, EmployeeDataMngInfo employee, String bussinessName) {
-		
-		
-		
-		
 	}
 
+	/**
+	 * システム必須チェック (Kiểm tra required system)
+	 * @param empCheck
+	 * @param dataOfEmployee
+	 * @param excuteCommand
+	 * @param mapCategoryWithListItemDf
+	 * @param result
+	 * @param employee
+	 * @param bussinessName
+	 */
 	private void checkSystemRequired(PeregEmpInfoQuery empCheck,
 			Map<String, List<GridLayoutPersonInfoClsDto>> dataOfEmployee, CheckDataFromUI excuteCommand,
 			Map<PersonInfoCategory, List<PersonInfoItemDefinition>> mapCategoryWithListItemDf,
@@ -302,6 +318,16 @@ public class CheckPersonInfoProcess {
 		}
 	}
 
+	/**
+	 * アルゴリズム「履歴整合性チェック」を実行する (Thực thi thuật toán 「Check tính hợp lệ của lịch sử」)
+	 * @param empCheck
+	 * @param dataOfEmployee
+	 * @param excuteCommand
+	 * @param mapCategoryWithListItemDf
+	 * @param result
+	 * @param employee
+	 * @param bussinessName
+	 */
 	public void checkCategoryHistory(PeregEmpInfoQuery empCheck, Map<String, List<GridLayoutPersonInfoClsDto>> dataOfEmployee, CheckDataFromUI excuteCommand,
 			Map<PersonInfoCategory, List<PersonInfoItemDefinition>> mapCategoryWithListItemDf, List<ErrorInfoCPS013> result, EmployeeDataMngInfo employee, String bussinessName) {
 		
@@ -385,7 +411,15 @@ public class CheckPersonInfoProcess {
 		}
 	}
 	
-	
+	/**
+	 * 履歴データ特殊チェック (Check historyData đặc biệt)
+	 * @param ctg
+	 * @param listDataEmpOfCtg
+	 * @param listDataPeriodOfCtgHis
+	 * @param employee
+	 * @param bussinessName
+	 * @param result
+	 */
 	private void checkHistoricalDataSpecial(PersonInfoCategory ctg, List<GridLayoutPersonInfoClsDto> listDataEmpOfCtg,
 			List<DatePeriod> listDataPeriodOfCtgHis, EmployeeDataMngInfo employee, String bussinessName, List<ErrorInfoCPS013> result ) {
 		if (AppContexts.system().isInstalled(ProductType.ATTENDANCE) == true && ctg.getCategoryCode().toString().equals("CS00014")) {
@@ -428,7 +462,13 @@ public class CheckPersonInfoProcess {
 		return false;
 	}
 
-	// 空白期間チェック (kiem tra thoi gian trong)
+	/**
+	 * 空白期間チェック (kiem tra thoi gian trong)
+	 * @param ctg
+	 * @param listDataEmpOfCtg
+	 * @param listDataPeriodOfCtgHis
+	 * @return
+	 */
 	private List<DatePeriod> checkBlankOfPeriod(PersonInfoCategory ctg, List<GridLayoutPersonInfoClsDto> listDataEmpOfCtg, List<DatePeriod> listDataPeriodOfCtgHis) {
 		if (ctg.getCategoryType() ==  CategoryType.CONTINUOUSHISTORY) {
 			if (listPersistentResidentHisAndPersistentHisCtg.contains(ctg.getCategoryCode().v()) && !listDataPeriodOfCtgHis.isEmpty() && listDataPeriodOfCtgHis.size() > 1) {
@@ -554,6 +594,11 @@ public class CheckPersonInfoProcess {
 		return false;
 	}
 	
+	/**
+	 * 履歴重複の場合 ( TH trùng lặp lịch sử)
+	 * @param historys
+	 * @return
+	 */
 	private List<GeneralDate> isOverlap(List<DatePeriod> historys) {
 		List<GeneralDate> result = new ArrayList<>();
 		historys.forEach(his1 -> {
