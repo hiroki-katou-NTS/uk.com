@@ -52,7 +52,6 @@ Vue.directive('float-action', {
         }
 
         if (el.closest('.modal.show')) {
-            el.style.zIndex = '1051';
             document.body.appendChild(el);
         }
     }
