@@ -254,10 +254,57 @@ const DIRTY = 'dirty',
                                             rule = $.get(Vue.toJS(self.validations), path, {}),
                                             msgkey = $.keys(models)[0];
 
-                                        // re validate
-                                        if (msgkey) {
+                                        if (rule.validate !== false) {
+                                            // re validate
+                                            if (msgkey) {
+                                                $.objectForEach(validators, (key: string, vldtor: (...params: any) => string) => {
+                                                    if (key == msgkey) {
+                                                        let params: Array<any> = $.isArray(rule[key]) ? rule[key] : [rule[key]],
+                                                            message = vldtor.apply(self, [value, ...params, rule]);
+
+                                                        if (!message) {
+                                                            $.omit(models, key);
+                                                        } else {
+                                                            if (!$.size(models)) {
+                                                                $.set(models, key, message);
+                                                            }
+                                                        }
+                                                    }
+                                                });
+
+                                                let vldtor: Function | { test: RegExp | Function; message?: string; messageId?: string; } = rule[msgkey];
+
+                                                if (vldtor) {
+                                                    if ($.isFunction(vldtor)) {
+                                                        let msgs = vldtor.apply(self, [value]);
+                                                        if (msgs) {
+                                                            $.set(models, msgkey, msgs);
+                                                        } else {
+                                                            $.omit(models, msgkey);
+                                                        }
+                                                    } else if ($.isFunction(vldtor.test)) {
+                                                        if (!vldtor.test.apply(self, [value])) {
+                                                            if (!$.size(models)) {
+                                                                $.set(models, msgkey, vldtor.message || vldtor.messageId);
+                                                            }
+                                                        } else {
+                                                            $.omit(models, msgkey);
+                                                        }
+                                                    } else if ($.isRegExp(vldtor.test)) {
+                                                        if (value && !vldtor.test.test(value)) {
+                                                            if (!$.size(models)) {
+                                                                $.set(models, msgkey, vldtor.message || vldtor.messageId);
+                                                            }
+                                                        } else {
+                                                            $.omit(models, msgkey);
+                                                        }
+                                                    }
+                                                }
+                                            }
+
+                                            // check fixed validators
                                             $.objectForEach(validators, (key: string, vldtor: (...params: any) => string) => {
-                                                if (key == msgkey) {
+                                                if ($.has(rule, key)) {
                                                     let params: Array<any> = $.isArray(rule[key]) ? rule[key] : [rule[key]],
                                                         message = vldtor.apply(self, [value, ...params, rule]);
 
@@ -271,83 +318,42 @@ const DIRTY = 'dirty',
                                                 }
                                             });
 
-                                            let vldtor: Function | { test: RegExp | Function; message?: string; messageId?: string; } = rule[msgkey];
+                                            // check custom validators of dev
+                                            $.keys(rule)
+                                                .filter((f) => $.keys(validators).indexOf(f) == -1)
+                                                .forEach((key: string) => {
+                                                    let vldtor: Function | { test: RegExp | Function; message?: string; messageId: string; } = rule[key];
 
-                                            if (vldtor) {
-                                                if ($.isFunction(vldtor)) {
-                                                    let msgs = vldtor.apply(self, [value]);
-                                                    if (msgs) {
-                                                        $.set(models, msgkey, msgs);
-                                                    } else {
-                                                        $.omit(models, msgkey);
-                                                    }
-                                                } else if ($.isFunction(vldtor.test)) {
-                                                    if (!vldtor.test.apply(self, [value])) {
-                                                        if (!$.size(models)) {
-                                                            $.set(models, msgkey, vldtor.message || vldtor.messageId);
+                                                    if (vldtor) {
+                                                        if ($.isFunction(vldtor)) {
+                                                            let msgs = vldtor.apply(self, [value]);
+                                                            if (msgs) {
+                                                                $.set(models, msgkey, msgs);
+                                                            } else {
+                                                                $.omit(models, msgkey);
+                                                            }
+                                                        } else if ($.isFunction(vldtor.test)) {
+                                                            if (!vldtor.test.apply(self, [value])) {
+                                                                if (!$.size(models)) {
+                                                                    $.set(models, key, vldtor.message || vldtor.messageId);
+                                                                }
+                                                            } else {
+                                                                $.omit(models, key);
+                                                            }
+                                                        } else if ($.isRegExp(vldtor.test)) {
+                                                            if (value && !vldtor.test.test(value)) {
+                                                                if (!$.size(models)) {
+                                                                    $.set(models, key, vldtor.message || vldtor.messageId);
+                                                                }
+                                                            } else {
+                                                                $.omit(models, key);
+                                                            }
                                                         }
-                                                    } else {
-                                                        $.omit(models, msgkey);
                                                     }
-                                                } else if ($.isRegExp(vldtor.test)) {
-                                                    if (value && !vldtor.test.test(value)) {
-                                                        if (!$.size(models)) {
-                                                            $.set(models, msgkey, vldtor.message || vldtor.messageId);
-                                                        }
-                                                    } else {
-                                                        $.omit(models, msgkey);
-                                                    }
-                                                }
-                                            }
+                                                });
+                                        } else {
+                                            $.set(errors, path2, {});
                                         }
-
-                                        // check fixed validators
-                                        $.objectForEach(validators, (key: string, vldtor: (...params: any) => string) => {
-                                            if ($.has(rule, key)) {
-                                                let params: Array<any> = $.isArray(rule[key]) ? rule[key] : [rule[key]],
-                                                    message = vldtor.apply(self, [value, ...params, rule]);
-
-                                                if (!message) {
-                                                    $.omit(models, key);
-                                                } else {
-                                                    if (!$.size(models)) {
-                                                        $.set(models, key, message);
-                                                    }
-                                                }
-                                            }
-                                        });
-
-                                        // check custom validators of dev
-                                        $.keys(rule)
-                                            .filter((f) => $.keys(validators).indexOf(f) == -1)
-                                            .forEach((key: string) => {
-                                                let vldtor: Function | { test: RegExp | Function; message?: string; messageId: string; } = rule[key];
-
-                                                if ($.isFunction(vldtor)) {
-                                                    let msgs = vldtor.apply(self, [value]);
-                                                    if (msgs) {
-                                                        $.set(models, msgkey, msgs);
-                                                    } else {
-                                                        $.omit(models, msgkey);
-                                                    }
-                                                } else if ($.isFunction(vldtor.test)) {
-                                                    if (!vldtor.test.apply(self, [value])) {
-                                                        if (!$.size(models)) {
-                                                            $.set(models, key, vldtor.message || vldtor.messageId);
-                                                        }
-                                                    } else {
-                                                        $.omit(models, key);
-                                                    }
-                                                } else if ($.isRegExp(vldtor.test)) {
-                                                    if (value && !vldtor.test.test(value)) {
-                                                        if (!$.size(models)) {
-                                                            $.set(models, key, vldtor.message || vldtor.messageId);
-                                                        }
-                                                    } else {
-                                                        $.omit(models, key);
-                                                    }
-                                                }
-                                            });
 
                                         vue.set(self, '$errors', errors);
                                     };

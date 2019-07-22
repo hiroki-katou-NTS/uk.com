@@ -15,6 +15,7 @@ interface IFetchOption {
 
 declare interface IRule {
     loop?: boolean;
+    validate?: boolean;
     required?: boolean;
     min?: number | Date;
     max?: number | Date;
