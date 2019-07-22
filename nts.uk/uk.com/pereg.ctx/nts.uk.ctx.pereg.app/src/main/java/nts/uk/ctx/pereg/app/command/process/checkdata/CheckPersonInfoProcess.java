@@ -12,6 +12,8 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
@@ -19,7 +21,6 @@ import nts.uk.ctx.pereg.app.find.layoutdef.classification.GridLayoutPersonInfoCl
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoValueDto;
 import nts.uk.ctx.pereg.dom.person.info.category.CategoryType;
-import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
 import nts.uk.shr.com.context.AppContexts;
@@ -33,13 +34,21 @@ import nts.uk.shr.pereg.app.find.PeregEmpInfoQuery;
 public class CheckPersonInfoProcess {
 	
 	final String chekPersonInfoType = TextResource.localize("CPS013_5");
+   
+	final List<String> lisCategorythistory = Arrays.asList("CS00003", "CS00004", "CS00014",
+			"CS00016", "CS00017", "CS00018", "CS00019", "CS00020", "CS00021", "CS00070");
 	
 	final List<String> listPersistentResidentHistoryCtg = Arrays.asList("CS00004","CS00014","CS00016","CS00017","CS00020","CS00070");
 	
 	final List<String> listPersistentResidentHisAndPersistentHisCtg = Arrays.asList("CS00004","CS00014","CS00016","CS00017","CS00020","CS00021","CS00070");
 	
+	final List<String> listItemToCheckSpace =  Arrays.asList("IS00003","IS00004","IS00015","IS00016");
 	@Inject
 	private ClosureEmploymentRepository closureEmploymentRepository;
+	@Inject
+	private BasicScheduleService basicService;
+	
+	private static final String JP_SPACE = "　";
 	
 	// 個人基本情報チェック (Check thông tin cá nhân cơ bản)
 	public List<ErrorInfoCPS013> checkPersonInfo2(PeregEmpInfoQuery empCheck, Map<String, List<GridLayoutPersonInfoClsDto>> dataOfEmployee,
@@ -67,6 +76,175 @@ public class CheckPersonInfoProcess {
 			Map<PersonInfoCategory, List<PersonInfoItemDefinition>> mapCategoryWithListItemDf,
 			List<ErrorInfoCPS013> result, EmployeeDataMngInfo employee, String bussinessName) {
 		
+		List<PersonInfoCategory> listCategory = new ArrayList<>(mapCategoryWithListItemDf.keySet());
+		
+		// list nay để check work time
+		List<PersonInfoCategory> categoryWorkingCondition = listCategory.stream().filter(
+				ctg -> ctg.getCategoryCode().v().equals("CS00070") || ctg.getCategoryCode().v().equals("CS00020"))
+				.collect(Collectors.toList());
+
+		for (int i = 0; i < listCategory.size(); i++) {
+			PersonInfoCategory category =  listCategory.get(i);
+			List<GridLayoutPersonInfoClsDto> listDataEmpOfCtg = dataOfEmployee.get(category.getCategoryCode().v());
+			List<LayoutPersonInfoValueDto> itemsOfWorkingCondition1 = new ArrayList<>();
+			List<LayoutPersonInfoValueDto> itemsOfWorkingCondition2 = new ArrayList<>();
+			boolean isExitCS00020 = false;
+			boolean isExitCS00070 = false;
+			listDataEmpOfCtg.forEach(data -> {
+				List<LayoutPersonInfoValueDto> items = new ArrayList<>();
+				List<LayoutPersonInfoClsDto> layoutDtos = data.getLayoutDtos();
+				layoutDtos.forEach(item -> {
+					items.addAll(item.getItems());
+					if (category.getCategoryCode().v().equals("CS00020")){
+						itemsOfWorkingCondition1.addAll(item.getItems());
+					}
+					if (category.getCategoryCode().v().equals("CS00070")) {
+						itemsOfWorkingCondition2.addAll(item.getItems());
+					}
+				});
+				
+				items.forEach(item -> {
+					
+					// 必須項目のNULLチェック (Check Null cho các requiredItem)
+					if(item.isRequired()){
+						checkNullOfRequiredItems(item, employee, category, bussinessName, result);
+					}
+				});
+				
+				// 項目の特殊チェック (Check item đặc biệt)
+				if (category.getCategoryCode().v().equals("CS00002")) {
+					checkItemSpecial(items, employee, category, bussinessName, result);
+				}
+				
+				// 日付の逆転チェック (Check đảo ngược date )
+				if (lisCategorythistory.contains(category.getCategoryCode().v())) {
+					checkDateReversal(items, employee, category, bussinessName, result); 
+				}
+			});
+			
+			// アルゴリズム「就業時間帯の必須チェック」を実行する (Thực hiện thuật toán [check required của worktime])
+			if (isExitCS00020) {
+				checkRequiredWorktime1(itemsOfWorkingCondition1, employee, category, bussinessName, result);
+			}
+		}
+	}
+
+	private void checkRequiredWorktime1(List<LayoutPersonInfoValueDto> itemsOfWorkingCondition1, EmployeeDataMngInfo employee,
+			PersonInfoCategory category, String bussinessName, List<ErrorInfoCPS013> result) {
+		
+		Optional<LayoutPersonInfoValueDto> IS00148Opt = itemsOfWorkingCondition1.stream().filter(item -> item.getItemCode().equals("IS00148")).findFirst();
+		Optional<LayoutPersonInfoValueDto> IS00157Opt = itemsOfWorkingCondition1.stream().filter(item -> item.getItemCode().equals("IS00157")).findFirst();
+		Optional<LayoutPersonInfoValueDto> IS00166Opt = itemsOfWorkingCondition1.stream().filter(item -> item.getItemCode().equals("IS00166")).findFirst();
+		Optional<LayoutPersonInfoValueDto> IS00175Opt = itemsOfWorkingCondition1.stream().filter(item -> item.getItemCode().equals("IS00175")).findFirst();
+		
+		if (IS00148Opt.isPresent()) {
+			String workTypeCD = (String) IS00148Opt.get().getValue();
+			//就業時間帯の必須チェック
+			SetupType checkNeededOfWorkTimeSetting = basicService.checkNeededOfWorkTimeSetting(workTypeCD);
+			if (checkNeededOfWorkTimeSetting == SetupType.REQUIRED) {
+				Optional<LayoutPersonInfoValueDto> IS00149Opt = itemsOfWorkingCondition1.stream().filter(item -> item.getItemCode().equals("IS00149")).findFirst();
+				if (IS00149Opt.isPresent()) {
+					Object workTimeIS00149 = IS00149Opt.get().getValue();
+					if (workTimeIS00149 == null) {
+						ErrorInfoCPS013 error_workTime = new ErrorInfoCPS013(employee.getEmployeeId(),category.getPersonInfoCategoryId(), employee.getEmployeeCode().v(), bussinessName,
+								chekPersonInfoType, category.getCategoryName().v(),
+								TextResource.localize("Msg_956", IS00148Opt.get().getItemName(), (String)IS00148Opt.get().getValue(), IS00149Opt.get().getItemName() ));
+						result.add(error_workTime);
+					}else {
+						Optional<LayoutPersonInfoValueDto> IS00151_StartTime1_Opt = itemsOfWorkingCondition1.stream().filter(item -> item.getItemCode().equals("IS00151")).findFirst();
+						if (IS00151_StartTime1_Opt.isPresent()) {
+							ErrorInfoCPS013 error_workTime = new ErrorInfoCPS013(employee.getEmployeeId(),category.getPersonInfoCategoryId(), employee.getEmployeeCode().v(), bussinessName,
+									chekPersonInfoType, category.getCategoryName().v(),
+									TextResource.localize("Msg_956", IS00148Opt.get().getItemName(), (String)IS00148Opt.get().getValue(), IS00149Opt.get().getItemName() ));
+							result.add(error_workTime);
+						}
+						
+						
+					}
+				}
+			}else if(checkNeededOfWorkTimeSetting == SetupType.NOT_REQUIRED){
+				
+			}
+		}
+	}
+
+	private void checkDateReversal(List<LayoutPersonInfoValueDto> items, EmployeeDataMngInfo employee,
+			PersonInfoCategory category, String bussinessName, List<ErrorInfoCPS013> result) {
+		switch (category.getCategoryCode().v()) {
+		case "CS00003":
+			checkItemReversal(items,employee, category, bussinessName, result , "IS00020" , "IS00021");
+			break;
+		case "CS00004":
+			checkItemReversal(items,employee, category, bussinessName, result , "IS00026" , "IS00027");
+			break;
+		case "CS00014":
+			checkItemReversal(items,employee, category, bussinessName, result , "IS00066" , "IS00067");
+			break;
+		case "CS00015":
+			checkItemReversal(items,employee, category, bussinessName, result , "IS00071" , "IS00072");
+			break;
+		case "CS00016":
+			checkItemReversal(items,employee, category, bussinessName, result , "IS00077" , "IS00078");
+			break;
+		case "CS00017":
+			checkItemReversal(items,employee, category, bussinessName, result , "IS00082" , "IS00083");
+			break;
+		case "CS00018":
+			checkItemReversal(items,employee, category, bussinessName, result , "IS00087" , "IS00088");
+			break;
+		case "CS00019":
+			checkItemReversal(items,employee, category, bussinessName, result , "IS00102" , "IS00103");
+			break;
+		case "CS00020":
+			checkItemReversal(items,employee, category, bussinessName, result , "IS00119" , "IS00120");
+			break;
+		case "CS00021":
+			checkItemReversal(items,employee, category, bussinessName, result , "IS00255" , "IS00256");
+			break;
+		case "CS00070":
+			checkItemReversal(items,employee, category, bussinessName, result , "IS00781" , "IS00782");
+			break;
+		}
+	}
+
+	private void checkItemReversal(List<LayoutPersonInfoValueDto> items, EmployeeDataMngInfo employee,
+			PersonInfoCategory category, String bussinessName, List<ErrorInfoCPS013> result, String itemCodeStartDate , String itemCodeEndDate) {
+		Optional<LayoutPersonInfoValueDto> startDateOpt =  items.stream().filter(itCode -> itCode.getItemCode().equals(itemCodeStartDate)).findFirst();
+		Optional<LayoutPersonInfoValueDto> endDateOpt =  items.stream().filter(itCode -> itCode.getItemCode().equals(itemCodeEndDate)).findFirst();
+		if (startDateOpt.isPresent() && endDateOpt.isPresent()) {
+			GeneralDate startDate = GeneralDate.fromString(startDateOpt.get().getValue().toString() , "yyyy/MM/dd");
+			GeneralDate endDate = GeneralDate.fromString(endDateOpt.get().getValue().toString() , "yyyy/MM/dd");
+			if (startDate.after(endDate)) {
+				ErrorInfoCPS013 error_itemReversal = new ErrorInfoCPS013(employee.getEmployeeId(),category.getPersonInfoCategoryId(), employee.getEmployeeCode().v(), bussinessName,
+						chekPersonInfoType, category.getCategoryName().v(),TextResource.localize("Msg_953", category.getCategoryName().v(), startDateOpt.get().getItemName() , startDate.toString(), category.getCategoryName().v(), endDateOpt.get().getItemName(), endDate.toString()));
+				result.add(error_itemReversal);
+			}
+		}
+	}
+
+	private void checkItemSpecial(List<LayoutPersonInfoValueDto> items, EmployeeDataMngInfo employee,
+			PersonInfoCategory category, String bussinessName, List<ErrorInfoCPS013> result) {
+		
+		// 半角または全角スペースあるか(có hay không half space or full space?)
+		items.forEach(item ->{
+			if (listItemToCheckSpace.contains(item.getItemCode())) {
+				String value = (String) item.getValue();
+				if (value.startsWith(JP_SPACE) || value.endsWith(JP_SPACE) || !value.contains(JP_SPACE)) {
+					ErrorInfoCPS013 error_itemReq = new ErrorInfoCPS013(employee.getEmployeeId(),category.getPersonInfoCategoryId(), employee.getEmployeeCode().v(), bussinessName,
+							chekPersonInfoType, category.getCategoryName().v(),TextResource.localize("Msg_952", item.getItemName()));
+					result.add(error_itemReq);
+				}
+			}
+		});
+	}
+
+	private void checkNullOfRequiredItems(LayoutPersonInfoValueDto item, EmployeeDataMngInfo employee,
+			PersonInfoCategory category, String bussinessName, List<ErrorInfoCPS013> result) {
+		if (item.getValue() == null || item.getValue() == "") {
+			ErrorInfoCPS013 error_itemReq = new ErrorInfoCPS013(employee.getEmployeeId(),category.getPersonInfoCategoryId(), employee.getEmployeeCode().v(), bussinessName,
+					chekPersonInfoType, category.getCategoryName().v(),TextResource.localize("Msg_955", item.getItemName()));
+			result.add(error_itemReq);
+		}
 	}
 
 	private void checkReferenceItem(PeregEmpInfoQuery empCheck,
@@ -353,9 +531,12 @@ public class CheckPersonInfoProcess {
 			layoutDtos.forEach(item -> {
 				items.addAll(item.getItems());
 			});
-			GeneralDate startDate = items.stream().filter(i -> i.getItemCode().equals(itemCodeStartDate)).findFirst().isPresent() ? (GeneralDate)(items.stream().filter(i -> i.getItemCode().equals(itemCodeStartDate)).findFirst().get().getValue()) : null;
-			GeneralDate endtDate = items.stream().filter(i -> i.getItemCode().equals(itemCodeEndDate)).findFirst().isPresent() ? (GeneralDate)(items.stream().filter(i -> i.getItemCode().equals(itemCodeEndDate)).findFirst().get().getValue()) : null;
-			if (startDate != null && endtDate!= null) {
+			
+			Optional<LayoutPersonInfoValueDto> startDateOpt = items.stream().filter(i -> i.getItemCode().equals(itemCodeStartDate)).findFirst();
+			Optional<LayoutPersonInfoValueDto> endDateOpt = items.stream().filter(i -> i.getItemCode().equals(itemCodeEndDate)).findFirst();
+			if (startDateOpt.isPresent() && endDateOpt.isPresent()) {
+				GeneralDate startDate = GeneralDate.fromString(startDateOpt.get().getValue().toString() , "yyyy/MM/dd");
+				GeneralDate endtDate  = GeneralDate.fromString(endDateOpt.get().getValue().toString() , "yyyy/MM/dd");
 				result.add(new DatePeriod(startDate, endtDate));
 			}
 		});
@@ -393,5 +574,4 @@ public class CheckPersonInfoProcess {
 		
 		return result.stream().sorted().collect(Collectors.toList());
 	}
-
 }
