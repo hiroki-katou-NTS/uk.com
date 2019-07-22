@@ -29,11 +29,9 @@ public class CheckMasterProcess {
 	final String chekMasterType = TextResource.localize("CPS013_11");
 	
 	@SuppressWarnings("unused")
-	private List<ErrorInfoCPS013> checkMaster(PeregEmpInfoQuery empCheck, Map<String, List<GridLayoutPersonInfoClsDto>> dataOfEmployee, 
-			CheckDataFromUI excuteCommand, Map<PersonInfoCategory, List<PersonInfoItemDefinition>> mapCategoryWithListItemDf, EmployeeDataMngInfo employee, String bussinessName) {
+	public void checkMaster(PeregEmpInfoQuery empCheck, Map<String, List<GridLayoutPersonInfoClsDto>> dataOfEmployee, 
+			CheckDataFromUI excuteCommand, Map<PersonInfoCategory, List<PersonInfoItemDefinition>> mapCategoryWithListItemDf, EmployeeDataMngInfo employee, String bussinessName, List<ErrorInfoCPS013> errors) {
 
-		List<ErrorInfoCPS013> result = new ArrayList<>();
-		
 		// 「実行時情報」の「システム利用区分」をチェックする (check thuộc tính 「システム利用区分」 trong RuntimeInformation)
 		int forAttendance = nts.uk.ctx.at.schedule.dom.plannedyearholiday.frame.NotUseAtr.NOT_USE.value;
 		int forPayroll = nts.uk.ctx.at.schedule.dom.plannedyearholiday.frame.NotUseAtr.NOT_USE.value;
@@ -73,7 +71,7 @@ public class CheckMasterProcess {
 					&& (settingCtg.getScheduleMngReq().value == NotUseAtr.USE.value)) {
 				List<GridLayoutPersonInfoClsDto> datas = dataOfEmployee.get(category.getCategoryCode().v());
 				if (datas.isEmpty()) {
-					writeError(employee, category, bussinessName, result, "スケジュール管理" );
+					writeError(employee, category, bussinessName, errors, "スケジュール管理" );
 				}
 			}
 			
@@ -82,7 +80,7 @@ public class CheckMasterProcess {
 					&& (settingCtg.getDailyActualMngReq().value == NotUseAtr.USE.value)) {
 				List<GridLayoutPersonInfoClsDto> datas = dataOfEmployee.get(category.getCategoryCode().v());
 				if (datas.isEmpty()) {
-					writeError(employee, category, bussinessName, result, "日別実績管理" );
+					writeError(employee, category, bussinessName, errors, "日別実績管理" );
 				}
 			}
 			
@@ -91,7 +89,7 @@ public class CheckMasterProcess {
 					&& (settingCtg.getMonthActualMngReq().value == NotUseAtr.USE.value)) {
 				List<GridLayoutPersonInfoClsDto> datas = dataOfEmployee.get(category.getCategoryCode().v());
 				if (datas.isEmpty()) {
-					writeError(employee, category, bussinessName, result, "月別実績管理" );
+					writeError(employee, category, bussinessName, errors, "月別実績管理" );
 				}
 			}
 			
@@ -100,7 +98,7 @@ public class CheckMasterProcess {
 					&& (settingCtg.getPayMngReq().value == NotUseAtr.USE.value)) {
 				List<GridLayoutPersonInfoClsDto> datas = dataOfEmployee.get(category.getCategoryCode().v());
 				if (datas.isEmpty()) {
-					writeError(employee, category, bussinessName, result, "給与管理");
+					writeError(employee, category, bussinessName, errors, "給与管理");
 				}
 			}
 			
@@ -109,7 +107,7 @@ public class CheckMasterProcess {
 					&& (settingCtg.getBonusMngReq().value == NotUseAtr.USE.value)) {
 				List<GridLayoutPersonInfoClsDto> datas = dataOfEmployee.get(category.getCategoryCode().v());
 				if (datas.isEmpty()) {
-					writeError(employee, category, bussinessName, result, "賞与管理");
+					writeError(employee, category, bussinessName, errors, "賞与管理");
 				}
 			}
 			
@@ -118,7 +116,7 @@ public class CheckMasterProcess {
 					&& (settingCtg.getYearMngReq().value == NotUseAtr.USE.value)) {
 				List<GridLayoutPersonInfoClsDto> datas = dataOfEmployee.get(category.getCategoryCode().v());
 				if (datas.isEmpty()) {
-					writeError(employee, category, bussinessName, result, "年調管理");
+					writeError(employee, category, bussinessName, errors, "年調管理");
 				}
 			}
 			
@@ -127,12 +125,10 @@ public class CheckMasterProcess {
 					&& (settingCtg.getMonthCalcMngReq().value == NotUseAtr.USE.value)) {
 				List<GridLayoutPersonInfoClsDto> datas = dataOfEmployee.get(category.getCategoryCode().v());
 				if (datas.isEmpty()) {
-					writeError(employee, category, bussinessName, result, "月額算定管理");
+					writeError(employee, category, bussinessName, errors, "月額算定管理");
 				}
 			}
 		}
-		
-		return result;
 	}
 
 	private void writeError(EmployeeDataMngInfo employee, PersonInfoCategory category, String bussinessName,

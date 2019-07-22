@@ -23,7 +23,10 @@ import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoValueD
 import nts.uk.ctx.pereg.dom.person.info.category.CategoryType;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
+import nts.uk.ctx.pereg.dom.person.setting.validatecheck.PerInfoValidChkCtgRepository;
+import nts.uk.ctx.pereg.dom.person.setting.validatecheck.PerInfoValidateCheckCategory;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.system.config.ProductType;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -47,28 +50,27 @@ public class CheckPersonInfoProcess {
 	private ClosureEmploymentRepository closureEmploymentRepository;
 	@Inject
 	private BasicScheduleService basicService;
+	@Inject
+	private PerInfoValidChkCtgRepository perInfoCheckCtgRepo;
 	
 	private static final String JP_SPACE = "　";
 	
 	// 個人基本情報チェック (Check thông tin cá nhân cơ bản)
-	public List<ErrorInfoCPS013> checkPersonInfo2(PeregEmpInfoQuery empCheck, Map<String, List<GridLayoutPersonInfoClsDto>> dataOfEmployee,
-			CheckDataFromUI excuteCommand,Map<PersonInfoCategory, List<PersonInfoItemDefinition>> mapCategoryWithListItemDf, EmployeeDataMngInfo employee, String bussinessName) {
-		
-		List<ErrorInfoCPS013> result = new ArrayList<>();
+	public void checkPersonInfo(PeregEmpInfoQuery empCheck, Map<String, List<GridLayoutPersonInfoClsDto>> dataOfEmployee,
+			CheckDataFromUI excuteCommand,Map<PersonInfoCategory, List<PersonInfoItemDefinition>> mapCategoryWithListItemDf, EmployeeDataMngInfo employee, String bussinessName, List<ErrorInfoCPS013> errors) {
 		
 		// アルゴリズム「履歴整合性チェック」を実行する (Thực thi thuật toán 「Check tính hợp lệ của lịch sử」)
-		checkCategoryHistory(empCheck, dataOfEmployee, excuteCommand, mapCategoryWithListItemDf, result, employee, bussinessName);
+		checkCategoryHistory(empCheck, dataOfEmployee, excuteCommand, mapCategoryWithListItemDf, errors, employee, bussinessName);
 		
 		// システム必須チェック (Kiểm tra required system)
-		checkSystemRequired(empCheck, dataOfEmployee, excuteCommand, mapCategoryWithListItemDf, result, employee, bussinessName);
+		checkSystemRequired(empCheck, dataOfEmployee, excuteCommand, mapCategoryWithListItemDf, errors, employee, bussinessName);
 		
 		// 参照項目チェック処理 (Check item tham chiếu)
-		checkReferenceItem(empCheck, dataOfEmployee, excuteCommand, mapCategoryWithListItemDf, result, employee, bussinessName);
+		checkReferenceItem(empCheck, dataOfEmployee, excuteCommand, mapCategoryWithListItemDf, errors, employee, bussinessName);
 		
 		//単一項目チェック(Check single item )
-		checkSingleItem(empCheck, dataOfEmployee, excuteCommand, mapCategoryWithListItemDf, result, employee, bussinessName);
+		checkSingleItem(empCheck, dataOfEmployee, excuteCommand, mapCategoryWithListItemDf, errors, employee, bussinessName);
 		
-		return result;
 	}
 
 	private void checkSingleItem(PeregEmpInfoQuery empCheck,
@@ -391,16 +393,42 @@ public class CheckPersonInfoProcess {
 			List<ErrorInfoCPS013> result, EmployeeDataMngInfo employee, String bussinessName) {
 		
 		// baseDate from UI
-		GeneralDate baseDate = GeneralDate.fromString(excuteCommand.getDateTime() , "yyyy/MM/dd"); 
+		GeneralDate baseDate = GeneralDate.fromString(excuteCommand.getDateTime() , "yyyy/MM/dd");
+		
+		/**
+		 * 各システム必須となったカテゴリだけチェック対象とする ＜下記の条件の該当するカテゴリが対象となる、それ以外は除外する＞
+		 * [個人情報整合性チェックカテゴリ]の [就業システム必須]:True または [人事システム必須]:True または
+		 * [給与システム必須]:True の場合 ----------------
+		 * Chi co categories system Required la doi tuong check < categorie tuong duong voi dieu kien
+		 * duoi day la doi tuong, cai khac thi loai bo>. 
+		 * [Personal Information Integrity Check Category]. 
+		 * [Employment system required]: True or
+		 * [Human Resources System Required]: True or 
+		 * [Salary System Required]: True
+		 */
 
 		List<PersonInfoCategory> listCategory = new ArrayList<>(mapCategoryWithListItemDf.keySet());
 		
-		List<PersonInfoCategory> listCategoryFilterBySystemReq = listCategory.stream().filter(ctg -> {
-			return ctg.isEmployment() || ctg.isPersonnel() || ctg.isSalary();
+		List<String> listCategoryCode = listCategory.stream().map(m -> m.getCategoryCode().v()).collect(Collectors.toList());
+		
+		List<PerInfoValidateCheckCategory> lstCtgSetting = this.perInfoCheckCtgRepo.getListPerInfoValidByListCtgId(listCategoryCode, AppContexts.user().contractCode());
+		
+		List<PerInfoValidateCheckCategory> listCategoryFilter = lstCtgSetting.stream().filter(ctg -> {
+			if ((ctg.getHumanSysReq().value == NotUseAtr.USE.value) || (ctg.getPaySysReq().value == NotUseAtr.USE.value)
+			|| (ctg.getJobSysReq().value == NotUseAtr.USE.value)) {
+				return true;
+			}
+			return false;
 		}).collect(Collectors.toList());
 		
-		for (int i = 0; i < listCategoryFilterBySystemReq.size(); i++) {
-				PersonInfoCategory category = listCategoryFilterBySystemReq.get(i);
+		List<String> listCategoryCodeFilter = listCategoryFilter.stream().map(m -> m.getCategoryCd().v()).collect(Collectors.toList());
+		
+		for (int i = 0; i < listCategory.size(); i++) {
+				PersonInfoCategory category = listCategory.get(i);
+				
+				if (!listCategoryCodeFilter.contains(category.getCategoryCode().v())) {
+					continue;
+				}
 				
 				List<GridLayoutPersonInfoClsDto> listDataEmpOfCtg = dataOfEmployee.get(category.getCategoryCode().v());
 				

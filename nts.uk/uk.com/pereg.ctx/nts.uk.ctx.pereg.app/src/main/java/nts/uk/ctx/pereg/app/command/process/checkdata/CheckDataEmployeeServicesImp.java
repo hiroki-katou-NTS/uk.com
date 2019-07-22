@@ -94,6 +94,9 @@ public class CheckDataEmployeeServicesImp implements CheckDataEmployeeServices {
 	@Inject 
 	private CheckPersonInfoProcess checkPersonInfoProcess;
 	
+	@Inject 
+	private CheckMasterProcess checkMasterProcess;
+	
 	/** The Constant TIME_DAY_START. */
 	public static final String TIME_DAY_START = " 00:00:00";
 
@@ -117,10 +120,6 @@ public class CheckDataEmployeeServicesImp implements CheckDataEmployeeServices {
 		
 		List<EmployeeDataMngInfo> listEmpData = this.empDataMngInfoRepo.findByListEmployeeId(sids);
 		
-		List<PeregEmpInfoQuery> empInfos =  listEmpData.stream().map(mapper -> {
-			return new PeregEmpInfoQuery(mapper.getPersonId(), mapper.getEmployeeId(), null);
-		}).collect(Collectors.toList());
-		
 		// アルゴリズム「個人情報カテゴリ取得」を実行する (Thực hiện thuật toán 「Lấy PersonInfoCategory」)
 		Map<PersonInfoCategory, List<PersonInfoItemDefinition>> mapCategoryWithListItemDf = this.getAllCategory(AppContexts.user().companyId());
 		
@@ -128,6 +127,8 @@ public class CheckDataEmployeeServicesImp implements CheckDataEmployeeServices {
 		
 		//アルゴリズム「整合性チェック処理」を実行する (Thực hiện thuật toán 「Xử lý check tính hợp lệ」)
 		for (int i = 0; i < listEmpData.size(); i++) {
+			
+			List<ErrorInfoCPS013> errors = new ArrayList<>();
 			
 			EmployeeDataMngInfo employee = listEmpData.get(i);
 			
@@ -138,9 +139,11 @@ public class CheckDataEmployeeServicesImp implements CheckDataEmployeeServices {
 			//チェック対象データ取得 (Lấy data đối tượng check)
 			Map<String, List<GridLayoutPersonInfoClsDto>> dataOfEmployee =  this.peregProcessor.getFullCategoryDetailByListEmp(Arrays.asList(empCheck), mapCategoryWithListItemDf);
 			
-			List<ErrorInfoCPS013> errors = checkDataOfEmp(empCheck, dataOfEmployee, excuteCommand, mapCategoryWithListItemDf, employee, bussinessName);
+			checkDataOfEmp(empCheck, dataOfEmployee, excuteCommand, mapCategoryWithListItemDf, employee, bussinessName, errors);
 			
-			listError.addAll(errors);
+			if (!errors.isEmpty()) {
+				listError.addAll(errors);
+			}
 		}
 		
 		
@@ -183,29 +186,60 @@ public class CheckDataEmployeeServicesImp implements CheckDataEmployeeServices {
 		
 	}
 
-	private List<ErrorInfoCPS013> checkDataOfEmp(PeregEmpInfoQuery empCheck, Map<String, List<GridLayoutPersonInfoClsDto>> dataOfEmployee, 
-			CheckDataFromUI excuteCommand,Map<PersonInfoCategory, List<PersonInfoItemDefinition>> mapCategoryWithListItemDf, EmployeeDataMngInfo employee, String bussinessName) {
-		
-		List<ErrorInfoCPS013> result = new ArrayList<>();
+	private void checkDataOfEmp(PeregEmpInfoQuery empCheck, Map<String, List<GridLayoutPersonInfoClsDto>> dataOfEmployee, 
+			CheckDataFromUI excuteCommand,Map<PersonInfoCategory, List<PersonInfoItemDefinition>> mapCategoryWithListItemDf, EmployeeDataMngInfo employee, String bussinessName, List<ErrorInfoCPS013> errors) {
 		
 		if (excuteCommand.isMasterCheck() && excuteCommand.isPerInfoCheck()) {
-			result = checkMasterAndPersonInfo(empCheck, dataOfEmployee, excuteCommand, mapCategoryWithListItemDf, employee, bussinessName);
+			checkMasterAndPersonInfo(empCheck, dataOfEmployee, excuteCommand, mapCategoryWithListItemDf, employee, bussinessName, errors);
 		} else if (excuteCommand.isPerInfoCheck()) {
-			result = this.checkPersonInfoProcess.checkPersonInfo2(empCheck, dataOfEmployee, excuteCommand, mapCategoryWithListItemDf, employee, bussinessName);
+			this.checkPersonInfoProcess.checkPersonInfo(empCheck, dataOfEmployee, excuteCommand, mapCategoryWithListItemDf, employee, bussinessName, errors);
 		} else if (excuteCommand.isMasterCheck()) {
-			result = checkMaster2(empCheck, dataOfEmployee, excuteCommand, mapCategoryWithListItemDf, employee, bussinessName);
+			this.checkMasterProcess.checkMaster(empCheck, dataOfEmployee, excuteCommand, mapCategoryWithListItemDf, employee, bussinessName, errors);
 		}
-		return result;
 	}
 
-	private List<ErrorInfoCPS013> checkMaster2(PeregEmpInfoQuery empCheck, Map<String, List<GridLayoutPersonInfoClsDto>> dataOfEmployee, 
-			CheckDataFromUI excuteCommand, Map<PersonInfoCategory, List<PersonInfoItemDefinition>> mapCategoryWithListItemDf, EmployeeDataMngInfo employee, String bussinessName) {
-				return null;
-	}
+	private void checkMasterAndPersonInfo(PeregEmpInfoQuery empCheck, Map<String, List<GridLayoutPersonInfoClsDto>> dataOfEmployee,
+			CheckDataFromUI excuteCommand, Map<PersonInfoCategory, List<PersonInfoItemDefinition>> mapCategoryWithListItemDf, EmployeeDataMngInfo employee, String bussinessName,  List<ErrorInfoCPS013> errors) {
+		
+		// 個人基本情報チェック (Check thông tin cá nhân cơ bản)
+		this.checkPersonInfoProcess.checkPersonInfo(empCheck, dataOfEmployee, excuteCommand, mapCategoryWithListItemDf, employee, bussinessName, errors);
 
-	private List<ErrorInfoCPS013> checkMasterAndPersonInfo(PeregEmpInfoQuery empCheck, Map<String, List<GridLayoutPersonInfoClsDto>> dataOfEmployee,
-			CheckDataFromUI excuteCommand, Map<PersonInfoCategory, List<PersonInfoItemDefinition>> mapCategoryWithListItemDf, EmployeeDataMngInfo employee, String bussinessName) {
-				return null;
+		// 対象カテゴリの絞り込み(Filter Category đối tượng check)
+		/**
+		 * Loai bo category doi tuong duoi day ra khoi list category doi tuongTruong hop [Personal information integrity check category].
+		 * [Employment system required]:True or 
+		 * [Human Resources System Required]:True or 
+		 * [Salary System Required]:True
+		 * 
+		 * ※Vi viec kiem tra System required category da duoc check trong「Personal Basic Information Check」, nen khong can hien thi error message 2 lan nua
+		 */
+		
+		List<PersonInfoCategory> listCategory = new ArrayList<>(mapCategoryWithListItemDf.keySet()); 
+		
+		List<String> listCategoryCode = listCategory.stream().map(m -> m.getCategoryCode().v()).collect(Collectors.toList());
+		
+		List<PerInfoValidateCheckCategory> lstCtgSetting = this.perInfoCheckCtgRepo.getListPerInfoValidByListCtgId(listCategoryCode, AppContexts.user().contractCode());
+		
+		List<PerInfoValidateCheckCategory> listCategorySystemFilter = lstCtgSetting.stream().filter(ctg -> {
+			if ((ctg.getHumanSysReq().value == NotUseAtr.USE.value) || (ctg.getPaySysReq().value == NotUseAtr.USE.value)
+			|| (ctg.getJobSysReq().value == NotUseAtr.USE.value)) {
+				return true;
+			}
+			return false;
+		}).collect(Collectors.toList());
+		
+		List<PerInfoValidateCheckCategory> listCategoryNotSystemFilter = lstCtgSetting.stream()
+                .filter(i -> !listCategorySystemFilter.contains(i))
+                .collect (Collectors.toList());
+		
+		List<String> listCtgNotSystemFilterCode = listCategoryNotSystemFilter.stream().map(m -> m.getCategoryCd().v()).collect(Collectors.toList());
+		
+		Map<PersonInfoCategory, List<PersonInfoItemDefinition>> mapCategoryWithListItemDfNew = mapCategoryWithListItemDf.entrySet().stream()
+				.filter(x -> listCtgNotSystemFilterCode.contains(x.getKey().getCategoryCode().v()))
+				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+		
+		// マスタチェック (check master)
+		this.checkMasterProcess.checkMaster(empCheck, dataOfEmployee, excuteCommand, mapCategoryWithListItemDfNew, employee, bussinessName, errors);
 		
 	}
 
@@ -1035,7 +1069,7 @@ public class CheckDataEmployeeServicesImp implements CheckDataEmployeeServices {
 		 */
 		private List<ErrorInfoCPS013> checkMaster(List<PersonInfoCategory> listCategory, List<PerInfoValidateCheckCategory> lstCtgSetting, CheckDataFromUI query, EmployeeResultDto emp,
 				Map<String, String> mapSidPid, List<ErrorInfoCPS013> listError) {
-
+			
 			LoginUserRoles permission = AppContexts.user().roles();
 			String forAttendance = permission.forAttendance();
 			String forPayroll = permission.forPayroll();
