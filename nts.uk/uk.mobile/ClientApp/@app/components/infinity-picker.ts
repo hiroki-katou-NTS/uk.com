@@ -7,7 +7,7 @@ interface IRange {
 }
 
 export const InfinityPicker = {
-    template: `<div class="ipkr-col" v-on:touchmove="preventScroll">
+    template: `<div class="ipkr-col">
         <div class="ipkr-viewport"
                 v-on:touchstart="gearTouchStart"
                 v-on:touchmove="gearTouchMove"
@@ -243,10 +243,6 @@ export const InfinityPicker = {
                 opt = self.dataSources[index];
 
             self.$emit('input', ov ? opt[ov] : opt);
-        },
-        preventScroll(evt: TouchEvent) {
-            evt.preventDefault();
-            evt.stopPropagation();
         }
     },
     created() {

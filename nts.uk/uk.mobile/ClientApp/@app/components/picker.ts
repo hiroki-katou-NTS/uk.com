@@ -8,8 +8,8 @@ export const MobilePicker = {
         'ipkr': InfinityPicker
     },
     template: `<transition name="picker-fade" v-on:after-leave="destroyPicker">
-        <div class="modal show" v-show="show" v-on:touchmove="preventScroll">
-            <div class="modal-dialog modal-md modal-popup modal-dialog-centered" v-on:touchmove="preventScroll">
+        <div class="modal show" v-show="show">
+            <div class="modal-dialog modal-md modal-popup modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-body infinity-picker android" v-bind:class="className">
                         <div class="ipkr-caption" v-if="title">
@@ -154,11 +154,6 @@ export const MobilePicker = {
             this.$nextTick(() => {
                 this.selects = {};
             });
-        },
-        preventScroll(evt: TouchEvent) {
-            evt.preventDefault();
-            evt.stopPropagation();
-            evt.stopImmediatePropagation();
         },
         destroyPicker() { }
     }

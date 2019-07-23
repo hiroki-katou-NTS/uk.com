@@ -98,7 +98,6 @@ const _SideMenu = Vue.observable({
             </template>
             <template v-else v-bind:key="'hide_if_doc'"></template>
         </ul>
-        <div class="prevent-scroll" v-on:touchstart.prevent></div>
     </nav>
     <nav v-else></nav>`,
     computed: {
@@ -203,19 +202,6 @@ export class SideMenuBar extends Vue {
             this.active = {};
         } else {
             this.active = item;
-        }
-    }
-
-    public preventScroll(evt: TouchEvent) {
-        let self = this,
-            menu = self.$el.querySelector('.list-unstyled.list-group.components');
-
-        if (menu) {
-            if (menu.scrollHeight <= menu.clientHeight) {
-                //evt.preventDefault();
-            }
-        } else {
-            evt.preventDefault();
         }
     }
 
