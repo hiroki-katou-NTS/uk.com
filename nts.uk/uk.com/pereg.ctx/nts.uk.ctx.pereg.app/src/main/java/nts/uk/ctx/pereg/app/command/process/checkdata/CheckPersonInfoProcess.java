@@ -31,7 +31,6 @@ import nts.uk.ctx.pereg.dom.person.setting.validatecheck.PerInfoValidateCheckCat
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.i18n.TextResource;
-import nts.uk.shr.com.system.config.ProductType;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.pereg.app.find.PeregEmpInfoQuery;
 
@@ -895,8 +894,8 @@ public class CheckPersonInfoProcess {
 	 */
 	private void checkHistoricalDataSpecial(PersonInfoCategory ctg, List<GridLayoutPersonInfoClsDto> listDataEmpOfCtg,
 			List<DatePeriod> listDataPeriodOfCtgHis, EmployeeDataMngInfo employee, String bussinessName, TaskDataSetter dataSetter ) {
-		if (AppContexts.system().isInstalled(ProductType.ATTENDANCE) == true && ctg.getCategoryCode().toString().equals("CS00014")) {
-			List<String> listResult =  new ArrayList<>();
+		
+		if (AppContexts.user().roles().forAttendance() != null  && ctg.getCategoryCode().toString().equals("CS00014")) {
 			listDataEmpOfCtg.forEach(data -> {
 				List<LayoutPersonInfoValueDto> items = new ArrayList<>();
 				List<LayoutPersonInfoClsDto> layoutDtos = data.getLayoutDtos();
@@ -908,17 +907,12 @@ public class CheckPersonInfoProcess {
 				
 				Optional<ClosureEmployment> closureEmp = closureEmploymentRepository.findByEmploymentCD(AppContexts.user().companyId(), employmentCode);
 				if(!closureEmp.isPresent()){
-					listResult.add(employmentCode);
+					ErrorInfoCPS013 error_5 = new ErrorInfoCPS013(employee.getEmployeeId(), ctg.getPersonInfoCategoryId(),
+							employee.getEmployeeCode().v(), bussinessName, chekPersonInfoType, ctg.getCategoryName().v(),
+							TextResource.localize("Msg_934", employmentCode ));
+					setErrorDataGetter(error_5, dataSetter);
 				}
 			});
-			if (!listResult.isEmpty() ) {
-				String errorInfo = listResult.stream().map(String::toString).collect(Collectors.joining(","));
-				ErrorInfoCPS013 error_5 = new ErrorInfoCPS013(employee.getEmployeeId(), ctg.getPersonInfoCategoryId(),
-						employee.getEmployeeCode().v(), bussinessName, chekPersonInfoType, ctg.getCategoryName().v(),
-						TextResource.localize("Msg_934", errorInfo ));
-				setErrorDataGetter(error_5, dataSetter);
-
-			}
 		}
 	}
 
@@ -929,10 +923,12 @@ public class CheckPersonInfoProcess {
 				GeneralDate endDate =  listDataPeriodOfCtgHis.get(listDataPeriodOfCtgHis.size() - 1).end();
 				if (endDate.equals(GeneralDate.max())) {
 					return true;
+				}else{
+					return false;
 				}
 			}
 		}
-		return false;
+		return true;
 	}
 
 	/**
@@ -959,15 +955,16 @@ public class CheckPersonInfoProcess {
 						}
 					}
 				}
+				return result;
 			}
 		}
-		return listDataPeriodOfCtgHis;
+		
+		return new ArrayList<>();
 	}
 
 	private boolean isHistoryContinue(DatePeriod datePeriod1, DatePeriod datePeriod2) {
 		
-		GeneralDate endDate1 = datePeriod1.end();
-		if (endDate1.addDays(1).equals(datePeriod2.start())) {
+		if (datePeriod1.end().addDays(1).equals(datePeriod2.start())) {
 			return true;
 		}
 		return false;
