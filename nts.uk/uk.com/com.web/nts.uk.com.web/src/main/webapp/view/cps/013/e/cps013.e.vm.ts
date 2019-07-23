@@ -67,13 +67,12 @@ module nts.uk.at.view.cps013.e {
                     service.executeCheck(dataShare).done(res => {
                         self.taskId(res.id);
                         self.startTime(moment.utc(dataShare.startDateTime).format("YYYY/MM/DD HH:mm:ss"));
-                        self.peopleCount(nts.uk.resource.getText("KFP001_23", [dataShare.peopleCount]));
                         nts.uk.deferred.repeat(conf => conf
                             .task(() => {
                                 return nts.uk.request.asyncTask.getInfo(self.taskId()).done(info => {
-                                                                        self.aggCreateCount(self.getAsyncData(info.taskDatas, "aggCreateCount").valueAsNumber);
-                                    self.aggCreateTotal(self.getAsyncData(info.taskDatas, "aggCreateTotal").valueAsNumber);
-                                    self.aggCreateStatus(self.getAsyncData(info.taskDatas, "aggCreateStatus").valueAsString);
+                                    self.aggCreateCount(self.getAsyncData(info.taskDatas, "numberEmpChecked").valueAsNumber);
+                                    self.aggCreateTotal(self.getAsyncData(info.taskDatas, "countEmp").valueAsNumber);
+                                    self.aggCreateStatus(self.getAsyncData(info.taskDatas, "statusCheck").valueAsString);
 
                                     if (!info.pending && !info.running) {
                                         self.isComplete(true);
@@ -84,13 +83,6 @@ module nts.uk.at.view.cps013.e {
                                         // Get EndTime from server, fallback to client
                                         self.endTime(self.getAsyncData(info.taskDatas, "endTime").valueAsString);
 
-                                        // DailyCreate
-                                        self.aggCreateStatus(self.getAsyncData(info.taskDatas, "aggCreateStatus").valueAsString);
-                                        self.aggCreateHasError(self.getAsyncData(info.taskDatas, "aggCreateHasError").valueAsString);
-                                       
-                                        // check bien nay ====
-                                        //self.errorMessageInfo(self.getAsyncData(info.taskDatas, "listError").listError);
-                                        // Get Log data
                                         self.bindingDataToGrid(info.taskDatas);
                                         //self.enableCancelTask(false);
                                         
@@ -103,6 +95,29 @@ module nts.uk.at.view.cps013.e {
                     });
                 }
             }
+            
+            cancelTask(): void {
+                var self = this;
+                self.enableCancelTask(false);
+                nts.uk.request.asyncTask.requestToCancel(self.taskId());
+                // End count time
+                self.elapseTime.end();
+                //nts.uk.ui.windows.close();
+            }
+
+            closeDialog(): void {
+                nts.uk.ui.windows.close();
+            }
+
+            stop() {
+                let self = this;
+                service.stopExecute(self.dataFromD());
+                self.enableCancelTask(false);
+                nts.uk.request.asyncTask.requestToCancel(self.taskId());
+                // End count time
+                self.elapseTime.end();
+            }
+            
                 
            private bindingDataToGrid(data: Array<any>): void {
                 var self = this;
@@ -192,31 +207,9 @@ module nts.uk.at.view.cps013.e {
                 });
                 return result || { valueAsString: "", valueAsNumer: 0, valueAsBoolean: false};
             }
-
-            cancelTask(): void {
-                var self = this;
-                service.stopExecute(self.dataFromD());
-                self.enableCancelTask(false);
-                nts.uk.request.asyncTask.requestToCancel(self.taskId());
-                // End count time
-                self.elapseTime.end();
-                //nts.uk.ui.windows.close();
-            }
-
-            closeDialog(): void {
-                nts.uk.ui.windows.close();
-            }
-
-            stop() {
-                let self = this;
-                service.stopExecute(self.dataFromD());
-                self.enableCancelTask(false);
-                nts.uk.request.asyncTask.requestToCancel(self.taskId());
-                // End count time
-                self.elapseTime.end();
-            }
         }
     }
+    
     export interface PersonInfoErrMessageLogDto {
         employeeId: string;
         categoryId: string;

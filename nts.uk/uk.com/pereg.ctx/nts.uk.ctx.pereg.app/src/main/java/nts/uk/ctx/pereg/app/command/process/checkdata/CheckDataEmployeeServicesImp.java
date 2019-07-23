@@ -15,6 +15,7 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
+import nts.arc.task.data.TaskDataSetter;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
@@ -61,6 +62,8 @@ public class CheckDataEmployeeServicesImp implements CheckDataEmployeeServices {
 
 	/** The Constant DATE_TIME_FORMAT. */
 	public static final String DATE_TIME_FORMAT = "yyyy/MM/dd HH:mm:ss";
+	/** The Constant DEFAULT_VALUE. */
+	private static final int DEFAULT_VALUE = 0;
 
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
@@ -84,6 +87,7 @@ public class CheckDataEmployeeServicesImp implements CheckDataEmployeeServices {
 		
 		List<ErrorInfoCPS013> listError = new ArrayList<>();
 		
+		int countError = DEFAULT_VALUE;
 		// システム日時を取得する (lấy system date)
 		dataSetter.setData("startTime", GeneralDateTime.now().toString());
 		dataSetter.setData("numberEmpChecked", 0);
@@ -93,7 +97,6 @@ public class CheckDataEmployeeServicesImp implements CheckDataEmployeeServices {
 		//アルゴリズム「整合性チェック処理」を実行する (Thực hiện thuật toán 「Xử lý check tính hợp lệ」)
 		for (int i = 0; i < listEmpData.size(); i++) {
 			
-			List<ErrorInfoCPS013> errors = new ArrayList<>();
 			
 			EmployeeDataMngInfo employee = listEmpData.get(i);
 			
@@ -104,40 +107,38 @@ public class CheckDataEmployeeServicesImp implements CheckDataEmployeeServices {
 			//チェック対象データ取得 (Lấy data đối tượng check)
 			Map<String, List<GridLayoutPersonInfoClsDto>> dataOfEmployee =  this.peregProcessor.getFullCategoryDetailByListEmp(Arrays.asList(empCheck), mapCategoryWithListItemDf);
 			
-			checkDataOfEmp(empCheck, dataOfEmployee, excuteCommand, mapCategoryWithListItemDf, employee, bussinessName, errors);
+			checkDataOfEmp(empCheck, dataOfEmployee, excuteCommand, mapCategoryWithListItemDf, employee, bussinessName, dataSetter);
 			
-			if (!errors.isEmpty()) {
-				listError.addAll(errors);
-			}
+			countError += 1;
 			
-			dataSetter.setData("numberEmpChecked", i+1);
+			dataSetter.updateData("numberEmpChecked", countError);
 		}
-
-		if (listError.isEmpty()) {
-			dataSetter.setData("statusCheck", ExecutionStatusCps013.DONE.name);
-		} else {
-			dataSetter.setData("statusCheck", ExecutionStatusCps013.DONE_WITH_ERROR.name);
-		}
+		
+//		if (listError.isEmpty()) {
+//			dataSetter.setData("statusCheck", ExecutionStatusCps013.DONE.name);
+//		} else {
+//			dataSetter.setData("statusCheck", ExecutionStatusCps013.DONE_WITH_ERROR.name);
+//		}
 		
 	}
 
 	private void checkDataOfEmp(PeregEmpInfoQuery empCheck, Map<String, List<GridLayoutPersonInfoClsDto>> dataOfEmployee, 
-			CheckDataFromUI excuteCommand,Map<PersonInfoCategory, List<PersonInfoItemDefinition>> mapCategoryWithListItemDf, EmployeeDataMngInfo employee, String bussinessName, List<ErrorInfoCPS013> errors) {
+			CheckDataFromUI excuteCommand,Map<PersonInfoCategory, List<PersonInfoItemDefinition>> mapCategoryWithListItemDf, EmployeeDataMngInfo employee, String bussinessName, TaskDataSetter dataSetter) {
 		
 		if (excuteCommand.isMasterCheck() && excuteCommand.isPerInfoCheck()) {
-			checkMasterAndPersonInfo(empCheck, dataOfEmployee, excuteCommand, mapCategoryWithListItemDf, employee, bussinessName, errors);
+			checkMasterAndPersonInfo(empCheck, dataOfEmployee, excuteCommand, mapCategoryWithListItemDf, employee, bussinessName, dataSetter);
 		} else if (excuteCommand.isPerInfoCheck()) {
-			this.checkPersonInfoProcess.checkPersonInfo(empCheck, dataOfEmployee, excuteCommand, mapCategoryWithListItemDf, employee, bussinessName, errors);
+			this.checkPersonInfoProcess.checkPersonInfo(empCheck, dataOfEmployee, excuteCommand, mapCategoryWithListItemDf, employee, bussinessName, dataSetter);
 		} else if (excuteCommand.isMasterCheck()) {
-			this.checkMasterProcess.checkMaster(empCheck, dataOfEmployee, excuteCommand, mapCategoryWithListItemDf, employee, bussinessName, errors);
+			this.checkMasterProcess.checkMaster(empCheck, dataOfEmployee, excuteCommand, mapCategoryWithListItemDf, employee, bussinessName, dataSetter);
 		}
 	}
 
 	private void checkMasterAndPersonInfo(PeregEmpInfoQuery empCheck, Map<String, List<GridLayoutPersonInfoClsDto>> dataOfEmployee,
-			CheckDataFromUI excuteCommand, Map<PersonInfoCategory, List<PersonInfoItemDefinition>> mapCategoryWithListItemDf, EmployeeDataMngInfo employee, String bussinessName,  List<ErrorInfoCPS013> errors) {
+			CheckDataFromUI excuteCommand, Map<PersonInfoCategory, List<PersonInfoItemDefinition>> mapCategoryWithListItemDf, EmployeeDataMngInfo employee, String bussinessName,  TaskDataSetter dataSetter) {
 		
 		// 個人基本情報チェック (Check thông tin cá nhân cơ bản)
-		this.checkPersonInfoProcess.checkPersonInfo(empCheck, dataOfEmployee, excuteCommand, mapCategoryWithListItemDf, employee, bussinessName, errors);
+		this.checkPersonInfoProcess.checkPersonInfo(empCheck, dataOfEmployee, excuteCommand, mapCategoryWithListItemDf, employee, bussinessName, dataSetter);
 
 		// 対象カテゴリの絞り込み(Filter Category đối tượng check)
 		/**
@@ -174,7 +175,7 @@ public class CheckDataEmployeeServicesImp implements CheckDataEmployeeServices {
 				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 		
 		// マスタチェック (check master)
-		this.checkMasterProcess.checkMaster(empCheck, dataOfEmployee, excuteCommand, mapCategoryWithListItemDfNew, employee, bussinessName, errors);
+		this.checkMasterProcess.checkMaster(empCheck, dataOfEmployee, excuteCommand, mapCategoryWithListItemDfNew, employee, bussinessName, dataSetter);
 		
 	}
 

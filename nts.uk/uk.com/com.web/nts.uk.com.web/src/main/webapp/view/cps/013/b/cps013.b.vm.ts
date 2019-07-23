@@ -81,37 +81,6 @@ module nts.uk.com.view.cps013.b.viewmodel {
             }
         }
 
-        /**
-         * updateState
-         */
-//        private updateState() {
-//            let self = this;
-//            // start count time
-//            $('.countdown').startCount();
-//            
-//            nts.uk.deferred.repeat(conf => conf
-//            .task(() => {
-//                return nts.uk.request.asyncTask.getInfo(self.taskId()).done(function(res: any) {
-//                    // update state on screen
-//                    if (res.running || res.succeeded || res.cancelled) {
-//                        self.updateInfoStatus();
-//                    }
-//                    // finish task
-//                    if (res.succeeded || res.failed || res.cancelled) {
-//                        $('.countdown').stopCount();
-//                        self.updateInfoStatus();
-//                        self.isFinish(true);
-//                        self.reloadPage();
-//                    }
-//                });
-//            }).while(infor => {
-//                return infor.pending || infor.running;
-//            }).pause(1000));
-//        }
-        
-        /**
-         * Event on click cancel button.
-         */
         public cancel(): void {
             nts.uk.ui.windows.close();
         }
