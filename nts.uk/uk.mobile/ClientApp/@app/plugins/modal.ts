@@ -16,8 +16,7 @@ const modal = {
             let self = typeof name === 'string' ? this : {},
                 $options = typeof name === 'string' ? self.$options : {},
                 components = typeof name === 'string' ? $options.components : {},
-                focused = document.querySelector(':focus') as HTMLElement,
-                fixedBtn = document.querySelector('body>.fixed-action-btn') as HTMLElement;
+                focused = document.querySelector(':focus') as HTMLElement;
 
             params = obj.toJS(params || {});
 
@@ -188,11 +187,6 @@ const modal = {
                                             }
                                         }
                                     });
-
-                                    // remove fixed btn
-                                    if (fixedBtn) {
-                                        fixedBtn.remove();
-                                    }
                                 },
                                 mounted() {
                                     let self = this,
@@ -234,11 +228,6 @@ const modal = {
                                     // focus to preview item (caller of modal)
                                     if (focused) {
                                         focused.focus();
-                                    }
-
-                                    // restore fixed btn
-                                    if (fixedBtn) {
-                                        document.body.append(fixedBtn);
                                     }
 
                                     // hide own mask layer
