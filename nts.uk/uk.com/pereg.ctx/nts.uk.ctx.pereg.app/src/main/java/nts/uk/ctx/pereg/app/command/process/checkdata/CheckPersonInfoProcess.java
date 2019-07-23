@@ -50,7 +50,9 @@ public class CheckPersonInfoProcess {
 	
 	final List<String> listItem_Master_History = Arrays.asList("IS00084","IS00085","IS00079");
 	
-	final List<String> standardDateItemCodes = Arrays.asList("IS00020", "IS00077", "IS00082", "IS00119", "IS00781");
+	private static final List<String> standardDateItemCodes = Arrays.asList("IS00020", "IS00077", "IS00082", "IS00119", "IS00781");
+	
+
 	
 	@Inject
 	private ClosureEmploymentRepository closureEmploymentRepository;
@@ -400,7 +402,7 @@ public class CheckPersonInfoProcess {
 
 		if (itemCodesByCtg.isEmpty())
 			return;
-
+		Map<String, String>  masterName = getNameMasterError();
 		itemCodesByCtg.entrySet().forEach(c -> {
 			List<GridLayoutPersonInfoClsDto> empData = dataOfEmployee.get(c.getKey());
 			if (CollectionUtil.isEmpty(empData))
@@ -412,7 +414,7 @@ public class CheckPersonInfoProcess {
 					c.getValue().forEach(item -> {
 						Optional<LayoutPersonInfoValueDto> itemOpt = items.stream()
 								.filter(i -> i.getItemCode().equals(item.getItemCode().v())).findFirst();
-						setError(item, c.getKey(), itemStartCode, items, result, employee, bussinessName, itemOpt);
+						setError(item, c.getKey(), itemStartCode, items, result, employee, bussinessName, itemOpt, masterName);
 					});
 				});
 
@@ -431,26 +433,30 @@ public class CheckPersonInfoProcess {
 	 * @param bussinessName
 	 * @param itemDtoOpt
 	 */
-	public void setError(PersonInfoItemDefinition item, String categoryCode, Map<String, String> itemStartCode, List<LayoutPersonInfoValueDto> items, List<ErrorInfoCPS013> result, EmployeeDataMngInfo employee, String bussinessName, Optional<LayoutPersonInfoValueDto> itemDtoOpt) {
+	public void setError(PersonInfoItemDefinition item, String categoryCode, Map<String, String> itemStartCode, List<LayoutPersonInfoValueDto> items, List<ErrorInfoCPS013> result, EmployeeDataMngInfo employee, String bussinessName, Optional<LayoutPersonInfoValueDto> itemDtoOpt, Map<String, String>  masterName) {
 		if (itemDtoOpt.isPresent()) {
+			
 			if (item.isEnum()) {
 				checkErrorEnum(result, employee, bussinessName, itemDtoOpt.get());
-			} else if (item.isDesignateMaster()) {
+			}
+			
+			if (item.isCodeName()) {
+				checkCodeName(result, employee, bussinessName, itemDtoOpt.get());
+			}
+			
+			if (item.isDesignateMaster()) {
 				String itemCodeStart = itemStartCode.get(categoryCode);
-				if (itemCodeStart != null) {
+				if (itemCodeStart == null) {
+					checkDesignateMaster(result, employee, bussinessName, itemDtoOpt.get(), null, masterName);
+
+				} else {
 					Optional<LayoutPersonInfoValueDto> itemStart = items.stream()
 							.filter(i -> i.getItemCode().equals(itemCodeStart)).findFirst();
 					if (itemStart.isPresent()) {
 						checkDesignateMaster(result, employee, bussinessName, itemDtoOpt.get(),
-								itemStart.get().getValue());
+								itemStart.get().getValue(), masterName);
 					}
-
-				} else {
-					checkDesignateMaster(result, employee, bussinessName, itemDtoOpt.get(), null);
-
 				}
-			} else if (item.isCodeName()) {
-				checkCodeName(result, employee, bussinessName, itemDtoOpt.get());
 			}
 		}
 	}
@@ -466,6 +472,7 @@ public class CheckPersonInfoProcess {
 		 String value = (String) item.getValue();
 		 List<String> comboxValue = item.getLstComboBoxValue().stream().map(c -> c.getOptionValue()).sorted().collect(Collectors.toList());
 		if (comboxValue.size() >0 && !comboxValue.contains(value)) {
+			//Enum値の最小値
 			String max = comboxValue.size() == 0? " ": comboxValue.get(comboxValue.size() - 1);
 			//{0} : 項目名, {1} : データの値, {2} : Enum値の最小値 (giá trị max của list combox)
 			ErrorInfoCPS013 error = new ErrorInfoCPS013(employee.getEmployeeId(), item.getCategoryId(),
@@ -494,33 +501,185 @@ public class CheckPersonInfoProcess {
 		}
 	}
 	
+	private Map<String, String> getNameMasterError(){
+		Map<String, String> masterName = new HashMap<>();
+			// M00001 - CS00015- 部門情報
+			
+			masterName.put("IS00073", "部門マスタ");
+			
+			// M00002 - CS00017- 職場情報
+			
+			masterName.put("IS00084", "職場マスタ");
+			
+			masterName.put("IS00085", "職場マスタ");
+			
+			// M00003 - CS00014- 雇用
+			
+			masterName.put("IS00068", "雇用マスタ");
+			
+			// M00004 - CS00004 - 分類
+			
+			masterName.put("IS00028", "分類マスタ１");
+			
+			// M00005 - CS00016- 職位情報
+			
+			masterName.put("IS00079", "職位マスタ");
+			
+			// M00006 - 休職休業枠
+			
+			masterName.put("IS00089", "休職休業マスタ");
+			
+			// M00007 - 勤務種別
+			
+			masterName.put("IS00257", "勤務種別マスタ");
+			
+			// M00008 - 勤務種別 chưa có
+			
+			// M00009 - 就業時間帯
+			
+			masterName.put("IS00131", "就業時間帯マスタ");
+			
+			masterName.put("IS00140", "就業時間帯マスタ");
+			
+			masterName.put("IS00158", "就業時間帯マスタ");
+			
+			masterName.put("IS00167", "就業時間帯マスタ");
+			
+			masterName.put("IS00176", "就業時間帯マスタ");
+			
+			masterName.put("IS00149", "就業時間帯マスタ");
+			
+			masterName.put("IS00194", "就業時間帯マスタ");
+			
+			masterName.put("IS00203", "就業時間帯マスタ");
+			
+			masterName.put("IS00212", "就業時間帯マスタ");
+			
+			masterName.put("IS00221", "就業時間帯マスタ");
+			
+			masterName.put("IS00230", "就業時間帯マスタ");
+			
+			masterName.put("IS00239", "就業時間帯マスタ");
+			
+			masterName.put("IS00185", "就業時間帯マスタ");
+			
+			//  M00010 - 勤務種類
+			
+			masterName.put("IS00193", "勤務種類マスタ2");
+			
+			masterName.put("IS00202", "勤務種類マスタ2");
+			
+			masterName.put("IS00211", "勤務種類マスタ2");	
+			
+			masterName.put("IS00220", "勤務種類マスタ2");
+			
+			masterName.put("IS00229", "勤務種類マスタ2");
+			
+			masterName.put("IS00238", "勤務種類マスタ2");
+			
+			masterName.put("IS00184", "勤務種類マスタ2");
+			
+			// M00011 - 勤務種類
+			
+			masterName.put("IS00128", "勤務種類マスタ3");
+			
+			// M00012 - 勤務種類
+			masterName.put("IS00139", "勤務種類マスタ4");
+			
+			masterName.put("IS00157", "勤務種類マスタ4");
+			
+			masterName.put("IS00166", "勤務種類マスタ4");
+			
+			masterName.put("IS00175", "勤務種類マスタ4");
+			
+			masterName.put("IS00148", "勤務種類マスタ4");
+			
+			//M00013 - CS00020- 勤務種類
+			//masterName.put("CS00070", "勤務種類マスタ5");
+			
+			//M00014 - CS00020- 月間パターン
+			
+			masterName.put("IS00127", "月間パターンマスタ4");
+			
+			//M00015 - CS00020 - 加給設定
+			
+			masterName.put("IS00246", "加給時間帯マスタ");
+			
+			//M00016 - CS00024 - 年休付与テーブルマスタ
+			
+			masterName.put("IS00280", "年休付与テーブルマスタ");
+			
+			//M00017 - CS00025 - 特別休暇勤続年数テーブル
+			
+			masterName.put("IS00299", "勤続年数テーブル");
+			
+			masterName.put("IS00306", "勤続年数テーブル");
+			
+			masterName.put("IS00313", "勤続年数テーブル");
+			
+			masterName.put("IS00320", "勤続年数テーブル");
+			
+			masterName.put("IS00327", "勤続年数テーブル");
+			
+			masterName.put("IS00334", "勤続年数テーブル");
+			
+			masterName.put("IS00341", "勤続年数テーブル");
+			
+			masterName.put("IS00348", "勤続年数テーブル");
+			
+			masterName.put("IS00355", "勤続年数テーブル");
+			
+			masterName.put("IS00362", "勤続年数テーブル");
+			
+			masterName.put("IS00563", "勤続年数テーブル");
+			
+			masterName.put("IS00570", "勤続年数テーブル");
+			
+			masterName.put("IS00577", "勤続年数テーブル");
+			
+			masterName.put("IS00584", "勤続年数テーブル");
+			
+			masterName.put("IS00591", "勤続年数テーブル");
+			
+			masterName.put("IS00598", "勤続年数テーブル");
+			
+			masterName.put("IS00605", "勤続年数テーブル");
+			
+			masterName.put("IS00612", "勤続年数テーブル");
+			
+			masterName.put("IS00619", "勤続年数テーブル");
+			
+			masterName.put("IS00626", "勤続年数テーブル");
+			
+			//M00025 
+			//masterName.put("CS00070", "就業時間帯マスタ");
+			return masterName;
+	}
+	
 	/**
-	 * check master item
-	 * マスタ未登録チェックする
+	 * マスタ未登録チェックする (check master item)
 	 * @param result
 	 * @param employee
 	 * @param bussinessName
 	 * @param item
 	 * @param startValue
 	 */
-	public void checkDesignateMaster(List<ErrorInfoCPS013> result, EmployeeDataMngInfo employee, String bussinessName, LayoutPersonInfoValueDto item, Object startValue) {
+	public void checkDesignateMaster(List<ErrorInfoCPS013> result, EmployeeDataMngInfo employee, String bussinessName, LayoutPersonInfoValueDto item, Object startValue, Map<String, String>  masterNames) {
 		 String value = (String) item.getValue();
 		 List<String> comboxValue = item.getLstComboBoxValue().stream().map(c -> c.getOptionValue()).sorted().collect(Collectors.toList());
-		if (comboxValue.size() >0 && !comboxValue.contains(value)) {
-			//TODO
-			//String masterName  = 
+		 String masterName  = masterNames.get(item.getItemCode());
+		 if (comboxValue.size() >0 && !comboxValue.contains(value)) {
 			//履歴ありマスタの場合 (TH master có history)
 			if(listItem_Master_History.contains(item.getItemCode())) {
 				ErrorInfoCPS013 error = new ErrorInfoCPS013(employee.getEmployeeId(), item.getCategoryId(),
 						employee.getEmployeeCode().v(), bussinessName, chekPersonInfoType, item.getCategoryName(),
-						TextResource.localize("Msg_938", item.getItemName(), value,"", startValue.toString() ));
+						TextResource.localize("Msg_938", item.getItemName(), value, masterName, startValue.toString() ));
 				result.add(error);
 			}else {
-				//TODO
 				//履歴なしマスタの場合 ( TH master không có history)
 				ErrorInfoCPS013 error = new ErrorInfoCPS013(employee.getEmployeeId(), item.getCategoryId(),
 						employee.getEmployeeCode().v(), bussinessName, chekPersonInfoType, item.getCategoryName(),
-						TextResource.localize("Msg_937", item.getItemName(), value,""));
+						TextResource.localize("Msg_937", item.getItemName(), value, masterName));
 				result.add(error);
 			}
 		}
