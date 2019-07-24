@@ -25,6 +25,7 @@ import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsDto
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoValueDto;
 import nts.uk.ctx.pereg.dom.person.info.category.CategoryType;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
+import nts.uk.ctx.pereg.dom.person.info.item.IsRequired;
 import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
 import nts.uk.ctx.pereg.dom.person.setting.validatecheck.PerInfoValidChkCtgRepository;
 import nts.uk.ctx.pereg.dom.person.setting.validatecheck.PerInfoValidateCheckCategory;
@@ -386,7 +387,8 @@ public class CheckPersonInfoProcess {
 		Map<String, List<PersonInfoItemDefinition>> itemCodesByCtg = new HashMap<>();
 		Map<String, String> itemStartCode = new HashMap<>();
 		mapCategoryWithListItemDf.entrySet().forEach(c -> {
-			List<PersonInfoItemDefinition> itemDefined = c.getValue().stream().filter(i -> i.isSelection())
+			List<PersonInfoItemDefinition> itemDefined = c.getValue().stream()
+					.filter(i -> i.isSelection() && (i.getIsRequired() == IsRequired.REQUIRED))
 					.collect(Collectors.toList());
 			Optional<String> itemDefinedStartCode = c.getValue().stream()
 					.filter(i -> standardDateItemCodes.contains(i.getItemCode().v())).map(i -> i.getItemCode().v())
@@ -410,10 +412,12 @@ public class CheckPersonInfoProcess {
 			empData.stream().forEach(emp -> {
 				List<LayoutPersonInfoClsDto> clsDto = emp.getLayoutDtos();
 				clsDto.stream().forEach(cls -> {
-					List<LayoutPersonInfoValueDto> items = cls.getItems();
+					List<LayoutPersonInfoValueDto> items = cls.getItems().stream().filter(i -> i.isRequired() == true)
+							.collect(Collectors.toList());
 					c.getValue().forEach(item -> {
 						Optional<LayoutPersonInfoValueDto> itemOpt = items.stream()
 								.filter(i -> i.getItemCode().equals(item.getItemCode().v())).findFirst();
+						
 						checkError(item, c.getKey(), itemStartCode, items, dataSetter, employee, bussinessName, itemOpt, masterName);
 					});
 				});
@@ -943,12 +947,11 @@ public class CheckPersonInfoProcess {
 			return new ArrayList<>();
 		}
 		if (ctg.getCategoryType() ==  CategoryType.CONTINUOUSHISTORY) {
-			List<DatePeriod> datePeriodOrder =  listDataPeriodOfCtgHis.stream().sorted((a, b) -> a.start().compareTo(b.start())).collect(Collectors.toList());
-			if (listPersistentResidentHisAndPersistentHisCtg.contains(ctg.getCategoryCode().v()) && !datePeriodOrder.isEmpty() && datePeriodOrder.size() > 1) {
+			if (listPersistentResidentHisAndPersistentHisCtg.contains(ctg.getCategoryCode().v()) && !listDataPeriodOfCtgHis.isEmpty() && listDataPeriodOfCtgHis.size() > 1) {
 				List<DatePeriod> result = new ArrayList<>();
-				for (int i = 0; i < datePeriodOrder.size() - 1; i++) {
-					DatePeriod datePeriod_i = datePeriodOrder.get(i);
-					DatePeriod datePeriod_i1 = datePeriodOrder.get(i + 1);
+				for (int i = 0; i < listDataPeriodOfCtgHis.size() - 1; i++) {
+					DatePeriod datePeriod_i = listDataPeriodOfCtgHis.get(i);
+					DatePeriod datePeriod_i1 = listDataPeriodOfCtgHis.get(i + 1);
 					if(!isHistoryContinue(datePeriod_i, datePeriod_i1)){
 						if(result.isEmpty()){
 							result.add(new DatePeriod(datePeriod_i.end().addDays(1), datePeriod_i1.start().addDays(-1)));
@@ -1036,7 +1039,7 @@ public class CheckPersonInfoProcess {
 			historys = getListDatePeriod("IS00781","IS00782",listDataEmpOfCtg);
 			break;
 		}
-		return historys;
+		return historys.stream().sorted((a, b) -> a.start().compareTo(b.start())).collect(Collectors.toList());
 	}
 
 	private List<DatePeriod> getListDatePeriod(String itemCodeStartDate, String itemCodeEndDate, List<GridLayoutPersonInfoClsDto> listDataEmpOfCtg) {
