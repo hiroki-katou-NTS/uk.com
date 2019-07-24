@@ -9,10 +9,10 @@ module nts.uk.at.view.cps013.e {
             elapseTime: kibanTimer = new kibanTimer('elapseTime');
             taskId: KnockoutObservable<string> = ko.observable("");
             executeId: KnockoutObservable<string> = ko.observable("");
-            aggCreateCount: KnockoutObservable<number> = ko.observable(0);
-            aggCreateTotal: KnockoutObservable<number> = ko.observable(0);
+            numberEmpChecked: KnockoutObservable<number> = ko.observable(0);
+            countEmp: KnockoutObservable<number> = ko.observable(0);
             isComplete: KnockoutObservable<boolean> = ko.observable(false);
-            aggCreateStatus: KnockoutObservable<string> = ko.observable("");
+            statusCheck: KnockoutObservable<string> = ko.observable("");
             aggCreateHasError: KnockoutObservable<string> = ko.observable("");
             logId: KnockoutObservable<string> = ko.observable("");
             columns: KnockoutObservableArray<any>;
@@ -66,13 +66,13 @@ module nts.uk.at.view.cps013.e {
                     //method execute
                     service.executeCheck(dataShare).done(res => {
                         self.taskId(res.id);
-                        self.startTime(self.getAsyncData(info.taskDatas, "startTime").valueAsString);
                         nts.uk.deferred.repeat(conf => conf
                             .task(() => {
                                 return nts.uk.request.asyncTask.getInfo(self.taskId()).done(info => {
-                                    self.aggCreateCount(self.getAsyncData(info.taskDatas, "numberEmpChecked").valueAsNumber);
-                                    self.aggCreateTotal(self.getAsyncData(info.taskDatas, "countEmp").valueAsNumber);
-                                    self.aggCreateStatus(self.getAsyncData(info.taskDatas, "statusCheck").valueAsString);
+                                    self.startTime(self.getAsyncData(info.taskDatas, "startTime").valueAsString);
+                                    self.numberEmpChecked(self.getAsyncData(info.taskDatas, "numberEmpChecked").valueAsNumber);
+                                    self.countEmp(self.getAsyncData(info.taskDatas, "countEmp").valueAsNumber);
+                                    self.statusCheck(self.getAsyncData(info.taskDatas, "statusCheck").valueAsString);
 
                                     if (!info.pending && !info.running) {
                                         self.isComplete(true);
