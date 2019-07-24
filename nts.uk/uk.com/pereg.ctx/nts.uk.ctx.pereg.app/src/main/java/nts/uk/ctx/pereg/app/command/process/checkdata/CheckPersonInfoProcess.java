@@ -93,11 +93,11 @@ public class CheckPersonInfoProcess {
 		Optional<PersonInfoCategory> isExitCS00070 = listCategory.stream().filter( ctg -> ctg.getCategoryCode().v().equals("CS00070")).findFirst();
 		List<LayoutPersonInfoValueDto> itemsOfWorkingCondition1 = new ArrayList<>();
 		List<LayoutPersonInfoValueDto> itemsOfWorkingCondition2 = new ArrayList<>();
-		
-		for (int i = 0; i < listCategory.size(); i++) {
-			PersonInfoCategory category =  listCategory.get(i);
+		mapCategoryWithListItemDf.entrySet().stream().forEach(c ->{
+			PersonInfoCategory category =  c.getKey();
+			List<String> itemCodeSingle = c.getValue().stream().filter(i -> i.isSingleItem())
+					.map(i -> i.getItemCode().v()).collect(Collectors.toList());
 			List<GridLayoutPersonInfoClsDto> listDataEmpOfCtg = dataOfEmployee.get(category.getCategoryCode().v());
-		
 			listDataEmpOfCtg.forEach(data -> {
 				List<LayoutPersonInfoValueDto> items = new ArrayList<>();
 				List<LayoutPersonInfoClsDto> layoutDtos = data.getLayoutDtos();
@@ -112,9 +112,8 @@ public class CheckPersonInfoProcess {
 				});
 				
 				items.forEach(item -> {
-					
 					// 必須項目のNULLチェック (Check Null cho các requiredItem)
-					if(item.isRequired()){
+					if(item.isRequired() && itemCodeSingle.contains(item.getItemCode())){
 						checkNullOfRequiredItems(item, employee, category, bussinessName, dataSetter);
 					}
 				});
@@ -138,7 +137,7 @@ public class CheckPersonInfoProcess {
 			if (isExitCS00070.isPresent()) {
 				checkRequiredWorktime2(itemsOfWorkingCondition2, employee, isExitCS00070.get(), bussinessName, dataSetter);
 			}
-		}
+		});
 	}
 
 	private void checkRequiredWorktime2(List<LayoutPersonInfoValueDto> itemsOfWorkingCondition2,
@@ -723,13 +722,11 @@ public class CheckPersonInfoProcess {
 		
 		List<PerInfoValidateCheckCategory> lstCtgSetting = this.perInfoCheckCtgRepo.getListPerInfoValidByListCtgId(listCategoryCode, AppContexts.user().contractCode());
 		
-		List<PerInfoValidateCheckCategory> listCategoryFilter = lstCtgSetting.stream().filter(ctg -> {
-			if ((ctg.getHumanSysReq().value == NotUseAtr.USE.value) || (ctg.getPaySysReq().value == NotUseAtr.USE.value)
-			|| (ctg.getJobSysReq().value == NotUseAtr.USE.value)) {
-				return true;
-			}
-			return false;
-		}).collect(Collectors.toList());
+		List<PerInfoValidateCheckCategory> listCategoryFilter = lstCtgSetting.stream()
+				.filter(ctg -> ((ctg.getHumanSysReq().value == NotUseAtr.USE.value)
+						|| (ctg.getPaySysReq().value == NotUseAtr.USE.value)
+						|| (ctg.getJobSysReq().value == NotUseAtr.USE.value)))
+				.collect(Collectors.toList());
 		
 		List<String> listCategoryCodeFilter = listCategoryFilter.stream().map(m -> m.getCategoryCd().v()).collect(Collectors.toList());
 		
@@ -940,15 +937,18 @@ public class CheckPersonInfoProcess {
 	 */
 	private List<DatePeriod> checkBlankOfPeriod(PersonInfoCategory ctg, List<GridLayoutPersonInfoClsDto> listDataEmpOfCtg, List<DatePeriod> listDataPeriodOfCtgHis) {
 		
+		if(ctg.getCategoryCode().v().equals("CS00003")) return new ArrayList<>();
+		
 		if (listDataPeriodOfCtgHis.isEmpty() || listDataPeriodOfCtgHis.size() <= 1) {
 			return new ArrayList<>();
 		}
 		if (ctg.getCategoryType() ==  CategoryType.CONTINUOUSHISTORY) {
-			if (listPersistentResidentHisAndPersistentHisCtg.contains(ctg.getCategoryCode().v()) && !listDataPeriodOfCtgHis.isEmpty() && listDataPeriodOfCtgHis.size() > 1) {
+			List<DatePeriod> datePeriodOrder =  listDataPeriodOfCtgHis.stream().sorted((a, b) -> a.start().compareTo(b.start())).collect(Collectors.toList());
+			if (listPersistentResidentHisAndPersistentHisCtg.contains(ctg.getCategoryCode().v()) && !datePeriodOrder.isEmpty() && datePeriodOrder.size() > 1) {
 				List<DatePeriod> result = new ArrayList<>();
-				for (int i = 0; i < listDataPeriodOfCtgHis.size() - 1; i++) {
-					DatePeriod datePeriod_i = listDataPeriodOfCtgHis.get(i);
-					DatePeriod datePeriod_i1 = listDataPeriodOfCtgHis.get(i + 1);
+				for (int i = 0; i < datePeriodOrder.size() - 1; i++) {
+					DatePeriod datePeriod_i = datePeriodOrder.get(i);
+					DatePeriod datePeriod_i1 = datePeriodOrder.get(i + 1);
 					if(!isHistoryContinue(datePeriod_i, datePeriod_i1)){
 						if(result.isEmpty()){
 							result.add(new DatePeriod(datePeriod_i.end().addDays(1), datePeriod_i1.start().addDays(-1)));
