@@ -1695,89 +1695,151 @@ var nts;
                 return moment.utc(nowDateTime);
             }
             time_1.now = now;
-            var JapanYearMonth = /** @class */ (function () {
-                function JapanYearMonth(empire, year, month) {
+            var JapanYear = /** @class */ (function () {
+                function JapanYear(empire, year) {
                     this.empire = empire;
                     this.year = year;
-                    this.month = month;
                 }
-                JapanYearMonth.prototype.getEmpire = function () {
+                JapanYear.prototype.getEmpire = function () {
                     return this.empire;
                 };
-                JapanYearMonth.prototype.getYear = function () {
+                JapanYear.prototype.getYear = function () {
                     return this.year;
                 };
+                JapanYear.prototype.toString = function () {
+                    return "" + this.empire + this.year + "\u5E74";
+                };
+                return JapanYear;
+            }());
+            time_1.JapanYear = JapanYear;
+            var JapanYearMonth = /** @class */ (function (_super) {
+                __extends(JapanYearMonth, _super);
+                function JapanYearMonth(empire, year, month) {
+                    var _this = _super.call(this, empire, year) || this;
+                    _this.month = month;
+                    return _this;
+                }
                 JapanYearMonth.prototype.getMonth = function () {
                     return this.month;
                 };
-                JapanYearMonth.prototype.removeMonth = function () {
-                    this.month = null;
-                    return this;
-                };
                 JapanYearMonth.prototype.toString = function () {
-                    return (_.isEmpty(this.getEmpire()) ? "" : this.getEmpire())
-                        + (_.isNil(this.getYear()) ? "" : this.getYear() + "年")
-                        + (_.isNil(this.getMonth()) ? "" : this.getMonth() + "月");
+                    return "" + this.empire + this.year + "\u5E74" + this.month;
                 };
                 return JapanYearMonth;
-            }());
+            }(JapanYear));
             time_1.JapanYearMonth = JapanYearMonth;
-            var JapanDateMoment = /** @class */ (function (_super) {
-                __extends(JapanDateMoment, _super);
-                function JapanDateMoment(empire, year, month, date) {
+            var JapanDate = /** @class */ (function (_super) {
+                __extends(JapanDate, _super);
+                function JapanDate(empire, year, month, date) {
                     var _this = _super.call(this, empire, year, month) || this;
-                    _this.day = date;
+                    _this.date = date;
                     return _this;
                 }
-                JapanDateMoment.prototype.getDate = function () {
-                    return this.day;
+                JapanDate.prototype.getDate = function () {
+                    return this.date;
                 };
-                JapanDateMoment.prototype.removeDate = function () {
-                    this.day = null;
-                    return this;
+                JapanDate.prototype.toString = function () {
+                    return "" + this.empire + this.year + "\u5E74" + this.month + this.date + "\u65E5";
                 };
-                JapanDateMoment.prototype.toString = function () {
-                    return _super.prototype.toString.call(this) + (_.isNil(this.getDate()) ? "" : this.getDate() + " 日");
-                };
-                return JapanDateMoment;
+                return JapanDate;
             }(JapanYearMonth));
-            time_1.JapanDateMoment = JapanDateMoment;
-            function dateInJapanEmpire(date) {
-                if (!nts.uk.ntsNumber.isNumber(date) && _.isEmpty(date)) {
-                    return null;
+            time_1.JapanDate = JapanDate;
+            /**
+             *
+             * @param value ["YYYY/M/D", "YYYY-M-D", "YYYYMMDD"]
+             */
+            function dateInJapanEmpire(value) {
+                if (!nts.uk.ntsNumber.isNumber(value) && _.isEmpty(value)) {
+                    return undefined;
                 }
-                var dateString = date.toString(), seperator = (dateString.match(/\//g) || []).length;
-                if (seperator > 2) {
-                    return null;
+                if (value.toString().length <= 7) {
+                    return undefined;
                 }
-                var format = _.filter(defaultInputFormat, function (f) { return (f.match(/\//g) || []).length === seperator; }), formatted = moment.utc(dateString, defaultInputFormat, true);
-                for (var _i = 0, _a = __viewContext.env.japaneseEras; _i < _a.length; _i++) {
-                    var i = _a[_i];
-                    var startEra = moment(i.start), endEraYear = moment(i.end);
-                    if (startEra.isSameOrBefore(formatted) && formatted.isSameOrBefore(endEraYear)) {
-                        var diff = formatted.year() - startEra.year() + 1;
-                        return new JapanDateMoment(i.name, diff, formatted.month() + 1, formatted.date());
-                    }
+                var correspondingMoment = getCorrespondingMoment(value);
+                var empire = getEmpire(correspondingMoment);
+                if (empire === null) {
+                    return undefined;
                 }
-                return null;
+                var japanYearNumber = correspondingMoment.year() - moment.utc(empire.start).year() + 1;
+                return new JapanDate(empire.name, japanYearNumber, correspondingMoment.month() + 1, correspondingMoment.date());
             }
             time_1.dateInJapanEmpire = dateInJapanEmpire;
-            function yearInJapanEmpire(date) {
-                var formatted = yearmonthInJapanEmpire(date);
-                if (formatted !== null) {
-                    formatted.month = null;
+            /**
+             *
+             * @param value ["YYYY", "YYYY/M", "YYYY-M", "YYYYMM", "YYYY/M/D", "YYYY-M-D", "YYYYMMDD"]
+             */
+            function yearInJapanEmpire(value) {
+                if (!nts.uk.ntsNumber.isNumber(value) && _.isEmpty(value)) {
+                    return undefined;
                 }
-                return formatted;
+                var correspondingMoment = getCorrespondingMoment(value);
+                var empire = getEmpire(correspondingMoment);
+                if (empire === null) {
+                    return undefined;
+                }
+                var japanYearNumber = correspondingMoment.year() - moment.utc(empire.start).year() + 1;
+                return new JapanYear(empire.name, japanYearNumber);
             }
             time_1.yearInJapanEmpire = yearInJapanEmpire;
-            function yearmonthInJapanEmpire(yearmonth) {
-                var formatted = dateInJapanEmpire(yearmonth);
-                if (formatted !== null) {
-                    formatted.day = null;
+            /**
+             *
+             * @param date ["YYYY/M", "YYYY-M", "YYYYMM", "YYYY/M/D", "YYYY-M-D", "YYYYMMDD"]
+             */
+            function yearmonthInJapanEmpire(value) {
+                if (!nts.uk.ntsNumber.isNumber(value) && _.isEmpty(value)) {
+                    return undefined;
                 }
-                return formatted;
+                if (value.toString().length <= 4) {
+                    // YYYY
+                    return undefined;
+                }
+                var correspondingMoment = getCorrespondingMoment(value);
+                var empire = getEmpire(correspondingMoment);
+                if (empire === null) {
+                    return undefined;
+                }
+                var japanYearNumber = correspondingMoment.year() - moment.utc(empire.start).year() + 1;
+                return new JapanYearMonth(empire.name, japanYearNumber, correspondingMoment.month() + 1);
             }
             time_1.yearmonthInJapanEmpire = yearmonthInJapanEmpire;
+            /**
+             */
+            function getCorrespondingMoment(value) {
+                // toString all type
+                value = value.toString();
+                var dateString = null;
+                if (value.length <= 4) {
+                    // "YYYY"
+                    dateString = value + "1231";
+                }
+                else if (value.length <= 7) {
+                    // ["YYYY/M", "YYYY-M", "YYYYMM"]
+                    var momentValue = moment.utc(value, ["YYYY/M", "YYYY-M", "YYYYMM"]);
+                    var month = momentValue.month() + 1;
+                    dateString = "" + momentValue.year() + (month >= 10 ? month : '0' + month) + momentValue.daysInMonth();
+                }
+                else {
+                    // ["YYYY/M/D", "YYYY-M-D", "YYYYMMDD"]
+                    dateString = value;
+                }
+                return moment.utc(dateString, ["YYYY/M/D", "YYYY-M-D", "YYYYMMDD"]);
+            }
+            /**
+             *
+             * @param momentObject Moment
+             *
+             * Returns the matched Empire, else null.
+             */
+            function getEmpire(momentObject) {
+                var corresEmpire = _.find(__viewContext.env.japaneseEras, function (empire) {
+                    var startEra = moment.utc(empire.start);
+                    var endEraYear = moment.utc(empire.end);
+                    if (startEra.isSameOrBefore(momentObject) && momentObject.isSameOrBefore(endEraYear)) {
+                        return true;
+                    }
+                });
+                return corresEmpire === undefined ? null : corresEmpire;
+            }
             /**
             * Format by pattern
             * @param  {number} [seconds]	  Input seconds
@@ -25246,7 +25308,7 @@ var nts;
                                     var info = _vessel().checkedErrors[ei];
                                     if (rData[_pk] === info.id && key === info.columnKey) {
                                         info.element = td;
-                                        khl.set(info, info.message, 1);
+                                        khl.set(info, info.message, 1, true);
                                         _vessel().checkedErrors.splice(ei, 1);
                                         break;
                                     }
@@ -25568,7 +25630,7 @@ var nts;
                                     var info = _vessel().checkedErrors[ei];
                                     if (rData[_pk] === info.id && key === info.columnKey) {
                                         info.element = td;
-                                        khl.set(info, info.message);
+                                        khl.set(info, info.message, null, true);
                                         _vessel().checkedErrors.splice(ei, 1);
                                         break;
                                     }
@@ -29501,7 +29563,7 @@ var nts;
                             return;
                         var column = _columnsMap[coord.columnKey];
                         if (column && _.toLower(column[0].dataType) === "number") {
-                            cellValue = cellValue === "" ? null : parseFloat(cellValue);
+                            cellValue = (_.isNil(cellValue) || cellValue === "") ? null : parseFloat(cellValue);
                         }
                         if (reset) {
                             origDs[coord.rowIdx][coord.columnKey] = cellValue;
@@ -32737,7 +32799,7 @@ var nts;
                     /**
                      * Set.
                      */
-                    function set(cell, message, setType) {
+                    function set(cell, message, setType, rendered) {
                         if (!cell || ((!setType || setType === 1) && (!cell.element || any(cell))))
                             return;
                         if (!setType || setType === 1) {
@@ -32759,10 +32821,10 @@ var nts;
                             if (_.isNil(cell.index)) {
                                 var index = _.findIndex(_dataSource, function (d) { return d[_pk] === cell.id; });
                                 if (index !== -1)
-                                    notice(cell.id, cell.columnKey, _dataSource[index]);
+                                    notice(cell.id, cell.columnKey, _dataSource[index], rendered);
                             }
                             else {
-                                notice(cell.id, cell.columnKey, _dataSource[cell.index]);
+                                notice(cell.id, cell.columnKey, _dataSource[cell.index], rendered);
                             }
                         }
                     }
