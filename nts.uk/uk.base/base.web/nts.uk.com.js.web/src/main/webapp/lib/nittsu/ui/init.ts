@@ -207,8 +207,16 @@ module nts.uk.ui {
             console.log("call");
             documentReady.fire();
             
-            __viewContext.transferred = uk.sessionStorage.getItem(uk.request.STORAGE_KEY_TRANSFER_DATA)
-                .map(v => JSON.parse(v));
+            __viewContext.transferred = new nts.uk.util.optional.Optional(undefined);
+            
+            // fix bug cannot remove old session storage after jump
+            uk.sessionStorage.getItem(uk.request.STORAGE_KEY_TRANSFER_DATA)
+                .map(v => JSON.parse(v))
+                .ifPresent(data => {
+                    __viewContext.transferred = new nts.uk.util.optional.Optional(data);
+                    
+                    nts.uk.sessionStorage.removeItem(uk.request.STORAGE_KEY_TRANSFER_DATA);
+                });
             
             if($(".html-loading").length <= 0){
                 startP();
