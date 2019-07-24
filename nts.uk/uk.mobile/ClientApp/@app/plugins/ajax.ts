@@ -132,7 +132,7 @@ const WEB_APP_NAME = {
                 // authentication 
                 setHeaders({
                     'MOBILE': 'true',
-                    'PG-Path': window.location.pathname,
+                    'PG-Path': window.location.href,
                     'X-CSRF-TOKEN': auth.token
                 });
 
