@@ -66,7 +66,7 @@ module nts.uk.at.view.cps013.e {
                     //method execute
                     service.executeCheck(dataShare).done(res => {
                         self.taskId(res.id);
-                        self.startTime(moment.utc(dataShare.startDateTime).format("YYYY/MM/DD HH:mm:ss"));
+                        self.startTime(self.getAsyncData(info.taskDatas, "startTime").valueAsString);
                         nts.uk.deferred.repeat(conf => conf
                             .task(() => {
                                 return nts.uk.request.asyncTask.getInfo(self.taskId()).done(info => {
@@ -94,6 +94,34 @@ module nts.uk.at.view.cps013.e {
                         );
                     });
                 }
+            }
+            
+            exportCsv(): void{
+                var self = this;
+                let info = self.errorMessageInfo();
+                console.log(info);
+                var listError = []; 
+                _.forEach(info, function(row) {
+                    let data = {
+                        employeeCode: row.employeeCode,
+                        employeeName: row.bussinessName,
+                        checkAtr: row.clsCategoryCheck,
+                        categoryName: row.categoryName,
+                        contentError: row.error
+                    };
+                    listError.push(data);
+                });
+                debugger;
+                nts.uk.request.exportFile('com', 'person/consistency/check/report/print/error', listError)
+                .done(data => {
+                    console.log(data);})
+                .fail((mes) => {});
+            }
+            
+            reCheck() : void {
+               var self = this;
+               
+            
             }
             
             cancelTask(): void {
@@ -268,10 +296,40 @@ module nts.uk.at.view.cps013.e {
         peopleCount: number,
         startDateTime: Date,
     }
+    export interface EmployeInfoErrorDataSourceDto {
+        employeeCode: string;
+        employeeName: string;
+        checkAtr: string;
+        categoryName: string;
+        contentError: string;
+    }
+    
+    export class EmployeInfoErrorDataSource {
+        employeeCode: string;
+        employeeName: string;
+        checkAtr: string;
+        categoryName: string;
+        contentError: string;
+        constructor(data: EmployeInfoErrorDataSourceDto) {
+            this.employeeCode = data.employeeCode;
+            this.employeeName = data.employeeName;
+            this.checkAtr = data.checkAtr;
+            this.categoryName = data.categoryName;
+            this.contentError = data.contentError;
+        }
+    }
 
     function makeIcon(value, row) {
+        console.log(row);
         if (value == '1')
             return '<img style="margin-left: 15px; width: 20px; height: 20px;" />';
-        return '<div>' + '<div class="limit-custom">'+ value +'</div>'+ '<div style = "display: inline-block; position: relative;">'+'<button tabindex = "0" class="open-dialog-i">'+ nts.uk.resource.getText("CPS013_31")+'</button>'+'</div>'+ '</div>';
+        
+        return '<div>' + '<div class="limit-custom">' + value + '</div>' + '<div style = "display: inline-block; position: relative;">' + '<button tabindex = "0" class="open-dialog-i" onclick="jumtoCPS001A(\'' + row.employeeId + '\', \'' + row.categoryId + '\')">' + nts.uk.resource.getText("CPS013_31") + '</button>' + '</div>' + '</div>';
     }
 }
+
+function jumtoCPS001A(employeeId: string, categoryId: string) {
+    nts.uk.request.jump('/view/cps/001/a/index.xhtml', { employeeId, categoryId });
+}
+
+ 
