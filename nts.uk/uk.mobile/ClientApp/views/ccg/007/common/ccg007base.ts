@@ -53,16 +53,13 @@ export class CCG007Login extends Vue {
             self.$modal.confirm({ messageId: data.msgErrorId, messageParams: [data.spanDays.toString()] })
                 .then((code) => {
                     if (code === 'yes') {
-                        self.$goto({
-                            name: 'changepass',
-                            params: _.merge(submitData,
-                                {
-                                    oldPassword: submitData.password,
-                                    mesId: data.msgErrorId,
-                                    changePassReason: 'Msg_1523',
-                                    spanDays: data.spanDays
-                                })
-                        });
+                        self.$goto.password.change(_.merge(submitData,
+                            {
+                                oldPassword: submitData.password,
+                                mesId: data.msgErrorId,
+                                changePassReason: 'Msg_1523',
+                                spanDays: data.spanDays
+                            }));
                     } else {
                         submitData.loginDirect = true;
                         this.login(submitData, resetForm);
@@ -72,16 +69,14 @@ export class CCG007Login extends Vue {
             // check MsgError
             if ((!_.isEmpty(data.msgErrorId) && data.msgErrorId !== 'Msg_1517') || data.showChangePass) {
                 if (data.showChangePass) {
-                    self.$goto({
-                        name: 'changepass', params: _.merge({},
-                            submitData,
-                            {
-                                oldPassword: submitData.password,
-                                mesId: data.msgErrorId,
-                                saveInfo: submitData.saveInfo,
-                                changePassReason: data.changePassReason
-                            })
-                    });
+                    self.$goto.password.change(_.merge({},
+                        submitData,
+                        {
+                            oldPassword: submitData.password,
+                            mesId: data.msgErrorId,
+                            saveInfo: submitData.saveInfo,
+                            changePassReason: data.changePassReason
+                        }));
                 } else {
                     resetForm();
                     /** TODO: wait for dialog error method */
