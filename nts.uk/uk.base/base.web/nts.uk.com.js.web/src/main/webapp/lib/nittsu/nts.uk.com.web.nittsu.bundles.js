@@ -3797,18 +3797,42 @@ var nts;
                     errorPages.stopUse = stopUse;
                 })(errorPages = specials.errorPages || (specials.errorPages = {}));
             })(specials = request.specials || (request.specials = {}));
-            function jumpFromDialogOrFrame(webAppId, path, data) {
-                var self;
-                if (nts.uk.util.isInFrame()) {
-                    self = nts.uk.ui.windows.getSelf();
+            function jumpToNewWindow(webAppId, path, data) {
+                // handle overload
+                if (typeof arguments[1] !== 'string') {
+                    jumpToNewWindow.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
+                    return;
+                }
+                if (data === undefined) {
+                    uk.sessionStorage.removeItem(request.STORAGE_KEY_TRANSFER_DATA);
                 }
                 else {
-                    self = window.parent.nts.uk.ui.windows.getSelf();
+                    uk.sessionStorage.setItemAsJson(request.STORAGE_KEY_TRANSFER_DATA, { data: data, jump: { webAppId: webAppId, path: path } });
                 }
-                while (!self.isRoot) {
-                    self = self.parent;
+                // open new tab (like current tab)
+                var wd = window.open(window.location.href, '_blank');
+                wd.focus();
+                // remove storage on current tab
+                nts.uk.sessionStorage.removeItem(uk.request.STORAGE_KEY_TRANSFER_DATA);
+            }
+            request.jumpToNewWindow = jumpToNewWindow;
+            // jumpToNewWindow step 2
+            $(function () {
+                setTimeout(function () {
+                    __viewContext.transferred.ifPresent(function (data) {
+                        if (_.isEqual(_.keys(data), ['data', 'jump'])) {
+                            nts.uk.request.jump(data.jump.webAppId, data.jump.path, data.data);
+                        }
+                    });
+                }, 0);
+            });
+            function jumpFromDialogOrFrame(webAppId, path, data) {
+                // handle overload
+                if (typeof arguments[1] !== 'string') {
+                    jumpFromDialogOrFrame.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
+                    return;
                 }
-                self.globalContext.nts.uk.request.jump(webAppId, path, data);
+                window.top.nts.uk.request.jump(webAppId, path, data);
             }
             request.jumpFromDialogOrFrame = jumpFromDialogOrFrame;
             function jump(webAppId, path, data) {
