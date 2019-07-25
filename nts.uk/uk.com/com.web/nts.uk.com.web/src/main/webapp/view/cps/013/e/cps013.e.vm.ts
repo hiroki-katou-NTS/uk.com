@@ -157,13 +157,14 @@ module nts.uk.at.view.cps013.e {
            private bindingDataToGrid(data: Array<any>): void {
                 var self = this;
 
-                let data_employeeId = [];
-                let data_categoryId = [];
-                let data_employeeCode = [];
-                let data_bussinessName = [];
-                let data_clsCategoryCheck = [];
-                let data_categoryName = [];
-                let data_error = [];
+                let  data_employeeId = [],
+                     data_categoryId = [],
+                     data_employeeCode = [],
+                     data_bussinessName = [],
+                     data_clsCategoryCheck = [],
+                     data_categoryName = [],
+                     data_error = [],
+                     errs = [];
 
                 _.forEach(data, item => {
                     if (item.key.substring(0, 5) === "error") {
@@ -183,30 +184,42 @@ module nts.uk.at.view.cps013.e {
                     }
                 });
 
-                let sorted_employeeId = _.sortBy(data_employeeId, function(t) { return parseInt(t.key.replace("employeeId", "")) });
+                /*let sorted_employeeId = _.sortBy(data_employeeId, function(t) { return parseInt(t.key.replace("employeeId", "")) });
                 let sorted_categoryId = _.sortBy(data_categoryId, function(t) { return parseInt(t.key.replace("categoryId", "")) });
                 let sorted_employeeCode = _.sortBy(data_employeeCode, function(t) { return parseInt(t.key.replace("employeeCode", "")) });
                 let sorted_bussinessName = _.sortBy(data_bussinessName, function(t) { return parseInt(t.key.replace("bussinessName", "")) });
                 let sorted_clsCategoryCheck = _.sortBy(data_clsCategoryCheck, function(t) { return parseInt(t.key.replace("clsCategoryChec", "")) });
                 let sorted_categoryName = _.sortBy(data_categoryName, function(t) { return parseInt(t.key.replace("categoryNam", "")) });
                 let sorted_error = _.sortBy(data_error, function(t) { return parseInt(t.key.replace("error", "")) });
-                let errs = [];
-                for (let i = 0; i < sorted_employeeId.length; i++) {
+                let errs = []; */
+               
+                for (let i = 0; i < data_employeeId.length; i++) {
 
+                    let tagKey = data_employeeId[i].key.substring(10, 15);
+                    let empId = data_employeeId[i].valueAsString;
+                    let ctgId = (_.filter(data_categoryId, function(o) { return o.key.substring(10, 15) == tagKey; }))[0].valueAsString;
+                    let employeeCode = (_.filter(data_employeeCode, function(o) { return o.key.substring(12, 17) == tagKey; }))[0].valueAsString;
+                    let bussinessName = (_.filter(data_bussinessName, function(o) { return o.key.substring(13, 18) == tagKey; }))[0].valueAsString;
+                    let clsCategoryCheck = (_.filter(data_clsCategoryCheck, function(o) { return o.key.substring(16, 21) == tagKey; }))[0].valueAsString;
+                    let categoryName = (_.filter(data_categoryName, function(o) { return o.key.substring(12, 17) == tagKey; }))[0].valueAsString;
+                    let error = (_.filter(data_error, function(o) { return o.key.substring(5, 10) == tagKey; }))[0].valueAsString;
+                    
+                    
                     var errorInfo = {
-                        employeeId: sorted_employeeId[i].valueAsString,
-                        categoryId: sorted_categoryId[i].valueAsString,
-                        employeeCode: sorted_employeeCode[i].valueAsString,
-                        bussinessName: sorted_bussinessName[i].valueAsString,
-                        clsCategoryCheck: sorted_clsCategoryCheck[i].valueAsString,
-                        categoryName: sorted_categoryName[i].valueAsString,
-                        error: sorted_error[i].valueAsString
+                        employeeId: empId,
+                        categoryId: ctgId,
+                        employeeCode: employeeCode,
+                        bussinessName: bussinessName,
+                        clsCategoryCheck: clsCategoryCheck,
+                        categoryName: categoryName,
+                        error: error
                     };
                     
                     errs.push(new PersonInfoErrMessageLog(errorInfo));
                 }
                
-               self.errorMessageInfo(errs);
+               // order 
+               self.errorMessageInfo(_.sortBy(errs, [function(o) { return o.employeeCode; }]));
 
             }
 
