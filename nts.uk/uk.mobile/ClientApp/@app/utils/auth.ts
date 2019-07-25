@@ -5,7 +5,7 @@ export const auth = {
         return !!storage.cookie.hasItem('sescon');
     },
     get token(): string | null {
-        return storage.local.getItem('csrf') as string;
+        return auth.valid && storage.local.getItem('csrf') as string;
     },
     get remember(): {
         companyCode: string,
