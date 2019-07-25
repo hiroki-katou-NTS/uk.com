@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.overtime.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application_New;
@@ -9,6 +10,8 @@ import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 import nts.uk.ctx.at.shared.dom.employmentrules.employmenttimezone.BreakTimeZoneSharedOutPut;
+import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 public interface OvertimeService {
 	/**
@@ -67,6 +70,18 @@ public interface OvertimeService {
 	 * @return
 	 */
 	public BreakTimeZoneSharedOutPut getBreakTimes(String companyID, String workTypeCode, String workTimeCode);
+	
+	/**
+	 * 01-01_休憩時間帯を取得する
+	 * @param companyID 会社ID
+	 * @param workTypeCode 勤務種類コード
+	 * @param workTimeCode 就業時間帯コード
+	 * @param opStartTime Optional＜開始時刻＞
+	 * @param opEndTime Optional＜終了時刻＞
+	 * @return
+	 */
+	public List<DeductionTime> getBreakTimes(String companyID, String workTypeCode, String workTimeCode, 
+			Optional<TimeWithDayAttr> opStartTime, Optional<TimeWithDayAttr> opEndTime);
 	
 	/**
 	 * 12.マスタ勤務種類、就業時間帯データをチェック
