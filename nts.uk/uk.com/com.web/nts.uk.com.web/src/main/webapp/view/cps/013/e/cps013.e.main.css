@@ -24,10 +24,6 @@ table.info-table td.fix-width {width: 150px; background:#CFF1A5; padding:2px;}
 	margin-left: 15px;
 }
 
-#button_area{
-	margin-left: 400px;
-}
-
 .limit-custom{
 	display: inline-block;
     white-space: nowrap;

@@ -29,7 +29,7 @@ module nts.uk.at.view.cps013.e {
 
             //enable enableCancelTask
             enableCancelTask: KnockoutObservable<boolean> = ko.observable(true);
-            dataFromD: KnockoutObservable<string>;
+            dataShare: KnockoutObservable<IDataShare>= ko.observableArray();
 
             // disable gridlist
             error: KnockoutObservable<boolean> = ko.observable(false);
@@ -63,6 +63,7 @@ module nts.uk.at.view.cps013.e {
                 $(".closebutton").focus();
                 //system date
                 if (dataShare !== undefined) {
+                    self.dataShare(dataShare);
                     //method execute
                     service.executeCheck(dataShare).done(res => {
                         self.taskId(res.id);
@@ -84,6 +85,7 @@ module nts.uk.at.view.cps013.e {
                                         self.endTime(self.getAsyncData(info.taskDatas, "endTime").valueAsString);
 
                                         self.bindingDataToGrid(info.taskDatas);
+                                        console.log("lít bug" + info.taskDatas);
                                         //self.enableCancelTask(false);
                                         
                                     }
@@ -96,10 +98,9 @@ module nts.uk.at.view.cps013.e {
                 }
             }
             
-            exportCsv(): void{
+            exportCsv(): void {
                 var self = this;
                 let info = self.errorMessageInfo();
-                console.log(info);
                 var listError = []; 
                 _.forEach(info, function(row) {
                     let data = {
@@ -111,17 +112,23 @@ module nts.uk.at.view.cps013.e {
                     };
                     listError.push(data);
                 });
-                debugger;
+                
                 nts.uk.request.exportFile('com', 'person/consistency/check/report/print/error', listError)
-                .done(data => {
-                    console.log(data);})
+                .done(data => {})
                 .fail((mes) => {});
             }
             
-            reCheck() : void {
+            RecheckTheSameConditions() : void {
                var self = this;
-               
-            
+               self.errorMessageInfo([]);
+               let conditions = self.dataShare();
+               self.elapseTime.start();
+               self.startTime('');
+               self.numberEmpChecked(0);
+               self.countEmp(0);
+               self.statusCheck('');
+               self.endTime('');
+               self.start(conditions);
             }
             
             cancelTask(): void {
@@ -320,7 +327,6 @@ module nts.uk.at.view.cps013.e {
     }
 
     function makeIcon(value, row) {
-        console.log(row);
         if (value == '1')
             return '<img style="margin-left: 15px; width: 20px; height: 20px;" />';
         
