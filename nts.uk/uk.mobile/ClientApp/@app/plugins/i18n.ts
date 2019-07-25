@@ -68,7 +68,7 @@ const language = new Vue({
                 if (lg === 'jp') {
                     // update locale of moment
                     moment.locale('ja');
-                    
+
                     document.head.appendChild(style);
                 } else if (document.head.contains(style)) {
                     // update locale of moment
@@ -184,10 +184,10 @@ const getText: any = (resource: string | number, params?: string | string[] | { 
         }
     }
 
-    // accept numbet raw
-    resource = resource.toString();
+    if (!obj.isNil(resource)) {
+        // accept numbet raw
+        resource = resource.toString();
 
-    if (resource) {
         [].slice.call(resource.match(/(#{[a-zA-z0-9_]+})|({#[a-zA-z0-9_]+})|({\d+})/g) || [])
             .map((match: string) => match.replace(/[\#\{\}]/g, ''))
             .forEach((key: string) => {
