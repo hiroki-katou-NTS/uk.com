@@ -35,8 +35,8 @@ module nts.uk.com.view.ccg008.a.viewmodel {
             ]);
             self.selectedTab = ko.observable(null);
             self.dateSwitch = ko.observableArray([
-                                                    { code: '0', name: nts.uk.resource.getText('CCG008_14')},
-                                                    { code: '1', name: nts.uk.resource.getText('CCG008_15')}
+                                                    { code: '1', name: nts.uk.resource.getText('CCG008_14')},
+                                                    { code: '2', name: nts.uk.resource.getText('CCG008_15')}
                                                 ]);
             self.selectedSwitch = ko.observable(null);
             self.switchVisible = ko.observable(true);
@@ -90,26 +90,27 @@ module nts.uk.com.view.ccg008.a.viewmodel {
             //var fromScreen = "login"; 
             if(fromScreen == "login"){
                 service.getCache().done((data: any) => {
-                    character.save('cache', data);
+                    character.save('cache', data).done(() => {
+                        self.topPageCode(code);
+                        character.restore('cache').done((obj)=>{
+                            if(obj){
+                                setTimeout(function() { 
+                                    if(obj.currentOrNextMonth){
+                                        self.selectedSwitch(obj.currentOrNextMonth);
+                                    }else{
+                                        self.selectedSwitch(null);    
+                                    }
+                                    self.closureSelected(obj.closureId)
+                                    nts.uk.ui.windows.setShared('cache', obj);
+                                }, 2000);
+                            }else{
+                                self.closureSelected(1);
+                                self.selectedSwitch(null);
+                            }
+                        }); 
+                    });
                 })  
             }
-            self.topPageCode(code);
-                character.restore('cache').done((obj)=>{
-                    if(obj){
-                        setTimeout(function() { 
-                            if(obj.currentOrNextMonth){
-                                self.selectedSwitch(obj.currentOrNextMonth);
-                            }else{
-                                self.selectedSwitch(null);    
-                            }
-                            self.closureSelected(obj.closureId)
-                            nts.uk.ui.windows.setShared('cache', obj);
-                        }, 2000);
-                    }else{
-                        self.closureSelected(1);
-                        self.selectedSwitch(null);
-                    }
-                });
             
             // 会社の締めを取得する - Lấy closure company
             service.getClosure().done((data: any) => {
