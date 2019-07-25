@@ -30,8 +30,11 @@ public class CheckMasterProcess {
 	final String chekMasterType = TextResource.localize("CPS013_11");
 	
 	@SuppressWarnings("unused")
-	public void checkMaster(PeregEmpInfoQuery empCheck, Map<String, List<GridLayoutPersonInfoClsDto>> dataOfEmployee, 
-			CheckDataFromUI excuteCommand, Map<PersonInfoCategory, List<PersonInfoItemDefinition>> mapCategoryWithListItemDf, EmployeeDataMngInfo employee, String bussinessName,  TaskDataSetter dataSetter) {
+	public void checkMaster(PeregEmpInfoQuery empCheck, Map<String, List<GridLayoutPersonInfoClsDto>> dataOfEmployee,
+			CheckDataFromUI excuteCommand,
+			Map<PersonInfoCategory, List<PersonInfoItemDefinition>> mapCategoryWithListItemDf,
+			EmployeeDataMngInfo employee, String bussinessName, TaskDataSetter dataSetter,
+			List<ErrorInfoCPS013> listError) {
 
 		// 「実行時情報」の「システム利用区分」をチェックする (check thuộc tính 「システム利用区分」 trong RuntimeInformation)
 		int forAttendance = nts.uk.ctx.at.schedule.dom.plannedyearholiday.frame.NotUseAtr.NOT_USE.value;
@@ -72,7 +75,7 @@ public class CheckMasterProcess {
 					&& (settingCtg.getScheduleMngReq().value == NotUseAtr.USE.value)) {
 				List<GridLayoutPersonInfoClsDto> datas = dataOfEmployee.get(category.getCategoryCode().v());
 				if (datas.isEmpty()) {
-					writeError(employee, category, bussinessName, dataSetter, "スケジュール管理" );
+					writeError(employee, category, bussinessName, dataSetter, "スケジュール管理", listError );
 				}
 			}
 			
@@ -81,7 +84,7 @@ public class CheckMasterProcess {
 					&& (settingCtg.getDailyActualMngReq().value == NotUseAtr.USE.value)) {
 				List<GridLayoutPersonInfoClsDto> datas = dataOfEmployee.get(category.getCategoryCode().v());
 				if (datas.isEmpty()) {
-					writeError(employee, category, bussinessName, dataSetter, "日別実績管理" );
+					writeError(employee, category, bussinessName, dataSetter, "日別実績管理", listError );
 				}
 			}
 			
@@ -90,7 +93,7 @@ public class CheckMasterProcess {
 					&& (settingCtg.getMonthActualMngReq().value == NotUseAtr.USE.value)) {
 				List<GridLayoutPersonInfoClsDto> datas = dataOfEmployee.get(category.getCategoryCode().v());
 				if (datas.isEmpty()) {
-					writeError(employee, category, bussinessName, dataSetter, "月別実績管理" );
+					writeError(employee, category, bussinessName, dataSetter, "月別実績管理", listError );
 				}
 			}
 			
@@ -99,7 +102,7 @@ public class CheckMasterProcess {
 					&& (settingCtg.getPayMngReq().value == NotUseAtr.USE.value)) {
 				List<GridLayoutPersonInfoClsDto> datas = dataOfEmployee.get(category.getCategoryCode().v());
 				if (datas.isEmpty()) {
-					writeError(employee, category, bussinessName, dataSetter, "給与管理");
+					writeError(employee, category, bussinessName, dataSetter, "給与管理", listError);
 				}
 			}
 			
@@ -108,7 +111,7 @@ public class CheckMasterProcess {
 					&& (settingCtg.getBonusMngReq().value == NotUseAtr.USE.value)) {
 				List<GridLayoutPersonInfoClsDto> datas = dataOfEmployee.get(category.getCategoryCode().v());
 				if (datas.isEmpty()) {
-					writeError(employee, category, bussinessName, dataSetter, "賞与管理");
+					writeError(employee, category, bussinessName, dataSetter, "賞与管理", listError);
 				}
 			}
 			
@@ -117,7 +120,7 @@ public class CheckMasterProcess {
 					&& (settingCtg.getYearMngReq().value == NotUseAtr.USE.value)) {
 				List<GridLayoutPersonInfoClsDto> datas = dataOfEmployee.get(category.getCategoryCode().v());
 				if (datas.isEmpty()) {
-					writeError(employee, category, bussinessName, dataSetter, "年調管理");
+					writeError(employee, category, bussinessName, dataSetter, "年調管理", listError);
 				}
 			}
 			
@@ -126,17 +129,18 @@ public class CheckMasterProcess {
 					&& (settingCtg.getMonthCalcMngReq().value == NotUseAtr.USE.value)) {
 				List<GridLayoutPersonInfoClsDto> datas = dataOfEmployee.get(category.getCategoryCode().v());
 				if (datas.isEmpty()) {
-					writeError(employee, category, bussinessName, dataSetter, "月額算定管理");
+					writeError(employee, category, bussinessName, dataSetter, "月額算定管理", listError);
 				}
 			}
 		}
 	}
 
 	private void writeError(EmployeeDataMngInfo employee, PersonInfoCategory category, String bussinessName,
-			 TaskDataSetter dataSetter ,String errorText) {
+			TaskDataSetter dataSetter, String errorText, List<ErrorInfoCPS013> listError) {
 		ErrorInfoCPS013 error = new ErrorInfoCPS013(employee.getEmployeeId(),category.getPersonInfoCategoryId(), employee.getEmployeeCode().v(), bussinessName,
 				chekMasterType, category.getCategoryName().v(),
 				TextResource.localize("Msg_1483", errorText));
+		listError.add(error);
 		setErrorDataGetter(error, dataSetter);
 		
 	}

@@ -335,7 +335,7 @@ module nts.uk.at.view.cps013.e {
 }
 
 function jumtoCPS001A(employeeId: string, categoryId: string) {
-    nts.uk.request.jump('/view/cps/001/a/index.xhtml', { employeeId, categoryId });
+    nts.uk.request.jumpToNewWindow('com', '/view/cps/001/a/index.xhtml', { employeeId, categoryId });
 }
 
  

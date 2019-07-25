@@ -107,38 +107,38 @@ public class CheckDataEmployeeServicesImp implements CheckDataEmployeeServices {
 			//チェック対象データ取得 (Lấy data đối tượng check)
 			Map<String, List<GridLayoutPersonInfoClsDto>> dataOfEmployee =  this.peregProcessor.getFullCategoryDetailByListEmp(Arrays.asList(empCheck), mapCategoryWithListItemDf);
 			
-			checkDataOfEmp(empCheck, dataOfEmployee, excuteCommand, mapCategoryWithListItemDf, employee, bussinessName, dataSetter);
+			checkDataOfEmp(empCheck, dataOfEmployee, excuteCommand, mapCategoryWithListItemDf, employee, bussinessName, dataSetter, listError);
 			
 			countError += 1;
 			
 			dataSetter.updateData("numberEmpChecked", countError);
 		}
 		
-//		if (listError.isEmpty()) {
-//			dataSetter.setData("statusCheck", ExecutionStatusCps013.DONE.name);
-//		} else {
-//			dataSetter.setData("statusCheck", ExecutionStatusCps013.DONE_WITH_ERROR.name);
-//		}
+		if (listError.isEmpty()) {
+			dataSetter.updateData("statusCheck", ExecutionStatusCps013.DONE.name);
+		} else {
+			dataSetter.updateData("statusCheck", ExecutionStatusCps013.DONE_WITH_ERROR.name);
+		}
 		
 	}
 
 	private void checkDataOfEmp(PeregEmpInfoQuery empCheck, Map<String, List<GridLayoutPersonInfoClsDto>> dataOfEmployee, 
-			CheckDataFromUI excuteCommand,Map<PersonInfoCategory, List<PersonInfoItemDefinition>> mapCategoryWithListItemDf, EmployeeDataMngInfo employee, String bussinessName, TaskDataSetter dataSetter) {
+			CheckDataFromUI excuteCommand,Map<PersonInfoCategory, List<PersonInfoItemDefinition>> mapCategoryWithListItemDf, EmployeeDataMngInfo employee, String bussinessName, TaskDataSetter dataSetter, List<ErrorInfoCPS013> listError) {
 		
 		if (excuteCommand.isMasterCheck() && excuteCommand.isPerInfoCheck()) {
-			checkMasterAndPersonInfo(empCheck, dataOfEmployee, excuteCommand, mapCategoryWithListItemDf, employee, bussinessName, dataSetter);
+			checkMasterAndPersonInfo(empCheck, dataOfEmployee, excuteCommand, mapCategoryWithListItemDf, employee, bussinessName, dataSetter, listError);
 		} else if (excuteCommand.isPerInfoCheck()) {
-			this.checkPersonInfoProcess.checkPersonInfo(empCheck, dataOfEmployee, excuteCommand, mapCategoryWithListItemDf, employee, bussinessName, dataSetter);
+			this.checkPersonInfoProcess.checkPersonInfo(empCheck, dataOfEmployee, excuteCommand, mapCategoryWithListItemDf, employee, bussinessName, dataSetter, listError);
 		} else if (excuteCommand.isMasterCheck()) {
-			this.checkMasterProcess.checkMaster(empCheck, dataOfEmployee, excuteCommand, mapCategoryWithListItemDf, employee, bussinessName, dataSetter);
+			this.checkMasterProcess.checkMaster(empCheck, dataOfEmployee, excuteCommand, mapCategoryWithListItemDf, employee, bussinessName, dataSetter, listError);
 		}
 	}
 
 	private void checkMasterAndPersonInfo(PeregEmpInfoQuery empCheck, Map<String, List<GridLayoutPersonInfoClsDto>> dataOfEmployee,
-			CheckDataFromUI excuteCommand, Map<PersonInfoCategory, List<PersonInfoItemDefinition>> mapCategoryWithListItemDf, EmployeeDataMngInfo employee, String bussinessName,  TaskDataSetter dataSetter) {
+			CheckDataFromUI excuteCommand, Map<PersonInfoCategory, List<PersonInfoItemDefinition>> mapCategoryWithListItemDf, EmployeeDataMngInfo employee, String bussinessName,  TaskDataSetter dataSetter, List<ErrorInfoCPS013> listError) {
 		
 		// 個人基本情報チェック (Check thông tin cá nhân cơ bản)
-		this.checkPersonInfoProcess.checkPersonInfo(empCheck, dataOfEmployee, excuteCommand, mapCategoryWithListItemDf, employee, bussinessName, dataSetter);
+		this.checkPersonInfoProcess.checkPersonInfo(empCheck, dataOfEmployee, excuteCommand, mapCategoryWithListItemDf, employee, bussinessName, dataSetter, listError);
 
 		// 対象カテゴリの絞り込み(Filter Category đối tượng check)
 		/**
@@ -175,7 +175,7 @@ public class CheckDataEmployeeServicesImp implements CheckDataEmployeeServices {
 				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 		
 		// マスタチェック (check master)
-		this.checkMasterProcess.checkMaster(empCheck, dataOfEmployee, excuteCommand, mapCategoryWithListItemDfNew, employee, bussinessName, dataSetter);
+		this.checkMasterProcess.checkMaster(empCheck, dataOfEmployee, excuteCommand, mapCategoryWithListItemDfNew, employee, bussinessName, dataSetter, listError);
 		
 	}
 
