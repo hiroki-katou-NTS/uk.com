@@ -19,20 +19,15 @@ import { SideMenu, NavMenu } from '@app/services';
     name: 'ccg007e'
 })
 export class Ccg007eComponent extends Vue {
-
-    // @Prop({ default: '' })
-    // id!: string;
-    public id: string;
-
-    public policy = {
-        lowestDigits: '0',
-        alphabetDigit: '0',
-        numberOfDigits: '0',
-        symbolCharacters: '0',
-        historyCount: '0',
-        validPeriod: '0',
+    public policy: PassWordPolicy = {
+        lowestDigits: 0,
+        alphabetDigit: 0,
+        numberOfDigits: 0,
+        symbolCharacters: 0,
+        historyCount: 0,
+        validPeriod: 0,
         isUse: false,
-        complex: ''
+        complex: []
     };
 
     public model = {
@@ -45,12 +40,13 @@ export class Ccg007eComponent extends Vue {
     };
 
     public created() {
-        let self = this;
-        self.id = self.$route.query.id as string;
+        let self = this,
+            $route = self.$route;
 
-        self.$http.post(servicePath.getUserName + self.id)
+        self.$http.post(servicePath.getUserName + $route.query.id)
             .then((res: { data: LoginInfor }) => {
                 let user: LoginInfor = res.data;
+
                 self.model.userName = user.userName;
                 self.model.contractCode = user.contractCode;
                 self.model.loginId = user.loginId;
@@ -60,24 +56,33 @@ export class Ccg007eComponent extends Vue {
             }).then((user) => {
                 return self.$http.post(servicePath.getPasswordPolicy + self.model.contractCode);
             }).then((res: { data: PassWordPolicy }) => {
-                let policy: PassWordPolicy = res.data, complex = [];
-                self.policy.lowestDigits = policy.lowestDigits.toString();
-                self.policy.alphabetDigit = policy.alphabetDigit.toString();
-                self.policy.numberOfDigits = policy.numberOfDigits.toString();
-                self.policy.symbolCharacters = policy.symbolCharacters.toString();
-                self.policy.historyCount = policy.historyCount.toString();
-                self.policy.validPeriod = policy.validityPeriod.toString();
-                self.policy.isUse = policy.isUse;
+                let policy = res.data;
+
+                self.policy = _.extend(policy, {
+                    complex: [],
+                    validPeriod: policy.validityPeriod
+                });
+
                 if (policy.alphabetDigit > 0) {
-                    complex.push(self.$i18n('CCGS07_25', self.policy.alphabetDigit));
+                    self.policy.complex.push({
+                        rid: 'CCGS07_25',
+                        params: [self.policy.alphabetDigit]
+                    });
                 }
+
                 if (policy.numberOfDigits > 0) {
-                    complex.push(self.$i18n('CCGS07_26', self.policy.numberOfDigits));
+                    self.policy.complex.push({
+                        rid: 'CCGS07_26',
+                        params: [self.policy.numberOfDigits]
+                    });
                 }
+
                 if (policy.symbolCharacters > 0) {
-                    complex.push(self.$i18n('CCGS07_27', self.policy.symbolCharacters));
+                    self.policy.complex.push({
+                        rid: 'CCGS07_27',
+                        params: [self.policy.symbolCharacters]
+                    });
                 }
-                self.policy.complex = complex.join('、');
             });
     }
 
@@ -101,8 +106,9 @@ export class Ccg007eComponent extends Vue {
         }
 
         let self = this,
+            $route = self.$route,
             command: ResetPasswordCommand = {
-                embeddedId: self.id,
+                embeddedId: $route.query.id as string,
                 newPassword: self.model.newPassword,
                 confirmNewPassword: self.model.newPasswordConfirm,
                 userId: self.model.userId
@@ -134,7 +140,7 @@ export class Ccg007eComponent extends Vue {
         if (!res.businessException) {
             return;
         }
-        
+
         /** TODO: show error message */
         if (_.isArray(res.errors) && !_.isEmpty(res.errors)) {
             // nts.uk.ui.dialog.bundledErrors(res);
@@ -175,14 +181,16 @@ interface LoginInfor {
 }
 
 interface PassWordPolicy {
-    notificationPasswordChange: number;
-    loginCheck: boolean;
-    initialPasswordChange: boolean;
+    notificationPasswordChange?: number;
+    loginCheck?: boolean;
+    initialPasswordChange?: boolean;
     isUse: boolean;
     historyCount: number;
     lowestDigits: number;
-    validityPeriod: number;
+    validityPeriod?: number;
     numberOfDigits: number;
     symbolCharacters: number;
     alphabetDigit: number;
+    validPeriod?: number;
+    complex: { rid: string; params: any[] }[];
 }

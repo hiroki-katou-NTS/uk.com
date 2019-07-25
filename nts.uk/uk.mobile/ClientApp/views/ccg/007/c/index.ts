@@ -32,15 +32,15 @@ export class Ccg007CComponent extends CCG007Login {
     public userId: string;
     public changeReason: string;
 
-    public policy = {
-        lowestDigits: '0',
-        alphabetDigit: '0',
-        numberOfDigits: '0',
-        symbolCharacters: '0',
-        historyCount: '0',
-        validPeriod: '0',
+    public policy: PassWordPolicy = {
+        lowestDigits: 0,
+        alphabetDigit: 0,
+        numberOfDigits: 0,
+        symbolCharacters: 0,
+        historyCount: 0,
+        validPeriod: 0,
         isUse: false,
-        complex: ''
+        complex: []
     };
 
     public model = {
@@ -52,6 +52,7 @@ export class Ccg007CComponent extends CCG007Login {
 
     public created() {
         let self = this;
+
         self.mesId = !_.isNil(self.params.spanDays) ? self.$i18n(self.params.changePassReason, self.params.spanDays.toString()) :
             _.isEmpty(self.params.changePassReason) ? self.$i18n(self.params.mesId)
                 : self.$i18n(self.params.changePassReason);
@@ -63,26 +64,32 @@ export class Ccg007CComponent extends CCG007Login {
             companyCode: self.params.companyCode
         })])
             .then((values: Array<any>) => {
-                let policy: PassWordPolicy = values[0].data, user: LoginInfor = values[1].data, complex = [];
+                let policy: PassWordPolicy = values[0].data,
+                    user: LoginInfor = values[1].data,
+                    complex = [];
+
                 self.model.userName = user.userName;
-                self.policy.lowestDigits = policy.lowestDigits.toString();
-                self.policy.alphabetDigit = policy.alphabetDigit.toString();
-                self.policy.numberOfDigits = policy.numberOfDigits.toString();
-                self.policy.symbolCharacters = policy.symbolCharacters.toString();
-                self.policy.historyCount = policy.historyCount.toString();
-                self.policy.validPeriod = policy.validityPeriod.toString();
+
+                self.policy.lowestDigits = policy.lowestDigits;
+                self.policy.alphabetDigit = policy.alphabetDigit;
+                self.policy.numberOfDigits = policy.numberOfDigits;
+                self.policy.symbolCharacters = policy.symbolCharacters;
+                self.policy.historyCount = policy.historyCount;
+                self.policy.validPeriod = policy.validityPeriod;
                 self.policy.isUse = policy.isUse;
                 self.userId = user.userId;
+
                 if (policy.alphabetDigit > 0) {
-                    complex.push(self.$i18n('CCGS07_25', self.policy.alphabetDigit));
+                    self.policy.complex.push({ rid: 'CCGS07_25', params: [policy.alphabetDigit] });
                 }
+
                 if (policy.numberOfDigits > 0) {
-                    complex.push(self.$i18n('CCGS07_26', self.policy.numberOfDigits));
+                    self.policy.complex.push({ rid: 'CCGS07_26', params: [policy.numberOfDigits] });
                 }
+
                 if (policy.symbolCharacters > 0) {
-                    complex.push(self.$i18n('CCGS07_27', self.policy.symbolCharacters));
+                    self.policy.complex.push({ rid: 'CCGS07_27', params: [policy.symbolCharacters] });
                 }
-                self.policy.complex = complex.join('、');
             });
     }
 
@@ -114,7 +121,7 @@ export class Ccg007CComponent extends CCG007Login {
 
         // submitChangePass
         self.$http.post(servicePath.changePass, command).then((res) => {
-            super.login({                
+            self.login({
                 saveInfo: self.params.autoLogin,
                 companyCode: self.params.companyCode,
                 employeeCode: self.params.employeeCode,
@@ -191,14 +198,16 @@ interface LoginInfor {
 }
 
 interface PassWordPolicy {
-    notificationPasswordChange: number;
-    loginCheck: boolean;
-    initialPasswordChange: boolean;
+    notificationPasswordChange?: number;
+    loginCheck?: boolean;
+    initialPasswordChange?: boolean;
     isUse: boolean;
     historyCount: number;
     lowestDigits: number;
-    validityPeriod: number;
+    validPeriod: number;
+    validityPeriod?: number;
     numberOfDigits: number;
     symbolCharacters: number;
     alphabetDigit: number;
+    complex: { rid: string; params: any[] }[];
 }
