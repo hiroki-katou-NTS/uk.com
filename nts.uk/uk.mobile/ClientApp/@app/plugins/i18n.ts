@@ -174,13 +174,18 @@ const i18n = {
 const getText: any = (resource: string | number, params?: string | string[] | { [key: string]: string }) => {
     let lng = Language.current,
         i18lang = resources[lng],
-        groups: { [key: string]: string } = {};
+        groups: { [key: string]: string } = {},
+        regex: RegExp = /{\d+}|#{[^}]+}|{#[^}]+}/g;
 
-    if (!!params) {
+    if (!obj.isNil(params)) {
+        if (obj.isNumber(params)) {
+            params = params.toString();
+        }
+
         if (!obj.isString(params)) {
             obj.extend(groups, params);
         } else {
-            obj.extend(groups, { '0': params.toString() });
+            obj.extend(groups, { '0': params });
         }
     }
 
@@ -188,7 +193,7 @@ const getText: any = (resource: string | number, params?: string | string[] | { 
         // accept numbet raw
         resource = resource.toString();
 
-        [].slice.call(resource.match(/(#{[a-zA-z0-9_]+})|({#[a-zA-z0-9_]+})|({\d+})/g) || [])
+        [].slice.call(resource.match(regex) || [])
             .map((match: string) => match.replace(/[\#\{\}]/g, ''))
             .forEach((key: string) => {
                 if (!obj.has(groups, key)) {
@@ -196,7 +201,7 @@ const getText: any = (resource: string | number, params?: string | string[] | { 
                 }
             });
         let result = (i18lang[resource] || resource)
-            .replace(/(#{[a-zA-z0-9_-]+})|({#[a-zA-z0-9_-]+})|({\d+})/g, (match: string) => {
+            .replace(regex, (match: string) => {
                 let key = match.replace(/[\#\{\}]/g, '');
 
                 return getText((groups[key] || key), groups);
