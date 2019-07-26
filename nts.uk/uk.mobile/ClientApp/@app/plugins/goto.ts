@@ -1,11 +1,12 @@
 import { Vue, VueConstructor } from '@app/provider';
 import { obj } from '@app/utils';
+import { Dictionary } from 'vuex';
 
 const goto = {
     install(vue: VueConstructor<Vue>) {
         vue.mixin({
             beforeMount() {
-                let self = this;
+                let self: Vue = this;
 
                 if (self && self.$router) {
                     obj.extend(self.$router, {
@@ -16,7 +17,7 @@ const goto = {
                                     params: {
                                         params: location.params
                                     }
-                                }, () => resolve(), () => reject());
+                                }, () => { resolve({ msgId: 'success' }); }, () => { reject({ msgId: 'error' }); });
                             });
                         }
                     });
@@ -71,7 +72,7 @@ const goto = {
         });
 
         vue.prototype.$goto = function (nameOrLocation: { name: string; params: { [key: string]: any; }; }, params?: { [key: string]: any; }) {
-            let self = this;
+            let self: Vue = this;
 
             return new Promise((resolve, reject) => {
                 if (typeof nameOrLocation !== 'string') {
@@ -79,13 +80,13 @@ const goto = {
                         name: nameOrLocation.name,
                         params: {
                             params: nameOrLocation.params
-                        }
-                    }, () => resolve(), () => reject);
+                        } as any as Dictionary<string>
+                    }, () => { resolve({ msgId: 'success' }); }, () => { reject({ msgId: 'error' }); });
                 } else {
                     self.$router.push({
                         name: nameOrLocation,
-                        params: { params }
-                    }, () => resolve(), () => reject());
+                        params: { params } as any as Dictionary<string>
+                    }, () => { resolve({ msgId: 'success' }); }, () => { reject({ msgId: 'error' }); });
                 }
             });
         };
