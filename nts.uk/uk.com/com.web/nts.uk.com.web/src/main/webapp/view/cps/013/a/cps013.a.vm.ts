@@ -66,7 +66,7 @@ module nts.uk.com.view.cps013.a.viewmodel {
             });
             $("#grid2").ntsGrid({ 
                 width: '300px',
-                height: '236px',
+                height: '230px',
                 dataSource: self.items(),
                 primaryKey: 'id',
                 virtualization: true,
