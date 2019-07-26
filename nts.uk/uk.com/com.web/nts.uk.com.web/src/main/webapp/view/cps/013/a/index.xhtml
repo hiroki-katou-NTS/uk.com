@@ -16,7 +16,7 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<!-- A1_001 -->
-				<button tabindex="1" id="btn_001" class="proceed large" data-bind = "click: execute">#{i18n.getText('CPS013_1')}</button>
+				<button tabindex="1" id="btn_001" class="proceed large" data-bind = "click: execute, enable: $root.errors.isEmpty">#{i18n.getText('CPS013_1')}</button>
 				<!-- A1_002 -->
 				<div class="link_button">
 				<a class="goout" tabindex="2" data-bind="ntsLinkButton: { jump: '/view/cps/001/a/index.xhtml' }">#{i18n.getText('CPS013_2')}</a>
