@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.transaction.Transactional;
+import javax.transaction.Transactional.TxType;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -534,12 +535,13 @@ public class SyEmployeePubImp implements SyEmployeePub {
 				.collect(Collectors.toMap(x -> x.getPersonId(), x -> x));
 		List<EmpOfLoginCompanyExport> lstresult = new ArrayList<>();
 		lstEmp.forEach(m -> {
+			if(personMap.get(m.getPersonId()) != null){
 			EmpOfLoginCompanyExport emp = new EmpOfLoginCompanyExport();
 			emp.setScd(m.getEmployeeCode().v());
 			emp.setSid(m.getEmployeeId());
 			emp.setBussinesName(personMap.get(m.getPersonId()).getPersonNameGroup().getBusinessName().v());
 			lstresult.add(emp);
-
+			}
 		});
 		return lstresult;
 	}
@@ -853,10 +855,10 @@ public class SyEmployeePubImp implements SyEmployeePub {
 		List<ResultRequest596Export> result = new ArrayList<>();
 		List<EmployeeDataMngInfo> emps = this.empDataMngRepo
 				.findBySidDel(sids.stream().distinct().collect(Collectors.toList()));
-		List<String> personLst = emps.parallelStream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
+		List<String> personLst = emps.stream().map(c -> c.getPersonId()).collect(Collectors.toList());
 		List<Person> personDomainLst = personRepo.getPersonByPersonIds(personLst);
-		emps.parallelStream().forEach(c ->{
-			Optional<Person> personOpt = personDomainLst.parallelStream().filter(p -> p.getPersonId().equals(c.getEmployeeId())).findFirst();
+		emps.stream().forEach(c ->{
+			Optional<Person> personOpt = personDomainLst.stream().filter(p -> p.getPersonId().equals(c.getPersonId())).findFirst();
 			if(personOpt.isPresent()) {
 				result.add(new ResultRequest596Export(c.getEmployeeId(), c.getEmployeeCode().v(),
 						personOpt.get().getPersonNameGroup().getBusinessName().v()));
@@ -906,5 +908,62 @@ public class SyEmployeePubImp implements SyEmployeePub {
 		}
 
 		return result;
+	}
+
+	@Override
+	public List<String> filterSidLstByDatePeriodAndSids(List<String> sids, DatePeriod period) {
+		List<String> sidsDistinct = sids.stream().distinct().collect(Collectors.toList());
+		// ドメインモデル「所属会社履歴（社員別）」を取得する
+		List<String> lstSidFromAffComHist = affComHistRepo.getLstSidByLstSidAndPeriod(sidsDistinct, period);
+
+		if (lstSidFromAffComHist.isEmpty()) {
+			return Collections.emptyList();
+		}
+		// ドメインモデル「休職休業履歴」を取得する		
+		List<String> lstSidAbsHist_NoCheckDate = tempAbsHistRepository.getByListSid(lstSidFromAffComHist);
+		
+		//ドメインモデル「休職休業履歴」が取得できなかった社員は、在職者として社員IDをリストに保持する
+		//(lưu employeeID  ko lấy được ở domain 「休職休業履歴」 vào list nhân viên đương nhiệm)
+		List<String> result = lstSidFromAffComHist.stream().filter(i -> !lstSidAbsHist_NoCheckDate.contains(i))
+				.collect(Collectors.toList());
+		
+		// 「休職休業履歴」．期間をチェックし、１日でも在職している社員を取得する
+		//(Check 「休職休業履歴」．期間, lấy employee đang tồn tại dù chỉ 1 ngày)
+		List<String> lstTempAbsenceHistory = tempAbsHistRepository.getLstSidByListSidAndDatePeriod(lstSidAbsHist_NoCheckDate,
+				period);
+		
+		//１日でも在職している社員は在職者として社員IDをリストに保持する
+		//(Lưu employee ở trên vào list employee đương nhiệm)
+		if(!lstTempAbsenceHistory.isEmpty()) {
+			result.addAll(lstTempAbsenceHistory);
+		}
+		
+		if (result.isEmpty()) {
+			return Collections.emptyList();
+		}
+		//在職者の社員IDをListで返す
+		//(return list employeeID của nhân viên đương nhiệm)
+		return result;
+	}
+	
+	@Override
+	public List<String> filterSidByCidAndPeriod(String cid, DatePeriod period) {
+		//ドメインモデル「社員データ管理情報」を取得する
+		List<String> listEmp = empDataMngRepo.getAllEmpNotDeleteByCid(cid).stream().map(c->c.getEmployeeId()).collect(Collectors.toList());
+		//ドメインモデル「所属会社履歴（社員別）」をすべて取得する
+		//取得できた「所属会社履歴（社員別）」の社員IDを返す
+		List<String> lstSidResult = affComHistRepo.getLstSidByLstSidAndPeriod(listEmp, period);
+		return lstSidResult;
+	}
+
+	@Override
+	public Map<String, String> getAllSidAndScdBySids(List<String> sids) {
+		if (CollectionUtil.isEmpty(sids)) {
+			return new HashMap<>();
+		}
+		// Lấy toàn bộ domain「社員データ管理情報」, convert sid, scd
+		Map<String, String> empMaps = this.empDataMngRepo
+				.getAllSidAndScdBySids(sids.stream().distinct().collect(Collectors.toList()));
+		return empMaps;
 	}
 }

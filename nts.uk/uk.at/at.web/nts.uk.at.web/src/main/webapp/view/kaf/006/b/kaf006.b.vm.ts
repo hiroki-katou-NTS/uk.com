@@ -485,13 +485,16 @@ module nts.uk.at.view.kaf006.b{
                 self.multilContent(data.application.applicationReason);
             }
             self.workTimeCodes(data.workTimeCodes);
+            if(data.masterUnreg){
+                 self.typeOfDutys.push(new common.TypeOfDuty(data.workTypeCode, data.workTypeCode + '　' + 'マスタ未登録'));
+            }
             if (!nts.uk.util.isNullOrEmpty(data.workTypes)) {
                 for (let i = 0; i < data.workTypes.length; i++) {
                     self.typeOfDutys.push(new common.TypeOfDuty(data.workTypes[i].workTypeCode, data.workTypes[i].displayName));
                     self.workTypecodes.push(data.workTypes[i].workTypeCode);
                 }
-                self.selectedTypeOfDuty(data.workTypeCode);
             }
+            self.selectedTypeOfDuty(data.workTypeCode);
             self.changeWorkHourValueFlg(data.displayWorkChangeFlg);
             self.changeWorkHourValue(data.changeWorkHourFlg);
             self.selectedAllDayHalfDayValue(data.allDayHalfDayLeaveAtr);

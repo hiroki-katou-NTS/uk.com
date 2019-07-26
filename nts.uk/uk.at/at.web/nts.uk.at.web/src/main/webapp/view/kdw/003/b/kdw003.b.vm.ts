@@ -34,11 +34,12 @@ module nts.uk.at.view.kdw003.b {
                 if (!_.isEmpty(messageRefer)) {
                     self.showMessage(true);
                     self.messageAlert(nts.uk.resource.getMessage(messageRefer));
-                    let windowSize = nts.uk.ui.windows.getSelf();
-                    windowSize.$dialog.dialog('option', {
-                        width : 900,
-                        height : 570
-                    });
+
+//                    let windowSize = nts.uk.ui.windows.getSelf();
+//                    windowSize.$dialog.dialog('option', {
+//                        width : 900,
+//                        height : 530
+//                    });
                     let data = [];
                      let i: number = 0;
                     _.each(errorValidate, value => {

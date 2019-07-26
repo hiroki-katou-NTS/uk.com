@@ -4,7 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.predset;
 
+import java.util.Optional;
+
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
@@ -19,7 +22,8 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 // 所定時間設定
 @Getter
-public class PredetemineTimeSetting extends WorkTimeAggregateRoot {
+@NoArgsConstructor
+public class PredetemineTimeSetting extends WorkTimeAggregateRoot implements Cloneable{
 
 	/** The company id. */
 	// 会社ID
@@ -261,7 +265,7 @@ public class PredetemineTimeSetting extends WorkTimeAggregateRoot {
 	 * @param workNo the work no
 	 * @return the time sheet of
 	 */
-	public TimezoneUse getTimeSheetOf(int workNo) {
+	public Optional<TimezoneUse> getTimeSheetOf(int workNo) {
 		return this.prescribedTimezoneSetting.getMatchWorkNoTimeSheet(workNo);
 	}
 
@@ -301,5 +305,26 @@ public class PredetemineTimeSetting extends WorkTimeAggregateRoot {
 		} 		
 	}
 
-	
+	/**
+ 	 * create this Instance
+	 * @return new Instance
+	 */
+	@Override
+	public PredetemineTimeSetting clone() {
+		PredetemineTimeSetting cloned = new PredetemineTimeSetting();
+		try {
+			cloned.companyId = this.companyId;
+			cloned.rangeTimeDay = new AttendanceTime(this.rangeTimeDay.v());
+			cloned.workTimeCode = new WorkTimeCode(this.workTimeCode.v());
+			cloned.predTime = this.predTime.clone();
+			cloned.nightShift = this.nightShift ? true : false ;
+			cloned.prescribedTimezoneSetting = this.prescribedTimezoneSetting.clone();
+			cloned.startDateClock = new TimeWithDayAttr(this.startDateClock.valueAsMinutes());
+			cloned.predetermine = this.predetermine ? true : false ;
+		}
+		catch (Exception e){
+			throw new RuntimeException("PredetemineTimeSetting clone error.");
+		}
+		return cloned;
+	}
 }

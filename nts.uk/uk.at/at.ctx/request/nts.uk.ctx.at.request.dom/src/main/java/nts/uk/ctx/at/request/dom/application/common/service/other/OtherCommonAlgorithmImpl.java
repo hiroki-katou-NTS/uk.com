@@ -72,6 +72,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.service.WorkTypeIsClosedService;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.mail.MailSender;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.com.url.RegisterEmbededURL;
@@ -386,7 +387,7 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 			String URL = "";
 			// ドメインモデル「メール内容のURL埋込設定」を取得する
 			Optional<UrlEmbedded> opUrlEmbedded = urlEmbeddedRepository.getUrlEmbeddedById(companyID);
-			if(opUrlEmbedded.isPresent()){
+			if(opUrlEmbedded.isPresent()&&opUrlEmbedded.get().getUrlEmbedded()==NotUseAtr.USE){
 				URL = registerEmbededURL.registerEmbeddedForApp(
 						application.getAppID(), 
 						application.getAppType().value, 
@@ -458,7 +459,7 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		String URL = "";
 		// ドメインモデル「メール内容のURL埋込設定」を取得する
 		Optional<UrlEmbedded> opUrlEmbedded = urlEmbeddedRepository.getUrlEmbeddedById(companyID);
-		if(opUrlEmbedded.isPresent()){
+		if(opUrlEmbedded.isPresent()&&opUrlEmbedded.get().getUrlEmbedded()==NotUseAtr.USE){
 			URL = registerEmbededURL.registerEmbeddedForApp(
 					application.getAppID(), 
 					application.getAppType().value, 

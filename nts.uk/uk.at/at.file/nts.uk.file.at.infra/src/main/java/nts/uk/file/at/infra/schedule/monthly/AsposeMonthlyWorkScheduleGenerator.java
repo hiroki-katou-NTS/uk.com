@@ -69,6 +69,7 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.service.CompanyMonthlyItemService;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.bs.company.dom.company.Company;
 import nts.uk.ctx.bs.company.dom.company.CompanyRepository;
 import nts.uk.ctx.bs.employee.dom.employment.Employment;
@@ -105,6 +106,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeName;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.DataDialogWithTypeProcessor;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
@@ -169,6 +171,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	/** The data processor. */
 	@Inject
 	private DataDialogWithTypeProcessor dataProcessor;
+	
+	@Inject
+	private ClosureService closureService;
 
 	/** The Constant TEMPLATE_DATE. */
 //	private static final String TEMPLATE_DATE= "report/KWR006_Date.xlsx";
@@ -645,15 +650,19 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		Map<String, WorkplaceInfo> lstWorkplace = new TreeMap<>(); // Automatically sort by code, will need to check hierarchy later
 		List<String> lstWorkplaceId = new ArrayList<>();
 		List<String> lstEmployeeNoWorkplace = new ArrayList<>();
+		//マスタの取得（月次）
+		DatePeriod DatePeriod = closureService.getClosurePeriod(query.getClosureId(), query.getEndYearMonth());
+		//締め期間．終了年月日
+		GeneralDate finalDate = DatePeriod.end();
 		
-		GeneralDate finalDate = query.getBaseDate();
-
-        List<WkpHistImport> workplaceList;
+        List<WkpHistImport> workplaceList = new ArrayList<>();
         {
             List<WkpHistImport> workplaceListSync = Collections.synchronizedList(new ArrayList<>());
             this.parallel.forEach(query.getEmployeeId(), sid -> {
                 WkpHistImport workplaceImport = workplaceAdapter.findWkpBySid(sid, finalDate);
-                workplaceListSync.add(workplaceImport);
+                if(workplaceImport != null) {
+                	workplaceListSync.add(workplaceImport);
+                }
             });
             workplaceList = new ArrayList<>(workplaceListSync);
         }
@@ -729,8 +738,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 
 		Optional<GeneralDate> baseDate = service.getProcessingYM(companyId, closureId);
 		if (!baseDate.isPresent()) {
-			//Uchida bảo là lỗi hệ thống _ ThànhPV
-			throw new BusinessException("");
+			throw new BusinessException("Uchida bảo là lỗi hệ thống _ ThànhPV");
 		}
 		Map<String, YearMonthPeriod> employeePeriod = service.getAffiliationPeriod(query.getEmployeeId(), new YearMonthPeriod(query.getStartYearMonth(), query.getEndYearMonth()), baseDate.get());
 		{
@@ -2989,7 +2997,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
             Cell employeeTagCell = cells.get(currentRow, 0);
             employeeTagCell.setValue(WorkScheOutputConstants.EMPLOYEE + "　" + employeeReportData.employeeCode
                     + "　" + employeeReportData.employeeName + "　" + WorkScheOutputConstants.EMPLOYMENT + "　"
-                    + employeeReportData.employmentName + "　" + WorkScheOutputConstants.POSITION + "　"
+                    + (employeeReportData.employmentName == null ? "" : (employeeReportData.employmentName + "　")) + WorkScheOutputConstants.POSITION + "　"
                     + employeeReportData.position);
             currentRow++;
         }

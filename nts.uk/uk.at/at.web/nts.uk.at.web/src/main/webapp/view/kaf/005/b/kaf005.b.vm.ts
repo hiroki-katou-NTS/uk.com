@@ -318,13 +318,13 @@ module nts.uk.at.view.kaf005.b {
                                  0,
                                  data.preAppOvertimeDto.overTimeInputsPre[i].frameName == null ? null : (data.preAppOvertimeDto.overTimeInputsPre[i].frameName + " : "),
                                  data.preAppOvertimeDto.overTimeInputsPre[i].startTime, data.preAppOvertimeDto.overTimeInputsPre[i].endTime,
-                                 data.preAppOvertimeDto.overTimeInputsPre[i].applicationTime ==-1 ? null :self.convertIntToTime(data.preAppOvertimeDto.overTimeInputsPre[i].applicationTime),
+                                 data.preAppOvertimeDto.overTimeInputsPre[i].applicationTime == null ? null :self.convertIntToTime(data.preAppOvertimeDto.overTimeInputsPre[i].applicationTime),
                                  null));
                             }
                         }
                     }
-                    self.overTimeShiftNightPre(data.preAppOvertimeDto.overTimeShiftNightPre == -1 ? null : self.convertIntToTime(data.preAppOvertimeDto.overTimeShiftNightPre));
-                    self.flexExessTimePre(data.preAppOvertimeDto.flexExessTimePre == -1 ? null : self.convertIntToTime(data.preAppOvertimeDto.flexExessTimePre));
+                    self.overTimeShiftNightPre(data.preAppOvertimeDto.overTimeShiftNightPre == null ? null : self.convertIntToTime(data.preAppOvertimeDto.overTimeShiftNightPre));
+                    self.flexExessTimePre(data.preAppOvertimeDto.flexExessTimePre == null ? null : self.convertIntToTime(data.preAppOvertimeDto.flexExessTimePre));
                 }
                 self.convertAppOvertimeReferDto(data);
                 let dataRestTime = _.filter(data.overTimeInputs, {'attendanceID': 0});
@@ -980,12 +980,12 @@ module nts.uk.at.view.kaf005.b {
                                 0, data.appOvertimeReference.overTimeInputsRefer[i].frameName +" : ",
                                 data.appOvertimeReference.overTimeInputsRefer[i].applicationTime,
                                 data.appOvertimeReference.overTimeInputsRefer[i].preAppTime,
-                                data.appOvertimeReference.overTimeInputsRefer[i].caculationTime == -1 ? null : self.convertIntToTime(data.appOvertimeReference.overTimeInputsRefer[i].caculationTime) ,null));
+                                data.appOvertimeReference.overTimeInputsRefer[i].caculationTime == null ? null : self.convertIntToTime(data.appOvertimeReference.overTimeInputsRefer[i].caculationTime) ,null));
                                 }
                         }
                     }
-                     self.overTimeShiftNightRefer(data.appOvertimeReference.overTimeShiftNightRefer == -1 ? null : self.convertIntToTime(data.appOvertimeReference.overTimeShiftNightRefer));
-                     self.flexExessTimeRefer(data.appOvertimeReference.flexExessTimeRefer == -1? null : self.convertIntToTime(data.appOvertimeReference.flexExessTimeRefer));
+                     self.overTimeShiftNightRefer(data.appOvertimeReference.overTimeShiftNightRefer == null ? null : self.convertIntToTime(data.appOvertimeReference.overTimeShiftNightRefer));
+                     self.flexExessTimeRefer(data.appOvertimeReference.flexExessTimeRefer == null ? null : self.convertIntToTime(data.appOvertimeReference.flexExessTimeRefer));
                 }
             }
             convertIntToTime(data : number) : string{

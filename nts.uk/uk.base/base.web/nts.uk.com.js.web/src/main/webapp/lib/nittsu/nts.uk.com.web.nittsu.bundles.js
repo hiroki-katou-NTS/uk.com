@@ -1756,7 +1756,7 @@ var nts;
                     var startEra = moment(i.start), endEraYear = moment(i.end);
                     if (startEra.isSameOrBefore(formatted) && formatted.isSameOrBefore(endEraYear)) {
                         var diff = formatted.year() - startEra.year() + 1;
-                        return new JapanDateMoment(diff === 1 ? i.name + "元年" : i.name, diff, formatted.month() + 1, formatted.date());
+                        return new JapanDateMoment(i.name, diff, formatted.month() + 1, formatted.date());
                     }
                 }
                 return null;
@@ -3797,18 +3797,42 @@ var nts;
                     errorPages.stopUse = stopUse;
                 })(errorPages = specials.errorPages || (specials.errorPages = {}));
             })(specials = request.specials || (request.specials = {}));
-            function jumpFromDialogOrFrame(webAppId, path, data) {
-                var self;
-                if (nts.uk.util.isInFrame()) {
-                    self = nts.uk.ui.windows.getSelf();
+            function jumpToNewWindow(webAppId, path, data) {
+                // handle overload
+                if (typeof arguments[1] !== 'string') {
+                    jumpToNewWindow.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
+                    return;
+                }
+                if (data === undefined) {
+                    uk.sessionStorage.removeItem(request.STORAGE_KEY_TRANSFER_DATA);
                 }
                 else {
-                    self = window.parent.nts.uk.ui.windows.getSelf();
+                    uk.sessionStorage.setItemAsJson(request.STORAGE_KEY_TRANSFER_DATA, { data: data, jump: { webAppId: webAppId, path: path } });
                 }
-                while (!self.isRoot) {
-                    self = self.parent;
+                // open new tab (like current tab)
+                var wd = window.open(window.location.href, '_blank');
+                wd.focus();
+                // remove storage on current tab
+                nts.uk.sessionStorage.removeItem(uk.request.STORAGE_KEY_TRANSFER_DATA);
+            }
+            request.jumpToNewWindow = jumpToNewWindow;
+            // jumpToNewWindow step 2
+            $(function () {
+                setTimeout(function () {
+                    __viewContext.transferred.ifPresent(function (data) {
+                        if (_.isEqual(_.keys(data), ['data', 'jump'])) {
+                            nts.uk.request.jump(data.jump.webAppId, data.jump.path, data.data);
+                        }
+                    });
+                }, 0);
+            });
+            function jumpFromDialogOrFrame(webAppId, path, data) {
+                // handle overload
+                if (typeof arguments[1] !== 'string') {
+                    jumpFromDialogOrFrame.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
+                    return;
                 }
-                self.globalContext.nts.uk.request.jump(webAppId, path, data);
+                window.top.nts.uk.request.jump(webAppId, path, data);
             }
             request.jumpFromDialogOrFrame = jumpFromDialogOrFrame;
             function jump(webAppId, path, data) {
@@ -5383,6 +5407,7 @@ var nts;
                         this.option().show(false);
                     };
                     ErrorsViewModel.prototype.addError = function (error) {
+                        var _this = this;
                         var duplicate = _.filter(this.errors(), function (e) { return e.$control.is(error.$control)
                             && (typeof error.message === "string" ? e.messageText === error.message : e.messageText === error.messageText); });
                         if (duplicate.length == 0) {
@@ -5412,8 +5437,15 @@ var nts;
                                     error.errorCode = error.message.messageId;
                                 }
                             }
-                            this.errors.push(error);
+                            // if exist, push error to list
+                            if (document.body.contains(error.$control[0])) {
+                                this.errors.push(error);
+                            }
                         }
+                        // remove all error not match with any control
+                        setTimeout(function () {
+                            _this.errors.remove(function (e) { return !document.body.contains(e.$control[0]); });
+                        }, 100);
                     };
                     ErrorsViewModel.prototype.hasError = function () {
                         return this.errors().length > 0;
@@ -23358,6 +23390,8 @@ var nts;
                     v_1.VFACON_ASC = "view-facon-asc";
                     v_1.FACON_ASC = "facon-asc";
                     v_1.FACON_DESC = "facon-desc";
+                    v_1.ALIGN_LEFT = "halign-left";
+                    v_1.ALIGN_RIGHT = "halign-right";
                     v_1.DefaultRowConfig = { css: { height: BODY_ROW_HEIGHT } };
                     v_1._voilerRows = {};
                     v_1._encarRows = [];
@@ -25137,8 +25171,11 @@ var nts;
                             var col = visibleColumnsMap[key];
                             if (!col)
                                 tdStyle += "; display: none;";
-                            else if (col[0].columnCssClass === hpl.CURRENCY_CLS || col[0].columnCssClass === "halign-right") {
-                                td.classList.add(col[0].columnCssClass);
+                            else if (!_.isNil(col[0].columnCssClass)) {
+                                col[0].columnCssClass.split(' ').forEach(function (clz) {
+                                    if (clz === hpl.CURRENCY_CLS || clz === "halign-right")
+                                        td.classList.add(clz);
+                                });
                             }
                             if (key === "rowNumber") {
                                 td.innerHTML = cData; //!_.isNil(numText) ? numText : rowIdx + 1;
@@ -25466,8 +25503,11 @@ var nts;
                             var col = self.visibleColumnsMap[key];
                             if (!col)
                                 tdStyle += "; display: none;";
-                            else if (col[0].columnCssClass === hpl.CURRENCY_CLS || col[0].columnCssClass === "halign-right") {
-                                td.classList.add(col[0].columnCssClass);
+                            else if (!_.isNil(col[0].columnCssClass)) {
+                                col[0].columnCssClass.split(' ').forEach(function (clz) {
+                                    if (clz === hpl.CURRENCY_CLS || clz === "halign-right")
+                                        td.classList.add(clz);
+                                });
                             }
                             var controlDef = self.controlMap[key];
                             var id = rData[self.primaryKey];
@@ -29004,6 +29044,12 @@ var nts;
                                 setTimeout(function () {
                                     $input.select();
                                 }, 0);
+                                if ($tCell.classList.contains(v.ALIGN_RIGHT)) {
+                                    $input.classList.remove(v.ALIGN_LEFT);
+                                }
+                                else {
+                                    $input.classList.add(v.ALIGN_LEFT);
+                                }
                                 var coord_3 = ti.getCellCoord($tCell);
                                 $input.style.imeMode = "inactive";
                                 if (coord_3) {
@@ -29206,6 +29252,12 @@ var nts;
                                         var data = $.data($tCell, v.DATA);
                                         $input.value = !_.isNil(data) ? data : "";
                                         $input.select();
+                                    }
+                                    if ($tCell.classList.contains(v.ALIGN_RIGHT)) {
+                                        $input.classList.remove(v.ALIGN_LEFT);
+                                    }
+                                    else {
+                                        $input.classList.add(v.ALIGN_LEFT);
                                     }
                                     cType.type = dkn.TEXTBOX;
                                     var coord_4 = ti.getCellCoord($tCell);
@@ -30974,6 +31026,10 @@ var nts;
                                 if (result && !result.isValid) {
                                     khl.set(cell, result.errorMessage);
                                     return;
+                                }
+                                if (khl._infobulle) {
+                                    ti.remove(khl._infobulle);
+                                    dkn.closeDD(khl._infobulle, true);
                                 }
                                 return $td;
                             }
@@ -42883,8 +42939,8 @@ var nts;
                         //                weekStart: 0
                         //            });
                         self.rangeName = nts.uk.util.isNullOrUndefined(rangeName) ? "期間入力フォーム" : nts.uk.resource.getControlName(rangeName);
-                        self.startName = nts.uk.util.isNullOrUndefined(startName) ? "期間入力フォーム開始" : nts.uk.resource.getControlName(startName);
-                        self.endName = nts.uk.util.isNullOrUndefined(endName) ? "期間入力フォーム終了" : nts.uk.resource.getControlName(endName);
+                        self.startName = nts.uk.util.isNullOrUndefined(startName) ? self.rangeName + "開始" : nts.uk.resource.getControlName(startName);
+                        self.endName = nts.uk.util.isNullOrUndefined(endName) ? self.rangeName + "終了" : nts.uk.resource.getControlName(endName);
                         self.getMessage = nts.uk.resource.getMessage;
                         ko.bindingHandlers["ntsDatePicker"].init(self.$start[0], function () {
                             return self.createStartBinding(data);
@@ -43005,25 +43061,23 @@ var nts;
                     DateRangeHelper.prototype.createStartBinding = function (parentBinding, name, format) {
                         var self = this;
                         return { required: parentBinding.required,
-                            name: parentBinding.startName ? self.startName : parentBinding.name,
+                            name: self.startName,
                             value: self.startValue,
                             dateFormat: self.dateFormat,
                             valueFormat: self.dateFormat,
                             enable: parentBinding.enable,
                             disabled: parentBinding.disabled
-                            //,endDate: self.endValue 
                         };
                     };
                     DateRangeHelper.prototype.createEndBinding = function (parentBinding, name) {
                         var self = this;
                         return { required: parentBinding.required,
-                            name: parentBinding.endName ? self.endName : parentBinding.name,
+                            name: self.endName,
                             value: self.endValue,
                             dateFormat: self.dateFormat,
                             valueFormat: self.dateFormat,
                             enable: parentBinding.enable,
                             disabled: parentBinding.disabled
-                            //,startDate: self.startValue 
                         };
                     };
                     return DateRangeHelper;

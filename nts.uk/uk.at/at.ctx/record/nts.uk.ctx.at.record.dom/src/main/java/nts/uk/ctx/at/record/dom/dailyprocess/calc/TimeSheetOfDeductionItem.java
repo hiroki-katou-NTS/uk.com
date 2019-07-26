@@ -13,6 +13,7 @@ import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.MidNightTimeSheetForCalc;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
+//import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
@@ -535,10 +536,12 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 	 */
 	public TimeSpanForCalc decisionNewSpan(TimeSpanForCalc timeSpan,TimeWithDayAttr baseTime,boolean isDateBefore) {
 		if(isDateBefore) {
-			return new TimeSpanForCalc(timeSpan.getStart(),baseTime);
+			val endOclock = timeSpan.getEnd().lessThan(baseTime) ? timeSpan.getEnd() : baseTime; 
+			return new TimeSpanForCalc(timeSpan.getStart(),endOclock);
 		}
 		else {
-			return new TimeSpanForCalc(baseTime,timeSpan.getEnd());
+			val startOclock = baseTime.lessThan(timeSpan.getStart()) ? timeSpan.getStart() : baseTime;
+			return new TimeSpanForCalc(startOclock,timeSpan.getEnd());
 		}
 	}
 	
@@ -833,5 +836,23 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 		}
 		returnList.addAll(this.collectShortTimeSheet());
 		return returnList;
+	}
+	
+	public static TimeSheetOfDeductionItem createFromDeductionTimeSheet(nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime dTimeSheet) {
+		return TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(new TimeZoneRounding(dTimeSheet.getStart(),dTimeSheet.getEnd(), new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN)),
+				  new TimeSpanForCalc(dTimeSheet.getStart(), dTimeSheet.getEnd()),
+				  Collections.emptyList(),
+				  Collections.emptyList(),
+				  Collections.emptyList(),
+				  Collections.emptyList(),
+				  Optional.empty(),
+				  WorkingBreakTimeAtr.NOTWORKING,
+				  Finally.empty(),
+				  Finally.of(BreakClassification.BREAK),
+				  Optional.empty(),
+				  DeductionClassification.BREAK,
+				  Optional.empty()
+				  );
+				
 	}
 }

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.service.event.breaktime;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -173,7 +174,7 @@ public class BreakTimeOfDailyService {
 			
 			List<ItemValue> ipByHandValues = converter.convert(itemsToMerge);
 			
-			converter.withBreakTime(breakTime);
+			converter.withBreakTime(new ArrayList<>(Arrays.asList(breakTime)));
 			
 //			List<ItemValue> recordVal = converter.convert(itemsToMerge);
 			
@@ -208,7 +209,8 @@ public class BreakTimeOfDailyService {
 	/** 手修正の勤怠項目を判断する */
 	private boolean isInputByHands(EditStateSetting es) {
 
-		return es == EditStateSetting.HAND_CORRECTION_MYSELF || es == EditStateSetting.HAND_CORRECTION_OTHER;
+		//return es == EditStateSetting.HAND_CORRECTION_MYSELF || es == EditStateSetting.HAND_CORRECTION_OTHER;
+		return true;
 	}
 
 	private List<EditStateOfDailyPerformance> getEditStateByItems(String empId, GeneralDate targetDate,

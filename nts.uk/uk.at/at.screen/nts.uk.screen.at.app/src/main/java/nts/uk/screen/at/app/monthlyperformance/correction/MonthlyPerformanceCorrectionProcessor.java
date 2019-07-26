@@ -275,8 +275,8 @@ public class MonthlyPerformanceCorrectionProcessor {
 				screenDto.setLstEmployee(param.getLstEmployees());
 			} else {
 				List<RegulationInfoEmployeeQueryR> regulationRs = regulationInfoEmployeePub.search(
-						createQueryEmployee(new ArrayList<>(), screenDto.getLstActualTimes().get(0).getStartDate(),
-								screenDto.getLstActualTimes().get(0).getEndDate()));
+						createQueryEmployee(new ArrayList<>(), presentClosingPeriodExport.get().getClosureStartDate(),
+								presentClosingPeriodExport.get().getClosureEndDate()));
 
 				List<MonthlyPerformanceEmployeeDto> lstEmployeeDto = regulationRs.stream().map(item -> {
 					return new MonthlyPerformanceEmployeeDto(item.getEmployeeId(), item.getEmployeeCode(),
@@ -285,6 +285,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 				screenDto.setLstEmployee(lstEmployeeDto);
 				param.setLstEmployees(lstEmployeeDto);
 			}
+			
 			screenDto.setLoginUser(employeeId);
 
 			List<String> employeeIds = screenDto.getLstEmployee().stream().map(e -> e.getId())

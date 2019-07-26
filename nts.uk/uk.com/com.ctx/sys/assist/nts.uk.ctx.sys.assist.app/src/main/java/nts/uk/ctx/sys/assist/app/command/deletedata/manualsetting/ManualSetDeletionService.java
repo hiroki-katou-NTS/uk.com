@@ -5,11 +5,9 @@ package nts.uk.ctx.sys.assist.app.command.deletedata.manualsetting;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +40,7 @@ import nts.uk.ctx.sys.assist.dom.deletedata.ManagementDeletion;
 import nts.uk.ctx.sys.assist.dom.deletedata.ManagementDeletionRepository;
 import nts.uk.ctx.sys.assist.dom.deletedata.ManualSetDeletion;
 import nts.uk.ctx.sys.assist.dom.deletedata.OperatingCondition;
+import nts.uk.ctx.sys.assist.dom.deletedata.PasswordCompressFileEncrypt;
 import nts.uk.ctx.sys.assist.dom.deletedata.Result;
 import nts.uk.ctx.sys.assist.dom.deletedata.ResultDeletion;
 import nts.uk.ctx.sys.assist.dom.deletedata.ResultDeletionRepository;
@@ -157,7 +156,7 @@ public class ManualSetDeletionService extends ExportService<Object>{
 					//ドメインモデル「データ削除の結果ログ」へ追加する
 					saveEndLogResult(domain, state);
 					//ドメインモデル「データ削除の保存結果」を更新する
-					saveEndResultDel(domain, resultSave);
+					saveEndResultDel(domain, resultSave,domain.isSaveBeforeDeleteFlg());
 					//ドメインモデル「データ削除動作管理」を更新する
 					saveEndManagementDel(delId, state);
 					
@@ -184,7 +183,7 @@ public class ManualSetDeletionService extends ExportService<Object>{
 			//ドメインモデル「データ削除の結果ログ」へ追加する
 			saveEndLogResult(domain, resultDel.getState());
 			//ドメインモデル「データ削除の保存結果」を更新する
-			saveEndResultDel(domain, resultDel);
+			saveEndResultDel(domain, resultDel,domain.isSaveBeforeDeleteFlg());
 			//ドメインモデル「データ削除動作管理」を更新する
 			saveEndManagementDel(delId, resultDelState);
 		} else {
@@ -208,7 +207,7 @@ public class ManualSetDeletionService extends ExportService<Object>{
 		ResultDeletion resultDomain = ResultDeletion.createFromJavatype(domain.getDelId(), domain.getCompanyId(),
 				domain.getDelName().v(), delType, domain.isSaveBeforeDeleteFlg(), null, numberEmployees,
 				domain.getSystemType(), domain.getSId(), SaveStatus.SUCCESS.value, startDateTimeDel, null, null, null,
-				fileSize);
+				fileSize, null);
 		repoResultDel.add(resultDomain);
 	}
 
@@ -280,10 +279,9 @@ public class ManualSetDeletionService extends ExportService<Object>{
 	 * ドメインモデル「データ削除の保存結果」を更新する
 	 * Update domain model 「データ削除の保存結果」
 	 */
-	private void saveEndResultDel(ManualSetDeletion domain, Result result) {
+	private void saveEndResultDel(ManualSetDeletion domain, Result result,Boolean isSaveBeforeDeleteFlg) {
 		Optional<ResultDeletion> optResultDel = repoResultDel.getResultDeletionById(domain.getDelId());
 		if (optResultDel.isPresent()) {
-			String fileName = null;
 			int fileSize = 0;
 			String fileId = null;
 			
@@ -298,17 +296,29 @@ public class ManualSetDeletionService extends ExportService<Object>{
 			GeneralDateTime endDateTimeDel = GeneralDateTime.now();
 			File file = result.getFile();
 			if (file != null) {
-				fileName = file.getName();
 				fileSize = (int)file.length();
 				fileId = result.getFileId();
 			}
-			
+			String datetimenow = GeneralDateTime.now().toString("yyyyMMddHHmmss");
+			String nameFile = domain.getCompanyId() + domain.getDelName()  + datetimenow;	
 			ResultDeletion resultDel = optResultDel.get();
 			resultDel.setStatus(status);
 			resultDel.setEndDateTimeDel(endDateTimeDel);
-			resultDel.setFileName(new FileName(fileName));
+			resultDel.setFileName(new FileName(nameFile));
 			resultDel.setFileSize(fileSize);
 			resultDel.setFileId(fileId);
+			if (fileId == null || fileId == "") {
+				resultDel.setDeletedFilesFlg(true);
+			} else {
+				resultDel.setDeletedFilesFlg(false);
+			}
+			
+			// redmine #108204
+			if (domain.isExistCompressPassFlg()) {
+				resultDel.setPasswordCompressFileEncrypt(domain.getPasswordCompressFileEncrypt());
+			} else {
+				resultDel.setPasswordCompressFileEncrypt(Optional.empty());
+			}
 			repoResultDel.update(resultDel);
 		}
 	}
@@ -382,7 +392,7 @@ public class ManualSetDeletionService extends ExportService<Object>{
 		try {
 			// Update domain model 「データ削除動作管理」
 			repoManagementDel.updateCatCountAnCond(delId, 0, OperatingCondition.SAVING);
-
+			
 			// テーブル一覧の内容をCSVファイルに書き出す Add Table to CSV
 			generalTableDeletionToCsv(generatorContext, tableDeletionDataCsvs, domain);
 
@@ -494,9 +504,8 @@ public class ManualSetDeletionService extends ExportService<Object>{
 		
 		// ファイル圧縮実行
 		boolean isExistCompressPassFlg = domain.isExistCompressPassFlg();
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
-		String executeDate = sdf.format(new Date()); 
-		String nameFile = domain.getCompanyId()+"_" + domain.getDelName() + "_" + executeDate + ZIP_FILE_EXTENSION;
+		String datetimenow = GeneralDateTime.now().toString("yyyyMMddHHmmss"); 
+		String nameFile = domain.getCompanyId() + domain.getDelName()  + datetimenow + ZIP_FILE_EXTENSION;
 		
 		Path compressedFile = null;
 		if (!isExistCompressPassFlg) {

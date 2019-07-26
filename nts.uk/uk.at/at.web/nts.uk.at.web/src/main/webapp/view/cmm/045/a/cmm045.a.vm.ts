@@ -863,11 +863,15 @@ module cmm045.a.viewmodel {
             let timeRes2 = groups.strTime2  == '' ? '' : groups.strTime2 + getText('CMM045_100') + groups.endTime2;
             //ver14
             let contentRes1 =  timeRes1 == '' ? timeRes2 : timeRes2 == '' ? timeRes1 : timeRes1 + '　' + timeRes2;
-            let lstFrameOv: Array<any> = groups.lstFrameRes;
-            //add shiftNight
-            lstFrameOv.push(new vmbase.OverTimeFrame(1,11,getText('CMM045_270'),0,groups.shiftNightTime));
-            //add flex
-            lstFrameOv.push(new vmbase.OverTimeFrame(1,12,getText('CMM045_271'),0,groups.flexTime));
+            let lstFrameOv: Array<any> = groups.lstFrameRes != null ? groups.lstFrameRes : [];
+            if(groups.shiftNightTime != null && groups.shiftNightTime != 0){
+                //add shiftNight
+                lstFrameOv.push(new vmbase.OverTimeFrame(1,11,getText('CMM045_270'),0,groups.shiftNightTime));
+            }
+            if(groups.flexTime != null && groups.flexTime != 0){
+                //add flex
+                lstFrameOv.push(new vmbase.OverTimeFrame(1,12,getText('CMM045_271'),0,groups.flexTime));
+            }
             let contentRes2 = self.convertFrameTime(lstFrameOv);
             let contResTrue = contentRes1 == '' ? contentRes2 : contentRes1 + '　' + contentRes2;
             let appRes = detailSet == 1 ? contResTrue : contentRes2;

@@ -50,4 +50,7 @@
     float: right;
 }
 
-
+#closure{
+	margin-right: 30px;
+    outline: none;
+}

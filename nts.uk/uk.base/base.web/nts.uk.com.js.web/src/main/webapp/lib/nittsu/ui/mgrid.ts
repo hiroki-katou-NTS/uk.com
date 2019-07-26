@@ -541,6 +541,8 @@ module nts.uk.ui.mgrid {
         export const VFACON_ASC = "view-facon-asc";
         export const FACON_ASC = "facon-asc";
         export const FACON_DESC = "facon-desc";
+        export const ALIGN_LEFT = "halign-left";
+        export const ALIGN_RIGHT = "halign-right";
         export const DefaultRowConfig = { css: { height: BODY_ROW_HEIGHT } };
         export let _voilerRows = {};
         export let _encarRows = [];
@@ -2372,8 +2374,11 @@ module nts.uk.ui.mgrid {
                 
                 let col = visibleColumnsMap[key];
                 if (!col) tdStyle += "; display: none;";
-                else if (col[0].columnCssClass === hpl.CURRENCY_CLS || col[0].columnCssClass === "halign-right") {
-                    td.classList.add(col[0].columnCssClass);
+                else if (!_.isNil(col[0].columnCssClass)) {
+                    col[0].columnCssClass.split(' ').forEach(clz => {
+                        if (clz === hpl.CURRENCY_CLS || clz === "halign-right")
+                            td.classList.add(clz);
+                    });
                 }
                 
                 if (key === "rowNumber") {
@@ -2717,8 +2722,11 @@ module nts.uk.ui.mgrid {
                 
                 let col = self.visibleColumnsMap[key];
                 if (!col) tdStyle += "; display: none;";
-                else if (col[0].columnCssClass === hpl.CURRENCY_CLS || col[0].columnCssClass === "halign-right") {
-                    td.classList.add(col[0].columnCssClass);
+                else if (!_.isNil(col[0].columnCssClass)) {
+                    col[0].columnCssClass.split(' ').forEach(clz => {
+                        if (clz === hpl.CURRENCY_CLS || clz === "halign-right")
+                            td.classList.add(clz);
+                    });
                 }
                 let controlDef = self.controlMap[key];
                 
@@ -6233,6 +6241,12 @@ module nts.uk.ui.mgrid {
                         $input.select();
                     }, 0);
                     
+                    if ($tCell.classList.contains(v.ALIGN_RIGHT)) {
+                        $input.classList.remove(v.ALIGN_LEFT);
+                    } else {
+                        $input.classList.add(v.ALIGN_LEFT);
+                    }
+                    
                     let coord = ti.getCellCoord($tCell);
                     $input.style.imeMode = "inactive";
                     if (coord) {
@@ -6432,6 +6446,12 @@ module nts.uk.ui.mgrid {
                             let data = $.data($tCell, v.DATA);
                             $input.value = !_.isNil(data) ? data : "";
                             $input.select();
+                        }
+                        
+                        if ($tCell.classList.contains(v.ALIGN_RIGHT)) {
+                            $input.classList.remove(v.ALIGN_LEFT);
+                        } else {
+                            $input.classList.add(v.ALIGN_LEFT);
                         }
                         
                         cType.type = dkn.TEXTBOX;
@@ -8211,6 +8231,11 @@ module nts.uk.ui.mgrid {
                     if (result && !result.isValid) {
                         khl.set(cell, result.errorMessage);
                         return;
+                    }
+                    
+                    if (khl._infobulle) {
+                        ti.remove(khl._infobulle);
+                        dkn.closeDD(khl._infobulle, true);
                     }
                     
                     return $td;
