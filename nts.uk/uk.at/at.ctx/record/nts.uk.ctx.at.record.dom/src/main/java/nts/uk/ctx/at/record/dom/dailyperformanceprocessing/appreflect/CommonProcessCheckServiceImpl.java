@@ -174,8 +174,7 @@ public class CommonProcessCheckServiceImpl implements CommonProcessCheckService{
 			employeeError.removeParam(x.getWorkInformation().getEmployeeId(), x.getWorkInformation().getYmd());
 			if(!x.getEmployeeError().isEmpty()) {
 				employeeError.insert(x.getEmployeeError());	
-			}
-			dailyTransaction.updated(x.getWorkInformation().getEmployeeId(), x.getWorkInformation().getYmd());
+			}			
 		});
 	}
 	@Override
@@ -188,7 +187,7 @@ public class CommonProcessCheckServiceImpl implements CommonProcessCheckService{
 		if(integrationOfDaily == null) {
 			integrationOfDaily = preOvertime.calculateForAppReflect(sid, ymd);
 		}
-		Optional<WorkingConditionItem> optWorkingCondition = workingCondition.getBySidAndStandardDate(sid, ymd);
+		
 		String companyId = AppContexts.user().companyId();
 		//就業時間帯の休憩時間帯を日別実績に反映する
 		integrationOfDaily = this.updateBreakTimeInfor(sid, ymd, integrationOfDaily, companyId);
@@ -197,6 +196,7 @@ public class CommonProcessCheckServiceImpl implements CommonProcessCheckService{
 		if(integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTypeCode() != null
 				&& !isOt) {
 			Optional<WorkType> workTypeInfor = worktypeRepo.findByPK(companyId, integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTypeCode().v());
+			Optional<WorkingConditionItem> optWorkingCondition = workingCondition.getBySidAndStandardDate(sid, ymd);
 			//出退勤時刻を補正する
 			integrationOfDaily = timeLeavingService.correct(companyId, integrationOfDaily, optWorkingCondition, workTypeInfor, false).getData();
 			//事前残業、休日時間を補正する
