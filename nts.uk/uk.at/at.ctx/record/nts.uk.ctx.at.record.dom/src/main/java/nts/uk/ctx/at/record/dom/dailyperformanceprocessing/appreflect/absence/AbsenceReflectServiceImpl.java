@@ -21,7 +21,6 @@ import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
 import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
-import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.worktype.algorithm.JudgmentWorkTypeService;
@@ -39,8 +38,6 @@ public class AbsenceReflectServiceImpl implements AbsenceReflectService{
 	private JudgmentWorkTypeService judgmentService;
 	@Inject
 	private WorkTypeIsClosedService workTypeRepo;
-	@Inject
-	private TimeLeavingOfDailyPerformanceRepository timeLeavingOfDailyRepos;
 	@Inject
 	private PreOvertimeReflectService preOvertime;
 	@Override
@@ -67,21 +64,20 @@ public class AbsenceReflectServiceImpl implements AbsenceReflectService{
 	}
 	@Override
 	public void reflectRecordStartEndTime(String employeeId, GeneralDate baseDate, String workTypeCode, IntegrationOfDaily dailyInfor) {
-		boolean isCheckClean =  this.checkTimeClean(employeeId, baseDate, workTypeCode);
+		boolean isCheckClean =  this.checkTimeClean(employeeId, baseDate, workTypeCode, dailyInfor.getAttendanceLeave());
 		//開始終了時刻をクリアするかチェックする 値：０になる。		
 		TimeReflectPara timeData = new TimeReflectPara(employeeId, baseDate, null, null, 1, isCheckClean, isCheckClean);
 		workTimeUpdate.updateRecordStartEndTimeReflect(timeData, dailyInfor);
 	}
 	
 	@Override
-	public boolean checkTimeClean(String employeeId, GeneralDate baseDate, String workTypeCode) {
+	public boolean checkTimeClean(String employeeId, GeneralDate baseDate, String workTypeCode, Optional<TimeLeavingOfDailyPerformance> optTimeLeavingOfDaily) {
 		//1日半日出勤・1日休日系の判定
 		if(basicScheService.checkWorkDay(workTypeCode) == WorkStyle.ONE_DAY_REST) {
 			//勤務種類が１日年休特休かの判断
 			boolean temp = judgmentService.checkWorkTypeIsHD(workTypeCode);
 			//打刻元情報をチェックする
 			if(temp) {
-				Optional<TimeLeavingOfDailyPerformance> optTimeLeavingOfDaily = timeLeavingOfDailyRepos.findByKey(employeeId, baseDate);
 				if(optTimeLeavingOfDaily.isPresent()) {
 					TimeLeavingOfDailyPerformance timeLeavingOfDaily = optTimeLeavingOfDaily.get();
 					if(checkReflectNenkyuTokkyu(timeLeavingOfDaily, 1)) {

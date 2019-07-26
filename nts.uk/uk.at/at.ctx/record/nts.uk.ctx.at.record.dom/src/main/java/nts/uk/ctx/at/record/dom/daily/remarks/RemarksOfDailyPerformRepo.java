@@ -30,4 +30,7 @@ public interface RemarksOfDailyPerformRepo {
 	public void removeWithJdbc(String employeeId, GeneralDate workingDate);
 	
 	public Optional<RemarksOfDailyPerform> getByKeys(String sid, GeneralDate ymd, int columnNo);
+	
+    public  List<RemarksOfDailyPerform> getRemarksBykey(String sid, GeneralDate ymd);
+
 }
