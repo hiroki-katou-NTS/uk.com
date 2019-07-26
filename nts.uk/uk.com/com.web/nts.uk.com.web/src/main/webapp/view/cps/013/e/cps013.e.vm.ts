@@ -183,15 +183,6 @@ module nts.uk.at.view.cps013.e {
                         data_categoryName.push(item);
                     }
                 });
-
-                /*let sorted_employeeId = _.sortBy(data_employeeId, function(t) { return parseInt(t.key.replace("employeeId", "")) });
-                let sorted_categoryId = _.sortBy(data_categoryId, function(t) { return parseInt(t.key.replace("categoryId", "")) });
-                let sorted_employeeCode = _.sortBy(data_employeeCode, function(t) { return parseInt(t.key.replace("employeeCode", "")) });
-                let sorted_bussinessName = _.sortBy(data_bussinessName, function(t) { return parseInt(t.key.replace("bussinessName", "")) });
-                let sorted_clsCategoryCheck = _.sortBy(data_clsCategoryCheck, function(t) { return parseInt(t.key.replace("clsCategoryChec", "")) });
-                let sorted_categoryName = _.sortBy(data_categoryName, function(t) { return parseInt(t.key.replace("categoryNam", "")) });
-                let sorted_error = _.sortBy(data_error, function(t) { return parseInt(t.key.replace("error", "")) });
-                let errs = []; */
                
                 for (let i = 0; i < data_employeeId.length; i++) {
 
@@ -203,7 +194,6 @@ module nts.uk.at.view.cps013.e {
                     let clsCategoryCheck = (_.filter(data_clsCategoryCheck, function(o) { return o.key.substring(16, 21) == tagKey; }))[0].valueAsString;
                     let categoryName = (_.filter(data_categoryName, function(o) { return o.key.substring(12, 17) == tagKey; }))[0].valueAsString;
                     let error = (_.filter(data_error, function(o) { return o.key.substring(5, 10) == tagKey; }))[0].valueAsString;
-                    
                     
                     var errorInfo = {
                         employeeId: empId,

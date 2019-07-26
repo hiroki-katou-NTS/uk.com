@@ -46,6 +46,20 @@ module nts.uk.com.view.cps013.a.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             block.invisible();
+            $("#grid2").ntsGrid({
+                width: '300px',
+                height: '230px',
+                dataSource: self.items(),
+                primaryKey: 'id',
+                virtualization: true,
+                columns: [
+                    { headerText: '', key: 'id', dataType: 'number', width: '40px' },
+                    { headerText: '', key: 'flag', dataType: 'boolean', width: '40px', ntsControl: 'Checkbox', showHeaderCheckbox: true },
+                    { headerText: text("CPS013_14"), key: 'name', dataType: 'string', width: '220px' },
+                ],
+                features: [],
+                ntsControls: [{ name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true }],
+            });
             character.restore("PerInfoValidCheckCtg").done((obj) => {
                 $('#date_text').focus();
                 if(obj){
@@ -61,24 +75,11 @@ module nts.uk.com.view.cps013.a.viewmodel {
                         $("#grid2_flag > span > div > label > input[type='checkbox']")[0].checked = false;
                     }
                 }
+
             }).fail(()=>{
                 block.clear();    
             });
-            $("#grid2").ntsGrid({ 
-                width: '300px',
-                height: '230px',
-                dataSource: self.items(),
-                primaryKey: 'id',
-                virtualization: true,
-                //virtualizationMode: 'continuous',
-                columns: [
-                    { headerText: '', key: 'id', dataType: 'number', width: '50px'},
-                    { headerText: '', key: 'flag', dataType: 'boolean', width: '50px', ntsControl: 'Checkbox' , showHeaderCheckbox: true},
-                    { headerText: text("CPS013_14"), key: 'name', dataType: 'string', width: '200px', ntsControl: 'SwitchButtons' },
-                ], 
-                features: [],
-                ntsControls: [{ name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true }],
-            });
+
                 dfd.resolve();
             return dfd.promise();
         }
