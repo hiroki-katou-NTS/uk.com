@@ -98,32 +98,38 @@ module nts.uk.com.view.cps013.a.viewmodel {
             }
             character.save('PerInfoValidCheckCtg', paramSave);
             character.restore("PerInfoValidCheckCtg").done((obj) => {
-                console.log(obj);
-                let flag = _.countBy(ko.toJS($("#grid2").igGrid("option","dataSource")), function (x) { return x.flag == true; });
-                // nếu A2_001 và A3_001 cùng không được chọn hoặc A3_001 được chọn nhưng list A3_004 không được chọn item nào => msg_360
-                if((flag.true === 0 && self.masterChk() === false) || (self.masterChk() === false && self.perInfoChk() === false)){
-                    nts.uk.ui.dialog.error({ messageId: "Msg_929" });
-                    return;
-                }
+//            let flag = _.countBy(ko.toJS($("#grid2").igGrid("option", "dataSource")), function(x) { return x.flag == true; });
+//            // nếu A2_001 và A3_001 cùng không được chọn hoặc A3_001 được chọn nhưng list A3_004 không được chọn item nào => msg_360
+//            if ((flag.true === 0 && self.masterChk() === false) || (self.masterChk() === false && self.perInfoChk() === false)) {
+//                nts.uk.ui.dialog.error({ messageId: "Msg_929" });
+//                block.clear();
+//                return;
+//            }
             });
-            let checkbox = ko.toJS($("#grid2").igGrid("option","dataSource"));
-            let CheckDataFromUI = { 
-            dateTime: self.date(),
-            perInfoCheck: self.perInfoChk(),
-            masterCheck: self.masterChk(),
-            scheduleMngCheck: checkbox[0].flag,
-            dailyPerforMngCheckL: checkbox[1].flag ,
-            monthPerforMngCheck: checkbox[2].flag ,
-            payRollMngCheck: checkbox[3].flag ,
-            bonusMngCheck: checkbox[4].flag ,
-            yearlyMngCheck: checkbox[5].flag ,
-            monthCalCheck: checkbox[6].flag };
-            
-            service.checkHasCtg(CheckDataFromUI).done((data  : IDataResult) =>{
+            let checkbox = ko.toJS($("#grid2").igGrid("option","dataSource")),
+                checkDataFromUI = { 
+                dateTime: self.date(),
+                perInfoCheck: self.perInfoChk(),
+                masterCheck: self.masterChk(),
+                scheduleMngCheck: checkbox[0].flag,
+                dailyPerforMngCheckL: checkbox[1].flag ,
+                monthPerforMngCheck: checkbox[2].flag ,
+                payRollMngCheck: checkbox[3].flag ,
+                bonusMngCheck: checkbox[4].flag ,
+                yearlyMngCheck: checkbox[5].flag ,
+                monthCalCheck: checkbox[6].flag },
+                flag = _.countBy(ko.toJS(checkbox), function(x) { return x.flag == true; });
+            // nếu A2_001 và A3_001 cùng không được chọn hoặc A3_001 được chọn nhưng list A3_004 không được chọn item nào => msg_360
+            if ((flag.true === 0 && self.masterChk() === false) || (self.masterChk() === false && self.perInfoChk() === false)) {
+                nts.uk.ui.dialog.error({ messageId: "Msg_929" });
+                block.clear();
+                return;
+            }
+            service.checkHasCtg(checkDataFromUI).done((data  : IDataResult) =>{
                 if (data.listCtg && data.peopleCount) {
-                    CheckDataFromUI.peopleCount = data.peopleCount;
-                    CheckDataFromUI.startTime   = data.startDateTime;
-                    nts.uk.ui.windows.setShared('CPS013B_PARAMS', CheckDataFromUI);
+                    checkDataFromUI.peopleCount = data.peopleCount;
+                    checkDataFromUI.startTime   = data.startDateTime;
+                    nts.uk.ui.windows.setShared('CPS013B_PARAMS', checkDataFromUI);
                     nts.uk.ui.windows.sub.modal('/view/cps/013/e/index.xhtml').onClosed(() => {
                         block.clear();
                     });
@@ -133,10 +139,7 @@ module nts.uk.com.view.cps013.a.viewmodel {
                 }
             }).fail(function(res) {
                 nts.uk.ui.dialog.alertError(res.message);
-            });
-            
-
-            
+            }).always(()=>block.clear());
         }
         
 
