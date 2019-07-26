@@ -672,7 +672,7 @@ var nts;
                 this.setItem(key, JSON.stringify(value));
             };
             WebStorageWrapper.prototype.containsKey = function (key) {
-                return this.getItem(key) !== null;
+                return this.getItem(key).isPresent();
             };
             ;
             WebStorageWrapper.prototype.getItem = function (key) {
@@ -3530,6 +3530,11 @@ var nts;
                 return dfd.promise();
             }
             request.writeDynamicConstraint = writeDynamicConstraint;
+            var SubSessionIdKey = "nts.uk.request.subSessionId";
+            if (!uk.sessionStorage.containsKey(SubSessionIdKey)) {
+                uk.sessionStorage.setItem(SubSessionIdKey, uk.util.randomId());
+            }
+            var subSessionId = uk.sessionStorage.getItem(SubSessionIdKey).get();
             function ajax(webAppId, path, data, options, restoresSession) {
                 if (typeof arguments[1] !== 'string') {
                     return ajax.apply(null, _.concat(location.currentAppId, arguments));
@@ -3554,7 +3559,8 @@ var nts;
                         data: data,
                         headers: {
                             'PG-Path': location.current.serialize(),
-                            "X-CSRF-TOKEN": csrf.getToken()
+                            "X-CSRF-TOKEN": csrf.getToken(),
+                            "X-SubSessionId": subSessionId
                         }
                     }).done(function (res) {
                         if (nts.uk.util.exception.isErrorToReject(res)) {
@@ -3608,7 +3614,8 @@ var nts;
                         async: false,
                         headers: {
                             'PG-Path': location.current.serialize(),
-                            "X-CSRF-TOKEN": csrf.getToken()
+                            "X-CSRF-TOKEN": csrf.getToken(),
+                            "X-SubSessionId": subSessionId
                         },
                         success: function (res) {
                             if (nts.uk.util.exception.isErrorToReject(res)) {
