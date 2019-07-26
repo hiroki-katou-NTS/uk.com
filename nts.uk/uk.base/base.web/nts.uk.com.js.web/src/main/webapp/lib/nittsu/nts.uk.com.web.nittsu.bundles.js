@@ -3796,18 +3796,42 @@ var nts;
                     errorPages.stopUse = stopUse;
                 })(errorPages = specials.errorPages || (specials.errorPages = {}));
             })(specials = request.specials || (request.specials = {}));
-            function jumpFromDialogOrFrame(webAppId, path, data) {
-                var self;
-                if (nts.uk.util.isInFrame()) {
-                    self = nts.uk.ui.windows.getSelf();
+            function jumpToNewWindow(webAppId, path, data) {
+                // handle overload
+                if (typeof arguments[1] !== 'string') {
+                    jumpToNewWindow.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
+                    return;
+                }
+                if (data === undefined) {
+                    uk.sessionStorage.removeItem(request.STORAGE_KEY_TRANSFER_DATA);
                 }
                 else {
-                    self = window.parent.nts.uk.ui.windows.getSelf();
+                    uk.sessionStorage.setItemAsJson(request.STORAGE_KEY_TRANSFER_DATA, { data: data, jump: { webAppId: webAppId, path: path } });
                 }
-                while (!self.isRoot) {
-                    self = self.parent;
+                // open new tab (like current tab)
+                var wd = window.open(window.location.href, '_blank');
+                wd.focus();
+                // remove storage on current tab
+                nts.uk.sessionStorage.removeItem(uk.request.STORAGE_KEY_TRANSFER_DATA);
+            }
+            request.jumpToNewWindow = jumpToNewWindow;
+            // jumpToNewWindow step 2
+            $(function () {
+                setTimeout(function () {
+                    __viewContext.transferred.ifPresent(function (data) {
+                        if (_.isEqual(_.keys(data), ['data', 'jump'])) {
+                            nts.uk.request.jump(data.jump.webAppId, data.jump.path, data.data);
+                        }
+                    });
+                }, 0);
+            });
+            function jumpFromDialogOrFrame(webAppId, path, data) {
+                // handle overload
+                if (typeof arguments[1] !== 'string') {
+                    jumpFromDialogOrFrame.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
+                    return;
                 }
-                self.globalContext.nts.uk.request.jump(webAppId, path, data);
+                window.top.nts.uk.request.jump(webAppId, path, data);
             }
             request.jumpFromDialogOrFrame = jumpFromDialogOrFrame;
             function jump(webAppId, path, data) {
@@ -23091,6 +23115,7 @@ var nts;
                                 _copie = true;
                             _$grid.mGrid("option", "errOccurred", self.errorOccurred);
                             _$grid.mGrid("option", "errResolved", self.errorResolved);
+                            _$grid.mGrid("option", "errDismissed", self.errorDismissed);
                         }
                     };
                     /**
@@ -25168,7 +25193,7 @@ var nts;
                                     var info = _vessel().checkedErrors[ei];
                                     if (rData[_pk] === info.id && key === info.columnKey) {
                                         info.element = td;
-                                        khl.set(info, info.message, 1);
+                                        khl.set(info, info.message, 1, true);
                                         _vessel().checkedErrors.splice(ei, 1);
                                         break;
                                     }
@@ -25490,7 +25515,7 @@ var nts;
                                     var info = _vessel().checkedErrors[ei];
                                     if (rData[_pk] === info.id && key === info.columnKey) {
                                         info.element = td;
-                                        khl.set(info, info.message);
+                                        khl.set(info, info.message, null, true);
                                         _vessel().checkedErrors.splice(ei, 1);
                                         break;
                                     }
@@ -28095,7 +28120,7 @@ var nts;
                                         if (item)
                                             content = item[controlDef_1.optionsText || "name"];
                                     }
-                                    txt.innerHTML = content;
+                                    txt.innerHTML = _.isNil(content) ? "" : content;
                                     su.wedgeCell(_$grid[0], { rowIdx: idx, columnKey: key }, val, reset);
                                     $.data($cell, v.DATA, val);
                                 }
@@ -28202,7 +28227,7 @@ var nts;
                                         date = null;
                                     su.wedgeCell(_$grid[0], { rowIdx: idx, columnKey: key }, date, reset);
                                     $.data($cell, v.DATA, date);
-                                    $cell.innerHTML = _.isNil(txt) ? (mDate.isValid() ? mDate.format(cbx_1.format[0]) : (_.isNil(mDate._i) ? null : mDate._i)) : txt;
+                                    $cell.innerHTML = _.isNil(txt) ? (mDate.isValid() ? mDate.format(cbx_1.format[0]) : (_.isNil(mDate._i) ? "" : mDate._i)) : txt;
                                 }
                             }
                             return idx;
@@ -28464,7 +28489,7 @@ var nts;
                         removeInsertions: function () {
                             v.eliminRows(_.cloneDeep(v._encarRows).sort(function (a, b) { return b - a; }));
                         },
-                        validate: function (lock) {
+                        validate: function (lock, check) {
                             var errors = [];
                             _.forEach(_.keys(_mafollicle), function (k) {
                                 if (k === SheetDef)
@@ -28472,8 +28497,8 @@ var nts;
                                 _.forEach(_mafollicle[k].dataSource, function (data, i) {
                                     _.forEach(_cstifle(), function (c) {
                                         var validator = _validators[c.key];
-                                        if (!validator || _.find(_hiddenColumns, function (hidden) { return hidden === c.key; })
-                                            || (!lock && _.find(((_cellStates[data[_pk]] || {})[c.key] || [{ state: [] }])[0].state, function (st) { return st === color.Lock; })))
+                                        if (!validator || _.find(_hiddenColumns, function (hidden) { return hidden === c.key; }) || (_.isFunction(check) && !check(data))
+                                            || (!lock && _.find(((_cellStates[data[_pk]] || {})[c.key] || [{ state: [] }])[0].state, function (st) { return st === color.Lock || st === color.Disable; })))
                                             return;
                                         var res = validator.probe(data[c.key], data[_pk]);
                                         if (res && !res.isValid) {
@@ -29423,7 +29448,7 @@ var nts;
                             return;
                         var column = _columnsMap[coord.columnKey];
                         if (column && _.toLower(column[0].dataType) === "number") {
-                            cellValue = cellValue === "" ? null : parseFloat(cellValue);
+                            cellValue = (_.isNil(cellValue) || cellValue === "") ? null : parseFloat(cellValue);
                         }
                         if (reset) {
                             origDs[coord.rowIdx][coord.columnKey] = cellValue;
@@ -30018,6 +30043,10 @@ var nts;
                                 if (!result.isValid) {
                                     khl.set(cell, result.errorMessage);
                                 }
+                                if (khl._infobulle) {
+                                    ti.remove(khl._infobulle);
+                                    dkn.closeDD(khl._infobulle, true);
+                                }
                             }
                             formatted = su.format(col[0], data);
                             target.innerHTML = formatted;
@@ -30074,6 +30103,10 @@ var nts;
                                     khl.clear(cell);
                                     if (!result.isValid) {
                                         khl.set(cell, result.errorMessage);
+                                    }
+                                    if (khl._infobulle) {
+                                        ti.remove(khl._infobulle);
+                                        dkn.closeDD(khl._infobulle, true);
                                     }
                                 }
                                 formatted = su.format(pointCol[0], c);
@@ -32628,10 +32661,18 @@ var nts;
                         var removed = _.remove(errors, function (e) {
                             return rowId === e.rowId && key === e.columnKey;
                         });
-                        if (removed.length > 0 && errors.length === 0) {
-                            var resolved = _$grid.mGrid("option", "errResolved");
-                            if (_.isFunction(resolved)) {
-                                resolved();
+                        if (removed.length > 0) {
+                            if (errors.length === 0) {
+                                var resolved = _$grid.mGrid("option", "errResolved");
+                                if (_.isFunction(resolved)) {
+                                    resolved();
+                                }
+                            }
+                            else {
+                                var dismiss = _$grid.mGrid("option", "errDismissed");
+                                if (_.isFunction(dismiss)) {
+                                    dismiss();
+                                }
                             }
                         }
                     }
@@ -32639,7 +32680,7 @@ var nts;
                     /**
                      * Set.
                      */
-                    function set(cell, message, setType) {
+                    function set(cell, message, setType, rendered, any) {
                         if (!cell || ((!setType || setType === 1) && (!cell.element || any(cell))))
                             return;
                         if (!setType || setType === 1) {
@@ -32661,10 +32702,10 @@ var nts;
                             if (_.isNil(cell.index)) {
                                 var index = _.findIndex(_dataSource, function (d) { return d[_pk] === cell.id; });
                                 if (index !== -1)
-                                    notice(cell.id, cell.columnKey, _dataSource[index]);
+                                    notice(cell.id, cell.columnKey, _dataSource[index], rendered);
                             }
                             else {
-                                notice(cell.id, cell.columnKey, _dataSource[cell.index]);
+                                notice(cell.id, cell.columnKey, _dataSource[cell.index], rendered);
                             }
                         }
                     }
@@ -33103,6 +33144,23 @@ var nts;
                         return cloneArr;
                     }
                     ti.cloneArray = cloneArray;
+                    function forEach(arr, loop) {
+                        if (_.isNil(arr))
+                            return;
+                        if (_.isObject(arr) && !_.isArray(arr)) {
+                            var keys = _.keys(arr);
+                            for (var i = 0; i < keys.length; i++) {
+                                if (loop(arr[keys[i]], keys[i]) === false)
+                                    break;
+                            }
+                            return;
+                        }
+                        for (var i = 0; i < arr.length; i++) {
+                            if (loop(arr[i], i) === false)
+                                break;
+                        }
+                    }
+                    ti.forEach = forEach;
                     function isZero(value, name) {
                         var col = _secColumn[name];
                         if (col && ((col.constraint && col.constraint.cDisplayType === "TimeWithDay")
