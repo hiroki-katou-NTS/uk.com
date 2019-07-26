@@ -24,11 +24,9 @@ import { storage } from '@app/utils';
     name: 'ccg007c'
 })
 export class Ccg007CComponent extends CCG007Login {
-
     @Prop({ default: () => ({}) })
     public params!: any;
 
-    public mesId: string;
     public userId: string;
     public changeReason: string;
 
@@ -50,34 +48,41 @@ export class Ccg007CComponent extends CCG007Login {
         userName: ''
     };
 
+    public get message() {
+        const vm = this,
+            params = vm.params;
+
+        return {
+            params: [!_.isNil(params.spanDays) && params.spanDays || ''],
+            resource: !_.isNil(params.spanDays) && params.changePassReason || params.mesId
+        };
+    }
+
     public created() {
-        let self = this;
+        let self = this,
+            $post = self.$http.post,
+            { companyCode, contractCode, employeeCode } = self.params;
 
-        self.mesId = !_.isNil(self.params.spanDays) ? self.$i18n(self.params.changePassReason, self.params.spanDays.toString()) :
-            _.isEmpty(self.params.changePassReason) ? self.$i18n(self.params.mesId)
-                : self.$i18n(self.params.changePassReason);
-
-        Promise.all([this.$http.post(servicePath.getPasswordPolicy + self.params.contractCode),
-        this.$http.post(servicePath.getUserName, {
-            contractCode: self.params.contractCode,
-            employeeCode: self.params.employeeCode,
-            companyCode: self.params.companyCode
-        })])
+        Promise.all([
+            $post(servicePath.getPasswordPolicy + contractCode),
+            $post(servicePath.getUserName, { companyCode, contractCode, employeeCode })
+        ])
             .then((values: Array<any>) => {
                 let policy: PassWordPolicy = values[0].data,
-                    user: LoginInfor = values[1].data,
-                    complex = [];
+                    user: LoginInfor = values[1].data;
 
+                self.userId = user.userId;
                 self.model.userName = user.userName;
+
+                self.policy.isUse = policy.isUse;
 
                 self.policy.lowestDigits = policy.lowestDigits;
                 self.policy.alphabetDigit = policy.alphabetDigit;
                 self.policy.numberOfDigits = policy.numberOfDigits;
                 self.policy.symbolCharacters = policy.symbolCharacters;
+
                 self.policy.historyCount = policy.historyCount;
                 self.policy.validPeriod = policy.validityPeriod;
-                self.policy.isUse = policy.isUse;
-                self.userId = user.userId;
 
                 if (policy.alphabetDigit > 0) {
                     self.policy.complex.push({ rid: 'CCGS07_25', params: [policy.alphabetDigit] });
@@ -107,6 +112,7 @@ export class Ccg007CComponent extends CCG007Login {
 
     public changePass() {
         this.$validate();
+
         if (!this.$valid) {
             return;
         }

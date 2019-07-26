@@ -4,7 +4,7 @@
       <div class="text-center page-title">{{ 'CCGS07_8' | i18n }}</div>
       <div class="text-left page-info alert-light alert">
         <div>{{ 'CCGS07_9' | i18n(model.userName) }}</div>
-        <div>{{ mesId }}</div>
+        <div>{{ message.msg | i18n(message.params) }}</div>
       </div>
       <fieldset class="login-form">
         <nts-input-password
