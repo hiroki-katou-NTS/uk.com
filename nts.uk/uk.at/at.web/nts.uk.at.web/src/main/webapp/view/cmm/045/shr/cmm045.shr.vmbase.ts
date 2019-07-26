@@ -61,15 +61,10 @@ module cmm045.shr {
                   this.appType = appType;
             }
         }
-        export class AppListParamFilter{
-            condition: AppListExtractConditionDto;
-            spr: boolean;
-            extractCondition: number;
-            constructor(condition, spr: boolean, extractCondition: number){
-                this.condition = condition;
-                this.spr = spr;
-                this.extractCondition = extractCondition;    
-            }
+        export interface AppListParamFilter{
+            condition: AppListExtractConditionDto;//抽出条件
+            spr: boolean;//SPRから呼ぶ？
+            extractCondition: number;//選択申請種類
         }
         //data fill grid list mode application
         export class DataModeApp{
