@@ -2,6 +2,7 @@ module nts.uk.com.view.cps013.a.viewmodel {
     import block = nts.uk.ui.block;
     import request = nts.uk.request;
     import character = nts.uk.characteristics;
+    import text = nts.uk.resource.getText;
     
     export class ScreenModel {
         date : KnockoutObservable<string> = ko.observable(null);
@@ -22,13 +23,13 @@ module nts.uk.com.view.cps013.a.viewmodel {
                 let param = new GridItem(item);
                 this.items.push(param);
             }
-            self.items()[0].name = nts.uk.resource.getText("CPS013_15");
-            self.items()[1].name = nts.uk.resource.getText("CPS013_16");
-            self.items()[2].name = nts.uk.resource.getText("CPS013_17");
-            self.items()[3].name = nts.uk.resource.getText("CPS013_18");
-            self.items()[4].name = nts.uk.resource.getText("CPS013_19");
-            self.items()[5].name = nts.uk.resource.getText("CPS013_20");
-            self.items()[6].name = nts.uk.resource.getText("CPS013_21");
+            self.items()[0].name = text("CPS013_15");
+            self.items()[1].name = text("CPS013_16");
+            self.items()[2].name = text("CPS013_17");
+            self.items()[3].name = text("CPS013_18");
+            self.items()[4].name = text("CPS013_19");
+            self.items()[5].name = text("CPS013_20");
+            self.items()[6].name = text("CPS013_21");
         }
 
         /** get data to list **/
@@ -69,11 +70,11 @@ module nts.uk.com.view.cps013.a.viewmodel {
                 dataSource: self.items(),
                 primaryKey: 'id',
                 virtualization: true,
-                virtualizationMode: 'continuous',
+                //virtualizationMode: 'continuous',
                 columns: [
                     { headerText: '', key: 'id', dataType: 'number', width: '50px'},
                     { headerText: '', key: 'flag', dataType: 'boolean', width: '50px', ntsControl: 'Checkbox' , showHeaderCheckbox: true},
-                    { headerText: nts.uk.resource.getText("CPS013_14"), key: 'name', dataType: 'string', width: '200px', ntsControl: 'SwitchButtons' },
+                    { headerText: text("CPS013_14"), key: 'name', dataType: 'string', width: '200px', ntsControl: 'SwitchButtons' },
                 ], 
                 features: [],
                 ntsControls: [{ name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true }],
@@ -98,13 +99,6 @@ module nts.uk.com.view.cps013.a.viewmodel {
             }
             character.save('PerInfoValidCheckCtg', paramSave);
             character.restore("PerInfoValidCheckCtg").done((obj) => {
-//            let flag = _.countBy(ko.toJS($("#grid2").igGrid("option", "dataSource")), function(x) { return x.flag == true; });
-//            // nếu A2_001 và A3_001 cùng không được chọn hoặc A3_001 được chọn nhưng list A3_004 không được chọn item nào => msg_360
-//            if ((flag.true === 0 && self.masterChk() === false) || (self.masterChk() === false && self.perInfoChk() === false)) {
-//                nts.uk.ui.dialog.error({ messageId: "Msg_929" });
-//                block.clear();
-//                return;
-//            }
             });
             let checkbox = ko.toJS($("#grid2").igGrid("option","dataSource")),
                 checkDataFromUI = { 
