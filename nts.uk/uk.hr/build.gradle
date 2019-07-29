@@ -152,7 +152,62 @@ subprojects {
 }
 
 
-//=========================hr:hr.develop�==================================
+//=========================hr:hr.shared==================================
+project (':hr.ctx:hr.shared') {
+}
+
+project (':hr.ctx:hr.shared:nts.uk.ctx.hr.shared.ws') {
+	dependencies {
+		compile project(':hr.ctx:hr.shared:nts.uk.ctx.hr.shared.app')
+	}
+}
+
+project (':hr.ctx:hr.shared:nts.uk.ctx.hr.shared.dom') {
+	dependencies {
+	}
+}
+
+project (':hr.ctx:hr.shared:nts.uk.ctx.hr.shared.app') {
+	dependencies {
+		compile group: 'com.shr', name: 'nts.uk.shr.find', version: version
+		compile project(':hr.ctx:hr.shared:nts.uk.ctx.hr.shared.dom')
+	}
+}
+
+project (':hr.ctx:hr.shared:nts.uk.ctx.hr.shared.infra') {
+	dependencies {
+		compile project(':hr.ctx:hr.shared:nts.uk.ctx.hr.shared.dom')
+	}
+}
+
+project (':hr.ctx:hr.shared:nts.uk.ctx.hr.shared.ac') {
+	dependencies {
+		compile(group: 'com.bs.person', name: 'nts.uk.ctx.bs.person.pub', version: version)
+		compile(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.pub', version: version)
+		compile(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.pub', version: version)
+		compile(group: 'com.query', name: 'nts.uk.query.pub', version: version)
+		compile(group: 'com.workflow', name: 'nts.uk.ctx.workflow.pub', version: version)
+		compile(group: 'com.sys.assist', name: 'nts.uk.ctx.sys.assist.pub', version: version)
+	}
+}
+
+project (':hr.ctx:hr.shared:nts.uk.ctx.hr.shared.pub') {
+	dependencies {
+		compile project(':hr.ctx:hr.shared:nts.uk.ctx.hr.shared.dom')
+	}
+}
+
+project (':hr.ctx:hr.shared:nts.uk.ctx.hr.shared.pubimp') {
+	dependencies {
+		compile project(':hr.ctx:hr.shared:nts.uk.ctx.hr.shared.pub')
+		compile project(':hr.ctx:hr.shared:nts.uk.ctx.hr.shared.dom')
+		compile project(':hr.ctx:hr.shared:nts.uk.ctx.hr.shared.app')
+		compile project(':hr.ctx:hr.shared:nts.uk.ctx.hr.shared.infra')
+	}
+}
+
+
+//=========================hr:hr.develop==================================
 project (':hr.ctx:hr.develop') {
 }
 
@@ -164,6 +219,7 @@ project (':hr.ctx:hr.develop:nts.uk.ctx.hr.develop.ws') {
 
 project (':hr.ctx:hr.develop:nts.uk.ctx.hr.develop.dom') {
 	dependencies {
+		compile project(':hr.ctx:hr.shared:nts.uk.ctx.hr.shared.dom')
 	}
 }
 
@@ -171,12 +227,14 @@ project (':hr.ctx:hr.develop:nts.uk.ctx.hr.develop.app') {
 	dependencies {
 		compile group: 'com.shr', name: 'nts.uk.shr.find', version: version
 		compile project(':hr.ctx:hr.develop:nts.uk.ctx.hr.develop.dom')
+		compile project(':hr.ctx:hr.shared:nts.uk.ctx.hr.shared.dom')
 	}
 }
 
 project (':hr.ctx:hr.develop:nts.uk.ctx.hr.develop.infra') {
 	dependencies {
 		compile project(':hr.ctx:hr.develop:nts.uk.ctx.hr.develop.dom')
+		compile project(':hr.ctx:hr.shared:nts.uk.ctx.hr.shared.dom')
 	}
 }
 
@@ -188,12 +246,14 @@ project (':hr.ctx:hr.develop:nts.uk.ctx.hr.develop.ac') {
 		compile(group: 'com.query', name: 'nts.uk.query.pub', version: version)
 		compile(group: 'com.workflow', name: 'nts.uk.ctx.workflow.pub', version: version)
 		compile(group: 'com.sys.assist', name: 'nts.uk.ctx.sys.assist.pub', version: version)
+		compile project(':hr.ctx:hr.shared:nts.uk.ctx.hr.shared.dom')
 	}
 }
 
 project (':hr.ctx:hr.develop:nts.uk.ctx.hr.develop.pub') {
 	dependencies {
 		compile project(':hr.ctx:hr.develop:nts.uk.ctx.hr.develop.dom')
+		compile project(':hr.ctx:hr.shared:nts.uk.ctx.hr.shared.dom')
 	}
 }
 
@@ -203,12 +263,12 @@ project (':hr.ctx:hr.develop:nts.uk.ctx.hr.develop.pubimp') {
 		compile project(':hr.ctx:hr.develop:nts.uk.ctx.hr.develop.dom')
 		compile project(':hr.ctx:hr.develop:nts.uk.ctx.hr.develop.app')
 		compile project(':hr.ctx:hr.develop:nts.uk.ctx.hr.develop.infra')
+		compile project(':hr.ctx:hr.shared:nts.uk.ctx.hr.shared.dom')
 	}
 }
-//=========================hr:hr.develop�====================================
 
 
-//=====================hr.screen�=============================
+//=====================hr.screen=============================
 project (':hr.screen:nts.uk.screen.hr.ws') {
 	dependencies {
 		compile project (':hr.screen:nts.uk.screen.hr.app')
@@ -264,8 +324,8 @@ project (':hr.screen:nts.uk.screen.hr.infra') {
 		compile(group: 'com.bs.person', name: 'nts.uk.ctx.bs.person.infra', version: version)
 	}
 }
-//=========================hr:screen�====================================
-//=============hr.file�==========================================
+
+//=============hr.file==========================================
 project (':hr.file:nts.uk.file.hr.ws') {
 	dependencies {
 		compile project (':hr.file:nts.uk.file.hr.app')	
@@ -287,8 +347,8 @@ project (':hr.file:nts.uk.file.hr.infra') {
 		compile(group: 'com.query', name: 'nts.uk.query.pub', version: version)
 	}
 }
-//=============hr.file�==========================================
-//=====================nts.uk.hr.web�=============================
+
+//=====================nts.uk.hr.web=============================
 project (':hr.web:nts.uk.hr.web') {
 	apply plugin: 'war'
 	apply plugin: 'com.moowork.node'
@@ -314,6 +374,14 @@ project (':hr.web:nts.uk.hr.web') {
 		// for SMTP authentications
 		runtime group: 'org.apache.geronimo.javamail', name: 'geronimo-javamail_1.4_mail', version: '1.8.4'
 		runtime group: 'jcifs', name: 'jcifs', version: '1.3.17'
+		
+		runtime project (':hr.ctx:hr.shared:nts.uk.ctx.hr.shared.ac')
+		runtime project (':hr.ctx:hr.shared:nts.uk.ctx.hr.shared.app')
+		runtime project (':hr.ctx:hr.shared:nts.uk.ctx.hr.shared.dom')
+		runtime project (':hr.ctx:hr.shared:nts.uk.ctx.hr.shared.infra')
+		runtime project (':hr.ctx:hr.shared:nts.uk.ctx.hr.shared.pub')
+		runtime project (':hr.ctx:hr.shared:nts.uk.ctx.hr.shared.pubimp')
+		runtime project (':hr.ctx:hr.shared:nts.uk.ctx.hr.shared.ws')
 		
 		runtime project (':hr.ctx:hr.develop:nts.uk.ctx.hr.develop.ac')
 		runtime project (':hr.ctx:hr.develop:nts.uk.ctx.hr.develop.app')

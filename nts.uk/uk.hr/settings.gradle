@@ -1,5 +1,13 @@
 include 'hr.web:nts.uk.hr.web'
 
+include 'hr.ctx:hr.shared:nts.uk.ctx.hr.shared.ac'
+include 'hr.ctx:hr.shared:nts.uk.ctx.hr.shared.app'
+include 'hr.ctx:hr.shared:nts.uk.ctx.hr.shared.dom'
+include 'hr.ctx:hr.shared:nts.uk.ctx.hr.shared.infra'
+include 'hr.ctx:hr.shared:nts.uk.ctx.hr.shared.ws'
+include 'hr.ctx:hr.shared:nts.uk.ctx.hr.shared.pub'
+include 'hr.ctx:hr.shared:nts.uk.ctx.hr.shared.pubimp'
+
 include 'hr.ctx:hr.develop:nts.uk.ctx.hr.develop.ac'
 include 'hr.ctx:hr.develop:nts.uk.ctx.hr.develop.app'
 include 'hr.ctx:hr.develop:nts.uk.ctx.hr.develop.dom'
