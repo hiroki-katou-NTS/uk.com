@@ -12,7 +12,6 @@ import javax.persistence.Table;
 
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.hr.develop.dom.guidance.GuideMsg;
-import nts.uk.ctx.hr.develop.infra.entity.careermgmt.careerpath.JhcmtCareerPathReq;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
@@ -64,7 +63,7 @@ public class JogmtGuideMsg extends UkJpaEntity implements Serializable {
 	@ManyToOne
 	@JoinColumns({
 			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false)})
-	public JhcmtCareerPathReq guideMsgList;
+	public JogmtGuideDispSetting guideMsgList;
 
 	@Override
 	public Object getKey() {
