@@ -405,20 +405,20 @@ const DIRTY = 'dirty',
 
                             // toggle class css error
                             if ($.size(binding.value)) {
-                                if (el.tagName == 'INPUT') {
+                                if (el.className.includes('form-control')) {
                                     dom.addClass(el, 'is-invalid');
-                                } else if (dom.hasClass(el, 'btn')) {
+                                } else if (el.className.includes('btn')) {
                                     dom.removeClass(el, 'btn-primary');
                                     dom.removeClass(el, 'btn-secondary');
                                     dom.addClass(el, 'btn-outline-danger');
-                                } else if (dom.hasClass(el, 'form-check')) {
+                                } else if (el.className.includes('form-check')) {
                                     dom.addClass(el, 'form-check-danger');
                                     dom.addClass(el, 'text-danger');
                                 }
                             } else {
-                                if (el.tagName == 'INPUT') {
+                                if (el.className.includes('form-control')) {
                                     dom.removeClass(el, 'is-invalid');
-                                } else if (dom.hasClass(el, 'btn')) {
+                                } else if (el.className.includes('btn')) {
                                     dom.removeClass(el, 'btn-outline-danger');
 
                                     const $inp = el.querySelector('input') as HTMLInputElement;
@@ -429,7 +429,7 @@ const DIRTY = 'dirty',
                                             dom.addClass(el, 'btn-secondary');
                                         }
                                     }
-                                } else if (dom.hasClass(el, 'form-check')) {
+                                } else if (el.className.includes('form-check')) {
                                     dom.removeClass(el, 'form-check-danger');
                                     dom.removeClass(el, 'text-danger');
                                 }
@@ -443,20 +443,20 @@ const DIRTY = 'dirty',
 
                             // toggle class css error
                             if ($.size(binding.value.errors)) {
-                                if (el.tagName == 'INPUT') {
+                                if (el.className.includes('form-control')) {
                                     dom.addClass(el, 'is-invalid');
-                                } else if (dom.hasClass(el, 'btn')) {
+                                } else if (el.className.includes('btn')) {
                                     dom.removeClass(el, 'btn-primary');
                                     dom.removeClass(el, 'btn-secondary');
                                     dom.addClass(el, 'btn-outline-danger');
-                                } else if (dom.hasClass(el, 'form-check')) {
+                                } else if (el.className.includes('form-check')) {
                                     dom.addClass(el, 'form-check-danger');
                                     dom.addClass(el, 'text-danger');
                                 }
                             } else {
-                                if (el.tagName == 'INPUT') {
+                                if (el.className.includes('form-control')) {
                                     dom.removeClass(el, 'is-invalid');
-                                } else if (dom.hasClass(el, 'btn')) {
+                                } else if (el.className.includes('btn')) {
                                     dom.removeClass(el, 'btn-outline-danger');
 
                                     const $inp = el.querySelector('input') as HTMLInputElement;
@@ -467,7 +467,7 @@ const DIRTY = 'dirty',
                                             dom.addClass(el, 'btn-secondary');
                                         }
                                     }
-                                } else if (dom.hasClass(el, 'form-check')) {
+                                } else if (el.className.includes('form-check')) {
                                     dom.removeClass(el, 'form-check-danger');
                                     dom.removeClass(el, 'text-danger');
                                 }
@@ -479,7 +479,7 @@ const DIRTY = 'dirty',
 
             vue.component('v-errors', {
                 props: ['value', 'name'],
-                template: `<span class="invalid-feedback">{{ resource | i18n(params) }}</span>`,
+                template: `<span v-for="(err, k) in  value" v-bind:key="k" class="invalid-feedback">{{ resource | i18n(params) }}</span>`,
                 computed: {
                     params() {
                         let self = this,
