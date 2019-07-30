@@ -3,18 +3,21 @@ package nts.uk.ctx.hr.develop.infra.entity.guidance;
 import java.io.Serializable;
 
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.hr.develop.dom.guidance.GuideMsg;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "JOGMT_GUIDE_MSG")
 public class JogmtGuideMsg extends UkJpaEntity implements Serializable {
 
@@ -23,7 +26,7 @@ public class JogmtGuideMsg extends UkJpaEntity implements Serializable {
 	@Column(name = "CID")
 	public String cId;
 
-	@EmbeddedId
+	@Id
 	@Column(name = "GUIDE_MSG_ID")
 	public String guideMsgId;
 
@@ -61,8 +64,7 @@ public class JogmtGuideMsg extends UkJpaEntity implements Serializable {
 	public String screenUrl;
 	
 	@ManyToOne
-	@JoinColumns({
-			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false)})
+	@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false)
 	public JogmtGuideDispSetting guideMsgList;
 
 	@Override
