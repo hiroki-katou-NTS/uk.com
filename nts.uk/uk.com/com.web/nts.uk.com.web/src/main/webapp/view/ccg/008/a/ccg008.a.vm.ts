@@ -60,10 +60,6 @@ module nts.uk.com.view.ccg008.a.viewmodel {
             // ver4 current month or next month
             self.selectedSwitch.subscribe(function(value){
                 character.save('cache', new model.Cache(self.closureSelected(), value));
-                service.getCache().done((data: any) => {
-                    console.log(data);
-                })
-                
                 nts.uk.ui.windows.setShared('cache', new model.Cache(self.closureSelected(), value));
                 var transferData = __viewContext.transferred.value;
                 var fromScreen = transferData && transferData.screen ? transferData.screen : "other";
@@ -81,6 +77,7 @@ module nts.uk.com.view.ccg008.a.viewmodel {
                 self.selectedSwitch.valueHasMutated();
             });
         }
+        
         start(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
@@ -109,13 +106,31 @@ module nts.uk.com.view.ccg008.a.viewmodel {
                             }
                         }); 
                     });
-                })  
+                });  
+            }else{
+                 // get combobox and switch button
+                character.restore('cache').done((obj)=>{
+                    if(obj){
+                        setTimeout(function() { 
+                            if(obj.currentOrNextMonth){
+                                self.selectedSwitch(obj.currentOrNextMonth);
+                            }else{
+                                self.selectedSwitch(null);    
+                            }
+                            self.closureSelected(obj.closureId)
+                            nts.uk.ui.windows.setShared('cache', obj);
+                        }, 2000);
+                    }else{
+                        self.closureSelected(1);
+                        self.selectedSwitch(null);
+                    }
+                });    
             }
             
             // 会社の締めを取得する - Lấy closure company
             service.getClosure().done((data: any) => {
-//                console.log(data);
-                self.lstClosure(data);
+                console.log(data);
+                self.lstClosure(data);   
                 service.getTopPageByCode(fromScreen, self.topPageCode()).done((data: model.LayoutAllDto) => {
                     self.dataSource(data);
                     var topPageUrl = "/view/ccg/008/a/index.xhtml";
