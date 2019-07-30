@@ -6,6 +6,7 @@
 import './approved-status';
 import './checkbox';
 import './dropdown';
+import './fix-table';
 import './input-date';
 import './input-date-range';
 import './input-number';
