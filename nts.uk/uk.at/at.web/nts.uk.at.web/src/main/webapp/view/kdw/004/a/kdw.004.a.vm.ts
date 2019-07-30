@@ -47,11 +47,20 @@ module nts.uk.at.view.kdw004.a.viewmodel {
         currentPageSize: KnockoutObservable<any> = ko.observable(50);
         selectedClosure: KnockoutObservable<any> = ko.observable(null);
         lstClosure: KnockoutObservableArray<any> = ko.observableArray([]);
+        isStartInProcess: boolean = true;
+        closureIdExtract: number = 0;
+        startDateExtract: any = null;
+        endDateExtract: any = null;
 
         constructor() {
             let self = this;
 
             self.selectedClosure.subscribe(val => {
+                if (self.isStartInProcess) {
+                    self.isStartInProcess = false;
+                    return;
+                } 
+                
                 if (val) {
                     let currentYearMonth,
                         closures = self.lstClosure();
@@ -75,21 +84,29 @@ module nts.uk.at.view.kdw004.a.viewmodel {
             });
         }
 
-        startPage = (): JQueryPromise<any> => {
+        startPage = (param): JQueryPromise<any> => {
             let self = this,
-                dfd = $.Deferred();
+                dfd = $.Deferred(),
+                data: any = param;
 
             nts.uk.ui.block.grayout();
 
-            service.startscreen().done((result: OneMonthApprovalStatus) => {
+            service.startscreen(data).done((result: OneMonthApprovalStatus) => {
                 self.lstClosure(result.lstClosure);
-
-                self.selectedClosure(result.lstClosure[0].closureId);
+                
+                self.isStartInProcess = true;
+                self.selectedClosure(_.isNil(data.closureIdParam) ? result.lstClosure[0].closureId : data.closureIdParam);
 
                 self.datePeriod({
                     startDate: moment(result.startDate).format("YYYY/MM/DD"),
                     endDate: moment(result.endDate).format("YYYY/MM/DD")
                 });
+                
+                // set gia trị ban đầu cho closureIdExtract startDateExtract endDateExtract khi khởi động
+                self.closureIdExtract = self.selectedClosure();
+                self.startDateExtract = moment(result.startDate).format("YYYY/MM/DD");
+                self.endDateExtract = moment(result.endDate).format("YYYY/MM/DD");
+                
                 if(result.lstEmployee != null){
                     self.lstData = self.convertToGridData(result.lstEmployee);
                 } else {
@@ -124,12 +141,15 @@ module nts.uk.at.view.kdw004.a.viewmodel {
         }
 
         extract = () => {
-            let self = this,
-                param = {
-                    closureIdParam: self.selectedClosure(),
-                    startDateParam: moment(self.datePeriod().startDate).utc().toISOString(),
-                    endDateParam: moment(self.datePeriod().endDate).utc().toISOString(),
-                };
+            let self = this;
+            self.closureIdExtract = self.selectedClosure();
+            self.startDateExtract = self.datePeriod().startDate;
+            self.endDateExtract = self.datePeriod().endDate;
+            let param = {
+                closureIdParam: self.selectedClosure(),
+                startDateParam: moment(self.startDateExtract).utc().toISOString(),
+                endDateParam: moment(self.endDateExtract).utc().toISOString(),
+            };
 
             nts.uk.ui.block.grayout();
 
@@ -187,7 +207,7 @@ module nts.uk.at.view.kdw004.a.viewmodel {
                     //期間を変更する
                     changePeriodAtr: true,
                     //処理締め
-                    targetClosure: self.selectedClosure(),
+                    targetClosure: self.closureIdExtract,
                     //Optional
                     //打刻初期値
                     initClock: null,
@@ -205,7 +225,9 @@ module nts.uk.at.view.kdw004.a.viewmodel {
                     //Optional
                     //日付別で起動
                     dateTarget: date,
-                    individualTarget: undefined
+                    individualTarget: undefined,
+                    startDateKDW004: self.startDateExtract,
+                    endDateKDW004: self.endDateExtract
                 };
 
             nts.uk.request.jump("at", "/view/kdw/003/a/index.xhtml", {
@@ -223,7 +245,7 @@ module nts.uk.at.view.kdw004.a.viewmodel {
                     // fix bug 101435
                     //期間を変更する
                     changePeriodAtr: true,
-                    targetClosure: self.selectedClosure(),
+                    targetClosure: self.closureIdExtract,
                     initClock: undefined,
                     transitionDesScreen: '/view/kdw/004/a/index.xhtml'
                 },
@@ -233,7 +255,9 @@ module nts.uk.at.view.kdw004.a.viewmodel {
                     endDate: startDate,
                     lstExtractedEmployee: [employeeId],
                     dateTarget: startDate,
-                    individualTarget: employeeId
+                    individualTarget: employeeId,
+                    startDateKDW004: self.startDateExtract,
+                    endDateKDW004: self.endDateExtract
                 };
 
             nts.uk.request.jump("at", "/view/kdw/003/a/index.xhtml", {
@@ -257,7 +281,7 @@ module nts.uk.at.view.kdw004.a.viewmodel {
                     //期間を変更する
                     changePeriodAtr: true,
                     //処理締め
-                    targetClosure: self.selectedClosure(),
+                    targetClosure: self.closureIdExtract,
                     //Optional
                     //打刻初期値
                     initClock: null,
@@ -267,14 +291,16 @@ module nts.uk.at.view.kdw004.a.viewmodel {
                     //表示形式
                     displayFormat: DPCorrectionDisplayFormat.INDIVIDUAl,
                     //期間
-                    startDate: self.datePeriod().startDate,
-                    endDate: self.datePeriod().endDate,
+                    startDate: self.startDateExtract,
+                    endDate: self.endDateExtract,
                     //抽出した社員一覧
                     lstExtractedEmployee: employeeId,
                     //初期表示年月日
                     dateTarget: null,
                     //初期表示社員
-                    individualTarget: employeeId
+                    individualTarget: employeeId,
+                    startDateKDW004: self.startDateExtract,
+                    endDateKDW004: self.endDateExtract
                 };
 
             nts.uk.request.jump("at", "/view/kdw/003/a/index.xhtml", {
@@ -535,6 +561,8 @@ module nts.uk.at.view.kdw004.a.viewmodel {
         //日付別で起動
         dateTarget: any;
         individualTarget: any;
+        startDateKDW004: string;
+        endDateKDW004: string
     }
 
     export enum DPCorrectionScreenMode {

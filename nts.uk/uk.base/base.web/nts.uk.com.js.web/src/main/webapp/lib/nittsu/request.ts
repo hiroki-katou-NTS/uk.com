@@ -164,6 +164,12 @@ module nts.uk.request {
         });        
         return dfd.promise();
     }
+    
+    let SubSessionIdKey = "nts.uk.request.subSessionId";
+    if (!uk.sessionStorage.containsKey(SubSessionIdKey)) {
+        uk.sessionStorage.setItem(SubSessionIdKey, uk.util.randomId());
+    }
+    let subSessionId = uk.sessionStorage.getItem(SubSessionIdKey).get();
 
     export function ajax(path: string, data?: any, options?: any);
     export function ajax(webAppId: WebAppId, path: string, data?: any, options?: any, restoresSession?: boolean) {
@@ -197,7 +203,8 @@ module nts.uk.request {
                 data: data,
                 headers: {
                     'PG-Path': location.current.serialize(),
-                    "X-CSRF-TOKEN": csrf.getToken()
+                    "X-CSRF-TOKEN": csrf.getToken(),
+                    "X-SubSessionId": subSessionId
                 }
             }).done(function(res) {
                 if (nts.uk.util.exception.isErrorToReject(res)) {
@@ -255,7 +262,8 @@ module nts.uk.request {
                 async: false,
                 headers: {
                     'PG-Path': location.current.serialize(),
-                    "X-CSRF-TOKEN": csrf.getToken()
+                    "X-CSRF-TOKEN": csrf.getToken(),
+                    "X-SubSessionId": subSessionId
                 },
                 success: function(res) {
                     if (nts.uk.util.exception.isErrorToReject(res)) {
@@ -520,20 +528,49 @@ module nts.uk.request {
         }
     }
     
+    export function jumpToNewWindow(path: string, data?: any);
+    export function jumpToNewWindow(webAppId: WebAppId, path: string, data?: any) {
+        // handle overload
+        if (typeof arguments[1] !== 'string') {
+            jumpToNewWindow.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
+            return;
+        }
+        
+        if (data === undefined) {
+            uk.sessionStorage.removeItem(STORAGE_KEY_TRANSFER_DATA);
+        } else {
+            uk.sessionStorage.setItemAsJson(STORAGE_KEY_TRANSFER_DATA, { data, jump: { webAppId, path } });
+        }
+
+        // open new tab (like current tab)
+        const wd = window.open(window.location.href, '_blank');
+        wd.focus();
+        
+        // remove storage on current tab
+        nts.uk.sessionStorage.removeItem(uk.request.STORAGE_KEY_TRANSFER_DATA);
+    }
+    
+    // jumpToNewWindow step 2
+    $(() => {
+        setTimeout(() => {
+            __viewContext.transferred.ifPresent(data => {
+                if (_.isEqual(_.keys(data), ['data', 'jump'])) {
+                    nts.uk.request.jump(data.jump.webAppId, data.jump.path, data.data);
+                }
+            });
+        }, 0);
+    });
+    
     export function jumpFromDialogOrFrame(path: string, data?: any);
     export function jumpFromDialogOrFrame(webAppId: WebAppId, path: string, data?: any) {
-        let self: nts.uk.ui.windows.ScreenWindow;
-        if(nts.uk.util.isInFrame()){
-            self = nts.uk.ui.windows.getSelf();
-        } else {
-            self = window.parent.nts.uk.ui.windows.getSelf();    
+        // handle overload
+        if (typeof arguments[1] !== 'string') {
+            jumpFromDialogOrFrame.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
+            return;
         }
-        while(!self.isRoot){
-            self = self.parent;
-        }
-        self.globalContext.nts.uk.request.jump(webAppId, path, data);
+        
+        window.top.nts.uk.request.jump(webAppId, path, data);
     }
-
 
     export function jump(path: string, data?: any);
     export function jump(webAppId: WebAppId, path: string, data?: any) {

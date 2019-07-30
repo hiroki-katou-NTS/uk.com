@@ -44,6 +44,7 @@ import nts.uk.ctx.at.record.dom.daily.vacationusetime.SpecialHolidayOfDaily;
 import nts.uk.ctx.at.record.dom.daily.vacationusetime.SubstituteHolidayOfDaily;
 import nts.uk.ctx.at.record.dom.daily.vacationusetime.TimeDigestOfDaily;
 import nts.uk.ctx.at.record.dom.daily.vacationusetime.YearlyReservedOfDaily;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ReflectBreakTimeOfDailyDomainService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.CalcDefaultValue;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.errorcheck.CalculationErrorCheckService;
@@ -1560,7 +1561,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	private Optional<PredetermineTimeSetForCalc> getPredetermineTimeSetForCalcFromShareContainer(MasterShareContainer<String> shareContainer,String companyId,String workTimeCode){
 		val predSet = getPredetermineTimeSetFromShareContainer(shareContainer, companyId, workTimeCode);
 		if(predSet.isPresent()) {
-			return Optional.of(PredetermineTimeSetForCalc.convertFromAggregatePremiumTime(predSet.get().clone()));
+			return Optional.of(PredetermineTimeSetForCalc.convertFromAggregatePremiumTime(predSet.get()));
 		}
 		return Optional.empty();
 	}
@@ -1573,7 +1574,11 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	 * @return
 	 */
 	private Optional<PredetemineTimeSetting> getPredetermineTimeSetFromShareContainer(MasterShareContainer<String> shareContainer,String companyId,String workTimeCode){
-		return shareContainer.getShared("PredetemineSet" + workTimeCode, () -> predetemineTimeSetRepository.findByWorkTimeCode(companyId, workTimeCode));
+		val predSet = shareContainer.getShared("PredetemineSet" + workTimeCode, () -> predetemineTimeSetRepository.findByWorkTimeCode(companyId, workTimeCode));
+		if(predSet.isPresent()) {
+			return Optional.of(predSet.get().clone());
+		}
+		return Optional.empty();
 	}
 	
 	

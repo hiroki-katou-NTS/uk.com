@@ -16,5 +16,6 @@ public interface AppReflectManager {
 	 */
 	public void reflectEmployeeOfApp(Application_New appInfor, InformationSettingOfEachApp reflectSetting,
 			ExecutionTypeExImport execuTionType, String excLogId, int currentRecord);
-
+	public void reflectEmployeeOfAppWithTransaction(Application_New appInfor,
+			InformationSettingOfEachApp reflectSetting, ExecutionTypeExImport execuTionType, String excLogId);	
 }

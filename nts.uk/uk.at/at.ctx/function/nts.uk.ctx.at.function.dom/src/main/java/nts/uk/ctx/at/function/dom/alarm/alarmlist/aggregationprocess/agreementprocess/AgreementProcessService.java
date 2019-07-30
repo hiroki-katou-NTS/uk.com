@@ -146,10 +146,11 @@ public class AgreementProcessService {
 				for (PeriodByAlarmCategory periodAlarm : periodAlarms) {
 					if(periodAlarm.getPeriod36Agreement() == periodCheck.value){
 						DatePeriod period = new DatePeriod(periodAlarm.getStartDate(), periodAlarm.getEndDate());
+						Object objCheckAgreement = checkAgreementAdapter.getCommonSetting(comId, employeeIds,period);
 						//アルゴリズム「エラーアラームチェック」を実行する
 						// アルゴリズム「36協定実績をチェックする」を実行する
 						List<CheckedAgreementResult> checkAgreementsResult = checkAgreementAdapter.checkArgreementResult(employeeIds,
-								period, agreeConditionError, agreementSetObj,closureList,mapEmpIdClosureID);
+								period, agreeConditionError, agreementSetObj,closureList,mapEmpIdClosureID,objCheckAgreement);
 						if(!CollectionUtil.isEmpty(checkAgreementsResult)){
 							result.addAll(generationValueExtractAlarm(mapEmployee,checkAgreementsResult,agreeConditionError,optAgreeName,periodCheck,
 									period.start()));	
@@ -210,7 +211,7 @@ public class AgreementProcessService {
 		/** TODO: parallel from here */
 		parallelManager.forEach(CollectionUtil.partitionBySize(empIds, 50), employeeIds -> {
 //		CollectionUtil.split(empIds, 25, employeeIds -> {
-			checkService.check(agreementErAl, periodAlarms, agreementSetObj, counter, shouldStop, result, empIds, empIdToClosureId,
+			checkService.check(agreementErAl, periodAlarms, agreementSetObj, counter, shouldStop, result, empIdToClosureId,
 					closureList, mapEmployee, employeeIds);
 		});
 //		Logger.getLogger(getClass()).info("Transaction Status 10: " + tsr.getTransactionStatus());

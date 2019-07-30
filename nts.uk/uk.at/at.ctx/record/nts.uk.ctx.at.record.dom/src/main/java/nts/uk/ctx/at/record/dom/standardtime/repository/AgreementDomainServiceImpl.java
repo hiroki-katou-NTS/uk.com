@@ -178,9 +178,9 @@ public class AgreementDomainServiceImpl implements AgreementDomainService {
 		List<AffClassificationSidImport> affClassifications = new ArrayList<>();
 		List<AgreementTimeOfClassification> agreeTimeClassifi = new ArrayList<>();
 		Map<GeneralDate, Map<String, List<String>>> empToWorkplaceId = new HashMap<>();
-		Map<String, AgreementTimeOfWorkPlace> agreeTimeWP = new HashMap<>();
+		Map<String, List<AgreementTimeOfWorkPlace>> agreeTimeWP = new HashMap<>();
 		Map<String, List<SyEmploymentImport>> employments = new HashMap<>();
-		Map<String, AgreementTimeOfEmployment> agreeTimeEmployment = new HashMap<>();
+		Map<String, List<AgreementTimeOfEmployment>> agreeTimeEmployment = new HashMap<>();
 		List<AgreementTimeOfCompany> agreeTimeCompany = new ArrayList<>();
 		
 		AgreementUnitSetting agreementUnitSet = this.agreementUnitSetRepository.find(companyId).orElseGet(() -> new AgreementUnitSetting(companyId,
@@ -208,10 +208,15 @@ public class AgreementDomainServiceImpl implements AgreementDomainService {
 													c.getValue().values().stream().flatMap(List::stream).distinct().collect(Collectors.toList()))
 											.flatMap(List::stream).distinct().collect(Collectors.toList());
 			// 職場36協定時間を取得する
+//			agreeTimeWP = this.agreementTimeWorkPlaceRepository.findWorkPlaceSetting(workplaceIds)
+//											.stream().collect(Collectors.toMap(c -> c.getWorkplaceId(), c -> c));
 			agreeTimeWP = this.agreementTimeWorkPlaceRepository.findWorkPlaceSetting(workplaceIds)
-											.stream().collect(Collectors.toMap(c -> c.getWorkplaceId(), c -> c));
-			basicAgreeSettings.putAll(this.getBasicSetting(agreeTimeWP.values().stream()
-																.map(c -> c.getBasicSettingId()).distinct().collect(Collectors.toList())));
+					.stream().collect(Collectors.groupingBy(AgreementTimeOfWorkPlace::getWorkplaceId));
+			
+//			basicAgreeSettings.putAll(this.getBasicSetting(agreeTimeWP.values().stream().map(c -> c.getBasicSettingId())
+//					.distinct().collect(Collectors.toList())));
+			basicAgreeSettings.putAll(this.getBasicSetting(agreeTimeWP.values().stream().flatMap(x -> x.stream())
+					.distinct().map(c -> c.getBasicSettingId()).distinct().collect(Collectors.toList())));
 		}
 		
 		if(agreementUnitSet.getEmploymentUseAtr() == UseClassificationAtr.USE){
@@ -220,10 +225,14 @@ public class AgreementDomainServiceImpl implements AgreementDomainService {
 																c.getValue().stream().map(h -> h.getEmploymentCode()).collect(Collectors.toList()))
 															.flatMap(List::stream).distinct().collect(Collectors.toList());
 			
+//			agreeTimeEmployment = this.agreementTimeEmploymentRepository.findEmploymentSetting(companyId, employmentCodes)
+//															.stream().collect(Collectors.toMap(c -> c.getEmploymentCategoryCode(), c -> c));
 			agreeTimeEmployment = this.agreementTimeEmploymentRepository.findEmploymentSetting(companyId, employmentCodes)
-															.stream().collect(Collectors.toMap(c -> c.getEmploymentCategoryCode(), c -> c));
-			basicAgreeSettings.putAll(this.getBasicSetting(agreeTimeEmployment.values().stream()
-																.map(c -> c.getBasicSettingId()).distinct().collect(Collectors.toList())));
+					.stream().collect(Collectors.groupingBy(AgreementTimeOfEmployment::getEmploymentCategoryCode));
+//			basicAgreeSettings.putAll(this.getBasicSetting(agreeTimeEmployment.values().stream()
+//																.map(c -> c.getBasicSettingId()).distinct().collect(Collectors.toList())));
+			basicAgreeSettings.putAll(this.getBasicSetting(agreeTimeEmployment.values().stream().flatMap(x -> x.stream())
+					.map(c -> c.getBasicSettingId()).distinct().collect(Collectors.toList())));
 		}
 		
 		agreeTimeCompany = this.agreementTimeCompanyRepository.find(companyId);
