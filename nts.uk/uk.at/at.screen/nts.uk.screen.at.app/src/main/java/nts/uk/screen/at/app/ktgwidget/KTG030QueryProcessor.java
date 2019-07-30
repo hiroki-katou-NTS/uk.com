@@ -67,9 +67,12 @@ public class KTG030QueryProcessor {
 			//Lấy tất cả data xác nhận kết quả các ngày có hay không có
 			listCheckTargetItem = dataMonthlyResult(employeeID, currentOrNextMonth, closureId);
 		}
-		// rq593
-		result = checkTrackRecord.checkTrackRecord(CID, employeeID, listCheckTargetItem.stream()
-											.map(c -> new CheckTargetItemDto(c.getClosureId(), c.getYearMonth())).collect(Collectors.toList()));
+		List<CheckTargetItemDto> temp = listCheckTargetItem.stream()
+										.filter(x -> x.getClosureId() == closureId)
+										.map(c -> new CheckTargetItemDto(c.getClosureId(), c.getYearMonth()))
+										.collect(Collectors.toList());
+		// rq594
+		result = checkTrackRecord.checkTrackRecord(CID, employeeID, temp);
 		
 		return new KTG001Dto(result, currentOrNextMonth, listCheckTargetItem.stream()
 															.map(x -> new TargetDto(x.getClosureId(), x.getYearMonth().toString())).collect(Collectors.toList()));

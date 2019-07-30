@@ -65,8 +65,9 @@ public class KTG001QueryProcessor {
 			// Lấy có không có tất cả data xác nhận kết quả các ngày
 			listCheckTargetItem = dataDailyResults(employeeID, currentOrNextMonth, closureId);
 		}
+		List<CheckTarget> temp = listCheckTargetItem.stream().filter(x -> x.getClosureId() == closureId).collect(Collectors.toList());
 		// request list 593
-		result = checkTrackRecordApprovalDay.checkTrackRecordApprovalDay(AppContexts.user().companyId(), employeeID, listCheckTargetItem);
+		result = checkTrackRecordApprovalDay.checkTrackRecordApprovalDay(AppContexts.user().companyId(), employeeID, temp);
 		return new KTG001Dto(result, currentOrNextMonth, listCheckTargetItem.stream()
 																.map(x -> new TargetDto(x.getClosureId(), x.getYearMonth().toString())).collect(Collectors.toList()));
 	}
