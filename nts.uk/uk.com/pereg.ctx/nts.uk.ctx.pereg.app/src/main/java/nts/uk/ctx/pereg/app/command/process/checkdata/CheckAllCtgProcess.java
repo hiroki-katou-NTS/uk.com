@@ -93,6 +93,10 @@ public class CheckAllCtgProcess {
 					ctg.getCategoryName().toString());
 		}).collect(Collectors.toList());
 		
+		/**
+		 * アルゴリズム「個人情報条件で社員を検索して並び替える」を実行する
+		 * Thực thi thuật toán 「Search employee theo điều kiện thông tin cá nhân, và thay đổi thứ tự」
+		 */
 		List<EmployeeResultDto> listEmp = findEmployeesInfo(query);
 		
 		GeneralDateTime endDateTime = GeneralDateTime.now();

@@ -121,7 +121,7 @@ module nts.uk.com.view.cps013.a.viewmodel {
                 return;
             }
             service.checkHasCtg(checkDataFromUI).done((data  : IDataResult) =>{
-                if (data.listCtg && data.peopleCount) {
+                if (data.listCtg) {
                     checkDataFromUI.peopleCount = data.peopleCount;
                     checkDataFromUI.startTime   = data.startDateTime;
                     nts.uk.ui.windows.setShared('CPS013B_PARAMS', checkDataFromUI);
