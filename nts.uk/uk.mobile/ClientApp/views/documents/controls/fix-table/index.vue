@@ -4,14 +4,14 @@
     <fix-table>
       <thead>
         <tr>
-          <th><button>Prev</button></th>
+          <th></th>
           <th>勤務種類</th>
           <th>就業時間帯</th>
           <th>出勤時刻</th>
           <th>退勤時刻</th>
           <th>休憩開始時刻1</th>
           <th>休憩終了時刻1</th>
-          <th><button>Next</button></th>
+          <th></th>
         </tr>
       </thead>
       <tbody>
