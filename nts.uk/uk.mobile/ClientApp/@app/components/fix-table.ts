@@ -4,14 +4,14 @@ import { component, Prop } from '@app/core/component';
 @component({
     template: `<div class="table-container">
         <div class="table-header">
-            <button ref="previous" class="btn btn-secondary" v-on:click="previous">前項</button>
-            <button ref="next" class="btn btn-secondary" v-on:click="next">事項</button>
-            <table class="table table-bordered m-0">
+            <button ref="previous" class="btn btn-secondary btn-sm" v-on:click="previous" disabled>前項</button>
+            <button ref="next" class="btn btn-secondary btn-sm" v-on:click="next">次項</button>
+            <table class="table table-bordered table-sm m-0">
                 <tbody></tbody>
             </table>
         </div>
         <div class="table-body">
-            <table class="table table-bordered m-0">
+            <table class="table table-bordered table-sm m-0">
                 <slot/>
             </table>
         </div>
@@ -20,6 +20,7 @@ import { component, Prop } from '@app/core/component';
                 <tbody></tbody>
             </table>
         </div>
+
     </div>`
 })
 export class FixTableComponent extends Vue {
@@ -27,7 +28,7 @@ export class FixTableComponent extends Vue {
     @Prop({ default: 4 })
     public displayColumns: number;
 
-    @Prop({ default: 6}) 
+    @Prop({ default: 10 })
     public rowNumber: number;
 
     public startDisplayIndex: number = 1;
@@ -59,12 +60,46 @@ export class FixTableComponent extends Vue {
 
     private setStyleOfTableBody() {
         this.$nextTick(() => {
-            let height: number = (this.bodyTable.tBodies[0].firstChild.firstChild as HTMLTableCellElement).clientHeight;
+            let height: number = (this.bodyTable.tBodies[0].firstChild.firstChild as HTMLTableCellElement).offsetHeight;
 
             let tableBodyDiv = this.$el.querySelector('.table-container .table-body') as HTMLDivElement;
-            tableBodyDiv.style.height = `${height * this.rowNumber}px` ;
+            tableBodyDiv.style.height = `${height * this.rowNumber}px`;
             tableBodyDiv.style.overflowY = 'scroll';
+
+            this.resize();
+
         });
+    }
+
+    private resize() {
+        this.resizeHeader();
+        this.resizeFooter();
+    }
+
+    private resizeFooter() {
+        // resize header
+        let columns = this.bodyTable.tBodies[0].children[0].children;
+        let maps = Array.from(columns).map(
+            (c: HTMLTableCellElement) => c.offsetWidth
+        );
+
+        let footerColumns = this.footerTable.tFoot.children[0].children;
+        for (let i = 0; i < footerColumns.length; i++) {
+            (footerColumns[i] as HTMLElement).style.width = `${maps[i]}px`;
+        }
+    }
+
+    private resizeHeader() {
+        // resize header
+        let columns = this.bodyTable.tBodies[0].children[0].children;
+        let maps = Array.from(columns).map(
+            (c: HTMLTableCellElement) => c.offsetWidth
+        );
+
+        let headerColumns = this.headerTable.tHead.children[0].children;
+        for (let i = 0; i < headerColumns.length; i++) {
+            (headerColumns[i] as HTMLElement).style.width = `${maps[i]}px`;
+        }
     }
 
     private hiddenColumns() {
@@ -109,7 +144,7 @@ export class FixTableComponent extends Vue {
             }
 
             // display new cells
-            for  (let i = this.startDisplayIndex; i < this.startDisplayIndex + this.displayColumns && i < headerColums.length - 1; i++) {
+            for (let i = this.startDisplayIndex; i < this.startDisplayIndex + this.displayColumns && i < headerColums.length - 1; i++) {
                 (row.childNodes[i] as HTMLTableCellElement).classList.remove('d-none');
             }
         }
@@ -124,11 +159,11 @@ export class FixTableComponent extends Vue {
         for (let i = this.startDisplayIndex; i < this.startDisplayIndex + this.displayColumns && i < headerColums.length - 1; i++) {
             (footerColums[i] as HTMLTableHeaderCellElement).classList.remove('d-none');
         }
-        
+
     }
 
     private addPrevNextButtons() {
-        let headerColumns = this.headerTable.tHead.firstChild.childNodes;
+        let headerColumns = this.headerTable.tHead.children[0].children;
         headerColumns[0].appendChild(this.$refs.previous as Node);
         headerColumns[headerColumns.length - 1].appendChild(this.$refs.next as Node);
     }
@@ -138,7 +173,7 @@ export class FixTableComponent extends Vue {
 
         self.oldStartDisplayIndex = self.startDisplayIndex;
         self.startDisplayIndex = self.startDisplayIndex - self.displayColumns;
-        
+
         if (self.startDisplayIndex === 1) {
             (this.$refs.previous as HTMLButtonElement).disabled = true;
         }
@@ -149,13 +184,14 @@ export class FixTableComponent extends Vue {
         }
 
         self.changeDisplayColumn();
+        self.resize();
     }
-    
+
     public next() {
         let self = this;
         self.oldStartDisplayIndex = self.startDisplayIndex;
         self.startDisplayIndex = self.startDisplayIndex + self.displayColumns;
-        
+
         let headerColumnLength = self.headerTable.tHead.firstChild.childNodes.length;
         if (self.startDisplayIndex + self.displayColumns >= headerColumnLength) {
             (self.$refs.next as HTMLButtonElement).disabled = true;
@@ -167,19 +203,7 @@ export class FixTableComponent extends Vue {
         }
 
         self.changeDisplayColumn();
-    }
-    
-    public updated() {
-        let columns = this.bodyTable.tBodies[0].children[0].children;
-        let maps = Array.from(columns).map( 
-            (c) => c.clientWidth
-        );
-        
-        let headerColumns = this.headerTable.tHead.children[0].children;
-        for ( let i = 0; i < headerColumns.length; i++) {
-            (headerColumns[i] as HTMLTableCellElement).style.width = `${maps[i]}px`;
-        }
-
+        self.resize();
     }
 
 }
