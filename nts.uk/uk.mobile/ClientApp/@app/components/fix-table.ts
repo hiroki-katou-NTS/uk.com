@@ -41,6 +41,7 @@ export class FixTableComponent extends Vue {
     private footerTable: HTMLTableElement = null;
 
     private xDown: number = null;
+    private yDown: number = null;
 
     public mounted() {
         this.bodyTable = this.$el.querySelector('.table-container .table-body table') as HTMLTableElement;
@@ -220,21 +221,26 @@ export class FixTableComponent extends Vue {
 
     public handleTouchStart(evt) {                                         
         this.xDown = evt.touches[0].clientX;
+        this.yDown = evt.touches[0].clientY;
     }
 
     public handleTouchEnd(evt: TouchEvent) {
-        if ( ! this.xDown) {
+      
+        if ( ! this.xDown || ! this.yDown ) {
             return;
         }
-        let xUp = evt.changedTouches[0].clientX;                                    
-        let xDiff = this.xDown - xUp;
     
-        if ( xDiff > 0 ) {
-            /* left swipe */ 
-            this.next();
-        } else {
-            /* right swipe */
-            this.previous();
-        }                       
+        let xDiff = this.xDown - evt.changedTouches[0].clientX;
+        let yDiff = this.yDown - evt.changedTouches[0].clientY;
+    
+        if ( Math.abs( xDiff ) > Math.abs( yDiff ) ) {
+            if ( xDiff > 0 ) {
+                /* left swipe */ 
+                this.next();
+            } else {
+                /* right swipe */
+                this.previous();
+            }                       
+        } 
     }
 }
