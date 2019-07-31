@@ -14,116 +14,16 @@
           <th></th>
         </tr>
       </thead>
-      <tbody style="font-size: 13px">
-        <tr>
-          <td style="width: 65px">22日(火)</td>
+      <tbody>
+        <tr v-for="row in rows" v-bind:key="row">
+          <td style="width: 70px">{{row}}日(火)</td>
           <td>出勤</td>
           <td>通常勤務</td>
           <td>8:30</td>
           <td>17:30</td>
           <td>12:00</td>
           <td>13:00</td>
-          <td style="width: 52px"><button>></button></td>
-        </tr>
-        <tr>
-          <td>1日(火)</td>
-          <td>出勤</td>
-          <td>通常勤務</td>
-          <td>8:30</td>
-          <td>17:30</td>
-          <td>12:00</td>
-          <td>13:00</td>
-          <td><button>></button></td>
-        </tr>
-        <tr>
-          <td>1日(火)</td>
-          <td>出勤</td>
-          <td>通常勤務</td>
-          <td>8:30</td>
-          <td>17:30</td>
-          <td>12:00</td>
-          <td>13:00</td>
-          <td><button>></button></td>
-        </tr>
-        <tr>
-          <td>1日(火)</td>
-          <td>出勤</td>
-          <td>通常勤務</td>
-          <td>8:30</td>
-          <td>17:30</td>
-          <td>12:00</td>
-          <td>13:00</td>
-          <td><button>></button></td>
-        </tr>
-        <tr>
-          <td>1日(火)</td>
-          <td>出勤</td>
-          <td>通常勤務</td>
-          <td>8:30</td>
-          <td>17:30</td>
-          <td>12:00</td>
-          <td>13:00</td>
-          <td><button>></button></td>
-        </tr>
-        <tr>
-          <td>1日(火)</td>
-          <td>出勤</td>
-          <td>通常勤務</td>
-          <td>8:30</td>
-          <td>17:30</td>
-          <td>12:00</td>
-          <td>13:00</td>
-          <td><button>></button></td>
-        </tr>
-        <tr>
-          <td>1日(火)</td>
-          <td>出勤</td>
-          <td>通常勤務</td>
-          <td>8:30</td>
-          <td>17:30</td>
-          <td>12:00</td>
-          <td>13:00</td>
-          <td><button>></button></td>
-        </tr>
-        <tr>
-          <td>1日(火)</td>
-          <td>出勤</td>
-          <td>通常勤務</td>
-          <td>8:30</td>
-          <td>17:30</td>
-          <td>12:00</td>
-          <td>13:00</td>
-          <td><button>></button></td>
-        </tr>
-        <tr>
-          <td>1日(火)</td>
-          <td>出勤</td>
-          <td>通常勤務</td>
-          <td>8:30</td>
-          <td>17:30</td>
-          <td>12:00</td>
-          <td>13:00</td>
-          <td><button>></button></td>
-        </tr>
-        <tr>
-          <td>1日(火)</td>
-          <td>出勤</td>
-          <td>通常勤務</td>
-          <td>8:30</td>
-          <td>17:30</td>
-          <td>12:00</td>
-          <td>13:00</td>
-          <td><button>></button></td>
-        </tr>
-        <tr>
-          <td>1日(火)</td>
-          <td>出勤</td>
-          <td>通常勤務</td>
-          <td>8:30</td>
-          <td>17:30</td>
-          <td>12:00</td>
-          <td>13:00</td>
-          <td><button>></button></td>
+          <td style="width: 52px"><button v-on:click="openB">></button></td>
         </tr>
       </tbody>
       <tfoot>

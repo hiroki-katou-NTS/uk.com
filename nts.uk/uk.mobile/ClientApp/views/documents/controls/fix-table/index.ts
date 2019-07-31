@@ -1,4 +1,4 @@
-import { Vue } from '@app/provider';
+import { Vue, _ } from '@app/provider';
 import { component } from '@app/core/component';
 import { FixTableComponent } from '@app/components/fix-table';
 
@@ -18,4 +18,11 @@ import { FixTableComponent } from '@app/components/fix-table';
         'fix-table': FixTableComponent
     }
 })
-export class DocumentsControlsFixTableComponent extends Vue { }
+export class DocumentsControlsFixTableComponent extends Vue { 
+
+    public rows: Array<number> = _.range(1, 31);
+
+    public openB() {
+        console.log('Open B screen!');
+    }
+}

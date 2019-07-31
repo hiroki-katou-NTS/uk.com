@@ -11,7 +11,9 @@ import { component, Prop } from '@app/core/component';
             </table>
         </div>
         <div class="table-body">
-            <table class="table table-bordered table-sm m-0">
+            <table class="table table-bordered table-sm m-0"
+                v-on:touchstart="handleTouchStart"
+                v-on:touchend="handleTouchEnd">
                 <slot/>
             </table>
         </div>
@@ -28,7 +30,7 @@ export class FixTableComponent extends Vue {
     @Prop({ default: 4 })
     public displayColumns: number;
 
-    @Prop({ default: 10 })
+    @Prop({ default: 5 })
     public rowNumber: number;
 
     public startDisplayIndex: number = 1;
@@ -38,8 +40,9 @@ export class FixTableComponent extends Vue {
     private bodyTable: HTMLTableElement = null;
     private footerTable: HTMLTableElement = null;
 
+    private xDown: number = null;
+
     public mounted() {
-        console.log('mounted hook, move table');
         this.bodyTable = this.$el.querySelector('.table-container .table-body table') as HTMLTableElement;
         this.headerTable = this.$el.querySelector('.table-container .table-header table') as HTMLTableElement;
         this.footerTable = this.$el.querySelector('.table-container .table-footer table') as HTMLTableElement;
@@ -171,6 +174,10 @@ export class FixTableComponent extends Vue {
     public previous() {
         let self = this;
 
+        if (this.startDisplayIndex === 1) {
+            return;
+        }
+
         self.oldStartDisplayIndex = self.startDisplayIndex;
         self.startDisplayIndex = self.startDisplayIndex - self.displayColumns;
 
@@ -189,10 +196,15 @@ export class FixTableComponent extends Vue {
 
     public next() {
         let self = this;
+        let headerColumnLength = self.headerTable.tHead.firstChild.childNodes.length;
+
+        if (self.startDisplayIndex + self.displayColumns >= headerColumnLength) {
+            return;
+        }
+        
         self.oldStartDisplayIndex = self.startDisplayIndex;
         self.startDisplayIndex = self.startDisplayIndex + self.displayColumns;
-
-        let headerColumnLength = self.headerTable.tHead.firstChild.childNodes.length;
+        
         if (self.startDisplayIndex + self.displayColumns >= headerColumnLength) {
             (self.$refs.next as HTMLButtonElement).disabled = true;
         }
@@ -206,4 +218,23 @@ export class FixTableComponent extends Vue {
         self.resize();
     }
 
+    public handleTouchStart(evt) {                                         
+        this.xDown = evt.touches[0].clientX;
+    }
+
+    public handleTouchEnd(evt: TouchEvent) {
+        if ( ! this.xDown) {
+            return;
+        }
+        let xUp = evt.changedTouches[0].clientX;                                    
+        let xDiff = this.xDown - xUp;
+    
+        if ( xDiff > 0 ) {
+            /* left swipe */ 
+            this.next();
+        } else {
+            /* right swipe */
+            this.previous();
+        }                       
+    }
 }
