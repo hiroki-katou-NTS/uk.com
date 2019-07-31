@@ -118,7 +118,7 @@ public class JpaExcessLeaveInfoRepo extends JpaRepository  implements ExcessLeav
 				+ " CID, SID, USE_ATR, OCCURRENCE_UNIT, PAYMENT_METHOD)"
 				+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
 				+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL,"
-				+ " CID_VAL, SID_VAL, USE_ATR_VAL, "
+				+ " CID_VAL, SID_VAL, VAL_USE_ATR, "
 				+ " OCCURRENCE_UNIT_VAL, PAYMENT_METHOD_VAL); ";
 		String insCcd = AppContexts.user().companyCode();
 		String insScd = AppContexts.user().employeeCode();
@@ -141,8 +141,8 @@ public class JpaExcessLeaveInfoRepo extends JpaRepository  implements ExcessLeav
 			sql = sql.replace("UPD_PG_VAL", "'" + updPg + "'");
 
 			sql = sql.replace("CID_VAL", "'" + c.getCid() + "'");
-			sql = sql.replace("SID_VAL", "" + c.getSID()+ "");
-			sql = sql.replace("USE_ATR_VAL", "" + c.getUseAtr().value + "");
+			sql = sql.replace("SID_VAL", "'" + c.getSID()+ "'");
+			sql = sql.replace("VAL_USE_ATR", "" + c.getUseAtr().value + "");
 			sql = sql.replace("OCCURRENCE_UNIT_VAL", "" + c.getOccurrenceUnit().v()+ "");
 			sql = sql.replace("PAYMENT_METHOD_VAL", "" + c.getPaymentMethod().value+ "");
 			
@@ -157,7 +157,7 @@ public class JpaExcessLeaveInfoRepo extends JpaRepository  implements ExcessLeav
 	@Override
 	public void updateAll(List<ExcessLeaveInfo> domains) {
 		String UP_SQL = "UPDATE KRCMT_EXCESS_LEAVE_INFO SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL, UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
-				+ " USE_ATR = USE_ATR_VAL , OCCURRENCE_UNIT = OCCURRENCE_UNIT_VAL, PAYMENT_METHOD = PAYMENT_METHOD_VAL"
+				+ " USE_ATR = VAL_USE_ATR , OCCURRENCE_UNIT = OCCURRENCE_UNIT_VAL, PAYMENT_METHOD = PAYMENT_METHOD_VAL"
 				+ " WHERE SID = SID_VAL AND CID = CID_VAL;";
 		String updCcd = AppContexts.user().companyCode();
 		String updScd = AppContexts.user().employeeCode();
@@ -172,8 +172,8 @@ public class JpaExcessLeaveInfoRepo extends JpaRepository  implements ExcessLeav
 			sql = sql.replace("UPD_PG_VAL", "'" + updPg + "'");
 
 			sql = sql.replace("CID_VAL", "'" + c.getCid() + "'");
-			sql = sql.replace("SID_VAL", "" + c.getSID()+ "");
-			sql = sql.replace("USE_ATR_VAL", "" + c.getUseAtr().value + "");
+			sql = sql.replace("SID_VAL", "'" + c.getSID()+ "'");
+			sql = sql.replace("VAL_USE_ATR", "" + c.getUseAtr().value + "");
 			sql = sql.replace("OCCURRENCE_UNIT_VAL", "" + c.getOccurrenceUnit().v()+ "");
 			sql = sql.replace("PAYMENT_METHOD_VAL", "" + c.getPaymentMethod().value+ "");
 			
