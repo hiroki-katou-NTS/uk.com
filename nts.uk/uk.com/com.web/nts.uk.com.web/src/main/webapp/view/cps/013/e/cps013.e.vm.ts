@@ -40,11 +40,11 @@ module nts.uk.at.view.cps013.e {
                 self.isComplete = ko.observable(false);
 
                 self.columns = ko.observableArray([
-                    { headerText: getText('KFP001_40'), key: 'employeeCode', width: 150 },
-                    { headerText: getText('KFP001_41'), key: 'bussinessName', width: 200 },
-                    { headerText: getText('KFP001_42'), key: 'clsCategoryCheck', width: 200 },
-                    { headerText: getText('KFP001_43'), key: 'categoryName', width: 200 },
-                    { headerText: getText('KFP001_43'), key: 'error', width: 350, formatter: makeIcon},
+                    { headerText: getText('CPS013_26'), key: 'employeeCode', width: 150 },
+                    { headerText: getText('CPS013_27'), key: 'bussinessName', width: 200 },
+                    { headerText: getText('CPS013_28'), key: 'clsCategoryCheck', width: 200 },
+                    { headerText: getText('CPS013_29'), key: 'categoryName', width: 200 },
+                    { headerText: getText('CPS013_30'), key: 'error', width: 350, formatter: makeIcon},
                     { headerText: '', key: 'employeeId', width: 1, hirren: true },
                     { headerText: '', key: 'categoryId', width: 1, hirren: true },
                     { headerText: '', key: 'GUID', width: 1, hirren: true },
@@ -332,7 +332,6 @@ module nts.uk.at.view.cps013.e {
     function makeIcon(value, row) {
         if (value == '1')
             return '<img style="margin-left: 15px; width: 20px; height: 20px;" />';
-        
         return '<div>' + '<div class="limit-custom">' + value + '</div>' + '<div style = "display: inline-block; position: relative;">' + '<button tabindex = "0" class="open-dialog-i" onclick="jumtoCPS001A(\'' + row.employeeId + '\', \'' + row.categoryId + '\')">' + nts.uk.resource.getText("CPS013_31") + '</button>' + '</div>' + '</div>';
     }
 }
