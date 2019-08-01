@@ -45,3 +45,7 @@
     padding-top: -147px;
     margin-top: -60px;
 }
+
+#grid2_flag > span > div > label > span{
+	margin-left: 2px;
+}
