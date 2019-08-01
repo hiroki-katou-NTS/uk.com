@@ -6,19 +6,19 @@ import { component, Prop } from '@app/core/component';
         <div class="table-header">
             <button ref="previous" class="btn btn-secondary btn-sm" v-on:click="previous" disabled>前項</button>
             <button ref="next" class="btn btn-secondary btn-sm" v-on:click="next">次項</button>
-            <table class="table table-bordered table-sm m-0">
+            <table v-bind:class="tableClass">
                 <tbody></tbody>
             </table>
         </div>
         <div class="table-body">
-            <table class="table table-bordered table-sm m-0"
+            <table v-bind:class="tableClass"
                 v-on:touchstart="handleTouchStart"
                 v-on:touchend="handleTouchEnd">
                 <slot/>
             </table>
         </div>
         <div class="table-footer">
-            <table class="table table-bordered m-0">
+            <table v-bind:class="tableClass">
                 <tbody></tbody>
             </table>
         </div>
@@ -26,6 +26,9 @@ import { component, Prop } from '@app/core/component';
     </div>`
 })
 export class FixTableComponent extends Vue {
+
+    @Prop({default: 'table table-bordered table-sm m-0'})
+    public tableClass: string;
 
     @Prop({ default: 4 })
     public displayColumns: number;
@@ -242,5 +245,8 @@ export class FixTableComponent extends Vue {
                 this.previous();
             }                       
         } 
+
+        this.xDown = null;
+        this.yDown = null;
     }
 }
