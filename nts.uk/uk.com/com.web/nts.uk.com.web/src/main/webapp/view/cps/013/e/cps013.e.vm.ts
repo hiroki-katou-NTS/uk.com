@@ -209,7 +209,7 @@ module nts.uk.at.view.cps013.e {
                 }
                
                // order 
-               self.errorMessageInfo(_.sortBy(errs, [function(o) { return o.employeeCode; }]));
+               self.errorMessageInfo(_.sortBy(errs, ['employeeCode', 'clsCategoryCheck', 'categoryName']));
 
             }
 
