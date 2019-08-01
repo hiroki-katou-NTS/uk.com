@@ -50,14 +50,14 @@ export class FixTableComponent extends Vue {
         return this.headerTable.tHead.firstChild.childNodes.length - 2;
     }
 
-    public get noChangeFooter() {
-        return this.footerTable.tFoot.firstChild.childNodes.length === 1;
-    }
+    private noChangeFooter = true;
 
     public mounted() {
         this.bodyTable = this.$el.querySelector('.table-container .table-body table') as HTMLTableElement;
         this.headerTable = this.$el.querySelector('.table-container .table-header table') as HTMLTableElement;
         this.footerTable = this.$el.querySelector('.table-container .table-footer table') as HTMLTableElement;
+
+        this.addBlankColums();
 
         this.moveTheadAndTfoot();
 
@@ -65,15 +65,46 @@ export class FixTableComponent extends Vue {
 
         this.addPrevNextButtons();
 
-        this.setStyleOfTableBody();
+        this.setStyle();
+    }
+
+    private addBlankColums() {
+        let numberOfFlexibleColumn = this.bodyTable.tHead.firstChild.childNodes.length - 2;
+        let numberOfExcessColumn = numberOfFlexibleColumn % this.displayColumns;
+
+        if (numberOfExcessColumn === 0) {
+            return;
+        }
+
+        let numberOfBlankColumn = this.displayColumns - numberOfExcessColumn;
+        let header = (this.bodyTable.tHead.children[0] as HTMLTableRowElement);
+        for (let i = 0; i < numberOfBlankColumn; i++) {
+            header.insertBefore(document.createElement('TH'), header.lastChild);
+        }
+
+        let rows = this.bodyTable.tBodies[0].children as HTMLCollection;
+        Array.from(rows).forEach((row) => {
+            for (let i = 0; i < numberOfBlankColumn; i++) {
+                row.insertBefore(document.createElement('TD'), row.lastChild);
+            }
+        });
+
+        if ( this.bodyTable.tFoot.firstChild.childNodes.length !== 1) {
+            let footer = this.bodyTable.tFoot.children[0] as HTMLTableRowElement;
+            for (let i = 0; i < numberOfBlankColumn; i++) {
+                footer.insertBefore(document.createElement('TD'), footer.lastChild);
+            }
+        }
     }
 
     private moveTheadAndTfoot() {
         this.headerTable.tHead = this.bodyTable.tHead;
         this.footerTable.tFoot = this.bodyTable.tFoot;
+
+        this.noChangeFooter = this.footerTable.tFoot.firstChild.childNodes.length === 1;
     }
 
-    private setStyleOfTableBody() {
+    private setStyle() {
         this.$nextTick(() => {
             let rows = this.bodyTable.tBodies[0].children;
 
@@ -83,14 +114,27 @@ export class FixTableComponent extends Vue {
                 return;
             }
             
-            let height: number = (rows[0] as HTMLTableRowElement).offsetHeight;
-
-            let tableBodyDiv = this.$el.querySelector('.table-container .table-body') as HTMLDivElement;
-            tableBodyDiv.style.height = `${height * this.rowNumber}px`;
-            tableBodyDiv.style.overflowY = 'scroll';
-
+            this.setStyleOfTableBody(rows);
+            this.setWidthOfFlexibleColumns();
             this.resize();
+        });
+    }
 
+    private setStyleOfTableBody(rows: any) {
+        let height: number = (rows[0] as HTMLTableRowElement).offsetHeight;
+
+        let tableBodyDiv = this.$el.querySelector('.table-container .table-body') as HTMLDivElement;
+        tableBodyDiv.style.height = `${height * this.rowNumber}px`;
+        tableBodyDiv.style.overflowY = 'scroll';
+    }
+
+    private setWidthOfFlexibleColumns() {
+        let firstCellWidth = (this.bodyTable.querySelector('tbody>tr>td:first-child') as HTMLTableCellElement).offsetWidth;
+        let lastCellWidth = (this.bodyTable.querySelector('tbody>tr>td:last-child') as HTMLTableCellElement).offsetWidth;
+        let middleCellWidth = Math.floor((this.bodyTable.clientWidth - firstCellWidth - lastCellWidth) / this.displayColumns);
+        let middelCelss = this.bodyTable.querySelectorAll('tbody>tr>td:not(:first-child):not(:last-child)');
+        Array.from(middelCelss).forEach((cell) => {
+            (cell as HTMLTableCellElement).style.width = `${middleCellWidth}px`;
         });
     }
 
