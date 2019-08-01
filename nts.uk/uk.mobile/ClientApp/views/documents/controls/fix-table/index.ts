@@ -20,7 +20,7 @@ import { FixTableComponent } from '@app/components/fix-table';
 })
 export class DocumentsControlsFixTableComponent extends Vue { 
 
-    public rows: Array<number> = _.range(1, 31);
+    public rows: Array<number> = _.range(20, 31);
 
     public openB() {
         console.log('Open B screen!');

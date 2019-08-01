@@ -1,7 +1,7 @@
 <template>
   <div class="documentscontrolsfix-table">
     <h5>1. {{'sample' | i18n}}</h5>
-    <fix-table>
+    <fix-table table-class="table table-bordered table-sm m-0 border border-dark" class="mx-n2" style="font-size: 13px">
       <thead>
         <tr style="height: 55px">
           <th></th>
@@ -14,16 +14,16 @@
           <th></th>
         </tr>
       </thead>
-      <tbody>
+      <tbody >
         <tr v-for="row in rows" v-bind:key="row">
-          <td style="width: 70px">{{row}}日(火)</td>
+          <td style="width: 67px; height: 51px">{{row}}日(火)</td>
           <td>出勤</td>
           <td>通常勤務</td>
           <td>8:30</td>
           <td>17:30</td>
           <td>12:00</td>
           <td>13:00</td>
-          <td style="width: 52px"><button v-on:click="openB">></button></td>
+          <td style="width: 52px"><span class="fa fa-exclamation-circle"></span><span class="pl-1" v-on:click="openB">></span></td>
         </tr>
       </tbody>
       <tfoot>

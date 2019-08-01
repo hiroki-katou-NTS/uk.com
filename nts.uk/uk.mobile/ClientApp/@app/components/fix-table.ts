@@ -131,8 +131,8 @@ export class FixTableComponent extends Vue {
     private setWidthOfFlexibleColumns() {
         let firstCellWidth = (this.bodyTable.querySelector('tbody>tr>td:first-child') as HTMLTableCellElement).offsetWidth;
         let lastCellWidth = (this.bodyTable.querySelector('tbody>tr>td:last-child') as HTMLTableCellElement).offsetWidth;
-        let middleCellWidth = Math.floor((this.bodyTable.clientWidth - firstCellWidth - lastCellWidth) / this.displayColumns);
-        let middelCelss = this.bodyTable.querySelectorAll('tbody>tr>td:not(:first-child):not(:last-child)');
+        let middleCellWidth = (this.bodyTable.offsetWidth - firstCellWidth - lastCellWidth) / this.displayColumns;
+        let middelCelss = this.bodyTable.querySelectorAll('tbody>tr:first-child>td:not(:first-child):not(:last-child)');
         Array.from(middelCelss).forEach((cell) => {
             (cell as HTMLTableCellElement).style.width = `${middleCellWidth}px`;
         });
