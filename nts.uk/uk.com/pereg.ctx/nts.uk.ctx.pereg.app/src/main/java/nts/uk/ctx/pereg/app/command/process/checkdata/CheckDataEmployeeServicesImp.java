@@ -17,6 +17,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.task.data.TaskDataSetter;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.GridLayoutPersonInfoClsDto;
@@ -75,6 +76,9 @@ public class CheckDataEmployeeServicesImp implements CheckDataEmployeeServices {
 		// アルゴリズム「個人情報条件で社員を検索して並び替える」を実行する
 		// (thực thi thuật toán 「Search employee theo điều kiện thông tin cá nhân, và thay đổi thứ tự」
 		List<EmployeeResultDto> listEmp = this.findEmployeesInfo(excuteCommand);
+		if(CollectionUtil.isEmpty(listEmp)) {
+			throw new BusinessException("Msg_1564");
+		}
 		
 		Map<String, String> mapSIdWthBussinessName = listEmp.stream().collect(Collectors.toMap(e -> e.sid, e -> e.bussinessName));
 		
