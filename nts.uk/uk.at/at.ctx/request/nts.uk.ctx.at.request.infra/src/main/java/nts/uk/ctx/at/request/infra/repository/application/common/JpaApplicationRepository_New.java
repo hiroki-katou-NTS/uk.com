@@ -118,13 +118,7 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 			+ " AND c.appType = :appType"
 			+ " AND c.stateReflectionReal IN :lstRef"
 			+ " ORDER BY c.appType ASC, c.inputDate DESC";
-	
-	private String SELECT_BY_REFLECT = "SELECT c FROM KrqdtApplication_New c "
-			+ " WHERE c.employeeID = :employeeID"
-			+ " AND c.appDate >= :startDate"
-			+ " AND c.appDate <= :endDate"
-			+ " AND c.appType IN :appTypes"
-			+ " AND (c.stateReflectionReal IN :stateReflectionReals"			
+				
 	private String SELECT_BY_REFLECT = "SELECT c FROM KrqdtApplication_New c "
 			+ " WHERE c.employeeID = :employeeID"
 			+ " AND c.appDate >= :startDate"
