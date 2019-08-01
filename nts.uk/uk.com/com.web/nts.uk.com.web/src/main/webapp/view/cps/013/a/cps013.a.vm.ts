@@ -113,9 +113,9 @@ module nts.uk.com.view.cps013.a.viewmodel {
                 bonusMngCheck: checkbox[4].flag ,
                 yearlyMngCheck: checkbox[5].flag ,
                 monthCalCheck: checkbox[6].flag },
-                flag = _.countBy(ko.toJS(checkbox), function(x) { return x.flag == true; });
+                flag =  _.filter(ko.toJS(checkbox), x => {return x.flag == true});
             // nếu A2_001 và A3_001 cùng không được chọn hoặc A3_001 được chọn nhưng list A3_004 không được chọn item nào => msg_360
-            if ((flag.true === 0 && self.masterChk() === false) || (self.masterChk() === false && self.perInfoChk() === false)) {
+            if ((flag.length === 0 && self.masterChk() === true) || (self.masterChk() === false && self.perInfoChk() === false)) {
                 nts.uk.ui.dialog.error({ messageId: "Msg_929" });
                 block.clear();
                 return;
@@ -133,7 +133,7 @@ module nts.uk.com.view.cps013.a.viewmodel {
                     return;
                 }
             }).fail(function(res) {
-                nts.uk.ui.dialog.alertError(res.message);
+                nts.uk.ui.dialog.alertError({messageId: res.messageId});
             }).always(()=>block.clear());
         }
         
