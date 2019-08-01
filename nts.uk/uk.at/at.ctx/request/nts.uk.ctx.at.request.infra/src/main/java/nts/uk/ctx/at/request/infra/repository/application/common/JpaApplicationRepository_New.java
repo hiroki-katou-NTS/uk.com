@@ -550,8 +550,7 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 						});
 						resultList.addAll(resultListTmp);
 					} catch (SQLException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						throw new RuntimeException(e);
 					}					
 				});
 			});
