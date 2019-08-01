@@ -2,6 +2,7 @@ package nts.uk.ctx.pereg.app.command.process.checkdata;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -931,11 +932,11 @@ public class CheckPersonInfoProcess {
 			}
 
 			// 期間重複チェック (kiểm tra trùng lặp thời gian)
-			String error = checkOverlapPeriod(ctg, listDataEmpOfCtg, listDataPeriodOfCtgHis);
+			DatePeriod error = checkOverlapPeriod(ctg, listDataEmpOfCtg, listDataPeriodOfCtgHis);
 			if (error != null) {
 				ErrorInfoCPS013 error_2 = new ErrorInfoCPS013(employee.getEmployeeId(), ctg.getPersonInfoCategoryId(),
 						employee.getEmployeeCode().v(), bussinessName, chekPersonInfoType, ctg.getCategoryName().v(),
-						TextResource.localize("Msg_933", error));
+						TextResource.localize("Msg_933", error.start().toString(), error.end().toString()));
 				listError.add(error_2);
 				setErrorDataGetter(error_2, dataSetter);
 				
@@ -1086,15 +1087,15 @@ public class CheckPersonInfoProcess {
 	}
 
 	// 期間重複チェック (kiểm tra trùng lặp thời gian)
-	private String checkOverlapPeriod(PersonInfoCategory ctg, List<GridLayoutPersonInfoClsDto> listDataEmpOfCtg, List<DatePeriod> listDataPeriod ) {
+	private DatePeriod checkOverlapPeriod(PersonInfoCategory ctg, List<GridLayoutPersonInfoClsDto> listDataEmpOfCtg, List<DatePeriod> listDataPeriod ) {
 		
 		if (listDataPeriod.isEmpty() || listDataPeriod.size() <= 1) {
 			return null;
 		}
-		List<GeneralDate> listDateOverLap = isOverlap(listDataPeriod);
+		DatePeriod dateOverLap = isOverlap(listDataPeriod);
 		
-		if (listDateOverLap.isEmpty()) return null;
-		return listDateOverLap.get(0).toString();
+		if (dateOverLap == null) return null;
+		return dateOverLap;
 	}
 
 	/**
@@ -1197,24 +1198,30 @@ public class CheckPersonInfoProcess {
 	 * @param historys
 	 * @return
 	 */
-	private List<GeneralDate> isOverlap(List<DatePeriod> historys) {
-		List<GeneralDate> result = new ArrayList<>();
-		historys.forEach(his1 -> {
-			historys.forEach(hisOther -> {
+	private DatePeriod isOverlap(List<DatePeriod> historys) {
+		List<DatePeriod> sortedList = historys.stream()
+				.sorted(Comparator.comparing(DatePeriod::start))
+				.collect(Collectors.toList());
+		
+		List<DatePeriod> result = new ArrayList<>();
+		sortedList.forEach(his1 -> {
+			sortedList.forEach(hisOther -> {
 				if (his1 != hisOther) {
 					if ((his1.start().afterOrEquals(hisOther.start()) && his1.start().beforeOrEquals(hisOther.end())) || 
 							(his1.start().beforeOrEquals(hisOther.start()) && his1.start().afterOrEquals(hisOther.end()))) {
-						result.add(his1.start());
+						result.add(new DatePeriod(his1.start(), hisOther.end()));
 					}
 
 					if ((his1.end().afterOrEquals(hisOther.start()) && his1.end().beforeOrEquals(hisOther.end())) || 
 							(his1.end().beforeOrEquals(hisOther.start()) && his1.end().afterOrEquals(hisOther.end()))) {
-						result.add(his1.end());
+						result.add(new DatePeriod(hisOther.start(), his1.end()));
 					}
 				}
 			});
 		});
 		
-		return result.stream().sorted().collect(Collectors.toList());
+		return result.isEmpty() ? null : result.stream()
+				.sorted(Comparator.comparing(DatePeriod::start))
+				.collect(Collectors.toList()).get(0);
 	}
 }
