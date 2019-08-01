@@ -50,6 +50,10 @@ export class FixTableComponent extends Vue {
         return this.headerTable.tHead.firstChild.childNodes.length - 2;
     }
 
+    public get noChangeFooter() {
+        return this.footerTable.tFoot.firstChild.childNodes.length === 1;
+    }
+
     public mounted() {
         this.bodyTable = this.$el.querySelector('.table-container .table-body table') as HTMLTableElement;
         this.headerTable = this.$el.querySelector('.table-container .table-header table') as HTMLTableElement;
@@ -71,7 +75,15 @@ export class FixTableComponent extends Vue {
 
     private setStyleOfTableBody() {
         this.$nextTick(() => {
-            let height: number = (this.bodyTable.tBodies[0].firstChild.firstChild as HTMLTableCellElement).offsetHeight;
+            let rows = this.bodyTable.tBodies[0].children;
+
+            if (rows.length === 0) {
+                this.resizeFooterWithHeader();
+
+                return;
+            }
+            
+            let height: number = (rows[0] as HTMLTableRowElement).offsetHeight;
 
             let tableBodyDiv = this.$el.querySelector('.table-container .table-body') as HTMLDivElement;
             tableBodyDiv.style.height = `${height * this.rowNumber}px`;
@@ -83,8 +95,29 @@ export class FixTableComponent extends Vue {
     }
 
     private resize() {
+        let rows = this.bodyTable.tBodies[0].children;
+
+        if (rows.length === 0) {
+            this.resizeFooterWithHeader();
+
+            return;
+        }
+
         this.resizeHeader();
         this.resizeFooter();
+    }
+
+    private resizeFooterWithHeader() {
+        // resize header
+        let columns = this.headerTable.tHead.children[0].children;
+        let maps = Array.from(columns).map(
+            (c: HTMLTableCellElement) => c.offsetWidth
+        );
+
+        let footerColumns = this.footerTable.tFoot.children[0].children;
+        for (let i = 0; i < footerColumns.length; i++) {
+            (footerColumns[i] as HTMLElement).style.width = `${maps[i]}px`;
+        }
     }
 
     private resizeFooter() {
@@ -128,6 +161,10 @@ export class FixTableComponent extends Vue {
             }
         }
 
+        if ( this.noChangeFooter) {
+            return;
+        }
+
         let footerColums = this.footerTable.tFoot.firstChild.childNodes;
         for (let i = displayColumns + 1; i < headerColums.length - 1; i++) {
             (footerColums[i] as HTMLTableHeaderCellElement).classList.add('d-none');
@@ -147,15 +184,13 @@ export class FixTableComponent extends Vue {
                                 this.flexibleColumns :
                                 this.startDisplayIndex + this.displayColumns - 1;
 
-        // hidden old header and footer columns
+        // hidden old header columns
         for (let i = this.oldStartDisplayIndex; i <= maxHiddenColIndex; i++) {
             (headerColums[i] as HTMLTableHeaderCellElement).classList.add('d-none');
-            (footerColums[i] as HTMLTableHeaderCellElement).classList.add('d-none');
         }
-        // display new header and footer columns
+        // display new headercolumns
         for (let i = this.startDisplayIndex; i <= maxDisplayColIndex; i++) {
             (headerColums[i] as HTMLTableHeaderCellElement).classList.remove('d-none');
-            (footerColums[i] as HTMLTableHeaderCellElement).classList.remove('d-none');
         }
 
         let rows = this.bodyTable.tBodies[0].children as HTMLCollection;
@@ -170,6 +205,19 @@ export class FixTableComponent extends Vue {
             for (let i = this.startDisplayIndex; i <= maxDisplayColIndex; i++) {
                 (row.childNodes[i] as HTMLTableCellElement).classList.remove('d-none');
             }
+        }
+
+        if ( this.noChangeFooter ) {
+            return;
+        }
+
+        // hidden old footer columns
+        for (let i = this.oldStartDisplayIndex; i <= maxHiddenColIndex; i++) {
+            (footerColums[i] as HTMLTableHeaderCellElement).classList.add('d-none');
+        }
+        // display new footer columns
+        for (let i = this.startDisplayIndex; i <= maxDisplayColIndex; i++) {
+            (footerColums[i] as HTMLTableHeaderCellElement).classList.remove('d-none');
         }
     }
 
