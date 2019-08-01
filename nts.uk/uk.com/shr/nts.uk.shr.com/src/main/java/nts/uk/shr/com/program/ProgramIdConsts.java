@@ -980,5 +980,11 @@ public class ProgramIdConsts {
 	public static final String KDL020A = "KDL020A";
 	
 	public static final String CMF007 = "CMF007";
+	
+	/** CPS013 */
+	public static final String CPS013A = "CPS013A";
+	
+	public static final String CPS013B = "CPS013B";
+	
 
 }

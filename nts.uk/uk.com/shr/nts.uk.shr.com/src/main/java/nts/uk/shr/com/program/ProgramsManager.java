@@ -2229,6 +2229,16 @@ public class ProgramsManager {
 			"/view/kdp/003/c/index.xhtml");
 	public static final Program CMF007 = new Program(WebAppId.COM, ProgramIdConsts.CMF007, "CMF007_1",
 			"/view/cmf/007/a/index.xhtml");
+	
+	/**
+	 * CPS013
+	 */
+	public static final Program CPS013A = new Program(WebAppId.COM, ProgramIdConsts.CPS013A, "CPS013_34",
+			"/view/cps/013/a/index.xhtml");
+	public static final Program CPS013B = new Program(WebAppId.COM, ProgramIdConsts.CPS013B, "CPS013_35",
+			"/view/cps/013/b/index.xhtml");
+	
+	
 	/**
 	 * All programs map.
 	 */
