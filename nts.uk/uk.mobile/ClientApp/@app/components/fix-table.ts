@@ -152,11 +152,11 @@ export class FixTableComponent extends Vue {
         }
 
         let rows = this.bodyTable.tBodies[0].children as HTMLCollection;
-        for (let row of Array.from(rows)) {
+        Array.from(rows).forEach((row) => {
             for (let i = displayColumns + 1; i < headerColums.length - 1; i++) {
                 (row.childNodes[i] as HTMLTableCellElement).classList.add('d-none');
             }
-        }
+        });
 
         if ( this.noChangeFooter) {
             return;
@@ -191,8 +191,7 @@ export class FixTableComponent extends Vue {
         }
 
         let rows = this.bodyTable.tBodies[0].children as HTMLCollection;
-        for (let row of rows) {
-
+        Array.from(rows).forEach((row) => {
             // hidden old cells
             for (let i = this.oldStartDisplayIndex; i <= maxHiddenColIndex; i++) {
                 (row.childNodes[i] as HTMLTableCellElement).classList.add('d-none');
@@ -202,7 +201,7 @@ export class FixTableComponent extends Vue {
             for (let i = this.startDisplayIndex; i <= maxDisplayColIndex; i++) {
                 (row.childNodes[i] as HTMLTableCellElement).classList.remove('d-none');
             }
-        }
+        });
 
         if ( this.noChangeFooter ) {
             return;
