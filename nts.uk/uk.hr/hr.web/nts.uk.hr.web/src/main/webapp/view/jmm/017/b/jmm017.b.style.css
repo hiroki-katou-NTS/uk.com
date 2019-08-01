@@ -1,19 +1,67 @@
-.container.cf{margin: 0 auto;}
-.rightTable tr td{width: 160px; height: 36px;}
-.contentTable{display: flex; margin-top: 20px;}
-.rightTable tr td span{float: left; margin: 4px;}
-.rightTable tr td .small{float: right; margin-right: 5px;}
-.careerClassRole textarea{height: 130px; margin: 3px 0 0 7px; width: 218px;}
-#fixed-table2 .careerClassRole td{height: 269px;}
-.radioReqType .ntsRadioBox{display: flex; margin-bottom: 20px;}
-.radioReqType{position: relative; top: 24px; left: 20px;}
-.comboYearType{position: relative; top: -55px; left: 44px;}
-.comboMasterType{position: relative; top: -5px; left: -75px;}
+/* .pl {
+	padding-left: 50px;
+}
 
-.inputTextYearType{position: relative; top: 5px; left: 4px;}
-.buttonMasterType{position: relative; top: 25px; left: 7px;}
-.buttonMasterType .limited-label{width:199px; vertical-align: middle;}
-#fixed-table2 .careerClassRole .inputTextarea{position: relative; top: 40px; height: 100px;}
-.scroll-header{display: none !important;}
-.nts-fixed-table table.fixed-table > tbody > tr:hover > td, .nts-fixed-table table.fixed-table > tbody > tr:hover > th {background-color: #FFF;}
-.textOrder{position: relative; display: flex; left: 20px; top: 10px;}
+.system_define {
+	width: 960px;
+	margin-top: 40px;
+}
+
+.system_define>p {
+	margin-left: 35px;
+	margin-bottom: 40px;
+}
+
+.system_define>#tab-panel {
+	margin-left: 40px;
+}
+
+.system_define>#tab-panel {
+	margin-left: 40px;
+}
+
+.system_define>#tab-panel .set_height {
+	height: 490px;
+}
+
+.system_define>#tab-panel .table_content {
+	float: left;
+	margin-left: 20px;
+	margin-top: 25px;
+	margin-right: 30px;
+}
+
+.system_define>#tab-panel .table_content td {
+	padding-bottom: 20px;
+} */
+
+.no-wrap {
+	white-space: nowrap;
+}
+
+#panel1 > div > div, #panel2 > div > div, #panel3 > div > div > div {
+	padding-top: 15px;
+	padding-bottom: 15px;
+}
+
+.system_define {
+	margin-top:40px;
+	margin-left:40px;
+	width: 650px;
+}
+
+#tab-panel {
+	padding-top: 40px;
+}
+
+#work-relate-content > div > div {
+	width: 110px;
+}
+
+#panel3 > div > div > div > div {
+	width: 110px;
+}
+
+/* .tab-content-1 > div > .fixed-flex-layout-right {
+	padding-left: 178px;
+} */

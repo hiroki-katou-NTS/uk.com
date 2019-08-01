@@ -3,33 +3,15 @@ module nts.uk.hr.view.jmm017.a {
     import format = nts.uk.text.format;
     export module service {
         var paths: any = {
-            saveCareer: "careermgmt/careerpath/saveCareer",
-            checkDataCareer: "careermgmt/careerpath/checkDataCareer",
-            getMaxClassLevel: "careermgmt/careerpath/getMaxClassLevel",
-            getLatestCareerPathHist: "careermgmt/careerpath/getLatestCareerPathHist",
-            getCareerPart: "careermgmt/careerpath/getCareerPart",
-            getAccountLockPolicy: "ctx/sys/gateway/securitypolicy/getAccountLockPolicy",
-            getPasswordPolicy: "ctx/sys/gateway/securitypolicy/getPasswordPolicy",
-            updateAccountPolicy: "ctx/sys/gateway/securitypolicy/updateAccountPolicy"
+            getGuidance: "guidance/getGuidance",
+            saveGuideDispSetting: "guidance/saveGuidance"
         }
 
-        export function getAccountLockPolicy(): JQueryPromise<any> {
-            return nts.uk.request.ajax(paths.getAccountLockPolicy);
+        export function getGuidance(): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.getGuidance);
         }
-        export function getMaxClassLevel(): JQueryPromise<any> {
-            return ajax(paths.getMaxClassLevel);
-        }
-        export function getLatestCareerPathHist(): JQueryPromise<any> {
-            return ajax(paths.getLatestCareerPathHist);
-        }
-        export function getCareerPart(param: any): JQueryPromise<any> {
-            return ajax(paths.getCareerPart, param);
-        }
-        export function checkDataCareer(param: any): JQueryPromise<any> {
-            return ajax(paths.checkDataCareer, param);
-        }
-        export function saveCareer(param: any): JQueryPromise<any> {
-            return ajax(paths.saveCareer, param);
+        export function saveGuideDispSetting(param: any): JQueryPromise<any> {
+            return ajax(paths.saveGuideDispSetting, param);
         }
 
     }

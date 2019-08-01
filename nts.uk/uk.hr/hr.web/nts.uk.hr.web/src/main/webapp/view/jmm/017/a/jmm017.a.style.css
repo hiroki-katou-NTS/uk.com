@@ -1,5 +1,4 @@
-.container.cf{margin: 0 auto;}
-.rightTable tr td{width: 160px; height: 36px;}
-.contentTable{display: flex; margin-top: 20px;}
-.rightTable tr td span{float: left; margin: 4px;}
-.rightTable tr td .small{float: right; margin-right: 5px;}
+#sidebar-area{width: 160px;}
+.tab1 {margin: 50px; width: 500px;}
+.tab1 .settings{margin: 10px;}
+.tab1 .settings .lableRequired{width: 200px;}
