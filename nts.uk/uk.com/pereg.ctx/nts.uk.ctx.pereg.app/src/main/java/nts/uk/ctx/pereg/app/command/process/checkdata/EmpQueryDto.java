@@ -132,7 +132,6 @@ public class EmpQueryDto implements Serializable {
 	public EmployeeSearchQuery toQueryModel(GeneralDateTime baseDate) {
 		return EmployeeSearchQuery.builder()
 				.baseDate(baseDate)
-				.systemType(CCG001SystemType.PERSONAL_INFORMATION.value)
 				.referenceRange(SearchReferenceRange.ALL_EMPLOYEE.value)
 				.filterByEmployment(false)
 				.employmentCodes(new ArrayList<>())
