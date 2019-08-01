@@ -27,10 +27,10 @@ import { component, Prop } from '@app/core/component';
 })
 export class FixTableComponent extends Vue {
 
-    @Prop({default: 'table table-bordered table-sm m-0'})
+    @Prop({ default: 'table table-bordered table-sm m-0' })
     public tableClass: string;
 
-    @Prop({ default: 4 })
+    @Prop({ default: 3 })
     public displayColumns: number;
 
     @Prop({ default: 5 })
@@ -45,6 +45,10 @@ export class FixTableComponent extends Vue {
 
     private xDown: number = null;
     private yDown: number = null;
+
+    public get flexibleColumns() {
+        return this.headerTable.tHead.firstChild.childNodes.length - 2;
+    }
 
     public mounted() {
         this.bodyTable = this.$el.querySelector('.table-container .table-body table') as HTMLTableElement;
@@ -133,40 +137,40 @@ export class FixTableComponent extends Vue {
 
     private changeDisplayColumn() {
         let headerColums = this.headerTable.tHead.firstChild.childNodes;
-        // hidden old columns
-        for (let i = this.oldStartDisplayIndex; i < this.oldStartDisplayIndex + this.displayColumns && i < headerColums.length - 1; i++) {
+        let footerColums = this.footerTable.tFoot.firstChild.childNodes;
+
+        let maxHiddenColIndex = this.oldStartDisplayIndex + this.displayColumns > this.flexibleColumns ? 
+                                this.flexibleColumns : 
+                                this.oldStartDisplayIndex + this.displayColumns - 1;
+
+        let maxDisplayColIndex = this.startDisplayIndex + this.displayColumns > this.flexibleColumns ?
+                                this.flexibleColumns :
+                                this.startDisplayIndex + this.displayColumns - 1;
+
+        // hidden old header and footer columns
+        for (let i = this.oldStartDisplayIndex; i <= maxHiddenColIndex; i++) {
             (headerColums[i] as HTMLTableHeaderCellElement).classList.add('d-none');
+            (footerColums[i] as HTMLTableHeaderCellElement).classList.add('d-none');
         }
-        // display new columns
-        for (let i = this.startDisplayIndex; i < this.startDisplayIndex + this.displayColumns && i < headerColums.length - 1; i++) {
+        // display new header and footer columns
+        for (let i = this.startDisplayIndex; i <= maxDisplayColIndex; i++) {
             (headerColums[i] as HTMLTableHeaderCellElement).classList.remove('d-none');
+            (footerColums[i] as HTMLTableHeaderCellElement).classList.remove('d-none');
         }
 
         let rows = this.bodyTable.tBodies[0].children as HTMLCollection;
         for (let row of rows) {
 
             // hidden old cells
-            for (let i = this.oldStartDisplayIndex; i < this.oldStartDisplayIndex + this.displayColumns && i < headerColums.length - 1; i++) {
+            for (let i = this.oldStartDisplayIndex; i <= maxHiddenColIndex; i++) {
                 (row.childNodes[i] as HTMLTableCellElement).classList.add('d-none');
             }
 
             // display new cells
-            for (let i = this.startDisplayIndex; i < this.startDisplayIndex + this.displayColumns && i < headerColums.length - 1; i++) {
+            for (let i = this.startDisplayIndex; i <= maxDisplayColIndex; i++) {
                 (row.childNodes[i] as HTMLTableCellElement).classList.remove('d-none');
             }
         }
-
-
-        let footerColums = this.footerTable.tFoot.firstChild.childNodes;
-        // hidden old columns
-        for (let i = this.oldStartDisplayIndex; i < this.oldStartDisplayIndex + this.displayColumns && i < headerColums.length - 1; i++) {
-            (footerColums[i] as HTMLTableHeaderCellElement).classList.add('d-none');
-        }
-        // display new columns
-        for (let i = this.startDisplayIndex; i < this.startDisplayIndex + this.displayColumns && i < headerColums.length - 1; i++) {
-            (footerColums[i] as HTMLTableHeaderCellElement).classList.remove('d-none');
-        }
-
     }
 
     private addPrevNextButtons() {
@@ -200,16 +204,14 @@ export class FixTableComponent extends Vue {
 
     public next() {
         let self = this;
-        let headerColumnLength = self.headerTable.tHead.firstChild.childNodes.length;
-
-        if (self.startDisplayIndex + self.displayColumns >= headerColumnLength) {
+        if (self.startDisplayIndex + self.displayColumns > self.flexibleColumns) {
             return;
         }
-        
+
         self.oldStartDisplayIndex = self.startDisplayIndex;
         self.startDisplayIndex = self.startDisplayIndex + self.displayColumns;
-        
-        if (self.startDisplayIndex + self.displayColumns >= headerColumnLength) {
+
+        if (self.startDisplayIndex + self.displayColumns > self.flexibleColumns) {
             (self.$refs.next as HTMLButtonElement).disabled = true;
         }
 
@@ -222,29 +224,29 @@ export class FixTableComponent extends Vue {
         self.resize();
     }
 
-    public handleTouchStart(evt) {                                         
+    public handleTouchStart(evt) {
         this.xDown = evt.touches[0].clientX;
         this.yDown = evt.touches[0].clientY;
     }
 
     public handleTouchEnd(evt: TouchEvent) {
-      
-        if ( ! this.xDown || ! this.yDown ) {
+
+        if (!this.xDown || !this.yDown) {
             return;
         }
-    
+
         let xDiff = this.xDown - evt.changedTouches[0].clientX;
         let yDiff = this.yDown - evt.changedTouches[0].clientY;
-    
-        if ( Math.abs( xDiff ) > Math.abs( yDiff ) ) {
-            if ( xDiff > 0 ) {
-                /* left swipe */ 
+
+        if (Math.abs(xDiff) > Math.abs(yDiff)) {
+            if (xDiff > 0) {
+                /* left swipe */
                 this.next();
             } else {
                 /* right swipe */
                 this.previous();
-            }                       
-        } 
+            }
+        }
 
         this.xDown = null;
         this.yDown = null;
