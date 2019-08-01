@@ -30,7 +30,7 @@ export class FixTableComponent extends Vue {
     @Prop({ default: 'table table-bordered table-sm m-0' })
     public tableClass: string;
 
-    @Prop({ default: 3 })
+    @Prop({ default: 4 })
     public displayColumns: number;
 
     @Prop({ default: 5 })
@@ -108,7 +108,6 @@ export class FixTableComponent extends Vue {
     }
 
     private resizeFooterWithHeader() {
-        // resize header
         let columns = this.headerTable.tHead.children[0].children;
         let maps = Array.from(columns).map(
             (c: HTMLTableCellElement) => c.offsetWidth
@@ -121,7 +120,6 @@ export class FixTableComponent extends Vue {
     }
 
     private resizeFooter() {
-        // resize header
         let columns = this.bodyTable.tBodies[0].children[0].children;
         let maps = Array.from(columns).map(
             (c: HTMLTableCellElement) => c.offsetWidth
@@ -134,7 +132,6 @@ export class FixTableComponent extends Vue {
     }
 
     private resizeHeader() {
-        // resize header
         let columns = this.bodyTable.tBodies[0].children[0].children;
         let maps = Array.from(columns).map(
             (c: HTMLTableCellElement) => c.offsetWidth
@@ -155,7 +152,7 @@ export class FixTableComponent extends Vue {
         }
 
         let rows = this.bodyTable.tBodies[0].children as HTMLCollection;
-        for (let row of rows) {
+        for (let row of Array.from(rows)) {
             for (let i = displayColumns + 1; i < headerColums.length - 1; i++) {
                 (row.childNodes[i] as HTMLTableCellElement).classList.add('d-none');
             }
