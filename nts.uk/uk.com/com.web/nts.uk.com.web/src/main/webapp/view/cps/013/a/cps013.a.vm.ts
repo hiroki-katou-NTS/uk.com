@@ -46,6 +46,10 @@ module nts.uk.com.view.cps013.a.viewmodel {
 
             self.items[self.items.length - 1].name = text("CPS013_21");
             
+            for(let i = 0; i< self.items.length; i++){
+                self.items[i].id = i + 1;
+            }
+  
             self.masterChk.subscribe(check =>{
                 if(check == false){
                     $("#grid2_flag > span > div > label > input[type=checkbox]").attr("disabled", true);
