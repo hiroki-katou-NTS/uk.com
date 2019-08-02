@@ -6,30 +6,60 @@ module nts.uk.com.view.cps013.a.viewmodel {
     
     export class ScreenModel {
         date : KnockoutObservable<string> = ko.observable(null);
-        items: KnockoutObservableArray<GridItem> = ko.observableArray([]);
+        items: Array<any> = [];
         // A2_001
         perInfoChk: KnockoutObservable<boolean> = ko.observable(false);
         // A3_001
         masterChk: KnockoutObservable<boolean> = ko.observable(false);
+        checkDisplay : any = __viewContext.env.products;
         constructor() {
             let self = this;
             // tạo list A3_004
             for(let i = 0; i < 7; i++){
-                let item : IGridItem = {
-                    id: i+1,
+                self.items.push(new GridItem({
+                    id: i + 1,
                     flag: false,
                     name: "",
-                }
-                let param = new GridItem(item);
-                this.items.push(param);
+                }));
             }
-            self.items()[0].name = text("CPS013_15");
-            self.items()[1].name = text("CPS013_16");
-            self.items()[2].name = text("CPS013_17");
-            self.items()[3].name = text("CPS013_18");
-            self.items()[4].name = text("CPS013_19");
-            self.items()[5].name = text("CPS013_20");
-            self.items()[6].name = text("CPS013_21");
+            
+            if (self.checkDisplay.attendance == false) {
+                _.remove(self.items, (e) => {
+                    return _.indexOf([1, 2, 3], e.id) > -1;
+                });
+            } else {
+                self.items[0].name = text("CPS013_15");
+                self.items[1].name = text("CPS013_16");
+                self.items[2].name = text("CPS013_17");
+
+            }
+
+            if (self.checkDisplay.payroll == true) {
+                self.items[3].name = text("CPS013_18");
+                self.items[4].name = text("CPS013_19");
+                self.items[5].name = text("CPS013_20");
+            }else {
+                _.remove(self.items, (e) => {
+                    return _.indexOf([4, 5, 6], e.id) > -1;
+                });
+            }
+
+            self.items[self.items.length - 1].name = text("CPS013_21");
+            
+            self.masterChk.subscribe(check =>{
+                if(check == false){
+                    $("#grid2_flag > span > div > label > input[type=checkbox]").attr("disabled", true);
+                    _.each(self.items, item => {
+                        $("#grid2").ntsGrid("disableNtsControlAt", item.id, "flag", "CheckBox");
+                    });   
+                }else{
+                    $("#grid2_flag > span > div > label > input[type=checkbox]").attr("disabled", false);
+                    _.each(self.items, item => {
+                        $("#grid2").ntsGrid("enableNtsControlAt", item.id, "flag", "CheckBox");
+                    }); 
+                }
+            });
+            
         }
 
         /** get data to list **/
@@ -49,7 +79,7 @@ module nts.uk.com.view.cps013.a.viewmodel {
             $("#grid2").ntsGrid({
                 width: '300px',
                 height: '234px',
-                dataSource: self.items(),
+                dataSource: self.items,
                 primaryKey: 'id',
                 virtualization: true,
                 columns: [
@@ -66,9 +96,20 @@ module nts.uk.com.view.cps013.a.viewmodel {
                     self.date(obj.dateTime);
                     self.perInfoChk(obj.perInfoChk);
                     self.masterChk(obj.masterChk);
-                    $("#grid2").igGrid("option","dataSource",obj.confirmTarget);
+                    //$("#grid2").igGrid("option","dataSource",self.item);
                     // khi tất cả check box được check thì thi load lên sẽ phải check cả check box trên header
                     let flag = _.countBy(ko.toJS($("#grid2").igGrid("option","dataSource")), function (x) { return x.flag == true; });
+                    if (self.masterChk() == false) {
+                        $("#grid2_flag > span > div > label > input[type=checkbox]").attr("disabled", true);
+                        _.each(self.items, item => {
+                            $("#grid2").ntsGrid("disableNtsControlAt", item.id, "flag", "CheckBox");
+                        });
+                    } else {
+                        $("#grid2_flag > span > div > label > input[type=checkbox]").attr("disabled", false);
+                        _.each(self.items, item => {
+                            $("#grid2").ntsGrid("enableNtsControlAt", item.id, "flag", "CheckBox");
+                        });
+                    }
                     if(flag.true === 7){
                         $("#grid2_flag > span > div > label > input[type='checkbox']")[0].checked = true;
                     }else{
@@ -153,10 +194,10 @@ module nts.uk.com.view.cps013.a.viewmodel {
         id: number;
         flag: boolean;
         name: string;
-        constructor(index: GridItem) {
-            this.id = index.id;
-            this.flag = index.flag;
-            this.name = index.name;
+        constructor(param: GridItem) {
+            this.id = param.id;
+            this.flag = param.flag;
+            this.name = param.name;
         }
     }
     

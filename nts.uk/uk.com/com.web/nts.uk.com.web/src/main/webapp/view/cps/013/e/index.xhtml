@@ -53,7 +53,7 @@
 				</div>
 				<com:ko tag="if" bind="error()">
 					<div class="place-holder">
-						<table id="single-list" class="disappear"
+						<table id="single-list" class="disappear" tabindex="6"
 							data-bind="css: {disappear: !isComplete()},
 							ntsGridList: {
 								dataSource: errorMessageInfo,
@@ -84,7 +84,7 @@
 					</com:ko>
 					<com:ko tag="if" bind="isComplete() &amp; !error()">
 						<!-- B3_003 -->
-						<button id="btn-f-stop" tabindex="3" class="large" data-bind="click: closeDialog">#{i18n.getText('CPS013_24')}</button>
+						<button id="btn-f-stop" tabindex="5" class="large" data-bind="click: closeDialog">#{i18n.getText('CPS013_24')}</button>
 	 				</com:ko>
  				</div>
 			</div>

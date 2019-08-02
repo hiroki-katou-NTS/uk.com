@@ -1,4 +1,5 @@
 module nts.uk.at.view.cps013.e {
+    import block = nts.uk.ui.block;
     import getText = nts.uk.resource.getText;
     import kibanTimer = nts.uk.ui.sharedvm.KibanTimer;
     export module viewmodel {
@@ -36,7 +37,7 @@ module nts.uk.at.view.cps013.e {
                 self.elapseTime.start();
                 self.mode = ko.observable(false);
                 self.isComplete = ko.observable(false);
-
+                $("#button3001").focus();
                 self.columns = ko.observableArray([
                     { headerText: getText('CPS013_26'), key: 'employeeCode', width: 150 },
                     { headerText: getText('CPS013_27'), key: 'bussinessName', width: 200 },
@@ -87,7 +88,10 @@ module nts.uk.at.view.cps013.e {
 
                                         self.bindingDataToGrid(info.taskDatas);
                                         console.log("list bug" + info.taskDatas);
-                                        
+                                        setTimeout(() => {
+                                           $("#button3001").focus();
+                                        }, 1500);
+                                                                    
                                     }
                                 });
                             })
@@ -112,10 +116,11 @@ module nts.uk.at.view.cps013.e {
                     };
                     listError.push(data);
                 });
-                
+                block.invisible();
                 nts.uk.request.exportFile('com', 'person/consistency/check/report/print/error', listError)
                 .done(data => {})
-                .fail((mes) => {});
+                .fail((mes) => {})
+                .always(()=>block.clear());
             }
             
             RecheckTheSameConditions() : void {
@@ -199,7 +204,7 @@ module nts.uk.at.view.cps013.e {
                
                // order 
                self.errorMessageInfo(_.sortBy(errs, ['employeeCode', 'clsCategoryCheck', 'categoryName']));
-
+            
             }
 
             private getLogData(): void {
@@ -321,7 +326,7 @@ module nts.uk.at.view.cps013.e {
     function makeIcon(value, row) {
         if (value == '1')
             return '<img style="margin-left: 15px; width: 20px; height: 20px;" />';
-        return '<div>' + '<div class="limit-custom">' + value + '</div>' + '<div style = "display: inline-block; position: relative;">' + '<button tabindex = "0" class="open-dialog-i" onclick="jumtoCPS001A(\'' + row.employeeId + '\', \'' + row.categoryId + '\')">' + nts.uk.resource.getText("CPS013_31") + '</button>' + '</div>' + '</div>';
+        return '<div>' + '<div class="limit-custom">' + value + '</div>' + '<div style = "display: inline-block; position: relative;">' + '<button tabindex = "6" class="open-dialog-i" onclick="jumtoCPS001A(\'' + row.employeeId + '\', \'' + row.categoryId + '\')">' + nts.uk.resource.getText("CPS013_31") + '</button>' + '</div>' + '</div>';
     }
 }
 
