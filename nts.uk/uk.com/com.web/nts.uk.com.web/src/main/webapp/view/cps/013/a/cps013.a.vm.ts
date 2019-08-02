@@ -48,7 +48,7 @@ module nts.uk.com.view.cps013.a.viewmodel {
             block.invisible();
             $("#grid2").ntsGrid({
                 width: '300px',
-                height: '230px',
+                height: '234px',
                 dataSource: self.items(),
                 primaryKey: 'id',
                 virtualization: true,
@@ -115,7 +115,7 @@ module nts.uk.com.view.cps013.a.viewmodel {
                 monthCalCheck: checkbox[6].flag },
                 flag =  _.filter(ko.toJS(checkbox), x => {return x.flag == true});
             // nếu A2_001 và A3_001 cùng không được chọn hoặc A3_001 được chọn nhưng list A3_004 không được chọn item nào => msg_360
-            if ((flag.length === 0 && self.masterChk() === true) || (self.masterChk() === false && self.perInfoChk() === false)) {
+            if ((flag.length === 0 && (self.masterChk() === true  && self.perInfoChk() === false)) || (self.masterChk() === false && self.perInfoChk() === false)) {
                 nts.uk.ui.dialog.error({ messageId: "Msg_929" });
                 block.clear();
                 return;
