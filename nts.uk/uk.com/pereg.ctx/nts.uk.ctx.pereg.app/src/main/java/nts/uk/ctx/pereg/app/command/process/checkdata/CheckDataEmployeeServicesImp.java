@@ -2,6 +2,7 @@ package nts.uk.ctx.pereg.app.command.process.checkdata;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +19,7 @@ import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.task.data.TaskDataSetter;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.GridLayoutPersonInfoClsDto;
@@ -32,6 +34,7 @@ import nts.uk.query.model.employee.RegulationInfoEmployee;
 import nts.uk.query.model.employee.RegulationInfoEmployeeRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
+import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.system.config.InstalledProduct;
 import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 import nts.uk.shr.pereg.app.find.PeregEmpInfoQuery;
@@ -65,6 +68,7 @@ public class CheckDataEmployeeServicesImp implements CheckDataEmployeeServices {
 	public static final String DATE_TIME_FORMAT = "yyyy/MM/dd HH:mm:ss";
 	/** The Constant DEFAULT_VALUE. */
 	private static final int DEFAULT_VALUE = 0;
+	final String cancelRequest = TextResource.localize("CPS013_51");
 
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
@@ -72,6 +76,8 @@ public class CheckDataEmployeeServicesImp implements CheckDataEmployeeServices {
 
 		// 実行状態 初期設定
 		val dataSetter = async.getDataSetter();
+		// システム日時を取得する (lấy system date)
+		dataSetter.setData("startTime", GeneralDateTime.now().toString());
 		
 		// アルゴリズム「個人情報条件で社員を検索して並び替える」を実行する
 		// (thực thi thuật toán 「Search employee theo điều kiện thông tin cá nhân, và thay đổi thứ tự」
@@ -86,21 +92,30 @@ public class CheckDataEmployeeServicesImp implements CheckDataEmployeeServices {
 		
 		List<EmployeeDataMngInfo> listEmpData = this.empDataMngInfoRepo.findByListEmployeeId(sids);
 		
+		List<EmployeeDataMngInfo> listEmpDataOrder = listEmpData.stream()
+				.sorted(Comparator.comparing(EmployeeDataMngInfo::getEmployeeCode))
+				.collect(Collectors.toList());
+		
 		// アルゴリズム「個人情報カテゴリ取得」を実行する (Thực hiện thuật toán 「Lấy PersonInfoCategory」)
 		Map<PersonInfoCategory, List<PersonInfoItemDefinition>> mapCategoryWithListItemDf = this.getAllCategory(AppContexts.user().companyId());
 		
 		List<ErrorInfoCPS013> listError = new ArrayList<>();
 		
 		int countError = DEFAULT_VALUE;
-		// システム日時を取得する (lấy system date)
-		dataSetter.setData("startTime", GeneralDateTime.now().toString());
 		dataSetter.setData("numberEmpChecked", 0);
 		dataSetter.setData("countEmp", listEmpData.size());
 		dataSetter.setData("statusCheck", ExecutionStatusCps013.PROCESSING.name);
 		
 		//アルゴリズム「整合性チェック処理」を実行する (Thực hiện thuật toán 「Xử lý check tính hợp lệ」)
-		for (int i = 0; i < listEmpData.size(); i++) {
+		for (int i = 0; i < listEmpDataOrder.size(); i++) {
 			
+			// check request cancel
+			if (async.hasBeenRequestedToCancel()) {
+				dataSetter.updateData("statusCheck", cancelRequest);
+				dataSetter.setData("endTime", GeneralDateTime.now().toString());
+				async.finishedAsCancelled();
+				return ;
+			}
 			
 			EmployeeDataMngInfo employee = listEmpData.get(i);
 			
@@ -123,7 +138,6 @@ public class CheckDataEmployeeServicesImp implements CheckDataEmployeeServices {
 		} else {
 			dataSetter.updateData("statusCheck", ExecutionStatusCps013.DONE_WITH_ERROR.name);
 		}
-		
 	}
 
 	private void checkDataOfEmp(PeregEmpInfoQuery empCheck, Map<String, List<GridLayoutPersonInfoClsDto>> dataOfEmployee, 

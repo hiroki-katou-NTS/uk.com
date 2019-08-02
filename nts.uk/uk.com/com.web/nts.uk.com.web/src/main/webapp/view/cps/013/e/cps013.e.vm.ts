@@ -27,8 +27,6 @@ module nts.uk.at.view.cps013.e {
             startDateTime: KnockoutObservable<string>;
             endDateTime: KnockoutObservable<string>;
 
-            //enable enableCancelTask
-            enableCancelTask: KnockoutObservable<boolean> = ko.observable(true);
             dataShare: KnockoutObservable<IDataShare>= ko.observableArray();
 
             // disable gridlist
@@ -79,9 +77,8 @@ module nts.uk.at.view.cps013.e {
                                     self.countEmp(self.getAsyncData(info.taskDatas, "countEmp").valueAsNumber);
                                     self.statusCheck(self.getAsyncData(info.taskDatas, "statusCheck").valueAsString);
 
-                                    if (!info.pending && !info.running) {
+                                    if (!info.pending && !info.running || info.requestedToCancel) {
                                         self.isComplete(true);
-
                                         // End count time
                                         self.elapseTime.end();
 
@@ -89,13 +86,12 @@ module nts.uk.at.view.cps013.e {
                                         self.endTime(self.getAsyncData(info.taskDatas, "endTime").valueAsString);
 
                                         self.bindingDataToGrid(info.taskDatas);
-                                        console.log("lít bug" + info.taskDatas);
-                                        //self.enableCancelTask(false);
+                                        console.log("list bug" + info.taskDatas);
                                         
                                     }
                                 });
                             })
-                            .while(info => info.pending || info.running)
+                            .while(info => (info.pending || info.running) && (!info.requestedToCancel))
                             .pause(1000)
                         );
                     });
@@ -137,7 +133,6 @@ module nts.uk.at.view.cps013.e {
             
             cancelTask(): void {
                 var self = this;
-                self.enableCancelTask(false);
                 nts.uk.request.asyncTask.requestToCancel(self.taskId());
                 // End count time
                 self.elapseTime.end();
@@ -148,16 +143,6 @@ module nts.uk.at.view.cps013.e {
                 nts.uk.ui.windows.close();
             }
 
-            stop() {
-                let self = this;
-                service.stopExecute(self.dataFromD());
-                self.enableCancelTask(false);
-                nts.uk.request.asyncTask.requestToCancel(self.taskId());
-                // End count time
-                self.elapseTime.end();
-            }
-            
-                
            private bindingDataToGrid(data: Array<any>): void {
                 var self = this;
 
