@@ -139,7 +139,7 @@ module nts.uk.ui {
                             $dialogDocument.on("keydown", ":tabbable", function(evt) {
                                 var code = evt.which || evt.keyCode;
                                 if (code.toString() === "9") {
-                                    var focusableElements = $dialogContentDoc.find(":tabbable");
+                                    var focusableElements = _.sortBy($dialogContentDoc.find(":tabbable"), (o) => parseInt($(o).attr("tabindex")));
                                     if ($(evt.target).hasClass("ui-dialog-titlebar-close") && evt.shiftKey === false) {
                                         focusableElements.first().focus();
                                         evt.preventDefault();
@@ -153,7 +153,7 @@ module nts.uk.ui {
                             $dialogContentDoc.on("keydown", ":tabbable", function(evt) {
                                 var code = evt.which || evt.keyCode;
                                 if (code.toString() === "9") {
-                                    var focusableElements = $dialogContentDoc.find(":tabbable");
+                                    var focusableElements = _.sortBy($dialogContentDoc.find(":tabbable"), (o) => parseInt($(o).attr("tabindex")));
                                     if ($(evt.target).is(focusableElements.last()) && evt.shiftKey === false) {
                                         focusableElements.first().focus();
                                         evt.preventDefault();
