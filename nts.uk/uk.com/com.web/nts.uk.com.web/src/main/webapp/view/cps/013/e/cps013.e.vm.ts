@@ -52,8 +52,12 @@ module nts.uk.at.view.cps013.e {
                 self.errorMessageInfo.subscribe((value)=>{
                     if(value.length){
                         self.error(true);
-                        nts.uk.ui.windows.getSelf().setWidth(1170);
-                        nts.uk.ui.windows.getSelf().setHeight(610);
+                        let selfDialog = nts.uk.ui.windows.getSelf();
+                        selfDialog.$dialog.data('__size__', {width : 1170 , height : 610});
+                        selfDialog.setSize(610, 1170);
+                        window.parent.dispatchEvent(new Event('resize'));
+                        //nts.uk.ui.windows.getSelf().setWidth(1170);
+                        //nts.uk.ui.windows.getSelf().setHeight(610);
                     }
                 });
             }
