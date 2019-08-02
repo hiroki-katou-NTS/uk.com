@@ -398,8 +398,8 @@ public class CheckFileFinder {
 		});
 		
 		// sắp xếp lại vị trí item theo số tự lỗi - エクセル受入データを並び替える - エラーの件数　DESC、社員コード　ASC
-		result.sort(Comparator.comparing(EmployeeRowDto::getEmployeeCode));
 		result.sort(SORT_BY_DISPORDER);
+		result.sort(Comparator.comparing(EmployeeRowDto::getEmployeeCode));
 		return new GridDto(header, result, itemErrors);
 	}
 	
@@ -757,7 +757,7 @@ public class CheckFileFinder {
 				break;
 			case NUMERIC:
 			case NUMBERIC_BUTTON:
-				itemDto.setValue(value == null || value == "" ? null : new BigDecimal(value)); 
+				itemDto.setValue(value == null || value == "" ? null : (isNumeric(value) == true? new BigDecimal(value) : value)); 
 				NumericConstraint numberContraint = (NumericConstraint) contraint;
 				if (gridHead.isRequired()) {
 					if (itemDto.getValue() == null) {
@@ -985,8 +985,11 @@ public class CheckFileFinder {
 			return new Integer(new BigDecimal(value).intValue());
 		case NUMBERIC_BUTTON:
 		case NUMERIC:
-			if(value.equals("")) return new BigDecimal(0);
-			return new BigDecimal(value);
+			if(isNumeric(value)) {
+				return new BigDecimal(value);
+			}else {
+				return value;
+			}
 		case DATE:
 			return GeneralDate.fromString(value, "yyyy/MM/dd");
 		default:
@@ -1029,18 +1032,25 @@ public class CheckFileFinder {
 	 */
 	private boolean isEqual(Object valueExcel, Object valueDb, int type) {
 		if(type == 2 || type == 11) {
-			BigDecimal valEx = (BigDecimal) valueExcel;
-			BigDecimal valDb = (BigDecimal) valueDb;
-			if(valEx != null) {
-				if(valDb == null) return false;
-				return valEx.compareTo(valDb) == 0? true: false;
-			}else {
-				if(valEx == null && valueDb == null){ 
-					return true;
+			boolean ischeckEx = isNumeric(valueExcel == null?"": valueExcel.toString());
+			boolean ischeckDb = isNumeric(valueDb == null? "": valueDb.toString());
+			if(ischeckEx == true && ischeckDb == true) {
+				BigDecimal valEx = (BigDecimal) valueExcel;
+				BigDecimal valDb = (BigDecimal) valueDb;
+				if(valEx != null) {
+					if(valDb == null) return false;
+					return valEx.compareTo(valDb) == 0? true: false;
+				}else {
+					if(valEx == null && valueDb == null){ 
+						return true;
+					}
+					if(valEx == null && valueDb != null) return false;
+					return valDb.compareTo(valEx) == 0? true: false;
 				}
-				if(valEx == null && valueDb != null) return false;
-				return valDb.compareTo(valEx) == 0? true: false;
+			}else {
+				return false;
 			}
+
 		}else {
 			if(valueExcel != null) {
 				return valueExcel.equals(valueDb);
@@ -1081,6 +1091,7 @@ public class CheckFileFinder {
 	private static Comparator<EmployeeRowDto> SORT_BY_DISPORDER = (o1, o2) -> {
 		return o2.getNumberOfError() - o1.getNumberOfError();
 	};
+	
 	
 	@AllArgsConstructor
 	@Getter
