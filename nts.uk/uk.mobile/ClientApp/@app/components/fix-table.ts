@@ -3,7 +3,7 @@ import { component, Prop } from '@app/core/component';
 
 @component({
     template: `<div class="table-container">
-        <div class="table-header">
+        <div class="table-header d-none" style="margin-bottom: -1px">
             <button ref="previous" class="btn btn-secondary btn-sm" v-on:click="previous" disabled>前項</button>
             <button ref="next" class="btn btn-secondary btn-sm" v-on:click="next">次項</button>
             <table v-bind:class="tableClass">
@@ -17,7 +17,7 @@ import { component, Prop } from '@app/core/component';
                 <slot/>
             </table>
         </div>
-        <div class="table-footer">
+        <div class="table-footer d-none" style="margin-top: -1px">
             <table v-bind:class="tableClass">
                 <tbody></tbody>
             </table>
@@ -114,8 +114,8 @@ export class FixTableComponent extends Vue {
                 return;
             }
             
-            this.setStyleOfTableBody(rows);
             this.setWidthOfFlexibleColumns();
+            this.setStyleOfTableBody(rows);
             this.resize();
         });
     }

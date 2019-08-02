@@ -10,6 +10,7 @@ import { FixTableComponent } from '@app/components/fix-table';
     },
     template: require('./index.vue'),
     resource: require('./resources.json'),
+    style: require('./style.scss'),
     markdown: {
         vi: require('./content/vi.md'),
         jp: require('./content/jp.md')
