@@ -1,5 +1,6 @@
 package nts.uk.ctx.pereg.app.command.process.checkdata;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -8,6 +9,7 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.setting.validatecheck.PerInfoValidChkCtgRepository;
@@ -93,7 +95,15 @@ public class CheckAllCtgProcess {
 					ctg.getCategoryName().toString());
 		}).collect(Collectors.toList());
 		
+		/**
+		 * アルゴリズム「個人情報条件で社員を検索して並び替える」を実行する
+		 * Thực thi thuật toán 「Search employee theo điều kiện thông tin cá nhân, và thay đổi thứ tự」
+		 */
 		List<EmployeeResultDto> listEmp = findEmployeesInfo(query);
+		
+		if(CollectionUtil.isEmpty(listEmp)) {
+			throw new BusinessException("Msg_1564");
+		}
 		
 		GeneralDateTime endDateTime = GeneralDateTime.now();
 		GeneralDateTime startDateTime = GeneralDateTime.now();

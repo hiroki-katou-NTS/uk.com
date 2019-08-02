@@ -38,3 +38,7 @@ table.info-table td.fix-width {width: 150px; background:#CFF1A5; padding:2px;}
     font-size: 75% !important;
     height: 20px !important;
 }
+
+html {
+	overflow: hidden;
+}

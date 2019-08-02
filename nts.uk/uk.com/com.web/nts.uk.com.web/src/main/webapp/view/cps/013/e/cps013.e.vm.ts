@@ -27,8 +27,6 @@ module nts.uk.at.view.cps013.e {
             startDateTime: KnockoutObservable<string>;
             endDateTime: KnockoutObservable<string>;
 
-            //enable enableCancelTask
-            enableCancelTask: KnockoutObservable<boolean> = ko.observable(true);
             dataShare: KnockoutObservable<IDataShare>= ko.observableArray();
 
             // disable gridlist
@@ -40,11 +38,11 @@ module nts.uk.at.view.cps013.e {
                 self.isComplete = ko.observable(false);
 
                 self.columns = ko.observableArray([
-                    { headerText: getText('KFP001_40'), key: 'employeeCode', width: 150 },
-                    { headerText: getText('KFP001_41'), key: 'bussinessName', width: 200 },
-                    { headerText: getText('KFP001_42'), key: 'clsCategoryCheck', width: 200 },
-                    { headerText: getText('KFP001_43'), key: 'categoryName', width: 200 },
-                    { headerText: getText('KFP001_43'), key: 'error', width: 350, formatter: makeIcon},
+                    { headerText: getText('CPS013_26'), key: 'employeeCode', width: 150 },
+                    { headerText: getText('CPS013_27'), key: 'bussinessName', width: 200 },
+                    { headerText: getText('CPS013_28'), key: 'clsCategoryCheck', width: 200 },
+                    { headerText: getText('CPS013_29'), key: 'categoryName', width: 200 },
+                    { headerText: getText('CPS013_30'), key: 'error', width: 350, formatter: makeIcon},
                     { headerText: '', key: 'employeeId', width: 1, hirren: true },
                     { headerText: '', key: 'categoryId', width: 1, hirren: true },
                     { headerText: '', key: 'GUID', width: 1, hirren: true },
@@ -52,8 +50,12 @@ module nts.uk.at.view.cps013.e {
                 self.errorMessageInfo.subscribe((value)=>{
                     if(value.length){
                         self.error(true);
-                        nts.uk.ui.windows.getSelf().setWidth(1170);
-                        nts.uk.ui.windows.getSelf().setHeight(610);
+                        let selfDialog = nts.uk.ui.windows.getSelf();
+                        selfDialog.$dialog.data('__size__', {width : 1170 , height : 610});
+                        selfDialog.setSize(610, 1170);
+                        window.parent.dispatchEvent(new Event('resize'));
+                        //nts.uk.ui.windows.getSelf().setWidth(1170);
+                        //nts.uk.ui.windows.getSelf().setHeight(610);
                     }
                 });
             }
@@ -75,9 +77,8 @@ module nts.uk.at.view.cps013.e {
                                     self.countEmp(self.getAsyncData(info.taskDatas, "countEmp").valueAsNumber);
                                     self.statusCheck(self.getAsyncData(info.taskDatas, "statusCheck").valueAsString);
 
-                                    if (!info.pending && !info.running) {
+                                    if (!info.pending && !info.running || info.requestedToCancel) {
                                         self.isComplete(true);
-
                                         // End count time
                                         self.elapseTime.end();
 
@@ -85,13 +86,12 @@ module nts.uk.at.view.cps013.e {
                                         self.endTime(self.getAsyncData(info.taskDatas, "endTime").valueAsString);
 
                                         self.bindingDataToGrid(info.taskDatas);
-                                        console.log("lít bug" + info.taskDatas);
-                                        //self.enableCancelTask(false);
+                                        console.log("list bug" + info.taskDatas);
                                         
                                     }
                                 });
                             })
-                            .while(info => info.pending || info.running)
+                            .while(info => (info.pending || info.running) && (!info.requestedToCancel))
                             .pause(1000)
                         );
                     });
@@ -133,7 +133,6 @@ module nts.uk.at.view.cps013.e {
             
             cancelTask(): void {
                 var self = this;
-                self.enableCancelTask(false);
                 nts.uk.request.asyncTask.requestToCancel(self.taskId());
                 // End count time
                 self.elapseTime.end();
@@ -144,16 +143,6 @@ module nts.uk.at.view.cps013.e {
                 nts.uk.ui.windows.close();
             }
 
-            stop() {
-                let self = this;
-                service.stopExecute(self.dataFromD());
-                self.enableCancelTask(false);
-                nts.uk.request.asyncTask.requestToCancel(self.taskId());
-                // End count time
-                self.elapseTime.end();
-            }
-            
-                
            private bindingDataToGrid(data: Array<any>): void {
                 var self = this;
 
@@ -209,7 +198,7 @@ module nts.uk.at.view.cps013.e {
                 }
                
                // order 
-               self.errorMessageInfo(_.sortBy(errs, [function(o) { return o.employeeCode; }]));
+               self.errorMessageInfo(_.sortBy(errs, ['employeeCode', 'clsCategoryCheck', 'categoryName']));
 
             }
 
@@ -332,7 +321,6 @@ module nts.uk.at.view.cps013.e {
     function makeIcon(value, row) {
         if (value == '1')
             return '<img style="margin-left: 15px; width: 20px; height: 20px;" />';
-        
         return '<div>' + '<div class="limit-custom">' + value + '</div>' + '<div style = "display: inline-block; position: relative;">' + '<button tabindex = "0" class="open-dialog-i" onclick="jumtoCPS001A(\'' + row.employeeId + '\', \'' + row.categoryId + '\')">' + nts.uk.resource.getText("CPS013_31") + '</button>' + '</div>' + '</div>';
     }
 }

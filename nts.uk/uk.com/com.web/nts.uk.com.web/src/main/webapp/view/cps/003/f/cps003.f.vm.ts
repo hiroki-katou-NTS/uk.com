@@ -97,7 +97,7 @@ module cps003.f.vm {
                             }, command = {
                                 itemId: item.id,
                                 required: false,
-                                baseDate: moment.utc().toISOString()
+                                baseDate: self.baseDate
                             }, constraint: any = {
                                 itemName: item.itemName,
                                 itemCode: item.itemCode,
@@ -280,45 +280,89 @@ module cps003.f.vm {
                     if (target == 'all') {
                         self.currentItem.target(text('CPS003_119'));
                     } else {
-                        if (!!filter) {
-                            let value = '';
-                            switch (itemData.dataType) {
-                                case ITEM_SINGLE_TYPE.DATE:
-                                    value = moment.utc(filter).format('YYYY/MM/DD');
-                                    break;
-                                case ITEM_SINGLE_TYPE.STRING:
-                                    value = filter;
-                                    break;
-                                case ITEM_SINGLE_TYPE.NUMERIC:
-                                    if (filter && !isNaN(Number(filter))) {
-                                        if (!itemData.amount) {
-                                            value = filter;
-                                        } else {
-                                            value = Number(filter).toLocaleString('ja-JP', { useGrouping: true })+ text('CPS003_122');
+                        if (itemData.dataType == ITEM_SINGLE_TYPE.NUMERIC || itemData.dataType == ITEM_SINGLE_TYPE.TIME || itemData.dataType == ITEM_SINGLE_TYPE.TIMEPOINT) {
+                            if (!!filter || filter === 0 || filter !="") {
+                                let value = '';
+                                switch (itemData.dataType) {
+                                    case ITEM_SINGLE_TYPE.DATE:
+                                        value = moment.utc(filter).format('YYYY/MM/DD');
+                                        break;
+                                    case ITEM_SINGLE_TYPE.STRING:
+                                        value = filter;
+                                        break;
+                                    case ITEM_SINGLE_TYPE.NUMERIC:
+                                        if (filter && !isNaN(Number(filter))) {
+                                            if (!itemData.amount) {
+                                                value = filter;
+                                            } else {
+                                                value = Number(filter).toLocaleString('ja-JP', { useGrouping: true }) + text('CPS003_122');
+                                            }
                                         }
-                                    }
-                                    break;
-                                case ITEM_SINGLE_TYPE.TIME:
-                                    if (filter && !isNaN(Number(filter))) {
-                                        value = parseTime(Number(filter), true).format();
-                                    }
-                                    break;
-                                case ITEM_SINGLE_TYPE.TIMEPOINT:
-                                    if (filter && !isNaN(Number(filter))) {
-                                        value = parseTimeWidthDay(Number(filter)).fullText;
-                                    }
-                                    break;
-                                case ITEM_SINGLE_TYPE.SELECTION:
-                                case ITEM_SINGLE_TYPE.SEL_RADIO:
-                                case ITEM_SINGLE_TYPE.SEL_BUTTON:
-                                    value = (_.find(itemData.selectionItems, m => m.optionValue == filter) || { optionText: '' }).optionText;
-                                    break;
+                                        break;
+                                    case ITEM_SINGLE_TYPE.TIME:
+                                        if (filter && !isNaN(Number(filter))) {
+                                            value = parseTime(Number(filter), true).format();
+                                        }
+                                        break;
+                                    case ITEM_SINGLE_TYPE.TIMEPOINT:
+                                        if (filter && !isNaN(Number(filter))) {
+                                            value = parseTimeWidthDay(Number(filter)).fullText;
+                                        }
+                                        break;
+                                    case ITEM_SINGLE_TYPE.SELECTION:
+                                    case ITEM_SINGLE_TYPE.SEL_RADIO:
+                                    case ITEM_SINGLE_TYPE.SEL_BUTTON:
+                                        value = (_.find(itemData.selectionItems, m => m.optionValue == filter) || { optionText: '' }).optionText;
+                                        break;
+                                }
+
+                                self.currentItem.target(text('CPS003_120', [itemName, value]));
+                            } else {
+                                self.currentItem.target(text('CPS003_121', [itemName]));
                             }
 
-                            self.currentItem.target(text('CPS003_120', [itemName, value]));
                         } else {
-                            self.currentItem.target(text('CPS003_121', [itemName]));
+                            if (!!filter) {
+                                let value = '';
+                                switch (itemData.dataType) {
+                                    case ITEM_SINGLE_TYPE.DATE:
+                                        value = moment.utc(filter).format('YYYY/MM/DD');
+                                        break;
+                                    case ITEM_SINGLE_TYPE.STRING:
+                                        value = filter;
+                                        break;
+                                    case ITEM_SINGLE_TYPE.NUMERIC:
+                                        if (filter && !isNaN(Number(filter))) {
+                                            if (!itemData.amount) {
+                                                value = filter;
+                                            } else {
+                                                value = Number(filter).toLocaleString('ja-JP', { useGrouping: true }) + text('CPS003_122');
+                                            }
+                                        }
+                                        break;
+                                    case ITEM_SINGLE_TYPE.TIME:
+                                        if (filter && !isNaN(Number(filter))) {
+                                            value = parseTime(Number(filter), true).format();
+                                        }
+                                        break;
+                                    case ITEM_SINGLE_TYPE.TIMEPOINT:
+                                        if (filter && !isNaN(Number(filter))) {
+                                            value = parseTimeWidthDay(Number(filter)).fullText;
+                                        }
+                                        break;
+                                    case ITEM_SINGLE_TYPE.SELECTION:
+                                    case ITEM_SINGLE_TYPE.SEL_RADIO:
+                                    case ITEM_SINGLE_TYPE.SEL_BUTTON:
+                                        value = (_.find(itemData.selectionItems, m => m.optionValue == filter) || { optionText: '' }).optionText;
+                                        break;
+                                }
+
+                                self.currentItem.target(text('CPS003_120', [itemName, value]));
+                            } else {
+                                self.currentItem.target(text('CPS003_121', [itemName]));
+                            }
                         }
+
                     }
                 }
             });
@@ -349,6 +393,11 @@ module cps003.f.vm {
                     replaceValue: undefined,
                     replaceFormat: undefined
                 };
+            if (item.itemData.dataType == ITEM_SINGLE_TYPE.NUMERIC || item.itemData.dataType == ITEM_SINGLE_TYPE.TIME || item.itemData.dataType == ITEM_SINGLE_TYPE.TIMEPOINT) {
+                if (item.filter == 0) {
+                    value.matchValue = item.filter;
+                }
+            }
             nts.uk.ui.errors.clearAll();
             $('input:not([disabled])').trigger('validate');
             validation.initCheckError(self.currentItem);
