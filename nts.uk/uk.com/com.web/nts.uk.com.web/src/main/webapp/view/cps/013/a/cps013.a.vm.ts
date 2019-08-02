@@ -103,7 +103,7 @@ module nts.uk.com.view.cps013.a.viewmodel {
                     //$("#grid2").igGrid("option","dataSource",self.item);
                     // khi tất cả check box được check thì thi load lên sẽ phải check cả check box trên header
                     let flag = _.countBy(ko.toJS($("#grid2").igGrid("option","dataSource")), function (x) { return x.flag == true; });
-                    if (self.masterChk() == false) {
+                    if (obj.masterChk == false) {
                         $("#grid2_flag > span > div > label > input[type=checkbox]").attr("disabled", true);
                         _.each(self.items, item => {
                             $("#grid2").ntsGrid("disableNtsControlAt", item.id, "flag", "CheckBox");
@@ -146,18 +146,26 @@ module nts.uk.com.view.cps013.a.viewmodel {
             character.save('PerInfoValidCheckCtg', paramSave);
             character.restore("PerInfoValidCheckCtg").done((obj) => {
             });
+            let scheduleMngChecks = _.filter(self.items, x => {return x.name == text("CPS013_15");}),
+                dailyPerforMngCheckLs = _.filter(self.items, x => {return x.name == text("CPS013_16");}),
+                monthPerforMngChecks = _.filter(self.items, x => {return x.name == text("CPS013_17");}),
+                payRollMngChecks = _.filter(self.items, x => {return x.name == text("CPS013_18");}),
+                bonusMngChecks = _.filter(self.items, x => {return x.name == text("CPS013_19");}),
+                yearlyMngChecks = _.filter(self.items, x => {return x.name == text("CPS013_20");}),
+                monthCalChecks = _.filter(self.items, x => {return x.name == text("CPS013_21");});
+            
             let checkbox = ko.toJS($("#grid2").igGrid("option","dataSource")),
                 checkDataFromUI = { 
                 dateTime: self.date(),
                 perInfoCheck: self.perInfoChk(),
                 masterCheck: self.masterChk(),
-                scheduleMngCheck: checkbox[0].flag,
-                dailyPerforMngCheckL: checkbox[1].flag ,
-                monthPerforMngCheck: checkbox[2].flag ,
-                payRollMngCheck: checkbox[3].flag ,
-                bonusMngCheck: checkbox[4].flag ,
-                yearlyMngCheck: checkbox[5].flag ,
-                monthCalCheck: checkbox[6].flag },
+                scheduleMngCheck: scheduleMngChecks.length > 0? checkbox[scheduleMngChecks[0].id - 1].flag: false ,
+                dailyPerforMngCheckL: dailyPerforMngCheckLs.length > 0? checkbox[dailyPerforMngCheckLs[0].id - 1].flag: false ,
+                monthPerforMngCheck: monthPerforMngChecks.length > 0? checkbox[monthPerforMngChecks[0].id - 1].flag: false ,
+                payRollMngCheck: payRollMngChecks.length > 0? checkbox[payRollMngChecks[0].id - 1].flag: false ,
+                bonusMngCheck: bonusMngChecks.length > 0? checkbox[bonusMngChecks[0].id - 1].flag: false ,
+                yearlyMngCheck: yearlyMngChecks.length > 0? checkbox[yearlyMngChecks[0].id - 1].flag: false ,
+                monthCalCheck: monthCalChecks.length > 0? checkbox[monthCalChecks[0].id - 1].flag: false} ,
                 flag =  _.filter(ko.toJS(checkbox), x => {return x.flag == true});
             // nếu A2_001 và A3_001 cùng không được chọn hoặc A3_001 được chọn nhưng list A3_004 không được chọn item nào => msg_360
             if ((flag.length === 0 && (self.masterChk() === true  && self.perInfoChk() === false)) || (self.masterChk() === false && self.perInfoChk() === false)) {
