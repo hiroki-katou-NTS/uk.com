@@ -148,6 +148,7 @@ module cps003.a.vm {
                             self.histType(nts.uk.resource.getText("CPS003_108"));
                             self.updateMode(1);
                             self.updateModeEnable(false);
+                            self.baseDateEnable(true);
                         } else {
                             service.fetch.permission(roleId, cid).done(permission => {
                                 if (permission) self.perInfoCatePermission(permission);
@@ -158,6 +159,7 @@ module cps003.a.vm {
                                         self.histType(nts.uk.resource.getText("CPS003_109"));
                                         self.updateMode(1);
                                         self.updateModeEnable(false);
+                                        self.baseDateEnable(true);
                                         break;
                                     case IT_CAT_TYPE.CONTINU:
                                     case IT_CAT_TYPE.CONTINUWED:
@@ -752,8 +754,8 @@ module cps003.a.vm {
             new nts.uk.ui.mgrid.MGrid($("#grid")[0], {
                 width: "1000px",
                 height: "800px",
-                headerHeight: "80px",
-                subHeight: "380px",
+                headerHeight: "40px",
+                subHeight: "330px",
                 subWidth: "160px",
                 dataSource: self.gridOptions.dataSource,
                 primaryKey: "id",
@@ -815,6 +817,10 @@ module cps003.a.vm {
             }
             
             nts.uk.request.ajax('com', 'ctx/pereg/grid-layout/get-data', param).done(data => {
+                if (data.bodyDatas && data.bodyDatas.length == 0 && !_.isNil(data.baseDate)) {
+                    self.baseDate(data.baseDate);
+                }
+                
                 self.convertData(data, settingData).done(() => {
                     self.loadGrid();
                     self.initDs = _.cloneDeep(self.gridOptions.dataSource);
@@ -842,7 +848,7 @@ module cps003.a.vm {
         }
 
         convertData(data: IRequestData, gridSettings: ISettingData) {
-            let self = this, dfd = $.Deferred();
+            let self = this, dfd = $.Deferred(), hideRowAdd;
             if (data.headDatas) {
                 self.batchSettingItems = [];
                 data.headDatas.sort((a, b) => {
@@ -857,7 +863,7 @@ module cps003.a.vm {
                     return a.itemOrder - b.itemOrder;
                 });
                 
-                let item, control, parent = {}, sort, hideRowAdd;
+                let item, control, parent = {}, sort;
                 self.dataTypes = {};
                 gridSettings = gridSettings || ko.toJS(self.settings);
                 
@@ -1112,6 +1118,27 @@ module cps003.a.vm {
                     
                     forEach(disItems, itm => states.push(new State(record.id, itm, ["mgrid-lock"])));
                     self.gridOptions.dataSource.push(record);
+                    if (hideRowAdd === false) {
+                        if (self.category.cate().categoryType === IT_CAT_TYPE.DUPLICATE) {
+                            if (__viewContext.user.employeeId === record.employeeId) {
+                                if (self.perInfoCatePermission().selfAllowAddMulti === 0 
+                                    || self.perInfoCatePermission().selfFutureHisAuth === 1 || self.perInfoCatePermission().selfFutureHisAuth === 2) {
+                                    states.push(new State(record.id, "rowAdd", ["mgrid-disable"]));
+                                }
+                            } else {
+                                if (self.perInfoCatePermission().otherAllowAddMulti === 0
+                                    || self.perInfoCatePermission().otherFutureHisAuth === 1 || self.perInfoCatePermission().otherFutureHisAuth === 2) {
+                                    states.push(new State(record.id, "rowAdd", ["mgrid-disable"]));
+                                }     
+                            }
+                        } else if (self.category.cate().categoryType === IT_CAT_TYPE.MULTI) {
+                            if (__viewContext.user.employeeId === record.employeeId && self.perInfoCatePermission().selfAllowAddMulti === 0) {
+                                states.push(new State(record.id, "rowAdd", ["mgrid-disable"]));
+                            } else if (__viewContext.user.employeeId !== record.employeeId && self.perInfoCatePermission().otherAllowAddMulti === 0) {
+                                states.push(new State(record.id, "rowAdd", ["mgrid-disable"]));  
+                            }
+                        }
+                    }
                 });
                 
                 if (workTimeCodes.length > 0) {

@@ -70,8 +70,8 @@ module nts.custombinding {
                             name: i18n('CPS003_25'),
                             value: cursorDirection,
                             options: ko.observableArray([
-                                { type: 'VERTICAL', name: 'する' },
-                                { type: 'HORIZONTAL', name: 'しない' }
+                                { type: 'VERTICAL', name: '縦' },
+                                { type: 'HORIZONTAL', name: '横' }
                             ]),
                             optionsText: 'name',
                             optionsValue: 'type',

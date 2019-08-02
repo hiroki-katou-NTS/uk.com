@@ -1,3 +1,22 @@
+#contents-area * {
+	font-size: 0.8rem;
+}
+
+#functions-area * {
+    font-size: 0.8rem;
+}
+
+button:not(.x-large) {
+    height: 25px !important;
+    min-width: 10px !important;
+}
+
+.ccg-lbl-vertical {
+    font-size: 18pt !important;
+}
+
+/*================*/
+
 .data-layout {
 	padding-left: 90px;
 }
@@ -8,7 +27,7 @@
 }
 
 .data-layout .form-group {
-	margin-bottom: 15px;
+	margin-bottom: 5px;
 	z-index: 9999;
 }
 
@@ -80,7 +99,7 @@
 .grid-setting {
 	border: 1px solid #B1B1B1;
 	border-radius: 3px;
-	padding: 10px;
+	padding: 3px;
 	margin-right: 30px;
 }
 
