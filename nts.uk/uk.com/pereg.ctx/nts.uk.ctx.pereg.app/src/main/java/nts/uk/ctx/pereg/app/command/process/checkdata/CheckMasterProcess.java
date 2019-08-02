@@ -9,6 +9,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.task.data.TaskDataSetter;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.GridLayoutPersonInfoClsDto;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
@@ -146,13 +147,14 @@ public class CheckMasterProcess {
 	}
 	
 	private void setErrorDataGetter(ErrorInfoCPS013 error, TaskDataSetter dataSetter) {
-		dataSetter.setData("employeeId" , error.getEmployeeId());
-		dataSetter.setData("categoryId" , error.getCategoryId());
-		dataSetter.setData("employeeCode" , error.getEmployeeCode());
-		dataSetter.setData("bussinessName" , error.getBussinessName());
-		dataSetter.setData("clsCategoryCheck" , error.getClsCategoryCheck());
-		dataSetter.setData("categoryName" , error.getCategoryName());
-		dataSetter.setData("error" , error.getError());
+		String ramdom = IdentifierUtil.randomUniqueId().substring(0, 5);
+		dataSetter.setData("employeeId" + ramdom, error.getEmployeeId());
+		dataSetter.setData("categoryId" + ramdom, error.getCategoryId());
+		dataSetter.setData("employeeCode" + ramdom, error.getEmployeeCode());
+		dataSetter.setData("bussinessName" + ramdom, error.getBussinessName());
+		dataSetter.setData("clsCategoryCheck" + ramdom, error.getClsCategoryCheck());
+		dataSetter.setData("categoryName" + ramdom, error.getCategoryName());
+		dataSetter.setData("error" + ramdom, error.getError());
 	}
 
 }
