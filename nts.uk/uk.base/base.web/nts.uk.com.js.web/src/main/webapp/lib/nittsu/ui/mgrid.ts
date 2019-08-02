@@ -4864,6 +4864,7 @@ module nts.uk.ui.mgrid {
                             if (btn) btn.disabled = true;
                             break;
                         case dkn.FLEX_IMAGE:
+                        case dkn.IMAGE:
                             let img = $cell.querySelector("span");
                             if (img) {
                                 img.removeXEventListener(ssk.CLICK_EVT);
@@ -4937,6 +4938,7 @@ module nts.uk.ui.mgrid {
                             }
                             break;
                         case dkn.FLEX_IMAGE:
+                        case dkn.IMAGE:
                             let img = $cell.querySelector("span");
                             if (img) {
                                 img.addXEventListener(ssk.CLICK_EVT, $.data(img, ssk.CLICK_EVT));
@@ -8224,6 +8226,11 @@ module nts.uk.ui.mgrid {
                         return;
                     }
                     
+                    if (khl._infobulle) {
+                        ti.remove(khl._infobulle);
+                        dkn.closeDD(khl._infobulle, true);
+                    }
+                    
                     return $td;
                 }
             };
@@ -9048,20 +9055,28 @@ module nts.uk.ui.mgrid {
             $span.className = data.controlDef.source;
             $container.appendChild($span);
             
+            let clickHandle;
             if (data.controlDef.source === "hidden-button") {
-                $span.addXEventListener(ssk.CLICK_EVT, evt => {
+                clickHandle = evt => {
                     let r = ti.closest($span, "tr");
                     if (r) v.voilerRow(parseFloat($.data(r, lo.VIEW)));
-                });
-                $span.style.cursor = "pointer";
+                };
             } else if (_.includes(data.controlDef.source, "plus-button")) {
-                $span.addXEventListener(ssk.CLICK_EVT, evt => {
+                clickHandle = evt => {
                     let r = ti.closest($span, "tr");
                     let noTd = r.querySelector("td." + v.STT_CLS);
                     if (r) v.encarterRow(parseFloat($.data(r, lo.VIEW)), data.controlDef.copy, data.controlDef.cssClass, noTd && noTd.innerHTML && parseInt(noTd.innerHTML) + 1);
-                });
-                $span.style.cursor = "pointer";
+                };    
             }
+            
+            if (clickHandle) {
+                if (data.enable) {
+                    $span.addXEventListener(ssk.CLICK_EVT, clickHandle);
+                    $span.style.cursor = "pointer";
+                }
+                
+                $.data($span, ssk.CLICK_EVT, clickHandle);
+            }   
             
             if (!controlType[data.columnKey]) {
                 controlType[data.columnKey] = IMAGE;
@@ -9961,7 +9976,7 @@ module nts.uk.ui.mgrid {
         /**
          * Set.
          */
-        export function set(cell: any, message: string, setType?: any, rendered:? any) {
+        export function set(cell: any, message: string, setType?: any, rendered?: any) {
             if (!cell || ((!setType || setType === 1) && (!cell.element || any(cell)))) return;
             if (!setType || setType === 1) {
                 let $cell = cell.element;
