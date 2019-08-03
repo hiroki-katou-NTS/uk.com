@@ -100,7 +100,6 @@ module nts.uk.com.view.cps013.a.viewmodel {
                     self.date(obj.dateTime);
                     self.perInfoChk(obj.perInfoChk);
                     self.masterChk(obj.masterChk);
-                    //$("#grid2").igGrid("option","dataSource",self.item);
                     // khi tất cả check box được check thì thi load lên sẽ phải check cả check box trên header
                     let flag = _.countBy(ko.toJS($("#grid2").igGrid("option","dataSource")), function (x) { return x.flag == true; });
                     if (obj.masterChk == false) {

@@ -986,14 +986,14 @@ public class CheckPersonInfoProcess {
 	}
 	
 	private void setErrorDataGetter(ErrorInfoCPS013 error, TaskDataSetter dataSetter) {
-		String ramdom = IdentifierUtil.randomUniqueId().substring(0, 5);
+		String ramdom = IdentifierUtil.randomUniqueId();
 		dataSetter.setData("employeeId" + ramdom, error.getEmployeeId());
 		dataSetter.setData("categoryId" + ramdom, error.getCategoryId());
-		dataSetter.setData("employeeCode" + ramdom, error.getEmployeeCode());
-		dataSetter.setData("bussinessName" + ramdom, error.getBussinessName());
-		dataSetter.setData("clsCategoryCheck" + ramdom, error.getClsCategoryCheck());
-		dataSetter.setData("categoryName" + ramdom, error.getCategoryName());
-		dataSetter.setData("error" + ramdom, error.getError());
+		dataSetter.setData("employeeCo" + ramdom, error.getEmployeeCode());
+		dataSetter.setData("bussinessN" + ramdom, error.getBussinessName());
+		dataSetter.setData("clsCtgChek" + ramdom, error.getClsCategoryCheck());
+		dataSetter.setData("categoryNa" + ramdom, error.getCategoryName());
+		dataSetter.setData("errorInfor" + ramdom, error.getError());
 	}
 
 	/**
