@@ -336,4 +336,9 @@ export class FixTableComponent extends Vue {
         this.xDown = null;
         this.yDown = null;
     }
+
+    public destroyed() {
+        let styleTag = document.querySelector(`style[role="${this.roleId}"]`) as HTMLStyleElement;
+        styleTag.remove();
+    }
 }
