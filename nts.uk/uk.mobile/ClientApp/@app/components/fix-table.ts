@@ -2,22 +2,22 @@ import { Vue } from '@app/provider';
 import { component, Prop } from '@app/core/component';
 
 @component({
-    template: `<div class="table-container">
-        <div class="table-header d-none" style="margin-bottom: -1px">
+    template: `<div class="table-container" v-bind:role="roleId">
+        <div class="table-header" >
             <button ref="previous" class="btn btn-secondary btn-sm" v-on:click="previous" disabled>前項</button>
             <button ref="next" class="btn btn-secondary btn-sm" v-on:click="next">次項</button>
             <table v-bind:class="tableClass">
                 <tbody></tbody>
             </table>
         </div>
-        <div class="table-body">
+        <div class="table-body" style="margin-bottom: -1px; margin-top: -1px">
             <table v-bind:class="tableClass"
                 v-on:touchstart="handleTouchStart"
                 v-on:touchend="handleTouchEnd">
                 <slot/>
             </table>
         </div>
-        <div class="table-footer d-none" style="margin-top: -1px">
+        <div class="table-footer">
             <table v-bind:class="tableClass">
                 <tbody></tbody>
             </table>
@@ -35,6 +35,8 @@ export class FixTableComponent extends Vue {
 
     @Prop({ default: 5 })
     public rowNumber: number;
+
+    private roleId: string = Date.now().toString();
 
     public startDisplayIndex: number = 1;
     public oldStartDisplayIndex: number = 1;
@@ -106,85 +108,82 @@ export class FixTableComponent extends Vue {
 
     private setStyle() {
         this.$nextTick(() => {
+
+            this.generateStyle();
+
             let rows = this.bodyTable.tBodies[0].children;
-
             if (rows.length === 0) {
-                this.resizeFooterWithHeader();
-
                 return;
             }
-            
-            this.setWidthOfFlexibleColumns();
             this.setStyleOfTableBody(rows);
-            this.resize();
         });
+    }
+
+    private generateStyle() {
+        let theFirstHeader = this.headerTable.querySelector('thead>tr>th:first-child') as HTMLTableCellElement;
+        let theLastHeader = this.headerTable.querySelector('thead>tr>th:last-child') as HTMLTableCellElement;
+
+        let firstHeaderWidth = theFirstHeader.getAttribute('c-width') as unknown as number;
+        let lastHeaderWidth = theLastHeader.getAttribute('c-width') as unknown as number;
+
+        if (firstHeaderWidth === null || lastHeaderWidth === null) {
+            console.warn(`Fix Table Error: the first column or the last column have not 'c-column' attribute!`);
+            firstHeaderWidth = theFirstHeader.offsetWidth;
+            lastHeaderWidth = theLastHeader.offsetWidth;
+        }
+
+        let middleHeaderWidth = Math.floor(((this.$el as HTMLElement).offsetWidth - firstHeaderWidth - lastHeaderWidth) / this.displayColumns - 1);
+
+        let numberOfCols = this.headerTable.tHead.firstChild.childNodes.length;
+
+        let css: string = '';
+
+        css += `
+            [role="${this.roleId}"] tr td:nth-child(${1}),\n
+            [role="${this.roleId}"] tr th:nth-child(${1}) {\n
+                width: ${firstHeaderWidth}px;\n
+                min-width: ${firstHeaderWidth}px;\n
+                max-width: ${firstHeaderWidth}px;\n
+            }\n
+            `;
+
+        for (let i = 2; i < numberOfCols; i++) {
+            css += `
+            [role="${this.roleId}"] tr td:nth-child(${i}),\n
+            [role="${this.roleId}"] tr th:nth-child(${i}) {\n
+                width: ${middleHeaderWidth}px;\n
+                min-width: ${middleHeaderWidth}px;\n
+                max-width: ${middleHeaderWidth}px;\n
+            }\n
+        `;
+        }
+
+        css += `
+            [role="${this.roleId}"] tr td:nth-child(${numberOfCols}),\n
+            [role="${this.roleId}"] tr th:nth-child(${numberOfCols}) {\n
+                width: ${lastHeaderWidth}px;\n
+                min-width: ${lastHeaderWidth}px;\n
+                max-width: ${lastHeaderWidth}px;\n
+            }\n
+        `;
+        let styleTag = document.createElement('style');
+        styleTag.setAttribute('role', this.roleId);
+        styleTag.setAttribute('type', 'text/css');
+        styleTag.innerHTML = css;
+
+        let head = document.head || document.getElementsByTagName('head')[0];
+        head.appendChild(styleTag);
     }
 
     private setStyleOfTableBody(rows: any) {
         let height: number = (rows[0] as HTMLTableRowElement).offsetHeight;
 
-        let tableBodyDiv = this.$el.querySelector('.table-container .table-body') as HTMLDivElement;
-        tableBodyDiv.style.height = `${height * this.rowNumber}px`;
-        tableBodyDiv.style.overflowY = 'scroll';
-    }
-
-    private setWidthOfFlexibleColumns() {
-        let firstCellWidth = (this.bodyTable.querySelector('tbody>tr>td:first-child') as HTMLTableCellElement).offsetWidth;
-        let lastCellWidth = (this.bodyTable.querySelector('tbody>tr>td:last-child') as HTMLTableCellElement).offsetWidth;
-        let middleCellWidth = (this.bodyTable.offsetWidth - firstCellWidth - lastCellWidth) / this.displayColumns;
-        let middelCelss = this.bodyTable.querySelectorAll('tbody>tr:first-child>td:not(:first-child):not(:last-child)');
-        Array.from(middelCelss).forEach((cell) => {
-            (cell as HTMLTableCellElement).style.width = `${middleCellWidth}px`;
-        });
-    }
-
-    private resize() {
-        let rows = this.bodyTable.tBodies[0].children;
-
-        if (rows.length === 0) {
-            this.resizeFooterWithHeader();
-
-            return;
-        }
-
-        this.resizeHeader();
-        this.resizeFooter();
-    }
-
-    private resizeFooterWithHeader() {
-        let columns = this.headerTable.tHead.children[0].children;
-        let maps = Array.from(columns).map(
-            (c: HTMLTableCellElement) => c.offsetWidth
-        );
-
-        let footerColumns = this.footerTable.tFoot.children[0].children;
-        for (let i = 0; i < footerColumns.length; i++) {
-            (footerColumns[i] as HTMLElement).style.width = `${maps[i]}px`;
-        }
-    }
-
-    private resizeFooter() {
-        let columns = this.bodyTable.tBodies[0].children[0].children;
-        let maps = Array.from(columns).map(
-            (c: HTMLTableCellElement) => c.offsetWidth
-        );
-
-        let footerColumns = this.footerTable.tFoot.children[0].children;
-        for (let i = 0; i < footerColumns.length; i++) {
-            (footerColumns[i] as HTMLElement).style.width = `${maps[i]}px`;
-        }
-    }
-
-    private resizeHeader() {
-        let columns = this.bodyTable.tBodies[0].children[0].children;
-        let maps = Array.from(columns).map(
-            (c: HTMLTableCellElement) => c.offsetWidth
-        );
-
-        let headerColumns = this.headerTable.tHead.children[0].children;
-        for (let i = 0; i < headerColumns.length; i++) {
-            (headerColumns[i] as HTMLElement).style.width = `${maps[i]}px`;
-        }
+        let styleTag = document.querySelector(`style[role="${this.roleId}"]`) as HTMLStyleElement;
+        let css = `.table-container .table-body {
+            height: ${height * this.rowNumber - ((this.rowNumber - 1) / 3)}px;
+            overflow-y: scroll;
+        }`;
+        styleTag.innerHTML += css;
     }
 
     private hiddenColumns() {
@@ -287,7 +286,6 @@ export class FixTableComponent extends Vue {
         }
 
         self.changeDisplayColumn();
-        self.resize();
     }
 
     public next() {
@@ -309,7 +307,6 @@ export class FixTableComponent extends Vue {
         }
 
         self.changeDisplayColumn();
-        self.resize();
     }
 
     public handleTouchStart(evt) {
