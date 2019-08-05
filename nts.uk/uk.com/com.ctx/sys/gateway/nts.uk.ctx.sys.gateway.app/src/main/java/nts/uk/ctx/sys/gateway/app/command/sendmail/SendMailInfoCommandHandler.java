@@ -51,8 +51,12 @@ public class SendMailInfoCommandHandler extends CommandHandlerWithResult<SendMai
 	@Inject
 	private ListCompanyAdapter listCompanyAdapter;
 
-	/**
-	 * パスワード再設定メール送信（形式１）
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command
+	 * .CommandHandlerContext)
 	 */
 	@Override
 	protected SendMailReturnDto handle(CommandHandlerContext<SendMailInfoCommand> context) {
@@ -110,7 +114,7 @@ public class SendMailInfoCommandHandler extends CommandHandlerWithResult<SendMai
 		
 		// get URL from CCG033
 		String url = this.registerEmbededURL.embeddedUrlInfoRegis(programId, screenId, timePeriod, numberPeriod, employeeId,
-				command.getContractCode(), command.getLoginId(), employeeCode, 1, new ArrayList<>(), Optional.empty());
+				command.getContractCode(), command.getLoginId(), employeeCode, 1, new ArrayList<>());
 		// sendMail
 		MailContents contents = new MailContents(I18NText.getText("CCG007_40"), I18NText.getText("CCG007_21") +" \n" + url);
 

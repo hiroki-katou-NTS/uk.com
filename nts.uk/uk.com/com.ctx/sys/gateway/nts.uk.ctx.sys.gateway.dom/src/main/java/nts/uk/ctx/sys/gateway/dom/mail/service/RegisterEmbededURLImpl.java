@@ -52,13 +52,12 @@ public class RegisterEmbededURLImpl implements RegisterEmbededURL {
 		List<UrlTaskIncre> taskInce = new ArrayList<>();
 		taskInce.add(UrlTaskIncre.createFromJavaType(null, null, null, appId, appId));
 		return this.embeddedUrlInfoRegis(embeddedUrlScreenID.getProgramId(), embeddedUrlScreenID.getDestinationId(), 1, 1, 
-				employeeId, "000000000000", loginId, "", 0, taskInce, Optional.empty());
+				employeeId, "000000000000", loginId, "", 0, taskInce);
 	}
 
 	@Override
 	public String embeddedUrlInfoRegis(String programId, String screenId, Integer periodCls, Integer numOfPeriod, 
-			String employeeId, String contractCD, String loginId, String employeeCD, Integer isCompanyNotLogin,
-			List<UrlTaskIncre> taskIncidental, Optional<String> companyId) {
+			String employeeId, String contractCD, String loginId, String employeeCD, Integer isCompanyNotLogin, List<UrlTaskIncre> taskIncidental) {
 		if (loginId.isEmpty() && employeeId.isEmpty()) {
 			return Strings.EMPTY;
 		} 
@@ -82,26 +81,19 @@ public class RegisterEmbededURLImpl implements RegisterEmbededURL {
 			// 期間数＝1(Số thời gian = 1)
 			numOfPeriodReal = numOfPeriod;
 		}
-		String cid = "";
+		String cid = AppContexts.user().companyId();
 		if(isCompanyNotLogin==1){
-			//hoatt 2019.06.03 EA3540 #107947
-			if(companyId.isPresent()){//会社ID指定されているか
-				cid = companyId.get();
-			}else{
-				// imported（ゲートウェイ）「ユーザ」を取得する
-				Optional<UserImportNew> opUserImportNew = userAdapter.findUserByContractAndLoginIdNew(contractCD, loginId);
-				if(!opUserImportNew.isPresent()){
-					throw new BusinessException("Msg_301");
-				}
-				// 「切替可能な会社一覧を取得する」
-				List<String> companyIDLst = collectCompanyList.getCompanyList(opUserImportNew.get().getUserId(), contractCD);
-				if(CollectionUtil.isEmpty(companyIDLst)){
-					throw new BusinessException("Msg_1419");
-				}
-				cid = companyIDLst.get(0);
+			// imported（ゲートウェイ）「ユーザ」を取得する
+			Optional<UserImportNew> opUserImportNew = userAdapter.findUserByContractAndLoginIdNew(contractCD, loginId);
+			if(!opUserImportNew.isPresent()){
+				throw new BusinessException("Msg_301");
 			}
-		}else{
-			cid = AppContexts.user().companyId();
+			// 「切替可能な会社一覧を取得する」
+			List<String> companyIDLst = collectCompanyList.getCompanyList(opUserImportNew.get().getUserId(), contractCD);
+			if(CollectionUtil.isEmpty(companyIDLst)){
+				throw new BusinessException("Msg_1419");
+			}
+			cid = companyIDLst.get(0);
 		}
 		GeneralDateTime issueDate = GeneralDateTime.now();
 		GeneralDateTime startDate = GeneralDateTime.now();
