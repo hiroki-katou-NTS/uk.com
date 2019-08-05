@@ -130,5 +130,32 @@ public class ShortWorkTimeDto extends PeregDomainDto {
 		}
 		return dto;
 	}
+	
+	// for cps013 , param childCareAtr để validate enum
+	public static ShortWorkTimeDto createShortWorkTimeDto(DateHistoryItem dateHitoryItem,
+			ShortWorkTimeHistoryItem shortTimeItem, Integer childCareAtr) {
+		
+		Optional<SChildCareFrame> firstItemOpt = shortTimeItem.getLstTimeSlot().stream().filter(slot -> slot.timeSlot == 1)
+				.findFirst();
+		
+		Optional<SChildCareFrame> secondItemOpt = shortTimeItem.getLstTimeSlot().stream().filter(slot -> slot.timeSlot == 2)
+				.findFirst();
+		
+		ShortWorkTimeDto dto =  new ShortWorkTimeDto(dateHitoryItem.identifier(), null, dateHitoryItem.start(), dateHitoryItem.end(),
+				childCareAtr);
+		
+		if ( firstItemOpt.isPresent()) {
+			SChildCareFrame firstItem = firstItemOpt.get();
+			dto.setStartTime1(firstItem.getStartTime().v());
+			dto.setEndTime1(firstItem.getEndTime().v());
+		}
+		
+		if ( secondItemOpt.isPresent()) {
+			SChildCareFrame secondItem = secondItemOpt.get();
+			dto.setStartTime2(secondItem.getStartTime().v());
+			dto.setEndTime2(secondItem.getEndTime().v());
+		}
+		return dto;
+	}
 
 }

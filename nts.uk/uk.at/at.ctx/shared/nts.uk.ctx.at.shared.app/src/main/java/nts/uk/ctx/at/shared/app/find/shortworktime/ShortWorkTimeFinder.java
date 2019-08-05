@@ -5,6 +5,7 @@ package nts.uk.ctx.at.shared.app.find.shortworktime;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -16,6 +17,7 @@ import nts.uk.ctx.at.shared.dom.shortworktime.SWorkTimeHistItemRepository;
 import nts.uk.ctx.at.shared.dom.shortworktime.SWorkTimeHistoryRepository;
 import nts.uk.ctx.at.shared.dom.shortworktime.ShortWorkTimeHistory;
 import nts.uk.ctx.at.shared.dom.shortworktime.ShortWorkTimeHistoryItem;
+import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItem;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.pereg.app.ComboBoxObject;
@@ -154,19 +156,24 @@ public class ShortWorkTimeFinder implements PeregFinder<ShortWorkTimeDto> {
 		
 		List<DateHistoryItem> dateHistItems = shortTimeHistoryRepo.getByEmployeeListNoWithPeriod(cid, sids);
 		
-		List<ShortWorkTimeHistoryItem> hisItemLst = this.shortTimeHistoryItemRepo
-				.findByHistIds(dateHistItems.stream().map(c -> c.identifier()).collect(Collectors.toList()));
+		List<Object[]> hisItemLstAndListEnum = this.shortTimeHistoryItemRepo
+				.findByHistIdsCPS013(dateHistItems.stream().map(c -> c.identifier()).collect(Collectors.toList()));
 		
 		result.stream().forEach(c -> {
-			List<ShortWorkTimeHistoryItem> listHistItem = hisItemLst.stream()
-					.filter(emp -> emp.getEmployeeId().equals(c.getEmployeeId())).collect(Collectors.toList());
+			List<Object[]> listHistItem = hisItemLstAndListEnum.stream()
+					.filter(emp -> ((ShortWorkTimeHistoryItem) emp[0]).getEmployeeId().equals(c.getEmployeeId())).collect(Collectors.toList());
 			
 			if (!listHistItem.isEmpty()) {
 				List<PeregDomainDto> listPeregDomainDto = new ArrayList<>();
 				listHistItem.forEach(h -> {
-					Optional<DateHistoryItem> dateHistoryItem = dateHistItems.stream().filter(i -> i.identifier().equals(h.getHistoryId())).findFirst();
+					ShortWorkTimeHistoryItem shortWorkTimeHisItem = (ShortWorkTimeHistoryItem) h[0];
+					Map<String, Integer> mapListEnum =  (Map<String, Integer>) h[1];
+					
+					Optional<DateHistoryItem> dateHistoryItem = dateHistItems.stream().filter(i -> i.identifier().equals(shortWorkTimeHisItem
+							.getHistoryId())).findFirst();
 					if (dateHistoryItem.isPresent()) {
-						listPeregDomainDto.add(ShortWorkTimeDto.createShortWorkTimeDto(dateHistoryItem.get() , h));
+						listPeregDomainDto.add(ShortWorkTimeDto.createShortWorkTimeDto(dateHistoryItem.get() , shortWorkTimeHisItem,
+								mapListEnum.get("IS00104")));
 					}
 				});
 				if (!listPeregDomainDto.isEmpty()) {
