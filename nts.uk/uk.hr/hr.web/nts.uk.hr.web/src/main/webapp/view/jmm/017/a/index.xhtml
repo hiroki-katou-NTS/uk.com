@@ -21,7 +21,7 @@
 					maxLength: 12,
 				};
 			</script>
-
+			<script src="https://igniteui.github.io/help-samples/data-files/northwind.js"></script>
 			<com:stylefile path="../b/jmm017.b.style.css" />
 			<com:scriptfile path="../b/jmm017.b.service.js" />
 			<com:scriptfile path="../b/jmm017.b.vm.js" />
@@ -59,8 +59,8 @@
 							value: guideMsgAreaRow,
 							constraint: 'Integer_1_5',
 							required: true,
-							option: {width: '50px'}}" />
-						<span>#{i18n.getText('JMM017_A422_5')}</span>
+							option: {width: '15px'}}" />
+						<span style="margin-left: 40px">#{i18n.getText('JMM017_A422_5')}</span>
 					</div>
 					<div class="settings">
 						<div data-bind="ntsFormLabel: {required: true}" class ="lableRequired">#{i18n.getText('JMM017_A422_6')}</div>
@@ -69,8 +69,8 @@
 							value: guideMsgMaxNum,
 							constraint: 'Integer_1_500',
 							required: true,
-							option: {width: '50px'}}" />
-						<span>#{i18n.getText('JMM017_A422_8')}</span>
+							option: {width: '30px'}}" />
+						<span style="margin-left: 26px">#{i18n.getText('JMM017_A422_8')}</span>
 					</div>
 				</div>
 			</div>
