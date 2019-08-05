@@ -420,14 +420,31 @@ module cps003 {
                         { id: id, columnKey: "IS00125" }, { id: id, columnKey: "IS00126" }, { id: id, columnKey: "IS00127" }]);
                 }
             },
-            CS00025_IS00296: (v, id) => {
+            CS00025_IS00296: (v, id, o) => {
                 let $grid = $("#grid");
-                _.forEach(['IS00297', 'IS00298', 'IS00299', 'IS00300', 'IS00301'], code => {
+                if (v === "1" && o.IS00297 === "0") {
+                    $grid.mGrid("enableNtsControlAt", id, "IS00297");
+                    _.forEach(['IS00298', 'IS00299', 'IS00300', 'IS00301'], code => {
+                        $grid.mGrid("disableNtsControlAt", id, code);
+                        $grid.mGrid("clearErrors", [{ id: id, columnKey: code }]);
+                    });
+                } else {
+                    _.forEach(['IS00297', 'IS00298', 'IS00299', 'IS00300', 'IS00301'], code => {
+                        $grid.mGrid(v === "1" ? "enableNtsControlAt" : "disableNtsControlAt", id, code);
+                        if (v !== "1") {
+                            $grid.mGrid("clearErrors", [{ id: id, columnKey: code }]);
+                        }
+                    });
+                }
+            },
+            CS00025_IS00297: (v, id) => {
+                let $grid = $("#grid");
+                _.forEach(['IS00298', 'IS00299', 'IS00300', 'IS00301'], code => {
                     $grid.mGrid(v === "1" ? "enableNtsControlAt" : "disableNtsControlAt", id, code);
                     if (v !== "1") {
                         $grid.mGrid("clearErrors", [{ id: id, columnKey: code }]);
                     }
-                });
+                });    
             },
             CS00026_IS00303: (v, id) => {
                 let $grid = $("#grid");

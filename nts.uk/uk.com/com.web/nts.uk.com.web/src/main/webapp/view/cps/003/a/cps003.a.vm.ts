@@ -110,6 +110,7 @@ module cps003.a.vm {
             perInfoData: ko.observableArray([])
         };
 
+        hiddenRows = [];
         // for employee info.
         employees: KnockoutObservableArray<IEmployee> = ko.observableArray([]);
         hasError: KnockoutObservable<boolean> = ko.observable(false);
@@ -232,7 +233,9 @@ module cps003.a.vm {
                 }
             });
 
-            $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent).done(() => { });
+            setTimeout(() => {
+                $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent).done(() => { });
+            }, 1);
             
             self.settings.matrixDisplay.subscribe(matrix => {
                 let $grid = $("#grid");
@@ -376,7 +379,7 @@ module cps003.a.vm {
                 let regChecked = [];
                 _.forEach(updates, item => {
                     if (item.columnKey === "register") {
-                        if (item.value) regChecked.push(item.rowId);
+                        if (item.value && _.isNil(find(self.hiddenRows, (id) => id === item.rowId))) regChecked.push(item.rowId);
                         return;
                     }
                     
@@ -442,7 +445,7 @@ module cps003.a.vm {
                     self.hasError(true);
                 }
                 
-                command = { baseDate: self.baseDate(), editMode: self.updateMode(), employees: employees };
+                command = { baseDate: moment.utc(self.baseDate(), "YYYY/MM/DD").toISOString(), editMode: self.updateMode(), employees: employees };
                 service.push.register(command).done((errorList) => {
                     if (dataToG && dataToG.length > 0) {
                         setShared("CPS003G_ERROR_LIST", dataToG);
@@ -543,8 +546,7 @@ module cps003.a.vm {
                         case ITEM_SELECT_TYPE.CODE_NAME:
                             return 1;
                         case ITEM_SELECT_TYPE.DESIGNATED_MASTER:
-                            case ITEM_SELECT_TYPE.DESIGNATED_MASTER:
-                            if (!_.isNil(value) && !isNaN(Number(value))) {
+                            if (!_.isNil(value) && !isNaN(Number(value)) && String(Number(value)) === String(value)) {
                                 return 2;
                             }
                             return 1;
@@ -688,6 +690,7 @@ module cps003.a.vm {
                 };
             
             _.forEach($grid.mGrid("dataSource"), (record: Record) => {
+                if (find(self.hiddenRows, id => id === record.id)) return;
                 matrixData.detailData.push(new GridEmployeeInfoDataSource(record, matrixData.dynamicHeader, $grid));
             });
             
@@ -821,6 +824,10 @@ module cps003.a.vm {
                     self.baseDate(data.baseDate);
                 }
                 
+//                if (employeeSelect) {
+                    self.hiddenRows = [];
+//                }
+                
                 self.convertData(data, settingData).done(() => {
                     self.loadGrid();
                     self.initDs = _.cloneDeep(self.gridOptions.dataSource);
@@ -917,7 +924,12 @@ module cps003.a.vm {
                         }    
                     },
 //                    { name: 'PrintCheckBox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
-                    { name: "ImageShow", source: "hidden-button", controlType: "Image" },
+                    { name: "ImageShow", source: "hidden-button", controlType: "Image", click: (idx) => {
+                        if (_.isNil(idx)) return;
+                        let ds = $("#grid").mGrid("dataSource");
+                        if (_.isNil(ds[idx])) return;
+                        self.hiddenRows.push(ds[idx].id);
+                    }},
                     { name: "RowAdd", source: "plus-button", cssClass: "blue-color", controlType: "Image", copy: 2 }];
                 let headerStyles = { name: "HeaderStyles", columns: [] },
                     columnSettings = _.cloneDeep(self.settings.perInfoData()),
@@ -1059,7 +1071,7 @@ module cps003.a.vm {
                             record[item.itemCode] = nts.uk.time.parseTime(item.value, true).format();
                         } else if (dt.cls.dataTypeValue === ITEM_SINGLE_TYPE.READONLY) {
                             if (self.category.catCode() === "CS00024" && item.itemCode === "IS00289") {
-                                record[item.itemCode] = !_.isNil(item.value) && item.value !== "" ? nts.uk.time.parseTime(item.value).format() : "";
+                                record[item.itemCode] = !_.isNil(item.value) && item.value !== "" ? nts.uk.time.parseTime(item.value, true).format() : "";
                             } else {
                                 record[item.itemCode] = item.value;
                             }
@@ -1207,7 +1219,9 @@ module cps003.a.vm {
         }
         
         redisplayEmp() {
+            let self = this;
             $("#grid").mGrid("showHiddenRows");
+            self.hiddenRows = [];
         }
         
         combobox(id: any, item: IColumnData, states, record: any) {
@@ -1267,6 +1281,14 @@ module cps003.a.vm {
                         case "IS00296":
                             if (item.value === "0") {
                                 states.push(new State(id, "IS00297", ["mgrid-disable"]));
+                                states.push(new State(id, "IS00298", ["mgrid-disable"]));
+                                states.push(new State(id, "IS00299", ["mgrid-disable"]));
+                                states.push(new State(id, "IS00300", ["mgrid-disable"]));
+                                states.push(new State(id, "IS00301", ["mgrid-disable"]));
+                            }
+                            break;
+                        case "IS00297":
+                            if (item.value === "0" && record.IS00296 === "1") {
                                 states.push(new State(id, "IS00298", ["mgrid-disable"]));
                                 states.push(new State(id, "IS00299", ["mgrid-disable"]));
                                 states.push(new State(id, "IS00300", ["mgrid-disable"]));
@@ -1753,7 +1775,8 @@ module cps003.a.vm {
                 if (!replaceValue) return;
                 if (_.find(self.specialItems.standardDate, it => it === replaceValue.targetItem)) {
                     if (replaceValue.replaceFormat === REPLACE_FORMAT.VALUE) {
-                        $grid.mGrid("replace", replaceValue.targetItem, (value) => {
+                        $grid.mGrid("replace", replaceValue.targetItem, (value, obj) => {
+                            if (find(self.hiddenRows, id => id === obj.id)) return false;
                             if (replaceValue.replaceAll) return true;
                             if (value instanceof Date) {
                                 return replaceValue.matchValue === `${value.getFullYear()}/${value.toLocaleDateString("en-US", { month: "2-digit" }).replace(/[^0-9-]/g, "")}/${value.toLocaleDateString("en-US", { day: "2-digit" }).replace(/[^0-9-]/g, "")}`;    
@@ -1767,7 +1790,8 @@ module cps003.a.vm {
                         if (empIdList.length > 0) {
                             service.fetch.basicHolidayEmpInfo({ listEmpID: empIdList }).done((infos: Array<AnnualLeaveEmpBasicInfo>) => {
                                 let groupByEmpId = _.groupBy(infos, "employeeId");
-                                $grid.mGrid("replace", replaceValue.targetItem, (value) => {
+                                $grid.mGrid("replace", replaceValue.targetItem, (value, obj) => {
+                                    if (find(self.hiddenRows, id => id === obj.id)) return false;
                                     if (replaceValue.replaceAll) return true;
                                     if (value instanceof Date) {
                                         return replaceValue.matchValue === `${value.getFullYear()}/${value.toLocaleDateString("en-US", { month: "2-digit" }).replace(/[^0-9-]/g, "")}/${value.toLocaleDateString("en-US", { day: "2-digit" }).replace(/[^0-9-]/g, "")}`;
@@ -1790,7 +1814,8 @@ module cps003.a.vm {
                                 // Group histItems by employeeId
                                 let groupByEmpId = _.groupBy(histItems, "employeeID");
                                 
-                                $grid.mGrid("replace", replaceValue.targetItem, (value) => {
+                                $grid.mGrid("replace", replaceValue.targetItem, (value, obj) => {
+                                    if (find(self.hiddenRows, id => id === obj.id)) return false;
                                     if (replaceValue.replaceAll) return true;
                                     if (value instanceof Date) {
                                         return replaceValue.matchValue === `${value.getFullYear()}/${value.toLocaleDateString("en-US", { month: "2-digit" }).replace(/[^0-9-]/g, "")}/${value.toLocaleDateString("en-US", { day: "2-digit" }).replace(/[^0-9-]/g, "")}`;
@@ -1814,7 +1839,8 @@ module cps003.a.vm {
                                 
                                 if (replaceValue.replaceValue[0] === YEAR_OF_JOIN.SAME) {
                                     // TODO: Replace by historyItem
-                                    $grid.mGrid("replace", replaceValue.targetItem, (value) => {
+                                    $grid.mGrid("replace", replaceValue.targetItem, (value, obj) => {
+                                        if (find(self.hiddenRows, id => id === obj.id)) return false;
                                         if (replaceValue.replaceAll) return true;
                                         return replaceValue.matchValue === value;
                                     }, (value, rec) => {
@@ -1833,7 +1859,8 @@ module cps003.a.vm {
                                         }
                                     });
                                 } else if (replaceValue.replaceValue[0] === YEAR_OF_JOIN.PREV) {
-                                    $grid.mGrid("replace", replaceValue.targetItem, (value) => {
+                                    $grid.mGrid("replace", replaceValue.targetItem, (value, obj) => {
+                                        if (find(self.hiddenRows, id => id === obj.id)) return false;
                                         if (replaceValue.replaceAll) return true;
                                         return replaceValue.matchValue === value;
                                     }, (value, rec) => {
@@ -1852,7 +1879,8 @@ module cps003.a.vm {
                                         }
                                     });
                                 } else {
-                                    $grid.mGrid("replace", replaceValue.targetItem, (value) => {
+                                    $grid.mGrid("replace", replaceValue.targetItem, (value, obj) => {
+                                        if (find(self.hiddenRows, id => id === obj.id)) return false;
                                         if (replaceValue.replaceAll) return true;
                                         return replaceValue.matchValue === value;
                                     }, (value, rec) => {
@@ -1884,7 +1912,8 @@ module cps003.a.vm {
                             replaced = nts.uk.time.parseTime(replaced, true).format();
                         }
                         
-                        $grid.mGrid("replace", item, (value, rec) => { 
+                        $grid.mGrid("replace", item, (value, rec) => {
+                            if (find(self.hiddenRows, id => id === rec.id)) return false; 
                             if (replaceValue.replaceAll) return true;
                             return replaceValue.matchValue === rec[replaceValue.targetItem[0]]; 
                         }, () => replaced);
@@ -1896,7 +1925,8 @@ module cps003.a.vm {
                             replaceValue.matchValue = nts.uk.time.parseTime(replaceValue.matchValue, true).format();
                         }
                         
-                        $grid.mGrid("replace", replaceValue.targetItem, (value) => {
+                        $grid.mGrid("replace", replaceValue.targetItem, (value, obj) => {
+                            if (find(self.hiddenRows, id => id === obj.id)) return false;
                             if (replaceValue.replaceAll) return true;
                             return replaceValue.matchValue === value;
                         }, () => replaced);
@@ -1909,7 +1939,8 @@ module cps003.a.vm {
                                 replaceValue.matchValue = nts.uk.time.parseTime(replaceValue.matchValue, true).format();
                             }
                             
-                            $grid.mGrid("replace", replaceValue.targetItem, (value) => {
+                            $grid.mGrid("replace", replaceValue.targetItem, (value, obj) => {
+                                if (find(self.hiddenRows, id => id === obj.id)) return false;
                                 if (replaceValue.replaceAll) return true;
                                 return replaceValue.matchValue === value;
                             }, (value, rec) => {
@@ -1923,13 +1954,15 @@ module cps003.a.vm {
                     }
                 } else if (replaceValue.mode === APPLY_MODE.AMOUNT) {
                     if (replaceValue.replaceFormat === REPLACE_FORMAT.ADD_OR_SUB) { // 加減算
-                        $grid.mGrid("replace", replaceValue.targetItem, (value) => {
+                        $grid.mGrid("replace", replaceValue.targetItem, (value, obj) => {
+                            if (find(self.hiddenRows, id => id === obj.id)) return false;
                             if (_.isNil(value) || value === "") return false;
                             if (replaceValue.replaceAll) return true;
                             return replaceValue.matchValue === value;
                         }, (value) => replaceValue.replaceValue + value); 
                     } else if (replaceValue.replaceFormat === REPLACE_FORMAT.VALUE) { // 値指定
-                        $grid.mGrid("replace", replaceValue.targetItem, (value) => {
+                        $grid.mGrid("replace", replaceValue.targetItem, (value, obj) => {
+                            if (find(self.hiddenRows, id => id === obj.id)) return false;
                             if (replaceValue.replaceAll) return true;
                             return replaceValue.matchValue === value;
                         }, () => {
@@ -1952,7 +1985,8 @@ module cps003.a.vm {
                             }
                         }
                         
-                        $grid.mGrid("replace", replaceValue.targetItem, (value) => {
+                        $grid.mGrid("replace", replaceValue.targetItem, (value, obj) => {
+                            if (find(self.hiddenRows, id => id === obj.id)) return false;
                             if (replaceValue.replaceAll) return true;
                             return replaceValue.matchValue === value;
                         }, (value, rec) => {
@@ -1962,7 +1996,8 @@ module cps003.a.vm {
                     });
                 } else if (_.find(self.specialItems.department, it => it === replaceValue.targetItem)) {
                 } else if (replaceValue.mode === APPLY_MODE.SELECTION) {
-                    $grid.mGrid("replace", replaceValue.targetItem, (value) => {
+                    $grid.mGrid("replace", replaceValue.targetItem, (value, obj) => {
+                        if (find(self.hiddenRows, id => id === obj.id)) return false;
                         if (replaceValue.replaceAll) return true;
                         return replaceValue.matchValue === value;
                     }, () => replaceValue.replaceValue);
@@ -1986,7 +2021,8 @@ module cps003.a.vm {
                         }
                     }
                     
-                    $grid.mGrid("replace", replaceValue.targetItem, (value) => {
+                    $grid.mGrid("replace", replaceValue.targetItem, (value, obj) => {
+                        if (find(self.hiddenRows, id => id === obj.id)) return false;
                         if (replaceValue.replaceAll 
                             || ((_.isNil(replaceValue.matchValue) || replaceValue.matchValue === "") && (_.isNil(value) || value === ""))) return true;
                         
