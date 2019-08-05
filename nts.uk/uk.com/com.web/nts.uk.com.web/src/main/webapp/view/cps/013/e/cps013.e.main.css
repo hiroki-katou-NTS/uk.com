@@ -37,11 +37,6 @@ table.info-table td.fix-width {width: 150px; background:#CFF1A5; padding:2px;}
     height: 20px !important;
 }
 
-html {
-	overflow-y: scroll;
-}
-
-
 .buttonCancel{
 	float : right;
 	margin-right: 25px;
