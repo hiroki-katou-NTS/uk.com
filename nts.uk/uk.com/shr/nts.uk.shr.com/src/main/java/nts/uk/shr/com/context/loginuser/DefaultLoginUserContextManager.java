@@ -12,6 +12,7 @@ import nts.arc.time.GeneralDateTime;
 import nts.gul.serialize.ObjectSerializer;
 import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.context.loginuser.role.DefaultLoginUserRoles;
+import nts.uk.shr.com.context.loginuser.role.LoginUserRoles;
 
 @Stateless
 public class DefaultLoginUserContextManager implements LoginUserContextManager {
@@ -134,6 +135,12 @@ public class DefaultLoginUserContextManager implements LoginUserContextManager {
 				return this;
 			}
 		};
+	}
+
+	@Override
+	public void roleSet(LoginUserRoles roles) {
+		DefaultLoginUserContext context = SessionContextProvider.get().get(LoginUserContext.KEY_SESSION_SCOPED);
+		((DefaultLoginUserRoles)context.roles()).restore(roles);
 	}
 
 	@Override

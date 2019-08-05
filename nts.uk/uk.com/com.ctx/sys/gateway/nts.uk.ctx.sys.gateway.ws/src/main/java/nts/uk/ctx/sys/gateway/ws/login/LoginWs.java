@@ -11,6 +11,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -18,6 +19,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 
 import nts.arc.layer.ws.WebService;
+import nts.arc.security.csrf.CsrfToken;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.gateway.app.command.login.LocalContractFormCommand;
 import nts.uk.ctx.sys.gateway.app.command.login.LocalContractFormCommandHandler;
@@ -175,17 +177,6 @@ public class LoginWs extends WebService {
 	public List<CompanyInformationImport> getAllCompany(@PathParam("contractCode") String contractCode) {
 		return companyInformationFinder.findAll(contractCode);
 	}
-
-	/**
-	 * Gets the all company.
-	 *
-	 * @return the all company
-	 */
-	@POST
-	@Path("getcompany/{contractCode}")
-	public List<CompanyInformationImport> getAllCompany(@PathParam("contractCode") String contractCode) {
-		return companyInformationFinder.findAll(contractCode);
-	}
 	
 	/**
 	 * Gets the company infor by code.
@@ -214,6 +205,12 @@ public class LoginWs extends WebService {
 		}
 		command.setRequest(request);
 		return this.submitForm3.handle(command);
+	}
+	
+	@GET
+	@Path("mobile/token")
+	public String getToken() {
+		return CsrfToken.getFromSession();
 	}
 	
 	@POST

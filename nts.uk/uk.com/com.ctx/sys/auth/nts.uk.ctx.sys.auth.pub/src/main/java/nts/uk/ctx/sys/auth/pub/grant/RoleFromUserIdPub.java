@@ -18,4 +18,6 @@ public interface RoleFromUserIdPub {
 	 */
 	String getRoleFromUserId(String userId, int roleType, GeneralDate baseDate);
 	
+	String getRoleFromUserId(String userId, int roleType, GeneralDate baseDate, String comId);
+	
 }

@@ -277,6 +277,78 @@ public class ProgramsManager {
 	 */
 	public static final Program CPS001I = new Program(WebAppId.COM, ProgramIdConsts.CPS001I, "CPS001_113",
 			"/view/cps/001/i/index.xhtml");
+	
+	/**
+	 * KSP001A
+	 */
+	public static final Program KSP001A = new Program(WebAppId.COM, ProgramIdConsts.KSP001A, "KSP001_1",
+			"/view/ksp/001/a/index.xhtml");
+	
+	/**
+	 * KSP001B
+	 */
+	public static final Program KSP001B = new Program(WebAppId.COM, ProgramIdConsts.KSP001B, "KSP001_2",
+			"/view/ksp/001/b/index.xhtml");
+	
+	/**
+	 * KSP001C
+	 */
+	public static final Program KSP001C = new Program(WebAppId.COM, ProgramIdConsts.KSP001C, "KSP001_3",
+			"/view/ksp/001/c/index.xhtml");
+	
+	/**
+	 * KSP001D
+	 */
+	public static final Program KSP001D = new Program(WebAppId.COM, ProgramIdConsts.KSP001D, "KSP001_4",
+			"/view/ksp/001/d/index.xhtml");
+	
+	/**
+	 * KSP001E
+	 */
+	public static final Program KSP001E = new Program(WebAppId.COM, ProgramIdConsts.KSP001E, "KSP001_5",
+			"/view/ksp/001/e/index.xhtml");
+
+	/**
+	 * CPS003A
+	 */
+	public static final Program CPS003A = new Program(WebAppId.COM, ProgramIdConsts.CPS003A, "CPS003_1",
+			"/view/cps/003/a/index.xhtml");
+
+	/**
+	 * CPS003B
+	 */
+	public static final Program CPS003B = new Program(WebAppId.COM, ProgramIdConsts.CPS003B, "CPS003_2",
+			"/view/cps/003/b/index.xhtml");
+
+	/**
+	 * CPS003C
+	 */
+	public static final Program CPS003C = new Program(WebAppId.COM, ProgramIdConsts.CPS003C, "CPS003_3",
+			"/view/cps/003/c/index.xhtml");
+
+	/**
+	 * CPS003D
+	 */
+	public static final Program CPS003D = new Program(WebAppId.COM, ProgramIdConsts.CPS003D, "CPS003_4",
+			"/view/cps/003/d/index.xhtml");
+
+	/**
+	 * CPS003E
+	 */
+	public static final Program CPS003E = new Program(WebAppId.COM, ProgramIdConsts.CPS003E, "CPS003_5",
+			"/view/cps/003/e/index.xhtml");
+
+	/**
+	 * CPS003F
+	 */
+	public static final Program CPS003F = new Program(WebAppId.COM, ProgramIdConsts.CPS003F, "CPS003_6",
+			"/view/cps/003/f/index.xhtml");
+
+	/**
+	 * CPS003G
+	 */
+	public static final Program CPS003G = new Program(WebAppId.COM, ProgramIdConsts.CPS003G, "CPS003_107",
+			"/view/cps/003/g/index.xhtml");
 
 	/**
 	 * KMK011A
@@ -774,7 +846,7 @@ public class ProgramsManager {
 
 	/** The Constant CCG007. */
 	public static final Program CCG007A = new Program(WebAppId.COM, ProgramIdConsts.CCG007A, "CCG007_51",
-			"/view/ccg/007/a/index.xhtml");
+			"/view/ccg/007/a/index.xhtml", ProgramIdConsts.CCGS07A);
 
 	/** The Constant CCG007B. */
 	public static final Program CCG007B = new Program(WebAppId.COM, ProgramIdConsts.CCG007B, "CCG007_52",
@@ -786,24 +858,24 @@ public class ProgramsManager {
 
 	/** The Constant CCG007D. */
 	public static final Program CCG007D = new Program(WebAppId.COM, ProgramIdConsts.CCG007D, "CCG007_54",
-			"/view/ccg/007/d/index.xhtml");
+			"/view/ccg/007/d/index.xhtml", ProgramIdConsts.CCGS07B);
 
 	/** The Constant CCG007E. */
 	public static final Program CCG007E = new Program(WebAppId.COM, ProgramIdConsts.CCG007E, "CCG007_55",
-			"/view/ccg/007/e/index.xhtml");
+			"/view/ccg/007/e/index.xhtml", ProgramIdConsts.CCGS07C);
 
 	/** The Constant CCG007F. */
 	public static final Program CCG007F = new Program(WebAppId.COM, ProgramIdConsts.CCG007F, "CCG007_56",
-			"/view/ccg/007/f/index.xhtml");
+			"/view/ccg/007/f/index.xhtml", ProgramIdConsts.CCGS07D);
 
 	/** The Constant CCG007G. */
 	public static final Program CCG007G = new Program(WebAppId.COM, ProgramIdConsts.CCG007G, "CCG007_57",
-			"/view/ccg/007/g/index.xhtml");
+			"/view/ccg/007/g/index.xhtml", ProgramIdConsts.CCGS07F);
 
 	/** The Constant CCG007H. */
 	public static final Program CCG007H = new Program(WebAppId.COM, ProgramIdConsts.CCG007H, "CCG007_58",
-			"/view/ccg/007/h/index.xhtml");
-
+			"/view/ccg/007/h/index.xhtml", ProgramIdConsts.CCGS07E);
+	
 	/** The Constant CCG007I. */
 	public static final Program CCG007I = new Program(WebAppId.COM, ProgramIdConsts.CCG007I, "CCG007_59",
 			"/view/ccg/007/i/index.xhtml");
@@ -2189,28 +2261,32 @@ public class ProgramsManager {
 			"/view/cmf/007/a/index.xhtml");
 
 	/** The Constant CCG007A. IN MOBILE */
-	public static final Program CCGS07A = new Program(WebAppId.MOBI, ProgramIdConsts.CCG007A, "CCG007_51",
-			"/ccg/007/a");
+	public static final Program CCGS07A = new Program(WebAppId.MOBI, ProgramIdConsts.CCGS07A, "CCG007_51",
+			"/ccg/007/a", ProgramIdConsts.CCG007A);
 	
 	/** The Constant CCG007D. IN MOBILE */
-	public static final Program CCGS07B = new Program(WebAppId.MOBI, ProgramIdConsts.CCG007D, "CCG007_54",
-			"/ccg/007/b");
+	public static final Program CCGS07B = new Program(WebAppId.MOBI, ProgramIdConsts.CCGS07B, "CCG007_54",
+			"/ccg/007/b", ProgramIdConsts.CCG007D);
 
 	/** The Constant CCG007E. IN MOBILE */
-	public static final Program CCGS07C = new Program(WebAppId.MOBI, ProgramIdConsts.CCG007E, "CCG007_55",
-			"/ccg/007/c");
+	public static final Program CCGS07C = new Program(WebAppId.MOBI, ProgramIdConsts.CCGS07C, "CCG007_55",
+			"/ccg/007/c", ProgramIdConsts.CCG007E);
 
 	/** The Constant CCG007F. IN MOBILE */
-	public static final Program CCGS07D = new Program(WebAppId.MOBI, ProgramIdConsts.CCG007F, "CCG007_56",
-			"/ccg/007/d");
+	public static final Program CCGS07D = new Program(WebAppId.MOBI, ProgramIdConsts.CCGS07D, "CCG007_56",
+			"/ccg/007/d", ProgramIdConsts.CCG007F);
 //
 	/** The Constant CCG007G. IN MOBILE */
-	public static final Program CCGS07F = new Program(WebAppId.MOBI, ProgramIdConsts.CCG007G, "CCG007_57",
-			"/ccg/007/f");
+	public static final Program CCGS07F = new Program(WebAppId.MOBI, ProgramIdConsts.CCGS07F, "CCG007_57",
+			"/ccg/007/f", ProgramIdConsts.CCG007G);
 
 	/** The Constant CCG007H. IN MOBILE */
-	public static final Program CCGS07E = new Program(WebAppId.MOBI, ProgramIdConsts.CCG007H, "CCG007_58",
-			"/ccg/007/e");
+	public static final Program CCGS07E = new Program(WebAppId.MOBI, ProgramIdConsts.CCGS07E, "CCG007_58",
+			"/ccg/007/e", ProgramIdConsts.CCG007H);
+
+	/** The Constant KAFS05A. IN MOBILE */
+	public static final Program KAFS05A = new Program(WebAppId.MOBI, ProgramIdConsts.KAFS05A, "KAFS05A",
+			"/kaf/s05/a");
 	
 	/**
 	 * All programs map.

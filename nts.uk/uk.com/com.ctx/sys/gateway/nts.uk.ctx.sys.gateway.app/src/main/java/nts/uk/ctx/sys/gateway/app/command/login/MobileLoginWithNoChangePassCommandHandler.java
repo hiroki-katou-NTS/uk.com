@@ -10,7 +10,7 @@ import javax.ejb.Stateless;
  * The Class SubmitLoginFormThreeCommandHandler.
  */
 @Stateless
-public class MobileLoginWithNoChangePassCommandHandler extends MobileLoginCommandHandler {
+public class MobileLoginWithNoChangePassCommandHandler extends MobileLoginCommonHandler {
 
 	@Override
 	protected boolean needShowChangePass(){

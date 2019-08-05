@@ -56,9 +56,10 @@ public abstract class MobileLoginCommonHandler extends LoginBaseCommandHandler<M
 		// Get User by PersonalId
 		UserImportNew user = this.service.getUser(em.getPersonalId(), companyId, employeeCode);
 
-        LoginUserRoles roles = this.checkRole(user.getUserId());
+        LoginUserRoles roles = this.checkRole(user.getUserId(), companyId);
 		SystemSuspendOutput systemSuspendOutput = this.service.checkSystemStop(command, roles);
 
+		this.checkAccoutLock(user.getLoginId(), command.getContractCode(), user.getUserId(), companyId, command.isSignOn());
 		
 		// check password
 		String msgErrorId = this.compareHashPassword(user, command.getPassword());
@@ -76,6 +77,7 @@ public abstract class MobileLoginCommonHandler extends LoginBaseCommandHandler<M
 		
 		//アルゴリズム「ログイン記録」を実行する
 		CheckChangePassDto passChecked = this.checkAfterLogin(user, command.getPassword(), false);
+		passChecked.successMsg = systemSuspendOutput.getMsgID();
 		
 		if (passChecked.showChangePass && this.needShowChangePass()){
 			return passChecked;
@@ -88,7 +90,6 @@ public abstract class MobileLoginCommonHandler extends LoginBaseCommandHandler<M
 	        
 	        //ログインセッション作成 (Create login session)
 	        this.initSessionC(user, em, command.getCompanyCode(), roles);
-			passChecked.successMsg = systemSuspendOutput.getMsgID();
 			
 			// アルゴリズム「ログイン記録」を実行する１
 			ParamLoginRecord param = new ParamLoginRecord(companyId, LoginMethod.NORMAL_LOGIN.value, LoginStatus.Success.value, null, em.getEmployeeId());

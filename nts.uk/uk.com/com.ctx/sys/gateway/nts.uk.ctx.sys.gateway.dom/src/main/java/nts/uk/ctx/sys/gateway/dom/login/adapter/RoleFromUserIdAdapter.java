@@ -13,4 +13,6 @@ public interface RoleFromUserIdAdapter {
 	 * @return the role from user
 	 */
 	String getRoleFromUser(String userId,Integer roleType,GeneralDate baseDate);
+	
+	String getRoleFromUser(String userId,Integer roleType,GeneralDate baseDate, String comId);
 }

@@ -1,6 +1,7 @@
 package nts.uk.shr.com.context.loginuser;
 
 import nts.arc.security.ticket.DataTicket;
+import nts.uk.shr.com.context.loginuser.role.LoginUserRoles;
 
 /**
  * The class to update LoginUserContext
@@ -81,6 +82,8 @@ public interface LoginUserContextManager {
 	 * @return RoleIdSetter
 	 */
 	RoleIdSetter roleIdSetter();
+	
+	void roleSet(LoginUserRoles roles);
 
 	/**
 	 * set language
