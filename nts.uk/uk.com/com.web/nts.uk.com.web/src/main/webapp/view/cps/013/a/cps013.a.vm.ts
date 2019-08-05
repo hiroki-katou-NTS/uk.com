@@ -118,6 +118,12 @@ module nts.uk.com.view.cps013.a.viewmodel {
                     }else{
                         $("#grid2_flag > span > div > label > input[type='checkbox']")[0].checked = false;
                     }
+                    
+                    _.each(obj.confirmTarget, i =>{
+                          $("#grid2").ntsGrid("updateRow", i.id,  { flag: i.flag });
+                    
+                    })
+                    
                 }
 
             }).fail(()=>{
@@ -158,13 +164,13 @@ module nts.uk.com.view.cps013.a.viewmodel {
                 dateTime: self.date(),
                 perInfoCheck: self.perInfoChk(),
                 masterCheck: self.masterChk(),
-                scheduleMngCheck: scheduleMngChecks.length > 0? checkbox[scheduleMngChecks[0].id - 1].flag: false ,
-                dailyPerforMngCheckL: dailyPerforMngCheckLs.length > 0? checkbox[dailyPerforMngCheckLs[0].id - 1].flag: false ,
-                monthPerforMngCheck: monthPerforMngChecks.length > 0? checkbox[monthPerforMngChecks[0].id - 1].flag: false ,
-                payRollMngCheck: payRollMngChecks.length > 0? checkbox[payRollMngChecks[0].id - 1].flag: false ,
-                bonusMngCheck: bonusMngChecks.length > 0? checkbox[bonusMngChecks[0].id - 1].flag: false ,
-                yearlyMngCheck: yearlyMngChecks.length > 0? checkbox[yearlyMngChecks[0].id - 1].flag: false ,
-                monthCalCheck: monthCalChecks.length > 0? checkbox[monthCalChecks[0].id - 1].flag: false} ,
+                scheduleMngCheck: self.masterChk() == false? false: (scheduleMngChecks.length > 0? checkbox[scheduleMngChecks[0].id - 1].flag: false),
+                dailyPerforMngCheckL: self.masterChk() == false? false:(dailyPerforMngCheckLs.length > 0? checkbox[dailyPerforMngCheckLs[0].id - 1].flag: false),
+                monthPerforMngCheck: self.masterChk() == false? false: (monthPerforMngChecks.length > 0? checkbox[monthPerforMngChecks[0].id - 1].flag: false),
+                payRollMngCheck: self.masterChk() == false? false: (payRollMngChecks.length > 0? checkbox[payRollMngChecks[0].id - 1].flag: false),
+                bonusMngCheck: self.masterChk() == false? false: (bonusMngChecks.length > 0? checkbox[bonusMngChecks[0].id - 1].flag: false),
+                yearlyMngCheck: self.masterChk() == false? false: (yearlyMngChecks.length > 0? checkbox[yearlyMngChecks[0].id - 1].flag: false),
+                monthCalCheck: self.masterChk() == false? false: (monthCalChecks.length > 0? checkbox[monthCalChecks[0].id - 1].flag: false)},
                 flag =  _.filter(ko.toJS(checkbox), x => {return x.flag == true});
             // nếu A2_001 và A3_001 cùng không được chọn hoặc A3_001 được chọn nhưng list A3_004 không được chọn item nào => msg_360
             if ((flag.length === 0 && self.masterChk() === true) || (self.masterChk() === false && self.perInfoChk() === false)) {
