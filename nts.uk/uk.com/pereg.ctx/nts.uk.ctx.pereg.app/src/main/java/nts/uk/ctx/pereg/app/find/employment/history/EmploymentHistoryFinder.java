@@ -147,18 +147,21 @@ public class EmploymentHistoryFinder implements PeregFinder<EmploymentHistoryDto
 		
 		List<String> histIds = histories.stream().map(c -> c.identifier()).collect(Collectors.toList());
 		
-		List<EmploymentHistoryItem> histItems = empHistItemRepo.getByListHistoryId(histIds);
-		
+		List<Object[]> histItemsAndListEnum = empHistItemRepo.getByListHistoryIdForCPS013(histIds);
+				
 		result.stream().forEach(c -> {
-			List<EmploymentHistoryItem> listHistItem = histItems.stream()
-					.filter(emp -> emp.getEmployeeId().equals(c.getEmployeeId())).collect(Collectors.toList());
+			List<Object[]> listHistItem = histItemsAndListEnum.stream()
+					.filter(emp -> ((EmploymentHistoryItem) emp[0]).getEmployeeId().equals(c.getEmployeeId())).collect(Collectors.toList());
 			
 			if (!listHistItem.isEmpty()) {
 				List<PeregDomainDto> listPeregDomainDto = new ArrayList<>();
 				listHistItem.forEach(h -> {
-					Optional<DateHistoryItem> dateHistoryItem = histories.stream().filter(i -> i.identifier().equals(h.getHistoryId())).findFirst();
+					EmploymentHistoryItem emptHisItem = (EmploymentHistoryItem) h[0];
+					Map<String, Integer> mapListEnum =  (Map<String, Integer>) h[1];
+					
+					Optional<DateHistoryItem> dateHistoryItem = histories.stream().filter(i -> i.identifier().equals(emptHisItem.getHistoryId())).findFirst();
 					if (dateHistoryItem.isPresent()) {
-						listPeregDomainDto.add(EmploymentHistoryDto.createFromDomain(dateHistoryItem.get(),h));
+						listPeregDomainDto.add(EmploymentHistoryDto.createFromDomain(dateHistoryItem.get(), emptHisItem, mapListEnum.get("IS00069")));
 					}
 				});
 				if (!listPeregDomainDto.isEmpty()) {
