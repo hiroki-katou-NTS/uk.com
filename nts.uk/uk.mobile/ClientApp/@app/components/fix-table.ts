@@ -138,34 +138,12 @@ export class FixTableComponent extends Vue {
 
         let css: string = '';
 
-        css += `
-            [role="${this.roleId}"] tr td:nth-child(${1}),\n
-            [role="${this.roleId}"] tr th:nth-child(${1}) {\n
-                width: ${firstHeaderWidth}px;\n
-                min-width: ${firstHeaderWidth}px;\n
-                max-width: ${firstHeaderWidth}px;\n
-            }\n
-            `;
-
+        css += this.createColumnStyle(1, firstHeaderWidth);
         for (let i = 2; i < numberOfCols; i++) {
-            css += `
-            [role="${this.roleId}"] tr td:nth-child(${i}),\n
-            [role="${this.roleId}"] tr th:nth-child(${i}) {\n
-                width: ${middleHeaderWidth}px;\n
-                min-width: ${middleHeaderWidth}px;\n
-                max-width: ${middleHeaderWidth}px;\n
-            }\n
-        `;
+            css += this.createColumnStyle(i, middleHeaderWidth);
         }
+        css += this.createColumnStyle(numberOfCols, lastHeaderWidth);
 
-        css += `
-            [role="${this.roleId}"] tr td:nth-child(${numberOfCols}),\n
-            [role="${this.roleId}"] tr th:nth-child(${numberOfCols}) {\n
-                width: ${lastHeaderWidth}px;\n
-                min-width: ${lastHeaderWidth}px;\n
-                max-width: ${lastHeaderWidth}px;\n
-            }\n
-        `;
         let styleTag = document.createElement('style');
         styleTag.setAttribute('role', this.roleId);
         styleTag.setAttribute('type', 'text/css');
@@ -173,6 +151,17 @@ export class FixTableComponent extends Vue {
 
         let head = document.head || document.getElementsByTagName('head')[0];
         head.appendChild(styleTag);
+    }
+
+    private createColumnStyle(index: number, width: number): string {
+        return `
+            [role="${this.roleId}"] tr td:nth-child(${index}),\n
+            [role="${this.roleId}"] tr th:nth-child(${index}) {\n
+                width: ${width}px;\n
+                min-width: ${width}px;\n
+                max-width: ${width}px;\n
+            }\n
+        `;
     }
 
     private setStyleOfTableBody(rows: any) {
