@@ -1,5 +1,3 @@
-#contents-area {overflow: hidden;}
-
 table.info-table {border-collapse: collapse; min-width:550px;}
 table.info-table td {border: 1px solid #CCC; padding:2px 7px;}
 table.info-table td.fix-width {width: 150px; background:#CFF1A5; padding:2px;}
@@ -39,6 +37,11 @@ table.info-table td.fix-width {width: 150px; background:#CFF1A5; padding:2px;}
     height: 20px !important;
 }
 
-html {
-	overflow: hidden;
+.buttonCancel{
+	float : right;
+	margin-right: 25px;
+}
+.buttoncloseDialogNoError{
+	float : right;
+	margin-right: 25px;
 }

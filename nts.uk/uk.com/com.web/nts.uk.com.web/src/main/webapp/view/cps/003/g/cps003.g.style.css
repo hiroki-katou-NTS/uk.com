@@ -25,3 +25,6 @@
 #G1_002{
 	margin-left: 930px !important;
 }
+.ui-iggrid .ui-iggrid-tablebody td {
+    height: 20px !important;
+}

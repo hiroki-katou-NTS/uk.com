@@ -33,6 +33,7 @@ import nts.uk.ctx.bs.employee.dom.employment.EmpmInfo;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItem;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryOfEmployee;
+import nts.uk.ctx.bs.employee.dom.employment.history.SalarySegment;
 import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHistItem;
 import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHistItem_;
 import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHist_;
@@ -486,32 +487,47 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 					throw new RuntimeException(e);
 				};
 		});
-		return listHistItem.stream().map(item -> toDomain(item))
+		    return listHistItem.stream().map(item -> toDomain(item))
 				.collect(Collectors.toList());
 	
 	}
-//
-//	"SELECT aw FROM BsymtEmploymentHistItem aw"
-//	+ " WHERE aw.hisId IN :historyId"
-//	@Override
-//	public List<EmploymentHistoryItem> getListEmptByListCodeAndDatePeriod(DatePeriod dateperiod,
-//			List<String> employmentCodes) {
-//		List<BsymtEmploymentHistItem> listHistItem = new ArrayList<>();
-//		CollectionUtil.split(employmentCodes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-//			listHistItem.addAll(this.queryProxy().query(SELECT_BY_LIST_EMPTCODE_DATEPERIOD, BsymtEmploymentHistItem.class)
-//					.setParameter("employmentCodes", subList)
-//					.setParameter("startDate", dateperiod.start())
-//					.setParameter("endDate", dateperiod.end())
-//					.getList());
-//		});
-//		if(listHistItem.isEmpty()){
-//			return Collections.emptyList();
-//		}
-//		return listHistItem.stream().map(e -> {
-//			EmploymentHistoryItem domain = this.toDomain(e);
-//			return domain;
-//		}).collect(Collectors.toList());
-//	}
+	
+	@Override
+	@SneakyThrows
+	public List<Object[]> getByListHistoryIdForCPS013(List<String> historyIds) {
+		if (CollectionUtil.isEmpty(historyIds)) {
+			return new ArrayList<>();
+		}
+		
+		List<Object[]> results = new ArrayList<>();
+		CollectionUtil.split(historyIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+				try(PreparedStatement statement = this.connection().prepareStatement(
+						"select * from BSYMT_EMPLOYMENT_HIS_ITEM a"
+					  + " where a.HIST_ID in (" + NtsStatement.In.createParamsString(subList) + ")")){
+					for (int i = 0; i < subList.size(); i++) {
+						statement.setString(i + 1, subList.get(i));
+					}
+					
+				new NtsResultSet(statement.executeQuery()).getList(rec -> {
+					  Map<String, Integer> mapListEnum = new HashMap<>();
+						BsymtEmploymentHistItem entity = new BsymtEmploymentHistItem();
+						entity.hisId = rec.getString("HIST_ID");
+						entity.sid = rec.getString("SID");
+						entity.empCode = rec.getString("EMP_CD");
+						entity.salarySegment  = SalarySegment.DailyMonthlySalary.value;
+						mapListEnum.put("IS00069", rec.getInt("SALARY_SEGMENT"));
+						results.add(new Object[]{toDomain(entity), mapListEnum});
+						return null;
+					});
+					
+				} catch (SQLException e) {
+					throw new RuntimeException(e);
+				};
+		});
+		return results;
+	}
+
+
 
 	@Override
 	public List<String> getLstSidByListCodeAndDatePeriod(DatePeriod dateperiod, List<String> employmentCodes) {
@@ -692,4 +708,5 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 		});
 		return listHistItem;
 	}
+
 }

@@ -1,4 +1,5 @@
 module nts.uk.at.view.cps013.e {
+    import block = nts.uk.ui.block;
     import getText = nts.uk.resource.getText;
     import kibanTimer = nts.uk.ui.sharedvm.KibanTimer;
     export module viewmodel {
@@ -10,6 +11,7 @@ module nts.uk.at.view.cps013.e {
             taskId: KnockoutObservable<string> = ko.observable("");
             executeId: KnockoutObservable<string> = ko.observable("");
             numberEmpChecked: KnockoutObservable<number> = ko.observable(0);
+            daucach: KnockoutObservable<string> = ko.observable("");
             countEmp: KnockoutObservable<number> = ko.observable(0);
             isComplete: KnockoutObservable<boolean> = ko.observable(false);
             statusCheck: KnockoutObservable<string> = ko.observable("");
@@ -31,12 +33,16 @@ module nts.uk.at.view.cps013.e {
 
             // disable gridlist
             error: KnockoutObservable<boolean> = ko.observable(false);
+            
+            // show table error
+            showTableResult: KnockoutObservable<boolean> = ko.observable(false);
             constructor() {
                 var self = this;
                 self.elapseTime.start();
                 self.mode = ko.observable(false);
                 self.isComplete = ko.observable(false);
-
+                self.showTableResult = ko.observable(false);
+                $("#button3001").focus();
                 self.columns = ko.observableArray([
                     { headerText: getText('CPS013_26'), key: 'employeeCode', width: 150 },
                     { headerText: getText('CPS013_27'), key: 'bussinessName', width: 200 },
@@ -50,12 +56,11 @@ module nts.uk.at.view.cps013.e {
                 self.errorMessageInfo.subscribe((value)=>{
                     if(value.length){
                         self.error(true);
+                        self.showTableResult(true);
                         let selfDialog = nts.uk.ui.windows.getSelf();
-                        selfDialog.$dialog.data('__size__', {width : 1170 , height : 610});
-                        selfDialog.setSize(610, 1170);
+                        selfDialog.$dialog.data('__size__', {width : 1170 , height : 615});
+                        selfDialog.setSize(615, 1170);
                         window.parent.dispatchEvent(new Event('resize'));
-                        //nts.uk.ui.windows.getSelf().setWidth(1170);
-                        //nts.uk.ui.windows.getSelf().setHeight(610);
                     }
                 });
             }
@@ -75,19 +80,24 @@ module nts.uk.at.view.cps013.e {
                                     self.startTime(self.getAsyncData(info.taskDatas, "startTime").valueAsString);
                                     self.numberEmpChecked(self.getAsyncData(info.taskDatas, "numberEmpChecked").valueAsNumber);
                                     self.countEmp(self.getAsyncData(info.taskDatas, "countEmp").valueAsNumber);
+                                    if(self.countEmp()){
+                                        self.daucach("/");
+                                    }
+                                    
                                     self.statusCheck(self.getAsyncData(info.taskDatas, "statusCheck").valueAsString);
 
                                     if (!info.pending && !info.running || info.requestedToCancel) {
                                         self.isComplete(true);
                                         // End count time
                                         self.elapseTime.end();
-
-                                        // Get EndTime from server, fallback to client
-                                        self.endTime(self.getAsyncData(info.taskDatas, "endTime").valueAsString);
-
-                                        self.bindingDataToGrid(info.taskDatas);
-                                        console.log("list bug" + info.taskDatas);
+                                        let timeAction = self.elapseTime.elapsedSeconds;
+                                        self.endTime(moment.utc(self.startTime()).add(timeAction, 'second').format("YYYY/MM/DD HH:mm:ss"));
+                                        $("#elapseTime").text(self.formatTime(timeAction));
                                         
+                                        self.bindingDataToGrid(info.taskDatas);
+                                        setTimeout(() => {
+                                           $("#button3001").focus();
+                                        }, 1500);
                                     }
                                 });
                             })
@@ -112,31 +122,43 @@ module nts.uk.at.view.cps013.e {
                     };
                     listError.push(data);
                 });
-                
+                block.invisible();
                 nts.uk.request.exportFile('com', 'person/consistency/check/report/print/error', listError)
                 .done(data => {})
-                .fail((mes) => {});
+                .fail((mes) => {})
+                .always(()=>block.clear());
             }
             
             RecheckTheSameConditions() : void {
                var self = this;
-               self.errorMessageInfo([]);
-               let conditions = self.dataShare();
                self.elapseTime.start();
                self.startTime('');
                self.numberEmpChecked(0);
+               self.daucach("");
                self.countEmp(0);
                self.statusCheck('');
                self.endTime('');
+                
+                self.showTableResult(false);
+                self.isComplete(false);
+                // change size dialog
+                let selfDialog = nts.uk.ui.windows.getSelf();
+                selfDialog.$dialog.data('__size__', { width: 600, height: 250 });
+                selfDialog.setSize(250, 600);
+                window.parent.dispatchEvent(new Event('resize'));
+                
+                // focus 
+                $("#buttoncancelTask").focus();
+                
+               self.errorMessageInfo([]);
+               let conditions = self.dataShare();
                self.start(conditions);
             }
             
             cancelTask(): void {
                 var self = this;
                 nts.uk.request.asyncTask.requestToCancel(self.taskId());
-                // End count time
                 self.elapseTime.end();
-                //nts.uk.ui.windows.close();
             }
 
             closeDialog(): void {
@@ -156,7 +178,7 @@ module nts.uk.at.view.cps013.e {
                      errs = [];
 
                 _.forEach(data, item => {
-                    if (item.key.substring(0, 5) === "error") {
+                    if (item.key.substring(0, 10) === "errorInfor") {
                         data_error.push(item);
                     } else if (item.key.substring(0, 10) === "employeeId") {
                         data_employeeId.push(item);
@@ -166,7 +188,7 @@ module nts.uk.at.view.cps013.e {
                         data_employeeCode.push(item);
                     } else if (item.key.substring(0, 10) === "bussinessN") {
                         data_bussinessName.push(item);
-                    } else if (item.key.substring(0, 10) === "clsCategor") {
+                    } else if (item.key.substring(0, 10) === "clsCtgChek") {
                         data_clsCategoryCheck.push(item);
                     } else if (item.key.substring(0, 10) === "categoryNa") {
                         data_categoryName.push(item);
@@ -175,14 +197,14 @@ module nts.uk.at.view.cps013.e {
                
                 for (let i = 0; i < data_employeeId.length; i++) {
 
-                    let tagKey = data_employeeId[i].key.substring(10, 15);
+                    let tagKey = data_employeeId[i].key.substring(10, 46);
                     let empId = data_employeeId[i].valueAsString;
-                    let ctgId = (_.filter(data_categoryId, function(o) { return o.key.substring(10, 15) == tagKey; }))[0].valueAsString;
-                    let employeeCode = (_.filter(data_employeeCode, function(o) { return o.key.substring(12, 17) == tagKey; }))[0].valueAsString;
-                    let bussinessName = (_.filter(data_bussinessName, function(o) { return o.key.substring(13, 18) == tagKey; }))[0].valueAsString;
-                    let clsCategoryCheck = (_.filter(data_clsCategoryCheck, function(o) { return o.key.substring(16, 21) == tagKey; }))[0].valueAsString;
-                    let categoryName = (_.filter(data_categoryName, function(o) { return o.key.substring(12, 17) == tagKey; }))[0].valueAsString;
-                    let error = (_.filter(data_error, function(o) { return o.key.substring(5, 10) == tagKey; }))[0].valueAsString;
+                    let ctgId = (_.filter(data_categoryId, function(o) { return o.key.substring(10, 46) == tagKey; }))[0].valueAsString;
+                    let employeeCode = (_.filter(data_employeeCode, function(o) { return o.key.substring(10, 46) == tagKey; }))[0].valueAsString;
+                    let bussinessName = (_.filter(data_bussinessName, function(o) { return o.key.substring(10, 46) == tagKey; }))[0].valueAsString;
+                    let clsCategoryCheck = (_.filter(data_clsCategoryCheck, function(o) { return o.key.substring(10, 46) == tagKey; }))[0].valueAsString;
+                    let categoryName = (_.filter(data_categoryName, function(o) { return o.key.substring(10, 46) == tagKey; }))[0].valueAsString;
+                    let error = (_.filter(data_error, function(o) { return o.key.substring(10, 46) == tagKey; }))[0].valueAsString;
                     
                     var errorInfo = {
                         employeeId: empId,
@@ -199,33 +221,7 @@ module nts.uk.at.view.cps013.e {
                
                // order 
                self.errorMessageInfo(_.sortBy(errs, ['employeeCode', 'clsCategoryCheck', 'categoryName']));
-
-            }
-
-            private getLogData(): void {
-                var self = this;
-
-                service.getErrorInfos(self.executeId()).done((result) => {
-                    let errs = [];
-                    _.forEach(result, function(sRes) {
-                        errs = [];
-                        var errorMess = {
-                            personCode: sRes.employeeCode,
-                            personName: sRes.employeeName,
-                            disposalDay: sRes.procDate,
-                            messageError: sRes.errorMessage
-                        };
-                        for (let i = 0; i < result.length; i++) {
-                            errorMess["no"] = i + 1;
-                            errs.push(new PersonInfoErrMessageLog(errorMess));
-                        }
-
-                    });
-                    self.errorMessageInfo(errs);
-                })
-                service.getErrorMessageInfo(self.logId()).done((res) => {
-
-                })
+            
             }
 
             private getAsyncData(data: Array<any>, key: string): any {
@@ -233,6 +229,11 @@ module nts.uk.at.view.cps013.e {
                     return item.key == key;
                 });
                 return result || { valueAsString: "", valueAsNumer: 0, valueAsBoolean: false};
+            }
+            
+            formatTime(second: number) {
+                let d = (s) => { f = Math.floor; g = (n) => ('00' + n).slice(-2); return f(s / 3600) + ':' + g(f(s / 60) % 60) + ':' + g(s % 60) };
+                return d(second);
             }
         }
     }
@@ -321,7 +322,7 @@ module nts.uk.at.view.cps013.e {
     function makeIcon(value, row) {
         if (value == '1')
             return '<img style="margin-left: 15px; width: 20px; height: 20px;" />';
-        return '<div>' + '<div class="limit-custom">' + value + '</div>' + '<div style = "display: inline-block; position: relative;">' + '<button tabindex = "0" class="open-dialog-i" onclick="jumtoCPS001A(\'' + row.employeeId + '\', \'' + row.categoryId + '\')">' + nts.uk.resource.getText("CPS013_31") + '</button>' + '</div>' + '</div>';
+        return '<div>' + '<div class="limit-custom">' + value + '</div>' + '<div style = "display: inline-block; position: relative;">' + '<button tabindex = "6" class="open-dialog-i" onclick="jumtoCPS001A(\'' + row.employeeId + '\', \'' + row.categoryId + '\')">' + nts.uk.resource.getText("CPS013_31") + '</button>' + '</div>' + '</div>';
     }
 }
 

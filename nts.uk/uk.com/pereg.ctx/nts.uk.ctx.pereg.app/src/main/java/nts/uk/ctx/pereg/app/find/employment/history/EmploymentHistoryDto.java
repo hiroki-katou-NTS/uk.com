@@ -1,5 +1,7 @@
 package nts.uk.ctx.pereg.app.find.employment.history;
 
+import java.util.Map;
+
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItem;
@@ -43,6 +45,13 @@ public class EmploymentHistoryDto extends PeregDomainDto {
 			EmploymentHistoryItem historyItem) {
 		return new EmploymentHistoryDto(historyItem.getHistoryId(), dateHistoryItem.start(), dateHistoryItem.end(),
 				historyItem.getEmploymentCode().v(), historyItem.getSalarySegment() != null? historyItem.getSalarySegment().value: null );
+	}
+	
+	public static EmploymentHistoryDto createFromDomain(DateHistoryItem dateHistoryItem,
+			EmploymentHistoryItem historyItem, Integer  mapListEnum) {
+		
+		return new EmploymentHistoryDto(historyItem.getHistoryId(), dateHistoryItem.start(), dateHistoryItem.end(),
+				historyItem.getEmploymentCode().v(), mapListEnum );
 	}
 
 }

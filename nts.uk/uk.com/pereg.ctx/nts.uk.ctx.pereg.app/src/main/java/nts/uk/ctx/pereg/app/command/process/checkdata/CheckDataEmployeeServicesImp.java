@@ -112,7 +112,7 @@ public class CheckDataEmployeeServicesImp implements CheckDataEmployeeServices {
 			// check request cancel
 			if (async.hasBeenRequestedToCancel()) {
 				dataSetter.updateData("statusCheck", cancelRequest);
-				dataSetter.setData("endTime", GeneralDateTime.now().toString());
+				dataSetter.setData("endTimeForRequestedToCancel", GeneralDateTime.now().toString());
 				async.finishedAsCancelled();
 				return ;
 			}

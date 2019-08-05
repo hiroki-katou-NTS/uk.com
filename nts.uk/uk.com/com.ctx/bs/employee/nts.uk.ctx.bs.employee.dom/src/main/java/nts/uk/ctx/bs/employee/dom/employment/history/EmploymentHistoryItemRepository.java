@@ -142,4 +142,6 @@ public interface EmploymentHistoryItemRepository {
 	 */
 	List<EmploymentHistoryOfEmployee> getEmploymentBySID(List<String> sids, List<String> employmentCodes, DatePeriod dateRange);
 
+	List<Object[]> getByListHistoryIdForCPS013(List<String> historyIds);
+	
 }
