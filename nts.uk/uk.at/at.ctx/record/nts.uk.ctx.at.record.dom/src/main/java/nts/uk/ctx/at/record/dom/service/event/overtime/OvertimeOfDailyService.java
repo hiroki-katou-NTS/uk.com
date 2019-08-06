@@ -9,7 +9,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.gul.util.value.Finally;
-import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
 import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTime;
@@ -31,8 +30,6 @@ public class OvertimeOfDailyService {
 	private WorkUpdateService recordUpdate;
 	@Inject
 	private EditStateOfDailyPerformanceRepository editStateDaily;
-	@Inject
-	private AttendanceTimeRepository attendanceTimeRepo;
 	/**
 	 * 申請された時間を補正する
 	 * @param working
@@ -62,18 +59,23 @@ public class OvertimeOfDailyService {
 			itemIdList.add(565); //事前所定外深夜時間
 			itemIdList.add(563); //所定外深夜時間
             //休日出勤申請：休憩時間しか反映してない
-            itemIdList.addAll(WorkUpdateService.BREAK_START_TIME);
-            itemIdList.addAll(WorkUpdateService.BREAK_END_TIME);
+            itemIdList.addAll(recordUpdate.lstScheBreakStartTime());
+            itemIdList.addAll(recordUpdate.lstScheBreakEndTime());
             itemIdList.addAll(CorrectEventConts.START_BREAK_TIME_CLOCK_ITEMS);
             itemIdList.addAll(CorrectEventConts.END_BREAK_TIME_CLOCK_ITEMS);
             //替時間(休出)の反映、をクリアする
     		itemIdList.addAll(recordUpdate.lstTranfertimeFrameItem());
-		} else {
+		} else if(!cachedWorkType.get().getDailyWork().getOneDay().isPause()
+				&& !cachedWorkType.get().getDailyWork().getMorning().isPause()
+				&& !cachedWorkType.get().getDailyWork().getAfternoon().isPause()) {
+			itemIdList.addAll(recordUpdate.lstTranfertimeFrameItem());
+		} 
+		else {
 			itemIdList.addAll(recordUpdate.lstPreWorktimeFrameItem());
 			itemIdList.addAll(recordUpdate.lstAfterWorktimeFrameItem());
 			 //休日出勤申請：休憩時間しか反映してない
-            itemIdList.addAll(WorkUpdateService.BREAK_START_TIME);
-            itemIdList.addAll(WorkUpdateService.BREAK_END_TIME);
+			itemIdList.addAll(recordUpdate.lstScheBreakStartTime());
+            itemIdList.addAll(recordUpdate.lstScheBreakEndTime());
             itemIdList.addAll(CorrectEventConts.START_BREAK_TIME_CLOCK_ITEMS);
             itemIdList.addAll(CorrectEventConts.END_BREAK_TIME_CLOCK_ITEMS);
           //替時間(休出)の反映、をクリアする
