@@ -1,15 +1,15 @@
-package nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord;
+package nts.uk.ctx.at.record.pub.dailyperform.appreflect;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@AllArgsConstructor
 @Setter
 @Getter
+@AllArgsConstructor
 @NoArgsConstructor
-public class BreakTime {
+public class BreakTimePubParam {
 	/**
 	 * 開始時刻
 	 */

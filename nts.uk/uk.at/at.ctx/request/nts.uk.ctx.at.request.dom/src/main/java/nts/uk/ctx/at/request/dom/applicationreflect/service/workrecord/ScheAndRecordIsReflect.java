@@ -5,17 +5,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@AllArgsConstructor
 @Setter
 @Getter
+@AllArgsConstructor
 @NoArgsConstructor
-public class BreakTime {
-	/**
-	 * 開始時刻
-	 */
-	private Integer startTime;
-	/**
-	 * 終了時刻
-	 */
-	private Integer endTime;
+public class ScheAndRecordIsReflect {
+	private boolean scheReflect;
+	private boolean recordReflect;
 }

@@ -8,7 +8,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonProcessCheckService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ScheAndRecordSameChangeFlg;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
@@ -17,6 +16,7 @@ import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
+import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.worktime.common.LateEarlyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.OtherEmTimezoneLateEarlySet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
@@ -42,6 +42,8 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 	@Inject
 	private WorkUpdateService scheUpdateService;
 	@Inject
+	private TimeLeavingOfDailyPerformanceRepository timeLeavingOfDaily;
+	@Inject
 	private WorkTimeIsFluidWork workTimeisFluidWork;
 	@Inject
 	private WorkTimeSettingRepository workTimeSetting;
@@ -54,8 +56,6 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 	/*流動勤務設定*/
 	@Inject
 	private FlowWorkSettingRepository flowWorkSettingRepository;
-	@Inject
-	private CommonProcessCheckService commonService;
 	/*時差勤務設定*/
 	@Inject
 	private DiffTimeWorkSettingRepository diffTimeWorkSettingRepository;
@@ -63,7 +63,7 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 	public void reflectScheTime(GobackReflectParameter para, boolean timeTypeScheReflect,
 			IntegrationOfDaily dailyInfor, boolean isPre) {
 		//予定時刻反映できるかチェックする
-		if(!commonService.checkReflectScheWorkTimeType(para.isScheReflectAtr(), para.getScheAndRecordSameChangeFlg(), isPre, para.getGobackData().getWorkTimeCode())) {
+		if(!this.checkScheReflect(para.getGobackData().getWorkTimeCode(), para.isScheReflectAtr(), para.getScheAndRecordSameChangeFlg(), isPre)) {
 			return;
 		}
 		//(開始時刻)反映する時刻を求める
@@ -78,13 +78,7 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 				ApplyTimeAtr.END, 
 				para.getGobackData().getWorkTimeCode(), 
 				para.getScheTimeReflectAtr());
-		TimeReflectPara timeData1 = new TimeReflectPara(para.getEmployeeId(),
-				para.getDateData(),
-				startTimeReflect.getTimeOfDay(),
-				endTimeReflect.getTimeOfDay(),
-				1,
-				startTimeReflect.isReflectFlg(),
-				endTimeReflect.isReflectFlg());
+		TimeReflectPara timeData1 = new TimeReflectPara(para.getEmployeeId(), para.getDateData(), startTimeReflect.getTimeOfDay(), endTimeReflect.getTimeOfDay(), 1, startTimeReflect.isReflectFlg(), endTimeReflect.isReflectFlg());
 		scheUpdateService.updateScheStartEndTime(timeData1, dailyInfor);		
 		/*//(開始時刻2)反映する時刻を求める
 		TimeOfDayReflectOutput startTime2Reflect = this.getTimeOfDayReflect(timeTypeScheReflect, 
@@ -170,23 +164,24 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 		return reflectOutput;
 	}
 	@Override
-	public void reflectTime(GobackReflectParameter para, boolean workTypeTimeReflect, IntegrationOfDaily dailyInfor) {
+	public void reflectTime(GobackReflectParameter para, boolean workTypeTimeReflect,IntegrationOfDaily dailyInfor) {
 		String tmpWorkTimeCode;
 		//INPUT．勤種・就時の反映できるフラグをチェックする
 		if(workTypeTimeReflect) {
 			tmpWorkTimeCode = para.getGobackData().getWorkTimeCode();
 		} else {
-			//ドメインモデル「日別実績の勤務情報」を取得する		
+			//ドメインモデル「日別実績の勤務情報」を取得する
+			
 			tmpWorkTimeCode = dailyInfor.getWorkInformation().getRecordInfo().getWorkTimeCode() == null ? null 
 					: dailyInfor.getWorkInformation().getRecordInfo().getWorkTimeCode().v();
 		}
 		//出勤時刻を反映できるかチェックする
-		boolean isStart1 = this.checkAttendenceReflect(para, 1, true, dailyInfor.getAttendanceLeave());
+		boolean isStart1 = this.checkAttendenceReflect(para, 1, true);
 		//ジャスト遅刻により時刻を編集する
 		//開始時刻を反映する 
 		Integer startTime1 = isStart1 ? this.justTimeLateLeave(tmpWorkTimeCode, para.getGobackData().getStartTime1(), 1, true) : null;
 		//退勤時刻を反映できるか
-		boolean isEnd1 = this.checkAttendenceReflect(para, 1, false, dailyInfor.getAttendanceLeave());
+		boolean isEnd1 = this.checkAttendenceReflect(para, 1, false);
 		//ジャスト早退により時刻を編集する
 		//終了時刻の反映
 		Integer endTime1 = isEnd1 ? this.justTimeLateLeave(tmpWorkTimeCode, para.getGobackData().getEndTime1(), 1, false) : null;		
@@ -204,8 +199,7 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 		scheUpdateService.updateRecordStartEndTimeReflect(timePara2);*/
 	}
 	@Override
-	public boolean checkAttendenceReflect(GobackReflectParameter para, Integer frameNo, boolean isPre,
-			Optional<TimeLeavingOfDailyPerformance> optTimeLeave) {
+	public boolean checkAttendenceReflect(GobackReflectParameter para, Integer frameNo, boolean isPre) {
 		//INPUT．打刻優先区分をチェックする
 		if(para.getPriorStampAtr() == PriorStampAtr.APP_TIME) {
 			//INPUT．申請する時刻に値があるかチェックする
@@ -218,6 +212,8 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 				return false;
 			}
 		} else {
+			
+			Optional<TimeLeavingOfDailyPerformance> optTimeLeave = timeLeavingOfDaily.findByKey(para.getEmployeeId(), para.getDateData());
 			if(!optTimeLeave.isPresent()) {
 				return true;
 			}
@@ -299,10 +295,10 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 		return timeData;
 	}
 	@Override
-	public boolean checkScheReflect(String worktimeCode, boolean scheReflectAtr, ScheAndRecordSameChangeFlg scheAndRecordSameChangeFlg) {
+	public boolean checkScheReflect(String worktimeCode, boolean scheReflectAtr, ScheAndRecordSameChangeFlg scheAndRecordSameChangeFlg, boolean isPre) {
 		//INPUT．予定反映区分をチェックする
 		//INPUT．予定と実績を同じに変更する区分をチェックする
-		if(scheReflectAtr
+		if((scheReflectAtr && isPre)
 				|| scheAndRecordSameChangeFlg == ScheAndRecordSameChangeFlg.ALWAYS_CHANGE_AUTO) {
 			return true;
 		}

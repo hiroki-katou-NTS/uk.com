@@ -14,7 +14,7 @@ public interface HolidayWorkReflectProcess {
 	 * @param scheReflectFlg
 	 * @param scheAndRecordSameChangeFlg
 	 */
-	public boolean updateScheWorkTimeType(String employeeId, 
+	public IntegrationOfDaily updateScheWorkTimeType(String employeeId, 
 			GeneralDate baseDate, 
 			String workTypeCode, 
 			String workTimeCode, 
@@ -37,20 +37,17 @@ public interface HolidayWorkReflectProcess {
 			boolean scheReflectFlg, boolean isPre,
 			ScheAndRecordSameChangeFlg scheAndRecordSameChangeFlg);
 	/**
-	 * 
-	 * @param employeeId
-	 * @param baseDate
-	 * @param mapWorkTimeFrame 休出時間1～10
-	 */
-	public void reflectWorkTimeFrame(HolidayWorktimePara holidayWorkPara, 
-			IntegrationOfDaily dailyData, boolean isPre);
-	/**
-	 * 休憩時間の反映
+	 * 休出時間を反映
 	 * @param holidayWorkPara
-	 * @param dailyData
-	 * @param isPre：　True：　事前、False：　事後
+	 * @param isPre：　True：　事前申請、False：　事後申請
+	 * @param daily
 	 */
-	public void reflectBreakTimeFrame(HolidayWorktimePara holidayWorkPara, 
-			IntegrationOfDaily dailyData, boolean isPre);
-
+	public IntegrationOfDaily reflectWorkTimeFrame(HolidayWorktimePara holidayWorkPara, boolean isPre, IntegrationOfDaily daily);
+	/**
+	 * 休憩時間を反映
+	 * @param holidayWorkPara
+	 * @param isPre　True：　事前申請、False：　事後申請
+	 * @param daily
+	 */
+	public void reflectBreakTimeFrame(HolidayWorktimePara holidayWorkPara, boolean isPre, IntegrationOfDaily daily);
 }

@@ -7,6 +7,7 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ScheAndRecordSameChangeFlg;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.AppReflectRecordWork;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
@@ -27,17 +28,17 @@ public class WorkTimeTypeScheReflectImpl implements WorkTimeTypeScheReflect {
 	@Inject
 	private WorkUpdateService workUpdate;
 	@Override
-	public boolean reflectScheWorkTimeType(GobackReflectParameter para, IntegrationOfDaily dailyInfor) {
+	public AppReflectRecordWork reflectScheWorkTimeType(GobackReflectParameter para, IntegrationOfDaily dailyInfor) {
 		//予定勤務種類による勤種・就時を反映できるかチェックする
-		if(!this.checkReflectWorkTimeType(para, dailyInfor.getWorkInformation())) {
-			return false;
+		if(!this.checkReflectWorkTimeType(para,dailyInfor.getWorkInformation())) {
+			return new AppReflectRecordWork(false, dailyInfor.getWorkInformation());
 		}
 		//予定勤種・就時の反映
 		ReflectParameter reflectInfo = new ReflectParameter(para.getEmployeeId(), para.getDateData(), 
 				para.getGobackData().getWorkTimeCode(), 
 				para.getGobackData().getWorkTypeCode(), false); 
 		workUpdate.updateWorkTimeType(reflectInfo, true, dailyInfor);
-		return true;
+		return new AppReflectRecordWork(true, dailyInfor.getWorkInformation());
 	}
 
 	@Override
@@ -78,7 +79,7 @@ public class WorkTimeTypeScheReflectImpl implements WorkTimeTypeScheReflect {
 	}
 
 	@Override
-	public boolean reflectRecordWorktimetype(GobackReflectParameter para, IntegrationOfDaily dailyInfor) {
+	public AppReflectRecordWork reflectRecordWorktimetype(GobackReflectParameter para, IntegrationOfDaily dailyInfor) {
 		boolean isReflect = this.checkReflectRecordForActual(para.getEmployeeId(), para.getDateData(), para.isOutResReflectAtr(),
 				para.getGobackData().getChangeAppGobackAtr());
 		//実績勤務種類による勤種・就時を反映できるかチェックする
@@ -87,8 +88,9 @@ public class WorkTimeTypeScheReflectImpl implements WorkTimeTypeScheReflect {
 			ReflectParameter reflectPara = new ReflectParameter(para.getEmployeeId(), para.getDateData(),
 					para.getGobackData().getWorkTimeCode(), para.getGobackData().getWorkTypeCode(), false);
 			workUpdate.updateWorkTimeType(reflectPara, false, dailyInfor);
+			return new AppReflectRecordWork(isReflect, dailyInfor.getWorkInformation());
 		}
-		return isReflect;
+		return new AppReflectRecordWork(isReflect, dailyInfor.getWorkInformation());
 	}
 
 	@Override

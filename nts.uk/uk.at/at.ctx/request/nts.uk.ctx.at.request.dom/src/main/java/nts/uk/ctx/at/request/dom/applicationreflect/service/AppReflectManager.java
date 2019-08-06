@@ -13,9 +13,11 @@ public interface AppReflectManager {
 	 * 社員の申請を反映
 	 * @param appInfor
 	 * @param excLogId 実行ID
+	 * @param currentRecord default = 0
 	 */
 	public void reflectEmployeeOfApp(Application_New appInfor, InformationSettingOfEachApp reflectSetting,
 			ExecutionTypeExImport execuTionType, String excLogId, int currentRecord);
-	public void reflectEmployeeOfAppWithTransaction(Application_New appInfor,
-			InformationSettingOfEachApp reflectSetting, ExecutionTypeExImport execuTionType, String excLogId);	
+
+	void reflectEmployeeOfAppWithTransaction(Application_New appInfor,
+			InformationSettingOfEachApp reflectSetting, ExecutionTypeExImport execuTionType, String excLogId);
 }
