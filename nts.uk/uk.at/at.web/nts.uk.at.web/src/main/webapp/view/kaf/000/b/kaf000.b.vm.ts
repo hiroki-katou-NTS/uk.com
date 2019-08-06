@@ -79,7 +79,6 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         user: number = 0;
         reflectPerState: number  = 0;
         errorEmpty: KnockoutObservable<boolean> = ko.observable(true);
-        currentApp : shrvm.model.ApplicationMetadata;
 
         constructor(listAppMetadata: Array<shrvm.model.ApplicationMetadata>, currentApp: shrvm.model.ApplicationMetadata) {
             let self = this;
@@ -95,7 +94,6 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 self.displayGoback(false);
             });
             self.listAppMeta = listAppMetadata;
-            self.currentApp = currentApp;
             self.appType = ko.observable(currentApp.appType);
             self.appID = ko.observable(currentApp.appID);
             self.inputCommandEvent = ko.observable(new model.InputCommandEvent(0, self.appID(), self.appReasonEvent()));
@@ -359,19 +357,6 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                     screenModel.errorEmpty(values);
                 });
             });
-            // fix bug #107493
-            var content_height=20;
-            if ($("#header").length != 0) {
-                content_height += $("#header").outerHeight();//header height+ content area botton padding,top padding
-            }
-            if ($("#functions-area").length != 0) {
-                content_height += $("#functions-area").outerHeight();//top function area height
-            }
-            if ($("#functions-area-bottom").length != 0) {
-                content_height += $("#functions-area-bottom").outerHeight();//bottom function area height
-            }
-            
-            $("#contents-area").css("height", "calc(100vh - " + content_height + "px)");
 //                });
         }
         getScreenModel(listAppMeta: any,currentApp:any, rebind: boolean){
@@ -487,30 +472,18 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                         }
                     }
                     service.reflectAppSingle(lstIdRef).done(function() {
-                        if (self.appType() == 1) {
-                            self.reBinding(self.listAppMeta, self.currentApp, false);
-                        } else {
-                            self.start(moment.utc().format("YYYY/MM/DD")).done(() => {
-                                nts.uk.ui.block.clear();
-                            });
-                        }
-                    }).fail(() => {
-                        if (self.appType() == 1) {
-                            self.reBinding(self.listAppMeta, self.currentApp, false);
-                        } else {
-                            self.start(moment.utc().format("YYYY/MM/DD")).done(() => {
-                                nts.uk.ui.block.clear();
-                            });
-                        }
-                    });;
-                } else {
-                    if (self.appType() == 1) {
-                        self.reBinding(self.listAppMeta, self.currentApp, false);
-                    } else {
                         self.start(moment.utc().format("YYYY/MM/DD")).done(() => {
                             nts.uk.ui.block.clear();
                         });
-                    }
+                    }).fail(() => {
+                        self.start(moment.utc().format("YYYY/MM/DD")).done(() => {
+                            nts.uk.ui.block.clear();
+                        });
+                    });;
+                } else {
+                    self.start(moment.utc().format("YYYY/MM/DD")).done(() => {
+                        nts.uk.ui.block.clear();
+                    });
                 }
 
             } else {

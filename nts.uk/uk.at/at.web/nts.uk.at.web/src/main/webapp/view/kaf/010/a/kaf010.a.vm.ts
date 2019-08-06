@@ -524,7 +524,8 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 uiType: self.uiType(),
                 calculateFlag: self.calculateFlag(),
                 appReasonID: comboBoxReason,
-                checkOver1Year: true
+                checkOver1Year: true,
+                actualExceedConfirm: false
             };
             //登録前エラーチェック
             self.beforeRegisterColorConfirm(overtime);
@@ -669,7 +670,8 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                     workClockTo1: self.timeEnd1(),
                     workClockFrom2: self.timeStart2(),
                     workClockTo2: self.timeEnd2(),
-                    breakTimes:  ko.toJS(self.breakTimes())
+                    breakTimes:  ko.toJS(self.breakTimes()),
+                    restTime:  ko.toJS(self.restTime()),
                 }
             //block screen
             nts.uk.ui.block.invisible();
@@ -1013,16 +1015,24 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 }
             });
             //休憩時間
-//            for (let i = 0; i < self.breakTimes().length; i++) {
-//                self.breakTimes()[i].applicationTime.subscribe(value => {
-//                    if (!nts.uk.util.isNullOrEmpty(self.preWorkContent)) {
-//                        if (self.preWorkContent.breakTimes[i].applicationTime != value) {
-//                            //→エラーＭＳＧ
-//                            self.calculateFlag(1);
-//                        }
-//                    }
-//                });
-//            }
+            for (let i = 0; i < self.restTime().length; i++) {
+                self.restTime()[i].startTime.subscribe(value => {
+                    if (!nts.uk.util.isNullOrEmpty(self.preWorkContent)) {
+                        if (self.preWorkContent.restTime[i].startTime != value) {
+                            //→エラーＭＳＧ
+                            self.calculateFlag(1);
+                        }
+                    }
+                });
+                self.restTime()[i].endTime.subscribe(value => {
+                    if (!nts.uk.util.isNullOrEmpty(self.preWorkContent)) {
+                        if (self.preWorkContent.restTime[i].endTime != value) {
+                            //→エラーＭＳＧ
+                            self.calculateFlag(1);
+                        }
+                    }
+                });
+            }
         }
         
         calculatorColorConfirm(param: any){
@@ -1137,38 +1147,77 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 self.beforeRegisterProcess(overtime);
             }
         }
-        beforeRegisterProcess(overtime: any){
+        beforeRegisterProcess(overtime: any) {
             let self = this;
-            service.checkBeforeRegister(overtime).done((data) => {    
+            service.checkBeforeRegister(overtime).done((data) => {
                 overtime.appOvertimeDetail = data.appOvertimeDetail;
                 self.confirmInconsistency(data, overtime);
             }).fail((res) => {
-                if(nts.uk.util.isNullOrEmpty(res.errors)){
-                    dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
-                    .then(function() { nts.uk.ui.block.clear(); });       
+                if (nts.uk.util.isNullOrEmpty(res.errors)) {
+                    if (res.messageId == "Msg_423" && res.parameterIds[3] == "confirm") {
+                        dialog.confirm({ messageId: res.messageId, messageParams: res.parameterIds }).ifYes(() => {
+                            overtime.actualExceedConfirm = true;
+                            service.checkBeforeRegister(overtime).done((data) => {
+                                overtime.appOvertimeDetail = data.appOvertimeDetail;
+                                self.confirmInconsistency(data, overtime);
+                            }).fail((res) => {
+                                if (nts.uk.util.isNullOrEmpty(res.errors)) {
+                                    dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
+                                        .then(function() { nts.uk.ui.block.clear(); });
+                                } else {
+                                    let errors = res.errors;
+                                    for (let i = 0; i < errors.length; i++) {
+                                        let error = errors[i];
+                                        if (error.messageId == "Msg_1538") {
+                                            error.parameterIds = [
+                                                nts.uk.time.formatYearMonth(parseInt(error.parameterIds[4])),
+                                                nts.uk.time.formatYearMonth(parseInt(error.parameterIds[5])),
+                                                nts.uk.time.format.byId("Clock_Short_HM", parseInt(error.parameterIds[6])),
+                                                nts.uk.time.format.byId("Clock_Short_HM", parseInt(error.parameterIds[7]))
+                                            ];
+                                        } else {
+                                            error.parameterIds = [
+                                                nts.uk.time.format.byId("Clock_Short_HM", parseInt(error.parameterIds[4])),
+                                                nts.uk.time.format.byId("Clock_Short_HM", parseInt(error.parameterIds[5]))
+                                            ];
+                                        }
+                                        error.message = nts.uk.resource.getMessage(error.messageId, error.parameterIds);
+                                    }
+                                    nts.uk.ui.dialog.bundledErrors({ errors: errors })
+                                        .then(function() { nts.uk.ui.block.clear(); });
+                                }
+                            });
+                        }).ifNo(() => {
+                            nts.uk.ui.block.clear();
+                            return;
+                        });
+                    } else {
+                        dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
+                            .then(function() { nts.uk.ui.block.clear(); });
+                    }
                 } else {
                     let errors = res.errors;
-                    for(let i = 0; i < errors.length; i++){
+                    for (let i = 0; i < errors.length; i++) {
                         let error = errors[i];
-                        if(error.messageId=="Msg_1538"){
+                        if (error.messageId == "Msg_1538") {
                             error.parameterIds = [
-                                nts.uk.time.formatYearMonth(parseInt(error.parameterIds[4])), 
+                                nts.uk.time.formatYearMonth(parseInt(error.parameterIds[4])),
                                 nts.uk.time.formatYearMonth(parseInt(error.parameterIds[5])),
-                                nts.uk.time.format.byId("Clock_Short_HM", parseInt(error.parameterIds[6])), 
+                                nts.uk.time.format.byId("Clock_Short_HM", parseInt(error.parameterIds[6])),
                                 nts.uk.time.format.byId("Clock_Short_HM", parseInt(error.parameterIds[7]))
-                            ];     
+                            ];
                         } else {
                             error.parameterIds = [
-                                nts.uk.time.format.byId("Clock_Short_HM", parseInt(error.parameterIds[4])), 
+                                nts.uk.time.format.byId("Clock_Short_HM", parseInt(error.parameterIds[4])),
                                 nts.uk.time.format.byId("Clock_Short_HM", parseInt(error.parameterIds[5]))
-                            ];     
+                            ];
                         }
                         error.message = nts.uk.resource.getMessage(error.messageId, error.parameterIds);
                     }
-                    nts.uk.ui.dialog.bundledErrors({ errors: errors })    
-                    .then(function() { nts.uk.ui.block.clear(); });      
-                }           
-            });        
+                    nts.uk.ui.dialog.bundledErrors({ errors: errors })
+                        .then(function() { nts.uk.ui.block.clear(); });
+                }
+            });
         }
         
         confirmInconsistency(data: any, overtime: any){

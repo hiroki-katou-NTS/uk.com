@@ -810,7 +810,8 @@ module nts.uk.at.view.kaf010.b {
                             workClockTo1: self.timeEnd1(),
                             workClockFrom2: self.timeStart2(),
                             workClockTo2: self.timeEnd2(),
-                            breakTimes:  ko.toJS(self.breakTimes())
+                            breakTimes:  ko.toJS(self.breakTimes()),
+                            restTime:  ko.toJS(self.restTime()),
                         }
                     
                     nts.uk.ui.block.invisible();
@@ -978,17 +979,25 @@ module nts.uk.at.view.kaf010.b {
                         }
                     }
                 });
-//                //休憩時間
-//                for (let i = 0; i < self.breakTimes().length; i++) {
-//                    self.breakTimes()[i].applicationTime.subscribe(value => {
-//                        if (!nts.uk.util.isNullOrEmpty(self.preWorkContent)) {
-//                            if (self.preWorkContent.breakTimes[i].applicationTime != value) {
-//                                //→エラーＭＳＧ
-//                                self.calculateFlag(1);
-//                            }
-//                        }
-//                    });
-//                }
+                //休憩時間
+                for (let i = 0; i < self.restTime().length; i++) {
+                    self.restTime()[i].startTime.subscribe(value => {
+                        if (!nts.uk.util.isNullOrEmpty(self.preWorkContent)) {
+                            if (self.preWorkContent.restTime[i].startTime != value) {
+                                //→エラーＭＳＧ
+                                self.calculateFlag(1);
+                            }
+                        }
+                    });
+                    self.restTime()[i].endTime.subscribe(value => {
+                        if (!nts.uk.util.isNullOrEmpty(self.preWorkContent)) {
+                            if (self.preWorkContent.restTime[i].endTime != value) {
+                                //→エラーＭＳＧ
+                                self.calculateFlag(1);
+                            }
+                        }
+                    });
+                }
             }
             
             calculatorColorConfirm(param: any){
