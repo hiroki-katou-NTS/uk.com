@@ -92,15 +92,16 @@ public interface ApprovalRootStateRepository {
 	
 	// only for SPR
 	public List<ApprovalRootState> getByApproverAgentPeriod(String companyID, String approverID, DatePeriod period, DatePeriod agentPeriod); 
-	/**
-	 * RQ309 -> doi ung cho CMM045
-	 * @param rootStateIDs
-	 * @param approverID
-	 * @return
-	 */
-	public List<ApprovalRootState> findEmploymentAppCMM045(List<String> lstApproverID);
-	
-	public boolean resultKTG002 (GeneralDate startDate, GeneralDate endDate, String approverID, Integer rootType,
+    /**
+     * RQ309 -> doi ung cho CMM045
+     * @param rootStateIDs
+     * @param approverID
+     * @return
+     */
+    public List<ApprovalRootState> findEmploymentAppCMM045(List<String> lstApproverID);
+    public List<String> resultKTG002Mobile (GeneralDate startDate, GeneralDate endDate, String approverID, Integer rootType,
 			String companyID );
-
+    
+    public boolean resultKTG002 (GeneralDate startDate, GeneralDate endDate, String approverID, Integer rootType,
+			String companyID );
 }

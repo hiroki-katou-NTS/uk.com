@@ -140,11 +140,14 @@ public interface ApprovalRootStateAdapter {
 	 * @return
 	 */
 	public List<ApproveRootStatusForEmpImPort> getAppRootStatusByEmpPeriodMonth(String employeeID, DatePeriod period);
-	/**
-	 * get data Appr RQ309 -> CMM045
-	 * @param appIDs
-	 * @param companyID
-	 * @return
-	 */
-	public Map<String,List<ApprovalPhaseStateImport_New>> getApprovalRootContentCMM045(String companyID, List<String> lstAgent);
+    /**
+     * get data Appr RQ309 -> CMM045
+     * @param appIDs
+     * @param companyID
+     * @return
+     */
+    public Map<String,List<ApprovalPhaseStateImport_New>> getApprovalRootContentCMM045(String companyID, List<String> lstAgent);
+    
+    public List<ApprovalPhaseStateImport_New> getApprovalDetail(String appID);
+    
 }

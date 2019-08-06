@@ -108,4 +108,13 @@ public class RouteConfirmStatusFrame {
 	public boolean hasApprovedByOther(String approverId) {
 		return hasApproved() && !employeeIds.contains(approverId);
 	}
+	
+	/**
+	 * この承認枠は指定した社員によって承認済みか
+	 * @param approverId
+	 * @return
+	 */
+	private boolean hasApprovedBy(String approverId) {
+		return hasApproved() && employeeIds.contains(approverId);
+	}
 }

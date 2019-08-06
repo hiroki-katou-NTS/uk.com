@@ -1,4 +1,5 @@
 package nts.uk.ctx.at.request.app.find.application.applicationlist;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -9,27 +10,20 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.apache.logging.log4j.util.Strings;
-
-import nts.arc.time.GeneralDate;
+import nts.arc.i18n.I18NText;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
-import nts.uk.ctx.at.request.app.find.setting.company.request.approvallistsetting.ApprovalListDisplaySetDto;
-import nts.uk.ctx.at.request.app.find.setting.company.vacationapplicationsetting.HdAppSetDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.AppListExtractCondition;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.ApplicationListAtr;
+import nts.uk.ctx.at.request.dom.application.applist.service.AppCompltLeaveSync;
 import nts.uk.ctx.at.request.dom.application.applist.service.AppListInitialRepository;
 import nts.uk.ctx.at.request.dom.application.applist.service.AppListOutPut;
 import nts.uk.ctx.at.request.dom.application.applist.service.AppMasterInfo;
 import nts.uk.ctx.at.request.dom.application.applist.service.ApplicationFullOutput;
 import nts.uk.ctx.at.request.dom.application.applist.service.CheckColorTime;
 import nts.uk.ctx.at.request.dom.application.applist.service.PhaseStatus;
-import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppContentDetailCMM045;
-import nts.uk.ctx.at.request.dom.application.applist.service.detail.ScreenAtr;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
@@ -50,23 +44,21 @@ public class ApplicationListFinder {
 	@Inject
 	private RequestSettingRepository repoRequestSet;
 	@Inject
-	private HdAppSetRepository repoHdAppSet;
-	@Inject
 	private AppDispNameRepository repoAppDispName;
-	@Inject
-	private AppContentDetailCMM045 contentDtail;
+	private static final int MOBILE = 1; 
 	
 	public ApplicationListDto getAppList(AppListParamFilter param){
 		AppListExtractConditionDto condition = param.getCondition();
+		int device = param.getDevice();
+		//対象申請種類List
+		List<Integer> lstType = param.getLstAppType();
 		String companyId = AppContexts.user().companyId();
 		//ドメインモデル「承認一覧表示設定」を取得する-(Lấy domain Approval List display Setting)
 		Optional<RequestSetting> requestSet = repoRequestSet.findByCompany(companyId);
 		ApprovalListDisplaySetting appDisplaySet = null;
-		ApprovalListDisplaySetDto displaySet = null;
 		Integer isDisPreP = null;
 		if(requestSet.isPresent()){
 			appDisplaySet = requestSet.get().getApprovalListDisplaySetting();
-			displaySet = ApprovalListDisplaySetDto.fromDomain(appDisplaySet);
 			isDisPreP = requestSet.get().getApplicationSetting().getAppDisplaySetting().getPrePostAtr().value;
 		}
 		//URパラメータが存在する-(Check param)
@@ -80,20 +72,20 @@ public class ApplicationListFinder {
 			}
 			condition.setStartDate(date.start().toString());
 			condition.setEndDate(date.end().toString());
-			
 		}
 		//ドメインモデル「申請一覧共通設定フォーマット.表の列幅」を取得-(Lấy 表の列幅)//xu ly o ui
 		//アルゴリズム「申請一覧リスト取得」を実行する-(Thực hiện thuật toán Application List get): 1-申請一覧リスト取得
 		AppListExtractCondition appListExCon = condition.convertDtotoDomain(condition);
-		AppListOutPut lstApp = repoAppListInit.getApplicationList(appListExCon, appDisplaySet);
+		AppListOutPut lstAppData = repoAppListInit.getApplicationList(appListExCon, appDisplaySet, device, lstType);
+		
 		List<ApplicationDto_New> lstAppDto = new ArrayList<>();
-		for (Application_New app : lstApp.getLstApp()) {
+		for (Application_New app : lstAppData.getLstApp()) {
 			lstAppDto.add(ApplicationDto_New.fromDomain(app));
 		}
 		List<AppStatusApproval> lstStatusApproval = new ArrayList<>();
 		List<ApproveAgent> lstAgent = new ArrayList<>();
 		if(condition.getAppListAtr() == 1){//mode approval
-			List<ApplicationFullOutput> lstFil = lstApp.getLstAppFull().stream().filter(c -> c.getStatus() != null).collect(Collectors.toList());
+			List<ApplicationFullOutput> lstFil = lstAppData.getLstAppFull().stream().filter(c -> c.getStatus() != null).collect(Collectors.toList());
 			for (ApplicationFullOutput app : lstFil) {
 				lstAgent.add(new ApproveAgent(app.getApplication().getAppID(), app.getAgentId()));
 				lstStatusApproval.add(new AppStatusApproval(app.getApplication().getAppID(), app.getStatus()));
@@ -101,24 +93,32 @@ public class ApplicationListFinder {
 			for (ApplicationDto_New appDto : lstAppDto) {
 				appDto.setReflectPerState(this.findStatusAppv(lstStatusApproval, appDto.getApplicationID()));
 			}
-			for (AppMasterInfo master : lstApp.getDataMaster().getLstAppMasterInfo()) {
-				master.setStatusFrameAtr(this.findStatusFrame(lstApp.getLstFramStatus(), master.getAppID()));
-				master.setPhaseStatus(this.findStatusPhase(lstApp.getLstPhaseStatus(), master.getAppID()));
-				master.setCheckTimecolor(this.findColorAtr(lstApp.getLstTimeColor(), master.getAppID()));
+			for (AppMasterInfo master : lstAppData.getDataMaster().getLstAppMasterInfo()) {
+				master.setStatusFrameAtr(this.findStatusFrame(lstAppData.getLstFramStatus(), master.getAppID()));
+				master.setPhaseStatus(this.findStatusPhase(lstAppData.getLstPhaseStatus(), master.getAppID()));
+				master.setCheckTimecolor(this.findColorAtr(lstAppData.getLstTimeColor(), master.getAppID()));
 			}
 		}
-		//ドメインモデル「休暇申請設定」を取得する (Vacation application setting)- YenNTH
-		Optional<HdAppSet> lstHdAppSet = repoHdAppSet.getAll();
-		HdAppSetDto hdAppSetDto = HdAppSetDto.convertToDto(lstHdAppSet.get());
-		List<AppInfor> lstAppType = this.findListApp(lstApp.getDataMaster().getLstAppMasterInfo(), param.isSpr(), param.getExtractCondition());
-		List<ApplicationDto_New> lstAppSort = param.getCondition().getAppListAtr() == 1 ? this.sortByIdModeApproval(lstAppDto, lstApp.getDataMaster().getLstAppMasterInfo()) : 
-									this.sortByIdModeApp(lstAppDto, lstApp.getDataMaster().getMapAppBySCD(), lstApp.getDataMaster().getLstSCD());
-		//contentApp
-		List<ContentApp> lstContentApp = this.crateContentApp(lstAppSort, appListExCon.getAppListAtr(), displaySet.getAppReasonDisAtr(), lstApp.getDataMaster().getLstAppMasterInfo());
-		return new ApplicationListDto(isDisPreP, condition.getStartDate(), condition.getEndDate(), displaySet, lstApp.getDataMaster().getLstAppMasterInfo(),lstAppSort,
-				lstApp.getLstAppOt(),lstApp.getLstAppGoBack(), lstApp.getAppStatusCount(), lstApp.getLstAppGroup(), lstAgent,
-				lstApp.getLstAppHdWork(), lstApp.getLstAppWorkChange(), lstApp.getLstAppAbsence(), lstAppType, hdAppSetDto, lstApp.getLstAppCompltLeaveSync(), lstContentApp);
+		List<AppInfor> lstAppType = this.findListApp(lstAppData.getDataMaster().getLstAppMasterInfo(), param.isSpr(), param.getExtractCondition(), device);
+		List<ApplicationDto_New> lstAppSort = appListExCon.equals(ApplicationListAtr.APPROVER) ?
+				this.sortByIdModeApproval(lstAppDto, lstAppData.getDataMaster().getLstAppMasterInfo()) : 
+				this.sortByIdModeApp(lstAppDto, lstAppData.getDataMaster().getMapAppBySCD(), lstAppData.getDataMaster().getLstSCD());
+		List<ApplicationDataOutput> lstAppCommon= new ArrayList<>();
+		for(ApplicationDto_New app : lstAppSort){
+			lstAppCommon.add(ApplicationDataOutput.convert(app, appListExCon.getAppListAtr().equals(ApplicationListAtr.APPROVER) ? 
+					this.convertStatusAppv(app.getReflectPerState(), device) : this.convertStatus(app.getReflectPerState(), device)));
+		}
+		List<AppAbsRecSyncData> lstSyncData = new ArrayList<>();
+		for(AppCompltLeaveSync sync: lstAppData.getLstAppCompltLeaveSync()){
+			if(sync.isSync()){
+				lstSyncData.add(new AppAbsRecSyncData(sync.getTypeApp(), sync.getAppMain().getAppID(), sync.getAppSub().getAppID(), sync.getAppDateSub()));
+			}
+		}
+		Collections.sort(lstAppData.getDataMaster().getLstSCD());
+		return new ApplicationListDto(isDisPreP, condition.getStartDate(), condition.getEndDate(), lstAppData.getDataMaster().getLstAppMasterInfo(),
+				lstAppCommon, lstAppData.getAppStatusCount(), lstAgent, lstAppType, lstAppData.getLstContentApp(), lstSyncData, lstAppData.getDataMaster().getLstSCD());
 	}
+	
 	/**
 	 * find status approval
 	 * @param lstStatusApproval
@@ -180,8 +180,9 @@ public class ApplicationListFinder {
 	 * @param lstApp
 	 * @return
 	 */
-	private List<AppInfor> findListApp(List<AppMasterInfo> lstApp, boolean isSpr, int extractCondition){
+	private List<AppInfor> findListApp(List<AppMasterInfo> lstApp, boolean isSpr, int extractCondition, int device){
 		List<AppInfor> lstAppType = new ArrayList<>();
+		lstAppType.add(new AppInfor(-1, device == MOBILE ? I18NText.getText("CMMS45_13") : I18NText.getText("CMM045_200")));
 		for (AppMasterInfo app : lstApp) {
 			if(!lstAppType.contains(new AppInfor(app.getAppType(), app.getDispName()))){
 				lstAppType.add(new AppInfor(app.getAppType(), app.getDispName()));
@@ -234,7 +235,7 @@ public class ApplicationListFinder {
 		List<ApplicationDto_New> lstResult = new ArrayList<>();
 		java.util.Collections.sort(lstSCD);
 		for (String sCD : lstSCD) {
-			lstResult.addAll(this.sortByDateTypePrePost(this.findBylstID(lstApp, mapAppBySCD.get(sCD))));
+            lstResult.addAll(this.sortByDateTypePrePost(this.findBylstID(lstApp, mapAppBySCD.get(sCD))));
 			
 		}
 		return lstResult;
@@ -267,74 +268,61 @@ public class ApplicationListFinder {
 		for (String sCD : lstSCD) {
 			List<String> lstAppID = lstAppMasterInfo.stream().filter(c -> c.getEmpSD().equals(sCD))
 					.map(d -> d.getAppID()).collect(Collectors.toList());
-			lstResult.addAll(this.sortByDateTypePrePost(this.findBylstID(lstApp, lstAppID)));
+            lstResult.addAll(this.sortByDateTypePrePost(this.findBylstID(lstApp, lstAppID)));
 		}
 		return lstResult;
 	}
-
-	private List<ContentApp> crateContentApp(List<ApplicationDto_New> lstApp, ApplicationListAtr appListAtr,
-			int appReasonDisAtr, List<AppMasterInfo> lstMaster) {
-		String companyID = AppContexts.user().companyId();
-		List<ContentApp> lstContent = new ArrayList<>();
-		for (ApplicationDto_New app : lstApp) {
-			String appID = app.getApplicationID();
-			String content = "";
-			switch (app.getApplicationType()) {
-				case 0: {// 残業申請
-					if (appListAtr.equals(ApplicationListAtr.APPROVER) && app.getPrePostAtr() == 1) {// 承認モード(事後)
-//						content = contentDtail.getContentOverTimeAf(companyID, appID, this.finddetailSet(lstMaster, appID),
-//								appReasonDisAtr, "");
-					} else {
-						content = contentDtail.getContentOverTimeBf(companyID, appID, this.finddetailSet(lstMaster, appID),
-								appReasonDisAtr, "", ScreenAtr.CMM045.value);
-					}
-					break;
-				}
-				case 1: {// 休暇申請
-					Integer day = 0;
-					if (Strings.isNotBlank(app.getStartDate()) && Strings.isNotBlank(app.getEndDate())) {
-						day = GeneralDate.fromString(app.getStartDate(), "yyyy/MM/dd")
-								.daysTo(GeneralDate.fromString(app.getEndDate(), "yyyy/MM/dd")) + 1;
-					}
-					content = contentDtail.getContentAbsence(companyID, appID, appReasonDisAtr, "", day,
-							ScreenAtr.CMM045.value);
-					break;
-				}
-				case 2: {// 勤務変更申請
-					content = contentDtail.getContentWorkChange(companyID, appID, appReasonDisAtr, "",
-							ScreenAtr.CMM045.value);
-					break;
-				}
-				case 4: {// 直行直帰申請*/
-					content = contentDtail.getContentGoBack(companyID, appID, appReasonDisAtr, "",
-							ScreenAtr.CMM045.value);
-					break;
-				}
-				case 6: {// 休出時間申請
-					if (appListAtr.equals(ApplicationListAtr.APPROVER) && app.getPrePostAtr() == 1) {// 承認モード(事後)
-//						content = contentDtail.getContentHdWorkAf(companyID, appID, appReasonDisAtr, "");
-					} else {
-						content = contentDtail.getContentHdWorkBf(companyID, appID, appReasonDisAtr, "",
-								ScreenAtr.CMM045.value);
-					}
-					break;
-				}
-				case 10: {// 振休振出申請*/
-					content = contentDtail.getContentComplt(companyID, appID, appReasonDisAtr, "",
-							ScreenAtr.CMM045.value);
-					break;
-				}
-			}
-			lstContent.add(new ContentApp(appID, content));
-		}
-		return lstContent;
-	}
-	private int finddetailSet(List<AppMasterInfo> lstMaster, String appID){
-		for (AppMasterInfo app : lstMaster) {
-			if(app.getAppID() == appID){
-				return app.getDetailSet().intValue();
-			}
-		}
-		return 0;
-	}
+    /**
+     * convert status from number to string
+     */
+//  ※申請一覧　　申請モード
+    private String convertStatus(int status, int device){
+        switch (status) {
+            case 0:
+            	//下書き保存/未反映　=　PC：未（#CMM045_62)、スマホ：未処理（#CMMS45_7）
+                return device == MOBILE ? I18NText.getText("CMMS45_7") : I18NText.getText("CMM045_62");//下書き保存/未反映　=　未
+            case 1:
+            //  反映待ち　＝　PC：承認済み（#CMM045_63)、スマホ：承認済（#CMMS45_8）
+                return device == MOBILE ? I18NText.getText("CMMS45_8") : I18NText.getText("CMM045_63");//反映待ち　＝　承認済み
+            case 2:
+            //  反映済　＝　PC：反映済み（#CMM045_64)、スマホ：反映済（#CMMS45_9）
+                return device == MOBILE ? I18NText.getText("CMMS45_9") : I18NText.getText("CMM045_64");//反映済　＝　反映済み
+            case 5:
+            //  差し戻し　＝　PC：差戻（#CMM045_66)、スマホ：差戻（#CMMS45_36）
+                return device == MOBILE ? I18NText.getText("CMMS45_36") : I18NText.getText("CMM045_66");//差し戻し　＝　差戻
+            case 6:
+            //  否認　=　PC：否（#CMM045_65)、スマホ：否認（#CMMS45_11）
+                return device == MOBILE ? I18NText.getText("CMMS45_11") : I18NText.getText("CMM045_65");//否認　=　否
+            default:
+            //  取消待ち/取消済　＝　PC：取消（#CMM045_67)、スマホ：取消（#CMMS45_10）
+                return device == MOBILE ? I18NText.getText("CMMS45_10") : I18NText.getText("CMM045_67");//取消待ち/取消済　＝　取消
+        }
+    }
+    //UNAPPROVED:5
+    //APPROVED: 4
+    //CANCELED: 3
+    //REMAND: 2
+    //DENIAL: 1
+    //-: 0
+    private String convertStatusAppv(int status, int device){
+        switch (status) {
+            case 1:  //DENIAL: 1
+            	//※　PC：#CMM045_65　＝　否 || スマホ：#CMMS45_11　＝　否認
+                return device == MOBILE ? I18NText.getText("CMMS45_11") : I18NText.getText("CMM045_65");
+            case 2: //REMAND: 2
+            	//※　PC：#CMM045_66　＝　差戻 || スマホ：#CMMS45_36　＝　差戻
+                return device == MOBILE ? I18NText.getText("CMMS45_36") : I18NText.getText("CMM045_66");
+            case 3: //CANCELED: 3
+            	//※　PC：#CMM045_67　＝　取消 || スマホ：#CMMS45_10　＝　取消
+                return device == MOBILE ? I18NText.getText("CMMS45_10") : I18NText.getText("CMM045_67");
+            case 4: //APPROVED: 4
+            	//※　PC：#CMM045_63　＝　承認済み || スマホ：#CMMS45_8　＝　承認済
+                return device == MOBILE ? I18NText.getText("CMMS45_8") : I18NText.getText("CMM045_63");
+            case 5: //UNAPPROVED:5
+            	//※　PC：#CMM045_62　＝　未  || スマホ：#CMMS45_7　＝　未処理
+                return device == MOBILE ? I18NText.getText("CMMS45_7") : I18NText.getText("CMM045_62");
+            default: //-: 0
+                return "-";
+        }
+    }
 }

@@ -17,13 +17,14 @@ import nts.uk.ctx.at.request.app.find.application.overtime.dto.OverTimeDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeInputDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.PreAppOvertimeDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputCaculation;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculation;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculationImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.TimeWithCalculationImport;
+import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.CommonOvertimeHoliday;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
@@ -35,7 +36,6 @@ import nts.uk.ctx.at.request.dom.application.overtime.service.WorkTypeOvertime;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
 import nts.uk.ctx.at.request.dom.setting.company.divergencereason.DivergenceReason;
-import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
@@ -69,6 +69,12 @@ public class CheckConvertPrePost {
 	@Inject
 	private DailyAttendanceTimeCaculation dailyAttendanceTimeCaculation;
 	
+	@Inject
+	private CommonOvertimeHoliday commonOvertimeHoliday;
+	
+	@Inject
+	private OtherCommonAlgorithm otherCommonAlgorithm;
+	
 	public OverTimeDto convertPrePost(int prePostAtr,String appDate,String siftCD,List<CaculationTime> overtimeHours,String workTypeCode,Integer startTime,Integer endTime,List<Integer> startTimeRests,List<Integer> endTimeRests){
 		
 		String companyID = AppContexts.user().companyId();
@@ -76,25 +82,22 @@ public class CheckConvertPrePost {
 		PreAppOvertimeDto preAppOvertimeDto = new PreAppOvertimeDto();
 		OverTimeDto result = new OverTimeDto();
 		Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet = this.overtimeRestAppCommonSetRepository.getOvertimeRestAppCommonSetting(companyID, ApplicationType.OVER_TIME_APPLICATION.value);
-		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(companyID,
-				employeeID,
-				1, EnumAdaptor.valueOf(ApplicationType.OVER_TIME_APPLICATION.value, ApplicationType.class),appDate == null? null : GeneralDate.fromString(appDate, DATE_FORMAT));
 		if(prePostAtr == 1){
 			if(overtimeRestAppCommonSet.isPresent()){
 				if(overtimeRestAppCommonSet.get().getPerformanceDisplayAtr().value == UseAtr.USE.value){
 					result.setReferencePanelFlg(true);
 					// 01-18_実績の内容を表示し直す
-					ApprovalFunctionSetting approvalFunctionSetting = appCommonSettingOutput.approvalFunctionSetting;
-					// 6.計算処理 : 
-					DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = dailyAttendanceTimeCaculation.getCalculation(employeeID,appDate == null ? null : GeneralDate.fromString(appDate, DATE_FORMAT), workTypeCode, siftCD, startTime, endTime, startTimeRests, endTimeRests);
-					Map<Integer,TimeWithCalculationImport> overTime = dailyAttendanceTimeCaculationImport.getOverTime();
-					List<OvertimeInputCaculation> overtimeInputCaculations = convertMaptoList(overTime,dailyAttendanceTimeCaculationImport.getFlexTime(),dailyAttendanceTimeCaculationImport.getMidNightTime());
-					AppOvertimeReference appOvertimeReference = iOvertimePreProcess.getResultContentActual(prePostAtr, siftCD, companyID,employeeID, appDate,approvalFunctionSetting,overtimeHours,overtimeInputCaculations);
+					AppOvertimeReference appOvertimeReference = iOvertimePreProcess.getResultContentActual(prePostAtr, workTypeCode, siftCD, companyID,employeeID, appDate);
 					result.setAppOvertimeReference(appOvertimeReference);
 				}
 				if(overtimeRestAppCommonSet.get().getPreDisplayAtr().value== UseAtr.USE.value){
 					result.setAllPreAppPanelFlg(true);
-					AppOverTime appOverTime = iOvertimePreProcess.getPreApplication(companyID, employeeID, overtimeRestAppCommonSet, appDate, prePostAtr);
+					AppOverTime appOverTime = otherCommonAlgorithm.getPreApplication(
+							employeeID,
+							EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class),
+							overtimeRestAppCommonSet.get().getPreDisplayAtr(), 
+							appDate == null ? null : GeneralDate.fromString(appDate, DATE_FORMAT),
+							ApplicationType.OVER_TIME_APPLICATION);
 					if(appOverTime != null){
 						convertOverTimeDto(companyID,preAppOvertimeDto,result,appOverTime);
 						result.setPreAppPanelFlg(true);
@@ -109,13 +112,21 @@ public class CheckConvertPrePost {
 					//01-08_乖離定型理由を取得
 					if(overtimeRestAppCommonSet.get().getDivergenceReasonFormAtr().value == UseAtr.USE.value){
 						result.setDisplayDivergenceReasonForm(true);
-						List<DivergenceReason> divergenceReasons = iOvertimePreProcess.getDivergenceReasonForm(companyID,ApplicationType.OVER_TIME_APPLICATION.value,overtimeRestAppCommonSet);
+						List<DivergenceReason> divergenceReasons = commonOvertimeHoliday
+								.getDivergenceReasonForm(
+										companyID,
+										EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class),
+										overtimeRestAppCommonSet.get().getDivergenceReasonFormAtr(),
+										ApplicationType.OVER_TIME_APPLICATION);
 						convertToDivergenceReasonDto(divergenceReasons,result);
 					}else{
 						result.setDisplayDivergenceReasonForm(false);
 					}
 					//01-07_乖離理由を取得
-					result.setDisplayDivergenceReasonInput(iOvertimePreProcess.displayDivergenceReasonInput(overtimeRestAppCommonSet));
+					result.setDisplayDivergenceReasonInput(
+							commonOvertimeHoliday.displayDivergenceReasonInput(
+									EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class), 
+									overtimeRestAppCommonSet.get().getDivergenceReasonInputAtr()));
 				}
 			}
 		}else if(prePostAtr == 0){

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.ws.application.holidaywork;
 /*import nts.uk.ctx.at.shared.dom.employmentrules.employmenttimezone.BreakTimeZoneSharedOutPut;*/
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -23,12 +24,16 @@ import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.RecordWorkPara
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeCheckResultDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.ParamChangeAppDate;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.RecordWorkDto;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.IErrorCheckBeforeRegister;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.CommonOvertimeHoliday;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.ColorConfirmResult;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetRepository;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.DeductionTimeDto;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 
 @Path("at/request/application/holidaywork")
@@ -44,7 +49,10 @@ public class HolidayWorkWebService extends WebService{
 	private UpdateHolidayWorkCommandHandler updateHolidayWorkCommandHandle;
 	
 	@Inject
-	private IErrorCheckBeforeRegister iErrorCheckBeforeRegister;
+	private OvertimeRestAppCommonSetRepository overTimeSetRepo;
+	
+	@Inject
+	private CommonOvertimeHoliday commonOvertimeHoliday;
 	
 	@POST
 	@Path("getHolidayWorkByUI")
@@ -54,7 +62,8 @@ public class HolidayWorkWebService extends WebService{
 	@POST
 	@Path("findChangeAppDate")
 	public AppHolidayWorkDto findChangeAppDate(ParamChangeAppDate param) {
-		return this.appHolidayWorkFinder.findChangeAppDate(param.getAppDate(), param.getPrePostAtr(),param.getSiftCD(),param.getOvertimeHours(),param.getChangeEmployee());
+		return this.appHolidayWorkFinder.findChangeAppDate(param.getAppDate(), param.getPrePostAtr(),param.getSiftCD(),param.getOvertimeHours(),param.getChangeEmployee(),
+				param.getStartTime(), param.getEndTime());
 	}
 	@POST
 	@Path("calculationresultConfirm")
@@ -131,17 +140,22 @@ public class HolidayWorkWebService extends WebService{
 	@POST
 	@Path("getBreakTimes")
 	public List<DeductionTimeDto> getBreakTimes(GetBreakTimeParam param) {
-		return this.appHolidayWorkFinder.getBreakTimes(param.getWorkTypeCD(), param.getWorkTimeCD());
+		Optional<TimeWithDayAttr> opStartTime = param.getStartTime()==null ? Optional.empty() : Optional.of(new TimeWithDayAttr(param.getStartTime())); 
+		Optional<TimeWithDayAttr> opEndTime = param.getEndTime()==null ? Optional.empty() : Optional.of(new TimeWithDayAttr(param.getEndTime()));
+		return this.appHolidayWorkFinder.getBreakTimes(param.getWorkTypeCD(), param.getWorkTimeCD(), opStartTime, opEndTime);
 	}
 	
 	@POST
 	@Path("confirmInconsistency")
 	public List<String> confirmInconsistency(CreateHolidayWorkCommand command) {
 		String companyID = AppContexts.user().companyId();
-		return iErrorCheckBeforeRegister.inconsistencyCheck(
+		Optional<OvertimeRestAppCommonSetting>  overTimeSettingOpt = overTimeSetRepo.getOvertimeRestAppCommonSetting(companyID, ApplicationType.BREAK_TIME_APPLICATION.value);
+		return commonOvertimeHoliday.inconsistencyCheck(
 				companyID, 
 				command.getApplicantSID(), 
-				command.getApplicationDate());
+				command.getApplicationDate(),
+				ApplicationType.BREAK_TIME_APPLICATION,
+				overTimeSettingOpt.get().getAppDateContradictionAtr());
 	}
 	
 }
@@ -150,4 +164,6 @@ public class HolidayWorkWebService extends WebService{
 class GetBreakTimeParam {
 	String workTypeCD;
 	String workTimeCD;
+	Integer startTime;
+	Integer endTime;
 }

@@ -23,12 +23,14 @@ import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.AppForSp
 import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.AppForSpecLeaveRepository;
 import nts.uk.ctx.at.request.dom.application.applist.service.AppCompltLeaveSync;
 import nts.uk.ctx.at.request.dom.application.applist.service.OverTimeFrame;
-import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppCompltLeaveSyncOutput;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.CompltLeaveSimMng;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.CompltLeaveSimMngRepository;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.SyncState;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentAppRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
@@ -54,6 +56,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 /**
  * get info detail application
@@ -92,9 +95,9 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 	@Inject
 	private RecruitmentAppRepository recRepo;
 	@Inject
-	private OtherCommonAlgorithm otherCommonAlg;
-	@Inject
 	private ApplicationRepository_New repoApp;
+	@Inject
+	private CompltLeaveSimMngRepository compLeaveRepo;
 	/**
 	 * 残業申請
 	 * get Application Over Time Info
@@ -205,7 +208,7 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 	 * @return
 	 */
 	@Override
-	public AppHolidayWorkFull getAppHolidayWorkInfo(String companyId, String appId) {
+	public AppHolidayWorkFull getAppHolidayWorkInfo(String companyId, String appId, List<WorkType> lstWkType, List<WorkTimeSetting> lstWkTime) {
 		Map<String,AppHolidayWork> appHdWork = repoHolidayWork.getListAppHdWorkFrame(companyId, Arrays.asList(appId));
 		AppHolidayWork hdWork = appHdWork.get(appId);
 		List<HolidayWorkInput> lstHdWkInput = hdWork.getHolidayWorkInputs();
@@ -247,15 +250,13 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 		}
 		String workTypeName = "";
 		if(hdWork.getWorkTypeCode() != null && !Strings.isBlank(hdWork.getWorkTypeCode().v())){
-			
-			Optional<WorkType> wtOp = repoWorkType.findByPK(companyId, hdWork.getWorkTypeCode().v());
-			workTypeName = wtOp.isPresent() ? wtOp.get().getName().v() : hdWork.getWorkTypeCode().v() + "マスタ未登録";
+			//勤務就業名称を作成 - WorkType
+			workTypeName = this.findWorkTypeName(lstWkType, hdWork.getWorkTypeCode().v());
 		}
 		String workTimeName = "";
 		if(hdWork.getWorkTimeCode() != null && !hdWork.getWorkTimeCode().v().equals("000")){
-			Optional<WorkTimeSetting> workTime =  repoworkTime.findByCode(companyId,hdWork.getWorkTimeCode().v());
-			workTimeName = workTime.isPresent() ? workTime.get().getWorkTimeDisplayName().getWorkTimeName().v() :
-				hdWork.getWorkTimeCode().v() + "マスタ未登録";
+			//勤務就業名称を作成 - WorkTime
+			workTimeName = this.findWorkTimeName(lstWkTime, hdWork.getWorkTimeCode().v());
 		}
 		AppOvertimeDetail timeDetail = hdWork.getAppOvertimeDetail().isPresent() ? hdWork.getAppOvertimeDetail().get() : null;
 		TimeNo417 timeNo417 = timeDetail == null ? null : 
@@ -279,19 +280,18 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 	 * @return
 	 */
 	@Override
-	public AppWorkChangeFull getAppWorkChangeInfo(String companyID, String appId) {
+	public AppWorkChangeFull getAppWorkChangeInfo(String companyID, String appId, List<WorkType> lstWkType, List<WorkTimeSetting> lstWkTime) {
 		Optional<AppWorkChange> workChange = repoworkChange.getAppworkChangeById(companyID, appId);
 		AppWorkChange appWkChange = workChange.get();
 		String workTypeName = "";
 		if(appWkChange.getWorkTypeCd() != null && !Strings.isBlank(appWkChange.getWorkTypeCd())){
-			Optional<WorkType> wt = repoWorkType.findByPK(companyID, appWkChange.getWorkTypeCd());
-			workTypeName = wt.isPresent() ? wt.get().getName().v() : appWkChange.getWorkTypeCd() + "マスタ未登録";
+			//勤務就業名称を作成 - WorkType
+			workTypeName = this.findWorkTypeName(lstWkType, appWkChange.getWorkTypeCd());
 		}
 		String workTimeName = "";
 		if(appWkChange.getWorkTimeCd() != null && !appWkChange.getWorkTimeCd().equals("000")){
-			Optional<WorkTimeSetting> workTime =  repoworkTime.findByCode(companyID,appWkChange.getWorkTimeCd());
-			workTimeName = workTime.isPresent() ? workTime.get().getWorkTimeDisplayName().getWorkTimeName().v() :
-				appWkChange.getWorkTimeCd() + "マスタ未登録";
+			//勤務就業名称を作成 - WorkTime
+			workTimeName = this.findWorkTimeName(lstWkTime, appWkChange.getWorkTimeCd());
 		}
 		return new AppWorkChangeFull(appId, workTypeName,
 				workTimeName,
@@ -316,7 +316,7 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 	 * @return
 	 */
 	@Override
-	public AppAbsenceFull getAppAbsenceInfo(String companyId, String appId, Integer day) {
+	public AppAbsenceFull getAppAbsenceInfo(String companyId, String appId, Integer day, List<WorkType> lstWkType, List<WorkTimeSetting> lstWkTime) {
 		//get 休暇申請
 		Optional<AppAbsence> absence = repoAbsence.getAbsenceById(companyId, appId);
 		AppAbsence appAbsence = absence.get();
@@ -327,8 +327,8 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 		}
 		String workTimeName = "";
 		if(appAbsence.getWorkTimeCode() != null){
-			Optional<WorkTimeSetting> workTime =  repoworkTime.findByCode(companyId,appAbsence.getWorkTimeCode().v());
-			workTimeName = workTime.isPresent() ? workTime.get().getWorkTimeDisplayName().getWorkTimeName().v() : appAbsence.getWorkTimeCode().v() + "マスタ未登録";
+			//勤務就業名称を作成 - WorkTime
+			workTimeName = this.findWorkTimeName(lstWkTime, appAbsence.getWorkTimeCode().v());
 		}
 		String startTime1 = appAbsence.getStartTime1() == null ? "" : appAbsence.getStartTime1().getDayDivision().description
 				+ appAbsence.getStartTime1().getInDayTimeWithFormat();
@@ -348,8 +348,8 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 		//ver39
 		String workTypeName = "";
 		if(appAbsence.getWorkTypeCode() != null && !Strings.isBlank(appAbsence.getWorkTypeCode().v())){
-			Optional<WorkType> wt = repoWorkType.findByPK(companyId, appAbsence.getWorkTypeCode().v());
-			workTypeName = wt.isPresent() ? wt.get().getName().v() : appAbsence.getWorkTypeCode().v() + "マスタ未登録";
+			//勤務就業名称を作成 - WorkType
+			workTypeName = this.findWorkTypeName(lstWkType, appAbsence.getWorkTypeCode().v());
 		}
 		return new AppAbsenceFull(appId, appAbsence.getHolidayAppType() == null ? null : appAbsence.getHolidayAppType().value, day,
 				workTimeName, appAbsence.getAllDayHalfDayLeaveAtr().value, startTime1, endTime1,startTime2, endTime2,
@@ -365,20 +365,18 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 	 * @return
 	 */
 	@Override
-	public AppCompltLeaveFull getAppCompltLeaveInfo(String companyID, String appId, int type) {
+	public AppCompltLeaveFull getAppCompltLeaveInfo(String companyID, String appId, int type, List<WorkType> lstWkType) {
 		if(type == 0){//xin nghi
 			AbsenceLeaveApp abs = absRepo.findByAppId(appId).get();
-			Optional<WorkType> wta = repoWorkType.findByPK(companyID, abs.getWorkTypeCD().v());
 			return new AppCompltLeaveFull(abs.getAppID(), type,
-					wta.isPresent() ? wta.get().getName().v() : abs.getWorkTypeCD().v() + "マスタ未登録",
+					this.findWorkTypeName(lstWkType, abs.getWorkTypeCD().v()),//勤務就業名称を作成 - WorkType
 					abs.getWorkTime1() == null ? null : this.convertTime(abs.getWorkTime1().getStartTime().v()),
 					abs.getWorkTime1() == null ? null : this.convertTime(abs.getWorkTime1().getEndTime().v()));
 		}
 		//di lam
 		RecruitmentApp rec = recRepo.findByAppId(appId).get();
-		Optional<WorkType> wtr = repoWorkType.findByPK(companyID, rec.getWorkTypeCD().v());
 		return new AppCompltLeaveFull(rec.getAppID(), type,
-				wtr.isPresent() ? wtr.get().getName().v() : rec.getWorkTypeCD().v() + "マスタ未登録",
+				this.findWorkTypeName(lstWkType, rec.getWorkTypeCD().v()),//勤務就業名称を作成 - WorkType
 				this.convertTime(rec.getWorkTime1().getStartTime().v()),
 				this.convertTime(rec.getWorkTime1().getEndTime().v()));
 	}
@@ -486,7 +484,7 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 	 * @return list AppHolidayWorkFull
 	 */
 	@Override
-	public List<AppHolidayWorkFull> getListAppHdWorkInfo(String companyId, List<String> lstAppId) {
+	public List<AppHolidayWorkFull> getListAppHdWorkInfo(String companyId, List<String> lstAppId, List<WorkType> lstWkType, List<WorkTimeSetting> lstWkTime) {
 		List<AppHolidayWorkFull> lstAppFull = new ArrayList<>();
 		//1.加給時間 - BONUSPAYTIME
 		//1.A NORMAL_TYPE
@@ -534,8 +532,8 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 			}
 			String workTypeName = "";
 			if(hdWork.getWorkTypeCode() != null && !Strings.isBlank(hdWork.getWorkTypeCode().v())){
-				Optional<WorkType> wt = repoWorkType.findByPK(companyId, hdWork.getWorkTypeCode().v());
-				workTypeName = wt.isPresent() ? wt.get().getName().v() : hdWork.getWorkTypeCode().v() + "マスタ未登録";
+				//勤務就業名称を作成 - WorkType
+				workTypeName = this.findWorkTypeName(lstWkType, hdWork.getWorkTypeCode().v());
 			}
 			String workTimeName = "";
 			if(hdWork.getWorkTimeCode() != null && !hdWork.getWorkTimeCode().v().equals("000")){
@@ -543,8 +541,8 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 				if(mapWorkTimeName.containsKey(wkTimeCD)){
 					workTimeName  = mapWorkTimeName.get(wkTimeCD);
 				}else{
-					Optional<WorkTimeSetting> workTime =  repoworkTime.findByCode(companyId, wkTimeCD);
-					workTimeName = workTime.isPresent() ? workTime.get().getWorkTimeDisplayName().getWorkTimeName().v() : wkTimeCD + "マスタ未登録";
+					//勤務就業名称を作成 - WorkTime
+					workTimeName = this.findWorkTimeName(lstWkTime, wkTimeCD);
 					mapWorkTimeName.put(wkTimeCD, workTimeName);
 				}
 			}
@@ -616,7 +614,7 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 	 * @return
 	 */
 	@Override
-	public List<AppWorkChangeFull> getListAppWorkChangeInfo(String companyID, List<String> lstAppId) {
+	public List<AppWorkChangeFull> getListAppWorkChangeInfo(String companyID, List<String> lstAppId, List<WorkType> lstWkType, List<WorkTimeSetting> lstWkTime) {
 		List<AppWorkChangeFull> lstAppFull = new ArrayList<>();
 		//get list app work change by lstId
 		List<AppWorkChange> lstWorkChange = repoworkChange.getListAppWorkChangeByID(companyID, lstAppId);
@@ -630,8 +628,8 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 				if(mapWorkTypeName.containsKey(wkTypeCD)){
 					workTypeName = mapWorkTypeName.get(wkTypeCD);
 				}else{
-					Optional<WorkType> wt = repoWorkType.findByPK(companyID, appWkChange.getWorkTypeCd());
-					workTypeName = wt.isPresent() ? wt.get().getName().v() : appWkChange.getWorkTypeCd() + "マスタ未登録";
+					//勤務就業名称を作成 - WorkType
+					workTypeName = this.findWorkTypeName(lstWkType, wkTypeCD);
 					mapWorkTypeName.put(wkTypeCD, workTypeName);
 				}
 			}
@@ -642,8 +640,8 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 				if(mapWorkTimeName.containsKey(wkTimeCD)){
 					workTimeName = mapWorkTimeName.get(wkTimeCD);
 				}else{
-					Optional<WorkTimeSetting> workTime =  repoworkTime.findByCode(companyID,wkTimeCD);
-					workTimeName = workTime.isPresent() ? workTime.get().getWorkTimeDisplayName().getWorkTimeName().v() : wkTimeCD + "マスタ未登録";
+					//勤務就業名称を作成 - WorkTime
+					workTimeName = this.findWorkTimeName(lstWkTime, wkTimeCD);
 					mapWorkTimeName.put(wkTimeCD, workTimeName);
 				}
 			}
@@ -687,27 +685,90 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 	}
 
 	@Override
-	public AppCompltLeaveSync getCompltLeaveSync(String companyID, String appId) {
+	public AppCompltLeaveSync getCompltLeaveSync(String companyID, String appId, List<WorkType> lstWkType) {
 		AppCompltLeaveFull appMain = null;
 		AppCompltLeaveFull appSub = null;
 		String appDateSub = null;
 		String appInputSub = null;
 		//アルゴリズム「申請一覧リスト取得振休振出」を実行する-(get List App Complement Leave): 6 - 申請一覧リスト取得振休振出
-		AppCompltLeaveSyncOutput sync = otherCommonAlg.getAppComplementLeaveSync(companyID, appId);
+		AppCompltLeaveSyncOutput sync = this.getAppComplementLeaveSync(companyID, appId);
 		if(!sync.isSync()){//TH k co don lien ket
 			//lay thong tin chi tiet
-			appMain = this.getAppCompltLeaveInfo(companyID, appId, sync.getType());
+			appMain = this.getAppCompltLeaveInfo(companyID, appId, sync.getType(), lstWkType);
 		}else{//TH co don lien ket
 			//lay thong tin chi tiet A
-			appMain = this.getAppCompltLeaveInfo(companyID, appId, sync.getType());
+			appMain = this.getAppCompltLeaveInfo(companyID, appId, sync.getType(), lstWkType);
 			//check B co trong list don xin k?
 			String appIdSync = sync.getType() == 0 ? sync.getRecId() : sync.getAbsId();
 			//lay thong tin chung
 			Application_New sub = repoApp.findByID(companyID, appIdSync).get();
 			appDateSub = sub.getAppDate().toString("yyyy/MM/dd");
 			appInputSub = sub.getInputDate().toString("yyyy/MM/dd HH:mm");
-			appSub = this.getAppCompltLeaveInfo(companyID, appIdSync, sync.getType() == 0 ? 1 : 0);
+			appSub = this.getAppCompltLeaveInfo(companyID, appIdSync, sync.getType() == 0 ? 1 : 0, lstWkType);
 		}
 		return new AppCompltLeaveSync(sync.getType(), sync.isSync(), appMain, appSub, appDateSub, appInputSub);
+	}
+	@Override
+	public AppCompltLeaveSyncOutput getAppComplementLeaveSync(String companyId, String appId) {
+		Optional<AbsenceLeaveApp> abs = absRepo.findByAppId(appId);
+		Optional<CompltLeaveSimMng> sync = null;
+		String absId = "";
+		String recId = "";
+		boolean synced = false;
+		int type = 0;
+		if(abs.isPresent()){//don xin nghi
+			absId = appId;
+			//tim lien ket theo abs
+			sync = compLeaveRepo.findByAbsID(appId);
+			if(sync.isPresent() && sync.get().getSyncing().equals(SyncState.SYNCHRONIZING)){
+				recId = sync.get().getRecAppID();
+				synced = true;
+			}
+		}else{//don lam bu
+			type = 1;
+			recId = appId;
+			sync = compLeaveRepo.findByRecID(appId);
+			if(sync.isPresent() && sync.get().getSyncing().equals(SyncState.SYNCHRONIZING)){
+				absId = sync.get().getAbsenceLeaveAppID();
+				synced = true;
+			}
+		}
+		return new AppCompltLeaveSyncOutput(absId, recId, synced, type);
+	}
+	/**
+	 * 勤務就業名称を作成 - WorkType
+	 * @param lstWkType
+	 * @param wkTypeCd
+	 * @return
+	 */
+	private String findWorkTypeName(List<WorkType> lstWkType, String wkTypeCd){
+		if(lstWkType.isEmpty()){
+            Optional<WorkType> wt = repoWorkType.findByPK(AppContexts.user().companyId(), wkTypeCd);
+            return wt.isPresent() ? wt.get().getName().v() : wkTypeCd + "マスタ未登録";
+		}
+		for (WorkType workType : lstWkType) {
+			if(workType.getWorkTypeCode().v().equals(wkTypeCd)){
+				return workType.getName().v();
+			}
+		}
+		return wkTypeCd + "マスタ未登録";
+	}
+	/**
+	 * 勤務就業名称を作成 - WorkTime
+	 * @param lstWkTime
+	 * @param wkTimeCd
+	 * @return
+	 */
+	private String findWorkTimeName(List<WorkTimeSetting> lstWkTime, String wkTimeCd){
+		if(lstWkTime.isEmpty()){
+            Optional<WorkTimeSetting> workTime =  repoworkTime.findByCode(AppContexts.user().companyId(), wkTimeCd);
+            return workTime.isPresent() ? workTime.get().getWorkTimeDisplayName().getWorkTimeName().v() : wkTimeCd + "マスタ未登録";
+		}
+		for (WorkTimeSetting workTime : lstWkTime) {
+			if(workTime.getWorktimeCode().v().equals(wkTimeCd)){
+				return workTime.getWorkTimeDisplayName().getWorkTimeName().v();
+			}
+		}
+		return wkTimeCd + "マスタ未登録";
 	}
 }

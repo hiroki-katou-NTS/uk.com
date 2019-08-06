@@ -264,10 +264,14 @@ public class HolidayShipmentScreenAFinder {
 	}
 
 	public HolidayShipmentDto changeAppDate(GeneralDate recDate, GeneralDate absDate, int comType, int uiType) {
+		
 		String companyID = AppContexts.user().companyId();
 		String employeeID = AppContexts.user().employeeId();
-		GeneralDate baseDate = comType == ApplicationCombination.Abs.value ? absDate : recDate;
+		
+		GeneralDate baseDate = getBaseDate(comType, absDate, recDate);
+		
 		AppCommonSettingOutput appCommonSettingOutput = getAppCommonSet(companyID, employeeID, baseDate);
+		
 		HolidayShipmentDto output = commonProcessBeforeStart(APP_TYPE, companyID, employeeID, baseDate,
 				appCommonSettingOutput);
 		// アルゴリズム「実績の取得」を実行する
@@ -277,6 +281,16 @@ public class HolidayShipmentScreenAFinder {
 		setChangeAppDateData(recDate, absDate, companyID, employeeID, uiType, output, appCommonSettingOutput, baseDate);
 
 		return output;
+	}
+
+	private GeneralDate getBaseDate(int comType, GeneralDate absDate, GeneralDate recDate) {
+		if (comType == ApplicationCombination.Abs.value) {
+			return absDate;
+		}
+		if(comType == ApplicationCombination.RecAndAbs.value && recDate == null){
+			return GeneralDate.today();
+		}
+		return recDate;
 	}
 
 	public WorkTimeInfoDto getSelectedWorkingHours(String wkTypeCD, String wkTimeCD) {

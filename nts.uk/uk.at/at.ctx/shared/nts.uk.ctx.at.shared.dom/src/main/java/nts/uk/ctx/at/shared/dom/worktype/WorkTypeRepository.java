@@ -340,4 +340,8 @@ public interface WorkTypeRepository {
 	List<WorkType> findForAppHdKAF006(String companyId, List<String> lstWorkTypeCD, int deprecateAtr, List<Integer> hdType);
 
 	boolean findWorkTypeRecord(String companyId, String workTypeCode);
+
+	List<WorkTypeInfor> getNotRemoveWorkType(String companyId, List<String> lstPossible);
+	
+	List<WorkType> findListByCid(String companyId);
 }

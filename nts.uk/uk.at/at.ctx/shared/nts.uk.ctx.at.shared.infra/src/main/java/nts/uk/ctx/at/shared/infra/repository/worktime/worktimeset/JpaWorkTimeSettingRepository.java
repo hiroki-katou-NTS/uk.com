@@ -42,6 +42,7 @@ public class JpaWorkTimeSettingRepository extends JpaRepository implements WorkT
 	
 	private static final String SELECT_CODE_AND_NAME_BY_WORKTIME_CODE = "SELECT c.kshmtWorkTimeSetPK.worktimeCd, c.name FROM KshmtWorkTimeSet c"
 			+ " WHERE c.kshmtWorkTimeSetPK.cid = :companyId AND c.kshmtWorkTimeSetPK.worktimeCd IN :listWorkTimeCode";
+	private static final String FIND_BY_CID = "SELECT c FROM KshmtWorkTimeSet c  WHERE c.kshmtWorkTimeSetPK.cid = :companyId";
 
 	/*
 	 * (non-Javadoc)
@@ -416,6 +417,14 @@ public class JpaWorkTimeSettingRepository extends JpaRepository implements WorkT
 		});
 		
 		return listObject.stream().collect(Collectors.toMap(x -> String.valueOf(x[0]), x -> String.valueOf(x[1])));
+	}
+
+	@Override
+	public List<WorkTimeSetting> findByCId(String companyId) {
+		return this.queryProxy()
+				.query(FIND_BY_CID, KshmtWorkTimeSet.class)
+				.setParameter("companyId", companyId)
+				.getList(c -> new WorkTimeSetting(new JpaWorkTimeSettingGetMemento(c)));
 	}
 	
 }

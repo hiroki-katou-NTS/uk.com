@@ -74,7 +74,7 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 	//hoatt
 	private static final String SELECT_BY_LIST_APPLICANT = SELECT_FROM_APPLICATION 
 				+ " AND a.employeeID IN :lstSID"
-				+ " AND a.endDate >= :startDate AND a.startDate <= :endDate and a.appType IN (0,1,2,4,6,10)";
+				+ " AND a.endDate >= :startDate AND a.startDate <= :endDate and a.appType IN :lstType";
 	//hoatt
 //	private static final String SELECT_APP_BY_SID = SELECT_FROM_APPLICATION + " AND ( a.employeeID = :employeeID Or a.enteredPersonID = :employeeID )"
 //			+ " AND ((a.startDate >= :startDate and a.endDate <= :endDate)"
@@ -86,7 +86,7 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 			+ " AND a.krqdpApplicationPK.appID in :lstAppId"
 			+ " AND a.stateReflectionReal != 5"
 			+ " AND a.endDate >= :startDate and a.startDate <= :endDate"
-			+ " AND a.appType IN (0,1,2,4,6,10)";
+			+ " AND a.appType IN :lstType";
 	private static final String SELECT_APP_BY_SIDS = "SELECT a FROM KrqdtApplication_New a" + " WHERE a.employeeID IN :employeeID" + " AND a.appDate >= :startDate AND a.appDate <= :endDate";
 	private static final String SELECT_APPLICATION_BY_ID = "SELECT a FROM KrqdtApplication_New a"
 			+ " WHERE a.krqdpApplicationPK.appID = :appID AND a.krqdpApplicationPK.companyID = :companyID";
@@ -201,8 +201,7 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 		return data;
 	}
 	@Override
-	public List<Application_New> getBeforeApplication(String companyId, String employeeID, GeneralDate appDate, GeneralDateTime inputDate,
-			int appType, int prePostAtr) {
+	public List<Application_New> getBeforeApplication(String companyId, String employeeID, GeneralDate appDate, int appType, int prePostAtr) {
 		return this.queryProxy().query(SELECT_BEFORE_APPLICATION, KrqdtApplication_New.class)
 				.setParameter("companyID", companyId)
 				.setParameter("employeeID", employeeID)
@@ -270,20 +269,18 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 	 * phuc vu CMM045
 	 */
 	@Override
-	public List<Application_New> getListAppByReflectandListID(String companyId, GeneralDate startDate, GeneralDate endDate, List<String> lstAppId) {
-		if(lstAppId.isEmpty()){
-			return new ArrayList<>();
-		}
-		List<Application_New> lstResult = new ArrayList<>();
-		CollectionUtil.split(lstAppId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subListId -> {
-			lstResult.addAll(this.queryProxy().query(SELECT_APP_BY_REFLECT, KrqdtApplication_New.class)
-					.setParameter("companyID", companyId)
-					.setParameter("lstAppId", subListId)
-					.setParameter("startDate", startDate)
-					.setParameter("endDate", endDate)
-					.getList(c -> c.toDomain()));
-		});
-		return lstResult;
+    public List<Application_New> getListAppByReflectandListID(String companyId, GeneralDate startDate, GeneralDate endDate,
+    		List<String> lstAppId, List<Integer> lstType) {
+        if(lstAppId.isEmpty() || lstType.isEmpty()){
+            return new ArrayList<>();
+        }
+		return this.queryProxy().query(SELECT_APP_BY_REFLECT, KrqdtApplication_New.class)
+				.setParameter("companyID", companyId)
+                .setParameter("lstAppId", lstAppId)
+				.setParameter("startDate", startDate)
+				.setParameter("endDate", endDate)
+				.setParameter("lstType", lstType)
+				.getList(c -> c.toDomain());
 	}
 	/**
 	 * get List Application Pre
@@ -434,8 +431,8 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 	 */
 	@Override
 	public List<Application_New> getByListApplicant(String companyId, List<String> lstSID, GeneralDate sDate,
-			GeneralDate eDate) {
-		if(lstSID.isEmpty()){
+			GeneralDate eDate, List<Integer> lstType) {
+		if(lstSID.isEmpty() || lstType.isEmpty()){
 			return new ArrayList<>();
 		}
 		List<KrqdtApplication_New> resultList = new ArrayList<>();
@@ -445,6 +442,7 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 					.setParameter("lstSID", subList)
 					.setParameter("startDate", sDate)
 					.setParameter("endDate", eDate)
+					.setParameter("lstType", lstType)
 					.getList());
 		});
 		return resultList.stream().map(c -> c.toDomain()).collect(Collectors.toList());
@@ -495,63 +493,18 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 		return resultList;
 	}
 	@Override
-	@SneakyThrows
 	public List<Application_New> getByListDateReflectType(String sid, List<GeneralDate> dateData, List<Integer> reflect,
 			List<Integer> appType) {
 		List<Application_New> resultList = new ArrayList<>();
 		CollectionUtil.split(dateData, SPLIT_650, lstDate -> {
-			String subIn1 = NtsStatement.In.createParamsString(lstDate);
 			CollectionUtil.split(reflect, SPLIT_650, lstRef -> {
-				String subIn2 = NtsStatement.In.createParamsString(lstRef);
 				CollectionUtil.split(appType, SPLIT_650, lstApp -> {
-					String subIn3 = NtsStatement.In.createParamsString(lstApp);
-					String sql = "SELECT * FROM KRQDT_APPLICATION "
-							+ "WHERE APP_DATE IN (" + subIn1 + ") "
-									+ " AND REFLECT_PER_STATE IN (" + subIn2 + ")"
-									+ " AND APP_TYPE IN (" + subIn3 + ") "
-											+ " AND APPLICANTS_SID = ?";
-					try(val stmt = this.connection().prepareStatement(sql)){
-						for (int i = 0; i < lstDate.size(); i++) {
-							stmt.setDate(i + 1, Date.valueOf(lstDate.get(i).localDate()));
-						}
-						for (int i = 0; i < lstRef.size(); i++) {
-							stmt.setInt(lstDate.size() + i + 1, lstRef.get(i));
-						}
-						int inCount = lstDate.size() + lstRef.size();
-						for (int i = 0; i < lstApp.size(); i++) {
-							stmt.setInt(inCount + i + 1, lstApp.get(i));
-						}
-						stmt.setString(1  + lstApp.size() + inCount, sid);
-						List<Application_New> resultListTmp =  new NtsResultSet(stmt.executeQuery()).getList(x -> {
-							ReflectionInformation_New reflectInfor = new ReflectionInformation_New(EnumAdaptor.valueOf(x.getInt("REFLECT_PLAN_STATE"), ReflectedState_New.class),
-									EnumAdaptor.valueOf(x.getInt("REFLECT_PER_STATE"), ReflectedState_New.class), 
-									EnumAdaptor.valueOf(x.getInt("REFLECT_PLAN_ENFORCE_ATR"), DisabledSegment_New.class),
-									EnumAdaptor.valueOf(x.getInt("REFLECT_PER_ENFORCE_ATR"), DisabledSegment_New.class),
-									x.getInt("REFLECT_PLAN_SCHE_REASON") == null ? Optional.empty() :
-										Optional.ofNullable(EnumAdaptor.valueOf(x.getInt("REFLECT_PLAN_SCHE_REASON"), ReasonNotReflect_New.class)), 
-									x.getInt("REFLECT_PER_SCHE_REASON") == null ? Optional.empty() :
-										Optional.ofNullable(EnumAdaptor.valueOf(x.getInt("REFLECT_PER_SCHE_REASON"), ReasonNotReflectDaily_New.class)),
-									Optional.ofNullable(x.getGeneralDateTime("REFLECT_PLAN_TIME")),
-									Optional.ofNullable(x.getGeneralDateTime("REFLECT_PER_TIME"))); 
-							return new Application_New(x.getLong("EXCLUS_VER"),
-									x.getString("CID"),
-									x.getString("APP_ID"),
-									EnumAdaptor.valueOf(x.getInt("PRE_POST_ATR"), PrePostAtr.class),
-									x.getGeneralDateTime("INPUT_DATE"),
-									x.getString("ENTERED_PERSON_SID"),
-									new AppReason(x.getString("REASON_REVERSION")),
-									x.getGeneralDate("APP_DATE"),
-									new AppReason(x.getString("APP_REASON")),
-									EnumAdaptor.valueOf(x.getInt("APP_TYPE"), ApplicationType.class),
-									x.getString("APPLICANTS_SID"),
-									Optional.ofNullable(x.getGeneralDate("APP_START_DATE")),
-									Optional.ofNullable(x.getGeneralDate("APP_END_DATE")),
-									reflectInfor);
-						});
-						resultList.addAll(resultListTmp);
-					} catch (SQLException e) {
-						throw new RuntimeException(e);
-					}					
+					resultList.addAll(this.queryProxy().query(SELECT_BY_SID_LISTDATE_APPTYPE, KrqdtApplication_New.class)
+										  .setParameter("employeeID", sid)
+										  .setParameter("dates", lstDate)
+										  .setParameter("stateReflectionReals", lstRef)
+										  .setParameter("appTypes", lstApp)
+										  .getList(x -> x.toDomain()));
 				});
 			});
 		});

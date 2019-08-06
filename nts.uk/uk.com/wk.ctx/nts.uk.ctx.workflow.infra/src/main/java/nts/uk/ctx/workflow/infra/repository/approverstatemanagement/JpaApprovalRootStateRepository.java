@@ -16,7 +16,6 @@ import lombok.SneakyThrows;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalForm;
@@ -108,8 +107,7 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT root.ROOT_STATE_ID, root.HIST_ID, root.EMPLOYEE_ID, root.APPROVAL_RECORD_DATE,");
 		builderString.append("phase.PHASE_ORDER, phase.APP_PHASE_ATR, phase.APPROVAL_FORM,");
-		builderString.append(
-				"frame.FRAME_ORDER, frame.APP_FRAME_ATR, frame.CONFIRM_ATR, frame.APPROVER_ID, frame.REPRESENTER_ID, frame.APPROVAL_DATE, frame.APPROVAL_REASON,");
+		builderString.append("frame.FRAME_ORDER, frame.APP_FRAME_ATR, frame.CONFIRM_ATR, frame.APPROVER_ID, frame.REPRESENTER_ID, frame.APPROVAL_DATE, frame.APPROVAL_REASON,");
 		builderString.append("approver.APPROVER_CHILD_ID, approver.CID FROM WWFDT_APPROVAL_ROOT_STATE root ");
 		builderString.append("LEFT JOIN WWFDT_APPROVAL_PHASE_ST phase ");
 		builderString.append("ON root.ROOT_STATE_ID = phase.ROOT_STATE_ID ");
@@ -548,26 +546,21 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 		switch (rootType) {
 		case 1:
 			WwfdtApprovalRootDay wwfdtApprovalRootDay = this.queryProxy()
-					.find(new WwfdpApprovalRootDayPK(approvalRootState.getRootStateID()), WwfdtApprovalRootDay.class)
-					.get();
+					.find(new WwfdpApprovalRootDayPK(approvalRootState.getRootStateID()), WwfdtApprovalRootDay.class).get();
 			wwfdtApprovalRootDay.listWwfdtApprovalPhaseDay = approvalRootState.getListApprovalPhaseState().stream()
 					.map(x -> updateEntityWwfdtApprovalPhaseDay(x)).collect(Collectors.toList());
 			this.commandProxy().update(wwfdtApprovalRootDay);
 			break;
 		case 2:
 			WwfdtApprovalRootMonth wwfdtApprovalRootMonth = this.queryProxy()
-					.find(new WwfdpApprovalRootMonthPK(approvalRootState.getRootStateID()),
-							WwfdtApprovalRootMonth.class)
-					.get();
+					.find(new WwfdpApprovalRootMonthPK(approvalRootState.getRootStateID()), WwfdtApprovalRootMonth.class).get();
 			wwfdtApprovalRootMonth.listWwfdtApprovalPhaseMonth = approvalRootState.getListApprovalPhaseState().stream()
 					.map(x -> updateEntityWwfdtApprovalPhaseMonth(x)).collect(Collectors.toList());
 			this.commandProxy().update(wwfdtApprovalRootMonth);
 			break;
 		default:
 			WwfdtApprovalRootState wwfdtApprovalRootState = this.queryProxy()
-					.find(new WwfdpApprovalRootStatePK(approvalRootState.getRootStateID()),
-							WwfdtApprovalRootState.class)
-					.get();
+					.find(new WwfdpApprovalRootStatePK(approvalRootState.getRootStateID()), WwfdtApprovalRootState.class).get();
 			wwfdtApprovalRootState.listWwfdtApprovalPhaseState = approvalRootState.getListApprovalPhaseState().stream()
 					.map(x -> updateEntityWwfdtApprovalPhaseState(x)).collect(Collectors.toList());
 			this.commandProxy().update(wwfdtApprovalRootState);
@@ -588,11 +581,12 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 			this.commandProxy().remove(WwfdtApprovalRootState.class, new WwfdpApprovalRootStatePK(rootStateID));
 		}
 	}
-
+	
 	private WwfdtApprovalPhaseState updateEntityWwfdtApprovalPhaseState(ApprovalPhaseState approvalPhaseState) {
 		WwfdtApprovalPhaseState wwfdtApprovalPhaseState = this.queryProxy().find(
-				new WwfdpApprovalPhaseStatePK(approvalPhaseState.getRootStateID(), approvalPhaseState.getPhaseOrder()),
-				WwfdtApprovalPhaseState.class).get();
+				new WwfdpApprovalPhaseStatePK(
+						approvalPhaseState.getRootStateID(), 
+						approvalPhaseState.getPhaseOrder()), WwfdtApprovalPhaseState.class).get();
 		wwfdtApprovalPhaseState.approvalAtr = approvalPhaseState.getApprovalAtr().value;
 		wwfdtApprovalPhaseState.approvalForm = approvalPhaseState.getApprovalForm().value;
 		wwfdtApprovalPhaseState.listWwfdtApprovalFrame = approvalPhaseState.getListApprovalFrame().stream()
@@ -600,11 +594,12 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 		return wwfdtApprovalPhaseState;
 	}
 
-	private WwfdtApprovalFrame updateEntityWwfdtApprovalFrame(ApprovalFrame approvalFrame) {
-		WwfdtApprovalFrame wwfdtApprovalFrame = this.queryProxy()
-				.find(new WwfdpApprovalFramePK(approvalFrame.getRootStateID(), approvalFrame.getPhaseOrder(),
-						approvalFrame.getFrameOrder()), WwfdtApprovalFrame.class)
-				.get();
+	private WwfdtApprovalFrame updateEntityWwfdtApprovalFrame(ApprovalFrame approvalFrame){
+		WwfdtApprovalFrame wwfdtApprovalFrame = this.queryProxy().find(
+				new WwfdpApprovalFramePK(
+						approvalFrame.getRootStateID(), 
+						approvalFrame.getPhaseOrder(), 
+						approvalFrame.getFrameOrder()), WwfdtApprovalFrame.class).get();
 		wwfdtApprovalFrame.approvalAtr = approvalFrame.getApprovalAtr().value;
 		wwfdtApprovalFrame.confirmAtr = approvalFrame.getConfirmAtr().value;
 		wwfdtApprovalFrame.approverID = approvalFrame.getApproverID();
@@ -617,17 +612,20 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 	}
 
 	private WwfdtApproverState updateEntityWwfdtApproverState(ApproverState approverState) {
-		WwfdtApproverState wwfdtApproverState = this.queryProxy()
-				.find(new WwfdpApproverStatePK(approverState.getRootStateID(), approverState.getPhaseOrder(),
-						approverState.getFrameOrder(), approverState.getApproverID()), WwfdtApproverState.class)
-				.get();
+		WwfdtApproverState wwfdtApproverState = this.queryProxy().find(
+				new WwfdpApproverStatePK(
+						approverState.getRootStateID(), 
+						approverState.getPhaseOrder(), 
+						approverState.getFrameOrder(), 
+						approverState.getApproverID()), WwfdtApproverState.class).get();
 		return wwfdtApproverState;
 	}
-
+	
 	private WwfdtApprovalPhaseDay updateEntityWwfdtApprovalPhaseDay(ApprovalPhaseState approvalPhaseState) {
 		WwfdtApprovalPhaseDay wwfdtApprovalPhaseDay = this.queryProxy().find(
-				new WwfdpApprovalPhaseDayPK(approvalPhaseState.getRootStateID(), approvalPhaseState.getPhaseOrder()),
-				WwfdtApprovalPhaseDay.class).get();
+				new WwfdpApprovalPhaseDayPK(
+						approvalPhaseState.getRootStateID(), 
+						approvalPhaseState.getPhaseOrder()), WwfdtApprovalPhaseDay.class).get();
 		wwfdtApprovalPhaseDay.approvalAtr = approvalPhaseState.getApprovalAtr().value;
 		wwfdtApprovalPhaseDay.approvalForm = approvalPhaseState.getApprovalForm().value;
 		wwfdtApprovalPhaseDay.listWwfdtApprovalFrameDay = approvalPhaseState.getListApprovalFrame().stream()
@@ -635,11 +633,12 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 		return wwfdtApprovalPhaseDay;
 	}
 
-	private WwfdtApprovalFrameDay updateEntityWwfdtApprovalFrameDay(ApprovalFrame approvalFrame) {
-		WwfdtApprovalFrameDay wwfdtApprovalFrameDay = this
-				.queryProxy().find(new WwfdpApprovalFrameDayPK(approvalFrame.getRootStateID(),
-						approvalFrame.getPhaseOrder(), approvalFrame.getFrameOrder()), WwfdtApprovalFrameDay.class)
-				.get();
+	private WwfdtApprovalFrameDay updateEntityWwfdtApprovalFrameDay(ApprovalFrame approvalFrame){
+		WwfdtApprovalFrameDay wwfdtApprovalFrameDay = this.queryProxy().find(
+				new WwfdpApprovalFrameDayPK(
+						approvalFrame.getRootStateID(), 
+						approvalFrame.getPhaseOrder(), 
+						approvalFrame.getFrameOrder()), WwfdtApprovalFrameDay.class).get();
 		wwfdtApprovalFrameDay.approvalAtr = approvalFrame.getApprovalAtr().value;
 		wwfdtApprovalFrameDay.confirmAtr = approvalFrame.getConfirmAtr().value;
 		wwfdtApprovalFrameDay.approverID = approvalFrame.getApproverID();
@@ -652,17 +651,20 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 	}
 
 	private WwfdtApproverDay updateEntityWwfdtApproverDay(ApproverState approverState) {
-		WwfdtApproverDay wwfdtApproverDay = this.queryProxy()
-				.find(new WwfdpApproverDayPK(approverState.getRootStateID(), approverState.getPhaseOrder(),
-						approverState.getFrameOrder(), approverState.getApproverID()), WwfdtApproverDay.class)
-				.get();
+		WwfdtApproverDay wwfdtApproverDay = this.queryProxy().find(
+				new WwfdpApproverDayPK(
+						approverState.getRootStateID(), 
+						approverState.getPhaseOrder(), 
+						approverState.getFrameOrder(), 
+						approverState.getApproverID()), WwfdtApproverDay.class).get();
 		return wwfdtApproverDay;
 	}
-
+	
 	private WwfdtApprovalPhaseMonth updateEntityWwfdtApprovalPhaseMonth(ApprovalPhaseState approvalPhaseState) {
 		WwfdtApprovalPhaseMonth wwfdtApprovalPhaseMonth = this.queryProxy().find(
-				new WwfdpApprovalPhaseMonthPK(approvalPhaseState.getRootStateID(), approvalPhaseState.getPhaseOrder()),
-				WwfdtApprovalPhaseMonth.class).get();
+				new WwfdpApprovalPhaseMonthPK(
+						approvalPhaseState.getRootStateID(), 
+						approvalPhaseState.getPhaseOrder()), WwfdtApprovalPhaseMonth.class).get();
 		wwfdtApprovalPhaseMonth.approvalAtr = approvalPhaseState.getApprovalAtr().value;
 		wwfdtApprovalPhaseMonth.approvalForm = approvalPhaseState.getApprovalForm().value;
 		wwfdtApprovalPhaseMonth.listWwfdtApprovalFrameMonth = approvalPhaseState.getListApprovalFrame().stream()
@@ -670,11 +672,12 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 		return wwfdtApprovalPhaseMonth;
 	}
 
-	private WwfdtApprovalFrameMonth updateEntityWwfdtApprovalFrameMonth(ApprovalFrame approvalFrame) {
-		WwfdtApprovalFrameMonth wwfdtApprovalFrameMonth = this
-				.queryProxy().find(new WwfdpApprovalFrameMonthPK(approvalFrame.getRootStateID(),
-						approvalFrame.getPhaseOrder(), approvalFrame.getFrameOrder()), WwfdtApprovalFrameMonth.class)
-				.get();
+	private WwfdtApprovalFrameMonth updateEntityWwfdtApprovalFrameMonth(ApprovalFrame approvalFrame){
+		WwfdtApprovalFrameMonth wwfdtApprovalFrameMonth = this.queryProxy().find(
+				new WwfdpApprovalFrameMonthPK(
+						approvalFrame.getRootStateID(), 
+						approvalFrame.getPhaseOrder(), 
+						approvalFrame.getFrameOrder()), WwfdtApprovalFrameMonth.class).get();
 		wwfdtApprovalFrameMonth.approvalAtr = approvalFrame.getApprovalAtr().value;
 		wwfdtApprovalFrameMonth.confirmAtr = approvalFrame.getConfirmAtr().value;
 		wwfdtApprovalFrameMonth.approverID = approvalFrame.getApproverID();
@@ -687,10 +690,12 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 	}
 
 	private WwfdtApproverMonth updateEntityWwfdtApproverMonth(ApproverState approverState) {
-		WwfdtApproverMonth wwfdtApproverMonth = this.queryProxy()
-				.find(new WwfdpApproverMonthPK(approverState.getRootStateID(), approverState.getPhaseOrder(),
-						approverState.getFrameOrder(), approverState.getApproverID()), WwfdtApproverMonth.class)
-				.get();
+		WwfdtApproverMonth wwfdtApproverMonth = this.queryProxy().find(
+				new WwfdpApproverMonthPK(
+						approverState.getRootStateID(), 
+						approverState.getPhaseOrder(), 
+						approverState.getFrameOrder(), 
+						approverState.getApproverID()), WwfdtApproverMonth.class).get();
 		return wwfdtApproverMonth;
 	}
 
@@ -701,15 +706,21 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 		switch (rootType) {
 		case 1:
 			result = this.queryProxy().query(SELECT_CF_DAY_BY_DATE, WwfdtApprovalRootDay.class)
-					.setParameter("startDate", startDate).setParameter("endDate", endDate).getList(x -> x.toDomain());
+				.setParameter("startDate", startDate)
+				.setParameter("endDate", endDate)
+				.getList(x -> x.toDomain());
 			break;
 		case 2:
 			result = this.queryProxy().query(SELECT_CF_MONTH_BY_DATE, WwfdtApprovalRootMonth.class)
-					.setParameter("startDate", startDate).setParameter("endDate", endDate).getList(x -> x.toDomain());
+				.setParameter("startDate", startDate)
+				.setParameter("endDate", endDate)
+				.getList(x -> x.toDomain());
 			break;
 		default:
 			result = this.queryProxy().query(SELECT_APP_BY_DATE, WwfdtApprovalRootState.class)
-					.setParameter("startDate", startDate).setParameter("endDate", endDate).getList(x -> x.toDomain());
+				.setParameter("startDate", startDate)
+				.setParameter("endDate", endDate)
+				.getList(x -> x.toDomain());
 		}
 		return result;
 	}
@@ -720,24 +731,28 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 		switch (rootType) {
 		case 1:
 			return this.queryProxy().query(SELECT_CF_DAY_BY_EMP_DATE, WwfdtApprovalRootDay.class)
-					.setParameter("startDate", startDate).setParameter("endDate", endDate)
+					.setParameter("startDate", startDate)
+					.setParameter("endDate", endDate)
 					.setParameter("employeeID", employeeID).getList(x -> x.toDomain());
 		case 2:
 			return this.queryProxy().query(SELECT_CF_MONTH_BY_EMP_DATE, WwfdtApprovalRootMonth.class)
-					.setParameter("startDate", startDate).setParameter("endDate", endDate)
+					.setParameter("startDate", startDate)
+					.setParameter("endDate", endDate)
 					.setParameter("employeeID", employeeID).getList(x -> x.toDomain());
 		default:
 			return this.queryProxy().query(SELECT_APP_BY_EMP_DATE, WwfdtApprovalRootState.class)
-					.setParameter("startDate", startDate).setParameter("endDate", endDate)
+					.setParameter("startDate", startDate)
+					.setParameter("endDate", endDate)
 					.setParameter("employeeID", employeeID).getList(x -> x.toDomain());
 		}
 	}
 
 	@Override
-	public List<ApprovalRootState> getRootStateByApproverDate(String companyID, String approverID, GeneralDate date) {
-		List<String> listAppRootStateSimp = this.queryProxy()
-				.query(SELECT_SIMPLE_APP_BY_DATE, WwfdtAppRootStateSimple.class).setParameter("startDate", date)
-				.setParameter("endDate", date).getList(x -> x.wwfdpApprovalRootStatePK.rootStateID);
+	public List<ApprovalRootState> getRootStateByApproverDate(String companyID, String approverID, GeneralDate date){
+		List<String> listAppRootStateSimp = 
+				this.queryProxy().query(SELECT_SIMPLE_APP_BY_DATE, WwfdtAppRootStateSimple.class)
+					.setParameter("startDate", date)
+					.setParameter("endDate", date).getList(x -> x.wwfdpApprovalRootStatePK.rootStateID);
 		List<ApprovalRootState> listAppRootState = new ArrayList<>();
 		CollectionUtil.split(listAppRootStateSimp, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 				internalQuery2(companyID, listAppRootState, subList);
@@ -796,17 +811,26 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 			GeneralDate startDate, GeneralDate endDate, String approverID) {
 		List<ApprovalRootState> result = new ArrayList<>();
 		result.addAll(this.queryProxy().query(SELECT_APPS_BY_APPROVER, WwfdtApprovalRootState.class)
-				.setParameter("companyID", companyID).setParameter("startDate", startDate)
-				.setParameter("endDate", endDate).setParameter("approverID", approverID)
-				.setParameter("systemDate", GeneralDate.today()).getList(x -> x.toDomain()));
+				.setParameter("companyID", companyID)
+				.setParameter("startDate", startDate)
+				.setParameter("endDate", endDate)
+				.setParameter("approverID", approverID)
+				.setParameter("systemDate", GeneralDate.today())
+				.getList(x -> x.toDomain()));
 		result.addAll(this.queryProxy().query(SELECT_CFS_DAY_BY_APPROVER, WwfdtApprovalRootDay.class)
-				.setParameter("companyID", companyID).setParameter("startDate", startDate)
-				.setParameter("endDate", endDate).setParameter("approverID", approverID)
-				.setParameter("systemDate", GeneralDate.today()).getList(x -> x.toDomain()));
+				.setParameter("companyID", companyID)
+				.setParameter("startDate", startDate)
+				.setParameter("endDate", endDate)
+				.setParameter("approverID", approverID)
+				.setParameter("systemDate", GeneralDate.today())
+				.getList(x -> x.toDomain()));
 		result.addAll(this.queryProxy().query(SELECT_CFS_MONTH_BY_APPROVER, WwfdtApprovalRootMonth.class)
-				.setParameter("companyID", companyID).setParameter("startDate", startDate)
-				.setParameter("endDate", endDate).setParameter("approverID", approverID)
-				.setParameter("systemDate", GeneralDate.today()).getList(x -> x.toDomain()));
+				.setParameter("companyID", companyID)
+				.setParameter("startDate", startDate)
+				.setParameter("endDate", endDate)
+				.setParameter("approverID", approverID)
+				.setParameter("systemDate", GeneralDate.today())
+				.getList(x -> x.toDomain()));
 		return result;
 	}
 
@@ -814,8 +838,10 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 	public List<ApprovalRootState> findAppByListEmployeeIDRecordDate(GeneralDate startDate, GeneralDate endDate,
 			List<String> employeeIDs, Integer rootType) {
 		return this.queryProxy().query(SELECT_BY_LIST_EMP_DATE, WwfdtApprovalRootState.class)
-				.setParameter("startDate", startDate).setParameter("endDate", endDate)
-				.setParameter("rootType", rootType).setParameter("employeeID", employeeIDs).getList(x -> x.toDomain());
+				.setParameter("startDate", startDate)
+				.setParameter("endDate", endDate)
+				.setParameter("rootType", rootType)
+				.setParameter("employeeID", employeeIDs).getList(x -> x.toDomain());
 	}
 
 	@Override
@@ -824,15 +850,18 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 		switch (rootType) {
 		case 1:
 			return this.queryProxy().query(SELECT_CFS_DAY_BY_EMP_AND_DATES, WwfdtApprovalRootDay.class)
-					.setParameter("recordDate", approvalRecordDates).setParameter("employeeID", employeeIDs)
-					.getList(x -> x.toDomain());
+				.setParameter("recordDate", approvalRecordDates)
+				.setParameter("employeeID", employeeIDs)
+				.getList(x -> x.toDomain());
 		case 2:
 			return this.queryProxy().query(SELECT_CFS_MONTH_BY_EMP_AND_DATES, WwfdtApprovalRootMonth.class)
-					.setParameter("recordDate", approvalRecordDates).setParameter("employeeID", employeeIDs)
+					.setParameter("recordDate", approvalRecordDates)
+					.setParameter("employeeID", employeeIDs)
 					.getList(x -> x.toDomain());
 		default:
 			return this.queryProxy().query(SELECT_APPS_BY_EMP_AND_DATES, WwfdtApprovalRootState.class)
-					.setParameter("recordDate", approvalRecordDates).setParameter("employeeID", employeeIDs)
+					.setParameter("recordDate", approvalRecordDates)
+					.setParameter("employeeID", employeeIDs)
 					.getList(x -> x.toDomain());
 		}
 	}
@@ -844,21 +873,30 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 		switch (rootType) {
 		case 1:
 			result = this.queryProxy().query(SELECT_CFS_DAY_BY_APPROVER, WwfdtApprovalRootDay.class)
-					.setParameter("companyID", companyID).setParameter("startDate", startDate)
-					.setParameter("endDate", endDate).setParameter("approverID", approverID)
-					.setParameter("systemDate", GeneralDate.today()).getList(x -> x.toDomain());
+				.setParameter("companyID", companyID)
+				.setParameter("startDate", startDate)
+				.setParameter("endDate", endDate)
+				.setParameter("approverID", approverID)
+				.setParameter("systemDate", GeneralDate.today())
+				.getList(x -> x.toDomain());
 			break;
 		case 2:
 			result = this.queryProxy().query(SELECT_CFS_MONTH_BY_APPROVER, WwfdtApprovalRootMonth.class)
-					.setParameter("companyID", companyID).setParameter("startDate", startDate)
-					.setParameter("endDate", endDate).setParameter("approverID", approverID)
-					.setParameter("systemDate", GeneralDate.today()).getList(x -> x.toDomain());
+				.setParameter("companyID", companyID)
+				.setParameter("startDate", startDate)
+				.setParameter("endDate", endDate)
+				.setParameter("approverID", approverID)
+				.setParameter("systemDate", GeneralDate.today())
+				.getList(x -> x.toDomain());
 			break;
 		default:
 			result = this.queryProxy().query(SELECT_APPS_BY_APPROVER, WwfdtApprovalRootState.class)
-					.setParameter("companyID", companyID).setParameter("startDate", startDate)
-					.setParameter("endDate", endDate).setParameter("approverID", approverID)
-					.setParameter("systemDate", GeneralDate.today()).getList(x -> x.toDomain());
+				.setParameter("companyID", companyID)
+				.setParameter("startDate", startDate)
+				.setParameter("endDate", endDate)
+				.setParameter("approverID", approverID)
+				.setParameter("systemDate", GeneralDate.today())
+				.getList(x -> x.toDomain());
 		}
 		return result;
 	}
@@ -872,9 +910,10 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 
 	@Override
 	public void deleteConfirmDay(String employeeID, GeneralDate date) {
-		List<WwfdpApprovalRootDayPK> rootDayKeyList = this.queryProxy()
-				.query(SELECT_CF_DAY_BY_EMP_DATE_SP, WwfdtAppRootDaySimple.class).setParameter("startDate", date)
-				.setParameter("endDate", date).setParameter("employeeID", employeeID)
+		List<WwfdpApprovalRootDayPK> rootDayKeyList = this.queryProxy().query(SELECT_CF_DAY_BY_EMP_DATE_SP, WwfdtAppRootDaySimple.class)
+				.setParameter("startDate", date)
+				.setParameter("endDate", date)
+				.setParameter("employeeID", employeeID)
 				.getList(x -> new WwfdpApprovalRootDayPK(x.wwfdpApprovalRootDayPK.rootStateID));
 		this.commandProxy().removeAll(WwfdtApprovalRootDay.class, rootDayKeyList);
 	}
@@ -882,14 +921,16 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 	@Override
 	public List<ApprovalPhaseState> findPhaseApprovalMax(String appID) {
 		return this.queryProxy().query(FIND_PHASE_APPROVAL_MAX, WwfdtApprovalPhaseState.class)
-				.setParameter("appID", appID).getList(c -> toDomainPhase(c));
+				.setParameter("appID", appID)
+				.getList(c->toDomainPhase(c));
 	}
 
 	private ApprovalPhaseState toDomainPhase(WwfdtApprovalPhaseState entity) {
 		return new ApprovalPhaseState(entity.wwfdpApprovalPhaseStatePK.rootStateID,
 				entity.wwfdpApprovalPhaseStatePK.phaseOrder,
 				EnumAdaptor.valueOf(entity.approvalAtr, ApprovalBehaviorAtr.class),
-				EnumAdaptor.valueOf(entity.approvalForm, ApprovalForm.class), null);
+				EnumAdaptor.valueOf(entity.approvalForm, ApprovalForm.class), 
+				null);
 	}
 
 	private List<ApprovalRootState> convertFromSQLResult(List<WwfdtFullJoinState> listFullData) {
@@ -899,39 +940,54 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 					String historyID = x.getValue().get(0).getHistoryID();
 					GeneralDate recordDate = x.getValue().get(0).getRecordDate();
 					String employeeID = x.getValue().get(0).getEmployeeID();
-					List<ApprovalPhaseState> listAppPhase = x.getValue().stream()
-							.collect(Collectors.groupingBy(WwfdtFullJoinState::getPhaseOrder)).entrySet().stream()
-							.map(y -> {
-								Integer phaseOrder = y.getValue().get(0).getPhaseOrder();
-								ApprovalForm approvalForm = y.getValue().get(0).getApprovalForm();
-								ApprovalBehaviorAtr appPhaseAtr = y.getValue().get(0).getAppPhaseAtr();
-								List<ApprovalFrame> listAppFrame = y.getValue().stream()
-										.collect(Collectors.groupingBy(WwfdtFullJoinState::getFrameOrder)).entrySet()
-										.stream().map(z -> {
-											Integer frameOrder = z.getValue().get(0).getFrameOrder();
-											ConfirmPerson confirmAtr = z.getValue().get(0).getConfirmAtr();
-											String frameApproverID = z.getValue().get(0).getApproverID();
-											String representerID = z.getValue().get(0).getRepresenterID();
-											GeneralDate approvalDate = z.getValue().get(0).getApprovalDate();
-											String approvalReason = z.getValue().get(0).getApprovalReason();
-											ApprovalBehaviorAtr appFrameAtr = z.getValue().get(0).getAppFrameAtr();
-											List<ApproverState> listApprover = z.getValue().stream()
-													.collect(Collectors
-															.groupingBy(WwfdtFullJoinState::getApproverChildID))
-													.entrySet().stream().map(t -> {
-														return new ApproverState(rootStateID, phaseOrder, frameOrder,
-																t.getValue().get(0).getApproverChildID(),
-																t.getValue().get(0).getCompanyID(), recordDate);
-													}).collect(Collectors.toList());
-											return new ApprovalFrame(rootStateID, phaseOrder, frameOrder, appFrameAtr,
-													confirmAtr, listApprover, frameApproverID, representerID,
-													approvalDate, approvalReason);
-										}).collect(Collectors.toList());
-								return new ApprovalPhaseState(rootStateID, phaseOrder, appPhaseAtr, approvalForm,
-										listAppFrame);
+					List<ApprovalPhaseState> listAppPhase =
+					x.getValue().stream().collect(Collectors.groupingBy(WwfdtFullJoinState::getPhaseOrder)).entrySet()
+					.stream().map(y -> {
+						Integer phaseOrder  = y.getValue().get(0).getPhaseOrder();
+						ApprovalForm approvalForm = y.getValue().get(0).getApprovalForm();
+						ApprovalBehaviorAtr appPhaseAtr =  y.getValue().get(0).getAppPhaseAtr();
+						List<ApprovalFrame> listAppFrame =
+						y.getValue().stream().collect(Collectors.groupingBy(WwfdtFullJoinState::getFrameOrder)).entrySet()
+						.stream().map(z -> { 
+							Integer frameOrder = z.getValue().get(0).getFrameOrder();
+							ConfirmPerson confirmAtr = z.getValue().get(0).getConfirmAtr();
+							String frameApproverID =  z.getValue().get(0).getApproverID();
+							String representerID = z.getValue().get(0).getRepresenterID();
+							GeneralDate approvalDate = z.getValue().get(0).getApprovalDate();
+							String approvalReason = z.getValue().get(0).getApprovalReason();
+							ApprovalBehaviorAtr appFrameAtr = z.getValue().get(0).getAppFrameAtr();
+							List<ApproverState> listApprover = z.getValue().stream().collect(Collectors.groupingBy(WwfdtFullJoinState::getApproverChildID)).entrySet()
+							.stream().map(t -> {
+								return new ApproverState(
+										rootStateID,
+										phaseOrder,
+										frameOrder,
+										t.getValue().get(0).getApproverChildID(),
+										t.getValue().get(0).getCompanyID(),
+										recordDate);
 							}).collect(Collectors.toList());
-					return new ApprovalRootState(rootStateID, RootType.EMPLOYMENT_APPLICATION, historyID, recordDate,
-							employeeID, listAppPhase);
+							return new ApprovalFrame(
+									rootStateID,
+									phaseOrder,
+									frameOrder,
+									appFrameAtr,
+									confirmAtr,
+									listApprover,
+									frameApproverID,
+									representerID,
+									approvalDate,
+									approvalReason
+							);
+						}).collect(Collectors.toList());
+						return new ApprovalPhaseState(
+									rootStateID,
+									phaseOrder,
+									appPhaseAtr,
+									approvalForm,
+									listAppFrame
+								);
+					}).collect(Collectors.toList());
+					return new ApprovalRootState(rootStateID, RootType.EMPLOYMENT_APPLICATION, historyID, recordDate, employeeID, listAppPhase);
 				}).collect(Collectors.toList());
 	}
 
@@ -1155,6 +1211,53 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 		result.addAll(entityRoot);
 	}
 
+	@Override
+	public List<String> resultKTG002Mobile(GeneralDate startDate, GeneralDate endDate, String approverID,
+			Integer rootType, String companyID) {
+		String loginSID = AppContexts.user().employeeId();
+		GeneralDate baseDate = GeneralDate.today();
+		List<String> data = new ArrayList<>();
+		String SELECT = "SELECT SYONIN.ROOT_STATE_ID FROM ( " + "SELECT APS.ROOT_STATE_ID AS ROOT_STATE_ID,APS.PHASE_ORDER AS PHASE_ORDER "
+				+ "FROM WWFDT_APPROVER_STATE APS " + "INNER JOIN " + "WWFDT_APPROVAL_FRAME AF "
+				+ "ON APS.ROOT_STATE_ID = AF.ROOT_STATE_ID " + "AND APS.PHASE_ORDER = AF.PHASE_ORDER "
+				+ "AND APS.FRAME_ORDER = AF.FRAME_ORDER " + "WHERE APS.CID = ? " + "AND APS.APPROVER_CHILD_ID = ? "
+				+ "AND AF.APP_FRAME_ATR = '0' " + "AND APS.APPROVAL_RECORD_DATE >= ? "
+				+ "AND APS.APPROVAL_RECORD_DATE <= ? " + "UNION ALL "
+				+ "SELECT APS.ROOT_STATE_ID AS ROOT_STATE_ID,APS.PHASE_ORDER AS PHASE_ORDER "
+				+ "FROM WWFDT_APPROVER_STATE APS " + "INNER JOIN WWFDT_APPROVAL_FRAME AF "
+				+ "ON APS.ROOT_STATE_ID = AF.ROOT_STATE_ID " + "AND APS.PHASE_ORDER = AF.PHASE_ORDER "
+				+ "AND APS.FRAME_ORDER = AF.FRAME_ORDER " + "INNER JOIN CMMMT_AGENT AG "
+				+ "ON APS.APPROVER_CHILD_ID = AG.SID " + "WHERE APS.CID = ? " + "AND AF.APP_FRAME_ATR = '0' "
+				+ "AND APS.APPROVAL_RECORD_DATE >= ? " + "AND APS.APPROVAL_RECORD_DATE <= ? "
+				+ "AND AG.START_DATE <= ? " + "AND AG.END_DATE >= ? " + "AND AG.AGENT_APP_TYPE1 = '0' "
+				+ "AND AG.AGENT_SID1 = ? ) " + "AS SYONIN " + "INNER JOIN ( "
+				+ "SELECT AP.ROOT_STATE_ID AS ROOT_STATE_ID, MIN(PHASE_ORDER) AS NOW_PHASE_ORDER "
+				+ "FROM WWFDT_APPROVAL_PHASE_ST AP " + "WHERE AP.APP_PHASE_ATR IN ('0','3') "
+				+ "GROUP BY AP.ROOT_STATE_ID )" + "AS NOWFAS " + "ON SYONIN.ROOT_STATE_ID = NOWFAS.ROOT_STATE_ID "
+				+ "AND SYONIN.PHASE_ORDER = NOWFAS.NOW_PHASE_ORDER ";
+		try (PreparedStatement stmt = this.connection().prepareStatement(SELECT)) {
+			stmt.setString(1, companyID);
+			stmt.setString(2, loginSID);
+			stmt.setDate(3, Date.valueOf(startDate.localDate()));
+			stmt.setDate(4, Date.valueOf(endDate.localDate()));
+			stmt.setString(5, companyID);
+			stmt.setDate(6, Date.valueOf(startDate.localDate()));
+			stmt.setDate(7, Date.valueOf(endDate.localDate()));
+			stmt.setDate(8, Date.valueOf(baseDate.localDate()));
+			stmt.setDate(9, Date.valueOf(baseDate.localDate()));
+			stmt.setString(10, loginSID);
+			ResultSet result = stmt.executeQuery();
+			while (result.next()) {
+				//result.getString(SELECT);
+				data.add(result.getString("ROOT_STATE_ID"));
+			}
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		return data;
+	}
+	
 	@Override
 	public boolean resultKTG002(GeneralDate startDate, GeneralDate endDate, String approverID, Integer rootType,
 			String companyID) {

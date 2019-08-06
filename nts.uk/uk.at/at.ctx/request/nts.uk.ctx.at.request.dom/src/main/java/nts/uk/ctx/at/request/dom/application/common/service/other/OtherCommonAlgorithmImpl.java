@@ -18,9 +18,12 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.mail.send.MailContents;
+import nts.uk.ctx.at.request.dom.application.AppReason;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
@@ -41,6 +44,13 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.Abs
 import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.CompltLeaveSimMng;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.CompltLeaveSimMngRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.SyncState;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
+import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
+import nts.uk.ctx.at.request.dom.application.overtime.OvertimeInputRepository;
+import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
+import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
+import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepository;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispName;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
 import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailapplicationapproval.ApprovalTemp;
@@ -72,7 +82,6 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.service.WorkTypeIsClosedService;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.mail.MailSender;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.com.url.RegisterEmbededURL;
@@ -148,6 +157,18 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	private AppAbsenceRepository repoAbsence;
 	@Inject
 	private DisplayReasonRepository displayRep;
+	
+	@Inject
+	private ApplicationReasonRepository applicationReasonRepository;
+	
+	@Inject
+	private ApplicationRepository_New applicationRepository;
+	
+	@Inject
+	private OvertimeRepository overtimeRepository;
+	
+	@Inject
+	private OvertimeInputRepository overtimeInputRepository;
 	
 	public PeriodCurrentMonth employeePeriodCurrentMonthCalculate(String companyID, String employeeID, GeneralDate date){
 		/*
@@ -387,7 +408,7 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 			String URL = "";
 			// ドメインモデル「メール内容のURL埋込設定」を取得する
 			Optional<UrlEmbedded> opUrlEmbedded = urlEmbeddedRepository.getUrlEmbeddedById(companyID);
-			if(opUrlEmbedded.isPresent()&&opUrlEmbedded.get().getUrlEmbedded()==NotUseAtr.USE){
+			if(opUrlEmbedded.isPresent()){
 				URL = registerEmbededURL.registerEmbeddedForApp(
 						application.getAppID(), 
 						application.getAppType().value, 
@@ -459,7 +480,7 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		String URL = "";
 		// ドメインモデル「メール内容のURL埋込設定」を取得する
 		Optional<UrlEmbedded> opUrlEmbedded = urlEmbeddedRepository.getUrlEmbeddedById(companyID);
-		if(opUrlEmbedded.isPresent()&&opUrlEmbedded.get().getUrlEmbedded()==NotUseAtr.USE){
+		if(opUrlEmbedded.isPresent()){
 			URL = registerEmbededURL.registerEmbeddedForApp(
 					application.getAppID(), 
 					application.getAppType().value, 
@@ -496,7 +517,7 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		return new MailResult(successList, failList);
 	}
 	@Override
-	public List<GeneralDate> lstDateIsHoliday(String cid, String sid, DatePeriod dates) {
+	public List<GeneralDate> lstDateNotHoliday(String cid, String sid, DatePeriod dates) {
 		List<GeneralDate> lstOutput = new ArrayList<>();
 		for(int i = 0; dates.start().daysTo(dates.end()) - i >= 0; i++){
 			GeneralDate loopDate = dates.start().addDays(i);
@@ -578,5 +599,61 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 			}
 			return true;//output：・結果＝使用
 		}
+	}
+	
+	@Override
+	public List<ApplicationReason> getApplicationReasonType(String companyID, AppDisplayAtr typicalReasonDisplayFlg, ApplicationType appType) {
+		// Input．定型理由の表示区分をチェック
+		if (typicalReasonDisplayFlg == AppDisplayAtr.DISPLAY) {
+			// ドメインモデル「申請定型理由」を取得
+			List<ApplicationReason> applicationReasons = applicationReasonRepository.getReasonByAppType(companyID, appType.value);
+			return applicationReasons;
+		}
+		return Collections.emptyList();
+	}
+	
+	@Override
+	public boolean displayAppReasonContentFlg(AppDisplayAtr displayReasonFlg) {
+		// Input．申請理由の表示区分をチェック
+		if (displayReasonFlg == AppDisplayAtr.DISPLAY) {
+			return true;
+		}
+		return false;
+	}
+	
+	@Override
+	public AppOverTime getPreApplication(String employeeID, PrePostAtr prePostAtr, UseAtr preDisplayAtr, GeneralDate appDate, ApplicationType appType) {
+		String companyID =  AppContexts.user().companyId();
+		AppOverTime result = new AppOverTime();
+		if (prePostAtr == PrePostAtr.POSTERIOR) {
+			if(preDisplayAtr == UseAtr.USE){
+				List<Application_New> applicationLst = applicationRepository.getApp(employeeID, appDate, PrePostAtr.PREDICT.value, appType.value);
+				if(!CollectionUtil.isEmpty(applicationLst)){
+					Application_New applicationOvertime = Application_New.firstCreate(companyID, prePostAtr, appDate, appType, employeeID, new AppReason(Strings.EMPTY));
+					applicationOvertime.setAppDate(applicationLst.get(0).getAppDate());
+					Optional<AppOverTime> appOvertime = this.overtimeRepository
+							.getAppOvertime(applicationLst.get(0).getCompanyID(), applicationLst.get(0).getAppID());
+					if (appOvertime.isPresent()) {
+						result.setWorkTypeCode(appOvertime.get().getWorkTypeCode());
+						result.setSiftCode(appOvertime.get().getSiftCode());
+						result.setWorkClockFrom1(appOvertime.get().getWorkClockFrom1());
+						result.setWorkClockTo1(appOvertime.get().getWorkClockTo1());
+						result.setWorkClockFrom2(appOvertime.get().getWorkClockFrom2());
+						result.setWorkClockTo2(appOvertime.get().getWorkClockTo2());
+
+						List<OverTimeInput> overtimeInputs = overtimeInputRepository.getOvertimeInputByAttendanceId(
+								appOvertime.get().getCompanyID(), appOvertime.get().getAppID(),
+								AttendanceType.NORMALOVERTIME.value);
+						result.setOverTimeInput(overtimeInputs);
+						result.setOverTimeShiftNight(appOvertime.get().getOverTimeShiftNight());
+						result.setFlexExessTime(appOvertime.get().getFlexExessTime());
+						result.setApplication(applicationOvertime);
+						result.setAppID(appOvertime.get().getAppID());
+						return result;
+					}
+				}
+			}
+		}
+		return null;
 	}
 }

@@ -187,7 +187,10 @@ public class UpdateAppAbsenceCommandHandler extends CommandHandlerWithResult<Upd
 		GeneralDate cmdStartDate = GeneralDate.fromString(command.getStartDate(), DATE_FORMAT);
 		GeneralDate cmdEndDate = GeneralDate.fromString(command.getEndDate(), DATE_FORMAT);
 		List<GeneralDate> listDate = new ArrayList<>();
-		List<GeneralDate> lstHoliday = otherCommonAlg.lstDateIsHoliday(companyID, command.getEmployeeID(), new DatePeriod(cmdStartDate, cmdEndDate));
+		for(GeneralDate loopDate = cmdStartDate; loopDate.beforeOrEquals(cmdEndDate); loopDate = loopDate.addDays(1)){
+			listDate.add(loopDate);
+		}
+		List<GeneralDate> lstHoliday = otherCommonAlg.lstDateNotHoliday(companyID, command.getEmployeeID(), new DatePeriod(cmdStartDate, cmdEndDate));
 		for(GeneralDate loopDate = cmdStartDate; loopDate.beforeOrEquals(cmdEndDate); loopDate = loopDate.addDays(1)){
 			if(!lstHoliday.contains(loopDate)) {
 				listDate.add(loopDate);	

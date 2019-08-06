@@ -112,5 +112,11 @@ public interface WorkTimeSettingRepository {
 	 * @return the optional
 	 */
 	public Optional<WorkTimeSetting> findByCodeAndAbolishCondition(String companyId, String workTimeCode,AbolishAtr abolishAtr);
+	/**
+	 * get list work time by cid
+	 * @param companyId
+	 * @return
+	 */
+	public List<WorkTimeSetting> findByCId(String companyId);
 	
 }

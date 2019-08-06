@@ -147,4 +147,6 @@ public class CreateHolidayWorkCommand {
 	private String appReasonID;
 	
 	private boolean checkOver1Year;
+	
+	private boolean actualExceedConfirm;
 }

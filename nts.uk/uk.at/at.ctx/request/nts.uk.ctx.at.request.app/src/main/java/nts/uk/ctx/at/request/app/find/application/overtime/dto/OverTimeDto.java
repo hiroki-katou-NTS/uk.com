@@ -251,6 +251,12 @@ public class OverTimeDto {
 	/** 申請理由が必須 */
 	private boolean requireAppReasonFlg;
 	
+	/** 就業時間帯 */
+	private Integer worktimeStart;
+	private Integer worktimeEnd;
+	
+	private String enteredPersonName;
+	
 	public static OverTimeDto fromDomain(AppOverTime appOverTime){
 		return new OverTimeDto(
 				appOverTime.getVersion(),
@@ -311,7 +317,10 @@ public class OverTimeDto {
 				null,
 				Collections.emptyList(),
 				false,
-				false);
+				false,
+				0,
+				0,
+				"");
 	}
 	
 }

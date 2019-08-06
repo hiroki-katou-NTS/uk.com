@@ -58,6 +58,10 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -92,6 +96,10 @@ public class ApprovalStatusFinder {
 	
 	@Inject
 	private AppContentDetailCMM045 contentDtail;
+	@Inject
+	private WorkTypeRepository repoWorkType;
+	@Inject
+	private WorkTimeSettingRepository repoworkTime;
 	
 	/**
 	 * アルゴリズム「承認状況本文起動」を実行する
@@ -414,6 +422,16 @@ public class ApprovalStatusFinder {
 		List<ApplicationDetailDto> listApplicationDetail = new ArrayList<>();
 		List<ApprovalSttAppDetail> listAppSttDetail = appList.getApprovalSttAppDetail();
 		List<AppCompltLeaveSync> lstCompltLeaveSync = appList.getListSync();
+		
+		//Lay List workType/workTime
+		List<WorkType> lstWkType = new ArrayList<>();
+		List<WorkTimeSetting> lstWkTime = new ArrayList<>();
+		//Chi 6,7,10,11 moi su dung den workType va workTime
+		if(!listAppSttDetail.isEmpty()){
+			lstWkType = repoWorkType.findListByCid(companyID);
+			lstWkTime =  repoworkTime.findByCId(companyID);
+		}
+		
 		for (ApprovalSttAppDetail app : listAppSttDetail) {
 			ApplicationDetailDto detail = new ApplicationDetailDto();
 			
@@ -484,7 +502,7 @@ public class ApprovalStatusFinder {
 			switch (appType) {
 			// 残業申請
 			case OVER_TIME_APPLICATION:
-				appContent = contentDtail.getContentOverTimeBf(companyID, appId, detailSet, 0, "", ScreenAtr.KAF018.value);
+				appContent = contentDtail.getContentOverTimeBf(null, companyID, appId, detailSet, 0, "", ScreenAtr.KAF018.value);
 				break;
 			// 休暇申請
 			case ABSENCE_APPLICATION:
@@ -493,11 +511,11 @@ public class ApprovalStatusFinder {
 				if(a.getStartDate().isPresent()&& a.getEndDate().isPresent()){
 					day = a.getStartDate().get().daysTo(a.getEndDate().get()) + 1;
 				}
-				appContent = contentDtail.getContentAbsence(companyID, appId, 0, "", day, ScreenAtr.KAF018.value);
+				appContent = contentDtail.getContentAbsence(null, companyID, appId, 0, "", day, ScreenAtr.KAF018.value, lstWkType, lstWkTime);
 				break;
 			// 勤務変更申請
 			case WORK_CHANGE_APPLICATION:
-				appContent = contentDtail.getContentWorkChange(companyID, appId, 0, "", ScreenAtr.KAF018.value);
+				appContent = contentDtail.getContentWorkChange(null, companyID, appId, 0, "", ScreenAtr.KAF018.value, lstWkType, lstWkTime);
 				// có endDate
 				break;
 			// 出張申請
@@ -507,11 +525,11 @@ public class ApprovalStatusFinder {
 				break;
 			// 直行直帰申請
 			case GO_RETURN_DIRECTLY_APPLICATION:
-				appContent = contentDtail.getContentGoBack(companyID, appId, 0, "", ScreenAtr.KAF018.value);
+				appContent = contentDtail.getContentGoBack(null, companyID, appId, 0, "", ScreenAtr.KAF018.value);
 				break;
 			// 休出時間申請
 			case BREAK_TIME_APPLICATION:
-				appContent = contentDtail.getContentHdWorkBf(companyID, appId, 0, "", ScreenAtr.KAF018.value);
+				appContent = contentDtail.getContentHdWorkBf(null, companyID, appId, 0, "", ScreenAtr.KAF018.value, lstWkType, lstWkTime);
 				break;
 			// 打刻申請
 			case STAMP_APPLICATION:
@@ -527,7 +545,7 @@ public class ApprovalStatusFinder {
 				break;
 			// 振休振出申請
 			case COMPLEMENT_LEAVE_APPLICATION:
-				appContent = contentDtail.getContentComplt(companyID, appId, 0, "", ScreenAtr.KAF018.value);
+				appContent = contentDtail.getContentComplt(null, companyID, appId, 0, "", ScreenAtr.KAF018.value, lstWkType);
 				break;
 			// 打刻申請（NR形式）
 			case STAMP_NR_APPLICATION:

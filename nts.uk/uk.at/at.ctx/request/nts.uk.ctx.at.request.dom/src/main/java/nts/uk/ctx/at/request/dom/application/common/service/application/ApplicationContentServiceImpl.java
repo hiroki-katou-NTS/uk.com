@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.common.service.application;
 
+import java.util.Collections;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -44,7 +45,7 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 			WorkPlaceHistBySIDImport wkp = wkpAdapter.findWpkBySIDandPeriod(app.getEmployeeID(), new DatePeriod(appDate,appDate));
 			String wkpId = wkp.getLstWkpInfo().isEmpty() ? "" : wkp.getLstWkpInfo().get(0).getWpkID();
 			int detailSet = appLstInitRepo.detailSet(companyID, wkpId, app.getAppType().value, appDate);
-			return contentDtail.getContentOverTimeBf(companyID, appID, detailSet, appReasonDisAtr, appReason, ScreenAtr.KDL030.value);
+			return contentDtail.getContentOverTimeBf(null, companyID, appID, detailSet, appReasonDisAtr, appReason, ScreenAtr.KDL030.value);
 		}
 		case ABSENCE_APPLICATION: {
 			/** 休暇申請*/
@@ -52,11 +53,11 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 			if(app.getStartDate().isPresent()&& app.getEndDate().isPresent()){
 				day = app.getStartDate().get().daysTo(app.getEndDate().get()) + 1;
 			}
-			return contentDtail.getContentAbsence(companyID, appID, appReasonDisAtr, appReason, day, ScreenAtr.KDL030.value);
+			return contentDtail.getContentAbsence(null, companyID, appID, appReasonDisAtr, appReason, day, ScreenAtr.KDL030.value, Collections.emptyList(), Collections.emptyList());
 		}
 		case WORK_CHANGE_APPLICATION: {
 			/** 勤務変更申請*/
-			return contentDtail.getContentWorkChange(companyID, appID, appReasonDisAtr, appReason, ScreenAtr.KDL030.value);
+			return contentDtail.getContentWorkChange(null, companyID, appID, appReasonDisAtr, appReason, ScreenAtr.KDL030.value, Collections.emptyList(), Collections.emptyList());
 		}
 		case BUSINESS_TRIP_APPLICATION: {
 			/** 出張申請*/
@@ -65,11 +66,11 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 		}
 		case GO_RETURN_DIRECTLY_APPLICATION: {
 			/** 直行直帰申請*/
-			return contentDtail.getContentGoBack(companyID, appID, appReasonDisAtr, appReason, ScreenAtr.KDL030.value);
+			return contentDtail.getContentGoBack(null, companyID, appID, appReasonDisAtr, appReason, ScreenAtr.KDL030.value);
 		}
 		case BREAK_TIME_APPLICATION: {
 			/** 休出時間申請*/
-			return contentDtail.getContentHdWorkBf(companyID, appID, appReasonDisAtr, appReason, ScreenAtr.KDL030.value);
+			return contentDtail.getContentHdWorkBf(null, companyID, appID, appReasonDisAtr, appReason, ScreenAtr.KDL030.value, Collections.emptyList(), Collections.emptyList());
 		}
 		case STAMP_APPLICATION: {
 			/** 打刻申請*/
@@ -86,7 +87,7 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 		}
 		case COMPLEMENT_LEAVE_APPLICATION: {
 			/** 振休振出申請*/
-			return contentDtail.getContentComplt(companyID, appID, appReasonDisAtr, appReason, ScreenAtr.KDL030.value);
+			return contentDtail.getContentComplt(null, companyID, appID, appReasonDisAtr, appReason, ScreenAtr.KDL030.value, Collections.emptyList());
 		}
 		case STAMP_NR_APPLICATION: {
 			/** 打刻申請（NR形式）*/

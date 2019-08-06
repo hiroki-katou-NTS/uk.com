@@ -22,6 +22,7 @@ import nts.uk.ctx.at.request.app.find.application.common.AppDataDateFinder;
 import nts.uk.ctx.at.request.app.find.application.common.AppDateDataDto;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationFinder;
 import nts.uk.ctx.at.request.app.find.application.common.ApprovalRootOfSubjectRequestDto;
+import nts.uk.ctx.at.request.app.find.application.common.DetailApplicantMobDto;
 import nts.uk.ctx.at.request.app.find.application.common.GetDataApprovalRootOfSubjectRequest;
 import nts.uk.ctx.at.request.app.find.application.common.GetDataCheckDetail;
 import nts.uk.ctx.at.request.app.find.application.common.ObjApprovalRootInput;
@@ -270,6 +271,12 @@ public class ApplicationWebservice extends WebService {
 	@Path("write-log")
 	public void writeLog(ParamWriteLog paramLog){
 		writeLogSv.writeLog(new ScreenIdentifier(paramLog.getProgramId(), paramLog.getScreenId(), paramLog.getQueryString()));
+	}
+	
+	@POST
+	@Path("getDetailApplicantMob")
+	public DetailApplicantMobDto getDetailApplicantMob(String appID) {
+		return finderApp.getDetailApplicantMob(appID);
 	}
 }
 

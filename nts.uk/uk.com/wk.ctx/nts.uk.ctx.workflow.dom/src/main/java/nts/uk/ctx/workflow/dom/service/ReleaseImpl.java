@@ -9,7 +9,6 @@ import javax.inject.Inject;
 
 import org.apache.logging.log4j.util.Strings;
 
-import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalForm;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmPerson;
@@ -63,7 +62,7 @@ public class ReleaseImpl implements ReleaseService {
 					approvalFrame.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
 					approvalFrame.setApproverID("");
 					approvalFrame.setRepresenterID("");
-					approvalFrame.setApprovalDate(GeneralDate.today());
+					approvalFrame.setApprovalDate(null);
 					approvalFrame.setApprovalReason("");
 				}
 			});

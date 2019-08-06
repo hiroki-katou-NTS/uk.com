@@ -141,6 +141,7 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 	private static final String SELECT_WORKTYPE_AND_ORDER;
 	private static final String SELECT_WORKTYPE_ALL_ORDER;
 	private static final String SELECT_WORKTYPE_WITH_NO_MASTER_AND_ORDER;
+	private static final String SELECT_NOT_REMOVE_WORKTYPE_AND_ORDER;
 	
 	static {
 		StringBuilder stringBuilder = new StringBuilder();
@@ -288,6 +289,19 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 		builder.append(" ORDER BY o.dispOrder ASC");
 		FIND_BY_CODES = builder.toString();
 
+	}
+	static {
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append("SELECT NEW " + WorkTypeInfor.class.getName());
+		stringBuilder.append(
+				"(c.kshmtWorkTypePK.workTypeCode, c.name, c.abbreviationName, c.symbolicName, c.deprecateAtr, c.memo, c.worktypeAtr, c.oneDayAtr, c.morningAtr, c.afternoonAtr, c.calculatorMethod, o.dispOrder) ");
+		stringBuilder.append("FROM KshmtWorkType c LEFT JOIN KshmtWorkTypeOrder o ");
+		stringBuilder.append(
+				"ON c.kshmtWorkTypePK.companyId = o.kshmtWorkTypeDispOrderPk.companyId AND c.kshmtWorkTypePK.workTypeCode = o.kshmtWorkTypeDispOrderPk.workTypeCode ");
+		stringBuilder.append("WHERE c.kshmtWorkTypePK.companyId = :companyId ");
+		stringBuilder.append("AND c.kshmtWorkTypePK.workTypeCode IN :lstPossible ");
+		stringBuilder.append("AND c.deprecateAtr = 0 ");
+		SELECT_NOT_REMOVE_WORKTYPE_AND_ORDER = stringBuilder.toString();
 	}
 
 	private static WorkType toDomain(KshmtWorkType entity) {
@@ -809,5 +823,34 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 				.setParameter("worktypeAtr", worktypeAtr)
 				.setParameter("oneDayAtr", oneDay)
 				.getList(x -> x.kshmtWorkTypePK.workTypeCode);
+	}
+	
+	@Override
+	public List<WorkTypeInfor> getNotRemoveWorkType(String companyId, List<String> lstPossible) {
+		if(CollectionUtil.isEmpty(lstPossible)){
+			return Collections.emptyList();
+		}
+		List<WorkTypeInfor> resultList = new ArrayList<>();
+		CollectionUtil.split(lstPossible, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(SELECT_NOT_REMOVE_WORKTYPE_AND_ORDER, WorkTypeInfor.class)
+								.setParameter("companyId", companyId)
+								.setParameter("lstPossible", subList)
+								.getList());
+		});
+		List<WorkTypeInfor> lstOrder = resultList.stream().filter(c -> c.getDispOrder() != null).collect(Collectors.toList());
+		List<WorkTypeInfor> lstNotOrder = resultList.stream().filter(c -> c.getDispOrder() == null).collect(Collectors.toList());
+		Collections.sort(lstOrder, Comparator.comparing(WorkTypeInfor:: getDispOrder));
+		Collections.sort(lstNotOrder, Comparator.comparing(WorkTypeInfor:: getWorkTypeCode));
+		List<WorkTypeInfor> lstSort = new ArrayList<>();
+		lstSort.addAll(lstOrder);
+		lstSort.addAll(lstNotOrder);
+		return lstSort;
+	}
+
+	@Override
+	public List<WorkType> findListByCid(String companyId) {
+		return this.queryProxy().query(SELECT_ALL_WORKTYPE, KshmtWorkType.class)
+				.setParameter("companyId", companyId)
+				.getList(x -> toDomain(x));
 	}
 }
