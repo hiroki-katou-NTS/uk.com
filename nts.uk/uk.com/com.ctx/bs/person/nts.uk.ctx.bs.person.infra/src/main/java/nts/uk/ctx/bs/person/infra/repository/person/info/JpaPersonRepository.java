@@ -377,4 +377,39 @@ public class JpaPersonRepository extends JpaRepository implements PersonReposito
 		
 	}
 
+	@Override
+	public List<Object[]> getPersonsByPersonIds(List<String> personIds) {
+		// check exist input
+				if (CollectionUtil.isEmpty(personIds)) {
+					return new ArrayList<>();
+				}
+
+				List<Object[]> lstPerson = new ArrayList<>();
+				CollectionUtil.split(personIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+					String sql = "SELECT * from BPSMT_PERSON"
+							+ " WHERE PID IN (" + NtsStatement.In.createParamsString(subList) + ")";
+					try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+						for (int i = 0; i < subList.size(); i++) {
+							stmt.setString(i + 1, subList.get(i));
+						}
+						List<Object[]> subResults = new NtsResultSet(stmt.executeQuery()).getList(r -> {
+							Object[] object = new Object[] {r.getString("PID"), r.getGeneralDate("BIRTHDAY"),  r.getInt("BLOOD_TYPE"), r.getInt("GENDER"), r.getString("PERSON_NAME"), 
+									r.getString("PERSON_NAME_KANA"), r.getString("BUSINESS_NAME"), r.getString("BUSINESS_NAME_KANA"),
+									r.getString("BUSINESS_ENGLISH_NAME"), r.getString("BUSINESS_OTHER_NAME"), r.getString("P_ROMANJI_FNAME"),
+									r.getString("P_ROMANJI_FNAME_KANA"), r.getString("TODOKEDE_FNAME"), r.getString("TODOKEDE_FNAME_KANA"),
+									r.getString("OLDNAME_FNAME"), r.getString("OLDNAME_FNAME_KANA"), r.getString("PERSON_NAME_MULTIL_LANG"),
+									r.getString("PERSON_NAME_MULTIL_LANG_KANA")
+									};
+							return object;
+						});
+						
+						lstPerson.addAll(subResults);
+					} catch (SQLException e) {
+						throw new RuntimeException(e);
+					}
+				});
+				return lstPerson;
+
+	}
+
 }
