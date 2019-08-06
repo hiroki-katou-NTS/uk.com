@@ -188,7 +188,7 @@ public class ConfirmStatusActualDay {
 							.getApprovalByListEmplAndListApprovalRecordDateNew(periodTemp.datesBetween(),
 									Arrays.asList(employeeId), 1);
 					val mapApprovalStatus = lstApprovalStatus.stream().collect(Collectors
-							.toMap(x -> Pair.of(x.getEmployeeID(), x.getAppDate()), x -> x.getApprovalStatus()));
+							.toMap(x -> Pair.of(x.getEmployeeID(), x.getAppDate()), x -> x.getApprovalStatus(), (x, y) -> x));
 					//lstResultEmpTemp3 = 
 					lstResultEmpTemp1.forEach(x ->{
 						if (mapApprovalStatus == null) {
@@ -386,7 +386,7 @@ public class ConfirmStatusActualDay {
 					.getApprovalByListEmplAndListApprovalRecordDateNew(
 							closurePeriodOpt.get().getPeriod().datesBetween(), employeeIds, 1);
 			val mapApprovalStatus = lstApprovalStatus.stream().collect(
-					Collectors.toMap(x -> Pair.of(x.getEmployeeID(), x.getAppDate()), x -> x.getApprovalStatus()));
+					Collectors.toMap(x -> Pair.of(x.getEmployeeID(), x.getAppDate()), x -> x.getApprovalStatus(), (x, y) -> x));
 			// lstResultEmpTemp3 =
 			lstResultEmpTemp1.forEach(x -> {
 				if (mapApprovalStatus == null) {
