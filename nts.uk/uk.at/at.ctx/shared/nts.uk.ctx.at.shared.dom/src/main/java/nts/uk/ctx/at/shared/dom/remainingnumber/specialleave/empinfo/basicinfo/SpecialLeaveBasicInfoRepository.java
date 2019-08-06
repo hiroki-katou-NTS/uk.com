@@ -37,4 +37,15 @@ public interface SpecialLeaveBasicInfoRepository {
 	 * @return
 	 */
 	List<SpecialLeaveBasicInfo> getAllBySidsLeaveCd(String cid, List<String> sids, int spLeaveCD);
+	
+	/**
+	 * for cps013
+	 * 特別休暇基本情報
+	 * getBySidsLeaveCd
+	 * @param cid
+	 * @param sids
+	 * @param spLeaveCD
+	 * @return
+	 */
+	List<Object[]> getAllBySidsAndLeaveCd(String cid, List<String> sids, int spLeaveCD);
 }
