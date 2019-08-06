@@ -15,6 +15,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import lombok.Value;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.ws.WebService;
 import nts.gul.collection.CollectionUtil;
@@ -276,4 +277,16 @@ public class WorkTypeWebService extends WebService {
 	public List<WorkTypeInfor> getPossibleWkTypeKDL002(List<String> lstPossible) {
 		return this.find.getPossibleWorkTypeKDL002(lstPossible);
 	}
+	
+	@POST
+	@Path("get_not_remove_work_type")
+	public List<WorkTypeInfor> getNotRemoveWorkType(getWkTypeParamDto param) {
+		return this.find.getNotRemoveWorkType(param.getWkTypeCodes());
+	}
+	
+}
+
+@Value
+class getWkTypeParamDto {
+	List<String> wkTypeCodes;
 }

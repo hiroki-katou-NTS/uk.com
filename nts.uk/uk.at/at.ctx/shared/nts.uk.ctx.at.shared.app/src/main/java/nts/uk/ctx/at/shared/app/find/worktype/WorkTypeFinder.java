@@ -60,6 +60,19 @@ public class WorkTypeFinder {
 		List<WorkTypeInfor> lst = this.workTypeRepo.getPossibleWorkTypeWithNoMasterAndOrder(companyId, lstPossible);
 		return lst;
 	}
+	
+	/**
+	 * Gets the not remove work type. with No Master
+	 *
+	 * @param lstPossible the lst possible
+	 * @return the possible work type
+	 */
+	public List<WorkTypeInfor> getNotRemoveWorkType(List<String> lstPossible) {
+		// company id
+		String companyId = AppContexts.user().companyId();
+		List<WorkTypeInfor> lst = this.workTypeRepo.getNotRemoveWorkType(companyId, lstPossible);
+		return lst;
+	}
 
 	/**
 	 * Find not deprecated by list code.
