@@ -1,12 +1,7 @@
 package nts.uk.ctx.hr.develop.app.guidance.dto;
 
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.uk.ctx.hr.develop.dom.careermgmt.careerpath.Career;
-import nts.uk.ctx.hr.develop.dom.guidance.Guidance;
 import nts.uk.ctx.hr.develop.dom.guidance.GuideMsg;
 
 @Data
@@ -29,7 +24,7 @@ public class GuideMsgDto {
 	
 	public String screenName;
 	
-	public Boolean usageFlgByScreen;
+	public String usageFlgByScreen;
 	
 	public String guideMsg;
 	
@@ -45,7 +40,7 @@ public class GuideMsgDto {
 		this.programName = guideMsg.getProgramName();
 		this.screenId = guideMsg.getScreenId();
 		this.screenName = guideMsg.getScreenName();
-		this.usageFlgByScreen = guideMsg.isUsageFlgByScreen();
+		this.usageFlgByScreen = guideMsg.isUsageFlgByScreen()?"使用する":"使用しない";
 		this.guideMsg = guideMsg.getGuideMsg().v();
 		this.screenPath = guideMsg.getScreenPath().orElse("");
 	}
@@ -60,7 +55,7 @@ public class GuideMsgDto {
 				this.programName, 
 				this.screenId, 
 				this.screenName,
-				this.usageFlgByScreen, 
+				this.usageFlgByScreen.equals("使用する"), 
 				this.guideMsg, 
 				this.screenPath
 				);

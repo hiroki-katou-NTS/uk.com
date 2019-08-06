@@ -1,7 +1,10 @@
 package nts.uk.ctx.hr.develop.dom.guidance;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -38,20 +41,25 @@ public class GuidanceService {
 	}
 	
 	// 操作ガイドメッセージの取得
-	public String getGuideMsg(String companyId, String categoryCode, String eventName, String programName, String screenName, boolean usageFlgByScreen) {
+	public List<GuideMsg> getGuideMsg(String companyId, String categoryCode, String eventName, String programName, String screenName, Boolean usageFlgByScreen) {
 		Optional<Guidance> guidance = guidanceRepo.getGuidance(companyId);
 		if(!guidance.isPresent()) {
 			throw new BusinessException("MsgJ_JMM017_1");
 		}
-		Optional<GuideMsg> guideMsg = guidance.get().getGuideMsg().stream().filter(c->{
-			return c.getCategoryCode().contains(categoryCode) 
-					&& c.getEventName().contains(eventName) 
-					&& c.getProgramName().contains(programName)
-					&& c.getScreenName().contains(screenName)
-					&& c.isUsageFlgByScreen() == usageFlgByScreen;
-			}).findFirst();
-		
-		return guideMsg.isPresent()?guideMsg.get().getGuideMsg().v():"";
+		List<GuideMsg> guideMsg = guidance.get().getGuideMsg().stream().filter(c->{
+			return (categoryCode == null || c.getCategoryCode().contains(categoryCode)) 
+					&& (eventName.equals("") || c.getEventName().contains(eventName)) 
+					&& (programName.equals("") || c.getProgramName().contains(programName)) 
+					&& (screenName.equals("") || c.getScreenName().contains(screenName)) 
+					&& (usageFlgByScreen == null || c.isUsageFlgByScreen() == usageFlgByScreen); 
+			}).collect(Collectors.toList());
+		//sorted ASC（Category CD, Event CD, Program ID, Screen ID）
+		Comparator<GuideMsg> compareByName = Comparator
+                .comparing(GuideMsg::getCategoryCode)
+                .thenComparing(GuideMsg::getEventCode)
+                .thenComparing(GuideMsg::getProgramId)
+                .thenComparing(GuideMsg::getScreenId);
+		return guideMsg.stream().sorted(compareByName).collect(Collectors.toList());
 	}
 
 }

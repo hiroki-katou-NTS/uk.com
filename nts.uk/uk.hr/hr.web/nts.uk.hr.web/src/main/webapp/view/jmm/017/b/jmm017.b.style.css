@@ -1,67 +1,32 @@
-/* .pl {
-	padding-left: 50px;
+.conditionBox {
+	margin: 30px;
+	border: 1px solid #999999;
+	padding: 10px 20px;
+	max-width: 1120px;
+	min-width: 870px;
+	width: fit-content;
 }
+.row .inline {
+	display: inline-block;
+	vertical-align: middle;
+	margin: 10px 10px;
 
-.system_define {
-	width: 960px;
-	margin-top: 40px;
 }
-
-.system_define>p {
-	margin-left: 35px;
-	margin-bottom: 40px;
+.row .lable {
+	margin: 0 0 0 20px;
 }
-
-.system_define>#tab-panel {
-	margin-left: 40px;
+#findBtn{
+	margin-left: 30px;
 }
-
-.system_define>#tab-panel {
-	margin-left: 40px;
+.gridTableContent{
+	max-width: 1120px;
+	min-width: 913px;
+	margin-left: 29px;
 }
-
-.system_define>#tab-panel .set_height {
-	height: 490px;
+.gridControlBtn{
+	margin: 10px 30px;
 }
-
-.system_define>#tab-panel .table_content {
-	float: left;
-	margin-left: 20px;
-	margin-top: 25px;
-	margin-right: 30px;
+.gridControlBtn button{
+    background: #fff;
+    padding: 3px 7px;
 }
-
-.system_define>#tab-panel .table_content td {
-	padding-bottom: 20px;
-} */
-
-.no-wrap {
-	white-space: nowrap;
-}
-
-#panel1 > div > div, #panel2 > div > div, #panel3 > div > div > div {
-	padding-top: 15px;
-	padding-bottom: 15px;
-}
-
-.system_define {
-	margin-top:40px;
-	margin-left:40px;
-	width: 650px;
-}
-
-#tab-panel {
-	padding-top: 40px;
-}
-
-#work-relate-content > div > div {
-	width: 110px;
-}
-
-#panel3 > div > div > div > div {
-	width: 110px;
-}
-
-/* .tab-content-1 > div > .fixed-flex-layout-right {
-	padding-left: 178px;
-} */

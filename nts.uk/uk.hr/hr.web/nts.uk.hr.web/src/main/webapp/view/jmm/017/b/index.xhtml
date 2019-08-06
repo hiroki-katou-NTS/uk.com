@@ -8,15 +8,157 @@
 <body>
 	<ui:composition>
 		<div class="sidebar-content-header">
-			<span class="title">#{i18n.getText('CMM007_2')}</span>
+			<span class="title">#{i18n.getText('JMM017_B3_2')}</span>
 		</div>
 
 		<div class="contents-area">
-			<div class="system_define">
-				<div style="height: 300px;">
-					<table id="grid"></table>
+			<div class ="conditionBox">
+				<div class="row">
+					<div class ="inline lable"><span>#{i18n.getText('JMM017_B422_2')}</span></div>
+					<div id="combo-box1" tabindex="5" class ="inline"  data-bind="ntsComboBox: {
+							width: 180,
+							options: categoryList,
+							optionsValue: 'code',
+							visibleItemsCount: 10,
+							value: categoryCode,
+							optionsText: 'name',
+							selectFirstIfNull: false,
+							columns: [{ prop: 'name', length: 10 },]}">
+					</div>
+					<div class ="inline lable"><span>#{i18n.getText('JMM017_B422_4')}</span></div>
+					<div class ="inline">
+						<input  tabindex="6" data-bind="ntsTextEditor: {
+							value: eventName,
+							constraint: 'String_Any_20',
+							option: {width: '180px'}}" />
+					</div>
+					<div class ="inline lable"><span>#{i18n.getText('JMM017_B422_6')}</span></div>
+					<div class ="inline">
+						<input tabindex="7" data-bind="ntsTextEditor: {
+							value: programName,
+							constraint: 'String_Any_20',
+							option: {width: '180px'}}" />
+					</div>
 				</div>
-				
+				<div class="row">
+					<div class ="inline lable" style="min-width: 40px;"><span>#{i18n.getText('JMM017_B422_8')}</span></div>
+					<div class ="inline">
+						<input tabindex="8" data-bind="ntsTextEditor: {
+							value: screenName,
+							constraint: 'String_Any_20',
+							option: {width: '180px'}}" />
+					</div>
+					<div class ="inline lable"><span>#{i18n.getText('JMM017_B422_10')}</span></div>
+					<div id="combo-box2" class ="inline" tabindex="9" data-bind="ntsComboBox: {
+							width: 130,
+							options: useList,
+							optionsValue: 'code',
+							visibleItemsCount: 3,
+							value: useSet,
+							optionsText: 'name',
+							selectFirstIfNull: false,
+							columns: [{ prop: 'name', length: 5 },]}">
+					</div>
+					<button tabindex="10" id="findBtn" class="inline" data-bind="click: find ">#{i18n.getText('JMM017_B422_12')}</button>
+				</div>
+			</div>
+			<div class="gridControlBtn">
+				<button tabindex="11" id="buttonExpandAll" class="inline" >#{i18n.getText('JMM017_B422_14')}</button>
+				<button tabindex="12" id="buttonCollapseAll" class="inline" >#{i18n.getText('JMM017_B422_15')}</button>
+			</div>
+			<div class="gridTableContent">
+				<div style="height: 430px;">
+					
+					<table id="grid" data-bind="igGrid: {
+						primaryKey: 'id',
+						columns: [
+							{
+								headerText: 'ID',
+								key: 'id',
+								hidden: true
+							},
+			                {
+			                     headerText: '', 
+			                     key: 'Edit',
+			                     dataType: 'string', 
+			                     width: '5%', 
+			                     unbound: true, 
+			                     template: editTem()
+			                 },
+			                {
+			                    headerText: '#{i18n.getText('JMM017_B422_17')}', key: 'categoryName', dataType: 'string', width: '5%'
+			                },
+			                {
+			                    headerText: '#{i18n.getText('JMM017_B422_18')}', key: 'eventName', dataType: 'string', width: '10%'
+			                },
+			                {
+			                    headerText: '#{i18n.getText('JMM017_B422_19')}', key: 'programName', dataType: 'string', width: '15%'
+			                },
+			                {
+			                    headerText: '#{i18n.getText('JMM017_B422_20')}', key: 'screenName', dataType: 'string', width: '15%'
+			                },
+			                {
+			                    headerText: '#{i18n.getText('JMM017_B422_21')}', key: 'usageFlgByScreen', dataType: 'string', width: '10%'
+			                },
+			                {
+			                    headerText: '#{i18n.getText('JMM017_B422_22')}', key: 'guideMsg', dataType: 'string', width: '25%'
+			                }
+			                ],
+			                dataSource: guideMessageList,
+			                dataSourceType: 'json',
+			                responseDataKey: 'results',
+			                height: '500px',
+			                width: '1000px',
+			                tabIndex: 1,
+			                rendered: function() { $('#grid').igGridGroupBy('groupByColumn', 'categoryName'); },
+			                features: [
+			                    {
+			                        name: 'Paging', 
+			                        type: 'local',
+			                        pageSize: 10
+			                    },
+			                    {
+			                        name: 'Filtering', 
+			                        type: 'local',
+			                        mode: 'simple'
+			                    },
+			                    {
+			                        name: 'Sorting', 
+			                        type: 'local'
+			                    },
+			                    {
+			                        name: 'GroupBy', 
+			                        groupByDialogContainment: 'window', 
+			                        columnSettings: [
+			                            {
+			                                columnKey: 'categoryName',
+			                                isGroupBy: false
+			                            },
+			                            {
+			                                columnKey: 'programName',
+			                                isGroupBy: false
+			                            }
+			                        ]
+			                    },
+			                    {
+			                        name: 'Hiding' 
+			                    },
+			                    {
+			                        name: 'Resizing' 
+			                    },
+			                    {
+			                    	name: 'Updating',
+			                    	editMode: 'none',
+			                    	enableAddRow: false,
+			                    	enableDeleteRow: false
+			                    },
+			                    {
+			                        name: 'ColumnMoving', 
+			                        columnMovingDialogContainment: 'window'
+			                    }
+			                ]
+					}"></table>
+				</div>
 			</div>
 		</div>
 	</ui:composition>

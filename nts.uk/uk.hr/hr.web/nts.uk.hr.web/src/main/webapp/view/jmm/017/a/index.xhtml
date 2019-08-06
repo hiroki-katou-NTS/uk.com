@@ -11,6 +11,7 @@
 			<com:ValidatorScript>
 					nts.uk.ctx.hr.develop.dom.guidance.Integer_1_500
 					nts.uk.ctx.hr.develop.dom.careermgmt.careertype.Integer_1_5
+					nts.uk.ctx.hr.develop.dom.careermgmt.careertype.String_Any_20
 			</com:ValidatorScript>
 
 			<com:scriptfile set="IGNITE" />
@@ -21,7 +22,10 @@
 					maxLength: 12,
 				};
 			</script>
-			<script src="https://igniteui.github.io/help-samples/data-files/northwind.js"></script>
+			<!-- <com:scriptfile path="/lib/generic/igniteui/js/extensions/infragistics.datasource.knockoutjs.js"  of="/nts.uk.com.js.web"/>
+			<com:scriptfile path="/lib/generic/igniteui/js/extensions/infragistics.ui.grid.knockout-extensions.js" of="nts.uk.com.js.web" /> -->
+			<script src="https://cdn-na.infragistics.com/igniteui/2019.1/latest/js/extensions/infragistics.datasource.knockoutjs.js"/>
+			<script src="https://cdn-na.infragistics.com/igniteui/2019.1/latest/js/extensions/infragistics.ui.grid.knockout-extensions.js"/>
 			<com:stylefile path="../b/jmm017.b.style.css" />
 			<com:scriptfile path="../b/jmm017.b.service.js" />
 			<com:scriptfile path="../b/jmm017.b.vm.js" />
@@ -74,7 +78,7 @@
 					</div>
 				</div>
 			</div>
-			<div id="tabpanel-2" role="tabpanel" data-bind="with: tab2ViewModel()">
+			<div id="tabpanel-2" role="tabpanel" data-bind="with: tab2ViewModel">
 				<ui:include src="../b/index.xhtml" />
 			</div>
 		</ui:define>
