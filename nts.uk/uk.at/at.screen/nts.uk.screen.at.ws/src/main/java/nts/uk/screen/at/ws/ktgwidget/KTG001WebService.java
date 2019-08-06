@@ -3,7 +3,6 @@ package nts.uk.screen.at.ws.ktgwidget;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
@@ -18,8 +17,10 @@ public class KTG001WebService extends WebService {
 	private KTG001QueryProcessor queryProcessor; 
 	
 	@POST
-	@Path("checkDisplay/{ym}/{closureId}")
-	public KTG001Dto checkDisplay(@PathParam("ym")Integer ym, @PathParam("closureId") int closureId){
-		return queryProcessor.checkDataDayPerConfirm(ym, closureId);
+	@Path("checkDisplay")
+	public KTG001Dto checkDisplay(KTG001Param param){
+		return this.queryProcessor.checkDataDayPerConfirm(param.getYm(), param.getClosureId());
 	}
+	
+
 }
