@@ -451,12 +451,12 @@ public class SpecialLeaveGrantFinder {
 		query.getEmpInfos().stream().forEach(c ->{
 			result.add(new GridPeregDomainBySidDto(c.getEmployeeId(), c.getPersonId(), new ArrayList<>()));
 		});
-		Map<String, List<SpecialLeaveGrantRemainingData>> data = repo.getAllByListEmpID(sids, specialLeaveCD).stream().collect(Collectors.groupingBy(c -> c.getEmployeeId()));
+		Map<String, List<Object[]>> data = repo.getAllBySids(sids, specialLeaveCD).stream().collect(Collectors.groupingBy(c -> c[2].toString()));
 		switch (EnumAdaptor.valueOf(specialLeaveCD, SpecialLeaveGrantCode.class)) {
 		case CS00039:
 			result.stream().forEach(c ->{
 				List<PeregDomainDto> peregDto = new ArrayList<>();
-				List<SpecialLeaveGrantRemainingData> remainingDataLst = data.get(c.getEmployeeId());
+				List<Object[]> remainingDataLst = data.get(c.getEmployeeId());
 				if (!CollectionUtil.isEmpty(remainingDataLst)) {
 					remainingDataLst.stream().forEach(r -> {
 						peregDto.add(SpecialLeaveGrantDto1.createFromDomain(r));
@@ -468,7 +468,7 @@ public class SpecialLeaveGrantFinder {
 		case CS00040:
 			result.stream().forEach(c ->{
 				List<PeregDomainDto> peregDto = new ArrayList<>();
-				List<SpecialLeaveGrantRemainingData> remainingDataLst = data.get(c.getEmployeeId());
+				List<Object[]> remainingDataLst = data.get(c.getEmployeeId());
 				if (!CollectionUtil.isEmpty(remainingDataLst)) {
 					remainingDataLst.stream().forEach(r -> {
 						peregDto.add(SpecialLeaveGrantDto2.createFromDomain(r));
@@ -480,7 +480,7 @@ public class SpecialLeaveGrantFinder {
 		case CS00041:
 			result.stream().forEach(c ->{
 				List<PeregDomainDto> peregDto = new ArrayList<>();
-				List<SpecialLeaveGrantRemainingData> remainingDataLst = data.get(c.getEmployeeId());
+				List<Object[]> remainingDataLst = data.get(c.getEmployeeId());
 				if (!CollectionUtil.isEmpty(remainingDataLst)) {
 					remainingDataLst.stream().forEach(r -> {
 						peregDto.add(SpecialLeaveGrantDto3.createFromDomain(r));
@@ -492,7 +492,7 @@ public class SpecialLeaveGrantFinder {
 		case CS00042:
 			result.stream().forEach(c ->{
 				List<PeregDomainDto> peregDto = new ArrayList<>();
-				List<SpecialLeaveGrantRemainingData> remainingDataLst = data.get(c.getEmployeeId());
+				List<Object[]> remainingDataLst = data.get(c.getEmployeeId());
 				if (!CollectionUtil.isEmpty(remainingDataLst)) {
 					remainingDataLst.stream().forEach(r -> {
 						peregDto.add(SpecialLeaveGrantDto4.createFromDomain(r));
@@ -504,7 +504,7 @@ public class SpecialLeaveGrantFinder {
 		case CS00043:
 			result.stream().forEach(c ->{
 				List<PeregDomainDto> peregDto = new ArrayList<>();
-				List<SpecialLeaveGrantRemainingData> remainingDataLst = data.get(c.getEmployeeId());
+				List<Object[]> remainingDataLst = data.get(c.getEmployeeId());
 				if (!CollectionUtil.isEmpty(remainingDataLst)) {
 					remainingDataLst.stream().forEach(r -> {
 						peregDto.add(SpecialLeaveGrantDto5.createFromDomain(r));
@@ -516,7 +516,7 @@ public class SpecialLeaveGrantFinder {
 		case CS00044:
 			result.stream().forEach(c ->{
 				List<PeregDomainDto> peregDto = new ArrayList<>();
-				List<SpecialLeaveGrantRemainingData> remainingDataLst = data.get(c.getEmployeeId());
+				List<Object[]> remainingDataLst = data.get(c.getEmployeeId());
 				if (!CollectionUtil.isEmpty(remainingDataLst)) {
 					remainingDataLst.stream().forEach(r -> {
 						peregDto.add(SpecialLeaveGrantDto6.createFromDomain(r));
@@ -528,7 +528,7 @@ public class SpecialLeaveGrantFinder {
 		case CS00045:
 			result.stream().forEach(c ->{
 				List<PeregDomainDto> peregDto = new ArrayList<>();
-				List<SpecialLeaveGrantRemainingData> remainingDataLst = data.get(c.getEmployeeId());
+				List<Object[]> remainingDataLst = data.get(c.getEmployeeId());
 				if (!CollectionUtil.isEmpty(remainingDataLst)) {
 					remainingDataLst.stream().forEach(r -> {
 						peregDto.add(SpecialLeaveGrantDto7.createFromDomain(r));
@@ -540,7 +540,7 @@ public class SpecialLeaveGrantFinder {
 		case CS00046:
 			result.stream().forEach(c ->{
 				List<PeregDomainDto> peregDto = new ArrayList<>();
-				List<SpecialLeaveGrantRemainingData> remainingDataLst = data.get(c.getEmployeeId());
+				List<Object[]> remainingDataLst = data.get(c.getEmployeeId());
 				if (!CollectionUtil.isEmpty(remainingDataLst)) {
 					remainingDataLst.stream().forEach(r -> {
 						peregDto.add(SpecialLeaveGrantDto8.createFromDomain(r));
@@ -552,7 +552,7 @@ public class SpecialLeaveGrantFinder {
 		case CS00047:
 			result.stream().forEach(c ->{
 				List<PeregDomainDto> peregDto = new ArrayList<>();
-				List<SpecialLeaveGrantRemainingData> remainingDataLst = data.get(c.getEmployeeId());
+				List<Object[]> remainingDataLst = data.get(c.getEmployeeId());
 				if (!CollectionUtil.isEmpty(remainingDataLst)) {
 					remainingDataLst.stream().forEach(r -> {
 						peregDto.add(SpecialLeaveGrantDto9.createFromDomain(r));
@@ -564,7 +564,7 @@ public class SpecialLeaveGrantFinder {
 		case CS00048:
 			result.stream().forEach(c ->{
 				List<PeregDomainDto> peregDto = new ArrayList<>();
-				List<SpecialLeaveGrantRemainingData> remainingDataLst = data.get(c.getEmployeeId());
+				List<Object[]> remainingDataLst = data.get(c.getEmployeeId());
 				if (!CollectionUtil.isEmpty(remainingDataLst)) {
 					remainingDataLst.stream().forEach(r -> {
 						peregDto.add(SpecialLeaveGrantDto10.createFromDomain(r));
@@ -576,7 +576,7 @@ public class SpecialLeaveGrantFinder {
 		case CS00059:
 			result.stream().forEach(c ->{
 				List<PeregDomainDto> peregDto = new ArrayList<>();
-				List<SpecialLeaveGrantRemainingData> remainingDataLst = data.get(c.getEmployeeId());
+				List<Object[]> remainingDataLst = data.get(c.getEmployeeId());
 				if (!CollectionUtil.isEmpty(remainingDataLst)) {
 					remainingDataLst.stream().forEach(r -> {
 						peregDto.add(SpecialLeaveGrantDto11.createFromDomain(r));
@@ -588,7 +588,7 @@ public class SpecialLeaveGrantFinder {
 		case CS00060:
 			result.stream().forEach(c ->{
 				List<PeregDomainDto> peregDto = new ArrayList<>();
-				List<SpecialLeaveGrantRemainingData> remainingDataLst = data.get(c.getEmployeeId());
+				List<Object[]> remainingDataLst = data.get(c.getEmployeeId());
 				if (!CollectionUtil.isEmpty(remainingDataLst)) {
 					remainingDataLst.stream().forEach(r -> {
 						peregDto.add(SpecialLeaveGrantDto12.createFromDomain(r));
@@ -600,7 +600,7 @@ public class SpecialLeaveGrantFinder {
 		case CS00061:
 			result.stream().forEach(c ->{
 				List<PeregDomainDto> peregDto = new ArrayList<>();
-				List<SpecialLeaveGrantRemainingData> remainingDataLst = data.get(c.getEmployeeId());
+				List<Object[]> remainingDataLst = data.get(c.getEmployeeId());
 				if (!CollectionUtil.isEmpty(remainingDataLst)) {
 					remainingDataLst.stream().forEach(r -> {
 						peregDto.add(SpecialLeaveGrantDto13.createFromDomain(r));
@@ -612,7 +612,7 @@ public class SpecialLeaveGrantFinder {
 		case CS00062:
 			result.stream().forEach(c ->{
 				List<PeregDomainDto> peregDto = new ArrayList<>();
-				List<SpecialLeaveGrantRemainingData> remainingDataLst = data.get(c.getEmployeeId());
+				List<Object[]> remainingDataLst = data.get(c.getEmployeeId());
 				if (!CollectionUtil.isEmpty(remainingDataLst)) {
 					remainingDataLst.stream().forEach(r -> {
 						peregDto.add(SpecialLeaveGrantDto14.createFromDomain(r));
@@ -624,7 +624,7 @@ public class SpecialLeaveGrantFinder {
 		case CS00063:
 			result.stream().forEach(c ->{
 				List<PeregDomainDto> peregDto = new ArrayList<>();
-				List<SpecialLeaveGrantRemainingData> remainingDataLst = data.get(c.getEmployeeId());
+				List<Object[]> remainingDataLst = data.get(c.getEmployeeId());
 				if (!CollectionUtil.isEmpty(remainingDataLst)) {
 					remainingDataLst.stream().forEach(r -> {
 						peregDto.add(SpecialLeaveGrantDto15.createFromDomain(r));
@@ -636,7 +636,7 @@ public class SpecialLeaveGrantFinder {
 		case CS00064:
 			result.stream().forEach(c ->{
 				List<PeregDomainDto> peregDto = new ArrayList<>();
-				List<SpecialLeaveGrantRemainingData> remainingDataLst = data.get(c.getEmployeeId());
+				List<Object[]> remainingDataLst = data.get(c.getEmployeeId());
 				if (!CollectionUtil.isEmpty(remainingDataLst)) {
 					remainingDataLst.stream().forEach(r -> {
 						peregDto.add(SpecialLeaveGrantDto16.createFromDomain(r));
@@ -648,7 +648,7 @@ public class SpecialLeaveGrantFinder {
 		case CS00065:
 			result.stream().forEach(c ->{
 				List<PeregDomainDto> peregDto = new ArrayList<>();
-				List<SpecialLeaveGrantRemainingData> remainingDataLst = data.get(c.getEmployeeId());
+				List<Object[]> remainingDataLst = data.get(c.getEmployeeId());
 				if (!CollectionUtil.isEmpty(remainingDataLst)) {
 					remainingDataLst.stream().forEach(r -> {
 						peregDto.add(SpecialLeaveGrantDto17.createFromDomain(r));
@@ -660,7 +660,7 @@ public class SpecialLeaveGrantFinder {
 		case CS00066:
 			result.stream().forEach(c ->{
 				List<PeregDomainDto> peregDto = new ArrayList<>();
-				List<SpecialLeaveGrantRemainingData> remainingDataLst = data.get(c.getEmployeeId());
+				List<Object[]> remainingDataLst = data.get(c.getEmployeeId());
 				if (!CollectionUtil.isEmpty(remainingDataLst)) {
 					remainingDataLst.stream().forEach(r -> {
 						peregDto.add(SpecialLeaveGrantDto18.createFromDomain(r));
@@ -672,7 +672,7 @@ public class SpecialLeaveGrantFinder {
 		case CS00067:
 			result.stream().forEach(c ->{
 				List<PeregDomainDto> peregDto = new ArrayList<>();
-				List<SpecialLeaveGrantRemainingData> remainingDataLst = data.get(c.getEmployeeId());
+				List<Object[]> remainingDataLst = data.get(c.getEmployeeId());
 				if (!CollectionUtil.isEmpty(remainingDataLst)) {
 					remainingDataLst.stream().forEach(r -> {
 						peregDto.add(SpecialLeaveGrantDto19.createFromDomain(r));
@@ -684,7 +684,7 @@ public class SpecialLeaveGrantFinder {
 		case CS00068:
 			result.stream().forEach(c ->{
 				List<PeregDomainDto> peregDto = new ArrayList<>();
-				List<SpecialLeaveGrantRemainingData> remainingDataLst = data.get(c.getEmployeeId());
+				List<Object[]> remainingDataLst = data.get(c.getEmployeeId());
 				if (!CollectionUtil.isEmpty(remainingDataLst)) {
 					remainingDataLst.stream().forEach(r -> {
 						peregDto.add(SpecialLeaveGrantDto20.createFromDomain(r));
