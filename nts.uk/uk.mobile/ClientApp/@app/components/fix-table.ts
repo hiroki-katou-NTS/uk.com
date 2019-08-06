@@ -263,7 +263,12 @@ export class FixTableComponent extends Vue {
     private addPrevNextButtons() {
         let headerColumns = this.headerTable.tHead.children[0].children;
         headerColumns[0].appendChild(this.$refs.previous as Node);
-        headerColumns[headerColumns.length - 1].appendChild(this.$refs.next as Node);
+
+        let nextButton = this.$refs.next as HTMLButtonElement;
+        if ( this.displayColumnsNumber === this.flexibleColumns) {
+            nextButton.disabled = true;
+        }
+        headerColumns[headerColumns.length - 1].appendChild(nextButton);
     }
 
     public previous() {
