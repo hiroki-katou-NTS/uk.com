@@ -9,7 +9,7 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 
 @Stateless
-public class GuidanceService implements IGuidance{
+public class GuidanceService {
 
 	@Inject
 	private GuidanceRepository guidanceRepo;
@@ -52,20 +52,6 @@ public class GuidanceService implements IGuidance{
 			}).findFirst();
 		
 		return guideMsg.isPresent()?guideMsg.get().getGuideMsg().v():"";
-	}
-
-	@Override
-	public IGuidanceExportDto getGuidance(String companyId, String programId, String screenId) {
-		Optional<Guidance> guidance = guidanceRepo.getGuidance(companyId);
-		if(guidance.isPresent()) {
-			if(guidance.get().isUsageFlgCommon()) {
-				Optional<GuideMsg> guideMsgs = guidance.get().getGuideMsg().stream().filter(c -> {return c.getProgramId().equals(programId) && c.getScreenId().equals(screenId);}).findFirst();
-				if(guideMsgs.isPresent() && guideMsgs.get().isUsageFlgByScreen()) {
-					return new IGuidanceExportDto(true, guidance.get().getGuideMsgAreaRow().v(), guideMsgs.get().getGuideMsg().v());
-				}
-			}
-		}
-		return new IGuidanceExportDto(false, null, null);
 	}
 
 }

@@ -4,11 +4,12 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.arc.layer.dom.AggregateRoot;
 
 /**メッセージ内容*/
 @AllArgsConstructor
 @Getter
-public class GuideMsg {
+public class GuideMsg extends AggregateRoot{
 
 	/**カテゴリCD*/
 	private String categoryCode;
