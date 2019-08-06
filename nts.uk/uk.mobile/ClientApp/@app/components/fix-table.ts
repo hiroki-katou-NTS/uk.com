@@ -4,8 +4,8 @@ import { component, Prop } from '@app/core/component';
 @component({
     template: `<div class="table-container" v-bind:role="roleId">
         <div class="table-header" >
-            <button ref="previous" class="btn btn-secondary btn-sm" v-on:click="previous" disabled>前項</button>
-            <button ref="next" class="btn btn-secondary btn-sm" v-on:click="next">次項</button>
+            <button ref="previous" v-bind:class="previousClass" v-on:click="previous" disabled>前項</button>
+            <button ref="next" v-bind:class="nextClass" v-on:click="next">次項</button>
             <table v-bind:class="tableClass">
                 <tbody></tbody>
             </table>
@@ -30,8 +30,14 @@ export class FixTableComponent extends Vue {
     @Prop({ default: 'table table-bordered table-sm m-0' })
     public tableClass: string;
 
+    @Prop({ default: 'btn btn-secondary btn-sm'})
+    public previousClass: string;
+
+    @Prop({ default: 'btn btn-secondary btn-sm'})
+    public nextClass: string;
+
     @Prop({ default: 4 })
-    public displayColumns: number;
+    public displayColumnsNumber: number;
 
     @Prop({ default: 5 })
     public rowNumber: number;
@@ -48,10 +54,11 @@ export class FixTableComponent extends Vue {
     private xDown: number = null;
     private yDown: number = null;
 
-    public get flexibleColumns() {
-        return this.headerTable.tHead.firstChild.childNodes.length - 2;
-    }
+    private firstHeaderWidth: number = null;
+    private lastHeaderWidth: number = null;
+    private middleHeaderWidth: number = null;
 
+    private flexibleColumns: number = null;
     private noChangeFooter = true;
 
     public mounted() {
@@ -63,7 +70,7 @@ export class FixTableComponent extends Vue {
 
         this.moveTheadAndTfoot();
 
-        this.hiddenColumns();
+        this.hiddenColumns(this.displayColumnsNumber + 1, this.flexibleColumns);
 
         this.addPrevNextButtons();
 
@@ -72,13 +79,13 @@ export class FixTableComponent extends Vue {
 
     private addBlankColums() {
         let numberOfFlexibleColumn = this.bodyTable.tHead.firstChild.childNodes.length - 2;
-        let numberOfExcessColumn = numberOfFlexibleColumn % this.displayColumns;
+        let numberOfExcessColumn = numberOfFlexibleColumn % this.displayColumnsNumber;
 
         if (numberOfExcessColumn === 0) {
             return;
         }
 
-        let numberOfBlankColumn = this.displayColumns - numberOfExcessColumn;
+        let numberOfBlankColumn = this.displayColumnsNumber - numberOfExcessColumn;
         let header = (this.bodyTable.tHead.children[0] as HTMLTableRowElement);
         for (let i = 0; i < numberOfBlankColumn; i++) {
             header.insertBefore(document.createElement('TH'), header.lastChild);
@@ -91,7 +98,7 @@ export class FixTableComponent extends Vue {
             }
         });
 
-        if ( this.bodyTable.tFoot.firstChild.childNodes.length !== 1) {
+        if (this.bodyTable.tFoot.firstChild.childNodes.length !== 1) {
             let footer = this.bodyTable.tFoot.children[0] as HTMLTableRowElement;
             for (let i = 0; i < numberOfBlankColumn; i++) {
                 footer.insertBefore(document.createElement('TD'), footer.lastChild);
@@ -104,6 +111,7 @@ export class FixTableComponent extends Vue {
         this.footerTable.tFoot = this.bodyTable.tFoot;
 
         this.noChangeFooter = this.footerTable.tFoot.firstChild.childNodes.length === 1;
+        this.flexibleColumns = this.headerTable.tHead.firstChild.childNodes.length - 2;
     }
 
     private setStyle() {
@@ -119,35 +127,46 @@ export class FixTableComponent extends Vue {
         });
     }
 
-    private generateStyle() {
+    private calculateColumnsWidth() {
         let theFirstHeader = this.headerTable.querySelector('thead>tr>th:first-child') as HTMLTableCellElement;
         let theLastHeader = this.headerTable.querySelector('thead>tr>th:last-child') as HTMLTableCellElement;
 
-        let firstHeaderWidth = theFirstHeader.getAttribute('c-width') as unknown as number;
-        let lastHeaderWidth = theLastHeader.getAttribute('c-width') as unknown as number;
+        let firstHeaderAttribute = theFirstHeader.getAttribute('c-width');
+        let lastHeaderAttribute = theLastHeader.getAttribute('c-width');
 
-        if (firstHeaderWidth === null || lastHeaderWidth === null) {
-            console.warn(`Fix Table Error: the first column or the last column have not 'c-column' attribute!`);
-            firstHeaderWidth = theFirstHeader.offsetWidth;
-            lastHeaderWidth = theLastHeader.offsetWidth;
-        }
+        this.firstHeaderWidth = firstHeaderAttribute !== null ? +firstHeaderAttribute : theFirstHeader.offsetWidth;
+        this.lastHeaderWidth = lastHeaderAttribute !== null ? +lastHeaderAttribute : theLastHeader.offsetWidth;
 
-        let middleHeaderWidth = Math.floor(((this.$el as HTMLElement).offsetWidth - firstHeaderWidth - lastHeaderWidth) / this.displayColumns - 1);
+        let totalMidddleColumnsWidth = (this.$el as HTMLElement).offsetWidth - this.firstHeaderWidth - this.lastHeaderWidth;
+        this.middleHeaderWidth = Math.floor(totalMidddleColumnsWidth / this.displayColumnsNumber - 1);
+    }
 
+    private createColumnsCSS(): string {
         let numberOfCols = this.headerTable.tHead.firstChild.childNodes.length;
-
         let css: string = '';
 
-        css += this.createColumnStyle(1, firstHeaderWidth);
+        css += this.createColumnStyle(1, this.firstHeaderWidth);
         for (let i = 2; i < numberOfCols; i++) {
-            css += this.createColumnStyle(i, middleHeaderWidth);
+            css += this.createColumnStyle(i, this.middleHeaderWidth);
         }
-        css += this.createColumnStyle(numberOfCols, lastHeaderWidth);
+        css += this.createColumnStyle(numberOfCols, this.lastHeaderWidth);
 
+        return css;
+    }
+
+    private createStyleTag(css: string): HTMLStyleElement {
         let styleTag = document.createElement('style');
         styleTag.setAttribute('role', this.roleId);
         styleTag.setAttribute('type', 'text/css');
         styleTag.innerHTML = css;
+
+        return styleTag;
+    }
+
+    private generateStyle() {
+        this.calculateColumnsWidth();
+        let css = this.createColumnsCSS();
+        let styleTag = this.createStyleTag(css);
 
         let head = document.head || document.getElementsByTagName('head')[0];
         head.appendChild(styleTag);
@@ -175,77 +194,69 @@ export class FixTableComponent extends Vue {
         styleTag.innerHTML += css;
     }
 
-    private hiddenColumns() {
-        let displayColumns = this.displayColumns;
+    private changeDisplayColumn() {
+        // hidden
+        let maxHiddenColIndex = this.oldStartDisplayIndex + this.displayColumnsNumber - 1;
+        this.hiddenColumns(this.oldStartDisplayIndex, maxHiddenColIndex);
 
-        let headerColums = this.headerTable.tHead.firstChild.childNodes;
-        for (let i = displayColumns + 1; i < headerColums.length - 1; i++) {
-            (headerColums[i] as HTMLTableHeaderCellElement).classList.add('d-none');
+        // display
+        let maxDisplayColIndex = this.startDisplayIndex + this.displayColumnsNumber - 1;
+        this.displayColumns(this.startDisplayIndex, maxDisplayColIndex);
+    }
+
+    private hiddenColumns(startIndex: number, endIndex: number) {
+        let headerColumns = this.headerTable.tHead.firstChild.childNodes;
+        let footerColumns = this.footerTable.tFoot.firstChild.childNodes;
+        let bodyRows = this.bodyTable.tBodies[0].children as HTMLCollection;
+
+        // header columns
+        for (let i = startIndex; i <= endIndex; i++) {
+            (headerColumns[i] as HTMLTableHeaderCellElement).classList.add('d-none');
         }
 
-        let rows = this.bodyTable.tBodies[0].children as HTMLCollection;
-        Array.from(rows).forEach((row) => {
-            for (let i = displayColumns + 1; i < headerColums.length - 1; i++) {
+        Array.from(bodyRows).forEach((row) => {
+            // body cells
+            for (let i = startIndex; i <= endIndex; i++) {
                 (row.childNodes[i] as HTMLTableCellElement).classList.add('d-none');
             }
         });
 
-        if ( this.noChangeFooter) {
+        if (this.noChangeFooter) {
             return;
         }
 
-        let footerColums = this.footerTable.tFoot.firstChild.childNodes;
-        for (let i = displayColumns + 1; i < headerColums.length - 1; i++) {
-            (footerColums[i] as HTMLTableHeaderCellElement).classList.add('d-none');
+        // footer columns
+        for (let i = startIndex; i <= endIndex; i++) {
+            (footerColumns[i] as HTMLTableHeaderCellElement).classList.add('d-none');
         }
 
     }
 
-    private changeDisplayColumn() {
-        let headerColums = this.headerTable.tHead.firstChild.childNodes;
-        let footerColums = this.footerTable.tFoot.firstChild.childNodes;
+    private displayColumns(startIndex: number, endIndex: number) {
+        let headerColumns = this.headerTable.tHead.firstChild.childNodes;
+        let footerColumns = this.footerTable.tFoot.firstChild.childNodes;
+        let bodyRows = this.bodyTable.tBodies[0].children as HTMLCollection;
 
-        let maxHiddenColIndex = this.oldStartDisplayIndex + this.displayColumns > this.flexibleColumns ? 
-                                this.flexibleColumns : 
-                                this.oldStartDisplayIndex + this.displayColumns - 1;
-
-        let maxDisplayColIndex = this.startDisplayIndex + this.displayColumns > this.flexibleColumns ?
-                                this.flexibleColumns :
-                                this.startDisplayIndex + this.displayColumns - 1;
-
-        // hidden old header columns
-        for (let i = this.oldStartDisplayIndex; i <= maxHiddenColIndex; i++) {
-            (headerColums[i] as HTMLTableHeaderCellElement).classList.add('d-none');
-        }
-        // display new headercolumns
-        for (let i = this.startDisplayIndex; i <= maxDisplayColIndex; i++) {
-            (headerColums[i] as HTMLTableHeaderCellElement).classList.remove('d-none');
+        // header columns
+        for (let i = startIndex; i <= endIndex; i++) {
+            (headerColumns[i] as HTMLTableHeaderCellElement).classList.remove('d-none');
         }
 
-        let rows = this.bodyTable.tBodies[0].children as HTMLCollection;
-        Array.from(rows).forEach((row) => {
-            // hidden old cells
-            for (let i = this.oldStartDisplayIndex; i <= maxHiddenColIndex; i++) {
-                (row.childNodes[i] as HTMLTableCellElement).classList.add('d-none');
-            }
 
-            // display new cells
-            for (let i = this.startDisplayIndex; i <= maxDisplayColIndex; i++) {
+        Array.from(bodyRows).forEach((row) => {
+            // body cells
+            for (let i = startIndex; i <= endIndex; i++) {
                 (row.childNodes[i] as HTMLTableCellElement).classList.remove('d-none');
             }
         });
 
-        if ( this.noChangeFooter ) {
+        if (this.noChangeFooter) {
             return;
         }
 
-        // hidden old footer columns
-        for (let i = this.oldStartDisplayIndex; i <= maxHiddenColIndex; i++) {
-            (footerColums[i] as HTMLTableHeaderCellElement).classList.add('d-none');
-        }
-        // display new footer columns
-        for (let i = this.startDisplayIndex; i <= maxDisplayColIndex; i++) {
-            (footerColums[i] as HTMLTableHeaderCellElement).classList.remove('d-none');
+        // footer columns
+        for (let i = startIndex; i <= endIndex; i++) {
+            (footerColumns[i] as HTMLTableHeaderCellElement).classList.remove('d-none');
         }
     }
 
@@ -258,44 +269,42 @@ export class FixTableComponent extends Vue {
     public previous() {
         let self = this;
 
-        if (this.startDisplayIndex === 1) {
+        if (self.startDisplayIndex === 1) {
             return;
         }
 
         self.oldStartDisplayIndex = self.startDisplayIndex;
-        self.startDisplayIndex = self.startDisplayIndex - self.displayColumns;
+        self.startDisplayIndex = self.startDisplayIndex - self.displayColumnsNumber;
 
         if (self.startDisplayIndex === 1) {
-            (this.$refs.previous as HTMLButtonElement).disabled = true;
+            (self.$refs.previous as HTMLButtonElement).disabled = true;
         }
 
-        let nextButton = this.$refs.next as HTMLButtonElement;
-        if (nextButton.disabled === true) {
-            nextButton.disabled = false;
-        }
-
+        self.enableButton(self.$refs.next as HTMLButtonElement);
         self.changeDisplayColumn();
     }
 
     public next() {
         let self = this;
-        if (self.startDisplayIndex + self.displayColumns > self.flexibleColumns) {
+        if (self.startDisplayIndex + self.displayColumnsNumber > self.flexibleColumns) {
             return;
         }
 
         self.oldStartDisplayIndex = self.startDisplayIndex;
-        self.startDisplayIndex = self.startDisplayIndex + self.displayColumns;
+        self.startDisplayIndex = self.startDisplayIndex + self.displayColumnsNumber;
 
-        if (self.startDisplayIndex + self.displayColumns > self.flexibleColumns) {
+        if (self.startDisplayIndex + self.displayColumnsNumber > self.flexibleColumns) {
             (self.$refs.next as HTMLButtonElement).disabled = true;
         }
 
-        let prevButton = self.$refs.previous as HTMLButtonElement;
-        if (prevButton.disabled === true) {
-            prevButton.disabled = false;
-        }
-
+        self.enableButton(self.$refs.previous as HTMLButtonElement);
         self.changeDisplayColumn();
+    }
+
+    private enableButton(button: HTMLButtonElement) {
+        if (button.disabled === true) {
+            button.disabled = false;
+        }
     }
 
     public handleTouchStart(evt) {
@@ -312,18 +321,20 @@ export class FixTableComponent extends Vue {
         let xDiff = this.xDown - evt.changedTouches[0].clientX;
         let yDiff = this.yDown - evt.changedTouches[0].clientY;
 
-        if (Math.abs(xDiff) > Math.abs(yDiff)) {
-            if (xDiff > 0) {
-                /* left swipe */
-                this.next();
-            } else {
-                /* right swipe */
-                this.previous();
-            }
-        }
-
         this.xDown = null;
         this.yDown = null;
+
+        if (Math.abs(xDiff) < Math.abs(yDiff)) {
+            // up-down swipe
+            return;
+        }
+
+        if (xDiff > 0) {
+            this.next();
+        } else {
+            this.previous();
+        }
+
     }
 
     public destroyed() {

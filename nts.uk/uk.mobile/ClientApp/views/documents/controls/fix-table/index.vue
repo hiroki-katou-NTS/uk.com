@@ -2,12 +2,16 @@
   <div class="documentscontrolsfix-table">
     <h5>1. {{'sample' | i18n}}</h5>
 
-        <span>{{ 'fix-table' | i18n}}</span>
+    <span>{{ 'fix-table' | i18n}}</span>
 
-    <fix-table table-class="table table-bordered m-0  table-sm" class="mx-n2" style="font-size: 13px">
-      <thead class="uk-bg-headline" style="height: 46px">
+    <fix-table
+      table-class="table table-bordered m-0  table-sm"
+      class="mx-n2"
+      style="font-size: 13px"
+    >
+      <thead class="uk-bg-headline">
         <tr>
-          <th c-width="70"></th>
+          <th c-width="64" style="height: 46px"></th>
           <th>勤務種類</th>
           <th style="font-size: 12px">就業時間帯</th>
           <th class="uk-bg-orange">出勤時刻</th>
@@ -26,7 +30,10 @@
           <td>17:30</td>
           <td>12:00</td>
           <td>13:00</td>
-          <td><span style="color: red" class="fa fa-exclamation-circle fa-lg"></span><span class="pl-1" v-on:click="openB">></span></td>
+          <td>
+            <span style="color: red" class="fa fa-exclamation-circle fa-lg"></span>
+            <span class="pl-1" v-on:click="openB">></span>
+          </td>
         </tr>
       </tbody>
       <tfoot>
@@ -42,9 +49,6 @@
         </tr>
       </tfoot>
     </fix-table>
-
-  
-
 
     <markdown />
   </div>
