@@ -722,8 +722,9 @@ public class CheckFileFinder {
 						if (itemSpecialLst.contains(itemDto.getItemCode())) {
 							ItemError error = new ItemError();
 							validateItemOfCS0002(itemDto, value.toString(), error, index);
-							if (error != null)
+							if (error.getColumnKey() != null && error.getColumnKey() !="") {
 								itemErrors.add(error);
+							}
 							break;
 						} else {
 							if (string.isPresent()) {
@@ -740,8 +741,9 @@ public class CheckFileFinder {
 						if (itemSpecialLst.contains(itemDto.getItemCode())) {
 							ItemError error = new ItemError();
 							validateItemOfCS0002(itemDto, value.toString(), error, index);
-							if (error != null)
+							if (error.getColumnKey() != null && error.getColumnKey() !="") {
 								itemErrors.add(error);
+							}
 							break;
 						} else {
 							if (string.isPresent()) {
@@ -982,7 +984,11 @@ public class CheckFileFinder {
 			return value;
 		case TIME:
 		case TIMEPOINT:
+			try {
 			return new Integer(new BigDecimal(value).intValue());
+			}catch(Exception e) {
+				return value;
+			}
 		case NUMBERIC_BUTTON:
 		case NUMERIC:
 			if(isNumeric(value)) {
@@ -991,7 +997,11 @@ public class CheckFileFinder {
 				return value;
 			}
 		case DATE:
-			return GeneralDate.fromString(value, "yyyy/MM/dd");
+			try {
+			  return GeneralDate.fromString(value, "yyyy/MM/dd");
+			}catch(Exception e) {
+				return value;
+			}
 		default:
 			return null;
 		}
