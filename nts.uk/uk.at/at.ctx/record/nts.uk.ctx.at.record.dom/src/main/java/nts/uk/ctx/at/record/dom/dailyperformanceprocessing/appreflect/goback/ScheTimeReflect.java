@@ -1,10 +1,7 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.goback;
 
-import java.util.Optional;
-
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ScheAndRecordSameChangeFlg;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
-import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 
 /**
  * 事前申請の処理: 予定時刻の反映
@@ -16,7 +13,7 @@ public interface ScheTimeReflect {
 	/**
 	 * 予定時刻の反映
 	 * @param para
-	 * @param timeTypeScheReflect: 予定勤種・就時の反映
+	 * @param timeTypeScheReflect: 予定勤種・就時の反IntegrationOfDaily映
 	 * @return
 	 */
 	public void reflectScheTime(GobackReflectParameter para, boolean timeTypeScheReflect,
@@ -40,14 +37,13 @@ public interface ScheTimeReflect {
 	 * 時刻の反映
 	 * @param para
 	 */
-	public void reflectTime(GobackReflectParameter para, boolean workTypeTimeReflect, IntegrationOfDaily dailyInfor);
+	public void reflectTime(GobackReflectParameter para, boolean workTypeTimeReflect,IntegrationOfDaily dailyInfor);
 	/**
 	 * 1.出勤時刻を反映できるか
 	 * 2.退勤時刻を反映できるか
 	 * @param para
 	 */
-	public boolean checkAttendenceReflect(GobackReflectParameter para, Integer frameNo, boolean isPre,
-			Optional<TimeLeavingOfDailyPerformance> optTimeLeave);
+	public boolean checkAttendenceReflect(GobackReflectParameter para, Integer frameNo, boolean isPre);
 	/**
 	 * ジャスト遅刻により時刻を編集する
 	 * ジャスト早退により時刻を編集する
@@ -66,5 +62,5 @@ public interface ScheTimeReflect {
 	 * 
 	 * @return
 	 */
-	public boolean checkScheReflect(String worktimeCode, boolean scheReflectAtr, ScheAndRecordSameChangeFlg scheAndRecordSameChangeFlg);
+	public boolean checkScheReflect(String worktimeCode, boolean scheReflectAtr, ScheAndRecordSameChangeFlg scheAndRecordSameChangeFlg, boolean isPre);
 }

@@ -44,4 +44,5 @@ public class GobackReflectParameter {
 	 */
 	private GobackAppParameter gobackData;
 	private String excLogId;
+
 }

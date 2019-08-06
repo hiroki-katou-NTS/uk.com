@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 
@@ -21,7 +22,7 @@ public interface PreOvertimeReflectProcess {
 	 * @return True: 反映前後勤就の変更する
 	 * False: 反映前後勤就の変更したい
 	 */
-	public boolean changeFlg(OvertimeParameter para, IntegrationOfDaily dailyInfo);
+	public AppReflectRecordWork changeFlg(OvertimeParameter para, WorkInfoOfDailyPerformance dailyInfo);
 	/**
 	 * 予定勤種・就時反映後の予定勤種・就時を取得する
 	 * @param employeeId
@@ -60,7 +61,7 @@ public interface PreOvertimeReflectProcess {
 	 * @param para
 	 * @return
 	 */
-	public void getReflectOfOvertime(OvertimeParameter para, IntegrationOfDaily dailyInfor);
+	public void getReflectOfOvertime(OvertimeParameter para, IntegrationOfDaily dailyData);
 	/**
 	 * 所定外深夜時間の反映
 	 * @param employeeId
@@ -69,7 +70,7 @@ public interface PreOvertimeReflectProcess {
 	 * @param overShiftNight: 外深夜時間
 	 */
 	public void overTimeShiftNight(String employeeId, GeneralDate dateData, boolean timeReflectFlg, 
-			Integer overShiftNight,	IntegrationOfDaily dailyInfor);
+			Integer overShiftNight,	IntegrationOfDaily attendanceTimeData);
 	/**
 	 * フレックス時間の反映
 	 * @param employeeId
