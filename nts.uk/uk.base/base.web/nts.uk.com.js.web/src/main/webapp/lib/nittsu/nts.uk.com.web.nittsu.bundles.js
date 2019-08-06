@@ -672,7 +672,7 @@ var nts;
                 this.setItem(key, JSON.stringify(value));
             };
             WebStorageWrapper.prototype.containsKey = function (key) {
-                return this.getItem(key) !== null;
+                return this.getItem(key).isPresent();
             };
             ;
             WebStorageWrapper.prototype.getItem = function (key) {
@@ -3467,6 +3467,45 @@ var nts;
                 return dfd.promise();
             }
             request.writeDynamicConstraint = writeDynamicConstraint;
+            var subSession;
+            (function (subSession) {
+                var SubSessionIdKey = "nts.uk.request.subSessionId.";
+                var SecondsToKeepSubSession = 30;
+                var SecondsIntervalToReportAlive = 3;
+                subSession.currentId = uk.util.randomId();
+                // keep alive sub sessions
+                function keepAliveSubSessionId() {
+                    window.localStorage.setItem(SubSessionIdKey + subSession.currentId, +new Date());
+                }
+                keepAliveSubSessionId();
+                setInterval(keepAliveSubSessionId, SecondsIntervalToReportAlive * 1000);
+                function getAliveIds() {
+                    var aliveIds = [];
+                    var deadIds = [];
+                    for (var i = 0;; i++) {
+                        var key = window.localStorage.key(i);
+                        if (key == null)
+                            break;
+                        if (key.indexOf(SubSessionIdKey) !== 0)
+                            continue;
+                        var id = key.slice(SubSessionIdKey.length);
+                        var lastReportTime = window.localStorage.getItem(SubSessionIdKey + id);
+                        var duration = +new Date() - lastReportTime;
+                        if (duration <= SecondsToKeepSubSession * 1000) {
+                            aliveIds.push(id);
+                        }
+                        else {
+                            deadIds.push(id);
+                        }
+                    }
+                    // prune dead IDs
+                    deadIds.forEach(function (deadId) {
+                        window.localStorage.removeItem(SubSessionIdKey + deadId);
+                    });
+                    return aliveIds;
+                }
+                subSession.getAliveIds = getAliveIds;
+            })(subSession || (subSession = {}));
             function ajax(webAppId, path, data, options, restoresSession) {
                 if (typeof arguments[1] !== 'string') {
                     return ajax.apply(null, _.concat(location.currentAppId, arguments));
@@ -3491,7 +3530,9 @@ var nts;
                         data: data,
                         headers: {
                             'PG-Path': location.current.serialize(),
-                            "X-CSRF-TOKEN": csrf.getToken()
+                            "X-CSRF-TOKEN": csrf.getToken(),
+                            "X-SubSessionId": subSession.currentId,
+                            "X-AliveSubSessionIds": subSession.getAliveIds()
                         }
                     }).done(function (res) {
                         if (nts.uk.util.exception.isErrorToReject(res)) {
@@ -3545,7 +3586,9 @@ var nts;
                         async: false,
                         headers: {
                             'PG-Path': location.current.serialize(),
-                            "X-CSRF-TOKEN": csrf.getToken()
+                            "X-CSRF-TOKEN": csrf.getToken(),
+                            "X-SubSessionId": subSession.currentId,
+                            "X-AliveSubSessionIds": subSession.getAliveIds()
                         },
                         success: function (res) {
                             if (nts.uk.util.exception.isErrorToReject(res)) {

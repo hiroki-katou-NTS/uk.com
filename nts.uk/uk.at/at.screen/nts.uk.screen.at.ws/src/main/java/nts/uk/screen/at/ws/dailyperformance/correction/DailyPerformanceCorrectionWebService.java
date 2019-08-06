@@ -14,8 +14,6 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -27,8 +25,8 @@ import lombok.val;
 import nts.arc.enums.EnumConstant;
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.app.file.export.ExportServiceResult;
-import nts.arc.layer.ws.ProducedRequest;
 import nts.arc.time.GeneralDate;
+import nts.arc.web.session.HttpSubSession;
 import nts.uk.ctx.at.function.app.find.dailyperformanceformat.DailyPerformanceAuthoritySetting;
 import nts.uk.ctx.at.function.app.find.dailyperformanceformat.MonthlyPerfomanceAuthorityFinder;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
@@ -44,6 +42,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.UpdateColWidthCommand;
 import nts.uk.screen.at.app.dailyperformance.correction.calctime.DailyCorrectCalcTimeService;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeName;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.DataDialogWithTypeProcessor;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.ApprovalConfirmCache;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPAttendanceItem;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPDataDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemParent;
@@ -138,8 +137,7 @@ public class DailyPerformanceCorrectionWebService {
 	private MonthlyPerfomanceAuthorityFinder monthlyPerfomanceAuthorityFinder;
 	
 	@Inject
-	@ProducedRequest
-	private HttpServletRequest httpRequest;
+	private HttpSubSession session;
 	
 	@Inject
 	private DPLoadVerProcessor dPLoadVerProcessor;
@@ -152,7 +150,6 @@ public class DailyPerformanceCorrectionWebService {
 	@POST
 	@Path("startScreen")
 	public DailyPerformanceCorrectionDto startScreen(DPParams params ) throws InterruptedException{
-		HttpSession session = httpRequest.getSession();
 		Integer closureId = params.closureId;
 		DailyPerformanceCorrectionDto screenDto = (DailyPerformanceCorrectionDto) session.getAttribute("resultReturn");
 		DailyPerformanceCorrectionDto dtoResult = this.processor.generateData(screenDto, params.lstEmployee, params.initScreen, params.mode, params.displayFormat, params.correctionOfDaily, params.formatCodes, params.showError, params.showLock, params.objectShare, closureId);
@@ -162,9 +159,10 @@ public class DailyPerformanceCorrectionWebService {
 		session.setAttribute("itemIdRCs", dtoResult.getLstControlDisplayItem() == null ? null : dtoResult.getLstControlDisplayItem().getMapDPAttendance());
 		session.setAttribute("dataSource", dtoResult.getLstData());
 		session.setAttribute("closureId", dtoResult.getClosureId());
-		session.setAttribute("dataSource1", dtoResult.getLstData());
 		session.setAttribute("resultReturn", null);
-		removeSession(session);
+		session.setAttribute("approvalConfirm", dtoResult.getApprovalConfirmCache());
+		dtoResult.setApprovalConfirmCache(null);
+		removeSession();
 		dtoResult.setDomainOld(Collections.emptyList());
 		return dtoResult;
 	}
@@ -172,7 +170,6 @@ public class DailyPerformanceCorrectionWebService {
 	@POST
 	@Path("errorCode")
 	public DailyPerformanceCorrectionDto condition(DPParams params ) throws InterruptedException{
-		HttpSession session = httpRequest.getSession();
 		Integer closureId = (Integer) session.getAttribute("closureId");
 		val results = this.errorProcessor.generateData(params.dateRange, params.lstEmployee, params.initScreen, params.mode, params.displayFormat, params.correctionOfDaily, params.errorCodes, params.formatCodes, params.showLock, closureId);
 		session.setAttribute("domainOlds", results.getDomainOld());
@@ -180,7 +177,11 @@ public class DailyPerformanceCorrectionWebService {
 		session.setAttribute("domainEdits", null);
 		session.setAttribute("itemIdRCs", results.getLstControlDisplayItem() == null ? null : results.getLstControlDisplayItem().getMapDPAttendance());
 		session.setAttribute("dataSource", results.getLstData());
-		removeSession(session);
+		session.setAttribute("closureId", results.getClosureId());
+		session.setAttribute("resultReturn", null);
+		session.setAttribute("approvalConfirm", results.getApprovalConfirmCache());
+		results.setApprovalConfirmCache(null);
+		removeSession();
 		results.setDomainOld(Collections.emptyList());
 		return results;
 	}
@@ -188,7 +189,6 @@ public class DailyPerformanceCorrectionWebService {
 	@POST
 	@Path("initParam")
 	public DailyPerformanceCorrectionDto initScreen(DPParams params ) throws InterruptedException{
-		HttpSession session = httpRequest.getSession();
 		Integer closureId = params.closureId;
 		Pair<DailyPerformanceCorrectionDto, ParamCommonAsync> dtoResult = this.infomationInit.initGetParam(params.dateRange, params.lstEmployee, params.initScreen, params.mode, params.displayFormat, params.correctionOfDaily, params.formatCodes, params.showError, params.showLock, params.objectShare, closureId);
 		session.setAttribute("resultReturn", dtoResult.getLeft());
@@ -199,7 +199,6 @@ public class DailyPerformanceCorrectionWebService {
 	@POST
 	@Path("loadMonth")
 	public DailyPerformanceCorrectionDto loadMonth() throws InterruptedException{
-		HttpSession session = httpRequest.getSession();
 		ParamCommonAsync paramCommonAsync = (ParamCommonAsync) session.getAttribute("resultMonthReturn");
 		DailyPerformanceCorrectionDto result = this.processMonthScreen.processMonth(paramCommonAsync);
 		session.setAttribute("resultMonthReturn", null);
@@ -209,7 +208,6 @@ public class DailyPerformanceCorrectionWebService {
 	@POST
 	@Path("getErrors")
 	public List<ErrorReferenceDto> getError(DPParams params ) {
-		HttpSession session = httpRequest.getSession();
 		Integer closureId = (Integer) session.getAttribute("closureId");
 		return this.processor.getListErrorRefer(params.dateRange, params.lstEmployee, closureId);
 	}
@@ -236,7 +234,6 @@ public class DailyPerformanceCorrectionWebService {
 	@Path("addAndUpdate")
 	@SuppressWarnings("unchecked")
 	public DataResultAfterIU addAndUpdate(DPItemParent dataParent) {
-		HttpSession session = httpRequest.getSession();
 		val domain  = session.getAttribute("domainEdits");
 		List<DailyRecordDto> dailyEdits = new ArrayList<>();
 		if(domain == null){
@@ -250,6 +247,7 @@ public class DailyPerformanceCorrectionWebService {
 		dataParent.setLstAttendanceItem((Map<Integer, DPAttendanceItem>) session.getAttribute("itemIdRCs"));
 		dataParent.setErrorAllSidDate((Boolean)session.getAttribute("errorAllCalc"));
 		dataParent.setLstSidDateDomainError((List<Pair<String, GeneralDate>>)session.getAttribute("lstSidDateErrorCalc"));
+		dataParent.setApprovalConfirmCache((ApprovalConfirmCache)session.getAttribute("approvalConfirm"));
 		DataResultAfterIU dataResultAfterIU =  dailyModifyResCommandFacade.insertItemDomain(dataParent);
 		session.setAttribute("lstSidDateErrorCalc", dataResultAfterIU.getLstSidDateDomainError());
 		session.setAttribute("errorAllCalc", dataResultAfterIU.isErrorAllSidDate());
@@ -259,13 +257,18 @@ public class DailyPerformanceCorrectionWebService {
 	@POST
 	@Path("insertClosure")
 	public void insertClosure(EmpAndDate empAndDate){
-		personalTightCommandFacade.insertPersonalTight(empAndDate.getEmployeeId(), empAndDate.getDate());
+		ApprovalConfirmCache approvalConfirmCache = (ApprovalConfirmCache)session.getAttribute("approvalConfirm");
+		ApprovalConfirmCache result = personalTightCommandFacade.insertPersonalTight(empAndDate.getEmployeeId(), empAndDate.getDate(), approvalConfirmCache);
+		session.setAttribute("approvalConfirm", result);
 	}
 	
 	@POST
 	@Path("releaseClosure")
 	public JavaTypeResult<String> releaseClosure(EmpAndDate empAndDate){
-		return new JavaTypeResult<String>(personalTightCommandFacade.releasePersonalTight(empAndDate.getEmployeeId(), empAndDate.getDate()));
+		ApprovalConfirmCache approvalConfirmCache = (ApprovalConfirmCache)session.getAttribute("approvalConfirm");
+		Pair<String, ApprovalConfirmCache> result = personalTightCommandFacade.releasePersonalTight(empAndDate.getEmployeeId(), empAndDate.getDate(), approvalConfirmCache);
+		session.setAttribute("approvalConfirm", result.getRight());
+		return new JavaTypeResult<String>(result.getLeft());
 	}
 	
 	public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
@@ -289,7 +292,6 @@ public class DailyPerformanceCorrectionWebService {
 	@Path("loadRow")
 	@SuppressWarnings("unchecked")
 	public DailyPerformanceCorrectionDto reloadRow(DPPramLoadRow param) {
-		HttpSession session = httpRequest.getSession();
 		val domain  = session.getAttribute("domainEdits");
 		List<DailyRecordDto> dailyEdits = new ArrayList<>();
 		if(domain == null){
@@ -302,8 +304,11 @@ public class DailyPerformanceCorrectionWebService {
 		param.setErrorAllSidDate((Boolean)session.getAttribute("errorAllCalc"));
 		Integer closureId = (Integer) session.getAttribute("closureId");
 		param.setClosureId(closureId);
+		param.setApprovalConfirmCache((ApprovalConfirmCache)session.getAttribute("approvalConfirm"));
 		val result = loadRowProcessor.reloadGrid(param);
 		session.setAttribute("domainEdits", null);
+		session.setAttribute("approvalConfirm", result.getApprovalConfirmCache());
+		result.setApprovalConfirmCache(null);
 		if(!param.getOnlyLoadMonth()) {
 			session.setAttribute("domainOlds", result.getDomainOld());
 			session.setAttribute("domainOldForLog", result.getDomainOldForLog());
@@ -316,7 +321,6 @@ public class DailyPerformanceCorrectionWebService {
 	@Path("loadVerData")
 	@SuppressWarnings("unchecked")
 	public LoadVerDataResult addAndUpdate(LoadVerData loadVerData) {
-		HttpSession session = httpRequest.getSession();
 		val domain = session.getAttribute("domainEdits");
 		List<DailyRecordDto> dailyEdits = new ArrayList<>();
 		if (domain == null) {
@@ -325,10 +329,13 @@ public class DailyPerformanceCorrectionWebService {
 			dailyEdits = (List<DailyRecordDto>) domain;
 		}
 		loadVerData.setLstDomainOld(dailyEdits);
+		loadVerData.setApprovalConfirmCache((ApprovalConfirmCache)session.getAttribute("approvalConfirm"));
 		val result = dPLoadVerProcessor.loadVerAfterCheckbox(loadVerData);
 		session.setAttribute("domainEdits", null);
 		session.setAttribute("domainOlds", result.getLstDomainOld());
 		result.setLstDomainOld(new ArrayList<>());
+		session.setAttribute("approvalConfirm", result.getApprovalConfirmCache());
+		result.setApprovalConfirmCache(null);
 		return result;
 	}
 	
@@ -379,7 +386,6 @@ public class DailyPerformanceCorrectionWebService {
 	@Path("calcTime")
 	@SuppressWarnings("unchecked")
 	public DCCalcTime calcTime(DCCalcTimeParam dcTimeParam) {
-		HttpSession session = httpRequest.getSession();
 		val domain  = session.getAttribute("domainEdits");
 		List<DailyRecordDto> dailyEdits = new ArrayList<>();
 		if(domain == null){
@@ -398,7 +404,6 @@ public class DailyPerformanceCorrectionWebService {
 	@Path("calculation")
 	@SuppressWarnings("unchecked")
 	public DailyPerformanceCalculationDto calculation(DPItemParent dataParent) {
-		HttpSession session = httpRequest.getSession();
 		val domain  = session.getAttribute("domainEdits");
 		List<DailyRecordDto> dailyEdits = new ArrayList<>();
 		if(domain == null){
@@ -429,7 +434,6 @@ public class DailyPerformanceCorrectionWebService {
 	@POST
 	@Path("lock")
 	public DailyPerformanceCorrectionDto processLock(DPDisplayLockParam param) {
-		HttpSession session = httpRequest.getSession();
 		Integer closureId = (Integer) session.getAttribute("closureId");
 		param.setClosureId(closureId);
 		return dpDisplayLockProcessor.processDisplayLock(param);
@@ -440,7 +444,7 @@ public class DailyPerformanceCorrectionWebService {
 		return dtos.stream().map(x -> x.clone()).collect(Collectors.toList());
 	}
 	
-	private void removeSession(HttpSession session) {
+	private void removeSession() {
 		session.setAttribute("lstSidDateErrorCalc", Collections.emptyList());
 		session.setAttribute("errorAllCalc", false);
 	}

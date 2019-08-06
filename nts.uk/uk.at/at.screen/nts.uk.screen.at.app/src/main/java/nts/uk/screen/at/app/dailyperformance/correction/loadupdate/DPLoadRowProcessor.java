@@ -38,6 +38,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.GetDataDaily;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeName;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeNameType;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.DataDialogWithTypeProcessor;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.ApprovalConfirmCache;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ApprovalUseSettingDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.CellEdit;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPAttendanceItem;
@@ -101,14 +102,20 @@ public class DPLoadRowProcessor {
     @Inject
 	private ClosureService closureService;
     
-    @Inject
+	@Inject
+	private IFindDataDCRecord iFindDataDCRecord;
+	
+//	@Inject
+//	private ApprovalStatusActualDayChange approvalStatusActualDayChange;
+//	
+//	@Inject
+//	private ConfirmStatusActualDayChange confirmStatusActualDayChange;
+	
+	@Inject
 	private ConfirmStatusActualDay confirmApprovalStatusActualDay;
 	
 	@Inject
 	private ApprovalStatusActualDay approvalStatusActualDay;
-	
-	@Inject
-	private IFindDataDCRecord iFindDataDCRecord;
     
 	public DailyPerformanceCorrectionDto reloadGrid(DPPramLoadRow param){
 		DailyPerformanceCorrectionDto result = new DailyPerformanceCorrectionDto();
@@ -258,6 +265,11 @@ public class DPLoadRowProcessor {
 		List<ApprovalStatusActualResult> approvalResults = approvalStatusActualDay.processApprovalStatus(companyId,
 				listEmployeeId, new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate()), result.getClosureId(),
 				mode, Optional.of(keyFind));
+		
+//		List<ConfirmStatusActualResult> confirmResults = confirmStatusActualDayChange.processConfirmStatus(companyId, sId, listEmployeeId, Optional.of( new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate())), Optional.empty());
+//
+//		List<ApprovalStatusActualResult> approvalResults = approvalStatusActualDayChange.processApprovalStatus(companyId, sId, listEmployeeId, Optional.of(new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate())), Optional.empty(), mode);
+
 		Map<Pair<String, GeneralDate>, ConfirmStatusActualResult> mapConfirmResult = confirmResults.stream().collect(Collectors.toMap(x -> Pair.of(x.getEmployeeId(), x.getDate()), x -> x));
 		Map<Pair<String, GeneralDate>, ApprovalStatusActualResult> mapApprovalResults = approvalResults.stream().collect(Collectors.toMap(x -> Pair.of(x.getEmployeeId(), x.getDate()), x -> x , (x, y) -> x));
 		//cell hide check box approval
@@ -341,6 +353,8 @@ public class DPLoadRowProcessor {
 		}
 		result.setLstHideControl(lstCellHideControl);
 		result.setLstData(lstData);
+		ApprovalConfirmCache cache = param.getApprovalConfirmCache();
+        result.setApprovalConfirmCache(new ApprovalConfirmCache(sId,  cache.getEmployeeIds(), cache.getPeriod(), cache.getMode(), confirmResults, approvalResults, result.getClosureId()));
 		return result;
 	}
 	

@@ -65,28 +65,31 @@ public class KTG030QueryProcessor {
 		}else{
 			//月別実績確認すべきデータ有無取得
 			//Lấy tất cả data xác nhận kết quả các ngày có hay không có
-			listCheckTargetItem = dataMonthlyResult(employeeID, currentOrNextMonth, closureId);
+			listCheckTargetItem = dataMonthlyResult(employeeID, currentOrNextMonth);
 		}
-		// rq593
-		result = checkTrackRecord.checkTrackRecord(CID, employeeID, listCheckTargetItem.stream()
-											.map(c -> new CheckTargetItemDto(c.getClosureId(), c.getYearMonth())).collect(Collectors.toList()));
+		List<CheckTargetItemDto> temp = listCheckTargetItem.stream()
+										.filter(x -> x.getClosureId() == closureId)
+										.map(c -> new CheckTargetItemDto(c.getClosureId(), c.getYearMonth()))
+										.collect(Collectors.toList());
+		// rq594
+		result = checkTrackRecord.checkTrackRecord(CID, employeeID, temp);
 		
 		return new KTG001Dto(result, currentOrNextMonth, listCheckTargetItem.stream()
 															.map(x -> new TargetDto(x.getClosureId(), x.getYearMonth().toString())).collect(Collectors.toList()));
 	}
 	
-	public List<CheckTarget> dataMonthlyResult(String employeeID ,int yearmonth, int closureId){
+	public List<CheckTarget> dataMonthlyResult(String employeeID ,int yearmonth){
 		//全締めの当月と期間を取得する
 		//Get thời gian và all closure tháng đó
 		List<ClosureInfo> listClosure = closureService.getAllClosureInfo();
 		List<CheckTarget> listCheckTargetItem = new ArrayList<>();
 		for (ClosureInfo closure : listClosure) {
 			if(yearmonth == 0){
-				listCheckTargetItem.add(new CheckTarget(closureId, closure.getCurrentMonth()));
+				listCheckTargetItem.add(new CheckTarget(closure.getClosureId().value, closure.getCurrentMonth()));
 				
 			}
 			else{
-				listCheckTargetItem.add(new CheckTarget(closureId, closure.getCurrentMonth().addMonths(1)));
+				listCheckTargetItem.add(new CheckTarget(closure.getClosureId().value, closure.getCurrentMonth().addMonths(1)));
 			}
 		}
 		return listCheckTargetItem;

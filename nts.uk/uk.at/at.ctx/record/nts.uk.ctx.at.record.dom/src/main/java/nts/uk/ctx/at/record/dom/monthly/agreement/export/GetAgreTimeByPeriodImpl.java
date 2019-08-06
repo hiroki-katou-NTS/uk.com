@@ -211,66 +211,79 @@ public class GetAgreTimeByPeriodImpl implements GetAgreTimeByPeriod {
 
 	@Override
 	public List<AgreementTimeByEmp> algorithmImprove(String companyId, List<String> employeeIds, GeneralDate criteria,
-                                                     Month startMonth, Year year, List<PeriodAtrOfAgreement> periodAtrs) {
-        YearMonth startYm = YearMonth.of(year.v(), startMonth.v());
-        List<YearMonth> periodYmAll = new ArrayList<>();
-        for (int i = 0; i < 12; i++) {
-            periodYmAll.add(startYm.addMonths(i));
-        }
-        // 36協定時間を取得
-        Map<String, List<AgreementTimeOfManagePeriod>> agreementTimeAll =
-                this.agreementTimeOfMngPrdRepo.findBySidsAndYearMonths(employeeIds, periodYmAll).stream()
-                        .collect(Collectors.groupingBy(AgreementTimeOfManagePeriod::getEmployeeId));
+            Month startMonth, Year year, List<PeriodAtrOfAgreement> periodAtrs,  Map<String, YearMonthPeriod> periodWorking) {
+		YearMonth startYm = YearMonth.of(year.v(), startMonth.v());
+		List<YearMonth> periodYmAll = new ArrayList<>();
+		for (int i = 0; i < 12; i++) {
+			periodYmAll.add(startYm.addMonths(i));
+		}
+		// 36協定時間を取得
 
-        // 「労働条件項目」を取得
-        Map<String, WorkingConditionItemCustom> workingConditionItemAll =
-                this.workingConditionItem.getBySidsAndStandardDate(employeeIds, criteria).stream()
-                        .collect(Collectors.toMap(WorkingConditionItemCustom::getEmployeeId, x -> x));
+		List<AgreementTimeOfManagePeriod> listAgreementTimeOfManagePeriod = this.agreementTimeOfMngPrdRepo
+				.findBySidsAndYearMonths(employeeIds, periodYmAll).stream().filter(c -> {
+					return periodWorking.get(c.getEmployeeId()).contains(c.getYearMonth());
+				}).collect(Collectors.toList());
 
-        Map<String, AgreementYearSetting> yearSetAll = new HashMap<>();
-        if (periodAtrs.contains(PeriodAtrOfAgreement.ONE_YEAR)) {
-            // 36協定年度設定を取得する
-            yearSetAll = this.agreementYearSetRepo.findByKey(employeeIds, year.v()).stream()
-                    .collect(Collectors.toMap(AgreementYearSetting::getEmployeeId, x -> x));
-        }
+		Map<String, List<AgreementTimeOfManagePeriod>> agreementTimeAll = listAgreementTimeOfManagePeriod.stream()
+				.collect(Collectors.groupingBy(AgreementTimeOfManagePeriod::getEmployeeId));
 
-        Map<String, List<AgreementMonthSetting>> monthSetAll = new HashMap<>();
-        if (periodAtrs.contains(PeriodAtrOfAgreement.ONE_MONTH)) {
-            // 36協定年月設定を取得する
-            monthSetAll = this.agreementMonthSetRepo.findByKey(employeeIds, periodYmAll).stream()
-                    .collect(Collectors.groupingBy(AgreementMonthSetting::getEmployeeId));
-        }
+		// 「労働条件項目」を取得
+		Map<String, WorkingConditionItemCustom> workingConditionItemAll = this.workingConditionItem
+				.getBySidsAndStandardDate(employeeIds, criteria).stream()
+				.collect(Collectors.toMap(WorkingConditionItemCustom::getEmployeeId, x -> x));
 
-        Map<String, AgreementYearSetting> finalYearSetAll = yearSetAll;
-        Map<String, List<AgreementMonthSetting>> finalMonthSetAll = monthSetAll;
-        List<AgreementTimeByEmp> agreementTimes = Collections.synchronizedList(new ArrayList<>());
-        this.parallel.forEach(employeeIds, employeeId -> {
-            if (!agreementTimeAll.containsKey(employeeId)) return;
-            List<AgreementTimeOfManagePeriod> agreementTimeByEmp = agreementTimeAll.get(employeeId);
+		Map<String, AgreementYearSetting> yearSetAll = new HashMap<>();
+		if (periodAtrs.contains(PeriodAtrOfAgreement.ONE_YEAR)) {
+			// 36協定年度設定を取得する
+			yearSetAll = this.agreementYearSetRepo.findByKey(employeeIds, year.v()).stream()
+					.collect(Collectors.toMap(AgreementYearSetting::getEmployeeId, x -> x));
+		}
 
-            // 「労働条件項目」を取得
-            if (!workingConditionItemAll.containsKey(employeeId)) return;
-            WorkingConditionItemCustom workingConditionItemByEmp = workingConditionItemAll.get(employeeId);
+		Map<String, List<AgreementMonthSetting>> monthSetAll = new HashMap<>();
+		if (periodAtrs.contains(PeriodAtrOfAgreement.ONE_MONTH)) {
+			// 36協定年月設定を取得する
 
-            AgreementYearSetting yearSetByEmp = null;
-            if (finalYearSetAll.containsKey(employeeId)) {
-                // 36協定年度設定を取得する
-                yearSetByEmp = finalYearSetAll.get(employeeId);
-            }
+			List<AgreementMonthSetting> agreementMonthSettings = this.agreementMonthSetRepo
+					.findByKey(employeeIds, periodYmAll).stream().filter(c -> {
+						return periodWorking.get(c.getEmployeeId()).contains(c.getYearMonthValue());
+					}).collect(Collectors.toList());
 
-            Map<Integer, AgreementMonthSetting> monthSetByEmp = new HashMap<>();
-            if (finalMonthSetAll.containsKey(employeeId)) {
-                // 36協定年月設定を取得する
-                monthSetByEmp = finalMonthSetAll.get(employeeId).stream()
-                        .collect(Collectors.toMap(x -> x.getYearMonthValue().v(), x -> x));
-            }
+			monthSetAll = agreementMonthSettings.stream()
+					.collect(Collectors.groupingBy(AgreementMonthSetting::getEmployeeId));
+		}
 
-            List<AgreementTimeByEmp> results = this.getAgreementTimeByEmp(companyId, employeeId, criteria, periodAtrs,
-                    startYm, agreementTimeByEmp, workingConditionItemByEmp, yearSetByEmp, monthSetByEmp);
-            agreementTimes.addAll(results);
-        });
-        // 年間36協定時間を返す
-        return new ArrayList<>(agreementTimes);
+		Map<String, AgreementYearSetting> finalYearSetAll = yearSetAll;
+		Map<String, List<AgreementMonthSetting>> finalMonthSetAll = monthSetAll;
+		List<AgreementTimeByEmp> agreementTimes = Collections.synchronizedList(new ArrayList<>());
+		this.parallel.forEach(employeeIds, employeeId -> {
+			if (!agreementTimeAll.containsKey(employeeId))
+				return;
+			List<AgreementTimeOfManagePeriod> agreementTimeByEmp = agreementTimeAll.get(employeeId);
+
+			// 「労働条件項目」を取得
+			if (!workingConditionItemAll.containsKey(employeeId))
+				return;
+			WorkingConditionItemCustom workingConditionItemByEmp = workingConditionItemAll.get(employeeId);
+
+			AgreementYearSetting yearSetByEmp = null;
+			if (finalYearSetAll.containsKey(employeeId)) {
+				// 36協定年度設定を取得する
+				yearSetByEmp = finalYearSetAll.get(employeeId);
+			}
+
+			Map<Integer, AgreementMonthSetting> monthSetByEmp = new HashMap<>();
+			if (finalMonthSetAll.containsKey(employeeId)) {
+				// 36協定年月設定を取得する
+				monthSetByEmp = finalMonthSetAll.get(employeeId).stream()
+						.collect(Collectors.toMap(x -> x.getYearMonthValue().v(), x -> x));
+			}
+
+			List<AgreementTimeByEmp> results = this.getAgreementTimeByEmp(companyId, employeeId, criteria, periodAtrs,
+					startYm, agreementTimeByEmp, workingConditionItemByEmp, yearSetByEmp, monthSetByEmp);
+			agreementTimes.addAll(results);
+		});
+		// 年間36協定時間を返す
+		return new ArrayList<>(agreementTimes);
 	}
 
 	private List<AgreementTimeByEmp> getAgreementTimeByEmp(String companyId, String employeeId, GeneralDate criteria,
