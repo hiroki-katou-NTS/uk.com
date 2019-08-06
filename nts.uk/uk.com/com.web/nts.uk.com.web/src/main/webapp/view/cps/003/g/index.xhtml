@@ -9,8 +9,8 @@
 		<ui:define name="htmlHead">
 			<script type='text/javascript'>
 				var dialogSize = {
-					width : 1200,
-					height :800
+					width : 1160,
+					height :455
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
@@ -25,11 +25,10 @@
 				<button id="G1_001" tabindex="1" data-bind = "click : exportFile" >#{i18n.getText('CPS003_98')}</button>
 				<button id="G1_002" tabindex="2" data-bind = "click : close" >#{i18n.getText('CPS003_99')} </button>
 			</div>
-			<div id="contents-area" data-bind="">
-			<div id= "contents-grid" data-bind="">
-			<table id="grid2" tabindex="3"></table>
-				</div>
+			<div id="contents-area">
+			<table id="grid2"  tabindex="3"></table>
 			</div>
+			<!-- <div id="functions-area-bottom"> </div> -->
 		</ui:define>
 	</ui:composition>
 </body>

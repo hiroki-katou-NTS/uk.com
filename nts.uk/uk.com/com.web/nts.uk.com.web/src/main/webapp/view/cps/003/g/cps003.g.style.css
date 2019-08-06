@@ -1,5 +1,5 @@
 #contents-area {
-	height: auto !important;
+	height: initial !important;
 }
 
 #contents-area .swap-list-updown-contaier>div {
@@ -25,6 +25,15 @@
 #G1_002{
 	margin-left: 930px !important;
 }
-.ui-iggrid .ui-iggrid-tablebody td {
-    height: 20px !important;
+
+#grid2_container{
+	margin-left:10px !important;
+}
+
+td[aria-describedby='grid2_empName']{
+  width: 99%;
+  /* display: inline-block; */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
