@@ -21,6 +21,7 @@ import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
+import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pereg.dom.person.setting.matrix.personinfomatrixitem.PersonInfoMatrixData;
 import nts.uk.ctx.pereg.dom.person.setting.matrix.personinfomatrixitem.PersonInfoMatrixItem;
@@ -119,13 +120,14 @@ public class JpaPersonInfoMatrixItem extends JpaRepository implements PersonInfo
 
 		if (!updateEntity.isPresent()) {
 			commandProxy().insert(entity);
+			this.getEntityManager().flush();
 		} else {
 			PpestPersonInfoMatrixItem _update = updateEntity.get();
-
 			_update.columnWidth = entity.columnWidth;
 			_update.regulationATR = entity.regulationATR;
 
 			commandProxy().update(_update);
+			this.getEntityManager().flush();
 		}
 	}
 
