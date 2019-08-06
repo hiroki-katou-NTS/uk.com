@@ -110,6 +110,8 @@ module cps003.f.vm {
 
                         // set name for display on F2_004
                         self.currentItem.name(item.itemName);
+                        self.currentItem.allOrMatch()[1].name = text('CPS003_77', [item.itemName]);
+                        self.currentItem.allOrMatch.valueHasMutated();
                         // generate primitive value
                         if (dts) {
                             switch (dts.dataTypeValue) {
@@ -281,7 +283,7 @@ module cps003.f.vm {
                         self.currentItem.target(text('CPS003_119'));
                     } else {
                         if (itemData.dataType == ITEM_SINGLE_TYPE.NUMERIC || itemData.dataType == ITEM_SINGLE_TYPE.TIME || itemData.dataType == ITEM_SINGLE_TYPE.TIMEPOINT) {
-                            if (!!filter || filter === 0 || filter !="") {
+                            if (!!filter || filter === 0 || (filter !="" && filter != null)) {
                                 let value = '';
                                 switch (itemData.dataType) {
                                     case ITEM_SINGLE_TYPE.DATE:
@@ -291,7 +293,7 @@ module cps003.f.vm {
                                         value = filter;
                                         break;
                                     case ITEM_SINGLE_TYPE.NUMERIC:
-                                        if (filter && !isNaN(Number(filter))) {
+                                        if ((filter || filter === 0) && !isNaN(Number(filter))) {
                                             if (!itemData.amount) {
                                                 value = filter;
                                             } else {
@@ -300,12 +302,12 @@ module cps003.f.vm {
                                         }
                                         break;
                                     case ITEM_SINGLE_TYPE.TIME:
-                                        if (filter && !isNaN(Number(filter))) {
+                                        if ((filter|| filter === 0) && !isNaN(Number(filter))) {
                                             value = parseTime(Number(filter), true).format();
                                         }
                                         break;
                                     case ITEM_SINGLE_TYPE.TIMEPOINT:
-                                        if (filter && !isNaN(Number(filter))) {
+                                        if ((filter|| filter === 0) && !isNaN(Number(filter))) {
                                             value = parseTimeWidthDay(Number(filter)).fullText;
                                         }
                                         break;
@@ -326,7 +328,11 @@ module cps003.f.vm {
                                 let value = '';
                                 switch (itemData.dataType) {
                                     case ITEM_SINGLE_TYPE.DATE:
-                                        value = moment.utc(filter).format('YYYY/MM/DD');
+                                        if(isNaN(Date.parse(filter)) ===false ){
+                                            value = moment.utc(filter).format('YYYY/MM/DD');
+                                        }else{
+                                           value = filter; 
+                                        }
                                         break;
                                     case ITEM_SINGLE_TYPE.STRING:
                                         value = filter;
@@ -394,7 +400,7 @@ module cps003.f.vm {
                     replaceFormat: undefined
                 };
             if (item.itemData.dataType == ITEM_SINGLE_TYPE.NUMERIC || item.itemData.dataType == ITEM_SINGLE_TYPE.TIME || item.itemData.dataType == ITEM_SINGLE_TYPE.TIMEPOINT) {
-                if (item.filter == 0) {
+                if (item.filter === 0 || item.filter === "") {
                     value.matchValue = item.filter;
                 }
             }
@@ -488,7 +494,7 @@ module cps003.f.vm {
                     value.replaceFormat = REPLACE_FORMAT.VALUE;
                     break;
                 case ITEM_SINGLE_TYPE.NUMERIC:
-                    if (value.matchValue != null) {
+                    if (value.matchValue != null && value.matchValue !="") {
                         value.matchValue = Number(value.matchValue);
                     }
                     if (!item.itemData.amount) {
@@ -688,23 +694,29 @@ module cps003.f.vm {
                     }
                 }
             } else { // 一致する社員のみ（F1_009）が選択されている場合
-                if (value.matchValue) {
+                let isNumber = (item.itemData.dataType == ITEM_SINGLE_TYPE.NUMERIC || item.itemData.dataType == ITEM_SINGLE_TYPE.NUMBERIC_BUTTON || item.itemData.dataType == ITEM_SINGLE_TYPE.TIME|| item.itemData.dataType == ITEM_SINGLE_TYPE.TIMEPOINT);
+                if (value.matchValue || (value.matchValue === 0 && isNumber)) {
                     if (mode == null) {
                         let checkArray = Array.isArray(value.replaceValue),
                             replaceValue = checkArray == true ? value.replaceValue[0] : value.replaceValue;
-                        if (replaceValue) {
-                            let valueText = value.matchValue;
-                            if (item.itemData.dataType == 6 || item.itemData.dataType == 8) {
-                                let itemX = _.filter(item.itemData.selectionItems, function(x) { return x.optionValue == value.matchValue });
-                                if (itemX.length > 0) {
-                                    valueText = itemX[0].optionText;
+                        if (replaceValue || (replaceValue === 0 && isNumber)) {
+                            let matchText = value.matchValue,
+                                replaceText = value.replaceValue;
+                            if (item.itemData.dataType == ITEM_SINGLE_TYPE.SELECTION || item.itemData.dataType == ITEM_SINGLE_TYPE.SEL_BUTTON) {
+                                let itemMatch = _.filter(item.itemData.selectionItems, function(x) { return x.optionValue == value.matchValue }),
+                                    itemReplace = _.filter(item.itemData.selectionItems, function(x) { return x.optionValue == value.replaceValue });
+                                if (itemMatch.length > 0) {
+                                    matchText = itemMatch[0].optionText;
+                                    replaceText = itemReplace[0].optionText;
                                 }
-                            } else if (item.itemData.dataType == 5) {
-                                valueText = parseTimeWidthDay(value.matchValue).fullText;
-                            } else if (item.itemData.dataType == 4) {
-                                valueText = parseTime(value.matchValue, true).format();
+                            } else if (item.itemData.dataType == ITEM_SINGLE_TYPE.TIMEPOINT) {
+                                matchText = parseTimeWidthDay(value.matchValue).fullText;
+                                replaceText = parseTimeWidthDay(value.replaceValue).fullText;
+                            } else if (item.itemData.dataType == ITEM_SINGLE_TYPE.TIME) {
+                                matchText = parseTime(value.matchValue, true).format();
+                                replaceText = parseTime(value.replaceValue, true).format();
                             }
-                            confirm({ messageId: 'Msg_635', messageParams: [item.name, valueText, item.replacer] }).ifYes(() => {
+                            confirm({ messageId: 'Msg_635', messageParams: [item.name, matchText, replaceText] }).ifYes(() => {
                                 setShared('CPS003F_VALUE', value);
                                 close();
                             });
@@ -715,14 +727,14 @@ module cps003.f.vm {
                             }else{
                                 value.replaceValue = null;
                             }
-                            if (item.itemData.dataType == 6 || item.itemData.dataType == 8) {
+                            if (item.itemData.dataType == ITEM_SINGLE_TYPE.SELECTION || item.itemData.dataType == ITEM_SINGLE_TYPE.SEL_BUTTON) {
                                 let itemX = _.filter(item.itemData.selectionItems, function(x) { return x.optionValue == value.matchValue });
                                 if (itemX.length > 0) {
                                     valueTextMatch = itemX[0].optionText;
                                 }
-                            } else if (item.itemData.dataType == 5) {
+                            } else if (item.itemData.dataType == ITEM_SINGLE_TYPE.TIMEPOINT) {
                                 valueTextMatch = parseTimeWidthDay(value.matchValue).fullText;
-                            } else if (item.itemData.dataType == 4) {
+                            } else if (item.itemData.dataType == ITEM_SINGLE_TYPE.TIME) {
                                 valueTextMatch = parseTime(value.matchValue, true).format();
                             } else {
                                 valueTextMatch = value.matchValue;
@@ -790,7 +802,7 @@ module cps003.f.vm {
                     if (mode == null) {
                         let checkArray = Array.isArray(value.replaceValue),
                             replaceValue = checkArray == true ? value.replaceValue[0] : value.replaceValue;
-                        if (replaceValue) {
+                        if (replaceValue || (replaceValue == 0 && (item.itemData.dataType == ITEM_SINGLE_TYPE.NUMERIC || item.itemData.dataType == ITEM_SINGLE_TYPE.NUMBERIC_BUTTON || item.itemData.dataType == ITEM_SINGLE_TYPE.TIME || item.itemData.dataType == ITEM_SINGLE_TYPE.TIMEPOINT))) {
                             confirm({ messageId: 'Msg_637', messageParams: [item.name, item.replacer] }).ifYes(() => {
                                 setShared('CPS003F_VALUE', value);
                                 close();

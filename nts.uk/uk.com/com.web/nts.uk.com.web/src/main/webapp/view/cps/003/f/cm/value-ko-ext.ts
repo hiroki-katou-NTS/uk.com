@@ -323,17 +323,24 @@ module nts.custombinding {
                                                     textView = vm.i18n('CPS003_133') + nts.uk.time.formatMonthDayLocalized(value1);
                                                     break;
                                             }
-                                        }
+                                    }
                                         break;
                                     case '3':
-                                        if (value2) {
+                                        if (isNaN(Date.parse(value2)) ===false ) {
                                             textView = moment.utc(value2).format('YYYY/MM/DD');
+                                        }else{
+                                            textView = value2;
                                         }
                                         break;
                                     default: break;
                                 }
                             } else {
-                                textView = moment.utc(value).format('YYYY/MM/DD');
+                                if (isNaN(Date.parse(value)) === false) {
+                                    textView = moment.utc(value).format('YYYY/MM/DD');
+                                }else{
+                                    textView = value;
+                                }
+                                break;
                             }
                             break;
                         case ITEM_SINGLE_TYPE.STRING:
