@@ -194,7 +194,7 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 	@Override
 	public void insertByAppType(String companyID, String employeeID, Integer appTypeValue, GeneralDate appDate, String appID, GeneralDate baseDate) {
 
-		approvalRootStatePub.insertAppRootType(companyID, employeeID, appTypeValue, appDate, appID, 0, baseDate);
+//		approvalRootStatePub.insertAppRootType(companyID, employeeID, appTypeValue, appDate, appID, 0, baseDate);
 
 	}
 
