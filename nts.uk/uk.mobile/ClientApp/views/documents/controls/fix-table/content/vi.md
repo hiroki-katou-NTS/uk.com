@@ -51,3 +51,12 @@ Hãy coi thẻ &lt;fix-table&gt; giống như thẻ &lt;table&gt; của HTML. M�
 </fix-table>
 ```
 
+##### 5 Thuộc tính bổ xung
+
+Bạn có thể thêm các properties dưới đây để tùy biến hiển thị của fix-table.
+- `displayColumnsNumber`: mặc định 4 : Số cột ở giữa sẽ được hiển thị
+- `rowNumber`: mặc định 5: Số hàng được hiển thị( các hàng còn lại được scroll)
+- `tableClass`: mặc định 'table table-bordered table-sm m-0' : class của fix-table
+- `previousClass`: mặc định 'btn btn-secondary btn-sm' : class của button previous
+- `nextClass`: mặc định 'btn btn-secondary btn-sm' : class của button next
+
