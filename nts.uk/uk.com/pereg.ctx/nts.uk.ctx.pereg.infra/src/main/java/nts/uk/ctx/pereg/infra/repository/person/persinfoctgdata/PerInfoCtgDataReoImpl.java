@@ -124,8 +124,6 @@ public class PerInfoCtgDataReoImpl extends JpaRepository implements PerInfoCtgDa
 				+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
 				+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL, RECORD_ID_VAL,"
 				+ " P_INFO_CTG_ID_VAL, PID_VAL); ";
-		
-		
     	GeneralDateTime insertTime = GeneralDateTime.now();
     	String insCcd = AppContexts.user().companyCode();
     	String insScd = AppContexts.user().employeeCode();
