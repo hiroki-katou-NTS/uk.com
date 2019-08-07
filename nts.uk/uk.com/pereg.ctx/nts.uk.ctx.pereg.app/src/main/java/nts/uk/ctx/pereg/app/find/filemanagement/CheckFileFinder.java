@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -37,6 +38,7 @@ import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.pereg.app.find.common.ComboBoxRetrieveFactory;
+import nts.uk.ctx.pereg.app.find.filemanagement.CheckFileFinder.UpdateMode;
 import nts.uk.ctx.pereg.app.find.layout.dto.EmpMainCategoryDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.ActionRole;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.GridEmpBody;
@@ -398,8 +400,11 @@ public class CheckFileFinder {
 		});
 		
 		// sắp xếp lại vị trí item theo số tự lỗi - エクセル受入データを並び替える - エラーの件数　DESC、社員コード　ASC
-		result.sort(SORT_BY_DISPORDER);
-		result.sort(Comparator.comparing(EmployeeRowDto::getEmployeeCode));
+		Comparator<EmployeeRowDto> compareByName = Comparator
+                .comparing(EmployeeRowDto::getNumberOfError, (s1, s2) -> {
+                	return s2.compareTo(s1);
+                }).thenComparing(EmployeeRowDto::getEmployeeCode);
+		result.sort(compareByName);
 		return new GridDto(header, result, itemErrors);
 	}
 	
