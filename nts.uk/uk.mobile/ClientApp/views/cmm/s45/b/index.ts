@@ -1,5 +1,5 @@
 import { Vue, moment, _ } from '@app/provider';
-import { component, Prop, Watch } from '@app/core/component';
+import { component, Prop } from '@app/core/component';
 
 import { AppInfo } from '../common';
 import { AppListExtractConditionDto } from '../common/index.d';
@@ -7,6 +7,7 @@ import { AppListExtractConditionDto } from '../common/index.d';
 import { TotopComponent } from '@app/components/totop';
 import { storage } from '@app/utils';
 import { CmmS45DComponent } from '../d/index';
+import { CmmS45EComponent } from '../e/index';
 
 @component({
     name: 'cmms45b',
@@ -21,12 +22,21 @@ import { CmmS45DComponent } from '../d/index';
         },
         selectedValue: {
             required: true
+        },
+        checkeds: {
+            self: {
+                test(value: any[]) {
+                    return !!value.length;
+                },
+                messageId: 'Msg_360'
+            }
         }
     },
     constraints: [],
     components: {
         'to-top': TotopComponent,
         'cmms45d': CmmS45DComponent,
+        'cmms45e': CmmS45EComponent
     }
 })
 
@@ -42,6 +52,7 @@ export class CmmS45BComponent extends Vue {
     public prFilter: AppListExtractConditionDto = null;//抽出条件
     public lstAppr: Array<string> = [];
     public lstMasterInfo: Array<any> = [];
+    public isDisPreP: number = 0;//申請表示設定.事前事後区分
 
     public mounted() {
         this.pgName = 'cmms45b';
@@ -50,11 +61,6 @@ export class CmmS45BComponent extends Vue {
     private filterAppr() {
         let self = this;
         self.$validate();
-        if (self.checkeds.length == 0) {
-            self.$modal.error({ messageId: 'Msg_360' }).then(() => {
-                return;
-            });
-        }
         if (self.$valid) {
             self.getData(false, true);
         }
@@ -145,10 +151,12 @@ export class CmmS45BComponent extends Vue {
             self.lstMasterInfo = data.lstMasterInfo;
             // キャッシュを変更する
             storage.local.setItem('CMMS45_AppListExtractCondition', self.prFilter);
-            
+
             self.createLstAppType(data.lstAppInfor);
             self.convertAppInfo(data);
             self.dateRange = { start: new Date(data.startDate), end: new Date(data.endDate) };
+            self.isDisPreP = data.isDisPreP;
+
         }).catch(() => {
             self.$mask('hide');
         });
@@ -200,7 +208,7 @@ export class CmmS45BComponent extends Vue {
     }
 
     private getFrameStatus(appID: string) {
-        return (_.find(this.lstMasterInfo, (app) => app.appID == appID) || { statusFrameAtr: false}).statusFrameAtr;
+        return (_.find(this.lstMasterInfo, (app) => app.appID == appID) || { statusFrameAtr: false }).statusFrameAtr;
     }
 
     private appTypeName(appType: number) {
@@ -223,8 +231,10 @@ export class CmmS45BComponent extends Vue {
     //一括承認モードに切り替える
     //通常モードに切り替える
     get btnChangeMode() {
-        return {class: this.modeAppr ? 'btn btn-secondary' : 'btn btn-primary',
-                name: this.modeAppr ? 'CMMS45_54' : 'CMMS45_55'};
+        return {
+            class: this.modeAppr ? 'btn btn-secondary' : 'btn btn-primary',
+            name: this.modeAppr ? 'CMMS45_54' : 'CMMS45_55'
+        };
     }
     // 詳細を確認する
     private goToDetail(id: string) {
@@ -247,9 +257,9 @@ export class CmmS45BComponent extends Vue {
         }
         let lstAppr = [];
         lstAppID.forEach((id) => {
-            lstAppr.push({ appId: id, version: self.findVersion(id)});
+            lstAppr.push({ appId: id, version: self.findVersion(id) });
         });
-        self.$modal.confirm({messageId: 'Msg_1551'}).then((value) => {
+        self.$modal.confirm({ messageId: 'Msg_1551' }).then((value) => {
             if (value == 'yes') {
                 self.$http.post('at', servicePath.approvalListApp, lstAppr).then((result) => {
                     self.$modal.info({ messageId: 'Msg_220' }).then(() => {
@@ -271,7 +281,7 @@ export class CmmS45BComponent extends Vue {
         let version = 0;
         this.lstAppByEmp.forEach((emp) => {
             emp.lstApp.forEach((app) => {
-                if (app.id == appId) {version = app.version;}
+                if (app.id == appId) { version = app.version; }
             });
         });
 
@@ -301,6 +311,13 @@ export class CmmS45BComponent extends Vue {
         });
 
         return lstId;
+    }
+    // create appContent
+    private appContent(appName: string, prePostName: string) {
+        return this.isDisPreP == 1 ? appName + ' ' + this.$i18n('CMMS45_24', prePostName) : appName;
+    }
+    public callE() {
+        this.$modal('cmms45e', { appId: '9a02b621-5f76-470b-85c9-b584bab9adda' });
     }
 }
 const servicePath = {

@@ -8,7 +8,7 @@ import { StepwizardComponent } from '@app/components';
 import { Kafs05Model } from './components/common/CommonClass';
 
 @component({
-    name: 'kafS05a',
+    name: 'KafS05a',
     route: '/kaf/s05/a',
     style: require('./style.scss'),
     template: require('./index.html'),
@@ -24,25 +24,27 @@ import { Kafs05Model } from './components/common/CommonClass';
 })
 
 export class KafS05aComponent extends Vue {
-    @Prop({ default: {appID: null} })
-    public params: {appID: string};
+    @Prop({default: true})
+    public isCreateMode: boolean;
 
     public kafs05Model: Kafs05Model = null;
 
     private step: string = 'step1';
 
     public created() {
-        this.step = 'step1';
-        this.kafs05Model = {
-            isCreate: true, step1Start: true, resetTimeRange: 0, overtimeType: '0', DATE_FORMAT: 'YYYY/MM/DD', checkBoxValue: false, enableSendMail: false, displayBreakTimeFlg: false, employeeName: '', enteredPersonName: '', prePostSelected: 2, workState: true,
-            typeSiftVisible: true, appDate: null, workTypeCd: '', workTypeName: '', siftCD: '', siftName: '', workTypecodes: [], workTimecodes: [], selectedWorkTime: '',
-            reasonCombo: [], selectedReason: '', requiredReason: false, multilContent: '', reasonCombo2: [], selectedReason2: '', requiredReason2: false, multilContent2: '',
-            approvalSource: [], employeeID: null, employeeIDs: [], employeeList: [], selectedEmplCodes: '', employeeFlag: false, totalEmployee: '', heightOvertimeHours: null,
-            overtimeAtr: null, restTime: [], overtimeHours: [], breakTimes: [], bonusTimes: [], prePostEnable: true, displayCaculationTime: false, displayBonusTime: false, displayPrePostFlg: false,
-            restTimeDisFlg: false, typicalReasonDisplayFlg: false, displayAppReasonContentFlg: false, displayDivergenceReasonForm: false, displayDivergenceReasonInput: false,
-            workTypeChangeFlg: false, overtimeWork: [], indicationOvertimeFlg: true, calculateFlag: 0, uiType: 0, preWorkContent: null, targetDate: null, editable: true,
-            enableOvertimeInput: false, isSpr: false, resultCaculationTimeFlg: false, workTimeInput: { start: null, end: null }, appID: this.params.appID, version: 0, reflectPerState: 0, user: 0
-        };
+        if (this.isCreateMode) {
+            this.step = 'step1';
+            this.kafs05Model = {
+                step1Start: true, isCreateMode: this.isCreateMode, resetTimeRange: 0, overtimeType: '0', DATE_FORMAT: 'YYYY/MM/DD', checkBoxValue: false, enableSendMail: false, displayBreakTimeFlg: false, employeeName: '', prePostSelected: 2, workState: true,
+                typeSiftVisible: true, appDate: null, workTypeCd: '', workTypeName: '', siftCD: '', siftName: '', workTypecodes: [], workTimecodes: [], selectedWorkTime: '',
+                reasonCombo: [], selectedReason: '', requiredReason: false, multilContent: '', reasonCombo2: [], selectedReason2: '', requiredReason2: false, multilContent2: '',
+                approvalSource: [], employeeID: null, employeeIDs: [], employeeList: [], selectedEmplCodes: '', employeeFlag: false, totalEmployee: '', heightOvertimeHours: null,
+                overtimeAtr: null, restTime: [], overtimeHours: [], breakTimes: [], bonusTimes: [], prePostEnable: true, displayCaculationTime: false, displayBonusTime: false, displayPrePostFlg: false,
+                restTimeDisFlg: false, typicalReasonDisplayFlg: false, displayAppReasonContentFlg: false, displayDivergenceReasonForm: false, displayDivergenceReasonInput: false,
+                workTypeChangeFlg: false, overtimeWork: [], indicationOvertimeFlg: true, calculateFlag: 0, uiType: 0, preWorkContent: null, targetDate: null, editable: true,
+                enableOvertimeInput: false, isSpr: false, resultCaculationTimeFlg: false, workTimeInput: { start: null, end: null }, appID:null
+            };
+        }       
     }
 
     public toStep2(kafs05Model: Kafs05Model) {

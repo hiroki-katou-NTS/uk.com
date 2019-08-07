@@ -1,7 +1,7 @@
 <template>
   <div class="cmms45b mb-5">
     <!-- Filter -->
-    <div class="accordion accordion-mn3">
+    <div v-if="!modeAppr" class="accordion accordion-mn3">
       <div class="card border border-left-0 border-right-0">
         <div class="card-header uk-bg-accordion">
           <button class="btn btn-link" type="button">
@@ -25,9 +25,9 @@
               <nts-checkbox class="col-4" v-model="checkeds" v-bind:value="6">{{'CMMS45_10' | i18n}}</nts-checkbox>
             </div>
             <div class="row pl-3">
-              <nts-checkbox v-model="checkeds" v-bind:value="4">{{'CMMS45_53' | i18n}}</nts-checkbox>
+              <nts-checkbox v-model="checkeds" v-bind:value="4" >{{'CMMS45_53' | i18n}}</nts-checkbox>
             </div>
-            <div></div>
+            <v-errors v-model="$errors.checkeds" name="" class="d-block m-0 p-0 mb-2" />
             <button class="btn btn-success btn-block" v-on:click="filterAppr">{{'CMMS45_6' | i18n}}</button>
           </div>
         </div>
@@ -35,13 +35,14 @@
     </div>
     <!-- AppType -->
     <nts-dropdown class="mt-3"
+      v-if="!modeAppr"
       v-model="selectedValue"
       name="CMMS45_5"
       v-bind:columns="{title: 'col-3 col-md-3 pr-0', input: 'col-5 col-md-5 pl-2'}">
       <option v-for="(item, k) in lstAppType" v-bind:key="k" :value="item.code">{{item.appName}}</option>
     </nts-dropdown>
     <!-- Button Change Mode B2_2-->
-    <button v-if="filterByAppType.length > 0" v-bind:class = "btnChangeMode.class" class="btn-block p-1 m-1"  v-on:click="modeAppr = !modeAppr">{{btnChangeMode.name | i18n}}</button>
+    <button v-if="filterByAppType.length > 0" v-bind:class = "btnChangeMode.class" class="btn-block p-1 m-1 mt-2"  v-on:click="modeAppr = !modeAppr">{{btnChangeMode.name | i18n}}</button>
     <!-- List App -->
     <div class="accordion accordion-mn3 pt-2">
         <div
@@ -84,7 +85,7 @@
                     >{{ item.appDate | date('MM/DD (ddd)')}}</div>
                     <div
                       class="pt-2 pb-2 d-inline-block"
-                    >{{item.appName}} {{'CMMS45_24' | i18n(item.prePostName) }}</div>
+                    >{{appContent(item.appName, item.prePostName)}}</div>
                   </div>
                 </div>
               </li>
@@ -97,6 +98,7 @@
     <div class="fixed-bottom px-2 py-1" v-if="modeAppr">
       <button class = 'btn btn-primary btn-block' v-on:click="processAppr">{{lstAppr.length == 0 ? 'CMMS45_56' : 'CMMS45_57' | i18n(`${lstAppr.length}`)}}</button>
     </div>
+    <!-- <button v-on:click="callE">call E</button> -->
     <to-top class="to-top"/>
   </div>
 </template>

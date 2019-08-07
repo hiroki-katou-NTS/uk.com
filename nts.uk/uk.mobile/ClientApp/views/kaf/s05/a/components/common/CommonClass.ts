@@ -152,8 +152,8 @@ export enum AgreementTimeStatusOfMonthly {
 }
 
 export interface Kafs05Model {
-    isCreate: boolean;
     step1Start: boolean;
+    isCreateMode: boolean;
     resetTimeRange: number;
     overtimeType: string;
     DATE_FORMAT: string;
@@ -161,7 +161,6 @@ export interface Kafs05Model {
     enableSendMail: boolean;
     displayBreakTimeFlg: boolean;
     employeeName: string;
-    enteredPersonName: string;
     prePostSelected: number;
     workState: boolean;
     typeSiftVisible: boolean;
@@ -216,7 +215,4 @@ export interface Kafs05Model {
     resultCaculationTimeFlg: boolean;
     workTimeInput: any;
     appID: string;
-    version: number;
-    reflectPerState: number;
-    user: number;
 }

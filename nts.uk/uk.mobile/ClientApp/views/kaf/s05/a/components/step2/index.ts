@@ -3,7 +3,7 @@ import { component, Prop, Watch } from '@app/core/component';
 import { Kafs05Model } from '../common/CommonClass';
 
 @component({
-    name: 'kafS05a2',
+    name: 'KafS05a2',
     template: require('./index.html'),
     resource: require('../../resources.json'),
     validations: {
@@ -26,7 +26,7 @@ import { Kafs05Model } from '../common/CommonClass';
 
                         return true;
                     },
-                    messageId: 'Msg_1563'
+                    messageId: 'MsgB_30'
                 }
             },
             selectedReason: {

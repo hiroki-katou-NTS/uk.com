@@ -61,7 +61,7 @@ const _SideMenu = Vue.observable({
                 <span></span>
             </button>
         </div>
-        <ul class="list-unstyled list-group components" ref="scrollEl" v-on:click="updateScroll">
+        <ul class="list-unstyled list-group components">
             <li v-if="document"><nts-search-box v-model="filter" class="mt-2 mr-2 ml-2" class-input="text-white" class-container="text-white" placeholder="filter_menu" /></li>
             <li v-else>
                 <router-link to="/ccg/008/a">
@@ -238,18 +238,6 @@ export class SideMenuBar extends Vue {
 
     public destroyed() {
         dom.removeEventHandler(window, 'resize', resize);
-    }
-
-    public updateScroll() {
-        const ul = this.$refs.scrollEl as HTMLElement;
-
-        if (ul) {
-            ul.style.display = 'none';
-
-            setTimeout(() => {
-                ul.style.display = '';
-            }, 0);
-        }
     }
 }
 

@@ -29,45 +29,20 @@
         </div>
     </div>
     <div class="input-container">
-        <div class="card card-label" v-if="null != kafs05ModelStep1.appID">
-            <div class="card-header">
-                <span>{{'KAFS05_81' | i18n}}</span>
-            </div>
-            <div class="card-body">
-                <div class="confirm-item mb-2">
-                    <span>{{kafs05ModelStep1.employeeName}}</span>
-                    <span v-if="null != kafs05ModelStep1.enteredPersonName"
-                        class="small-header"></BR>(代行者：{{kafs05ModelStep1.enteredPersonName}})</span>
-                </div>
-            </div>
-            <div class="card card-label">
-                <div class="card-header">
-                    <span>{{'KAFS05_82' | i18n}}</span>
-                </div>
-                <div class="card-body">
-                    <div class="confirm-item mb-2" v-if="kafs05ModelStep1.prePostSelected == 0">
-                        <span>{{kafs05ModelStep1.appDate}}&nbsp;{{'KAF009_9' | i18n}}</span></div>
-                    <div class="confirm-item mb-2" v-if="kafs05ModelStep1.prePostSelected == 1">
-                        <span>{{kafs05ModelStep1.appDate}}&nbsp;{{'KAF009_10' | i18n}}</span></div>
-                </div>
-            </div>
-        </div>
-        <div class="card card-label" v-if="kafs05ModelStep1.displayPrePostFlg && null == kafs05ModelStep1.appID">
+        <div class="card card-label" v-show="kafs05ModelStep1.displayPrePostFlg">
             <div class="card-header">
                 <span>{{'KAFS05_61' | i18n}}</span>
                 <span class="badge badge-warning">必須</span>
             </div>
             <div class="card-body mb-3 mt-2">
                 <div class="valid-switchbox">
-                    <nts-switchbox v-model="kafs05ModelStep1.prePostSelected" v-bind:value="0">
-                        {{'KAF009_9' | i18n}}</nts-switchbox>
-                    <nts-switchbox v-model="kafs05ModelStep1.prePostSelected" v-bind:value="1">
-                        {{'KAF009_10' | i18n}}</nts-switchbox>
+                    <nts-switchbox v-model="kafs05ModelStep1.prePostSelected" v-bind:value="0"> {{'KAF009_9' | i18n}}</nts-switchbox>
+                    <nts-switchbox v-model="kafs05ModelStep1.prePostSelected" v-bind:value="1"> {{'KAF009_10' | i18n}}</nts-switchbox>
                 </div>
                 <v-errors v-model="$errors.kafs05ModelStep1.prePostSelected" class="d-block mt-0" />
             </div>
         </div>
-        <div class="card card-label" v-if="null == kafs05ModelStep1.appID">
+        <div class="card card-label">
             <div class="card-header">
                 <span>{{'KAFS05_62' | i18n}}</span>
                 <span class="badge badge-warning">必須</span>
@@ -76,38 +51,35 @@
                 <nts-date-input　v-model="kafs05ModelStep1.appDate" />
             </div>
         </div>
-        <div class="card card-label" v-if="kafs05ModelStep1.displayCaculationTime">
+        <div class="card card-label" v-show="kafs05ModelStep1.displayCaculationTime">
             <div class="card-header">
                 <span>{{'KAFS05_63' | i18n}}</span>
                 <span class="badge badge-warning">必須</span>
             </div>
             <div class="card-body">
                 <span class="small-header">{{'KAFS05_64' | i18n}}</span>
-                <button type="button" class="btn btn-selection" v-on:click="openKDL002()"
-                    :disabled="!kafs05ModelStep1.workTypeChangeFlg">
+                <button type="button" class="btn btn-selection" v-on:click="openKDL002()" :disabled="!kafs05ModelStep1.workTypeChangeFlg">
                     <span class="badge badge-secondary">{{kafs05ModelStep1.workTypeCd}}</span>
                     <span>{{kafs05ModelStep1.workTypeName}}</span>
                 </button>
                 <span class="small-header">{{'KAFS05_65' | i18n}}</span>
-                <button type="button" class="btn btn-selection mb-2" v-on:click="openKDL002()"
-                    :disabled="!kafs05ModelStep1.workTypeChangeFlg">
+                <button type="button" class="btn btn-selection mb-2" v-on:click="openKDL002()" :disabled="!kafs05ModelStep1.workTypeChangeFlg">
                     <span class="badge badge-secondary">{{kafs05ModelStep1.siftCD}}</span>
                     <span>{{kafs05ModelStep1.siftName}}</span>
                     <span class="d-block mt-1">{{kafs05ModelStep1.selectedWorkTime}}</span>
                 </button>
             </div>
         </div>
-        <div class="card card-label" v-if="kafs05ModelStep1.displayCaculationTime">
+        <div class="card card-label" v-show="kafs05ModelStep1.displayCaculationTime">
             <div class="card-header">
                 <span>{{'KAFS05_66' | i18n}}</span>
                 <span class="badge badge-warning">必須</span>
             </div>
             <div class="card-body">
-                <nts-time-range-input v-model="kafs05ModelStep1.workTimeInput" :key="kafs05ModelStep1.resetTimeRange">
-                </nts-time-range-input>
+                <nts-time-range-input v-model="kafs05ModelStep1.workTimeInput" :key="kafs05ModelStep1.resetTimeRange"></nts-time-range-input>
             </div>
         </div>
-        <div class="card card-label" v-if="kafs05ModelStep1.displayCaculationTime && kafs05ModelStep1.restTimeDisFlg">
+        <div class="card card-label" v-show="kafs05ModelStep1.displayCaculationTime && kafs05ModelStep1.restTimeDisFlg">
             <div class="card-header">
                 <span>{{'KAFS05_68' | i18n}}</span>
                 <span class="badge badge-info">任意</span>
@@ -115,17 +87,14 @@
             <div class="card-body">
                 <div v-for="(item, i) of kafs05ModelStep1.restTime">
                     <span class="small-header">{{'KAFS05_69' | i18n(item.frameNo.toString())}}</span>
-                    <nts-time-range-input v-model="item.restTimeInput" :key="resetTimeRange" disabled="true">
-                    </nts-time-range-input>
+                    <nts-time-range-input v-model="item.restTimeInput" :key="resetTimeRange" disabled="true"></nts-time-range-input>
                 </div>
             </div>
         </div>
         <div class="card card-label">
             <div class="card-body">
-                <button type="button" class="btn btn-success btn-block" v-on:click="calculate()"
-                    v-if="kafs05ModelStep1.displayCaculationTime">{{'KAFS05_16' | i18n}}</button>
-                <button type="button" class="btn btn-success btn-block" v-on:click="calculate()"
-                    v-if="!kafs05ModelStep1.displayCaculationTime">{{'KAFS05_17' | i18n}}</button>
+                <button type="button" class="btn btn-success btn-block" v-on:click="calculate()" v-if="kafs05ModelStep1.displayCaculationTime">{{'KAFS05_16' | i18n}}</button>
+                <button type="button" class="btn btn-success btn-block" v-on:click="calculate()" v-if="!kafs05ModelStep1.displayCaculationTime">{{'KAFS05_17' | i18n}}</button>
             </div>
         </div>
     </div>

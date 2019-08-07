@@ -5,7 +5,7 @@ import { TimeWithDay, $ } from '@app/utils';
 import { OvertimeAgreement, AgreementTimeStatusOfMonthly, Kafs05Model } from '../common/CommonClass';
 
 @component({
-    name: 'kafS05a1',
+    name: 'KafS05a1',
     template: require('./index.html'),
     resource: require('../../resources.json'),
     components: {
@@ -33,16 +33,13 @@ import { OvertimeAgreement, AgreementTimeStatusOfMonthly, Kafs05Model } from '..
             prePostSelected: {
                 validateSwitchbox: {
                     test(value: number) {
-                        if (null == this.kafs05ModelStep1.appID) {
-                            if (value != 0 && value != 1) {
-                                document.body.getElementsByClassName('valid-switchbox')[0].className += ' invalid';
-    
-                                return false;
-                            }
-                            document.body.getElementsByClassName('valid-switchbox')[0].className += 'valid-switchbox';
-    
-                            return true;
+
+                        if (value != 0 && value != 1) {
+                            document.body.getElementsByClassName('valid-switchbox')[0].className += ' invalid';
+
+                            return false;
                         }
+                        document.body.getElementsByClassName('valid-switchbox')[0].className += 'valid-switchbox';
 
                         return true;
                     },
@@ -65,11 +62,7 @@ export class KafS05aStep1Component extends Vue {
         if (this.kafs05ModelStep1.step1Start) {
             this.$mask('show', { message: true });
         }
-        if (null == this.kafs05ModelStep1.appID) {
-            this.applyWatcher();
-        } else {
-            this.kafs05ModelStep1.isCreate = false;
-        }
+        this.applyWatcher();
     }
 
     public created() {
@@ -264,49 +257,29 @@ export class KafS05aStep1Component extends Vue {
     public startPage() {
         let self = this.kafs05ModelStep1;
 
-        if (null != self.appID) {
-            this.getApprovalData();
-
-            this.$http.post('at', servicePath.findByAppID, self.appID)
-            .then((result: { data: any }) => {
-                this.initData(result.data);
-                this.$mask('hide');
-            }).catch((res: any) => {
-                if (res.messageId == 'Msg_426') {
-                    this.$modal.error({ messageId: res.messageId }).then(() => {
-                        this.$goto('ccg007b');
-                    });
-                } else {
-                    this.$modal.error({ messageId: res.messageId }).then(() => {
-                        this.$goto('ccg008a');
-                    });
-                }
-            });
-        } else {
-            this.$http.post('at', servicePath.getOvertimeByUI, {
-                url: self.overtimeType,
-                appDate: self.appDate,
-                uiType: self.uiType,
-                timeStart1: self.workTimeInput.start,
-                timeEnd1: self.workTimeInput.end,
-                reasonContent: self.multilContent,
-                employeeIDs: self.employeeIDs,
-                employeeID: self.employeeID
-            }).then((result: { data: any }) => {
-                this.initData(result.data);
-                this.$mask('hide');
-            }).catch((res: any) => {
-                if (res.messageId == 'Msg_426') {
-                    this.$modal.error({ messageId: res.messageId }).then(() => {
-                        this.$goto('ccg007b');
-                    });
-                } else {
-                    this.$modal.error({ messageId: res.messageId }).then(() => {
-                        this.$goto('ccg008a');
-                    });
-                }
-            });
-        }
+        this.$http.post('at', servicePath.getOvertimeByUI, {
+            url: self.overtimeType,
+            appDate: self.appDate,
+            uiType: self.uiType,
+            timeStart1: self.workTimeInput.start,
+            timeEnd1: self.workTimeInput.end,
+            reasonContent: self.multilContent,
+            employeeIDs: self.employeeIDs,
+            employeeID: self.employeeID
+        }).then((result: { data: any }) => {
+            this.initData(result.data);
+            this.$mask('hide');
+        }).catch((res: any) => {
+            if (res.messageId == 'Msg_426') {
+                this.$modal.error({ messageId: res.messageId }).then(() => {
+                    this.$goto('ccg007b');
+                });
+            } else {
+                this.$modal.error({ messageId: res.messageId }).then(() => {
+                    this.$goto('ccg008a');
+                });
+            }
+        });
     }
 
     public applyWatcher() {
@@ -403,14 +376,6 @@ export class KafS05aStep1Component extends Vue {
 
     public initData(data) {
         let self = this.kafs05ModelStep1;
-        if (null != self.appID) {
-            self.appDate = data.application.applicationDate;
-            self.enteredPersonName = data.enteredPersonName;
-            self.version = data.application.version;
-            self.employeeID = data.application.applicantSID;
-        } else {
-            self.employeeID = data.employeeID;
-        }
         self.requiredReason = data.requireAppReasonFlg;
         self.enableOvertimeInput = data.enableOvertimeInput;
         self.checkBoxValue = !data.manualSendMailAtr;
@@ -425,7 +390,7 @@ export class KafS05aStep1Component extends Vue {
         self.displayBonusTime = data.displayBonusTime;
         self.restTimeDisFlg = data.displayRestTime;
         self.employeeName = data.employeeName;
-
+        self.employeeID = data.employeeID;
         if (data.siftType != null) {
             self.siftCD = data.siftType.siftCode;
             self.siftName = this.getName(data.siftType.siftCode, data.siftType.siftName);
@@ -496,25 +461,6 @@ export class KafS05aStep1Component extends Vue {
                             caculationTime: null,
                             nameID: '#[KAF005_55]',
                             itemName: 'KAF005_85',
-                            color: '',
-                            preAppExceedState: false,
-                            actualExceedState: false,
-                        });
-                    }
-                    if (data.overTimeInputs[i].attendanceID == 2) {
-                        self.breakTimes.push({
-                            companyID: '',
-                            appID: '',
-                            attendanceID: data.overTimeInputs[i].attendanceID,
-                            attendanceName: '',
-                            frameNo: data.overTimeInputs[i].frameNo,
-                            timeItemTypeAtr: 0,
-                            frameName: data.overTimeInputs[i].frameName,
-                            applicationTime: null,
-                            preAppTime: null,
-                            caculationTime: null,
-                            nameID: '',
-                            itemName: '',
                             color: '',
                             preAppExceedState: false,
                             actualExceedState: false,
@@ -743,25 +689,6 @@ export class KafS05aStep1Component extends Vue {
                         actualExceedState: false,
                     });
                 }
-                if (data.overTimeInputs[i].attendanceID == 2) {
-                    self.breakTimes.push({
-                        companyID: '',
-                        appID: '',
-                        attendanceID: data.overTimeInputs[i].attendanceID,
-                        attendanceName: '',
-                        frameNo: data.overTimeInputs[i].frameNo,
-                        timeItemTypeAtr: 0,
-                        frameName: data.overTimeInputs[i].frameName,
-                        applicationTime: null,
-                        preAppTime: null,
-                        caculationTime: null,
-                        nameID: '',
-                        itemName: '',
-                        color: '',
-                        preAppExceedState: false,
-                        actualExceedState: false,
-                    });
-                }
                 if (data.overTimeInputs[i].attendanceID == 3) {
                     self.bonusTimes.push({
                         companyID: '',
@@ -940,27 +867,6 @@ export class KafS05aStep1Component extends Vue {
         self.overtimeWork.push(overtimeWork1);
         self.overtimeWork.push(overtimeWork2);
     }
-
-    public getApprovalData() {
-        let self = this.kafs05ModelStep1;
-
-        this.$http.post('at', servicePath.getDetailCheck, {
-            applicationID: self.appID,
-            baseDate: '2022/01/01',
-        }).then((result: { data: any }) => {
-            self.user = result.data.user;
-            self.reflectPerState = result.data.reflectPlanState;
-            if (self.reflectPerState != 0 && self.reflectPerState != 5) {
-                this.$modal.error({ messageId: 'Msg_1555' }).then(() => {
-                    this.$goto('cmms45a', {CMMS45_FromMenu: false});
-                });
-            }
-        }).catch((res: any) => {
-            this.$modal.error({ messageId: res.messageId }).then(() => {
-                this.$goto('cmms45a', {CMMS45_FromMenu: false});
-            });
-        });
-    }
 }
 const servicePath = {
     getRecordWork: 'at/request/application/overtime/getRecordWork',
@@ -969,7 +875,5 @@ const servicePath = {
     getOvertimeByUI: 'at/request/application/overtime/getOvertimeByUI',
     findByChangeAppDate: 'at/request/application/overtime/findByChangeAppDate',
     checkConvertPrePost: 'at/request/application/overtime/checkConvertPrePost',
-    getAppDataDate: 'at/request/application/getAppDataByDate',
-    findByAppID: 'at/request/application/overtime/findByAppID',
-    getDetailCheck: 'at/request/application/getdetailcheck',
+    getAppDataDate: 'at/request/application/getAppDataByDate'
 };
