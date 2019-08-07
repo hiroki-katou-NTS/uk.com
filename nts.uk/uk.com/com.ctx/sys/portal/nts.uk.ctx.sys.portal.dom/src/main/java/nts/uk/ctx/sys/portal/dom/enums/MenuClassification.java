@@ -19,7 +19,9 @@ public enum MenuClassification {
 	/**7:オフィスヘルパー稟議書*/
 	OfficeHelper(7),
 	/**8:トップページ*/
-	TopPage(8);
+	TopPage(8),
+	/**9:スマートフォン*/
+	SmartPhone(9);
 
 	public int value;
 

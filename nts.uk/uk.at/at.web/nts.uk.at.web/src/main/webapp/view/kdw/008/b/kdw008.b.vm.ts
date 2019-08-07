@@ -38,8 +38,12 @@ module nts.uk.at.view.kdw008.b {
             tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
             selectedTab: KnockoutObservable<string>;
 
+            mobileTabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
+            selectedMobileTab: KnockoutObservable<string>;
+
             //is daily
             isDaily: boolean;
+            isMobile: boolean;
 
             sideBar: KnockoutObservable<number>;
             enableSheetNo: KnockoutObservable<boolean>;
@@ -48,6 +52,7 @@ module nts.uk.at.view.kdw008.b {
                 var self = this;
                 //check daily
                 self.isDaily = dataShare.ShareObject;
+                self.isMobile = dataShare.mobile;
                 self.sideBar = ko.observable(1);
                 if (!self.isDaily) {
                     self.sideBar(2);
@@ -109,6 +114,13 @@ module nts.uk.at.view.kdw008.b {
                 ]);
                 self.selectedTab = ko.observable('tab-1');
 
+                self.mobileTabs = ko.observableArray([
+                    { id: 'tab-1', title: getText('KDW008_14'), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(self.isDaily) },
+                    { id: 'tab-2', title: getText('KDW008_13'), content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(self.isDaily) },
+                    { id: 'tab-3', title: getText('KDW008_13'), content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(!self.isDaily) },
+                ]);
+                self.selectedMobileTab = ko.observable('tab-1');
+               
                 //combobox select sheetNo tab2
                 self.sheetNoList = ko.observableArray([
                     new SheetNoModel('1', '1'),
@@ -244,8 +256,9 @@ module nts.uk.at.view.kdw008.b {
             getDailyDetail(businessTypeCode: string, sheetNo: string): JQueryPromise<any> {
                 let self = this,
                     dfd = $.Deferred();
-                service.getDailyDetail(businessTypeCode, self.selectedSheetNo()).done(data => {
-                    $("#swap-list2-grid2").igGridSelection("clearSelection") ;
+                service.getDailyDetail(businessTypeCode, self.selectedSheetNo(), self.isMobile).done(data => {
+                    $("#swap-list2-grid2").igGridSelection("clearSelection");
+                    $("#swap-list2-grid1").igGridSelection("clearSelection");
                     self.businessTypeFormatDailyValue.removeAll();
                     self.dailyDataSource.removeAll();
                     self.dailyDataSource(_.cloneDeep(self.dailyAttItems()));
@@ -278,13 +291,17 @@ module nts.uk.at.view.kdw008.b {
             getMonthlyDetail(businessTypeCode: string): JQueryPromise<any> {
                 let self = this,
                     dfd = $.Deferred();
-                service.getMonthlyDetail(businessTypeCode).done(data => {
+                service.getMonthlyDetail(businessTypeCode, self.isMobile).done(data => {
+                    $("#swap-list-grid2").igGridSelection("clearSelection");
+                    $("#swap-list-grid1").igGridSelection("clearSelection");
                     self.businessTypeFormatMonthlyValue.removeAll();
                     self.monthlyDataSource.removeAll();
                     self.monthlyDataSource(_.cloneDeep(self.monthlyAttItems()));
 
                     if (data) {
-                        self.businessTypeFormatMonthlyValue(self.mapAttItemFormatDetail(self.monthlyAttItems(), data.businessTypeFormatMonthlyDtos));
+                        let dat = self.mapAttItemFormatDetail(self.monthlyAttItems(), data.businessTypeFormatMonthlyDtos);
+                        console.log(dat);
+                        self.businessTypeFormatMonthlyValue(dat);
                     }
                     dfd.resolve();
                 }).fail(err => {
@@ -310,19 +327,6 @@ module nts.uk.at.view.kdw008.b {
                         attItemDetail.push(dto);
                     }
                 }
-//                attItemDetail = _.map(details, function(item: BusinessTypeFormatDetailDto) {
-//                    let dto: AttendanceItemDto = new AttendanceItemDto(null);
-//                    dto.attendanceItemId = item.attendanceItemId;
-//                    dto.columnWidth = item.columnWidth;
-//                    let attItem: AttendanceItemDto = _.find(attItems, (att: AttendanceItemDto) => {
-//                        return att.attendanceItemId == item.attendanceItemId;
-//                    })
-//                    if (attItem) {
-//                        dto.attendanceItemName = attItem.attendanceItemName;
-//                        dto.attendanceItemDisplayNumber = attItem.attendanceItemDisplayNumber;
-//                    }
-//                    return dto;
-//                })
                 return attItemDetail;
             }
 
@@ -393,7 +397,11 @@ module nts.uk.at.view.kdw008.b {
 
             jumpTo(sidebar) {
                 let self = this;
-                nts.uk.request.jump("/view/kdw/006/a/index.xhtml", { ShareObject: sidebar() });
+                if(!self.isMobile) {
+                    nts.uk.request.jump("/view/kdw/006/a/index.xhtml", { ShareObject: sidebar() });  
+                } else {
+                    nts.uk.request.jump("com","/view/ksp/001/a/index.xhtml", { ShareObject: sidebar() });
+                }
             }
 
             btnSheetNo() {
@@ -528,7 +536,7 @@ module nts.uk.at.view.kdw008.b {
 
                 let addOrUpdateBusFormat = new AddOrUpdateBusFormat(addOrUpdateBusinessFormatMonthly, addOrUpdateBusinessFormatDaily);
 
-                service.addDailyDetail(addOrUpdateBusFormat).done(function() {
+                service.addDailyDetail(addOrUpdateBusFormat, self.isMobile).done(function() {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
                         self.initSelectedCodeHasMutated();
                     });
@@ -541,7 +549,32 @@ module nts.uk.at.view.kdw008.b {
             dialog() {
                 let self = this;
                 nts.uk.ui.windows.setShared("openC", self.isDaily);
+                nts.uk.ui.windows.setShared("isMob", self.isMobile);
                 nts.uk.ui.windows.sub.modal("../c/index.xhtml");
+            }
+
+            startMobilePage() {
+                let self = this;
+                let dfd = $.Deferred();
+                block.invisible();
+                self.getBusinessType().done(() => {
+                    let dtdGetDailyAttItem = self.getDailyAttItem();
+                    let dtdGetMonthlyAttItem = self.getMonthlyAttItem();
+                    $.when(dtdGetDailyAttItem, dtdGetMonthlyAttItem).done(() => {
+                        let businessItem = self.businessTypeList()[0];
+                        self.selectedCode(businessItem.businessTypeCode);
+                    }).always(() => {
+                        block.clear();
+                    })
+                   
+                    dfd.resolve();
+                }).fail(() => {
+                    block.clear();
+                    nts.uk.ui.dialog.alert({ messageId: "Msg_242" });
+                    self.hasdata = false;
+                    dfd.resolve();
+                })
+                return dfd.promise();
             }
 
         }
@@ -626,7 +659,7 @@ module nts.uk.at.view.kdw008.b {
             attendanceItemId: number;
             attendanceItemName: string;
             attendanceItemDisplayNumber: number;
-            columnWidth: number;
+            columnWidth?: number;
             constructor(data: IAttendanceItemDto) {
                 if (!data) return;
                 this.attendanceItemId = data.attendanceItemId;

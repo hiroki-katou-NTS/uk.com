@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.AuthorityFormatInitialDisplay;
+import nts.uk.ctx.at.function.dom.dailyperformanceformat.enums.PCSmartPhoneAtt;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.primitivevalue.DailyPerformanceFormatCode;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.repository.AuthorityFormatInitialDisplayRepository;
 import nts.uk.ctx.at.function.infra.entity.dailyperformanceformat.KfnmtDailyPerformanceDisplay;
@@ -29,15 +30,15 @@ public class JpaAuthorityFormatInitialDisplayRepository extends JpaRepository
 		builderString.append("DELETE ");
 		builderString.append("FROM KfnmtDailyPerformanceDisplay a ");
 		builderString.append("WHERE a.kfnmtDailyPerformanceDisplayPK.companyId = :companyId ");
-		builderString.append(
-				"AND a.kfnmtDailyPerformanceDisplayPK.dailyPerformanceFormatCode = :dailyPerformanceFormatCode ");
+		builderString.append("AND a.kfnmtDailyPerformanceDisplayPK.dailyPerformanceFormatCode = :dailyPerformanceFormatCode ");
+		builderString.append("AND a.kfnmtDailyPerformanceDisplayPK.pcSpAtr = :pcSpAtr ");
 		DEL_BY_KEY = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("UPDATE KfnmtDailyPerformanceDisplay a ");
-		builderString.append(
-				"SET a.kfnmtDailyPerformanceDisplayPK.dailyPerformanceFormatCode = :dailyPerformanceFormatCode ");
+		builderString.append("SET a.kfnmtDailyPerformanceDisplayPK.dailyPerformanceFormatCode = :dailyPerformanceFormatCode ");
 		builderString.append("WHERE a.kfnmtDailyPerformanceDisplayPK.companyId = :companyId ");
+		builderString.append("AND a.kfnmtDailyPerformanceDisplayPK.pcSpAtr = :pcSpAtr ");
 		UPDATE_BY_KEY = builderString.toString();
 
 		builderString = new StringBuilder();
@@ -45,12 +46,14 @@ public class JpaAuthorityFormatInitialDisplayRepository extends JpaRepository
 		builderString.append("FROM KfnmtDailyPerformanceDisplay a ");
 		builderString.append("WHERE a.kfnmtDailyPerformanceDisplayPK.dailyPerformanceFormatCode = :dailyPerformanceFormatCode ");
 		builderString.append("AND a.kfnmtDailyPerformanceDisplayPK.companyId = :companyId ");
+		builderString.append("AND a.kfnmtDailyPerformanceDisplayPK.pcSpAtr = :pcSpAtr ");
 		IS_EXIST_DATA = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT COUNT(a) ");
 		builderString.append("FROM KfnmtDailyPerformanceDisplay a ");
 		builderString.append("WHERE a.kfnmtDailyPerformanceDisplayPK.companyId = :companyId ");
+		builderString.append("AND a.kfnmtDailyPerformanceDisplayPK.pcSpAtr = :pcSpAtr ");
 		IS_EXIST_DATA_BY_CID = builderString.toString();
 	}
 
@@ -61,49 +64,63 @@ public class JpaAuthorityFormatInitialDisplayRepository extends JpaRepository
 	}
 
 	@Override
-	public void update(String companyId, DailyPerformanceFormatCode dailyPerformanceFormatCode) {
+	public void update(String companyId, DailyPerformanceFormatCode dailyPerformanceFormatCode, PCSmartPhoneAtt att) {
 		this.getEntityManager().createQuery(UPDATE_BY_KEY).setParameter("companyId", companyId)
-				.setParameter("dailyPerformanceFormatCode", dailyPerformanceFormatCode.v()).executeUpdate();
+				.setParameter("dailyPerformanceFormatCode", dailyPerformanceFormatCode.v())
+				.setParameter("pcSpAtr", att.value)
+				.executeUpdate();
 	}
 
 	@Override
-	public void remove(String companyId, DailyPerformanceFormatCode dailyPerformanceFormatCode) {
-		this.getEntityManager().createQuery(DEL_BY_KEY).setParameter("companyId", companyId)
-				.setParameter("dailyPerformanceFormatCode", dailyPerformanceFormatCode.v()).executeUpdate();
+	public void remove(String companyId, DailyPerformanceFormatCode dailyPerformanceFormatCode, PCSmartPhoneAtt att) {
+		this.getEntityManager()
+				.createQuery(DEL_BY_KEY)
+				.setParameter("companyId", companyId)
+				.setParameter("dailyPerformanceFormatCode", dailyPerformanceFormatCode.v())
+				.setParameter("pcSpAtr", att.value)
+				.executeUpdate();
 	}
 
 	@Override
-	public boolean checkExistData(String companyId,DailyPerformanceFormatCode dailyPerformanceFormatCode) {
+	public boolean checkExistData(String companyId,DailyPerformanceFormatCode dailyPerformanceFormatCode, PCSmartPhoneAtt att) {
 		return this.queryProxy().query(IS_EXIST_DATA, long.class)
 				.setParameter("dailyPerformanceFormatCode", dailyPerformanceFormatCode.v())
 				.setParameter("companyId", companyId)
+				.setParameter("pcSpAtr", att.value)
 				.getSingle().get() > 0;
 	}
 
 	@Override
-	public boolean checkExistDataByCompanyId(String companyId) {
-		return this.queryProxy().query(IS_EXIST_DATA_BY_CID, long.class).setParameter("companyId", companyId)
+	public boolean checkExistDataByCompanyId(String companyId, PCSmartPhoneAtt att) {
+		return this.queryProxy()
+				.query(IS_EXIST_DATA_BY_CID, long.class)
+				.setParameter("companyId", companyId)
+				.setParameter("pcSpAtr", att.value)
 				.getSingle().get() > 0;
 	}
 
-	private KfnmtDailyPerformanceDisplay toEntity(AuthorityFormatInitialDisplay authorityFormatInitialDisplay) {
+	private KfnmtDailyPerformanceDisplay toEntity(AuthorityFormatInitialDisplay domain) {
 		val entity = new KfnmtDailyPerformanceDisplay();
 
 		entity.kfnmtDailyPerformanceDisplayPK = new KfnmtDailyPerformanceDisplayPK();
-		entity.kfnmtDailyPerformanceDisplayPK.companyId = authorityFormatInitialDisplay.getCompanyId();
-		entity.kfnmtDailyPerformanceDisplayPK.dailyPerformanceFormatCode = authorityFormatInitialDisplay
+		entity.kfnmtDailyPerformanceDisplayPK.companyId = domain.getCompanyId();
+		entity.kfnmtDailyPerformanceDisplayPK.dailyPerformanceFormatCode = domain
 				.getDailyPerformanceFormatCode().v();
+		entity.kfnmtDailyPerformanceDisplayPK.pcSpAtr = domain.getPcSmAtt().value;
 
 		return entity;
 	}
 
 	private static final String GET_ALL_BY_CID = "SELECT c FROM KfnmtDailyPerformanceDisplay c"
-			+ " WHERE c.kfnmtDailyPerformanceDisplayPK.companyId = :companyId ";
+			+ " WHERE c.kfnmtDailyPerformanceDisplayPK.companyId = :companyId "
+			+ " AND c.kfnmtDailyPerformanceDisplayPK.pcSpAtr = :pcSpAtr ";
 	
 	@Override
-	public void removeByCid(String companyId) {
-		List<KfnmtDailyPerformanceDisplay> data = this.queryProxy().query(GET_ALL_BY_CID,KfnmtDailyPerformanceDisplay.class)
+	public void removeByCid(String companyId, PCSmartPhoneAtt att) {
+		List<KfnmtDailyPerformanceDisplay> data = this.queryProxy()
+				.query(GET_ALL_BY_CID,KfnmtDailyPerformanceDisplay.class)
 				.setParameter("companyId", companyId)
+				.setParameter("pcSpAtr", att.value)
 				.getList();
 		this.commandProxy().removeAll(data);
 		this.getEntityManager().flush();

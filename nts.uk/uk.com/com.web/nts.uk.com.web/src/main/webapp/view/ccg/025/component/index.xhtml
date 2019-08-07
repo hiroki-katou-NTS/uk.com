@@ -8,18 +8,21 @@
 	<ui:composition>
 		<!-- <div style="width: 350px" data-bind="ntsSearchBox: {searchMode: searchMode, targetKey: 'roleCode', comId: 'multi-list', 
 				items: listRole,  selectedKey: 'roleCode', fields: ['name', 'roleCode'], mode: 'igGrid'}" /> -->
-		<table id="multi-list"
-			data-bind="attr: {tabindex: setting.tabindex}, ntsGridList: {
-					height: 320,
-					dataSource: listRole ,
-					primaryKey: 'roleId',
-					columns: columns,
-					multiple: setting.multiple,
-					value: currentCode,
-					rows: setting.rows,
-					columnResize: setting.isResize,
-				}">
-		</table>
+		<div class="caret-right caret-background">
+			<table id="multi-list"
+				data-bind="attr: {tabindex: setting.tabindex}, 
+					   ntsGridList: {
+							height: 320,
+							dataSource: listRole ,
+							primaryKey: 'roleId',
+							columns: columns,
+							multiple: setting.multiple,
+							value: currentCode,
+							rows: setting.rows,
+							columnResize: setting.isResize,
+						}">
+			</table>
+		</div>
 	</ui:composition>
 </body>
 </html>

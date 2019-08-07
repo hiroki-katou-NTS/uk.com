@@ -1,0 +1,13 @@
+#group-btn {
+	margin-left: 60px;
+}
+
+#title {
+	margin: 30px;
+}
+
+.btn-css {
+	display: block;
+	margin-bottom: 30px !important;
+	min-width: 320px;
+}

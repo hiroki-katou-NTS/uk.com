@@ -15,6 +15,7 @@ import nts.uk.ctx.at.function.dom.dailyperformanceformat.AuthorityFomatDaily;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.AuthorityFomatMonthly;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.AuthorityFormatInitialDisplay;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.AuthorityFormatSheet;
+import nts.uk.ctx.at.function.dom.dailyperformanceformat.enums.PCSmartPhoneAtt;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.primitivevalue.DailyPerformanceFormatCode;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.primitivevalue.DailyPerformanceFormatName;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.repository.AuthorityDailyPerformanceFormatRepository;
@@ -85,10 +86,14 @@ public class AddAutDaiFormatCommandHandler extends CommandHandler<AddAuthorityDa
 			this.authorityFormatSheetRepository.add(authorityFormatSheet);	
 		}
 
-		AuthorityFormatInitialDisplay authorityFormatInitialDisplay = new AuthorityFormatInitialDisplay(companyId,
-				new DailyPerformanceFormatCode(command.getAuthorityDailyCommand().getDailyPerformanceFormatCode()));
+		AuthorityFormatInitialDisplay authorityFormatInitialDisplay = new AuthorityFormatInitialDisplay(
+				companyId,
+				new DailyPerformanceFormatCode(command.getAuthorityDailyCommand()
+						.getDailyPerformanceFormatCode()),
+				PCSmartPhoneAtt.PC
+				);
 		if (command.getAuthorityDailyCommand().getIsDefaultInitial() == 1) {
-			authorityFormatInitialDisplayRepository.removeByCid(companyId);
+			authorityFormatInitialDisplayRepository.removeByCid(companyId, PCSmartPhoneAtt.PC);
 			this.authorityFormatInitialDisplayRepository.add(authorityFormatInitialDisplay);
 //			if (!this.authorityFormatInitialDisplayRepository.checkExistDataByCompanyId(companyId)) {
 //				this.authorityFormatInitialDisplayRepository.add(authorityFormatInitialDisplay);

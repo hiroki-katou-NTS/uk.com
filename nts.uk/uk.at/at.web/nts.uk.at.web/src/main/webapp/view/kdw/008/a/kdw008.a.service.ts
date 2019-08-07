@@ -1,5 +1,5 @@
 module nts.uk.at.view.kdw008.a.service {
-
+    var BASE_DAILY_PATH = 'at/function/dailyperformanceformat/';
     var paths = {
         addDailyDetail: "at/function/dailyperformanceformat/addAuthorityDailyFormat",
         updateDailyDetail: "at/function/dailyperformanceformat/updateAuthorityDailyFormat",
@@ -28,30 +28,50 @@ module nts.uk.at.view.kdw008.a.service {
         
         getDailyDetail: "at/function/dailyperformanceformat/getAuthorityDailyFormat/{0}/{1}",
         getMonthlyDetail: "at/function/dailyperformanceformat/getAuthorityMonthlyFormat/{0}",
+
+        //mobile
+        getDailyMobileDetail: BASE_DAILY_PATH + "mobile/getAuthorityDailyFormat/{0}",
+        getMobileListAuthorityDailyFormatCode: BASE_DAILY_PATH + "mobile/getAuthorityDailyFormatCode",
+        getMobileDailyPerformance: BASE_DAILY_PATH + "mobile/getAuthorityDailyFormat/{0}",
+        addMobileDailyDetail: BASE_DAILY_PATH + "mobile/addAuthorityDailyFormat",
+        updateMobileDailyDetail: BASE_DAILY_PATH + "mobile/updateAuthorityDailyFormat",
+        removeMobileAuthorityDailyFormat: BASE_DAILY_PATH + "mobile/removeAuthorityFormat",
+        getMonthlyMobileDetail: BASE_DAILY_PATH + "mobile/getAuthorityMonthlyFormat/{0}",
+
     }
 
-    export function addDailyDetail(AddAuthorityDailyFormatCommand: any): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", paths.addDailyDetail, AddAuthorityDailyFormatCommand);
+    export function addDailyDetail(AddAuthorityDailyFormatCommand: any, isMobile: boolean): JQueryPromise<any> {
+        let _path = !isMobile ? paths.addDailyDetail : paths.addMobileDailyDetail;
+        return nts.uk.request.ajax("at", _path, AddAuthorityDailyFormatCommand);
     };
 
-    export function updateDailyDetail(UpdateAuthorityDailyFormatCommand: any): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", paths.updateDailyDetail, UpdateAuthorityDailyFormatCommand);
+    export function updateDailyDetail(UpdateAuthorityDailyFormatCommand: any, isMobile: boolean): JQueryPromise<any> {
+        let _path = !isMobile ? paths.updateDailyDetail : paths.updateMobileDailyDetail;
+        return nts.uk.request.ajax("at", _path, UpdateAuthorityDailyFormatCommand);
     };
 
 
 
-    export function getListAuthorityDailyFormatCode(): JQueryPromise<any> {
-        let _path = nts.uk.text.format(paths.getListAuthorityDailyFormatCode);
+    export function getListAuthorityDailyFormatCode(isMobile: boolean): JQueryPromise<any> {
+        let _path = nts.uk.text.format(!isMobile ? paths.getListAuthorityDailyFormatCode : paths.getMobileListAuthorityDailyFormatCode );
         return nts.uk.request.ajax("at", _path);
     };
 
-    export function getDailyPerformance(businessTypeCode: string, sheetNo: number): JQueryPromise<any> {
-        let _path = nts.uk.text.format(paths.getDailyPerformance, businessTypeCode, sheetNo);
+    export function getDailyPerformance(businessTypeCode: string, sheetNo: number, isMobile: boolean): JQueryPromise<any> {
+
+        let _path = '';
+        if(!isMobile) {
+            _path = nts.uk.text.format(paths.getDailyPerformance, businessTypeCode, sheetNo);
+        } else {
+            _path = nts.uk.text.format(paths.getMobileDailyPerformance, businessTypeCode);
+        }
+        
         return nts.uk.request.ajax("at", _path);
     };
 
-    export function removeAuthorityDailyFormat(RemoveAuthorityCommand: any): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", paths.removeAuthorityDailyFormat, RemoveAuthorityCommand);
+    export function removeAuthorityDailyFormat(RemoveAuthorityCommand: any, isMobile: boolean): JQueryPromise<any> {
+        let _path = !isMobile ? paths.removeAuthorityDailyFormat : paths.removeMobileAuthorityDailyFormat;
+        return nts.uk.request.ajax("at", _path, RemoveAuthorityCommand);
     };
 
     // monthly
@@ -89,13 +109,21 @@ module nts.uk.at.view.kdw008.a.service {
     export function getMonthlyAttItem(): JQueryPromise < any > {
         return nts.uk.request.ajax("at", paths.getMonthlyAttItem);
     }
-    export function getDailyDetail(code: string, sheetNo: number): JQueryPromise < any > {
-        let _path = nts.uk.text.format(paths.getDailyDetail, code, sheetNo);
+    export function getDailyDetail(code: string, sheetNo: number, isMobile: boolean): JQueryPromise < any > {
+        let _path = '';
+        if(!isMobile) {
+            _path = nts.uk.text.format(paths.getDailyDetail, code, sheetNo); 
+        } else {
+            _path = nts.uk.text.format(paths.getDailyMobileDetail, code);
+        }
+        
         return nts.uk.request.ajax("at", _path);
     };
 
-    export function getMonthlyDetail(code: string): JQueryPromise < any > {
-        let _path = nts.uk.text.format(paths.getMonthlyDetail, code);
+    export function getMonthlyDetail(code: string, isMobile: boolean): JQueryPromise < any > {
+        let url = !isMobile ? paths.getMonthlyDetail : paths.getMonthlyMobileDetail;
+        let _path = nts.uk.text.format(url, code);
         return nts.uk.request.ajax("at", _path);
     };
+    
 }

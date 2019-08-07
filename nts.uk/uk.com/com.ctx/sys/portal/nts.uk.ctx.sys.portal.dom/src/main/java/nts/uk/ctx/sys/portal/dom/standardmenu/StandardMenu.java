@@ -11,6 +11,7 @@ import nts.uk.ctx.sys.portal.dom.enums.System;
 import nts.uk.ctx.sys.portal.dom.enums.WebMenuSetting;
 
 /**
+ * 標準メニュー
  * The Class StandardMenu.
  */
 @Getter
