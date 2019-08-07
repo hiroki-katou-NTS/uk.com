@@ -1,0 +1,100 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="../../../../master/base.xhtml">
+    <ui:define name="htmlHead">
+        <com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+        <com:scriptfile set="IGNITE" />
+
+
+        <com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+        <com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+        <com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
+        <com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+
+
+        <com:scriptfile path="qsi003.a.vm.js" />
+        <com:scriptfile path="qsi003.a.start.js" />
+        <com:scriptfile path="qsi003.a.service.js" />
+        <com:stylefile path="qsi003.a.style.css" />
+    </ui:define>
+
+    <ui:define name="content">
+        <div id="functions-area" style = "min-width: 1000px;">
+            <button id="A1_1" tabindex="1" class="proceed">#{i18n.getText('QSI003_3')}</button>
+
+            <button id="A1_2" tabindex="2" >#{i18n.getText('QSI003_2')}</button>
+
+            <button id="A1_3" tabindex="3" data-bind="click: openScreenB" >#{i18n.getText('QSI003_4')}</button>
+
+        </div>
+        <div id="contents-area">
+            <!-- ccg001 -->
+            <div id="com-ccg001"></div>
+
+            <!-- div left -->
+            <div class="pull-left" style="margin-left: 100px">
+
+                <table id="multi-list" data-bind="ntsGridList: {
+                    height: 350,
+                    options: items,
+                    optionsValue: 'code',
+                    columns: columns,
+                    multiple: true,
+                    value: currentCodeList
+                }"></table>
+
+
+            </div>
+            <!-- div right -->
+            <div  class="pull-left" style="margin-left: 100px;    border-radius: 8px;border: 1px solid grey;padding: 10px;">
+                <span id="A3_2" class="label" style="margin-bottom: 15px;">#{i18n.getText('QSI003_5')}</span>
+                <div class="control-group">
+                    <div id="A3_3" data-bind="ntsFormLabel: {constrant: '', required:true}">#{i18n.getText('QSI003_6')}</div>
+                    <div style="margin-left:100px;" data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD', name: '#{i18n.getText('QSI003_6')}'}"></div>
+                    <span style="margin-left:20px" data-bind="text: datePicker"></span>
+                </div>
+
+                <div class="control-group valign-center">
+                    <div id="A3_6" data-bind="ntsFormLabel: {constrant: '', required:true}">#{i18n.getText('QSI003_7')}</div>
+                    <div style="margin-left:72px" class="cf" data-bind="ntsSwitchButton: {
+                        name: '#{i18n.getText('QSI003_7')}',
+                        options: roundingRules,
+                        optionsValue: 'code',
+                        optionsText: 'name',
+                        value: selectedRuleCode,
+                        required: true,
+                        enable: true }"></div>
+                        <button data-bind="ntsHelpButton: {image: 'QSI003Image01.png', position: 'right top', enable: true }">?</button>
+                </div>
+
+                <div class="control-group valign-center">
+                    <div id="A3_11" data-bind="ntsFormLabel: {constrant: '', required:true}">#{i18n.getText('QSI003_10')}</div>
+                    <div id="A3_12" style="margin-left:71px"  data-bind="ntsComboBox: {
+                        name: '#{i18n.getText('QSI003_11')}',
+                        options: itemList,
+                        optionsValue: 'code',
+                        visibleItemsCount: 5,
+                        value: selectedCode,
+                        optionsText: 'name',
+                        editable: true,
+                        enable: true,
+                        required: true,
+                        selectFirstIfNull: true,
+                        columns: [
+                            { prop: 'code', length: 4 },
+                            { prop: 'name', length: 10 },
+                        ]}"></div>
+                </div>
+            </div>
+            <!--end-->
+
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>
