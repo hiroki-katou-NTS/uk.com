@@ -19,7 +19,7 @@ export class ViewModel extends Vue {
 ```
 <span class="fas fa-exclamation-triangle uk-text-required"></span> **Chú ý**:   
 > Nếu tạo Date ở client, hãy sử dụng UTC. Việc này sẽ tạo ra một giá trị ngày theo múi giờ 0. <a href="https://developer.mozilla.org/vi/docs/Web/JavaScript/Reference/Global_Objects/Date/UTC" target="_blank">Tham khảo Date.UTC</a> <br/>
-> Trong trường hợp giá trị `date` được lấy về từ Server, thay vì trả về date ở dạng String, hãy sử dụng GeneralDate ở DTO.
+> Trong trường hợp giá trị `date` được lấy về từ Server, thay vì trả về date ở dạng String, hãy sử dụng Date ở DTO.
 
 ##### 4. Thông tin bổ sung
 
