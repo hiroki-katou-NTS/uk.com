@@ -156,7 +156,6 @@ export interface Kafs05Model {
     isCreateMode: boolean;
     resetTimeRange: number;
     overtimeType: string;
-    DATE_FORMAT: string;
     checkBoxValue: boolean;
     enableSendMail: boolean;
     displayBreakTimeFlg: boolean;
