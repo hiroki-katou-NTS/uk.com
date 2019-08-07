@@ -33,13 +33,16 @@ import { OvertimeAgreement, AgreementTimeStatusOfMonthly, Kafs05Model } from '..
             prePostSelected: {
                 validateSwitchbox: {
                     test(value: number) {
-
-                        if (value != 0 && value != 1) {
-                            document.body.getElementsByClassName('valid-switchbox')[0].className += ' invalid';
-
-                            return false;
+                        if (null == this.kafs05ModelStep1.appID && this.displayPrePostFlg) {
+                            if (value != 0 && value != 1) {
+                                document.body.getElementsByClassName('valid-switchbox')[0].className += ' invalid';
+    
+                                return false;
+                            }
+                            document.body.getElementsByClassName('valid-switchbox')[0].className += 'valid-switchbox';
+    
+                            return true;
                         }
-                        document.body.getElementsByClassName('valid-switchbox')[0].className += 'valid-switchbox';
 
                         return true;
                     },
