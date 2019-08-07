@@ -1,19 +1,14 @@
-package .infra.entity.ドメインモデル.nittsusystem.universalk.salary.shared.socialinsurance.employeesociainsur.empbenepenpeninfor;
-
-import java.io.Serializable;
-
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import .dom.ドメインモデル.nittsusystem.universalk.salary.shared.socialinsurance.employeesociainsur.empbenepenpeninfor.WelfarePenTypeInfor;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
+package nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.empbenepenpeninfor;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.WelfarePenTypeInfor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
+
+import javax.persistence.*;
+import java.io.Serializable;
+
 
 /**
 * 厚生年金種別情報
@@ -74,10 +69,9 @@ public class QqsmtEmpPenIns extends UkJpaEntity implements Serializable
     }
 
     public WelfarePenTypeInfor toDomain() {
-        return new WelfarePenTypeInfor(this.empPenInsPk.employeeId, this.empPenInsPk.historyId, this.startDate, this.endDate, this.healInsurSameCtg, this.welPenNumber, this.undergoundDivision);
-    }
+        return null; }
     public static QqsmtEmpPenIns toEntity(WelfarePenTypeInfor domain) {
-        return new QqsmtEmpPenIns(new QqsmtEmpPenInsPk(domain.get(), domain.get()),domain.get(), domain.get(), domain.get(), domain.get(), domain.getUndergroundDivision().value);
+        return null;
     }
 
 }

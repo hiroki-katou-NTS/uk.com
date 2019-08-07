@@ -1,10 +1,12 @@
-package .app.find.ドメインモデル.nittsusystem.universalk.salary.shared.socialinsurance.employeesociainsur.empbenepenpeninfor;
+package nts.uk.ctx.pr.shared.app.find.socialinsurance.employeesociainsur.empbenepenpeninfor;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.WelfarePenTypeInforRepository;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.util.List;
+import java.util.stream.Collectors;
+
 
 @Stateless
 /**

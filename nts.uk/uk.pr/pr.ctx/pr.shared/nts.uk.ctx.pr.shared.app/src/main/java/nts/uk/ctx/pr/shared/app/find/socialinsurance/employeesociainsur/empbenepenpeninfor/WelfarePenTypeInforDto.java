@@ -2,7 +2,6 @@ package nts.uk.ctx.pr.shared.app.find.socialinsurance.employeesociainsur.empbene
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
-import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.PitInsiderDivision;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.WelfarePenTypeInfor;
 
 /**
@@ -26,7 +25,7 @@ public class WelfarePenTypeInforDto
     
     public static WelfarePenTypeInforDto fromDomain(WelfarePenTypeInfor domain)
     {
-        return new WelfarePenTypeInforDto(domain.getHistoryId(),domain.getUndergroundDivision() );
+        return null;
     }
     
 }

@@ -1,11 +1,11 @@
-package .app.command.ドメインモデル.nittsusystem.universalk.salary.shared.socialinsurance.employeesociainsur.emphealinsurassocinfor;
-
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
+package nts.uk.ctx.pr.shared.app.command.socialinsurance.employeesociainsur.emphealinsurassocinfor;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurassocinfor.HealInsurPortPerIntellRepository;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 @Stateless
@@ -18,8 +18,6 @@ public class RemoveHealInsurPortPerIntellCommandHandler extends CommandHandler<H
     
     @Override
     protected void handle(CommandHandlerContext<HealInsurPortPerIntellCommand> context) {
-        String employeeId = context.getCommand().getEmployeeId();
-        String hisId = context.getCommand().get();
-        repository.remove(employeeId, hisId);
+
     }
 }

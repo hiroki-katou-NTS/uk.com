@@ -2,7 +2,6 @@ package nts.uk.ctx.pr.shared.app.command.socialinsurance.employeesociainsur.empb
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.WelfarePenTypeInfor;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.WelfarePenTypeInforRepository;
 
 import javax.ejb.Stateless;
@@ -20,8 +19,7 @@ public class AddWelfarePenTypeInforCommandHandler extends CommandHandler<Welfare
     
     @Override
     protected void handle(CommandHandlerContext<WelfarePenTypeInforCommand> context) {
-        WelfarePenTypeInforCommand command = context.getCommand();
-        repository.add(new WelfarePenTypeInfor(command.getHistoryId(), command.get()));
+
     
     }
 }
