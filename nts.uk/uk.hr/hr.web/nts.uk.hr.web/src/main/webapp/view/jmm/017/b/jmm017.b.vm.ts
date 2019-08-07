@@ -60,7 +60,6 @@ module nts.uk.hr.view.jmm017.b.viewmodel {
                 useSet: self.useSet()==1?null:self.useSet()==2
             }
             new service.getGuideMessageList(param).done(function(data: any) {
-                console.log(data);                
                 let groupByColumns = $("#grid").igGridGroupBy("groupByColumns");
                 $("#grid").igGridGroupBy("ungroupAll");
                 self.guideMessageList = data;
@@ -82,36 +81,31 @@ module nts.uk.hr.view.jmm017.b.viewmodel {
         public reloadGrid(): void {
             block.grayout();
             let self = this;
+            let pageSizeOld =  $('#grid').igGridPaging("option", "pageSize");
             let groupByColumns = $("#grid").igGridGroupBy("groupByColumns");
             let filters = $("#grid").data("igGridFiltering")._filteringExpressions
             let pageIndex = $('#grid').igGridPaging("option", "currentPageIndex");
-//            self.guideMessageList[0].guideMsg = 'Thanh test';
             self.bindData();
             setTimeout(() => {
                 _.forEach(groupByColumns, col => {
                     $("#grid").igGridGroupBy("groupByColumn", col.key);
                 });
                 $("#grid").igGridFiltering("filter", filters);
+                $("#grid").igGridPaging("pageSize", pageSizeOld);
                 $("#grid").igGridPaging("pageIndex", pageIndex);
             }, 1);
             block.clear();
         }
         
-        public test(): void {
-            let self = this;
-            self.guideMessageList[0];
-            self.reloadGrid();
-        }
-        
         public editMsg(msgId: string): void {
             let self = this;
-            self.pageSize =  $('#grid').igGridPaging("option", "pageSize");
             let index = _.findIndex(self.guideMessageList, function(o) { return o.guideMsgId == msgId; });
             let guideMsg = _.find(self.guideMessageList, function(o) { return o.guideMsgId == msgId });
             setShared('guideMsg', guideMsg);
             nts.uk.ui.windows.sub.modal('/view/jmm/017/c/index.xhtml').onClosed(function(): any {
-                if (getShared('guideMsg')) {
-                    self.guideMessageList[index] = getShared('guideMsg');
+                if (getShared('guideMsgB')) {
+                    self.guideMessageList[index] = getShared('guideMsgB');
+                    setShared("guideMsgB", undefined);
                     self.reloadGrid();
                 }
             });
@@ -259,7 +253,6 @@ module nts.uk.hr.view.jmm017.b.viewmodel {
 }
 
 function editMsg(param) {
-    console.log(param.id);
     nts.uk.ui._viewModel.content.tab2ViewModel().editMsg(param.id);
 }
 

@@ -41,7 +41,7 @@ module nts.uk.com.view.jmm017.c.viewmodel {
             self.guideMsg.usageFlgByScreen = self.usageFlgByScreen()?'使用する':'使用しない';
             self.guideMsg.guideMsg = self.guideMsgText();
             new service.updateGuideMsg(self.guideMsg).done(function() {
-                nts.uk.ui.windows.setShared("guideMsg", self.guideMsg);
+                nts.uk.ui.windows.setShared("guideMsgB", self.guideMsg);
                 nts.uk.ui.windows.close();
             }).always(function() {
                 block.clear();
