@@ -65,12 +65,7 @@ public class OvertimeOfDailyService {
             itemIdList.addAll(CorrectEventConts.END_BREAK_TIME_CLOCK_ITEMS);
             //替時間(休出)の反映、をクリアする
     		itemIdList.addAll(recordUpdate.lstTranfertimeFrameItem());
-		} else if(!cachedWorkType.get().getDailyWork().getOneDay().isPause()
-				&& !cachedWorkType.get().getDailyWork().getMorning().isPause()
-				&& !cachedWorkType.get().getDailyWork().getAfternoon().isPause()) {
-			itemIdList.addAll(recordUpdate.lstTranfertimeFrameItem());
-		} 
-		else {
+		} else {
 			itemIdList.addAll(recordUpdate.lstPreWorktimeFrameItem());
 			itemIdList.addAll(recordUpdate.lstAfterWorktimeFrameItem());
 			 //休日出勤申請：休憩時間しか反映してない
