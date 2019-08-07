@@ -12,7 +12,7 @@ HTMLの`v-model="date"`を使えるためViewModelの中は`date`という変数
 export class ViewModel extends Vue {
     *
     *
-    date: Date = new Date();
+    date: Date = null;
     *
     *
 }
