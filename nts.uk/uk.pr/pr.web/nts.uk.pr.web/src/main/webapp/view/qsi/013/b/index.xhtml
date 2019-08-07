@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component">
+<body>
+<ui:composition template="../../../../master/dialog.xhtml">
+    <ui:define name="htmlHead">
+        <script>var dialogSize = { width: 1000, height: 700 };</script>
+        <com:scriptfile set="IGNITE" />
+        <com:scriptfile path="../share/model.js" />
+        <com:scriptfile path="qsi013.b.vm.js" />
+        <com:scriptfile path="qsi013.b.start.js" />
+        <com:scriptfile path="qsi013.b.service.js" />
+        <com:stylefile path="qsi013.b.style.css" />
+        <com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+        <com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+        <com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+        <com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
+        <com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+    </ui:define>
+    <ui:define name="content">
+        <div id="functions-area">
+            <button id="A1_1" tabindex="1" class="proceed"
+                    data-bind="">#{i18n.getText('QSI013_4')}</button>
+            <button id="A1_2" tabindex="2"
+                    data-bind="click: close">#{i18n.getText('QSI013_5')}</button>
+        </div>
+
+        <div style="margin-top: 15px; min-width: 1000px;" class="contents-area">
+            <div id="com-ccg001" ></div>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>
