@@ -11,6 +11,9 @@
 **/.settings*
 **/.ide*
 
+#ignore spotlight cache
+**/.DS_Store
+
 #ignore sass-cache folder
 **/.sass-cache*
 
@@ -27,9 +30,20 @@
 
 #ignore all js, map file
 **/*.js*
+!**/*.json
 
 # except all js, map in base.web
 !**/base.web/**/*.js*
 **/base.web/**/*bundles.js*
 
 nts.uk/uk.repo/*
+
+# add ignore file of mobile project
+**/.vscode/*
+**/node_modules/*
+**/package-lock.json
+**/vendor*
+**/bundles*
+**/main-server*
+**/wwwroot/*
+**/.DS_Store
