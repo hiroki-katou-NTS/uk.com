@@ -1,0 +1,46 @@
+package nts.uk.ctx.hr.develop.infra.repository.hrdevelopmentevent;
+
+import java.util.List;
+import java.util.Optional;
+
+import javax.ejb.Stateless;
+
+import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.hr.develop.dom.hrdevelopmentevent.HRDevMenu;
+import nts.uk.ctx.hr.develop.dom.hrdevelopmentevent.HRDevMenuRepository;
+import nts.uk.ctx.hr.develop.infra.entity.hrdevelopmentevent.JcmmtHRDevMenu;
+@Stateless
+public class JpaHRDevMenuRepository extends JpaRepository implements HRDevMenuRepository{
+	
+	private static final String FIND_BY_AVAILABLE = "SELECT a FROM JcmmtHRDevMenu a "
+												+ "WHERE a.availableEvent =: 1 "
+												+ "ORDER BY a.eventId ASC ";
+	
+	/**
+	 * find item by id
+	 * @author yennth
+	 */
+	@Override
+	public List<HRDevMenu> findByAvailable() {
+		List<HRDevMenu> result = this.queryProxy().query(FIND_BY_AVAILABLE, JcmmtHRDevMenu.class)
+										.getList(x -> convertToDomain(x));
+		return result;
+	}
+
+	/**
+	 * convert from entity to domain
+	 * @param x
+	 * @return
+	 * @author yennth
+	 */
+	private HRDevMenu convertToDomain(JcmmtHRDevMenu x) {
+		HRDevMenu domain = HRDevMenu.createFromJavaType(x.eventId, 
+														x.programId, 
+														x.programName, 
+														x.availableMenu, 
+														x.availableApproval, 
+														x.dispOrder, 
+														x.availableNotice);
+		return domain;
+	}
+}
