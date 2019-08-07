@@ -2604,6 +2604,12 @@ module nts.uk.ui.mgrid {
                     self.hoover(evt, true);
                 });
                 
+                if (_.keys(_voilerRows).length > 0
+                    && _.includes(_voilerRows[Math.floor(rowIdx / (aho._bloc * 2 - 1))], rowIdx)) {
+                    fixedTr.style.display = "none";
+                    tr.style.display = "none";
+                }
+                
                 let ret = { fixedRow: fixedTr, row: tr, fixedElements: fixedElements, elements: elements }; 
                 if (rowIdx === 0) {
                     ret.fixedColIdxes = fixedColIdxes;
@@ -3054,26 +3060,37 @@ module nts.uk.ui.mgrid {
         }
         
         export function voilerRow(idx: any) {
-            if (_.isNil(idx) || idx > _end || idx < _start) return;
+            if (_.isNil(idx)) return;
             let nama = Math.floor(idx / (aho._bloc * 2 - 1));
             
             if (!_voilerRows[nama]) _voilerRows[nama] = [];
             _voilerRows[nama].push(idx);
-            idx -= _start;
             
-            _.forEach(_bodyWrappers, b => {
-                let r = b.querySelector("tr:nth-of-type(" + (idx + 2) + ")");
-                if (r) r.style.display = "none";
-//                let last = b.querySelector("tr:last-child");
-//                if (last) last.style.height = parseFloat(last.style.height) - BODY_ROW_HEIGHT + "px";
-            });
-            
-            _.forEach(_.keys(_mafollicle[SheetDef]), k => {
-                let maf = _mafollicle[_currentPage][k];
-                if (k === _currentSheet || !maf || !maf.$bBody) return;
-                let r = maf.$bBody.querySelector("tr:nth-of-type(" + (idx + 2) + ")");
-                if (r) r.style.display = "none";
-            });
+            if (idx <=_end && idx >= _start) {
+                idx -= _start;
+                _.forEach(_bodyWrappers, b => {
+                    let r = b.querySelector("tr:nth-of-type(" + (idx + 2) + ")");
+                    if (r) r.style.display = "none";
+    //                let last = b.querySelector("tr:last-child");
+    //                if (last) last.style.height = parseFloat(last.style.height) - BODY_ROW_HEIGHT + "px";
+                });
+                
+                _.forEach(_.keys(_mafollicle[SheetDef]), k => {
+                    let maf = _mafollicle[_currentPage][k];
+                    if (k === _currentSheet || !maf || !maf.$bBody) return;
+                    let r = maf.$bBody.querySelector("tr:nth-of-type(" + (idx + 2) + ")");
+                    if (r) r.style.display = "none";
+                });
+            } else {
+                _.forEach(_.keys(_mafollicle[SheetDef]), k => {
+                    let maf = _mafollicle[_currentPage][k];
+                    if (!maf || !maf.desc) return;
+                    let r = maf.desc.rowElements[idx];
+                    if (r) r.style.display = "none";
+                    let fr = maf.desc.fixedRowElements[idx];
+                    if (fr) fr.style.display = "none";
+                });
+            }
         }
         
         export function encarterRow(idx: any, copy: any, cssClass: any, numText: any) {
@@ -5323,6 +5340,9 @@ module nts.uk.ui.mgrid {
                     }
                     _cloud.painter.painters[!_hasFixed || !ufx ? 0 : 1].unbubColumn(col, i);
                 }
+            },
+            hideRow: function(idx) {
+                v.voilerRow(idx);    
             },
             updateCell: function(id, key, val, reset, ackDis, ls) {
                 let idx = _.findIndex(_dataSource, r => r[_pk] === id);
@@ -8531,13 +8551,18 @@ module nts.uk.ui.mgrid {
                 let list = $dd.querySelector(".mcombo-list");
                 let items = list.querySelectorAll("li");
                 if (items) {
-                    let top = 0;
+                    let top = 0, selected;
                     _.forEach(items, li => {
-                        if (li.classList.contains("selecteditem")) return false;
+                        if (li.classList.contains("selecteditem")) {
+                            selected = true;
+                            return false;
+                        }
+                        
                         top += 26;
                     });
                     
-                    if (top >= 0) list.scrollTop = top;
+                    if (top >= 0 && selected) list.scrollTop = top;
+                    else list.scrollTop = 0;
                 }
             }
             
@@ -9059,7 +9084,13 @@ module nts.uk.ui.mgrid {
             if (data.controlDef.source === "hidden-button") {
                 clickHandle = evt => {
                     let r = ti.closest($span, "tr");
-                    if (r) v.voilerRow(parseFloat($.data(r, lo.VIEW)));
+                    if (r) {
+                        let view = parseFloat($.data(r, lo.VIEW));
+                        v.voilerRow(view);
+                        if (_.isFunction(data.controlDef.click)) {
+                            data.controlDef.click(view);    
+                        }
+                    }
                 };
             } else if (_.includes(data.controlDef.source, "plus-button")) {
                 clickHandle = evt => {
