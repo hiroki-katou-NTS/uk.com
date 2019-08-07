@@ -64,5 +64,13 @@ public interface SpecialLeaveGrantRepository {
 	 * @return 
 	 */
 	List<SpecialLeaveGrantRemainingData> getByNextDate(String sid, int speCode, DatePeriod datePriod, GeneralDate startDate, LeaveExpirationStatus expirationStatus);
+	
+	/**
+	 * for cps013
+	 * @param listEmpID
+	 * @param specialLeaveCD
+	 * @return
+	 */
+	List<Object[]> getAllBySids(List<String> sids, int specialLeaveCD);
 
 }

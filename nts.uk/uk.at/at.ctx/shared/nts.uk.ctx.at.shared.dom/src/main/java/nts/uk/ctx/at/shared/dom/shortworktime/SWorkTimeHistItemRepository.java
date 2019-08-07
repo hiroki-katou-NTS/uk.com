@@ -59,4 +59,6 @@ public interface SWorkTimeHistItemRepository {
 	 * @return the map
 	 */
 	List<ShortWorkTimeHistoryItem> findByHistIds(List<String> histIds);
+
+	List<Object[]> findByHistIdsCPS013(List<String> histIds);
 }

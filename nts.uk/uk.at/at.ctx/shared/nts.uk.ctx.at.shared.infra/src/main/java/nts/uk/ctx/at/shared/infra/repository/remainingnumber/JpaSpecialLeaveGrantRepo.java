@@ -480,4 +480,44 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 		
 	}
 
+	@Override
+	public List<Object[]> getAllBySids(List<String> sids, int specialLeaveCD) {
+		List<Object[]> entities = new ArrayList<>();
+		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			String sql = "SELECT * FROM KRCMT_SPEC_LEAVE_REMAIN WHERE  SPECIAL_LEAVE_CD = ? AND SID IN ("
+					+ NtsStatement.In.createParamsString(subList) + ")";
+			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+				stmt.setInt(1, specialLeaveCD);
+
+				for (int i = 0; i < subList.size(); i++) {
+					stmt.setString(2 + i, subList.get(i));
+				}
+				List<Object[]> result = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
+					Object[] object = new Object[] {rec.getString("SPECIAL_LEAVE_ID"),
+							rec.getString("CID"), 
+							rec.getString("SID"),
+							rec.getInt("SPECIAL_LEAVE_CD"),
+							rec.getGeneralDate("GRANT_DATE"),
+							rec.getGeneralDate("DEADLINE_DATE"),
+							rec.getInt("EXPIRED_STATE"),
+							rec.getInt("REGISTRATION_TYPE"),
+							rec.getDouble("NUMBER_DAYS_GRANT"),
+							rec.getInt("TIME_GRANT"),
+							rec.getDouble("NUMBER_DAYS_REMAIN"),
+							rec.getInt("TIME_REMAIN"),
+							rec.getDouble("NUMBER_DAYS_USE"),
+							rec.getInt("TIME_USE"),
+							rec.getDouble("USED_SAVING_DAYS"),
+							rec.getDouble("NUMBER_OVER_DAYS"),
+							rec.getInt("TIME_OVER")};
+					return object;
+				});
+				entities.addAll(result);
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+		});
+		return entities;
+	}
+
 }

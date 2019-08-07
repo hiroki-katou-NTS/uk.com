@@ -40,7 +40,6 @@ public interface PersonRepository {
 
 	void addNewPerson(Person newPerson);
 	
-	
 	/**
 	 * @author lanlt
 	 * get full domain
@@ -49,6 +48,15 @@ public interface PersonRepository {
 	 * @return
 	 */
 	List<Person> getFullPersonByPersonIds(List<String> personIds);
+	
+	/**
+	 * @author lanlt
+	 * get full domain - for cps013
+	 * getFullPersonByPersonIds
+	 * @param personIds
+	 * @return
+	 */
+	List<Object[]> getPersonsByPersonIds(List<String> personIds);
 	
 	
 	/**

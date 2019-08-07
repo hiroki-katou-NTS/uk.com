@@ -287,4 +287,41 @@ public class JpaSpecialLeaveBasicInfoRepo extends JpaRepository implements Speci
 		System.out.println(records);		
 	}
 
+	@Override
+	public List<Object[]> getAllBySidsAndLeaveCd(String cid, List<String> sids, int spLeaveCD) {
+		List<Object[]> entities = new ArrayList<>();
+		
+		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			String sql = "SELECT * FROM KRCMT_SPECIAL_LEAVE_INFO WHERE CID = ? AND SPECIAL_LEAVE_CD = ? AND SID IN ("+ NtsStatement.In.createParamsString(subList) + ")";
+			
+			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+				stmt.setString( 1, cid);
+				stmt.setInt( 2, spLeaveCD);
+				for (int i = 0; i < subList.size(); i++) {
+					stmt.setString( 3 + i, subList.get(i));
+				}
+				
+				List<Object[]> result = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
+					Object[] object = new Object[] {
+							rec.getString("SID"),
+							rec.getInt("SPECIAL_LEAVE_CD"),
+							rec.getString("CID"),
+							rec.getInt("USE_ATR"),
+							rec.getInt("APPLICATION_SET"),
+							rec.getGeneralDate("GRANT_DATE"),
+							rec.getInt("GRANTED_DAYS"),
+							rec.getString("GRANT_TABLE")
+					};
+					return object;
+				});
+				entities.addAll(result);
+				
+			}catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+		});
+		
+		return entities;
+	}
+
 }

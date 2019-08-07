@@ -476,9 +476,9 @@ public class SpecialleaveInformationFinder {
 			result.add(new GridPeregDomainBySidDto(c.getEmployeeId(), c.getPersonId(), new ArrayList<>()));
 		});
 
-		Map<String, List<SpecialLeaveBasicInfo>> spLeaBasicInfoLst = specialLeaveBasicInfoRepository
-				.getAllBySidsLeaveCd(cid, sids, specialLeaveCD).stream()
-				.collect(Collectors.groupingBy(c -> c.getSID()));
+		Map<String, List<Object[]>> spLeaBasicInfoLst = specialLeaveBasicInfoRepository
+				.getAllBySidsAndLeaveCd(cid, sids, specialLeaveCD).stream()
+				.collect(Collectors.groupingBy(c -> c[0].toString()));
 
 		Map<String, String> dayTimeMap = specialLeaveGrantRemainService.calDayTime(cid, sids, specialLeaveCD);
 
@@ -486,7 +486,7 @@ public class SpecialleaveInformationFinder {
 		case CS00025:
 			result.stream().forEach(c -> {
 				List<PeregDomainDto> peregDto = new ArrayList<>();
-				List<SpecialLeaveBasicInfo> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
+				List<Object[]> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
 				if(!CollectionUtil.isEmpty(spLeaBasicInfo)) {
 					spLeaBasicInfo.stream().forEach(s ->{
 						Specialleave1InformationDto dto = Specialleave1InformationDto.createFromDomain(s);
@@ -500,7 +500,7 @@ public class SpecialleaveInformationFinder {
 		case CS00026:
 			result.stream().forEach(c -> {
 				List<PeregDomainDto> peregDto = new ArrayList<>();
-				List<SpecialLeaveBasicInfo> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
+				List<Object[]> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
 				if(!CollectionUtil.isEmpty(spLeaBasicInfo)) {
 					spLeaBasicInfo.stream().forEach(s ->{
 						Specialleave2informationDto dto = Specialleave2informationDto.createFromDomain(s);
@@ -514,7 +514,7 @@ public class SpecialleaveInformationFinder {
 		case CS00027:
 			result.stream().forEach(c -> {
 				List<PeregDomainDto> peregDto = new ArrayList<>();
-				List<SpecialLeaveBasicInfo> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
+				List<Object[]> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
 				if(!CollectionUtil.isEmpty(spLeaBasicInfo)) {
 					spLeaBasicInfo.stream().forEach(s ->{
 						Specialleave3informationDto dto = Specialleave3informationDto.createFromDomain(s);
@@ -528,7 +528,7 @@ public class SpecialleaveInformationFinder {
 		case CS00028:
 			result.stream().forEach(c -> {
 				List<PeregDomainDto> peregDto = new ArrayList<>();
-				List<SpecialLeaveBasicInfo> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
+				List<Object[]> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
 				if(!CollectionUtil.isEmpty(spLeaBasicInfo)) {
 					spLeaBasicInfo.stream().forEach(s ->{
 						Specialleave4informationDto dto = Specialleave4informationDto.createFromDomain(s);
@@ -542,7 +542,7 @@ public class SpecialleaveInformationFinder {
 		case CS00029:
 			result.stream().forEach(c -> {
 				List<PeregDomainDto> peregDto = new ArrayList<>();
-				List<SpecialLeaveBasicInfo> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
+				List<Object[]> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
 				if(!CollectionUtil.isEmpty(spLeaBasicInfo)) {
 					spLeaBasicInfo.stream().forEach(s ->{
 						Specialleave5informationDto dto = Specialleave5informationDto.createFromDomain(s);
@@ -556,7 +556,7 @@ public class SpecialleaveInformationFinder {
 		case CS00030:
 			result.stream().forEach(c -> {
 				List<PeregDomainDto> peregDto = new ArrayList<>();
-				List<SpecialLeaveBasicInfo> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
+				List<Object[]> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
 				if(!CollectionUtil.isEmpty(spLeaBasicInfo)) {
 					spLeaBasicInfo.stream().forEach(s ->{
 						Specialleave6informationDto dto = Specialleave6informationDto.createFromDomain(s);
@@ -570,7 +570,7 @@ public class SpecialleaveInformationFinder {
 		case CS00031:
 			result.stream().forEach(c -> {
 				List<PeregDomainDto> peregDto = new ArrayList<>();
-				List<SpecialLeaveBasicInfo> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
+				List<Object[]> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
 				if(!CollectionUtil.isEmpty(spLeaBasicInfo)) {
 					spLeaBasicInfo.stream().forEach(s ->{
 						Specialleave7informationDto dto = Specialleave7informationDto.createFromDomain(s);
@@ -584,7 +584,7 @@ public class SpecialleaveInformationFinder {
 		case CS00032:
 			result.stream().forEach(c -> {
 				List<PeregDomainDto> peregDto = new ArrayList<>();
-				List<SpecialLeaveBasicInfo> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
+				List<Object[]> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
 				if(!CollectionUtil.isEmpty(spLeaBasicInfo)) {
 					spLeaBasicInfo.stream().forEach(s ->{
 						Specialleave8informationDto dto = Specialleave8informationDto.createFromDomain(s);
@@ -598,7 +598,7 @@ public class SpecialleaveInformationFinder {
 		case CS00033:
 			result.stream().forEach(c -> {
 				List<PeregDomainDto> peregDto = new ArrayList<>();
-				List<SpecialLeaveBasicInfo> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
+				List<Object[]> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
 				if(!CollectionUtil.isEmpty(spLeaBasicInfo)) {
 					spLeaBasicInfo.stream().forEach(s ->{
 						Specialleave9informationDto dto = Specialleave9informationDto.createFromDomain(s);
@@ -612,7 +612,7 @@ public class SpecialleaveInformationFinder {
 		case CS00034:
 			result.stream().forEach(c -> {
 				List<PeregDomainDto> peregDto = new ArrayList<>();
-				List<SpecialLeaveBasicInfo> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
+				List<Object[]> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
 				if(!CollectionUtil.isEmpty(spLeaBasicInfo)) {
 					spLeaBasicInfo.stream().forEach(s ->{
 						Specialleave10informationDto dto = Specialleave10informationDto.createFromDomain(s);
@@ -626,7 +626,7 @@ public class SpecialleaveInformationFinder {
 		case CS00049:
 			result.stream().forEach(c -> {
 				List<PeregDomainDto> peregDto = new ArrayList<>();
-				List<SpecialLeaveBasicInfo> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
+				List<Object[]> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
 				if(!CollectionUtil.isEmpty(spLeaBasicInfo)) {
 					spLeaBasicInfo.stream().forEach(s ->{
 						Specialleave11informationDto dto = Specialleave11informationDto.createFromDomain(s);
@@ -640,7 +640,7 @@ public class SpecialleaveInformationFinder {
 		case CS00050:
 			result.stream().forEach(c -> {
 				List<PeregDomainDto> peregDto = new ArrayList<>();
-				List<SpecialLeaveBasicInfo> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
+				List<Object[]> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
 				if(!CollectionUtil.isEmpty(spLeaBasicInfo)) {
 					spLeaBasicInfo.stream().forEach(s ->{
 						Specialleave12informationDto dto = Specialleave12informationDto.createFromDomain(s);
@@ -654,7 +654,7 @@ public class SpecialleaveInformationFinder {
 		case CS00051:
 			result.stream().forEach(c -> {
 				List<PeregDomainDto> peregDto = new ArrayList<>();
-				List<SpecialLeaveBasicInfo> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
+				List<Object[]> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
 				if(!CollectionUtil.isEmpty(spLeaBasicInfo)) {
 					spLeaBasicInfo.stream().forEach(s ->{
 						Specialleave13informationDto dto = Specialleave13informationDto.createFromDomain(s);
@@ -668,7 +668,7 @@ public class SpecialleaveInformationFinder {
 		case CS00052:
 			result.stream().forEach(c -> {
 				List<PeregDomainDto> peregDto = new ArrayList<>();
-				List<SpecialLeaveBasicInfo> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
+				List<Object[]> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
 				if(!CollectionUtil.isEmpty(spLeaBasicInfo)) {
 					spLeaBasicInfo.stream().forEach(s ->{
 						Specialleave14informationDto dto = Specialleave14informationDto.createFromDomain(s);
@@ -682,7 +682,7 @@ public class SpecialleaveInformationFinder {
 		case CS00053:
 			result.stream().forEach(c -> {
 				List<PeregDomainDto> peregDto = new ArrayList<>();
-				List<SpecialLeaveBasicInfo> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
+				List<Object[]> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
 				if(!CollectionUtil.isEmpty(spLeaBasicInfo)) {
 					spLeaBasicInfo.stream().forEach(s ->{
 						Specialleave15informationDto dto = Specialleave15informationDto.createFromDomain(s);
@@ -696,7 +696,7 @@ public class SpecialleaveInformationFinder {
 		case CS00054:
 			result.stream().forEach(c -> {
 				List<PeregDomainDto> peregDto = new ArrayList<>();
-				List<SpecialLeaveBasicInfo> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
+				List<Object[]> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
 				if(!CollectionUtil.isEmpty(spLeaBasicInfo)) {
 					spLeaBasicInfo.stream().forEach(s ->{
 						Specialleave16informationDto dto = Specialleave16informationDto.createFromDomain(s);
@@ -710,7 +710,7 @@ public class SpecialleaveInformationFinder {
 		case CS00055:
 			result.stream().forEach(c -> {
 				List<PeregDomainDto> peregDto = new ArrayList<>();
-				List<SpecialLeaveBasicInfo> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
+				List<Object[]> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
 				if(!CollectionUtil.isEmpty(spLeaBasicInfo)) {
 					spLeaBasicInfo.stream().forEach(s ->{
 						Specialleave17informationDto dto = Specialleave17informationDto.createFromDomain(s);
@@ -724,7 +724,7 @@ public class SpecialleaveInformationFinder {
 		case CS00056:
 			result.stream().forEach(c -> {
 				List<PeregDomainDto> peregDto = new ArrayList<>();
-				List<SpecialLeaveBasicInfo> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
+				List<Object[]> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
 				if(!CollectionUtil.isEmpty(spLeaBasicInfo)) {
 					spLeaBasicInfo.stream().forEach(s ->{
 						Specialleave18informationDto dto = Specialleave18informationDto.createFromDomain(s);
@@ -738,7 +738,7 @@ public class SpecialleaveInformationFinder {
 		case CS00057:
 			result.stream().forEach(c -> {
 				List<PeregDomainDto> peregDto = new ArrayList<>();
-				List<SpecialLeaveBasicInfo> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
+				List<Object[]> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
 				if(!CollectionUtil.isEmpty(spLeaBasicInfo)) {
 					spLeaBasicInfo.stream().forEach(s ->{
 						Specialleave19informationDto dto = Specialleave19informationDto.createFromDomain(s);
@@ -752,7 +752,7 @@ public class SpecialleaveInformationFinder {
 		case CS00058:
 			result.stream().forEach(c -> {
 				List<PeregDomainDto> peregDto = new ArrayList<>();
-				List<SpecialLeaveBasicInfo> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
+				List<Object[]> spLeaBasicInfo = spLeaBasicInfoLst.get(c.getEmployeeId());
 				if(!CollectionUtil.isEmpty(spLeaBasicInfo)) {
 					spLeaBasicInfo.stream().forEach(s ->{
 						Specialleave20informationDto dto = Specialleave20informationDto.createFromDomain(s);

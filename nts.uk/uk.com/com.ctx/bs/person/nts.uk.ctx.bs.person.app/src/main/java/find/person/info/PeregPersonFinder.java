@@ -94,14 +94,13 @@ public class PeregPersonFinder implements PeregFinder<PersonDto>{
 			result.add(new GridPeregDomainBySidDto(c.getEmployeeId(), c.getPersonId(), new ArrayList<>()));
 		});
 		
-		List<Person> domains = personRepository.getFullPersonByPersonIds(pids);
+		List<Object[]> domains = personRepository.getPersonsByPersonIds(pids);
 		
 		result.stream().forEach(c ->{
-			Optional<Person> domainOpt = domains.stream().filter(p -> p.getPersonId().equals(c.getPersonId())).findFirst();
-			c.setPeregDomainDto(domainOpt.isPresent() == true ? Arrays.asList(PersonDto.createFromDomain(domainOpt.get())): null);
-			
+			Optional<Object[]> domainOpt = domains.stream().filter(p -> p[0].toString().equals(c.getPersonId())).findFirst();
+			c.setPeregDomainDto(domainOpt.isPresent() == true ? Arrays.asList(PersonDto.createFromDomain(domainOpt.get())): new ArrayList<>());
 		});
-		
+			
 		return result;
 	}
 }
