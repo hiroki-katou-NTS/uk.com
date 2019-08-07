@@ -36,8 +36,7 @@ public class GuidanceService {
 	
 	// 操作ガイド表示条件の更新
 	public void updateGuideDispSetting(String companyId, boolean usageFlgCommon, int guideMsgAreaRow, int guideMsgMaxNum) {
-		Guidance defaultGuidance = Guidance.createFromJavaType(companyId, usageFlgCommon, guideMsgAreaRow, guideMsgMaxNum, new ArrayList<>());
-		guidanceRepo.updateGuidance(defaultGuidance);
+		guidanceRepo.updateGuidance(companyId, usageFlgCommon, guideMsgAreaRow, guideMsgMaxNum);
 	}
 	
 	// 操作ガイドメッセージの取得

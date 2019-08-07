@@ -11,25 +11,27 @@ module nts.uk.hr.view.jmm017.b.viewmodel {
         categoryList: KnockoutObservableArray<any>;
         useList: KnockoutObservableArray<any>;
         
-        guideMessageList: KnockoutObservableArray<any>;
+        guideMessageList: any;
+        pageSize: number;
         
         categoryCode: KnockoutObservable<string>;
         eventName: KnockoutObservable<string>;
         programName: KnockoutObservable<string>;
         screenName: KnockoutObservable<string>;
         useSet: KnockoutObservable<string>;
-        editTem: KnockoutObservable<string>;
+        editTem: string;
         constructor() {
             let self = this;
             self.categoryList = ko.observableArray([]);
-            self.guideMessageList = ko.observableArray([]);
+            self.guideMessageList = [];
+            self.pageSize = 10;
             self.categoryCode = ko.observable("");
             self.eventName = ko.observable("");
             self.programName = ko.observable("");
             self.screenName = ko.observable("");
             self.useSet = ko.observable('1');
             self.useList = ko.observableArray([]);
-            self.editTem = ko.observable("<button data-bind='click: editMsg({ cateName: ${categoryName} })'>"+getText('JMM017_B422_23')+"</button>");
+            self.editTem = "<a href='#' onclick=\"editMsg({ id: '${guideMsgId}' })\">"+getText('JMM017_B422_23')+"</a>";
         }
         startPage(): JQueryPromise<any> {
             var self = this;
@@ -37,7 +39,7 @@ module nts.uk.hr.view.jmm017.b.viewmodel {
             self.useList([{ code: "1", name: "" }, { code: "2", name: "使用する"},{ code: "3", name: "使用しない"}]);
             new service.getGuideCategory().done(function(data: any) {
                 self.categoryList(data);
-                self.binData();
+                self.bindData();
             }).fail(function(error) {
                 error({ messageId: error.messageId });
             }).always(function() {
@@ -58,15 +60,11 @@ module nts.uk.hr.view.jmm017.b.viewmodel {
                 useSet: self.useSet()==1?null:self.useSet()==2
             }
             new service.getGuideMessageList(param).done(function(data: any) {
-                console.log(data);
-                _.forEach(data, d => {
-                    d.id = nts.uk.util.randomId();
-                });
-                
+                console.log(data);                
                 let groupByColumns = $("#grid").igGridGroupBy("groupByColumns");
                 $("#grid").igGridGroupBy("ungroupAll");
-                self.guideMessageList(data);
-//                self.binData();
+                self.guideMessageList = data;
+                self.bindData();
                 setTimeout(() => {
                     _.forEach(groupByColumns, col => {
                         $("#grid").igGridGroupBy("groupByColumn", col.key);
@@ -81,11 +79,45 @@ module nts.uk.hr.view.jmm017.b.viewmodel {
             });
         }
         
-        public editMsg(selectedMsg: any): void {
-             console.log(selectedMsg);   
+        public reloadGrid(): void {
+            block.grayout();
+            let self = this;
+            let groupByColumns = $("#grid").igGridGroupBy("groupByColumns");
+            let filters = $("#grid").data("igGridFiltering")._filteringExpressions
+            let pageIndex = $('#grid').igGridPaging("option", "currentPageIndex");
+//            self.guideMessageList[0].guideMsg = 'Thanh test';
+            self.bindData();
+            setTimeout(() => {
+                _.forEach(groupByColumns, col => {
+                    $("#grid").igGridGroupBy("groupByColumn", col.key);
+                });
+                $("#grid").igGridFiltering("filter", filters);
+                $("#grid").igGridPaging("pageIndex", pageIndex);
+            }, 1);
+            block.clear();
         }
         
-         public binData(): void {
+        public test(): void {
+            let self = this;
+            self.guideMessageList[0];
+            self.reloadGrid();
+        }
+        
+        public editMsg(msgId: string): void {
+            let self = this;
+            self.pageSize =  $('#grid').igGridPaging("option", "pageSize");
+            let index = _.findIndex(self.guideMessageList, function(o) { return o.guideMsgId == msgId; });
+            let guideMsg = _.find(self.guideMessageList, function(o) { return o.guideMsgId == msgId });
+            setShared('guideMsg', guideMsg);
+            nts.uk.ui.windows.sub.modal('/view/jmm/017/c/index.xhtml').onClosed(function(): any {
+                if (getShared('guideMsg')) {
+                    self.guideMessageList[index] = getShared('guideMsg');
+                    self.reloadGrid();
+                }
+            });
+        }
+        
+         public bindData(): void {
             let self = this;
              
             // process events of buttons and editors
@@ -99,7 +131,8 @@ module nts.uk.hr.view.jmm017.b.viewmodel {
                 });
                 return groupRows;
             }
-             $("#buttonExpandAll").igButton({
+             
+            $("#buttonExpandAll").igButton({
                 click: function (evt, args) {
                     var ds = $("#grid").data("igGrid").dataSource,
                         groupRows = getGroupRows(ds.groupByData());
@@ -126,7 +159,92 @@ module nts.uk.hr.view.jmm017.b.viewmodel {
             
             /*----------------- Instantiation -------------------------*/
             $("#grid").igGrid({
-                
+                primaryKey: 'guideMsgId',
+                columns: [
+                    {
+                        headerText: 'ID',
+                        key: 'guideMsgId',
+                        hidden: true
+                    },
+                    {
+                         headerText: '', 
+                         key: 'Edit',
+                         dataType: 'string', 
+                         width: '5%', 
+                         unbound: true, 
+                         template: self.editTem
+                     },
+                    {
+                        headerText: getText('JMM017_B422_17'), key: 'categoryName', dataType: 'string', width: '5%'
+                    },
+                    {
+                        headerText: getText('JMM017_B422_18'), key: 'eventName', dataType: 'string', width: '10%'
+                    },
+                    {
+                        headerText: getText('JMM017_B422_19'), key: 'programName', dataType: 'string', width: '15%'
+                    },
+                    {
+                        headerText: getText('JMM017_B422_20'), key: 'screenName', dataType: 'string', width: '15%'
+                    },
+                    {
+                        headerText: getText('JMM017_B422_21'), key: 'usageFlgByScreen', dataType: 'string', width: '10%'
+                    },
+                    {
+                        headerText: getText('JMM017_B422_22'), key: 'guideMsg', dataType: 'string', width: '25%'
+                    }
+                ],
+                dataSource: self.guideMessageList,
+                dataSourceType: 'json',
+                responseDataKey: 'results',
+                height: '100%',
+                width: '100%',
+                tabIndex: 14,
+                features: [
+                    {
+                        name: 'Paging', 
+                        type: 'local',
+                        pageSize: self.pageSize
+                    },
+                    {
+                        name: 'Filtering', 
+                        type: 'local',
+                        mode: 'simple'
+                    },
+                    {
+                        name: 'Sorting', 
+                        type: 'local'
+                    },
+                    {
+                        name: 'GroupBy', 
+                        groupByDialogContainment: 'window', 
+                        columnSettings: [
+                            {
+                                columnKey: 'categoryName',
+                                isGroupBy: false
+                            },
+                            {
+                                columnKey: 'programName',
+                                isGroupBy: false
+                            }
+                        ]
+                    },
+                    {
+                        name: 'Hiding' 
+                    },
+                    {
+                        name: 'Resizing' 
+                    },
+                    {
+                        name: 'Updating',
+                        editMode: 'none',
+                        enableAddRow: false,
+                        enableDeleteRow: false
+                    },
+                    {
+                        name: 'ColumnMoving', 
+                        columnMovingDialogContainment: 'window'
+                    }
+                ]
             });
         }
     }
@@ -138,5 +256,10 @@ module nts.uk.hr.view.jmm017.b.viewmodel {
             this.name = name;
         }
     }
+}
+
+function editMsg(param) {
+    console.log(param.id);
+    nts.uk.ui._viewModel.content.tab2ViewModel().editMsg(param.id);
 }
 

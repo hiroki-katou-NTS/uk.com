@@ -11,6 +11,8 @@ import nts.arc.layer.dom.AggregateRoot;
 @Getter
 public class GuideMsg extends AggregateRoot{
 
+	private String guideMsgId;
+	
 	/**カテゴリCD*/
 	private String categoryCode;
 	
@@ -44,8 +46,9 @@ public class GuideMsg extends AggregateRoot{
 	/**画面URL*/
 	private Optional<String> screenPath;
 	
-	public static GuideMsg createFromJavaType(String categoryCode, String categoryName, String eventCode, String eventName, String programId, String programName, String screenId, String screenName, boolean usageFlgByScreen, String guideMsg, String screenPath) {
+	public static GuideMsg createFromJavaType(String guideMsgId, String categoryCode, String categoryName, String eventCode, String eventName, String programId, String programName, String screenId, String screenName, boolean usageFlgByScreen, String guideMsg, String screenPath) {
 		return new GuideMsg(
+				guideMsgId,
 				categoryCode, 
 				categoryName, 
 				eventCode, 

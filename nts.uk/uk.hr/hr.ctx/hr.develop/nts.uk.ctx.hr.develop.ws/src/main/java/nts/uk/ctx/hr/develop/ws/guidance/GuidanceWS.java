@@ -8,7 +8,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import nts.uk.ctx.hr.develop.app.guidance.command.SaveGuidanceCommandHandler;
+import nts.uk.ctx.hr.develop.app.guidance.command.UpdateGuidanceCommandHandler;
 import nts.uk.ctx.hr.develop.app.guidance.dto.CategoryGuideDto;
 import nts.uk.ctx.hr.develop.app.guidance.dto.GuidanceDto;
 import nts.uk.ctx.hr.develop.app.guidance.dto.GuideMsgDto;
@@ -24,7 +24,7 @@ public class GuidanceWS {
 	private GuidanceFinder finder;
 	
 	@Inject
-	private SaveGuidanceCommandHandler commandGuidance;
+	private UpdateGuidanceCommandHandler commandGuidance;
 	
 	@POST
 	@Path("/getGuidance")
@@ -50,4 +50,12 @@ public class GuidanceWS {
 	public List<GuideMsgDto> getGuideMessageList(ParamFindScreen param){
 		return finder.getGuideMsg(param);
 	}
+	
+	@POST
+	@Path("/updateGuideMsg")
+	public void updateGuideMsg(GuideMsgDto command){
+		commandGuidance.updateGuideMsg(command);
+	}
+	
+	
 }

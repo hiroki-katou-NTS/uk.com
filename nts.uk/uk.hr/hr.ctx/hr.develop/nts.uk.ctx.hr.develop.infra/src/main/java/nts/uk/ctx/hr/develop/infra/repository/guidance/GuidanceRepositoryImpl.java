@@ -28,8 +28,14 @@ public class GuidanceRepositoryImpl extends JpaRepository implements GuidanceRep
 	}
 
 	@Override
-	public void updateGuidance(Guidance domain) {
-		this.commandProxy().update(new JogmtGuideDispSetting(domain));
+	public void updateGuidance(String companyId, boolean usageFlgCommon, int guideMsgAreaRow, int guideMsgMaxNum) {
+		Optional<JogmtGuideDispSetting> entity = this.queryProxy().find(companyId, JogmtGuideDispSetting.class);
+		if(entity.isPresent()) {
+			entity.get().usageFlgCommon = usageFlgCommon?1:0;
+			entity.get().guideMsgAreaRow = guideMsgAreaRow;
+			entity.get().guideMsgMaxNum = guideMsgMaxNum;
+			this.commandProxy().update(entity.get());
+		}
 	}
 
 }

@@ -8,5 +8,5 @@ public interface GuidanceRepository {
 	
 	void addGuidance(Guidance domain);
 	
-	void updateGuidance(Guidance domain);
+	void updateGuidance(String companyId, boolean usageFlgCommon, int guideMsgAreaRow, int guideMsgMaxNum);
 }

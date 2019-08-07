@@ -74,6 +74,7 @@ public class JogmtGuideMsg extends UkJpaEntity implements Serializable {
 
 	public GuideMsg toDomain() {
 		return GuideMsg.createFromJavaType(
+				this.guideMsgId,
 				this.categoryCode, 
 				this.categoryName, 
 				this.eventCode, 

@@ -8,6 +8,8 @@ import nts.uk.ctx.hr.develop.dom.guidance.GuideMsg;
 @AllArgsConstructor
 public class GuideMsgDto {
 
+	public String guideMsgId;
+	
 	public String categoryCode;
 	
 	public String categoryName;
@@ -32,6 +34,7 @@ public class GuideMsgDto {
 	
 	public GuideMsgDto(GuideMsg guideMsg) {
 		super();
+		this.guideMsgId = guideMsg.getGuideMsgId();
 		this.categoryCode = guideMsg.getCategoryCode();
 		this.categoryName = guideMsg.getCategoryName();
 		this.eventCode = guideMsg.getEventCode();
@@ -47,6 +50,7 @@ public class GuideMsgDto {
 	
 	public GuideMsg toDomain() {
 		return GuideMsg.createFromJavaType(
+				this.guideMsgId,
 				this.categoryCode, 
 				this.categoryName, 
 				this.eventCode, 
