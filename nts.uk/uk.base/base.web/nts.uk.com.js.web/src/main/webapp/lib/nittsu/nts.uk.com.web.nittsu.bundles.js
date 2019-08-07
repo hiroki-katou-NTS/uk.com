@@ -25392,6 +25392,11 @@ var nts;
                             tr.addXEventListener(ssk.MOUSE_OUT, function (evt) {
                                 self.hoover(evt, true);
                             });
+                            if (_.keys(v_1._voilerRows).length > 0
+                                && _.includes(v_1._voilerRows[Math.floor(rowIdx / (aho._bloc * 2 - 1))], rowIdx)) {
+                                fixedTr.style.display = "none";
+                                tr.style.display = "none";
+                            }
                             var ret = { fixedRow: fixedTr, row: tr, fixedElements: fixedElements, elements: elements };
                             if (rowIdx === 0) {
                                 ret.fixedColIdxes = fixedColIdxes;
@@ -25832,28 +25837,43 @@ var nts;
                     }
                     v_1.createWrapper = createWrapper;
                     function voilerRow(idx) {
-                        if (_.isNil(idx) || idx > _end || idx < _start)
+                        if (_.isNil(idx))
                             return;
                         var nama = Math.floor(idx / (aho._bloc * 2 - 1));
                         if (!v_1._voilerRows[nama])
                             v_1._voilerRows[nama] = [];
                         v_1._voilerRows[nama].push(idx);
-                        idx -= _start;
-                        _.forEach(_bodyWrappers, function (b) {
-                            var r = b.querySelector("tr:nth-of-type(" + (idx + 2) + ")");
-                            if (r)
-                                r.style.display = "none";
-                            //                let last = b.querySelector("tr:last-child");
-                            //                if (last) last.style.height = parseFloat(last.style.height) - BODY_ROW_HEIGHT + "px";
-                        });
-                        _.forEach(_.keys(_mafollicle[SheetDef]), function (k) {
-                            var maf = _mafollicle[_currentPage][k];
-                            if (k === _currentSheet || !maf || !maf.$bBody)
-                                return;
-                            var r = maf.$bBody.querySelector("tr:nth-of-type(" + (idx + 2) + ")");
-                            if (r)
-                                r.style.display = "none";
-                        });
+                        if (idx <= _end && idx >= _start) {
+                            idx -= _start;
+                            _.forEach(_bodyWrappers, function (b) {
+                                var r = b.querySelector("tr:nth-of-type(" + (idx + 2) + ")");
+                                if (r)
+                                    r.style.display = "none";
+                                //                let last = b.querySelector("tr:last-child");
+                                //                if (last) last.style.height = parseFloat(last.style.height) - BODY_ROW_HEIGHT + "px";
+                            });
+                            _.forEach(_.keys(_mafollicle[SheetDef]), function (k) {
+                                var maf = _mafollicle[_currentPage][k];
+                                if (k === _currentSheet || !maf || !maf.$bBody)
+                                    return;
+                                var r = maf.$bBody.querySelector("tr:nth-of-type(" + (idx + 2) + ")");
+                                if (r)
+                                    r.style.display = "none";
+                            });
+                        }
+                        else {
+                            _.forEach(_.keys(_mafollicle[SheetDef]), function (k) {
+                                var maf = _mafollicle[_currentPage][k];
+                                if (!maf || !maf.desc)
+                                    return;
+                                var r = maf.desc.rowElements[idx];
+                                if (r)
+                                    r.style.display = "none";
+                                var fr = maf.desc.fixedRowElements[idx];
+                                if (fr)
+                                    fr.style.display = "none";
+                            });
+                        }
                     }
                     v_1.voilerRow = voilerRow;
                     function encarterRow(idx, copy, cssClass, numText) {
@@ -28036,6 +28056,9 @@ var nts;
                                 }
                                 _cloud.painter.painters[!_hasFixed || !ufx ? 0 : 1].unbubColumn(col, i);
                             }
+                        },
+                        hideRow: function (idx) {
+                            v.voilerRow(idx);
                         },
                         updateCell: function (id, key, val, reset, ackDis, ls) {
                             var idx = _.findIndex(_dataSource, function (r) { return r[_pk] === id; });
@@ -31298,14 +31321,18 @@ var nts;
                             var list = $dd.querySelector(".mcombo-list");
                             var items = list.querySelectorAll("li");
                             if (items) {
-                                var top_1 = 0;
+                                var top_1 = 0, selected_5;
                                 _.forEach(items, function (li) {
-                                    if (li.classList.contains("selecteditem"))
+                                    if (li.classList.contains("selecteditem")) {
+                                        selected_5 = true;
                                         return false;
+                                    }
                                     top_1 += 26;
                                 });
-                                if (top_1 >= 0)
+                                if (top_1 >= 0 && selected_5)
                                     list.scrollTop = top_1;
+                                else
+                                    list.scrollTop = 0;
                             }
                         }
                         if (!f) {
@@ -31816,8 +31843,13 @@ var nts;
                         if (data.controlDef.source === "hidden-button") {
                             clickHandle = function (evt) {
                                 var r = ti.closest($span, "tr");
-                                if (r)
-                                    v.voilerRow(parseFloat($.data(r, lo.VIEW)));
+                                if (r) {
+                                    var view = parseFloat($.data(r, lo.VIEW));
+                                    v.voilerRow(view);
+                                    if (_.isFunction(data.controlDef.click)) {
+                                        data.controlDef.click(view);
+                                    }
+                                }
                             };
                         }
                         else if (_.includes(data.controlDef.source, "plus-button")) {
@@ -35343,11 +35375,11 @@ var nts;
                         };
                         $grid.bind('selectionchanged', function () {
                             if (options.multiple) {
-                                var selected_5 = $grid.ntsGridList('getSelected');
+                                var selected_6 = $grid.ntsGridList('getSelected');
                                 var disables_2 = $grid.data("selectionDisables");
                                 var disableIds_2 = [];
                                 if (disables_2) {
-                                    _.forEach(selected_5, function (s, i) {
+                                    _.forEach(selected_6, function (s, i) {
                                         _.forEach(disables_2, function (d) {
                                             if (d === s.id && uk.util.isNullOrUndefined(_.find(value, function (iv) { return iv === d; }))) {
                                                 $grid.igGridSelection("deselectRowById", d);
@@ -35357,16 +35389,16 @@ var nts;
                                         });
                                     });
                                     disableIds_2.sort(function (i1, i2) { return i2 - i1; }).forEach(function (d) {
-                                        selected_5.splice(d, 1);
+                                        selected_6.splice(d, 1);
                                     });
                                     var valueCount = _.intersection(disables_2, value).length;
                                     var ds = $grid.igGrid("option", "dataSource");
-                                    if (selected_5.length === ds.length - disables_2.length + valueCount) {
+                                    if (selected_6.length === ds.length - disables_2.length + valueCount) {
                                         checkAll();
                                     }
                                 }
-                                if (!nts.uk.util.isNullOrEmpty(selected_5)) {
-                                    var newValue = _.map(selected_5, function (s) { return s.id; });
+                                if (!nts.uk.util.isNullOrEmpty(selected_6)) {
+                                    var newValue = _.map(selected_6, function (s) { return s.id; });
                                     newValue = _.union(_.intersection(disables_2, value), newValue);
                                     setValue($grid, newValue);
                                 }

@@ -111,6 +111,7 @@ module cps003.a.vm {
         };
 
         hiddenRows = [];
+        hiddenEmpIds = [];
         // for employee info.
         employees: KnockoutObservableArray<IEmployee> = ko.observableArray([]);
         hasError: KnockoutObservable<boolean> = ko.observable(false);
@@ -383,7 +384,7 @@ module cps003.a.vm {
                         return;
                     }
                     
-                    if (_.find(errObj[item.rowId], it => it === item.columnKey)) return;
+                    if (errObj[item.rowId]) return;
                     let recData: Record = recId[item.rowId];
                     let regEmp = regId[recData.id];
                     updateDone.push(item);
@@ -408,10 +409,10 @@ module cps003.a.vm {
                     }
                 });
                 
-                if (employees.length === 0) {
-                    unblock();
-                    return;
-                }
+//                if (employees.length === 0) {
+//                    unblock();
+//                    return;
+//                }
                 
                 employees = _.filter(employees, e => {
                     return _.find(regChecked, r => r === e.rowId);
@@ -824,13 +825,23 @@ module cps003.a.vm {
                     self.baseDate(data.baseDate);
                 }
                 
-//                if (employeeSelect) {
+                if (employeeSelect) {
                     self.hiddenRows = [];
-//                }
+                    self.hiddenEmpIds = [];
+                }
                 
                 self.convertData(data, settingData).done(() => {
                     self.loadGrid();
                     self.initDs = _.cloneDeep(self.gridOptions.dataSource);
+                    if (self.hiddenEmpIds.length > 0) {
+                        let $grid = $("#grid");
+                        forEach(self.initDs, (obj, i) => {
+                            if (find(self.hiddenEmpIds, empId => obj.employeeId === empId)) {
+                                $grid.mGrid("hideRow", i);
+                            }
+                        });
+                    }
+                    
                     self.settings.matrixDisplay.valueHasMutated();
                     self.disableCS00035();
                     unblock();
@@ -928,7 +939,9 @@ module cps003.a.vm {
                         if (_.isNil(idx)) return;
                         let ds = $("#grid").mGrid("dataSource");
                         if (_.isNil(ds[idx])) return;
-                        self.hiddenRows.push(ds[idx].id);
+                        let obj = ds[idx];
+                        self.hiddenRows.push(obj.id);
+                        self.hiddenEmpIds.push(obj.employeeId);
                     }},
                     { name: "RowAdd", source: "plus-button", cssClass: "blue-color", controlType: "Image", copy: 2 }];
                 let headerStyles = { name: "HeaderStyles", columns: [] },

@@ -856,7 +856,7 @@ module cps003.c.vm {
                         return;
                     }
                     
-                    if (_.find(errObj[item.rowId], it => it === item.columnKey)) return;
+                    if (errObj[item.rowId]) return;
                     let recData: Record = recId[item.rowId];
                     let regEmp = regId[recData.id];
                     updateDone.push(item);
@@ -927,7 +927,7 @@ module cps003.c.vm {
                     return _.find(regChecked, r => r === d.rowId);
                 });
                 
-                command = { baseDate: self.baseDate(), editMode: self.updateMode(), employees: employees };
+                command = { baseDate:  moment.utc(self.baseDate(), "YYYY/MM/DD").toISOString(), editMode: self.updateMode(), employees: employees };
                 service.push.register(command).done((errorList) => {
                     let regEmployeeIds = [];
                     if (dataToG && dataToG.length > 0) {
