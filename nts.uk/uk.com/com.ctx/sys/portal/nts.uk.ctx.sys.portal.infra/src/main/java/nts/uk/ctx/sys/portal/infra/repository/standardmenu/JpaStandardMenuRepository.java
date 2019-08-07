@@ -49,6 +49,10 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 	private static final String GET_PG_BYQRY = "SELECT a FROM CcgstStandardMenu a WHERE a.ccgmtStandardMenuPK.companyId = :companyId"
 			+ " AND a.programId = :programId AND a.screenID = :screenId"
 			+ " AND a.queryString = :queryString";
+	private static final String GET_BY_CID_CD = "SELECT c FROM CcgstStandardMenu c WHERE c.ccgmtStandardMenuPK.companyId = :companyId "
+			+ " AND c.ccgmtStandardMenuPK.system = 1"
+			+ " AND c.ccgmtStandardMenuPK.classification = 9"
+			+ " AND c.ccgmtStandardMenuPK.code IN :code";
 
 	public CcgstStandardMenu insertToEntity(StandardMenu domain) {
 		 CcgstStandardMenuPK ccgstStandardMenuPK = new CcgstStandardMenuPK(domain.getCompanyId(), domain.getCode().v(), domain.getSystem().value, domain.getClassification().value);
@@ -343,5 +347,12 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 		.setParameter("system",  system)
 		.setParameter("classification",  classification)
 		.getSingle().orElse(0);
+	}
+
+	@Override
+	public List<StandardMenu> findByCIDMobileCode(String companyID, List<String> codeLst) {
+		return this.queryProxy().query(GET_BY_CID_CD, CcgstStandardMenu.class)
+				.setParameter("companyId", companyID)
+				.setParameter("code", codeLst).getList(m -> toDomain(m));
 	}
 }

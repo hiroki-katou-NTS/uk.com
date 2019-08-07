@@ -155,4 +155,6 @@ public interface StandardMenuRepository {
 	
 	
 	Optional<StandardMenu> getPgName(String companyId, String programId, String screenId, String queryString);
+	
+	List<StandardMenu> findByCIDMobileCode(String companyID, List<String> codeLst);
 }
