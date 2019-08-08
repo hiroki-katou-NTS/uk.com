@@ -114,14 +114,14 @@
         &.type {
           &-info {
             .modal-content {
-              border: 1px solid darken($color: $info, $amount: 25%);
+              border: 1px solid darken($color: $info, $amount: 25%) !important;
 
               .modal {
                 &-header {
                   color: #fff;
                   border-radius: 0;
-                  background-color: darken($color: $info, $amount: 15%);
-                  border-bottom-color: darken($color: $info, $amount: 25%);
+                  background-color: darken($color: $info, $amount: 15%) !important;
+                  border-bottom-color: darken($color: $info, $amount: 25%) !important;
 
                   .modal-title {
                     & > span {
@@ -140,14 +140,14 @@
 
           &-warn {
             .modal-content {
-              border: 1px solid darken($color: $warning, $amount: 25%);
+              border: 1px solid darken($color: $warning, $amount: 25%) !important;
 
               .modal {
                 &-header {
                   color: #fff;
                   border-radius: 0;
-                  background-color: darken($color: $warning, $amount: 15%);
-                  border-bottom-color: darken($color: $warning, $amount: 25%);
+                  background-color: darken($color: $warning, $amount: 15%) !important;
+                  border-bottom-color: darken($color: $warning, $amount: 25%) !important;
 
                   .modal-title {
                     & > span {
@@ -166,14 +166,14 @@
 
           &-error {
             .modal-content {
-              border: 1px solid darken($color: $danger, $amount: 25%);
+              border: 1px solid darken($color: $danger, $amount: 25%) !important;
 
               .modal {
                 &-header {
                   color: #fff;
                   border-radius: 0;
-                  background-color: darken($color: $danger, $amount: 15%);
-                  border-bottom-color: darken($color: $danger, $amount: 25%);
+                  background-color: darken($color: $danger, $amount: 15%) !important;
+                  border-bottom-color: darken($color: $danger, $amount: 25%) !important;
 
                   .modal-title {
                     & > span {
@@ -192,14 +192,14 @@
 
           &-confirm {
             .modal-content {
-              border: 1px solid darken($color: $primary, $amount: 25%);
+              border: 1px solid darken($color: $primary, $amount: 25%) !important;
 
               .modal {
                 &-header {
                   color: #fff;
                   border-radius: 0;
-                  background-color: darken($color: $primary, $amount: 15%);
-                  border-bottom-color: darken($color: $primary, $amount: 25%);
+                  background-color: darken($color: $primary, $amount: 15%) !important;
+                  border-bottom-color: darken($color: $primary, $amount: 25%) !important;
 
                   .modal-title {
                     & > span {
