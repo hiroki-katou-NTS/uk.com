@@ -207,17 +207,10 @@ module nts.uk.at.view.cps013.e {
 					for (let i = 0; i < data_employeeCode.length; i++) {
 						list_employeeCode.push(data_employeeCode[i].valueAsString);										
 					}
-					const seen = Object.create(null);
-					list_employeeCode.forEach(emp => {
-					  seen[emp] = true;
-					});
-					const uniqueEmployeeCode = Object.keys(seen);
-					console.log(uniqueEmployeeCode);
-					self.numberEmpChecked(uniqueEmployeeCode.length);
-				}
-				
-				
-				
+					
+					let list_employeeCodeUnique = _.uniq(list_employeeCode);										
+					self.numberEmpChecked(list_employeeCodeUnique.length);
+				}											
                
                 for (let i = 0; i < data_employeeId.length; i++) {
 
