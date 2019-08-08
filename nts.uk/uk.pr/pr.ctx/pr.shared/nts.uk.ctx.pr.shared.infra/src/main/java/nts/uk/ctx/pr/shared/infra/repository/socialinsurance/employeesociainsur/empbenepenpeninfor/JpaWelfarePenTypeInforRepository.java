@@ -27,8 +27,8 @@ public class JpaWelfarePenTypeInforRepository extends JpaRepository implements W
     @Override
     public Optional<WelfarePenTypeInfor> getWelfarePenTypeInforById(String historyId){
         return this.queryProxy().query(SELECT_BY_KEY_STRING, QqbmtWelfPenTypeInfor.class)
-        .setParameter("historyId", historyId)
-        .getSingle(c->c.toDomain());
+                .setParameter("historyId", historyId)
+                .getSingle(c->c.toDomain());
     }
 
     @Override

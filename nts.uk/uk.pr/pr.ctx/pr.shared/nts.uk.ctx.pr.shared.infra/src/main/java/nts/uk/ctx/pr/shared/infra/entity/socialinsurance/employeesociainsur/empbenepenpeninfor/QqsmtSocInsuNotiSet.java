@@ -2,7 +2,7 @@ package nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.emp
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.WelfarePenTypeInfor;
+import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.SocialInsurNotiCreateSet;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
@@ -102,10 +102,10 @@ public class QqsmtSocInsuNotiSet extends UkJpaEntity implements Serializable
         return socInsuNotiSetPk;
     }
 
-    public WelfarePenTypeInfor toDomain() {
+    public SocialInsurNotiCreateSet toDomain() {
        return null;
     }
-    public static QqsmtSocInsuNotiSet toEntity(WelfarePenTypeInfor domain) {
+    public static QqsmtSocInsuNotiSet toEntity(SocialInsurNotiCreateSet domain) {
        return null;
     }
 
