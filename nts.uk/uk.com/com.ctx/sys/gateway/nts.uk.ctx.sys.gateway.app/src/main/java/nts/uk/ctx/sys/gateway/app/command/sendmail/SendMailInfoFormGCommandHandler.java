@@ -21,11 +21,12 @@ import nts.uk.ctx.sys.gateway.app.service.login.LoginService;
 @Transactional
 public class SendMailInfoFormGCommandHandler
 		extends CommandHandlerWithResult<SendMailInfoFormGCommand, List<SendMailReturnDto>> {
-
-	private LoginService sendMailService;
 	
 	/**
 	 * パスワード再設定メール送信（形式２、形式３）
+	/** The user adapter. */
+	@Inject
+	private LoginService sendMailService;
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -40,6 +41,7 @@ public class SendMailInfoFormGCommandHandler
 
 		String companyId = sendMailService.comanyId(command.getContractCode(), command.getCompanyCode());
 		
+
 		return sendMailService.sendMail(companyId, command.getEmployeeCode(), command.getContractCode());
 	}
 }

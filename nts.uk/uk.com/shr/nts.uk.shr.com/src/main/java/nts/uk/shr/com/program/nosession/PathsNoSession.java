@@ -24,7 +24,8 @@ public class PathsNoSession implements PathsToCheckCsrf {
 			"/ctx/sys/gateway/sendmail/.*",
 			"/ctx/sys/gateway/changepassword/.*",
 			"/ctx/sys/gateway/url/.*",
-			"/validate/constraints/.*"
+			"/validate/constraints/.*",
+			"/enums/map"
 			);
 
 	public static PathsNoSession WEB_SCREENS = PathsNoSession.define(
