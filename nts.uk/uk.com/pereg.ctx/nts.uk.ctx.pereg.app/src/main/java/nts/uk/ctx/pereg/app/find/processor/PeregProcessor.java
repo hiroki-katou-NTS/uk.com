@@ -871,7 +871,7 @@ public class PeregProcessor {
 									.map(i -> i.genToPeregDto()).collect(Collectors.toList());
 							Optional<PeregEmpInfoQuery> empInfoQueryOpt = query.getEmpInfos().stream()
 									.filter(emp -> emp.getEmployeeId().equals(c.getKey())).findFirst();
-							if (CollectionUtil.isEmpty(optionalItemDataDto) && empInfoQueryOpt.isPresent()) {
+							if (!CollectionUtil.isEmpty(optionalItemDataDto) && empInfoQueryOpt.isPresent()) {
 								GridLayoutPersonInfoClsDto dto = new GridLayoutPersonInfoClsDto(
 										empInfoQueryOpt.get().getEmployeeId(), empInfoQueryOpt.get().getPersonId(),
 										empInfoQueryOpt.get().getEmployeeId().equals(selfEmployeeId)
