@@ -7,6 +7,7 @@ package nts.uk.ctx.sys.gateway.app.command.sendmail;
 import java.util.List;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandlerContext;
