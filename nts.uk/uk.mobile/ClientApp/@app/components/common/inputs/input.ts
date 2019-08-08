@@ -82,7 +82,9 @@ export class InputComponent extends Vue {
     public click() { }
 
     public type: string = '';
-    public rows: number | string | null = null;
+
+    @Prop({ default: () => null })
+    public readonly rows!: number | string | null;
 
     public editable: boolean = true;
 
