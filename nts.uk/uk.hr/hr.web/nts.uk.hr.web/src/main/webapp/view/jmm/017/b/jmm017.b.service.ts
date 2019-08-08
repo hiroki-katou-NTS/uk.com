@@ -3,11 +3,16 @@ module nts.uk.hr.view.jmm017.b {
     import format = nts.uk.text.format;
     export module service {
         var paths: any = {
-            getCareerList: "careermgmt/careerpath/getCareerList",
+            getGuideCategory: "guidance/getGuideCategory",
+            getGuideMessageList: "guidance/getGuideMessageList",
         }
 
-         export function getCareerList(param: any): JQueryPromise<any> {
-            return nts.uk.request.ajax(paths.getCareerList, param);
+        export function getGuideCategory(): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.getGuideCategory);
+        }
+        
+        export function getGuideMessageList(param: any): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.getGuideMessageList, param);
         }
     }
 }

@@ -1,18 +1,15 @@
 package nts.uk.ctx.hr.develop.app.guidance.dto;
 
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.uk.ctx.hr.develop.dom.careermgmt.careerpath.Career;
-import nts.uk.ctx.hr.develop.dom.guidance.Guidance;
 import nts.uk.ctx.hr.develop.dom.guidance.GuideMsg;
 
 @Data
 @AllArgsConstructor
 public class GuideMsgDto {
 
+	public String guideMsgId;
+	
 	public String categoryCode;
 	
 	public String categoryName;
@@ -29,7 +26,7 @@ public class GuideMsgDto {
 	
 	public String screenName;
 	
-	public Boolean usageFlgByScreen;
+	public String usageFlgByScreen;
 	
 	public String guideMsg;
 	
@@ -37,6 +34,7 @@ public class GuideMsgDto {
 	
 	public GuideMsgDto(GuideMsg guideMsg) {
 		super();
+		this.guideMsgId = guideMsg.getGuideMsgId();
 		this.categoryCode = guideMsg.getCategoryCode();
 		this.categoryName = guideMsg.getCategoryName();
 		this.eventCode = guideMsg.getEventCode();
@@ -45,13 +43,14 @@ public class GuideMsgDto {
 		this.programName = guideMsg.getProgramName();
 		this.screenId = guideMsg.getScreenId();
 		this.screenName = guideMsg.getScreenName();
-		this.usageFlgByScreen = guideMsg.isUsageFlgByScreen();
+		this.usageFlgByScreen = guideMsg.isUsageFlgByScreen()?"使用する":"使用しない";
 		this.guideMsg = guideMsg.getGuideMsg().v();
 		this.screenPath = guideMsg.getScreenPath().orElse("");
 	}
 	
 	public GuideMsg toDomain() {
 		return GuideMsg.createFromJavaType(
+				this.guideMsgId,
 				this.categoryCode, 
 				this.categoryName, 
 				this.eventCode, 
@@ -60,7 +59,7 @@ public class GuideMsgDto {
 				this.programName, 
 				this.screenId, 
 				this.screenName,
-				this.usageFlgByScreen, 
+				this.usageFlgByScreen.equals("使用する"), 
 				this.guideMsg, 
 				this.screenPath
 				);

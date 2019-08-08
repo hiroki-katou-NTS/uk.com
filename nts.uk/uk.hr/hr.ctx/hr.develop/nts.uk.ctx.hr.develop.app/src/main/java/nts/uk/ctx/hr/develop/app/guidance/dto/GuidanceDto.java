@@ -1,13 +1,10 @@
 package nts.uk.ctx.hr.develop.app.guidance.dto;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.uk.ctx.hr.develop.app.careermgmt.careerpath.dto.CareerRequirementDto;
-import nts.uk.ctx.hr.develop.dom.careermgmt.careerpath.Career;
 import nts.uk.ctx.hr.develop.dom.guidance.Guidance;
 
 @Data

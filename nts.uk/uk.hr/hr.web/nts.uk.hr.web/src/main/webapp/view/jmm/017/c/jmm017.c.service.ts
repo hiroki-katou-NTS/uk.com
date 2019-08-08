@@ -1,14 +1,12 @@
 module nts.uk.com.view.jmm017.c.service {
     var paths: any = {
-        searchUser: "ctx/sys/auth/user/findByKey",
+        updateGuideMsg: "guidance/updateGuideMsg",
+        getGuidance: "guidance/getGuidance"
     }
-    export function searchUser(key: string, Special: boolean, Multi: boolean, roleType: number): JQueryPromise<any> {
-        var userKeyDto = {
-            key: key,
-            Special: Special,
-            Multi: Multi,
-            roleType: roleType
-        };
-        return nts.uk.request.ajax("com", paths.searchUser, userKeyDto);
+    export function updateGuideMsg(param: any): JQueryPromise<any> {
+        return nts.uk.request.ajax(paths.updateGuideMsg, param);
+    }
+    export function getGuidance(): JQueryPromise<any> {
+        return nts.uk.request.ajax(paths.getGuidance);
     }
 }

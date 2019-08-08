@@ -38,8 +38,8 @@ module nts.uk.hr.view.jmm017.a.viewmodel {
                 self.usageFlgCommon(data.usageFlgCommon);
                 self.guideMsgAreaRow(data.guideMsgAreaRow);
                 self.guideMsgMaxNum(data.guideMsgMaxNum);
-            }).fail(function(error) {
-                error({ messageId: error.messageId });
+            }).fail(function(errorInfor) {
+                error({ messageId: errorInfor.messageId });
             }).always(function() {
                 dfd.resolve();
             });
@@ -83,8 +83,8 @@ module nts.uk.hr.view.jmm017.a.viewmodel {
                 }
                 new service.saveGuideDispSetting(param).done(function() {
                     
-                }).fail(function(error) {
-                    error({ messageId: error.messageId });
+                }).fail(function(errorInfor) {
+                    error({ messageId: errorInfor.messageId });
                 }).always(function() {
                    block.clear();
                 });
