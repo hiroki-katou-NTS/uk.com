@@ -103,11 +103,11 @@ export class CmmS45CComponent extends Vue {
 
     public mounted() {
         this.$mask('show');
-        this.getApprovalList();
+        this.initData();
     }
 
     // get approver list data
-    public getApprovalList() {
+    public initData() {
         this.selected = 0;
         this.$http.post('at', API.getDetailApplicantMob, this.currentApp)
         .then((resApp: any) => {
@@ -143,7 +143,7 @@ export class CmmS45CComponent extends Vue {
         this.appCount++;
         this.currentApp = this.listAppMeta[this.appCount];
         this.$mask('show');
-        this.getApprovalList();
+        this.initData();
     }
 
     // back to previous application
@@ -152,7 +152,7 @@ export class CmmS45CComponent extends Vue {
         this.appCount--;
         this.currentApp = this.listAppMeta[this.appCount];
         this.$mask('show');
-        this.getApprovalList();
+        this.initData();
     }
 
     // check first application

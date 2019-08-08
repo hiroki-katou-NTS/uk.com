@@ -149,7 +149,7 @@
             v-if="$app.displayAppReasonContentFlg || $app.typicalReasonDisplayFlg">{{'CMMS45_34' | i18n}}</div>
         <div class="row pl-2 pt-1 pb-1 border-top uk-border-light-gray"
             v-if="$app.displayAppReasonContentFlg || $app.typicalReasonDisplayFlg">{{ $app.appReason }}</div>
-        <div class="row pl-2 pt-1 pb-1 uk-bg-headline border-top uk-border-light-gray"
+        <div class="row pl-1 pt-1 pb-1 uk-bg-headline border-top uk-border-light-gray"
             v-if="$app.prePostAtr==1 && $app.displayDivergenceReasonForm && $app.displayDivergenceReasonInput">
             {{'CMMS45_35' | i18n}}
         </div>
