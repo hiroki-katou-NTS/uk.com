@@ -4,6 +4,7 @@ import { ApprovedComponent } from '@app/components';
 import { IApprovalPhase, IApprovalFrame, IApplication } from 'views/cmm/s45/common/index.d';
 import { Phase } from 'views/cmm/s45/common/index';
 import { IOvertime } from 'views/cmm/s45/components/app1';
+import { CmmS45EComponent } from 'views/cmm/s45/e';
 
 import {
     CmmS45ComponentsApp1Component,
@@ -28,7 +29,8 @@ import {
         'app2': CmmS45ComponentsApp2Component,
         'app3': CmmS45ComponentsApp3Component,
         'app4': CmmS45ComponentsApp4Component,
-        'app5': CmmS45ComponentsApp5Component
+        'app5': CmmS45ComponentsApp5Component,
+        'cmms45e': CmmS45EComponent
     }
 })
 export class CmmS45DComponent extends Vue {
@@ -101,11 +103,11 @@ export class CmmS45DComponent extends Vue {
 
     public mounted() {
         this.$mask('show');
-        this.getApprovalList();
+        this.initData();
     }
 
     // get approver list data
-    public getApprovalList() {
+    public initData() {
         this.selected = 0;
         this.$http.post('at', API.getDetailApplicantMob, this.currentApp)
         .then((resApp: any) => {
@@ -141,7 +143,7 @@ export class CmmS45DComponent extends Vue {
         this.appCount++;
         this.currentApp = this.listAppMeta[this.appCount];
         this.$mask('show');
-        this.getApprovalList();
+        this.initData();
     }
 
     // back to previous application
@@ -150,7 +152,7 @@ export class CmmS45DComponent extends Vue {
         this.appCount--;
         this.currentApp = this.listAppMeta[this.appCount];
         this.$mask('show');
-        this.getApprovalList();
+        this.initData();
     }
 
     // check first application
@@ -193,6 +195,12 @@ export class CmmS45DComponent extends Vue {
 
     public checkFloatBtn(): void {
         console.log('aa');
+    }
+
+    public returnApp(): void {
+        let self = this;
+        self.$modal('cmms45e', { 'lstAppId': [self.currentApp], 'version': self.appState.version }).then((res: any) => {
+        });
     }
 }
 

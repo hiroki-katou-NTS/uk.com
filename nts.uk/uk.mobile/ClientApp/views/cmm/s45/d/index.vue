@@ -97,47 +97,51 @@
         </div>
       </div> 
     </div>
-    <!--asdashdk-->
-    <app1 v-if="true" v-bind:params="{appOvertime: appOvertime}" />
-    <app2 v-if="false" />
-    <app3 v-if="false" />
     <div>
-      <div>
-        <div class="row mt-n5">
-          <div class="col-12">
-            <div class="row p-1 release-lock mt-n4" v-if="!releaseFlg">
-              <div class="col-2"></div>
-              <div class="col-8">
-                <div class="text-center release" v-on:click="changeRelease">
-                  <i class="fas fa-unlock-alt fa-3x"></i> 
-                  <div>{{'CMMS45_63' | i18n}}</div>
-                </div>
-              </div>
-              <div class="col-2"></div>
-            </div>
-            <div class="row p-1 release-open mt-n4" v-if="releaseFlg"> 
-              <div class="col-5 pr-2">
-                <div class="text-center approve" v-on:click="changeRelease">
-                  <i class="fas fa-user-check fa-3x"></i>
-                  <div>{{'CMMS45_64' | i18n}}</div>
-                </div>  
-              </div>
-              <div class="col-3 pl-1 pr-1">
-                <div class="text-center deny" v-on:click="changeRelease">
-                  <i class="fas fa-user-times fa-3x"></i>
-                  <div>{{'CMMS45_65' | i18n}}</div>
-                </div>
-              </div>
-              <div class="col-4 pl-2">
-                <div class="text-center border border-dark">
-                  <i class="fa fa-mail-forward fa-flip-horizontal fa-3x"></i>
-                  <div>{{'CMMS45_66' | i18n}}</div>  
-                </div>
-              </div>  
+      <app1 v-if="true" v-bind:params="{appOvertime: appOvertime}" />
+      <app2 v-if="false" />
+      <app3 v-if="false" />
+    </div>
+    <div class="row pl-2 pt-1 pb-1 border-top border-bottom uk-border-light-gray">{{'CMMS45_62' | i18n}}</div>
+    <nts-text-area v-model="text" class="mt-2"/>
+    <div class="card invisible">
+      <div class="card-body">
+        Hidden Content
+      </div>
+    </div>
+    <div class="row fixed-bottom mb-1">
+      <div class="col-12">
+        <div class="row release-lock p-1" v-if="!releaseFlg">
+          <div class="col-2"></div>
+          <div class="col-8">
+            <div class="text-center release" v-on:click="changeRelease">
+              <i class="fas fa-unlock-alt fa-3x"></i> 
+              <div>{{'CMMS45_63' | i18n}}</div>
             </div>
           </div>
-        </div> 
-      </div> 
+          <div class="col-2"></div>
+        </div>
+        <div class="row release-open p-1" v-if="releaseFlg"> 
+          <div class="col-5 pr-2">
+            <div class="text-center approve" v-on:click="changeRelease">
+              <i class="fas fa-user-check fa-3x"></i>
+              <div>{{'CMMS45_64' | i18n}}</div>
+            </div>  
+          </div>
+          <div class="col-3 pl-1 pr-1">
+            <div class="text-center deny" v-on:click="changeRelease">
+              <i class="fas fa-user-times fa-3x"></i>
+              <div>{{'CMMS45_65' | i18n}}</div>
+            </div>
+          </div>
+          <div class="col-4 pl-2">
+            <div class="text-center border border-dark" v-on:click="returnApp">
+              <i class="fa fa-mail-forward fa-flip-horizontal fa-3x"></i>
+              <div>{{'CMMS45_66' | i18n}}</div>  
+            </div>
+          </div>  
+        </div>
+      </div>
     </div>
   </div>
 </template>
