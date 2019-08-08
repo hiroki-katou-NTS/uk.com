@@ -230,8 +230,6 @@ export class CmmS45CComponent extends Vue {
 }
 
 const API = {
-    approvedStatus: 'at/request/application/getAppDataByDate',
-    overtimeApp: 'at/request/application/overtime/findByAppID',
     delete: 'at/request/application/deleteapp',
     getDetailApplicantMob: 'at/request/application/getDetailApplicantMob'
 };
