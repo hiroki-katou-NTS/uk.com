@@ -1,12 +1,15 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.repository;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmployeeHistory;
+import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmployeeHistoryInter;
 import nts.uk.shr.com.history.DateHistoryItem;
 
 /**
@@ -57,4 +60,63 @@ public class BusinessTypeOfHistoryGeneralRepositoryImpl implements BusinessTypeO
 		}
 	}
 
+	/**
+	 * @author lanlt
+	 * addAll
+	 */
+	@Override
+	public void addAll(List<BusinessTypeOfEmployeeHistory> domains) {
+		Map<String, DateHistoryItem> dateHistItemMaps = new HashMap<>();
+		domains.parallelStream().forEach(c ->{
+			List<DateHistoryItem> history = c.getHistory();
+			DateHistoryItem item = history.get(history.size() - 1);
+			dateHistItemMaps.put(c.getEmployeeId(), item);
+		});
+		
+		if(!dateHistItemMaps.isEmpty()) {
+			historyRepos.addAll(dateHistItemMaps);
+		}
+		
+		
+	}
+
+	/**
+	 * @author lanlt
+	 * updateAll
+	 */
+	@Override
+	public void updateAll(List<BusinessTypeOfEmployeeHistoryInter> domainsInter) {
+		Map<String, DateHistoryItem> dateHistItemMaps = new HashMap<>();
+		domainsInter.parallelStream().forEach(c ->{
+			dateHistItemMaps.put(c.getBEmployeeHistory().getEmployeeId(), c.getItem());
+			
+		});
+		
+		if(!dateHistItemMaps.isEmpty()) {
+			historyRepos.updateAll(dateHistItemMaps);		
+		}
+		updateAllItemsBefore(domainsInter);
+	}
+	
+	/**
+	 * @author lanlt
+	 * updateAllItemsBefore
+	 * @param domainsInter
+	 */
+	public void updateAllItemsBefore(List<BusinessTypeOfEmployeeHistoryInter> domainsInter) {
+		Map<String, DateHistoryItem> dateHistItemMaps = new HashMap<>();
+		domainsInter.parallelStream().forEach(c -> {
+			Optional<DateHistoryItem> optinal = c.getBEmployeeHistory().immediatelyBefore(c.getItem());
+
+			if (optinal.isPresent()) {
+				DateHistoryItem itemToBeUpdate = optinal.get();
+				dateHistItemMaps.put(c.getBEmployeeHistory().getEmployeeId(), itemToBeUpdate);
+			}
+
+		});
+
+		if (!dateHistItemMaps.isEmpty()) {
+			historyRepos.updateAll(dateHistItemMaps);
+		}
+	}
 }
