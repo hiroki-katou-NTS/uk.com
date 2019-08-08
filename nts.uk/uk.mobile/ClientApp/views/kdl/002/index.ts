@@ -200,6 +200,7 @@ export class KDL002Component extends Vue {
                     self.$close({
                         selectedWorkType: self.selectedWorkType
                     });
+                    self.$mask('hide');
 
                     return;
                 default: addNone = false;
