@@ -275,9 +275,9 @@
   }
 }
 
-/* Small devices (landscape phones, 576px and up) */
+/* Small devices (landscape phones, 991px and up) */
 
-@media (max-width: 575px) {
+@media (max-width: 991px) {
   .modal {
     &.show {
       .modal-dialog {
