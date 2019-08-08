@@ -82,9 +82,9 @@ module nts.uk.at.view.cps013.e {
                                     self.countEmp(self.getAsyncData(info.taskDatas, "countEmp").valueAsNumber);
                                     if(self.countEmp()){
                                         self.daucach("/");
-                                    }
-                                    
-                                    self.statusCheck(self.getAsyncData(info.taskDatas, "statusCheck").valueAsString);
+                                    }    
+									
+									self.statusCheck(self.getAsyncData(info.taskDatas, "statusCheck").valueAsString);
 
                                     if (!info.pending && !info.running || info.requestedToCancel) {
                                         self.isComplete(true);
@@ -94,6 +94,10 @@ module nts.uk.at.view.cps013.e {
                                         self.endTime(moment.utc(self.startTime()).add(timeAction, 'second').format("YYYY/MM/DD HH:mm:ss"));
                                         $("#elapseTime").text(self.formatTime(timeAction));
                                         
+										if(info.requestedToCancel){
+											self.statusCheck(getText('CPS013_51'));
+										}
+																				
                                         self.bindingDataToGrid(info.taskDatas);
                                         setTimeout(() => {
                                            $("#button3001").focus();
@@ -194,6 +198,26 @@ module nts.uk.at.view.cps013.e {
                         data_categoryName.push(item);
                     }
                 });
+				
+				
+				let numberOfEmpChecked = 0;
+				if(data_employeeCode.length > 1){
+					numberOfEmpChecked = 1;
+					let list_employeeCode = []
+					for (let i = 0; i < data_employeeCode.length; i++) {
+						list_employeeCode.push(data_employeeCode[i].valueAsString);										
+					}
+					const seen = Object.create(null);
+					list_employeeCode.forEach(emp => {
+					  seen[emp] = true;
+					});
+					const uniqueEmployeeCode = Object.keys(seen);
+					console.log(uniqueEmployeeCode);
+					self.numberEmpChecked(uniqueEmployeeCode.length);
+				}
+				
+				
+				
                
                 for (let i = 0; i < data_employeeId.length; i++) {
 
