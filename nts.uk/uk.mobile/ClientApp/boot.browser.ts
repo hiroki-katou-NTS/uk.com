@@ -10,9 +10,9 @@ import { obj, browser } from '@app/utils';
 import { SideMenuBar, NavMenuBar, SideMenu } from '@app/components';
 import { resources, Language, LanguageBar, } from '@app/plugins/i18n';
 
-Vue.config.silent = true;
+// Vue.config.silent = true;
 Vue.config.devtools = true;
-Vue.config.productionTip = false;
+// Vue.config.productionTip = false;
 
 new (RootApp.extend({
     components: {

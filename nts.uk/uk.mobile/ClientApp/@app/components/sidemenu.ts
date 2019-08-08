@@ -49,10 +49,10 @@ const _SideMenu = Vue.observable({
             <h3 v-on:touchstart.prevent>
                 <router-link to="/" v-on:click="show = false">
                     <span class="d-block">{{ (empName || 'app_name') | i18n }}</span>
-                    <template v-if="warning" v-bind:key="'show_warn'">
-                        <span class="mt-1 mb-3 small d-block">{{'CCGS20_2' | i18n}}</span>
+                    <template v-if="warning">
+                        <span class="mt-1 mb-3 small d-block" v-bind:key="'show_warn'">{{'CCGS20_2' | i18n}}</span>
                     </template>
-                    <template v-else v-bind:key="'not_show_warn'"></template>
+                    <template v-else></template>
                 </router-link>
             </h3>
             <button type="button" class="navbar-btn" v-on:click="show = !show">
@@ -89,14 +89,14 @@ const _SideMenu = Vue.observable({
                     </router-link>
                 </template>
             </li>
-            <template v-if="!document" v-bind:key="'show_if_not_doc'">
-                <li>
+            <template v-if="!document">
+                <li v-bind:key="'show_if_not_doc'">
                     <a v-on:click="removeSession">
                         <span><i class="fas fa-sign-out-alt mr-2"></i>{{ 'CCGS20_3' | i18n }}</span>
                     </a>
                 </li>
             </template>
-            <template v-else v-bind:key="'hide_if_doc'"></template>
+            <template v-else></template>
         </ul>
     </nav>
     <nav v-else></nav>`,
