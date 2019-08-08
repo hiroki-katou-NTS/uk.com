@@ -24,6 +24,9 @@ const datetime = {
                     fromString(value: string, format: string) {
                         return moment(value, format || DATE_FORMAT).toDate();
                     },
+                    fromUTCString(value: string, format: string) {
+                        return moment.utc(value, format || DATE_FORMAT).toDate();
+                    },
                     timewd(value: number) {
                         return TimeWithDay.toString(value);
                     },
