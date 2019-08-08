@@ -104,10 +104,6 @@ public class PeregProcessor {
 
 	@Inject
 	private LayoutControlComBoBox layoutControlComboBox;
-	
-	@Inject
-	private EmpUserDefDataFinder empUserDefDataFinder;
-
 	/**
 	 * get person information category and it's children (Hiển thị category và
 	 * danh sách tab category con của nó)
@@ -421,7 +417,8 @@ public class PeregProcessor {
 	
 	private List<GridLayoutPersonInfoClsDto> getAndMapEmpOptionItem(List<String> recordIds, PeregQueryByListEmp query, String selfEmployeeId, HashMap<Boolean, List<PerInfoItemDefForLayoutDto>> perItems, PersonInfoCategory perInfoCtg) {
 		List<GridLayoutPersonInfoClsDto> result = new ArrayList<>();
-		Map<String, List<OptionalItemDataDto>> empOptionItemData =  empUserDefDataFinder.getDatas(recordIds);
+		Map<String, List<OptionalItemDataDto>> empOptionItemData =  this.empInfoItemDataRepository.getAllInfoItemByRecordId(recordIds)
+				.stream().map(c -> c.genToPeregDto()).collect(Collectors.groupingBy(x -> x.getRecordId()));
 		empOptionItemData.entrySet().forEach(c ->{
 			Optional<PeregEmpInfoQuery> empInfo = query.getEmpInfos().stream().filter(emp -> emp.getEmployeeId().equals(c.getKey())).findFirst();
 			if(empInfo.isPresent()) {
