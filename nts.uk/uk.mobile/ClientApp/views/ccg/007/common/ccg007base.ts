@@ -1,4 +1,5 @@
 import { Vue, _ } from '@app/provider';
+import { SideMenu } from '@app/components';
 
 export class CCG007Login extends Vue {
     protected login(submitData: LoginParam, resetForm: Function) {
@@ -84,6 +85,7 @@ export class CCG007Login extends Vue {
                 }
             } else {
                 self.$goto.home({ screen: 'login' });
+                SideMenu.reload();
             }
         }
 
