@@ -1,6 +1,9 @@
 import { _, Vue, VueConstructor, moment } from '@app/provider';
 import { TimeWithDay, TimePoint, TimeDuration } from '@app/utils/time';
 
+const YM_FORMAT: string = 'YYYY/MM',
+    DATE_FORMAT: string = 'YYYY/MM/DD';
+
 const datetime = {
     install(vue: VueConstructor<Vue>) {
 
@@ -10,13 +13,16 @@ const datetime = {
 
                 Object.assign(self, {
                     $dt(d: Date, format: string) {
-                        return moment(d).format(format || 'YYYY/MM/DD');
+                        return moment(d).format(format || DATE_FORMAT);
                     }
                 });
 
                 Object.assign(self.$dt, {
                     date(d: Date, format: string) {
-                        return moment(d).format(format || 'YYYY/MM/DD');
+                        return moment(d).format(format || DATE_FORMAT);
+                    },
+                    fromString(value: string, format: string) {
+                        return moment(value, format || DATE_FORMAT).toDate();
                     },
                     timewd(value: number) {
                         return TimeWithDay.toString(value);
@@ -33,7 +39,7 @@ const datetime = {
                                 month: number = Math.floor(d % 100);
 
                             if (year && month) {
-                                return moment.utc(Date.UTC(year, month)).format(format || 'YYYY/MM');
+                                return moment.utc(Date.UTC(year, month)).format(format || YM_FORMAT);
                             }
                         }
 
