@@ -1,6 +1,5 @@
 package nts.uk.ctx.hr.develop.app.sysoperationset.eventmanage.commandhandler;
 
-import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
 
@@ -18,10 +17,9 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.hr.develop.app.sysoperationset.eventmanage.command.EventOperationCmd;
 import nts.uk.ctx.hr.develop.app.sysoperationset.eventmanage.command.JMM018Cmd;
 import nts.uk.ctx.hr.develop.app.sysoperationset.eventmanage.command.MenuOperationCmd;
+import nts.uk.ctx.hr.develop.dom.sysoperationset.eventmanage.EventMenuOperSer;
 import nts.uk.ctx.hr.develop.dom.sysoperationset.eventmanage.EventOperation;
-import nts.uk.ctx.hr.develop.dom.sysoperationset.eventmanage.EventOperationRepository;
 import nts.uk.ctx.hr.develop.dom.sysoperationset.eventmanage.MenuOperation;
-import nts.uk.ctx.hr.develop.dom.sysoperationset.eventmanage.MenuOperationRepository;
 import nts.uk.shr.com.context.AppContexts;
 /**
  * 
@@ -33,10 +31,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class UpdateEventMenuOperation extends CommandHandler<JMM018Cmd>{
 	
 	@Inject
-	private EventOperationRepository eventRep;
-	
-	@Inject
-	private MenuOperationRepository menuRep;
+	private EventMenuOperSer eventMenuOperSer;
 	
 	@Override
 	protected void handle(CommandHandlerContext<JMM018Cmd> context) {
@@ -47,11 +42,11 @@ public class UpdateEventMenuOperation extends CommandHandler<JMM018Cmd>{
 		List<MenuOperationCmd> listMenu = command.getListMenuOper();
 		for(EventOperationCmd item: listEvent){
 			// ドメインモデル[イベント管理]を更新する - update domain event Operation
-			eventRep.update(EventOperation.createFromJavaType(item.getEventId(), item.getUseEvent(), companyId, ccd));
+			eventMenuOperSer.updateEvent(EventOperation.createFromJavaType(item.getEventId(), item.getUseEvent(), companyId, ccd));
 		}
 		for(MenuOperationCmd cmd: listMenu){
 			// ドメインモデル[メニュー管理]を更新する - update domain menu operation
-			menuRep.update(MenuOperation.createFromJavaType(cmd.getProgramId(), cmd.getUseMenu(), 
+			eventMenuOperSer.updateMenu(MenuOperation.createFromJavaType(cmd.getProgramId(), cmd.getUseMenu(), 
 															companyId, cmd.getUseApproval(), cmd.getUseNotice(), ccd));
 		}
 	}

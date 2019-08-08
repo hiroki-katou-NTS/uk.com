@@ -14,27 +14,20 @@ import nts.uk.ctx.hr.develop.app.sysoperationset.eventmanage.dto.HRDevEventDto;
 import nts.uk.ctx.hr.develop.app.sysoperationset.eventmanage.dto.HRDevMenuDto;
 import nts.uk.ctx.hr.develop.app.sysoperationset.eventmanage.dto.JMM018Dto;
 import nts.uk.ctx.hr.develop.app.sysoperationset.eventmanage.dto.MenuOperationDto;
-import nts.uk.ctx.hr.develop.dom.hrdevelopmentevent.HRDevEventRepository;
-import nts.uk.ctx.hr.develop.dom.hrdevelopmentevent.HRDevMenuRepository;
+import nts.uk.ctx.hr.develop.dom.hrdevelopmentevent.HREventMenuService;
+import nts.uk.ctx.hr.develop.dom.sysoperationset.eventmanage.EventMenuOperSer;
 import nts.uk.ctx.hr.develop.dom.sysoperationset.eventmanage.EventOperation;
-import nts.uk.ctx.hr.develop.dom.sysoperationset.eventmanage.EventOperationRepository;
 import nts.uk.ctx.hr.develop.dom.sysoperationset.eventmanage.MenuOperation;
-import nts.uk.ctx.hr.develop.dom.sysoperationset.eventmanage.MenuOperationRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class JMM018Finder {
-	@Inject
-	private EventOperationRepository eventOperationRep;
 	
 	@Inject
-	private MenuOperationRepository menuOperationRep;
+	private HREventMenuService hrEventMenuSer;
 	
 	@Inject
-	private HRDevEventRepository hRDevEventRep;
-	
-	@Inject
-	private HRDevMenuRepository hRDevMenuRep;
+	private EventMenuOperSer eventMenuOperSer;
 	
 	/**
 	 * ドメインモデル[人材育成イベント]を取得する - lấy domain 人材育成イベント với điều kiện 利用できる= true và [order by] dspOrder　ASC
@@ -42,7 +35,7 @@ public class JMM018Finder {
 	 * @author yennth
 	 */
 	public List<HRDevEventDto> findHREvent(){
-		List<HRDevEventDto> listResult = this.hRDevEventRep.findByAvailable()
+		List<HRDevEventDto> listResult = this.hrEventMenuSer.getHrEvent()
 											.stream().map(x -> HRDevEventDto.fromDomain(x))
 											.collect(Collectors.toList());
 		return listResult;
@@ -54,7 +47,7 @@ public class JMM018Finder {
 	 * @author yennth
 	 */
 	public List<HRDevMenuDto> findHRMenu(){
-		List<HRDevMenuDto> listResult = this.hRDevMenuRep.findByAvailable()
+		List<HRDevMenuDto> listResult = this.hrEventMenuSer.getHrMenu()
 											.stream().map(x -> HRDevMenuDto.fromDomain(x))
 											.collect(Collectors.toList());
 		return listResult;
@@ -67,7 +60,7 @@ public class JMM018Finder {
 	 * @author yennth
 	 */
 	public Optional<EventOperationDto> findEventOper(int eventId){
-		Optional<EventOperation> findResult = eventOperationRep.findByKey(AppContexts.user().companyId(), eventId);
+		Optional<EventOperation> findResult = eventMenuOperSer.findEventByKey(AppContexts.user().companyId(), eventId);
 		if(findResult.isPresent()){
 			EventOperation domain = findResult.get();
 			EventOperationDto mapping = new EventOperationDto(domain.getEventId().value, domain.getUseEvent().value, domain.getCcd());
@@ -84,7 +77,7 @@ public class JMM018Finder {
 	 * @author yennth
 	 */
 	public Optional<MenuOperationDto> findMenutOper(String programId){
-		Optional<MenuOperation> findResult = menuOperationRep.findByKey(AppContexts.user().companyId(), programId);
+		Optional<MenuOperation> findResult = eventMenuOperSer.findMenuByKey(AppContexts.user().companyId(), programId);
 		if(findResult.isPresent()){
 			MenuOperation domain = findResult.get();
 			MenuOperationDto mapping = new MenuOperationDto(domain.getProgramId().v(), domain.getUseMenu().value, 
@@ -110,7 +103,7 @@ public class JMM018Finder {
 		if(listHrEvent.isEmpty()){
 			available = 0;
 		}else{
-			listHrMenu = findHRMenu();
+			listHrMenu = findHRMenu(); 
 			if(listHrMenu.isEmpty()){
 				available = 0;
 			}
@@ -124,7 +117,7 @@ public class JMM018Finder {
 				Optional<EventOperationDto> getEventOper = findEventOper(item.getEventId());
 				if(!getEventOper.isPresent()){
 					// ドメインモデル[イベント管理]を追加する - insert event operation
-					eventOperationRep.add(EventOperation.createFromJavaType(item.getEventId(), 0, 
+					eventMenuOperSer.addEvent(EventOperation.createFromJavaType(item.getEventId(), 0, 
 											AppContexts.user().companyId(), 
 											new BigInteger(AppContexts.user().companyCode())));
 				}else{
@@ -137,7 +130,7 @@ public class JMM018Finder {
 				Optional<MenuOperationDto> getEventOper = findMenutOper(param.getProgramId());
 				if(!getEventOper.isPresent()){
 					// アルゴリズム[メニュー管理を追加する]を実行する - insert menu operation
-					menuOperationRep.add(MenuOperation.createFromJavaType(param.getProgramId(), 0, 
+					eventMenuOperSer.addMenu(MenuOperation.createFromJavaType(param.getProgramId(), 0, 
 																		AppContexts.user().companyId(), 
 																		0, 0, 
 																		new BigInteger(AppContexts.user().companyCode())));

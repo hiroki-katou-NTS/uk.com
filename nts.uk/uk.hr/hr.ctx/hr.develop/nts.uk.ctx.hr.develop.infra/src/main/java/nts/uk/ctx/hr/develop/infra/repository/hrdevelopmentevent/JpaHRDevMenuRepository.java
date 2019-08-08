@@ -1,7 +1,6 @@
 package nts.uk.ctx.hr.develop.infra.repository.hrdevelopmentevent;
 
 import java.util.List;
-import java.util.Optional;
 
 import javax.ejb.Stateless;
 
@@ -13,7 +12,7 @@ import nts.uk.ctx.hr.develop.infra.entity.hrdevelopmentevent.JcmmtHRDevMenu;
 public class JpaHRDevMenuRepository extends JpaRepository implements HRDevMenuRepository{
 	
 	private static final String FIND_BY_AVAILABLE = "SELECT a FROM JcmmtHRDevMenu a "
-												+ "WHERE a.availableEvent =: 1 "
+												+ "WHERE a.availableMenu = :availableMenu "
 												+ "ORDER BY a.eventId ASC ";
 	
 	/**
@@ -23,6 +22,7 @@ public class JpaHRDevMenuRepository extends JpaRepository implements HRDevMenuRe
 	@Override
 	public List<HRDevMenu> findByAvailable() {
 		List<HRDevMenu> result = this.queryProxy().query(FIND_BY_AVAILABLE, JcmmtHRDevMenu.class)
+										.setParameter("availableMenu", 1)
 										.getList(x -> convertToDomain(x));
 		return result;
 	}

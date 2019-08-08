@@ -61,6 +61,7 @@ public class JpaEventOperationRepository extends JpaRepository implements EventO
 		val entity = new JcmstEventOperation();
 		entity.jcmstEventOperationPK = new JcmstEventOperationPK(x.getCompanyId(), x.getEventId().value);
 		entity.useEvent = x.getUseEvent().value;
+		entity.ccd = x.getCcd();
 		return entity;
 	}
 }

@@ -32,7 +32,6 @@ public class JpaMenuOperationRepository extends JpaRepository implements MenuOpe
 	@Override
 	public void add(MenuOperation menuOperation) {
 		this.commandProxy().insert(convertToEntity(menuOperation));
-		
 	}
 	
 	/**
@@ -57,6 +56,7 @@ public class JpaMenuOperationRepository extends JpaRepository implements MenuOpe
 		entity.useApproval = x.getUseApproval().value;
 		entity.useMenu = x.getUseMenu().value;
 		entity.useNotice = x.getUseNotice().value;
+		entity.ccd = x.getCcd();
 		return entity;
 	}
 	

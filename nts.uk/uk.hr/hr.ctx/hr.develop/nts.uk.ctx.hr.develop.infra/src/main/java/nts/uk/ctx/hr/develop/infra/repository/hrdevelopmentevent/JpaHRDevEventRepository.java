@@ -13,7 +13,7 @@ import nts.uk.ctx.hr.develop.infra.entity.hrdevelopmentevent.JcmmtHRDevEvent;
 public class JpaHRDevEventRepository extends JpaRepository implements HRDevEventRepository{
 	
 	private static final String FIND_BY_AVAILABLE = "SELECT a FROM JcmmtHRDevEvent a "
-											+ "WHERE a.availableEvent =: 1 "
+											+ "WHERE a.availableEvent = :availableEvent "
 											+ "ORDER BY a.eventId ASC ";
 	/**
 	 * find item by id
@@ -22,6 +22,7 @@ public class JpaHRDevEventRepository extends JpaRepository implements HRDevEvent
 	@Override
 	public List<HRDevEvent> findByAvailable() {
 		List<HRDevEvent> result = this.queryProxy().query(FIND_BY_AVAILABLE, JcmmtHRDevEvent.class)
+										.setParameter("availableEvent", 1)
 										.getList(x -> convertToDomain(x));
 		return result;
 	}

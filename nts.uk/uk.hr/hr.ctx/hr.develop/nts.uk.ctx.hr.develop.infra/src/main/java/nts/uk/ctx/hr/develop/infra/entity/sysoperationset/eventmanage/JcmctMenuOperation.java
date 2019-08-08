@@ -16,7 +16,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  *
  */
 @Entity
-@Table(name="JCMCT_MENU_OPERATION")
+@Table(name="JCMST_MENU_OPERATION")
 @AllArgsConstructor
 @NoArgsConstructor
 public class JcmctMenuOperation extends UkJpaEntity {
