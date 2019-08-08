@@ -36,7 +36,7 @@
             </div>
             <div class="card-body">
                 <v-errors v-model="$errors.kafs05ModelStep2.overtimeHours" class="d-block mt-0 mb-2" />
-                <div v-for="(item, i) of kafs05ModelStep2.overtimeHours" v-if="kafs05ModelStep2.prePostSelected == 1 || item.frameNo != 12">
+                <div v-for="(item, i) of kafs05ModelStep2.overtimeHours">
                     <div class="row">
                         <div class="col-4">
                             <span class="small-header">{{item.frameName | i18n}}</span>
