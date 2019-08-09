@@ -19,7 +19,6 @@ import nts.uk.ctx.pereg.app.find.common.InitDefaultValue;
 import nts.uk.ctx.pereg.app.find.common.LayoutControlComBoBox;
 import nts.uk.ctx.pereg.app.find.common.MappingFactory;
 import nts.uk.ctx.pereg.app.find.common.StampCardLength;
-import nts.uk.ctx.pereg.app.find.empinfoitemdata.EmpUserDefDataFinder;
 import nts.uk.ctx.pereg.app.find.layout.dto.EmpMainCategoryDto;
 import nts.uk.ctx.pereg.app.find.layout.dto.EmpMaintLayoutDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.ActionRole;
@@ -716,12 +715,14 @@ public class PeregProcessor {
 		PersonInfoItemDefinition firstItem = lstItemDef.get(0);
 		if (perInfoCtg.isEmployeeType()) {
 			List<GridLayoutPersonInfoClsDto> employees = getInfoItemEmployeeTypeCps003(query, firstItem.getPerInfoItemDefId(), selfEmployeeId, perItems, perInfoCtg);
-			if(employees.isEmpty()) {
+			if(!employees.isEmpty()) {
 				result.addAll(employees);
 			}
 		} else {
 			List<GridLayoutPersonInfoClsDto> persons = getInfoItemPersonTypeCps003(query, firstItem.getPerInfoItemDefId(), selfEmployeeId, perItems, perInfoCtg);
-			result.addAll(persons);
+			if(!persons.isEmpty()) {
+				result.addAll(persons);
+			}
 		}
 
 		return result;
@@ -743,7 +744,7 @@ public class PeregProcessor {
 				.getBySidsAndCtgId(sids, query.getCategoryId()).stream().collect(Collectors.groupingBy(c -> c.getEmployeeId()));
 		empInfoCtgDatas.entrySet().forEach(c ->{
 			List<String> recordIds = c.getValue().stream().map(ctg -> ctg.getRecordId()).distinct().collect(Collectors.toList());
-			Map<String, List<EmpInfoItemData>> itemDatas = empInfoItemDataRepository.getItemsData(itemId, recordIds).stream().collect(Collectors.groupingBy(i -> i.getRecordId()));
+			Map<String, List<EmpInfoItemData>> itemDatas = empInfoItemDataRepository.getAllInfoItemByRecordId(recordIds).stream().collect(Collectors.groupingBy(i -> i.getRecordId()));
 			Optional<PeregEmpInfoQuery> empInfoQueryOpt =  query.getEmpInfos().stream().filter(emp -> emp.getEmployeeId().equals(c.getKey())).findFirst();
 			if(empInfoQueryOpt.isPresent() && !itemDatas.isEmpty()){
 				itemDatas.entrySet().forEach(item ->{
@@ -755,6 +756,13 @@ public class PeregProcessor {
 							query.getStandardDate());
 					result.add(dto);
 				});
+			}
+		});
+		
+		query.getEmpInfos().forEach(c ->{
+			List<GridLayoutPersonInfoClsDto> empLstOpt = result.stream().filter(i -> i.getEmployeeId().equals(c.getEmployeeId())).collect(Collectors.toList());
+			if(CollectionUtil.isEmpty(empLstOpt)) {
+				result.add(new GridLayoutPersonInfoClsDto(c.getEmployeeId(), c.getPersonId(), new ArrayList<>()));
 			}
 		});
 		
@@ -777,7 +785,7 @@ public class PeregProcessor {
 		perInfoCtgDatas.entrySet().forEach(c ->{
 			List<String> recordIds = c.getValue().stream().map(i -> i.getRecordId()).collect(Collectors.toList());
 			Optional<PeregEmpInfoQuery> empInfoQueryOpt =  query.getEmpInfos().stream().filter(emp -> emp.getEmployeeId().equals(c.getKey())).findFirst();
-			Map<String, List<PersonInfoItemData>> itemDatas  = perInfoItemDataRepository.getItemData(itemId, recordIds).stream().collect(Collectors.groupingBy(i -> i.getRecordId()));
+			Map<String, List<PersonInfoItemData>> itemDatas  = perInfoItemDataRepository.getAllInfoItemByRecordId(recordIds).stream().collect(Collectors.groupingBy(i -> i.getRecordId()));
 			if(empInfoQueryOpt.isPresent() && !itemDatas.isEmpty()){
 				itemDatas.entrySet().forEach(item ->{
 					GridLayoutPersonInfoClsDto dto = new GridLayoutPersonInfoClsDto(empInfoQueryOpt.get().getEmployeeId(), empInfoQueryOpt.get().getPersonId(), empInfoQueryOpt.get().getEmployeeId().equals(selfEmployeeId) ? creatClassItemList(perItems.get(true), perInfoCtg) :  creatClassItemList(perItems.get(false), perInfoCtg));
@@ -788,6 +796,13 @@ public class PeregProcessor {
 							query.getStandardDate());
 					result.add(dto);
 				});
+			}
+		});
+		
+		query.getEmpInfos().forEach(c ->{
+			List<GridLayoutPersonInfoClsDto> empLstOpt = result.stream().filter(i -> i.getEmployeeId().equals(c.getEmployeeId())).collect(Collectors.toList());
+			if(CollectionUtil.isEmpty(empLstOpt)) {
+				result.add(new GridLayoutPersonInfoClsDto(c.getEmployeeId(), c.getPersonId(), new ArrayList<>()));
 			}
 		});
 		return result;
@@ -845,8 +860,9 @@ public class PeregProcessor {
 				.getBySidsAndCtgId(sids, query.getCategoryId()).stream()
 				.collect(Collectors.groupingBy(c -> c.getEmployeeId()));
 		// lấy recordId
-		if (empInfoCtgDatas.size() == 0)
-			return new ArrayList<>();
+		if (empInfoCtgDatas.size() == 0) {
+			
+		}
 		// muc dích lấy ra DatePeroid
 		empInfoCtgDatas.entrySet().forEach(c -> {
 			for (EmpInfoCtgData empInfoCtgData : c.getValue()) {
@@ -888,6 +904,14 @@ public class PeregProcessor {
 					}
 
 				}
+			}
+		});
+		
+		
+		query.getEmpInfos().forEach(c ->{
+			List<GridLayoutPersonInfoClsDto> empLstOpt = result.stream().filter(i -> i.getEmployeeId().equals(c.getEmployeeId())).collect(Collectors.toList());
+			if(CollectionUtil.isEmpty(empLstOpt)) {
+				result.add(new GridLayoutPersonInfoClsDto(c.getEmployeeId(), c.getPersonId(), new ArrayList<>()));
 			}
 		});
 		return result;
