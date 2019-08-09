@@ -90,8 +90,8 @@ module nts.uk.hr.view.jmm017.b.viewmodel {
                 _.forEach(groupByColumns, col => {
                     $("#grid").igGridGroupBy("groupByColumn", col.key);
                 });
-                $("#grid").igGridFiltering("filter", filters);
                 $("#grid").igGridPaging("pageSize", pageSizeOld);
+                $("#grid").igGridFiltering("filter", filters);
                 $("#grid").igGridPaging("pageIndex", pageIndex);
             }, 1);
             block.clear();
@@ -214,11 +214,11 @@ module nts.uk.hr.view.jmm017.b.viewmodel {
                         columnSettings: [
                             {
                                 columnKey: 'categoryName',
-                                isGroupBy: false
+                                isGroupBy: true
                             },
                             {
                                 columnKey: 'programName',
-                                isGroupBy: false
+                                isGroupBy: true
                             }
                         ]
                     },

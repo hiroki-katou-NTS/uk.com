@@ -17,6 +17,7 @@ module nts.uk.hr.view.jmm017.a.viewmodel {
             self.usageFlgCommon = ko.observable(false);
             self.guideMsgAreaRow = ko.observable(0);
             self.guideMsgMaxNum = ko.observable(0);
+            //nts.uk.ui.guide.operate("hr", 'guidance/guideOperate', Page.SIDEBAR, { tab1: "", tab2: "" });
         }
 
         public startPage(): JQueryPromise<any> {
@@ -96,4 +97,10 @@ module nts.uk.hr.view.jmm017.a.viewmodel {
         export const FIRST = 0;
         export const SECOND = 1;
     }
+    enum Page {
+         NORMAL = 0,
+         SIDEBAR = 1,
+         FREE_LAYOUT = 2
+    }
+
 }

@@ -10,7 +10,7 @@ public class IGuidanceExportDto {
 
 	private boolean displayMessage;
 	
-	private Integer NumberLinesInMessage;
+	private Integer numberLinesInMessage;
 	
-	private String ContentMessage;
+	private String contentMessage;
 }

@@ -12,7 +12,10 @@ import nts.uk.ctx.hr.develop.app.guidance.dto.CategoryGuideDto;
 import nts.uk.ctx.hr.develop.app.guidance.dto.GuidanceDto;
 import nts.uk.ctx.hr.develop.app.guidance.dto.GuideMsgDto;
 import nts.uk.ctx.hr.develop.app.guidance.dto.ParamFindScreen;
+import nts.uk.ctx.hr.develop.app.guidance.dto.ScreenGuideParam;
+import nts.uk.ctx.hr.develop.app.guidance.dto.ScreenGuideSettingDto;
 import nts.uk.ctx.hr.develop.dom.guidance.GuidanceService;
+import nts.uk.ctx.hr.develop.dom.guidance.IGuidance;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -20,6 +23,8 @@ public class GuidanceFinder {
 
 	@Inject
 	private GuidanceService guidanceService;
+	@Inject
+	private IGuidance iGuidance;
 	
 	public GuidanceDto getGuideDispSetting(String companyId) {
 		return new GuidanceDto(guidanceService.getGuideDispSetting(companyId));
@@ -47,5 +52,10 @@ public class GuidanceFinder {
 			throw new BusinessException("MsgJ_JMM017_2");
 		}
 		return result;
+	}
+	
+	public ScreenGuideSettingDto guideOperate(ScreenGuideParam param) {
+		String cId = AppContexts.user().companyId();
+		return ScreenGuideSettingDto.fromDomain(iGuidance.getGuidance(cId, param.getProgramId(), param.getScreenId()));
 	}
 }
