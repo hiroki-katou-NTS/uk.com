@@ -1,13 +1,13 @@
 {
     "jp": {
-        "kafS05a": "残業申請",
-        "kafS05a1": "残業申請",
-        "kafS05a2": "残業申請",
-        "kafS05a3": "残業申請",
-        "kafS05a4": "残業申請",
-        "step1": "勤務情報",
-        "step2": "申請時間",
-        "step3": "確認",
-        "step4": "完了"
+        "kafS05a": "#{KAFS05_1}",
+        "kafS05a1": "#{KAFS05_1}",
+        "kafS05a2": "#{KAFS05_1}",
+        "kafS05a3": "#{KAFS05_1}",
+        "kafS05a4": "#{KAFS05_1}",
+        "step1": "#{KAFS05_2}",
+        "step2": "#{KAFS05_3}",
+        "step3": "#{KAFS05_4}",
+        "step4": "#{KAFS05_5}"
     }
 }
