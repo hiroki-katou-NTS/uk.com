@@ -9,55 +9,74 @@ module nts.uk.ui.guide {
         export let linkShow = "操作ガイド　表示";
     }
     
-    export function operate(path: string, page: Page) {
-        nts.uk.request.ajax("com", path).done(config => {
+    export function operateCurrent(path: string, data: any, page: Page) {
+        operate.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
+    }
+    
+    export function operate(appId: string, path: string, data: any, tabMapping: any, page: Page) { 
+        nts.uk.request.ajax(appId, path, data).done(config => {
+            if (_.isFunction(tabMapping) && _.isArray(config)) {
+                _.forEach(config, c => {
+                    c.tabId = tabMapping(c.programId, c.screenId);
+                });
+            }
+            
             let op = new OperationGuide(config);
             op.setPosition(page);
         });
     }
     
     class OperationGuide {
-        isUsed: boolean;
-        display: boolean;
-        lineCount: number;
-        content: string;
+        
+        configs: Array<GuideConfig> = [];
         
         constructor(config: any) {
-            this.isUsed = config.isUsed;
-            this.lineCount = config.lineCount;
-            this.content = config.content;
+            if (_.isArray(config)) {
+                this.configs = config;
+                return;
+            }
+            
+            this.configs.push(config);
         }
         
-        link(top: number) {
+        link(top: number, tabConfig: GuideConfig) {
             let self = this;
-            self.display = true;
+            tabConfig.display = true;
             let $link = $("<a/>").addClass("nts-guide-link").text(resource.linkHide);
             $link.css("margin-top", top);
             $link.on("click", () => {
-                if (self.display) {
-                    $(".nts-guide-link").text(resource.linkShow);
-                    $(".nts-guide-area").hide();
-                    self.display = !self.display;
+                let $guideArea;
+                if (!_.isNil(tabConfig.tabId)) {
+                    let $tabPanel = $link.closest("div[role=tabpanel]");
+                    $guideArea = $tabPanel.find(".nts-guide-area");
+                } else {
+                    $guideArea = $(".nts-guide-area");
+                }
+                
+                if (tabConfig.display) {
+                    $link.text(resource.linkShow);
+                    $guideArea.hide();
+                    tabConfig.display = !tabConfig.display;
                     return;
                 }
                 
-                $(".nts-guide-link").text(resource.linkHide);
-                $(".nts-guide-area").show();
-                self.display = !self.display;
+                $link.text(resource.linkHide);
+                $guideArea.show();
+                tabConfig.display = !tabConfig.display;
             });
             
             return $link;
         }
         
-        textArea(position: Position) {
+        textArea(tabConfig: GuideConfig, position: Position) {
             let self = this;
             let $area = $("<div/>").addClass("nts-guide-area");
             if (position === Position.BOTTOM) {
                 $area.addClass("nts-bottom");
             }
             
-            $area.height(ROW_HEIGHT * self.lineCount);
-            let content = self.content.split('\n').join("<br/>");
+            $area.height(ROW_HEIGHT * tabConfig.lineCount);
+            let content = tabConfig.content.split('\n').join("<br/>");
             $area.html(content);
             
             return $area;
@@ -73,11 +92,11 @@ module nts.uk.ui.guide {
                         $functionsArea = $("#functions-area-bottom");
                         if ($functionsArea.find(".nts-guide-link").length == 0) {
                             let top = ($functionsArea.height() - 24) / 2;
-                            $functionsArea.append(self.link(top));
+                            $functionsArea.append(self.link(top, self.configs[0]));
                         }
                         
                         if (!$functionsArea.prev().is(".nts-guide-area")) {
-                            $functionsArea.before(self.textArea(Position.BOTTOM));
+                            $functionsArea.before(self.textArea(self.configs[0], Position.BOTTOM));
                         }
                         
                         return;
@@ -85,37 +104,49 @@ module nts.uk.ui.guide {
                     
                     if ($functionsArea.find(".nts-guide-link").length == 0) {
                         let top = ($functionsArea.height() - 22) / 2;
-                        $functionsArea.append(self.link(top));
+                        $functionsArea.append(self.link(top, self.configs[0]));
                     }
                     
                     if (!$functionsArea.next().is(".nts-guide-area")) {
-                        $functionsArea.after(self.textArea());
+                        $functionsArea.after(self.textArea(self.configs[0]));
                     }
                     
                     break;
                 case Page.SIDEBAR:
-                    let $contentHeader = $(".sidebar-content-header");
-                    if ($contentHeader.length > 0) {
-                        $contentHeader.each(function() { 
-                            let $header = $(this);
-                            if ($header.find(".nts-guide-link").length == 0) {
-                                let top = ($header.height() - 18) / 2;
-                                $header.append(self.link(top));
-                            }
-                        });
+                    _.forEach(self.configs, (tabConfig: GuideConfig) => {
+                        let $tab = $(`#${tabConfig.tabId}`);
+                        let $contentHeader = $tab.find(".sidebar-content-header");
                         
-                        $contentHeader.each(function() {
-                            let $header = $(this);
-                            if (!$header.next().is(".nts-guide-area")) {
-                                $header.after(self.textArea()); 
-                            }
-                        });
-                    }
+                        if ($contentHeader.find(".nts-guide-link").length == 0) {
+                            let top = ($contentHeader.height() - 18) / 2;
+                            $contentHeader.append(self.link(top, tabConfig));
+                        }
+                        
+                        if (!$contentHeader.next().is(".nts-guide-area")) {
+                            $contentHeader.after(self.textArea(tabConfig)); 
+                        }
+                    });
                     
                     break;
                 case Page.FREE_LAYOUT:
                     break;
             }
+        }
+    }
+    
+    class GuideConfig {
+        tabId: string;
+        isUsed: boolean;
+        display: boolean;
+        lineCount: number;
+        content: string;    
+        
+        constructor(tabId: string, isUsed: boolean, display: boolean, lineCount: number, content: string) {
+            this.tabId = tabId;
+            this.isUsed = isUsed;
+            this.display = display;
+            this.lineCount = lineCount;
+            this.content = content;
         }
     }
     
