@@ -175,16 +175,15 @@ public class JpaTimeOfMonthly extends JpaRepository implements TimeOfMonthlyRepo
 					.paramInt("yms", yearMonthValues)
 					.getList(rec -> KrcdtMonMerge.MAPPER.toEntity(rec));
 		});
-//		
-//		results.sort((o1, o2) -> {
-//			int tmp = o1.getKrcdtMonMergePk().getEmployeeId().compareTo(o2.getKrcdtMonMergePk().getEmployeeId());
-//			if (tmp != 0) return tmp;
-//			tmp = o1.getKrcdtMonMergePk().getYearMonth() - o2.getKrcdtMonMergePk().getYearMonth();
-//			if (tmp != 0) return tmp;
-//			return o1.getStartYmd().compareTo(o2.getStartYmd());
-//		});
-//		return results.stream().map(item -> toDomain(item)).collect(Collectors.toList());
-		return new ArrayList<>();
+		
+		results.sort((o1, o2) -> {
+			int tmp = o1.getKrcdtMonMergePk().getEmployeeId().compareTo(o2.getKrcdtMonMergePk().getEmployeeId());
+			if (tmp != 0) return tmp;
+			tmp = o1.getKrcdtMonMergePk().getYearMonth() - o2.getKrcdtMonMergePk().getYearMonth();
+			if (tmp != 0) return tmp;
+			return o1.getStartYmd().compareTo(o2.getStartYmd());
+		});
+		return results.stream().map(item -> toDomain(item)).collect(Collectors.toList());
 	}
 		
 	/** 検索　（基準日） */
