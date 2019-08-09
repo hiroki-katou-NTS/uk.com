@@ -23,7 +23,7 @@ import { OvertimeAgreement, AgreementTimeStatusOfMonthly, Kafs05Model } from '..
             prePostSelected: {
                 validateSwitchbox: {
                     test(value: number) {
-                        if (null == this.kafs05ModelStep1.appID && this.displayPrePostFlg) {
+                        if (null == this.kafs05ModelStep1.appID && this.kafs05ModelStep1.displayPrePostFlg) {
                             if (value != 0 && value != 1) {
                                 document.body.getElementsByClassName('valid-switchbox')[0].className += ' invalid';
     
@@ -244,7 +244,10 @@ export class KafS05aStep1Component extends Vue {
                 this.$modal.error({ messageId: 'Msg_424', messageParams: [res.parameterIds[0], res.parameterIds[1], res.parameterIds[2]] });
             } else if (res.messageId == 'Msg_1508') {
                 this.$modal.error({ messageId: 'Msg_1508', messageParams: [res.parameterIds[0]] });
+            } else {
+                this.$modal.error({ messageId: res.messageId });
             }
+            this.$mask('hide');
         });
     }
     public startPage() {
@@ -345,17 +348,17 @@ export class KafS05aStep1Component extends Vue {
                     switch (result.data.errorFlag) {
                         case 1:
                             this.$modal.error({ messageId: 'Msg_324' }).then(() => {
-                                this.$goto('ccg008a');
+                                return;
                             });
                             break;
                         case 2:
                             this.$modal.error({ messageId: 'Msg_238' }).then(() => {
-                                this.$goto('ccg008a');
+                                return;
                             });
                             break;
                         case 3:
                             this.$modal.error({ messageId: 'Msg_237' }).then(() => {
-                                this.$goto('ccg008a');
+                                return;
                             });
                             break;
                         default:
