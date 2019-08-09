@@ -2,7 +2,6 @@ package nts.uk.ctx.pereg.app.find.employment.history;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -19,9 +18,7 @@ import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
-import nts.uk.shr.pereg.app.find.PeregQueryByListEmp;
 import nts.uk.shr.pereg.app.find.dto.DataClassification;
-import nts.uk.shr.pereg.app.find.dto.GridPeregDomainDto;
 import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 
 /**
@@ -94,37 +91,4 @@ public class EmploymentHistoryFinder implements PeregFinder<EmploymentHistoryDto
 		return new ArrayList<>();
 	}
 
-	@Override
-	public List<GridPeregDomainDto> getAllData(PeregQueryByListEmp query) {
-		String cid = AppContexts.user().companyId();
-
-		List<GridPeregDomainDto> result = new ArrayList<>();
-
-		List<String> sids = query.getEmpInfos().stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
-
-		query.getEmpInfos().forEach(c -> {
-			result.add(new GridPeregDomainDto(c.getEmployeeId(), c.getPersonId(), null));
-		});
-
-		Map<String, List<DateHistoryItem>> dateHistLst = this.empHistRepo
-				.getByEmployeeIdAndStandardDate(cid, sids, query.getStandardDate()).stream()
-				.collect(Collectors.groupingBy(c -> c.identifier()));
-
-		List<String> historyIds = dateHistLst.values().stream().map(c -> c.get(0).identifier())
-				.collect(Collectors.toList());
-
-		Map<String, List<EmploymentHistoryItem>> employmentHist = this.empHistItemRepo.getByListHistoryId(historyIds)
-				.stream().collect(Collectors.groupingBy(c -> c.getEmployeeId()));
-
-		result.stream().forEach(c -> {
-			List<EmploymentHistoryItem> histItem = employmentHist.get(c.getEmployeeId());
-			if (histItem != null) {
-				EmploymentHistoryItem employeeMent = histItem.get(0);
-				DateHistoryItem date = dateHistLst.get(employeeMent.getHistoryId()).get(0);
-				c.setPeregDomainDto(EmploymentHistoryDto.createFromDomain(date, employeeMent));
-			}
-		});
-
-		return result;
-	}
 }
