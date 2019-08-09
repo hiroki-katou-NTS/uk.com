@@ -7338,7 +7338,7 @@ module nts.uk.ui.mgrid {
                 }
                 
                 if (coupe) {
-                    if (cell) {
+                    if (cell && !cell.classList.contains(color.Disable) && !cell.classList.contains(color.Lock)) {
                         coord = ti.getCellCoord(cell);
                         cell.innerHTML = "";
                         sess.o.push({ coord: coord, value: _dataSource[coord.rowIdx][coord.columnKey] });
