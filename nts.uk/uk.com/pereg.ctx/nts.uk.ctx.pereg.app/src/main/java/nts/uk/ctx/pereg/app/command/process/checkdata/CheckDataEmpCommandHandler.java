@@ -30,24 +30,7 @@ public class CheckDataEmpCommandHandler extends AsyncCommandHandler<CheckDataFro
 		val dataSetter = asyncContext.getDataSetter();
 		CheckDataFromUI param = context.getCommand();
 		
-		// check 画面の選択状態をチェックする (Check trạng thái chọn màn hình) 
-		validateDataUI(asyncContext.getCommand());
-		
 		this.checkdataServices.manager(param, asyncContext);
 		dataSetter.setData("endTime", GeneralDateTime.now().toString());
-	}
-	
-	// check 画面の選択状態をチェックする (Check trạng thái chọn màn hình) 
-	private void validateDataUI(CheckDataFromUI query){
-		if(!query.isPerInfoCheck() && !query.isMasterCheck()){
-			throw new BusinessException(new RawErrorMessage("Msg_929"));
-		}
-		
-		if(!query.isPerInfoCheck() && query.isMasterCheck() && !query.isBonusMngCheck()
-			&& !query.isDailyPerforMngCheck() && !query.isMonthCalCheck()
-			&& !query.isMonthPerforMngCheck() && !query.isPayRollMngCheck()
-			&& !query.isScheduleMngCheck() && !query.isYearlyMngCheck()){
-			throw new BusinessException(new RawErrorMessage("Msg_929"));
-		}
 	}
 }
