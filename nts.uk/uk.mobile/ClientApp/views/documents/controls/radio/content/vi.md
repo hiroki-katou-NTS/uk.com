@@ -44,4 +44,4 @@ export class FormCheckComponent extends Vue {
 | -----|---------|--------------|-----------|
 | `disabled?` | `boolean` | false | Radio đó có bị disable hay không? |
 
-**Tạo bởi: Phạm Văn Dân**
+**Tạo bởi: Nguyễn Văn Vương**
