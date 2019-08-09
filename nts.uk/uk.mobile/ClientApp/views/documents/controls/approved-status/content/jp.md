@@ -60,3 +60,5 @@ HTMLでは, &lt;approved&gt;を作って`v-model="selected"`という属性を�
     </template>
 </approved>
 ```
+
+著者：Nguyen Van Vuong

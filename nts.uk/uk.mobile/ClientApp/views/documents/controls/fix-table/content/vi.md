@@ -60,3 +60,4 @@ Bạn có thể thêm các properties dưới đây để tùy biến hiển th�
 - `previousClass`: mặc định 'btn btn-secondary btn-sm' : class của button previous
 - `nextClass`: mặc định 'btn btn-secondary btn-sm' : class của button next
 
+Người tạo: Phạm Văn Dân
