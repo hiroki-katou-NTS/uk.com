@@ -17,10 +17,14 @@ public class ScreenGuideSettingDto {
 	private Integer lineCount;
 
 	private String content;
+	
+	private String programId;
 
-	public static ScreenGuideSettingDto fromDomain(IGuidanceExportDto domain) {
+	private String screenId;
 
-		return new ScreenGuideSettingDto(domain.isDisplayMessage(), domain.getNumberLinesInMessage(), domain.getContentMessage());
+	public static ScreenGuideSettingDto fromDomain(IGuidanceExportDto domain, String programId, String screenId) {
+
+		return new ScreenGuideSettingDto(domain.isDisplayMessage(), domain.getNumberLinesInMessage(), domain.getContentMessage(), programId, screenId);
 
 	}
 }

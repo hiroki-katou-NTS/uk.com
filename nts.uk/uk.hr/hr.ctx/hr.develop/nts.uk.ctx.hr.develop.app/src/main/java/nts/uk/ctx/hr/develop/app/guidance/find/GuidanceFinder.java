@@ -13,6 +13,7 @@ import nts.uk.ctx.hr.develop.app.guidance.dto.GuidanceDto;
 import nts.uk.ctx.hr.develop.app.guidance.dto.GuideMsgDto;
 import nts.uk.ctx.hr.develop.app.guidance.dto.ParamFindScreen;
 import nts.uk.ctx.hr.develop.app.guidance.dto.ScreenGuideParam;
+import nts.uk.ctx.hr.develop.app.guidance.dto.ScreenGuideParamList;
 import nts.uk.ctx.hr.develop.app.guidance.dto.ScreenGuideSettingDto;
 import nts.uk.ctx.hr.develop.dom.guidance.GuidanceService;
 import nts.uk.ctx.hr.develop.dom.guidance.IGuidance;
@@ -54,8 +55,12 @@ public class GuidanceFinder {
 		return result;
 	}
 	
-	public ScreenGuideSettingDto guideOperate(ScreenGuideParam param) {
+	public List<ScreenGuideSettingDto> guideOperate(ScreenGuideParamList params) {
 		String cId = AppContexts.user().companyId();
-		return ScreenGuideSettingDto.fromDomain(iGuidance.getGuidance(cId, param.getProgramId(), param.getScreenId()));
+		List<ScreenGuideSettingDto> result = new ArrayList<>();
+		for (ScreenGuideParam param : params.getScreenGuideParam()) {
+			result.add(ScreenGuideSettingDto.fromDomain(iGuidance.getGuidance(cId, param.getProgramId(), param.getScreenId()), param.getProgramId(), param.getScreenId()));
+		}
+		return result;
 	}
 }

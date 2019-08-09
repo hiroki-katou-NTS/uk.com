@@ -61,14 +61,13 @@ module nts.uk.hr.view.jmm017.b.viewmodel {
             }
             new service.getGuideMessageList(param).done(function(data: any) {
                 let groupByColumns = $("#grid").igGridGroupBy("groupByColumns");
-                $("#grid").igGridGroupBy("ungroupAll");
                 self.guideMessageList = data;
                 self.bindData();
                 setTimeout(() => {
+                    $("#grid").igGridGroupBy("ungroupAll");
                     _.forEach(groupByColumns, col => {
                         $("#grid").igGridGroupBy("groupByColumn", col.key);
                     });
-                    
                     $("#grid").igGridPaging("pageIndex", 0);
                 }, 1);
             }).fail(function(errorInfor) {
