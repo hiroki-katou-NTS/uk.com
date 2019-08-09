@@ -65,7 +65,9 @@
                         </div>
                     </div>
                     <nts-time-editor time-input-type="time-duration" v-model="item.applicationTime"
-                        :disabled="!kafs05ModelStep2.enableOvertimeInput" />
+                        v-bind:disabled="!kafs05ModelStep2.enableOvertimeInput" 
+                        v-bind:errors="$errors.kafs05ModelStep2.overtimeHours"
+                        v-bind:show-error="false"/>
                 </div>
             </div>
         </div>

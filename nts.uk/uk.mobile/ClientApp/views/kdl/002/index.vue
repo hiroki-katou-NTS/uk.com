@@ -27,7 +27,7 @@
     </div>
 
     <ul
-      v-bind:class="[ isSelectWorkTime ?'list-group list-group-selection': 'list-group-single-select']"
+      v-bind:class="params.isSelectWorkTime ? 'list-group list-group-selection' : 'list-group-single-select'"
       class="mb-5 list-group"
     >
       <li

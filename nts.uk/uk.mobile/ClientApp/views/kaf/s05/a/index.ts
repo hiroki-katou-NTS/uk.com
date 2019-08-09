@@ -24,7 +24,7 @@ import { Kafs05Model } from './components/common/CommonClass';
 })
 
 export class KafS05aComponent extends Vue {
-    @Prop({ default: {appID: null} })
+    @Prop({ default: () => ({ appID: null }) })
     public params: {appID: string};
 
     public kafs05Model: Kafs05Model = null;
