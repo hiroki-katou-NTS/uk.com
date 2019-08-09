@@ -55,3 +55,5 @@ export class ViewModel extends Vue {
 | showTitle | boolean | true | Có hiển thị title cùng input hay không? |
 | inlineTitle | boolean | false | Constraint có hiển thị cùng một dòng mới title hay không? |
 | columns | {title, input} | {title: 'col-md-12', input: 'col-md-12'} | Điều chỉnh để title và input hiển thị cùng một dòng. (Ví dụ: { title: 'col-md-6', input: 'col-md-6'})|
+
+Tạo bởi: Nguyễn Văn Vương

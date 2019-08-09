@@ -34,3 +34,4 @@ export class ViewModel extends Vue {
 
 Khi khai báo nts-number-editor trong index.html, bạn có thể truyền thêm các tham số này nếu muốn.  
 
+Tạo bởi: Phạm Văn Dân

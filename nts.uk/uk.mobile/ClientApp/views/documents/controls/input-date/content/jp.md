@@ -27,3 +27,5 @@ export class ViewModel extends Vue {
 | showTitle | boolean | true | ラベルを表示する？ |
 | inlineTitle | boolean | false | ラベルと拘束は一行で表示する？ |
 | columns | {title, input} | {title: 'col-md-12', input: 'col-md-12'} | ラベルとインプットを一行に表示したい時、これを修正ください。（例えば：{ title: 'col-md-6', input: 'col-md-6'}）|
+
+著者： Pham Van Dan

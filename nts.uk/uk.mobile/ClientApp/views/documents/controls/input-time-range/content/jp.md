@@ -46,3 +46,5 @@ time-range-inputを作るために&lt;nts-time-range-input&gt;作ってViewModel
 | showTitle | boolean | **false** | ラベルを表示する？ |
 | inlineTitle | boolean | false | ラベルと制約は一行で表示する？ |
 | columns | {title, input} | {title: 'col-md-12', input: 'col-md-12'} | ラベルとインプットを一行に表示したい時、これを修正ください。（例えば：{ title: 'col-md-6', input: 'col-md-6'}）|
+
+著者：Nguyen Van Vuong
