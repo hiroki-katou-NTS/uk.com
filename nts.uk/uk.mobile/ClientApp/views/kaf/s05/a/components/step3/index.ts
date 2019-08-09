@@ -21,6 +21,7 @@ export class KafS05aStep3Component extends Vue {
     }
 
     public registerClick() {
+        this.$mask('show', { message: true });
         this.beforeRegisterColorConfirm();
     }
 
@@ -104,11 +105,15 @@ export class KafS05aStep3Component extends Vue {
                                 this.contentBefRegColorConfirmDone(overtime, result.data);
                             }).catch((res: any) => {
                                 this.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
+                                this.$mask('hide');
                             });
+                        } else {
+                            this.$mask('hide');
                         }
                     });
                 } else {
                     this.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
+                    this.$mask('hide');
                 }
             });
             //更新
@@ -119,6 +124,8 @@ export class KafS05aStep3Component extends Vue {
                     this.$modal.confirm({ messageId: res.messageId, messageParams: res.parameterIds }).then((value) => {
                         if (value == 'yes') {
                             this.beforeUpdateProcess(overtime);
+                        } else {
+                            this.$mask('hide');
                         }
                     });
                 } else {
@@ -126,6 +133,7 @@ export class KafS05aStep3Component extends Vue {
                 }
             }).catch((res: any) => {
                 this.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
+                this.$mask('hide');
             });
         }
 
@@ -139,6 +147,8 @@ export class KafS05aStep3Component extends Vue {
                 //登録処理を実行
                 if (value == 'yes') {
                     this.beforeRegisterProcess(overtime);
+                } else {
+                    this.$mask('hide');
                 }
             });
         } else {
@@ -154,6 +164,7 @@ export class KafS05aStep3Component extends Vue {
         }).catch((res: any) => {
             if (_.isEmpty(res.errors)) {
                 this.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
+                this.$mask('hide');
             } else {
                 let errors = res.errors;
                 for (let i = 0; i < errors.length; i++) {
@@ -173,7 +184,8 @@ export class KafS05aStep3Component extends Vue {
                     }
                     //error.message = resource.getMessage(error.messageId, error.kafs05ModeleterIds);
                 }
-                //nbundledErrors({ errors: errors })  
+                //nbundledErrors({ errors: errors })
+                this.$mask('hide');
             }
         });
     }
@@ -185,6 +197,7 @@ export class KafS05aStep3Component extends Vue {
         }).catch((res: any) => {
             if (_.isEmpty(res.errors)) {
                 this.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
+                this.$mask('hide');
             } else {
                 let errors = res.errors;
                 for (let i = 0; i < errors.length; i++) {
@@ -204,7 +217,8 @@ export class KafS05aStep3Component extends Vue {
                     }
                     //error.message = resource.getMessage(error.messageId, error.kafs05ModeleterIds);
                 }
-                //nbundledErrors({ errors: errors })  
+                //nbundledErrors({ errors: errors })
+                this.$mask('hide');
             }
         });
     }
@@ -216,6 +230,8 @@ export class KafS05aStep3Component extends Vue {
                 this.$modal.confirm({ messageId: result.data[0], messageParams: [result.data[1], result.data[2]] }).then((value) => {
                     if (value == 'yes') {
                         this.registerData(overtime);
+                    } else {
+                        this.$mask('hide');
                     }
                 });
             } else {
@@ -224,12 +240,12 @@ export class KafS05aStep3Component extends Vue {
             }
         }).catch((res: any) => {
             this.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
+            this.$mask('hide');
         });
     }
 
     public registerData(overtime: any) {
         let self = this.kafs05ModelStep3;
-        this.$mask('show', { message: true });
 
         this.$http.post('at', servicePath.createOvertime, overtime).then((result: { data: any }) => {
             this.kafs05ModelStep3.appID = result.data.appID;
@@ -243,7 +259,6 @@ export class KafS05aStep3Component extends Vue {
     }
 
     public updateOvertime(overtime: any) {
-        this.$mask('show', { message: true });
         this.$http.post('at', servicePath.updateOvertime, overtime).then((result: { data: any }) => {
             this.$modal.info({ messageId: 'Msg_15' });
             this.$emit('toStep4', this.kafs05ModelStep3);
@@ -255,6 +270,7 @@ export class KafS05aStep3Component extends Vue {
             } else {
                 this.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
             }
+            this.$mask('hide');
         });
     }
 
