@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.ac.employee.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,7 +30,7 @@ import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfo;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
-//import nts.uk.query.pub.employee.SearchEmployeePub;
+import nts.uk.query.pub.employee.SearchEmployeePub;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -64,8 +63,8 @@ public class SearchEmployeeServiceImpl implements SearchEmployeeService {
 	@Inject
 	private WorkplaceInfoRepository workplaceInfoRepo;
 
-//	@Inject
-//	private SearchEmployeePub searchEmployeePub;
+	@Inject
+	private SearchEmployeePub searchEmployeePub;
 
 	/*
 	 * (non-Javadoc)
@@ -100,9 +99,8 @@ public class SearchEmployeeServiceImpl implements SearchEmployeeService {
 	 */
 	private EmployeeSearchData getEmployeeFromEmployeeCode(String cid, GeneralDate baseDate, EmployeeSearchDto dto) {
 		// 社員コードで検索する
-//		List<String> lstEmpId = this.searchEmployeePub.searchByEmployeeCode(dto.getEmployeeCode(),
-//				Integer.valueOf(dto.getSystem()));
-		List<String> lstEmpId = new ArrayList<>();
+		List<String> lstEmpId = this.searchEmployeePub.searchByEmployeeCode(dto.getEmployeeCode(),
+				Integer.valueOf(dto.getSystem()));
 		if (lstEmpId.isEmpty()) {
 			return null;
 		}
