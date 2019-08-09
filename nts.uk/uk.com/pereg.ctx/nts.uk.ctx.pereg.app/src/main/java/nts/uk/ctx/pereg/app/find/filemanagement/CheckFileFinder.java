@@ -4,7 +4,6 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -38,7 +37,6 @@ import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.pereg.app.find.common.ComboBoxRetrieveFactory;
-import nts.uk.ctx.pereg.app.find.filemanagement.CheckFileFinder.UpdateMode;
 import nts.uk.ctx.pereg.app.find.layout.dto.EmpMainCategoryDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.ActionRole;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.GridEmpBody;
@@ -717,7 +715,7 @@ public class CheckFileFinder {
 				itemDto.setValue(value == null ? null : value);
 				StringConstraint stringContraint = (StringConstraint) contraint;
 				if (gridHead.isRequired()) {
-					if (value == null) {
+					if (value == null || value =="") {
 						ItemError error = new ItemError("", index, itemDto.getItemCode(), "FND_E_REQ_INPUT");
 						itemDto.setError(true);
 						itemErrors.add(error);
@@ -740,12 +738,14 @@ public class CheckFileFinder {
 						}
 					}
 				} else {
-					if (value != null) {
+					if (value != null ) {
 						Optional<String> string = stringContraint.validateString(value.toString());
 						if (itemSpecialLst.contains(itemDto.getItemCode())) {
-							 ItemError error = validateItemOfCS0002(itemDto, value.toString(),  index);
-							if (error != null) {
-								itemErrors.add(error);
+							if(value.toString() != "") {
+								 ItemError error = validateItemOfCS0002(itemDto, value.toString(),  index);
+									if (error != null) {
+										itemErrors.add(error);
+									}
 							}
 							break;
 						} else {
