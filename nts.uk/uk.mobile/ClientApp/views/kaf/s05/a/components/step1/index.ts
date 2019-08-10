@@ -23,7 +23,7 @@ import { OvertimeAgreement, AgreementTimeStatusOfMonthly, Kafs05Model } from '..
             prePostSelected: {
                 validateSwitchbox: {
                     test(value: number) {
-                        if (null == this.kafs05ModelStep1.appID && this.kafs05ModelStep1.displayPrePostFlg) {
+                        if (null == this.kafs05ModelStep1.appID && this.kafs05ModelStep1.displayPrePostFlg && !_.isNil(document.body.getElementsByClassName('valid-switchbox')[0])) {
                             if (value != 0 && value != 1) {
                                 document.body.getElementsByClassName('valid-switchbox')[0].className += ' invalid';
     

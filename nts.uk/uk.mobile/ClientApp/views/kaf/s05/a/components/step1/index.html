@@ -1,5 +1,5 @@
 <div class="kaf005">
-    <div class="accordion border-bottom" v-if="kafs05ModelStep2.indicationOvertimeFlg">
+    <div class="accordion border-bottom" v-if="kafs05ModelStep1.indicationOvertimeFlg">
         <div class="card">
             <div class="card-header">
                 <button class="btn btn-link" type="button">
@@ -17,7 +17,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(item, i) of kafs05ModelStep2.overtimeWork">
+                            <tr v-for="(item, i) of kafs05ModelStep1.overtimeWork">
                                 <td :class="item.color">{{item.yearMonth}}</td>
                                 <td :class="item.color">{{item.limitTime | timedr}}</td>
                                 <td :class="item.color">{{item.actualTime | timedr}}</td>
