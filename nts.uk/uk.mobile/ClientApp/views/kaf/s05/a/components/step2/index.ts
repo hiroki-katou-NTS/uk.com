@@ -32,7 +32,7 @@ import { Kafs05Model } from '../common/CommonClass';
             selectedReason: {
                 checkNull: {
                     test(value: any) {
-                        if (this.kafs05ModelStep2.requiredReason) {
+                        if (this.kafs05ModelStep2.requiredReason && (this.kafs05ModelStep2.typicalReasonDisplayFlg || this.kafs05ModelStep2.displayAppReasonContentFlg)) {
                             if ((value + this.kafs05ModelStep2.multilContent).length == 0) {
                                 return false;
                             }
@@ -59,7 +59,7 @@ import { Kafs05Model } from '../common/CommonClass';
             multilContent: {
                 checkNull: {
                     test(value: any) {
-                        if (this.kafs05ModelStep2.requiredReason) {
+                        if (this.kafs05ModelStep2.requiredReason && (this.kafs05ModelStep2.typicalReasonDisplayFlg || this.kafs05ModelStep2.displayAppReasonContentFlg)) {
                             if ((value + this.kafs05ModelStep2.selectedReason).length == 0) {
                                 return false;
                             }
