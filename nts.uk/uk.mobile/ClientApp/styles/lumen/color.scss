@@ -229,6 +229,7 @@ $uk-status-color: (
     .apply-#{$class-name},
     .uk-apply-#{$class-name} {
         color: $fg-color !important;
+        border: 1px solid $bd-color;
         border-color: $bd-color !important;
         background-color: $bg-color !important;
         text-align: center;
@@ -238,6 +239,7 @@ $uk-status-color: (
         &:hover,
         &:focus {
             color: $fg-color !important;
+            border: 1px solid $bd-color;
             border-color: $bd-color !important;
             background-color: $bg-color !important;            
         }
