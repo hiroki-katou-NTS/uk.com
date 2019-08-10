@@ -36,7 +36,7 @@
             <div class="card-body">
                 <div class="confirm-item mb-2">
                     <span>{{kafs05ModelStep3.employeeName}}</span>
-                    <span v-if="null != kafs05ModelStep3.enteredPersonName"
+                    <span v-if="null != kafs05ModelStep3.enteredPersonName && kafs05ModelStep1.enteredPersonName != kafs05ModelStep1.employeeName"
                         class="small-header"></BR>(代行者：{{kafs05ModelStep3.enteredPersonName}})</span>
                 </div>
             </div>
