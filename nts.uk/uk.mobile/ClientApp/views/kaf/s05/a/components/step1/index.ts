@@ -453,6 +453,9 @@ export class KafS05aStep1Component extends Vue {
         }
 
         self.prePostEnable = data.prePostCanChangeFlg;
+        if (self.prePostSelected == 2) {
+            self.prePostEnable = true;
+        }
         self.indicationOvertimeFlg = data.extratimeDisplayFlag;
         if (!_.isNil(self.appID)) {
             if (_.isNil(data.appOvertimeDetailDto)) {
