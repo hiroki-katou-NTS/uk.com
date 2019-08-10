@@ -32,3 +32,5 @@ export class ViewModel extends Vue {
 | columns | {title, input} | {title: 'col-md-12', input: 'col-md-12'} | Điều chỉnh để title và input hiển thị cùng một dòng. (Ví dụ: { title: 'col-md-6', input: 'col-md-6'})|
 
 Khi khai báo nts-text-editor trong index.html, bạn có thể truyền thêm các tham số này nếu muốn.  
+
+Tạo bởi: Nguyễn Văn Vương

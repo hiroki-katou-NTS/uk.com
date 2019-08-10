@@ -35,45 +35,43 @@
                 <span class="badge badge-warning">必須</span>
             </div>
             <div class="card-body">
-                <div v-for="(item, i) of kafs05ModelStep2.overtimeHours" v-show="kafs05ModelStep2.prePostSelected == 1 || item.frameNo != 12">
+                <v-errors v-model="$errors.kafs05ModelStep2.overtimeHours" class="d-block mt-0 mb-2" />
+                <div v-for="(item, i) of kafs05ModelStep2.overtimeHours">
                     <div class="row">
                         <div class="col-4">
                             <span class="small-header">{{item.frameName | i18n}}</span>
                         </div>
                         <div class="col-4 display-time"
-                            v-show="kafs05ModelStep2.prePostSelected == 1 && !item.preAppExceedState">
+                            v-if="kafs05ModelStep2.prePostSelected == 1 && !item.preAppExceedState">
                             <span class="far fa-clock" v-if="item.preAppTime">事前[{{item.preAppTime | timedr}}]</span>
                             <span class="far fa-clock" v-if="!item.preAppTime">事前[--:--]</span>
                         </div>
                         <div class="col-4 display-time-exceed"
-                            v-show="kafs05ModelStep2.prePostSelected == 1 && item.preAppExceedState">
+                            v-if="kafs05ModelStep2.prePostSelected == 1 && item.preAppExceedState">
                             <span class="far fa-clock" v-if="item.preAppTime">事前[{{item.preAppTime | timedr}}]</span>
                             <span class="far fa-clock" v-if="!item.preAppTime">事前[--:--]</span>
                         </div>
                         <div class="col-4 display-time"
-                            v-show="kafs05ModelStep2.prePostSelected == 1 && !item.actualExceedState">
+                            v-if="kafs05ModelStep2.prePostSelected == 1 && !item.actualExceedState">
                             <span class="far fa-clock"
                                 v-if="item.caculationTime">実績[{{item.caculationTime | timedr}}]</span>
                             <span class="far fa-clock" v-if="!item.caculationTime">実績[--:--]</span>
                         </div>
                         <div class="col-4 display-time-exceed"
-                            v-show="kafs05ModelStep2.prePostSelected == 1 && item.actualExceedState">
+                            v-if="kafs05ModelStep2.prePostSelected == 1 && item.actualExceedState">
                             <span class="far fa-clock"
                                 v-if="item.caculationTime">実績[{{item.caculationTime | timedr}}]</span>
                             <span class="far fa-clock" v-if="!item.caculationTime">実績[--:--]</span>
                         </div>
                     </div>
-                    <nts-time-editor 
-                        time-input-type="time-duration"
-                        v-model="item.applicationTime"
+                    <nts-time-editor time-input-type="time-duration" v-model="item.applicationTime"
+                        v-bind:disabled="!kafs05ModelStep2.enableOvertimeInput" 
                         v-bind:errors="$errors.kafs05ModelStep2.overtimeHours"
-                        v-bind:show-error="false"
-                        :disabled="!kafs05ModelStep2.enableOvertimeInput" />
+                        v-bind:show-error="false"/>
                 </div>
-                <v-errors v-model="$errors.kafs05ModelStep2.overtimeHours" class="d-block mt-0 mb-2" />
             </div>
         </div>
-        <div class="card card-label" v-show="kafs05ModelStep2.displayBonusTime">
+        <div class="card card-label" v-if="kafs05ModelStep2.displayBonusTime">
             <div class="card-header">
                 <span>{{'KAFS05_74' | i18n}}</span>
                 <span class="badge badge-info">任意</span>
@@ -85,13 +83,13 @@
                             <span class="small-header">{{item.frameName | i18n}}</span>
                         </div>
                         <div class="col-4 display-time"
-                            v-show="kafs05ModelStep2.prePostSelected == 1 && !item.preAppExceedState">
+                            v-if="kafs05ModelStep2.prePostSelected == 1 && !item.preAppExceedState">
                             <span class="far fa-clock" v-if="item.preAppTime">事前[{{item.preAppTime | timedr}}]</span>
                             <span class="far fa-clock" v-if="!item.preAppTime">事前[--:--]</span>
                         </div>
 
                         <div class="col-4 display-time-exceed"
-                            v-show="kafs05ModelStep2.prePostSelected == 1 && item.preAppExceedState">
+                            v-if="kafs05ModelStep2.prePostSelected == 1 && item.preAppExceedState">
                             <span class="far fa-clock" v-if="item.preAppTime">事前[{{item.preAppTime | timedr}}]</span>
                             <span class="far fa-clock" v-if="!item.preAppTime">事前[--:--]</span>
                         </div>
@@ -102,13 +100,13 @@
         </div>
         <div class="card card-label">
             <div class="card-header"
-                v-show="kafs05ModelStep2.typicalReasonDisplayFlg || kafs05ModelStep2.displayAppReasonContentFlg">
+                v-if="kafs05ModelStep2.typicalReasonDisplayFlg || kafs05ModelStep2.displayAppReasonContentFlg">
                 <span>{{'KAFS05_75' | i18n}}</span>
                 <span class="badge badge-warning" v-if="kafs05ModelStep2.requiredReason">必須</span>
                 <span class="badge badge-info" v-if="!kafs05ModelStep2.requiredReason">任意</span>
             </div>
             <div class="card-body">
-                <div v-show="kafs05ModelStep2.typicalReasonDisplayFlg">
+                <div v-if="kafs05ModelStep2.typicalReasonDisplayFlg">
                     <span class="small-header">{{'KAFS05_76' | i18n}}</span>
                     <nts-dropdown v-model="kafs05ModelStep2.selectedReason" :showError="!kafs05ModelStep2.displayAppReasonContentFlg">
                         <option v-for="item in kafs05ModelStep2.reasonCombo" :value="item.reasonId">
@@ -116,20 +114,20 @@
                         </option>
                     </nts-dropdown>
                 </div>
-                <div v-show="kafs05ModelStep2.displayAppReasonContentFlg">
+                <div v-if="kafs05ModelStep2.displayAppReasonContentFlg">
                     <span class="small-header">{{'KAFS05_77' | i18n}}</span>
                     <nts-text-area　v-model="kafs05ModelStep2.multilContent" />
                 </div>
             </div>
         </div>
         <div class="card card-label"
-            v-show="kafs05ModelStep2.displayDivergenceReasonForm && kafs05ModelStep2.prePostSelected == 1">
+            v-if="kafs05ModelStep2.prePostSelected == 1">
             <div class="card-header">
                 <span>{{'KAFS05_78' | i18n}}</span>
                 <span class="badge badge-info">任意</span>
             </div>
             <div class="card-body">
-                <div>
+                <div v-if="kafs05ModelStep2.displayDivergenceReasonForm">
                     <span class="small-header">{{'KAFS05_79' | i18n}}</span>
                     <nts-dropdown v-model="kafs05ModelStep2.selectedReason2" :showError="false">
                         <option value="" selected="selected">--- 未選択 ---</option>
@@ -138,7 +136,7 @@
                         </option>
                     </nts-dropdown>
                 </div>
-                <div>
+                <div v-if="kafs05ModelStep2.displayDivergenceReasonInput">
                     <span class="small-header">{{'KAFS05_80' | i18n}}</span>
                     <nts-text-area　v-model="kafs05ModelStep2.multilContent2" />
                 </div>

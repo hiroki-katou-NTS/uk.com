@@ -34,10 +34,10 @@ Có 2 kiểu validate là:
 ##### 3. Fixed validators
 Validator | type | Mặc định |Giải thích
 ----|----|---------| ------------
-validate | Boolean | true | Có validate hay không? 
 required | Boolean | false | Có require hay không? 
 min | Number | undefined | Giá trị nhỏ nhất của biến
 max | Number | undefined | Giá trị lớn nhất của biến
+maxLength | Number | undefined | giá trị giới hạn kí tự nhập vào.
 charType | String | undefined |Validate giá trị text nhập vào. CharType là một trong số: Kana, AnyHalfWidth, AlphaNumeric, Numeric, Any
 dateRange | Boolean | false |Dữ liệu có phải kiểu date-range hay không?
 timeRange | Boolean | false |Dữ liệu có phải kiểu time-range hay không?

@@ -479,7 +479,7 @@ const DIRTY = 'dirty',
 
             vue.component('v-errors', {
                 props: ['value', 'name'],
-                template: `<span v-for="(err, k) in  value" v-bind:key="k" class="invalid-feedback">{{ resource | i18n(params) }}</span>`,
+                template: `<div class="invalid-feedback mt-1"><span v-for="(err, k) in  value" v-bind:key="k" >{{ resource | i18n(params) }}</span></div>`,
                 computed: {
                     params() {
                         let self = this,

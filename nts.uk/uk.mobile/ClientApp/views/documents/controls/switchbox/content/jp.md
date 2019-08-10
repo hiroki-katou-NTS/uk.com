@@ -42,4 +42,4 @@ export class FormCheckComponent extends Vue {
 | -----|---------|--------------|-----------|
 | `disabled` | `boolean` | false | 無効？ |
 
-**著者：Pham Van Dan**
+**著者：Nguyen Van Vuong**

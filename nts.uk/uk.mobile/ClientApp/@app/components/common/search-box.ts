@@ -5,25 +5,25 @@ import { TimeWithDayHelper } from '@app/components/controls/time-picker';
 @component({
     template: `<div class="form-group mb-0">
         <div class="input-group input-group-time">             
-            <template v-if="iconsClass.before" v-bind:key="'show'">
-                <div class="input-group-prepend" v-click:500="emitSearch">
+            <template v-if="iconsClass.before">
+                <div class="input-group-prepend" v-click:500="emitSearch" v-bind:key="'show'">
                     <span class="input-group-text" v-bind:class="iconsClass.before">{{ !iconsClass.before ? icons.before : '' }}</span>
                 </div>
             </template>
-            <template v-else v-bind:key="'hide'"></template>
-            <div class="form-control" v-bind:class="{ 'is-invalid': invalid }">
+            <template v-else></template>
+            <div class="form-control">
                 <div class="row m-0">
                     <div class="col-5 p-0 text-center" v-click:1000="selectStartTime">{{displayStartTime}}</div>
                     <div class="col-2 p-0 text-center">～</div>
                     <div class="col-5 p-0 text-center" v-click:1000="selectEndTime">{{displayEndTime}}</div>
                 </div>
             </div>
-            <template v-if="iconsClass.after" v-bind:key="'show'">
-                <div class="input-group-append" v-click:500="emitSearch">
+            <template v-if="iconsClass.after">
+                <div class="input-group-append" v-click:500="emitSearch" v-bind:key="'show'">
                     <span class="input-group-text" v-bind:class="iconsClass.after">{{ !iconsClass.after ? icons.after : ''}}</span>
                 </div>
             </template>
-            <template v-else v-bind:key="'hide'"></template>
+            <template v-else></template>
         </div>
     </div>`
 })

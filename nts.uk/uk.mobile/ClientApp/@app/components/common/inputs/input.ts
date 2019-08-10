@@ -5,8 +5,8 @@ import { component, Prop, Watch } from '@app/core/component';
 
 export const input = (tagName: 'input' | 'textarea' | 'select' = 'input') => component({
     template: `<div class="form-group row">
-        <template v-if="showTitle && showTitle !== 'false' && name" v-bind:key="'showtitle'">
-            <div v-bind:class="columns.title">
+        <template v-if="showTitle && showTitle !== 'false' && name">
+            <div v-bind:class="columns.title" v-bind:key="'showtitle'">
                 <nts-label 
                     v-bind:constraint="constraints"
                     v-bind:show-constraint="showConstraint"
@@ -14,21 +14,21 @@ export const input = (tagName: 'input' | 'textarea' | 'select' = 'input') => com
                     >{{ name | i18n }}</nts-label>
             </div>
         </template>
-        <template v-else v-bind:key="'hidetitle'"></template>
+        <template v-else></template>
         <div v-bind:class="columns.input">
             <div class="input-group input-group-transparent">                
-                <template v-if="icons.before" key="show">
-                    <div class="input-group-prepend">
+                <template v-if="icons.before">
+                    <div class="input-group-prepend" v-bind:key="'show'">
                         <span class="input-group-text" v-bind:class="iconsClass.before">{{ !iconsClass.before ? icons.before : '' }}</span>
                     </div>
                 </template>
-                <template v-else key="hide"></template>
-                <template v-if="icons.after" key="show">
-                    <div class="input-group-append">
+                <template v-else></template>
+                <template v-if="icons.after">
+                    <div class="input-group-append" v-bind:key="'show'">
                         <span class="input-group-text" v-bind:class="iconsClass.after">{{ !iconsClass.after ? icons.after : ''}}</span>
                     </div>
                 </template>
-                <template v-else key="hide"></template>       
+                <template v-else></template>       
                 ${
         tagName === 'select' ?
             `<select class="form-control" 
@@ -59,7 +59,7 @@ export const input = (tagName: 'input' | 'textarea' | 'select' = 'input') => com
                         v-bind:tabindex="tabindex"
                         v-bind:placeholder="$placeholder"
                         v-bind:class="classInput"
-                        v-on:click="click()"
+                        v-on:click="evt => { click(); $emit('click', evt); }"
                         v-on:keydown.13="click()"
                         v-on:input="input()"
                         v-on:keydown="evt => $emit('keydown', evt)"
@@ -67,14 +67,13 @@ export const input = (tagName: 'input' | 'textarea' | 'select' = 'input') => com
                         v-on:keyup="evt => $emit('keyup', evt)"
                         v-on:focus="evt => $emit('focus', evt)"
                         v-on:blur="evt => $emit('blur', evt)"
-                        v-on:click="evt => $emit('click', evt)"
                         v-on:dblclick="evt => $emit('dblclick', evt)"
                     />`
         }
-                <template v-if="showError" v-bind:key="'showError'">
-                    <v-errors v-model="$errors" v-bind:name="name" />
+                <template v-if="showError">
+                    <v-errors v-model="$errors" v-bind:name="name" v-bind:key="'showError'" />
                 </template>
-                <template v-else v-bind:key="'hideError'"></template>
+                <template v-else></template>
             </div>
         </div>
     </div>`
@@ -83,7 +82,9 @@ export class InputComponent extends Vue {
     public click() { }
 
     public type: string = '';
-    public rows: number | string | null = null;
+
+    @Prop({ default: () => null })
+    public readonly rows!: number | string | null;
 
     public editable: boolean = true;
 

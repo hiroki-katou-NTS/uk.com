@@ -58,3 +58,4 @@ ViewではViewModelで定義した&lt;fix-table&gt;タグを使ってくださ�
 - `previousClass`: 初期値 'btn btn-secondary btn-sm' : 「前項」ボタンのCSSクラス
 - `nextClass`: mặc định 'btn btn-secondary btn-sm' : 「次項」ボタンのCSSクラス
 
+著者： Pham Van Dan

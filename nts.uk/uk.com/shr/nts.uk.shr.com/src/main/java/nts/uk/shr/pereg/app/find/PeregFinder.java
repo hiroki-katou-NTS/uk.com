@@ -28,7 +28,7 @@ public interface PeregFinder<T> {
 	DataClassification dataType();
 
 	PeregDomainDto getSingleData(PeregQuery query);
-
+	
 	List<PeregDomainDto> getListData(PeregQuery query);
 	
 	List<ComboBoxObject> getListFirstItems(PeregQuery query);
@@ -44,4 +44,5 @@ public interface PeregFinder<T> {
 	default List<ComboBoxObject> findListFirstItems(PeregQuery query) {
 		return this.getListFirstItems(query);
 	}
+	
 }

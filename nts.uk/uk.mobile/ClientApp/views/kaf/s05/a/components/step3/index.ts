@@ -2,7 +2,7 @@ import { _, Vue } from '@app/provider';
 import { component, Watch, Prop } from '@app/core/component';
 import { Kafs05Model } from '../common/CommonClass';
 @component({
-    name: 'KafS05a3',
+    name: 'kafS05a3',
     template: require('./index.html'),
     resource: require('../../resources.json')
 })
@@ -21,6 +21,7 @@ export class KafS05aStep3Component extends Vue {
     }
 
     public registerClick() {
+        this.$mask('show', { message: true });
         this.beforeRegisterColorConfirm();
     }
 
@@ -55,8 +56,8 @@ export class KafS05aStep3Component extends Vue {
                 flexExessTimeTmp = self.overtimeHours[i].applicationTime;
             }
         }
-        let overtime = {
-            applicationDate: new Date(self.appDate),
+        let overtime: any = {
+            applicationDate: self.appDate,
             prePostAtr: self.prePostSelected,
             applicantSID: self.employeeID,
             applicationReason: self.multilContent,
@@ -65,6 +66,7 @@ export class KafS05aStep3Component extends Vue {
             workClockFrom1: self.workTimeInput.start,
             workClockTo1: self.workTimeInput.end,
             bonusTimes: self.bonusTimes,
+            breakTimes: self.breakTimes,
             overtimeHours: self.overtimeHours,
             restTime: self.restTime,
             overTimeShiftNight: overTimeShiftNightTmp == null ? null : overTimeShiftNightTmp,
@@ -78,25 +80,64 @@ export class KafS05aStep3Component extends Vue {
             checkOver1Year: true,
             checkAppDate: false
         };
-        this.$http.post('at', servicePath.beforeRegisterColorConfirm, overtime).then((result: { data: any }) => {
-            overtime.checkOver1Year = false;
-            this.contentBefRegColorConfirmDone(overtime, result.data);
-        }).catch((res: any) => {
-            if (res.messageId == 'Msg_1518') {
-                this.$modal.confirm({ messageId: res.messageId }).then((value) => {
-                    if (value == 'yes') {
-                        overtime.checkOver1Year = false;
-                        this.$http.post('at', servicePath.beforeRegisterColorConfirm, overtime).then((result: { data: any }) => {
-                            this.contentBefRegColorConfirmDone(overtime, result.data);
-                        }).catch((res: any) => {
-                            this.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
-                        });
-                    }
-                });
-            } else {
+
+        if (null != self.appID) {
+            overtime.version = self.version;
+            overtime.appID = self.appID;
+            // EDITMODE 設定
+            overtime.user = self.user;
+            overtime.reflectPerState = self.reflectPerState;
+            delete overtime.checkOver1Year;
+            delete overtime.checkAppDate;
+        }
+
+        //登録
+        if (null == self.appID) {
+            this.$http.post('at', servicePath.beforeRegisterColorConfirm, overtime).then((result: { data: any }) => {
+                overtime.checkOver1Year = false;
+                this.contentBefRegColorConfirmDone(overtime, result.data);
+            }).catch((res: any) => {
+                if (res.messageId == 'Msg_1518') {
+                    this.$modal.confirm({ messageId: res.messageId }).then((value) => {
+                        if (value == 'yes') {
+                            overtime.checkOver1Year = false;
+                            this.$http.post('at', servicePath.beforeRegisterColorConfirm, overtime).then((result: { data: any }) => {
+                                this.contentBefRegColorConfirmDone(overtime, result.data);
+                            }).catch((res: any) => {
+                                this.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
+                                this.$mask('hide');
+                            });
+                        } else {
+                            this.$mask('hide');
+                        }
+                    });
+                } else {
+                    this.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
+                    this.$mask('hide');
+                }
+            });
+            //更新
+        } else {
+            this.$http.post('at', servicePath.beforeRegisterColorConfirm, overtime).then((result: { data: any }) => {
+                let res = result.data;
+                if (res.confirm) {
+                    this.$modal.confirm({ messageId: res.messageId, messageParams: res.parameterIds }).then((value) => {
+                        if (value == 'yes') {
+                            this.beforeUpdateProcess(overtime);
+                        } else {
+                            this.$mask('hide');
+                        }
+                    });
+                } else {
+                    this.beforeUpdateProcess(overtime);
+                }
+            }).catch((res: any) => {
                 this.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
-            }
-        });
+                this.$mask('hide');
+            });
+        }
+
+
     }
 
     public contentBefRegColorConfirmDone(overtime, data) {
@@ -106,6 +147,8 @@ export class KafS05aStep3Component extends Vue {
                 //登録処理を実行
                 if (value == 'yes') {
                     this.beforeRegisterProcess(overtime);
+                } else {
+                    this.$mask('hide');
                 }
             });
         } else {
@@ -121,51 +164,88 @@ export class KafS05aStep3Component extends Vue {
         }).catch((res: any) => {
             if (_.isEmpty(res.errors)) {
                 this.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
+                this.$mask('hide');
             } else {
                 let errors = res.errors;
                 for (let i = 0; i < errors.length; i++) {
                     let error = errors[i];
                     if (error.messageId == 'Msg_1538') {
-                        error.kafs05ModeleterIds = [
-                            //formatYearMonth(parseInt(error.kafs05ModeleterIds[4])), 
-                            //formatYearMonth(parseInt(error.kafs05ModeleterIds[5])),
-                            //format.byId('Clock_Short_HM', parseInt(error.kafs05ModeleterIds[6])), 
-                            //.byId('Clock_Short_HM', parseInt(error.kafs05ModeleterIds[7]))
-                        ];
+                        //error.kafs05ModeleterIds = [
+                        //formatYearMonth(parseInt(error.kafs05ModeleterIds[4])), 
+                        //formatYearMonth(parseInt(error.kafs05ModeleterIds[5])),
+                        //format.byId('Clock_Short_HM', parseInt(error.kafs05ModeleterIds[6])), 
+                        //.byId('Clock_Short_HM', parseInt(error.kafs05ModeleterIds[7]))
+                        //];
                     } else {
-                        error.kafs05ModeleterIds = [
-                            //.byId('Clock_Short_HM', parseInt(error.kafs05ModeleterIds[4])), 
-                            //.byId('Clock_Short_HM', parseInt(error.kafs05ModeleterIds[5]))
-                        ];
+                        //error.kafs05ModeleterIds = [
+                        //.byId('Clock_Short_HM', parseInt(error.kafs05ModeleterIds[4])), 
+                        //.byId('Clock_Short_HM', parseInt(error.kafs05ModeleterIds[5]))
+                        //];
                     }
                     //error.message = resource.getMessage(error.messageId, error.kafs05ModeleterIds);
                 }
-                //nbundledErrors({ errors: errors })  
+                //nbundledErrors({ errors: errors })
+                this.$mask('hide');
+            }
+        });
+    }
+
+    public beforeUpdateProcess(overtime: any) {
+        this.$http.post('at', servicePath.checkBeforeRegister, overtime).then((result: { data: any }) => {
+            overtime.appOvertimeDetail = result.data.appOvertimeDetail;
+            this.updateOvertime(overtime);
+        }).catch((res: any) => {
+            if (_.isEmpty(res.errors)) {
+                this.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
+                this.$mask('hide');
+            } else {
+                let errors = res.errors;
+                for (let i = 0; i < errors.length; i++) {
+                    let error = errors[i];
+                    if (error.messageId == 'Msg_1538') {
+                        //error.kafs05ModeleterIds = [
+                        //formatYearMonth(parseInt(error.kafs05ModeleterIds[4])), 
+                        //formatYearMonth(parseInt(error.kafs05ModeleterIds[5])),
+                        //format.byId('Clock_Short_HM', parseInt(error.kafs05ModeleterIds[6])), 
+                        //.byId('Clock_Short_HM', parseInt(error.kafs05ModeleterIds[7]))
+                        //];
+                    } else {
+                        //error.kafs05ModeleterIds = [
+                        //.byId('Clock_Short_HM', parseInt(error.kafs05ModeleterIds[4])), 
+                        //.byId('Clock_Short_HM', parseInt(error.kafs05ModeleterIds[5]))
+                        //];
+                    }
+                    //error.message = resource.getMessage(error.messageId, error.kafs05ModeleterIds);
+                }
+                //nbundledErrors({ errors: errors })
+                this.$mask('hide');
             }
         });
     }
 
     public confirmInconsistency(overtime: any) {
         let self = this.kafs05ModelStep3;
-        this.$http.post('at', servicePath.confirmInconsistency, overtime).then((result: { data: any }) => { 
+        this.$http.post('at', servicePath.confirmInconsistency, overtime).then((result: { data: any }) => {
             if (!_.isEmpty(result.data)) {
-                this.$modal.confirm({ messageId: result.data[0], messageParams: [result.data[1],result.data[2]] }).then((value) => {
+                this.$modal.confirm({ messageId: result.data[0], messageParams: [result.data[1], result.data[2]] }).then((value) => {
                     if (value == 'yes') {
                         this.registerData(overtime);
+                    } else {
+                        this.$mask('hide');
                     }
                 });
             } else {
                 //登録処理を実行
                 this.registerData(overtime);
-            }   
+            }
         }).catch((res: any) => {
-            this.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });    
-        });    
+            this.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
+            this.$mask('hide');
+        });
     }
 
     public registerData(overtime: any) {
         let self = this.kafs05ModelStep3;
-        this.$mask('show', { message: true });
 
         this.$http.post('at', servicePath.createOvertime, overtime).then((result: { data: any }) => {
             this.kafs05ModelStep3.appID = result.data.appID;
@@ -175,6 +255,22 @@ export class KafS05aStep3Component extends Vue {
         }).catch((res: any) => {
             this.$mask('hide');
             this.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
+        });
+    }
+
+    public updateOvertime(overtime: any) {
+        this.$http.post('at', servicePath.updateOvertime, overtime).then((result: { data: any }) => {
+            this.$modal.info({ messageId: 'Msg_15' });
+            this.$emit('toStep4', this.kafs05ModelStep3);
+            this.$mask('hide');
+
+        }).catch((res: any) => {
+            if (res.optimisticLock == true) {
+                this.$modal.error({ messageId: 'Msg_197' });
+            } else {
+                this.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
+            }
+            this.$mask('hide');
         });
     }
 
@@ -195,4 +291,5 @@ const servicePath = {
     checkBeforeRegister: 'at/request/application/overtime/checkBeforeRegister',
     confirmInconsistency: 'at/request/application/holidaywork/confirmInconsistency',
     createOvertime: 'at/request/application/overtime/create',
+    updateOvertime: 'at/request/application/overtime/update',
 };

@@ -1,5 +1,5 @@
 import { component, Prop, Watch } from '@app/core/component';
-import { _, moment, VueConstructor, Vue } from '@app/provider';
+import { _, Vue } from '@app/provider';
 import { KDL002Component } from '../../../../../kdl/002';
 import { TimeWithDay, $ } from '@app/utils';
 import { OvertimeAgreement, AgreementTimeStatusOfMonthly, Kafs05Model } from '../common/CommonClass';
@@ -19,27 +19,20 @@ import { OvertimeAgreement, AgreementTimeStatusOfMonthly, Kafs05Model } from '..
             workTimeInput: {
                 timeRange: true,
                 required: true,
-                checkStartEnd: {
-                    test(value: any) {
-                        if (!_.isNil(value.start) && !_.isNil(value.end) && (value.start == value.end)) {
-                            return false;
-                        }
-
-                        return true;
-                    },
-                    messageId: 'Msg_307'
-                }
             },
             prePostSelected: {
                 validateSwitchbox: {
                     test(value: number) {
-
-                        if (value != 0 && value != 1) {
-                            document.body.getElementsByClassName('valid-switchbox')[0].className += ' invalid';
-
-                            return false;
+                        if (null == this.kafs05ModelStep1.appID && this.kafs05ModelStep1.displayPrePostFlg) {
+                            if (value != 0 && value != 1) {
+                                document.body.getElementsByClassName('valid-switchbox')[0].className += ' invalid';
+    
+                                return false;
+                            }
+                            document.body.getElementsByClassName('valid-switchbox')[0].className += 'valid-switchbox';
+    
+                            return true;
                         }
-                        document.body.getElementsByClassName('valid-switchbox')[0].className += 'valid-switchbox';
 
                         return true;
                     },
@@ -102,7 +95,7 @@ export class KafS05aStep1Component extends Vue {
                 self.selectedWorkTime = f.selectedWorkTime.workTime1;
                 this.$http.post('at', servicePath.getRecordWork, {
                     employeeID: self.employeeID,
-                    appDate: _.isNil(self.appDate) ? null : moment(self.appDate).format(self.DATE_FORMAT),
+                    appDate: _.isNil(self.appDate) ? null : this.$dt(self.appDate),
                     siftCD: self.siftCD,
                     prePostAtr: self.prePostSelected,
                     overtimeHours: _.map(self.overtimeHours, (item) => this.initCalculateData(item)),
@@ -143,11 +136,11 @@ export class KafS05aStep1Component extends Vue {
         }
 
         this.$mask('show', { message: true });
-        let kafs05ModelStep1: any = {
+        let param: any = {
             overtimeHours: _.map(self.overtimeHours, (item) => this.initCalculateData(item)),
             bonusTimes: _.map(self.bonusTimes, (item) => this.initCalculateData(item)),
             prePostAtr: self.prePostSelected,
-            appDate: _.isNil(self.appDate) ? null : moment(self.appDate).format(self.DATE_FORMAT),
+            appDate: _.isNil(self.appDate) ? null : this.$dt(self.appDate),
             siftCD: self.siftCD,
             workTypeCode: self.workTypeCd,
             startTimeRests: _.isEmpty(self.restTime) ? [] : _.map(self.restTime, (x) => x.restTimeInput.start),
@@ -158,7 +151,7 @@ export class KafS05aStep1Component extends Vue {
         };
 
         let overtimeHoursResult: Array<any>;
-        this.$http.post('at', servicePath.getCalculationResultMob, kafs05ModelStep1).then((result: { data: any }) => {
+        this.$http.post('at', servicePath.getCalculationResultMob, param).then((result: { data: any }) => {
             _.remove(self.overtimeHours);
             _.remove(self.bonusTimes);
             overtimeHoursResult = result.data.caculationTimes;
@@ -251,7 +244,10 @@ export class KafS05aStep1Component extends Vue {
                 this.$modal.error({ messageId: 'Msg_424', messageParams: [res.parameterIds[0], res.parameterIds[1], res.parameterIds[2]] });
             } else if (res.messageId == 'Msg_1508') {
                 this.$modal.error({ messageId: 'Msg_1508', messageParams: [res.parameterIds[0]] });
+            } else {
+                this.$modal.error({ messageId: res.messageId });
             }
+            this.$mask('hide');
         });
     }
     public startPage() {
@@ -283,11 +279,11 @@ export class KafS05aStep1Component extends Vue {
     }
 
     public applyWatcher() {
-        this.$watch('kafs05ModelStep1.appDate', function (value: string) {
+        this.$watch('kafs05ModelStep1.appDate', function (value: Date) {
             let self = this.kafs05ModelStep1;
             this.$mask('show', { message: true });
             this.$http.post('at', servicePath.findByChangeAppDate, {
-                appDate: moment(value).format(self.DATE_FORMAT),
+                appDate: this.$dt(value),
                 prePostAtr: self.prePostSelected,
                 siftCD: self.siftCD,
                 overtimeHours: _.map(self.overtimeHours, (item) => this.initCalculateData(item)),
@@ -300,7 +296,7 @@ export class KafS05aStep1Component extends Vue {
                 changeEmployee: _.isEmpty(self.employeeList) ? null : self.employeeList[0].id
             }).then((result: { data: any }) => {
                 this.changeAppDateData(result.data);
-                this.checkAppDate(0, moment(value).format(self.DATE_FORMAT), false, self.employeeID, self.overtimeAtr);
+                this.checkAppDate(0, this.$dt(value), false, self.employeeID, self.overtimeAtr);
                 self.resetTimeRange++;
                 this.$mask('hide');
             }).catch((res: any) => {
@@ -320,7 +316,7 @@ export class KafS05aStep1Component extends Vue {
             }
             this.$http.post('at', servicePath.checkConvertPrePost, {
                 prePostAtr: value,
-                appDate: _.isNil(self.appDate) ? null : moment(self.appDate).format(self.DATE_FORMAT),
+                appDate: _.isNil(self.appDate) ? null : this.$dt(self.appDate),
                 siftCD: self.siftCD,
                 overtimeHours: _.map(self.overtimeHours, (item) => this.initCalculateData(item)),
                 workTypeCode: self.workTypeCd,
@@ -352,17 +348,17 @@ export class KafS05aStep1Component extends Vue {
                     switch (result.data.errorFlag) {
                         case 1:
                             this.$modal.error({ messageId: 'Msg_324' }).then(() => {
-                                this.$goto('ccg008a');
+                                return;
                             });
                             break;
                         case 2:
                             this.$modal.error({ messageId: 'Msg_238' }).then(() => {
-                                this.$goto('ccg008a');
+                                return;
                             });
                             break;
                         case 3:
                             this.$modal.error({ messageId: 'Msg_237' }).then(() => {
-                                this.$goto('ccg008a');
+                                return;
                             });
                             break;
                         default:
