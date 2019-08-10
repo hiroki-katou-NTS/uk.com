@@ -228,7 +228,7 @@ $uk-status-color: (
 
     .apply-#{$class-name},
     .uk-apply-#{$class-name} {
-        color: $fg-color;
+        color: $fg-color !important;
         border: 1px solid $bd-color;
         border-color: $bd-color !important;
         background-color: $bg-color !important;
@@ -238,34 +238,10 @@ $uk-status-color: (
 
         &:hover,
         &:focus {
-            color: $fg-color;
+            color: $fg-color !important;
             border: 1px solid $bd-color;
-            background-color: $bg-color;            
-        }
-
-        &.border-0 {
-            border: 0;
-        }
-        &.border-1 {
-            border: 1px solid $bd-color;
-        }
-        &.border-2 {
-            border: 2px solid $bd-color;
-        }
-        &.border-3 {
-            border: 1px solid $bd-color;
-        }
-        &.border-dashed {
-            border-style: dashed;
-        }
-        &.border-dotted {
-            border-style: dotted;
-        }
-        &.border-double {
-            border-style: double;
-        }
-        &.border-ridge {
-            border-style: ridge;
+            border-color: $bd-color !important;
+            background-color: $bg-color !important;            
         }
     }
 }
