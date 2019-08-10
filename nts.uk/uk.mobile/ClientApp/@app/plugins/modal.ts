@@ -240,16 +240,16 @@ const modal = {
                                                 <template v-if="hasTitle">
                                                     <div class="modal-header uk-bg-teal rounded-0" v-bind:key="hasTitle">
                                                         <h4 class="modal-title text-white">
-                                                            <template v-if="brsize" key="'mobilesize'">
-                                                                <i class="fas fa-angle-left mr-1" v-on:click="show = false"></i>
+                                                            <template v-if="brsize">
+                                                                <i class="fas fa-angle-left mr-1" v-on:click="show = false" v-bindkey="'mobilesize'"></i>
                                                             </template>
-                                                            <template v-else key="'mobilesizedesktopsize_2'"></template>
+                                                            <template v-else></template>
                                                             <span>{{title | i18n}}</span>
                                                         </h4>
-                                                        <template v-if="!brsize" key="'desktopsize'">
-                                                            <button tabindex="-1" type="button" v-on:click="show = false" class="close btn-close">&times;</button>
+                                                        <template v-if="!brsize">
+                                                            <button tabindex="-1" v-bind:key="'desktopsize'" type="button" v-on:click="show = false" class="close btn-close">&times;</button>
                                                         </template>
-                                                        <template v-else key="'desktopsize_2'"></template>
+                                                        <template v-else></template>
                                                     </div>
                                                 </template>
                                                 <template v-else></template>
