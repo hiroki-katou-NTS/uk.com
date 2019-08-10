@@ -34,7 +34,7 @@ export class KafS05aComponent extends Vue {
     public created() {
         this.step = 'step1';
         this.kafs05Model = {
-            isCreate: true, step1Start: true, resetTimeRange: 0, overtimeType: '0', checkBoxValue: false, enableSendMail: false, displayBreakTimeFlg: false, employeeName: '', enteredPersonName: '', prePostSelected: 2, workState: true,
+            isCreate: true, step1Start: true, resetTimeRange: 0, checkBoxValue: false, enableSendMail: false, displayBreakTimeFlg: false, employeeName: '', enteredPersonName: '', prePostSelected: 2, workState: true,
             typeSiftVisible: true, appDate: null, workTypeCd: '', workTypeName: '', siftCD: '', siftName: '', workTypecodes: [], workTimecodes: [], selectedWorkTime: '',
             reasonCombo: [], selectedReason: '', requiredReason: false, multilContent: '', reasonCombo2: [], selectedReason2: '', requiredReason2: false, multilContent2: '',
             approvalSource: [], employeeID: null, employeeIDs: [], employeeList: [], selectedEmplCodes: '', employeeFlag: false, totalEmployee: '', heightOvertimeHours: null,
