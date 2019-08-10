@@ -97,14 +97,17 @@
         </div>
       </div> 
     </div>
+    <div class="row pl-2 pt-1 pb-1 uk-bg-alice-blue border-top border-bottom uk-border-light-gray"
+      v-show="displayApproveReasonContent()">{{'CMMS45_62' | i18n}}
+    </div>
+    <div v-show="displayApproveReasonContent()">{{ authorComment }}</div>
     <div>
       <app1 v-if="true" v-bind:params="{appOvertime: appOvertime}" />
       <app2 v-if="false" />
       <app3 v-if="false" />
     </div>
     <div class="row pl-2 pt-1 pb-1 uk-bg-alice-blue border-top border-bottom uk-border-light-gray"
-      v-show="displayApproveReasonInput()">
-      {{'CMMS45_62' | i18n}}
+      v-show="displayApproveReasonInput()">{{'CMMS45_62' | i18n}}
     </div>
     <div class="mt-2">
       <nts-text-area v-model="memo" v-show="displayApproveReasonInput()"/>

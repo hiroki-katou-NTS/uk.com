@@ -81,6 +81,7 @@ export interface IApplication {
     authorizableFlags: boolean;
 	approvalATR: number;
     alternateExpiration: boolean;
+    authorComment: string;
     appOvertime: IOvertime;
 }
 

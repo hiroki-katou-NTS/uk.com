@@ -29,5 +29,7 @@ public class DetailMobDto {
 	
 	public boolean alternateExpiration;
 	
+	public String authorComment;
+	
 	public AppOverTimeMobDto appOvertime;
 }
