@@ -18,7 +18,7 @@
                         </thead>
                         <tbody>
                             <tr v-for="(item, i) of kafs05ModelStep1.overtimeWork">
-                                <td :class="item.color">{{item.yearMonth}}</td>
+                                <td :class="item.color">{{item.yearMonth | yearmonth}}</td>
                                 <td :class="item.color">{{item.limitTime | timedr}}</td>
                                 <td :class="item.color">{{item.actualTime | timedr}}</td>
                             </tr>
@@ -46,9 +46,9 @@
                 </div>
                 <div class="card-body">
                     <div class="confirm-item mb-2" v-if="kafs05ModelStep1.prePostSelected == 0">
-                        <span>{{kafs05ModelStep1.appDate}}&nbsp;{{'KAF009_9' | i18n}}</span></div>
+                        <span>{{kafs05ModelStep1.appDate | date}}&nbsp;{{'KAF009_9' | i18n}}</span></div>
                     <div class="confirm-item mb-2" v-if="kafs05ModelStep1.prePostSelected == 1">
-                        <span>{{kafs05ModelStep1.appDate}}&nbsp;{{'KAF009_10' | i18n}}</span></div>
+                        <span>{{kafs05ModelStep1.appDate | date}}&nbsp;{{'KAF009_10' | i18n}}</span></div>
                 </div>
             </div>
         </div>

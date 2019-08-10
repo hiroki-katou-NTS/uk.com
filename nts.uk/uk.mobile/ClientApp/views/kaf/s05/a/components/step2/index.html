@@ -18,7 +18,7 @@
                         </thead>
                         <tbody>
                             <tr v-for="(item, i) of kafs05ModelStep2.overtimeWork">
-                                <td :class="item.color">{{item.yearMonth}}</td>
+                                <td :class="item.color">{{item.yearMonth | yearmonth}}</td>
                                 <td :class="item.color">{{item.limitTime | timedr}}</td>
                                 <td :class="item.color">{{item.actualTime | timedr}}</td>
                             </tr>

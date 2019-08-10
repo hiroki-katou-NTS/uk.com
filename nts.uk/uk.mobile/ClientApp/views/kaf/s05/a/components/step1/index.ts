@@ -248,6 +248,10 @@ export class KafS05aStep1Component extends Vue {
                 this.$modal.error({ messageId: 'Msg_424', messageParams: [res.parameterIds[0], res.parameterIds[1], res.parameterIds[2]] });
             } else if (res.messageId == 'Msg_1508') {
                 this.$modal.error({ messageId: 'Msg_1508', messageParams: [res.parameterIds[0]] });
+            } else {
+                this.$modal.error({ messageId: res.messageId }).then(() => {
+                    this.$goto('ccg008a');
+                });
             }
         });
     }
@@ -393,8 +397,8 @@ export class KafS05aStep1Component extends Vue {
 
     public initData(data) {
         let self = this.kafs05ModelStep1;
-        if (null != self.appID) {
-            self.appDate = data.application.applicationDate;
+        if (!_.isNil(self.appID)) {
+            self.appDate = this.$dt.fromString(data.application.applicationDate);
             self.enteredPersonName = data.enteredPersonName;
             self.version = data.application.version;
             self.employeeID = data.application.applicantSID;
@@ -450,11 +454,20 @@ export class KafS05aStep1Component extends Vue {
 
         self.prePostEnable = data.prePostCanChangeFlg;
         self.indicationOvertimeFlg = data.extratimeDisplayFlag;
-        if (_.isNil(data.agreementTimeDto)) {
-            self.indicationOvertimeFlg = false;
+        if (!_.isNil(self.appID)) {
+            if (_.isNil(data.appOvertimeDetailDto)) {
+                self.indicationOvertimeFlg = false;
+            } else {
+                this.setOvertimeWorkDetail(data.appOvertimeDetailDto, self, data.appOvertimeDetailStatus);
+            }
         } else {
-            this.setOvertimeWork(data.agreementTimeDto, self);
+            if (_.isNil(data.agreementTimeDto)) {
+                self.indicationOvertimeFlg = false;
+            } else {
+                this.setOvertimeWork(data.agreementTimeDto, self);
+            }
         }
+        
         self.workTypeChangeFlg = data.workTypeChangeFlg;
         // list employeeID
         if (!_.isEmpty(data.employees)) {
@@ -929,6 +942,53 @@ export class KafS05aStep1Component extends Vue {
         _.remove(self.overtimeWork);
         self.overtimeWork.push(overtimeWork1);
         self.overtimeWork.push(overtimeWork2);
+    }
+
+    public setOvertimeWorkDetail(appOvertimeDetailDto: any, self: any, status: any): void {
+        let overtimeWork = { yearMonth: '', limitTime: 0, actualTime: 0, appTime: 0, totalTime:0, color: '' };
+        
+        overtimeWork.yearMonth = appOvertimeDetailDto.yearMonth;
+        if (!_.isNil(appOvertimeDetailDto.exceptionLimitErrorTime)) {
+            overtimeWork.limitTime = appOvertimeDetailDto.exceptionLimitErrorTime;    
+        } else {
+            overtimeWork.limitTime = appOvertimeDetailDto.limitErrorTime;    
+        }
+        overtimeWork.actualTime = appOvertimeDetailDto.actualTime;
+        overtimeWork.appTime = appOvertimeDetailDto.applicationTime;
+        overtimeWork.totalTime = appOvertimeDetailDto.actualTime + appOvertimeDetailDto.applicationTime;
+        switch (status) {
+            case AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM: {
+                overtimeWork.color = 'alarm';
+                break;
+            }   
+            case AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR: {
+                overtimeWork.color = 'error';
+                break;
+            } 
+            case AgreementTimeStatusOfMonthly.NORMAL_SPECIAL: {
+                break;    
+            }
+            case AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM_SP: {
+                overtimeWork.color = 'exception';
+                break;
+            }
+            case AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR_SP: {
+                overtimeWork.color = 'exception';
+                break;        
+            }
+            case AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM: {
+                overtimeWork.color = 'alarm';
+                break;
+            }     
+            case AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ERROR: {
+                overtimeWork.color = 'error';
+                break;
+            }  
+            default: break;
+        }
+        
+        _.remove(self.overtimeWork);
+        self.overtimeWork.push(overtimeWork);
     }
 
     public getApprovalData() {
