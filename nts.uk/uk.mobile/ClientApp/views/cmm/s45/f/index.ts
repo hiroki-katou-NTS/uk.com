@@ -29,6 +29,6 @@ export class CmmS45FComponent extends Vue {
     // tiến tới đơn tiếp theo
     public toNextApp() {
         let self = this;
-        self.$close();    
+        self.$close({ backToMenu: false });    
     }
 }
