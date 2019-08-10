@@ -11,16 +11,24 @@ import { component, Prop } from '@app/core/component';
     constraints: []
 })
 export class CmmS45FComponent extends Vue {
-    @Prop({ default: () => ({ action: 0, listAppMeta: [], nextApp: '' }) })
-    public readonly params: { action: number, listAppMeta: Array<string>, nextApp: string };
+    @Prop({ default: () => ({ action: 0 }) })
+    public readonly params: { 
+        // 1: 処理区分 = 承認 
+        // 2: 処理区分 = 否認
+        // 3: 処理区分 = 差し戻し
+        action: number 
+    };
     public title: string = 'CmmS45F';
 
+    // quay về màn CMMS45B
     public back() {
-        this.$goto('cmms45b', { CMMS45_FromMenu: false });
+        let self = this;
+        this.$close({ backToMenu: true });
     }
 
+    // tiến tới đơn tiếp theo
     public toNextApp() {
         let self = this;
-        self.$close({ 'listAppMeta':self.params.listAppMeta, 'currentApp': self.params.nextApp });    
+        self.$close();    
     }
 }

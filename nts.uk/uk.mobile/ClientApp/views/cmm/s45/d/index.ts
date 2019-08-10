@@ -41,7 +41,7 @@ import {
 })
 export class CmmS45DComponent extends Vue {
     @Prop({ default: () => ({ listAppMeta: [], currentApp: '' }) })
-    public readonly params: { listAppMeta: Array<string>, currentApp: string };
+    public readonly params: { listAppMeta: Array<string>, currentApp: string, backToMenu?: boolean };
     public title: string = 'CmmS45D';
     public showApproval: boolean = false;
     public appCount: number = 0;
@@ -65,10 +65,11 @@ export class CmmS45DComponent extends Vue {
     public memo: string = '';
 
     public created() {
-        this.listAppMeta = this.params.listAppMeta;
-        this.currentApp = this.params.currentApp;
-        this.appCount = _.indexOf(this.listAppMeta, this.currentApp);
-        Object.defineProperty(this.appState, 'getName', {
+        let self = this;
+        self.listAppMeta = self.params.listAppMeta;
+        self.currentApp = self.params.currentApp;
+        self.appCount = _.indexOf(self.listAppMeta, self.currentApp);
+        Object.defineProperty(self.appState, 'getName', {
             get() {
                 switch (this.appStatus) {
                     case 0: return 'CMMS45_7'; // 反映状態 = 未反映
@@ -83,7 +84,7 @@ export class CmmS45DComponent extends Vue {
             }
         });
         
-        Object.defineProperty(this.appState, 'getClass', {
+        Object.defineProperty(self.appState, 'getClass', {
             get() {
                 switch (this.appStatus) {
                     case 0: return 'apply-unapproved'; // 反映状態 = 未反映
@@ -98,7 +99,7 @@ export class CmmS45DComponent extends Vue {
             }
         });
 
-        Object.defineProperty(this.appState, 'getNote', {
+        Object.defineProperty(self.appState, 'getNote', {
             get() {
                 switch (this.appStatus) {
                     case 0: return 'CMMS45_39'; // 反映状態 = 未反映
@@ -115,88 +116,101 @@ export class CmmS45DComponent extends Vue {
     }
 
     public mounted() {
-        this.$mask('show');
-        this.initData();
+        let self = this;
+        self.$mask('show');
+        self.initData();
     }
 
-    // get approver list data
+    // lấy dữ liệu ban đầu
     public initData() {
-        this.selected = 0;
-        this.$http.post('at', API.getDetailMob, this.currentApp)
+        let self = this;
+        self.selected = 0;
+        self.$http.post('at', API.getDetailMob, self.currentApp)
         .then((resApp: any) => {
             let appData: IApplication = resApp.data;
-            this.createPhaseLst(appData.listApprovalPhaseStateDto);
-            this.appState.appStatus = appData.appStatus;
-            this.appState.reflectStatus = appData.reflectStatus;
-            this.appState.version = appData.version;
-            this.appState.authorizableFlags = appData.authorizableFlags;
-            this.appState.approvalATR = appData.approvalATR;
-            this.appState.alternateExpiration = appData.alternateExpiration; 
-            this.reversionReason = appData.reversionReason;
-            this.appOvertime = appData.appOvertime;
-            this.$mask('hide');
+            self.createPhaseLst(appData.listApprovalPhaseStateDto);
+            self.appState.appStatus = appData.appStatus;
+            self.appState.reflectStatus = appData.reflectStatus;
+            self.appState.version = appData.version;
+            self.appState.authorizableFlags = appData.authorizableFlags;
+            self.appState.approvalATR = appData.approvalATR;
+            self.appState.alternateExpiration = appData.alternateExpiration; 
+            self.reversionReason = appData.reversionReason;
+            self.appOvertime = appData.appOvertime;
+            self.$mask('hide');
         }).catch((res: any) => {
-            this.$modal.error(this.$i18n(res.messageId))
+            self.$modal.error(res.messageId)
                 .then(() => {
-                    this.back(true);
+                    self.back();
                 });
         });
     }
 
-    // render data for approver list
+    // tạo dữ liệu người phê duyệt
     public createPhaseLst(listPhase: Array<IApprovalPhase>): void {
+        let self = this;
         let phaseLstConvert: Array<IApprovalPhase> = [];
         for (let i: number = 1; i <= 5; i++) {
             let containPhase: IApprovalPhase = _.find(listPhase, (phase: IApprovalPhase) => phase.phaseOrder == i);
             phaseLstConvert.push(new Phase(containPhase));
         }
-        this.phaseLst = phaseLstConvert;
+        self.phaseLst = phaseLstConvert;
     }
 
-    // go to next application
+    // tiến tới đơn tiếp theo
     public toNextApp(): void {
-        this.showApproval = false;
-        this.appCount++;
-        this.currentApp = this.listAppMeta[this.appCount];
-        this.$mask('show');
-        this.initData();
+        let self = this;
+        self.showApproval = false;
+        self.appCount++;
+        self.currentApp = self.listAppMeta[self.appCount];
+        self.$mask('show');
+        self.initData();
     }
 
-    // back to previous application
+    // quay về đơn trước
     public toPreviousApp(): void {
-        this.showApproval = false;
-        this.appCount--;
-        this.currentApp = this.listAppMeta[this.appCount];
-        this.$mask('show');
-        this.initData();
+        let self = this;
+        self.showApproval = false;
+        self.appCount--;
+        self.currentApp = self.listAppMeta[self.appCount];
+        self.$mask('show');
+        self.initData();
     }
 
-    // check first application
+    // kiểm tra có phải đơn đầu tiên không
     public isFirstApp(): boolean {
-        return this.appCount == 0;
+        let self = this;
+
+        return self.appCount == 0;
     }
 
-    // check last application
+    // kiểm tra có phải đơn cuối cùng không
     public isLastApp(): boolean {
-        return this.appCount == this.listAppMeta.length - 1;
+        let self = this;
+
+        return self.appCount == self.listAppMeta.length - 1;
     }
 
-    // check list app empty
+    // kiểm tra list đơn xin rỗng
     public isEmptyApp(): boolean {
-        return this.listAppMeta.length == 0;
+        let self = this;
+
+        return self.listAppMeta.length == 0;
     }
 
-    // show/hide approver list
+    // ẩn hiện người phê duyệt
     public reverseApproval(): void {
-        this.showApproval = !this.showApproval;
+        let self = this;
+        self.showApproval = !self.showApproval;
     }
 
-    // back to CMMS45A
-    public back(reloadValue?: boolean) {
-        this.$close({ CMMS45A_Reload: false });
+    // quay về màn CMMS45B
+    public back() {
+        let self = this;
+        self.$close();
     }
 
-    // active release app
+    // kích hoạt nút giải phóng
     public releaseApp(): void {
         let self = this;
         self.$modal.confirm('Msg_248')
@@ -209,16 +223,21 @@ export class CmmS45DComponent extends Vue {
                             applicationID: self.currentApp
                         }
                     }).then((resRelease: any) => {
-                        if (resRelease.processDone) {
-                            self.reflectApp(resRelease.reflectAppId);
-                            self.$modal.info('Msg_221');
+                        if (resRelease.data.processDone) {
+                            self.reflectApp(resRelease.data.reflectAppId);
+                            self.$modal.info('Msg_221').then(() => { self.initData(); });
                         }
-                    });            
+                    }).catch((failRelease: any) => {
+                        self.$modal.error(failRelease.messageId)
+                            .then(() => {
+                                self.back();
+                            });
+                    });              
                 }
             });
     }
 
-    // active approve app
+    // kích hoạt nút chấp nhận
     public approveApp(): void {
         let self = this;
         self.$modal.confirm('Msg_1549')
@@ -237,55 +256,74 @@ export class CmmS45DComponent extends Vue {
                         reflectPerState: self.appState.reflectStatus,
                         mobileCall: true
                     }).then((resApprove: any) => {
-                        if (resApprove.processDone) {
-                            self.reflectApp(resApprove.reflectAppId);
+                        if (resApprove.data.processDone) {
+                            self.reflectApp(resApprove.data.reflectAppId);
                             self.$modal.info('Msg_220').then(() => {
                                 self.$modal('cmms45f', { 'action': 1, 'listAppMeta': self.listAppMeta, 'nextApp': self.getNextApp() })
                                 .then((resAfterApprove: any) => {
-                                    self.currentApp = resAfterApprove.currentApp;
-                                    self.listAppMeta = resAfterApprove.listAppMeta;
-                                    self.initData();        
+                                    if (resAfterApprove.backToMenu) {
+                                        self.$close();
+                                    } else {
+                                        self.toNextApp();
+                                    }        
                                 }); 
                             });
                         }
+                    }).catch((failApprove: any) => {
+                        self.$modal.error(failApprove.messageId)
+                            .then(() => {
+                                self.back();
+                            });
                     });            
                 }
             });
     }
 
-    // active deny app
+    // kích hoạt nút từ chối
     public denyApp(): void {
         let self = this;
         self.$modal.confirm('Msg_1550')
             .then((v) => {
                 if (v == 'yes') {
                     self.$http.post('at', API.deny, {
-                        version: self.appState.version,
-                        appId: self.currentApp
+                        memo: self.memo,
+                        applicationDto: {
+                            version: self.appState.version,
+                            applicationID: self.currentApp,
+                            prePostAtr: self.appOvertime.prePostAtr,
+                            applicantSID: self.appOvertime.applicant
+                        }   
                     }).then((resDeny: any) => {
-                        if (resDeny.processDone) {
-                            self.reflectApp(resDeny.reflectAppId);
+                        if (resDeny.data.processDone) {
+                            self.reflectApp(resDeny.data.reflectAppId);
                             self.$modal.info('Msg_222').then(() => {
                                 self.$modal('cmms45f', { 'action': 2, 'listAppMeta': self.listAppMeta, 'nextApp': self.getNextApp() })
                                 .then((resAfterDeny: any) => {
-                                    self.currentApp = resAfterDeny.currentApp;
-                                    self.listAppMeta = resAfterDeny.listAppMeta;
-                                    self.initData();        
+                                    if (resAfterDeny.backToMenu) {
+                                        self.$close();
+                                    } else {
+                                        self.toNextApp();
+                                    }      
                                 });
                             });
                         }
-                    });            
+                    }).catch((failDeny: any) => {
+                        self.$modal.error(failDeny.messageId)
+                            .then(() => {
+                                self.back();
+                            });
+                    });           
                 }
             });
     }
 
-    // active return app
+    // kích hoạt nút trả về
     public returnApp(): void {
         let self = this;
         self.$modal('cmms45e', {'listAppMeta': self.listAppMeta, 'currentApp': self.currentApp, 'version': self.appState.version });
     }
 
-    // reflect app after approve/deny
+    // phản ánh đơn xin sau khi chấp nhận, từ chối
     public reflectApp(appID: string): void {
         let self = this;
         if (!appID) {
@@ -293,16 +331,19 @@ export class CmmS45DComponent extends Vue {
         }
     }
 
-    // get next appID
+    // lấy ID của đơn tiếp theo
     public getNextApp(): string {
-        return this.listAppMeta[this.appCount + 1];            
+        let self = this;
+        
+        return self.listAppMeta[self.appCount + 1];            
     }
 
+    // kiểm tra có thể thay đổi không dựa vào trạng thái đơn
     public canChangeStatus(): boolean {
         let self = this;
         switch (self.appState.reflectStatus) {
             case 0: return true; // 反映状態 = 未反映
-            // case 1: return false; // 反映状態 = 反映待ち
+            case 1: return true; // 反映状態 = 反映待ち
             case 2: return false; // 反映状態 = 反映済
             case 3: return false; // 反映状態 = 取消待ち
             case 4: return false; // 反映状態 = 取消済
@@ -313,18 +354,18 @@ export class CmmS45DComponent extends Vue {
         }
     }
 
+    // kiểm tra trạng thái của người login đối với đơn xin
     public isModify(): boolean {
         let self = this;
         switch (self.appState.approvalATR) {
             case 0: return false; // ログイン者の承認区分 = 未承認
             case 1: return true; // ログイン者の承認区分 = 承認済
-            case 2: return false; // ログイン者の承認区分 = 否認
+            case 2: return true; // ログイン者の承認区分 = 否認
             default: break;  
         }
     }
 
-
-
+    // hiển thị lý do approve
     public displayApproveReasonContent(): boolean {
         let self = this;
         if (self.canChangeStatus() && self.appState.authorizableFlags && !self.appState.alternateExpiration) {
@@ -334,6 +375,7 @@ export class CmmS45DComponent extends Vue {
         return !self.isModify();
     }
 
+    // hiển thị ô nhập lý do approve
     public displayApproveReasonInput(): boolean {
         let self = this;
         if (self.canChangeStatus() && self.appState.authorizableFlags && !self.appState.alternateExpiration) {
@@ -343,6 +385,7 @@ export class CmmS45DComponent extends Vue {
         return false;
     }
 
+    // hiển thị nút giải phóng
     public displayReleaseLock(): boolean {
         let self = this;
         if (self.canChangeStatus() && self.appState.authorizableFlags) {
@@ -352,6 +395,7 @@ export class CmmS45DComponent extends Vue {
         return false;
     }
 
+    // hiển thị nút chấp nhận, từ chối, trả về
     public displayReleaseOpen(): boolean {
         let self = this;
         if (self.canChangeStatus() && self.appState.authorizableFlags && !self.appState.alternateExpiration) {
