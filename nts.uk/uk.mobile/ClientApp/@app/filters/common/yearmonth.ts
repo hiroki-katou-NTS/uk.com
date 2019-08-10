@@ -6,7 +6,7 @@ Vue.filter('yearmonth', (d: number, format?: string) => {
             month: number = Math.floor(d % 100);
 
         if (year && month) {
-            return moment.utc(Date.UTC(year, month)).format(format || 'YYYY/MM');
+            return moment(`${d}`, 'YYYYMM').format(format || 'YYYY/MM');
         }
     }
 
