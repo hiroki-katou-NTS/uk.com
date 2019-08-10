@@ -97,10 +97,11 @@
         </div>
       </div> 
     </div>
-    <!--asdashdk-->
-    <app1 v-if="true" v-bind:params="{appOvertime: appOvertime}" />
-    <app2 v-if="false" />
-    <app3 v-if="false" />
+    <div>
+      <app1 v-if="true" v-bind:params="{appOvertime: appOvertime}" />
+      <app2 v-if="false" />
+      <app3 v-if="false" />
+    </div>
     <div
       class="fixed-action-btn" v-show="displayEditFloat"
       v-float-action="{ icon: 'fas fa-pen', background: 'uk-bg-sea-green', forceground: 'uk-text-dark-gray' }"

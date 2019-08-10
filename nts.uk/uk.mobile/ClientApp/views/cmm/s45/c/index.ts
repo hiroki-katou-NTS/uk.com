@@ -109,7 +109,7 @@ export class CmmS45CComponent extends Vue {
     // get approver list data
     public initData() {
         this.selected = 0;
-        this.$http.post('at', API.getDetailApplicantMob, this.currentApp)
+        this.$http.post('at', API.getDetailMob, this.currentApp)
         .then((resApp: any) => {
             let appData: IApplication = resApp.data;
             this.createPhaseLst(appData.listApprovalPhaseStateDto);
@@ -231,5 +231,5 @@ export class CmmS45CComponent extends Vue {
 
 const API = {
     delete: 'at/request/application/deleteapp',
-    getDetailApplicantMob: 'at/request/application/getDetailApplicantMob'
+    getDetailMob: 'at/request/application/getDetailMob'
 };

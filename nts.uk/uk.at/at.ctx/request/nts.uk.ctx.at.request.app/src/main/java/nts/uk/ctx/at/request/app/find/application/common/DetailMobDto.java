@@ -11,7 +11,7 @@ import nts.uk.ctx.at.request.app.find.application.overtime.dto.AppOverTimeMobDto
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class DetailApplicantMobDto {
+public class DetailMobDto {
 	
 	public List<ApprovalPhaseStateForAppDto> listApprovalPhaseStateDto;
 	
@@ -22,6 +22,12 @@ public class DetailApplicantMobDto {
 	public Integer version;
 	
 	public String reversionReason;
+	
+	public boolean authorizableFlags;
+	
+	public Integer approvalATR;
+	
+	public boolean alternateExpiration;
 	
 	public AppOverTimeMobDto appOvertime;
 }

@@ -1481,7 +1481,7 @@ public class AppOvertimeFinder {
 		return new RecordWorkDto(startTime1, endTime1, startTime2, endTime2, appOvertimeReference, timeZones);
 	} 
 	
-	public AppOverTimeMobDto getDetailApplicantMob(String appID, AppCommonSettingOutput appCommonSettingOutput) {
+	public AppOverTimeMobDto getDetailMob(String appID, AppCommonSettingOutput appCommonSettingOutput) {
 		AppOverTimeMobDto appOverTimeMobDto = new AppOverTimeMobDto();
 		String companyID = AppContexts.user().companyId();
 		Optional<AppOverTime> opAppOverTime = overtimeRepository.getFullAppOvertime(companyID, appID);

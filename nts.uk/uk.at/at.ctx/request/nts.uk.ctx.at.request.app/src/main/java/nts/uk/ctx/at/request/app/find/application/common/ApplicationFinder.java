@@ -112,8 +112,8 @@ public class ApplicationFinder {
 		return collectAchievement.getAchievement(companyID, app.getEmployeeID(), app.getAppDate());
 	}
 	
-	public DetailApplicantMobDto getDetailApplicantMob(String appID){
-		DetailApplicantMobDto detailApplicantMobDto = new DetailApplicantMobDto();
+	public DetailMobDto getDetailMob(String appID){
+		DetailMobDto getDetailMob = new DetailMobDto();
 		String companyID = AppContexts.user().companyId();
 		String loginEmpID = AppContexts.user().employeeId();
 		// 14-1.詳細画面起動前申請共通設定を取得する
@@ -124,12 +124,12 @@ public class ApplicationFinder {
 			throw new BusinessException("Msg_198");
 		}
 		Application_New application = opApp.get();
-		detailApplicantMobDto.appStatus = application.getReflectionInformation().getStateReflectionReal().value;
-		detailApplicantMobDto.version = application.getVersion().intValue();
-		detailApplicantMobDto.reversionReason = application.getReversionReason().v();
+		getDetailMob.appStatus = application.getReflectionInformation().getStateReflectionReal().value;
+		getDetailMob.version = application.getVersion().intValue();
+		getDetailMob.reversionReason = application.getReversionReason().v();
 		// 15-1.詳細画面の承認コメントを取得する
 		List<ApprovalPhaseStateImport_New> listApprovalPhaseState = detailScreenBefore.getApprovalDetail(appID);
-		detailApplicantMobDto.listApprovalPhaseStateDto = listApprovalPhaseState
+		getDetailMob.listApprovalPhaseStateDto = listApprovalPhaseState
 				.stream().map(x -> ApprovalPhaseStateForAppDto.fromApprovalPhaseStateImport(x)).collect(Collectors.toList());
 		//1-1.新規画面起動前申請共通設定を取得する
 		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(companyID, application.getEmployeeID(), 1, 
@@ -137,15 +137,18 @@ public class ApplicationFinder {
 		// 14-2.詳細画面起動前モードの判断
 		DetailedScreenPreBootModeOutput detailedScreenPreBootModeOutput = 
 				beforePreBootMode.judgmentDetailScreenMode(companyID, loginEmpID, appID, appCommonSettingOutput.getGeneralDate());
-		detailApplicantMobDto.reflectStatus = detailedScreenPreBootModeOutput.getReflectPlanState().value;
+		getDetailMob.reflectStatus = detailedScreenPreBootModeOutput.getReflectPlanState().value;
+		getDetailMob.authorizableFlags = detailedScreenPreBootModeOutput.isAuthorizableFlags();
+		getDetailMob.approvalATR = detailedScreenPreBootModeOutput.getApprovalATR().value;
+		getDetailMob.alternateExpiration = detailedScreenPreBootModeOutput.isAlternateExpiration();
 		switch (application.getAppType()) {
 		case OVER_TIME_APPLICATION:
-			detailApplicantMobDto.appOvertime = appOvertimeFinder.getDetailApplicantMob(appID, appCommonSettingOutput);
+			getDetailMob.appOvertime = appOvertimeFinder.getDetailMob(appID, appCommonSettingOutput);
 			break;
 
 		default:
 			break;
 		}
-		return detailApplicantMobDto;
+		return getDetailMob;
 	}
 }
