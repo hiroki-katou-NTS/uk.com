@@ -5,8 +5,8 @@ import { InputComponent } from '@app/components/common/inputs/input';
 
 const range = (tagName: string) => component({
     template: `<div class="form-group row">
-    <template v-if="showTitle && showTitle !== 'false' && name" v-bind:key="'showtitle'">
-        <div v-bind:class="columns.title">
+    <template v-if="showTitle && showTitle !== 'false' && name">
+        <div v-bind:class="columns.title" v-bind:key="'showtitle'">
             <nts-label 
                 v-bind:constraint="constraints"
                 v-bind:show-constraint="showConstraint"
@@ -14,7 +14,7 @@ const range = (tagName: string) => component({
                 >{{ name | i18n }}</nts-label>
         </div>
     </template>
-    <template v-else v-bind:key="'hidetitle'"></template>
+    <template v-else></template>
     <div v-bind:class="columns.input">
         <div class="row form-group form-group-range mb-0" v-bind:class="{ 'is-invalid': invalid }">
             <div class="col-6">
@@ -48,10 +48,10 @@ const range = (tagName: string) => component({
                     v-bind:key="'endrange'" />
             </div>
         </div>
-        <template v-if="showError" v-bind:key="'showError'">
-            <v-errors v-model="$errors" v-bind:name="name" />
+        <template v-if="showError">
+            <v-errors v-model="$errors" v-bind:name="name" v-bind:key="'showError'"/>
         </template>
-        <template v-else v-bind:key="'hideError'"></template>
+        <template v-else></template>
     </div>
 </div>`
 });
