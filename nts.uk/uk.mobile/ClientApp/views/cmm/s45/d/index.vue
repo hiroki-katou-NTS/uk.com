@@ -102,34 +102,39 @@
       <app2 v-if="false" />
       <app3 v-if="false" />
     </div>
-    <div class="row pl-2 pt-1 pb-1 border-top border-bottom uk-border-light-gray">{{'CMMS45_62' | i18n}}</div>
-    <nts-text-area v-model="text" class="mt-2"/>
-    <div class="card invisible">
+    <div class="row pl-2 pt-1 pb-1 uk-bg-alice-blue border-top border-bottom uk-border-light-gray"
+      v-show="displayApproveReasonInput()">
+      {{'CMMS45_62' | i18n}}
+    </div>
+    <div class="mt-2">
+      <nts-text-area v-model="memo" v-show="displayApproveReasonInput()"/>
+    </div>
+    <div class="card invisible" v-show="displayReleaseLock() || displayReleaseOpen()">
       <div class="card-body">
         Hidden Content
       </div>
     </div>
-    <div class="row fixed-bottom mb-1">
+    <div class="row fixed-bottom mb-1" v-show="displayReleaseLock() || displayReleaseOpen()">
       <div class="col-12">
-        <div class="row release-lock p-1" v-if="!releaseFlg">
+        <div class="row release-lock p-1" v-show="displayReleaseLock()">
           <div class="col-2"></div>
           <div class="col-8">
-            <div class="text-center release" v-on:click="changeRelease">
+            <div class="text-center release" v-on:click="releaseApp">
               <i class="fas fa-unlock-alt fa-3x"></i> 
               <div>{{'CMMS45_63' | i18n}}</div>
             </div>
           </div>
           <div class="col-2"></div>
         </div>
-        <div class="row release-open p-1" v-if="releaseFlg"> 
+        <div class="row release-open p-1" v-show="displayReleaseOpen()"> 
           <div class="col-5 pr-2">
-            <div class="text-center approve" v-on:click="changeRelease">
+            <div class="text-center approve" v-on:click="approveApp">
               <i class="fas fa-user-check fa-3x"></i>
               <div>{{'CMMS45_64' | i18n}}</div>
             </div>  
           </div>
           <div class="col-3 pl-1 pr-1">
-            <div class="text-center deny" v-on:click="changeRelease">
+            <div class="text-center deny" v-on:click="denyApp">
               <i class="fas fa-user-times fa-3x"></i>
               <div>{{'CMMS45_65' | i18n}}</div>
             </div>

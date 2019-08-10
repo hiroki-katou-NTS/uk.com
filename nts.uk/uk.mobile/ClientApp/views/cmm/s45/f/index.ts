@@ -1,5 +1,5 @@
 import { Vue } from '@app/provider';
-import { component } from '@app/core/component';
+import { component, Prop } from '@app/core/component';
 
 @component({
     name: 'cmms45f',
@@ -11,5 +11,16 @@ import { component } from '@app/core/component';
     constraints: []
 })
 export class CmmS45FComponent extends Vue {
+    @Prop({ default: () => ({ action: 0, listAppMeta: [], nextApp: '' }) })
+    public readonly params: { action: number, listAppMeta: Array<string>, nextApp: string };
     public title: string = 'CmmS45F';
+
+    public back() {
+        this.$goto('cmms45b', { CMMS45_FromMenu: false });
+    }
+
+    public toNextApp() {
+        let self = this;
+        self.$close({ 'listAppMeta':self.params.listAppMeta, 'currentApp': self.params.nextApp });    
+    }
 }

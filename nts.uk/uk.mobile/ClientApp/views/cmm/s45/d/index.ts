@@ -5,6 +5,7 @@ import { IApprovalPhase, IApprovalFrame, IApplication } from 'views/cmm/s45/comm
 import { Phase } from 'views/cmm/s45/common/index';
 import { IOvertime } from 'views/cmm/s45/components/app1';
 import { CmmS45EComponent } from 'views/cmm/s45/e';
+import { CmmS45FComponent } from 'views/cmm/s45/f';
 
 import {
     CmmS45ComponentsApp1Component,
@@ -20,8 +21,12 @@ import {
     style: require('./style.scss'),
     template: require('./index.vue'),
     resource: require('./resources.json'),
-    validations: {},
-    constraints: [],
+    validations: {
+        memo: {
+            constraint: 'ApproverReason'
+        }
+    },
+    constraints: ['nts.uk.ctx.at.request.dom.application.ApproverReason'],
     components: {
         // khai báo virtual tag name
         'approved': ApprovedComponent,
@@ -30,7 +35,8 @@ import {
         'app3': CmmS45ComponentsApp3Component,
         'app4': CmmS45ComponentsApp4Component,
         'app5': CmmS45ComponentsApp5Component,
-        'cmms45e': CmmS45EComponent
+        'cmms45e': CmmS45EComponent,
+        'cmms45f': CmmS45FComponent
     }
 })
 export class CmmS45DComponent extends Vue {
@@ -44,12 +50,19 @@ export class CmmS45DComponent extends Vue {
     public currentApp: string = '';
     // 承認ルートインスタンス
     public phaseLst: Array<IApprovalPhase> = [];
-    public appState: { appStatus: number, reflectStatus: number, version: number } = { appStatus: 0, reflectStatus: 1, version: 0 };
+    public appState: { 
+        appStatus: number, 
+        reflectStatus: number, 
+        version: number,
+        authorizableFlags: boolean,
+        approvalATR: number,
+        alternateExpiration: boolean 
+    } = { appStatus: 0, reflectStatus: 1, version: 0, authorizableFlags: false, approvalATR: 0, alternateExpiration: false };
     public appOvertime: IOvertime = null;
     // 差し戻し理由
     public reversionReason: string = '';
 
-    public releaseFlg: boolean = false;
+    public memo: string = '';
 
     public created() {
         this.listAppMeta = this.params.listAppMeta;
@@ -109,13 +122,16 @@ export class CmmS45DComponent extends Vue {
     // get approver list data
     public initData() {
         this.selected = 0;
-        this.$http.post('at', API.getDetailApplicantMob, this.currentApp)
+        this.$http.post('at', API.getDetailMob, this.currentApp)
         .then((resApp: any) => {
             let appData: IApplication = resApp.data;
             this.createPhaseLst(appData.listApprovalPhaseStateDto);
             this.appState.appStatus = appData.appStatus;
             this.appState.reflectStatus = appData.reflectStatus;
             this.appState.version = appData.version;
+            this.appState.authorizableFlags = appData.authorizableFlags;
+            this.appState.approvalATR = appData.approvalATR;
+            this.appState.alternateExpiration = appData.alternateExpiration; 
             this.reversionReason = appData.reversionReason;
             this.appOvertime = appData.appOvertime;
             this.$mask('hide');
@@ -177,36 +193,179 @@ export class CmmS45DComponent extends Vue {
 
     // back to CMMS45A
     public back(reloadValue?: boolean) {
-        if (this.$router.currentRoute.name == 'cmms45b') {
-            if (reloadValue) {
-                this.$close({ CMMS45A_Reload: reloadValue });
-            } else {
-                this.$close({ CMMS45A_Reload: false });
-            }
-            
-        } else {
-            this.$goto('cmms45b', { CMMS45_FromMenu: false });   
+        this.$close({ CMMS45A_Reload: false });
+    }
+
+    // active release app
+    public releaseApp(): void {
+        let self = this;
+        self.$modal.confirm('Msg_248')
+            .then((v) => {
+                if (v == 'yes') {
+                    self.$http.post('at', API.release, {
+                        memo: self.memo,
+                        applicationDto: {
+                            version: self.appState.version,
+                            applicationID: self.currentApp
+                        }
+                    }).then((resRelease: any) => {
+                        if (resRelease.processDone) {
+                            self.reflectApp(resRelease.reflectAppId);
+                            self.$modal.info('Msg_221');
+                        }
+                    });            
+                }
+            });
+    }
+
+    // active approve app
+    public approveApp(): void {
+        let self = this;
+        self.$modal.confirm('Msg_1549')
+            .then((v) => {
+                if (v == 'yes') {
+                    self.$http.post('at', API.approve, {
+                        applicationDto: {
+                            version: self.appState.version,
+                            applicationID: self.currentApp    
+                        },	
+                        memo: self.memo, 
+                        comboBoxReason: '',
+                        textAreaReason: '',
+                        holidayAppType: 0,
+                        user: 1,
+                        reflectPerState: self.appState.reflectStatus,
+                        mobileCall: true
+                    }).then((resApprove: any) => {
+                        if (resApprove.processDone) {
+                            self.reflectApp(resApprove.reflectAppId);
+                            self.$modal.info('Msg_220').then(() => {
+                                self.$modal('cmms45f', { 'action': 1, 'listAppMeta': self.listAppMeta, 'nextApp': self.getNextApp() })
+                                .then((resAfterApprove: any) => {
+                                    self.currentApp = resAfterApprove.currentApp;
+                                    self.listAppMeta = resAfterApprove.listAppMeta;
+                                    self.initData();        
+                                }); 
+                            });
+                        }
+                    });            
+                }
+            });
+    }
+
+    // active deny app
+    public denyApp(): void {
+        let self = this;
+        self.$modal.confirm('Msg_1550')
+            .then((v) => {
+                if (v == 'yes') {
+                    self.$http.post('at', API.deny, {
+                        version: self.appState.version,
+                        appId: self.currentApp
+                    }).then((resDeny: any) => {
+                        if (resDeny.processDone) {
+                            self.reflectApp(resDeny.reflectAppId);
+                            self.$modal.info('Msg_222').then(() => {
+                                self.$modal('cmms45f', { 'action': 2, 'listAppMeta': self.listAppMeta, 'nextApp': self.getNextApp() })
+                                .then((resAfterDeny: any) => {
+                                    self.currentApp = resAfterDeny.currentApp;
+                                    self.listAppMeta = resAfterDeny.listAppMeta;
+                                    self.initData();        
+                                });
+                            });
+                        }
+                    });            
+                }
+            });
+    }
+
+    // active return app
+    public returnApp(): void {
+        let self = this;
+        self.$modal('cmms45e', {'listAppMeta': self.listAppMeta, 'currentApp': self.currentApp, 'version': self.appState.version });
+    }
+
+    // reflect app after approve/deny
+    public reflectApp(appID: string): void {
+        let self = this;
+        if (!appID) {
+            self.$http.post('at', API.reflectApp, [appID]);
         }
     }
 
-    public changeRelease(): void {
-        this.releaseFlg = !this.releaseFlg;    
+    // get next appID
+    public getNextApp(): string {
+        return this.listAppMeta[this.appCount + 1];            
     }
 
-    public checkFloatBtn(): void {
-        console.log('aa');
-    }
-
-    public returnApp(): void {
+    public canChangeStatus(): boolean {
         let self = this;
-        self.$modal('cmms45e', { 'lstAppId': [self.currentApp], 'version': self.appState.version }).then((res: any) => {
-        });
+        switch (self.appState.reflectStatus) {
+            case 0: return true; // 反映状態 = 未反映
+            // case 1: return false; // 反映状態 = 反映待ち
+            case 2: return false; // 反映状態 = 反映済
+            case 3: return false; // 反映状態 = 取消待ち
+            case 4: return false; // 反映状態 = 取消済
+            case 5: return true; // 反映状態 = 差し戻し
+            case 6: return true; // 反映状態 = 否認
+            case 99: return false; //
+            default: break;  
+        }
+    }
+
+    public isModify(): boolean {
+        let self = this;
+        switch (self.appState.approvalATR) {
+            case 0: return false; // ログイン者の承認区分 = 未承認
+            case 1: return true; // ログイン者の承認区分 = 承認済
+            case 2: return false; // ログイン者の承認区分 = 否認
+            default: break;  
+        }
+    }
+
+
+
+    public displayApproveReasonContent(): boolean {
+        let self = this;
+        if (self.canChangeStatus() && self.appState.authorizableFlags && !self.appState.alternateExpiration) {
+            return true;
+        }
+
+        return !self.isModify();
+    }
+
+    public displayApproveReasonInput(): boolean {
+        let self = this;
+        if (self.canChangeStatus() && self.appState.authorizableFlags && !self.appState.alternateExpiration) {
+            return !self.isModify();
+        }
+
+        return false;
+    }
+
+    public displayReleaseLock(): boolean {
+        let self = this;
+        if (self.canChangeStatus() && self.appState.authorizableFlags) {
+            return self.isModify();
+        }
+        
+        return false;
+    }
+
+    public displayReleaseOpen(): boolean {
+        let self = this;
+        if (self.canChangeStatus() && self.appState.authorizableFlags && !self.appState.alternateExpiration) {
+            return !self.isModify();
+        }
+
+        return false;
     }
 }
 
 const API = {
-    approvedStatus: 'at/request/application/getAppDataByDate',
-    overtimeApp: 'at/request/application/overtime/findByAppID',
-    delete: 'at/request/application/deleteapp',
-    getDetailApplicantMob: 'at/request/application/getDetailApplicantMob'
+    getDetailMob: 'at/request/application/getDetailMob',
+    approve: 'at/request/application/approveapp',
+    deny: 'at/request/application/denyapp',
+    release: 'at/request/application/releaseapp',
+    reflectApp: 'at/request/application/reflect-app'
 };

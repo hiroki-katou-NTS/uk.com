@@ -73,7 +73,7 @@ public class UpdateApplicationApproveHandler extends CommandHandlerWithResult<In
         beforeRegisterRepo.exclusiveCheck(companyID, command.getApplicationID(), command.getVersion());
         String appReason = Strings.EMPTY;
         boolean isUpdateReason = false;
-        if(!context.getCommand().isMobile()) {
+        if(!context.getCommand().getMobileCall()) {
 			Optional<ApplicationSetting> applicationSettingOp = applicationSettingRepository
 					.getApplicationSettingByComID(companyID);
 			ApplicationSetting applicationSetting = applicationSettingOp.get();
