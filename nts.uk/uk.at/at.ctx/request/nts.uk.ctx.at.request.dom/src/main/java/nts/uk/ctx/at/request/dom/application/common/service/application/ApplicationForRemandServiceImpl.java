@@ -3,7 +3,6 @@ package nts.uk.ctx.at.request.dom.application.common.service.application;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -13,12 +12,10 @@ import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.jobtitle.AtJobTitleAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.jobtitle.dto.AffJobTitleHistoryImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverRemandImport;
 import nts.uk.ctx.at.request.dom.application.common.service.application.output.ApplicationForRemandOutput;
-import nts.uk.ctx.at.request.dom.application.common.service.application.output.DetailApprovalFrameOutput;
-import nts.uk.ctx.at.request.dom.application.common.service.application.output.DetailApproverOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.application.output.RemandInfoKDL034;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -28,7 +25,7 @@ public class ApplicationForRemandServiceImpl implements IApplicationForRemandSer
 	private ApplicationRepository_New applicationRepository;
 	
 	@Inject
-	private ApprovalRootStateAdapter approvalRootStateAdapter;
+	private ApprovalRootStateAdapter apprRootStt;
 	
 	@Inject
 	private EmployeeRequestAdapter employeeRequestAdapter;
@@ -36,55 +33,40 @@ public class ApplicationForRemandServiceImpl implements IApplicationForRemandSer
 	@Inject
 	private AtJobTitleAdapter jobTitleAdapter;
 	
-	@Inject
-	private ApprovalRootAdapter approvalRootAdapter;
 	/**
 	 * 画面表示
 	 * KDL034
+	 * 差し戻し先リストを取得する
 	 */
 	@Override
 	public ApplicationForRemandOutput getApplicationForRemand(List<String> lstAppID) {
 		String companyID = AppContexts.user().companyId();
+		String sidLogin = AppContexts.user().employeeId();
 		String appID = lstAppID.get(0);
 		//申請IDをキーにドメインモデル「申請」「承認フェーズ」「承認枠」を取得する
 		Optional<Application_New> application_New = this.applicationRepository.findByID(companyID, appID);
-		if (application_New.isPresent()){
-			Application_New app = application_New.get();
-			//承認者（社員ID）から承認枠を特定して「順序」を取得する
-			Integer phaseOrder = approvalRootAdapter.getCurrentApprovePhase(app.getAppID(), 0);
-			
-			ApprovalRootContentImport_New approvalRootContentImport = approvalRootStateAdapter
-					.getApprovalRootContent(companyID, null, null, null, appID, false);
-			Optional<AffJobTitleHistoryImport> jobTitle = jobTitleAdapter.getJobTitlebBySIDAndDate(app.getEmployeeID(), app.getAppDate());
-			String applicantPosition = jobTitle.isPresent() ? jobTitle.get().getJobTitleName() : "";
-			List<DetailApprovalFrameOutput> listApprovalFrame = new ArrayList<DetailApprovalFrameOutput>();
-			approvalRootContentImport.getApprovalRootState().getListApprovalPhaseState().forEach(x -> {
-				x.getListApprovalFrame().forEach(y -> {
-					List<DetailApproverOutput> listApprover = new ArrayList<DetailApproverOutput>();
-					y.getListApprover().forEach(z -> {
-						Optional<AffJobTitleHistoryImport> approverJobTitle = jobTitleAdapter.getJobTitlebBySIDAndDate(z.getApproverID(), app.getAppDate());
-						String approverPosition = approverJobTitle.isPresent() ? approverJobTitle.get().getJobTitleName() : "";
-						String jobtitleAgent = "";
-						if(z.getRepresenterID() != ""){
-							Optional<AffJobTitleHistoryImport> agentJobTitle = jobTitleAdapter.getJobTitlebBySIDAndDate(z.getRepresenterID(), app.getAppDate());
-							jobtitleAgent = agentJobTitle.isPresent() ? agentJobTitle.get().getJobTitleName() : "";
-						}
-						listApprover.add(new DetailApproverOutput(z.getApproverID(), z.getApproverName(), z.getRepresenterID(),
-								z.getRepresenterName(), approverPosition, jobtitleAgent));
-					});
-					listApprovalFrame
-							.add(new DetailApprovalFrameOutput(y.getPhaseOrder(), y.getApprovalReason(), listApprover));
-				});
-			});
-			List<DetailApprovalFrameOutput> listApprFrameFil = listApprovalFrame.stream()
-					.filter(c->c.phaseOrder < phaseOrder).collect(Collectors.toList());
-			return new ApplicationForRemandOutput(appID, application_New.get().getVersion(),
-					approvalRootContentImport.getErrorFlag().value, applicantPosition,
-					application_New.isPresent() ? employeeRequestAdapter
-							.getEmployeeInfor(application_New.map(Application_New::getEmployeeID).orElse("")) : null,
-							listApprFrameFil);
+		if (!application_New.isPresent()){
+			return null;
 		}
-		return null;
+		Application_New app = application_New.get();
+		//Imported（承認申請）「差し戻し対象者一覧を取得」
+		List<ApproverRemandImport> lstRemand = apprRootStt.getListApproverRemand(appID);
+		
+		List<RemandInfoKDL034> lstApprover  = new ArrayList<>();
+		int phaseLogin = 0;
+		for (ApproverRemandImport remand : lstRemand) {
+			String sID = remand.getSID();
+			phaseLogin = sID.equals(sidLogin) ? remand.getPhaseOrder() : phaseLogin;
+			Optional<AffJobTitleHistoryImport> approverJobTitle = jobTitleAdapter.getJobTitlebBySIDAndDate(sID, app.getAppDate());
+			String jobTitle = approverJobTitle.isPresent() ? approverJobTitle.get().getJobTitleName() : "";
+			String approverName = employeeRequestAdapter.getEmployeeName(sID);
+			lstApprover.add(new RemandInfoKDL034(remand.getPhaseOrder(), sID, approverName, jobTitle, remand.isAgent()));
+		}
+		String applicantName = employeeRequestAdapter.getEmployeeName(app.getEmployeeID());
+		Optional<AffJobTitleHistoryImport> job = jobTitleAdapter.getJobTitlebBySIDAndDate(app.getEmployeeID(), app.getAppDate());
+		String applicantJob = job.isPresent() ? job.get().getJobTitleName() : "";
+		return new ApplicationForRemandOutput(appID, app.getVersion(),
+									app.getEmployeeID(), applicantName, applicantJob,
+									phaseLogin, lstApprover);
 	}
-	
 }

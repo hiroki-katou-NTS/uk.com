@@ -12,9 +12,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationMetaDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationPeriodDto;
-import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationRemandDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationSendDto;
-import nts.uk.ctx.at.request.app.find.application.common.dto.ApprovalFrameForRemandDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApprovalPhaseStateForAppDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.AppOvertimeFinder;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
@@ -73,18 +71,8 @@ public class ApplicationFinder {
 				}).collect(Collectors.toList());
 	}
 
-	public ApplicationRemandDto getAppByIdForRemand(List<String> lstAppID) {
-		String appID = lstAppID.get(0);
-		ApplicationForRemandOutput appOutput = appForRemandService.getApplicationForRemand(lstAppID);
-		if (!Objects.isNull(appOutput)){
-			return ApplicationRemandDto.fromDomain(appID, appOutput.getVersion(),
-					appOutput.getErrorFlag(), appOutput.getApplicantPosition(),
-					appOutput.getApplicant(),
-					appOutput.getApprovalFrameDtoForRemand().stream().map(x ->{
-						return ApprovalFrameForRemandDto.fromDomain(x);
-					}).collect(Collectors.toList()));
-		}
-		return null;
+	public ApplicationForRemandOutput getAppByIdForRemand(List<String> lstAppID) {
+		return appForRemandService.getApplicationForRemand(lstAppID);
 	}
 
 	public ApplicationSendDto getAppByIdForSend(String appID){

@@ -101,8 +101,8 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 	private static final String SELECT_CFS_DAY_BY_APPROVER;
 	private static final String SELECT_CFS_MONTH_BY_APPROVER;
 	private static final String FIND_PHASE_APPROVAL_MAX = "SELECT a FROM WwfdtApprovalPhaseState a"
-			+ " WHERE a.wwfdpApprovalPhaseStatePK.rootStateID =: appID"
-			+ " AND a.approvalAtr = 1 ORDER BY a.phaseOrder DESC";
+			+ " WHERE a.wwfdpApprovalPhaseStatePK.rootStateID = :appID"
+			+ " AND a.approvalAtr = 1 ORDER BY a.wwfdpApprovalPhaseStatePK.phaseOrder ASC";
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT root.ROOT_STATE_ID, root.HIST_ID, root.EMPLOYEE_ID, root.APPROVAL_RECORD_DATE,");
@@ -922,16 +922,16 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 	public List<ApprovalPhaseState> findPhaseApprovalMax(String appID) {
 		return this.queryProxy().query(FIND_PHASE_APPROVAL_MAX, WwfdtApprovalPhaseState.class)
 				.setParameter("appID", appID)
-				.getList(c->toDomainPhase(c));
+				.getList(c->c.toDomain());
 	}
 
-	private ApprovalPhaseState toDomainPhase(WwfdtApprovalPhaseState entity) {
-		return new ApprovalPhaseState(entity.wwfdpApprovalPhaseStatePK.rootStateID,
-				entity.wwfdpApprovalPhaseStatePK.phaseOrder,
-				EnumAdaptor.valueOf(entity.approvalAtr, ApprovalBehaviorAtr.class),
-				EnumAdaptor.valueOf(entity.approvalForm, ApprovalForm.class), 
-				null);
-	}
+//	private ApprovalPhaseState toDomainPhase(WwfdtApprovalPhaseState entity) {
+//		return new ApprovalPhaseState(entity.wwfdpApprovalPhaseStatePK.rootStateID,
+//				entity.wwfdpApprovalPhaseStatePK.phaseOrder,
+//				EnumAdaptor.valueOf(entity.approvalAtr, ApprovalBehaviorAtr.class),
+//				EnumAdaptor.valueOf(entity.approvalForm, ApprovalForm.class), 
+//				null);
+//	}
 
 	private List<ApprovalRootState> convertFromSQLResult(List<WwfdtFullJoinState> listFullData) {
 		return listFullData.stream().collect(Collectors.groupingBy(WwfdtFullJoinState::getRootStateID)).entrySet()

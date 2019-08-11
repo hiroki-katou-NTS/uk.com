@@ -242,6 +242,7 @@ export class CmmS45BComponent extends Vue {
         let lstAppId = self.findLstIdDisplay();
         //「D：申請内容確認（承認）」画面へ遷移する
         this.$modal('cmms45d', { 'listAppMeta': lstAppId, 'currentApp': id }).then(() => {
+            //reload
             self.getData(true, false);
         });
     }
@@ -315,9 +316,6 @@ export class CmmS45BComponent extends Vue {
     // create appContent
     private appContent(appName: string, prePostName: string) {
         return this.isDisPreP == 1 ? appName + ' ' + this.$i18n('CMMS45_24', prePostName) : appName;
-    }
-    public callE() {
-        this.$modal('cmms45e', { appId: '9a02b621-5f76-470b-85c9-b584bab9adda' });
     }
 }
 const servicePath = {

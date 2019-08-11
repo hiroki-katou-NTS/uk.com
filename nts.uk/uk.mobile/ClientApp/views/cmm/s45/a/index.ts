@@ -148,11 +148,8 @@ export class CmmS45AComponent extends Vue {
             lstAppId.push(app.id);
         });
         // 「C：申請内容確認」画面へ遷移する
-        self.$modal('cmms45c', { 'listAppMeta': lstAppId, 'currentApp': id }).then((res: any) => {
-            if (res.CMMS45A_Reload) {
+        self.$modal('cmms45c', { 'listAppMeta': lstAppId, 'currentApp': id }).then(() => {
                 self.getData(true, false);
-            }
-            console.log(res);
         });
     }
 
