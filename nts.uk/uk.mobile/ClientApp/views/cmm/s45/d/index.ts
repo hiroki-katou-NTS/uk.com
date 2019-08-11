@@ -58,6 +58,7 @@ export class CmmS45DComponent extends Vue {
         approvalATR: number,
         alternateExpiration: boolean 
     } = { appStatus: 0, reflectStatus: 1, version: 0, authorizableFlags: false, approvalATR: 0, alternateExpiration: false };
+    public authorComment: string = '';
     public appOvertime: IOvertime = null;
     // 差し戻し理由
     public reversionReason: string = '';
@@ -134,7 +135,8 @@ export class CmmS45DComponent extends Vue {
             self.appState.version = appData.version;
             self.appState.authorizableFlags = appData.authorizableFlags;
             self.appState.approvalATR = appData.approvalATR;
-            self.appState.alternateExpiration = appData.alternateExpiration; 
+            self.appState.alternateExpiration = appData.alternateExpiration;
+            self.authorComment = appData.authorComment; 
             self.reversionReason = appData.reversionReason;
             self.appOvertime = appData.appOvertime;
             self.$mask('hide');
