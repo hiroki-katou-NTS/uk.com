@@ -260,7 +260,6 @@ export class KafS05aStep3Component extends Vue {
 
     public updateOvertime(overtime: any) {
         this.$http.post('at', servicePath.updateOvertime, overtime).then((result: { data: any }) => {
-            this.$modal.info({ messageId: 'Msg_15' });
             this.$emit('toStep4', this.kafs05ModelStep3);
             this.$mask('hide');
 
