@@ -43,7 +43,7 @@ public class SocialInsurNotiCreateSet {
     /**
      * 提出氏名区分
      */
-    private nts.uk.ctx.pr.report.dom.printdata.socinsurnoticreset.SubNameClass submittedName;
+    private SubNameClass submittedName;
 
     /**
      * 被保険者整理番号
