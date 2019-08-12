@@ -9,31 +9,17 @@
 	<ui:composition template="../../../../master/sidebar.xhtml">
 		<ui:define name="sidebar-head">
 			<com:ValidatorScript>
-					nts.uk.ctx.bs.employee.dom.temporaryabsence.frame.TempAbsenceFrameName
-					nts.uk.ctx.bs.employee.dom.temporaryabsence.frame.TempAbsenceFrameNo
-					nts.uk.shr.com.i18n.name.LongName
-					nts.uk.shr.com.i18n.name.ShortName
-					nts.uk.shr.com.i18n.name.IntermediateDesignation
+					
 			</com:ValidatorScript>
 
 			<com:scriptfile set="IGNITE" />
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="/lib/generic/igniteui/js/extensions/infragistics.datasource.knockoutjs.js"  of="/nts.uk.com.js.web"/>
+			<com:scriptfile path="/lib/generic/igniteui/js/extensions/infragistics.ui.grid.knockout-extensions.js" of="nts.uk.com.js.web" />
 
-			<script>
-				__viewContext.primitiveValueConstraints.PlanYearHolidayFrameName = {
-						valueType: 'String',
-						maxLength: 12,
-				};
-
-				__viewContext.primitiveValueConstraints.OvertimeWorkFrameName = {
-						valueType: 'String',
-						maxLength: 12,
-				};
-				
-				__viewContext.primitiveValueConstraints.WorkdayoffFrameName = {
-						valueType: 'String',
-						maxLength: 12,
-				};
-			</script>
+			<com:EnumScript>
+				nts.uk.ctx.hr.develop.dom.hrdevelopmentevent.EventId
+			</com:EnumScript>
 
 
 			<com:stylefile path="../b/jmm018.b.style.css" />
@@ -53,7 +39,7 @@
 		</ui:define>
 		<ui:define name="sidebar-content">
 			<!-- COMPANY WORK TIME SETTING  START -->
-			<div id="tabpanel-1" role="tabpanel" data-bind="with: systemDefine()">
+			<div id="tabpanel-1" role="tabpanel" data-bind="with: eventManage()">
 				<ui:include src="../b/index.xhtml" />
 			</div>
 			
