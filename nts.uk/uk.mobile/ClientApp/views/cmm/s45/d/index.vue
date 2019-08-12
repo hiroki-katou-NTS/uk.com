@@ -1,12 +1,14 @@
 <template>
-  <div class="cmms45d">
+  <div class="cmms45d pt-0">
     <div class="modal-header">
       <a v-on:click="back()">
         <i class="fas fa-arrow-circle-left"></i>
         {{ 'CMMS45_17' | i18n }}
       </a>
     </div>
-    <div class="card invisible mt-3">
+    <div class="card invisible mt-n2" v-show="!(!isEmptyApp() && isFirstApp() && isLastApp())">
+      <div class="card-body">
+      </div>
     </div>
     <div class="row bg-grey-200 border uk-border-gray border-right-0 border-left-0 pt-1">
       <div class="col-12">
@@ -105,7 +107,7 @@
         Hidden Content
       </div>
     </div>
-    <div class="row mb-2 fixed-top mt-5 border-bottom">
+    <div class="row mb-2 fixed-top mt-5 border-bottom" v-show="!(!isEmptyApp() && isFirstApp() && isLastApp())">
       <div class="col-6 text-left uk-text-blue uk-bg-silver mt-n2 pt-2 pb-2 pl-4">
         <a v-on:click="toPreviousApp" v-bind:class="{ 'd-none': isFirstApp() && !isEmptyApp() }">
           <i class="fas fa-arrow-circle-left"></i>
