@@ -73,6 +73,25 @@
                 <div class="confirm-item mb-2"><span>{{kafs05ModelStep3.appDate | date}}</span></div>
             </div>
         </div>
+        <div class="card card-label" v-if="kafs05ModelStep3.displayCaculationTime">
+            <div class="card-header">
+                <span>{{'KAFS05_63' | i18n}}</span>
+                <span class="badge badge-warning">必須</span>
+            </div>
+            <div class="card-body">
+                <span class="small-header">{{'KAFS05_64' | i18n}}</span>
+                <div class="confirm-item">
+                    <span class="badge badge-secondary">{{kafs05ModelStep3.workTypeCd}}</span>
+                    <span>{{kafs05ModelStep3.workTypeName}}</span>
+                </div>
+                <span class="small-header">{{'KAFS05_65' | i18n}}</span>
+                <div class="confirm-item mb-2">
+                    <span class="badge badge-secondary">{{kafs05ModelStep3.siftCD}}</span>
+                    <span>{{kafs05ModelStep3.siftName}}</span>
+                    <span class="ml-2">{{kafs05ModelStep3.selectedWorkTime}}</span>
+                </div>
+            </div>
+        </div>
         <div class="card card-label" v-show="kafs05ModelStep3.displayCaculationTime">
             <div class="card-header">
                 <span>{{'KAFS05_66' | i18n}}</span>

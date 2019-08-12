@@ -373,17 +373,17 @@ export class KafS05aStep1Component extends Vue {
                     switch (result.data.errorFlag) {
                         case 1:
                             this.$modal.error({ messageId: 'Msg_324' }).then(() => {
-                                this.$goto('ccg007b');
+                                return;
                             });
                             break;
                         case 2:
                             this.$modal.error({ messageId: 'Msg_238' }).then(() => {
-                                this.$goto('ccg007b');
+                                return;
                             });
                             break;
                         case 3:
                             this.$modal.error({ messageId: 'Msg_237' }).then(() => {
-                                this.$goto('ccg007b');
+                                return;
                             });
                             break;
                         default:
