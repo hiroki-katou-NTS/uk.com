@@ -1,4 +1,5 @@
-package nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor;
+package nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset;
+
 
 import java.util.List;
 import java.util.Optional;

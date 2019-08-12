@@ -1,10 +1,10 @@
-package nts.uk.ctx.pr.shared.infra.repository.socialinsurance.employeesociainsur.empbenepenpeninfor;
+package nts.uk.ctx.pr.report.infra.repository.printdata.socialinsurnoticreset;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.SocialInsurNotiCrSetRepository;
-import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.SocialInsurNotiCreateSet;
-import nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.empbenepenpeninfor.QqsmtSocInsuNotiSet;
-import nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.empbenepenpeninfor.QqsmtSocInsuNotiSetPk;
+import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.SocialInsurNotiCrSetRepository;
+import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.SocialInsurNotiCreateSet;
+import nts.uk.ctx.pr.report.infra.entity.printdata.socialinsurnoticreset.QqsmtSocInsuNotiSet;
+import nts.uk.ctx.pr.report.infra.entity.printdata.socialinsurnoticreset.QqsmtSocInsuNotiSetPk;
 
 import java.util.List;
 import java.util.Optional;

@@ -1,13 +1,8 @@
-package nts.uk.ctx.pr.report.dom.printdata.comlegalrecord;
-import java.util.Optional;
-import java.util.List;
-import lombok.AllArgsConstructor;
+package nts.uk.ctx.pr.report.dom.printdata.socinsurnoticreset;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
-import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.pr.report.dom.printdata.socinsurnoticreset.NameChangeNotifi;
+
+import java.util.Optional;
 
 /**
 * 社員氏名変更届情報

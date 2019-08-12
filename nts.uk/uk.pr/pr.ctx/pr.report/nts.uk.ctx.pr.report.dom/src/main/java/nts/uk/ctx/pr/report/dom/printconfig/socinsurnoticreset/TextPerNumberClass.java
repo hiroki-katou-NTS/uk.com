@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor;
+package nts.uk.ctx.pr.report.dom.printdata.socinsurnoticreset;
 
 public enum TextPerNumberClass {
     OUTPUT_NUMBER(0, "ENUM_outputNumber_OUTPUT_NUMBER"),

@@ -1,6 +1,5 @@
 package nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor;
 
-
 /**
 * 坑内員区分
 */
