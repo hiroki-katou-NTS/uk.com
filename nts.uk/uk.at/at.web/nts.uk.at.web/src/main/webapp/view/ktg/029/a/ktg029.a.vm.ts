@@ -214,7 +214,7 @@ module nts.uk.at.view.ktg029.a.viewmodel {
             var code = $(location).attr('search').split('=')[1];
             let getShare = nts.uk.ui.windows.getShared('cache')
             self.switchDate(getShare.currentOrNextMonth);
-            if(self.switchDate() == 1){
+            if(!self.switchDate()){
                 nts.uk.ui.block.grayout();
                 let serviceParam = new service.Service();
                 serviceParam.getRequestList609().done(function(data: any){
