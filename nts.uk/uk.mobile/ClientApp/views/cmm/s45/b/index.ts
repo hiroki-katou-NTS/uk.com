@@ -1,4 +1,4 @@
-import { Vue, moment, _ } from '@app/provider';
+import { Vue, _ } from '@app/provider';
 import { component, Prop } from '@app/core/component';
 
 import { AppInfo } from '../common';
@@ -101,8 +101,8 @@ export class CmmS45BComponent extends Vue {
         // check: キャッシュを取るか？
         if (filter) {
             self.prFilter = {
-                startDate: moment(self.dateRange.start).format('YYYY/MM/DD'),
-                endDate: moment(self.dateRange.end).format('YYYY/MM/DD'),
+                startDate: self.$dt.date(self.dateRange.start, 'YYYY/MM/DD'),
+                endDate: self.$dt.date(self.dateRange.end, 'YYYY/MM/DD'),
                 appListAtr: 1,
                 appType: Number(self.selectedValue),
                 unapprovalStatus: self.checkUnapprovalStatus(),
@@ -119,8 +119,8 @@ export class CmmS45BComponent extends Vue {
             self.prFilter = storage.local.getItem('CMMS45_AppListExtractCondition') as AppListExtractConditionDto;
         } else {
             self.prFilter = {
-                startDate: self.dateRange.start == null ? '' : moment(self.dateRange.start).format('YYYY/MM/DD'),
-                endDate: self.dateRange.end == null ? '' : moment(self.dateRange.end).format('YYYY/MM/DD'),
+                startDate: self.dateRange.start == null ? '' : self.$dt.date(self.dateRange.start, 'YYYY/MM/DD'),
+                endDate: self.dateRange.end == null ? '' : self.$dt.date(self.dateRange.end, 'YYYY/MM/DD'),
                 appListAtr: 1,
                 appType: -1,
                 unapprovalStatus: true,
@@ -154,9 +154,8 @@ export class CmmS45BComponent extends Vue {
 
             self.createLstAppType(data.lstAppInfor);
             self.convertAppInfo(data);
-            self.dateRange = { start: new Date(data.startDate), end: new Date(data.endDate) };
+            self.dateRange = { start: self.$dt.fromUTCString(data.startDate, 'YYYY/MM/DD'), end: self.$dt.fromUTCString(data.endDate, 'YYYY/MM/DD') };
             self.isDisPreP = data.isDisPreP;
-
         }).catch(() => {
             self.$mask('hide');
         });
@@ -193,7 +192,7 @@ export class CmmS45BComponent extends Vue {
         lstApp.forEach((app: any) => {
             lst.push(new AppInfo({
                 id: app.applicationID,
-                appDate: new Date(app.applicationDate),
+                appDate: this.$dt.fromUTCString(app.applicationDate, 'YYYY/MM/DD'),
                 appType: app.applicationType,
                 appName: this.appTypeName(app.applicationType),
                 prePostAtr: app.prePostAtr,
@@ -233,7 +232,7 @@ export class CmmS45BComponent extends Vue {
     get btnChangeMode() {
         return {
             class: this.modeAppr ? 'btn btn-secondary' : 'btn btn-primary',
-            name: this.modeAppr ? 'CMMS45_54' : 'CMMS45_55'
+            name: this.modeAppr ? 'CMMS45_55' : 'CMMS45_54'
         };
     }
     // 詳細を確認する

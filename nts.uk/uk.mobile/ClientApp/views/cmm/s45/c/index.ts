@@ -242,7 +242,7 @@ export class CmmS45CComponent extends Vue {
     // tiến tới màn chi tiết KAF005
     public updateApp(): void {
         let self = this;
-        self.$goto('kafS05a', { appID: self.currentApp }); 
+        self.$goto('kafS05b', { appID: self.currentApp }); 
     }
 }
 
