@@ -10,7 +10,7 @@ public enum ExecutionStatusCps013 {
 	// 1:完了（エラーあり）
 	DONE_WITH_ERROR(1, "完了（エラーあり）"),
 	// 2:処理中
-	PROCESSING(2, "処理中"),
+	PROCESSING(2, "実行中"),
 	// 3:実行中止
 	STOP_EXECUTION(3, "実行中止"),
 	// 4:中断開始

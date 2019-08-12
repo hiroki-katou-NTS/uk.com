@@ -32,20 +32,26 @@ import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefForLayoutDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefForLayoutFinder;
 import nts.uk.ctx.pereg.dom.person.additemdata.category.EmInfoCtgDataRepository;
 import nts.uk.ctx.pereg.dom.person.additemdata.category.EmpInfoCtgData;
+import nts.uk.ctx.pereg.dom.person.additemdata.item.EmpInfoItemData;
 import nts.uk.ctx.pereg.dom.person.additemdata.item.EmpInfoItemDataRepository;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
+import nts.uk.ctx.pereg.dom.person.info.category.PersonEmployeeType;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
+import nts.uk.ctx.pereg.dom.person.info.daterangeitem.DateRangeItem;
 import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
+import nts.uk.ctx.pereg.dom.person.info.setitem.SetItem;
 import nts.uk.ctx.pereg.dom.person.layout.classification.LayoutItemType;
 import nts.uk.ctx.pereg.dom.person.personinfoctgdata.categor.PerInfoCtgData;
 import nts.uk.ctx.pereg.dom.person.personinfoctgdata.categor.PerInfoCtgDataRepository;
 import nts.uk.ctx.pereg.dom.person.personinfoctgdata.item.PerInfoItemDataRepository;
+import nts.uk.ctx.pereg.dom.person.personinfoctgdata.item.PersonInfoItemData;
 import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoAuthType;
 import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuth;
 import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuthRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.pereg.app.find.PeregEmpInfoQuery;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.PeregQueryByListEmp;
@@ -97,7 +103,6 @@ public class PeregProcessor {
 
 	@Inject
 	private LayoutControlComBoBox layoutControlComboBox;
-
 	/**
 	 * get person information category and it's children (Hiển thị category và
 	 * danh sách tab category con của nó)
@@ -348,27 +353,15 @@ public class PeregProcessor {
 				List<GridLayoutPersonInfoClsDto> resultsSync = Collections.synchronizedList(new ArrayList<>());
 				
 				parallel.forEach(peregDtoLst, m -> {
-					// combo-box sẽ lấy dựa theo các ngày startDate của từng category
-					GeneralDate comboBoxStandardDate = GeneralDate.today();
+//					// combo-box sẽ lấy dựa theo các ngày startDate của từng category
 					
 					GridLayoutPersonInfoClsDto dto = new GridLayoutPersonInfoClsDto(m.getEmployeeId(), m.getPersonId(), m.getEmployeeId().equals(selfEmployeeId) ? creatClassItemList(perItems.get(true), perInfoCtg) :  creatClassItemList(perItems.get(false), perInfoCtg));
 					
 					MappingFactory.mapListItemClassCPS003(m.getPeregDto(), dto.getLayoutDtos());
-
 					
-					Map<String, Object> itemValueMap = MappingFactory.getFullDtoValue(m.getPeregDto());
-					List<String> standardDateItemCodes = Arrays.asList("IS00020", "IS00077", "IS00082", "IS00119", "IS00781");
-					
-					for (String itemCode : standardDateItemCodes) {
-						if (itemValueMap.containsKey(itemCode)) {
-							comboBoxStandardDate = (GeneralDate) itemValueMap.get(itemCode);
-							break;
-						}
-					}
-					
-					// get Combo-Box List
+					// get Combo-Box List theo ngày trên màn hình
 					layoutControlComboBox.getComboBoxListForSelectionItems(m.getEmployeeId(), perInfoCtg, dto.getLayoutDtos(),
-							comboBoxStandardDate);
+							query.getStandardDate());
 					
 					resultsSync.add(dto);					
 				});
@@ -376,11 +369,88 @@ public class PeregProcessor {
 				return new ArrayList<>(resultsSync);
 			}
 		} else { //for optional category
-			
+			switch (perInfoCtg.getCategoryType()) {
+			case SINGLEINFO:
+				 return setOptionDataSingleCategory(perInfoCtg, query, selfEmployeeId, perItems);
+			default:
+				return setOptionDataWithRecordId(perInfoCtg, query, selfEmployeeId, perItems);
+			}
 		}
-
 		return new ArrayList<>();
 	}
+	
+	
+	private List<GridLayoutPersonInfoClsDto> setOptionDataSingleCategory(PersonInfoCategory perInfoCtg, PeregQueryByListEmp query, String selfEmployeeId, HashMap<Boolean, List<PerInfoItemDefForLayoutDto>> perItems) {
+		if (perInfoCtg.isEmployeeType()) {
+			//list sids
+			List<String> sids = query.getEmpInfos().stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
+			// employee option data
+			Map<String, List<EmpInfoCtgData>> empInfoCtgDatas = empInCtgDataRepo
+					.getBySidsAndCtgId(sids, perInfoCtg.getPersonInfoCategoryId()).stream()
+					.collect(Collectors.groupingBy(c -> c.getEmployeeId()));
+			if (!empInfoCtgDatas.isEmpty()) {
+				List<GridLayoutPersonInfoClsDto> result = getAndMapEmpOptionItem(new ArrayList<>(empInfoCtgDatas.keySet()), query, selfEmployeeId, perItems, perInfoCtg);
+				return result;
+			}
+		} else {
+			//list sids
+			List<String> pids = query.getEmpInfos().stream().map(c -> c.getInfoId()).collect(Collectors.toList());
+			// person option data
+			Map<String, List<PerInfoCtgData>> perInfoCtgDatas = perInCtgDataRepo.getAllByPidsAndCtgId(pids, perInfoCtg.getPersonInfoCategoryId()).stream()
+					.collect(Collectors.groupingBy(c -> c.getPersonId()));
+			if (!perInfoCtgDatas.isEmpty()) {
+				List<GridLayoutPersonInfoClsDto> result = getAndMapPerOptionItem(new ArrayList<>(perInfoCtgDatas.keySet()), query, selfEmployeeId, perItems, perInfoCtg);
+				return result;
+			}
+		}
+		return new ArrayList<>();
+	}
+	
+	private List<GridLayoutPersonInfoClsDto> setOptionDataWithRecordId(PersonInfoCategory perInfoCtg,
+			PeregQueryByListEmp query, String selfEmployeeId, HashMap<Boolean, List<PerInfoItemDefForLayoutDto>> perItems) {
+		
+		List<GridLayoutPersonInfoClsDto> result =  getHistInfoCtgByCtgIdAndSid(query, selfEmployeeId, perItems,  perInfoCtg);
+		return result;
+		
+	}
+	
+	private List<GridLayoutPersonInfoClsDto> getAndMapEmpOptionItem(List<String> recordIds, PeregQueryByListEmp query, String selfEmployeeId, HashMap<Boolean, List<PerInfoItemDefForLayoutDto>> perItems, PersonInfoCategory perInfoCtg) {
+		List<GridLayoutPersonInfoClsDto> result = new ArrayList<>();
+		Map<String, List<OptionalItemDataDto>> empOptionItemData =  this.empInfoItemDataRepository.getAllInfoItemByRecordId(recordIds)
+				.stream().map(c -> c.genToPeregDto()).collect(Collectors.groupingBy(x -> x.getRecordId()));
+		empOptionItemData.entrySet().forEach(c ->{
+			Optional<PeregEmpInfoQuery> empInfo = query.getEmpInfos().stream().filter(emp -> emp.getEmployeeId().equals(c.getKey())).findFirst();
+			if(empInfo.isPresent()) {
+				GridLayoutPersonInfoClsDto dto = new GridLayoutPersonInfoClsDto(empInfo.get().getEmployeeId(), empInfo.get().getPersonId(), empInfo.get().getEmployeeId().equals(selfEmployeeId) ? creatClassItemList(perItems.get(true), perInfoCtg) :  creatClassItemList(perItems.get(false), perInfoCtg));
+				MappingFactory.matchOptionalItemData(c.getKey(), dto.getLayoutDtos(), new ArrayList<>(c.getValue()));
+				// get Combo-Box List theo ngày trên màn hình
+				layoutControlComboBox.getComboBoxListForSelectionItems(empInfo.get().getEmployeeId(), perInfoCtg, dto.getLayoutDtos(),
+						query.getStandardDate());
+				result.add(dto);
+			}
+		});
+		return result;
+	}
+	
+	
+	private List<GridLayoutPersonInfoClsDto> getAndMapPerOptionItem(List<String> recordIds, PeregQueryByListEmp query, String selfEmployeeId, HashMap<Boolean, List<PerInfoItemDefForLayoutDto>> perItems, PersonInfoCategory perInfoCtg) {
+		List<GridLayoutPersonInfoClsDto> result = new ArrayList<>();
+		List<OptionalItemDataDto> itemDataLst = perInfoItemDataRepository.getAllInfoItemByRecordId(recordIds).stream().map(c -> c.genToPeregDto()).collect(Collectors.toList());;
+		Map<String, List<OptionalItemDataDto>> perOptionItemDatas = itemDataLst.stream().collect(Collectors.groupingBy(x -> x.getRecordId()));
+		perOptionItemDatas.entrySet().forEach(c ->{
+			Optional<PeregEmpInfoQuery> empInfo = query.getEmpInfos().stream().filter(emp -> emp.getEmployeeId().equals(c.getKey())).findFirst();
+			if(empInfo.isPresent()) {
+				GridLayoutPersonInfoClsDto dto = new GridLayoutPersonInfoClsDto(empInfo.get().getEmployeeId(), empInfo.get().getPersonId(), empInfo.get().getEmployeeId().equals(selfEmployeeId) ? creatClassItemList(perItems.get(true), perInfoCtg) :  creatClassItemList(perItems.get(false), perInfoCtg));
+				MappingFactory.matchOptionalItemData(c.getKey(), dto.getLayoutDtos(), new ArrayList<>(c.getValue()));
+				// get Combo-Box List theo ngày trên màn hình
+				layoutControlComboBox.getComboBoxListForSelectionItems(empInfo.get().getEmployeeId(), perInfoCtg, dto.getLayoutDtos(),
+						query.getStandardDate());
+				result.add(dto);
+			}
+		});
+		return result;
+	}	
+
 
 	private List<LayoutPersonInfoClsDto> creatClassItemList(List<PerInfoItemDefForLayoutDto> lstClsItem, PersonInfoCategory perInfoCtg) {
 		return lstClsItem.stream().map(item -> {
@@ -605,4 +675,344 @@ public class PeregProcessor {
 
 		return lstReturn;
 	}
+	
+	/**
+	 * cps003
+	 * @param query
+	 * @param perInfoCtg
+	 * @return
+	 */
+	public List<GridLayoutPersonInfoClsDto> getHistInfoCtgByCtgIdAndSid(PeregQueryByListEmp query, String selfEmployeeId, HashMap<Boolean, List<PerInfoItemDefForLayoutDto>> perItems, PersonInfoCategory perInfoCtg) {
+		String contractCode = AppContexts.user().contractCode();
+		if (perInfoCtg.isSingleCategory()) {
+			// SINGLE CATEGORY
+			return new ArrayList<>();
+		} 
+		// get combo-box object
+		List<PersonInfoItemDefinition> lstItemDef = perItemRepo
+				.getAllPerInfoItemDefByCategoryId(perInfoCtg.getPersonInfoCategoryId(), contractCode);
+				
+		if (perInfoCtg.isMultiCategory()) {
+			// MULTI CATEGORY
+			return getListOfMultiCategoryCps003(lstItemDef, query, selfEmployeeId, perItems, perInfoCtg);
+		} else {
+			// HISTORY CATEGORY
+			return getListOfHistoryCategoryCps003(query, perInfoCtg, lstItemDef, selfEmployeeId, perItems);
+		}
+	}
+	
+	/**
+	 * optional cps003
+	 * @param lstItemDef
+	 * @param query
+	 * @param selfEmployeeId
+	 * @param perItems
+	 * @param perInfoCtg
+	 * @return
+	 */
+	private List<GridLayoutPersonInfoClsDto> getListOfMultiCategoryCps003(List<PersonInfoItemDefinition> lstItemDef, PeregQueryByListEmp query, String selfEmployeeId, HashMap<Boolean, List<PerInfoItemDefForLayoutDto>> perItems, PersonInfoCategory perInfoCtg) {
+		List<GridLayoutPersonInfoClsDto> result = new ArrayList<>();
+		PersonInfoItemDefinition firstItem = lstItemDef.get(0);
+		if (perInfoCtg.isEmployeeType()) {
+			List<GridLayoutPersonInfoClsDto> employees = getInfoItemEmployeeTypeCps003(query, firstItem.getPerInfoItemDefId(), selfEmployeeId, perItems, perInfoCtg);
+			if(!employees.isEmpty()) {
+				result.addAll(employees);
+			}
+		} else {
+			List<GridLayoutPersonInfoClsDto> persons = getInfoItemPersonTypeCps003(query, firstItem.getPerInfoItemDefId(), selfEmployeeId, perItems, perInfoCtg);
+			if(!persons.isEmpty()) {
+				result.addAll(persons);
+			}
+		}
+
+		return result;
+	}
+	
+	/**
+	 * optional cps003
+	 * @param query
+	 * @param itemId
+	 * @param selfEmployeeId
+	 * @param perItems
+	 * @param perInfoCtg
+	 * @return
+	 */
+	private List<GridLayoutPersonInfoClsDto> getInfoItemEmployeeTypeCps003(PeregQueryByListEmp query, String itemId, String selfEmployeeId, HashMap<Boolean, List<PerInfoItemDefForLayoutDto>> perItems, PersonInfoCategory perInfoCtg) {
+		List<String> sids = query.getEmpInfos().stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
+		List<GridLayoutPersonInfoClsDto> result = new ArrayList<>();
+		Map<String, List<EmpInfoCtgData>> empInfoCtgDatas = empInCtgDataRepo
+				.getBySidsAndCtgId(sids, query.getCategoryId()).stream().collect(Collectors.groupingBy(c -> c.getEmployeeId()));
+		empInfoCtgDatas.entrySet().forEach(c ->{
+			List<String> recordIds = c.getValue().stream().map(ctg -> ctg.getRecordId()).distinct().collect(Collectors.toList());
+			Map<String, List<EmpInfoItemData>> itemDatas = empInfoItemDataRepository.getAllInfoItemByRecordId(recordIds).stream().collect(Collectors.groupingBy(i -> i.getRecordId()));
+			Optional<PeregEmpInfoQuery> empInfoQueryOpt =  query.getEmpInfos().stream().filter(emp -> emp.getEmployeeId().equals(c.getKey())).findFirst();
+			if(empInfoQueryOpt.isPresent() && !itemDatas.isEmpty()){
+				itemDatas.entrySet().forEach(item ->{
+					GridLayoutPersonInfoClsDto dto = new GridLayoutPersonInfoClsDto(empInfoQueryOpt.get().getEmployeeId(), empInfoQueryOpt.get().getPersonId(), empInfoQueryOpt.get().getEmployeeId().equals(selfEmployeeId) ? creatClassItemList(perItems.get(true), perInfoCtg) :  creatClassItemList(perItems.get(false), perInfoCtg));
+					MappingFactory.matchOptionalItemData(item.getKey(), dto.getLayoutDtos(),
+							item.getValue().stream().map(i -> i.genToPeregDto()).collect(Collectors.toList()));
+					// get Combo-Box List theo ngày trên màn hình
+					layoutControlComboBox.getComboBoxListForSelectionItems(empInfoQueryOpt.get().getEmployeeId(), perInfoCtg, dto.getLayoutDtos(),
+							query.getStandardDate());
+					result.add(dto);
+				});
+			}
+		});
+		
+		query.getEmpInfos().forEach(c ->{
+			List<GridLayoutPersonInfoClsDto> empLstOpt = result.stream().filter(i -> i.getEmployeeId().equals(c.getEmployeeId())).collect(Collectors.toList());
+			if(CollectionUtil.isEmpty(empLstOpt)) {
+				result.add(new GridLayoutPersonInfoClsDto(c.getEmployeeId(), c.getPersonId(), new ArrayList<>()));
+			}
+		});
+		
+		return result;
+	}
+	
+	/**
+	 * optional cps003
+	 * @param query
+	 * @param itemId
+	 * @param selfEmployeeId
+	 * @param perItems
+	 * @param perInfoCtg
+	 * @return
+	 */
+	private List<GridLayoutPersonInfoClsDto> getInfoItemPersonTypeCps003(PeregQueryByListEmp query, String itemId,  String selfEmployeeId, HashMap<Boolean, List<PerInfoItemDefForLayoutDto>> perItems, PersonInfoCategory perInfoCtg) {
+		List<String> pids = query.getEmpInfos().stream().map(c -> c.getPersonId()).collect(Collectors.toList());
+		List<GridLayoutPersonInfoClsDto> result = new ArrayList<>();
+		Map<String, List<PerInfoCtgData>> perInfoCtgDatas = perInCtgDataRepo.getAllByPidsAndCtgId(pids, query.getCategoryId()).stream().collect(Collectors.groupingBy(c -> c.getPersonId()));
+		perInfoCtgDatas.entrySet().forEach(c ->{
+			List<String> recordIds = c.getValue().stream().map(i -> i.getRecordId()).collect(Collectors.toList());
+			Optional<PeregEmpInfoQuery> empInfoQueryOpt =  query.getEmpInfos().stream().filter(emp -> emp.getEmployeeId().equals(c.getKey())).findFirst();
+			Map<String, List<PersonInfoItemData>> itemDatas  = perInfoItemDataRepository.getAllInfoItemByRecordId(recordIds).stream().collect(Collectors.groupingBy(i -> i.getRecordId()));
+			if(empInfoQueryOpt.isPresent() && !itemDatas.isEmpty()){
+				itemDatas.entrySet().forEach(item ->{
+					GridLayoutPersonInfoClsDto dto = new GridLayoutPersonInfoClsDto(empInfoQueryOpt.get().getEmployeeId(), empInfoQueryOpt.get().getPersonId(), empInfoQueryOpt.get().getEmployeeId().equals(selfEmployeeId) ? creatClassItemList(perItems.get(true), perInfoCtg) :  creatClassItemList(perItems.get(false), perInfoCtg));
+					MappingFactory.matchOptionalItemData(item.getKey(), dto.getLayoutDtos(),
+							item.getValue().stream().map(i -> i.genToPeregDto()).collect(Collectors.toList()));
+					// get Combo-Box List theo ngày trên màn hình
+					layoutControlComboBox.getComboBoxListForSelectionItems(empInfoQueryOpt.get().getEmployeeId(), perInfoCtg, dto.getLayoutDtos(),
+							query.getStandardDate());
+					result.add(dto);
+				});
+			}
+		});
+		
+		query.getEmpInfos().forEach(c ->{
+			List<GridLayoutPersonInfoClsDto> empLstOpt = result.stream().filter(i -> i.getEmployeeId().equals(c.getEmployeeId())).collect(Collectors.toList());
+			if(CollectionUtil.isEmpty(empLstOpt)) {
+				result.add(new GridLayoutPersonInfoClsDto(c.getEmployeeId(), c.getPersonId(), new ArrayList<>()));
+			}
+		});
+		return result;
+	}
+	
+	/**
+	 * getListOfHistoryCategoryCps003
+	 * @param query
+	 * @param perInfoCtg
+	 * @param lstItemDef
+	 * @return
+	 */
+	private List<GridLayoutPersonInfoClsDto> getListOfHistoryCategoryCps003(PeregQueryByListEmp query, PersonInfoCategory perInfoCtg,
+			List<PersonInfoItemDefinition> lstItemDef, String selfEmployeeId,
+			HashMap<Boolean, List<PerInfoItemDefForLayoutDto>> perItems) {
+
+		String categoryId = query.getCategoryId();
+	
+		PersonInfoItemDefinition period = getPeriodItem(query.getCategoryCode(), categoryId, lstItemDef);
+
+		List<GridLayoutPersonInfoClsDto> result = getInfoListHistTypeCps003(perInfoCtg, query, period, selfEmployeeId, perItems);
+
+		return result;
+	}
+	
+	private List<GridLayoutPersonInfoClsDto> getInfoListHistTypeCps003(PersonInfoCategory perInfoCtg, PeregQueryByListEmp query,
+			PersonInfoItemDefinition period,  String selfEmployeeId,
+			HashMap<Boolean, List<PerInfoItemDefForLayoutDto>> perItems) {
+
+		List<String> timePerInfoItemDefIds = ((SetItem) period.getItemTypeState()).getItems();
+
+		return perInfoCtg.getPersonEmployeeType() == PersonEmployeeType.EMPLOYEE
+				? getHistInfoEmployeeType(timePerInfoItemDefIds, query, selfEmployeeId, perItems, perInfoCtg)
+				: getHistInfoPersonType(timePerInfoItemDefIds, query, selfEmployeeId, perItems, perInfoCtg);
+
+	}
+	
+	/**
+	 *  optional cps003
+	 * @param timePerInfoItemDefIds
+	 * @param query
+	 * @param selfEmployeeId
+	 * @param perItems
+	 * @param perInfoCtg
+	 * @return
+	 */
+	private List<GridLayoutPersonInfoClsDto> getHistInfoEmployeeType(List<String> timePerInfoItemDefIds,
+			PeregQueryByListEmp query, String selfEmployeeId,
+			HashMap<Boolean, List<PerInfoItemDefForLayoutDto>> perItems, PersonInfoCategory perInfoCtg) {
+		List<GridLayoutPersonInfoClsDto> result = new ArrayList<>();
+		// get EmpInfoCtgData to get record id
+		List<String> sids = query.getEmpInfos().stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
+		// employee option data
+		Map<String, List<EmpInfoCtgData>> empInfoCtgDatas = empInCtgDataRepo
+				.getBySidsAndCtgId(sids, query.getCategoryId()).stream()
+				.collect(Collectors.groupingBy(c -> c.getEmployeeId()));
+		// lấy recordId
+		if (empInfoCtgDatas.size() == 0) {
+			
+		}
+		// muc dích lấy ra DatePeroid
+		empInfoCtgDatas.entrySet().forEach(c -> {
+			for (EmpInfoCtgData empInfoCtgData : c.getValue()) {
+				// get option text
+				List<GeneralDate> optionText = new ArrayList<>();
+				List<EmpInfoItemData> lstEmpInfoCtgItemData = empInfoItemDataRepository
+						.getAllInfoItemByRecordId(empInfoCtgData.getRecordId());
+				if (lstEmpInfoCtgItemData.size() != 0) {
+					for (EmpInfoItemData itemData : lstEmpInfoCtgItemData) {
+						if (timePerInfoItemDefIds.contains(itemData.getPerInfoDefId())) {
+							optionText.add(itemData.getDataState().getDateValue() == null ? GeneralDate.max()
+									: itemData.getDataState().getDateValue());
+						}
+					}
+					sortDate(optionText);
+					if (optionText.size() > 0) {
+						DatePeriod datePeriod = new DatePeriod((GeneralDate) optionText.get(0),
+								(GeneralDate) optionText.get(1));
+						if (datePeriod.start().beforeOrEquals(query.getStandardDate()) == true
+								&& datePeriod.end().afterOrEquals(query.getStandardDate()) == true) {
+							List<OptionalItemDataDto> optionalItemDataDto = lstEmpInfoCtgItemData.stream()
+									.map(i -> i.genToPeregDto()).collect(Collectors.toList());
+							Optional<PeregEmpInfoQuery> empInfoQueryOpt = query.getEmpInfos().stream()
+									.filter(emp -> emp.getEmployeeId().equals(c.getKey())).findFirst();
+							if (!CollectionUtil.isEmpty(optionalItemDataDto) && empInfoQueryOpt.isPresent()) {
+								GridLayoutPersonInfoClsDto dto = new GridLayoutPersonInfoClsDto(
+										empInfoQueryOpt.get().getEmployeeId(), empInfoQueryOpt.get().getPersonId(),
+										empInfoQueryOpt.get().getEmployeeId().equals(selfEmployeeId)
+												? creatClassItemList(perItems.get(true), perInfoCtg)
+												: creatClassItemList(perItems.get(false), perInfoCtg));
+								MappingFactory.matchOptionalItemData(empInfoCtgData.getRecordId(), dto.getLayoutDtos(),
+										optionalItemDataDto);
+								// get Combo-Box List theo ngày trên màn hình
+								layoutControlComboBox.getComboBoxListForSelectionItems(empInfoQueryOpt.get().getEmployeeId(), perInfoCtg, dto.getLayoutDtos(),
+										query.getStandardDate());
+								result.add(dto);
+							}
+						}
+					}
+
+				}
+			}
+		});
+		
+		
+		query.getEmpInfos().forEach(c ->{
+			List<GridLayoutPersonInfoClsDto> empLstOpt = result.stream().filter(i -> i.getEmployeeId().equals(c.getEmployeeId())).collect(Collectors.toList());
+			if(CollectionUtil.isEmpty(empLstOpt)) {
+				result.add(new GridLayoutPersonInfoClsDto(c.getEmployeeId(), c.getPersonId(), new ArrayList<>()));
+			}
+		});
+		return result;
+	}
+	
+	/**
+	 *  optional cps003
+	 * @param timePerInfoItemDefIds
+	 * @param query
+	 * @param selfEmployeeId
+	 * @param perItems
+	 * @param perInfoCtg
+	 * @return
+	 */
+	private List<GridLayoutPersonInfoClsDto> getHistInfoPersonType(List<String> timePerInfoItemDefIds, PeregQueryByListEmp query, String selfEmployeeId,
+			HashMap<Boolean, List<PerInfoItemDefForLayoutDto>> perItems, PersonInfoCategory perInfoCtg) {
+		List<GridLayoutPersonInfoClsDto> result = new ArrayList<>();
+
+		List<String> pids = query.getEmpInfos().stream().map(c -> c.getPersonId()).collect(Collectors.toList());
+		// get EmpInfoCtgData to get record id
+		Map<String, List<PerInfoCtgData>> lstPerInfoCtgData = perInCtgDataRepo
+				.getAllByPidsAndCtgId(pids, query.getCategoryId()).stream()
+				.collect(Collectors.groupingBy(c -> c.getPersonId()));
+		if (lstPerInfoCtgData.size() == 0)
+			return result;
+
+		// get lst item data and filter base on item def
+		List<PersonInfoItemData> lstValidItemData = new ArrayList<>();
+		lstPerInfoCtgData.entrySet().forEach(c ->{
+			for (PerInfoCtgData perInfoCtgData : c.getValue()) {
+				// get option value value combo box
+				// get option text
+				List<GeneralDate> optionText = new ArrayList<>();
+				List<PersonInfoItemData> lstPerInfoCtgItemData = perInfoItemDataRepository
+						.getAllInfoItemByRecordId(perInfoCtgData.getRecordId());
+				if (lstPerInfoCtgItemData.size() != 0) {
+					for (PersonInfoItemData itemData : lstValidItemData) {
+						if (timePerInfoItemDefIds.contains(itemData.getPerInfoItemDefId())) {
+							optionText.add(itemData.getDataState().getDateValue() == null ? GeneralDate.max() : itemData.getDataState().getDateValue());
+						}
+					}
+					sortDate(optionText);
+					if (optionText.size() > 0) {
+						DatePeriod datePeriod = new DatePeriod((GeneralDate) optionText.get(0), (GeneralDate) optionText.get(1));
+						if (datePeriod.start().beforeOrEquals(query.getStandardDate()) == true
+								&& datePeriod.end().afterOrEquals(query.getStandardDate()) == true) {
+							List<OptionalItemDataDto> optionalItemDataDto = lstPerInfoCtgItemData.stream().map(i -> i.genToPeregDto()).collect(Collectors.toList());
+							Optional<PeregEmpInfoQuery> empInfoQueryOpt = query.getEmpInfos().stream()
+									.filter(emp -> emp.getEmployeeId().equals(c.getKey())).findFirst();
+							if (CollectionUtil.isEmpty(optionalItemDataDto) && empInfoQueryOpt.isPresent()) {
+								GridLayoutPersonInfoClsDto dto = new GridLayoutPersonInfoClsDto(
+										empInfoQueryOpt.get().getEmployeeId(), empInfoQueryOpt.get().getPersonId(),
+										empInfoQueryOpt.get().getEmployeeId().equals(selfEmployeeId)
+												? creatClassItemList(perItems.get(true), perInfoCtg)
+												: creatClassItemList(perItems.get(false), perInfoCtg));
+								MappingFactory.matchOptionalItemData(perInfoCtgData.getRecordId(), dto.getLayoutDtos(),
+										optionalItemDataDto);
+								// get Combo-Box List theo ngày trên màn hình
+								layoutControlComboBox.getComboBoxListForSelectionItems(empInfoQueryOpt.get().getEmployeeId(), perInfoCtg, dto.getLayoutDtos(),
+										query.getStandardDate());
+								result.add(dto);
+							}
+						}
+					}
+
+				}
+			}
+		});
+	
+		return result;
+	}
+	
+	/**
+	 * optional cps003
+	 * @param categoryCode
+	 * @param categoryId
+	 * @param lstItemDef
+	 * @return
+	 */
+	private PersonInfoItemDefinition getPeriodItem(String categoryCode, String categoryId,
+			List<PersonInfoItemDefinition> lstItemDef) {
+		if (categoryCode.equals("CS00003")) {
+			return lstItemDef.get(0);
+		}
+		
+		DateRangeItem dateRangeItem = perInfoCtgRepositoty.getDateRangeItemByCategoryId(categoryId).get();
+		return lstItemDef.stream().filter(x -> x.getPerInfoItemDefId().equals(dateRangeItem.getDateRangeItemId()))
+				.findFirst().get();
+	}
+	
+	/**
+	 *  optional cps003
+	 * sort asc
+	 * @param optionText
+	 */
+	private void sortDate(List<GeneralDate> optionText) {
+		optionText.sort((a, b) -> {
+			GeneralDate start = a;
+			GeneralDate end = b;
+			return start.compareTo(end);
+		});
+	}
+	
 }

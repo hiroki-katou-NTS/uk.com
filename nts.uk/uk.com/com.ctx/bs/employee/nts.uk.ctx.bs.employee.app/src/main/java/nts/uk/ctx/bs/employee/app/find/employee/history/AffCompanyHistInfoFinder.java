@@ -186,8 +186,10 @@ public class AffCompanyHistInfoFinder implements PeregFinder<AffCompanyHistInfoD
 				List<AffCompanyHistItem> listHistItemByEmp = hisEmp.items();
 				if (!listHistItemByEmp.isEmpty()) {
 					listHistItemByEmp.forEach(itemHis -> {
-						AffCompanyInfo affCompanyInfoByHistId = affCompanyInfo.stream().filter(comInfo -> comInfo.getHistoryId().equals(itemHis.getHistoryId())).findFirst().get();
-						listHistInfoDto.add(AffCompanyHistInfoDto.fromDomainForCPS013(itemHis, affCompanyInfoByHistId));
+						Optional<AffCompanyInfo> affCompanyInfoByHistId = affCompanyInfo.stream().filter(comInfo -> comInfo.getHistoryId().equals(itemHis.getHistoryId())).findFirst();
+						if (affCompanyInfoByHistId.isPresent()) {
+							listHistInfoDto.add(AffCompanyHistInfoDto.fromDomainForCPS013(itemHis, affCompanyInfoByHistId.get()));
+						}
 					});
 				}
 			});

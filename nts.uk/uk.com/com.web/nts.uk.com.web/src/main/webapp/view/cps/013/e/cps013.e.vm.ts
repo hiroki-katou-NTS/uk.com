@@ -82,9 +82,9 @@ module nts.uk.at.view.cps013.e {
                                     self.countEmp(self.getAsyncData(info.taskDatas, "countEmp").valueAsNumber);
                                     if(self.countEmp()){
                                         self.daucach("/");
-                                    }
-                                    
-                                    self.statusCheck(self.getAsyncData(info.taskDatas, "statusCheck").valueAsString);
+                                    }    
+									
+									self.statusCheck(self.getAsyncData(info.taskDatas, "statusCheck").valueAsString);
 
                                     if (!info.pending && !info.running || info.requestedToCancel) {
                                         self.isComplete(true);
@@ -94,6 +94,12 @@ module nts.uk.at.view.cps013.e {
                                         self.endTime(moment.utc(self.startTime()).add(timeAction, 'second').format("YYYY/MM/DD HH:mm:ss"));
                                         $("#elapseTime").text(self.formatTime(timeAction));
                                         
+										if(info.requestedToCancel){
+											self.statusCheck(getText('CPS013_51'));
+										}
+                                        
+										self.numberEmpChecked(self.getAsyncData(info.taskDatas, "numberEmpChecked").valueAsNumber);
+                                        										
                                         self.bindingDataToGrid(info.taskDatas);
                                         setTimeout(() => {
                                            $("#button3001").focus();
@@ -177,47 +183,37 @@ module nts.uk.at.view.cps013.e {
                      data_error = [],
                      errs = [];
 
-                _.forEach(data, item => {
-                    if (item.key.substring(0, 10) === "errorInfor") {
-                        data_error.push(item);
-                    } else if (item.key.substring(0, 10) === "employeeId") {
-                        data_employeeId.push(item);
-                    } else if (item.key.substring(0, 10) === "categoryId") {
-                        data_categoryId.push(item);
-                    } else if (item.key.substring(0, 10) === "employeeCo") {
-                        data_employeeCode.push(item);
-                    } else if (item.key.substring(0, 10) === "bussinessN") {
-                        data_bussinessName.push(item);
-                    } else if (item.key.substring(0, 10) === "clsCtgChek") {
-                        data_clsCategoryCheck.push(item);
-                    } else if (item.key.substring(0, 10) === "categoryNa") {
-                        data_categoryName.push(item);
-                    }
-                });
+               data_error = _.filter(data, function(item) { return item.key.substring(0, 10) === "errorInfor"; });
+               data_employeeId = _.filter(data, function(item) { return item.key.substring(0, 10) === "employeeId"; });
+               data_categoryId = _.filter(data, function(item) { return item.key.substring(0, 10) === "categoryId"; });
+               data_employeeCode =  _.filter(data, function(item) { return item.key.substring(0, 10) === "employeeCo"; });
+               data_bussinessName =  _.filter(data, function(item) { return item.key.substring(0, 10) === "bussinessN"; });
+               data_clsCategoryCheck =  _.filter(data, function(item) { return item.key.substring(0, 10) === "clsCtgChek"; });
+               data_categoryName =  _.filter(data, function(item) { return item.key.substring(0, 10) === "categoryNa"; });
                
-                for (let i = 0; i < data_employeeId.length; i++) {
+               for (let i = 0; i < data_employeeId.length; i++) {
 
-                    let tagKey = data_employeeId[i].key.substring(10, 46);
-                    let empId = data_employeeId[i].valueAsString;
-                    let ctgId = (_.filter(data_categoryId, function(o) { return o.key.substring(10, 46) == tagKey; }))[0].valueAsString;
-                    let employeeCode = (_.filter(data_employeeCode, function(o) { return o.key.substring(10, 46) == tagKey; }))[0].valueAsString;
-                    let bussinessName = (_.filter(data_bussinessName, function(o) { return o.key.substring(10, 46) == tagKey; }))[0].valueAsString;
-                    let clsCategoryCheck = (_.filter(data_clsCategoryCheck, function(o) { return o.key.substring(10, 46) == tagKey; }))[0].valueAsString;
-                    let categoryName = (_.filter(data_categoryName, function(o) { return o.key.substring(10, 46) == tagKey; }))[0].valueAsString;
-                    let error = (_.filter(data_error, function(o) { return o.key.substring(10, 46) == tagKey; }))[0].valueAsString;
-                    
-                    var errorInfo = {
-                        employeeId: empId,
-                        categoryId: ctgId,
-                        employeeCode: employeeCode,
-                        bussinessName: bussinessName,
-                        clsCategoryCheck: clsCategoryCheck,
-                        categoryName: categoryName,
-                        error: error
-                    };
-                    
-                    errs.push(new PersonInfoErrMessageLog(errorInfo));
-                }
+                   let tagKey = data_employeeId[i].key.substring(10, 46);
+                   let empId = data_employeeId[i].valueAsString;
+                   let ctgId = (_.filter(data_categoryId, function(o) { return o.key.substring(10, 46) == tagKey; }))[0].valueAsString;
+                   let employeeCode = (_.filter(data_employeeCode, function(o) { return o.key.substring(10, 46) == tagKey; }))[0].valueAsString;
+                   let bussinessName = (_.filter(data_bussinessName, function(o) { return o.key.substring(10, 46) == tagKey; }))[0].valueAsString;
+                   let clsCategoryCheck = (_.filter(data_clsCategoryCheck, function(o) { return o.key.substring(10, 46) == tagKey; }))[0].valueAsString;
+                   let categoryName = (_.filter(data_categoryName, function(o) { return o.key.substring(10, 46) == tagKey; }))[0].valueAsString;
+                   let error = (_.filter(data_error, function(o) { return o.key.substring(10, 46) == tagKey; }))[0].valueAsString;
+
+                   var errorInfo = {
+                       employeeId: empId,
+                       categoryId: ctgId,
+                       employeeCode: employeeCode,
+                       bussinessName: bussinessName,
+                       clsCategoryCheck: clsCategoryCheck,
+                       categoryName: categoryName,
+                       error: error
+                   };
+
+                   errs.push(new PersonInfoErrMessageLog(errorInfo));
+               }
                
                // order 
                self.errorMessageInfo(_.sortBy(errs, ['employeeCode', 'clsCategoryCheck', 'categoryName']));
@@ -322,7 +318,7 @@ module nts.uk.at.view.cps013.e {
     function makeIcon(value, row) {
         if (value == '1')
             return '<img style="margin-left: 15px; width: 20px; height: 20px;" />';
-        return '<div>' + '<div class="limit-custom">' + value + '</div>' + '<div style = "display: inline-block; position: relative;">' + '<button tabindex = "6" class="open-dialog-i" onclick="jumtoCPS001A(\'' + row.employeeId + '\', \'' + row.categoryId + '\')">' + nts.uk.resource.getText("CPS013_31") + '</button>' + '</div>' + '</div>';
+        return '<div>' + '<div class="jumpButton">' + value + '</div>' + '<div style = "display: inline-block; position: relative;">' + '<button tabindex = "6" class="open-dialog-i" onclick="jumtoCPS001A(\'' + row.employeeId + '\', \'' + row.categoryId + '\')">' + nts.uk.resource.getText("CPS013_31") + '</button>' + '</div>' + '</div>';
     }
 }
 

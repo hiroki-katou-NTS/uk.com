@@ -4,7 +4,6 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -38,7 +37,6 @@ import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.pereg.app.find.common.ComboBoxRetrieveFactory;
-import nts.uk.ctx.pereg.app.find.filemanagement.CheckFileFinder.UpdateMode;
 import nts.uk.ctx.pereg.app.find.layout.dto.EmpMainCategoryDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.ActionRole;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.GridEmpBody;
@@ -113,9 +111,9 @@ public class CheckFileFinder {
 	
 	private static String header;
 	
-	private final static List<String> itemSpecialLst = Arrays.asList("IS00003","IS00004");
+	private final static List<String> itemSpecialLst = Arrays.asList("IS00003", "IS00004","IS00015","IS00016");
 	
-	private static int index;
+	//private static int index;
 	
 	@SuppressWarnings("unused")
 	private static GeneralDate valueStartCode;
@@ -286,14 +284,15 @@ public class CheckFileFinder {
 		List<EmployeeRowDto> result = new ArrayList<>();
 		// lấy ra những item bị thiếu không file import ko có trong setting ở màn hình A, set RecordId, set actionRole
 		headerReal.removeAll(headerRemain);
-		index = 0;
+		//index = 0;
 		PeregQueryByListEmp lquery = PeregQueryByListEmp.createQueryLayout(category.getPersonInfoCategoryId(),
 				category.getCategoryCode().v(), GeneralDate.today(),
 				employees.stream().map(m -> new PeregEmpInfoQuery(m.getPersonId(), m.getEmployeeId())).collect(Collectors.toList()));
 		
 		List<EmpMainCategoryDto> layouts = layoutProcessor.getCategoryDetailByListEmp(lquery);
-		employeeDtos.stream().forEach(pdt -> {
-			List<ItemError> errors = itemErrors.stream().filter(error -> error.getIndex() == index).collect(Collectors.toList());
+		int index = 0;
+		for(EmployeeRowDto pdt: employeeDtos) {
+			List<ItemError> errors = itemErrors.stream().filter(error -> error.getIndex() == 1).collect(Collectors.toList());
 			// lấy full value của các item
 			List<ItemRowDto> itemDtos = new ArrayList<>();
 			List<EmpMainCategoryDto> empDtos = layouts.stream().filter(l -> l.getEmployeeId().equals(pdt.getEmployeeId())).collect(Collectors.toList());
@@ -396,8 +395,8 @@ public class CheckFileFinder {
 
 			pdt.getItems().sort(Comparator.comparing(ItemRowDto::getItemOrder, Comparator.naturalOrder()));
 			result.add(pdt);
-			index++;
-		});
+			index++;			
+		}
 		
 		// sắp xếp lại vị trí item theo số tự lỗi - エクセル受入データを並び替える - エラーの件数　DESC、社員コード　ASC
 		Comparator<EmployeeRowDto> compareByName = Comparator
@@ -421,19 +420,18 @@ public class CheckFileFinder {
 	private void readEmployeeFromFile(PersonInfoCategory category, List<NtsExcelRow> rows,
 			List<EmployeeDataMngInfo> employees, List<GridEmpHead> headerReal, HashMap<String, Object> contraintList,
 			List<GridEmpHead> headerRemain, List<EmployeeRowDto> employeeDtos, Periods period, List<ItemError> itemErrors) {
-		index = 0;
-		rows.stream().forEach( row ->{
+		int index = 0;
+		for(NtsExcelRow row: rows) {
 			List<NtsExcelCell> cells = row.cells();		
 			EmployeeRowDto employeeDto = new EmployeeRowDto();
 			List<ItemRowDto> items = new ArrayList<>();
-			
-			cells.stream().forEach( cell -> {
+			for(NtsExcelCell cell: cells) {
 				String[] itemChilds = cell.getHeader().getMain().getValue().getText().split("＿");
 				String header = cell.getHeader().getMain().getValue().getText();
 				String headerTemp = itemChilds.length > 0? itemChilds[itemChilds.length - 1]: header;
 				//setValueItemDto(category, employees, cell, employeeDto, header, headerTemp,  headerReal, contraintList, items,  headerRemain, period, itemErrors, index);
 				setValueItemDto(category, employees, cell, employeeDto, header, headerTemp,  headerReal, contraintList, items,  headerRemain, period, itemErrors, index);
-			});
+			}
 			employeeDto.setItems(items);
 			if(employeeDto.getEmployeeCode()!= null) {
 				employeeDtos.add(employeeDto);
@@ -444,7 +442,7 @@ public class CheckFileFinder {
 				}
 			}
 			index++;
-		});
+		}
 
 	}
 	
@@ -717,7 +715,7 @@ public class CheckFileFinder {
 				itemDto.setValue(value == null ? null : value);
 				StringConstraint stringContraint = (StringConstraint) contraint;
 				if (gridHead.isRequired()) {
-					if (value == null) {
+					if (value == null || value =="") {
 						ItemError error = new ItemError("", index, itemDto.getItemCode(), "FND_E_REQ_INPUT");
 						itemDto.setError(true);
 						itemErrors.add(error);
@@ -725,9 +723,8 @@ public class CheckFileFinder {
 					} else {
 						Optional<String> string = stringContraint.validateString(value.toString());
 						if (itemSpecialLst.contains(itemDto.getItemCode())) {
-							ItemError error = new ItemError();
-							validateItemOfCS0002(itemDto, value.toString(), error, index);
-							if (error.getColumnKey() != null && error.getColumnKey() !="") {
+							ItemError error = validateItemOfCS0002(itemDto, value.toString(), index);
+							if (error!= null) {
 								itemErrors.add(error);
 							}
 							break;
@@ -741,13 +738,14 @@ public class CheckFileFinder {
 						}
 					}
 				} else {
-					if (value != null) {
+					if (value != null ) {
 						Optional<String> string = stringContraint.validateString(value.toString());
 						if (itemSpecialLst.contains(itemDto.getItemCode())) {
-							ItemError error = new ItemError();
-							validateItemOfCS0002(itemDto, value.toString(), error, index);
-							if (error.getColumnKey() != null && error.getColumnKey() !="") {
-								itemErrors.add(error);
+							if(value.toString() != "") {
+								 ItemError error = validateItemOfCS0002(itemDto, value.toString(),  index);
+									if (error != null) {
+										itemErrors.add(error);
+									}
 							}
 							break;
 						} else {
@@ -927,19 +925,17 @@ public class CheckFileFinder {
 	 * @param itemDto
 	 * @param value
 	*/
-	private void validateItemOfCS0002(ItemRowDto itemDto, String value, ItemError error, int index){
+	private ItemError validateItemOfCS0002(ItemRowDto itemDto, String value, int index){
 		for (String itemCode : itemSpecialLst) {
 			if (itemDto.getItemCode().equals(itemCode)) {
 				if (value.startsWith(JP_SPACE) || value.endsWith(JP_SPACE)
 						|| !value.contains(JP_SPACE)) {
 					itemDto.setError(true);
-					error = new ItemError("", index, itemDto.getItemCode(), "Msg_924");
-					break;
-				}else {
-					error = null;
+					return new ItemError("", index, itemDto.getItemCode(), "Msg_924");
 				}
 			}
 		}
+		return null;
 	}
 	
 	/**
