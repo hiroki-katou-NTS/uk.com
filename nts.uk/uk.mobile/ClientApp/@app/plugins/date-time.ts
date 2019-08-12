@@ -42,7 +42,7 @@ const datetime = {
                                 month: number = Math.floor(d % 100);
 
                             if (year && month) {
-                                return moment.utc(Date.UTC(year, month)).format(format || YM_FORMAT);
+                                return moment(`${d}`, 'YYYYMM').format(format || 'YYYY/MM');
                             }
                         }
 

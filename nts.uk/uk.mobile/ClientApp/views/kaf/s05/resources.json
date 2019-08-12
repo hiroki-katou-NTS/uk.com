@@ -1,0 +1,26 @@
+{
+    "jp": {
+        "kafS05a": "#{KAFS05_1}",
+        "kafS05b": "#{KAFS05_1}",
+        "kafS05_1": "#{KAFS05_1}",
+        "kafS05_2": "#{KAFS05_1}",
+        "kafS05_3": "#{KAFS05_1}",
+        "kafS05_4": "#{KAFS05_1}",
+        "step1": "#{KAFS05_2}",
+        "step2": "#{KAFS05_3}",
+        "step3": "#{KAFS05_4}",
+        "step4": "#{KAFS05_5}"
+    },
+    "vi": {
+        "kafS05a": "#{KAFS05_1}",
+        "kafS05b": "#{KAFS05_1}",
+        "kafS05_1": "#{KAFS05_1}",
+        "kafS05_2": "#{KAFS05_1}",
+        "kafS05_3": "#{KAFS05_1}",
+        "kafS05_4": "#{KAFS05_1}",
+        "step1": "#{KAFS05_2}",
+        "step2": "#{KAFS05_3}",
+        "step3": "#{KAFS05_4}",
+        "step4": "#{KAFS05_5}"
+    }
+}

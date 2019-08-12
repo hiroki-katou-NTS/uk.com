@@ -3,7 +3,7 @@ import { component, Prop, Watch } from '@app/core/component';
 import { Kafs05Model } from '../common/CommonClass';
 
 @component({
-    name: 'KafS05a2',
+    name: 'KafS05_2',
     template: require('./index.html'),
     resource: require('../../resources.json'),
     validations: {
@@ -32,7 +32,7 @@ import { Kafs05Model } from '../common/CommonClass';
             selectedReason: {
                 checkNull: {
                     test(value: any) {
-                        if (this.kafs05ModelStep2.requiredReason) {
+                        if (this.kafs05ModelStep2.requiredReason && (this.kafs05ModelStep2.typicalReasonDisplayFlg || this.kafs05ModelStep2.displayAppReasonContentFlg)) {
                             if ((value + this.kafs05ModelStep2.multilContent).length == 0) {
                                 return false;
                             }
@@ -59,7 +59,7 @@ import { Kafs05Model } from '../common/CommonClass';
             multilContent: {
                 checkNull: {
                     test(value: any) {
-                        if (this.kafs05ModelStep2.requiredReason) {
+                        if (this.kafs05ModelStep2.requiredReason && (this.kafs05ModelStep2.typicalReasonDisplayFlg || this.kafs05ModelStep2.displayAppReasonContentFlg)) {
                             if ((value + this.kafs05ModelStep2.selectedReason).length == 0) {
                                 return false;
                             }
@@ -118,27 +118,31 @@ export class KafS05aStep2Component extends Vue {
 
     @Watch('kafs05ModelStep2.selectedReason')
     public validateSelectedReason() {
-        this.$validate();
+        this.$validate('kafs05ModelStep2.multilContent');
+        this.$validate('kafs05ModelStep2.selectedReason');
     }
 
     @Watch('kafs05ModelStep2.multilContent')
     public validateMultilContent() {
-        this.$validate();
+        this.$validate('kafs05ModelStep2.multilContent');
+        this.$validate('kafs05ModelStep2.selectedReason');
     }
 
     @Watch('kafs05ModelStep2.selectedReason2')
     public validateSelectedReason2() {
-        this.$validate();
+        this.$validate('kafs05ModelStep2.multilContent2');
+        this.$validate('kafs05ModelStep2.selectedReason2');
     }
 
     @Watch('kafs05ModelStep2.multilContent2')
     public validateMultilContent2() {
-        this.$validate();
+        this.$validate('kafs05ModelStep2.multilContent2');
+        this.$validate('kafs05ModelStep2.selectedReason2');
     }
 
     @Watch('kafs05ModelStep2.overtimeHours', { deep: true, immediate: false })
     public validateOvertimeHours(value: any, oldValue: any) {
-        this.$validate();
+        this.$validate('kafs05ModelStep2.overtimeHours');
     }
 
     public created() {

@@ -3,7 +3,7 @@
         <div class="card">
             <div class="card-header">
                 <button class="btn btn-link" type="button">
-                    {{'KAF005_23' | i18n}}
+                    {{'KAFS05_41' | i18n}}
                 </button>
             </div>
             <div class="collapse">
@@ -11,14 +11,14 @@
                     <table class="table table-36">
                         <thead class="thead-light">
                             <tr>
-                                <th scope="col">{{'KAF005_24' | i18n}}</th>
-                                <th scope="col">{{'KAF005_25' | i18n}}</th>
-                                <th scope="col">{{'KAF005_26' | i18n}}</th>
+                                <th scope="col">{{'KAFS05_42' | i18n}}</th>
+                                <th scope="col">{{'KAFS05_43' | i18n}}</th>
+                                <th scope="col">{{'KAFS05_44' | i18n}}</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-for="(item, i) of kafs05ModelStep1.overtimeWork">
-                                <td :class="item.color">{{item.yearMonth}}</td>
+                                <td :class="item.color">{{item.yearMonth | yearmonth}}</td>
                                 <td :class="item.color">{{item.limitTime | timedr}}</td>
                                 <td :class="item.color">{{item.actualTime | timedr}}</td>
                             </tr>
@@ -36,7 +36,7 @@
             <div class="card-body">
                 <div class="confirm-item mb-2">
                     <span>{{kafs05ModelStep1.employeeName}}</span>
-                    <span v-if="null != kafs05ModelStep1.enteredPersonName"
+                    <span v-if="null != kafs05ModelStep1.enteredPersonName && kafs05ModelStep1.enteredPersonName != kafs05ModelStep1.employeeName"
                         class="small-header"></BR>(代行者：{{kafs05ModelStep1.enteredPersonName}})</span>
                 </div>
             </div>
@@ -46,9 +46,9 @@
                 </div>
                 <div class="card-body">
                     <div class="confirm-item mb-2" v-if="kafs05ModelStep1.prePostSelected == 0">
-                        <span>{{kafs05ModelStep1.appDate}}&nbsp;{{'KAF009_9' | i18n}}</span></div>
+                        <span>{{kafs05ModelStep1.appDate | date}}&nbsp;{{'KAF009_9' | i18n}}</span></div>
                     <div class="confirm-item mb-2" v-if="kafs05ModelStep1.prePostSelected == 1">
-                        <span>{{kafs05ModelStep1.appDate}}&nbsp;{{'KAF009_10' | i18n}}</span></div>
+                        <span>{{kafs05ModelStep1.appDate | date}}&nbsp;{{'KAF009_10' | i18n}}</span></div>
                 </div>
             </div>
         </div>

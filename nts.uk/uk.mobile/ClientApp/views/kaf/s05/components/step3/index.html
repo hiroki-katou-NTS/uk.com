@@ -3,7 +3,7 @@
         <div class="card">
             <div class="card-header">
                 <button class="btn btn-link" type="button">
-                    {{'KAF005_23' | i18n}}
+                    {{'KAFS05_41' | i18n}}
                 </button>
             </div>
             <div class="collapse">
@@ -11,14 +11,14 @@
                     <table class="table table-36">
                         <thead class="thead-light">
                             <tr>
-                                <th scope="col">{{'KAF005_24' | i18n}}</th>
-                                <th scope="col">{{'KAF005_25' | i18n}}</th>
-                                <th scope="col">{{'KAF005_26' | i18n}}</th>
+                                <th scope="col">{{'KAFS05_42' | i18n}}</th>
+                                <th scope="col">{{'KAFS05_43' | i18n}}</th>
+                                <th scope="col">{{'KAFS05_44' | i18n}}</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-for="(item, i) of kafs05ModelStep3.overtimeWork">
-                                <td :class="item.color">{{item.yearMonth}}</td>
+                                <td :class="item.color">{{item.yearMonth | yearmonth}}</td>
                                 <td :class="item.color">{{item.limitTime | timedr}}</td>
                                 <td :class="item.color">{{item.actualTime | timedr}}</td>
                             </tr>
@@ -29,17 +29,42 @@
         </div>
     </div>
     <div class="input-container">
-        <div class="card card-label" v-show="kafs05ModelStep3.displayPrePostFlg">
+        <div class="card card-label" v-if="null != kafs05ModelStep3.appID">
+            <div class="card-header">
+                <span>{{'KAFS05_81' | i18n}}</span>
+            </div>
+            <div class="card-body">
+                <div class="confirm-item mb-2">
+                    <span>{{kafs05ModelStep3.employeeName}}</span>
+                    <span v-if="null != kafs05ModelStep3.enteredPersonName && kafs05ModelStep3.enteredPersonName != kafs05ModelStep3.employeeName"
+                        class="small-header"></BR>(代行者：{{kafs05ModelStep3.enteredPersonName}})</span>
+                </div>
+            </div>
+            <div class="card card-label">
+                <div class="card-header">
+                    <span>{{'KAFS05_82' | i18n}}</span>
+                </div>
+                <div class="card-body">
+                    <div class="confirm-item mb-2" v-if="kafs05ModelStep3.prePostSelected == 0">
+                        <span>{{kafs05ModelStep3.appDate | date}}&nbsp;{{'KAF009_9' | i18n}}</span></div>
+                    <div class="confirm-item mb-2" v-if="kafs05ModelStep3.prePostSelected == 1">
+                        <span>{{kafs05ModelStep3.appDate | date}}&nbsp;{{'KAF009_10' | i18n}}</span></div>
+                </div>
+            </div>
+        </div>
+        <div class="card card-label" v-if="kafs05ModelStep3.displayPrePostFlg && null == kafs05ModelStep3.appID">
             <div class="card-header">
                 <span>{{'KAFS05_61' | i18n}}</span>
                 <span class="badge badge-warning">必須</span>
             </div>
             <div class="card-body">
-                <div class="confirm-item mb-2" v-if="kafs05ModelStep3.prePostSelected == 0"><span>事前</span></div>
-                <div class="confirm-item mb-2" v-if="kafs05ModelStep3.prePostSelected == 1"><span>事後</span></div>
+                <div class="confirm-item mb-2" v-if="kafs05ModelStep3.prePostSelected == 0">
+                    <span>{{'KAF009_9' | i18n}}</span></div>
+                <div class="confirm-item mb-2" v-if="kafs05ModelStep3.prePostSelected == 1">
+                    <span>{{'KAF009_10' | i18n}}</span></div>
             </div>
         </div>
-        <div class="card card-label">
+        <div class="card card-label" v-if="null == kafs05ModelStep3.appID">
             <div class="card-header">
                 <span>{{'KAFS05_62' | i18n}}</span>
                 <span class="badge badge-warning">必須</span>
@@ -48,7 +73,7 @@
                 <div class="confirm-item mb-2"><span>{{kafs05ModelStep3.appDate | date}}</span></div>
             </div>
         </div>
-        <div class="card card-label" v-show="kafs05ModelStep3.displayCaculationTime">
+        <div class="card card-label" v-if="kafs05ModelStep3.displayCaculationTime">
             <div class="card-header">
                 <span>{{'KAFS05_63' | i18n}}</span>
                 <span class="badge badge-warning">必須</span>
@@ -169,7 +194,7 @@
                 <div class="confirm-item mb-2 reason-confirm"><span v-html='appReason'></span></div>
             </div>
         </div>
-        <div class="card card-label" v-show="kafs05ModelStep3.displayDivergenceReasonForm && kafs05ModelStep3.prePostSelected == 1">
+        <div class="card card-label" v-show="(kafs05ModelStep3.displayDivergenceReasonForm || kafs05ModelStep3.displayDivergenceReasonInput) && kafs05ModelStep3.prePostSelected == 1">
             <div class="card-header">
                 <span>{{'KAFS05_78' | i18n}}</span>
                 <span class="badge badge-info">任意</span>

@@ -155,7 +155,6 @@ export interface Kafs05Model {
     isCreate: boolean;
     step1Start: boolean;
     resetTimeRange: number;
-    overtimeType: string;
     checkBoxValue: boolean;
     enableSendMail: boolean;
     displayBreakTimeFlg: boolean;
