@@ -15,7 +15,6 @@ import {
 
 @component({
     name: 'cmms45c',
-    route: '/cmm/s45/c',
     style: require('./style.scss'),
     template: require('./index.vue'),
     resource: require('./resources.json'),

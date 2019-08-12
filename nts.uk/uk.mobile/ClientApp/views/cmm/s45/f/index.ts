@@ -3,7 +3,6 @@ import { component, Prop } from '@app/core/component';
 
 @component({
     name: 'cmms45f',
-    route: '/cmm/s45/f',
     style: require('./style.scss'),
     template: require('./index.vue'),
     resource: require('./resources.json'),
