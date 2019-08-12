@@ -35,6 +35,8 @@ module cps003.c.vm {
             let self = this;
             cps003.control.selectButton();
             cps003.control.relateButton();
+            cps003.control.validateDateRange();
+            cps003.control.extendTimeRange();
         }
 
         start() {
@@ -61,13 +63,13 @@ module cps003.c.vm {
                         $grid.mGrid("setErrors", errs);
                     }
                     
-                    let errors = $grid.mGrid("errors");
-                    if (errors.length > 0) {
-                        let errGroup = _.groupBy(errors, "rowId");
-                        _.forEach(_.keys(errGroup), id => {
-                            $grid.mGrid("updateCell", id, "status", "エラー(" + errGroup[id].length + "件)", true);
-                        });
-                    }
+//                    let errors = $grid.mGrid("errors");
+//                    if (errors.length > 0) {
+//                        let errGroup = _.groupBy(errors, "rowId");
+//                        _.forEach(_.keys(errGroup), id => {
+//                            $grid.mGrid("updateCell", id, "status", "エラー(" + errGroup[id].length + "件)", true);
+//                        });
+//                    }
                     
                     unblock();
                 });
@@ -208,12 +210,12 @@ module cps003.c.vm {
                     displayItems.push(column.key);
                 });
                 
-                data.employees.sort((emp1, emp2) => {
-                    if (_.isNil(emp1.employeeCode) && _.isNil(emp2.employeeCode)) return 0;
-                    if (_.isNil(emp1.employeeCode)) return -1;
-                    if (_.isNil(emp2.employeeCode)) return 1;
-                    return emp1.employeeCode.compareTo(emp2.employeeCode);
-                });
+//                data.employees.sort((emp1, emp2) => {
+//                    if (_.isNil(emp1.employeeCode) && _.isNil(emp2.employeeCode)) return 0;
+//                    if (_.isNil(emp1.employeeCode)) return -1;
+//                    if (_.isNil(emp2.employeeCode)) return 1;
+//                    return emp1.employeeCode.compareTo(emp2.employeeCode);
+//                });
                 
                 _.forEach(data.employees, (d: EmployeeRowDto) => {
                     let record = new Record(d), disItems = _.cloneDeep(displayItems);
@@ -1171,7 +1173,11 @@ module cps003.c.vm {
             this.employeeCode = data.employeeCode;
             this.employeeName = data.employeeName;
             this.register = false;
-            this.status = "正常";
+            if (data.numberOfError === 0) {
+                this.status = "正常";
+            } else {
+                this.status = "エラー(" + data.numberOfError + "件)";
+            }
         }
     }
     

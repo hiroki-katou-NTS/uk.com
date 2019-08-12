@@ -811,7 +811,11 @@ module cps003.a.vm {
                     tmpSet.add(e);
                 });
                 
-                tmpSet.forEach(e => employeeIds.push(e));
+                self.employees.removeAll();
+                tmpSet.forEach(e => {
+                    employeeIds.push(e);
+                    self.employees.push({ employeeId: e });
+                });
             }
             
             let param = { categoryId: self.category.catId(), lstEmployee: employeeIds, standardDate: moment.utc(self.baseDate(), "YYYY/MM/DD").toISOString() };
@@ -1734,6 +1738,21 @@ module cps003.a.vm {
                 let $grid = $("#grid"), columns = getShared('CPS003D_VALUE');
                 if (!columns) return;
                 
+                if (self.employees.length === 0) {
+                    service.fetch.setting(self.category.catId()).done((data: ISettingData) => {
+                        if (ko.isObservable(self.settings.matrixDisplay)) {
+                            self.settings.matrixDisplay(data.matrixDisplay);
+                        }    
+                        
+                        if (ko.isObservable(self.settings.perInfoData)) {
+                            self.settings.perInfoData(data.perInfoData);
+                        }
+                    });
+                    
+                    self.requestData();
+                    return;
+                }
+                
                 _.forEach(self.settings.perInfoData(), (itemInfo: IPersonInfoSetting) => {
                     if (_.find(columns, itemId => itemId === itemInfo.perInfoItemDefID)) {
                         $grid.mGrid("showColumn", itemInfo.itemCD, true);
@@ -1941,7 +1960,8 @@ module cps003.a.vm {
                         $grid.mGrid("replace", replaceValue.targetItem, (value, obj) => {
                             if (find(self.hiddenRows, id => id === obj.id)) return false;
                             if (replaceValue.replaceAll) return true;
-                            return replaceValue.matchValue === value;
+                            return replaceValue.matchValue === value 
+                                || ((_.isNil(replaceValue.matchValue) || replaceValue.matchValue === "") && (_.isNil(value) || value === ""));
                         }, () => replaced);
                     } else if (replaceValue.replaceFormat === REPLACE_FORMAT.CONTRACT_TIME) { // 契約時間
                         // TODO: Get contract time
@@ -1955,7 +1975,8 @@ module cps003.a.vm {
                             $grid.mGrid("replace", replaceValue.targetItem, (value, obj) => {
                                 if (find(self.hiddenRows, id => id === obj.id)) return false;
                                 if (replaceValue.replaceAll) return true;
-                                return replaceValue.matchValue === value;
+                                return replaceValue.matchValue === value
+                                    || ((_.isNil(replaceValue.matchValue) || replaceValue.matchValue === "") && (_.isNil(value) || value === ""));
                             }, (value, rec) => {
                                 let contractTime = groupByEmpId[rec.employeeId];
                                 if (!_.isNil(contractTime)) {
