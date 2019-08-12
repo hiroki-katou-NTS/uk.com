@@ -36,9 +36,8 @@
                     v-model="reasonRemand"
                     name='CMMS45_69'
                     showTitle='false'
-                    v-validate="$errors.reasonRemand"/>
+                    />
             </div>
-            <v-errors v-model="$errors.reasonRemand" name="" class="d-block m-0 p-0 mb-2" />
         </div>
     </div>
     <!-- E3_1 -->

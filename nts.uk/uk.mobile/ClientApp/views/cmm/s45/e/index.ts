@@ -9,12 +9,7 @@ import { CmmS45FComponent } from '../f/index';
     resource: require('./resources.json'),
     validations: {
         reasonRemand: {
-            self: {
-                test(value: any) {
-                    return !!value;
-                },
-                messageId: 'MsgB_30'
-            }
+            required: true
         }
     },
     constraints: [],
@@ -66,7 +61,7 @@ export class CmmS45EComponent extends Vue {
     //差し戻す
     private remand() {
         let self = this;
-        self.$validate;
+        self.$validate();
         if (!self.$valid) {
             return;
         }
