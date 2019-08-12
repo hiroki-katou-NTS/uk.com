@@ -12,7 +12,11 @@ import nts.uk.ctx.hr.develop.app.guidance.dto.CategoryGuideDto;
 import nts.uk.ctx.hr.develop.app.guidance.dto.GuidanceDto;
 import nts.uk.ctx.hr.develop.app.guidance.dto.GuideMsgDto;
 import nts.uk.ctx.hr.develop.app.guidance.dto.ParamFindScreen;
+import nts.uk.ctx.hr.develop.app.guidance.dto.ScreenGuideParam;
+import nts.uk.ctx.hr.develop.app.guidance.dto.ScreenGuideParamList;
+import nts.uk.ctx.hr.develop.app.guidance.dto.ScreenGuideSettingDto;
 import nts.uk.ctx.hr.develop.dom.guidance.GuidanceService;
+import nts.uk.ctx.hr.develop.dom.guidance.IGuidance;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -20,6 +24,8 @@ public class GuidanceFinder {
 
 	@Inject
 	private GuidanceService guidanceService;
+	@Inject
+	private IGuidance iGuidance;
 	
 	public GuidanceDto getGuideDispSetting(String companyId) {
 		return new GuidanceDto(guidanceService.getGuideDispSetting(companyId));
@@ -45,6 +51,15 @@ public class GuidanceFinder {
 				.stream().map(c -> new GuideMsgDto(c)).collect(Collectors.toList());
 		if(result.isEmpty()) {
 			throw new BusinessException("MsgJ_JMM017_2");
+		}
+		return result;
+	}
+	
+	public List<ScreenGuideSettingDto> guideOperate(ScreenGuideParamList params) {
+		String cId = AppContexts.user().companyId();
+		List<ScreenGuideSettingDto> result = new ArrayList<>();
+		for (ScreenGuideParam param : params.getScreenGuideParam()) {
+			result.add(ScreenGuideSettingDto.fromDomain(iGuidance.getGuidance(cId, param.getProgramId(), param.getScreenId()), param.getProgramId(), param.getScreenId()));
 		}
 		return result;
 	}

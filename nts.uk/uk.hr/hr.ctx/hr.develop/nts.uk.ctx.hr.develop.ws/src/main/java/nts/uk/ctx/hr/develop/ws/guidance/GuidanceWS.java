@@ -13,6 +13,8 @@ import nts.uk.ctx.hr.develop.app.guidance.dto.CategoryGuideDto;
 import nts.uk.ctx.hr.develop.app.guidance.dto.GuidanceDto;
 import nts.uk.ctx.hr.develop.app.guidance.dto.GuideMsgDto;
 import nts.uk.ctx.hr.develop.app.guidance.dto.ParamFindScreen;
+import nts.uk.ctx.hr.develop.app.guidance.dto.ScreenGuideParamList;
+import nts.uk.ctx.hr.develop.app.guidance.dto.ScreenGuideSettingDto;
 import nts.uk.ctx.hr.develop.app.guidance.find.GuidanceFinder;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -57,5 +59,9 @@ public class GuidanceWS {
 		commandGuidance.updateGuideMsg(command);
 	}
 	
-	
+	@POST
+	@Path("/guideOperate")
+	public List<ScreenGuideSettingDto> guideOperate(ScreenGuideParamList param){
+		return finder.guideOperate(param);
+	}
 }

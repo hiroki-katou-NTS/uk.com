@@ -40,6 +40,8 @@ module nts.uk.hr.view.jmm017.b.viewmodel {
             new service.getGuideCategory().done(function(data: any) {
                 self.categoryList(data);
                 self.bindData();
+                $("#grid").igGridGroupBy("groupByColumn", 'categoryName');
+                $("#grid").igGridGroupBy("groupByColumn", 'programName');
             }).fail(function(error) {
                 error({ messageId: error.messageId });
             }).always(function() {
@@ -61,16 +63,15 @@ module nts.uk.hr.view.jmm017.b.viewmodel {
             }
             new service.getGuideMessageList(param).done(function(data: any) {
                 let groupByColumns = $("#grid").igGridGroupBy("groupByColumns");
-                $("#grid").igGridGroupBy("ungroupAll");
                 self.guideMessageList = data;
                 self.bindData();
-                setTimeout(() => {
+//                setTimeout(() => {
+                    $("#grid").igGridGroupBy("ungroupAll");
                     _.forEach(groupByColumns, col => {
                         $("#grid").igGridGroupBy("groupByColumn", col.key);
                     });
-                    
                     $("#grid").igGridPaging("pageIndex", 0);
-                }, 1);
+//                }, 1);
             }).fail(function(errorInfor) {
                 error({ messageId: errorInfor.messageId });
             }).always(function() {
@@ -90,8 +91,8 @@ module nts.uk.hr.view.jmm017.b.viewmodel {
                 _.forEach(groupByColumns, col => {
                     $("#grid").igGridGroupBy("groupByColumn", col.key);
                 });
-                $("#grid").igGridFiltering("filter", filters);
                 $("#grid").igGridPaging("pageSize", pageSizeOld);
+                $("#grid").igGridFiltering("filter", filters);
                 $("#grid").igGridPaging("pageIndex", pageIndex);
             }, 1);
             block.clear();
@@ -211,16 +212,16 @@ module nts.uk.hr.view.jmm017.b.viewmodel {
                     {
                         name: 'GroupBy', 
                         groupByDialogContainment: 'window', 
-                        columnSettings: [
-                            {
-                                columnKey: 'categoryName',
-                                isGroupBy: false
-                            },
-                            {
-                                columnKey: 'programName',
-                                isGroupBy: false
-                            }
-                        ]
+//                        columnSettings: [
+//                            {
+//                                columnKey: 'categoryName',
+//                                isGroupBy: true
+//                            },
+//                            {
+//                                columnKey: 'programName',
+//                                isGroupBy: true
+//                            }
+//                        ]
                     },
                     {
                         name: 'Hiding' 

@@ -45113,8 +45113,17 @@ var nts;
                     resource.linkHide = "操作ガイド　非表示";
                     resource.linkShow = "操作ガイド　表示";
                 })(resource || (resource = {}));
-                function operate(path, page) {
-                    nts.uk.request.ajax("com", path).done(function (config) {
+                function operateCurrent(path, data, page) {
+                    operate.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
+                }
+                guide.operateCurrent = operateCurrent;
+                function operate(appId, path, data, tabMapping, page) {
+                    nts.uk.request.ajax(appId, path, data).done(function (config) {
+                        if (_.isFunction(tabMapping) && _.isArray(config)) {
+                            _.forEach(config, function (c) {
+                                c.tabId = tabMapping(c.programId, c.screenId);
+                            });
+                        }
                         var op = new OperationGuide(config);
                         op.setPosition(page);
                     });
@@ -45122,36 +45131,47 @@ var nts;
                 guide.operate = operate;
                 var OperationGuide = /** @class */ (function () {
                     function OperationGuide(config) {
-                        this.isUsed = config.isUsed;
-                        this.lineCount = config.lineCount;
-                        this.content = config.content;
+                        this.configs = [];
+                        if (_.isArray(config)) {
+                            this.configs = config;
+                            return;
+                        }
+                        this.configs.push(config);
                     }
-                    OperationGuide.prototype.link = function (top) {
+                    OperationGuide.prototype.link = function (top, tabConfig) {
                         var self = this;
-                        self.display = true;
+                        tabConfig.display = true;
                         var $link = $("<a/>").addClass("nts-guide-link").text(resource.linkHide);
                         $link.css("margin-top", top);
                         $link.on("click", function () {
-                            if (self.display) {
-                                $(".nts-guide-link").text(resource.linkShow);
-                                $(".nts-guide-area").hide();
-                                self.display = !self.display;
+                            var $guideArea;
+                            if (!_.isNil(tabConfig.tabId)) {
+                                var $tabPanel = $link.closest("div[role=tabpanel]");
+                                $guideArea = $tabPanel.find(".nts-guide-area");
+                            }
+                            else {
+                                $guideArea = $(".nts-guide-area");
+                            }
+                            if (tabConfig.display) {
+                                $link.text(resource.linkShow);
+                                $guideArea.hide();
+                                tabConfig.display = !tabConfig.display;
                                 return;
                             }
-                            $(".nts-guide-link").text(resource.linkHide);
-                            $(".nts-guide-area").show();
-                            self.display = !self.display;
+                            $link.text(resource.linkHide);
+                            $guideArea.show();
+                            tabConfig.display = !tabConfig.display;
                         });
                         return $link;
                     };
-                    OperationGuide.prototype.textArea = function (position) {
+                    OperationGuide.prototype.textArea = function (tabConfig, position) {
                         var self = this;
                         var $area = $("<div/>").addClass("nts-guide-area");
                         if (position === Position.BOTTOM) {
                             $area.addClass("nts-bottom");
                         }
-                        $area.height(ROW_HEIGHT * self.lineCount);
-                        var content = self.content.split('\n').join("<br/>");
+                        $area.height(ROW_HEIGHT * tabConfig.lineCount);
+                        var content = tabConfig.content.split('\n').join("<br/>");
                         $area.html(content);
                         return $area;
                     };
@@ -45165,44 +45185,49 @@ var nts;
                                     $functionsArea = $("#functions-area-bottom");
                                     if ($functionsArea.find(".nts-guide-link").length == 0) {
                                         var top = ($functionsArea.height() - 24) / 2;
-                                        $functionsArea.append(self.link(top));
+                                        $functionsArea.append(self.link(top, self.configs[0]));
                                     }
                                     if (!$functionsArea.prev().is(".nts-guide-area")) {
-                                        $functionsArea.before(self.textArea(Position.BOTTOM));
+                                        $functionsArea.before(self.textArea(self.configs[0], Position.BOTTOM));
                                     }
                                     return;
                                 }
                                 if ($functionsArea.find(".nts-guide-link").length == 0) {
                                     var top = ($functionsArea.height() - 22) / 2;
-                                    $functionsArea.append(self.link(top));
+                                    $functionsArea.append(self.link(top, self.configs[0]));
                                 }
                                 if (!$functionsArea.next().is(".nts-guide-area")) {
-                                    $functionsArea.after(self.textArea());
+                                    $functionsArea.after(self.textArea(self.configs[0]));
                                 }
                                 break;
                             case Page.SIDEBAR:
-                                var $contentHeader = $(".sidebar-content-header");
-                                if ($contentHeader.length > 0) {
-                                    $contentHeader.each(function () {
-                                        var $header = $(this);
-                                        if ($header.find(".nts-guide-link").length == 0) {
-                                            var top = ($header.height() - 18) / 2;
-                                            $header.append(self.link(top));
-                                        }
-                                    });
-                                    $contentHeader.each(function () {
-                                        var $header = $(this);
-                                        if (!$header.next().is(".nts-guide-area")) {
-                                            $header.after(self.textArea());
-                                        }
-                                    });
-                                }
+                                _.forEach(self.configs, function (tabConfig) {
+                                    var $tab = $("#" + tabConfig.tabId);
+                                    var $contentHeader = $tab.find(".sidebar-content-header");
+                                    if ($contentHeader.find(".nts-guide-link").length == 0) {
+                                        var top = ($contentHeader.height() - 18) / 2;
+                                        $contentHeader.append(self.link(top, tabConfig));
+                                    }
+                                    if (!$contentHeader.next().is(".nts-guide-area")) {
+                                        $contentHeader.after(self.textArea(tabConfig));
+                                    }
+                                });
                                 break;
                             case Page.FREE_LAYOUT:
                                 break;
                         }
                     };
                     return OperationGuide;
+                }());
+                var GuideConfig = /** @class */ (function () {
+                    function GuideConfig(tabId, isUsed, display, lineCount, content) {
+                        this.tabId = tabId;
+                        this.isUsed = isUsed;
+                        this.display = display;
+                        this.lineCount = lineCount;
+                        this.content = content;
+                    }
+                    return GuideConfig;
                 }());
                 var Page;
                 (function (Page) {
