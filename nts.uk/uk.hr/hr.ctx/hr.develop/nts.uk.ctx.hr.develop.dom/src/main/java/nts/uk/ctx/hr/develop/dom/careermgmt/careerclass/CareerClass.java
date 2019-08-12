@@ -5,9 +5,9 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.hr.develop.dom.careermgmt.careertype.Code_AlphaNumeric_3;
 import nts.uk.ctx.hr.develop.dom.careermgmt.careertype.MasterMapping;
-import nts.uk.ctx.hr.develop.dom.careermgmt.careertype.String_Any_20;
+import nts.uk.ctx.hr.shared.dom.primitiveValue.Code_AlphaNumeric_3;
+import nts.uk.ctx.hr.shared.dom.primitiveValue.String_Any_20;
 
 /**キャリア*/
 @AllArgsConstructor

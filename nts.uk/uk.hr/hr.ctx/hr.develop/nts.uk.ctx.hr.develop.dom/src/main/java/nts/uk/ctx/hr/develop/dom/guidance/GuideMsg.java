@@ -41,7 +41,7 @@ public class GuideMsg extends AggregateRoot{
 	private boolean usageFlgByScreen;
 	
 	/**メッセージ*/
-	private String_Any_1000 guideMsg;
+	private String guideMsg;
 	
 	/**画面URL*/
 	private Optional<String> screenPath;
@@ -58,7 +58,7 @@ public class GuideMsg extends AggregateRoot{
 				screenId, 
 				screenName, 
 				usageFlgByScreen, 
-				new String_Any_1000(guideMsg), 
+				guideMsg, 
 				Optional.ofNullable(screenPath));
 	}
 }

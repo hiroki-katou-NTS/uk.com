@@ -5,6 +5,7 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.hr.shared.dom.primitiveValue.Integer_1_6;
 
 /**キャリア条件*/
 @AllArgsConstructor

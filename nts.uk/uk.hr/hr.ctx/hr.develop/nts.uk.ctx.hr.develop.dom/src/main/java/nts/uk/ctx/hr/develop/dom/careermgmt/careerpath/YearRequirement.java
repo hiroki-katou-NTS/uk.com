@@ -3,6 +3,7 @@ package nts.uk.ctx.hr.develop.dom.careermgmt.careerpath;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
+import nts.uk.ctx.hr.shared.dom.primitiveValue.Integer_0_99;
 
 /** 年数条件 */
 @Getter

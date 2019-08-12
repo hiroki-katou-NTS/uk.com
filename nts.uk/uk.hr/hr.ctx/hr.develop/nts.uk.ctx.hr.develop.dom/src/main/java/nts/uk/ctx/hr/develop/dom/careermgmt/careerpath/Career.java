@@ -6,6 +6,8 @@ import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.error.BusinessException;
+import nts.uk.ctx.hr.shared.dom.primitiveValue.Integer_1_10;
+import nts.uk.ctx.hr.shared.dom.primitiveValue.String_Any_100;
 
 /**キャリア*/
 @Getter

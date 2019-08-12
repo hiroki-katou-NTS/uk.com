@@ -1,4 +1,4 @@
-package nts.uk.ctx.hr.develop.dom.guidance;
+package nts.uk.ctx.hr.shared.dom.primitiveValue;
 
 import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.constraint.IntegerRange;

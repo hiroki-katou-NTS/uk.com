@@ -18,7 +18,7 @@ public class IGuidanceImpl implements IGuidance{
 			if(guidance.get().isUsageFlgCommon()) {
 				Optional<GuideMsg> guideMsgs = guidance.get().getGuideMsg().stream().filter(c -> {return c.getProgramId().equals(programId) && c.getScreenId().equals(screenId);}).findFirst();
 				if(guideMsgs.isPresent() && guideMsgs.get().isUsageFlgByScreen()) {
-					return new IGuidanceExportDto(true, guidance.get().getGuideMsgAreaRow().v(), guideMsgs.get().getGuideMsg().v());
+					return new IGuidanceExportDto(true, guidance.get().getGuideMsgAreaRow().v(), guideMsgs.get().getGuideMsg());
 				}
 			}
 		}

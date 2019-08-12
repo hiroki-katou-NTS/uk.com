@@ -101,7 +101,7 @@ public class JogmtGuideMsg extends UkJpaEntity implements Serializable {
 		this.screenId = domain.getScreenId();
 		this.screenName = domain.getScreenName();
 		this.usageFlgByScreen = domain.isUsageFlgByScreen()?1:0;
-		this.guideMsg = domain.getGuideMsg().v();
+		this.guideMsg = domain.getGuideMsg();
 		this.screenUrl = domain.getScreenPath().orElse(null);
 	}
 	

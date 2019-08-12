@@ -5,6 +5,7 @@ import java.util.List;
 import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.hr.shared.dom.primitiveValue.Integer_1_10;
 
 /**キャリアパス*/
 @Getter

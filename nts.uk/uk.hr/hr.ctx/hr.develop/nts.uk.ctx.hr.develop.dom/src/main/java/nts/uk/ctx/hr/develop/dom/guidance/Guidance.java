@@ -5,7 +5,8 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.hr.develop.dom.careermgmt.careertype.Integer_1_5;
+import nts.uk.ctx.hr.shared.dom.primitiveValue.Integer_1_5;
+import nts.uk.ctx.hr.shared.dom.primitiveValue.Integer_1_500;
 
 /**操作ガイド*/
 @AllArgsConstructor

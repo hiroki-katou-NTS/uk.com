@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.uk.ctx.hr.shared.dom.primitiveValue.Integer_1_5;
 
 /**個人情報と紐付け*/
 @AllArgsConstructor

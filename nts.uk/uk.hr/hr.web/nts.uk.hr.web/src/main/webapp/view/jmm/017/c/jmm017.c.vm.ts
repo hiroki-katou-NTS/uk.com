@@ -27,7 +27,7 @@ module nts.uk.com.view.jmm017.c.viewmodel {
             block.grayout();
             var dfd = $.Deferred();
             new service.getGuidance().done(function(data: any) {
-                __viewContext.primitiveValueConstraints.String_Any_1000.maxLength = data.guideMsgMaxNum;
+                __viewContext.primitiveValueConstraints.String_Any_100.maxLength = data.guideMsgMaxNum;
             }).always(function() {
                 dfd.resolve();
                 block.clear();

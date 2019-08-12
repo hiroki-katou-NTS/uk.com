@@ -44,7 +44,7 @@ public class GuideMsgDto {
 		this.screenId = guideMsg.getScreenId();
 		this.screenName = guideMsg.getScreenName();
 		this.usageFlgByScreen = guideMsg.isUsageFlgByScreen()?"使用する":"使用しない";
-		this.guideMsg = guideMsg.getGuideMsg().v();
+		this.guideMsg = guideMsg.getGuideMsg();
 		this.screenPath = guideMsg.getScreenPath().orElse("");
 	}
 	

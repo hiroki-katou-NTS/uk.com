@@ -1,4 +1,4 @@
-package nts.uk.ctx.hr.develop.dom.careermgmt.careertype;
+package nts.uk.ctx.hr.shared.dom.primitiveValue;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.CharType;
