@@ -189,12 +189,7 @@ export class CmmS45CComponent extends Vue {
     public back(reloadValue?: boolean) {
         let self = this;
         if (self.$router.currentRoute.name == 'cmms45a') {
-            if (reloadValue) {
-                self.$close();
-            } else {
-                self.$close();
-            }
-            
+            self.$close();
         } else {
             self.$goto('cmms45a');   
         }
@@ -242,7 +237,11 @@ export class CmmS45CComponent extends Vue {
     // tiến tới màn chi tiết KAF005
     public updateApp(): void {
         let self = this;
-        self.$goto('kafS05b', { appID: self.currentApp }); 
+        if (self.$router.currentRoute.name == 'kafS05b') {
+            self.$close({ appID: self.currentApp });
+        } else {
+            self.$goto('kafS05b', { appID: self.currentApp }); 
+        }
     }
 }
 
