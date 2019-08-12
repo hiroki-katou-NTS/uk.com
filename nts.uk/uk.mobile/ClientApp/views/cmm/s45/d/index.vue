@@ -6,21 +6,9 @@
         {{ 'CMMS45_17' | i18n }}
       </a>
     </div>
-    <div class="row mb-2">
-      <div class="col-6 text-left uk-text-blue">
-        <a v-on:click="toPreviousApp" v-bind:class="{ 'd-none': isFirstApp() && !isEmptyApp() }">
-          <i class="fas fa-arrow-circle-left"></i>
-          {{'CMMS45_18' | i18n}}
-        </a>
-      </div>
-      <div class="col-6 text-right uk-text-blue">
-        <a v-on:click="toNextApp" v-bind:class="{ 'd-none': isLastApp() && !isEmptyApp() }">
-          {{'CMMS45_19' | i18n}}
-          <i class="fas fa-arrow-circle-right"></i>
-        </a>
-      </div>
+    <div class="card invisible mt-3">
     </div>
-    <div class="row bg-grey-200 border uk-border-gray border-right-0 border-left-0">
+    <div class="row bg-grey-200 border uk-border-gray border-right-0 border-left-0 pt-1">
       <div class="col-12">
         <div class="row p-2 pl-3 pr-3 ">
           <div class="mb-2 p-2 status-label align-top col-3" v-bind:class="appState.getClass">{{ appState.getName | i18n }}</div>
@@ -115,6 +103,20 @@
     <div class="card invisible" v-show="displayReleaseLock() || displayReleaseOpen()">
       <div class="card-body">
         Hidden Content
+      </div>
+    </div>
+    <div class="row mb-2 fixed-top mt-5 border-bottom">
+      <div class="col-6 text-left uk-text-blue uk-bg-silver mt-n2 pt-2 pb-2 pl-4">
+        <a v-on:click="toPreviousApp" v-bind:class="{ 'd-none': isFirstApp() && !isEmptyApp() }">
+          <i class="fas fa-arrow-circle-left"></i>
+          {{'CMMS45_18' | i18n}}
+        </a>
+      </div>
+      <div class="col-6 text-right uk-text-blue uk-bg-silver mt-n2 pt-2 pb-2 pr-4">
+        <a v-on:click="toNextApp" v-bind:class="{ 'd-none': isLastApp() && !isEmptyApp() }">
+          {{'CMMS45_19' | i18n}}
+          <i class="fas fa-arrow-circle-right"></i>
+        </a>
       </div>
     </div>
     <div class="row fixed-bottom mb-1" v-show="displayReleaseLock() || displayReleaseOpen()">

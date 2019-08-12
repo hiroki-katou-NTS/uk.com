@@ -66,63 +66,81 @@
                     <div class="col-12" v-if="overTime.frameNo <= 10">
                         <div class="row">
                             <div class="col-6">{{ overTime.frameName | i18n }}</div>
-                            <div class="col-6">{{ (overTime.appTime || 0) | timept }}</div>
+                            <div class="col-6">
+                                <span v-if="overTime.appTime">{{ overTime.appTime | timept }}</span>
+                                <span v-else>--:--</span>
+                            </div>
                         </div>
                         <div class="row" v-if="isPostApp">
                             <div class="col-6 pl-4">
-                                <span class="far fa-clock display-time">事前[{{ (overTime.preAppTime || 0) | timept }}]</span>
+                                <span v-if="overTime.preAppTime" class="far fa-clock display-time" v-bind:class="{ 'preApp-Error': overTime.preAppError}">
+                                    事前[{{ overTime.preAppTime | timept }}]
+                                </span>
+                                <span v-else class="far fa-clock display-time" v-bind:class="{ 'preApp-Error': overTime.preAppError}">
+                                    事前[--:--]
+                                </span>
                             </div>
                             <div class="col-6">
-                                <span class="far fa-clock display-time">実績[{{ (overTime.actualTime || 0) | timept }}]</span>
+                                <span v-if="overTime.actualTime" class="far fa-clock display-time" v-bind:class="{ 'actual-Error': overTime.actualError}">
+                                    実績[{{ overTime.actualTime | timept }}]
+                                </span>
+                                <span v-else class="far fa-clock display-time" v-bind:class="{ 'actual-Error': overTime.actualError}">
+                                    事前[--:--]
+                                </span>
                             </div>
                         </div>
                     </div>
                     <div class="col-12" v-if="overTime.frameNo == 11 && $app.appOvertimeNightFlg == 1">
                         <div class="row">
                             <div class="col-6">{{ 'CMMS45_30' | i18n }}</div>
-                            <div class="col-6">{{ (overTime.appTime || 0) | timept }}</div>
+                            <div class="col-6">
+                                <span v-if="overTime.appTime">{{ overTime.appTime | timept }}</span>
+                                <span v-else>--:--</span>
+                            </div>
                         </div>
                         <div class="row" v-if="isPostApp">
                             <div class="col-6 pl-4">
-                                <span class="far fa-clock display-time">事前[{{ (overTime.preAppTime || 0) | timept }}]</span>
+                                <span v-if="overTime.preAppTime" class="far fa-clock display-time" v-bind:class="{ 'preApp-Error': overTime.preAppError}">
+                                    事前[{{ overTime.preAppTime | timept }}]
+                                </span>
+                                <span v-else class="far fa-clock display-time" v-bind:class="{ 'preApp-Error': overTime.preAppError}">
+                                    事前[--:--]
+                                </span>
                             </div>
                             <div class="col-6">
-                                <span class="far fa-clock display-time">実績[{{ (overTime.actualTime || 0) | timept }}]</span>
+                                <span v-if="overTime.actualTime" class="far fa-clock display-time" v-bind:class="{ 'actual-Error': overTime.actualError}">
+                                    実績[{{ overTime.actualTime | timept }}]
+                                </span>
+                                <span v-else class="far fa-clock display-time" v-bind:class="{ 'actual-Error': overTime.actualError}">
+                                    事前[--:--]
+                                </span>
                             </div>
                         </div>
                     </div>
                     <div class="col-12" v-if="overTime.frameNo == 12 && $app.flexFLag">
                         <div class="row">
                             <div class="col-6">{{ 'CMMS45_31' | i18n }}</div>
-                            <div class="col-6">{{ (overTime.appTime || 0) | timept }}</div>
+                            <div class="col-6">
+                                <span v-if="overTime.appTime">{{ overTime.appTime | timept }}</span>
+                                <span v-else>--:--</span>
+                            </div>
                         </div>
                         <div class="row" v-if="isPostApp">
                             <div class="col-6 pl-4">
-                                <span class="far fa-clock display-time">事前[{{ (overTime.preAppTime || 0) | timept }}]</span>
+                                <span v-if="overTime.preAppTime" class="far fa-clock display-time" v-bind:class="{ 'preApp-Error': overTime.preAppError}">
+                                    事前[{{ overTime.preAppTime | timept }}]
+                                </span>
+                                <span v-else class="far fa-clock display-time" v-bind:class="{ 'preApp-Error': overTime.preAppError}">
+                                    事前[--:--]
+                                </span>
                             </div>
                             <div class="col-6">
-                                <span class="far fa-clock display-time">実績[{{ (overTime.actualTime || 0) | timept }}]</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row pl-2 pt-1 pb-1 uk-bg-headline border-top uk-border-light-gray" v-if="false">{{'CMMS45_32' | i18n}}</div>
-        <div class="row pl-2 pt-1 pb-1 border-top uk-border-light-gray" v-if="false">
-            <div class="col-12">
-                <div class="row border-top uk-border-light-gray" v-for="(restTime, restTimeIndex) in restTimeLst" v-bind:key="restTimeIndex">
-                    <div class="col-12">
-                        <div class="row">
-                            <div class="col-4">{{ restTime.frameName | i18n }}</div>
-                            <div class="col-8">{{ (restTime.appTime || 0) | timept }}</div>
-                        </div>
-                        <div class="row">
-                            <div class="col-4 pl-4">
-                                <span class="far fa-clock display-time">事前[{{ (restTime.preAppTime || 0) | timept }}]</span>
-                            </div>
-                            <div class="col-8">
-                                <span class="far fa-clock display-time">実績[{{ (restTime.actualTime || 0) | timept }}]</span>
+                                <span v-if="overTime.actualTime" class="far fa-clock display-time" v-bind:class="{ 'actual-Error': overTime.actualError}">
+                                    実績[{{ overTime.actualTime | timept }}]
+                                </span>
+                                <span v-else class="far fa-clock display-time" v-bind:class="{ 'actual-Error': overTime.actualError}">
+                                    事前[--:--]
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -136,9 +154,17 @@
                     <div class="col-12">
                         <div class="row">
                             <div class="col-5">{{ payTime.frameName | i18n }}</div>
-                            <div class="col-2 pl-0">{{ (payTime.appTime || 0) | timept }}</div>
+                            <div class="col-2 pl-0">
+                                <span v-if="payTime.appTime">{{ payTime.appTime | timept }}</span>
+                                <span v-else>--:--</span>
+                            </div>
                             <div class="col-5 pl-3" v-if="isPostApp">
-                                <span class="far fa-clock display-time">事前[{{ (payTime.preAppTime || 0) | timept }}]</span>
+                                <span v-if="payTime.preAppTime" class="far fa-clock display-time" v-bind:class="{ 'preApp-Error': payTime.preAppError}">
+                                    事前[{{ payTime.preAppTime | timept }}]
+                                </span>
+                                <span v-else class="far fa-clock display-time" v-bind:class="{ 'preApp-Error': payTime.preAppError}">
+                                    事前[--:--]
+                                </span>
                             </div>
                         </div>
                     </div>

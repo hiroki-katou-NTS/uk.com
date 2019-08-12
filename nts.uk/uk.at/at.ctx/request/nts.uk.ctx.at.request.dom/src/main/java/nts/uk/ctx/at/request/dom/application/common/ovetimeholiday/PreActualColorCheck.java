@@ -16,34 +16,37 @@ public interface PreActualColorCheck {
 	
 	/**
 	 * 07_事前申請・実績超過チェック
-	 * @param companyID 会社ID
-	 * @param employeeID 社員ID
 	 * @param preExcessDisplaySetting 事前超過表示設定
 	 * @param performanceExcessAtr 実績超過表示設定
-	 * @param appDate 申請日
 	 * @param appType 申請種類
 	 * @param prePostAtr 事前事後区分
-	 * @param workType 勤務種類コード
-	 * @param workTime 申請の就業時間帯コード
 	 * @param overrideSet 退勤時刻優先設定
 	 * @param calStampMiss 退勤打刻漏れ補正設定
-	 * @param overtimeInputCaculations 計算値リスト
-	 * @param caculationTimeHours 入力値リスト
+	 * @param calcTimeList 入力値リスト
+	 * @param overTimeLst 計算値リスト
+	 * @param opAppBefore 事前申請
+	 * @param beforeAppStatus 事前申請状態
+	 * @param actualLst 実績
+	 * @param actualStatus 実績状態
+	 * @return 
+	 */
+	public PreActualColorResult preActualColorCheck(UseAtr preExcessDisplaySetting, AppDateContradictionAtr performanceExcessAtr,
+			ApplicationType appType, PrePostAtr prePostAtr, OverrideSet overrideSet, Optional<CalcStampMiss> calStampMiss, 
+			List<OvertimeColorCheck> calcTimeList, List<OvertimeColorCheck> overTimeLst, 
+			Optional<Application_New> opAppBefore, boolean beforeAppStatus, List<OvertimeColorCheck> actualLst, ActualStatus actualStatus);
+	
+	/**
+	 * 07-01_事前申請状態チェック
+	 * @param companyID 会社ID
+	 * @param employeeID 申請者
+	 * @param appDate 申請日
+	 * @param appType 申請種類
 	 * @return
 	 */
-	public PreActualColorResult preActualColorCheck(String companyID, String employeeID, UseAtr preExcessDisplaySetting, AppDateContradictionAtr performanceExcessAtr,
-			GeneralDate appDate, ApplicationType appType, PrePostAtr prePostAtr, String workType, String workTime, OverrideSet overrideSet, 
-			Optional<CalcStampMiss> calStampMiss, List<OvertimeColorCheck> overtimeInputCaculations, List<OvertimeColorCheck> caculationTimeHours);
+	public PreAppCheckResult preAppStatusCheck(String companyID, String employeeID, GeneralDate appDate, ApplicationType appType);
 	
 	/**
-	 * 07-01-2_事前申請状態チェック
-	 * @param appBefore 事前申請：申請
-	 * @return 事前申請状態 true = error;
-	 */
-	public boolean preAppStatusCheck(Optional<Application_New> opAppBefore);
-	
-	/**
-	 * 07-02-2_実績取得・状態チェック
+	 * 07-02_実績取得・状態チェック
 	 * @param companyID 会社ID
 	 * @param employeeID 申請者
 	 * @param appDate 申請日
@@ -128,7 +131,18 @@ public interface PreActualColorCheck {
 	 */
 	public boolean judgmentCalculation(ActualStatus actualStatus, boolean workTypeChange, boolean stampLeaveChange, boolean workTimeChange);
 	
+	/**
+	 * 07-01-3_枠別事前申請超過チェック
+	 * @param appType 勤怠種類
+	 * @param overtimeColorCheck 対象枠, 入力値
+	 * @param opAppBefore 事前申請
+	 */
 	public void preAppErrorCheck(ApplicationType appType, OvertimeColorCheck overtimeColorCheck, Optional<Application_New> opAppBefore);
 	
-	public void actualErrorCheck(OvertimeColorCheck overtimeColorCheck, ActualStatusCheckResult actualStatusCheckResult);
+	/**
+	 * 07-02-3_枠別実績超過チェック
+	 * @param overtimeColorCheck 対象枠, 入力値
+	 * @param actualLst 実績
+	 */
+	public void actualErrorCheck(OvertimeColorCheck overtimeColorCheck, List<OvertimeColorCheck> actualLst);
 }

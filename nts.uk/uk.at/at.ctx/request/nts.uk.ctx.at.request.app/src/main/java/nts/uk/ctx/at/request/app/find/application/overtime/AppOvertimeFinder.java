@@ -51,9 +51,12 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRoo
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter.MailDestinationCache;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
+import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.ActualStatusCheckResult;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.CommonOvertimeHoliday;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.OvertimeColorCheck;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreActualColorCheck;
+import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreActualColorResult;
+import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreAppCheckResult;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.CollectApprovalRootPatternService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.StartupErrorCheckService;
@@ -68,7 +71,6 @@ import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
-import nts.uk.ctx.at.request.dom.application.overtime.service.AppOvertimeRefer;
 import nts.uk.ctx.at.request.dom.application.overtime.service.AppOvertimeReference;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.DisplayPrePost;
@@ -1528,31 +1530,48 @@ public class AppOvertimeFinder {
 				.filter(x -> x.getAttendanceType().value!=0)
 				.map(x -> OvertimeColorCheck.createApp(x.getAttendanceType().value, x.getFrameNo(), x.getApplicationTime().v()))
 				.collect(Collectors.toList());
-		// // アルゴリズム「残業申請設定を取得する」を実行する
 		OvertimeRestAppCommonSetting overtimeRestAppCommonSet = overtimeRestAppCommonSetRepository
 				.getOvertimeRestAppCommonSetting(companyID, ApplicationType.OVER_TIME_APPLICATION.value).get();
-		UseAtr preExcessDisplaySetting = overtimeRestAppCommonSet.getPreExcessDisplaySetting();
-		AppDateContradictionAtr performanceExcessAtr = overtimeRestAppCommonSet.getPerformanceExcessAtr();
-		WithdrawalAppSet withdrawalAppSet = withdrawalAppSetRepository.getWithDraw().get();
-		/*
-		// 07_事前申請・実績超過チェック(07_đơn xin trước. check vượt quá thực tế )
-		PreActualColorResult preActualColorResult = preActualColorCheck.preActualColorCheck(
-				companyID, 
-				application.getEmployeeID(), 
-				preExcessDisplaySetting, 
-				performanceExcessAtr, 
-				application.getAppDate(), 
-				application.getAppType(), 
-				application.getPrePostAtr(), 
-				appOverTime.getWorkTypeCode().v(), 
-				appOverTime.getSiftCode().v(), 
-				withdrawalAppSet.getOverrideSet(), 
-				Optional.empty(), 
-				Collections.emptyList(), 
-				otTimeLst);
-		appOverTimeMobDto.timeLst = preActualColorResult.resultLst;
-		*/
-		appOverTimeMobDto.timeLst = Collections.emptyList();
+		if(appOverTime.getWorkTypeCode()!=null && appOverTime.getSiftCode()!=null) {
+			// // アルゴリズム「残業申請設定を取得する」を実行する
+			UseAtr preExcessDisplaySetting = overtimeRestAppCommonSet.getPreExcessDisplaySetting();
+			AppDateContradictionAtr performanceExcessAtr = overtimeRestAppCommonSet.getPerformanceExcessAtr();
+			WithdrawalAppSet withdrawalAppSet = withdrawalAppSetRepository.getWithDraw().get();
+			// 07-01_事前申請状態チェック
+			PreAppCheckResult preAppCheckResult = preActualColorCheck.preAppStatusCheck(
+					companyID, 
+					application.getEmployeeID(), 
+					application.getAppDate(), 
+					application.getAppType());
+			// 07-02_実績取得・状態チェック
+			ActualStatusCheckResult actualStatusCheckResult = preActualColorCheck.actualStatusCheck(
+					companyID, 
+					application.getEmployeeID(), 
+					application.getAppDate(), 
+					application.getAppType(), 
+					appOverTime.getWorkTypeCode().v(), 
+					appOverTime.getSiftCode().v(), 
+					withdrawalAppSet.getOverrideSet(), 
+					Optional.empty());
+			// 07_事前申請・実績超過チェック(07_đơn xin trước. check vượt quá thực tế )
+			PreActualColorResult preActualColorResult = preActualColorCheck.preActualColorCheck(
+					preExcessDisplaySetting, 
+					performanceExcessAtr, 
+					application.getAppType(), 
+					application.getPrePostAtr(), 
+					withdrawalAppSet.getOverrideSet(), 
+					Optional.empty(), 
+					Collections.emptyList(), 
+					otTimeLst,
+					preAppCheckResult.opAppBefore,
+					preAppCheckResult.beforeAppStatus,
+					actualStatusCheckResult.actualLst,
+					actualStatusCheckResult.actualStatus);
+			appOverTimeMobDto.timeLst = preActualColorResult.resultLst;
+		} else {
+			appOverTimeMobDto.timeLst = otTimeLst;
+		}
+		// appOverTimeMobDto.timeLst = Collections.emptyList();
 		// アルゴリズム「勤務種類名称を取得する」を実行する
 		if(appOverTime.getWorkTypeCode()!=null){
 			appOverTimeMobDto.workTypeName = workTypeRepository.findByPK(companyID, appOverTimeMobDto.workTypeCD)
