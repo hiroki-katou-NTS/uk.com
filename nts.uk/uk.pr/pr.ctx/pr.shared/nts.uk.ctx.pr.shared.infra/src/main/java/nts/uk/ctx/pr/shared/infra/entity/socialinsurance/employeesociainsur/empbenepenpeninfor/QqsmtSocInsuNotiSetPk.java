@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.report.infra.entity.printdata.socialinsurnoticreset;
+package nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.empbenepenpeninfor;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;

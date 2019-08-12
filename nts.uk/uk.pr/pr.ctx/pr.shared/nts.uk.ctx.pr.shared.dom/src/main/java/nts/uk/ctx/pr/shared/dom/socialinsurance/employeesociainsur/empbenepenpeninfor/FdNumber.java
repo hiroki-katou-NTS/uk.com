@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.report.dom.printdata.socinsurnoticreset;
+package nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.CharType;

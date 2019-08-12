@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.report.dom.printdata.socinsurnoticreset;
+package nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor;
 
 public enum SubNameClass {
     PERSONAL_NAME(0, "ENUM_personalName_PERSONAL_NAME"),
