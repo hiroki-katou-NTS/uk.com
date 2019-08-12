@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor;
+package nts.uk.ctx.pr.report.dom.printdata.socinsurnoticreset;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -39,7 +39,11 @@ public class SocialInsurNotiCreateSet {
     /**
      * 印刷個人番号
      */
-    private SubNameClass submittedName;
+    private PersonalNumClass printPersonNumber;
+    /**
+     * 提出氏名区分
+     */
+    private nts.uk.ctx.pr.report.dom.printdata.socinsurnoticreset.SubNameClass submittedName;
 
     /**
      * 被保険者整理番号

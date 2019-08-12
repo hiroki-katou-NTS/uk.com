@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor;
+package nts.uk.ctx.pr.report.dom.printdata.socinsurnoticreset;
 
 public enum BussEsimateClass {
     HEAL_INSUR_OFF_ARR_SYMBOL(0, "ENUM_healInsurOffArrSymbol_HEAL_INSUR_OFF_ARR_SYMBOL"),

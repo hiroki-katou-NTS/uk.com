@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor;
+package nts.uk.ctx.pr.report.dom.printdata.socinsurnoticreset;
 
 public enum BusinessDivision {
     OUTPUT_COMPANY_NAME(0, "ENUM_outPutCompanyNameAdd_OUTPUTCOMPANYNAME"),

@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor;
+package nts.uk.ctx.pr.report.dom.printdata.socinsurnoticreset;
  /**
  * 被保険者整理番号区分
  */

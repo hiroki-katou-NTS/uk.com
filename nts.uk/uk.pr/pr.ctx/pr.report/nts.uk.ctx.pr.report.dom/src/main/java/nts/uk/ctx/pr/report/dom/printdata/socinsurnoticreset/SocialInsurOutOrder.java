@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor;
+package nts.uk.ctx.pr.report.dom.printdata.socinsurnoticreset;
 
 public enum SocialInsurOutOrder {
     HEAL_INSUR_NUMBER_ORDER(0, "ENUM_healInsurNumberOrder_HEAL_INSUR_NUMBER_ORDER"),

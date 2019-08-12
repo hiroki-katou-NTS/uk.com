@@ -2,6 +2,7 @@ package nts.uk.ctx.pr.shared.dom.salgenpurposeparam;
 
 
 import nts.arc.time.GeneralDate;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -51,6 +52,19 @@ public class SalGenParaDateHistoryService {
             dateHistory.get().exCorrectToRemove(lastestItem);
             salGenParaDateHistRepository.update(lastestItem, dateHistory.get().getParaNo(), cId);
         }
+    }
+    public String getHistoryIdByTargetDate(String paraNo,GeneralDate targetDate){
+        Optional<SalGenParaDateHistory> objectHis = salGenParaDateHistRepository.getAllSalGenParaDateHist(AppContexts.user().companyId(),paraNo);
+        return objectHis.get().getDateHistoryItem()
+                .stream()
+                .filter(e -> e.start().compareTo(targetDate)== 1 && e.end().compareTo(targetDate)==2)
+                .findFirst().get().identifier();
+    }
+    public String getHistoryIdByStartDate(String paraNo,GeneralDate startDate){
+        Optional<SalGenParaDateHistory> objectHis = salGenParaDateHistRepository.getAllSalGenParaDateHist(AppContexts.user().companyId(),paraNo);
+        return objectHis.get().getDateHistoryItem()
+                .stream()
+                .reduce((first, second) -> second).get().identifier();
     }
 
 }
