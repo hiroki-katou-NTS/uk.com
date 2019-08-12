@@ -140,6 +140,7 @@ export class CmmS45DComponent extends Vue {
             self.appOvertime = appData.appOvertime;
             self.$mask('hide');
         }).catch((res: any) => {
+            self.$mask('hide');
             self.$modal.error(res.messageId)
                 .then(() => {
                     self.back();
@@ -217,6 +218,7 @@ export class CmmS45DComponent extends Vue {
         self.$modal.confirm('Msg_248')
             .then((v) => {
                 if (v == 'yes') {
+                    self.$mask('show');
                     self.$http.post('at', API.release, {
                         memo: self.memo,
                         applicationDto: {
@@ -224,11 +226,13 @@ export class CmmS45DComponent extends Vue {
                             applicationID: self.currentApp
                         }
                     }).then((resRelease: any) => {
+                        self.$mask('hide');
                         if (resRelease.data.processDone) {
                             self.reflectApp(resRelease.data.reflectAppId);
                             self.$modal.info('Msg_221').then(() => { self.initData(); });
                         }
                     }).catch((failRelease: any) => {
+                        self.$mask('hide');
                         self.$modal.error(failRelease.messageId)
                             .then(() => {
                                 self.back();
@@ -244,6 +248,7 @@ export class CmmS45DComponent extends Vue {
         self.$modal.confirm('Msg_1549')
             .then((v) => {
                 if (v == 'yes') {
+                    self.$mask('show');
                     self.$http.post('at', API.approve, {
                         applicationDto: {
                             version: self.appState.version,
@@ -257,6 +262,7 @@ export class CmmS45DComponent extends Vue {
                         reflectPerState: self.appState.reflectStatus,
                         mobileCall: true
                     }).then((resApprove: any) => {
+                        self.$mask('hide');
                         if (resApprove.data.processDone) {
                             self.reflectApp(resApprove.data.reflectAppId);
                             self.$modal.info('Msg_220').then(() => {
@@ -271,6 +277,7 @@ export class CmmS45DComponent extends Vue {
                             });
                         }
                     }).catch((failApprove: any) => {
+                        self.$mask('hide');
                         self.$modal.error(failApprove.messageId)
                             .then(() => {
                                 self.back();
@@ -286,6 +293,7 @@ export class CmmS45DComponent extends Vue {
         self.$modal.confirm('Msg_1550')
             .then((v) => {
                 if (v == 'yes') {
+                    self.$mask('show');
                     self.$http.post('at', API.deny, {
                         memo: self.memo,
                         applicationDto: {
@@ -295,6 +303,7 @@ export class CmmS45DComponent extends Vue {
                             applicantSID: self.appOvertime.applicant
                         }   
                     }).then((resDeny: any) => {
+                        self.$mask('hide');
                         if (resDeny.data.processDone) {
                             self.reflectApp(resDeny.data.reflectAppId);
                             self.$modal.info('Msg_222').then(() => {
@@ -309,6 +318,7 @@ export class CmmS45DComponent extends Vue {
                             });
                         }
                     }).catch((failDeny: any) => {
+                        self.$mask('hide');
                         self.$modal.error(failDeny.messageId)
                             .then(() => {
                                 self.back();
