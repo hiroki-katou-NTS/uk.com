@@ -4,11 +4,11 @@ module nts.uk.com.view.jmm018.a {
     export module viewmodel {
         export class ScreenModel {
             
-            systemDefine: KnockoutObservable<any>;
+            eventManage: KnockoutObservable<any>;
             
             constructor(){
                 let _self = this;
-                _self.systemDefine = ko.observable(new viewModelTabB.ScreenModel());
+                _self.eventManage = ko.observable(new viewModelTabB.ScreenModel());
             }
             
             public start_page(): JQueryPromise<any> {
@@ -18,7 +18,7 @@ module nts.uk.com.view.jmm018.a {
                 let _self = this;
                 
                 $.when(
-                    _self.systemDefine().start_page()).done(function() {
+                    _self.eventManage().start_page()).done(function() {
                         dfd.resolve(_self);
                     });
                 

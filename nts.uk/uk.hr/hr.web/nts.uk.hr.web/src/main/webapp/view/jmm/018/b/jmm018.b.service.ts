@@ -23,27 +23,4 @@ module nts.uk.com.view.jmm018.b {
         }
     }
     
-    /**
-     * Model define.
-     */
-    export module model {
-        export class SystemResourceDto {
-            resourceId: string;
-            resourceContent: string;
-            
-            constructor(id: string, content: string){
-                this.resourceId = id;
-                this.resourceContent = content;
-            }
-        }
-        
-        export class SystemResourceSaveCommand {
-            listData: Array<model.SystemResourceDto>;
-
-            constructor(data: Array<model.SystemResourceDto>){
-               this.listData = data;
-            }
-        }
-    }
-    
 }
