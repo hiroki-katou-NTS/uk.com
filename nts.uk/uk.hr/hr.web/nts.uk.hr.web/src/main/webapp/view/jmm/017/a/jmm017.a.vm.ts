@@ -73,7 +73,7 @@ module nts.uk.hr.view.jmm017.a.viewmodel {
             $("#sidebar").ntsSideBar("init", {
                 active: SideBarTabIndex.SECOND,
                 activate: (event, info) => {
-                    $('#tempAbsenceNo7').focus();
+                    $('#combo-box1').focus();
                     let self = this;
 //                    self.startPage();
                 }

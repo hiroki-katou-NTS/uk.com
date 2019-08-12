@@ -38,11 +38,13 @@ module nts.uk.hr.view.jmm017.b.viewmodel {
             var dfd = $.Deferred();
             self.useList([{ code: "1", name: "" }, { code: "2", name: "使用する"},{ code: "3", name: "使用しない"}]);
             new service.getGuideCategory().done(function(data: any) {
+                $('#gridContent').css( "height", "200px");
                 self.categoryList(data);
                 self.bindData();
                 $("#grid").igGridGroupBy("groupByColumn", 'categoryName');
                 $("#grid").igGridGroupBy("groupByColumn", 'programName');
             }).fail(function(error) {
+                $('#gridContent').css( "height", "200px");
                 error({ messageId: error.messageId });
             }).always(function() {
                 dfd.resolve();
@@ -64,6 +66,7 @@ module nts.uk.hr.view.jmm017.b.viewmodel {
             new service.getGuideMessageList(param).done(function(data: any) {
                 let groupByColumns = $("#grid").igGridGroupBy("groupByColumns");
                 self.guideMessageList = data;
+                $('#gridContent').css( "height", "430px");
                 self.bindData();
 //                setTimeout(() => {
                     $("#grid").igGridGroupBy("ungroupAll");
@@ -74,6 +77,15 @@ module nts.uk.hr.view.jmm017.b.viewmodel {
 //                }, 1);
             }).fail(function(errorInfor) {
                 error({ messageId: errorInfor.messageId });
+                let groupByColumns = $("#grid").igGridGroupBy("groupByColumns");
+                self.guideMessageList = [];
+                $('#gridContent').css( "height", "200px");
+                self.bindData();
+                $("#grid").igGridGroupBy("ungroupAll");
+                _.forEach(groupByColumns, col => {
+                    $("#grid").igGridGroupBy("groupByColumn", col.key);
+                });
+                $("#grid").igGridPaging("pageIndex", 0);
             }).always(function() {
                 block.clear();
             });
@@ -154,6 +166,7 @@ module nts.uk.hr.view.jmm017.b.viewmodel {
             
             /*----------------- Instantiation -------------------------*/
             $("#grid").igGrid({
+                autoGenerateColumns: false,
                 primaryKey: 'guideMsgId',
                 columns: [
                     {
