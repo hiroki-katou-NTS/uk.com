@@ -1,11 +1,11 @@
 import { _, Vue } from '@app/provider';
 import { component, Prop } from '@app/core/component';
 import { storage } from '@app/utils';
-import { CmmS45CComponent } from '../../../../../cmm/s45/c';
+import { CmmS45CComponent } from '../../../../cmm/s45/c';
 import { Kafs05Model } from '../common/CommonClass';
 
 @component({
-    name: 'kafS05a4',
+    name: 'kafS05_4',
     template: require('./index.html'),
     resource: require('../../resources.json'),
     components: {

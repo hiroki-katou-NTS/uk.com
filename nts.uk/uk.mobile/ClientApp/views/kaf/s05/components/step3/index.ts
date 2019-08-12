@@ -2,7 +2,7 @@ import { _, Vue } from '@app/provider';
 import { component, Watch, Prop } from '@app/core/component';
 import { Kafs05Model } from '../common/CommonClass';
 @component({
-    name: 'kafS05a3',
+    name: 'kafS05_3',
     template: require('./index.html'),
     resource: require('../../resources.json')
 })
@@ -116,12 +116,12 @@ export class KafS05aStep3Component extends Vue {
                     this.$mask('hide');
                 }
             });
-            //更新
+        //更新
         } else {
             this.$http.post('at', servicePath.beforeRegisterColorConfirm, overtime).then((result: { data: any }) => {
                 let res = result.data;
                 if (res.confirm) {
-                    this.$modal.confirm({ messageId: res.messageId, messageParams: res.parameterIds }).then((value) => {
+                    this.$modal.confirm({ messageId: res.msgID, messageParams: res.parameterIds }).then((value) => {
                         if (value == 'yes') {
                             this.beforeUpdateProcess(overtime);
                         } else {

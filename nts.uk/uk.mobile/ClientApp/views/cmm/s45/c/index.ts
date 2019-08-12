@@ -225,7 +225,7 @@ export class CmmS45CComponent extends Vue {
     // update Application, go to detail screen
     public updateApp(): void {
         let self = this;
-        this.$goto('kafS05a', { appID: self.currentApp }); 
+        this.$goto('kafS05b', { appID: self.currentApp }); 
     }
 }
 

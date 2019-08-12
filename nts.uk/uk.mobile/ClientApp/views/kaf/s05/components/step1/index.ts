@@ -1,11 +1,11 @@
 import { component, Prop, Watch } from '@app/core/component';
 import { _, Vue } from '@app/provider';
-import { KDL002Component } from '../../../../../kdl/002';
+import { KDL002Component } from '../../../../kdl/002';
 import { TimeWithDay, $ } from '@app/utils';
 import { OvertimeAgreement, AgreementTimeStatusOfMonthly, Kafs05Model } from '../common/CommonClass';
 
 @component({
-    name: 'kafS05a1',
+    name: 'kafS05_1',
     template: require('./index.html'),
     resource: require('../../resources.json'),
     components: {
@@ -373,17 +373,17 @@ export class KafS05aStep1Component extends Vue {
                     switch (result.data.errorFlag) {
                         case 1:
                             this.$modal.error({ messageId: 'Msg_324' }).then(() => {
-                                this.$goto('ccg008a');
+                                this.$goto('ccg007b');
                             });
                             break;
                         case 2:
                             this.$modal.error({ messageId: 'Msg_238' }).then(() => {
-                                this.$goto('ccg008a');
+                                this.$goto('ccg007b');
                             });
                             break;
                         case 3:
                             this.$modal.error({ messageId: 'Msg_237' }).then(() => {
-                                this.$goto('ccg008a');
+                                this.$goto('ccg007b');
                             });
                             break;
                         default:
@@ -434,10 +434,14 @@ export class KafS05aStep1Component extends Vue {
         self.workTimeInput.end = data.workClockTo1 == null ? null : data.workClockTo1;
         if (data.applicationReasonDtos != null && data.applicationReasonDtos.length > 0) {
             self.reasonCombo = _.map(data.applicationReasonDtos, (o) => ({ reasonId: o.reasonID, reasonName: o.reasonTemp }));
-            self.selectedReason = _.find(data.applicationReasonDtos, (o) => o.defaultFlg == 1).reasonID;
-            if (data.application.applicationReason != null) {
-                self.multilContent = data.application.applicationReason;
+            if (!_.isNil(self.appID)) {
+                self.selectedReason = data.applicationReasonDtos[0].reasonID;
+            } else {
+                self.selectedReason = _.find(data.applicationReasonDtos, (o) => o.defaultFlg == 1).reasonID;
             }
+        }
+        if (data.application.applicationReason != null) {
+            self.multilContent = data.application.applicationReason;
         }
         if (data.divergenceReasonDtos != null && data.divergenceReasonDtos.length > 0) {
             self.reasonCombo2 = _.map(data.divergenceReasonDtos, (o) => ({ reasonId: o.divergenceReasonID, reasonName: o.reasonTemp }));
@@ -447,9 +451,9 @@ export class KafS05aStep1Component extends Vue {
             } else {
                 self.selectedReason2 = '';
             }
-            if (data.divergenceReasonContent != null) {
-                self.multilContent2 = data.divergenceReasonContent;
-            }
+        }
+        if (data.divergenceReasonContent != null) {
+            self.multilContent2 = data.divergenceReasonContent;
         }
 
         self.prePostEnable = data.prePostCanChangeFlg;

@@ -8,8 +8,8 @@ import { StepwizardComponent } from '@app/components';
 import { Kafs05Model } from '../components/common/CommonClass';
 
 @component({
-    name: 'kafS05a',
-    route: '/kaf/s05/a',
+    name: 'kafS05b',
+    route: '/kaf/s05/b',
     style: require('../style.scss'),
     template: require('./index.html'),
     resource: require('../resources.json'),
@@ -23,7 +23,7 @@ import { Kafs05Model } from '../components/common/CommonClass';
     }
 })
 
-export class KafS05aComponent extends Vue {
+export class KafS05bComponent extends Vue {
     @Prop({ default: () => ({ appID: null }) })
     public params: {appID: string};
 

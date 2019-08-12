@@ -538,6 +538,13 @@ public class AppOvertimeFinder {
 				
 				overTimeDto.setSiftType(new SiftType(workTimeCD, workTimeName));
 				
+				// 表示対象の就業時間帯を取得する
+				Optional<PredetemineTimeSetting> optFindByCode = predetemineTimeRepo.findByWorkTimeCode(companyID, workTimeCD);
+				if (optFindByCode.isPresent()) {
+					overTimeDto.setWorktimeStart(optFindByCode.get().getPrescribedTimezoneSetting().getLstTimezone().get(0).getStart().v());
+					overTimeDto.setWorktimeEnd(optFindByCode.get().getPrescribedTimezoneSetting().getLstTimezone().get(0).getEnd().v());
+				}
+				
 				// 01-17_休憩時間取得(lay thoi gian nghi ngoi)
 				boolean displayRestTime = commonOvertimeHoliday.getRestTime(
 						companyID,
