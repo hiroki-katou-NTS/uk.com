@@ -15,15 +15,15 @@ public class OvertimeColorCheck {
 	
 	public Integer calcTime;
 	
-	public Boolean calcError;
+	public boolean calcError;
 	
 	public Integer preAppTime;
 	
-	public Boolean preAppError;
+	public boolean preAppError;
 	
 	public Integer actualTime;
 	
-	public Boolean actualError;
+	public boolean actualError;
 	
 	public static OvertimeColorCheck createActual(Integer attendanceID, Integer frameNo, Integer actualTime){
 		OvertimeColorCheck overtimeColorCheck = new OvertimeColorCheck();
@@ -38,12 +38,6 @@ public class OvertimeColorCheck {
 		overtimeColorCheck.attendanceID = attendanceID;
 		overtimeColorCheck.frameNo = frameNo;
 		overtimeColorCheck.appTime = appTime;
-		overtimeColorCheck.calcTime = 0;
-		overtimeColorCheck.calcError = false;
-		overtimeColorCheck.preAppTime = 0;
-		overtimeColorCheck.preAppError = false;
-		overtimeColorCheck.actualTime = 0;
-		overtimeColorCheck.actualError = false;
 		return overtimeColorCheck;
 	}
 	

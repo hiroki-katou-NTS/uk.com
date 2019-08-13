@@ -168,7 +168,11 @@ export class CmmS45AComponent extends Vue {
         lstAppInfor.forEach((appType) => {
             self.lstAppType.push({ code: appType.appType, appType: appType.appType, appName: appType.appName });
         });
-        self.selectedValue = self.prFilter.appType.toString();
+        if (_.filter(self.lstAppType, (c) => c.appType == self.prFilter.appType).length > 0) {
+            self.selectedValue = self.prFilter.appType.toString();
+        } else {
+            self.selectedValue = '-1';
+        }
     }
 
     // create appContent

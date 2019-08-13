@@ -4,6 +4,7 @@ import { IApprovalPhase, IApprovalFrame, IApprover, IApplication } from 'views/c
 
 @component({
     name: 'cmms45componentsapp1',
+    style: require('./style.scss'),
     template: require('./index.vue'),
     validations: {},
     constraints: []
@@ -153,12 +154,12 @@ export class OvertimeFrame {
     public frameNo: number = 0;
     public frameName: string = '';
     public actualError: boolean = false;
-    public actualTime: number = 0;
-    public appTime: number = 0;
+    public actualTime: number = null;
+    public appTime: number = null;
     public calcError: boolean = false;
-    public calcTime: number = 0;
+    public calcTime: number = null;
     public preAppError: boolean = false;
-    public preAppTime: number = 0;
+    public preAppTime: number = null;
     public appOvertimeNightFlg?: boolean = false;
     public flexFLag?: boolean = false;
 
