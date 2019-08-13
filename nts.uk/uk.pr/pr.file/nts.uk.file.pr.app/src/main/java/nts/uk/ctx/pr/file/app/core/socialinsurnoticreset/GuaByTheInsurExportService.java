@@ -4,7 +4,6 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.pr.report.app.find.printdata.socialinsurnoticreset.SocialInsurNotiCreateSetDto;
 import nts.uk.ctx.pr.report.dom.printdata.socinsurnoticreset.InsurPersonNumDivision;
 import nts.uk.ctx.pr.report.dom.printdata.socinsurnoticreset.SocialInsurNotiCrSetRepository;
 import nts.uk.ctx.pr.report.dom.printdata.socinsurnoticreset.SocialInsurNotiCreateSet;
@@ -12,6 +11,7 @@ import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpen
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.EmpWelfarePenInsQualiInforRepository;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmplHealInsurQualifiInfor;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmplHealInsurQualifiInforRepository;
+import nts.uk.query.pub.person.EmployeeInfoExport;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
@@ -38,6 +38,9 @@ public class GuaByTheInsurExportService extends ExportService {
     @Inject
     private SocialInsurNotiCrSetRepository mSocialInsurNotiCrSetRepository;
 
+    @Inject
+    private EmployeeInfoExport mEmployeeInfoExport;
+
     @Override
     protected void handle(ExportServiceContext exportServiceContext) {
 
@@ -45,13 +48,13 @@ public class GuaByTheInsurExportService extends ExportService {
 
     }
 
-    public void printInsuredQualifiNoti(List<String> employeeIds, SocialInsurNotiCreateSetDto model, GeneralDate startDate, GeneralDate endDate) {
+    public void printInsuredQualifiNoti(List<String> employeeIds, GuaByTheInsurDto model, GeneralDate startDate, GeneralDate endDate) {
         settingRegisProcess(model);
         checkAcquiNotiInsurProcess(employeeIds,startDate,endDate);
         insurQualiNotiProcess(employeeIds);
     }
 
-    private void settingRegisProcess(SocialInsurNotiCreateSetDto model) {
+    private void settingRegisProcess(GuaByTheInsurDto model) {
 
         String cid = AppContexts.user().companyId();
         String uid = AppContexts.user().userId();

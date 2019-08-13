@@ -10,6 +10,7 @@ import java.util.Optional;
 @AllArgsConstructor
 @Getter
 @Setter
+
 @Builder
 public class SocialInsurNotiCreateSetDto {
 
@@ -61,19 +62,19 @@ public class SocialInsurNotiCreateSetDto {
      */
     private Optional<LineFeedCode> lineFeedCode;
 
-    public static SocialInsurNotiCreateSetDto fromDomain(SocialInsurNotiCreateSet domain){
+    public static SocialInsurNotiCreateSetDto fromDomain(SocialInsurNotiCreateSet domain) {
         return SocialInsurNotiCreateSetDto.builder()
-                        .officeInformation(domain.getOfficeInformation())
-                        .businessArrSymbol(domain.getBusinessArrSymbol())
-                        .outputOrder(domain.getOutputOrder())
-                        .printPersonNumber(domain.getPrintPersonNumber())
-                        .submittedName(domain.getSubmittedName())
-                        .insuredNumber(domain.getInsuredNumber())
-                        .fdNumber(domain.getFdNumber())
-                        .textPersonNumber(domain.getTextPersonNumber())
-                        .outputFormat(domain.getOutputFormat())
-                        .lineFeedCode(domain.getLineFeedCode())
+                .officeInformation(domain.getOfficeInformation())
+                .businessArrSymbol(domain.getBusinessArrSymbol())
+                .outputOrder(domain.getOutputOrder())
+                .printPersonNumber(domain.getPrintPersonNumber())
+                .submittedName(domain.getSubmittedName())
+                .insuredNumber(domain.getInsuredNumber())
+                .fdNumber(domain.getFdNumber())
+                .textPersonNumber(domain.getTextPersonNumber())
+                .outputFormat(domain.getOutputFormat())
+                .lineFeedCode(domain.getLineFeedCode())
                 .build();
-
+        }
     }
-}
+

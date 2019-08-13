@@ -76,7 +76,7 @@ public class GuaByTheInsurExportData {
     /**
      * 住所カタカナ
      */
-    Optional<String> addressKatakana;
+    Optional<Person> addressKatakana;
 
     /**
      * 個人番号
@@ -135,7 +135,128 @@ public class GuaByTheInsurExportData {
     Optional<SocialInsurAcquisiInfor> acquiCtgHealInsurOrWelfare;
 
     /**
-     * 取得区分（健保・厚年）
+     * 取得区分（共済出向）
      */
+    Optional<SocialInsurAcquisiInfor> acquiCtgMutualAidSeconded;
 
+    /**
+     * 取得区分（船保任継）
+     */
+    Optional<SocialInsurAcquisiInfor> acquiCtgShipTranfer;
+
+    /**
+     * 報酬月額（合計）
+     */
+    Optional<SocialInsurAcquisiInfor> compMonthlyAmountTotal;
+
+    /**
+     * 報酬月額（現物によるものの額）
+     */
+    Optional<SocialInsurAcquisiInfor> monthRemunAmountOfActualItem;
+
+    /**
+     * 報酬月額（通貨によるものの額）
+     */
+    Optional<SocialInsurAcquisiInfor> monthRemunAmountInCurrency;
+
+    /**
+     * 提出日和暦
+     */
+    Optional<GeneralDate> submissionDate;
+
+    /**
+     * 生年月日（令和）
+     */
+    Optional<GeneralDate> dateOfBirthRyowa;
+
+    /**
+     * 生年月日（平成）
+     */
+    Optional<GeneralDate> dateOfBirthHeisei;
+
+    /**
+     * 生年月日（昭和）
+     */
+    Optional<GeneralDate> dateOfBirthShowa;
+
+    /**
+     * 種別（坑内員（基金））
+     */
+    Optional<Person> typeMineWorkerFund;
+
+    /**
+     * 種別（坑内員）
+     */
+    Optional<Person> typeMine;
+
+    /**
+     * 種別（女（基金））
+     */
+    Optional<Person> typeFemaleFund;
+
+    /**
+     * 種別（女）
+     */
+    Optional<Person> typeFemale;
+
+    /**
+     * 種別（男（基金））
+     */
+    Optional<Person> typeMaleFund;
+
+    /**
+     * 種別（男）
+     */
+    Optional<Person> typeMale;
+
+    /**
+     * 被保険者の氏名（名）
+     */
+    Optional<Person> nameOfInsuredPerson;
+
+    /**
+     * 被保険者の氏名（名ｶﾅ）
+     */
+    Optional<Person> fullNameOfTheInsurPerson;
+
+    /**
+     * 被保険者の氏名（氏）
+     */
+    Optional<Person> firstNameOfInsuredPerson2;
+
+    /**
+     * 被保険者整理番号
+     */
+    Optional<String> insurPersonRefNumber;
+
+    /**
+     *  被扶養者（有）
+     */
+    Optional<SocialInsurAcquisiInfor> dependentYes;
+
+    /**
+     *  被扶養者（無）
+     */
+    Optional<SocialInsurAcquisiInfor> dependentNo;
+
+    /**
+     *  資格取得年月日
+     */
+    Optional<GeneralDate> qualifiDate;
+
+
+    /**
+     * 資格取得年月日（令和）
+     */
+    Optional<GeneralDate> qualifiDateRyowa;
+
+    /**
+     * 郵便番号
+     */
+    Optional<SocialInsurAcquisiInfor> postalCode;
+
+    /**
+     * 電話番号
+     */
+    Optional<CompanyInfor> phoneNumber;
 }
