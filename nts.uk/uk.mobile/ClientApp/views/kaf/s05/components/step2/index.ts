@@ -146,7 +146,7 @@ export class KafS05aStep2Component extends Vue {
     }
 
     public created() {
-        console.log(this.kafs05ModelStep2);
+        this.kafs05ModelStep2.step1Start = false;
     }
 
     public next() {

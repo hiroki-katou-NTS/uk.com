@@ -1004,5 +1004,6 @@ public class ProgramIdConsts {
 	
 	public static final String CMF007 = "CMF007";
 	public static final String KAFS05A = "KAFS05A";
+	public static final String KAFS05B = "KAFS05B";
 
 }
