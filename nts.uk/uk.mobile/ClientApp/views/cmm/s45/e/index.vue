@@ -26,9 +26,11 @@
     <div class="card card-label mb-2">
         <div class="card card-label mb-2">
             <!-- E2_3 -->
-            <div class="card-header uk-bg-dark-salmon">
-                <span>{{'CMMS45_69' | i18n}}</span>
-                <span class="badge badge-warning">必須</span>
+            <div class="card-header uk-bg-dark-salmon p-0 pl-3" >
+                <v-label class="border-0 pl-0 mb-0 control-label-inline" 
+                    v-bind:constraint="validations.reasonRemand" 
+                    v-bind:margin-bottom="0">{{'CMMS45_69' | i18n}}</v-label>
+                <span class="badge badge-warning position-absolute" style="top: 8px; right: 0;">必須</span>
             </div>
             <!-- E2_4 -->
             <div class="card-body mt-2 mb-n3">
