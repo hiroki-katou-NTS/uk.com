@@ -10,7 +10,7 @@ import java.util.Optional;
 @AllArgsConstructor
 @Getter
 @Setter
-public class SocialInsurNotiCreateSetDto {
+public class GuaByTheInsurDto {
     public Optional<SalGenParaValue> salGenParaValue;
     public Optional<SocialInsurNotiCreateSet> socialInsurNotiCreateSet;
 }

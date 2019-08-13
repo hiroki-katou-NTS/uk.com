@@ -30,8 +30,8 @@ public class SocialInsurNotiCreateSetFinder {
 
 
 
-    public SocialInsurNotiCreateSetDto initScreen(GeneralDate targetDate) {
-        SocialInsurNotiCreateSetDto resulf = new SocialInsurNotiCreateSetDto();
+    public GuaByTheInsurDto initScreen(GeneralDate targetDate) {
+        GuaByTheInsurDto resulf = new GuaByTheInsurDto();
         String cid = AppContexts.user().companyId();
         String uid = AppContexts.user().userId();
         final int DATE_HISTORY = 0;
