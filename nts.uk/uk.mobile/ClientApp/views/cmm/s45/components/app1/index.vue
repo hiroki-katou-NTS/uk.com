@@ -46,14 +46,21 @@
         <div class="row pl-2 pt-1 pb-1 uk-bg-headline border-top uk-border-light-gray"
             v-if="$app.displayCaculationTime && $app.displayRestTime">{{'CMMS45_27' | i18n}}</div>
         <div class="row" v-if="$app.displayCaculationTime && $app.displayRestTime">
-            <div class="col-12">
-                <div class="row pl-2 pt-1 pb-1 border-top uk-border-light-gray" v-for="(breakTime, breakTimeIndex) in [1,2,3,4,5,6,7,8,9,10]" v-bind:key="breakTimeIndex">
+            <div class="col-12" v-if="breakTimeLst.length > 0">
+                <div class="row pl-2 pt-1 pb-1 border-top uk-border-light-gray" v-for="(breakTime, breakTimeIndex) in breakTimeLst" v-bind:key="breakTimeIndex">
                     <div class="col-12">
-                        <div class="row">{{'CMMS45_85' | i18n(breakTime.toString())}}</div>
-                        <div class="row" v-if="breakTimeLst[breakTimeIndex]">
-                            <span>{{ breakTimeLst[breakTimeIndex].startTime | timewd}} {{ 'CMMS45_12' | i18n}} {{ breakTimeLst[breakTimeIndex].endTime | timewd}}</span>
+                        <div class="row">{{ 'CMMS45_85' | i18n(breakTime.frameNo.toString()) }}</div>
+                        <div class="row">
+                            <span>{{ breakTime.startTime | timewd}} {{ 'CMMS45_12' | i18n}} {{ breakTime.endTime | timewd}}</span>
                         </div>
-                        <div class="row" v-else>{{'CMMS45_15' | i18n}}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12" v-else>
+                <div class="row pl-2 pt-1 pb-1 border-top uk-border-light-gray">
+                    <div class="col-12">
+                        <div class="row">{{ 'CMMS45_85' | i18n('1') }}</div>
+                        <div class="row">{{'CMMS45_15' | i18n}}</div>
                     </div>
                 </div>
             </div>
