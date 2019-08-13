@@ -81,4 +81,5 @@ export class KafS05bComponent extends Vue {
         this.kafs05Model = _.cloneWith(kafs05Model);
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
+
 }
