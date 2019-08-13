@@ -29,7 +29,7 @@
         </div>
     </div>
     <div class="input-container">
-        <div class="card card-label" v-if="null != kafs05ModelStep1.appID">
+        <div class="card card-label" v-if="!kafs05ModelStep1.isCreate">
             <div class="card-header">
                 <span>{{'KAFS05_81' | i18n}}</span>
             </div>
@@ -52,7 +52,7 @@
                 </div>
             </div>
         </div>
-        <div class="card card-label" v-if="kafs05ModelStep1.displayPrePostFlg && null == kafs05ModelStep1.appID">
+        <div class="card card-label" v-if="kafs05ModelStep1.displayPrePostFlg && kafs05ModelStep1.isCreate">
             <div class="card-header">
                 <span>{{'KAFS05_61' | i18n}}</span>
                 <span class="badge badge-warning">必須</span>
@@ -67,7 +67,7 @@
                 <v-errors v-model="$errors.kafs05ModelStep1.prePostSelected" class="d-block mt-0" />
             </div>
         </div>
-        <div class="card card-label" v-if="null == kafs05ModelStep1.appID">
+        <div class="card card-label" v-if="kafs05ModelStep1.isCreate">
             <div class="card-header">
                 <span>{{'KAFS05_62' | i18n}}</span>
                 <span class="badge badge-warning">必須</span>

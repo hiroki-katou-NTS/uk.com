@@ -81,7 +81,7 @@ export class KafS05aStep3Component extends Vue {
             checkAppDate: false
         };
 
-        if (null != self.appID) {
+        if (!self.isCreate) {
             overtime.version = self.version;
             overtime.appID = self.appID;
             // EDITMODE 設定
@@ -92,7 +92,7 @@ export class KafS05aStep3Component extends Vue {
         }
 
         //登録
-        if (null == self.appID) {
+        if (self.isCreate) {
             this.$http.post('at', servicePath.beforeRegisterColorConfirm, overtime).then((result: { data: any }) => {
                 overtime.checkOver1Year = false;
                 this.contentBefRegColorConfirmDone(overtime, result.data);
