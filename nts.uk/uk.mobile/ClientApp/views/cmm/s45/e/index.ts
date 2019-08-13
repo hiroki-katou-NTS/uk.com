@@ -77,7 +77,7 @@ export class CmmS45EComponent extends Vue {
                 return;
             }
             self.$mask('show');
-            let phaseOrder = _.find(self.appInfo.lstApprover, (c) => c.approverID == self.selectedValue).phaseOrder;
+            let phaseOrder = (_.find(self.appInfo.lstApprover, (c) => c.approverID == self.selectedValue) || {phaseOrder: null}).phaseOrder;
             let remandParam = {
                 appID: [self.params.currentApp],
                 applicaintName: self.appInfo.applicantName,//申請本人の名前
