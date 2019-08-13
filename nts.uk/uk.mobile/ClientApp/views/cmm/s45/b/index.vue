@@ -60,7 +60,7 @@
           <div class="card-body py-0">
             <ul class="list-group list-group-selection list-group-flush">
               <li
-                class="list-group-item"
+                class="list-group-item mb-0"
                 v-for="(item,k) in emp.lstApp"
                 v-bind:key="k"
                 :value="item.id"
