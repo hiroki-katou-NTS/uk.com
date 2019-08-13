@@ -2187,6 +2187,27 @@ public class ProgramsManager {
 			"/view/kdp/003/c/index.xhtml");
 	public static final Program CMF007 = new Program(WebAppId.COM, ProgramIdConsts.CMF007, "CMF007_1",
 			"/view/cmf/007/a/index.xhtml");
+	
+	/**
+	 * JHC002
+	 */
+	public static final Program JHC002A = new Program(WebAppId.HR, ProgramIdConsts.JHC002A, "JHC002_A",
+			"/view/jhc/002/a/index.xhtml");
+	public static final Program JHC002B = new Program(WebAppId.HR, ProgramIdConsts.JHC002B, "JHC002_B",
+			"/view/jhc/002/b/index.xhtml");
+	public static final Program JHC002C = new Program(WebAppId.HR, ProgramIdConsts.JHC002C, "JHC002_C",
+			"/view/jhc/002/c/index.xhtml");
+	
+	/**
+	 * JMM017
+	 */
+	public static final Program JMM017A = new Program(WebAppId.HR, ProgramIdConsts.JMM017A, "JMM017_A",
+			"/view/jmm/017/a/index.xhtml");
+	public static final Program JMM017B = new Program(WebAppId.HR, ProgramIdConsts.JMM017B, "JMM017_B",
+			"/view/jmm/017/b/index.xhtml");
+	public static final Program JMM017C = new Program(WebAppId.HR, ProgramIdConsts.JMM017C, "JMM017_C",
+			"/view/jmm/017/c/index.xhtml");
+
 
 	/** The Constant CCG007A. IN MOBILE */
 	public static final Program CCGS07A = new Program(WebAppId.MOBI, ProgramIdConsts.CCGS07A, "CCG007_51",
