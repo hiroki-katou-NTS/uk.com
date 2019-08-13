@@ -6,13 +6,14 @@ import nts.uk.ctx.pr.shared.dom.salgenpurposeparam.*;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.inject.Inject;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class SocialInsurNotiCreateSetFinder {
 
     @Inject
-    private SocialInsurNotiCrSetRepository mSocialInsurNotiCrSetRepository;
-
+    private SocialInsurNotiCrSetRepository socialInsurNotiCrSetRepository;
 
     @Inject
     private SalGenParaIdentificationRepository mSalGenParaIdentificationRepository;
@@ -26,7 +27,10 @@ public class SocialInsurNotiCreateSetFinder {
     @Inject
     private SalGenParaYMHistRepository mSalGenParaYMHistRepository;
 
-
+    public List<SocialInsurNotiCreateSetDto> getSocInsurNotiCreSet(){
+        String cid = AppContexts.user().companyId();
+        return socialInsurNotiCrSetRepository.getAllSocialInsurNotiCreateSet(cid).stream().map(i -> SocialInsurNotiCreateSetDto.fromDomain(i)).collect(Collectors.toList());
+    }
 
 
 
@@ -37,7 +41,7 @@ public class SocialInsurNotiCreateSetFinder {
         final int DATE_HISTORY = 0;
         /*パラメータNo = “KS0002”*/
         String paraNo = "KS002";
-        resulf.setSocialInsurNotiCreateSet(mSocialInsurNotiCrSetRepository.getSocialInsurNotiCreateSetById(uid, cid));
+        resulf = SocialInsurNotiCreateSetDto.fromDomain(socialInsurNotiCrSetRepository.getSocialInsurNotiCreateSetById(uid, cid).orElse(null));
 
 
         ParaHistoryAtr historyAtr = mSalGenParaIdentificationRepository.getSalGenParaIdentificationById(paraNo, cid).get().getHistoryAtr();
