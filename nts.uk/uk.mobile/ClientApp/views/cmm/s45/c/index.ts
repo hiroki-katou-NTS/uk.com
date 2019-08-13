@@ -122,6 +122,7 @@ export class CmmS45CComponent extends Vue {
             self.appOvertime = appData.appOvertime;
             self.$mask('hide');
         }).catch((res: any) => {
+            self.$mask('hide');
             self.$modal.error(res.messageId)
                 .then(() => {
                     self.back();
@@ -225,13 +226,20 @@ export class CmmS45CComponent extends Vue {
         self.$modal.confirm('Msg_18')
             .then((v) => {
                 if (v == 'yes') {
+                    self.$mask('show');
                     self.$http.post('at', API.delete, {
                         version: self.appState.version,
                         appId: self.currentApp
                     }).then((resDelete: any) => {
-                        return self.$modal.info('Msg_16');
-                    }).then(() => {
-                        self.back();
+                        self.$mask('hide');
+                        self.$modal.info('Msg_16').then(() => {
+                            self.back();
+                        });
+                    }).catch((res: any) => {
+                        self.$mask('hide');
+                        self.$modal.error(res.messageId).then(() => {
+                            self.back();
+                        });
                     });               
                 }
             });
