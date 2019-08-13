@@ -6,13 +6,13 @@ import { component, Prop } from '@app/core/component';
         <template v-for="(item, k) in items">
             <transition name="v-collapse">
                 <template v-if="selected == item">
-                    <a v-bind:key="'active'" class="nav-item nav-link disabled active" href="javascript:void(0)" v-bind:key="k">
+                    <a class="nav-item nav-link disabled active" href="javascript:void(0)" v-bind:key="k">
                         <span>{{k + 1}}</span>
                         <span>{{item | i18n}}</span>
                     </a>
                 </template>
                 <template v-else>
-                    <a v-bind:key="'inactive'" class="nav-item nav-link disabled" href="javascript:void(0)" v-bind:key="k">{{k + 1}}</a>
+                    <a class="nav-item nav-link disabled" href="javascript:void(0)" v-bind:key="k">{{k + 1}}</a>
                 </template>
             </transition>
         </template>
