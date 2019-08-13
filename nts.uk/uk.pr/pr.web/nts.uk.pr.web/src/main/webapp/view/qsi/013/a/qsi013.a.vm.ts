@@ -1,12 +1,11 @@
 module nts.uk.pr.view.qsi013.a.viewmodel {
-    import service = nts.uk.pr.view.qmm001.a.service;
+    import service = nts.uk.pr.view.qsi013.a.service;
     import dialog = nts.uk.ui.dialog;
     import getText = nts.uk.resource.getText;
     import errors = nts.uk.ui.errors;
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
-    import model = qsi013.share.model;
 
     export class ScreenModel {
         ccg001ComponentOption: GroupOption;
@@ -16,10 +15,33 @@ module nts.uk.pr.view.qsi013.a.viewmodel {
         endDateJp: KnockoutObservable<string> = ko.observable('');
         filingDate: KnockoutObservable<string> = ko.observable('');
         filingDateJp: KnockoutObservable<string> = ko.observable('');
+        selectedRuleCode: KnockoutObservable<string> = ko.observable('0');
+        rules: KnockoutObservableArray<ItemModel> = ko.observableArray(getRule());
+        simpleValue: KnockoutObservable<string> = ko.observable('');
+        columns: KnockoutObservableArray<any> = ko.observableArray();
+        items: KnockoutObservableArray<any> = ko.observableArray();
+        currentCodeList: KnockoutObservableArray<any> = ko.observableArray();
+        socInsurNotiCreSet : KnockoutObservable<SocInsurNotiCreSet> = ko.observable(new SocInsurNotiCreSet({
+                officeInformation: 0,
+                businessArrSymbol: 0,
+                outputOrder: 0,
+                submittedName: 0,
+                insuredNumber: 0,
+                fdNumber: null,
+                textPersonNumber: 0,
+                outputFormat: 0,
+                lineFeedCode: 0
+                }));
         constructor() {
             let self = this;
 
             this.loadCCG001();
+            this.columns = ko.observableArray([
+                { headerText: 'コード', key: 'id', width: 100, hidden: true },
+                { headerText: '名称', key: 'code', width: 150},
+                { headerText: '説明', key: 'businessName', width: 150 },
+                { headerText: '説明1', key: 'workplaceName', width: 150}
+            ]);
 
             self.startDate.subscribe((data) =>{
                 self.startDateJp(" (" + nts.uk.time.dateInJapanEmpire(data) + ")");
@@ -137,6 +159,58 @@ module nts.uk.pr.view.qsi013.a.viewmodel {
         periodStart: string; // 対象期間（開始)
         periodEnd: string; // 対象期間（終了）
         listEmployee: Array<EmployeeSearchDto>; // 検索結果
+    }
+
+    export function getRule(): Array<ItemModel> {
+        return [
+            new ItemModel('0', getText('QSI013_18')),
+            new ItemModel('1', getText('QSI013_19'))
+        ];
+    }
+
+    export class ItemModel {
+        code: string;
+        name: string;
+
+        constructor(code: string, name: string) {
+            this.code = code;
+            this.name = name;
+        }
+    }
+
+    export interface ISocInsurNotiCreSet {
+        officeInformation: number;
+        businessArrSymbol: number;
+        outputOrder: number;
+        submittedName: number;
+        insuredNumber: number;
+        fdNumber: string;
+        textPersonNumber:number;
+        outputFormat: number;
+        lineFeedCode: number;
+    }
+
+    export class SocInsurNotiCreSet {
+        officeInformation: KnockoutObservable<number> = ko.observable(null);
+        businessArrSymbol: KnockoutObservable<number> = ko.observable(null);
+        outputOrder: KnockoutObservable<number> = ko.observable(null);
+        submittedName: KnockoutObservable<number> = ko.observable(null);
+        insuredNumber: KnockoutObservable<number> = ko.observable(null);
+        fdNumber: KnockoutObservable<string> = ko.observable(null);
+        textPersonNumber: KnockoutObservable<number> = ko.observable(null);
+        outputFormat: KnockoutObservable<number> = ko.observable(null);
+        lineFeedCode: KnockoutObservable<number> = ko.observable(null);
+        constructor(params: ISocInsurNotiCreSet) {
+            this.officeInformation(params ? params.officeInformation : null);
+            this.businessArrSymbol(params ? params.businessArrSymbol : null);
+            this.outputOrder(params ? params.outputOrder : null);
+            this.submittedName(params ? params.submittedName : null);
+            this.insuredNumber(params ? params.insuredNumber : null);
+            this.fdNumber(params ? params.fdNumber : null);
+            this.textPersonNumber(params ? params.textPersonNumber : null);
+            this.outputFormat(params ? params.outputFormat : null);
+            this.lineFeedCode(params ? params.lineFeedCode : null);
+        }
     }
 
 }

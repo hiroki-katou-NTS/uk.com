@@ -70,8 +70,4 @@ public class SocialInsurNotiCreateSet {
      */
     private Optional<LineFeedCode> lineFeedCode;
 
-
-
-
-
 }

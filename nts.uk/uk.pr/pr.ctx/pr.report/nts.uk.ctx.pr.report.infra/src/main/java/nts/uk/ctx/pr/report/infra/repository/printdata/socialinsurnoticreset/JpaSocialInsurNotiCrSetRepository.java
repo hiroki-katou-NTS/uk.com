@@ -15,7 +15,7 @@ public class JpaSocialInsurNotiCrSetRepository extends JpaRepository implements 
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.socInsuNotiSetPk.userId =:userId AND  f.socInsuNotiSetPk.cid =:cid ";
 
     @Override
-    public List<SocialInsurNotiCreateSet> getAllSocialInsurNotiCreateSet() {
+    public List<SocialInsurNotiCreateSet> getAllSocialInsurNotiCreateSet(String cid) {
         return this.queryProxy().query(SELECT_ALL_QUERY_STRING, QqsmtSocInsuNotiSet.class)
                 .getList(item -> item.toDomain());
     }
