@@ -38,7 +38,7 @@
         <div class="row pl-2 pt-1 pb-1 border-top uk-border-light-gray" v-if="$app.displayCaculationTime">
             <div class="col-12">
                 <div class="row">
-                    <span v-if="$app.startTime">{{ $app.startTime | timewd}} {{ 'CMMS45_12' | i18n}} {{ $app.endTime | timewd}}</span>  
+                    <span v-if="$app.startTime!=null">{{ $app.startTime | timewd}} {{ 'CMMS45_12' | i18n}} {{ $app.endTime | timewd}}</span>  
                     <span v-else>{{'CMMS45_15' | i18n}}</span>
                 </div>
             </div>
@@ -74,13 +74,13 @@
                         <div class="row">
                             <div class="col-6">{{ overTime.frameName | i18n }}</div>
                             <div class="col-6">
-                                <span v-if="overTime.appTime">{{ overTime.appTime | timept }}</span>
+                                <span v-if="overTime.appTime!=null">{{ overTime.appTime | timept }}</span>
                                 <span v-else>--:--</span>
                             </div>
                         </div>
                         <div class="row" v-if="isPostApp">
                             <div class="col-6 pl-4">
-                                <span v-if="overTime.preAppTime" class="far fa-clock display-time" v-bind:class="{ 'preApp-Error': overTime.preAppError}">
+                                <span v-if="overTime.preAppTime!=null" class="far fa-clock display-time" v-bind:class="{ 'preApp-Error': overTime.preAppError}">
                                     事前[{{ overTime.preAppTime | timept }}]
                                 </span>
                                 <span v-else class="far fa-clock display-time" v-bind:class="{ 'preApp-Error': overTime.preAppError}">
@@ -88,7 +88,7 @@
                                 </span>
                             </div>
                             <div class="col-6">
-                                <span v-if="overTime.actualTime" class="far fa-clock display-time" v-bind:class="{ 'actual-Error': overTime.actualError}">
+                                <span v-if="overTime.actualTime!=null" class="far fa-clock display-time" v-bind:class="{ 'actual-Error': overTime.actualError}">
                                     実績[{{ overTime.actualTime | timept }}]
                                 </span>
                                 <span v-else class="far fa-clock display-time" v-bind:class="{ 'actual-Error': overTime.actualError}">
@@ -101,13 +101,13 @@
                         <div class="row">
                             <div class="col-6">{{ 'CMMS45_30' | i18n }}</div>
                             <div class="col-6">
-                                <span v-if="overTime.appTime">{{ overTime.appTime | timept }}</span>
+                                <span v-if="overTime.appTime!=null">{{ overTime.appTime | timept }}</span>
                                 <span v-else>--:--</span>
                             </div>
                         </div>
                         <div class="row" v-if="isPostApp">
                             <div class="col-6 pl-4">
-                                <span v-if="overTime.preAppTime" class="far fa-clock display-time" v-bind:class="{ 'preApp-Error': overTime.preAppError}">
+                                <span v-if="overTime.preAppTime!=null" class="far fa-clock display-time" v-bind:class="{ 'preApp-Error': overTime.preAppError}">
                                     事前[{{ overTime.preAppTime | timept }}]
                                 </span>
                                 <span v-else class="far fa-clock display-time" v-bind:class="{ 'preApp-Error': overTime.preAppError}">
@@ -115,7 +115,7 @@
                                 </span>
                             </div>
                             <div class="col-6">
-                                <span v-if="overTime.actualTime" class="far fa-clock display-time" v-bind:class="{ 'actual-Error': overTime.actualError}">
+                                <span v-if="overTime.actualTime!=null" class="far fa-clock display-time" v-bind:class="{ 'actual-Error': overTime.actualError}">
                                     実績[{{ overTime.actualTime | timept }}]
                                 </span>
                                 <span v-else class="far fa-clock display-time" v-bind:class="{ 'actual-Error': overTime.actualError}">
@@ -128,13 +128,13 @@
                         <div class="row">
                             <div class="col-6">{{ 'CMMS45_31' | i18n }}</div>
                             <div class="col-6">
-                                <span v-if="overTime.appTime">{{ overTime.appTime | timept }}</span>
+                                <span v-if="overTime.appTime!=null">{{ overTime.appTime | timept }}</span>
                                 <span v-else>--:--</span>
                             </div>
                         </div>
                         <div class="row" v-if="isPostApp">
                             <div class="col-6 pl-4">
-                                <span v-if="overTime.preAppTime" class="far fa-clock display-time" v-bind:class="{ 'preApp-Error': overTime.preAppError}">
+                                <span v-if="overTime.preAppTime!=null" class="far fa-clock display-time" v-bind:class="{ 'preApp-Error': overTime.preAppError}">
                                     事前[{{ overTime.preAppTime | timept }}]
                                 </span>
                                 <span v-else class="far fa-clock display-time" v-bind:class="{ 'preApp-Error': overTime.preAppError}">
@@ -142,7 +142,7 @@
                                 </span>
                             </div>
                             <div class="col-6">
-                                <span v-if="overTime.actualTime" class="far fa-clock display-time" v-bind:class="{ 'actual-Error': overTime.actualError}">
+                                <span v-if="overTime.actualTime!=null" class="far fa-clock display-time" v-bind:class="{ 'actual-Error': overTime.actualError}">
                                     実績[{{ overTime.actualTime | timept }}]
                                 </span>
                                 <span v-else class="far fa-clock display-time" v-bind:class="{ 'actual-Error': overTime.actualError}">
@@ -162,11 +162,11 @@
                         <div class="row">
                             <div class="col-5">{{ payTime.frameName | i18n }}</div>
                             <div class="col-2 pl-0">
-                                <span v-if="payTime.appTime">{{ payTime.appTime | timept }}</span>
+                                <span v-if="payTime.appTime!=null">{{ payTime.appTime | timept }}</span>
                                 <span v-else>--:--</span>
                             </div>
                             <div class="col-5 pl-3" v-if="isPostApp">
-                                <span v-if="payTime.preAppTime" class="far fa-clock display-time" v-bind:class="{ 'preApp-Error': payTime.preAppError}">
+                                <span v-if="payTime.preAppTime!=null" class="far fa-clock display-time" v-bind:class="{ 'preApp-Error': payTime.preAppError}">
                                     事前[{{ payTime.preAppTime | timept }}]
                                 </span>
                                 <span v-else class="far fa-clock display-time" v-bind:class="{ 'preApp-Error': payTime.preAppError}">
