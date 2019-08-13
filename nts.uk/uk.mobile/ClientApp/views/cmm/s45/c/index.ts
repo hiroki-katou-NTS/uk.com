@@ -44,7 +44,7 @@ export class CmmS45CComponent extends Vue {
     public listAppMeta: Array<string> = [];
     public currentApp: string = '';
     // 承認ルートインスタンス
-    public phaseLst: Array<IApprovalPhase> = [];
+    public phaseLst: Array<Phase> = [];
     public appState: { appStatus: number, reflectStatus: number, version: number } = { appStatus: 0, reflectStatus: 1, version: 0 };
     public appOvertime: IOvertime = null;
     // 差し戻し理由
@@ -132,12 +132,36 @@ export class CmmS45CComponent extends Vue {
     // tạo dữ liệu người phê duyệt
     public createPhaseLst(listPhase: Array<IApprovalPhase>): void {
         let self = this;
-        let phaseLstConvert: Array<IApprovalPhase> = [];
+        let phaseLstConvert: Array<Phase> = [];
         for (let i: number = 1; i <= 5; i++) {
             let containPhase: IApprovalPhase = _.find(listPhase, (phase: IApprovalPhase) => phase.phaseOrder == i);
             phaseLstConvert.push(new Phase(containPhase));
         }
         self.phaseLst = phaseLstConvert;
+        self.selected = self.getSelectedPhase();
+    }
+
+    // lấy phase chỉ định 
+    private getSelectedPhase(): number {
+        let self = this;
+        let denyPhase: Phase = _.find(self.phaseLst, (phase: Phase) => phase.approvalAtrValue == 2);
+        if (denyPhase) {
+            return denyPhase.phaseOrder - 1;
+        }
+        let returnPhase: Phase = _.find(self.phaseLst, (phase: Phase) => phase.approvalAtrValue == 3);
+        if (returnPhase) {
+            return returnPhase.phaseOrder - 1;
+        }
+        let unapprovePhaseLst: Array<Phase> = _.filter(self.phaseLst, (phase: Phase) => phase.approvalAtrValue == 0);
+        if (unapprovePhaseLst.length > 0) {
+            return _.sortBy(unapprovePhaseLst, 'phaseOrder')[0].phaseOrder - 1;
+        }
+        let approvePhaseLst: Array<Phase> = _.filter(self.phaseLst, (phase: Phase) => phase.approvalAtrValue == 1);
+        if (approvePhaseLst.length > 0) {
+            return _.sortBy(approvePhaseLst, 'phaseOrder').reverse()[0].phaseOrder - 1;
+        }
+
+        return 0;
     }
 
     // tiến tới đơn tiếp theo
