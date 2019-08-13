@@ -1,26 +1,30 @@
 <template>
-  <div class="cmms45c">
+  <div class="cmms45c pt-0">
     <div class="modal-header">
       <a class="uk-text-white" v-on:click="back()">
         <i class="fas fa-arrow-circle-left"></i>
         {{ 'CMMS45_17' | i18n }}
       </a>
     </div>
-    <div class="row mb-2">
-      <div class="col-6 text-left">
-        <a class="uk-text-blue" v-on:click="toPreviousApp" v-bind:class="{ 'd-none': isFirstApp() && !isEmptyApp() }">
+    <div class="card invisible mt-n2" v-show="!(!isEmptyApp() && isFirstApp() && isLastApp())">
+      <div class="card-body">
+      </div>
+    </div>
+    <div class="row mb-2 fixed-top mt-5 border-bottom" v-show="!(!isEmptyApp() && isFirstApp() && isLastApp())">
+      <div class="col-6 text-left uk-text-blue uk-bg-silver mt-n2 pt-2 pb-2 pl-4">
+        <a v-on:click="toPreviousApp" v-bind:class="{ 'd-none': isFirstApp() && !isEmptyApp() }">
           <i class="fas fa-arrow-circle-left"></i>
           {{'CMMS45_18' | i18n}}
         </a>
       </div>
-      <div class="col-6 text-right">
-        <a class="uk-text-blue" v-on:click="toNextApp" v-bind:class="{ 'd-none': isLastApp() && !isEmptyApp() }">
+      <div class="col-6 text-right uk-text-blue uk-bg-silver mt-n2 pt-2 pb-2 pr-4">
+        <a v-on:click="toNextApp" v-bind:class="{ 'd-none': isLastApp() && !isEmptyApp() }">
           {{'CMMS45_19' | i18n}}
           <i class="fas fa-arrow-circle-right"></i>
         </a>
       </div>
     </div>
-    <div class="row bg-grey-200 border uk-border-gray border-right-0 border-left-0">
+    <div class="row bg-grey-200 border uk-border-gray border-right-0 border-left-0 pt-1">
       <div class="col-12">
         <div class="row p-2 pl-3 pr-3 ">
           <div class="mb-2 p-2 status-label align-top col-3" v-bind:class="appState.getClass">{{ appState.getName | i18n }}</div>
@@ -62,13 +66,13 @@
                           </td>
                           <td>
                             <span v-if="frame.approvalAtrValue==1 || frame.approvalAtrValue==2">
-                              <span v-if="frame.approverName">{{ frame.approverName }}</span>
-                              <span v-else-if="frame.representerName">{{ frame.representerName }}</span>
+                              <span class="text-break" v-if="frame.approverName"><span>{{ frame.approverName }}</span></span>
+                              <span class="text-break" v-else-if="frame.representerName"><span>{{ frame.representerName }}</span></span>
                               <br/>
-                              <span>{{ frame.approvalReason }}</span>
+                              <p class="text-break child-font-size mb-0 pl-2">{{ frame.approvalReason }}</p>
                             </span>  
                             <span v-else>
-                              <span v-for="(approver, approverIndex) in frame.listApprover" v-bind:key="approverIndex">
+                              <span class="text-break" v-for="(approver, approverIndex) in frame.listApprover" v-bind:key="approverIndex">
                                 <span>
                                   {{ approver.approverName }}
                                 </span>
@@ -102,6 +106,7 @@
       <app2 v-if="false" />
       <app3 v-if="false" />
     </div>
+    
     <div
       class="fixed-action-btn" v-show="displayEditFloat"
       v-float-action="{ icon: 'fas fa-pen', background: 'uk-bg-sea-green', forceground: 'uk-text-dark-gray' }"
