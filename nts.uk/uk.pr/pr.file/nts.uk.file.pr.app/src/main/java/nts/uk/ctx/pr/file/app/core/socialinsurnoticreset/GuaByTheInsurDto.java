@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.report.app.find.printdata.socialinsurnoticreset;
+package nts.uk.ctx.pr.file.app.core.socialinsurnoticreset;
 
 import lombok.*;
 import nts.uk.ctx.pr.report.dom.printdata.socinsurnoticreset.SocialInsurNotiCreateSet;

@@ -4,7 +4,6 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.pr.report.app.find.printdata.socialinsurnoticreset.GuaByTheInsurDto;
 import nts.uk.ctx.pr.report.dom.printdata.socinsurnoticreset.InsurPersonNumDivision;
 import nts.uk.ctx.pr.report.dom.printdata.socinsurnoticreset.SocialInsurNotiCrSetRepository;
 import nts.uk.ctx.pr.report.dom.printdata.socinsurnoticreset.SocialInsurNotiCreateSet;
