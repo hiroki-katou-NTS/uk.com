@@ -1,20 +1,20 @@
 <template>
   <div class="cmms45c">
     <div class="modal-header">
-      <a v-on:click="back()">
+      <a class="uk-text-white" v-on:click="back()">
         <i class="fas fa-arrow-circle-left"></i>
         {{ 'CMMS45_17' | i18n }}
       </a>
     </div>
     <div class="row mb-2">
-      <div class="col-6 text-left uk-text-blue">
-        <a v-on:click="toPreviousApp" v-bind:class="{ 'd-none': isFirstApp() && !isEmptyApp() }">
+      <div class="col-6 text-left">
+        <a class="uk-text-blue" v-on:click="toPreviousApp" v-bind:class="{ 'd-none': isFirstApp() && !isEmptyApp() }">
           <i class="fas fa-arrow-circle-left"></i>
           {{'CMMS45_18' | i18n}}
         </a>
       </div>
-      <div class="col-6 text-right uk-text-blue">
-        <a v-on:click="toNextApp" v-bind:class="{ 'd-none': isLastApp() && !isEmptyApp() }">
+      <div class="col-6 text-right">
+        <a class="uk-text-blue" v-on:click="toNextApp" v-bind:class="{ 'd-none': isLastApp() && !isEmptyApp() }">
           {{'CMMS45_19' | i18n}}
           <i class="fas fa-arrow-circle-right"></i>
         </a>
