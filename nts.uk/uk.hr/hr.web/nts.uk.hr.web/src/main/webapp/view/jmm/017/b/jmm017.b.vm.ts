@@ -76,17 +76,16 @@ module nts.uk.hr.view.jmm017.b.viewmodel {
                     $("#grid").igGridPaging("pageIndex", 0);
 //                }, 1);
             }).fail(function(errorInfor) {
-                error({ messageId: errorInfor.messageId }).then(() => {
-                    let groupByColumns = $("#grid").igGridGroupBy("groupByColumns");
-                    self.guideMessageList = [];
-                    $('#gridContent').css( "height", "200px");
-                    self.bindData();
-                    $("#grid").igGridGroupBy("ungroupAll");
-                    _.forEach(groupByColumns, col => {
-                        $("#grid").igGridGroupBy("groupByColumn", col.key);
-                    });
-                    $("#grid").igGridPaging("pageIndex", 0);    
+                error({ messageId: errorInfor.messageId });
+                let groupByColumns = $("#grid").igGridGroupBy("groupByColumns");
+                self.guideMessageList = [];
+                $('#gridContent').css( "height", "200px");
+                self.bindData();
+                $("#grid").igGridGroupBy("ungroupAll");
+                _.forEach(groupByColumns, col => {
+                    $("#grid").igGridGroupBy("groupByColumn", col.key);
                 });
+                $("#grid").igGridPaging("pageIndex", 0);    
             }).always(function() {
                 block.clear();
             });
