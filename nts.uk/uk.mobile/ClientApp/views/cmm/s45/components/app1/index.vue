@@ -39,7 +39,7 @@
             <div class="col-12">
                 <div class="row">
                     <span v-if="$app.startTime">{{ $app.startTime | timewd}} {{ 'CMMS45_12' | i18n}} {{ $app.endTime | timewd}}</span>  
-                    <span v-else>{{'CMMS45_15' | i18n}} {{ 'CMMS45_12' | i18n}}</span>
+                    <span v-else>{{'CMMS45_15' | i18n}}</span>
                 </div>
             </div>
         </div>
