@@ -268,11 +268,7 @@ export class CmmS45DComponent extends Vue {
                             self.$modal.info('Msg_220').then(() => {
                                 self.$modal('cmms45f', { 'action': 1, 'listAppMeta': self.listAppMeta, 'nextApp': self.getNextApp() })
                                 .then((resAfterApprove: any) => {
-                                    if (resAfterApprove.backToMenu) {
-                                        self.$close();
-                                    } else {
-                                        self.toNextApp();
-                                    }        
+                                    self.controlDialog(resAfterApprove);        
                                 }); 
                             });
                         }
@@ -309,11 +305,7 @@ export class CmmS45DComponent extends Vue {
                             self.$modal.info('Msg_222').then(() => {
                                 self.$modal('cmms45f', { 'action': 2, 'listAppMeta': self.listAppMeta, 'nextApp': self.getNextApp() })
                                 .then((resAfterDeny: any) => {
-                                    if (resAfterDeny.backToMenu) {
-                                        self.$close();
-                                    } else {
-                                        self.toNextApp();
-                                    }      
+                                    self.controlDialog(resAfterDeny);   
                                 });
                             });
                         }
@@ -331,7 +323,24 @@ export class CmmS45DComponent extends Vue {
     // kích hoạt nút trả về
     public returnApp(): void {
         let self = this;
-        self.$modal('cmms45e', {'listAppMeta': self.listAppMeta, 'currentApp': self.currentApp, 'version': self.appState.version });
+        self.$modal('cmms45e', {'listAppMeta': self.listAppMeta, 'currentApp': self.currentApp, 'version': self.appState.version })
+        .then((resReturn: any) => {
+            self.controlDialog(resReturn); 
+        });
+    }
+
+    // xử lý sau khi từ màn F trở về
+    public controlDialog(result): void {
+        let self = this;
+        if (result) {
+            if (result.backToMenu) {
+                self.$close();
+            } else {
+                self.toNextApp();
+            }
+        } else {
+            self.initData();    
+        }  
     }
 
     // phản ánh đơn xin sau khi chấp nhận, từ chối

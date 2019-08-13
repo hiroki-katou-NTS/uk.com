@@ -20,9 +20,9 @@ export class CmmS45FComponent extends Vue {
     public title: string = 'CmmS45F';
 
     // quay về màn CMMS45B
-    public back() {
+    public backToMenu() {
         let self = this;
-        this.$close({ backToMenu: true });
+        self.$close({ backToMenu: true });
     }
 
     // tiến tới đơn tiếp theo

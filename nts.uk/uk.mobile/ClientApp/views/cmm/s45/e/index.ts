@@ -91,7 +91,11 @@ export class CmmS45EComponent extends Vue {
                 console.log('remand');
                 // 「F：処理完了」画面に遷移する
                 this.$modal('cmms45f', { action: 3 }).then((result: any) => {
-                    self.$close(result.backToMenu);
+                    if (result) {
+                        self.$close({ backToMenu: result.backToMenu }); 
+                    } else {
+                        self.$close();   
+                    }  
                 });
             }).catch((res) => {
                 self.$modal.error(res.messageId).then(() => {
