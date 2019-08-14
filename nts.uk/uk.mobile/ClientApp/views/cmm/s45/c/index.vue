@@ -65,23 +65,19 @@
                             </span>
                           </td>
                           <td>
-                            <span v-if="frame.approvalAtrValue==1 || frame.approvalAtrValue==2">
+                            <div v-if="frame.approvalAtrValue==1 || frame.approvalAtrValue==2">
                               <span class="text-break" v-if="frame.approverName"><span>{{ frame.approverName }}</span></span>
                               <span class="text-break" v-else-if="frame.representerName"><span>{{ frame.representerName }}</span></span>
                               <br/>
                               <p class="text-break child-font-size mb-0 pl-2">{{ frame.approvalReason }}</p>
-                            </span>  
-                            <span v-else>
+                            </div>  
+                            <div v-else>
                               <span class="text-break" v-for="(approver, approverIndex) in frame.listApprover" v-bind:key="approverIndex">
-                                <span>
-                                  {{ approver.approverName }}
-                                </span>
-                                <span v-if="approver.representerName">
-                                  ({{ approver.representerName }})
-                                </span>
+                                <span>{{ approver.approverName }}</span>
+                                <span v-if="approver.representerName">({{ approver.representerName }})</span>
                                 <span v-if="approverIndex < frame.listApprover.length - 1">,</span>
                               </span>
-                            </span>    
+                            </div>    
                           </td>
                         </tr>
                       </tbody>
