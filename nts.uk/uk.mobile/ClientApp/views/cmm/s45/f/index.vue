@@ -1,7 +1,7 @@
 <template>
   <div class="cmms45f">
     <div class="modal-header">
-      <a v-on:click="backToDetail()">
+      <a class="uk-text-white" v-on:click="backToDetail()">
         <i class="fas fa-arrow-circle-left"></i>
         {{ 'CMMS45_75' | i18n }}
       </a>
