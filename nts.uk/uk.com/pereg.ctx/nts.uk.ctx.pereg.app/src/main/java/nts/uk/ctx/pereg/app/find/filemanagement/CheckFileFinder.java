@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -59,6 +60,8 @@ import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCtgByCompanyRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.item.ItemType;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
+import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuth;
+import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuthRepository;
 import nts.uk.ctx.sys.auth.dom.role.EmployeeReferenceRange;
 import nts.uk.ctx.sys.auth.dom.role.Role;
 import nts.uk.ctx.sys.auth.dom.role.RoleRepository;
@@ -109,6 +112,9 @@ public class CheckFileFinder {
 	@Inject
 	private AffCompanyHistRepository companyHistRepo;
 	
+	@Inject
+	private PersonInfoItemAuthRepository itemAuthRepo;
+	
 	private static String header;
 	
 	private final static List<String> itemSpecialLst = Arrays.asList("IS00003", "IS00004","IS00015","IS00016");
@@ -131,12 +137,20 @@ public class CheckFileFinder {
 	public GridDto processFile(CheckFileParams params) throws Exception {
 		try {
 			String cid = AppContexts.user().companyId();
+			String roleId = AppContexts.user().roles().forPersonalInfo();
+			if(roleId == null || roleId =="") return null;
 			String contractCd = AppContexts.user().contractCode();
 			UpdateMode updateMode = EnumAdaptor.valueOf(params.getModeUpdate(), UpdateMode.class);
 			// read file import
 			InputStream inputStream = this.fileStreamService.takeOutFromFileId(params.getFileId());
 			Optional<PersonInfoCategory> ctgOptional =  this.ctgRepo.getDetailCategoryInfo(cid, params.getCategoryId(), contractCd);
 			if(!ctgOptional.isPresent()) throw new BusinessException("category invalid");
+			List<String> itemIds = params.getColumnChange().stream()
+					.filter(c -> c.getItemTypeState().getItemType() == 2).map(c -> c.getItemId())
+					.collect(Collectors.toList());
+			List<PersonInfoItemAuth> itemAuths = this.itemAuthRepo.getAllItemAuth(roleId, params.getCategoryId(), itemIds);
+			if(CollectionUtil.isEmpty(itemAuths)) { throw new BusinessException("Msg_723");}
+			
 			// data file
 			NtsExcelImport excelReader = NtsExcelReader.read(inputStream);
 			// header
@@ -149,7 +163,7 @@ public class CheckFileFinder {
 			List<EmployeeDataMngInfo> employees = this.getEmployeeIds(rows, params.getSids());
 			Periods period = peroidByCategory.get(ctgOptional.get().getCategoryCode().toString());
 			//GridDto dto = this.getGridInfo(excelReader, headerDb, ctgOptional.get(), employees, period == null? null: period.periods.get(0).getItem(), updateMode); 
-			GridDto dto = this.getGridInfo(excelReader, headerDb, ctgOptional.get(), employees, period, updateMode); 
+			GridDto dto = this.getGridInfo(excelReader, headerDb, ctgOptional.get(), employees, period, updateMode, itemAuths); 
 			//受入するファイルの列に、メイン画面の「個人情報一覧（A3_001）」に表示している可変列で更新可能な項目が１件でも存在するかチェックする
 			//check xem các header của item trong file import có khớp với màn hình A 
 			if (colums.size() == 0) {
@@ -268,7 +282,14 @@ public class CheckFileFinder {
 	 * @param employees
 	 * @return
 	 */
-	private GridDto getGridInfo(NtsExcelImport excelReader, List<GridEmpHead> headerReal, PersonInfoCategory category, List<EmployeeDataMngInfo> employees, Periods period, UpdateMode updateMode) {
+	private GridDto getGridInfo(NtsExcelImport excelReader, List<GridEmpHead> headerReal, PersonInfoCategory category,
+			List<EmployeeDataMngInfo> employees, Periods period, UpdateMode updateMode,
+			List<PersonInfoItemAuth> itemAuths) {
+		String sid = AppContexts.user().employeeId();
+		List<ItemRowDto> itemSelfDtos =  new ArrayList<>();
+		List<ItemRowDto> itemOtherDtos =  new ArrayList<>();
+		boolean isOther = false;
+		boolean isSelf = false;
 		/* lien quan den bodyData*/
 		List<GridEmpHead> headerRemain = new ArrayList<>();
 		List<GridEmpHead> header =  new ArrayList<GridEmpHead>();
@@ -291,7 +312,10 @@ public class CheckFileFinder {
 		
 		List<EmpMainCategoryDto> layouts = layoutProcessor.getCategoryDetailByListEmp(lquery);
 		int index = 0;
-		for(EmployeeRowDto pdt: employeeDtos) {
+		Iterator<EmployeeRowDto> itr = employeeDtos.iterator();
+		while (itr.hasNext()) {
+			EmployeeRowDto pdt = itr.next();
+			boolean isSelfAuth = sid.equals(pdt.getEmployeeId());
 			List<ItemError> errors = itemErrors.stream().filter(error -> error.getIndex() == 1).collect(Collectors.toList());
 			// lấy full value của các item
 			List<ItemRowDto> itemDtos = new ArrayList<>();
@@ -328,13 +352,22 @@ public class CheckFileFinder {
 				List<ItemRowDto>  itemErrorLst = pdt.getItems().stream().filter(x -> x.isError() == true).collect(Collectors.toList());
 				pdt.setNumberOfError(itemErrorLst.size());
 				//lấy thông tin recordId và actionRole
+				if(items.isEmpty()) {
+					pdt.getItems().removeAll(pdt.getItems());
+					itr.remove();
+				}
 				items.stream().forEach(item -> {
 					pdt.getItems().stream().forEach(itemDto -> {
 						if (itemDto.getItemCode().equals(item.getItemCode())) {
+							System.out.println("itemDto: " + itemDto.getItemCode());
+							if(itemDto.getItemCode().equals("IS00085")) {
+								System.out.println("lan:IS00085");
+							}
 							Optional<ItemError> itemError = errors.stream().filter(e -> e.getColumnKey().equals(itemDto.getItemCode())).findFirst();
 							if(itemError.isPresent()) {
 								itemError.get().setRecordId(item.getRecordId());
 							}
+
 							itemDto.setRecordId(item.getRecordId());
 							// trường hợp ghi đè, item ko có trong file import thì sẽ chỉ được view thôi, ko được update giá trị
 							if(itemDto.getActionRole() == null) {
@@ -347,6 +380,9 @@ public class CheckFileFinder {
 							if(itemDto.getDataType() == 0) return; 
 							Object valueDb = item.getValue() == null? null: this.convertValue(itemDto.getDataType(), item.getValue().toString());
 							Object valueExcel = itemDto.getValue() == null? null: this.convertValue(itemDto.getDataType(), itemDto.getValue().toString());
+							if(itemDto.getItemCode().equals("IS00085")) {
+								System.out.println("SMmmmmmm");
+							}
 							if(isEqual(valueExcel, valueDb, itemDto.getDataType()) == true) {
 								itemDto.setUpdate(false);
 								itemDto.setDefValue(itemDto.getValue());
@@ -394,8 +430,26 @@ public class CheckFileFinder {
 			});
 
 			pdt.getItems().sort(Comparator.comparing(ItemRowDto::getItemOrder, Comparator.naturalOrder()));
+			if (isSelfAuth == true) {
+				List<ItemRowDto> itemSelfDtoTmps = pdt.getItems().stream()
+						.filter(c -> c.getActionRole() == ActionRole.EDIT).collect(Collectors.toList());
+				itemSelfDtos.addAll(itemSelfDtoTmps);
+				isSelf = true;
+			} else {
+				if (itemOtherDtos.isEmpty()) {
+					List<ItemRowDto> itemOtherDtoTmps = pdt.getItems().stream()
+							.filter(c -> c.getActionRole() == ActionRole.EDIT).collect(Collectors.toList());
+					itemOtherDtos.addAll(itemOtherDtoTmps);
+					isOther = true;
+				}
+			}
 			result.add(pdt);
-			index++;			
+			index++;	
+		}
+		
+		if ((itemSelfDtos.isEmpty() && itemOtherDtos.isEmpty()) && ((isOther == false && isSelf == true)
+				|| (isOther == true && isSelf == false) || (isOther == true && isSelf == true))) {
+			throw new BusinessException("Msg_724");
 		}
 		
 		// sắp xếp lại vị trí item theo số tự lỗi - エクセル受入データを並び替える - エラーの件数　DESC、社員コード　ASC
@@ -436,11 +490,11 @@ public class CheckFileFinder {
 			if(employeeDto.getEmployeeCode()!= null) {
 				employeeDtos.add(employeeDto);
 			}
-			if(category.isHistoryCategory()) {
-				if(period.getPeriods().get(0).getValue() != null && period.getPeriods().get(1).getValue() != null) {
-					
-				}
-			}
+//			if(category.isHistoryCategory()) {
+//				if(period.getPeriods().get(0).getValue() != null && period.getPeriods().get(1).getValue() != null) {
+//					
+//				}
+//			}
 			index++;
 		}
 
@@ -530,6 +584,8 @@ public class CheckFileFinder {
 					empBody.setItemName(headerGrid.getItemName());
 					empBody.setItemOrder(headerGrid.getItemOrder());
 					empBody.setValue(selectionCode);
+					SingleItemDto singleDto = (SingleItemDto) headerGrid.getItemTypeState();
+					empBody.setDataType(singleDto.getDataTypeState().getDataTypeValue());
 					List<ComboBoxObject> comboxLst = this.getComboBox(headerGrid, category, employeeDto.getEmployeeId(), empBody, items);
 					// thuật toán lấy selectionId, workplaceId, codeName,...
 					Optional<ComboBoxObject> combo = comboxLst.stream().filter(c -> {
@@ -1099,27 +1155,21 @@ public class CheckFileFinder {
 		aMap.put("CS00070", new Periods(Arrays.asList(new Period("IS00781", null), new Period("IS00782", null))));
 		return aMap;
 	}
-	private static Comparator<EmployeeRowDto> SORT_BY_DISPORDER = (o1, o2) -> {
-		return o2.getNumberOfError() - o1.getNumberOfError();
-	};
-	
 	
 	@AllArgsConstructor
 	@Getter
 	public class Periods{
 		private List<Period> periods;
-		
-		private boolean compare() {
-			if(CollectionUtil.isEmpty(periods)) {
-				return false;
-			}
-			Period start = periods.get(0);
-			Period end = periods.get(1);
-			
-			
-			return false;
-		}
-		
+//		private boolean compare() {
+//			if(CollectionUtil.isEmpty(periods)) {
+//				return false;
+//			}
+//			Period start = periods.get(0);
+//			Period end = periods.get(1);
+//			
+//			
+//			return false;
+//		}
 	}
 	
 	@AllArgsConstructor

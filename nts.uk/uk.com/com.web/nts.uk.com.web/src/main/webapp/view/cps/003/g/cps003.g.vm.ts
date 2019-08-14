@@ -16,15 +16,18 @@ module cps003.g.vm {
         start() {
             let self = this;
             var dfd = $.Deferred();
-            let paramA = getShared("CPS003G_ERROR_LIST"), paramC: GridDtoError = getShared("CPS003G_ERROR_LIST");
-            self.data = _.map(paramA, a => {
+            let paramA = getShared("CPS003G_ERROR_LIST"), paramC: GridDtoError = getShared("CPS003G_ERROR_LIST"),
+                paramSorted = _.sortBy(paramA, ['no']);
+            self.data = _.map(paramSorted, a => {
                 return {
                     id : a.employeeId + a.itemName + a.no,
                     empCd: a.empCd, empName: a.empName,
                     employeeId: a.employeeId, errorType: a.errorType == 0 ? text("CPS003_127") : text("CPS003_128"),
-                    isDisplayRegister: a.isDisplayRegister, itemName: a.itemName, message: a.message, no: a.no
+                    isDisplayRegister: a.isDisplayRegister, itemName: a.itemName, message: a.message, no: a.no,
+                    resultRegister: a.errorType == 0 ? text("CPS003_126") : text("CPS003_125")
                 }
             });
+            let isDisplayRegiter = _.filter(self.data, c =>{ return c.isDisplayRegister == true });
         
             $("#grid2").ntsGrid({
                 height: '343px',
@@ -39,7 +42,7 @@ module cps003.g.vm {
                     { headerText: text("CPS003_100"), key: "empCd", dataType: "string" ,width: "100px"},
                     { headerText: text("CPS003_101"), key: "empName", dataType: "string",width: "150px" },
                     { headerText: text("CPS003_102"), key: "no", dataType: "string",width: "50px" },
-                    { headerText: text("CPS003_103"), key: "isDisplayRegister", dataType: "boolean",width: "50px" , formatter: function(v) { return v ? '〇' : 'X' }  },
+                    { headerText: text("CPS003_103"), key: "resultRegister", dataType: "string",width: "50px", hidden: isDisplayRegiter.length > 0? false: true},
                     { headerText: text("CPS003_104"), key: "errorType", dataType: "string",width: "50px" },
                     { headerText: text("CPS003_105"), key: "itemName", dataType: "string",width: "200px" },
                     { headerText: text("CPS003_106"), key: "message", dataType: "string",width: "500px" }

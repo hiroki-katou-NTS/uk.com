@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.error.BusinessException;
 @Getter
 public class MyCustomizeException extends BusinessException {
@@ -13,10 +14,18 @@ public class MyCustomizeException extends BusinessException {
 	 */
 	private static final long serialVersionUID = 1L;
 	private List<String> errorLst = new ArrayList<>();
+	@Setter
+	private String itemName;
 
 	public MyCustomizeException(String messageId, List<String> errorLst) {
 		super(messageId);
 		this.errorLst.addAll(errorLst);
+	}
+	
+	public MyCustomizeException(String messageId, List<String> errorLst, String itemName) {
+		super(messageId);
+		this.errorLst.addAll(errorLst);
+		this.itemName = itemName;
 	}
 
 }

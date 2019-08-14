@@ -580,13 +580,12 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			String sql = "select h.PID, h.SID, h.HIST_ID, h.DESTINATION_DATA, h.START_DATE, h.END_DATE "
 						+ " from BSYMT_AFF_COM_HIST h"
-						+ " where h.START_DATE < ?"
-						+ " and h.END_DATE > ?"
+						+ " where h.START_DATE <= ?"
+						+ " and h.END_DATE >= ?"
 						+ " and h.SID in (" + NtsStatement.In.createParamsString(subList) + ")";
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
-				GeneralDate addBaseDate = baseDate.addDays(1);
-				stmt.setDate(1, Date.valueOf(addBaseDate.toLocalDate()));
-				stmt.setDate(2, Date.valueOf(addBaseDate.toLocalDate()));
+				stmt.setDate(1, Date.valueOf(baseDate.toLocalDate()));
+				stmt.setDate(2, Date.valueOf(baseDate.toLocalDate()));
 				for (int i = 0; i < subList.size(); i++) {
 					stmt.setString(3 + i, subList.get(i));
 				}

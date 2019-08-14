@@ -1,9 +1,9 @@
 package nts.uk.ctx.bs.employee.app.command.employee.mngdata;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -11,6 +11,7 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -43,32 +44,33 @@ public class UpdateEmployeeDataMngInfoListCommandHandler extends CommandHandlerW
 		Map<String, List<EmployeeDataMngInfo>> employeeDataMap = employeeDataMngInfoRepository
 				.findByListEmployeeCode(cid,
 						command.stream().map(c -> c.getEmployeeCode()).collect(Collectors.toList()))
-				.parallelStream().collect(Collectors.groupingBy(c -> c.getEmployeeCode().v()));
+				.stream().collect(Collectors.groupingBy(c -> c.getEmployeeCode().v()));
 		
-		List<EmployeeDataMngInfo> domains = command.parallelStream().map(c -> {
+		List<EmployeeDataMngInfo> domains = command.stream().map(c -> {
 			return new EmployeeDataMngInfo(cid, c.getPersonId(), c.getEmployeeId(), c.getEmployeeCode(),
 					c.getExternalCode());
 		}).collect(Collectors.toList());
 		
-		command.parallelStream().forEach(c -> {
-			List<EmployeeDataMngInfo> empLst = employeeDataMap.get(c.getEmployeeCode());
-			if (empLst != null) {
-				Optional<EmployeeDataMngInfo> empOpt = empLst.stream()
-						.filter(emp -> !emp.getEmployeeId().equals(c.getEmployeeId())).findFirst();
-				if (empOpt.isPresent()) {
-					sidErrorLst.add(c.getEmployeeId());
-					domains.remove(empOpt.get());
-				}
-			}
-
-		});
+		Iterator<EmployeeDataMngInfo> itr = domains.iterator();
+        while (itr.hasNext()) {
+        	EmployeeDataMngInfo emp = itr.next();
+        	List<EmployeeDataMngInfo> empLst = employeeDataMap.get(emp.getEmployeeCode().v());
+        	if (!CollectionUtil.isEmpty(empLst)) {
+        		empLst.stream().forEach(c ->{
+                    if (c.getEmployeeCode().equals(emp.getEmployeeCode())) {
+                    	sidErrorLst.add(emp.getEmployeeId());
+                        itr.remove();
+                    }
+        		});
+        	}
+        }
 		
 		if(!domains.isEmpty()) {
 			this.employeeDataMngInfoRepository.updateAll(domains);
 		}
 		
 		if (sidErrorLst.size() > 0) {
-			errorExceptionLst.add(new MyCustomizeException("Msg_345", sidErrorLst));
+			errorExceptionLst.add(new MyCustomizeException("Msg_345", sidErrorLst, "社員CD"));
 		}
 		return errorExceptionLst;
 	}

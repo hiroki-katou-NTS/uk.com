@@ -42,6 +42,7 @@ public class AsposePersonInfoMatrixErrorGenerator extends AsposeCellsReportGener
 				+ GeneralDateTime.now().toString("yyyyMMddHHmmss") + EXTENSION_FILE;
 		Workbook workbook = reportContext.getWorkbook();
 		Worksheet worksheet = workbook.getWorksheets().get(0);
+		worksheet.setName("エラー・警告一覧");
 		setWidthColum(worksheet, dataSource);
 		printTilte(worksheet);
 		// tính ra số cột của template

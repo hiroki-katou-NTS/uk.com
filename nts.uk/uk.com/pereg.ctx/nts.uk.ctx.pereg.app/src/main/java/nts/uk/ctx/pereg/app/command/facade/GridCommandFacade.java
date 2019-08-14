@@ -2,14 +2,12 @@ package nts.uk.ctx.pereg.app.command.facade;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import nts.uk.ctx.pereg.app.find.filemanagement.EmployeeRowDto;
 import nts.uk.ctx.pereg.dom.person.error.ErrorWarningEmployeeInfo;
 import nts.uk.shr.pereg.app.command.EmployeeInputContainer;
 import nts.uk.shr.pereg.app.command.GridInputContainer;
@@ -22,7 +20,7 @@ public class GridCommandFacade {
 	private PeregCommonCommandFacade commandFacade;
 	public Collection<?> registerHandler(GridInputContainer gridInputContainer) {
 		List<PeregInputContainerCps003> containerLst = new ArrayList<>();
-		gridInputContainer.getEmployees().parallelStream().forEach(c -> {
+		gridInputContainer.getEmployees().stream().forEach(c -> {
 			containerLst.add(new PeregInputContainerCps003(c.getPersonId(), c.getEmployeeId(), c.getInput()));
 		});
 		List<MyCustomizeException> errorLst = this.commandFacade.registerHandler(containerLst,
@@ -33,8 +31,10 @@ public class GridCommandFacade {
 			c.getErrorLst().stream().forEach(e ->{
 				Optional<EmployeeInputContainer> emp = gridInputContainer.getEmployees().stream().filter(i -> i.getEmployeeId().equals(e)).findFirst();
 				if(emp.isPresent()) {
+					//0 - error
+					//1 - warning
 					ErrorWarningEmployeeInfo errorWarning = new ErrorWarningEmployeeInfo(emp.get().getEmployeeId(),
-							emp.get().getEmployeeCd(), emp.get().getEmployeeName(), emp.get().getOrder(), true, 1, "", c.getMessage());	
+							emp.get().getEmployeeCd(), emp.get().getEmployeeName(), emp.get().getOrder(), true, 0, c.getItemName(), c.getMessage());	
 					result.add(errorWarning);
 				}
 						

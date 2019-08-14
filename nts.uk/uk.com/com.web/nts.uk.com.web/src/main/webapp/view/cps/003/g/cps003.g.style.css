@@ -37,3 +37,11 @@ td[aria-describedby='grid2_empName']{
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+td[aria-describedby='grid2_itemName']{
+  width: 99%;
+  /* display: inline-block; */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

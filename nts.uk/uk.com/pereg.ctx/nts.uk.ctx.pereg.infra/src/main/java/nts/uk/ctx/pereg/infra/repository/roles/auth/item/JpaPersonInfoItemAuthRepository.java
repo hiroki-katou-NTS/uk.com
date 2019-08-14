@@ -10,6 +10,7 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoAuthType;
 import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuth;
 import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuthRepository;
 import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemDetail;
@@ -64,6 +65,12 @@ public class JpaPersonInfoItemAuthRepository extends JpaRepository implements Pe
 			+ " INNER JOIN PpemtPerInfoItemCm pm ON pi.itemCd = pm.ppemtPerInfoItemCmPK.itemCd AND pc.categoryCd = pm.ppemtPerInfoItemCmPK.categoryCd"
 			+ " WHERE pm.ppemtPerInfoItemCmPK.itemCd =:itemCd"
 			+ " AND pi.perInfoCtgId IN :perInfoCtgId";
+	
+	private static final String SEL_ALL_ITEM_AUTH_BY_ROLE_ID_CTG_ID_ITEM_ID = " SELECT c FROM PpemtPersonItemAuth c"
+			+ " WHERE c.ppemtPersonItemAuthPk.roleId =:roleId"
+			+ " AND c.ppemtPersonItemAuthPk.personInfoCategoryAuthId =:categoryId"
+			+ " AND c.ppemtPersonItemAuthPk.personItemDefId IN :itemIds"
+			+ " AND (c.otherPersonAuthType =:otherType OR c.selfAuthType =:selfType)";
 	
 
 
@@ -224,6 +231,17 @@ public class JpaPersonInfoItemAuthRepository extends JpaRepository implements Pe
 		.setParameter("cid", cid)
 		.setParameter("contractCd", contractCd)
 		.getSingle(c -> toDomain(c));
+	}
+
+	@Override
+	public List<PersonInfoItemAuth> getAllItemAuth(String roleId, String categoryId, List<String> itemIds) {
+		return this.queryProxy().query(SEL_ALL_ITEM_AUTH_BY_ROLE_ID_CTG_ID_ITEM_ID, PpemtPersonItemAuth.class)
+				.setParameter("roleId", roleId)
+				.setParameter("categoryId", categoryId)
+				.setParameter("itemIds", itemIds)
+				.setParameter("otherType", PersonInfoAuthType.UPDATE.value)
+				.setParameter("selfType", PersonInfoAuthType.UPDATE.value)
+				.getList(c -> toDomain(c));
 	}
 
 }
