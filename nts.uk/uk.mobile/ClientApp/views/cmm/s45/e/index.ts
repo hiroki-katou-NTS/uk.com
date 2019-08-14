@@ -23,7 +23,7 @@ export class CmmS45EComponent extends Vue {
 
     @Prop({ default: () => ({ listAppMeta: [], currentApp: '', version: 0}) })
     public readonly params: { listAppMeta: Array<string>, currentApp: string, version: number };
-    public reasonRemand: string = null;//差し戻しコメント
+    public reasonRemand: string = '';//差し戻しコメント
     public selectedValue: string = '1';
     public apprList: Array<{id: string, content: string}> = [{id: '1', content: ''}];//差し戻し先
     public appInfo: any = null;
