@@ -1,13 +1,27 @@
 <template>
   <div class="cmms45d pt-0">
     <div class="modal-header">
-      <a v-on:click="back()">
+      <a class="uk-text-white" v-on:click="back()">
         <i class="fas fa-arrow-circle-left"></i>
         {{ 'CMMS45_17' | i18n }}
       </a>
     </div>
     <div class="card invisible mt-n2" v-show="!(!isEmptyApp() && isFirstApp() && isLastApp())">
       <div class="card-body">
+      </div>
+    </div>
+    <div class="row mb-2 fixed-top mt-5 border-bottom" v-show="!(!isEmptyApp() && isFirstApp() && isLastApp())">
+      <div class="col-6 text-left uk-text-blue uk-bg-silver mt-n2 pt-2 pb-2 pl-4">
+        <a v-on:click="toPreviousApp" v-bind:class="{ 'd-none': isFirstApp() && !isEmptyApp() }">
+          <i class="fas fa-arrow-circle-left"></i>
+          {{'CMMS45_18' | i18n}}
+        </a>
+      </div>
+      <div class="col-6 text-right uk-text-blue uk-bg-silver mt-n2 pt-2 pb-2 pr-4">
+        <a v-on:click="toNextApp" v-bind:class="{ 'd-none': isLastApp() && !isEmptyApp() }">
+          {{'CMMS45_19' | i18n}}
+          <i class="fas fa-arrow-circle-right"></i>
+        </a>
       </div>
     </div>
     <div class="row bg-grey-200 border uk-border-gray border-right-0 border-left-0 pt-1">
@@ -51,23 +65,19 @@
                             </span>
                           </td>
                           <td>
-                            <span v-if="frame.approvalAtrValue==1 || frame.approvalAtrValue==2">
-                              <span v-if="frame.approverName">{{ frame.approverName }}</span>
-                              <span v-else-if="frame.representerName">{{ frame.representerName }}</span>
+                            <div v-if="frame.approvalAtrValue==1 || frame.approvalAtrValue==2">
+                              <span class="text-break" v-if="frame.approverName"><span>{{ frame.approverName }}</span></span>
+                              <span class="text-break" v-else-if="frame.representerName"><span>{{ frame.representerName }}</span></span>
                               <br/>
-                              <span>{{ frame.approvalReason }}</span>
-                            </span>  
-                            <span v-else>
-                              <span v-for="(approver, approverIndex) in frame.listApprover" v-bind:key="approverIndex">
-                                <span>
-                                  {{ approver.approverName }}
-                                </span>
-                                <span v-if="approver.representerName">
-                                  ({{ approver.representerName }})
-                                </span>
+                              <p class="text-break child-font-size mb-0 pl-2">{{ frame.approvalReason }}</p>
+                            </div>  
+                            <div v-else>
+                              <span class="text-break" v-for="(approver, approverIndex) in frame.listApprover" v-bind:key="approverIndex">
+                                <span>{{ approver.approverName }}</span>
+                                <span v-if="approver.representerName">({{ approver.representerName }})</span>
                                 <span v-if="approverIndex < frame.listApprover.length - 1">,</span>
                               </span>
-                            </span>    
+                            </div>      
                           </td>
                         </tr>
                       </tbody>
@@ -107,21 +117,7 @@
         Hidden Content
       </div>
     </div>
-    <div class="row mb-2 fixed-top mt-5 border-bottom" v-show="!(!isEmptyApp() && isFirstApp() && isLastApp())">
-      <div class="col-6 text-left uk-text-blue uk-bg-silver mt-n2 pt-2 pb-2 pl-4">
-        <a v-on:click="toPreviousApp" v-bind:class="{ 'd-none': isFirstApp() && !isEmptyApp() }">
-          <i class="fas fa-arrow-circle-left"></i>
-          {{'CMMS45_18' | i18n}}
-        </a>
-      </div>
-      <div class="col-6 text-right uk-text-blue uk-bg-silver mt-n2 pt-2 pb-2 pr-4">
-        <a v-on:click="toNextApp" v-bind:class="{ 'd-none': isLastApp() && !isEmptyApp() }">
-          {{'CMMS45_19' | i18n}}
-          <i class="fas fa-arrow-circle-right"></i>
-        </a>
-      </div>
-    </div>
-    <div class="row fixed-bottom mb-1" v-show="displayReleaseLock() || displayReleaseOpen()">
+    <div class="row fixed-bottom" v-show="displayReleaseLock() || displayReleaseOpen()">
       <div class="col-12">
         <div class="row release-lock p-1" v-show="displayReleaseLock()">
           <div class="col-2"></div>
