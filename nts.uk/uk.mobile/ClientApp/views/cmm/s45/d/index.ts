@@ -40,7 +40,7 @@ import {
 })
 export class CmmS45DComponent extends Vue {
     @Prop({ default: () => ({ listAppMeta: [], currentApp: '' }) })
-    public readonly params: { listAppMeta: Array<string>, currentApp: string, backToMenu?: boolean };
+    public readonly params: { listAppMeta: Array<string>, currentApp: string };
     public title: string = 'CmmS45D';
     public showApproval: boolean = false;
     public appCount: number = 0;
@@ -48,7 +48,7 @@ export class CmmS45DComponent extends Vue {
     public listAppMeta: Array<string> = [];
     public currentApp: string = '';
     // 承認ルートインスタンス
-    public phaseLst: Array<IApprovalPhase> = [];
+    public phaseLst: Array<Phase> = [];
     public appState: { 
         appStatus: number, 
         reflectStatus: number, 
@@ -151,12 +151,36 @@ export class CmmS45DComponent extends Vue {
     // tạo dữ liệu người phê duyệt
     public createPhaseLst(listPhase: Array<IApprovalPhase>): void {
         let self = this;
-        let phaseLstConvert: Array<IApprovalPhase> = [];
+        let phaseLstConvert: Array<Phase> = [];
         for (let i: number = 1; i <= 5; i++) {
             let containPhase: IApprovalPhase = _.find(listPhase, (phase: IApprovalPhase) => phase.phaseOrder == i);
             phaseLstConvert.push(new Phase(containPhase));
         }
         self.phaseLst = phaseLstConvert;
+        self.selected = self.getSelectedPhase();
+    }
+
+    // lấy phase chỉ định 
+    private getSelectedPhase(): number {
+        let self = this;
+        let denyPhase: Phase = _.find(self.phaseLst, (phase: Phase) => phase.approvalAtrValue == 2);
+        if (denyPhase) {
+            return denyPhase.phaseOrder - 1;
+        }
+        let returnPhase: Phase = _.find(self.phaseLst, (phase: Phase) => phase.approvalAtrValue == 3);
+        if (returnPhase) {
+            return returnPhase.phaseOrder - 1;
+        }
+        let unapprovePhaseLst: Array<Phase> = _.filter(self.phaseLst, (phase: Phase) => phase.approvalAtrValue == 0);
+        if (unapprovePhaseLst.length > 0) {
+            return _.sortBy(unapprovePhaseLst, 'phaseOrder')[0].phaseOrder - 1;
+        }
+        let approvePhaseLst: Array<Phase> = _.filter(self.phaseLst, (phase: Phase) => phase.approvalAtrValue == 1);
+        if (approvePhaseLst.length > 0) {
+            return _.sortBy(approvePhaseLst, 'phaseOrder').reverse()[0].phaseOrder - 1;
+        }
+
+        return 0;
     }
 
     // tiến tới đơn tiếp theo
@@ -266,7 +290,7 @@ export class CmmS45DComponent extends Vue {
                         if (resApprove.data.processDone) {
                             self.reflectApp(resApprove.data.reflectAppId);
                             self.$modal.info('Msg_220').then(() => {
-                                self.$modal('cmms45f', { 'action': 1, 'listAppMeta': self.listAppMeta, 'nextApp': self.getNextApp() })
+                                self.$modal('cmms45f', { 'action': 1, 'listAppMeta': self.listAppMeta, 'currentApp': self.currentApp })
                                 .then((resAfterApprove: any) => {
                                     self.controlDialog(resAfterApprove);        
                                 }); 
@@ -303,7 +327,7 @@ export class CmmS45DComponent extends Vue {
                         if (resDeny.data.processDone) {
                             self.reflectApp(resDeny.data.reflectAppId);
                             self.$modal.info('Msg_222').then(() => {
-                                self.$modal('cmms45f', { 'action': 2, 'listAppMeta': self.listAppMeta, 'nextApp': self.getNextApp() })
+                                self.$modal('cmms45f', { 'action': 2, 'listAppMeta': self.listAppMeta, 'currentApp': self.currentApp })
                                 .then((resAfterDeny: any) => {
                                     self.controlDialog(resAfterDeny);   
                                 });
@@ -333,20 +357,20 @@ export class CmmS45DComponent extends Vue {
     public controlDialog(result): void {
         let self = this;
         if (result) {
-            if (result.backToMenu) {
-                self.$close();
+            if (result.currentApp == self.currentApp) {
+                self.initData();    
             } else {
                 self.toNextApp();
             }
         } else {
-            self.initData();    
+            self.$close(); 
         }  
     }
 
     // phản ánh đơn xin sau khi chấp nhận, từ chối
     public reflectApp(appID: string): void {
         let self = this;
-        if (!appID) {
+        if (!_.isEmpty(appID)) {
             self.$http.post('at', API.reflectApp, [appID]);
         }
     }

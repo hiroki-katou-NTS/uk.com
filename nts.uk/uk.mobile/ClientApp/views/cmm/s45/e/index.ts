@@ -90,12 +90,8 @@ export class CmmS45EComponent extends Vue {
                 self.$mask('hide');
                 console.log('remand');
                 // 「F：処理完了」画面に遷移する
-                this.$modal('cmms45f', { action: 3 }).then((result: any) => {
-                    if (result) {
-                        self.$close({ backToMenu: result.backToMenu }); 
-                    } else {
-                        self.$close();   
-                    }  
+                this.$modal('cmms45f', { 'action': 3, 'listAppMeta': self.params.listAppMeta, 'currentApp': self.params.currentApp }).then((result: any) => {
+                    self.$close(result);   
                 });
             }).catch((res) => {
                 self.$modal.error(res.messageId).then(() => {
