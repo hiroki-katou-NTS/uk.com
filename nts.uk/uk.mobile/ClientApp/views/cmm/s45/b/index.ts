@@ -94,6 +94,9 @@ export class CmmS45BComponent extends Vue {
         return _.filter(this.checkeds, (c) => c == 6).length > 0 ? true : false;
     }
 
+    public disableBtn(lstCheck: Array<number>) {
+        return _.filter(lstCheck, (c) => c == 1).length > 0 ? false : true;
+    }
     //データを取る
     private getData(getCache: boolean, filter: boolean) {
         let self = this;
