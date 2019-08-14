@@ -24,6 +24,7 @@ import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypes;
 import nts.uk.ctx.pereg.dom.person.info.setitem.SetItem;
+import nts.uk.ctx.pereg.dom.person.info.setitem.SetTableItem;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeState;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.SingleItem;
@@ -173,11 +174,11 @@ public class ItemDefFinder {
 			index = parentItems.indexOf(itemDef);
 			parentItems.remove(index);
 			// get children by itemId list
-			if(itemDef.getItemTypeState().getItemType() == ItemType.SET_ITEM) {
+			if(itemDef.getItemTypeState().getItemType() == ItemType.SET_ITEM || itemDef.getItemTypeState().getItemType() == ItemType.TABLE_ITEM) {
 				
 				List<PersonInfoItemDefinition> lstDomain = getListChildrenDef(itemDef.getItemTypeState());	
 				lstDomain.forEach(i -> {
-					if(i.getItemTypeState().getItemType() == ItemType.SET_ITEM) {
+					if(i.getItemTypeState().getItemType() == ItemType.SET_ITEM || itemDef.getItemTypeState().getItemType() == ItemType.TABLE_ITEM) {
 						parentItems.add(i);
 					}else {
 						lstItemDef.add(getItemValueFromDomain(i));
@@ -190,8 +191,14 @@ public class ItemDefFinder {
 	private List<PersonInfoItemDefinition> getListChildrenDef(ItemTypeState item){
 		String contractCode = AppContexts.user().contractCode();
 		// get itemId list of children
-		SetItem setItem = (SetItem) item;
-		List<String> items = setItem.getItems();
+		List<String> items = new ArrayList<>();
+		if(item.getItemType()  == ItemType.SET_ITEM) {
+			SetItem setItem = (SetItem) item;
+			items.addAll(setItem.getItems());
+		}else {
+			SetTableItem setItem = (SetTableItem) item;
+			items.addAll(setItem.getItems());
+		}
 		
 		// get children by itemId list
 		List<PersonInfoItemDefinition> lstDomain = perInfoItemDefRepositoty.getPerInfoItemDefByListId(items,

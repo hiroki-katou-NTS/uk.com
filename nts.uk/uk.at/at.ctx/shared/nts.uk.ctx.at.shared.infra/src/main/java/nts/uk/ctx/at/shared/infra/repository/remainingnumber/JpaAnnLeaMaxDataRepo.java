@@ -171,7 +171,7 @@ public class JpaAnnLeaMaxDataRepo extends JpaRepository implements AnnLeaMaxData
 			if ( timeAnnualLeaveMax.isPresent()) {
 				TimeAnnualLeaveMax time = timeAnnualLeaveMax.get();
 				sql = sql.replace("MAX_MINUTES_VAL", "" + time.getMaxMinutes().v()+ "");
-				sql = sql.replace("USED_MINUTES_VAL", "" + time.getMaxMinutes().v()+ "");
+				sql = sql.replace("USED_MINUTES_VAL", "" + time.getUsedMinutes().v()+ "");
 				sql = sql.replace("REMAINING_MINUTES_VAL", "" + time.getRemainingMinutes().v()+ "");
 			}else {
 				sql = sql.replace("MAX_MINUTES_VAL", "null");
@@ -223,7 +223,7 @@ public class JpaAnnLeaMaxDataRepo extends JpaRepository implements AnnLeaMaxData
 			if ( timeAnnualLeaveMax.isPresent()) {
 				TimeAnnualLeaveMax time = timeAnnualLeaveMax.get();
 				sql = sql.replace("MAX_MINUTES_VAL", "" + time.getMaxMinutes().v()+ "");
-				sql = sql.replace("USED_MINUTES_VAL", "" + time.getMaxMinutes().v()+ "");
+				sql = sql.replace("USED_MINUTES_VAL", "" + time.getUsedMinutes().v()+ "");
 				sql = sql.replace("REMAINING_MINUTES_VAL", "" + time.getRemainingMinutes().v()+ "");
 			}else {
 				sql = sql.replace("MAX_MINUTES_VAL", "null");
