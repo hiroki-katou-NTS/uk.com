@@ -17,11 +17,6 @@ public class JpaSocialInsurAcquisiInforRepository extends JpaRepository implemen
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QqsmtSocIsacquisiInfo f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.socIsacquisiInfoPk.employeeId =:employeeId ";
 
-    @Override
-    public List<SocialInsurAcquisiInfor> getAllSocialInsurAcquisiInfor(){
-        return this.queryProxy().query(SELECT_ALL_QUERY_STRING, QqsmtSocIsacquisiInfo.class)
-                .getList(item -> item.toDomain());
-    }
 
     @Override
     public Optional<SocialInsurAcquisiInfor> getSocialInsurAcquisiInforById(String employeeId){

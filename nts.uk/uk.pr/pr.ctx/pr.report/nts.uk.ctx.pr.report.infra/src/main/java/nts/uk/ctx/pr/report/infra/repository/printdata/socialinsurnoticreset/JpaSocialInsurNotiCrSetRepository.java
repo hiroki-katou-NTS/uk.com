@@ -6,9 +6,11 @@ import nts.uk.ctx.pr.report.dom.printdata.socinsurnoticreset.SocialInsurNotiCrea
 import nts.uk.ctx.pr.report.infra.entity.printdata.socialinsurnoticreset.QqsmtSocInsuNotiSet;
 import nts.uk.ctx.pr.report.infra.entity.printdata.socialinsurnoticreset.QqsmtSocInsuNotiSetPk;
 
+import javax.ejb.Stateless;
 import java.util.List;
 import java.util.Optional;
 
+@Stateless
 public class JpaSocialInsurNotiCrSetRepository extends JpaRepository implements SocialInsurNotiCrSetRepository {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QqsmtSocInsuNotiSet f";
