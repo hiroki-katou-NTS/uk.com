@@ -138,6 +138,7 @@ export class CmmS45DComponent extends Vue {
             self.authorComment = appData.authorComment; 
             self.reversionReason = appData.reversionReason;
             self.appOvertime = appData.appOvertime;
+            self.memo = '';
             self.$mask('hide');
         }).catch((res: any) => {
             self.$mask('hide');
