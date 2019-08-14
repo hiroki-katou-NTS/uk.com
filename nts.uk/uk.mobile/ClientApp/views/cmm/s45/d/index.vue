@@ -44,7 +44,7 @@
             <template v-slot:buttons>
               <!-- Khi một button bất kỳ được click, giá trị được emit ra là thứ tự của button -->
               <button v-for="(phase, phaseIndex) in phaseLst" v-bind:key="phaseIndex" v-bind:class="[phase.className, !phase.isExist ? 'corner-line' : '' ]" 
-                v-bind:disabled="!phase.isExist" class="h-100">{{ phase.phaseText | i18n }}</button>
+                v-bind:disabled="!phase.isExist" class="h-100 w-100">{{ phase.phaseText | i18n }}</button>
             </template>
             <template v-slot:popovers>
               <!-- duyệt theo thứ tự button ở đây -->
