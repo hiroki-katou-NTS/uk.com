@@ -284,7 +284,7 @@ public class JpaAffWorkplaceHistoryItemRepository extends JpaRepository implemen
 				+ " NORMAL_WORKPLACE_ID)"
 				+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
 				+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL,"
-				+ " HIST_ID_VAL, SID_VAL, WORKPLACE_ID_VAL, NORMAL_WORKPLACE_ID_VAL); ";
+				+ " HIST_ID_VAL, SID_VAL, WORKPLACE_ID_VAL, NORMAL_ID_VAL); ";
 		String insCcd = AppContexts.user().companyCode();
 		String insScd = AppContexts.user().employeeCode();
 		String insPg = AppContexts.programId();
@@ -308,7 +308,7 @@ public class JpaAffWorkplaceHistoryItemRepository extends JpaRepository implemen
 			sql = sql.replace("HIST_ID_VAL", "'" + c.getHistoryId() + "'");
 			sql = sql.replace("SID_VAL", "'" + c.getEmployeeId() + "'");
 			sql = sql.replace("WORKPLACE_ID_VAL", c.getWorkplaceId() == null? "null": "'" + c.getWorkplaceId() + "'");
-			sql = sql.replace("NORMAL_WORKPLACE_ID_VAL", c.getNormalWorkplaceId() == null? "null" : "'" +  c.getNormalWorkplaceId() + "'");
+			sql = sql.replace("NORMAL_ID_VAL", c.getNormalWorkplaceId() == null? "null" : "'" +  c.getNormalWorkplaceId() + "'");
 			
 			sb.append(sql);
 		});

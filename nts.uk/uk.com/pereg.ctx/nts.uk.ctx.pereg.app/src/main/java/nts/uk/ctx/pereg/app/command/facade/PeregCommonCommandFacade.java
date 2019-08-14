@@ -21,6 +21,7 @@ import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
 import nts.uk.ctx.pereg.app.command.common.FacadeUtils;
 import nts.uk.ctx.pereg.app.find.employee.category.EmpCtgFinder;
 import nts.uk.ctx.pereg.app.find.processor.ItemDefFinder;
@@ -97,6 +98,9 @@ public class PeregCommonCommandFacade {
 	
 	@Inject
 	private FacadeUtils facadeUtils;
+	
+	@Inject
+	private AffCompanyHistRepository affCompanyHistRepository;
 	
 	private final static String nameEndate = "終了日";
 	
@@ -187,9 +191,13 @@ public class PeregCommonCommandFacade {
 			});
 			
 			List<MyCustomizeException> add = this.add(inputContainerLst, target, baseDate, modeUpdate);
-			List<MyCustomizeException> update = this.update(inputContainerLst, baseDate,  target);
+			if(modeUpdate == 1) {
+				List<MyCustomizeException> update = this.update(inputContainerLst, baseDate,  target);
+				result.addAll(update);
+			}
+			
 			result.addAll(add);
-			result.addAll(update);
+			
 		});
 		return result;
 	}
@@ -206,6 +214,7 @@ public class PeregCommonCommandFacade {
 
 	private List<MyCustomizeException> addNonTransaction(List<PeregInputContainerCps003> containerLst, List<PersonCorrectionLogParameter> target, GeneralDate baseDate, int modeUpdate) {
 		List<PeregInputContainerCps003> containerAdds = new ArrayList<>();
+		List<MyCustomizeException> result = new ArrayList<>();
 		containerLst.stream().forEach(c ->{
 			ItemsByCategory itemByCtg = c.getInputs();
 			if(itemByCtg.getRecordId() == null || itemByCtg.getRecordId() == "" || itemByCtg.getRecordId().indexOf("noData") > -1 || modeUpdate == 2) {
@@ -217,6 +226,32 @@ public class PeregCommonCommandFacade {
 			return new ArrayList<MyCustomizeException>(); 
 		}
 		
+		if(modeUpdate == 2) {
+			if(containerAdds.get(0).getInputs().getCategoryCd().equals("CS00003")) {
+				Map<String,String> pidSids = containerAdds.stream().collect(Collectors.toMap(c -> c.getPersonId(), c -> c.getEmployeeId()));
+				List<String> pids = this.affCompanyHistRepository
+						.getAffComHistOfEmployeeListAndBaseDateV2(new ArrayList<>(pidSids.values()), baseDate).stream()
+						.map(c -> c.getPId()).distinct().collect(Collectors.toList());
+				List<String> sids = new ArrayList<>();
+				for(String pid: pids) {
+					PeregInputContainerCps003 container = containerAdds.stream().filter(c -> c.getPersonId().equals(pid)).findFirst().get();
+					sids.add(pidSids.get(pid));
+					int index = containerAdds.indexOf(container);
+					containerAdds.remove(index);
+				}
+				if(!sids.isEmpty()) {
+					MyCustomizeException exeption = new MyCustomizeException("Msg_852", sids, "所属会社履歴項目の期間");
+					result.add(exeption);
+				}
+				
+			}
+
+			if(containerAdds.isEmpty()) return result;
+			// đoạn nay update những item không xuất hiện trên màn hình, vì của các nhân  viên sẽ khác nhau nên sẽ lấy khác nhau, khả năng mình sẽ trả về một Map<sid, List<ItemValue>
+			updateInputCategoriesCps003(containerAdds , baseDate);
+		}
+		
+		if(containerAdds.isEmpty()) return result;
 		DataCorrectionContext.transactional(CorrectionProcessorId.MATRIX_REGISTER, () -> {
 			if(modeUpdate == 1) {
 				updateInputForAdd(containerAdds);
@@ -224,6 +259,7 @@ public class PeregCommonCommandFacade {
 			setParamsForCPS003(containerAdds, PersonInfoProcessAttr.ADD, target, baseDate);
 			
 		});
+
 		ItemsByCategory itemFirstByCtg = containerAdds.get(0).getInputs();
 
 		// Get all items by category id
@@ -277,7 +313,7 @@ public class PeregCommonCommandFacade {
 			this.userDefAdd.handle(commandForUserDef);
 		}
 
-		return new ArrayList<>();
+		return result;
 	}
 
 	/**
@@ -637,6 +673,7 @@ public class PeregCommonCommandFacade {
 					.collect(Collectors.toList()));
 			});
 
+			
 			Map<String, List<ItemValue>> fullItems = itemDefFinder.getFullListItemDefCPS003(query);
 			fullItems.entrySet().stream().forEach(c ->{
 				List<String> visibleItemCodes = visibleItemCodeMaps.get(c.getKey());
