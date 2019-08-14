@@ -81,21 +81,21 @@
                         <div class="row" v-if="isPostApp">
                             <div class="col-6 pl-4">
                                 <span v-if="overTime.preAppTime!=null" class="far fa-clock display-time child-font-size" 
-                                    v-bind:class="{ 'preApp-Error': overTime.preAppError, 'uk-text-dark-gray': !overTime.preAppError }">
+                                    v-bind:class="{ 'excess-time': overTime.preAppError }">
                                     事前[{{ overTime.preAppTime | timept }}]
                                 </span>
                                 <span v-else class="far fa-clock display-time child-font-size" 
-                                    v-bind:class="{ 'preApp-Error': overTime.preAppError, 'uk-text-dark-gray': !overTime.preAppError }">
+                                    v-bind:class="{ 'excess-time': overTime.preAppError }">
                                     事前[--:--]
                                 </span>
                             </div>
                             <div class="col-6">
                                 <span v-if="overTime.actualTime!=null" class="far fa-clock display-time child-font-size" 
-                                    v-bind:class="{ 'actual-Error': overTime.actualError, 'uk-text-dark-gray': !overTime.actualError }">
+                                    v-bind:class="{ 'excess-time': overTime.actualError }">
                                     実績[{{ overTime.actualTime | timept }}]
                                 </span>
                                 <span v-else class="far fa-clock display-time child-font-size" 
-                                    v-bind:class="{ 'actual-Error': overTime.actualError, 'uk-text-dark-gray': !overTime.actualError }">
+                                    v-bind:class="{ 'excess-time': overTime.actualError }">
                                     事前[--:--]
                                 </span>
                             </div>
@@ -112,21 +112,21 @@
                         <div class="row" v-if="isPostApp">
                             <div class="col-6 pl-4">
                                 <span v-if="overTime.preAppTime!=null" class="far fa-clock display-time child-font-size" 
-                                    v-bind:class="{ 'preApp-Error': overTime.preAppError, 'uk-text-dark-gray': !overTime.preAppError }">
+                                    v-bind:class="{ 'excess-time': overTime.preAppError }">
                                     事前[{{ overTime.preAppTime | timept }}]
                                 </span>
                                 <span v-else class="far fa-clock display-time child-font-size" 
-                                    v-bind:class="{ 'preApp-Error': overTime.preAppError, 'uk-text-dark-gray': !overTime.preAppError }">
+                                    v-bind:class="{ 'excess-time': overTime.preAppError }">
                                     事前[--:--]
                                 </span>
                             </div>
                             <div class="col-6">
                                 <span v-if="overTime.actualTime!=null" class="far fa-clock display-time child-font-size" 
-                                    v-bind:class="{ 'actual-Error': overTime.actualError, 'uk-text-dark-gray': !overTime.actualError }">
+                                    v-bind:class="{ 'excess-time': overTime.actualError }">
                                     実績[{{ overTime.actualTime | timept }}]
                                 </span>
                                 <span v-else class="far fa-clock display-time child-font-size" 
-                                    v-bind:class="{ 'actual-Error': overTime.actualError, 'uk-text-dark-gray': !overTime.actualError }">
+                                    v-bind:class="{ 'excess-time': overTime.actualError }">
                                     事前[--:--]
                                 </span>
                             </div>
@@ -143,21 +143,21 @@
                         <div class="row" v-if="isPostApp">
                             <div class="col-6 pl-4">
                                 <span v-if="overTime.preAppTime!=null" class="far fa-clock display-time child-font-size" 
-                                    v-bind:class="{ 'preApp-Error': overTime.preAppError, 'uk-text-dark-gray': !overTime.preAppError }">
+                                    v-bind:class="{ 'excess-time': overTime.preAppError }">
                                     事前[{{ overTime.preAppTime | timept }}]
                                 </span>
                                 <span v-else class="far fa-clock display-time child-font-size" 
-                                    v-bind:class="{ 'preApp-Error': overTime.preAppError, 'uk-text-dark-gray': !overTime.preAppError }">
+                                    v-bind:class="{ 'excess-time': overTime.preAppError }">
                                     事前[--:--]
                                 </span>
                             </div>
                             <div class="col-6">
                                 <span v-if="overTime.actualTime!=null" class="far fa-clock display-time child-font-size" 
-                                    v-bind:class="{ 'actual-Error': overTime.actualError, 'uk-text-dark-gray': !overTime.actualError }">
+                                    v-bind:class="{ 'excess-time': overTime.actualError }">
                                     実績[{{ overTime.actualTime | timept }}]
                                 </span>
                                 <span v-else class="far fa-clock display-time child-font-size" 
-                                    v-bind:class="{ 'actual-Error': overTime.actualError, 'uk-text-dark-gray': !overTime.actualError }">
+                                    v-bind:class="{ 'excess-time': overTime.actualError }">
                                     事前[--:--]
                                 </span>
                             </div>
@@ -179,11 +179,11 @@
                             </div>
                             <div class="col-5 pl-3" v-if="isPostApp">
                                 <span v-if="payTime.preAppTime!=null" class="far fa-clock display-time child-font-size" 
-                                    v-bind:class="{ 'preApp-Error': payTime.preAppError, 'uk-text-dark-gray': !payTime.preAppError }">
+                                    v-bind:class="{ 'excess-time': payTime.preAppError }">
                                     事前[{{ payTime.preAppTime | timept }}]
                                 </span>
                                 <span v-else class="far fa-clock display-time child-font-size" 
-                                    v-bind:class="{ 'preApp-Error': payTime.preAppError, 'uk-text-dark-gray': !payTime.preAppError }">
+                                    v-bind:class="{ 'excess-time': payTime.preAppError }">
                                     事前[--:--]
                                 </span>
                             </div>
