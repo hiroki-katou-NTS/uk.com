@@ -178,16 +178,21 @@ export class CmmS45BComponent extends Vue {
     }
 
     private getLstApp(data: any, sCD: string) {
+        let self = this;
         let lstResult = [];
-        let name = '';
-        data.lstMasterInfo.forEach((app) => {
-            if (app.empSD == sCD) {
-                lstResult.push(_.find(data.lstApp, (c) => c.applicationID == app.appID));
-                name = app.empName;
+        let lstObj = _.filter(data.lstMasterInfo, (c) => c.empSD == sCD).map((x) => { return {id: x.appID, name: x.empName };
+        });
+        data.lstApp.forEach((app) => {
+            if (self.contains(lstObj, app.applicationID)) {
+                lstResult.push(app);
             }
         });
 
-        return { sName: name, lstApp: lstResult };
+        return { sName: lstObj.length >= 0 ? lstObj[0].name : '', lstApp: lstResult };
+    }
+
+    private contains(lst: Array<any>, id: any) {
+        return _.find(lst, (c) => c.id == id) != undefined ? true : false;
     }
 
     private convertLstApp(lstApp: Array<any>) {
