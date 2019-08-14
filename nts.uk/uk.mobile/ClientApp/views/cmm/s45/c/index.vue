@@ -11,14 +11,14 @@
       </div>
     </div>
     <div class="row mb-2 fixed-top mt-5 border-bottom" v-show="!(!isEmptyApp() && isFirstApp() && isLastApp())">
-      <div class="col-6 text-left uk-text-blue uk-bg-silver mt-n2 pt-2 pb-2 pl-4">
-        <a v-on:click="toPreviousApp" v-bind:class="{ 'd-none': isFirstApp() && !isEmptyApp() }">
+      <div class="col-6 text-left uk-bg-silver mt-n2 pt-2 pb-2 pl-4">
+        <a class="uk-text-blue" v-on:click="toPreviousApp" v-bind:class="{ 'd-none': isFirstApp() && !isEmptyApp() }">
           <i class="fas fa-arrow-circle-left"></i>
           {{'CMMS45_18' | i18n}}
         </a>
       </div>
-      <div class="col-6 text-right uk-text-blue uk-bg-silver mt-n2 pt-2 pb-2 pr-4">
-        <a v-on:click="toNextApp" v-bind:class="{ 'd-none': isLastApp() && !isEmptyApp() }">
+      <div class="col-6 text-right uk-bg-silver mt-n2 pt-2 pb-2 pr-4">
+        <a class="uk-text-blue" v-on:click="toNextApp" v-bind:class="{ 'd-none': isLastApp() && !isEmptyApp() }">
           {{'CMMS45_19' | i18n}}
           <i class="fas fa-arrow-circle-right"></i>
         </a>
@@ -92,7 +92,7 @@
           <div class="col-12 uk-bg-light-coral">
             <div class="row ml-0 mr-0 pt-1 pb-1">{{ 'CMMS45_58' | i18n }}</div>
             <hr class="mt-0 mb-0"/>
-            <div class="row ml-2 mr-2 pt-1 pb-1">{{ reversionReason || 'CMMS45_15' | i18n }}</div>
+            <div class="row ml-2 mr-2 pt-1 pb-1 text-break">{{ reversionReason || 'CMMS45_15' | i18n }}</div>
           </div>
         </div>
       </div> 

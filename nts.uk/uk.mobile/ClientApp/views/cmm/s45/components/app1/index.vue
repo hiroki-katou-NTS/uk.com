@@ -3,7 +3,7 @@
     <div class="row" v-if="$app"> 
       <div class="col-12">
         <div class="row mt-1 pl-2 pt-1 pb-1 uk-bg-headline border-top uk-border-light-gray">{{'CMMS45_21' | i18n}}</div>
-        <div class="row pl-2 pt-1 pb-1 border-top uk-border-light-gray">
+        <div class="row pl-2 pt-1 pb-1 border-top uk-border-light-gray text-break">
             <span>{{ $app.applicant | i18n }}</span> 
             <span v-if="$app.representer" class="uk-text-dark-gray child-font-size">{{ 'CMMS45_22' | i18n($app.representer) }}</span></div>
         <div class="row pl-2 pt-1 pb-1 uk-bg-headline border-top uk-border-light-gray">{{'CMMS45_23' | i18n}}</div>
@@ -194,13 +194,13 @@
         </div>
         <div class="row pl-2 pt-1 pb-1 uk-bg-headline border-top uk-border-light-gray"
             v-if="$app.displayAppReasonContentFlg || $app.typicalReasonDisplayFlg">{{'CMMS45_34' | i18n}}</div>
-        <div class="row pl-2 pt-1 pb-1 border-top uk-border-light-gray"
+        <div class="row pl-2 pt-1 pb-1 border-top uk-border-light-gray text-break"
             v-if="$app.displayAppReasonContentFlg || $app.typicalReasonDisplayFlg">{{ $app.appReason }}</div>
         <div class="row pl-1 pt-1 pb-1 uk-bg-headline border-top uk-border-light-gray"
             v-if="$app.prePostAtr==1 && $app.displayDivergenceReasonForm && $app.displayDivergenceReasonInput">
             {{'CMMS45_35' | i18n}}
         </div>
-        <div class="row pl-2 pt-1 pb-1 border-top uk-border-light-gray"
+        <div class="row pl-2 pt-1 pb-1 border-top uk-border-light-gray text-break"
             v-if="$app.prePostAtr==1 && $app.displayDivergenceReasonForm && $app.displayDivergenceReasonInput">
             {{ $app.divergenceReasonContent }}
         </div>
