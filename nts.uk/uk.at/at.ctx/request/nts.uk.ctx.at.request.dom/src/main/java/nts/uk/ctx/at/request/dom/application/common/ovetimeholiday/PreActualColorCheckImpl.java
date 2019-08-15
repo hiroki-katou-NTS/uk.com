@@ -78,7 +78,7 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 				}
 			}
 			// 入力時間チェック
-			if(overtimeColorCheck.appTime<=0){
+			if(null == overtimeColorCheck.appTime || overtimeColorCheck.appTime<=0){
 				continue;
 			}
 			// 事前申請超過チェックをする必要があるかチェックする

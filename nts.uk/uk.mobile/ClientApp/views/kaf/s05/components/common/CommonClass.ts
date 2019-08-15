@@ -49,22 +49,6 @@ export interface OverTimeInput {
     endTime: number;
 }
 
-export interface OvertimeCaculation {
-    companyID: string;
-    appID: string;
-    attendanceID: number;
-    attendanceName: string;
-    frameNo: number;
-    timeItemTypeAtr: number;
-    frameName: string;
-    applicationTime: number;
-    preAppTime: string;
-    caculationTime: string;
-    nameID: string;
-    itemName: string;
-    color: string;
-}
-
 export interface OvertimeWork {
     yearMonth: string;
     limitTime: string;
