@@ -78,20 +78,10 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 					overtimeColorCheck.appTime = opOvertimeInputCaculation.get().getResultCaculation();
 				}
 			}
-			// 入力時間チェック
-			if(overtimeColorCheck.appTime<=0){
-				continue;
-			}
-			// 事前申請超過チェックをする必要があるかチェックする
-			if(preAppSetCheck){
-				// アルゴリズム「枠別事前申請超過チェック」を実行する
-				preAppErrorCheck(appType, overtimeColorCheck, opAppBefore);
-			}
-			// 実績超過チェックをする必要があるかチェックする
-			if(actualSetCheck){
-				// アルゴリズム「枠別実績超過チェック」を実行する
-				actualErrorCheck(overtimeColorCheck, actualLst);
-			}
+			// アルゴリズム「枠別事前申請超過チェック」を実行する
+			preAppErrorCheck(appType, overtimeColorCheck, opAppBefore, preAppSetCheck);
+			// アルゴリズム「枠別実績超過チェック」を実行する
+			actualErrorCheck(overtimeColorCheck, actualLst, actualSetCheck);
 		}
 		result.beforeAppStatus = beforeAppStatus;
 		result.actualStatus = actualStatus.value;
@@ -352,7 +342,7 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 	}
 
 	@Override
-	public void preAppErrorCheck(ApplicationType appType, OvertimeColorCheck overtimeColorCheck, Optional<Application_New> opAppBefore) {
+	public void preAppErrorCheck(ApplicationType appType, OvertimeColorCheck overtimeColorCheck, Optional<Application_New> opAppBefore, boolean preAppSetCheck) {
 		String companyID = AppContexts.user().companyId();
 		int compareValue = 0;
 		// 事前申請をチェックする
@@ -360,7 +350,7 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 			Application_New appBefore = opAppBefore.get();
 			// 申請種類をチェックする
 			if(appType==ApplicationType.OVER_TIME_APPLICATION){
-				AppOverTime appOverTime = overtimeRepository.getAppOvertime(companyID, appBefore.getAppID()).get();
+				AppOverTime appOverTime = overtimeRepository.getFullAppOvertime(companyID, appBefore.getAppID()).get();
 				List<OverTimeInput> overTimeInputLst = appOverTime.getOverTimeInput();
 				if(!CollectionUtil.isEmpty(overTimeInputLst)) {
 					Optional<OverTimeInput> opOverTimeInput = overTimeInputLst
@@ -375,14 +365,17 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 				// KAF010
 			}
 		}
-		// 事前申請超過チェック
-		if(overtimeColorCheck.appTime > compareValue){
-			overtimeColorCheck.preAppError = true;
+		// 事前申請超過チェックをする必要があるかチェックする
+		if(preAppSetCheck){
+			// 事前申請超過チェック
+			if(overtimeColorCheck.appTime !=null && overtimeColorCheck.appTime > compareValue){
+				overtimeColorCheck.preAppError = true;
+			}
 		}
 	}
 
 	@Override
-	public void actualErrorCheck(OvertimeColorCheck overtimeColorCheck, List<OvertimeColorCheck> actualLst) {
+	public void actualErrorCheck(OvertimeColorCheck overtimeColorCheck, List<OvertimeColorCheck> actualLst, boolean actualSetCheck) {
 		int compareValue = 0;
 		// 実績をチェックする
 		if(!CollectionUtil.isEmpty(actualLst)){
@@ -394,9 +387,12 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 				compareValue = overtimeColorCheck.actualTime;
 			}
 		}
-		// 実績時間チェック
-		if(overtimeColorCheck.appTime > compareValue){
-			overtimeColorCheck.actualError = true;
+		// 実績超過チェックをする必要があるかチェックする
+		if(actualSetCheck){
+			// 実績時間チェック
+			if(overtimeColorCheck.appTime!=null && overtimeColorCheck.appTime > compareValue){
+				overtimeColorCheck.actualError = true;
+			}
 		}
 	}
 
