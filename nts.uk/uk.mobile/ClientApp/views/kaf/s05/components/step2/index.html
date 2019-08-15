@@ -98,10 +98,9 @@
                 </div>
             </div>
         </div>
-        <div class="card card-label">
-            <div class="card-header"
-                v-if="kafs05ModelStep2.typicalReasonDisplayFlg || kafs05ModelStep2.displayAppReasonContentFlg">
-                <span>{{'KAFS05_75' | i18n}}</span>
+        <div class="card card-label" v-if="kafs05ModelStep2.typicalReasonDisplayFlg || kafs05ModelStep2.displayAppReasonContentFlg">
+            <div class="card-header" style="align-items: center">
+                <v-label class="border-0" v-bind:constraint="validations.kafs05ModelStep2" v-bind:margin-bottom="0">{{'KAFS05_75' | i18n}}</v-label>
                 <span class="badge badge-warning" v-if="kafs05ModelStep2.requiredReason">必須</span>
                 <span class="badge badge-info" v-if="!kafs05ModelStep2.requiredReason">任意</span>
             </div>
@@ -120,11 +119,12 @@
                 </div>
             </div>
         </div>
-        <div class="card card-label"
-            v-if="kafs05ModelStep2.prePostSelected == 1">
-            <div class="card-header">
-                <span>{{'KAFS05_78' | i18n}}</span>
-                <span class="badge badge-info">任意</span>
+        <div class="card card-label" v-if="kafs05ModelStep2.prePostSelected == 1 && (kafs05ModelStep2.displayDivergenceReasonForm || kafs05ModelStep2.displayDivergenceReasonInput)">
+            <div class="card-header" style="align-items: center">
+                <v-label class="border-0" 
+                    v-bind:constraint="validations.kafs05ModelStep2" 
+                    v-bind:margin-bottom="0">{{'KAFS05_78' | i18n}}</v-label>
+                <span class="badge badge-info" style="height: 30%">任意</span>
             </div>
             <div class="card-body">
                 <div v-if="kafs05ModelStep2.displayDivergenceReasonForm">

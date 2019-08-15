@@ -23,7 +23,7 @@ import { OvertimeAgreement, AgreementTimeStatusOfMonthly, Kafs05Model } from '..
             prePostSelected: {
                 validateSwitchbox: {
                     test(value: number) {
-                        if (this.kafs05ModelStep1.isCreate && this.displayPrePostFlg) {
+                        if (this.kafs05ModelStep1.isCreate && this.kafs05ModelStep1.displayPrePostFlg) {
                             if (value != 0 && value != 1) {
                                 document.body.getElementsByClassName('valid-switchbox')[0].className += ' invalid';
 
@@ -166,6 +166,7 @@ export class KafS05aStep1Component extends Vue {
             startTime: _.isNil(self.workTimeInput.start) ? null : self.workTimeInput.start,
             endTime: _.isNil(self.workTimeInput.end) ? null : self.workTimeInput.end,
             displayCaculationTime: self.displayCaculationTime,
+            isFromStepOne: true
         };
 
         let overtimeHoursResult: Array<any>;

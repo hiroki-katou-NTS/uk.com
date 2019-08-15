@@ -297,7 +297,7 @@ public class AppOvertimeFinder {
 	
 	public OverTimeDto getCalculationResultMob(List<CaculationTime> overtimeHours,
 			List<CaculationTime> bonusTimes, int prePostAtr, String appDate, String siftCD, String workTypeCode,
-			Integer startTime, Integer endTime, List<Integer> startTimeRests, List<Integer> endTimeRests, boolean displayCaculationTime) {
+			Integer startTime, Integer endTime, List<Integer> startTimeRests, List<Integer> endTimeRests, boolean displayCaculationTime, boolean isFromStepOne) {
 
 		String companyID = AppContexts.user().companyId();
 		String employeeID = AppContexts.user().employeeId();
@@ -345,8 +345,11 @@ public class AppOvertimeFinder {
 			return null;
 		} else {
 			// 6.計算処理 : 
-			List<OvertimeInputCaculation> overtimeInputCaculations = commonOvertimeHoliday.calculator(appCommonSettingOutput, appDate, siftCD, 
-					workTypeCode, startTime, endTime, startTimeRests, endTimeRests);
+			List<OvertimeInputCaculation> overtimeInputCaculations = new ArrayList<>();
+			if (isFromStepOne) {
+				overtimeInputCaculations = commonOvertimeHoliday.calculator(appCommonSettingOutput, appDate, siftCD, 
+						workTypeCode, startTime, endTime, startTimeRests, endTimeRests);
+			}			
 					
 			// caculationTimeHours = this.overtimeSixProcess.getCaculationOvertimeHours(companyID, employeeID, appDate, ApplicationType.OVER_TIME_APPLICATION.value, overtimeHours, overtimeInputCaculations);
 			/*caculationTimeHours = commonOvertimeHoliday.preActualExceededCheckMob(companyID, appDate == null ? null : GeneralDate.fromString(appDate, DATE_FORMAT),

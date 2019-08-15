@@ -108,9 +108,12 @@ import { Kafs05Model } from '../common/CommonClass';
                     },
                     messageId: 'Msg_960'
                 }
-            }
+            },
+            constraint: 'AppReason'
         },
-    }
+        
+    },
+    constraints: ['nts.uk.ctx.at.request.dom.application.AppReason'],
 })
 export class KafS05aStep2Component extends Vue {
     @Prop()
@@ -178,6 +181,7 @@ export class KafS05aStep2Component extends Vue {
             startTime: _.isNil(self.workTimeInput.start) ? null : self.workTimeInput.start,
             endTime: _.isNil(self.workTimeInput.end) ? null : self.workTimeInput.end,
             displayCaculationTime: self.displayCaculationTime,
+            isFromStepOne: false
         };
 
         let overtimeHoursResult: Array<any>;

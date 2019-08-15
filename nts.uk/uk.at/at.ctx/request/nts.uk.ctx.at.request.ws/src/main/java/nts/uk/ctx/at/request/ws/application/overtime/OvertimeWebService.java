@@ -125,7 +125,8 @@ public class OvertimeWebService extends WebService{
 				param.getEndTime(),
 				param.getStartTimeRests(),
 				param.getEndTimeRests(),
-				param.isDisplayCaculationTime());
+				param.isDisplayCaculationTime(),
+				param.isFromStepOne());
 	}
 	
 	@POST
