@@ -434,14 +434,14 @@ public class PersonInfoItemDefinition extends AggregateRoot {
 		
 		if (dataTypeValue == DataTypeValue.SELECTION_RADIO) return true;
 		
-		if (dataTypeValue != DataTypeValue.SELECTION) return false;
-		
-		SelectionItem selectionItem = (SelectionItem) dataTypeState;
-		
-		ReferenceTypes referenceType = selectionItem.getReferenceTypes();
-		
-		if(referenceType == ReferenceTypes.ENUM) return true;
-		
+		if (dataTypeValue == DataTypeValue.SELECTION){
+			
+			SelectionItem selectionItem = (SelectionItem) dataTypeState;
+			
+			ReferenceTypes referenceType = selectionItem.getReferenceTypes();
+			
+			if(referenceType == ReferenceTypes.ENUM) return true;
+		}
 		return false;
 	}
 	
@@ -455,14 +455,13 @@ public class PersonInfoItemDefinition extends AggregateRoot {
 		
 		DataTypeValue dataTypeValue = (DataTypeValue) dataTypeState.getDataTypeValue();
 		
-		if (dataTypeValue != DataTypeValue.SELECTION) return false;
-		
-		SelectionItem selectionItem = (SelectionItem) dataTypeState;
-		
-		ReferenceTypes referenceType = selectionItem.getReferenceTypes();
-		
-		if(referenceType == ReferenceTypes.CODE_NAME) return true;
-		
+		if (dataTypeValue == DataTypeValue.SELECTION) {
+			SelectionItem selectionItem = (SelectionItem) dataTypeState;
+			
+			ReferenceTypes referenceType = selectionItem.getReferenceTypes();
+			
+			if(referenceType == ReferenceTypes.CODE_NAME) return true;
+		}
 		return false;
 	}
 	
@@ -476,14 +475,17 @@ public class PersonInfoItemDefinition extends AggregateRoot {
 		
 		DataTypeValue dataTypeValue = (DataTypeValue) dataTypeState.getDataTypeValue();
 		
-		if (dataTypeValue != DataTypeValue.SELECTION) return false;
+		if (dataTypeValue == DataTypeValue.SELECTION_BUTTON) return true;
 		
-		SelectionItem selectionItem = (SelectionItem) dataTypeState;
-		
-		ReferenceTypes referenceType = selectionItem.getReferenceTypes();
-		
-		if(referenceType == ReferenceTypes.DESIGNATED_MASTER) return true;
-		
+		if (dataTypeValue == DataTypeValue.SELECTION ) {
+			
+			SelectionItem selectionItem = (SelectionItem) dataTypeState;
+			
+			ReferenceTypes referenceType = selectionItem.getReferenceTypes();
+			
+			if(referenceType == ReferenceTypes.DESIGNATED_MASTER) return true;
+			
+		}
 		return false;
 	}
 }

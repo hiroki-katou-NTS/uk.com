@@ -26,7 +26,6 @@ import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsDto
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoValueDto;
 import nts.uk.ctx.pereg.dom.person.info.category.CategoryType;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
-import nts.uk.ctx.pereg.dom.person.info.item.IsRequired;
 import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
 import nts.uk.ctx.pereg.dom.person.setting.validatecheck.PerInfoValidChkCtgRepository;
 import nts.uk.ctx.pereg.dom.person.setting.validatecheck.PerInfoValidateCheckCategory;
@@ -55,7 +54,6 @@ public class CheckPersonInfoProcess {
 	
 	private static final List<String> standardDateItemCodes = Arrays.asList("IS00020", "IS00077", "IS00082", "IS00119", "IS00781");
 	
-
 	
 	@Inject
 	private ClosureEmploymentRepository closureEmploymentRepository;
@@ -455,7 +453,7 @@ public class CheckPersonInfoProcess {
 	/**
 	 * 参照項目チェック処理 (Check item tham chiếu)
 	 * @param empCheck
-	 * @param dataOfEmployee
+	 * @param dataOfEmployee mapping categoryCode - List<GridLayoutPersonInfoClsDto>
 	 * @param excuteCommand
 	 * @param mapCategoryWithListItemDf
 	 * @param result
@@ -467,17 +465,23 @@ public class CheckPersonInfoProcess {
 			Map<PersonInfoCategory, List<PersonInfoItemDefinition>> mapCategoryWithListItemDf,
 			TaskDataSetter dataSetter, EmployeeDataMngInfo employee, String bussinessName,
 			List<ErrorInfoCPS013> listError) {
-		Map<String, List<PersonInfoItemDefinition>> itemCodesByCtg = new HashMap<>();
+		
+		Map<PersonInfoCategory, List<PersonInfoItemDefinition>> itemCodesByCtg = new HashMap<>();
+		
 		Map<String, String> itemStartCode = new HashMap<>();
+		
 		mapCategoryWithListItemDf.entrySet().forEach(c -> {
-			List<PersonInfoItemDefinition> itemDefined = c.getValue().stream()
-					.filter(i -> i.isSelection() && (i.getIsRequired() == IsRequired.REQUIRED))
+			
+			List<PersonInfoItemDefinition> lstItemDefined = c.getValue().stream()
+					.filter(i -> i.isSelection())
 					.collect(Collectors.toList());
+			
 			Optional<String> itemDefinedStartCode = c.getValue().stream()
 					.filter(i -> standardDateItemCodes.contains(i.getItemCode().v())).map(i -> i.getItemCode().v())
 					.findFirst();
-			if (!CollectionUtil.isEmpty(itemDefined)) {
-				itemCodesByCtg.put(c.getKey().getCategoryCode().v(), itemDefined);
+			
+			if (!CollectionUtil.isEmpty(lstItemDefined)) {
+				itemCodesByCtg.put(c.getKey(), lstItemDefined);
 			}
 
 			if (itemDefinedStartCode.isPresent()) {
@@ -487,70 +491,217 @@ public class CheckPersonInfoProcess {
 
 		if (itemCodesByCtg.isEmpty())
 			return;
+		
 		Map<String, String>  masterName = getNameMasterError();
+		
 		itemCodesByCtg.entrySet().forEach(c -> {
-			List<GridLayoutPersonInfoClsDto> empData = dataOfEmployee.get(c.getKey());
+			
+			List<GridLayoutPersonInfoClsDto> empData = dataOfEmployee.get(c.getKey().getCategoryCode().toString());
+			
+			List<PersonInfoItemDefinition> lstItemDefineFull = mapCategoryWithListItemDf.get(c.getKey());
+			
 			if (CollectionUtil.isEmpty(empData))
 				return;
+			
 			empData.stream().forEach(emp -> {
-				List<LayoutPersonInfoClsDto> clsDto = emp.getLayoutDtos();
-				clsDto.stream().forEach(cls -> {
-					List<LayoutPersonInfoValueDto> items = cls.getItems().stream().filter(i -> i.isRequired() == true)
-							.collect(Collectors.toList());
-					c.getValue().forEach(item -> {
-						Optional<LayoutPersonInfoValueDto> itemOpt = items.stream()
-								.filter(i -> i.getItemCode().equals(item.getItemCode().v())).findFirst();
-						checkError(item, c.getKey(), itemStartCode, items, dataSetter, employee, bussinessName, itemOpt, masterName, listError);
+				
+				List<LayoutPersonInfoClsDto> listClsDto = emp.getLayoutDtos();
+				
+				
+				List<LayoutPersonInfoValueDto> listAllItemValue = new ArrayList<>();
+				listClsDto.forEach(cls -> {
+					List<LayoutPersonInfoValueDto> itemsValue = cls.getItems();
+					listAllItemValue.addAll(itemsValue);
+				});
+				
+				
+				listClsDto.stream().forEach(cls -> {
+					
+					List<LayoutPersonInfoValueDto> itemsValue = cls.getItems();
+					List<PersonInfoItemDefinition> listItemDefinedSelection = c.getValue();  // list nay chỉ chua danh sach item selection
+					
+					listItemDefinedSelection.forEach(itemDf -> {
+						
+						Optional<LayoutPersonInfoValueDto> itemValueOpt = itemsValue.stream()
+								.filter(i -> i.getItemCode().equals(itemDf.getItemCode().toString())).findFirst();
+						
+						
+						if (itemValueOpt.isPresent()) {
+
+							checkError(itemValueOpt.get(), c.getKey().getCategoryCode().toString(), itemStartCode, itemsValue, listAllItemValue, lstItemDefineFull, dataSetter, employee, bussinessName, itemDf, masterName, listError);
+							
+						}
 					});
 				});
-
 			});
 		});
 	}
 	
 	/**
-	 * setError
-	 * @param item
+	 * 
+	 * @param itemValue : item selection ddang check
 	 * @param categoryCode
 	 * @param itemStartCode
-	 * @param items
-	 * @param result
+	 * @param itemsValue : list Item nawmf torng cungf 1 claasfication
+	 * @param lstItemDefineFull
+	 * @param dataSetter
 	 * @param employee
 	 * @param bussinessName
-	 * @param itemDtoOpt
+	 * @param itemDf
+	 * @param masterName
+	 * @param listError
 	 */
-	public void checkError(PersonInfoItemDefinition item, String categoryCode, Map<String, String> itemStartCode,
-			List<LayoutPersonInfoValueDto> items, TaskDataSetter dataSetter, EmployeeDataMngInfo employee,
-			String bussinessName, Optional<LayoutPersonInfoValueDto> itemDtoOpt, Map<String, String> masterName,
+	public void checkError(LayoutPersonInfoValueDto itemValue, String categoryCode, Map<String, String> itemStartCode,
+			List<LayoutPersonInfoValueDto> itemsValue, List<LayoutPersonInfoValueDto> listAlltemsValue, List<PersonInfoItemDefinition> lstItemDefineFull,  TaskDataSetter dataSetter, EmployeeDataMngInfo employee,
+			String bussinessName, PersonInfoItemDefinition itemDf, Map<String, String> masterName,
 			List<ErrorInfoCPS013> listError) {
-		if (itemDtoOpt.isPresent()) {
-			
-			if (item.isEnum()) {
-				checkErrorEnum(dataSetter, employee, bussinessName, itemDtoOpt.get(), listError);
-			}
-			
-			if (item.isCodeName()) {
-				checkCodeName(dataSetter, employee, bussinessName, itemDtoOpt.get(), listError);
-			}
-			
-			if (item.isDesignateMaster()) {
-				String itemCodeStart = itemStartCode.get(categoryCode);
-				if (itemCodeStart == null) {
-					checkDesignateMaster(dataSetter, employee, bussinessName, itemDtoOpt.get(), null, masterName, listError);
 
-				} else {
-					Optional<LayoutPersonInfoValueDto> itemStart = items.stream()
-							.filter(i -> i.getItemCode().equals(itemCodeStart)).findFirst();
-					if (itemStart.isPresent()) {
-						checkDesignateMaster(dataSetter, employee, bussinessName, itemDtoOpt.get(),
-								itemStart.get().getValue(), masterName, listError);
+		if (itemDf.isEnum()) {
+			checkErrorEnum(dataSetter, employee, bussinessName, itemValue, listError);
+		}
+
+		if (itemDf.isCodeName()) {
+			checkCodeName(dataSetter, employee, bussinessName, itemValue, listError);
+		}
+
+		if (itemDf.isDesignateMaster()) {
+			String itemCodeStart = itemStartCode.get(categoryCode);
+			if (itemCodeStart == null) {
+				
+				checkDesignateMaster(dataSetter, employee, bussinessName, itemValue, null, null, masterName, listError);
+
+			} else {
+				// itemCodeStart != null
+				switch (itemValue.getItemCode().toString()) {
+				case "IS00023": // startDate code IS00022
+					Optional<LayoutPersonInfoValueDto> itemStartDate22 = listAlltemsValue.stream().filter(i -> i.getItemCode().equals("IS00020")).findFirst();
+					Optional<LayoutPersonInfoValueDto> itemCombobox23 = itemsValue.stream().filter(i -> i.getItemCode().equals("IS00023")).findFirst();
+					if (itemStartDate22.isPresent() && itemCombobox23.isPresent()) {
+						checkDesignateMaster(dataSetter, employee, bussinessName, itemValue, itemStartDate22.get().getValue(),itemCombobox23.get().getValue(), masterName, listError);
 					}
+					break;
+				case "IS00079":  // startDate code IS00077
+					Optional<LayoutPersonInfoValueDto> itemStartDate77 = listAlltemsValue.stream().filter(i -> i.getItemCode().equals("IS00077")).findFirst();
+					Optional<LayoutPersonInfoValueDto> itemCombobox79 = itemsValue.stream().filter(i -> i.getItemCode().equals("IS00079")).findFirst();
+					if (itemStartDate77.isPresent() && itemCombobox79.isPresent()) {
+						checkDesignateMaster(dataSetter, employee, bussinessName, itemValue, itemStartDate77.get().getValue(),itemCombobox79.get().getValue(), masterName, listError);
+					}
+					break;
+				case "IS00084":  // startDate code IS00082
+					Optional<LayoutPersonInfoValueDto> itemStartDate82_1 = listAlltemsValue.stream().filter(i -> i.getItemCode().equals("IS00082")).findFirst();
+					Optional<LayoutPersonInfoValueDto> itemCombobox84 = itemsValue.stream().filter(i -> i.getItemCode().equals("IS00084")).findFirst();
+					if (itemStartDate82_1.isPresent() && itemCombobox84.isPresent()) {
+						checkDesignateMaster(dataSetter, employee, bussinessName, itemValue, itemStartDate82_1.get().getValue(),itemCombobox84.get().getValue(), masterName, listError);
+					}
+					break;
+				case "IS00085": // startDate code IS00082
+					Optional<LayoutPersonInfoValueDto> itemStartDate82_2 = listAlltemsValue.stream().filter(i -> i.getItemCode().equals("IS00082")).findFirst();
+					Optional<LayoutPersonInfoValueDto> itemCombobox85 = itemsValue.stream().filter(i -> i.getItemCode().equals("IS00085")).findFirst();
+					if (itemStartDate82_2.isPresent() && itemCombobox85.isPresent()) {
+						checkDesignateMaster(dataSetter, employee, bussinessName, itemValue, itemStartDate82_2.get().getValue(),itemCombobox85.get().getValue(), masterName, listError);
+					}
+					break;
+				case "IS00131": // startDate code IS00119
+					Optional<LayoutPersonInfoValueDto> itemStartDate119_1 = listAlltemsValue.stream().filter(i -> i.getItemCode().equals("IS00119")).findFirst();
+					Optional<LayoutPersonInfoValueDto> itemCombobox131 = itemsValue.stream().filter(i -> i.getItemCode().equals("IS00131")).findFirst();
+					if (itemStartDate119_1.isPresent() && itemCombobox131.isPresent()) {
+						checkDesignateMaster(dataSetter, employee, bussinessName, itemValue, itemStartDate119_1.get().getValue(),itemCombobox131.get().getValue(), masterName, listError);
+					}
+					break;
+				case "IS00140": // startDate code IS00119
+					Optional<LayoutPersonInfoValueDto> itemStartDate119_2 = listAlltemsValue.stream().filter(i -> i.getItemCode().equals("IS00119")).findFirst();
+					Optional<LayoutPersonInfoValueDto> itemCombobox140 = itemsValue.stream().filter(i -> i.getItemCode().equals("IS00140")).findFirst();
+					if (itemStartDate119_2.isPresent() && itemCombobox140.isPresent()) {
+						checkDesignateMaster(dataSetter, employee, bussinessName, itemValue, itemStartDate119_2.get().getValue(),itemCombobox140.get().getValue(), masterName, listError);
+					}
+					break;
+				case "IS00158": // startDate code IS00119
+					Optional<LayoutPersonInfoValueDto> itemStartDate119_3 = listAlltemsValue.stream().filter(i -> i.getItemCode().equals("IS00119")).findFirst();
+					Optional<LayoutPersonInfoValueDto> itemCombobox158 = itemsValue.stream().filter(i -> i.getItemCode().equals("IS00158")).findFirst();
+					if (itemStartDate119_3.isPresent() && itemCombobox158.isPresent()) {
+						checkDesignateMaster(dataSetter, employee, bussinessName, itemValue, itemStartDate119_3.get().getValue(),itemCombobox158.get().getValue(), masterName, listError);
+					}
+					break;
+				case "IS00167": // startDate code IS00119
+					Optional<LayoutPersonInfoValueDto> itemStartDate119_4 = listAlltemsValue.stream().filter(i -> i.getItemCode().equals("IS00119")).findFirst();
+					Optional<LayoutPersonInfoValueDto> itemCombobox167 = itemsValue.stream().filter(i -> i.getItemCode().equals("IS00167")).findFirst();
+					if (itemStartDate119_4.isPresent() && itemCombobox167.isPresent()) {
+						checkDesignateMaster(dataSetter, employee, bussinessName, itemValue, itemStartDate119_4.get().getValue(),itemCombobox167.get().getValue(), masterName, listError);
+					}
+					break;
+				case "IS00176": // startDate code IS00119
+					Optional<LayoutPersonInfoValueDto> itemStartDate119_5 = listAlltemsValue.stream().filter(i -> i.getItemCode().equals("IS00119")).findFirst();
+					Optional<LayoutPersonInfoValueDto> itemCombobox176 = itemsValue.stream().filter(i -> i.getItemCode().equals("IS00176")).findFirst();
+					if (itemStartDate119_5.isPresent() && itemCombobox176.isPresent()) {
+						checkDesignateMaster(dataSetter, employee, bussinessName, itemValue, itemStartDate119_5.get().getValue(),itemCombobox176.get().getValue(), masterName, listError);
+					}
+					break;
+				case "IS00149": // startDate code IS00119
+					Optional<LayoutPersonInfoValueDto> itemStartDate119_6 = listAlltemsValue.stream().filter(i -> i.getItemCode().equals("IS00119")).findFirst();
+					Optional<LayoutPersonInfoValueDto> itemCombobox149 = itemsValue.stream().filter(i -> i.getItemCode().equals("IS00149")).findFirst();
+					if (itemStartDate119_6.isPresent() && itemCombobox149.isPresent()) {
+						checkDesignateMaster(dataSetter, employee, bussinessName, itemValue, itemStartDate119_6.get().getValue(),itemCombobox149.get().getValue(), masterName, listError);
+					}
+					break;
+				case "IS00194": // startDate code IS00781
+					Optional<LayoutPersonInfoValueDto> itemStartDate781_1 = listAlltemsValue.stream().filter(i -> i.getItemCode().equals("IS00781")).findFirst();
+					Optional<LayoutPersonInfoValueDto> itemCombobox194 = itemsValue.stream().filter(i -> i.getItemCode().equals("IS00194")).findFirst();
+					if (itemStartDate781_1.isPresent() && itemCombobox194.isPresent()) {
+						checkDesignateMaster(dataSetter, employee, bussinessName, itemValue, itemStartDate781_1.get().getValue(),itemCombobox194.get().getValue(), masterName, listError);
+					}
+					break;
+				case "IS00203": // startDate code IS00781
+					Optional<LayoutPersonInfoValueDto> itemStartDate781_2 = listAlltemsValue.stream().filter(i -> i.getItemCode().equals("IS00781")).findFirst();
+					Optional<LayoutPersonInfoValueDto> itemCombobox203 = itemsValue.stream().filter(i -> i.getItemCode().equals("IS00203")).findFirst();
+					if (itemStartDate781_2.isPresent() && itemCombobox203.isPresent()) {
+						checkDesignateMaster(dataSetter, employee, bussinessName, itemValue, itemStartDate781_2.get().getValue(),itemCombobox203.get().getValue(), masterName, listError);
+					}
+					break;
+				case "IS00212": // startDate code IS00781
+					Optional<LayoutPersonInfoValueDto> itemStartDate781_3 = listAlltemsValue.stream().filter(i -> i.getItemCode().equals("IS00781")).findFirst();
+					Optional<LayoutPersonInfoValueDto> itemCombobox212 = itemsValue.stream().filter(i -> i.getItemCode().equals("IS00212")).findFirst();
+					if (itemStartDate781_3.isPresent() && itemCombobox212.isPresent()) {
+						checkDesignateMaster(dataSetter, employee, bussinessName, itemValue, itemStartDate781_3.get().getValue(),itemCombobox212.get().getValue(), masterName, listError);
+					}
+					break;
+				case "IS00221": // startDate code IS00781
+					Optional<LayoutPersonInfoValueDto> itemStartDate781_4 = listAlltemsValue.stream().filter(i -> i.getItemCode().equals("IS00781")).findFirst();
+					Optional<LayoutPersonInfoValueDto> itemCombobox221 = itemsValue.stream().filter(i -> i.getItemCode().equals("IS00221")).findFirst();
+					if (itemStartDate781_4.isPresent() && itemCombobox221.isPresent()) {
+						checkDesignateMaster(dataSetter, employee, bussinessName, itemValue, itemStartDate781_4.get().getValue(),itemCombobox221.get().getValue(), masterName, listError);
+					}
+					break;
+				case "IS00230": // startDate code IS00781
+					Optional<LayoutPersonInfoValueDto> itemStartDate781_5 = listAlltemsValue.stream().filter(i -> i.getItemCode().equals("IS00781")).findFirst();
+					Optional<LayoutPersonInfoValueDto> itemCombobox230 = itemsValue.stream().filter(i -> i.getItemCode().equals("IS00230")).findFirst();
+					if (itemStartDate781_5.isPresent() && itemCombobox230.isPresent()) {
+						checkDesignateMaster(dataSetter, employee, bussinessName, itemValue, itemStartDate781_5.get().getValue(),itemCombobox230.get().getValue(), masterName, listError);
+					}
+					break;
+				case "IS00239": // startDate code IS00781
+					Optional<LayoutPersonInfoValueDto> itemStartDate781_6 = listAlltemsValue.stream().filter(i -> i.getItemCode().equals("IS00781")).findFirst();
+					Optional<LayoutPersonInfoValueDto> itemCombobox239 = itemsValue.stream().filter(i -> i.getItemCode().equals("IS00239")).findFirst();
+					if (itemStartDate781_6.isPresent() && itemCombobox239.isPresent()) {
+						checkDesignateMaster(dataSetter, employee, bussinessName, itemValue, itemStartDate781_6.get().getValue(),itemCombobox239.get().getValue(), masterName, listError);
+					}
+					break;
+				case "IS00185": // startDate code IS00781 
+					Optional<LayoutPersonInfoValueDto> itemStartDate781_7 = listAlltemsValue.stream().filter(i -> i.getItemCode().equals("IS00781")).findFirst();
+					Optional<LayoutPersonInfoValueDto> itemCombobox185 = itemsValue.stream().filter(i -> i.getItemCode().equals("IS00185")).findFirst();
+					if (itemStartDate781_7.isPresent() && itemCombobox185.isPresent()) {
+						checkDesignateMaster(dataSetter, employee, bussinessName, itemValue, itemStartDate781_7.get().getValue(),itemCombobox185.get().getValue(), masterName, listError);
+					}
+					break;
+
+				
 				}
+				
 			}
 		}
+
 	}
 	
-	/**
+	/** "IS00020", "IS00077", "IS00082", "IS00119", "IS00781"
 	 * Enum参照する場合 ( TH tham chiếu Enum)
 	 * @param result
 	 * @param employee
@@ -758,24 +909,24 @@ public class CheckPersonInfoProcess {
 	 * @param startValue
 	 */
 	public void checkDesignateMaster(TaskDataSetter dataSetter, EmployeeDataMngInfo employee, String bussinessName,
-			LayoutPersonInfoValueDto item, Object startValue, Map<String, String> masterNames,
+			LayoutPersonInfoValueDto item, Object startValue,Object comboboxValue, Map<String, String> masterNames,
 			List<ErrorInfoCPS013> listError) {
 		 String value = (String) item.getValue();
 		 List<String> comboxValue = item.getLstComboBoxValue().stream().map(c -> c.getOptionValue()).sorted().collect(Collectors.toList());
 		 String masterName  = masterNames.get(item.getItemCode());
-		 if (comboxValue.size() >0 && !comboxValue.contains(value)) {
+		 if (comboxValue.size() >0  && !comboxValue.contains(value)) {
 			//履歴ありマスタの場合 (TH master có history)
 			if(listItem_Master_History.contains(item.getItemCode())) {
 				ErrorInfoCPS013 error = new ErrorInfoCPS013(employee.getEmployeeId(), item.getCategoryId(),
 						employee.getEmployeeCode().v(), bussinessName, chekPersonInfoType, item.getCategoryName(),
-						TextResource.localize("Msg_938", item.getItemName(), value, masterName, startValue.toString() ));
+						TextResource.localize("Msg_936", item.getItemName(), value == null ? "null"  : value , masterName, startValue.toString() ));
 				listError.add(error);
 				setErrorDataGetter(error, dataSetter);
 			}else {
 				//履歴なしマスタの場合 ( TH master không có history)
 				ErrorInfoCPS013 error = new ErrorInfoCPS013(employee.getEmployeeId(), item.getCategoryId(),
 						employee.getEmployeeCode().v(), bussinessName, chekPersonInfoType, item.getCategoryName(),
-						TextResource.localize("Msg_937", item.getItemName(), value, masterName));
+						TextResource.localize("Msg_937", item.getItemName(), value == null ? "null"  : value , masterName));
 				listError.add(error);
 				setErrorDataGetter(error, dataSetter);
 			}
