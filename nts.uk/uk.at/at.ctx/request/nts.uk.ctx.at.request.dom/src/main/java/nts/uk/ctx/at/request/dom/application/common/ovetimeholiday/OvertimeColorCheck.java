@@ -15,8 +15,6 @@ public class OvertimeColorCheck {
 	
 	public Integer appTime;
 	
-	public Integer calcTime;
-	
 	public boolean calcError;
 	
 	public Integer preAppTime;
