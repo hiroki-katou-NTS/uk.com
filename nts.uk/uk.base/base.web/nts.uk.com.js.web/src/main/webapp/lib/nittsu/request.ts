@@ -533,25 +533,33 @@ module nts.uk.request {
         } else {
             uk.sessionStorage.setItemAsJson(STORAGE_KEY_TRANSFER_DATA, { data, jump: { webAppId, path } });
         }
-
-        // open new tab (like current tab)
-        const wd = window.open(window.location.href, '_blank');
-        wd.focus();
         
-        // remove storage on current tab
-        nts.uk.sessionStorage.removeItem(uk.request.STORAGE_KEY_TRANSFER_DATA);
+        let resolvedPath = nts.uk.request.location.siteRoot
+                .mergeRelativePath(nts.uk.request.WEB_APP_NAME[webAppId] + '/')
+                .mergeRelativePath(path).serialize();
+
+        if (webAppId !== nts.uk.request.location.currentAppId) {
+            login.keepSerializedSession()
+                .then(() => {
+                    return login.restoreSessionTo(webAppId);
+                })
+                .then(() => {
+                    // open new tab (like current tab)
+                    const wd = window.open(resolvedPath, '_blank');
+                    wd.focus();
+                    
+                    // remove storage on current tab
+                    nts.uk.sessionStorage.removeItem(uk.request.STORAGE_KEY_TRANSFER_DATA);
+                });            
+        } else {
+            // open new tab (like current tab)
+            const wd = window.open(resolvedPath, '_blank');
+            wd.focus();
+            
+            // remove storage on current tab
+            nts.uk.sessionStorage.removeItem(uk.request.STORAGE_KEY_TRANSFER_DATA);            
+        }
     }
-    
-    // jumpToNewWindow step 2
-    $(() => {
-        setTimeout(() => {
-            __viewContext.transferred.ifPresent(data => {
-                if (_.isEqual(_.keys(data), ['data', 'jump'])) {
-                    nts.uk.request.jump(data.jump.webAppId, data.jump.path, data.data);
-                }
-            });
-        }, 0);
-    });
     
     export function jumpFromDialogOrFrame(path: string, data?: any);
     export function jumpFromDialogOrFrame(webAppId: WebAppId, path: string, data?: any) {
