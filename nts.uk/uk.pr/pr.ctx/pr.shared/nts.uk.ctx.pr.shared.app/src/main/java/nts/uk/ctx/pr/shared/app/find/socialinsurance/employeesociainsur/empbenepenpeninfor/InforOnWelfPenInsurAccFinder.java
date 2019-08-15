@@ -1,7 +1,5 @@
 package nts.uk.ctx.pr.shared.app.find.socialinsurance.employeesociainsur.empbenepenpeninfor;
 
-import nts.uk.ctx.pr.shared.dom.adapter.socialinsurance.employeesociainsur.person.EmployeeBasicInfo;
-import nts.uk.ctx.pr.shared.dom.adapter.socialinsurance.employeesociainsur.person.EmployeeBasicInfoAdapter;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.InforOnWelfPenInsurAcc;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.InforOnWelfPenInsurAccRepository;
 
@@ -22,8 +20,8 @@ public class InforOnWelfPenInsurAccFinder
     @Inject
     private InforOnWelfPenInsurAccRepository finder;
 
-    @Inject
-    private EmployeeBasicInfoAdapter adapter;
+
+
 
     public List<InforOnWelfPenInsurAccDto> getAllInforOnWelfPenInsurAcc(){
         return finder.getAllInforOnWelfPenInsurAcc().stream().map(item -> InforOnWelfPenInsurAccDto.fromDomain(item))
@@ -40,8 +38,5 @@ public class InforOnWelfPenInsurAccFinder
         return null;
     }
 
-    public EmployeeBasicInfo getPersonInfo(String sID){
-        return adapter.getPersonInfo(sID);
-    }
 
 }

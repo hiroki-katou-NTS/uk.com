@@ -1,12 +1,18 @@
-package nts.uk.ctx.pr.shared.dom.adapter.socialinsurance.employeesociainsur.person;
+package nts.uk.ctx.pr.shared.dom.adapter.person;
 
 import lombok.AllArgsConstructor;
-import lombok.Value;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.time.GeneralDate;
 
-@Value
+
+@Getter
+@Setter
 @AllArgsConstructor
-public class EmployeeBasicInfo {
+@NoArgsConstructor
+public class PersonInfoExportAdapter {
+
     private String pid;
 
     private String businessName;

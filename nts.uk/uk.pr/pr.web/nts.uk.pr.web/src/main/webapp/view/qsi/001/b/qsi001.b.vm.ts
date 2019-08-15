@@ -1,6 +1,9 @@
 module nts.uk.pr.view.qsi001.b.viewmodel {
 
     import block = nts.uk.ui.block;
+    import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
+
     export class ScreenModel {
         ccg001ComponentOption: GroupOption;
         employeeInputList: KnockoutObservableArray<EmployeeModel>;
@@ -24,6 +27,17 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
         constructor() {
             block.invisible();
             let self = this;
+
+            let params = getShared('QSI001_PARAMS_TO_SCREEN_B');
+            if(params.listEmpId.length > 0){
+                params.listEmpId.forEach(e =>{
+                   service.getPersonInfo(e).done(r => {
+                       console.dir(r);
+                   }).fail(f =>{
+                       console.dir(f);
+                   });
+                });
+            }
             self.loadCCG001();
             self.simpleValue = ko.observable("123");
 
