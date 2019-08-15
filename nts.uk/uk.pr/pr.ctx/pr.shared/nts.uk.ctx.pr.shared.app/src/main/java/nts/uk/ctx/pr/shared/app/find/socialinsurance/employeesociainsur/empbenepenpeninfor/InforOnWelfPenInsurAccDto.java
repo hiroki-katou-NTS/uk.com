@@ -100,25 +100,24 @@ public class InforOnWelfPenInsurAccDto
     
     public static InforOnWelfPenInsurAccDto fromDomain(InforOnWelfPenInsurAcc domain)
     {
-//        return new InforOnWelfPenInsurAccDto(domain.getEmployeeId(),
-//                domain.getHealInsurDis().value,
-//                domain.getReasonAndOContent().v(),
-//                domain.getYearsOldOrOlder(),
-//                domain.getRemarksOther(),
-//                domain.getRemarksOther(),
-//                domain.getRemuMonthlyKind().map(i->i.v()).orElse(null),
-//                domain.getRemuMonthlyAmount().map(i->i.v()).orElse(null),
-//                domain.getTotalMonthlyRemun().map(i->i.v()).orElse(null),
-//                domain.getLivingAbroad(),
-//                domain.getReasonOther(),
-//                domain.getReOtherContents(),
-//                domain.getShortTermResidence(),
-//                domain.getDependentNotiClass().map(i->i.value).orElse(null),
-//                domain.getQuaAcquiRemarks().map(i->i.v()).orElse(null),
-//                domain.getQualifiClass(),
-//                domain.getContiReemAfRetirement()
-//        );
-        return null;
+        return new InforOnWelfPenInsurAccDto(domain.getEmployeeId(),
+                domain.getHealInsurDis().value,
+                domain.getReasonAndOContent().v(),
+                domain.getYearsOldOrOlder().get(),
+                domain.getRemarksOther().get(),
+                domain.getReOtherContents().get().v(),
+                domain.getRemuMonthlyKind().map(i->i.v()).orElse(null),
+                domain.getRemuMonthlyAmount().map(i->i.v()).orElse(null),
+                domain.getTotalMonthlyRemun().map(i->i.v()).orElse(null),
+                domain.getLivingAbroad().get(),
+                domain.getReasonOther().get(),
+                domain.getReasonOther().get(),
+                domain.getShortTermResidence().get(),
+                domain.getDependentNotiClass().map(i->i.value).orElse(null),
+                domain.getQuaAcquiRemarks().map(i->i.v()).orElse(null),
+                domain.getQualifiClass().get(),
+                domain.getContiReemAfRetirement().get()
+        );
     }
     
 }

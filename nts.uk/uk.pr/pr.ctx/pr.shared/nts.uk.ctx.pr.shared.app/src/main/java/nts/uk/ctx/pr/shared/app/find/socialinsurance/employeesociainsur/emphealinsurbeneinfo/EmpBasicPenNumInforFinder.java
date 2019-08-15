@@ -1,10 +1,12 @@
 package nts.uk.ctx.pr.shared.app.find.socialinsurance.employeesociainsur.emphealinsurbeneinfo;
 
+import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmpBasicPenNumInfor;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmpBasicPenNumInforRepository;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Stateless
@@ -17,9 +19,8 @@ public class EmpBasicPenNumInforFinder
     @Inject
     private EmpBasicPenNumInforRepository finder;
 
-    public List<EmpBasicPenNumInforDto> getAllEmpBasicPenNumInfor(){
-        return finder.getAllEmpBasicPenNumInfor().stream().map(item -> EmpBasicPenNumInforDto.fromDomain(item))
-                .collect(Collectors.toList());
+    Optional<EmpBasicPenNumInfor> getEmpBasicPenNumInforById(String employeeId){
+        return finder.getEmpBasicPenNumInforById(employeeId);
     }
 
 }

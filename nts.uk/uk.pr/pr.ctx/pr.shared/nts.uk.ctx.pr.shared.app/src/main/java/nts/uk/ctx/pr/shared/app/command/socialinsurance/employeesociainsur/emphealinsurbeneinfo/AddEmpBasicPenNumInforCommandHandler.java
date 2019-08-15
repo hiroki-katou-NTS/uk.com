@@ -2,23 +2,74 @@ package nts.uk.ctx.pr.shared.app.command.socialinsurance.employeesociainsur.emph
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmpBasicPenNumInforRepository;
+import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.*;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 @Stateless
 @Transactional
-public class AddEmpBasicPenNumInforCommandHandler extends CommandHandler<EmpBasicPenNumInforCommand>
+public class AddEmpBasicPenNumInforCommandHandler extends CommandHandler<CredentialAcquisitionInfoCommand>
 {
     
     @Inject
-    private EmpBasicPenNumInforRepository repository;
+    private EmpBasicPenNumInforRepository empBasicPenNumInforRepository;
+
+    @Inject
+    private MultiEmpWorkInfoRepository multiEmpWorkInfoRepository;
+
+    @Inject
+    private SocialInsurAcquisiInforRepository socialInsurAcquisiInforRepository;
     
     @Override
-    protected void handle(CommandHandlerContext<EmpBasicPenNumInforCommand> context) {
+    protected void handle(CommandHandlerContext<CredentialAcquisitionInfoCommand> context) {
 
-    
+        CredentialAcquisitionInfoCommand command = context.getCommand();
+        SocialInsurAcquisiInforCommand socialInsurAcquisiInforCommand = command.getSocialInsurAcquisiInforCommand();
+        MultiEmpWorkInfoCommand multiEmpWorkInfoCommand = command.getMultiEmpWorkInfoCommand();
+        EmpBasicPenNumInforCommand empBasicPenNumInforCommand = command.getEmpBasicPenNumInforCommand();
+        Optional<SocialInsurAcquisiInfor> socialInsurAcquisiInfor =  socialInsurAcquisiInforRepository.getSocialInsurAcquisiInforById(socialInsurAcquisiInforCommand.getEmployeeId());
+        SocialInsurAcquisiInfor socialInsurAcquisiInforDomain = new SocialInsurAcquisiInfor(
+                socialInsurAcquisiInforCommand.getEmployeeId(),
+                socialInsurAcquisiInforCommand.getPercentOrMore(),
+                socialInsurAcquisiInforCommand.getRemarksOther(),
+                socialInsurAcquisiInforCommand.getRemarksAndOtherContents(),
+                socialInsurAcquisiInforCommand.getRemunMonthlyAmountKind(),
+                socialInsurAcquisiInforCommand.getRemunMonthlyAmount(),
+                socialInsurAcquisiInforCommand.getTotalMonthlyRemun(),
+                socialInsurAcquisiInforCommand.getLivingAbroad(),
+                socialInsurAcquisiInforCommand.getReasonOther(),
+                socialInsurAcquisiInforCommand.getReasonAndOtherContents(),
+                socialInsurAcquisiInforCommand.getShortStay(),
+                socialInsurAcquisiInforCommand.getShortStay(),
+                socialInsurAcquisiInforCommand.getDepenAppoint(),
+                socialInsurAcquisiInforCommand.getEmployeeId(),
+                socialInsurAcquisiInforCommand.getDepenAppoint()
+        );
+        if(socialInsurAcquisiInfor.isPresent()){
+            socialInsurAcquisiInforRepository.update(socialInsurAcquisiInforDomain);
+        }else {
+
+            socialInsurAcquisiInforRepository.add(socialInsurAcquisiInforDomain);
+        }
+
+        if(!empBasicPenNumInforCommand.getBasicPenNumber().isEmpty()){
+            Optional<EmpBasicPenNumInfor> empBasicPenNumInfor = empBasicPenNumInforRepository.getEmpBasicPenNumInforById(empBasicPenNumInforCommand.getEmployeeId());
+            EmpBasicPenNumInfor domain = new EmpBasicPenNumInfor(empBasicPenNumInforCommand.getEmployeeId(),empBasicPenNumInforCommand.getBasicPenNumber());
+            if(empBasicPenNumInfor.isPresent()){
+                empBasicPenNumInforRepository.update(domain);
+            }else{
+                empBasicPenNumInforRepository.add(domain);
+            }
+        }
+        Optional<MultiEmpWorkInfo>  multiEmpWorkInfo = multiEmpWorkInfoRepository.getMultiEmpWorkInfoById(multiEmpWorkInfoCommand.getEmpId());
+        MultiEmpWorkInfo multiEmpWorkInfoDomain = new MultiEmpWorkInfo(multiEmpWorkInfoCommand.getEmpId(),multiEmpWorkInfoCommand.getIsMoreEmp());
+        if(multiEmpWorkInfo.isPresent()){
+            multiEmpWorkInfoRepository.update(multiEmpWorkInfoDomain);
+        }else{
+            multiEmpWorkInfoRepository.add(multiEmpWorkInfoDomain);
+        }
     }
 }
