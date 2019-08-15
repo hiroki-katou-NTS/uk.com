@@ -81,7 +81,11 @@ const vm = Vue.extend({
 
             if (act === 'hide') {
                 if (self.$$mask) {
-                    self.$$mask.show = false;
+                    if (!!self.$$mask.show) {
+                        self.$$mask.show = false;
+                    } else {
+                        self.$$mask.$destroy(true);
+                    }
 
                     delete self.$$mask;
                 }
