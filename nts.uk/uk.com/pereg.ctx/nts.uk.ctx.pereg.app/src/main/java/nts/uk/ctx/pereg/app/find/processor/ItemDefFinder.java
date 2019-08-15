@@ -177,13 +177,13 @@ public class ItemDefFinder {
 			if(itemDef.getItemTypeState().getItemType() == ItemType.SET_ITEM || itemDef.getItemTypeState().getItemType() == ItemType.TABLE_ITEM) {
 				
 				List<PersonInfoItemDefinition> lstDomain = getListChildrenDef(itemDef.getItemTypeState());	
-				lstDomain.forEach(i -> {
-					if(i.getItemTypeState().getItemType() == ItemType.SET_ITEM || itemDef.getItemTypeState().getItemType() == ItemType.TABLE_ITEM) {
+				for(PersonInfoItemDefinition i: lstDomain) {
+					if(i.getItemTypeState().getItemType().value == ItemType.SET_ITEM.value || i.getItemTypeState().getItemType().value == ItemType.TABLE_ITEM.value) {
 						parentItems.add(i);
 					}else {
 						lstItemDef.add(getItemValueFromDomain(i));
 					}
-				});
+				}
 			}
 		}
 		return lstItemDef;
