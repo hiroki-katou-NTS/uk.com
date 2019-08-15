@@ -41,14 +41,6 @@ public class OvertimeColorCheck {
 		return overtimeColorCheck;
 	}
 	
-	public static OvertimeColorCheck createFromCalc(OvertimeInputCaculation overtimeInputCaculation){
-		OvertimeColorCheck overtimeColorCheck = new OvertimeColorCheck();
-		overtimeColorCheck.attendanceID = overtimeInputCaculation.getAttendanceID();
-		overtimeColorCheck.frameNo = overtimeInputCaculation.getFrameNo();
-		overtimeColorCheck.calcTime = overtimeInputCaculation.getResultCaculation();
-		return overtimeColorCheck;
-	}
-	
 	public static OvertimeColorCheck createFromOverTimeInput(CaculationTime overtimeHour){
 		OvertimeColorCheck overtimeColorCheck = new OvertimeColorCheck();
 		overtimeColorCheck.attendanceID = overtimeHour.getAttendanceID();
