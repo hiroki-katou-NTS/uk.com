@@ -459,6 +459,83 @@ public class AppOvertimeFinder {
 		
 		return caculationTimes;
 	}
+	
+	/**
+	 * @return
+	 */
+	public List<CaculationTime> getCalculateValue(String employeeID, String appDate, Integer prePostAtr, String workTypeCD, String workTimeCD,
+			List<CaculationTime> overtimeInputLst, Integer startTime, Integer endTime, List<Integer> startTimeRests, List<Integer> endTimeRests){
+		String companyID = AppContexts.user().companyId();
+		GeneralDate generalDate = GeneralDate.fromString(appDate, DATE_FORMAT); 
+		//1-1.新規画面起動前申請共通設定を取得する
+		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(companyID, employeeID, 1, 
+				ApplicationType.OVER_TIME_APPLICATION, generalDate);
+		
+		// 6.計算処理 : 
+		List<OvertimeInputCaculation> overtimeInputCaculations = commonOvertimeHoliday.calculator(appCommonSettingOutput, appDate, workTimeCD, workTypeCD, startTime, endTime, startTimeRests, endTimeRests);
+		List<OvertimeColorCheck> otTimeLst = overtimeInputLst.stream()
+				.map(x -> OvertimeColorCheck.createApp(x.getAttendanceID(), x.getFrameNo(), x.getApplicationTime()))
+				.collect(Collectors.toList());
+		OvertimeRestAppCommonSetting overtimeRestAppCommonSet = overtimeRestAppCommonSetRepository
+				.getOvertimeRestAppCommonSetting(companyID, ApplicationType.OVER_TIME_APPLICATION.value).get();
+		UseAtr preExcessDisplaySetting = overtimeRestAppCommonSet.getPreExcessDisplaySetting();
+		AppDateContradictionAtr performanceExcessAtr = overtimeRestAppCommonSet.getPerformanceExcessAtr();
+		WithdrawalAppSet withdrawalAppSet = withdrawalAppSetRepository.getWithDraw().get();
+		// 07-01_事前申請状態チェック
+		PreAppCheckResult preAppCheckResult = preActualColorCheck.preAppStatusCheck(
+				companyID, 
+				employeeID, 
+				GeneralDate.fromString(appDate, DATE_FORMAT), 
+				ApplicationType.OVER_TIME_APPLICATION);
+		// 07-02_実績取得・状態チェック
+		ActualStatusCheckResult actualStatusCheckResult = preActualColorCheck.actualStatusCheck(
+				companyID, 
+				employeeID, 
+				GeneralDate.fromString(appDate, DATE_FORMAT), 
+				ApplicationType.OVER_TIME_APPLICATION, 
+				workTypeCD, 
+				workTimeCD, 
+				withdrawalAppSet.getOverrideSet(), 
+				Optional.empty());
+		// 07_事前申請・実績超過チェック
+		PreActualColorResult preActualColorResult =	preActualColorCheck.preActualColorCheck(
+				preExcessDisplaySetting, 
+				performanceExcessAtr, 
+				ApplicationType.OVER_TIME_APPLICATION, 
+				EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class), 
+				withdrawalAppSet.getOverrideSet(), 
+				Optional.empty(), 
+				overtimeInputCaculations, 
+				otTimeLst, 
+				preAppCheckResult.opAppBefore, 
+				preAppCheckResult.beforeAppStatus, 
+				actualStatusCheckResult.actualLst, 
+				actualStatusCheckResult.actualStatus);
+		
+		return preActualColorResult.resultLst.stream()
+			.map(x -> new CaculationTime(
+					companyID, 
+					"", 
+					x.attendanceID, 
+					x.frameNo, 
+					0, 
+					"", 
+					x.appTime, 
+					x.preAppTime == null ? null : x.preAppTime.toString(), 
+					x.actualTime == null ? null : x.actualTime.toString(), 
+					getErrorCodePC(x.calcError, x.preAppError, x.actualError), 
+					true, 
+					x.preAppError, 
+					x.actualError))
+			.collect(Collectors.toList());
+	}
+	
+	private Integer getErrorCodePC(boolean calcError, boolean preAppError, boolean actualError){
+		if(actualError) return 1;
+		if(preAppError) return 2;
+		if(calcError) return 3;
+		return 0;
+	}
 
 	private List<OvertimeInputCaculation> convertMaptoList(Map<Integer,TimeWithCalculationImport> overTime,TimeWithCalculationImport flexTime,TimeWithCalculationImport midNightTime){
 		List<OvertimeInputCaculation> result = new ArrayList<>();

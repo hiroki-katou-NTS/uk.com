@@ -15,6 +15,7 @@ module nts.uk.at.view.kaf005.shr.service {
         beforeRegisterColorConfirm: "at/request/application/overtime/beforeRegisterColorConfirm",
         confirmInconsistency: "at/request/application/overtime/confirmInconsistency",
         getByChangeTime: "at/request/application/overtime/getByChangeTime",
+        getCalculateValue: "at/request/application/overtime/getCalculateValue",
     }
     /** Get TitleMenu */
     export function getOvertimeByUI(param: any): JQueryPromise<any> {
@@ -75,5 +76,9 @@ module nts.uk.at.view.kaf005.shr.service {
     
     export function getByChangeTime(param: any): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.getByChangeTime, param);
+    }
+    
+    export function getCalculateValue(param: any): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getCalculateValue, param);
     }
 }
