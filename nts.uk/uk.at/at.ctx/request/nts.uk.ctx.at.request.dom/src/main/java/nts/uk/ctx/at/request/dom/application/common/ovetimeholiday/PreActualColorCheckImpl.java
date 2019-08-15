@@ -20,6 +20,7 @@ import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
+import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputCaculation;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculation;
@@ -59,7 +60,7 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 	@Override
 	public PreActualColorResult preActualColorCheck(UseAtr preExcessDisplaySetting, AppDateContradictionAtr performanceExcessAtr,
 			ApplicationType appType, PrePostAtr prePostAtr, OverrideSet overrideSet, Optional<CalcStampMiss> calStampMiss, 
-			List<OvertimeColorCheck> calcTimeList, List<OvertimeColorCheck> overTimeLst,
+			List<OvertimeInputCaculation> calcTimeList, List<OvertimeColorCheck> overTimeLst,
 			Optional<Application_New> opAppBefore, boolean beforeAppStatus, List<OvertimeColorCheck> actualLst, ActualStatus actualStatus) {
 		PreActualColorResult result = new PreActualColorResult();
 		// アルゴリズム「チェック条件」を実行する
@@ -68,13 +69,13 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 		boolean actualSetCheck = commonOvertimeHoliday.actualSetCheck(performanceExcessAtr, prePostAtr);
 		for(OvertimeColorCheck overtimeColorCheck : overTimeLst){
 			// ループ中の枠に対する計算値が存在するかチェックする
-			Optional<OvertimeColorCheck> opOvertimeColorCheck = calcTimeList.stream()
-					.filter(x -> x.attendanceID==overtimeColorCheck.attendanceID && x.frameNo==overtimeColorCheck.frameNo).findAny();
-			if(opOvertimeColorCheck.isPresent()){
+			Optional<OvertimeInputCaculation> opOvertimeInputCaculation = calcTimeList.stream()
+					.filter(x -> x.getAttendanceID()==overtimeColorCheck.attendanceID && x.getFrameNo()==overtimeColorCheck.frameNo).findAny();
+			if(opOvertimeInputCaculation.isPresent()){
 				// 計算値チェック
-				if(opOvertimeColorCheck.get().calcTime!=overtimeColorCheck.appTime){
+				if(opOvertimeInputCaculation.get().getResultCaculation()!=overtimeColorCheck.appTime){
 					overtimeColorCheck.calcError = true;
-					overtimeColorCheck.calcTime = opOvertimeColorCheck.get().calcTime;
+					overtimeColorCheck.appTime = opOvertimeInputCaculation.get().getResultCaculation();
 				}
 			}
 			// 入力時間チェック

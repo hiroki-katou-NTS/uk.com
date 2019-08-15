@@ -8,6 +8,7 @@ import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
+import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputCaculation;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.CalcStampMiss;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.OverrideSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.AppDateContradictionAtr;
@@ -32,7 +33,7 @@ public interface PreActualColorCheck {
 	 */
 	public PreActualColorResult preActualColorCheck(UseAtr preExcessDisplaySetting, AppDateContradictionAtr performanceExcessAtr,
 			ApplicationType appType, PrePostAtr prePostAtr, OverrideSet overrideSet, Optional<CalcStampMiss> calStampMiss, 
-			List<OvertimeColorCheck> calcTimeList, List<OvertimeColorCheck> overTimeLst, 
+			List<OvertimeInputCaculation> calcTimeList, List<OvertimeColorCheck> overTimeLst, 
 			Optional<Application_New> opAppBefore, boolean beforeAppStatus, List<OvertimeColorCheck> actualLst, ActualStatus actualStatus);
 	
 	/**
