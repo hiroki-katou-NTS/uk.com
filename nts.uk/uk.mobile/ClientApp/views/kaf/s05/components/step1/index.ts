@@ -1,7 +1,7 @@
 import { component, Prop, Watch } from '@app/core/component';
 import { _, Vue } from '@app/provider';
 import { KDL002Component } from '../../../../kdl/002';
-import { TimeWithDay, storage } from '@app/utils';
+import { TimeWithDay } from '@app/utils';
 import { OvertimeAgreement, AgreementTimeStatusOfMonthly, Kafs05Model } from '../common/CommonClass';
 
 @component({
@@ -63,19 +63,6 @@ export class KafS05aStep1Component extends Vue {
 
     public created() {
         let self = this;
-        if (self.$router.currentRoute.name == 'kafS05b') {
-            self.kafs05ModelStep1.isCreate = false;
-            if (_.isNil(self.kafs05ModelStep1.appID)) {
-                if (storage.local.hasItem('appID')) {
-                    self.kafs05ModelStep1.appID = storage.local.getItem('appID').toString();                   
-                } else {
-                    this.$mask('hide');                  
-                    this.$modal.error('').then(() => {self.$goto('cmms45a', {CMMS45_FromMenu: true});});
-                }
-            } else {
-                storage.local.setItem('appID', self.kafs05ModelStep1.appID);
-            }
-        }
 
         if (this.kafs05ModelStep1.step1Start) {
             this.startPage();

@@ -280,6 +280,10 @@ export class KafS05aStep2Component extends Vue {
                 this.$modal.error({ messageId: 'Msg_424', messageParams: [res.parameterIds[0], res.parameterIds[1], res.parameterIds[2]] });
             } else if (res.messageId == 'Msg_1508') {
                 this.$modal.error({ messageId: 'Msg_1508', messageParams: [res.parameterIds[0]] });
+            } else if (res.messageId == 'Msg_426') {
+                this.$modal.error({ messageId: 'Msg_426', messageParams: [res.parameterIds[0]] }).then(() => {
+                    this.$goto('ccg007b');
+                });
             } else {
                 this.$modal.error({ messageId: res.messageId }).then(() => {
                     this.$goto('ccg008a');
