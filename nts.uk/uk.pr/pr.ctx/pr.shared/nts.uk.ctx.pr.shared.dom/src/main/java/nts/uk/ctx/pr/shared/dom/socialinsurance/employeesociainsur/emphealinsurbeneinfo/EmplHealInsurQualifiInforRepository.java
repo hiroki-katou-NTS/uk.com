@@ -11,6 +11,8 @@ public interface EmplHealInsurQualifiInforRepository
 
     List<EmplHealInsurQualifiInfor> getAllEmplHealInsurQualifiInfor();
 
+    boolean checkHealInsurQualifiInformation(String userIds);
+
     Optional<EmplHealInsurQualifiInfor> getEmplHealInsurQualifiInforById(String employeeId, String hisId);
 
     void add(EmplHealInsurQualifiInfor domain);

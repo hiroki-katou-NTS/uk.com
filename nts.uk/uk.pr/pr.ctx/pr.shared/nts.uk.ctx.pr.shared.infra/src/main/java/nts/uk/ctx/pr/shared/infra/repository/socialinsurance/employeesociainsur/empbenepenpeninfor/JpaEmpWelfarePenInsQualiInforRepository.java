@@ -24,6 +24,11 @@ public class JpaEmpWelfarePenInsQualiInforRepository extends JpaRepository imple
     }
 
     @Override
+    public boolean checkEmpWelfarePenInsQualiInfor(String userIds) {
+        return false;
+    }
+
+    @Override
     public Optional<EmpWelfarePenInsQualiInfor> getEmpWelfarePenInsQualiInforById(String employeeId, String historyId){
         return this.queryProxy().query(SELECT_BY_KEY_STRING, QqsmtEmpWelfInsQcIf.class)
         .setParameter("employeeId", employeeId)
@@ -39,10 +44,5 @@ public class JpaEmpWelfarePenInsQualiInforRepository extends JpaRepository imple
     @Override
     public void update(EmpWelfarePenInsQualiInfor domain){
         this.commandProxy().update(QqsmtEmpWelfInsQcIf.toEntity(domain));
-    }
-
-    @Override
-    public void remove(String employeeId, String historyId){
-        this.commandProxy().remove(QqsmtEmpWelfInsQcIf.class, new nts.uk.ctx.pr.shared.infra.repository.socialinsurance.employeesociainsur.empbenepenpeninfor.QqsmtEmpWelfInsQcIfPk(employeeId, historyId));
     }
 }

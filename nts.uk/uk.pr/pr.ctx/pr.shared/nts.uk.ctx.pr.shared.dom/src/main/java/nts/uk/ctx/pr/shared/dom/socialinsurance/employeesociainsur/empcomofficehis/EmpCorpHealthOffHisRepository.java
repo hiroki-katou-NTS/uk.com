@@ -13,10 +13,4 @@ public interface EmpCorpHealthOffHisRepository
 
     Optional<EmpCorpHealthOffHis> getEmpCorpHealthOffHisById(String employeeId, String hisId);
 
-    void add(EmpCorpHealthOffHis domain);
-
-    void update(EmpCorpHealthOffHis domain);
-
-    void remove(String employeeId, String hisId);
-
 }

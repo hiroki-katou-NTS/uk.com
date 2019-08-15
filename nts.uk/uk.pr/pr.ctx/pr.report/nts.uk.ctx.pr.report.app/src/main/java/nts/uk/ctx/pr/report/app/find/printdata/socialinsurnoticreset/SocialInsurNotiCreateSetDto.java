@@ -1,9 +1,7 @@
 package nts.uk.ctx.pr.report.app.find.printdata.socialinsurnoticreset;
 
 import lombok.*;
-import nts.uk.ctx.pr.report.dom.printdata.socinsurnoticreset.*;
-
-import java.util.Optional;
+import nts.uk.ctx.pr.report.dom.printdata.socinsurnoticreset.SocialInsurNotiCreateSet;
 
 @Data
 @NoArgsConstructor
@@ -17,63 +15,63 @@ public class SocialInsurNotiCreateSetDto {
     /**
      * 事業所情報
      */
-    private BusinessDivision officeInformation;
+    private int officeInformation;
 
     /**
      * 事業所整理記号
      */
-    private BussEsimateClass businessArrSymbol;
+    private int businessArrSymbol;
 
     /**
      * 出力順
      */
-    private SocialInsurOutOrder outputOrder;
+    private int outputOrder;
     /**
      * 印刷個人番号
      */
-    private PersonalNumClass printPersonNumber;
+    private int printPersonNumber;
     /**
      * 提出氏名区分
      */
-    private SubNameClass submittedName;
+    private int submittedName;
 
     /**
      * 被保険者整理番号
      */
-    private InsurPersonNumDivision insuredNumber;
+    private int insuredNumber;
 
     /**
      * FD番号
      */
-    private Optional<FdNumber> fdNumber;
+    private String fdNumber;
 
     /**
      * テキスト個人番号
      */
-    private Optional<TextPerNumberClass> textPersonNumber;
+    private Integer textPersonNumber;
 
     /**
      * 出力形式
      */
-    private Optional<OutputFormatClass> outputFormat;
+    private Integer outputFormat;
 
     /**
      * 改行コード
      */
-    private Optional<LineFeedCode> lineFeedCode;
+    private Integer lineFeedCode;
 
     public static SocialInsurNotiCreateSetDto fromDomain(SocialInsurNotiCreateSet domain) {
         return SocialInsurNotiCreateSetDto.builder()
-                .officeInformation(domain.getOfficeInformation())
-                .businessArrSymbol(domain.getBusinessArrSymbol())
-                .outputOrder(domain.getOutputOrder())
-                .printPersonNumber(domain.getPrintPersonNumber())
-                .submittedName(domain.getSubmittedName())
-                .insuredNumber(domain.getInsuredNumber())
-                .fdNumber(domain.getFdNumber())
-                .textPersonNumber(domain.getTextPersonNumber())
-                .outputFormat(domain.getOutputFormat())
-                .lineFeedCode(domain.getLineFeedCode())
+                .officeInformation(domain.getOfficeInformation().value)
+                .businessArrSymbol(domain.getBusinessArrSymbol().value)
+                .outputOrder(domain.getOutputOrder().value)
+                .printPersonNumber(domain.getPrintPersonNumber().value)
+                .submittedName(domain.getSubmittedName().value)
+                .insuredNumber(domain.getInsuredNumber().value)
+                .fdNumber(domain.getFdNumber().isPresent() ? domain.getFdNumber().get().v() : null)
+                .textPersonNumber(domain.getTextPersonNumber().isPresent() ? domain.getTextPersonNumber().get().value : null)
+                .outputFormat(domain.getOutputFormat().isPresent() ? domain.getOutputFormat().get().value : null)
+                .lineFeedCode(domain.getLineFeedCode().isPresent() ? domain.getLineFeedCode().get().value : null)
                 .build();
         }
     }

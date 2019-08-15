@@ -3,6 +3,7 @@ module nts.uk.pr.view.qsi013.a.viewmodel {
     import dialog = nts.uk.ui.dialog;
     import getText = nts.uk.resource.getText;
     import errors = nts.uk.ui.errors;
+    import block = nts.uk.ui.block;
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
@@ -50,6 +51,23 @@ module nts.uk.pr.view.qsi013.a.viewmodel {
             self.endDate.subscribe((data) =>{
                 self.endDateJp(" (" + nts.uk.time.dateInJapanEmpire(data) + ")");
             });
+        }
+
+        initScreen(): JQueryPromise<any> {
+            let self = this;
+            let dfd = $.Deferred();
+            block.invisible();
+
+            service.getSocialInsurNotiCreateSet().done(function(data: ISocInsurNotiCreSet) {
+                if(data != null) {
+                    self.socInsurNotiCreSet(data);
+                }
+            }).fail(function(result) {
+                dialog.alertError(result.errorMessage);
+                dfd.reject();
+            });
+            block.clear();
+            return dfd.promise();
         }
 
         openBScreen() {
@@ -191,25 +209,25 @@ module nts.uk.pr.view.qsi013.a.viewmodel {
     }
 
     export class SocInsurNotiCreSet {
-        officeInformation: KnockoutObservable<number> = ko.observable(null);
-        businessArrSymbol: KnockoutObservable<number> = ko.observable(null);
-        outputOrder: KnockoutObservable<number> = ko.observable(null);
-        submittedName: KnockoutObservable<number> = ko.observable(null);
-        insuredNumber: KnockoutObservable<number> = ko.observable(null);
-        fdNumber: KnockoutObservable<string> = ko.observable(null);
-        textPersonNumber: KnockoutObservable<number> = ko.observable(null);
-        outputFormat: KnockoutObservable<number> = ko.observable(null);
-        lineFeedCode: KnockoutObservable<number> = ko.observable(null);
+        officeInformation: KnockoutObservable<number>;
+        businessArrSymbol: KnockoutObservable<number>;
+        outputOrder: KnockoutObservable<number>;
+        submittedName: KnockoutObservable<number>;
+        insuredNumber: KnockoutObservable<number>;
+        fdNumber: KnockoutObservable<string>;
+        textPersonNumber: KnockoutObservable<number>;
+        outputFormat: KnockoutObservable<number>;
+        lineFeedCode: KnockoutObservable<number>;
         constructor(params: ISocInsurNotiCreSet) {
-            this.officeInformation(params ? params.officeInformation : null);
-            this.businessArrSymbol(params ? params.businessArrSymbol : null);
-            this.outputOrder(params ? params.outputOrder : null);
-            this.submittedName(params ? params.submittedName : null);
-            this.insuredNumber(params ? params.insuredNumber : null);
-            this.fdNumber(params ? params.fdNumber : null);
-            this.textPersonNumber(params ? params.textPersonNumber : null);
-            this.outputFormat(params ? params.outputFormat : null);
-            this.lineFeedCode(params ? params.lineFeedCode : null);
+            this.officeInformation = ko.observable(params.officeInformation);
+            this.businessArrSymbol = ko.observable(params.businessArrSymbol);
+            this.outputOrder = ko.observable(params.outputOrder);
+            this.submittedName = ko.observable(params.submittedName);
+            this.insuredNumber = ko.observable(params.insuredNumber);
+            this.fdNumber = ko.observable(params ? params.fdNumber : null);
+            this.textPersonNumber = ko.observable(params ? params.textPersonNumber : null);
+            this.outputFormat = ko.observable(params ? params.outputFormat : null);
+            this.lineFeedCode = ko.observable(params ? params.lineFeedCode : null);
         }
     }
 

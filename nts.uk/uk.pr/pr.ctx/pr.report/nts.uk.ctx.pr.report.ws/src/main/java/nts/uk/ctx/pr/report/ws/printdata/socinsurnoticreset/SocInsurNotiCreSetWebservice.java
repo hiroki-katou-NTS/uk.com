@@ -7,7 +7,6 @@ import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import java.util.List;
 
 
 @Path("ctx/pr/report/printdata/socinsurnoticreset")
@@ -19,7 +18,7 @@ public class SocInsurNotiCreSetWebservice {
 
     @POST
     @Path("/getSocialInsurNotiCreateSet")
-    public List<SocialInsurNotiCreateSetDto> getEmpNameChangeNotiInfor() {
+    public SocialInsurNotiCreateSetDto getEmpNameChangeNotiInfor() {
         return socialInsurNotiCreateSetFinder.getSocInsurNotiCreSet();
     }
 }

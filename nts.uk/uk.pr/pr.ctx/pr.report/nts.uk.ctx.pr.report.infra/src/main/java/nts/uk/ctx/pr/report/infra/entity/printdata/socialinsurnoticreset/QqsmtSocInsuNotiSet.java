@@ -103,7 +103,19 @@ public class QqsmtSocInsuNotiSet extends UkJpaEntity implements Serializable
     }
 
     public SocialInsurNotiCreateSet toDomain() {
-       return null;
+       return new SocialInsurNotiCreateSet(
+               this.socInsuNotiSetPk.userId,
+               this.socInsuNotiSetPk.cid,
+               this.officeInformation,
+               this.bussinessArrSymbol,
+               this.outputOrder,
+               this.printPersonNumber,
+               this.submittedName,
+               this.insuredNumber,
+               this.fdNumber,
+               this.textPersonNumber,
+               this.outputFormat,
+               this.lineFeedCode);
     }
     public static QqsmtSocInsuNotiSet toEntity(SocialInsurNotiCreateSet domain) {
        return null;

@@ -1,8 +1,8 @@
 package nts.uk.ctx.pr.report.dom.printdata.socinsurnoticreset;
 
 public enum SubNameClass {
-    PERSONAL_NAME(0, "ENUM_personalName_PERSONAL_NAME"),
-    REPORTED_NAME(1, "ENUM_reportedName_REPORTED_NAME");
+    PERSONAL_NAME(0, "Enum_SubNameClass_PERSONAL_NAME"),
+    REPORTED_NAME(1, "Enum_SubNameClass_REPORTED_NAME");
 
     /** The value. */
     public final int value;

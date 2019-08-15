@@ -8,17 +8,12 @@ import nts.uk.ctx.pr.report.infra.entity.printdata.socialinsurnoticreset.QqsmtSo
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class JpaSocialInsurNotiCrSetRepository extends JpaRepository implements SocialInsurNotiCrSetRepository {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QqsmtSocInsuNotiSet f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.socInsuNotiSetPk.userId =:userId AND  f.socInsuNotiSetPk.cid =:cid ";
-
-    @Override
-    public List<SocialInsurNotiCreateSet> getAllSocialInsurNotiCreateSet(String cid) {
-        return this.queryProxy().query(SELECT_ALL_QUERY_STRING, QqsmtSocInsuNotiSet.class)
-                .getList(item -> item.toDomain());
-    }
 
     @Override
     public Optional<SocialInsurNotiCreateSet> getSocialInsurNotiCreateSetById(String userId, String cid) {
@@ -35,7 +30,7 @@ public class JpaSocialInsurNotiCrSetRepository extends JpaRepository implements 
 
     @Override
     public void update(SocialInsurNotiCreateSet domain) {
-        this.commandProxy().insert(QqsmtSocInsuNotiSet.toEntity(domain));
+        this.commandProxy().update(QqsmtSocInsuNotiSet.toEntity(domain));
     }
 
     @Override

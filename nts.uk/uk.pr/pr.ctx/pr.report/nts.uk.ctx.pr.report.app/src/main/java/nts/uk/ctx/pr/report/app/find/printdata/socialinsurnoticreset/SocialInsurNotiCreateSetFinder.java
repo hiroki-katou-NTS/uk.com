@@ -2,6 +2,7 @@ package nts.uk.ctx.pr.report.app.find.printdata.socialinsurnoticreset;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.report.dom.printdata.socinsurnoticreset.SocialInsurNotiCrSetRepository;
+import nts.uk.ctx.pr.report.dom.printdata.socinsurnoticreset.SocialInsurNotiCreateSet;
 import nts.uk.ctx.pr.shared.dom.salgenpurposeparam.*;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -27,19 +28,21 @@ public class SocialInsurNotiCreateSetFinder {
     @Inject
     private SalGenParaYMHistRepository mSalGenParaYMHistRepository;
 
-    public List<SocialInsurNotiCreateSetDto> getSocInsurNotiCreSet(){
+    public SocialInsurNotiCreateSetDto getSocInsurNotiCreSet(){
         String cid = AppContexts.user().companyId();
-        return socialInsurNotiCrSetRepository.getAllSocialInsurNotiCreateSet(cid).stream().map(i -> SocialInsurNotiCreateSetDto.fromDomain(i)).collect(Collectors.toList());
+        String userId = AppContexts.user().userId();
+        Optional<SocialInsurNotiCreateSet> socialInsurNotiCreateSet = socialInsurNotiCrSetRepository.getSocialInsurNotiCreateSetById(userId, cid);
+        return socialInsurNotiCreateSet.isPresent() ? SocialInsurNotiCreateSetDto.fromDomain(socialInsurNotiCreateSet.get()) : null;
     }
 
 
 
-    public GuaByTheInsurDto initScreen(GeneralDate targetDate) {
+    /*public GuaByTheInsurDto initScreen(GeneralDate targetDate) {
         GuaByTheInsurDto resulf = new GuaByTheInsurDto();
         String cid = AppContexts.user().companyId();
         String uid = AppContexts.user().userId();
         final int DATE_HISTORY = 0;
-        /*パラメータNo = “KS0002”*/
+        *//*パラメータNo = “KS0002”*//*
         String paraNo = "KS002";
         resulf = SocialInsurNotiCreateSetDto.fromDomain(socialInsurNotiCrSetRepository.getSocialInsurNotiCreateSetById(uid, cid).orElse(null));
 
@@ -48,11 +51,11 @@ public class SocialInsurNotiCreateSetFinder {
         String historyid;
         Optional<SalGenParaValue> mSalGenParaValue;
         if (historyAtr.value == DATE_HISTORY) {
-            /*開始日≦対象年月日≦終了日*/
+            *//*開始日≦対象年月日≦終了日*//*
             historyid = mSalGenParaDateHistFinder.getHistoryIdByTargetDate(paraNo, targetDate);
             mSalGenParaValue = mSalGenParaYMHistRepository.getSalGenParaValueById(historyid);
             if (!mSalGenParaValue.isPresent()) {
-                /*開始日 = 最も古い開始日の履歴*/
+                *//*開始日 = 最も古い開始日の履歴*//*
                 historyid = mSalGenParaDateHistFinder.getHistoryIdByStartDate(paraNo, targetDate);
                 mSalGenParaValue = mSalGenParaYMHistRepository.getSalGenParaValueById(historyid);
 
@@ -68,7 +71,7 @@ public class SocialInsurNotiCreateSetFinder {
         }
         resulf.setSalGenParaValue(mSalGenParaValue);
         return resulf;
-    }
+    }*/
 
 
 }

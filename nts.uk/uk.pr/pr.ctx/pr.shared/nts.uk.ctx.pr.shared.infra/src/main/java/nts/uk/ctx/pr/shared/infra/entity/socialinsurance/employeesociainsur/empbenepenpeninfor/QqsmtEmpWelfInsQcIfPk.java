@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.shared.infra.repository.socialinsurance.employeesociainsur.empbenepenpeninfor;
+package nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.empbenepenpeninfor;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;

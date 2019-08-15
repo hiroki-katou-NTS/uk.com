@@ -1,15 +1,14 @@
 package nts.uk.ctx.pr.report.dom.printdata.socinsurnoticreset;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.enums.EnumAdaptor;
 
 import java.util.Optional;
 
 /**
  * 社会保険届作成設定
  */
-@AllArgsConstructor
 @Getter
 @Setter
 public class SocialInsurNotiCreateSet {
@@ -70,4 +69,18 @@ public class SocialInsurNotiCreateSet {
      */
     private Optional<LineFeedCode> lineFeedCode;
 
+    public SocialInsurNotiCreateSet(String userId, String cid, int officeInformation, int businessArrSymbol, int outputOrder, int printPersonNumber, int submittedName, int insuredNumber, String fdNumber, Integer textPersonNumber, Integer outputFormat, Integer lineFeedCode) {
+        this.cid = cid;
+        this.userId = userId;
+        this.officeInformation = EnumAdaptor.valueOf(officeInformation, BusinessDivision.class);
+        this.businessArrSymbol = EnumAdaptor.valueOf(businessArrSymbol, BussEsimateClass.class);
+        this.outputOrder = EnumAdaptor.valueOf(outputOrder, SocialInsurOutOrder.class);
+        this.printPersonNumber = EnumAdaptor.valueOf(printPersonNumber, PersonalNumClass.class);
+        this.submittedName = EnumAdaptor.valueOf(submittedName, SubNameClass.class);
+        this.insuredNumber = EnumAdaptor.valueOf(insuredNumber, InsurPersonNumDivision.class);
+        this.fdNumber = fdNumber == null ? Optional.empty() : Optional.of(new FdNumber(fdNumber));
+        this.textPersonNumber = textPersonNumber == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(textPersonNumber, TextPerNumberClass.class));
+        this.outputFormat = outputFormat == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(outputFormat, OutputFormatClass.class));
+        this.lineFeedCode = lineFeedCode == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(lineFeedCode, LineFeedCode.class));
+    }
 }
