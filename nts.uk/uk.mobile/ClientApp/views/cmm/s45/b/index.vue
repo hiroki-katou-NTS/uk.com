@@ -39,7 +39,7 @@
       v-model="selectedValue"
       name="CMMS45_5"
       v-bind:columns="{title: 'col-3 col-md-3 pr-0', input: 'col-5 col-md-5 pl-2'}">
-      <option v-for="(item, k) in lstAppType" v-bind:key="k" :value="item.code">{{item.appName}}</option>
+      <option v-for="item in lstAppType" v-bind:key="item.code" :value="item.code">{{item.appName}}</option>
     </nts-dropdown>
     <!-- Button Change Mode B2_2-->
     <button v-if="filterByAppType.length > 0" v-bind:class = "btnChangeMode.class" class="btn-block p-1 m-1 mt-2"  v-on:click="modeAppr = !modeAppr">{{btnChangeMode.name | i18n}}</button>
@@ -70,7 +70,7 @@
                   <!-- Check box -->
                   <div v-if="modeAppr" class="col-1 p-0 align-middle text-center pt-2">
                     <div v-if="item.frameStatus">
-                    <input v-model="lstAppr" type="checkbox" v-bind:value="item.id  " class="input-control" />
+                    <input v-model="lstAppr" type="checkbox" v-bind:value="item.id" class="input-control" />
                     </div>
                   </div>
                   <!-- Reflect status -->
@@ -96,9 +96,9 @@
     </div>
     <!-- Button Approve B2_4 -->
     <div class="fixed-bottom px-2 py-1" v-if="modeAppr" v-bind:class="{'bg-white': disableBtn(checkeds)}">
-      <button v-bind:disabled = "disableBtn(checkeds)" class = 'btn btn-primary btn-block' v-on:click="processAppr" >{{lstAppr.length == 0 ? 'CMMS45_56' : 'CMMS45_57' | i18n(`${lstAppr.length}`)}}</button>
+      <button v-bind:disabled = "disableBtn(checkeds)" class = 'btn btn-primary btn-block' 
+        v-on:click="processAppr" >{{lstAppr.length == 0 ? 'CMMS45_56' : 'CMMS45_57' | i18n(`${lstAppr.length}`)}}</button>
     </div>
-    <!-- <button v-on:click="callE">call E</button> -->
     <to-top class="to-top"/>
   </div>
 </template>

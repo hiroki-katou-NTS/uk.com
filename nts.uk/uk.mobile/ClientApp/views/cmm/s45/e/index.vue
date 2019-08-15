@@ -2,7 +2,7 @@
 <div class="cmms45e">
     <!-- Header -->
     <div class="modal-header">
-      <a v-on:click="callBack">
+      <a v-on:click="callBack" class="uk-text-white">
         <i class="fas fa-arrow-circle-left"></i>
         {{ 'CMMS45_67' | i18n }}
       </a>
@@ -44,15 +44,9 @@
     </div>
     <!-- E3_1 -->
     <div class="ml-4 mr-4">
-    <button class=" btn btn-secondary btn-block" >
-        <a v-on:click="remand">
-            <i class="fas fa-undo"></i>
-        {{'CMMS45_70' | i18n}}
-        </a>
+    <button class=" btn btn-secondary btn-block" v-on:click="remand">
+        <a><i class="fas fa-undo"></i>{{'CMMS45_70' | i18n}}</a>
     </button>
     </div>
-
-
-
 </div>
 </template>

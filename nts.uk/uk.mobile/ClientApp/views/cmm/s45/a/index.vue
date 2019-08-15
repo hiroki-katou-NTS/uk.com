@@ -25,12 +25,12 @@
       v-model="selectedValue"
       name="CMMS45_5"
       v-bind:columns="{title: 'col-3 col-md-3 pr-0', input: 'col-5 col-md-5 pl-2'}">
-      <option v-for="(item, k) in lstAppType" v-bind:key="k" :value="item.code">{{item.appName}}</option>
+      <option v-for="item in lstAppType" v-bind:key="item.code" :value="item.code">{{item.appName}}</option>
     </nts-dropdown>
 
     <!-- A3_1: list Application -->
     <ul class="list-group list-group-selection list-group-flush">
-      <li  class="list-group-item" v-for="(item,k) in filterByAppType" v-bind:key="k" :value="item.id" v-on:click="goToDetail(item.id)">
+      <li  class="list-group-item" v-for="item in filterByAppType" v-bind:key="item.id" :value="item.id" v-on:click="goToDetail(item.id)">
           <div class="row">
               <div class="col-3 pl-2 pr-0">
                   <span v-bind:class = "item.reflectCss" class="p-2 d-block">{{item.reflectStatus}}</span>
