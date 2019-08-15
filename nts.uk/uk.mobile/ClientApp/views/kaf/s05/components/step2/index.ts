@@ -159,7 +159,129 @@ export class KafS05aStep2Component extends Vue {
             return;
         }
 
-        this.$emit('toStep3', this.kafs05ModelStep2);
+        if (!self.displayCaculationTime) {
+            this.$emit('toStep3', self);
+
+            return;
+        }
+
+        this.$mask('show', { message: true });
+        let param: any = {
+            overtimeHours: _.map(self.overtimeHours, (item) => this.initCalculateData(item)),
+            bonusTimes: _.map(self.bonusTimes, (item) => this.initCalculateData(item)),
+            prePostAtr: self.prePostSelected,
+            appDate: _.isNil(self.appDate) ? null : this.$dt(self.appDate),
+            siftCD: self.siftCD,
+            workTypeCode: self.workTypeCd,
+            startTimeRests: _.isEmpty(self.restTime) ? [] : _.map(self.restTime, (x) => x.restTimeInput.start),
+            endTimeRests: _.isEmpty(self.restTime) ? [] : _.map(self.restTime, (x) => x.restTimeInput.end),
+            startTime: _.isNil(self.workTimeInput.start) ? null : self.workTimeInput.start,
+            endTime: _.isNil(self.workTimeInput.end) ? null : self.workTimeInput.end,
+            displayCaculationTime: self.displayCaculationTime,
+        };
+
+        let overtimeHoursResult: Array<any>;
+        let overtimeHoursbk = self.overtimeHours.slice().concat(self.bonusTimes.slice());
+
+        this.$http.post('at', servicePath.getCalculationResultMob, param).then((result: { data: any }) => {
+            _.remove(self.overtimeHours);
+            _.remove(self.bonusTimes);
+            overtimeHoursResult = result.data.preActualColorResult.resultLst;
+            if (overtimeHoursResult != null) {
+                for (let i = 0; i < overtimeHoursResult.length; i++) {
+                    //残業時間
+                    if (overtimeHoursResult[i].attendanceID == 1) {
+                        if (overtimeHoursResult[i].frameNo != 11 && overtimeHoursResult[i].frameNo != 12) {
+                            self.overtimeHours.push({
+                                companyID: '',
+                                appID: '',
+                                attendanceID: overtimeHoursResult[i].attendanceID,
+                                attendanceName: '',
+                                frameNo: overtimeHoursResult[i].frameNo,
+                                timeItemTypeAtr: 0,
+                                frameName: overtimeHoursbk[i].frameName,
+                                applicationTime: overtimeHoursResult[i].appTime,
+                                preAppTime: overtimeHoursResult[i].preAppTime,
+                                caculationTime: overtimeHoursResult[i].actualTime,
+                                nameID: '#[KAF005_55]',
+                                itemName: 'KAF005_55',
+                                color: '',
+                                preAppExceedState: overtimeHoursResult[i].preAppError,
+                                actualExceedState: overtimeHoursResult[i].actualError,
+                            });
+                        } else if (overtimeHoursResult[i].frameNo == 11) {
+                            self.overtimeHours.push({
+                                companyID: '',
+                                appID: '',
+                                attendanceID: overtimeHoursResult[i].attendanceID,
+                                attendanceName: '',
+                                frameNo: overtimeHoursResult[i].frameNo,
+                                timeItemTypeAtr: 0,
+                                frameName: 'KAF005_63',
+                                applicationTime: overtimeHoursResult[i].appTime,
+                                preAppTime: overtimeHoursResult[i].preAppTime,
+                                caculationTime: overtimeHoursResult[i].actualTime,
+                                nameID: '#[KAF005_64]',
+                                itemName: 'KAF005_55',
+                                color: '',
+                                preAppExceedState: overtimeHoursResult[i].preAppError,
+                                actualExceedState: overtimeHoursResult[i].actualError,
+                            });
+                        } else if (overtimeHoursResult[i].frameNo == 12) {
+                            self.overtimeHours.push({
+                                companyID: '',
+                                appID: '',
+                                attendanceID: overtimeHoursResult[i].attendanceID,
+                                attendanceName: '',
+                                frameNo: overtimeHoursResult[i].frameNo,
+                                timeItemTypeAtr: 0,
+                                frameName: 'KAF005_65',
+                                applicationTime: overtimeHoursResult[i].appTime,
+                                preAppTime: overtimeHoursResult[i].preAppTime,
+                                caculationTime: overtimeHoursResult[i].actualTime,
+                                nameID: '#[KAF005_66]',
+                                itemName: 'KAF005_55',
+                                color: '',
+                                preAppExceedState: overtimeHoursResult[i].preAppError,
+                                actualExceedState: overtimeHoursResult[i].actualError,
+                            });
+                        }
+                    }
+                    //加給時間
+                    if (overtimeHoursResult[i].attendanceID == 3) {
+                        self.bonusTimes.push({
+                            companyID: '',
+                            appID: '',
+                            attendanceID: overtimeHoursResult[i].attendanceID,
+                            attendanceName: '',
+                            frameNo: overtimeHoursResult[i].frameNo,
+                            timeItemTypeAtr: overtimeHoursbk[i].timeItemTypeAtr,
+                            frameName: overtimeHoursbk[i].frameName,
+                            applicationTime: overtimeHoursResult[i].appTime,
+                            preAppTime: overtimeHoursResult[i].preAppTime,
+                            caculationTime: null,
+                            nameID: '',
+                            itemName: '',
+                            color: '',
+                            preAppExceedState: overtimeHoursResult[i].preAppError,
+                            actualExceedState: overtimeHoursResult[i].actualError,
+                        });
+                    }
+                }
+            }
+            this.$emit('toStep3', this.kafs05ModelStep2);
+            this.$mask('hide');
+        }).catch((res: any) => {
+            if (res.messageId == 'Msg_424') {
+                this.$modal.error({ messageId: 'Msg_424', messageParams: [res.parameterIds[0], res.parameterIds[1], res.parameterIds[2]] });
+            } else if (res.messageId == 'Msg_1508') {
+                this.$modal.error({ messageId: 'Msg_1508', messageParams: [res.parameterIds[0]] });
+            } else {
+                this.$modal.error({ messageId: res.messageId }).then(() => {
+                    this.$goto('ccg008a');
+                });
+            }
+        });
     }
 
     public getComboBoxReason(selectID: string, listID: Array<any>, displaySet: boolean): string {
@@ -190,4 +312,25 @@ export class KafS05aStep2Component extends Vue {
 
         return count;
     }
+
+    public initCalculateData(item: any): any {
+        return {
+            companyID: item.companyID,
+            appID: item.appID,
+            attendanceID: item.attendanceID,
+            attendanceName: item.attendanceName,
+            frameNo: item.frameNo,
+            timeItemTypeAtr: item.timeItemTypeAtr,
+            frameName: item.frameName,
+            applicationTime: item.applicationTime,
+            preAppTime: null,
+            caculationTime: null,
+            nameID: item.nameID,
+            itemName: item.itemName
+        };
+    }
 }
+
+const servicePath = {
+    getCalculationResultMob: 'at/request/application/overtime/getCalculationResultMob',
+};

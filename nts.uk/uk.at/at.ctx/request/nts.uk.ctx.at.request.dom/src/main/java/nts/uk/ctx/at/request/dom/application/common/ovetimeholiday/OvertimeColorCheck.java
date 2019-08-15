@@ -15,8 +15,6 @@ public class OvertimeColorCheck {
 	
 	public Integer appTime;
 	
-	public Integer calcTime;
-	
 	public boolean calcError;
 	
 	public Integer preAppTime;
@@ -40,14 +38,6 @@ public class OvertimeColorCheck {
 		overtimeColorCheck.attendanceID = attendanceID;
 		overtimeColorCheck.frameNo = frameNo;
 		overtimeColorCheck.appTime = appTime;
-		return overtimeColorCheck;
-	}
-	
-	public static OvertimeColorCheck createFromCalc(OvertimeInputCaculation overtimeInputCaculation){
-		OvertimeColorCheck overtimeColorCheck = new OvertimeColorCheck();
-		overtimeColorCheck.attendanceID = overtimeInputCaculation.getAttendanceID();
-		overtimeColorCheck.frameNo = overtimeInputCaculation.getFrameNo();
-		overtimeColorCheck.calcTime = overtimeInputCaculation.getResultCaculation();
 		return overtimeColorCheck;
 	}
 	

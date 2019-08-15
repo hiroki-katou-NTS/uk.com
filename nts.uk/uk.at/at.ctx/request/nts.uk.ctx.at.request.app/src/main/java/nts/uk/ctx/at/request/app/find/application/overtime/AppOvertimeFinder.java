@@ -352,7 +352,6 @@ public class AppOvertimeFinder {
 			/*caculationTimeHours = commonOvertimeHoliday.preActualExceededCheckMob(companyID, appDate == null ? null : GeneralDate.fromString(appDate, DATE_FORMAT),
 					inputDate, prePostAtr, employeeID, siftCD, overtimeInputCaculations, caculationTimeHours);*/
 			//事前申請・実績超過チェック
-			List<OvertimeColorCheck> calcTimeList = overtimeInputCaculations.stream().map(item -> OvertimeColorCheck.createFromCalc(item)).collect(Collectors.toList());
 			List<OvertimeColorCheck> overTimeLst  = overtimeHours.stream().map(item -> OvertimeColorCheck.createFromOverTimeInput(item)).collect(Collectors.toList());
 			List<OvertimeColorCheck> bonusTimeLst  = bonusTimes.stream().map(item -> OvertimeColorCheck.createFromOverTimeInput(item)).collect(Collectors.toList());
 			overTimeLst.addAll(bonusTimeLst);
@@ -372,7 +371,7 @@ public class AppOvertimeFinder {
 			// 07_事前申請・実績超過チェック(07_đơn xin trước. check vượt quá thực tế )
 			PreActualColorResult preActualColorResult = preActualColorCheck.preActualColorCheck(preExcessDisplaySetting,
 					performanceExcessAtr, ApplicationType.OVER_TIME_APPLICATION, PrePostAtr.values()[prePostAtr],
-					withdrawalAppSet.getOverrideSet(), Optional.empty(), calcTimeList, overTimeLst,
+					withdrawalAppSet.getOverrideSet(), Optional.empty(), overtimeInputCaculations, overTimeLst,
 					preAppCheckResult.opAppBefore, preAppCheckResult.beforeAppStatus, actualStatusCheckResult.actualLst,
 					actualStatusCheckResult.actualStatus);
 			result.setPreActualColorResult(preActualColorResult);			
