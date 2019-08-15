@@ -241,7 +241,7 @@ const modal = {
                                                     <div class="modal-header uk-bg-teal rounded-0" v-bind:key="hasTitle">
                                                         <h4 class="modal-title text-white">
                                                             <template v-if="brsize">
-                                                                <i class="fas fa-angle-left mr-1" v-on:click="show = false" v-bindkey="'mobilesize'"></i>
+                                                                <i class="fas fa-angle-left mr-1" v-on:click="show = false" v-bind:key="'mobilesize'"></i>
                                                             </template>
                                                             <template v-else></template>
                                                             <span>{{title | i18n}}</span>
