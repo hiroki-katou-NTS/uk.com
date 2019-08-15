@@ -61,8 +61,8 @@
             <ul class="list-group list-group-selection list-group-flush">
               <li
                 class="list-group-item mb-0"
-                v-for="(item,k) in emp.lstApp"
-                v-bind:key="k"
+                v-for="item in emp.lstApp"
+                v-bind:key="item.id"
                 :value="item.id"
                 v-on:click="() => !modeAppr && goToDetail(item.id)"
               >
