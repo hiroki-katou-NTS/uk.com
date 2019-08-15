@@ -6,11 +6,13 @@ import nts.uk.ctx.pr.report.dom.printdata.socinsurnoticreset.SocialInsurNotiCrea
 import nts.uk.ctx.pr.shared.dom.salgenpurposeparam.*;
 import nts.uk.shr.com.context.AppContexts;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Stateless
 public class SocialInsurNotiCreateSetFinder {
 
     @Inject
