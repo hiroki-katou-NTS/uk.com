@@ -38,32 +38,22 @@ new (RootApp.extend({
                     self.$modal.warn({ messageId: 'Msg_1533' });
                 }
             })
+            .then(() => self.$auth.token)
+            .then((tk: string | null) => {
+                if (tk) {
+                    // xử lý các hàm lấy dữ liệu cần thiết ở đây
+                    SideMenu.reload();
+                }
+            })
+            .then(() => self.$http.resources)
+            .then((resr: any) => {
+                obj.merge(resources.jp, resr, true);
+            })
             .then(() => {
-                self.$auth.token
-                    .then((tk: string | null) => {
-                        if (tk) {
-                            // xử lý các hàm lấy dữ liệu cần thiết ở đây
-                            SideMenu.reload();
-                        }
-                    })
-                    .then(() => {
-                        self.$http.resources
-                            .then((resr: any) => {
-                                obj.merge(resources.jp, resr, true);
-                            })
-                            .then(() => {
-                                Language.refresh();
-                            })
-                            .then(() => {
-                                self.$mask('hide');
-                            })
-                            .catch(() => {
-                                self.$mask('hide');
-                            });
-                    })
-                    .catch(() => {
-                        self.$mask('hide');
-                    });
+                Language.refresh();
+            })
+            .then(() => {
+                self.$mask('hide');
             })
             .catch(() => {
                 self.$mask('hide');
