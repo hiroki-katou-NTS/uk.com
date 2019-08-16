@@ -39,6 +39,9 @@ import { OvertimeAgreement, AgreementTimeStatusOfMonthly, Kafs05Model } from '..
                     messageId: 'MsgB_30'
                 }
             },
+            workTypeCd: {
+                required: true,
+            }
         },
     },
 })
@@ -117,6 +120,8 @@ export class KafS05aStep1Component extends Vue {
                     self.resetTimeRange++;
                 });
             }
+        }).catch((res: any) => {
+            this.$modal.error({ messageId: res.messageId });
         });
     }
 
@@ -1158,8 +1163,7 @@ export class KafS05aStep1Component extends Vue {
         let self = this.kafs05ModelStep1;
 
         this.$http.post('at', servicePath.getDetailCheck, {
-            applicationID: self.appID,
-            baseDate: '2022/01/01',
+            applicationID: self.appID, baseDate: this.$dt(new Date())
         }).then((result: { data: any }) => {
             self.user = result.data.user;
             self.reflectPerState = result.data.reflectPlanState;

@@ -31,7 +31,7 @@
     <div>
         <div v-if="kafs05ModelStep3.beforeAppStatus" class="border border-warning rounded p-1 mt-2 alarm-message" role="alert">
             <fa-font icon="exclamation-triangle" class="text-danger m-2" />
-            <div>{{ 'Msg_1557' | i18n(kafs05ModelStep3.appDate) }}</div>
+            <div>{{ 'Msg_1557' | i18n($dt(kafs05ModelStep3.appDate)) }}</div>
         </div>
         <div v-if="hasPreAppError" class="border border-warning rounded p-1 mt-2 alarm-message" role="alert">
             <fa-font icon="exclamation-circle" class="text-danger m-2" />
@@ -154,7 +154,7 @@
                 <div class="mb-2" v-for="(item, i) of kafs05ModelStep3.overtimeHours">
                     <div class="row">
                         <div class="col-4">
-                            <span class="small-header">{{item.frameName | i18n}}</span>
+                            <span class="small-header-framename">{{item.frameName | i18n}}</span>
                         </div>
                         <div class="col-8">
                             <span v-if="null != item.applicationTime">{{item.applicationTime | timedr}}</span>

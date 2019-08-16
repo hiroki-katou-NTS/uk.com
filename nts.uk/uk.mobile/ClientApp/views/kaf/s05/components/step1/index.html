@@ -37,7 +37,7 @@
                 <div class="confirm-item mb-2">
                     <span>{{kafs05ModelStep1.employeeName}}</span>
                     <span v-if="null != kafs05ModelStep1.enteredPersonName && kafs05ModelStep1.enteredPersonName != kafs05ModelStep1.employeeName"
-                        class="small-header"></BR>(代行者：{{kafs05ModelStep1.enteredPersonName}})</span>
+                        class="small-header"></BR>{{'KAFS05_53' | i18n(kafs05ModelStep1.enteredPersonName)}}</span>
                 </div>
             </div>
             <div class="card card-label">
@@ -93,9 +93,10 @@
                     :disabled="!kafs05ModelStep1.workTypeChangeFlg">
                     <span class="badge badge-secondary">{{kafs05ModelStep1.siftCD ? kafs05ModelStep1.siftCD : ''}}</span>
                     <span>{{kafs05ModelStep1.siftCD ? kafs05ModelStep1.siftName : '未設定'}}</span>
-                    <span class="d-block mt-1">{{kafs05ModelStep1.siftCD ? kafs05ModelStep1.selectedWorkTime : ''}}</span>
+                    <span class="d-block mt-1">{{kafs05ModelStep1.siftCD ? kafs05ModelStep1.selectedWorkTime : '未設定'}}</span>
                 </button>
             </div>
+            <v-errors v-model="$errors.kafs05ModelStep1.workTypeCd" class="d-block mt-0" />
         </div>
         <div class="card card-label" v-if="kafs05ModelStep1.displayCaculationTime">
             <div class="card-header">

@@ -169,8 +169,6 @@ export class KafS05aStep3Component extends Vue {
                 this.$mask('hide');
             });
         }
-
-
     }
 
     public contentBefRegColorConfirmDone(overtime, data) {
@@ -298,7 +296,12 @@ export class KafS05aStep3Component extends Vue {
 
         }).catch((res: any) => {
             if (res.optimisticLock == true) {
-                this.$modal.error({ messageId: 'Msg_197' });
+                this.$modal.error({ messageId: 'Msg_197' }).then((value) => {
+                    this.$modal('cmms45c', { 'listAppMeta': [this.kafs05ModelStep3.appID], 'currentApp': this.kafs05ModelStep3.appID }).then(() => {
+                        this.kafs05ModelStep3.step1Start = true;
+                        this.$emit('backToStep1', this.kafs05ModelStep3);
+                    });
+                });
             } else {
                 this.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
             }
