@@ -2298,6 +2298,10 @@ public class ProgramsManager {
 	public static final Program CMMS45E = new Program(WebAppId.MOBI, ProgramIdConsts.CMMS45E, "CMMS45E",
 			"/cmm/s45/e");
 	
+	/** The Constant KAFS05A. IN MOBILE */
+	public static final Program KAFS05B = new Program(WebAppId.MOBI, ProgramIdConsts.KAFS05B, "KAFS05B",
+			"/kaf/s05/b");
+	
 	/**
 	 * All programs map.
 	 */

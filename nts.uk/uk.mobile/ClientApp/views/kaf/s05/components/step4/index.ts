@@ -25,9 +25,13 @@ export class KafS05aStep4Component extends Vue {
     }
 
     public toConfirmList() {
-        if (this.kafs05ModelStep4.isCreate) {
+        let self = this;
+        if (self.kafs05ModelStep4.isCreate) {
             storage.local.removeItem('CMMS45_AppListExtractCondition');
         }
-        this.$modal('cmms45c', { 'listAppMeta': [this.kafs05ModelStep4.appID], 'currentApp': this.kafs05ModelStep4.appID });
+        self.$modal('cmms45c', { 'listAppMeta': [self.kafs05ModelStep4.appID], 'currentApp': self.kafs05ModelStep4.appID }).then(() => {
+            self.kafs05ModelStep4.step1Start = true;
+            self.$emit('backToStep1', self.kafs05ModelStep4);
+        });
     }
 }

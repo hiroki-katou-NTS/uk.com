@@ -1,7 +1,7 @@
 import { component, Prop, Watch } from '@app/core/component';
 import { _, Vue } from '@app/provider';
 import { KDL002Component } from '../../../../kdl/002';
-import { TimeWithDay, $ } from '@app/utils';
+import { TimeWithDay } from '@app/utils';
 import { OvertimeAgreement, AgreementTimeStatusOfMonthly, Kafs05Model } from '../common/CommonClass';
 
 @component({
@@ -23,7 +23,7 @@ import { OvertimeAgreement, AgreementTimeStatusOfMonthly, Kafs05Model } from '..
             prePostSelected: {
                 validateSwitchbox: {
                     test(value: number) {
-                        if (null == this.kafs05ModelStep1.appID && this.displayPrePostFlg) {
+                        if (this.kafs05ModelStep1.isCreate && this.kafs05ModelStep1.displayPrePostFlg) {
                             if (value != 0 && value != 1) {
                                 document.body.getElementsByClassName('valid-switchbox')[0].className += ' invalid';
 
@@ -52,17 +52,18 @@ export class KafS05aStep1Component extends Vue {
     }
 
     public mounted() {
-        if (this.kafs05ModelStep1.step1Start) {
-            this.$mask('show', { message: true });
+        let self = this;
+        if (self.$router.currentRoute.name == 'kafS05a') {
+            self.applyWatcher();
         }
-        if (null == this.kafs05ModelStep1.appID) {
-            this.applyWatcher();
-        } else {
-            this.kafs05ModelStep1.isCreate = false;
+        if (self.kafs05ModelStep1.step1Start) {
+            self.$mask('show', { message: true });
         }
     }
 
     public created() {
+        let self = this;
+
         if (this.kafs05ModelStep1.step1Start) {
             this.startPage();
         } else {
@@ -151,14 +152,17 @@ export class KafS05aStep1Component extends Vue {
             endTimeRests: _.isEmpty(self.restTime) ? [] : _.map(self.restTime, (x) => x.restTimeInput.end),
             startTime: _.isNil(self.workTimeInput.start) ? null : self.workTimeInput.start,
             endTime: _.isNil(self.workTimeInput.end) ? null : self.workTimeInput.end,
-            displayCaculationTime: self.displayCaculationTime
+            displayCaculationTime: self.displayCaculationTime,
+            isFromStepOne: true
         };
 
         let overtimeHoursResult: Array<any>;
+        let overtimeHoursbk = self.overtimeHours.slice().concat(self.bonusTimes.slice());
+
         this.$http.post('at', servicePath.getCalculationResultMob, param).then((result: { data: any }) => {
             _.remove(self.overtimeHours);
             _.remove(self.bonusTimes);
-            overtimeHoursResult = result.data.caculationTimes;
+            overtimeHoursResult = result.data.preActualColorResult.resultLst;
             if (overtimeHoursResult != null) {
                 for (let i = 0; i < overtimeHoursResult.length; i++) {
                     //残業時間
@@ -171,15 +175,15 @@ export class KafS05aStep1Component extends Vue {
                                 attendanceName: '',
                                 frameNo: overtimeHoursResult[i].frameNo,
                                 timeItemTypeAtr: 0,
-                                frameName: overtimeHoursResult[i].frameName,
-                                applicationTime: overtimeHoursResult[i].applicationTime,
+                                frameName: overtimeHoursbk[i].frameName,
+                                applicationTime: overtimeHoursResult[i].appTime,
                                 preAppTime: overtimeHoursResult[i].preAppTime,
-                                caculationTime: overtimeHoursResult[i].caculationTime,
+                                caculationTime: overtimeHoursResult[i].actualTime,
                                 nameID: '#[KAF005_55]',
                                 itemName: 'KAF005_55',
                                 color: '',
-                                preAppExceedState: overtimeHoursResult[i].preAppExceedState,
-                                actualExceedState: overtimeHoursResult[i].actualExceedState,
+                                preAppExceedState: overtimeHoursResult[i].preAppError,
+                                actualExceedState: overtimeHoursResult[i].actualError,
                             });
                         } else if (overtimeHoursResult[i].frameNo == 11) {
                             self.overtimeHours.push({
@@ -190,14 +194,14 @@ export class KafS05aStep1Component extends Vue {
                                 frameNo: overtimeHoursResult[i].frameNo,
                                 timeItemTypeAtr: 0,
                                 frameName: 'KAF005_63',
-                                applicationTime: overtimeHoursResult[i].applicationTime,
+                                applicationTime: overtimeHoursResult[i].appTime,
                                 preAppTime: overtimeHoursResult[i].preAppTime,
-                                caculationTime: overtimeHoursResult[i].caculationTime,
+                                caculationTime: overtimeHoursResult[i].actualTime,
                                 nameID: '#[KAF005_64]',
                                 itemName: 'KAF005_55',
                                 color: '',
-                                preAppExceedState: overtimeHoursResult[i].preAppExceedState,
-                                actualExceedState: overtimeHoursResult[i].actualExceedState,
+                                preAppExceedState: overtimeHoursResult[i].preAppError,
+                                actualExceedState: overtimeHoursResult[i].actualError,
                             });
                         } else if (overtimeHoursResult[i].frameNo == 12) {
                             self.overtimeHours.push({
@@ -208,14 +212,14 @@ export class KafS05aStep1Component extends Vue {
                                 frameNo: overtimeHoursResult[i].frameNo,
                                 timeItemTypeAtr: 0,
                                 frameName: 'KAF005_65',
-                                applicationTime: overtimeHoursResult[i].applicationTime,
+                                applicationTime: overtimeHoursResult[i].appTime,
                                 preAppTime: overtimeHoursResult[i].preAppTime,
-                                caculationTime: overtimeHoursResult[i].caculationTime,
+                                caculationTime: overtimeHoursResult[i].actualTime,
                                 nameID: '#[KAF005_66]',
                                 itemName: 'KAF005_55',
                                 color: '',
-                                preAppExceedState: overtimeHoursResult[i].preAppExceedState,
-                                actualExceedState: overtimeHoursResult[i].actualExceedState,
+                                preAppExceedState: overtimeHoursResult[i].preAppError,
+                                actualExceedState: overtimeHoursResult[i].actualError,
                             });
                         }
                     }
@@ -227,16 +231,16 @@ export class KafS05aStep1Component extends Vue {
                             attendanceID: overtimeHoursResult[i].attendanceID,
                             attendanceName: '',
                             frameNo: overtimeHoursResult[i].frameNo,
-                            timeItemTypeAtr: overtimeHoursResult[i].timeItemTypeAtr,
-                            frameName: overtimeHoursResult[i].frameName,
-                            applicationTime: overtimeHoursResult[i].applicationTime,
+                            timeItemTypeAtr: overtimeHoursbk[i].timeItemTypeAtr,
+                            frameName: overtimeHoursbk[i].frameName,
+                            applicationTime: overtimeHoursResult[i].appTime,
                             preAppTime: overtimeHoursResult[i].preAppTime,
                             caculationTime: null,
                             nameID: '',
                             itemName: '',
                             color: '',
-                            preAppExceedState: overtimeHoursResult[i].preAppExceedState,
-                            actualExceedState: overtimeHoursResult[i].actualExceedState,
+                            preAppExceedState: overtimeHoursResult[i].preAppError,
+                            actualExceedState: overtimeHoursResult[i].actualError,
                         });
                     }
                 }
@@ -258,7 +262,7 @@ export class KafS05aStep1Component extends Vue {
     public startPage() {
         let self = this.kafs05ModelStep1;
 
-        if (null != self.appID) {
+        if (!_.isNil(self.appID)) {
             this.getApprovalData();
 
             this.$http.post('at', servicePath.findByAppID, self.appID)

@@ -66,7 +66,6 @@ export class KafS05aComponent extends Vue {
     public backToStep1(kafs05Model: Kafs05Model) {
         this.step = 'step1';
         this.kafs05Model = _.cloneWith(kafs05Model);
-        this.kafs05Model.step1Start = false;
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 

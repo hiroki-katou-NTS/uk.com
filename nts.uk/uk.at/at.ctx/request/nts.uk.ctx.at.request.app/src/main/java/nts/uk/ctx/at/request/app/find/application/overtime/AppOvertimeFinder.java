@@ -297,18 +297,21 @@ public class AppOvertimeFinder {
 	
 	public OverTimeDto getCalculationResultMob(List<CaculationTime> overtimeHours,
 			List<CaculationTime> bonusTimes, int prePostAtr, String appDate, String siftCD, String workTypeCode,
-			Integer startTime, Integer endTime, List<Integer> startTimeRests, List<Integer> endTimeRests, boolean displayCaculationTime) {
+			Integer startTime, Integer endTime, List<Integer> startTimeRests, List<Integer> endTimeRests, boolean displayCaculationTime, boolean isFromStepOne) {
 
 		String companyID = AppContexts.user().companyId();
 		String employeeID = AppContexts.user().employeeId();
-		GeneralDateTime inputDate = GeneralDateTime.now();
+		GeneralDate generalAppDate = appDate == null ? null : GeneralDate.fromString(appDate, DATE_FORMAT);
+		Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet = this.overtimeRestAppCommonSetRepository.getOvertimeRestAppCommonSetting(companyID, ApplicationType.OVER_TIME_APPLICATION.value);
+		Optional<AppTypeDiscreteSetting> appTypeDiscreteSetting = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(companyID,  ApplicationType.OVER_TIME_APPLICATION.value);
+		OverTimeDto result = new OverTimeDto();
 		
 		int rootAtr = 1;
 		// 1-1.新規画面起動前申請共通設定を取得する
 		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(
 				companyID, employeeID, rootAtr,
 				EnumAdaptor.valueOf(ApplicationType.OVER_TIME_APPLICATION.value, ApplicationType.class),
-				appDate == null ? null : GeneralDate.fromString(appDate, DATE_FORMAT));
+				generalAppDate);
 		// 承認ルートを取得する
 		MailDestinationCache mailDestCache = this.approvalRootStateAdapter
 				.createMailDestinationCache(AppContexts.user().companyId());
@@ -337,22 +340,47 @@ public class AppOvertimeFinder {
 		}
 		
 		// 勤務情報から残業時間を計算する
-		List<CaculationTime> caculationTimeHours = new ArrayList<CaculationTime>();
+		//List<CaculationTime> caculationTimeHours = new ArrayList<CaculationTime>();
 		if (displayCaculationTime == false) {
 			return null;
 		} else {
 			// 6.計算処理 : 
-			List<OvertimeInputCaculation> overtimeInputCaculations = commonOvertimeHoliday.calculator(appCommonSettingOutput, appDate, siftCD, 
-					workTypeCode, startTime, endTime, startTimeRests, endTimeRests);
-			caculationTimeHours = this.overtimeSixProcess.getCaculationOvertimeHours(companyID, employeeID, appDate, ApplicationType.OVER_TIME_APPLICATION.value, overtimeHours, overtimeInputCaculations);
-
+			List<OvertimeInputCaculation> overtimeInputCaculations = new ArrayList<>();
+			if (isFromStepOne) {
+				overtimeInputCaculations = commonOvertimeHoliday.calculator(appCommonSettingOutput, appDate, siftCD, 
+						workTypeCode, startTime, endTime, startTimeRests, endTimeRests);
+			}			
+					
+			// caculationTimeHours = this.overtimeSixProcess.getCaculationOvertimeHours(companyID, employeeID, appDate, ApplicationType.OVER_TIME_APPLICATION.value, overtimeHours, overtimeInputCaculations);
+			/*caculationTimeHours = commonOvertimeHoliday.preActualExceededCheckMob(companyID, appDate == null ? null : GeneralDate.fromString(appDate, DATE_FORMAT),
+					inputDate, prePostAtr, employeeID, siftCD, overtimeInputCaculations, caculationTimeHours);*/
 			//事前申請・実績超過チェック
-			caculationTimeHours = commonOvertimeHoliday.preActualExceededCheckMob(companyID, appDate == null ? null : GeneralDate.fromString(appDate, DATE_FORMAT),
-					inputDate, prePostAtr, employeeID, siftCD, overtimeInputCaculations, caculationTimeHours);
+			List<OvertimeColorCheck> overTimeLst  = overtimeHours.stream().map(item -> OvertimeColorCheck.createFromOverTimeInput(item)).collect(Collectors.toList());
+			List<OvertimeColorCheck> bonusTimeLst  = bonusTimes.stream().map(item -> OvertimeColorCheck.createFromOverTimeInput(item)).collect(Collectors.toList());
+			overTimeLst.addAll(bonusTimeLst);
+			
+			UseAtr preExcessDisplaySetting = overtimeRestAppCommonSet.get().getPreExcessDisplaySetting();
+			AppDateContradictionAtr performanceExcessAtr = overtimeRestAppCommonSet.get().getPerformanceExcessAtr();
+			WithdrawalAppSet withdrawalAppSet = withdrawalAppSetRepository.getWithDraw().get();
+			
+			// 07-01_事前申請状態チェック
+			PreAppCheckResult preAppCheckResult = preActualColorCheck.preAppStatusCheck(companyID,
+					employeeID, generalAppDate, ApplicationType.OVER_TIME_APPLICATION);
+			// 07-02_実績取得・状態チェック
+			ActualStatusCheckResult actualStatusCheckResult = preActualColorCheck.actualStatusCheck(companyID,
+					employeeID, generalAppDate, ApplicationType.OVER_TIME_APPLICATION,
+					workTypeCode, siftCD, withdrawalAppSet.getOverrideSet(),
+					Optional.empty());
+			// 07_事前申請・実績超過チェック(07_đơn xin trước. check vượt quá thực tế )
+			PreActualColorResult preActualColorResult = preActualColorCheck.preActualColorCheck(preExcessDisplaySetting,
+					performanceExcessAtr, ApplicationType.OVER_TIME_APPLICATION, PrePostAtr.values()[prePostAtr],
+					withdrawalAppSet.getOverrideSet(), Optional.empty(), overtimeInputCaculations, overTimeLst,
+					preAppCheckResult.opAppBefore, preAppCheckResult.beforeAppStatus, actualStatusCheckResult.actualLst,
+					actualStatusCheckResult.actualStatus);
+			result.setPreActualColorResult(preActualColorResult);			
 		}
 		
 		// 勤務情報確定後のデータを取得する
-		OverTimeDto result = new OverTimeDto();
 		// 社員の労働条件を取得する
 		// Optional<WorkingConditionItem> workingConditionItem = this.workingConditionService.findWorkConditionByEmployee(employeeID, baseDate);
 		
@@ -368,13 +396,7 @@ public class AppOvertimeFinder {
 			overTimeInputs.add(overtimeInputDto);
 		}
 		result.setOverTimeInputs(overTimeInputs);
-		
-		// 加給時間を取得
-		caculationTimeHours.addAll(bonusTimes);
-		result.setCaculationTimes(caculationTimeHours);
 
-		Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet = this.overtimeRestAppCommonSetRepository.getOvertimeRestAppCommonSetting(companyID, ApplicationType.OVER_TIME_APPLICATION.value);
-		Optional<AppTypeDiscreteSetting> appTypeDiscreteSetting = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(companyID,  ApplicationType.OVER_TIME_APPLICATION.value);
 		if(appTypeDiscreteSetting.isPresent()){
 			result.setTypicalReasonDisplayFlg(false);
 			// 申請定型理由を取得

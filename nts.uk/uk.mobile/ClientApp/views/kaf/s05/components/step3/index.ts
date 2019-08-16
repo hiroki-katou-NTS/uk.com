@@ -81,7 +81,7 @@ export class KafS05aStep3Component extends Vue {
             checkAppDate: false
         };
 
-        if (null != self.appID) {
+        if (!self.isCreate) {
             overtime.version = self.version;
             overtime.appID = self.appID;
             // EDITMODE 設定
@@ -92,7 +92,7 @@ export class KafS05aStep3Component extends Vue {
         }
 
         //登録
-        if (null == self.appID) {
+        if (self.isCreate) {
             this.$http.post('at', servicePath.beforeRegisterColorConfirm, overtime).then((result: { data: any }) => {
                 overtime.checkOver1Year = false;
                 this.contentBefRegColorConfirmDone(overtime, result.data);
@@ -112,11 +112,17 @@ export class KafS05aStep3Component extends Vue {
                         }
                     });
                 } else {
-                    this.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
+                    if (res.messageId == 'Msg_426') {
+                        this.$modal.error({ messageId: 'Msg_426', messageParams: [res.parameterIds[0]] }).then(() => {
+                            this.$goto('ccg007b');
+                        });
+                    } else {
+                        this.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
+                    }
                     this.$mask('hide');
                 }
             });
-        //更新
+            //更新
         } else {
             this.$http.post('at', servicePath.beforeRegisterColorConfirm, overtime).then((result: { data: any }) => {
                 let res = result.data;
@@ -132,7 +138,13 @@ export class KafS05aStep3Component extends Vue {
                     this.beforeUpdateProcess(overtime);
                 }
             }).catch((res: any) => {
-                this.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
+                if (res.messageId == 'Msg_426') {
+                    this.$modal.error({ messageId: 'Msg_426', messageParams: [res.parameterIds[0]] }).then(() => {
+                        this.$goto('ccg007b');
+                    });
+                } else {
+                    this.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
+                }
                 this.$mask('hide');
             });
         }
