@@ -42,4 +42,16 @@
     .table-36{
         margin-bottom: -1rem !important;
     }
+    .alarm-message{
+        background-color:#fff3cd; 
+        color:#856404; 
+        display:flex; 
+        align-items: center
+    }
+    .error-message{
+        background-color:#f8d7da; 
+        color:#721c24; 
+        display:flex; 
+        align-items: center
+    }
 }

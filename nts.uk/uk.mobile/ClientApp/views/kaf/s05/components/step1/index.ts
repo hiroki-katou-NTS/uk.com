@@ -162,6 +162,8 @@ export class KafS05aStep1Component extends Vue {
         this.$http.post('at', servicePath.getCalculationResultMob, param).then((result: { data: any }) => {
             _.remove(self.overtimeHours);
             _.remove(self.bonusTimes);
+            self.beforeAppStatus = result.data.preActualColorResult.beforeAppStatus;
+            self.actualStatus = result.data.preActualColorResult.actualStatus;
             overtimeHoursResult = result.data.preActualColorResult.resultLst;
             if (overtimeHoursResult != null) {
                 for (let i = 0; i < overtimeHoursResult.length; i++) {
@@ -273,6 +275,7 @@ export class KafS05aStep1Component extends Vue {
                     if (res.messageId == 'Msg_426') {
                         this.$modal.error({ messageId: res.messageId }).then(() => {
                             this.$goto('ccg007b');
+                            this.$auth.logout();
                         });
                     } else {
                         this.$modal.error({ messageId: res.messageId }).then(() => {
@@ -297,6 +300,7 @@ export class KafS05aStep1Component extends Vue {
                 if (res.messageId == 'Msg_426') {
                     this.$modal.error({ messageId: res.messageId }).then(() => {
                         this.$goto('ccg007b');
+                        this.$auth.logout();
                     });
                 } else {
                     this.$modal.error({ messageId: res.messageId }).then(() => {
@@ -842,6 +846,7 @@ export class KafS05aStep1Component extends Vue {
         if (!_.isNil(data.worktimeStart) && !_.isNil(data.worktimeEnd)) {
             self.selectedWorkTime = TimeWithDay.toString(data.worktimeStart) + '～' + TimeWithDay.toString(data.worktimeEnd);
         }
+        self.performanceExcessAtr = data.performanceExcessAtr;
     }
 
     public changeAppDateData(data: any) {

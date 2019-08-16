@@ -13,9 +13,6 @@ import { Kafs05Model } from '../common/CommonClass';
                     test(value: any) {
                         if (this.kafs05ModelStep2.enableOvertimeInput) {
                             for (let i of value) {
-                                if (this.kafs05ModelStep2.prePostSelected == 0 && i.frameNo == 12) {
-                                    continue;
-                                }
                                 if (!_.isNil(i.applicationTime)) {
                                     return true;
                                 }
@@ -27,7 +24,8 @@ import { Kafs05Model } from '../common/CommonClass';
                         return true;
                     },
                     messageId: 'MsgB_30'
-                }
+                },
+
             },
             selectedReason: {
                 checkNull: {
@@ -111,7 +109,7 @@ import { Kafs05Model } from '../common/CommonClass';
             },
             constraint: 'AppReason'
         },
-        
+
     },
     constraints: ['nts.uk.ctx.at.request.dom.application.AppReason'],
 })
@@ -148,12 +146,31 @@ export class KafS05aStep2Component extends Vue {
         this.$validate('kafs05ModelStep2.overtimeHours');
     }
 
+    private hasPreAppError: boolean = false;
+    private hasActualError: boolean = false;
+
     public created() {
         this.kafs05ModelStep2.step1Start = false;
+        this.kafs05ModelStep2.overtimeHours.forEach((overtimeHour) => {
+            if (overtimeHour.preAppExceedState) {
+                this.hasPreAppError = true;
+            }
+            if (overtimeHour.actualExceedState) {
+                this.hasActualError = true;
+            }
+        });
     }
 
     public next() {
         let self = this.kafs05ModelStep2;
+
+        // 実績なし 登録不可 or 打刻漏れ 超過エラー
+        if ((self.actualStatus == 3 && self.performanceExcessAtr == 2) || 
+            (self.actualStatus == 1 && this.hasActualError && self.performanceExcessAtr == 2)) {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            return;
+        } 
 
         this.$validate();
         if (!this.$valid) {
@@ -190,6 +207,8 @@ export class KafS05aStep2Component extends Vue {
         this.$http.post('at', servicePath.getCalculationResultMob, param).then((result: { data: any }) => {
             _.remove(self.overtimeHours);
             _.remove(self.bonusTimes);
+            self.beforeAppStatus = result.data.preActualColorResult.beforeAppStatus;
+            self.actualStatus = result.data.preActualColorResult.actualStatus;
             overtimeHoursResult = result.data.preActualColorResult.resultLst;
             if (overtimeHoursResult != null) {
                 for (let i = 0; i < overtimeHoursResult.length; i++) {
@@ -283,6 +302,7 @@ export class KafS05aStep2Component extends Vue {
             } else if (res.messageId == 'Msg_426') {
                 this.$modal.error({ messageId: 'Msg_426', messageParams: [res.parameterIds[0]] }).then(() => {
                     this.$goto('ccg007b');
+                    this.$auth.logout();
                 });
             } else {
                 this.$modal.error({ messageId: res.messageId }).then(() => {

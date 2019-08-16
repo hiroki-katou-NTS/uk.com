@@ -15,9 +15,20 @@ export class KafS05aStep3Component extends Vue {
     private comboBoxReason: string = null;
     private appReason: string = null;
     private divergenceReason: string = null;
+    private hasPreAppError: boolean = false;
+    private hasActualError: boolean = false;
 
     public created() {
         this.convertDisplayItem();
+
+        this.kafs05ModelStep3.overtimeHours.forEach((overtimeHour) => {
+            if (overtimeHour.preAppExceedState) {
+                this.hasPreAppError = true;
+            }
+            if (overtimeHour.actualExceedState) {
+                this.hasActualError = true;
+            }
+        });
     }
 
     public registerClick() {
@@ -45,6 +56,14 @@ export class KafS05aStep3Component extends Vue {
 
     public beforeRegisterColorConfirm() {
         let self = this.kafs05ModelStep3;
+
+        // 実績なし 登録不可 or 打刻漏れ 超過エラー
+        if ((self.actualStatus == 3 && self.performanceExcessAtr == 2) || 
+            (self.actualStatus == 1 && this.hasActualError && self.performanceExcessAtr == 2)) {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            return;
+        } 
 
         let overTimeShiftNightTmp: number = null;
         let flexExessTimeTmp: number = null;
@@ -115,6 +134,7 @@ export class KafS05aStep3Component extends Vue {
                     if (res.messageId == 'Msg_426') {
                         this.$modal.error({ messageId: 'Msg_426', messageParams: [res.parameterIds[0]] }).then(() => {
                             this.$goto('ccg007b');
+                            this.$auth.logout();
                         });
                     } else {
                         this.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
@@ -141,6 +161,7 @@ export class KafS05aStep3Component extends Vue {
                 if (res.messageId == 'Msg_426') {
                     this.$modal.error({ messageId: 'Msg_426', messageParams: [res.parameterIds[0]] }).then(() => {
                         this.$goto('ccg007b');
+                        this.$auth.logout();
                     });
                 } else {
                     this.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });

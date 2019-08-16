@@ -260,6 +260,8 @@ public class OverTimeDto {
 	
 	private PreActualColorResult preActualColorResult;
 	
+	private int performanceExcessAtr;
+	
 	public static OverTimeDto fromDomain(AppOverTime appOverTime){
 		return new OverTimeDto(
 				appOverTime.getVersion(),
@@ -324,7 +326,8 @@ public class OverTimeDto {
 				0,
 				0,
 				"",
-				null);
+				null,
+				0);
 	}
 	
 }
