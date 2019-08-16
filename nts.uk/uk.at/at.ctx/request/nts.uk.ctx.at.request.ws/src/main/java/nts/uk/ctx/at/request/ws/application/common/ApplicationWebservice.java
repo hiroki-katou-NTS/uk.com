@@ -39,10 +39,12 @@ import nts.uk.ctx.at.request.app.find.setting.request.application.ApplicationDea
 import nts.uk.ctx.at.request.dom.application.common.service.application.output.ApplicationForRemandOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InputGetDetailCheck;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.RemandCommand;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.MailSenderResult;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ApproveProcessResult;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.ScreenIdentifier;
 import nts.uk.shr.infra.web.util.StartPageLogService;
 
@@ -89,6 +91,9 @@ public class ApplicationWebservice extends WebService {
 	private ReflectAplicationCommmandHandler relect;
 	@Inject
 	private StartPageLogService writeLogSv;
+	
+	@Inject
+	private DetailBeforeUpdate detailBeforeUpdate;
 	
 	/**
 	 * approve application
@@ -277,6 +282,13 @@ public class ApplicationWebservice extends WebService {
 	@Path("getDetailMob")
 	public DetailMobDto getDetailMob(String appID) {
 		return finderApp.getDetailMob(appID);
+	}
+	
+	@POST
+	@Path("checkVersion")
+	public void checkVersion(VersionCheckParam param) {
+		String companyID = AppContexts.user().companyId();
+		detailBeforeUpdate.exclusiveCheck(companyID, param.appID, param.version);
 	}
 }
 
