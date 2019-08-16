@@ -6,5 +6,4 @@ import '@views/kdl';
 
 import '@views/cdl';
 import '@views/cmm';
-import '@views/test';
 
