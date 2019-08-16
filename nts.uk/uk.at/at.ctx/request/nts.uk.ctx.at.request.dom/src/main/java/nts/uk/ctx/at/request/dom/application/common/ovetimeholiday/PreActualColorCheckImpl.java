@@ -146,8 +146,8 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 							appDate, 
 							judgmentWorkTypeResult.getCalcWorkType(), 
 							judgmentWorkTimeResult.getCalcWorkTime(), 
-							null, 
-							null, 
+							recordWorkInfoImport.getAttendanceStampTimeFirst(), 
+							judgmentStampResult.getCalcLeaveStamp(), 
 							Collections.emptyList(), 
 							Collections.emptyList());
 			actualLst.addAll(dailyAttendanceTimeCaculationImport.getOverTime().entrySet()
