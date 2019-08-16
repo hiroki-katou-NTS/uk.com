@@ -145,7 +145,7 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 							employeeID, 
 							appDate, 
 							judgmentWorkTypeResult.getCalcWorkType(), 
-							null, 
+							judgmentWorkTimeResult.getCalcWorkTime(), 
 							null, 
 							null, 
 							Collections.emptyList(), 
