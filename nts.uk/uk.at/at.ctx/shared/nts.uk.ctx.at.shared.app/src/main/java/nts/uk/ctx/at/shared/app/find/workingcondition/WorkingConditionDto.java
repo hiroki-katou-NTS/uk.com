@@ -492,7 +492,9 @@ public class WorkingConditionDto extends PeregDomainDto {
 			dto.setMonthlyPattern(mp.v());
 		});
 
-		setScheduleMethod(dto, workingConditionItem.getScheduleMethod().get());
+		if (workingConditionItem.getScheduleMethod().isPresent()) {
+			setScheduleMethod(dto, workingConditionItem.getScheduleMethod().get());
+		}
 
 		PersonalWorkCategory workCategory = workingConditionItem.getWorkCategory();
 
