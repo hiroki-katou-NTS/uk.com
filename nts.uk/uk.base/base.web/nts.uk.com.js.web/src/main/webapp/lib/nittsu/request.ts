@@ -529,9 +529,9 @@ module nts.uk.request {
         }
         
         if (data === undefined) {
-            uk.sessionStorage.removeItem(STORAGE_KEY_TRANSFER_DATA);
+            uk.sessionStorage.removeItem(uk.request.STORAGE_KEY_TRANSFER_DATA);
         } else {
-            uk.sessionStorage.setItemAsJson(STORAGE_KEY_TRANSFER_DATA, { data, jump: { webAppId, path } });
+            uk.sessionStorage.setItemAsJson(uk.request.STORAGE_KEY_TRANSFER_DATA, data);
         }
         
         let resolvedPath = nts.uk.request.location.siteRoot
