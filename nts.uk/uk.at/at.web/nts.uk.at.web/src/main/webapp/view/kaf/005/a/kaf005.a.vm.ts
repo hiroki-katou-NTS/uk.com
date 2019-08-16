@@ -252,6 +252,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                             self.findBychangeAppDateData(data);
                             self.kaf000_a.getAppDataDate(0, moment(value).format(self.DATE_FORMAT), false,nts.uk.util.isNullOrEmpty(self.employeeID()) ? null : self.employeeID());
                             self.convertAppOvertimeReferDto(data);
+                            self.clearOvertimeColor();
                             nts.uk.ui.block.clear(); 
                             dfd.resolve(data);
                         }).fail((res) =>{
@@ -347,6 +348,23 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             return dfd.promise();
 
         }
+        
+        clearOvertimeColor(){
+            let self = this;
+            _.forEach(self.overtimeHours(), overtimeHour => {
+                overtimeHour.applicationTime(null);
+                overtimeHour.preAppTime(null);
+                overtimeHour.caculationTime(null);
+                overtimeHour.color(self.changeColor(1, overtimeHour.frameNo(), 0));
+            });   
+            _.forEach(self.bonusTimes(), bonusTime => {
+                bonusTime.applicationTime(null);
+                bonusTime.preAppTime(null);
+                bonusTime.caculationTime(null);
+                bonusTime.color(self.changeColor(3, bonusTime.frameNo(), 0));
+            });  
+        }
+        
         isShowReason(){
             let self =this;
             if(self.screenModeNew()){
@@ -868,6 +886,18 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                         overtimeHour.color(self.changeColor(1, overtimeHour.frameNo(), calcOT.errorCode));
                     }
                 });  
+                _.forEach(self.bonusTimes(), bonusTime => {
+                    let calcOT = _.find(data, item => {
+                        return item.attendanceID == 3 &&
+                            item.frameNo == bonusTime.frameNo();    
+                    });          
+                    if(!nts.uk.util.isNullOrUndefined(calcOT)){
+                        bonusTime.applicationTime(calcOT.applicationTime);
+                        bonusTime.preAppTime(nts.uk.util.isNullOrUndefined(calcOT.preAppTime) ? null : nts.uk.time.format.byId("Clock_Short_HM", parseInt(calcOT.preAppTime)));
+                        bonusTime.caculationTime(nts.uk.util.isNullOrUndefined(calcOT.caculationTime) ? null : nts.uk.time.format.byId("Clock_Short_HM", parseInt(calcOT.caculationTime)));
+                        bonusTime.color(self.changeColor(3, bonusTime.frameNo(), calcOT.errorCode));
+                    }
+                }); 
                 nts.uk.ui.block.clear();
                 if(!self.isEmptyOverTimeInput(ko.toJS(self.overtimeHours()))){
                     self.calculateFlag(0);
