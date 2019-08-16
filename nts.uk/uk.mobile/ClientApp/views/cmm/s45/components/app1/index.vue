@@ -175,7 +175,7 @@
                             <div class="col-5 uk-text-dark-gray child-font-size">{{ payTime.frameName | i18n }}</div>
                             <div class="col-2 pl-0">
                                 <span v-if="payTime.appTime!=null">{{ payTime.appTime | timept }}</span>
-                                <span v-else>{{'CMMS45_15' | i18n}}</span>
+                                <span v-else>--:--</span>
                             </div>
                             <div class="col-5 pl-3" v-if="isPostApp">
                                 <span v-if="payTime.preAppTime!=null" class="far fa-clock display-time child-font-size" 

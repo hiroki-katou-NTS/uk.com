@@ -145,7 +145,7 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 							employeeID, 
 							appDate, 
 							judgmentWorkTypeResult.getCalcWorkType(), 
-							judgmentWorkTimeResult.getCalcWorkTime(), 
+							null, 
 							null, 
 							null, 
 							Collections.emptyList(), 
@@ -240,7 +240,7 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 		}
 		calcWorkTime = screenWorkTime;
 		// 就業時間帯が変更されているかチェックする
-		if(actualWorkTime.equals(screenWorkTime)){
+		if(Strings.isNotBlank(actualWorkTime) && screenWorkTime.equals(actualWorkTime)){
 			workTimeChange = false;
 		} else {
 			workTimeChange = true;
@@ -358,7 +358,9 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 					if(opOverTimeInput.isPresent()){
 						// 事前申請時間に勤怠種類・枠NOに応じた時間を設定する
 						overtimeColorCheck.preAppTime = opOverTimeInput.get().getApplicationTime().v();
-						compareValue = overtimeColorCheck.preAppTime;
+						if(overtimeColorCheck.preAppTime!=null) {
+							compareValue = overtimeColorCheck.preAppTime;
+						}
 					}
 				}
 			} else {
@@ -384,7 +386,9 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 			if(opActual.isPresent()){
 				// 実績時間に勤怠種類・枠NOに応じた時間を設定する
 				overtimeColorCheck.actualTime = opActual.get().actualTime;
-				compareValue = overtimeColorCheck.actualTime;
+				if(overtimeColorCheck.actualTime!=null) {
+					compareValue = overtimeColorCheck.actualTime;
+				}
 			}
 		}
 		// 実績超過チェックをする必要があるかチェックする
