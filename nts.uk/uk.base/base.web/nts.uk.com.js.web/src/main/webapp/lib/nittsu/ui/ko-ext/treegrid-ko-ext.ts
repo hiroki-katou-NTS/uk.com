@@ -32,6 +32,7 @@ module nts.uk.ui.koExtentions {
             let rows = ko.unwrap(data.rows);
             let virtualization = ko.unwrap(!util.isNullOrUndefined(data.virtualization) ? data.virtualization : false);
             let virtualizationMode = ko.unwrap(!util.isNullOrUndefined(data.virtualizationMode) ? data.virtualizationMode : "");
+            let isFilter = ko.unwrap(!util.isNullOrUndefined(data.filter) ? data.filter : false);
             
             // Default.
             var showCheckBox = data.showCheckBox !== undefined ? ko.unwrap(data.showCheckBox) : true;
@@ -117,10 +118,21 @@ module nts.uk.ui.koExtentions {
                 
                 $treegrid.addClass("row-limited");
             }
+            
+            if(isFilter) {
+                features.push({ name: "Filtering", filterDelay : 100, filterDropDownAnimationDuration : 100 });
+            }
+            
 
             $treegrid.data("expand", new ExpandNodeHolder());
             $treegrid.data("autoExpanding", false);
             
+            let colSet = _.map(displayColumns, (col) => {
+                return { columnKey: col.key, readOnly: true };
+            });
+            features.push({ name: "Updating", editMode:   "cell", enableAddChild: false, 
+                            enableAddRow: false, enableDeleteRow: false, columnSettings: colSet });
+            var cols = $treegrid.ntsTreeView("formatColumns", displayColumns, features);
             // Init ig grid.
             $treegrid.igTreeGrid({
                 width: width,
@@ -128,7 +140,8 @@ module nts.uk.ui.koExtentions {
                 indentation: "12px",
                 dataSource: _.cloneDeep(options),
                 primaryKey: optionsValue,
-                columns: displayColumns,
+                columns: cols,
+                autoCommit: true,
                 childDataKey: optionsChild,
                 initialExpandDepth: nts.uk.util.isNullOrUndefined(initialExpandDepth) ? 10 : initialExpandDepth,
                 tabIndex: -1,
@@ -180,6 +193,11 @@ module nts.uk.ui.koExtentions {
                     }
                 }
             });
+            $treegrid.bind('cellChanging', () => {
+                $treegrid.data("notUpdate", true);
+                let optionX = data.dataSource !== undefined ? data.dataSource : data.options;
+                optionX($treegrid.igTreeGrid("option", "dataSource"));
+            });
             
             $treegrid.setupSearchScroll("igTreeGrid");
             
@@ -197,8 +215,11 @@ module nts.uk.ui.koExtentions {
             var options: Array<any> = ko.unwrap(data.dataSource !== undefined ? data.dataSource : data.options);
             var selectedValues: Array<any> = ko.unwrap(data.selectedValues);
             var singleValue = ko.unwrap(data.value);
-            
             let $treegrid = $(element);
+            if( $treegrid.data("notUpdate") === true) {
+                $treegrid.data("notUpdate", false);
+                return;
+            }
             // Update datasource.
             var originalSource = $(element).igTreeGrid('option', 'dataSource');
             if (!_.isEqual(originalSource, options)) {

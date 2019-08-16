@@ -48,7 +48,8 @@
 										primaryText: 'nodeText',
 										multiple: false,
 										enable: true,
-										showCheckBox: false}">
+										showCheckBox: false,
+										filter: true }">
 							</table>
 							
 							<table id="treegrid2-limited"
@@ -57,7 +58,7 @@
 										height: 250,
 										dataSource: items2,
 										value: singleSelectedCode,
-										columns: columns,
+										columns: columns, 
 										primaryKey: 'code',
 										childDataKey: 'childs',
 										primaryText: 'nodeText',
@@ -223,7 +224,9 @@
 											<td><b>Type:</b> array&lt;column&gt;<br /> An array of
 												column objects:<br /> <i>headerText:</i> Text for header<br />
 												<i>prop / key:</i> Property in data array for column<br /> <i>width:</i>
-												Width for column<br /> <b><i>(*): Can use other
+												Width for column<br/>
+												<i>formatType: </i> setting special type for column (current available: checkbox (value type for this column is boolean, if null value -> checkbox is not rendered))
+												<br /> <b><i>(*): Can use other
 														properties of columns of tree</i></b></td>
 										</tr><tr>
 											<td>initialExpandDepth</td>
@@ -243,6 +246,10 @@
 										<tr>
 											<td>rows</td>
 											<td><b>Type:</b> number<br /> max rows are displayed in view and will have scroll and tooltip</td>
+										</tr>
+										<tr>
+											<td>filter</td>
+											<td><b>Type:</b> boolean<br /> Enables/disables filter feature</td>
 										</tr>
 									</tbody>
 								</table>
