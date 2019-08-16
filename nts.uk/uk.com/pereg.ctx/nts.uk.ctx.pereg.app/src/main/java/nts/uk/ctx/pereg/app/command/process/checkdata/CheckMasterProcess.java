@@ -22,6 +22,9 @@ import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.system.config.InstalledProduct;
 import nts.uk.shr.pereg.app.find.PeregEmpInfoQuery;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 @Stateless
 public class CheckMasterProcess {
 	
@@ -148,13 +151,14 @@ public class CheckMasterProcess {
 	
 	private void setErrorDataGetter(ErrorInfoCPS013 error, TaskDataSetter dataSetter) {
 		String ramdom = IdentifierUtil.randomUniqueId();
-		dataSetter.setData("employeeId" + ramdom, error.getEmployeeId());
-		dataSetter.setData("categoryId" + ramdom, error.getCategoryId());
-		dataSetter.setData("employeeCo" + ramdom, error.getEmployeeCode());
-		dataSetter.setData("bussinessN" + ramdom, error.getBussinessName());
-		dataSetter.setData("clsCtgChek" + ramdom, error.getClsCategoryCheck());
-		dataSetter.setData("categoryNa" + ramdom, error.getCategoryName());
-		dataSetter.setData("errorInfor" + ramdom, error.getError());
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			dataSetter.setData("employeeId" + ramdom, mapper.writeValueAsString(error));
+		} catch (JsonProcessingException e) {
+			System.out.println("cps013 mapper object to json fail");
+			e.printStackTrace();
+			
+		}
 	}
 
 }

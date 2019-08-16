@@ -174,42 +174,21 @@ module nts.uk.at.view.cps013.e {
            private bindingDataToGrid(data: Array<any>): void {
                 var self = this;
 
-                let  data_employeeId = [],
-                     data_categoryId = [],
-                     data_employeeCode = [],
-                     data_bussinessName = [],
-                     data_clsCategoryCheck = [],
-                     data_categoryName = [],
-                     data_error = [],
+                let  data_employee = [],
                      errs = [];
 
-               data_error = _.filter(data, function(item) { return item.key.substring(0, 10) === "errorInfor"; });
-               data_employeeId = _.filter(data, function(item) { return item.key.substring(0, 10) === "employeeId"; });
-               data_categoryId = _.filter(data, function(item) { return item.key.substring(0, 10) === "categoryId"; });
-               data_employeeCode =  _.filter(data, function(item) { return item.key.substring(0, 10) === "employeeCo"; });
-               data_bussinessName =  _.filter(data, function(item) { return item.key.substring(0, 10) === "bussinessN"; });
-               data_clsCategoryCheck =  _.filter(data, function(item) { return item.key.substring(0, 10) === "clsCtgChek"; });
-               data_categoryName =  _.filter(data, function(item) { return item.key.substring(0, 10) === "categoryNa"; });
+               data_employee = _.filter(data, function(item) { return item.key.substring(0, 10) === "employeeId"; });
                
-               for (let i = 0; i < data_employeeId.length; i++) {
-
-                   let tagKey = data_employeeId[i].key.substring(10, 46);
-                   let empId = data_employeeId[i].valueAsString;
-                   let ctgId = (_.filter(data_categoryId, function(o) { return o.key.substring(10, 46) == tagKey; }))[0].valueAsString;
-                   let employeeCode = (_.filter(data_employeeCode, function(o) { return o.key.substring(10, 46) == tagKey; }))[0].valueAsString;
-                   let bussinessName = (_.filter(data_bussinessName, function(o) { return o.key.substring(10, 46) == tagKey; }))[0].valueAsString;
-                   let clsCategoryCheck = (_.filter(data_clsCategoryCheck, function(o) { return o.key.substring(10, 46) == tagKey; }))[0].valueAsString;
-                   let categoryName = (_.filter(data_categoryName, function(o) { return o.key.substring(10, 46) == tagKey; }))[0].valueAsString;
-                   let error = (_.filter(data_error, function(o) { return o.key.substring(10, 46) == tagKey; }))[0].valueAsString;
-
+               for (let i = 0; i < data_employee.length; i++) {
+                   var obj = JSON.parse(data_employee[i].valueAsString);
                    var errorInfo = {
-                       employeeId: empId,
-                       categoryId: ctgId,
-                       employeeCode: employeeCode,
-                       bussinessName: bussinessName,
-                       clsCategoryCheck: clsCategoryCheck,
-                       categoryName: categoryName,
-                       error: error
+                       employeeId: obj.employeeId,
+                       categoryId: obj.categoryId,
+                       employeeCode: obj.employeeCode,
+                       bussinessName: obj.bussinessName,
+                       clsCategoryCheck: obj.clsCategoryCheck,
+                       categoryName: obj.categoryName,
+                       error: obj.error
                    };
 
                    errs.push(new PersonInfoErrMessageLog(errorInfo));
