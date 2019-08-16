@@ -397,17 +397,16 @@ export class CmmS45DComponent extends Vue {
     }
 
     // xử lý sau khi từ màn F trở về
-    public controlDialog(result): void {
+    public controlDialog(result: any): void {
         let self = this;
         if (result) {
-            if (result.currentApp == self.currentApp) {
-                self.initData();    
-            } else {
-                self.toNextApp();
+            switch (result.destination) {
+                case 1: self.$close(); break; // đến CMMS45B
+                case 2: self.toNextApp(); break; // đến đơn tiếp theo
+                case 3: self.initData(); break; // reload đơn hiện tại
+                default: break;     
             }
-        } else {
-            self.$close(); 
-        }  
+        }
     }
 
     // phản ánh đơn xin sau khi chấp nhận, từ chối

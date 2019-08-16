@@ -24,20 +24,20 @@ export class CmmS45FComponent extends Vue {
     // quay về màn CMMS45B
     public backToMenu() {
         let self = this;
-        self.$close();
+        self.$close({ destination: 1 });
     }
 
     // tiến tới đơn tiếp theo
     public toNextApp() {
         let self = this;
-        self.$close({ listAppMeta: self.params.listAppMeta, currentApp: '' });
+        self.$close({ destination: 2 });
     }
 
     // quay về đơn hiện tại
     public backToDetail() {
         let self = this;
         if (self.params.action != 3) {
-            self.$close({ listAppMeta: self.params.listAppMeta, currentApp: self.params.currentApp });
+            self.$close({ destination: 3 });
         }
     }
 
