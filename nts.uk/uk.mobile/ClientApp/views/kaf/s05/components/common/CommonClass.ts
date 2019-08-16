@@ -201,4 +201,7 @@ export interface Kafs05Model {
     version: number;
     reflectPerState: number;
     user: number;
+    beforeAppStatus: boolean;
+    actualStatus: number;
+    performanceExcessAtr: number;
 }

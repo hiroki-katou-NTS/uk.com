@@ -32,6 +32,8 @@ export class KafS05bComponent extends Vue {
 
     private step: string = 'step1';
 
+    private screenName: string = null;
+
     public created() {
         this.step = 'step1';
         this.kafs05Model = {
@@ -42,7 +44,8 @@ export class KafS05bComponent extends Vue {
             overtimeAtr: null, restTime: [], overtimeHours: [], breakTimes: [], bonusTimes: [], prePostEnable: true, displayCaculationTime: false, displayBonusTime: false, displayPrePostFlg: false,
             restTimeDisFlg: false, typicalReasonDisplayFlg: false, displayAppReasonContentFlg: false, displayDivergenceReasonForm: false, displayDivergenceReasonInput: false,
             workTypeChangeFlg: false, overtimeWork: [], indicationOvertimeFlg: true, calculateFlag: 0, uiType: 0, preWorkContent: null, targetDate: null, editable: true,
-            enableOvertimeInput: false, isSpr: false, resultCaculationTimeFlg: false, workTimeInput: { start: null, end: null }, appID: this.params.appID, version: 0, reflectPerState: 0, user: 0
+            enableOvertimeInput: false, isSpr: false, resultCaculationTimeFlg: false, workTimeInput: { start: null, end: null }, appID: this.params.appID, version: 0, reflectPerState: 0, user: 0, 
+            beforeAppStatus: false, actualStatus: null, performanceExcessAtr: null
         };
 
         this.kafs05Model.isCreate = false;
@@ -54,6 +57,16 @@ export class KafS05bComponent extends Vue {
             }
         } else {
             storage.local.setItem('appID', this.kafs05Model.appID);
+        }
+
+        if (this.$route.query.overworkatr == '0') {
+            this.pgName = 'kafS05b0';
+        } else if (this.$route.query.overworkatr == '1') {
+            this.pgName = 'kafS05b1';
+        } else if (this.$route.query.overworkatr == '2') {
+            this.pgName = 'kafS05b2';
+        } else {
+            this.pgName = 'kafS05b2';
         }
     }
 
