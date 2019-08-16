@@ -258,10 +258,17 @@ export class CmmS45DComponent extends Vue {
                         }
                     }).catch((failRelease: any) => {
                         self.$mask('hide');
-                        self.$modal.error(failRelease.messageId)
-                            .then(() => {
-                                self.back();
-                            });
+                        if (failRelease.messageId == 'Msg_197') {
+                            self.$modal.error(failRelease.messageId)
+                                .then(() => {
+                                    self.initData();
+                                });
+                        } else {
+                            self.$modal.error(failRelease.messageId)
+                                .then(() => {
+                                    self.back();
+                                });
+                        }
                     });              
                 }
             });
@@ -299,10 +306,17 @@ export class CmmS45DComponent extends Vue {
                         }
                     }).catch((failApprove: any) => {
                         self.$mask('hide');
-                        self.$modal.error(failApprove.messageId)
-                            .then(() => {
-                                self.back();
-                            });
+                        if (failApprove.messageId == 'Msg_197') {
+                            self.$modal.error(failApprove.messageId)
+                                .then(() => {
+                                    self.initData();
+                                });
+                        } else {
+                            self.$modal.error(failApprove.messageId)
+                                .then(() => {
+                                    self.back();
+                                });
+                        }
                     });            
                 }
             });
@@ -336,10 +350,17 @@ export class CmmS45DComponent extends Vue {
                         }
                     }).catch((failDeny: any) => {
                         self.$mask('hide');
-                        self.$modal.error(failDeny.messageId)
-                            .then(() => {
-                                self.back();
-                            });
+                        if (failDeny.messageId == 'Msg_197') {
+                            self.$modal.error(failDeny.messageId)
+                                .then(() => {
+                                    self.initData();
+                                });
+                        } else {
+                            self.$modal.error(failDeny.messageId)
+                                .then(() => {
+                                    self.back();
+                                });
+                        }
                     });           
                 }
             });
@@ -348,10 +369,31 @@ export class CmmS45DComponent extends Vue {
     // kích hoạt nút trả về
     public returnApp(): void {
         let self = this;
-        self.$modal('cmms45e', {'listAppMeta': self.listAppMeta, 'currentApp': self.currentApp, 'version': self.appState.version })
-        .then((resReturn: any) => {
-            self.controlDialog(resReturn); 
-        });
+        self.$mask('show');
+        self.$http.post('at', API.checkVersion, {
+            appID: self.currentApp,
+            version: self.appState.version
+        }).then(() => {
+            self.$mask('hide');
+            self.$modal('cmms45e', {'listAppMeta': self.listAppMeta, 'currentApp': self.currentApp, 'version': self.appState.version })
+            .then((resReturn: any) => {
+                self.controlDialog(resReturn); 
+            });
+        }).catch((failVersionCheck: any) => {
+            self.$mask('hide');
+            if (failVersionCheck.messageId == 'Msg_197') {
+                self.$modal.error(failVersionCheck.messageId)
+                    .then(() => {
+                        self.initData();
+                    });
+            } else {
+                self.$modal.error(failVersionCheck.messageId)
+                    .then(() => {
+                        self.back();
+                    });
+            }
+        });  
+        
     }
 
     // xử lý sau khi từ màn F trở về
@@ -456,5 +498,6 @@ const API = {
     approve: 'at/request/application/approveapp',
     deny: 'at/request/application/denyapp',
     release: 'at/request/application/releaseapp',
-    reflectApp: 'at/request/application/reflect-app'
+    reflectApp: 'at/request/application/reflect-app',
+    checkVersion: 'at/request/application/checkVersion'
 };
