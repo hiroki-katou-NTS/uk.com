@@ -53,6 +53,7 @@ export class CmmS45BComponent extends Vue {
     public lstAppr: Array<string> = [];
     public lstMasterInfo: Array<any> = [];
     public isDisPreP: number = 0;//申請表示設定.事前事後区分
+    public disableB24: boolean = false;
 
     public mounted() {
         this.pgName = 'cmms45b';
@@ -94,9 +95,6 @@ export class CmmS45BComponent extends Vue {
         return _.filter(this.checkeds, (c) => c == 6).length > 0 ? true : false;
     }
 
-    public disableBtn(lstCheck: Array<number>) {
-        return _.filter(lstCheck, (c) => c == 1).length > 0 ? false : true;
-    }
     //データを取る
     private getData(getCache: boolean, filter: boolean) {
         let self = this;
@@ -159,6 +157,7 @@ export class CmmS45BComponent extends Vue {
             self.convertAppInfo(data);
             self.dateRange = { start: self.$dt.fromUTCString(data.startDate, 'YYYY/MM/DD'), end: self.$dt.fromUTCString(data.endDate, 'YYYY/MM/DD') };
             self.isDisPreP = data.isDisPreP;
+            self.disableB24 = data.appStatusCount.unApprovalNumber == 0 ? true : false;
         }).catch(() => {
             self.$mask('hide');
         });
