@@ -381,6 +381,7 @@ public class PeregProcessor {
 	
 	
 	private List<GridLayoutPersonInfoClsDto> setOptionDataSingleCategory(PersonInfoCategory perInfoCtg, PeregQueryByListEmp query, String selfEmployeeId, HashMap<Boolean, List<PerInfoItemDefForLayoutDto>> perItems) {
+		List<GridLayoutPersonInfoClsDto> result = new ArrayList<>();
 		if (perInfoCtg.isEmployeeType()) {
 			//list sids
 			List<String> sids = query.getEmpInfos().stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
@@ -389,8 +390,8 @@ public class PeregProcessor {
 					.getBySidsAndCtgId(sids, perInfoCtg.getPersonInfoCategoryId()).stream()
 					.collect(Collectors.groupingBy(c -> c.getEmployeeId()));
 			if (!empInfoCtgDatas.isEmpty()) {
-				List<GridLayoutPersonInfoClsDto> result = getAndMapEmpOptionItem(new ArrayList<>(empInfoCtgDatas.keySet()), query, selfEmployeeId, perItems, perInfoCtg);
-				return result;
+				List<GridLayoutPersonInfoClsDto> empResult = getAndMapEmpOptionItem(new ArrayList<>(empInfoCtgDatas.keySet()), query, selfEmployeeId, perItems, perInfoCtg);
+				result.addAll(empResult);
 			}
 		} else {
 			//list sids
@@ -399,10 +400,18 @@ public class PeregProcessor {
 			Map<String, List<PerInfoCtgData>> perInfoCtgDatas = perInCtgDataRepo.getAllByPidsAndCtgId(pids, perInfoCtg.getPersonInfoCategoryId()).stream()
 					.collect(Collectors.groupingBy(c -> c.getPersonId()));
 			if (!perInfoCtgDatas.isEmpty()) {
-				List<GridLayoutPersonInfoClsDto> result = getAndMapPerOptionItem(new ArrayList<>(perInfoCtgDatas.keySet()), query, selfEmployeeId, perItems, perInfoCtg);
-				return result;
+				List<GridLayoutPersonInfoClsDto> perResult = getAndMapPerOptionItem(new ArrayList<>(perInfoCtgDatas.keySet()), query, selfEmployeeId, perItems, perInfoCtg);
+				result.addAll(perResult);
 			}
 		}
+		
+		query.getEmpInfos().forEach(c ->{
+			List<GridLayoutPersonInfoClsDto> empLstOpt = result.stream().filter(i -> i.getEmployeeId().equals(c.getEmployeeId())).collect(Collectors.toList());
+			if(CollectionUtil.isEmpty(empLstOpt)) {
+				result.add(new GridLayoutPersonInfoClsDto(c.getEmployeeId(), c.getPersonId(), new ArrayList<>()));
+			}
+		});
+		
 		return new ArrayList<>();
 	}
 	
