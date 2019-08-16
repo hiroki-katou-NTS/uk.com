@@ -118,6 +118,7 @@ export class CmmS45BComponent extends Vue {
             } as AppListExtractConditionDto;
         } else if (getCache && storage.local.hasItem('CMMS45_AppListExtractCondition')) {
             self.prFilter = storage.local.getItem('CMMS45_AppListExtractCondition') as AppListExtractConditionDto;
+            self.selectedValue = self.prFilter.appType.toString();
         } else {
             self.prFilter = {
                 startDate: self.dateRange.start == null ? '' : self.$dt.date(self.dateRange.start, 'YYYY/MM/DD'),
