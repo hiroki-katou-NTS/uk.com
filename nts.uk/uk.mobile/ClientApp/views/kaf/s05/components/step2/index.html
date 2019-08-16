@@ -53,7 +53,7 @@
                 <div v-for="(item, i) of kafs05ModelStep2.overtimeHours">
                     <div class="row">
                         <div class="col-4">
-                            <span class="small-header">{{item.frameName | i18n}}</span>
+                            <span class="small-header-framename">{{item.frameName | i18n}}</span>
                         </div>
                         <div class="col-4 display-time"
                             v-if="kafs05ModelStep2.prePostSelected == 1 && !item.preAppExceedState">
