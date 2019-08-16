@@ -75,9 +75,33 @@ public class BusinessTypeOfHistoryGeneralRepositoryImpl implements BusinessTypeO
 		
 		if(!dateHistItemMaps.isEmpty()) {
 			historyRepos.addAll(dateHistItemMaps);
+			updateAllItemBefore(domains);
+		}
 		}
 		
 		
+	
+	/**
+	 * @author lanlt
+	 * updateAllItemBefore - cps003
+	 * @param histories
+	 */
+	private void updateAllItemBefore(List<BusinessTypeOfEmployeeHistory> histories) {
+		Map<String, DateHistoryItem> dateHistItemMaps = new HashMap<>();
+		// Update item before
+		histories.stream().forEach(c ->{
+			if(c.getHistory().size() > 0) {
+				DateHistoryItem historyItem  = c.getHistory().get(c.getHistory().size() - 1);
+				Optional<DateHistoryItem> beforeItemOpt = c.immediatelyBefore(historyItem);
+				if (!beforeItemOpt.isPresent()) {
+					return;
+				}
+				dateHistItemMaps.put(c.getEmployeeId(), beforeItemOpt.get());
+			}
+		});
+		if(!dateHistItemMaps.isEmpty()) {
+			historyRepos.updateAll(dateHistItemMaps);
+		}
 	}
 
 	/**
