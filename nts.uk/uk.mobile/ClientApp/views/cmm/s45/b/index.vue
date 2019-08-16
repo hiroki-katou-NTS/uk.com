@@ -95,8 +95,8 @@
       </div>
     </div>
     <!-- Button Approve B2_4 -->
-    <div class="fixed-bottom px-2 py-1" v-if="modeAppr" v-bind:class="{'bg-white': disableBtn(checkeds)}">
-      <button v-bind:disabled = "disableBtn(checkeds)" class = 'btn btn-primary btn-block' 
+    <div class="fixed-bottom px-2 py-1" v-if="modeAppr" v-bind:class="{'bg-white': disableB24}">
+      <button v-bind:disabled = "disableB24" class = 'btn btn-primary btn-block' 
         v-on:click="processAppr" >{{lstAppr.length == 0 ? 'CMMS45_56' : 'CMMS45_57' | i18n(`${lstAppr.length}`)}}</button>
     </div>
     <to-top class="to-top"/>
