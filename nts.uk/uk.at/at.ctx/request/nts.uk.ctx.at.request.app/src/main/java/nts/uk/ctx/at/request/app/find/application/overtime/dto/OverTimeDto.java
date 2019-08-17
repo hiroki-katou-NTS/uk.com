@@ -11,6 +11,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AgreeOverTimeDto;
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ApplicationReasonDto;
+import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreActualColorResult;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.AppOvertimeReference;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
@@ -257,6 +258,10 @@ public class OverTimeDto {
 	
 	private String enteredPersonName;
 	
+	private PreActualColorResult preActualColorResult;
+	
+	private int performanceExcessAtr;
+	
 	public static OverTimeDto fromDomain(AppOverTime appOverTime){
 		return new OverTimeDto(
 				appOverTime.getVersion(),
@@ -320,7 +325,9 @@ public class OverTimeDto {
 				false,
 				0,
 				0,
-				"");
+				"",
+				null,
+				0);
 	}
 	
 }

@@ -29,7 +29,7 @@
         </div>
     </div>
     <div class="input-container">
-        <div class="card card-label" v-if="null != kafs05ModelStep1.appID">
+        <div class="card card-label" v-if="!kafs05ModelStep1.isCreate">
             <div class="card-header">
                 <span>{{'KAFS05_81' | i18n}}</span>
             </div>
@@ -37,7 +37,7 @@
                 <div class="confirm-item mb-2">
                     <span>{{kafs05ModelStep1.employeeName}}</span>
                     <span v-if="null != kafs05ModelStep1.enteredPersonName && kafs05ModelStep1.enteredPersonName != kafs05ModelStep1.employeeName"
-                        class="small-header"></BR>(代行者：{{kafs05ModelStep1.enteredPersonName}})</span>
+                        class="small-header"></BR>{{'KAFS05_53' | i18n(kafs05ModelStep1.enteredPersonName)}}</span>
                 </div>
             </div>
             <div class="card card-label">
@@ -52,7 +52,7 @@
                 </div>
             </div>
         </div>
-        <div class="card card-label" v-if="kafs05ModelStep1.displayPrePostFlg && null == kafs05ModelStep1.appID">
+        <div class="card card-label" v-if="kafs05ModelStep1.displayPrePostFlg && kafs05ModelStep1.isCreate">
             <div class="card-header">
                 <span>{{'KAFS05_61' | i18n}}</span>
                 <span class="badge badge-warning">必須</span>
@@ -67,7 +67,7 @@
                 <v-errors v-model="$errors.kafs05ModelStep1.prePostSelected" class="d-block mt-0" />
             </div>
         </div>
-        <div class="card card-label" v-if="null == kafs05ModelStep1.appID">
+        <div class="card card-label" v-if="kafs05ModelStep1.isCreate">
             <div class="card-header">
                 <span>{{'KAFS05_62' | i18n}}</span>
                 <span class="badge badge-warning">必須</span>
@@ -85,17 +85,18 @@
                 <span class="small-header">{{'KAFS05_64' | i18n}}</span>
                 <button type="button" class="btn btn-selection" v-on:click="openKDL002()"
                     :disabled="!kafs05ModelStep1.workTypeChangeFlg">
-                    <span class="badge badge-secondary">{{kafs05ModelStep1.workTypeCd}}</span>
-                    <span>{{kafs05ModelStep1.workTypeName}}</span>
+                    <span class="badge badge-secondary">{{kafs05ModelStep1.workTypeCd ? kafs05ModelStep1.workTypeCd : ''}}</span>
+                    <span>{{kafs05ModelStep1.workTypeCd ? kafs05ModelStep1.workTypeName : '未設定'}}</span>
                 </button>
                 <span class="small-header">{{'KAFS05_65' | i18n}}</span>
                 <button type="button" class="btn btn-selection mb-2" v-on:click="openKDL002()"
                     :disabled="!kafs05ModelStep1.workTypeChangeFlg">
-                    <span class="badge badge-secondary">{{kafs05ModelStep1.siftCD}}</span>
-                    <span>{{kafs05ModelStep1.siftName}}</span>
-                    <span class="d-block mt-1">{{kafs05ModelStep1.selectedWorkTime}}</span>
+                    <span class="badge badge-secondary">{{kafs05ModelStep1.siftCD ? kafs05ModelStep1.siftCD : ''}}</span>
+                    <span>{{kafs05ModelStep1.siftCD ? kafs05ModelStep1.siftName : '未設定'}}</span>
+                    <span class="d-block mt-1">{{kafs05ModelStep1.siftCD ? kafs05ModelStep1.selectedWorkTime : '未設定'}}</span>
                 </button>
             </div>
+            <v-errors v-model="$errors.kafs05ModelStep1.workTypeCd" class="d-block mt-0" />
         </div>
         <div class="card card-label" v-if="kafs05ModelStep1.displayCaculationTime">
             <div class="card-header">

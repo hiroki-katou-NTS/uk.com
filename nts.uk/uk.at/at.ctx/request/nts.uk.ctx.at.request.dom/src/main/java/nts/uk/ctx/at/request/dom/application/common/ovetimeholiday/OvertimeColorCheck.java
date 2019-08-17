@@ -2,6 +2,8 @@ package nts.uk.ctx.at.request.dom.application.common.ovetimeholiday;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputCaculation;
+import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -36,6 +38,16 @@ public class OvertimeColorCheck {
 		overtimeColorCheck.attendanceID = attendanceID;
 		overtimeColorCheck.frameNo = frameNo;
 		overtimeColorCheck.appTime = appTime;
+		return overtimeColorCheck;
+	}
+	
+	public static OvertimeColorCheck createFromOverTimeInput(CaculationTime overtimeHour){
+		OvertimeColorCheck overtimeColorCheck = new OvertimeColorCheck();
+		overtimeColorCheck.attendanceID = overtimeHour.getAttendanceID();
+		overtimeColorCheck.frameNo = overtimeHour.getFrameNo();
+		overtimeColorCheck.appTime = overtimeHour.getApplicationTime();
+		overtimeColorCheck.preAppTime = null == overtimeHour.getPreAppTime() ? null: Integer.parseInt(overtimeHour.getPreAppTime());
+		overtimeColorCheck.actualTime = null == overtimeHour.getCaculationTime() ? null: Integer.parseInt(overtimeHour.getCaculationTime());
 		return overtimeColorCheck;
 	}
 	

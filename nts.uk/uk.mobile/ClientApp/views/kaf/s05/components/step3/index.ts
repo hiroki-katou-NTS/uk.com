@@ -15,9 +15,20 @@ export class KafS05aStep3Component extends Vue {
     private comboBoxReason: string = null;
     private appReason: string = null;
     private divergenceReason: string = null;
+    private hasPreAppError: boolean = false;
+    private hasActualError: boolean = false;
 
     public created() {
         this.convertDisplayItem();
+
+        this.kafs05ModelStep3.overtimeHours.forEach((overtimeHour) => {
+            if (overtimeHour.preAppExceedState) {
+                this.hasPreAppError = true;
+            }
+            if (overtimeHour.actualExceedState) {
+                this.hasActualError = true;
+            }
+        });
     }
 
     public registerClick() {
@@ -45,6 +56,14 @@ export class KafS05aStep3Component extends Vue {
 
     public beforeRegisterColorConfirm() {
         let self = this.kafs05ModelStep3;
+
+        // 実績なし 登録不可 or 打刻漏れ 超過エラー
+        if ((self.actualStatus == 3 && self.performanceExcessAtr == 2) || 
+            (self.actualStatus == 1 && this.hasActualError && self.performanceExcessAtr == 2)) {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            return;
+        } 
 
         let overTimeShiftNightTmp: number = null;
         let flexExessTimeTmp: number = null;
@@ -81,7 +100,7 @@ export class KafS05aStep3Component extends Vue {
             checkAppDate: false
         };
 
-        if (null != self.appID) {
+        if (!self.isCreate) {
             overtime.version = self.version;
             overtime.appID = self.appID;
             // EDITMODE 設定
@@ -92,7 +111,7 @@ export class KafS05aStep3Component extends Vue {
         }
 
         //登録
-        if (null == self.appID) {
+        if (self.isCreate) {
             this.$http.post('at', servicePath.beforeRegisterColorConfirm, overtime).then((result: { data: any }) => {
                 overtime.checkOver1Year = false;
                 this.contentBefRegColorConfirmDone(overtime, result.data);
@@ -112,11 +131,18 @@ export class KafS05aStep3Component extends Vue {
                         }
                     });
                 } else {
-                    this.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
+                    if (res.messageId == 'Msg_426') {
+                        this.$modal.error({ messageId: 'Msg_426', messageParams: [res.parameterIds[0]] }).then(() => {
+                            this.$goto('ccg007b');
+                            this.$auth.logout();
+                        });
+                    } else {
+                        this.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
+                    }
                     this.$mask('hide');
                 }
             });
-        //更新
+            //更新
         } else {
             this.$http.post('at', servicePath.beforeRegisterColorConfirm, overtime).then((result: { data: any }) => {
                 let res = result.data;
@@ -132,12 +158,17 @@ export class KafS05aStep3Component extends Vue {
                     this.beforeUpdateProcess(overtime);
                 }
             }).catch((res: any) => {
-                this.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
+                if (res.messageId == 'Msg_426') {
+                    this.$modal.error({ messageId: 'Msg_426', messageParams: [res.parameterIds[0]] }).then(() => {
+                        this.$goto('ccg007b');
+                        this.$auth.logout();
+                    });
+                } else {
+                    this.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
+                }
                 this.$mask('hide');
             });
         }
-
-
     }
 
     public contentBefRegColorConfirmDone(overtime, data) {
@@ -265,7 +296,12 @@ export class KafS05aStep3Component extends Vue {
 
         }).catch((res: any) => {
             if (res.optimisticLock == true) {
-                this.$modal.error({ messageId: 'Msg_197' });
+                this.$modal.error({ messageId: 'Msg_197' }).then((value) => {
+                    this.$modal('cmms45c', { 'listAppMeta': [this.kafs05ModelStep3.appID], 'currentApp': this.kafs05ModelStep3.appID }).then(() => {
+                        this.kafs05ModelStep3.step1Start = true;
+                        this.$emit('backToStep1', this.kafs05ModelStep3);
+                    });
+                });
             } else {
                 this.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
             }

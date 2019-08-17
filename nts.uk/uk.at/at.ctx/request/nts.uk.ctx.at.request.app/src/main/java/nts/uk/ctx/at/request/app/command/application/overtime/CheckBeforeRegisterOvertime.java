@@ -71,7 +71,7 @@ public class CheckBeforeRegisterOvertime {
 				Optional.empty());
 
 
-		return beforeRegisterColorConfirm(command.getCalculateFlag(), appRoot, overTimeDomain, command.isCheckOver1Year(),command.isCheckAppDate());
+		return beforeRegisterColorConfirm(command.getCalculateFlag(), appRoot, overTimeDomain, command.isCheckOver1Year(),command.isCheckAppDate(), command.getAppID());
 	}
 
 	public OvertimeCheckResultDto CheckBeforeRegister(CreateOvertimeCommand command) {
@@ -100,12 +100,14 @@ public class CheckBeforeRegisterOvertime {
 		return checkBeforeRegister(command.getCalculateFlag(), appRoot, overTimeDomain, command.isCheckOver1Year(),command.isCheckAppDate());
 	}
 
-	public ColorConfirmResult beforeRegisterColorConfirm(int calculateFlg, Application_New app, AppOverTime overtime, boolean checkOver1Year, boolean checkAppDate) {
+	public ColorConfirmResult beforeRegisterColorConfirm(int calculateFlg, Application_New app, AppOverTime overtime, boolean checkOver1Year, boolean checkAppDate, String appID) {
 		// 社員ID
 		String employeeId = AppContexts.user().employeeId();
 		String companyID =  app.getCompanyID();
 		// 2-1.新規画面登録前の処理を実行する
-		newBeforeRegister.processBeforeRegister(app,overtime.getOverTimeAtr().value, checkOver1Year);
+		if (null == appID) {
+			newBeforeRegister.processBeforeRegister(app,overtime.getOverTimeAtr().value, checkOver1Year);
+		}
 		// 登録前エラーチェック
 		// 計算ボタン未クリックチェック
 		commonOvertimeHoliday.calculateButtonCheck(calculateFlg, app.getCompanyID(), employeeId, 1,
