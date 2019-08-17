@@ -22,6 +22,7 @@ import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamCalculati
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamGetHolidayWork;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.RecordWorkParamHoliday;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeCheckResultDto;
+import nts.uk.ctx.at.request.app.find.application.overtime.dto.ParamCalculateOvertime;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.ParamChangeAppDate;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.RecordWorkDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
@@ -96,6 +97,23 @@ public class HolidayWorkWebService extends WebService{
 															param.getEndTimeRests(),
 															param.getDailyAttendanceTimeCaculationImport());
 	}
+	
+	@POST
+	@Path("getCalculateValue")
+	public List<CaculationTime> getCalculateValue(ParamCalculateOvertime param) {
+		return appHolidayWorkFinder.getCalculateValue(
+				param.employeeID, 
+				param.appDate, 
+				param.prePostAtr, 
+				param.workTypeCD, 
+				param.workTimeCD, 
+				param.overtimeInputLst, 
+				param.startTime, 
+				param.endTime, 
+				param.getStartTimeRests(), 
+				param.getEndTimeRests());
+	}
+	
 	@POST
 	@Path("create")
 	public ProcessResult createHolidayWork(CreateHolidayWorkCommand command){

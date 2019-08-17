@@ -36,9 +36,16 @@ import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputCaculation;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculation;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculationImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.TimeWithCalculationImport;
+import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.ActualStatusCheckResult;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.CommonOvertimeHoliday;
+import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.OvertimeColorCheck;
+import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreActualColorCheck;
+import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreActualColorResult;
+import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreAppCheckResult;
 //import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InitMode;
 //import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.BeforePreBootMode;
 //import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailScreenInitModeOutput;
@@ -75,6 +82,9 @@ import nts.uk.ctx.at.request.dom.application.overtime.service.SiftType;
 import nts.uk.ctx.at.request.dom.application.overtime.service.WorkTypeOvertime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.output.RecordWorkOutput;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.WithdrawalAppSet;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.WithdrawalAppSetRepository;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.AppDateContradictionAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
 import nts.uk.ctx.at.request.dom.setting.company.divergencereason.DivergenceReason;
@@ -151,6 +161,12 @@ public class AppHolidayWorkFinder {
 	
 	@Inject
 	private ApplicationSettingRepository applicationSettingRepository;
+	
+	@Inject
+	private PreActualColorCheck preActualColorCheck;
+	
+	@Inject
+	private WithdrawalAppSetRepository withdrawalAppSetRepository;
 	
 	/**
 	 * getAppHolidayWork for start UI KAF010A
@@ -414,6 +430,92 @@ public class AppHolidayWorkFinder {
 				result,
 				dailyAttendanceTimeCaculationImport.getHolidayWorkTime(),prePostAtr);
 		return result;
+	}
+	
+	public List<CaculationTime> getCalculateValue(String employeeID, String appDate, Integer prePostAtr, String workTypeCD, String workTimeCD,
+			List<CaculationTime> overtimeInputLst, Integer startTime, Integer endTime, List<Integer> startTimeRests, List<Integer> endTimeRests){
+		String companyID = AppContexts.user().companyId();
+		GeneralDate generalDate = GeneralDate.fromString(appDate, DATE_FORMAT); 
+		
+		// 6.計算処理 : 
+		DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = dailyAttendanceTimeCaculation.getCalculation(employeeID,
+				GeneralDate.fromString(appDate, DATE_FORMAT),
+				workTypeCD,
+				workTimeCD,
+				startTime,
+				endTime,
+				startTimeRests,
+				endTimeRests);
+		List<OvertimeInputCaculation> breaktimeInputCaculations = new ArrayList<>();
+				
+		for (Map.Entry<Integer, TimeWithCalculationImport> entry : dailyAttendanceTimeCaculationImport.getHolidayWorkTime().entrySet()) {
+			OvertimeInputCaculation breaktimeCal = new OvertimeInputCaculation(AttendanceType.BREAKTIME.value,
+					entry.getKey(), entry.getValue().getCalTime());
+			breaktimeInputCaculations.add(breaktimeCal);
+		}
+		
+		List<OvertimeColorCheck> otTimeLst = overtimeInputLst.stream()
+				.map(x -> OvertimeColorCheck.createApp(x.getAttendanceID(), x.getFrameNo(), x.getApplicationTime()))
+				.collect(Collectors.toList());
+		OvertimeRestAppCommonSetting overtimeRestAppCommonSet = overtimeRestAppCommonSetRepository
+				.getOvertimeRestAppCommonSetting(companyID, ApplicationType.BREAK_TIME_APPLICATION.value).get();
+		UseAtr preExcessDisplaySetting = overtimeRestAppCommonSet.getPreExcessDisplaySetting();
+		AppDateContradictionAtr performanceExcessAtr = overtimeRestAppCommonSet.getPerformanceExcessAtr();
+		WithdrawalAppSet withdrawalAppSet = withdrawalAppSetRepository.getWithDraw().get();
+		// 07-01_事前申請状態チェック
+		PreAppCheckResult preAppCheckResult = preActualColorCheck.preAppStatusCheck(
+				companyID, 
+				employeeID, 
+				GeneralDate.fromString(appDate, DATE_FORMAT), 
+				ApplicationType.BREAK_TIME_APPLICATION);
+		// 07-02_実績取得・状態チェック
+		ActualStatusCheckResult actualStatusCheckResult = preActualColorCheck.actualStatusCheck(
+				companyID, 
+				employeeID, 
+				GeneralDate.fromString(appDate, DATE_FORMAT), 
+				ApplicationType.BREAK_TIME_APPLICATION, 
+				workTypeCD, 
+				workTimeCD, 
+				withdrawalAppSet.getOverrideSet(), 
+				Optional.empty());
+		// 07_事前申請・実績超過チェック
+		PreActualColorResult preActualColorResult =	preActualColorCheck.preActualColorCheck(
+				preExcessDisplaySetting, 
+				performanceExcessAtr, 
+				ApplicationType.BREAK_TIME_APPLICATION, 
+				EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class), 
+				withdrawalAppSet.getOverrideSet(), 
+				Optional.empty(), 
+				breaktimeInputCaculations, 
+				otTimeLst, 
+				preAppCheckResult.opAppBefore, 
+				preAppCheckResult.beforeAppStatus, 
+				actualStatusCheckResult.actualLst, 
+				actualStatusCheckResult.actualStatus);
+		
+		return preActualColorResult.resultLst.stream()
+			.map(x -> new CaculationTime(
+					companyID, 
+					"", 
+					x.attendanceID, 
+					x.frameNo, 
+					0, 
+					"", 
+					x.appTime, 
+					x.preAppTime == null ? null : x.preAppTime.toString(), 
+					x.actualTime == null ? null : x.actualTime.toString(), 
+					getErrorCodePC(x.calcError, x.preAppError, x.actualError), 
+					true, 
+					x.preAppError, 
+					x.actualError))
+			.collect(Collectors.toList());
+	}
+	
+	private Integer getErrorCodePC(boolean calcError, boolean preAppError, boolean actualError){
+		if(actualError) return 1;
+		if(preAppError) return 2;
+		if(calcError) return 3;
+		return 0;
 	}
 	
 	/**
