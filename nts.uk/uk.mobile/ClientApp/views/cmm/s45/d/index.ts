@@ -455,7 +455,7 @@ export class CmmS45DComponent extends Vue {
     public displayApproveReasonContent(): boolean {
         let self = this;
         if (self.canChangeStatus() && self.appState.authorizableFlags && !self.appState.alternateExpiration) {
-            return true;
+            return self.isModify();
         }
 
         return !self.isModify();
