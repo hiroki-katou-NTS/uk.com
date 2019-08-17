@@ -173,11 +173,11 @@
                     <div class="col-12">
                         <div class="row">
                             <div class="col-5 uk-text-dark-gray child-font-size">{{ payTime.frameName | i18n }}</div>
-                            <div class="col-2 pl-0">
+                            <div class="col-3 pl-0">
                                 <span v-if="payTime.appTime!=null">{{ payTime.appTime | timept }}</span>
-                                <span v-else>--:--</span>
+                                <span v-else>{{'CMMS45_15' | i18n}}</span>
                             </div>
-                            <div class="col-5 pl-3" v-if="isPostApp">
+                            <div class="col-4 pl-1" v-if="isPostApp">
                                 <span v-if="payTime.preAppTime!=null" class="far fa-clock display-time child-font-size" 
                                     v-bind:class="{ 'excess-time': payTime.preAppError }">
                                     {{'KAFS00_1' | i18n}}[{{ payTime.preAppTime | timept }}]
