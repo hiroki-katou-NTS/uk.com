@@ -180,7 +180,8 @@ export class CmmS45BComponent extends Vue {
     private getLstApp(data: any, sCD: string) {
         let self = this;
         let lstResult = [];
-        let lstObj = _.filter(data.lstMasterInfo, (c) => c.empSD == sCD).map((x) => { return {id: x.appID, name: x.empName };
+        let lstObj = _.filter(data.lstMasterInfo, (c) => c.empSD == sCD).map((x) => {
+            return { id: x.appID, name: x.empName };
         });
         data.lstApp.forEach((app) => {
             if (self.contains(lstObj, app.applicationID)) {
@@ -246,12 +247,23 @@ export class CmmS45BComponent extends Vue {
     // 詳細を確認する
     private goToDetail(id: string) {
         let self = this;
-        let lstAppId = self.findLstIdDisplay();
-        //「D：申請内容確認（承認）」画面へ遷移する
-        this.$modal('cmms45d', { 'listAppMeta': lstAppId, 'currentApp': id }).then(() => {
-            //reload
-            self.getData(true, false);
-        });
+        if (!self.modeAppr) {
+            let lstAppId = self.findLstIdDisplay();
+            //「D：申請内容確認（承認）」画面へ遷移する
+            this.$modal('cmms45d', { 'listAppMeta': lstAppId, 'currentApp': id }).then(() => {
+                //reload
+                self.getData(true, false);
+            });
+        } else {
+            let checkSel = _.filter(self.lstAppr, (idSel) => idSel == id).length;
+            if (checkSel > 0) {//bo check
+                self.lstAppr = _.remove(self.lstAppr, (select) => {
+                    return select != id;
+                });
+            } else {//them chek
+                self.lstAppr.push(id);
+            }
+        }
     }
     //一括承認する
     private processAppr() {
