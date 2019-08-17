@@ -209,6 +209,7 @@ export class KafS05aStep2Component extends Vue {
             _.remove(self.bonusTimes);
             self.beforeAppStatus = result.data.preActualColorResult.beforeAppStatus;
             self.actualStatus = result.data.preActualColorResult.actualStatus;
+            self.preExcessDisplaySetting = result.data.preExcessDisplaySetting;
             overtimeHoursResult = result.data.preActualColorResult.resultLst;
             if (overtimeHoursResult != null) {
                 for (let i = 0; i < overtimeHoursResult.length; i++) {

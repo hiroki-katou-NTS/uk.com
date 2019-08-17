@@ -78,11 +78,6 @@ export class KafS05aStep1Component extends Vue {
         let self = this.kafs05ModelStep1;
 
         this.$validate('kafs05ModelStep1.appDate');
-        if (!this.$valid) {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-
-            return;
-        }
 
         this.$modal(
             'worktype',
@@ -169,6 +164,7 @@ export class KafS05aStep1Component extends Vue {
             _.remove(self.bonusTimes);
             self.beforeAppStatus = result.data.preActualColorResult.beforeAppStatus;
             self.actualStatus = result.data.preActualColorResult.actualStatus;
+            self.preExcessDisplaySetting = result.data.preExcessDisplaySetting;
             overtimeHoursResult = result.data.preActualColorResult.resultLst;
             if (overtimeHoursResult != null) {
                 for (let i = 0; i < overtimeHoursResult.length; i++) {

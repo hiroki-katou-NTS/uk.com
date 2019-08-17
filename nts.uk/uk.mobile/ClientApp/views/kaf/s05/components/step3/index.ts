@@ -1,10 +1,14 @@
 import { _, Vue } from '@app/provider';
 import { component, Watch, Prop } from '@app/core/component';
 import { Kafs05Model } from '../common/CommonClass';
+import { CmmS45CComponent } from '../../../../cmm/s45/c/index';
 @component({
     name: 'kafS05_3',
     template: require('./index.html'),
-    resource: require('../../resources.json')
+    resource: require('../../resources.json'),
+    components: {
+        'cmms45c': CmmS45CComponent
+    }
 })
 export class KafS05aStep3Component extends Vue {
 
@@ -295,7 +299,7 @@ export class KafS05aStep3Component extends Vue {
             this.$mask('hide');
 
         }).catch((res: any) => {
-            if (res.optimisticLock == true) {
+            if (res.messageId == 'Msg_197') {
                 this.$modal.error({ messageId: 'Msg_197' }).then((value) => {
                     this.$modal('cmms45c', { 'listAppMeta': [this.kafs05ModelStep3.appID], 'currentApp': this.kafs05ModelStep3.appID }).then(() => {
                         this.kafs05ModelStep3.step1Start = true;

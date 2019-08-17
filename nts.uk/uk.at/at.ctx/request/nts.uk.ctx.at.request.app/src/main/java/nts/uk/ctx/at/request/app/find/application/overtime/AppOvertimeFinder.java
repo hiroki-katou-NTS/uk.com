@@ -344,13 +344,15 @@ public class AppOvertimeFinder {
 				prePostAtr = prePostAtrJudgment.value;
 			}
 		}
-		
+
 		// 勤務情報から残業時間を計算する
 		//List<CaculationTime> caculationTimeHours = new ArrayList<CaculationTime>();
 		if (displayCaculationTime == false) {
 			return null;
 		} else {
-			// 6.計算処理 : 
+			UseAtr preExcessDisplaySetting = overtimeRestAppCommonSet.get().getPreExcessDisplaySetting();// 事前申請超過チェック
+			AppDateContradictionAtr performanceExcessAtr = overtimeRestAppCommonSet.get().getPerformanceExcessAtr();// 実績超過チェック
+			// 6.計算処理 :
 			List<OvertimeInputCaculation> overtimeInputCaculations = new ArrayList<>();
 			if (isFromStepOne) {
 				overtimeInputCaculations = commonOvertimeHoliday.calculator(appCommonSettingOutput, appDate, siftCD, 
@@ -364,9 +366,7 @@ public class AppOvertimeFinder {
 			List<OvertimeColorCheck> overTimeLst  = overtimeHours.stream().map(item -> OvertimeColorCheck.createFromOverTimeInput(item)).collect(Collectors.toList());
 			List<OvertimeColorCheck> bonusTimeLst  = bonusTimes.stream().map(item -> OvertimeColorCheck.createFromOverTimeInput(item)).collect(Collectors.toList());
 			overTimeLst.addAll(bonusTimeLst);
-			
-			UseAtr preExcessDisplaySetting = overtimeRestAppCommonSet.get().getPreExcessDisplaySetting();
-			AppDateContradictionAtr performanceExcessAtr = overtimeRestAppCommonSet.get().getPerformanceExcessAtr();
+
 			WithdrawalAppSet withdrawalAppSet = withdrawalAppSetRepository.getWithDraw().get();
 			
 			// 07-01_事前申請状態チェック
@@ -384,6 +384,13 @@ public class AppOvertimeFinder {
 					preAppCheckResult.opAppBefore, preAppCheckResult.beforeAppStatus, actualStatusCheckResult.actualLst,
 					actualStatusCheckResult.actualStatus);
 			result.setPreActualColorResult(preActualColorResult);			
+			
+			if(prePostAtr == 0){
+				result.getPreActualColorResult().setBeforeAppStatus(false);
+				result.getPreActualColorResult().setActualStatus(3);
+			}
+			result.setPerformanceExcessAtr(performanceExcessAtr.value);
+			result.setPreExcessDisplaySetting(preExcessDisplaySetting.value);
 		}
 		
 		// 勤務情報確定後のデータを取得する

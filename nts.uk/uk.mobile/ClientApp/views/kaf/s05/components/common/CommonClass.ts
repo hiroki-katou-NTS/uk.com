@@ -204,4 +204,5 @@ export interface Kafs05Model {
     beforeAppStatus: boolean;
     actualStatus: number;
     performanceExcessAtr: number;
+    preExcessDisplaySetting?: number;
 }

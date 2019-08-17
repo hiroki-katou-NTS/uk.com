@@ -2,9 +2,13 @@ package nts.uk.ctx.at.request.dom.application.common.ovetimeholiday;
 
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class PreActualColorResult {
 	/**
 	 * 事前申請状態
