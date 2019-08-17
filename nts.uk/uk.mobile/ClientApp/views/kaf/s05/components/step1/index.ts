@@ -255,7 +255,10 @@ export class KafS05aStep1Component extends Vue {
             this.$emit('toStep2', this.kafs05ModelStep1);
             this.$mask('hide');
         }).catch((res: any) => {
-            if (res.messageId == 'Msg_424') {
+            if (res.messageId == 'Msg_426') {
+                this.$auth.logout();
+                this.$goto('ccg007b');
+            } else if (res.messageId == 'Msg_424') {
                 this.$modal.error({ messageId: 'Msg_424', messageParams: [res.parameterIds[0], res.parameterIds[1], res.parameterIds[2]] });
             } else if (res.messageId == 'Msg_1508') {
                 this.$modal.error({ messageId: 'Msg_1508', messageParams: [res.parameterIds[0]] });
