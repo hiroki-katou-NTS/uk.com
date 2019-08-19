@@ -405,6 +405,12 @@ module nts.uk.request {
                 }
             })
             .fail((res: any) => {
+                if (res && (res.failed || res.status == "ABORTED")) {
+                    if (res.error && res.error.businessException === false) {
+                        specials.errorPages.systemError();
+                        return;
+                    }
+                }
                 dfd.reject(res);
             });
 
