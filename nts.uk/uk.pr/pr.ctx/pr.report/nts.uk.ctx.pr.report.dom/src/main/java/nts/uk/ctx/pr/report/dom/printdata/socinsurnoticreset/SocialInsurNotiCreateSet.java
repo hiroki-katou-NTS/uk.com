@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.report.dom.printdata.socinsurnoticreset;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
