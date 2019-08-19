@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistoryRepository;
 import nts.uk.shr.com.history.DateHistoryItem;
 
 /**
@@ -94,7 +93,7 @@ public class AffClassHistoryRepositoryService {
 		
 		if (!historiesInsertLst.isEmpty()) {
 			affClassHistoryRepo.addAll(historiesInsertLst);
-			updateAllItemBefore(historiesInsertLst);
+			addAllItemBefore(history);
 		}
 	}
 	
@@ -103,19 +102,18 @@ public class AffClassHistoryRepositoryService {
 	 * updateAllItemBefore - cps003
 	 * @param histories
 	 */
-	private void updateAllItemBefore(List<AffClassHistory> histories) {
+	private void updateAllItemBefore(List<MidAffClass> midAffClass) {
 		List<DateHistoryItem> dateHistItem = new ArrayList<>();
 		// Update item before
-		histories.stream().forEach(c ->{
-			DateHistoryItem historyItem  = c.getPeriods().get(0);
-			Optional<DateHistoryItem> beforeItemOpt = c.immediatelyBefore(historyItem);
+		midAffClass.stream().forEach(c -> {
+			Optional<DateHistoryItem> beforeItemOpt = c.getHistory().immediatelyBefore(c.getItem());
 			if (!beforeItemOpt.isPresent()) {
 				return;
 			}
 			dateHistItem.add(beforeItemOpt.get());
-				
 		});
-		if(!dateHistItem.isEmpty()) {
+
+		if (!dateHistItem.isEmpty()) {
 			affClassHistoryRepo.updateAll(dateHistItem);
 		}
 	}
@@ -129,16 +127,32 @@ public class AffClassHistoryRepositoryService {
 		List<DateHistoryItem> dateHistItems = midAffClass.stream().map(c -> c.getItem()).collect(Collectors.toList());
 		affClassHistoryRepo.updateAll(dateHistItems);
 		// Update item before and after
-		
-		List<AffClassHistory> historiesInsertLst = new ArrayList<>();
-		midAffClass.stream().forEach(c ->{
-			historiesInsertLst.add(new AffClassHistory(c.getHistory().getCompanyId(), c.getHistory().getEmployeeId(), Arrays.asList(c.getItem())));
-		});
-		if(!historiesInsertLst.isEmpty()) {
-			updateAllItemBefore(historiesInsertLst);
+		if(!midAffClass.isEmpty()) {
+			updateAllItemBefore(midAffClass);
 		}
 	}
 	
-	
+	/**
+	 * @author lanlt
+	 * addAllItemBefore - cps003
+	 * @param histories
+	 */
+	private void addAllItemBefore(List<AffClassHistory> histories) {
+		List<DateHistoryItem> dateHistItem = new ArrayList<>();
+		// Update item before
+		histories.stream().forEach(c ->{
+			List<DateHistoryItem> periods = c.getPeriods();
+			DateHistoryItem historyItem = periods.get(periods.size() - 1);
+			Optional<DateHistoryItem> beforeItemOpt = c.immediatelyBefore(historyItem);
+			if (!beforeItemOpt.isPresent()) {
+				return;
+			}
+			dateHistItem.add(beforeItemOpt.get());
+				
+		});
+		if(!dateHistItem.isEmpty()) {
+			affClassHistoryRepo.updateAll(dateHistItem);
+		}
+	}
 
 }
