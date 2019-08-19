@@ -158,14 +158,24 @@ public class UpdateAppAbsenceCommandHandler extends CommandHandlerWithResult<Upd
 				command.getVersion(),
 				appAbsence.getWorkTypeCode() == null ? null : appAbsence.getWorkTypeCode().v(),
 				appAbsence.getWorkTimeCode() == null ? null : appAbsence.getWorkTimeCode().v());
+		GeneralDate startDate = opAppAbsence.get().getApplication().getAppDate();
+		GeneralDate endDate = opAppAbsence.get().getApplication().getEndDate().isPresent() ? opAppAbsence.get().getApplication().getEndDate().get() : opAppAbsence.get().getApplication().getAppDate();
+		
+		//休日申請日
+		List<GeneralDate> lstDateIsHoliday = otherCommonAlg.lstDateIsHoliday(companyID, command.getEmployeeID(), new DatePeriod(startDate, endDate));
 		//check update 7.登録時のエラーチェック
 		insertAppAbsence.checkBeforeRegister(convert(command),
-				opAppAbsence.get().getApplication().getAppDate(),
-				opAppAbsence.get().getApplication().getEndDate().isPresent() ?opAppAbsence.get().getApplication().getEndDate().get() : opAppAbsence.get().getApplication().getAppDate(),false);
+				startDate,
+				endDate,
+				false,
+				lstDateIsHoliday);
 		//計画年休上限チェック(check giới han trên plan annual holiday)
 		//hoatt-2018-07-05
 		absenceServiceProcess.checkLimitAbsencePlan(companyID, command.getEmployeeID(), command.getWorkTypeCode(),
-				GeneralDate.fromString(command.getStartDate(),"yyyy/MM/dd"), GeneralDate.fromString(command.getEndDate(),"yyyy/MM/dd"), EnumAdaptor.valueOf(command.getHolidayAppType(), HolidayAppType.class));
+				GeneralDate.fromString(command.getStartDate(),"yyyy/MM/dd"),
+				GeneralDate.fromString(command.getEndDate(),"yyyy/MM/dd"),
+				EnumAdaptor.valueOf(command.getHolidayAppType(),HolidayAppType.class),
+				lstDateIsHoliday);
 		//update appAbsence
 		repoAppAbsence.updateAbsence(appAbsence);
 		SpecHolidayCommand specHdCm = command.getSpecHd();
