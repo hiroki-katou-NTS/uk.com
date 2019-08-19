@@ -3032,7 +3032,7 @@ button.nts-switch-button[disabled].selected {
   margin-top: -10px !important;
 }
 
-.ui-treegridview .ui-iggrid-table .ui-iggrid-tablebody tr td:last-child {
+.ui-igtreegrid .ui-iggrid-table .ui-iggrid-tablebody tr td:last-child {
   padding-right: 2px !important;
 }
 
