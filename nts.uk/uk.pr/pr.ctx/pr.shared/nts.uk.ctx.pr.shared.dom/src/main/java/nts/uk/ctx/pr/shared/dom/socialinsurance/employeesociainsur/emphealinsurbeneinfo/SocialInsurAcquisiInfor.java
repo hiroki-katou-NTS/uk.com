@@ -75,7 +75,7 @@ public class SocialInsurAcquisiInfor extends AggregateRoot {
     /**
     * 資格取得区分
     */
-    private Optional<String> qualifiDistin;
+    private Optional<Integer> qualifiDistin;
     
     /**
     * 短時間労働者
@@ -90,7 +90,7 @@ public class SocialInsurAcquisiInfor extends AggregateRoot {
     public SocialInsurAcquisiInfor(String employeeId,
                                    Integer PercentOrMore,
                                    Integer remarksOther,
-                                    String  remarksAndOtherContents,
+                                   String  remarksAndOtherContents,
                                    Integer remunMonthlyAmountKind,
                                    Integer remunMonthlyAmount,
                                    Integer totalMonthlyRemun,
@@ -100,7 +100,7 @@ public class SocialInsurAcquisiInfor extends AggregateRoot {
                                    Integer shortTimeWorkes,
                                    Integer shortStay,
                                    Integer depenAppoint,
-                                   String qualifiDistin,
+                                   Integer qualifiDistin,
                                    Integer continReemAfterRetirement
     ) {
         this.employeeId = employeeId;

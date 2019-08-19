@@ -7,7 +7,29 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
     export class ScreenModel {
         ccg001ComponentOption: GroupOption;
         employeeInputList: KnockoutObservableArray<EmployeeModel>;
+        //
 
+        depNotiAttach: KnockoutObservableArray<any>;
+        selectedDepNotoAttach: any;
+
+        basicPension: KnockoutObservable<number>;
+        salaryMonthly: KnockoutObservable<number>;
+        salaryMonthlyActual: KnockoutObservable<number>;
+        totalCompensation: KnockoutObservable<number>;
+        depNotiAttach : KnockoutObservableArray<any>;
+        selectedDepNotiAttach: any;
+
+        applyToEmployeeOver70: KnockoutObservable<boolean>;
+        twoOrMoreEmployee: KnockoutObservable<boolean>;
+        shortWorkHours: KnockoutObservable<boolean>;
+        continuousEmpAfterRetire: KnockoutObservable<boolean>;
+        otherNotes: KnockoutObservable<boolean>;
+        textOtherNotes: KnockoutObservable<boolean>;
+        shortTermResidence: KnockoutObservable<boolean>;
+        otherNotes1: KnockoutObservable<boolean>;
+        textOtherNotes1: KnockoutObservable<boolean>;
+
+        livingAbroad: KnockoutObservable<boolean>;
         //kcp009
         systemReference: KnockoutObservable<number>;
         isDisplayOrganizationName: KnockoutObservable<boolean>;
@@ -38,6 +60,37 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
                    });
                 });
             }
+
+            //init
+
+            self.depNotiAttach = ko.observableArray([]);
+            self.selectedDepNotoAttach = ko.observable({});
+
+            self.basicPension  = ko.observable(0);
+            self.salaryMonthly = ko.observable(0);
+            self.salaryMonthlyActual = ko.observable(0);
+            self.totalCompensation = ko.observable(0);
+            self.depNotiAttach = ko.observableArray([
+                { code: '1', name: nts.uk.resource.getText('QSI001_54') },
+                { code: '2', name: nts.uk.resource.getText('QSI001_55') }
+            ]);
+            self.selectedDepNotiAttach = ko.observable(1);
+
+            self.applyToEmployeeOver70 = ko.observable(false);
+            self.twoOrMoreEmployee = ko.observable(false);
+            self.shortWorkHours = ko.observable(false);
+            self.continuousEmpAfterRetire = ko.observable(false);
+            self.otherNotes = ko.observable(false);
+            self.textOtherNotes = ko.observable("");
+
+            self.livingAbroad = ko.observable(false);
+            self.shortTermResidence = ko.observable(false);
+            self.otherNotes1 = ko.observable(false);
+            self.textOtherNotes1 = ko.observable("");
+
+
+
+            //end init
             self.loadCCG001();
             self.simpleValue = ko.observable("123");
 
@@ -104,6 +157,75 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
 
         }
 
+
+        add(){
+            let self = this;
+            /*let data = {
+                socialInsurAcquisiInforCommand: {
+                    employeeId: self.selectedItem(),
+                    percentOrMore: self.applyToEmployeeOver70(),
+                    remarksOther: self.otherNotes(),
+                    remarksAndOtherContents: self.textOtherNotes(),
+                    remunMonthlyAmountKind: self.salaryMonthlyActual(),
+                    remunMonthlyAmount: self.salaryMonthly(),
+                    totalMonthlyRemun: self.totalCompensation(),
+                    livingAbroad: self.livingAbroad(),
+                    reasonOther: self.otherNotes(),
+                    reasonAndOtherContents: self.textOtherNotes1(),
+                    shortStay: self.shortTermResidence(),
+                    depenAppoint: self.selectedDepNotiAttach(),
+                    qualifiDistin: null,
+                    shortTimeWorkers: self.shortWorkHours(),
+                    continReemAfterRetirement: self.continuousEmpAfterRetire()
+                },
+                empBasicPenNumInforCommand: {
+                    employeeId: self.selectedItem(),
+                    basicPenNumber: self.basicPension()
+
+                },
+                multiEmpWorkInfoCommand: {
+                    employeeId: self.selectedItem(),
+                    isMoreEmp: self.twoOrMoreEmployee(),
+
+                }
+            }*/
+
+            let data = {
+                socialInsurAcquisiInforCommand: {
+                    employeeId: self.selectedItem(),
+                    percentOrMore: 1,
+                    remarksOther: 1,
+                    remarksAndOtherContents: 1,
+                    remunMonthlyAmountKind: 1,
+                    remunMonthlyAmount: 1,
+                    totalMonthlyRemun: 1,
+                    livingAbroad: 1,
+                    reasonOther: 1,
+                    reasonAndOtherContents: 1,
+                    shortStay: 1,
+                    depenAppoint: self.selectedDepNotiAttach(),
+                    qualifiDistin: 0,
+                    shortTimeWorkers: 1,
+                    continReemAfterRetirement: 1
+                },
+                empBasicPenNumInforCommand: {
+                    employeeId: self.selectedItem(),
+                    basicPenNumber: 1
+
+                },
+                multiEmpWorkInfoCommand: {
+                    employeeId: self.selectedItem(),
+                    isMoreEmp: 1
+
+                }
+            }
+
+            service.add(data).done(e =>{
+
+            }).fail(e =>{
+
+            });
+        }
         createEmployeeModel(data){
             let listEmployee = [];
             _.each(data, data => {
