@@ -14,6 +14,7 @@ module nts.uk.pr.view.qsi013.a {
         export function exportFile(data: any): JQueryPromise<any> {
             return nts.uk.request.exportFile(paths.exportFile, data);
         }
+
     }
 
 }

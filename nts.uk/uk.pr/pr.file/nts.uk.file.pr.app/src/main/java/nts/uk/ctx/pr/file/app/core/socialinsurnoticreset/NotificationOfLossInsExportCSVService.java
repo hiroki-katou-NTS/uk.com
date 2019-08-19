@@ -3,9 +3,7 @@ package nts.uk.ctx.pr.file.app.core.socialinsurnoticreset;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
-import nts.uk.ctx.pr.report.dom.printdata.socinsurnoticreset.PersonalNumClass;
-import nts.uk.ctx.pr.report.dom.printdata.socinsurnoticreset.SocialInsurNotiCrSetRepository;
-import nts.uk.ctx.pr.report.dom.printdata.socinsurnoticreset.SocialInsurNotiCreateSet;
+import nts.uk.ctx.pr.report.dom.printdata.socinsurnoticreset.*;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.EmpWelfarePenInsQualiInforRepository;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmplHealInsurQualifiInforRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -15,7 +13,7 @@ import javax.inject.Inject;
 import java.util.List;
 
 @Stateless
-public class NotificationOfLossInsExportService extends ExportService<NotificationOfLossInsExportQuery> {
+public class NotificationOfLossInsExportCSVService extends ExportService<NotificationOfLossInsExportQuery> {
 
 	@Inject
 	private SocialInsurNotiCrSetRepository socialInsurNotiCrSetRepository;
@@ -51,17 +49,31 @@ public class NotificationOfLossInsExportService extends ExportService<Notificati
 				socialInsurNotiCreateSet.getOutputFormat()
 		);
 		socialInsNotifiCreateSetRegis(domain);
-		List<String> empIds = exportServiceContext.getQuery().getUserIds();
-		//socialInsNotifiCreateSetRegis();
+		List<String> empIds = exportServiceContext.getQuery().getEmpIds();
+		if(exportServiceContext.getQuery().getEndDate().before(exportServiceContext.getQuery().getStartDate())) {
+			throw new BusinessException("Msg_812");
+		}
 		if(!checkHealthInsQualificationInformation(userId) && checkWelfarePenInsQualiInformation(userId)) {
 			throw new BusinessException("Msg_37");
 		}
+		if(domain.getInsuredNumber() == InsurPersonNumDivision.DO_NOT_OUPUT) {
+			throw new BusinessException("MsgQ_174, [QSI013_21]");
+		}
+		if(domain.getOfficeInformation() == BusinessDivision.OUTPUT_COMPANY_NAME) {
+			throw new BusinessException("MsgQ_174, [QSI013_23]");
+		}
+		if(domain.getFdNumber().isPresent()) {
+			throw new BusinessException("MsgQ_5, [QSI013_32]");
+		}
+		if(domain.getOutputFormat().get() == OutputFormatClass.PEN_OFFICE) {
+			emplHealInsurQualifiInforRepository.getAllEmplHealInsurQualifiInfor();
+		}
 
-		if( socialInsurNotiCreateSet.getPrintPersonNumber() == PersonalNumClass.DO_NOT_OUTPUT.value) {
+		/*if( socialInsurNotiCreateSet.getPrintPersonNumber() == PersonalNumClass.DO_NOT_OUTPUT.value) {
 			List<InsLossDataExport> healthInsLoss = socialInsurNotiCreateSetEx.getHealthInsLoss(empIds);
 			List<InsLossDataExport> welfPenInsLoss = socialInsurNotiCreateSetEx.getWelfPenInsLoss(empIds);
 			socialInsurNotiCreateSetFileGenerator.generate(exportServiceContext.getGeneratorContext(), new LossNotificationInformation(healthInsLoss, welfPenInsLoss, socialInsurNotiCreateSet));
-		}
+		}*/
 	}
 
 	//社会保険届作成設定登録処理
@@ -77,15 +89,5 @@ public class NotificationOfLossInsExportService extends ExportService<Notificati
 	//社員健康保険資格情報が存在するかチェックする
 	private boolean checkWelfarePenInsQualiInformation(String userId){
 		return empWelfarePenInsQualiInforRepository.checkEmpWelfarePenInsQualiInfor(userId);
-	}
-
-	//70歳以上被用者不該当届データ取得処理
-	private void getSociaInsNoticeSet(){
-
-	}
-
-	//被保険者資格喪失届取得処理
-	private void getInsPersonLossReport(){
-
 	}
 }

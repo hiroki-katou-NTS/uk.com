@@ -9,6 +9,6 @@ import java.util.List;
 public class NotificationOfLossInsExportQuery {
     private GeneralDate startDate;
     private GeneralDate endDate;
-    private List<String> userIds;
+    private List<String> empIds;
     private NotificationOfLossInsExport socialInsurNotiCreateSet;
 }

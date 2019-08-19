@@ -11,7 +11,7 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 import javax.ejb.Stateless;
 
 @Stateless
-public class NotificationOfLossInsAposeFileGenerator extends AsposeCellsReportGenerator implements NotificationOfLossInsFileGenerator {
+public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsReportGenerator implements NotificationOfLossInsFileGenerator {
 
     private static final String TEMPLATE_FILE = "report/被保険者資格喪失届_帳票テンプレート.xlsx";
     private static final String FILE_NAME = "被保険者資格喪失届_帳票テンプレート";

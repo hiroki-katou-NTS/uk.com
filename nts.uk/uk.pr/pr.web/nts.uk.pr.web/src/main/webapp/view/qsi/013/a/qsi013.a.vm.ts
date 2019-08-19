@@ -143,7 +143,7 @@ module nts.uk.pr.view.qsi013.a.viewmodel {
             $('#component-items-list').ntsListComponent(self.listComponentOption);
         }
 
-        exportExcel(): void {
+        exportFile(): void {
             let self = this;
             let data: any = {
                 socialInsurNotiCreateSet: self.socInsurNotiCreSet(),
