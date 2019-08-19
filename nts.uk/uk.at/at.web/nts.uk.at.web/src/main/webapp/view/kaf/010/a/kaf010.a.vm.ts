@@ -698,7 +698,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                     }
                 });   
                 nts.uk.ui.block.clear();
-                if(!self.isEmptyOverTimeInput(ko.toJS(self.overtimeHours()))){
+                if(!self.isEmptyOverTimeInput(ko.toJS(self.breakTimes()))){
                     self.calculateFlag(0);
                 }
                 self.checkWorkContentChanged();
