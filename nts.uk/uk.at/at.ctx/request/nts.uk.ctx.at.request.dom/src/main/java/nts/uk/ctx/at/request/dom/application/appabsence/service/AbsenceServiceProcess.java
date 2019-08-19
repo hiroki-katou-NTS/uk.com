@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.appabsence.service;
 
+import java.util.List;
+
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
