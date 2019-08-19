@@ -24,7 +24,15 @@
 	.ui-igtreegrid-expandcell{
 		margin-top: -10px !important;
 	}
-	
+	.ui-iggrid-table {
+		.ui-iggrid-tablebody {
+			tr {
+				td:last-child {
+				  	padding-right: 2px !important;
+				}
+			}
+		}
+	}
 }
 
 .no-selector {
