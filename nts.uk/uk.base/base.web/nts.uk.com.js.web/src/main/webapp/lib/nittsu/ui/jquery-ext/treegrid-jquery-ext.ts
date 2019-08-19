@@ -26,6 +26,7 @@ module nts.uk.ui.jqueryExtentions {
             let virtualization = !util.isNullOrUndefined(options.virtualization) ? options.virtualization : false;
             let virtualizationMode = !util.isNullOrUndefined(options.virtualizationMode) ? options.virtualizationMode : "";
             let multiple = !_.isNil(options.multiple) ? options.multiple : false;
+            let isFilter = ko.unwrap(!util.isNullOrUndefined(data.filter) ? data.filter : false);
             
             // Default.
             let showCheckBox = options.showCheckBox !== undefined ? options.showCheckBox : true;
@@ -103,9 +104,20 @@ module nts.uk.ui.jqueryExtentions {
                 
                 $treegrid.addClass("row-limited");
             }
+            
+            if(isFilter) {
+                features.push({ name: "Filtering", filterDelay : 100, filterDropDownAnimationDuration : 100 });
+            }
 
             $treegrid.data("expand", new koExtentions.ExpandNodeHolder());
             $treegrid.data("autoExpanding", false);
+            
+            let colSet = _.map(displayColumns, (col) => {
+                return { columnKey: col.key, readOnly: true };
+            });
+            features.push({ name: "Updating", editMode:   "cell", enableAddChild: false, 
+                            enableAddRow: false, enableDeleteRow: false, columnSettings: colSet });
+            var cols = $treegrid.ntsTreeView("formatColumns", displayColumns, features);
             
             // Init ig grid.
             $treegrid.igTreeGrid({
@@ -114,7 +126,7 @@ module nts.uk.ui.jqueryExtentions {
                 indentation: "12px",
                 dataSource: _.cloneDeep(dataSource),
                 primaryKey: optionsValue,
-                columns: displayColumns,
+                columns: cols,
                 childDataKey: optionsChild,
                 initialExpandDepth: nts.uk.util.isNullOrUndefined(initialExpandDepth) ? 10 : initialExpandDepth,
                 tabIndex: -1,
@@ -163,6 +175,15 @@ module nts.uk.ui.jqueryExtentions {
 //                        selectRows($treegrid);
 //                    }
 //                }
+            });
+            
+            $treegrid.bind('cellChanging', () => {
+                $treegrid.data("notUpdate", true);
+                let optionX = data.dataSource !== undefined ? data.dataSource : data.options;
+                if(_.isFunction(optionX)){
+                    optionX($treegrid.igTreeGrid("option", "dataSource"));        
+                }
+                
             });
             
             $treegrid.setupSearchScroll("igTreeGrid");

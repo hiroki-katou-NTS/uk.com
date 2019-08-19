@@ -13,22 +13,22 @@ __viewContext.ready(function () {
             var self = this;
             self.items1 = ko.observableArray([]);
             for(let i = 1; i <= 50; i++) {
-                let level1 = new Node('0000' + i, 'サービス部 サービス部 サービス部  vサービス部  サービス部サービス部 サービス部 サービス部 サービス部サービス部 サービス部サービス部' + i, []);
+                let level1 = new Node(_.padStart(i, 6, 0), 'サービス部 サービス部 サービス部  vサービス部  サービス部サービス部 サービス部 サービス部 サービス部サービス部 サービス部サービス部' + i, []);
                 for(let j = 1; j <= 2; j++) {
                     let ij = i + "" + j;
-                    let level2 = new Node('0000' + ij, 'サービス部' + ij, []);
+                    let level2 = new Node(_.padStart(ij, 7, 0), 'サービス部' + ij, []);
                     level1.childs.push(level2);
                     for(let k = 1; k <= 2; k++) {
                         let  ijk = ij + "" + k;
-                        let level3 = new Node('0000' + ijk, 'サービス部' + ijk, []);
+                        let level3 = new Node(_.padStart(ijk, 8, 0), 'サービス部' + ijk, []);
                         level2.childs.push(level3);
                         for(let l = 1; l <= 2; l++) {
                             let  ijkl = ijk + "" + l;
-                            let level4 = new Node('0000' + ijkl, 'サービス部' + ijkl, []);
+                            let level4 = new Node(_.padStart(ijkl, 9, 0), 'サービス部' + ijkl, []);
                             level3.childs.push(level4);
                             for(let n = 1; n <= 2; n++) {
                                 let  ijkln = ijkl + "" + n;
-                                let level5 = new Node('0000' + ijkln, 'サービス部' + ijkln, []);
+                                let level5 = new Node(_.padStart(ijkln, 10, 0), 'サービス部' + ijkln, []);
                                 level4.childs.push(level5);
                             }
                         }
@@ -42,7 +42,7 @@ __viewContext.ready(function () {
             self.selectedCodes2 = ko.observable([]);
             self.index = 0;
             self.columns = ko.observableArray([{ headerText: "Item Code", width: "250px", key: 'code', dataType: "string", hidden: false },
-            { headerText: "Item Text", key: 'nodeText', width: "200px", dataType: "string" }]);
+            { headerText: "Item Text", key: 'checkbox', width: "200px", dataType: "boolean", formatType : "checkbox" }]);
             self.columns2 = ko.observableArray([{ headerText: "Item Code", width: "250px", key: 'code', dataType: "string", hidden: false },
             { headerText: "Item Text", key: 'nodeText', width: "250px", dataType: "string" },
             { headerText: "Item Auto Generated Field", key: 'custom', width: "200px", dataType: "string" }]);            
@@ -84,6 +84,7 @@ __viewContext.ready(function () {
         nodeText: string;
         custom: string;
         childs: Array<Node>;
+        checkbox: boolean;
         constructor(code: string, name: string, childs: Array<Node>) {
             var self = this;
             self.code = code;
@@ -91,6 +92,7 @@ __viewContext.ready(function () {
             self.nodeText = self.code + ' ' + self.name;
             self.childs = childs;
             self.custom = 'Random' + new Date().getTime();
+            self.checkbox = true;
         }
     }
     
