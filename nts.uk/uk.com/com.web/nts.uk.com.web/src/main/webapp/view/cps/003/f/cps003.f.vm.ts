@@ -47,7 +47,6 @@ module cps003.f.vm {
                             .filter(f => excs.indexOf(f.itemCD) == -1)
                             .filter(f => data.itemsDefIds.indexOf(f.perInfoItemDefID) > -1)
                             .filter(f => [
-                                'IS00106', 'IS00107', 'IS00109', 'IS00110', // 
                                 'IS00133', 'IS00134', 'IS00136', 'IS00137', // IS00131
                                 'IS00142', 'IS00143', 'IS00145', 'IS00146', // IS00140
                                 'IS00151', 'IS00152', 'IS00154', 'IS00155', // IS00149
@@ -303,12 +302,20 @@ module cps003.f.vm {
                                         break;
                                     case ITEM_SINGLE_TYPE.TIME:
                                         if ((filter|| filter === 0) && !isNaN(Number(filter))) {
-                                            value = parseTime(Number(filter), true).format();
+                                            try{
+                                                value = parseTime(Number(filter), true).format();
+                                            }catch(error){
+                                                value = value;
+                                            }
                                         }
                                         break;
                                     case ITEM_SINGLE_TYPE.TIMEPOINT:
-                                        if ((filter|| filter === 0) && !isNaN(Number(filter))) {
-                                            value = parseTimeWidthDay(Number(filter)).fullText;
+                                        if ((filter || filter === 0) && !isNaN(Number(filter))) {
+                                            try {
+                                                value = parseTimeWidthDay(Number(filter)).fullText;
+                                            } catch (err) {
+                                                value = value;
+                                            }
                                         }
                                         break;
                                     case ITEM_SINGLE_TYPE.SELECTION:
@@ -748,7 +755,7 @@ module cps003.f.vm {
                         if (item.itemData.amount) {
                             if (mode == 0) { // 通常置換（F1_026）が選択されている場合
                                 if (value.replaceValue) {
-                                    confirm({ messageId: 'Msg_635', messageParams: [item.name, value.matchValue + text('CPS003_122') , item.replacer] }).ifYes(() => {
+                                    confirm({ messageId: 'Msg_635', messageParams: [item.name, Number(value.matchValue).toLocaleString('ja-JP', { useGrouping: true }) + text('CPS003_122'), item.replacer] }).ifYes(() => {
                                         setShared('CPS003F_VALUE', value);
                                         close();
                                     });
@@ -822,7 +829,7 @@ module cps003.f.vm {
                         if (item.itemData.amount) {
                             if ((value.replaceValue || value.matchValue) && mode == 0) {
                                 if (mode == 0) {
-                                    confirm({ messageId: 'Msg_637', messageParams: [item.name, item.replacer + text('CPS003_122')] }).ifYes(() => {
+                                    confirm({ messageId: 'Msg_637', messageParams: [item.name, item.replacer] }).ifYes(() => {
                                         setShared('CPS003F_VALUE', value);
                                         close();
                                     });
