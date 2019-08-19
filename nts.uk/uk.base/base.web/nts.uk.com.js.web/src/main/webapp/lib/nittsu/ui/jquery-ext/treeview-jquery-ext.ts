@@ -38,7 +38,7 @@ module nts.uk.ui.jqueryExtentions {
             let newColumns = _.map(columns, (colO) => {
                 let col = _.cloneDeep(colO);
                 if(_.lowerCase(col.formatType) === "checkbox") {
-                    let oldFormatter = col.formatter;
+                    let oldFormatter = col.formatte, isParentCompute = _.isNil(col.parentCompute) || !col.parentCompute ? false : true;
                     
                     col.formatter = (value, rowObj) => {
                         if (_.isNil(rowObj)) return value;
@@ -117,12 +117,14 @@ module nts.uk.ui.jqueryExtentions {
                                         }
                                         $tree.data("igTreeGrid").dataSource.setCellValue(rowId, col.key, val, true);
                                         $tree.data("igTreeGridUpdating")._notifyCellUpdated(rowId);
-                                        updateX(rowObj[childKey], val, col.key, childKey, primaryKey);
-                                        if($wrapper.data("changeByParent")) {
-                                            $wrapper.data("changeByParent", false);
-                                            return;
+                                        if(isParentCompute) {
+                                            updateX(rowObj[childKey], val, col.key, childKey, primaryKey);
+                                            if($wrapper.data("changeByParent")) {
+                                                $wrapper.data("changeByParent", false);
+                                                return;
+                                            }
+                                            checkSiblings(rowId, $tree.igTreeGrid("option", "dataSource"), col.key, childKey, primaryKey);    
                                         }
-                                        checkSiblings(rowId, $tree.igTreeGrid("option", "dataSource"), col.key, childKey, primaryKey);
                                         $tree.trigger("cellChanging");
                                     }
                                 }, deleteRow: () => {
