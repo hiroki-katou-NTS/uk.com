@@ -90,8 +90,9 @@ public class BusinessTypeOfHistoryGeneralRepositoryImpl implements BusinessTypeO
 		Map<String, DateHistoryItem> dateHistItemMaps = new HashMap<>();
 		// Update item before
 		histories.stream().forEach(c ->{
-			if(c.getHistory().size() > 0) {
-				DateHistoryItem historyItem  = c.getHistory().get(c.getHistory().size() - 1);
+			if(c.getHistory().size() > 1) {
+				int max = c.getHistory().size();
+				DateHistoryItem historyItem  = c.getHistory().get(max - 1);
 				Optional<DateHistoryItem> beforeItemOpt = c.immediatelyBefore(historyItem);
 				if (!beforeItemOpt.isPresent()) {
 					return;
