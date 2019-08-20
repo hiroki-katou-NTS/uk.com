@@ -157,10 +157,9 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 		if(lstApp.isEmpty()) {
 			return true;
 		}
-		
-		for (Application_New appData : lstApp) {			
+		this.managedParallelWithContext.forEach(lstApp, appData -> {
 			appRefMng.reflectEmployeeOfApp(appData, reflectSetting, refAppResult, workId, 0);
-		}
+		});		
 		return true;
 	}
 	@Override
@@ -190,7 +189,7 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 		}
 		lstApp = applicationRepo.getAppForReflect(sid, datePeriod, lstRecordStatus, lstScheStatus, lstApptype);
 		//申請日でソートする		
-		return lstApp;
+		return this.sortData(lstApp);
 	}
 	private List<Application_New> sortData(List<Application_New> lstApp){
 		//申請日、入力日、事前事後区分　ASC

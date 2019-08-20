@@ -36,6 +36,10 @@ import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
+import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.DuplicateStateAtr;
+import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.DuplicationStatusOfTimeZone;
+import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.RangeOfDayTimeZoneService;
+import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
@@ -44,6 +48,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
 public class OvertimeServiceImpl implements OvertimeService {
@@ -73,6 +78,9 @@ public class OvertimeServiceImpl implements OvertimeService {
 	private BasicScheduleService basicService;
 	@Inject
 	private BreakTimeZoneService timeService;
+	
+	@Inject
+	public RangeOfDayTimeZoneService rangeOfDayTimeZoneService;
 	
 	@Override
 	public int checkOvertimeAtr(String url) {
@@ -381,6 +389,47 @@ public class OvertimeServiceImpl implements OvertimeService {
             }
 		});
 		return breakTimeZoneSharedOutPut;
+	}
+	
+	// 休憩時間帯を取得する
+	public List<DeductionTime> getBreakTimes(String companyID, String workTypeCode, String workTimeCode, 
+			Optional<TimeWithDayAttr> opStartTime, Optional<TimeWithDayAttr> opEndTime) {
+		List<DeductionTime> result = new ArrayList<>();
+		// 1日半日出勤・1日休日系の判定
+		WorkStyle workStyle = this.basicService.checkWorkDay(workTypeCode);
+		// 平日か休日か判断する
+		WeekdayHolidayClassification weekDay = checkHolidayOrNot(workTypeCode);
+		// 休憩時間帯の取得
+		BreakTimeZoneSharedOutPut breakTimeZoneSharedOutPut = this.timeService.getBreakTimeZone(companyID, workTimeCode,
+				weekDay.value, workStyle);
+		Collections.sort(breakTimeZoneSharedOutPut.getLstTimezone(), new Comparator<DeductionTime>() {
+			@Override
+			public int compare(DeductionTime o1, DeductionTime o2) {
+				return o1.getStart().v().compareTo(o2.getStart().v());
+			}
+		});
+		// Input．開始時刻とInput．終了時刻をチェック
+		if(!opStartTime.isPresent() || !opEndTime.isPresent()){
+			return breakTimeZoneSharedOutPut.getLstTimezone();
+		}
+		for(DeductionTime deductionTime : breakTimeZoneSharedOutPut.getLstTimezone()){
+			// 状態区分　＝　「重複の判断処理」を実行
+			TimeWithDayAttr startTime = opStartTime.get();
+			TimeWithDayAttr endTime = opEndTime.get();
+			TimeSpanForCalc timeSpanFirstTime = new TimeSpanForCalc(endTime, startTime);
+			TimeSpanForCalc timeSpanSecondTime = new TimeSpanForCalc(deductionTime.getEnd(), deductionTime.getStart());
+			// アルゴリズム「時刻入力期間重複チェック」を実行する
+			DuplicateStateAtr duplicateStateAtr = this.rangeOfDayTimeZoneService
+					.checkPeriodDuplication(timeSpanFirstTime, timeSpanSecondTime);
+			// 重複状態区分チェック
+			DuplicationStatusOfTimeZone duplicationStatusOfTimeZone = this.rangeOfDayTimeZoneService
+					.checkStateAtr(duplicateStateAtr);
+			// 取得した状態区分をチェック
+			if(duplicationStatusOfTimeZone != DuplicationStatusOfTimeZone.NON_OVERLAPPING){
+				result.add(deductionTime);
+			}
+		}
+		return result;
 	}
 
 	private WeekdayHolidayClassification checkHolidayOrNot(String workTypeCd) {

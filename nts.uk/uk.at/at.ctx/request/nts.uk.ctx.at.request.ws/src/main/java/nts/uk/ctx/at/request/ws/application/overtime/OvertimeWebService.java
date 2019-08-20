@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.request.ws.application.overtime;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -24,6 +26,11 @@ import nts.uk.ctx.at.request.app.find.application.overtime.dto.RecordWorkDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.RecordWorkParam;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
+import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeService;
+import nts.uk.ctx.at.shared.app.find.worktime.common.dto.DeductionTimeDto;
+import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
+import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Path("at/request/application/overtime")
 @Produces("application/json")
@@ -40,6 +47,9 @@ public class OvertimeWebService extends WebService{
 	
 	@Inject
 	private UpdateOvertimeCommandHandler updateOvertimeCommandHandler;
+	
+	@Inject
+	private OvertimeService overtimeService;
 	
 	@POST
 	@Path("getOvertimeByUI")
@@ -123,5 +133,20 @@ public class OvertimeWebService extends WebService{
 		return this.overtimeFinder.getRecordWork(param.employeeID, param.appDate, param.siftCD,param.prePostAtr,param.getOvertimeHours(),param.getWorkTypeCode(),
 				param.getStartTimeRests(),
 				param.getEndTimeRests());
+	}
+	
+	@POST
+	@Path("getByChangeTime")
+	public List<DeductionTimeDto> getByChangeTime(ChangeTimeParam param) {
+		String companyID = AppContexts.user().companyId();
+		Optional<TimeWithDayAttr> opStartTime = param.startTime==null ? Optional.empty() : Optional.of(new TimeWithDayAttr(param.startTime)); 
+		Optional<TimeWithDayAttr> opEndTime = param.endTime==null ? Optional.empty() : Optional.of(new TimeWithDayAttr(param.endTime));
+		List<DeductionTime> breakTimes = overtimeService.getBreakTimes(companyID, param.workTypeCD, param.workTimeCD, opStartTime, opEndTime);
+		List<DeductionTimeDto> timeZones = breakTimes.stream().map(domain->{
+			DeductionTimeDto dto = new DeductionTimeDto();
+			domain.saveToMemento(dto);
+			return dto;
+		}).collect(Collectors.toList());
+		return timeZones;
 	}
 }

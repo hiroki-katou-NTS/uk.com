@@ -38,7 +38,8 @@ public class HolidayWorktimeAppRequestPara {
 	private Integer startTime;
 	private Integer endTime;
 	/**
-	 * 休憩時間
+	 * 休日出勤申請・休憩時間（１０枠）
 	 */
-	private Map<Integer, BreakTime> mapBreakTime;
+	private Map<Integer, BreakTime> mapBreakTimeFrame;
 }
+

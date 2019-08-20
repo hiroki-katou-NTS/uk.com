@@ -203,7 +203,27 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 employeeID: nts.uk.util.isNullOrEmpty(self.employeeID()) ? null : self.employeeID(),
                 employeeIDs: self.employeeIDs()
             }).done((data) => {
-                self.initData(data);
+                self.initData(data); 
+                self.timeStart1.subscribe(() => {
+                    service.getByChangeTime({
+                        workTypeCD: self.workTypeCd(),
+                        workTimeCD: self.siftCD(),
+                        startTime: self.timeStart1(),
+                        endTime: self.timeEnd1()
+                    }).done((timeRs) => {
+                        self.setTimeZones(timeRs);    
+                    });    
+                });
+                self.timeEnd1.subscribe(() => {
+                    service.getByChangeTime({
+                        workTypeCD: self.workTypeCd(),
+                        workTimeCD: self.siftCD(),
+                        startTime: self.timeStart1(),
+                        endTime: self.timeEnd1()
+                    }).done((timeRs) => {
+                        self.setTimeZones(timeRs);      
+                    });    
+                });
                 self.checkRequiredOvertimeHours();
                 $("#inputdate").focus();
                  // findByChangeAppDate

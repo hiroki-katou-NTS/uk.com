@@ -79,15 +79,15 @@ public class InformationSettingOfAppForReflectImpl implements InformationSetting
 			scheAndWorkChange = requestSetting.getClassScheAchi();
 		}
 		//休出申請設定．事前反映設定．休出時間
-		boolean isHwScheReflectHwTime = true;
+		boolean isHwScheReflect = true;
 		boolean isHwRecordReflectTime = true;
 		boolean isHwRecordReflectBreak = true;
 		Optional<WithdrawalAppSet> optBreackOfWork = kyushutsuSetting.getByCid(cid);
 		if(optBreackOfWork.isPresent()) {
-			WithdrawalAppSet hwReflectSetting = optBreackOfWork.get();
-			isHwScheReflectHwTime = hwReflectSetting.getRestTime() == UnitTime.ONEMIN ? false : true;
-			isHwRecordReflectTime = hwReflectSetting.getWorkTime() == nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.UseAtr.USE ? true : false;
-			isHwRecordReflectBreak = hwReflectSetting.getBreakTime() == nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.UseAtr.USE ? true : false;			
+			WithdrawalAppSet holidayWorkReflectSetting = optBreackOfWork.get();
+			isHwScheReflect = holidayWorkReflectSetting.getRestTime() == UnitTime.ONEMIN ? false : true;
+			isHwRecordReflectTime = holidayWorkReflectSetting.getWorkTime() == nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.UseAtr.USE ? true : false;
+			isHwRecordReflectBreak = holidayWorkReflectSetting.getBreakTime() == nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.UseAtr.USE ? true : false;
 		}
 		return new InformationSettingOfEachApp(furikyuFurishutsu,
 				chokochoki,
@@ -98,7 +98,7 @@ public class InformationSettingOfAppForReflectImpl implements InformationSetting
 				workJikokuYusen,
 				jizenScheYusen,
 				scheAndWorkChange,
-				isHwScheReflectHwTime,
+				isHwScheReflect,
 				isHwRecordReflectTime,
 				isHwRecordReflectBreak);
 	}

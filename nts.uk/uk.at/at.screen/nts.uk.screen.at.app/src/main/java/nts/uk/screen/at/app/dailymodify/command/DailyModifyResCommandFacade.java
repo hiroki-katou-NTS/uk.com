@@ -285,7 +285,7 @@ public class DailyModifyResCommandFacade {
 
 	public DataResultAfterIU insertItemDomain(DPItemParent dataParent) {
 		//Map<Integer, List<DPItemValue>> resultError = new HashMap<>();
-		validatorDataDaily.checkVerConfirmApproval(dataParent.getApprovalConfirmCache());
+		validatorDataDaily.checkVerConfirmApproval(dataParent.getApprovalConfirmCache(), dataParent.getDataCheckSign(), dataParent.getDataCheckApproval());
 		Map<Integer, List<DPItemValue>> resultErrorMonth = new HashMap<>();
 		DataResultAfterIU dataResultAfterIU = new DataResultAfterIU();
 		Map<Pair<String, GeneralDate>, ResultReturnDCUpdateData> lstResultReturnDailyError = new HashMap<>();
@@ -1202,8 +1202,8 @@ public class DailyModifyResCommandFacade {
 		if ((flexShortageRCDto.isError() || !flexShortageRCDto.getMessageError().isEmpty()) && editFlex) {
 			hasError = true;
 			if(!resultIU.getLstMonthDomain().isEmpty()) flexShortageRCDto.createDataCalc(convertMonthToItem(MonthlyRecordWorkDto.fromOnlyAttTime(resultIU.getLstMonthDomain().get(0)), monthValue));
+			flexShortageRCDto.setVersion(monthValue.getVersion());
 		}
-		flexShortageRCDto.setVersion(monthValue.getVersion());
 		dataResultAfterIU.setFlexShortage(flexShortageRCDto);
 		//}
 		//フレ補填によって年休残数のエラーが発生していないかチェックする
