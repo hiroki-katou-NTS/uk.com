@@ -162,5 +162,15 @@ public interface PerInfoItemDefRepositoty {
 	
 	Map<String, String> getNamesByCodes(List<String> itemCodes);
 	
+	/**
+	 * cps003, cps002, cps001
+	 * @param categoryCode
+	 * @param itemCds
+	 * @param cid
+	 * @param contractCd
+	 * @return
+	 */
+	List<PersonInfoItemDefinition> getItemsByCtgCdItemCdsCid(String categoryCode, List<String> itemCds, String cid , String contractCd);
+	
 	
 }
