@@ -22,6 +22,10 @@
 				  	padding-right: 2px !important;
 				}
 			}
+			tr.row-disabled {
+				background-color: #CCC;
+  				color: #333;
+			}
 		}
 	}
 }

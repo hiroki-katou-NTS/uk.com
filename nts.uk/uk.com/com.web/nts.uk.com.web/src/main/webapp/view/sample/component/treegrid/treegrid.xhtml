@@ -30,8 +30,8 @@
 					<h1>TreeGrid</h1>
 					<h2>Overview</h2>
 					<button data-bind="click: resetSelection">Reset</button>
-					<button data-bind="click: changeDataSource">Next
-						Datasource</button>
+					<button data-bind="click: changeDataSource">Next Datasource</button>
+					<button data-bind="click: disableRows">disable some rows</button>
 					<div class="cf">
 						<div style="float: left">
 							<h3>Single Selection</h3>
@@ -253,6 +253,25 @@
 										<tr>
 											<td>filter</td>
 											<td><b>Type:</b> boolean<br /> Enables/disables filter feature</td>
+										</tr>
+									</tbody>
+								</table>
+								<br/><br/>
+								<h2>Methods</h2>
+								<table>
+									<colgroup>
+										<col width="200px" />
+									</colgroup>
+									<thead>
+										<tr>
+											<th><h4>sample</h4></th>
+											<th><h4>Description</h4></th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td>$("#treegrid2").ntsTreeView("disableRows", ["000001", "000002"]);</td>
+											<td>disables some rows by ids</td>
 										</tr>
 									</tbody>
 								</table>

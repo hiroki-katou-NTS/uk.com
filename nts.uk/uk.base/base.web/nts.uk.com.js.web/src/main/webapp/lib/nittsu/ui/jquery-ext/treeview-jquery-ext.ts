@@ -29,8 +29,43 @@ module nts.uk.ui.jqueryExtentions {
                     return virtualScroll($tree, param);
                 case 'formatColumns':
                     return formatColumns($tree, param);
+                case 'disableRows':
+                    return disableRows($tree, param);
             }
         };
+        
+        function disableRows($tree, rowIds) {
+            if (_.isNil(rowIds)) {
+                return;
+            }
+            let disabled = $tree.data("rowDisabled"), columnSets = $tree.igTreeGrid("option", "columns");
+            if (_.isNil(disabled)) {
+                disabled = [];
+            }
+            if (!_.isArray(rowIds)) {
+                rowIds = [rowIds]; 
+            }
+            columnSets = _.filter(columnSets, (col) => { return !_.isNil(col.formatType) });
+            
+            _.forEach(rowIds, (r) => {
+                _.forEach(columnSets, (col) => {
+                    if(_.lowerCase(col.formatType) === "checkbox"){
+                        var cellContainer = $tree.igTreeGrid("cellById", r, col.key);
+                        
+                        if(_.isEmpty(cellContainer)) return; 
+                        
+                        var control = ntsGrid.ntsControls.getControl(ntsGrid.ntsControls.CHECKBOX);
+                        let $cellContainer = $(cellContainer);
+                        control.disable($cellContainer);     
+                    }   
+                });
+                var row = $tree.igTreeGrid("rowById", r);
+                if(_.isEmpty(row)) return; 
+                row.addClass("row-disabled");
+            });  
+            
+            $tree.data("rowDisabled", _.union(disabled, rowIds));
+        }
         
         function formatColumns($tree: JQuery, columns): any {
             $tree.data("CB_SELECTED", {});
@@ -190,8 +225,14 @@ module nts.uk.ui.jqueryExtentions {
 
         function setSelected($tree: JQuery, selectedId: any) {
             deselectAll($tree);
-
+            let disabledRows = $tree.data("rowDisabled");
+            
             if ($tree.igTreeGridSelection('option', 'multipleSelection')) {
+                if(!_.isEmpty(disabledRows)) {
+                    _.remove(selectedId, function(r) {
+                        return disabledRows.includes(r);
+                    });  
+                }
                 (<Array<string>>selectedId).forEach(id => { 
                     $tree.igTreeGridSelection('selectRowById', id);
                     virtualScroll($tree, id);
@@ -200,8 +241,12 @@ module nts.uk.ui.jqueryExtentions {
                 if (selectedId.constructor === Array) {
                     selectedId = selectedId[0];
                 }
-                $tree.igTreeGridSelection('selectRowById', selectedId);
-                virtualScroll($tree, selectedId);
+                if(!(!_.isEmpty(disabledRows) && !_.isNil(selectedId) && disabledRows.includes(selectedId))) {
+                    $tree.igTreeGridSelection('selectRowById', selectedId);
+                    virtualScroll($tree, selectedId);
+                } else {
+                    selectedId = null;    
+                }
             }
             
             $tree.trigger("ntstreeselectionchanged", [ selectedId ]);

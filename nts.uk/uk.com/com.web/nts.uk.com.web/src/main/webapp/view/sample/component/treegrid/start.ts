@@ -69,6 +69,12 @@ __viewContext.ready(function () {
 //            self.selectedCode(['0001-1', '0002']);
         }
         
+        disableRows(): void {
+            $("#treegrid2").ntsTreeView("disableRows", ["000001", "000002"]);    
+            $("#treegrid2-limited").ntsTreeView("disableRows", ["000001", "000002"]);
+            $("#treegrid").ntsTreeView("disableRows", ["000001", "000002"]);
+        }
+        
         changeDataSource(): void {
             var self = this;
             var i = 0;
