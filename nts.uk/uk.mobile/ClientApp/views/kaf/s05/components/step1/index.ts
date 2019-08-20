@@ -40,7 +40,20 @@ import { OvertimeAgreement, AgreementTimeStatusOfMonthly, Kafs05Model } from '..
                 }
             },
             workTypeCd: {
-                required: true,
+                check: {
+                    test(value: string) {
+                        if (this.kafs05ModelStep1.displayCaculationTime) {
+                            if (_.isNil(value) || '' == value) {
+                                return false;
+                            }
+
+                            return true;
+                        }
+
+                        return true;
+                    },
+                    messageId: 'MsgB_30'
+                }
             }
         },
     },
@@ -847,8 +860,12 @@ export class KafS05aStep1Component extends Vue {
         }
 
         self.overtimeAtr = data.overtimeAtr;
-        if (!_.isNil(data.worktimeStart) && !_.isNil(data.worktimeEnd)) {
-            self.selectedWorkTime = TimeWithDay.toString(data.worktimeStart) + '～' + TimeWithDay.toString(data.worktimeEnd);
+        if (!_.isNil(data.worktimeStart) && !_.isNil(data.worktimeEnd)) {           
+            if (_.isNil(self.siftCD) || self.siftName == this.$i18n('KAL003_120')) {
+                self.selectedWorkTime = '';
+            } else {
+                self.selectedWorkTime = TimeWithDay.toString(data.worktimeStart) + '～' + TimeWithDay.toString(data.worktimeEnd);
+            }
         }
         self.performanceExcessAtr = data.performanceExcessAtr;
     }
@@ -955,8 +972,12 @@ export class KafS05aStep1Component extends Vue {
         }
         // 休憩時間
         this.setTimeZones(data.timezones);
-        if (!_.isNil(data.worktimeStart) && !_.isNil(data.worktimeEnd)) {
-            self.selectedWorkTime = TimeWithDay.toString(data.worktimeStart) + '～' + TimeWithDay.toString(data.worktimeEnd);
+        if (!_.isNil(data.worktimeStart) && !_.isNil(data.worktimeEnd)) {           
+            if (_.isNil(self.siftCD) || self.siftName == this.$i18n('KAL003_120')) {
+                self.selectedWorkTime = '';
+            } else {
+                self.selectedWorkTime = TimeWithDay.toString(data.worktimeStart) + '～' + TimeWithDay.toString(data.worktimeEnd);
+            }
         }
     }
 
