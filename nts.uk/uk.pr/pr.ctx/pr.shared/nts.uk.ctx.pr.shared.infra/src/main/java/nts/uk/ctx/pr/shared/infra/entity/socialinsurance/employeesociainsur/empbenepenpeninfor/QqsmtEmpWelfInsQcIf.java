@@ -4,10 +4,16 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.EmpWelfarePenInsQualiInfor;
+import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.EmployWelPenInsurAche;
+import nts.uk.shr.com.history.DateHistoryItem;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 /**
 * 社員厚生年金保険資格情報
@@ -46,11 +52,30 @@ public class QqsmtEmpWelfInsQcIf extends UkJpaEntity implements Serializable
         return empWelfInsQcIfPk;
     }
 
-    public EmpWelfarePenInsQualiInfor toDomain() {
+    public static Optional<EmpWelfarePenInsQualiInfor> toDomain(List<QqsmtEmpWelfInsQcIf> data) {
+        List<EmployWelPenInsurAche> mournPeriod = new ArrayList<>();
+        String employeeId = data.get(0).empWelfInsQcIfPk.employeeId;
+        data.forEach(x -> {
+            DatePeriod period = new DatePeriod(x.startDate,x.endDate);
+            DateHistoryItem item = new DateHistoryItem(x.empWelfInsQcIfPk.historyId,period);
+            mournPeriod.add(new EmployWelPenInsurAche(x.empWelfInsQcIfPk.historyId,item) );
+        });
+        return Optional.ofNullable(new EmpWelfarePenInsQualiInfor(
+                employeeId,
+                mournPeriod
+        ));
+    }
+
+    public EmpWelfarePenInsQualiInfor toDomain(){
         return null;
     }
     public static QqsmtEmpWelfInsQcIf toEntity(EmpWelfarePenInsQualiInfor domain) {
-        return null;
+
+        return new QqsmtEmpWelfInsQcIf(
+                new QqsmtEmpWelfInsQcIfPk(domain.getEmployeeId(),domain.getMournPeriod().get(0).getHistoryId()),
+                domain.getMournPeriod().get(0).getDatePeriod().start(),
+                domain.getMournPeriod().get(0).getDatePeriod().end()
+        );
     }
 
 }

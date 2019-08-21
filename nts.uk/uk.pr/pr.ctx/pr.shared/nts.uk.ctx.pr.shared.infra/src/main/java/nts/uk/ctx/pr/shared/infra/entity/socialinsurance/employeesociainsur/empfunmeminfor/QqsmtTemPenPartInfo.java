@@ -4,10 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empfunmeminfor.EmPensionFundPartiPeriodInfor;
+import nts.uk.shr.com.history.DateHistoryItem;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
+import java.util.Optional;
 
 
 /**
@@ -55,8 +59,13 @@ public class QqsmtTemPenPartInfo extends UkJpaEntity implements Serializable
     }
 
     public EmPensionFundPartiPeriodInfor toDomain() {
-        return null;
+        DatePeriod period = new DatePeriod(this.startDate,endDate);
+        DateHistoryItem historyItem = new DateHistoryItem(this.temPenPartInfoPk.historyId,period);
+        return new EmPensionFundPartiPeriodInfor(this.temPenPartInfoPk.employeeId,historyItem);
+
     }
+
+
     public static QqsmtTemPenPartInfo toEntity(EmPensionFundPartiPeriodInfor domain) {
         return null;
     }

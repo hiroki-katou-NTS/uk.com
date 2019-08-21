@@ -16,11 +16,21 @@ public class JpaEmpWelfarePenInsQualiInforRepository extends JpaRepository imple
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QqsmtEmpWelfInsQcIf f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.empWelfInsQcIfPk.employeeId =:employeeId AND  f.empWelfInsQcIfPk.historyId =:historyId ";
+    private static final String SELECT_BY_KEY_STRING_BY_EMPID = SELECT_ALL_QUERY_STRING + " WHERE f.empWelfInsQcIfPk.employeeId =:employeeId ";
 
     @Override
     public List<EmpWelfarePenInsQualiInfor> getAllEmpWelfarePenInsQualiInfor(){
         return this.queryProxy().query(SELECT_ALL_QUERY_STRING, QqsmtEmpWelfInsQcIf.class)
                 .getList(item -> item.toDomain());
+    }
+
+    @Override
+    public Optional<EmpWelfarePenInsQualiInfor> getEmpWelfarePenInsQualiInforByEmpId(String employeeId){
+        List<QqsmtEmpWelfInsQcIf> list = this.queryProxy().query(SELECT_BY_KEY_STRING_BY_EMPID, QqsmtEmpWelfInsQcIf.class)
+                .setParameter("employeeId", employeeId)
+                .getList();
+
+        return QqsmtEmpWelfInsQcIf.toDomain(list);
     }
 
     @Override
