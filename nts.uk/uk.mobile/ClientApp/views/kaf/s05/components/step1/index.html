@@ -86,14 +86,14 @@
                 <button type="button" class="btn btn-selection" v-on:click="openKDL002()"
                     :disabled="!kafs05ModelStep1.workTypeChangeFlg">
                     <span class="badge badge-secondary">{{kafs05ModelStep1.workTypeCd ? kafs05ModelStep1.workTypeCd : ''}}</span>
-                    <span>{{kafs05ModelStep1.workTypeCd ? kafs05ModelStep1.workTypeName : '未設定'}}</span>
+                    <span>{{kafs05ModelStep1.workTypeName ? kafs05ModelStep1.workTypeName : '未設定'}}</span>
                 </button>
                 <span class="small-header">{{'KAFS05_65' | i18n}}</span>
                 <button type="button" class="btn btn-selection mb-2" v-on:click="openKDL002()"
                     :disabled="!kafs05ModelStep1.workTypeChangeFlg">
                     <span class="badge badge-secondary">{{kafs05ModelStep1.siftCD ? kafs05ModelStep1.siftCD : ''}}</span>
-                    <span>{{kafs05ModelStep1.siftCD ? kafs05ModelStep1.siftName : '未設定'}}</span>
-                    <span class="d-block mt-1">{{kafs05ModelStep1.siftCD ? kafs05ModelStep1.selectedWorkTime : '未設定'}}</span>
+                    <span>{{kafs05ModelStep1.siftName ? kafs05ModelStep1.siftName : '未設定'}}</span>
+                    <span class="d-block mt-1">{{kafs05ModelStep1.siftCD ? kafs05ModelStep1.selectedWorkTime : ''}}</span>
                 </button>
             </div>
             <v-errors v-model="$errors.kafs05ModelStep1.workTypeCd" class="d-block mt-0" />

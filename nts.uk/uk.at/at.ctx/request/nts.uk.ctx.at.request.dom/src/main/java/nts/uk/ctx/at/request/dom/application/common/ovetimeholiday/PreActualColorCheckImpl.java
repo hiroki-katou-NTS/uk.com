@@ -84,7 +84,9 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 			actualErrorCheck(overtimeColorCheck, actualLst, actualSetCheck);
 		}
 		result.beforeAppStatus = beforeAppStatus;
-		result.actualStatus = actualStatus.value;
+		if (null != actualStatus) {
+			result.actualStatus = actualStatus.value;
+		}
 		result.resultLst = overTimeLst;
 		return result;
 	}
@@ -346,7 +348,7 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 		String companyID = AppContexts.user().companyId();
 		int compareValue = 0;
 		// 事前申請をチェックする
-		if(opAppBefore.isPresent()){
+		if(null != opAppBefore && opAppBefore.isPresent()){
 			Application_New appBefore = opAppBefore.get();
 			// 申請種類をチェックする
 			if(appType==ApplicationType.OVER_TIME_APPLICATION){
