@@ -63,6 +63,13 @@ module nts.uk.ui.jqueryExtentions {
 //                    } else {
 //                        selectRows($treegrid, selectedRows.length <= 0 ? undefined : ui.row.id);
 //                    }
+                }, rowSelectionChanging: function (evt, ui) {
+                    let disabledRows = $treegrid.data("rowDisabled");
+                    if(!_.isEmpty(disabledRows)) {
+                        _.remove(ui.selectedRows, function(r) {
+                            return disabledRows.includes(r.id);
+                        });
+                    }
                 }
             });
             
@@ -151,7 +158,12 @@ module nts.uk.ui.jqueryExtentions {
 //                    _.forEach(holder.nodes, function(node: any){
 //                        $treegrid.igTreeGrid("expandRow", node); 
 //                    });
-                    
+                    if(virtualization){
+                         let disabledRows = $treegrid.data("rowDisabled");
+                        if(!_.isEmpty(disabledRows)) {
+                            $treegrid.ntsTreeView("disableRows", disabledRows);
+                        }   
+                    }
                     $treegrid.data("autoExpanding", false);   
                 }
             });
@@ -197,6 +209,19 @@ module nts.uk.ui.jqueryExtentions {
             let dataSource = $treegrid.igTreeGrid('option', 'dataSource');
             let multiple = !_.isNil(selectedValue) && selectedValue.constructor === Array;
 
+            let disabledRows = $treegrid.data("rowDisabled");
+            if(!_.isEmpty(disabledRows)) {
+                if (multiple) {
+                    _.remove(selectedValue, function(r) {
+                        return disabledRows.includes(r);
+                    });    
+                } else {
+                    if (!_.isNil(selectedValue) && disabledRows.includes(selectedValue)){
+                        selectedValue = null;
+                    }
+                }
+            }
+            
             if (nts.uk.util.isNullOrUndefined(selectedValue)) {
                 $treegrid.igTreeGridSelection("clearSelection");
             } else {

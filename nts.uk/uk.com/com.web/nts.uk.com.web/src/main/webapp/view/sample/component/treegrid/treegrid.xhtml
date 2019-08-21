@@ -30,8 +30,8 @@
 					<h1>TreeGrid</h1>
 					<h2>Overview</h2>
 					<button data-bind="click: resetSelection">Reset</button>
-					<button data-bind="click: changeDataSource">Next
-						Datasource</button>
+					<button data-bind="click: changeDataSource">Next Datasource</button>
+					<button data-bind="click: disableRows">disable some rows</button>
 					<div class="cf">
 						<div style="float: left">
 							<h3>Single Selection</h3>
@@ -52,13 +52,13 @@
 										filter: true }">
 							</table>
 							
-							<!--  <table id="treegrid2-limited"
+							<table id="treegrid2-limited"
 								data-bind="ntsTreeGridView:{
 										width: 1000,
 										height: 250,
-										dataSource: items2,
+										dataSource: itemsX,
 										value: singleSelectedCode,
-										columns: columns, 
+										columns: columnsX, 
 										primaryKey: 'code',
 										childDataKey: 'childs',
 										primaryText: 'nodeText',
@@ -66,7 +66,7 @@
 										enable: true,
 										showCheckBox: false,
 										rows: 5}">
-							</table>-->
+							</table>
 						</div>
 						<div style="float: left">
 							<br />
@@ -78,7 +78,7 @@
 					<div class="cf">
 						<div style="float: left;">
 							<h3>Multi Selection</h3>
-							<!--<div>
+							<div>
 								<div style="width: 390px" data-bind="ntsSearchBox: {label: '検索', targetKey: 'code', mode:'igTree', comId:'treegrid', items: items1, selected: selectedCodes2, selectedKey: 'code', childField: 'childs', fields: ['name', 'code']}" />
 								<div style="display: inline-block;">
 									<table id="treegrid"
@@ -106,7 +106,7 @@
 									type: 'tree', 
 									childDataKey: 'childs'
 								}"></div>
-							</div>-->
+							</div>
 						</div>
 						<div style="float: left">
 							<br />
@@ -226,7 +226,10 @@
 												<i>prop / key:</i> Property in data array for column<br /> <i>width:</i>
 												Width for column<br/>
 												<i>formatType: </i> setting special type for column (current available: checkbox (value type for this column is boolean, if null value -> checkbox is not rendered))
-												<br /> <b><i>(*): Can use other
+												<br /> 
+												<i>parentCompute: </i> setting parent compute with children values or otherwise on format type is checkbox (current available: boolean)
+												<br />
+												<b><i>(*): Can use other
 														properties of columns of tree</i></b></td>
 										</tr><tr>
 											<td>initialExpandDepth</td>
@@ -250,6 +253,25 @@
 										<tr>
 											<td>filter</td>
 											<td><b>Type:</b> boolean<br /> Enables/disables filter feature</td>
+										</tr>
+									</tbody>
+								</table>
+								<br/><br/>
+								<h2>Methods</h2>
+								<table>
+									<colgroup>
+										<col width="200px" />
+									</colgroup>
+									<thead>
+										<tr>
+											<th><h4>sample</h4></th>
+											<th><h4>Description</h4></th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td>$("#treegrid2").ntsTreeView("disableRows", ["000001", "000002"]);</td>
+											<td>disables some rows by ids</td>
 										</tr>
 									</tbody>
 								</table>

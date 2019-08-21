@@ -3,10 +3,12 @@ __viewContext.ready(function () {
         index: number;
         items1: any;
         items2: any;
+        itemsX: any;
         selectedCode: any;
         singleSelectedCode: any;
         columns: any;
         columns2: any;
+        columnsX: any;
         selectedCodes2: any;
     
         constructor() {
@@ -37,12 +39,15 @@ __viewContext.ready(function () {
                 self.items1.push(level1);
             }
             self.items2 = ko.observableArray(self.items1());
+            self.itemsX = ko.observableArray(_.cloneDeep(self.items1()));
             self.selectedCode = ko.observableArray([]);
             self.singleSelectedCode = ko.observable(null);
             self.selectedCodes2 = ko.observable([]);
             self.index = 0;
             self.columns = ko.observableArray([{ headerText: "Item Code", width: "250px", key: 'code', dataType: "string", hidden: false },
             { headerText: "Item Text", key: 'checkbox', width: "200px", dataType: "boolean", formatType : "checkbox" }]);
+            self.columnsX = ko.observableArray([{ headerText: "Item Code", width: "250px", key: 'code', dataType: "string", hidden: false },
+            { headerText: "Item Text", key: 'checkbox', width: "200px", dataType: "boolean", formatType : "checkbox", parentCompute: true }]);
             self.columns2 = ko.observableArray([{ headerText: "Item Code", width: "250px", key: 'code', dataType: "string", hidden: false },
             { headerText: "Item Text", key: 'nodeText', width: "250px", dataType: "string" },
             { headerText: "Item Auto Generated Field", key: 'custom', width: "200px", dataType: "string" }]);            
@@ -62,6 +67,12 @@ __viewContext.ready(function () {
             self.items2(x); 
 //            self.singleSelectedCode('0002');
 //            self.selectedCode(['0001-1', '0002']);
+        }
+        
+        disableRows(): void {
+            $("#treegrid2").ntsTreeView("disableRows", ["000001", "000002"]);    
+            $("#treegrid2-limited").ntsTreeView("disableRows", ["000001", "000002"]);
+            $("#treegrid").ntsTreeView("disableRows", ["000001", "000002"]);
         }
         
         changeDataSource(): void {
