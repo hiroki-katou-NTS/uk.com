@@ -294,7 +294,7 @@ public interface CommonOvertimeHoliday {
 	 * @param preExcessDisplaySetting 事前超過表示設定
 	 * @return
 	 */
-	public boolean preAppSetCheck(PrePostAtr prePostAtr, UseAtr preExcessDisplaySetting);
+	public UseAtr preAppSetCheck(PrePostAtr prePostAtr, UseAtr preExcessDisplaySetting);
 	
 	/**
 	 * 03-02-1_チェック条件
@@ -302,5 +302,5 @@ public interface CommonOvertimeHoliday {
 	 * @param prePostAtr 事前事後区分
 	 * @return
 	 */
-	public boolean actualSetCheck(AppDateContradictionAtr performanceExcessAtr, PrePostAtr prePostAtr);
+	public AppDateContradictionAtr actualSetCheck(AppDateContradictionAtr performanceExcessAtr, PrePostAtr prePostAtr);
 }

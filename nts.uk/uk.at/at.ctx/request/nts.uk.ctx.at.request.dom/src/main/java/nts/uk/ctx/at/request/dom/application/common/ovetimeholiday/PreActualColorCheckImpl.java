@@ -64,9 +64,9 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 			Optional<Application_New> opAppBefore, boolean beforeAppStatus, List<OvertimeColorCheck> actualLst, ActualStatus actualStatus) {
 		PreActualColorResult result = new PreActualColorResult();
 		// アルゴリズム「チェック条件」を実行する
-		boolean preAppSetCheck = commonOvertimeHoliday.preAppSetCheck(prePostAtr, preExcessDisplaySetting);
+		UseAtr preAppSetCheck = commonOvertimeHoliday.preAppSetCheck(prePostAtr, preExcessDisplaySetting);
 		// 実績超過チェック　＝　「03-02-1_チェック条件」を取得
-		boolean actualSetCheck = commonOvertimeHoliday.actualSetCheck(performanceExcessAtr, prePostAtr);
+		AppDateContradictionAtr actualSetCheck = commonOvertimeHoliday.actualSetCheck(performanceExcessAtr, prePostAtr);
 		for(OvertimeColorCheck overtimeColorCheck : overTimeLst){
 			// ループ中の枠に対する計算値が存在するかチェックする
 			Optional<OvertimeInputCaculation> opOvertimeInputCaculation = calcTimeList.stream()
@@ -74,7 +74,7 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 			if(opOvertimeInputCaculation.isPresent()){
 				// 計算値チェック
 				if(opOvertimeInputCaculation.get().getResultCaculation()!=overtimeColorCheck.appTime){
-					overtimeColorCheck.calcError = true;
+					overtimeColorCheck.calcError = PreActualError.CALC_ERROR.value;
 					overtimeColorCheck.appTime = opOvertimeInputCaculation.get().getResultCaculation();
 				}
 			}
@@ -342,7 +342,7 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 	}
 
 	@Override
-	public void preAppErrorCheck(ApplicationType appType, OvertimeColorCheck overtimeColorCheck, Optional<Application_New> opAppBefore, boolean preAppSetCheck) {
+	public void preAppErrorCheck(ApplicationType appType, OvertimeColorCheck overtimeColorCheck, Optional<Application_New> opAppBefore, UseAtr preAppSetCheck) {
 		String companyID = AppContexts.user().companyId();
 		int compareValue = 0;
 		// 事前申請をチェックする
@@ -368,16 +368,16 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 			}
 		}
 		// 事前申請超過チェックをする必要があるかチェックする
-		if(preAppSetCheck){
+		if(preAppSetCheck==UseAtr.USE){
 			// 事前申請超過チェック
 			if(overtimeColorCheck.appTime !=null && overtimeColorCheck.appTime > compareValue){
-				overtimeColorCheck.preAppError = true;
+				overtimeColorCheck.preAppError = PreActualError.ACTUAL_ALARM.value;
 			}
 		}
 	}
 
 	@Override
-	public void actualErrorCheck(OvertimeColorCheck overtimeColorCheck, List<OvertimeColorCheck> actualLst, boolean actualSetCheck) {
+	public void actualErrorCheck(OvertimeColorCheck overtimeColorCheck, List<OvertimeColorCheck> actualLst, AppDateContradictionAtr actualSetCheck) {
 		int compareValue = 0;
 		// 実績をチェックする
 		if(!CollectionUtil.isEmpty(actualLst)){
@@ -392,10 +392,14 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 			}
 		}
 		// 実績超過チェックをする必要があるかチェックする
-		if(actualSetCheck){
+		if(actualSetCheck!=AppDateContradictionAtr.NOTCHECK){
 			// 実績時間チェック
 			if(overtimeColorCheck.appTime!=null && overtimeColorCheck.appTime > compareValue){
-				overtimeColorCheck.actualError = true;
+				if(actualSetCheck==AppDateContradictionAtr.CHECKNOTREGISTER) {
+					overtimeColorCheck.actualError = PreActualError.ACTUAL_ERROR.value;
+				} else if (actualSetCheck==AppDateContradictionAtr.CHECKREGISTER) {
+					overtimeColorCheck.actualError = PreActualError.ACTUAL_ALARM.value;
+				}
 			}
 		}
 	}

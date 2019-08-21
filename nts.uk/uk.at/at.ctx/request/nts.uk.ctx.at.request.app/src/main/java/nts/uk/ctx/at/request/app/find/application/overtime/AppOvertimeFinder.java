@@ -560,16 +560,25 @@ public class AppOvertimeFinder {
 					x.actualTime == null ? null : x.actualTime.toString(), 
 					getErrorCodePC(x.calcError, x.preAppError, x.actualError), 
 					true, 
-					x.preAppError, 
-					x.actualError))
+					x.preAppError > 0 ? true : false, 
+					x.actualError > 0 ? true : false))
 			.collect(Collectors.toList());
 	}
 	
-	private Integer getErrorCodePC(boolean calcError, boolean preAppError, boolean actualError){
-		if(actualError) return 1;
-		if(preAppError) return 2;
-		if(calcError) return 3;
-		return 0;
+	private Integer getErrorCodePC(int calcError, int preAppError, int actualError){
+		if(actualError > preAppError) {
+			if(actualError > calcError) {
+				return actualError;
+			} else {
+				return calcError;
+			}
+		} else {
+			if(preAppError > calcError) {
+				return preAppError;
+			} else {
+				return calcError;
+			}
+		}
 	}
 
 	private List<OvertimeInputCaculation> convertMaptoList(Map<Integer,TimeWithCalculationImport> overTime,TimeWithCalculationImport flexTime,TimeWithCalculationImport midNightTime){
