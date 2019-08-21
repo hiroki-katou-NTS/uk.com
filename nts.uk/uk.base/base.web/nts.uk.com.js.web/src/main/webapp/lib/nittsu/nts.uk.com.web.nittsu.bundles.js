@@ -3535,7 +3535,12 @@ var nts;
                 var SubSessionIdKey = "nts.uk.request.subSessionId.";
                 var SecondsToKeepSubSession = 30;
                 var SecondsIntervalToReportAlive = 3;
-                subSession.currentId = uk.util.randomId();
+                if (uk.util.isInFrame()) {
+                    subSession.currentId = parent.window.nts.uk.request.subSession.currentId;
+                }
+                else {
+                    subSession.currentId = uk.util.randomId();
+                }
                 // keep alive sub sessions
                 function keepAliveSubSessionId() {
                     window.localStorage.setItem(SubSessionIdKey + subSession.currentId, +new Date());
@@ -3568,7 +3573,7 @@ var nts;
                     return aliveIds;
                 }
                 subSession.getAliveIds = getAliveIds;
-            })(subSession || (subSession = {}));
+            })(subSession = request.subSession || (request.subSession = {}));
             function ajax(webAppId, path, data, options, restoresSession) {
                 if (typeof arguments[1] !== 'string') {
                     return ajax.apply(null, _.concat(location.currentAppId, arguments));
@@ -3747,6 +3752,12 @@ var nts;
                     }
                 })
                     .fail(function (res) {
+                    if (res && (res.failed || res.status == "ABORTED")) {
+                        if (res.error && res.error.businessException === false) {
+                            specials.errorPages.systemError();
+                            return;
+                        }
+                    }
                     dfd.reject(res);
                 });
                 return dfd.promise();
@@ -21912,6 +21923,7 @@ var nts;
                         var rows = ko.unwrap(data.rows);
                         var virtualization = ko.unwrap(!uk.util.isNullOrUndefined(data.virtualization) ? data.virtualization : false);
                         var virtualizationMode = ko.unwrap(!uk.util.isNullOrUndefined(data.virtualizationMode) ? data.virtualizationMode : "");
+                        var isFilter = ko.unwrap(!uk.util.isNullOrUndefined(data.filter) ? data.filter : false);
                         // Default.
                         var showCheckBox = data.showCheckBox !== undefined ? ko.unwrap(data.showCheckBox) : true;
                         var enable = data.enable !== undefined ? ko.unwrap(data.enable) : true;
@@ -21954,6 +21966,13 @@ var nts;
                                         }
                                     }
                                 }
+                            }, rowSelectionChanging: function (evt, ui) {
+                                var disabledRows = $treegrid.data("rowDisabled");
+                                if (!_.isEmpty(disabledRows)) {
+                                    _.remove(ui.selectedRows, function (r) {
+                                        return disabledRows.includes(r.id);
+                                    });
+                                }
                             }
                         });
                         features.push({
@@ -21991,8 +22010,17 @@ var nts;
                             });
                             $treegrid.addClass("row-limited");
                         }
+                        if (isFilter) {
+                            features.push({ name: "Filtering", filterDelay: 100, filterDropDownAnimationDuration: 100 });
+                        }
                         $treegrid.data("expand", new ExpandNodeHolder());
                         $treegrid.data("autoExpanding", false);
+                        var colSet = _.map(displayColumns, function (col) {
+                            return { columnKey: col.key, readOnly: true };
+                        });
+                        features.push({ name: "Updating", editMode: "cell", enableAddChild: false,
+                            enableAddRow: false, enableDeleteRow: false, columnSettings: colSet });
+                        var cols = $treegrid.ntsTreeView("formatColumns", displayColumns, features);
                         // Init ig grid.
                         $treegrid.igTreeGrid({
                             width: width,
@@ -22000,7 +22028,8 @@ var nts;
                             indentation: "12px",
                             dataSource: _.cloneDeep(options),
                             primaryKey: optionsValue,
-                            columns: displayColumns,
+                            columns: cols,
+                            autoCommit: true,
                             childDataKey: optionsChild,
                             initialExpandDepth: nts.uk.util.isNullOrUndefined(initialExpandDepth) ? 10 : initialExpandDepth,
                             tabIndex: -1,
@@ -22027,6 +22056,12 @@ var nts;
                                 //                        $treegrid.igTreeGrid("expandRow", node); 
                                 //                    });
                                 //                    }
+                                if (virtualization) {
+                                    var disabledRows = $treegrid.data("rowDisabled");
+                                    if (!_.isEmpty(disabledRows)) {
+                                        $treegrid.ntsTreeView("disableRows", disabledRows);
+                                    }
+                                }
                                 $treegrid.data("autoExpanding", false);
                             }
                         });
@@ -22052,6 +22087,11 @@ var nts;
                                 }
                             }
                         });
+                        $treegrid.bind('cellChanging', function () {
+                            $treegrid.data("notUpdate", true);
+                            var optionX = data.dataSource !== undefined ? data.dataSource : data.options;
+                            optionX($treegrid.igTreeGrid("option", "dataSource"));
+                        });
                         $treegrid.setupSearchScroll("igTreeGrid");
                         if (showCheckBox != true) {
                             $treegrid.closest(".nts-treegridview").addClass("no-selector");
@@ -22066,15 +22106,37 @@ var nts;
                         var options = ko.unwrap(data.dataSource !== undefined ? data.dataSource : data.options);
                         var selectedValues = ko.unwrap(data.selectedValues);
                         var singleValue = ko.unwrap(data.value);
+                        var multiple = data.multiple != undefined ? ko.unwrap(data.multiple) : true;
                         var $treegrid = $(element);
+                        if ($treegrid.data("notUpdate") === true) {
+                            $treegrid.data("notUpdate", false);
+                            return;
+                        }
+                        var disabledRows = $treegrid.data("rowDisabled");
+                        if (!_.isEmpty(disabledRows)) {
+                            if (multiple) {
+                                _.remove(selectedValues, function (r) {
+                                    return disabledRows.includes(r);
+                                });
+                                if (!_.isEqual(selectedValues, data.selectedValues())) {
+                                    data.selectedValues(selectedValues);
+                                    return;
+                                }
+                            }
+                            else {
+                                if (!_.isNil(singleValue) && disabledRows.includes(singleValue)) {
+                                    data.value(null);
+                                    return;
+                                }
+                            }
+                            $treegrid.ntsTreeView("disableRows", disabledRows);
+                        }
                         // Update datasource.
                         var originalSource = $(element).igTreeGrid('option', 'dataSource');
                         if (!_.isEqual(originalSource, options)) {
                             $treegrid.igTreeGrid("option", "dataSource", _.cloneDeep(options));
                             $treegrid.igTreeGrid("dataBind");
                         }
-                        // Set multiple data source.
-                        var multiple = data.multiple != undefined ? ko.unwrap(data.multiple) : true;
                         if ($treegrid.igTreeGridSelection("option", "multipleSelection") !== multiple) {
                             $treegrid.igTreeGridSelection("option", "multipleSelection", multiple);
                         }
@@ -30301,7 +30363,7 @@ var nts;
                                 struct_1 = ds[parseFloat(keys[0])][key];
                             }
                             if (coupe) {
-                                if (cell) {
+                                if (cell && !cell.classList.contains(color.Disable) && !cell.classList.contains(color.Lock)) {
                                     coord = ti.getCellCoord(cell);
                                     cell.innerHTML = "";
                                     sess.o.push({ coord: coord, value: _dataSource[coord.rowIdx][coord.columnKey] });
@@ -38674,7 +38736,7 @@ var nts;
                             }
                             comboBox.getCopiedValue = getCopiedValue;
                         })(comboBox = ntsControls.comboBox || (ntsControls.comboBox = {}));
-                    })(ntsControls || (ntsControls = {}));
+                    })(ntsControls = ntsGrid.ntsControls || (ntsGrid.ntsControls = {}));
                     var specialColumn;
                     (function (specialColumn_1) {
                         specialColumn_1.CODE = "code";
@@ -42132,6 +42194,7 @@ var nts;
                         var virtualization = !uk.util.isNullOrUndefined(options.virtualization) ? options.virtualization : false;
                         var virtualizationMode = !uk.util.isNullOrUndefined(options.virtualizationMode) ? options.virtualizationMode : "";
                         var multiple = !_.isNil(options.multiple) ? options.multiple : false;
+                        var isFilter = ko.unwrap(!uk.util.isNullOrUndefined(data.filter) ? data.filter : false);
                         // Default.
                         var showCheckBox = options.showCheckBox !== undefined ? options.showCheckBox : true;
                         var enable = options.enable !== undefined ? options.enable : true;
@@ -42163,6 +42226,13 @@ var nts;
                                 //                    } else {
                                 //                        selectRows($treegrid, selectedRows.length <= 0 ? undefined : ui.row.id);
                                 //                    }
+                            }, rowSelectionChanging: function (evt, ui) {
+                                var disabledRows = $treegrid.data("rowDisabled");
+                                if (!_.isEmpty(disabledRows)) {
+                                    _.remove(ui.selectedRows, function (r) {
+                                        return disabledRows.includes(r.id);
+                                    });
+                                }
                             }
                         });
                         features.push({
@@ -42200,8 +42270,17 @@ var nts;
                             });
                             $treegrid.addClass("row-limited");
                         }
+                        if (isFilter) {
+                            features.push({ name: "Filtering", filterDelay: 100, filterDropDownAnimationDuration: 100 });
+                        }
                         $treegrid.data("expand", new ui_26.koExtentions.ExpandNodeHolder());
                         $treegrid.data("autoExpanding", false);
+                        var colSet = _.map(displayColumns, function (col) {
+                            return { columnKey: col.key, readOnly: true };
+                        });
+                        features.push({ name: "Updating", editMode: "cell", enableAddChild: false,
+                            enableAddRow: false, enableDeleteRow: false, columnSettings: colSet });
+                        var cols = $treegrid.ntsTreeView("formatColumns", displayColumns, features);
                         // Init ig grid.
                         $treegrid.igTreeGrid({
                             width: width,
@@ -42209,7 +42288,7 @@ var nts;
                             indentation: "12px",
                             dataSource: _.cloneDeep(dataSource),
                             primaryKey: optionsValue,
-                            columns: displayColumns,
+                            columns: cols,
                             childDataKey: optionsChild,
                             initialExpandDepth: nts.uk.util.isNullOrUndefined(initialExpandDepth) ? 10 : initialExpandDepth,
                             tabIndex: -1,
@@ -42234,6 +42313,12 @@ var nts;
                                 //                    _.forEach(holder.nodes, function(node: any){
                                 //                        $treegrid.igTreeGrid("expandRow", node); 
                                 //                    });
+                                if (virtualization) {
+                                    var disabledRows = $treegrid.data("rowDisabled");
+                                    if (!_.isEmpty(disabledRows)) {
+                                        $treegrid.ntsTreeView("disableRows", disabledRows);
+                                    }
+                                }
                                 $treegrid.data("autoExpanding", false);
                             }
                         });
@@ -42256,6 +42341,13 @@ var nts;
                             //                    }
                             //                }
                         });
+                        $treegrid.bind('cellChanging', function () {
+                            $treegrid.data("notUpdate", true);
+                            var optionX = data.dataSource !== undefined ? data.dataSource : data.options;
+                            if (_.isFunction(optionX)) {
+                                optionX($treegrid.igTreeGrid("option", "dataSource"));
+                            }
+                        });
                         $treegrid.setupSearchScroll("igTreeGrid");
                         if (showCheckBox != true) {
                             $treegrid.closest(".nts-treegridview").addClass("no-selector");
@@ -42264,6 +42356,19 @@ var nts;
                     function selectRows($treegrid, selectedValue) {
                         var dataSource = $treegrid.igTreeGrid('option', 'dataSource');
                         var multiple = !_.isNil(selectedValue) && selectedValue.constructor === Array;
+                        var disabledRows = $treegrid.data("rowDisabled");
+                        if (!_.isEmpty(disabledRows)) {
+                            if (multiple) {
+                                _.remove(selectedValue, function (r) {
+                                    return disabledRows.includes(r);
+                                });
+                            }
+                            else {
+                                if (!_.isNil(selectedValue) && disabledRows.includes(selectedValue)) {
+                                    selectedValue = null;
+                                }
+                            }
+                        }
                         if (nts.uk.util.isNullOrUndefined(selectedValue)) {
                             $treegrid.igTreeGridSelection("clearSelection");
                         }
@@ -42339,8 +42444,161 @@ var nts;
                                 return deselectAll($tree);
                             case 'virtualScrollTo':
                                 return virtualScroll($tree, param);
+                            case 'formatColumns':
+                                return formatColumns($tree, param);
+                            case 'disableRows':
+                                return disableRows($tree, param);
                         }
                     };
+                    function disableRows($tree, rowIds) {
+                        if (_.isNil(rowIds)) {
+                            return;
+                        }
+                        var disabled = $tree.data("rowDisabled"), columnSets = $tree.igTreeGrid("option", "columns");
+                        if (_.isNil(disabled)) {
+                            disabled = [];
+                        }
+                        if (!_.isArray(rowIds)) {
+                            rowIds = [rowIds];
+                        }
+                        columnSets = _.filter(columnSets, function (col) { return !_.isNil(col.formatType); });
+                        _.forEach(rowIds, function (r) {
+                            _.forEach(columnSets, function (col) {
+                                if (_.lowerCase(col.formatType) === "checkbox") {
+                                    var cellContainer = $tree.igTreeGrid("cellById", r, col.key);
+                                    if (_.isEmpty(cellContainer))
+                                        return;
+                                    var control = jqueryExtentions.ntsGrid.ntsControls.getControl(jqueryExtentions.ntsGrid.ntsControls.CHECKBOX);
+                                    var $cellContainer = $(cellContainer);
+                                    control.disable($cellContainer);
+                                }
+                            });
+                            var row = $tree.igTreeGrid("rowById", r);
+                            if (_.isEmpty(row))
+                                return;
+                            row.addClass("row-disabled");
+                        });
+                        $tree.data("rowDisabled", _.union(disabled, rowIds));
+                    }
+                    function formatColumns($tree, columns) {
+                        $tree.data("CB_SELECTED", {});
+                        $tree.data("UNIQ", _.isNil($tree.attr("id")) ? nts.uk.util.randomId() : $tree.attr("id"));
+                        var newColumns = _.map(columns, function (colO) {
+                            var col = _.cloneDeep(colO);
+                            if (_.lowerCase(col.formatType) === "checkbox") {
+                                var oldFormatter = col.formatte, isParentCompute_1 = _.isNil(col.parentCompute) || !col.parentCompute ? false : true;
+                                col.formatter = function (value, rowObj) {
+                                    if (_.isNil(rowObj))
+                                        return value;
+                                    if (_.isNil(value))
+                                        return "";
+                                    var updateX = function (data, val, key, childKey, primaryKey) {
+                                        if (!_.isEmpty(data)) {
+                                            _.forEach(data, function (child) {
+                                                var rId = child[primaryKey], controlCls = "nts-grid-control-" + $tree.data("UNIQ") + "-" + key + "-" + rId, $wrapper = $tree.find("." + controlCls), checkbox = $wrapper.find("input[type='checkbox']");
+                                                if (checkbox.length > 0) {
+                                                    if (checkbox.is(":checked") !== val) {
+                                                        $wrapper.data("changeByParent", true);
+                                                        checkbox.click();
+                                                    }
+                                                }
+                                                else {
+                                                    $tree.data("igTreeGrid").dataSource.setCellValue(rId, key, val, true);
+                                                    $tree.data("igTreeGridUpdating")._notifyCellUpdated(rId);
+                                                    updateX(child[childKey], val, key, childKey, primaryKey);
+                                                }
+                                            });
+                                        }
+                                    }, checkChildSiblings = function (source, key, childKey, primaryKey) {
+                                        var isAllCheck = _.isNil(_.find(source[childKey], function (c) {
+                                            var controlCls = "nts-grid-control-" + $tree.data("UNIQ") + "-" + key + "-" + c[primaryKey], checkbox = $tree.find("." + controlCls).find("input[type='checkbox']");
+                                            return !checkbox.is(":checked");
+                                        }));
+                                        var controlCls = "nts-grid-control-" + $tree.data("UNIQ") + "-" + key + "-" + source[primaryKey], $wrapper = $tree.find("." + controlCls), $checkbox = $wrapper.find("input[type='checkbox']");
+                                        if (isAllCheck !== $checkbox.is(":checked")) {
+                                            $wrapper.data("changeByChild", true);
+                                            $checkbox.click();
+                                        }
+                                        return isAllCheck;
+                                    }, checkSiblings = function (rowId, source, key, childKey, primaryKey) {
+                                        //let source = $tree.igTreeGrid("option", "dataSource");
+                                        for (var i = 0; i < source.length; i++) {
+                                            if (!_.isEmpty(source[i][childKey])) {
+                                                var isParentOf = _.find(source[i][childKey], function (c) { return c[primaryKey] === rowId; });
+                                                if (isParentOf) {
+                                                    var isAllCheck = checkChildSiblings(source[i], key, childKey, primaryKey);
+                                                    return { process: true, value: isAllCheck };
+                                                }
+                                                else {
+                                                    var checkRel = checkSiblings(rowId, source[i][childKey], key, childKey, primaryKey);
+                                                    if (checkRel.process) {
+                                                        var isAllCheck = checkChildSiblings(source[i], key, childKey, primaryKey);
+                                                        return { process: true, value: isAllCheck };
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        return { process: false, value: false };
+                                    };
+                                    var primaryKey = $tree.igTreeGrid("option", "primaryKey"), childKey = $tree.igTreeGrid("option", "childDataKey"), rowId = rowObj[primaryKey], controlCls = "nts-grid-control-" + $tree.data("UNIQ") + "-" + col.key + "-" + rowId, $wrapper = $("<div/>").addClass(controlCls).css({ "text-align": 'center', "height": "30px" }), $container = $("<div/>").append($wrapper), $_self = $tree, data = {
+                                        rowId: rowId,
+                                        columnKey: col.key,
+                                        update: function (val) {
+                                            if (!_.isNil($tree.data("igTreeGrid"))) {
+                                                var $wrapper_1 = $tree.find("." + controlCls);
+                                                if ($wrapper_1.data("changeByChild")) {
+                                                    $wrapper_1.data("changeByChild", false);
+                                                    return;
+                                                }
+                                                $tree.data("igTreeGrid").dataSource.setCellValue(rowId, col.key, val, true);
+                                                $tree.data("igTreeGridUpdating")._notifyCellUpdated(rowId);
+                                                if (isParentCompute_1) {
+                                                    updateX(rowObj[childKey], val, col.key, childKey, primaryKey);
+                                                    if ($wrapper_1.data("changeByParent")) {
+                                                        $wrapper_1.data("changeByParent", false);
+                                                        return;
+                                                    }
+                                                    checkSiblings(rowId, $tree.igTreeGrid("option", "dataSource"), col.key, childKey, primaryKey);
+                                                }
+                                                $tree.trigger("cellChanging");
+                                            }
+                                        }, deleteRow: function () {
+                                            if ($tree.data("igTreeGrid") !== null) {
+                                                $tree.data("igTreeGridUpdating").deleteRow(rowId);
+                                            }
+                                        }, initValue: value,
+                                        rowObj: rowObj,
+                                        showHeaderCheckbox: col.showHeaderCheckbox,
+                                        enable: true,
+                                        controlDef: { controlType: "CheckBox", enable: true,
+                                            name: "Checkbox", options: { value: 1, text: "" },
+                                            optionsText: "text", optionsValue: "value" }
+                                    };
+                                    var ntsControl = jqueryExtentions.ntsGrid.ntsControls.getControl(jqueryExtentions.ntsGrid.ntsControls.CHECKBOX);
+                                    setTimeout(function () {
+                                        var $self = $_self;
+                                        var $treeCell = $self.igTreeGrid("cellById", data.rowId, data.columnKey);
+                                        var gridCellChild;
+                                        if (!$treeCell || (gridCellChild = $treeCell.children()).length === 0)
+                                            return;
+                                        if (gridCellChild[0].children.length === 0) {
+                                            var $control = ntsControl.draw(data);
+                                            var gridControl = $treeCell[0].querySelector("." + controlCls);
+                                            if (!gridControl)
+                                                return;
+                                            gridControl.appendChild($control[0]);
+                                            /**$control.on("change", function() {
+                                            });*/
+                                            ntsControl.$containedGrid = $self;
+                                        }
+                                    }, 0);
+                                    return $container.html();
+                                };
+                            }
+                            return col;
+                        });
+                        return newColumns;
+                    }
                     function getSelected($tree) {
                         if ($tree.igTreeGridSelection('option', 'multipleSelection')) {
                             var selectedRows = $tree.igTreeGridSelection('selectedRows');
@@ -42363,7 +42621,13 @@ var nts;
                     }
                     function setSelected($tree, selectedId) {
                         deselectAll($tree);
+                        var disabledRows = $tree.data("rowDisabled");
                         if ($tree.igTreeGridSelection('option', 'multipleSelection')) {
+                            if (!_.isEmpty(disabledRows)) {
+                                _.remove(selectedId, function (r) {
+                                    return disabledRows.includes(r);
+                                });
+                            }
                             selectedId.forEach(function (id) {
                                 $tree.igTreeGridSelection('selectRowById', id);
                                 virtualScroll($tree, id);
@@ -42373,8 +42637,13 @@ var nts;
                             if (selectedId.constructor === Array) {
                                 selectedId = selectedId[0];
                             }
-                            $tree.igTreeGridSelection('selectRowById', selectedId);
-                            virtualScroll($tree, selectedId);
+                            if (!(!_.isEmpty(disabledRows) && !_.isNil(selectedId) && disabledRows.includes(selectedId))) {
+                                $tree.igTreeGridSelection('selectRowById', selectedId);
+                                virtualScroll($tree, selectedId);
+                            }
+                            else {
+                                selectedId = null;
+                            }
                         }
                         $tree.trigger("ntstreeselectionchanged", [selectedId]);
                     }
