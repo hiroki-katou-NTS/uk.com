@@ -78,9 +78,9 @@ export class KafS05aStep1Component extends Vue {
     }
 
     public created() {
-        let self = this;
+        let self = this.kafs05ModelStep1;
 
-        if (this.kafs05ModelStep1.step1Start) {
+        if (self.step1Start) {
             this.startPage();
         } else {
             this.$mask('hide');
@@ -860,6 +860,17 @@ export class KafS05aStep1Component extends Vue {
         }
 
         self.overtimeAtr = data.overtimeAtr;
+        if (!_.isNil(self.appID)) {
+            if (self.overtimeAtr == 0) {
+                this.pgName = 'kafS05b0';
+            } else if (self.overtimeAtr == 1) {
+                this.pgName = 'kafS05b1';
+            } else if (self.overtimeAtr == 2) {
+                this.pgName = 'kafS05b2';
+            } else {
+                this.pgName = 'kafS05b2';
+            }
+        }       
         if (!_.isNil(data.worktimeStart) && !_.isNil(data.worktimeEnd)) {           
             if (_.isNil(self.siftCD) || self.siftName == this.$i18n('KAL003_120')) {
                 self.selectedWorkTime = '';
