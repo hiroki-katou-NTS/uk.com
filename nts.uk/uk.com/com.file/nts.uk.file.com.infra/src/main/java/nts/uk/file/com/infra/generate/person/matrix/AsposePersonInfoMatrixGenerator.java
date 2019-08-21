@@ -261,12 +261,19 @@ public class AsposePersonInfoMatrixGenerator extends AsposeCellsReportGenerator 
 											if(comboxObjOpt.isPresent()) {
 												ComboBoxObject comboxObj = comboxObjOpt.get();
 												if(!header.getItemTypeState().getDataTypeState().getReferenceType().equals("ENUM")) {
-													String[] stringSplit = comboxObj.getOptionText().split(JP_SPACE);
-													String selCode = dataSource.getCategoryCode().equals("CS00016") || dataSource.getCategoryCode().equals("CS00017")?  (stringSplit.length > 0? stringSplit[0]: ""): comboxObj.getOptionValue();
-													selCodeCell.setValue(selCode);
-													selNameCell.setValue(stringSplit.length > 1? stringSplit[1]: stringSplit[0]);
+													if(header.getItemTypeState().getDataTypeState().getReferenceType().equals("CODE_NAME")) {
+														String[] stringSplit = comboxObj.getOptionText().split(JP_SPACE);
+														String selCode = stringSplit.length > 0? stringSplit[0]: "";
+														selCodeCell.setValue(selCode);
+														selNameCell.setValue(stringSplit.length > 1? stringSplit[1]: stringSplit[0]);	
+													}else {
+														String[] stringSplit = comboxObj.getOptionText().split(JP_SPACE);
+														String selCode = dataSource.getCategoryCode().equals("CS00016") || dataSource.getCategoryCode().equals("CS00017")?  (stringSplit.length > 0? stringSplit[0]: ""): comboxObj.getOptionValue();
+														selCodeCell.setValue(selCode);
+														selNameCell.setValue(stringSplit.length > 1? stringSplit[1]: stringSplit[0]);														
+													}
+
 												}else {
-													
 													selCodeCell.setValue(comboxObj.getOptionValue());
 													selNameCell.setValue(comboxObj.getOptionText());
 												}

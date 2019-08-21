@@ -359,10 +359,6 @@ public class CheckFileFinder {
 				items.stream().forEach(item -> {
 					pdt.getItems().stream().forEach(itemDto -> {
 						if (itemDto.getItemCode().equals(item.getItemCode())) {
-							System.out.println("itemDto: " + itemDto.getItemCode());
-							if(itemDto.getItemCode().equals("IS00085")) {
-								System.out.println("lan:IS00085");
-							}
 							Optional<ItemError> itemError = errors.stream().filter(e -> e.getColumnKey().equals(itemDto.getItemCode())).findFirst();
 							if(itemError.isPresent()) {
 								itemError.get().setRecordId(item.getRecordId());
@@ -380,9 +376,6 @@ public class CheckFileFinder {
 							if(itemDto.getDataType() == 0) return; 
 							Object valueDb = item.getValue() == null? null: this.convertValue(itemDto.getDataType(), item.getValue().toString());
 							Object valueExcel = itemDto.getValue() == null? null: this.convertValue(itemDto.getDataType(), itemDto.getValue().toString());
-							if(itemDto.getItemCode().equals("IS00085")) {
-								System.out.println("SMmmmmmm");
-							}
 							if(isEqual(valueExcel, valueDb, itemDto.getDataType()) == true) {
 								itemDto.setUpdate(false);
 								itemDto.setDefValue(itemDto.getValue());

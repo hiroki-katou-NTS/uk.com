@@ -393,9 +393,8 @@ public class ComboBoxRetrieveFactory {
 				perEmplType);
 		List<ComboBoxObject> lstComboBoxValue = new ArrayList<>();
 		for (SelectionInitDto selection : selectionList) {
-			lstComboBoxValue.add(new ComboBoxObject(selection.getSelectionId(), String.join(" ", selection.getSelectionCode(), selection.getSelectionName())));
+			lstComboBoxValue.add(new ComboBoxObject(selection.getSelectionId(), String.join(JP_SPACE, selection.getSelectionCode(), selection.getSelectionName())));
 		}
-
 		return lstComboBoxValue;
 	}
 
