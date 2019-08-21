@@ -30225,7 +30225,7 @@ var nts;
                                 struct_1 = ds[parseFloat(keys[0])][key];
                             }
                             if (coupe) {
-                                if (cell) {
+                                if (cell && !cell.classList.contains(color.Disable) && !cell.classList.contains(color.Lock)) {
                                     coord = ti.getCellCoord(cell);
                                     cell.innerHTML = "";
                                     sess.o.push({ coord: coord, value: _dataSource[coord.rowIdx][coord.columnKey] });
