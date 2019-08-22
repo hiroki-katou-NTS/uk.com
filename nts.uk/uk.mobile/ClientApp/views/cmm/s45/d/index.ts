@@ -63,6 +63,7 @@ export class CmmS45DComponent extends Vue {
     public reversionReason: string = '';
 
     public memo: string = '';
+    public commentDis: boolean = false;
 
     public created() {
         let self = this;
@@ -139,6 +140,11 @@ export class CmmS45DComponent extends Vue {
             self.reversionReason = appData.reversionReason;
             self.appOvertime = appData.appOvertime;
             self.memo = '';
+            if (self.canChangeStatus() && self.appState.authorizableFlags && !self.appState.alternateExpiration && !_.isEmpty(self.authorComment)) {
+                self.commentDis = true;
+            } else {
+                self.commentDis = false;
+            }
             self.$mask('hide');
         }).catch((res: any) => {
             self.$mask('hide');
