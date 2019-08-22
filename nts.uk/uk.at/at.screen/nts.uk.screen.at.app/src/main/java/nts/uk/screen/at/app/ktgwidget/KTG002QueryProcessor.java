@@ -73,8 +73,7 @@ public class KTG002QueryProcessor {
 			List<Application_New> listApplication = applicationRepository_New.findByListID(cid, listApplicationID);
 			/* 「申請」．申請種類＝Input．申請種類 & 「申請」．実績反映状態<>差し戻し に該当する申請が存在するかチェックする */
 			List<Application_New> listApplicationFilter = listApplication.stream()
-					.filter(c -> (c.getAppType() == ApplicationType.OVER_TIME_APPLICATION)
-							&& c.getReflectionInformation().getStateReflectionReal() != ReflectedState_New.REMAND)
+					.filter(c -> c.getReflectionInformation().getStateReflectionReal() != ReflectedState_New.REMAND)
 					.collect(Collectors.toList());
 			if (listApplicationFilter.isEmpty()) {
 				return false;
