@@ -296,7 +296,7 @@ public class ItemDefFinder {
 	 * @param peregDto
 	 */
 	private void setItemDefValueOfFixedCtg(Map<String, PeregMatrixByEmp> itemDefList) {
-		itemDefList.entrySet().parallelStream().forEach(c ->{
+		itemDefList.entrySet().stream().forEach(c ->{
 			Map<String, Object> itemCodeValueMap = MappingFactory.getFullDtoValue(c.getValue().getDto());
 			setItemValueFromMap(c.getValue().getItems(), itemCodeValueMap);
 		});

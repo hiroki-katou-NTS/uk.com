@@ -131,4 +131,6 @@ public interface TempAbsHistRepository {
     
 	// get data cps013
 	List<DateHistoryItem> getListByListSidsNoWithPeriod(String cid, List<String> sids);
+	
+	List<TempAbsenceHistory> getHistoryBySidAndCidAndBaseDate(String cid, List<String> sids, GeneralDate standardDate);
 }

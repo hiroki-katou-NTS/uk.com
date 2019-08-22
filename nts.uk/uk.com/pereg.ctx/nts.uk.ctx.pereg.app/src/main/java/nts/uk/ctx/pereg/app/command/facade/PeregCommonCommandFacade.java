@@ -21,7 +21,6 @@ import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
 import nts.uk.ctx.pereg.app.command.common.FacadeUtils;
 import nts.uk.ctx.pereg.app.find.employee.category.EmpCtgFinder;
 import nts.uk.ctx.pereg.app.find.processor.ItemDefFinder;
@@ -100,7 +99,7 @@ public class PeregCommonCommandFacade {
 	private FacadeUtils facadeUtils;
 	
 	@Inject
-	private AffCompanyHistRepository affCompanyHistRepository;
+	private CategoryValidate categoryValidate;
 	
 	private final static String nameEndate = "終了日";
 	
@@ -153,10 +152,6 @@ public class PeregCommonCommandFacade {
 			put("CS00069", "IS00779");
 		}
 	};
-	
-	private final static List<String> itemSpecialLst = Arrays.asList("IS00003", "IS00004","IS00015","IS00016");
-
-	private static final String JP_SPACE = "　";
 	/**
 	 * return List Category Code
 	 */
@@ -195,7 +190,7 @@ public class PeregCommonCommandFacade {
 			
 			List<MyCustomizeException> add = this.add(inputContainerLst, target, baseDate, modeUpdate);
 			if(modeUpdate == 1) {
-				List<MyCustomizeException> update = this.update(inputContainerLst, baseDate,  target);
+				List<MyCustomizeException> update = this.update(inputContainerLst, baseDate,  target, modeUpdate);
 				result.addAll(update);
 			}
 			
@@ -228,65 +223,14 @@ public class PeregCommonCommandFacade {
 		if(containerAdds.size() == 0) {
 			return new ArrayList<MyCustomizeException>(); 
 		}
-		List<String> indexs = new ArrayList<>();
-		if(containerAdds.get(0).getInputs().getCategoryCd().equals("CS00002")) {
-			for(int i = 0; i < containerAdds.size(); i++ ) {
-				if(!containerAdds.isEmpty()) {
-					List<MyCustomizeException> errorlst = new ArrayList<>();
-					for(ItemValue item: containerAdds.get(i).getInputs().getItems()) {
-						MyCustomizeException exception = validateItemOfCS0002(item, containerAdds.get(i).getEmployeeId());
-						if(exception != null) {
-							errorlst.add(exception);
-							
-						}
-					}
-					if(errorlst.size() > 0) {
-						result.addAll(errorlst);
-						indexs.add(String.valueOf(i));
-					}	
-				}
-			}
-		}
-		
-		if(!indexs.isEmpty()) {
-			indexs.stream().forEach(i ->{
-				containerAdds.remove(Integer.valueOf(i).intValue());
-			});
-		}
-		if(containerAdds.size() == 0) {
-			return result; 
-		}
+
+		ItemsByCategory itemFirstByCtg = containerAdds.get(0).getInputs();
 		
 		if(modeUpdate == 2) {
-			if(containerAdds.get(0).getInputs().getCategoryCd().equals("CS00003")) {
-				Map<String,String> pidSids = containerAdds.stream().collect(Collectors.toMap(c -> c.getPersonId(), c -> c.getEmployeeId()));
-				List<String> pids = this.affCompanyHistRepository
-						.getAffComHistOfEmployeeListAndBaseDateV2(new ArrayList<>(pidSids.values()), baseDate).stream()
-						.map(c -> c.getPId()).distinct().collect(Collectors.toList());
-				List<String> sids = new ArrayList<>();
-				for(String pid: pids) {
-					PeregInputContainerCps003 container = containerAdds.stream().filter(c -> c.getPersonId().equals(pid)).findFirst().get();
-					sids.add(pidSids.get(pid));
-					int index = containerAdds.indexOf(container);
-					containerAdds.remove(index);
-				}
-				if(!sids.isEmpty()) {
-					MyCustomizeException exeption = new MyCustomizeException("Msg_852", sids, "所属会社履歴項目の期間");
-					result.add(exeption);
-				}
-				
-			}
-
-			if(containerAdds.isEmpty()) return result;
 			// đoạn nay update những item không xuất hiện trên màn hình, vì của các nhân  viên sẽ khác nhau nên sẽ lấy khác nhau, khả năng mình sẽ trả về một Map<sid, List<ItemValue>
 			updateInputCategoriesCps003(containerAdds , baseDate);
 		}
 		
-		if(containerAdds.isEmpty()) return result;
-
-
-		ItemsByCategory itemFirstByCtg = containerAdds.get(0).getInputs();
-
 		// Get all items by category id
 		Map<String, List<ItemBasicInfo>> itemsByCtgId = perInfoItemDefRepositoty
 				.getItemCDByListCategoryIdWithAbolition(Arrays.asList(itemFirstByCtg.getCategoryId()),
@@ -329,6 +273,31 @@ public class PeregCommonCommandFacade {
 
 		});
 		
+		
+		if(modeUpdate == 2) {
+			
+			List<String> indexs = new ArrayList<>();
+			
+			categoryValidate.validateSpaceCS0002(indexs, result, containerAdds);
+			
+			if(!indexs.isEmpty()) {
+				indexs.stream().forEach(i ->{
+					containerAdds.remove(Integer.valueOf(i).intValue());
+				});
+			}
+			
+			if(containerAdds.size() == 0) {
+				return result; 
+			}
+			
+			categoryValidate.historyValidate(result, containerAdds, baseDate, modeUpdate);
+			
+			if(containerAdds.isEmpty()) return result;
+			
+		}
+		
+		if(containerAdds.isEmpty()) return result;
+		
 		DataCorrectionContext.transactional(CorrectionProcessorId.MATRIX_REGISTER, () -> {
 			if(modeUpdate == 1) {
 				updateInputForAdd(containerAdds);
@@ -357,7 +326,7 @@ public class PeregCommonCommandFacade {
 	 *            inputs
 	 */
 	@Transactional
-	public List<MyCustomizeException> update(List<PeregInputContainerCps003> containerLst, GeneralDate baseDate, List<PersonCorrectionLogParameter> target) {
+	public List<MyCustomizeException> update(List<PeregInputContainerCps003> containerLst, GeneralDate baseDate, List<PersonCorrectionLogParameter> target, int modeUpdate) {
 		List<PeregInputContainerCps003> containerAdds = new ArrayList<>();
 		List<MyCustomizeException> result = new ArrayList<MyCustomizeException>();
 		containerLst.stream().forEach(c ->{
@@ -373,25 +342,7 @@ public class PeregCommonCommandFacade {
 			ItemsByCategory itemFirstByCtg = containerAdds.get(0).getInputs();
 			
 			List<String> indexs = new ArrayList<>();
-			if(containerAdds.get(0).getInputs().getCategoryCd().equals("CS00002")) {
-				for(int i = 0; i < containerAdds.size(); i++ ) {
-					if(!containerAdds.isEmpty()) {
-						List<MyCustomizeException> errorlst = new ArrayList<>();
-						for(ItemValue item: containerAdds.get(i).getInputs().getItems()) {
-							MyCustomizeException exception = validateItemOfCS0002(item, containerAdds.get(i).getEmployeeId());
-							if(exception != null) {
-								errorlst.add(exception);
-								
-							}
-						}
-						if(errorlst.size() > 0) {
-							result.addAll(errorlst);
-							indexs.add(String.valueOf(i));
-						}	
-					}
-				}
-			}
-			
+			categoryValidate.validateSpaceCS0002(indexs, result, containerAdds);
 			if(!indexs.isEmpty()) {
 				indexs.stream().forEach(i ->{
 					containerAdds.remove(Integer.valueOf(i).intValue());
@@ -400,6 +351,8 @@ public class PeregCommonCommandFacade {
 			if(containerAdds.isEmpty()) {
 				return result;
 			}
+			//categoryValidate.historyValidate(result, containerAdds, baseDate);
+			
 			// đoạn này viết log
 			DataCorrectionContext.transactional(CorrectionProcessorId.MATRIX_REGISTER, () -> {
 				setParamsForCPS003(containerAdds, PersonInfoProcessAttr.UPDATE, target, baseDate, 2);
@@ -408,6 +361,10 @@ public class PeregCommonCommandFacade {
 			// đoạn nay update những item không xuất hiện trên màn hình, vì của các nhân  viên sẽ khác nhau nên sẽ lấy khác nhau, khả năng mình sẽ trả về một Map<sid, List<ItemValue>
 			updateInputCategoriesCps003(containerAdds , baseDate);
 
+			categoryValidate.historyValidate(result, containerAdds, baseDate, modeUpdate);
+			
+			if(containerAdds.isEmpty()) return result;
+			
 			// vì categoryCode của các nhân viên trong màn cps003 đều giống nhau nên mình sẽ
 			// lấy itemByCtg của thằng nhân viên đầu tiên
 			val handler = this.updateHandlers.get(itemFirstByCtg.getCategoryCd());
@@ -752,27 +709,6 @@ public class PeregCommonCommandFacade {
 		}
 		return result;
 	}
-	
-	/**
-	 * validate những item đặc biệt của category CS0002
-	 * return true = error, false = no error
-	 * validateItemOfCS0002
-	 * new MyCustomizeException("Msg_852", sids, "所属会社履歴項目の期間")
-	 * @param itemDto
-	 * @param value
-	*/
-	private MyCustomizeException validateItemOfCS0002(ItemValue itemValue, String sid){
-		for (String itemCode : itemSpecialLst) {
-			if (itemValue.itemCode().equals(itemCode)) {
-				if (itemValue.valueAfter().startsWith(JP_SPACE) ||itemValue.valueAfter().endsWith(JP_SPACE)
-						|| !itemValue.valueAfter().contains(JP_SPACE)) {
-					return new MyCustomizeException("Msg_924", Arrays.asList(sid), itemValue.itemName());
-				}
-			}
-		}
-		return null;
-	}
-	
 	/**
 	 * 
 	 * @param keyExtractor

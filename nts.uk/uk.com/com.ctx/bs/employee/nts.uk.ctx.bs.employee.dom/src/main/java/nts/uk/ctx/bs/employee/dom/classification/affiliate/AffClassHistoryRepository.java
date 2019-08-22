@@ -110,4 +110,6 @@ public interface AffClassHistoryRepository {
 	void updateAll(List<DateHistoryItem> domains);
 
 	List<DateHistoryItem> getByEmployeeListNoWithPeriod(String cid, List<String> employeeIds );
+	
+	List<AffClassHistory> getHistoryByEmployeeListWithBaseDate(String cid, List<String> employeeIds, GeneralDate standardDate);
 }

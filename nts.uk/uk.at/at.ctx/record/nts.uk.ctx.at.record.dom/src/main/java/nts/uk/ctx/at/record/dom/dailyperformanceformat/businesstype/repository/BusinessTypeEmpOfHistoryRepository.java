@@ -100,5 +100,7 @@ public interface BusinessTypeEmpOfHistoryRepository {
 	// get data cps013
 	List<DateHistoryItem> getListByListSidsNoWithPeriod(String cid, List<String> sids);
 	
+	List<BusinessTypeOfEmployeeHistory> findByBaseDate(GeneralDate baseDate, List<String> sIds);
+	
 
 }

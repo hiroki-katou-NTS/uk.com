@@ -1,7 +1,5 @@
 package nts.uk.ctx.pereg.app.find.employment.history;
 
-import java.util.Map;
-
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItem;
