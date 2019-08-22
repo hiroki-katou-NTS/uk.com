@@ -14,6 +14,9 @@ module nts.uk.com.view.cps013.a.viewmodel {
         checkDisplay : any = __viewContext.env.products;
         constructor() {
             let self = this;
+            
+            console.log('function constructor');
+            
             // tạo list A3_004
             for(let i = 0; i < 7; i++){
                 self.items.push(new GridItem({
@@ -25,16 +28,19 @@ module nts.uk.com.view.cps013.a.viewmodel {
             
             if (self.checkDisplay.attendance == false) {
                 _.remove(self.items, (e) => {
-                    return _.indexOf([1, 2, 3], e.id) > -1;
+                    return _.indexOf([1, 2, 3, 4, 5, 6], e.id) > -1;
                 });
             } else {
                 self.items[0].name = text("CPS013_15");
                 self.items[1].name = text("CPS013_16");
                 self.items[2].name = text("CPS013_17");
+                self.items[3].name = text("CPS013_18");
+                self.items[4].name = text("CPS013_19");
+                self.items[5].name = text("CPS013_20");
 
             }
 
-            if (self.checkDisplay.payroll == true) {
+            /*if (self.checkDisplay.payroll == true) {
                 self.items[3].name = text("CPS013_18");
                 self.items[4].name = text("CPS013_19");
                 self.items[5].name = text("CPS013_20");
@@ -42,7 +48,7 @@ module nts.uk.com.view.cps013.a.viewmodel {
                 _.remove(self.items, (e) => {
                     return _.indexOf([4, 5, 6], e.id) > -1;
                 });
-            }
+            }*/
 
             self.items[self.items.length - 1].name = text("CPS013_21");
             
@@ -63,7 +69,6 @@ module nts.uk.com.view.cps013.a.viewmodel {
                     }); 
                 }
             });
-            
         }
 
         /** get data when start dialog **/
@@ -71,6 +76,9 @@ module nts.uk.com.view.cps013.a.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             block.invisible();
+            
+            console.log('function startPage');
+            
             $("#grid2").ntsGrid({
                 width: '300px',
                 height: '234px',
@@ -88,7 +96,6 @@ module nts.uk.com.view.cps013.a.viewmodel {
             character.restore("PerInfoValidCheckCtg").done((obj) => {
                 $('#date_text').focus();
                 if(obj){
-                    self.date(obj.dateTime);
                     self.perInfoChk(obj.perInfoChk);
                     self.masterChk(obj.masterChk);
                     // khi tất cả check box được check thì thi load lên sẽ phải check cả check box trên header
@@ -104,6 +111,7 @@ module nts.uk.com.view.cps013.a.viewmodel {
                             $("#grid2").ntsGrid("enableNtsControlAt", item.id, "flag", "CheckBox");
                         });
                     }
+                    
                     if(flag.true === 7){
                         $("#grid2_flag > span > div > label > input[type='checkbox']")[0].checked = true;
                     }else{
@@ -120,8 +128,31 @@ module nts.uk.com.view.cps013.a.viewmodel {
             }).fail(()=>{
                 block.clear();    
             });
-
-                dfd.resolve();
+            
+            if (self.masterChk() == false) {
+                $("#grid2_flag > span > div > label > input[type=checkbox]").attr("disabled", true);
+                _.each(self.items, item => {
+                    $("#grid2").ntsGrid("disableNtsControlAt", item.id, "flag", "CheckBox");
+                });
+            } else {
+                $("#grid2_flag > span > div > label > input[type=checkbox]").attr("disabled", false);
+                _.each(self.items, item => {
+                    $("#grid2").ntsGrid("enableNtsControlAt", item.id, "flag", "CheckBox");
+                });
+            }
+            
+    
+            // get SystemDate from server moment(new Date()).format('YYYY-MM-DD');
+            service.getSystemDate().done(function(dateToday: any) {
+                let date = dateToday.referenceDate;
+                // A1_004
+                self.date(moment.utc(date).format("YYYY/MM/DD"));
+            }).fail(function(error) {
+                self.date(moment(new Date()).format('YYYY/MM/DD'));
+                console.log('khong get duoc SystemDate from server');
+            });
+            
+            dfd.resolve();
             return dfd.promise();
         }
         
@@ -131,8 +162,6 @@ module nts.uk.com.view.cps013.a.viewmodel {
             let self = this;
             
             let paramSave = {
-                // A1_004
-                dateTime: self.date(),
                 // A2_001
                 perInfoChk: self.perInfoChk(),
                 // A3_001
@@ -186,10 +215,6 @@ module nts.uk.com.view.cps013.a.viewmodel {
             }).always(()=>block.clear());
         }
         
-
-        /** remove item from list **/
-        remove() {
-        }
     }
     
     export interface IGridItem{

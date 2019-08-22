@@ -10,6 +10,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.task.AsyncTaskInfo;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pereg.app.command.process.checkdata.CategoryResult;
 import nts.uk.ctx.pereg.app.command.process.checkdata.CheckAllCtgProcess;
 import nts.uk.ctx.pereg.app.command.process.checkdata.CheckDataEmpCommandHandler;
@@ -71,6 +72,12 @@ public class PerInfoValidChkCtgWebservice {
 	@Path("getError")
 	public List<DataEmployeeToCheck> getError(CheckDataFromUI query) {
 		return null;
-		//return this.process.checkDataEmployee(query);
+	}
+	
+	@POST
+	@Path("getSystemDate")
+	public SystemDateDto getSystemDate() {
+		SystemDateDto result = new SystemDateDto(GeneralDate.today());
+		return result;
 	}
 }
