@@ -771,7 +771,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         }
         
         changeColor(attendanceId, frameNo,errorCode){
-            if(errorCode == 1){
+            if(errorCode == 3){
                 $('td#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', '#FD4D4D');
                 $('input#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', '#FD4D4D');
                 return '#FD4D4D';
@@ -781,7 +781,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 $('input#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', '#F6F636');
                 return '#F6F636';
             }
-            if(errorCode == 3){
+            if(errorCode == 1){
                 $('td#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', '#F69164');
                 $('input#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', '#F69164');
                 return '#F69164';

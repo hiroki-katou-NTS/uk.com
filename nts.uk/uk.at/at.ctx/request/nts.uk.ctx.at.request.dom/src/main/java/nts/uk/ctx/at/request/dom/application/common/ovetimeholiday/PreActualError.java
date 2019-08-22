@@ -8,7 +8,7 @@ public enum PreActualError {
 	/**
 	 * 計算値	
 	 */
-	CALC_ERROR(3),
+	CALC_ERROR(1),
 	/**
 	 * 実績アラーム	
 	 */
@@ -16,7 +16,7 @@ public enum PreActualError {
 	/**
 	 * 実績エラー	
 	 */
-	ACTUAL_ERROR(1);
+	ACTUAL_ERROR(3);
 	
 	public int value;
 	
