@@ -31,6 +31,8 @@ module nts.uk.ui.jqueryExtentions {
                     return formatColumns($tree, param);
                 case 'disableRows':
                     return disableRows($tree, param);
+                case 'enableRows':
+                    return enableRows($tree, param);
             }
         };
         
@@ -65,6 +67,39 @@ module nts.uk.ui.jqueryExtentions {
             });  
             
             $tree.data("rowDisabled", _.union(disabled, rowIds));
+        }
+            
+        function enableRows($tree, rowIds) {
+            if (_.isNil(rowIds)) {
+                return;
+            }
+            let disabled = $tree.data("rowDisabled"), columnSets = $tree.igTreeGrid("option", "columns");
+            if (_.isNil(disabled)) {
+                return;
+            }
+            if (!_.isArray(rowIds)) {
+                rowIds = [rowIds]; 
+            }
+            columnSets = _.filter(columnSets, (col) => { return !_.isNil(col.formatType) });
+            
+            _.forEach(rowIds, (r) => {
+                _.forEach(columnSets, (col) => {
+                    if(_.lowerCase(col.formatType) === "checkbox"){
+                        var cellContainer = $tree.igTreeGrid("cellById", r, col.key);
+                        
+                        if(_.isEmpty(cellContainer)) return; 
+                        
+                        var control = ntsGrid.ntsControls.getControl(ntsGrid.ntsControls.CHECKBOX);
+                        let $cellContainer = $(cellContainer);
+                        control.enable($cellContainer);     
+                    }   
+                });
+                var row = $tree.igTreeGrid("rowById", r);
+                if(_.isEmpty(row)) return; 
+                row.removeClass("row-disabled");
+            });  
+            
+            $tree.data("rowDisabled", _.difference(disabled, rowIds));
         }
         
         function formatColumns($tree: JQuery, columns): any {
@@ -161,6 +196,7 @@ module nts.uk.ui.jqueryExtentions {
                                             checkSiblings(rowId, $tree.igTreeGrid("option", "dataSource"), col.key, childKey, primaryKey);    
                                         }
                                         $tree.trigger("cellChanging");
+                                        $tree.trigger("checkboxChanging", { value: val, rowId: rowId, column: col.key, rowData: rowObj, element: $wrapper });
                                     }
                                 }, deleteRow: () => {
                                     if ($tree.data("igTreeGrid") !== null) {

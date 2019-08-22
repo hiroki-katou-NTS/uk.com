@@ -273,6 +273,30 @@
 											<td>$("#treegrid2").ntsTreeView("disableRows", ["000001", "000002"]);</td>
 											<td>disables some rows by ids</td>
 										</tr>
+										<tr>
+											<td>$("#treegrid2").ntsTreeView("enableRows", ["000001", "000002"]);</td>
+											<td>enables some rows by ids</td>
+										</tr>
+									</tbody>
+								</table>
+								<br/><br/>
+								<h2>Events</h2>
+								<table>
+									<colgroup>
+										<col width="200px" />
+									</colgroup>
+									<thead>
+										<tr>
+											<th><h4>sample</h4></th>
+											<th><h4>Description</h4></th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td>checkboxChanging</td>
+											<td>Event for when check value updated by user.<br/> 
+												values can get from event: { value: boolean, rowId: string, column: string, rowData: any, element: Jquery }</td>
+										</tr>
 									</tbody>
 								</table>
 							</div>
