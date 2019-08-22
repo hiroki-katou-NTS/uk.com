@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -17,6 +18,9 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistory;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistoryRepository;
+import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
+import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
+import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
 import nts.uk.ctx.bs.employee.dom.employment.history.DateHistItem;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryRepository;
@@ -63,19 +67,36 @@ public class CategoryValidate {
 			if (containerAdds.get(0).getInputs().getCategoryCd().equals("CS00003")) {
 				Map<String, String> pidSids = containerAdds.stream()
 						.collect(Collectors.toMap(c -> c.getPersonId(), c -> c.getEmployeeId()));
-				List<String> pids = this.affCompanyHistRepository
-						.getAffComHistOfEmployeeListAndBaseDateV2(new ArrayList<>(pidSids.values()), baseDate).stream()
-						.map(c -> c.getPId()).distinct().collect(Collectors.toList());
-				List<String> sids = new ArrayList<>();
-				for (String pid : pids) {
+				List<AffCompanyHist> affCompanyHistLst = this.affCompanyHistRepository
+						.getAffComHistOfEmployeeListAndBaseDateV2(new ArrayList<>(pidSids.values()), baseDate);
+				List<String> sidError = new ArrayList<>();
+				for (AffCompanyHist affCompanyHist : affCompanyHistLst) {
 					PeregInputContainerCps003 container = containerAdds.stream()
-							.filter(c -> c.getPersonId().equals(pid)).findFirst().get();
-					sids.add(pidSids.get(pid));
-					int index = containerAdds.indexOf(container);
-					containerAdds.remove(index);
+							.filter(c -> c.getPersonId().equals(affCompanyHist.getPId())).findFirst().get();
+					ItemValue start = container.getInputs().getItems().stream().filter(c -> c.itemCode().equals("IS00020")).findFirst().get();
+					ItemValue end = container.getInputs().getItems().stream().filter(c -> c.itemCode().equals("IS00021")).findFirst().get();
+					AffCompanyHistByEmployee employee = affCompanyHist.getAffCompanyHistByEmployee(container.getEmployeeId());
+					Optional<AffCompanyHistItem> historyOpt = employee.getHistory();
+					if(historyOpt.isPresent()) {
+						if(end.valueAfter() != null) {
+							sidError.add(container.getEmployeeId());
+							int index = containerAdds.indexOf(container);
+							containerAdds.remove(index);
+							continue;
+						}
+						
+						if(modeUpdate == 2) {
+							if(GeneralDate.fromString(start.valueAfter(), "yyyy/MM/dd").before(historyOpt.get().start())) {
+								sidError.add(container.getEmployeeId());
+								int index = containerAdds.indexOf(container);
+								containerAdds.remove(index);
+								continue;
+							}
+						}
+					}
 				}
-				if (!sids.isEmpty()) {
-					MyCustomizeException exeption = new MyCustomizeException("Msg_852", sids, "");
+				if (!sidError.isEmpty()) {
+					MyCustomizeException exeption = new MyCustomizeException("Msg_852", sidError, "");
 					result.add(exeption);
 				}
 			}
