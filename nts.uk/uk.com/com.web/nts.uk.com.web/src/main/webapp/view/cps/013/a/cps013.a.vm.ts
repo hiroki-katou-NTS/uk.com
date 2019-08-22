@@ -15,8 +15,6 @@ module nts.uk.com.view.cps013.a.viewmodel {
         constructor() {
             let self = this;
             
-            console.log('function constructor');
-            
             // tạo list A3_004
             for(let i = 0; i < 7; i++){
                 self.items.push(new GridItem({
@@ -39,16 +37,6 @@ module nts.uk.com.view.cps013.a.viewmodel {
                 self.items[5].name = text("CPS013_20");
 
             }
-
-            /*if (self.checkDisplay.payroll == true) {
-                self.items[3].name = text("CPS013_18");
-                self.items[4].name = text("CPS013_19");
-                self.items[5].name = text("CPS013_20");
-            }else {
-                _.remove(self.items, (e) => {
-                    return _.indexOf([4, 5, 6], e.id) > -1;
-                });
-            }*/
 
             self.items[self.items.length - 1].name = text("CPS013_21");
             
@@ -76,8 +64,6 @@ module nts.uk.com.view.cps013.a.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             block.invisible();
-            
-            console.log('function startPage');
             
             $("#grid2").ntsGrid({
                 width: '300px',
@@ -172,7 +158,7 @@ module nts.uk.com.view.cps013.a.viewmodel {
             character.restore("PerInfoValidCheckCtg").done((obj) => {
             });
             let scheduleMngChecks = _.filter(self.items, x => {return x.name == text("CPS013_15");}),
-                dailyPerforMngCheckLs = _.filter(self.items, x => {return x.name == text("CPS013_16");}),
+                dailyPerforMngCheck = _.filter(self.items, x => {return x.name == text("CPS013_16");}),
                 monthPerforMngChecks = _.filter(self.items, x => {return x.name == text("CPS013_17");}),
                 payRollMngChecks = _.filter(self.items, x => {return x.name == text("CPS013_18");}),
                 bonusMngChecks = _.filter(self.items, x => {return x.name == text("CPS013_19");}),
@@ -185,7 +171,7 @@ module nts.uk.com.view.cps013.a.viewmodel {
                 perInfoCheck: self.perInfoChk(),
                 masterCheck: self.masterChk(),
                 scheduleMngCheck: self.masterChk() == false? false: (scheduleMngChecks.length > 0? checkbox[scheduleMngChecks[0].id - 1].flag: false),
-                dailyPerforMngCheckL: self.masterChk() == false? false:(dailyPerforMngCheckLs.length > 0? checkbox[dailyPerforMngCheckLs[0].id - 1].flag: false),
+                dailyPerforMngCheck: self.masterChk() == false? false:(dailyPerforMngCheck.length > 0? checkbox[dailyPerforMngCheck[0].id - 1].flag: false),
                 monthPerforMngCheck: self.masterChk() == false? false: (monthPerforMngChecks.length > 0? checkbox[monthPerforMngChecks[0].id - 1].flag: false),
                 payRollMngCheck: self.masterChk() == false? false: (payRollMngChecks.length > 0? checkbox[payRollMngChecks[0].id - 1].flag: false),
                 bonusMngCheck: self.masterChk() == false? false: (bonusMngChecks.length > 0? checkbox[bonusMngChecks[0].id - 1].flag: false),
