@@ -66,15 +66,6 @@ module nts.uk.com.view.cps013.a.viewmodel {
             
         }
 
-        /** get data to list **/
-        getData(): JQueryPromise<any> {
-            let self = this;
-            let dfd = $.Deferred();
-                dfd.resolve();
-                dfd.reject();
-            return dfd.promise();
-        }
-
         /** get data when start dialog **/
         startPage(): JQueryPromise<any> {
             let self = this;
