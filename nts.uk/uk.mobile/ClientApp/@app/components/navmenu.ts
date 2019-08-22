@@ -80,13 +80,31 @@ export class NavMenuBar extends Vue {
 
         if (!show) {
             self.$mask('hide');
+            let top = 0,
+                container = document.body.querySelector('.container-fluid') as HTMLElement;
 
-            dom.removeClass(document.body, 'show-menu-top');
+            if (container) {
+                top = Number((container.style.marginTop || '').replace('px', ''));
+                container.style.marginTop = '';
+            }
+
+            document.body.classList.remove('show-menu-top');
+
+            setTimeout(() => {
+                document.scrollingElement.scrollTop = Math.abs(top);
+            }, 0);
         } else {
             self.$mask('show')
                 .on(() => NavMenu.show = false);
 
+            let top = document.scrollingElement.scrollTop,
+                container = document.body.querySelector('.container-fluid') as HTMLElement;
+
             dom.addClass(document.body, 'show-menu-top');
+
+            if (!container.style.marginTop) {
+                container.style.marginTop = `-${top}px`;
+            }
         }
     }
 

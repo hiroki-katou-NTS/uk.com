@@ -38,7 +38,23 @@ class DateComponent extends InputComponent {
     }
 
     private titlePicker(selecteds: { year: number; month: number; date: number; }) {
-        return this.$i18n('nts_date_format', [selecteds.year.toString(), selecteds.month.toString(), selecteds.date.toString()]);
+
+        let $utc = Date.UTC(selecteds.year, selecteds.month - 1, selecteds.date);
+        let weekday = moment.utc($utc).day();
+        let weekdayString = ((weekday) => {
+            switch (weekday) {
+                case 0: return '日';
+                case 1: return '月';
+                case 2: return '火';
+                case 3: return '水';
+                case 4: return '木';
+                case 5: return '金';
+                case 6: return '土';
+                default: return '日';
+            }
+        })(weekday);
+
+        return this.$i18n('nts_date_format', [selecteds.year.toString(), selecteds.month.toString(), selecteds.date.toString(), weekdayString]);
     }
 
     public click() {
