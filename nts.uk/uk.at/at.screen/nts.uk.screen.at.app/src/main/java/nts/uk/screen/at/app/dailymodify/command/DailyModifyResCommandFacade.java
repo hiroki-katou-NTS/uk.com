@@ -285,7 +285,6 @@ public class DailyModifyResCommandFacade {
 
 	public DataResultAfterIU insertItemDomain(DPItemParent dataParent) {
 		//Map<Integer, List<DPItemValue>> resultError = new HashMap<>();
-		validatorDataDaily.checkVerConfirmApproval(dataParent.getApprovalConfirmCache(), dataParent.getDataCheckSign(), dataParent.getDataCheckApproval(), dataParent.getItemValues());
 		Map<Integer, List<DPItemValue>> resultErrorMonth = new HashMap<>();
 		DataResultAfterIU dataResultAfterIU = new DataResultAfterIU();
 		Map<Pair<String, GeneralDate>, ResultReturnDCUpdateData> lstResultReturnDailyError = new HashMap<>();
@@ -460,6 +459,7 @@ public class DailyModifyResCommandFacade {
 		if (querys.isEmpty() 
 				&& (dataParent.getMonthValue() == null || dataParent.getMonthValue().getItems() == null || dataParent.getMonthValue().getItems().isEmpty()) 
 				&& (!dataParent.getDataCheckSign().isEmpty() || !dataParent.getDataCheckApproval().isEmpty() || dataParent.getSpr() != null)) {
+			validatorDataDaily.checkVerConfirmApproval(dataParent.getApprovalConfirmCache(), dataParent.getDataCheckSign(), dataParent.getDataCheckApproval(), dataParent.getItemValues());
 			errorRelease = releaseSign(dataParent.getDataCheckSign(), new ArrayList<>(), dailyEdits,
 					AppContexts.user().employeeId(), true);
 			// only insert check box
@@ -523,7 +523,7 @@ public class DailyModifyResCommandFacade {
 			resultIU = handleUpdate(dailyOlds, dailyEdits, commandNew, commandOld, dailyItems, monthParam, dataParent.getMode(),
 					dataParent.isFlagCalculation(), itemAtr);
 			
-			
+			validatorDataDaily.checkVerConfirmApproval(dataParent.getApprovalConfirmCache(), dataParent.getDataCheckSign(), dataParent.getDataCheckApproval(), dataParent.getItemValues());
 			if (resultIU != null) {
 				
 				List<EmployeeMonthlyPerError> errorMonthHoliday = new ArrayList<>();
