@@ -1604,10 +1604,15 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 									isHasInterrupt = this.RedoDailyPerformanceProcessing(context, companyId, empLeader,
 											p, empCalAndSumExeLog.getEmpCalAndSumExecLogID(), dailyCreateLog, procExec);
 								}
-							} catch (CreateDailyException ex) {
-								isHasCreateDailyException = true;
-								isHasDailyCalculateException = true;
-							}
+							} catch (RuntimeException ex) {
+								if(ex instanceof CreateDailyException) {
+									//create error
+									isHasCreateDailyException = true;
+								}else {
+									//calculation error
+									isHasDailyCalculateException = true;
+								}
+							} 
 							if (isHasInterrupt) {
 								break;
 							}
