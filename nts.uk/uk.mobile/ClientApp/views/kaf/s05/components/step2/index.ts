@@ -45,10 +45,12 @@ import { Kafs05Model } from '../common/CommonClass';
                 checkMaxLength: {
                     test(value: any) {
                         let comboBoxReason: string = this.getComboBoxReason(value, this.kafs05ModelStep2.reasonCombo, this.kafs05ModelStep2.typicalReasonDisplayFlg);
-                        if (this.countHalf(comboBoxReason + '\n' + this.kafs05ModelStep2.multilContent) > 400) {
-                            return false;
+                        if (this.kafs05ModelStep2.typicalReasonDisplayFlg || this.kafs05ModelStep2.displayAppReasonContentFlg) {
+                            if (this.countHalf(comboBoxReason + '\n' + this.kafs05ModelStep2.multilContent) > 400) {
+                                return false;
+                            }
                         }
-
+                        
                         return true;
                     },
                     messageId: 'Msg_960'
@@ -72,8 +74,10 @@ import { Kafs05Model } from '../common/CommonClass';
                 checkMaxLength: {
                     test(value: any) {
                         let comboBoxReason: string = this.getComboBoxReason(this.kafs05ModelStep2.selectedReason, this.kafs05ModelStep2.reasonCombo, this.kafs05ModelStep2.typicalReasonDisplayFlg);
-                        if (this.countHalf(comboBoxReason + '\n' + value) > 400) {
-                            return false;
+                        if (this.kafs05ModelStep2.typicalReasonDisplayFlg || this.kafs05ModelStep2.displayAppReasonContentFlg) {
+                            if (this.countHalf(comboBoxReason + '\n' + value) > 400) {
+                                return false;
+                            }
                         }
 
                         return true;
@@ -85,8 +89,10 @@ import { Kafs05Model } from '../common/CommonClass';
                 checkMaxLength: {
                     test(value: any) {
                         let comboDivergenceReason = this.getComboBoxReason(value, this.kafs05ModelStep2.reasonCombo2, this.kafs05ModelStep2.displayDivergenceReasonForm);
-                        if (this.countHalf(comboDivergenceReason + '\n' + this.kafs05ModelStep2.multilContent2) > 400) {
-                            return false;
+                        if (this.kafs05ModelStep2.displayDivergenceReasonForm || this.kafs05ModelStep2.displayDivergenceReasonInput) {
+                            if (this.countHalf(comboDivergenceReason + '\n' + this.kafs05ModelStep2.multilContent2) > 400) {
+                                return false;
+                            }
                         }
 
                         return true;
@@ -98,8 +104,10 @@ import { Kafs05Model } from '../common/CommonClass';
                 checkMaxLength: {
                     test(value: any) {
                         let comboDivergenceReason = this.getComboBoxReason(this.kafs05ModelStep2.selectedReason2, this.kafs05ModelStep2.reasonCombo2, this.kafs05ModelStep2.displayDivergenceReasonForm);
-                        if (this.countHalf(comboDivergenceReason + '\n' + value) > 400) {
-                            return false;
+                        if (this.kafs05ModelStep2.displayDivergenceReasonForm || this.kafs05ModelStep2.displayDivergenceReasonInput) {
+                            if (this.countHalf(comboDivergenceReason + '\n' + value) > 400) {
+                                return false;
+                            }
                         }
 
                         return true;
