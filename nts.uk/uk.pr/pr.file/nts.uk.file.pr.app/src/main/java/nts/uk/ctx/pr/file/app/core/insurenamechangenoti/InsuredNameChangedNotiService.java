@@ -67,7 +67,7 @@ public class InsuredNameChangedNotiService extends ExportService<InsuredNameChan
 
         List<SocialInsuranceOffice> listSocialInsuranceOffice = socialInsuranceOfficeRepository.findByCid(cid);
         query.getListEmpId().forEach(x -> {
-            this.get(x);
+//            this.get(x);
         });
     }
 
@@ -76,7 +76,7 @@ public class InsuredNameChangedNotiService extends ExportService<InsuredNameChan
         Optional<EmpWelfarePenInsQualiInfor> empWelfarePenInsQualiInfors = empWelfarePenInsQualiInforRepository.getEmpWelfarePenInsQualiInforByEmpId(empId);
 
         if(empWelfarePenInsQualiInfors.isPresent()){
-            DateHistoryItem dateHistoryItem= this.check(empWelfarePenInsQualiInfors.get(),date)
+            DateHistoryItem dateHistoryItem= this.check(empWelfarePenInsQualiInfors.get(),date);
             if(dateHistoryItem != null){
                 Optional<WelfarePenTypeInfor> welfarePenTypeInfor = welfarePenTypeInforRepository.getWelfarePenTypeInforById(dateHistoryItem.identifier());
                 List<EmPensionFundPartiPeriodInfor> list = emPensionFundPartiPeriodInforRepository.getEmPensionFundPartiPeriodInforByEmpId(empId);

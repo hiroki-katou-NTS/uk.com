@@ -55,10 +55,11 @@ public class SalGenParaDateHistoryService {
     }
     public String getHistoryIdByTargetDate(String paraNo,GeneralDate targetDate){
         Optional<SalGenParaDateHistory> objectHis = salGenParaDateHistRepository.getAllSalGenParaDateHist(AppContexts.user().companyId(),paraNo);
-        return objectHis.get().getDateHistoryItem()
+        Optional<DateHistoryItem> resulf =  objectHis.get().getDateHistoryItem()
                 .stream()
-                .filter(e -> e.start().compareTo(targetDate)== 1 && e.end().compareTo(targetDate)==2)
-                .findFirst().get().identifier();
+                .filter(e -> e.start().beforeOrEquals(targetDate) && e.end().afterOrEquals(targetDate))
+                .findFirst();
+        return resulf.isPresent() ? resulf.get().identifier() : "";
     }
     public String getHistoryIdByStartDate(String paraNo,GeneralDate startDate){
         Optional<SalGenParaDateHistory> objectHis = salGenParaDateHistRepository.getAllSalGenParaDateHist(AppContexts.user().companyId(),paraNo);

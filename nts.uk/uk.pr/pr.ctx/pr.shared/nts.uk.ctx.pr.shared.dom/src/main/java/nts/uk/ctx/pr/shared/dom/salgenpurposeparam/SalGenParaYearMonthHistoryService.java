@@ -59,12 +59,11 @@ public class SalGenParaYearMonthHistoryService {
         YearMonth yearMonth = YearMonth.of(targetDate.year(),targetDate.month());
         return objectHis.get().getHistory()
                 .stream()
-                .filter(e -> e.start().compareTo(yearMonth)==0 && e.end().compareTo(yearMonth)==1)
+                .filter(e -> e.start().lessThanOrEqualTo(yearMonth) && e.end().greaterThanOrEqualTo(yearMonth))
                 .findFirst().get().identifier();
     }
     public String getHistoryIdByStartDate(String paraNo){
         Optional<SalGenParaYearMonthHistory> objectHis = salGenParaYMHistRepository.getAllSalGenParaYMHist(AppContexts.user().companyId(),paraNo);
-
         return objectHis.get().getHistory()
                 .stream()
                 .reduce((first, second) -> second).get().identifier();
