@@ -1,5 +1,7 @@
 package nts.uk.screen.at.app.dailymodify.command;
 
+import java.awt.print.Printable;
+import java.io.Console;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -1275,6 +1277,7 @@ public class DailyModifyResCommandFacade {
 		List<ItemValue> itemValue = itemValueTempDay.stream()
 				.filter(x -> DPText.ITEM_INSERT_STAMP_SOURCE.contains(x.getItemId())).collect(Collectors.toList());
 		itemValue.stream().forEach(x -> {
+			try{
 			switch (x.getItemId()) {
 			case 75:
 			case 79:
@@ -1325,6 +1328,8 @@ public class DailyModifyResCommandFacade {
 
 			default:
 				break;
+			}}catch (Exception e) {
+				System.out.print("Lỗi map createStampSourceInfo itemId: " + x.getItemId());
 			}
 		});
 	}
