@@ -147,18 +147,6 @@ public class CheckBeforeRegisterOvertime {
 				app.getCompanyID(), app.getEmployeeID(), app.getAppDate(), overTimeDomain.getOverTimeInput());
 		result.setAppOvertimeDetail(AppOvertimeDetailDto.fromDomain(appOvertimeDetailOtp));
 		beforeCheck.TimeUpperLimitYearCheck();
-
-		//申請日の矛盾チェック
-		if (!checkAppDate) {
-			List<String> errors = this.commonOvertimeHoliday.inconsistencyCheck(companyID, employeeId, app.getAppDate(),
-					ApplicationType.OVER_TIME_APPLICATION, overTimeSettingOpt.get().getAppDateContradictionAtr());
-
-			if (!CollectionUtil.isEmpty(errors)) {
-				List<String> errorParam = new ArrayList<>(errors);
-				errorParam.remove(0);
-				throw new BusinessException(errors.get(0), errorParam.toArray(new String[errorParam.size()]));
-			}
-		}
 		
 		return result;
 	}
