@@ -526,7 +526,8 @@ public class CheckFileFinder {
 					value = value == ""? null:String.valueOf(cell.getValue().getDecimal());
 					break;
 				case DATE:
-					value = cell.getValue().getDate().toString();
+					String date = cell.getValue().getDate().toString();
+					value = date.contains("-") == true? date.replace("-", "/"): date;
 					break;
 				case DATETIME:
 					value = cell.getValue().getDateTime().toString();

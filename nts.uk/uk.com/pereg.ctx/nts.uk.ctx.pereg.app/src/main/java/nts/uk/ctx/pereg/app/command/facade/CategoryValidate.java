@@ -183,8 +183,8 @@ public class CategoryValidate {
 			List<String> sidError = new ArrayList<>();
 			for(AffWorkplaceHistory history: sidExits) {
 				PeregInputContainerCps003 container = containerAdds.stream().filter(c -> c.getEmployeeId().equals(history.getEmployeeId())).findFirst().get();
-				ItemValue start = container.getInputs().getItems().stream().filter(c -> c.itemCode().equals("IS00077")).findFirst().get();
-				ItemValue end = container.getInputs().getItems().stream().filter(c -> c.itemCode().equals("IS00078")).findFirst().get();
+				ItemValue start = container.getInputs().getItems().stream().filter(c -> c.itemCode().equals("IS00082")).findFirst().get();
+				ItemValue end = container.getInputs().getItems().stream().filter(c -> c.itemCode().equals("IS00083")).findFirst().get();
 				DateHistoryItem historyItem = history.getHistoryItems().get(0);
 				if(!end.valueAfter().equals("9999/12/31")) {
 					sidError.add(history.getEmployeeId());
@@ -207,6 +207,7 @@ public class CategoryValidate {
 				result.add(exeption);
 			}
 		}
+		
 		if(CollectionUtil.isEmpty(containerAdds)) return;
 		if (containerAdds.get(0).getInputs().getCategoryCd().equals("CS00020")
 				|| containerAdds.get(0).getInputs().getCategoryCd().equals("CS00070")) {
@@ -216,8 +217,40 @@ public class CategoryValidate {
 			List<String> sidError = new ArrayList<>();
 			for(WorkingCondition history: sidExits) {
 				PeregInputContainerCps003 container = containerAdds.stream().filter(c -> c.getEmployeeId().equals(history.getEmployeeId())).findFirst().get();
-				ItemValue start = container.getInputs().getItems().stream().filter(c -> c.itemCode().equals("IS00077")).findFirst().get();
-				ItemValue end = container.getInputs().getItems().stream().filter(c -> c.itemCode().equals("IS00078")).findFirst().get();
+				ItemValue start = container.getInputs().getItems().stream().filter(c -> c.itemCode().equals("IS00120")).findFirst().get();
+				ItemValue end = container.getInputs().getItems().stream().filter(c -> c.itemCode().equals("IS00121")).findFirst().get();
+				DateHistoryItem historyItem = history.getDateHistoryItem().get(0);
+				if(!end.valueAfter().equals("9999/12/31")) {
+					sidError.add(history.getEmployeeId());
+					int index = containerAdds.indexOf(container);
+					containerAdds.remove(index);
+					continue;
+				}
+				if(modeUpdate == 2) {
+					if(GeneralDate.fromString(start.valueAfter(), "yyyy/MM/dd").before(historyItem.start())) {
+						sidError.add(history.getEmployeeId());
+						int index = containerAdds.indexOf(container);
+						containerAdds.remove(index);
+						continue;
+					}
+				}
+			}
+			if(!sidError.isEmpty()) {
+				MyCustomizeException exeption = new MyCustomizeException("Msg_102", sidError, "");
+				result.add(exeption);
+			}
+		}
+		
+		if(CollectionUtil.isEmpty(containerAdds)) return;
+		if (containerAdds.get(0).getInputs().getCategoryCd().equals("CS00070")) {
+			List<String> sids = containerAdds.stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
+			List<WorkingCondition> sidExits =  this.wcRepo
+					.getBySidsAndCid(sids, baseDate, cid);
+			List<String> sidError = new ArrayList<>();
+			for(WorkingCondition history: sidExits) {
+				PeregInputContainerCps003 container = containerAdds.stream().filter(c -> c.getEmployeeId().equals(history.getEmployeeId())).findFirst().get();
+				ItemValue start = container.getInputs().getItems().stream().filter(c -> c.itemCode().equals("IS00781")).findFirst().get();
+				ItemValue end = container.getInputs().getItems().stream().filter(c -> c.itemCode().equals("IS00782")).findFirst().get();
 				DateHistoryItem historyItem = history.getDateHistoryItem().get(0);
 				if(!end.valueAfter().equals("9999/12/31")) {
 					sidError.add(history.getEmployeeId());
@@ -247,8 +280,8 @@ public class CategoryValidate {
 			List<String> sidError = new ArrayList<>();
 			for(BusinessTypeOfEmployeeHistory history: sidExits) {
 				PeregInputContainerCps003 container = containerAdds.stream().filter(c -> c.getEmployeeId().equals(history.getEmployeeId())).findFirst().get();
-				ItemValue start = container.getInputs().getItems().stream().filter(c -> c.itemCode().equals("IS00077")).findFirst().get();
-				ItemValue end = container.getInputs().getItems().stream().filter(c -> c.itemCode().equals("IS00078")).findFirst().get();
+				ItemValue start = container.getInputs().getItems().stream().filter(c -> c.itemCode().equals("IS00255")).findFirst().get();
+				ItemValue end = container.getInputs().getItems().stream().filter(c -> c.itemCode().equals("IS00256")).findFirst().get();
 				DateHistoryItem historyItem = history.getHistory().get(0);
 				if(!end.valueAfter().equals("9999/12/31")) {
 					sidError.add(history.getEmployeeId());
