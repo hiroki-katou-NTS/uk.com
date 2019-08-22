@@ -7,6 +7,8 @@ module common.error.system {
         if (!nts.uk.util.isNullOrUndefined(errorInfo)) {
             screenModel.details(errorInfo.errorMessage + "\r\n" + errorInfo.stackTrace);
             screenModel.errorAtTime(moment.utc(errorInfo.atTime).format("YYYY/MM/DD HH:mm:ss"));
+        } else {
+            screenModel.errorAtTime(moment().format("YYYY/MM/DD HH:mm:ss"));
         }
     });
     
@@ -27,7 +29,14 @@ module common.error.system {
         }
         
         gotoLogin() {
-            nts.uk.ui.windows.rgc().nts.uk.request.login.jumpToUsedLoginPage();
+            nts.uk.characteristics.restore("loginMode").done(mode => {
+                let rgc = nts.uk.ui.windows.rgc();
+                if (mode) {
+                    rgc.nts.uk.request.login.jumpToUsedSSOLoginPage();
+                } else {
+                    rgc.nts.uk.request.login.jumpToUsedLoginPage();
+                }
+            });
         }
     }
 }

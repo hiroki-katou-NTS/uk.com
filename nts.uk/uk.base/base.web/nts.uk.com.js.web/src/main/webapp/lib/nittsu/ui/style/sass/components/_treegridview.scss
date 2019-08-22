@@ -14,6 +14,20 @@
 		  	background-color: #FFFFFF;
 		} 
 	}
+	
+	.ui-iggrid-table {
+		.ui-iggrid-tablebody {
+			tr {
+				td:last-child {
+				  	padding-right: 2px !important;
+				}
+			}
+			tr.row-disabled {
+				background-color: #CCC;
+  				color: #333;
+			}
+		}
+	}
 }
 
 .nts-treegridview {
@@ -24,7 +38,6 @@
 	.ui-igtreegrid-expandcell{
 		margin-top: -10px !important;
 	}
-	
 }
 
 .no-selector {

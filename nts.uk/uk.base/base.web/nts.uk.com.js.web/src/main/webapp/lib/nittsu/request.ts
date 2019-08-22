@@ -165,6 +165,51 @@ module nts.uk.request {
         });        
         return dfd.promise();
     }
+    
+    export module subSession {
+        const SubSessionIdKey = "nts.uk.request.subSessionId.";
+        const SecondsToKeepSubSession = 30;
+        const SecondsIntervalToReportAlive = 3;
+        export let currentId;
+        if (uk.util.isInFrame()) {
+            currentId = parent.window.nts.uk.request.subSession.currentId;
+        } else {
+            currentId = uk.util.randomId();
+        }
+         
+        // keep alive sub sessions
+        function keepAliveSubSessionId() {
+            window.localStorage.setItem(SubSessionIdKey + currentId, +new Date());
+        }
+        keepAliveSubSessionId();
+        setInterval(keepAliveSubSessionId, SecondsIntervalToReportAlive * 1000);
+        
+        export function getAliveIds() {
+            let aliveIds = [];
+            let deadIds = [];
+            for (let i = 0; ; i++) {
+                let key = window.localStorage.key(i);
+                if (key == null) break;
+                if (key.indexOf(SubSessionIdKey) !== 0) continue;
+                
+                let id = key.slice(SubSessionIdKey.length);
+                let lastReportTime = window.localStorage.getItem(SubSessionIdKey + id);
+                let duration = +new Date() - lastReportTime;
+                if (duration <= SecondsToKeepSubSession * 1000) {
+                    aliveIds.push(id);
+                } else {
+                    deadIds.push(id);
+                }
+            }
+            
+            // prune dead IDs
+            deadIds.forEach(deadId => {
+                window.localStorage.removeItem(SubSessionIdKey + deadId);
+            });
+            
+            return aliveIds;
+        }
+    }
 
     export function ajax(path: string, data?: any, options?: any);
     export function ajax(webAppId: WebAppId, path: string, data?: any, options?: any, restoresSession?: boolean) {
@@ -187,6 +232,8 @@ module nts.uk.request {
             .mergeRelativePath(location.ajaxRootDir)
             .mergeRelativePath(path);
         
+        var countRetryByDeadLock = 0;
+        
         function ajaxFunc() {
             $.ajax({
                 type: options.method || 'POST',
@@ -196,7 +243,9 @@ module nts.uk.request {
                 data: data,
                 headers: {
                     'PG-Path': location.current.serialize(),
-                    "X-CSRF-TOKEN": csrf.getToken()
+                    "X-CSRF-TOKEN": csrf.getToken(),
+                    "X-SubSessionId": subSession.currentId,
+                    "X-AliveSubSessionIds": subSession.getAliveIds()
                 }
             }).done(function(res) {
                 if (nts.uk.util.exception.isErrorToReject(res)) {
@@ -207,6 +256,12 @@ module nts.uk.request {
                     dfd.resolve(res);
                 }
             }).fail(function (jqXHR, textStatus, errorThrown) {
+                // デッドロックの場合、待機時間を少しずつ増やしながらリトライ（とりあえず10回までとする）
+                if (jqXHR.responseJSON && jqXHR.responseJSON.deadLock === true && countRetryByDeadLock < 10) {
+                    countRetryByDeadLock++;
+                    setTimeout(ajaxFunc, 300 + countRetryByDeadLock * 100);
+                    return;
+                }
                 AjaxErrorHandlers.main(jqXHR, textStatus, errorThrown);
             });
         }
@@ -248,7 +303,9 @@ module nts.uk.request {
                 async: false,
                 headers: {
                     'PG-Path': location.current.serialize(),
-                    "X-CSRF-TOKEN": csrf.getToken()
+                    "X-CSRF-TOKEN": csrf.getToken(),
+                    "X-SubSessionId": subSession.currentId,
+                    "X-AliveSubSessionIds": subSession.getAliveIds()
                 },
                 success: function(res) {
                     if (nts.uk.util.exception.isErrorToReject(res)) {
@@ -349,6 +406,12 @@ module nts.uk.request {
                 }
             })
             .fail((res: any) => {
+                if (res && (res.failed || res.status == "ABORTED")) {
+                    if (res.error && res.error.businessException === false) {
+                        specials.errorPages.systemError();
+                        return;
+                    }
+                }
                 dfd.reject(res);
             });
 
@@ -629,6 +692,14 @@ module nts.uk.request {
                 window.location.href = path;
             }).ifEmpty(() => {
                 request.jump('com', '/view/ccg/007/d/index.xhtml');
+            });
+        }
+        
+        export function jumpToUsedSSOLoginPage() {
+            uk.sessionStorage.getItem(STORAGE_KEY_USED_LOGIN_PAGE).ifPresent(path => {
+                window.location.href = path;
+            }).ifEmpty(() => {
+                request.jump('com', '/view/ccg/007/d/index.xhtml?signon=on');
             });
         }
         

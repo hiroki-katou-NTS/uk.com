@@ -117,7 +117,7 @@ __viewContext.ready(function () {
         if (!order) return s1.name.localeCompare(s2.name);
         return order;
     }).forEach(ctrl => {
-        $(`<option value="${ctrl}"/>`).text(`${sample[ctrl].name} ● ${ctrl}`).appendTo($select);
+        $(`<option value="${ctrl}"/>`).text(`${ctrl} ● ${sample[ctrl].name}`).appendTo($select);
     });
     
     $preview.on("load", () => {

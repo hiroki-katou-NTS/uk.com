@@ -26,6 +26,7 @@ module nts.uk.ui.jqueryExtentions {
             let virtualization = !util.isNullOrUndefined(options.virtualization) ? options.virtualization : false;
             let virtualizationMode = !util.isNullOrUndefined(options.virtualizationMode) ? options.virtualizationMode : "";
             let multiple = !_.isNil(options.multiple) ? options.multiple : false;
+            let isFilter = ko.unwrap(!util.isNullOrUndefined(data.filter) ? data.filter : false);
             
             // Default.
             let showCheckBox = options.showCheckBox !== undefined ? options.showCheckBox : true;
@@ -62,6 +63,13 @@ module nts.uk.ui.jqueryExtentions {
 //                    } else {
 //                        selectRows($treegrid, selectedRows.length <= 0 ? undefined : ui.row.id);
 //                    }
+                }, rowSelectionChanging: function (evt, ui) {
+                    let disabledRows = $treegrid.data("rowDisabled");
+                    if(!_.isEmpty(disabledRows)) {
+                        _.remove(ui.selectedRows, function(r) {
+                            return disabledRows.includes(r.id);
+                        });
+                    }
                 }
             });
             
@@ -103,9 +111,20 @@ module nts.uk.ui.jqueryExtentions {
                 
                 $treegrid.addClass("row-limited");
             }
+            
+            if(isFilter) {
+                features.push({ name: "Filtering", filterDelay : 100, filterDropDownAnimationDuration : 100 });
+            }
 
             $treegrid.data("expand", new koExtentions.ExpandNodeHolder());
             $treegrid.data("autoExpanding", false);
+            
+            let colSet = _.map(displayColumns, (col) => {
+                return { columnKey: col.key, readOnly: true };
+            });
+            features.push({ name: "Updating", editMode:   "cell", enableAddChild: false, 
+                            enableAddRow: false, enableDeleteRow: false, columnSettings: colSet });
+            var cols = $treegrid.ntsTreeView("formatColumns", displayColumns, features);
             
             // Init ig grid.
             $treegrid.igTreeGrid({
@@ -114,7 +133,7 @@ module nts.uk.ui.jqueryExtentions {
                 indentation: "12px",
                 dataSource: _.cloneDeep(dataSource),
                 primaryKey: optionsValue,
-                columns: displayColumns,
+                columns: cols,
                 childDataKey: optionsChild,
                 initialExpandDepth: nts.uk.util.isNullOrUndefined(initialExpandDepth) ? 10 : initialExpandDepth,
                 tabIndex: -1,
@@ -139,7 +158,12 @@ module nts.uk.ui.jqueryExtentions {
 //                    _.forEach(holder.nodes, function(node: any){
 //                        $treegrid.igTreeGrid("expandRow", node); 
 //                    });
-                    
+                    if(virtualization){
+                         let disabledRows = $treegrid.data("rowDisabled");
+                        if(!_.isEmpty(disabledRows)) {
+                            $treegrid.ntsTreeView("disableRows", disabledRows);
+                        }   
+                    }
                     $treegrid.data("autoExpanding", false);   
                 }
             });
@@ -165,6 +189,15 @@ module nts.uk.ui.jqueryExtentions {
 //                }
             });
             
+            $treegrid.bind('cellChanging', () => {
+                $treegrid.data("notUpdate", true);
+                let optionX = data.dataSource !== undefined ? data.dataSource : data.options;
+                if(_.isFunction(optionX)){
+                    optionX($treegrid.igTreeGrid("option", "dataSource"));        
+                }
+                
+            });
+            
             $treegrid.setupSearchScroll("igTreeGrid");
             
             if(showCheckBox != true){
@@ -176,6 +209,19 @@ module nts.uk.ui.jqueryExtentions {
             let dataSource = $treegrid.igTreeGrid('option', 'dataSource');
             let multiple = !_.isNil(selectedValue) && selectedValue.constructor === Array;
 
+            let disabledRows = $treegrid.data("rowDisabled");
+            if(!_.isEmpty(disabledRows)) {
+                if (multiple) {
+                    _.remove(selectedValue, function(r) {
+                        return disabledRows.includes(r);
+                    });    
+                } else {
+                    if (!_.isNil(selectedValue) && disabledRows.includes(selectedValue)){
+                        selectedValue = null;
+                    }
+                }
+            }
+            
             if (nts.uk.util.isNullOrUndefined(selectedValue)) {
                 $treegrid.igTreeGridSelection("clearSelection");
             } else {

@@ -189,22 +189,45 @@ Result: "0:26:40"]]></pre></div></div>
 nts.uk.time.formatDate(new Date("1999/02/11"), "yyyy-MM-dd hh:mm:ss.SSS");
 Result: result.format() -> "1999-02-11 00:00:00/000"]]></pre></div></div>
 						
-						
+
+                        <div class="feature-box"><div class="header">
+                            <h3>dateInJapanEmpire</h3></div><div class="content">
+                            <p>Parameter: value (string or number)</p>
+                            <p>Format: ["YYYYMMDD", "YYYY/M/D", "YYYY-M-D"]</p>
+                            <p>Description: Convert input to Japan calendar's format. Object which the method return is a <b>JapanDate</b> Object. 
+                            It has empire, year, month and date properties. You can use it by set, get and toString methods.</p>
+                            <pre><![CDATA[//Try to paste this to console
+nts.uk.time.dateInJapanEmpire("20190101").toString();　//"平成31年1月1日"
+nts.uk.time.dateInJapanEmpire("2019-03-01").toString();　//"平成31年3月1日 "
+nts.uk.time.dateInJapanEmpire("2019/06/01").toString();　//"令和1年6月１日"
+]]></pre></div></div>
+
+                        <div class="feature-box"><div class="header">
+                            <h3>yearmonthInJapanEmpire</h3></div><div class="content">
+                            <p>Parameter: value (string or number)</p>
+                            <p>Format: ["YYYYMM", "YYYY/M", "YYYY-M", "YYYYMMDD", "YYYY/M/D", "YYYY-M-D"]</p>
+                            <p>Description: Convert input to Japan calendar's format. Object which the method return is a <b>JapanYearMonth</b> Object. 
+                            It has empire, year and month properties. You can use it by set, get and toString methods.</p>
+                            <pre><![CDATA[//Try to paste this to console
+nts.uk.time.yearmonthInJapanEmpire("2019-03").toString();　//"平成31年3月 "
+nts.uk.time.yearmonthInJapanEmpire("2019/06/01").toString();　//"令和1年6月 "
+]]></pre></div></div>
+
 						<div class="feature-box"><div class="header">
-						<h3>yearInJapanEmpire</h3></div><div class="content">
-						<p>Parameter: value (string or number)</p>
-						<p>Format year value according to japan calendar format. Method return a object is JapanYearMonth. In JapanYearMonth have properties are empire, year, month which can use method get to get data or can use toString method.</p>
-						<pre><![CDATA[//Try to paste this to console
-nts.uk.time.yearInJapanEmpire(2017).toString();
-Result: "平成  29 年 "]]></pre></div></div>
-						
-						<div class="feature-box"><div class="header">
-						<h3>yearmonthInJapanEmpire</h3></div><div class="content">
-						<p>Parameter: value (string or number)</p>
-						<p>Format year value according to japan calendar format. Method return a object is JapanYearMonth.</p>
-						<pre><![CDATA[//Try to paste this to console
-nts.uk.time.yearInJapanEmpire(2017).toString();
-Result: "平成  29 年 "]]></pre></div></div>
+                        <h3>yearInJapanEmpire</h3></div><div class="content">
+                        <p>Parameter: value (string or number)</p>
+                        <p>Format: ["YYYY", "YYYYMM", "YYYY/M", "YYYY-M", "YYYYMMDD", "YYYY/M/D", "YYYY-M-D"]</p>
+                        <p>Description: Convert input to Japan calendar's format. Object which the method return is a <b>JapanYear</b> Object. 
+                        It has empire and year properties. You can use it by set, get and toString methods.</p>
+                        <pre><![CDATA[//Try to paste this to console
+nts.uk.time.yearInJapanEmpire(2019).toString();　//"令和1年 "
+nts.uk.time.yearInJapanEmpire("2019-03").toString();　//"平成31年 "
+nts.uk.time.yearInJapanEmpire("2019/06/01").toString();　//"令和1年 "
+]]></pre></div></div>
+                        
+                        
+
+                        
 						
 						<hr />
 						
