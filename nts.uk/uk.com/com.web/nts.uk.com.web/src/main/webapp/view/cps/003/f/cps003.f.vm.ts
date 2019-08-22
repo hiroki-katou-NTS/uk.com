@@ -402,7 +402,7 @@ module cps003.f.vm {
                     mode: undefined,
                     replaceAll: item.applyFor == 'all',
                     targetItem: item.itemData.itemCode,
-                    matchValue: item.filter || null,
+                    matchValue: item.filter ||null,
                     replaceValue: undefined,
                     replaceFormat: undefined
                 };
@@ -418,7 +418,6 @@ module cps003.f.vm {
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
-
             switch (item.itemData.dataType) {
                 default:
                     break;
@@ -503,6 +502,8 @@ module cps003.f.vm {
                 case ITEM_SINGLE_TYPE.NUMERIC:
                     if (value.matchValue != null && value.matchValue !="") {
                         value.matchValue = Number(value.matchValue);
+                    }else{
+                        value.matchValue = null;
                     }
                     if (!item.itemData.amount) {
                         value.mode = APPLY_MODE.NUMBER;
