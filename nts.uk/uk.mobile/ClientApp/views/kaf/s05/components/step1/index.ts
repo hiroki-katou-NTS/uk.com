@@ -54,6 +54,32 @@ import { OvertimeAgreement, AgreementTimeStatusOfMonthly, Kafs05Model } from '..
                     },
                     messageId: 'MsgB_30'
                 }
+            },
+            workTypeName: {
+                check(value: string) {
+                    if (this.kafs05ModelStep1.displayCaculationTime) {
+                        if (value == this.$i18n('KAL003_120')) {
+                            return ['Msg_1530', '勤務種類コード' + this.kafs05ModelStep1.workTypeCd];
+                        }
+
+                        return false;
+                    }
+
+                    return false;
+                }
+            },
+            siftName: {
+                check(value: string) {
+                    if (this.kafs05ModelStep1.displayCaculationTime) {
+                        if (value == this.$i18n('KAL003_120')) {
+                            return ['Msg_1530', '就業時間帯コード' + this.kafs05ModelStep1.siftCD];
+                        }
+
+                        return false;
+                    }
+
+                    return false;
+                }
             }
         },
     },
@@ -288,6 +314,7 @@ export class KafS05aStep1Component extends Vue {
                 .then((result: { data: any }) => {
                     this.initData(result.data);
                     this.$mask('hide');
+                    this.$validate('clear');
                 }).catch((res: any) => {
                     if (res.messageId == 'Msg_426') {
                         this.$modal.error({ messageId: res.messageId }).then(() => {
@@ -870,8 +897,8 @@ export class KafS05aStep1Component extends Vue {
             } else {
                 this.pgName = 'kafS05b2';
             }
-        }       
-        if (!_.isNil(data.worktimeStart) && !_.isNil(data.worktimeEnd)) {           
+        }
+        if (!_.isNil(data.worktimeStart) && !_.isNil(data.worktimeEnd)) {
             if (_.isNil(self.siftCD) || self.siftName == this.$i18n('KAL003_120')) {
                 self.selectedWorkTime = '';
             } else {
@@ -983,7 +1010,7 @@ export class KafS05aStep1Component extends Vue {
         }
         // 休憩時間
         this.setTimeZones(data.timezones);
-        if (!_.isNil(data.worktimeStart) && !_.isNil(data.worktimeEnd)) {           
+        if (!_.isNil(data.worktimeStart) && !_.isNil(data.worktimeEnd)) {
             if (_.isNil(self.siftCD) || self.siftName == this.$i18n('KAL003_120')) {
                 self.selectedWorkTime = '';
             } else {

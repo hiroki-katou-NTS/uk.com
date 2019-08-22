@@ -726,6 +726,8 @@ public class AppOvertimeFinder {
 					commonOvertimeHoliday.displayDivergenceReasonInput(
 							EnumAdaptor.valueOf(overTimeDto.getApplication().getPrePostAtr(), PrePostAtr.class), 
 							overtimeRestAppCommonSet.get().getDivergenceReasonInputAtr()));
+			AppDateContradictionAtr performanceExcessAtr = overtimeRestAppCommonSet.get().getPerformanceExcessAtr();
+			overTimeDto.setPerformanceExcessAtr(performanceExcessAtr.value);
 		}
 		List<OvertimeInputDto> overTimeInputs = new ArrayList<>();
 		// 01-03_残業枠を取得: chua xong
@@ -943,6 +945,7 @@ public class AppOvertimeFinder {
 				}
 			}
 		}
+
 		return overTimeDto;
 	} 
 	public List<OvertimeInputDto> checkColorCaculationForUIB(List<OvertimeInputDto> overtimeHours,int prePostAtr,String appDate,String inputDate,String siftCD,
