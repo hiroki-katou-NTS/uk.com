@@ -24,21 +24,35 @@ module nts.uk.com.view.cps013.a.viewmodel {
                 }));
             }
             
-            if (self.checkDisplay.attendance == false) {
+            self.items[0].name = text("CPS013_15");
+            self.items[1].name = text("CPS013_16");
+            self.items[2].name = text("CPS013_17");
+            self.items[3].name = text("CPS013_18");
+            self.items[4].name = text("CPS013_19");
+            self.items[5].name = text("CPS013_20");
+            self.items[6].name = text("CPS013_21");
+            
+            
+            // check system == attendance
+            if ((self.checkDisplay.attendance == true) && (self.checkDisplay.payroll == false)) {
                 _.remove(self.items, (e) => {
-                    return _.indexOf([1, 2, 3, 4, 5, 6], e.id) > -1;
+                    return _.indexOf([4,5,6,7], e.id) > -1;
                 });
-            } else {
-                self.items[0].name = text("CPS013_15");
-                self.items[1].name = text("CPS013_16");
-                self.items[2].name = text("CPS013_17");
-                self.items[3].name = text("CPS013_18");
-                self.items[4].name = text("CPS013_19");
-                self.items[5].name = text("CPS013_20");
-
+            } 
+            
+            // check system == payroll
+            if ((self.checkDisplay.payroll == true) && (self.checkDisplay.attendance == false)) {
+                _.remove(self.items, (e) => {
+                    return _.indexOf([1,2,3], e.id) > -1;
+                });
+            } 
+            
+            if ((self.checkDisplay.payroll == false) && (self.checkDisplay.attendance == false)) {
+                _.remove(self.items, (e) => {
+                    return _.indexOf([1,2,3,4,5,6,7], e.id) > -1;
+                });
             }
 
-            self.items[self.items.length - 1].name = text("CPS013_21");
             
             for(let i = 0; i< self.items.length; i++){
                 self.items[i].id = i + 1;
