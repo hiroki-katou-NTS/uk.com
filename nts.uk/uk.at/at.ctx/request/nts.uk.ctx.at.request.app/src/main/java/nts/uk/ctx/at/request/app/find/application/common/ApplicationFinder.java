@@ -123,6 +123,7 @@ public class ApplicationFinder {
 		getDetailMob.authorizableFlags = detailedScreenPreBootModeOutput.isAuthorizableFlags();
 		getDetailMob.approvalATR = detailedScreenPreBootModeOutput.getApprovalATR().value;
 		getDetailMob.alternateExpiration = detailedScreenPreBootModeOutput.isAlternateExpiration();
+		getDetailMob.loginApprovalAtr = detailScreenAppData.getDetailScreenApprovalData().getLoginApprovalAtr() == null ? null : detailScreenAppData.getDetailScreenApprovalData().getLoginApprovalAtr().value;
 		switch (application.getAppType()) {
 		case OVER_TIME_APPLICATION:
 			getDetailMob.appOvertime = appOvertimeFinder.getDetailMob(appID, appCommonSettingOutput);

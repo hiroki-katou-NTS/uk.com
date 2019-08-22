@@ -64,6 +64,7 @@ export class CmmS45DComponent extends Vue {
 
     public memo: string = '';
     public commentDis: boolean = false;
+    public commentColor: string = '';
 
     public created() {
         let self = this;
@@ -145,6 +146,7 @@ export class CmmS45DComponent extends Vue {
             } else {
                 self.commentDis = false;
             }
+            self.commentColor = resApp.data.loginApprovalAtr == 2 ? 'uk-bg-dark-salmon' : 'uk-bg-alice-blue';
             self.$mask('hide');
         }).catch((res: any) => {
             self.$mask('hide');
@@ -193,6 +195,7 @@ export class CmmS45DComponent extends Vue {
     // tiến tới đơn tiếp theo
     public toNextApp(): void {
         let self = this;
+        self.$el.scrollTop = 0;
         self.showApproval = false;
         self.appCount++;
         self.currentApp = self.listAppMeta[self.appCount];
@@ -203,6 +206,7 @@ export class CmmS45DComponent extends Vue {
     // quay về đơn trước
     public toPreviousApp(): void {
         let self = this;
+        self.$el.scrollTop = 0;
         self.showApproval = false;
         self.appCount--;
         self.currentApp = self.listAppMeta[self.appCount];

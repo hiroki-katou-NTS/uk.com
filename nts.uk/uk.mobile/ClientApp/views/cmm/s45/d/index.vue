@@ -97,7 +97,8 @@
         </div>
       </div> 
     </div>
-    <div class="row pl-2 pt-1 pb-1 uk-bg-alice-blue border-top border-bottom uk-border-light-gray"
+    <div class="row pl-2 pt-1 pb-1 border-top border-bottom uk-border-light-gray"
+      v-bind:class="commentColor"
       v-show="commentDis">{{'CMMS45_62' | i18n}}
     </div>
     <div class="text-break" v-show="commentDis">{{ authorComment }}</div>
