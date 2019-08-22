@@ -140,7 +140,7 @@ export class CmmS45DComponent extends Vue {
             self.reversionReason = appData.reversionReason;
             self.appOvertime = appData.appOvertime;
             self.memo = '';
-            if (self.canChangeStatus() && self.appState.authorizableFlags && !self.appState.alternateExpiration && !_.isEmpty(self.authorComment)) {
+            if (!_.isEmpty(self.authorComment)) {
                 self.commentDis = true;
             } else {
                 self.commentDis = false;
