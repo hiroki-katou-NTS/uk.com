@@ -64,7 +64,7 @@
                 v-for="item in emp.lstApp"
                 v-bind:key="item.id"
                 :value="item.id"
-                v-on:click="() => goToDetail(item.id)"
+                v-on:click="() => goToDetail(item)"
               >
                 <div class="row">
                   <!-- Check box -->
