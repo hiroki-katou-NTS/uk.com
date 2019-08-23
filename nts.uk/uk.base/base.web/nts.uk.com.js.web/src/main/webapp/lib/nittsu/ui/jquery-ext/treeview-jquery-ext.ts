@@ -108,71 +108,89 @@ module nts.uk.ui.jqueryExtentions {
             let newColumns = _.map(columns, (colO) => {
                 let col = _.cloneDeep(colO);
                 if(_.lowerCase(col.formatType) === "checkbox") {
-                    let oldFormatter = col.formatte, isParentCompute = _.isNil(col.parentCompute) || !col.parentCompute ? false : true;
+                    let oldFormatter = col.formatte, isParentCompute = _.isNil(col.parentCompute) || !col.parentCompute ? false : true,
+                        helper = {
+                            updateX (data, val, key, childKey, primaryKey) {
+                                if(!_.isEmpty(data)){
+                                    _.forEach(data, (child) => {
+                                        let rId = child[primaryKey], 
+                                            controlCls = "nts-grid-control-" + $tree.data("UNIQ") + "-" + key + "-" + rId, 
+                                            $wrapper = $tree.find("." + controlCls), checkbox = $wrapper.find("input[type='checkbox']");
+                                        if(checkbox.length > 0) {
+                                            if(checkbox.is(":checked") !== val) {
+                                                $wrapper.data("changeByParent", true);
+                                                checkbox.click();
+                                            }
+                                        } else {
+                                            $tree.data("igTreeGrid").dataSource.setCellValue(rId, key, val, true);
+                                            $tree.data("igTreeGridUpdating")._notifyCellUpdated(rId);
+                                            helper.updateX(child[childKey], val, key, childKey, primaryKey);    
+                                        }
+                                    });    
+                                }
+                            }, checkChildSiblings (source, key, childKey, primaryKey) {
+                                let isAllCheck = _.isNil(_.find(source[childKey], (c) => {
+                                    let controlCls = "nts-grid-control-" + $tree.data("UNIQ") + "-" + key + "-" + c[primaryKey],
+                                        checkbox = $tree.find("." + controlCls).find("input[type='checkbox']");    
+                                    return !checkbox.is(":checked");
+                                }));
+                                
+                                let controlCls = "nts-grid-control-" + $tree.data("UNIQ") + "-" + key + "-" + source[primaryKey],
+                                    $wrapper = $tree.find("." + controlCls), $checkbox = $wrapper.find("input[type='checkbox']");
+                                if (isAllCheck !== $checkbox.is(":checked")) {
+                                    $wrapper.data("changeByChild", true);
+                                    $checkbox.click();
+                                }
+                                
+                                return isAllCheck;
+                            }, checkSiblings (rowId, source, key, childKey, primaryKey) {
+                                //let source = $tree.igTreeGrid("option", "dataSource");
+                                for(var i = 0; i < source.length; i++) {
+                                    if (!_.isEmpty(source[i][childKey])) {
+                                        let isParentOf = _.find(source[i][childKey], (c) => c[primaryKey] === rowId);
+                                        if (isParentOf) {
+                                            let isAllCheck = helper.checkChildSiblings(source[i], key, childKey, primaryKey);
+                                            
+                                            return { process: true, value: isAllCheck };
+                                        } else {
+                                            let checkRel =  helper.checkSiblings(rowId, source[i][childKey], key, childKey, primaryKey);
+                                            if (checkRel.process) {
+                                                let isAllCheck = helper.checkChildSiblings(source[i], key, childKey, primaryKey);
+                                                
+                                                return { process: true, value: isAllCheck };
+                                            }
+                                        }   
+                                    }
+                                }
+                                
+                                return { process: false, value: false };
+                            }, getTrueRowData (rowId, primaryKey, childKey) {
+                                let dataSource = $tree.data("igTreeGrid").dataSource._origDs,
+                                    flatSource = helper.flatChild(dataSource, childKey);
+
+                                return _.find(flatSource, (s) => s[primaryKey] === rowId);
+                            }, flatChild (dataSource, childKey) {
+                                let result = [];
+                                if (_.isEmpty(dataSource)) {
+                                    return result;
+                                }
+                                _.forEach(dataSource, (s) => {
+                                    result = _.concat(result, s, helper.flatChild(s[childKey], childKey));
+                                });
+                                
+                                return result;
+                            }
+                        };
                     
                     col.formatter = (value, rowObj) => {
                         if (_.isNil(rowObj)) return value;
-                        if (_.isNil(value)) return "";
-                        let updateX = (data, val, key, childKey, primaryKey) => {
-                            if(!_.isEmpty(data)){
-                                _.forEach(data, (child) => {
-                                    let rId = child[primaryKey], 
-                                        controlCls = "nts-grid-control-" + $tree.data("UNIQ") + "-" + key + "-" + rId, 
-                                        $wrapper = $tree.find("." + controlCls), checkbox = $wrapper.find("input[type='checkbox']");
-                                    if(checkbox.length > 0) {
-                                        if(checkbox.is(":checked") !== val) {
-                                            $wrapper.data("changeByParent", true);
-                                            checkbox.click();
-                                        }
-                                    } else {
-                                        $tree.data("igTreeGrid").dataSource.setCellValue(rId, key, val, true);
-                                        $tree.data("igTreeGridUpdating")._notifyCellUpdated(rId);
-                                        updateX(child[childKey], val, key, childKey, primaryKey);    
-                                    }
-                                });    
-                            }
-                        }, checkChildSiblings = (source, key, childKey, primaryKey)=> {
-                            let isAllCheck = _.isNil(_.find(source[childKey], (c) => {
-                                let controlCls = "nts-grid-control-" + $tree.data("UNIQ") + "-" + key + "-" + c[primaryKey],
-                                    checkbox = $tree.find("." + controlCls).find("input[type='checkbox']");    
-                                return !checkbox.is(":checked");
-                            }));
+                        let primaryKey =  $tree.data("igTreeGrid").options.primaryKey,
+                            childKey = $tree.data("igTreeGrid").options.childDataKey, rowId = rowObj[primaryKey],
+                            trueRowValue = helper.getTrueRowData(rowId, primaryKey, childKey);
                             
-                            let controlCls = "nts-grid-control-" + $tree.data("UNIQ") + "-" + key + "-" + source[primaryKey],
-                                $wrapper = $tree.find("." + controlCls), $checkbox = $wrapper.find("input[type='checkbox']");
-                            if (isAllCheck !== $checkbox.is(":checked")) {
-                                $wrapper.data("changeByChild", true);
-                                $checkbox.click();
-                            }
-                            
-                            return isAllCheck;
-                        }, checkSiblings = (rowId, source, key, childKey, primaryKey) => {
-                            //let source = $tree.igTreeGrid("option", "dataSource");
-                            for(var i = 0; i < source.length; i++) {
-                                if (!_.isEmpty(source[i][childKey])) {
-                                    let isParentOf = _.find(source[i][childKey], (c) => c[primaryKey] === rowId);
-                                    if (isParentOf) {
-                                        let isAllCheck = checkChildSiblings(source[i], key, childKey, primaryKey);
-                                        
-                                        return { process: true, value: isAllCheck };
-                                    } else {
-                                        let checkRel =  checkSiblings(rowId, source[i][childKey], key, childKey, primaryKey);
-                                        if (checkRel.process) {
-                                            let isAllCheck = checkChildSiblings(source[i], key, childKey, primaryKey);
-                                            
-                                            return { process: true, value: isAllCheck };
-                                        }
-                                    }   
-                                }
-                            }
-                            
-                            return { process: false, value: false };
-                        };
-                                               
-                        
-                        let primaryKey = $tree.igTreeGrid("option", "primaryKey"),
-                            childKey = $tree.igTreeGrid("option", "childDataKey"), rowId = rowObj[primaryKey],
-                            controlCls = "nts-grid-control-" + $tree.data("UNIQ") + "-" + col.key + "-" + rowId, 
+                        if (_.isNil(trueRowValue) || _.isNil(trueRowValue[col.key])) return "";
+                         
+                        let controlCls = "nts-grid-control-" + $tree.data("UNIQ") + "-" + col.key + "-" + rowId, 
                             $wrapper = $("<div/>").addClass(controlCls).css({ "text-align": 'center', "height": "30px"} ),
                             $container = $("<div/>").append($wrapper), $_self = $tree,
                             data: any = {
@@ -188,12 +206,12 @@ module nts.uk.ui.jqueryExtentions {
                                         $tree.data("igTreeGrid").dataSource.setCellValue(rowId, col.key, val, true);
                                         $tree.data("igTreeGridUpdating")._notifyCellUpdated(rowId);
                                         if(isParentCompute) {
-                                            updateX(rowObj[childKey], val, col.key, childKey, primaryKey);
+                                            helper.updateX(rowObj[childKey], val, col.key, childKey, primaryKey);
                                             if($wrapper.data("changeByParent")) {
                                                 $wrapper.data("changeByParent", false);
                                                 return;
                                             }
-                                            checkSiblings(rowId, $tree.igTreeGrid("option", "dataSource"), col.key, childKey, primaryKey);    
+                                            helper.checkSiblings(rowId, $tree.igTreeGrid("option", "dataSource"), col.key, childKey, primaryKey);    
                                         }
                                         $tree.trigger("cellChanging");
                                         $tree.trigger("checkboxChanging", { value: val, rowId: rowId, column: col.key, rowData: rowObj, element: $wrapper });
