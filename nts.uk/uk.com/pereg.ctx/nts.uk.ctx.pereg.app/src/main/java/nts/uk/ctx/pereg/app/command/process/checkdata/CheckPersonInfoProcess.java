@@ -36,6 +36,7 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregEmpInfoQuery;
 
 
@@ -752,109 +753,109 @@ public class CheckPersonInfoProcess {
 		Map<String, String> masterName = new HashMap<>();
 			// M00001 - CS00015- 部門情報
 			
-			masterName.put("IS00073", "部門マスタ");
+			masterName.put("IS00073", "部門");
 			
 			// M00002 - CS00017- 職場情報
 			
-			masterName.put("IS00084", "職場マスタ");
+			masterName.put("IS00084", "職場");
 			
-			masterName.put("IS00085", "職場マスタ");
+			masterName.put("IS00085", "職場");
 			
 			// M00003 - CS00014- 雇用
 			
-			masterName.put("IS00068", "雇用マスタ");
+			masterName.put("IS00068", "雇用");
 			
 			// M00004 - CS00004 - 分類
 			
-			masterName.put("IS00028", "分類マスタ１");
+			masterName.put("IS00028", "分類");
 			
 			// M00005 - CS00016- 職位情報
 			
-			masterName.put("IS00079", "職位マスタ");
+			masterName.put("IS00079", "職位");
 			
 			// M00006 - 休職休業枠
 			
-			masterName.put("IS00089", "休職休業マスタ");
+			masterName.put("IS00089", "休職休業");
 			
 			// M00007 - 勤務種別
 			
-			masterName.put("IS00257", "勤務種別マスタ");
+			masterName.put("IS00257", "勤務種別");
 			
 			// M00008 - 勤務種別 chưa có
 			
 			// M00009 - 就業時間帯
 			
-			masterName.put("IS00131", "就業時間帯マスタ");
+			masterName.put("IS00131", "就業時間帯");
 			
-			masterName.put("IS00140", "就業時間帯マスタ");
+			masterName.put("IS00140", "就業時間帯");
 			
-			masterName.put("IS00158", "就業時間帯マスタ");
+			masterName.put("IS00158", "就業時間帯");
 			
-			masterName.put("IS00167", "就業時間帯マスタ");
+			masterName.put("IS00167", "就業時間帯");
 			
-			masterName.put("IS00176", "就業時間帯マスタ");
+			masterName.put("IS00176", "就業時間帯");
 			
-			masterName.put("IS00149", "就業時間帯マスタ");
+			masterName.put("IS00149", "就業時間帯");
 			
-			masterName.put("IS00194", "就業時間帯マスタ");
+			masterName.put("IS00194", "就業時間帯");
 			
-			masterName.put("IS00203", "就業時間帯マスタ");
+			masterName.put("IS00203", "就業時間帯");
 			
-			masterName.put("IS00212", "就業時間帯マスタ");
+			masterName.put("IS00212", "就業時間帯");
 			
-			masterName.put("IS00221", "就業時間帯マスタ");
+			masterName.put("IS00221", "就業時間帯");
 			
-			masterName.put("IS00230", "就業時間帯マスタ");
+			masterName.put("IS00230", "就業時間帯");
 			
-			masterName.put("IS00239", "就業時間帯マスタ");
+			masterName.put("IS00239", "就業時間帯");
 			
-			masterName.put("IS00185", "就業時間帯マスタ");
+			masterName.put("IS00185", "就業時間帯");
 			
 			//  M00010 - 勤務種類
 			
-			masterName.put("IS00193", "勤務種類マスタ2");
+			masterName.put("IS00193", "勤務種類");
 			
-			masterName.put("IS00202", "勤務種類マスタ2");
+			masterName.put("IS00202", "勤務種類");
 			
-			masterName.put("IS00211", "勤務種類マスタ2");	
+			masterName.put("IS00211", "勤務種類");	
 			
-			masterName.put("IS00220", "勤務種類マスタ2");
+			masterName.put("IS00220", "勤務種類");
 			
-			masterName.put("IS00229", "勤務種類マスタ2");
+			masterName.put("IS00229", "勤務種類");
 			
-			masterName.put("IS00238", "勤務種類マスタ2");
+			masterName.put("IS00238", "勤務種類");
 			
-			masterName.put("IS00184", "勤務種類マスタ2");
+			masterName.put("IS00184", "勤務種類");
 			
 			// M00011 - 勤務種類
 			
-			masterName.put("IS00128", "勤務種類マスタ3");
+			masterName.put("IS00128", "勤務種類");
 			
 			// M00012 - 勤務種類
-			masterName.put("IS00139", "勤務種類マスタ4");
+			masterName.put("IS00139", "勤務種類");
 			
-			masterName.put("IS00157", "勤務種類マスタ4");
+			masterName.put("IS00157", "勤務種類");
 			
-			masterName.put("IS00166", "勤務種類マスタ4");
+			masterName.put("IS00166", "勤務種類");
 			
-			masterName.put("IS00175", "勤務種類マスタ4");
+			masterName.put("IS00175", "勤務種類");
 			
-			masterName.put("IS00148", "勤務種類マスタ4");
+			masterName.put("IS00148", "勤務種類");
 			
 			//M00013 - CS00020- 勤務種類
 			//masterName.put("CS00070", "勤務種類マスタ5");
 			
 			//M00014 - CS00020- 月間パターン
 			
-			masterName.put("IS00127", "月間パターンマスタ4");
+			masterName.put("IS00127", "月間パターン");
 			
 			//M00015 - CS00020 - 加給設定
 			
-			masterName.put("IS00246", "加給時間帯マスタ");
+			masterName.put("IS00246", "加給時間帯");
 			
-			//M00016 - CS00024 - 年休付与テーブルマスタ
+			//M00016 - CS00024 - 年休付与テーブル
 			
-			masterName.put("IS00280", "年休付与テーブルマスタ");
+			masterName.put("IS00280", "年休付与テーブル");
 			
 			//M00017 - CS00025 - 特別休暇勤続年数テーブル
 			
@@ -899,7 +900,7 @@ public class CheckPersonInfoProcess {
 			masterName.put("IS00626", "勤続年数テーブル");
 			
 			//M00025 
-			//masterName.put("CS00070", "就業時間帯マスタ");
+			//masterName.put("CS00070", "就業時間帯");
 			return masterName;
 	}
 	
