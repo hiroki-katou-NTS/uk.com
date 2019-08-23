@@ -8,9 +8,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Stateless
 public class SocialInsurNotiCreateSetFinder {
@@ -30,7 +28,10 @@ public class SocialInsurNotiCreateSetFinder {
     @Inject
     private SalGenParaYMHistRepository mSalGenParaYMHistRepository;
 
-    public SocialInsurNotiCreateSetDto getSocInsurNotiCreSet(){
+    @Inject
+    private SalGenParaDateHistRepository mSalGenParaDateHistRepository;
+
+    public SocialInsurNotiCreateSetDto getSocInsurNotiCreSet() {
         String cid = AppContexts.user().companyId();
         String userId = AppContexts.user().userId();
         Optional<SocialInsurNotiCreateSet> socialInsurNotiCreateSet = socialInsurNotiCrSetRepository.getSocialInsurNotiCreateSetById(userId, cid);
@@ -38,42 +39,48 @@ public class SocialInsurNotiCreateSetFinder {
     }
 
 
-
-    /*public GuaByTheInsurDto initScreen(GeneralDate targetDate) {
-        GuaByTheInsurDto resulf = new GuaByTheInsurDto();
+    public NotifiOfInsurQuaAcDto initScreen(GeneralDate targetDate) {
         String cid = AppContexts.user().companyId();
         String uid = AppContexts.user().userId();
         final int DATE_HISTORY = 0;
-        *//*パラメータNo = “KS0002”*//*
+        //*パラメータNo = “KS0002”*//*
         String paraNo = "KS002";
-        resulf = SocialInsurNotiCreateSetDto.fromDomain(socialInsurNotiCrSetRepository.getSocialInsurNotiCreateSetById(uid, cid).orElse(null));
-
-
+        Optional<SocialInsurNotiCreateSet> mSocialInsurNotiCreateSet = socialInsurNotiCrSetRepository.getSocialInsurNotiCreateSetById(uid, cid);
         ParaHistoryAtr historyAtr = mSalGenParaIdentificationRepository.getSalGenParaIdentificationById(paraNo, cid).get().getHistoryAtr();
         String historyid;
         Optional<SalGenParaValue> mSalGenParaValue;
         if (historyAtr.value == DATE_HISTORY) {
-            *//*開始日≦対象年月日≦終了日*//*
+            //*開始日≦対象年月日≦終了日*//*
             historyid = mSalGenParaDateHistFinder.getHistoryIdByTargetDate(paraNo, targetDate);
-            mSalGenParaValue = mSalGenParaYMHistRepository.getSalGenParaValueById(historyid);
-            if (!mSalGenParaValue.isPresent()) {
-                *//*開始日 = 最も古い開始日の履歴*//*
-                historyid = mSalGenParaDateHistFinder.getHistoryIdByStartDate(paraNo, targetDate);
-                mSalGenParaValue = mSalGenParaYMHistRepository.getSalGenParaValueById(historyid);
+            if(!historyid.equals("")){
+                mSalGenParaValue = mSalGenParaDateHistRepository.getSalGenParaValueById(historyid);
+                if (!mSalGenParaValue.isPresent()) {
+                    //*開始日 = 最も古い開始日の履歴*//*
+                    historyid = mSalGenParaDateHistFinder.getHistoryIdByStartDate(paraNo, targetDate);
+                    mSalGenParaValue = mSalGenParaDateHistRepository.getSalGenParaValueById(historyid);
+
+                }
+                NotifiOfInsurQuaAcDto.fromDomain(mSocialInsurNotiCreateSet.get(), mSalGenParaValue.get());
 
             }
-            resulf.setSalGenParaValue(mSalGenParaValue);
-            return resulf;
+
+            return NotifiOfInsurQuaAcDto.fromDomain(mSocialInsurNotiCreateSet.get(), null);
+
         }
         historyid = mSalGenParaYMHistFinder.getHistoryIdByTargetDate(paraNo, targetDate);
-        mSalGenParaValue = mSalGenParaYMHistRepository.getSalGenParaValueById(historyid);
-        if (!mSalGenParaValue.isPresent()) {
-            historyid = mSalGenParaYMHistFinder.getHistoryIdByStartDate(paraNo);
+        if(!historyid.equals("")){
             mSalGenParaValue = mSalGenParaYMHistRepository.getSalGenParaValueById(historyid);
+            if (!mSalGenParaValue.isPresent()) {
+                historyid = mSalGenParaYMHistFinder.getHistoryIdByStartDate(paraNo);
+                mSalGenParaValue = mSalGenParaYMHistRepository.getSalGenParaValueById(historyid);
+            }
+            return  NotifiOfInsurQuaAcDto.fromDomain(mSocialInsurNotiCreateSet.get(), mSalGenParaValue.get());
+
         }
-        resulf.setSalGenParaValue(mSalGenParaValue);
-        return resulf;
-    }*/
+        return NotifiOfInsurQuaAcDto.fromDomain(mSocialInsurNotiCreateSet.get(), null);
+
+
+    }
 
 
 }
