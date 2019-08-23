@@ -314,10 +314,6 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                             self.convertAppOvertimeReferDto(data);
                             self.referencePanelFlg(data.referencePanelFlg);
                             self.allPreAppPanelFlg(data.allPreAppPanelFlg);
-                            if(!nts.uk.util.isNullOrEmpty(self.appDate()) && value == 1 && !nts.uk.util.isNullOrEmpty(data.appOvertimeReference.overTimeInputsRefer)){
-                                self.overtimeHours.removeAll();
-                                self.changeOvertimeHours(data.appOvertimeReference.overTimeInputsRefer);
-                            }
                             self.preAppPanelFlg(data.preAppPanelFlg);
                             self.isRightContent(data.allPreAppPanelFlg || data.referencePanelFlg);
                             self.displayDivergenceReasonForm(data.displayDivergenceReasonForm);
@@ -1112,7 +1108,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         }
         convertAppOvertimeReferDto(data :any){
             let self = this;
-            if(data.appOvertimeReference != null){
+            if(data.appOvertimeReference != null && !nts.uk.util.isNullOrEmpty(self.appDate())) {
                 self.appDateReference(data.appOvertimeReference.appDateRefer);
                 if(data.appOvertimeReference.workTypeRefer != null){
                     self.workTypeCodeReference(data.appOvertimeReference.workTypeRefer.workTypeCode);

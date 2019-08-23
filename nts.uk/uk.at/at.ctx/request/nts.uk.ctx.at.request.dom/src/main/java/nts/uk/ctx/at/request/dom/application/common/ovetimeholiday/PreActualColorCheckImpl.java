@@ -129,7 +129,7 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 		// Imported(申請承認)「勤務実績」を取得する
 		RecordWorkInfoImport recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID, appDate);
 		if(Strings.isBlank(recordWorkInfoImport.getWorkTypeCode())){
-			return new ActualStatusCheckResult(ActualStatus.NO_ACTUAL, Collections.emptyList());
+			return new ActualStatusCheckResult(ActualStatus.NO_ACTUAL, "", "", null, null, Collections.emptyList());
 		}
 		// アルゴリズム「勤務分類変更の判定」を実行する
 		JudgmentWorkTypeResult judgmentWorkTypeResult = judgmentWorkTypeChange(companyID, appType, recordWorkInfoImport.getWorkTypeCode(), workType);
@@ -171,7 +171,13 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 			actualLst.add(OvertimeColorCheck.createActual(1, 11, recordWorkInfoImport.getShiftNightCaculation()));
 			actualLst.add(OvertimeColorCheck.createActual(1, 12, recordWorkInfoImport.getFlexCaculation()));
 		}
-		return new ActualStatusCheckResult(actualStatus, actualLst);
+		return new ActualStatusCheckResult(
+				actualStatus, 
+				judgmentWorkTypeResult.getCalcWorkType(), 
+				judgmentWorkTimeResult.getCalcWorkTime(),
+				recordWorkInfoImport.getAttendanceStampTimeFirst(),
+				judgmentStampResult.getCalcLeaveStamp(),
+				actualLst);
 	}
 
 	@Override
