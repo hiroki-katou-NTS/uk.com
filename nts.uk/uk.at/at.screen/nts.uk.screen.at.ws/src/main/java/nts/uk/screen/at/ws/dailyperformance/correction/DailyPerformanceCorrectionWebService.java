@@ -46,16 +46,21 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.ApprovalConfirmCache
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPAttendanceItem;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPDataDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemParent;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DPParams;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceCalculationDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceCorrectionDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DataResultAfterIU;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DatePeriodInfo;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.EmpAndDate;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ErrorReferenceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.HolidayRemainNumberDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.cache.DPCorrectionStateParam;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.calctime.DCCalcTime;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.calctime.DCCalcTimeParam;
 import nts.uk.screen.at.app.dailyperformance.correction.flex.CalcFlexDto;
 import nts.uk.screen.at.app.dailyperformance.correction.flex.CheckBeforeCalcFlex;
+import nts.uk.screen.at.app.dailyperformance.correction.gendate.GenDateDto;
+import nts.uk.screen.at.app.dailyperformance.correction.gendate.GenDateProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.kdw003b.DailyPerformErrorReferDto;
 import nts.uk.screen.at.app.dailyperformance.correction.kdw003b.DailyPerformErrorReferExportDto;
 import nts.uk.screen.at.app.dailyperformance.correction.kdw003b.DailyPerformErrorReferExportService;
@@ -144,8 +149,12 @@ public class DailyPerformanceCorrectionWebService {
 	
 	@Inject
 	private InfomationInitScreenProcess infomationInit;
+	
 	@Inject
 	private ProcessMonthScreen processMonthScreen;
+	
+	@Inject
+	private GenDateProcessor genDateProcessor;
 	
 	@POST
 	@Path("startScreen")
@@ -188,9 +197,10 @@ public class DailyPerformanceCorrectionWebService {
 	
 	@POST
 	@Path("initParam")
-	public DailyPerformanceCorrectionDto initScreen(DPParams params ) throws InterruptedException{
-		Integer closureId = params.closureId;
-		Pair<DailyPerformanceCorrectionDto, ParamCommonAsync> dtoResult = this.infomationInit.initGetParam(params.dateRange, params.lstEmployee, params.initScreen, params.mode, params.displayFormat, params.correctionOfDaily, params.formatCodes, params.showError, params.showLock, params.objectShare, closureId);
+	public DailyPerformanceCorrectionDto initScreen(DPParams params) throws InterruptedException{
+		params.dpStateParam = (DPCorrectionStateParam)session.getAttribute("dpStateParam");
+		Pair<DailyPerformanceCorrectionDto, ParamCommonAsync> dtoResult = this.infomationInit.initGetParam(params);
+		session.setAttribute("dpStateParam", dtoResult.getLeft().getStateParam());
 		session.setAttribute("resultReturn", dtoResult.getLeft());
 		session.setAttribute("resultMonthReturn", dtoResult.getRight());
 		return dtoResult.getLeft();
@@ -439,6 +449,12 @@ public class DailyPerformanceCorrectionWebService {
 		return dpDisplayLockProcessor.processDisplayLock(param);
 	}
 
+	@POST
+	@Path("gendate")
+	public DatePeriodInfo genDateFromYM(GenDateDto param) {
+		return genDateProcessor.genDateFromYearMonth(param);
+	}
+	
 	private List<DailyRecordDto> cloneListDto(List<DailyRecordDto> dtos){
 		if(dtos == null) return new ArrayList<>();
 		return dtos.stream().map(x -> x.clone()).collect(Collectors.toList());

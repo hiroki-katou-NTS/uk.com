@@ -49,6 +49,8 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.Co
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.approval.ApprovalStatusActualDayChange;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.confirm.ConfirmStatusActualDayChange;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeUseSet;
+import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.AggrPeriodEachActualClosure;
+import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.GetClosurePeriod;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnitType;
@@ -71,6 +73,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttenda
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosurePeriod;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.at.shared.pub.workrule.closure.PresentClosingPeriodExport;
@@ -83,6 +86,7 @@ import nts.uk.screen.at.app.dailymodify.command.DailyModifyResCommandFacade;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyQueryProcessor;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyResult;
 import nts.uk.screen.at.app.dailyperformance.correction.checkdata.ValidatorDataDailyRes;
+import nts.uk.screen.at.app.dailyperformance.correction.closure.FindClosureDateService;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeName;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeNameType;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.DataDialogWithTypeProcessor;
@@ -113,7 +117,9 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.DPSheetDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceCorrectionDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceEmployeeDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyRecEditSetDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DatePeriodInfo;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DisplayFormat;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DisplayItem;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DivergenceTimeDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ErrorReferenceDto;
@@ -126,6 +132,8 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.SPRCheck;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ScreenMode;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkFixedDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkInfoOfDailyPerformanceDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.cache.AggrPeriodClosure;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.cache.DPCorrectionStateParam;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkapproval.ApproveRootStatusForEmpDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkshowbutton.DailyPerformanceAuthorityDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.companyhist.AffComHistItemAtScreen;
@@ -217,6 +225,11 @@ public class DailyPerformanceCorrectionProcessor {
 	
 	@Inject
 	private ConfirmStatusActualDayChange confirmStatusActualDayChange;
+
+	private FindClosureDateService findClosureService;
+	
+	@Inject
+	private GetClosurePeriod getClosurePeriod;
 	
     static final Integer[] DEVIATION_REASON  = {436, 438, 439, 441, 443, 444, 446, 448, 449, 451, 453, 454, 456, 458, 459, 799, 801, 802, 804, 806, 807, 809, 811, 812, 814, 816, 817, 819, 821, 822};
 	public static final Map<Integer, Integer> DEVIATION_REASON_MAP = IntStream.range(0, DEVIATION_REASON.length-1).boxed().collect(Collectors.toMap(x -> DEVIATION_REASON[x], x -> x/3 +1));
@@ -1529,7 +1542,7 @@ public class DailyPerformanceCorrectionProcessor {
 	}
 	
 	public List<String> changeListEmployeeId(List<String> employeeIds, DateRange range, int mode, boolean isTranfer, Integer closureId, DailyPerformanceCorrectionDto screenDto) {
-		// 社員一覧を変更する
+		//初期表示社員を取得する
 		String companyId = AppContexts.user().companyId();
 		String employeeIdLogin = AppContexts.user().employeeId();
 		List<String> lstEmployeeId = new ArrayList<>();
@@ -1700,11 +1713,18 @@ public class DailyPerformanceCorrectionProcessor {
 		return new ChangeSPR(change31, change34);
 	}
 	
-	public DateRange changeDateRange(DateRange dateRange, ObjectShare objectShare, String companyId, String sId, DailyPerformanceCorrectionDto screenDto, Integer mode){
+	public DatePeriodInfo changeDateRange(DateRange dateRange, ObjectShare objectShare, String companyId, String sId,
+			DailyPerformanceCorrectionDto screenDto, Integer mode, Integer displayFormat, Boolean initScreenOther, DPCorrectionStateParam dpStateParam) {
 		
-		if (dateRange != null){
+		if (dateRange != null && !initScreenOther){
 			screenDto.setEmploymentCode(getEmploymentCode(companyId, dateRange.getEndDate(), sId));
-			return dateRange;
+			DatePeriodInfo dateInfo = dpStateParam.getDateInfo();
+			dateInfo.setTargetRange(dateRange);
+			return dateInfo;
+		}
+		
+		if(dateRange != null && initScreenOther) {
+			return updatePeriod(Optional.empty(), displayFormat, sId, new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate()));
 		}
 
 		boolean isObjectShare = objectShare != null && objectShare.getStartDate() != null
@@ -1714,7 +1734,7 @@ public class DailyPerformanceCorrectionProcessor {
 			// get employmentCode
 			dateRange = new DateRange(objectShare.getStartDate(), objectShare.getEndDate());
 			screenDto.setEmploymentCode(getEmploymentCode(companyId, dateRange.getEndDate(), sId));
-			return dateRange;
+			return updatePeriod(Optional.empty(), displayFormat, sId, new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate()));
 		} else {
 			GeneralDate dateRefer = GeneralDate.today();
 			if (isObjectShare && objectShare.getInitClock() != null) {
@@ -1732,7 +1752,7 @@ public class DailyPerformanceCorrectionProcessor {
 									: shClosurePub.find(companyId, closureEmploymentOptional.get().getClosureId());
 					dateRange = new DateRange(closingPeriod.get().getClosureStartDate(),
 							closingPeriod.get().getClosureEndDate());
-					return dateRange;
+					return updatePeriod(Optional.empty(), displayFormat, sId, new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate()));
 				}
 			} else {
 				screenDto.setEmploymentCode(getEmploymentCode(companyId, dateRefer, sId));
@@ -1740,13 +1760,15 @@ public class DailyPerformanceCorrectionProcessor {
 				if(initSwitch != null &&  !CollectionUtil.isEmpty(initSwitch.getListDateProcessed())) {
 					Optional<DateProcessedRecord> dateRecordOpt = initSwitch.getListDateProcessed().stream().filter(x -> x.getClosureID() == screenDto.getClosureId()).findFirst();
 					if(dateRecordOpt.isPresent() && dateRecordOpt.get().getDatePeriod() != null) {
-						return new DateRange(dateRecordOpt.get().getDatePeriod().start(), dateRecordOpt.get().getDatePeriod().end());
+						DateRange rangeTemp =  new DateRange(dateRecordOpt.get().getDatePeriod().start(), dateRecordOpt.get().getDatePeriod().end());
+						return updatePeriod(Optional.empty(), displayFormat, sId, new DatePeriod(rangeTemp.getStartDate(), rangeTemp.getEndDate()));
 					}
 				}
 			}
             
-			return new DateRange(GeneralDate.legacyDate(new Date()).addMonths(-1).addDays(+1),
+			DateRange rangeTemp =  new DateRange(GeneralDate.legacyDate(new Date()).addMonths(-1).addDays(+1),
 					GeneralDate.legacyDate(new Date()));
+			return new DatePeriodInfo(Arrays.asList(rangeTemp), rangeTemp, 0, null, new ArrayList<>());
 		}
 	}
 	
@@ -1770,9 +1792,78 @@ public class DailyPerformanceCorrectionProcessor {
 		}
 	}
 	
+	//対象期間の更新
+	public DatePeriodInfo updatePeriod(Optional<YearMonth> yearMonthOpt, int displayFormat, String empLogin, DatePeriod period) {
+		GeneralDate today = GeneralDate.today();
+		DateRange result = new DateRange(today, today);
+		ClosureId closureId = null;
+		YearMonth yearMonth = null;
+		List<nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.ClosurePeriod> lstClosurePeriod  = new ArrayList<>();
+		List<DateRange> lstPeriod = new ArrayList<>();
+		List<AggrPeriodClosure> lstClosureCache = new ArrayList<>();
+		// 個人別
+		if (displayFormat == DisplayFormat.Individual.value) {
+			if (yearMonthOpt.isPresent()) {
+				GeneralDate dateRefer = GeneralDate.ymd(yearMonthOpt.get().year(), yearMonthOpt.get().month(),
+						yearMonthOpt.get().lastDateInMonth());
+				yearMonth = yearMonthOpt.get();
+				lstClosurePeriod.addAll(getClosurePeriod
+						.fromYearMonth(empLogin, dateRefer, yearMonthOpt.get()));
+			} else {
+				Optional<ClosurePeriod> closurePeriodOpt = findClosureService.getClosurePeriod(empLogin,
+						period.start());
+				if(!closurePeriodOpt.isPresent()) return null;
+				GeneralDate dateRefer = GeneralDate.ymd(closurePeriodOpt.get().getYearMonth().year(),
+						closurePeriodOpt.get().getYearMonth().month(),
+						closurePeriodOpt.get().getYearMonth().lastDateInMonth());
+				yearMonth = closurePeriodOpt.get().getYearMonth();
+				lstClosurePeriod.addAll(getClosurePeriod
+						.fromYearMonth(empLogin, dateRefer, closurePeriodOpt.get().getYearMonth()));
+			}
+			if(lstClosurePeriod.isEmpty()) return null;
+			
+			List<AggrPeriodEachActualClosure> lstAggrPeriod = lstClosurePeriod.stream().flatMap(x -> x.getAggrPeriods().stream())
+					    .sorted((x, y) -> x.getPeriod().start().compareTo(y.getPeriod().end()))
+						.collect(Collectors.toList());
+			 
+			List<DateRange> lstAgg = lstClosurePeriod.stream().flatMap(x -> x.getAggrPeriods().stream())
+					.map(x -> new DateRange(x.getPeriod().start(), x.getPeriod().end())).sorted((x, y) -> x.getStartDate().compareTo(y.getStartDate()))
+					.collect(Collectors.toList());
+			lstPeriod.addAll(lstAgg);
+			
+			//Optional<DateRange> dateOpt = lstAgg.stream().filter(x -> x.inRange(today)).findFirst();
+			
+			Optional<AggrPeriodEachActualClosure> dateAggOpt = lstAggrPeriod.stream().filter(x -> DateRange.convertPeriod(x.getPeriod()).inRange(today)).findFirst();
+			
+			AggrPeriodEachActualClosure dateAgg = dateAggOpt.isPresent() ? dateAggOpt.get() : lstAggrPeriod.get(0);
+			result = DateRange.convertPeriod(dateAgg.getPeriod());
+			closureId = dateAgg.getClosureId();
+			lstClosureCache.addAll(lstClosurePeriod.stream().flatMap(x -> x.getAggrPeriods().stream()).map(
+					x -> new AggrPeriodClosure(x.getClosureId(), x.getClosureDate(), x.getYearMonth(), x.getPeriod()))
+					.collect(Collectors.toList()));
+		
+		} else if (displayFormat == DisplayFormat.ByDate.value) {
+			// 日付別(daily)
+			if(period.start().beforeOrEquals(today) && period.end().afterOrEquals(today)) {
+				result = new DateRange(today, today);
+			}else {
+				result = new DateRange(period.start(), period.start());
+			}
+		} else {
+			// エラーアラーム(error alarm)
+			Optional<ClosurePeriod> closurePeriodOpt = findClosureService.getClosurePeriod(empLogin,
+					period.start());
+			if(!closurePeriodOpt.isPresent()) return null;
+			result = DateRange.convertPeriod(closurePeriodOpt.get().getPeriod());
+		}
+				
+		return new DatePeriodInfo(lstPeriod, result, yearMonth == null ? 0 : yearMonth.v(), closureId, lstClosureCache);
+	}
+	
 	public void requestForFlush(){
 		this.repo.requestForFlush();
 	}
+	
 	
 	public boolean checkDataInClosing( Pair<String, GeneralDate> pairEmpDate, Map<String, List<EmploymentHisOfEmployeeImport>> mapClosingEmpResult) {
 		val empWithListDate = mapClosingEmpResult.get(pairEmpDate.getLeft());

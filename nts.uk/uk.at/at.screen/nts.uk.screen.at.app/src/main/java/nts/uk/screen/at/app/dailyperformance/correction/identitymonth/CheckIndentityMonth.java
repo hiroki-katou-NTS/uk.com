@@ -13,14 +13,24 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.adapter.company.AffComHistItemImport;
 import nts.uk.ctx.at.record.dom.adapter.company.AffCompanyHistImport;
 import nts.uk.ctx.at.record.dom.adapter.company.SyCompanyRecordAdapter;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.ClosurePeriod;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.GetClosurePeriod;
+import nts.uk.ctx.at.record.dom.workrecord.actualsituation.confirmstatusmonthly.AvailabilityAtr;
+import nts.uk.ctx.at.record.dom.workrecord.actualsituation.confirmstatusmonthly.ConfirmStatusResult;
+import nts.uk.ctx.at.record.dom.workrecord.actualsituation.confirmstatusmonthly.ReleasedAtr;
+import nts.uk.ctx.at.record.dom.workrecord.actualsituation.confirmstatusmonthly.StatusConfirmMonthDto;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.identificationstatus.export.CheckIndentityDayConfirm;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.month.ConfirmationMonth;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.ConfirmationMonthRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DisplayFormat;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.cache.DPCorrectionStateParam;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -42,6 +52,9 @@ public class CheckIndentityMonth {
 
 	@Inject
 	private CheckIndentityDayConfirm checkIndentityDayConfirm;
+	
+	@Inject
+	private ClosureRepository closureRepository;
 
 	// 月の本人確認をチェックする
 	public IndentityMonthResult checkIndenityMonth(IndentityMonthParam param) {
@@ -95,6 +108,59 @@ public class CheckIndentityMonth {
 		boolean checkIndentityDay = checkIndentityDayConfirm.checkIndentityDay(param.employeeId, lstDate);
 		// A2_6 show, A2_7 hide
 		return new IndentityMonthResult(true, checkIndentityDay, false);
+	}
+	
+	//月の本人確認をチェックする
+	public IndentityMonthResult checkIndenityMonth(IndentityMonthParam param, DPCorrectionStateParam stateParam) {
+		//取得した「本人確認処理利用設定．月の本人確認を利用する」
+		if(!param.getIdentityUseSetDto().isPresent()|| !param.getIdentityUseSetDto().get().isUseIdentityOfMonth()) {
+			return new IndentityMonthResult(false, false, true);
+		}
+		
+		if(param.getDisplayFormat() != DisplayFormat.Individual.value) {
+			return new IndentityMonthResult(false, false, true);
+		}
+		
+		if(!param.getEmployeeId().equals(AppContexts.user().employeeId())) {
+			return new IndentityMonthResult(false, false, true);
+		}
+		
+		if(stateParam.getDateInfo() == null) {
+			return new IndentityMonthResult(false, false, true);
+		}
+		
+		Optional<Closure> closureIdOpt = closureRepository.findById(param.getCompanyId(), stateParam.getDateInfo().getClosureId().value);
+		if (!closureIdOpt.isPresent()) {
+			return new IndentityMonthResult(false, false, true);
+		}
+		
+		YearMonth yearMonthCurrent = closureIdOpt.get().getClosureMonth().getProcessingYm();
+		
+		int yearMonthTarget = stateParam.getDateInfo().getYearMonth();
+		if(yearMonthTarget != yearMonthCurrent.v()) {
+			 return new IndentityMonthResult(false, false, true);
+		}
+		
+		
+		//TODO: [No.586]月の実績の確認状況を取得する（NEW）
+		
+		Optional<StatusConfirmMonthDto> statusOpt = Optional.empty();
+		if(!statusOpt.isPresent())  return new IndentityMonthResult(false, false, true);
+		List<ConfirmStatusResult> listConfirmStatus = statusOpt.get().getListConfirmStatus();
+		ConfirmStatusResult confirmResult = listConfirmStatus.stream()
+				.filter(x -> x.getEmployeeId().equals(param.getEmployeeId()) && x.getYearMonth().v() == yearMonthTarget)
+				.findFirst().orElse(null);
+		Boolean show26 = true;		
+		Boolean enableButton = false;
+		if(confirmResult.isConfirmStatus()) {
+			show26 = false;
+			enableButton = confirmResult.getWhetherToRelease().value == ReleasedAtr.CAN_RELEASE.value ? true : false;
+		}else {
+			show26 = true;
+			enableButton = confirmResult.getImplementaPropriety().value == AvailabilityAtr.CAN_RELEASE.value ? true : false;
+		}
+		
+		return new IndentityMonthResult(show26, enableButton, false);
 	}
 	
 	private Pair<DatePeriod, ClosurePeriod> getDatePeriodOldest(List<ClosurePeriod>  lstClosurePeriod) {

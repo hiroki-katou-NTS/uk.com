@@ -20,7 +20,8 @@ module nts.uk.at.view.kdw003.a.service {
         getRemainNum: 'screen/at/correctionofdailyperformance/getRemainNum',
         lock: 'screen/at/correctionofdailyperformance/lock',
         loadMonth: "screen/at/correctionofdailyperformance/loadMonth",
-        initParam: "screen/at/correctionofdailyperformance/initParam"
+        initParam: "screen/at/correctionofdailyperformance/initParam",
+        genDate: "screen/at/correctionofdailyperformance/gendate"
     }
 
     export function startScreen(param) {
@@ -106,5 +107,9 @@ module nts.uk.at.view.kdw003.a.service {
 
     export function initParam(param) {
         return nts.uk.request.ajax(paths.initParam, param);
+    }
+    
+    export function genDate(param) {
+        return nts.uk.request.ajax(paths.genDate, param);
     }
 }
