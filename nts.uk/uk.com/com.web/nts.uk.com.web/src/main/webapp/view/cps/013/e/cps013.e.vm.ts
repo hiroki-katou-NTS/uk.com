@@ -49,9 +49,9 @@ module nts.uk.at.view.cps013.e {
                     { headerText: getText('CPS013_28'), key: 'clsCategoryCheck', width: 200 },
                     { headerText: getText('CPS013_29'), key: 'categoryName', width: 200 },
                     { headerText: getText('CPS013_30'), key: 'error', width: 350, formatter: makeIcon},
-                    { headerText: '', key: 'employeeId', width: 1, hirren: true },
-                    { headerText: '', key: 'categoryId', width: 1, hirren: true },
-                    { headerText: '', key: 'GUID', width: 1, hirren: true },
+                    { headerText: '', key: 'employeeId', width: 1, hidden: true },
+                    { headerText: '', key: 'categoryId', width: 1, hidden: true },
+                    { headerText: '', key: 'GUID', width: 1, hidden: true },
                 ]);
                 self.errorMessageInfo.subscribe((value)=>{
                     if(value.length){
