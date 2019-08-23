@@ -113,21 +113,26 @@ module nts.uk.ui.jqueryExtentions {
             }
             
             if(isFilter) {
-                features.push({ name: "Filtering", filterDelay : 100, filterDropDownAnimationDuration : 100, 
-                                dataFiltered: function (evt, ui) {
-                                    var disabled = $treegrid.data("rowDisabled");
-                                    if (!_.isEmpty(disabled)) {
-                                        $treegrid.ntsTreeView("disableRows", disabled);
-                                    }
-                                }, dataFiltering: function (evt, ui) {
-                                    let disabled = $treegrid.data("rowDisabled");
-                                    _.remove(ui.newExpressions, (ex) => _.isNil(ex.expr));
-                                    if (!_.isEmpty(disabled) && !_.isEmpty(ui.newExpressions)) {
-                                        _.forEach(disabled, (rId) => {
-                                            ui.newExpressions.push({fieldName: optionsValue, cond: "doesNotEqual", expr: rId});
-                                        });
-                                    } 
-                                } } });
+                features.push({
+                    name: "Filtering",
+                    filterDelay : 100,
+                    filterDropDownAnimationDuration : 100,
+                    dataFiltered: function (evt, ui) {
+                        var disabled = $treegrid.data("rowDisabled");
+                        if (!_.isEmpty(disabled)) {
+                            $treegrid.ntsTreeView("disableRows", disabled);
+                        }
+                    },
+                    dataFiltering: function (evt, ui) {
+                        let disabled = $treegrid.data("rowDisabled");
+                        _.remove(ui.newExpressions, (ex) => _.isNil(ex.expr));
+                        if (!_.isEmpty(disabled) && !_.isEmpty(ui.newExpressions)) {
+                            _.forEach(disabled, (rId) => {
+                                ui.newExpressions.push({fieldName: optionsValue, cond: "doesNotEqual", expr: rId});
+                            });
+                        }
+                    }
+                });
             }
 
             $treegrid.data("expand", new koExtentions.ExpandNodeHolder());
