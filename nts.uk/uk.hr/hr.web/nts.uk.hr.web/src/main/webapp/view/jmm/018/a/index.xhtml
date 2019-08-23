@@ -8,14 +8,13 @@
 <body>
 	<ui:composition template="../../../../master/sidebar.xhtml">
 		<ui:define name="sidebar-head">
-			<com:ValidatorScript>
-					
-			</com:ValidatorScript>
 
 			<com:scriptfile set="IGNITE" />
-			<com:scriptfile set="IGNITE" />
+			
+			
 			<com:scriptfile path="/lib/generic/igniteui/js/extensions/infragistics.datasource.knockoutjs.js"  of="/nts.uk.com.js.web"/>
 			<com:scriptfile path="/lib/generic/igniteui/js/extensions/infragistics.ui.grid.knockout-extensions.js" of="nts.uk.com.js.web" />
+			<com:scriptfile path="/lib/generic/igniteui/js/extensions/infragistics.ui.tree.knockout-extensions.js" of="nts.uk.com.js.web" />
 
 			<com:EnumScript>
 				nts.uk.ctx.hr.develop.dom.hrdevelopmentevent.EventId

@@ -15,8 +15,23 @@
 
 		<div class="contents-area">
 			<div class = "ignite-grid">
-				<div style="height: 430px;">
-					<table id="hierarchicalGrid"></table>
+				<div id = "list-table">
+					<table id="treegrid"
+								data-bind="ntsTreeGridView:{
+										width: 800,
+										height: 500,
+										dataSource: listEventId,
+										value: itemSelected,
+										columns: columns,
+										initialExpandDepth: 0,
+										primaryKey: 'key',
+										childDataKey: 'listChild',
+										primaryText: 'nodeText',
+										multiple: false,
+										enable: true,
+										showCheckBox: false,
+										filter: true}">
+							</table>
 				</div>
 			</div>
 		</div>

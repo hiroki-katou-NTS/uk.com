@@ -10,6 +10,7 @@ import lombok.Data;
 public class JMM018Dto {
 	// 処理結果
 	private int available;
+	private List<HRDevMenuDto> hRDevMenuList;
 	// <List>イベント管理 
 	private List<EventOperationDto> eventOperList;
 	//

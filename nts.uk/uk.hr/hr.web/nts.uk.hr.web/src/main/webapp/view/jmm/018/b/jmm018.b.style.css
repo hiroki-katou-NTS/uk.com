@@ -1,0 +1,41 @@
+#list-table{
+	margin-left: 50px;
+	margin-top: 30px;
+}
+
+#treegrid_nodeText{
+	overflow: visible;
+} 
+
+#treegrid_container > div.ui-widget-header.ui-helper-reset{
+	overflow: visible !important;
+}
+
+ #treegrid_useEventOrMenu{
+	overflow: visible;
+}
+
+#treegrid_useNotice{
+	overflow: visible;
+}
+
+#treegrid_useApproval{
+	overflow: visible;
+}
+
+#nodeText{
+	margin-left: 125px;
+}
+
+#useEventOrMenu{
+	margin-left: 50px;
+}
+
+#useNotice{
+	margin-left: 50px;
+}
+
+#useApproval{
+	margin-left: 30px;
+}
+    

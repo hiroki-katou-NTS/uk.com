@@ -2207,6 +2207,12 @@ public class ProgramsManager {
 			"/view/jmm/017/b/index.xhtml");
 	public static final Program JMM017C = new Program(WebAppId.HR, ProgramIdConsts.JMM017C, "JMM017_C",
 			"/view/jmm/017/c/index.xhtml");
+	
+	/**
+	 * JMM018
+	 */
+	public static final Program JMM018A = new Program(WebAppId.HR, ProgramIdConsts.JMM018A, "JMM018_A",
+			"/view/jmm/018/a/index.xhtml");
 
 
 	/** The Constant CCG007A. IN MOBILE */

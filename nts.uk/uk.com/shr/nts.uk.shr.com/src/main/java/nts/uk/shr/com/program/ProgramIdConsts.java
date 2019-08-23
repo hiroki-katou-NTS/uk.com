@@ -989,5 +989,6 @@ public class ProgramIdConsts {
 	public static final String JMM017B = "JMM017B";
 	public static final String JMM017C = "JMM017C";
 
-
+	/** JMM018 */
+	public static final String JMM018A = "JMM018A";
 }

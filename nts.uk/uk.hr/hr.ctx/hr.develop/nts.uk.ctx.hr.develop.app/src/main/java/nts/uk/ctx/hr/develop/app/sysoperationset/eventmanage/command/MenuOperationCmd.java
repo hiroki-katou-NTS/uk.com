@@ -1,7 +1,5 @@
 package nts.uk.ctx.hr.develop.app.sysoperationset.eventmanage.command;
 
-import java.math.BigInteger;
-
 import lombok.Data;
 
 @Data
@@ -10,12 +8,8 @@ public class MenuOperationCmd {
 	private String programId;
 	// メニューを使用する
 	private int useMenu;
-	// 会社ID
-	private String companyId;
 	//承認機能を使用する
 	private int useApproval;
 	// 通知機能を使用する
 	private int useNotice;
-	// 会社コード
-	private BigInteger ccd;
 }
