@@ -36,9 +36,7 @@ export class CmmS45FComponent extends Vue {
     // quay về đơn hiện tại
     public backToDetail() {
         let self = this;
-        if (self.params.action != 3) {
-            self.$close({ destination: 3 });
-        }
+        self.$close({ destination: 3 });
     }
 
     // kiểm tra có phải đơn cuối cùng không
