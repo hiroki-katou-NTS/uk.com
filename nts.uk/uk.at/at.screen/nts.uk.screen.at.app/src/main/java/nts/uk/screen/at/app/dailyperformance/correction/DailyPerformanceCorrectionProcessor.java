@@ -226,6 +226,7 @@ public class DailyPerformanceCorrectionProcessor {
 	@Inject
 	private ConfirmStatusActualDayChange confirmStatusActualDayChange;
 
+	@Inject
 	private FindClosureDateService findClosureService;
 	
 	@Inject
@@ -1839,7 +1840,7 @@ public class DailyPerformanceCorrectionProcessor {
 			result = DateRange.convertPeriod(dateAgg.getPeriod());
 			closureId = dateAgg.getClosureId();
 			lstClosureCache.addAll(lstClosurePeriod.stream().flatMap(x -> x.getAggrPeriods().stream()).map(
-					x -> new AggrPeriodClosure(x.getClosureId(), x.getClosureDate(), x.getYearMonth(), x.getPeriod()))
+					x -> new AggrPeriodClosure(x.getClosureId(), x.getClosureDate(), x.getYearMonth().v(), x.getPeriod()))
 					.collect(Collectors.toList()));
 		
 		} else if (displayFormat == DisplayFormat.ByDate.value) {

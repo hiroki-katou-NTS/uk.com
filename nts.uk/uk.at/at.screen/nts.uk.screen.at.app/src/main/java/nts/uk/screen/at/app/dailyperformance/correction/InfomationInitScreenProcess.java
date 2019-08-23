@@ -14,7 +14,6 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.val;
-import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.finddata.IFindDataDCRecord;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ApprovalUseSettingDto;
@@ -202,6 +201,7 @@ public class InfomationInitScreenProcess {
 		if(listEmployeeId.isEmpty()) {
 			//screenDto.setLstEmployee(Collections.emptyList());
 			screenDto.setErrorInfomation(DCErrorInfomation.NOT_EMP_IN_HIST.value);
+			setStateParam(screenDto, resultPeriod, displayFormat, initScreenOther);
 			return Pair.of(screenDto, null);
 		}
 		System.out.println("time map data wplhis, date:" + (System.currentTimeMillis() - timeStart3));
@@ -216,8 +216,8 @@ public class InfomationInitScreenProcess {
 		List<DPErrorDto> lstError = processor.getErrorList(screenDto, listEmployeeId);
 		screenDto.setDPErrorDto(lstError);
 		
-		Map<String, String> listEmployeeError = lstError.stream()
-				.collect(Collectors.toMap(e -> e.getEmployeeId(), e -> "", (x, y) -> x));
+//		Map<String, String> listEmployeeError = lstError.stream()
+//				.collect(Collectors.toMap(e -> e.getEmployeeId(), e -> "", (x, y) -> x));
 		if (displayFormat == 2) {
 			// only filter data error
 //			if(listEmployeeError.isEmpty()) throw new BusinessException("Msg_672");
@@ -260,6 +260,7 @@ public class InfomationInitScreenProcess {
 		DisplayItem disItem = processor.getDisplayItems(correct, formatCodes, companyId, screenDto, listEmployeeId, showButton, dailyPerformanceDto);
 		if(disItem == null || !disItem.getErrors().isEmpty()) {
 			if(disItem != null) screenDto.setErrors(disItem.getErrors());
+			setStateParam(screenDto, resultPeriod, displayFormat, initScreenOther);
 			return Pair.of(screenDto, listEmployeeId.isEmpty() ? null : new ParamCommonAsync(listEmployeeId.get(0), dateRange, screenDto.getEmploymentCode(), screenDto.getAutBussCode(), displayFormat, screenDto.getIdentityProcessDto()));
 		}
 		screenDto.setAutBussCode(disItem.getAutBussCode());
