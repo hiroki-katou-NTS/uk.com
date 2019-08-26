@@ -117,7 +117,7 @@ public class CheckDataEmployeeServicesImp implements CheckDataEmployeeServices {
 				return ;
 			}
 			
-			EmployeeDataMngInfo employee = listEmpData.get(i);
+			EmployeeDataMngInfo employee = listEmpDataOrder.get(i);
 			
 			String bussinessName = mapSIdWthBussinessName.get(employee.getEmployeeId());
 			
