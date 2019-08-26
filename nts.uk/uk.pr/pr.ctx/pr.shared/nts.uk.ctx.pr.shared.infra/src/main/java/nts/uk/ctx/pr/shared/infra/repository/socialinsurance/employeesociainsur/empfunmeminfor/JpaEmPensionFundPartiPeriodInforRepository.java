@@ -17,6 +17,8 @@ public class JpaEmPensionFundPartiPeriodInforRepository extends JpaRepository im
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QqsmtTemPenPartInfo f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.temPenPartInfoPk.employeeId =:employeeId AND  f.temPenPartInfoPk.historyId =:historyId ";
+    private static final String SELECT_BY_KEY_STRING_BY_EMPID = SELECT_ALL_QUERY_STRING + " WHERE  f.temPenPartInfoPk.employeeId =:employeeId ";
+
 
     @Override
     public List<EmPensionFundPartiPeriodInfor> getAllEmPensionFundPartiPeriodInfor(){
@@ -30,6 +32,16 @@ public class JpaEmPensionFundPartiPeriodInforRepository extends JpaRepository im
         .setParameter("employeeId", employeeId)
         .setParameter("historyId", historyId)
         .getSingle(c->c.toDomain());
+    }
+
+    @Override
+    public List<EmPensionFundPartiPeriodInfor> getEmPensionFundPartiPeriodInforByEmpId(String employeeId) {
+        return this.queryProxy().query(SELECT_BY_KEY_STRING, QqsmtTemPenPartInfo.class)
+                .setParameter("employeeId", employeeId)
+                .getList(x -> x.toDomain());
+
+
+
     }
 
     @Override

@@ -7,4 +7,8 @@ module nts.uk.pr.view.qsi013.share.model {
         THE_WELF_PEN = 2
     }
 
+    export enum SCREEN_MODE {
+        NEW = 0,
+        UPDATE = 1
+    }
 }

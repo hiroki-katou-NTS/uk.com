@@ -2,7 +2,7 @@ package nts.uk.ctx.pr.report.app.command.printdata.socialinsurnoticreset;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.pr.report.dom.printdata.comlegalrecord.EmpNameChangeNotiInfor;
+import nts.uk.ctx.pr.report.dom.printdata.socinsurnoticreset.EmpNameChangeNotiInfor;
 import nts.uk.ctx.pr.report.dom.printdata.socinsurnoticreset.EmpNameChangeNotiInforRepository;
 
 import javax.ejb.Stateless;

@@ -1,8 +1,7 @@
 package nts.uk.ctx.pr.report.dom.printdata.socinsurnoticreset;
-import nts.uk.ctx.pr.report.dom.printdata.comlegalrecord.EmpNameChangeNotiInfor;
 
-import java.util.Optional;
 import java.util.List;
+import java.util.Optional;
 
 /**
 * 社員氏名変更届情報

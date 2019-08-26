@@ -13,4 +13,6 @@ public interface EmpCorpHealthOffHisRepository
 
     Optional<EmpCorpHealthOffHis> getEmpCorpHealthOffHisById(String employeeId, String hisId);
 
+    Optional<EmpCorpHealthOffHis> getEmpCorpHealthOffHisById(String employeeId);
+
 }

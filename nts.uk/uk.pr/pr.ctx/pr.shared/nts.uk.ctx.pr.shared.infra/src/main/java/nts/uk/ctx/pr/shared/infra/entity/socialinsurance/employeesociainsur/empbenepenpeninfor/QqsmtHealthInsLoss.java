@@ -2,6 +2,9 @@ package nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.emp
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.arc.primitive.constraint.IntegerRange;
+import nts.arc.primitive.constraint.StringMaxLength;
+import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.HealthInsLossInfo;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
@@ -65,4 +68,13 @@ public class QqsmtHealthInsLoss extends UkJpaEntity implements Serializable
         return healthInsLossPk;
     }
 
+    public QqsmtHealthInsLoss toEntity(HealthInsLossInfo healthInsLossInfo){
+        return new QqsmtHealthInsLoss(new QqsmtHealthInsLossPk(healthInsLossInfo.getEmpId()),
+                healthInsLossInfo.getOther(),
+                healthInsLossInfo.getOtherReason().map(i -> i.v()).orElse(null),
+                healthInsLossInfo.getCaInsurance().map(i -> i.v()).orElse(null),
+                healthInsLossInfo.getNumRecoved().map(i -> i.v()).orElse(null),
+                healthInsLossInfo.getCause().map(i -> i.value).orElse(null));
+                //.isPresent() ? healthInsLossInfo.getCause().get().value : null
+    }
 }
