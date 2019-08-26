@@ -40,9 +40,8 @@ public class LossInfoFinder {
                     EmpBasicPenNumInforDto.fromDomain(domainBasicPen.get()),
                     MultiEmpWorkInfoDto.fromDomain(domainMultiWork.get()),
                     1);
-        } else {
-            return null;
         }
+        return null;
     }
 
 }

@@ -21,28 +21,19 @@ public class JpaHealthInsLossInfoRepository extends JpaRepository implements Hea
     public Optional<HealthInsLossInfo> getHealthInsLossInfoById(String employeeId){
         return this.queryProxy().query(HEALTH_LOSS_INFO, QqsmtHealthInsLoss.class)
                 .setParameter("empId", employeeId)
-                .getSingle(c->toDomain(c));
-    }
-
-    private  final HealthInsLossInfo toDomain(QqsmtHealthInsLoss entity){
-        val domain = HealthInsLossInfo.createFromDataType(entity.other, entity.otherReason, entity.caInsurance, entity.numRecoved, entity.cause);
-        return domain;
+                .getSingle(c->c.toDomain());
     }
 
     @Override
-    public void insertHealthLossInfo(HealthInsLossInfo healthInsLossInfo){
-        // Convert data to entity
-        QqsmtHealthInsLoss entity =  new QqsmtHealthInsLoss().toEntity(healthInsLossInfo);
+    public void insert(HealthInsLossInfo healthInsLossInfo){
         // Insert entity
-        this.commandProxy().insert(entity);
+        this.commandProxy().insert(QqsmtHealthInsLoss.toEntity(healthInsLossInfo));
     }
 
     @Override
-    public void updateHealthLossInfo(HealthInsLossInfo healthInsLossInfo){
-        // Convert data to entity
-        QqsmtHealthInsLoss entity =  new QqsmtHealthInsLoss().toEntity(healthInsLossInfo);
+    public void update(HealthInsLossInfo healthInsLossInfo){
         // Insert entity
-        this.commandProxy().update(entity);
+        this.commandProxy().update(QqsmtHealthInsLoss.toEntity(healthInsLossInfo));
     }
 
 

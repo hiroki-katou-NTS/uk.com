@@ -65,13 +65,20 @@ public class QqsmtWelfPenInsLoss extends UkJpaEntity implements Serializable {
     }
 
 
-    public QqsmtWelfPenInsLoss toEntity(WelfPenInsLossIf welfPenInsLossIf) {
+   // Convert data to entity
+    public static QqsmtWelfPenInsLoss toEntity(WelfPenInsLossIf welfPenInsLossIf) {
         return new QqsmtWelfPenInsLoss(new QqsmtWelfPenInsLossPk(welfPenInsLossIf.getEmpId()),
                 welfPenInsLossIf.getOther(),
                 welfPenInsLossIf.getOtherReason().map(i -> i.v()).orElse(null),
                 welfPenInsLossIf.getNumRecoved().map(i -> i.v()).orElse(null),
                 welfPenInsLossIf.getCaInsuarace().map(i -> i.v()).orElse(null),
                 welfPenInsLossIf.getCause().isPresent() ? welfPenInsLossIf.getCause().get().value : null);
+    }
+
+    public  WelfPenInsLossIf toDomain(){
+        return  new  WelfPenInsLossIf(this.welfPenInsLossPk.empId, this.other, this.otherReason,
+                this.caInsurance, this.numRecoved, this.cause);
+
     }
 
 }

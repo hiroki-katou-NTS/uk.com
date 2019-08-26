@@ -29,10 +29,10 @@ public class LossInfoCommandHandler extends CommandHandler<LossInfoCommand> {
     protected void handle(CommandHandlerContext<LossInfoCommand> context) {
 
         if (context.getCommand().getScreenMode() == 0) {
-            handlerHealth.insertHealthLossInfo(context.getCommand().getHealthInsLossInfo().fromCommandToDomain());
+            handlerHealth.insert(context.getCommand().getHealthInsLossInfo().fromCommandToDomain());
             handlerWelPen.insertWelfPenInsLossIf(context.getCommand().getWelfPenInsLossIf().fromCommandToDomain());
         } else {
-            handlerHealth.updateHealthLossInfo(context.getCommand().getHealthInsLossInfo().fromCommandToDomain());
+            handlerHealth.update(context.getCommand().getHealthInsLossInfo().fromCommandToDomain());
             handlerWelPen.updateWelfPenInsLossIf(context.getCommand().getWelfPenInsLossIf().fromCommandToDomain());
         }
 

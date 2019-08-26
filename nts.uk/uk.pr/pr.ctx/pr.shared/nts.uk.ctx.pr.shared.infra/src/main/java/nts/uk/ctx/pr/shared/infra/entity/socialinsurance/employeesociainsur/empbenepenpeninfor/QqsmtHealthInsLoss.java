@@ -68,7 +68,7 @@ public class QqsmtHealthInsLoss extends UkJpaEntity implements Serializable
         return healthInsLossPk;
     }
 
-    public QqsmtHealthInsLoss toEntity(HealthInsLossInfo healthInsLossInfo){
+    public static QqsmtHealthInsLoss toEntity(HealthInsLossInfo healthInsLossInfo){
         return new QqsmtHealthInsLoss(new QqsmtHealthInsLossPk(healthInsLossInfo.getEmpId()),
                 healthInsLossInfo.getOther(),
                 healthInsLossInfo.getOtherReason().map(i -> i.v()).orElse(null),
@@ -77,4 +77,9 @@ public class QqsmtHealthInsLoss extends UkJpaEntity implements Serializable
                 healthInsLossInfo.getCause().map(i -> i.value).orElse(null));
                 //.isPresent() ? healthInsLossInfo.getCause().get().value : null
     }
+
+    public HealthInsLossInfo toDomain(){
+        return new HealthInsLossInfo(this.other, this.otherReason, this.caInsurance, this.numRecoved, this.cause);
+    }
+
 }

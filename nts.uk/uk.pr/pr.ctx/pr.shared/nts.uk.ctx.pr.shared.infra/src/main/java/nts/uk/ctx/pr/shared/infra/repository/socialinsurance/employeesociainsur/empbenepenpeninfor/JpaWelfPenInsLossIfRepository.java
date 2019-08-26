@@ -17,32 +17,21 @@ public class JpaWelfPenInsLossIfRepository extends JpaRepository implements welf
 
         return this.queryProxy().query(PENSION_LOSS_INFO, QqsmtWelfPenInsLoss.class)
                 .setParameter("empId", empId)
-                .getSingle(c->toDomain(c));
+                .getSingle(c->c.toDomain());
     }
 
-
-   private final WelfPenInsLossIf toDomain(QqsmtWelfPenInsLoss entity){
-       return  WelfPenInsLossIf.createFromDataType(entity.welfPenInsLossPk.empId, entity.other, entity.otherReason,
-               entity.caInsurance, entity.numRecoved, entity.cause);
-
-   }
     @Override
    public void insertWelfPenInsLossIf(WelfPenInsLossIf welfPenInsLossIf){
-        // Convert data to entity
-        QqsmtWelfPenInsLoss entity = new QqsmtWelfPenInsLoss().toEntity(welfPenInsLossIf);
-
         // Insert entity
-        this.commandProxy().insert(entity);
+        this.commandProxy().insert(QqsmtWelfPenInsLoss.toEntity(welfPenInsLossIf));
 
     }
 
     @Override
     public void updateWelfPenInsLossIf(WelfPenInsLossIf welfPenInsLossIf){
-        // Convert data to entity
-        QqsmtWelfPenInsLoss entity = new QqsmtWelfPenInsLoss().toEntity(welfPenInsLossIf);
+        //
         // Insert entity
-        this.commandProxy().update(entity);
+        this.commandProxy().update(QqsmtWelfPenInsLoss.toEntity(welfPenInsLossIf));
 
     }
-
 }

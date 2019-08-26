@@ -60,8 +60,8 @@ public class HealthInsLossInfo extends AggregateRoot {
         this.otherReason = otherReason == null ? Optional.empty() : Optional.of(new RemarkForQuaCompany(otherReason));
     }
 
-    public static HealthInsLossInfo createFromDataType(int other, String otherReason, Integer caInsurance, Integer numRecoved, Integer cause){
+  /*  public static HealthInsLossInfo createFromDataType(int other, String otherReason, Integer caInsurance, Integer numRecoved, Integer cause){
         return new HealthInsLossInfo(other, otherReason, caInsurance, numRecoved, cause);
     }
-
+*/
 }
