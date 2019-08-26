@@ -1,8 +1,10 @@
 package nts.uk.ctx.pr.report.dom.printdata.socinsurnoticreset;
+
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 
 import java.util.Optional;
+
 
 /**
 * 社員氏名変更届情報

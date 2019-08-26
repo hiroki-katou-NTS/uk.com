@@ -11,9 +11,15 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
 import java.io.Serializable;
+<<<<<<< HEAD
+import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+=======
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+>>>>>>> 9147aa9b3d3394baca2e0434303c156eaf49aa37
 
 /**
 * 社員厚生年金保険資格情報
@@ -52,25 +58,15 @@ public class QqsmtEmpWelfInsQcIf extends UkJpaEntity implements Serializable
         return empWelfInsQcIfPk;
     }
 
-    public static Optional<EmpWelfarePenInsQualiInfor> toDomain(List<QqsmtEmpWelfInsQcIf> data) {
-        List<EmployWelPenInsurAche> mournPeriod = new ArrayList<>();
-        String employeeId = data.get(0).empWelfInsQcIfPk.employeeId;
-        data.forEach(x -> {
-            DatePeriod period = new DatePeriod(x.startDate,x.endDate);
-            DateHistoryItem item = new DateHistoryItem(x.empWelfInsQcIfPk.historyId,period);
-            mournPeriod.add(new EmployWelPenInsurAche(x.empWelfInsQcIfPk.historyId,item) );
-        });
-        return Optional.ofNullable(new EmpWelfarePenInsQualiInfor(
-                employeeId,
-                mournPeriod
-        ));
+
+    public static EmpWelfarePenInsQualiInfor toDomain(List<QqsmtEmpWelfInsQcIf> qqsmtEmpWelfInsQcIf) {
+        return new EmpWelfarePenInsQualiInfor(
+                qqsmtEmpWelfInsQcIf.get(0).empWelfInsQcIfPk.employeeId,
+                qqsmtEmpWelfInsQcIf.stream().map(i -> new EmployWelPenInsurAche(i.empWelfInsQcIfPk.historyId, new DateHistoryItem(i.empWelfInsQcIfPk.historyId, new DatePeriod(i.startDate, i.endDate))))
+                        .collect(Collectors.toList()));
     }
 
-    public EmpWelfarePenInsQualiInfor toDomain(){
-        return null;
-    }
     public static QqsmtEmpWelfInsQcIf toEntity(EmpWelfarePenInsQualiInfor domain) {
-
         return new QqsmtEmpWelfInsQcIf(
                 new QqsmtEmpWelfInsQcIfPk(domain.getEmployeeId(),domain.getMournPeriod().get(0).getHistoryId()),
                 domain.getMournPeriod().get(0).getDatePeriod().start(),

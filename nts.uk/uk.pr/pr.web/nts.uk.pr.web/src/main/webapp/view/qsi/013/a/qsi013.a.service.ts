@@ -4,15 +4,20 @@ module nts.uk.pr.view.qsi013.a {
     export module service {
         let paths: any = {
             getSocialInsurNotiCreateSet: "ctx/pr/report/printdata/socinsurnoticreset/getSocialInsurNotiCreateSet",
-            exportFile: "ctx/pr/file/printdata/notice/exportFile"
+            exportFilePDF: "ctx/pr/file/printdata/notice/exportFilePDF",
+            exportFileCSV: "ctx/pr/file/printdata/notice/exportFileCSV"
         };
 
         export function getSocialInsurNotiCreateSet(): JQueryPromise<any> {
             return ajax("pr", paths.getSocialInsurNotiCreateSet);
         }
 
-        export function exportFile(data: any): JQueryPromise<any> {
-            return nts.uk.request.exportFile(paths.exportFile, data);
+        export function exportFilePDF(data: any): JQueryPromise<any> {
+            return nts.uk.request.exportFile(paths.exportFilePDF, data);
+        }
+
+        export function exportFileCSV(data: any): JQueryPromise<any> {
+            return nts.uk.request.exportFile(paths.exportFileCSV, data);
         }
 
     }
