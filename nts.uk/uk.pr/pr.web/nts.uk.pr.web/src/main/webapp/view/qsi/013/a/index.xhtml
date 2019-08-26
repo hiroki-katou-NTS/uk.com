@@ -23,9 +23,9 @@
 	<ui:define name="content">
 		<div id="functions-area">
 			<button id="A1_1" tabindex="1" class="proceed" style="margin-left: 70px;"
-					data-bind="click:  function(){ self.exportFile(0); }, enable: $root.errors.isEmpty">#{i18n.getText('QSI013_4')}</button>
+					data-bind="click:  function(){ exportFile(0); }, enable: $root.errors.isEmpty">#{i18n.getText('QSI013_4')}</button>
 			<button id="A1_2" tabindex="2"
-					data-bind="click:  function(){ self.exportFile(1); }">#{i18n.getText('QSI013_5')}</button>
+					data-bind="click:  function(){ exportFile(1); }">#{i18n.getText('QSI013_5')}</button>
 			<button id="A1_4" tabindex="3"
 					data-bind="click: openBScreen">#{i18n.getText('QSI013_7')}</button>
 			<button id="A1_5" tabindex="4"

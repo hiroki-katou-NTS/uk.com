@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.shared.infra.repository.socialinsurance.employeesociainsur.emphealinsurbeneinfo;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmplHealInsurQualifiInfor;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmplHealInsurQualifiInforRepository;
 import nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.emphealinsurbeneinfo.QqsmtEmpHealInsurQi;
@@ -11,16 +12,19 @@ import java.util.List;
 import java.util.Optional;
 
 @Stateless
-public class JpaEmplHealInsurQualifiInforRepository extends JpaRepository implements EmplHealInsurQualifiInforRepository
-{
+public class JpaEmplHealInsurQualifiInforRepository extends JpaRepository implements EmplHealInsurQualifiInforRepository {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QqsmtEmpHealInsurQi f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.empHealInsurQiPk.employeeId =:employeeId AND  f.empHealInsurQiPk.hisId =:hisId ";
+    private static final String SELECT_BY_LIST_EMP = SELECT_ALL_QUERY_STRING + " WHERE  f.empWelfInsQcIfPk.employeeId IN :employeeIds  AND f.startDate <= :startDate AND f.endDate >= :startDate";
 
     @Override
-    public List<EmplHealInsurQualifiInfor> getAllEmplHealInsurQualifiInfor(){
-        return this.queryProxy().query(SELECT_ALL_QUERY_STRING, QqsmtEmpHealInsurQi.class)
-                .getList(item -> item.toDomain());
+    public EmplHealInsurQualifiInfor getEmplHealInsurQualifiInfor(GeneralDate start, List<String> empIds){
+        List<QqsmtEmpHealInsurQi> qqsmtEmpHealInsurQi =  this.queryProxy().query(SELECT_BY_LIST_EMP, QqsmtEmpHealInsurQi.class)
+                .setParameter("employeeIds", empIds)
+                .setParameter("startDate", start)
+                .getList();
+        return qqsmtEmpHealInsurQi == null ? null : QqsmtEmpHealInsurQi.toDomain(qqsmtEmpHealInsurQi);
     }
 
     @Override
@@ -30,10 +34,11 @@ public class JpaEmplHealInsurQualifiInforRepository extends JpaRepository implem
 
     @Override
     public Optional<EmplHealInsurQualifiInfor> getEmplHealInsurQualifiInforById(String employeeId, String hisId){
-        return this.queryProxy().query(SELECT_BY_KEY_STRING, QqsmtEmpHealInsurQi.class)
+        List<QqsmtEmpHealInsurQi> qqsmtEmpHealInsurQi = this.queryProxy().query(SELECT_BY_KEY_STRING, QqsmtEmpHealInsurQi.class)
         .setParameter("employeeId", employeeId)
         .setParameter("hisId", hisId)
-        .getSingle(c->c.toDomain());
+        .getList();
+        return qqsmtEmpHealInsurQi == null ? Optional.empty() : Optional.of(QqsmtEmpHealInsurQi.toDomain(qqsmtEmpHealInsurQi));
     }
 
     @Override

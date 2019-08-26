@@ -35,7 +35,7 @@ public class SocialInsurNotiCreateSetQuery {
     /**
      * FD番号
      */
-    private int fdNumber;
+    private String fdNumber;
 
     /**
      * テキスト個人番号
@@ -51,4 +51,9 @@ public class SocialInsurNotiCreateSetQuery {
      * 改行コード
      */
     private int lineFeedCode;
+    //payroll value
+    /**
+     * 対象区分
+     */
+    private int targetAtr;
 }

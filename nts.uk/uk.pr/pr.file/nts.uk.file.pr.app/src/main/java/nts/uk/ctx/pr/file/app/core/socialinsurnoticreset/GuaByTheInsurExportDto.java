@@ -9,7 +9,6 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsuranceOffice;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.MultiEmpWorkInfo;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.SocialInsurAcquisiInfor;
-import nts.uk.shr.com.company.CompanyInfor;
 
 import java.util.Optional;
 
@@ -36,17 +35,17 @@ public class GuaByTheInsurExportDto {
     /**
      * 事業所住所1
      */
-    Optional<CompanyInfor> officeAndressOne;
+    /*Optional<CompanyInfor>*/ String officeAndressOne;
 
     /**
      * 事業所住所2
      */
-    Optional<CompanyInfor> officeAndressTwo;
+    /*Optional<CompanyInfor> */String officeAndressTwo;
 
     /**
      * 事業所名称
      */
-    Optional<CompanyInfor> bussinessName;
+    /*Optional<CompanyInfor>*/ String bussinessName;
 
     /**
      * 事業所整理記号1
@@ -61,17 +60,17 @@ public class GuaByTheInsurExportDto {
     /**
      * 事業所氏名
      */
-    Optional<CompanyInfor> bussinessName2;
+    /*Optional<CompanyInfor> */String bussinessName2;
 
     /**
      * 事業所番号
      */
-    Optional<SocialInsuranceOffice> officeNumber;
+    /*Optional<SocialInsuranceOffice>*/ String officeNumber;
 
     /**
      * 事業所郵便番号
      */
-    Optional<CompanyInfor> officePostalCode;
+    /*Optional<CompanyInfor> */String officePostalCode;
 
     /**
      * 住所カタカナ
@@ -258,5 +257,11 @@ public class GuaByTheInsurExportDto {
     /**
      * 電話番号
      */
-    Optional<CompanyInfor> phoneNumber;
+    /*Optional<CompanyInfor> */String phoneNumber;
+
+    // C2_2,3,4,5
+    /**
+     * 提出氏名
+     */
+    int submittedName;
 }
