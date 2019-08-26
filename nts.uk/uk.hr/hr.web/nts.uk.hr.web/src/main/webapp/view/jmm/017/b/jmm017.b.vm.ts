@@ -224,17 +224,10 @@ module nts.uk.hr.view.jmm017.b.viewmodel {
                     },
                     {
                         name: 'GroupBy', 
-                        groupByDialogContainment: 'window', 
-//                        columnSettings: [
-//                            {
-//                                columnKey: 'categoryName',
-//                                isGroupBy: true
-//                            },
-//                            {
-//                                columnKey: 'programName',
-//                                isGroupBy: true
-//                            }
-//                        ]
+                        groupByDialogContainment: 'window'
+                    },
+                    {
+                        name: "CellMerging"
                     },
                     {
                         name: 'Hiding' 
@@ -251,7 +244,12 @@ module nts.uk.hr.view.jmm017.b.viewmodel {
                     {
                         name: 'ColumnMoving', 
                         columnMovingDialogContainment: 'window'
-                    }
+                    }, 
+                    {
+                        name: "Tooltips",                        
+                        cursorLeftOffset: 50,
+                        cursorTopOffset: 50  
+                    }    
                 ]
             });
         }
