@@ -11,7 +11,8 @@ public interface AffOfficeInformationRepository
 
     List<AffOfficeInformation> getAllAffOfficeInformation();
 
-    Optional<AffOfficeInformation> getAffOfficeInformationById(String socialInsuranceOfficeCd, String hisId);
+
+    Optional<AffOfficeInformation> getAffOfficeInformationById(String empID, String hisId);
 
     void add(AffOfficeInformation domain);
 

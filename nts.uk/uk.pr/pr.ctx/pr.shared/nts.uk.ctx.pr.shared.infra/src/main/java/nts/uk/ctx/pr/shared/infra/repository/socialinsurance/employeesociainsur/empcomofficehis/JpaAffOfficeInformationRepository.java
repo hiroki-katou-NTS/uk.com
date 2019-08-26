@@ -1,7 +1,9 @@
 package nts.uk.ctx.pr.shared.infra.repository.socialinsurance.employeesociainsur.empcomofficehis;
 
+import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empcomofficehis.AffOfficeInformation;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empcomofficehis.AffOfficeInformationRepository;
+import nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.empcomofficehis.QqsmtEmpCorpOffHis;
 
 import javax.ejb.Stateless;
 import java.util.List;
@@ -9,15 +11,24 @@ import java.util.Optional;
 
 
 @Stateless
-public class JpaAffOfficeInformationRepository implements AffOfficeInformationRepository{
+public class JpaAffOfficeInformationRepository extends JpaRepository implements AffOfficeInformationRepository{
+
+    private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QqbmtEmpCorpOffHis f";
+    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.empCorpOffHisPk.employeeId =:employeeId AND  f.empCorpOffHisPk.hisId =:hisId ";
+
+
     @Override
     public List<AffOfficeInformation> getAllAffOfficeInformation() {
         return null;
     }
 
+
     @Override
-    public Optional<AffOfficeInformation> getAffOfficeInformationById(String socialInsuranceOfficeCd, String hisId) {
-        return Optional.empty();
+    public Optional<AffOfficeInformation> getAffOfficeInformationById(String empId, String hisId) {
+        return this.queryProxy().query(SELECT_BY_KEY_STRING, QqsmtEmpCorpOffHis.class)
+                .setParameter("employeeId", empId)
+                .setParameter("hisId",hisId)
+                .getSingle(x -> x.toDomain());
     }
 
     @Override

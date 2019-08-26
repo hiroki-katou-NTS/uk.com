@@ -19,4 +19,6 @@ public interface EmpBasicPenNumInforRepository
 
     void remove(String employeeId);
 
+    /*boolean checkExistEmpBasicPenNumInfo(String empId);*/
+
 }
