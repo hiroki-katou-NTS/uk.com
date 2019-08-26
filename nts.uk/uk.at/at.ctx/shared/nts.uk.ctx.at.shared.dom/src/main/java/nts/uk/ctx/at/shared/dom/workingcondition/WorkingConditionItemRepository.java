@@ -191,4 +191,11 @@ public interface WorkingConditionItemRepository {
 	 */
 	List<WorkingConditionItem> getLastWorkingCondItem(List<String> employeeIds);
 	
+	/**
+	 * 
+	 * @param listHistoryID
+	 * @return
+	 */
+	List<WorkingConditionItemWithEnumList> getAllAndEnumByHistIds(List<String> listHistoryID);
+	
 }

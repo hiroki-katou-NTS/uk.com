@@ -19,6 +19,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemWithEnumList;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
@@ -155,12 +156,11 @@ public class WorkingConditionFinder implements PeregFinder<WorkingConditionDto>{
 			historyIds.addAll(c.stream().map(h -> h.identifier()).collect(Collectors.toList()));
 		});
 
-		List<WorkingConditionItem> workingCondiditionItems = wcItemRepo.getByListHistoryID(historyIds.stream().distinct().collect(Collectors.toList()));
-		
+		List<WorkingConditionItemWithEnumList> workingCondiditionItems = wcItemRepo.getAllAndEnumByHistIds(historyIds.stream().distinct().collect(Collectors.toList()));
 		result.stream().forEach(c -> {
 			
-			List<WorkingConditionItem> histItemLst = workingCondiditionItems.stream()
-					.filter(emp -> emp.getEmployeeId().equals(c.getEmployeeId())).collect(Collectors.toList());
+			List<WorkingConditionItemWithEnumList> histItemLst = workingCondiditionItems.stream()
+					.filter(emp -> emp.getWorkingItem().getEmployeeId().equals(c.getEmployeeId())).collect(Collectors.toList());
 			
 			if (!CollectionUtil.isEmpty(histItemLst)) {
 				
@@ -170,10 +170,10 @@ public class WorkingConditionFinder implements PeregFinder<WorkingConditionDto>{
 				
 				histItemLst.stream().forEach(h ->{
 					
-					Optional<DateHistoryItem> histItemOpt = dateHistItemLst.stream().filter(d -> d.identifier().equals(h.getHistoryId())).findFirst();
+					Optional<DateHistoryItem> histItemOpt = dateHistItemLst.stream().filter(d -> d.identifier().equals(h.getWorkingItem().getHistoryId())).findFirst();
 					
 					if(histItemOpt.isPresent()) {
-						workingConditionDtoLst.add(WorkingConditionDto.createWorkingConditionDto(histItemOpt.get(), h));
+						workingConditionDtoLst.add(WorkingConditionDto.createWorkingConditionDtoEnum(histItemOpt.get(), h.getWorkingItem(), h.getEnumLst()));
 					}
 				});
 				

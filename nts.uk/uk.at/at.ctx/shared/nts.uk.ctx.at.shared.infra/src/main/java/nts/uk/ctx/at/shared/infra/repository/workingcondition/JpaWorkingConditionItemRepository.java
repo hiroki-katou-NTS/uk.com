@@ -38,6 +38,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.MonthlyPatternCode;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemCustom;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemWithEnumList;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionWithDataPeriod;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtDayofweekTimeZone;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtDayofweekTimeZonePK;
@@ -1064,6 +1065,18 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 			}
 		}
 		
+	}
+
+	@Override
+	public List<WorkingConditionItemWithEnumList> getAllAndEnumByHistIds(List<String> listHistoryID) {
+		List<KshmtWorkingCondItem> entities = this.getByHistIds(listHistoryID);
+		List<WorkingConditionItemWithEnumList> result = new ArrayList<>();
+		entities.stream().forEach(entity -> {
+			Map<String, Object> enums = new HashMap<>();
+			WorkingConditionItem item  = new WorkingConditionItem(new JpaWorkingConditionItemGetMemento(entity, enums));
+			result.add(new WorkingConditionItemWithEnumList(item, enums));
+		});
+		return result;
 	}
 
 }
