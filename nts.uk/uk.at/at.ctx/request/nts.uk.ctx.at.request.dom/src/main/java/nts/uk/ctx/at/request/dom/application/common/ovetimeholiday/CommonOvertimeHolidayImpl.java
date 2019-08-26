@@ -662,7 +662,7 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 		Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet = this.overtimeRestAppCommonSetRepository
 				.getOvertimeRestAppCommonSetting(companyId, ApplicationType.BREAK_TIME_APPLICATION.value);
 		UseAtr preExcessDisplaySetting = overtimeRestAppCommonSet.get().getPreExcessDisplaySetting();
-		if (!this.preAppSetCheck(prePostAtr, preExcessDisplaySetting)) {
+		if (this.preAppSetCheck(prePostAtr, preExcessDisplaySetting)==UseAtr.NOTUSE) {
 			result.setErrorCode(0);
 			return new ColorConfirmResult(false, 0, 0, "", Collections.emptyList(), null);
 		}
@@ -1236,9 +1236,9 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 		}
 		// 03-01-1_チェック条件を確認
 		// 事前申請超過チェック
-		boolean preAppExceedCheck = this.preAppSetCheck(EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class), preExcessDisplaySetting);
+		UseAtr preAppExceedCheck = this.preAppSetCheck(EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class), preExcessDisplaySetting);
 		boolean preStateHasError = false;
-		if (preAppExceedCheck) {
+		if (preAppExceedCheck==UseAtr.USE) {
 			// ドメインモデル「申請」を取得
 			// 事前申請漏れチェック
 			List<Application_New> beforeApplication = appRepository.getBeforeApplication(companyId, employeeID, appDate,
@@ -1260,9 +1260,9 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 
 		// 03-02-1_チェック条件
 		// 実績超過チェック
-		boolean actualExceedCheck = this.actualSetCheck(performanceExcessAtr, EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class));
+		AppDateContradictionAtr actualExceedCheck = this.actualSetCheck(performanceExcessAtr, EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class));
 		//ActualState actualState = ActualState.ACTUALNOTEXIST;
-		if (actualExceedCheck) {
+		if (actualExceedCheck!=AppDateContradictionAtr.NOTCHECK) {
 			// 07-02-2_実績取得・状態チェック
 			//DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = null;
 
@@ -1350,7 +1350,7 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 
 			if (overtimeHour.getApplicationTime() > 0) {
 				// 事前申請超過チェック
-				if (preAppExceedCheck) {
+				if (preAppExceedCheck==UseAtr.NOTUSE) {
 					if (!preStateHasError) {
 						// 07-01-3_枠別事前申請超過チェック										
 						if (Integer.parseInt(null == overtimeHour.getPreAppTime()? "0": overtimeHour.getPreAppTime()) < overtimeHour.getApplicationTime()) {
@@ -1359,7 +1359,7 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 					}
 				}
 				// 実績超過チェック
-				if (actualExceedCheck) {
+				if (actualExceedCheck!=AppDateContradictionAtr.NOTCHECK) {
 					// 07-02-3_枠別実績超過チェック
 					if (Integer.parseInt(null == overtimeHour.getCaculationTime()? "0": overtimeHour.getCaculationTime()) < overtimeHour.getApplicationTime()) {
 						actualExceedState = true;
@@ -1397,28 +1397,22 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 	}
 
 	@Override
-	public boolean preAppSetCheck(PrePostAtr prePostAtr, UseAtr preExcessDisplaySetting) {
+	public UseAtr preAppSetCheck(PrePostAtr prePostAtr, UseAtr preExcessDisplaySetting) {
 		// Input．事前事後区分をチェック
 		if(prePostAtr == PrePostAtr.PREDICT){
-			return false;
+			return UseAtr.NOTUSE;
 		}
 		// Input．事前超過表示設定をチェック
-		if(preExcessDisplaySetting == UseAtr.NOTUSE){
-			return false;
-		}
-		return true;
+		return preExcessDisplaySetting;
 	}
 
 	@Override
-	public boolean actualSetCheck(AppDateContradictionAtr performanceExcessAtr, PrePostAtr prePostAtr) {
+	public AppDateContradictionAtr actualSetCheck(AppDateContradictionAtr performanceExcessAtr, PrePostAtr prePostAtr) {
 		// Input．事前事後区分チェック
 		if(prePostAtr == PrePostAtr.PREDICT){
-			return false;
+			return AppDateContradictionAtr.NOTCHECK;
 		}
 		// Input．実績超過区分チェック
-		if(performanceExcessAtr == AppDateContradictionAtr.NOTCHECK){
-			return false;
-		}
-		return true;
+		return performanceExcessAtr;
 	}
 }

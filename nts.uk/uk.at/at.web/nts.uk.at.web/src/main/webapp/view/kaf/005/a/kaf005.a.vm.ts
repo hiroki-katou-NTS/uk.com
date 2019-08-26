@@ -149,6 +149,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         editable: KnockoutObservable<boolean> = ko.observable(true);
         enableOvertimeInput: KnockoutObservable<boolean> = ko.observable(false);
         isSpr: boolean = false;
+        appOvertimeNightFlg: KnockoutObservable<boolean> = ko.observable(true);
+        flexFLag: KnockoutObservable<boolean> = ko.observable(true);
         constructor(transferData :any) {
             let self = this;
             if(transferData != null){
@@ -386,6 +388,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 
         initData(data: any) {
             var self = this;
+            self.appOvertimeNightFlg(data.appOvertimeNightFlg == 1 ? true : false);
+            self.flexFLag(data.flexFLag);
             self.requiredReason(data.requireAppReasonFlg);
             self.enableOvertimeInput(data.enableOvertimeInput);
             self.checkBoxValue(!data.manualSendMailAtr);
@@ -452,9 +456,6 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             self.preDisplayAtr(data.preDisplayAtr);
             self.performanceDisplayAtr(data.performanceDisplayAtr);
             self.workTypeChangeFlg(data.workTypeChangeFlg);
-            // preAppOvertime
-            self.convertpreAppOvertimeDto(data);
-            self.convertAppOvertimeReferDto(data);
             // list employeeID
             if(!nts.uk.util.isNullOrEmpty(data.employees)){
                 self.employeeFlag(true);
@@ -581,6 +582,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                  //Check work content Changed
                 self.checkWorkContentChanged(); 
             }
+            
+            // preAppOvertime
+            self.convertpreAppOvertimeDto(data);
+            self.convertAppOvertimeReferDto(data);
             
             self.overtimeAtr(data.overtimeAtr);
 //            if(data.overtimeAtr == 0){
@@ -773,7 +778,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         }
         
         changeColor(attendanceId, frameNo,errorCode){
-            if(errorCode == 1){
+            if(errorCode == 3){
                 $('td#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', '#FD4D4D');
                 $('input#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', '#FD4D4D');
                 return '#FD4D4D';
@@ -783,7 +788,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 $('input#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', '#F6F636');
                 return '#F6F636';
             }
-            if(errorCode == 3){
+            if(errorCode == 1){
                 $('td#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', '#F69164');
                 $('input#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', '#F69164');
                 return '#F69164';
@@ -1114,7 +1119,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         }
         convertAppOvertimeReferDto(data :any){
             let self = this;
-            if(data.appOvertimeReference != null){
+            if(data.appOvertimeReference != null && !nts.uk.util.isNullOrEmpty(self.appDate())) {
                 self.appDateReference(data.appOvertimeReference.appDateRefer);
                 if(data.appOvertimeReference.workTypeRefer != null){
                     self.workTypeCodeReference(data.appOvertimeReference.workTypeRefer.workTypeCode);
@@ -1154,6 +1159,17 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 self.workClockFrom1To1Reference("");
                 self.workClockFrom2To2Reference("");
                 self.displayWorkClockFrom2To2Reference(false);
+                self.overtimeHoursReference.removeAll();
+                for (let index in self.overtimeHours()) {
+                    let overtimeHour = self.overtimeHours()[index];
+                    if(overtimeHour.frameNo() != 11 && overtimeHour.frameNo() != 12){
+                        self.overtimeHoursReference.push(new common.AppOvertimePre("", "", 
+                        overtimeHour.attendanceID(),
+                        "", overtimeHour.frameNo(),
+                        0, overtimeHour.frameName() +" : ",
+                        null, null, null));
+                    }
+                }
             }
         }
         
