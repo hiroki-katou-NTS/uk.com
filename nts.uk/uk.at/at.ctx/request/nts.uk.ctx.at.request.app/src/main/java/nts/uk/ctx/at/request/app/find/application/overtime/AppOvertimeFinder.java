@@ -896,12 +896,7 @@ public class AppOvertimeFinder {
 		AppOvertimeReference appOvertimeReference = new AppOvertimeReference();
 		if(appOverTime.getApplication().getPrePostAtr() == PrePostAtr.POSTERIOR) {
 			appOvertimeReference.setAppDateRefer(appOverTime.getApplication().getAppDate().toString(DATE_FORMAT));
-			String appWorkType = appOverTime.getWorkTypeCode() == null ? null : appOverTime.getWorkTypeCode().v();
-			String appWorkTime = appOverTime.getSiftCode() ==  null ? null : appOverTime.getSiftCode().v();
-			appOvertimeReference.setWorkTypeRefer(new WorkTypeOvertime(appWorkType, workTypeRepository.findByPK(companyID, appWorkType).map(x -> x.getName().toString()).orElse(null)));
-			appOvertimeReference.setSiftTypeRefer(new SiftType(appWorkTime, workTimeRepository.findByCode(companyID, appWorkTime).map(x -> x.getWorkTimeDisplayName().getWorkTimeName().v()).orElse(null)));
-			List<CaculationTime> overTimeInputsRefer = overtimeFrames.stream()
-					.map(x -> CaculationTime.builder().frameName(x.getOvertimeWorkFrName().toString()).build()).collect(Collectors.toList());
+			List<CaculationTime> overTimeInputsRefer = new ArrayList<>();
 			WithdrawalAppSet withdrawalAppSet = withdrawalAppSetRepository.getWithDraw().get();
 			// 07-02_実績取得・状態チェック
 			ActualStatusCheckResult actualStatusCheckResult = preActualColorCheck.actualStatusCheck(
@@ -909,13 +904,37 @@ public class AppOvertimeFinder {
 					appOverTime.getApplication().getEmployeeID(), 
 					appOverTime.getApplication().getAppDate(), 
 					appOverTime.getApplication().getAppType(), 
-					appWorkType, 
-					appWorkTime, 
+					appOverTime.getWorkTypeCode().v(), 
+					appOverTime.getSiftCode().v(), 
 					withdrawalAppSet.getOverrideSet(), 
 					Optional.empty());
-			overTimeInputsRefer.stream().forEach(x -> {
-				x.setApplicationTime(actualStatusCheckResult.actualLst.stream().filter(y -> y.frameNo==x.getFrameNo()).findAny().map(z -> z.actualTime).orElse(null));
-			});
+			for(OvertimeWorkFrame overtimeFrame :overtimeFrames){
+				overTimeInputsRefer.add(CaculationTime.builder()
+						.attendanceID(1)
+						.frameNo(overtimeFrame.getOvertimeWorkFrNo().v().intValue())
+						.frameName(overtimeFrame.getOvertimeWorkFrName().toString())
+						.build());
+			}
+			if(actualStatusCheckResult.actualStatus==ActualStatus.NO_ACTUAL) {
+				appOvertimeReference.setOverTimeInputsRefer(overTimeInputsRefer);
+				overTimeDto.setAppOvertimeReference(appOvertimeReference);
+			} else {
+				appOvertimeReference.setWorkTypeRefer(
+						new WorkTypeOvertime(actualStatusCheckResult.workType, 
+								workTypeRepository.findByPK(companyID, actualStatusCheckResult.workType).map(x -> x.getName().toString()).orElse(null)));
+				appOvertimeReference.setSiftTypeRefer(
+						new SiftType(actualStatusCheckResult.workTime, 
+								workTimeRepository.findByCode(companyID, actualStatusCheckResult.workTime).map(x -> x.getWorkTimeDisplayName().getWorkTimeName().v()).orElse(null)));
+				appOvertimeReference.setWorkClockFromTo1Refer(convertWorkClockFromTo(actualStatusCheckResult.startTime, actualStatusCheckResult.endTime));
+				for(CaculationTime caculationTime : overTimeInputsRefer) {
+					caculationTime.setApplicationTime(actualStatusCheckResult.actualLst.stream()
+							.filter(x -> x.attendanceID == caculationTime.getAttendanceID() && x.frameNo == caculationTime.getFrameNo())
+							.findAny().map(y -> y.actualTime).orElse(null));
+				}
+				appOvertimeReference.setOverTimeInputsRefer(overTimeInputsRefer);
+				overTimeDto.setAppOvertimeReference(appOvertimeReference);
+			}
+			appOvertimeReference.setOverTimeInputsRefer(overTimeInputsRefer);
 		}
 		overTimeDto.setAppOvertimeReference(appOvertimeReference);
 		
