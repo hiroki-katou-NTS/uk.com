@@ -11,15 +11,9 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
 import java.io.Serializable;
-<<<<<<< HEAD
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
-=======
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
->>>>>>> 9147aa9b3d3394baca2e0434303c156eaf49aa37
+
 
 /**
 * 社員厚生年金保険資格情報
