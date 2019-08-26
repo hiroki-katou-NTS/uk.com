@@ -875,9 +875,10 @@ module nts.uk.at.view.kaf005.b {
                                 data.appOvertimeReference.overTimeInputsRefer[i].attendanceID,
                                 "", data.appOvertimeReference.overTimeInputsRefer[i].frameNo,
                                 0, data.appOvertimeReference.overTimeInputsRefer[i].frameName +" : ",
+                                null,
+                                null,
                                 data.appOvertimeReference.overTimeInputsRefer[i].applicationTime == null ? self.convertIntToTime(0) : self.convertIntToTime(data.appOvertimeReference.overTimeInputsRefer[i].applicationTime),
-                                data.appOvertimeReference.overTimeInputsRefer[i].preAppTime,
-                                data.appOvertimeReference.overTimeInputsRefer[i].caculationTime == null ? self.convertIntToTime(0) : self.convertIntToTime(data.appOvertimeReference.overTimeInputsRefer[i].caculationTime) ,null));
+                                null));
                                 }
                         }
                     }
@@ -899,7 +900,7 @@ module nts.uk.at.view.kaf005.b {
                             overtimeHour.attendanceID(),
                             "", overtimeHour.frameNo(),
                             0, overtimeHour.frameName() +" : ",
-                            null, null, null));
+                            null, null, null, null));
                         }
                     }
                 }
