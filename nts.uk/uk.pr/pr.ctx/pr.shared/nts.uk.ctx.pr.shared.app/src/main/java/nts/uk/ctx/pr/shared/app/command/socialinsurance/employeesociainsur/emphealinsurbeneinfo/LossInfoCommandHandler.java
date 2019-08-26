@@ -2,7 +2,7 @@ package nts.uk.ctx.pr.shared.app.command.socialinsurance.employeesociainsur.emph
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.welfPenInsLossIfRepository;
+import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.WelfPenInsLossIfRepository;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmpBasicPenNumInforRepository;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.HealthInsLossInfoRepository;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.MultiEmpWorkInfoRepository;
@@ -17,7 +17,7 @@ public class LossInfoCommandHandler extends CommandHandler<LossInfoCommand> {
     private HealthInsLossInfoRepository handlerHealth;
 
     @Inject
-    private welfPenInsLossIfRepository handlerWelPen;
+    private WelfPenInsLossIfRepository handlerWelPen;
 
     @Inject
     private MultiEmpWorkInfoRepository handlerMultiWork;
@@ -30,10 +30,10 @@ public class LossInfoCommandHandler extends CommandHandler<LossInfoCommand> {
 
         if (context.getCommand().getScreenMode() == 0) {
             handlerHealth.insert(context.getCommand().getHealthInsLossInfo().fromCommandToDomain());
-            handlerWelPen.insertWelfPenInsLossIf(context.getCommand().getWelfPenInsLossIf().fromCommandToDomain());
+            handlerWelPen.insert(context.getCommand().getWelfPenInsLossIf().fromCommandToDomain());
         } else {
             handlerHealth.update(context.getCommand().getHealthInsLossInfo().fromCommandToDomain());
-            handlerWelPen.updateWelfPenInsLossIf(context.getCommand().getWelfPenInsLossIf().fromCommandToDomain());
+            handlerWelPen.update(context.getCommand().getWelfPenInsLossIf().fromCommandToDomain());
         }
 
         //check exist

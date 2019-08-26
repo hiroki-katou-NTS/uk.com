@@ -2,13 +2,13 @@ package nts.uk.ctx.pr.shared.infra.repository.socialinsurance.employeesociainsur
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.WelfPenInsLossIf;
-import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.welfPenInsLossIfRepository;
+import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.WelfPenInsLossIfRepository;
 import nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.empbenepenpeninfor.QqsmtWelfPenInsLoss;
 
 import javax.ejb.Stateless;
 import java.util.Optional;
 @Stateless
-public class JpaWelfPenInsLossIfRepository extends JpaRepository implements welfPenInsLossIfRepository{
+public class JpaWelfPenInsLossIfRepository extends JpaRepository implements WelfPenInsLossIfRepository {
 
     private static final String PENSION_LOSS_INFO ="SELECT f FROM QqsmtWelfPenInsLoss f WHERE f.welfPenInsLossPk.empId =:empId";
 
@@ -21,14 +21,14 @@ public class JpaWelfPenInsLossIfRepository extends JpaRepository implements welf
     }
 
     @Override
-   public void insertWelfPenInsLossIf(WelfPenInsLossIf welfPenInsLossIf){
+   public void insert(WelfPenInsLossIf welfPenInsLossIf){
         // Insert entity
         this.commandProxy().insert(QqsmtWelfPenInsLoss.toEntity(welfPenInsLossIf));
 
     }
 
     @Override
-    public void updateWelfPenInsLossIf(WelfPenInsLossIf welfPenInsLossIf){
+    public void update(WelfPenInsLossIf welfPenInsLossIf){
         //
         // Insert entity
         this.commandProxy().update(QqsmtWelfPenInsLoss.toEntity(welfPenInsLossIf));

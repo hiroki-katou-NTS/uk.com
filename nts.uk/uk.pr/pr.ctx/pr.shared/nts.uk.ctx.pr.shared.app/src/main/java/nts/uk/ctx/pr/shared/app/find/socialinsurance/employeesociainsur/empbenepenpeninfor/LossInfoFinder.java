@@ -4,7 +4,7 @@ import nts.uk.ctx.pr.shared.app.find.socialinsurance.employeesociainsur.empheali
 import nts.uk.ctx.pr.shared.app.find.socialinsurance.employeesociainsur.emphealinsurbeneinfo.HealthInLossInfoDto;
 import nts.uk.ctx.pr.shared.app.find.socialinsurance.employeesociainsur.emphealinsurbeneinfo.MultiEmpWorkInfoDto;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.WelfPenInsLossIf;
-import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.welfPenInsLossIfRepository;
+import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.WelfPenInsLossIfRepository;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.*;
 
 import javax.ejb.Stateless;
@@ -15,7 +15,7 @@ import java.util.Optional;
 public class LossInfoFinder {
 
     @Inject
-    private welfPenInsLossIfRepository finderWelPen;
+    private WelfPenInsLossIfRepository finderWelPen;
 
     @Inject
     private HealthInsLossInfoRepository finderHealth;

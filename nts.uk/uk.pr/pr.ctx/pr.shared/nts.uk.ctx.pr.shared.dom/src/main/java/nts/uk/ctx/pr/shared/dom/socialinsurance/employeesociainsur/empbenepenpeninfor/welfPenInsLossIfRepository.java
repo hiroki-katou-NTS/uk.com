@@ -5,8 +5,8 @@ import java.util.Optional;
 /**
 * 厚生年金保険喪失時情報
 */
-public interface welfPenInsLossIfRepository {
+public interface WelfPenInsLossIfRepository {
     Optional<WelfPenInsLossIf> getWelfPenLossInfoById(String empId);
-    void insertWelfPenInsLossIf(WelfPenInsLossIf welfPenInsLossIf);
-    void updateWelfPenInsLossIf(WelfPenInsLossIf welfPenInsLossIf);
+    void insert(WelfPenInsLossIf welfPenInsLossIf);
+    void update(WelfPenInsLossIf welfPenInsLossIf);
 }
