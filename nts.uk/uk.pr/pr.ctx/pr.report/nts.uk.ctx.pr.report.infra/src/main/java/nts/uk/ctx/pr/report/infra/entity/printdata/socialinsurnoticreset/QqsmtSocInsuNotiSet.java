@@ -118,7 +118,17 @@ public class QqsmtSocInsuNotiSet extends UkJpaEntity implements Serializable
                this.lineFeedCode);
     }
     public static QqsmtSocInsuNotiSet toEntity(SocialInsurNotiCreateSet domain) {
-       return null;
+       return new QqsmtSocInsuNotiSet(new QqsmtSocInsuNotiSetPk(domain.getUserId(), domain.getCid()),
+               domain.getOfficeInformation().value,
+               domain.getBusinessArrSymbol().value,
+               domain.getOutputOrder().value,
+               domain.getPrintPersonNumber().value,
+               domain.getSubmittedName().value,
+               domain.getInsuredNumber().value,
+               domain.getFdNumber().isPresent() ? domain.getFdNumber().get().v() : null,
+               domain.getTextPersonNumber().isPresent() ? domain.getTextPersonNumber().get().value : null,
+               domain.getOutputFormat().isPresent() ? domain.getOutputFormat().get().value : null,
+               domain.getLineFeedCode().isPresent() ? domain.getLineFeedCode().get().value : null);
     }
 
 }

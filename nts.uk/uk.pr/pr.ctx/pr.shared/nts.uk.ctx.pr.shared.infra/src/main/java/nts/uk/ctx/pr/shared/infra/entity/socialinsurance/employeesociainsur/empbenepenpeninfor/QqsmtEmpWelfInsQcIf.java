@@ -4,10 +4,16 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.EmpWelfarePenInsQualiInfor;
+import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.EmployWelPenInsurAche;
+import nts.uk.shr.com.history.DateHistoryItem;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 /**
 * 社員厚生年金保険資格情報
@@ -46,8 +52,11 @@ public class QqsmtEmpWelfInsQcIf extends UkJpaEntity implements Serializable
         return empWelfInsQcIfPk;
     }
 
-    public EmpWelfarePenInsQualiInfor toDomain() {
-        return null;
+    public static EmpWelfarePenInsQualiInfor toDomain(List<QqsmtEmpWelfInsQcIf> qqsmtEmpWelfInsQcIf) {
+        return new EmpWelfarePenInsQualiInfor(
+                qqsmtEmpWelfInsQcIf.get(0).empWelfInsQcIfPk.employeeId,
+                qqsmtEmpWelfInsQcIf.stream().map(i -> new EmployWelPenInsurAche(i.empWelfInsQcIfPk.historyId , new DateHistoryItem(i.empWelfInsQcIfPk.historyId, new DatePeriod(i.startDate, i.endDate))))
+                .collect(Collectors.toList()));
     }
     public static QqsmtEmpWelfInsQcIf toEntity(EmpWelfarePenInsQualiInfor domain) {
         return null;
