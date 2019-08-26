@@ -5,7 +5,7 @@ module nts.uk.com.view.jmm018.b {
          */
         var path: any = {
                 findEventMenu: "hrdeveventmenu/eventmenuoperation/getAll",
-                save: "screen/com/systemresource/save",
+                save: "hrdeveventmenu/eventmenuoperation/update-event-menu",
             };
         
         /**
@@ -18,7 +18,7 @@ module nts.uk.com.view.jmm018.b {
         /**
          * 
          */
-        export function saveSysResourceSetting(data: model.SystemResourceSaveCommand): JQueryPromise<any> {
+        export function saveEventMenu(data: any): JQueryPromise<any> {
             return nts.uk.request.ajax(path.save, data);
         }
     }

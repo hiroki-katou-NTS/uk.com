@@ -9,6 +9,17 @@ module nts.uk.com.view.jmm018.a {
         mainTab.start_page().done(function(screenModel){
             __viewContext.bind(screenModel);
             screenModel.onSelectTabB();
+            $('#nodeText').focus();
+            $('#nodeText').blur();
+            
+            $('#useEventOrMenu').focus();
+            $('#useEventOrMenu').blur();
+            
+            $('#useNotice').focus();
+            $('#useNotice').blur();
+            
+            $('#useApproval').focus();
+            $('#useApproval').blur();
             blockUI.clear(); 
         });
     });
