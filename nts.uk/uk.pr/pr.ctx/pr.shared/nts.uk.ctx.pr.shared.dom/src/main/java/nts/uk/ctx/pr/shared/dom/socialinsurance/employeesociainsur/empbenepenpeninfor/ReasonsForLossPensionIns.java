@@ -4,7 +4,7 @@ package nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpe
 /**
 * 厚生年金保険資格喪失原因
 */
-enum ReasonsForLossPensionIns {
+public enum ReasonsForLossPensionIns {
     
     BLANK(0, "Enum_ReasonsForLossPensionIns_BLANK"),
     RETIREMENT(4, "Enum_ReasonsForLossPensionIns_RETIREMENT"),

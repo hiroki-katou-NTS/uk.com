@@ -40,10 +40,10 @@ public class QqsmtEmpBaPenNum extends UkJpaEntity implements Serializable
     }
 
     public EmpBasicPenNumInfor toDomain() {
-        return null;
+        return new EmpBasicPenNumInfor(this.empBaPenNumPk.employeeId, this.basicPenNumber);
     }
     public static QqsmtEmpBaPenNum toEntity(EmpBasicPenNumInfor domain) {
-        return null;
+        return new QqsmtEmpBaPenNum(new QqsmtEmpBaPenNumPk(domain.getEmployeeId()), domain.getBasicPenNumber().map(i -> i.v()).orElse(null));
     }
 
 }

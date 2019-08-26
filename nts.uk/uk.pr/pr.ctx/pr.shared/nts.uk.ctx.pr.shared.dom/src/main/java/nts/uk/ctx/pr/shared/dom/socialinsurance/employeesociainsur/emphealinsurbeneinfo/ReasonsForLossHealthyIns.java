@@ -4,7 +4,7 @@ package nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsur
 /**
 * 健康保険資格喪失原因
 */
-enum ReasonsForLossHealthyIns {
+public enum ReasonsForLossHealthyIns {
 
     BLANK(0, "Enum_ReasonsForLossHealthyIns_BLANK"),
     RETIREMENT(4, "Enum_ReasonsForLossHealthyIns_RETIREMENT"),
