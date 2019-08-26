@@ -2,7 +2,7 @@ package nts.uk.ctx.pr.report.infra.entity.printdata.socialinsurnoticreset;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.pr.report.dom.printdata.comlegalrecord.EmpNameChangeNotiInfor;
+import nts.uk.ctx.pr.report.dom.printdata.socinsurnoticreset.EmpNameChangeNotiInfor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
