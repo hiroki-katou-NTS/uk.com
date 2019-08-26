@@ -287,6 +287,13 @@ export class KafS05aStep1Component extends Vue {
                     }
                 }
             }
+            // 実績なし 登録不可
+            if ((self.actualStatus == 3 && self.performanceExcessAtr == 2)) {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                this.$mask('hide');
+
+                return;
+            }
             this.$emit('toStep2', this.kafs05ModelStep1);
             this.$mask('hide');
         }).catch((res: any) => {

@@ -164,23 +164,23 @@
                     <div class="row confirm-item" v-show="kafs05ModelStep3.prePostSelected == 1">
                         <div class="col-4" v-show="!item.preAppExceedState">
                             <span class="far fa-clock display-time"
-                                v-if="item.preAppTime">事前[{{item.preAppTime | timedr}}]</span>
-                            <span class="far fa-clock display-time" v-if="!item.preAppTime">事前[--:--]</span>
+                                v-if="null != item.preAppTime">事前[{{item.preAppTime | timedr}}]</span>
+                            <span class="far fa-clock display-time" v-if="null == item.preAppTime">事前[--:--]</span>
                         </div>
                         <div class="col-4" v-show="item.preAppExceedState">
                             <span class="far fa-clock display-time-exceed"
-                                v-if="item.preAppTime">事前[{{item.preAppTime | timedr}}]</span>
-                            <span class="far fa-clock display-time" v-if="!item.preAppTime">事前[--:--]</span>
+                                v-if="null != item.preAppTime">事前[{{item.preAppTime | timedr}}]</span>
+                            <span class="far fa-clock display-time" v-if="null == item.preAppTime">事前[--:--]</span>
                         </div>
                         <div class="col-8" v-show="!item.actualExceedState">
                             <span class="far fa-clock display-time"
-                                v-if="item.caculationTime">実績[{{item.caculationTime | timedr}}]</span>
-                            <span class="far fa-clock display-time" v-if="!item.caculationTime">実績[--:--]</span>
+                                v-if="null != item.caculationTime">実績[{{item.caculationTime | timedr}}]</span>
+                            <span class="far fa-clock display-time" v-if="null == item.caculationTime">実績[--:--]</span>
                         </div>
                         <div class="col-8" v-show="item.actualExceedState">
                             <span class="far fa-clock display-time-exceed"
-                                v-if="item.caculationTime">実績[{{item.caculationTime | timedr}}]</span>
-                            <span class="far fa-clock display-time" v-if="!item.caculationTime">実績[--:--]</span>
+                                v-if="null != item.caculationTime">実績[{{item.caculationTime | timedr}}]</span>
+                            <span class="far fa-clock display-time" v-if="null == item.caculationTime">実績[--:--]</span>
                         </div>
                     </div>
                 </div>
@@ -204,13 +204,13 @@
                         <div class="col-4" v-show="kafs05ModelStep3.prePostSelected == 1">
                             <div v-show="!item.preAppExceedState">
                                 <span class="far fa-clock display-time"
-                                    v-if="item.preAppTime">事前[{{item.preAppTime | timedr}}]</span>
-                                <span class="far fa-clock display-time" v-if="!item.preAppTime">事前[--:--]</span>
+                                    v-if="null != item.preAppTime">事前[{{item.preAppTime | timedr}}]</span>
+                                <span class="far fa-clock display-time" v-if="null == item.preAppTime">事前[--:--]</span>
                             </div>
                             <div v-show="item.preAppExceedState">
                                 <span class="far fa-clock display-time-exceed"
-                                    v-if="item.preAppTime">事前[{{item.preAppTime | timedr}}]</span>
-                                <span class="far fa-clock display-time" v-if="!item.preAppTime">事前[--:--]</span>
+                                    v-if="null != item.preAppTime">事前[{{item.preAppTime | timedr}}]</span>
+                                <span class="far fa-clock display-time" v-if="null == item.preAppTime">事前[--:--]</span>
                             </div>
                         </div>
                     </div>
