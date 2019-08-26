@@ -13,6 +13,8 @@ public interface EmPensionFundPartiPeriodInforRepository
 
     Optional<EmPensionFundPartiPeriodInfor> getEmPensionFundPartiPeriodInforById(String employeeId, String historyId);
 
+    List<EmPensionFundPartiPeriodInfor> getEmPensionFundPartiPeriodInforByEmpId(String employeeId);
+
     void add(EmPensionFundPartiPeriodInfor domain);
 
     void update(EmPensionFundPartiPeriodInfor domain);

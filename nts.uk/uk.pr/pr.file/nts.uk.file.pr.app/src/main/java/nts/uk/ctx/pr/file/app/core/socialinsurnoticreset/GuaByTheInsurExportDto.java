@@ -21,7 +21,7 @@ import java.util.Optional;
  * 取得届情報
  */
 
-public class GuaByTheInsurExportData {
+public class GuaByTheInsurExportDto {
 
     /**
      * 70歳以上被用者区分

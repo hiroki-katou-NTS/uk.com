@@ -4,9 +4,9 @@ package nts.uk.ctx.pr.report.dom.printdata.socinsurnoticreset;
  */
 
 public enum LineFeedCode {
-    ADD(0, "ENUM_add_PEN_OFFICE"),
-    DO_NOT_ADD(0, "ENUM_doNotAdd_DO_NOT_ADD"),
-    E_GOV(0, "ENUM_eGov_E_GOV");
+    ADD(0, "Enum_LineFeedCode_ADD"),
+    DO_NOT_ADD(1, "Enum_LineFeedCode_DO_NOT_ADD"),
+    E_GOV(2, "Enum_LineFeedCode_E_GOV");
 
     /** The value. */
     public final int value;

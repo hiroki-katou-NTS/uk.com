@@ -1,7 +1,7 @@
 package nts.uk.ctx.pr.report.infra.repository.printdata.socialinsurnoticreset;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.pr.report.dom.printdata.comlegalrecord.EmpNameChangeNotiInfor;
+import nts.uk.ctx.pr.report.dom.printdata.socinsurnoticreset.EmpNameChangeNotiInfor;
 import nts.uk.ctx.pr.report.dom.printdata.socinsurnoticreset.EmpNameChangeNotiInforRepository;
 import nts.uk.ctx.pr.report.infra.entity.printdata.socialinsurnoticreset.QrsmtEmpNameChange;
 import nts.uk.ctx.pr.report.infra.entity.printdata.socialinsurnoticreset.QrsmtEmpNameChangePk;
@@ -30,6 +30,11 @@ public class JpaEmpNameChangeNotiInforRepository extends JpaRepository implement
         .setParameter("employeeId", employeeId)
         .setParameter("cid", cid)
         .getSingle(c->c.toDomain());
+    }
+
+    @Override
+    public void add(EmpNameChangeNotiInfor domain) {
+
     }
 
     @Override

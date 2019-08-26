@@ -29,7 +29,7 @@ public class QqsmtSocIsacquisiInfo extends UkJpaEntity implements Serializable
     * 70歳以上被用者
     */
     @Basic(optional = true)
-    @Column(name = "70_PERCENT_OR_MORE")
+    @Column(name = "PERCENT_OR_MORE")
     public Integer percentOrMore;
     
     /**
@@ -130,10 +130,42 @@ public class QqsmtSocIsacquisiInfo extends UkJpaEntity implements Serializable
     }
 
     public SocialInsurAcquisiInfor toDomain() {
-        return null;
+        return new SocialInsurAcquisiInfor(this.socIsacquisiInfoPk.employeeId,
+                this.percentOrMore,
+                this.remarksOther,
+                this.remarksAndOtherContents,
+                this.remunMonthlyAmountKind,
+                this.remunMonthlyAmount,
+                this.totalMonthlyRemun,
+                this.livingAbroad,
+                this.reasonOther,
+                this.reasonAndOtherContents,
+                this.shortTimeWorkes,
+                this.shortStay,
+                this.depenAppoint,
+                this.qualifiDistin,
+                this.continReemAfterRetirement
+                );
     }
     public static QqsmtSocIsacquisiInfo toEntity(SocialInsurAcquisiInfor domain) {
- return null;
+         return new QqsmtSocIsacquisiInfo(
+                 new QqsmtSocIsacquisiInfoPk(domain.getEmployeeId()),
+                 domain.getPercentOrMore().isPresent() ? domain.getPercentOrMore().get() : null,
+                 domain.getRemarksOther().isPresent() ? domain.getRemarksOther().get(): null,
+                 domain.getRemarksAndOtherContents().isPresent() ? domain.getRemarksAndOtherContents().get().v(): null,
+                 domain.getRemunMonthlyAmountKind().isPresent() ? domain.getRemunMonthlyAmountKind().get().v() : null,
+                 domain.getRemunMonthlyAmount().isPresent() ? domain.getRemunMonthlyAmount().get().v() : null,
+                 domain.getTotalMonthlyRemun().isPresent() ? domain.getTotalMonthlyRemun().get().v() : null,
+                 domain.getLivingAbroad().isPresent() ? domain.getLivingAbroad().get() : null,
+                 domain.getReasonOther().isPresent() ? domain.getReasonOther().get() : null,
+                 domain.getReasonAndOtherContents().isPresent() ? domain.getReasonAndOtherContents().get().v() : null,
+                 domain.getShortTimeWorkers().isPresent() ? domain.getShortTimeWorkers().get() : null,
+                 domain.getShortStay().isPresent() ? domain.getShortStay().get() : null,
+                 domain.getDepenAppoint().isPresent() ? domain.getDepenAppoint().get().value : null,
+                 domain.getQualifiDistin().isPresent() ? domain.getQualifiDistin().get().intValue() : null,
+                 domain.getContinReemAfterRetirement().isPresent() ? domain.getContinReemAfterRetirement().get() : null
+         );
+
     }
 
 }

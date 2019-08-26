@@ -20,7 +20,7 @@ public class AddMultiEmpWorkInfoCommandHandler extends CommandHandler<MultiEmpWo
     @Override
     protected void handle(CommandHandlerContext<MultiEmpWorkInfoCommand> context) {
         MultiEmpWorkInfoCommand command = context.getCommand();
-        repository.add(new MultiEmpWorkInfo(command.getEmpId(), command.getIsMoreEmp()));
+        repository.add(new MultiEmpWorkInfo(command.getEmployeeId(), command.getIsMoreEmp()));
     
     }
 }

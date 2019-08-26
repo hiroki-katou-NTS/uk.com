@@ -2,6 +2,8 @@ package nts.uk.ctx.pr.shared.ws.socialinsurance.employeesociainsur;
 
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.pr.shared.app.command.socialinsurance.employeesociainsur.emphealinsurbeneinfo.AddEmpBasicPenNumInforCommandHandler;
+import nts.uk.ctx.pr.shared.app.command.socialinsurance.employeesociainsur.emphealinsurbeneinfo.CredentialAcquisitionInfoCommand;
 import nts.uk.ctx.pr.shared.app.find.socialinsurance.employeesociainsur.empbenepenpeninfor.InforOnWelfPenInsurAccDto;
 import nts.uk.ctx.pr.shared.app.find.socialinsurance.employeesociainsur.empbenepenpeninfor.InforOnWelfPenInsurAccFinder;
 import nts.uk.ctx.pr.shared.dom.adapter.person.PersonInfoAdapter;
@@ -24,6 +26,9 @@ public class InforOnWelfPenInsurAccWebService extends WebService{
     @Inject
     private PersonInfoAdapter adapter;
 
+    @Inject
+    private AddEmpBasicPenNumInforCommandHandler commandHandler;
+
     @POST
     @Path("getInforOnWelfPenInsurAccById/{empID}")
     public InforOnWelfPenInsurAccDto getInforOnWelfPenInsurAccById(@PathParam("empID")String empID){
@@ -34,6 +39,12 @@ public class InforOnWelfPenInsurAccWebService extends WebService{
     @Path("getPersonInfo/{empID}")
     public PersonInfoExportAdapter getPersonInfo(@PathParam("empID")String empID){
         return adapter.getPersonInfo(empID);
+    }
+
+    @POST
+    @Path("add")
+    public void getPersonInfo(CredentialAcquisitionInfoCommand command){
+        commandHandler.handle(command);
     }
 
 

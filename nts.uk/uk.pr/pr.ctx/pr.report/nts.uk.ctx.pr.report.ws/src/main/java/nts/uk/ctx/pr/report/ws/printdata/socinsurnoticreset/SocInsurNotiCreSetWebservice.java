@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.report.ws.printdata.socinsurnoticreset;
 
+import nts.uk.ctx.pr.report.app.find.printdata.socialinsurnoticreset.NotifiOfInsurQuaAcDto;
 import nts.uk.ctx.pr.report.app.find.printdata.socialinsurnoticreset.SocialInsurNotiCreateSetDto;
 import nts.uk.ctx.pr.report.app.find.printdata.socialinsurnoticreset.SocialInsurNotiCreateSetFinder;
 
@@ -20,5 +21,11 @@ public class SocInsurNotiCreSetWebservice {
     @Path("/getSocialInsurNotiCreateSet")
     public SocialInsurNotiCreateSetDto getEmpNameChangeNotiInfor() {
         return socialInsurNotiCreateSetFinder.getSocInsurNotiCreSet();
+    }
+
+    @POST
+    @Path("/loadingscreen001")
+    public NotifiOfInsurQuaAcDto getDataLoadingScreenQsi001() {
+        return socialInsurNotiCreateSetFinder.initScreen(null);
     }
 }

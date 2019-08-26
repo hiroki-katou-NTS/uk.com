@@ -1,9 +1,11 @@
 package nts.uk.ctx.pr.report.dom.printdata.socinsurnoticreset;
 
 public enum BusinessDivision {
-    OUTPUT_COMPANY_NAME(0, "ENUM_outPutCompanyNameAdd_OUTPUTCOMPANYNAME"),
-    OUTPUT_SIC_INSURES(1, "ENUM_outputSocInsurEs_OUTPUTSICINSURES"),
-    DO_NOT_OUTPUT(2, "ENUM_doNotOutput_DONOTOUTPUT");
+    //会社名・住所を出力
+    OUTPUT_COMPANY_NAME(0, "Enum_BusinessDivision_OUTPUT_COMPANY_NAME"),
+    //社会保険事業所名・住所を出力
+    OUTPUT_SIC_INSURES(1, "Enum_BusinessDivision_OUTPUT_SIC_INSURES"),
+    DO_NOT_OUTPUT(2, "Enum_BusinessDivision_DO_NOT_OUTPUT");
 
     /** The value. */
     public final int value;

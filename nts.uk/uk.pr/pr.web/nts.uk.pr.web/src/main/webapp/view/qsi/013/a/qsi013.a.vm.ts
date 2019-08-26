@@ -1,5 +1,4 @@
 module nts.uk.pr.view.qsi013.a.viewmodel {
-    import service = nts.uk.pr.view.qsi013.a.service;
     import dialog = nts.uk.ui.dialog;
     import getText = nts.uk.resource.getText;
     import errors = nts.uk.ui.errors;
@@ -17,13 +16,40 @@ module nts.uk.pr.view.qsi013.a.viewmodel {
         filingDate: KnockoutObservable<string> = ko.observable('');
         filingDateJp: KnockoutObservable<string> = ko.observable('');
         selectedRuleCode: KnockoutObservable<string> = ko.observable('0');
-        rules: KnockoutObservableArray<ItemModel> = ko.observableArray(getRule());
+
+        officeInformations: KnockoutObservableArray<ItemModel> = ko.observableArray(getBusinessDivision());
+        businessArrSymbols: KnockoutObservableArray<ItemModel> = ko.observableArray(getBussEsimateClass());
+        outputOrders: KnockoutObservableArray<ItemModel> = ko.observableArray(getSocialInsurOutOrder());
+        printPersonNumbers: KnockoutObservableArray<ItemModel> = ko.observableArray(getPersonalNumClass());
+        submittedNames: KnockoutObservableArray<ItemModel> = ko.observableArray(getSubNameClass());
+        insuredNumbers: KnockoutObservableArray<ItemModel> = ko.observableArray(getInsurPersonNumDivision());
+        textPersonNumbers: KnockoutObservableArray<ItemModel> = ko.observableArray(getTextPerNumberClass());
+        outputFormats: KnockoutObservableArray<ItemModel> = ko.observableArray(getOutputFormatClass());
+        lineFeedCodes: KnockoutObservableArray<ItemModel> = ko.observableArray(getLineFeedCode());
+
+
         simpleValue: KnockoutObservable<string> = ko.observable('');
         columns: KnockoutObservableArray<any> = ko.observableArray();
         items: KnockoutObservableArray<any> = ko.observableArray();
         currentCodeList: KnockoutObservableArray<any> = ko.observableArray();
+        /* kcp005 */
+        baseDate: any;
+        listComponentOption: any;
+        selectedCode: KnockoutObservable<string>;
+        multiSelectedCode: KnockoutObservableArray<string>;
+        isShowAlreadySet: KnockoutObservable<boolean>;
+        alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
+        isDialog: KnockoutObservable<boolean>;
+        isShowNoSelectRow: KnockoutObservable<boolean>;
+        isMultiSelect: KnockoutObservable<boolean>;
+        isShowWorkPlaceName: KnockoutObservable<boolean>;
+        isShowSelectAllButton: KnockoutObservable<boolean>;
+        disableSelection : KnockoutObservable<boolean>;
+        employeeList: KnockoutObservableArray<UnitModel>;
+
         socInsurNotiCreSet : KnockoutObservable<SocInsurNotiCreSet> = ko.observable(new SocInsurNotiCreSet({
                 officeInformation: 0,
+                printPersonNumber: 0,
                 businessArrSymbol: 0,
                 outputOrder: 0,
                 submittedName: 0,
@@ -35,8 +61,9 @@ module nts.uk.pr.view.qsi013.a.viewmodel {
                 }));
         constructor() {
             let self = this;
-
+            this.loadKCP005();
             this.loadCCG001();
+
             this.columns = ko.observableArray([
                 { headerText: 'コード', key: 'id', width: 100, hidden: true },
                 { headerText: '名称', key: 'code', width: 150},
@@ -73,6 +100,62 @@ module nts.uk.pr.view.qsi013.a.viewmodel {
         openBScreen() {
             modal("/view/qsi/013/b/index.xhtml").onClosed(() => {
 
+            });
+        }
+
+        loadKCP005(){
+            let self = this;
+            self.baseDate = ko.observable(new Date());
+            self.selectedCode = ko.observable('1');
+            self.multiSelectedCode = ko.observableArray(['0', '1', '4']);
+            self.isShowAlreadySet = ko.observable(false);
+            self.alreadySettingList = ko.observableArray([
+                {code: '1', isAlreadySetting: true},
+                {code: '2', isAlreadySetting: true}
+            ]);
+            self.isDialog = ko.observable(false);
+            self.isShowNoSelectRow = ko.observable(false);
+            self.isMultiSelect = ko.observable(false);
+            self.isShowWorkPlaceName = ko.observable(false);
+            self.isShowSelectAllButton = ko.observable(false);
+            self.disableSelection = ko.observable(false);
+
+            this.employeeList = ko.observableArray<UnitModel>([
+                { code: '1', name: 'Angela Baby', workplaceName: 'HN' },
+                { code: '2', name: 'Xuan Toc Do', workplaceName: 'HN' },
+                { code: '3', name: 'Park Shin Hye', workplaceName: 'HCM' },
+                { code: '4', name: 'Vladimir Nabokov', workplaceName: 'HN' }
+            ]);
+            self.listComponentOption = {
+                isShowAlreadySet: self.isShowAlreadySet(),
+                isMultiSelect: self.isMultiSelect(),
+                listType: ListType.EMPLOYEE,
+                employeeInputList: self.employeeList,
+                selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                selectedCode: self.selectedCode,
+                isDialog: self.isDialog(),
+                isShowNoSelectRow: self.isShowNoSelectRow(),
+                alreadySettingList: self.alreadySettingList,
+                isShowWorkPlaceName: self.isShowWorkPlaceName(),
+                isShowSelectAllButton: self.isShowSelectAllButton(),
+                disableSelection : self.disableSelection()
+            };
+            $('#component-items-list').ntsListComponent(self.listComponentOption);
+        }
+
+        exportFile(): void {
+            let self = this;
+            let data: any = {
+                socialInsurNotiCreateSet: self.socInsurNotiCreSet(),
+                startDate: self.startDate,
+                endDate: self.endDate
+            };
+            nts.uk.ui.block.grayout();
+            service.exportFile(data).done(function() {
+            }).fail(function(error) {
+                nts.uk.ui.dialog.alertError(error);
+            }).always(function() {
+                nts.uk.ui.block.clear();
             });
         }
 
@@ -116,7 +199,7 @@ module nts.uk.pr.view.qsi013.a.viewmodel {
                  * @param: data: the data return from CCG001
                  */
                 returnDataFromCcg001: function(data: Ccg001ReturnedData) {
-
+                    self.employeeInputList(self.employeeList(data.listEmployee));
                 }
             }
 
@@ -164,6 +247,7 @@ module nts.uk.pr.view.qsi013.a.viewmodel {
         /** Data returned */
         returnDataFromCcg001: (data: Ccg001ReturnedData) => void;
     }
+
     export interface EmployeeSearchDto {
         employeeId: string;
         employeeCode: string;
@@ -179,10 +263,108 @@ module nts.uk.pr.view.qsi013.a.viewmodel {
         listEmployee: Array<EmployeeSearchDto>; // 検索結果
     }
 
-    export function getRule(): Array<ItemModel> {
+    /*kcp005*/
+    export class ListType {
+        static EMPLOYMENT = 1;
+        static Classification = 2;
+        static JOB_TITLE = 3;
+        static EMPLOYEE = 4;
+    }
+
+    export interface UnitModel {
+        code: string;
+        name?: string;
+        workplaceName?: string;
+        isAlreadySetting?: boolean;
+    }
+
+    export class SelectType {
+        static SELECT_BY_SELECTED_CODE = 1;
+        static SELECT_ALL = 2;
+        static SELECT_FIRST_ITEM = 3;
+        static NO_SELECT = 4;
+    }
+
+    export interface UnitAlreadySettingModel {
+        code: string;
+        isAlreadySetting: boolean;
+    }
+
+    //Enum
+    export function getBusinessDivision(): Array<ItemModel> {
         return [
-            new ItemModel('0', getText('QSI013_18')),
-            new ItemModel('1', getText('QSI013_19'))
+            new ItemModel('0', getText('Enum_BusinessDivision_OUTPUT_COMPANY_NAME')),
+            new ItemModel('1', getText('ENUM_BusinessDivision_OUTPUT_SIC_INSURES')),
+            new ItemModel('2', getText('ENUM_BusinessDivision_DO_NOT_OUTPUT'))
+        ];
+    }
+    export function getBussEsimateClass(): Array<ItemModel> {
+        return [
+            new ItemModel('0', getText('Enum_BussEsimateClass_HEAL_INSUR_OFF_ARR_SYMBOL')),
+            new ItemModel('1', getText('Enum_BussEsimateClass_EMPEN_ESTAB_REARSIGN'))
+        ];
+    }
+    export function getSocialInsurOutOrder(): Array<ItemModel> {
+        return [
+            new ItemModel('0', getText('Enum_SocialInsurOutOrder_HEAL_INSUR_NUMBER_ORDER')),
+            new ItemModel('1', getText('Enum_SocialInsurOutOrder_WELF_AREPEN_NUMBER_ORDER')),
+            new ItemModel('2', getText('Enum_SocialInsurOutOrder_HEAL_INSUR_NUMBER_UNION_ORDER')),
+            new ItemModel('3', getText('Enum_SocialInsurOutOrder_ORDER_BY_FUND')),
+            new ItemModel('4', getText('Enum_SocialInsurOutOrder_HEAL_INSUR_OFF_ARR_SYMBOL')),
+            new ItemModel('5', getText('Enum_SocialInsurOutOrder_EMPLOYEE_CODE_ORDER')),
+            new ItemModel('6', getText('Enum_SocialInsurOutOrder_EMPLOYEE_KANA_ORDER')),
+            new ItemModel('7', getText('Enum_SocialInsurOutOrder_INSURED_PER_NUMBER_ORDER'))
+        ];
+    }
+
+    export function getPersonalNumClass(): Array<ItemModel> {
+        return [
+            new ItemModel('0', getText('Enum_PersonalNumClass_OUTPUT_PER_NUMBER')),
+            new ItemModel('1', getText('Enum_PersonalNumClass_OUTPUT_BASIC_PER_NUMBER')),
+            new ItemModel('2', getText('Enum_PersonalNumClass_OUTPUT_BASIC_PEN_NOPER')),
+            new ItemModel('3', getText('Enum_PersonalNumClass_DO_NOT_OUTPUT'))
+        ];
+    }
+
+    export function getSubNameClass(): Array<ItemModel> {
+        return [
+            new ItemModel('0', getText('Enum_SubNameClass_PERSONAL_NAME')),
+            new ItemModel('1', getText('Enum_SubNameClass_REPORTED_NAME'))
+        ];
+    }
+
+
+    export function getInsurPersonNumDivision(): Array<ItemModel> {
+        return [
+            new ItemModel('0', getText('Enum_InsurPersonNumDivision_DO_NOT_OUPUT')),
+            new ItemModel('1', getText('Enum_InsurPersonNumDivision_OUTPUT_HEAL_INSUR_NUM')),
+            new ItemModel('2', getText('Enum_InsurPersonNumDivision_OUTPUT_THE_WELF_PENNUMBER')),
+            new ItemModel('3', getText('Enum_InsurPersonNumDivision_OUTPUT_HEAL_INSUR_UNION')),
+            new ItemModel('4', getText('Enum_InsurPersonNumDivision_OUTPUT_THE_FUN_MEMBER'))
+        ];
+    }
+
+    export function getTextPerNumberClass(): Array<ItemModel> {
+        return [
+            new ItemModel('0', getText('Enum_TextPerNumberClass_OUTPUT_NUMBER')),
+            new ItemModel('1', getText('Enum_TextPerNumberClass_OUPUT_BASIC_PEN_NUMBER')),
+            new ItemModel('2', getText('Enum_TextPerNumberClass_OUTPUT_BASIC_NO_PERSONAL'))
+        ];
+    }
+
+    export function getOutputFormatClass(): Array<ItemModel> {
+        return [
+            new ItemModel('0', getText('Enum_OutputFormatClass_PEN_OFFICE')),
+            new ItemModel('1', getText('Enum_OutputFormatClass_HEAL_INSUR_ASSO')),
+            new ItemModel('2', getText('Enum_OutputFormatClass_OUTPUT_THE_WELF_PEN'))
+        ];
+    }
+
+    export function getLineFeedCode(): Array<ItemModel> {
+        return [
+            new ItemModel('0', getText('Enum_LineFeedCode_ADD')),
+            new ItemModel('1', getText('Enum_LineFeedCode_DO_NOT_ADD')),
+            new ItemModel('2', getText('Enum_LineFeedCode_E_GOV'))
         ];
     }
 
@@ -198,6 +380,7 @@ module nts.uk.pr.view.qsi013.a.viewmodel {
 
     export interface ISocInsurNotiCreSet {
         officeInformation: number;
+        printPersonNumber: number;
         businessArrSymbol: number;
         outputOrder: number;
         submittedName: number;
@@ -210,6 +393,7 @@ module nts.uk.pr.view.qsi013.a.viewmodel {
 
     export class SocInsurNotiCreSet {
         officeInformation: KnockoutObservable<number>;
+        printPersonNumber: KnockoutObservable<number>;
         businessArrSymbol: KnockoutObservable<number>;
         outputOrder: KnockoutObservable<number>;
         submittedName: KnockoutObservable<number>;
@@ -220,6 +404,7 @@ module nts.uk.pr.view.qsi013.a.viewmodel {
         lineFeedCode: KnockoutObservable<number>;
         constructor(params: ISocInsurNotiCreSet) {
             this.officeInformation = ko.observable(params.officeInformation);
+            this.printPersonNumber = ko.observable(params.printPersonNumber);
             this.businessArrSymbol = ko.observable(params.businessArrSymbol);
             this.outputOrder = ko.observable(params.outputOrder);
             this.submittedName = ko.observable(params.submittedName);

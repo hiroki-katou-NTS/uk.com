@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.file.app.core.temp;
+package nts.uk.ctx.pr.file.app.core.socialinsurnoticreset;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class SocialInsurNotiCreateSetExport {
+public class NotificationOfLossInsExport {
     /**
      * 事業所情報
      */

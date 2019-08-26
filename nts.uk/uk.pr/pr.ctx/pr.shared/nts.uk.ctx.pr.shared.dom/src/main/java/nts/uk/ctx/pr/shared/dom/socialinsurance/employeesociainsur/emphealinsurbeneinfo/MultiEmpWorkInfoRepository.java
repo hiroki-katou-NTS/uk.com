@@ -9,8 +9,6 @@ import java.util.Optional;
 public interface MultiEmpWorkInfoRepository
 {
 
-    List<MultiEmpWorkInfo> getAllMultiEmpWorkInfo();
-
     Optional<MultiEmpWorkInfo> getMultiEmpWorkInfoById(String employeeId);
 
     void add(MultiEmpWorkInfo domain);

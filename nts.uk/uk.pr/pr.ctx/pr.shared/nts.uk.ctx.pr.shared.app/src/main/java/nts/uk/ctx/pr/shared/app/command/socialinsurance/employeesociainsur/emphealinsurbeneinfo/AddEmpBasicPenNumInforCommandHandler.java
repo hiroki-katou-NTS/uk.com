@@ -42,11 +42,12 @@ public class AddEmpBasicPenNumInforCommandHandler extends CommandHandler<Credent
                 socialInsurAcquisiInforCommand.getLivingAbroad(),
                 socialInsurAcquisiInforCommand.getReasonOther(),
                 socialInsurAcquisiInforCommand.getReasonAndOtherContents(),
-                socialInsurAcquisiInforCommand.getShortStay(),
+                socialInsurAcquisiInforCommand.getShortTimeWorkers(),
                 socialInsurAcquisiInforCommand.getShortStay(),
                 socialInsurAcquisiInforCommand.getDepenAppoint(),
-                socialInsurAcquisiInforCommand.getEmployeeId(),
-                socialInsurAcquisiInforCommand.getDepenAppoint()
+                socialInsurAcquisiInforCommand.getQualifiDistin(),
+                socialInsurAcquisiInforCommand.getContinReemAfterRetirement()
+
         );
         if(socialInsurAcquisiInfor.isPresent()){
             socialInsurAcquisiInforRepository.update(socialInsurAcquisiInforDomain);
@@ -64,8 +65,8 @@ public class AddEmpBasicPenNumInforCommandHandler extends CommandHandler<Credent
                 empBasicPenNumInforRepository.add(domain);
             }
         }
-        Optional<MultiEmpWorkInfo>  multiEmpWorkInfo = multiEmpWorkInfoRepository.getMultiEmpWorkInfoById(multiEmpWorkInfoCommand.getEmpId());
-        MultiEmpWorkInfo multiEmpWorkInfoDomain = new MultiEmpWorkInfo(multiEmpWorkInfoCommand.getEmpId(),multiEmpWorkInfoCommand.getIsMoreEmp());
+        Optional<MultiEmpWorkInfo>  multiEmpWorkInfo = multiEmpWorkInfoRepository.getMultiEmpWorkInfoById(multiEmpWorkInfoCommand.getEmployeeId());
+        MultiEmpWorkInfo multiEmpWorkInfoDomain = new MultiEmpWorkInfo(multiEmpWorkInfoCommand.getEmployeeId(),multiEmpWorkInfoCommand.getIsMoreEmp());
         if(multiEmpWorkInfo.isPresent()){
             multiEmpWorkInfoRepository.update(multiEmpWorkInfoDomain);
         }else{

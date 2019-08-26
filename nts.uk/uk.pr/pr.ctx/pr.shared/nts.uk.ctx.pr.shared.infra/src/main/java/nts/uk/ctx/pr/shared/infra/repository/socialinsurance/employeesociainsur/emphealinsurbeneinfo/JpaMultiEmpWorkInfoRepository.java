@@ -18,12 +18,6 @@ public class JpaMultiEmpWorkInfoRepository extends JpaRepository implements Mult
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.multiEmpWorkIfPk.employeeId =:employeeId ";
 
     @Override
-    public List<MultiEmpWorkInfo> getAllMultiEmpWorkInfo(){
-        return this.queryProxy().query(SELECT_ALL_QUERY_STRING, QqsmtMultiEmpWorkIf.class)
-                .getList(item -> item.toDomain());
-    }
-
-    @Override
     public Optional<MultiEmpWorkInfo> getMultiEmpWorkInfoById(String employeeId){
         return this.queryProxy().query(SELECT_BY_KEY_STRING, QqsmtMultiEmpWorkIf.class)
         .setParameter("employeeId", employeeId)

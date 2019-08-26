@@ -74,7 +74,7 @@ public class SocialInsurAcquisiInforCommand {
     /**
      * 資格取得区分
      */
-    private String qualifiDistin;
+    private int qualifiDistin;
 
     /**
      * 短時間労働者

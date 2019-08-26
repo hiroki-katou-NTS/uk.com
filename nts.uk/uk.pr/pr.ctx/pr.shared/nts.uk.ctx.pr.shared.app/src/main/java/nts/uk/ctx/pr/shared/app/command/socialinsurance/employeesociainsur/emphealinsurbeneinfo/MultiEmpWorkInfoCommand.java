@@ -9,7 +9,7 @@ public class MultiEmpWorkInfoCommand
     /**
     * 社員ID
     */
-    private String empId;
+    private String employeeId;
     
     /**
     * 二以上事業所勤務者
