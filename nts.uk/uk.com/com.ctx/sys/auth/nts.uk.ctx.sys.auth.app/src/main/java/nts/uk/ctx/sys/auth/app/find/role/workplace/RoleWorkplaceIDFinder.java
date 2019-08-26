@@ -144,6 +144,7 @@ public class RoleWorkplaceIDFinder {
 	}
 	
 	/**
+	 * 参照可能な職場リストを取得する
 	 * Find list workplace id.
 	 *
 	 * @param param the param
@@ -172,20 +173,26 @@ public class RoleWorkplaceIDFinder {
 	 * @return the list
 	 */
 	public List<String> findListWkpId(WorkplaceParam param) {
-		List<String> listWkpId = new ArrayList<>();
 
 		String workplaceId = "";
 		String employeeId = AppContexts.user().employeeId();
 		String companyId = AppContexts.user().companyId();
+		
+		//[RQ613]指定社員の職場管理者の職場リストを取得する（配下含む）
+		List<String> listWkpId = workplaceAdapter.getWorkplaceId(GeneralDate.today(), employeeId);
+				
+		// requestList #30 get aff workplace history
+		Optional<AffWorkplaceHistImport> opAffWorkplaceHistImport = workplaceAdapter
+				.findWkpByBaseDateAndEmployeeId(param.getBaseDate(), employeeId);
 
 		// Including management workplace = false
 
 		// RequestList No.30 get aff workplace history
-		Optional<AffWorkplaceHistImport> optAffWorkplaceHistImport = sysAuthWorkplaceAdapter
-				.findWkpByBaseDateAndEmpId(param.getBaseDate(), employeeId);
+//		Optional<AffWorkplaceHistImport> optAffWorkplaceHistImport = sysAuthWorkplaceAdapter
+//				.findWkpByBaseDateAndEmpId(param.getBaseDate(), employeeId);
 
-		if (optAffWorkplaceHistImport.isPresent()) {
-			workplaceId = optAffWorkplaceHistImport.get().getWorkplaceId();
+		if (opAffWorkplaceHistImport.isPresent()) {
+			workplaceId = opAffWorkplaceHistImport.get().getWorkplaceId();
 		}
 
         // check workplace id != null
