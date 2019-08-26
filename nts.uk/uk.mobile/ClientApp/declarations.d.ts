@@ -29,10 +29,10 @@ declare interface IRule {
     valueType?: 'String' | 'Decimal' | 'Integer' | 'HalfInt' | 'Date' | 'Time' | 'Clock' | 'Duration' | 'TimePoint' | 'TimeRange' | 'DateRange';
     [rule: string]: Array<Date | number | string> | Date | number | boolean | IRule | string | Function | {
         test: RegExp | Function;
-        message: string;
+        message: string | Array<string | { [key: string]: string }>;
     } | {
         test: RegExp | Function;
-        messageId: string;
+        messageId: string | Array<string | { [key: string]: string }>;
     };
 }
 

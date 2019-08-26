@@ -51,7 +51,14 @@ const vm = Vue.extend({
 
                 this.$destroy(true);
             } else {
+                let top = document.scrollingElement.scrollTop,
+                    container = document.body.querySelector('.container-fluid') as HTMLElement;
+
                 dom.addClass(document.body, 'modal-open');
+
+                if (!container.style.marginTop) {
+                    container.style.marginTop = `-${top}px`;
+                }
             }
         }
     },
@@ -71,7 +78,17 @@ const vm = Vue.extend({
         document.body.removeChild(self.$el);
 
         if (dom.modals.length <= 1) {
-            dom.removeClass(document.body, 'modal-open');
+            let top = 0,
+                container = document.body.querySelector('.container-fluid') as HTMLElement;
+
+            if (container) {
+                top = Number((container.style.marginTop || '').replace('px', ''));
+                container.style.marginTop = '';
+            }
+
+            document.body.classList.remove('modal-open');
+
+            document.scrollingElement.scrollTop = Math.abs(top);
         }
     }
 }), mask = {

@@ -49,6 +49,7 @@ export class KafS05bComponent extends Vue {
         };
 
         this.kafs05Model.isCreate = false;
+        this.pgName = '';
         if (_.isNil(this.kafs05Model.appID)) {
             if (storage.local.hasItem('appID')) {
                 this.kafs05Model.appID = storage.local.getItem('appID').toString();
@@ -57,16 +58,6 @@ export class KafS05bComponent extends Vue {
             }
         } else {
             storage.local.setItem('appID', this.kafs05Model.appID);
-        }
-
-        if (this.$route.query.overworkatr == '0') {
-            this.pgName = 'kafS05b0';
-        } else if (this.$route.query.overworkatr == '1') {
-            this.pgName = 'kafS05b1';
-        } else if (this.$route.query.overworkatr == '2') {
-            this.pgName = 'kafS05b2';
-        } else {
-            this.pgName = 'kafS05b2';
         }
     }
 

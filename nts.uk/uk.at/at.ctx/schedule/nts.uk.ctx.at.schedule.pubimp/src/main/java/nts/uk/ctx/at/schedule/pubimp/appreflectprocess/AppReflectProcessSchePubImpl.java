@@ -1,5 +1,4 @@
 package nts.uk.ctx.at.schedule.pubimp.appreflectprocess;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
@@ -15,6 +14,7 @@ import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.holidaywork.HolidayW
 import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.recruitment.RecruitmentAppReflectSche;
 import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.workchange.WorkChangeReflectServiceSche;
 import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.workchange.WorkChangecommonReflectParamSche;
+import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.schedule.pub.appreflectprocess.CommonReflectSchePubParam;
 import nts.uk.ctx.at.schedule.pub.appreflectprocess.WorkChangeCommonReflectSchePubParam;
 import nts.uk.ctx.at.schedule.pub.appreflectprocess.AppReflectProcessSchePub;
@@ -69,8 +69,6 @@ public class AppReflectProcessSchePubImpl implements AppReflectProcessSchePub{
 				schePubParam.getDatePara(),
 				schePubParam.getWorktypeCode(),
 				schePubParam.getWorkTimeCode(),
-				schePubParam.getStartDate(),
-				schePubParam.getEndDate(),
 				schePubParam.getStartTime(),
 				schePubParam.getEndTime());
 		return paramSche;
@@ -90,5 +88,4 @@ public class AppReflectProcessSchePubImpl implements AppReflectProcessSchePub{
 	public void recruitmentReflectSche(CommonReflectSchePubParam recruitmentParam) {
 		recruitmentReflect.recruitmentReflect(this.toParamSche(recruitmentParam));
 	}
-
 }
