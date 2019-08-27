@@ -2,6 +2,8 @@ package nts.uk.ctx.pereg.app.find.filemanagement;
 
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -359,10 +361,11 @@ public class CheckFileFinder {
 				items.stream().forEach(item -> {
 					pdt.getItems().stream().forEach(itemDto -> {
 						if (itemDto.getItemCode().equals(item.getItemCode())) {
-							Optional<ItemError> itemError = errors.stream().filter(e -> e.getColumnKey().equals(itemDto.getItemCode())).findFirst();
-							if(itemError.isPresent()) {
-								itemError.get().setRecordId(item.getRecordId());
-							}
+							errors.stream().forEach(error ->{
+								if(error.getColumnKey().equals(itemDto.getItemCode())) {
+									error.setRecordId(item.getRecordId());
+								}
+							});
 
 							itemDto.setRecordId(item.getRecordId());
 							// trường hợp ghi đè, item ko có trong file import thì sẽ chỉ được view thôi, ko được update giá trị
@@ -1036,8 +1039,8 @@ public class CheckFileFinder {
 		case TIME:
 		case TIMEPOINT:
 			try {
-			return new Integer(new BigDecimal(value).intValue());
-			}catch(Exception e) {
+				return new Integer(new BigDecimal(value).intValue());
+			} catch (Exception e) {
 				return value;
 			}
 		case NUMBERIC_BUTTON:
@@ -1048,9 +1051,46 @@ public class CheckFileFinder {
 				return value;
 			}
 		case DATE:
+			List<String> ddMMyyy = Arrays.asList("dd/MM/yyyy","dd-MM-yyyy");
+			List<String> MMddyyy = Arrays.asList("MM/dd/yyyy","MM-dd-yyyy");
 			try {
-			  return GeneralDate.fromString(value, "yyyy/MM/dd");
-			}catch(Exception e) {
+				Optional<SimpleDateFormat> dateFormat = validateDate(value);
+				
+				if (dateFormat.isPresent()) {
+					
+					if (ddMMyyy.contains(dateFormat.get().toPattern())) {
+						
+						String[] dateSplit = value.split("[-/]");
+						
+						if (dateSplit.length == 3) {
+							
+							return GeneralDate.ymd(Integer.valueOf(dateSplit[2]).intValue(),
+									Integer.valueOf(dateSplit[1]).intValue(), Integer.valueOf(dateSplit[0]).intValue());
+						} else {
+							
+							return value;
+							
+						}
+					}
+					if (MMddyyy.contains(dateFormat.get().toPattern())) {
+						
+						String[] dateSplit = value.split("[-/]");
+						
+						if (dateSplit.length == 3) {
+							
+							return GeneralDate.ymd(Integer.valueOf(dateSplit[2]).intValue(),
+									Integer.valueOf(dateSplit[0]).intValue(), Integer.valueOf(dateSplit[1]).intValue());
+						
+						} else {
+							
+							return value;
+							
+						}
+					} else {
+						return GeneralDate.fromString(value, "yyyy/MM/dd");
+					}
+				}
+			} catch (Exception e) {
 				return value;
 			}
 		default:
@@ -1125,6 +1165,38 @@ public class CheckFileFinder {
 
 	}
 	
+	private Optional<SimpleDateFormat> validateDate(String value) {
+		List<SimpleDateFormat> dateFormats = createSimpleDateFormat();
+		List<SimpleDateFormat> isDateLst = new ArrayList<>();
+		for(SimpleDateFormat dateFormat : dateFormats) {
+			try {
+				dateFormat.parse(value.trim());
+				isDateLst.add(dateFormat);
+			} catch (ParseException pe) {
+				
+			}
+			
+		}
+		if(!isDateLst.isEmpty()) return Optional.ofNullable(isDateLst.get(0));
+		return Optional.empty();
+	}
+	
+	private  List<SimpleDateFormat> createSimpleDateFormat(){
+		List<SimpleDateFormat> result = new ArrayList<>();
+		SimpleDateFormat yMd = new SimpleDateFormat("yyyy/MM/dd");
+		yMd.setLenient(false);
+		result.add(yMd);
+		SimpleDateFormat yMd1 = new SimpleDateFormat("yyyy-MM-dd");
+		yMd1.setLenient(false);
+		result.add(yMd1);
+		SimpleDateFormat dMy = new SimpleDateFormat("dd/MM/yyyy");
+		dMy.setLenient(false);
+		result.add(dMy);
+		SimpleDateFormat dMy1 = new SimpleDateFormat("dd-MM-yyyy");
+		dMy1.setLenient(false);
+		result.add(dMy1);
+		return result;
+	}
 	private Map<String, Periods> createPeriod(){
 		Map<String, Periods> aMap = new HashMap<>();
 		// 所属会社履歴
