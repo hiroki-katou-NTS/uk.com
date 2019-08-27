@@ -79,7 +79,7 @@
                         v-bind:errors="$errors.kafs05ModelStep2.overtimeHours"
                         v-bind:show-error="false"/>
                     <div class="invalid-feedback mt-1 d-block mt-0 mb-2" v-if="item.preAppExceedState"><span>{{ 'Msg_1561' | i18n(item.frameName) }}</span></div>
-                    <div class="invalid-feedback mt-1 d-block mt-0 mb-2" v-if="kafs05ModelStep2.actualStatus == 1 && item.actualExceedState"><span>{{ 'Msg_1560' | i18n(item.frameName) }}</span></div>
+                    <div class="invalid-feedback mt-1 d-block mt-0 mb-2" v-if="item.actualExceedState"><span>{{ 'Msg_1560' | i18n(item.frameName) }}</span></div>
                 </div>
             </div>
         </div>
