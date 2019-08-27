@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.app.find.remainingnumber.nursingcareleave;
 
+import java.util.Map;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
@@ -96,6 +97,63 @@ public class CareLeaveInfoDto extends PeregDomainDto {
 			LeaveForCareInfo careInfoDomain = careInfoDomainOpt.get();
 			result.setCareUseArt(careInfoDomain.isUseClassification() ? 1 : 0);
 			result.setCareUpLimSet(careInfoDomain.getUpperlimitSetting().value);
+			result.setCareThisFiscal(careInfoDomain.getMaxDayForThisFiscalYear().isPresent()
+					? careInfoDomain.getMaxDayForThisFiscalYear().get().v() : null);
+			result.setCareNextFiscal(careInfoDomain.getMaxDayForNextFiscalYear().isPresent()
+					? careInfoDomain.getMaxDayForNextFiscalYear().get().v() : null);
+		}
+
+		//care-data
+		if (careDataDomainOpt.isPresent()) {
+			LeaveForCareData careDataDomain = careDataDomainOpt.get();
+			result.setCareUsedDays(careDataDomain.getNumOfUsedDay().v());
+		} else {
+			result.setCareUsedDays(null);
+		}
+
+		return result;
+	}
+	
+	public static CareLeaveInfoDto createFromDomainCps013(String employeeId,
+			Optional<ChildCareLeaveRemainingInfo> childCareInfoDomainOpt,
+			Optional<ChildCareLeaveRemainingData> childCareDataDomainOpt,
+			Optional<LeaveForCareInfo> careInfoDomainOpt, Optional<LeaveForCareData> careDataDomainOpt, Map<String, Object> enums) {
+		CareLeaveInfoDto result = new CareLeaveInfoDto();
+		result.setSId(employeeId);
+		result.setRecordId(employeeId);
+
+		// child-care-info
+		if (childCareInfoDomainOpt.isPresent()) {
+			
+			Integer childCareUseArt = (Integer)enums.get("IS00375");
+			Integer childCareUpLimSet = (Integer)enums.get("IS00376");
+			
+			ChildCareLeaveRemainingInfo childCareInfoDomain = childCareInfoDomainOpt.get();
+			result.setChildCareUseArt(childCareUseArt);
+			result.setChildCareUpLimSet(childCareUpLimSet);
+			result.setChildCareThisFiscal(childCareInfoDomain.getMaxDayForThisFiscalYear().isPresent()
+					? childCareInfoDomain.getMaxDayForThisFiscalYear().get().v() : null);
+			result.setChildCareNextFiscal(childCareInfoDomain.getMaxDayForNextFiscalYear().isPresent()
+					? childCareInfoDomain.getMaxDayForNextFiscalYear().get().v() : null);
+		}
+
+		// child-care-data
+		if (childCareDataDomainOpt.isPresent()) {
+			ChildCareLeaveRemainingData childCareDataDomain = childCareDataDomainOpt.get();
+			result.setChildCareUsedDays(childCareDataDomain.getNumOfUsedDay().v());
+		} else {
+			result.setChildCareUsedDays(null);
+		}
+
+		// care-info
+		if (careInfoDomainOpt.isPresent()) {
+			LeaveForCareInfo careInfoDomain = careInfoDomainOpt.get();
+			
+			Integer careUseArt = (Integer)enums.get("IS00380");
+			Integer careUpLimSet = (Integer)enums.get("IS00381");
+			
+			result.setCareUseArt(careUseArt);
+			result.setCareUpLimSet(careUpLimSet);
 			result.setCareThisFiscal(careInfoDomain.getMaxDayForThisFiscalYear().isPresent()
 					? careInfoDomain.getMaxDayForThisFiscalYear().get().v() : null);
 			result.setCareNextFiscal(careInfoDomain.getMaxDayForNextFiscalYear().isPresent()

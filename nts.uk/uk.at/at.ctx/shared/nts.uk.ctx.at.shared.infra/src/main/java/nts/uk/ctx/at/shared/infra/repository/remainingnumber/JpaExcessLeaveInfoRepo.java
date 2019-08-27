@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -110,6 +111,45 @@ public class JpaExcessLeaveInfoRepo extends JpaRepository  implements ExcessLeav
 								new BigDecimal(x.paymentMethod))).collect(Collectors.toList());
 	
 	}
+	
+	@Override
+	public List<ExcessLeaveInfo> getAllForCPS013(List<String> sids, String cid, Map<String, Object> enums) {
+		List<KrcmtExcessLeaveInfo> entities = new ArrayList<>();
+		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			String sql = "SELECT * FROM KRCMT_EXCESS_LEAVE_INFO WHERE  CID = ? AND SID IN ("
+					+ NtsStatement.In.createParamsString(subList) + ")";
+			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+				stmt.setString(1, cid);
+				for (int i = 0; i < subList.size(); i++) {
+					stmt.setString(2 + i, subList.get(i));
+				}
+				List<KrcmtExcessLeaveInfo> result = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
+					KrcmtExcessLeaveInfo entity = new KrcmtExcessLeaveInfo();
+					entity.cID = rec.getString("CID");
+					entity.employeeId = rec.getString("SID");
+					entity.useAtr = rec.getInt("USE_ATR");
+					entity.occurrenceUnit = rec.getInt("OCCURRENCE_UNIT");
+					entity.paymentMethod = rec.getInt("PAYMENT_METHOD");
+					
+					//  60H超休管理
+					enums.put("IS00370", rec.getInt("USE_ATR"));
+					//  精算方法
+					enums.put("IS00372", rec.getInt("PAYMENT_METHOD"));
+					return entity;
+				});
+				entities.addAll(result);
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+		});
+		return entities.stream()
+				.map(x -> ExcessLeaveInfo.createDomainforcps013(
+							    x.cID,
+								x.employeeId,
+								new BigDecimal(x.useAtr),
+								new BigDecimal(x.occurrenceUnit),
+								new BigDecimal(x.paymentMethod))).collect(Collectors.toList());
+	}
 
 	@Override
 	public void addAll(List<ExcessLeaveInfo> domains) {
@@ -184,6 +224,5 @@ public class JpaExcessLeaveInfoRepo extends JpaRepository  implements ExcessLeav
 		System.out.println(records);
 		
 	}
-
 
 }

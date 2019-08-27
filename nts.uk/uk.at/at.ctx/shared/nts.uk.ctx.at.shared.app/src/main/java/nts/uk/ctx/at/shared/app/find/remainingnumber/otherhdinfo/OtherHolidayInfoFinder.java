@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.app.find.remainingnumber.otherhdinfo;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -190,10 +191,15 @@ public class OtherHolidayInfoFinder implements PeregFinder<OtherHolidayInfoDto> 
 		String cid = AppContexts.user().companyId();
 		List<GridPeregDomainBySidDto> result = new ArrayList<>();
 		List<String> listEmp = query.getEmpInfos().stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
+		
 		Map<String, List<PublicHolidayRemain>> listHolidayRemainMap = publicHolidayRemainRepository.getAll(cid, listEmp)
 				.parallelStream().collect(Collectors.groupingBy(c -> c.getSID()));
-		Map<String, List<ExcessLeaveInfo>> listExcessLeaveMap = excessLeaveInfoRepository.getAll(listEmp, cid)
+		
+		Map<String, Object> enums = new HashMap<>();
+		
+		Map<String, List<ExcessLeaveInfo>> listExcessLeaveMap = excessLeaveInfoRepository.getAllForCPS013(listEmp, cid, enums)
 				.parallelStream().collect(Collectors.groupingBy(c -> c.getSID()));
+		
 		Map<String, Double> leaveMaDataMap = leaveManaDataRepository.getAllBySidWithsubHDAtr(cid, listEmp,
 				DigestionAtr.UNUSED.value);
 		Map<String, Double> comDayManaData = comDayOffManaDataRepository.getAllBySidWithReDay(cid, listEmp);
@@ -214,8 +220,8 @@ public class OtherHolidayInfoFinder implements PeregFinder<OtherHolidayInfoDto> 
 				excessLeaveInfo = listExcessLeave.get(0);
 			}
 
-			OtherHolidayInfoDto dto = OtherHolidayInfoDto.createFromDomain(Optional.ofNullable(publicHolidayRemain),
-					Optional.ofNullable(excessLeaveInfo));
+			OtherHolidayInfoDto dto = OtherHolidayInfoDto.createFromDomainCPS013(Optional.ofNullable(publicHolidayRemain),
+					Optional.ofNullable(excessLeaveInfo), enums);
 			// Item IS00366 --------------
 			// 取得した「休出管理データ」の未使用日数を合計
 			Double sumUnUsedDay = leaveMaDataMap.get(c.getEmployeeId());

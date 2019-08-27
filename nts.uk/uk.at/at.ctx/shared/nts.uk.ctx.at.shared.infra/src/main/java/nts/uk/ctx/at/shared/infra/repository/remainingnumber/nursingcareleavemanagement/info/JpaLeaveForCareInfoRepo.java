@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -240,17 +241,80 @@ public class JpaLeaveForCareInfoRepo extends JpaRepository implements LeaveForCa
 				}
 
 				List<CareLeaveDataInfo> data = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
-					LeaveForCareInfo leaveForCareInfo =  LeaveForCareInfo.createCareLeaveInfo(rec.getString("ISID"),
-							rec.getInt("IUSE_ATR"), rec.getInt("IUPPER_LIM_SET_ART"),
-							rec.getDouble("IMAX_DAY_THIS_FISCAL_YEAR"), rec.getDouble("IMAX_DAY_NEXT_FISCAL_YEAR"));
+					LeaveForCareInfo leaveForCareInfo =  LeaveForCareInfo.createCareLeaveInfo(
+							rec.getString("ISID"),
+							rec.getInt("IUSE_ATR"), 
+							rec.getInt("IUPPER_LIM_SET_ART"),
+							rec.getDouble("IMAX_DAY_THIS_FISCAL_YEAR"), 
+							rec.getDouble("IMAX_DAY_NEXT_FISCAL_YEAR"));
 					
 					LeaveForCareData leaveForCareData = LeaveForCareData.getCareHDRemaining(rec.getString("DSID"), rec.getDouble("DUSED_DAYS"));
 					
-					ChildCareLeaveRemainingInfo childCareLeaveRemainingInfo =  ChildCareLeaveRemainingInfo.createChildCareLeaveInfo(rec.getString("CISID"),  
+					ChildCareLeaveRemainingInfo childCareLeaveRemainingInfo =  ChildCareLeaveRemainingInfo.createChildCareLeaveInfo(
+							rec.getString("CISID"),  
 							rec.getInt("CIUSE_ATR"), 
 							rec.getInt("CIUPPER_LIM_SET_ART"),
 							rec.getDouble("CIMAX_DAY_THIS_FISCAL_YEAR"),
 							rec.getDouble("CIMAX_DAY_NEXT_FISCAL_YEAR"));
+					
+					ChildCareLeaveRemainingData childCareLeaveRemainingData = ChildCareLeaveRemainingData.getChildCareHDRemaining(rec.getString("CDSID"), rec.getDouble("CDUSED_DAYS"));
+					return new CareLeaveDataInfo(leaveForCareInfo, leaveForCareData, childCareLeaveRemainingInfo , childCareLeaveRemainingData);
+				});
+				result.addAll(data);
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+		});
+		return result;
+	}
+
+	@Override
+	public List<CareLeaveDataInfo> getAllCareInfoDataBysIdCps013(String cid, List<String> sids,
+			Map<String, Object> enums) {
+
+		List<CareLeaveDataInfo> result = new ArrayList<>();
+		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			String sql = String.join(" ",
+					"SELECT i.SID AS ISID, i.USE_ATR AS IUSE_ATR, i.UPPER_LIM_SET_ART AS IUPPER_LIM_SET_ART, i.MAX_DAY_THIS_FISCAL_YEAR AS IMAX_DAY_THIS_FISCAL_YEAR, i.MAX_DAY_NEXT_FISCAL_YEAR as IMAX_DAY_NEXT_FISCAL_YEAR,",
+					"d.SID AS DSID, d.USED_DAYS AS DUSED_DAYS,",
+					"ci.SID AS CISID, ci.USE_ATR AS CIUSE_ATR, i.UPPER_LIM_SET_ART AS CIUPPER_LIM_SET_ART, i.MAX_DAY_THIS_FISCAL_YEAR AS CIMAX_DAY_THIS_FISCAL_YEAR, i.MAX_DAY_NEXT_FISCAL_YEAR as CIMAX_DAY_NEXT_FISCAL_YEAR,",
+					"cd.SID AS CDSID, cd.USED_DAYS as CDUSED_DAYS",
+					"FROM KRCMT_CARE_HD_INFO i",
+					"LEFT JOIN KRCMT_CARE_HD_DATA d",
+					"ON i.SID = d.SID AND i.CID = CID_VAL",
+					"LEFT JOIN KRCMT_CHILD_CARE_HD_INFO ci",
+					"ON ci.SID = i.SID AND ci.CID = CID_VAL",
+					"LEFT JOIN KRCMT_CHILD_CARE_HD_DATA cd",
+					"ON cd.SID = i.SID AND cd.CID = CID_VAL",
+					"WHERE i.SID IN (",  NtsStatement.In.createParamsString(subList) + ")");
+			sql = sql.replace("CID_VAL", "'"+ cid + "'");
+			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+				//stmt.setString(1, cid);
+				for (int i = 0; i < subList.size(); i++) {
+					stmt.setString(1 + i, subList.get(i));
+				}
+
+				List<CareLeaveDataInfo> data = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
+					LeaveForCareInfo leaveForCareInfo =  LeaveForCareInfo.createCareLeaveInfoCps013(
+							rec.getString("ISID"),
+							rec.getInt("IUSE_ATR"), 
+							rec.getInt("IUPPER_LIM_SET_ART"),
+							rec.getDouble("IMAX_DAY_THIS_FISCAL_YEAR"), 
+							rec.getDouble("IMAX_DAY_NEXT_FISCAL_YEAR"));
+					
+					enums.put("IS00380", rec.getInt("IUSE_ATR"));
+					enums.put("IS00381", rec.getInt("IUPPER_LIM_SET_ART"));
+					
+					LeaveForCareData leaveForCareData = LeaveForCareData.getCareHDRemaining(rec.getString("DSID"), rec.getDouble("DUSED_DAYS"));
+					
+					ChildCareLeaveRemainingInfo childCareLeaveRemainingInfo =  ChildCareLeaveRemainingInfo.createChildCareLeaveInfoCps013(
+							rec.getString("CISID"),  
+							rec.getInt("CIUSE_ATR"), 
+							rec.getInt("CIUPPER_LIM_SET_ART"),
+							rec.getDouble("CIMAX_DAY_THIS_FISCAL_YEAR"),
+							rec.getDouble("CIMAX_DAY_NEXT_FISCAL_YEAR"));
+					enums.put("IS00375", rec.getInt("CIUSE_ATR"));
+					enums.put("IS00376", rec.getInt("CIUPPER_LIM_SET_ART"));
 					
 					ChildCareLeaveRemainingData childCareLeaveRemainingData = ChildCareLeaveRemainingData.getChildCareHDRemaining(rec.getString("CDSID"), rec.getDouble("CDUSED_DAYS"));
 					return new CareLeaveDataInfo(leaveForCareInfo, leaveForCareData, childCareLeaveRemainingInfo , childCareLeaveRemainingData);

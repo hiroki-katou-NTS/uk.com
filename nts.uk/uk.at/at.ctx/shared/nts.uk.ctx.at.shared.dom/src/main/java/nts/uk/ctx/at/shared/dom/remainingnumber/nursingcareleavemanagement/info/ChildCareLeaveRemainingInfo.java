@@ -32,5 +32,15 @@ public class ChildCareLeaveRemainingInfo extends NursingCareLeaveRemainingInfo{
 				maxDayForNextFiscalYear != null ? Optional.of(new MaxDayForFiscalYear(maxDayForNextFiscalYear))
 						: Optional.empty());
 	}
+	
+	public static ChildCareLeaveRemainingInfo createChildCareLeaveInfoCps013(String sId, int useClassification,
+			int upperlimitSetting, Double maxDayForThisFiscalYear, Double maxDayForNextFiscalYear) {
+		return new ChildCareLeaveRemainingInfo(sId, 
+				LeaveType.CHILD_CARE_LEAVE,
+				useClassification == 1,
+				UpperLimitSetting.FAMILY_INFO,
+				maxDayForThisFiscalYear != null ? Optional.of(new MaxDayForFiscalYear(maxDayForThisFiscalYear)): Optional.empty(),
+				maxDayForNextFiscalYear != null ? Optional.of(new MaxDayForFiscalYear(maxDayForNextFiscalYear)): Optional.empty());
+	}
 
 }
