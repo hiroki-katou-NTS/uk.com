@@ -9,13 +9,16 @@ import nts.uk.ctx.hr.develop.dom.hrdevelopmentevent.HRDevEvent;
 public class HRDevEventDto {
 	// イベントID
 	private int eventId;
+	// イベント名
+	private String eventName;
 	// 備考
 	private String memo;
 	// 利用できる
 	private int availableEvent;
 	
 	public static HRDevEventDto fromDomain(HRDevEvent domain){
-		return new HRDevEventDto(domain.getEventId().value, 
+		return new HRDevEventDto(domain.getEventId().value,
+									domain.getEventName().v(),
 									domain.getMemo().v(), domain.getAvailableEvent().value);
 	}
 }

@@ -33,7 +33,7 @@ public class JpaHRDevEventRepository extends JpaRepository implements HRDevEvent
 	 * @author yennth
 	 */
 	private HRDevEvent convertToDomain(JcmmtHRDevEvent x) {
-		HRDevEvent domain = HRDevEvent.createFromJavaType(x.eventId, x.memo, x.availableEvent);
+		HRDevEvent domain = HRDevEvent.createFromJavaType(x.eventId, x.memo, x.eventName, x.availableEvent);
 		return domain;
 	}
 

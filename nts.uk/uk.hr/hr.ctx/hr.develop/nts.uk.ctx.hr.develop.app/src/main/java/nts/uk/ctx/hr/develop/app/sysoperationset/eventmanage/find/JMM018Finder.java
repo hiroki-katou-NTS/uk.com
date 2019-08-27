@@ -98,7 +98,7 @@ public class JMM018Finder {
 		List<HRDevEventDto> listHrEvent = findHREvent();
 		List<HRDevMenuDto> listHrMenu = new ArrayList<>();
 		int available = 1;
-		JMM018Dto result = new JMM018Dto(available, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+		JMM018Dto result = new JMM018Dto(available, listHrEvent, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 		// アルゴリズム[利用可能なイベントとメニューを取得する]を実行する
 		if(listHrEvent.isEmpty()){
 			available = 0;

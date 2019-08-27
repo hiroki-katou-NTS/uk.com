@@ -7,35 +7,26 @@
 	overflow: visible;
 } 
 
-#treegrid_container > div.ui-widget-header.ui-helper-reset{
+/* #treegrid_container > div.ui-widget-header.ui-helper-reset{
 	overflow: visible !important;
-}
-
- #treegrid_useEventOrMenu{
-	overflow: visible;
-}
-
-#treegrid_useNotice{
-	overflow: visible;
-}
-
-#treegrid_useApproval{
-	overflow: visible;
-}
-
-/* #nodeText{
-	margin-left: 125px;
-}
-
-#useEventOrMenu{
-	margin-left: 50px;
-}
-
-#useNotice{
-	margin-left: 50px;
-}
-
-#useApproval{
-	margin-left: 30px;
 } */
-    
+
+#treegrid_nodeText > div.ntsControl.ntsHelpButton{
+	float: right;
+	margin-right: 10px;
+}
+
+#treegrid_useEventOrMenu > div.ntsControl.ntsHelpButton{
+	float: right;
+	margin-right: 10px;
+}
+
+#treegrid_useNotice > div.ntsControl.ntsHelpButton{
+	float: right;
+	margin-right: 10px;
+}
+
+#treegrid_useApproval > div.ntsControl.ntsHelpButton{
+	float: right;
+	margin-right: 10px;
+}

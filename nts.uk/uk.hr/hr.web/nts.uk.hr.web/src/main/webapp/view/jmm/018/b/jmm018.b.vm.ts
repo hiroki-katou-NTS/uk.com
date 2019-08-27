@@ -12,6 +12,8 @@ module nts.uk.com.view.jmm018.b {
             listEventId: KnockoutObservableArray<DisplayItem> = ko.observableArray([]);
             columns: any;
             itemSelected: KnockoutObservable<any> = ko.observable(null);
+            listEventOper: KnockoutObservableArray<EventOper> = ko.observableArray([]);
+            listMenuOper: KnockoutObservableArray<MenuOper> = ko.observableArray([]);
             constructor(){
                 let self = this;
                 nts.uk.ui.guide.operateCurrent('guidance/guideOperate', {screenGuideParam :[{programId:'JMM018',screenId:'A'},{programId:'JMM017',screenId:'B'}]}, 
@@ -21,6 +23,7 @@ module nts.uk.com.view.jmm018.b {
                     } 
                 }, Page.SIDEBAR);
                 self.columns = ko.observableArray([
+                                                    { headerText: getText('JMM018_A422_4'), key: 'programId', width: "250px", dataType: "string", hidden: true },
                                                     { headerText: getText('JMM018_A422_4'), key: 'key', width: "250px", dataType: "string", hidden: true },
                                                     { headerText: getText('JMM018_A422_4'), key: 'eventId', width: "250px", dataType: "string", hidden: true },
                                                     { headerText: getText('JMM018_A422_4'), key: 'nodeText', width: "250px", dataType: "string" },
@@ -30,62 +33,104 @@ module nts.uk.com.view.jmm018.b {
                                                 ]);
                 // thêm help button trong header
                  $(document).delegate("#treegrid", "igtreegriddatarendered", function (evt, ui) {
-                     let helpButton = $('<button>', {
-                        id: ('nodeText'), 
-                        text: getText('?'),
-                        'data-bind': 'ntsHelpButton: { textId: "JMM018_A422_8", position: "top center" }'
-                     }).on('focus', (evt) => {
-                         $("#treegrid_nodeText").css('overflow', 'visible');
-                     }).on('blur', () => {
-                         $("#treegrid_nodeText").css('overflow', 'hidden');
-                     })
+                     let first = $(evt.target).data('_first_event');
                      
-                     $('#treegrid_headers').find('thead #treegrid_nodeText').append(helpButton);
-                     ko.applyBindings({}, helpButton.get(0));
-                     
-                     let helpButton1 = $('<button>', {
-                        id: ('useEventOrMenu'), 
-                        text: getText('?'),
-                        'data-bind': 'ntsHelpButton: { textId: "JMM018_A422_9", position: "top center" }'
-                     }).on('focus', (evt) => {
-                         $("#treegrid_useEventOrMenu").css('overflow', 'visible');
-                     }).on('blur', () => {
-                         $("#treegrid_useEventOrMenu").css('overflow', 'hidden');
+                     if(!first) {
+                         let helpButton = $('<button>', {
+                            id: ('nodeText'), 
+                            text: getText('?'),
+                            'data-bind': 'ntsHelpButton: { textId: "JMM018_A422_8", position: "top center" }'
+                         }).on('focus', (evt) => {
+                             $("#treegrid_nodeText").css('overflow', 'visible');
+                             $("#treegrid_container > div.ui-widget-header.ui-helper-reset").css('overflow', 'visible');
+                         }).on('blur', () => {
+                             $("#treegrid_nodeText").css('overflow', 'hidden');
+                             $("#treegrid_container > div.ui-widget-header.ui-helper-reset").css('overflow', 'hidden');
+                         })
                          
+                         $('#treegrid_headers').find('thead #treegrid_nodeText').append(helpButton);
+                         ko.applyBindings({}, helpButton.get(0));
+                         
+                         let helpButton1 = $('<button>', {
+                            id: ('useEventOrMenu'), 
+                            text: getText('?'),
+                            'data-bind': 'ntsHelpButton: { textId: "JMM018_A422_9", position: "top center" }'
+                         }).on('focus', (evt) => {
+                             $("#treegrid_useEventOrMenu").css('overflow', 'visible');
+                             $("#treegrid_container > div.ui-widget-header.ui-helper-reset").css('overflow', 'visible');
+                         }).on('blur', () => {
+                             $("#treegrid_useEventOrMenu").css('overflow', 'hidden');
+                             $("#treegrid_container > div.ui-widget-header.ui-helper-reset").css('overflow', 'hidden');
+                             
+                         });
+                         
+                         $('#treegrid_headers').find('thead #treegrid_useEventOrMenu').append(helpButton1);
+                         ko.applyBindings({}, helpButton1.get(0));
+                         
+                         let helpButton2 = $('<button>', {
+                            id: ('useNotice'),
+                            text: getText('?'),
+                            'data-bind': 'ntsHelpButton: { textId: "JMM018_A422_10", position: "top center" }'
+                         }).on('focus', (evt) => {
+                             $("#treegrid_useNotice").css('overflow', 'visible');
+                             $("#treegrid_container > div.ui-widget-header.ui-helper-reset").css('overflow', 'visible');
+                         }).on('blur', () => {
+                             $("#treegrid_useNotice").css('overflow', 'hidden');
+                             $("#treegrid_container > div.ui-widget-header.ui-helper-reset").css('overflow', 'hidden');
+                             
+                         });
+                         
+                         $('#treegrid_headers').find('thead #treegrid_useNotice').append(helpButton2);
+                         ko.applyBindings({}, helpButton2.get(0));
+                         
+                         let helpButton3 = $('<button>', {
+                            id: ('useApproval'),
+                            text: getText('?'),
+                            'data-bind': 'ntsHelpButton: { textId: "JMM018_A422_11", position: "top center" }'
+                         }).on('focus', (evt) => {
+                             $("#treegrid_useApproval").css('overflow', 'visible');
+                             $("#treegrid_container > div.ui-widget-header.ui-helper-reset").css('overflow', 'visible');
+                         }).on('blur', () => {
+                             $("#treegrid_useApproval").css('overflow', 'hidden');
+                             $("#treegrid_container > div.ui-widget-header.ui-helper-reset").css('overflow', 'hidden');
+                         });
+                         
+                         $('#treegrid_headers').find('thead #treegrid_useApproval').append(helpButton3);
+                         ko.applyBindings({}, helpButton3.get(0));
+                             
+                     }
+                     $(evt.target).data('_first_event', true);
+                     
+                     //subcribe the change in the tree
+                     $("#treegrid").bind("checkboxChanging", function(evt, query?: any) {
+                         console.log(query);
+                        let lisTree = self.listEventId();
+                        if(query.rowData.listChild){
+                            let disable = _.map(query.rowData.listChild, 'key');
+                            // enable/disable child
+                            if(query.value == false){
+                                $("#treegrid").ntsTreeView("disableRows", disable);
+                                return;
+                            }else{
+                                $("#treegrid").ntsTreeView("enableRows", disable);
+                            }
+                            let obj = _.find(lisTree, function(b) {
+                                return b.key == query.rowData.key;
+                            });
+                            self.listEventOper().push(new EventOper({eventId: obj.eventId, useEventOrMenu: obj.useEventOrMenu}));
+                        }else{
+                            self.listMenuOper().push(new MenuOper({
+                                                                    programId: query.rowData.programId,
+                                                                    useEventOrMenu: query.rowData.useEventOrMenu,
+                                                                    useApproval: query.rowData.useApproval,
+                                                                    useNotice: query.rowData.useNotice
+                                                                }))
+                        }
                      });
                      
-                     $('#treegrid_headers').find('thead #treegrid_useEventOrMenu').append(helpButton1);
-                     ko.applyBindings({}, helpButton1.get(0));
-                     
-                     let helpButton2 = $('<button>', {
-                        id: ('useNotice'),
-                        text: getText('?'),
-                        'data-bind': 'ntsHelpButton: { textId: "JMM018_A422_10", position: "top center" }'
-                     }).on('focus', (evt) => {
-                         $("#treegrid_useNotice").css('overflow', 'visible');
-                     }).on('blur', () => {
-                         $("#treegrid_useNotice").css('overflow', 'hidden');
-                         
-                     });
-                     
-                     $('#treegrid_headers').find('thead #treegrid_useNotice').append(helpButton2);
-                     ko.applyBindings({}, helpButton2.get(0));
-                     
-                     let helpButton3 = $('<button>', {
-                        id: ('useApproval'),
-                        text: getText('?'),
-                        'data-bind': 'ntsHelpButton: { textId: "JMM018_A422_11", position: "top center" }'
-                     }).on('focus', (evt) => {
-                         $("#treegrid_useApproval").css('overflow', 'visible');
-                     }).on('blur', () => {
-                         $("#treegrid_useApproval").css('overflow', 'hidden');
-                         
-                     });
-                     
-                     $('#treegrid_headers').find('thead #treegrid_useApproval').append(helpButton3);
-                     ko.applyBindings({}, helpButton3.get(0));
-                     console.log('delegate pass');
                  });
+
+                
             }
             
             /**
@@ -96,16 +141,19 @@ module nts.uk.com.view.jmm018.b {
                 let self = this;
                 blockUI.invisible();
                 let listParent = [];
-                let listEnum = __viewContext.enums.EventId;
                 let menu = [];
                 service.findEventMenu().done(function(data: any){
+                    if(data.available == 0){
+                        nts.uk.ui.dialog.error({ messageId: "JMsg_JMM018_1"});
+                    }
                     // A422_12, A422_13, A422_14, 
-                    _.forEach(__viewContext.enums.EventId, (a) => {
+                    let eventNameList = _.map(data.listHrEvent, (item: any) => new MenuName({eventId: item.eventId, eventName: item.eventName}));
+                    _.forEach(eventNameList, (a) => {
                             let obj = _.find(data.eventOperList, function(b) {
-                                return b.eventId == a.value;
+                                return b.eventId == a.eventId;
                             });
                             if(obj){
-                                listParent.push(new DisplayItem({eventId: a.value, eventName: a.name, useEventOrMenu: obj.useEvent}));
+                                listParent.push(new DisplayItem({key: 0, eventId: a.eventId, eventName: a.eventName, useEventOrMenu: obj.useEvent}));
                                 self.listEventId(listParent);
                             }
                     });
@@ -115,7 +163,8 @@ module nts.uk.com.view.jmm018.b {
                         let agur = _.find(data.menuOperList, function(d) {
                             return d.programId == c.programId;
                         });
-                        menu.push(new DisplayItem({eventId: c.eventId,
+                        menu.push(new DisplayItem({ key: 0, 
+                                                eventId: c.eventId,
                                                 programId: c.programId,
                                                 programName: c.programName,
                                                 useEventOrMenu: agur.useMenu,
@@ -128,6 +177,7 @@ module nts.uk.com.view.jmm018.b {
                             return o.eventId == c.eventId;                  
                         });
                         let listAll = new DisplayItem({
+                            key: 0,
                             eventId: c.eventId,
                             eventName: c.eventName,
                             useEventOrMenu: c.useEventOrMenu,
@@ -137,16 +187,15 @@ module nts.uk.com.view.jmm018.b {
                     });
                     let q = 0;
                     _.forEach(list, (f) => {
-                        f.key = q;
+                        f.key = q.toString();
                         q += 1;
                         _.forEach(f.listChild, (g) =>{
-                            g.key = q;
+                            g.key = q.toString();
                             q += 1;
                         });
                     });
                     self.listEventId(list);
-                    self.bindData();
-                    dfd.resolve();
+                    
                 }).fail(function(error) {
                     alertError(error);
                 }).always(function() {
@@ -160,42 +209,22 @@ module nts.uk.com.view.jmm018.b {
             /**
              * Save System Resource setting
              */
-            public saveSysResourceSetting(): JQueryPromise<void> {
-                let _self = this;
-                
-                 // Validate
-//                if (_self.hasError()) {
-//                    return;    
-//                }
-//                
-//                blockUI.invisible();
-//                
-//                var dfd = $.Deferred<void>();
-//                  
-//                var params = new SystemResourceCommand(_self.prepareDataToSave());
-//                nts.uk.ui.block.grayout();
-//                service.saveSysResourceSetting(params).done(function(){
-//                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => { 
-//                        dfd.resolve();
-//                        blockUI.clear();
-//                        $('#com_company').focus();
-//                    });
-//                }).always(() => {
-//                    nts.uk.ui.block.clear();
-//                });
+            public saveEventMenu(): JQueryPromise<void> {
+                var dfd = $.Deferred<void>();
+                let self = this;
+                nts.uk.ui.block.grayout();
+                let params = {
+                    listEventOper: self.listEventOper(),
+                    listMenuOper: self.listMenuOper()
+                }
+                service.saveEventMenu(params).done(function(){
+                }).always(() => {
+                    nts.uk.ui.block.clear();
+                });
                 
                 return dfd.promise();
             }
             
-            
-            public bindData(): void {
-                let self = this;
-                /*----------------- Instantiation -------------------------*/
-//                $("#hierarchicalGrid").hierarchicalGrid({
-//                    
-//                });
-//            
-            }
             
         }
     }
@@ -288,7 +317,7 @@ module nts.uk.com.view.jmm018.b {
     }
     
     class DisplayItem {
-        key: number;
+        key: string;
         eventId: number;
         eventName: string;
         useEventOrMenu: boolean;
@@ -309,6 +338,70 @@ module nts.uk.com.view.jmm018.b {
             this.useNotice = (param.useNotice == 1 ? true : null) || (param.useNotice == undefined ? null : param.useNotice);
             this.nodeText = param.eventName ? param.eventId + ' ' + param.eventName : param.programId + ' ' + param.programName;
             this.listChild = param.listChild;
+        }
+    }
+    
+    interface IEventOper{
+        // イベントID
+        eventId: number;
+        // イベントを使用する
+        useEventOrMenu: boolean;
+    }
+    
+    class EventOper{
+        // イベントID
+        eventId: number;
+        // イベントを使用する
+        useEvent: number;
+        constructor(param: IEventOper){
+            this.eventId = param.eventId;
+            this.useEvent = param.useEventOrMenu == true ? 1 : 0;
+        }
+    }
+    
+    interface IMenuOper{
+        // プログラムID
+        programId: string;
+        // メニューを使用する
+        useEventOrMenu: boolean;
+        //承認機能を使用する
+        useApproval: boolean;
+        // 通知機能を使用する
+        useNotice: boolean;
+    }
+    
+    class MenuOper{
+       // プログラムID
+        programId: string;
+        // メニューを使用する
+        useMenu: number;
+        //承認機能を使用する
+        useApproval: number;
+        // 通知機能を使用する
+        useNotice: number;
+        constructor(param: IMenuOper){
+            this.programId = param.programId;
+            this.useMenu = param.useEventOrMenu == true ? 1 : 0;
+            this.useApproval = param.useApproval == true ? 1 : 0;
+            this.useNotice = param.useNotice == true ? 1 : 0;
+        }
+    }
+    
+    interface IMenuName{
+        // イベントID
+        eventId: number;
+        // イベント名
+        eventName: string;
+    }
+    
+    class MenuName{
+        // イベントID
+        eventId: number;
+        // イベント名
+        eventName: string;
+        constructor(param: IMenuName){
+            this.eventId = param.eventId;
+            this.eventName = param.eventName;    
         }
     }
 }

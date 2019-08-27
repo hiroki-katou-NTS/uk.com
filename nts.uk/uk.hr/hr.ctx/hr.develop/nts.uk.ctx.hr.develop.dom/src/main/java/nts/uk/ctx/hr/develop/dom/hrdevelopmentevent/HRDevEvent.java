@@ -11,6 +11,8 @@ import nts.arc.layer.dom.AggregateRoot;
 public class HRDevEvent extends AggregateRoot{
 	// イベントID
 	private EventId eventId;
+	// イベント名
+	private EventName eventName;
 	// 備考
 	private Memo memo;
 	// 利用できる
@@ -23,8 +25,9 @@ public class HRDevEvent extends AggregateRoot{
 	 * @param availableEvent
 	 * @return
 	 */
-	public static HRDevEvent createFromJavaType(int eventId, String memo, int availableEvent) {
-		return new HRDevEvent(EnumAdaptor.valueOf(eventId, EventId.class), 
+	public static HRDevEvent createFromJavaType(int eventId, String memo, String eventName, int availableEvent) {
+		return new HRDevEvent(EnumAdaptor.valueOf(eventId, EventId.class),
+				new EventName(eventName),
 				new Memo(memo), 
 				EnumAdaptor.valueOf(availableEvent, AvailableEvent.class));
 	}
