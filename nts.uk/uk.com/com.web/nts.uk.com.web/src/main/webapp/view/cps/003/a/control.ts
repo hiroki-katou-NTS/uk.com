@@ -1672,7 +1672,12 @@ module cps003 {
                         if (dts.decimalPart == 0) {
                             constraint.valueType = "Integer";
                         } else {
-                            constraint.valueType = "Decimal";
+                            if (dts.numericItemAmount === 1) {
+                                constraint.valueType = "Currency";
+                            } else {
+                                constraint.valueType = "Decimal";
+                            }
+                            
                             constraint.mantissaMaxLength = dts.decimalPart;
                         }
     

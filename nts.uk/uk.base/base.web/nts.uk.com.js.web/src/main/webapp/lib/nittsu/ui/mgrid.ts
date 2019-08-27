@@ -8619,7 +8619,8 @@ module nts.uk.ui.mgrid {
             
             if (_ramass[format]) {
                 if (!data.initValue || data.initValue === "") return "";
-                return moment(data.initValue, formats, true).format(formats[0]);
+                let momentObj = moment(data.initValue, formats, true);
+                return momentObj.isValid() ? momentObj.format(formats[0]) : data.initValue;
             }
             
             _ramass[format] = _prtDiv.cloneNode();
