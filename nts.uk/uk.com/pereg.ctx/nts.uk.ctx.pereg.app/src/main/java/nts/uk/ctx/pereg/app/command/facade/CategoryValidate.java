@@ -14,6 +14,8 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmployeeHistory;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.repository.BusinessTypeEmpOfHistoryRepository;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistory;
@@ -56,6 +58,9 @@ public class CategoryValidate {
 	
 	@Inject
 	private BusinessTypeEmpOfHistoryRepository typeEmployeeOfHistoryRepos;
+	
+	@Inject
+	private StampCardRepository stampCardRepo;
 	
 	private static final String JP_SPACE = "　";
 	
@@ -352,6 +357,34 @@ public class CategoryValidate {
 					}	
 				}
 			}
+		}
+	}
+	
+	public void validateItemOfCS0069(List<MyCustomizeException> result, List<PeregInputContainerCps003> containerAdds){
+		List<String> indexs = new ArrayList<>();
+		List<String> sidErrors = new ArrayList<>();
+		String contractCode = AppContexts.user().contractCode();
+		for(int i = 0; i < containerAdds.size(); i++ ) {
+			if(!containerAdds.isEmpty()) {
+				for(ItemValue item: containerAdds.get(i).getInputs().getItems()) {
+					Optional<StampCard> stampCard = this.stampCardRepo.getByCardNoAndContractCode(item.valueAfter(), contractCode);
+					if(stampCard.isPresent()) {
+						sidErrors.add(containerAdds.get(i).getEmployeeId());
+					}
+				}
+				if(sidErrors.size() > 0) {
+					indexs.add(String.valueOf(i));
+				}	
+			}
+		}
+		if(sidErrors.size() > 0) {
+			result.add(new MyCustomizeException("Msg_1106", sidErrors));
+		}
+		
+		if(!indexs.isEmpty()) {
+			indexs.stream().forEach(i ->{
+				containerAdds.remove(Integer.valueOf(i).intValue());
+			});
 		}
 	}
 	
