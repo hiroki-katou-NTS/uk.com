@@ -296,6 +296,12 @@ public class PeregCommonCommandFacade {
 			
 		}
 		
+		
+		
+		if(containerAdds.isEmpty()) return result;
+		
+		categoryValidate.validateItemOfCS0069(result, containerAdds);
+		
 		if(containerAdds.isEmpty()) return result;
 		
 		DataCorrectionContext.transactional(CorrectionProcessorId.MATRIX_REGISTER, () -> {
@@ -351,7 +357,10 @@ public class PeregCommonCommandFacade {
 			if(containerAdds.isEmpty()) {
 				return result;
 			}
-			//categoryValidate.historyValidate(result, containerAdds, baseDate);
+			
+			categoryValidate.validateItemOfCS0069(result, containerAdds);
+			
+			if(containerAdds.isEmpty()) return result;
 			
 			// đoạn này viết log
 			DataCorrectionContext.transactional(CorrectionProcessorId.MATRIX_REGISTER, () -> {
