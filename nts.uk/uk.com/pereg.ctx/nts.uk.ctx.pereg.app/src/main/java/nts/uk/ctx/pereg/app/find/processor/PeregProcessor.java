@@ -354,7 +354,7 @@ public class PeregProcessor {
 				
 				parallel.forEach(peregDtoLst, m -> {
 //					// combo-box sẽ lấy dựa theo các ngày startDate của từng category
-					
+					if(m == null) return;
 					GridLayoutPersonInfoClsDto dto = new GridLayoutPersonInfoClsDto(m.getEmployeeId(), m.getPersonId(), m.getEmployeeId().equals(selfEmployeeId) ? creatClassItemList(perItems.get(true), perInfoCtg) :  creatClassItemList(perItems.get(false), perInfoCtg));
 					
 					MappingFactory.mapListItemClassCPS003(m.getPeregDto(), dto.getLayoutDtos());
