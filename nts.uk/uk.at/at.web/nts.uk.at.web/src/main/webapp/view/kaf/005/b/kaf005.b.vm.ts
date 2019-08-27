@@ -869,16 +869,16 @@ module nts.uk.at.view.kaf005.b {
                     self.overtimeHoursReference.removeAll();
                     if(data.appOvertimeReference.overTimeInputsRefer != null){
                         for (let i = 0; i < data.appOvertimeReference.overTimeInputsRefer.length; i++) {
-                                self.changeColor( 1 , data.appOvertimeReference.overTimeInputsRefer[i].frameNo,data.appOvertimeReference.overTimeInputsRefer[i].errorCode);
-                                if(data.appOvertimeReference.overTimeInputsRefer[i].frameNo != 11 && data.appOvertimeReference.overTimeInputsRefer[i].frameNo != 12){
-                                    self.overtimeHoursReference.push(new common.AppOvertimePre("", "", 
+                            if(data.appOvertimeReference.overTimeInputsRefer[i].frameNo != 11 && data.appOvertimeReference.overTimeInputsRefer[i].frameNo != 12){
+                                self.overtimeHoursReference.push(new common.AppOvertimePre("", "", 
                                 data.appOvertimeReference.overTimeInputsRefer[i].attendanceID,
                                 "", data.appOvertimeReference.overTimeInputsRefer[i].frameNo,
                                 0, data.appOvertimeReference.overTimeInputsRefer[i].frameName +" : ",
+                                null,
+                                null,
                                 data.appOvertimeReference.overTimeInputsRefer[i].applicationTime == null ? self.convertIntToTime(0) : self.convertIntToTime(data.appOvertimeReference.overTimeInputsRefer[i].applicationTime),
-                                data.appOvertimeReference.overTimeInputsRefer[i].preAppTime,
-                                data.appOvertimeReference.overTimeInputsRefer[i].caculationTime == null ? self.convertIntToTime(0) : self.convertIntToTime(data.appOvertimeReference.overTimeInputsRefer[i].caculationTime) ,null));
-                                }
+                                null));
+                            }
                         }
                     }
                      self.overTimeShiftNightRefer(data.appOvertimeReference.overTimeShiftNightRefer == null ? self.convertIntToTime(0) : self.convertIntToTime(data.appOvertimeReference.overTimeShiftNightRefer));
@@ -899,7 +899,7 @@ module nts.uk.at.view.kaf005.b {
                             overtimeHour.attendanceID(),
                             "", overtimeHour.frameNo(),
                             0, overtimeHour.frameName() +" : ",
-                            null, null, null));
+                            null, null, null, null));
                         }
                     }
                 }
