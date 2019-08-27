@@ -195,7 +195,7 @@ module nts.uk.at.view.cps013.e {
                }
                
                // order 
-               self.errorMessageInfo(_.sortBy(errs, ['employeeCode', 'clsCategoryCheck', 'categoryName']));
+               self.errorMessageInfo(_.sortBy(errs, ['employeeCode', 'clsCategoryCheck', 'categoryName', 'error']));
             
             }
 
