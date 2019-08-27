@@ -1,10 +1,7 @@
 package nts.uk.ctx.at.record.app.command.stamp.card.stampcard.add;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -37,23 +34,13 @@ implements PeregAddListCommandHandler<AddStampCardCommand>{
 	protected List<PeregAddCommandResult> handle(CommandHandlerContext<List<AddStampCardCommand>> context) {
 		List<AddStampCardCommand> cmd = context.getCommand();
 		String contractCode = AppContexts.user().contractCode();
-		List<AddStampCardCommand> cardNotNull = cmd.stream().filter(c -> c.getStampNumber()!= null).collect(Collectors.toList());
-		Map<String, String> cardQuery = cardNotNull.stream().collect(Collectors.toMap(AddStampCardCommand::getEmployeeId, AddStampCardCommand::getStampNumber));
-		Map<String, StampCard> empErrors = new HashMap<>();
-		if(!cardQuery.isEmpty()) {
-			Map<String, StampCard> stampCard = this.stampCardRepo.getByCardNoAndContractCode(cardQuery, contractCode);
-           if(!stampCard.isEmpty()) {
-        	   empErrors.putAll(stampCard);
-           }
-		}
-		
 		List<StampCard> insertLst = new ArrayList<>();
 		cmd.stream().forEach(c ->{
-			if(!empErrors.containsKey(c.getEmployeeId())) {
-				// create new domain and add
+			// create new domain and add
+			if (c.getStampNumber() != null) {
 				String stampCardId = IdentifierUtil.randomUniqueId();
 				StampCard stampCard = StampCard.createFromJavaType(stampCardId, c.getEmployeeId(),
-						c.getStampNumber(), GeneralDate.today(), AppContexts.user().contractCode());
+						c.getStampNumber(), GeneralDate.today(), contractCode);
 				insertLst.add(stampCard);
 			}
 
