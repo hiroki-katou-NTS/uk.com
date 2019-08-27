@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -36,7 +37,6 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
-import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregEmpInfoQuery;
 
 
@@ -715,7 +715,16 @@ public class CheckPersonInfoProcess {
 	public void checkErrorEnum(TaskDataSetter dataSetter, EmployeeDataMngInfo employee, String bussinessName,
 			LayoutPersonInfoValueDto item, List<ErrorInfoCPS013> listError) {
 		 String value = (String) item.getValue();
-		 List<String> comboxValue = item.getLstComboBoxValue().stream().map(c -> c.getOptionValue()).sorted().collect(Collectors.toList());
+		 
+		if (Objects.isNull(value)) {
+			return;
+		}
+
+		if (value.trim().equals("")) {
+			return;
+		}
+			
+		List<String> comboxValue = item.getLstComboBoxValue().stream().map(c -> c.getOptionValue()).sorted().collect(Collectors.toList());
 		if (comboxValue.size() >0 && !comboxValue.contains(value)) {
 			//Enum値の最小値
 			String max = comboxValue.size() == 0? " ": comboxValue.get(comboxValue.size() - 1);
@@ -737,8 +746,15 @@ public class CheckPersonInfoProcess {
 	 */
 	public void checkCodeName(TaskDataSetter dataSetter, EmployeeDataMngInfo employee, String bussinessName,
 			LayoutPersonInfoValueDto item, List<ErrorInfoCPS013> listError) {
-		 String value = (String) item.getValue();
-		 List<String> comboxValue = item.getLstComboBoxValue().stream().map(c -> c.getOptionValue()).sorted().collect(Collectors.toList());
+		String value = (String) item.getValue();
+		if (Objects.isNull(value)) {
+			return;
+		}
+
+		if (value.trim().equals("")) {
+			return;
+		}
+		List<String> comboxValue = item.getLstComboBoxValue().stream().map(c -> c.getOptionValue()).sorted().collect(Collectors.toList());
 		if (comboxValue.size() >0 && !comboxValue.contains(value)) {
 			//{0} : 項目名, {1} : データの値
 			ErrorInfoCPS013 error = new ErrorInfoCPS013(employee.getEmployeeId(), item.getCategoryId(),
@@ -918,19 +934,28 @@ public class CheckPersonInfoProcess {
 		 String value = (String) item.getValue();
 		 List<String> comboxValue = item.getLstComboBoxValue().stream().map(c -> c.getOptionValue()).sorted().collect(Collectors.toList());
 		 String masterName  = masterNames.get(item.getItemCode());
-		 if (comboxValue.size() >0  && !comboxValue.contains(value)) {
-			//履歴ありマスタの場合 (TH master có history)
-			if(listItem_Master_History.contains(item.getItemCode())) {
+		 
+		if (Objects.isNull(value)) {
+			return;
+		}
+
+		if (value.trim().equals("")) {
+			return;
+		}
+
+		if (comboxValue.size() > 0 && !comboxValue.contains(value)) {
+			// 履歴ありマスタの場合 (TH master có history)
+			if (listItem_Master_History.contains(item.getItemCode())) {
 				ErrorInfoCPS013 error = new ErrorInfoCPS013(employee.getEmployeeId(), item.getCategoryId(),
 						employee.getEmployeeCode().v(), bussinessName, chekPersonInfoType, item.getCategoryName(),
-						TextResource.localize("Msg_936", item.getItemName(), value == null ? "null"  : value , masterName, startValue.toString() ));
+						TextResource.localize("Msg_936", item.getItemName(), value == null ? "null" : value, masterName, startValue.toString()));
 				listError.add(error);
 				setErrorDataGetter(error, dataSetter);
-			}else {
-				//履歴なしマスタの場合 ( TH master không có history)
+			} else {
+				// 履歴なしマスタの場合 ( TH master không có history)
 				ErrorInfoCPS013 error = new ErrorInfoCPS013(employee.getEmployeeId(), item.getCategoryId(),
 						employee.getEmployeeCode().v(), bussinessName, chekPersonInfoType, item.getCategoryName(),
-						TextResource.localize("Msg_937", item.getItemName(), value == null ? "null"  : value , masterName));
+						TextResource.localize("Msg_937", item.getItemName(), value == null ? "null" : value, masterName));
 				listError.add(error);
 				setErrorDataGetter(error, dataSetter);
 			}
