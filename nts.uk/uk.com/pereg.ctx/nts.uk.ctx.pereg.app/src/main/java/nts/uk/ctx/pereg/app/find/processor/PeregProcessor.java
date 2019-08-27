@@ -350,9 +350,10 @@ public class PeregProcessor {
 			List<GridPeregDto> peregDtoLst = layoutingProcessor.findAllData(query);
 			
 			if (!CollectionUtil.isEmpty(peregDtoLst)) {
+				
 				List<GridLayoutPersonInfoClsDto> resultsSync = Collections.synchronizedList(new ArrayList<>());
 				
-				parallel.forEach(peregDtoLst, m -> {
+				peregDtoLst.stream().forEach(m -> {
 //					// combo-box sẽ lấy dựa theo các ngày startDate của từng category
 					if(m == null) return;
 					GridLayoutPersonInfoClsDto dto = new GridLayoutPersonInfoClsDto(m.getEmployeeId(), m.getPersonId(), m.getEmployeeId().equals(selfEmployeeId) ? creatClassItemList(perItems.get(true), perInfoCtg) :  creatClassItemList(perItems.get(false), perInfoCtg));
