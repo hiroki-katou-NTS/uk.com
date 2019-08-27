@@ -125,7 +125,7 @@
                 <span class="badge badge-warning">必須</span>
             </div>
             <div class="card-body">
-                <div class="confirm-item mb-2" v-if="kafs05ModelStep3.workTimeInput.start">
+                <div class="confirm-item mb-2" v-if="null != kafs05ModelStep3.workTimeInput.start">
                     <span>{{kafs05ModelStep3.workTimeInput.start | timewd}}～{{kafs05ModelStep3.workTimeInput.end | timewd}}</span>
                 </div>
             </div>

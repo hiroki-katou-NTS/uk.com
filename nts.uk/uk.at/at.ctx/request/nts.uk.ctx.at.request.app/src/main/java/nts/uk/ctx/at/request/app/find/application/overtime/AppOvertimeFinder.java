@@ -1125,6 +1125,25 @@ public class AppOvertimeFinder {
 							result.setWorktimeEnd(optFindByCode.get().getPrescribedTimezoneSetting().getLstTimezone().get(0).getEnd().v());
 						}
 					}
+					// 01-17_休憩時間取得(lay thoi gian nghi ngoi)
+					boolean displayRestTime = commonOvertimeHoliday.getRestTime(
+							companyID,
+							approvalFunctionSetting.getApplicationDetailSetting().get().getTimeCalUse(),
+							approvalFunctionSetting.getApplicationDetailSetting().get().getBreakInputFieldDisp(),
+							ApplicationType.OVER_TIME_APPLICATION);
+					result.setDisplayRestTime(displayRestTime);
+					if(displayRestTime) {
+						// 休憩時間帯を取得する
+						Optional<TimeWithDayAttr> opStartTime = startTime==null ? Optional.empty() : Optional.of(new TimeWithDayAttr(startTime)); 
+						Optional<TimeWithDayAttr> opEndTime = endTime==null ? Optional.empty() : Optional.of(new TimeWithDayAttr(endTime)); 
+						List<DeductionTime> breakTimes = this.commonOvertimeHoliday.getBreakTimes(companyID, result.getWorkType().getWorkTypeCode(), result.getSiftType().getSiftCode(), opStartTime, opEndTime);
+						List<DeductionTimeDto> timeZones = breakTimes.stream().map(domain->{
+							DeductionTimeDto dto = new DeductionTimeDto();
+							domain.saveToMemento(dto);
+							return dto;
+						}).collect(Collectors.toList());
+						result.setTimezones(timeZones);
+					}
 					// 01-18_実績の内容を表示し直す : chưa xử lí
 					AppOvertimeReference appOvertimeReference = new AppOvertimeReference();
 					WithdrawalAppSet withdrawalAppSet = withdrawalAppSetRepository.getWithDraw().get();
