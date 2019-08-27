@@ -551,22 +551,20 @@ public class WorkingConditionDto extends PeregDomainDto {
 	public static WorkingConditionDto createWorkingConditionDtoEnum(DateHistoryItem dateHistoryItem,
 			WorkingConditionItem workingConditionItem, Map<String, Object> enums) {
 		WorkingConditionDto dto = new WorkingConditionDto(dateHistoryItem.identifier());
-
+		
 		dto.setRecordId(dateHistoryItem.identifier());
 		dto.setStartDate(dateHistoryItem.start());
 		dto.setEndDate(dateHistoryItem.end());
 
-		if (workingConditionItem.getHourlyPaymentAtr() != null) {
-			Integer scheduleManagementAtr = (Integer)enums.get("IS00259");
-			dto.setHourlyPaymentAtr(scheduleManagementAtr == null? workingConditionItem.getHourlyPaymentAtr().value: scheduleManagementAtr.intValue());
-		}
+		Integer hourlyPaymentAtr = (Integer) enums.get("IS00259");
+		dto.setHourlyPaymentAtr(hourlyPaymentAtr == null? null: hourlyPaymentAtr.intValue());
 
 		workingConditionItem.getTimeApply().ifPresent(wci -> {
 			dto.setTimeApply(wci.v());
 		});
 		
 		Integer scheduleManagementAtr = (Integer)enums.get("IS00121");
-		dto.setScheduleManagementAtr(scheduleManagementAtr == null? workingConditionItem.getScheduleManagementAtr().value: scheduleManagementAtr.intValue());
+		dto.setScheduleManagementAtr(scheduleManagementAtr == null? null: scheduleManagementAtr.intValue());
 
 		// 予定作成方法
 		workingConditionItem.getMonthlyPattern().ifPresent(mp -> {
@@ -574,7 +572,7 @@ public class WorkingConditionDto extends PeregDomainDto {
 		});
 
 		if (workingConditionItem.getScheduleMethod().isPresent()) {
-			setScheduleMethod(dto, workingConditionItem.getScheduleMethod().get(), enums);
+			setScheduleMethodCPS013(dto, workingConditionItem.getScheduleMethod().get(), enums);
 		}
 
 		PersonalWorkCategory workCategory = workingConditionItem.getWorkCategory();
@@ -661,7 +659,7 @@ public class WorkingConditionDto extends PeregDomainDto {
 		}
 	}
 	
-	private static void setScheduleMethod(WorkingConditionDto dto, ScheduleMethod scheduleMethod, Map<String, Object> enums) {
+	private static void setScheduleMethodCPS013(WorkingConditionDto dto, ScheduleMethod scheduleMethod, Map<String, Object> enums) {
 		Integer basicCreateMethod = (Integer) enums.get("IS00123");
 		dto.setBasicCreateMethod(basicCreateMethod == null? null: basicCreateMethod.intValue());
 
@@ -672,15 +670,15 @@ public class WorkingConditionDto extends PeregDomainDto {
 			dto.setReferenceBusinessDayCalendar(referenceBusinessDayCalendar == null? null: referenceBusinessDayCalendar.intValue());
 		});
 
-		switch (scheduleMethod.getBasicCreateMethod()) {
+		switch (basicCreateMethod) {
 			
-		case BUSINESS_DAY_CALENDAR:
+		case 0: // BUSINESS_DAY_CALENDAR
 			scheduleMethod.getWorkScheduleBusCal().ifPresent(wsb -> {
 				Integer referenceType = (Integer) enums.get("IS00126");
 				dto.setReferenceType(referenceType == null? 0: referenceType.intValue());
 			});
 			break;
-		case MONTHLY_PATTERN:
+		case 1: // MONTHLY_PATTERN
 			scheduleMethod.getMonthlyPatternWorkScheduleCre().ifPresent(mps -> {
 				Integer referenceType = (Integer) enums.get("IS00126");
 				dto.setReferenceType(referenceType == null? 0: referenceType.intValue());
