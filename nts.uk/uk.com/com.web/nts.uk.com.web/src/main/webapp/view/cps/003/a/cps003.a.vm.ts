@@ -124,13 +124,21 @@ module cps003.a.vm {
             cps003.control.relateButton();
             cps003.control.validateDateRange();
             cps003.control.extendTimeRange();
-            self.baseDate(moment().format("YYYY/MM/DD"));
+//            self.baseDate(nts.uk.time.today().format("YYYY/MM/DD"));
 
             //fetch all category by login 
             service.fetch.category(__viewContext.user.employeeId)
                 .done(data => {
+                    if (!data || data.length === 0) {
+                        alertError({ messageId: "Msg_1460" }).then(() => {
+                            nts.uk.request.jumpToTopPage();
+                        });
+                        
+                        return;
+                    }
+                    
                     self.category.items(data);
-                    self.baseDate(moment.utc().toISOString());
+                    self.baseDate(nts.uk.time.today().format("YYYY/MM/DD"));
                 });
             
             self.baseDate.subscribe(date => {
@@ -212,6 +220,11 @@ module cps003.a.vm {
                                             self.updateModeEnable(true);
                                         }
                                         break;
+                                }
+                                
+                                if (self.category.cate().categoryCode === "CS00003"
+                                    || self.category.cate().categoryCode === "CS00070") {
+                                    self.updateModeEnable(false);
                                 }
                             });
                         }
@@ -826,7 +839,7 @@ module cps003.a.vm {
             
             nts.uk.request.ajax('com', 'ctx/pereg/grid-layout/get-data', param).done(data => {
                 if (data.bodyDatas && data.bodyDatas.length == 0 && !_.isNil(data.baseDate)) {
-                    self.baseDate(data.baseDate);
+//                    self.baseDate(data.baseDate);
                 }
                 
                 if (employeeSelect) {
@@ -1588,6 +1601,12 @@ module cps003.a.vm {
                     if (!item.hidden) self.batchSettingItems.push(item.itemId);
                     break;
                 case ITEM_SINGLE_TYPE.NUMERIC:
+                    if (controlType.numericItemAmount === 1) {
+                        let constraint = (item.constraint || {});
+                        constraint.decimalLength = controlType.decimalPart;
+                        item.constraint = constraint;
+                    }
+                    
                     item.dataType = "number";
                     let timeNumber = cps003.control.NUMBER[self.category.catCode() + "_" + item.key];
                     if (timeNumber) item.inputProcess = timeNumber;
@@ -1727,7 +1746,7 @@ module cps003.a.vm {
         settingColumns() {
             let self = this,
                 id = self.category.catId(),
-                ctg = _.first(self.category.items(), m => m.id == id);
+                ctg = _.find(self.category.items(), m => m.id == id);
 
             setShared('CPS003D_PARAM', {
                 id: id,
@@ -1815,7 +1834,7 @@ module cps003.a.vm {
                             }
                             
                             return replaceValue.matchValue === value;
-                        }, () => replaceValue.replaceValue);
+                        }, () => replaceValue.replaceValue, true);
                     } else if (replaceValue.replaceFormat === REPLACE_FORMAT.GRAND_DATE) { //　年休付与基準日
                         // Get 年休社員基本情報
                         let empIdList = _.map($grid.mGrid("dataSource"), (ds: Record) => ds.employeeId);
@@ -1835,7 +1854,7 @@ module cps003.a.vm {
                                     if (holidayInfo) {
                                         return holidayInfo[0].grantRule.grantStandardDate;
                                     }
-                                });
+                                }, true);
                             });
                         }
                     } else if (replaceValue.replaceFormat === REPLACE_FORMAT.HIRE_DATE) {
@@ -1859,7 +1878,7 @@ module cps003.a.vm {
                                     if (!_.isNil(histItem)) {
                                         return histItem[0].startDate;
                                     }
-                                });
+                                }, true);
                             });
                         }
                     } else if (replaceValue.replaceFormat === REPLACE_FORMAT.DESI_YEAR_OE) {
@@ -1889,7 +1908,7 @@ module cps003.a.vm {
                                             
                                             return date.format("YYYY/MM/DD");
                                         }
-                                    });
+                                    }, true);
                                 } else if (replaceValue.replaceValue[0] === YEAR_OF_JOIN.PREV) {
                                     $grid.mGrid("replace", replaceValue.targetItem, (value, obj) => {
                                         if (find(self.hiddenRows, id => id === obj.id)) return false;
@@ -1909,7 +1928,7 @@ module cps003.a.vm {
                                             
                                             return date.format("YYYY/MM/DD");
                                         }
-                                    });
+                                    }, true);
                                 } else {
                                     $grid.mGrid("replace", replaceValue.targetItem, (value, obj) => {
                                         if (find(self.hiddenRows, id => id === obj.id)) return false;
@@ -1929,7 +1948,7 @@ module cps003.a.vm {
                                             
                                             return date.format("YYYY/MM/DD");
                                         }
-                                    });
+                                    }, true);
                                 }
                             });
                         }
@@ -1948,7 +1967,7 @@ module cps003.a.vm {
                             if (find(self.hiddenRows, id => id === rec.id)) return false; 
                             if (replaceValue.replaceAll) return true;
                             return replaceValue.matchValue === rec[replaceValue.targetItem[0]]; 
-                        }, () => replaced);
+                        }, () => replaced, true);
                     }
                 } else if (self.specialItems.holidayLimit[0] === replaceValue.targetItem) {
                     if (replaceValue.replaceFormat === REPLACE_FORMAT.VALUE) { // 値指定
@@ -1962,7 +1981,20 @@ module cps003.a.vm {
                             if (replaceValue.replaceAll) return true;
                             return replaceValue.matchValue === value 
                                 || ((_.isNil(replaceValue.matchValue) || replaceValue.matchValue === "") && (_.isNil(value) || value === ""));
-                        }, () => replaced);
+                        }, (value, obj) => {
+                            setTimeout(() => {
+                                let afterProc = cps003.control.NUMBER[self.category.catCode() + "_" + replaceValue.targetItem];
+                                if (afterProc) {
+                                    afterProc(obj.id, replaceValue.targetItem, replaced, obj).done(res => {
+                                        forEach(res, s => {
+                                            $grid.mGrid("updateCell", s.id, s.item, s.value);
+                                        });
+                                    });
+                                }
+                            }, 1);
+                            
+                            return replaced;
+                        }, true);
                     } else if (replaceValue.replaceFormat === REPLACE_FORMAT.CONTRACT_TIME) { // 契約時間
                         // TODO: Get contract time
                         let empIdList = _.map($grid.mGrid("dataSource"), (ds: Record) => ds.employeeId);
@@ -1979,11 +2011,24 @@ module cps003.a.vm {
                                     || ((_.isNil(replaceValue.matchValue) || replaceValue.matchValue === "") && (_.isNil(value) || value === ""));
                             }, (value, rec) => {
                                 let contractTime = groupByEmpId[rec.employeeId];
+                                let replaced = "";
                                 if (!_.isNil(contractTime)) {
-                                    let replaced = nts.uk.time.parseTime(replaceValue.replaceValue * contractTime[0].contractTime, true).format();
-                                    return replaced;
-                                } else return "";
-                            });
+                                    replaced = nts.uk.time.parseTime(replaceValue.replaceValue * contractTime[0].contractTime, true).format();
+                                }
+                                
+                                setTimeout(() => {
+                                    let afterProc = cps003.control.NUMBER[self.category.catCode() + "_" + replaceValue.targetItem];
+                                    if (afterProc) {
+                                        afterProc(rec.id, replaceValue.targetItem, replaced, rec).done(res => {
+                                            forEach(res, s => {
+                                                $grid.mGrid("updateCell", s.id, s.item, s.value);
+                                            });
+                                        });
+                                    }
+                                }, 1);
+                                
+                                return replaced;
+                            }, true);
                         });
                     }
                 } else if (replaceValue.mode === APPLY_MODE.AMOUNT) {
@@ -1992,16 +2037,18 @@ module cps003.a.vm {
                             if (find(self.hiddenRows, id => id === obj.id)) return false;
                             if (_.isNil(value) || value === "") return false;
                             if (replaceValue.replaceAll) return true;
-                            return replaceValue.matchValue === value;
-                        }, (value) => replaceValue.replaceValue + value); 
+                            return replaceValue.matchValue === value
+                                || ((_.isNil(replaceValue.matchValue) || replaceValue.matchValue === "") && (_.isNil(value) || value === ""));
+                        }, (value) => String(replaceValue.replaceValue + value), true); 
                     } else if (replaceValue.replaceFormat === REPLACE_FORMAT.VALUE) { // 値指定
                         $grid.mGrid("replace", replaceValue.targetItem, (value, obj) => {
                             if (find(self.hiddenRows, id => id === obj.id)) return false;
                             if (replaceValue.replaceAll) return true;
-                            return replaceValue.matchValue === value;
+                            return replaceValue.matchValue === value
+                                || ((_.isNil(replaceValue.matchValue) || replaceValue.matchValue === "") && (_.isNil(value) || value === ""));
                         }, () => {
-                            return !_.isNil(replaceValue.replaceValue) ? replaceValue.replaceValue : null;
-                        });
+                            return !_.isNil(replaceValue.replaceValue) ? String(replaceValue.replaceValue) : null;
+                        }, true);
                     }
                 } else if (_.find(self.specialItems.workplace, it => it === replaceValue.targetItem)) {
                     let wpName = {}, promises = [], dates = [];
@@ -2026,15 +2073,18 @@ module cps003.a.vm {
                         }, (value, rec) => {
                             let dateStr = moment.utc(rec["IS00082"]).toISOString();
                             return wpName[dateStr] || null;
-                        });
+                        }, true);
                     });
                 } else if (_.find(self.specialItems.department, it => it === replaceValue.targetItem)) {
                 } else if (replaceValue.mode === APPLY_MODE.SELECTION) {
                     $grid.mGrid("replace", replaceValue.targetItem, (value, obj) => {
                         if (find(self.hiddenRows, id => id === obj.id)) return false;
                         if (replaceValue.replaceAll) return true;
-                        return replaceValue.matchValue === value;
-                    }, () => replaceValue.replaceValue);
+                        
+                        return replaceValue.matchValue === value
+                            || ((_.isNil(replaceValue.matchValue) || replaceValue.matchValue === "") && (_.isNil(value) || value === ""))
+                            || ((_.isNil(replaceValue.matchValue) || replaceValue.matchValue === "") && !find($grid.mGrid("optionsList", obj.id, replaceValue.targetItem), opt => opt.optionValue === value));
+                    }, () => replaceValue.replaceValue, true);
                 } else {
                     let replaced = replaceValue.replaceValue, dt = self.dataTypes[replaceValue.targetItem];
                     if (dt.cls.dataTypeValue === ITEM_SINGLE_TYPE.TIMEPOINT) {
@@ -2053,6 +2103,8 @@ module cps003.a.vm {
                         if (!replaceValue.replaceAll && !_.isNil(replaceValue.matchValue) && replaceValue.matchValue !== "") {
                             replaceValue.matchValue = nts.uk.time.parseTime(replaceValue.matchValue, true).format();
                         }
+                    } else if (dt.cls.dataTypeValue === ITEM_SINGLE_TYPE.DATE) {
+                        if (_.isNil(replaced)) replaced = "";
                     }
                     
                     $grid.mGrid("replace", replaceValue.targetItem, (value, obj) => {
@@ -2065,7 +2117,20 @@ module cps003.a.vm {
                         }
                         
                         return (_.isString(replaceValue.matchValue) && _.trim(replaceValue.matchValue) === value) || replaceValue.matchValue === value;
-                    }, () => replaced);
+                    }, (value, obj) => {
+                        setTimeout(() => {
+                            let afterProc = cps003.control.NUMBER[self.category.catCode() + "_" + replaceValue.targetItem];
+                            if (afterProc) {
+                                afterProc(obj.id, replaceValue.targetItem, replaced, obj).done(res => {
+                                    forEach(res, s => {
+                                        $grid.mGrid("updateCell", s.id, s.item, s.value);
+                                    });
+                                });
+                            }
+                        }, 1);
+                        
+                        return replaced;
+                    }, true);
                 }
             });
         }
