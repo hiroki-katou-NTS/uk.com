@@ -119,6 +119,8 @@ public class CheckFileFinder {
 	
 	private static String header;
 	
+	private static int index;
+	
 	private final static List<String> itemSpecialLst = Arrays.asList("IS00003", "IS00004","IS00015","IS00016");
 	
 	//private static int index;
@@ -307,18 +309,18 @@ public class CheckFileFinder {
 		List<EmployeeRowDto> result = new ArrayList<>();
 		// lấy ra những item bị thiếu không file import ko có trong setting ở màn hình A, set RecordId, set actionRole
 		headerReal.removeAll(headerRemain);
-		//index = 0;
+		index = 0;
 		PeregQueryByListEmp lquery = PeregQueryByListEmp.createQueryLayout(category.getPersonInfoCategoryId(),
 				category.getCategoryCode().v(), GeneralDate.today(),
 				employees.stream().map(m -> new PeregEmpInfoQuery(m.getPersonId(), m.getEmployeeId())).collect(Collectors.toList()));
 		
 		List<EmpMainCategoryDto> layouts = layoutProcessor.getCategoryDetailByListEmp(lquery);
-		int index = 0;
+		
 		Iterator<EmployeeRowDto> itr = employeeDtos.iterator();
 		while (itr.hasNext()) {
 			EmployeeRowDto pdt = itr.next();
 			boolean isSelfAuth = sid.equals(pdt.getEmployeeId());
-			List<ItemError> errors = itemErrors.stream().filter(error -> error.getIndex() == 1).collect(Collectors.toList());
+			List<ItemError> errors = itemErrors.stream().filter(error -> error.getIndex() == index).collect(Collectors.toList());
 			// lấy full value của các item
 			List<ItemRowDto> itemDtos = new ArrayList<>();
 			List<EmpMainCategoryDto> empDtos = layouts.stream().filter(l -> l.getEmployeeId().equals(pdt.getEmployeeId())).collect(Collectors.toList());
