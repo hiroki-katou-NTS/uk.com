@@ -35,6 +35,7 @@ public class ParamCaculationOvertime {
 	private List<Integer> startTimeRests;
 	private List<Integer> endTimeRests;
 	private boolean displayCaculationTime;
+	private boolean isFromStepOne;
 	
 	public List<Integer> getStartTimeRests() {
 

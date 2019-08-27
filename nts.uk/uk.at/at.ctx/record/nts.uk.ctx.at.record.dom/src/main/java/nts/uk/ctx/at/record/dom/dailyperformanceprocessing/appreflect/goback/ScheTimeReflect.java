@@ -16,7 +16,7 @@ public interface ScheTimeReflect {
 	/**
 	 * 予定時刻の反映
 	 * @param para
-	 * @param timeTypeScheReflect: 予定勤種・就時の反映
+	 * @param timeTypeScheReflect: 予定勤種・就時の反IntegrationOfDaily映
 	 * @return
 	 */
 	public void reflectScheTime(GobackReflectParameter para, boolean timeTypeScheReflect,
@@ -40,7 +40,7 @@ public interface ScheTimeReflect {
 	 * 時刻の反映
 	 * @param para
 	 */
-	public void reflectTime(GobackReflectParameter para, boolean workTypeTimeReflect, IntegrationOfDaily dailyInfor);
+	public void reflectTime(GobackReflectParameter para, boolean workTypeTimeReflect,IntegrationOfDaily dailyInfor);
 	/**
 	 * 1.出勤時刻を反映できるか
 	 * 2.退勤時刻を反映できるか
@@ -66,5 +66,5 @@ public interface ScheTimeReflect {
 	 * 
 	 * @return
 	 */
-	public boolean checkScheReflect(String worktimeCode, boolean scheReflectAtr, ScheAndRecordSameChangeFlg scheAndRecordSameChangeFlg);
+	public boolean checkScheReflect(String worktimeCode, boolean scheReflectAtr, ScheAndRecordSameChangeFlg scheAndRecordSameChangeFlg, boolean isPre);
 }

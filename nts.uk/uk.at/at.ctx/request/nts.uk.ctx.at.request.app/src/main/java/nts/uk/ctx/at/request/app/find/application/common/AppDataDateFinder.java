@@ -23,10 +23,10 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAd
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.DetailScreenBefore;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.CollectApprovalRootPatternService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.StartupErrorCheckService;
 import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
-import nts.uk.ctx.at.request.dom.application.common.service.other.DetailScreenAppDataService;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
@@ -69,7 +69,7 @@ public class AppDataDateFinder {
 	private ApplicationSettingRepository applicationSettingRepository;
 	
 	@Inject
-	private DetailScreenAppDataService detailScreenAppDataService;
+	private DetailScreenBefore detailScreenBefore;
 	
 	private static final String DATE_FORMAT = "yyyy/MM/dd";
 	
@@ -122,7 +122,7 @@ public class AppDataDateFinder {
 					.reflectPlanTime(application.getReflectionInformation().getDateTimeReflection().map(x -> x.toString(DATE_FORMAT)).orElse(null))
 					.reflectPerTime(application.getReflectionInformation().getDateTimeReflectionReal().map(x -> x.toString(DATE_FORMAT)).orElse(null))
 					.build();
-			authorCmt = detailScreenAppDataService.getDetailScreenAppData(appID).getAuthorComment();
+			authorCmt = detailScreenBefore.getDetailScreenAppData(appID).getDetailScreenApprovalData().getAuthorComment();
 		} else {
 			//achievementOutput = collectAchievement.getAchievement(companyID, employeeID, appGeneralDate);
 			if(isStartUp.equals(Boolean.TRUE)){

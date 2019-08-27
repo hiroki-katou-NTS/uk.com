@@ -552,18 +552,24 @@ module nts.uk.at.view.kaf010.a.viewmodel {
         }
         
         changeColor(attendanceId, frameNo,errorCode){
-            if(errorCode == 1){
+            if(errorCode == 3){
                 $('td#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', '#FD4D4D')
                 $('input#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', '#FD4D4D')
+                return '#FD4D4D';
             }
             if(errorCode == 2){
                 $('td#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', '#F6F636')
                 $('input#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', '#F6F636')
+                return '#F6F636';
             }
-             if(errorCode == 3){
+            if(errorCode == 1){
                 $('td#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', '#F69164')
                 $('input#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', '#F69164')
+                return '#F69164';
             }
+            $('td#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', 'none');
+            $('input#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', 'none');
+            return 'none';
            
         }
         validate(): boolean{
@@ -646,37 +652,57 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 if ( !self.validateTime( self.timeStart2(), self.timeEnd2(), '#inpStartTime2' ) ) {
                     return;
                 };
-            }         
-            let param : any ={
-                breakTimes: _.map(ko.toJS(self.breakTimes()), item => {return self.initCalculateData(item);}),
-                //bonusTimes: _.map(ko.toJS(self.bonusTimes()), item => {return self.initCalculateData(item);}),
-                prePostAtr : self.prePostSelected(),
-                appDate : nts.uk.util.isNullOrEmpty(self.appDate()) ? null : moment(self.appDate()).format(self.DATE_FORMAT),
-                siftCD: self.siftCD(),
-                workTypeCode: self.workTypeCd(),
-                inputDate: null,
-                startTimeRests: nts.uk.util.isNullOrEmpty(self.restTime()) ? [] : _.map(self.restTime(), function (x) { return x.startTime(); }),
-                endTimeRests: nts.uk.util.isNullOrEmpty(self.restTime()) ? [] : _.map(self.restTime(), function (x) { return x.endTime(); }), 
+            }  
+            let breakTimeInputLst = [];
+            _.forEach(ko.toJS(self.breakTimes()), (item) => {
+                breakTimeInputLst.push(self.initCalculateData(item));        
+            });
+            let param1 = {
+                employeeID: self.employeeID(),
+                appDate: moment(self.appDate()).format("YYYY/MM/DD"),
+                prePostAtr: self.prePostSelected(),
+                workTypeCD: self.workTypeCd(),
+                workTimeCD: self.siftCD(),
+                overtimeInputLst: breakTimeInputLst,
                 startTime: nts.uk.util.isNullOrEmpty(self.timeStart1()) ? null : self.timeStart1(),
                 endTime: nts.uk.util.isNullOrEmpty(self.timeEnd1()) ? null : self.timeEnd1(),
-                employeeID: self.employeeID()
+                startTimeRests: nts.uk.util.isNullOrEmpty(self.restTime()) ? [] : _.map(self.restTime(),x=>{return x.startTime()}),
+                endTimeRests: nts.uk.util.isNullOrEmpty(self.restTime()) ? [] : _.map(self.restTime(),x=>{return x.endTime()})     
             }
             //setting work content
             self.preWorkContent = {
-                    applicationDate: self.appDate(),
-                    workType: self.workTypeCd(),
-                    siftType: self.siftCD(),
-                    workClockFrom1: self.timeStart1(),
-                    workClockTo1: self.timeEnd1(),
-                    workClockFrom2: self.timeStart2(),
-                    workClockTo2: self.timeEnd2(),
-                    breakTimes:  ko.toJS(self.breakTimes()),
-                    restTime:  ko.toJS(self.restTime()),
-                }
+                applicationDate: self.appDate(),
+                workType: self.workTypeCd(),
+                siftType: self.siftCD(),
+                workClockFrom1: self.timeStart1(),
+                workClockTo1: self.timeEnd1(),
+                workClockFrom2: self.timeStart2(),
+                workClockTo2: self.timeEnd2(),
+                breakTimes:  ko.toJS(self.breakTimes()),
+                restTime:  ko.toJS(self.restTime()),
+            }
             //block screen
             nts.uk.ui.block.invisible();
             //計算をクリック
-            self.calculatorColorConfirm(param);
+            service.getCalculateValue(param1).done((data: any) => {
+                _.forEach(self.breakTimes(), breakTime => {
+                    let calcOT = _.find(data, item => {
+                        return item.attendanceID == 2 &&
+                            item.frameNo == breakTime.frameNo();    
+                    });          
+                    if(!nts.uk.util.isNullOrUndefined(calcOT)){
+                        breakTime.applicationTime(calcOT.applicationTime);
+                        breakTime.preAppTime(nts.uk.util.isNullOrUndefined(calcOT.preAppTime) ? null : nts.uk.time.format.byId("Clock_Short_HM", parseInt(calcOT.preAppTime)));
+                        breakTime.caculationTime(nts.uk.util.isNullOrUndefined(calcOT.caculationTime) ? null : nts.uk.time.format.byId("Clock_Short_HM", parseInt(calcOT.caculationTime)));
+                        breakTime.color(self.changeColor(2, breakTime.frameNo(), calcOT.errorCode));
+                    }
+                });   
+                nts.uk.ui.block.clear();
+                if(!self.isEmptyOverTimeInput(ko.toJS(self.breakTimes()))){
+                    self.calculateFlag(0);
+                }
+                self.checkWorkContentChanged();
+            });
         }
         
         getReasonName(reasonCombo: common.ComboReason, reasonId: string): string{  

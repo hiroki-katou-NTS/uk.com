@@ -1003,6 +1003,12 @@ public class ProgramIdConsts {
 	public static final String KDL020A = "KDL020A";
 	
 	public static final String CMF007 = "CMF007";
+	
+	//スマホ②
 	public static final String KAFS05A = "KAFS05A";
-
+	public static final String KAFS05B = "KAFS05B";
+	public static final String CMMS45B = "CMMS45B";
+	public static final String CMMS45C = "CMMS45C";
+	public static final String CMMS45D = "CMMS45B";
+	public static final String CMMS45E = "CMMS45E";
 }

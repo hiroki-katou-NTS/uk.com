@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.dom.application.common.ovetimeholiday;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -13,17 +14,15 @@ public class OvertimeColorCheck {
 	
 	public Integer appTime;
 	
-	public Integer calcTime;
-	
-	public Boolean calcError;
+	public int calcError;
 	
 	public Integer preAppTime;
 	
-	public Boolean preAppError;
+	public int preAppError;
 	
 	public Integer actualTime;
 	
-	public Boolean actualError;
+	public int actualError;
 	
 	public static OvertimeColorCheck createActual(Integer attendanceID, Integer frameNo, Integer actualTime){
 		OvertimeColorCheck overtimeColorCheck = new OvertimeColorCheck();
@@ -38,12 +37,16 @@ public class OvertimeColorCheck {
 		overtimeColorCheck.attendanceID = attendanceID;
 		overtimeColorCheck.frameNo = frameNo;
 		overtimeColorCheck.appTime = appTime;
-		overtimeColorCheck.calcTime = 0;
-		overtimeColorCheck.calcError = false;
-		overtimeColorCheck.preAppTime = 0;
-		overtimeColorCheck.preAppError = false;
-		overtimeColorCheck.actualTime = 0;
-		overtimeColorCheck.actualError = false;
+		return overtimeColorCheck;
+	}
+	
+	public static OvertimeColorCheck createFromOverTimeInput(CaculationTime overtimeHour){
+		OvertimeColorCheck overtimeColorCheck = new OvertimeColorCheck();
+		overtimeColorCheck.attendanceID = overtimeHour.getAttendanceID();
+		overtimeColorCheck.frameNo = overtimeHour.getFrameNo();
+		overtimeColorCheck.appTime = overtimeHour.getApplicationTime();
+		overtimeColorCheck.preAppTime = null == overtimeHour.getPreAppTime() ? null: Integer.parseInt(overtimeHour.getPreAppTime());
+		overtimeColorCheck.actualTime = null == overtimeHour.getCaculationTime() ? null: Integer.parseInt(overtimeHour.getCaculationTime());
 		return overtimeColorCheck;
 	}
 	

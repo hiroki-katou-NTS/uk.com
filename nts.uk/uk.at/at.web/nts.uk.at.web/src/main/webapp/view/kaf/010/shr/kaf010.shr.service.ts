@@ -14,7 +14,8 @@ module nts.uk.at.view.kaf010.shr.service {
         confirmInconsistency: "at/request/application/holidaywork/confirmInconsistency",
         confirmPrerepudiation: "at/request/application/holidaywork/confirmPrerepudiation",
         calculationresultConfirm: "at/request/application/holidaywork/calculationresultConfirm",
-        beforeRegisterColorConfirm: "at/request/application/holidaywork/beforeRegisterColorConfirm"
+        beforeRegisterColorConfirm: "at/request/application/holidaywork/beforeRegisterColorConfirm",
+        getCalculateValue: "at/request/application/holidaywork/getCalculateValue",
     }
     /** Get TitleMenu */
     export function getHolidayWorkByUI(param: any): JQueryPromise<any> {
@@ -75,5 +76,9 @@ module nts.uk.at.view.kaf010.shr.service {
     
     export function beforeRegisterColorConfirm(overtime:any): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.beforeRegisterColorConfirm ,overtime);
+    }
+    
+    export function getCalculateValue(param: any): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getCalculateValue, param);
     }
 }

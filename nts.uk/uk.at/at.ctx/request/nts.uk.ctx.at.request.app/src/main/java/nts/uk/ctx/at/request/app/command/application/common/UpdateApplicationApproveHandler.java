@@ -71,57 +71,60 @@ public class UpdateApplicationApproveHandler extends CommandHandlerWithResult<In
 		
         //アルゴリズム「排他チェック」を実行する (thực hiện xử lý 「check version」)
         beforeRegisterRepo.exclusiveCheck(companyID, command.getApplicationID(), command.getVersion());
-
-		Optional<ApplicationSetting> applicationSettingOp = applicationSettingRepository
-				.getApplicationSettingByComID(companyID);
-		ApplicationSetting applicationSetting = applicationSettingOp.get();
-        //14-3.詳細画面の初期モード
-		DetailScreenInitModeOutput output = initMode.getDetailScreenInitMode(EnumAdaptor.valueOf(context.getCommand().getUser(), User.class), context.getCommand().getReflectPerState());
-		String appReason = applicationRepository.findByID(companyID, command.getApplicationID()).get().getAppReason().v();
-		boolean isUpdateReason = false;
-		if(output.getOutputMode()==OutputMode.EDITMODE){
-			boolean displayFixedReason = false;
-			boolean displayAppReason = false;
-			Integer appType = command.getApplicationType();
-			if(appType==ApplicationType.ABSENCE_APPLICATION.value){
-				List<DisplayReasonDto> displayReasonDtoLst = 
-						displayRep.findDisplayReason(companyID).stream().map(x -> DisplayReasonDto.fromDomain(x)).collect(Collectors.toList());
-				DisplayReasonDto displayReasonSet = displayReasonDtoLst.stream().filter(x -> x.getTypeOfLeaveApp() == context.getCommand().getHolidayAppType())
-						.findAny().orElse(null);
-				displayFixedReason = displayReasonSet.getDisplayFixedReason() == 1 ? true : false;
-				displayAppReason = displayReasonSet.getDisplayAppReason() == 1 ? true : false;
-			} else {
-				AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(
-						companyID, 
-						appType).get();
-				displayFixedReason = appTypeDiscreteSetting.getTypicalReasonDisplayFlg().equals(AppDisplayAtr.DISPLAY);
-				displayAppReason = appTypeDiscreteSetting.getDisplayReasonFlg().equals(AppDisplayAtr.DISPLAY);
-			}
-			String typicalReason = Strings.EMPTY;
-			String displayReason = Strings.EMPTY;
-			if(displayFixedReason){
-				typicalReason += context.getCommand().getComboBoxReason();
-			}
-			if(displayAppReason){
-				if(Strings.isNotBlank(typicalReason)){
-					displayReason += System.lineSeparator();
+        String appReason = Strings.EMPTY;
+        boolean isUpdateReason = false;
+        boolean isMobileCall =  context.getCommand().getMobileCall() == null ? false : context.getCommand().getMobileCall().booleanValue();
+        if(!isMobileCall) {
+			Optional<ApplicationSetting> applicationSettingOp = applicationSettingRepository
+					.getApplicationSettingByComID(companyID);
+			ApplicationSetting applicationSetting = applicationSettingOp.get();
+	        //14-3.詳細画面の初期モード
+			DetailScreenInitModeOutput output = initMode.getDetailScreenInitMode(EnumAdaptor.valueOf(context.getCommand().getUser(), User.class), context.getCommand().getReflectPerState());
+			appReason = applicationRepository.findByID(companyID, command.getApplicationID()).get().getAppReason().v();
+			if(output.getOutputMode()==OutputMode.EDITMODE){
+				boolean displayFixedReason = false;
+				boolean displayAppReason = false;
+				Integer appType = command.getApplicationType();
+				if(appType==ApplicationType.ABSENCE_APPLICATION.value){
+					List<DisplayReasonDto> displayReasonDtoLst = 
+							displayRep.findDisplayReason(companyID).stream().map(x -> DisplayReasonDto.fromDomain(x)).collect(Collectors.toList());
+					DisplayReasonDto displayReasonSet = displayReasonDtoLst.stream().filter(x -> x.getTypeOfLeaveApp() == context.getCommand().getHolidayAppType())
+							.findAny().orElse(null);
+					displayFixedReason = displayReasonSet.getDisplayFixedReason() == 1 ? true : false;
+					displayAppReason = displayReasonSet.getDisplayAppReason() == 1 ? true : false;
+				} else {
+					AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(
+							companyID, 
+							appType).get();
+					displayFixedReason = appTypeDiscreteSetting.getTypicalReasonDisplayFlg().equals(AppDisplayAtr.DISPLAY);
+					displayAppReason = appTypeDiscreteSetting.getDisplayReasonFlg().equals(AppDisplayAtr.DISPLAY);
 				}
-				displayReason += context.getCommand().getTextAreaReason();
-			} else {
-				if(Strings.isBlank(typicalReason)){
-					displayReason = applicationRepository.findByID(companyID, command.getApplicationID()).get().getAppReason().v();
+				String typicalReason = Strings.EMPTY;
+				String displayReason = Strings.EMPTY;
+				if(displayFixedReason){
+					typicalReason += context.getCommand().getComboBoxReason();
+				}
+				if(displayAppReason){
+					if(Strings.isNotBlank(typicalReason)){
+						displayReason += System.lineSeparator();
+					}
+					displayReason += context.getCommand().getTextAreaReason();
+				} else {
+					if(Strings.isBlank(typicalReason)){
+						displayReason = applicationRepository.findByID(companyID, command.getApplicationID()).get().getAppReason().v();
+					}
+				}
+				
+				if(displayFixedReason||displayAppReason){
+					if (applicationSetting.getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED)
+							&& Strings.isBlank(typicalReason+displayReason)) {
+						throw new BusinessException("Msg_115");
+					}
+					appReason = typicalReason + displayReason;
+					isUpdateReason = true;
 				}
 			}
-			
-			if(displayFixedReason||displayAppReason){
-				if (applicationSetting.getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED)
-						&& Strings.isBlank(typicalReason+displayReason)) {
-					throw new BusinessException("Msg_115");
-				}
-				appReason = typicalReason + displayReason;
-				isUpdateReason = true;
-			}
-		}
+        }
 		
 		//8-2.詳細画面承認後の処理
 		ProcessResult processResult = detailAfterApproval_New.doApproval(companyID, command.getApplicationID(), employeeID, memo, appReason, isUpdateReason);

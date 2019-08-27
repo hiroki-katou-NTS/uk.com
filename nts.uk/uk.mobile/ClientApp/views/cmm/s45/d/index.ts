@@ -4,6 +4,8 @@ import { ApprovedComponent } from '@app/components';
 import { IApprovalPhase, IApprovalFrame, IApplication } from 'views/cmm/s45/common/index.d';
 import { Phase } from 'views/cmm/s45/common/index';
 import { IOvertime } from 'views/cmm/s45/components/app1';
+import { CmmS45EComponent } from 'views/cmm/s45/e';
+import { CmmS45FComponent } from 'views/cmm/s45/f';
 
 import {
     CmmS45ComponentsApp1Component,
@@ -15,12 +17,15 @@ import {
 
 @component({
     name: 'cmms45d',
-    route: '/cmm/s45/d',
     style: require('./style.scss'),
     template: require('./index.vue'),
     resource: require('./resources.json'),
-    validations: {},
-    constraints: [],
+    validations: {
+        memo: {
+            constraint: 'ApproverReason'
+        }
+    },
+    constraints: ['nts.uk.ctx.at.request.dom.application.ApproverReason'],
     components: {
         // khai báo virtual tag name
         'approved': ApprovedComponent,
@@ -28,7 +33,9 @@ import {
         'app2': CmmS45ComponentsApp2Component,
         'app3': CmmS45ComponentsApp3Component,
         'app4': CmmS45ComponentsApp4Component,
-        'app5': CmmS45ComponentsApp5Component
+        'app5': CmmS45ComponentsApp5Component,
+        'cmms45e': CmmS45EComponent,
+        'cmms45f': CmmS45FComponent
     }
 })
 export class CmmS45DComponent extends Vue {
@@ -41,19 +48,30 @@ export class CmmS45DComponent extends Vue {
     public listAppMeta: Array<string> = [];
     public currentApp: string = '';
     // 承認ルートインスタンス
-    public phaseLst: Array<IApprovalPhase> = [];
-    public appState: { appStatus: number, reflectStatus: number, version: number } = { appStatus: 0, reflectStatus: 1, version: 0 };
+    public phaseLst: Array<Phase> = [];
+    public appState: { 
+        appStatus: number, 
+        reflectStatus: number, 
+        version: number,
+        authorizableFlags: boolean,
+        approvalATR: number,
+        alternateExpiration: boolean 
+    } = { appStatus: 0, reflectStatus: 1, version: 0, authorizableFlags: false, approvalATR: 0, alternateExpiration: false };
+    public authorComment: string = '';
     public appOvertime: IOvertime = null;
     // 差し戻し理由
     public reversionReason: string = '';
 
-    public releaseFlg: boolean = false;
+    public memo: string = '';
+    public commentDis: boolean = false;
+    public commentColor: string = '';
 
     public created() {
-        this.listAppMeta = this.params.listAppMeta;
-        this.currentApp = this.params.currentApp;
-        this.appCount = _.indexOf(this.listAppMeta, this.currentApp);
-        Object.defineProperty(this.appState, 'getName', {
+        let self = this;
+        self.listAppMeta = self.params.listAppMeta;
+        self.currentApp = self.params.currentApp;
+        self.appCount = _.indexOf(self.listAppMeta, self.currentApp);
+        Object.defineProperty(self.appState, 'getName', {
             get() {
                 switch (this.appStatus) {
                     case 0: return 'CMMS45_7'; // 反映状態 = 未反映
@@ -68,7 +86,7 @@ export class CmmS45DComponent extends Vue {
             }
         });
         
-        Object.defineProperty(this.appState, 'getClass', {
+        Object.defineProperty(self.appState, 'getClass', {
             get() {
                 switch (this.appStatus) {
                     case 0: return 'apply-unapproved'; // 反映状態 = 未反映
@@ -83,7 +101,7 @@ export class CmmS45DComponent extends Vue {
             }
         });
 
-        Object.defineProperty(this.appState, 'getNote', {
+        Object.defineProperty(self.appState, 'getNote', {
             get() {
                 switch (this.appStatus) {
                     case 0: return 'CMMS45_39'; // 反映状態 = 未反映
@@ -100,105 +118,391 @@ export class CmmS45DComponent extends Vue {
     }
 
     public mounted() {
-        this.$mask('show');
-        this.getApprovalList();
+        let self = this;
+        self.$mask('show');
+        self.initData();
     }
 
-    // get approver list data
-    public getApprovalList() {
-        this.selected = 0;
-        this.$http.post('at', API.getDetailApplicantMob, this.currentApp)
+    // lấy dữ liệu ban đầu
+    public initData() {
+        let self = this;
+        self.selected = 0;
+        self.$http.post('at', API.getDetailMob, self.currentApp)
         .then((resApp: any) => {
             let appData: IApplication = resApp.data;
-            this.createPhaseLst(appData.listApprovalPhaseStateDto);
-            this.appState.appStatus = appData.appStatus;
-            this.appState.reflectStatus = appData.reflectStatus;
-            this.appState.version = appData.version;
-            this.reversionReason = appData.reversionReason;
-            this.appOvertime = appData.appOvertime;
-            this.$mask('hide');
+            self.createPhaseLst(appData.listApprovalPhaseStateDto);
+            self.appState.appStatus = appData.appStatus;
+            self.appState.reflectStatus = appData.reflectStatus;
+            self.appState.version = appData.version;
+            self.appState.authorizableFlags = appData.authorizableFlags;
+            self.appState.approvalATR = appData.approvalATR;
+            self.appState.alternateExpiration = appData.alternateExpiration;
+            self.authorComment = appData.authorComment; 
+            self.reversionReason = appData.reversionReason;
+            self.appOvertime = appData.appOvertime;
+            self.memo = '';
+            if (!_.isEmpty(self.authorComment)) {
+                self.commentDis = true;
+            } else {
+                self.commentDis = false;
+            }
+            self.commentColor = resApp.data.loginApprovalAtr == 2 ? 'uk-bg-dark-salmon' : 'uk-bg-alice-blue';
+            self.$mask('hide');
         }).catch((res: any) => {
-            this.$modal.error(this.$i18n(res.messageId))
+            self.$mask('hide');
+            self.$modal.error(res.messageId)
                 .then(() => {
-                    this.back(true);
+                    self.back();
                 });
         });
     }
 
-    // render data for approver list
+    // tạo dữ liệu người phê duyệt
     public createPhaseLst(listPhase: Array<IApprovalPhase>): void {
-        let phaseLstConvert: Array<IApprovalPhase> = [];
+        let self = this;
+        let phaseLstConvert: Array<Phase> = [];
         for (let i: number = 1; i <= 5; i++) {
             let containPhase: IApprovalPhase = _.find(listPhase, (phase: IApprovalPhase) => phase.phaseOrder == i);
             phaseLstConvert.push(new Phase(containPhase));
         }
-        this.phaseLst = phaseLstConvert;
+        self.phaseLst = phaseLstConvert;
+        self.selected = self.getSelectedPhase();
     }
 
-    // go to next application
+    // lấy phase chỉ định 
+    private getSelectedPhase(): number {
+        let self = this;
+        let denyPhase: Phase = _.find(self.phaseLst, (phase: Phase) => phase.approvalAtrValue == 2);
+        if (denyPhase) {
+            return denyPhase.phaseOrder - 1;
+        }
+        let returnPhase: Phase = _.find(self.phaseLst, (phase: Phase) => phase.approvalAtrValue == 3);
+        if (returnPhase) {
+            return returnPhase.phaseOrder - 1;
+        }
+        let unapprovePhaseLst: Array<Phase> = _.filter(self.phaseLst, (phase: Phase) => phase.approvalAtrValue == 0);
+        if (unapprovePhaseLst.length > 0) {
+            return _.sortBy(unapprovePhaseLst, 'phaseOrder')[0].phaseOrder - 1;
+        }
+        let approvePhaseLst: Array<Phase> = _.filter(self.phaseLst, (phase: Phase) => phase.approvalAtrValue == 1);
+        if (approvePhaseLst.length > 0) {
+            return _.sortBy(approvePhaseLst, 'phaseOrder').reverse()[0].phaseOrder - 1;
+        }
+
+        return 0;
+    }
+
+    // tiến tới đơn tiếp theo
     public toNextApp(): void {
-        this.showApproval = false;
-        this.appCount++;
-        this.currentApp = this.listAppMeta[this.appCount];
-        this.$mask('show');
-        this.getApprovalList();
+        let self = this;
+        self.$el.scrollTop = 0;
+        self.showApproval = false;
+        self.appCount++;
+        self.currentApp = self.listAppMeta[self.appCount];
+        self.$mask('show');
+        self.initData();
     }
 
-    // back to previous application
+    // quay về đơn trước
     public toPreviousApp(): void {
-        this.showApproval = false;
-        this.appCount--;
-        this.currentApp = this.listAppMeta[this.appCount];
-        this.$mask('show');
-        this.getApprovalList();
+        let self = this;
+        self.$el.scrollTop = 0;
+        self.showApproval = false;
+        self.appCount--;
+        self.currentApp = self.listAppMeta[self.appCount];
+        self.$mask('show');
+        self.initData();
     }
 
-    // check first application
+    // kiểm tra có phải đơn đầu tiên không
     public isFirstApp(): boolean {
-        return this.appCount == 0;
+        let self = this;
+
+        return self.appCount == 0;
     }
 
-    // check last application
+    // kiểm tra có phải đơn cuối cùng không
     public isLastApp(): boolean {
-        return this.appCount == this.listAppMeta.length - 1;
+        let self = this;
+
+        return self.appCount == self.listAppMeta.length - 1;
     }
 
-    // check list app empty
+    // kiểm tra list đơn xin rỗng
     public isEmptyApp(): boolean {
-        return this.listAppMeta.length == 0;
+        let self = this;
+
+        return self.listAppMeta.length == 0;
     }
 
-    // show/hide approver list
+    // ẩn hiện người phê duyệt
     public reverseApproval(): void {
-        this.showApproval = !this.showApproval;
+        let self = this;
+        self.showApproval = !self.showApproval;
     }
 
-    // back to CMMS45A
-    public back(reloadValue?: boolean) {
-        if (this.$router.currentRoute.name == 'cmms45b') {
-            if (reloadValue) {
-                this.$close({ CMMS45A_Reload: reloadValue });
+    // quay về màn CMMS45B
+    public back() {
+        let self = this;
+        self.$close();
+    }
+
+    // kích hoạt nút giải phóng
+    public releaseApp(): void {
+        let self = this;
+        self.$modal.confirm('Msg_248')
+            .then((v) => {
+                if (v == 'yes') {
+                    self.$mask('show');
+                    self.$http.post('at', API.release, {
+                        memo: self.memo,
+                        applicationDto: {
+                            version: self.appState.version,
+                            applicationID: self.currentApp
+                        }
+                    }).then((resRelease: any) => {
+                        self.$mask('hide');
+                        if (resRelease.data.processDone) {
+                            self.reflectApp(resRelease.data.reflectAppId);
+                            self.$modal.info('Msg_221').then(() => { self.initData(); });
+                        }
+                    }).catch((failRelease: any) => {
+                        self.$mask('hide');
+                        if (failRelease.messageId == 'Msg_197') {
+                            self.$modal.error(failRelease.messageId)
+                                .then(() => {
+                                    self.initData();
+                                });
+                        } else {
+                            self.$modal.error(failRelease.messageId)
+                                .then(() => {
+                                    self.back();
+                                });
+                        }
+                    });              
+                }
+            });
+    }
+
+    // kích hoạt nút chấp nhận
+    public approveApp(): void {
+        let self = this;
+        self.$modal.confirm('Msg_1549')
+            .then((v) => {
+                if (v == 'yes') {
+                    self.$mask('show');
+                    self.$http.post('at', API.approve, {
+                        applicationDto: {
+                            version: self.appState.version,
+                            applicationID: self.currentApp    
+                        },	
+                        memo: self.memo, 
+                        comboBoxReason: '',
+                        textAreaReason: '',
+                        holidayAppType: 0,
+                        user: 1,
+                        reflectPerState: self.appState.reflectStatus,
+                        mobileCall: true
+                    }).then((resApprove: any) => {
+                        self.$mask('hide');
+                        if (resApprove.data.processDone) {
+                            self.reflectApp(resApprove.data.reflectAppId);
+                            self.$modal('cmms45f', { 'action': 1, 'listAppMeta': self.listAppMeta, 'currentApp': self.currentApp })
+                            .then((resAfterApprove: any) => {
+                                self.controlDialog(resAfterApprove);        
+                            }); 
+                        }
+                    }).catch((failApprove: any) => {
+                        self.$mask('hide');
+                        if (failApprove.messageId == 'Msg_197') {
+                            self.$modal.error(failApprove.messageId)
+                                .then(() => {
+                                    self.initData();
+                                });
+                        } else {
+                            self.$modal.error(failApprove.messageId)
+                                .then(() => {
+                                    self.back();
+                                });
+                        }
+                    });            
+                }
+            });
+    }
+
+    // kích hoạt nút từ chối
+    public denyApp(): void {
+        let self = this;
+        self.$modal.confirm('Msg_1550')
+            .then((v) => {
+                if (v == 'yes') {
+                    self.$mask('show');
+                    self.$http.post('at', API.deny, {
+                        memo: self.memo,
+                        applicationDto: {
+                            version: self.appState.version,
+                            applicationID: self.currentApp,
+                            prePostAtr: self.appOvertime.prePostAtr,
+                            applicantSID: self.appOvertime.applicant
+                        }   
+                    }).then((resDeny: any) => {
+                        self.$mask('hide');
+                        if (resDeny.data.processDone) {
+                            self.reflectApp(resDeny.data.reflectAppId);
+                            self.$modal('cmms45f', { 'action': 2, 'listAppMeta': self.listAppMeta, 'currentApp': self.currentApp })
+                            .then((resAfterDeny: any) => {
+                                self.controlDialog(resAfterDeny);   
+                            });
+                        }
+                    }).catch((failDeny: any) => {
+                        self.$mask('hide');
+                        if (failDeny.messageId == 'Msg_197') {
+                            self.$modal.error(failDeny.messageId)
+                                .then(() => {
+                                    self.initData();
+                                });
+                        } else {
+                            self.$modal.error(failDeny.messageId)
+                                .then(() => {
+                                    self.back();
+                                });
+                        }
+                    });           
+                }
+            });
+    }
+
+    // kích hoạt nút trả về
+    public returnApp(): void {
+        let self = this;
+        self.$mask('show');
+        self.$http.post('at', API.checkVersion, {
+            appID: self.currentApp,
+            version: self.appState.version
+        }).then(() => {
+            self.$mask('hide');
+            self.$modal('cmms45e', {'listAppMeta': self.listAppMeta, 'currentApp': self.currentApp, 'version': self.appState.version })
+            .then((resReturn: any) => {
+                self.controlDialog(resReturn); 
+            });
+        }).catch((failVersionCheck: any) => {
+            self.$mask('hide');
+            if (failVersionCheck.messageId == 'Msg_197') {
+                self.$modal.error(failVersionCheck.messageId)
+                    .then(() => {
+                        self.initData();
+                    });
             } else {
-                this.$close({ CMMS45A_Reload: false });
+                self.$modal.error(failVersionCheck.messageId)
+                    .then(() => {
+                        self.back();
+                    });
             }
-            
-        } else {
-            this.$goto('cmms45b', { CMMS45_FromMenu: false });   
+        });  
+        
+    }
+
+    // xử lý sau khi từ màn F trở về
+    public controlDialog(result: any): void {
+        let self = this;
+        if (result) {
+            switch (result.destination) {
+                case 1: self.$close(); break; // đến CMMS45B
+                case 2: self.toNextApp(); break; // đến đơn tiếp theo
+                case 3: self.initData(); break; // reload đơn hiện tại
+                default: break;     
+            }
         }
     }
 
-    public changeRelease(): void {
-        this.releaseFlg = !this.releaseFlg;    
+    // phản ánh đơn xin sau khi chấp nhận, từ chối
+    public reflectApp(appID: string): void {
+        let self = this;
+        if (!_.isEmpty(appID)) {
+            self.$http.post('at', API.reflectApp, [appID]);
+        }
     }
 
-    public checkFloatBtn(): void {
-        console.log('aa');
+    // lấy ID của đơn tiếp theo
+    public getNextApp(): string {
+        let self = this;
+        
+        return self.listAppMeta[self.appCount + 1];            
+    }
+
+    // kiểm tra có thể thay đổi không dựa vào trạng thái đơn
+    public canChangeStatus(): boolean {
+        let self = this;
+        switch (self.appState.reflectStatus) {
+            case 0: return true; // 反映状態 = 未反映
+            case 1: return true; // 反映状態 = 反映待ち
+            case 2: return false; // 反映状態 = 反映済
+            case 3: return false; // 反映状態 = 取消待ち
+            case 4: return false; // 反映状態 = 取消済
+            case 5: return true; // 反映状態 = 差し戻し
+            case 6: return true; // 反映状態 = 否認
+            case 99: return false; //
+            default: break;  
+        }
+    }
+
+    // kiểm tra trạng thái của người login đối với đơn xin
+    public isModify(): boolean {
+        let self = this;
+        switch (self.appState.approvalATR) {
+            case 0: return false; // ログイン者の承認区分 = 未承認
+            case 1: return true; // ログイン者の承認区分 = 承認済
+            case 2: return true; // ログイン者の承認区分 = 否認
+            default: break;  
+        }
+    }
+
+    // hiển thị lý do approve
+    public displayApproveReasonContent(): boolean {
+        let self = this;
+        if (self.canChangeStatus() && self.appState.authorizableFlags && !self.appState.alternateExpiration) {
+            return self.isModify();
+        }
+
+        return !self.isModify();
+    }
+
+    // hiển thị ô nhập lý do approve
+    public displayApproveReasonInput(): boolean {
+        let self = this;
+        if (self.canChangeStatus() && self.appState.authorizableFlags && !self.appState.alternateExpiration) {
+            return !self.isModify();
+        }
+
+        return false;
+    }
+
+    // hiển thị nút giải phóng
+    public displayReleaseLock(): boolean {
+        let self = this;
+        if (self.canChangeStatus() && self.appState.authorizableFlags) {
+            return self.isModify();
+        }
+        
+        return false;
+    }
+
+    // hiển thị nút chấp nhận, từ chối, trả về
+    public displayReleaseOpen(): boolean {
+        let self = this;
+        if (self.canChangeStatus() && self.appState.authorizableFlags && !self.appState.alternateExpiration) {
+            return !self.isModify();
+        }
+
+        return false;
     }
 }
 
 const API = {
-    approvedStatus: 'at/request/application/getAppDataByDate',
-    overtimeApp: 'at/request/application/overtime/findByAppID',
-    delete: 'at/request/application/deleteapp',
-    getDetailApplicantMob: 'at/request/application/getDetailApplicantMob'
+    getDetailMob: 'at/request/application/getDetailMob',
+    approve: 'at/request/application/approveapp',
+    deny: 'at/request/application/denyapp',
+    release: 'at/request/application/releaseapp',
+    reflectApp: 'at/request/application/reflect-app',
+    checkVersion: 'at/request/application/checkVersion'
 };

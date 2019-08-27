@@ -78,6 +78,10 @@ export interface IApplication {
     reflectStatus: number;
     reversionReason: string;
     version: number;
-    appOvertime: IOvertime
+    authorizableFlags: boolean;
+	approvalATR: number;
+    alternateExpiration: boolean;
+    authorComment: string;
+    appOvertime: IOvertime;
 }
 

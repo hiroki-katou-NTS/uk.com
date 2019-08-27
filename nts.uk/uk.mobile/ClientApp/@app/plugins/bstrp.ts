@@ -30,6 +30,10 @@ const bstrp = {
                                         dom.removeClass(label, 'btn-primary');
                                         dom.addClass(label, 'btn-secondary');
                                     }
+
+                                    if (input.disabled) {
+                                        dom.addClass(label, 'disabled');
+                                    }
                                 }
                             });
                     })(root);

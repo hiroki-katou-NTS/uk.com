@@ -20,6 +20,7 @@ import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
+import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputCaculation;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculation;
@@ -57,73 +58,68 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 	private OvertimeRepository overtimeRepository;
 
 	@Override
-	public PreActualColorResult preActualColorCheck(String companyID, String employeeID,
-			UseAtr preExcessDisplaySetting, AppDateContradictionAtr performanceExcessAtr, GeneralDate appDate,
-			ApplicationType appType, PrePostAtr prePostAtr, String workType, String workTime, OverrideSet overrideSet,
-			Optional<CalcStampMiss> calStampMiss, List<OvertimeColorCheck> calcTimeList, List<OvertimeColorCheck> overTimeLst) {
+	public PreActualColorResult preActualColorCheck(UseAtr preExcessDisplaySetting, AppDateContradictionAtr performanceExcessAtr,
+			ApplicationType appType, PrePostAtr prePostAtr, OverrideSet overrideSet, Optional<CalcStampMiss> calStampMiss, 
+			List<OvertimeInputCaculation> calcTimeList, List<OvertimeColorCheck> overTimeLst,
+			Optional<Application_New> opAppBefore, boolean beforeAppStatus, List<OvertimeColorCheck> actualLst, ActualStatus actualStatus) {
 		PreActualColorResult result = new PreActualColorResult();
-		Optional<Application_New> opAppBefore = Optional.empty();
 		// アルゴリズム「チェック条件」を実行する
-		boolean preAppSetCheck = commonOvertimeHoliday.preAppSetCheck(prePostAtr, preExcessDisplaySetting);
-		if(preAppSetCheck){
-			// ドメインモデル「申請」を取得(lây domain "đơn xin")
-			List<Application_New> appBeforeLst = applicationRepository.getBeforeApplication(companyID, employeeID, appDate, appType.value, prePostAtr.value);
-			opAppBefore = CollectionUtil.isEmpty(appBeforeLst) ? Optional.empty() : Optional.of(appBeforeLst.get(0)); 
-			// アルゴリズム「事前申請状態チェック」を実行する
-			result.beforeAppStatus = preAppStatusCheck(opAppBefore);
-		}
+		UseAtr preAppSetCheck = commonOvertimeHoliday.preAppSetCheck(prePostAtr, preExcessDisplaySetting);
 		// 実績超過チェック　＝　「03-02-1_チェック条件」を取得
-		boolean actualSetCheck = commonOvertimeHoliday.actualSetCheck(performanceExcessAtr, prePostAtr);
-		ActualStatusCheckResult actualStatusCheckResult = new ActualStatusCheckResult(ActualStatus.NO_ACTUAL, Collections.emptyList());
-		if(actualSetCheck){
-			// アルゴリズム「実績取得・状態チェック」を実行する
-			actualStatusCheckResult = actualStatusCheck(companyID, employeeID, appDate, appType, workType, workTime, overrideSet, calStampMiss);
-		}
+		AppDateContradictionAtr actualSetCheck = commonOvertimeHoliday.actualSetCheck(performanceExcessAtr, prePostAtr);
 		for(OvertimeColorCheck overtimeColorCheck : overTimeLst){
+			// 入力値をチェックする
+			int compareCalc = 0;
+			if(overtimeColorCheck.appTime!=null) {
+				compareCalc = overtimeColorCheck.appTime;
+			}
 			// ループ中の枠に対する計算値が存在するかチェックする
-			Optional<OvertimeColorCheck> opOvertimeColorCheck = calcTimeList.stream()
-					.filter(x -> x.attendanceID==overtimeColorCheck.attendanceID && x.frameNo==overtimeColorCheck.frameNo).findAny();
-			if(opOvertimeColorCheck.isPresent()){
+			Optional<OvertimeInputCaculation> opOvertimeInputCaculation = calcTimeList.stream()
+					.filter(x -> x.getAttendanceID()==overtimeColorCheck.attendanceID && x.getFrameNo()==overtimeColorCheck.frameNo).findAny();
+			if(opOvertimeInputCaculation.isPresent()){
 				// 計算値チェック
-				if(opOvertimeColorCheck.get().calcTime!=overtimeColorCheck.appTime){
-					overtimeColorCheck.calcError = true;
-					overtimeColorCheck.calcTime = opOvertimeColorCheck.get().calcTime;
+				if(opOvertimeInputCaculation.get().getResultCaculation()!=compareCalc){
+					overtimeColorCheck.calcError = PreActualError.CALC_ERROR.value;
+				} else {
+					overtimeColorCheck.calcError = PreActualError.NO_ERROR.value;
 				}
+				overtimeColorCheck.appTime = opOvertimeInputCaculation.get().getResultCaculation();
 			}
-			// 入力時間チェック
-			if(overtimeColorCheck.appTime<=0){
-				continue;
-			}
-			// 事前申請超過チェックをする必要があるかチェックする
-			if(preExcessDisplaySetting==UseAtr.USE){
-				// アルゴリズム「枠別事前申請超過チェック」を実行する
-				preAppErrorCheck(appType, overtimeColorCheck, opAppBefore);
-			}
-			// 実績超過チェックをする必要があるかチェックする
-			if(performanceExcessAtr==AppDateContradictionAtr.CHECKNOTREGISTER&&performanceExcessAtr==AppDateContradictionAtr.CHECKREGISTER){
-				// アルゴリズム「枠別実績超過チェック」を実行する
-				actualErrorCheck(overtimeColorCheck, actualStatusCheckResult);
-			}
+			// アルゴリズム「枠別事前申請超過チェック」を実行する
+			preAppErrorCheck(appType, overtimeColorCheck, opAppBefore, preAppSetCheck);
+			// アルゴリズム「枠別実績超過チェック」を実行する
+			actualErrorCheck(overtimeColorCheck, actualLst, actualSetCheck);
 		}
-		result.actualStatus = actualStatusCheckResult.actualStatus.value;
+		result.beforeAppStatus = beforeAppStatus;
+		if (null != actualStatus) {
+			result.actualStatus = actualStatus.value;
+		}
 		result.resultLst = overTimeLst;
 		return result;
 	}
 
 	@Override
-	public boolean preAppStatusCheck(Optional<Application_New> opAppBefore) {
+	public PreAppCheckResult preAppStatusCheck(String companyID, String employeeID, GeneralDate appDate, ApplicationType appType) {
+		PreAppCheckResult preAppCheckResult = new PreAppCheckResult();
+		// ドメインモデル「申請」を取得(lây domain "đơn xin")
+		List<Application_New> appBeforeLst = applicationRepository.getBeforeApplication(companyID, employeeID, appDate, appType.value, PrePostAtr.PREDICT.value);
+		Optional<Application_New> opAppBefore = CollectionUtil.isEmpty(appBeforeLst) ? Optional.empty() : Optional.of(appBeforeLst.get(0)); 
 		// 事前申請漏れチェック
 		if(!opAppBefore.isPresent()){
-			return true;
+			preAppCheckResult.beforeAppStatus = true;
+			preAppCheckResult.opAppBefore = Optional.empty();
+			return preAppCheckResult;
 		}
+		preAppCheckResult.opAppBefore = opAppBefore;
 		Application_New appBefore = opAppBefore.get();
 		ReflectedState_New refPlan = appBefore.getReflectionInformation()
 				.getStateReflectionReal();
 		// 事前申請否認チェック
 		if (refPlan.equals(ReflectedState_New.DENIAL) || refPlan.equals(ReflectedState_New.REMAND)) {
-			return true;
+			preAppCheckResult.beforeAppStatus = true;
+			return preAppCheckResult;
 		}
-		return false;
+		return preAppCheckResult;
 	}
 
 	@Override
@@ -135,7 +131,7 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 		// Imported(申請承認)「勤務実績」を取得する
 		RecordWorkInfoImport recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID, appDate);
 		if(Strings.isBlank(recordWorkInfoImport.getWorkTypeCode())){
-			return new ActualStatusCheckResult(ActualStatus.NO_ACTUAL, Collections.emptyList());
+			return new ActualStatusCheckResult(ActualStatus.NO_ACTUAL, "", "", null, null, Collections.emptyList());
 		}
 		// アルゴリズム「勤務分類変更の判定」を実行する
 		JudgmentWorkTypeResult judgmentWorkTypeResult = judgmentWorkTypeChange(companyID, appType, recordWorkInfoImport.getWorkTypeCode(), workType);
@@ -159,8 +155,8 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 							appDate, 
 							judgmentWorkTypeResult.getCalcWorkType(), 
 							judgmentWorkTimeResult.getCalcWorkTime(), 
-							null, 
-							null, 
+							recordWorkInfoImport.getAttendanceStampTimeFirst(), 
+							judgmentStampResult.getCalcLeaveStamp(), 
 							Collections.emptyList(), 
 							Collections.emptyList());
 			actualLst.addAll(dailyAttendanceTimeCaculationImport.getOverTime().entrySet()
@@ -177,13 +173,22 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 			actualLst.add(OvertimeColorCheck.createActual(1, 11, recordWorkInfoImport.getShiftNightCaculation()));
 			actualLst.add(OvertimeColorCheck.createActual(1, 12, recordWorkInfoImport.getFlexCaculation()));
 		}
-		return new ActualStatusCheckResult(actualStatus, actualLst);
+		return new ActualStatusCheckResult(
+				actualStatus, 
+				judgmentWorkTypeResult.getCalcWorkType(), 
+				judgmentWorkTimeResult.getCalcWorkTime(),
+				recordWorkInfoImport.getAttendanceStampTimeFirst(),
+				judgmentStampResult.getCalcLeaveStamp(),
+				actualLst);
 	}
 
 	@Override
 	public boolean judgmentToday(GeneralDate appDate, String workTime) {
 		// 1日の範囲を時間帯で返す
 		TimeSpanForCalc timeSpanForCalc = rangeOfDayTimeZoneService.getRangeofOneDay(workTime);
+		if(timeSpanForCalc==null) {
+			return false;
+		}
 		// 1日の範囲から申請日の範囲を作成する
 		GeneralDateTime appDateRangeStart = getAppDateRange(timeSpanForCalc.getStart(), appDate);
 		GeneralDateTime appDateRangeEnd = getAppDateRange(timeSpanForCalc.getEnd(), appDate);
@@ -250,7 +255,7 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 		}
 		calcWorkTime = screenWorkTime;
 		// 就業時間帯が変更されているかチェックする
-		if(actualWorkTime.equals(screenWorkTime)){
+		if(Strings.isNotBlank(actualWorkTime) && screenWorkTime.equals(actualWorkTime)){
 			workTimeChange = false;
 		} else {
 			workTimeChange = true;
@@ -352,46 +357,71 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 	}
 
 	@Override
-	public void preAppErrorCheck(ApplicationType appType, OvertimeColorCheck overtimeColorCheck, Optional<Application_New> opAppBefore) {
+	public void preAppErrorCheck(ApplicationType appType, OvertimeColorCheck overtimeColorCheck, Optional<Application_New> opAppBefore, UseAtr preAppSetCheck) {
 		String companyID = AppContexts.user().companyId();
+		int compareValue = 0;
 		// 事前申請をチェックする
-		if(opAppBefore.isPresent()){
+		if(null != opAppBefore && opAppBefore.isPresent()){
 			Application_New appBefore = opAppBefore.get();
 			// 申請種類をチェックする
 			if(appType==ApplicationType.OVER_TIME_APPLICATION){
-				AppOverTime appOverTime = overtimeRepository.getAppOvertime(companyID, appBefore.getAppID()).get();
+				AppOverTime appOverTime = overtimeRepository.getFullAppOvertime(companyID, appBefore.getAppID()).get();
 				List<OverTimeInput> overTimeInputLst = appOverTime.getOverTimeInput();
-				Optional<OverTimeInput> opOverTimeInput = overTimeInputLst
-						.stream().filter(x -> x.getAttendanceType().value==overtimeColorCheck.attendanceID && x.getFrameNo()==overtimeColorCheck.frameNo).findAny();
-				if(opOverTimeInput.isPresent()){
-					// 事前申請時間に勤怠種類・枠NOに応じた時間を設定する
-					overtimeColorCheck.preAppTime = opOverTimeInput.get().getApplicationTime().v();
+				if(!CollectionUtil.isEmpty(overTimeInputLst)) {
+					Optional<OverTimeInput> opOverTimeInput = overTimeInputLst
+							.stream().filter(x -> x.getAttendanceType().value==overtimeColorCheck.attendanceID && x.getFrameNo()==overtimeColorCheck.frameNo).findAny();
+					if(opOverTimeInput.isPresent()){
+						// 事前申請時間に勤怠種類・枠NOに応じた時間を設定する
+						overtimeColorCheck.preAppTime = opOverTimeInput.get().getApplicationTime().v();
+						if(overtimeColorCheck.preAppTime!=null) {
+							compareValue = overtimeColorCheck.preAppTime;
+						}
+					}
 				}
 			} else {
-				
+				// KAF010
 			}
 		}
-		// 事前申請超過チェック
-		if(overtimeColorCheck.appTime > overtimeColorCheck.preAppTime){
-			overtimeColorCheck.preAppError = true;
+		// 事前申請超過チェックをする必要があるかチェックする
+		if(preAppSetCheck==UseAtr.USE){
+			// 事前申請超過チェック
+			if(overtimeColorCheck.appTime !=null && overtimeColorCheck.appTime > compareValue){
+				overtimeColorCheck.preAppError = PreActualError.ACTUAL_ALARM.value;
+			} else {
+				overtimeColorCheck.preAppError = PreActualError.NO_ERROR.value;
+			}
 		}
 	}
 
 	@Override
-	public void actualErrorCheck(OvertimeColorCheck overtimeColorCheck, ActualStatusCheckResult actualStatusCheckResult) {
+	public void actualErrorCheck(OvertimeColorCheck overtimeColorCheck, List<OvertimeColorCheck> actualLst, AppDateContradictionAtr actualSetCheck) {
+		int compareValue = 0;
 		// 実績をチェックする
-		if(!CollectionUtil.isEmpty(actualStatusCheckResult.actualLst)){
-			List<OvertimeColorCheck> actualLst = actualStatusCheckResult.actualLst;
+		if(!CollectionUtil.isEmpty(actualLst)){
 			Optional<OvertimeColorCheck> opActual = actualLst.stream()
 					.filter(x -> x.attendanceID==overtimeColorCheck.attendanceID&&x.frameNo==overtimeColorCheck.frameNo).findAny();
 			if(opActual.isPresent()){
 				// 実績時間に勤怠種類・枠NOに応じた時間を設定する
 				overtimeColorCheck.actualTime = opActual.get().actualTime;
+				if(overtimeColorCheck.actualTime!=null) {
+					compareValue = overtimeColorCheck.actualTime;
+				}
 			}
 		}
-		// 実績時間チェック
-		if(overtimeColorCheck.appTime > overtimeColorCheck.actualTime){
-			overtimeColorCheck.actualError = true;
+		// 実績超過チェックをする必要があるかチェックする
+		if(actualSetCheck!=AppDateContradictionAtr.NOTCHECK){
+			// 実績時間チェック
+			if(overtimeColorCheck.appTime!=null && overtimeColorCheck.appTime > compareValue){
+				if(actualSetCheck==AppDateContradictionAtr.CHECKNOTREGISTER) {
+					overtimeColorCheck.actualError = PreActualError.ACTUAL_ERROR.value;
+				} else if (actualSetCheck==AppDateContradictionAtr.CHECKREGISTER) {
+					overtimeColorCheck.actualError = PreActualError.ACTUAL_ALARM.value;
+				} else {
+					overtimeColorCheck.actualError = PreActualError.NO_ERROR.value;
+				}
+			} else {
+				overtimeColorCheck.actualError = PreActualError.NO_ERROR.value;
+			}
 		}
 	}
 

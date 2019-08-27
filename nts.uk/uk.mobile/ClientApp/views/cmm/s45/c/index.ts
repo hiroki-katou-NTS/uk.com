@@ -15,7 +15,6 @@ import {
 
 @component({
     name: 'cmms45c',
-    route: '/cmm/s45/c',
     style: require('./style.scss'),
     template: require('./index.vue'),
     resource: require('./resources.json'),
@@ -45,17 +44,18 @@ export class CmmS45CComponent extends Vue {
     public listAppMeta: Array<string> = [];
     public currentApp: string = '';
     // 承認ルートインスタンス
-    public phaseLst: Array<IApprovalPhase> = [];
+    public phaseLst: Array<Phase> = [];
     public appState: { appStatus: number, reflectStatus: number, version: number } = { appStatus: 0, reflectStatus: 1, version: 0 };
     public appOvertime: IOvertime = null;
     // 差し戻し理由
     public reversionReason: string = '';
 
     public created() {
-        this.listAppMeta = this.params.listAppMeta;
-        this.currentApp = this.params.currentApp;
-        this.appCount = _.indexOf(this.listAppMeta, this.currentApp);
-        Object.defineProperty(this.appState, 'getName', {
+        let self = this;
+        self.listAppMeta = self.params.listAppMeta;
+        self.currentApp = self.params.currentApp;
+        self.appCount = _.indexOf(self.listAppMeta, self.currentApp);
+        Object.defineProperty(self.appState, 'getName', {
             get() {
                 switch (this.appStatus) {
                     case 0: return 'CMMS45_7'; // 反映状態 = 未反映
@@ -70,7 +70,7 @@ export class CmmS45CComponent extends Vue {
             }
         });
         
-        Object.defineProperty(this.appState, 'getClass', {
+        Object.defineProperty(self.appState, 'getClass', {
             get() {
                 switch (this.appStatus) {
                     case 0: return 'apply-unapproved'; // 反映状態 = 未反映
@@ -85,7 +85,7 @@ export class CmmS45CComponent extends Vue {
             }
         });
 
-        Object.defineProperty(this.appState, 'getNote', {
+        Object.defineProperty(self.appState, 'getNote', {
             get() {
                 switch (this.appStatus) {
                     case 0: return 'CMMS45_39'; // 反映状態 = 未反映
@@ -102,136 +102,182 @@ export class CmmS45CComponent extends Vue {
     }
 
     public mounted() {
-        this.$mask('show');
-        this.getApprovalList();
+        let self = this;
+        self.$mask('show');
+        self.initData();
     }
 
-    // get approver list data
-    public getApprovalList() {
-        this.selected = 0;
-        this.$http.post('at', API.getDetailApplicantMob, this.currentApp)
+    // lấy dữ liệu ban đầu
+    public initData() {
+        let self = this;
+        self.selected = 0;
+        self.$http.post('at', API.getDetailMob, self.currentApp)
         .then((resApp: any) => {
             let appData: IApplication = resApp.data;
-            this.createPhaseLst(appData.listApprovalPhaseStateDto);
-            this.appState.appStatus = appData.appStatus;
-            this.appState.reflectStatus = appData.reflectStatus;
-            this.appState.version = appData.version;
-            this.reversionReason = appData.reversionReason;
-            this.appOvertime = appData.appOvertime;
-            this.$mask('hide');
+            self.createPhaseLst(appData.listApprovalPhaseStateDto);
+            self.appState.appStatus = appData.appStatus;
+            self.appState.reflectStatus = appData.reflectStatus;
+            self.appState.version = appData.version;
+            self.reversionReason = appData.reversionReason;
+            self.appOvertime = appData.appOvertime;
+            self.$mask('hide');
         }).catch((res: any) => {
-            this.$modal.error(this.$i18n(res.messageId))
+            self.$mask('hide');
+            self.$modal.error(res.messageId)
                 .then(() => {
-                    this.back(true);
+                    self.back();
                 });
         });
     }
 
-    // render data for approver list
+    // tạo dữ liệu người phê duyệt
     public createPhaseLst(listPhase: Array<IApprovalPhase>): void {
-        let phaseLstConvert: Array<IApprovalPhase> = [];
+        let self = this;
+        let phaseLstConvert: Array<Phase> = [];
         for (let i: number = 1; i <= 5; i++) {
             let containPhase: IApprovalPhase = _.find(listPhase, (phase: IApprovalPhase) => phase.phaseOrder == i);
             phaseLstConvert.push(new Phase(containPhase));
         }
-        this.phaseLst = phaseLstConvert;
+        self.phaseLst = phaseLstConvert;
+        self.selected = self.getSelectedPhase();
     }
 
-    // go to next application
+    // lấy phase chỉ định 
+    private getSelectedPhase(): number {
+        let self = this;
+        let denyPhase: Phase = _.find(self.phaseLst, (phase: Phase) => phase.approvalAtrValue == 2);
+        if (denyPhase) {
+            return denyPhase.phaseOrder - 1;
+        }
+        let returnPhase: Phase = _.find(self.phaseLst, (phase: Phase) => phase.approvalAtrValue == 3);
+        if (returnPhase) {
+            return returnPhase.phaseOrder - 1;
+        }
+        let unapprovePhaseLst: Array<Phase> = _.filter(self.phaseLst, (phase: Phase) => phase.approvalAtrValue == 0);
+        if (unapprovePhaseLst.length > 0) {
+            return _.sortBy(unapprovePhaseLst, 'phaseOrder')[0].phaseOrder - 1;
+        }
+        let approvePhaseLst: Array<Phase> = _.filter(self.phaseLst, (phase: Phase) => phase.approvalAtrValue == 1);
+        if (approvePhaseLst.length > 0) {
+            return _.sortBy(approvePhaseLst, 'phaseOrder').reverse()[0].phaseOrder - 1;
+        }
+
+        return 0;
+    }
+
+    // tiến tới đơn tiếp theo
     public toNextApp(): void {
-        this.showApproval = false;
-        this.appCount++;
-        this.currentApp = this.listAppMeta[this.appCount];
-        this.$mask('show');
-        this.getApprovalList();
+        let self = this;
+        self.showApproval = false;
+        self.appCount++;
+        self.currentApp = self.listAppMeta[self.appCount];
+        self.$mask('show');
+        self.initData();
     }
 
-    // back to previous application
+    // quay về đơn trước
     public toPreviousApp(): void {
-        this.showApproval = false;
-        this.appCount--;
-        this.currentApp = this.listAppMeta[this.appCount];
-        this.$mask('show');
-        this.getApprovalList();
+        let self = this;
+        self.showApproval = false;
+        self.appCount--;
+        self.currentApp = self.listAppMeta[self.appCount];
+        self.$mask('show');
+        self.initData();
     }
 
-    // check first application
+    // kiểm tra có phải đơn đầu tiên không
     public isFirstApp(): boolean {
-        return this.appCount == 0;
+        let self = this;
+
+        return self.appCount == 0;
     }
 
-    // check last application
+    // kiểm tra có phải đơn cuối cùng không
     public isLastApp(): boolean {
-        return this.appCount == this.listAppMeta.length - 1;
+        let self = this;
+
+        return self.appCount == self.listAppMeta.length - 1;
     }
 
-    // check list app empty
+    // kiểm tra list đơn xin rỗng
     public isEmptyApp(): boolean {
         return this.listAppMeta.length == 0;
     }
 
-    // show/hide approver list
+    // ẩn hiện người phê duyệt
     public reverseApproval(): void {
-        this.showApproval = !this.showApproval;
+        let self = this;
+        self.showApproval = !self.showApproval;
     }
 
-    // back to CMMS45A
+    // quay về màn CMMS45A
     public back(reloadValue?: boolean) {
-        if (this.$router.currentRoute.name == 'cmms45a') {
-            if (reloadValue) {
-                this.$close({ CMMS45A_Reload: reloadValue });
-            } else {
-                this.$close({ CMMS45A_Reload: false });
-            }
-            
+        let self = this;
+        if (self.$router.currentRoute.name == 'cmms45a') {
+            self.$close();
         } else {
-            this.$goto('cmms45a', { CMMS45_FromMenu: false });   
+            self.$goto('cmms45a', { 'CMMS45_FromMenu': false});   
         }
     }
 
-    // delete APplication
+    // kích hoạt nút xóa đơn
     public deleteApp(): void {
         let self = this;
         self.$modal.confirm('Msg_18')
             .then((v) => {
                 if (v == 'yes') {
+                    self.$mask('show');
                     self.$http.post('at', API.delete, {
                         version: self.appState.version,
                         appId: self.currentApp
-                    }).then((resApproval: any) => {
-                        return self.$modal.info('Msg_16');
-                    }).then(() => {
-                        this.back(true);
+                    }).then((resDelete: any) => {
+                        self.$mask('hide');
+                        self.$modal.info('Msg_16').then(() => {
+                            self.back();
+                        });
+                    }).catch((res: any) => {
+                        self.$mask('hide');
+                        self.$modal.error(res.messageId).then(() => {
+                            self.back();
+                        });
                     });               
                 }
             });
     }
 
-    // display delete button
+    // hiển thị nút xóa đơn
     public get displayDeleteButton() {
-        return this.appState.reflectStatus == 0 || this.appState.reflectStatus == 5;
+        let self  = this;
+
+        return self.appState.reflectStatus == 0 || self.appState.reflectStatus == 5;
     }
 
-    // display update button
+    // hiển thị nút cập nhật đơn
     public get displayUpdateButton() {
-        return this.appState.reflectStatus == 0 || this.appState.reflectStatus == 5;
+        let self = this;
+
+        return self.appState.reflectStatus == 0 || self.appState.reflectStatus == 5;
     }
 
-    // display edit float button
+    // hiển thị menu chỉnh sửa đơn
     public get displayEditFloat() {
-        return this.displayDeleteButton || this.displayUpdateButton;    
+        let self = this;
+
+        return self.displayDeleteButton || self.displayUpdateButton;    
     }
     
-    // update Application, go to detail screen
+    // tiến tới màn chi tiết KAF005
     public updateApp(): void {
         let self = this;
-        this.$goto('kafS05a', { appID: self.currentApp }); 
+        if (self.$router.currentRoute.name == 'kafS05b') {
+            self.$close({ appID: self.currentApp });
+        } else {
+            self.$goto('kafS05b', { appID: self.currentApp }); 
+        }
     }
 }
 
 const API = {
-    approvedStatus: 'at/request/application/getAppDataByDate',
-    overtimeApp: 'at/request/application/overtime/findByAppID',
     delete: 'at/request/application/deleteapp',
-    getDetailApplicantMob: 'at/request/application/getDetailApplicantMob'
+    getDetailMob: 'at/request/application/getDetailMob'
 };

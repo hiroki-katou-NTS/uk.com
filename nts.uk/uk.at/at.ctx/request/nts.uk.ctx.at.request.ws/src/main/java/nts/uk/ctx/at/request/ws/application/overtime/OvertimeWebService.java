@@ -22,6 +22,7 @@ import nts.uk.ctx.at.request.app.find.application.overtime.ParamGetOvertime;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OverTimeDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeCheckResultDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.ParamCaculationOvertime;
+import nts.uk.ctx.at.request.app.find.application.overtime.dto.ParamCalculateOvertime;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.ParamChangeAppDate;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.RecordWorkDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.RecordWorkParam;
@@ -118,6 +119,22 @@ public class OvertimeWebService extends WebService{
 	}
 	
 	@POST
+	@Path("getCalculateValue")
+	public List<CaculationTime> getCalculateValue(ParamCalculateOvertime param) {
+		return overtimeFinder.getCalculateValue(
+				param.employeeID, 
+				param.appDate, 
+				param.prePostAtr, 
+				param.workTypeCD, 
+				param.workTimeCD, 
+				param.overtimeInputLst, 
+				param.startTime, 
+				param.endTime, 
+				param.getStartTimeRests(), 
+				param.getEndTimeRests());
+	}
+	
+	@POST
 	@Path("getCalculationResultMob")
 	public OverTimeDto getCalculationResultMob(ParamCaculationOvertime param){
 		return this.overtimeFinder.getCalculationResultMob(param.getOvertimeHours(),param.getBonusTimes(),param.getPrePostAtr(), param.getAppDate(),param.getSiftCD(),param.getWorkTypeCode(),
@@ -125,7 +142,8 @@ public class OvertimeWebService extends WebService{
 				param.getEndTime(),
 				param.getStartTimeRests(),
 				param.getEndTimeRests(),
-				param.isDisplayCaculationTime());
+				param.isDisplayCaculationTime(),
+				param.isFromStepOne());
 	}
 	
 	@POST

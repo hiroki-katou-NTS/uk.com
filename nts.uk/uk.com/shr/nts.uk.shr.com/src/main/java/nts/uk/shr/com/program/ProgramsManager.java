@@ -2284,9 +2284,19 @@ public class ProgramsManager {
 	public static final Program CCGS07E = new Program(WebAppId.MOBI, ProgramIdConsts.CCGS07E, "CCG007_58",
 			"/ccg/007/e", ProgramIdConsts.CCG007H);
 
-	/** The Constant KAFS05A. IN MOBILE */
+	//スマホ②
 	public static final Program KAFS05A = new Program(WebAppId.MOBI, ProgramIdConsts.KAFS05A, "KAFS05A",
 			"/kaf/s05/a");
+	public static final Program KAFS05B = new Program(WebAppId.MOBI, ProgramIdConsts.KAFS05B, "KAFS05B",
+			"/kaf/s05/b");
+	public static final Program CMMS45B = new Program(WebAppId.MOBI, ProgramIdConsts.CMMS45B, "CMMS45B",
+			"/cmm/s45/b");
+	public static final Program CMMS45C = new Program(WebAppId.MOBI, ProgramIdConsts.CMMS45C, "CMMS45C",
+			"/cmm/s45/c");
+	public static final Program CMMS45D = new Program(WebAppId.MOBI, ProgramIdConsts.CMMS45D, "CMMS45D",
+			"/cmm/s45/d");
+	public static final Program CMMS45E = new Program(WebAppId.MOBI, ProgramIdConsts.CMMS45E, "CMMS45E",
+			"/cmm/s45/e");
 	
 	/**
 	 * All programs map.

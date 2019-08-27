@@ -14,6 +14,8 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import org.apache.log4j.Logger;
+
 import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.task.parallel.ManagedParallelWithContext;
@@ -36,7 +38,7 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
-public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRecord{
+public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRecord {
 	@Inject
 	private TargetPersonRequestImport targetPerson;
 	@Inject
@@ -111,11 +113,11 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 				GeneralDate startDateshime = closure.get();
 				if(workDate.start().afterOrEquals(startDateshime)) {
 					//社員の申請を反映 (Phản ánh nhân viên)
-					if(!this.reflectAppOfEmployee(workId, x.getEmployeeId(), workDate, 
-							optRequesSetting.get(), aprResult, reflectSetting)) {
-						dataSetter.updateData("reflectApprovalStatus", ExecutionStatusReflect.STOPPING.nameId);
-						status.add(ProcessStateReflect.INTERRUPTION);
-					}
+					this.reflectAppOfEmployee(workId, x.getEmployeeId(),
+							workDate, 
+							optRequesSetting.get(),
+							aprResult,
+							reflectSetting);
 				}
 				
 			}
@@ -129,10 +131,8 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 		return ProcessStateReflect.SUCCESS;
 	}
 	@Override
-	public boolean reflectAppOfEmployee(String workId, String sid, DatePeriod datePeriod,
+	public void reflectAppOfEmployee(String workId, String sid, DatePeriod datePeriod,
 			RequestSetting optRequesSetting, ExecutionTypeExImport refAppResult, InformationSettingOfEachApp reflectSetting) {
-		
-		
 		//ドメインモデル「締め状態管理」を取得する
 		Optional<DatePeriod> optClosureStatus = closureStatusImport.closureDatePeriod(sid);
 		//「申請期間」を作成する
@@ -152,16 +152,26 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 				appDatePeriod = new DatePeriod(sDate, datePeriod.end());
 			}	
 		}		
-		
-		List<Application_New> lstApp = this.getApps(sid, appDatePeriod, refAppResult);
-		if(lstApp.isEmpty()) {
-			return true;
-		}
-		
-		for (Application_New appData : lstApp) {			
+		this.reflectAppOfAppDate(workId, sid, refAppResult, reflectSetting, appDatePeriod);		
+	}
+	@Override
+	public void reflectAppOfAppDate(String workId, String sid, ExecutionTypeExImport refAppResult,
+			InformationSettingOfEachApp reflectSetting, DatePeriod appDatePeriod) {
+		List<Application_New> lstApp = Collections.synchronizedList(this.getApps(sid, appDatePeriod, refAppResult));	
+		lstApp.stream().forEach(x -> {
+			appRefMng.reflectEmployeeOfApp(x, reflectSetting, refAppResult, workId, 0);
+		});
+		/*lstApp.stream().forEach(x -> {
+			Logger.getLogger(this.getClass()).info("lstApp Date: " + x.getInputDate());
+		});
+		List<Integer> tempX = lstApp.stream().map(c -> 1).collect(Collectors.toList());
+		List<Integer> processX = Collections.synchronizedList(new ArrayList<>());
+		this.managedParallelWithContext.forEach(tempX, x -> {
+			processX.add(x);
+			Application_New appData = lstApp.get(processX.size() - 1);
+			Logger.getLogger(this.getClass()).info("Application_New Date: " + appData.getInputDate());
 			appRefMng.reflectEmployeeOfApp(appData, reflectSetting, refAppResult, workId, 0);
-		}
-		return true;
+		});*/
 	}
 	@Override
 	public List<Application_New> getApps(String sid, DatePeriod datePeriod, ExecutionTypeExImport exeType) {
@@ -225,11 +235,8 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 		if(optRefAppResult.isPresent()) {
 			aprResult = optRefAppResult.get().getExecutionType();
 		}
-		if(!this.reflectAppOfEmployee(workId, sid, datePeriod, 
-				optRequesSetting.get(), aprResult, reflectSetting)) {
-			return ProcessStateReflect.INTERRUPTION;
-		}
-		
+		this.reflectAppOfEmployee(workId, sid, datePeriod, 
+				optRequesSetting.get(), aprResult, reflectSetting);
 		return ProcessStateReflect.SUCCESS;
 	}
 

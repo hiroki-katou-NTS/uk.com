@@ -1,4 +1,4 @@
-import { moment, Vue, _ } from '@app/provider';
+import { Vue, _ } from '@app/provider';
 import { component, Prop } from '@app/core/component';
 import { TotopComponent } from '@app/components/totop';
 import { storage } from '@app/utils';
@@ -74,15 +74,16 @@ export class CmmS45AComponent extends Vue {
         self.$mask('show');
         // check: キャッシュを取るか？
         if (filter) {
-            self.prFilter.startDate = moment(self.dateRange.start).format('YYYY/MM/DD');
-            self.prFilter.endDate = moment(self.dateRange.end).format('YYYY/MM/DD');
+            self.prFilter.startDate = self.$dt.date(self.dateRange.start, 'YYYY/MM/DD');
+            self.prFilter.endDate = self.$dt.date(self.dateRange.end, 'YYYY/MM/DD');
             self.prFilter.appType = Number(self.selectedValue);
         } else if (getCache && storage.local.hasItem('CMMS45_AppListExtractCondition')) {
             self.prFilter = storage.local.getItem('CMMS45_AppListExtractCondition') as AppListExtractConditionDto;
+            self.selectedValue = self.prFilter.appType.toString();
         } else {
             self.prFilter = {
-                startDate: self.dateRange.start == null ? '' : moment(self.dateRange.start).format('YYYY/MM/DD'),
-                endDate: self.dateRange.end == null ? '' : moment(self.dateRange.end).format('YYYY/MM/DD'),
+                startDate: self.dateRange.start == null ? '' : self.$dt.date(self.dateRange.start, 'YYYY/MM/DD'),
+                endDate: self.dateRange.end == null ? '' : self.$dt.date(self.dateRange.end, 'YYYY/MM/DD'),
                 appListAtr: 0,
                 appType: -1,
                 unapprovalStatus: false,
@@ -116,7 +117,7 @@ export class CmmS45AComponent extends Vue {
 
             self.createLstAppType(data.lstAppInfor);
             self.convertAppInfo(data);
-            self.dateRange = { start: new Date(data.startDate), end: new Date(data.endDate) };
+            self.dateRange = { start: self.$dt.fromUTCString(data.startDate, 'YYYY/MM/DD'), end: self.$dt.fromUTCString(data.endDate, 'YYYY/MM/DD') };
             self.isDisPreP = data.isDisPreP;
         }).catch(() => {
             self.$mask('hide');
@@ -130,7 +131,7 @@ export class CmmS45AComponent extends Vue {
         data.lstApp.forEach((app: any) => {
             self.lstApp.push(new AppInfo({
                 id: app.applicationID,
-                appDate: new Date(app.applicationDate),
+                appDate: self.$dt.fromUTCString(app.applicationDate, 'YYYY/MM/DD'),
                 appType: app.applicationType,
                 appName: self.appTypeName(app.applicationType),
                 prePostAtr: app.prePostAtr,
@@ -148,11 +149,8 @@ export class CmmS45AComponent extends Vue {
             lstAppId.push(app.id);
         });
         // 「C：申請内容確認」画面へ遷移する
-        self.$modal('cmms45c', { 'listAppMeta': lstAppId, 'currentApp': id }).then((res: any) => {
-            if (res.CMMS45A_Reload) {
+        self.$modal('cmms45c', { 'listAppMeta': lstAppId, 'currentApp': id }).then(() => {
                 self.getData(true, false);
-            }
-            console.log(res);
         });
     }
 
@@ -171,7 +169,11 @@ export class CmmS45AComponent extends Vue {
         lstAppInfor.forEach((appType) => {
             self.lstAppType.push({ code: appType.appType, appType: appType.appType, appName: appType.appName });
         });
-        self.selectedValue = self.prFilter.appType.toString();
+        if (_.filter(self.lstAppType, (c) => c.appType == self.prFilter.appType).length > 0) {
+            self.selectedValue = self.prFilter.appType.toString();
+        } else {
+            self.selectedValue = '-1';
+        }
     }
 
     // create appContent

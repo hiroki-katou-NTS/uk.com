@@ -162,7 +162,11 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 			return result;
 		}
 		// ドメインモデル「就業時間帯の設定」を取得する
-		PredetemineTimeSetting workTimeSet = workTimeSetRepository.findByWorkTimeCode(companyID, siftCode).get();
+		PredetemineTimeSetting workTimeSet = null;
+		if (workTimeSetRepository.findByWorkTimeCode(companyID, siftCode).isPresent()) {
+			workTimeSet = workTimeSetRepository.findByWorkTimeCode(companyID, siftCode).get();
+		}
+		
 		if(checkTimeDay(appDate, workTimeSet)){
 			return this.getResultCurrentDay(employeeID, GeneralDate.fromString(appDate, DATE_FORMAT), workType, siftCode, recordWorkInfoImport);
 		} else {
@@ -339,7 +343,7 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 		GeneralDateTime appDateGeneralstart = GeneralDateTime.fromString(appDate + SPACE + ZEZO_TIME, DATE_TIME_FORMAT);
 		GeneralDateTime appDateGeneralEnd = GeneralDateTime.fromString(appDate + SPACE + ZEZO_TIME, DATE_TIME_FORMAT);
 
-		if (workTimeSet.getPrescribedTimezoneSetting() != null) {
+		if (null != workTimeSet && workTimeSet.getPrescribedTimezoneSetting() != null) {
 			if (workTimeSet.getPrescribedTimezoneSetting().getLstTimezone() != null) {
 				appDateGeneralstart = appDateGeneralstart.addHours(workTimeSet.getPrescribedTimezoneSetting().getLstTimezone().get(0).getStart().hour());
 				appDateGeneralstart = appDateGeneralstart.addMinutes(workTimeSet.getPrescribedTimezoneSetting().getLstTimezone().get(0).getStart().minute());

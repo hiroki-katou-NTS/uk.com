@@ -1,5 +1,5 @@
-import { Vue, moment, _ } from '@app/provider';
-import { component, Prop } from '@app/core/component';
+import { Vue, _ } from '@app/provider';
+import { component, Prop, Watch } from '@app/core/component';
 
 import { AppInfo } from '../common';
 import { AppListExtractConditionDto } from '../common/index.d';
@@ -53,6 +53,14 @@ export class CmmS45BComponent extends Vue {
     public lstAppr: Array<string> = [];
     public lstMasterInfo: Array<any> = [];
     public isDisPreP: number = 0;//申請表示設定.事前事後区分
+    public disableB24: boolean = false;
+
+    @Watch('modeAppr')
+    public checkChangeMode(mode: boolean) {
+        if (!mode) {
+            this.lstAppr = [];
+        }
+    }
 
     public mounted() {
         this.pgName = 'cmms45b';
@@ -101,8 +109,8 @@ export class CmmS45BComponent extends Vue {
         // check: キャッシュを取るか？
         if (filter) {
             self.prFilter = {
-                startDate: moment(self.dateRange.start).format('YYYY/MM/DD'),
-                endDate: moment(self.dateRange.end).format('YYYY/MM/DD'),
+                startDate: self.$dt.date(self.dateRange.start, 'YYYY/MM/DD'),
+                endDate: self.$dt.date(self.dateRange.end, 'YYYY/MM/DD'),
                 appListAtr: 1,
                 appType: Number(self.selectedValue),
                 unapprovalStatus: self.checkUnapprovalStatus(),
@@ -117,10 +125,11 @@ export class CmmS45BComponent extends Vue {
             } as AppListExtractConditionDto;
         } else if (getCache && storage.local.hasItem('CMMS45_AppListExtractCondition')) {
             self.prFilter = storage.local.getItem('CMMS45_AppListExtractCondition') as AppListExtractConditionDto;
+            self.selectedValue = self.prFilter.appType.toString();
         } else {
             self.prFilter = {
-                startDate: self.dateRange.start == null ? '' : moment(self.dateRange.start).format('YYYY/MM/DD'),
-                endDate: self.dateRange.end == null ? '' : moment(self.dateRange.end).format('YYYY/MM/DD'),
+                startDate: self.dateRange.start == null ? '' : self.$dt.date(self.dateRange.start, 'YYYY/MM/DD'),
+                endDate: self.dateRange.end == null ? '' : self.$dt.date(self.dateRange.end, 'YYYY/MM/DD'),
                 appListAtr: 1,
                 appType: -1,
                 unapprovalStatus: true,
@@ -154,9 +163,9 @@ export class CmmS45BComponent extends Vue {
 
             self.createLstAppType(data.lstAppInfor);
             self.convertAppInfo(data);
-            self.dateRange = { start: new Date(data.startDate), end: new Date(data.endDate) };
+            self.dateRange = { start: self.$dt.fromUTCString(data.startDate, 'YYYY/MM/DD'), end: self.$dt.fromUTCString(data.endDate, 'YYYY/MM/DD') };
             self.isDisPreP = data.isDisPreP;
-
+            self.disableB24 = data.appStatusCount.unApprovalNumber == 0 ? true : false;
         }).catch(() => {
             self.$mask('hide');
         });
@@ -176,16 +185,22 @@ export class CmmS45BComponent extends Vue {
     }
 
     private getLstApp(data: any, sCD: string) {
+        let self = this;
         let lstResult = [];
-        let name = '';
-        data.lstMasterInfo.forEach((app) => {
-            if (app.empSD == sCD) {
-                lstResult.push(_.find(data.lstApp, (c) => c.applicationID == app.appID));
-                name = app.empName;
+        let lstObj = _.filter(data.lstMasterInfo, (c) => c.empSD == sCD).map((x) => {
+            return { id: x.appID, name: x.empName };
+        });
+        data.lstApp.forEach((app) => {
+            if (self.contains(lstObj, app.applicationID)) {
+                lstResult.push(app);
             }
         });
 
-        return { sName: name, lstApp: lstResult };
+        return { sName: lstObj.length >= 0 ? lstObj[0].name : '', lstApp: lstResult };
+    }
+
+    private contains(lst: Array<any>, id: any) {
+        return _.find(lst, (c) => c.id == id) != undefined ? true : false;
     }
 
     private convertLstApp(lstApp: Array<any>) {
@@ -193,7 +208,7 @@ export class CmmS45BComponent extends Vue {
         lstApp.forEach((app: any) => {
             lst.push(new AppInfo({
                 id: app.applicationID,
-                appDate: new Date(app.applicationDate),
+                appDate: this.$dt.fromUTCString(app.applicationDate, 'YYYY/MM/DD'),
                 appType: app.applicationType,
                 appName: this.appTypeName(app.applicationType),
                 prePostAtr: app.prePostAtr,
@@ -233,17 +248,32 @@ export class CmmS45BComponent extends Vue {
     get btnChangeMode() {
         return {
             class: this.modeAppr ? 'btn btn-secondary' : 'btn btn-primary',
-            name: this.modeAppr ? 'CMMS45_54' : 'CMMS45_55'
+            name: this.modeAppr ? 'CMMS45_55' : 'CMMS45_54'
         };
     }
     // 詳細を確認する
-    private goToDetail(id: string) {
+    private goToDetail(item: AppInfo) {
         let self = this;
-        let lstAppId = self.findLstIdDisplay();
-        //「D：申請内容確認（承認）」画面へ遷移する
-        this.$modal('cmms45d', { 'listAppMeta': lstAppId, 'currentApp': id }).then(() => {
-            self.getData(true, false);
-        });
+        if (!self.modeAppr) {
+            let lstAppId = self.findLstIdDisplay();
+            //「D：申請内容確認（承認）」画面へ遷移する
+            this.$modal('cmms45d', { 'listAppMeta': lstAppId, 'currentApp': item.id }).then(() => {
+                //reload
+                self.getData(true, false);
+            });
+        } else {
+            if (!item.frameStatus) {//TH đơn không được approve thì bỏ qua
+                return;
+            }
+            let checkSel = _.filter(self.lstAppr, (idSel) => idSel == item.id).length;
+            if (checkSel > 0) {//bo check
+                self.lstAppr = _.remove(self.lstAppr, (select) => {
+                    return select != item.id;
+                });
+            } else {//them chek
+                self.lstAppr.push(item.id);
+            }
+        }
     }
     //一括承認する
     private processAppr() {
@@ -315,9 +345,6 @@ export class CmmS45BComponent extends Vue {
     // create appContent
     private appContent(appName: string, prePostName: string) {
         return this.isDisPreP == 1 ? appName + ' ' + this.$i18n('CMMS45_24', prePostName) : appName;
-    }
-    public callE() {
-        this.$modal('cmms45e', { appId: '9a02b621-5f76-470b-85c9-b584bab9adda' });
     }
 }
 const servicePath = {

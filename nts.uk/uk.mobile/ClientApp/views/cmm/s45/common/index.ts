@@ -87,16 +87,16 @@ export class Phase {
 
     get className() {
         switch (this.approvalAtrValue) {
-            case 0:
+            case 0: // 承認区分 = 未承認
                 return 'apply-unapproved';
-            case 1:
+            case 1: // 承認区分 = 承認済
                 return 'apply-approved';
-            case 2:
+            case 2: // 承認区分 = 否認
                 return 'apply-denial';
-            case 3:
+            case 3: // 承認区分 = 差し戻し
                 return 'apply-return';
-            case 4:
-                return 'apply-return';
+            case 4: // 承認区分 = 本人差し戻し
+                return 'apply-unapproved';
             default:
                 return 'uk-bg-light-gray';
         }
@@ -104,16 +104,16 @@ export class Phase {
 
     get phaseText() {
         switch (this.approvalAtrValue) {
-            case 0:
+            case 0: // 承認区分 = 未承認
                 return 'CMMS45_48';
-            case 1:
+            case 1: // 承認区分 = 承認済
                 return 'CMMS45_49';
-            case 2:
+            case 2: // 承認区分 = 否認
                 return 'CMMS45_50';
-            case 3:
+            case 3: // 承認区分 = 差し戻し
                 return 'CMMS45_51';
-            case 4:
-                return 'CMMS45_51';
+            case 4: // 承認区分 = 本人差し戻し
+                return 'CMMS45_48';
             default:
                 return '';
         }
@@ -121,16 +121,16 @@ export class Phase {
 
     get infoLabel() {
         switch (this.approvalAtrValue) {
-            case 0:
+            case 0: // 承認区分 = 未承認
                 return 'CMMS45_44';
-            case 1:
+            case 1: // 承認区分 = 承認済
                 return 'CMMS45_43';
-            case 2:
+            case 2: // 承認区分 = 否認
                 return 'CMMS45_46';
-            case 3:
+            case 3: // 承認区分 = 差し戻し
                 return 'CMMS45_45';
-            case 4:
-                return 'CMMS45_45';
+            case 4: // 承認区分 = 本人差し戻し
+                return 'CMMS45_44';
             default:
                 return '';
         }
