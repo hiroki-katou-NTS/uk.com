@@ -27,6 +27,11 @@ export class KafS05aComponent extends Vue {
     @Prop({ default: () => ({ appID: null }) })
     public params: {appID: string};
 
+    @Watch('$route')
+    public checkURL(value: any) {
+        window.location.reload();
+    }
+
     public kafs05Model: Kafs05Model = null;
 
     private step: string = 'step1';
