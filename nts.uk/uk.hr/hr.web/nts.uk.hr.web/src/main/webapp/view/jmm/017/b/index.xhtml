@@ -14,7 +14,7 @@
 		<div class="contents-area">
 			<div class ="conditionBox">
 				<div class="row">
-					<div class ="inline lable"><span>#{i18n.getText('JMM017_B422_2')}</span></div>
+					<div class ="inline lable" style="min-width: 42px;"><span>#{i18n.getText('JMM017_B422_2')}</span></div>
 					<div id="combo-box1" tabindex="5" class ="inline"  data-bind="ntsComboBox: {
 							width: 180,
 							options: categoryList,
@@ -31,7 +31,7 @@
 							name: '#{i18n.getText('JMM017_B422_5')}', 
 							value: eventName,
 							constraint: 'String_Any_20',
-							option: {width: '180px'}}" />
+							option: {width: '180px', placeholder: '#{i18n.getText('JMM017_B422_5')}'}}" />
 					</div>
 					<div class ="inline lable"><span>#{i18n.getText('JMM017_B422_6')}</span></div>
 					<div class ="inline">
@@ -39,17 +39,17 @@
 							name: '#{i18n.getText('JMM017_B422_7')}', 
 							value: programName,
 							constraint: 'String_Any_20',
-							option: {width: '180px'}}" />
+							option: {width: '180px', placeholder: '#{i18n.getText('JMM017_B422_7')}'}}" />
 					</div>
 				</div>
 				<div class="row">
-					<div class ="inline lable" style="min-width: 40px;"><span>#{i18n.getText('JMM017_B422_8')}</span></div>
+					<div class ="inline lable"><span>#{i18n.getText('JMM017_B422_8')}</span></div>
 					<div class ="inline">
 						<input tabindex="8" data-bind="ntsTextEditor: {
 							name: '#{i18n.getText('JMM017_B422_9')}', 
 							value: screenName,
 							constraint: 'String_Any_20',
-							option: {width: '180px'}}" />
+							option: {width: '180px', placeholder: '#{i18n.getText('JMM017_B422_9')}'}}" />
 					</div>
 					<div class ="inline lable"><span>#{i18n.getText('JMM017_B422_10')}</span></div>
 					<div id="combo-box2" class ="inline" tabindex="9" data-bind="ntsComboBox: {

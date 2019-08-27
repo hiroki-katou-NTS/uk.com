@@ -57,7 +57,7 @@ module nts.uk.hr.view.jmm017.b.viewmodel {
             block.grayout();
             var self = this;
             let param = {
-                categoryCode: self.categoryCode(),
+                categoryCode: self.categoryCode() == 0 ? '' : self.categoryCode(),
                 eventName: self.eventName(),
                 programName: self.programName(),
                 screenName: self.screenName(),

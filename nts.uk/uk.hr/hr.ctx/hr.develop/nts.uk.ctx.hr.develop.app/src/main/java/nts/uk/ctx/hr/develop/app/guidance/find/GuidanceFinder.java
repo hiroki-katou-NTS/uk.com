@@ -35,6 +35,7 @@ public class GuidanceFinder {
 		List<CategoryGuideDto> result = new ArrayList<>();
 //		2019/7時点でカテゴリを取得するAPIがないため、以下のリストをOutputとする。
 //		Vi khong co  API lay category tai thoi diem thang 7/ 2019, nen list sau day se la Output 
+		result.add(new CategoryGuideDto(0,""));
 		result.add(new CategoryGuideDto(1,"共通"));
 		result.add(new CategoryGuideDto(2, "勤次郎"));
 		result.add(new CategoryGuideDto(3, "Ｑ太郎"));
