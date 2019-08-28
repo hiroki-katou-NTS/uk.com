@@ -45,7 +45,7 @@
             <fa-font icon="exclamation-circle" class="text-danger m-2" />
             <div>{{ 'Msg_1556' | i18n($dt(kafs05ModelStep3.appDate)) }}</div>
         </div>
-        <div v-if="kafs05ModelStep3.actualStatus == 1 && hasActualError && kafs05ModelStep3.performanceExcessAtr == 1" class="border border-warning rounded p-1 mt-2 alarm-message" role="alert">
+        <div v-if="hasActualError && kafs05ModelStep3.performanceExcessAtr == 1" class="border border-warning rounded p-1 mt-2 alarm-message" role="alert">
             <fa-font icon="exclamation-triangle" class="text-danger m-2" />
             <div>{{ 'Msg_1558' | i18n }}</div>
         </div>

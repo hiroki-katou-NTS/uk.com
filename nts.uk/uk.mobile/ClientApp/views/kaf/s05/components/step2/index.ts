@@ -173,7 +173,7 @@ export class KafS05aStep2Component extends Vue {
         let self = this.kafs05ModelStep2;
 
         // 打刻漏れ 超過エラー
-        if ((self.actualStatus == 1 && this.hasActualError && self.performanceExcessAtr == 2)) {
+        if ((this.hasActualError && self.performanceExcessAtr == 2)) {
             window.scrollTo({ top: 0, behavior: 'smooth' });
 
             return;
