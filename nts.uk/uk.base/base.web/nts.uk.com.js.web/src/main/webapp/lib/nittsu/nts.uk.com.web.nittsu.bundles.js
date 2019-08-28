@@ -22056,6 +22056,10 @@ var nts;
                                     holder.addNode(ui["dataRecord"][optionsValue]);
                                     $treegrid.data("expand", holder);
                                 }
+                                var disabledRows = $treegrid.data("rowDisabled");
+                                if (!_.isEmpty(disabledRows)) {
+                                    $treegrid.ntsTreeView("disableRows", disabledRows);
+                                }
                             }, rowCollapsed: function (evt, ui) {
                                 if (!$treegrid.data("autoExpanding")) {
                                     var holder = $treegrid.data("expand");
@@ -22223,7 +22227,7 @@ var nts;
                         while (!isEmpty(children)) {
                             var currentNode = children.shift();
                             ids.push(currentNode[nodeKey]);
-                            if (!isEmpty(currentNode)) {
+                            if (!isEmpty(currentNode) && !isEmpty(currentNode[childKey])) {
                                 children = children.concat(currentNode[childKey]);
                             }
                         }
@@ -42334,6 +42338,10 @@ var nts;
                                     holder.addNode(ui["dataRecord"][optionsValue]);
                                     $treegrid.data("expand", holder);
                                 }
+                                var disabledRows = $treegrid.data("rowDisabled");
+                                if (!_.isEmpty(disabledRows)) {
+                                    $treegrid.ntsTreeView("disableRows", disabledRows);
+                                }
                             }, rowCollapsed: function (evt, ui) {
                                 if (!$treegrid.data("autoExpanding")) {
                                     var holder = $treegrid.data("expand");
@@ -42498,6 +42506,10 @@ var nts;
                         }
                         columnSets = _.filter(columnSets, function (col) { return !_.isNil(col.formatType); });
                         _.forEach(rowIds, function (r) {
+                            var row = $tree.igTreeGrid("rowById", r);
+                            if (_.isEmpty(row) || row.hasClass("row-disabled"))
+                                return;
+                            row.addClass("row-disabled");
                             _.forEach(columnSets, function (col) {
                                 if (_.lowerCase(col.formatType) === "checkbox") {
                                     var cellContainer = $tree.igTreeGrid("cellById", r, col.key);
@@ -42508,10 +42520,6 @@ var nts;
                                     control.disable($cellContainer);
                                 }
                             });
-                            var row = $tree.igTreeGrid("rowById", r);
-                            if (_.isEmpty(row))
-                                return;
-                            row.addClass("row-disabled");
                         });
                         $tree.data("rowDisabled", _.union(disabled, rowIds));
                     }
@@ -42528,6 +42536,10 @@ var nts;
                         }
                         columnSets = _.filter(columnSets, function (col) { return !_.isNil(col.formatType); });
                         _.forEach(rowIds, function (r) {
+                            var row = $tree.igTreeGrid("rowById", r);
+                            if (_.isEmpty(row) || !row.hasClass("row-disabled"))
+                                return;
+                            row.removeClass("row-disabled");
                             _.forEach(columnSets, function (col) {
                                 if (_.lowerCase(col.formatType) === "checkbox") {
                                     var cellContainer = $tree.igTreeGrid("cellById", r, col.key);
@@ -42538,10 +42550,6 @@ var nts;
                                     control.enable($cellContainer);
                                 }
                             });
-                            var row = $tree.igTreeGrid("rowById", r);
-                            if (_.isEmpty(row))
-                                return;
-                            row.removeClass("row-disabled");
                         });
                         $tree.data("rowDisabled", _.difference(disabled, rowIds));
                     }
