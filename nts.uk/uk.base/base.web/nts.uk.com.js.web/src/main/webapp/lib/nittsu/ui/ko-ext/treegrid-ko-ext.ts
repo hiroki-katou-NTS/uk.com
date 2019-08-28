@@ -175,6 +175,10 @@ module nts.uk.ui.koExtentions {
                         holder.addNode(ui["dataRecord"][optionsValue]);
                         $treegrid.data("expand", holder);
                     }
+                    let disabledRows = $treegrid.data("rowDisabled");
+                    if(!_.isEmpty(disabledRows)) {
+                        $treegrid.ntsTreeView("disableRows", disabledRows);
+                    }
                 }, rowCollapsed: function (evt, ui) {
                     if (!$treegrid.data("autoExpanding")) {
                         let holder: ExpandNodeHolder = $treegrid.data("expand");
@@ -190,8 +194,8 @@ module nts.uk.ui.koExtentions {
 //                    });
                     
 //                    }
-                    if(virtualization){
-                         let disabledRows = $treegrid.data("rowDisabled");
+                    if (virtualization) {
+                        let disabledRows = $treegrid.data("rowDisabled");
                         if(!_.isEmpty(disabledRows)) {
                             $treegrid.ntsTreeView("disableRows", disabledRows);
                         }   
@@ -352,7 +356,7 @@ module nts.uk.ui.koExtentions {
             while (!isEmpty(children)){
                 let currentNode = children.shift();
                 ids.push(currentNode[nodeKey]);
-                if(!isEmpty(currentNode)){
+                if(!isEmpty(currentNode) && !isEmpty(currentNode[childKey])){
                     children = children.concat(currentNode[childKey]);        
                 }
             }
