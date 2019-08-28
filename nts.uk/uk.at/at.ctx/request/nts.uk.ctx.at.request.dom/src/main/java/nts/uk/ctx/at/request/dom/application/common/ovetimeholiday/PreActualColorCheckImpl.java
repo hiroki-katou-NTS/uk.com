@@ -147,7 +147,7 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 				judgmentWorkTypeResult.isWorkTypeChange(), 
 				judgmentStampResult.isStampLeaveChange(), 
 				judgmentWorkTimeResult.isWorkTimeChange());
-		if(calcExecution){
+		if(true){
 			// アルゴリズム「1日分の勤怠時間を仮計算」を実行する
 			DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = 
 					dailyAttendanceTimeCaculation.getCalculation(
