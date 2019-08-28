@@ -1,6 +1,6 @@
-#list-table{
+#treegrid_container{
 	margin-left: 50px;
-	margin-top: 30px;
+	margin-top: 5px;
 }
 
 #treegrid_nodeText{
@@ -29,4 +29,18 @@
 #treegrid_useApproval > div.ntsControl.ntsHelpButton{
 	float: right;
 	margin-right: 10px;
+}
+
+.sidebar-content{
+	overflow: inherit !important;
+}
+
+#button{
+	margin-left: 50px;
+	margin-top: 40px;
+}
+
+#button button{
+    background: #fff;
+    padding: 3px 7px;
 }

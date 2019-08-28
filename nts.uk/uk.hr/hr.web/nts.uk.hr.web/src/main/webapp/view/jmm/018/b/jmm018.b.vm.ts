@@ -26,10 +26,10 @@ module nts.uk.com.view.jmm018.b {
                                                     { headerText: getText('JMM018_A422_4'), key: 'programId', width: "250px", dataType: "string", hidden: true },
                                                     { headerText: getText('JMM018_A422_4'), key: 'key', width: "250px", dataType: "string", hidden: true },
                                                     { headerText: getText('JMM018_A422_4'), key: 'eventId', width: "250px", dataType: "string", hidden: true },
-                                                    { headerText: getText('JMM018_A422_4'), key: 'nodeText', width: "250px", dataType: "string" },
-                                                    { headerText: getText('JMM018_A422_5'), key: 'useEventOrMenu', width: "200px", dataType: "boolean", formatType : "checkbox"},
-                                                    { headerText: getText('JMM018_A422_6'), key: 'useNotice', width: "200px", dataType: "boolean", formatType : "checkbox"},
-                                                    { headerText: getText('JMM018_A422_7'), key: 'useApproval', width: "100px", dataType: "boolean", formatType : "checkbox"}
+                                                    { headerText: getText('JMM018_A422_4'), key: 'nodeText', width: "500px", dataType: "string" },
+                                                    { headerText: getText('JMM018_A422_5'), key: 'useEventOrMenu', width: "400px", dataType: "boolean", formatType : "checkbox"},
+                                                    { headerText: getText('JMM018_A422_6'), key: 'useNotice', width: "400px", dataType: "boolean", formatType : "checkbox"},
+                                                    { headerText: getText('JMM018_A422_7'), key: 'useApproval', width: "400px", dataType: "boolean", formatType : "checkbox"}
                                                 ]);
                 // thêm help button trong header
                  $(document).delegate("#treegrid", "igtreegriddatarendered", function (evt, ui) {
@@ -129,7 +129,39 @@ module nts.uk.com.view.jmm018.b {
                      });
                      
                  });
-
+                
+                 $(document).delegate("#treegrid", "igtreegriddatarendered", function (evt, ui) {
+                    _.defer(() => {
+                        //subcribe the change in the tree
+                        let lisTree = self.listEventId();
+                        _.forEach(lisTree, (value) => {
+                            if(value.listChild.length > 0){
+                                let disable = _.map(value.listChild, 'key');
+                                // enable/disable child
+                                if(value.useEventOrMenu == false || value.useEventOrMenu == 0){
+                                    $("#treegrid").ntsTreeView("disableRows", disable);
+                                }
+                            }                            
+                        });    
+                    });
+                 });     
+                
+                
+            $("#buttonExpandAll").igButton({
+                click: function (evt, args) {
+                    for (var i = 0; i < self.listEventId().length; i++) {
+                        $("#treegrid").igTreeGrid("expandRow", self.listEventId()[i].key);
+                    }
+                }
+            });
+            
+            $("#buttonCollapseAll").igButton({
+                click: function (evt, args) {
+                    for (var i = 0; i < self.listEventId().length; i++) {
+                        $("#treegrid").igTreeGrid("collapseRow", self.listEventId()[i].key);
+                    }
+                }
+            });
                 
             }
             
@@ -167,9 +199,9 @@ module nts.uk.com.view.jmm018.b {
                                                 eventId: c.eventId,
                                                 programId: c.programId,
                                                 programName: c.programName,
-                                                useEventOrMenu: agur.useMenu,
-                                                useApproval: agur.useApproval,
-                                                useNotice: agur.useNotice} ) );
+                                                useEventOrMenu: agur.useMenu == 1 ? true : null,
+                                                useApproval: agur.useApproval == 1 ? true : null,
+                                                useNotice: agur.useNotice == 1 ? true : null} ) );
                     });
                     let list = [];
                     _.forEach(self.listEventId(), (c) => {
@@ -195,7 +227,7 @@ module nts.uk.com.view.jmm018.b {
                         });
                     });
                     self.listEventId(list);
-                    
+                    console.log(self.listEventId());
                 }).fail(function(error) {
                     alertError(error);
                 }).always(function() {
