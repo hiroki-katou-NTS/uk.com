@@ -3,103 +3,14 @@ module nts.uk.pr.view.qsi013.b.viewmodel {
     import model = nts.uk.pr.view.qsi013.share.model;
     import dialog = nts.uk.ui.dialog;
 
-    //class for combo box
-    export class ItemModel {
-        code: string;
-        name: string;
-
-        constructor(code: string, name: string) {
-            this.code = code;
-            this.name = name;
-        }
-    }
-
     export interface ComponentOption {
-        systemReference: SystemType;
+        systemReference: model.SystemType;
         isDisplayOrganizationName: boolean;
-        employeeInputList: KnockoutObservableArray<EmployeeModel>;
+        employeeInputList: KnockoutObservableArray<model.EmployeeModel>;
         targetBtnText: string;
         selectedItem: KnockoutObservable<string>;
         tabIndex: number;
         baseDate?: KnockoutObservable<Date>;
-    }
-
-    export interface EmployeeModel {
-        id: string;
-        code: string;
-        businessName: string;
-        depName?: string;
-        workplaceName?: string;
-    }
-
-    export class SystemType {
-        static EMPLOYMENT = 1;
-        static SALARY = 2;
-        static PERSONNEL = 3;
-        static ACCOUNTING = 4;
-        static OH = 6;
-    }
-
-    export enum ReasonsForLossHealthyIns {
-        BLANK = 0,
-        RETIREMENT = 4,
-        DEATH = 5,
-        ONLY_HEALTHY_INSURANCE = 7,
-        DISABILITY_AUTHORIZATION = 9
-    }
-
-    export enum ReasonsForLossPensionIns {
-        BLANK = 0,
-        RETIREMENT = 4,
-        DEATH = 5,
-        ONLY_HEALTHY_INSURANCE = 6
-    }
-
-    //for interface healthLossInfo
-    export interface IHealthLossInfo {
-        other: number;
-        otherReason: string;
-        caInsurance: number;
-        numRecoved: number;
-        cause: number;
-    }
-
-    //for interface healthLossInfo
-    export interface IPensionLossInfo {
-        other: number;
-        otherReason: string;
-        caInsuarace: number;
-        numRecoved: number;
-        cause: number;
-    }
-
-    export interface IPensionBasic {
-        basicPenNumber: string;
-    }
-
-    export interface IMultiWorkInfo {
-        isMoreEmp: number;
-    }
-
-
-    //for combo box
-    export function getCauseTypeHealthLossInfo(): Array<ItemModel> {
-        return [
-            new ItemModel(ReasonsForLossHealthyIns.BLANK.toString(), getText('Enum_ReasonsForLossHealthyIns_BLANK')),
-            new ItemModel(ReasonsForLossHealthyIns.RETIREMENT.toString(), getText('Enum_ReasonsForLossHealthyIns_RETIREMENT')),
-            new ItemModel(ReasonsForLossHealthyIns.DEATH.toString(), getText('Enum_ReasonsForLossHealthyIns_DEATH')),
-            new ItemModel(ReasonsForLossHealthyIns.ONLY_HEALTHY_INSURANCE.toString(), getText('Enum_ReasonsForLossHealthyIns_ONLY_HEALTHY_INSURANCE')),
-            new ItemModel(ReasonsForLossHealthyIns.DISABILITY_AUTHORIZATION.toString(), getText('Enum_ReasonsForLossHealthyIns_DISABILITY_AUTHORIZATION'))
-        ];
-    }
-
-    export function getCauseTypePensionLossInfo(): Array<ItemModel> {
-        return [
-            new ItemModel(ReasonsForLossPensionIns.BLANK.toString(), getText('Enum_ReasonsForLossPensionIns_BLANK')),
-            new ItemModel(ReasonsForLossPensionIns.RETIREMENT.toString(), getText('Enum_ReasonsForLossPensionIns_RETIREMENT')),
-            new ItemModel(ReasonsForLossPensionIns.DEATH.toString(), getText('Enum_ReasonsForLossPensionIns_DEATH')),
-            new ItemModel(ReasonsForLossPensionIns.ONLY_HEALTHY_INSURANCE.toString(), getText('Enum_ReasonsForLossPensionIns_ONLY_PENSION_INSURANCE'))
-        ];
     }
 
     export class ScreenModel {
@@ -108,7 +19,7 @@ module nts.uk.pr.view.qsi013.b.viewmodel {
         inline: KnockoutObservable<boolean>;
         required: KnockoutObservable<boolean>;
         enable: KnockoutObservable<boolean>;
-        employeeInputList: KnockoutObservableArray<EmployeeModel>;
+        employeeInputList: KnockoutObservableArray<model.EmployeeModel>;
         systemReference: KnockoutObservable<number>;
         isDisplayOrganizationName: KnockoutObservable<boolean>;
         targetBtnText: string;
@@ -131,8 +42,8 @@ module nts.uk.pr.view.qsi013.b.viewmodel {
         numbereditor: any;
 
         //combo box
-        itemListHealth: KnockoutObservableArray<ItemModel>;
-        itemListPension: KnockoutObservableArray<ItemModel>;
+        itemListHealth: KnockoutObservableArray<model.ItemModel>;
+        itemListPension: KnockoutObservableArray<model.ItemModel>;
         hCause: KnockoutObservable<number> = ko.observable(0);
         pCause: KnockoutObservable<number> = ko.observable(0);
         isEnable: KnockoutObservable<boolean>;
@@ -197,6 +108,12 @@ module nts.uk.pr.view.qsi013.b.viewmodel {
             self.inline = ko.observable(true);
             self.required = ko.observable(true)
             self.enable = ko.observable(true);
+            self.systemReference = ko.observable(model.SystemType.SALARY);
+            self.isDisplayOrganizationName = ko.observable(false);
+            self.targetBtnText = nts.uk.resource.getText("KCP009_3");
+            self.tabindex = 1;
+            self.isEnable = ko.observable(true);
+            self.isEditable = ko.observable(true);
 
             self.employeeInputList = ko.observableArray([
                 {
@@ -222,18 +139,10 @@ module nts.uk.pr.view.qsi013.b.viewmodel {
                 }
             ]);
 
-            self.systemReference = ko.observable(SystemType.SALARY);
-            self.isDisplayOrganizationName = ko.observable(false);
-            self.targetBtnText = nts.uk.resource.getText("KCP009_3");
-
-            //data from object lossinfo
             self.selectedItem.subscribe((data) => {
                 self.getDataLossInfo(data);
             });
-            //self.selectedItem = ko.observable('000000000000000000000000000000000002');
 
-            self.tabindex = 1;
-            // Initial listComponentOption
             self.listComponentOption = {
                 systemReference: self.systemReference(),
                 isDisplayOrganizationName: self.isDisplayOrganizationName(),
@@ -243,51 +152,18 @@ module nts.uk.pr.view.qsi013.b.viewmodel {
                 tabIndex: 0
             };
 
+            this.getDataLossInfo(self.selectedItem());
+            $('#emp-component').ntsLoadListComponent(self.listComponentOption);
+
+            self.itemListHealth = ko.observableArray(model.getCauseTypeHealthLossInfo());
+            self.itemListPension = ko.observableArray(model.getCauseTypePensionLossInfo());
+
             self.hOther = ko.observable(true);
             self.pOther = ko.observable(true);
             self.enable = ko.observable(true);
-
-            //get data when load creen
-            this.getDataLossInfo(self.selectedItem());
-
-            self.numbereditor = {
-                constraint: '',
-                option: new nts.uk.ui.option.NumberEditorOption({
-                    grouplength: 3,
-                    decimallength: 2,
-                    placeholder: "Placeholder for number editor",
-                    width: "",
-                    textalign: "left"
-                }),
-                //enable: ko.observable(true),
-                readonly: ko.observable(false)
-            };
-            $('#emp-component').ntsLoadListComponent(self.listComponentOption);
-
-
-            //set data enum into combo box
-            self.itemListHealth = ko.observableArray(getCauseTypeHealthLossInfo());
-            self.itemListPension = ko.observableArray(getCauseTypePensionLossInfo());
-
             self.hCause = ko.observable(1);
             self.pCause = ko.observable(1);
-            self.isEnable = ko.observable(true);
-            self.isEditable = ko.observable(true);
-
-            //for text editor
             self.pOtherReason = ko.observable("");
-            self.texteditor = {
-                constraint: 'ResidenceCode',
-                option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                    textmode: "text",
-                    placeholder: "Placeholder for text editor",
-                    width: "100px",
-                    textalign: "left"
-                })),
-                required: ko.observable(true),
-                enable: ko.observable(true),
-                readonly: ko.observable(false)
-            };
         }
 
         //method for combo box
@@ -301,31 +177,13 @@ module nts.uk.pr.view.qsi013.b.viewmodel {
             nts.uk.ui.windows.close();
         }
 
-        //convert boolean to int in command
-        convertDataToInt(data: boolean) {
-            if (data == true) {
-                return 1;
-            } else {
-                return 0;
-            }
-        }
-
-        checkedDataUpdate(other : boolean, otherReason : string){
-            if(other){
-                return otherReason;
-            } else {
-                return '';
-            }
-        }
-
         registerLossInfo() {
             var self = this;
             //for register info
             let healthInsLossInfo: any = {
                 empId: self.selectedItem(),
-                other: this.convertDataToInt(self.hOther()),
-                otherReason: this.checkedDataUpdate(self.hOther(),self.hOtherReason() ),
-                    //self.hOtherReason(),
+                other : self.hOther() == true ? 1 : 0,
+                otherReason : self.hOther() == true ? self.hOtherReason() : '',
                 caInsurance: self.hCaInsurance(),
                 numRecoved: self.hNumRecoved(),
                 cause: self.hCause(),
@@ -333,15 +191,15 @@ module nts.uk.pr.view.qsi013.b.viewmodel {
 
             let welfPenInsLossIf: any = {
                 empId: self.selectedItem(),
-                other: this.convertDataToInt(self.pOther()),
-                otherReason: this.checkedDataUpdate(self.pOther(),self.pOtherReason() ),
+                other : self.pOther() == true ? 1 : 0,
+                otherReason : self.pOther() == true ? self.pOtherReason() : '',
                 caInsuarace: self.pCaInsurance(),
                 numRecoved: self.pNumRecoved(),
                 cause: self.pCause(),
             };
             let multiEmpWorkInfo: any = {
                 empId: self.selectedItem(),
-                isMoreEmp: this.convertDataToInt(self.isMoreEmp())
+                isMoreEmp: self.isMoreEmp() == true ?  1 : 0
             };
 
             let empBasicPenNumInfor: any = {
@@ -363,7 +221,7 @@ module nts.uk.pr.view.qsi013.b.viewmodel {
                     //enter update mode
                     self.screenMode(model.SCREEN_MODE.UPDATE);
                     //load data
-                    this.getDataLossInfo(self.selectedItem());
+                    self.getDataLossInfo(self.selectedItem());
                 });
             }).fail(error => {
                 dialog.alertError(error);
