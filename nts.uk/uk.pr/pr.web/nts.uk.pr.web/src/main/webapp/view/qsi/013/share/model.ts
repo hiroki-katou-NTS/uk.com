@@ -11,4 +11,91 @@ module nts.uk.pr.view.qsi013.share.model {
         NEW = 0,
         UPDATE = 1
     }
+
+    export class ItemModel {
+        code: number;
+        name: string;
+
+        constructor(code: number, name: string) {
+            this.code = code;
+            this.name = name;
+        }
+    }
+
+    export function getBusinessDivision(): Array<ItemModel> {
+        return [
+            new ItemModel(0, getText('Enum_BusinessDivision_OUTPUT_COMPANY_NAME')),
+            new ItemModel(1, getText('Enum_BusinessDivision_OUTPUT_SIC_INSURES')),
+            new ItemModel(2, getText('Enum_BusinessDivision_DO_NOT_OUTPUT'))
+        ];
+    }
+    export function getBussEsimateClass(): Array<ItemModel> {
+        return [
+            new ItemModel(0, getText('Enum_BussEsimateClass_HEAL_INSUR_OFF_ARR_SYMBOL')),
+            new ItemModel(1, getText('Enum_BussEsimateClass_EMPEN_ESTAB_REARSIGN'))
+        ];
+    }
+    export function getSocialInsurOutOrder(): Array<ItemModel> {
+        return [
+            new ItemModel(0, getText('Enum_SocialInsurOutOrder_DIVISION_EMP_ORDER')),
+            new ItemModel(1, getText('Enum_SocialInsurOutOrder_EMPLOYEE_CODE_ORDER')),
+            new ItemModel(2, getText('Enum_SocialInsurOutOrder_EMPLOYEE_KANA_ORDER')),
+            new ItemModel(3, getText('Enum_SocialInsurOutOrder_HEAL_INSUR_NUMBER_ORDER')),
+            new ItemModel(4, getText('Enum_SocialInsurOutOrder_WELF_AREPEN_NUMBER_ORDER')),
+            new ItemModel(5, getText('Enum_SocialInsurOutOrder_HEAL_INSUR_NUMBER_UNION_ORDER')),
+            new ItemModel(6, getText('Enum_SocialInsurOutOrder_ORDER_BY_FUND')),
+            new ItemModel(7, getText('Enum_SocialInsurOutOrder_INSURED_PER_NUMBER_ORDER'))
+        ];
+    }
+
+    export function getPersonalNumClass(): Array<ItemModel> {
+        return [
+            new ItemModel(0, getText('Enum_PersonalNumClass_OUTPUT_PER_NUMBER')),
+            new ItemModel(1, getText('Enum_PersonalNumClass_OUTPUT_BASIC_PER_NUMBER')),
+            new ItemModel(2, getText('Enum_PersonalNumClass_OUTPUT_BASIC_PEN_NOPER')),
+            new ItemModel(3, getText('Enum_PersonalNumClass_DO_NOT_OUTPUT'))
+        ];
+    }
+
+    export function getSubNameClass(): Array<ItemModel> {
+        return [
+            new ItemModel(0, getText('QSI013_18')),
+            new ItemModel(1, getText('QSI013_19'))
+        ];
+    }
+
+
+    export function getInsurPersonNumDivision(): Array<ItemModel> {
+        return [
+            new ItemModel(0, getText('Enum_InsurPersonNumDivision_DO_NOT_OUPUT')),
+            new ItemModel(1, getText('Enum_InsurPersonNumDivision_OUTPUT_HEAL_INSUR_NUM')),
+            new ItemModel(2, getText('Enum_InsurPersonNumDivision_OUTPUT_THE_WELF_PENNUMBER')),
+            new ItemModel(3, getText('Enum_InsurPersonNumDivision_OUTPUT_HEAL_INSUR_UNION')),
+            new ItemModel(4, getText('Enum_InsurPersonNumDivision_OUTPUT_THE_FUN_MEMBER'))
+        ];
+    }
+
+    export function getTextPerNumberClass(): Array<ItemModel> {
+        return [
+            new ItemModel(0, getText('Enum_TextPerNumberClass_OUTPUT_NUMBER')),
+            new ItemModel(1, getText('Enum_TextPerNumberClass_OUPUT_BASIC_PEN_NUMBER')),
+            new ItemModel(2, getText('Enum_TextPerNumberClass_OUTPUT_BASIC_NO_PERSONAL'))
+        ];
+    }
+
+    export function getOutputFormatClass(): Array<ItemModel> {
+        return [
+            new ItemModel(0, getText('Enum_OutputFormatClass_PEN_OFFICE')),
+            new ItemModel(1, getText('Enum_OutputFormatClass_HEAL_INSUR_ASSO')),
+            new ItemModel(2, getText('Enum_OutputFormatClass_OUTPUT_THE_WELF_PEN'))
+        ];
+    }
+
+    export function getLineFeedCode(): Array<ItemModel> {
+        return [
+            new ItemModel(0, getText('Enum_LineFeedCode_ADD')),
+            new ItemModel(1, getText('Enum_LineFeedCode_DO_NOT_ADD')),
+            new ItemModel(2, getText('Enum_LineFeedCode_E_GOV'))
+        ];
+    }
 }
