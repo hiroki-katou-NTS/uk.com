@@ -110,7 +110,6 @@ module nts.uk.com.view.jmm018.b {
                             // enable/disable child
                             if(query.value == false){
                                 $("#treegrid").ntsTreeView("disableRows", disable);
-                                return;
                             }else{
                                 $("#treegrid").ntsTreeView("enableRows", disable);
                             }
@@ -130,7 +129,7 @@ module nts.uk.com.view.jmm018.b {
                      
                  });
                 
-                 $(document).delegate("#treegrid", "igtreegriddatarendered", function (evt, ui) {
+                 $("#treegrid").bind("checkboxChanging", function(evt, query?: any) {
                     _.defer(() => {
                         //subcribe the change in the tree
                         let lisTree = self.listEventId();
@@ -245,6 +244,18 @@ module nts.uk.com.view.jmm018.b {
                 var dfd = $.Deferred<void>();
                 let self = this;
                 nts.uk.ui.block.grayout();
+                let copyList = self.listEventId();
+                _.forEach(copyList, (value) => {
+                    if(value.useEventOrMenu == false){
+                        _.forEach(value.listChild, (a) => {
+                            self.listMenuOper(_.remove(self.listMenuOper(), function(n) {
+                                return n.programId == a.programId;
+                            }));
+                        });
+                            
+                    }
+                });
+                console.log(self.listMenuOper());
                 let params = {
                     listEventOper: self.listEventOper(),
                     listMenuOper: self.listMenuOper()
