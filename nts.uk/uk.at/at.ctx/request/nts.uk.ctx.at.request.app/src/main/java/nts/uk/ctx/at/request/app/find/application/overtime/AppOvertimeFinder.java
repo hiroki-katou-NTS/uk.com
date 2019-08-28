@@ -904,8 +904,8 @@ public class AppOvertimeFinder {
 					appOverTime.getApplication().getEmployeeID(), 
 					appOverTime.getApplication().getAppDate(), 
 					appOverTime.getApplication().getAppType(), 
-					appOverTime.getWorkTypeCode().v(), 
-					appOverTime.getSiftCode().v(), 
+					appOverTime.getWorkTypeCode() == null ? null : appOverTime.getWorkTypeCode().v(), 
+					appOverTime.getSiftCode() == null ? null : appOverTime.getSiftCode().v(), 
 					withdrawalAppSet.getOverrideSet(), 
 					Optional.empty());
 			for(OvertimeWorkFrame overtimeFrame :overtimeFrames){
@@ -1785,8 +1785,8 @@ public class AppOvertimeFinder {
 					application.getEmployeeID(), 
 					application.getAppDate(), 
 					application.getAppType(), 
-					appOverTime.getWorkTypeCode().v(), 
-					appOverTime.getSiftCode().v(), 
+					appOverTime.getWorkTypeCode() == null ? null : appOverTime.getWorkTypeCode().v(), 
+					appOverTime.getSiftCode() == null ? null : appOverTime.getSiftCode().v(), 
 					withdrawalAppSet.getOverrideSet(), 
 					Optional.empty());
 			// 07_事前申請・実績超過チェック(07_đơn xin trước. check vượt quá thực tế )
