@@ -525,7 +525,38 @@ public class CheckFileFinder {
 			if(cell.getValue() != null) {
 				switch(cell.getValue().getType()) {
 				case TEXT:
-					value = cell.getValue().getText();
+					String tmp = cell.getValue().getText();
+					value = tmp.contains("-") == true ? tmp.replace("-", "/") : tmp;
+					List<String> ddMMyyy = Arrays.asList("dd/MM/yyyy", "dd-MM-yyyy");
+					List<String> MMddyyy = Arrays.asList("MM/dd/yyyy", "MM-dd-yyyy");
+					Optional<SimpleDateFormat> dateFormat = validateDate(value);
+					if (dateFormat.isPresent()) {
+
+						if (ddMMyyy.contains(dateFormat.get().toPattern())) {
+
+							String[] dateSplit = value.split("[-/]");
+
+							if (dateSplit.length == 3) {
+
+								value = GeneralDate.ymd(Integer.valueOf(dateSplit[2]).intValue(),
+										Integer.valueOf(dateSplit[1]).intValue(),
+										Integer.valueOf(dateSplit[0]).intValue()).toString();
+							}
+						}else if (MMddyyy.contains(dateFormat.get().toPattern())) {
+
+							String[] dateSplit = value.split("[-/]");
+
+							if (dateSplit.length == 3) {
+
+								value = GeneralDate.ymd(Integer.valueOf(dateSplit[2]).intValue(),
+										Integer.valueOf(dateSplit[0]).intValue(),
+										Integer.valueOf(dateSplit[1]).intValue()).toString();
+
+							}
+						}else {
+							value = GeneralDate.fromString(value, "yyyy/MM/dd").toString();
+						}
+					}
 					break;
 				case NUMBER:
 					value = value == ""? null:String.valueOf(cell.getValue().getDecimal());
