@@ -9,10 +9,12 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
@@ -26,6 +28,8 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRoo
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.CollectApprovalRootPatternService;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.StartupErrorCheckService;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationrestrictionsetting.service.ActualLockingCheck;
@@ -98,6 +102,12 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 	@Inject
 	private ApplyPossibleCheck applyPossibleCheck;
 	
+	@Inject
+	private CollectApprovalRootPatternService approvalRootPatternService;
+	
+	@Inject
+	private StartupErrorCheckService startupErrorCheckService;
+	
 	public void processBeforeRegister(Application_New application, int overTimeAtr, boolean checkOver1Year){
 		// アルゴリズム「未入社前チェック」を実施する
 		retirementCheckBeforeJoinCompany(application.getCompanyID(), application.getEmployeeID(), application.getAppDate());
@@ -132,13 +142,15 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 		}		
 		
 		// キャッシュから承認ルートを取得する(Lấy comfirm root từ cache)	
-		ApprovalRootContentImport_New approvalRootContentImport = approvalRootStateAdapter.getApprovalRootContent(
+		ApprovalRootContentImport_New approvalRootContentImport = approvalRootPatternService.getApprovalRootPatternService(
 				application.getCompanyID(), 
 				application.getEmployeeID(), 
-				application.getAppType().value, 
-				application.getAppDate(), 
+				EmploymentRootAtr.APPLICATION, 
+				application.getAppType(), 
+				application.getAppDate(),
 				application.getAppID(),
-				true);
+				true).getApprovalRootContentImport();
+		startupErrorCheckService.startupErrorCheck(application.getAppDate(), application.getAppType().value, approvalRootContentImport);
 		switch (approvalRootContentImport.getErrorFlag()) {
 		case NO_CONFIRM_PERSON:
 			throw new BusinessException("Msg_238");

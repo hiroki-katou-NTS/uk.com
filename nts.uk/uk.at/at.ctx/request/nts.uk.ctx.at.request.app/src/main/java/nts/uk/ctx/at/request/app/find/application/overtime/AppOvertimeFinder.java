@@ -1610,8 +1610,7 @@ public class AppOvertimeFinder {
 
 			siftType.setSiftCode(appOvertime.getSiftCode().toString().equals("000")? "" : appOvertime.getSiftCode().toString());
 			Optional<WorkTimeSetting> workTime = workTimeRepository.findByCode(companyID,
-					appOvertime.getSiftCode().toString());                siftType.setSiftName(workTime.get().getWorkTimeDisplayName().getWorkTimeName().v());
-
+					appOvertime.getSiftCode().toString()); 
 			if (workTime.isPresent()) {
                 siftType.setSiftName(workTime.get().getWorkTimeDisplayName().getWorkTimeName().v());
 			}
