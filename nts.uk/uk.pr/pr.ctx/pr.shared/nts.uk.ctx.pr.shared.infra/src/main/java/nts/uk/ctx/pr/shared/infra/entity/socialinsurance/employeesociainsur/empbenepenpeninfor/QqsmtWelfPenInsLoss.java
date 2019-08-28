@@ -70,8 +70,8 @@ public class QqsmtWelfPenInsLoss extends UkJpaEntity implements Serializable {
         return new QqsmtWelfPenInsLoss(new QqsmtWelfPenInsLossPk(welfPenInsLossIf.getEmpId()),
                 welfPenInsLossIf.getOther(),
                 welfPenInsLossIf.getOtherReason().map(i -> i.v()).orElse(null),
-                welfPenInsLossIf.getNumRecoved().map(i -> i.v()).orElse(null),
                 welfPenInsLossIf.getCaInsuarace().map(i -> i.v()).orElse(null),
+                welfPenInsLossIf.getNumRecoved().map(i -> i.v()).orElse(null),
                 welfPenInsLossIf.getCause().isPresent() ? welfPenInsLossIf.getCause().get().value : null);
     }
 

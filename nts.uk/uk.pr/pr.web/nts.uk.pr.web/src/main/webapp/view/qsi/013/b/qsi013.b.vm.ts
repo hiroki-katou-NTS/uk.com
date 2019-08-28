@@ -1,7 +1,8 @@
 module nts.uk.pr.view.qsi013.b.viewmodel {
-    import getText = nts.uk.resource.getText;
     import model = nts.uk.pr.view.qsi013.share.model;
     import dialog = nts.uk.ui.dialog;
+    import block = nts.uk.ui.block;
+    import getShared = nts.uk.ui.windows.getShared;
 
     export interface ComponentOption {
         systemReference: model.SystemType;
@@ -19,13 +20,13 @@ module nts.uk.pr.view.qsi013.b.viewmodel {
         inline: KnockoutObservable<boolean>;
         required: KnockoutObservable<boolean>;
         enable: KnockoutObservable<boolean>;
-        employeeInputList: KnockoutObservableArray<model.EmployeeModel>;
+        employeeInputList: KnockoutObservableArray<model.EmployeeModel>= ko.observableArray([]);
         systemReference: KnockoutObservable<number>;
         isDisplayOrganizationName: KnockoutObservable<boolean>;
         targetBtnText: string;
         baseDate: KnockoutObservable<Date>;
         listComponentOption: ComponentOption;
-        selectedItem: KnockoutObservable<string> = ko.observable(null);
+        selectedItem: KnockoutObservable<string> = ko.observable('');
         tabindex: number;
 
         //checked
@@ -39,7 +40,6 @@ module nts.uk.pr.view.qsi013.b.viewmodel {
         pCaInsurance: KnockoutObservable<number> = ko.observable();
         pNumRecoved: KnockoutObservable<number> = ko.observable();
         basicPenNumber: KnockoutObservable<string> = ko.observable('');
-        numbereditor: any;
 
         //combo box
         itemListHealth: KnockoutObservableArray<model.ItemModel>;
@@ -53,11 +53,11 @@ module nts.uk.pr.view.qsi013.b.viewmodel {
         empId: string;
 
         //for text editor
-        texteditor: any;
         hOtherReason: KnockoutObservable<string> = ko.observable('');
         pOtherReason: KnockoutObservable<string> = ko.observable('');
 
         getDataLossInfo(empId: string) {
+            block.invisible();
             let self = this;
             nts.uk.pr.view.qsi013.b.service.getLossInfoById(empId).done(function (data: any) {
                 if (data) {
@@ -82,18 +82,18 @@ module nts.uk.pr.view.qsi013.b.viewmodel {
                     // for new mode
                     //set default value
                     self.hCause(0);
-                    self.hNumRecoved();
-                    self.hOther();
-                    self.hCaInsurance();
+                    self.hNumRecoved(null);
+                    self.hOther(false);
+                    self.hCaInsurance(null);
                     self.hOtherReason('');
 
                     self.pCause(0);
-                    self.pNumRecoved();
-                    self.pOther();
-                    self.pCaInsurance();
+                    self.pNumRecoved(null);
+                    self.pOther(false);
+                    self.pCaInsurance(null);
                     self.pOtherReason('');
 
-                    self.isMoreEmp();
+                    self.isMoreEmp(null);
                     self.basicPenNumber('');
 
                     self.screenMode(model.SCREEN_MODE.NEW);
@@ -101,9 +101,10 @@ module nts.uk.pr.view.qsi013.b.viewmodel {
             }).fail(error => {
                 dialog.alertError(error);
             });
+            block.clear();
         }
 
-        constructor() {
+        init(){
             var self = this;
             self.inline = ko.observable(true);
             self.required = ko.observable(true)
@@ -111,37 +112,9 @@ module nts.uk.pr.view.qsi013.b.viewmodel {
             self.systemReference = ko.observable(model.SystemType.SALARY);
             self.isDisplayOrganizationName = ko.observable(false);
             self.targetBtnText = nts.uk.resource.getText("KCP009_3");
-            self.tabindex = 1;
             self.isEnable = ko.observable(true);
             self.isEditable = ko.observable(true);
 
-            self.employeeInputList = ko.observableArray([
-                {
-                    id: '000000000000000000000000000000000001',
-                    code: 'A000000000001',
-                    businessName: '日通　純一郎1',
-                    workplaceName: '名古屋支店',
-                    depName: 'Dep Name'
-                },
-                {
-                    id: '000000000000000000000000000000000002',
-                    code: 'A000000000004',
-                    businessName: '日通　純一郎4',
-                    workplaceName: '名古屋支店',
-                    depName: 'Dep Name'
-                },
-                {
-                    id: '000000000000000000000000000000000003',
-                    code: 'A000000000005',
-                    businessName: '日通　純一郎5',
-                    workplaceName: '名古屋支店',
-                    depName: 'Dep Name'
-                }
-            ]);
-
-            self.selectedItem.subscribe((data) => {
-                self.getDataLossInfo(data);
-            });
 
             self.listComponentOption = {
                 systemReference: self.systemReference(),
@@ -151,25 +124,24 @@ module nts.uk.pr.view.qsi013.b.viewmodel {
                 selectedItem: self.selectedItem,
                 tabIndex: 0
             };
+        }
+        constructor() {
 
-            this.getDataLossInfo(self.selectedItem());
+            var self = this;
+            this.init();
+            let list = getShared("QSI013_PARAMS_B");
+            self.employeeInputList(list.employeeList);
+            self.selectedItem(self.employeeInputList()[0].id);
+
             $('#emp-component').ntsLoadListComponent(self.listComponentOption);
 
             self.itemListHealth = ko.observableArray(model.getCauseTypeHealthLossInfo());
             self.itemListPension = ko.observableArray(model.getCauseTypePensionLossInfo());
 
-            self.hOther = ko.observable(true);
-            self.pOther = ko.observable(true);
-            self.enable = ko.observable(true);
-            self.hCause = ko.observable(1);
-            self.pCause = ko.observable(1);
-            self.pOtherReason = ko.observable("");
-        }
 
-        //method for combo box
-        setDefault() {
-            var self = this;
-            nts.uk.util.value.reset($("#combo-box, #A_SEL_001"), self.defaultValue() !== '' ? self.defaultValue() : undefined);
+            self.selectedItem.subscribe((data) => {
+                self.getDataLossInfo(data);
+            });
         }
 
         //set cancel method
