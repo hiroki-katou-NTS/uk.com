@@ -126,8 +126,6 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 	public ActualStatusCheckResult actualStatusCheck(String companyID, String employeeID, GeneralDate appDate, ApplicationType appType,
 			String workType, String workTime, OverrideSet overrideSet, Optional<CalcStampMiss> calStampMiss) {
 		List<OvertimeColorCheck> actualLst = new ArrayList<>();
-		// アルゴリズム「当日判定」を実行する
-		boolean isToday = judgmentToday(appDate, workTime);
 		// Imported(申請承認)「勤務実績」を取得する
 		RecordWorkInfoImport recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID, appDate);
 		if(Strings.isBlank(recordWorkInfoImport.getWorkTypeCode())){
@@ -137,6 +135,8 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 		JudgmentWorkTypeResult judgmentWorkTypeResult = judgmentWorkTypeChange(companyID, appType, recordWorkInfoImport.getWorkTypeCode(), workType);
 		// アルゴリズム「就業時間帯変更の判定」を実行する
 		JudgmentWorkTimeResult judgmentWorkTimeResult = judgmentWorkTimeChange(recordWorkInfoImport.getWorkTimeCode(), workTime);
+		// アルゴリズム「当日判定」を実行する
+		boolean isToday = judgmentToday(appDate, judgmentWorkTimeResult.getCalcWorkTime());
 		// アルゴリズム「打刻漏れと退勤打刻補正の判定」を実行する
 		JudgmentStampResult judgmentStampResult = judgmentStamp(isToday, overrideSet, calStampMiss, 
 				recordWorkInfoImport.getAttendanceStampTimeFirst(), recordWorkInfoImport.getLeaveStampTimeFirst());
