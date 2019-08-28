@@ -727,11 +727,12 @@ public class CheckPersonInfoProcess {
 		List<String> comboxValue = item.getLstComboBoxValue().stream().map(c -> c.getOptionValue()).sorted().collect(Collectors.toList());
 		if (comboxValue.size() >0 && !comboxValue.contains(value)) {
 			//Enum値の最小値
+			String min = comboxValue.size() == 0? " ": comboxValue.get(0);
 			String max = comboxValue.size() == 0? " ": comboxValue.get(comboxValue.size() - 1);
 			//{0} : 項目名, {1} : データの値, {2} : Enum値の最小値 (giá trị max của list combox)
 			ErrorInfoCPS013 error = new ErrorInfoCPS013(employee.getEmployeeId(), item.getCategoryId(),
 					employee.getEmployeeCode().v(), bussinessName, chekPersonInfoType, item.getCategoryName(),
-					TextResource.localize("Msg_949", item.getItemName(), value == null? "": value, max));
+					TextResource.localize("Msg_949", item.getItemName(), value == null? "": value, min, max));
 			listError.add(error);
 			setErrorDataGetter(error, dataSetter);
 		}
