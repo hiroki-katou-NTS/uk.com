@@ -169,6 +169,7 @@ export class CmmS45CComponent extends Vue {
     // tiến tới đơn tiếp theo
     public toNextApp(): void {
         let self = this;
+        self.$el.scrollTop = 0;
         self.showApproval = false;
         self.appCount++;
         self.currentApp = self.listAppMeta[self.appCount];
@@ -179,6 +180,7 @@ export class CmmS45CComponent extends Vue {
     // quay về đơn trước
     public toPreviousApp(): void {
         let self = this;
+        self.$el.scrollTop = 0;
         self.showApproval = false;
         self.appCount--;
         self.currentApp = self.listAppMeta[self.appCount];
