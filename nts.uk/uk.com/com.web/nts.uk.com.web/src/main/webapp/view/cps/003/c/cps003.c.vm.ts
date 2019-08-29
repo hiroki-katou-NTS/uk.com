@@ -1174,11 +1174,12 @@ module cps003.c.vm {
             this.employeeCode = data.employeeCode;
             this.employeeName = data.employeeName;
             this.register = false;
-            if (data.numberOfError === 0) {
-                this.status = "正常";
-            } else {
-                this.status = "エラー(" + data.numberOfError + "件)";
-            }
+            this.status = "正常";
+//            if (data.numberOfError === 0) {
+//                this.status = "正常";
+//            } else {
+//                this.status = "エラー(" + data.numberOfError + "件)";
+//            }
         }
     }
     

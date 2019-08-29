@@ -1015,7 +1015,16 @@ module cps003.a.vm {
                             if (control.controlType === "DatePicker") {
                                 let dp = cps003.control.DATE_RANGE[self.category.catCode() + "_" + d.itemCode];
                                 if (dp) {
-                                    control.inputProcess = dp.bind(null, d.required, control.format);
+                                    if (control.inputProcess) {
+                                        let existedProcess = control.inputProcess;
+                                        let format = control.format;
+                                        control.inputProcess = function() {
+                                            existedProcess.apply(null, arguments);
+                                            dp.apply(null, _.concat(d.required, format, arguments));
+                                        };
+                                    } else {
+                                        control.inputProcess = dp.bind(null, d.required, control.format);
+                                    }
                                 }
                             }
                         }
@@ -1893,7 +1902,14 @@ module cps003.a.vm {
                                     $grid.mGrid("replace", replaceValue.targetItem, (value, obj) => {
                                         if (find(self.hiddenRows, id => id === obj.id)) return false;
                                         if (replaceValue.replaceAll) return true;
-                                        return replaceValue.matchValue === value;
+                                        let v;
+                                        if (value instanceof Date) {
+                                            v = moment(value).format("YYYY/MM/DD");
+                                        } else if (value instanceof moment) {
+                                            v = value.format("YYYY/MM/DD");
+                                        } else v = value;
+                                        
+                                        return replaceValue.matchValue === v;
                                     }, (value, rec) => {
                                         let histItem = groupByEmpId[rec.employeeId];
                                         if (!_.isNil(histItem)) {
@@ -1913,7 +1929,14 @@ module cps003.a.vm {
                                     $grid.mGrid("replace", replaceValue.targetItem, (value, obj) => {
                                         if (find(self.hiddenRows, id => id === obj.id)) return false;
                                         if (replaceValue.replaceAll) return true;
-                                        return replaceValue.matchValue === value;
+                                        let v;
+                                        if (value instanceof Date) {
+                                            v = moment(value).format("YYYY/MM/DD");
+                                        } else if (value instanceof moment) {
+                                            v = value.format("YYYY/MM/DD");
+                                        } else v = value;
+                                        
+                                        return replaceValue.matchValue === v;
                                     }, (value, rec) => {
                                         let histItem = groupByEmpId[rec.employeeId];
                                         if (!_.isNil(histItem)) {
@@ -1933,7 +1956,14 @@ module cps003.a.vm {
                                     $grid.mGrid("replace", replaceValue.targetItem, (value, obj) => {
                                         if (find(self.hiddenRows, id => id === obj.id)) return false;
                                         if (replaceValue.replaceAll) return true;
-                                        return replaceValue.matchValue === value;
+                                        let v;
+                                        if (value instanceof Date) {
+                                            v = moment(value).format("YYYY/MM/DD");
+                                        } else if (value instanceof moment) {
+                                            v = value.format("YYYY/MM/DD");
+                                        } else v = value;
+                                        
+                                        return replaceValue.matchValue === v;
                                     }, (value, rec) => {
                                         let histItem = groupByEmpId[rec.employeeId];
                                         if (!_.isNil(histItem)) {
