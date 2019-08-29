@@ -352,15 +352,27 @@ public class PeregProcessor {
 				List<GridLayoutPersonInfoClsDto> resultsSync = Collections.synchronizedList(new ArrayList<>());
 				
 				peregDtoLst.stream().forEach(m -> {
-//					// combo-box sẽ lấy dựa theo các ngày startDate của từng category
+					// combo-box sẽ lấy dựa theo các ngày startDate của từng category
+					GeneralDate comboBoxStandardDate = query.getStandardDate();
 					if(m == null) return;
 					GridLayoutPersonInfoClsDto dto = new GridLayoutPersonInfoClsDto(m.getEmployeeId(), m.getPersonId(), m.getEmployeeId().equals(selfEmployeeId) ? creatClassItemList(perItems.get(true), perInfoCtg) :  creatClassItemList(perItems.get(false), perInfoCtg));
 					
 					MappingFactory.mapListItemClassCPS003(m.getPeregDto(), dto.getLayoutDtos());
 					
+					Map<String, Object> itemValueMap = MappingFactory.getFullDtoValue(m.getPeregDto());
+					
+					List<String> standardDateItemCodes = Arrays.asList("IS00020", "IS00077", "IS00082", "IS00119", "IS00781");
+
+					for (String itemCode : standardDateItemCodes) {
+						if (itemValueMap.containsKey(itemCode)) {
+							comboBoxStandardDate = (GeneralDate) itemValueMap.get(itemCode);
+							break;
+						}
+					}
+					
 					// get Combo-Box List theo ngày trên màn hình
 					layoutControlComboBox.getComboBoxListForSelectionItems(m.getEmployeeId(), perInfoCtg, dto.getLayoutDtos(),
-							query.getStandardDate());
+							comboBoxStandardDate);
 					
 					resultsSync.add(dto);					
 				});
