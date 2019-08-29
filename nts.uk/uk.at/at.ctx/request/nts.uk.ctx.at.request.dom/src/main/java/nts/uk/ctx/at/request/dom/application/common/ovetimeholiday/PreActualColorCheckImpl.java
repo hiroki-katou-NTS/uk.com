@@ -126,8 +126,6 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 	public ActualStatusCheckResult actualStatusCheck(String companyID, String employeeID, GeneralDate appDate, ApplicationType appType,
 			String workType, String workTime, OverrideSet overrideSet, Optional<CalcStampMiss> calStampMiss) {
 		List<OvertimeColorCheck> actualLst = new ArrayList<>();
-		// アルゴリズム「当日判定」を実行する
-		boolean isToday = judgmentToday(appDate, workTime);
 		// Imported(申請承認)「勤務実績」を取得する
 		RecordWorkInfoImport recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID, appDate);
 		if(Strings.isBlank(recordWorkInfoImport.getWorkTypeCode())){
@@ -137,6 +135,8 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 		JudgmentWorkTypeResult judgmentWorkTypeResult = judgmentWorkTypeChange(companyID, appType, recordWorkInfoImport.getWorkTypeCode(), workType);
 		// アルゴリズム「就業時間帯変更の判定」を実行する
 		JudgmentWorkTimeResult judgmentWorkTimeResult = judgmentWorkTimeChange(recordWorkInfoImport.getWorkTimeCode(), workTime);
+		// アルゴリズム「当日判定」を実行する
+		boolean isToday = judgmentToday(appDate, judgmentWorkTimeResult.getCalcWorkTime());
 		// アルゴリズム「打刻漏れと退勤打刻補正の判定」を実行する
 		JudgmentStampResult judgmentStampResult = judgmentStamp(isToday, overrideSet, calStampMiss, 
 				recordWorkInfoImport.getAttendanceStampTimeFirst(), recordWorkInfoImport.getLeaveStampTimeFirst());
@@ -186,12 +186,17 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 	public boolean judgmentToday(GeneralDate appDate, String workTime) {
 		// 1日の範囲を時間帯で返す
 		TimeSpanForCalc timeSpanForCalc = rangeOfDayTimeZoneService.getRangeofOneDay(workTime);
+		GeneralDateTime appDateRangeStart = null;
+		GeneralDateTime appDateRangeEnd = null;
 		if(timeSpanForCalc==null) {
-			return false;
+			// 申請日の範囲を作成する
+			appDateRangeStart = GeneralDateTime.fromString(appDate.toString("yyyy/MM/dd")+" 00:00", "yyyy/MM/dd HH:mm");
+			appDateRangeEnd = GeneralDateTime.fromString(appDate.toString("yyyy/MM/dd")+" 23:59", "yyyy/MM/dd HH:mm");
+		} else {
+			// 1日の範囲から申請日の範囲を作成する
+			appDateRangeStart = getAppDateRange(timeSpanForCalc.getStart(), appDate);
+			appDateRangeEnd = getAppDateRange(timeSpanForCalc.getEnd(), appDate);
 		}
-		// 1日の範囲から申請日の範囲を作成する
-		GeneralDateTime appDateRangeStart = getAppDateRange(timeSpanForCalc.getStart(), appDate);
-		GeneralDateTime appDateRangeEnd = getAppDateRange(timeSpanForCalc.getEnd(), appDate);
 		GeneralDateTime sysDate = GeneralDateTime.now();
 		// システム日時が申請日の範囲内に含まれるかをチェックする
 		if (sysDate.afterOrEquals(appDateRangeStart) && sysDate.beforeOrEquals(appDateRangeEnd)) {
