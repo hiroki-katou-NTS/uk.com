@@ -9,7 +9,6 @@ module nts.uk.com.view.jmm018.a {
         mainTab.start_page().done(function(screenModel){
             __viewContext.bind(screenModel);
             screenModel.onSelectTabB();
-            
             $('#nodeText').focus();
             $('#nodeText').blur();
             
@@ -22,6 +21,7 @@ module nts.uk.com.view.jmm018.a {
             $('#useApproval').focus();
             $('#useApproval').blur();
             
+            $('#treegrid_container').focus();
             blockUI.clear(); 
         });
     });

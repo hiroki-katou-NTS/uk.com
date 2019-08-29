@@ -9,17 +9,17 @@
 	<ui:composition>
 		<div class="sidebar-content-header">
 			<span class="title">#{i18n.getText('JMM018_A1_2')}</span>
-			<button tabindex="1" class="proceed"
+			<button tabindex="2" class="proceed"
 				data-bind="click: saveEventMenu">#{i18n.getText('JMM018_A3_2')}</button>
 		</div>
 
 		<div class="contents-area">
 			<div class = "ignite-grid">
 				<div id = "button">
-					<button id="buttonExpandAll" data-bind="click: saveEventMenu">#{i18n.getText('JMM018_A422_2')}</button>
-					<button id="buttonCollapseAll" data-bind="click: saveEventMenu">#{i18n.getText('JMM018_A422_3')}</button>
+					<button id="buttonExpandAll">#{i18n.getText('JMM018_A422_2')}</button>
+					<button id="buttonCollapseAll">#{i18n.getText('JMM018_A422_3')}</button>
 				</div>
-				<div id = "list-table">
+				<div id = "list-table" tabindex="3">
 					<table id="treegrid"
 								data-bind="ntsTreeGridView:{
 										width: 1700,
