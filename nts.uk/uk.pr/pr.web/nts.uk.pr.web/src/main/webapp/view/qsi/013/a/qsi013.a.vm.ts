@@ -1,6 +1,5 @@
 module nts.uk.pr.view.qsi013.a.viewmodel {
     import dialog = nts.uk.ui.dialog;
-    import getText = nts.uk.resource.getText;
     import errors = nts.uk.ui.errors;
     import block = nts.uk.ui.block;
     import model = nts.uk.pr.view.qsi013.share.model;
