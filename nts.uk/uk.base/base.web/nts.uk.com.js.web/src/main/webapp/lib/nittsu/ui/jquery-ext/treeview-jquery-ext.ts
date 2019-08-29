@@ -190,7 +190,9 @@ module nts.uk.ui.jqueryExtentions {
                             
                         if (_.isNil(trueRowValue) || _.isNil(trueRowValue[col.key])) return "";
                          
-                        let controlCls = "nts-grid-control-" + $tree.data("UNIQ") + "-" + col.key + "-" + rowId, 
+                        let rowsDisables = $tree.data("rowDisabled"),
+                            isRowEnable = _.isNil(rowsDisables) ? true : _.isNil(_.find(rowsDisables, (r) => r === rowId)), 
+                            controlCls = "nts-grid-control-" + $tree.data("UNIQ") + "-" + col.key + "-" + rowId, 
                             $wrapper = $("<div/>").addClass(controlCls).css({ "text-align": 'center', "height": "30px"} ),
                             $container = $("<div/>").append($wrapper), $_self = $tree,
                             data: any = {
@@ -223,8 +225,8 @@ module nts.uk.ui.jqueryExtentions {
                                 }, initValue: value,
                                 rowObj: rowObj,
                                 showHeaderCheckbox: col.showHeaderCheckbox,
-                                enable: true,
-                                controlDef: { controlType : "CheckBox", enable : true, 
+                                enable: isRowEnable,
+                                controlDef: { controlType : "CheckBox", enable : isRowEnable, 
                                                 name : "Checkbox", options : {value: 1, text: ""}, 
                                                 optionsText : "text", optionsValue: "value"}
                             };

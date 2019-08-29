@@ -141,6 +141,17 @@ module nts.uk.ui.koExtentions {
                                             ui.newExpressions.push({fieldName: optionsValue, cond: "doesNotEqual", expr: rId});
                                         });
                                     } 
+                                }, dropDownOpening: function (evt, ui) {
+                                    let dropId = ui.dropDown.attr("id"), idParts = dropId.split("_"), colName = idParts[idParts.length - 1],
+                                        currentCol = _.find(ui.owner.grid.options.columns, (c) => c.key === colName);
+                                    if (!_.isNil(currentCol) && currentCol.formatType === "checkbox") {
+                                        let filterOpts = ui.dropDown.find(".ui-iggrid-filterddlistitemicons"),
+                                            trueOpt = _.find(filterOpts, (f) => !_.isNil($(f).data("cond")) && $(f).data("cond").toLowerCase() === "true"),
+                                            falseOpt = _.find(filterOpts, (f) => !_.isNil($(f).data("cond")) && $(f).data("cond").toLowerCase() === "false");
+                                        
+                                        $(trueOpt).find(".ui-iggrid-filterddlistitemcontainer").html(nts.uk.resource.getText("Enum_UseAtr_Use"));
+                                        $(falseOpt).find(".ui-iggrid-filterddlistitemcontainer").html(nts.uk.resource.getText("Enum_UseAtr_NotUse"));
+                                    } 
                                 } });
             }
             
