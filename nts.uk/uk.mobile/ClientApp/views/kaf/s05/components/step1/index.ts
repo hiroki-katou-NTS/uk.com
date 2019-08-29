@@ -95,6 +95,8 @@ export class KafS05aStep1Component extends Vue {
 
     public mounted() {
         let self = this;
+        
+        document.scrollingElement.scrollTop = 0;
         if (self.$router.currentRoute.name == 'kafS05a') {
             self.applyWatcher();
         }
@@ -168,7 +170,7 @@ export class KafS05aStep1Component extends Vue {
 
         this.$validate();
         if (!this.$valid) {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            document.scrollingElement.scrollTop = 0;
 
             return;
         }
@@ -289,7 +291,7 @@ export class KafS05aStep1Component extends Vue {
             }
             // 実績なし 登録不可
             if ((self.actualStatus == 3 && self.performanceExcessAtr == 2)) {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                document.scrollingElement.scrollTop = 0;
                 this.$mask('hide');
 
                 return;
