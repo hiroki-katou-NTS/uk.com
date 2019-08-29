@@ -23,10 +23,7 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pereg.app.command.common.FacadeUtils;
 import nts.uk.ctx.pereg.app.find.employee.category.EmpCtgFinder;
-import nts.uk.ctx.pereg.app.find.layout.dto.EmpMainCategoryDto;
-import nts.uk.ctx.pereg.app.find.layoutdef.classification.GridEmpBody;
 import nts.uk.ctx.pereg.app.find.processor.ItemDefFinder;
-import nts.uk.ctx.pereg.app.find.processor.PeregProcessor;
 import nts.uk.ctx.pereg.dom.person.info.category.CategoryType;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.dto.DateRangeDto;
@@ -280,34 +277,7 @@ public class PeregCommonCommandFacade {
 
 		});
 		
-		
-		if(modeUpdate == 2) {
-			
-			List<String> indexs = new ArrayList<>();
-			
-			categoryValidate.validateSpaceCS0002(indexs, result, containerAdds);
-			
-			if(!indexs.isEmpty()) {
-				indexs.stream().forEach(i ->{
-					containerAdds.remove(Integer.valueOf(i).intValue());
-				});
-			}
-			
-			if(containerAdds.size() == 0) {
-				return result; 
-			}
-			
-			categoryValidate.historyValidate(result, containerAdds, baseDate, modeUpdate);
-			
-			if(containerAdds.isEmpty()) return result;
-			
-		}
-		
-		
-		
-		if(containerAdds.isEmpty()) return result;
-		
-		categoryValidate.validateItemOfCS0069(result, containerAdds);
+		categoryValidate.validateAdd(result, containerAdds, baseDate, modeUpdate);
 		
 		if(containerAdds.isEmpty()) return result;
 
@@ -354,18 +324,7 @@ public class PeregCommonCommandFacade {
 		if(containerAdds.size() > 0) {
 			ItemsByCategory itemFirstByCtg = containerAdds.get(0).getInputs();
 			
-			List<String> indexs = new ArrayList<>();
-			categoryValidate.validateSpaceCS0002(indexs, result, containerAdds);
-			if(!indexs.isEmpty()) {
-				indexs.stream().forEach(i ->{
-					containerAdds.remove(Integer.valueOf(i).intValue());
-				});
-			}
-			if(containerAdds.isEmpty()) {
-				return result;
-			}
-			
-			categoryValidate.validateItemOfCS0069(result, containerAdds);
+			categoryValidate.validateUpdate(result, containerAdds, baseDate, modeUpdate);
 			
 			if(containerAdds.isEmpty()) return result;
 			

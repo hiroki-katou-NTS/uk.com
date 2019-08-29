@@ -66,6 +66,51 @@ public class CategoryValidate {
 	
 	private final static List<String> itemSpecialLst = Arrays.asList("IS00003", "IS00004","IS00015","IS00016");
 	
+	
+	
+	public void validateAdd(List<MyCustomizeException> result, List<PeregInputContainerCps003> containerAdds, GeneralDate baseDate, int modeUpdate) {
+		
+		if(modeUpdate == 2) {
+			
+			List<String> indexs = new ArrayList<>();
+			
+			validateSpaceCS0002(indexs, result, containerAdds);
+			
+			if(!indexs.isEmpty()) {
+				indexs.stream().forEach(i ->{
+					containerAdds.remove(Integer.valueOf(i).intValue());
+				});
+			}
+			
+			if(containerAdds.size()> 0) {
+				
+				historyValidate(result, containerAdds, baseDate, modeUpdate);
+			}
+			
+		}
+		
+		if(containerAdds.size()> 0) {
+			validateItemOfCS0069(result, containerAdds);
+		}
+	}
+	
+	public void validateUpdate(List<MyCustomizeException> result, List<PeregInputContainerCps003> containerAdds, GeneralDate baseDate, int modeUpdate) {
+		
+		List<String> indexs = new ArrayList<>();
+		validateSpaceCS0002(indexs, result, containerAdds);
+		
+		if(!indexs.isEmpty()) {
+			indexs.stream().forEach(i ->{
+				containerAdds.remove(Integer.valueOf(i).intValue());
+			});
+		}
+		if(containerAdds.size() > 0) {
+			validateItemOfCS0069(result, containerAdds);
+		}
+		
+		
+	}
+	
 	public void historyValidate(List<MyCustomizeException> result, List<PeregInputContainerCps003> containerAdds, GeneralDate baseDate, int modeUpdate) {
 		String cid = AppContexts.user().companyId();
 		if (modeUpdate == 2) {
@@ -150,12 +195,15 @@ public class CategoryValidate {
 				PeregInputContainerCps003 container = containerAdds.stream().filter(c -> c.getEmployeeId().equals(entry.getKey())).findFirst().get();
 				ItemValue start = container.getInputs().getItems().stream().filter(c -> c.itemCode().equals("IS00066")).findFirst().get();
 				ItemValue end = container.getInputs().getItems().stream().filter(c -> c.itemCode().equals("IS00067")).findFirst().get();
-				if(!end.valueAfter().equals("9999/12/31")) {
-					sidError.add(entry.getKey());
-					int index = containerAdds.indexOf(container);
-					containerAdds.remove(index);
-					continue;
+				if(!end.valueAfter().equals(end.valueBefore())) {
+					if(entry.getValue().getPeriod().end().toString().equals("9999/12/31") && !end.valueAfter().equals("9999/12/31")) {
+						sidError.add(entry.getKey());
+						int index = containerAdds.indexOf(container);
+						containerAdds.remove(index);
+						continue;
+					}
 				}
+				
 				if(modeUpdate == 2) {
 					if(GeneralDate.fromString(start.valueAfter(), "yyyy/MM/dd").before(entry.getValue().getPeriod().start())) {
 						sidError.add(entry.getKey());
@@ -180,12 +228,15 @@ public class CategoryValidate {
 				ItemValue start = container.getInputs().getItems().stream().filter(c -> c.itemCode().equals("IS00077")).findFirst().get();
 				ItemValue end = container.getInputs().getItems().stream().filter(c -> c.itemCode().equals("IS00078")).findFirst().get();
 				DateHistoryItem historyItem = history.getHistoryItems().get(0);
-				if(!end.valueAfter().equals("9999/12/31")) {
-					sidError.add(history.getEmployeeId());
-					int index = containerAdds.indexOf(container);
-					containerAdds.remove(index);
-					continue;
+				if(!end.valueAfter().equals(end.valueBefore())) {
+					if(historyItem.end().toString().equals("9999/12/31") && !end.valueAfter().equals("9999/12/31")) {
+						sidError.add(history.getEmployeeId());
+						int index = containerAdds.indexOf(container);
+						containerAdds.remove(index);
+						continue;
+					}
 				}
+
 				if(modeUpdate == 2) {
 					if(GeneralDate.fromString(start.valueAfter(), "yyyy/MM/dd").before(historyItem.start())) {
 						sidError.add(history.getEmployeeId());
@@ -212,11 +263,13 @@ public class CategoryValidate {
 				ItemValue start = container.getInputs().getItems().stream().filter(c -> c.itemCode().equals("IS00082")).findFirst().get();
 				ItemValue end = container.getInputs().getItems().stream().filter(c -> c.itemCode().equals("IS00083")).findFirst().get();
 				DateHistoryItem historyItem = history.getHistoryItems().get(0);
-				if(!end.valueAfter().equals("9999/12/31")) {
-					sidError.add(history.getEmployeeId());
-					int index = containerAdds.indexOf(container);
-					containerAdds.remove(index);
-					continue;
+				if(!end.valueAfter().equals(end.valueBefore())) {
+					if(historyItem.end().toString().equals("9999/12/31") && !end.valueAfter().equals("9999/12/31")) {
+						sidError.add(history.getEmployeeId());
+						int index = containerAdds.indexOf(container);
+						containerAdds.remove(index);
+						continue;
+					}
 				}
 				
 				if(modeUpdate == 2) {
@@ -246,11 +299,13 @@ public class CategoryValidate {
 				ItemValue start = container.getInputs().getItems().stream().filter(c -> c.itemCode().equals("IS00120")).findFirst().get();
 				ItemValue end = container.getInputs().getItems().stream().filter(c -> c.itemCode().equals("IS00121")).findFirst().get();
 				DateHistoryItem historyItem = history.getDateHistoryItem().get(0);
-				if(!end.valueAfter().equals("9999/12/31")) {
-					sidError.add(history.getEmployeeId());
-					int index = containerAdds.indexOf(container);
-					containerAdds.remove(index);
-					continue;
+				if(!end.valueAfter().equals(end.valueBefore())) {
+					if(historyItem.end().toString().equals("9999/12/31") && !end.valueAfter().equals("9999/12/31")) {
+						sidError.add(history.getEmployeeId());
+						int index = containerAdds.indexOf(container);
+						containerAdds.remove(index);
+						continue;
+					}
 				}
 				if(modeUpdate == 2) {
 					if(GeneralDate.fromString(start.valueAfter(), "yyyy/MM/dd").before(historyItem.start())) {
@@ -278,11 +333,13 @@ public class CategoryValidate {
 				ItemValue start = container.getInputs().getItems().stream().filter(c -> c.itemCode().equals("IS00781")).findFirst().get();
 				ItemValue end = container.getInputs().getItems().stream().filter(c -> c.itemCode().equals("IS00782")).findFirst().get();
 				DateHistoryItem historyItem = history.getDateHistoryItem().get(0);
-				if(!end.valueAfter().equals("9999/12/31")) {
-					sidError.add(history.getEmployeeId());
-					int index = containerAdds.indexOf(container);
-					containerAdds.remove(index);
-					continue;
+				if(!end.valueAfter().equals(end.valueBefore())) {
+					if(historyItem.end().toString().equals("9999/12/31") && !end.valueAfter().equals("9999/12/31")) {
+						sidError.add(history.getEmployeeId());
+						int index = containerAdds.indexOf(container);
+						containerAdds.remove(index);
+						continue;
+					}
 				}
 				if(modeUpdate == 2) {
 					if(GeneralDate.fromString(start.valueAfter(), "yyyy/MM/dd").before(historyItem.start())) {
