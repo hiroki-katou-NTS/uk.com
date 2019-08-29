@@ -1,7 +1,10 @@
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -42506,10 +42509,6 @@ var nts;
                         }
                         columnSets = _.filter(columnSets, function (col) { return !_.isNil(col.formatType); });
                         _.forEach(rowIds, function (r) {
-                            var row = $tree.igTreeGrid("rowById", r);
-                            if (_.isEmpty(row) || row.hasClass("row-disabled"))
-                                return;
-                            row.addClass("row-disabled");
                             _.forEach(columnSets, function (col) {
                                 if (_.lowerCase(col.formatType) === "checkbox") {
                                     var cellContainer = $tree.igTreeGrid("cellById", r, col.key);
@@ -42520,6 +42519,10 @@ var nts;
                                     control.disable($cellContainer);
                                 }
                             });
+                            var row = $tree.igTreeGrid("rowById", r);
+                            if (_.isEmpty(row) || row.hasClass("row-disabled"))
+                                return;
+                            row.addClass("row-disabled");
                         });
                         $tree.data("rowDisabled", _.union(disabled, rowIds));
                     }
@@ -42536,10 +42539,6 @@ var nts;
                         }
                         columnSets = _.filter(columnSets, function (col) { return !_.isNil(col.formatType); });
                         _.forEach(rowIds, function (r) {
-                            var row = $tree.igTreeGrid("rowById", r);
-                            if (_.isEmpty(row) || !row.hasClass("row-disabled"))
-                                return;
-                            row.removeClass("row-disabled");
                             _.forEach(columnSets, function (col) {
                                 if (_.lowerCase(col.formatType) === "checkbox") {
                                     var cellContainer = $tree.igTreeGrid("cellById", r, col.key);
@@ -42550,6 +42549,10 @@ var nts;
                                     control.enable($cellContainer);
                                 }
                             });
+                            var row = $tree.igTreeGrid("rowById", r);
+                            if (_.isEmpty(row))
+                                return;
+                            row.removeClass("row-disabled");
                         });
                         $tree.data("rowDisabled", _.difference(disabled, rowIds));
                     }
