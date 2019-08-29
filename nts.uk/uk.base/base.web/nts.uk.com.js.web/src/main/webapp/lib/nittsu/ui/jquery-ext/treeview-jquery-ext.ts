@@ -62,7 +62,7 @@ module nts.uk.ui.jqueryExtentions {
                     }   
                 });
                 var row = $tree.igTreeGrid("rowById", r);
-                if(_.isEmpty(row)) return; 
+                if(_.isEmpty(row) || row.hasClass("row-disabled")) return; 
                 row.addClass("row-disabled");
             });  
             

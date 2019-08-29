@@ -165,6 +165,10 @@ module nts.uk.ui.jqueryExtentions {
                         holder.addNode(ui["dataRecord"][optionsValue]);
                         $treegrid.data("expand", holder);
                     }
+                    let disabledRows = $treegrid.data("rowDisabled");
+                    if(!_.isEmpty(disabledRows)) {
+                        $treegrid.ntsTreeView("disableRows", disabledRows);
+                    }
                 }, rowCollapsed: function (evt, ui) {
                     if (!$treegrid.data("autoExpanding")) {
                         let holder: koExtentions.ExpandNodeHolder = $treegrid.data("expand");

@@ -70,9 +70,9 @@ __viewContext.ready(function () {
         }
         
         disableRows(): void {
-            $("#treegrid2").ntsTreeView("disableRows", ["000001", "000002"]);    
-            $("#treegrid2-limited").ntsTreeView("disableRows", ["000001", "000002"]);
-            $("#treegrid").ntsTreeView("disableRows", ["000001", "000002"]);
+            $("#treegrid2").ntsTreeView("disableRows", ["000003", "000004"]);    
+            $("#treegrid2-limited").ntsTreeView("disableRows", ["000003", "000004"]);
+            $("#treegrid").ntsTreeView("disableRows", ["000003", "000004"]);
         }
         
         changeDataSource(): void {
@@ -108,5 +108,14 @@ __viewContext.ready(function () {
     }
     
     this.bind(new ScreenModel());
+    $("#treegrid2").ntsTreeView("disableRows", ["0000011", "0000012"]);    
+    $("#treegrid2-limited").ntsTreeView("disableRows", ["0000011", "0000012"]);
+    $("#treegrid").ntsTreeView("disableRows", ["0000011", "0000012"]);
+    
+    $("#treegrid2").on("checkboxChanging", function(evt, data) {
+        _.forEach(data.rowData.childs, function(c){
+                $("#treegrid2").ntsTreeView(data.value ? "enableRows" : "disableRows", c.code);
+        });
+    });
     
 });

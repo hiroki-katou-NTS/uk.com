@@ -1,7 +1,10 @@
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -22056,6 +22059,10 @@ var nts;
                                     holder.addNode(ui["dataRecord"][optionsValue]);
                                     $treegrid.data("expand", holder);
                                 }
+                                var disabledRows = $treegrid.data("rowDisabled");
+                                if (!_.isEmpty(disabledRows)) {
+                                    $treegrid.ntsTreeView("disableRows", disabledRows);
+                                }
                             }, rowCollapsed: function (evt, ui) {
                                 if (!$treegrid.data("autoExpanding")) {
                                     var holder = $treegrid.data("expand");
@@ -22223,7 +22230,7 @@ var nts;
                         while (!isEmpty(children)) {
                             var currentNode = children.shift();
                             ids.push(currentNode[nodeKey]);
-                            if (!isEmpty(currentNode)) {
+                            if (!isEmpty(currentNode) && !isEmpty(currentNode[childKey])) {
                                 children = children.concat(currentNode[childKey]);
                             }
                         }
@@ -42334,6 +42341,10 @@ var nts;
                                     holder.addNode(ui["dataRecord"][optionsValue]);
                                     $treegrid.data("expand", holder);
                                 }
+                                var disabledRows = $treegrid.data("rowDisabled");
+                                if (!_.isEmpty(disabledRows)) {
+                                    $treegrid.ntsTreeView("disableRows", disabledRows);
+                                }
                             }, rowCollapsed: function (evt, ui) {
                                 if (!$treegrid.data("autoExpanding")) {
                                     var holder = $treegrid.data("expand");
@@ -42509,7 +42520,7 @@ var nts;
                                 }
                             });
                             var row = $tree.igTreeGrid("rowById", r);
-                            if (_.isEmpty(row))
+                            if (_.isEmpty(row) || row.hasClass("row-disabled"))
                                 return;
                             row.addClass("row-disabled");
                         });
