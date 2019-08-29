@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface ApplicationRepository_New {
@@ -55,15 +54,17 @@ public interface ApplicationRepository_New {
 	public List<Application_New> getListAppBySID(String companyId, String sID, GeneralDate startDate, GeneralDate endDate);
 	/**
 	 * @author hoatt
-	 * CMM045
-	 * get List Application By Reflect
+	 * get List Application
+	 * Phuc vu CMM045
 	 * @param companyId
 	 * @param startDate
 	 * @param endDate
 	 * @return
 	 */
-    public List<Application_New> getListAppByReflectandListID(String companyId, GeneralDate startDate, GeneralDate endDate,
-    		List<String> lstAppId, List<Integer> lstType);
+	public List<Application_New> getListAppModeApprCMM045(String companyId, DatePeriod period, List<String> lstAppId,
+			boolean unapprovalStatus, boolean approvalStatus, boolean denialStatus, 
+			boolean agentApprovalStatus, boolean remandStatus, boolean cancelStatus, List<Integer> lstType);
+
 	/**
 	 * get List Application Pre
 	 * @param companyId
