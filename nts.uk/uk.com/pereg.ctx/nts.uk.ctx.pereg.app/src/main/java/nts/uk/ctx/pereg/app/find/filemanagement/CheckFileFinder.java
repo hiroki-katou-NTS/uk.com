@@ -123,7 +123,7 @@ public class CheckFileFinder {
 	
 	private final static List<String> itemSpecialLst = Arrays.asList("IS00003", "IS00004","IS00015","IS00016");
 	
-	//private static int index;
+	private final static List<String> endDateLst = Arrays.asList("IS00021","IS00027","IS00067","IS00078","IS00083","IS00120","IS00782","IS00256");
 	
 	@SuppressWarnings("unused")
 	private static GeneralDate valueStartCode;
@@ -375,7 +375,7 @@ public class CheckFileFinder {
 								itemDto.setActionRole(item.getActionRole());
 							}
 							// trường hợp tạo mới lịch sử, item có trong file import nhưng không có quyền update thì sẽ lấy giá trị từ database
-							if(item.getActionRole() == ActionRole.VIEW_ONLY || item.getActionRole() == ActionRole.HIDDEN) {
+							if(endDateLst.contains(itemDto.getItemCode())&& (item.getActionRole() == ActionRole.VIEW_ONLY || item.getActionRole() == ActionRole.HIDDEN)) {
 								itemDto.setValue(item.getValue());
 							}
 							if(itemDto.getDataType() == 0) return; 
@@ -392,7 +392,6 @@ public class CheckFileFinder {
 										itemDto.setTextValue(textOpt.get().getOptionText());
 										itemDto.setDefText(textOpt.get().getOptionText());
 									}
-								
 								} else {
 									itemDto.setTextValue(attr.format(valueDb));
 									itemDto.setDefText(attr.format(valueDb));
@@ -404,8 +403,8 @@ public class CheckFileFinder {
 								DataValueAttribute attr = converType(itemDto.getDataType());
 								if (itemDto.getDataType() == 6 || itemDto.getDataType() == 7
 										|| itemDto.getDataType() == 8) {
-									Optional<ComboBoxObject> textOpt = item.getLstComboBoxValue().stream().filter(combo -> combo.getOptionValue().equals(item.getValue() == null? "":item.getValue().toString())).findFirst();
-									Optional<ComboBoxObject> defTextOpt = item.getLstComboBoxValue().stream().filter(combo -> combo.getOptionValue().equals(itemDto.getValue() == null?"": itemDto.getValue().toString())).findFirst();
+									Optional<ComboBoxObject> textOpt = item.getLstComboBoxValue().stream().filter(combo -> combo.getOptionValue().equals(itemDto.getValue() == null? "":itemDto.getValue().toString())).findFirst();
+									Optional<ComboBoxObject> defTextOpt = item.getLstComboBoxValue().stream().filter(combo -> combo.getOptionValue().equals(item.getValue() == null?"": item.getValue().toString())).findFirst();
 									if(textOpt.isPresent()) {
 										itemDto.setTextValue(textOpt.get().getOptionText());
 									}
@@ -456,6 +455,20 @@ public class CheckFileFinder {
                 	return s2.compareTo(s1);
                 }).thenComparing(EmployeeRowDto::getEmployeeCode);
 		result.sort(compareByName);
+		//set lại vị trí index sau khi sort
+		int index = 0;
+		for(EmployeeRowDto pdt: result) {
+			if(!CollectionUtil.isEmpty(pdt.getItems())) {
+				for(ItemError error : itemErrors) {
+					if(error.getRecordId() == pdt.getItems().get(0).getRecordId()) {
+						error.setIndex(index);
+					}
+				}
+			
+			}
+			index++;
+		}
+		
 		return new GridDto(header, result, itemErrors);
 	}
 	
@@ -488,11 +501,21 @@ public class CheckFileFinder {
 			if(employeeDto.getEmployeeCode()!= null) {
 				employeeDtos.add(employeeDto);
 			}
-//			if(category.isHistoryCategory()) {
-//				if(period.getPeriods().get(0).getValue() != null && period.getPeriods().get(1).getValue() != null) {
-//					
-//				}
-//			}
+			if(category.isHistoryCategory()) {
+				if(period.getPeriods().get(0).getValue() != null && period.getPeriods().get(1).getValue() != null) {
+					GeneralDate start = GeneralDate.fromString(period.getPeriods().get(0).getValue().toString(), "yyyy/MM/dd"); 
+					GeneralDate end = GeneralDate.fromString(period.getPeriods().get(1).getValue().toString(), "yyyy/MM/dd"); 
+					if(start.after(end)) {
+						ItemError error = new ItemError("", index, period.getPeriods().get(0).getItem(), "MsgB_2"); 
+						itemErrors.add(error);
+					}
+					
+//					if(end.after(end)) {
+//						ItemError error = new ItemError("", index, period.getPeriods().get(0).getItem(), "MsgB_2"); 
+//						itemErrors.add(error);
+//					}
+				}
+			}
 			index++;
 		}
 
@@ -635,6 +658,7 @@ public class CheckFileFinder {
 					}).findFirst();
 					empBody.setValue(combo.isPresent() == true ? combo.get().getOptionValue() : "");
 					empBody.setLstComboBoxValue(comboxLst);
+					validateCombox(headerGrid, empBody.getValue().toString(), itemErrors, index, comboxLst);
 					items.add(empBody);
 				} else {
 					if (!headerGrid.getItemName().equals(CheckFileFinder.header)) {
@@ -651,6 +675,28 @@ public class CheckFileFinder {
 			}
 		}
 		
+	}
+
+	private void validateCombox(GridEmpHead headerGrid, String value, List<ItemError> itemErrors,
+			int index, List<ComboBoxObject> combox) {
+		List<String> comboxKey = combox.stream().map(c -> c.getOptionValue()).collect(Collectors.toList());
+		if (headerGrid.isRequired()) {
+			if (value == null || value == "") {
+				ItemError error = new ItemError("", index, headerGrid.getItemCode(), "MsgB_2");
+				itemErrors.add(error);
+			} else {
+				if (!comboxKey.contains(value)) {
+					ItemError error = new ItemError("", index, headerGrid.getItemCode(), "MsgB_2");
+					itemErrors.add(error);
+				}
+			}
+		} else {
+
+			if (!comboxKey.contains(value)) {
+				ItemError error = new ItemError("", index, headerGrid.getItemCode(), "MsgB_2");
+				itemErrors.add(error);
+			}
+		}
 	}
 	
 	/**
@@ -709,7 +755,6 @@ public class CheckFileFinder {
 						break;
 					case 4:
 						type = StringCharType.NUMERIC;
-						break;
 					case 5:
 						type = StringCharType.KATAKANA;
 						break;
