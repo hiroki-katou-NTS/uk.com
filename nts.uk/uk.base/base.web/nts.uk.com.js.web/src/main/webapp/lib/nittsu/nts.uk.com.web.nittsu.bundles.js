@@ -22028,6 +22028,13 @@ var nts;
                                             ui.newExpressions.push({ fieldName: optionsValue, cond: "doesNotEqual", expr: rId });
                                         });
                                     }
+                                }, dropDownOpening: function (evt, ui) {
+                                    var dropId = ui.dropDown.attr("id"), idParts = dropId.split("_"), colName = idParts[idParts.length - 1], currentCol = _.find(ui.owner.grid.options.columns, function (c) { return c.key === colName; });
+                                    if (!_.isNil(currentCol) && currentCol.formatType === "checkbox") {
+                                        var filterOpts = ui.dropDown.find(".ui-iggrid-filterddlistitemicons"), trueOpt = _.find(filterOpts, function (f) { return !_.isNil($(f).data("cond")) && $(f).data("cond").toLowerCase() === "true"; }), falseOpt = _.find(filterOpts, function (f) { return !_.isNil($(f).data("cond")) && $(f).data("cond").toLowerCase() === "false"; });
+                                        $(trueOpt).find(".ui-iggrid-filterddlistitemcontainer").html(nts.uk.resource.getText("Enum_UseAtr_Use"));
+                                        $(falseOpt).find(".ui-iggrid-filterddlistitemcontainer").html(nts.uk.resource.getText("Enum_UseAtr_NotUse"));
+                                    }
                                 } });
                         }
                         $treegrid.data("expand", new ExpandNodeHolder());
@@ -42310,6 +42317,13 @@ var nts;
                                             ui.newExpressions.push({ fieldName: optionsValue, cond: "doesNotEqual", expr: rId });
                                         });
                                     }
+                                }, dropDownOpening: function (evt, ui) {
+                                    var dropId = ui.dropDown.attr("id"), idParts = dropId.split("_"), colName = idParts[idParts.length - 1], currentCol = _.find(ui.owner.grid.options.columns, function (c) { return c.key === colName; });
+                                    if (!_.isNil(currentCol) && currentCol.formatType === "checkbox") {
+                                        var filterOpts = ui.dropDown.find(".ui-iggrid-filterddlistitemicons"), trueOpt = _.find(filterOpts, function (f) { return !_.isNil($(f).data("cond")) && $(f).data("cond").toLowerCase() === "true"; }), falseOpt = _.find(filterOpts, function (f) { return !_.isNil($(f).data("cond")) && $(f).data("cond").toLowerCase() === "false"; });
+                                        $(trueOpt).find(".ui-iggrid-filterddlistitemcontainer").html(nts.uk.resource.getText("Enum_UseAtr_Use"));
+                                        $(falseOpt).find(".ui-iggrid-filterddlistitemcontainer").html(nts.uk.resource.getText("Enum_UseAtr_NotUse"));
+                                    }
                                 }
                             });
                         }
@@ -42630,7 +42644,7 @@ var nts;
                                     var primaryKey = $tree.data("igTreeGrid").options.primaryKey, childKey = $tree.data("igTreeGrid").options.childDataKey, rowId = rowObj[primaryKey], trueRowValue = helper_1.getTrueRowData(rowId, primaryKey, childKey);
                                     if (_.isNil(trueRowValue) || _.isNil(trueRowValue[col.key]))
                                         return "";
-                                    var controlCls = "nts-grid-control-" + $tree.data("UNIQ") + "-" + col.key + "-" + rowId, $wrapper = $("<div/>").addClass(controlCls).css({ "text-align": 'center', "height": "30px" }), $container = $("<div/>").append($wrapper), $_self = $tree, data = {
+                                    var rowsDisables = $tree.data("rowDisabled"), isRowEnable = _.isNil(rowsDisables) ? true : _.isNil(_.find(rowsDisables, function (r) { return r === rowId; })), controlCls = "nts-grid-control-" + $tree.data("UNIQ") + "-" + col.key + "-" + rowId, $wrapper = $("<div/>").addClass(controlCls).css({ "text-align": 'center', "height": "30px" }), $container = $("<div/>").append($wrapper), $_self = $tree, data = {
                                         rowId: rowId,
                                         columnKey: col.key,
                                         update: function (val) {
@@ -42660,8 +42674,8 @@ var nts;
                                         }, initValue: value,
                                         rowObj: rowObj,
                                         showHeaderCheckbox: col.showHeaderCheckbox,
-                                        enable: true,
-                                        controlDef: { controlType: "CheckBox", enable: true,
+                                        enable: isRowEnable,
+                                        controlDef: { controlType: "CheckBox", enable: isRowEnable,
                                             name: "Checkbox", options: { value: 1, text: "" },
                                             optionsText: "text", optionsValue: "value" }
                                     };
