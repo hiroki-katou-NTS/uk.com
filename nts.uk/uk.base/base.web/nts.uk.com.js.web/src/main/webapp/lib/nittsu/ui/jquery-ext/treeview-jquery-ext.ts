@@ -50,9 +50,6 @@ module nts.uk.ui.jqueryExtentions {
             columnSets = _.filter(columnSets, (col) => { return !_.isNil(col.formatType) });
             
             _.forEach(rowIds, (r) => {
-                var row = $tree.igTreeGrid("rowById", r);
-                if(_.isEmpty(row) || row.hasClass("row-disabled")) return; 
-                row.addClass("row-disabled");
                 _.forEach(columnSets, (col) => {
                     if(_.lowerCase(col.formatType) === "checkbox"){
                         var cellContainer = $tree.igTreeGrid("cellById", r, col.key);
@@ -64,6 +61,9 @@ module nts.uk.ui.jqueryExtentions {
                         control.disable($cellContainer);     
                     }   
                 });
+                var row = $tree.igTreeGrid("rowById", r);
+                if(_.isEmpty(row) || row.hasClass("row-disabled")) return; 
+                row.addClass("row-disabled");
             });  
             
             $tree.data("rowDisabled", _.union(disabled, rowIds));
@@ -83,9 +83,6 @@ module nts.uk.ui.jqueryExtentions {
             columnSets = _.filter(columnSets, (col) => { return !_.isNil(col.formatType) });
             
             _.forEach(rowIds, (r) => {
-                var row = $tree.igTreeGrid("rowById", r);
-                if(_.isEmpty(row) || !row.hasClass("row-disabled")) return; 
-                row.removeClass("row-disabled");
                 _.forEach(columnSets, (col) => {
                     if(_.lowerCase(col.formatType) === "checkbox"){
                         var cellContainer = $tree.igTreeGrid("cellById", r, col.key);
@@ -97,6 +94,9 @@ module nts.uk.ui.jqueryExtentions {
                         control.enable($cellContainer);     
                     }   
                 });
+                var row = $tree.igTreeGrid("rowById", r);
+                if(_.isEmpty(row)) return; 
+                row.removeClass("row-disabled");
             });  
             
             $tree.data("rowDisabled", _.difference(disabled, rowIds));

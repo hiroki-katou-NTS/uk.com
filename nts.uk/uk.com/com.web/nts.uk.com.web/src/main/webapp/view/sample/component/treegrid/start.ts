@@ -112,4 +112,10 @@ __viewContext.ready(function () {
     $("#treegrid2-limited").ntsTreeView("disableRows", ["0000011", "0000012"]);
     $("#treegrid").ntsTreeView("disableRows", ["0000011", "0000012"]);
     
+    $("#treegrid2").on("checkboxChanging", function(evt, data) {
+        _.forEach(data.rowData.childs, function(c){
+                $("#treegrid2").ntsTreeView(data.value ? "enableRows" : "disableRows", c.code);
+        });
+    });
+    
 });
