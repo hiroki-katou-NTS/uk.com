@@ -64,37 +64,31 @@ export class KafS05bComponent extends Vue {
     public toStep2(kafs05Model: Kafs05Model) {
         this.step = 'step2';
         this.kafs05Model = _.cloneWith(kafs05Model);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     public toStep3(kafs05Model: Kafs05Model) {
         this.step = 'step3';
         this.kafs05Model = _.cloneWith(kafs05Model);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     public toStep4(kafs05Model: Kafs05Model) {
         this.step = 'step4';
         this.kafs05Model = _.cloneWith(kafs05Model);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     public backToStep1(kafs05Model: Kafs05Model) {
         this.step = 'step1';
         this.kafs05Model = _.cloneWith(kafs05Model);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     public backToStep2(kafs05Model: Kafs05Model) {
         this.step = 'step2';
         this.kafs05Model = _.cloneWith(kafs05Model);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     public backToStep3(kafs05Model: Kafs05Model) {
         this.step = 'step3';
         this.kafs05Model = _.cloneWith(kafs05Model);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
 }

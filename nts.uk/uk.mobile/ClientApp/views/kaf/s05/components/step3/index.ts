@@ -35,6 +35,12 @@ export class KafS05aStep3Component extends Vue {
         });
     }
 
+    public mounted() {
+        setTimeout(() => {
+            document.scrollingElement.scrollTop = 0;
+        }, 200);
+    }
+
     public registerClick() {
         this.$mask('show', { message: true });
         this.beforeRegisterColorConfirm();
