@@ -69,7 +69,7 @@
                 <div class="row">
                   <!-- Check box -->
                   <div v-if="modeAppr" class="col-1 p-0 align-middle text-center pt-2">
-                    <div v-if="item.frameStatus">
+                    <div v-if="item.appStatusNo == 5">
                     <input v-model="lstAppr" type="checkbox" v-bind:value="item.id" class="input-control" />
                     </div>
                   </div>
