@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,6 +9,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.remainingnumber.TimeOfRemain;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
@@ -45,10 +47,18 @@ public class SpecialLeaveGrantRemainService {
 	 * @return
 	 * @author lanlt
 	 */
-	public Map<String, String> calDayTime(String cid, List<String> sid, int specialCD) {
+	public Map<String, String> calDayTime(String cid, List<String> sids, int specialCD) {
 		Map<String, String> result = new HashMap<>();
-		 Map<String, List<SpecialLeaveGrantRemainingData>> grantRemains = specialLeaveGrantRepo.getAllByExpStatus(cid, sid, specialCD,
+		 Map<String, List<SpecialLeaveGrantRemainingData>> grantRemains = specialLeaveGrantRepo.getAllByExpStatus(cid, sids, specialCD,
 				LeaveExpirationStatus.AVAILABLE.value).stream().collect(Collectors.groupingBy( c  -> c.getEmployeeId()));
+		 if(grantRemains.size() < sids.size()) {
+			 for(String sid: sids) {
+				 List<SpecialLeaveGrantRemainingData> grantRemain = grantRemains.get(sid);
+				 if(CollectionUtil.isEmpty(grantRemain)) {
+					 grantRemains.put(sid, new ArrayList<>());
+				 }
+			 }
+		 }
 			// Total time
 			// TODO No268特別休暇の利用制御
 			ManageDistinct specialTimeManager = ManageDistinct.NO;
