@@ -20,5 +20,6 @@ public interface EmpWelfarePenInsQualiInforRepository {
 
     void update(EmpWelfarePenInsQualiInfor domain);
 
+    Optional<EmpWelfarePenInsQualiInfor> getEmpWelfarePenInsQualiInforByEmpId(String employeeId);
 
 }

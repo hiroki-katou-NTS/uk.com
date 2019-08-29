@@ -52,9 +52,4 @@ public class WelfPenInsLossIf extends AggregateRoot {
         this.other = other;
         this.otherReason = otherReason == null ? Optional.empty() : Optional.of(new RemarkForQuaCompany(otherReason));
     }
-
-    public static WelfPenInsLossIf createFromDataType(String empId, int other, String otherReason, Integer caInsurance, Integer numRecoved, Integer cause){
-        return new WelfPenInsLossIf(empId, other, otherReason, caInsurance, numRecoved, cause);
-    }
-
 }

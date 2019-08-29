@@ -12,6 +12,9 @@ public interface EmplHealInsurQualifiInforRepository {
 
     EmplHealInsurQualifiInfor getEmplHealInsurQualifiInfor(GeneralDate start, List<String> empIds);
 
+
+    Optional<EmplHealInsurQualifiInfor> getEmplHealInsurQualifiInforByEmpId(String empId);
+
     boolean checkHealInsurQualifiInformation(String empIds);
 
     Optional<EmplHealInsurQualifiInfor> getEmplHealInsurQualifiInforById(String employeeId, String hisId);

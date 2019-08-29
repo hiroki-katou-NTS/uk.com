@@ -17,6 +17,7 @@ public class JpaEmpWelfarePenInsQualiInforRepository extends JpaRepository imple
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QqsmtEmpWelfInsQcIf f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.empWelfInsQcIfPk.employeeId =:employeeId AND  f.empWelfInsQcIfPk.historyId =:historyId ";
     private static final String SELECT_BY_LIST_EMP = SELECT_ALL_QUERY_STRING + " WHERE  f.empWelfInsQcIfPk.employeeId IN :employeeIds  AND f.startDate <= :startDate AND f.endDate >= :startDate";
+    private static final String SELECT_BY_LIST_EMP_END = SELECT_ALL_QUERY_STRING + " WHERE  f.empWelfInsQcIfPk.employeeId IN :employeeIds  AND f.startDate <= :endDate AND f.endDate >= :endDate";
     private static final String SELECT_BY_KEY_STRING_BY_EMP_ID = SELECT_ALL_QUERY_STRING + " WHERE f.empWelfInsQcIfPk.employeeId =:employeeId ";
 
     @Override
@@ -27,6 +28,7 @@ public class JpaEmpWelfarePenInsQualiInforRepository extends JpaRepository imple
                 .getList();
         return qqsmtEmpWelfInsQcIf.isEmpty() ? null : QqsmtEmpWelfInsQcIf.toDomain(qqsmtEmpWelfInsQcIf);
     }
+
 
     @Override
     public boolean checkEmpWelfarePenInsQualiInfor(String empIds) {
@@ -50,6 +52,11 @@ public class JpaEmpWelfarePenInsQualiInforRepository extends JpaRepository imple
     @Override
     public void update(EmpWelfarePenInsQualiInfor domain){
         this.commandProxy().update(QqsmtEmpWelfInsQcIf.toEntity(domain));
+    }
+
+    @Override
+    public Optional<EmpWelfarePenInsQualiInfor> getEmpWelfarePenInsQualiInforByEmpId(String employeeId) {
+        return Optional.empty();
     }
 
 }
