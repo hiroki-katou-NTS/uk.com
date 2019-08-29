@@ -129,7 +129,7 @@ module nts.uk.com.view.jmm018.b {
                      
                  });
                 
-                 $("#treegrid").bind("checkboxChanging", function(evt, query?: any) {
+                 $("#treegrid").bind("igcontrolcreated", function(evt, query?: any) {
                     _.defer(() => {
                         //subcribe the change in the tree
                         let lisTree = self.listEventId();
