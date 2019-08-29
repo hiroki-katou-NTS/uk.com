@@ -136,7 +136,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 	private static final String SELECT_EMPL_NOT_DELETE_BY_CID = String.join(" ", SELECT_NO_PARAM, "WHERE e.companyId = :companyId AND e.delStatus = 0");
 
 	private static final String SELECT_FIXED_DATA = String.join(" ", "SELECT",
-			"mng.PID, mng.SID, mng.SCD, per.BUSINESS_NAME, per.PERSON_NAME, per.BIRTHDAY,",
+			"DISTINCT mng.PID, mng.SID, mng.SCD, per.BUSINESS_NAME, per.PERSON_NAME, per.BIRTHDAY,",
 			"dpi.CD, dpi.NAME,",
 			"wif.WKPCD, wif.WKP_DISPLAY_NAME, wif.WKP_NAME,",
 			"ji.JOB_CD, ji.JOB_NAME,",

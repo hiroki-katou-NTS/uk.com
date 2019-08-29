@@ -361,31 +361,35 @@ public class CategoryValidate {
 	}
 	
 	public void validateItemOfCS0069(List<MyCustomizeException> result, List<PeregInputContainerCps003> containerAdds){
-		List<String> indexs = new ArrayList<>();
-		List<String> sidErrors = new ArrayList<>();
-		String contractCode = AppContexts.user().contractCode();
-		for(int i = 0; i < containerAdds.size(); i++ ) {
-			if(!containerAdds.isEmpty()) {
-				for(ItemValue item: containerAdds.get(i).getInputs().getItems()) {
-					Optional<StampCard> stampCard = this.stampCardRepo.getByCardNoAndContractCode(item.valueAfter(), contractCode);
-					if(stampCard.isPresent()) {
-						sidErrors.add(containerAdds.get(i).getEmployeeId());
+		if (containerAdds.get(0).getInputs().getCategoryCd().equals("CS00069")) {
+			List<String> indexs = new ArrayList<>();
+			List<String> sidErrors = new ArrayList<>();
+			String contractCode = AppContexts.user().contractCode();
+			for (int i = 0; i < containerAdds.size(); i++) {
+				if (!containerAdds.isEmpty()) {
+					for (ItemValue item : containerAdds.get(i).getInputs().getItems()) {
+						Optional<StampCard> stampCard = this.stampCardRepo.getByCardNoAndContractCode(item.valueAfter(),
+								contractCode);
+						if (stampCard.isPresent()) {
+							sidErrors.add(containerAdds.get(i).getEmployeeId());
+						}
+					}
+					if (sidErrors.size() > 0) {
+						indexs.add(String.valueOf(i));
 					}
 				}
-				if(sidErrors.size() > 0) {
-					indexs.add(String.valueOf(i));
-				}	
+			}
+			if (sidErrors.size() > 0) {
+				result.add(new MyCustomizeException("Msg_1106", sidErrors));
+			}
+
+			if (!indexs.isEmpty()) {
+				indexs.stream().forEach(i -> {
+					containerAdds.remove(Integer.valueOf(i).intValue());
+				});
 			}
 		}
-		if(sidErrors.size() > 0) {
-			result.add(new MyCustomizeException("Msg_1106", sidErrors));
-		}
-		
-		if(!indexs.isEmpty()) {
-			indexs.stream().forEach(i ->{
-				containerAdds.remove(Integer.valueOf(i).intValue());
-			});
-		}
+
 	}
 	
 	/**

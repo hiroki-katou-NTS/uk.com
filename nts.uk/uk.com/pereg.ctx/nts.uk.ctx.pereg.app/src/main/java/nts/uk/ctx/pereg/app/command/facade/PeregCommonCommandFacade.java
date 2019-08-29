@@ -23,7 +23,10 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pereg.app.command.common.FacadeUtils;
 import nts.uk.ctx.pereg.app.find.employee.category.EmpCtgFinder;
+import nts.uk.ctx.pereg.app.find.layout.dto.EmpMainCategoryDto;
+import nts.uk.ctx.pereg.app.find.layoutdef.classification.GridEmpBody;
 import nts.uk.ctx.pereg.app.find.processor.ItemDefFinder;
+import nts.uk.ctx.pereg.app.find.processor.PeregProcessor;
 import nts.uk.ctx.pereg.dom.person.info.category.CategoryType;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.dto.DateRangeDto;
@@ -255,10 +258,11 @@ public class PeregCommonCommandFacade {
 
 		Map<String, List<ItemValue>> itemsDefaultLstBySid = facadeUtils.getListDefaultItem(itemFirstByCtg.getCategoryCd(),
 				listItemCodeInScreen, itemsByCtgId.get(itemFirstByCtg.getCategoryId()), employees);
-
+		
 		containerAdds.stream().forEach(c -> {
 			ItemsByCategory itemByCtg = c.getInputs();
 			List<ItemValue> itemDefaultLst = itemsDefaultLstBySid.get(c.getEmployeeId());
+			
 			if (itemDefaultLst != null) {
 				c.getInputs().getItems().addAll(itemDefaultLst);
 			}
@@ -266,7 +270,10 @@ public class PeregCommonCommandFacade {
 			List<String> listItemAfter = itemByCtg.getItems().stream().map(i -> i.itemCode()).collect(Collectors.toList());
 
 			if (requiredItemByCtgId.containsKey(itemByCtg.getCategoryId())) {
-
+				List<ItemValue> selectedFirst = facadeUtils.getListDefaultEnum(requiredItemByCtgId.get(itemByCtg.getCategoryId()));
+				if(!selectedFirst.isEmpty()) {
+					c.getInputs().getItems().addAll(selectedFirst);
+				}
 				itemExclude.addAll(requiredItemByCtgId.get(itemByCtg.getCategoryId()).stream()
 						.filter(i -> !listItemAfter.contains(i.getItemCode())).collect(Collectors.toList()));
 			}
@@ -303,7 +310,7 @@ public class PeregCommonCommandFacade {
 		categoryValidate.validateItemOfCS0069(result, containerAdds);
 		
 		if(containerAdds.isEmpty()) return result;
-		
+
 		DataCorrectionContext.transactional(CorrectionProcessorId.MATRIX_REGISTER, () -> {
 			if(modeUpdate == 1) {
 				updateInputForAdd(containerAdds);
@@ -717,6 +724,11 @@ public class PeregCommonCommandFacade {
 			});
 		}
 		return result;
+	}
+	
+	private void test(PeregQueryByListEmp query) {
+		
+		
 	}
 	/**
 	 * 

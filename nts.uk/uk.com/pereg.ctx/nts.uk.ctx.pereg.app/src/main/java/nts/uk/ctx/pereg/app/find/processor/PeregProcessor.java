@@ -62,8 +62,6 @@ import nts.uk.shr.pereg.app.find.dto.PeregDto;
 
 @Stateless
 public class PeregProcessor {
-	@Inject
-	private ManagedParallelWithContext parallel;
 	
 	@Inject
 	private PerInfoCategoryFinder perInfoCategoryFinder;

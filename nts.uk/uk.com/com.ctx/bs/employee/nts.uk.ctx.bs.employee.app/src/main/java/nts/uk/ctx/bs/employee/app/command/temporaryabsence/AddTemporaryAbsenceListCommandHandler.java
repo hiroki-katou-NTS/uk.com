@@ -84,7 +84,7 @@ implements PeregAddListCommandHandler<AddTemporaryAbsenceCommand>{
 			}
 			// TODO SoInsPayCategory set to null
 			TempAbsenceHisItem temporaryAbsence = TempAbsenceHisItem.createTempAbsenceHisItem(
-					c.getTempAbsenceFrNo() != null ? c.getTempAbsenceFrNo().intValue() : 0, newHistID,
+					c.getTempAbsenceFrNo() != null ? c.getTempAbsenceFrNo().intValue() : 1, newHistID,
 					c.getEmployeeId(), c.getRemarks(),
 					c.getSoInsPayCategory() != null ? c.getSoInsPayCategory().intValue() : null, multiple,
 					c.getFamilyMemberId(), sameFamily,

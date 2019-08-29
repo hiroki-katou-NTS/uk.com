@@ -712,7 +712,7 @@ module cps003.f.vm {
                                 replaceText = value.replaceValue;
                             if (item.itemData.dataType == ITEM_SINGLE_TYPE.SELECTION || item.itemData.dataType == ITEM_SINGLE_TYPE.SEL_BUTTON) {
                                 let itemMatch = _.filter(item.itemData.selectionItems, function(x) { return x.optionValue == value.matchValue }),
-                                    itemReplace = _.filter(item.itemData.selectionItems, function(x) { return x.optionValue == value.replaceValue });
+                                    itemReplace = _.filter(item.itemData.selectionItems, function(x) { return x.optionValue == replaceValue });
                                 if (itemMatch.length > 0) {
                                     matchText = itemMatch[0].optionText;
                                     replaceText = itemReplace[0].optionText;
@@ -768,7 +768,8 @@ module cps003.f.vm {
                                 }
                             } else { // 加減算（F1_027）が選択されている場合
                                 if (value.replaceValue) {
-                                    confirm({ messageId: 'Msg_714', messageParams: [item.name, value.matchValue, text(value.replaceValue > 0 ? 'CPS003_123' : 'CPS003_124') + Math.abs(value.replaceValue)] }).ifYes(() => {
+                                    
+                                    confirm({ messageId: 'Msg_714', messageParams: [item.name, value.matchValue, text(value.replaceValue > 0 ? 'CPS003_123' : 'CPS003_124') + Math.abs(value.replaceValue) + text('CPS003_122')] }).ifYes(() => {
                                         setShared('CPS003F_VALUE', value);
                                         close();
                                     });

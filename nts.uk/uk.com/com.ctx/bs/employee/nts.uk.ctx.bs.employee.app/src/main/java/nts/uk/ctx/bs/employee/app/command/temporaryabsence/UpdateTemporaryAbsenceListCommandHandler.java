@@ -95,7 +95,7 @@ implements PeregUpdateListCommandHandler<UpdateTemporaryAbsenceCommand>{
 			}
 
 			// Update detail table
-			int tempAbsenceFrNo = c.getTempAbsenceFrNo() != null ? c.getTempAbsenceFrNo().intValue() : 0;
+			int tempAbsenceFrNo = c.getTempAbsenceFrNo() != null ? c.getTempAbsenceFrNo().intValue() : 1;
 			Integer soInsPayCategory = c.getSoInsPayCategory() != null ? c.getSoInsPayCategory().intValue()
 					: null;
 			Integer childType = c.getChildType() != null ? c.getChildType().intValue() : null;
@@ -119,7 +119,8 @@ implements PeregUpdateListCommandHandler<UpdateTemporaryAbsenceCommand>{
 		if(!sidErrorLst.isEmpty()) {
 			errorExceptionLst.add(new MyCustomizeException("invalid TempAbsenceHistory", sidErrorLst));
 		}
-		return null;
+		
+		return errorExceptionLst;
 	}
 
 }
