@@ -45,7 +45,8 @@ __viewContext.ready(function () {
             self.selectedCodes2 = ko.observable([]);
             self.index = 0;
             self.columns = ko.observableArray([{ headerText: "Item Code", width: "250px", key: 'code', dataType: "string", hidden: false },
-            { headerText: "Item Text", key: 'checkbox', width: "200px", dataType: "boolean", formatType : "checkbox" }]);
+            { headerText: "Item Text", key: 'checkbox', width: "200px", dataType: "boolean", formatType : "checkbox", 
+                    filterOpts : { trueOpt: nts.uk.resource.getText("Enum_UseAtr_Use"), falseOpt: nts.uk.resource.getText("Enum_UseAtr_NotUse") } }]);
             self.columnsX = ko.observableArray([{ headerText: "Item Code", width: "250px", key: 'code', dataType: "string", hidden: false },
             { headerText: "Item Text", key: 'checkbox', width: "200px", dataType: "boolean", formatType : "checkbox", parentCompute: true }]);
             self.columns2 = ko.observableArray([{ headerText: "Item Code", width: "250px", key: 'code', dataType: "string", hidden: false },
