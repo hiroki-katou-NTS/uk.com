@@ -129,28 +129,53 @@ module nts.uk.ui.koExtentions {
             if(isFilter) {
                 features.push({ name: "Filtering", filterDelay : 100, filterDropDownAnimationDuration : 100, 
                                 dataFiltered: function (evt, ui) {
-                                    var disabled = $treegrid.data("rowDisabled");
+                                    let disabled = $treegrid.data("rowDisabled");
                                     if (!_.isEmpty(disabled)) {
                                         $treegrid.ntsTreeView("disableRows", disabled);
                                     }
+                                    
                                 }, dataFiltering: function (evt, ui) {
-                                    let disabled = $treegrid.data("rowDisabled");
+                                    let disabled = $treegrid.data("rowDisabled"), treeId = $treegrid.attr("id"), 
+                                        currentCol = _.find(ui.owner.grid.options.columns, (c) => c.key === ui.columnKey), 
+                                        shouldRemove = $treegrid.data("customExpression");
+                                    
                                     _.remove(ui.newExpressions, (ex) => _.isNil(ex.expr));
+                                    if (!_.isEmpty(shouldRemove)) {
+                                        _.remove(ui.newExpressions, (ex) => !_.isNil(_.find(shouldRemove, sr => _.isEqual(sr, ex))));
+                                        $treegrid.data("customExpression", []);
+                                    }
+                                    
+                                    if (!_.isNil(currentCol) && currentCol.formatType === "checkbox" && !_.isNil(currentCol.filterOpts)) {
+                                        let currentExp = _.find(ui.newExpressions, (exp) => exp.fieldName === ui.columnKey);
+                                        
+                                        if (!_.isNil(currentExp)) {
+                                            let isFilterTrue = currentExp.expr.toLowerCase() === "true"; 
+                                            $treegrid.closest(".nts-treegridview").find(".ui-iggrid-filterrow")
+                                                .find("td[aria-describedby='" + treeId + "_" + ui.columnKey + "']")
+                                                .find(".ui-iggrid-filtereditor")
+                                                .val(isFilterTrue ? currentCol.filterOpts.trueOpt : currentCol.filterOpts.falseOpt);
+                                        }
+                                    }
+                                    
                                     if (!_.isEmpty(disabled) && !_.isEmpty(ui.newExpressions)) {
+                                        let shouldRemove = [];
                                         _.forEach(disabled, (rId) => {
-                                            ui.newExpressions.push({fieldName: optionsValue, cond: "doesNotEqual", expr: rId});
+                                            let newExp = { fieldName: optionsValue, cond: "doesNotEqual", expr: rId };
+                                            ui.newExpressions.push(newExp);
+                                            shouldRemove.push(newExp);
                                         });
+                                        $treegrid.data("customExpression", shouldRemove);
                                     } 
                                 }, dropDownOpening: function (evt, ui) {
                                     let dropId = ui.dropDown.attr("id"), idParts = dropId.split("_"), colName = idParts[idParts.length - 1],
                                         currentCol = _.find(ui.owner.grid.options.columns, (c) => c.key === colName);
-                                    if (!_.isNil(currentCol) && currentCol.formatType === "checkbox") {
+                                    if (!_.isNil(currentCol) && currentCol.formatType === "checkbox" && !_.isNil(currentCol.filterOpts)) {
                                         let filterOpts = ui.dropDown.find(".ui-iggrid-filterddlistitemicons"),
                                             trueOpt = _.find(filterOpts, (f) => !_.isNil($(f).data("cond")) && $(f).data("cond").toLowerCase() === "true"),
                                             falseOpt = _.find(filterOpts, (f) => !_.isNil($(f).data("cond")) && $(f).data("cond").toLowerCase() === "false");
                                         
-                                        $(trueOpt).find(".ui-iggrid-filterddlistitemcontainer").html(nts.uk.resource.getText("Enum_UseAtr_Use"));
-                                        $(falseOpt).find(".ui-iggrid-filterddlistitemcontainer").html(nts.uk.resource.getText("Enum_UseAtr_NotUse"));
+                                        $(trueOpt).find(".ui-iggrid-filterddlistitemcontainer").html(currentCol.filterOpts.trueOpt);//nts.uk.resource.getText("Enum_UseAtr_Use"));
+                                        $(falseOpt).find(".ui-iggrid-filterddlistitemcontainer").html(currentCol.filterOpts.falseOpt);//nts.uk.resource.getText("Enum_UseAtr_NotUse"));
                                     } 
                                 } });
             }
