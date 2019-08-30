@@ -82,7 +82,7 @@ import nts.uk.ctx.bs.employee.pub.workplace.ResultRequest597Export;
 import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
 import nts.uk.ctx.sys.auth.dom.role.Role;
 import nts.uk.ctx.sys.auth.dom.role.RoleRepository;
-import nts.uk.screen.at.app.dailymodify.command.DailyModifyResCommandFacade;
+import nts.uk.screen.at.app.dailymodify.command.common.ProcessCommonCalc;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyQueryProcessor;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyResult;
 import nts.uk.screen.at.app.dailyperformance.correction.checkdata.ValidatorDataDailyRes;
@@ -1332,7 +1332,7 @@ public class DailyPerformanceCorrectionProcessor {
 					DCMessageError bundleExeption = new DCMessageError();
 					bundleExeption.setMessageId("Msg_1403");
 					screenDto.getLstData().stream()
-							.filter(DailyModifyResCommandFacade.distinctByKey(x -> x.getEmployeeId())).forEach(x -> {
+							.filter(ProcessCommonCalc.distinctByKey(x -> x.getEmployeeId())).forEach(x -> {
 								bundleExeption.setMessage(TextResource.localize("Msg_1403", x.getEmployeeCode() + " " + x.getEmployeeName()));
 								errors.add(bundleExeption);
 							});

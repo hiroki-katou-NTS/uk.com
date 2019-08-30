@@ -118,13 +118,13 @@
 										<div id="daterangepicker">
 												<div id="yearMonthPicker" style="top: -9px; height: 27px;" data-bind="ntsDatePicker: { 
 															value: yearMonth,
-															name: '#[KMW003_9]',
+															name: '#[KDW003_40]',
 															required: true, 
 															dateFormat: 'yearmonth',
 															showJumpButtons: true,
 															enable: showDateRange,
 															valueFormat: 'YYYYMM'}" />
-												<div id="dislayFormatLbl" data-bind="ntsFormLabel: { required: false}" style="width: 50px ; text-align: center; margin-top: 10px">#{i18n.getText('KMW003_11')}</div>
+												<div id="dislayFormatLbl" data-bind="ntsFormLabel: { required: false}" style="width: 50px ; text-align: center; margin-top: 10px">#{i18n.getText('KDW003_128')}</div>
 												<div  id="dislayFormatLbl" style="vertical-align: middle;  height: 27px;" data-bind="ntsComboBox: {
 														options: actualTimeOptionDisp,
 														optionsValue: 'code',
@@ -133,7 +133,7 @@
 														enable: showDateRange() &amp;&amp; ko.computed(function() {
 																				        return actualTimeOptionDisp().length  > 1;
 																				    }, this),
-														name:'#[KMW003_12]',
+														name:'#[KDW003_128]',
 														columns: [
 															{ prop: 'name', length: 6 },
 														]}">
@@ -180,7 +180,7 @@
 	                                <div id="emp-component"></div>
 	                            </div>         -->                      
                             </div>
-                            <div id="holiday-agree" class="agree-row" style="width: 488px">
+                            <div id="holiday-agree" class="agree-row" style="width: 493px">
                             <div id="numberHoliday" class="agree-column" style="float: left;">
 	                            <table id="fixed-table">
 	                                <thead>

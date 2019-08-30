@@ -14,6 +14,8 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.val;
+import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.finddata.IFindDataDCRecord;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ApprovalUseSettingDto;
@@ -123,8 +125,12 @@ public class InfomationInitScreenProcess {
 		//<<Public>> パラメータに初期値を設定する
 		///期間を変更する
 		DatePeriodInfo resultPeriod = processor.changeDateRange(dateRange, objectShare, companyId, sId, screenDto, mode, displayFormat, initScreenOther, param.dpStateParam);
+		//TODO: empty dateRange
+		if(resultPeriod == null) {
+			throw new BusinessException(new RawErrorMessage("Error date range empty"));
+		}
 		dateRange = resultPeriod.getTargetRange();
-		screenDto.setPeriodInfo(resultPeriod);;
+		screenDto.setPeriodInfo(resultPeriod);
 		///表示形式を変更する -- get from Characteristic 
 		DateRange datePeriodResult = dateRange;
 		if(initScreen == 0 && objectShare != null && objectShare.getDisplayFormat() == 1){
@@ -261,7 +267,11 @@ public class InfomationInitScreenProcess {
 		if(disItem == null || !disItem.getErrors().isEmpty()) {
 			if(disItem != null) screenDto.setErrors(disItem.getErrors());
 			setStateParam(screenDto, resultPeriod, displayFormat, initScreenOther);
-			return Pair.of(screenDto, listEmployeeId.isEmpty() ? null : new ParamCommonAsync(listEmployeeId.get(0), dateRange, screenDto.getEmploymentCode(), screenDto.getAutBussCode(), displayFormat, screenDto.getIdentityProcessDto()));
+			return Pair.of(screenDto,
+					listEmployeeId.isEmpty() ? null
+							: new ParamCommonAsync(listEmployeeId.get(0), dateRange, screenDto.getEmploymentCode(),
+									screenDto.getAutBussCode(), displayFormat, screenDto.getIdentityProcessDto(),
+									screenDto.getStateParam(), Optional.empty(), false));
 		}
 		screenDto.setAutBussCode(disItem.getAutBussCode());
 		screenDto.setEmployeeIds(listEmployeeId);
@@ -272,7 +282,11 @@ public class InfomationInitScreenProcess {
 		screenDto.setDisItem(disItem);
 		setStateParam(screenDto, resultPeriod, displayFormat, initScreenOther);
 		System.out.println("time init All" + (System.currentTimeMillis() - timeStart));
-		return Pair.of(screenDto, listEmployeeId.isEmpty() ? null : new ParamCommonAsync(listEmployeeId.get(0), dateRange, screenDto.getEmploymentCode(), screenDto.getAutBussCode(), displayFormat, screenDto.getIdentityProcessDto()));
+		return Pair.of(screenDto,
+				listEmployeeId.isEmpty() ? null
+						: new ParamCommonAsync(listEmployeeId.get(0), dateRange, screenDto.getEmploymentCode(),
+								screenDto.getAutBussCode(), displayFormat, screenDto.getIdentityProcessDto(),
+								screenDto.getStateParam(),  Optional.empty(), false));
 	}
 	
 	private void setStateParam(DailyPerformanceCorrectionDto screenDto, DatePeriodInfo info, int displayFormat, Boolean transferDesScreen) {

@@ -589,7 +589,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         dfd.resolve({ bindDataMap: true, data: data });
                     }
                     else {
-                        $.when(service.loadMonth(), service.startScreen(param)).done((dataMonth, dataDaily) => {
+                        let paramMonth: any = {loadAfterCalc: false}
+                        $.when(service.loadMonth(paramMonth), service.startScreen(param)).done((dataMonth, dataDaily) => {
                             dataDaily.monthResult = dataMonth.monthResult;
                             dataDaily.indentityMonthResult = dataMonth.indentityMonthResult;
                             dataDaily.showTighProcess = dataMonth.showTighProcess;
@@ -601,7 +602,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     if (error.messageId == "Msg_672") {
                         nts.uk.ui.dialog.info({ messageId: "Msg_672" });
                     } else if (error.messageId != undefined && error.messageId != "KDW/003/a") {
-                        nts.uk.ui.dialog.alert(error.messageId == "Msg_1430" ? error.message : { messageId: error.messageId }).then(function() {
+                        nts.uk.ui.dialog.alert((error.messageId == "Msg_1430" || error.messageId == "") ? error.message : { messageId: error.messageId }).then(function() {
                             nts.uk.request.jumpToTopPage();
                         });
 
@@ -664,7 +665,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                     dfd.resolve({ bindDataMap: true, data: data });
                                 }
                                 else {
-                                    $.when(service.loadMonth(), service.startScreen(param)).done((dataMonth, dataDaily) => {
+                                    let paramMonth: any = {loadAfterCalc: false}
+                                    $.when(service.loadMonth(paramMonth), service.startScreen(param)).done((dataMonth, dataDaily) => {
                                         dataDaily.monthResult = dataMonth.monthResult;
                                         dataDaily.indentityMonthResult = dataMonth.indentityMonthResult;
                                         dataDaily.showTighProcess = dataMonth.showTighProcess;
@@ -807,15 +809,19 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         initActualTime(data) {
             let self = this,
+                selectItem = 0;
             if (data.lstRange && data.lstRange.length > 0) {
                 self.actualTimeOptionDisp([]);
                 for (let i = 0; i < data.lstRange.length; i++) {
                     let startDate = data.lstRange[i].startDate,
                         endDate =  data.lstRange[i].endDate;
+                    if(data.targetRange.startDate == startDate){
+                       selectItem = i; 
+                    }
                     self.actualTimeOptionDisp.push({ code: i, name: (i+1) + ": " + moment(startDate).format("M/D") + "～" + moment(endDate).format("M/D")});
                 }
             }
-            self.actualTimeSelectedCode(0);
+            self.actualTimeSelectedCode(selectItem);
         };
         
         loadRemainNumberTable() {
@@ -1170,7 +1176,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             }
 
             let checkDailyChange = (dataChangeProcess.length > 0 || dataCheckSign.length > 0 || dataCheckApproval.length > 0 || self.sprStampSourceInfo() != null) && checkDataCare;
-            dataParent["checkDailyChange"] = checkDailyChange ? true : false;
+            dataParent["checkDailyChange"] = (dataChangeProcess.length > 0 || self.sprStampSourceInfo()) ? true : false;
             dataParent["showFlex"] = self.showFlex();
             if (checkDailyChange || (self.valueUpdateMonth != null && !_.isEmpty(self.valueUpdateMonth.items)) || self.flagCalculation || !_.isEmpty(sprStampSourceInfo)) {
                 service.addAndUpdate(dataParent).done((dataAfter) => {
@@ -1542,7 +1548,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 //dailyEdits: self.lstDomainEdit,
                 flagCalculation: updateAll,
                 cellEdits: dataChageUI,
-                lstNotFoundWorkType: self.workTypeNotFound
+                lstNotFoundWorkType: self.workTypeNotFound,
+                showDialogError: self.showDialogError
             }
             if (self.displayFormat() == 0) {
                 if (!_.isEmpty(self.shareObject()) && self.shareObject().initClock != null) {
@@ -1559,9 +1566,17 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     endDate: moment(self.dateRanger().endDate).toISOString()
                 }
             }
+            
+            let checkDailyChange = (dataChangeProcess.length > 0 || dataCheckSign.length > 0 || dataCheckApproval.length > 0 || self.sprStampSourceInfo() != null) && checkDataCare;
+            dataParent["checkDailyChange"] = (dataChangeProcess.length > 0 || self.sprStampSourceInfo()) ? true : false;
+            dataParent["showFlex"] = self.showFlex();
+
             //self.removeErrorRefer();
             let dfd = $.Deferred();
             service.calculation(dataParent).done((data) => {
+                if(data.dailyCorrectDto){
+                      self.processFlex(data.dailyCorrectDto, true);
+                }
                 self.flagCalculation = true;
                 if (data.resultError != null && !_.isEmpty(data.resultError.flexShortage)) {
                     if (data.resultError.flexShortage.error && data.resultError.flexShortage.messageError.length != 0) {
@@ -2340,7 +2355,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         });
                         nts.uk.ui.block.clear();
                     } else {
-                        $.when(service.loadMonth(), service.startScreen(param)).done((dataMonth, data) => {
+                        let paramMonth: any = {loadAfterCalc: false}
+                        $.when(service.loadMonth(paramMonth), service.startScreen(param)).done((dataMonth, data) => { 
+                            self.loadFirst = false;
                             //update mobile
                             if((hasChangeFormat && self.displayFormat() === 0) || self.initFromScreenOther){
                                 self.yearMonth(data.periodInfo.yearMonth);
@@ -2840,7 +2857,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         nts.uk.ui.block.invisible();
                         nts.uk.ui.block.grayout();
                         service.initParam(param).done((dataInit) => {
-                            $.when(service.loadMonth(), service.startScreen(param)).done((dataMonth, data) => {
+                            let paramMonth: any = {loadAfterCalc: false}
+                            $.when(service.loadMonth(paramMonth), service.startScreen(param)).done((dataMonth, data) => {
                                 data.monthResult = dataMonth.monthResult;
                                 data.indentityMonthResult = dataMonth.indentityMonthResult;
                                 data.showTighProcess = dataMonth.showTighProcess;

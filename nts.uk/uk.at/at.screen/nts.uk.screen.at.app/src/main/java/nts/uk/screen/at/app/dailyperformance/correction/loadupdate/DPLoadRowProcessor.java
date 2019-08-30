@@ -136,7 +136,7 @@ public class DPLoadRowProcessor {
 			String emp = param.getOnlyLoadMonth() ? param.getLstEmployee().get(0).getId() : listEmployeeId.get(0);
 				result.setMonthResult(dPMonthFlexProcessor
 						.getDPMonthFlex(new DPMonthFlexParam(companyId, emp, param.getDateMonth(),
-								process.getEmploymentCode(companyId, param.getDateMonth(), emp), dailyPerformanceDto, param.getAutBussCode())));
+								process.getEmploymentCode(companyId, param.getDateMonth(), emp), dailyPerformanceDto, param.getAutBussCode(), param.getDomainMonthOpt())));
 			// screenDto.setFlexShortage(null);
 			//}
 			if (emp.equals(sId) && !param.getOnlyLoadMonth()) {
@@ -150,8 +150,9 @@ public class DPLoadRowProcessor {
 					//screenDto.checkShowTighProcess(displayFormat, true);
 				} else {
 					// checkIndenityMonth
-					result.setIndentityMonthResult(checkIndentityMonth.checkIndenityMonth(
-							new IndentityMonthParam(companyId, sId, GeneralDate.today())));
+					result.setIndentityMonthResult(checkIndentityMonth
+							.checkIndenityMonth(new IndentityMonthParam(companyId, sId, GeneralDate.today(),
+									displayFormat, Optional.of(param.getIdentityProcess())), param.getStateParam()));
 					//対象日の本人確認が済んでいるかチェックする
 					result.checkShowTighProcess(displayFormat, true);
 				}
