@@ -18,7 +18,7 @@ public class JpaSocialInsurAcquisiInforRepository extends JpaRepository implemen
 
 
     @Override
-    public Optional<SocialInsurAcquisiInfor> getSocialInsurAcquisiInforById(String employeeId){
+    public Optional<SocialInsurAcquisiInfor> getSocialInsurAcquisiInforById(String cid, String employeeId){
         return this.queryProxy().query(SELECT_BY_KEY_STRING, QqsmtSocIsacquisiInfo.class)
         .setParameter("employeeId", employeeId)
         .getSingle(c->c.toDomain());

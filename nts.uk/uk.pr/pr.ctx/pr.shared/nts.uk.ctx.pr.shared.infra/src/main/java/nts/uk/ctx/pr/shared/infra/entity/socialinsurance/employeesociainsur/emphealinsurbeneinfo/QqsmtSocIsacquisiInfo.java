@@ -130,7 +130,7 @@ public class QqsmtSocIsacquisiInfo extends UkJpaEntity implements Serializable
     }
 
     public SocialInsurAcquisiInfor toDomain() {
-        return new SocialInsurAcquisiInfor(this.socIsacquisiInfoPk.cid,this.socIsacquisiInfoPk.employeeId,
+        return new SocialInsurAcquisiInfor(this.socIsacquisiInfoPk.companyId,this.socIsacquisiInfoPk.employeeId,
                 this.percentOrMore,
                 this.remarksOther,
                 this.remarksAndOtherContents,

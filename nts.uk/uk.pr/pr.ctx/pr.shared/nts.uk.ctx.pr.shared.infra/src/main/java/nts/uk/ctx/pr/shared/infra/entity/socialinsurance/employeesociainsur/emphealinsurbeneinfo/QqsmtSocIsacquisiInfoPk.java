@@ -34,11 +34,6 @@ public class QqsmtSocIsacquisiInfoPk implements Serializable
     @Basic(optional = false)
     @Column(name = "EMPLOYEE_ID")
     public String employeeId;
-    /**
-     * 社員ID
-     */
-    @Basic(optional = false)
-    @Column(name = "CID")
-    public String cid;
+
     
 }

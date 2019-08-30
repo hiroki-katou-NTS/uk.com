@@ -8,7 +8,7 @@ import java.util.Optional;
 public interface SocialInsurAcquisiInforRepository
 {
 
-    Optional<SocialInsurAcquisiInfor> getSocialInsurAcquisiInforById(String employeeId);
+    Optional<SocialInsurAcquisiInfor> getSocialInsurAcquisiInforById(String cid, String employeeId);
 
     void add(SocialInsurAcquisiInfor domain);
 
