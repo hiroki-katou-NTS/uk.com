@@ -741,7 +741,8 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 	 * @param wkTypeCd
 	 * @return
 	 */
-	private String findWorkTypeName(List<WorkType> lstWkType, String wkTypeCd){
+	@Override
+	public String findWorkTypeName(List<WorkType> lstWkType, String wkTypeCd){
 		if(lstWkType.isEmpty()){
             Optional<WorkType> wt = repoWorkType.findByPK(AppContexts.user().companyId(), wkTypeCd);
             return wt.isPresent() ? wt.get().getName().v() : wkTypeCd + "マスタ未登録";
@@ -759,7 +760,8 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 	 * @param wkTimeCd
 	 * @return
 	 */
-	private String findWorkTimeName(List<WorkTimeSetting> lstWkTime, String wkTimeCd){
+	@Override
+	public String findWorkTimeName(List<WorkTimeSetting> lstWkTime, String wkTimeCd){
 		if(lstWkTime.isEmpty()){
             Optional<WorkTimeSetting> workTime =  repoworkTime.findByCode(AppContexts.user().companyId(), wkTimeCd);
             return workTime.isPresent() ? workTime.get().getWorkTimeDisplayName().getWorkTimeName().v() : wkTimeCd + "マスタ未登録";
