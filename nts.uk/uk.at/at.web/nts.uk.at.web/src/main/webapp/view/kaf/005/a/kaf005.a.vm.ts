@@ -397,7 +397,6 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             self.displayDivergenceReasonInput(data.displayDivergenceReasonInput);
             self.displayBonusTime(data.displayBonusTime);
             self.restTimeDisFlg(data.displayRestTime);
-//            self.displayBreakTimeFlg();
             self.employeeName(data.employeeName);
             self.employeeID(data.employeeID);
             if (data.siftType != null) {
@@ -582,13 +581,6 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             self.convertAppOvertimeReferDto(data);
             
             self.overtimeAtr(data.overtimeAtr);
-//            if(data.overtimeAtr == 0){
-//                self.heightOvertimeHours(56); 
-//            }else if(data.overtimeAtr == 1){
-//                self.heightOvertimeHours(88);
-//            }else{
-//                self.heightOvertimeHours(120);
-//            }
             switch(self.overtimeHours().length){
                 case 1: 
                     self.heightOvertimeHours(56);
@@ -802,11 +794,6 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             if(!self.validateTime(self.timeStart1(), self.timeEnd1(), '#inpStartTime1')){
                 return false;
             };
-//            if ( !nts.uk.util.isNullOrEmpty(self.timeStart2()) && self.timeStart2() != "") {
-//                if ( !self.validateTime( self.timeStart2(), self.timeEnd2(), '#inpStartTime2' ) ) {
-//                    return false;
-//                };
-//            }
             //休憩時間
             for (let i = 0; i < self.restTime().length; i++) {
                 let startTime = self.restTime()[i].startTime();
@@ -1063,13 +1050,6 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     }
                 }
             }
-//            if(overtimeDto.overtimeAtr == 0){
-//                self.heightOvertimeHours(56);   
-//            }else if(overtimeDto.overtimeAtr == 1){
-//                self.heightOvertimeHours(180);
-//            }else{
-//                self.heightOvertimeHours(216);
-//            }
             
             // 休憩時間
             self.setTimeZones(data.timezones);
@@ -1287,17 +1267,6 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     }
                 }
             });
-//            //休憩時間
-//            for (let i = 0; i < self.overtimeHours().length; i++) {
-//                self.overtimeHours()[i].applicationTime.subscribe(value => {
-//                    if (!nts.uk.util.isNullOrEmpty(self.preWorkContent)) {
-//                        if (self.preWorkContent.overtimeHours[i].applicationTime != value) {
-//                            //→エラーＭＳＧ
-//                            self.calculateFlag(1);
-//                        }
-//                    }
-//                });
-//            }
         }
         private changeOvertimeHours(data){
             let self = this;

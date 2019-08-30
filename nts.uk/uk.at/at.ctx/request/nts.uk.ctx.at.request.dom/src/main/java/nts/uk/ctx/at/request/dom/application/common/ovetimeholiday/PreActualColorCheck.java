@@ -138,12 +138,14 @@ public interface PreActualColorCheck {
 	 * @param overtimeColorCheck 対象枠, 入力値
 	 * @param opAppBefore 事前申請
 	 */
-	public void preAppErrorCheck(ApplicationType appType, OvertimeColorCheck overtimeColorCheck, Optional<Application_New> opAppBefore, UseAtr preAppSetCheck);
+	public void preAppErrorCheck(ApplicationType appType, OvertimeColorCheck overtimeColorCheck, Optional<Application_New> opAppBefore, 
+			boolean beforeAppStatus, UseAtr preAppSetCheck);
 	
 	/**
 	 * 07-02-3_枠別実績超過チェック
 	 * @param overtimeColorCheck 対象枠, 入力値
 	 * @param actualLst 実績
 	 */
-	public void actualErrorCheck(OvertimeColorCheck overtimeColorCheck, List<OvertimeColorCheck> actualLst, AppDateContradictionAtr actualSetCheck);
+	public void actualErrorCheck(OvertimeColorCheck overtimeColorCheck, List<OvertimeColorCheck> actualLst, 
+			ActualStatus actualStatus, AppDateContradictionAtr actualSetCheck);
 }
