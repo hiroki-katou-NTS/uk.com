@@ -111,7 +111,7 @@ public class SocialInsurAcquisiInforDto
                 domain.getReasonAndOtherContents().isPresent() ? domain.getReasonAndOtherContents().get().v() : null,
                 domain.getShortStay().isPresent() ? domain.getShortStay().get() : null,
                 domain.getDepenAppoint().isPresent() ? domain.getDepenAppoint().get().value : null,
-                domain.getQualifiDistin().isPresent() ? domain.getQualifiDistin().get() : null,
+                domain.getQualifiDistin().isPresent() ? domain.getQualifiDistin().get().value : null,
                 domain.getShortTimeWorkers().isPresent() ? domain.getShortTimeWorkers().get() : null,
                 domain.getContinReemAfterRetirement().isPresent() ? domain.getContinReemAfterRetirement().get() : null
 

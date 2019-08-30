@@ -115,7 +115,7 @@ public class SocialInsurAcquisiInfor extends AggregateRoot {
         this.remunMonthlyAmountKind = remunMonthlyAmountKind == null ? Optional.empty() : Optional.of(new RemuneraMonthly(remunMonthlyAmountKind));
         this.totalMonthlyRemun = totalMonthlyRemun == null ? Optional.empty() : Optional.of(new RemuneraMonthly(totalMonthlyRemun));
         this.depenAppoint = depenAppoint == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(depenAppoint, DepenNotiAttachCtg.class));
-        this.qualifiDistin = Optional.ofNullable(qualifiDistin);
+        this.qualifiDistin = Optional.ofNullable(EnumAdaptor.valueOf(qualifiDistin,SocialInsurQuaAcquiClass.class));
         this.PercentOrMore = Optional.ofNullable(PercentOrMore);
         this.shortTimeWorkers = Optional.ofNullable(shortTimeWorkes);
         this.continReemAfterRetirement = Optional.ofNullable(continReemAfterRetirement);

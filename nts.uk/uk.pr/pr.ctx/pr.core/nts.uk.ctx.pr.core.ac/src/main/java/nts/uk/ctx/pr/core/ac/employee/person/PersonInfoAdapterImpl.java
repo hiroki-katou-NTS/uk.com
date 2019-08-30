@@ -9,8 +9,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 
-@Stateless
-public class PersonInfoAdaptẻrImpl implements PersonInfoAdapter {
+@Stateless(name ="DPersonInfoAdapterImpl")
+public class PersonInfoAdapterImpl implements PersonInfoAdapter {
     
     @Inject
     IPersonInfoPub repo;

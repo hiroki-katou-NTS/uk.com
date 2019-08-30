@@ -7,8 +7,8 @@ import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsura
 import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsuranceOfficeRepository;
 import nts.uk.ctx.pr.file.app.core.bank.BankExportFileGenerator;
 import nts.uk.ctx.pr.report.dom.printdata.socinsurnoticreset.*;
-import nts.uk.ctx.pr.shared.dom.adapter.person.PersonInfoAdapter;
-import nts.uk.ctx.pr.shared.dom.adapter.person.PersonInfoExportAdapter;
+import nts.uk.ctx.pr.shared.dom.adapter.query.person.PersonInfoAdapter;
+import nts.uk.ctx.pr.shared.dom.adapter.query.person.PersonInfoExportAdapter;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.*;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empcomofficehis.AffOfficeInformation;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empcomofficehis.AffOfficeInformationRepository;
