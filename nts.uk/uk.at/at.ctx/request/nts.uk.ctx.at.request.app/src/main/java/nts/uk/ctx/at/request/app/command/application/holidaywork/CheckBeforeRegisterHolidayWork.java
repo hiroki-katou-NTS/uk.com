@@ -135,7 +135,7 @@ public class CheckBeforeRegisterHolidayWork {
 				return colorConfirmResult;
 			}
 		}
-		return new ColorConfirmResult(false, 0, 0, "", Collections.emptyList(), null);
+		return new ColorConfirmResult(false, 0, 0, "", Collections.emptyList(), null, null);
 	}
 
 	public OvertimeCheckResultDto CheckBeforeRegister(int calculateFlg, Application_New app, AppHolidayWork appHolidayWork, boolean actualExceedConfirm) {
@@ -225,7 +225,7 @@ public class CheckBeforeRegisterHolidayWork {
 			}
 		}
 		
-		return new ColorConfirmResult(false, 0, 0, "", Collections.emptyList(), null);
+		return new ColorConfirmResult(false, 0, 0, "", Collections.emptyList(), null, null);
 	}
 	
 	public OvertimeCheckResultDto checkBeforeUpdate(CreateHolidayWorkCommand command) {

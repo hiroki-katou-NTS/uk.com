@@ -307,7 +307,7 @@ public class AppHolidayWorkFinder {
 		}
 		String companyID = AppContexts.user().companyId();
 		String employeeIDOrapproverID = AppContexts.user().employeeId();
-		ColorConfirmResult result = new ColorConfirmResult(false, 0, 0, "", Collections.emptyList(), null);
+		ColorConfirmResult result = new ColorConfirmResult(false, 0, 0, "", Collections.emptyList(), null, null);
 		// 6.計算処理 : TODO
 		// 表示しない
 		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(companyID,
