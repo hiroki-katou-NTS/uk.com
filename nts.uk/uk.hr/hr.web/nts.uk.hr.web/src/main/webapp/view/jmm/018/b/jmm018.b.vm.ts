@@ -27,7 +27,8 @@ module nts.uk.com.view.jmm018.b {
                                                     { headerText: getText('JMM018_A422_4'), key: 'key', width: "250px", dataType: "string", hidden: true },
                                                     { headerText: getText('JMM018_A422_4'), key: 'eventId', width: "250px", dataType: "string", hidden: true },
                                                     { headerText: getText('JMM018_A422_4'), key: 'nodeText', width: "500px", dataType: "string" },
-                                                    { headerText: getText('JMM018_A422_5'), key: 'useEventOrMenu', width: "400px", dataType: "boolean", formatType : "checkbox"},
+                                                    { headerText: getText('JMM018_A422_5'), key: 'useEventOrMenu', width: "400px", dataType: "boolean", formatType : "checkbox",
+                                                                filterOpts : { trueOpt: nts.uk.resource.getText("Enum_UseAtr_Use"), falseOpt: nts.uk.resource.getText("Enum_UseAtr_NotUse") }},
                                                     { headerText: getText('JMM018_A422_6'), key: 'useNotice', width: "400px", dataType: "boolean", formatType : "checkbox"},
                                                     { headerText: getText('JMM018_A422_7'), key: 'useApproval', width: "400px", dataType: "boolean", formatType : "checkbox"}
                                                 ]);
@@ -103,7 +104,6 @@ module nts.uk.com.view.jmm018.b {
                      
                      //subcribe the change in the tree
                      $("#treegrid").bind("checkboxChanging", function(evt, query?: any) {
-                         console.log(query);
                         let lisTree = self.listEventId();
                         if(query.rowData.listChild){
                             let disable = _.map(query.rowData.listChild, 'key');
@@ -124,6 +124,7 @@ module nts.uk.com.view.jmm018.b {
                                                                     useApproval: query.rowData.useApproval,
                                                                     useNotice: query.rowData.useNotice
                                                                 }))
+                            console.log(self.listMenuOper());
                         }
                      });
                      
@@ -263,17 +264,21 @@ module nts.uk.com.view.jmm018.b {
                 let self = this;
                 nts.uk.ui.block.grayout();
                 let copyList = self.listEventId();
-                _.forEach(copyList, (value) => {
-                    if(value.useEventOrMenu == false){
-                        _.forEach(value.listChild, (a) => {
-                            self.listMenuOper(_.remove(self.listMenuOper(), function(n) {
-                                return n.programId == a.programId;
-                            }));
-                        });
-                            
-                    }
+                
+                let opennerId = ko.toJS(self.listMenuOper).map(m => m.programId);
+                
+                _.chain(copyList)
+                    .filter((v: any) => !v.userEventOrMenu)
+                    .each((v: any) => {
+                        const mapId = _.map(v.listChild, c => c.programId);
+                        
+                       opennerId = _.filter(mapId, m => opennerId.indexOf(m) === -1);
+                    });
+                
+                console.log(opennerId);
+                _.forEach(opennerId, (f) => {
+                    self.listMenuOper.remove(function (r) {return r.programId == f.programId});
                 });
-                console.log(self.listMenuOper());
                 let params = {
                     listEventOper: self.listEventOper(),
                     listMenuOper: self.listMenuOper()
