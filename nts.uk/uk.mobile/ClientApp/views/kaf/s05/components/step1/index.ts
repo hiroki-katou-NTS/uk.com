@@ -291,8 +291,10 @@ export class KafS05aStep1Component extends Vue {
             }
             // 実績なし 登録不可
             if ((self.actualStatus == 3 && self.performanceExcessAtr == 2)) {
-                document.scrollingElement.scrollTop = 0;
                 this.$mask('hide');
+                setTimeout(() => {
+                    document.scrollingElement.scrollTop = 0;
+                }, 100);
 
                 return;
             }
