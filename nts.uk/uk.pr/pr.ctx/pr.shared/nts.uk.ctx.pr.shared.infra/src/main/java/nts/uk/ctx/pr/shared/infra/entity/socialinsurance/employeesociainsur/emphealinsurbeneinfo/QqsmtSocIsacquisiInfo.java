@@ -130,7 +130,7 @@ public class QqsmtSocIsacquisiInfo extends UkJpaEntity implements Serializable
     }
 
     public SocialInsurAcquisiInfor toDomain() {
-        return new SocialInsurAcquisiInfor(this.socIsacquisiInfoPk.employeeId,
+        return new SocialInsurAcquisiInfor(this.socIsacquisiInfoPk.cid,this.socIsacquisiInfoPk.employeeId,
                 this.percentOrMore,
                 this.remarksOther,
                 this.remarksAndOtherContents,
@@ -149,7 +149,7 @@ public class QqsmtSocIsacquisiInfo extends UkJpaEntity implements Serializable
     }
     public static QqsmtSocIsacquisiInfo toEntity(SocialInsurAcquisiInfor domain) {
          return new QqsmtSocIsacquisiInfo(
-                 new QqsmtSocIsacquisiInfoPk(domain.getEmployeeId()),
+                 new QqsmtSocIsacquisiInfoPk(domain.getCid(),domain.getEmployeeId()),
                  domain.getPercentOrMore().isPresent() ? domain.getPercentOrMore().get() : null,
                  domain.getRemarksOther().isPresent() ? domain.getRemarksOther().get(): null,
                  domain.getRemarksAndOtherContents().isPresent() ? domain.getRemarksAndOtherContents().get().v(): null,

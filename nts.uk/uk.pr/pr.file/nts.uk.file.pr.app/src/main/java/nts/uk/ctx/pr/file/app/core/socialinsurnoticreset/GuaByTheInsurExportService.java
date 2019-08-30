@@ -6,9 +6,9 @@ import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.*;
+import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.*;
 import nts.uk.ctx.pr.report.dom.printdata.comlegalrecord.Name;
 import nts.uk.ctx.pr.report.dom.printdata.comlegalrecord.RepresentativeName;
-import nts.uk.ctx.pr.report.dom.printdata.socinsurnoticreset.*;
 import nts.uk.ctx.pr.shared.dom.adapter.person.PersonInfoAdapter;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.EmpWelfarePenInsQualiInfor;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.EmpWelfarePenInsQualiInforRepository;
@@ -167,21 +167,16 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
         if (startDate.after(endDate)) {
             throw new BusinessException("Msg_812");
         }
-        Optional<EmpHealthInsurBenefits> his = Optional.empty();
-        for (int i = 0; i < employeeIds.size(); i++) {
-            Optional<EmplHealInsurQualifiInfor> temp = mEmplHealInsurQualifiInforRepository.getEmplHealInsurQualifiInforByEmpId(employeeIds.get(i));
-
-            if (/*điều kiện chưa có */ 0 == 0) {
-                /*アルゴリズム「社員健康保険資格情報が存在するかチェックする」を実行する*/
-                his = temp.get().getMourPeriod().stream().filter(e -> startDate.beforeOrEquals(e.getDatePeriod().start()) && endDate.afterOrEquals(e.getDatePeriod().start())).findFirst();
-            } else {
-                /*アルゴリズム「社員厚生年金保険資格情報が存在するかチェックする」を実行する*/
-                his = temp.get().getMourPeriod().stream().filter(e -> startDate.beforeOrEquals(e.getDatePeriod().end()) && endDate.afterOrEquals(e.getDatePeriod().end())).findFirst();
-
-            }
+        Optional<EmplHealInsurQualifiInfor> temp;
+        /*design cho 対象区分（0：資格取得、1:資格喪失） == 1*/
+        if (/*điều kiện chưa có */ 0 == 1) {
+            /*アルゴリズム「社員健康保険資格情報が存在するかチェックする」を実行する*/
+            temp = Optional.of(mEmplHealInsurQualifiInforRepository.getEmplHealInsurQualifiInfor(startDate, employeeIds));
+        } else {
+            /*アルゴリズム「社員厚生年金保険資格情報が存在するかチェックする」を実行する*/
+            temp = Optional.of(mEmplHealInsurQualifiInforRepository.getEmplHealInsurQualifiInfor(endDate, employeeIds));
         }
-        ;
-        if (!his.isPresent()) {
+        if (!temp.isPresent()) {
             throw new BusinessException("Msg_37");
         }
 
@@ -253,7 +248,7 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
 
 
             Optional<EmpHealthInsurBenefits> checkEmpHealthInsurBenefits = mEmplHealInsurQualifiInforRepository.getEmplHealInsurQualifiInfor(startDate, employeeIds).getMourPeriod().stream()
-                      .findFirst();
+                    .findFirst();
 
             if (checkEmpHealthInsurBenefits.isPresent()) {
                 exportElement.setQualifiDate(Optional.of(checkEmpHealthInsurBenefits.get().getDatePeriod().start()));
@@ -269,6 +264,16 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
 
                 }
                 // còn bước update mà chưa biết update như nào
+
+                // bước này có input là so sánh pedrio với 対象区分 mà chưa rõ trường 対象区分  là gì ?
+                Optional<DateHistoryItem> mDateHistoryItem2 = mEmpCorpHealthOffHisRepository.getEmpCorpHealthOffHisById(employeeIds,/*対象区分*/ startDate).get().getPeriod().stream().findFirst();
+                if (0 == 0/* điều kiện if mà chưa biết if gì =))) 対象区分（0：資格取得、1:資格喪失）*/) {
+                    mAffOfficeInformation = mAffOfficeInformationRepository.getAffOfficeInformationById(e, mDateHistoryItem2.get().identifier());
+                } else {
+                    mAffOfficeInformation = mAffOfficeInformationRepository.getAffOfficeInformationById(e, mDateHistoryItem2.get().identifier());
+
+                }
+                // update trường 保険事業所コード trong AcquiNotifiInformation nhưng k có
 
 
             }
@@ -339,9 +344,9 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
 
 
     // print csv
-    private void printInsuredQualifiNotiAsText(List<String> employeeIds, GeneralDate startDate, GeneralDate endDate,SocialInsurNotiCreateSetQuery socialInsurNotiCreateSetQuery) {
+    private void printInsuredQualifiNotiAsText(List<String> employeeIds, GeneralDate startDate, GeneralDate endDate, SocialInsurNotiCreateSetQuery socialInsurNotiCreateSetQuery) {
         SocialInsurNotiCreatSetRegisProcess(socialInsurNotiCreateSetQuery);
-        reportTextOutputCheck(employeeIds, startDate,endDate);
+        reportTextOutputCheck(employeeIds, startDate, endDate);
     }
 
     private void SocialInsurNotiCreatSetRegisProcess(SocialInsurNotiCreateSetQuery socialInsurNotiCreateSetQuery) {
@@ -411,8 +416,7 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
                     emplHealInsurQualifiInfor = mEmplHealInsurQualifiInforRepository.getEmplHealInsurQualifiInfor(startDate, employeeIds);
                     empWelfarePenInsQualiInfor = mEmpWelfarePenInsQualiInforRepository.getEmplHealInsurQualifiInfor(startDate, employeeIds);
 
-                }
-                else {
+                } else {
                     emplHealInsurQualifiInfor = mEmplHealInsurQualifiInforRepository.getEmplHealInsurQualifiInfor(endDate, employeeIds);
                     empWelfarePenInsQualiInfor = mEmpWelfarePenInsQualiInforRepository.getEmplHealInsurQualifiInfor(endDate, employeeIds);
 
@@ -454,7 +458,8 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
         }
 
     }
-    private void textOutputProcessing(){
+
+    private void textOutputProcessing() {
 
     }
 

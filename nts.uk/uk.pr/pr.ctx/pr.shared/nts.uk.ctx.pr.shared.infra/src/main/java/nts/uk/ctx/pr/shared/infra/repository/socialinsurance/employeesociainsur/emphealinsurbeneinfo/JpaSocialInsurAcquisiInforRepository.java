@@ -7,7 +7,6 @@ import nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.emph
 import nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.emphealinsurbeneinfo.QqsmtSocIsacquisiInfoPk;
 
 import javax.ejb.Stateless;
-import java.util.List;
 import java.util.Optional;
 
 @Stateless
@@ -36,7 +35,7 @@ public class JpaSocialInsurAcquisiInforRepository extends JpaRepository implemen
     }
 
     @Override
-    public void remove(String employeeId){
-        this.commandProxy().remove(QqsmtSocIsacquisiInfo.class, new QqsmtSocIsacquisiInfoPk(employeeId));
+    public void remove(String cid,String employeeId){
+        this.commandProxy().remove(QqsmtSocIsacquisiInfo.class, new QqsmtSocIsacquisiInfoPk(cid,employeeId));
     }
 }

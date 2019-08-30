@@ -24,11 +24,11 @@ public class HealInsurNumberInfor extends AggregateRoot {
     /**
     * 健康保険番号
     */
-    private Optional<NurCareInsurNum> healInsNumber;
+    private Optional<HealInsurNumber> healInsNumber;
     
     public HealInsurNumberInfor(String historyId, String careIsNumber, String healInsurNumber) {
         this.historyId = historyId;
-        this.healInsNumber = healInsurNumber == null ? Optional.empty() : Optional.of(new NurCareInsurNum(healInsurNumber));
+        this.healInsNumber = healInsurNumber == null ? Optional.empty() : Optional.of(new HealInsurNumber(healInsurNumber));
         this.careInsurNumber = careIsNumber == null ? Optional.empty() : Optional.of(new NurCareInsurNum(careIsNumber));
     }
     
