@@ -189,6 +189,8 @@ module nts.uk.com.view.jmm018.b {
                             }
                     });
                     // A422_16 -> A422-20
+                    let listNoticeDevMenu = _.map(data.hrdevMenuList, (item: any) => new Program(item.programId, item.availableNotice));
+                    let listApprovalDevMenu = _.map(data.hrdevMenuList, (item: any) => new Program(item.programId, item.availableApproval));
                     let programName = _.map(data.hrdevMenuList, (item: any) => new HRDevMenu(item));
                     _.forEach(programName, (c) =>{
                         let agur = _.find(data.menuOperList, function(d) {
@@ -198,9 +200,26 @@ module nts.uk.com.view.jmm018.b {
                                                 eventId: c.eventId,
                                                 programId: c.programId,
                                                 programName: c.programName,
-                                                useEventOrMenu: agur.useMenu == 1 ? true : null,
-                                                useApproval: agur.useApproval == 1 ? true : null,
-                                                useNotice: agur.useNotice == 1 ? true : null} ) );
+                                                useEventOrMenu: agur.useMenu,
+                                                useApproval: agur.useApproval,
+                                                useNotice: agur.useNotice} ) );
+                    });
+                    // xét điều kiện để biết check box nào bị visiable trong hai cột 通知機能の使用(cột 3) 承認機能の使用 (cột 4)
+                    _.forEach(menu, (e) =>{
+                        let obj = _.find(listNoticeDevMenu, function(b) {
+                            return b.programId == e.programId;
+                        });
+                        if(obj.use == 0){
+                            e.useNotice = null;
+                        }             
+                    });
+                    _.forEach(menu, (j) =>{
+                        let obj = _.find(listApprovalDevMenu, function(h) {
+                            return h.programId == j.programId;
+                        });
+                        if(obj.use == 0){
+                            j.useApproval = null;
+                        }             
                     });
                     let list = [];
                     _.forEach(self.listEventId(), (c) => {
@@ -226,7 +245,6 @@ module nts.uk.com.view.jmm018.b {
                         });
                     });
                     self.listEventId(list);
-                    console.log(self.listEventId());
                 }).fail(function(error) {
                     alertError(error);
                 }).always(function() {
@@ -445,6 +463,17 @@ module nts.uk.com.view.jmm018.b {
         constructor(param: IMenuName){
             this.eventId = param.eventId;
             this.eventName = param.eventName;    
+        }
+    }
+    
+    class Program{
+        // イベントID
+        programId: string;
+        // イベント名
+        use: number;
+        constructor(programId: string, use: number){
+            this.use = use;
+            this.programId = programId;
         }
     }
 }
