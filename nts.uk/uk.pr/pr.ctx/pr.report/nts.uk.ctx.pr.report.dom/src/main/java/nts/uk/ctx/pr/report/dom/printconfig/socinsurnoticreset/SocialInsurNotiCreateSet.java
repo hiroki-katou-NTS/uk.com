@@ -10,6 +10,7 @@ import java.util.Optional;
 /**
  * 社会保険届作成設定
  */
+@Setter
 @Getter
 @Setter
 public class SocialInsurNotiCreateSet extends AggregateRoot {

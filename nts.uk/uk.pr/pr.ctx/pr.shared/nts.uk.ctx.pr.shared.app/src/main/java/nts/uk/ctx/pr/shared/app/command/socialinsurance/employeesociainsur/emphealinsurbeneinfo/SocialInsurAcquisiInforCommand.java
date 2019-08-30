@@ -6,6 +6,7 @@ import lombok.Value;
 public class SocialInsurAcquisiInforCommand
 {
 
+    private String companyId;
     /**
     * 社員ID
     */

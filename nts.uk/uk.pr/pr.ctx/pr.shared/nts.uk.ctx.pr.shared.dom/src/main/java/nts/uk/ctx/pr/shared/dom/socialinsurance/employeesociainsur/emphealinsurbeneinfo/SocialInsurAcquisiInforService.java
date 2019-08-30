@@ -18,7 +18,7 @@ public class SocialInsurAcquisiInforService {
         repository.update(domain);
     }
 
-    Optional<SocialInsurAcquisiInfor> getSocialInsurAcquisiInforById(String employeeId){
-        return repository.getSocialInsurAcquisiInforById(employeeId);
+    Optional<SocialInsurAcquisiInfor> getSocialInsurAcquisiInforById(String cid, String employeeId){
+        return repository.getSocialInsurAcquisiInforById(cid,employeeId);
     }
 }

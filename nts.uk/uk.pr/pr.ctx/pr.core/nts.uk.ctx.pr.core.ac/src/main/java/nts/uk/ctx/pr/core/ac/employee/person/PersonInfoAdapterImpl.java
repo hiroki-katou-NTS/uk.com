@@ -1,18 +1,19 @@
-package nts.uk.ctx.pr.core.ac.person;
+package nts.uk.ctx.pr.core.ac.employee.person;
 
 import nts.uk.ctx.bs.employee.pub.person.IPersonInfoPub;
 import nts.uk.ctx.bs.employee.pub.person.PersonInfoExport;
-import nts.uk.ctx.pr.shared.dom.adapter.person.PersonInfoAdapter;
-import nts.uk.ctx.pr.shared.dom.adapter.person.PersonInfoExportAdapter;
+import nts.uk.ctx.pr.shared.dom.adapter.query.person.PersonInfoAdapter;
+import nts.uk.ctx.pr.shared.dom.adapter.query.person.PersonInfoExportAdapter;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 
 @Stateless
-public class PersonInfoPubImpl implements PersonInfoAdapter {
+public class PersonInfoAdaptẻrImpl implements PersonInfoAdapter {
+    
     @Inject
-   IPersonInfoPub repo;
+    IPersonInfoPub repo;
 
     public PersonInfoExportAdapter getPersonInfo(String sID){
         PersonInfoExport domain = repo.getPersonInfo(sID);

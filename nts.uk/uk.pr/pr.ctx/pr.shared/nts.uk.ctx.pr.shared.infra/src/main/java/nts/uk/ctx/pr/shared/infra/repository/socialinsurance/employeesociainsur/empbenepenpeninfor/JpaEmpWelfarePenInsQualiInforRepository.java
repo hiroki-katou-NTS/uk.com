@@ -16,17 +16,17 @@ public class JpaEmpWelfarePenInsQualiInforRepository extends JpaRepository imple
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QqsmtEmpWelfInsQcIf f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.empWelfInsQcIfPk.employeeId =:employeeId AND  f.empWelfInsQcIfPk.historyId =:historyId ";
-    private static final String SELECT_BY_LIST_EMP_START = SELECT_ALL_QUERY_STRING + " WHERE  f.empWelfInsQcIfPk.employeeId IN :employeeIds  AND f.startDate <= :startDate AND f.endDate >= :startDate";
+    private static final String SELECT_BY_LIST_EMP = SELECT_ALL_QUERY_STRING + " WHERE  f.empWelfInsQcIfPk.employeeId IN :employeeIds  AND f.startDate <= :startDate AND f.endDate >= :startDate";
     private static final String SELECT_BY_LIST_EMP_END = SELECT_ALL_QUERY_STRING + " WHERE  f.empWelfInsQcIfPk.employeeId IN :employeeIds  AND f.startDate <= :endDate AND f.endDate >= :endDate";
     private static final String SELECT_BY_KEY_STRING_BY_EMP_ID = SELECT_ALL_QUERY_STRING + " WHERE f.empWelfInsQcIfPk.employeeId =:employeeId ";
 
     @Override
-    public EmpWelfarePenInsQualiInfor getEmplHealInsurQualifiInfor(GeneralDate start, List<String> empIds) {
-        List<QqsmtEmpWelfInsQcIf> qqsmtEmpWelfInsQcIf =  this.queryProxy().query(SELECT_BY_LIST_EMP_START, QqsmtEmpWelfInsQcIf.class)
+    public EmpWelfarePenInsQualiInfor getEmpWelfarePenInsQualiInfor(GeneralDate start, List<String> empIds) {
+        List<QqsmtEmpWelfInsQcIf> qqsmtEmpWelfInsQcIf =  this.queryProxy().query(SELECT_BY_LIST_EMP, QqsmtEmpWelfInsQcIf.class)
                 .setParameter("employeeIds", empIds)
                 .setParameter("startDate", start)
                 .getList();
-        return qqsmtEmpWelfInsQcIf == null ? null : QqsmtEmpWelfInsQcIf.toDomain(qqsmtEmpWelfInsQcIf);
+        return qqsmtEmpWelfInsQcIf.isEmpty() ? null : QqsmtEmpWelfInsQcIf.toDomain(qqsmtEmpWelfInsQcIf);
     }
 
 
@@ -41,7 +41,7 @@ public class JpaEmpWelfarePenInsQualiInforRepository extends JpaRepository imple
         .setParameter("employeeId", employeeId)
         .setParameter("historyId", historyId)
         .getList();
-        return qqsmtEmpWelfInsQcIf == null ? Optional.empty() : Optional.of(QqsmtEmpWelfInsQcIf.toDomain(qqsmtEmpWelfInsQcIf));
+        return qqsmtEmpWelfInsQcIf.isEmpty() ? Optional.empty() : Optional.of(QqsmtEmpWelfInsQcIf.toDomain(qqsmtEmpWelfInsQcIf));
     }
 
     @Override

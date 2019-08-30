@@ -21,7 +21,6 @@ public class JpaEmplHealInsurQualifiInforRepository extends JpaRepository implem
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QqsmtEmpHealInsurQi f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.empHealInsurQiPk.employeeId =:employeeId AND  f.empHealInsurQiPk.hisId =:hisId ";
     private static final String SELECT_BY_LIST_EMP_START = SELECT_ALL_QUERY_STRING + " WHERE  f.empWelfInsQcIfPk.employeeId IN :employeeIds  AND f.startDate <= :startDate AND f.endDate >= :startDate";
-    private static final String SELECT_BY_LIST_EMP_END = SELECT_ALL_QUERY_STRING + " WHERE  f.empWelfInsQcIfPk.employeeId IN :employeeIds  AND f.startDate <= :endDate AND f.endDate >= :endDate";
     private static final String SELECT_BY_EMPLID = SELECT_ALL_QUERY_STRING + " WHERE  f.empHealInsurQiPk.employeeId =:employeeId ";
 
     @Override
@@ -30,10 +29,8 @@ public class JpaEmplHealInsurQualifiInforRepository extends JpaRepository implem
                 .setParameter("employeeIds", empIds)
                 .setParameter("startDate", start)
                 .getList();
-        return qqsmtEmpHealInsurQi == null ? null : QqsmtEmpHealInsurQi.toDomain(qqsmtEmpHealInsurQi);
+        return qqsmtEmpHealInsurQi.isEmpty() ? null : QqsmtEmpHealInsurQi.toDomain(qqsmtEmpHealInsurQi);
     }
-
-
 
     @Override
     public Optional<EmplHealInsurQualifiInfor> getEmplHealInsurQualifiInforByEmpId(String empId) {
@@ -41,8 +38,6 @@ public class JpaEmplHealInsurQualifiInforRepository extends JpaRepository implem
                 .setParameter("employeeId", empId)
                 .getList();
          return Optional.of(new EmplHealInsurQualifiInfor(empId,toDomain(qqsmtEmpHealInsurQi)));
-
-
     }
     private List<EmpHealthInsurBenefits> toDomain(List<QqsmtEmpHealInsurQi> entities) {
         List<EmpHealthInsurBenefits> dateHistoryItems = new ArrayList<EmpHealthInsurBenefits>();

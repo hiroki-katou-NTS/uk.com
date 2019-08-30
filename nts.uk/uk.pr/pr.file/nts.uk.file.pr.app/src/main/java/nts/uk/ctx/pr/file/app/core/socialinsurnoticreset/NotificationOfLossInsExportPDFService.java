@@ -69,7 +69,7 @@ public class NotificationOfLossInsExportPDFService extends ExportService<Notific
 		if( socialInsurNotiCreateSet.getPrintPersonNumber() == PersonalNumClass.DO_NOT_OUTPUT.value) {
 			List<InsLossDataExport> healthInsLoss = socialInsurNotiCreateSetEx.getHealthInsLoss(empIds);
 			List<InsLossDataExport> welfPenInsLoss = socialInsurNotiCreateSetEx.getWelfPenInsLoss(empIds);
-			Optional<SocialInsuranceOffice> socialInsuranceOffice =  socialInsuranceOfficeRepository.findByCodeAndCid(cid, healthInsLoss.get(0).getOfficeCode());
+			//Optional<SocialInsuranceOffice> socialInsuranceOffice =  socialInsuranceOfficeRepository.findByCodeAndCid(cid, healthInsLoss.get(0).getOfficeCode());
 			socialInsurNotiCreateSetFileGenerator.generate(exportServiceContext.getGeneratorContext(), new LossNotificationInformation(healthInsLoss, welfPenInsLoss, socialInsurNotiCreateSet));
 		}
 	}

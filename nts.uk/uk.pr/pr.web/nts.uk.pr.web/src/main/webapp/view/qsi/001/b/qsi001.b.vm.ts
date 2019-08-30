@@ -71,8 +71,8 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
             self.salaryMonthlyActual = ko.observable(0);
             self.totalCompensation = ko.observable(0);
             self.depNotiAttach = ko.observableArray([
-                { code: '1', name: nts.uk.resource.getText('QSI001_54') },
-                { code: '2', name: nts.uk.resource.getText('QSI001_55') }
+                { code: '1', name: nts.uk.resource.getText('QSI001_B222_13') },
+                { code: '2', name: nts.uk.resource.getText('QSI001_B222_14') }
             ]);
             self.selectedDepNotiAttach = ko.observable(1);
 
