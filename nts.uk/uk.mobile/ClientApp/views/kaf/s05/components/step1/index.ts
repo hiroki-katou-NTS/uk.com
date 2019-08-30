@@ -3,13 +3,15 @@ import { _, Vue } from '@app/provider';
 import { KDL002Component } from '../../../../kdl/002';
 import { TimeWithDay } from '@app/utils';
 import { OvertimeAgreement, AgreementTimeStatusOfMonthly, Kafs05Model } from '../common/CommonClass';
+import { CmmS45CComponent } from '../../../../cmm/s45/c';
 
 @component({
     name: 'kafS05_1',
     template: require('./index.html'),
     resource: require('../../resources.json'),
     components: {
-        'worktype': KDL002Component
+        'worktype': KDL002Component,
+        'cmms45c': CmmS45CComponent
     },
     validations: {
         kafs05ModelStep1: {
