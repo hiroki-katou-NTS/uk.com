@@ -62,7 +62,6 @@ import nts.uk.ctx.at.request.dom.application.overtime.service.DisplayPrePost;
 import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeSixProcess;
 import nts.uk.ctx.at.request.dom.application.overtime.service.WeekdayHolidayClassification;
 import nts.uk.ctx.at.request.dom.application.overtime.service.output.RecordWorkOutput;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.AppOvertimeSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.AppDateContradictionAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
@@ -183,9 +182,6 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 
 	@Inject
 	public RangeOfDayTimeZoneService rangeOfDayTimeZoneService;
-
-	@Inject
-	private AppOvertimeSettingRepository appOvertimeSettingRepository;
 
 	@Override
 	// 休憩時間帯を取得する
@@ -1217,183 +1213,6 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 		result.add(flexTimeCal);
 		result.add(midNightTimeCal);
 		return result;
-	}
-
-	// 07_事前申請・実績超過チェック(MOB)
-	@Override
-	public List<CaculationTime> preActualExceededCheckMob(String companyId, GeneralDate appDate,
-			GeneralDateTime inputDate, int prePostAtr, String employeeID, String siftCD,
-			List<OvertimeInputCaculation> overtimeInputCaculations, List<CaculationTime> caculationTimeHours) {
-
-		// ドメインモデル「残業休出申請共通設定」を取得
-		UseAtr preExcessDisplaySetting = null;
-		AppDateContradictionAtr performanceExcessAtr = null;
-		Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet = this.overtimeRestAppCommonSetRepository
-				.getOvertimeRestAppCommonSetting(companyId, ApplicationType.OVER_TIME_APPLICATION.value);
-		if (overtimeRestAppCommonSet.isPresent()) {
-			preExcessDisplaySetting = overtimeRestAppCommonSet.get().getPreExcessDisplaySetting();
-			performanceExcessAtr = overtimeRestAppCommonSet.get().getPerformanceExcessAtr();
-		}
-		// 03-01-1_チェック条件を確認
-		// 事前申請超過チェック
-		UseAtr preAppExceedCheck = this.preAppSetCheck(EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class), preExcessDisplaySetting);
-		boolean preStateHasError = false;
-		if (preAppExceedCheck==UseAtr.USE) {
-			// ドメインモデル「申請」を取得
-			// 事前申請漏れチェック
-			List<Application_New> beforeApplication = appRepository.getBeforeApplication(companyId, employeeID, appDate,
-					ApplicationType.OVER_TIME_APPLICATION.value, PrePostAtr.PREDICT.value);
-			// 07-01-2_事前申請状態チェック
-			if (beforeApplication.isEmpty()) {
-				// 事前申請状態：実績エラー
-				preStateHasError = true;
-			} else {
-				// 事前申請否認チェック
-				ReflectedState_New refPlan = beforeApplication.get(0).getReflectionInformation()
-						.getStateReflectionReal();
-				if (refPlan.equals(ReflectedState_New.DENIAL) || refPlan.equals(ReflectedState_New.REMAND)) {
-					// 事前申請状態：実績エラー
-					preStateHasError = true;
-				}
-			}
-		}
-
-		// 03-02-1_チェック条件
-		// 実績超過チェック
-		AppDateContradictionAtr actualExceedCheck = this.actualSetCheck(performanceExcessAtr, EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class));
-		//ActualState actualState = ActualState.ACTUALNOTEXIST;
-		if (actualExceedCheck!=AppDateContradictionAtr.NOTCHECK) {
-			// 07-02-2_実績取得・状態チェック
-			//DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = null;
-
-			// 07-02-2-1_当日判定
-			boolean sameDateFlag = false;
-			// 1日の範囲を時間帯で返す
-			TimeSpanForCalc timeSpanForCalc = rangeOfDayTimeZoneService.getRangeofOneDay(siftCD);
-			// 1日の範囲から申請日の範囲を作成する
-			GeneralDateTime appDateRangeStart = getAppDateRange(timeSpanForCalc.getStart(), appDate);
-			GeneralDateTime appDateRangeEnd = getAppDateRange(timeSpanForCalc.getEnd(), appDate);
-			GeneralDateTime sysDate = GeneralDateTime.now();
-			// システム日時が申請日の範囲内に含まれるかをチェックする
-			if (sysDate.afterOrEquals(appDateRangeStart) && sysDate.beforeOrEquals(appDateRangeEnd)) {
-				sameDateFlag = true;
-			}
-
-			// Imported(申請承認)「勤務実績」を取得する
-			RecordWorkInfoImport recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID, appDate);
-			if (null != recordWorkInfoImport) {
-				// 打刻漏れチェック
-				if (null != recordWorkInfoImport.getAttendanceStampTimeFirst()
-						&& null != recordWorkInfoImport.getLeaveStampTimeFirst()) {
-					// 打刻優先設定をチェックする
-					if (appOvertimeSettingRepository.getAppOver().isPresent()) {
-						if (appOvertimeSettingRepository.getAppOver().get().getPriorityStampSetAtr().value == 0) {
-							// 就業時間帯が変更されているかチェックする
-							if (!siftCD.equals(recordWorkInfoImport.getWorkTimeCode())) {
-								// 実績状態：実績補正なし
-								// actualState = ActualState.ACTUALCORRECTIONNOTEXIST;
-							} else {
-								// 1日分の勤怠時間を仮計算
-								/*dailyAttendanceTimeCaculationImport = dailyAttendanceTimeCaculation.getCalculation(
-										employeeID, appDate, recordWorkInfoImport.getWorkTypeCode(), siftCD,
-										recordWorkInfoImport.getAttendanceStampTimeFirst(),
-										recordWorkInfoImport.getLeaveStampTimeFirst(), null, null);*/
-								// 実績状態：就業時間変更
-								// actualState = ActualState.WORKTIMECHANGE;
-							}
-						} else {
-							/*dailyAttendanceTimeCaculationImport = dailyAttendanceTimeCaculation.getCalculation(
-									employeeID, appDate, recordWorkInfoImport.getWorkTypeCode(), siftCD,
-									recordWorkInfoImport.getAttendanceStampTimeFirst(),
-									recordWorkInfoImport.getLeaveStampTimeFirst(), null, null);*/
-							// 実績状態：システム時刻退勤
-							// actualState = ActualState.CURRENTTIMESTAMP;
-						}
-					}
-				} else {
-					if (null == recordWorkInfoImport.getAttendanceStampTimeFirst()) {
-						// 実績状態：打刻漏れ
-						// actualState = ActualState.STAMPLEAK;
-					} else if (null == recordWorkInfoImport.getLeaveStampTimeFirst()) {
-						if (!sameDateFlag) {
-							// 実績状態：打刻漏れ
-							// actualState = ActualState.STAMPLEAK;
-						} else {
-							/*dailyAttendanceTimeCaculationImport = dailyAttendanceTimeCaculation.getCalculation(
-									employeeID, appDate, recordWorkInfoImport.getWorkTypeCode(), siftCD,
-									recordWorkInfoImport.getAttendanceStampTimeFirst(),
-									recordWorkInfoImport.getLeaveStampTimeFirst(), null, null);*/
-							// 実績状態：退勤打刻補正
-							// actualState = ActualState.LEAVESTAMPCORRECTION;
-						}
-					}
-				}
-			}
-		}
-		boolean preAppExceedState = false;
-		boolean actualExceedState = false;
-		for (CaculationTime overtimeHour : caculationTimeHours) {
-			preAppExceedState = false;
-			actualExceedState = false;
-			//calculationDiff = false;
-			/*for (OvertimeInputCaculation overtimeInputCaculation : overtimeInputCaculations) {
-				// 計算/入力差異チェック
-				if (overtimeInputCaculation.getFrameNo() == overtimeHour.getFrameNo()) {
-					if (null == overtimeInputCaculation.getResultCaculation()) {
-						calculationDiff = false;
-					} else if (!overtimeInputCaculation.getResultCaculation()
-							.equals(overtimeHour.getApplicationTime())) {
-						calculationDiff = true;
-					}
-				}
-			}*/
-
-			if (overtimeHour.getApplicationTime() > 0) {
-				// 事前申請超過チェック
-				if (preAppExceedCheck==UseAtr.NOTUSE) {
-					if (!preStateHasError) {
-						// 07-01-3_枠別事前申請超過チェック										
-						if (Integer.parseInt(null == overtimeHour.getPreAppTime()? "0": overtimeHour.getPreAppTime()) < overtimeHour.getApplicationTime()) {
-							preAppExceedState = true;
-						}
-					}
-				}
-				// 実績超過チェック
-				if (actualExceedCheck!=AppDateContradictionAtr.NOTCHECK) {
-					// 07-02-3_枠別実績超過チェック
-					if (Integer.parseInt(null == overtimeHour.getCaculationTime()? "0": overtimeHour.getCaculationTime()) < overtimeHour.getApplicationTime()) {
-						actualExceedState = true;
-					}
-				}
-			}
-			// OUTPUT用のListを追加する
-			overtimeHour.setPreAppExceedState(preAppExceedState);
-			overtimeHour.setActualExceedState(actualExceedState);
-		}
-		return caculationTimeHours;
-	}
-
-	// 1日の範囲から申請日の範囲を作成する
-	private GeneralDateTime getAppDateRange(TimeWithDayAttr timeSpan, GeneralDate appDate) {
-
-		if (timeSpan.getDayDivision().value == 0) {
-			return GeneralDateTime.ymdhms(appDate.addDays(-1).year(), appDate.addDays(-1).month(),
-					appDate.addDays(-1).day(), timeSpan.hour(), timeSpan.minute(), 0);
-		}
-		if (timeSpan.getDayDivision().value == 1) {
-			return GeneralDateTime.ymdhms(appDate.year(), appDate.month(), appDate.day(), timeSpan.hour(),
-					timeSpan.minute(), 0);
-		}
-		if (timeSpan.getDayDivision().value == 2) {
-			return GeneralDateTime.ymdhms(appDate.addDays(1).year(), appDate.addDays(1).month(),
-					appDate.addDays(1).day(), timeSpan.hour(), timeSpan.minute(), 0);
-		}
-		if (timeSpan.getDayDivision().value == 3) {
-			return GeneralDateTime.ymdhms(appDate.addDays(2).year(), appDate.addDays(2).month(),
-					appDate.addDays(2).day(), timeSpan.hour(), timeSpan.minute(), 0);
-		}
-
-		return null;
 	}
 
 	@Override
