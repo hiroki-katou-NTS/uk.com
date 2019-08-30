@@ -35,7 +35,7 @@ implements PeregAddListCommandHandler<AddEmployeeInfoContactCommand>{
 		List<EmployeeInfoContact> domains = cmd.stream().map(c ->{return new EmployeeInfoContact(cid, c.getSid(), c.getMailAddress(),
 				c.getSeatDialIn(), c.getSeatExtensionNo(), c.getPhoneMailAddress(),
 				c.getCellPhoneNo());}).collect(Collectors.toList());
-		if(domains.isEmpty()) {
+		if(!domains.isEmpty()) {
 			employeeInfoContactRepository.addAll(domains);
 			return cmd.stream().map(c -> {return new PeregAddCommandResult(c.getSid());}).collect(Collectors.toList());
 		}
