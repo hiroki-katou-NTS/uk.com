@@ -1253,7 +1253,7 @@ interface JQuery {
         return dfd.promise();
     }
     
-    $.fn.ntsListComponentApi = function(action: string, param?: any): JQueryPromise<void> {
+    $.fn.ntsListComponentApi = function(action: string, param?: any): any {
         let $list = $(this);
         switch (action) {
             case 'getSelectedRecords': {
@@ -1269,7 +1269,7 @@ interface JQuery {
                     if (list.isMultipleSelect) {
                         return list.selectedCodes().includes(isId ? item.id : item.code);
                     }
-                    return list.selectedCodes() === isId ? item.id : item.code;
+                    return list.selectedCodes() === (isId ? item.id : item.code);
                 });
             }
         }
