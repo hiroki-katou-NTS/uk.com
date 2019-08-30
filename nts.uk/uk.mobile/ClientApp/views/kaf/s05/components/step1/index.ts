@@ -305,7 +305,6 @@ export class KafS05aStep1Component extends Vue {
         }).catch((res: any) => {
             if (res.messageId == 'Msg_426') {
                 this.$modal.error({ messageId: res.messageId }).then(() => {
-                    this.$goto('ccg007b');
                     this.$auth.logout();
                 });
             } else if (res.messageId == 'Msg_424') {
@@ -349,7 +348,6 @@ export class KafS05aStep1Component extends Vue {
             }).catch((res: any) => {
                 if (res.messageId == 'Msg_426') {
                     this.$modal.error({ messageId: res.messageId }).then(() => {
-                        this.$goto('ccg007b');
                         this.$auth.logout();
                     });
                 } else {
@@ -374,7 +372,6 @@ export class KafS05aStep1Component extends Vue {
             }).catch((res: any) => {
                 if (res.messageId == 'Msg_426') {
                     this.$modal.error({ messageId: res.messageId }).then(() => {
-                        this.$goto('ccg007b');
                         this.$auth.logout();
                     });
                 } else {
@@ -1246,12 +1243,6 @@ export class KafS05aStep1Component extends Vue {
 
         _.remove(self.overtimeWork);
         self.overtimeWork.push(overtimeWork);
-    }
-
-    public getApprovalData() {
-        let self = this.kafs05ModelStep1;
-
-        
     }
 }
 const servicePath = {
