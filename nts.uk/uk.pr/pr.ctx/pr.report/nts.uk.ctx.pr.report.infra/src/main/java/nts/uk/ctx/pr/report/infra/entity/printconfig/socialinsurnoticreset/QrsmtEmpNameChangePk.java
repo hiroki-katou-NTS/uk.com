@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.emphealinsurbeneinfo;
+package nts.uk.ctx.pr.report.infra.entity.printconfig.socialinsurnoticreset;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -10,13 +10,13 @@ import javax.persistence.Embeddable;
 import java.io.Serializable;
 
 /**
-* 社会保険取得時情報: 主キー情報
+* 社員氏名変更届情報: 主キー情報
 */
 @EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class QqsmtSocIsacquisiInfoPk implements Serializable
+public class QrsmtEmpNameChangePk implements Serializable
 {
     private static final long serialVersionUID = 1L;
     
@@ -26,9 +26,10 @@ public class QqsmtSocIsacquisiInfoPk implements Serializable
     @Basic(optional = false)
     @Column(name = "EMPLOYEE_ID")
     public String employeeId;
+    
     /**
-     * 社員ID
-     */
+    * 会社ID
+    */
     @Basic(optional = false)
     @Column(name = "CID")
     public String cid;

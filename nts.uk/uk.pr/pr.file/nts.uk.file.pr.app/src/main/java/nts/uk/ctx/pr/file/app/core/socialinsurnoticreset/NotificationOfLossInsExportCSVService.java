@@ -4,7 +4,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.pr.report.dom.printdata.socinsurnoticreset.*;
+import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.*;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.EmpWelfarePenInsQualiInfor;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.EmpWelfarePenInsQualiInforRepository;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmplHealInsurQualifiInfor;
