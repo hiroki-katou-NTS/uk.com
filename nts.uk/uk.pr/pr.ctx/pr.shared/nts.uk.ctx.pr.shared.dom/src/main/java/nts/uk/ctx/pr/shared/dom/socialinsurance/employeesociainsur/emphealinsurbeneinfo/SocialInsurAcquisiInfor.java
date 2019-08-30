@@ -81,7 +81,7 @@ public class SocialInsurAcquisiInfor extends AggregateRoot {
     /**
     * 資格取得区分
     */
-    private Optional<Integer> qualifiDistin;
+    private Optional<SocialInsurQuaAcquiClass> qualifiDistin;
     
     /**
     * 短時間労働者
