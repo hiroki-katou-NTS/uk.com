@@ -895,15 +895,20 @@ module nts.uk.at.view.kaf010.b {
             }
             
             changeColor(attendanceId, frameNo,errorCode){
-                if(errorCode == 3){
+                if(errorCode == 4){
                     $('td#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', '#FD4D4D')
                     $('input#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', '#FD4D4D')
                     return '#FD4D4D';
                 }
-                if(errorCode == 2){
+                if(errorCode == 3){
                     $('td#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', '#F6F636')
                     $('input#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', '#F6F636')
                     return '#F6F636';
+                }
+                if(errorCode == 2){
+                    $('td#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', '#FFC0CB');
+                    $('input#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', '#FFC0CB');
+                    return '#FFC0CB';
                 }
                 if(errorCode == 1){
                     $('td#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', '#F69164')
