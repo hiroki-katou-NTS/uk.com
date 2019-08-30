@@ -4,6 +4,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.SocialInsurAcquisiInfor;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.SocialInsurAcquisiInforRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 import javax.inject.Inject;
 
@@ -15,8 +16,8 @@ public class AddSocialInsurAcquisiInforCommandHandler  extends CommandHandler<So
     @Override
     protected void handle(CommandHandlerContext<SocialInsurAcquisiInforCommand> context) {
         SocialInsurAcquisiInforCommand command = context.getCommand();
-        SocialInsurAcquisiInfor domain = new SocialInsurAcquisiInfor(
-                command.getCompanyId(),
+        String cid = AppContexts.user().companyId();
+        SocialInsurAcquisiInfor domain = new SocialInsurAcquisiInfor(cid,
                 command.getEmployeeId(),
                 command.getPercentOrMore(),
                 command.getRemarksOther(),

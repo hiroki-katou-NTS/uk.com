@@ -98,7 +98,7 @@ public class SocialInsurAcquisiInforDto
     public static SocialInsurAcquisiInforDto fromDomain(SocialInsurAcquisiInfor domain)
     {
         return new SocialInsurAcquisiInforDto(
-                domain.getCompanyId(),
+                domain.getCid(),
                 domain.getEmployeeId(),
                 domain.getPercentOrMore().isPresent() ? domain.getPercentOrMore().get() : null,
                 domain.getRemarksOther().isPresent() ? domain.getRemarksOther().get() : null,

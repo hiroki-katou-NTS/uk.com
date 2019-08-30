@@ -6,7 +6,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsuranceOffice;
 import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsuranceOfficeRepository;
 import nts.uk.ctx.pr.file.app.core.bank.BankExportFileGenerator;
-import nts.uk.ctx.pr.report.dom.printdata.socinsurnoticreset.*;
+import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.*;
 import nts.uk.ctx.pr.shared.dom.adapter.query.person.PersonInfoAdapter;
 import nts.uk.ctx.pr.shared.dom.adapter.query.person.PersonInfoExportAdapter;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.*;

@@ -8,12 +8,12 @@ import java.util.Optional;
 public interface SocialInsurAcquisiInforRepository
 {
 
-    Optional<SocialInsurAcquisiInfor> getSocialInsurAcquisiInforById(String companyId, String employeeId);
+    Optional<SocialInsurAcquisiInfor> getSocialInsurAcquisiInforById(String cid, String employeeId);
 
     void add(SocialInsurAcquisiInfor domain);
 
     void update(SocialInsurAcquisiInfor domain);
 
-    void remove(String cid, String employeeId);
+    void remove(String cid,String employeeId);
 
 }

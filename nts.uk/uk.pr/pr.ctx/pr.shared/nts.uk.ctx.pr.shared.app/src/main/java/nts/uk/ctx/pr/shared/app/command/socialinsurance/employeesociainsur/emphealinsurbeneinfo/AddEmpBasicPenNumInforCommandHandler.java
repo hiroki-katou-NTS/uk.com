@@ -3,6 +3,7 @@ package nts.uk.ctx.pr.shared.app.command.socialinsurance.employeesociainsur.emph
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.*;
+import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -30,9 +31,12 @@ public class AddEmpBasicPenNumInforCommandHandler extends CommandHandler<Credent
         SocialInsurAcquisiInforCommand socialInsurAcquisiInforCommand = command.getSocialInsurAcquisiInforCommand();
         MultiEmpWorkInfoCommand multiEmpWorkInfoCommand = command.getMultiEmpWorkInfoCommand();
         EmpBasicPenNumInforCommand empBasicPenNumInforCommand = command.getEmpBasicPenNumInforCommand();
-        Optional<SocialInsurAcquisiInfor> socialInsurAcquisiInfor =  socialInsurAcquisiInforRepository.getSocialInsurAcquisiInforById(socialInsurAcquisiInforCommand.getCompanyId(),socialInsurAcquisiInforCommand.getEmployeeId());
+        String cid = AppContexts.user().companyId();
+        Optional<SocialInsurAcquisiInfor> socialInsurAcquisiInfor =  socialInsurAcquisiInforRepository.getSocialInsurAcquisiInforById(cid,socialInsurAcquisiInforCommand.getEmployeeId());
+
+
         SocialInsurAcquisiInfor socialInsurAcquisiInforDomain = new SocialInsurAcquisiInfor(
-                socialInsurAcquisiInforCommand.getCompanyId(),
+                cid,
                 socialInsurAcquisiInforCommand.getEmployeeId(),
                 socialInsurAcquisiInforCommand.getPercentOrMore(),
                 socialInsurAcquisiInforCommand.getRemarksOther(),

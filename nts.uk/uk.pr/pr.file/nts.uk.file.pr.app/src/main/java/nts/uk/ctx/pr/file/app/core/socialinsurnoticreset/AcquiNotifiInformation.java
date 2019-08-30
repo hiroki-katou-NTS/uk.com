@@ -9,7 +9,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.*;
 import nts.uk.ctx.pr.report.dom.printdata.comlegalrecord.Name;
 import nts.uk.ctx.pr.report.dom.printdata.comlegalrecord.RepresentativeName;
-import nts.uk.ctx.pr.report.dom.printdata.socinsurnoticreset.FdNumber;
+import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.FdNumber;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.EmployWelPenInsurAche;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.PitInsiderDivision;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empfunmeminfor.FundMembershipNumber;

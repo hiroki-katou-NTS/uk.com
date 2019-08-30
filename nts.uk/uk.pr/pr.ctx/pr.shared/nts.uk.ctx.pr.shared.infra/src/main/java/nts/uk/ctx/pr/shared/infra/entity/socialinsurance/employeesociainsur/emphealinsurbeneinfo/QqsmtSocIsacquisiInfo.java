@@ -149,7 +149,7 @@ public class QqsmtSocIsacquisiInfo extends UkJpaEntity implements Serializable
     }
     public static QqsmtSocIsacquisiInfo toEntity(SocialInsurAcquisiInfor domain) {
          return new QqsmtSocIsacquisiInfo(
-                 new QqsmtSocIsacquisiInfoPk(domain.getCompanyId(),domain.getEmployeeId()),
+                 new QqsmtSocIsacquisiInfoPk(domain.getCid(),domain.getEmployeeId()),
                  domain.getPercentOrMore().isPresent() ? domain.getPercentOrMore().get() : null,
                  domain.getRemarksOther().isPresent() ? domain.getRemarksOther().get(): null,
                  domain.getRemarksAndOtherContents().isPresent() ? domain.getRemarksAndOtherContents().get().v(): null,
