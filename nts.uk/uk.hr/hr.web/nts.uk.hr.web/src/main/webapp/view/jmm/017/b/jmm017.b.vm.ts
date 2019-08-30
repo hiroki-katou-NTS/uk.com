@@ -38,7 +38,7 @@ module nts.uk.hr.view.jmm017.b.viewmodel {
             var dfd = $.Deferred();
             self.useList([{ code: "1", name: "" }, { code: "2", name: "使用する"},{ code: "3", name: "使用しない"}]);
             new service.getGuideCategory().done(function(data: any) {
-                $('#gridContent').css( "height", "200px");
+                //$('#gridContent').css( "height", "200px");
                 self.categoryList(data);
                 self.bindData();
                 $("#grid").igGridGroupBy("groupByColumn", 'categoryName');
@@ -66,7 +66,7 @@ module nts.uk.hr.view.jmm017.b.viewmodel {
             new service.getGuideMessageList(param).done(function(data: any) {
                 let groupByColumns = $("#grid").igGridGroupBy("groupByColumns");
                 self.guideMessageList = data;
-                $('#gridContent').css( "height", "430px");
+                //$('#gridContent').css( "height", "430px");
                 self.bindData();
 //                setTimeout(() => {
                     $("#grid").igGridGroupBy("ungroupAll");
@@ -79,7 +79,7 @@ module nts.uk.hr.view.jmm017.b.viewmodel {
                 error({ messageId: errorInfor.messageId });
                 let groupByColumns = $("#grid").igGridGroupBy("groupByColumns");
                 self.guideMessageList = [];
-                $('#gridContent').css( "height", "200px");
+                //$('#gridContent').css( "height", "200px");
                 self.bindData();
                 $("#grid").igGridGroupBy("ungroupAll");
                 _.forEach(groupByColumns, col => {
@@ -204,7 +204,7 @@ module nts.uk.hr.view.jmm017.b.viewmodel {
                 dataSource: self.guideMessageList,
                 dataSourceType: 'json',
                 responseDataKey: 'results',
-                height: '100%',
+                //height: '100%',
                 width: '100%',
                 tabIndex: 14,
                 features: [

@@ -55,3 +55,11 @@
 #gridContent .ui-iggrid-expandbutton {
 	margin: 0 20% 0 20%;
 }
+
+#gridContent .ui-iggrid-groupbyarea {
+	background-color: #fff;
+}
+
+#gridContent .ui-iggrid-groupbylabelrightedgeend, .ui-iggrid-groupbylabelrightedgeend.ui-state-default {
+    border-color: #fff #fff #fff transparent;
+}
