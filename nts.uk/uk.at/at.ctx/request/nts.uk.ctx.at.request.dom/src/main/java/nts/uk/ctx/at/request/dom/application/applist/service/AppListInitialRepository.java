@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.dom.application.applist.service;
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.AppListExtractCondition;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppCompltLeaveSyncOutput;
@@ -83,24 +84,17 @@ public interface AppListInitialRepository {
 	public AppListAtrOutput getAppListAchievement(List<ApplicationFullOutput> lstApp, ApprovalListDisplaySetting displaySet, String companyId,
 			String sID, List<AppCompltLeaveSync> lstSync, List<WorkType> lstWkType, List<WorkTimeSetting> lstWkTime, int device);
 	/**
-	 * 5.1 - 申請一覧リスト取得実績休出申請
-	 * @param 社員ID　sID
-	 * @param 日　date
+	 * 5.1 - 申請一覧リスト取得実績(休出申請・残業申請）
+	 * @param sID
+	 * @param date
 	 * @param time
+	 * @param appType
+	 * @param lstWkType
+	 * @param lstWkTime
 	 * @return
 	 */
-	public TimeResultOutput getAppListAchievementBreak(String sID, GeneralDate date, List<OverTimeFrame> time);
-	/**
-	 * 5.2 - 申請一覧リスト取得実績残業申請
-	 * @param 社員ID　sID
-	 * @param 日　date                
-	 * @param time
-	 * @param lstRestStart
-	 * @param lstRestEnd
-	 * @return
-	 */
-	public TimeResultOutput getAppListAchievementOverTime(String sID, GeneralDate date, List<OverTimeFrame> time, 
-			List<Integer> lstRestStart, List<Integer> lstRestEnd);
+	public TimeResultOutput getDataActual(String sID, GeneralDate date, List<OverTimeFrame> time, 
+			ApplicationType appType, List<WorkType> lstWkType, List<WorkTimeSetting> lstWkTime);
 	/**
 	 * 6 - 申請一覧リスト取得振休振出
 	 * @param 申請　application

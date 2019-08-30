@@ -553,14 +553,14 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 		// チェック条件を確認
 		if (!this.confirmCheck(companyId, prePostAtr)) {
 			result.setErrorCode(0);
-			return new ColorConfirmResult(false, 0, 0, "", Collections.emptyList(), null);
+			return new ColorConfirmResult(false, 0, 0, "", Collections.emptyList(), null, null);
 		}
 		// ドメインモデル「申請」を取得
 		// 事前申請漏れチェック
 		List<Application_New> beforeApplication = appRepository.getBeforeApplication(companyId, employeeID, appDate,
 				ApplicationType.OVER_TIME_APPLICATION.value, PrePostAtr.PREDICT.value);
 		if (beforeApplication.isEmpty()) {
-			return new ColorConfirmResult(true, 0, 0, "Msg_1508", Arrays.asList(employeeName), null);
+			return new ColorConfirmResult(true, 0, 0, "Msg_1508", Arrays.asList(employeeName), null, null);
 		}
 		// 事前申請否認チェック
 		// 否認以外：
@@ -568,7 +568,7 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 		ReflectedState_New refPlan = beforeApplication.get(0).getReflectionInformation().getStateReflectionReal();
 		if (refPlan.equals(ReflectedState_New.DENIAL) || refPlan.equals(ReflectedState_New.REMAND)) {
 			// 背景色を設定する
-			return new ColorConfirmResult(true, 0, 0, "Msg_1508", Arrays.asList(employeeName), null);
+			return new ColorConfirmResult(true, 0, 0, "Msg_1508", Arrays.asList(employeeName), null, null);
 		}
 		String beforeCid = beforeApplication.get(0).getCompanyID();
 		String beforeAppId = beforeApplication.get(0).getAppID();
@@ -580,7 +580,7 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 				.collect(Collectors.toList());
 		if (beforeOvertimeInputs.isEmpty()) {
 			result.setErrorCode(0);
-			return new ColorConfirmResult(false, 0, 0, "", Collections.emptyList(), null);
+			return new ColorConfirmResult(false, 0, 0, "", Collections.emptyList(), null, null);
 		}
 		// 残業時間１～１０、加給時間
 		// すべての残業枠をチェック
@@ -607,11 +607,11 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 								.asList(employeeName,
 										overtimeWorkFrame.isPresent()
 												? overtimeWorkFrame.get().getOvertimeWorkFrName().toString() : ""),
-						null);
+						null, null);
 			}
 		}
 		result.setErrorCode(0);
-		return new ColorConfirmResult(false, 0, 0, "", Collections.emptyList(), null);
+		return new ColorConfirmResult(false, 0, 0, "", Collections.emptyList(), null, null);
 	}
 
 	/**
@@ -660,14 +660,14 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 		UseAtr preExcessDisplaySetting = overtimeRestAppCommonSet.get().getPreExcessDisplaySetting();
 		if (this.preAppSetCheck(prePostAtr, preExcessDisplaySetting)==UseAtr.NOTUSE) {
 			result.setErrorCode(0);
-			return new ColorConfirmResult(false, 0, 0, "", Collections.emptyList(), null);
+			return new ColorConfirmResult(false, 0, 0, "", Collections.emptyList(), null, null);
 		}
 		// ドメインモデル「申請」を取得
 		// 事前申請漏れチェック
 		List<Application_New> beforeApplication = appRepository.getBeforeApplication(companyId, employeeID, appDate,
 				ApplicationType.BREAK_TIME_APPLICATION.value, PrePostAtr.PREDICT.value);
 		if (beforeApplication.isEmpty()) {
-			return new ColorConfirmResult(true, 0, 0, "Msg_1508", Arrays.asList(employeeName), null);
+			return new ColorConfirmResult(true, 0, 0, "Msg_1508", Arrays.asList(employeeName), null, null);
 		}
 		// 事前申請否認チェック
 		// 否認以外：
@@ -675,7 +675,7 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 		ReflectedState_New refPlan = beforeApplication.get(0).getReflectionInformation().getStateReflectionReal();
 		if (refPlan.equals(ReflectedState_New.DENIAL) || refPlan.equals(ReflectedState_New.REMAND)) {
 			// 背景色を設定する
-			return new ColorConfirmResult(true, 0, 0, "Msg_1508", Arrays.asList(employeeName), null);
+			return new ColorConfirmResult(true, 0, 0, "Msg_1508", Arrays.asList(employeeName), null, null);
 		}
 		String beforeCid = beforeApplication.get(0).getCompanyID();
 		String beforeAppId = beforeApplication.get(0).getAppID();
@@ -686,7 +686,7 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 				.filter(item -> item.getAttendanceType() == EnumAdaptor.valueOf(attendanceId, AttendanceType.class))
 				.collect(Collectors.toList());
 		if (beforeOvertimeInputs.isEmpty()) {
-			return new ColorConfirmResult(false, 0, 0, "", Collections.emptyList(), null);
+			return new ColorConfirmResult(false, 0, 0, "", Collections.emptyList(), null, null);
 		}
 		// 残業時間１～１０、加給時間
 		// すべての残業枠をチェック
@@ -710,11 +710,11 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 						.findWorkdayoffFrame(new CompanyId(companyId), frameNo);
 				return new ColorConfirmResult(true, 1, frameNo, "Msg_424", Arrays.asList(employeeName,
 						workDayoffFrame.isPresent() ? workDayoffFrame.get().getWorkdayoffFrName().toString() : ""),
-						null);
+						null, null);
 			}
 		}
 		result.setErrorCode(0);
-		return new ColorConfirmResult(false, 0, 0, "", Collections.emptyList(), null);
+		return new ColorConfirmResult(false, 0, 0, "", Collections.emptyList(), null, null);
 	}
 
 	/**
@@ -1026,7 +1026,7 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 				}
 			}
 		}
-		return new ColorConfirmResult(false, 0, 0, "", Collections.emptyList(), null);
+		return new ColorConfirmResult(false, 0, 0, "", Collections.emptyList(), null, null);
 
 	}
 
@@ -1076,7 +1076,7 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 				}
 			}
 		}
-		return new ColorConfirmResult(false, 0, 0, "", Collections.emptyList(), null);
+		return new ColorConfirmResult(false, 0, 0, "", Collections.emptyList(), null, null);
 	}
 
 	@Override
@@ -1124,7 +1124,7 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 				}
 			}
 		}
-		return new ColorConfirmResult(false, 0, 0, "", Collections.emptyList(), null);
+		return new ColorConfirmResult(false, 0, 0, "", Collections.emptyList(), null, null);
 	}
 
 	/* 06-02-2_申請時間を取得 */

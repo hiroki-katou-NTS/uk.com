@@ -28,6 +28,7 @@ import nts.uk.ctx.at.request.app.find.application.overtime.dto.RecordWorkDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.RecordWorkParam;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.CommonOvertimeHoliday;
+import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreActualColorResult;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.ColorConfirmResult;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
@@ -120,7 +121,7 @@ public class OvertimeWebService extends WebService{
 	
 	@POST
 	@Path("getCalculateValue")
-	public List<CaculationTime> getCalculateValue(ParamCalculateOvertime param) {
+	public PreActualColorResult getCalculateValue(ParamCalculateOvertime param) {
 		return overtimeFinder.getCalculateValue(
 				param.employeeID, 
 				param.appDate, 
@@ -162,12 +163,6 @@ public class OvertimeWebService extends WebService{
 	@Path("checkBeforeRegister")
 	public OvertimeCheckResultDto checkBeforeRegister(CreateOvertimeCommand command){
 		return checkBefore.CheckBeforeRegister(command);
-	}
-	
-	@POST
-	@Path("beforeUpdateColorConfirm")
-	public ColorConfirmResult beforeUpdateColorConfirm(CreateOvertimeCommand command){
-		return checkBefore.checkBeforeUpdateColor(command);
 	}
 	
 	@POST
