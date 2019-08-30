@@ -476,7 +476,7 @@ public class CheckPersonInfoProcess {
 		
 		mapCategoryWithListItemDf.entrySet().forEach(c -> {
 			
-			List<PersonInfoItemDefinition> lstItemDefined = c.getValue().stream()
+			List<PersonInfoItemDefinition> lstItemDefIsSelection = c.getValue().stream()
 					.filter(i -> i.isSelection())
 					.collect(Collectors.toList());
 			
@@ -484,8 +484,8 @@ public class CheckPersonInfoProcess {
 					.filter(i -> standardDateItemCodes.contains(i.getItemCode().v())).map(i -> i.getItemCode().v())
 					.findFirst();
 			
-			if (!CollectionUtil.isEmpty(lstItemDefined)) {
-				itemCodesByCtg.put(c.getKey(), lstItemDefined);
+			if (!CollectionUtil.isEmpty(lstItemDefIsSelection)) {
+				itemCodesByCtg.put(c.getKey(), lstItemDefIsSelection);
 			}
 
 			if (itemDefinedStartCode.isPresent()) {
@@ -518,7 +518,6 @@ public class CheckPersonInfoProcess {
 					listAllItemValue.addAll(itemsValue);
 				});
 				
-				
 				listClsDto.stream().forEach(cls -> {
 					
 					List<LayoutPersonInfoValueDto> itemsValue = cls.getItems();
@@ -529,11 +528,8 @@ public class CheckPersonInfoProcess {
 						Optional<LayoutPersonInfoValueDto> itemValueOpt = itemsValue.stream()
 								.filter(i -> i.getItemCode().equals(itemDf.getItemCode().toString())).findFirst();
 						
-						
 						if (itemValueOpt.isPresent()) {
-
 							checkError(itemValueOpt.get(), c.getKey().getCategoryCode().toString(), itemStartCode, itemsValue, listAllItemValue, lstItemDefineFull, dataSetter, employee, bussinessName, itemDf, masterName, listError);
-							
 						}
 					});
 				});
@@ -559,7 +555,7 @@ public class CheckPersonInfoProcess {
 			List<LayoutPersonInfoValueDto> itemsValue, List<LayoutPersonInfoValueDto> listAlltemsValue, List<PersonInfoItemDefinition> lstItemDefineFull,  TaskDataSetter dataSetter, EmployeeDataMngInfo employee,
 			String bussinessName, PersonInfoItemDefinition itemDf, Map<String, String> masterName,
 			List<ErrorInfoCPS013> listError) {
-
+		
 		if (itemDf.isEnum()) {
 			checkErrorEnum(dataSetter, employee, bussinessName, itemValue, listError);
 		}
@@ -569,140 +565,43 @@ public class CheckPersonInfoProcess {
 		}
 
 		if (itemDf.isDesignateMaster()) {
-			String itemCodeStart = itemStartCode.get(categoryCode);
-			if (itemCodeStart == null) {
-				
-				checkDesignateMaster(dataSetter, employee, bussinessName, itemValue, null, null, masterName, listError);
+			
+			if (itemValue.getItemCode().toString() == "IS00073") {
+				// CS00015	部門本務 itemStartDate IS00071
+				Optional<LayoutPersonInfoValueDto> itemStartDateIS00071 = listAlltemsValue.stream().filter(i -> i.getItemCode().equals("IS00071")).findFirst();
+				Optional<LayoutPersonInfoValueDto> itemMasterIS00073 = itemsValue.stream().filter(i -> i.getItemCode().equals("IS00073")).findFirst();
+				if (itemStartDateIS00071.isPresent() && itemMasterIS00073.isPresent()) {
+					checkDesignateMaster(dataSetter, employee, bussinessName, itemValue, itemStartDateIS00071.get().getValue(),itemMasterIS00073.get().getValue(), masterName, listError);
+				}
 
-			} else {
-				// itemCodeStart != null
-				switch (itemValue.getItemCode().toString()) {
-				case "IS00023": // startDate code IS00022
-					Optional<LayoutPersonInfoValueDto> itemStartDate22 = listAlltemsValue.stream().filter(i -> i.getItemCode().equals("IS00020")).findFirst();
-					Optional<LayoutPersonInfoValueDto> itemCombobox23 = itemsValue.stream().filter(i -> i.getItemCode().equals("IS00023")).findFirst();
-					if (itemStartDate22.isPresent() && itemCombobox23.isPresent()) {
-						checkDesignateMaster(dataSetter, employee, bussinessName, itemValue, itemStartDate22.get().getValue(),itemCombobox23.get().getValue(), masterName, listError);
-					}
-					break;
-				case "IS00079":  // startDate code IS00077
-					Optional<LayoutPersonInfoValueDto> itemStartDate77 = listAlltemsValue.stream().filter(i -> i.getItemCode().equals("IS00077")).findFirst();
-					Optional<LayoutPersonInfoValueDto> itemCombobox79 = itemsValue.stream().filter(i -> i.getItemCode().equals("IS00079")).findFirst();
-					if (itemStartDate77.isPresent() && itemCombobox79.isPresent()) {
-						checkDesignateMaster(dataSetter, employee, bussinessName, itemValue, itemStartDate77.get().getValue(),itemCombobox79.get().getValue(), masterName, listError);
-					}
-					break;
-				case "IS00084":  // startDate code IS00082
-					Optional<LayoutPersonInfoValueDto> itemStartDate82_1 = listAlltemsValue.stream().filter(i -> i.getItemCode().equals("IS00082")).findFirst();
-					Optional<LayoutPersonInfoValueDto> itemCombobox84 = itemsValue.stream().filter(i -> i.getItemCode().equals("IS00084")).findFirst();
-					if (itemStartDate82_1.isPresent() && itemCombobox84.isPresent()) {
-						checkDesignateMaster(dataSetter, employee, bussinessName, itemValue, itemStartDate82_1.get().getValue(),itemCombobox84.get().getValue(), masterName, listError);
-					}
-					break;
-				case "IS00085": // startDate code IS00082
-					Optional<LayoutPersonInfoValueDto> itemStartDate82_2 = listAlltemsValue.stream().filter(i -> i.getItemCode().equals("IS00082")).findFirst();
-					Optional<LayoutPersonInfoValueDto> itemCombobox85 = itemsValue.stream().filter(i -> i.getItemCode().equals("IS00085")).findFirst();
-					if (itemStartDate82_2.isPresent() && itemCombobox85.isPresent()) {
-						checkDesignateMaster(dataSetter, employee, bussinessName, itemValue, itemStartDate82_2.get().getValue(),itemCombobox85.get().getValue(), masterName, listError);
-					}
-					break;
-				case "IS00131": // startDate code IS00119
-					Optional<LayoutPersonInfoValueDto> itemStartDate119_1 = listAlltemsValue.stream().filter(i -> i.getItemCode().equals("IS00119")).findFirst();
-					Optional<LayoutPersonInfoValueDto> itemCombobox131 = itemsValue.stream().filter(i -> i.getItemCode().equals("IS00131")).findFirst();
-					if (itemStartDate119_1.isPresent() && itemCombobox131.isPresent()) {
-						checkDesignateMaster(dataSetter, employee, bussinessName, itemValue, itemStartDate119_1.get().getValue(),itemCombobox131.get().getValue(), masterName, listError);
-					}
-					break;
-				case "IS00140": // startDate code IS00119
-					Optional<LayoutPersonInfoValueDto> itemStartDate119_2 = listAlltemsValue.stream().filter(i -> i.getItemCode().equals("IS00119")).findFirst();
-					Optional<LayoutPersonInfoValueDto> itemCombobox140 = itemsValue.stream().filter(i -> i.getItemCode().equals("IS00140")).findFirst();
-					if (itemStartDate119_2.isPresent() && itemCombobox140.isPresent()) {
-						checkDesignateMaster(dataSetter, employee, bussinessName, itemValue, itemStartDate119_2.get().getValue(),itemCombobox140.get().getValue(), masterName, listError);
-					}
-					break;
-				case "IS00158": // startDate code IS00119
-					Optional<LayoutPersonInfoValueDto> itemStartDate119_3 = listAlltemsValue.stream().filter(i -> i.getItemCode().equals("IS00119")).findFirst();
-					Optional<LayoutPersonInfoValueDto> itemCombobox158 = itemsValue.stream().filter(i -> i.getItemCode().equals("IS00158")).findFirst();
-					if (itemStartDate119_3.isPresent() && itemCombobox158.isPresent()) {
-						checkDesignateMaster(dataSetter, employee, bussinessName, itemValue, itemStartDate119_3.get().getValue(),itemCombobox158.get().getValue(), masterName, listError);
-					}
-					break;
-				case "IS00167": // startDate code IS00119
-					Optional<LayoutPersonInfoValueDto> itemStartDate119_4 = listAlltemsValue.stream().filter(i -> i.getItemCode().equals("IS00119")).findFirst();
-					Optional<LayoutPersonInfoValueDto> itemCombobox167 = itemsValue.stream().filter(i -> i.getItemCode().equals("IS00167")).findFirst();
-					if (itemStartDate119_4.isPresent() && itemCombobox167.isPresent()) {
-						checkDesignateMaster(dataSetter, employee, bussinessName, itemValue, itemStartDate119_4.get().getValue(),itemCombobox167.get().getValue(), masterName, listError);
-					}
-					break;
-				case "IS00176": // startDate code IS00119
-					Optional<LayoutPersonInfoValueDto> itemStartDate119_5 = listAlltemsValue.stream().filter(i -> i.getItemCode().equals("IS00119")).findFirst();
-					Optional<LayoutPersonInfoValueDto> itemCombobox176 = itemsValue.stream().filter(i -> i.getItemCode().equals("IS00176")).findFirst();
-					if (itemStartDate119_5.isPresent() && itemCombobox176.isPresent()) {
-						checkDesignateMaster(dataSetter, employee, bussinessName, itemValue, itemStartDate119_5.get().getValue(),itemCombobox176.get().getValue(), masterName, listError);
-					}
-					break;
-				case "IS00149": // startDate code IS00119
-					Optional<LayoutPersonInfoValueDto> itemStartDate119_6 = listAlltemsValue.stream().filter(i -> i.getItemCode().equals("IS00119")).findFirst();
-					Optional<LayoutPersonInfoValueDto> itemCombobox149 = itemsValue.stream().filter(i -> i.getItemCode().equals("IS00149")).findFirst();
-					if (itemStartDate119_6.isPresent() && itemCombobox149.isPresent()) {
-						checkDesignateMaster(dataSetter, employee, bussinessName, itemValue, itemStartDate119_6.get().getValue(),itemCombobox149.get().getValue(), masterName, listError);
-					}
-					break;
-				case "IS00194": // startDate code IS00781
-					Optional<LayoutPersonInfoValueDto> itemStartDate781_1 = listAlltemsValue.stream().filter(i -> i.getItemCode().equals("IS00781")).findFirst();
-					Optional<LayoutPersonInfoValueDto> itemCombobox194 = itemsValue.stream().filter(i -> i.getItemCode().equals("IS00194")).findFirst();
-					if (itemStartDate781_1.isPresent() && itemCombobox194.isPresent()) {
-						checkDesignateMaster(dataSetter, employee, bussinessName, itemValue, itemStartDate781_1.get().getValue(),itemCombobox194.get().getValue(), masterName, listError);
-					}
-					break;
-				case "IS00203": // startDate code IS00781
-					Optional<LayoutPersonInfoValueDto> itemStartDate781_2 = listAlltemsValue.stream().filter(i -> i.getItemCode().equals("IS00781")).findFirst();
-					Optional<LayoutPersonInfoValueDto> itemCombobox203 = itemsValue.stream().filter(i -> i.getItemCode().equals("IS00203")).findFirst();
-					if (itemStartDate781_2.isPresent() && itemCombobox203.isPresent()) {
-						checkDesignateMaster(dataSetter, employee, bussinessName, itemValue, itemStartDate781_2.get().getValue(),itemCombobox203.get().getValue(), masterName, listError);
-					}
-					break;
-				case "IS00212": // startDate code IS00781
-					Optional<LayoutPersonInfoValueDto> itemStartDate781_3 = listAlltemsValue.stream().filter(i -> i.getItemCode().equals("IS00781")).findFirst();
-					Optional<LayoutPersonInfoValueDto> itemCombobox212 = itemsValue.stream().filter(i -> i.getItemCode().equals("IS00212")).findFirst();
-					if (itemStartDate781_3.isPresent() && itemCombobox212.isPresent()) {
-						checkDesignateMaster(dataSetter, employee, bussinessName, itemValue, itemStartDate781_3.get().getValue(),itemCombobox212.get().getValue(), masterName, listError);
-					}
-					break;
-				case "IS00221": // startDate code IS00781
-					Optional<LayoutPersonInfoValueDto> itemStartDate781_4 = listAlltemsValue.stream().filter(i -> i.getItemCode().equals("IS00781")).findFirst();
-					Optional<LayoutPersonInfoValueDto> itemCombobox221 = itemsValue.stream().filter(i -> i.getItemCode().equals("IS00221")).findFirst();
-					if (itemStartDate781_4.isPresent() && itemCombobox221.isPresent()) {
-						checkDesignateMaster(dataSetter, employee, bussinessName, itemValue, itemStartDate781_4.get().getValue(),itemCombobox221.get().getValue(), masterName, listError);
-					}
-					break;
-				case "IS00230": // startDate code IS00781
-					Optional<LayoutPersonInfoValueDto> itemStartDate781_5 = listAlltemsValue.stream().filter(i -> i.getItemCode().equals("IS00781")).findFirst();
-					Optional<LayoutPersonInfoValueDto> itemCombobox230 = itemsValue.stream().filter(i -> i.getItemCode().equals("IS00230")).findFirst();
-					if (itemStartDate781_5.isPresent() && itemCombobox230.isPresent()) {
-						checkDesignateMaster(dataSetter, employee, bussinessName, itemValue, itemStartDate781_5.get().getValue(),itemCombobox230.get().getValue(), masterName, listError);
-					}
-					break;
-				case "IS00239": // startDate code IS00781
-					Optional<LayoutPersonInfoValueDto> itemStartDate781_6 = listAlltemsValue.stream().filter(i -> i.getItemCode().equals("IS00781")).findFirst();
-					Optional<LayoutPersonInfoValueDto> itemCombobox239 = itemsValue.stream().filter(i -> i.getItemCode().equals("IS00239")).findFirst();
-					if (itemStartDate781_6.isPresent() && itemCombobox239.isPresent()) {
-						checkDesignateMaster(dataSetter, employee, bussinessName, itemValue, itemStartDate781_6.get().getValue(),itemCombobox239.get().getValue(), masterName, listError);
-					}
-					break;
-				case "IS00185": // startDate code IS00781 
-					Optional<LayoutPersonInfoValueDto> itemStartDate781_7 = listAlltemsValue.stream().filter(i -> i.getItemCode().equals("IS00781")).findFirst();
-					Optional<LayoutPersonInfoValueDto> itemCombobox185 = itemsValue.stream().filter(i -> i.getItemCode().equals("IS00185")).findFirst();
-					if (itemStartDate781_7.isPresent() && itemCombobox185.isPresent()) {
-						checkDesignateMaster(dataSetter, employee, bussinessName, itemValue, itemStartDate781_7.get().getValue(),itemCombobox185.get().getValue(), masterName, listError);
-					}
-					break;
+			} else if (itemValue.getItemCode().toString() == "IS00079") {
+				// CS00016	職位 itemStartDate IS00077
+				Optional<LayoutPersonInfoValueDto> itemStartDateIS00077 = listAlltemsValue.stream().filter(i -> i.getItemCode().equals("IS00077")).findFirst();
+				Optional<LayoutPersonInfoValueDto> itemMasterIS00079 = itemsValue.stream().filter(i -> i.getItemCode().equals("IS00079")).findFirst();
+				if (itemStartDateIS00077.isPresent() && itemMasterIS00079.isPresent()) {
+					checkDesignateMaster(dataSetter, employee, bussinessName, itemValue, itemStartDateIS00077.get().getValue(),itemMasterIS00079.get().getValue(), masterName, listError);
+				}
 
-				
+			} else if (itemValue.getItemCode().toString() == "IS00084") {
+				// CS00017 職場 itemStartDate IS00082
+				Optional<LayoutPersonInfoValueDto> itemStartDateIS00082 = listAlltemsValue.stream().filter(i -> i.getItemCode().equals("IS00082")).findFirst();
+				Optional<LayoutPersonInfoValueDto> itemMasterIS00084 = itemsValue.stream().filter(i -> i.getItemCode().equals("IS00084")).findFirst();
+				if (itemStartDateIS00082.isPresent() && itemMasterIS00084.isPresent()) {
+					checkDesignateMaster(dataSetter, employee, bussinessName, itemValue, itemStartDateIS00082.get().getValue(),itemMasterIS00084.get().getValue(), masterName, listError);
 				}
 				
+			} else if (itemValue.getItemCode().toString() == "IS00085") {
+				// CS00017 職場 itemStartDate IS00082
+				Optional<LayoutPersonInfoValueDto> itemStartDateIS00082 = listAlltemsValue.stream().filter(i -> i.getItemCode().equals("IS00082")).findFirst();
+				Optional<LayoutPersonInfoValueDto> itemMasterIS00085 = itemsValue.stream().filter(i -> i.getItemCode().equals("IS00085")).findFirst();
+				if (itemStartDateIS00082.isPresent() && itemMasterIS00085.isPresent()) {
+					checkDesignateMaster(dataSetter, employee, bussinessName, itemValue, itemStartDateIS00082.get().getValue(),itemMasterIS00085.get().getValue(), masterName, listError);
+				}
+				
+			} else{
+				checkDesignateMaster(dataSetter, employee, bussinessName, itemValue, null, null, masterName, listError);
 			}
 		}
-
 	}
 	
 	/** "IS00020", "IS00077", "IS00082", "IS00119", "IS00781"
@@ -771,161 +670,6 @@ public class CheckPersonInfoProcess {
 		}
 	}
 	
-	private Map<String, String> getNameMasterError(){
-		Map<String, String> masterName = new HashMap<>();
-			// M00001 - CS00015- 部門情報
-			
-			masterName.put("IS00073", "部門");
-			
-			// M00002 - CS00017- 職場情報
-			
-			masterName.put("IS00084", "職場");
-			
-			masterName.put("IS00085", "職場");
-			
-			// M00003 - CS00014- 雇用
-			
-			masterName.put("IS00068", "雇用");
-			
-			// M00004 - CS00004 - 分類
-			
-			masterName.put("IS00028", "分類");
-			
-			// M00005 - CS00016- 職位情報
-			
-			masterName.put("IS00079", "職位");
-			
-			// M00006 - 休職休業枠
-			
-			masterName.put("IS00089", "休職休業");
-			
-			// M00007 - 勤務種別
-			
-			masterName.put("IS00257", "勤務種別");
-			
-			// M00008 - 勤務種別 chưa có
-			
-			// M00009 - 就業時間帯
-			
-			masterName.put("IS00131", "就業時間帯");
-			
-			masterName.put("IS00140", "就業時間帯");
-			
-			masterName.put("IS00158", "就業時間帯");
-			
-			masterName.put("IS00167", "就業時間帯");
-			
-			masterName.put("IS00176", "就業時間帯");
-			
-			masterName.put("IS00149", "就業時間帯");
-			
-			masterName.put("IS00194", "就業時間帯");
-			
-			masterName.put("IS00203", "就業時間帯");
-			
-			masterName.put("IS00212", "就業時間帯");
-			
-			masterName.put("IS00221", "就業時間帯");
-			
-			masterName.put("IS00230", "就業時間帯");
-			
-			masterName.put("IS00239", "就業時間帯");
-			
-			masterName.put("IS00185", "就業時間帯");
-			
-			//  M00010 - 勤務種類
-			
-			masterName.put("IS00193", "勤務種類");
-			
-			masterName.put("IS00202", "勤務種類");
-			
-			masterName.put("IS00211", "勤務種類");	
-			
-			masterName.put("IS00220", "勤務種類");
-			
-			masterName.put("IS00229", "勤務種類");
-			
-			masterName.put("IS00238", "勤務種類");
-			
-			masterName.put("IS00184", "勤務種類");
-			
-			// M00011 - 勤務種類
-			
-			masterName.put("IS00128", "勤務種類");
-			
-			// M00012 - 勤務種類
-			masterName.put("IS00139", "勤務種類");
-			
-			masterName.put("IS00157", "勤務種類");
-			
-			masterName.put("IS00166", "勤務種類");
-			
-			masterName.put("IS00175", "勤務種類");
-			
-			masterName.put("IS00148", "勤務種類");
-			
-			//M00013 - CS00020- 勤務種類
-			//masterName.put("CS00070", "勤務種類マスタ5");
-			
-			//M00014 - CS00020- 月間パターン
-			
-			masterName.put("IS00127", "月間パターン");
-			
-			//M00015 - CS00020 - 加給設定
-			
-			masterName.put("IS00246", "加給時間帯");
-			
-			//M00016 - CS00024 - 年休付与テーブル
-			
-			masterName.put("IS00280", "年休付与テーブル");
-			
-			//M00017 - CS00025 - 特別休暇勤続年数テーブル
-			
-			masterName.put("IS00299", "勤続年数テーブル");
-			
-			masterName.put("IS00306", "勤続年数テーブル");
-			
-			masterName.put("IS00313", "勤続年数テーブル");
-			
-			masterName.put("IS00320", "勤続年数テーブル");
-			
-			masterName.put("IS00327", "勤続年数テーブル");
-			
-			masterName.put("IS00334", "勤続年数テーブル");
-			
-			masterName.put("IS00341", "勤続年数テーブル");
-			
-			masterName.put("IS00348", "勤続年数テーブル");
-			
-			masterName.put("IS00355", "勤続年数テーブル");
-			
-			masterName.put("IS00362", "勤続年数テーブル");
-			
-			masterName.put("IS00563", "勤続年数テーブル");
-			
-			masterName.put("IS00570", "勤続年数テーブル");
-			
-			masterName.put("IS00577", "勤続年数テーブル");
-			
-			masterName.put("IS00584", "勤続年数テーブル");
-			
-			masterName.put("IS00591", "勤続年数テーブル");
-			
-			masterName.put("IS00598", "勤続年数テーブル");
-			
-			masterName.put("IS00605", "勤続年数テーブル");
-			
-			masterName.put("IS00612", "勤続年数テーブル");
-			
-			masterName.put("IS00619", "勤続年数テーブル");
-			
-			masterName.put("IS00626", "勤続年数テーブル");
-			
-			//M00025 
-			//masterName.put("CS00070", "就業時間帯");
-			return masterName;
-	}
-	
 	/**
 	 * マスタ未登録チェックする (check master item)
 	 * @param result
@@ -948,7 +692,7 @@ public class CheckPersonInfoProcess {
 		if (value.trim().equals("")) {
 			return;
 		}
-
+		
 		if (comboxValue.size() > 0 && !comboxValue.contains(value)) {
 			// 履歴ありマスタの場合 (TH master có history)
 			if (listItem_Master_History.contains(item.getItemCode())) {
@@ -1410,5 +1154,792 @@ public class CheckPersonInfoProcess {
 		return result.isEmpty() ? null : result.stream()
 				.sorted(Comparator.comparing(DatePeriod::start))
 				.collect(Collectors.toList()).get(0);
+	}
+	
+	private Map<String, String> getNameMasterError(){
+		Map<String, String> masterName = new HashMap<>();
+		masterName.put("IS00001" , "社員CD");		
+		masterName.put("IS00002" , "外部CD");		
+		masterName.put("IS00003" , "個人名");		
+		masterName.put("IS00004" , "個人名カナ");		
+		masterName.put("IS00005" , "個人名ローマ字");		
+		masterName.put("IS00006" , "個人名ローマ字カナ");		
+		masterName.put("IS00007" , "個人名他言語");		
+		masterName.put("IS00008" , "個人名他言語カナ");		
+		masterName.put("IS00009" , "表示氏名(ビジネスネーム)");		
+		masterName.put("IS00010" , "表示氏名(ビジネスネーム)カナ");		
+		masterName.put("IS00011" , "表示氏名(ビジネスネーム)英語");		
+		masterName.put("IS00012" , "表示氏名(ビジネスネーム)その他");		
+		masterName.put("IS00013" , "個人旧姓");		
+		masterName.put("IS00014" , "個人旧姓カナ");		
+		masterName.put("IS00015" , "個人届出名");		
+		masterName.put("IS00016" , "個人届出名カナ");		
+		masterName.put("IS00017" , "生年月日");		
+		masterName.put("IS00783" , "年齢");		
+		masterName.put("IS00018" , "性別");		
+		masterName.put("IS00019" , "血液型");		
+		masterName.put("IS00020" , "入社年月日");		
+		masterName.put("IS00021" , "退職年月日");		
+		masterName.put("IS00784" , "勤続年数");		
+		masterName.put("IS00022" , "本採用年月日");		
+		masterName.put("IS00023" , "採用区分");		
+		masterName.put("IS00024" , "退職金計算開始日");		
+		masterName.put("IS00025" , "期間");		
+		masterName.put("IS00026" , "開始日");		
+		masterName.put("IS00027" , "終了日");		
+		masterName.put("IS00028" , "分類CD");		
+		masterName.put("IS00029" , "期間");		
+		masterName.put("IS00030" , "開始日");		
+		masterName.put("IS00031" , "終了日");		
+		masterName.put("IS00032" , "分類CD");		
+		masterName.put("IS00033" , "期間");		
+		masterName.put("IS00034" , "開始日");		
+		masterName.put("IS00035" , "終了日");		
+		masterName.put("IS00036" , "分類CD");		
+		masterName.put("IS00037" , "期間");		
+		masterName.put("IS00038" , "開始日");		
+		masterName.put("IS00039" , "終了日");		
+		masterName.put("IS00040" , "分類CD");		
+		masterName.put("IS00041" , "期間");		
+		masterName.put("IS00042" , "開始日");		
+		masterName.put("IS00043" , "終了日");		
+		masterName.put("IS00044" , "分類CD");		
+		masterName.put("IS00045" , "期間");		
+		masterName.put("IS00046" , "開始日");		
+		masterName.put("IS00047" , "終了日");		
+		masterName.put("IS00048" , "分類CD");		
+		masterName.put("IS00049" , "期間");		
+		masterName.put("IS00050" , "開始日");		
+		masterName.put("IS00051" , "終了日");		
+		masterName.put("IS00052" , "分類CD");		
+		masterName.put("IS00053" , "期間");		
+		masterName.put("IS00054" , "開始日");		
+		masterName.put("IS00055" , "終了日");		
+		masterName.put("IS00056" , "分類CD");		
+		masterName.put("IS00057" , "期間");		
+		masterName.put("IS00058" , "開始日");		
+		masterName.put("IS00059" , "終了日");		
+		masterName.put("IS00060" , "分類CD");		
+		masterName.put("IS00061" , "期間");		
+		masterName.put("IS00062" , "開始日");		
+		masterName.put("IS00063" , "終了日");		
+		masterName.put("IS00064" , "分類CD");		
+		masterName.put("IS00065" , "期間");		
+		masterName.put("IS00066" , "開始日");		
+		masterName.put("IS00067" , "終了日");		
+		masterName.put("IS00068" , "雇用CD");		
+		masterName.put("IS00069" , "給与区分");		
+		masterName.put("IS00070" , "期間");		
+		masterName.put("IS00071" , "発令日");		
+		masterName.put("IS00072" , "終了日");		
+		masterName.put("IS00073" , "部門CD");		
+		masterName.put("IS00074" , "所属履歴異動種類");		
+		masterName.put("IS00075" , "分配率");		
+		masterName.put("IS00076" , "期間");		
+		masterName.put("IS00077" , "開始日");		
+		masterName.put("IS00078" , "終了日");		
+		masterName.put("IS00079" , "職位CD");		
+		masterName.put("IS00080" , "備考");		
+		masterName.put("IS00081" , "期間");		
+		masterName.put("IS00082" , "開始日");		
+		masterName.put("IS00083" , "終了日");		
+		masterName.put("IS00084" , "職場CD");		
+		masterName.put("IS00085" , "通常職場CD");		
+		masterName.put("IS00086" , "休職休業期間");		
+		masterName.put("IS00087" , "休職休業開始日");		
+		masterName.put("IS00088" , "休職休業終了日");		
+		masterName.put("IS00089" , "休職休業区分");		
+		masterName.put("IS00090" , "家族の同一の要介護状態について介護休業したことがあるか（介護休業の場合）");	
+		masterName.put("IS00091" , "対象の家族についてのこれまでの介護休業および介護短時間勤務の日数（介護休業の場合）");	
+		masterName.put("IS00092" , "出産種別（産前休業の場合）");		
+		masterName.put("IS00093" , "子の区分（育児休業の場合）");		
+		masterName.put("IS00094" , "縁組成立の年月日（育児休業で子が養子の場合）");		
+		masterName.put("IS00095" , "同じ子について育児休業をしたことがあるか（育児休業の場合）");	
+		masterName.put("IS00096" , "１歳を超えての休業の申出の場合で申出者が育児休業中でない場合、配偶者が休業しているか（育児休業の場合）");		
+		masterName.put("IS00097" , "社会保険支給対象区分");		
+		masterName.put("IS00098" , "備考");		
+		masterName.put("IS00099" , "休業対象家族氏名");		
+		masterName.put("IS00100" , "休業対象家族続柄");		
+		masterName.put("IS00101" , "短時間勤務期間");		
+		masterName.put("IS00102" , "短時間開始日");		
+		masterName.put("IS00103" , "短時間終了日");		
+		masterName.put("IS00104" , "短時間勤務区分");		
+		masterName.put("IS00105" , "育児時間1");		
+		masterName.put("IS00106" , "育児開始1");		
+		masterName.put("IS00107" , "育児終了1");		
+		masterName.put("IS00108" , "育児時間2");		
+		masterName.put("IS00109" , "育児開始2");		
+		masterName.put("IS00110" , "育児終了2");		
+		masterName.put("IS00111" , "備考");		
+		masterName.put("IS00112" , "短時間対象家族氏名");		
+		masterName.put("IS00113" , "短時間対象家族続柄");		
+		masterName.put("IS00114" , "家族の同一の要介護状態について介護短時間勤務をしたことがあるか（介護短時間の場合）");		
+		masterName.put("IS00115" , "対象の家族についてのこれまでの介護休業および介護短時間勤務の日数（介護短時間の場合）");	
+		masterName.put("IS00116" , "子の区分（育児短時間の場合）");		
+		masterName.put("IS00117" , "縁組成立の年月日（育児短時間で子が養子の場合）");		
+		masterName.put("IS00118" , "期間");		
+		masterName.put("IS00119" , "開始日");		
+		masterName.put("IS00120" , "終了日");		
+		masterName.put("IS00252" , "就業区分");		
+		masterName.put("IS00253" , "契約時間");		
+		masterName.put("IS00260" , "休暇時の就業時間加算設定");		
+		masterName.put("IS00248" , "休暇時の加算時間");		
+		masterName.put("IS00249" , "加算時間１日");		
+		masterName.put("IS00250" , "加算時間午前");		
+		masterName.put("IS00251" , "加算時間午後");		
+		masterName.put("IS00247" , "休暇時の就業時間帯の自動設定");		
+		masterName.put("IS00258" , "勤務時間の自動設定");		
+		masterName.put("IS00246" , "加給時間帯");		
+		masterName.put("IS00259" , "時給者区分");		
+		masterName.put("IS00122" , "スケジュール管理設定");		
+		masterName.put("IS00121" , "スケジュール管理");		
+		masterName.put("IS00123" , "スケジュール作成方法");		
+		masterName.put("IS00124" , "カレンダーの参照先");		
+		masterName.put("IS00125" , "基本勤務の参照先");		
+		masterName.put("IS00127" , "月間パターン");		
+		masterName.put("IS00126" , "就業時間帯の参照先");					
+		masterName.put("IS00129" , "平日時勤務設定");		
+		masterName.put("IS00130" , "平日の勤務種類");		
+		masterName.put("IS00131" , "平日の就業時間帯");		
+		masterName.put("IS00132" , "平日の勤務時間1");		
+		masterName.put("IS00133" , "平日の開始時刻1");		
+		masterName.put("IS00134" , "平日の終了時刻1");		
+		masterName.put("IS00135" , "平日の勤務時間2");		
+		masterName.put("IS00136" , "平日の開始時刻2");		
+		masterName.put("IS00137" , "平日の終了時刻2");		
+		masterName.put("IS00261" , "休日時勤務設定");		
+		masterName.put("IS00128" , "休日の勤務種類");		
+		masterName.put("IS00138" , "休出時勤務設定");		
+		masterName.put("IS00139" , "休出の勤務種類");		
+		masterName.put("IS00140" , "休出の就業時間帯");		
+		masterName.put("IS00141" , "休出の勤務時間1");		
+		masterName.put("IS00142" , "休出の開始時刻1");		
+		masterName.put("IS00143" , "休出の終了時刻1");		
+		masterName.put("IS00144" , "休出の勤務時間2");		
+		masterName.put("IS00145" , "休出の開始時刻2");		
+		masterName.put("IS00146" , "休出の終了時刻2");		
+		masterName.put("IS00156" , "法定休出時勤務設定");		
+		masterName.put("IS00157" , "法定休出の勤務種類");		
+		masterName.put("IS00158" , "法定休出の就業時間帯");		
+		masterName.put("IS00159" , "法定休出の勤務時間1");		
+		masterName.put("IS00160" , "法定休出の開始時刻1");		
+		masterName.put("IS00161" , "法定休出の終了時刻1");		
+		masterName.put("IS00162" , "法定休出の勤務時間2");		
+		masterName.put("IS00163" , "法定休出の開始時刻2");		
+		masterName.put("IS00164" , "法定休出の終了時刻2");		
+		masterName.put("IS00165" , "法定外休出時勤務設定");		
+		masterName.put("IS00166" , "法定外休出の勤務種類");		
+		masterName.put("IS00167" , "法定外休出の就業時間帯");		
+		masterName.put("IS00168" , "法定外休出の勤務時間1");		
+		masterName.put("IS00169" , "法定外休出の開始時刻1");		
+		masterName.put("IS00170" , "法定外休出の終了時刻1");		
+		masterName.put("IS00171" , "法定外休出の勤務時間2");		
+		masterName.put("IS00172" , "法定外休出の開始時刻2");		
+		masterName.put("IS00173" , "法定外休出の終了時刻2");		
+		masterName.put("IS00174" , "祝日時勤務設定");		
+		masterName.put("IS00175" , "法定外祝日の勤務種類");		
+		masterName.put("IS00176" , "法定外祝日の就業時間帯");		
+		masterName.put("IS00177" , "法定外祝日の勤務時間1");		
+		masterName.put("IS00178" , "法定外祝日の開始時刻1");		
+		masterName.put("IS00179" , "法定外祝日の終了時刻1");		
+		masterName.put("IS00180" , "法定外祝日の勤務時間2");		
+		masterName.put("IS00181" , "法定外祝日の開始時刻2");		
+		masterName.put("IS00182" , "法定外祝日の終了時刻2");		
+		masterName.put("IS00147" , "公休出勤時勤務設定");		
+		masterName.put("IS00148" , "公休休出の勤務種類");		
+		masterName.put("IS00149" , "公休休出の就業時間帯");		
+		masterName.put("IS00150" , "公休休出の勤務時間1");		
+		masterName.put("IS00151" , "公休休出の開始時刻1");		
+		masterName.put("IS00152" , "公休休出の終了時刻1");		
+		masterName.put("IS00153" , "公休休出の勤務時間2");		
+		masterName.put("IS00154" , "公休休出の開始時刻2");		
+		masterName.put("IS00155" , "公休休出の終了時刻2");		
+		masterName.put("IS00780" , "期間");		
+		masterName.put("IS00781" , "開始日");		
+		masterName.put("IS00782" , "終了日");		
+		masterName.put("IS00192" , "月曜勤務設定");		
+		masterName.put("IS00193" , "月曜の勤務種類");		
+		masterName.put("IS00194" , "月曜の就業時間帯");		
+		masterName.put("IS00195" , "月曜の勤務時間1");		
+		masterName.put("IS00196" , "月曜の開始時刻1");		
+		masterName.put("IS00197" , "月曜の終了時刻1");		
+		masterName.put("IS00198" , "月曜の勤務時間2");		
+		masterName.put("IS00199" , "月曜の開始時刻2");		
+		masterName.put("IS00200" , "月曜の終了時刻2");		
+		masterName.put("IS00201" , "火曜勤務設定");		
+		masterName.put("IS00202" , "火曜の勤務種類");		
+		masterName.put("IS00203" , "火曜の就業時間帯");		
+		masterName.put("IS00204" , "火曜の勤務時間1");		
+		masterName.put("IS00205" , "火曜の開始時刻1");		
+		masterName.put("IS00206" , "火曜の終了時刻1");		
+		masterName.put("IS00207" , "火曜の勤務時間2");		
+		masterName.put("IS00208" , "火曜の開始時刻2");		
+		masterName.put("IS00209" , "火曜の終了時刻2");		
+		masterName.put("IS00210" , "水曜勤務設定");		
+		masterName.put("IS00211" , "水曜の勤務種類");		
+		masterName.put("IS00212" , "水曜の就業時間帯");		
+		masterName.put("IS00213" , "水曜の勤務時間1");		
+		masterName.put("IS00214" , "水曜の開始時刻1");		
+		masterName.put("IS00215" , "水曜の終了時刻1");		
+		masterName.put("IS00216" , "水曜の勤務時間2");		
+		masterName.put("IS00217" , "水曜の開始時刻2");		
+		masterName.put("IS00218" , "水曜の終了時刻2");		
+		masterName.put("IS00219" , "木曜勤務設定");		
+		masterName.put("IS00220" , "木曜の勤務種類");		
+		masterName.put("IS00221" , "木曜の就業時間帯");		
+		masterName.put("IS00222" , "木曜の勤務時間1");		
+		masterName.put("IS00223" , "木曜の開始時刻1");		
+		masterName.put("IS00224" , "木曜の終了時刻1");		
+		masterName.put("IS00225" , "木曜の勤務時間2");		
+		masterName.put("IS00226" , "木曜の開始時刻2");		
+		masterName.put("IS00227" , "木曜の終了時刻2");		
+		masterName.put("IS00228" , "金曜勤務設定");		
+		masterName.put("IS00229" , "金曜の勤務種類");		
+		masterName.put("IS00230" , "金曜の就業時間帯");		
+		masterName.put("IS00231" , "金曜の勤務時間1");		
+		masterName.put("IS00232" , "金曜の開始時刻1");		
+		masterName.put("IS00233" , "金曜の終了時刻1");		
+		masterName.put("IS00234" , "金曜の勤務時間2");		
+		masterName.put("IS00235" , "金曜の開始時刻2");		
+		masterName.put("IS00236" , "金曜の終了時刻2");		
+		masterName.put("IS00237" , "土曜勤務設定");		
+		masterName.put("IS00238" , "土曜の勤務種類");		
+		masterName.put("IS00239" , "土曜の就業時間帯");		
+		masterName.put("IS00240" , "土曜の勤務時間1");		
+		masterName.put("IS00241" , "土曜の開始時刻1");		
+		masterName.put("IS00242" , "土曜の終了時刻1");		
+		masterName.put("IS00243" , "土曜の勤務時間2");		
+		masterName.put("IS00244" , "土曜の開始時刻2");		
+		masterName.put("IS00245" , "土曜の終了時刻2");		
+		masterName.put("IS00183" , "日曜勤務設定");		
+		masterName.put("IS00184" , "日曜の勤務種類");		
+		masterName.put("IS00185" , "日曜の就業時間帯");		
+		masterName.put("IS00186" , "日曜の勤務時間1");		
+		masterName.put("IS00187" , "日曜の開始時刻1");		
+		masterName.put("IS00188" , "日曜の終了時刻1");		
+		masterName.put("IS00189" , "日曜の勤務時間2");		
+		masterName.put("IS00190" , "日曜の開始時刻2");		
+		masterName.put("IS00191" , "日曜の終了時刻2");		
+		masterName.put("IS00254" , "期間");		
+		masterName.put("IS00255" , "開始日");		
+		masterName.put("IS00256" , "終了日");		
+		masterName.put("IS00257" , "勤務種別CD");		
+		masterName.put("IS00262" , "個人携帯電話番号");		
+		masterName.put("IS00263" , "個人メールアドレス");		
+		masterName.put("IS00264" , "個人携帯メールアドレス");		
+		masterName.put("IS00265" , "緊急連絡先名1");		
+		masterName.put("IS00266" , "緊急連絡先電話番号1");		
+		masterName.put("IS00267" , "緊急連絡先メモ1");		
+		masterName.put("IS00268" , "緊急連絡先名2");		
+		masterName.put("IS00269" , "緊急連絡先電話番号2");		
+		masterName.put("IS00270" , "緊急連絡先メモ2");		
+		masterName.put("IS00271" , "会社携帯電話番号");		
+		masterName.put("IS00272" , "会社メールアドレス");		
+		masterName.put("IS00273" , "会社携帯メールアドレス");		
+		masterName.put("IS00274" , "座席電話番号ダイヤルイン");		
+		masterName.put("IS00275" , "座席電話番号内線");		
+		masterName.put("IS00276" , "年休残数");		
+		masterName.put("IS00277" , "前回年休付与日");		
+		masterName.put("IS00278" , "年休付与");		
+		masterName.put("IS00279" , "年休付与基準日");		
+		masterName.put("IS00280" , "年休付与テーブル");		
+		masterName.put("IS00281" , "次回年休付与日");		
+		masterName.put("IS00282" , "次回年休付与日数");		
+		masterName.put("IS00283" , "次回時間年休付与上限");		
+		masterName.put("IS00284" , "年間所定労働日数");		
+		masterName.put("IS00285" , "導入前労働日数");		
+		masterName.put("IS00286" , "時間年休上限");		
+		masterName.put("IS00287" , "時間年休上限時間");		
+		masterName.put("IS00288" , "時間年休使用時間");		
+		masterName.put("IS00289" , "時間年休残時間");		
+		masterName.put("IS00290" , "半休上限");		
+		masterName.put("IS00291" , "半休上限回数");		
+		masterName.put("IS00292" , "半休使用回数");		
+		masterName.put("IS00293" , "半休残回数");		
+		masterName.put("IS00294" , "積立年休残数");		
+		masterName.put("IS00295" , "特別休暇付与基準日");		
+		masterName.put("IS00296" , "特別休暇管理");		
+		masterName.put("IS00297" , "付与設定");		
+		masterName.put("IS00298" , "付与日数");		
+		masterName.put("IS00299" , "付与テーブル");		
+		masterName.put("IS00300" , "次回付与日");		
+		masterName.put("IS00301" , "特別休暇残数");		
+		masterName.put("IS00302" , "特別休暇付与基準日");		
+		masterName.put("IS00303" , "特別休暇管理");		
+		masterName.put("IS00304" , "付与設定");		
+		masterName.put("IS00305" , "付与日数");		
+		masterName.put("IS00306" , "付与テーブル");		
+		masterName.put("IS00307" , "次回付与日");		
+		masterName.put("IS00308" , "特別休暇残数");		
+		masterName.put("IS00309" , "特別休暇付与基準日");		
+		masterName.put("IS00310" , "特別休暇管理");		
+		masterName.put("IS00311" , "付与設定");		
+		masterName.put("IS00312" , "付与日数");		
+		masterName.put("IS00313" , "付与テーブル");		
+		masterName.put("IS00314" , "次回付与日");		
+		masterName.put("IS00315" , "特別休暇残数");		
+		masterName.put("IS00316" , "特別休暇付与基準日");		
+		masterName.put("IS00317" , "特別休暇管理");		
+		masterName.put("IS00318" , "付与設定");		
+		masterName.put("IS00319" , "付与日数");		
+		masterName.put("IS00320" , "付与テーブル");		
+		masterName.put("IS00321" , "次回付与日");		
+		masterName.put("IS00322" , "特別休暇残数");		
+		masterName.put("IS00323" , "特別休暇付与基準日");		
+		masterName.put("IS00324" , "特別休暇管理");		
+		masterName.put("IS00325" , "付与設定");		
+		masterName.put("IS00326" , "付与日数");		
+		masterName.put("IS00327" , "付与テーブル");		
+		masterName.put("IS00328" , "次回付与日");		
+		masterName.put("IS00329" , "特別休暇残数");		
+		masterName.put("IS00330" , "特別休暇付与基準日");		
+		masterName.put("IS00331" , "特別休暇管理");		
+		masterName.put("IS00332" , "付与設定");		
+		masterName.put("IS00333" , "付与日数");		
+		masterName.put("IS00334" , "付与テーブル");		
+		masterName.put("IS00335" , "次回付与日");		
+		masterName.put("IS00336" , "特別休暇残数");		
+		masterName.put("IS00337" , "特別休暇付与基準日");		
+		masterName.put("IS00338" , "特別休暇管理");		
+		masterName.put("IS00339" , "付与設定");		
+		masterName.put("IS00340" , "付与日数");		
+		masterName.put("IS00341" , "付与テーブル");		
+		masterName.put("IS00342" , "次回付与日");		
+		masterName.put("IS00343" , "特別休暇残数");		
+		masterName.put("IS00344" , "特別休暇付与基準日");		
+		masterName.put("IS00345" , "特別休暇管理");		
+		masterName.put("IS00346" , "付与設定");		
+		masterName.put("IS00347" , "付与日数");		
+		masterName.put("IS00348" , "付与テーブル");		
+		masterName.put("IS00349" , "次回付与日");		
+		masterName.put("IS00350" , "特別休暇残数");		
+		masterName.put("IS00351" , "特別休暇付与基準日");		
+		masterName.put("IS00352" , "特別休暇管理");		
+		masterName.put("IS00353" , "付与設定");		
+		masterName.put("IS00354" , "付与日数");		
+		masterName.put("IS00355" , "付与テーブル");		
+		masterName.put("IS00356" , "次回付与日");		
+		masterName.put("IS00357" , "特別休暇残数");		
+		masterName.put("IS00358" , "特別休暇付与基準日");		
+		masterName.put("IS00359" , "特別休暇管理");		
+		masterName.put("IS00360" , "付与設定");		
+		masterName.put("IS00361" , "付与日数");		
+		masterName.put("IS00362" , "付与テーブル");		
+		masterName.put("IS00363" , "次回付与日");		
+		masterName.put("IS00364" , "特別休暇残数");		
+		masterName.put("IS00366" , "代休残数");		
+		masterName.put("IS00368" , "振休残数");		
+		masterName.put("IS00369" , "公休残数");		
+		masterName.put("IS00370" , "60H超休管理");		
+		masterName.put("IS00371" , "発生単位");		
+		masterName.put("IS00372" , "精算方法");		
+		masterName.put("IS00374" , "60H超休残数");		
+		masterName.put("IS00375" , "子の看護休暇管理");		
+		masterName.put("IS00376" , "子の看護上限設定");		
+		masterName.put("IS00377" , "本年度の子の看護上限日数");		
+		masterName.put("IS00378" , "次年度の子の看護上限日数");		
+		masterName.put("IS00379" , "子の看護使用日数");		
+		masterName.put("IS00380" , "介護休暇管理");		
+		masterName.put("IS00381" , "介護上限設定");		
+		masterName.put("IS00382" , "本年度の介護上限日数");		
+		masterName.put("IS00383" , "次年度の介護上限日数");		
+		masterName.put("IS00384" , "介護使用日数");		
+		masterName.put("IS00385" , "年休付与日");		
+		masterName.put("IS00386" , "年休期限日");		
+		masterName.put("IS00387" , "年休期限切れ状態");		
+		masterName.put("IS00388" , "年休使用状況");		
+		masterName.put("IS00389" , "付与数");		
+		masterName.put("IS00390" , "付与日数");		
+		masterName.put("IS00391" , "付与時間");		
+		masterName.put("IS00392" , "使用数");		
+		masterName.put("IS00393" , "使用日数");		
+		masterName.put("IS00394" , "使用時間");		
+		masterName.put("IS00395" , "残数");		
+		masterName.put("IS00396" , "残日数");		
+		masterName.put("IS00397" , "残時間");		
+		masterName.put("IS00398" , "積立年休付与日");		
+		masterName.put("IS00399" , "積立年休期限日");		
+		masterName.put("IS00400" , "積立年休期限切れ状態");		
+		masterName.put("IS00401" , "積立年休使用状況");		
+		masterName.put("IS00403" , "付与数");		
+		masterName.put("IS00404" , "使用数");		
+		masterName.put("IS00405" , "使用日数");		
+		masterName.put("IS00406" , "上限超過消滅日数");		
+		masterName.put("IS00408" , "残数");		
+		masterName.put("IS00409" , "付与日");		
+		masterName.put("IS00410" , "期限日");		
+		masterName.put("IS00411" , "期限切れ状態");		
+		masterName.put("IS00412" , "使用状況");		
+		masterName.put("IS00413" , "付与数");		
+		masterName.put("IS00414" , "付与日数");		
+		masterName.put("IS00415" , "付与時間");		
+		masterName.put("IS00416" , "使用数");		
+		masterName.put("IS00417" , "使用日数");		
+		masterName.put("IS00418" , "使用時間");		
+		masterName.put("IS00419" , "上限超過消滅日数");		
+		masterName.put("IS00420" , "上限超過消滅時間");		
+		masterName.put("IS00421" , "残数");		
+		masterName.put("IS00422" , "残日数");		
+		masterName.put("IS00423" , "残時間");		
+		masterName.put("IS00424" , "付与日");		
+		masterName.put("IS00425" , "期限日");		
+		masterName.put("IS00426" , "期限切れ状態");		
+		masterName.put("IS00427" , "使用状況");		
+		masterName.put("IS00428" , "付与数");		
+		masterName.put("IS00429" , "付与日数");		
+		masterName.put("IS00430" , "付与時間");		
+		masterName.put("IS00431" , "使用数");		
+		masterName.put("IS00432" , "使用日数");		
+		masterName.put("IS00433" , "使用時間");		
+		masterName.put("IS00434" , "上限超過消滅日数");		
+		masterName.put("IS00435" , "上限超過消滅時間");		
+		masterName.put("IS00436" , "残数");		
+		masterName.put("IS00437" , "残日数");		
+		masterName.put("IS00438" , "残時間");		
+		masterName.put("IS00439" , "付与日");		
+		masterName.put("IS00440" , "期限日");		
+		masterName.put("IS00441" , "期限切れ状態");		
+		masterName.put("IS00442" , "使用状況");		
+		masterName.put("IS00443" , "付与数");		
+		masterName.put("IS00444" , "付与日数");		
+		masterName.put("IS00445" , "付与時間");		
+		masterName.put("IS00446" , "使用数");		
+		masterName.put("IS00447" , "使用日数");		
+		masterName.put("IS00448" , "使用時間");		
+		masterName.put("IS00449" , "上限超過消滅日数");		
+		masterName.put("IS00450" , "上限超過消滅時間");		
+		masterName.put("IS00451" , "残数");		
+		masterName.put("IS00452" , "残日数");		
+		masterName.put("IS00453" , "残時間");		
+		masterName.put("IS00454" , "付与日");		
+		masterName.put("IS00455" , "期限日");		
+		masterName.put("IS00456" , "期限切れ状態");		
+		masterName.put("IS00457" , "使用状況");		
+		masterName.put("IS00458" , "付与数");		
+		masterName.put("IS00459" , "付与日数");		
+		masterName.put("IS00460" , "付与時間");		
+		masterName.put("IS00461" , "使用数");		
+		masterName.put("IS00462" , "使用日数");		
+		masterName.put("IS00463" , "使用時間");		
+		masterName.put("IS00464" , "上限超過消滅日数");		
+		masterName.put("IS00465" , "上限超過消滅時間");		
+		masterName.put("IS00466" , "残数");		
+		masterName.put("IS00467" , "残日数");		
+		masterName.put("IS00468" , "残時間");		
+		masterName.put("IS00469" , "付与日");		
+		masterName.put("IS00470" , "期限日");		
+		masterName.put("IS00471" , "期限切れ状態");		
+		masterName.put("IS00472" , "使用状況");		
+		masterName.put("IS00473" , "付与数");		
+		masterName.put("IS00474" , "付与日数");		
+		masterName.put("IS00475" , "付与時間");		
+		masterName.put("IS00476" , "使用数");		
+		masterName.put("IS00477" , "使用日数");		
+		masterName.put("IS00478" , "使用時間");		
+		masterName.put("IS00479" , "上限超過消滅日数");		
+		masterName.put("IS00480" , "上限超過消滅時間");		
+		masterName.put("IS00481" , "残数");		
+		masterName.put("IS00482" , "残日数");		
+		masterName.put("IS00483" , "残時間");		
+		masterName.put("IS00484" , "付与日");		
+		masterName.put("IS00485" , "期限日");		
+		masterName.put("IS00486" , "期限切れ状態");		
+		masterName.put("IS00487" , "使用状況");		
+		masterName.put("IS00488" , "付与数");		
+		masterName.put("IS00489" , "付与日数");		
+		masterName.put("IS00490" , "付与時間");		
+		masterName.put("IS00491" , "使用数");		
+		masterName.put("IS00492" , "使用日数");		
+		masterName.put("IS00493" , "使用時間");		
+		masterName.put("IS00494" , "上限超過消滅日数");		
+		masterName.put("IS00495" , "上限超過消滅時間");		
+		masterName.put("IS00496" , "残数");		
+		masterName.put("IS00497" , "残日数");		
+		masterName.put("IS00498" , "残時間");		
+		masterName.put("IS00499" , "付与日");		
+		masterName.put("IS00500" , "期限日");		
+		masterName.put("IS00501" , "期限切れ状態");		
+		masterName.put("IS00502" , "使用状況");		
+		masterName.put("IS00503" , "付与数");		
+		masterName.put("IS00504" , "付与日数");		
+		masterName.put("IS00505" , "付与時間");		
+		masterName.put("IS00506" , "使用数");		
+		masterName.put("IS00507" , "使用日数");		
+		masterName.put("IS00508" , "使用時間");		
+		masterName.put("IS00509" , "上限超過消滅日数");		
+		masterName.put("IS00510" , "上限超過消滅時間");		
+		masterName.put("IS00511" , "残数");		
+		masterName.put("IS00512" , "残日数");		
+		masterName.put("IS00513" , "残時間");		
+		masterName.put("IS00514" , "付与日");		
+		masterName.put("IS00515" , "期限日");		
+		masterName.put("IS00516" , "期限切れ状態");		
+		masterName.put("IS00517" , "使用状況");		
+		masterName.put("IS00518" , "付与数");		
+		masterName.put("IS00519" , "付与日数");		
+		masterName.put("IS00520" , "付与時間");		
+		masterName.put("IS00521" , "使用数");		
+		masterName.put("IS00522" , "使用日数");		
+		masterName.put("IS00523" , "使用時間");		
+		masterName.put("IS00524" , "上限超過消滅日数");		
+		masterName.put("IS00525" , "上限超過消滅時間");		
+		masterName.put("IS00526" , "残数");		
+		masterName.put("IS00527" , "残日数");		
+		masterName.put("IS00528" , "残時間");		
+		masterName.put("IS00529" , "付与日");		
+		masterName.put("IS00530" , "期限日");		
+		masterName.put("IS00531" , "期限切れ状態");		
+		masterName.put("IS00532" , "使用状況");		
+		masterName.put("IS00533" , "付与数");		
+		masterName.put("IS00534" , "付与日数");		
+		masterName.put("IS00535" , "付与時間");		
+		masterName.put("IS00536" , "使用数");		
+		masterName.put("IS00537" , "使用日数");		
+		masterName.put("IS00538" , "使用時間");		
+		masterName.put("IS00539" , "上限超過消滅日数");		
+		masterName.put("IS00540" , "上限超過消滅時間");		
+		masterName.put("IS00541" , "残数");		
+		masterName.put("IS00542" , "残日数");		
+		masterName.put("IS00543" , "残時間");		
+		masterName.put("IS00544" , "付与日");		
+		masterName.put("IS00545" , "期限日");		
+		masterName.put("IS00546" , "期限切れ状態");		
+		masterName.put("IS00547" , "使用状況");		
+		masterName.put("IS00548" , "付与数");		
+		masterName.put("IS00549" , "付与日数");		
+		masterName.put("IS00550" , "付与時間");		
+		masterName.put("IS00551" , "使用数");		
+		masterName.put("IS00552" , "使用日数");		
+		masterName.put("IS00553" , "使用時間");		
+		masterName.put("IS00554" , "上限超過消滅日数");		
+		masterName.put("IS00555" , "上限超過消滅時間");		
+		masterName.put("IS00556" , "残数");		
+		masterName.put("IS00557" , "残日数");		
+		masterName.put("IS00558" , "残時間");		
+		masterName.put("IS00559" , "特別休暇付与基準日");		
+		masterName.put("IS00560" , "特別休暇管理");		
+		masterName.put("IS00561" , "付与設定");		
+		masterName.put("IS00562" , "付与日数");		
+		masterName.put("IS00563" , "付与テーブル");		
+		masterName.put("IS00564" , "次回付与日");		
+		masterName.put("IS00565" , "特別休暇残数");		
+		masterName.put("IS00566" , "特別休暇付与基準日");		
+		masterName.put("IS00567" , "特別休暇管理");		
+		masterName.put("IS00568" , "付与設定");		
+		masterName.put("IS00569" , "付与日数");		
+		masterName.put("IS00570" , "付与テーブル");		
+		masterName.put("IS00571" , "次回付与日");		
+		masterName.put("IS00572" , "特別休暇残数");		
+		masterName.put("IS00573" , "特別休暇付与基準日");		
+		masterName.put("IS00574" , "特別休暇管理");		
+		masterName.put("IS00575" , "付与設定");		
+		masterName.put("IS00576" , "付与日数");		
+		masterName.put("IS00577" , "付与テーブル");		
+		masterName.put("IS00578" , "次回付与日");		
+		masterName.put("IS00579" , "特別休暇残数");		
+		masterName.put("IS00580" , "特別休暇付与基準日");		
+		masterName.put("IS00581" , "特別休暇管理");		
+		masterName.put("IS00582" , "付与設定");		
+		masterName.put("IS00583" , "付与日数");		
+		masterName.put("IS00584" , "付与テーブル");		
+		masterName.put("IS00585" , "次回付与日");		
+		masterName.put("IS00586" , "特別休暇残数");		
+		masterName.put("IS00587" , "特別休暇付与基準日");		
+		masterName.put("IS00588" , "特別休暇管理");		
+		masterName.put("IS00589" , "付与設定");		
+		masterName.put("IS00590" , "付与日数");		
+		masterName.put("IS00591" , "付与テーブル");		
+		masterName.put("IS00592" , "次回付与日");		
+		masterName.put("IS00593" , "特別休暇残数");		
+		masterName.put("IS00594" , "特別休暇付与基準日");		
+		masterName.put("IS00595" , "特別休暇管理");		
+		masterName.put("IS00596" , "付与設定");		
+		masterName.put("IS00597" , "付与日数");		
+		masterName.put("IS00598" , "付与テーブル");		
+		masterName.put("IS00599" , "次回付与日");		
+		masterName.put("IS00600" , "特別休暇残数");		
+		masterName.put("IS00601" , "特別休暇付与基準日");		
+		masterName.put("IS00602" , "特別休暇管理");		
+		masterName.put("IS00603" , "付与設定");		
+		masterName.put("IS00604" , "付与日数");		
+		masterName.put("IS00605" , "付与テーブル");		
+		masterName.put("IS00606" , "次回付与日");		
+		masterName.put("IS00607" , "特別休暇残数");		
+		masterName.put("IS00608" , "特別休暇付与基準日");		
+		masterName.put("IS00609" , "特別休暇管理");		
+		masterName.put("IS00610" , "付与設定");		
+		masterName.put("IS00611" , "付与日数");		
+		masterName.put("IS00612" , "付与テーブル");		
+		masterName.put("IS00613" , "次回付与日");		
+		masterName.put("IS00614" , "特別休暇残数");		
+		masterName.put("IS00615" , "特別休暇付与基準日");		
+		masterName.put("IS00616" , "特別休暇管理");		
+		masterName.put("IS00617" , "付与設定");		
+		masterName.put("IS00618" , "付与日数");		
+		masterName.put("IS00619" , "付与テーブル");		
+		masterName.put("IS00620" , "次回付与日");		
+		masterName.put("IS00621" , "特別休暇残数");		
+		masterName.put("IS00622" , "特別休暇付与基準日");		
+		masterName.put("IS00623" , "特別休暇管理");		
+		masterName.put("IS00624" , "付与設定");		
+		masterName.put("IS00625" , "付与日数");		
+		masterName.put("IS00626" , "付与テーブル");		
+		masterName.put("IS00627" , "次回付与日");		
+		masterName.put("IS00628" , "特別休暇残数");		
+		masterName.put("IS00629" , "付与日");		
+		masterName.put("IS00630" , "期限日");		
+		masterName.put("IS00631" , "期限切れ状態");		
+		masterName.put("IS00632" , "使用状況");		
+		masterName.put("IS00633" , "付与数");		
+		masterName.put("IS00634" , "付与日数");		
+		masterName.put("IS00635" , "付与時間");		
+		masterName.put("IS00636" , "使用数");		
+		masterName.put("IS00637" , "使用日数");		
+		masterName.put("IS00638" , "使用時間");		
+		masterName.put("IS00639" , "上限超過消滅日数");		
+		masterName.put("IS00640" , "上限超過消滅時間");		
+		masterName.put("IS00641" , "残数");		
+		masterName.put("IS00642" , "残日数");		
+		masterName.put("IS00643" , "残時間");		
+		masterName.put("IS00644" , "付与日");		
+		masterName.put("IS00645" , "期限日");		
+		masterName.put("IS00646" , "期限切れ状態");		
+		masterName.put("IS00647" , "使用状況");		
+		masterName.put("IS00648" , "付与数");		
+		masterName.put("IS00649" , "付与日数");		
+		masterName.put("IS00650" , "付与時間");		
+		masterName.put("IS00651" , "使用数");		
+		masterName.put("IS00652" , "使用日数");		
+		masterName.put("IS00653" , "使用時間");		
+		masterName.put("IS00654" , "上限超過消滅日数");		
+		masterName.put("IS00655" , "上限超過消滅時間");		
+		masterName.put("IS00656" , "残数");		
+		masterName.put("IS00657" , "残日数");		
+		masterName.put("IS00658" , "残時間");		
+		masterName.put("IS00659" , "付与日");		
+		masterName.put("IS00660" , "期限日");		
+		masterName.put("IS00661" , "期限切れ状態");		
+		masterName.put("IS00662" , "使用状況");		
+		masterName.put("IS00663" , "付与数");		
+		masterName.put("IS00664" , "付与日数");		
+		masterName.put("IS00665" , "付与時間");		
+		masterName.put("IS00666" , "使用数");		
+		masterName.put("IS00667" , "使用日数");		
+		masterName.put("IS00668" , "使用時間");		
+		masterName.put("IS00669" , "上限超過消滅日数");		
+		masterName.put("IS00670" , "上限超過消滅時間");		
+		masterName.put("IS00671" , "残数");		
+		masterName.put("IS00672" , "残日数");		
+		masterName.put("IS00673" , "残時間");		
+		masterName.put("IS00674" , "付与日");		
+		masterName.put("IS00675" , "期限日");		
+		masterName.put("IS00676" , "期限切れ状態");		
+		masterName.put("IS00677" , "使用状況");		
+		masterName.put("IS00678" , "付与数");		
+		masterName.put("IS00679" , "付与日数");		
+		masterName.put("IS00680" , "付与時間");		
+		masterName.put("IS00681" , "使用数");		
+		masterName.put("IS00682" , "使用日数");		
+		masterName.put("IS00683" , "使用時間");		
+		masterName.put("IS00684" , "上限超過消滅日数");		
+		masterName.put("IS00685" , "上限超過消滅時間");		
+		masterName.put("IS00686" , "残数");		
+		masterName.put("IS00687" , "残日数");		
+		masterName.put("IS00688" , "残時間");		
+		masterName.put("IS00689" , "付与日");		
+		masterName.put("IS00690" , "期限日");		
+		masterName.put("IS00691" , "期限切れ状態");		
+		masterName.put("IS00692" , "使用状況");		
+		masterName.put("IS00693" , "付与数");		
+		masterName.put("IS00694" , "付与日数");		
+		masterName.put("IS00695" , "付与時間");		
+		masterName.put("IS00696" , "使用数");		
+		masterName.put("IS00697" , "使用日数");		
+		masterName.put("IS00698" , "使用時間");		
+		masterName.put("IS00699" , "上限超過消滅日数");		
+		masterName.put("IS00700" , "上限超過消滅時間");		
+		masterName.put("IS00701" , "残数");		
+		masterName.put("IS00702" , "残日数");		
+		masterName.put("IS00703" , "残時間");		
+		masterName.put("IS00704" , "付与日");		
+		masterName.put("IS00705" , "期限日");		
+		masterName.put("IS00706" , "期限切れ状態");		
+		masterName.put("IS00707" , "使用状況");		
+		masterName.put("IS00708" , "付与数");		
+		masterName.put("IS00709" , "付与日数");		
+		masterName.put("IS00710" , "付与時間");		
+		masterName.put("IS00711" , "使用数");		
+		masterName.put("IS00712" , "使用日数");		
+		masterName.put("IS00713" , "使用時間");		
+		masterName.put("IS00714" , "上限超過消滅日数");		
+		masterName.put("IS00715" , "上限超過消滅時間");		
+		masterName.put("IS00716" , "残数");		
+		masterName.put("IS00717" , "残日数");		
+		masterName.put("IS00718" , "残時間");		
+		masterName.put("IS00719" , "付与日");		
+		masterName.put("IS00720" , "期限日");		
+		masterName.put("IS00721" , "期限切れ状態");		
+		masterName.put("IS00722" , "使用状況");		
+		masterName.put("IS00723" , "付与数");		
+		masterName.put("IS00724" , "付与日数");		
+		masterName.put("IS00725" , "付与時間");		
+		masterName.put("IS00726" , "使用数");		
+		masterName.put("IS00727" , "使用日数");		
+		masterName.put("IS00728" , "使用時間");		
+		masterName.put("IS00729" , "上限超過消滅日数");		
+		masterName.put("IS00730" , "上限超過消滅時間");		
+		masterName.put("IS00731" , "残数");		
+		masterName.put("IS00732" , "残日数");		
+		masterName.put("IS00733" , "残時間");		
+		masterName.put("IS00734" , "付与日");		
+		masterName.put("IS00735" , "期限日");		
+		masterName.put("IS00736" , "期限切れ状態");		
+		masterName.put("IS00737" , "使用状況");		
+		masterName.put("IS00738" , "付与数");		
+		masterName.put("IS00739" , "付与日数");		
+		masterName.put("IS00740" , "付与時間");		
+		masterName.put("IS00741" , "使用数");		
+		masterName.put("IS00742" , "使用日数");		
+		masterName.put("IS00743" , "使用時間");		
+		masterName.put("IS00744" , "上限超過消滅日数");		
+		masterName.put("IS00745" , "上限超過消滅時間");		
+		masterName.put("IS00746" , "残数");		
+		masterName.put("IS00747" , "残日数");		
+		masterName.put("IS00748" , "残時間");		
+		masterName.put("IS00749" , "付与日");		
+		masterName.put("IS00750" , "期限日");		
+		masterName.put("IS00751" , "期限切れ状態");		
+		masterName.put("IS00752" , "使用状況");		
+		masterName.put("IS00753" , "付与数");		
+		masterName.put("IS00754" , "付与日数");		
+		masterName.put("IS00755" , "付与時間");		
+		masterName.put("IS00756" , "使用数");		
+		masterName.put("IS00757" , "使用日数");		
+		masterName.put("IS00758" , "使用時間");		
+		masterName.put("IS00759" , "上限超過消滅日数");		
+		masterName.put("IS00760" , "上限超過消滅時間");		
+		masterName.put("IS00761" , "残数");		
+		masterName.put("IS00762" , "残日数");		
+		masterName.put("IS00763" , "残時間");		
+		masterName.put("IS00764" , "付与日");		
+		masterName.put("IS00765" , "期限日");		
+		masterName.put("IS00766" , "期限切れ状態");		
+		masterName.put("IS00767" , "使用状況");		
+		masterName.put("IS00768" , "付与数");		
+		masterName.put("IS00769" , "付与日数");		
+		masterName.put("IS00770" , "付与時間");		
+		masterName.put("IS00771" , "使用数");		
+		masterName.put("IS00772" , "使用日数");		
+		masterName.put("IS00773" , "使用時間");		
+		masterName.put("IS00774" , "上限超過消滅日数");		
+		masterName.put("IS00775" , "上限超過消滅時間");		
+		masterName.put("IS00776" , "残数");		
+		masterName.put("IS00777" , "残日数");		
+		masterName.put("IS00778" , "残時間");		
+		masterName.put("IS00779" , "カード番号");		
+
+		return masterName;
+			
+	
 	}
 }
