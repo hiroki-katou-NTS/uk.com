@@ -503,17 +503,16 @@ public class CheckFileFinder {
 			}
 			if(category.isHistoryCategory()) {
 				if(period.getPeriods().get(0).getValue() != null && period.getPeriods().get(1).getValue() != null) {
-					GeneralDate start = GeneralDate.fromString(period.getPeriods().get(0).getValue().toString(), "yyyy/MM/dd"); 
-					GeneralDate end = GeneralDate.fromString(period.getPeriods().get(1).getValue().toString(), "yyyy/MM/dd"); 
-					if(start.after(end)) {
-						ItemError error = new ItemError("", index, period.getPeriods().get(0).getItem(), "MsgB_2"); 
-						itemErrors.add(error);
+					try {
+						GeneralDate start = GeneralDate.fromString(period.getPeriods().get(0).getValue().toString(), "yyyy/MM/dd"); 
+						GeneralDate end = GeneralDate.fromString(period.getPeriods().get(1).getValue().toString(), "yyyy/MM/dd"); 
+						if(start.after(end)) {
+							ItemError error = new ItemError("", index, period.getPeriods().get(0).getItem(), "MsgB_2"); 
+							itemErrors.add(error);
+						}
+					}catch(Exception e) {
+						System.out.println("invalid format date");
 					}
-					
-//					if(end.after(end)) {
-//						ItemError error = new ItemError("", index, period.getPeriods().get(0).getItem(), "MsgB_2"); 
-//						itemErrors.add(error);
-//					}
 				}
 			}
 			index++;
