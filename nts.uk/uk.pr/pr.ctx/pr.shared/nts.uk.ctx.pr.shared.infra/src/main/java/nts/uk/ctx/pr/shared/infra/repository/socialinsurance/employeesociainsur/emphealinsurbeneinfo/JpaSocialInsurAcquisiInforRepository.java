@@ -15,14 +15,15 @@ public class JpaSocialInsurAcquisiInforRepository extends JpaRepository implemen
 {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QqsmtSocIsacquisiInfo f";
-    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.socIsacquisiInfoPk.employeeId =:employeeId ";
+    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.socIsacquisiInfoPk.companyId =:companyId AND f.socIsacquisiInfoPk.employeeId =:employeeId ";
 
 
     @Override
-    public Optional<SocialInsurAcquisiInfor> getSocialInsurAcquisiInforById(String employeeId){
+    public Optional<SocialInsurAcquisiInfor> getSocialInsurAcquisiInforById(String cid, String employeeId){
         return this.queryProxy().query(SELECT_BY_KEY_STRING, QqsmtSocIsacquisiInfo.class)
-        .setParameter("employeeId", employeeId)
-        .getSingle(c->c.toDomain());
+                .setParameter("companyId",cid)
+                .setParameter("employeeId", employeeId)
+                .getSingle(c->c.toDomain());
     }
 
     @Override
@@ -36,7 +37,7 @@ public class JpaSocialInsurAcquisiInforRepository extends JpaRepository implemen
     }
 
     @Override
-    public void remove(String employeeId){
-        this.commandProxy().remove(QqsmtSocIsacquisiInfo.class, new QqsmtSocIsacquisiInfoPk(employeeId));
+    public void remove(String cid, String employeeId){
+        this.commandProxy().remove(QqsmtSocIsacquisiInfo.class, new QqsmtSocIsacquisiInfoPk(cid,employeeId));
     }
 }

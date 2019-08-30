@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.shared.dom.adapter.person;
+package nts.uk.ctx.pr.shared.dom.adapter.query.person;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

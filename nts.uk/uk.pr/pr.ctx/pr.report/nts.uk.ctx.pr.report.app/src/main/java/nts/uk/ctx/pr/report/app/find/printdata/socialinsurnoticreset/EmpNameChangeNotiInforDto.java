@@ -2,7 +2,7 @@ package nts.uk.ctx.pr.report.app.find.printdata.socialinsurnoticreset;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
-import nts.uk.ctx.pr.report.dom.printdata.comlegalrecord.EmpNameChangeNotiInfor;
+import nts.uk.ctx.pr.report.dom.printdata.socinsurnoticreset.EmpNameChangeNotiInfor;
 
 /**
 * 社員氏名変更届情報: DTO

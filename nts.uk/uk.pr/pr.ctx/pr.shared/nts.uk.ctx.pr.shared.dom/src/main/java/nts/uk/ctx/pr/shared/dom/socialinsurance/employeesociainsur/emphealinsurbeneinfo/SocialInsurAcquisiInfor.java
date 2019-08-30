@@ -11,6 +11,12 @@ import java.util.Optional;
 */
 @Getter
 public class SocialInsurAcquisiInfor extends AggregateRoot {
+
+
+    /**
+     * 会社ID
+     */
+    private String companyId;
     
     /**
     * 社員ID
@@ -87,7 +93,7 @@ public class SocialInsurAcquisiInfor extends AggregateRoot {
     */
     private Optional<Integer> continReemAfterRetirement;
     
-    public SocialInsurAcquisiInfor(String employeeId,
+    public SocialInsurAcquisiInfor(String companyId, String employeeId,
                                    Integer PercentOrMore,
                                    Integer remarksOther,
                                    String  remarksAndOtherContents,
@@ -103,6 +109,7 @@ public class SocialInsurAcquisiInfor extends AggregateRoot {
                                    Integer qualifiDistin,
                                    Integer continReemAfterRetirement
     ) {
+        this.companyId = companyId;
         this.employeeId = employeeId;
         this.remunMonthlyAmount = remunMonthlyAmount == null ? Optional.empty() : Optional.of(new RemuneraMonthly(remunMonthlyAmount));
         this.remunMonthlyAmountKind = remunMonthlyAmountKind == null ? Optional.empty() : Optional.of(new RemuneraMonthly(remunMonthlyAmountKind));

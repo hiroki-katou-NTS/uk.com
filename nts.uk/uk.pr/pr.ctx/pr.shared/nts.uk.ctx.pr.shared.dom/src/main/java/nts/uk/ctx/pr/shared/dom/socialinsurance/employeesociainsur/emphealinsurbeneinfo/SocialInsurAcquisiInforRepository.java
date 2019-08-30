@@ -1,6 +1,5 @@
 package nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -9,12 +8,12 @@ import java.util.Optional;
 public interface SocialInsurAcquisiInforRepository
 {
 
-    Optional<SocialInsurAcquisiInfor> getSocialInsurAcquisiInforById(String employeeId);
+    Optional<SocialInsurAcquisiInfor> getSocialInsurAcquisiInforById(String companyId, String employeeId);
 
     void add(SocialInsurAcquisiInfor domain);
 
     void update(SocialInsurAcquisiInfor domain);
 
-    void remove(String employeeId);
+    void remove(String cid, String employeeId);
 
 }

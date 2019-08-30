@@ -16,6 +16,7 @@ public class AddSocialInsurAcquisiInforCommandHandler  extends CommandHandler<So
     protected void handle(CommandHandlerContext<SocialInsurAcquisiInforCommand> context) {
         SocialInsurAcquisiInforCommand command = context.getCommand();
         SocialInsurAcquisiInfor domain = new SocialInsurAcquisiInfor(
+                command.getCompanyId(),
                 command.getEmployeeId(),
                 command.getPercentOrMore(),
                 command.getRemarksOther(),
@@ -33,10 +34,5 @@ public class AddSocialInsurAcquisiInforCommandHandler  extends CommandHandler<So
                 command.getContinReemAfterRetirement()
         );
 
-        if(command.getMode() == 0){
-            repository.add(domain);
-        }else{
-            repository.update(domain);
-        }
     }
 }

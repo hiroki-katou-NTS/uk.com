@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.report.dom.printdata.socinsurnoticreset;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 
@@ -9,6 +10,7 @@ import java.util.Optional;
 /**
  * 社会保険届作成設定
  */
+@Setter
 @Getter
 public class SocialInsurNotiCreateSet extends AggregateRoot {
     /**
