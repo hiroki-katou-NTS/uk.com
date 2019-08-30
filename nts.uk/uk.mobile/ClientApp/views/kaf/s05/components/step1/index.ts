@@ -304,8 +304,10 @@ export class KafS05aStep1Component extends Vue {
             this.$mask('hide');
         }).catch((res: any) => {
             if (res.messageId == 'Msg_426') {
-                this.$auth.logout();
-                this.$goto('ccg007b');
+                this.$modal.error({ messageId: res.messageId }).then(() => {
+                    this.$goto('ccg007b');
+                    this.$auth.logout();
+                });
             } else if (res.messageId == 'Msg_424') {
                 this.$modal.error({ messageId: 'Msg_424', messageParams: [res.parameterIds[0], res.parameterIds[1], res.parameterIds[2]] });
             } else if (res.messageId == 'Msg_1508') {
@@ -321,25 +323,41 @@ export class KafS05aStep1Component extends Vue {
         let self = this.kafs05ModelStep1;
 
         if (!_.isNil(self.appID)) {
-            this.getApprovalData();
-
-            this.$http.post('at', servicePath.findByAppID, self.appID)
+            this.$http.post('at', servicePath.getDetailCheck, {
+                applicationID: self.appID, baseDate: this.$dt(new Date())
+            }).then((result: { data: any }) => {
+                self.user = result.data.user;
+                self.reflectPerState = result.data.reflectPlanState;
+                if (self.reflectPerState != 0 && self.reflectPerState != 5) {
+                    this.$modal.error({ messageId: 'Msg_1555' }).then(() => {
+                        this.$modal('cmms45c', { 'listAppMeta': [self.appID], 'currentApp': self.appID }).then(() => {
+                            self.step1Start = true;
+                            this.$emit('backToStep1', self);
+                        });
+                    });
+                }
+                this.$http.post('at', servicePath.findByAppID, self.appID)
                 .then((result: { data: any }) => {
                     this.initData(result.data);
                     this.$mask('hide');
                     this.$validate('clear');
                 }).catch((res: any) => {
-                    if (res.messageId == 'Msg_426') {
-                        this.$modal.error({ messageId: res.messageId }).then(() => {
-                            this.$goto('ccg007b');
-                            this.$auth.logout();
-                        });
-                    } else {
-                        this.$modal.error({ messageId: res.messageId }).then(() => {
-                            this.$goto('ccg008a');
-                        });
-                    }
+                    this.$modal.error({ messageId: res.messageId }).then(() => {
+                        this.$goto('ccg008a');
+                    });
                 });
+            }).catch((res: any) => {
+                if (res.messageId == 'Msg_426') {
+                    this.$modal.error({ messageId: res.messageId }).then(() => {
+                        this.$goto('ccg007b');
+                        this.$auth.logout();
+                    });
+                } else {
+                    this.$modal.error({ messageId: res.messageId }).then(() => {
+                        this.$goto('cmms45a', { CMMS45_FromMenu: false });
+                    });
+                }
+            });            
         } else {
             this.$http.post('at', servicePath.getOvertimeByUI, {
                 url: this.$route.query.overworkatr,
@@ -1233,24 +1251,7 @@ export class KafS05aStep1Component extends Vue {
     public getApprovalData() {
         let self = this.kafs05ModelStep1;
 
-        this.$http.post('at', servicePath.getDetailCheck, {
-            applicationID: self.appID, baseDate: this.$dt(new Date())
-        }).then((result: { data: any }) => {
-            self.user = result.data.user;
-            self.reflectPerState = result.data.reflectPlanState;
-            if (self.reflectPerState != 0 && self.reflectPerState != 5) {
-                this.$modal.error({ messageId: 'Msg_1555' }).then(() => {
-                    this.$modal('cmms45c', { 'listAppMeta': [self.appID], 'currentApp': self.appID }).then(() => {
-                        self.step1Start = true;
-                        this.$emit('backToStep1', self);
-                    });
-                });
-            }
-        }).catch((res: any) => {
-            this.$modal.error({ messageId: res.messageId }).then(() => {
-                this.$goto('cmms45a', { CMMS45_FromMenu: false });
-            });
-        });
+        
     }
 }
 const servicePath = {
