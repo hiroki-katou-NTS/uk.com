@@ -22021,19 +22021,37 @@ var nts;
                                         $treegrid.ntsTreeView("disableRows", disabled);
                                     }
                                 }, dataFiltering: function (evt, ui) {
-                                    var disabled = $treegrid.data("rowDisabled");
+                                    var disabled = $treegrid.data("rowDisabled"), treeId = $treegrid.attr("id"), currentCol = _.find(ui.owner.grid.options.columns, function (c) { return c.key === ui.columnKey; }), shouldRemove = $treegrid.data("customExpression");
                                     _.remove(ui.newExpressions, function (ex) { return _.isNil(ex.expr); });
+                                    if (!_.isEmpty(shouldRemove)) {
+                                        _.remove(ui.newExpressions, function (ex) { return !_.isNil(_.find(shouldRemove, function (sr) { return _.isEqual(sr, ex); })); });
+                                        $treegrid.data("customExpression", []);
+                                    }
+                                    if (!_.isNil(currentCol) && currentCol.formatType === "checkbox" && !_.isNil(currentCol.filterOpts)) {
+                                        var currentExp = _.find(ui.newExpressions, function (exp) { return exp.fieldName === ui.columnKey; });
+                                        if (!_.isNil(currentExp)) {
+                                            var isFilterTrue = currentExp.expr.toLowerCase() === "true";
+                                            $treegrid.closest(".nts-treegridview").find(".ui-iggrid-filterrow")
+                                                .find("td[aria-describedby='" + treeId + "_" + ui.columnKey + "']")
+                                                .find(".ui-iggrid-filtereditor")
+                                                .val(isFilterTrue ? currentCol.filterOpts.trueOpt : currentCol.filterOpts.falseOpt);
+                                        }
+                                    }
                                     if (!_.isEmpty(disabled) && !_.isEmpty(ui.newExpressions)) {
+                                        var shouldRemove_1 = [];
                                         _.forEach(disabled, function (rId) {
-                                            ui.newExpressions.push({ fieldName: optionsValue, cond: "doesNotEqual", expr: rId });
+                                            var newExp = { fieldName: optionsValue, cond: "doesNotEqual", expr: rId };
+                                            ui.newExpressions.push(newExp);
+                                            shouldRemove_1.push(newExp);
                                         });
+                                        $treegrid.data("customExpression", shouldRemove_1);
                                     }
                                 }, dropDownOpening: function (evt, ui) {
                                     var dropId = ui.dropDown.attr("id"), idParts = dropId.split("_"), colName = idParts[idParts.length - 1], currentCol = _.find(ui.owner.grid.options.columns, function (c) { return c.key === colName; });
-                                    if (!_.isNil(currentCol) && currentCol.formatType === "checkbox") {
+                                    if (!_.isNil(currentCol) && currentCol.formatType === "checkbox" && !_.isNil(currentCol.filterOpts)) {
                                         var filterOpts = ui.dropDown.find(".ui-iggrid-filterddlistitemicons"), trueOpt = _.find(filterOpts, function (f) { return !_.isNil($(f).data("cond")) && $(f).data("cond").toLowerCase() === "true"; }), falseOpt = _.find(filterOpts, function (f) { return !_.isNil($(f).data("cond")) && $(f).data("cond").toLowerCase() === "false"; });
-                                        $(trueOpt).find(".ui-iggrid-filterddlistitemcontainer").html(nts.uk.resource.getText("Enum_UseAtr_Use"));
-                                        $(falseOpt).find(".ui-iggrid-filterddlistitemcontainer").html(nts.uk.resource.getText("Enum_UseAtr_NotUse"));
+                                        $(trueOpt).find(".ui-iggrid-filterddlistitemcontainer").html(currentCol.filterOpts.trueOpt); //nts.uk.resource.getText("Enum_UseAtr_Use"));
+                                        $(falseOpt).find(".ui-iggrid-filterddlistitemcontainer").html(currentCol.filterOpts.falseOpt); //nts.uk.resource.getText("Enum_UseAtr_NotUse"));
                                     }
                                 } });
                         }
@@ -42299,33 +42317,46 @@ var nts;
                             $treegrid.addClass("row-limited");
                         }
                         if (isFilter) {
-                            features.push({
-                                name: "Filtering",
-                                filterDelay: 100,
-                                filterDropDownAnimationDuration: 100,
+                            features.push({ name: "Filtering", filterDelay: 100, filterDropDownAnimationDuration: 100,
                                 dataFiltered: function (evt, ui) {
                                     var disabled = $treegrid.data("rowDisabled");
                                     if (!_.isEmpty(disabled)) {
                                         $treegrid.ntsTreeView("disableRows", disabled);
                                     }
-                                },
-                                dataFiltering: function (evt, ui) {
-                                    var disabled = $treegrid.data("rowDisabled");
+                                }, dataFiltering: function (evt, ui) {
+                                    var disabled = $treegrid.data("rowDisabled"), treeId = $treegrid.attr("id"), currentCol = _.find(ui.owner.grid.options.columns, function (c) { return c.key === ui.columnKey; }), shouldRemove = $treegrid.data("customExpression");
                                     _.remove(ui.newExpressions, function (ex) { return _.isNil(ex.expr); });
+                                    if (!_.isEmpty(shouldRemove)) {
+                                        _.remove(ui.newExpressions, function (ex) { return !_.isNil(_.find(shouldRemove, function (sr) { return _.isEqual(sr, ex); })); });
+                                        $treegrid.data("customExpression", []);
+                                    }
+                                    if (!_.isNil(currentCol) && currentCol.formatType === "checkbox" && !_.isNil(currentCol.filterOpts)) {
+                                        var currentExp = _.find(ui.newExpressions, function (exp) { return exp.fieldName === ui.columnKey; });
+                                        if (!_.isNil(currentExp)) {
+                                            var isFilterTrue = currentExp.expr.toLowerCase() === "true";
+                                            $treegrid.closest(".nts-treegridview").find(".ui-iggrid-filterrow")
+                                                .find("td[aria-describedby='" + treeId + "_" + ui.columnKey + "']")
+                                                .find(".ui-iggrid-filtereditor")
+                                                .val(isFilterTrue ? currentCol.filterOpts.trueOpt : currentCol.filterOpts.falseOpt);
+                                        }
+                                    }
                                     if (!_.isEmpty(disabled) && !_.isEmpty(ui.newExpressions)) {
+                                        var shouldRemove_2 = [];
                                         _.forEach(disabled, function (rId) {
-                                            ui.newExpressions.push({ fieldName: optionsValue, cond: "doesNotEqual", expr: rId });
+                                            var newExp = { fieldName: optionsValue, cond: "doesNotEqual", expr: rId };
+                                            ui.newExpressions.push(newExp);
+                                            shouldRemove_2.push(newExp);
                                         });
+                                        $treegrid.data("customExpression", shouldRemove_2);
                                     }
                                 }, dropDownOpening: function (evt, ui) {
                                     var dropId = ui.dropDown.attr("id"), idParts = dropId.split("_"), colName = idParts[idParts.length - 1], currentCol = _.find(ui.owner.grid.options.columns, function (c) { return c.key === colName; });
-                                    if (!_.isNil(currentCol) && currentCol.formatType === "checkbox") {
+                                    if (!_.isNil(currentCol) && currentCol.formatType === "checkbox" && !_.isNil(currentCol.filterOpts)) {
                                         var filterOpts = ui.dropDown.find(".ui-iggrid-filterddlistitemicons"), trueOpt = _.find(filterOpts, function (f) { return !_.isNil($(f).data("cond")) && $(f).data("cond").toLowerCase() === "true"; }), falseOpt = _.find(filterOpts, function (f) { return !_.isNil($(f).data("cond")) && $(f).data("cond").toLowerCase() === "false"; });
-                                        $(trueOpt).find(".ui-iggrid-filterddlistitemcontainer").html(nts.uk.resource.getText("Enum_UseAtr_Use"));
-                                        $(falseOpt).find(".ui-iggrid-filterddlistitemcontainer").html(nts.uk.resource.getText("Enum_UseAtr_NotUse"));
+                                        $(trueOpt).find(".ui-iggrid-filterddlistitemcontainer").html(currentCol.filterOpts.trueOpt); //nts.uk.resource.getText("Enum_UseAtr_Use"));
+                                        $(falseOpt).find(".ui-iggrid-filterddlistitemcontainer").html(currentCol.filterOpts.falseOpt); //nts.uk.resource.getText("Enum_UseAtr_NotUse"));
                                     }
-                                }
-                            });
+                                } });
                         }
                         $treegrid.data("expand", new ui_26.koExtentions.ExpandNodeHolder());
                         $treegrid.data("autoExpanding", false);
@@ -44609,6 +44640,10 @@ var nts;
                                 })
                                     .css(marginDirection, CARET_WIDTH * operator);
                                 $caret.css(caretPosition, parseFloat($popup.css(caretPosition)) * -1);
+                            }
+                        }).on("mouseleave", function () {
+                            if ($popup.is(":visible")) {
+                                $popup.hide();
                             }
                         }).wrap($("<div class='ntsControl ntsHelpButton'></div>"));
                         var $container = $(element).closest(".ntsHelpButton");
