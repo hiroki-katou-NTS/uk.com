@@ -6,10 +6,10 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.hr.develop.dom.sysoperationset.eventmanage.EventOperation;
-import nts.uk.ctx.hr.develop.dom.sysoperationset.eventmanage.EventOperationRepository;
-import nts.uk.ctx.hr.develop.infra.entity.sysoperationset.eventmanage.JcmstEventOperation;
-import nts.uk.ctx.hr.develop.infra.entity.sysoperationset.eventmanage.JcmstEventOperationPK;
+import nts.uk.ctx.hr.develop.dom.sysoperationset.eventoperation.EventOperation;
+import nts.uk.ctx.hr.develop.dom.sysoperationset.eventoperation.EventOperationRepository;
+import nts.uk.ctx.hr.develop.infra.entity.sysoperationset.eventoperation.JcmstEventOperation;
+import nts.uk.ctx.hr.develop.infra.entity.sysoperationset.eventoperation.JcmstEventOperationPK;
 @Stateless
 public class JpaEventOperationRepository extends JpaRepository implements EventOperationRepository{
 	

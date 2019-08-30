@@ -6,10 +6,10 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.hr.develop.dom.sysoperationset.eventmanage.MenuOperation;
-import nts.uk.ctx.hr.develop.dom.sysoperationset.eventmanage.MenuOperationRepository;
-import nts.uk.ctx.hr.develop.infra.entity.sysoperationset.eventmanage.JcmctMenuOperation;
-import nts.uk.ctx.hr.develop.infra.entity.sysoperationset.eventmanage.JcmctMenuOperationPK;
+import nts.uk.ctx.hr.develop.dom.sysoperationset.eventoperation.MenuOperation;
+import nts.uk.ctx.hr.develop.dom.sysoperationset.eventoperation.MenuOperationRepository;
+import nts.uk.ctx.hr.develop.infra.entity.sysoperationset.eventoperation.JcmctMenuOperation;
+import nts.uk.ctx.hr.develop.infra.entity.sysoperationset.eventoperation.JcmctMenuOperationPK;
 
 @Stateless
 public class JpaMenuOperationRepository extends JpaRepository implements MenuOperationRepository{

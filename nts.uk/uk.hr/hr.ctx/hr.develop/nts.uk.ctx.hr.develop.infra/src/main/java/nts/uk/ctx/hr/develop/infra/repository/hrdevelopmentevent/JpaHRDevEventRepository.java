@@ -5,9 +5,9 @@ import java.util.List;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.hr.develop.dom.hrdevelopmentevent.HRDevEvent;
-import nts.uk.ctx.hr.develop.dom.hrdevelopmentevent.HRDevEventRepository;
-import nts.uk.ctx.hr.develop.infra.entity.hrdevelopmentevent.JcmmtHRDevEvent;
+import nts.uk.ctx.hr.develop.dom.humanresourcedevevent.HRDevEvent;
+import nts.uk.ctx.hr.develop.dom.humanresourcedevevent.HRDevEventRepository;
+import nts.uk.ctx.hr.develop.infra.entity.humanresourcedevevent.JcmmtHRDevEvent;
 
 @Stateless
 public class JpaHRDevEventRepository extends JpaRepository implements HRDevEventRepository{

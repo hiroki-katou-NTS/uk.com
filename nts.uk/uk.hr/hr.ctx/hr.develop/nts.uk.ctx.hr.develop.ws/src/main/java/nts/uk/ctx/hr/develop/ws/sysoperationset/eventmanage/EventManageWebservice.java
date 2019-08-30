@@ -6,10 +6,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import nts.uk.ctx.hr.develop.app.sysoperationset.eventmanage.command.JMM018Cmd;
-import nts.uk.ctx.hr.develop.app.sysoperationset.eventmanage.commandhandler.UpdateEventMenuOperation;
-import nts.uk.ctx.hr.develop.app.sysoperationset.eventmanage.dto.JMM018Dto;
-import nts.uk.ctx.hr.develop.app.sysoperationset.eventmanage.find.JMM018Finder;
+import nts.uk.ctx.hr.develop.app.sysoperationset.eventoperation.command.JMM018Cmd;
+import nts.uk.ctx.hr.develop.app.sysoperationset.eventoperation.commandhandler.UpdateEventMenuOperation;
+import nts.uk.ctx.hr.develop.app.sysoperationset.eventoperation.dto.JMM018Dto;
+import nts.uk.ctx.hr.develop.app.sysoperationset.eventoperation.find.JMM018Finder;
 
 @Path("hrdeveventmenu/eventmenuoperation")
 @Produces(MediaType.APPLICATION_JSON)
