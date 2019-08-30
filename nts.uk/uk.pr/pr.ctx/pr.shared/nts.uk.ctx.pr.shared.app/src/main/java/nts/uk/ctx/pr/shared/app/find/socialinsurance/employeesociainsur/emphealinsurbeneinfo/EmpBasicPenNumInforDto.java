@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.shared.app.find.socialinsurance.employeesociainsur.emphealinsurbeneinfo;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Value;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmpBasicPenNumInfor;
 
@@ -9,6 +10,7 @@ import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurb
 */
 @AllArgsConstructor
 @Value
+@Data
 public class EmpBasicPenNumInforDto
 {
     

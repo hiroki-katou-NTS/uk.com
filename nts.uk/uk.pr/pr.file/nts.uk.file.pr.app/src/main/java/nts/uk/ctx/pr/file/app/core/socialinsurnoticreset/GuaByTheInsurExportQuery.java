@@ -10,10 +10,7 @@ import java.util.List;
 public class GuaByTheInsurExportQuery {
     int typeExport;
     List<String> employeeIds;
-    GuaByTheInsurDto model;
     GeneralDate startDate;
     GeneralDate endDate;
-
-    //
     SocialInsurNotiCreateSetQuery socialInsurNotiCreateSetQuery;
 }

@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.shared.infra.repository.socialinsurance.employeesociainsur.empcomofficehis;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empcomofficehis.EmpCorpHealthOffHis;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empcomofficehis.EmpCorpHealthOffHisRepository;
 import nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.empcomofficehis.QqsmtEmpCorpOffHis;
@@ -16,7 +17,7 @@ public class JpaEmpCorpHealthOffHisRepository extends JpaRepository implements E
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QqbmtEmpCorpOffHis f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.empCorpOffHisPk.employeeId =:employeeId AND  f.empCorpOffHisPk.hisId =:hisId ";
-    private static final String SELECT_BY_KEY_EMPID = SELECT_ALL_QUERY_STRING + " WHERE  f.empCorpOffHisPk.employeeId =:employeeId ";
+    private static final String SELECT_BY_KEY_EMPID = SELECT_ALL_QUERY_STRING + " WHERE  f.empCorpOffHisPk.employeeId IN :employeeIds  AND f.startDate <= :startDate AND f.endDate >= :startDate ";
 
     @Override
     public List<EmpCorpHealthOffHis> getAllEmpCorpHealthOffHis(){
@@ -29,12 +30,13 @@ public class JpaEmpCorpHealthOffHisRepository extends JpaRepository implements E
     }
 
     @Override
-    public Optional<EmpCorpHealthOffHis> getEmpCorpHealthOffHisById(String employeeId) {
-        List<QqsmtEmpCorpOffHis> entity =  this.queryProxy().query(SELECT_BY_KEY_EMPID, QqsmtEmpCorpOffHis.class)
-                .setParameter("employeeId", employeeId)
-                .getList();
+    public Optional<EmpCorpHealthOffHis> getEmpCorpHealthOffHisById(List<String> employeeIds, GeneralDate startDate) {
 
-        return Optional.ofNullable(QqsmtEmpCorpOffHis.toDomain(entity));
+        List<QqsmtEmpCorpOffHis> qqsmtEmpCorpOffHis =  this.queryProxy().query(SELECT_BY_KEY_EMPID, QqsmtEmpCorpOffHis.class)
+                .setParameter("employeeIds", employeeIds)
+                .setParameter("startDate", startDate)
+                .getList();
+        return Optional.of(qqsmtEmpCorpOffHis == null ? null : QqsmtEmpCorpOffHis.toDomain(qqsmtEmpCorpOffHis));
     }
 
 }

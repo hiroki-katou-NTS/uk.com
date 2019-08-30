@@ -1,6 +1,7 @@
 package nts.uk.file.pr.ws.core.socialinsurnoticreset;
 
 import nts.arc.layer.app.file.export.ExportServiceResult;
+import nts.uk.ctx.pr.file.app.core.socialinsurnoticreset.NotificationOfLossInsExportCSVService;
 import nts.uk.ctx.pr.file.app.core.socialinsurnoticreset.NotificationOfLossInsExportQuery;
 import nts.uk.ctx.pr.file.app.core.socialinsurnoticreset.NotificationOfLossInsExportPDFService;
 
@@ -14,11 +15,20 @@ import javax.ws.rs.Produces;
 public class NoticeOfLossWebService {
 
     @Inject
-    private NotificationOfLossInsExportPDFService service;
+    private NotificationOfLossInsExportPDFService servicePDF;
+
+    @Inject
+    private NotificationOfLossInsExportCSVService serviceCSV;
 
     @POST
-    @Path("exportFile")
-    public ExportServiceResult generate(NotificationOfLossInsExportQuery query) {
-        return service.start(query);
+    @Path("exportFilePDF")
+    public ExportServiceResult generatePDF(NotificationOfLossInsExportQuery query) {
+        return servicePDF.start(query);
+    }
+
+    @POST
+    @Path("exportFileCSV")
+    public ExportServiceResult generateCSV(NotificationOfLossInsExportQuery query) {
+        return serviceCSV.start(query);
     }
 }

@@ -1,17 +1,21 @@
 package nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo;
 
+import nts.arc.time.GeneralDate;
+
 import java.util.List;
 import java.util.Optional;
 
 /**
 * 社員健康保険資格情報
 */
-public interface EmplHealInsurQualifiInforRepository
-{
+public interface EmplHealInsurQualifiInforRepository {
 
-    List<EmplHealInsurQualifiInfor> getAllEmplHealInsurQualifiInfor();
+    EmplHealInsurQualifiInfor getEmplHealInsurQualifiInfor(GeneralDate start, List<String> empIds);
 
-    boolean checkHealInsurQualifiInformation(String userIds);
+
+    Optional<EmplHealInsurQualifiInfor> getEmplHealInsurQualifiInforByEmpId(String empId);
+
+    boolean checkHealInsurQualifiInformation(String empIds);
 
     Optional<EmplHealInsurQualifiInfor> getEmplHealInsurQualifiInforById(String employeeId, String hisId);
 

@@ -1,8 +1,11 @@
 package nts.uk.file.pr.infra.core.socinsurnoticreset;
 
-import com.aspose.cells.*;
+import com.aspose.cells.PageSetup;
+import com.aspose.cells.Workbook;
+import com.aspose.cells.Worksheet;
+import com.aspose.cells.WorksheetCollection;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
-import nts.uk.ctx.pr.file.app.core.comlegalrecord.CompanyStatutoryWriteExportData;
+import nts.uk.ctx.pr.file.app.core.socialinsurnoticreset.ExportDataCsv;
 import nts.uk.ctx.pr.file.app.core.socialinsurnoticreset.GuaByTheInsurExportDto;
 import nts.uk.ctx.pr.file.app.core.socialinsurnoticreset.GuaByTheInsurExportExcelGenerator;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
@@ -27,81 +30,206 @@ public class GuaByTheInsurExcelAposeFileGenerator extends AsposeCellsReportGener
 
 
     @Override
-    public void generate(FileGeneratorContext fileContext, GuaByTheInsurExportDto exportData) {
-        try(AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE)){
+    public void generate(FileGeneratorContext fileContext, ExportDataCsv exportData) {
+        try (AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE)) {
             Workbook wb = reportContext.getWorkbook();
             WorksheetCollection wsc = wb.getWorksheets();
-            this.writeFileExcel(wsc,null,"");
-            reportContext.processDesigner();
-            reportContext.saveAsExcel(this.createNewFile(fileContext,this.getReportName(REPORT_FILE_NAME)));
-        }catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private void writeFileExcel(WorksheetCollection wsc, List<CompanyStatutoryWriteExportData> exportData, String companyName){
-        try {
-            int rowIndex = FIRST_ROW_FILL;
             Worksheet ws = wsc.get(0);
-            int lineCopy = 3;
-            this.settingHeader(ws, companyName);
-            for (int i = 0; i < exportData.size(); i++) {
-                CompanyStatutoryWriteExportData entity = exportData.get(i);
-                if (i % 2 == 0) {
-                    ws.getCells().copyRows(ws.getCells(), rowIndex, rowIndex + lineCopy - 1, lineCopy);
-                }
-                if (i == exportData.size() - 1) {
-                    ws.getCells().deleteRows(rowIndex, exportData.size() % 2 == 0 ? 3 : 4);
-                }
-//                ws.getCells().get(rowIndex, CODE).putValue(entity.getCode());
-//                ws.getCells().get(rowIndex, NAME).putValue(entity.getName());
-//                ws.getCells().get(rowIndex, KANANAME).putValue(entity.getKanaName());
-//                ws.getCells().get(rowIndex, CORPORATENUMBER).putValue(entity.getCorporateNumber());
-//                ws.getCells().get(rowIndex, REPRESENTATIVE_NAME).putValue(entity.getClubRepresentativeName());
-//                ws.getCells().get(rowIndex, REPRESENTATIVE_POSITION).putValue(entity.getClubRepresentativePosition());
-//                ws.getCells().get(rowIndex, POSTALCODE).putValue(entity.getPostalCode());
-//                ws.getCells().get(rowIndex, ADDRESS1).putValue(entity.getAddress1());
-//                ws.getCells().get(rowIndex, ADDRESSKANA1).putValue(entity.getAddressKana1());
-//                ws.getCells().get(rowIndex, ADDRESS2).putValue(entity.getAddress2());
-//                ws.getCells().get(rowIndex, ADDRESSKANA2).putValue(entity.getAddressKana2());
-//                ws.getCells().get(rowIndex, PHONENUMBER).putValue(entity.getPhoneNumber());
-//                ws.getCells().get(rowIndex, ACCOUNT_MANANAME).putValue(entity.getAccountManagerName());
-//                ws.getCells().get(rowIndex, CONTACT_CLASS).putValue(entity.getContactClass());
-//                ws.getCells().get(rowIndex, CONTACT_NAME).putValue(entity.getContactName());
-//                ws.getCells().get(rowIndex, CONTRACT_PHONE_NUMBER).putValue(entity.getContactPhoneNumber());
-//                ws.getCells().get(rowIndex, ACCOUNTING_OFF_NAME).putValue(entity.getAccountingOfficeName());
-//                ws.getCells().get(rowIndex, ACCOUNTING_OFF_NAME_PHONE_NUMBER).putValue(entity.getAccountingOfficeTelephoneNumber());
-//                ws.getCells().get(rowIndex, SALAPAY_METHOD_DUE_DATE1).putValue(entity.getSalaryPaymentMethodAndDueDate1());
-//                ws.getCells().get(rowIndex, SALAPAY_METHOD_DUE_DATE2).putValue(entity.getSalaryPaymentMethodAndDueDate2());
-//                ws.getCells().get(rowIndex, SALAPAY_METHOD_DUE_DATE3).putValue(entity.getSalaryPaymentMethodAndDueDate3());
-//                ws.getCells().get(rowIndex, BUSINESSLINE1).putValue(entity.getBusinessLine1());
-//                ws.getCells().get(rowIndex, BUSINESSLINE2).putValue(entity.getBusinessLine2());
-//                ws.getCells().get(rowIndex, BUSINESSLINE3).putValue(entity.getBusinessLine3());
-//                ws.getCells().get(rowIndex, TAX_OFFICE).putValue(entity.getTaxOffice());
-//                ws.getCells().get(rowIndex, NAME_BANK_TRANFEINS).putValue(entity.getNameBankTransferInstitution());
-//                ws.getCells().get(rowIndex, VIBLOCAFININS).putValue(entity.getVibrantLocationFinancialInstitutions());
-                rowIndex++;
-            }
-            if(exportData.size() == 0) {
-                ws.getCells().deleteRows(rowIndex, 2);
-            }
-
-            if(exportData.size() % 2 == 0 && exportData.size() > 1) {
-                int totalColumn = 27;
-                int columnStart = 1;
-                for(int column = columnStart ; column < totalColumn + columnStart; column++) {
-                    Style style = wsc.get(0).getCells().get(rowIndex - 1, column).getStyle();
-                    style.setPattern(BackgroundType.SOLID);
-                    style.setForegroundColor(Color.fromArgb(216,228, 188));
-                    wsc.get(0).getCells().get(rowIndex - 1, column).setStyle(style);
-                }
-            }
+            this.writeFileExcel(ws, exportData.listContent, "");
+            reportContext.processDesigner();
+            reportContext.saveAsExcel(this.createNewFile(fileContext, this.getReportName(REPORT_FILE_NAME)));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void settingHeader(Worksheet ws, String companyName){
+    private void writeFileExcel(Worksheet ws, List<GuaByTheInsurExportDto> exportData, String companyName) {
+
+        final int MAX_LINE = 36;
+        int rowIndex = 3;
+        int count = 0;
+        int numberRow = 39;
+        int sourceRowIndex = 0;
+        int destinationRowIndex = 39;
+
+        // Index column to fill data
+        final int COLUMN_INDEX_C1_10 = 32;
+        //row index == 8
+        final int COLUMN_INDEX_C1_1 = 14;
+        final int COLUMN_INDEX_C1_2 = 28;
+        final int COLUMN_INDEX_C1_3 = 46;
+        //row index ==    17
+        final int COLUMN_INDEX_C1_4 = 18;
+        //row index ==    20
+        final int COLUMN_INDEX_C1_5 = 14;
+        //row index ==    24
+        final int COLUMN_INDEX_C1_6 = 14;
+        //row index ==    31
+        final int COLUMN_INDEX_C1_7 = 14;
+        //row index ==    40
+        final int COLUMN_INDEX_C1_8 = 14;
+        //row index ==    49
+        final int COLUMN_INDEX_C1_9 = 22;
+        //row index ==    55
+        final int COLUMN_INDEX_C2_1 = 14;
+        //row index ==    58
+        final int COLUMN_INDEX_C2_2 = 28;
+        //row index ==    58
+        final int COLUMN_INDEX_C2_3 = 53;
+        //row index ==    55
+        final int COLUMN_INDEX_C2_4 = 28;
+        //row index ==    55
+        final int COLUMN_INDEX_C2_5 = 53;
+        //row index == 58
+        final int COLUMN_INDEX_C2_6 = 84;
+        //row index == 60
+        final int COLUMN_INDEX_C2_7 = 84;
+        //row index == 62
+        final int COLUMN_INDEX_C2_8 = 84;
+        //row index == 60
+        final int COLUMN_INDEX_C2_9 = 96;
+        //row index == 56
+        final int COLUMN_INDEX_C2_10 = 114;
+        //row index == 58
+        final int COLUMN_INDEX_C2_11 = 114;
+        //row index == 60
+        final int COLUMN_INDEX_C2_12 = 114;
+        //row index == 56
+        final int COLUMN_INDEX_C2_13 = 121;
+        //row index == 58
+        final int COLUMN_INDEX_C2_14 = 121;
+        //row index == 60
+        final int COLUMN_INDEX_C2_15 = 121;
+        //row index == 66
+        final int COLUMN_INDEX_C2_16 = 14;
+        //row index == 68
+        final int COLUMN_INDEX_C2_17 = 14;
+        //row index == 70
+        final int COLUMN_INDEX_C2_18 = 14;
+        //row index == 65
+        final int COLUMN_INDEX_C2_19 = 52;
+        //row index == 69
+        final int COLUMN_INDEX_C2_20 = 85;
+        //row index == 69
+        final int COLUMN_INDEX_C2_21 = 96;
+
+        //row index == 65
+        final int COLUMN_INDEX_C2_22 = 112;
+        //row index == 65
+        final int COLUMN_INDEX_C2_23 = 122;
+
+        //row index == 74
+        final int COLUMN_INDEX_C2_24 = 19;
+        //row index == 78
+        final int COLUMN_INDEX_C2_25 = 19;
+
+        //row index == 77
+        final int COLUMN_INDEX_C2_26 = 44;
+
+        //row index == 84
+        final int COLUMN_INDEX_C2_27 = 16;
+        //row index == 84
+        final int COLUMN_INDEX_C2_28 = 30;
+        //row index == 77
+        final int COLUMN_INDEX_C2_29 = 30;
+
+
+        //row index == 77
+        final int COLUMN_INDEX_C2_30 = 87;
+        //row index == 79
+        final int COLUMN_INDEX_C2_31 = 87;
+
+        //row index == 75
+        final int COLUMN_INDEX_C2_32 = 106;
+        //row index == 77
+        final int COLUMN_INDEX_C2_33 = 106;
+        //row index == 79
+        final int COLUMN_INDEX_C2_34 = 106;
+
+        //row index == 79
+        final int COLUMN_INDEX_C2_35 = 115;
+
+        //row index == 82
+        final int COLUMN_INDEX_C2_36 = 115;
+        //row index == 84
+        final int COLUMN_INDEX_C2_37 = 115;
+        //row index == 86
+        final int COLUMN_INDEX_C2_38 = 115;
+
+        //row index == 86
+        final int COLUMN_INDEX_C2_39 = 112;
+
+
+        for (int i = 1; i < Math.ceil((float) exportData.size() / (float) MAX_LINE); i++) {
+            try {
+                ws.getCells().copyRows(ws.getCells(), sourceRowIndex, destinationRowIndex, numberRow);
+            } catch (Exception e) {
+
+            }
+            numberRow = numberRow + MAX_LINE;
+            sourceRowIndex = sourceRowIndex + MAX_LINE;
+            destinationRowIndex = destinationRowIndex + MAX_LINE;
+        }
+
+        for (GuaByTheInsurExportDto element : exportData) {
+            ws.getCells().get(rowIndex, COLUMN_INDEX_C1_1).putValue("");
+            ws.getCells().get(rowIndex, COLUMN_INDEX_C1_2).putValue("");
+//            ws.getCells().get(rowIndex, COLUMN_INDEX_C1_3).putValue(element.getOfficeNumber());
+//            ws.getCells().get(rowIndex, COLUMN_INDEX_C1_4).putValue(element.getPostalCode());
+//            ws.getCells().get(rowIndex, COLUMN_INDEX_C1_5).putValue(element.getOfficeAndressOne());
+//            ws.getCells().get(rowIndex, COLUMN_INDEX_C1_6).putValue(element.getOfficeAndressTwo());
+//            ws.getCells().get(rowIndex, COLUMN_INDEX_C1_7).putValue(element.getBussinessName());
+//            ws.getCells().get(rowIndex, COLUMN_INDEX_C1_8).putValue(element.getBussinessName2());
+//            ws.getCells().get(rowIndex, COLUMN_INDEX_C1_9).putValue(element.getPhoneNumber());
+//            ws.getCells().get(rowIndex, COLUMN_INDEX_C2_1).putValue("COLUMN_INDEX_C2_1");
+//            ws.getCells().get(rowIndex, COLUMN_INDEX_C2_2).putValue(element.getSubmittedName());
+//            ws.getCells().get(rowIndex, COLUMN_INDEX_C2_3).putValue(element.getSubmittedName());
+//            ws.getCells().get(rowIndex, COLUMN_INDEX_C2_4).putValue(element.getSubmittedName());
+//            ws.getCells().get(rowIndex, COLUMN_INDEX_C2_5).putValue(element.getSubmittedName());
+            ws.getCells().get(rowIndex, COLUMN_INDEX_C2_6).putValue("COLUMN_INDEX_C2_6");
+            ws.getCells().get(rowIndex, COLUMN_INDEX_C2_7).putValue("COLUMN_INDEX_C2_7");
+            ws.getCells().get(rowIndex, COLUMN_INDEX_C2_8).putValue("COLUMN_INDEX_C2_8");
+            ws.getCells().get(rowIndex, COLUMN_INDEX_C2_9).putValue("COLUMN_INDEX_C2_9");
+            ws.getCells().get(rowIndex, COLUMN_INDEX_C2_10).putValue("COLUMN_INDEX_C2_10");
+            ws.getCells().get(rowIndex, COLUMN_INDEX_C2_11).putValue("COLUMN_INDEX_C2_11");
+            ws.getCells().get(rowIndex, COLUMN_INDEX_C2_12).putValue("COLUMN_INDEX_C2_12");
+            ws.getCells().get(rowIndex, COLUMN_INDEX_C2_13).putValue("COLUMN_INDEX_C2_13");
+            ws.getCells().get(rowIndex, COLUMN_INDEX_C2_14).putValue("COLUMN_INDEX_C2_14");
+            ws.getCells().get(rowIndex, COLUMN_INDEX_C2_15).putValue("COLUMN_INDEX_C2_15");
+            ws.getCells().get(rowIndex, COLUMN_INDEX_C2_16).putValue("COLUMN_INDEX_C2_16");
+            ws.getCells().get(rowIndex, COLUMN_INDEX_C2_17).putValue("COLUMN_INDEX_C2_17");
+            ws.getCells().get(rowIndex, COLUMN_INDEX_C2_18).putValue("COLUMN_INDEX_C2_18");
+            ws.getCells().get(rowIndex, COLUMN_INDEX_C2_19).putValue("COLUMN_INDEX_C2_19");
+            ws.getCells().get(rowIndex, COLUMN_INDEX_C2_20).putValue("COLUMN_INDEX_C2_20");
+            ws.getCells().get(rowIndex, COLUMN_INDEX_C2_21).putValue("COLUMN_INDEX_C2_21");
+            ws.getCells().get(rowIndex, COLUMN_INDEX_C2_22).putValue("COLUMN_INDEX_C2_22");
+            ws.getCells().get(rowIndex, COLUMN_INDEX_C2_23).putValue("COLUMN_INDEX_C2_23");
+            ws.getCells().get(rowIndex, COLUMN_INDEX_C2_24).putValue("COLUMN_INDEX_C2_24");
+            ws.getCells().get(rowIndex, COLUMN_INDEX_C2_25).putValue("COLUMN_INDEX_C2_25");
+            ws.getCells().get(rowIndex, COLUMN_INDEX_C2_26).putValue("COLUMN_INDEX_C2_26");
+            ws.getCells().get(rowIndex, COLUMN_INDEX_C2_27).putValue("COLUMN_INDEX_C2_27");
+            ws.getCells().get(rowIndex, COLUMN_INDEX_C2_28).putValue("COLUMN_INDEX_C2_28");
+            ws.getCells().get(rowIndex, COLUMN_INDEX_C2_29).putValue("COLUMN_INDEX_C2_29");
+            ws.getCells().get(rowIndex, COLUMN_INDEX_C2_30).putValue("COLUMN_INDEX_C2_30");
+            ws.getCells().get(rowIndex, COLUMN_INDEX_C2_31).putValue("COLUMN_INDEX_C2_31");
+            ws.getCells().get(rowIndex, COLUMN_INDEX_C2_32).putValue("COLUMN_INDEX_C2_32");
+            ws.getCells().get(rowIndex, COLUMN_INDEX_C2_33).putValue("COLUMN_INDEX_C2_33");
+            ws.getCells().get(rowIndex, COLUMN_INDEX_C2_34).putValue("COLUMN_INDEX_C2_34");
+            ws.getCells().get(rowIndex, COLUMN_INDEX_C2_35).putValue("COLUMN_INDEX_C2_35");
+            ws.getCells().get(rowIndex, COLUMN_INDEX_C2_36).putValue("COLUMN_INDEX_C2_36");
+            ws.getCells().get(rowIndex, COLUMN_INDEX_C2_37).putValue("COLUMN_INDEX_C2_37");
+            ws.getCells().get(rowIndex, COLUMN_INDEX_C2_38).putValue("COLUMN_INDEX_C2_38");
+            ws.getCells().get(rowIndex, COLUMN_INDEX_C2_39).putValue("COLUMN_INDEX_C2_39");
+
+
+            rowIndex++;
+            count++;
+        }
+
+
+    }
+
+    private void settingHeader(Worksheet ws, String companyName) {
 
         // Set print page
         PageSetup pageSetup = ws.getPageSetup();

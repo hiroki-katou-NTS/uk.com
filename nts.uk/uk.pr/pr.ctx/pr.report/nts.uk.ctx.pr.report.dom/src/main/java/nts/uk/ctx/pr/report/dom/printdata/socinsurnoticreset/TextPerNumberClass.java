@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.report.dom.printdata.socinsurnoticreset;
 
+/*テキスト個人番号区分*/
 public enum TextPerNumberClass {
     OUTPUT_NUMBER(0, "Enum_TextPerNumberClass_OUTPUT_NUMBER"),
     OUPUT_BASIC_PEN_NUMBER(1, "Enum_TextPerNumberClass_OUPUT_BASIC_PEN_NUMBER"),

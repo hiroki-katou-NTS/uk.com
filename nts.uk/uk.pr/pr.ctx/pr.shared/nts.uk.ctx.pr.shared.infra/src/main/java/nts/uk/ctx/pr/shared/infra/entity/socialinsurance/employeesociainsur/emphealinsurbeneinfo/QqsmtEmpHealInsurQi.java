@@ -3,11 +3,16 @@ package nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.emp
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmpHealthInsurBenefits;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmplHealInsurQualifiInfor;
+import nts.uk.shr.com.history.DateHistoryItem;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 /**
@@ -47,9 +52,13 @@ public class QqsmtEmpHealInsurQi extends UkJpaEntity implements Serializable
         return empHealInsurQiPk;
     }
 
-    public EmplHealInsurQualifiInfor toDomain() {
-        return null;
+    public static EmplHealInsurQualifiInfor toDomain(List<QqsmtEmpHealInsurQi> qqsmtEmpHealInsurQi) {
+        return new EmplHealInsurQualifiInfor(
+                qqsmtEmpHealInsurQi.get(0).empHealInsurQiPk.employeeId,
+                qqsmtEmpHealInsurQi.stream().map(i -> new EmpHealthInsurBenefits(i.empHealInsurQiPk.hisId , new DateHistoryItem(i.empHealInsurQiPk.hisId, new DatePeriod(i.startDate, i.endDate))))
+                        .collect(Collectors.toList()));
     }
+
     public static QqsmtEmpHealInsurQi toEntity(EmplHealInsurQualifiInfor domain) {
         return null;
     }

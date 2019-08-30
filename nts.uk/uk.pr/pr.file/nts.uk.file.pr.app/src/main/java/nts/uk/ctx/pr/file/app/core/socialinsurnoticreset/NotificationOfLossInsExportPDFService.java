@@ -3,6 +3,8 @@ package nts.uk.ctx.pr.file.app.core.socialinsurnoticreset;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
+import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsuranceOffice;
+import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsuranceOfficeRepository;
 import nts.uk.ctx.pr.report.dom.printdata.socinsurnoticreset.PersonalNumClass;
 import nts.uk.ctx.pr.report.dom.printdata.socinsurnoticreset.SocialInsurNotiCrSetRepository;
 import nts.uk.ctx.pr.report.dom.printdata.socinsurnoticreset.SocialInsurNotiCreateSet;
@@ -13,6 +15,7 @@ import nts.uk.shr.com.context.AppContexts;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.List;
+import java.util.Optional;
 
 @Stateless
 public class NotificationOfLossInsExportPDFService extends ExportService<NotificationOfLossInsExportQuery> {
@@ -31,6 +34,9 @@ public class NotificationOfLossInsExportPDFService extends ExportService<Notific
 
 	@Inject
 	private NotificationOfLossInsExRepository socialInsurNotiCreateSetEx;
+
+	@Inject
+	private SocialInsuranceOfficeRepository socialInsuranceOfficeRepository;
 
 
 	@Override
@@ -63,6 +69,7 @@ public class NotificationOfLossInsExportPDFService extends ExportService<Notific
 		if( socialInsurNotiCreateSet.getPrintPersonNumber() == PersonalNumClass.DO_NOT_OUTPUT.value) {
 			List<InsLossDataExport> healthInsLoss = socialInsurNotiCreateSetEx.getHealthInsLoss(empIds);
 			List<InsLossDataExport> welfPenInsLoss = socialInsurNotiCreateSetEx.getWelfPenInsLoss(empIds);
+			//Optional<SocialInsuranceOffice> socialInsuranceOffice =  socialInsuranceOfficeRepository.findByCodeAndCid(cid, healthInsLoss.get(0).getOfficeCode());
 			socialInsurNotiCreateSetFileGenerator.generate(exportServiceContext.getGeneratorContext(), new LossNotificationInformation(healthInsLoss, welfPenInsLoss, socialInsurNotiCreateSet));
 		}
 	}

@@ -8,6 +8,7 @@
 <ui:composition template="../../../../master/base.xhtml">
 	<ui:define name="htmlHead">
 		<com:scriptfile set="IGNITE"/>
+        <com:scriptfile path="../share/model.js"/>
 		<com:stylefile path="qsi013.a.style.css"/>
 		<com:scriptfile path="qsi013.a.service.js"/>
 		<com:scriptfile path="qsi013.a.start.js"/>
@@ -18,14 +19,17 @@
 		<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
 		<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
         <com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
+		<com:ValidatorScript>
+			nts.uk.ctx.pr.report.dom.printdata.socinsurnoticreset.FdNumber
+		</com:ValidatorScript>
 	</ui:define>
 
 	<ui:define name="content">
 		<div id="functions-area">
 			<button id="A1_1" tabindex="1" class="proceed" style="margin-left: 70px;"
-					data-bind="click:  function(){ self.exportFile(0); }, enable: $root.errors.isEmpty">#{i18n.getText('QSI013_4')}</button>
+					data-bind="click:  function(){ exportFile(0); }, enable: $root.errors.isEmpty">#{i18n.getText('QSI013_4')}</button>
 			<button id="A1_2" tabindex="2"
-					data-bind="click:  function(){ self.exportFile(1); }">#{i18n.getText('QSI013_5')}</button>
+					data-bind="click:  function(){ exportFile(1); }">#{i18n.getText('QSI013_5')}</button>
 			<button id="A1_4" tabindex="3"
 					data-bind="click: openBScreen">#{i18n.getText('QSI013_7')}</button>
 			<button id="A1_5" tabindex="4"
@@ -95,6 +99,7 @@
                                 options: $parent.submittedNames,
                                 optionsValue: 'code',
                                 optionsText: 'name',
+                                constraint: 'SubNameClass',
                                 value: submittedName,
                                 enable: true  }"></div>
 						<!--A222_20-->
@@ -218,7 +223,7 @@
                         value: textPersonNumber,
                         optionsText: 'name',
                         editable: false,
-                        enable: true,
+                        enable: outputFormat() == 0,
                         required: true,
                         selectFirstIfNull: true,
                         }"></div>
@@ -228,19 +233,23 @@
 					<div class="valign-center control-group">
 						<div class="column-first" data-bind="ntsFormLabel: {required:true}">#{i18n.getText('QSI013_28')}</div>
 						<div class="cf" data-bind="ntsSwitchButton: {
-                        name: '#{i18n.getText('QSI013_28')}',
-                        options: $parent.lineFeedCodes,
-                        optionsValue: 'code',
-                        optionsText: 'name',
-                        value: lineFeedCode,
-                        required: true,
-                        enable: true }"></div>
+                        										name: '#{i18n.getText('QSI013_28')}',
+                        										options: $parent.lineFeedCodes,
+                        										optionsValue: 'code',
+                        										optionsText: 'name',
+                        										value: lineFeedCode,
+                        										required: true,
+                        										enable: true }"></div>
 						<button data-bind="ntsHelpButton: {image: 'QSI013Image03.png', position: 'right top', enable: true }">?</button>
 					</div>
 
 					<div class="valign-center control-group">
 						<div class="column-first" data-bind="ntsFormLabel: {required:false}">#{i18n.getText('QSI013_32')}</div>
-						<input data-bind="ntsTextEditor: {value: fdNumber, name: '#{i18n.getText('QSI013_32')}'}" />
+						<input data-bind="ntsTextEditor: {
+								value: fdNumber,
+								constraint: 'FdNumber',
+								name: '#{i18n.getText('QSI013_32')}'
+								}" />
 					</div>
 				</div>
 			</div>

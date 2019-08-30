@@ -1,5 +1,7 @@
 package nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor;
 
+import nts.arc.time.GeneralDate;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -8,7 +10,7 @@ import java.util.Optional;
 */
 public interface EmpWelfarePenInsQualiInforRepository {
 
-    List<EmpWelfarePenInsQualiInfor> getAllEmpWelfarePenInsQualiInfor();
+    EmpWelfarePenInsQualiInfor getEmpWelfarePenInsQualiInfor(GeneralDate start, List<String> empId);
 
     boolean checkEmpWelfarePenInsQualiInfor(String userIds);
 

@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.report.dom.printdata.socinsurnoticreset;
 
+/*提出氏名区分*/
 public enum SubNameClass {
     PERSONAL_NAME(0, "Enum_SubNameClass_PERSONAL_NAME"),
     REPORTED_NAME(1, "Enum_SubNameClass_REPORTED_NAME");

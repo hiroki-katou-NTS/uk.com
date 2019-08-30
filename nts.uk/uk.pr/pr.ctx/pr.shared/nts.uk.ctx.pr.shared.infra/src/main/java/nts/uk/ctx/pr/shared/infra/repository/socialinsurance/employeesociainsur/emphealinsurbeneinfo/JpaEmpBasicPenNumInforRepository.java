@@ -30,8 +30,10 @@ public class JpaEmpBasicPenNumInforRepository extends JpaRepository implements E
         .getSingle(c->c.toDomain());
     }
 
+
     @Override
     public void add(EmpBasicPenNumInfor domain){
+
         this.commandProxy().insert(QqsmtEmpBaPenNum.toEntity(domain));
     }
 

@@ -1,125 +1,204 @@
 module nts.uk.pr.view.qsi013.b.viewmodel {
-    import close = nts.uk.ui.windows.close;
-    import getText = nts.uk.resource.getText;
-    import setShared = nts.uk.ui.windows.setShared;
+    import model = nts.uk.pr.view.qsi013.share.model;
+    import dialog = nts.uk.ui.dialog;
+    import block = nts.uk.ui.block;
     import getShared = nts.uk.ui.windows.getShared;
-    import model = qsi001.share.model;
+
+    export interface ComponentOption {
+        systemReference: model.SystemType;
+        isDisplayOrganizationName: boolean;
+        employeeInputList: KnockoutObservableArray<model.EmployeeModel>;
+        targetBtnText: string;
+        selectedItem: KnockoutObservable<string>;
+        tabIndex: number;
+        baseDate?: KnockoutObservable<Date>;
+    }
 
     export class ScreenModel {
-        ccg001ComponentOption: GroupOption;
+        screenMode: KnockoutObservable<model.SCREEN_MODE> = ko.observable(null);
+        constraint: string = 'LayoutCode';
+        inline: KnockoutObservable<boolean>;
+        required: KnockoutObservable<boolean>;
+        enable: KnockoutObservable<boolean>;
+        employeeInputList: KnockoutObservableArray<model.EmployeeModel>= ko.observableArray([]);
+        systemReference: KnockoutObservable<number>;
+        isDisplayOrganizationName: KnockoutObservable<boolean>;
+        targetBtnText: string;
+        baseDate: KnockoutObservable<Date>;
+        listComponentOption: ComponentOption;
+        selectedItem: KnockoutObservable<string> = ko.observable('');
+        tabindex: number;
 
-        constructor() {
+        //checked
+        isMoreEmp: KnockoutObservable<boolean> = ko.observable();
+        hOther: KnockoutObservable<boolean> = ko.observable();
+        pOther: KnockoutObservable<boolean> = ko.observable();
+
+        //number editor
+        hCaInsurance: KnockoutObservable<number> = ko.observable();
+        hNumRecoved: KnockoutObservable<number> = ko.observable();
+        pCaInsurance: KnockoutObservable<number> = ko.observable();
+        pNumRecoved: KnockoutObservable<number> = ko.observable();
+        basicPenNumber: KnockoutObservable<string> = ko.observable('');
+
+        //combo box
+        itemListHealth: KnockoutObservableArray<model.ItemModel>;
+        itemListPension: KnockoutObservableArray<model.ItemModel>;
+        hCause: KnockoutObservable<number> = ko.observable(0);
+        pCause: KnockoutObservable<number> = ko.observable(0);
+        isEnable: KnockoutObservable<boolean>;
+        isEditable: KnockoutObservable<boolean>;
+
+        //declard para employeeId to push method
+        empId: string;
+
+        //for text editor
+        hOtherReason: KnockoutObservable<string> = ko.observable('');
+        pOtherReason: KnockoutObservable<string> = ko.observable('');
+
+        getDataLossInfo(empId: string) {
+            block.invisible();
             let self = this;
-            this.loadCCG001();
+            nts.uk.pr.view.qsi013.b.service.getLossInfoById(empId).done(function (data: any) {
+                if (data) {
+                    self.hCause(data.healthInsLossInfo.cause);
+                    self.hNumRecoved(data.healthInsLossInfo.numRecoved);
+                    self.hOther(data.healthInsLossInfo.other == 1);
+                    self.hCaInsurance(data.healthInsLossInfo.caInsurance);
+                    self.hOtherReason(data.healthInsLossInfo.otherReason);
+
+                    self.pCause(data.welfPenInsLossIf.cause);
+                    self.pNumRecoved(data.welfPenInsLossIf.numRecoved);
+                    self.pOther(data.welfPenInsLossIf.other);
+                    self.pCaInsurance(data.welfPenInsLossIf.caInsuarace);
+                    self.pOtherReason(data.welfPenInsLossIf.otherReason);
+
+                    self.isMoreEmp(data.multiEmpWorkInfo.isMoreEmp == 1);
+                    self.basicPenNumber(data.empBasicPenNumInfor.basicPenNumber);
+
+                    self.screenMode(model.SCREEN_MODE.UPDATE);
+
+                } else {
+                    // for new mode
+                    //set default value
+                    self.hCause(0);
+                    self.hNumRecoved(null);
+                    self.hOther(false);
+                    self.hCaInsurance(null);
+                    self.hOtherReason('');
+
+                    self.pCause(0);
+                    self.pNumRecoved(null);
+                    self.pOther(false);
+                    self.pCaInsurance(null);
+                    self.pOtherReason('');
+
+                    self.isMoreEmp(null);
+                    self.basicPenNumber('');
+
+                    self.screenMode(model.SCREEN_MODE.NEW);
+                }
+            }).fail(error => {
+                dialog.alertError(error);
+            });
+            block.clear();
         }
 
-        close(){
+        init(){
+            var self = this;
+            self.inline = ko.observable(true);
+            self.required = ko.observable(true)
+            self.enable = ko.observable(true);
+            self.systemReference = ko.observable(model.SystemType.SALARY);
+            self.isDisplayOrganizationName = ko.observable(false);
+            self.targetBtnText = nts.uk.resource.getText("KCP009_3");
+            self.isEnable = ko.observable(true);
+            self.isEditable = ko.observable(true);
+
+
+            self.listComponentOption = {
+                systemReference: self.systemReference(),
+                isDisplayOrganizationName: self.isDisplayOrganizationName(),
+                employeeInputList: self.employeeInputList,
+                targetBtnText: self.targetBtnText,
+                selectedItem: self.selectedItem,
+                tabIndex: 0
+            };
+        }
+        constructor() {
+
+            var self = this;
+            this.init();
+            let list = getShared("QSI013_PARAMS_B");
+            self.employeeInputList(list.employeeList);
+            self.selectedItem(self.employeeInputList()[0].id);
+
+            $('#emp-component').ntsLoadListComponent(self.listComponentOption);
+
+            self.itemListHealth = ko.observableArray(model.getCauseTypeHealthLossInfo());
+            self.itemListPension = ko.observableArray(model.getCauseTypePensionLossInfo());
+
+
+            self.selectedItem.subscribe((data) => {
+                self.getDataLossInfo(data);
+            });
+        }
+
+        //set cancel method
+        cancel() {
             nts.uk.ui.windows.close();
         }
 
-        loadCCG001(){
-            let self = this;
-            self.ccg001ComponentOption = {
-                /** Common properties */
-                systemType: 1,
-                showEmployeeSelection: true,
-                showQuickSearchTab: false,
-                showAdvancedSearchTab: true,
-                showBaseDate: false,
-                showClosure: false,
-                showAllClosure: false,
-                showPeriod: false,
-                periodFormatYM: false,
-                tabindex: 5,
-                /** Required parameter */
-                baseDate: moment().toISOString(),
-                periodStartDate: moment().toISOString(),
-                periodEndDate: moment().toISOString(),
-                inService: true,
-                leaveOfAbsence: true,
-                closed: true,
-                retirement: true,
+        registerLossInfo() {
+            var self = this;
+            //for register info
+            let healthInsLossInfo: any = {
+                empId: self.selectedItem(),
+                other : self.hOther() == true ? 1 : 0,
+                otherReason : self.hOther() == true ? self.hOtherReason() : '',
+                caInsurance: self.hCaInsurance(),
+                numRecoved: self.hNumRecoved(),
+                cause: self.hCause(),
+            };
 
-                /** Quick search tab options */
-                showAllReferableEmployee: true,
-                showOnlyMe: true,
-                showSameWorkplace: true,
-                showSameWorkplaceAndChild: true,
+            let welfPenInsLossIf: any = {
+                empId: self.selectedItem(),
+                other : self.pOther() == true ? 1 : 0,
+                otherReason : self.pOther() == true ? self.pOtherReason() : '',
+                caInsuarace: self.pCaInsurance(),
+                numRecoved: self.pNumRecoved(),
+                cause: self.pCause(),
+            };
+            let multiEmpWorkInfo: any = {
+                empId: self.selectedItem(),
+                isMoreEmp: self.isMoreEmp() == true ?  1 : 0
+            };
 
-                /** Advanced search properties */
-                showEmployment: true,
-                showWorkplace: true,
-                showClassification: true,
-                showJobTitle: true,
-                showWorktype: true,
-                isMutipleCheck: true,
-                /**
-                 * Self-defined function: Return data from CCG001
-                 * @param: data: the data return from CCG001
-                 */
-                returnDataFromCcg001: function(data: Ccg001ReturnedData) {
+            let empBasicPenNumInfor: any = {
+                employeeId: self.selectedItem(),
+                basicPenNumber: self.basicPenNumber()
+            };
 
-                }
-            }
+            let lossInfoCommand: any = {
+                healthInsLossInfo: healthInsLossInfo,
+                welfPenInsLossIf: welfPenInsLossIf,
+                multiEmpWorkInfo: multiEmpWorkInfo,
+                empBasicPenNumInfor: empBasicPenNumInfor,
+                screenMode: model.SCREEN_MODE.UPDATE
 
-            $('#com-ccg001').ntsGroupComponent(self.ccg001ComponentOption);
+            };
 
+            nts.uk.pr.view.qsi013.b.service.registerLossInfo(lossInfoCommand).done( function() {
+                dialog.info({ messageId: "Msg_15" }).then(() => {
+                    //enter update mode
+                    self.screenMode(model.SCREEN_MODE.UPDATE);
+                    //load data
+                    self.getDataLossInfo(self.selectedItem());
+                });
+            }).fail(error => {
+                dialog.alertError(error);
+            });
+            $("#B2_2").focus();
         }
     }
-    export interface GroupOption {
-        /** Common properties */
-        showEmployeeSelection?: boolean; // 検索タイプ
-        systemType: number; // システム区分
-        showQuickSearchTab?: boolean; // クイック検索
-        showAdvancedSearchTab?: boolean; // 詳細検索
-        showBaseDate?: boolean; // 基準日利用
-        showClosure?: boolean; // 就業締め日利用
-        showAllClosure?: boolean; // 全締め表示
-        showPeriod?: boolean; // 対象期間利用
-        periodFormatYM?: boolean; // 対象期間精度
-        isInDialog?: boolean;
-        tabindex: number;
-
-        /** Required parameter */
-        baseDate?: string; // 基準日
-        periodStartDate?: string; // 対象期間開始日
-        periodEndDate?: string; // 対象期間終了日
-        inService: boolean; // 在職区分
-        leaveOfAbsence: boolean; // 休職区分
-        closed: boolean; // 休業区分
-        retirement: boolean; // 退職区分
-
-        /** Quick search tab options */
-        showAllReferableEmployee?: boolean; // 参照可能な社員すべて
-        showOnlyMe?: boolean; // 自分だけ
-        showSameWorkplace?: boolean; // 同じ職場の社員
-        showSameWorkplaceAndChild?: boolean; // 同じ職場とその配下の社員
-
-        /** Advanced search properties */
-        showEmployment?: boolean; // 雇用条件
-        showWorkplace?: boolean; // 職場条件
-        showClassification?: boolean; // 分類条件
-        showJobTitle?: boolean; // 職位条件
-        showWorktype?: boolean; // 勤種条件
-        isMutipleCheck?: boolean; // 選択モード
-        isTab2Lazy?: boolean;
-
-        /** Data returned */
-        returnDataFromCcg001: (data: Ccg001ReturnedData) => void;
-    }
-    export interface EmployeeSearchDto {
-        employeeId: string;
-        employeeCode: string;
-        employeeName: string;
-        workplaceId: string;
-        workplaceName: string;
-    }
-    export interface Ccg001ReturnedData {
-        baseDate: string; // 基準日
-        closureId?: number; // 締めID
-        periodStart: string; // 対象期間（開始)
-        periodEnd: string; // 対象期間（終了）
-        listEmployee: Array<EmployeeSearchDto>; // 検索結果
-    }
-
 }

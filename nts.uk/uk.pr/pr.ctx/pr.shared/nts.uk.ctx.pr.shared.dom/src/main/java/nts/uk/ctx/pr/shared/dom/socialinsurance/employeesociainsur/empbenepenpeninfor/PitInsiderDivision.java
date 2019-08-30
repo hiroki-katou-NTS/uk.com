@@ -7,8 +7,8 @@ package nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpe
 public enum PitInsiderDivision
 {
     
-    NOTTARGETED(0, "ENUM_PitInsiderDivision_NOTTARGETED"),
-    TARGET(1, "ENUM_PitInsiderDivision_TARGET");
+    NOTTARGETED(0, "Enum_PitInsiderDivision_NOTTARGETED"),
+    TARGET(1, "Enum_PitInsiderDivision_TARGET");
     
     /** The value. */
     public final int value;
