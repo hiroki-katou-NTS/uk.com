@@ -206,7 +206,7 @@
                             <div v-show="item.preAppExceedState">
                                 <span class="far fa-clock display-time-exceed"
                                     v-if="null != item.preAppTime">事前[{{item.preAppTime | timedr}}]</span>
-                                <span class="far fa-clock display-time" v-if="null == item.preAppTime">事前[--:--]</span>
+                                <span class="far fa-clock display-time-exceed" v-if="null == item.preAppTime">事前[--:--]</span>
                             </div>
                         </div>
                     </div>
