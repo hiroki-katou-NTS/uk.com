@@ -389,11 +389,15 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 		}
 		// 事前申請超過チェックをする必要があるかチェックする
 		if(preAppSetCheck==UseAtr.USE){
-			// 事前申請超過チェック
-			if(overtimeColorCheck.appTime !=null && overtimeColorCheck.appTime > compareValue){
-				overtimeColorCheck.preAppError = PreActualError.ACTUAL_ALARM.value;
+			if(null != opAppBefore && opAppBefore.isPresent()){
+				// 事前申請超過チェック
+				if(overtimeColorCheck.appTime !=null && overtimeColorCheck.appTime > compareValue){
+					overtimeColorCheck.preAppError = PreActualError.PRE_ERROR.value;
+				} else {
+					overtimeColorCheck.preAppError = PreActualError.NO_ERROR.value;
+				}
 			} else {
-				overtimeColorCheck.preAppError = PreActualError.NO_ERROR.value;
+				overtimeColorCheck.preAppError = PreActualError.PRE_ERROR.value;
 			}
 		}
 	}
@@ -415,17 +419,23 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 		}
 		// 実績超過チェックをする必要があるかチェックする
 		if(actualSetCheck!=AppDateContradictionAtr.NOTCHECK){
-			// 実績時間チェック
-			if(overtimeColorCheck.appTime!=null && overtimeColorCheck.appTime > compareValue){
-				if(actualSetCheck==AppDateContradictionAtr.CHECKNOTREGISTER) {
-					overtimeColorCheck.actualError = PreActualError.ACTUAL_ERROR.value;
-				} else if (actualSetCheck==AppDateContradictionAtr.CHECKREGISTER) {
-					overtimeColorCheck.actualError = PreActualError.ACTUAL_ALARM.value;
+			if(!CollectionUtil.isEmpty(actualLst)){
+				// 実績時間チェック
+				if(overtimeColorCheck.appTime!=null && overtimeColorCheck.appTime > compareValue){
+					if(actualSetCheck==AppDateContradictionAtr.CHECKNOTREGISTER) {
+						overtimeColorCheck.actualError = PreActualError.ACTUAL_ERROR.value;
+					} else {
+						overtimeColorCheck.actualError = PreActualError.ACTUAL_ALARM.value;
+					}
 				} else {
 					overtimeColorCheck.actualError = PreActualError.NO_ERROR.value;
 				}
 			} else {
-				overtimeColorCheck.actualError = PreActualError.NO_ERROR.value;
+				if(actualSetCheck==AppDateContradictionAtr.CHECKNOTREGISTER) {
+					overtimeColorCheck.actualError = PreActualError.ACTUAL_ERROR.value;
+				} else {
+					overtimeColorCheck.actualError = PreActualError.ACTUAL_ALARM.value;
+				} 
 			}
 		}
 	}
