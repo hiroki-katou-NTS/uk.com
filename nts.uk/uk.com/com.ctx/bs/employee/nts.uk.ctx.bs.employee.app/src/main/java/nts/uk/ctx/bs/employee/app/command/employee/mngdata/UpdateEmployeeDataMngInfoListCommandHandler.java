@@ -48,7 +48,7 @@ public class UpdateEmployeeDataMngInfoListCommandHandler extends CommandHandlerW
 		
 		List<EmployeeDataMngInfo> domains = command.stream().map(c -> {
 			return new EmployeeDataMngInfo(cid, c.getPersonId(), c.getEmployeeId(), c.getEmployeeCode(),
-					c.getExternalCode().equals("") == true ? null: c.getExternalCode());
+					c.getExternalCode() == null? null: c.getExternalCode().equals("") == true ? null: c.getExternalCode());
 		}).collect(Collectors.toList());
 		
 		Iterator<EmployeeDataMngInfo> itr = domains.iterator();
