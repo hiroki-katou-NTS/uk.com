@@ -274,21 +274,6 @@ public interface CommonOvertimeHoliday {
 			Integer startTime,Integer endTime, List<Integer> startTimeRests,List<Integer> endTimeRests);
 	
 	/**
-	 * 07_事前申請・実績超過チェック(MOB)
-	 * @param companyId: 会社ID
-	 * @param appDate: 申請日
-	 * @param inputDate: 入力日
-	 * @param prePostAtr: 事前事後区分
-	 * @param employeeID: 社員ID
-	 * @param siftCD: 就業時間帯CD
-	 * @param overtimeInputCaculations: 計算結果
-	 * @param caculationTimeHours: 残業時間
-	 * 
-	 */
-	public List<CaculationTime> preActualExceededCheckMob(String companyId, GeneralDate appDate,
-			GeneralDateTime inputDate, int prePostAtr, String employeeID, String siftCD, List<OvertimeInputCaculation> overtimeInputCaculations, List<CaculationTime> caculationTimeHours);
-	
-	/**
 	 * 03-01-1_チェック条件
 	 * @param prePostAtr 事前事後区分
 	 * @param preExcessDisplaySetting 事前超過表示設定
