@@ -405,7 +405,8 @@ export class KafS05aStep1Component extends Vue {
                 self.resetTimeRange++;
                 this.$mask('hide');
             }).catch((res: any) => {
-
+                this.$mask('hide');
+                this.$modal.error({ messageId: res.messageId });
             });
         });
         this.$watch('kafs05ModelStep1.prePostSelected', function (value: number) {
@@ -435,6 +436,8 @@ export class KafS05aStep1Component extends Vue {
                 this.$mask('hide');
 
             }).catch((res: any) => {
+                this.$mask('hide');
+                this.$modal.error({ messageId: res.messageId });
             });
         });
     }
@@ -471,7 +474,8 @@ export class KafS05aStep1Component extends Vue {
                 }
             }
         }).catch((res: any) => {
-
+            this.$mask('hide');
+            this.$modal.error({ messageId: res.messageId });
         });
     }
 
