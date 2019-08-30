@@ -366,12 +366,15 @@ public class CategoryValidate {
 				ItemValue start = container.getInputs().getItems().stream().filter(c -> c.itemCode().equals("IS00255")).findFirst().get();
 				ItemValue end = container.getInputs().getItems().stream().filter(c -> c.itemCode().equals("IS00256")).findFirst().get();
 				DateHistoryItem historyItem = history.getHistory().get(0);
-				if(!end.valueAfter().equals("9999/12/31")) {
-					sidError.add(history.getEmployeeId());
-					int index = containerAdds.indexOf(container);
-					containerAdds.remove(index);
-					continue;
+				if(!end.valueAfter().equals(end.valueBefore())) {
+					if(historyItem.end().toString().equals("9999/12/31") && !end.valueAfter().equals("9999/12/31")) {
+						sidError.add(history.getEmployeeId());
+						int index = containerAdds.indexOf(container);
+						containerAdds.remove(index);
+						continue;
+					}
 				}
+				
 				if(modeUpdate == 2) {
 					if(GeneralDate.fromString(start.valueAfter(), "yyyy/MM/dd").before(historyItem.start())) {
 						sidError.add(history.getEmployeeId());
