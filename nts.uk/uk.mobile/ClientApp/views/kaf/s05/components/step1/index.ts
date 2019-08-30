@@ -1236,7 +1236,10 @@ export class KafS05aStep1Component extends Vue {
             self.reflectPerState = result.data.reflectPlanState;
             if (self.reflectPerState != 0 && self.reflectPerState != 5) {
                 this.$modal.error({ messageId: 'Msg_1555' }).then(() => {
-                    this.$goto('cmms45a', { CMMS45_FromMenu: false });
+                    this.$modal('cmms45c', { 'listAppMeta': [self.appID], 'currentApp': self.appID }).then(() => {
+                        self.step1Start = true;
+                        this.$emit('backToStep1', self);
+                    });
                 });
             }
         }).catch((res: any) => {
