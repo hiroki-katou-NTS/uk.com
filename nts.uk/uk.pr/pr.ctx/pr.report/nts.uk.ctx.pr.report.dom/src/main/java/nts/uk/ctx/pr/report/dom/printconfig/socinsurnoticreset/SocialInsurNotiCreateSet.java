@@ -12,7 +12,6 @@ import java.util.Optional;
  */
 @Setter
 @Getter
-@Setter
 public class SocialInsurNotiCreateSet extends AggregateRoot {
     /**
      * 会社ID

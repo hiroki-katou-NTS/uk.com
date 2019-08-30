@@ -31,9 +31,10 @@ public class AddEmpBasicPenNumInforCommandHandler extends CommandHandler<Credent
         SocialInsurAcquisiInforCommand socialInsurAcquisiInforCommand = command.getSocialInsurAcquisiInforCommand();
         MultiEmpWorkInfoCommand multiEmpWorkInfoCommand = command.getMultiEmpWorkInfoCommand();
         EmpBasicPenNumInforCommand empBasicPenNumInforCommand = command.getEmpBasicPenNumInforCommand();
-        Optional<SocialInsurAcquisiInfor> socialInsurAcquisiInfor =  socialInsurAcquisiInforRepository.getSocialInsurAcquisiInforById(socialInsurAcquisiInforCommand.getEmployeeId());
-
         String cid = AppContexts.user().companyId();
+        Optional<SocialInsurAcquisiInfor> socialInsurAcquisiInfor =  socialInsurAcquisiInforRepository.getSocialInsurAcquisiInforById(cid,socialInsurAcquisiInforCommand.getEmployeeId());
+
+
         SocialInsurAcquisiInfor socialInsurAcquisiInforDomain = new SocialInsurAcquisiInfor(
                 cid,
                 socialInsurAcquisiInforCommand.getEmployeeId(),
