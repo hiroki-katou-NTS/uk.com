@@ -15,6 +15,7 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
+import org.eclipse.persistence.sdo.helper.extension.OPStack;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
@@ -1796,24 +1797,69 @@ public class AppOvertimeFinder {
 		appOverTimeMobDto.appReason = application.getAppReason().v();
 		appOverTimeMobDto.divergenceReasonContent = appOverTime.getDivergenceReason();
 		appOverTimeMobDto.frameLst = new ArrayList<>();
+		OvertimeRestAppCommonSetting overtimeRestAppCommonSet = overtimeRestAppCommonSetRepository
+				.getOvertimeRestAppCommonSetting(companyID, ApplicationType.OVER_TIME_APPLICATION.value).get();
+		if(overtimeRestAppCommonSet.getBonusTimeDisplayAtr().value == UseAtr.USE.value){
+			appOverTimeMobDto.displayBonusTime = true;
+		} 
+		List<OvertimeColorCheck> otTimeLst = new ArrayList<>();
 		List<OvertimeWorkFrame> overtimeFrames = iOvertimePreProcess.getOvertimeHours(0, companyID);
 		for(OvertimeWorkFrame overtimeFrame :overtimeFrames){
 			appOverTimeMobDto.frameLst.add(new OvertimeFrameDto(
 					AttendanceType.NORMALOVERTIME.value, 
 					overtimeFrame.getOvertimeWorkFrNo().v().intValue(), 
 					overtimeFrame.getOvertimeWorkFrName().toString()));
+			otTimeLst.add(OvertimeColorCheck.createApp(
+					AttendanceType.NORMALOVERTIME.value, 
+					overtimeFrame.getOvertimeWorkFrNo().v().intValue(), 
+					null));
+		}
+		appOverTimeMobDto.appOvertimeNightFlg = appCommonSettingOutput.applicationSetting.getAppOvertimeNightFlg().value == 1 ? true : false;
+		if(appOvertimeSettingRepository.getAppOver().get().getFlexJExcessUseSetAtr() == FlexExcessUseSetAtr.ALWAYSDISPLAY){
+			appOverTimeMobDto.flexFLag = true;
+		} else if(appOvertimeSettingRepository.getAppOver().get().getFlexJExcessUseSetAtr() == FlexExcessUseSetAtr.DISPLAY){
+			Optional<WorkingConditionItem> personalLablorCodition = workingConditionItemRepository
+					.getBySidAndStandardDate(application.getEmployeeID(), application.getAppDate());
+			if(personalLablorCodition.isPresent()){
+				if(personalLablorCodition.get().getLaborSystem() == WorkingSystem.FLEX_TIME_WORK){
+					appOverTimeMobDto.flexFLag = true;
+				}
+			}
+		}
+		if(appOverTimeMobDto.appOvertimeNightFlg) {
+			otTimeLst.add(OvertimeColorCheck.createApp(AttendanceType.NORMALOVERTIME.value, 11, null));
+		}
+		if(appOverTimeMobDto.flexFLag) {
+			otTimeLst.add(OvertimeColorCheck.createApp(AttendanceType.NORMALOVERTIME.value, 12, null));
+		}
+		if(appOverTimeMobDto.displayBonusTime){
+			List<BonusPayTimeItem> bonusPayTimeItems= this.commonOvertimeHoliday.getBonusTime(
+					companyID,
+					appOverTime.getApplication().getEmployeeID(),
+					appOverTime.getApplication().getAppDate(),
+					overtimeRestAppCommonSet.getBonusTimeDisplayAtr());
+			for(BonusPayTimeItem bonusPayTimeItem : bonusPayTimeItems){
+				appOverTimeMobDto.frameLst.add(new OvertimeFrameDto(
+						AttendanceType.BONUSPAYTIME.value, 
+						bonusPayTimeItem.getId(), 
+						bonusPayTimeItem.getTimeItemName().toString()));
+				otTimeLst.add(OvertimeColorCheck.createApp(
+						AttendanceType.BONUSPAYTIME.value, 
+						bonusPayTimeItem.getId(), 
+						null));
+			}
 		}
 		List<OvertimeBreakDto> breakTimeLst = appOverTime.getOverTimeInput().stream()
 				.filter(x -> x.getAttendanceType().value==0)
 				.map(x -> new OvertimeBreakDto(x.getFrameNo(), x.getStartTime().v(), x.getEndTime().v()))
 				.collect(Collectors.toList());
 		appOverTimeMobDto.breakTimeLst = breakTimeLst;
-		List<OvertimeColorCheck> otTimeLst = appOverTime.getOverTimeInput().stream()
-				.filter(x -> x.getAttendanceType().value!=0)
-				.map(x -> OvertimeColorCheck.createApp(x.getAttendanceType().value, x.getFrameNo(), x.getApplicationTime().v()))
-				.collect(Collectors.toList());
-		OvertimeRestAppCommonSetting overtimeRestAppCommonSet = overtimeRestAppCommonSetRepository
-				.getOvertimeRestAppCommonSetting(companyID, ApplicationType.OVER_TIME_APPLICATION.value).get();
+		otTimeLst = otTimeLst.stream().map(x -> {
+			Integer value = appOverTime.getOverTimeInput().stream()
+			.filter(y -> y.getAttendanceType().value==x.attendanceID && y.getFrameNo()==x.frameNo)
+			.findAny().map(z -> z.getApplicationTime().v()).orElse(null);
+			return OvertimeColorCheck.createApp(x.attendanceID, x.frameNo, value);
+		}).collect(Collectors.toList());
 		if(appOverTime.getWorkTypeCode()!=null && appOverTime.getSiftCode()!=null) {
 			// // アルゴリズム「残業申請設定を取得する」を実行する
 			UseAtr preExcessDisplaySetting = overtimeRestAppCommonSet.getPreExcessDisplaySetting();
@@ -1873,21 +1919,6 @@ public class AppOvertimeFinder {
 				approvalFunctionSetting.getApplicationDetailSetting().get().getTimeCalUse(),
 				approvalFunctionSetting.getApplicationDetailSetting().get().getBreakInputFieldDisp(),
 				ApplicationType.OVER_TIME_APPLICATION);
-		appOverTimeMobDto.appOvertimeNightFlg = appCommonSettingOutput.applicationSetting.getAppOvertimeNightFlg().value == 1 ? true : false;
-		if(appOvertimeSettingRepository.getAppOver().get().getFlexJExcessUseSetAtr() == FlexExcessUseSetAtr.ALWAYSDISPLAY){
-			appOverTimeMobDto.flexFLag = true;
-		} else if(appOvertimeSettingRepository.getAppOver().get().getFlexJExcessUseSetAtr() == FlexExcessUseSetAtr.DISPLAY){
-			Optional<WorkingConditionItem> personalLablorCodition = workingConditionItemRepository
-					.getBySidAndStandardDate(application.getEmployeeID(), application.getAppDate());
-			if(personalLablorCodition.isPresent()){
-				if(personalLablorCodition.get().getLaborSystem() == WorkingSystem.FLEX_TIME_WORK){
-					appOverTimeMobDto.flexFLag = true;
-				}
-			}
-		}
-		if(overtimeRestAppCommonSet.getBonusTimeDisplayAtr().value == UseAtr.USE.value){
-			appOverTimeMobDto.displayBonusTime = true;
-		} 
 		Optional<AppTypeDiscreteSetting> appTypeDiscreteSetting = appTypeDiscreteSettingRepository
 				.getAppTypeDiscreteSettingByAppType(companyID,  ApplicationType.OVER_TIME_APPLICATION.value);
 		if(appTypeDiscreteSetting.get().getTypicalReasonDisplayFlg().value == AppDisplayAtr.DISPLAY.value){
@@ -1899,19 +1930,6 @@ public class AppOvertimeFinder {
 		}
 		appOverTimeMobDto.displayDivergenceReasonInput = commonOvertimeHoliday.displayDivergenceReasonInput(
 						EnumAdaptor.valueOf(appOverTimeMobDto.prePostAtr, PrePostAtr.class), overtimeRestAppCommonSet.getDivergenceReasonInputAtr());
-		if(appOverTimeMobDto.displayBonusTime){
-			List<BonusPayTimeItem> bonusPayTimeItems= this.commonOvertimeHoliday.getBonusTime(
-					companyID,
-					appOverTime.getApplication().getEmployeeID(),
-					appOverTime.getApplication().getAppDate(),
-					overtimeRestAppCommonSet.getBonusTimeDisplayAtr());
-			for(BonusPayTimeItem bonusPayTimeItem : bonusPayTimeItems){
-				appOverTimeMobDto.frameLst.add(new OvertimeFrameDto(
-						AttendanceType.BONUSPAYTIME.value, 
-						bonusPayTimeItem.getId(), 
-						bonusPayTimeItem.getTimeItemName().toString()));
-			}
-		}
 		return appOverTimeMobDto;
 	}
 }
