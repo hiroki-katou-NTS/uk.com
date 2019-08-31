@@ -85,10 +85,9 @@ import nts.uk.ctx.at.request.dom.application.overtime.service.WorkTypeAndSiftTyp
 import nts.uk.ctx.at.request.dom.application.overtime.service.WorkTypeOvertime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.output.RecordWorkOutput;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.AppOvertimeSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.AppOvertimeSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.FlexExcessUseSetAtr;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.WithdrawalAppSet;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.WithdrawalAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.AppDateContradictionAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
@@ -190,9 +189,6 @@ public class AppOvertimeFinder {
 	
 	@Inject
 	private PreActualColorCheck preActualColorCheck;
-	
-	@Inject
-	private WithdrawalAppSetRepository withdrawalAppSetRepository;
 	
 	/**
 	 * @param url
@@ -349,7 +345,7 @@ public class AppOvertimeFinder {
 
 		// 勤務情報から残業時間を計算する
 		//List<CaculationTime> caculationTimeHours = new ArrayList<CaculationTime>();
-		WithdrawalAppSet withdrawalAppSet = withdrawalAppSetRepository.getWithDraw().get();
+		AppOvertimeSetting appOvertimeSetting = appOvertimeSettingRepository.getAppOver().get();
 		PreAppCheckResult preAppCheckResult = new PreAppCheckResult();
 		ActualStatusCheckResult actualStatusCheckResult = new ActualStatusCheckResult();
 		if (prePostAtr == PrePostAtr.POSTERIOR.value) {
@@ -359,7 +355,7 @@ public class AppOvertimeFinder {
 			// 07-02_実績取得・状態チェック
 			actualStatusCheckResult = preActualColorCheck.actualStatusCheck(companyID,
 					employeeID, generalAppDate, ApplicationType.OVER_TIME_APPLICATION,
-					workTypeCode, siftCD, withdrawalAppSet.getOverrideSet(),
+					workTypeCode, siftCD, appOvertimeSetting.getPriorityStampSetAtr(),
 					Optional.empty());
 		}
 
@@ -386,7 +382,7 @@ public class AppOvertimeFinder {
 			// 07_事前申請・実績超過チェック(07_đơn xin trước. check vượt quá thực tế )
 			PreActualColorResult preActualColorResult = preActualColorCheck.preActualColorCheck(preExcessDisplaySetting,
 					performanceExcessAtr, ApplicationType.OVER_TIME_APPLICATION, PrePostAtr.values()[prePostAtr],
-					withdrawalAppSet.getOverrideSet(), Optional.empty(), overtimeInputCaculations, overTimeLst,
+					overtimeInputCaculations, overTimeLst,
 					preAppCheckResult.opAppBefore, preAppCheckResult.beforeAppStatus, actualStatusCheckResult.actualLst,
 					actualStatusCheckResult.actualStatus);
 			result.setPreActualColorResult(preActualColorResult);			
@@ -517,7 +513,7 @@ public class AppOvertimeFinder {
 				.getOvertimeRestAppCommonSetting(companyID, ApplicationType.OVER_TIME_APPLICATION.value).get();
 		UseAtr preExcessDisplaySetting = overtimeRestAppCommonSet.getPreExcessDisplaySetting();
 		AppDateContradictionAtr performanceExcessAtr = overtimeRestAppCommonSet.getPerformanceExcessAtr();
-		WithdrawalAppSet withdrawalAppSet = withdrawalAppSetRepository.getWithDraw().get();
+		AppOvertimeSetting appOvertimeSetting = appOvertimeSettingRepository.getAppOver().get();
 		// 07-01_事前申請状態チェック
 		PreAppCheckResult preAppCheckResult = preActualColorCheck.preAppStatusCheck(
 				companyID, 
@@ -532,16 +528,14 @@ public class AppOvertimeFinder {
 				ApplicationType.OVER_TIME_APPLICATION, 
 				workTypeCD, 
 				workTimeCD, 
-				withdrawalAppSet.getOverrideSet(), 
+				appOvertimeSetting.getPriorityStampSetAtr(), 
 				Optional.empty());
 		// 07_事前申請・実績超過チェック
 		PreActualColorResult preActualColorResult =	preActualColorCheck.preActualColorCheck(
 				preExcessDisplaySetting, 
 				performanceExcessAtr, 
 				ApplicationType.OVER_TIME_APPLICATION, 
-				EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class), 
-				withdrawalAppSet.getOverrideSet(), 
-				Optional.empty(), 
+				EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class),
 				overtimeInputCaculations, 
 				otTimeLst, 
 				preAppCheckResult.opAppBefore, 
@@ -866,7 +860,7 @@ public class AppOvertimeFinder {
 		if(appOverTime.getApplication().getPrePostAtr() == PrePostAtr.POSTERIOR) {
 			appOvertimeReference.setAppDateRefer(appOverTime.getApplication().getAppDate().toString(DATE_FORMAT));
 			List<CaculationTime> overTimeInputsRefer = new ArrayList<>();
-			WithdrawalAppSet withdrawalAppSet = withdrawalAppSetRepository.getWithDraw().get();
+			AppOvertimeSetting appOvertimeSetting = appOvertimeSettingRepository.getAppOver().get();
 			// 07-02_実績取得・状態チェック
 			ActualStatusCheckResult actualStatusCheckResult = preActualColorCheck.actualStatusCheck(
 					companyID, 
@@ -875,7 +869,7 @@ public class AppOvertimeFinder {
 					appOverTime.getApplication().getAppType(), 
 					appOverTime.getWorkTypeCode() == null ? null : appOverTime.getWorkTypeCode().v(), 
 					appOverTime.getSiftCode() == null ? null : appOverTime.getSiftCode().v(), 
-					withdrawalAppSet.getOverrideSet(), 
+					appOvertimeSetting.getPriorityStampSetAtr(), 
 					Optional.empty());
 			for(OvertimeWorkFrame overtimeFrame :overtimeFrames){
 				overTimeInputsRefer.add(CaculationTime.builder()
@@ -1115,12 +1109,12 @@ public class AppOvertimeFinder {
 					}
 					// 01-18_実績の内容を表示し直す : chưa xử lí
 					AppOvertimeReference appOvertimeReference = new AppOvertimeReference();
-					WithdrawalAppSet withdrawalAppSet = withdrawalAppSetRepository.getWithDraw().get();
+					AppOvertimeSetting appOvertimeSetting = appOvertimeSettingRepository.getAppOver().get();
 					ActualStatusCheckResult actualStatusCheckResult = preActualColorCheck
 							.actualStatusCheck(companyID, employeeID, GeneralDate.fromString(appDate, DATE_FORMAT), ApplicationType.OVER_TIME_APPLICATION, 
 									result.getWorkType() == null ? null : result.getWorkType().getWorkTypeCode(), 
 									result.getSiftType() ==  null ? null : result.getSiftType().getSiftCode(), 
-									withdrawalAppSet.getOverrideSet(), Optional.empty());
+									appOvertimeSetting.getPriorityStampSetAtr(), Optional.empty());
 					appOvertimeReference.setAppDateRefer(appDate);
 					List<CaculationTime> overTimeInputsRefer = new ArrayList<>();
 					List<OvertimeWorkFrame> overtimeFrames = iOvertimePreProcess.getOvertimeHours(0, companyID);
@@ -1461,12 +1455,12 @@ public class AppOvertimeFinder {
 			// 01-18_実績の内容を表示し直す :
 			if (approvalFunctionSetting != null) {
 				AppOvertimeReference appOvertimeReference = new AppOvertimeReference();
-				WithdrawalAppSet withdrawalAppSet = withdrawalAppSetRepository.getWithDraw().get();
+				AppOvertimeSetting appOvertimeSetting = appOvertimeSettingRepository.getAppOver().get();
 				ActualStatusCheckResult actualStatusCheckResult = preActualColorCheck
 						.actualStatusCheck(companyID, employeeID, GeneralDate.fromString(appDate, DATE_FORMAT), ApplicationType.OVER_TIME_APPLICATION, 
 								result.getWorkType() == null ? null : result.getWorkType().getWorkTypeCode(), 
 								result.getSiftType() ==  null ? null : result.getSiftType().getSiftCode(), 
-								withdrawalAppSet.getOverrideSet(), Optional.empty());
+								appOvertimeSetting.getPriorityStampSetAtr(), Optional.empty());
 				appOvertimeReference.setAppDateRefer(appDate);
 				List<CaculationTime> overTimeInputsRefer = new ArrayList<>();
 				for(OvertimeWorkFrame overtimeFrame :overtimeFrames){
@@ -1703,9 +1697,10 @@ public class AppOvertimeFinder {
 			}).collect(Collectors.toList());
 			// 01-18_実績の内容を表示し直す
 			if(appDate!=null) {
-				WithdrawalAppSet withdrawalAppSet = withdrawalAppSetRepository.getWithDraw().get();
+				AppOvertimeSetting appOvertimeSetting = appOvertimeSettingRepository.getAppOver().get();
 				ActualStatusCheckResult actualStatusCheckResult = preActualColorCheck
-						.actualStatusCheck(companyID, employeeID, GeneralDate.fromString(appDate, DATE_FORMAT), ApplicationType.OVER_TIME_APPLICATION, workTypeCode, siftCD, withdrawalAppSet.getOverrideSet(), Optional.empty());
+						.actualStatusCheck(companyID, employeeID, GeneralDate.fromString(appDate, DATE_FORMAT), ApplicationType.OVER_TIME_APPLICATION, 
+								workTypeCode, siftCD, appOvertimeSetting.getPriorityStampSetAtr(), Optional.empty());
 				appOvertimeReference.setAppDateRefer(appDate);
 				List<CaculationTime> overTimeInputsRefer = new ArrayList<>();
 				List<OvertimeWorkFrame> overtimeFrames = iOvertimePreProcess.getOvertimeHours(0, companyID);
@@ -1835,7 +1830,7 @@ public class AppOvertimeFinder {
 			// // アルゴリズム「残業申請設定を取得する」を実行する
 			UseAtr preExcessDisplaySetting = overtimeRestAppCommonSet.getPreExcessDisplaySetting();
 			AppDateContradictionAtr performanceExcessAtr = overtimeRestAppCommonSet.getPerformanceExcessAtr();
-			WithdrawalAppSet withdrawalAppSet = withdrawalAppSetRepository.getWithDraw().get();
+			AppOvertimeSetting appOvertimeSetting = appOvertimeSettingRepository.getAppOver().get();
 			// 07-01_事前申請状態チェック
 			PreAppCheckResult preAppCheckResult = preActualColorCheck.preAppStatusCheck(
 					companyID, 
@@ -1850,7 +1845,7 @@ public class AppOvertimeFinder {
 					application.getAppType(), 
 					appOverTime.getWorkTypeCode() == null ? null : appOverTime.getWorkTypeCode().v(), 
 					appOverTime.getSiftCode() == null ? null : appOverTime.getSiftCode().v(), 
-					withdrawalAppSet.getOverrideSet(), 
+					appOvertimeSetting.getPriorityStampSetAtr(), 
 					Optional.empty());
 			// 07_事前申請・実績超過チェック(07_đơn xin trước. check vượt quá thực tế )
 			PreActualColorResult preActualColorResult = preActualColorCheck.preActualColorCheck(
@@ -1858,9 +1853,7 @@ public class AppOvertimeFinder {
 					performanceExcessAtr, 
 					application.getAppType(), 
 					application.getPrePostAtr(), 
-					withdrawalAppSet.getOverrideSet(), 
-					Optional.empty(), 
-					Collections.emptyList(), 
+					Collections.emptyList(),
 					otTimeLst,
 					preAppCheckResult.opAppBefore,
 					preAppCheckResult.beforeAppStatus,
