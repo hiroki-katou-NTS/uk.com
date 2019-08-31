@@ -474,7 +474,11 @@ module nts.uk.at.view.kaf010.b {
                 if(errorCode == 1){
                     return '#F69164';
                 }
-                return 'none';
+                if(self.editable()&& self.enableOvertimeInput()){
+                    return 'none';    
+                } else {
+                    return '#ebebe4';
+                }
             }
 
             checkRequiredBreakTimes() {
@@ -955,9 +959,15 @@ module nts.uk.at.view.kaf010.b {
                     $('input#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', '#F69164');
                     return '#F69164';
                 }
-                $('td#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', 'none');
-                $('input#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', 'none');
-                return 'none';
+                if(self.editable()&& self.enableOvertimeInput()){
+                    $('td#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', 'none');
+                    $('input#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', 'none');
+                    return 'none';    
+                } else {
+                    $('td#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', '#ebebe4');
+                    $('input#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', '#ebebe4');
+                    return '#ebebe4';
+                }
             }
             
             getReason(inputReasonDisp: boolean, inputReasonID: string, inputReasonList: Array<common.ComboReason>, detailReasonDisp: boolean, detailReason: string): string{

@@ -569,9 +569,15 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 $('input#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', '#F69164');
                 return '#F69164';
             }
-            $('td#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', 'none');
-            $('input#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', 'none');
-            return 'none';
+            if(self.editable()&& self.enableOvertimeInput()){
+                $('td#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', 'none');
+                $('input#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', 'none');
+                return 'none';    
+            } else {
+                $('td#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', '#ebebe4');
+                $('input#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', '#ebebe4');
+                return '#ebebe4';
+            }
         }
 
         validate(): boolean{
