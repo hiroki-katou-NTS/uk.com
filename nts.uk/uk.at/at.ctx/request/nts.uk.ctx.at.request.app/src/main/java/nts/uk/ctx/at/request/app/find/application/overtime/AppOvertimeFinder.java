@@ -938,8 +938,77 @@ public class AppOvertimeFinder {
 		AppDateContradictionAtr performanceExcessAtr = overtimeRestAppCommonSet.get().getPerformanceExcessAtr();
 		overTimeDto.setPreExcessDisplaySetting(preExcessDisplaySetting.value);
 		overTimeDto.setPerformanceExcessAtr(performanceExcessAtr.value);
+		
+		List<OvertimeColorCheck> otTimeLst = new ArrayList<>();
+		overTimeInputs.forEach(overtimeInput -> {
+			otTimeLst.add(OvertimeColorCheck.createApp(overtimeInput.getAttendanceID(), overtimeInput.getFrameNo(), overtimeInput.getApplicationTime()));
+		});
+		// // アルゴリズム「残業申請設定を取得する」を実行する
+		AppOvertimeSetting appOvertimeSetting = appOvertimeSettingRepository.getAppOver().get();
+		// 07-01_事前申請状態チェック
+		PreAppCheckResult preAppCheckResult = preActualColorCheck.preAppStatusCheck(
+				companyID, 
+				appOverTime.getApplication().getEmployeeID(), 
+				appOverTime.getApplication().getAppDate(), 
+				appOverTime.getApplication().getAppType());
+		// 07-02_実績取得・状態チェック
+		ActualStatusCheckResult actualStatusCheckResult = preActualColorCheck.actualStatusCheck(
+				companyID, 
+				appOverTime.getApplication().getEmployeeID(), 
+				appOverTime.getApplication().getAppDate(), 
+				appOverTime.getApplication().getAppType(), 
+				appOverTime.getWorkTypeCode() == null ? null : appOverTime.getWorkTypeCode().v(), 
+				appOverTime.getSiftCode() == null ? null : appOverTime.getSiftCode().v(), 
+				appOvertimeSetting.getPriorityStampSetAtr(), 
+				Optional.empty());
+		// 07_事前申請・実績超過チェック(07_đơn xin trước. check vượt quá thực tế )
+		PreActualColorResult preActualColorResult = preActualColorCheck.preActualColorCheck(
+				preExcessDisplaySetting, 
+				performanceExcessAtr, 
+				appOverTime.getApplication().getAppType(), 
+				appOverTime.getApplication().getPrePostAtr(), 
+				Collections.emptyList(),
+				otTimeLst,
+				preAppCheckResult.opAppBefore,
+				preAppCheckResult.beforeAppStatus,
+				actualStatusCheckResult.actualLst,
+				actualStatusCheckResult.actualStatus);
+		List<CaculationTime> caculationTimes = preActualColorResult.resultLst.stream()
+				.map(x -> new CaculationTime(
+						companyID, 
+						appID, 
+						x.attendanceID, 
+						x.frameNo, 
+						0, 
+						"", 
+						x.appTime, 
+						x.preAppTime==null ? null : x.preAppTime.toString(), 
+						x.actualTime==null ? null : x.actualTime.toString(), 
+						getErrorCode(x.calcError, x.preAppError, x.actualError), 
+						false, 
+						preActualColorResult.beforeAppStatus, 
+						preActualColorResult.actualStatus==3))
+				.collect(Collectors.toList());
+		overTimeDto.setCaculationTimes(caculationTimes);
 		return overTimeDto;
 	} 
+	
+	private int getErrorCode(int calcError, int preAppError, int actualError){
+        if(actualError > preAppError) {
+            if(actualError > calcError) {
+                return actualError;
+            } else {
+                return calcError;
+            }
+        } else {
+            if(preAppError > calcError) {
+                return preAppError;
+            } else {
+                return calcError;
+            }
+        }
+    }
+	
 	public List<OvertimeInputDto> checkColorCaculationForUIB(List<OvertimeInputDto> overtimeHours,int prePostAtr,String appDate,String inputDate,String siftCD,
 			String workTypeCode,Integer startTime,Integer endTime,List<Integer> startTimeRests,List<Integer> endTimeRests){
 		

@@ -412,27 +412,17 @@ module nts.uk.at.view.kaf010.b {
                    
                 }); 
                 _.forEach(dataBreakTime, (item :any) => {
-                    let color: string = "";
-                    if (item.errorCode == 1) {
-                        color = '#FD4D4D';
+                    if(item.frameNo == 11){
+                        if (data.appOvertimeNightFlg == 1) {
+                            self.breakTimes.push(self.createOvertimeInputInit(data.caculationTimes, item));
+                        }
+                    } else if (item.frameNo == 12) {
+                        if (data.flexFLag) {
+                            self.breakTimes.push(self.createOvertimeInputInit(data.caculationTimes, item));
+                        }
+                    } else {
+                        self.breakTimes.push(self.createOvertimeInputInit(data.caculationTimes, item));
                     }
-                    if (item.errorCode == 2) {
-                        color = '#F6F636';
-                    }
-                    if (item.errorCode == 3) {
-                        color = '#F69164';
-                    } 
-                    self.breakTimes.push(new common.OvertimeCaculation(
-                        item.companyID, 
-                        item.appID, 
-                        item.attendanceType, 
-                        "", 
-                        item.frameNo, 
-                        "", 
-                        item.frameName, 
-                        item.applicationTime, 
-                        null, 
-                        null, "","",color));
                 }); 
                 _.forEach(dataBonusTime, (item) => { 
                     self.bonusTimes.push(new common.OvertimeCaculation(
@@ -447,6 +437,44 @@ module nts.uk.at.view.kaf010.b {
                         null, 
                         null, "","",""));
                 }); 
+            }
+            
+            createOvertimeInputInit(calcLstInit, item){
+                let self = this;
+                let calcValue = _.filter(calcLstInit, value => {
+                    return item.attendanceType == value.attendanceID && item.frameNo == value.frameNo;     
+                })[0];
+                return new common.OvertimeCaculation(
+                        item.companyID, 
+                        item.appID, 
+                        item.attendanceID, 
+                        "", 
+                        item.frameNo, 
+                        item.timeItemTypeAtr, 
+                        item.frameName, 
+                        calcValue.applicationTime, 
+                        nts.uk.util.isNullOrUndefined(calcValue.preAppTime) ? null : self.convertIntToTime(parseInt(calcValue.preAppTime)), 
+                        nts.uk.util.isNullOrUndefined(calcValue.caculationTime) ? null : self.convertIntToTime(parseInt(calcValue.caculationTime)),
+                        "",
+                        "", 
+                        self.getColorInit(item.attendanceID, item.frameNo, calcValue.errorCode, calcValue.preAppExceedState, calcValue.actualExceedState));        
+            }
+            
+            getColorInit(attendanceId, frameNo,errorCode, beforeAppStatus, actualStatus){
+                let self = this;
+                if((self.performanceExcessAtr() == 2) &&(errorCode == 4||actualStatus==true)){
+                    return '#FD4D4D';
+                }
+                if((self.performanceExcessAtr() == 1) &&(errorCode == 3||actualStatus==true)){
+                    return '#F6F636';
+                }
+                if((self.preExcessDisplaySetting()==1) &&(errorCode == 2||beforeAppStatus==true)){
+                    return '#FFC0CB';
+                }
+                if(errorCode == 1){
+                    return '#F69164';
+                }
+                return 'none';
             }
 
             checkRequiredBreakTimes() {
@@ -1085,7 +1113,7 @@ module nts.uk.at.view.kaf010.b {
                 } else {
                     let framesError = '';
                     preAppErrorFrames.forEach((v, k)=>{
-                        let currentFrame = _.find(self.breakTimes(), ot => ot.attendanceID()==v.attendanceID && ot.frameNo()==v.frameNo);
+                        let currentFrame = _.find(self.breakTimes(), ot => ot.frameNo()==v.frameNo);
                         if(!nts.uk.util.isNullOrUndefined(currentFrame)){
                             framesError+=currentFrame.frameName();
                             if(k<(preAppErrorFrames.length-1)){
@@ -1135,7 +1163,7 @@ module nts.uk.at.view.kaf010.b {
                 if(!nts.uk.util.isNullOrEmpty(actualErrorFrames)){
                     let framesError = '';
                     actualErrorFrames.forEach((v, k)=>{
-                        let currentError = _.find(self.breakTimes(), ot => ot.attendanceID()==v.attendanceID&&ot.frameNo()==v.frameNo);
+                        let currentError = _.find(self.breakTimes(), ot => ot.frameNo()==v.frameNo);
                         if(!nts.uk.util.isNullOrUndefined(currentError)){
                             framesError+=currentError.frameName();
                             if(k<(actualErrorFrames.length-1)){
@@ -1151,7 +1179,7 @@ module nts.uk.at.view.kaf010.b {
                 } else if(!nts.uk.util.isNullOrEmpty(actualAlarmFrames)){
                     let framesAlarm = '';
                     actualAlarmFrames.forEach((v, k)=>{
-                        let currentAlarm = _.find(self.breakTimes(), ot => ot.attendanceID()==v.attendanceID&&ot.frameNo()==v.frameNo);
+                        let currentAlarm = _.find(self.breakTimes(), ot => ot.frameNo()==v.frameNo);
                         if(!nts.uk.util.isNullOrUndefined(currentAlarm)){
                             framesAlarm+=currentAlarm.frameName();
                             if(k<(actualAlarmFrames.length-1)){
