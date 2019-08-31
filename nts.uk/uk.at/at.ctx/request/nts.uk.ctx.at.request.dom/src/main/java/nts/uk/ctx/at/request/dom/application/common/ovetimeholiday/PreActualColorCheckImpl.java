@@ -25,6 +25,9 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInf
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculation;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculationImport;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
@@ -56,6 +59,9 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 	
 	@Inject
 	private OvertimeRepository overtimeRepository;
+	
+	@Inject
+	private AppHolidayWorkRepository appHolidayWorkRepository;
 
 	@Override
 	public PreActualColorResult preActualColorCheck(UseAtr preExcessDisplaySetting, AppDateContradictionAtr performanceExcessAtr,
@@ -384,7 +390,19 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 					}
 				}
 			} else {
-				// KAF010
+				AppHolidayWork appHolidayWork = appHolidayWorkRepository.getFullAppHolidayWork(companyID, appBefore.getAppID()).get();
+				List<HolidayWorkInput> holidayWorkInputLst = appHolidayWork.getHolidayWorkInputs();
+				if(!CollectionUtil.isEmpty(holidayWorkInputLst)) {
+					Optional<HolidayWorkInput> holidayWorkInput = holidayWorkInputLst
+							.stream().filter(x -> x.getAttendanceType().value==overtimeColorCheck.attendanceID && x.getFrameNo()==overtimeColorCheck.frameNo).findAny();
+					if(holidayWorkInput.isPresent()){
+						// 事前申請時間に勤怠種類・枠NOに応じた時間を設定する
+						overtimeColorCheck.preAppTime = holidayWorkInput.get().getApplicationTime().v();
+						if(overtimeColorCheck.preAppTime!=null) {
+							compareValue = overtimeColorCheck.preAppTime;
+						}
+					}
+				}
 			}
 		}
 		// 事前申請超過チェックをする必要があるかチェックする

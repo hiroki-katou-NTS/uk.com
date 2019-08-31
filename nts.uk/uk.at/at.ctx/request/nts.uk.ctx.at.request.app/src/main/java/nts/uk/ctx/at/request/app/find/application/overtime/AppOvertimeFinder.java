@@ -15,7 +15,6 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
-import org.eclipse.persistence.sdo.helper.extension.OPStack;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
