@@ -645,7 +645,7 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
         int count = 0;
         List<OverTimeFrame> lstSort = this.sortFrameTime(lstFrame, 6);
         for(OverTimeFrame item : lstSort){
-        	if (item != null && item.getApplicationTime() != 0) {
+        	if (item.getApplicationTime() != null && item.getApplicationTime() != 0) {
                 if (count < 3) {
                     framName += item.getName() + this.convertTime_Short_HM(item.getApplicationTime()) + "　";
                 }

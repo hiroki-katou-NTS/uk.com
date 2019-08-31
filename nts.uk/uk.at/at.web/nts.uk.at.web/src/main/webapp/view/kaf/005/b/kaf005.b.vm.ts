@@ -848,7 +848,7 @@ module nts.uk.at.view.kaf005.b {
                     }
                 });  
                 _.forEach(self.bonusTimes(), bonusTime => {
-                    let calcOT = _.find(data, item => {
+                    let calcOT = _.find(resultLst, item => {
                         return item.attendanceID == 3 &&
                             item.frameNo == bonusTime.frameNo();    
                     });          
@@ -959,7 +959,7 @@ module nts.uk.at.view.kaf005.b {
                     $('input#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', '#F6F636');
                     return '#F6F636';
                 }
-                if(errorCode == 2 || beforeAppStatus==true){
+                if((self.preExcessDisplaySetting()==1) &&(errorCode == 2||beforeAppStatus==true)){
                     $('td#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', '#FFC0CB');
                     $('input#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', '#FFC0CB');
                     return '#FFC0CB';
