@@ -16,6 +16,7 @@ import javax.inject.Inject;
 import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
@@ -81,6 +82,10 @@ import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachCompanyRepository;
 import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachWorkplaceRepository;
 import nts.uk.ctx.at.request.dom.setting.workplace.SettingFlg;
+import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
+import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository;
+import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
+import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
@@ -148,7 +153,10 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	private WithdrawalAppSetRepository withdrawalAppSetRepo;
 	@Inject
 	private AppOvertimeSettingRepository appOtSetRepo;
-	
+	@Inject
+	private OvertimeWorkFrameRepository repoOverTimeFr;
+	@Inject
+	private WorkdayoffFrameRepository repoWork;
 	private static final int PC = 0;
 	private static final int MOBILE = 1;
 	
@@ -919,6 +927,29 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			frameRes.setApplicationTime(actTime);
 			lstFrameResult.add(frameRes);
 		}
+		if(lstFrameResult.size() < actualLst.size()){//TH xin sau k co nhung thuc te co
+			for(OvertimeColorCheck act: actualLst){
+				if(lstFrameResult.stream().filter(c -> c.getAttendanceType() == act.attendanceID && c.getFrameNo() == act.frameNo)
+						.collect(Collectors.toList()).size() == 0){
+					String name = "";
+					if(act.frameNo == 11){
+						name = I18NText.getText("CMM045_270");
+					}else if(act.frameNo == 12){
+						name = I18NText.getText("CMM045_271");
+					}else{
+						if(act.attendanceID == 1){//
+							List<OvertimeWorkFrame> lstFramOt = repoOverTimeFr.getOvertimeWorkFrameByFrameNos(AppContexts.user().companyId(), Arrays.asList(act.frameNo));
+							name = !lstFramOt.isEmpty() ? lstFramOt.get(0).getOvertimeWorkFrName().v() : act.frameNo + "マスタ未登録";
+						}
+						if(act.attendanceID == 2){
+							List<WorkdayoffFrame> lstFramWork = repoWork.getWorkdayoffFrameBy(AppContexts.user().companyId(),Arrays.asList(act.frameNo));
+							name = !lstFramWork.isEmpty() ? lstFramWork.get(0).getWorkdayoffFrName().v() : act.frameNo + "マスタ未登録";
+						}
+					}
+					lstFrameResult.add(new OverTimeFrame(act.attendanceID, act.frameNo, name, null, act.actualTime, null, null));
+				}
+			}
+		}
 		/**就業時間外深夜 - 計算就業外深夜*/
 		Integer shiftNightTime = this.findTimeRes(actualLst, new OverTimeFrame(1, 11, "", null, null, null, null));
 		/**フレックス超過時間 - 計算フレックス*/
@@ -938,7 +969,6 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				repoAppDetail.convertTime(cal.endTime), repoAppDetail.convertTime(null), 
 				repoAppDetail.convertTime(null), shiftNightTime, flexTime, workTypeName, workTimeName);
 	}
-	
 	private Integer findTimeRes(List<OvertimeColorCheck> actualLst, OverTimeFrame time){
 		for(OvertimeColorCheck act : actualLst){
 			if(act.attendanceID == time.getAttendanceType() && act.frameNo == time.getFrameNo()){
