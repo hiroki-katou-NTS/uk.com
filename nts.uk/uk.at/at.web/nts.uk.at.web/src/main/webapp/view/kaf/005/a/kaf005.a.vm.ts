@@ -795,7 +795,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 $('input#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', '#F6F636');
                 return '#F6F636';
             }
-            if(errorCode == 2 || beforeAppStatus==true){
+            if((self.preExcessDisplaySetting()==1) &&(errorCode == 2||beforeAppStatus==true)){
                 $('td#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', '#FFC0CB');
                 $('input#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', '#FFC0CB');
                 return '#FFC0CB';
