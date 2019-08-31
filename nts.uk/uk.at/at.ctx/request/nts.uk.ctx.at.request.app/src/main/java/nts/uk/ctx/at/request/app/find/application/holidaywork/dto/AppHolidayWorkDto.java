@@ -242,6 +242,9 @@ public class AppHolidayWorkDto {
 	/** 申請理由が必須 */
 	private boolean requireAppReasonFlg;
 	
+	private int performanceExcessAtr;
+	private int preExcessDisplaySetting;
+	
 	public static AppHolidayWorkDto fromDomain(AppHolidayWork appHolidayWork){
 		return new AppHolidayWorkDto(
 				appHolidayWork.getVersion(),
@@ -295,7 +298,9 @@ public class AppHolidayWorkDto {
 				null,
 				Collections.emptyList(),
 				false,
-				false);
+				false,
+				0,
+				0);
 	}
 	
 }
