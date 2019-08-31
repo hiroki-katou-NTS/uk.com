@@ -848,7 +848,7 @@ module nts.uk.at.view.kaf005.b {
                     }
                 });  
                 _.forEach(self.bonusTimes(), bonusTime => {
-                    let calcOT = _.find(data, item => {
+                    let calcOT = _.find(resultLst, item => {
                         return item.attendanceID == 3 &&
                             item.frameNo == bonusTime.frameNo();    
                     });          
