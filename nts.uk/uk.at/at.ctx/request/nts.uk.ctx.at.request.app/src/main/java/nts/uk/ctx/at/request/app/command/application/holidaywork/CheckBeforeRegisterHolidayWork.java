@@ -226,8 +226,6 @@ public class CheckBeforeRegisterHolidayWork {
 				performanceExcessAtr, 
 				ApplicationType.BREAK_TIME_APPLICATION, 
 				app.getPrePostAtr(), 
-				withdrawalAppSet.getOverrideSet(), 
-				Optional.empty(), 
 				Collections.emptyList(), 
 				holidayTimeLst,
 				preAppCheckResult.opAppBefore,

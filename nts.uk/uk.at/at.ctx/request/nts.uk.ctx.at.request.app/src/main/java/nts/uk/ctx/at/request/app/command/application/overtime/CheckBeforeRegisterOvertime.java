@@ -37,10 +37,9 @@ import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.service.IFactoryOvertime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.IOvertimePreProcess;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.AppOvertimeSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.AppOvertimeSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.FlexExcessUseSetAtr;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.WithdrawalAppSet;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.WithdrawalAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.AppDateContradictionAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
@@ -67,9 +66,6 @@ public class CheckBeforeRegisterOvertime {
 	
 	@Inject
 	private PreActualColorCheck preActualColorCheck;
-	
-	@Inject
-	private WithdrawalAppSetRepository withdrawalAppSetRepository;
 	
 	@Inject
 	private IOvertimePreProcess iOvertimePreProcess;
@@ -205,7 +201,7 @@ public class CheckBeforeRegisterOvertime {
 		PreActualColorResult preActualColorResult = null;
 		UseAtr preExcessDisplaySetting = overTimeSettingOpt.get().getPreExcessDisplaySetting();
 		AppDateContradictionAtr performanceExcessAtr = overTimeSettingOpt.get().getPerformanceExcessAtr();
-		WithdrawalAppSet withdrawalAppSet = withdrawalAppSetRepository.getWithDraw().get();
+		AppOvertimeSetting appOvertimeSetting = appOvertimeSettingRepository.getAppOver().get();
 		otTimeLst = otTimeLst.stream().map(x -> {
 			Integer value = overtimeInputs.stream()
 			.filter(y -> y.getAttendanceType().value==x.attendanceID && y.getFrameNo()==x.frameNo)
@@ -226,7 +222,7 @@ public class CheckBeforeRegisterOvertime {
 				ApplicationType.OVER_TIME_APPLICATION, 
 				overtime.getWorkTypeCode() == null ? null : overtime.getWorkTypeCode().v(), 
 				overtime.getSiftCode() == null ? null : overtime.getSiftCode().v(), 
-				withdrawalAppSet.getOverrideSet(), 
+						appOvertimeSetting.getPriorityStampSetAtr(), 
 				Optional.empty());
 		// 07_事前申請・実績超過チェック(07_đơn xin trước. check vượt quá thực tế )
 		preActualColorResult = preActualColorCheck.preActualColorCheck(
@@ -234,8 +230,6 @@ public class CheckBeforeRegisterOvertime {
 				performanceExcessAtr, 
 				ApplicationType.OVER_TIME_APPLICATION, 
 				app.getPrePostAtr(), 
-				withdrawalAppSet.getOverrideSet(), 
-				Optional.empty(), 
 				Collections.emptyList(), 
 				otTimeLst,
 				preAppCheckResult.opAppBefore,
