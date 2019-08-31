@@ -714,8 +714,76 @@ public class AppHolidayWorkFinder {
 		AppDateContradictionAtr performanceExcessAtr = overtimeRestAppCommonSet.get().getPerformanceExcessAtr();
 		appHolidayWorkDto.setPreExcessDisplaySetting(preExcessDisplaySetting.value);
 		appHolidayWorkDto.setPerformanceExcessAtr(performanceExcessAtr.value);
+		
+		List<OvertimeColorCheck> holidayLst = new ArrayList<>();
+		appHolidayWorkDto.getHolidayWorkInputDtos().forEach(holidayInput -> {
+			holidayLst.add(OvertimeColorCheck.createApp(2, holidayInput.getFrameNo(), holidayInput.getApplicationTime()));
+		});
+		// // アルゴリズム「残業申請設定を取得する」を実行する
+		WithdrawalAppSet withdrawalAppSet = withdrawalAppSetRepository.getWithDraw().get();
+		// 07-01_事前申請状態チェック
+		PreAppCheckResult preAppCheckResult = preActualColorCheck.preAppStatusCheck(
+				companyID, 
+				appHolidayWork.getApplication().getEmployeeID(), 
+				appHolidayWork.getApplication().getAppDate(), 
+				appHolidayWork.getApplication().getAppType());
+		// 07-02_実績取得・状態チェック
+		ActualStatusCheckResult actualStatusCheckResult = preActualColorCheck.actualStatusCheck(
+				companyID, 
+				appHolidayWork.getApplication().getEmployeeID(), 
+				appHolidayWork.getApplication().getAppDate(), 
+				appHolidayWork.getApplication().getAppType(), 
+				appHolidayWork.getWorkTypeCode() == null ? null : appHolidayWork.getWorkTypeCode().v(), 
+						appHolidayWork.getWorkTimeCode() == null ? null : appHolidayWork.getWorkTimeCode().v(), 
+				withdrawalAppSet.getOverrideSet(), 
+				Optional.empty());
+		// 07_事前申請・実績超過チェック(07_đơn xin trước. check vượt quá thực tế )
+		PreActualColorResult preActualColorResult = preActualColorCheck.preActualColorCheck(
+				preExcessDisplaySetting, 
+				performanceExcessAtr, 
+				appHolidayWork.getApplication().getAppType(), 
+				appHolidayWork.getApplication().getPrePostAtr(), 
+				Collections.emptyList(),
+				holidayLst,
+				preAppCheckResult.opAppBefore,
+				preAppCheckResult.beforeAppStatus,
+				actualStatusCheckResult.actualLst,
+				actualStatusCheckResult.actualStatus);
+		List<CaculationTime> caculationTimes = preActualColorResult.resultLst.stream()
+				.map(x -> new CaculationTime(
+						companyID, 
+						appID, 
+						x.attendanceID, 
+						x.frameNo, 
+						0, 
+						"", 
+						x.appTime, 
+						x.preAppTime==null ? null : x.preAppTime.toString(), 
+						x.actualTime==null ? null : x.actualTime.toString(), 
+						getErrorCode(x.calcError, x.preAppError, x.actualError), 
+						false, 
+						preActualColorResult.beforeAppStatus, 
+						preActualColorResult.actualStatus==3))
+				.collect(Collectors.toList());
+		appHolidayWorkDto.setCaculationTimes(caculationTimes);
 		return appHolidayWorkDto;
 	}
+	
+	private int getErrorCode(int calcError, int preAppError, int actualError){
+        if(actualError > preAppError) {
+            if(actualError > calcError) {
+                return actualError;
+            } else {
+                return calcError;
+            }
+        } else {
+            if(preAppError > calcError) {
+                return preAppError;
+            } else {
+                return calcError;
+            }
+        }
+    }
 	
 	private boolean isSettingDisplay(AppCommonSettingOutput appCommonSettingOutput) {
 		return appCommonSettingOutput.approvalFunctionSetting.getApplicationDetailSetting().get()

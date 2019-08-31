@@ -16,6 +16,7 @@ import nts.uk.ctx.at.request.app.find.application.overtime.dto.DivergenceReasonD
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.EmployeeOvertimeDto;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.AppHolidayWorkPreAndReferDto;
+import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.SiftType;
 import nts.uk.ctx.at.request.dom.application.overtime.service.WorkTypeOvertime;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.DeductionTimeDto;
@@ -244,6 +245,7 @@ public class AppHolidayWorkDto {
 	
 	private int performanceExcessAtr;
 	private int preExcessDisplaySetting;
+	private List<CaculationTime> caculationTimes;
 	
 	public static AppHolidayWorkDto fromDomain(AppHolidayWork appHolidayWork){
 		return new AppHolidayWorkDto(
@@ -300,7 +302,8 @@ public class AppHolidayWorkDto {
 				false,
 				false,
 				0,
-				0);
+				0,
+				Collections.emptyList());
 	}
 	
 }
