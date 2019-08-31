@@ -35,4 +35,6 @@ public class AppOverTimeInfoFull {
 	private String flexExessTime;
 	//時間外時間の詳細
 	private TimeNo417 timeNo417;
+	
+	private WkTypeWkTime wkT;
 }

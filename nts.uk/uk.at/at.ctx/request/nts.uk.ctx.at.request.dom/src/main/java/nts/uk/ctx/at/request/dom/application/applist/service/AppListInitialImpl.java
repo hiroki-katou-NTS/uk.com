@@ -37,6 +37,7 @@ import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppOverTimeI
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppWorkChangeFull;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.ContentApp;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.ScreenAtr;
+import nts.uk.ctx.at.request.dom.application.applist.service.detail.WkTypeWkTime;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmploymentAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.SyEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmploymentHisImport;
@@ -607,10 +608,10 @@ public class AppListInitialImpl implements AppListInitialRepository{
 					.filter(c -> !lstSyncId.contains(c.getApplication().getAppID())).collect(Collectors.toList());
 			List<AppCompltLeaveSync> lstSync = lstAppCompltLeaveSync.stream()
 					.filter(c -> c.isSync()).collect(Collectors.toList());
-			timeOutput = this.getAppListAchievement(lstCount, displaySet, companyId, sID, lstSync, lstWkType, lstWkTime, device);
+			timeOutput = this.getAppListAchievement(lstCount, lstAppOt, lstAppHdWork, displaySet, companyId, sID, lstSync, lstWkType, lstWkTime, device);
 		} else {
 			lstAppFilter.addAll(lstAppFilter3);
-			timeOutput = this.getAppListAchievement(lstAppFullFilter3, displaySet, companyId, sID, new ArrayList<>(), lstWkType, lstWkTime, device);
+			timeOutput = this.getAppListAchievement(lstAppFullFilter3, lstAppOt, lstAppHdWork, displaySet, companyId, sID, new ArrayList<>(), lstWkType, lstWkTime, device);
 		}
 			
 		//imported(申請承認）「稟議書」を取得する - wait request : return list app - tam thoi bo qua
@@ -696,7 +697,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	 * 5 - 申請一覧リスト取得実績
 	 */
 	@Override
-	public AppListAtrOutput getAppListAchievement(List<ApplicationFullOutput> lstAppFull, ApprovalListDisplaySetting displaySet, String companyId,
+	public AppListAtrOutput getAppListAchievement(List<ApplicationFullOutput> lstAppFull, List<AppOverTimeInfoFull> lstAppOt, List<AppHolidayWorkFull> lstAppHdWork, ApprovalListDisplaySetting displaySet, String companyId,
 			String sIDLogin, List<AppCompltLeaveSync> lstSync, List<WorkType> lstWkType, List<WorkTimeSetting> lstWkTime, int device) {
 		List<CheckColorTime> lstColorTime = new ArrayList<>();
 		List<AppPrePostGroup> lstAppGroup = new ArrayList<>();
@@ -764,7 +765,9 @@ public class AppListInitialImpl implements AppListInitialRepository{
 					lstRestStart.add(restTime.getStartTime());
 					lstRestEnd.add(restTime.getEndTime());
 				}
-				TimeResultOutput result = this.getDataActual(sID, appDate, time, ApplicationType.OVER_TIME_APPLICATION, lstWkType, lstWkTime);
+				WkTypeWkTime wkT = this.findWkTOt(lstAppOt, appID);
+				TimeResultOutput result = this.getDataActual(sID, appDate, time, 
+						ApplicationType.OVER_TIME_APPLICATION, wkT.getWkTypeCd(), wkT.getWkTimeCd(), lstWkType, lstWkTime);
 				if (result.isCheckColor()) {
 					if (this.checkExistColor(lstColorTime, appID)) {
 						checkColor.setColorAtr(2);
@@ -837,7 +840,9 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			if (displaySet.getHwActualDisAtr().equals(DisplayAtr.DISPLAY)) {// 表示する
 				// アルゴリズム「申請一覧リスト取得実績残業申請」を実行する-(5.2)
 				List<OverTimeFrame> time = appHdPost.getLstFrame();
-				TimeResultOutput result = this.getDataActual(sID, appDate, time, ApplicationType.BREAK_TIME_APPLICATION, lstWkType, lstWkTime);
+				WkTypeWkTime wkT = this.findWkTHd(lstAppHdWork, appID);
+				TimeResultOutput result = this.getDataActual(sID, appDate, time, 
+						ApplicationType.BREAK_TIME_APPLICATION, wkT.getWkTypeCd(), wkT.getWkTimeCd(), lstWkType, lstWkTime);
 				if (result.isCheckColor()) {
 					if (this.checkExistColor(lstColorTime, appID)) {
 						checkColor.setColorAtr(2);
@@ -885,7 +890,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	 */
 	@Override
 	public TimeResultOutput getDataActual(String sID, GeneralDate date, List<OverTimeFrame> time, 
-			ApplicationType appType, List<WorkType> lstWkType, List<WorkTimeSetting> lstWkTime) {
+			ApplicationType appType, String wkTypeCd, String wkTimeCd, List<WorkType> lstWkType, List<WorkTimeSetting> lstWkTime) {
 		OverrideSet overrideSet = OverrideSet.SYSTEM_TIME_PRIORITY;
 		Optional<CalcStampMiss> calStampMiss = Optional.empty();
 		if(appType.equals(ApplicationType.OVER_TIME_APPLICATION)){
@@ -899,7 +904,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		
 		//07-02_実績取得・状態チェック
 		ActualStatusCheckResult cal = preActualCheck.actualStatusCheck(AppContexts.user().companyId(), sID, date, 
-				appType, null, null, overrideSet, calStampMiss);
+				appType, wkTypeCd, wkTimeCd, overrideSet, calStampMiss);
 		
 		boolean checkColor = false;
 		List<OverTimeFrame> lstFrameResult = new ArrayList<>();
@@ -1861,5 +1866,17 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		}
 		if(phaseApprMax == lstPhase.get(lstPhase.size() - 1).getPhaseOrder()) phaseNotAppr = phaseApprMax;
 		return phaseNotAppr;
+	}
+	private WkTypeWkTime findWkTOt(List<AppOverTimeInfoFull> lstApp, String appId){
+		for(AppOverTimeInfoFull app : lstApp){
+			if(app.getAppID().equals(appId)) return app.getWkT();
+		}
+		return new WkTypeWkTime(null, null);
+	}
+	private WkTypeWkTime findWkTHd(List<AppHolidayWorkFull> lstApp, String appId){
+		for(AppHolidayWorkFull app : lstApp){
+			if(app.getAppId().equals(appId)) return app.getWkT();
+		}
+		return new WkTypeWkTime(null, null);
 	}
 }
