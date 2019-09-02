@@ -23,6 +23,7 @@ import nts.uk.ctx.sys.auth.app.find.person.role.PersonInformationRole;
 import nts.uk.ctx.sys.auth.app.find.person.role.PersonInformationRoleFinder;
 import nts.uk.ctx.sys.auth.app.find.person.role.dto.RoleDto;
 import nts.uk.ctx.sys.auth.app.find.role.workplace.RoleWorkplaceIDFinder;
+import nts.uk.ctx.sys.auth.app.find.role.workplace.RoleWorkplaceIDFinder.SystemType;
 import nts.uk.ctx.sys.auth.app.find.role.workplace.WorkplaceParam;
 import nts.uk.ctx.sys.auth.dom.adapter.persettingmenu.PermissionSettingMenuAdapter;
 import nts.uk.ctx.sys.auth.dom.adapter.persettingmenu.PermissionSettingMenuImport;
@@ -67,10 +68,15 @@ public class RoleWebservice extends WebService {
 	@POST
 	@Path("getrefrangebysystype/{systype}")
 	public int getRefRangeByRoleId(@PathParam("systype") int sysType) {
+		if (sysType == SystemType.ADMINISTRATOR.value) {
+			return EmployeeReferenceRange.ALL_EMPLOYEE.value;
+		}
+		
 		String roleId = this.roleWorkplaceIDFinder.findRoleIdBySystemType(sysType);
 		if (Strings.isBlank(roleId)) {
 			return EmployeeReferenceRange.ONLY_MYSELF.value;
 		}
+		
 		return this.personInforRoleFinder.getRoleByRoleId(roleId).getEmployeeReferenceRange();
 	}
 	
