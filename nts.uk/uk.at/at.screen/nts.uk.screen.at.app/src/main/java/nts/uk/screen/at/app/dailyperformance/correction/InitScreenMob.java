@@ -15,6 +15,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
@@ -86,11 +87,13 @@ import nts.uk.screen.at.app.dailyperformance.correction.lock.DPLock;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.DPLockDto;
 import nts.uk.screen.at.app.dailyperformance.correction.month.asynctask.ParamCommonAsync;
 import nts.uk.screen.at.app.dailyperformance.correction.process.CheckClosingEmployee;
+import nts.uk.screen.at.app.dailyperformance.correction.searchemployee.FindAllEmployee;
 import nts.uk.screen.at.app.dailyperformance.correction.text.DPText;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
+@Stateless
 public class InitScreenMob {
 
 	@Inject
@@ -125,6 +128,9 @@ public class InitScreenMob {
 	
 	@Inject
 	private CheckClosingEmployee checkClosingEmployee;
+	
+	@Inject
+	private FindAllEmployee findAllEmployee;
 
 	private static final Integer[] DEVIATION_REASON = { 436, 438, 439, 441, 443, 444, 446, 448, 449, 451, 453, 454, 456,
 			458, 459, 799, 801, 802, 804, 806, 807, 809, 811, 812, 814, 816, 817, 819, 821, 822 };
@@ -140,6 +146,11 @@ public class InitScreenMob {
 		String sId = AppContexts.user().employeeId();
 		DailyPerformanceCorrectionDto screenDto = new DailyPerformanceCorrectionDto();
 		List<DailyPerformanceEmployeeDto> lstEmployee = param.lstEmployee;
+		Boolean needSortEmp = Boolean.FALSE;
+		Integer screenMode = param.screenMode;
+		Integer displayFormat = param.displayFormat;
+		DateRange dateRange = param.objectDateRange;
+		String employeeID = param.employeeID;
 
 		// 起動に必要な情報の取得
 		// アルゴリズム「実績修正画面で利用するフォーマットを取得する」を実行する
@@ -151,26 +162,60 @@ public class InitScreenMob {
 				: new IdentityProcessUseSetDto(false, false, null));
 		Optional<ApprovalUseSettingDto> approvalUseSettingDtoOpt = repo.findApprovalUseSettingDto(companyId);
 		screenDto.setApprovalUseSettingDtoOpt(approvalUseSettingDtoOpt);
+		
+		// 保持パラメータを生成する
+		screenDto.setClosureId(processor.getClosureId(companyId, sId, GeneralDate.today()));
+		
+		// 期間を変更する
+		DatePeriodInfo resultPeriod = processor.changeDateRange(dateRange, null, companyId, sId, screenDto, screenMode, displayFormat, false, null);
+		dateRange = resultPeriod.getTargetRange();
+		screenDto.setDateRange(dateRange);
+		screenDto.setPeriodInfo(resultPeriod);
 
 		// 対象社員の特定
 		List<String> changeEmployeeIds = new ArrayList<>();
-		changeEmployeeIds = lstEmployee.stream().map(x -> x.getId()).collect(Collectors.toList());
+		if (lstEmployee.isEmpty()) {
+			val employeeIds = lstEmployee.stream().map(x -> x.getId()).collect(Collectors.toList());
+			if(employeeIds.isEmpty()) needSortEmp = true;
+			changeEmployeeIds = processor.changeListEmployeeId(employeeIds, screenDto.getDateRange(), screenMode, false, screenDto.getClosureId(), screenDto);
+		} else {
+			changeEmployeeIds = lstEmployee.stream().map(x -> x.getId()).collect(Collectors.toList());
+		}
 
 		// ログイン社員の日別実績の権限を取得する
 		screenDto.setAuthorityDto(processor.getAuthority(screenDto));
 
-		// 保持パラメータを生成する
-		Integer screenMode = param.screenMode;
-		Integer displayFormat = param.displayFormat;
-		DateRange dateRange = param.objectDateRange;
-		String employeeID = param.employeeID;
-
+		screenDto.setLstEmployee(findAllEmployee.findAllEmployee(changeEmployeeIds, dateRange.getEndDate()));
 		List<DailyPerformanceEmployeeDto> lstEmployeeData = processor.extractEmployeeData(0, sId,
 				screenDto.getLstEmployee(), null);
 		screenDto.setLstData(processor.getListData(lstEmployeeData, dateRange, displayFormat));
+
+		Map<String, WorkPlaceHistTemp> WPHMap = repo.getWplByListSidAndPeriod(companyId, changeEmployeeIds, screenDto.getDateRange().getEndDate());
+		screenDto.getLstEmployee().stream().map(x -> {
+			val wph = WPHMap.get(x.getId());
+			x.setWorkplaceName(wph == null ? "" : wph.getName());
+			return x;
+		}).collect(Collectors.toList());
+		if(displayFormat == 0){
+			String employeeSelect = lstEmployee.isEmpty() ? sId : lstEmployee.get(0).getId();
+			changeEmployeeIds = changeEmployeeIds.stream().filter(x -> x.equals(employeeSelect)).collect(Collectors.toList());
+		}
+		Map<String, List<AffComHistItemAtScreen>> affCompanyMap = repo.getAffCompanyHistoryOfEmployee(AppContexts.user().companyId(), changeEmployeeIds);
+		screenDto.setLstData(processor.setWorkPlace(WPHMap, affCompanyMap, screenDto.getLstData()));
+		
+		List<DPDataDto> listData = new ArrayList<>();
+		for (String employeeId : changeEmployeeIds) {
+			screenDto.getLstData().stream().forEach(item -> {
+				if(item.getEmployeeId().equals(employeeId)){
+					listData.add(item);
+				}				
+			});			
+		}
+		screenDto.setLstData(needSortEmp ? listData.stream().sorted((x, y) ->x.getEmployeeCode().compareTo(y.getEmployeeCode())).collect(Collectors.toList()) : listData);
+		
 		List<String> listEmployeeId = screenDto.getLstData().stream().map(e -> e.getEmployeeId())
 				.collect(Collectors.toSet()).stream().collect(Collectors.toList());
-
+		
 		// フォーマットの特定（スマホ）
 		// 表示項目を制御する（スマホ）
 		DisplayItem disItem = processor.getDisplayItems(null, new ArrayList<>(), companyId, screenDto, listEmployeeId,
@@ -212,14 +257,14 @@ public class InitScreenMob {
 
 		// 休暇管理状況をチェックする
 		// 10-1.年休の設定を取得する
-		AnnualHolidaySetOutput annualHd = absenceTenProcess.getSettingForAnnualHoliday(companyId);
+		//AnnualHolidaySetOutput annualHd = absenceTenProcess.getSettingForAnnualHoliday(companyId);
 		// 10-2.代休の設定を取得する
-		SubstitutionHolidayOutput subHd = absenceTenProcess.getSettingForSubstituteHoliday(companyId, sId,
-				GeneralDate.today());
+		//SubstitutionHolidayOutput subHd = absenceTenProcess.getSettingForSubstituteHoliday(companyId, sId,
+				//GeneralDate.today());
 		// 10-3.振休の設定を取得する
-		LeaveSetOutput leaveSet = absenceTenProcess.getSetForLeave(companyId, sId, GeneralDate.today());
+		//LeaveSetOutput leaveSet = absenceTenProcess.getSetForLeave(companyId, sId, GeneralDate.today());
 		// 10-4.積立年休の設定を取得する
-		boolean isRetentionManage = absenceTenProcess.getSetForYearlyReserved(companyId, sId, GeneralDate.today());
+		//boolean isRetentionManage = absenceTenProcess.getSetForYearlyReserved(companyId, sId, GeneralDate.today());
 
 		// 実績の表示（スマホ）
 		// マスタの取得
@@ -282,6 +327,7 @@ public class InitScreenMob {
 				lstData.add(data);
 			}
 		}
+		screenDto.setLstData(lstData);
 		return screenDto;
 	}
 

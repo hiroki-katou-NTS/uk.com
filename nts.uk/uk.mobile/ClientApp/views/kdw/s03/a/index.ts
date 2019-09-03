@@ -39,18 +39,19 @@ export class Kdw003AComponent extends Vue {
     public yearMonth: number = 0;
     public actualTimeOptionDisp: Array<any> = [];
     public actualTimeSelectedCode: number = 0;
+    public selectedEmployee: string = '';
 
     @Watch('yearMonth')
     public changeYearMonth(value: any) {
         let self = this;
-        self.$http.post('at', servicePath.genDate, {yearMonth: value}).then((result: { data: any }) => {
+        self.$http.post('at', servicePath.genDate, { yearMonth: value }).then((result: { data: any }) => {
             let data = result.data;
             _.remove(self.actualTimeOptionDisp);
             if (data.lstRange && data.lstRange.length > 0) {
                 for (let i = 0; i < data.lstRange.length; i++) {
                     let startDate = data.lstRange[i].startDate,
-                        endDate =  data.lstRange[i].endDate;
-                    self.actualTimeOptionDisp.push({ code: i, name: (i + 1) + ': ' + this.$dt(startDate, 'M/D') + '～' + this.$dt(endDate, 'M/D')});
+                        endDate = data.lstRange[i].endDate;
+                    self.actualTimeOptionDisp.push({ code: i, name: (i + 1) + ': ' + this.$dt(startDate, 'M/D') + '～' + this.$dt(endDate, 'M/D') });
                 }
             }
         });
@@ -67,11 +68,16 @@ export class Kdw003AComponent extends Vue {
 
     public startPage() {
         let self = this;
+
+        self.$auth.user.then((user: null | { employeeCode: string }) => {
+            self.selectedEmployee = user.employeeCode;
+        });
+
         let param = {
             dateRange: null,
             displayFormat: 0,
             initScreen: 1,
-            mode: 0,
+            screenMode: 0,
             lstEmployee: [],
             formatCodes: [],
             objectShare: null,
@@ -126,8 +132,6 @@ export class Kdw003AComponent extends Vue {
                 }
             }
         });
-
-
     }
 
     public processMapData(data: any) {
@@ -165,18 +169,26 @@ export class Kdw003AComponent extends Vue {
             let rowData = [];
             for (let i = 0; i < self.lstDataHeader.length; i++) {
                 let headerKey = self.lstDataHeader[i];
-                
+
                 let header1 = (_.filter(self.optionalHeader, (o) => o.key == headerKey))[0];
                 if (!_.isNil(header1)) {
-                    rowData.push({key: headerKey, value: rowDataSrc[headerKey], headerText: header1.headerText, color: header1.color});
+                    rowData.push({ key: headerKey, value: rowDataSrc[headerKey], headerText: header1.headerText, color: header1.color });
                 }
                 let header2 = (_.filter(self.optionalHeader, (o) => !_.isEmpty(o.group) && o.group[1].key == headerKey))[0];
                 if (!_.isNil(header2)) {
-                    rowData.push({key: headerKey, value: rowDataSrc[headerKey], headerText: header2.headerText, color: header2.color});
+                    rowData.push({ key: headerKey, value: rowDataSrc[headerKey], headerText: header2.headerText, color: header2.color });
                 }
             }
-            self.displayDataLst.push({rowData, date: rowDataSrc.date});
+            self.displayDataLst.push({ rowData, date: rowDataSrc.date });
         });
+        if (self.lstDataSourceLoad.length == 0) {
+            let rowData = [];
+            let headers = (_.filter(self.optionalHeader, (o) => o.hidden == false));
+            headers.forEach((header: any) => {
+                rowData.push({ key: header.key, headerText: header.headerText, color: header.color });
+            });
+            self.displayDataLst.push({ rowData });
+        }
     }
 
     public formatDate(lstData: any) {
@@ -196,7 +208,7 @@ export class Kdw003AComponent extends Vue {
                 dateDetail: this.$dt(data.date, 'YYYY/MM/DD'),
                 typeGroup: data.typeGroup
             };
-            _.each(data.cellDatas, function(item) {
+            _.each(data.cellDatas, function (item) {
                 object[item.columnKey] = item.value;
             });
 

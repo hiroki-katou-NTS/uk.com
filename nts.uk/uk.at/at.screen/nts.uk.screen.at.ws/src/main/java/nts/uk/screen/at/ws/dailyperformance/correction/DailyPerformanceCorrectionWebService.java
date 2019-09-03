@@ -38,12 +38,14 @@ import nts.uk.screen.at.app.dailyperformance.correction.DPUpdateColWidthCommandH
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceCorrectionProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.DisplayRemainingHolidayNumber;
 import nts.uk.screen.at.app.dailyperformance.correction.InfomationInitScreenProcess;
+import nts.uk.screen.at.app.dailyperformance.correction.InitScreenMob;
 import nts.uk.screen.at.app.dailyperformance.correction.UpdateColWidthCommand;
 import nts.uk.screen.at.app.dailyperformance.correction.calctime.DailyCorrectCalcTimeService;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeName;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.DataDialogWithTypeProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ApprovalConfirmCache;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPAttendanceItem;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DPCorrectionInitParam;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPDataDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemParent;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPParams;
@@ -156,6 +158,9 @@ public class DailyPerformanceCorrectionWebService {
 	@Inject
 	private GenDateProcessor genDateProcessor;
 	
+	@Inject
+	private InitScreenMob initScreenMob;
+	
 	@POST
 	@Path("startScreen")
 	public DailyPerformanceCorrectionDto startScreen(DPParams params ) throws InterruptedException{
@@ -204,6 +209,14 @@ public class DailyPerformanceCorrectionWebService {
 		session.setAttribute("resultReturn", dtoResult.getLeft());
 		session.setAttribute("resultMonthReturn", dtoResult.getRight());
 		return dtoResult.getLeft();
+	}
+	
+	@POST
+	@Path("initMOB")
+	public DailyPerformanceCorrectionDto initScreen(DPCorrectionInitParam param) throws InterruptedException{
+		DailyPerformanceCorrectionDto dtoResult = this.initScreenMob.initMOB(param);
+		session.setAttribute("domainOlds", dtoResult.getDomainOld());
+		return dtoResult;
 	}
 	
 	@POST
