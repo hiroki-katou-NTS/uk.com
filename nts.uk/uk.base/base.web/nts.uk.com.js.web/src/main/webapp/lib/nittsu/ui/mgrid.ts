@@ -4149,7 +4149,7 @@ module nts.uk.ui.mgrid {
                     $headerTable.insertAdjacentElement("beforebegin", self.$agency);
                     hiddenCount = 0;
                     _.forEach(self.headerColGroup[1], ($targetCol, i) => {
-                        if (i === self.headerColGroup[1].length - 1) return;
+//                        if (i === self.headerColGroup[1].length - 1) return;
                         if ($targetCol.style.display === "none") {
                             hiddenCount++;
                             return;
@@ -4605,7 +4605,7 @@ module nts.uk.ui.mgrid {
                 self.$agency.style.width = self.headerWrappers[i].style.width;
                 let left = 0, group = self.headerColGroup[i];
                 _.forEach(group, function($td: HTMLElement, index: number) {
-                    if ($td.style.display === "none" || (!self.actionDetails.isFixed && index === group.length - 1)) return;
+                    if ($td.style.display === "none" /*|| (!self.actionDetails.isFixed && index === group.length - 1)*/) return;
                     left += parseFloat($td.style.width);
                     if (index < self.actionDetails.gripIndex) return;
                     if (self.unshiftRight && index > self.actionDetails.gripIndex) return false;

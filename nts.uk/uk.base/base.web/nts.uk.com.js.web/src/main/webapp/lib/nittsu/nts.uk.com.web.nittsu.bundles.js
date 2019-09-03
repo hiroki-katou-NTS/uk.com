@@ -26873,8 +26873,7 @@ var nts;
                                 $headerTable.insertAdjacentElement("beforebegin", self.$agency);
                                 hiddenCount_1 = 0;
                                 _.forEach(self.headerColGroup[1], function ($targetCol, i) {
-                                    if (i === self.headerColGroup[1].length - 1)
-                                        return;
+                                    //                        if (i === self.headerColGroup[1].length - 1) return;
                                     if ($targetCol.style.display === "none") {
                                         hiddenCount_1++;
                                         return;
@@ -27318,7 +27317,7 @@ var nts;
                             self.$agency.style.width = self.headerWrappers[i].style.width;
                             var left = 0, group = self.headerColGroup[i];
                             _.forEach(group, function ($td, index) {
-                                if ($td.style.display === "none" || (!self.actionDetails.isFixed && index === group.length - 1))
+                                if ($td.style.display === "none" /*|| (!self.actionDetails.isFixed && index === group.length - 1)*/)
                                     return;
                                 left += parseFloat($td.style.width);
                                 if (index < self.actionDetails.gripIndex)
