@@ -1420,6 +1420,7 @@ module cps003 {
         ];
         
         function spaceCheck(i, k, v, o) {
+            if (_.isNil(v) || v === "") return;
             let $grid = $("#grid"), index = _.findIndex($grid.mGrid("dataSource", true), d => d.id === o.id),
                 message = nts.uk.resource.getMessage("Msg_924"),
                 sIndex = _.indexOf(v, "　");

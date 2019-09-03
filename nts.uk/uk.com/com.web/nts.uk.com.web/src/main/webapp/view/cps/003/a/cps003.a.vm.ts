@@ -1148,7 +1148,7 @@ module cps003.a.vm {
                             dt.specs.list[item.recordId] = dt.specs.pattern.length - 1;
                             if (cps003.control.WORK_TIME[item.itemCode]) {
                                 if (!_.isNil(item.value)) {
-                                    if (_.isNil(find(workTimeItems, wt => wt === item.itemCode))) {
+                                    if (_.isNil(find(workTimeCodes, wt => wt === item.value))) {
                                         workTimeCodes.push(item.value);
                                         workTimeItems.push(item.itemCode);
                                     }
