@@ -6,9 +6,9 @@ import java.util.regex.Pattern;
 
 import lombok.Getter;
 import nts.gul.util.value.ValueWithType;
+import nts.gul.util.value.ValueWithType.Type;
 import nts.uk.shr.com.validate.constraint.DataConstraint;
 import nts.uk.shr.com.validate.constraint.ValidatorType;
-import nts.uk.shr.com.validate.validator.ErrorIdFactory;
 import nts.uk.shr.com.validate.validator.TimeMinMaxValidator;
 
 @Getter
@@ -33,22 +33,25 @@ public class TimeConstraint extends DataConstraint {
 	}
 
 	public Optional<String> validate(ValueWithType value) {
-		switch (value.getType()) {
-		case TEXT:
+		if (value.getType() == Type.TEXT) 
 			return validateString(value.getText());
-		default:
-			return Optional.of(ErrorIdFactory.TimeStyleErrorId);
-		}
+		
+		return Optional.of(getDefaultMessage());
 	}
 
 	public Optional<String> validateString(String value) {
 
 		// validate style
 		if (!validateTimeStyle(value)) {
-			return Optional.of(ErrorIdFactory.TimeStyleErrorId);
+			return Optional.of(getDefaultMessage());
 		}
 
-		return TimeMinMaxValidator.validateMinMax(this.min, this.max, value);
+		return TimeMinMaxValidator.validateMinMax(this.min, this.max, value).map(c -> getDefaultMessage());
+	}
+
+	@Override
+	protected String getDefaultMessage() {
+		return "MsgB_55";
 	}
 
 }
