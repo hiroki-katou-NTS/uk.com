@@ -97,10 +97,11 @@
         </div>
       </div> 
     </div>
-    <div class="row pl-2 pt-1 pb-1 uk-bg-alice-blue border-top border-bottom uk-border-light-gray"
-      v-show="displayApproveReasonContent()">{{'CMMS45_62' | i18n}}
+    <div class="row pl-2 pt-1 pb-1 border-top border-bottom uk-border-light-gray"
+      v-bind:class="commentColor"
+      v-show="commentDis">{{'CMMS45_62' | i18n}}
     </div>
-    <div class="text-break" v-show="displayApproveReasonContent()">{{ authorComment }}</div>
+    <div class="text-break" v-show="commentDis">{{ authorComment }}</div>
     <div>
       <app1 v-if="true" v-bind:params="{appOvertime: appOvertime}" />
       <app2 v-if="false" />

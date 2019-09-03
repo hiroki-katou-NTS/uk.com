@@ -62,9 +62,9 @@ module cmm045.shr {
             }
         }
         interface AppListParamFilter{
-            condition: AppListExtractConditionDto;
-            spr: boolean;
-            extractCondition: number;
+            condition: AppListExtractConditionDto;//抽出条件
+            spr: boolean;//SPRから呼ぶ？
+            extractCondition: number;//選択申請種類
             device: number;
             lstAppType: Array<number>;
         }

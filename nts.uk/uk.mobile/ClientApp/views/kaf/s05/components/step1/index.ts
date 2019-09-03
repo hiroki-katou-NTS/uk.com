@@ -3,13 +3,15 @@ import { _, Vue } from '@app/provider';
 import { KDL002Component } from '../../../../kdl/002';
 import { TimeWithDay } from '@app/utils';
 import { OvertimeAgreement, AgreementTimeStatusOfMonthly, Kafs05Model } from '../common/CommonClass';
+import { CmmS45CComponent } from '../../../../cmm/s45/c';
 
 @component({
     name: 'kafS05_1',
     template: require('./index.html'),
     resource: require('../../resources.json'),
     components: {
-        'worktype': KDL002Component
+        'worktype': KDL002Component,
+        'cmms45c': CmmS45CComponent
     },
     validations: {
         kafs05ModelStep1: {
@@ -40,7 +42,46 @@ import { OvertimeAgreement, AgreementTimeStatusOfMonthly, Kafs05Model } from '..
                 }
             },
             workTypeCd: {
-                required: true,
+                check: {
+                    test(value: string) {
+                        if (this.kafs05ModelStep1.displayCaculationTime) {
+                            if (_.isNil(value) || '' == value) {
+                                return false;
+                            }
+
+                            return true;
+                        }
+
+                        return true;
+                    },
+                    messageId: 'MsgB_30'
+                }
+            },
+            workTypeName: {
+                check(value: string) {
+                    if (this.kafs05ModelStep1.displayCaculationTime) {
+                        if (value == this.$i18n('KAL003_120')) {
+                            return ['Msg_1530', '勤務種類コード' + this.kafs05ModelStep1.workTypeCd];
+                        }
+
+                        return false;
+                    }
+
+                    return false;
+                }
+            },
+            siftName: {
+                check(value: string) {
+                    if (this.kafs05ModelStep1.displayCaculationTime) {
+                        if (value == this.$i18n('KAL003_120')) {
+                            return ['Msg_1530', '就業時間帯コード' + this.kafs05ModelStep1.siftCD];
+                        }
+
+                        return false;
+                    }
+
+                    return false;
+                }
             }
         },
     },
@@ -56,6 +97,8 @@ export class KafS05aStep1Component extends Vue {
 
     public mounted() {
         let self = this;
+        
+        document.scrollingElement.scrollTop = 0;
         if (self.$router.currentRoute.name == 'kafS05a') {
             self.applyWatcher();
         }
@@ -65,9 +108,9 @@ export class KafS05aStep1Component extends Vue {
     }
 
     public created() {
-        let self = this;
+        let self = this.kafs05ModelStep1;
 
-        if (this.kafs05ModelStep1.step1Start) {
+        if (self.step1Start) {
             this.startPage();
         } else {
             this.$mask('hide');
@@ -129,7 +172,7 @@ export class KafS05aStep1Component extends Vue {
 
         this.$validate();
         if (!this.$valid) {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            document.scrollingElement.scrollTop = 0;
 
             return;
         }
@@ -248,12 +291,22 @@ export class KafS05aStep1Component extends Vue {
                     }
                 }
             }
+            // 実績なし 登録不可
+            if ((self.actualStatus == 3 && self.performanceExcessAtr == 2)) {
+                this.$mask('hide');
+                setTimeout(() => {
+                    document.scrollingElement.scrollTop = 0;
+                }, 100);
+
+                return;
+            }
             this.$emit('toStep2', this.kafs05ModelStep1);
             this.$mask('hide');
         }).catch((res: any) => {
             if (res.messageId == 'Msg_426') {
-                this.$auth.logout();
-                this.$goto('ccg007b');
+                this.$modal.error({ messageId: res.messageId }).then(() => {
+                    this.$auth.logout();
+                });
             } else if (res.messageId == 'Msg_424') {
                 this.$modal.error({ messageId: 'Msg_424', messageParams: [res.parameterIds[0], res.parameterIds[1], res.parameterIds[2]] });
             } else if (res.messageId == 'Msg_1508') {
@@ -269,24 +322,40 @@ export class KafS05aStep1Component extends Vue {
         let self = this.kafs05ModelStep1;
 
         if (!_.isNil(self.appID)) {
-            this.getApprovalData();
-
-            this.$http.post('at', servicePath.findByAppID, self.appID)
+            this.$http.post('at', servicePath.getDetailCheck, {
+                applicationID: self.appID, baseDate: this.$dt(new Date())
+            }).then((result: { data: any }) => {
+                self.user = result.data.user;
+                self.reflectPerState = result.data.reflectPlanState;
+                if (self.reflectPerState != 0 && self.reflectPerState != 5) {
+                    this.$modal.error({ messageId: 'Msg_1555' }).then(() => {
+                        this.$modal('cmms45c', { 'listAppMeta': [self.appID], 'currentApp': self.appID }).then(() => {
+                            self.step1Start = true;
+                            this.$emit('backToStep1', self);
+                        });
+                    });
+                }
+                this.$http.post('at', servicePath.findByAppID, self.appID)
                 .then((result: { data: any }) => {
                     this.initData(result.data);
                     this.$mask('hide');
+                    this.$validate('clear');
                 }).catch((res: any) => {
-                    if (res.messageId == 'Msg_426') {
-                        this.$modal.error({ messageId: res.messageId }).then(() => {
-                            this.$goto('ccg007b');
-                            this.$auth.logout();
-                        });
-                    } else {
-                        this.$modal.error({ messageId: res.messageId }).then(() => {
-                            this.$goto('ccg008a');
-                        });
-                    }
+                    this.$modal.error({ messageId: res.messageId }).then(() => {
+                        this.$goto('ccg008a');
+                    });
                 });
+            }).catch((res: any) => {
+                if (res.messageId == 'Msg_426') {
+                    this.$modal.error({ messageId: res.messageId }).then(() => {
+                        this.$auth.logout();
+                    });
+                } else {
+                    this.$modal.error({ messageId: res.messageId }).then(() => {
+                        this.$goto('cmms45a', { CMMS45_FromMenu: false });
+                    });
+                }
+            });            
         } else {
             this.$http.post('at', servicePath.getOvertimeByUI, {
                 url: this.$route.query.overworkatr,
@@ -303,7 +372,6 @@ export class KafS05aStep1Component extends Vue {
             }).catch((res: any) => {
                 if (res.messageId == 'Msg_426') {
                     this.$modal.error({ messageId: res.messageId }).then(() => {
-                        this.$goto('ccg007b');
                         this.$auth.logout();
                     });
                 } else {
@@ -337,7 +405,8 @@ export class KafS05aStep1Component extends Vue {
                 self.resetTimeRange++;
                 this.$mask('hide');
             }).catch((res: any) => {
-
+                this.$mask('hide');
+                this.$modal.error({ messageId: res.messageId });
             });
         });
         this.$watch('kafs05ModelStep1.prePostSelected', function (value: number) {
@@ -367,6 +436,8 @@ export class KafS05aStep1Component extends Vue {
                 this.$mask('hide');
 
             }).catch((res: any) => {
+                this.$mask('hide');
+                this.$modal.error({ messageId: res.messageId });
             });
         });
     }
@@ -403,7 +474,8 @@ export class KafS05aStep1Component extends Vue {
                 }
             }
         }).catch((res: any) => {
-
+            this.$mask('hide');
+            this.$modal.error({ messageId: res.messageId });
         });
     }
 
@@ -847,8 +919,23 @@ export class KafS05aStep1Component extends Vue {
         }
 
         self.overtimeAtr = data.overtimeAtr;
+        if (!_.isNil(self.appID)) {
+            if (self.overtimeAtr == 0) {
+                this.pgName = 'kafS05b0';
+            } else if (self.overtimeAtr == 1) {
+                this.pgName = 'kafS05b1';
+            } else if (self.overtimeAtr == 2) {
+                this.pgName = 'kafS05b2';
+            } else {
+                this.pgName = 'kafS05b2';
+            }
+        }
         if (!_.isNil(data.worktimeStart) && !_.isNil(data.worktimeEnd)) {
-            self.selectedWorkTime = TimeWithDay.toString(data.worktimeStart) + '～' + TimeWithDay.toString(data.worktimeEnd);
+            if (_.isNil(self.siftCD) || self.siftName == this.$i18n('KAL003_120')) {
+                self.selectedWorkTime = '';
+            } else {
+                self.selectedWorkTime = TimeWithDay.toString(data.worktimeStart) + '～' + TimeWithDay.toString(data.worktimeEnd);
+            }
         }
         self.performanceExcessAtr = data.performanceExcessAtr;
     }
@@ -956,7 +1043,11 @@ export class KafS05aStep1Component extends Vue {
         // 休憩時間
         this.setTimeZones(data.timezones);
         if (!_.isNil(data.worktimeStart) && !_.isNil(data.worktimeEnd)) {
-            self.selectedWorkTime = TimeWithDay.toString(data.worktimeStart) + '～' + TimeWithDay.toString(data.worktimeEnd);
+            if (_.isNil(self.siftCD) || self.siftName == this.$i18n('KAL003_120')) {
+                self.selectedWorkTime = '';
+            } else {
+                self.selectedWorkTime = TimeWithDay.toString(data.worktimeStart) + '～' + TimeWithDay.toString(data.worktimeEnd);
+            }
         }
     }
 
@@ -1156,26 +1247,6 @@ export class KafS05aStep1Component extends Vue {
 
         _.remove(self.overtimeWork);
         self.overtimeWork.push(overtimeWork);
-    }
-
-    public getApprovalData() {
-        let self = this.kafs05ModelStep1;
-
-        this.$http.post('at', servicePath.getDetailCheck, {
-            applicationID: self.appID, baseDate: this.$dt(new Date())
-        }).then((result: { data: any }) => {
-            self.user = result.data.user;
-            self.reflectPerState = result.data.reflectPlanState;
-            if (self.reflectPerState != 0 && self.reflectPerState != 5) {
-                this.$modal.error({ messageId: 'Msg_1555' }).then(() => {
-                    this.$goto('cmms45a', { CMMS45_FromMenu: false });
-                });
-            }
-        }).catch((res: any) => {
-            this.$modal.error({ messageId: res.messageId }).then(() => {
-                this.$goto('cmms45a', { CMMS45_FromMenu: false });
-            });
-        });
     }
 }
 const servicePath = {

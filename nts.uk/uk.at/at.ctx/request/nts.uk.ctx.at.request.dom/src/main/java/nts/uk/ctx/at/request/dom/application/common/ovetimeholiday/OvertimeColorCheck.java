@@ -2,7 +2,6 @@ package nts.uk.ctx.at.request.dom.application.common.ovetimeholiday;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputCaculation;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
 
 @AllArgsConstructor
@@ -15,15 +14,15 @@ public class OvertimeColorCheck {
 	
 	public Integer appTime;
 	
-	public boolean calcError;
+	public int calcError;
 	
 	public Integer preAppTime;
 	
-	public boolean preAppError;
+	public int preAppError;
 	
 	public Integer actualTime;
 	
-	public boolean actualError;
+	public int actualError;
 	
 	public static OvertimeColorCheck createActual(Integer attendanceID, Integer frameNo, Integer actualTime){
 		OvertimeColorCheck overtimeColorCheck = new OvertimeColorCheck();

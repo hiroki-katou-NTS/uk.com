@@ -12,8 +12,9 @@ import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.CommonReflectParamSc
 import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.UpdateScheCommonAppRelect;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
-import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.service.StartEndTimeReflectScheService;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.service.servicedto.TimeReflectScheDto;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedulestate.WorkScheduleState;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedulestate.WorkScheduleStateRepository;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
@@ -32,25 +33,29 @@ public class AbsenceLeaveReflectScheImpl implements AbsenceLeaveReflectSche{
 	@Inject
 	private BasicScheduleService basicService;
 	@Inject
-	private StartEndTimeReflectScheService startEndTimeScheService;
-	@Inject
 	private BasicScheduleRepository basicScheRepo;
 	@Inject
 	private WorkingConditionItemRepository workingConditionItemRepository;
 	@Inject
 	private PredetemineTimeSettingRepository predetemineTimeRepo;
+	@Inject
+	private WorkScheduleStateRepository workScheReposi;
 	@Override
 	public void absenceLeaveReflect(CommonReflectParamSche param) {
+		BasicSchedule scheData = basicScheRepo.find(param.getEmployeeId(), param.getAppDate()).get();
+		List<WorkScheduleState> lstState = workScheReposi.findByDateAndEmpId(param.getEmployeeId(), param.getAppDate());
 		//勤種・就時の反映 
-		updateSche.updateScheWorkType(param.getEmployeeId(), 
-				param.getDatePara(), 
+		updateSche.updateScheWorkType(scheData, 
+				lstState, 
 				param.getWorktypeCode());
 		//開始予定・終了予定の置き換え
-		this.absenceLeaveStartEndTimeReflect(param);
+		this.absenceLeaveStartEndTimeReflect(param, scheData, lstState);
+		basicScheRepo.update(scheData);
+		workScheReposi.updateOrInsert(lstState);
 	}
 
 	@Override
-	public void absenceLeaveStartEndTimeReflect(CommonReflectParamSche param) {
+	public void absenceLeaveStartEndTimeReflect(CommonReflectParamSche param, BasicSchedule scheData, List<WorkScheduleState> lstState) {
 		//1日半日出勤・1日休日系の判定
 		WorkStyle checkworkDay = basicService.checkWorkDay(param.getWorktypeCode());
 		//日休日の場合
@@ -60,28 +65,28 @@ public class AbsenceLeaveReflectScheImpl implements AbsenceLeaveReflectSche{
 			//必須任意不要区分(output)が不要
 			if(checkNeededOfWorkTimeSetting == SetupType.NOT_REQUIRED) {
 				//就時の反映
-				updateSche.updateScheWorkTime(param.getEmployeeId(), 
-						param.getDatePara(), 
+				updateSche.updateScheWorkTime(scheData, 
+						lstState, 
 						null);//就業時間帯クリア
 			}
 			//勤務開始終了のクリア
-			startEndTimeScheService.updateStartTimeRflect(new TimeReflectScheDto(param.getEmployeeId(),
-					param.getDatePara(), 0, 0, 1, true, true));
+			updateSche.updateStartTimeRflect(new TimeReflectScheDto(param.getEmployeeId(),
+					param.getAppDate(), 0, 0, 1, true, true), scheData, lstState);
 		} else if(checkworkDay == WorkStyle.AFTERNOON_WORK
 				|| checkworkDay == WorkStyle.MORNING_WORK){ //出勤休日区分が午前出勤系又は、午後出勤系
 			//就業時間帯が反映できるか
 			WorkTimeIsReflect workTimeReflect = this.workTimeIsReflect(param.getEmployeeId(), 
-					param.getDatePara(),
+					param.getAppDate(),
 					param.getWorkTimeCode());
 			if(workTimeReflect.isReflect()) {
 				//就時の反映
-				updateSche.updateScheWorkTime(param.getEmployeeId(), 
-						param.getDatePara(), 
+				updateSche.updateScheWorkTime(scheData, 
+						lstState, 
 						workTimeReflect.getWorkTimeCode());
 			}
 			//開始終了時刻が反映できるか
 			StartEndTimeIsReflect chkReflect = this.startEndTimeIsReflect(param.getEmployeeId(), 
-					param.getDatePara(), 
+					param.getAppDate(), 
 					checkworkDay, 
 					param.getStartTime(), 
 					param.getEndTime(), 
@@ -89,8 +94,8 @@ public class AbsenceLeaveReflectScheImpl implements AbsenceLeaveReflectSche{
 			if(chkReflect.isChkReflect()) {
 				//開始時刻の反映
 				//終了時刻の反映
-				startEndTimeScheService.updateStartTimeRflect(new TimeReflectScheDto(param.getEmployeeId(),
-						param.getDatePara(), chkReflect.getStartTime(), chkReflect.getEndTime(), 1, true, true));
+				updateSche.updateStartTimeRflect(new TimeReflectScheDto(param.getEmployeeId(),
+						param.getAppDate(), chkReflect.getStartTime(), chkReflect.getEndTime(), 1, true, true), scheData, lstState);
 			}
 		}
 			
@@ -106,7 +111,7 @@ public class AbsenceLeaveReflectScheImpl implements AbsenceLeaveReflectSche{
 			Optional<BasicSchedule> optBasicSche = basicScheRepo.find(employeeId, baseDate);
 			//ドメインモデル「勤務予定基本情報」．就業時間帯をチェックする
 			if(optBasicSche.isPresent()
-					&& optBasicSche.get().getWorkTimeCode() != null) {
+					|| optBasicSche.get().getWorkTimeCode() != "") {
 				BasicSchedule basicSche = optBasicSche.get();
 				//dataOutput.setReflect(true);
 				dataOutput.setWorkTimeCode(basicSche.getWorkTimeCode());

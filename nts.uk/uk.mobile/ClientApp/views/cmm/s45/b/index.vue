@@ -58,18 +58,18 @@
         <!-- List App by Emp -->
         <div class="collapse">
           <div class="card-body py-0">
-            <ul class="list-group list-group-selection list-group-flush">
+            <ul class="list-group list-group-flush"  v-bind:class="{'list-group-selection': !modeAppr, 'ml-n3 mr-n3': modeAppr}" >
               <li
                 class="list-group-item mb-0"
                 v-for="item in emp.lstApp"
                 v-bind:key="item.id"
                 :value="item.id"
-                v-on:click="() => goToDetail(item.id)"
+                v-on:click="() => goToDetail(item)"
               >
                 <div class="row">
                   <!-- Check box -->
                   <div v-if="modeAppr" class="col-1 p-0 align-middle text-center pt-2">
-                    <div v-if="item.frameStatus">
+                    <div v-if="item.appStatusNo == 5">
                     <input v-model="lstAppr" type="checkbox" v-bind:value="item.id" class="input-control" />
                     </div>
                   </div>

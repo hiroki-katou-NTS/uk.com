@@ -12,6 +12,12 @@ const modal = {
             }
         });
 
+        window.onpopstate = function (event: Event) {
+            if (document.querySelector('.modal.show')) {
+                window.history.forward();
+            }
+        };
+
         vue.prototype.$modal = function (name: string | ComponentOptions<Vue>, params?: any, options?: IModalOptions) {
             let self = typeof name === 'string' ? this : {},
                 $options = typeof name === 'string' ? self.$options : {},

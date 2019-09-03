@@ -17,5 +17,9 @@ public class ActualStatusCheckResult {
 	/**
 	 * 実績
 	 */
+	public String workType; // 出勤時刻
+	public String workTime; // 退勤時刻
+	public Integer startTime; // 勤務種類
+	public Integer endTime; // 就業時間帯
 	public List<OvertimeColorCheck> actualLst;
 }

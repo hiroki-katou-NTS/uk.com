@@ -30,6 +30,7 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.GetAgreementTime;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.shared.app.query.workrule.closure.ClosureResultModel;
 import nts.uk.ctx.at.shared.app.query.workrule.closure.WorkClosureQueryProcessor;
 import nts.uk.ctx.at.shared.dom.adapter.dailyperformance.DailyPerformanceAdapter;
@@ -140,78 +141,82 @@ public class ToppageStartupProcessMobFinder {
 
 		for (SPTopPageSet spTopPageSet : listSPTopPageSet) {
 
-			if (spTopPageSet.getSmartPhoneTopPageType().getType() == Type.NOTIFICATION) {	
-				toppageStartupDto.displayNotifiDto = new DisplayNotifiDto(false, false, spTopPageSet.getDisplayAtr() == NotUseAtr.USE);
+			if (spTopPageSet.getSmartPhoneTopPageType().getType() == Type.NOTIFICATION) {
+				toppageStartupDto.displayNotifiDto = new DisplayNotifiDto(false, false,
+						spTopPageSet.getDisplayAtr() == NotUseAtr.USE);
 			}
 			if (spTopPageSet.getSmartPhoneTopPageType().getType() == Type.TIME_STATUS) {
 				// -----------------------Start Date ???? End Date
 				// ?????----------------------------------------------------
-				toppageStartupDto.ktg029 = new ToppageOptionalWidgetInfoDto(null, spTopPageSet.getDisplayAtr() == NotUseAtr.USE);
-				
+				toppageStartupDto.ktg029 = new ToppageOptionalWidgetInfoDto(null,
+						spTopPageSet.getDisplayAtr() == NotUseAtr.USE);
+
 			}
 			if (spTopPageSet.getSmartPhoneTopPageType().getType() == Type.OVERTIME_WORK) {
 				toppageStartupDto.overtimeHoursDto = new ToppageOvertimeHoursDto(null,
-							spTopPageSet.getDisplayAtr() == NotUseAtr.USE);	
+						spTopPageSet.getDisplayAtr() == NotUseAtr.USE);
 			}
 		}
 		return toppageStartupDto;
 
 	}
-	
-	public DisplayNotifiDto getDisplayNotif () {
+
+	public DisplayNotifiDto getDisplayNotif() {
 		String companyID = AppContexts.user().companyId();
 		DisplayNotifiDto result = displayNoti();
-		
+
 		SPTopPageSet setting = sPTopPageSetRepository.getTopPageSetByCompanyAndType(companyID, Type.NOTIFICATION.value);
-		if(setting != null && setting.getSmartPhoneTopPageType().getType() == Type.NOTIFICATION) {
+		if (setting != null && setting.getSmartPhoneTopPageType().getType() == Type.NOTIFICATION) {
 			result.setVisible(setting.getDisplayAtr() == NotUseAtr.USE);
 		}
 		return result;
 	}
-	
+
 	public ToppageOptionalWidgetInfoDto getKTG029() {
 		String companyID = AppContexts.user().companyId();
-		//DatePeriodDto datePeriod = getCurrentMonth();
-		/*GeneralDate start = datePeriod.getStrCurrentMonth();
-		GeneralDate end = datePeriod.getEndCurrentMonth().addMonths(1);*/
+		// DatePeriodDto datePeriod = getCurrentMonth();
+		/*
+		 * GeneralDate start = datePeriod.getStrCurrentMonth(); GeneralDate end
+		 * = datePeriod.getEndCurrentMonth().addMonths(1);
+		 */
 		boolean view = false;
 		String companyId = AppContexts.user().companyId();
 		DateRangeDto dateRange = getDateRangeByClsId(companyId);
 		OptionalWidgetInfoMobileDto result = getKTG029(dateRange.getStart(), dateRange.getEnd());
 		SPTopPageSet setting = sPTopPageSetRepository.getTopPageSetByCompanyAndType(companyID, Type.TIME_STATUS.value);
-		
-		if(setting != null && setting.getSmartPhoneTopPageType().getType() == Type.TIME_STATUS) { 
+
+		if (setting != null && setting.getSmartPhoneTopPageType().getType() == Type.TIME_STATUS) {
 			view = setting.getDisplayAtr() == NotUseAtr.USE;
 		}
-		
+
 		return new ToppageOptionalWidgetInfoDto(result, view);
 	}
-	
+
 	private DateRangeDto getDateRangeByClsId(String companyId) {
 		String employmentCode = this.getEmploymentCode();
 		Integer closureId = this.getClosureId();
-        LocalDate todaydate = LocalDate.now();
-        GeneralDate startDate = GeneralDate.localDate(todaydate.withDayOfMonth(1));
-        GeneralDate endDate = GeneralDate.localDate(todaydate.with(TemporalAdjusters.lastDayOfMonth()));
+		LocalDate todaydate = LocalDate.now();
+		GeneralDate startDate = GeneralDate.localDate(todaydate.withDayOfMonth(1));
+		GeneralDate endDate = GeneralDate.localDate(todaydate.with(TemporalAdjusters.lastDayOfMonth()));
 		if (!employmentCode.isEmpty() && closureId != null) {
 			Optional<Closure> closure = closureRepository.findById(companyId, closureId);
 			YearMonth yearmonth = closure.get().getClosureMonth().getProcessingYm();
 			// アルゴリズム「当月の期間を算出する」を実行する
 			// 検索当月＝当月＋１ヵ月
 			DatePeriod datePeriod1 = closureService.getClosurePeriod(closureId, yearmonth);
-			 startDate = datePeriod1.start();
-			 endDate = datePeriod1.end();
+			startDate = datePeriod1.start();
+			endDate = datePeriod1.end();
 		}
-		
+
 		return new DateRangeDto(startDate, endDate);
 	}
-	
+
 	public ToppageOvertimeHoursDto getDisplayOvertime(int targetMonth) {
 		String companyID = AppContexts.user().companyId();
 		boolean view = false;
 		SPTopPageSet setting = sPTopPageSetRepository.getTopPageSetByCompanyAndType(companyID, Type.TIME_STATUS.value);
-		
-		if(setting != null && setting.getSmartPhoneTopPageType().getType() == Type.TIME_STATUS) { 
+
+		if (setting != null && setting.getSmartPhoneTopPageType().getType() == Type.TIME_STATUS) {
 			view = setting.getDisplayAtr() == NotUseAtr.USE;
 		}
 		return new ToppageOvertimeHoursDto(displayOvertime(targetMonth), view);
@@ -234,15 +239,17 @@ public class ToppageStartupProcessMobFinder {
 		if (notiDetailSet.isPresent()) {
 			List<NotificationDisplayItem> listNotificationDisplayItem = notiDetailSet.get().getDetailedItem();
 			for (NotificationDisplayItem notificationDisplayItem : listNotificationDisplayItem) {
-				if (notificationDisplayItem.getDetailType().value == NotificationType.APPLICATION_FOR_APPROVED.value && notificationDisplayItem.getDisplayAtr() == NotUseAtr.USE) {
+				if (notificationDisplayItem.getDetailType().value == NotificationType.APPLICATION_FOR_APPROVED.value
+						&& notificationDisplayItem.getDisplayAtr() == NotUseAtr.USE) {
 					result.KTG002 = existenceDataApproved();
 				}
-				if (notificationDisplayItem.getDetailType().value == NotificationType.DAILY_ACTUALS_ERROR.value &&  notificationDisplayItem.getDisplayAtr() == NotUseAtr.USE) {
+				if (notificationDisplayItem.getDetailType().value == NotificationType.DAILY_ACTUALS_ERROR.value
+						&& notificationDisplayItem.getDisplayAtr() == NotUseAtr.USE) {
 					// アルゴリズム「08.日別実績のエラー有無表示」を実行する_
 					// Thực hiện thuật toán "Hiển thị hoặc không hiển thị erro
 					// thực tích các ngày 08"
-					result.checkDailyErrorA2_2 = checksDailyPerformanceErrorRepo.checked(employeeID, dateRange.getStart(),
-							dateRange.getEnd());
+					result.checkDailyErrorA2_2 = checksDailyPerformanceErrorRepo.checked(employeeID,
+							dateRange.getStart(), dateRange.getEnd());
 				}
 
 			}
@@ -262,8 +269,7 @@ public class ToppageStartupProcessMobFinder {
 		OptionalWidgetInfoMobileDto dataKTG029 = new OptionalWidgetInfoMobileDto();
 		Optional<TimeStatusDetailsSet> optTimeStatusDetailsSet = sPTopPageSetRepository
 				.getTimeStatusDetailsSet(companyId, Type.TIME_STATUS.value);
-		
-		
+
 		if (!optTimeStatusDetailsSet.isPresent()) {
 			return null;
 		}
@@ -275,12 +281,14 @@ public class ToppageStartupProcessMobFinder {
 		for (TimeStatusDisplayItem timeStatusDisplayItem : listDetailedItem) {
 			if ((timeStatusDisplayItem.getDetailType() == TimeStatusType.NUMBER_REMAINING_YEARS
 					|| timeStatusDisplayItem.getDetailType() == TimeStatusType.HALF_DAY_ANNUAL_REST_COUNT
-					|| timeStatusDisplayItem.getDetailType() == TimeStatusType.HOURLY_ANNUAL_HOLIDAY_AVAI_LIMIT) && timeStatusDisplayItem.getDisplayAtr() == NotUseAtr.USE ) {
+					|| timeStatusDisplayItem.getDetailType() == TimeStatusType.HOURLY_ANNUAL_HOLIDAY_AVAI_LIMIT)
+					&& timeStatusDisplayItem.getDisplayAtr() == NotUseAtr.USE) {
 				// アルゴリズム「15.年休残数表示」を実行する_ THực hiện thuật toán "15. Hiển thị
 				// nghỉ phép năm còn lại "
 				// Xử lý 15
 				dataKTG029.setYearlyHoliday(setYearlyHoliday(companyId, employeeId, systemDate, datePeriod));
-			} else if (timeStatusDisplayItem.getDetailType() == TimeStatusType.ACCUMULATED_ANNUAL_REST && timeStatusDisplayItem.getDisplayAtr() == NotUseAtr.USE) {
+			} else if (timeStatusDisplayItem.getDetailType() == TimeStatusType.ACCUMULATED_ANNUAL_REST
+					&& timeStatusDisplayItem.getDisplayAtr() == NotUseAtr.USE) {
 				// アルゴリズム「16.積立年休残数表示」を実行する_Thực hiện thuật toán "16.HIển thị
 				// nghỉ phép năm cộng dồn"
 				// Xử lý 16
@@ -293,19 +301,22 @@ public class ToppageStartupProcessMobFinder {
 				}
 				dataKTG029.setReservedYearsRemainNo(new RemainingNumber("", KTGRsvLeaveInfoImport.getRemainingDays(),
 						KTGRsvLeaveInfoImport.getAftRemainDay(), KTGRsvLeaveInfoImport.getGrantDay(), showAfter));
-			} else if (timeStatusDisplayItem.getDetailType() == TimeStatusType.NUMBER_DAYS_LEFT && timeStatusDisplayItem.getDisplayAtr() == NotUseAtr.USE) {
+			} else if (timeStatusDisplayItem.getDetailType() == TimeStatusType.NUMBER_DAYS_LEFT
+					&& timeStatusDisplayItem.getDisplayAtr() == NotUseAtr.USE) {
 				// アルゴリズム「18.代休残数表示」を実行する_Thực hiện thuật toán"18.Hiển thị nghỉ
 				// bù"
 				// Xử lý 18
 				Double remain = breakDayOffMngInPeriodQuery.getBreakDayOffMngRemain(employeeId, systemDate);
 				dataKTG029.setRemainAlternationNoDay(remain != null ? remain : 0.0);
-			} else if (timeStatusDisplayItem.getDetailType() == TimeStatusType.REMNANT_NUMBER && timeStatusDisplayItem.getDisplayAtr() == NotUseAtr.USE) {
+			} else if (timeStatusDisplayItem.getDetailType() == TimeStatusType.REMNANT_NUMBER
+					&& timeStatusDisplayItem.getDisplayAtr() == NotUseAtr.USE) {
 				// アルゴリズム「19.振休残数表示」を実行する_ THực hiện thuật toán "19.Hiển thị
 				// nghỉ bù ngày lễ không nghỉ"
 				// Xử lý 19
 				Double remainLeft = absenceReruitmentMngInPeriodQuery.getAbsRecMngRemain(employeeId, systemDate);
 				dataKTG029.setRemainsLeft(remainLeft != null ? remainLeft : 0.0);
-			} else if (timeStatusDisplayItem.getDetailType() == TimeStatusType.REMAINING_HOLIDAY && timeStatusDisplayItem.getDisplayAtr() == NotUseAtr.USE) {
+			} else if (timeStatusDisplayItem.getDetailType() == TimeStatusType.REMAINING_HOLIDAY
+					&& timeStatusDisplayItem.getDisplayAtr() == NotUseAtr.USE) {
 				// sử lý 23
 				// requestList 208(期間内の特別休暇残を集計する)
 				List<RemainingNumber> sPHDRamainNos = new ArrayList<>();
@@ -395,64 +406,94 @@ public class ToppageStartupProcessMobFinder {
 		String companyID = AppContexts.user().companyId();
 		Integer closureId = this.getClosureId();
 		List<AgreementTimeList36> data = new ArrayList<>();
-		//OvertimeHoursDto overtimeHoursDto = kTG027QueryProcessor.initialActivationArocess(targetMonth);
+		// OvertimeHoursDto overtimeHoursDto =
+		// kTG027QueryProcessor.initialActivationArocess(targetMonth);
 		List<String> employeeId = new ArrayList<>();
 		employeeId.add(AppContexts.user().employeeId());
-		//RQ 333 
-		if(closureId == null){
+		// RQ 333
+		if (closureId == null) {
 			throw new BusinessException("Msg_1134");
 		}
-		List<AgreementTimeDetail> listAgreementTimeDetail = getAgreementTime.get(companyID, employeeId, YearMonth.of(targetMonth), ClosureId.valueOf(closureId));
-		
+		List<AgreementTimeDetail> listAgreementTimeDetail = getAgreementTime.get(companyID, employeeId,
+				YearMonth.of(targetMonth), ClosureId.valueOf(closureId));
+
 		if (listAgreementTimeDetail.isEmpty()) {
 			throw new RuntimeException("ListAgreementTimeDetailRQ333 Empty");
 		}
-		for (AgreementTimeDetail agreementTimeDetail : listAgreementTimeDetail){
-			if (agreementTimeDetail.getErrorMessage().isPresent()){
+		for (AgreementTimeDetail agreementTimeDetail : listAgreementTimeDetail) {
+			if (agreementTimeDetail.getErrorMessage().isPresent()) {
 				throw new BusinessException(new RawErrorMessage(agreementTimeDetail.getErrorMessage().get()));
 			}
 		}
 		// (Set thông tin công việc ngoài giờ đã lấy)
-				List<String> lstEmpID = listAgreementTimeDetail.stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
-				// Lay Request61
-				List<PersonEmpBasicInfoImport> listEmpBasicInfoImport = empEmployeeAdapter.getPerEmpBasicInfo(lstEmpID);
-				for (AgreementTimeDetail agreementTimeDetail : listAgreementTimeDetail) {
-					Optional<PersonEmpBasicInfoImport> personInfor = listEmpBasicInfoImport.stream().filter(c -> c.getEmployeeId().equals(agreementTimeDetail.getEmployeeId())).findFirst();
-					if (!personInfor.isPresent()) {
-						break;
-					}
-					AgreementTimeList36 agreementTimeList36 = new AgreementTimeList36(personInfor.get().getEmployeeCode(), personInfor.get().getBusinessName(), null,
-							new AgreementTimeOfMonthlyDto(!agreementTimeDetail.getConfirmed().isPresent()? 0 : agreementTimeDetail.getConfirmed().get().getAgreementTime().v(),
-									!agreementTimeDetail.getConfirmed().isPresent() ? 0 : agreementTimeDetail.getConfirmed().get().getLimitErrorTime().v(),
-									!agreementTimeDetail.getConfirmed().isPresent() ? 0 : agreementTimeDetail.getConfirmed().get().getLimitAlarmTime().v(),
-									!agreementTimeDetail.getConfirmed().isPresent() ? 0 : (!agreementTimeDetail.getConfirmed().get().getExceptionLimitErrorTime().isPresent() ? agreementTimeDetail.getConfirmed().get().getLimitErrorTime().v() :agreementTimeDetail.getConfirmed().get().getExceptionLimitErrorTime().get().v()),
-									!agreementTimeDetail.getConfirmed().isPresent() ? 0 : (!agreementTimeDetail.getConfirmed().get().getExceptionLimitAlarmTime().isPresent() ? 0 :agreementTimeDetail.getConfirmed().get().getExceptionLimitAlarmTime().get().v()),
-									!agreementTimeDetail.getConfirmed().isPresent() ? 0 : agreementTimeDetail.getConfirmed().get().getStatus().value),
-							new AgreementTimeOfMonthlyDto(!agreementTimeDetail.getAfterAppReflect().isPresent()? 0 : agreementTimeDetail.getAfterAppReflect().get().getAgreementTime().v(),
-									!agreementTimeDetail.getAfterAppReflect().isPresent() ? 0 : agreementTimeDetail.getAfterAppReflect().get().getLimitErrorTime().v(),
-									!agreementTimeDetail.getAfterAppReflect().isPresent() ? 0 : agreementTimeDetail.getAfterAppReflect().get().getLimitAlarmTime().v(),
-									!agreementTimeDetail.getAfterAppReflect().isPresent() ? 0 : (!agreementTimeDetail.getAfterAppReflect().get().getExceptionLimitErrorTime().isPresent() ? 0 :agreementTimeDetail.getAfterAppReflect().get().getExceptionLimitErrorTime().get().v()),
-									!agreementTimeDetail.getAfterAppReflect().isPresent() ? 0 : (!agreementTimeDetail.getAfterAppReflect().get().getExceptionLimitAlarmTime().isPresent() ? 0 :agreementTimeDetail.getAfterAppReflect().get().getExceptionLimitAlarmTime().get().v()),
-									!agreementTimeDetail.getAfterAppReflect().isPresent() ? 0 : agreementTimeDetail.getAfterAppReflect().get().getStatus().value));
-					data.add(agreementTimeList36);
-				}
-				
-				data.sort((a, b) ->
-					 {
-						 if(a.getAfterAppReflect().getAgreementTime()== b.getAfterAppReflect().getAgreementTime()){
-							 return a.getEmployeeCD().compareTo(b.getEmployeeCD());
-						 }else{
-							 return  b.getAfterAppReflect().getAgreementTime()-a.getAfterAppReflect().getAgreementTime();
-						 }
-					}
-				);
-				OvertimeHours over = new OvertimeHours(null, data);
-				OvertimeHoursDto overtimeHoursDto =  new OvertimeHoursDto(closureId,null, over);
-		List<AgreementTimeList36> filtered = overtimeHoursDto
-				.getOvertimeHours().getOvertimeLaborInfor().stream()
-				.filter(x -> x.getEmployeeCD()
-				.equalsIgnoreCase(empLoginCode))
+		List<String> lstEmpID = listAgreementTimeDetail.stream().map(c -> c.getEmployeeId())
 				.collect(Collectors.toList());
+		// Lay Request61
+		List<PersonEmpBasicInfoImport> listEmpBasicInfoImport = empEmployeeAdapter.getPerEmpBasicInfo(lstEmpID);
+		for (AgreementTimeDetail agreementTimeDetail : listAgreementTimeDetail) {
+			Optional<PersonEmpBasicInfoImport> personInfor = listEmpBasicInfoImport.stream()
+					.filter(c -> c.getEmployeeId().equals(agreementTimeDetail.getEmployeeId())).findFirst();
+			if (!personInfor.isPresent()) {
+				break;
+			}
+			AgreementTimeList36 agreementTimeList36 = new AgreementTimeList36(personInfor.get().getEmployeeCode(),
+					personInfor.get().getBusinessName(), null,
+					new AgreementTimeOfMonthlyDto(
+							!agreementTimeDetail.getConfirmed().isPresent() ? 0
+									: agreementTimeDetail.getConfirmed().get().getAgreementTime().v(),
+							!agreementTimeDetail.getConfirmed().isPresent() ? 0
+									: agreementTimeDetail.getConfirmed().get().getLimitErrorTime().v(),
+							!agreementTimeDetail.getConfirmed().isPresent() ? 0
+									: agreementTimeDetail.getConfirmed().get().getLimitAlarmTime().v(),
+							!agreementTimeDetail.getConfirmed().isPresent() ? 0
+									: (!agreementTimeDetail.getConfirmed().get().getExceptionLimitErrorTime()
+											.isPresent()
+													? agreementTimeDetail.getConfirmed().get().getLimitErrorTime().v()
+													: agreementTimeDetail.getConfirmed().get()
+															.getExceptionLimitErrorTime().get().v()),
+							!agreementTimeDetail.getConfirmed().isPresent() ? 0
+									: (!agreementTimeDetail.getConfirmed().get().getExceptionLimitAlarmTime()
+											.isPresent()
+													? 0
+													: agreementTimeDetail.getConfirmed().get()
+															.getExceptionLimitAlarmTime().get().v()),
+							!agreementTimeDetail.getConfirmed().isPresent() ? 0
+									: agreementTimeDetail.getConfirmed().get().getStatus().value),
+					new AgreementTimeOfMonthlyDto(
+							!agreementTimeDetail.getAfterAppReflect().isPresent() ? 0
+									: agreementTimeDetail.getAfterAppReflect().get().getAgreementTime().v(),
+							!agreementTimeDetail.getAfterAppReflect().isPresent() ? 0
+									: agreementTimeDetail.getAfterAppReflect().get().getLimitErrorTime().v(),
+							!agreementTimeDetail.getAfterAppReflect().isPresent() ? 0
+									: agreementTimeDetail.getAfterAppReflect().get().getLimitAlarmTime().v(),
+							!agreementTimeDetail.getAfterAppReflect().isPresent() ? 0
+									: (!agreementTimeDetail.getAfterAppReflect().get().getExceptionLimitErrorTime()
+											.isPresent()
+													? 0
+													: agreementTimeDetail.getAfterAppReflect().get()
+															.getExceptionLimitErrorTime().get().v()),
+							!agreementTimeDetail.getAfterAppReflect().isPresent() ? 0
+									: (!agreementTimeDetail.getAfterAppReflect().get().getExceptionLimitAlarmTime()
+											.isPresent()
+													? 0
+													: agreementTimeDetail.getAfterAppReflect().get()
+															.getExceptionLimitAlarmTime().get().v()),
+							!agreementTimeDetail.getAfterAppReflect().isPresent() ? 0
+									: agreementTimeDetail.getAfterAppReflect().get().getStatus().value));
+			data.add(agreementTimeList36);
+		}
+
+		data.sort((a, b) -> {
+			if (a.getAfterAppReflect().getAgreementTime() == b.getAfterAppReflect().getAgreementTime()) {
+				return a.getEmployeeCD().compareTo(b.getEmployeeCD());
+			} else {
+				return b.getAfterAppReflect().getAgreementTime() - a.getAfterAppReflect().getAgreementTime();
+			}
+		});
+		OvertimeHours over = new OvertimeHours(null, data);
+		OvertimeHoursDto overtimeHoursDto = new OvertimeHoursDto(closureId, null, over);
+		List<AgreementTimeList36> filtered = overtimeHoursDto.getOvertimeHours().getOvertimeLaborInfor().stream()
+				.filter(x -> x.getEmployeeCD().equalsIgnoreCase(empLoginCode)).collect(Collectors.toList());
 		overtimeHoursDto.getOvertimeHours().setOvertimeLaborInfor(filtered);
 
 		return overtimeHoursDto;
@@ -523,7 +564,8 @@ public class ToppageStartupProcessMobFinder {
 			YearlyHoliday yearlyHoliday = new YearlyHoliday();
 		}
 	}
-	//Get the existence of application data to be approved
+
+	// Get the existence of application data to be approved
 	public boolean existenceDataApproved() {
 		String cid = AppContexts.user().companyId();
 		String employeeID = AppContexts.user().employeeId();
@@ -552,15 +594,17 @@ public class ToppageStartupProcessMobFinder {
 					employeeID, 0, cid);
 			// アルゴリズム「申請IDを使用して申請一覧を取得する」を実行する
 			List<Application_New> listApplication = applicationRepository_New.findByListID(cid, listApplicationID);
-			List<ApplicationType> listApplicationType = listApplication.stream().map(c -> c.getAppType())
+			/* 「申請」．申請種類＝Input．申請種類 & 「申請」．実績反映状態<>差し戻し に該当する申請が存在するかチェックする */
+			List<Application_New> listApplicationFilter = listApplication.stream()
+					.filter(c -> (c.getAppType() == ApplicationType.OVER_TIME_APPLICATION)
+							&& c.getReflectionInformation().getStateReflectionReal() != ReflectedState_New.REMAND)
 					.collect(Collectors.toList());
-			List<ApplicationType> listFilter = listApplicationType.stream()
-					.filter(c -> c == ApplicationType.OVER_TIME_APPLICATION).collect(Collectors.toList());
-			if (listFilter.isEmpty()) {
+			if (listApplicationFilter.isEmpty()) {
 				return false;
 			} else {
 				return true;
 			}
+
 		}
 	}
 }

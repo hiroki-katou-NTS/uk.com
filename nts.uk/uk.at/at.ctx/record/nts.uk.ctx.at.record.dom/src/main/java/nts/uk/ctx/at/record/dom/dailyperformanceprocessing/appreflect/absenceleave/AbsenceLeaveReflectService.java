@@ -1,10 +1,11 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.absenceleave;
 
-import java.util.List;
+import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonReflectParameter;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
+import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 
 public interface AbsenceLeaveReflectService {
@@ -25,7 +26,7 @@ public interface AbsenceLeaveReflectService {
 	 * @param workTime
 	 * @return
 	 */
-	public WorkTimeIsRecordReflect checkReflectWorktime(String employeeId, GeneralDate dateData, String workTime, boolean isChe);
+	public WorkTimeIsRecordReflect checkReflectWorktime(String employeeId, GeneralDate dateData, String workTime);
 	/**
 	 * 予定開始終了時刻が反映できるか
 	 * @param employeeId
@@ -50,6 +51,6 @@ public interface AbsenceLeaveReflectService {
 	 * @param frameNo
 	 * @return
 	 */
-	public boolean checkReflectRecordStartEndTime(String employeeId, GeneralDate baseDate, Integer frameNo, boolean isAttendence);
-	public List<IntegrationOfDaily> getByAbsenceLeave(CommonReflectParameter param, boolean isPre);
+	public boolean checkReflectRecordStartEndTime(String employeeId, GeneralDate baseDate, Integer frameNo, boolean isAttendence,
+			Optional<TimeLeavingOfDailyPerformance> optTimeLeaving);
 }

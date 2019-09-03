@@ -71,10 +71,20 @@ router.afterEach((to: Route, from: Route) => {
             }
         });
     }
-    
+
     setTimeout(() => {
         if (!document.body.querySelectorAll('.modal.show, .modal-back-drop.show').length) {
+            let top = 0,
+                container = document.body.querySelector('.container-fluid') as HTMLElement;
+
+            if (container) {
+                top = Number((container.style.marginTop || '').replace('px', ''));
+                container.style.marginTop = '';
+            }
+
             document.body.classList.remove('modal-open');
+
+            document.scrollingElement.scrollTop = Math.abs(top);
         }
     }, 500);
 

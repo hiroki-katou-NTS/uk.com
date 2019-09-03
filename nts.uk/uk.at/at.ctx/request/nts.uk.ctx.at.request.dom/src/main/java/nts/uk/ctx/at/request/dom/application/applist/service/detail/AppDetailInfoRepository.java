@@ -110,4 +110,18 @@ public interface AppDetailInfoRepository {
 	 * @return
 	 */
 	public AppCompltLeaveSyncOutput getAppComplementLeaveSync(String companyId, String appId);
+	/**
+	 * 勤務就業名称を作成 - WorkType
+	 * @param lstWkType
+	 * @param wkTypeCd
+	 * @return
+	 */
+	public String findWorkTypeName(List<WorkType> lstWkType, String wkTypeCd);
+	/**
+	 * 勤務就業名称を作成 - WorkTime
+	 * @param lstWkTime
+	 * @param wkTimeCd
+	 * @return
+	 */
+	public String findWorkTimeName(List<WorkTimeSetting> lstWkTime, String wkTimeCd);
 }

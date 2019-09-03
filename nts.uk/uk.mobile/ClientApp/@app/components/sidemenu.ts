@@ -219,7 +219,14 @@ export class SideMenuBar extends Vue {
                     .on(() => SideMenu.show = false);
             }
 
+            let top = document.scrollingElement.scrollTop,
+                container = document.body.querySelector('.container-fluid') as HTMLElement;
+
             dom.addClass(document.body, 'show-side-bar');
+
+            if (!container.style.marginTop) {
+                container.style.marginTop = `-${top}px`;
+            }
         }
 
         storage.local.setItem('sidebar', show ? 'show' : 'hide');

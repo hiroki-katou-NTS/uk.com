@@ -1,5 +1,5 @@
 import { Vue, _ } from '@app/provider';
-import { component, Prop } from '@app/core/component';
+import { component, Prop, Watch } from '@app/core/component';
 
 import { AppInfo } from '../common';
 import { AppListExtractConditionDto } from '../common/index.d';
@@ -54,6 +54,13 @@ export class CmmS45BComponent extends Vue {
     public lstMasterInfo: Array<any> = [];
     public isDisPreP: number = 0;//申請表示設定.事前事後区分
     public disableB24: boolean = false;
+
+    @Watch('modeAppr')
+    public checkChangeMode(mode: boolean) {
+        if (!mode) {
+            this.lstAppr = [];
+        }
+    }
 
     public mounted() {
         this.pgName = 'cmms45b';
@@ -245,23 +252,26 @@ export class CmmS45BComponent extends Vue {
         };
     }
     // 詳細を確認する
-    private goToDetail(id: string) {
+    private goToDetail(item: AppInfo) {
         let self = this;
         if (!self.modeAppr) {
             let lstAppId = self.findLstIdDisplay();
             //「D：申請内容確認（承認）」画面へ遷移する
-            this.$modal('cmms45d', { 'listAppMeta': lstAppId, 'currentApp': id }).then(() => {
+            this.$modal('cmms45d', { 'listAppMeta': lstAppId, 'currentApp': item.id }).then(() => {
                 //reload
                 self.getData(true, false);
             });
         } else {
-            let checkSel = _.filter(self.lstAppr, (idSel) => idSel == id).length;
+            if (!item.frameStatus) {//TH đơn không được approve thì bỏ qua
+                return;
+            }
+            let checkSel = _.filter(self.lstAppr, (idSel) => idSel == item.id).length;
             if (checkSel > 0) {//bo check
                 self.lstAppr = _.remove(self.lstAppr, (select) => {
-                    return select != id;
+                    return select != item.id;
                 });
             } else {//them chek
-                self.lstAppr.push(id);
+                self.lstAppr.push(item.id);
             }
         }
     }

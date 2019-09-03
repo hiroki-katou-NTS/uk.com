@@ -228,6 +228,12 @@ public class AppHolidayWorkFinder {
 		if(appCommonSettingOutput.getApprovalFunctionSetting()!=null){
 			result.setEnableOvertimeInput(appCommonSettingOutput.getApprovalFunctionSetting().getApplicationDetailSetting().get().getTimeInputUse().value==1?true:false);
 		}
+		OvertimeRestAppCommonSetting overtimeRestAppCommonSet = overtimeRestAppCommonSetRepository
+				.getOvertimeRestAppCommonSetting(companyID, ApplicationType.BREAK_TIME_APPLICATION.value).get();
+		UseAtr preExcessDisplaySetting = overtimeRestAppCommonSet.getPreExcessDisplaySetting();
+		AppDateContradictionAtr performanceExcessAtr = overtimeRestAppCommonSet.getPerformanceExcessAtr();
+		result.setPreExcessDisplaySetting(preExcessDisplaySetting.value);
+		result.setPerformanceExcessAtr(performanceExcessAtr.value);
 		return result;
 	}
 	/**
@@ -307,7 +313,7 @@ public class AppHolidayWorkFinder {
 		}
 		String companyID = AppContexts.user().companyId();
 		String employeeIDOrapproverID = AppContexts.user().employeeId();
-		ColorConfirmResult result = new ColorConfirmResult(false, 0, 0, "", Collections.emptyList(), null);
+		ColorConfirmResult result = new ColorConfirmResult(false, 0, 0, "", Collections.emptyList(), null, null);
 		// 6.計算処理 : TODO
 		// 表示しない
 		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(companyID,
@@ -432,10 +438,9 @@ public class AppHolidayWorkFinder {
 		return result;
 	}
 	
-	public List<CaculationTime> getCalculateValue(String employeeID, String appDate, Integer prePostAtr, String workTypeCD, String workTimeCD,
+	public PreActualColorResult getCalculateValue(String employeeID, String appDate, Integer prePostAtr, String workTypeCD, String workTimeCD,
 			List<CaculationTime> overtimeInputLst, Integer startTime, Integer endTime, List<Integer> startTimeRests, List<Integer> endTimeRests){
 		String companyID = AppContexts.user().companyId();
-		GeneralDate generalDate = GeneralDate.fromString(appDate, DATE_FORMAT); 
 		
 		// 6.計算処理 : 
 		DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = dailyAttendanceTimeCaculation.getCalculation(employeeID,
@@ -483,9 +488,7 @@ public class AppHolidayWorkFinder {
 				preExcessDisplaySetting, 
 				performanceExcessAtr, 
 				ApplicationType.BREAK_TIME_APPLICATION, 
-				EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class), 
-				withdrawalAppSet.getOverrideSet(), 
-				Optional.empty(), 
+				EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class),
 				breaktimeInputCaculations, 
 				otTimeLst, 
 				preAppCheckResult.opAppBefore, 
@@ -493,29 +496,7 @@ public class AppHolidayWorkFinder {
 				actualStatusCheckResult.actualLst, 
 				actualStatusCheckResult.actualStatus);
 		
-		return preActualColorResult.resultLst.stream()
-			.map(x -> new CaculationTime(
-					companyID, 
-					"", 
-					x.attendanceID, 
-					x.frameNo, 
-					0, 
-					"", 
-					x.appTime, 
-					x.preAppTime == null ? null : x.preAppTime.toString(), 
-					x.actualTime == null ? null : x.actualTime.toString(), 
-					getErrorCodePC(x.calcError, x.preAppError, x.actualError), 
-					true, 
-					x.preAppError, 
-					x.actualError))
-			.collect(Collectors.toList());
-	}
-	
-	private Integer getErrorCodePC(boolean calcError, boolean preAppError, boolean actualError){
-		if(actualError) return 1;
-		if(preAppError) return 2;
-		if(calcError) return 3;
-		return 0;
+		return preActualColorResult;
 	}
 	
 	/**
@@ -729,8 +710,80 @@ public class AppHolidayWorkFinder {
 				}
 			}
 		}
+		UseAtr preExcessDisplaySetting = overtimeRestAppCommonSet.get().getPreExcessDisplaySetting();
+		AppDateContradictionAtr performanceExcessAtr = overtimeRestAppCommonSet.get().getPerformanceExcessAtr();
+		appHolidayWorkDto.setPreExcessDisplaySetting(preExcessDisplaySetting.value);
+		appHolidayWorkDto.setPerformanceExcessAtr(performanceExcessAtr.value);
+		
+		List<OvertimeColorCheck> holidayLst = new ArrayList<>();
+		appHolidayWorkDto.getHolidayWorkInputDtos().forEach(holidayInput -> {
+			holidayLst.add(OvertimeColorCheck.createApp(2, holidayInput.getFrameNo(), holidayInput.getApplicationTime()));
+		});
+		// // アルゴリズム「残業申請設定を取得する」を実行する
+		WithdrawalAppSet withdrawalAppSet = withdrawalAppSetRepository.getWithDraw().get();
+		// 07-01_事前申請状態チェック
+		PreAppCheckResult preAppCheckResult = preActualColorCheck.preAppStatusCheck(
+				companyID, 
+				appHolidayWork.getApplication().getEmployeeID(), 
+				appHolidayWork.getApplication().getAppDate(), 
+				appHolidayWork.getApplication().getAppType());
+		// 07-02_実績取得・状態チェック
+		ActualStatusCheckResult actualStatusCheckResult = preActualColorCheck.actualStatusCheck(
+				companyID, 
+				appHolidayWork.getApplication().getEmployeeID(), 
+				appHolidayWork.getApplication().getAppDate(), 
+				appHolidayWork.getApplication().getAppType(), 
+				appHolidayWork.getWorkTypeCode() == null ? null : appHolidayWork.getWorkTypeCode().v(), 
+						appHolidayWork.getWorkTimeCode() == null ? null : appHolidayWork.getWorkTimeCode().v(), 
+				withdrawalAppSet.getOverrideSet(), 
+				Optional.empty());
+		// 07_事前申請・実績超過チェック(07_đơn xin trước. check vượt quá thực tế )
+		PreActualColorResult preActualColorResult = preActualColorCheck.preActualColorCheck(
+				preExcessDisplaySetting, 
+				performanceExcessAtr, 
+				appHolidayWork.getApplication().getAppType(), 
+				appHolidayWork.getApplication().getPrePostAtr(), 
+				Collections.emptyList(),
+				holidayLst,
+				preAppCheckResult.opAppBefore,
+				preAppCheckResult.beforeAppStatus,
+				actualStatusCheckResult.actualLst,
+				actualStatusCheckResult.actualStatus);
+		List<CaculationTime> caculationTimes = preActualColorResult.resultLst.stream()
+				.map(x -> new CaculationTime(
+						companyID, 
+						appID, 
+						x.attendanceID, 
+						x.frameNo, 
+						0, 
+						"", 
+						x.appTime, 
+						x.preAppTime==null ? null : x.preAppTime.toString(), 
+						x.actualTime==null ? null : x.actualTime.toString(), 
+						getErrorCode(x.calcError, x.preAppError, x.actualError), 
+						false, 
+						preActualColorResult.beforeAppStatus, 
+						preActualColorResult.actualStatus==3))
+				.collect(Collectors.toList());
+		appHolidayWorkDto.setCaculationTimes(caculationTimes);
 		return appHolidayWorkDto;
 	}
+	
+	private int getErrorCode(int calcError, int preAppError, int actualError){
+        if(actualError > preAppError) {
+            if(actualError > calcError) {
+                return actualError;
+            } else {
+                return calcError;
+            }
+        } else {
+            if(preAppError > calcError) {
+                return preAppError;
+            } else {
+                return calcError;
+            }
+        }
+    }
 	
 	private boolean isSettingDisplay(AppCommonSettingOutput appCommonSettingOutput) {
 		return appCommonSettingOutput.approvalFunctionSetting.getApplicationDetailSetting().get()

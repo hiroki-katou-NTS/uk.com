@@ -158,14 +158,24 @@ public class UpdateAppAbsenceCommandHandler extends CommandHandlerWithResult<Upd
 				command.getVersion(),
 				appAbsence.getWorkTypeCode() == null ? null : appAbsence.getWorkTypeCode().v(),
 				appAbsence.getWorkTimeCode() == null ? null : appAbsence.getWorkTimeCode().v());
+		GeneralDate startDate = opAppAbsence.get().getApplication().getAppDate();
+		GeneralDate endDate = opAppAbsence.get().getApplication().getEndDate().isPresent() ? opAppAbsence.get().getApplication().getEndDate().get() : opAppAbsence.get().getApplication().getAppDate();
+		
+		//休日申請日
+		List<GeneralDate> lstDateIsHoliday = otherCommonAlg.lstDateIsHoliday(companyID, command.getEmployeeID(), new DatePeriod(startDate, endDate));
 		//check update 7.登録時のエラーチェック
 		insertAppAbsence.checkBeforeRegister(convert(command),
-				opAppAbsence.get().getApplication().getAppDate(),
-				opAppAbsence.get().getApplication().getEndDate().isPresent() ?opAppAbsence.get().getApplication().getEndDate().get() : opAppAbsence.get().getApplication().getAppDate(),false);
+				startDate,
+				endDate,
+				false,
+				lstDateIsHoliday);
 		//計画年休上限チェック(check giới han trên plan annual holiday)
 		//hoatt-2018-07-05
 		absenceServiceProcess.checkLimitAbsencePlan(companyID, command.getEmployeeID(), command.getWorkTypeCode(),
-				GeneralDate.fromString(command.getStartDate(),"yyyy/MM/dd"), GeneralDate.fromString(command.getEndDate(),"yyyy/MM/dd"), EnumAdaptor.valueOf(command.getHolidayAppType(), HolidayAppType.class));
+				GeneralDate.fromString(command.getStartDate(),"yyyy/MM/dd"),
+				GeneralDate.fromString(command.getEndDate(),"yyyy/MM/dd"),
+				EnumAdaptor.valueOf(command.getHolidayAppType(),HolidayAppType.class),
+				lstDateIsHoliday);
 		//update appAbsence
 		repoAppAbsence.updateAbsence(appAbsence);
 		SpecHolidayCommand specHdCm = command.getSpecHd();
@@ -187,10 +197,7 @@ public class UpdateAppAbsenceCommandHandler extends CommandHandlerWithResult<Upd
 		GeneralDate cmdStartDate = GeneralDate.fromString(command.getStartDate(), DATE_FORMAT);
 		GeneralDate cmdEndDate = GeneralDate.fromString(command.getEndDate(), DATE_FORMAT);
 		List<GeneralDate> listDate = new ArrayList<>();
-		for(GeneralDate loopDate = cmdStartDate; loopDate.beforeOrEquals(cmdEndDate); loopDate = loopDate.addDays(1)){
-			listDate.add(loopDate);
-		}
-		List<GeneralDate> lstHoliday = otherCommonAlg.lstDateNotHoliday(companyID, command.getEmployeeID(), new DatePeriod(cmdStartDate, cmdEndDate));
+		List<GeneralDate> lstHoliday = otherCommonAlg.lstDateIsHoliday(companyID, command.getEmployeeID(), new DatePeriod(cmdStartDate, cmdEndDate));
 		for(GeneralDate loopDate = cmdStartDate; loopDate.beforeOrEquals(cmdEndDate); loopDate = loopDate.addDays(1)){
 			if(!lstHoliday.contains(loopDate)) {
 				listDate.add(loopDate);	

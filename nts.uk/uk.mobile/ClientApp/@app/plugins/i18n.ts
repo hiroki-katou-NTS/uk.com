@@ -32,7 +32,7 @@ const resources: {
         'confirm': '確認',
         'filter_menu': 'Enter keyword for filter menu',
         'year_month': '{0}年{1}月',
-        'nts_date_format': '{0}年{1}月{2}日'
+        'nts_date_format': '{0}年{1}月{2}日（{3}）'
     },
     vi: {
         'jp': '日本',

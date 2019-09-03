@@ -21,8 +21,6 @@ public interface PreActualColorCheck {
 	 * @param performanceExcessAtr 実績超過表示設定
 	 * @param appType 申請種類
 	 * @param prePostAtr 事前事後区分
-	 * @param overrideSet 退勤時刻優先設定
-	 * @param calStampMiss 退勤打刻漏れ補正設定
 	 * @param calcTimeList 入力値リスト
 	 * @param overTimeLst 計算値リスト
 	 * @param opAppBefore 事前申請
@@ -32,8 +30,7 @@ public interface PreActualColorCheck {
 	 * @return 
 	 */
 	public PreActualColorResult preActualColorCheck(UseAtr preExcessDisplaySetting, AppDateContradictionAtr performanceExcessAtr,
-			ApplicationType appType, PrePostAtr prePostAtr, OverrideSet overrideSet, Optional<CalcStampMiss> calStampMiss, 
-			List<OvertimeInputCaculation> calcTimeList, List<OvertimeColorCheck> overTimeLst, 
+			ApplicationType appType, PrePostAtr prePostAtr, List<OvertimeInputCaculation> calcTimeList, List<OvertimeColorCheck> overTimeLst, 
 			Optional<Application_New> opAppBefore, boolean beforeAppStatus, List<OvertimeColorCheck> actualLst, ActualStatus actualStatus);
 	
 	/**
@@ -138,12 +135,12 @@ public interface PreActualColorCheck {
 	 * @param overtimeColorCheck 対象枠, 入力値
 	 * @param opAppBefore 事前申請
 	 */
-	public void preAppErrorCheck(ApplicationType appType, OvertimeColorCheck overtimeColorCheck, Optional<Application_New> opAppBefore, boolean preAppSetCheck);
+	public void preAppErrorCheck(ApplicationType appType, OvertimeColorCheck overtimeColorCheck, Optional<Application_New> opAppBefore, UseAtr preAppSetCheck);
 	
 	/**
 	 * 07-02-3_枠別実績超過チェック
 	 * @param overtimeColorCheck 対象枠, 入力値
 	 * @param actualLst 実績
 	 */
-	public void actualErrorCheck(OvertimeColorCheck overtimeColorCheck, List<OvertimeColorCheck> actualLst, boolean actualSetCheck);
+	public void actualErrorCheck(OvertimeColorCheck overtimeColorCheck, List<OvertimeColorCheck> actualLst, AppDateContradictionAtr actualSetCheck);
 }

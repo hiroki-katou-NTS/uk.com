@@ -14,6 +14,7 @@ import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalBehaviorAtrImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalFrameImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailScreenAppData;
@@ -48,6 +49,7 @@ public class DetailScreenBeforeImpl implements DetailScreenBefore {
 	public DetailScreenApprovalData getApprovalDetail(String appID) {
 		String loginEmpID = AppContexts.user().employeeId();
 		String authorComment = Strings.EMPTY;
+		ApprovalBehaviorAtrImport_New loginApprovalAtr = null;
 		List<ApprovalPhaseStateImport_New> approvalPhaseStateLst = approvalRootStateAdapter.getApprovalDetail(appID);
 		// 承認フェーズListを5～1の逆順でループする
 		approvalPhaseStateLst.sort(Comparator.comparing(ApprovalPhaseStateImport_New::getPhaseOrder).reversed());
@@ -58,6 +60,7 @@ public class DetailScreenBeforeImpl implements DetailScreenBefore {
 				// ループ中の承認枠．承認者＝ログイン社員の場合
 				if(approverList.contains(loginEmpID)){
 					authorComment = approvalFrame.getApprovalReason();
+					loginApprovalAtr = approvalFrame.getApprovalAtr();
 					find = true;
 					break;
 				}
@@ -66,7 +69,7 @@ public class DetailScreenBeforeImpl implements DetailScreenBefore {
 				break;
 			}
 		}
-		return new DetailScreenApprovalData(approvalPhaseStateLst, authorComment);
+		return new DetailScreenApprovalData(approvalPhaseStateLst, authorComment, loginApprovalAtr);
 	}
 
 }

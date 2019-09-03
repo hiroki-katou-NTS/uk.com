@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.appabsence.service;
 
+import java.util.List;
+
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
@@ -23,9 +25,10 @@ public interface AbsenceServiceProcess {
 	 * @param sDate: 申請開始日
 	 * @param eDate: 申請終了日
 	 * @param hdAppType: 休暇種類
+	 * @param lstDateIsHoliday: 休日の申請日
 	 */
 	void checkLimitAbsencePlan(String cID, String sID, String workTypeCD, 
-			GeneralDate sDate, GeneralDate eDate, HolidayAppType hdAppType);
+			GeneralDate sDate, GeneralDate eDate, HolidayAppType hdAppType, List<GeneralDate> lstDateIsHoliday);
 	/**
 	 * @author hoatt
 	 * 14.休暇種類表示チェック

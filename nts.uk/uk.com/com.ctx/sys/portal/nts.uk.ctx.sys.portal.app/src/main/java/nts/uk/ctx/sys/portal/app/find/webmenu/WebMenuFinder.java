@@ -11,6 +11,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.arc.i18n.I18NResources;
@@ -470,6 +472,9 @@ public class WebMenuFinder {
 			List<MobileMenuChildDto> mobileMenuChildDtoLst = new ArrayList<>();
 			String url = "/" + standardMenu.getProgramId().substring(0, 3) + 
 					"/" + standardMenu.getProgramId().substring(3) + "/" + standardMenu.getScreenId();
+			if(Strings.isNotBlank(standardMenu.getQueryString())) {
+				url = url + "?" + standardMenu.getQueryString();
+			}
 			mobileMenuDtoLst.add(new MobileMenuDto(
 					code, 
 					standardMenu.getDisplayName().v(), 
@@ -492,6 +497,9 @@ public class WebMenuFinder {
 				StandardMenu standardMenuChild = opStandardMenuChild.get();
 				String childUrl = "/" + standardMenuChild.getProgramId().substring(0, 3) + 
 						"/" + standardMenuChild.getProgramId().substring(3) + "/" + standardMenuChild.getScreenId();
+				if(Strings.isNotBlank(standardMenuChild.getQueryString())) {
+					childUrl = childUrl + "?" + standardMenuChild.getQueryString();
+				}
 				mobileMenuChildDtoLst.add(new MobileMenuChildDto(
 						childMenu.v(), 
 						standardMenuChild.getDisplayName().v(), 

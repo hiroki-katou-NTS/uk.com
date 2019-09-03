@@ -46,7 +46,7 @@ export class YearMonthComponent extends InputComponent {
             self.dataSource,
             self.onSelect, {
                 title: self.displayYearMonth({ year, month }),
-                required: self.constraints.required
+                required: self.constraints && self.constraints.required
             })
             .then((select: any) => {
                 if (select === undefined) {

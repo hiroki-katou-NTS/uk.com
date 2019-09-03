@@ -328,8 +328,9 @@
 							<!--A6_7 残業時間名称--> 						
 							<td class="header" data-bind="attr: { id: 'overtimeHoursHeader_'+attendanceID()+'_'+frameNo()}, text: frameName"></td>
 							<!--A6_8 残業申請時間入力--> 						
-							<td data-bind="attr: { id: 'overtimeHoursCheck_'+attendanceID()+'_'+frameNo()}, style: { 'background-color' : color }"><input tabindex="15" class="right-content overtimeHoursCheck"
-								data-bind="attr: { id: 'overtimeHoursCheck_'+attendanceID()+'_'+frameNo()}, style: { 'background-color' : color }, 
+							<td data-bind="attr: { id: 'overtimeHoursCheck_'+attendanceID()+'_'+frameNo()}">
+							<input tabindex="15" class="right-content overtimeHoursCheck"
+								data-bind="attr: { id: 'overtimeHoursCheck_'+attendanceID()+'_'+frameNo()}, 
 								ntsTimeEditor: {
 									name: nameID, 
 									value: applicationTime, 
@@ -372,7 +373,8 @@
 							<!--A6_7 残業時間名称--> 						
 							<td class="header" data-bind="attr: { id: 'overtimeHoursHeader_'+attendanceID()+'_'+frameNo()}, text: frameName"></td>
 							<!--A6_8 残業申請時間入力--> 						
-							<td data-bind="attr: { id: 'overtimeHoursCheck_'+attendanceID()+'_'+frameNo()}, style: { 'background-color' : color }"><input tabindex="15" class="right-content overtimeHoursCheck"
+							<td data-bind="attr: { id: 'overtimeHoursCheck_'+attendanceID()+'_'+frameNo()}, style: { 'background-color' : color }">
+							<input tabindex="15" class="right-content overtimeHoursCheck"
 								data-bind="attr: { id: 'overtimeHoursCheck_'+attendanceID()+'_'+frameNo()}, style: { 'background-color' : color }, 
 								ntsTimeEditor: {
 									name: nameID, 
@@ -649,19 +651,20 @@
 			<label style ="margin-left: 72px" data-bind="text : workClockFrom2To2Reference"></label>
 			</div>
 			<div class="control-group" data-bind ="foreach: overtimeHoursReference">
+				<div class="control-group">
 					<!--A11_16-->
 					<label  data-bind="text : frameName"></label>
 					<!--A11_17-->
 					<label data-bind="text : applicationTime"></label>
-					<BR />
+				</div>
 			</div>
-			<div class="control-group">
+			<div class="control-group" data-bind="if: appOvertimeNightFlg">
 			<!--A11_24申請者-->
 			<label>#{i18n.getText('KAF005_109')} :</label>
 			<!--A11_25 申請者表示氏名-->
 			<label data-bind="text : overTimeShiftNightRefer"></label>
 			</div>
-			<div class="control-group">
+			<div class="control-group" data-bind="if: flexFLag">
 			<!--A11_26 申請者-->
 			<label>#{i18n.getText('KAF005_110')} :</label>
 			<!--A11_27 申請者表示氏名-->
@@ -724,13 +727,13 @@
 						<label data-bind="text : applicationTime"></label>
 						<BR />
 						</div>
-						<div class="control-group">
+						<div class="control-group" data-bind="if: appOvertimeNightFlg">
 						<!--A12_24-->
 						<label>#{i18n.getText('KAF005_131')} :</label>
 						<!--A12_25-->
 						<label data-bind="text : overTimeShiftNightPre"></label>
 						</div>
-						<div class="control-group">
+						<div class="control-group" data-bind="if: flexFLag">
 						<!--A12_26-->
 						<label>#{i18n.getText('KAF005_132')} :</label>
 						<!--A12_27-->

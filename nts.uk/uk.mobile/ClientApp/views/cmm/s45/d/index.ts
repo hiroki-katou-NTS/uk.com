@@ -63,6 +63,8 @@ export class CmmS45DComponent extends Vue {
     public reversionReason: string = '';
 
     public memo: string = '';
+    public commentDis: boolean = false;
+    public commentColor: string = '';
 
     public created() {
         let self = this;
@@ -139,6 +141,12 @@ export class CmmS45DComponent extends Vue {
             self.reversionReason = appData.reversionReason;
             self.appOvertime = appData.appOvertime;
             self.memo = '';
+            if (!_.isEmpty(self.authorComment)) {
+                self.commentDis = true;
+            } else {
+                self.commentDis = false;
+            }
+            self.commentColor = resApp.data.loginApprovalAtr == 2 ? 'uk-bg-dark-salmon' : 'uk-bg-alice-blue';
             self.$mask('hide');
         }).catch((res: any) => {
             self.$mask('hide');
@@ -172,7 +180,8 @@ export class CmmS45DComponent extends Vue {
         if (returnPhase) {
             return returnPhase.phaseOrder - 1;
         }
-        let unapprovePhaseLst: Array<Phase> = _.filter(self.phaseLst, (phase: Phase) => phase.approvalAtrValue == 0);
+        let unapprovePhaseLst: Array<Phase> = _.filter(self.phaseLst, 
+            (phase: Phase) => phase.approvalAtrValue == 0 || phase.approvalAtrValue == 4);
         if (unapprovePhaseLst.length > 0) {
             return _.sortBy(unapprovePhaseLst, 'phaseOrder')[0].phaseOrder - 1;
         }
@@ -187,6 +196,7 @@ export class CmmS45DComponent extends Vue {
     // tiến tới đơn tiếp theo
     public toNextApp(): void {
         let self = this;
+        self.$el.scrollTop = 0;
         self.showApproval = false;
         self.appCount++;
         self.currentApp = self.listAppMeta[self.appCount];
@@ -197,6 +207,7 @@ export class CmmS45DComponent extends Vue {
     // quay về đơn trước
     public toPreviousApp(): void {
         let self = this;
+        self.$el.scrollTop = 0;
         self.showApproval = false;
         self.appCount--;
         self.currentApp = self.listAppMeta[self.appCount];
@@ -297,12 +308,10 @@ export class CmmS45DComponent extends Vue {
                         self.$mask('hide');
                         if (resApprove.data.processDone) {
                             self.reflectApp(resApprove.data.reflectAppId);
-                            self.$modal.info('Msg_220').then(() => {
-                                self.$modal('cmms45f', { 'action': 1, 'listAppMeta': self.listAppMeta, 'currentApp': self.currentApp })
-                                .then((resAfterApprove: any) => {
-                                    self.controlDialog(resAfterApprove);        
-                                }); 
-                            });
+                            self.$modal('cmms45f', { 'action': 1, 'listAppMeta': self.listAppMeta, 'currentApp': self.currentApp })
+                            .then((resAfterApprove: any) => {
+                                self.controlDialog(resAfterApprove);        
+                            }); 
                         }
                     }).catch((failApprove: any) => {
                         self.$mask('hide');
@@ -341,11 +350,9 @@ export class CmmS45DComponent extends Vue {
                         self.$mask('hide');
                         if (resDeny.data.processDone) {
                             self.reflectApp(resDeny.data.reflectAppId);
-                            self.$modal.info('Msg_222').then(() => {
-                                self.$modal('cmms45f', { 'action': 2, 'listAppMeta': self.listAppMeta, 'currentApp': self.currentApp })
-                                .then((resAfterDeny: any) => {
-                                    self.controlDialog(resAfterDeny);   
-                                });
+                            self.$modal('cmms45f', { 'action': 2, 'listAppMeta': self.listAppMeta, 'currentApp': self.currentApp })
+                            .then((resAfterDeny: any) => {
+                                self.controlDialog(resAfterDeny);   
                             });
                         }
                     }).catch((failDeny: any) => {

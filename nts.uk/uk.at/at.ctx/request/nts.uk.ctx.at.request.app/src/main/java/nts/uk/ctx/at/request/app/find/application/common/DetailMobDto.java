@@ -32,4 +32,6 @@ public class DetailMobDto {
 	public String authorComment;
 	
 	public AppOverTimeMobDto appOvertime;
+	
+	public Integer loginApprovalAtr;
 }

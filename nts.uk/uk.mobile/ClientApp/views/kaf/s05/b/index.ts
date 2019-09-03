@@ -49,6 +49,7 @@ export class KafS05bComponent extends Vue {
         };
 
         this.kafs05Model.isCreate = false;
+        this.pgName = '';
         if (_.isNil(this.kafs05Model.appID)) {
             if (storage.local.hasItem('appID')) {
                 this.kafs05Model.appID = storage.local.getItem('appID').toString();
@@ -58,52 +59,36 @@ export class KafS05bComponent extends Vue {
         } else {
             storage.local.setItem('appID', this.kafs05Model.appID);
         }
-
-        if (this.$route.query.overworkatr == '0') {
-            this.pgName = 'kafS05b0';
-        } else if (this.$route.query.overworkatr == '1') {
-            this.pgName = 'kafS05b1';
-        } else if (this.$route.query.overworkatr == '2') {
-            this.pgName = 'kafS05b2';
-        } else {
-            this.pgName = 'kafS05b2';
-        }
     }
 
     public toStep2(kafs05Model: Kafs05Model) {
         this.step = 'step2';
         this.kafs05Model = _.cloneWith(kafs05Model);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     public toStep3(kafs05Model: Kafs05Model) {
         this.step = 'step3';
         this.kafs05Model = _.cloneWith(kafs05Model);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     public toStep4(kafs05Model: Kafs05Model) {
         this.step = 'step4';
         this.kafs05Model = _.cloneWith(kafs05Model);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     public backToStep1(kafs05Model: Kafs05Model) {
         this.step = 'step1';
         this.kafs05Model = _.cloneWith(kafs05Model);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     public backToStep2(kafs05Model: Kafs05Model) {
         this.step = 'step2';
         this.kafs05Model = _.cloneWith(kafs05Model);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     public backToStep3(kafs05Model: Kafs05Model) {
         this.step = 'step3';
         this.kafs05Model = _.cloneWith(kafs05Model);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
 }

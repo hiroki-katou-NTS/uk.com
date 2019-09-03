@@ -10,21 +10,13 @@ import nts.uk.ctx.at.request.dom.applicationreflect.service.WorkChangeCommonRefl
 public class WorkRecordReflectServiceImpl implements WorkRecordReflectService{
 	@Inject
 	private AppReflectProcessRecord reflectRecord;
-
 	@Override
-	public boolean workRecordreflect(AppReflectRecordPara appRecordInfor) {
-		ReflectRecordInfor recordInfor = appRecordInfor.getRecordInfor();
-		//事前チェック処理
-		boolean checkReflect = reflectRecord.appReflectProcessRecord(appRecordInfor.getRecordInfor().getAppInfor(), true,
-				appRecordInfor.getExecuTionType());
-		if (!checkReflect) {
-			return false;
-		}
-		boolean isPre = recordInfor.getAppInfor().getPrePostAtr() == PrePostAtr.PREDICT ? true : false;
+	public void workRecordreflect(AppReflectRecordPara appRecordInfor) {
+		boolean isPre = appRecordInfor.getPrePosAtr() == PrePostAtr.PREDICT ? true : false;
 		//申請種類
-		switch(recordInfor.getAppInfor().getAppType()) {
+		switch (appRecordInfor.getAppType()) {
 		case OVER_TIME_APPLICATION:
-			reflectRecord.overtimeReflectRecord(appRecordInfor.getOvertimeInfor(), isPre);
+			reflectRecord.overtimeReflectRecord(appRecordInfor.getOvertimeInfor(), true); 
 			break;
 		case GO_RETURN_DIRECTLY_APPLICATION:
 			GobackReflectPara gobackpara = appRecordInfor.getGobackInfor();
@@ -53,8 +45,7 @@ public class WorkRecordReflectServiceImpl implements WorkRecordReflectService{
 			}
 			break;
 		default:
-			return false;
+			break;
 		}
-		return true;
 	}
 }
