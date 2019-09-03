@@ -1,7 +1,5 @@
 package nts.uk.ctx.hr.develop.app.sysoperationset.eventoperation.find;
 
-import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -14,10 +12,10 @@ import nts.uk.ctx.hr.develop.app.sysoperationset.eventoperation.dto.HRDevEventDt
 import nts.uk.ctx.hr.develop.app.sysoperationset.eventoperation.dto.HRDevMenuDto;
 import nts.uk.ctx.hr.develop.app.sysoperationset.eventoperation.dto.JMM018Dto;
 import nts.uk.ctx.hr.develop.app.sysoperationset.eventoperation.dto.MenuOperationDto;
-import nts.uk.ctx.hr.develop.dom.humanresourcedevevent.HREventMenuService;
-import nts.uk.ctx.hr.develop.dom.sysoperationset.eventoperation.EventMenuOperSer;
+import nts.uk.ctx.hr.develop.dom.humanresourcedevevent.algorithm.HREventMenuService;
 import nts.uk.ctx.hr.develop.dom.sysoperationset.eventoperation.EventOperation;
 import nts.uk.ctx.hr.develop.dom.sysoperationset.eventoperation.MenuOperation;
+import nts.uk.ctx.hr.develop.dom.sysoperationset.eventoperation.algorithm.EventMenuOperSer;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -35,7 +33,7 @@ public class JMM018Finder {
 	 * @author yennth
 	 */
 	public List<HRDevEventDto> findHREvent(){
-		List<HRDevEventDto> listResult = this.hrEventMenuSer.getHrEvent()
+		List<HRDevEventDto> listResult = this.hrEventMenuSer.getAvailableEventAndMenu().getListHrDevEvent()
 											.stream().map(x -> HRDevEventDto.fromDomain(x))
 											.collect(Collectors.toList());
 		return listResult;
@@ -47,7 +45,7 @@ public class JMM018Finder {
 	 * @author yennth
 	 */
 	public List<HRDevMenuDto> findHRMenu(){
-		List<HRDevMenuDto> listResult = this.hrEventMenuSer.getHrMenu()
+		List<HRDevMenuDto> listResult = this.hrEventMenuSer.getAvailableEventAndMenu().getListHrDevMenu()
 											.stream().map(x -> HRDevMenuDto.fromDomain(x))
 											.collect(Collectors.toList());
 		return listResult;
@@ -95,52 +93,19 @@ public class JMM018Finder {
 	 * @author yennth
 	 */
 	public JMM018Dto finderJMM018(){
-		List<HRDevEventDto> listHrEvent = findHREvent();
-		List<HRDevMenuDto> listHrMenu = new ArrayList<>();
-		int available = 1;
-		JMM018Dto result = new JMM018Dto(available, listHrEvent, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 		// アルゴリズム[利用可能なイベントとメニューを取得する]を実行する
-		if(listHrEvent.isEmpty()){
-			available = 0;
-		}else{
-			listHrMenu = findHRMenu(); 
-			result.setHRDevMenuList(listHrMenu);
-			if(listHrMenu.isEmpty()){
-				available = 0; 
-			}
-		}
-		if(available == 0){
-			result.setAvailable(available);
-			return result;
-		}else{
-			for(HRDevEventDto item: listHrEvent){
-				// アルゴリズム[イベント管理を取得する]を実行する
-				Optional<EventOperationDto> getEventOper = findEventOper(item.getEventId());
-				if(!getEventOper.isPresent()){
-					// ドメインモデル[イベント管理]を追加する - insert event operation
-					eventMenuOperSer.addEvent(EventOperation.createFromJavaType(item.getEventId(), 0, 
-											AppContexts.user().companyId(), 
-											new BigInteger(AppContexts.user().companyCode())));
-				}else{
-					// [output.イベント管理]を<List>イベント管理に追加する - add item to event operation list
-					result.getEventOperList().add(getEventOper.get());
-				}
-			}
-			for(HRDevMenuDto param: listHrMenu){
-				// アルゴリズム[メニュー管理を取得する]を実行する
-				Optional<MenuOperationDto> getEventOper = findMenutOper(param.getProgramId());
-				if(!getEventOper.isPresent()){
-					// アルゴリズム[メニュー管理を追加する]を実行する - insert menu operation
-					eventMenuOperSer.addMenu(MenuOperation.createFromJavaType(param.getProgramId(), 0, 
-																		AppContexts.user().companyId(), 
-																		0, 0, 
-																		new BigInteger(AppContexts.user().companyCode())));
-				}else{
-					// [output.メニュー管理]を<List>メニュー管理に追加する - add item to menu operation list
-					result.getMenuOperList().add(getEventOper.get());
-				}
-			}
-		}
+		List<HRDevEventDto> listHrEvent = findHREvent();
+		List<HRDevMenuDto> listHrMenu = findHRMenu();
+		boolean available = hrEventMenuSer.getAvailableEventAndMenu().isAvailable();
+		
+		List<EventOperationDto> eventOper = eventMenuOperSer.getEventOprationSettings().getListEventOper().stream()
+											.map(x -> new EventOperationDto(x.getEventId().value, x.getUseEvent().value, x.getCcd()))
+											.collect(Collectors.toList());
+		List<MenuOperationDto> menuOper = eventMenuOperSer.getEventOprationSettings().getListMenuOper().stream()
+											.map(q -> new MenuOperationDto(q.getProgramId().v(), q.getUseMenu().value, q.getCompanyId(), q.getUseApproval().value, q.getUseNotice().value, q.getCcd()))
+											.collect(Collectors.toList());
+		
+		JMM018Dto result = new JMM018Dto(available, listHrEvent, listHrMenu, eventOper, menuOper);
 		return result;
 	}
 }

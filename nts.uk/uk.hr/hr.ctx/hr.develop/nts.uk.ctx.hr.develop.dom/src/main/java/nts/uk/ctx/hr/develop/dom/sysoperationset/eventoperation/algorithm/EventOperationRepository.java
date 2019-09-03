@@ -1,6 +1,8 @@
-package nts.uk.ctx.hr.develop.dom.sysoperationset.eventoperation;
+package nts.uk.ctx.hr.develop.dom.sysoperationset.eventoperation.algorithm;
 
 import java.util.Optional;
+
+import nts.uk.ctx.hr.develop.dom.sysoperationset.eventoperation.EventOperation;
 
 public interface EventOperationRepository {
 	/**

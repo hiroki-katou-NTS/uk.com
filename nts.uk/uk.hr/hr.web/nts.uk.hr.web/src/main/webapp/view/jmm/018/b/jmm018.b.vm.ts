@@ -175,7 +175,7 @@ module nts.uk.com.view.jmm018.b {
                 let listParent = [];
                 let menu = [];
                 service.findEventMenu().done(function(data: any){
-                    if(data.available == 0){
+                    if(data.available == false){
                         nts.uk.ui.dialog.error({ messageId: "JMsg_JMM018_1"});
                     }
                     // A422_12, A422_13, A422_14, 

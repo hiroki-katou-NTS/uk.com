@@ -6,7 +6,7 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.hr.develop.dom.humanresourcedevevent.HRDevMenu;
-import nts.uk.ctx.hr.develop.dom.humanresourcedevevent.HRDevMenuRepository;
+import nts.uk.ctx.hr.develop.dom.humanresourcedevevent.algorithm.HRDevMenuRepository;
 import nts.uk.ctx.hr.develop.infra.entity.humanresourcedevevent.JcmmtHRDevMenu;
 @Stateless
 public class JpaHRDevMenuRepository extends JpaRepository implements HRDevMenuRepository{

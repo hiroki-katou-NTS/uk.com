@@ -9,7 +9,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class JMM018Dto {
 	// 処理結果
-	private int available;
+	private boolean available;
 	// 人材育成イベント list
 	List<HRDevEventDto> listHrEvent;
 	private List<HRDevMenuDto> hRDevMenuList;

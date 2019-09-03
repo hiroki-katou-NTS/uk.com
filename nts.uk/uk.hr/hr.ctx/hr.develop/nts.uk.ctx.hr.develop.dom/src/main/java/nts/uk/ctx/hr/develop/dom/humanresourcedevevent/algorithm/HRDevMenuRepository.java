@@ -1,6 +1,8 @@
-package nts.uk.ctx.hr.develop.dom.humanresourcedevevent;
+package nts.uk.ctx.hr.develop.dom.humanresourcedevevent.algorithm;
 
 import java.util.List;
+
+import nts.uk.ctx.hr.develop.dom.humanresourcedevevent.HRDevMenu;
 
 public interface HRDevMenuRepository {
 	/**

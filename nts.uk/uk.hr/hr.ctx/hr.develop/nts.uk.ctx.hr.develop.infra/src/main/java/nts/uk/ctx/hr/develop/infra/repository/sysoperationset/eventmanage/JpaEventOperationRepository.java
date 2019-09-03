@@ -7,7 +7,7 @@ import javax.ejb.Stateless;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.hr.develop.dom.sysoperationset.eventoperation.EventOperation;
-import nts.uk.ctx.hr.develop.dom.sysoperationset.eventoperation.EventOperationRepository;
+import nts.uk.ctx.hr.develop.dom.sysoperationset.eventoperation.algorithm.EventOperationRepository;
 import nts.uk.ctx.hr.develop.infra.entity.sysoperationset.eventoperation.JcmstEventOperation;
 import nts.uk.ctx.hr.develop.infra.entity.sysoperationset.eventoperation.JcmstEventOperationPK;
 @Stateless
