@@ -257,6 +257,17 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         
         mapIndentityCheck: any = {};
         mapApprovalCheck: any = {};
+        
+         //Date YYYYMM picker
+        yearMonth: KnockoutObservable<number> = ko.observable(0);
+        //Combobox display actual time
+        actualTimeOptionDisp: KnockoutObservableArray<any> =  ko.observableArray([]);
+        actualTimeSelectedCode: KnockoutObservable<number> = ko.observable(0);
+        timePeriodAllInfo: any = {};
+        displayFormatOld: number = null;
+        initFromScreenOther: boolean = false;
+        clickChangeMonth: boolean = true;
+        
         constructor(dataShare: any) {
             var self = this;
 
@@ -305,6 +316,31 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 //                    character.save('characterKdw003a', self.characteristics);
                 }
             });
+            
+            self.yearMonth.subscribe(value => {
+                  if (!self.loadFirst && self.clickChangeMonth) {
+                      if (nts.uk.ui.errors.getErrorByElement($("#yearMonthPicker")).length != 0) {
+                          return;
+                      }
+                      let param = {
+                          yearMonth: value
+                       };
+                      self.clickChangeMonth = false;
+                      service.genDate(param).done((data) => {
+                          if (data) {
+                              self.yearMonth(data.yearMonth);
+                              //Combobox display actual time
+                              self.initActualTime(data);
+                              self.timePeriodAllInfo = data;
+                               self.clickChangeMonth = true;
+                          }else{
+                               self.yearMonth(self.timePeriodAllInfo.yearMonth);
+                               self.clickChangeMonth = true;
+                          }
+                      });
+                  }
+            });
+            
             //$("#fixed-table").ntsFixedTable({ height: 50, width: 300 });
             $(document).mouseup(function(e) {
                 var container = $(".ui-tooltip");
@@ -498,7 +534,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     formatCodes: self.formatCodes(),
                     objectShare: _.isEmpty(self.shareObject()) ? null : self.shareObject(),
                     showError: _.isEmpty(self.shareObject()) ? null : self.shareObject().errorRefStartAtr,
-                    closureId: self.closureId
+                    closureId: self.closureId,
+                    initFromScreenOther: self.initFromScreenOther
                 };
                 // delete grid in localStorage
                 self.deleteGridInLocalStorage();
@@ -647,8 +684,6 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         processMapData(data) {
             var self = this;
             let startTime: number = performance.now();
-            console.log(data);
-            self.loadFirst = false;
             self.closureId = data.closureId;
             //self.lstDomainOld = data.domainOld;
             //self.lstDomainEdit = _.cloneDeep(data.domainOld);
@@ -659,6 +694,14 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.dateRanger().startDate = data.dateRange.startDate;
             self.dateRanger().endDate = data.dateRange.endDate;
             self.dateRanger.valueHasMutated();
+            //change doc 
+               //Date YYYYMM picker
+            self.initFromScreenOther = false;
+            self.yearMonth(data.periodInfo.yearMonth);
+            self.yearMonth.valueHasMutated();
+            //Combobox display actual time
+            self.initActualTime(data.periodInfo);
+            self.timePeriodAllInfo = data.periodInfo;
             //if(self.displayFormat() == 1) //self.selectedDate(data.dateRange.startDate);
             // pair name input
             self.itemInputName = data.lstControlDisplayItem.itemInputName;
@@ -753,14 +796,28 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 $("#dpGrid").mGrid("setState", "_"+hide.rowId, hide.columnKey, ["mgrid-hide"]);
             })
             console.log("thoi gian load 0: " + (performance.now() - startTime));
-            //set SPR
+            //set SPR 
             if (data.showErrorDialog) {
                 self.showDialogError = true;
                 self.showErrorDialog();
             }
+            self.loadFirst = false;
             //alert("time load ALL: "+ (performance.now() - startTime));
         }
 
+        initActualTime(data) {
+            let self = this,
+            if (data.lstRange && data.lstRange.length > 0) {
+                self.actualTimeOptionDisp([]);
+                for (let i = 0; i < data.lstRange.length; i++) {
+                    let startDate = data.lstRange[i].startDate,
+                        endDate =  data.lstRange[i].endDate;
+                    self.actualTimeOptionDisp.push({ code: i, name: (i+1) + ": " + moment(startDate).format("M/D") + "～" + moment(endDate).format("M/D")});
+                }
+            }
+            self.actualTimeSelectedCode(0);
+        };
+        
         loadRemainNumberTable() {
             let self = this;
             service.getRemainNum(self.selectedEmployee()).done((data: any) => {
@@ -2166,33 +2223,42 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         hideComponent() {
             var self = this;
             if (self.displayFormat() == 0) {
+                self.displayFormatOld = 0;
                 $("#container").css("display", "block");
                 $("#daterangepicker").css("display", "block");
                 $("#cbListDate").css("display", "none");
+                $("#daterangepickererror").css("display", "none");
                 $("#btnVacationRemaining").show();
                 $('#numberHoliday').show();
                 $('#fixed-table').show();
-                $('#content-all-grid').attr('style', 'top: 15px !IMPORTANT ; position: relative; clear: both');
+                //$('#content-all-grid').attr('style', 'top: 15px !IMPORTANT ; position: relative; clear: both');
+                $('#content-grid-not').attr('style', 'margin-top: -3px !IMPORTANT');
                 //  $("#content-grid").attr('style', 'top: 244px !IMPORTANT');
             } else if (self.displayFormat() == 1) {
+                self.displayFormatOld = 1;
                 $("#daterangepicker").css("display", "none");
+                $("#daterangepickererror").css("display", "none");
                 $("#cbListDate").css("display", "block");
                 $("#container").css("display", "none");
                 $("#btnVacationRemaining").hide();
                 $('#numberHoliday').hide();
                 $('#fixed-table').hide();
                 $('#flex').hide();
-                $('#content-all-grid').attr('style', 'top: 0px !IMPORTANT ; position: relative; clear: both');
+                //$('#content-all-grid').attr('style', 'top: 0px !IMPORTANT ; position: relative; clear: both');
                 // $("#content-grid").attr('style', 'top: 225px !IMPORTANT');
+                 $('#content-grid-not').attr('style', 'margin-top: -45px !IMPORTANT');
             } else {
-                $("#daterangepicker").css("display", "block");
+                self.displayFormatOld = 2;
+                $("#daterangepickererror").css("display", "block");
+                $("#daterangepicker").css("display", "none");
                 $("#cbListDate").css("display", "none");
                 $("#container").css("display", "none");
                 $("#btnVacationRemaining").hide();
                 $('#numberHoliday').hide();
                 $('#fixed-table').hide();
                 $('#flex').hide();
-                $('#content-all-grid').attr('style', 'top: 0px !IMPORTANT ; position: relative; clear: both');
+                //$('#content-all-grid').attr('style', 'top: 0px !IMPORTANT ; position: relative; clear: both');
+                $('#content-grid-not').attr('style', 'margin-top: -45px !IMPORTANT');
                 // $("#content-grid").attr('style', 'top: 180px !IMPORTANT');
             }
         }
@@ -2202,20 +2268,21 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             console.log(self.dailyPerfomanceData());
             // if (!nts.uk.ui.errors.hasError()) {
             nts.uk.ui.errors.clearAll();
-            self.hideComponent();
             self.removeErrorRefer();
             $.when(self.findEmployee()).done(data => {
                 let lstEmployee = data;
-                if (self.displayFormat() === 1) {
-                    if (self.datePicker().startDate !== self.dateRanger().startDate &&
-                        self.datePicker().endDate !== self.dateRanger().endDate) {
-                        self.datePicker().startDate = self.dateRanger().startDate;
-                        self.datePicker().endDate = self.dateRanger().endDate;
-                        self.datePicker.valueHasMutated();
-                    }
-                }
+                let hasChangeFormat: boolean = (self.displayFormatOld == self.displayFormat()) ? false : true;
+//                if (self.displayFormat() === 1) {
+//                    if (self.datePicker().startDate !== self.dateRanger().startDate &&
+//                        self.datePicker().endDate !== self.dateRanger().endDate) {
+//                        self.datePicker().startDate = self.dateRanger().startDate;
+//                        self.datePicker().endDate = self.dateRanger().endDate;
+//                        self.datePicker.valueHasMutated();
+//                    }
+//                }
+                if(!self.initFromScreenOther) self.genDateExtract(hasChangeFormat);
                 let param = {
-                    dateRange: self.hasEmployee ? {
+                    dateRange: ((self.hasEmployee && !hasChangeFormat) || self.initFromScreenOther)? {
                         startDate: self.displayFormat() === 1 ? moment(self.selectedDate()) : moment(self.dateRanger().startDate).utc().toISOString(),
                         endDate: self.displayFormat() === 1 ? moment(self.selectedDate()) : moment(self.dateRanger().endDate).utc().toISOString()
                     } : null,
@@ -2226,12 +2293,14 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     formatCodes: self.formatCodes(),
                     objectShare: null,
                     showLock: self.showLock(),
-                    closureId: self.closureId
+                    closureId: self.closureId,
+                    initFromScreenOther: self.initFromScreenOther
                 };
                 self.characteristics.formatExtract = param.displayFormat;
                 character.save('characterKdw003a', self.characteristics);
                 nts.uk.ui.block.invisible();
                 nts.uk.ui.block.grayout();
+                self.hideComponent();
                 service.initParam(param).done((dataInit) => {
                     if (!_.isEmpty(dataInit.errors)) {
                         let errors = [];
@@ -2272,6 +2341,18 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         nts.uk.ui.block.clear();
                     } else {
                         $.when(service.loadMonth(), service.startScreen(param)).done((dataMonth, data) => {
+                            //update mobile
+                            if((hasChangeFormat && self.displayFormat() === 0) || self.initFromScreenOther){
+                                self.yearMonth(data.periodInfo.yearMonth);
+                                //Combobox display actual time
+                                self.initActualTime(data.periodInfo);
+                                self.timePeriodAllInfo = data.periodInfo;
+                            }else if(hasChangeFormat && self.displayFormat() === 1 || self.initFromScreenOther){
+                                self.selectedDate(data.periodInfo.targetRange.startDate);
+                            }else if(hasChangeFormat && self.displayFormat() === 2 || self.initFromScreenOther){
+                                 self.dateRanger({ startDate: data.periodInfo.targetRange.startDate, endDate: data.periodInfo.targetRange.endDate });
+                            }
+                            self.initFromScreenOther = false;
                             data.monthResult = dataMonth.monthResult;
                             data.indentityMonthResult = dataMonth.indentityMonthResult;
                             data.showTighProcess = dataMonth.showTighProcess;
@@ -2380,6 +2461,19 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             });
         }
 
+        genDateExtract(hasChangeFormat: boolean): void{
+            let self = this;
+            if(self.displayFormat() == 0 && !hasChangeFormat){
+                  self.actualTimeSelectedCode();
+                  for(i = 0 ; i< self.timePeriodAllInfo.lstRange.length; i++){
+                      if(self.actualTimeSelectedCode() == i){
+                          self.dateRanger({ startDate: self.timePeriodAllInfo.lstRange[i].startDate, endDate: self.timePeriodAllInfo.lstRange[i].endDate });
+                          break;
+                      }
+                  }
+            }
+        }
+        
         findEmployee(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred()
@@ -2727,9 +2821,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         } else {
                             lstEmployee = self.lstEmployee();
                         }
-
+                        let hasChangeFormat: boolean = (self.displayFormatOld == self.displayFormat()) ? false : true;
                         let param = {
-                            dateRange: self.hasEmployee ? {
+                            dateRange: (self.hasEmployee && !hasChangeFormat) ? {
                                 startDate: self.displayFormat() === 1 ? moment(self.selectedDate()) : moment(self.dateRanger().startDate).utc().toISOString(),
                                 endDate: self.displayFormat() === 1 ? moment(self.selectedDate()) : moment(self.dateRanger().endDate).utc().toISOString()
                             } : null,
@@ -3428,11 +3522,15 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         };
                     }));
                     self.lstEmployee(_.orderBy(self.lstEmployee(), ['code'], ['asc']));
-                    self.selectedEmployee(self.lstEmployee()[0].id);
+                    let employeeLoginInList = _.find(self.lstEmployee(), (emp) =>{
+                       return __viewContext.user.employeeId == emp.id;
+                    })
+                    self.selectedEmployee(_.isEmpty(employeeLoginInList) ? self.lstEmployee()[0].id : employeeLoginInList.id);
                     self.dateRanger({ startDate: dataList.periodStart, endDate: dataList.periodEnd });
                     self.hasEmployee = true;
                     self.closureId = dataList.closureId;
                     self.loadKcp009();
+                    self.initFromScreenOther = true;
                     self.btnExtraction_Click();
                     }, 50);
                 },
@@ -4088,7 +4186,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 if (header.headerText != "提出済みの申請" && header.headerText != "申請" && header.headerText != "申請一覧") {
                     if (header.group == undefined && header.group == null) {
                         if (self.showHeaderNumber()) {
-                            headerText = header.headerText + " " + header.key.substring(1, header.key.length);
+                            headerText = "[" + header.key.substring(1, header.key.length) + "]" + " " + header.headerText ;
                             $("#dpGrid").mGrid("headerText", header.key, headerText, false);
                         } else {
                            // headerText = header.headerText.split(" ")[0];
@@ -4096,12 +4194,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         }
                     } else {
                         if (self.showHeaderNumber()) {
-                            headerText = header.headerText + " " + header.group[1].key.substring(4, header.group[1].key.length);
+                            headerText =  "[" + header.group[1].key.substring(4, header.group[1].key.length) + "]" + " " + header.headerText;
                             $("#dpGrid").mGrid("headerText", header.headerText, headerText, true);
                         } else {
                           //  headerText = header.headerText.split(" ")[0];
                             headerText = header.headerText;
-                            $("#dpGrid").mGrid("headerText", headerText + " " + header.group[1].key.substring(4, header.group[1].key.length), headerText, true);
+                            $("#dpGrid").mGrid("headerText", "[" + header.group[1].key.substring(4, header.group[1].key.length) + "]" + " " + headerText, headerText, true);
                         }
                     }
                 }
@@ -5109,6 +5207,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         }
         mapDataShare(dataInit: any, dataExtract: any, dataSPR: any) {
             var self = this;
+            self.initFromScreenOther = true;
             if (dataInit != undefined) {
                 self.changePeriodAtr = (dataInit.changePeriodAtr == null || dataInit.changePeriodAtr == undefined) ? true : dataInit.changePeriodAtr;
                 self.errorRefStartAtr = dataInit.errorRefStartAtr;
@@ -5246,8 +5345,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             } else {
                 $("#next-month").attr('style', 'background-color: white !important');
             }
-            if (showLstError) {
-                self.displayListError(lstError);
+            if (showLstError || !_.isEmpty(lstError)) {
+                self.displayListError(lstError, showLstError);
             }
             self.initLoad = 1;
         }
@@ -5313,7 +5412,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             return hours + ":" + minutes;
         }
 
-        displayListError(lstError: any) {
+        displayListError(lstError: any, showLstError: boolean) {
             if (lstError.length == 0) {
                 $("#next-month").ntsError("clear");
             } else {

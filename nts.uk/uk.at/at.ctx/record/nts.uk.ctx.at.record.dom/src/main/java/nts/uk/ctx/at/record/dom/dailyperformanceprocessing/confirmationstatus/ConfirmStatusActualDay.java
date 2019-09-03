@@ -3,9 +3,11 @@ package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -15,14 +17,20 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.adapter.application.ApplicationRecordAdapter;
+import nts.uk.ctx.at.record.dom.adapter.application.ApplicationRecordImport;
 import nts.uk.ctx.at.record.dom.adapter.company.StatusOfEmployeeExport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.ApprovalStatusAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproveRootStatusForEmpImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalStatusForEmployee;
+import nts.uk.ctx.at.record.dom.application.realitystatus.RealityStatusService;
+import nts.uk.ctx.at.record.dom.application.realitystatus.output.EmployeeErrorOuput;
 import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ReflectedStateRecord;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.finddata.IFindDataDCRecord;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.Identification;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.IdentityProcessUseSet;
+import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.enums.SelfConfirmError;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.month.ConfirmationMonth;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.ConfirmationMonthRepository;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.IdentificationRepository;
@@ -53,6 +61,12 @@ public class ConfirmStatusActualDay {
 	
 	@Inject
 	private IFindDataDCRecord iFindDataDCRecord;
+	
+	@Inject
+	private RealityStatusService realityStatusService;
+	
+	@Inject
+	private ApplicationRecordAdapter applicationRecordAdapter;
 	
 	/**
 	 * 日の実績の確認状況を取得する
@@ -174,7 +188,7 @@ public class ConfirmStatusActualDay {
 							.getApprovalByListEmplAndListApprovalRecordDateNew(periodTemp.datesBetween(),
 									Arrays.asList(employeeId), 1);
 					val mapApprovalStatus = lstApprovalStatus.stream().collect(Collectors
-							.toMap(x -> Pair.of(x.getEmployeeID(), x.getAppDate()), x -> x.getApprovalStatus()));
+							.toMap(x -> Pair.of(x.getEmployeeID(), x.getAppDate()), x -> x.getApprovalStatus(), (x, y) -> x));
 					//lstResultEmpTemp3 = 
 					lstResultEmpTemp1.forEach(x ->{
 						if (mapApprovalStatus == null) {
@@ -195,11 +209,17 @@ public class ConfirmStatusActualDay {
 				});
 			}
 			
-			
 			lstResult.addAll(lstResultEmpTemp1);
 		});
-
-		return lstResult;
+		List<ConfirmStatusActualResult> results = new ArrayList<>();
+		 Set<Pair<String, GeneralDate>> setErrorAndApp = getErrorAndApplication(employeeIds, period, optIndentity);
+		 results = lstResult.stream().map(x ->{
+			if(setErrorAndApp.contains(Pair.of(x.getEmployeeId(), x.getDate()))) {
+				x.setPermissionChecked(false);
+			}
+			return x;
+		}).collect(Collectors.toList());
+		return results;
 
 	}
 
@@ -235,7 +255,7 @@ public class ConfirmStatusActualDay {
 		}
 	}
 
-	private List<ConfirmStatusActualResult> updatePermission(String companyId, String employeeId,
+	public List<ConfirmStatusActualResult> updatePermission(String companyId, String employeeId,
 			IdentityProcessUseSet identityProcessUseSet, ClosurePeriod mergePeriodClr,
 			List<ConfirmStatusActualResult> lstResult) {
 		lstResult = lstResult.stream().filter(x -> x.getDate().afterOrEquals(mergePeriodClr.getPeriod().start())
@@ -366,7 +386,7 @@ public class ConfirmStatusActualDay {
 					.getApprovalByListEmplAndListApprovalRecordDateNew(
 							closurePeriodOpt.get().getPeriod().datesBetween(), employeeIds, 1);
 			val mapApprovalStatus = lstApprovalStatus.stream().collect(
-					Collectors.toMap(x -> Pair.of(x.getEmployeeID(), x.getAppDate()), x -> x.getApprovalStatus()));
+					Collectors.toMap(x -> Pair.of(x.getEmployeeID(), x.getAppDate()), x -> x.getApprovalStatus(), (x, y) -> x));
 			// lstResultEmpTemp3 =
 			lstResultEmpTemp1.forEach(x -> {
 				if (mapApprovalStatus == null) {
@@ -390,7 +410,7 @@ public class ConfirmStatusActualDay {
 		return lstResult;
 	}
 
-	private List<ConfirmStatusActualResult> updatePermission(String companyId, List<String> employeeIds,
+	public List<ConfirmStatusActualResult> updatePermission(String companyId, List<String> employeeIds,
 			IdentityProcessUseSet identityProcessUseSet, ClosurePeriod mergePeriodClr,
 			List<ConfirmStatusActualResult> lstResult) {
 		lstResult = lstResult.stream().filter(x -> x.getDate().afterOrEquals(mergePeriodClr.getPeriod().start())
@@ -412,5 +432,30 @@ public class ConfirmStatusActualDay {
 				return x;
 			}).collect(Collectors.toList());
 		}
+	}
+	
+	public Set<Pair<String, GeneralDate>> getErrorAndApplication(List<String> employeeIds, DatePeriod datePeriod, Optional<IdentityProcessUseSet> optIndentity){
+		 Set<Pair<String, GeneralDate>> result = new HashSet<>();
+
+		if (optIndentity.isPresent() && optIndentity.get().getYourSelfConfirmError().isPresent() && optIndentity.get()
+				.getYourSelfConfirmError().get().value == SelfConfirmError.CAN_NOT_CHECK_WHEN_ERROR.value) {
+			employeeIds.stream().forEach(error -> {
+				List<EmployeeErrorOuput> lstOut = realityStatusService.checkEmployeeErrorOnProcessingDate(error,
+						datePeriod.start(), datePeriod.end());
+				result.addAll(lstOut.stream().filter(x -> x.getHasError()).map(x -> Pair.of(error, x.getDate()))
+						.collect(Collectors.toSet()));
+			});
+		}
+		List<ApplicationRecordImport> lstAppRecord = applicationRecordAdapter.getApplicationBySID(employeeIds,
+				datePeriod.start(), datePeriod.end());
+		lstAppRecord.forEach(x -> {
+			boolean disable = (x.getReflectState() == ReflectedStateRecord.NOTREFLECTED.value
+					|| x.getReflectState() == ReflectedStateRecord.REMAND.value)
+					&& x.getAppType() != nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ApplicationType.OVER_TIME_APPLICATION.value;
+			if (disable)
+				result.add(Pair.of(x.getEmployeeID(), x.getAppDate()));
+		});
+		
+		return result;
 	}
 }

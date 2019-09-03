@@ -1,14 +1,11 @@
 /**
  * 6:00:49 PM Aug 28, 2017
  */
-package nts.uk.screen.at.ws.dailyperformance.correction;
+package nts.uk.screen.at.app.dailyperformance.correction.dto;
 
 import java.util.List;
 
-import nts.uk.screen.at.app.dailyperformance.correction.dto.CorrectionOfDailyPerformance;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceEmployeeDto;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.ObjectShare;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.cache.DPCorrectionStateParam;
 
 /**
  * @author hungnm
@@ -29,4 +26,6 @@ public class DPParams {
     public ObjectShare objectShare;	
     public Boolean showLock;
     public Integer closureId;
+    public Boolean initFromScreenOther;
+    public DPCorrectionStateParam dpStateParam;
 }

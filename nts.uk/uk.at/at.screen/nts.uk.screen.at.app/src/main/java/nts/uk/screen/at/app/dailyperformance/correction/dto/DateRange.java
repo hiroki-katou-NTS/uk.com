@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * @author hungnm
@@ -46,5 +47,9 @@ public class DateRange {
 				? GeneralDate.ymd(endDateTemp.year(), endDateTemp.month(), endDateTemp.lastDateInMonth())
 				: endDateTemp;
 		return new DateRange(startDateResult, endDateResult);
+	}
+	
+	public static DateRange convertPeriod(DatePeriod period) {
+		return new DateRange(period.start(), period.end());
 	}
 }

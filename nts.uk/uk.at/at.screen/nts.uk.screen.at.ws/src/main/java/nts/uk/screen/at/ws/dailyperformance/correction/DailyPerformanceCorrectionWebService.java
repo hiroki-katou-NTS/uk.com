@@ -42,19 +42,25 @@ import nts.uk.screen.at.app.dailyperformance.correction.UpdateColWidthCommand;
 import nts.uk.screen.at.app.dailyperformance.correction.calctime.DailyCorrectCalcTimeService;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeName;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.DataDialogWithTypeProcessor;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.ApprovalConfirmCache;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPAttendanceItem;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPDataDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemParent;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DPParams;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceCalculationDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceCorrectionDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DataResultAfterIU;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DatePeriodInfo;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.EmpAndDate;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ErrorReferenceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.HolidayRemainNumberDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.cache.DPCorrectionStateParam;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.calctime.DCCalcTime;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.calctime.DCCalcTimeParam;
 import nts.uk.screen.at.app.dailyperformance.correction.flex.CalcFlexDto;
 import nts.uk.screen.at.app.dailyperformance.correction.flex.CheckBeforeCalcFlex;
+import nts.uk.screen.at.app.dailyperformance.correction.gendate.GenDateDto;
+import nts.uk.screen.at.app.dailyperformance.correction.gendate.GenDateProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.kdw003b.DailyPerformErrorReferDto;
 import nts.uk.screen.at.app.dailyperformance.correction.kdw003b.DailyPerformErrorReferExportDto;
 import nts.uk.screen.at.app.dailyperformance.correction.kdw003b.DailyPerformErrorReferExportService;
@@ -143,8 +149,12 @@ public class DailyPerformanceCorrectionWebService {
 	
 	@Inject
 	private InfomationInitScreenProcess infomationInit;
+	
 	@Inject
 	private ProcessMonthScreen processMonthScreen;
+	
+	@Inject
+	private GenDateProcessor genDateProcessor;
 	
 	@POST
 	@Path("startScreen")
@@ -158,8 +168,9 @@ public class DailyPerformanceCorrectionWebService {
 		session.setAttribute("itemIdRCs", dtoResult.getLstControlDisplayItem() == null ? null : dtoResult.getLstControlDisplayItem().getMapDPAttendance());
 		session.setAttribute("dataSource", dtoResult.getLstData());
 		session.setAttribute("closureId", dtoResult.getClosureId());
-		session.setAttribute("dataSource1", dtoResult.getLstData());
 		session.setAttribute("resultReturn", null);
+		session.setAttribute("approvalConfirm", dtoResult.getApprovalConfirmCache());
+		dtoResult.setApprovalConfirmCache(null);
 		removeSession();
 		dtoResult.setDomainOld(Collections.emptyList());
 		return dtoResult;
@@ -175,6 +186,10 @@ public class DailyPerformanceCorrectionWebService {
 		session.setAttribute("domainEdits", null);
 		session.setAttribute("itemIdRCs", results.getLstControlDisplayItem() == null ? null : results.getLstControlDisplayItem().getMapDPAttendance());
 		session.setAttribute("dataSource", results.getLstData());
+		session.setAttribute("closureId", results.getClosureId());
+		session.setAttribute("resultReturn", null);
+		session.setAttribute("approvalConfirm", results.getApprovalConfirmCache());
+		results.setApprovalConfirmCache(null);
 		removeSession();
 		results.setDomainOld(Collections.emptyList());
 		return results;
@@ -182,9 +197,10 @@ public class DailyPerformanceCorrectionWebService {
 	
 	@POST
 	@Path("initParam")
-	public DailyPerformanceCorrectionDto initScreen(DPParams params ) throws InterruptedException{
-		Integer closureId = params.closureId;
-		Pair<DailyPerformanceCorrectionDto, ParamCommonAsync> dtoResult = this.infomationInit.initGetParam(params.dateRange, params.lstEmployee, params.initScreen, params.mode, params.displayFormat, params.correctionOfDaily, params.formatCodes, params.showError, params.showLock, params.objectShare, closureId);
+	public DailyPerformanceCorrectionDto initScreen(DPParams params) throws InterruptedException{
+		params.dpStateParam = (DPCorrectionStateParam)session.getAttribute("dpStateParam");
+		Pair<DailyPerformanceCorrectionDto, ParamCommonAsync> dtoResult = this.infomationInit.initGetParam(params);
+		session.setAttribute("dpStateParam", dtoResult.getLeft().getStateParam());
 		session.setAttribute("resultReturn", dtoResult.getLeft());
 		session.setAttribute("resultMonthReturn", dtoResult.getRight());
 		return dtoResult.getLeft();
@@ -241,6 +257,7 @@ public class DailyPerformanceCorrectionWebService {
 		dataParent.setLstAttendanceItem((Map<Integer, DPAttendanceItem>) session.getAttribute("itemIdRCs"));
 		dataParent.setErrorAllSidDate((Boolean)session.getAttribute("errorAllCalc"));
 		dataParent.setLstSidDateDomainError((List<Pair<String, GeneralDate>>)session.getAttribute("lstSidDateErrorCalc"));
+		dataParent.setApprovalConfirmCache((ApprovalConfirmCache)session.getAttribute("approvalConfirm"));
 		DataResultAfterIU dataResultAfterIU =  dailyModifyResCommandFacade.insertItemDomain(dataParent);
 		session.setAttribute("lstSidDateErrorCalc", dataResultAfterIU.getLstSidDateDomainError());
 		session.setAttribute("errorAllCalc", dataResultAfterIU.isErrorAllSidDate());
@@ -250,13 +267,18 @@ public class DailyPerformanceCorrectionWebService {
 	@POST
 	@Path("insertClosure")
 	public void insertClosure(EmpAndDate empAndDate){
-		personalTightCommandFacade.insertPersonalTight(empAndDate.getEmployeeId(), empAndDate.getDate());
+		ApprovalConfirmCache approvalConfirmCache = (ApprovalConfirmCache)session.getAttribute("approvalConfirm");
+		ApprovalConfirmCache result = personalTightCommandFacade.insertPersonalTight(empAndDate.getEmployeeId(), empAndDate.getDate(), approvalConfirmCache);
+		session.setAttribute("approvalConfirm", result);
 	}
 	
 	@POST
 	@Path("releaseClosure")
 	public JavaTypeResult<String> releaseClosure(EmpAndDate empAndDate){
-		return new JavaTypeResult<String>(personalTightCommandFacade.releasePersonalTight(empAndDate.getEmployeeId(), empAndDate.getDate()));
+		ApprovalConfirmCache approvalConfirmCache = (ApprovalConfirmCache)session.getAttribute("approvalConfirm");
+		Pair<String, ApprovalConfirmCache> result = personalTightCommandFacade.releasePersonalTight(empAndDate.getEmployeeId(), empAndDate.getDate(), approvalConfirmCache);
+		session.setAttribute("approvalConfirm", result.getRight());
+		return new JavaTypeResult<String>(result.getLeft());
 	}
 	
 	public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
@@ -292,8 +314,11 @@ public class DailyPerformanceCorrectionWebService {
 		param.setErrorAllSidDate((Boolean)session.getAttribute("errorAllCalc"));
 		Integer closureId = (Integer) session.getAttribute("closureId");
 		param.setClosureId(closureId);
+		param.setApprovalConfirmCache((ApprovalConfirmCache)session.getAttribute("approvalConfirm"));
 		val result = loadRowProcessor.reloadGrid(param);
 		session.setAttribute("domainEdits", null);
+		session.setAttribute("approvalConfirm", result.getApprovalConfirmCache());
+		result.setApprovalConfirmCache(null);
 		if(!param.getOnlyLoadMonth()) {
 			session.setAttribute("domainOlds", result.getDomainOld());
 			session.setAttribute("domainOldForLog", result.getDomainOldForLog());
@@ -314,10 +339,13 @@ public class DailyPerformanceCorrectionWebService {
 			dailyEdits = (List<DailyRecordDto>) domain;
 		}
 		loadVerData.setLstDomainOld(dailyEdits);
+		loadVerData.setApprovalConfirmCache((ApprovalConfirmCache)session.getAttribute("approvalConfirm"));
 		val result = dPLoadVerProcessor.loadVerAfterCheckbox(loadVerData);
 		session.setAttribute("domainEdits", null);
 		session.setAttribute("domainOlds", result.getLstDomainOld());
 		result.setLstDomainOld(new ArrayList<>());
+		session.setAttribute("approvalConfirm", result.getApprovalConfirmCache());
+		result.setApprovalConfirmCache(null);
 		return result;
 	}
 	
@@ -421,6 +449,12 @@ public class DailyPerformanceCorrectionWebService {
 		return dpDisplayLockProcessor.processDisplayLock(param);
 	}
 
+	@POST
+	@Path("gendate")
+	public DatePeriodInfo genDateFromYM(GenDateDto param) {
+		return genDateProcessor.genDateFromYearMonth(param);
+	}
+	
 	private List<DailyRecordDto> cloneListDto(List<DailyRecordDto> dtos){
 		if(dtos == null) return new ArrayList<>();
 		return dtos.stream().map(x -> x.clone()).collect(Collectors.toList());

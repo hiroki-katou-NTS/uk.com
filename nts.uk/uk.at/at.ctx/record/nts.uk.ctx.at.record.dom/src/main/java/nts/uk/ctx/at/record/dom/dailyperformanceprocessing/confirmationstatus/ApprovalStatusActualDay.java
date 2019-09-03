@@ -112,7 +112,7 @@ public class ApprovalStatusActualDay {
 						Map<Pair<String, GeneralDate>, Pair<ApprovalStatus, ApproverEmployeeState>> mapApprovalRoot = approvalRoot
 								.getApprovalRootSituations().stream()
 								.collect(Collectors.toMap(x -> Pair.of(x.getTargetID(), x.getAppDate()),
-										x -> Pair.of(x.getApprovalStatus(), x.getApprovalAtr())));
+										x -> Pair.of(x.getApprovalStatus(), x.getApprovalAtr()), (x, y) -> x));
 						mapApprovalRootBySId.putAll(mapApprovalRoot);
 
 						if (mode == ModeData.NORMAL.value) {
@@ -254,7 +254,7 @@ public class ApprovalStatusActualDay {
 		Map<Pair<String, GeneralDate>, Pair<ApprovalStatus, ApproverEmployeeState>> mapApprovalRoot = approvalRoot
 				.getApprovalRootSituations().stream()
 				.collect(Collectors.toMap(x -> Pair.of(x.getTargetID(), x.getAppDate()),
-						x -> Pair.of(x.getApprovalStatus(), x.getApprovalAtr())));
+						x -> Pair.of(x.getApprovalStatus(), x.getApprovalAtr()), (x, y) -> x));
 		mapApprovalRootBySId.putAll(mapApprovalRoot);
 
 		// 対応するImported「（就業．勤務実績）承認対象者の承認状況」をすべて取得する

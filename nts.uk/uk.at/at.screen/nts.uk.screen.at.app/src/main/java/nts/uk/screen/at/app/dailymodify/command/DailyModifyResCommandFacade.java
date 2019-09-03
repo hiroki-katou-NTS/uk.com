@@ -1,5 +1,7 @@
 package nts.uk.screen.at.app.dailymodify.command;
 
+import java.awt.print.Printable;
+import java.io.Console;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -459,6 +461,7 @@ public class DailyModifyResCommandFacade {
 		if (querys.isEmpty() 
 				&& (dataParent.getMonthValue() == null || dataParent.getMonthValue().getItems() == null || dataParent.getMonthValue().getItems().isEmpty()) 
 				&& (!dataParent.getDataCheckSign().isEmpty() || !dataParent.getDataCheckApproval().isEmpty() || dataParent.getSpr() != null)) {
+			validatorDataDaily.checkVerConfirmApproval(dataParent.getApprovalConfirmCache(), dataParent.getDataCheckSign(), dataParent.getDataCheckApproval(), dataParent.getItemValues());
 			errorRelease = releaseSign(dataParent.getDataCheckSign(), new ArrayList<>(), dailyEdits,
 					AppContexts.user().employeeId(), true);
 			// only insert check box
@@ -522,7 +525,7 @@ public class DailyModifyResCommandFacade {
 			resultIU = handleUpdate(dailyOlds, dailyEdits, commandNew, commandOld, dailyItems, monthParam, dataParent.getMode(),
 					dataParent.isFlagCalculation(), itemAtr);
 			
-			
+			validatorDataDaily.checkVerConfirmApproval(dataParent.getApprovalConfirmCache(), dataParent.getDataCheckSign(), dataParent.getDataCheckApproval(), dataParent.getItemValues());
 			if (resultIU != null) {
 				
 				List<EmployeeMonthlyPerError> errorMonthHoliday = new ArrayList<>();
@@ -1201,8 +1204,8 @@ public class DailyModifyResCommandFacade {
 		if ((flexShortageRCDto.isError() || !flexShortageRCDto.getMessageError().isEmpty()) && editFlex) {
 			hasError = true;
 			if(!resultIU.getLstMonthDomain().isEmpty()) flexShortageRCDto.createDataCalc(convertMonthToItem(MonthlyRecordWorkDto.fromOnlyAttTime(resultIU.getLstMonthDomain().get(0)), monthValue));
+			flexShortageRCDto.setVersion(monthValue.getVersion());
 		}
-		flexShortageRCDto.setVersion(monthValue.getVersion());
 		dataResultAfterIU.setFlexShortage(flexShortageRCDto);
 		//}
 		//フレ補填によって年休残数のエラーが発生していないかチェックする
@@ -1274,6 +1277,7 @@ public class DailyModifyResCommandFacade {
 		List<ItemValue> itemValue = itemValueTempDay.stream()
 				.filter(x -> DPText.ITEM_INSERT_STAMP_SOURCE.contains(x.getItemId())).collect(Collectors.toList());
 		itemValue.stream().forEach(x -> {
+			try{
 			switch (x.getItemId()) {
 			case 75:
 			case 79:
@@ -1324,6 +1328,8 @@ public class DailyModifyResCommandFacade {
 
 			default:
 				break;
+			}}catch (Exception e) {
+				System.out.print("Lỗi map createStampSourceInfo itemId: " + x.getItemId());
 			}
 		});
 	}

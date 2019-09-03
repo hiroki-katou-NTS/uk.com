@@ -96,7 +96,7 @@ public class GetClosureIdHistoryImpl implements GetClosureIdHistory {
 			}
 		}
 		List<ClosureEmployment> closureEmployments =
-				this.closureEmploymentRepo.findListEmployment(employeeId, employmentCds);
+				this.closureEmploymentRepo.findListEmployment(AppContexts.user().companyId(), employmentCds);
 		Map<String, ClosureEmployment> closureEmploymentMap = new HashMap<>();
 		for (ClosureEmployment closureEmployment : closureEmployments) {
 			closureEmploymentMap.putIfAbsent(closureEmployment.getEmploymentCD(), closureEmployment);
