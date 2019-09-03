@@ -163,13 +163,13 @@ public class JpaTimeOfMonthly extends JpaRepository implements TimeOfMonthlyRepo
 	@Override
 	public List<TimeOfMonthly> findBySidsAndYearMonths(List<String> employeeIds, List<YearMonth> yearMonths) {
 		
-		List<Integer> yearMonthValues = yearMonths.stream().map(c -> c.v()).collect(Collectors.toList());
+		val yearMonthValues = yearMonths.stream().map(c -> c.v()).collect(Collectors.toList());
 		
 		String sql = "select * from KRCDT_MON_MERGE"
 				+ " where SID in @emps"
 				+ " and YM in @yms";
 		
-		List<Object> results = NtsStatement.In.split(employeeIds, emps -> {
+		val results = NtsStatement.In.split(employeeIds, emps -> {
 			return new NtsStatement(sql, this.jdbcProxy())
 					.paramString("emps", emps)
 					.paramInt("yms", yearMonthValues)
@@ -177,13 +177,13 @@ public class JpaTimeOfMonthly extends JpaRepository implements TimeOfMonthlyRepo
 		});
 		
 		results.sort((o1, o2) -> {
-			int tmp = ((KrcdtMonMerge) o1).getKrcdtMonMergePk().getEmployeeId().compareTo(((KrcdtMonMerge) o2).getKrcdtMonMergePk().getEmployeeId());
+			int tmp = o1.getKrcdtMonMergePk().getEmployeeId().compareTo(o2.getKrcdtMonMergePk().getEmployeeId());
 			if (tmp != 0) return tmp;
-			tmp = ((KrcdtMonMerge) o1).getKrcdtMonMergePk().getYearMonth() - ((KrcdtMonMerge) o2).getKrcdtMonMergePk().getYearMonth();
+			tmp = o1.getKrcdtMonMergePk().getYearMonth() - o2.getKrcdtMonMergePk().getYearMonth();
 			if (tmp != 0) return tmp;
-			return ((KrcdtMonMerge) o1).getStartYmd().compareTo(((KrcdtMonMerge) o2).getStartYmd());
+			return o1.getStartYmd().compareTo(o2.getStartYmd());
 		});
-		return results.stream().map(item -> toDomain((KrcdtMonMerge) item)).collect(Collectors.toList());
+		return results.stream().map(item -> toDomain(item)).collect(Collectors.toList());
 	}
 		
 	/** 検索　（基準日） */

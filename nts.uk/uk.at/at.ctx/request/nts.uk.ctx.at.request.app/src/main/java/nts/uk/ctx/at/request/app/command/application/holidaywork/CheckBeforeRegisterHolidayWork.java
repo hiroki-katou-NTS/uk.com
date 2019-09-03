@@ -4,7 +4,6 @@ import static java.util.stream.Collectors.groupingBy;
 
 /*import java.lang.reflect.Array;*/
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -14,27 +13,43 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.AppOvertimeDetailDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeCheckResultDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculation;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculationImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.TimeWithCalculationImport;
+import nts.uk.ctx.at.request.dom.application.UseAtr;
+import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.ActualStatusCheckResult;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.CommonOvertimeHoliday;
+import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.OvertimeColorCheck;
+import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreActualColorCheck;
+import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreActualColorResult;
+import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreAppCheckResult;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.IErrorCheckBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.service.HolidayThreeProcess;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.IFactoryHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.ColorConfirmResult;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
-import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
+import nts.uk.ctx.at.request.dom.application.overtime.service.IOvertimePreProcess;
 import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeService;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.AppOvertimeSettingRepository;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.FlexExcessUseSetAtr;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.WithdrawalAppSet;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.WithdrawalAppSetRepository;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.AppDateContradictionAtr;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetRepository;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
+import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -46,14 +61,31 @@ public class CheckBeforeRegisterHolidayWork {
 	@Inject
 	private IFactoryHolidayWork factoryHolidayWork;
 	@Inject
-	private HolidayThreeProcess holidayThreeProcess;
-	@Inject
-	private DailyAttendanceTimeCaculation dailyAttendanceTimeCaculation;
-	@Inject
 	private OvertimeService overtimeService;
 	
 	@Inject
 	private CommonOvertimeHoliday commonOvertimeHoliday;
+	
+	@Inject
+	private OvertimeRestAppCommonSetRepository overTimeSetRepo;
+	
+	@Inject
+	private PreActualColorCheck preActualColorCheck;
+	
+	@Inject
+	private WithdrawalAppSetRepository withdrawalAppSetRepository;
+	
+	@Inject
+	private IOvertimePreProcess iOvertimePreProcess;
+	
+	@Inject
+	private BeforePrelaunchAppCommonSet beforePrelaunchAppCommonSet;
+	
+	@Inject
+	private AppOvertimeSettingRepository appOvertimeSettingRepository;
+	
+	@Inject
+	private WorkingConditionItemRepository workingConditionItemRepository;
 	
 	public ColorConfirmResult checkBeforeRregisterColor(CreateHolidayWorkCommand command) {
 		// 会社ID
@@ -112,6 +144,7 @@ public class CheckBeforeRegisterHolidayWork {
 	}
 	
 	public ColorConfirmResult beforeRegisterColorConfirm(int calculateFlg, Application_New app, AppHolidayWork appHolidayWork, boolean checkOver1Year) {
+		String companyID = AppContexts.user().companyId();
 		// 社員ID
 		String employeeId = AppContexts.user().employeeId();
 		// 2-1.新規画面登録前の処理を実行する
@@ -126,47 +159,82 @@ public class CheckBeforeRegisterHolidayWork {
 				.collect(groupingBy(HolidayWorkInput::getAttendanceType));
 		// Only check for [残業時間]
 		// 時間①～フレ超過時間 まで 背景色をピンク
-		List<HolidayWorkInput> holidayWorkInputs = findMap.get(AttendanceType.BREAKTIME);
+		Optional<OvertimeRestAppCommonSetting>  overTimeSettingOpt = this.overTimeSetRepo.getOvertimeRestAppCommonSetting(companyID, ApplicationType.BREAK_TIME_APPLICATION.value);
 		
-		if (holidayWorkInputs != null && !holidayWorkInputs.isEmpty()) {
-			ColorConfirmResult colorConfirmResult = commonOvertimeHoliday.preApplicationExceededCheck010(app.getCompanyID(), app.getAppDate(),
-					app.getInputDate(), app.getPrePostAtr(), AttendanceType.BREAKTIME.value, holidayWorkInputs, app.getEmployeeID());
-			if (colorConfirmResult.isConfirm()) {
-				return colorConfirmResult;
-			}
+		List<HolidayWorkInput> holidayWorkInputs = new ArrayList<>(); 
+		holidayWorkInputs.addAll(CollectionUtil.isEmpty(findMap.get(AttendanceType.BREAKTIME)) ? Collections.emptyList() : findMap.get(AttendanceType.BREAKTIME));
+		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(companyID, app.getEmployeeID(), 1, 
+				EnumAdaptor.valueOf(ApplicationType.BREAK_TIME_APPLICATION.value, ApplicationType.class), app.getAppDate());
+		List<OvertimeColorCheck> holidayTimeLst = new ArrayList<>();
+		List<WorkdayoffFrame> breaktimeFrames = iOvertimePreProcess.getBreaktimeFrame(companyID);
+		for(WorkdayoffFrame breaktimeFrame :breaktimeFrames){
+			holidayTimeLst.add(OvertimeColorCheck.createApp(
+					AttendanceType.BREAKTIME.value, 
+					breaktimeFrame.getWorkdayoffFrNo().v().intValueExact(), 
+					null));
 		}
-		return new ColorConfirmResult(false, 0, 0, "", Collections.emptyList(), null);
-	}
-
-	public OvertimeCheckResultDto CheckBeforeRegister(int calculateFlg, Application_New app, AppHolidayWork appHolidayWork, boolean actualExceedConfirm) {
-		// 社員ID
-		String employeeId = AppContexts.user().employeeId();
-		OvertimeCheckResultDto result = new OvertimeCheckResultDto(0, 0, 0, false, null);
-		// 03-01_事前申請超過チェック
-		Map<AttendanceType, List<HolidayWorkInput>> findMap = appHolidayWork.getHolidayWorkInputs().stream()
-				.collect(groupingBy(HolidayWorkInput::getAttendanceType));
-		// Only check for [残業時間]
-		// 時間①～フレ超過時間 まで 背景色をピンク
-		List<HolidayWorkInput> holidayWorkInputs = findMap.get(AttendanceType.BREAKTIME);
-		// 6.計算処理 : TODO
-		DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = dailyAttendanceTimeCaculation.getCalculation(employeeId,
-				app.getAppDate(),
-				appHolidayWork.getWorkTypeCode()== null ? "" : appHolidayWork.getWorkTypeCode().toString(),
-				appHolidayWork.getWorkTimeCode() == null ? "" : appHolidayWork.getWorkTimeCode().toString(), 
-				appHolidayWork.getWorkClock1().getStartTime() == null ? null : appHolidayWork.getWorkClock1().getStartTime().v(),
-				appHolidayWork.getWorkClock1().getEndTime() == null? null: appHolidayWork.getWorkClock1().getEndTime().v(),
-				Arrays.asList(100),
-				Arrays.asList(200));
-		// 03-02_実績超過チェック
-		for(CaculationTime breakTime : convertList(holidayWorkInputs)){
-			for(Map.Entry<Integer,TimeWithCalculationImport> entry : dailyAttendanceTimeCaculationImport.getHolidayWorkTime().entrySet()){
-				if(breakTime.getFrameNo() == entry.getKey()){
-					holidayThreeProcess.checkCaculationActualExcess(app.getPrePostAtr().value, ApplicationType.BREAK_TIME_APPLICATION.value, employeeId, appHolidayWork.getCompanyID(), app.getAppDate(), breakTime, 
-							appHolidayWork.getWorkTimeCode() == null ?"" : appHolidayWork.getWorkTimeCode().toString(), entry.getValue().getCalTime(), false, actualExceedConfirm);
+		boolean appOvertimeNightFlg = appCommonSettingOutput.applicationSetting.getAppOvertimeNightFlg().value == 1 ? true : false;
+		boolean flexFLag = false;
+		if(appOvertimeSettingRepository.getAppOver().get().getFlexJExcessUseSetAtr() == FlexExcessUseSetAtr.ALWAYSDISPLAY){
+			flexFLag = true;
+		} else if(appOvertimeSettingRepository.getAppOver().get().getFlexJExcessUseSetAtr() == FlexExcessUseSetAtr.DISPLAY){
+			Optional<WorkingConditionItem> personalLablorCodition = workingConditionItemRepository
+					.getBySidAndStandardDate(app.getEmployeeID(), app.getAppDate());
+			if(personalLablorCodition.isPresent()){
+				if(personalLablorCodition.get().getLaborSystem() == WorkingSystem.FLEX_TIME_WORK){
+					flexFLag = true;
 				}
 			}
 		}
-		
+		if(appOvertimeNightFlg) {
+			holidayTimeLst.add(OvertimeColorCheck.createApp(AttendanceType.BREAKTIME.value, 11, null));
+		}
+		if(flexFLag) {
+			holidayTimeLst.add(OvertimeColorCheck.createApp(AttendanceType.BREAKTIME.value, 12, null));
+		}
+		PreActualColorResult preActualColorResult = null;
+		UseAtr preExcessDisplaySetting = overTimeSettingOpt.get().getPreExcessDisplaySetting();
+		AppDateContradictionAtr performanceExcessAtr = overTimeSettingOpt.get().getPerformanceExcessAtr();
+		WithdrawalAppSet withdrawalAppSet = withdrawalAppSetRepository.getWithDraw().get();
+		holidayTimeLst = holidayTimeLst.stream().map(x -> {
+			Integer value = holidayWorkInputs.stream()
+			.filter(y -> y.getAttendanceType().value==x.attendanceID && y.getFrameNo()==x.frameNo)
+			.findAny().map(z -> z.getApplicationTime().v()).orElse(null);
+			return OvertimeColorCheck.createApp(x.attendanceID, x.frameNo, value);
+		}).collect(Collectors.toList());
+		// 07-01_事前申請状態チェック
+		PreAppCheckResult preAppCheckResult = preActualColorCheck.preAppStatusCheck(
+				companyID, 
+				employeeId, 
+				app.getAppDate(), 
+				ApplicationType.BREAK_TIME_APPLICATION);
+		// 07-02_実績取得・状態チェック
+		ActualStatusCheckResult actualStatusCheckResult = preActualColorCheck.actualStatusCheck(
+				companyID, 
+				employeeId, 
+				app.getAppDate(), 
+				ApplicationType.BREAK_TIME_APPLICATION, 
+				appHolidayWork.getWorkTypeCode() == null ? null : appHolidayWork.getWorkTypeCode().v(), 
+				appHolidayWork.getWorkTimeCode() == null ? null : appHolidayWork.getWorkTimeCode().v(), 
+				withdrawalAppSet.getOverrideSet(), 
+				Optional.empty());
+		// 07_事前申請・実績超過チェック(07_đơn xin trước. check vượt quá thực tế )
+		preActualColorResult = preActualColorCheck.preActualColorCheck(
+				preExcessDisplaySetting, 
+				performanceExcessAtr, 
+				ApplicationType.BREAK_TIME_APPLICATION, 
+				app.getPrePostAtr(), 
+				Collections.emptyList(), 
+				holidayTimeLst,
+				preAppCheckResult.opAppBefore,
+				preAppCheckResult.beforeAppStatus,
+				actualStatusCheckResult.actualLst,
+				actualStatusCheckResult.actualStatus);
+		return new ColorConfirmResult(false, 0, 0, "", Collections.emptyList(), null, preActualColorResult);
+	}
+
+	public OvertimeCheckResultDto CheckBeforeRegister(int calculateFlg, Application_New app, AppHolidayWork appHolidayWork, boolean actualExceedConfirm) {
+		OvertimeCheckResultDto result = new OvertimeCheckResultDto(0, 0, 0, false, null);
 		// ３６協定時間上限チェック（月間）
 		Optional<AppOvertimeDetail> appOvertimeDetailOtp = commonOvertimeHoliday.registerHdWorkCheck36TimeLimit(
 				app.getCompanyID(), app.getEmployeeID(), app.getAppDate(), appHolidayWork.getHolidayWorkInputs());
@@ -225,7 +293,7 @@ public class CheckBeforeRegisterHolidayWork {
 			}
 		}
 		
-		return new ColorConfirmResult(false, 0, 0, "", Collections.emptyList(), null);
+		return new ColorConfirmResult(false, 0, 0, "", Collections.emptyList(), null, null);
 	}
 	
 	public OvertimeCheckResultDto checkBeforeUpdate(CreateHolidayWorkCommand command) {
@@ -254,7 +322,6 @@ public class CheckBeforeRegisterHolidayWork {
 				 command.getOverTimeShiftNight(),
 				CheckBeforeRegisterHolidayWork.getHolidayWorkInput(command, companyId, appID), Optional.empty());
 		// 社員ID
-		String employeeId = AppContexts.user().employeeId();
 		OvertimeCheckResultDto result = new OvertimeCheckResultDto(0, 0, 0, false, null);
 		// 事前申請超過チェック
 		Map<AttendanceType, List<HolidayWorkInput>> findMap = holidayWorkDomain.getHolidayWorkInputs().stream()
@@ -263,28 +330,6 @@ public class CheckBeforeRegisterHolidayWork {
 		// 時間①～フレ超過時間 まで 背景色をピンク
 		List<HolidayWorkInput> holidayWorkInputs = findMap.get(AttendanceType.BREAKTIME);
 		
-		// 6.計算処理 : TODO
-		DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = dailyAttendanceTimeCaculation.getCalculation(employeeId,
-						appRoot.getAppDate(),
-						holidayWorkDomain.getWorkTypeCode() == null ? ""
-								: holidayWorkDomain.getWorkTypeCode().toString(),
-						holidayWorkDomain.getWorkTimeCode() == null ? ""
-								: holidayWorkDomain.getWorkTimeCode().toString(),
-						holidayWorkDomain.getWorkClock1().getStartTime() == null ? null
-								: holidayWorkDomain.getWorkClock1().getStartTime().v(),
-						holidayWorkDomain.getWorkClock1().getEndTime() == null ? null
-								: holidayWorkDomain.getWorkClock1().getEndTime().v(),
-								Arrays.asList(100),
-								Arrays.asList(200));
-		// 03-02_実績超過チェック
-		for(CaculationTime breakTime : convertList(holidayWorkInputs)){
-			for(Map.Entry<Integer,TimeWithCalculationImport> entry : dailyAttendanceTimeCaculationImport.getHolidayWorkTime().entrySet()){
-				if(breakTime.getFrameNo() == entry.getKey()){
-					holidayThreeProcess.checkCaculationActualExcess(appRoot.getPrePostAtr().value, ApplicationType.BREAK_TIME_APPLICATION.value, employeeId, holidayWorkDomain.getCompanyID(), appRoot.getAppDate(), breakTime, 
-							holidayWorkDomain.getWorkTimeCode() == null ? "" : holidayWorkDomain.getWorkTimeCode().toString(), entry.getValue().getCalTime(), false, command.isActualExceedConfirm());
-				}
-			}
-		}
 		// ３６上限チェック(詳細)
 		Optional<AppOvertimeDetail> appOvertimeDetailOtp = commonOvertimeHoliday.updateHdWorkCheck36TimeLimit(
 				appRoot.getCompanyID(), command.getAppID(), appRoot.getEnteredPersonID(), appRoot.getEmployeeID(),
@@ -341,19 +386,5 @@ public class CheckBeforeRegisterHolidayWork {
 			return HolidayWorkInput.createSimpleFromJavaType(Cid, appId, attendanceId, item.getFrameNo(), startTime,
 					endTime, appTime);
 		}).collect(Collectors.toList());
-	}
-	private static List<CaculationTime> convertList(List<HolidayWorkInput> holidayInput){
-		List<CaculationTime> calculations = new ArrayList<>();
-		if(CollectionUtil.isEmpty(holidayInput)){
-			return calculations;
-		}
-		for(HolidayWorkInput holidayWork : holidayInput){
-			CaculationTime cal = new CaculationTime();
-			cal.setAttendanceID(holidayWork.getAttendanceType().value);
-			cal.setFrameNo(holidayWork.getFrameNo());
-			cal.setApplicationTime(holidayWork.getApplicationTime().v());
-			calculations.add(cal);
-		}
-		return calculations;
 	}
 }

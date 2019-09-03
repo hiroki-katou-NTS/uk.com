@@ -50,7 +50,7 @@ import { Kafs05Model } from '../common/CommonClass';
                                 return false;
                             }
                         }
-                        
+
                         return true;
                     },
                     messageId: 'Msg_960'
@@ -125,6 +125,9 @@ export class KafS05aStep2Component extends Vue {
     @Prop()
     public kafs05ModelStep2: Kafs05Model;
 
+    private hasPreAppError: boolean = false;
+    private hasActualError: boolean = false;
+
     @Watch('kafs05ModelStep2.selectedReason')
     public validateSelectedReason() {
         this.$validate('kafs05ModelStep2.multilContent');
@@ -154,9 +157,6 @@ export class KafS05aStep2Component extends Vue {
         this.$validate('kafs05ModelStep2.overtimeHours');
     }
 
-    private hasPreAppError: boolean = false;
-    private hasActualError: boolean = false;
-
     public created() {
         this.kafs05ModelStep2.step1Start = false;
         this.kafs05ModelStep2.overtimeHours.forEach((overtimeHour) => {
@@ -169,19 +169,22 @@ export class KafS05aStep2Component extends Vue {
         });
     }
 
+    public mounted() {
+        setTimeout(() => {
+            document.scrollingElement.scrollTop = 0;
+        }, 0);
+    }
+
+    public updated() {
+        this.$mask('hide');
+    }
+
     public next() {
         let self = this.kafs05ModelStep2;
 
-        // 打刻漏れ 超過エラー
-        if ((self.actualStatus == 1 && this.hasActualError && self.performanceExcessAtr == 2)) {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-
-            return;
-        } 
-
         this.$validate();
         if (!this.$valid) {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            document.scrollingElement.scrollTop = 0;
 
             return;
         }
@@ -192,12 +195,18 @@ export class KafS05aStep2Component extends Vue {
             return;
         }
 
-        this.$mask('show', { message: true });
+        this.calculate();
+    }
+
+    public calculate() {
+        let self = this.kafs05ModelStep2;
+        let self2 = this;
+        self2.$mask('show', { message: true });
         let param: any = {
-            overtimeHours: _.map(self.overtimeHours, (item) => this.initCalculateData(item)),
-            bonusTimes: _.map(self.bonusTimes, (item) => this.initCalculateData(item)),
+            overtimeHours: _.map(self.overtimeHours, (item) => self2.initCalculateData(item)),
+            bonusTimes: _.map(self.bonusTimes, (item) => self2.initCalculateData(item)),
             prePostAtr: self.prePostSelected,
-            appDate: _.isNil(self.appDate) ? null : this.$dt(self.appDate),
+            appDate: _.isNil(self.appDate) ? null : self2.$dt(self.appDate),
             siftCD: self.siftCD,
             workTypeCode: self.workTypeCd,
             startTimeRests: _.isEmpty(self.restTime) ? [] : _.map(self.restTime, (x) => x.restTimeInput.start),
@@ -211,7 +220,7 @@ export class KafS05aStep2Component extends Vue {
         let overtimeHoursResult: Array<any>;
         let overtimeHoursbk = self.overtimeHours.slice().concat(self.bonusTimes.slice());
 
-        this.$http.post('at', servicePath.getCalculationResultMob, param).then((result: { data: any }) => {
+        self2.$http.post('at', servicePath.getCalculationResultMob, param).then((result: { data: any }) => {
             _.remove(self.overtimeHours);
             _.remove(self.bonusTimes);
             self.beforeAppStatus = result.data.preActualColorResult.beforeAppStatus;
@@ -300,21 +309,39 @@ export class KafS05aStep2Component extends Vue {
                     }
                 }
             }
+
+            self2.hasPreAppError = false;
+            self2.hasActualError = false;
+            self2.kafs05ModelStep2.overtimeHours.forEach((overtimeHour) => {
+                if (overtimeHour.preAppExceedState) {
+                    self2.hasPreAppError = true;
+                }
+                if (overtimeHour.actualExceedState) {
+                    self2.hasActualError = true;
+                }
+            });
+            self2.$mask('hide');
+            // 打刻漏れ 超過エラー
+            if ((self2.hasActualError && self.performanceExcessAtr == 2)) {
+                document.scrollingElement.scrollTop = 0;
+
+                return;
+            }
+
             this.$emit('toStep3', this.kafs05ModelStep2);
-            this.$mask('hide');
         }).catch((res: any) => {
             if (res.messageId == 'Msg_424') {
-                this.$modal.error({ messageId: 'Msg_424', messageParams: [res.parameterIds[0], res.parameterIds[1], res.parameterIds[2]] });
+                self2.$modal.error({ messageId: 'Msg_424', messageParams: [res.parameterIds[0], res.parameterIds[1], res.parameterIds[2]] });
             } else if (res.messageId == 'Msg_1508') {
-                this.$modal.error({ messageId: 'Msg_1508', messageParams: [res.parameterIds[0]] });
+                self2.$modal.error({ messageId: 'Msg_1508', messageParams: [res.parameterIds[0]] });
             } else if (res.messageId == 'Msg_426') {
-                this.$modal.error({ messageId: 'Msg_426', messageParams: [res.parameterIds[0]] }).then(() => {
-                    this.$goto('ccg007b');
-                    this.$auth.logout();
+                self2.$modal.error({ messageId: 'Msg_426', messageParams: [res.parameterIds[0]] }).then(() => {
+                    self2.$goto('ccg007b');
+                    self2.$auth.logout();
                 });
             } else {
-                this.$modal.error({ messageId: res.messageId }).then(() => {
-                    this.$goto('ccg008a');
+                self2.$modal.error({ messageId: res.messageId }).then(() => {
+                    self2.$goto('ccg008a');
                 });
             }
         });

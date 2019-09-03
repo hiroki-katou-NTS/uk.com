@@ -12,11 +12,15 @@ public enum PreActualError {
 	/**
 	 * 実績アラーム	
 	 */
-	ACTUAL_ALARM(2),
+	PRE_ERROR(2),
+	/**
+	 * 実績アラーム	
+	 */
+	ACTUAL_ALARM(3),
 	/**
 	 * 実績エラー	
 	 */
-	ACTUAL_ERROR(3);
+	ACTUAL_ERROR(4);
 	
 	public int value;
 	

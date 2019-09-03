@@ -2,7 +2,6 @@ package nts.uk.ctx.at.request.app.command.application.overtime;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -19,22 +18,20 @@ import nts.uk.ctx.at.request.app.find.application.overtime.dto.PreAppOvertimeDto
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
-import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputCaculation;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.TimeWithCalculationImport;
+import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.ActualStatus;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.ActualStatusCheckResult;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.CommonOvertimeHoliday;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreActualColorCheck;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
-import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.service.AppOvertimeReference;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.IOvertimePreProcess;
 import nts.uk.ctx.at.request.dom.application.overtime.service.SiftType;
 import nts.uk.ctx.at.request.dom.application.overtime.service.WorkTypeOvertime;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.WithdrawalAppSet;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.WithdrawalAppSetRepository;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.AppOvertimeSetting;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.AppOvertimeSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
 import nts.uk.ctx.at.request.dom.setting.company.divergencereason.DivergenceReason;
@@ -76,7 +73,7 @@ public class CheckConvertPrePost {
 	private PreActualColorCheck preActualColorCheck;
 	
 	@Inject
-	private WithdrawalAppSetRepository withdrawalAppSetRepository;
+	private AppOvertimeSettingRepository appOvertimeSettingRepository;
 	
 	public OverTimeDto convertPrePost(int prePostAtr,String appDate,String siftCD,List<CaculationTime> overtimeHours,String workTypeCode,Integer startTime,Integer endTime,List<Integer> startTimeRests,List<Integer> endTimeRests){
 		
@@ -94,17 +91,11 @@ public class CheckConvertPrePost {
 					if(appDate==null) {
 						result.setAppOvertimeReference(appOvertimeReference);
 					} else {
-						WithdrawalAppSet withdrawalAppSet = withdrawalAppSetRepository.getWithDraw().get();
+						AppOvertimeSetting appOvertimeSetting = appOvertimeSettingRepository.getAppOver().get();
 						ActualStatusCheckResult actualStatusCheckResult = preActualColorCheck
-								.actualStatusCheck(companyID, employeeID, GeneralDate.fromString(appDate, DATE_FORMAT), ApplicationType.OVER_TIME_APPLICATION, workTypeCode, siftCD, withdrawalAppSet.getOverrideSet(), Optional.empty());
+								.actualStatusCheck(companyID, employeeID, GeneralDate.fromString(appDate, DATE_FORMAT), ApplicationType.OVER_TIME_APPLICATION, 
+										workTypeCode, siftCD, appOvertimeSetting.getPriorityStampSetAtr(), Optional.empty());
 						appOvertimeReference.setAppDateRefer(appDate);
-						appOvertimeReference.setWorkTypeRefer(
-								new WorkTypeOvertime(actualStatusCheckResult.workType, 
-										workTypeRepository.findByPK(companyID, actualStatusCheckResult.workType).map(x -> x.getName().toString()).orElse(null)));
-						appOvertimeReference.setSiftTypeRefer(
-								new SiftType(actualStatusCheckResult.workTime, 
-										workTimeRepository.findByCode(companyID, actualStatusCheckResult.workTime).map(x -> x.getWorkTimeDisplayName().getWorkTimeName().v()).orElse(null)));
-						appOvertimeReference.setWorkClockFromTo1Refer(convertWorkClockFromTo(actualStatusCheckResult.startTime, actualStatusCheckResult.endTime));
 						List<CaculationTime> overTimeInputsRefer = new ArrayList<>();
 						List<OvertimeWorkFrame> overtimeFrames = iOvertimePreProcess.getOvertimeHours(0, companyID);
 						for(OvertimeWorkFrame overtimeFrame :overtimeFrames){
@@ -114,13 +105,31 @@ public class CheckConvertPrePost {
 									.frameName(overtimeFrame.getOvertimeWorkFrName().toString())
 									.build());
 						}
-						for(CaculationTime caculationTime : overTimeInputsRefer) {
-							caculationTime.setApplicationTime(actualStatusCheckResult.actualLst.stream()
-									.filter(x -> x.attendanceID == caculationTime.getAttendanceID() && x.frameNo == caculationTime.getFrameNo())
+						if(actualStatusCheckResult.actualStatus==ActualStatus.NO_ACTUAL) {
+							appOvertimeReference.setOverTimeInputsRefer(overTimeInputsRefer);
+							result.setAppOvertimeReference(appOvertimeReference);
+						} else {
+							appOvertimeReference.setWorkTypeRefer(
+									new WorkTypeOvertime(actualStatusCheckResult.workType, 
+											workTypeRepository.findByPK(companyID, actualStatusCheckResult.workType).map(x -> x.getName().toString()).orElse(null)));
+							appOvertimeReference.setSiftTypeRefer(
+									new SiftType(actualStatusCheckResult.workTime, 
+											workTimeRepository.findByCode(companyID, actualStatusCheckResult.workTime).map(x -> x.getWorkTimeDisplayName().getWorkTimeName().v()).orElse(null)));
+							appOvertimeReference.setWorkClockFromTo1Refer(convertWorkClockFromTo(actualStatusCheckResult.startTime, actualStatusCheckResult.endTime));
+							for(CaculationTime caculationTime : overTimeInputsRefer) {
+								caculationTime.setApplicationTime(actualStatusCheckResult.actualLst.stream()
+										.filter(x -> x.attendanceID == caculationTime.getAttendanceID() && x.frameNo == caculationTime.getFrameNo())
+										.findAny().map(y -> y.actualTime).orElse(null));
+							}
+							appOvertimeReference.setOverTimeInputsRefer(overTimeInputsRefer);
+							appOvertimeReference.setOverTimeShiftNightRefer(actualStatusCheckResult.actualLst.stream()
+									.filter(x -> x.attendanceID == 1 && x.frameNo == 11)
 									.findAny().map(y -> y.actualTime).orElse(null));
+							appOvertimeReference.setFlexExessTimeRefer(actualStatusCheckResult.actualLst.stream()
+									.filter(x -> x.attendanceID == 1 && x.frameNo == 12)
+									.findAny().map(y -> y.actualTime).orElse(null));
+							result.setAppOvertimeReference(appOvertimeReference);
 						}
-						appOvertimeReference.setOverTimeInputsRefer(overTimeInputsRefer);
-						result.setAppOvertimeReference(appOvertimeReference);
 					}
 				}
 				if(overtimeRestAppCommonSet.get().getPreDisplayAtr().value== UseAtr.USE.value){
@@ -282,17 +291,5 @@ public class CheckConvertPrePost {
 		}
 		TimeWithDayAttr timeConvert = new TimeWithDayAttr(minute);
 		return timeConvert.getInDayTimeWithFormat();
-	}
-	private List<OvertimeInputCaculation> convertMaptoList(Map<Integer,TimeWithCalculationImport> overTime,TimeWithCalculationImport flexTime,TimeWithCalculationImport midNightTime){
-		List<OvertimeInputCaculation> result = new ArrayList<>();
-		for(Map.Entry<Integer,TimeWithCalculationImport> entry : overTime.entrySet()){
-			OvertimeInputCaculation overtimeCal = new OvertimeInputCaculation(AttendanceType.NORMALOVERTIME.value, entry.getKey(), entry.getValue().getCalTime());
-			result.add(overtimeCal);
-		}
-		OvertimeInputCaculation flexTimeCal = new OvertimeInputCaculation(AttendanceType.NORMALOVERTIME.value, 12, (flexTime.getCalTime() == null || flexTime.getCalTime() < 0)? null : flexTime.getCalTime());
-		OvertimeInputCaculation midNightTimeCal = new OvertimeInputCaculation(AttendanceType.NORMALOVERTIME.value, 11, midNightTime.getCalTime());
-		result.add(flexTimeCal);
-		result.add(midNightTimeCal);
-		return result;
 	}
 }

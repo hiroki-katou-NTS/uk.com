@@ -45,12 +45,8 @@
             <fa-font icon="exclamation-circle" class="text-danger m-2" />
             <div>{{ 'Msg_1556' | i18n($dt(kafs05ModelStep3.appDate)) }}</div>
         </div>
-        <div v-if="kafs05ModelStep3.actualStatus == 1 && hasActualError && kafs05ModelStep3.performanceExcessAtr == 1" class="border border-warning rounded p-1 mt-2 alarm-message" role="alert">
+        <div v-if="hasActualError && kafs05ModelStep3.performanceExcessAtr == 1" class="border border-warning rounded p-1 mt-2 alarm-message" role="alert">
             <fa-font icon="exclamation-triangle" class="text-danger m-2" />
-            <div>{{ 'Msg_1558' | i18n }}</div>
-        </div>
-        <div v-if="kafs05ModelStep3.actualStatus == 1 && hasActualError && kafs05ModelStep3.performanceExcessAtr == 2" class="border border-danger rounded p-1 mt-2 error-message" role="alert">
-            <fa-font icon="exclamation-circle" class="text-danger m-2" />
             <div>{{ 'Msg_1558' | i18n }}</div>
         </div>
     </div>
@@ -125,7 +121,7 @@
                 <span class="badge badge-warning">必須</span>
             </div>
             <div class="card-body">
-                <div class="confirm-item mb-2" v-if="kafs05ModelStep3.workTimeInput.start">
+                <div class="confirm-item mb-2" v-if="null != kafs05ModelStep3.workTimeInput.start">
                     <span>{{kafs05ModelStep3.workTimeInput.start | timewd}}～{{kafs05ModelStep3.workTimeInput.end | timewd}}</span>
                 </div>
             </div>
@@ -170,7 +166,7 @@
                         <div class="col-4" v-show="item.preAppExceedState">
                             <span class="far fa-clock display-time-exceed"
                                 v-if="null != item.preAppTime">事前[{{item.preAppTime | timedr}}]</span>
-                            <span class="far fa-clock display-time" v-if="null == item.preAppTime">事前[--:--]</span>
+                            <span class="far fa-clock display-time-exceed" v-if="null == item.preAppTime">事前[--:--]</span>
                         </div>
                         <div class="col-8" v-show="!item.actualExceedState">
                             <span class="far fa-clock display-time"
@@ -180,7 +176,7 @@
                         <div class="col-8" v-show="item.actualExceedState">
                             <span class="far fa-clock display-time-exceed"
                                 v-if="null != item.caculationTime">実績[{{item.caculationTime | timedr}}]</span>
-                            <span class="far fa-clock display-time" v-if="null == item.caculationTime">実績[--:--]</span>
+                            <span class="far fa-clock display-time-exceed" v-if="null == item.caculationTime">実績[--:--]</span>
                         </div>
                     </div>
                 </div>
@@ -210,7 +206,7 @@
                             <div v-show="item.preAppExceedState">
                                 <span class="far fa-clock display-time-exceed"
                                     v-if="null != item.preAppTime">事前[{{item.preAppTime | timedr}}]</span>
-                                <span class="far fa-clock display-time" v-if="null == item.preAppTime">事前[--:--]</span>
+                                <span class="far fa-clock display-time-exceed" v-if="null == item.preAppTime">事前[--:--]</span>
                             </div>
                         </div>
                     </div>

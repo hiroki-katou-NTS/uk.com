@@ -175,7 +175,9 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 				this.convertTime(appOt.getWorkClockTo2()),
 				lstFrame, this.convertTime(appOt.getOverTimeShiftNight()),
 				this.convertTime(appOt.getFlexExessTime()),
-				timeNo417);
+				timeNo417,
+				new WkTypeWkTime(appOt.getWorkTypeCode() != null ? appOt.getWorkTypeCode().v() : null,
+						appOt.getSiftCode() != null ? appOt.getSiftCode().v() : null));
 	}
 
 	/**
@@ -249,14 +251,18 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 
 		}
 		String workTypeName = "";
+		String wkTypeCd = null;
 		if(hdWork.getWorkTypeCode() != null && !Strings.isBlank(hdWork.getWorkTypeCode().v())){
 			//勤務就業名称を作成 - WorkType
-			workTypeName = this.findWorkTypeName(lstWkType, hdWork.getWorkTypeCode().v());
+			wkTypeCd = hdWork.getWorkTypeCode().v();
+			workTypeName = this.findWorkTypeName(lstWkType, wkTypeCd);
 		}
 		String workTimeName = "";
+		String wkTimeCd = null;
 		if(hdWork.getWorkTimeCode() != null && !hdWork.getWorkTimeCode().v().equals("000")){
 			//勤務就業名称を作成 - WorkTime
-			workTimeName = this.findWorkTimeName(lstWkTime, hdWork.getWorkTimeCode().v());
+			wkTimeCd = hdWork.getWorkTimeCode().v();
+			workTimeName = this.findWorkTimeName(lstWkTime, wkTimeCd);
 		}
 		AppOvertimeDetail timeDetail = hdWork.getAppOvertimeDetail().isPresent() ? hdWork.getAppOvertimeDetail().get() : null;
 		TimeNo417 timeNo417 = timeDetail == null ? null : 
@@ -269,7 +275,7 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 				hdWork.getWorkClock1().getEndTime() == null ? "" : this.convertTime(hdWork.getWorkClock1().getEndTime().v()),
 				hdWork.getWorkClock2().getStartTime() == null ? "" : this.convertTime(hdWork.getWorkClock2().getStartTime().v()),
 				hdWork.getWorkClock2().getEndTime() == null ? "" : this.convertTime(hdWork.getWorkClock2().getEndTime().v()),
-				lstFrame, timeNo417);
+				lstFrame, timeNo417, new WkTypeWkTime(wkTypeCd, wkTimeCd));
 	}
 	/**
 	 * 勤務変更申請
@@ -471,7 +477,9 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 					this.convertTime(appOt.getWorkClockTo2()),
 					lstFrame, this.convertTime(appOt.getOverTimeShiftNight()),
 					this.convertTime(appOt.getFlexExessTime()),
-					timeNo417));
+					timeNo417,
+					new WkTypeWkTime(appOt.getWorkTypeCode() != null ? appOt.getWorkTypeCode().v() : null,
+							appOt.getSiftCode() != null ? appOt.getSiftCode().v() : null)));
 		}
 		return lstAppFull;
 	}
@@ -531,19 +539,23 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 				}
 			}
 			String workTypeName = "";
+			String wkTypeCd = null;
 			if(hdWork.getWorkTypeCode() != null && !Strings.isBlank(hdWork.getWorkTypeCode().v())){
 				//勤務就業名称を作成 - WorkType
-				workTypeName = this.findWorkTypeName(lstWkType, hdWork.getWorkTypeCode().v());
+				wkTypeCd = hdWork.getWorkTypeCode().v();
+				workTypeName = this.findWorkTypeName(lstWkType, wkTypeCd);
 			}
 			String workTimeName = "";
+			String wkTimeCD = null;
 			if(hdWork.getWorkTimeCode() != null && !hdWork.getWorkTimeCode().v().equals("000")){
-				String wkTimeCD = hdWork.getWorkTimeCode().v();
+				wkTimeCD = hdWork.getWorkTimeCode().v();
 				if(mapWorkTimeName.containsKey(wkTimeCD)){
 					workTimeName  = mapWorkTimeName.get(wkTimeCD);
 				}else{
 					//勤務就業名称を作成 - WorkTime
 					workTimeName = this.findWorkTimeName(lstWkTime, wkTimeCD);
 					mapWorkTimeName.put(wkTimeCD, workTimeName);
+					
 				}
 			}
 			AppOvertimeDetail timeDetail = hdWork.getAppOvertimeDetail().isPresent() ? hdWork.getAppOvertimeDetail().get() : null;
@@ -557,7 +569,7 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 					hdWork.getWorkClock1().getEndTime() == null ? "" : this.convertTime(hdWork.getWorkClock1().getEndTime().v()),
 					hdWork.getWorkClock2().getStartTime() == null ? "" : this.convertTime(hdWork.getWorkClock2().getStartTime().v()),
 					hdWork.getWorkClock2().getEndTime() == null ? "" : this.convertTime(hdWork.getWorkClock2().getEndTime().v()),
-					lstFrame, timeNo417));
+					lstFrame, timeNo417, new WkTypeWkTime(wkTypeCd, wkTimeCD)));
 		}
 		return lstAppFull;
 	}
@@ -741,7 +753,8 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 	 * @param wkTypeCd
 	 * @return
 	 */
-	private String findWorkTypeName(List<WorkType> lstWkType, String wkTypeCd){
+	@Override
+	public String findWorkTypeName(List<WorkType> lstWkType, String wkTypeCd){
 		if(lstWkType.isEmpty()){
             Optional<WorkType> wt = repoWorkType.findByPK(AppContexts.user().companyId(), wkTypeCd);
             return wt.isPresent() ? wt.get().getName().v() : wkTypeCd + "マスタ未登録";
@@ -759,7 +772,8 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 	 * @param wkTimeCd
 	 * @return
 	 */
-	private String findWorkTimeName(List<WorkTimeSetting> lstWkTime, String wkTimeCd){
+	@Override
+	public String findWorkTimeName(List<WorkTimeSetting> lstWkTime, String wkTimeCd){
 		if(lstWkTime.isEmpty()){
             Optional<WorkTimeSetting> workTime =  repoworkTime.findByCode(AppContexts.user().companyId(), wkTimeCd);
             return workTime.isPresent() ? workTime.get().getWorkTimeDisplayName().getWorkTimeName().v() : wkTimeCd + "マスタ未登録";

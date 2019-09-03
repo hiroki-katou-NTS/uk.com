@@ -153,7 +153,8 @@ export class CmmS45CComponent extends Vue {
         if (returnPhase) {
             return returnPhase.phaseOrder - 1;
         }
-        let unapprovePhaseLst: Array<Phase> = _.filter(self.phaseLst, (phase: Phase) => phase.approvalAtrValue == 0);
+        let unapprovePhaseLst: Array<Phase> = _.filter(self.phaseLst, 
+            (phase: Phase) => phase.approvalAtrValue == 0 || phase.approvalAtrValue == 4);
         if (unapprovePhaseLst.length > 0) {
             return _.sortBy(unapprovePhaseLst, 'phaseOrder')[0].phaseOrder - 1;
         }
@@ -168,6 +169,7 @@ export class CmmS45CComponent extends Vue {
     // tiến tới đơn tiếp theo
     public toNextApp(): void {
         let self = this;
+        self.$el.scrollTop = 0;
         self.showApproval = false;
         self.appCount++;
         self.currentApp = self.listAppMeta[self.appCount];
@@ -178,6 +180,7 @@ export class CmmS45CComponent extends Vue {
     // quay về đơn trước
     public toPreviousApp(): void {
         let self = this;
+        self.$el.scrollTop = 0;
         self.showApproval = false;
         self.appCount--;
         self.currentApp = self.listAppMeta[self.appCount];

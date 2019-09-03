@@ -3,7 +3,6 @@ module nts.uk.at.view.kaf010.shr.service {
         getHolidayWorkByUI: "at/request/application/holidaywork/getHolidayWorkByUI",
         findByChangeAppDate: "at/request/application/holidaywork/findChangeAppDate",
         checkConvertPrePost: "at/request/application/overtime/checkConvertPrePost",
-        getCaculationResult: "at/request/application/holidaywork/getcalculationresult",
         createOvertime: "at/request/application/holidaywork/create",
         updateOvertime: "at/request/application/holidaywork/update",
         checkBeforeRegister: "at/request/application/holidaywork/checkBeforeRegister",
@@ -13,7 +12,6 @@ module nts.uk.at.view.kaf010.shr.service {
         getBreakTimes: "at/request/application/holidaywork/getBreakTimes",
         confirmInconsistency: "at/request/application/holidaywork/confirmInconsistency",
         confirmPrerepudiation: "at/request/application/holidaywork/confirmPrerepudiation",
-        calculationresultConfirm: "at/request/application/holidaywork/calculationresultConfirm",
         beforeRegisterColorConfirm: "at/request/application/holidaywork/beforeRegisterColorConfirm",
         getCalculateValue: "at/request/application/holidaywork/getCalculateValue",
     }
@@ -28,10 +26,6 @@ module nts.uk.at.view.kaf010.shr.service {
     
     export function checkConvertPrePost(prePostAtr: string): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.checkConvertPrePost, prePostAtr);
-    }
-    
-    export function getCaculationResult(param: any): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", paths.getCaculationResult, param);
     }
     
     export function createOvertime(overtime: any): JQueryPromise<void> {
@@ -68,10 +62,6 @@ module nts.uk.at.view.kaf010.shr.service {
     
     export function confirmPrerepudiation(param: any): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.confirmPrerepudiation, param);
-    }
-    
-    export function calculationresultConfirm(param: any): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", paths.calculationresultConfirm, param);
     }
     
     export function beforeRegisterColorConfirm(overtime:any): JQueryPromise<any> {

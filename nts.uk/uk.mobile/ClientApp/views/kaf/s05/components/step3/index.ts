@@ -35,6 +35,12 @@ export class KafS05aStep3Component extends Vue {
         });
     }
 
+    public mounted() {
+        setTimeout(() => {
+            document.scrollingElement.scrollTop = 0;
+        }, 200);
+    }
+
     public registerClick() {
         this.$mask('show', { message: true });
         this.beforeRegisterColorConfirm();
@@ -60,14 +66,6 @@ export class KafS05aStep3Component extends Vue {
 
     public beforeRegisterColorConfirm() {
         let self = this.kafs05ModelStep3;
-
-        // 実績なし 登録不可 or 打刻漏れ 超過エラー
-        if ((self.actualStatus == 3 && self.performanceExcessAtr == 2) || 
-            (self.actualStatus == 1 && this.hasActualError && self.performanceExcessAtr == 2)) {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-
-            return;
-        } 
 
         let overTimeShiftNightTmp: number = null;
         let flexExessTimeTmp: number = null;

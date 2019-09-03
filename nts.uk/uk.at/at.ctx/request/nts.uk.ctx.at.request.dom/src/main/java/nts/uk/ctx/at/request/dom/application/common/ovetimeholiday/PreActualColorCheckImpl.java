@@ -25,6 +25,9 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInf
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculation;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculationImport;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
@@ -56,11 +59,13 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 	
 	@Inject
 	private OvertimeRepository overtimeRepository;
+	
+	@Inject
+	private AppHolidayWorkRepository appHolidayWorkRepository;
 
 	@Override
 	public PreActualColorResult preActualColorCheck(UseAtr preExcessDisplaySetting, AppDateContradictionAtr performanceExcessAtr,
-			ApplicationType appType, PrePostAtr prePostAtr, OverrideSet overrideSet, Optional<CalcStampMiss> calStampMiss, 
-			List<OvertimeInputCaculation> calcTimeList, List<OvertimeColorCheck> overTimeLst,
+			ApplicationType appType, PrePostAtr prePostAtr, List<OvertimeInputCaculation> calcTimeList, List<OvertimeColorCheck> overTimeLst,
 			Optional<Application_New> opAppBefore, boolean beforeAppStatus, List<OvertimeColorCheck> actualLst, ActualStatus actualStatus) {
 		PreActualColorResult result = new PreActualColorResult();
 		// アルゴリズム「チェック条件」を実行する
@@ -126,8 +131,6 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 	public ActualStatusCheckResult actualStatusCheck(String companyID, String employeeID, GeneralDate appDate, ApplicationType appType,
 			String workType, String workTime, OverrideSet overrideSet, Optional<CalcStampMiss> calStampMiss) {
 		List<OvertimeColorCheck> actualLst = new ArrayList<>();
-		// アルゴリズム「当日判定」を実行する
-		boolean isToday = judgmentToday(appDate, workTime);
 		// Imported(申請承認)「勤務実績」を取得する
 		RecordWorkInfoImport recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID, appDate);
 		if(Strings.isBlank(recordWorkInfoImport.getWorkTypeCode())){
@@ -137,6 +140,8 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 		JudgmentWorkTypeResult judgmentWorkTypeResult = judgmentWorkTypeChange(companyID, appType, recordWorkInfoImport.getWorkTypeCode(), workType);
 		// アルゴリズム「就業時間帯変更の判定」を実行する
 		JudgmentWorkTimeResult judgmentWorkTimeResult = judgmentWorkTimeChange(recordWorkInfoImport.getWorkTimeCode(), workTime);
+		// アルゴリズム「当日判定」を実行する
+		boolean isToday = judgmentToday(appDate, judgmentWorkTimeResult.getCalcWorkTime());
 		// アルゴリズム「打刻漏れと退勤打刻補正の判定」を実行する
 		JudgmentStampResult judgmentStampResult = judgmentStamp(isToday, overrideSet, calStampMiss, 
 				recordWorkInfoImport.getAttendanceStampTimeFirst(), recordWorkInfoImport.getLeaveStampTimeFirst());
@@ -186,12 +191,17 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 	public boolean judgmentToday(GeneralDate appDate, String workTime) {
 		// 1日の範囲を時間帯で返す
 		TimeSpanForCalc timeSpanForCalc = rangeOfDayTimeZoneService.getRangeofOneDay(workTime);
+		GeneralDateTime appDateRangeStart = null;
+		GeneralDateTime appDateRangeEnd = null;
 		if(timeSpanForCalc==null) {
-			return false;
+			// 申請日の範囲を作成する
+			appDateRangeStart = GeneralDateTime.fromString(appDate.toString("yyyy/MM/dd")+" 00:00", "yyyy/MM/dd HH:mm");
+			appDateRangeEnd = GeneralDateTime.fromString(appDate.toString("yyyy/MM/dd")+" 23:59", "yyyy/MM/dd HH:mm");
+		} else {
+			// 1日の範囲から申請日の範囲を作成する
+			appDateRangeStart = getAppDateRange(timeSpanForCalc.getStart(), appDate);
+			appDateRangeEnd = getAppDateRange(timeSpanForCalc.getEnd(), appDate);
 		}
-		// 1日の範囲から申請日の範囲を作成する
-		GeneralDateTime appDateRangeStart = getAppDateRange(timeSpanForCalc.getStart(), appDate);
-		GeneralDateTime appDateRangeEnd = getAppDateRange(timeSpanForCalc.getEnd(), appDate);
 		GeneralDateTime sysDate = GeneralDateTime.now();
 		// システム日時が申請日の範囲内に含まれるかをチェックする
 		if (sysDate.afterOrEquals(appDateRangeStart) && sysDate.beforeOrEquals(appDateRangeEnd)) {
@@ -379,14 +389,26 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 					}
 				}
 			} else {
-				// KAF010
+				AppHolidayWork appHolidayWork = appHolidayWorkRepository.getFullAppHolidayWork(companyID, appBefore.getAppID()).get();
+				List<HolidayWorkInput> holidayWorkInputLst = appHolidayWork.getHolidayWorkInputs();
+				if(!CollectionUtil.isEmpty(holidayWorkInputLst)) {
+					Optional<HolidayWorkInput> holidayWorkInput = holidayWorkInputLst
+							.stream().filter(x -> x.getAttendanceType().value==overtimeColorCheck.attendanceID && x.getFrameNo()==overtimeColorCheck.frameNo).findAny();
+					if(holidayWorkInput.isPresent()){
+						// 事前申請時間に勤怠種類・枠NOに応じた時間を設定する
+						overtimeColorCheck.preAppTime = holidayWorkInput.get().getApplicationTime().v();
+						if(overtimeColorCheck.preAppTime!=null) {
+							compareValue = overtimeColorCheck.preAppTime;
+						}
+					}
+				}
 			}
 		}
 		// 事前申請超過チェックをする必要があるかチェックする
 		if(preAppSetCheck==UseAtr.USE){
 			// 事前申請超過チェック
 			if(overtimeColorCheck.appTime !=null && overtimeColorCheck.appTime > compareValue){
-				overtimeColorCheck.preAppError = PreActualError.ACTUAL_ALARM.value;
+				overtimeColorCheck.preAppError = PreActualError.PRE_ERROR.value;
 			} else {
 				overtimeColorCheck.preAppError = PreActualError.NO_ERROR.value;
 			}
@@ -414,10 +436,8 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 			if(overtimeColorCheck.appTime!=null && overtimeColorCheck.appTime > compareValue){
 				if(actualSetCheck==AppDateContradictionAtr.CHECKNOTREGISTER) {
 					overtimeColorCheck.actualError = PreActualError.ACTUAL_ERROR.value;
-				} else if (actualSetCheck==AppDateContradictionAtr.CHECKREGISTER) {
-					overtimeColorCheck.actualError = PreActualError.ACTUAL_ALARM.value;
 				} else {
-					overtimeColorCheck.actualError = PreActualError.NO_ERROR.value;
+					overtimeColorCheck.actualError = PreActualError.ACTUAL_ALARM.value;
 				}
 			} else {
 				overtimeColorCheck.actualError = PreActualError.NO_ERROR.value;

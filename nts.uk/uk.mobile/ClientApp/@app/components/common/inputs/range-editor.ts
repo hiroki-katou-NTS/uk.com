@@ -1,5 +1,5 @@
 import { $, TimeInputType } from '@app/utils';
-import { Vue } from '@app/provider';
+import { _, Vue } from '@app/provider';
 import { component, Prop } from '@app/core/component';
 import { InputComponent } from '@app/components/common/inputs/input';
 
@@ -63,7 +63,7 @@ export class RangeEditorComponent extends InputComponent {
     public timeInputType: TimeInputType;
 
     get start() {
-        return this.value && this.value.start || null;
+        return !_.isNil(this.value) && !_.isNil(this.value.start) ? this.value.start : null;
     }
 
     set start(start: Date | number) {
@@ -74,7 +74,7 @@ export class RangeEditorComponent extends InputComponent {
     }
 
     get end() {
-        return this.value && this.value.end || null;
+        return !_.isNil(this.value) && !_.isNil(this.value.end) ? this.value.end : null;
     }
 
     set end(end: Date | number) {

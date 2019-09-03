@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculationImport;
+import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreActualColorResult;
 
 /**
  * 
@@ -28,5 +29,7 @@ public class ColorConfirmResult {
 	private List<String> params;
 	
 	private DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport;
+	
+	private PreActualColorResult preActualColorResult;
 	
 }
