@@ -423,7 +423,8 @@ public class CheckFileFinder {
 							}
 						}
 					});
-				});				
+				});		
+				
 			});
 
 			pdt.getItems().sort(Comparator.comparing(ItemRowDto::getItemOrder, Comparator.naturalOrder()));
@@ -657,7 +658,7 @@ public class CheckFileFinder {
 					}).findFirst();
 					empBody.setValue(combo.isPresent() == true ? combo.get().getOptionValue() : "");
 					empBody.setLstComboBoxValue(comboxLst);
-					validateCombox(headerGrid, empBody.getValue().toString(), itemErrors, index, comboxLst);
+					validateCombox(headerGrid, empBody, itemErrors, index, comboxLst);
 					items.add(empBody);
 				} else {
 					if (!headerGrid.getItemName().equals(CheckFileFinder.header)) {
@@ -676,17 +677,20 @@ public class CheckFileFinder {
 		
 	}
 
-	private void validateCombox(GridEmpHead headerGrid, String value, List<ItemError> itemErrors,
+	private void validateCombox(GridEmpHead headerGrid, ItemRowDto empBody, List<ItemError> itemErrors,
 			int index, List<ComboBoxObject> combox) {
+		String value =(String) empBody.getValue();
 		List<String> comboxKey = combox.stream().map(c -> c.getOptionValue()).collect(Collectors.toList());
 		if (headerGrid.isRequired()) {
-			if (value == null || value == "") {
+			if ( value == null || value == "") {
 				ItemError error = new ItemError("", index, headerGrid.getItemCode(), "MsgB_2");
 				itemErrors.add(error);
+				empBody.setError(true);
 			} else {
 				if (!comboxKey.contains(value)) {
 					ItemError error = new ItemError("", index, headerGrid.getItemCode(), "MsgB_2");
 					itemErrors.add(error);
+					empBody.setError(true);
 				}
 			}
 		} else {
@@ -694,6 +698,7 @@ public class CheckFileFinder {
 			if (!comboxKey.contains(value)) {
 				ItemError error = new ItemError("", index, headerGrid.getItemCode(), "MsgB_2");
 				itemErrors.add(error);
+				empBody.setError(true);
 			}
 		}
 	}
@@ -881,7 +886,7 @@ public class CheckFileFinder {
 						} else {
 							if (string.isPresent()) {
 								itemDto.setError(true);
-								ItemError error = new ItemError("", index, itemDto.getItemCode(), string.get());
+								ItemError error = new ItemError("", index, itemDto.getItemCode(), TextResource.localize(string.get(), Arrays.asList(gridHead.getItemName(), String.valueOf(stringContraint.getMaxLenght()))));
 								itemErrors.add(error);
 								break;
 							}

@@ -37,7 +37,7 @@ implements PeregUpdateListCommandHandler<UpdateEmployeeInfoContactCommand>{
 				c.getSeatDialIn(), c.getSeatExtensionNo(), c.getPhoneMailAddress(),
 				c.getCellPhoneNo());}).collect(Collectors.toList());
 		if(!domains.isEmpty()) {
-			employeeInfoContactRepository.addAll(domains);
+			employeeInfoContactRepository.updateAll(domains);
 		}
 		
 		return new ArrayList<MyCustomizeException>();
