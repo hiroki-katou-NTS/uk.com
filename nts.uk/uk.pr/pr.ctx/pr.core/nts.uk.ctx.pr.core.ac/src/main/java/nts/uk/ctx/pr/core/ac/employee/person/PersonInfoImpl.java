@@ -8,14 +8,14 @@ import nts.uk.ctx.pr.shared.dom.adapter.query.person.PersonInfoExportAdapter;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+@Stateless
+public class PersonInfoImpl implements PersonInfoAdapter {
 
-@Stateless(name ="DPersonInfoAdapterImpl")
-public class PersonInfoAdapterImpl implements PersonInfoAdapter {
-    
     @Inject
     IPersonInfoPub repo;
 
-    public PersonInfoExportAdapter getPersonInfo(String sID){
+    @Override
+    public PersonInfoExportAdapter getPersonInfo(String sID) {
         PersonInfoExport domain = repo.getPersonInfo(sID);
         return new PersonInfoExportAdapter(
                 domain.getPid(),

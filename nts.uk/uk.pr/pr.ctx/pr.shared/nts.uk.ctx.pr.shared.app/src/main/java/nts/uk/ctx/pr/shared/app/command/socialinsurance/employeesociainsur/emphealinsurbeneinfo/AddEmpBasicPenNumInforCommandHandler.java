@@ -23,6 +23,8 @@ public class AddEmpBasicPenNumInforCommandHandler extends CommandHandler<Credent
 
     @Inject
     private SocialInsurAcquisiInforRepository socialInsurAcquisiInforRepository;
+
+
     
     @Override
     protected void handle(CommandHandlerContext<CredentialAcquisitionInfoCommand> context) {

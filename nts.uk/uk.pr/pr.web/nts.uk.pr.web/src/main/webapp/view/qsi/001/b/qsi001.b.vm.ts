@@ -51,15 +51,37 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
             let self = this;
 
             let params = getShared('QSI001_PARAMS_TO_SCREEN_B');
-            if(params.listEmpId.length > 0){
-                params.listEmpId.forEach(e =>{
-                   service.getPersonInfo(e).done(r => {
-                       console.dir(r);
-                   }).fail(f =>{
-                       console.dir(f);
-                   });
-                });
-            }
+
+            self.loadKCP009(self.createEmployeeModel(params.listEmpId));
+
+
+            service.getSocialInsurAcquisiInforById(self.selectedItem()).done(e =>{
+                self.otherNotes(e.remarksOther == 1 ? true : false);
+                self.textOtherNotes(e.remarksAndOtherContents);
+                self.salaryMonthlyActual(e.remunMonthlyAmountKind);
+                self.salaryMonthly(e.remunMonthlyAmount);
+                self.totalCompensation(e.totalMonthlyRemun);
+                self.livingAbroad(e.livingAbroad == 1 ? true : false);
+                self.otherNotes1(e.reasonOther == 1 ? true : false);
+                self.textOtherNotes1(e.reasonAndOtherContents);
+                self.shortTermResidence(e.shortStay == 1 ? true : false);
+                self.selectedDepNotiAttach(e.depenAppoint);
+                self.shortWorkHours(e.shortTimeWorkers == 1 ? true : false);
+                self.continuousEmpAfterRetire(e.continReemAfterRetirement == 1 ? true : false);
+            }).fail(e =>{
+
+            });
+
+            service.getPersonInfo(self.selectedItem()).done(r => {
+                if(self.getAge(r.birthDay,params.date) >= 70){
+                    self.applyToEmployeeOver70(true);
+                    self.otherNotes(true);
+                }
+            }).fail(f =>{
+                console.dir(f);
+            });
+
+
 
             //init
 
@@ -71,8 +93,8 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
             self.salaryMonthlyActual = ko.observable(0);
             self.totalCompensation = ko.observable(0);
             self.depNotiAttach = ko.observableArray([
-                { code: '1', name: nts.uk.resource.getText('QSI001_B222_13') },
-                { code: '2', name: nts.uk.resource.getText('QSI001_B222_14') }
+                { code: '1', name: nts.uk.resource.getText('QSI001_54') },
+                { code: '2', name: nts.uk.resource.getText('QSI001_55') }
             ]);
             self.selectedDepNotiAttach = ko.observable(1);
 
@@ -102,6 +124,19 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
 
             block.clear();
         }
+
+        getAge(DOB,date) {
+            var today = new Date(date);
+            var birthDate = new Date(DOB);
+            var age = today.getFullYear() - birthDate.getFullYear();
+            var m = today.getMonth() - birthDate.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                age = age - 1;
+            }
+
+            return age;
+        }
+
         cancel(){
             nts.uk.ui.windows.close();
         }
@@ -158,67 +193,39 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
         }
 
 
+
         add(){
             let self = this;
-            /*let data = {
-                socialInsurAcquisiInforCommand: {
-                    employeeId: self.selectedItem(),
-                    percentOrMore: self.applyToEmployeeOver70(),
-                    remarksOther: self.otherNotes(),
-                    remarksAndOtherContents: self.textOtherNotes(),
-                    remunMonthlyAmountKind: self.salaryMonthlyActual(),
-                    remunMonthlyAmount: self.salaryMonthly(),
-                    totalMonthlyRemun: self.totalCompensation(),
-                    livingAbroad: self.livingAbroad(),
-                    reasonOther: self.otherNotes(),
-                    reasonAndOtherContents: self.textOtherNotes1(),
-                    shortStay: self.shortTermResidence(),
-                    depenAppoint: self.selectedDepNotiAttach(),
-                    qualifiDistin: null,
-                    shortTimeWorkers: self.shortWorkHours(),
-                    continReemAfterRetirement: self.continuousEmpAfterRetire()
-                },
-                empBasicPenNumInforCommand: {
-                    employeeId: self.selectedItem(),
-                    basicPenNumber: self.basicPension()
-
-                },
-                multiEmpWorkInfoCommand: {
-                    employeeId: self.selectedItem(),
-                    isMoreEmp: self.twoOrMoreEmployee(),
-
-                }
-            }*/
-
             let data = {
                 socialInsurAcquisiInforCommand: {
                     employeeId: self.selectedItem(),
-                    percentOrMore: 1,
-                    remarksOther: 1,
-                    remarksAndOtherContents: 1,
-                    remunMonthlyAmountKind: 1,
-                    remunMonthlyAmount: 1,
-                    totalMonthlyRemun: 1,
-                    livingAbroad: 1,
-                    reasonOther: 1,
-                    reasonAndOtherContents: 1,
-                    shortStay: 1,
+                    percentOrMore: self.applyToEmployeeOver70() == true ? 1 : 0,
+                    remarksOther: self.otherNotes() == true ? 1 : 0,
+                    remarksAndOtherContents: self.textOtherNotes(),
+                    remunMonthlyAmountKind: Number(self.salaryMonthlyActual()),
+                    remunMonthlyAmount: Number(self.salaryMonthly()),
+                    totalMonthlyRemun: Number(self.totalCompensation()),
+                    livingAbroad: self.livingAbroad() == true ? 1 : 0,
+                    reasonOther: self.otherNotes1() == true ? 1 : 0,
+                    reasonAndOtherContents: self.textOtherNotes1(),
+                    shortStay: self.shortTermResidence() == true ? 1 : 0,
                     depenAppoint: self.selectedDepNotiAttach(),
                     qualifiDistin: 0,
-                    shortTimeWorkers: 1,
-                    continReemAfterRetirement: 1
+                    shortTimeWorkers: self.shortWorkHours() == true ? 1: 0,
+                    continReemAfterRetirement: self.continuousEmpAfterRetire() == true ? 1 : 0
                 },
                 empBasicPenNumInforCommand: {
                     employeeId: self.selectedItem(),
-                    basicPenNumber: 1
+                    basicPenNumber: Number(self.basicPension())
 
                 },
                 multiEmpWorkInfoCommand: {
                     employeeId: self.selectedItem(),
-                    isMoreEmp: 1
+                    isMoreEmp: self.twoOrMoreEmployee() == true ? 1 : 0,
 
                 }
             }
+
 
             service.add(data).done(e =>{
 

@@ -34,9 +34,9 @@
 
     <ui:define name="content">
         <div id="functions-area" style = "min-width: 1000px;">
-            <button id="B1_1" data-bind="click: add" tabindex="1" class="proceed">#{i18n.getText('QSI001_B1_1')}</button>
+            <button id="B1_1" data-bind="click: add" tabindex="1" class="proceed">#{i18n.getText('QSI001_41')}</button>
 
-            <button id="B1_2" data-bind="click: cancel" tabindex="2" >#{i18n.getText('QSI001_B1_2')}</button>
+            <button id="B1_2" data-bind="click: cancel" tabindex="2" >#{i18n.getText('QSI001_42')}</button>
 
         </div>
         <div id="contents-area">
@@ -50,10 +50,10 @@
             <!-- div left -->
             <div class="pull-left" style="margin-left: 100px">
                 <div class="control-group">
-                    <div data-bind="ntsFormLabel: {}">#{i18n.getText('QSI001_B222_3')}</div>
+                    <div data-bind="ntsFormLabel: {}">#{i18n.getText('QSI001_44')}</div>
                     <input id="B222_4" data-bind="ntsTextEditor: {
                                     value: basicPension,
-                                    name: '#{i18n.getText('QSI001_B222_4')}',
+                                    name: '#{i18n.getText('QSI001_45')}',
                                     constraint: 'BasicPenNumber',
                                     required: true,
                                     enable: true,
@@ -61,10 +61,10 @@
                 </div>
 
                 <div class="control-group">
-                    <div data-bind="ntsFormLabel: {}">#{i18n.getText('QSI001_B222_5')}</div>
-                    <input id="B222_6" data-bind="ntsTextEditor: {
+                    <div data-bind="ntsFormLabel: {}">#{i18n.getText('QSI001_46')}</div>
+                    <input id="B222_6" data-bind="ntsNumberEditor: {
                                     value: salaryMonthly,
-                                    name: '#{i18n.getText('QSI001_B222_6')}',
+                                    name: '#{i18n.getText('QSI001_47')}',
                                     constraint: 'RemuneraMonthly',
                                     required: true,
                                     enable: true,
@@ -72,10 +72,10 @@
                 </div>
 
                 <div class="control-group">
-                    <div data-bind="ntsFormLabel: {}">#{i18n.getText('QSI001_B222_7')}</div>
-                    <input id="B222_8" data-bind="ntsTextEditor: {
+                    <div data-bind="ntsFormLabel: {}">#{i18n.getText('QSI001_48')}</div>
+                    <input id="B222_8" data-bind="ntsNumberEditor: {
                                     value: salaryMonthlyActual,
-                                    name: '#{i18n.getText('QSI001_B222_8')}',
+                                    name: '#{i18n.getText('QSI001_49')}',
                                     constraint: 'RemuneraMonthly',
                                     required: true,
                                     enable: true,
@@ -83,10 +83,10 @@
                 </div>
 
                 <div class="control-group">
-                    <div data-bind="ntsFormLabel: {}">#{i18n.getText('QSI001_B222_9')}</div>
-                    <input id="B222_10" data-bind="ntsTextEditor: {
+                    <div data-bind="ntsFormLabel: {}">#{i18n.getText('QSI001_50')}</div>
+                    <input id="B222_10" data-bind="ntsNumberEditor: {
                                     value: totalCompensation,
-                                    name: '#{i18n.getText('QSI001_B222_10')}',
+                                    name: '#{i18n.getText('QSI001_51')}',
                                     constraint: 'RemuneraMonthly',
                                     required: true,
                                     enable: true,
@@ -94,9 +94,9 @@
                 </div>
 
                 <div class="control-group">
-                    <div data-bind="ntsFormLabel: {}">#{i18n.getText('QSI001_B222_11')}</div>
+                    <div data-bind="ntsFormLabel: {}">#{i18n.getText('QSI001_52')}</div>
                     <div class="cf" data-bind="ntsSwitchButton: {
-                        name: '#{i18n.getText('QSI001_B222_12')}',
+                        name: '#{i18n.getText('QSI001_53')}',
                         options: depNotiAttach,
                         optionsValue: 'code',
                         optionsText: 'name',
@@ -108,38 +108,38 @@
             <!-- div right -->
             <div class="pull-left" style="margin-left: 100px">
                 <div>
-                    <div data-bind="ntsFormLabel: {}">#{i18n.getText('QSI001_B222_15')}</div>
+                    <div data-bind="ntsFormLabel: {}">#{i18n.getText('QSI001_56')}</div>
                     <div>
-                        <div id="B222_16" data-bind="ntsCheckBox: { checked: applyToEmployeeOver70 }">#{i18n.getText('QSI001_B222_16')}</div>
+                        <div id="B222_16" data-bind="ntsCheckBox: { checked: applyToEmployeeOver70 }">#{i18n.getText('QSI001_57')}</div>
                         <br></br>
-                        <div id="B222_17" data-bind="ntsCheckBox: { checked: twoOrMoreEmployee }">#{i18n.getText('QSI001_B222_17')}</div>
+                        <div id="B222_17" data-bind="ntsCheckBox: { checked: twoOrMoreEmployee }">#{i18n.getText('QSI001_58')}</div>
                         <br></br>
-                        <div id="B222_18" data-bind="ntsCheckBox: { checked: shortWorkHours }">#{i18n.getText('QSI001_B222_18')}</div>
+                        <div id="B222_18" data-bind="ntsCheckBox: { checked: shortWorkHours }">#{i18n.getText('QSI001_59')}</div>
                         <br></br>
-                        <div id="B222_19" data-bind="ntsCheckBox: { checked: continuousEmpAfterRetire }">#{i18n.getText('QSI001_B222_19')}</div>
+                        <div id="B222_19" data-bind="ntsCheckBox: { checked: continuousEmpAfterRetire }">#{i18n.getText('QSI001_60')}</div>
                         <br></br>
-                        <div id="B222_20" data-bind="ntsCheckBox: { checked: otherNotes }">#{i18n.getText('QSI001_B222_20')}</div>
+                        <div id="B222_20" data-bind="ntsCheckBox: { checked: otherNotes }">#{i18n.getText('QSI001_61')}</div>
                         <input id="B222_21" data-bind="ntsTextEditor: {
                                     value: textOtherNotes,
-                                    name: '#{i18n.getText('QSI001_B222_21')}',
+                                    name: '#{i18n.getText('QSI001_62')}',
                                     constraint: 'QualificationAcquiNoti',
-                                    required: true,
-                                    enable: true,
+                                    required: otherNotes,
+                                    enable: otherNotes,
                                     readonly: false}" />
                     </div>
-                    <div data-bind="ntsFormLabel: {}">#{i18n.getText('QSI001_B222_22')}</div>
+                    <div data-bind="ntsFormLabel: {}">#{i18n.getText('QSI001_63')}</div>
                     <div>
-                        <div id="B222_23" data-bind="ntsCheckBox: { checked: livingAbroad }">#{i18n.getText('QSI001_B222_23')}</div>
+                        <div id="B222_23" data-bind="ntsCheckBox: { checked: livingAbroad }">#{i18n.getText('QSI001_64')}</div>
                         <br></br>
-                        <div id="B222_24" data-bind="ntsCheckBox: { checked: shortTermResidence }">#{i18n.getText('QSI001_B222_24')}</div>
+                        <div id="B222_24" data-bind="ntsCheckBox: { checked: shortTermResidence }">#{i18n.getText('QSI001_65')}</div>
                         <br></br>
-                        <div id="B222_25" data-bind="ntsCheckBox: { checked: otherNotes1 }">#{i18n.getText('QSI001_B222_25')}</div>
+                        <div id="B222_25" data-bind="ntsCheckBox: { checked: otherNotes1 }">#{i18n.getText('QSI001_66')}</div>
                         <input data-bind="ntsTextEditor: {
                                     value: textOtherNotes1,
-                                    name: '#{i18n.getText('QSI001_B222_26')}',
+                                    name: '#{i18n.getText('QSI001_67')}',
                                     constraint: 'ReaForNotiOfQuatification',
-                                    required: true,
-                                    enable: true,
+                                    required: otherNotes1,
+                                    enable: otherNotes1,
                                     readonly: false}" />
                     </div>
                 </div>
