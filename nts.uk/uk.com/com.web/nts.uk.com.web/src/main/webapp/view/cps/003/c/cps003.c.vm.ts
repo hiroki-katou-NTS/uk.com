@@ -911,7 +911,11 @@ module cps003.c.vm {
                 });
                 
                 self.validateSpecial(regChecked, dataSource);
-                itemErrors = $grid.mGrid("errors");
+                itemErrors = _.filter($grid.mGrid("errors"), e => {
+                    let d = dataSource[e.index];
+                    return d && d.register;
+                });
+                
                 errObj = {};
                 if (itemErrors && itemErrors.length > 0) {
                     dataToG = _.map(itemErrors, err => {
@@ -957,17 +961,25 @@ module cps003.c.vm {
                             });
                         });
                     } else {
-                        info({ messageId: "Msg_15" }).then(() => {
-                            unblock();
-                            setShared("CPS003C_REG_DONE", true);
-                            forEach(updateDone, d => {
-                                let recData: Record = recId[d.rowId];
-                                regEmployeeIds.push(recData.employeeId);
+                        if (!errorList || errorList.length === 0) {
+                            info({ messageId: "Msg_15" }).then(() => {
+                                unblock();
+                                setShared("CPS003C_REG_DONE", true);
+                                forEach(updateDone, d => {
+                                    let recData: Record = recId[d.rowId];
+                                    regEmployeeIds.push(recData.employeeId);
+                                });
+                                
+                                setShared("CPS003C_REG_EMPID", regEmployeeIds);
+                                self.close();
                             });
-                            
-                            setShared("CPS003C_REG_EMPID", regEmployeeIds);
-                            self.close();
-                        });
+                        } else {
+                            let errLst = _.map(errorList, e => e);
+                            setShared("CPS003G_ERROR_LIST", errLst);
+                            modeless("/view/cps/003/g/index.xhtml").onClosed(() => {
+                                
+                            });
+                        }
                     }
                 }).fail((res) => {
                     unblock();
