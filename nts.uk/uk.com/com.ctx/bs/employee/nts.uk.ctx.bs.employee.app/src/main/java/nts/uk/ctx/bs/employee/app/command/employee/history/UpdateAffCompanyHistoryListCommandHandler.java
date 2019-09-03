@@ -66,7 +66,7 @@ implements PeregUpdateListCommandHandler<UpdateAffCompanyHistoryCommand>{
 					.collect(Collectors.groupingBy(c -> c.getPId()));
 			histLstMapResult.putAll(histLstMap);
 		}
-			command.parallelStream().forEach(c -> {
+			command.stream().forEach(c -> {
 				if(c.getStartDate() != null) {
 					List<AffCompanyHist> listHist = histLstMapResult.get(c.getPId());
 					AffCompanyHistByEmployee itemToBeAdded = null;

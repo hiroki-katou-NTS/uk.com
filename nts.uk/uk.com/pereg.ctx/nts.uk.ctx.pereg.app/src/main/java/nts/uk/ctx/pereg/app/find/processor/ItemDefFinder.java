@@ -116,7 +116,10 @@ public class ItemDefFinder {
 
 		if(!gridPeregDto.isEmpty()) {
 			gridPeregDto.stream().forEach(m ->{
-				PeregEmpInfoQuery empQuery = new PeregEmpInfoQuery(m.getEmployeeId(), m.getPersonId(), m.getPeregDto() == null? null:  m.getPeregDto().getDomainDto().getRecordId());
+				PeregEmpInfoQuery empQuery = new PeregEmpInfoQuery(m.getEmployeeId(), m.getPersonId(),
+						m.getPeregDto() == null ? null
+								: (m.getPeregDto().getDomainDto() == null ? null
+										: m.getPeregDto().getDomainDto().getRecordId()));
 				List<ItemValue> lstItemDef = getItemDefFromDomain(lstPerInfoDef);
 				empLst.put(m.getEmployeeId(), new PeregMatrixByEmp(lstItemDef, empQuery, m.getPeregDto()));
 			});
