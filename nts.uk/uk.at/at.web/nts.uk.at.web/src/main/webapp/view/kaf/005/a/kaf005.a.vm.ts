@@ -784,17 +784,17 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         
         changeColor(attendanceId, frameNo,errorCode, beforeAppStatus, actualStatus){
             let self = this;
-            if((self.performanceExcessAtr() == 2) &&(errorCode == 4||actualStatus==3)){
+            if((self.prePostSelected() == 1) && (self.performanceExcessAtr() == 2) &&(errorCode == 4||actualStatus==3)){
                 $('td#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', '#FD4D4D');
                 $('input#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', '#FD4D4D');
                 return '#FD4D4D';
             }
-            if((self.performanceExcessAtr() == 1) &&(errorCode == 3||actualStatus==3)){
+            if((self.prePostSelected() == 1) && (self.performanceExcessAtr() == 1) &&(errorCode == 3||actualStatus==3)){
                 $('td#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', '#F6F636');
                 $('input#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', '#F6F636');
                 return '#F6F636';
             }
-            if((self.preExcessDisplaySetting()==1) &&(errorCode == 2||beforeAppStatus==true)){
+            if((self.prePostSelected() == 1) && (self.preExcessDisplaySetting()==1) &&(errorCode == 2||beforeAppStatus==true)){
                 $('td#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', '#FFC0CB');
                 $('input#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', '#FFC0CB');
                 return '#FFC0CB';
