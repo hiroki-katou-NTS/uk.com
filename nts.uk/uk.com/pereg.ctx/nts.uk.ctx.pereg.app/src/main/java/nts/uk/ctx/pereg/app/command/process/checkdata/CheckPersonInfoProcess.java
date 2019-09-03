@@ -54,7 +54,9 @@ public class CheckPersonInfoProcess {
 	
 	final List<String> listItemToCheckSpace =  Arrays.asList("IS00003","IS00004","IS00015","IS00016");
 	
-	final List<String> listItem_Master_History = Arrays.asList("IS00084","IS00085","IS00079");
+	final List<String> listItem_Master_History = Arrays.asList("IS00084", "IS00085", "IS00079", "IS00073", "IS00131",
+			"IS00140", "IS00158", "IS00167", "IS00176", "IS00149", "IS00194", "IS00203", "IS00212", "IS00221",
+			"IS00230", "IS00239", "IS00185");
 	
 	private static final List<String> standardDateItemCodes = Arrays.asList("IS00020", "IS00077", "IS00082", "IS00119", "IS00781");
 	
@@ -566,7 +568,7 @@ public class CheckPersonInfoProcess {
 
 		if (itemDf.isDesignateMaster()) {
 			
-			if (itemValue.getItemCode().toString() == "IS00073") {
+			if (itemValue.getItemCode().toString().equals("IS00073")) {
 				// CS00015	部門本務 itemStartDate IS00071
 				Optional<LayoutPersonInfoValueDto> itemStartDateIS00071 = listAlltemsValue.stream().filter(i -> i.getItemCode().equals("IS00071")).findFirst();
 				Optional<LayoutPersonInfoValueDto> itemMasterIS00073 = itemsValue.stream().filter(i -> i.getItemCode().equals("IS00073")).findFirst();
@@ -574,7 +576,7 @@ public class CheckPersonInfoProcess {
 					checkDesignateMaster(dataSetter, employee, bussinessName, itemValue, itemStartDateIS00071.get().getValue(),itemMasterIS00073.get().getValue(), masterName, listError);
 				}
 
-			} else if (itemValue.getItemCode().toString() == "IS00079") {
+			} else if (itemValue.getItemCode().toString().equals("IS00079")) {
 				// CS00016	職位 itemStartDate IS00077
 				Optional<LayoutPersonInfoValueDto> itemStartDateIS00077 = listAlltemsValue.stream().filter(i -> i.getItemCode().equals("IS00077")).findFirst();
 				Optional<LayoutPersonInfoValueDto> itemMasterIS00079 = itemsValue.stream().filter(i -> i.getItemCode().equals("IS00079")).findFirst();
@@ -582,7 +584,7 @@ public class CheckPersonInfoProcess {
 					checkDesignateMaster(dataSetter, employee, bussinessName, itemValue, itemStartDateIS00077.get().getValue(),itemMasterIS00079.get().getValue(), masterName, listError);
 				}
 
-			} else if (itemValue.getItemCode().toString() == "IS00084") {
+			} else if (itemValue.getItemCode().toString().equals("IS00084")) {
 				// CS00017 職場 itemStartDate IS00082
 				Optional<LayoutPersonInfoValueDto> itemStartDateIS00082 = listAlltemsValue.stream().filter(i -> i.getItemCode().equals("IS00082")).findFirst();
 				Optional<LayoutPersonInfoValueDto> itemMasterIS00084 = itemsValue.stream().filter(i -> i.getItemCode().equals("IS00084")).findFirst();
@@ -590,7 +592,7 @@ public class CheckPersonInfoProcess {
 					checkDesignateMaster(dataSetter, employee, bussinessName, itemValue, itemStartDateIS00082.get().getValue(),itemMasterIS00084.get().getValue(), masterName, listError);
 				}
 				
-			} else if (itemValue.getItemCode().toString() == "IS00085") {
+			} else if (itemValue.getItemCode().toString().equals("IS00085")) {
 				// CS00017 職場 itemStartDate IS00082
 				Optional<LayoutPersonInfoValueDto> itemStartDateIS00082 = listAlltemsValue.stream().filter(i -> i.getItemCode().equals("IS00082")).findFirst();
 				Optional<LayoutPersonInfoValueDto> itemMasterIS00085 = itemsValue.stream().filter(i -> i.getItemCode().equals("IS00085")).findFirst();
@@ -598,6 +600,97 @@ public class CheckPersonInfoProcess {
 					checkDesignateMaster(dataSetter, employee, bussinessName, itemValue, itemStartDateIS00082.get().getValue(),itemMasterIS00085.get().getValue(), masterName, listError);
 				}
 				
+			} else if (itemValue.getItemCode().toString().equals("IS00131")) {
+				// CS00020
+				Optional<LayoutPersonInfoValueDto> itemStartDateIS00119 = listAlltemsValue.stream().filter(i -> i.getItemCode().equals("IS00119")).findFirst();
+				Optional<LayoutPersonInfoValueDto> itemMasterIS00131 = itemsValue.stream().filter(i -> i.getItemCode().equals("IS00131")).findFirst();
+				if (itemStartDateIS00119.isPresent() && itemMasterIS00131.isPresent()) {
+					checkDesignateMaster(dataSetter, employee, bussinessName, itemValue, itemStartDateIS00119.get().getValue(),itemMasterIS00131.get().getValue(), masterName, listError);
+				}
+			} else if (itemValue.getItemCode().toString().equals("IS00140")) {
+				// CS00020
+				Optional<LayoutPersonInfoValueDto> itemStartDateIS00119 = listAlltemsValue.stream().filter(i -> i.getItemCode().equals("IS00119")).findFirst();
+				Optional<LayoutPersonInfoValueDto> itemMasterIS00140 = itemsValue.stream().filter(i -> i.getItemCode().equals("IS00140")).findFirst();
+				if (itemStartDateIS00119.isPresent() && itemMasterIS00140.isPresent()) {
+					checkDesignateMaster(dataSetter, employee, bussinessName, itemValue, itemStartDateIS00119.get().getValue(),itemMasterIS00140.get().getValue(), masterName, listError);
+				}
+			} else if (itemValue.getItemCode().toString().equals("IS00158")) {
+				// CS00020
+				Optional<LayoutPersonInfoValueDto> itemStartDateIS00119 = listAlltemsValue.stream().filter(i -> i.getItemCode().equals("IS00119")).findFirst();
+				Optional<LayoutPersonInfoValueDto> itemMasterIS00158 = itemsValue.stream().filter(i -> i.getItemCode().equals("IS00158")).findFirst();
+				if (itemStartDateIS00119.isPresent() && itemMasterIS00158.isPresent()) {
+					checkDesignateMaster(dataSetter, employee, bussinessName, itemValue, itemStartDateIS00119.get().getValue(),itemMasterIS00158.get().getValue(), masterName, listError);
+				}
+			} else if (itemValue.getItemCode().toString().equals("IS00167")) {
+				// CS00020
+				Optional<LayoutPersonInfoValueDto> itemStartDateIS00119 = listAlltemsValue.stream().filter(i -> i.getItemCode().equals("IS00119")).findFirst();
+				Optional<LayoutPersonInfoValueDto> itemMasterIS00167 = itemsValue.stream().filter(i -> i.getItemCode().equals("IS00167")).findFirst();
+				if (itemStartDateIS00119.isPresent() && itemMasterIS00167.isPresent()) {
+					checkDesignateMaster(dataSetter, employee, bussinessName, itemValue, itemStartDateIS00119.get().getValue(),itemMasterIS00167.get().getValue(), masterName, listError);
+				}
+			} else if (itemValue.getItemCode().toString().equals("IS00176")) {
+				// CS00020
+				Optional<LayoutPersonInfoValueDto> itemStartDateIS00119 = listAlltemsValue.stream().filter(i -> i.getItemCode().equals("IS00119")).findFirst();
+				Optional<LayoutPersonInfoValueDto> itemMasterIS00176 = itemsValue.stream().filter(i -> i.getItemCode().equals("IS00176")).findFirst();
+				if (itemStartDateIS00119.isPresent() && itemMasterIS00176.isPresent()) {
+					checkDesignateMaster(dataSetter, employee, bussinessName, itemValue, itemStartDateIS00119.get().getValue(),itemMasterIS00176.get().getValue(), masterName, listError);
+				}
+			} else if (itemValue.getItemCode().toString().equals("IS00149")) {
+				// CS00020
+				Optional<LayoutPersonInfoValueDto> itemStartDateIS00119 = listAlltemsValue.stream().filter(i -> i.getItemCode().equals("IS00119")).findFirst();
+				Optional<LayoutPersonInfoValueDto> itemMasterIS00149 = itemsValue.stream().filter(i -> i.getItemCode().equals("IS00149")).findFirst();
+				if (itemStartDateIS00119.isPresent() && itemMasterIS00149.isPresent()) {
+					checkDesignateMaster(dataSetter, employee, bussinessName, itemValue, itemStartDateIS00119.get().getValue(),itemMasterIS00149.get().getValue(), masterName, listError);
+				}
+			} else if (itemValue.getItemCode().toString().equals("IS00194")) {
+				// CS00070
+				Optional<LayoutPersonInfoValueDto> itemStartDateIS00781 = listAlltemsValue.stream().filter(i -> i.getItemCode().equals("IS00781")).findFirst();
+				Optional<LayoutPersonInfoValueDto> itemMasterIS00194 = itemsValue.stream().filter(i -> i.getItemCode().equals("IS00194")).findFirst();
+				if (itemStartDateIS00781.isPresent() && itemMasterIS00194.isPresent()) {
+					checkDesignateMaster(dataSetter, employee, bussinessName, itemValue, itemStartDateIS00781.get().getValue(),itemMasterIS00194.get().getValue(), masterName, listError);
+				}
+			} else if (itemValue.getItemCode().toString().equals("IS00203")) {
+				// CS00070
+				Optional<LayoutPersonInfoValueDto> itemStartDateIS00781 = listAlltemsValue.stream().filter(i -> i.getItemCode().equals("IS00781")).findFirst();
+				Optional<LayoutPersonInfoValueDto> itemMasterIS00203 = itemsValue.stream().filter(i -> i.getItemCode().equals("IS00203")).findFirst();
+				if (itemStartDateIS00781.isPresent() && itemMasterIS00203.isPresent()) {
+					checkDesignateMaster(dataSetter, employee, bussinessName, itemValue, itemStartDateIS00781.get().getValue(),itemMasterIS00203.get().getValue(), masterName, listError);
+				}
+			} else if (itemValue.getItemCode().toString().equals("IS00212")) {
+				// CS00070
+				Optional<LayoutPersonInfoValueDto> itemStartDateIS00781 = listAlltemsValue.stream().filter(i -> i.getItemCode().equals("IS00781")).findFirst();
+				Optional<LayoutPersonInfoValueDto> itemMasterIS00212 = itemsValue.stream().filter(i -> i.getItemCode().equals("IS00212")).findFirst();
+				if (itemStartDateIS00781.isPresent() && itemMasterIS00212.isPresent()) {
+					checkDesignateMaster(dataSetter, employee, bussinessName, itemValue, itemStartDateIS00781.get().getValue(),itemMasterIS00212.get().getValue(), masterName, listError);
+				}
+			} else if (itemValue.getItemCode().toString().equals("IS00221")) {
+				// CS00070
+				Optional<LayoutPersonInfoValueDto> itemStartDateIS00781 = listAlltemsValue.stream().filter(i -> i.getItemCode().equals("IS00781")).findFirst();
+				Optional<LayoutPersonInfoValueDto> itemMasterIS00221 = itemsValue.stream().filter(i -> i.getItemCode().equals("IS00221")).findFirst();
+				if (itemStartDateIS00781.isPresent() && itemMasterIS00221.isPresent()) {
+					checkDesignateMaster(dataSetter, employee, bussinessName, itemValue, itemStartDateIS00781.get().getValue(),itemMasterIS00221.get().getValue(), masterName, listError);
+				}
+			} else if (itemValue.getItemCode().toString().equals("IS00230")) {
+				// CS00070
+				Optional<LayoutPersonInfoValueDto> itemStartDateIS00781 = listAlltemsValue.stream().filter(i -> i.getItemCode().equals("IS00781")).findFirst();
+				Optional<LayoutPersonInfoValueDto> itemMasterIS00230 = itemsValue.stream().filter(i -> i.getItemCode().equals("IS00230")).findFirst();
+				if (itemStartDateIS00781.isPresent() && itemMasterIS00230.isPresent()) {
+					checkDesignateMaster(dataSetter, employee, bussinessName, itemValue, itemStartDateIS00781.get().getValue(),itemMasterIS00230.get().getValue(), masterName, listError);
+				}
+			} else if (itemValue.getItemCode().toString().equals("IS00239")) {
+				// CS00070
+				Optional<LayoutPersonInfoValueDto> itemStartDateIS00781 = listAlltemsValue.stream().filter(i -> i.getItemCode().equals("IS00781")).findFirst();
+				Optional<LayoutPersonInfoValueDto> itemMasterIS00239 = itemsValue.stream().filter(i -> i.getItemCode().equals("IS00239")).findFirst();
+				if (itemStartDateIS00781.isPresent() && itemMasterIS00239.isPresent()) {
+					checkDesignateMaster(dataSetter, employee, bussinessName, itemValue, itemStartDateIS00781.get().getValue(),itemMasterIS00239.get().getValue(), masterName, listError);
+				}
+			} else if (itemValue.getItemCode().toString().equals("IS00185")) {
+				// CS00070
+				Optional<LayoutPersonInfoValueDto> itemStartDateIS00781 = listAlltemsValue.stream().filter(i -> i.getItemCode().equals("IS00781")).findFirst();
+				Optional<LayoutPersonInfoValueDto> itemMasterIS00185 = itemsValue.stream().filter(i -> i.getItemCode().equals("IS00185")).findFirst();
+				if (itemStartDateIS00781.isPresent() && itemMasterIS00185.isPresent()) {
+					checkDesignateMaster(dataSetter, employee, bussinessName, itemValue, itemStartDateIS00781.get().getValue(),itemMasterIS00185.get().getValue(), masterName, listError);
+				}
 			} else{
 				checkDesignateMaster(dataSetter, employee, bussinessName, itemValue, null, null, masterName, listError);
 			}
