@@ -7106,7 +7106,7 @@ module nts.uk.ui.mgrid {
                         currencyOpts.decimallength = _.isNil(constraint.decimalLength) ? 0 : constraint.decimalLength;
                         currencyOpts.currencyformat = constraint.currencyFormat ? constraint.currencyFormat : "JPY";
                         let groupSeparator = constraint.groupSeparator || ",";
-                        let rawValue = text.replaceAll(value, groupSeparator, "");
+                        let rawValue = text.replaceAll(String(value), groupSeparator, "");
                         let formatter = new uk.text.NumberFormatter({ option: currencyOpts });
                         let numVal = Number(rawValue);
                         if (!isNaN(numVal)) value = formatter.format(numVal);
@@ -8216,9 +8216,9 @@ module nts.uk.ui.mgrid {
                             data = data.toLocaleDateString("ja-JP", { year: "numeric", month: "2-digit", day: "2-digit" });
                         }
                         
-                        let tDate = moment.utc($editor.value, ctrl.format).format(ctrl.format[0]);
-                        if (/*data !== tDate &&*/ !d.classList.contains(khl.ERROR_CLS) && _.isFunction(ctrl.inputProcess)) {
-                            ctrl.inputProcess(tDate, _dataSource[coord.rowIdx]);
+                        let tDate = moment.utc($editor.value, ctrl.format, true);
+                        if (/*data !== tDate && !d.classList.contains(khl.ERROR_CLS) &&*/ _.isFunction(ctrl.inputProcess)) {
+                            ctrl.inputProcess(tDate.isValid() ? tDate.format(ctrl.format[0]) : $editor.value, _dataSource[coord.rowIdx]);
                         }
                         su.endEdit(_$grid[0]);
                     }
@@ -8917,7 +8917,8 @@ module nts.uk.ui.mgrid {
             });
             
             if (data.initValue && data.initValue !== "") {
-                return moment(data.initValue, formats, true).format(formats[0]);
+                let momentObj = moment(data.initValue, formats, true); 
+                return momentObj.isValid() ? momentObj.format(formats[0]) : data.initValue;
             }
             
             return "";
@@ -9005,7 +9006,7 @@ module nts.uk.ui.mgrid {
             let selected = _prtDiv.cloneNode(true);
             selected.classList.add("mgrid-refer-text");
             if (_.isNil(text) && !_.isNil(data.initValue)) {
-                text = data.initValue + " " + (data.controlDef.notFound || "");
+                text = _.isNil(data.controlDef.notFound) ? data.initValue : data.controlDef.notFound;
             }
             
             selected.textContent = text || "";
