@@ -785,7 +785,7 @@ module cps003.c.vm {
             new nts.uk.ui.mgrid.MGrid($("#grid")[0], {
                 width: "1000px",
                 height: "800px",
-                headerHeight: "80px",
+                headerHeight: "40px",
                 subHeight: "140px",
                 subWidth: "100px",
                 dataSource: self.gridOptions.dataSource,
