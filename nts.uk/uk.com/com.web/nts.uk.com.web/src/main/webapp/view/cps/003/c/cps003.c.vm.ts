@@ -996,8 +996,7 @@ module cps003.c.vm {
                         case ITEM_SELECT_TYPE.CODE_NAME:
                             return 1;
                         case ITEM_SELECT_TYPE.DESIGNATED_MASTER:
-                            case ITEM_SELECT_TYPE.DESIGNATED_MASTER:
-                            if (!_.isNil(value) && !isNaN(Number(value))) {
+                            if (!_.isNil(value) && !isNaN(Number(value)) && String(Number(value)) === String(value)) {
                                 return 2;
                             }
                             return 1;

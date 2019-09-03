@@ -138,7 +138,10 @@ module cps003.a.vm {
                     }
                     
                     self.category.items(data);
-                    self.baseDate(nts.uk.time.today().format("YYYY/MM/DD"));
+                    
+                    nts.uk.request.syncAjax("com", "server/time/today/").done(function(res) {
+                        self.baseDate(res);
+                    });
                 });
             
             self.baseDate.subscribe(date => {
@@ -250,6 +253,12 @@ module cps003.a.vm {
             setTimeout(() => {
                 $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent).done(() => { });
             }, 1);
+            
+            self.baseDateEnable.subscribe(enable => {
+                nts.uk.request.syncAjax("com", "server/time/today/").done(function(res) {
+                    self.baseDate(res);
+                });
+            });
             
             self.settings.matrixDisplay.subscribe(matrix => {
                 let $grid = $("#grid");
@@ -1164,6 +1173,10 @@ module cps003.a.vm {
                                     codes[item.value] = [ item.recordId ];
                                 }
                             }
+                        } else if (dt.cls.dataTypeValue === ITEM_SINGLE_TYPE.RELATE_CATEGORY) {
+                            if (item.itemCode === "IS00301" && (_.isNil(item.value) || item.value === "")) {
+                                record[item.itemCode] = "0.0日";
+                            }
                         }
                     });
                     
@@ -1322,7 +1335,7 @@ module cps003.a.vm {
                                 states.push(new State(id, "IS00297", ["mgrid-disable"]));
                                 states.push(new State(id, "IS00298", ["mgrid-disable"]));
                                 states.push(new State(id, "IS00299", ["mgrid-disable"]));
-                                states.push(new State(id, "IS00300", ["mgrid-disable"]));
+//                                states.push(new State(id, "IS00300", ["mgrid-disable"]));
                                 states.push(new State(id, "IS00301", ["mgrid-disable"]));
                             }
                             break;
@@ -1330,7 +1343,7 @@ module cps003.a.vm {
                             if (item.value === "0" && record.IS00296 === "1") {
                                 states.push(new State(id, "IS00298", ["mgrid-disable"]));
                                 states.push(new State(id, "IS00299", ["mgrid-disable"]));
-                                states.push(new State(id, "IS00300", ["mgrid-disable"]));
+//                                states.push(new State(id, "IS00300", ["mgrid-disable"]));
                                 states.push(new State(id, "IS00301", ["mgrid-disable"]));
                             }
                             break;
@@ -1343,7 +1356,15 @@ module cps003.a.vm {
                                 states.push(new State(id, "IS00304", ["mgrid-disable"]));
                                 states.push(new State(id, "IS00305", ["mgrid-disable"]));
                                 states.push(new State(id, "IS00306", ["mgrid-disable"]));
-                                states.push(new State(id, "IS00307", ["mgrid-disable"]));
+//                                states.push(new State(id, "IS00307", ["mgrid-disable"]));
+                                states.push(new State(id, "IS00308", ["mgrid-disable"]));
+                            }
+                            break;
+                        case "IS00304":
+                            if (item.value === "0" && record.IS00303 === "1") {
+                                states.push(new State(id, "IS00305", ["mgrid-disable"]));
+                                states.push(new State(id, "IS00306", ["mgrid-disable"]));
+//                                states.push(new State(id, "IS00307", ["mgrid-disable"]));
                                 states.push(new State(id, "IS00308", ["mgrid-disable"]));
                             }
                             break;
@@ -1356,7 +1377,15 @@ module cps003.a.vm {
                                 states.push(new State(id, "IS00311", ["mgrid-disable"]));
                                 states.push(new State(id, "IS00312", ["mgrid-disable"]));
                                 states.push(new State(id, "IS00313", ["mgrid-disable"]));
-                                states.push(new State(id, "IS00314", ["mgrid-disable"]));
+//                                states.push(new State(id, "IS00314", ["mgrid-disable"]));
+                                states.push(new State(id, "IS00315", ["mgrid-disable"]));
+                            }
+                            break;
+                        case "IS00311":
+                            if (item.value === "0" && record.IS00310 === "1") {
+                                states.push(new State(id, "IS00312", ["mgrid-disable"]));
+                                states.push(new State(id, "IS00313", ["mgrid-disable"]));
+//                                states.push(new State(id, "IS00314", ["mgrid-disable"]));
                                 states.push(new State(id, "IS00315", ["mgrid-disable"]));
                             }
                             break;
@@ -1369,7 +1398,15 @@ module cps003.a.vm {
                                 states.push(new State(id, "IS00318", ["mgrid-disable"]));
                                 states.push(new State(id, "IS00319", ["mgrid-disable"]));
                                 states.push(new State(id, "IS00320", ["mgrid-disable"]));
-                                states.push(new State(id, "IS00321", ["mgrid-disable"]));
+//                                states.push(new State(id, "IS00321", ["mgrid-disable"]));
+                                states.push(new State(id, "IS00322", ["mgrid-disable"]));
+                            }
+                            break;
+                        case "IS00318":
+                            if (item.value === "0" && record.IS00317 === "1") {
+                                states.push(new State(id, "IS00319", ["mgrid-disable"]));
+                                states.push(new State(id, "IS00320", ["mgrid-disable"]));
+//                                states.push(new State(id, "IS00321", ["mgrid-disable"]));
                                 states.push(new State(id, "IS00322", ["mgrid-disable"]));
                             }
                             break;
@@ -1382,7 +1419,15 @@ module cps003.a.vm {
                                 states.push(new State(id, "IS00325", ["mgrid-disable"]));
                                 states.push(new State(id, "IS00326", ["mgrid-disable"]));
                                 states.push(new State(id, "IS00327", ["mgrid-disable"]));
-                                states.push(new State(id, "IS00328", ["mgrid-disable"]));
+//                                states.push(new State(id, "IS00328", ["mgrid-disable"]));
+                                states.push(new State(id, "IS00329", ["mgrid-disable"]));
+                            }
+                            break;
+                        case "IS00325":
+                            if (item.value === "0" && record.IS00324 === "1") {
+                                states.push(new State(id, "IS00326", ["mgrid-disable"]));
+                                states.push(new State(id, "IS00327", ["mgrid-disable"]));
+//                                states.push(new State(id, "IS00328", ["mgrid-disable"]));
                                 states.push(new State(id, "IS00329", ["mgrid-disable"]));
                             }
                             break;
@@ -1395,7 +1440,15 @@ module cps003.a.vm {
                                 states.push(new State(id, "IS00332", ["mgrid-disable"]));
                                 states.push(new State(id, "IS00333", ["mgrid-disable"]));
                                 states.push(new State(id, "IS00334", ["mgrid-disable"]));
-                                states.push(new State(id, "IS00335", ["mgrid-disable"]));
+//                                states.push(new State(id, "IS00335", ["mgrid-disable"]));
+                                states.push(new State(id, "IS00336", ["mgrid-disable"]));
+                            }
+                            break;
+                        case "IS00332":
+                            if (item.value === "0" && record.IS00331 === "1") {
+                                states.push(new State(id, "IS00333", ["mgrid-disable"]));
+                                states.push(new State(id, "IS00334", ["mgrid-disable"]));
+//                                states.push(new State(id, "IS00335", ["mgrid-disable"]));
                                 states.push(new State(id, "IS00336", ["mgrid-disable"]));
                             }
                             break;
@@ -1405,9 +1458,17 @@ module cps003.a.vm {
                     switch (item.itemCode) {
                         case "IS00338":
                             if (item.value === "0") {
-                                _.forEach(['IS00339', 'IS00340', 'IS00341', 'IS00342', 'IS00343'], code => {
+                                _.forEach(['IS00339', 'IS00340', 'IS00341'/*, 'IS00342'*/, 'IS00343'], code => {
                                     states.push(new State(id, code, ["mgrid-disable"]));
                                 });
+                            }
+                            break;
+                        case "IS00339":
+                            if (item.value === "0" && record.IS00338 === "1") {
+                                states.push(new State(id, "IS00340", ["mgrid-disable"]));
+                                states.push(new State(id, "IS00341", ["mgrid-disable"]));
+//                                states.push(new State(id, "IS00342", ["mgrid-disable"]));
+                                states.push(new State(id, "IS00343", ["mgrid-disable"]));
                             }
                             break;
                     }
@@ -1416,9 +1477,17 @@ module cps003.a.vm {
                     switch (item.itemCode) {
                         case "IS00345":
                             if (item.value === "0") {
-                                _.forEach(['IS00346', 'IS00347', 'IS00348', 'IS00349', 'IS00350'], code => {
+                                _.forEach(['IS00346', 'IS00347', 'IS00348'/*, 'IS00349'*/, 'IS00350'], code => {
                                     states.push(new State(id, code, ["mgrid-disable"]));
                                 });
+                            }
+                            break;
+                        case "IS00346":
+                            if (item.value === "0" && record.IS00345 === "1") {
+                                states.push(new State(id, "IS00347", ["mgrid-disable"]));
+                                states.push(new State(id, "IS00348", ["mgrid-disable"]));
+//                                states.push(new State(id, "IS00349", ["mgrid-disable"]));
+                                states.push(new State(id, "IS00350", ["mgrid-disable"]));
                             }
                             break;
                     }
@@ -1427,9 +1496,17 @@ module cps003.a.vm {
                     switch (item.itemCode) {
                         case "IS00352":
                             if (item.value === "0") {
-                                _.forEach(['IS00353', 'IS00354', 'IS00355', 'IS00356', 'IS00357'], code => {
+                                _.forEach(['IS00353', 'IS00354', 'IS00355'/*, 'IS00356'*/, 'IS00357'], code => {
                                     states.push(new State(id, code, ["mgrid-disable"]));
                                 });
+                            }
+                            break;
+                        case "IS00353":
+                            if (item.value === "0" && record.IS00352 === "1") {
+                                states.push(new State(id, "IS00354", ["mgrid-disable"]));
+                                states.push(new State(id, "IS00355", ["mgrid-disable"]));
+//                                states.push(new State(id, "IS00356", ["mgrid-disable"]));
+                                states.push(new State(id, "IS00357", ["mgrid-disable"]));
                             }
                             break;
                     }
@@ -1438,9 +1515,17 @@ module cps003.a.vm {
                     switch (item.itemCode) {
                         case "IS00359":
                             if (item.value === "0") {
-                                _.forEach(['IS00360', 'IS00361', 'IS00362', 'IS00363', 'IS00364'], code => {
+                                _.forEach(['IS00360', 'IS00361', 'IS00362'/*, 'IS00363'*/, 'IS00364'], code => {
                                     states.push(new State(id, code, ["mgrid-disable"]));
                                 });
+                            }
+                            break;
+                        case "IS00360":
+                            if (item.value === "0" && record.IS00359 === "1") {
+                                states.push(new State(id, "IS00361", ["mgrid-disable"]));
+                                states.push(new State(id, "IS00362", ["mgrid-disable"]));
+//                                states.push(new State(id, "IS00363", ["mgrid-disable"]));
+                                states.push(new State(id, "IS00364", ["mgrid-disable"]));
                             }
                             break;
                     }
@@ -1478,9 +1563,17 @@ module cps003.a.vm {
                     switch (item.itemCode) {
                         case "IS00560":
                             if (item.value === "0") {
-                                _.forEach(['IS00561', 'IS00562', 'IS00563', 'IS00564', 'IS00565'], code => {
+                                _.forEach(['IS00561', 'IS00562', 'IS00563'/*, 'IS00564'*/, 'IS00565'], code => {
                                     states.push(new State(id, code, ["mgrid-disable"]));
                                 });
+                            }
+                            break;
+                        case "IS00561":
+                            if (item.value === "0" && record.IS00560 === "1") {
+                                states.push(new State(id, "IS00562", ["mgrid-disable"]));
+                                states.push(new State(id, "IS00563", ["mgrid-disable"]));
+//                                states.push(new State(id, "IS00564", ["mgrid-disable"]));
+                                states.push(new State(id, "IS00565", ["mgrid-disable"]));
                             }
                             break;
                     }
@@ -1489,9 +1582,17 @@ module cps003.a.vm {
                     switch (item.itemCode) {
                         case "IS00567":
                             if (item.value === "0") {
-                                _.forEach(['IS00568', 'IS00569', 'IS00570', 'IS00571', 'IS00572'], code => {
+                                _.forEach(['IS00568', 'IS00569', 'IS00570'/*, 'IS00571'*/, 'IS00572'], code => {
                                     states.push(new State(id, code, ["mgrid-disable"]));
                                 });
+                            }
+                            break;
+                        case "IS00568":
+                            if (item.value === "0" && record.IS00567 === "1") {
+                                states.push(new State(id, "IS00569", ["mgrid-disable"]));
+                                states.push(new State(id, "IS00570", ["mgrid-disable"]));
+//                                states.push(new State(id, "IS00571", ["mgrid-disable"]));
+                                states.push(new State(id, "IS00572", ["mgrid-disable"]));
                             }
                             break;
                     }
@@ -1500,9 +1601,17 @@ module cps003.a.vm {
                     switch (item.itemCode) {
                         case "IS00574":
                             if (item.value === "0") {
-                                _.forEach(['IS00575', 'IS00576', 'IS00577', 'IS00578', 'IS00579'], code => {
+                                _.forEach(['IS00575', 'IS00576', 'IS00577'/*, 'IS00578'*/, 'IS00579'], code => {
                                     states.push(new State(id, code, ["mgrid-disable"]));
                                 });
+                            }
+                            break;
+                        case "IS00575":
+                            if (item.value === "0" && record.IS00574 === "1") {
+                                states.push(new State(id, "IS00576", ["mgrid-disable"]));
+                                states.push(new State(id, "IS00577", ["mgrid-disable"]));
+//                                states.push(new State(id, "IS00578", ["mgrid-disable"]));
+                                states.push(new State(id, "IS00579", ["mgrid-disable"]));
                             }
                             break;
                     }
@@ -1511,9 +1620,17 @@ module cps003.a.vm {
                     switch (item.itemCode) {
                         case "IS00581":
                             if (item.value === "0") {
-                                _.forEach(['IS00582', 'IS00583', 'IS00584', 'IS00585', 'IS00586'], code => {
+                                _.forEach(['IS00582', 'IS00583', 'IS00584'/*, 'IS00585'*/, 'IS00586'], code => {
                                     states.push(new State(id, code, ["mgrid-disable"]));
                                 });
+                            }
+                            break;
+                        case "IS00582":
+                            if (item.value === "0" && record.IS00581 === "1") {
+                                states.push(new State(id, "IS00583", ["mgrid-disable"]));
+                                states.push(new State(id, "IS00584", ["mgrid-disable"]));
+//                                states.push(new State(id, "IS00585", ["mgrid-disable"]));
+                                states.push(new State(id, "IS00586", ["mgrid-disable"]));
                             }
                             break;
                     }
@@ -1522,9 +1639,17 @@ module cps003.a.vm {
                     switch (item.itemCode) {
                         case "IS00588":
                             if (item.value === "0") {
-                                _.forEach(['IS00589', 'IS00590', 'IS00591', 'IS00592', 'IS00593'], code => {
+                                _.forEach(['IS00589', 'IS00590', 'IS00591'/*, 'IS00592'*/, 'IS00593'], code => {
                                     states.push(new State(id, code, ["mgrid-disable"]));
                                 });
+                            }
+                            break;
+                        case "IS00589":
+                            if (item.value === "0" && record.IS00588 === "1") {
+                                states.push(new State(id, "IS00590", ["mgrid-disable"]));
+                                states.push(new State(id, "IS00591", ["mgrid-disable"]));
+//                                states.push(new State(id, "IS00592", ["mgrid-disable"]));
+                                states.push(new State(id, "IS00593", ["mgrid-disable"]));
                             }
                             break;
                     }
@@ -1533,9 +1658,17 @@ module cps003.a.vm {
                     switch (item.itemCode) {
                         case "IS00595":
                             if (item.value === "0") {
-                                _.forEach(['IS00596', 'IS00597', 'IS00598', 'IS00599', 'IS00600'], code => {
+                                _.forEach(['IS00596', 'IS00597', 'IS00598'/*, 'IS00599'*/, 'IS00600'], code => {
                                     states.push(new State(id, code, ["mgrid-disable"]));
                                 });
+                            }
+                            break;
+                        case "IS00596":
+                            if (item.value === "0" && record.IS00595 === "1") {
+                                states.push(new State(id, "IS00597", ["mgrid-disable"]));
+                                states.push(new State(id, "IS00598", ["mgrid-disable"]));
+//                                states.push(new State(id, "IS00599", ["mgrid-disable"]));
+                                states.push(new State(id, "IS00600", ["mgrid-disable"]));
                             }
                             break;
                     }
@@ -1544,9 +1677,17 @@ module cps003.a.vm {
                     switch (item.itemCode) {
                         case "IS00602":
                             if (item.value === "0") {
-                                _.forEach(['IS00603', 'IS00604', 'IS00605', 'IS00606', 'IS00607'], code => {
+                                _.forEach(['IS00603', 'IS00604', 'IS00605'/*, 'IS00606'*/, 'IS00607'], code => {
                                     states.push(new State(id, code, ["mgrid-disable"]));
                                 });
+                            }
+                            break;
+                        case "IS00603":
+                            if (item.value === "0" && record.IS00602 === "1") {
+                                states.push(new State(id, "IS00604", ["mgrid-disable"]));
+                                states.push(new State(id, "IS00605", ["mgrid-disable"]));
+//                                states.push(new State(id, "IS00606", ["mgrid-disable"]));
+                                states.push(new State(id, "IS00607", ["mgrid-disable"]));
                             }
                             break;
                     }
@@ -1555,9 +1696,17 @@ module cps003.a.vm {
                     switch (item.itemCode) {
                         case "IS00609":
                             if (item.value === "0") {
-                                _.forEach(['IS00610', 'IS00611', 'IS00612', 'IS00613', 'IS00614'], code => {
+                                _.forEach(['IS00610', 'IS00611', 'IS00612'/*, 'IS00613'*/, 'IS00614'], code => {
                                     states.push(new State(id, code, ["mgrid-disable"]));
                                 });
+                            }
+                            break;
+                        case "IS00610":
+                            if (item.value === "0" && record.IS00609 === "1") {
+                                states.push(new State(id, "IS00611", ["mgrid-disable"]));
+                                states.push(new State(id, "IS00612", ["mgrid-disable"]));
+//                                states.push(new State(id, "IS00613", ["mgrid-disable"]));
+                                states.push(new State(id, "IS00614", ["mgrid-disable"]));
                             }
                             break;
                     }
@@ -1566,9 +1715,17 @@ module cps003.a.vm {
                     switch (item.itemCode) {
                         case "IS00616":
                             if (item.value === "0") {
-                                _.forEach(['IS00617', 'IS00618', 'IS00619', 'IS00620', 'IS00621'], code => {
+                                _.forEach(['IS00617', 'IS00618', 'IS00619'/*, 'IS00620'*/, 'IS00621'], code => {
                                     states.push(new State(id, code, ["mgrid-disable"]));
                                 });
+                            }
+                            break;
+                        case "IS00617":
+                            if (item.value === "0" && record.IS00616 === "1") {
+                                states.push(new State(id, "IS00618", ["mgrid-disable"]));
+                                states.push(new State(id, "IS00619", ["mgrid-disable"]));
+//                                states.push(new State(id, "IS00620", ["mgrid-disable"]));
+                                states.push(new State(id, "IS00621", ["mgrid-disable"]));
                             }
                             break;
                     }
@@ -1577,9 +1734,17 @@ module cps003.a.vm {
                     switch (item.itemCode) {
                         case "IS00623":
                             if (item.value === "0") {
-                                _.forEach(['IS00624', 'IS00625', 'IS00626', 'IS00627', 'IS00628'], code => {
+                                _.forEach(['IS00624', 'IS00625', 'IS00626'/*, 'IS00627'*/, 'IS00628'], code => {
                                     states.push(new State(id, code, ["mgrid-disable"]));
                                 });
+                            }
+                            break;
+                        case "IS00624":
+                            if (item.value === "0" && record.IS00623 === "1") {
+                                states.push(new State(id, "IS00625", ["mgrid-disable"]));
+                                states.push(new State(id, "IS00626", ["mgrid-disable"]));
+//                                states.push(new State(id, "IS00627", ["mgrid-disable"]));
+                                states.push(new State(id, "IS00628", ["mgrid-disable"]));
                             }
                             break;
                     }
@@ -1718,6 +1883,9 @@ module cps003.a.vm {
                     sort.type = "Number";
                     break;
                 case ITEM_SINGLE_TYPE.READONLY_BUTTON:
+                    item.ntsControl = "Label";
+                    sort.columnKey = item.key;
+                    sort.allowSorting = true;
                     break;
             }
             
@@ -2144,9 +2312,18 @@ module cps003.a.vm {
                         
                         if (value instanceof Date) {
                             return replaceValue.matchValue === `${value.getFullYear()}/${value.toLocaleDateString("en-US", { month: "2-digit" }).replace(/[^0-9-]/g, "")}/${value.toLocaleDateString("en-US", { day: "2-digit" }).replace(/[^0-9-]/g, "")}`;    
-                        }
+                        } else if (value instanceof moment) {
+                            if (!value.isValid()) {
+                                return replaceValue.matchValue === value._i
+                                    || ((_.isNil(replaceValue.matchValue) || replaceValue.matchValue === "") && (_.isNil(value._i) || value._i === ""));
+                            }
+                            
+                            return replaceValue.matchValue === value.format("YYYY/MM/DD");
+                        }   
                         
-                        return (_.isString(replaceValue.matchValue) && _.trim(replaceValue.matchValue) === value) || replaceValue.matchValue === value;
+                        return (_.isString(replaceValue.matchValue) && _.trim(replaceValue.matchValue) === value) 
+                            || replaceValue.matchValue === value
+                            || ((_.isNil(replaceValue.matchValue) || replaceValue.matchValue === "") && (_.isNil(value) || value === ""));
                     }, (value, obj) => {
                         setTimeout(() => {
                             let afterProc = cps003.control.NUMBER[self.category.catCode() + "_" + replaceValue.targetItem];

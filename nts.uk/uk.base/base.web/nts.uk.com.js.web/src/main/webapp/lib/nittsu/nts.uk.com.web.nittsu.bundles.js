@@ -29927,7 +29927,7 @@ var nts;
                                     currencyOpts.decimallength = _.isNil(constraint.decimalLength) ? 0 : constraint.decimalLength;
                                     currencyOpts.currencyformat = constraint.currencyFormat ? constraint.currencyFormat : "JPY";
                                     var groupSeparator = constraint.groupSeparator || ",";
-                                    var rawValue = uk.text.replaceAll(value, groupSeparator, "");
+                                    var rawValue = uk.text.replaceAll(String(value), groupSeparator, "");
                                     var formatter = new uk.text.NumberFormatter({ option: currencyOpts });
                                     var numVal = Number(rawValue);
                                     if (!isNaN(numVal))
@@ -31016,9 +31016,9 @@ var nts;
                                     if (data instanceof Date) {
                                         data = data.toLocaleDateString("ja-JP", { year: "numeric", month: "2-digit", day: "2-digit" });
                                     }
-                                    var tDate = moment.utc($editor.value, ctrl.format).format(ctrl.format[0]);
-                                    if ( /*data !== tDate &&*/!d.classList.contains(khl.ERROR_CLS) && _.isFunction(ctrl.inputProcess)) {
-                                        ctrl.inputProcess(tDate, _dataSource[coord.rowIdx]);
+                                    var tDate = moment.utc($editor.value, ctrl.format, true);
+                                    if ( /*data !== tDate && !d.classList.contains(khl.ERROR_CLS) &&*/_.isFunction(ctrl.inputProcess)) {
+                                        ctrl.inputProcess(tDate.isValid() ? tDate.format(ctrl.format[0]) : $editor.value, _dataSource[coord.rowIdx]);
                                     }
                                     su.endEdit(_$grid[0]);
                                 }
@@ -31694,7 +31694,8 @@ var nts;
                             $.data(dkn._ramass[format], "date", mDisplayDate);
                         });
                         if (data.initValue && data.initValue !== "") {
-                            return moment(data.initValue, formats, true).format(formats[0]);
+                            var momentObj = moment(data.initValue, formats, true);
+                            return momentObj.isValid() ? momentObj.format(formats[0]) : data.initValue;
                         }
                         return "";
                     }
@@ -31780,7 +31781,7 @@ var nts;
                         var selected = _prtDiv.cloneNode(true);
                         selected.classList.add("mgrid-refer-text");
                         if (_.isNil(text) && !_.isNil(data.initValue)) {
-                            text = data.initValue + " " + (data.controlDef.notFound || "");
+                            text = _.isNil(data.controlDef.notFound) ? data.initValue : data.controlDef.notFound;
                         }
                         selected.textContent = text || "";
                         if (data.controlDef.labelPosition === "before") {
