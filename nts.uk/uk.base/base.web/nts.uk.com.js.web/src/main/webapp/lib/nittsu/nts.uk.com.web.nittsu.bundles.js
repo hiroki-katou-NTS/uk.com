@@ -23394,6 +23394,8 @@ var nts;
                     v_1.VFACON_ASC = "view-facon-asc";
                     v_1.FACON_ASC = "facon-asc";
                     v_1.FACON_DESC = "facon-desc";
+                    v_1.ALIGN_LEFT = "halign-left";
+                    v_1.ALIGN_RIGHT = "halign-right";
                     v_1.DefaultRowConfig = { css: { height: BODY_ROW_HEIGHT } };
                     v_1._voilerRows = {};
                     v_1._encarRows = [];
@@ -25173,8 +25175,12 @@ var nts;
                             var col = visibleColumnsMap[key];
                             if (!col)
                                 tdStyle += "; display: none;";
-                            else if (col[0].columnCssClass === hpl.CURRENCY_CLS || col[0].columnCssClass === "halign-right") {
-                                td.classList.add(col[0].columnCssClass);
+                            else if (!_.isNil(col[0].columnCssClass)) {
+                                col[0].columnCssClass.split(' ').forEach(function (clz) {
+                                    if (clz === hpl.CURRENCY_CLS || clz === "halign-right") {
+                                        td.classList.add(clz);
+                                    }
+                                });
                             }
                             if (key === "rowNumber") {
                                 td.innerHTML = cData; //!_.isNil(numText) ? numText : rowIdx + 1;
@@ -25507,8 +25513,12 @@ var nts;
                             var col = self.visibleColumnsMap[key];
                             if (!col)
                                 tdStyle += "; display: none;";
-                            else if (col[0].columnCssClass === hpl.CURRENCY_CLS || col[0].columnCssClass === "halign-right") {
-                                td.classList.add(col[0].columnCssClass);
+                            else if (!_.isNil(col[0].columnCssClass)) {
+                                col[0].columnCssClass.split(' ').forEach(function (clz) {
+                                    if (clz === hpl.CURRENCY_CLS || clz === "halign-right") {
+                                        td.classList.add(clz);
+                                    }
+                                });
                             }
                             var controlDef = self.controlMap[key];
                             var id = rData[self.primaryKey];
@@ -29065,6 +29075,12 @@ var nts;
                                 setTimeout(function () {
                                     $input.select();
                                 }, 0);
+                                if ($tCell.classList.contains(v.ALIGN_RIGHT)) {
+                                    $input.classList.remove(v.ALIGN_LEFT);
+                                }
+                                else {
+                                    $input.classList.add(v.ALIGN_LEFT);
+                                }
                                 var coord_3 = ti.getCellCoord($tCell);
                                 $input.style.imeMode = "inactive";
                                 if (coord_3) {
@@ -29130,6 +29146,12 @@ var nts;
                                 endEdit($grid);
                                 $tCell.textContent = "";
                                 $tCell.classList.add(dkn.CONTROL_CLS);
+                                if ($tCell.classList.contains(v.ALIGN_RIGHT)) {
+                                    $input.classList.remove(v.ALIGN_LEFT);
+                                }
+                                else {
+                                    $input.classList.add(v.ALIGN_LEFT);
+                                }
                                 $tCell.appendChild($editor);
                                 var data = $.data($tCell, v.DATA), mDate = moment(data, control.format, true), mDisplayDate = mDate.isValid() ? mDate : moment();
                                 $input.value = !_.isNil(data) && data !== "" ? (mDate.isValid() ? mDate.format(control.format[0]) : mDate._i) : "";
@@ -29267,6 +29289,12 @@ var nts;
                                         var data = $.data($tCell, v.DATA);
                                         $input.value = !_.isNil(data) ? data : "";
                                         $input.select();
+                                    }
+                                    if ($tCell.classList.contains(v.ALIGN_RIGHT)) {
+                                        $input.classList.remove(v.ALIGN_LEFT);
+                                    }
+                                    else {
+                                        $input.classList.add(v.ALIGN_LEFT);
                                     }
                                     cType.type = dkn.TEXTBOX;
                                     var coord_4 = ti.getCellCoord($tCell);
