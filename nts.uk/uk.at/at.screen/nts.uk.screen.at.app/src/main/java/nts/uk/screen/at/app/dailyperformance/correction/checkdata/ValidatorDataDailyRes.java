@@ -19,6 +19,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.app.command.dailyperform.month.UpdateMonthDailyParam;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.app.service.workrecord.erroralarm.recordcheck.ErAlWorkRecordCheckService;
@@ -533,6 +534,9 @@ public class ValidatorDataDailyRes {
 	 */
 	public List<DPItemValue> releaseDivergence(List<IntegrationOfDaily> dailyResults) {
 		// 乖離エラーのチェック
+		if(CollectionUtil.isEmpty(dailyResults)) {
+			return new ArrayList<>();
+		}
 		List<DPItemValue> divergenceErrors = new ArrayList<>();
 		for (IntegrationOfDaily d : dailyResults) {
 			List<EmployeeDailyPerError> employeeError = d.getEmployeeError();

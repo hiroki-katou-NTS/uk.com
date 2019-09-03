@@ -462,7 +462,7 @@ public class DailyModifyRCommandFacade {
 				}
 
 				// processCalcMonth
-				if (resultIU != null) {
+				if (dataParent.isCheckDailyChange()) {
 					domainDailyNew = resultIU.getLstDailyDomain();
 				}
 
