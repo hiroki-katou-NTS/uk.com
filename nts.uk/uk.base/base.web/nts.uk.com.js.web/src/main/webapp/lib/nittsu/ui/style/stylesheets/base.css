@@ -3037,6 +3037,15 @@ button.nts-switch-button[disabled].selected {
   margin-top: -10px !important;
 }
 
+.ui-igtreegrid .ui-iggrid-table .ui-iggrid-tablebody tr td:last-child {
+  padding-right: 2px !important;
+}
+
+.ui-igtreegrid .ui-iggrid-table .ui-iggrid-tablebody tr.row-disabled {
+  background-color: #CCC;
+  color: #333;
+}
+
 /* line 32, ../sass/components/_treegridview.scss */
 .no-selector table th:first-child.ui-iggrid-rowselector-class {
   visibility: hidden;
