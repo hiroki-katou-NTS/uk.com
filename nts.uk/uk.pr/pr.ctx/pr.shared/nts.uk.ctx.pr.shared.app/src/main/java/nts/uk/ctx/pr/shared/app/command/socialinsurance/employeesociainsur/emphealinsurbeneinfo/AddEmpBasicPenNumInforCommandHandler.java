@@ -36,47 +36,70 @@ public class AddEmpBasicPenNumInforCommandHandler extends CommandHandler<Credent
         String cid = AppContexts.user().companyId();
         Optional<SocialInsurAcquisiInfor> socialInsurAcquisiInfor =  socialInsurAcquisiInforRepository.getSocialInsurAcquisiInforById(cid,socialInsurAcquisiInforCommand.getEmployeeId());
 
-
-        SocialInsurAcquisiInfor socialInsurAcquisiInforDomain = new SocialInsurAcquisiInfor(
-                cid,
-                socialInsurAcquisiInforCommand.getEmployeeId(),
-                socialInsurAcquisiInforCommand.getPercentOrMore(),
-                socialInsurAcquisiInforCommand.getRemarksOther(),
-                socialInsurAcquisiInforCommand.getRemarksAndOtherContents(),
-                socialInsurAcquisiInforCommand.getRemunMonthlyAmountKind(),
-                socialInsurAcquisiInforCommand.getRemunMonthlyAmount(),
-                socialInsurAcquisiInforCommand.getTotalMonthlyRemun(),
-                socialInsurAcquisiInforCommand.getLivingAbroad(),
-                socialInsurAcquisiInforCommand.getReasonOther(),
-                socialInsurAcquisiInforCommand.getReasonAndOtherContents(),
-                socialInsurAcquisiInforCommand.getShortTimeWorkers(),
-                socialInsurAcquisiInforCommand.getShortStay(),
-                socialInsurAcquisiInforCommand.getDepenAppoint(),
-                socialInsurAcquisiInforCommand.getQualifiDistin(),
-                socialInsurAcquisiInforCommand.getContinReemAfterRetirement()
-
-        );
         if(socialInsurAcquisiInfor.isPresent()){
+            SocialInsurAcquisiInfor socialInsurAcquisiInforDomain = new SocialInsurAcquisiInfor(
+                    cid,
+                    socialInsurAcquisiInforCommand.getEmployeeId(),
+                    socialInsurAcquisiInforCommand.getPercentOrMore(),
+                    socialInsurAcquisiInforCommand.getRemarksOther(),
+                    socialInsurAcquisiInforCommand.getRemarksAndOtherContents(),
+                    socialInsurAcquisiInforCommand.getRemunMonthlyAmountKind(),
+                    socialInsurAcquisiInforCommand.getRemunMonthlyAmount(),
+                    socialInsurAcquisiInforCommand.getTotalMonthlyRemun(),
+                    socialInsurAcquisiInforCommand.getLivingAbroad(),
+                    socialInsurAcquisiInforCommand.getReasonOther(),
+                    socialInsurAcquisiInforCommand.getReasonAndOtherContents(),
+                    socialInsurAcquisiInforCommand.getShortTimeWorkers(),
+                    socialInsurAcquisiInforCommand.getShortStay(),
+                    socialInsurAcquisiInforCommand.getDepenAppoint(),
+                    socialInsurAcquisiInforCommand.getQualifiDistin(),
+                    socialInsurAcquisiInforCommand.getContinReemAfterRetirement()
+
+            );
             socialInsurAcquisiInforRepository.update(socialInsurAcquisiInforDomain);
         }else {
+
+            SocialInsurAcquisiInfor socialInsurAcquisiInforDomain = new SocialInsurAcquisiInfor(
+                    cid,
+                    socialInsurAcquisiInforCommand.getEmployeeId(),
+                    socialInsurAcquisiInforCommand.getPercentOrMore() == 0 ? null : socialInsurAcquisiInforCommand.getPercentOrMore(),
+                    socialInsurAcquisiInforCommand.getRemarksOther() == 0 ? null : socialInsurAcquisiInforCommand.getRemarksOther(),
+                    socialInsurAcquisiInforCommand.getRemarksAndOtherContents().isEmpty() ? null : socialInsurAcquisiInforCommand.getRemarksAndOtherContents(),
+                    socialInsurAcquisiInforCommand.getRemunMonthlyAmountKind() == 0? null : socialInsurAcquisiInforCommand.getRemunMonthlyAmountKind(),
+                    socialInsurAcquisiInforCommand.getRemunMonthlyAmount() == 0 ? null : socialInsurAcquisiInforCommand.getRemunMonthlyAmount(),
+                    socialInsurAcquisiInforCommand.getTotalMonthlyRemun() == 0 ? null : socialInsurAcquisiInforCommand.getTotalMonthlyRemun(),
+                    socialInsurAcquisiInforCommand.getLivingAbroad() == 0 ? null : socialInsurAcquisiInforCommand.getLivingAbroad(),
+                    socialInsurAcquisiInforCommand.getReasonOther() == 0 ? null : socialInsurAcquisiInforCommand.getReasonOther(),
+                    socialInsurAcquisiInforCommand.getReasonAndOtherContents().isEmpty() ? null : socialInsurAcquisiInforCommand.getReasonAndOtherContents(),
+                    socialInsurAcquisiInforCommand.getShortTimeWorkers() == 0 ? null : socialInsurAcquisiInforCommand.getShortTimeWorkers(),
+                    socialInsurAcquisiInforCommand.getShortStay() == 0 ? null : socialInsurAcquisiInforCommand.getShortStay(),
+                    socialInsurAcquisiInforCommand.getDepenAppoint() == 1 && socialInsurAcquisiInforCommand.getDepenAppoint() == null ? null : socialInsurAcquisiInforCommand.getDepenAppoint(),
+                    socialInsurAcquisiInforCommand.getQualifiDistin(),
+                    socialInsurAcquisiInforCommand.getContinReemAfterRetirement() == 0? null : socialInsurAcquisiInforCommand.getContinReemAfterRetirement()
+
+            );
 
             socialInsurAcquisiInforRepository.add(socialInsurAcquisiInforDomain);
         }
 
         if(!empBasicPenNumInforCommand.getBasicPenNumber().isEmpty()){
             Optional<EmpBasicPenNumInfor> empBasicPenNumInfor = empBasicPenNumInforRepository.getEmpBasicPenNumInforById(empBasicPenNumInforCommand.getEmployeeId());
-            EmpBasicPenNumInfor domain = new EmpBasicPenNumInfor(empBasicPenNumInforCommand.getEmployeeId(),empBasicPenNumInforCommand.getBasicPenNumber());
+
             if(empBasicPenNumInfor.isPresent()){
+                EmpBasicPenNumInfor domain = new EmpBasicPenNumInfor(empBasicPenNumInforCommand.getEmployeeId(),empBasicPenNumInforCommand.getBasicPenNumber());
                 empBasicPenNumInforRepository.update(domain);
             }else{
+                EmpBasicPenNumInfor domain = new EmpBasicPenNumInfor(empBasicPenNumInforCommand.getEmployeeId(),empBasicPenNumInforCommand.getBasicPenNumber().isEmpty() ? null : empBasicPenNumInforCommand.getBasicPenNumber());
                 empBasicPenNumInforRepository.add(domain);
             }
         }
         Optional<MultiEmpWorkInfo>  multiEmpWorkInfo = multiEmpWorkInfoRepository.getMultiEmpWorkInfoById(multiEmpWorkInfoCommand.getEmployeeId());
-        MultiEmpWorkInfo multiEmpWorkInfoDomain = new MultiEmpWorkInfo(multiEmpWorkInfoCommand.getEmployeeId(),multiEmpWorkInfoCommand.getIsMoreEmp());
+
         if(multiEmpWorkInfo.isPresent()){
+            MultiEmpWorkInfo multiEmpWorkInfoDomain = new MultiEmpWorkInfo(multiEmpWorkInfoCommand.getEmployeeId(),multiEmpWorkInfoCommand.getIsMoreEmp());
             multiEmpWorkInfoRepository.update(multiEmpWorkInfoDomain);
         }else{
+            MultiEmpWorkInfo multiEmpWorkInfoDomain = new MultiEmpWorkInfo(multiEmpWorkInfoCommand.getEmployeeId(),multiEmpWorkInfoCommand.getIsMoreEmp() == 0 ? null : multiEmpWorkInfoCommand.getIsMoreEmp());
             multiEmpWorkInfoRepository.add(multiEmpWorkInfoDomain);
         }
     }

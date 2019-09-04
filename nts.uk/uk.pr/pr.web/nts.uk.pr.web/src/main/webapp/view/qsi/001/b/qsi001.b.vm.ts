@@ -1,11 +1,9 @@
 module nts.uk.pr.view.qsi001.b.viewmodel {
 
     import block = nts.uk.ui.block;
-    import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
 
     export class ScreenModel {
-        ccg001ComponentOption: GroupOption;
         employeeInputList: KnockoutObservableArray<EmployeeModel>;
         //
 
@@ -40,7 +38,6 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
         tabindex: number;
         //
 
-        texteditor: any;
         simpleValue: KnockoutObservable<string>;
 
         roundingRules: KnockoutObservableArray<any>;
@@ -52,34 +49,80 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
 
             let params = getShared('QSI001_PARAMS_TO_SCREEN_B');
 
-            self.loadKCP009(self.createEmployeeModel(params.listEmpId));
+            if(params && params.listEmpId.length > 0){
+                self.loadKCP009(self.createEmployeeModel(params.listEmpId));
 
+                self.selectedItem.subscribe(e =>{
+                    service.getSocialInsurAcquisiInforById(self.selectedItem()).done(e =>{
+                        if(e){
+                            self.otherNotes(e.remarksOther == 1 ? true : false);
+                            self.textOtherNotes(e.remarksAndOtherContents);
+                            self.salaryMonthlyActual(e.remunMonthlyAmountKind);
+                            self.salaryMonthly(e.remunMonthlyAmount);
+                            self.totalCompensation(e.totalMonthlyRemun);
+                            self.livingAbroad(e.livingAbroad == 1 ? true : false);
+                            self.otherNotes1(e.reasonOther == 1 ? true : false);
+                            self.textOtherNotes1(e.reasonAndOtherContents);
+                            self.shortTermResidence(e.shortStay == 1 ? true : false);
+                            self.selectedDepNotiAttach(e.depenAppoint);
+                            self.shortWorkHours(e.shortTimeWorkers == 1 ? true : false);
+                            self.continuousEmpAfterRetire(e.continReemAfterRetirement == 1 ? true : false);
+                        }else{
+                            self.otherNotes(false);
+                            self.textOtherNotes(null);
+                            self.salaryMonthlyActual(null);
+                            self.salaryMonthly(null);
+                            self.totalCompensation(null);
+                            self.livingAbroad(false);
+                            self.otherNotes1(false);
+                            self.textOtherNotes1(null);
+                            self.shortTermResidence(false);
+                            self.selectedDepNotiAttach(null);
+                            self.shortWorkHours(false);
+                            self.continuousEmpAfterRetire(false);
+                        }
 
-            service.getSocialInsurAcquisiInforById(self.selectedItem()).done(e =>{
-                self.otherNotes(e.remarksOther == 1 ? true : false);
-                self.textOtherNotes(e.remarksAndOtherContents);
-                self.salaryMonthlyActual(e.remunMonthlyAmountKind);
-                self.salaryMonthly(e.remunMonthlyAmount);
-                self.totalCompensation(e.totalMonthlyRemun);
-                self.livingAbroad(e.livingAbroad == 1 ? true : false);
-                self.otherNotes1(e.reasonOther == 1 ? true : false);
-                self.textOtherNotes1(e.reasonAndOtherContents);
-                self.shortTermResidence(e.shortStay == 1 ? true : false);
-                self.selectedDepNotiAttach(e.depenAppoint);
-                self.shortWorkHours(e.shortTimeWorkers == 1 ? true : false);
-                self.continuousEmpAfterRetire(e.continReemAfterRetirement == 1 ? true : false);
-            }).fail(e =>{
+                    }).fail(e =>{
 
-            });
+                    });
 
-            service.getPersonInfo(self.selectedItem()).done(r => {
-                if(self.getAge(r.birthDay,params.date) >= 70){
-                    self.applyToEmployeeOver70(true);
-                    self.otherNotes(true);
-                }
-            }).fail(f =>{
-                console.dir(f);
-            });
+                    service.getPersonInfo(self.selectedItem()).done(r => {
+                        if(self.getAge(r.birthDay,params.date) >= 70){
+                            self.applyToEmployeeOver70(true);
+                            self.otherNotes(true);
+                        }
+                    }).fail(f =>{
+                        console.dir(f);
+                    });
+                });
+
+                service.getSocialInsurAcquisiInforById(self.selectedItem()).done(e =>{
+                    self.otherNotes(e.remarksOther == 1 ? true : false);
+                    self.textOtherNotes(e.remarksAndOtherContents);
+                    self.salaryMonthlyActual(e.remunMonthlyAmountKind);
+                    self.salaryMonthly(e.remunMonthlyAmount);
+                    self.totalCompensation(e.totalMonthlyRemun);
+                    self.livingAbroad(e.livingAbroad == 1 ? true : false);
+                    self.otherNotes1(e.reasonOther == 1 ? true : false);
+                    self.textOtherNotes1(e.reasonAndOtherContents);
+                    self.shortTermResidence(e.shortStay == 1 ? true : false);
+                    self.selectedDepNotiAttach(e.depenAppoint);
+                    self.shortWorkHours(e.shortTimeWorkers == 1 ? true : false);
+                    self.continuousEmpAfterRetire(e.continReemAfterRetirement == 1 ? true : false);
+                }).fail(e =>{
+
+                });
+
+                service.getPersonInfo(self.selectedItem()).done(r => {
+                    if(self.getAge(r.birthDay,params.date) >= 70){
+                        self.applyToEmployeeOver70(true);
+                        self.otherNotes(true);
+                    }
+                }).fail(f =>{
+                    console.dir(f);
+                });
+
+            }
 
 
 
@@ -113,7 +156,6 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
 
 
             //end init
-            self.loadCCG001();
             self.simpleValue = ko.observable("123");
 
             self.roundingRules = ko.observableArray([
@@ -140,78 +182,38 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
         cancel(){
             nts.uk.ui.windows.close();
         }
-        /* CCG001 */
-        loadCCG001(){
-            let self = this;
-            self.ccg001ComponentOption = {
-                /** Common properties */
-                systemType: 1,
-                showEmployeeSelection: true,
-                showQuickSearchTab: false,
-                showAdvancedSearchTab: true,
-                showBaseDate: false,
-                showClosure: false,
-                showAllClosure: false,
-                showPeriod: false,
-                periodFormatYM: false,
-                tabindex: 5,
-                /** Required parameter */
-                baseDate: moment().toISOString(),
-                periodStartDate: moment().toISOString(),
-                periodEndDate: moment().toISOString(),
-                inService: true,
-                leaveOfAbsence: true,
-                closed: true,
-                retirement: true,
-
-                /** Quick search tab options */
-                showAllReferableEmployee: true,
-                showOnlyMe: true,
-                showSameWorkplace: true,
-                showSameWorkplaceAndChild: true,
-
-                /** Advanced search properties */
-                showEmployment: true,
-                showWorkplace: true,
-                showClassification: true,
-                showJobTitle: true,
-                showWorktype: true,
-                isMutipleCheck: true,
-                /**
-                 * Self-defined function: Return data from CCG001
-                 * @param: data: the data return from CCG001
-                 */
-                returnDataFromCcg001: function(data: Ccg001ReturnedData) {
-
-                    self.loadKCP009(self.createEmployeeModel(data.listEmployee));
-
-                }
-            }
-
-            $('#com-ccg001').ntsGroupComponent(self.ccg001ComponentOption);
-
-        }
-
-
 
         add(){
             let self = this;
             let data = {
                 socialInsurAcquisiInforCommand: {
                     employeeId: self.selectedItem(),
+                    //70歳以上被用者
                     percentOrMore: self.applyToEmployeeOver70() == true ? 1 : 0,
+                    //備考その他
                     remarksOther: self.otherNotes() == true ? 1 : 0,
+                    //備考その他内容
                     remarksAndOtherContents: self.textOtherNotes(),
+                    //報酬月額（現物）
                     remunMonthlyAmountKind: Number(self.salaryMonthlyActual()),
+                    //報酬月額（金額）
                     remunMonthlyAmount: Number(self.salaryMonthly()),
+                    //報酬月額合計
                     totalMonthlyRemun: Number(self.totalCompensation()),
+                    //海外在住
                     livingAbroad: self.livingAbroad() == true ? 1 : 0,
+                    //理由その他
                     reasonOther: self.otherNotes1() == true ? 1 : 0,
+                    //理由その他内容
                     reasonAndOtherContents: self.textOtherNotes1(),
+                    //短期在留
                     shortStay: self.shortTermResidence() == true ? 1 : 0,
+                    //被扶養者届出区分
                     depenAppoint: self.selectedDepNotiAttach(),
-                    qualifiDistin: 0,
+                    qualifiDistin: null,
+                    //短時間労働者
                     shortTimeWorkers: self.shortWorkHours() == true ? 1: 0,
+                    //退職後の継続再雇用者
                     continReemAfterRetirement: self.continuousEmpAfterRetire() == true ? 1 : 0
                 },
                 empBasicPenNumInforCommand: {
@@ -253,7 +255,7 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
             self.isDisplayOrganizationName = ko.observable(true);
             self.targetBtnText = nts.uk.resource.getText("KCP009_3");
             self.selectedItem = ko.observable(null);
-            self.tabindex = 1;
+            self.tabindex = 3;
             // Initial listComponentOption
             self.listComponentOption = {
                 systemReference: self.systemReference(),
@@ -269,72 +271,6 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
 
     }
 
-    // Note: Defining these interfaces are optional
-    export interface GroupOption {
-        /** Common properties */
-        showEmployeeSelection?: boolean; // 検索タイプ
-        systemType: number; // システム区分
-        showQuickSearchTab?: boolean; // クイック検索
-        showAdvancedSearchTab?: boolean; // 詳細検索
-        showBaseDate?: boolean; // 基準日利用
-        showClosure?: boolean; // 就業締め日利用
-        showAllClosure?: boolean; // 全締め表示
-        showPeriod?: boolean; // 対象期間利用
-        periodFormatYM?: boolean; // 対象期間精度
-        maxPeriodRange?: string; // 最長期間
-        showSort?: boolean; // 並び順利用
-        nameType?: number; // 氏名の種類
-
-        /** Required parameter */
-        baseDate?: any; // 基準日 KnockoutObservable<string> or string
-        periodStartDate?: any; // 対象期間開始日 KnockoutObservable<string> or string
-        periodEndDate?: any; // 対象期間終了日 KnockoutObservable<string> or string
-        dateRangePickerValue?: KnockoutObservable<any>;
-        inService: boolean; // 在職区分
-        leaveOfAbsence: boolean; // 休職区分
-        closed: boolean; // 休業区分
-        retirement: boolean; // 退職区分
-
-        /** Quick search tab options */
-        showAllReferableEmployee?: boolean; // 参照可能な社員すべて
-        showOnlyMe?: boolean; // 自分だけ
-        showSameDepartment?: boolean; //同じ部門の社員
-        showSameDepartmentAndChild?: boolean; // 同じ部門とその配下の社員
-        showSameWorkplace?: boolean; // 同じ職場の社員
-        showSameWorkplaceAndChild?: boolean; // 同じ職場とその配下の社員
-
-        /** Advanced search properties */
-        showEmployment?: boolean; // 雇用条件
-        showDepartment?: boolean; // 部門条件
-        showWorkplace?: boolean; // 職場条件
-        showClassification?: boolean; // 分類条件
-        showJobTitle?: boolean; // 職位条件
-        showWorktype?: boolean; // 勤種条件
-        isMutipleCheck?: boolean; // 選択モード
-
-        /** Optional properties */
-        isInDialog?: boolean;
-        showOnStart?: boolean;
-        isTab2Lazy?: boolean;
-        tabindex?: number;
-
-        /** Data returned */
-        returnDataFromCcg001: (data: Ccg001ReturnedData) => void;
-    }
-    export interface EmployeeSearchDto {
-        employeeId: string;
-        employeeCode: string;
-        employeeName: string;
-        affiliationId: string; // departmentId or workplaceId based on system type
-        affiliationName: string; // departmentName or workplaceName based on system type
-    }
-    export interface Ccg001ReturnedData {
-        baseDate: string; // 基準日
-        closureId?: number; // 締めID
-        periodStart: string; // 対象期間（開始)
-        periodEnd: string; // 対象期間（終了）
-        listEmployee: Array<EmployeeSearchDto>; // 検索結果
-    }
 
     export interface ComponentOption {
         systemReference: SystemType;
