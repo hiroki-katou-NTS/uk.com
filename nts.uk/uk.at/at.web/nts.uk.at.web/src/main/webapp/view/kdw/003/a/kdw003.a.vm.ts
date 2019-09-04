@@ -318,7 +318,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             });
             
             self.yearMonth.subscribe(value => {
-                  if (!self.loadFirst && self.clickChangeMonth) {
+                  if (!self.loadFirst && self.clickChangeMonth && self.displayFormat() == 0) {
                       if (nts.uk.ui.errors.getErrorByElement($("#yearMonthPicker")).length != 0) {
                           return;
                       }
@@ -700,7 +700,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                //Date YYYYMM picker
             self.initFromScreenOther = false;
             self.yearMonth(data.periodInfo.yearMonth);
-            self.yearMonth.valueHasMutated();
+//            self.yearMonth.valueHasMutated();
             //Combobox display actual time
             self.initActualTime(data.periodInfo);
             self.timePeriodAllInfo = data.periodInfo;
@@ -2357,7 +2357,6 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     } else {
                         let paramMonth: any = {loadAfterCalc: false}
                         $.when(service.loadMonth(paramMonth), service.startScreen(param)).done((dataMonth, data) => { 
-                            self.loadFirst = false;
                             //update mobile
                             if((hasChangeFormat && self.displayFormat() === 0) || self.initFromScreenOther){
                                 self.yearMonth(data.periodInfo.yearMonth);
@@ -2369,6 +2368,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             }else if(hasChangeFormat && self.displayFormat() === 2 || self.initFromScreenOther){
                                  self.dateRanger({ startDate: data.periodInfo.targetRange.startDate, endDate: data.periodInfo.targetRange.endDate });
                             }
+                            self.loadFirst = false;
                             self.initFromScreenOther = false;
                             data.monthResult = dataMonth.monthResult;
                             data.indentityMonthResult = dataMonth.indentityMonthResult;
