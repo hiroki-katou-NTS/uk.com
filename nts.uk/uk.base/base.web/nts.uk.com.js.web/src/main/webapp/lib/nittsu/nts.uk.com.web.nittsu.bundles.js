@@ -42225,7 +42225,7 @@ var nts;
                         var virtualization = !uk.util.isNullOrUndefined(options.virtualization) ? options.virtualization : false;
                         var virtualizationMode = !uk.util.isNullOrUndefined(options.virtualizationMode) ? options.virtualizationMode : "";
                         var multiple = !_.isNil(options.multiple) ? options.multiple : false;
-                        var isFilter = ko.unwrap(!uk.util.isNullOrUndefined(data.filter) ? data.filter : false);
+                        var isFilter = ko.unwrap(!uk.util.isNullOrUndefined(options.filter) ? options.filter : false);
                         // Default.
                         var showCheckBox = options.showCheckBox !== undefined ? options.showCheckBox : true;
                         var enable = options.enable !== undefined ? options.enable : true;
