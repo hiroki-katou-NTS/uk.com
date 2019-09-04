@@ -191,6 +191,34 @@ module nts.uk.at.view.kaf005.b {
                         }
                     });
                     self.initData(data);
+                    self.timeStart1.subscribe(() => {
+                        $("#inpStartTime1").trigger("validate");
+                        if (nts.uk.ui.errors.hasError()){
+                            return;
+                        }
+                        service.getByChangeTime({
+                            workTypeCD: self.workTypeCd(),
+                            workTimeCD: self.siftCD(),
+                            startTime: self.timeStart1(),
+                            endTime: self.timeEnd1()
+                        }).done((timeRs) => {
+                            self.setTimeZones(timeRs);    
+                        });    
+                    });
+                    self.timeEnd1.subscribe(() => {
+                        $("#inpEndTime1").trigger("validate");
+                        if (nts.uk.ui.errors.hasError()){
+                            return;
+                        }
+                        service.getByChangeTime({
+                            workTypeCD: self.workTypeCd(),
+                            workTimeCD: self.siftCD(),
+                            startTime: self.timeStart1(),
+                            endTime: self.timeEnd1()
+                        }).done((timeRs) => {
+                            self.setTimeZones(timeRs);      
+                        });    
+                    });
                     self.checkRequiredOvertimeHours();
                     //Check work content Changed
                     self.checkWorkContentChanged();

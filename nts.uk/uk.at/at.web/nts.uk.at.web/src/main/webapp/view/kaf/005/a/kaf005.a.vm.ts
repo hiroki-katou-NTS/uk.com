@@ -213,6 +213,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             }).done((data) => {
                 self.initData(data);
                 self.timeStart1.subscribe(() => {
+                    $("#inpStartTime1").trigger("validate");
+                    if (nts.uk.ui.errors.hasError()){
+                        return;
+                    }
                     service.getByChangeTime({
                         workTypeCD: self.workTypeCd(),
                         workTimeCD: self.siftCD(),
@@ -223,6 +227,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     });    
                 });
                 self.timeEnd1.subscribe(() => {
+                    $("#inpEndTime1").trigger("validate");
+                    if (nts.uk.ui.errors.hasError()){
+                        return;
+                    }
                     service.getByChangeTime({
                         workTypeCD: self.workTypeCd(),
                         workTimeCD: self.siftCD(),
