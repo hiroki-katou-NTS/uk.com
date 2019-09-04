@@ -753,6 +753,7 @@ module cps003.f.vm {
                             });
                         }
                     } else {
+                        
                         if (item.itemData.amount) {
                             if (mode == 0) { // 通常置換（F1_026）が選択されている場合
                                 if (value.replaceValue) {
@@ -769,7 +770,7 @@ module cps003.f.vm {
                             } else { // 加減算（F1_027）が選択されている場合
                                 if (value.replaceValue) {
                                     
-                                    confirm({ messageId: 'Msg_714', messageParams: [item.name, value.matchValue, text(value.replaceValue > 0 ? 'CPS003_123' : 'CPS003_124') + Math.abs(value.replaceValue) + text('CPS003_122')] }).ifYes(() => {
+                                    confirm({ messageId: 'Msg_714', messageParams: [item.name,  Number(value.matchValue).toLocaleString('ja-JP', { useGrouping: true }), text(value.replaceValue > 0 ? 'CPS003_123' : 'CPS003_124') + Number(Math.abs(value.replaceValue)).toLocaleString('ja-JP', { useGrouping: true }) + text('CPS003_122')] }).ifYes(() => {
                                         setShared('CPS003F_VALUE', value);
                                         close();
                                     });
