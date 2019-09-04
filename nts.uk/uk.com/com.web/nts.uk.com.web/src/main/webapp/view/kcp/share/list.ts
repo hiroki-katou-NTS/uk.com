@@ -488,7 +488,9 @@ module kcp.share.list {
             gridList.on('selectionchanged', evt => {
                 const selectedValues = gridList.ntsGridList("getSelectedValue");
                 const selectedIds = self.isMultipleSelect ? _.map(selectedValues, o => o.id) : selectedValues.id;
-                self.selectedCodes(selectedIds);
+                if(!_.isEqual(self.selectedCodes(), selectedIds)){
+                    self.selectedCodes(selectedIds);  
+                }
             });
             gridList.on('selectChange', evt => {
                 // scroll to top if select all
@@ -498,8 +500,14 @@ module kcp.share.list {
             });
 
             self.selectedCodes.subscribe(() => {
-                if ($('#' + self.componentGridId).length > 0) {
-                    $('#' + self.componentGridId).ntsGridList('setSelected', self.selectedCodes());
+                // can not use OUTSIDE "gridList" variable here. must to use $('#' + self.componentGridId)
+                let gridList = $('#' + self.componentGridId);
+                if (gridList.length > 0) {
+                    var selectedValues = gridList.ntsGridList("getSelectedValue");
+                    var selectedIds = self.isMultipleSelect ? _.map(selectedValues, o => o.id) : selectedValues.id;
+                    if(!_.isEqual(self.selectedCodes(), selectedIds)){
+                        gridList.ntsGridList('setSelected', self.selectedCodes());    
+                    }
                 }
             });
 

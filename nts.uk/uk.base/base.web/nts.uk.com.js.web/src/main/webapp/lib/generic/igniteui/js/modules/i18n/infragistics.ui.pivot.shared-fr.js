@@ -1,37 +1,9 @@
-﻿/*!@license
-* Infragistics.Web.ClientUI Pivot Shared localization resources 16.2.20162.2040
+/*!@license
+* Infragistics.Web.ClientUI Pivot Shared localization resources 19.1.20
 *
-* Copyright (c) 2011-2016 Infragistics Inc.
+* Copyright (c) 2011-2019 Infragistics Inc.
 *
 * http://www.infragistics.com/
 *
 */
-
-/*global define, jQuery */
-(function (factory) {
-	if (typeof define === "function" && define.amd) {
-		define( ["jquery"], factory );
-	} else {
-		factory(jQuery);
-	}
-}
-(function ($) {
-    $.ig = $.ig || {};
-
-    if (!$.ig.PivotShared) {
-        $.ig.PivotShared = {};
-
-        $.extend($.ig.PivotShared, {
-            locale: {
-                invalidDataSource: "La source de données spécifiée est nulle ou n'est pas prise en charge.",
-                measureList: "Mesures",
-                ok: "OK",
-                cancel: "Annuler",
-                addToMeasures: "Ajouter aux Mesures",
-                addToFilters: "Ajouter aux Filtres",
-                addToColumns: "Ajouter aux Colonnes",
-                addToRows: "Ajouter aux Lignes"
-            }
-        });
-    }
-}));// REMOVE_FROM_COMBINED_FILES
+(function(factory){if(typeof define==="function"&&define.amd){define(["jquery"],factory)}else{return factory(jQuery)}})(function($){$.ig=$.ig||{};$.ig.locale=$.ig.locale||{};$.ig.locale.fr=$.ig.locale.fr||{};$.ig.PivotShared=$.ig.PivotShared||{};$.ig.locale.fr.PivotShared={invalidDataSource:"La source de données spécifiée est nulle ou n'est pas prise en charge.",measureList:"Mesures",ok:"OK",cancel:"Annuler",addToMeasures:"Ajouter aux Mesures",addToFilters:"Ajouter aux Filtres",addToColumns:"Ajouter aux Colonnes",addToRows:"Ajouter aux Lignes"};$.ig.PivotShared.locale=$.ig.PivotShared.locale||$.ig.locale.fr.PivotShared;return $.ig.locale.fr.PivotShared});

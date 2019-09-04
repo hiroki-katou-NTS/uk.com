@@ -27,3 +27,9 @@
   display: table;
   max-width: none !important;
 }
+
+
+/* fix for header column width not map with column width in body */
+.ui-iggrid-headertable {
+  max-width: 100% !important;
+}

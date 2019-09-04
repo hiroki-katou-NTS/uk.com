@@ -69,6 +69,10 @@ module nts.uk.ui.koExtentions {
                         .css(marginDirection, CARET_WIDTH * operator);
                     $caret.css(caretPosition, parseFloat($popup.css(caretPosition)) * -1);
                 }
+            }).on( "mouseleave", function() {
+                if ($popup.is(":visible")) {
+                    $popup.hide();
+                }
             }).wrap($("<div class='ntsControl ntsHelpButton'></div>"));
             
             var $container = $(element).closest(".ntsHelpButton");
