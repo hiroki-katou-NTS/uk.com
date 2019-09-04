@@ -13,83 +13,80 @@
             nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.QualificationAcquiNoti
             nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.ReaForNotiOfQuatification
         </com:ValidatorScript>
-        <script>var dialogSize = { width: 1000, height: 600 };</script>
-        <com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
-        <com:scriptfile set="IGNITE" />
+        <script>var dialogSize = {width: 1000, height: 600};</script>
+        <com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web"/>
+        <com:scriptfile set="IGNITE"/>
 
-        <com:scriptfile path="/view/kcp/009/kcp009.js" of="/nts.uk.com.web" />
-        <com:stylefile path="/view/kcp/009/style.css" of="/nts.uk.com.web" />
+        <com:scriptfile path="/view/kcp/009/kcp009.js" of="/nts.uk.com.web"/>
+        <com:stylefile path="/view/kcp/009/style.css" of="/nts.uk.com.web"/>
 
-        <com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
-        <com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
-        <com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
-        <com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+        <com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web"/>
 
 
-        <com:scriptfile path="qsi001.b.vm.js" />
-        <com:scriptfile path="qsi001.b.start.js" />
-        <com:scriptfile path="qsi001.b.service.js" />
-        <com:stylefile path="qsi001.b.style.css" />
+        <com:scriptfile path="qsi001.b.vm.js"/>
+        <com:scriptfile path="qsi001.b.start.js"/>
+        <com:scriptfile path="qsi001.b.service.js"/>
+        <com:stylefile path="qsi001.b.style.css"/>
     </ui:define>
 
     <ui:define name="content">
-        <div id="functions-area" style = "min-width: 1000px;">
+        <div id="functions-area" style="min-width: 1000px;">
             <button id="B1_1" data-bind="click: add" tabindex="1" class="proceed">#{i18n.getText('QSI001_41')}</button>
 
-            <button id="B1_2" data-bind="click: cancel" tabindex="2" >#{i18n.getText('QSI001_42')}</button>
+            <button id="B1_2" data-bind="click: cancel" tabindex="2">#{i18n.getText('QSI001_42')}</button>
 
         </div>
         <div id="contents-area">
             <!-- kcp009-->
             <div id="emp-component" style="margin-left: 20px"></div>
 
-
-
-
             <!-- div left -->
             <div class="pull-left" style="margin-left: 30px">
                 <div class="control-group">
                     <div data-bind="ntsFormLabel: {}">#{i18n.getText('QSI001_44')}</div>
-                    <input id="B222_4" data-bind="ntsTextEditor: {
+                    <input style="margin-left: 40px" id="B222_4" data-bind="ntsTextEditor: {
                                     value: basicPension,
                                     name: '#{i18n.getText('QSI001_45')}',
                                     constraint: 'BasicPenNumber',
                                     required: false,
                                     enable: true,
-                                    readonly: false}" />
+                                    readonly: false}"/>
                 </div>
 
                 <div class="control-group">
                     <div data-bind="ntsFormLabel: {}">#{i18n.getText('QSI001_46')}</div>
-                    <input id="B222_6" data-bind="ntsNumberEditor: {
+                    <input style="margin-left: 12px" id="B222_6" data-bind="ntsNumberEditor: {
                                     value: salaryMonthly,
                                     name: '#{i18n.getText('QSI001_47')}',
                                     constraint: 'RemuneraMonthly',
                                     required: false,
                                     enable: true,
-                                    readonly: false}" />
+                                    readonly: false}"/>
                 </div>
 
                 <div class="control-group">
                     <div data-bind="ntsFormLabel: {}">#{i18n.getText('QSI001_48')}</div>
-                    <input id="B222_8" data-bind="ntsNumberEditor: {
+                    <input style="margin-left: 11px" id="B222_8" data-bind="ntsNumberEditor: {
                                     value: salaryMonthlyActual,
                                     name: '#{i18n.getText('QSI001_49')}',
                                     constraint: 'RemuneraMonthly',
                                     required: false,
                                     enable: true,
-                                    readonly: false}" />
+                                    readonly: false}"/>
                 </div>
 
                 <div class="control-group">
                     <div data-bind="ntsFormLabel: {}">#{i18n.getText('QSI001_50')}</div>
-                    <input id="B222_10" data-bind="ntsNumberEditor: {
+                    <input style="margin-left: 40px" id="B222_10" data-bind="ntsNumberEditor: {
                                     value: totalCompensation,
                                     name: '#{i18n.getText('QSI001_51')}',
                                     constraint: 'RemuneraMonthly',
                                     required: false,
                                     enable: true,
-                                    readonly: false}" />
+                                    readonly: false}"/>
                 </div>
 
                 <div class="control-group">
@@ -108,38 +105,46 @@
             <div class="pull-left" style="margin-left: 100px">
                 <div>
                     <div data-bind="ntsFormLabel: {}">#{i18n.getText('QSI001_56')}</div>
-                    <div>
-                        <div id="B222_16" data-bind="ntsCheckBox: { checked: applyToEmployeeOver70 }">#{i18n.getText('QSI001_57')}</div>
+                    <div style="margin-left: 20px">
+                        <div id="B222_16"
+                             data-bind="ntsCheckBox: { checked: applyToEmployeeOver70 }">#{i18n.getText('QSI001_57')}</div>
                         <br></br>
-                        <div id="B222_17" data-bind="ntsCheckBox: { checked: twoOrMoreEmployee }">#{i18n.getText('QSI001_58')}</div>
+                        <div id="B222_17"
+                             data-bind="ntsCheckBox: { checked: twoOrMoreEmployee }">#{i18n.getText('QSI001_58')}</div>
                         <br></br>
-                        <div id="B222_18" data-bind="ntsCheckBox: { checked: shortWorkHours }">#{i18n.getText('QSI001_59')}</div>
+                        <div id="B222_18"
+                             data-bind="ntsCheckBox: { checked: shortWorkHours }">#{i18n.getText('QSI001_59')}</div>
                         <br></br>
-                        <div id="B222_19" data-bind="ntsCheckBox: { checked: continuousEmpAfterRetire }">#{i18n.getText('QSI001_60')}</div>
+                        <div id="B222_19"
+                             data-bind="ntsCheckBox: { checked: continuousEmpAfterRetire }">#{i18n.getText('QSI001_60')}</div>
                         <br></br>
-                        <div id="B222_20" data-bind="ntsCheckBox: { checked: otherNotes }">#{i18n.getText('QSI001_61')}</div>
+                        <div id="B222_20"
+                             data-bind="ntsCheckBox: { checked: otherNotes }">#{i18n.getText('QSI001_61')}</div>
                         <input id="B222_21" data-bind="ntsTextEditor: {
                                     value: textOtherNotes,
                                     name: '#{i18n.getText('QSI001_62')}',
                                     constraint: 'QualificationAcquiNoti',
                                     required: false,
                                     enable: otherNotes,
-                                    readonly: false}" />
+                                    readonly: false}"/>
                     </div>
                     <div data-bind="ntsFormLabel: {}">#{i18n.getText('QSI001_63')}</div>
-                    <div>
-                        <div id="B222_23" data-bind="ntsCheckBox: { checked: livingAbroad }">#{i18n.getText('QSI001_64')}</div>
+                    <div style="margin-left: 20px">
+                        <div id="B222_23"
+                             data-bind="ntsCheckBox: { checked: livingAbroad }">#{i18n.getText('QSI001_64')}</div>
                         <br></br>
-                        <div id="B222_24" data-bind="ntsCheckBox: { checked: shortTermResidence }">#{i18n.getText('QSI001_65')}</div>
+                        <div id="B222_24"
+                             data-bind="ntsCheckBox: { checked: shortTermResidence }">#{i18n.getText('QSI001_65')}</div>
                         <br></br>
-                        <div id="B222_25" data-bind="ntsCheckBox: { checked: otherNotes1 }">#{i18n.getText('QSI001_66')}</div>
+                        <div id="B222_25"
+                             data-bind="ntsCheckBox: { checked: otherNotes1 }">#{i18n.getText('QSI001_66')}</div>
                         <input data-bind="ntsTextEditor: {
                                     value: textOtherNotes1,
                                     name: '#{i18n.getText('QSI001_67')}',
                                     constraint: 'ReaForNotiOfQuatification',
                                     required: false,
                                     enable: otherNotes1,
-                                    readonly: false}" />
+                                    readonly: false}"/>
                     </div>
                 </div>
             </div>

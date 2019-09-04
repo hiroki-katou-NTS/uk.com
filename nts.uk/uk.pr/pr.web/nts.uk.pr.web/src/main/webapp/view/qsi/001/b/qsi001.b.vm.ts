@@ -14,7 +14,7 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
         salaryMonthly: KnockoutObservable<number>;
         salaryMonthlyActual: KnockoutObservable<number>;
         totalCompensation: KnockoutObservable<number>;
-        depNotiAttach : KnockoutObservableArray<any>;
+        depNotiAttach: KnockoutObservableArray<any>;
         selectedDepNotiAttach: any;
 
         applyToEmployeeOver70: KnockoutObservable<boolean>;
@@ -36,12 +36,6 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
         listComponentOption: ComponentOption;
         selectedItem: KnockoutObservable<string>;
         tabindex: number;
-        //
-
-        simpleValue: KnockoutObservable<string>;
-
-        roundingRules: KnockoutObservableArray<any>;
-        selectedRuleCode: any;
 
         constructor() {
             block.invisible();
@@ -49,12 +43,57 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
 
             let params = getShared('QSI001_PARAMS_TO_SCREEN_B');
 
-            if(params && params.listEmpId.length > 0){
+            if (params && params.listEmpId.length > 0) {
                 self.loadKCP009(self.createEmployeeModel(params.listEmpId));
 
-                self.selectedItem.subscribe(e =>{
-                    service.getSocialInsurAcquisiInforById(self.selectedItem()).done(e =>{
-                        if(e){
+                //起動する
+                //load page
+                service.getSocialInsurAcquisiInforById(params.listEmpId[0].employeeId).done(e => {
+                    if (e) {
+                        self.otherNotes(e.remarksOther == 1 ? true : false);
+                        self.textOtherNotes(e.remarksAndOtherContents);
+                        self.salaryMonthlyActual(e.remunMonthlyAmountKind);
+                        self.salaryMonthly(e.remunMonthlyAmount);
+                        self.totalCompensation(e.totalMonthlyRemun);
+                        self.livingAbroad(e.livingAbroad == 1 ? true : false);
+                        self.otherNotes1(e.reasonOther == 1 ? true : false);
+                        self.textOtherNotes1(e.reasonAndOtherContents);
+                        self.shortTermResidence(e.shortStay == 1 ? true : false);
+                        self.selectedDepNotiAttach(e.depenAppoint);
+                        self.shortWorkHours(e.shortTimeWorkers == 1 ? true : false);
+                        self.continuousEmpAfterRetire(e.continReemAfterRetirement == 1 ? true : false);
+                    } else {
+                        self.otherNotes(false);
+                        self.textOtherNotes(null);
+                        self.salaryMonthlyActual(null);
+                        self.salaryMonthly(null);
+                        self.totalCompensation(null);
+                        self.livingAbroad(false);
+                        self.otherNotes1(false);
+                        self.textOtherNotes1(null);
+                        self.shortTermResidence(false);
+                        self.selectedDepNotiAttach(0);
+                        self.shortWorkHours(false);
+                        self.continuousEmpAfterRetire(false);
+                    }
+                }).fail(e => {
+
+                });
+
+                service.getPersonInfo(self.selectedItem()).done(r => {
+                    if (self.getAge(r.birthDay, params.date) >= 70) {
+                        self.applyToEmployeeOver70(true);
+                        self.otherNotes(true);
+                    }
+                }).fail(f => {
+                    console.dir(f);
+                });
+
+                //社員を切り替える
+                //select employee
+                self.selectedItem.subscribe(e => {
+                    service.getSocialInsurAcquisiInforById(self.selectedItem()).done(e => {
+                        if (e) {
                             self.otherNotes(e.remarksOther == 1 ? true : false);
                             self.textOtherNotes(e.remarksAndOtherContents);
                             self.salaryMonthlyActual(e.remunMonthlyAmountKind);
@@ -67,7 +106,7 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
                             self.selectedDepNotiAttach(e.depenAppoint);
                             self.shortWorkHours(e.shortTimeWorkers == 1 ? true : false);
                             self.continuousEmpAfterRetire(e.continReemAfterRetirement == 1 ? true : false);
-                        }else{
+                        } else {
                             self.otherNotes(false);
                             self.textOtherNotes(null);
                             self.salaryMonthlyActual(null);
@@ -77,53 +116,27 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
                             self.otherNotes1(false);
                             self.textOtherNotes1(null);
                             self.shortTermResidence(false);
-                            self.selectedDepNotiAttach(null);
+                            self.selectedDepNotiAttach(0);
                             self.shortWorkHours(false);
                             self.continuousEmpAfterRetire(false);
                         }
 
-                    }).fail(e =>{
+                    }).fail(e => {
 
                     });
 
                     service.getPersonInfo(self.selectedItem()).done(r => {
-                        if(self.getAge(r.birthDay,params.date) >= 70){
+                        if (self.getAge(r.birthDay, params.date) >= 70) {
                             self.applyToEmployeeOver70(true);
                             self.otherNotes(true);
                         }
-                    }).fail(f =>{
+                    }).fail(f => {
                         console.dir(f);
                     });
                 });
 
-                service.getSocialInsurAcquisiInforById(self.selectedItem()).done(e =>{
-                    self.otherNotes(e.remarksOther == 1 ? true : false);
-                    self.textOtherNotes(e.remarksAndOtherContents);
-                    self.salaryMonthlyActual(e.remunMonthlyAmountKind);
-                    self.salaryMonthly(e.remunMonthlyAmount);
-                    self.totalCompensation(e.totalMonthlyRemun);
-                    self.livingAbroad(e.livingAbroad == 1 ? true : false);
-                    self.otherNotes1(e.reasonOther == 1 ? true : false);
-                    self.textOtherNotes1(e.reasonAndOtherContents);
-                    self.shortTermResidence(e.shortStay == 1 ? true : false);
-                    self.selectedDepNotiAttach(e.depenAppoint);
-                    self.shortWorkHours(e.shortTimeWorkers == 1 ? true : false);
-                    self.continuousEmpAfterRetire(e.continReemAfterRetirement == 1 ? true : false);
-                }).fail(e =>{
-
-                });
-
-                service.getPersonInfo(self.selectedItem()).done(r => {
-                    if(self.getAge(r.birthDay,params.date) >= 70){
-                        self.applyToEmployeeOver70(true);
-                        self.otherNotes(true);
-                    }
-                }).fail(f =>{
-                    console.dir(f);
-                });
 
             }
-
 
 
             //init
@@ -131,43 +144,33 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
             self.depNotiAttach = ko.observableArray([]);
             self.selectedDepNotoAttach = ko.observable({});
 
-            self.basicPension  = ko.observable(0);
-            self.salaryMonthly = ko.observable(0);
-            self.salaryMonthlyActual = ko.observable(0);
-            self.totalCompensation = ko.observable(0);
+            self.basicPension = ko.observable(null);
+            self.salaryMonthly = ko.observable(null);
+            self.salaryMonthlyActual = ko.observable(null);
+            self.totalCompensation = ko.observable(null);
             self.depNotiAttach = ko.observableArray([
-                { code: '1', name: nts.uk.resource.getText('QSI001_54') },
-                { code: '2', name: nts.uk.resource.getText('QSI001_55') }
+                {code: '0', name: nts.uk.resource.getText('QSI001_54')},
+                {code: '1', name: nts.uk.resource.getText('QSI001_55')}
             ]);
-            self.selectedDepNotiAttach = ko.observable(1);
+            self.selectedDepNotiAttach = ko.observable(0);
 
             self.applyToEmployeeOver70 = ko.observable(false);
             self.twoOrMoreEmployee = ko.observable(false);
             self.shortWorkHours = ko.observable(false);
             self.continuousEmpAfterRetire = ko.observable(false);
             self.otherNotes = ko.observable(false);
-            self.textOtherNotes = ko.observable("");
+            self.textOtherNotes = ko.observable(null);
 
             self.livingAbroad = ko.observable(false);
             self.shortTermResidence = ko.observable(false);
             self.otherNotes1 = ko.observable(false);
-            self.textOtherNotes1 = ko.observable("");
+            self.textOtherNotes1 = ko.observable(null);
 
-
-
-            //end init
-            self.simpleValue = ko.observable("123");
-
-            self.roundingRules = ko.observableArray([
-                { code: '1', name: nts.uk.resource.getText('QSI001_54') },
-                { code: '2', name: nts.uk.resource.getText('QSI001_55') }
-            ]);
-            self.selectedRuleCode = ko.observable(1);
 
             block.clear();
         }
 
-        getAge(DOB,date) {
+        getAge(DOB, date) {
             var today = new Date(date);
             var birthDate = new Date(DOB);
             var age = today.getFullYear() - birthDate.getFullYear();
@@ -179,12 +182,18 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
             return age;
         }
 
-        cancel(){
+        cancel() {
             nts.uk.ui.windows.close();
         }
 
-        add(){
+        add() {
             let self = this;
+            nts.uk.ui.errors.clearAll();
+            $("input").trigger("validate");
+            if (nts.uk.ui.errors.hasError()) {
+                return;
+            }
+            block.invisible();
             let data = {
                 socialInsurAcquisiInforCommand: {
                     employeeId: self.selectedItem(),
@@ -212,7 +221,7 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
                     depenAppoint: self.selectedDepNotiAttach(),
                     qualifiDistin: null,
                     //短時間労働者
-                    shortTimeWorkers: self.shortWorkHours() == true ? 1: 0,
+                    shortTimeWorkers: self.shortWorkHours() == true ? 1 : 0,
                     //退職後の継続再雇用者
                     continReemAfterRetirement: self.continuousEmpAfterRetire() == true ? 1 : 0
                 },
@@ -229,13 +238,16 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
             }
 
 
-            service.add(data).done(e =>{
-
-            }).fail(e =>{
-
+            service.add(data).done(e => {
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(e=>{
+                    block.clear();
+                })
+            }).fail(e => {
+                block.clear();
             });
         }
-        createEmployeeModel(data){
+
+        createEmployeeModel(data) {
             let listEmployee = [];
             _.each(data, data => {
                 listEmployee.push({
@@ -248,7 +260,8 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
 
             return listEmployee;
         }
-        loadKCP009(data){
+
+        loadKCP009(data) {
             let self = this;
             self.employeeInputList = ko.observableArray(data);
             self.systemReference = ko.observable(SystemType.EMPLOYMENT);
@@ -281,6 +294,7 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
         tabIndex: number;
         baseDate?: KnockoutObservable<Date>;
     }
+
     export interface EmployeeModel {
         id: string;
         code: string;
@@ -288,6 +302,7 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
         depName?: string;
         workplaceName?: string;
     }
+
     export class SystemType {
         static EMPLOYMENT = 1;
         static SALARY = 2;
