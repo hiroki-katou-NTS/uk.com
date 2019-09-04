@@ -20,6 +20,7 @@ import nts.uk.ctx.at.request.app.find.application.overtime.dto.AppOvertimeDetail
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeCheckResultDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.ActualStatusCheckResult;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.CommonOvertimeHoliday;
@@ -193,43 +194,45 @@ public class CheckBeforeRegisterHolidayWork {
 			holidayTimeLst.add(OvertimeColorCheck.createApp(AttendanceType.BREAKTIME.value, 12, null));
 		}
 		PreActualColorResult preActualColorResult = null;
-		UseAtr preExcessDisplaySetting = overTimeSettingOpt.get().getPreExcessDisplaySetting();
-		AppDateContradictionAtr performanceExcessAtr = overTimeSettingOpt.get().getPerformanceExcessAtr();
-		WithdrawalAppSet withdrawalAppSet = withdrawalAppSetRepository.getWithDraw().get();
-		holidayTimeLst = holidayTimeLst.stream().map(x -> {
-			Integer value = holidayWorkInputs.stream()
-			.filter(y -> y.getAttendanceType().value==x.attendanceID && y.getFrameNo()==x.frameNo)
-			.findAny().map(z -> z.getApplicationTime().v()).orElse(null);
-			return OvertimeColorCheck.createApp(x.attendanceID, x.frameNo, value);
-		}).collect(Collectors.toList());
-		// 07-01_事前申請状態チェック
-		PreAppCheckResult preAppCheckResult = preActualColorCheck.preAppStatusCheck(
-				companyID, 
-				employeeId, 
-				app.getAppDate(), 
-				ApplicationType.BREAK_TIME_APPLICATION);
-		// 07-02_実績取得・状態チェック
-		ActualStatusCheckResult actualStatusCheckResult = preActualColorCheck.actualStatusCheck(
-				companyID, 
-				employeeId, 
-				app.getAppDate(), 
-				ApplicationType.BREAK_TIME_APPLICATION, 
-				appHolidayWork.getWorkTypeCode() == null ? null : appHolidayWork.getWorkTypeCode().v(), 
-				appHolidayWork.getWorkTimeCode() == null ? null : appHolidayWork.getWorkTimeCode().v(), 
-				withdrawalAppSet.getOverrideSet(), 
-				Optional.empty());
-		// 07_事前申請・実績超過チェック(07_đơn xin trước. check vượt quá thực tế )
-		preActualColorResult = preActualColorCheck.preActualColorCheck(
-				preExcessDisplaySetting, 
-				performanceExcessAtr, 
-				ApplicationType.BREAK_TIME_APPLICATION, 
-				app.getPrePostAtr(), 
-				Collections.emptyList(), 
-				holidayTimeLst,
-				preAppCheckResult.opAppBefore,
-				preAppCheckResult.beforeAppStatus,
-				actualStatusCheckResult.actualLst,
-				actualStatusCheckResult.actualStatus);
+		if(app.getPrePostAtr()==PrePostAtr.POSTERIOR) {
+			UseAtr preExcessDisplaySetting = overTimeSettingOpt.get().getPreExcessDisplaySetting();
+			AppDateContradictionAtr performanceExcessAtr = overTimeSettingOpt.get().getPerformanceExcessAtr();
+			WithdrawalAppSet withdrawalAppSet = withdrawalAppSetRepository.getWithDraw().get();
+			holidayTimeLst = holidayTimeLst.stream().map(x -> {
+				Integer value = holidayWorkInputs.stream()
+				.filter(y -> y.getAttendanceType().value==x.attendanceID && y.getFrameNo()==x.frameNo)
+				.findAny().map(z -> z.getApplicationTime().v()).orElse(null);
+				return OvertimeColorCheck.createApp(x.attendanceID, x.frameNo, value);
+			}).collect(Collectors.toList());
+			// 07-01_事前申請状態チェック
+			PreAppCheckResult preAppCheckResult = preActualColorCheck.preAppStatusCheck(
+					companyID, 
+					employeeId, 
+					app.getAppDate(), 
+					ApplicationType.BREAK_TIME_APPLICATION);
+			// 07-02_実績取得・状態チェック
+			ActualStatusCheckResult actualStatusCheckResult = preActualColorCheck.actualStatusCheck(
+					companyID, 
+					employeeId, 
+					app.getAppDate(), 
+					ApplicationType.BREAK_TIME_APPLICATION, 
+					appHolidayWork.getWorkTypeCode() == null ? null : appHolidayWork.getWorkTypeCode().v(), 
+					appHolidayWork.getWorkTimeCode() == null ? null : appHolidayWork.getWorkTimeCode().v(), 
+					withdrawalAppSet.getOverrideSet(), 
+					Optional.empty());
+			// 07_事前申請・実績超過チェック(07_đơn xin trước. check vượt quá thực tế )
+			preActualColorResult = preActualColorCheck.preActualColorCheck(
+					preExcessDisplaySetting, 
+					performanceExcessAtr, 
+					ApplicationType.BREAK_TIME_APPLICATION, 
+					app.getPrePostAtr(), 
+					Collections.emptyList(), 
+					holidayTimeLst,
+					preAppCheckResult.opAppBefore,
+					preAppCheckResult.beforeAppStatus,
+					actualStatusCheckResult.actualLst,
+					actualStatusCheckResult.actualStatus);
+		}
 		return new ColorConfirmResult(false, 0, 0, "", Collections.emptyList(), null, preActualColorResult);
 	}
 
