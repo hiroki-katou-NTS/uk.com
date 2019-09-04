@@ -10,7 +10,7 @@ Một số tính năng chính của FixTableComponent là:
 `FixTableComponent` không phải là `common` component bạn cần import, và khai báo nó trước khi sử dụng.  
 
 ```typescript
-import { FixTableComponent } from '@app/components';
+import { FixTableComponent } from '@app/components/fix-table';
 
 @component({
     components: {
