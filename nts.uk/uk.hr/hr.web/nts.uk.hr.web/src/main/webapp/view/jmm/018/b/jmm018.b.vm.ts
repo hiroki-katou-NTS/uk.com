@@ -23,14 +23,14 @@ module nts.uk.com.view.jmm018.b {
                     } 
                 }, Page.SIDEBAR);
                 self.columns = ko.observableArray([
-                                                    { headerText: getText('JMM018_A422_4'), key: 'programId', width: "250px", dataType: "string", hidden: true },
-                                                    { headerText: getText('JMM018_A422_4'), key: 'key', width: "250px", dataType: "string", hidden: true },
-                                                    { headerText: getText('JMM018_A422_4'), key: 'eventId', width: "250px", dataType: "string", hidden: true },
-                                                    { headerText: getText('JMM018_A422_4'), key: 'nodeText', width: "500px", dataType: "string" },
-                                                    { headerText: getText('JMM018_A422_5'), key: 'useEventOrMenu', width: "400px", dataType: "boolean", formatType : "checkbox",
+                                                    { headerText: getText('JMM018_A422_4'), key: 'programId', dataType: "string", hidden: true },
+                                                    { headerText: getText('JMM018_A422_4'), key: 'key', dataType: "string", hidden: true },
+                                                    { headerText: getText('JMM018_A422_4'), key: 'eventId', dataType: "string", hidden: true },
+                                                    { headerText: getText('JMM018_A422_4'), key: 'nodeText', width: '30%', dataType: "string" },
+                                                    { headerText: getText('JMM018_A422_5'), key: 'useEventOrMenu', width: '20%', dataType: "boolean", formatType : "checkbox",
                                                                 filterOpts : { trueOpt: nts.uk.resource.getText("Enum_UseAtr_Use"), falseOpt: nts.uk.resource.getText("Enum_UseAtr_NotUse") }},
-                                                    { headerText: getText('JMM018_A422_6'), key: 'useNotice', width: "400px", dataType: "boolean", formatType : "checkbox"},
-                                                    { headerText: getText('JMM018_A422_7'), key: 'useApproval', width: "400px", dataType: "boolean", formatType : "checkbox"}
+                                                    { headerText: getText('JMM018_A422_6'), key: 'useNotice', width: '20%', dataType: "boolean", formatType : "checkbox"},
+                                                    { headerText: getText('JMM018_A422_7'), key: 'useApproval', width: '20%', dataType: "boolean", formatType : "checkbox"}
                                                 ]);
                 // thêm help button trong header
                  $(document).delegate("#treegrid", "igtreegriddatarendered", function (evt, ui) {
