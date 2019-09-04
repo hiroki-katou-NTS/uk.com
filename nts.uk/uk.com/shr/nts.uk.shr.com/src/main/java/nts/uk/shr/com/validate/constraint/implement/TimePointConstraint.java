@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 import lombok.Getter;
 import nts.gul.util.value.ValueWithType;
 import nts.gul.util.value.ValueWithType.Type;
+import nts.uk.shr.com.enumcommon.DayAttr;
 import nts.uk.shr.com.validate.constraint.DataConstraint;
 import nts.uk.shr.com.validate.constraint.ValidatorType;
 import nts.uk.shr.com.validate.validator.TimeMinMaxValidator;
@@ -15,6 +16,8 @@ import nts.uk.shr.com.validate.validator.TimeMinMaxValidator;
 public class TimePointConstraint extends DataConstraint {
 
 	private static final String TIME_FORMAT = "^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$";
+
+	private static final String TIME_POINT_FORMAT = "^([0-9]*):[0-5][0-9]$";
 
 	private int min;
 
@@ -26,32 +29,53 @@ public class TimePointConstraint extends DataConstraint {
 		this.max = max;
 	}
 
-	public boolean validateTimeStyle(String value) {
-		Pattern pattern = Pattern.compile(TIME_FORMAT);
+	public boolean validateTimeStyle(String value, String format) {
+		
+		Pattern pattern = Pattern.compile(format);
 		Matcher matcher = pattern.matcher(value);
 		return matcher.matches();
 	}
 	
 	public Optional<String> validate(ValueWithType value) {
-		if (value.getType() == Type.TEXT) 
+		if (value.getType() == Type.TEXT) { 
+			if (value.getText() == null)
+				return Optional.empty();
+			
 			return validateString(value.getText());
-		
+		}
 		return Optional.of(getDefaultMessage());
 	}
 
 	public Optional<String> validateString(String value) {
-
-		// validate style
-		if (!validateTimeStyle(value)) {
-			return Optional.of(getDefaultMessage());
+		DayAttr dayAttr = checkDayAttr(value);
+		if (dayAttr != null) {
+			value = value.replace(dayAttr.description, "").trim();
+			if (!validateTimeStyle(value, TIME_FORMAT)) {
+				return Optional.of(getDefaultMessage());
+			}
+		} else {
+			if (!validateTimeStyle(value, TIME_POINT_FORMAT)) {
+				return Optional.of(getDefaultMessage());
+			}
 		}
+		
 
-		return TimeMinMaxValidator.validateMinMax(this.min, this.max, value).map(c -> getDefaultMessage());
+		return TimeMinMaxValidator.validateMinMaxTimePoint(this.min, this.max, value, dayAttr).map(c -> getDefaultMessage());
 	}
 
 	@Override
 	protected String getDefaultMessage() {
 		return "MsgB_56";
+	}
+	
+	private DayAttr checkDayAttr (String value) {
+		for (DayAttr dt : DayAttr.values()) {
+			if (value.contains(dt.description)) {
+				return dt;
+			}
+		}
+		
+		return null;
 	}
 
 }
