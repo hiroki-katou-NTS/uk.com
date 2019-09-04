@@ -14,6 +14,8 @@ module nts.uk.com.view.jmm018.b {
             itemSelected: KnockoutObservable<any> = ko.observable(null);
             listEventOper: KnockoutObservableArray<EventOper> = ko.observableArray([]);
             listMenuOper: KnockoutObservableArray<MenuOper> = ko.observableArray([]);
+            // list item con bị disable, không được lưu vào db
+            listNotSave: KnockoutObservableArray<MenuOper> = ko.observableArray([]);
             constructor(){
                 let self = this;
                 nts.uk.ui.guide.operateCurrent('guidance/guideOperate', {screenGuideParam :[{programId:'JMM018',screenId:'A'},{programId:'JMM017',screenId:'B'}]}, 
@@ -117,6 +119,16 @@ module nts.uk.com.view.jmm018.b {
                                 return b.key == query.rowData.key;
                             });
                             self.listEventOper().push(new EventOper({eventId: obj.eventId, useEventOrMenu: obj.useEventOrMenu}));
+                            if(query.rowData.useEventOrMenu == false){
+                                _.forEach(query.rowData.listChild, (value) => {
+                                    self.listNotSave().push(value);
+                                });
+                            }else{
+                                _.forEach(query.rowData.listChild, (value) => {
+                                    self.listNotSave.remove(function (r) {return r.programId == value.programId});
+                                });
+                            }
+                            console.log(self.listNotSave());
                         }else{
                             self.listMenuOper().push(new MenuOper({
                                                                     programId: query.rowData.programId,
@@ -124,7 +136,6 @@ module nts.uk.com.view.jmm018.b {
                                                                     useApproval: query.rowData.useApproval,
                                                                     useNotice: query.rowData.useNotice
                                                                 }))
-                            console.log(self.listMenuOper());
                         }
                      });
                      
@@ -263,22 +274,12 @@ module nts.uk.com.view.jmm018.b {
                 var dfd = $.Deferred<void>();
                 let self = this;
                 nts.uk.ui.block.grayout();
-                let copyList = self.listEventId();
-                
-                let opennerId = ko.toJS(self.listMenuOper).map(m => m.programId);
-                
-                _.chain(copyList)
-                    .filter((v: any) => !v.userEventOrMenu)
-                    .each((v: any) => {
-                        const mapId = _.map(v.listChild, c => c.programId);
-                        
-                       opennerId = _.filter(mapId, m => opennerId.indexOf(m) === -1);
-                    });
-                
-                console.log(opennerId);
+                // lọc những item con bị disable sẽ không được lưu xuống DB
+                let opennerId = ko.toJS(self.listNotSave).map(m => m.programId);
                 _.forEach(opennerId, (f) => {
-                    self.listMenuOper.remove(function (r) {return r.programId == f.programId});
+                    self.listMenuOper.remove(function (r) {return r.programId == f});
                 });
+                
                 let params = {
                     listEventOper: self.listEventOper(),
                     listMenuOper: self.listMenuOper()
