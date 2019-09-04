@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Value;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.SocialInsurAcquisiInfor;
 
+import java.util.Optional;
+
 
 /**
 * 社会保険取得時情報: DTO
@@ -12,8 +14,10 @@ import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurb
 @Value
 public class SocialInsurAcquisiInforDto
 {
-
-    private String cid;
+    /**
+     * 会社ID
+     */
+    private String companyId;
 
     /**
     * 社員ID
@@ -65,8 +69,6 @@ public class SocialInsurAcquisiInforDto
     */
     private String reasonAndOtherContents;
     
-
-    
     /**
     * 短期在留
     */
@@ -79,44 +81,29 @@ public class SocialInsurAcquisiInforDto
 
 
     /**
-     * 資格取得区分
-     */
-    private Integer qualifiDistin;
-
-    /**
-     * 短時間労働者
-     */
-    private Integer shortTimeWorkers;
-
-    /**
      * 退職後の継続再雇用者
      */
     private Integer continReemAfterRetirement;
-
     
     
     public static SocialInsurAcquisiInforDto fromDomain(SocialInsurAcquisiInfor domain)
     {
         return new SocialInsurAcquisiInforDto(
-                domain.getCid(),
+                domain.getCompanyId(),
                 domain.getEmployeeId(),
-                domain.getPercentOrMore().isPresent() ? domain.getPercentOrMore().get() : null,
-                domain.getRemarksOther().isPresent() ? domain.getRemarksOther().get() : null,
-                domain.getRemarksAndOtherContents().isPresent() ? domain.getRemarksAndOtherContents().get().v() :null,
-                domain.getRemunMonthlyAmountKind().isPresent() ? domain.getRemunMonthlyAmountKind().get().v() :null,
-                domain.getRemunMonthlyAmount().isPresent() ? domain.getRemunMonthlyAmount().get().v() : null,
-                domain.getTotalMonthlyRemun().isPresent()  ? domain.getTotalMonthlyRemun().get().v() : null,
-                domain.getLivingAbroad().isPresent() ? domain.getLivingAbroad().get() : null,
-                domain.getReasonOther().isPresent() ? domain.getReasonOther().get() : null,
-                domain.getReasonAndOtherContents().isPresent() ? domain.getReasonAndOtherContents().get().v() : null,
-                domain.getShortStay().isPresent() ? domain.getShortStay().get() : null,
-                domain.getDepenAppoint().isPresent() ? domain.getDepenAppoint().get().value : null,
-                domain.getQualifiDistin().isPresent() ? domain.getQualifiDistin().get().value : null,
-                domain.getShortTimeWorkers().isPresent() ? domain.getShortTimeWorkers().get() : null,
-                domain.getContinReemAfterRetirement().isPresent() ? domain.getContinReemAfterRetirement().get() : null
-
-
-        );
+                domain.getPercentOrMore().map(i->i.intValue()).orElse(null),
+                domain.getRemarksOther().map(i->i.intValue()).orElse(null),
+                domain.getRemarksAndOtherContents().map(i->i.v()).orElse(null),
+                domain.getRemunMonthlyAmountKind().map(i->i.v()).orElse(null),
+                domain.getTotalMonthlyRemun().map(i->i.v()).orElse(null),
+                domain.getTotalMonthlyRemun().map(i->i.v()).orElse(null),
+                domain.getLivingAbroad().map(i->i.intValue()).orElse(null),
+                domain.getReasonOther().map(i->i.intValue()).orElse(null),
+                domain.getReasonAndOtherContents().map(i->i.v()).orElse(null),
+                domain.getShortStay().map(i->i.intValue()).orElse(null),
+                domain.getDepenAppoint().map(i->i.value).orElse(null),
+                //domain.getDepenAppoint() == null ? null : domain.getDepenAppoint().get().value,
+                domain.getContinReemAfterRetirement().map(i->i.intValue()).orElse(null));
     }
     
 }

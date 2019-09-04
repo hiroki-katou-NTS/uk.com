@@ -7,93 +7,96 @@ import nts.arc.layer.dom.AggregateRoot;
 import java.util.Optional;
 
 /**
- * 社会保険取得時情報
- */
+* 社会保険取得時情報
+*/
 @Getter
 public class SocialInsurAcquisiInfor extends AggregateRoot {
+
     /**
-     * Cid
-     */
-    private String cid;
+    * 会社ID
+    */
+    private String companyId;
+
     /**
-     * 社員ID
-     */
+    * 社員ID
+    */
     private String employeeId;
 
     /**
-     * 70歳以上被用者
-     */
+    * 70歳以上被用者
+    */
     private Optional<Integer> PercentOrMore;
 
     /**
-     * 備考その他
-     */
+    * 備考その他
+    */
     private Optional<Integer> remarksOther;
-
+    
     /**
-     * 備考その他内容
-     */
+    * 備考その他内容
+    */
     private Optional<QualificationAcquiNoti> remarksAndOtherContents;
-
+    
     /**
-     * 報酬月額（現物）
-     */
+    * 報酬月額（現物）
+    */
     private Optional<RemuneraMonthly> remunMonthlyAmountKind;
-
+    
     /**
-     * 報酬月額（金額）
-     */
+    * 報酬月額（金額）
+    */
     private Optional<RemuneraMonthly> remunMonthlyAmount;
-
+    
     /**
-     * 報酬月額合計
-     */
+    * 報酬月額合計
+    */
     private Optional<RemuneraMonthly> totalMonthlyRemun;
-
+    
     /**
-     * 海外在住
-     */
+    * 海外在住
+    */
     private Optional<Integer> livingAbroad;
-
+    
     /**
-     * 理由その他
-     */
+    * 理由その他
+    */
     private Optional<Integer> reasonOther;
-
+    
     /**
-     * 理由その他内容
-     */
+    * 理由その他内容
+    */
     private Optional<ReaForNotiOfQuatification> reasonAndOtherContents;
-
+    
     /**
-     * 短期在留
-     */
+    * 短期在留
+    */
     private Optional<Integer> shortStay;
-
+    
     /**
-     * 被扶養者届出区分
-     */
+    * 被扶養者届出区分
+    */
     private Optional<DepenNotiAttachCtg> depenAppoint;
-
+    
     /**
-     * 資格取得区分
-     */
-    private Optional<SocialInsurQuaAcquiClass> qualifiDistin;
-
+    * 資格取得区分
+    */
+    private Optional<Integer> qualifiDistin;
+    
     /**
-     * 短時間労働者
-     */
+    * 短時間労働者
+    */
     private Optional<Integer> shortTimeWorkers;
-
+    
     /**
-     * 退職後の継続再雇用者
-     */
+    * 退職後の継続再雇用者
+    */
     private Optional<Integer> continReemAfterRetirement;
-
-    public SocialInsurAcquisiInfor(String cid, String employeeId,
+    
+    public SocialInsurAcquisiInfor(
+                                   String employeeId,
                                    Integer PercentOrMore,
                                    Integer remarksOther,
-                                   String remarksAndOtherContents,
+                                   String  remarksAndOtherContents,
                                    Integer remunMonthlyAmountKind,
                                    Integer remunMonthlyAmount,
                                    Integer totalMonthlyRemun,
@@ -106,13 +109,13 @@ public class SocialInsurAcquisiInfor extends AggregateRoot {
                                    Integer qualifiDistin,
                                    Integer continReemAfterRetirement
     ) {
-        this.cid = cid;
+
         this.employeeId = employeeId;
         this.remunMonthlyAmount = remunMonthlyAmount == null ? Optional.empty() : Optional.of(new RemuneraMonthly(remunMonthlyAmount));
         this.remunMonthlyAmountKind = remunMonthlyAmountKind == null ? Optional.empty() : Optional.of(new RemuneraMonthly(remunMonthlyAmountKind));
         this.totalMonthlyRemun = totalMonthlyRemun == null ? Optional.empty() : Optional.of(new RemuneraMonthly(totalMonthlyRemun));
         this.depenAppoint = depenAppoint == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(depenAppoint, DepenNotiAttachCtg.class));
-        this.qualifiDistin = Optional.ofNullable(EnumAdaptor.valueOf(qualifiDistin,SocialInsurQuaAcquiClass.class));
+        this.qualifiDistin = Optional.ofNullable(qualifiDistin);
         this.PercentOrMore = Optional.ofNullable(PercentOrMore);
         this.shortTimeWorkers = Optional.ofNullable(shortTimeWorkes);
         this.continReemAfterRetirement = Optional.ofNullable(continReemAfterRetirement);
@@ -122,6 +125,51 @@ public class SocialInsurAcquisiInfor extends AggregateRoot {
         this.shortStay = Optional.ofNullable(shortStay);
         this.reasonOther = Optional.ofNullable(reasonOther);
         this.reasonAndOtherContents = reasonAndOtherContents == null ? Optional.empty() : Optional.of(new ReaForNotiOfQuatification(reasonAndOtherContents));
+    }
+
+
+    public SocialInsurAcquisiInfor(
+            String companyId,
+            String employeeId,
+            Integer PercentOrMore,
+            Integer remarksOther,
+            String  remarksAndOtherContents,
+            Integer remunMonthlyAmountKind,
+            Integer remunMonthlyAmount,
+            Integer totalMonthlyRemun,
+            Integer livingAbroad,
+            Integer reasonOther,
+            String reasonAndOtherContents,
+            Integer shortTimeWorkes,
+            Integer shortStay,
+            Integer depenAppoint,
+            Integer qualifiDistin,
+            Integer continReemAfterRetirement
+    ) {
+        this.companyId = companyId;
+        this.employeeId = employeeId;
+        this.remunMonthlyAmount = remunMonthlyAmount == null ? Optional.empty() : Optional.of(new RemuneraMonthly(remunMonthlyAmount));
+        this.remunMonthlyAmountKind = remunMonthlyAmountKind == null ? Optional.empty() : Optional.of(new RemuneraMonthly(remunMonthlyAmountKind));
+        this.totalMonthlyRemun = totalMonthlyRemun == null ? Optional.empty() : Optional.of(new RemuneraMonthly(totalMonthlyRemun));
+        this.depenAppoint = depenAppoint == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(depenAppoint, DepenNotiAttachCtg.class));
+        this.qualifiDistin = Optional.ofNullable(qualifiDistin);
+        this.PercentOrMore = Optional.ofNullable(PercentOrMore);
+        this.shortTimeWorkers = Optional.ofNullable(shortTimeWorkes);
+        this.continReemAfterRetirement = Optional.ofNullable(continReemAfterRetirement);
+        this.remarksOther = Optional.ofNullable(remarksOther);
+        this.remarksAndOtherContents = remarksAndOtherContents == null ? Optional.empty() : Optional.of(new QualificationAcquiNoti(remarksAndOtherContents));
+        this.livingAbroad = Optional.ofNullable(livingAbroad);
+        this.shortStay = Optional.ofNullable(shortStay);
+        this.reasonOther = Optional.ofNullable(reasonOther);
+        this.reasonAndOtherContents = reasonAndOtherContents == null ? Optional.empty() : Optional.of(new ReaForNotiOfQuatification(reasonAndOtherContents));
+    }
+
+    public SocialInsurAcquisiInfor( String companyId,
+                                    String employeeId,
+                                    Integer continReemAfterRetirement){
+        this.companyId = companyId;
+        this.employeeId = employeeId;
+        this.continReemAfterRetirement = Optional.ofNullable(continReemAfterRetirement);
     }
 
 }

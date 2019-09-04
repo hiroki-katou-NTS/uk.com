@@ -12,14 +12,13 @@ import java.util.Optional;
 /**
 * 社会保険取得時情報: Finder
 */
-public class SocialInsurAcquisiInforFinder
-{
+public class SocialInsurAcquisiInforFinder {
 
     @Inject
     private SocialInsurAcquisiInforRepository finder;
 
     public Optional<SocialInsurAcquisiInfor> getSocialInsurAcquisiInforById(String cid, String employeeId){
-        return finder.getSocialInsurAcquisiInforById(cid,employeeId);
+        return finder.getSocialInsurAcquisiInforByCIdEmpId(cid, employeeId);
     }
 
 }

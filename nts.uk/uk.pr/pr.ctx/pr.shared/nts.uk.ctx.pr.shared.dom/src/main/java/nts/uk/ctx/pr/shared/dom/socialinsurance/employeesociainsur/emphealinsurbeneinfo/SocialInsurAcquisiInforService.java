@@ -1,5 +1,7 @@
 package nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo;
 
+import nts.uk.shr.com.context.AppContexts;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.Optional;
@@ -18,7 +20,8 @@ public class SocialInsurAcquisiInforService {
         repository.update(domain);
     }
 
-    Optional<SocialInsurAcquisiInfor> getSocialInsurAcquisiInforById(String cid, String employeeId){
-        return repository.getSocialInsurAcquisiInforById(cid,employeeId);
+    Optional<SocialInsurAcquisiInfor> getSocialInsurAcquisiInforById(String employeeId){
+
+        return repository.getSocialInsurAcquisiInforByCIdEmpId(AppContexts.user().companyId(), employeeId);
     }
 }

@@ -23,8 +23,6 @@ public class AddEmpBasicPenNumInforCommandHandler extends CommandHandler<Credent
 
     @Inject
     private SocialInsurAcquisiInforRepository socialInsurAcquisiInforRepository;
-
-
     
     @Override
     protected void handle(CommandHandlerContext<CredentialAcquisitionInfoCommand> context) {
@@ -34,8 +32,7 @@ public class AddEmpBasicPenNumInforCommandHandler extends CommandHandler<Credent
         MultiEmpWorkInfoCommand multiEmpWorkInfoCommand = command.getMultiEmpWorkInfoCommand();
         EmpBasicPenNumInforCommand empBasicPenNumInforCommand = command.getEmpBasicPenNumInforCommand();
         String cid = AppContexts.user().companyId();
-        Optional<SocialInsurAcquisiInfor> socialInsurAcquisiInfor =  socialInsurAcquisiInforRepository.getSocialInsurAcquisiInforById(cid,socialInsurAcquisiInforCommand.getEmployeeId());
-
+        Optional<SocialInsurAcquisiInfor> socialInsurAcquisiInfor =  socialInsurAcquisiInforRepository.getSocialInsurAcquisiInforByCIdEmpId(cid, socialInsurAcquisiInforCommand.getEmployeeId());
         if(socialInsurAcquisiInfor.isPresent()){
             SocialInsurAcquisiInfor socialInsurAcquisiInforDomain = new SocialInsurAcquisiInfor(
                     cid,

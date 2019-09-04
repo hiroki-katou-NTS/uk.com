@@ -3,6 +3,7 @@ package nts.uk.ctx.pr.shared.app.find.socialinsurance.employeesociainsur.empbene
 import nts.uk.ctx.pr.shared.app.find.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmpBasicPenNumInforDto;
 import nts.uk.ctx.pr.shared.app.find.socialinsurance.employeesociainsur.emphealinsurbeneinfo.HealthInLossInfoDto;
 import nts.uk.ctx.pr.shared.app.find.socialinsurance.employeesociainsur.emphealinsurbeneinfo.MultiEmpWorkInfoDto;
+import nts.uk.ctx.pr.shared.app.find.socialinsurance.employeesociainsur.emphealinsurbeneinfo.SocialInsurAcquisiInforDto;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.WelfPenInsLossIf;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.WelfPenInsLossIfRepository;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.*;
@@ -26,22 +27,38 @@ public class LossInfoFinder {
     @Inject
     private EmpBasicPenNumInforRepository finderBacsicPen;
 
-    public LossInfoDto getLossInfoById(String empId){
+
+    @Inject
+    private SocialInsurAcquisiInforRepository finderSocial;
+
+    public LossInfoDto getLossInfoById(String companyId, String empId){
 
         Optional<WelfPenInsLossIf> domainWelPen = finderWelPen.getWelfPenLossInfoById(empId);
         Optional<HealthInsLossInfo> domainHealth = finderHealth.getHealthInsLossInfoById(empId);
         Optional<MultiEmpWorkInfo> domainMultiWork = finderMultiWork.getMultiEmpWorkInfoById(empId);
         Optional<EmpBasicPenNumInfor> domainBasicPen = finderBacsicPen.getEmpBasicPenNumInforById(empId);
+        Optional<SocialInsurAcquisiInfor> domainSocial = finderSocial.getSocialInsurAcquisiInforByCIdEmpId(companyId, empId );
 
-        if(domainWelPen.isPresent() && domainHealth.isPresent() && domainBasicPen.isPresent() && domainMultiWork.isPresent()){
+
+        /*if(domainWelPen.isPresent() && domainHealth.isPresent() && domainBasicPen.isPresent() && domainMultiWork.isPresent() && domainSocial.isPresent()){
             return new LossInfoDto(
                     HealthInLossInfoDto.fromDomain(domainHealth.get()),
                     WelfPenInsLossIfDto.fromDomain(domainWelPen.get()),
                     EmpBasicPenNumInforDto.fromDomain(domainBasicPen.get()),
                     MultiEmpWorkInfoDto.fromDomain(domainMultiWork.get()),
+                    SocialInsurAcquisiInforDto.fromDomain(domainSocial.get()),
                     1);
         }
-        return null;
+        return null;*/
+
+        return new LossInfoDto(
+                domainHealth.isPresent() ? HealthInLossInfoDto.fromDomain(domainHealth.get()) : null,
+                domainWelPen.isPresent() ? WelfPenInsLossIfDto.fromDomain(domainWelPen.get()) : null,
+                domainBasicPen.isPresent() ? EmpBasicPenNumInforDto.fromDomain( domainBasicPen.get()) : null,
+                domainMultiWork.isPresent() ? MultiEmpWorkInfoDto.fromDomain(domainMultiWork.get()) :null,
+                domainSocial.isPresent() ? SocialInsurAcquisiInforDto.fromDomain(domainSocial.get()): null,
+                1);
     }
+
 
 }

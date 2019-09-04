@@ -117,7 +117,7 @@ public class QqsmtSocIsacquisiInfo extends UkJpaEntity implements Serializable
     public Integer qualifiDistin;
     
     /**
-    * 社会保険資格取得区分
+    * 退職後の継続再雇用者
     */
     @Basic(optional = true)
     @Column(name = "CONTIN_REEM_AFTER_RETIREMENT")
@@ -130,7 +130,7 @@ public class QqsmtSocIsacquisiInfo extends UkJpaEntity implements Serializable
     }
 
     public SocialInsurAcquisiInfor toDomain() {
-        return new SocialInsurAcquisiInfor(this.socIsacquisiInfoPk.companyId,this.socIsacquisiInfoPk.employeeId,
+        return new SocialInsurAcquisiInfor(this.socIsacquisiInfoPk.employeeId,
                 this.percentOrMore,
                 this.remarksOther,
                 this.remarksAndOtherContents,
@@ -147,9 +147,33 @@ public class QqsmtSocIsacquisiInfo extends UkJpaEntity implements Serializable
                 this.continReemAfterRetirement
                 );
     }
+
+    public SocialInsurAcquisiInfor toDomains() {
+        return new SocialInsurAcquisiInfor(
+                this.socIsacquisiInfoPk.companyId,
+                this.socIsacquisiInfoPk.employeeId,
+                this.percentOrMore,
+                this.remarksOther,
+                this.remarksAndOtherContents,
+                this.remunMonthlyAmountKind,
+                this.remunMonthlyAmount,
+                this.totalMonthlyRemun,
+                this.livingAbroad,
+                this.reasonOther,
+                this.reasonAndOtherContents,
+                this.shortTimeWorkes,
+                this.shortStay,
+                this.depenAppoint,
+                this.qualifiDistin,
+                this.continReemAfterRetirement
+        );
+    }
+
+
+
     public static QqsmtSocIsacquisiInfo toEntity(SocialInsurAcquisiInfor domain) {
          return new QqsmtSocIsacquisiInfo(
-                 new QqsmtSocIsacquisiInfoPk(domain.getCid(),domain.getEmployeeId()),
+                 new QqsmtSocIsacquisiInfoPk(domain.getCompanyId(),domain.getEmployeeId()),
                  domain.getPercentOrMore().isPresent() ? domain.getPercentOrMore().get() : null,
                  domain.getRemarksOther().isPresent() ? domain.getRemarksOther().get(): null,
                  domain.getRemarksAndOtherContents().isPresent() ? domain.getRemarksAndOtherContents().get().v(): null,
@@ -162,7 +186,7 @@ public class QqsmtSocIsacquisiInfo extends UkJpaEntity implements Serializable
                  domain.getShortTimeWorkers().isPresent() ? domain.getShortTimeWorkers().get() : null,
                  domain.getShortStay().isPresent() ? domain.getShortStay().get() : null,
                  domain.getDepenAppoint().isPresent() ? domain.getDepenAppoint().get().value : null,
-                 domain.getQualifiDistin().isPresent() ? domain.getQualifiDistin().get().value : null,
+                 domain.getQualifiDistin().isPresent() ? domain.getQualifiDistin().get().intValue() : null,
                  domain.getContinReemAfterRetirement().isPresent() ? domain.getContinReemAfterRetirement().get() : null
          );
 

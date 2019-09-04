@@ -5,6 +5,7 @@ import nts.uk.ctx.pr.shared.app.command.socialinsurance.employeesociainsur.emphe
 import nts.uk.ctx.pr.shared.app.command.socialinsurance.employeesociainsur.emphealinsurbeneinfo.LossInfoCommandHandler;
 import nts.uk.ctx.pr.shared.app.find.socialinsurance.employeesociainsur.empbenepenpeninfor.LossInfoDto;
 import nts.uk.ctx.pr.shared.app.find.socialinsurance.employeesociainsur.empbenepenpeninfor.LossInfoFinder;
+import nts.uk.shr.com.context.AppContexts;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -26,7 +27,8 @@ public class LossInfoWebService extends WebService{
     @POST
     @Path("/getLossInfo/{empId}")
     public LossInfoDto getLossInfoById(@PathParam("empId") String empId){
-        return lossInfoFinder.getLossInfoById(empId);
+        String companyId = AppContexts.user().companyId();
+        return lossInfoFinder.getLossInfoById(companyId, empId);
     }
 
     @POST
