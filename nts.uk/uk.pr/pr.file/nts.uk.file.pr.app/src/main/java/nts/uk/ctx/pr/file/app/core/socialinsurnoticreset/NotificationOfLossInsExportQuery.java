@@ -10,5 +10,6 @@ public class NotificationOfLossInsExportQuery {
     private GeneralDate startDate;
     private GeneralDate endDate;
     private List<String> empIds;
+    private GeneralDate reference;
     private NotificationOfLossInsExport socialInsurNotiCreateSet;
 }

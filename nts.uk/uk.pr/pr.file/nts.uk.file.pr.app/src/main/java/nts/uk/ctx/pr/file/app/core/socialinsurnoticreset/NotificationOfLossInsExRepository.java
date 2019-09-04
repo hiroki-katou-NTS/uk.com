@@ -6,5 +6,6 @@ public interface NotificationOfLossInsExRepository {
 
     List<InsLossDataExport> getWelfPenInsLoss(List<String> empId);
     List<InsLossDataExport> getHealthInsLoss(List<String> empId);
+    CompanyInfor getCompanyInfor(String cid);
 
 }

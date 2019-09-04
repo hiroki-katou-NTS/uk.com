@@ -2,7 +2,6 @@ package nts.uk.ctx.pr.file.app.core.socialinsurance.healthinsurance;
 
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
-import nts.uk.ctx.pr.file.app.core.socialinsurance.*;
 import nts.uk.shr.com.company.CompanyAdapter;
 import nts.uk.shr.com.company.CompanyInfor;
 import nts.uk.shr.com.context.AppContexts;

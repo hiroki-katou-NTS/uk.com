@@ -6,7 +6,7 @@ import nts.uk.ctx.pr.shared.app.command.socialinsurance.employeesociainsur.emphe
 import nts.uk.ctx.pr.shared.app.command.socialinsurance.employeesociainsur.emphealinsurbeneinfo.CredentialAcquisitionInfoCommand;
 import nts.uk.ctx.pr.shared.app.find.socialinsurance.employeesociainsur.emphealinsurbeneinfo.SocialInsurAcquisiInforDto;
 import nts.uk.ctx.pr.shared.app.find.socialinsurance.employeesociainsur.emphealinsurbeneinfo.SocialInsurAcquisiInforFinder;
-import nts.uk.ctx.pr.shared.dom.adapter.query.person.PersonInfoAdapter;
+import nts.uk.ctx.pr.shared.dom.adapter.query.person.PersonInfomationAdapter;
 import nts.uk.ctx.pr.shared.dom.adapter.query.person.PersonInfoExportAdapter;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.SocialInsurAcquisiInfor;
 import nts.uk.shr.com.context.AppContexts;
@@ -23,7 +23,7 @@ import java.util.Optional;
 public class InforOnWelfPenInsurAccWebService extends WebService{
 
     @Inject
-    private PersonInfoAdapter adapter;
+    private PersonInfomationAdapter adapter;
 
     @Inject
     private AddEmpBasicPenNumInforCommandHandler commandHandler;
