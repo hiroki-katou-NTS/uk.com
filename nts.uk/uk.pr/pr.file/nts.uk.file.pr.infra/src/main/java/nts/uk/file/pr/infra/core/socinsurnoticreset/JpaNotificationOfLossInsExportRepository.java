@@ -54,7 +54,7 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
         exportSQL.append("       ON qi.EMPLOYEE_ID = his.EMPLOYEE_ID");
         exportSQL.append("  LEFT JOIN (SELECT * ");
         exportSQL.append("       FROM QQSMT_HEALTH_INS_LOSS");
-        exportSQL.append("       WHERE CAUSE == 7) loss");
+        exportSQL.append("       WHERE CAUSE = 7) loss");
         exportSQL.append("  ON loss.EMP_ID = his.EMPLOYEE_ID");
         exportSQL.append("  LEFT JOIN QQSMT_SOC_ISACQUISI_INFO info ON info.EMPLOYEE_ID = his.EMPLOYEE_ID");
         exportSQL.append("  LEFT JOIN QQSMT_MULTI_EMP_WORK_IF mt ON mt.EMPLOYEE_ID = his.EMPLOYEE_ID");

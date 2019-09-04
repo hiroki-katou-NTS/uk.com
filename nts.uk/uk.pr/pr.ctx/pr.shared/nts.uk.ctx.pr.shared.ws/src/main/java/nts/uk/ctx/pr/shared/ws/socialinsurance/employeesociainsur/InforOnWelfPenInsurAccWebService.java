@@ -4,10 +4,12 @@ package nts.uk.ctx.pr.shared.ws.socialinsurance.employeesociainsur;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pr.shared.app.command.socialinsurance.employeesociainsur.emphealinsurbeneinfo.AddEmpBasicPenNumInforCommandHandler;
 import nts.uk.ctx.pr.shared.app.command.socialinsurance.employeesociainsur.emphealinsurbeneinfo.CredentialAcquisitionInfoCommand;
-import nts.uk.ctx.pr.shared.app.find.socialinsurance.employeesociainsur.empbenepenpeninfor.InforOnWelfPenInsurAccDto;
-import nts.uk.ctx.pr.shared.app.find.socialinsurance.employeesociainsur.empbenepenpeninfor.InforOnWelfPenInsurAccFinder;
-import nts.uk.ctx.pr.shared.dom.adapter.person.PersonInfoAdapter;
-import nts.uk.ctx.pr.shared.dom.adapter.person.PersonInfoExportAdapter;
+import nts.uk.ctx.pr.shared.app.find.socialinsurance.employeesociainsur.emphealinsurbeneinfo.SocialInsurAcquisiInforDto;
+import nts.uk.ctx.pr.shared.app.find.socialinsurance.employeesociainsur.emphealinsurbeneinfo.SocialInsurAcquisiInforFinder;
+import nts.uk.ctx.pr.shared.dom.adapter.query.person.PersonInfoAdapter;
+import nts.uk.ctx.pr.shared.dom.adapter.query.person.PersonInfoExportAdapter;
+import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.SocialInsurAcquisiInfor;
+import nts.uk.shr.com.context.AppContexts;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -21,19 +23,14 @@ import java.util.Optional;
 public class InforOnWelfPenInsurAccWebService extends WebService{
 
     @Inject
-    private InforOnWelfPenInsurAccFinder finder;
-
-    @Inject
     private PersonInfoAdapter adapter;
 
     @Inject
     private AddEmpBasicPenNumInforCommandHandler commandHandler;
 
-    @POST
-    @Path("getInforOnWelfPenInsurAccById/{empID}")
-    public InforOnWelfPenInsurAccDto getInforOnWelfPenInsurAccById(@PathParam("empID")String empID){
-        return finder.getInforOnWelfPenInsurAccById(empID);
-    }
+    @Inject
+    private SocialInsurAcquisiInforFinder socialInsurAcquisiInforFinder;
+
 
     @POST
     @Path("getPersonInfo/{empID}")
@@ -43,8 +40,22 @@ public class InforOnWelfPenInsurAccWebService extends WebService{
 
     @POST
     @Path("add")
-    public void getPersonInfo(CredentialAcquisitionInfoCommand command){
+    public void add(CredentialAcquisitionInfoCommand command){
         commandHandler.handle(command);
+    }
+
+
+    @POST
+    @Path("getSocialInsurAcquisiInforById/{empID}")
+    public SocialInsurAcquisiInforDto getSocialInsurAcquisiInforById(@PathParam("empID")String empID){
+        String cid = AppContexts.user().companyId();
+        Optional<SocialInsurAcquisiInfor> socialInsurAcquisiInfor = socialInsurAcquisiInforFinder.getSocialInsurAcquisiInforById(empID);
+
+        if(socialInsurAcquisiInfor.isPresent()){
+            return SocialInsurAcquisiInforDto.fromDomain(socialInsurAcquisiInfor.get());
+        }
+
+        return null;
     }
 
 

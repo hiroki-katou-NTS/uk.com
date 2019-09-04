@@ -6,9 +6,9 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsuranceOffice;
 import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsuranceOfficeRepository;
 import nts.uk.ctx.pr.file.app.core.bank.BankExportFileGenerator;
-import nts.uk.ctx.pr.report.dom.printdata.socinsurnoticreset.*;
-import nts.uk.ctx.pr.shared.dom.adapter.person.PersonInfoAdapter;
-import nts.uk.ctx.pr.shared.dom.adapter.person.PersonInfoExportAdapter;
+import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.*;
+import nts.uk.ctx.pr.shared.dom.adapter.query.person.PersonInfoAdapter;
+import nts.uk.ctx.pr.shared.dom.adapter.query.person.PersonInfoExportAdapter;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.*;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empcomofficehis.AffOfficeInformation;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empcomofficehis.AffOfficeInformationRepository;
@@ -22,7 +22,6 @@ import nts.uk.shr.com.company.CompanyAdapter;
 import nts.uk.shr.com.company.CompanyInfor;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
-import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmpBasicPenNumInforRepository;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -133,7 +132,7 @@ public class InsuredNameChangedNotiService extends ExportService<InsuredNameChan
         }
 
         if(socialInsurNotiCreateSet.getOfficeInformation() == BusinessDivision.OUTPUT_SIC_INSURES){
-            Optional<EmpCorpHealthOffHis> empCorpHealthOffHis = empCorpHealthOffHisRepository.getEmpCorpHealthOffHisById(empId);
+            Optional<EmpCorpHealthOffHis> empCorpHealthOffHis = empCorpHealthOffHisRepository.getEmpCorpHealthOffHisById(empId,"");
             Optional<DateHistoryItem> historyItem = this.getHistoryID(empCorpHealthOffHis.get(),date);
             Optional<AffOfficeInformation> affOfficeInformation = affOfficeInformationRepository.getAffOfficeInformationById(empId,historyItem.get().identifier());
         }

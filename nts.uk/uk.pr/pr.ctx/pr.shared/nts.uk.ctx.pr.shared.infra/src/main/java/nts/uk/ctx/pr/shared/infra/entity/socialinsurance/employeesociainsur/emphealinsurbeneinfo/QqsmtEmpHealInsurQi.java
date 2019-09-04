@@ -3,8 +3,6 @@ package nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.emp
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.EmpWelfarePenInsQualiInfor;
-import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.EmployWelPenInsurAche;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmpHealthInsurBenefits;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmplHealInsurQualifiInfor;
 import nts.uk.shr.com.history.DateHistoryItem;
@@ -60,6 +58,7 @@ public class QqsmtEmpHealInsurQi extends UkJpaEntity implements Serializable
                 qqsmtEmpHealInsurQi.stream().map(i -> new EmpHealthInsurBenefits(i.empHealInsurQiPk.hisId , new DateHistoryItem(i.empHealInsurQiPk.hisId, new DatePeriod(i.startDate, i.endDate))))
                         .collect(Collectors.toList()));
     }
+
     public static QqsmtEmpHealInsurQi toEntity(EmplHealInsurQualifiInfor domain) {
         return null;
     }

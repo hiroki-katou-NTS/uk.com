@@ -1,8 +1,8 @@
 package nts.uk.ctx.pr.report.ws.printdata.socinsurnoticreset;
 
-import nts.uk.ctx.pr.report.app.find.printdata.socialinsurnoticreset.NotifiOfInsurQuaAcDto;
-import nts.uk.ctx.pr.report.app.find.printdata.socialinsurnoticreset.SocialInsurNotiCreateSetDto;
-import nts.uk.ctx.pr.report.app.find.printdata.socialinsurnoticreset.SocialInsurNotiCreateSetFinder;
+import nts.uk.ctx.pr.report.app.find.printconfig.socialinsurnoticreset.NotifiOfInsurQuaAcDto;
+import nts.uk.ctx.pr.report.app.find.printconfig.socialinsurnoticreset.SocialInsurNotiCreateSetDto;
+import nts.uk.ctx.pr.report.app.find.printconfig.socialinsurnoticreset.SocialInsurNotiCreateSetFinder;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;

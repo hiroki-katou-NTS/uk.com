@@ -5,9 +5,9 @@ import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsuranceOffice;
 import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsuranceOfficeRepository;
-import nts.uk.ctx.pr.report.dom.printdata.socinsurnoticreset.PersonalNumClass;
-import nts.uk.ctx.pr.report.dom.printdata.socinsurnoticreset.SocialInsurNotiCrSetRepository;
-import nts.uk.ctx.pr.report.dom.printdata.socinsurnoticreset.SocialInsurNotiCreateSet;
+import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.PersonalNumClass;
+import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.SocialInsurNotiCrSetRepository;
+import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.SocialInsurNotiCreateSet;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.EmpWelfarePenInsQualiInforRepository;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmplHealInsurQualifiInforRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -69,7 +69,7 @@ public class NotificationOfLossInsExportPDFService extends ExportService<Notific
 		if( socialInsurNotiCreateSet.getPrintPersonNumber() == PersonalNumClass.DO_NOT_OUTPUT.value) {
 			List<InsLossDataExport> healthInsLoss = socialInsurNotiCreateSetEx.getHealthInsLoss(empIds);
 			List<InsLossDataExport> welfPenInsLoss = socialInsurNotiCreateSetEx.getWelfPenInsLoss(empIds);
-			Optional<SocialInsuranceOffice> socialInsuranceOffice =  socialInsuranceOfficeRepository.findByCodeAndCid(cid, healthInsLoss.get(0).getOfficeCode());
+			//Optional<SocialInsuranceOffice> socialInsuranceOffice =  socialInsuranceOfficeRepository.findByCodeAndCid(cid, healthInsLoss.get(0).getOfficeCode());
 			socialInsurNotiCreateSetFileGenerator.generate(exportServiceContext.getGeneratorContext(), new LossNotificationInformation(healthInsLoss, welfPenInsLoss, socialInsurNotiCreateSet));
 		}
 	}

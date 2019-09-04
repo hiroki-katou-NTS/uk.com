@@ -33,6 +33,7 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
         columns: KnockoutObservableArray<any>;
         items: KnockoutObservableArray<ItemModelGrid>;
         currentCodeList: KnockoutObservableArray<any>;
+        listEmployee: any;
 
         socialInsurNotiCrSet : KnockoutObservable<SocialInsurNotiCrSet> = ko.observable(new SocialInsurNotiCrSet({
             officeInformation: 0,
@@ -104,6 +105,7 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
             this.items = ko.observableArray([]);
 
             this.currentCodeList = ko.observableArray([]);
+            this.listEmployee = ko.observable();
             this.switchSubmittedName = ko.observable(0);
             block.clear();
             self.initScreen();
@@ -114,7 +116,8 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
             let self = this;
 
             setShared('QSI001_PARAMS_TO_SCREEN_B', {
-                listEmpId: self.currentCodeList()
+                listEmpId: self.listEmployee(),
+                date: self.date()
             });
 
             nts.uk.ui.windows.sub.modal("/view/qsi/001/b/index.xhtml").onClosed(() => {
@@ -165,6 +168,7 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
                  */
                 returnDataFromCcg001: function (data: Ccg001ReturnedData) {
                     self.createGridList(data.listEmployee);
+                    self.listEmployee(data.listEmployee);
 
                 }
             }

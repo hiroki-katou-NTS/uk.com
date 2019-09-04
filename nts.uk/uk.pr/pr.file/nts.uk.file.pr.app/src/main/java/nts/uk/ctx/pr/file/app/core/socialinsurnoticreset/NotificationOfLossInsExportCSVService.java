@@ -4,7 +4,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.pr.report.dom.printdata.socinsurnoticreset.*;
+import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.*;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.EmpWelfarePenInsQualiInfor;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.EmpWelfarePenInsQualiInforRepository;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmplHealInsurQualifiInfor;
@@ -62,15 +62,15 @@ public class NotificationOfLossInsExportCSVService extends ExportService<Notific
 			throw new BusinessException("Msg_37");
 		}
 		if(domain.getInsuredNumber() == InsurPersonNumDivision.DO_NOT_OUPUT) {
-			throw new BusinessException("MsgQ_174, [QSI013_21]");
+			throw new BusinessException("MsgQ_174", "QSI013_21");
 		}
 		if(domain.getOfficeInformation() == BusinessDivision.OUTPUT_COMPANY_NAME) {
-			throw new BusinessException("MsgQ_174, [QSI013_23]");
+			throw new BusinessException("MsgQ_174", "QSI013_23");
 		}
-		if(domain.getFdNumber().isPresent()) {
-			throw new BusinessException("MsgQ_5, [QSI013_32]");
+		if(!domain.getFdNumber().isPresent()) {
+			throw new BusinessException("MsgQ_5", "QSI013_32");
 		}
-        EmpWelfarePenInsQualiInfor empWelfarePenInsQualiInfor = empWelfarePenInsQualiInforRepository.getEmplHealInsurQualifiInfor(end, empIds);
+        EmpWelfarePenInsQualiInfor empWelfarePenInsQualiInfor = empWelfarePenInsQualiInforRepository.getEmpWelfarePenInsQualiInfor(end, empIds);
         EmplHealInsurQualifiInfor emplHealInsurQualifiInfor= emplHealInsurQualifiInforRepository.getEmplHealInsurQualifiInfor(end, empIds);
 		if(domain.getOutputFormat().get() == OutputFormatClass.PEN_OFFICE && empWelfarePenInsQualiInfor == null && emplHealInsurQualifiInfor == null) {
 		    throw new BusinessException("Msg_37");
@@ -81,12 +81,6 @@ public class NotificationOfLossInsExportCSVService extends ExportService<Notific
         if(domain.getOutputFormat().get() == OutputFormatClass.THE_WELF_PEN && empWelfarePenInsQualiInfor == null) {
             throw new BusinessException("Msg_37");
         }
-
-        /*if(domain.getOutputFormat().get() == OutputFormatClass.PEN_OFFICE) {
-		    if(domain.getTextPersonNumber().get() == TextPerNumberClass.OUPUT_BASIC_PEN_NUMBER || domain.getTextPersonNumber().get() == TextPerNumberClass.OUTPUT_BASIC_NO_PERSONAL) {
-		        chưa rõ
-            }
-        }*/
         if(domain.getOutputFormat().get() == OutputFormatClass.PEN_OFFICE){
             List<InsLossDataExport> healthInsLoss = socialInsurNotiCreateSetEx.getHealthInsLoss(empIds);
             List<InsLossDataExport> welfPenInsLoss = socialInsurNotiCreateSetEx.getWelfPenInsLoss(empIds);

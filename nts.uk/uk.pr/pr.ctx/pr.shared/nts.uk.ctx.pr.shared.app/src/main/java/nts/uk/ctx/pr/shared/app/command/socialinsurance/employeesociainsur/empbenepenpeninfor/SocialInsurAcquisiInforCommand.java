@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @Value
 public class SocialInsurAcquisiInforCommand {
-    private int mode;
+    private String companyId;
     /**
      * 社員ID
      */
