@@ -9,7 +9,6 @@ import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.*;
 import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.*;
 import nts.uk.ctx.pr.report.dom.printdata.comlegalrecord.Name;
 import nts.uk.ctx.pr.report.dom.printdata.comlegalrecord.RepresentativeName;
-import nts.uk.ctx.pr.shared.dom.adapter.query.person.PersonInfoAdapter;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.EmpWelfarePenInsQualiInfor;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.EmpWelfarePenInsQualiInforRepository;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.WelfarePenTypeInforRepository;
