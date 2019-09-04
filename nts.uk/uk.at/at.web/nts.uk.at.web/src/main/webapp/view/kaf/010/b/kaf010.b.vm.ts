@@ -71,6 +71,8 @@ module nts.uk.at.view.kaf010.b {
             overtimeHours: KnockoutObservableArray<common.OvertimeCaculation> = ko.observableArray([]);
             //休憩時間
             breakTimes: KnockoutObservableArray<common.OvertimeCaculation> = ko.observableArray([]);
+            
+            breakTimesOld: Array<common.OvertimeCaculation> = [];
             //加給時間
             bonusTimes: KnockoutObservableArray<common.OvertimeCaculation> = ko.observableArray([]);
             //menu-bar 
@@ -839,6 +841,7 @@ module nts.uk.at.view.kaf010.b {
                 nts.uk.ui.block.invisible();
                 //計算をクリック
                 service.getCalculateValue(param1).done((data: any) => {
+                    self.breakTimesOld = ko.toJS(self.breakTimes());
                     self.fillColor(data);
                     nts.uk.ui.block.clear();
                     if(!self.isEmptyOverTimeInput(ko.toJS(self.breakTimes()))){
@@ -862,7 +865,15 @@ module nts.uk.at.view.kaf010.b {
                         breakTime.applicationTime(calcOT.appTime);
                         breakTime.preAppTime(nts.uk.util.isNullOrUndefined(calcOT.preAppTime) ? null : nts.uk.time.format.byId("Clock_Short_HM", calcOT.preAppTime));
                         breakTime.caculationTime(nts.uk.util.isNullOrUndefined(calcOT.actualTime) ? null : nts.uk.time.format.byId("Clock_Short_HM", calcOT.actualTime));
-                        breakTime.color(self.changeColor(2, breakTime.frameNo(), self.getErrorCode(calcOT.calcError, calcOT.preAppError, calcOT.actualError), beforeAppStatus, actualStatus));
+                        let oldValue = _.find(self.breakTimesOld, item => {
+                            return item.attendanceID == 2 &&
+                                item.frameNo == breakTime.frameNo();    
+                        });  
+                        if((nts.uk.util.isNullOrUndefined(oldValue)) || 
+                            (nts.uk.util.isNullOrUndefined(oldValue.applicationTime)) || 
+                            (oldValue.applicationTime!=breakTime.applicationTime())){
+                            breakTime.color(self.changeColor(2, breakTime.frameNo(), self.getErrorCode(calcOT.calcError, calcOT.preAppError, calcOT.actualError), beforeAppStatus, actualStatus));
+                        }
                     }
                 });   
             }
@@ -1089,6 +1100,7 @@ module nts.uk.at.view.kaf010.b {
                     if(nts.uk.util.isNullOrUndefined(data2.preActualColorResult)){
                         self.beforeUpdateProcess(overtime);    
                     } else {
+                        self.breakTimesOld = ko.toJS(self.breakTimes());
                         self.fillColor(data2.preActualColorResult);
                         self.checkPreApp(overtime, data2);        
                     }

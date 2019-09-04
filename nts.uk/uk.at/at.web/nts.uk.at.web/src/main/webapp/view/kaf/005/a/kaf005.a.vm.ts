@@ -71,10 +71,14 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         restTime: KnockoutObservableArray<common.OverTimeInput> = ko.observableArray([]);
         //残業時間
         overtimeHours: KnockoutObservableArray<common.OvertimeCaculation> = ko.observableArray([]);
+        
+        overtimeHoursOld: Array<common.OvertimeCaculation> = [];
         //休憩時間
         breakTimes: KnockoutObservableArray<common.OvertimeCaculation> = ko.observableArray([]);
         //加給時間
         bonusTimes: KnockoutObservableArray<common.OvertimeCaculation> = ko.observableArray([]);
+        
+        bonusTimesOld: Array<common.OvertimeCaculation> = [];
         //menu-bar 
         prePostDisp: KnockoutObservable<boolean> = ko.observable(true);
         prePostEnable: KnockoutObservable<boolean> = ko.observable(true);
@@ -894,6 +898,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 overtimeHours:  ko.toJS(self.overtimeHours())
             }
             service.getCalculateValue(param1).done((data: any) => {
+                self.overtimeHoursOld = ko.toJS(self.overtimeHours());
+                self.bonusTimesOld = ko.toJS(self.bonusTimes());
                 self.fillColor(data);
                 nts.uk.ui.block.clear();
                 if(!self.isEmptyOverTimeInput(ko.toJS(self.overtimeHours()))){
@@ -917,7 +923,15 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     overtimeHour.applicationTime(calcOT.appTime);
                     overtimeHour.preAppTime(nts.uk.util.isNullOrUndefined(calcOT.preAppTime) ? null : nts.uk.time.format.byId("Clock_Short_HM", calcOT.preAppTime));
                     overtimeHour.caculationTime(nts.uk.util.isNullOrUndefined(calcOT.actualTime) ? null : nts.uk.time.format.byId("Clock_Short_HM", calcOT.actualTime));
-                    overtimeHour.color(self.changeColor(1, overtimeHour.frameNo(), self.getErrorCode(calcOT.calcError, calcOT.preAppError, calcOT.actualError), beforeAppStatus, actualStatus));
+                    let oldValue = _.find(self.overtimeHoursOld, item => {
+                        return item.attendanceID == 1 &&
+                            item.frameNo == overtimeHour.frameNo();    
+                    });  
+                    if((nts.uk.util.isNullOrUndefined(oldValue)) || 
+                        (nts.uk.util.isNullOrUndefined(oldValue.applicationTime)) || 
+                        (oldValue.applicationTime!=overtimeHour.applicationTime())){
+                        overtimeHour.color(self.changeColor(1, overtimeHour.frameNo(), self.getErrorCode(calcOT.calcError, calcOT.preAppError, calcOT.actualError), beforeAppStatus, actualStatus));    
+                    }
                 }
             });  
             _.forEach(self.bonusTimes(), bonusTime => {
@@ -929,7 +943,15 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     bonusTime.applicationTime(calcOT.appTime);
                     bonusTime.preAppTime(nts.uk.util.isNullOrUndefined(calcOT.preAppTime) ? null : nts.uk.time.format.byId("Clock_Short_HM", calcOT.preAppTime));
                     bonusTime.caculationTime(nts.uk.util.isNullOrUndefined(calcOT.actualTime) ? null : nts.uk.time.format.byId("Clock_Short_HM", calcOT.actualTime));
-                    bonusTime.color(self.changeColor(3, bonusTime.frameNo(), self.getErrorCode(calcOT.calcError, calcOT.preAppError, calcOT.actualError), beforeAppStatus, actualStatus));
+                    let oldValue = _.find(self.bonusTimesOld, item => {
+                        return item.attendanceID == 3 &&
+                            item.frameNo == bonusTime.frameNo();    
+                    });  
+                    if((nts.uk.util.isNullOrUndefined(oldValue)) ||
+                        (nts.uk.util.isNullOrUndefined(oldValue.applicationTime)) || 
+                        (oldValue.applicationTime!=bonusTime.applicationTime())){
+                        bonusTime.color(self.changeColor(3, bonusTime.frameNo(), self.getErrorCode(calcOT.calcError, calcOT.preAppError, calcOT.actualError), beforeAppStatus, actualStatus));
+                    }
                 }
             });         
         }
@@ -1375,6 +1397,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             if(nts.uk.util.isNullOrUndefined(data2.preActualColorResult)){
                 self.beforeRegisterProcess(overtime);    
             } else {
+                self.overtimeHoursOld = ko.toJS(self.overtimeHours());
+                self.bonusTimesOld = ko.toJS(self.bonusTimes());
                 self.fillColor(data2.preActualColorResult);
                 self.checkPreApp(overtime, data2);        
             }
