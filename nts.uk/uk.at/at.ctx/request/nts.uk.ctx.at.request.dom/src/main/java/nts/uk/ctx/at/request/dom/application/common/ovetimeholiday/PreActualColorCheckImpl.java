@@ -164,19 +164,31 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 							judgmentStampResult.getCalcLeaveStamp(), 
 							Collections.emptyList(), 
 							Collections.emptyList());
-			actualLst.addAll(dailyAttendanceTimeCaculationImport.getOverTime().entrySet()
-					.stream().map(x -> OvertimeColorCheck.createActual(1, x.getKey(), x.getValue().getCalTime())).collect(Collectors.toList()));
-			actualLst.add(OvertimeColorCheck.createActual(1, 11, dailyAttendanceTimeCaculationImport.getMidNightTime().getCalTime()));
-			actualLst.add(OvertimeColorCheck.createActual(1, 12, dailyAttendanceTimeCaculationImport.getFlexTime().getCalTime()));
-			actualLst.addAll(dailyAttendanceTimeCaculationImport.getBonusPayTime().entrySet()
-					.stream().map(x -> OvertimeColorCheck.createActual(3, x.getKey(), x.getValue())).collect(Collectors.toList()));
-			actualLst.addAll(dailyAttendanceTimeCaculationImport.getSpecBonusPayTime().entrySet()
-					.stream().map(x -> OvertimeColorCheck.createActual(4, x.getKey(), x.getValue())).collect(Collectors.toList()));
+			if(appType==ApplicationType.OVER_TIME_APPLICATION) {
+				actualLst.addAll(dailyAttendanceTimeCaculationImport.getOverTime().entrySet()
+						.stream().map(x -> OvertimeColorCheck.createActual(1, x.getKey(), x.getValue().getCalTime())).collect(Collectors.toList()));
+				actualLst.add(OvertimeColorCheck.createActual(1, 11, dailyAttendanceTimeCaculationImport.getMidNightTime().getCalTime()));
+				actualLst.add(OvertimeColorCheck.createActual(1, 12, dailyAttendanceTimeCaculationImport.getFlexTime().getCalTime()));
+				actualLst.addAll(dailyAttendanceTimeCaculationImport.getBonusPayTime().entrySet()
+						.stream().map(x -> OvertimeColorCheck.createActual(3, x.getKey(), x.getValue())).collect(Collectors.toList()));
+				actualLst.addAll(dailyAttendanceTimeCaculationImport.getSpecBonusPayTime().entrySet()
+						.stream().map(x -> OvertimeColorCheck.createActual(4, x.getKey(), x.getValue())).collect(Collectors.toList()));
+			} else {
+				actualLst.addAll(dailyAttendanceTimeCaculationImport.getHolidayWorkTime().entrySet()
+						.stream().map(x -> OvertimeColorCheck.createActual(2, x.getKey(), x.getValue().getCalTime())).collect(Collectors.toList()));
+				actualLst.addAll(dailyAttendanceTimeCaculationImport.getBonusPayTime().entrySet()
+						.stream().map(x -> OvertimeColorCheck.createActual(3, x.getKey(), x.getValue())).collect(Collectors.toList()));
+			}
 		} else {
-			actualLst.addAll(recordWorkInfoImport.getOvertimeCaculation().stream()
-					.map(x -> OvertimeColorCheck.createActual(x.getAttendanceID(), x.getFrameNo(), x.getResultCaculation())).collect(Collectors.toList()));
-			actualLst.add(OvertimeColorCheck.createActual(1, 11, recordWorkInfoImport.getShiftNightCaculation()));
-			actualLst.add(OvertimeColorCheck.createActual(1, 12, recordWorkInfoImport.getFlexCaculation()));
+			if(appType==ApplicationType.OVER_TIME_APPLICATION) {
+				actualLst.addAll(recordWorkInfoImport.getOvertimeCaculation().stream()
+						.map(x -> OvertimeColorCheck.createActual(x.getAttendanceID(), x.getFrameNo(), x.getResultCaculation())).collect(Collectors.toList()));
+				actualLst.add(OvertimeColorCheck.createActual(1, 11, recordWorkInfoImport.getShiftNightCaculation()));
+				actualLst.add(OvertimeColorCheck.createActual(1, 12, recordWorkInfoImport.getFlexCaculation()));
+			} else {
+				actualLst.addAll(recordWorkInfoImport.getOvertimeHolidayCaculation().stream()
+						.map(x -> OvertimeColorCheck.createActual(x.getAttendanceID(), x.getFrameNo(), x.getResultCaculation())).collect(Collectors.toList()));
+			}
 		}
 		return new ActualStatusCheckResult(
 				actualStatus, 
