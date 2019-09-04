@@ -173,11 +173,13 @@
 
 #holiday-agree {
 	margin-left: 10px;
-	/* margin-top: -20px; */
 	height: 80px;
 	position: absolute;
-	left: 900px;
+	left: 815px;
 	top: 7px;
+	min-width: 520px;
+  /*   float: right;
+    margin-top: -25px */
 }
 	
 #fixed-table tr td {
@@ -189,7 +191,7 @@
 	margin-top: -14px;
 	margin-left: -10px;
 	margin-bottom: 10px;
-    width: 820px;
+    width: 732px;
     height: 30px !important;
 }
 .ui-iggrid .ui-iggrid-headercaption, .ui-iggrid .ui-iggrid-header, .ui-iggrid .ui-iggrid-toolbar {

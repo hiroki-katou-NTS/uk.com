@@ -1287,6 +1287,17 @@ public class DailyPerformanceCorrectionProcessor {
 						result.setFormatCode(formatCodeSelects.stream().collect(Collectors.toSet()));
 						result.setAutBussCode(result.getFormatCode());
 						authorityFomatDailys = repo.findAuthorityFomatDaily(companyId, formatCodeSelects);
+						if(CollectionUtil.isEmpty(authorityFomatDailys)) {
+							List<AuthorityFormatInitialDisplayDto> initialDisplayDtos = repo
+									.findAuthorityFormatInitialDisplay(companyId);
+							List<String> formatCodes = initialDisplayDtos.stream()
+									.map(x -> x.getDailyPerformanceFormatCode()).collect(Collectors.toList());
+							if (!CollectionUtil.isEmpty(formatCodes)) {
+								authorityFomatDailys = repo.findAuthorityFomatDaily(companyId, formatCodes);
+								result.setFormatCode(formatCodes.stream().collect(Collectors.toSet()));
+								result.setAutBussCode(result.getFormatCode());
+							}
+						}
 						List<BigDecimal> sheetNos = authorityFomatDailys.stream().map(x -> x.getSheetNo())
 								.collect(Collectors.toList());
 						authorityFormatSheets = sheetNos.isEmpty() ? Collections.emptyList()
@@ -1717,14 +1728,14 @@ public class DailyPerformanceCorrectionProcessor {
 	public DatePeriodInfo changeDateRange(DateRange dateRange, ObjectShare objectShare, String companyId, String sId,
 			DailyPerformanceCorrectionDto screenDto, Integer mode, Integer displayFormat, Boolean initScreenOther, DPCorrectionStateParam dpStateParam) {
 		
-		if (dateRange != null && !initScreenOther){
+		if (dateRange != null && (initScreenOther == null || !initScreenOther)){
 			screenDto.setEmploymentCode(getEmploymentCode(companyId, dateRange.getEndDate(), sId));
 			DatePeriodInfo dateInfo = dpStateParam.getDateInfo();
 			dateInfo.setTargetRange(dateRange);
 			return dateInfo;
 		}
 		
-		if(dateRange != null && initScreenOther) {
+		if(dateRange != null && initScreenOther != null && initScreenOther) {
 			return updatePeriod(Optional.empty(), displayFormat, sId, new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate()));
 		}
 

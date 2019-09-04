@@ -640,7 +640,9 @@ public class DailyModifyRCommandFacade {
 
 	private boolean insertSignD(List<DPItemCheckBox> dataCheckSign, List<IntegrationOfDaily> dailyEdit,
 			List<DailyRecordDto> dailyOlds, Set<Pair<String, GeneralDate>> updated) {
-
+        if(CollectionUtil.isEmpty(dataCheckSign)) {
+        	return false;
+        }
 		List<EmployeeDailyPerError> errors = dailyEdit.stream().map(c -> c.getEmployeeError()).flatMap(List::stream)
 				.collect(Collectors.toList());
 
