@@ -12,7 +12,7 @@ import javax.inject.Inject;
 public class PersonInfoImpl implements PersonInfoAdapter {
 
     @Inject
-    IPersonInfoPub repo;
+    private IPersonInfoPub repo;
 
     @Override
     public PersonInfoExportAdapter getPersonInfo(String sID) {
