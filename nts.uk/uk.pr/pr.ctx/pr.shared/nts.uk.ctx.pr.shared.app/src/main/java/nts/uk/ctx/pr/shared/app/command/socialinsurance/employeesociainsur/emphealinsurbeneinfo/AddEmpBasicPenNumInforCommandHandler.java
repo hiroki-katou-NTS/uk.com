@@ -70,7 +70,7 @@ public class AddEmpBasicPenNumInforCommandHandler extends CommandHandler<Credent
                     socialInsurAcquisiInforCommand.getReasonAndOtherContents().isEmpty() ? null : socialInsurAcquisiInforCommand.getReasonAndOtherContents(),
                     socialInsurAcquisiInforCommand.getShortTimeWorkers() == 0 ? null : socialInsurAcquisiInforCommand.getShortTimeWorkers(),
                     socialInsurAcquisiInforCommand.getShortStay() == 0 ? null : socialInsurAcquisiInforCommand.getShortStay(),
-                    socialInsurAcquisiInforCommand.getDepenAppoint() == 1 && socialInsurAcquisiInforCommand.getDepenAppoint() == null ? null : socialInsurAcquisiInforCommand.getDepenAppoint(),
+                    socialInsurAcquisiInforCommand.getDepenAppoint() == 0 && socialInsurAcquisiInforCommand.getDepenAppoint() == null ? null : socialInsurAcquisiInforCommand.getDepenAppoint(),
                     socialInsurAcquisiInforCommand.getQualifiDistin(),
                     socialInsurAcquisiInforCommand.getContinReemAfterRetirement() == 0? null : socialInsurAcquisiInforCommand.getContinReemAfterRetirement()
 
