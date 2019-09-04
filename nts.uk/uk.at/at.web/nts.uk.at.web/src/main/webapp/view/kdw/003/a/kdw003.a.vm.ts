@@ -350,10 +350,14 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 }
             });
             if (dataShare != undefined) {
-                self.shareObject().mapDataShare(dataShare.initParam, dataShare.extractionParam, dataShare.dataSPR);
-                self.showDateRange(_.isEmpty(self.shareObject().changePeriodAtr) ? true : self.shareObject().changePeriodAtr);
-                self.transitionDesScreen = _.isEmpty(self.shareObject().transitionDesScreen) ? false : true;
-                self.closureId = (self.shareObject().targetClosure != undefined && self.shareObject().targetClosure != null) ? self.shareObject().targetClosure : null;
+                let checkDataShare: boolean = self.shareObject().mapDataShare(dataShare.initParam, dataShare.extractionParam, dataShare.dataSPR);
+                if (checkDataShare) {
+                    self.showDateRange(_.isEmpty(self.shareObject().changePeriodAtr) ? true : self.shareObject().changePeriodAtr);
+                    self.transitionDesScreen = _.isEmpty(self.shareObject().transitionDesScreen) ? false : true;
+                    self.closureId = (self.shareObject().targetClosure != undefined && self.shareObject().targetClosure != null) ? self.shareObject().targetClosure : null;
+                } else {
+                    self.shareObject(new ShareObject());
+                }
             }
 
             //            self.flexShortage.subscribe((val:any) => {
@@ -5223,8 +5227,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         endDateKDW004: any;//期間 khoảng thời gian KDW004
         constructor() {
         }
-        mapDataShare(dataInit: any, dataExtract: any, dataSPR: any) {
-            var self = this;
+        mapDataShare(dataInit: any, dataExtract: any, dataSPR: any) : boolean {
+            var self = this,
+                checkDataShare = false;
             self.initFromScreenOther = true;
             if (dataInit != undefined) {
                 self.changePeriodAtr = (dataInit.changePeriodAtr == null || dataInit.changePeriodAtr == undefined) ? true : dataInit.changePeriodAtr;
@@ -5237,6 +5242,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 if (self.screenMode == ScreenMode.APPROVAL) {
                     $("#ccg001").hide();
                 }
+                checkDataShare = true;
             }
             if (dataExtract != undefined) {
                 self.dateTarget = moment(dataExtract.dateTarget, "YYYY/MM/DD");
@@ -5247,6 +5253,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 self.endDate = moment(dataExtract.endDate, "YYYY/MM/DD");
                 self.startDateKDW004 =  dataExtract.startDateKDW004;
                 self.endDateKDW004 =  dataExtract.endDateKDW004;
+                checkDataShare = true;
             }
 
             if (dataSPR != undefined) {
@@ -5263,7 +5270,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 self.lstExtractedEmployee = [];
                 self.startDate = moment(dataSPR.dateTarget, "YYYY/MM/DD");
                 self.endDate = moment(dataSPR.dateTarget, "YYYY/MM/DD");
+                checkDataShare = true;
             }
+            return checkDataShare;
         }
     }
 
