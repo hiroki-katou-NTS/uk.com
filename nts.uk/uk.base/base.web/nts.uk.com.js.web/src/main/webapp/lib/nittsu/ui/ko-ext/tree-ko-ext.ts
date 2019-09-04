@@ -169,6 +169,15 @@ module nts.uk.ui.koExtentions {
                 $tree.data("mousePosition", pageCoords );
             });
             $tree.setupSearchScroll("igTree");
+            
+            $tree.bind("sourcechanging", function(evt){
+                let source = $tree.igTree("option", "dataSource").__ds;
+                if(_.isNil(data.dataSource)){
+                    data.options(source);
+                } else {
+                    data.dataSource(source);    
+                }
+            });
         }
 
         /**
@@ -197,7 +206,7 @@ module nts.uk.ui.koExtentions {
             } else {
                 let getOffset = function($node){
                     let offset = $node[0].offsetTop, parent = $node[0].offsetParent;
-                    while(parent.tagName.toLowerCase() != "ul"){
+                    while(!_.isNil(parent) && parent.tagName.toLowerCase() != "ul"){
                         offset+= parent.offsetTop;
                         parent = parent.offsetParent;
                     }
@@ -212,17 +221,22 @@ module nts.uk.ui.koExtentions {
                             let $checkbox = $node.find("span[data-role=checkbox]:first").find(".ui-icon-check");
                             if($node.length > 0 && $tree.igTree("checkState", $node) === "off"){
                                 $tree.igTree("toggleCheckstate", $node);
-                            }
-                            $tree.scrollTop(getOffset($node[0]));      
+                            }   
                         }
                     });
+                    if(selectedValues.length > 0){
+                       let $selectingNode = $tree.igTree("nodesByValue", selectedValues[0]);
+                        if ($selectingNode.length > 0) {
+                            $tree.scrollTop(getOffset($selectingNode));  
+                        }
+                    }
                 } else {
                     $tree.igTree("clearSelection");
                     let $selectingNode = $tree.igTree("nodesByValue", singleValue);
                     if ($selectingNode.length > 0) {
                         $tree.igTree("select", $selectingNode);
                         $tree.igTree("expandToNode", $selectingNode);
-                        $tree.scrollTop(getOffset($selectingNode[0]));  
+                        $tree.scrollTop(getOffset($selectingNode));  
                     }
                 }
             }
