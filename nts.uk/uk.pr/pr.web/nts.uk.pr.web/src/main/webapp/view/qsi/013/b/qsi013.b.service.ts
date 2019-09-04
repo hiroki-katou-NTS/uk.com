@@ -48,9 +48,6 @@ module nts.uk.pr.view.qsi013.b.service {
     }
 
     export function getLossInfoById(empId: any): JQueryPromise<any>{
-        /*let _path = nts.uk.text.format(path.getEmpInsurPreRate, param);
-        return nts.uk.request.ajax("pr", _path);*/
-
         let _path  =  nts.uk.text.format(paths.getLossInfoById, empId);
         return ajax("pr", _path);
     }

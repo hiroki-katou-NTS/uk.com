@@ -18,6 +18,10 @@ public class LossInfoCommand {
 
     private MultiEmpWorkInfoCommands multiEmpWorkInfo ;
 
+    private SocialInsurAcquisiInforCommands socialInsurAcquisiInfo;
+
     private int screenMode;
+
+
 
 }

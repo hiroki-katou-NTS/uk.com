@@ -36,6 +36,7 @@ module nts.uk.pr.view.qsi013.b.viewmodel {
 
         //number editor
         hCaInsurance: KnockoutObservable<number> = ko.observable();
+        continReemAfterRetirement: KnockoutObservable<boolean> = ko.observable();
         hNumRecoved: KnockoutObservable<number> = ko.observable();
         pCaInsurance: KnockoutObservable<number> = ko.observable();
         pNumRecoved: KnockoutObservable<number> = ko.observable();
@@ -56,47 +57,83 @@ module nts.uk.pr.view.qsi013.b.viewmodel {
         hOtherReason: KnockoutObservable<string> = ko.observable('');
         pOtherReason: KnockoutObservable<string> = ko.observable('');
 
+        getDataDefault(){
+            let self = this;
+            // for new mode
+            //set default value
+            self.hCause(0);
+            self.hNumRecoved(null);
+            self.hOther(false);
+            self.hCaInsurance(null);
+            self.hOtherReason('');
+
+            self.pCause(0);
+            self.pNumRecoved(null);
+            self.pOther(false);
+            self.pCaInsurance(null);
+            self.pOtherReason('');
+
+            self.isMoreEmp(null);
+            self.continReemAfterRetirement(null);
+            self.basicPenNumber('');
+
+            self.screenMode(model.SCREEN_MODE.NEW);
+        }
         getDataLossInfo(empId: string) {
             block.invisible();
             let self = this;
             nts.uk.pr.view.qsi013.b.service.getLossInfoById(empId).done(function (data: any) {
                 if (data) {
-                    self.hCause(data.healthInsLossInfo.cause);
-                    self.hNumRecoved(data.healthInsLossInfo.numRecoved);
-                    self.hOther(data.healthInsLossInfo.other == 1);
-                    self.hCaInsurance(data.healthInsLossInfo.caInsurance);
-                    self.hOtherReason(data.healthInsLossInfo.otherReason);
 
-                    self.pCause(data.welfPenInsLossIf.cause);
-                    self.pNumRecoved(data.welfPenInsLossIf.numRecoved);
-                    self.pOther(data.welfPenInsLossIf.other);
-                    self.pCaInsurance(data.welfPenInsLossIf.caInsuarace);
-                    self.pOtherReason(data.welfPenInsLossIf.otherReason);
+                    if(data.healthInsLossInfo){
+                        self.hCause(data.healthInsLossInfo.cause);
+                        self.hNumRecoved(data.healthInsLossInfo.numRecoved);
+                        self.hOther(data.healthInsLossInfo.other == 1);
+                        self.hCaInsurance(data.healthInsLossInfo.caInsurance);
+                        self.hOtherReason(data.healthInsLossInfo.otherReason);
+                    } else {
+                        self.hCause(0);
+                        self.hNumRecoved(null);
+                        self.hOther(false);
+                        self.hCaInsurance(null);
+                        self.hOtherReason('');
+                    }
 
-                    self.isMoreEmp(data.multiEmpWorkInfo.isMoreEmp == 1);
-                    self.basicPenNumber(data.empBasicPenNumInfor.basicPenNumber);
+                    if(data.welfPenInsLossIf){
+                        self.pCause(data.welfPenInsLossIf.cause);
+                        self.pNumRecoved(data.welfPenInsLossIf.numRecoved);
+                        self.pOther(data.welfPenInsLossIf.other ==1);
+                        self.pCaInsurance(data.welfPenInsLossIf.caInsuarace);
+                        self.pOtherReason(data.welfPenInsLossIf.otherReason);
+                    } else{
+                        self.pCause(0);
+                        self.pNumRecoved(null);
+                        self.pOther(false);
+                        self.pCaInsurance(null);
+                        self.pOtherReason('');
+                    }
 
+                    if(data.multiEmpWorkInfo){
+                        self.isMoreEmp(data.multiEmpWorkInfo.isMoreEmp == 1);
+                    } else {
+                        self.isMoreEmp(null);
+                    }
+
+                    if(data.empBasicPenNumInfor){
+                        self.basicPenNumber(data.empBasicPenNumInfor.basicPenNumber);
+                    } else{
+                        self.basicPenNumber('');
+                    }
+
+                    if(data.socialInsurAcquisiInfor){
+                        self.continReemAfterRetirement(data.socialInsurAcquisiInfor.continReemAfterRetirement == 1 );
+                    } else{
+                        self.continReemAfterRetirement(null);
+                    }
                     self.screenMode(model.SCREEN_MODE.UPDATE);
 
                 } else {
-                    // for new mode
-                    //set default value
-                    self.hCause(0);
-                    self.hNumRecoved(null);
-                    self.hOther(false);
-                    self.hCaInsurance(null);
-                    self.hOtherReason('');
-
-                    self.pCause(0);
-                    self.pNumRecoved(null);
-                    self.pOther(false);
-                    self.pCaInsurance(null);
-                    self.pOtherReason('');
-
-                    self.isMoreEmp(null);
-                    self.basicPenNumber('');
-
-                    self.screenMode(model.SCREEN_MODE.NEW);
+                    this.getDataDefault();
                 }
             }).fail(error => {
                 dialog.alertError(error);
@@ -137,7 +174,7 @@ module nts.uk.pr.view.qsi013.b.viewmodel {
 
             self.itemListHealth = ko.observableArray(model.getCauseTypeHealthLossInfo());
             self.itemListPension = ko.observableArray(model.getCauseTypePensionLossInfo());
-
+            self.getDataLossInfo(self.selectedItem());
 
             self.selectedItem.subscribe((data) => {
                 self.getDataLossInfo(data);
@@ -179,11 +216,18 @@ module nts.uk.pr.view.qsi013.b.viewmodel {
                 basicPenNumber: self.basicPenNumber()
             };
 
+            let socialInsurAcquisiInfo: any = {
+                employeeId: self.selectedItem(),
+                continReemAfterRetirement: self.continReemAfterRetirement() == true ?  1 : 0
+            };
+
+
             let lossInfoCommand: any = {
                 healthInsLossInfo: healthInsLossInfo,
                 welfPenInsLossIf: welfPenInsLossIf,
                 multiEmpWorkInfo: multiEmpWorkInfo,
                 empBasicPenNumInfor: empBasicPenNumInfor,
+                socialInsurAcquisiInfo : socialInsurAcquisiInfo,
                 screenMode: model.SCREEN_MODE.UPDATE
 
             };

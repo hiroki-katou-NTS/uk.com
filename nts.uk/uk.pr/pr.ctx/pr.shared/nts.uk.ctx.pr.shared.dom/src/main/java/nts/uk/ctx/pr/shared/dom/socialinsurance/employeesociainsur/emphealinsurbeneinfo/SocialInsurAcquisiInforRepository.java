@@ -15,6 +15,14 @@ public interface SocialInsurAcquisiInforRepository
 
     void update(SocialInsurAcquisiInfor domain);
 
-    void remove(String employeeId);
+    void remove(String employeeId, String companyId);
+
+    Optional<SocialInsurAcquisiInfor> getSocialInsurAcquisiInforByCIdEmpId(String companyId, String employeeId );
+
+    void  updated(SocialInsurAcquisiInfor domain);
+
+    void updated(String employeeId, int continReemAfterRetirement);
+
+
 
 }

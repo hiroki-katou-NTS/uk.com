@@ -11,7 +11,12 @@ import java.util.Optional;
 */
 @Getter
 public class SocialInsurAcquisiInfor extends AggregateRoot {
-    
+
+    /**
+    * 会社ID
+    */
+    private String companyId;
+
     /**
     * 社員ID
     */
@@ -87,7 +92,8 @@ public class SocialInsurAcquisiInfor extends AggregateRoot {
     */
     private Optional<Integer> continReemAfterRetirement;
     
-    public SocialInsurAcquisiInfor(String employeeId,
+    public SocialInsurAcquisiInfor(
+                                   String employeeId,
                                    Integer PercentOrMore,
                                    Integer remarksOther,
                                    String  remarksAndOtherContents,
@@ -103,6 +109,7 @@ public class SocialInsurAcquisiInfor extends AggregateRoot {
                                    Integer qualifiDistin,
                                    Integer continReemAfterRetirement
     ) {
+
         this.employeeId = employeeId;
         this.remunMonthlyAmount = remunMonthlyAmount == null ? Optional.empty() : Optional.of(new RemuneraMonthly(remunMonthlyAmount));
         this.remunMonthlyAmountKind = remunMonthlyAmountKind == null ? Optional.empty() : Optional.of(new RemuneraMonthly(remunMonthlyAmountKind));
@@ -119,5 +126,50 @@ public class SocialInsurAcquisiInfor extends AggregateRoot {
         this.reasonOther = Optional.ofNullable(reasonOther);
         this.reasonAndOtherContents = reasonAndOtherContents == null ? Optional.empty() : Optional.of(new ReaForNotiOfQuatification(reasonAndOtherContents));
     }
-    
+
+
+    public SocialInsurAcquisiInfor(
+            String companyId,
+            String employeeId,
+            Integer PercentOrMore,
+            Integer remarksOther,
+            String  remarksAndOtherContents,
+            Integer remunMonthlyAmountKind,
+            Integer remunMonthlyAmount,
+            Integer totalMonthlyRemun,
+            Integer livingAbroad,
+            Integer reasonOther,
+            String reasonAndOtherContents,
+            Integer shortTimeWorkes,
+            Integer shortStay,
+            Integer depenAppoint,
+            Integer qualifiDistin,
+            Integer continReemAfterRetirement
+    ) {
+        this.companyId = companyId;
+        this.employeeId = employeeId;
+        this.remunMonthlyAmount = remunMonthlyAmount == null ? Optional.empty() : Optional.of(new RemuneraMonthly(remunMonthlyAmount));
+        this.remunMonthlyAmountKind = remunMonthlyAmountKind == null ? Optional.empty() : Optional.of(new RemuneraMonthly(remunMonthlyAmountKind));
+        this.totalMonthlyRemun = totalMonthlyRemun == null ? Optional.empty() : Optional.of(new RemuneraMonthly(totalMonthlyRemun));
+        this.depenAppoint = depenAppoint == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(depenAppoint, DepenNotiAttachCtg.class));
+        this.qualifiDistin = Optional.ofNullable(qualifiDistin);
+        this.PercentOrMore = Optional.ofNullable(PercentOrMore);
+        this.shortTimeWorkers = Optional.ofNullable(shortTimeWorkes);
+        this.continReemAfterRetirement = Optional.ofNullable(continReemAfterRetirement);
+        this.remarksOther = Optional.ofNullable(remarksOther);
+        this.remarksAndOtherContents = remarksAndOtherContents == null ? Optional.empty() : Optional.of(new QualificationAcquiNoti(remarksAndOtherContents));
+        this.livingAbroad = Optional.ofNullable(livingAbroad);
+        this.shortStay = Optional.ofNullable(shortStay);
+        this.reasonOther = Optional.ofNullable(reasonOther);
+        this.reasonAndOtherContents = reasonAndOtherContents == null ? Optional.empty() : Optional.of(new ReaForNotiOfQuatification(reasonAndOtherContents));
+    }
+
+    public SocialInsurAcquisiInfor( String companyId,
+                                    String employeeId,
+                                    Integer continReemAfterRetirement){
+        this.companyId = companyId;
+        this.employeeId = employeeId;
+        this.continReemAfterRetirement = Optional.ofNullable(continReemAfterRetirement);
+    }
+
 }
