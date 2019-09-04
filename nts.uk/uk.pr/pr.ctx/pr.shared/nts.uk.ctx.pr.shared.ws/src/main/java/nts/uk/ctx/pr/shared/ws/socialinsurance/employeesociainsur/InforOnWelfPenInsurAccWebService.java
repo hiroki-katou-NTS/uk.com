@@ -49,7 +49,7 @@ public class InforOnWelfPenInsurAccWebService extends WebService{
     @Path("getSocialInsurAcquisiInforById/{empID}")
     public SocialInsurAcquisiInforDto getSocialInsurAcquisiInforById(@PathParam("empID")String empID){
         String cid = AppContexts.user().companyId();
-        Optional<SocialInsurAcquisiInfor> socialInsurAcquisiInfor = socialInsurAcquisiInforFinder.getSocialInsurAcquisiInforById(empID);
+        Optional<SocialInsurAcquisiInfor> socialInsurAcquisiInfor = socialInsurAcquisiInforFinder.getSocialInsurAcquisiInforById(cid, empID);
 
         if(socialInsurAcquisiInfor.isPresent()){
             return SocialInsurAcquisiInforDto.fromDomain(socialInsurAcquisiInfor.get());

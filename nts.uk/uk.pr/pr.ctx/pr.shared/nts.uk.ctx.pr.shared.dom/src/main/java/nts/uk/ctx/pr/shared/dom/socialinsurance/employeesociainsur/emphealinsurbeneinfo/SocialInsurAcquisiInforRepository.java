@@ -6,10 +6,7 @@ import java.util.Optional;
 /**
 * 社会保険取得時情報
 */
-public interface SocialInsurAcquisiInforRepository
-{
-
-    Optional<SocialInsurAcquisiInfor> getSocialInsurAcquisiInforById(String employeeId);
+public interface SocialInsurAcquisiInforRepository {
 
     void add(SocialInsurAcquisiInfor domain);
 

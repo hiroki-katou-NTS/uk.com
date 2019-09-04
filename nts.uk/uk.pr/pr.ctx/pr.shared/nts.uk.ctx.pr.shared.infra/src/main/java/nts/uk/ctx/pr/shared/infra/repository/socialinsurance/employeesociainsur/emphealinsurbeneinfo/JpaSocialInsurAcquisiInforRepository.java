@@ -12,20 +12,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Stateless
-public class JpaSocialInsurAcquisiInforRepository extends JpaRepository implements SocialInsurAcquisiInforRepository
-{
+public class JpaSocialInsurAcquisiInforRepository extends JpaRepository implements SocialInsurAcquisiInforRepository {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QqsmtSocIsacquisiInfo f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.socIsacquisiInfoPk.employeeId =:employeeId ";
     private static final String SELECT_BY_KEY_STRINGS = "SELECT f FROM QqsmtSocIsacquisiInfo f WHERE  f.socIsacquisiInfoPk.employeeId =:employeeId AND f.socIsacquisiInfoPk.companyId =:companyId";
   //  private static final String UPDATE_SOCIAL_BY_KEY = "UPDATE QqsmtSocIsacquisiInfo f SET f.continReemAfterRetirement =:continReemAfterRetirement WHERE f.socIsacquisiInfoPk.employeeId =:employeeId";
 
-    @Override
-    public Optional<SocialInsurAcquisiInfor> getSocialInsurAcquisiInforById(String employeeId){
-        return this.queryProxy().query(SELECT_BY_KEY_STRING, QqsmtSocIsacquisiInfo.class)
-                .setParameter("employeeId", employeeId)
-                .getSingle(c->c.toDomain());
-    }
 
     @Override
     public void add(SocialInsurAcquisiInfor domain){

@@ -17,8 +17,8 @@ public class SocialInsurAcquisiInforFinder {
     @Inject
     private SocialInsurAcquisiInforRepository finder;
 
-    public Optional<SocialInsurAcquisiInfor> getSocialInsurAcquisiInforById(String employeeId){
-        return finder.getSocialInsurAcquisiInforById(employeeId);
+    public Optional<SocialInsurAcquisiInfor> getSocialInsurAcquisiInforById(String cid, String employeeId){
+        return finder.getSocialInsurAcquisiInforByCIdEmpId(cid, employeeId);
     }
 
 }
