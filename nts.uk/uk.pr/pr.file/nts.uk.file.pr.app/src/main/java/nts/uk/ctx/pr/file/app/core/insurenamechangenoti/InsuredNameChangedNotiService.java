@@ -7,7 +7,7 @@ import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsura
 import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsuranceOfficeRepository;
 import nts.uk.ctx.pr.file.app.core.bank.BankExportFileGenerator;
 import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.*;
-import nts.uk.ctx.pr.shared.dom.adapter.query.person.PersonInfoAdapter;
+import nts.uk.ctx.pr.shared.dom.adapter.query.person.PersonInfomationAdapter;
 import nts.uk.ctx.pr.shared.dom.adapter.query.person.PersonInfoExportAdapter;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.*;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empcomofficehis.AffOfficeInformation;
@@ -45,7 +45,7 @@ public class InsuredNameChangedNotiService extends ExportService<InsuredNameChan
     private SocialInsuranceOfficeRepository socialInsuranceOfficeRepository;
 
     @Inject
-    private PersonInfoAdapter personAdapter;
+    private PersonInfomationAdapter personAdapter;
 
     @Inject
     private EmpWelfarePenInsQualiInforRepository empWelfarePenInsQualiInforRepository;

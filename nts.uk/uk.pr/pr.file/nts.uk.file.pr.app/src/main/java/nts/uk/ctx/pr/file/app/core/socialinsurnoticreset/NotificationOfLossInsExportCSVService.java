@@ -84,7 +84,7 @@ public class NotificationOfLossInsExportCSVService extends ExportService<Notific
         if(domain.getOutputFormat().get() == OutputFormatClass.PEN_OFFICE){
             List<InsLossDataExport> healthInsLoss = socialInsurNotiCreateSetEx.getHealthInsLoss(empIds);
             List<InsLossDataExport> welfPenInsLoss = socialInsurNotiCreateSetEx.getWelfPenInsLoss(empIds);
-			notificationOfLossInsCSVFileGenerator.generate(exportServiceContext.getGeneratorContext(), new LossNotificationInformation(healthInsLoss, welfPenInsLoss, socialInsurNotiCreateSet));
+			/*notificationOfLossInsCSVFileGenerator.generate(exportServiceContext.getGeneratorContext(), new LossNotificationInformation(healthInsLoss, welfPenInsLoss, socialInsurNotiCreateSet));*/
         }
 
     }

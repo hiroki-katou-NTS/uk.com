@@ -15,7 +15,6 @@ import nts.uk.shr.com.context.AppContexts;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.List;
-import java.util.Optional;
 
 @Stateless
 public class NotificationOfLossInsExportPDFService extends ExportService<NotificationOfLossInsExportQuery> {
@@ -44,7 +43,7 @@ public class NotificationOfLossInsExportPDFService extends ExportService<Notific
 		String userId = AppContexts.user().userId();
 		String cid = AppContexts.user().companyId();
 		NotificationOfLossInsExport socialInsurNotiCreateSet = exportServiceContext.getQuery().getSocialInsurNotiCreateSet();
-		SocialInsurNotiCreateSet domain = new SocialInsurNotiCreateSet(cid, userId,
+		SocialInsurNotiCreateSet domain = new SocialInsurNotiCreateSet(userId, cid,
 				socialInsurNotiCreateSet.getOfficeInformation(),
 				socialInsurNotiCreateSet.getBusinessArrSymbol(),
 				socialInsurNotiCreateSet.getOutputOrder(),
@@ -69,8 +68,10 @@ public class NotificationOfLossInsExportPDFService extends ExportService<Notific
 		if( socialInsurNotiCreateSet.getPrintPersonNumber() == PersonalNumClass.DO_NOT_OUTPUT.value) {
 			List<InsLossDataExport> healthInsLoss = socialInsurNotiCreateSetEx.getHealthInsLoss(empIds);
 			List<InsLossDataExport> welfPenInsLoss = socialInsurNotiCreateSetEx.getWelfPenInsLoss(empIds);
-			//Optional<SocialInsuranceOffice> socialInsuranceOffice =  socialInsuranceOfficeRepository.findByCodeAndCid(cid, healthInsLoss.get(0).getOfficeCode());
-			socialInsurNotiCreateSetFileGenerator.generate(exportServiceContext.getGeneratorContext(), new LossNotificationInformation(healthInsLoss, welfPenInsLoss, socialInsurNotiCreateSet));
+			List<SocialInsuranceOffice> socialInsuranceOffice =  socialInsuranceOfficeRepository.findByCid(cid);
+			CompanyInfor company = socialInsurNotiCreateSetEx.getCompanyInfor(cid);
+			socialInsurNotiCreateSetFileGenerator.generate(exportServiceContext.getGeneratorContext(),
+					new LossNotificationInformation(healthInsLoss, welfPenInsLoss, socialInsuranceOffice, socialInsurNotiCreateSet, exportServiceContext.getQuery().getReference(), company));
 		}
 	}
 

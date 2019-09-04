@@ -45,6 +45,20 @@ public class QqsmtEmpHealInsurQi extends UkJpaEntity implements Serializable
     @Basic(optional = false)
     @Column(name = "END_DATE")
     public GeneralDate endDate;
+
+    /**
+     * 介護保険番号
+     */
+    @Basic(optional = true)
+    @Column(name = "CARE_IS_NUMBER")
+    public String careIsNumber;
+
+    /**
+     * 健康保険番号
+     */
+    @Basic(optional = true)
+    @Column(name = "HEAL_INSUR_NUMBER")
+    public String healInsurNumber;
     
     @Override
     protected Object getKey()

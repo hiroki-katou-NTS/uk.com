@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsuranceOffice;
 
 import java.util.List;
 
@@ -14,5 +16,8 @@ import java.util.List;
 public class LossNotificationInformation {
     List<InsLossDataExport> healthInsLoss;
     List<InsLossDataExport> welfPenInsLoss;
+    List<SocialInsuranceOffice> socialInsuranceOffice;
     NotificationOfLossInsExport socialInsurNotiCreateSet;
+    GeneralDate baseDate;
+    CompanyInfor company;
 }
