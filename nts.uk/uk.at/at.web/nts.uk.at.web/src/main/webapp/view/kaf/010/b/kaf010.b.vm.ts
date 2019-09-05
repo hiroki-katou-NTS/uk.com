@@ -471,13 +471,13 @@ module nts.uk.at.view.kaf010.b {
             
             getColorInit(attendanceId, frameNo,errorCode, beforeAppStatus, actualStatus){
                 let self = this;
-                if((self.performanceExcessAtr() == 2) &&(errorCode == 4||actualStatus==true)){
+                if((self.prePostSelected() == 1) && (self.performanceExcessAtr() == 2) &&(errorCode == 4||actualStatus==true)){
                     return '#FD4D4D';
                 }
-                if((self.performanceExcessAtr() == 1) &&(errorCode == 3||actualStatus==true)){
+                if((self.prePostSelected() == 1) && (self.performanceExcessAtr() == 1) &&(errorCode == 3||actualStatus==true)){
                     return '#F6F636';
                 }
-                if((self.preExcessDisplaySetting()==1) &&(errorCode == 2||beforeAppStatus==true)){
+                if((self.prePostSelected() == 1) && (self.preExcessDisplaySetting()==1) &&(errorCode == 2||beforeAppStatus==true)){
                     return '#FFC0CB';
                 }
                 if(errorCode == 1){
