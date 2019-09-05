@@ -60,6 +60,7 @@ import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.Ident
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
+import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.EmpProvisionalInput;
@@ -95,6 +96,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.TypeError;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.month.DPMonthValue;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.month.LeaveDayErrorDto;
 import nts.uk.screen.at.app.dailyperformance.correction.text.DPText;
+import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyQuery;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -185,6 +187,12 @@ public class DailyModifyRCommandFacade {
 				Optional<IntegrationOfMonthly> domainMonthOpt = Optional.empty();
 				if(dataParent.getDomainMonthOpt().isPresent()) {
 					MonthlyRecordWorkDto monthDto = dataParent.getDomainMonthOpt().get();
+					MonthlyModifyQuery monthQuery = new MonthlyModifyQuery(month.getItems().stream().map(x -> {
+						return ItemValue.builder().itemId(x.getItemId()).layout(x.getLayoutCode()).value(x.getValue())
+								.valueType(ValueType.valueOf(x.getValueType())).withPath("");
+					}).collect(Collectors.toList()), month.getYearMonth(), month.getEmployeeId(), month.getClosureId(),
+							month.getClosureDate());
+					monthDto = AttendanceItemUtil.fromItemValues(monthDto, monthQuery.getItems(), AttendanceItemType.MONTHLY_ITEM);
 					IntegrationOfMonthly domainMonth = monthDto.toDomain(monthDto.getEmployeeId(),
 							monthDto.getYearMonth(), monthDto.getClosureID(), monthDto.getClosureDate());
 					domainMonth.getAffiliationInfo().ifPresent(d -> {
@@ -624,7 +632,7 @@ public class DailyModifyRCommandFacade {
 		}
 	}
 
-	private List<DailyModifyQuery> createQuerys(Map<Pair<String, GeneralDate>, List<DPItemValue>> mapSidDate) {
+	public List<DailyModifyQuery> createQuerys(Map<Pair<String, GeneralDate>, List<DPItemValue>> mapSidDate) {
 		List<DailyModifyQuery> querys = new ArrayList<>();
 		mapSidDate.entrySet().forEach(x -> {
 			List<ItemValue> itemCovert = x.getValue().stream()
@@ -638,7 +646,7 @@ public class DailyModifyRCommandFacade {
 		return querys;
 	}
 
-	private boolean insertSignD(List<DPItemCheckBox> dataCheckSign, List<IntegrationOfDaily> dailyEdit,
+	public boolean insertSignD(List<DPItemCheckBox> dataCheckSign, List<IntegrationOfDaily> dailyEdit,
 			List<DailyRecordDto> dailyOlds, Set<Pair<String, GeneralDate>> updated) {
         if(CollectionUtil.isEmpty(dataCheckSign)) {
         	return false;
@@ -649,7 +657,7 @@ public class DailyModifyRCommandFacade {
 		return insertSignInternal(dataCheckSign, errors, dailyOlds, updated);
 	}
 
-	private boolean insertSign(List<DPItemCheckBox> dataCheckSign, List<DailyRecordDto> dailyEdit,
+	public boolean insertSign(List<DPItemCheckBox> dataCheckSign, List<DailyRecordDto> dailyEdit,
 			List<DailyRecordDto> dailyOlds, Set<Pair<String, GeneralDate>> updated) {
 
 		List<EmployeeDailyPerError> errors = dailyEdit.stream().map(c -> c.getErrors()).flatMap(List::stream)
@@ -658,7 +666,7 @@ public class DailyModifyRCommandFacade {
 		return insertSignInternal(dataCheckSign, errors, dailyOlds, updated);
 	}
 
-	private boolean insertSignInternal(List<DPItemCheckBox> dataCheckSign, List<EmployeeDailyPerError> editErrors,
+	public boolean insertSignInternal(List<DPItemCheckBox> dataCheckSign, List<EmployeeDailyPerError> editErrors,
 			List<DailyRecordDto> dailyOlds, Set<Pair<String, GeneralDate>> updated) {
 		if (dataCheckSign.isEmpty())
 			return false;
@@ -864,12 +872,12 @@ public class DailyModifyRCommandFacade {
 		return editedDate;
 	}
 
-	private DPAttendanceItemRC convertItemAtr(DPAttendanceItem item) {
+	public DPAttendanceItemRC convertItemAtr(DPAttendanceItem item) {
 		return new DPAttendanceItemRC(item.getId(), item.getName(), item.getDisplayNumber(), item.isUserCanSet(),
 				item.getLineBreakPosition(), item.getAttendanceAtr(), item.getTypeGroup(), item.getPrimitive());
 	}
 
-	private Map<Pair<String, GeneralDate>, List<DPItemValue>> releaseSign(List<DPItemCheckBox> dataCheckApproval,
+	public Map<Pair<String, GeneralDate>, List<DPItemValue>> releaseSign(List<DPItemCheckBox> dataCheckApproval,
 			List<DPItemValue> resultError, List<DailyRecordDto> dailys, String employeeId, boolean onlyCheckBox) {
 		Map<Pair<String, GeneralDate>, List<DPItemValue>> itemUi = new HashMap<>();
 		if (resultError.isEmpty() && !onlyCheckBox)
@@ -941,7 +949,7 @@ public class DailyModifyRCommandFacade {
 		return itemUi;
 	}
 
-	private boolean showError(List<IntegrationOfDaily> dailys, List<DailyRecordDto> dailyRecord) {
+	public boolean showError(List<IntegrationOfDaily> dailys, List<DailyRecordDto> dailyRecord) {
 		// アルゴリズム「実績修正画面で利用するフォーマットを取得する」を実行する(thực hiện xử lý 「実績修正画面で利用するフォーマットを取得する」)
 		val lstError = dailys.stream().flatMap(x -> x.getEmployeeError().stream()).collect(Collectors.toList());
 		val lstErrorDto = dailyRecord.stream().flatMap(x -> x.getErrors().stream()).collect(Collectors.toList());
@@ -1119,7 +1127,7 @@ public class DailyModifyRCommandFacade {
 		});
 	}
 
-	private List<EmpErrorCode> getRemoveState(String employeeId, int typeError,
+	public List<EmpErrorCode> getRemoveState(String employeeId, int typeError,
 			Map<GeneralDate, List<EmpErrorCode>> mapErrorCode) {
 		List<EmpErrorCode> lstResult = new ArrayList<>();
 		mapErrorCode.forEach((key, values) -> {
@@ -1140,7 +1148,7 @@ public class DailyModifyRCommandFacade {
 		return lstResult;
 	}
 
-	private void processDto(List<DailyRecordDto> dailyOlds, List<DailyRecordDto> dailyEdits, DPItemParent dataParent,
+	public void processDto(List<DailyRecordDto> dailyOlds, List<DailyRecordDto> dailyEdits, DPItemParent dataParent,
 			List<DailyModifyQuery> querys, Map<Pair<String, GeneralDate>, List<DPItemValue>> mapSidDate,
 			Set<Pair<String, GeneralDate>> pairSidDateCheck, List<DailyModifyQuery> queryNotChanges) {
 		// list cell change by checkbox

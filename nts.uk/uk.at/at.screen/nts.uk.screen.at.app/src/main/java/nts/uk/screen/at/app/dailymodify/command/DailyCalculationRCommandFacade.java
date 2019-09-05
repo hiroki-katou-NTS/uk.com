@@ -33,6 +33,7 @@ import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
+import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.screen.at.app.dailymodify.command.common.DailyCalcParam;
@@ -53,6 +54,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.ResultReturnDCUpdate
 import nts.uk.screen.at.app.dailyperformance.correction.dto.TypeError;
 import nts.uk.screen.at.app.dailyperformance.correction.loadupdate.DPLoadRowProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.month.asynctask.ProcessMonthScreen;
+import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyQuery;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -133,6 +135,12 @@ public class DailyCalculationRCommandFacade {
 				Optional<IntegrationOfMonthly> domainMonthOpt = Optional.empty();
 				if(dataParent.getDomainMonthOpt().isPresent()) {
 					MonthlyRecordWorkDto monthDto = dataParent.getDomainMonthOpt().get();
+					MonthlyModifyQuery monthQuery = new MonthlyModifyQuery(month.getItems().stream().map(x -> {
+						return ItemValue.builder().itemId(x.getItemId()).layout(x.getLayoutCode()).value(x.getValue())
+								.valueType(ValueType.valueOf(x.getValueType())).withPath("");
+					}).collect(Collectors.toList()), month.getYearMonth(), month.getEmployeeId(), month.getClosureId(),
+							month.getClosureDate());
+					monthDto = AttendanceItemUtil.fromItemValues(monthDto, monthQuery.getItems(), AttendanceItemType.MONTHLY_ITEM);
 					IntegrationOfMonthly domainMonth = monthDto.toDomain(monthDto.getEmployeeId(),
 							monthDto.getYearMonth(), monthDto.getClosureID(), monthDto.getClosureDate());
 					domainMonth.getAffiliationInfo().ifPresent(d -> {
