@@ -937,7 +937,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     });  
                     if((nts.uk.util.isNullOrUndefined(oldValue)) || 
                         (nts.uk.util.isNullOrUndefined(oldValue.applicationTime)) || 
-                        (oldValue.applicationTime!=overtimeHour.applicationTime())){
+                        (ko.toJSON(oldValue).localeCompare(ko.toJSON(overtimeHour))!=0)){
                         overtimeHour.color(self.changeColor(1, overtimeHour.frameNo(), self.getErrorCode(calcOT.calcError, calcOT.preAppError, calcOT.actualError), beforeAppStatus, actualStatus));    
                     }
                 }
@@ -957,7 +957,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     });  
                     if((nts.uk.util.isNullOrUndefined(oldValue)) ||
                         (nts.uk.util.isNullOrUndefined(oldValue.applicationTime)) || 
-                        (oldValue.applicationTime!=bonusTime.applicationTime())){
+                        (ko.toJSON(oldValue).localeCompare(ko.toJSON(bonusTime))!=0)){
                         bonusTime.color(self.changeColor(3, bonusTime.frameNo(), self.getErrorCode(calcOT.calcError, calcOT.preAppError, calcOT.actualError), beforeAppStatus, actualStatus));
                     }
                 }

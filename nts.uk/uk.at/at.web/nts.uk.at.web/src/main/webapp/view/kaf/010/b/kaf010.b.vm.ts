@@ -878,7 +878,7 @@ module nts.uk.at.view.kaf010.b {
                         });  
                         if((nts.uk.util.isNullOrUndefined(oldValue)) || 
                             (nts.uk.util.isNullOrUndefined(oldValue.applicationTime)) || 
-                            (oldValue.applicationTime!=breakTime.applicationTime())){
+                            (ko.toJSON(oldValue).localeCompare(ko.toJSON(breakTime))!=0)){
                             breakTime.color(self.changeColor(2, breakTime.frameNo(), self.getErrorCode(calcOT.calcError, calcOT.preAppError, calcOT.actualError), beforeAppStatus, actualStatus));
                         }
                     }
