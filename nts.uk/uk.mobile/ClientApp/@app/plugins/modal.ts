@@ -14,7 +14,7 @@ const modal = {
 
         window.onpopstate = function (event: Event) {
             if (document.querySelector('.modal.show')) {
-                window.history.forward();
+                // window.history.forward();
             }
         };
 
@@ -162,13 +162,13 @@ const modal = {
                                         // destroy modal app
                                         this.$destroy(true);
                                     },
-                                    preventScroll(evt: TouchEvent) {
-                                        // evt.preventDefault();
-                                        evt.stopPropagation();
-                                        evt.stopImmediatePropagation();
-                                    },
                                     toggleTitle(hasTitle: boolean) {
                                         this.hasTitle = hasTitle;
+                                    },
+                                    clickDropback(evt: MouseEvent) {
+                                        if ((evt.target as HTMLElement).querySelector('.modal-dialog.dropback')) {
+                                            this.callback('dropback');
+                                        }
                                     }
                                 },
                                 beforeMount() {
@@ -240,8 +240,8 @@ const modal = {
                                     this.$mask('hide');
                                 },
                                 template: `<transition apear v-bind:name="animate" v-on:after-leave="afterLeave">
-                                    <div class="modal show" v-show="show" v-on:touchmove="preventScroll">
-                                        <div class="modal-dialog" v-bind:class="$class" v-on:touchmove="preventScroll">
+                                    <div class="modal show" v-show="show" v-on:click="clickDropback">
+                                        <div class="modal-dialog" v-bind:class="$class">
                                             <div class="modal-content uk-bg-silver">
                                                 <template v-if="hasTitle">
                                                     <div class="modal-header uk-bg-teal rounded-0" v-bind:key="hasTitle">

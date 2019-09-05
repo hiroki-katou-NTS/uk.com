@@ -3032,6 +3032,15 @@ button.nts-switch-button[disabled].selected {
   margin-top: -10px !important;
 }
 
+.ui-igtreegrid .ui-iggrid-table .ui-iggrid-tablebody tr td:last-child {
+  padding-right: 2px !important;
+}
+
+.ui-igtreegrid .ui-iggrid-table .ui-iggrid-tablebody tr.row-disabled {
+  background-color: #CCC;
+  color: #333;
+}
+
 /* line 32, ../sass/components/_treegridview.scss */
 .no-selector table th:first-child.ui-iggrid-rowselector-class {
   visibility: hidden;
@@ -5947,12 +5956,47 @@ div .ex-area-line.x-stay {
   display: inline-block;
 }
 
-/* line 53, ../sass/base.scss */
+/* line 1, ../sass/components/_assy.scss */
+.assy-hist .as-area {
+  float: left;
+}
+
+/* line 5, ../sass/components/_assy.scss */
+.assy-hist .hist-label {
+  float: left;
+}
+
+/* line 10, ../sass/components/_assy.scss */
+.assy-hist .hist-list {
+  float: left;
+}
+
+/* line 14, ../sass/components/_assy.scss */
+.assy-hist .as-area .del-chk {
+  margin: 86px 0px 0px 10px;
+}
+
+/* line 18, ../sass/components/_assy.scss */
+.assy-hist .hist-btn {
+  float: left;
+}
+
+/* line 22, ../sass/components/_assy.scss */
+.assy-hist .hist-btn button {
+  margin-bottom: 11px;
+}
+
+/* line 26, ../sass/components/_assy.scss */
+.as-area .ntsCheckBox span.label {
+  padding-left: 0px;
+}
+
+/* line 54, ../sass/base.scss */
 html {
   font-size: 14px;
 }
 
-/* line 57, ../sass/base.scss */
+/* line 58, ../sass/base.scss */
 body * {
   font-size: 1rem;
   font-family: "Meiryo UI";

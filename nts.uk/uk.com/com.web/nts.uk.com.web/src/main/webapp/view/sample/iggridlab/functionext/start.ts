@@ -212,7 +212,8 @@ module nts.uk.ui.gridlist {
                                                 constraint: {
                                                     cDisplayType: "Currency",
                                                     min: 3, max: 9,
-                                                    required: true
+                                                    required: true,
+                                                    integer: true
                                                 }},
                                             { headerText: 'Address1', key: 'address1', dataType: 'string', width: '150px'}
                                            ]
