@@ -12,6 +12,7 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.gul.text.StringUtil;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregEmpOptRepository;
 import nts.uk.shr.pereg.app.find.PeregFinder;
@@ -124,7 +125,7 @@ public class LayoutingProcessor {
 		}
 
 		List<String> recordIds = objectDto.stream().map(c -> Optional.ofNullable(c.getPeregDomainDto()).map(m  -> m.getRecordId()).orElse(""))
-				.filter(f -> !f.equals(""))
+				.filter(f -> !StringUtil.isNullOrEmpty(f, true))
 				.collect(Collectors.toList());
 
 		// get optional data
