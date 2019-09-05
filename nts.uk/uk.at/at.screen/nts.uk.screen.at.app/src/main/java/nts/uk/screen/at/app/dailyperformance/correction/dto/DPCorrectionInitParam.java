@@ -3,6 +3,7 @@ package nts.uk.screen.at.app.dailyperformance.correction.dto;
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.cache.DPCorrectionStateParam;
 
 /**
  * @author ductm
@@ -31,4 +32,5 @@ public class DPCorrectionInitParam {
 	public DateRange displayDateRange;
 	// 遷移先の画面
 	public String transitionDesScreen;
+	public DPCorrectionStateParam dpStateParam;
 }

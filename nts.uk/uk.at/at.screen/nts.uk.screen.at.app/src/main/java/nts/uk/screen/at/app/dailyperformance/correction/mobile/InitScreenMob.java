@@ -1,4 +1,4 @@
-package nts.uk.screen.at.app.dailyperformance.correction;
+package nts.uk.screen.at.app.dailyperformance.correction.mobile;
 
 import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
@@ -46,6 +46,9 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.Subs
 import nts.uk.screen.at.app.dailymodify.command.DailyModifyResCommandFacade;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyQueryProcessor;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyResult;
+import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceCorrectionProcessor;
+import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
+import nts.uk.screen.at.app.dailyperformance.correction.GetDataDaily;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeName;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeNameType;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.DataDialogWithTypeProcessor;
@@ -78,6 +81,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.OperationOfDailyPerf
 import nts.uk.screen.at.app.dailyperformance.correction.dto.SPRCheck;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ScreenMode;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkInfoOfDailyPerformanceDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.cache.DPCorrectionStateParam;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkapproval.ApproveRootStatusForEmpDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.companyhist.AffComHistItemAtScreen;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.type.TypeLink;
@@ -100,7 +104,7 @@ public class InitScreenMob {
 	private DailyPerformanceScreenRepo repo;
 
 	@Inject
-	private DailyPerformanceCorrectionProcessor processor;
+	private DPCorrectionProcessorMob processor;
 
 	@Inject
 	private DailyModifyQueryProcessor dailyModifyQueryProcessor;
@@ -167,7 +171,7 @@ public class InitScreenMob {
 		screenDto.setClosureId(processor.getClosureId(companyId, sId, GeneralDate.today()));
 		
 		// 期間を変更する
-		DatePeriodInfo resultPeriod = processor.changeDateRange(dateRange, null, companyId, sId, screenDto, screenMode, displayFormat, false, null);
+		DatePeriodInfo resultPeriod = processor.changeDateRange(dateRange, null, companyId, sId, screenDto, screenMode, displayFormat, false, param.dpStateParam);
 		dateRange = resultPeriod.getTargetRange();
 		screenDto.setDateRange(dateRange);
 		screenDto.setPeriodInfo(resultPeriod);
@@ -328,6 +332,7 @@ public class InitScreenMob {
 			}
 		}
 		screenDto.setLstData(lstData);
+		setStateParam(screenDto, resultPeriod, displayFormat, false);
 		return screenDto;
 	}
 
@@ -529,5 +534,13 @@ public class InitScreenMob {
 				screenDto.setCellSate(rowId, columnKey, DPText.REFLECT_APPLICATION);
 			}
 		}
+	}
+	
+	private void setStateParam(DailyPerformanceCorrectionDto screenDto, DatePeriodInfo info, int displayFormat, Boolean transferDesScreen) {
+		DPCorrectionStateParam cacheParam = new DPCorrectionStateParam(
+				new DatePeriod(screenDto.getDateRange().getStartDate(), screenDto.getDateRange().getEndDate()),
+				screenDto.getEmployeeIds(), displayFormat, screenDto.getEmployeeIds(), screenDto.getLstControlDisplayItem(), info, transferDesScreen);
+		screenDto.setStateParam(cacheParam);
+
 	}
 }

@@ -38,7 +38,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.DPUpdateColWidthCommandH
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceCorrectionProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.DisplayRemainingHolidayNumber;
 import nts.uk.screen.at.app.dailyperformance.correction.InfomationInitScreenProcess;
-import nts.uk.screen.at.app.dailyperformance.correction.InitScreenMob;
+import nts.uk.screen.at.app.dailyperformance.correction.mobile.InitScreenMob;
 import nts.uk.screen.at.app.dailyperformance.correction.UpdateColWidthCommand;
 import nts.uk.screen.at.app.dailyperformance.correction.calctime.DailyCorrectCalcTimeService;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeName;
@@ -214,8 +214,10 @@ public class DailyPerformanceCorrectionWebService {
 	@POST
 	@Path("initMOB")
 	public DailyPerformanceCorrectionDto initScreen(DPCorrectionInitParam param) throws InterruptedException{
+		param.dpStateParam = (DPCorrectionStateParam)session.getAttribute("dpStateParam");
 		DailyPerformanceCorrectionDto dtoResult = this.initScreenMob.initMOB(param);
 		session.setAttribute("domainOlds", dtoResult.getDomainOld());
+		session.setAttribute("dpStateParam", dtoResult.getStateParam());
 		return dtoResult;
 	}
 	

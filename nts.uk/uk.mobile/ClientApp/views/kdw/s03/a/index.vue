@@ -9,7 +9,7 @@
                 </nts-dropdown>
             </div>
             <div class="col-3">
-                <button type="button" class="btn btn-primary btn-block">{{'KDWS03_23' | i18n}}</button>
+                <button type="button" class="btn btn-primary btn-block" v-on:click="startPage">{{'KDWS03_23' | i18n}}</button>
             </div>
         </div>
         <div class="row">
@@ -24,7 +24,7 @@
                 </nts-dropdown>
             </div>
         </div>
-        <fix-table table-class="table table-bordered m-0  table-sm" :rowNumber="6" class="mx-n2" style="font-size: 11px" v-if="displayDataLst.length > 0">
+        <fix-table table-class="table table-bordered m-0  table-sm" :rowNumber="6" class="mx-n2" style="font-size: 11px" v-if="displayDataLst.length > 0" :key="resetTable">
             <thead class="uk-bg-headline">
                 <tr>
                     <th c-width="64" style="height: 70px"></th>

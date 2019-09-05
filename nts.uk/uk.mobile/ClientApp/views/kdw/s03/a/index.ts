@@ -1,10 +1,10 @@
 import { _, Vue } from '@app/provider';
 import { component, Watch } from '@app/core/component';
-import { FixTableComponent } from '@app/components';
+import { FixTableComponent } from '@app/components/fix-table';
 
 @component({
-    name: 'kdw003a',
-    route: '/kdw/003/a',
+    name: 'kdws03a',
+    route: '/kdw/s03/a',
     style: require('./style.scss'),
     template: require('./index.vue'),
     resource: require('./resources.json'),
@@ -18,8 +18,8 @@ import { FixTableComponent } from '@app/components';
         },
     }
 })
-export class Kdw003AComponent extends Vue {
-    public title: string = 'Kdw003A';
+export class Kdws03AComponent extends Vue {
+    public title: string = 'Kdws03A';
     public displayFormat: number = 0;
     public lstDataSourceLoad: Array<any> = [];
     public lstDataHeader: Array<any> = [];
@@ -38,8 +38,10 @@ export class Kdw003AComponent extends Vue {
     public lstEmployee: Array<any> = [];
     public yearMonth: number = 0;
     public actualTimeOptionDisp: Array<any> = [];
+    public timePeriodAllInfo: any = null;
     public actualTimeSelectedCode: number = 0;
     public selectedEmployee: string = '';
+    public resetTable: number = 0;
 
     @Watch('yearMonth')
     public changeYearMonth(value: any) {
@@ -55,6 +57,17 @@ export class Kdw003AComponent extends Vue {
                 }
             }
         });
+    }
+
+    get dateRanger() {
+        let self = this;
+        if (!_.isNil(self.timePeriodAllInfo)) {
+            for (let i = 0; i < self.timePeriodAllInfo.lstRange.length; i++) {
+                if (self.actualTimeSelectedCode == i) {
+                    return ({ startDate: self.timePeriodAllInfo.lstRange[i].startDate, endDate: self.timePeriodAllInfo.lstRange[i].endDate });
+                }
+            }
+        }
     }
 
     public created() {
@@ -74,16 +87,17 @@ export class Kdw003AComponent extends Vue {
         });
 
         let param = {
-            dateRange: null,
-            displayFormat: 0,
-            initScreen: 1,
+            changePeriodAtr: false,
             screenMode: 0,
+            errorRefStartAtr: false,
+            initDisplayDate: null,
+            employeeID: self.selectedEmployee,
+            objectDateRange: !_.isNil(self.dateRanger) ? {startDate: self.$dt.fromString(self.dateRanger.startDate), endDate: self.$dt.fromString(self.dateRanger.endDate)} : null,
             lstEmployee: [],
-            formatCodes: [],
-            objectShare: null,
-            showError: true,
-            closureId: 1,
-            initFromScreenOther: false
+            initClock: null,
+            displayFormat: 0,
+            displayDateRange: null,
+            transitionDesScreen: null,
         };
 
         self.$http.post('at', servicePath.initMOB, param).then((result: { data: any }) => {
@@ -139,6 +153,7 @@ export class Kdw003AComponent extends Vue {
         self.lstDataSourceLoad = self.formatDate(data.lstData);
         self.optionalHeader = data.lstControlDisplayItem.lstHeader;
         self.cellStates = data.lstCellState;
+        self.timePeriodAllInfo = data.periodInfo;
 
         self.fixHeaders = data.lstFixedHeader;
         self.showPrincipal = data.showPrincipal;
@@ -164,23 +179,21 @@ export class Kdw003AComponent extends Vue {
         self.yearMonth = data.periodInfo.yearMonth;
         self.lstEmployee = _.orderBy(data.lstEmployee, ['code'], ['asc']);
 
-        self.lstDataHeader = _.isNil(self.lstDataSourceLoad) ? null : _.keys(self.lstDataSourceLoad[0]);
+        _.remove(self.displayDataLst);
+
         self.lstDataSourceLoad.forEach((rowDataSrc: any) => {
             let rowData = [];
-            for (let i = 0; i < self.lstDataHeader.length; i++) {
-                let headerKey = self.lstDataHeader[i];
-
-                let header1 = (_.filter(self.optionalHeader, (o) => o.key == headerKey))[0];
-                if (!_.isNil(header1)) {
-                    rowData.push({ key: headerKey, value: rowDataSrc[headerKey], headerText: header1.headerText, color: header1.color });
-                }
-                let header2 = (_.filter(self.optionalHeader, (o) => !_.isEmpty(o.group) && o.group[1].key == headerKey))[0];
-                if (!_.isNil(header2)) {
-                    rowData.push({ key: headerKey, value: rowDataSrc[headerKey], headerText: header2.headerText, color: header2.color });
-                }
-            }
+            self.optionalHeader.forEach((header: any) => {
+                if (_.has(rowDataSrc, header.key)) {
+                    rowData.push({ key: header.key, value: rowDataSrc[header.key], headerText: header.headerText, color: header.color });
+                } else {
+                    rowData.push({ key: header.group[1].key, value: rowDataSrc[header.group[1].key], headerText: header.headerText, color: header.color });
+                }               
+            });
+            
             self.displayDataLst.push({ rowData, date: rowDataSrc.date });
         });
+
         if (self.lstDataSourceLoad.length == 0) {
             let rowData = [];
             let headers = (_.filter(self.optionalHeader, (o) => o.hidden == false));
@@ -189,6 +202,8 @@ export class Kdw003AComponent extends Vue {
             });
             self.displayDataLst.push({ rowData });
         }
+
+        self.resetTable++;
     }
 
     public formatDate(lstData: any) {
