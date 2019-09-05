@@ -446,6 +446,13 @@ module nts.uk.at.view.kaf010.b {
                 let calcValue = _.filter(calcLstInit, value => {
                     return item.attendanceType == value.attendanceID && item.frameNo == value.frameNo;     
                 })[0];
+                let frameName = item.frameName;
+                if(item.frameNo==11){
+                    frameName = nts.uk.resource.getText("KAF005_63");    
+                }
+                if(item.frameNo==12){
+                    frameName = nts.uk.resource.getText("KAF005_65");     
+                }
                 return new common.OvertimeCaculation(
                         item.companyID, 
                         item.appID, 
@@ -453,7 +460,7 @@ module nts.uk.at.view.kaf010.b {
                         "", 
                         item.frameNo, 
                         item.timeItemTypeAtr, 
-                        item.frameName, 
+                        frameName, 
                         calcValue.applicationTime, 
                         nts.uk.util.isNullOrUndefined(calcValue.preAppTime) ? null : self.convertIntToTime(parseInt(calcValue.preAppTime)), 
                         nts.uk.util.isNullOrUndefined(calcValue.caculationTime) ? null : self.convertIntToTime(parseInt(calcValue.caculationTime)),
