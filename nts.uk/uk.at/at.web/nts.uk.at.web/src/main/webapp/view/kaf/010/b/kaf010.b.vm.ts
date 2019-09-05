@@ -456,7 +456,7 @@ module nts.uk.at.view.kaf010.b {
                 return new common.OvertimeCaculation(
                         item.companyID, 
                         item.appID, 
-                        item.attendanceID, 
+                        item.attendanceType, 
                         "", 
                         item.frameNo, 
                         item.timeItemTypeAtr, 
@@ -1229,7 +1229,7 @@ module nts.uk.at.view.kaf010.b {
             
             beforeUpdateProcess(overtime: any){
                 let self = this;
-                service.checkBeforeRegister(overtime).done((data) => {    
+                service.checkBeforeUpdate(overtime).done((data) => {    
                     overtime.appOvertimeDetail = data.appOvertimeDetail;
                     self.updateOvertime(overtime);
                 }).fail((res) => {
