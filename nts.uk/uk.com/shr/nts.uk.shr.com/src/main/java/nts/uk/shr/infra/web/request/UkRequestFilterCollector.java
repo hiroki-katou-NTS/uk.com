@@ -9,7 +9,6 @@ import nts.arc.diagnose.performance.responsetime.aggregate.ResponseTimeAggregate
 import nts.arc.layer.ws.preprocess.RequestFilterCollector;
 import nts.arc.layer.ws.preprocess.RequestFilterMapping;
 import nts.arc.layer.ws.preprocess.filters.RequestPerformanceLogFilter;
-import nts.arc.layer.ws.preprocess.filters.RequestPerformancePoolFilter;
 import nts.arc.system.ServerSystemProperties;
 import nts.arc.web.session.HttpSubSessionFilter;
 import nts.uk.shr.infra.application.auth.WindowsAccountCatcher;
