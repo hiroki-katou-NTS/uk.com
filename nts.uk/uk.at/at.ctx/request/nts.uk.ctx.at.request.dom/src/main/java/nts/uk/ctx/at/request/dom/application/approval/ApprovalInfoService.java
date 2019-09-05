@@ -24,10 +24,11 @@ public class ApprovalInfoService implements ApprovalInfoInterface{
 	 */
 	@Override
 	public JudgmentUserAtr judgmentUser(String companyId, String appId, String sId){
-		//アルゴリズム「指定した社員が承認者であるかの判断」を実行する (Thực hiện [kiểm tra xem employee đã chỉ định có phải là approver ko])
-		Boolean	approverFlag = apprRootStateAd.judgmentTargetPersonIsApprover(companyId, appId, sId);
+		//ドメインモデル「申請」を取得する
 		Optional<Application_New> app = appRepo.findByID(companyId, appId);
 		if(!app.isPresent()) return JudgmentUserAtr.OTHER;
+		//アルゴリズム「指定した社員が承認者であるかの判断」を実行する (Thực hiện [kiểm tra xem employee đã chỉ định có phải là approver ko])
+		Boolean	approverFlag = apprRootStateAd.judgmentTargetPersonIsApprover(companyId, appId, sId);
 		String applicantID = app.get().getEmployeeID();
 		if(approverFlag){//承認者フラグがtrue TH co the approve
 			if(sId.equals(applicantID)) return JudgmentUserAtr.ALL;
