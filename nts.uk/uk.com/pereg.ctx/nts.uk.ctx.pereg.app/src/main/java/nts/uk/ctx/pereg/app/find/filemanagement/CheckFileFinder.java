@@ -776,7 +776,11 @@ public class CheckFileFinder {
 				case 2:
 					NumericItemDto numericItemDto = (NumericItemDto) singleDto.getDataTypeState();
 					double max = Math.pow(10, numericItemDto.getIntegerPart()) - Math.pow(10, -(numericItemDto.getDecimalPart() == null? 0:numericItemDto.getDecimalPart().intValue()));
-					double minItem = numericItemDto.getNumericItemMin() == null? (numericItemDto.getNumericItemMinus() == 1? -max :  0) : numericItemDto.getNumericItemMin().doubleValue();
+					double minItem = numericItemDto.getNumericItemMin() == null
+							? (numericItemDto.getNumericItemMinus() == 1
+									? (numericItemDto.getNumericItemAmount() == 1 ? 0 : -max)
+									: 0)
+							: numericItemDto.getNumericItemMin().doubleValue();
 					double maxItem = numericItemDto.getNumericItemMax() == null? max : numericItemDto.getNumericItemMax().doubleValue();
 					obj = new NumericConstraint(0, numericItemDto.getNumericItemMinus() == 0 ? true : false,
 							new BigDecimal(minItem), new BigDecimal(maxItem),
@@ -886,7 +890,9 @@ public class CheckFileFinder {
 						} else {
 							if (string.isPresent()) {
 								itemDto.setError(true);
-								ItemError error = new ItemError("", index, itemDto.getItemCode(), TextResource.localize(string.get(), Arrays.asList(gridHead.getItemName(), String.valueOf(stringContraint.getMaxLenght()))));
+								ItemError error = new ItemError("", index, itemDto.getItemCode(),
+										TextResource.localize(string.get(), Arrays.asList(gridHead.getItemName(),
+												String.valueOf(stringContraint.getMaxLenght()))));
 								itemErrors.add(error);
 								break;
 							}
@@ -909,18 +915,111 @@ public class CheckFileFinder {
 						Optional<String> string = numberContraint.validateString(value.toString());
 						if (string.isPresent()) {
 							itemDto.setError(true);
-							ItemError error = new ItemError("", index, itemDto.getItemCode(), string.get());
-							itemErrors.add(error);
+							if(string.get().equals("MsgB_11")) {
+								ItemError error = new ItemError("", index, itemDto.getItemCode(), 
+										TextResource.localize(string.get(), 
+												Arrays.asList(gridHead.getItemName(),
+												String.valueOf(numberContraint.getMin()), 
+												String.valueOf(numberContraint.getMax()),
+												String.valueOf(numberContraint.getDecimalPart()))));
+								itemErrors.add(error);
+								break;
+							}else if(string.get().equals("MsgB_8")) {
+								ItemError error = new ItemError("", index, itemDto.getItemCode(), 
+										TextResource.localize(string.get(), 
+												Arrays.asList(gridHead.getItemName(),
+												String.valueOf(numberContraint.getMin()),
+												String.valueOf(numberContraint.getMax()))));
+								itemErrors.add(error);
+								break;
+							}else if(string.get().equals("MsgB_12")) {
+								ItemError error = new ItemError("", index, itemDto.getItemCode(), 
+										TextResource.localize(string.get(), 
+												Arrays.asList(gridHead.getItemName(),
+												String.valueOf(numberContraint.getIntegerPart()),
+												String.valueOf(numberContraint.getDecimalPart()))));
+								itemErrors.add(error);
+								break;
+							}else if(string.get().equals("MsgB_9")) {
+								ItemError error = new ItemError("", index, itemDto.getItemCode(),
+										TextResource.localize(string.get(),
+												Arrays.asList(gridHead.getItemName(),
+												String.valueOf(numberContraint.getIntegerPart()))));
+								itemErrors.add(error);
+								break;
+							}else if(string.get().equals("MsgB_13")) {
+								ItemError error = new ItemError("", index, itemDto.getItemCode(),
+										TextResource.localize(string.get(), 
+												Arrays.asList(gridHead.getItemName(),
+												String.valueOf(numberContraint.getIntegerPart()),
+												String.valueOf(numberContraint.getDecimalPart()))));
+								itemErrors.add(error);
+								break;
+							}else if(string.get().equals("MsgB_10")) {
+								ItemError error = new ItemError("", index, itemDto.getItemCode(),
+										TextResource.localize(string.get(), 
+												Arrays.asList(gridHead.getItemName(),
+												String.valueOf(numberContraint.getIntegerPart()))));
+								itemErrors.add(error);
+								break;
+							}
 							break;
 						}
+						break;
 					}
 				} else {
 					if (itemDto.getValue() != null) {
 						Optional<String> string = numberContraint.validateString(value.toString());
 						if (string.isPresent()) {
 							itemDto.setError(true);
-							ItemError error = new ItemError("", index, itemDto.getItemCode(), string.get());
-							itemErrors.add(error);
+							if(string.get().equals("MsgB_11")) {
+								ItemError error = new ItemError("", index, itemDto.getItemCode(), 
+										TextResource.localize(string.get(), 
+												Arrays.asList(gridHead.getItemName(),
+												String.valueOf(numberContraint.getMin()), 
+												String.valueOf(numberContraint.getMax()),
+												String.valueOf(numberContraint.getDecimalPart()))));
+								itemErrors.add(error);
+								break;
+							}else if(string.get().equals("MsgB_8")) {
+								ItemError error = new ItemError("", index, itemDto.getItemCode(), 
+										TextResource.localize(string.get(), 
+												Arrays.asList(gridHead.getItemName(),
+												String.valueOf(numberContraint.getMin()),
+												String.valueOf(numberContraint.getMax()))));
+								itemErrors.add(error);
+								break;
+							}else if(string.get().equals("MsgB_12")) {
+								ItemError error = new ItemError("", index, itemDto.getItemCode(), 
+										TextResource.localize(string.get(), 
+												Arrays.asList(gridHead.getItemName(),
+												String.valueOf(numberContraint.getIntegerPart()),
+												String.valueOf(numberContraint.getDecimalPart()))));
+								itemErrors.add(error);
+								break;
+							}else if(string.get().equals("MsgB_9")) {
+								ItemError error = new ItemError("", index, itemDto.getItemCode(),
+										TextResource.localize(string.get(),
+												Arrays.asList(gridHead.getItemName(),
+												String.valueOf(numberContraint.getIntegerPart()))));
+								itemErrors.add(error);
+								break;
+							}else if(string.get().equals("MsgB_13")) {
+								ItemError error = new ItemError("", index, itemDto.getItemCode(),
+										TextResource.localize(string.get(), 
+												Arrays.asList(gridHead.getItemName(),
+												String.valueOf(numberContraint.getIntegerPart()),
+												String.valueOf(numberContraint.getDecimalPart()))));
+								itemErrors.add(error);
+								break;
+							}else if(string.get().equals("MsgB_10")) {
+								ItemError error = new ItemError("", index, itemDto.getItemCode(),
+										TextResource.localize(string.get(), 
+												Arrays.asList(gridHead.getItemName(),
+												String.valueOf(numberContraint.getIntegerPart()))));
+								itemErrors.add(error);
+								break;
+							}
 							break;
 						}
 					}
@@ -979,7 +1078,8 @@ public class CheckFileFinder {
 						Optional<String> string = timeContraint.validateString(value.toString());
 						if (string.isPresent()) {
 							itemDto.setError(true);
-							ItemError error = new ItemError("", index, itemDto.getItemCode(), string.get());
+							ItemError error = new ItemError("", index, itemDto.getItemCode(), TextResource.localize(string.get(),
+									Arrays.asList(gridHead.getItemName(), convertTime(timeContraint.getMin()), convertTime(timeContraint.getMax()))));
 							itemErrors.add(error);
 							break;
 						}
@@ -1000,7 +1100,8 @@ public class CheckFileFinder {
 						Optional<String> string = timeContraint.validateString(value.toString());
 						if (string.isPresent()) {
 							itemDto.setError(true);
-							ItemError error = new ItemError("", index, itemDto.getItemCode(), string.get());
+							ItemError error = new ItemError("", index, itemDto.getItemCode(), TextResource.localize(string.get(),
+									Arrays.asList(gridHead.getItemName(), convertTime(timeContraint.getMin()), convertTime(timeContraint.getMax()))));
 							itemErrors.add(error);
 							break;
 						}
@@ -1014,10 +1115,15 @@ public class CheckFileFinder {
 				if (gridHead.isRequired()) {
 					if (value != null && value != "") {
 						itemDto.setValue(convertTimepoint(value)); 
-						Optional<String> string = timePointContraint.validateString(value.toString());
+						Optional<String> string = timePointContraint.validateString(value);
 						if (string.isPresent()) {
 							itemDto.setError(true);
-							ItemError error = new ItemError("", index, itemDto.getItemCode(), string.get());
+							//MsgB_56
+							ItemError error = new ItemError("", index, itemDto.getItemCode(),
+									TextResource.localize(string.get(),
+											Arrays.asList(gridHead.getItemName(),
+													convertStringTimepoint(timePointContraint.getMin()),
+													convertStringTimepoint(timePointContraint.getMax()))));
 							itemErrors.add(error);
 							break;
 						}
@@ -1028,10 +1134,14 @@ public class CheckFileFinder {
 				} else {
 					if (value != null && value != "") {
 						itemDto.setValue(convertTimepoint(value));
-						Optional<String> string = timePointContraint.validateString(value.toString());
+						Optional<String> string = timePointContraint.validateString(value);
 						if (string.isPresent()) {
 							itemDto.setError(true);
-							ItemError error = new ItemError("", index, itemDto.getItemCode(), string.get());
+							ItemError error = new ItemError("", index, itemDto.getItemCode(), 
+									TextResource.localize(string.get(),
+											Arrays.asList(gridHead.getItemName(),
+													convertStringTimepoint(timePointContraint.getMin()),
+													convertStringTimepoint(timePointContraint.getMax()))));
 							itemErrors.add(error);
 							break;
 						}
@@ -1074,6 +1184,19 @@ public class CheckFileFinder {
 	}
 	
 	/**
+	 * danh cho item kieu time - 4
+	 * convertTimepoint -> int
+	 * @param value
+	 * @return
+	 */
+	private String convertTime(int value) {
+		int hours = value/60;
+		int minute = (value  - hours*60)%60;
+		String valueConvert = hours+":"+ (String.valueOf(minute).length() == 1? "0"+ minute : minute);
+		return valueConvert;
+	}
+	
+	/**
 	 * danh cho item kieu timepoint - 5
 	 * convertTimepoint -> int
 	 * @param value
@@ -1101,6 +1224,46 @@ public class CheckFileFinder {
 			}
 		}
 		return value;
+	}
+	
+	private String convertStringTimepoint(int value) {
+		int hours = value/60;
+		int minute = (value  - hours*60)%60;
+		String valueConvert = hours+":"+ (String.valueOf(minute).length() == 1? "0"+ minute : minute);
+		String result = "";
+		String[] valueSplit = valueConvert.split(":");
+		if(valueSplit.length > 0) {
+			if(valueSplit.length == 2) {
+				if(!isNumeric(valueSplit[0]) || !isNumeric(valueSplit[1])) return valueConvert;
+			}
+			if(valueSplit.length > 2) {
+				 return valueConvert;
+			}
+			
+			if(valueSplit.length == 1) {
+				if(!isNumeric(valueSplit[0])) return valueConvert;
+			}
+			
+			int day = hours/24;
+			
+			if (hours < -1) {
+				return "前日" + Math.abs(hours) + ":"+ valueSplit[1];
+			}
+			if (day == 0) {
+				result = "当日" + hours + ":"+ valueSplit[1];
+			}
+			
+			if(day == 1) {
+				result = "翌日" + (hours - 24) + ":"+ valueSplit[1];
+			}
+			
+			if(day == 2) {
+				result = "翌々日" + (hours - 48) + ":"+ valueSplit[1];
+				
+			}
+		}
+		
+		return result;
 	}
 	
 	private Object convertValue(int valueType, String value) {
