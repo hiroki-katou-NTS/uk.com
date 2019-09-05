@@ -61,15 +61,15 @@ public class AddEmpBasicPenNumInforCommandHandler extends CommandHandler<Credent
                     socialInsurAcquisiInforCommand.getEmployeeId(),
                     socialInsurAcquisiInforCommand.getPercentOrMore() == 0 ? null : socialInsurAcquisiInforCommand.getPercentOrMore(),
                     socialInsurAcquisiInforCommand.getRemarksOther() == 0 ? null : socialInsurAcquisiInforCommand.getRemarksOther(),
-                    socialInsurAcquisiInforCommand.getRemarksAndOtherContents().isEmpty() ? null : socialInsurAcquisiInforCommand.getRemarksAndOtherContents(),
-                    socialInsurAcquisiInforCommand.getRemunMonthlyAmountKind() == 0? null : socialInsurAcquisiInforCommand.getRemunMonthlyAmountKind(),
-                    socialInsurAcquisiInforCommand.getRemunMonthlyAmount() == 0 ? null : socialInsurAcquisiInforCommand.getRemunMonthlyAmount(),
-                    socialInsurAcquisiInforCommand.getTotalMonthlyRemun() == 0 ? null : socialInsurAcquisiInforCommand.getTotalMonthlyRemun(),
-                    socialInsurAcquisiInforCommand.getLivingAbroad() == 0 ? null : socialInsurAcquisiInforCommand.getLivingAbroad(),
-                    socialInsurAcquisiInforCommand.getReasonOther() == 0 ? null : socialInsurAcquisiInforCommand.getReasonOther(),
-                    socialInsurAcquisiInforCommand.getReasonAndOtherContents().isEmpty() ? null : socialInsurAcquisiInforCommand.getReasonAndOtherContents(),
+                    socialInsurAcquisiInforCommand.getRemarksAndOtherContents(),
+                    socialInsurAcquisiInforCommand.getRemunMonthlyAmountKind(),
+                    socialInsurAcquisiInforCommand.getRemunMonthlyAmount(),
+                    socialInsurAcquisiInforCommand.getTotalMonthlyRemun(),
+                    socialInsurAcquisiInforCommand.getLivingAbroad(),
+                    socialInsurAcquisiInforCommand.getReasonOther(),
+                    socialInsurAcquisiInforCommand.getReasonAndOtherContents(),
                     socialInsurAcquisiInforCommand.getShortTimeWorkers() == 0 ? null : socialInsurAcquisiInforCommand.getShortTimeWorkers(),
-                    socialInsurAcquisiInforCommand.getShortStay() == 0 ? null : socialInsurAcquisiInforCommand.getShortStay(),
+                    socialInsurAcquisiInforCommand.getShortStay(),
                     socialInsurAcquisiInforCommand.getDepenAppoint() == 0 && socialInsurAcquisiInforCommand.getDepenAppoint() == null ? null : socialInsurAcquisiInforCommand.getDepenAppoint(),
                     socialInsurAcquisiInforCommand.getQualifiDistin(),
                     socialInsurAcquisiInforCommand.getContinReemAfterRetirement() == 0? null : socialInsurAcquisiInforCommand.getContinReemAfterRetirement()
@@ -96,7 +96,7 @@ public class AddEmpBasicPenNumInforCommandHandler extends CommandHandler<Credent
             MultiEmpWorkInfo multiEmpWorkInfoDomain = new MultiEmpWorkInfo(multiEmpWorkInfoCommand.getEmployeeId(),multiEmpWorkInfoCommand.getIsMoreEmp());
             multiEmpWorkInfoRepository.update(multiEmpWorkInfoDomain);
         }else{
-            MultiEmpWorkInfo multiEmpWorkInfoDomain = new MultiEmpWorkInfo(multiEmpWorkInfoCommand.getEmployeeId(),multiEmpWorkInfoCommand.getIsMoreEmp() == 0 ? null : multiEmpWorkInfoCommand.getIsMoreEmp());
+            MultiEmpWorkInfo multiEmpWorkInfoDomain = new MultiEmpWorkInfo(multiEmpWorkInfoCommand.getEmployeeId(),multiEmpWorkInfoCommand.getIsMoreEmp());
             multiEmpWorkInfoRepository.add(multiEmpWorkInfoDomain);
         }
     }

@@ -4,8 +4,11 @@ package nts.uk.ctx.pr.shared.ws.socialinsurance.employeesociainsur;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pr.shared.app.command.socialinsurance.employeesociainsur.emphealinsurbeneinfo.AddEmpBasicPenNumInforCommandHandler;
 import nts.uk.ctx.pr.shared.app.command.socialinsurance.employeesociainsur.emphealinsurbeneinfo.CredentialAcquisitionInfoCommand;
-import nts.uk.ctx.pr.shared.app.find.socialinsurance.employeesociainsur.emphealinsurbeneinfo.SocialInsurAcquisiInforDto;
-import nts.uk.ctx.pr.shared.app.find.socialinsurance.employeesociainsur.emphealinsurbeneinfo.SocialInsurAcquisiInforFinder;
+import nts.uk.ctx.pr.shared.app.find.socialinsurance.employeesociainsur.emphealinsurbeneinfo.*;
+import nts.uk.ctx.pr.shared.dom.adapter.query.person.PersonInfoExportAdapter;
+import nts.uk.ctx.pr.shared.dom.adapter.query.person.PersonInfomationAdapter;
+import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmpBasicPenNumInfor;
+import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.MultiEmpWorkInfo;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.SocialInsurAcquisiInfor;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -20,8 +23,8 @@ import java.util.Optional;
 @Produces("application/json")
 public class InforOnWelfPenInsurAccWebService extends WebService{
 
-    //@Inject
-    //private PersonInfomationAdapter adapter;
+    @Inject
+    private PersonInfomationAdapter adapter;
 
     @Inject
     private AddEmpBasicPenNumInforCommandHandler commandHandler;
@@ -29,12 +32,18 @@ public class InforOnWelfPenInsurAccWebService extends WebService{
     @Inject
     private SocialInsurAcquisiInforFinder socialInsurAcquisiInforFinder;
 
+    @Inject
+    private MultiEmpWorkInfoFinder multiEmpWorkInfoFinder;
 
-    /*@POST
+    @Inject
+    private EmpBasicPenNumInforFinder empBasicPenNumInforFinder;
+
+
+    @POST
     @Path("getPersonInfo/{empID}")
     public PersonInfoExportAdapter getPersonInfo(@PathParam("empID")String empID){
         return adapter.getPersonInfo(empID);
-    }*/
+    }
 
     @POST
     @Path("add")
@@ -56,5 +65,29 @@ public class InforOnWelfPenInsurAccWebService extends WebService{
         return null;
     }
 
+    @POST
+    @Path("getMultiEmpWorkInfoById/{empID}")
+    public MultiEmpWorkInfoDto getMultiEmpWorkInfoById(@PathParam("empID")String empID){
+        String cid = AppContexts.user().companyId();
+        Optional<MultiEmpWorkInfo> multiEmpWorkInfo = multiEmpWorkInfoFinder.getMultiEmpWorkInfoById(empID);
 
+        if(multiEmpWorkInfo.isPresent()){
+            return MultiEmpWorkInfoDto.fromDomain(multiEmpWorkInfo.get());
+        }
+
+        return null;
+    }
+
+
+    @POST
+    @Path("getEmpBasicPenNumInforById/{empID}")
+    public EmpBasicPenNumInforDto getEmpBasicPenNumInforById(@PathParam("empID")String empID){
+        Optional<EmpBasicPenNumInfor> empBasicPenNumInfor = empBasicPenNumInforFinder.getEmpBasicPenNumInforById(empID);
+
+        if(empBasicPenNumInfor.isPresent()){
+            return EmpBasicPenNumInforDto.fromDomain(empBasicPenNumInfor.get());
+        }
+
+        return null;
+    }
 }

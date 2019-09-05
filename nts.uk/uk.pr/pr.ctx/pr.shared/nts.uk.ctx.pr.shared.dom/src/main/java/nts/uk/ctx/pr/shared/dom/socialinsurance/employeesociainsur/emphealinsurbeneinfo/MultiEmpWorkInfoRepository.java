@@ -1,6 +1,5 @@
 package nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
