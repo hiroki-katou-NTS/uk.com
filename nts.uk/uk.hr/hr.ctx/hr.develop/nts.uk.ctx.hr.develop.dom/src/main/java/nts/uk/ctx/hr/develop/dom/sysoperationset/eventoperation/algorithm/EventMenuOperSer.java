@@ -99,6 +99,10 @@ public class EventMenuOperSer {
 			for(HRDevEvent item: hrEventMenu.getListHrDevEvent()){
 				Optional<EventOperation> eventOper = this.findEventByKey(AppContexts.user().companyId(), item.getEventId().value);
 				if(!eventOper.isPresent()){
+					// ドメインモデル[イベント管理]を追加する - insert event operation
+					eventRep.add(EventOperation.createFromJavaType(item.getEventId().value, 0, 
+											AppContexts.user().companyId(), 
+											new BigInteger(AppContexts.user().companyCode())));
 					listEventOper.add(EventOperation.createFromJavaType(item.getEventId().value, 0, AppContexts.user().companyId(), 
 							new BigInteger(AppContexts.user().companyCode())));
 				}else{
@@ -111,6 +115,9 @@ public class EventMenuOperSer {
 				if(menuOper.isPresent()){
 					listMenuOper.add(menuOper.get());
 				}else{
+					menuRep.add(MenuOperation.createFromJavaType(obj.getProgramId().toString(), 0, 
+							AppContexts.user().companyId(), 0, 0,
+							new BigInteger(AppContexts.user().companyCode())));
 					listMenuOper.add(MenuOperation.createFromJavaType(obj.getProgramId().toString(), 0, 
 																		AppContexts.user().companyId(), 0, 0,
 																		new BigInteger(AppContexts.user().companyCode())));
