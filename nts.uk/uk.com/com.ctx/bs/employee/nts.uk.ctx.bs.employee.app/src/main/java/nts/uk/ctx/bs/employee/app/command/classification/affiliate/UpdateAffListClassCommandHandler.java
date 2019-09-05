@@ -1,6 +1,7 @@
 package nts.uk.ctx.bs.employee.app.command.classification.affiliate;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistItem;
@@ -65,21 +67,28 @@ public class UpdateAffListClassCommandHandler extends CommandHandlerWithResult<L
 		// check xem có hiển thị trên màn hình ko?
 		UpdateAffClassificationCommand updateFirst = command.get(0);
 		if (updateFirst.getStartDate() != null) {
-			Map<String, List<AffClassHistory>> affClassHisMap = affClassHistoryRepo.getBySidsWithCid(cid, sids)
-					.stream().collect(Collectors.groupingBy(c -> c.getEmployeeId()));
+			Map<String, List<AffClassHistory>> affClassHisMap = affClassHistoryRepo.getBySidsWithCid(cid, sids).stream()
+					.collect(Collectors.groupingBy(c -> c.getEmployeeId()));
 			affClassHisMaps.putAll(affClassHisMap);
-			}
-			command.stream().forEach(c -> {
-			if (c.getStartDate() != null) {
-				List<AffClassHistory> affClassHistLst = affClassHisMaps.get(c.getEmployeeId());
-				if (affClassHistLst != null) {
-					AffClassHistory historyOption = affClassHistLst.get(0);
-					Optional<DateHistoryItem> itemToBeUpdateOpt = historyOption.getPeriods().stream()
-							.filter(date -> date.identifier().equals(c.getHistoryId())).findFirst();
-					if (itemToBeUpdateOpt.isPresent()) {
-						historyOption.changeSpan(itemToBeUpdateOpt.get(), new DatePeriod(c.getStartDate(),
-								c.getEndDate() != null ? c.getEndDate() : ConstantUtils.maxDate()));
-						histories.add(new MidAffClass(historyOption, itemToBeUpdateOpt.get()));
+		}
+		
+		command.stream().forEach(c -> {
+			try {
+				if (c.getStartDate() != null) {
+					List<AffClassHistory> affClassHistLst = affClassHisMaps.get(c.getEmployeeId());
+					if (affClassHistLst != null) {
+						AffClassHistory historyOption = affClassHistLst.get(0);
+						Optional<DateHistoryItem> itemToBeUpdateOpt = historyOption.getPeriods().stream()
+								.filter(date -> date.identifier().equals(c.getHistoryId())).findFirst();
+						if (itemToBeUpdateOpt.isPresent()) {
+							historyOption.changeSpan(itemToBeUpdateOpt.get(), new DatePeriod(c.getStartDate(),
+									c.getEndDate() != null ? c.getEndDate() : ConstantUtils.maxDate()));
+							histories.add(new MidAffClass(historyOption, itemToBeUpdateOpt.get()));
+
+						} else {
+							errors.add(c.getEmployeeId());
+							return;
+						}
 
 					} else {
 						errors.add(c.getEmployeeId());
@@ -91,17 +100,16 @@ public class UpdateAffListClassCommandHandler extends CommandHandlerWithResult<L
 					return;
 				}
 
-			} else {
-				errors.add(c.getEmployeeId());
-				return;
-			}
-				
-			// update history item
-			AffClassHistItem historyItem = AffClassHistItem.createFromJavaType(c.getEmployeeId(), c.getHistoryId(),
-					c.getClassificationCode());
-			items.add(historyItem);
+				// update history item
+				AffClassHistItem historyItem = AffClassHistItem.createFromJavaType(c.getEmployeeId(), c.getHistoryId(),
+						c.getClassificationCode());
+				items.add(historyItem);
 
-			});
+			} catch (BusinessException e) {
+				MyCustomizeException ex = new MyCustomizeException(e.getMessageId(), Arrays.asList(c.getEmployeeId()));
+				errorExceptionLst.add(ex);
+			}
+		});
 
 			if(!histories.isEmpty()) {
 				affClassHistoryRepositoryService.updateAll(histories);

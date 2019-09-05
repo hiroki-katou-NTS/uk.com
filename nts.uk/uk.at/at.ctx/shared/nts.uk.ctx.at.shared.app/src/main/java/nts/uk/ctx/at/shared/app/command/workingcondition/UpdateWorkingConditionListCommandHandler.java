@@ -11,6 +11,7 @@ import javax.inject.Inject;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
@@ -60,11 +61,13 @@ implements PeregUpdateListCommandHandler<UpdateWorkingConditionCommand>{
 		}
 		cmd.stream().forEach(c ->{
 			if(c.getStartDate() != null) {
-				Optional<WorkingCondition> workingCondOpt =  listHistBySids.stream().filter(item -> item.getEmployeeId().equals(c.getEmployeeId())).findFirst();
-				if(!workingCondOpt.isPresent()) {
+				List<WorkingCondition> workingCondOpt = listHistBySids.stream()
+						.filter(item -> item.getEmployeeId().equals(c.getEmployeeId())).collect(Collectors.toList());
+				if (CollectionUtil.isEmpty(workingCondOpt)) {
 					errorLst.add(c.getEmployeeId());
+					return;
 				}
-				WorkingCondition workingCond = workingCondOpt.get();
+				WorkingCondition workingCond = workingCondOpt.get(0);
 				Optional<DateHistoryItem> itemToBeUpdated = workingCond.getDateHistoryItem().stream().filter(hist->hist.identifier().equals(c.getHistId())).findFirst();
 				if (!itemToBeUpdated.isPresent()){
 					errorLst.add(c.getEmployeeId());

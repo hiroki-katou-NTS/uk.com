@@ -13,10 +13,11 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.RervLeaGrantRemDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.ReserveLeaveGrantRemainingData;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.pereg.app.command.MyCustomizeException;
 import nts.uk.shr.pereg.app.command.PeregAddCommandResult;
 import nts.uk.shr.pereg.app.command.PeregAddListCommandHandler;
 @Stateless
-public class AddResvLeaListCommandPeregHandler extends CommandHandlerWithResult<List<AddResvLeaRemainPeregCommand>, List<PeregAddCommandResult>>
+public class AddResvLeaListCommandPeregHandler extends CommandHandlerWithResult<List<AddResvLeaRemainPeregCommand>, List<MyCustomizeException>>
 implements PeregAddListCommandHandler<AddResvLeaRemainPeregCommand>{
 	@Inject
 	private RervLeaGrantRemDataRepository resvLeaRepo;
@@ -32,7 +33,7 @@ implements PeregAddListCommandHandler<AddResvLeaRemainPeregCommand>{
 	}
 
 	@Override
-	protected List<PeregAddCommandResult> handle(CommandHandlerContext<List<AddResvLeaRemainPeregCommand>> context) {
+	protected List<MyCustomizeException> handle(CommandHandlerContext<List<AddResvLeaRemainPeregCommand>> context) {
 		List<AddResvLeaRemainPeregCommand> cmd = context.getCommand();
 		String cid = AppContexts.user().companyId();
 		List<PeregAddCommandResult> result = new ArrayList<>();
@@ -59,7 +60,7 @@ implements PeregAddListCommandHandler<AddResvLeaRemainPeregCommand>{
 		if(!insertLst.isEmpty()) {
 			resvLeaRepo.addAll(cid , insertLst);
 		}
-		return null;
+		return new ArrayList<>();
 	}
 
 }

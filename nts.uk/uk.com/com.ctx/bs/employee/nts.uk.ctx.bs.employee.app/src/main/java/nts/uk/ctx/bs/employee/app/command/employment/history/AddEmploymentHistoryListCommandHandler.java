@@ -1,6 +1,7 @@
 package nts.uk.ctx.bs.employee.app.command.employment.history;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -8,6 +9,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.text.IdentifierUtil;
@@ -21,10 +23,10 @@ import nts.uk.ctx.bs.person.dom.person.common.ConstantUtils;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
-import nts.uk.shr.pereg.app.command.PeregAddCommandResult;
+import nts.uk.shr.pereg.app.command.MyCustomizeException;
 import nts.uk.shr.pereg.app.command.PeregAddListCommandHandler;
 @Stateless
-public class AddEmploymentHistoryListCommandHandler extends CommandHandlerWithResult<List<AddEmploymentHistoryCommand>, List<PeregAddCommandResult>>
+public class AddEmploymentHistoryListCommandHandler extends CommandHandlerWithResult<List<AddEmploymentHistoryCommand>, List<MyCustomizeException>>
 implements PeregAddListCommandHandler<AddEmploymentHistoryCommand>{
 	@Inject
 	private EmploymentHistoryRepository employmentHistoryRepository;
@@ -44,10 +46,10 @@ implements PeregAddListCommandHandler<AddEmploymentHistoryCommand>{
 	}
 
 	@Override
-	protected List<PeregAddCommandResult> handle(CommandHandlerContext<List<AddEmploymentHistoryCommand>> context) {
+	protected List<MyCustomizeException> handle(CommandHandlerContext<List<AddEmploymentHistoryCommand>> context) {
 		List<AddEmploymentHistoryCommand> command = context.getCommand();
 		String cid = AppContexts.user().companyId();
-		List<PeregAddCommandResult> historyIds = new ArrayList<>();
+		List<MyCustomizeException> result = new ArrayList<>();
 		List<EmploymentHistoryIntermediate> domains = new ArrayList<>();
 		List<EmploymentHistoryItem> employmentHistoryItems = new ArrayList<>();
 		List<String> sids = command.stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
@@ -55,22 +57,29 @@ implements PeregAddListCommandHandler<AddEmploymentHistoryCommand>{
 				.stream().collect(Collectors.groupingBy(c -> c.getEmployeeId()));
 
 		command.stream().forEach(c -> {
-			String newHistID = IdentifierUtil.randomUniqueId();
-			DateHistoryItem dateItem = new DateHistoryItem(newHistID,
-					new DatePeriod(c.getStartDate() != null ? c.getStartDate() : ConstantUtils.minDate(),
-							c.getEndDate() != null ? c.getEndDate() : ConstantUtils.maxDate()));
-			List<EmploymentHistory> histBySidLst = histBySidsMap.get(c.getEmployeeId());
-			EmploymentHistory itemtoBeAdded = new EmploymentHistory(cid, c.getEmployeeId(), new ArrayList<>());
-			if (histBySidLst != null) {
-				itemtoBeAdded = histBySidLst.get(0);
+			try {
+				String newHistID = IdentifierUtil.randomUniqueId();
+				DateHistoryItem dateItem = new DateHistoryItem(newHistID,
+						new DatePeriod(c.getStartDate() != null ? c.getStartDate() : ConstantUtils.minDate(),
+								c.getEndDate() != null ? c.getEndDate() : ConstantUtils.maxDate()));
+				List<EmploymentHistory> histBySidLst = histBySidsMap.get(c.getEmployeeId());
+				EmploymentHistory itemtoBeAdded = new EmploymentHistory(cid, c.getEmployeeId(), new ArrayList<>());
+				if (histBySidLst != null) {
+					itemtoBeAdded = histBySidLst.get(0);
+				}
+				itemtoBeAdded.add(dateItem);
+				// phải set Segment mặc định là 1 vì Enum value từ 1-> 4
+				EmploymentHistoryItem histItem = EmploymentHistoryItem.createFromJavaType(newHistID, c.getEmployeeId(),
+						c.getEmploymentCode(), c.getSalarySegment() != null ? c.getSalarySegment().intValue() : null);
+				domains.add(new EmploymentHistoryIntermediate(itemtoBeAdded, dateItem));
+				employmentHistoryItems.add(histItem);
+				
+			}catch(BusinessException e) {
+				MyCustomizeException ex = new MyCustomizeException(e.getMessageId(), Arrays.asList(c.getEmployeeId()));
+				result.add(ex);
 			}
-			itemtoBeAdded.add(dateItem);
-			// phải set Segment mặc định là 1 vì Enum value từ 1-> 4
-			EmploymentHistoryItem histItem = EmploymentHistoryItem.createFromJavaType(newHistID, c.getEmployeeId(),
-					c.getEmploymentCode(), c.getSalarySegment() != null ? c.getSalarySegment().intValue() : null);
-			domains.add(new EmploymentHistoryIntermediate(itemtoBeAdded, dateItem));
-			employmentHistoryItems.add(histItem);
-			historyIds.add(new PeregAddCommandResult(newHistID));
+
+			
 		});
 		if (!domains.isEmpty()) {
 			employmentHistoryService.addAll(domains);
@@ -80,7 +89,7 @@ implements PeregAddListCommandHandler<AddEmploymentHistoryCommand>{
 			employmentHistoryItemRepository.addAll(employmentHistoryItems);
 		}
 
-		return historyIds;
+		return result;
 	}
 
 }

@@ -438,7 +438,7 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements A
 		
 		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			String sql = "SELECT * FROM BSYMT_AFF_WORKPLACE_HIST WHERE  CID = ? AND SID IN ("
-					+ NtsStatement.In.createParamsString(subList) + ")";
+					+ NtsStatement.In.createParamsString(subList) + ")" + " ORDER BY SID, START_DATE DESC";
 
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 				stmt.setString( 1, cid);

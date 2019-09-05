@@ -421,7 +421,7 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 				+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
 				+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL,"
 				+ " LEAVE_MANA_ID_VAL, CID_VAL, SID_VAL, UNKNOWN_DATE_VAL, DAYOFF_DATE_VAL, EXPIRED_DATE_VAL, OCCURRED_DAYS_VAL, OCCURRED_TIMES_VAL,"
-				+ " UNUSED_DAYS_VAL, UNUSED_TIMES_VAL, SUB_HD_ATR_VAL, FULL_DAY_TIME_VAL, HALF_DAY_TIME_VAL, DISAPEAR_DATE_VAL); ";
+				+ " UNUSED_DAYS_VAL, UNUSED_TIMES_VAL, SUB_HD_ATR_VAL, FULL_DAY_TIME_VAL, HALF_DAY_TIME_VAL, DATE_VAL); ";
 		String insCcd = AppContexts.user().companyCode();
 		String insScd = AppContexts.user().employeeCode();
 		String insPg = AppContexts.programId();
@@ -430,7 +430,7 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 		String updScd = insScd;
 		String updPg = insPg;
 		StringBuilder sb = new StringBuilder();
-		domains.parallelStream().forEach(c -> {
+		domains.stream().forEach(c -> {
 			String sql = INS_SQL;
 			sql = sql.replace("INS_DATE_VAL", "'" + GeneralDateTime.now() + "'");
 			sql = sql.replace("INS_CCD_VAL", "'" + insCcd + "'");
@@ -460,7 +460,7 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 			sql = sql.replace("SUB_HD_ATR_VAL", "" + c.getSubHDAtr().value +"");
 			sql = sql.replace("FULL_DAY_TIME_VAL", "" + c.getFullDayTime().v() +"");
 			sql = sql.replace("HALF_DAY_TIME_VAL", "" + c.getHalfDayTime().v() +"");
-			sql = sql.replace("DISAPEAR_DATE",  c.getDisapearDate().isPresent()? "'" + c.getDisapearDate().get() +"'": "null");
+			sql = sql.replace("DATE_VAL",  c.getDisapearDate() == null? "null": (c.getDisapearDate().isPresent()? "'" + c.getDisapearDate().get() +"'": "null"));
 			sb.append(sql);
 		});
 

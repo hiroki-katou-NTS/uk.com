@@ -16,11 +16,12 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.LeaveForCareInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.UpperLimitSetting;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.pereg.app.command.MyCustomizeException;
 import nts.uk.shr.pereg.app.command.PeregAddCommandResult;
 import nts.uk.shr.pereg.app.command.PeregAddListCommandHandler;
 @Stateless
 @Transactional
-public class AddCareLeaveListCommandHandler extends CommandHandlerWithResult<List<AddCareLeaveCommand>, List<PeregAddCommandResult>>
+public class AddCareLeaveListCommandHandler extends CommandHandlerWithResult<List<AddCareLeaveCommand>, List<MyCustomizeException>>
 implements PeregAddListCommandHandler<AddCareLeaveCommand>{
 
 	@Inject
@@ -37,7 +38,7 @@ implements PeregAddListCommandHandler<AddCareLeaveCommand>{
 	}
 
 	@Override
-	protected List<PeregAddCommandResult> handle(CommandHandlerContext<List<AddCareLeaveCommand>> context) {
+	protected List<MyCustomizeException> handle(CommandHandlerContext<List<AddCareLeaveCommand>> context) {
 		String cid = AppContexts.user().companyId();
 		List<AddCareLeaveCommand> cmd = context.getCommand();
 		List<PeregAddCommandResult> result = new ArrayList<>();
@@ -78,7 +79,7 @@ implements PeregAddListCommandHandler<AddCareLeaveCommand>{
 			result.add(new PeregAddCommandResult(c.getSId()));
 		});
 		service.addData(cid, childCareDataInsert, leaveCareDataInsert, childCareLeaveInfoInsert, leaveCareInfoInsert);
-		return result;
+		return new ArrayList<>();
 	}
 
 }

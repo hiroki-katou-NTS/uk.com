@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.app.command.dailyperformanceformat.businesstype;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -8,6 +9,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmployee;
@@ -65,31 +67,41 @@ implements PeregUpdateListCommandHandler<UpdateBusinessWorkTypeOfHistoryCommand>
 		}
 		
 		cmd.stream().forEach(c ->{
-			if(c.getStartDate()!= null) {
-				Optional<BusinessTypeOfEmployeeHistory> optional = bTypeOfEmployeeHistory.stream().filter(item -> item.getEmployeeId().equals(c.getEmployeeId())).findFirst();
-				if (!optional.isPresent()) {
+			try {
+				if (c.getStartDate() != null) {
+					Optional<BusinessTypeOfEmployeeHistory> optional = bTypeOfEmployeeHistory.stream()
+							.filter(item -> item.getEmployeeId().equals(c.getEmployeeId())).findFirst();
+					if (!optional.isPresent()) {
+						errorLst.add(c.getEmployeeId());
+						return;
+					}
+					BusinessTypeOfEmployeeHistory bEmployeeHistory = optional.get();
+					Optional<DateHistoryItem> optionalHisItem = bEmployeeHistory.getHistory().stream()
+							.filter(x -> x.identifier().equals(c.getHistoryId())).findFirst();
+					if (!optionalHisItem.isPresent()) {
+						errorLst.add(c.getEmployeeId());
+						return;
+					}
+					bEmployeeHistory.changeSpan(optionalHisItem.get(),
+							new DatePeriod(c.getStartDate(), c.getEndDate()));
+					bTypeOfEmployeeHistoryInterLst
+							.add(new BusinessTypeOfEmployeeHistoryInter(bEmployeeHistory, optionalHisItem.get()));
+				}
+				Optional<BusinessTypeOfEmployee> bTypeOfEmp = bTypeOfEmployee.stream()
+						.filter(emp -> emp.getHistoryId().equals(c.getHistoryId())).findFirst();
+				// update typeof employee
+				if (!bTypeOfEmp.isPresent()) {
 					errorLst.add(c.getEmployeeId());
 					return;
 				}
-				BusinessTypeOfEmployeeHistory bEmployeeHistory = optional.get();
-				Optional<DateHistoryItem> optionalHisItem = bEmployeeHistory.getHistory().stream()
-						.filter(x -> x.identifier().equals(c.getHistoryId())).findFirst();
-				if (!optionalHisItem.isPresent()) {
-					errorLst.add(c.getEmployeeId());
-					return;
-				}
-				bEmployeeHistory.changeSpan(optionalHisItem.get(), new DatePeriod(c.getStartDate(), c.getEndDate()));
-				bTypeOfEmployeeHistoryInterLst.add(new BusinessTypeOfEmployeeHistoryInter(bEmployeeHistory, optionalHisItem.get()));
+				BusinessTypeOfEmployee bEmployee = BusinessTypeOfEmployee.createFromJavaType(c.getBusinessTypeCode(),
+						c.getHistoryId(), c.getEmployeeId());
+				histItems.add(bEmployee);
+			} catch (BusinessException e) {
+				MyCustomizeException ex = new MyCustomizeException(e.getMessageId(), Arrays.asList(c.getEmployeeId()));
+				errorExceptionLst.add(ex);
 			}
-			Optional<BusinessTypeOfEmployee> bTypeOfEmp = bTypeOfEmployee.stream().filter(emp -> emp.getHistoryId().equals(c.getHistoryId())).findFirst();
-			// update typeof employee
-			if (!bTypeOfEmp.isPresent()) {
-				errorLst.add(c.getEmployeeId());
-				return;
-			}
-			BusinessTypeOfEmployee bEmployee = BusinessTypeOfEmployee.createFromJavaType(c.getBusinessTypeCode(), c.getHistoryId(),
-					c.getEmployeeId());
-			histItems.add(bEmployee);
+
 		});
 		
 		if(!bTypeOfEmployeeHistoryInterLst.isEmpty()) {

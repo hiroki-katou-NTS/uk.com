@@ -1,5 +1,6 @@
 package nts.uk.ctx.pereg.app.command.facade;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -21,8 +22,15 @@ import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.pereg.app.command.common.FacadeUtils;
 import nts.uk.ctx.pereg.app.find.employee.category.EmpCtgFinder;
+import nts.uk.ctx.pereg.app.find.layoutdef.classification.GridEmpBody;
+import nts.uk.ctx.pereg.app.find.layoutdef.classification.GridEmpHead;
+import nts.uk.ctx.pereg.app.find.layoutdef.classification.GridEmployeeDto;
+import nts.uk.ctx.pereg.app.find.layoutdef.classification.GridEmployeeInfoDto;
+import nts.uk.ctx.pereg.app.find.person.info.item.ItemTypeStateDto;
+import nts.uk.ctx.pereg.app.find.person.info.item.SelectionItemDto;
+import nts.uk.ctx.pereg.app.find.person.info.item.SingleItemDto;
+import nts.uk.ctx.pereg.app.find.processor.GridPeregProcessor;
 import nts.uk.ctx.pereg.app.find.processor.ItemDefFinder;
 import nts.uk.ctx.pereg.dom.person.info.category.CategoryType;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
@@ -57,6 +65,7 @@ import nts.uk.shr.pereg.app.command.userdef.PeregUserDefAddListCommandHandler;
 import nts.uk.shr.pereg.app.command.userdef.PeregUserDefListUpdateCommandHandler;
 import nts.uk.shr.pereg.app.command.userdef.PeregUserDefUpdateCommand;
 import nts.uk.shr.pereg.app.find.PeregEmpInfoQuery;
+import nts.uk.shr.pereg.app.find.PeregGridQuery;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.PeregQueryByListEmp;
 
@@ -96,10 +105,10 @@ public class PeregCommonCommandFacade {
 	private PerInfoItemDefRepositoty perInfoItemDefRepositoty;
 	
 	@Inject
-	private FacadeUtils facadeUtils;
+	private CategoryValidate categoryValidate;
 	
 	@Inject
-	private CategoryValidate categoryValidate;
+	private GridPeregProcessor gridProcessor;
 	
 	private final static String nameEndate = "終了日";
 	
@@ -226,11 +235,6 @@ public class PeregCommonCommandFacade {
 
 		ItemsByCategory itemFirstByCtg = containerAdds.get(0).getInputs();
 		
-		if(modeUpdate == 2) {
-			// đoạn nay update những item không xuất hiện trên màn hình, vì của các nhân  viên sẽ khác nhau nên sẽ lấy khác nhau, khả năng mình sẽ trả về một Map<sid, List<ItemValue>
-			updateInputCategoriesCps003(containerAdds , baseDate);
-		}
-		
 		// Get all items by category id
 		Map<String, List<ItemBasicInfo>> itemsByCtgId = perInfoItemDefRepositoty
 				.getItemCDByListCategoryIdWithAbolition(Arrays.asList(itemFirstByCtg.getCategoryId()),
@@ -244,33 +248,40 @@ public class PeregCommonCommandFacade {
 		// Check is enough item to regist
 		// Item missing
 		List<ItemBasicInfo> itemExclude = new ArrayList<>();
-		
-		// vì những item của các nhân viên đều được hiển thị giống nhau nên mình sẽ lấy
-		// list item đầu tiên của nhân viên đầu tiên trong list employee đó thực hiện  mục đích đó
-		List<String> listItemCodeInScreen = itemFirstByCtg.getItems().stream().map(i -> i.itemCode())
-				.collect(Collectors.toList());
-		
-		Map<String, String> employees = containerAdds.stream()
-				.collect(Collectors.toMap(PeregInputContainerCps003::getPersonId, PeregInputContainerCps003::getEmployeeId));
 
-		Map<String, List<ItemValue>> itemsDefaultLstBySid = facadeUtils.getListDefaultItem(itemFirstByCtg.getCategoryCd(),
-				listItemCodeInScreen, itemsByCtgId.get(itemFirstByCtg.getCategoryId()), employees);
+		
+		GridEmployeeDto gridEmpDto = this.gridProcessor.getGridLayout(new PeregGridQuery(itemFirstByCtg.getCategoryId(),
+				itemFirstByCtg.getCategoryCd(), baseDate,
+				containerAdds.stream().map(c -> c.getEmployeeId()).collect(Collectors.toList())));
+		
+		List<GridEmpHead> itemRequireds = gridEmpDto.getHeadDatas().stream().filter(c -> c.isRequired() == true && c.getItemTypeState().getItemType() == 2).collect(Collectors.toList());
+		containerAdds.stream().forEach(c -> {
+			Optional<GridEmployeeInfoDto> gridEmployeeInfoDto = gridEmpDto.getBodyDatas().stream()
+					.filter(p -> p.getEmployeeId().equals(c.getEmployeeId())).findFirst();
+			if(gridEmployeeInfoDto.isPresent()) {
+				if(c.getInputs().getRecordId() == null || c.getInputs().getRecordId() == "" || c.getInputs().getRecordId().indexOf("noData") > -1 || modeUpdate == 2) {
+					itemRequireds.stream().forEach(r ->{
+						SingleItemDto single = (SingleItemDto) r.getItemTypeState();
+						if(single.getDataTypeState().getDataTypeValue() == 9 || single.getDataTypeState().getDataTypeValue() == 10 || single.getDataTypeState().getDataTypeValue() == 12) return;
+						Optional<ItemValue> required = c.getInputs().getItems().stream().filter(i -> i.itemCode().equals(r.getItemCode())).findFirst();
+						Optional<GridEmpBody> gridEmpOpt = gridEmployeeInfoDto.get().getItems().stream().filter(i -> i.getItemCode().equals(r.getItemCode())).findFirst();
+						if(!required.isPresent() && gridEmpOpt.isPresent()) {
+							GridEmpBody gridEmp = gridEmpOpt.get();
+							ItemValue itemValue = new ItemValue(r.getItemId(), r.getItemCode(),
+									r.getItemName(), gridEmp.getValue()== null? "":  gridEmp.getValue().toString(), gridEmp.getTextValue(), null, null,  this.convertType(r.getItemTypeState(), gridEmp.getValue()), single.getDataTypeState().getDataTypeValue());
+							c.getInputs().getItems().add(itemValue);
+						}
+					});
+				}
+			}
+		});
 		
 		containerAdds.stream().forEach(c -> {
 			ItemsByCategory itemByCtg = c.getInputs();
-			List<ItemValue> itemDefaultLst = itemsDefaultLstBySid.get(c.getEmployeeId());
-			
-			if (itemDefaultLst != null) {
-				c.getInputs().getItems().addAll(itemDefaultLst);
-			}
 			
 			List<String> listItemAfter = itemByCtg.getItems().stream().map(i -> i.itemCode()).collect(Collectors.toList());
 
 			if (requiredItemByCtgId.containsKey(itemByCtg.getCategoryId())) {
-				List<ItemValue> selectedFirst = facadeUtils.getListDefaultEnum(requiredItemByCtgId.get(itemByCtg.getCategoryId()));
-				if(!selectedFirst.isEmpty()) {
-					c.getInputs().getItems().addAll(selectedFirst);
-				}
 				itemExclude.addAll(requiredItemByCtgId.get(itemByCtg.getCategoryId()).stream()
 						.filter(i -> !listItemAfter.contains(i.getItemCode())).collect(Collectors.toList()));
 			}
@@ -293,7 +304,8 @@ public class PeregCommonCommandFacade {
 		val handler = this.addHandlers.get(itemFirstByCtg.getCategoryCd());
 		
 		if (handler != null && itemFirstByCtg.isHaveSomeSystemItems()) {
-			handler.handlePeregCommand(containerAdds);
+			List<MyCustomizeException> myEx =  handler.handlePeregCommand(containerAdds);
+			if(!myEx.isEmpty()) result.addAll(myEx);
 		    // xử lí cho những item optional
 			List<PeregUserDefAddCommand> commandForUserDef = containerAdds.stream().map(c -> { return new PeregUserDefAddCommand(c.getPersonId(), c.getEmployeeId(), c.getInputs().getCategoryCd(), c.getInputs());}).collect(Collectors.toList());
 			this.userDefAdd.handle(commandForUserDef);
@@ -301,6 +313,52 @@ public class PeregCommonCommandFacade {
 
 		return result;
 	}
+	
+	private int convertType(ItemTypeStateDto itemTypeStateDto, Object value) {
+		if (itemTypeStateDto.getItemType() == 2) {
+			SingleItemDto single = (SingleItemDto) itemTypeStateDto;
+			switch (single.getDataTypeState().getDataTypeValue()) {
+			case 1:
+				return 1;
+			case 2:
+			case 4:
+			case 5:
+				return 2;
+			case 3:
+				return 3;
+			case 6:
+			case 7:
+			case 8:
+				SelectionItemDto sel = (SelectionItemDto) single.getDataTypeState();
+				switch (sel.getReferenceType().value) {
+				// DESIGNATED_MASTER
+				case 1:
+					try {
+						if ((value != null) && !(value instanceof Integer || value instanceof BigDecimal)
+								&& value.toString().equals(String.valueOf(Integer.valueOf(value.toString())))) {
+							return 2;
+						}
+						return 1;
+					}catch(Exception e) {
+						return 1;
+					}
+
+				// CODE_NAME
+				case 2:
+					return 1;
+				// ENUM
+				case 3:
+					return 2;
+
+				}
+
+			}
+			return 1;
+
+		}
+		return 1;
+	}
+	
 
 	/**
 	 * Handles update commands.
@@ -683,11 +741,6 @@ public class PeregCommonCommandFacade {
 			});
 		}
 		return result;
-	}
-	
-	private void test(PeregQueryByListEmp query) {
-		
-		
 	}
 	/**
 	 * 

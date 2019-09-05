@@ -15,10 +15,11 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.otherholiday.OtherHolidayInfoInt
 import nts.uk.ctx.at.shared.dom.remainingnumber.otherholiday.OtherHolidayInfoService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.publicholiday.PublicHolidayRemain;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.pereg.app.command.MyCustomizeException;
 import nts.uk.shr.pereg.app.command.PeregAddCommandResult;
 import nts.uk.shr.pereg.app.command.PeregAddListCommandHandler;
 @Stateless
-public class AddOtherHolidayInfoListCommandHandler extends CommandHandlerWithResult<List<AddOtherHolidayInfoCommand>, List<PeregAddCommandResult>>
+public class AddOtherHolidayInfoListCommandHandler extends CommandHandlerWithResult<List<AddOtherHolidayInfoCommand>, List<MyCustomizeException>>
 implements PeregAddListCommandHandler<AddOtherHolidayInfoCommand>{
 	@Inject
 	private OtherHolidayInfoService otherHolidayInfoService;
@@ -33,7 +34,7 @@ implements PeregAddListCommandHandler<AddOtherHolidayInfoCommand>{
 	}
 
 	@Override
-	protected List<PeregAddCommandResult> handle(CommandHandlerContext<List<AddOtherHolidayInfoCommand>> context) {
+	protected List<MyCustomizeException> handle(CommandHandlerContext<List<AddOtherHolidayInfoCommand>> context) {
 		List<AddOtherHolidayInfoCommand> cmd = context.getCommand();
 		String cid = AppContexts.user().companyId();
 		 Map<String, OtherHolidayInfoInter> otherHolidayInfos = new HashMap<>();
@@ -53,7 +54,7 @@ implements PeregAddListCommandHandler<AddOtherHolidayInfoCommand>{
 		if(!otherHolidayInfos.isEmpty()) {
 			otherHolidayInfoService.addOtherHolidayInfo(cid, otherHolidayInfos);
 		}
-		return result;
+		return new ArrayList<>();
 	}
 
 }

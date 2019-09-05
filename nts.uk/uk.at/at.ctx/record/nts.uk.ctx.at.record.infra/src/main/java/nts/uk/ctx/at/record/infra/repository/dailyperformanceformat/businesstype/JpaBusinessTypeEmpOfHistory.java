@@ -242,7 +242,7 @@ public class JpaBusinessTypeEmpOfHistory extends JpaRepository
 		List<BusinessTypeOfEmployeeHistory> result = new ArrayList<>();
 		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
 			String sql = "SELECT * FROM KRCMT_BUS_TYPE_HIST WHERE CID = ? AND SID IN ("
-					+ NtsStatement.In.createParamsString(subList) + ")" + " ORDER BY START_DATE DESC";
+					+ NtsStatement.In.createParamsString(subList) + ")" + " ORDER BY SID, START_DATE DESC";
 
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 				stmt.setString(1, cid);

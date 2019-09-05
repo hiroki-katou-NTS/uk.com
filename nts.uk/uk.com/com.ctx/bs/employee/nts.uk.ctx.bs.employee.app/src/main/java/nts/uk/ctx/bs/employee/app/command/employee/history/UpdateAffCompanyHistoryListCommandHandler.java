@@ -1,6 +1,7 @@
 package nts.uk.ctx.bs.employee.app.command.employee.history;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
@@ -52,7 +54,7 @@ implements PeregUpdateListCommandHandler<UpdateAffCompanyHistoryCommand>{
 		List<AffCompanyHistItem> affCompanyHistItems = new ArrayList<>();
 		List<MyCustomizeException> errorExceptionLst = new ArrayList<>();
 		Map<String, List<AffCompanyHist>> histLstMapResult = new HashMap<>();
-		
+
 		// sidsPidsMap
 		List<String> sids = command.parallelStream().map(c -> c.getSId()).collect(Collectors.toList());
 		// In case of date period are exist in the screen, do thiết lập ẩn hiển cho cùng
@@ -62,12 +64,12 @@ implements PeregUpdateListCommandHandler<UpdateAffCompanyHistoryCommand>{
 		UpdateAffCompanyHistoryCommand updateFirst = command.get(0);
 		if (updateFirst.getStartDate() != null) {
 			Map<String, List<AffCompanyHist>> histLstMap = this.affCompanyHistRepository
-					.getAffCompanyHistoryOfEmployees(sids).parallelStream()
-					.collect(Collectors.groupingBy(c -> c.getPId()));
+					.getAffCompanyHistoryOfEmployees(sids).stream().collect(Collectors.groupingBy(c -> c.getPId()));
 			histLstMapResult.putAll(histLstMap);
 		}
-			command.stream().forEach(c -> {
-				if(c.getStartDate() != null) {
+		command.stream().forEach(c -> {
+			try {
+				if (c.getStartDate() != null) {
 					List<AffCompanyHist> listHist = histLstMapResult.get(c.getPId());
 					AffCompanyHistByEmployee itemToBeAdded = null;
 					if (listHist != null) {
@@ -91,18 +93,22 @@ implements PeregUpdateListCommandHandler<UpdateAffCompanyHistoryCommand>{
 				AffCompanyInfo histItem = AffCompanyInfo.createFromJavaType(c.getSId(), c.getHistoryId(),
 						c.getRecruitmentClassification(), c.getAdoptionDate(), c.getRetirementAllowanceCalcStartDate());
 				affCompanyInfoLst.add(histItem);
+			} catch (BusinessException e) {
+				MyCustomizeException ex = new MyCustomizeException(e.getMessageId(), Arrays.asList(c.getSId()));
+				errorExceptionLst.add(ex);
+			}
 
-			});
-			
-		if(!affCompanyHistItems.isEmpty()) {
+		});
+
+		if (!affCompanyHistItems.isEmpty()) {
 			affCompanyHistService.updateAll(affCompanyHistItems);
 		}
-		
-		if(!affCompanyInfoLst.isEmpty()) {
+
+		if (!affCompanyInfoLst.isEmpty()) {
 			affCompanyInfoRepository.updateAll(affCompanyInfoLst);
 		}
-		
-		if(!sidErrorLst.isEmpty()) {
+
+		if (!sidErrorLst.isEmpty()) {
 			errorExceptionLst.add(new MyCustomizeException("Invalid", sidErrorLst));
 		}
 		return errorExceptionLst;

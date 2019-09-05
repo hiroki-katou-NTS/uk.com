@@ -14,12 +14,12 @@ import nts.uk.ctx.at.shared.app.command.remainingnumber.specialleavegrant.add.Sp
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.pereg.app.command.PeregAddCommandResult;
+import nts.uk.shr.pereg.app.command.MyCustomizeException;
 import nts.uk.shr.pereg.app.command.PeregAddListCommandHandler;
 
 @Stateless
 public class AddSpeLeaGrant10ListCommandHandler
-extends CommandHandlerWithResult<List<AddSpecialLeaveGrant10Command>, List<PeregAddCommandResult>>
+extends CommandHandlerWithResult<List<AddSpecialLeaveGrant10Command>, List<MyCustomizeException>>
 implements PeregAddListCommandHandler<AddSpecialLeaveGrant10Command> {
 	@Inject
 	private SpeLeaveGrantCommandHandler addSpeLeaveGrantCommandHandler;
@@ -35,10 +35,10 @@ implements PeregAddListCommandHandler<AddSpecialLeaveGrant10Command> {
 	}
 
 	@Override
-	protected List<PeregAddCommandResult> handle(CommandHandlerContext<List<AddSpecialLeaveGrant10Command>> context) {
+	protected List<MyCustomizeException> handle(CommandHandlerContext<List<AddSpecialLeaveGrant10Command>> context) {
 		List<AddSpecialLeaveGrant10Command> cmd = context.getCommand();
 		String cid = AppContexts.user().companyId();
-		List<PeregAddCommandResult> result = new ArrayList<>();
+		List<MyCustomizeException> result = new ArrayList<>();
 		List<SpecialLeaveGrantRemainingData> insertLst = new ArrayList<>();
 		cmd.stream().forEach(c ->{
 			String specialId = IdentifierUtil.randomUniqueId();

@@ -244,7 +244,8 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 		List<DateHistoryItem> tempAbsHistoryEntities = new ArrayList<>();
 		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
 			String sql = "SELECT * FROM BSYMT_TEMP_ABS_HISTORY" + " WHERE CID = ?" + " AND START_DATE <= ?"
-					+ " AND END_DATE >= ?" + " AND SID IN (" + NtsStatement.In.createParamsString(subList) + ")";
+					+ " AND END_DATE >= ?" + " AND SID IN (" + NtsStatement.In.createParamsString(subList) + ")"
+					+ " ORDER BY SID, START_DATE DESC";;
 
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 

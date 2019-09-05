@@ -348,7 +348,7 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 				+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
 				+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL,"
 				+ " PAYOUT_ID_VAL, CID_VAL, SID_VAL, UNKNOWN_DATE_VAL, DAYOFF_DATE_VAL, EXPIRED_DATE_VAL, LAW_ATR_VAL, OCCURRENCE_DAYS_VAL,"
-				+ " UNUSED_DAYS_VAL, STATE_ATR_VAL, DISAPEAR_DATE_VAL); ";
+				+ " UNUSED_DAYS_VAL, STATE_ATR_VAL, DATE_VAL); ";
 		String insCcd = AppContexts.user().companyCode();
 		String insScd = AppContexts.user().employeeCode();
 		String insPg = AppContexts.programId();
@@ -384,7 +384,7 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 			
 			sql = sql.replace("UNUSED_DAYS_VAL", c.getUnUsedDays() == null? "null": "" + c.getUnUsedDays().v() +"");
 			sql = sql.replace("STATE_ATR_VAL", "" + c.getStateAtr().value +"");
-			sql = sql.replace("DISAPEAR_DATE_VAL", c.getDisapearDate().isPresent()? "'"+ c.getDisapearDate().get()+"'": "null");
+			sql = sql.replace("DATE_VAL", c.getDisapearDate() == null? "null": (c.getDisapearDate().isPresent()? "'"+ c.getDisapearDate().get()+"'": "null"));
 			sb.append(sql);
 		});
 

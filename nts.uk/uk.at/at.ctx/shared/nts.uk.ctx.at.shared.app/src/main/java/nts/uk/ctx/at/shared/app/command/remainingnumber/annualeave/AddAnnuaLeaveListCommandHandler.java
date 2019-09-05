@@ -2,7 +2,6 @@ package nts.uk.ctx.at.shared.app.command.remainingnumber.annualeave;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -13,10 +12,10 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.An
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.AnnLeaMaxDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.AnnualLeaveMaxData;
-import nts.uk.shr.pereg.app.command.PeregAddCommandResult;
+import nts.uk.shr.pereg.app.command.MyCustomizeException;
 import nts.uk.shr.pereg.app.command.PeregAddListCommandHandler;
 @Stateless
-public class AddAnnuaLeaveListCommandHandler extends CommandHandlerWithResult<List<AddAnnuaLeaveCommand>, List<PeregAddCommandResult>>
+public class AddAnnuaLeaveListCommandHandler extends CommandHandlerWithResult<List<AddAnnuaLeaveCommand>, List<MyCustomizeException>>
 implements PeregAddListCommandHandler<AddAnnuaLeaveCommand>{
 	@Inject
 	private AnnLeaEmpBasicInfoRepository annLeaBasicInfoRepo;
@@ -34,7 +33,7 @@ implements PeregAddListCommandHandler<AddAnnuaLeaveCommand>{
 	}
 
 	@Override
-	protected List<PeregAddCommandResult> handle(CommandHandlerContext<List<AddAnnuaLeaveCommand>> context) {
+	protected List<MyCustomizeException> handle(CommandHandlerContext<List<AddAnnuaLeaveCommand>> context) {
 		List<AddAnnuaLeaveCommand> cmd = context.getCommand();
 		List<AnnualLeaveEmpBasicInfo> basicInfoLst = new ArrayList<>();
 		List<AnnualLeaveMaxData> maxDataLst = new ArrayList<>();
@@ -53,7 +52,7 @@ implements PeregAddListCommandHandler<AddAnnuaLeaveCommand>{
 			maxDataRepo.addAll(maxDataLst);
 		}
 		
-		return cmd.stream().map(c -> {return new PeregAddCommandResult(c.getEmployeeId());}).collect(Collectors.toList());
+		return new ArrayList<>();
 	}
 
 }
