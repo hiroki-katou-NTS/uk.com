@@ -1,3 +1,38 @@
 .kdw003a {
-
+    .mgrid-error{
+        background-color: #FD4D4D;
+    }
+    .mgrid-alarm{
+        background-color: #F6F636;
+    }
+    .mgrid-manual-edit-target{
+        background-color: #94B7FE;
+    }
+    .mgrid-manual-edit-other{
+        background-color: #CEE6FF;
+    }
+    .mgrid-reflect{
+        background-color: #BFEA60;
+    }
+    .mgrid-calc{
+        background-color: #F69164;
+    }
+    .mgrid-disable{
+        background-color: #CCC;
+        color: #333;
+    }
+    .mgrid-lock{
+        background-color: #CCC;
+    }
+    .mgrid-hide{
+        display: none;
+    }
+    .color-sunday {
+        background-color: #fabf8f !important;
+        color: #FF0000 !important;
+    }   
+    .color-saturday {
+        background-color: #8bd8ff !important;
+        color: #0000FF !important;
+    }
 }

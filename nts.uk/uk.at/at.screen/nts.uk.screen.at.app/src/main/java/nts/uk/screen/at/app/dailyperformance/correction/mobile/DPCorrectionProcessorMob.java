@@ -1681,16 +1681,16 @@ public class DPCorrectionProcessorMob {
 	}
 	
 	public DatePeriodInfo changeDateRange(DateRange dateRange, ObjectShare objectShare, String companyId, String sId,
-			DailyPerformanceCorrectionDto screenDto, Integer mode, Integer displayFormat, Boolean initScreenOther, DPCorrectionStateParam dpStateParam) {
+			DailyPerformanceCorrectionDto screenDto, Integer mode, Integer displayFormat, DPCorrectionStateParam dpStateParam) {
 		
-		if (dateRange != null && !initScreenOther){
+		if (dateRange != null && null != dpStateParam){
 			screenDto.setEmploymentCode(getEmploymentCode(companyId, dateRange.getEndDate(), sId));
 			DatePeriodInfo dateInfo = dpStateParam.getDateInfo();
 			dateInfo.setTargetRange(dateRange);
 			return dateInfo;
 		}
-		
-		if(dateRange != null && initScreenOther) {
+
+		if(dateRange != null && null == dpStateParam) {
 			return updatePeriod(Optional.empty(), displayFormat, sId, new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate()));
 		}
 

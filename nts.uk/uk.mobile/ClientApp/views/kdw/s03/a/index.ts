@@ -1,6 +1,7 @@
 import { _, Vue } from '@app/provider';
 import { component, Watch } from '@app/core/component';
 import { FixTableComponent } from '@app/components/fix-table';
+import { TimeWithDay, TimePoint, TimeDuration } from '@app/utils/time';
 
 @component({
     name: 'kdws03a',
@@ -20,7 +21,7 @@ import { FixTableComponent } from '@app/components/fix-table';
 })
 export class Kdws03AComponent extends Vue {
     public title: string = 'Kdws03A';
-    public displayFormat: number = 0;
+    public displayFormat: any = '0';
     public lstDataSourceLoad: Array<any> = [];
     public lstDataHeader: Array<any> = [];
     public optionalHeader: Array<any> = [];
@@ -28,11 +29,10 @@ export class Kdws03AComponent extends Vue {
     public fixHeaders: Array<any> = [];
     public showPrincipal: boolean = true;
     public showSupervisor: boolean = true;
-    public employeeModeHeader: Array<any> = [];
-    public dateModeHeader: Array<any> = [];
-    public errorModeHeader: Array<any> = [];
     public hasLstHeader: boolean = true;
     public displayDataLst: Array<any> = [];
+    public displayHeaderLst: Array<any> = [];
+    public displaySumLst: any = {};
     public hasErrorBuss: boolean = false;
     public lstCellDisByLock: Array<any> = [];
     public lstEmployee: Array<any> = [];
@@ -41,6 +41,7 @@ export class Kdws03AComponent extends Vue {
     public timePeriodAllInfo: any = null;
     public actualTimeSelectedCode: number = 0;
     public selectedEmployee: string = '';
+    public selectedDate: Date = new Date();
     public resetTable: number = 0;
 
     @Watch('yearMonth')
@@ -71,8 +72,13 @@ export class Kdws03AComponent extends Vue {
     }
 
     public created() {
+        if (this.$route.query.displayformat == '0' || this.$route.query.displayformat == '1') {
+            this.displayFormat = this.$route.query.displayformat;
+        }
+        this.$auth.user.then((user: null | { employeeCode: string }) => {
+            this.selectedEmployee = user.employeeCode;
+        });
         this.startPage();
-        this.$nextTick();
     }
 
     public mounted() {
@@ -81,10 +87,16 @@ export class Kdws03AComponent extends Vue {
 
     public startPage() {
         let self = this;
+        self.$mask('show', { message: true });
 
-        self.$auth.user.then((user: null | { employeeCode: string }) => {
-            self.selectedEmployee = user.employeeCode;
-        });
+        let lstEmployeeParam = [];
+        if (self.lstEmployee.length != 0) {
+            if (self.displayFormat == '0') {
+                lstEmployeeParam = _.filter(self.lstEmployee, (o) => o.code == self.selectedEmployee);
+            } else {
+                lstEmployeeParam = self.lstEmployee;
+            }
+        }
 
         let param = {
             changePeriodAtr: false,
@@ -92,10 +104,12 @@ export class Kdws03AComponent extends Vue {
             errorRefStartAtr: false,
             initDisplayDate: null,
             employeeID: self.selectedEmployee,
-            objectDateRange: !_.isNil(self.dateRanger) ? {startDate: self.$dt.fromString(self.dateRanger.startDate), endDate: self.$dt.fromString(self.dateRanger.endDate)} : null,
-            lstEmployee: [],
+            objectDateRange: self.displayFormat == '0' ?
+                (!_.isNil(self.dateRanger) ? { startDate: self.$dt.fromString(self.dateRanger.startDate), endDate: self.$dt.fromString(self.dateRanger.endDate) } : null) :
+                { startDate: self.selectedDate, endDate: self.selectedDate },
+            lstEmployee: lstEmployeeParam,
             initClock: null,
-            displayFormat: 0,
+            displayFormat: this.displayFormat,
             displayDateRange: null,
             transitionDesScreen: null,
         };
@@ -161,48 +175,94 @@ export class Kdws03AComponent extends Vue {
         if (data.lstControlDisplayItem.lstHeader.length == 0) {
             self.hasLstHeader = false;
         }
-        if (self.showPrincipal || data.lstControlDisplayItem.lstHeader.length == 0) {
-            self.employeeModeHeader = [self.fixHeaders[0], self.fixHeaders[1], self.fixHeaders[2], self.fixHeaders[3], self.fixHeaders[4]];
-            self.dateModeHeader = [self.fixHeaders[0], self.fixHeaders[1], self.fixHeaders[2], self.fixHeaders[5], self.fixHeaders[6], self.fixHeaders[7], self.fixHeaders[4]];
-            self.errorModeHeader = [self.fixHeaders[0], self.fixHeaders[1], self.fixHeaders[2], self.fixHeaders[5], self.fixHeaders[6], self.fixHeaders[3], self.fixHeaders[7], self.fixHeaders[4]];
-        } else {
-            self.employeeModeHeader = [self.fixHeaders[0], self.fixHeaders[1], self.fixHeaders[2], self.fixHeaders[3]];
-            self.dateModeHeader = [self.fixHeaders[0], self.fixHeaders[1], self.fixHeaders[2], self.fixHeaders[5], self.fixHeaders[6], self.fixHeaders[7]];
-            self.errorModeHeader = [self.fixHeaders[0], self.fixHeaders[1], self.fixHeaders[2], self.fixHeaders[5], self.fixHeaders[6], self.fixHeaders[3], self.fixHeaders[7]];
-        }
-        if (self.showSupervisor) {
-            self.employeeModeHeader.push(self.fixHeaders[8]);
-            self.dateModeHeader.push(self.fixHeaders[8]);
-            self.errorModeHeader.push(self.fixHeaders[8]);
-        }
 
         self.yearMonth = data.periodInfo.yearMonth;
-        self.lstEmployee = _.orderBy(data.lstEmployee, ['code'], ['asc']);
+        if (self.lstEmployee.length == 0) {
+            self.lstEmployee = _.orderBy(data.lstEmployee, ['code'], ['asc']);
+        }
 
         _.remove(self.displayDataLst);
+        _.remove(self.displayHeaderLst);
+        _.remove(self.displaySumLst);
+
+        let headers = (_.filter(self.optionalHeader, (o) => o.hidden == false));
+        headers.forEach((header: any) => {
+            self.displayHeaderLst.push({
+                key: header.key,
+                headerText: header.headerText,
+                color: header.color,
+                constraint: header.constraint
+            });
+        });
 
         self.lstDataSourceLoad.forEach((rowDataSrc: any) => {
             let rowData = [];
-            self.optionalHeader.forEach((header: any) => {
+            headers.forEach((header: any) => {
                 if (_.has(rowDataSrc, header.key)) {
-                    rowData.push({ key: header.key, value: rowDataSrc[header.key], headerText: header.headerText, color: header.color });
+                    rowData.push({ key: header.key, value: rowDataSrc[header.key] });
                 } else {
-                    rowData.push({ key: header.group[1].key, value: rowDataSrc[header.group[1].key], headerText: header.headerText, color: header.color });
-                }               
+                    rowData.push({ key: header.group[1].key, value: rowDataSrc[header.group[1].key] });
+                }
             });
-            
-            self.displayDataLst.push({ rowData, date: rowDataSrc.date });
+
+            if (self.displayFormat == '0') {
+                self.displayDataLst.push({ rowData, date: rowDataSrc.date, id: rowDataSrc.id });
+            } else {
+                self.displayDataLst.push({ rowData, employeeName: rowDataSrc.employeeName, id: rowDataSrc.id });
+            }
         });
 
-        if (self.lstDataSourceLoad.length == 0) {
-            let rowData = [];
-            let headers = (_.filter(self.optionalHeader, (o) => o.hidden == false));
-            headers.forEach((header: any) => {
-                rowData.push({ key: header.key, headerText: header.headerText, color: header.color });
+        self.displayDataLst.forEach((row: any) => {
+            let states = _.filter(self.cellStates, (x) => x.rowId == row.id);
+            row.rowData.forEach((cell: any) => {
+                if (!_.isNil(_.find(states, (x) => x.columnKey == cell.key))) {
+                    cell.class = '';
+                    let classArray = _.find(states, (x) => x.columnKey == cell.key).state;
+                    _.forEach(classArray, (x) => cell.class = cell.class + x);
+                }
             });
-            self.displayDataLst.push({ rowData });
+            if (!_.isNil(_.find(states, (x) => x.columnKey == 'date'))) {
+                row.dateColor = _.find(states, (x) => x.columnKey == 'date').state[0];
+            }
+        });
+
+        if (self.lstDataSourceLoad.length < 6) {
+            for (let i = 1; i <= (6 - self.lstDataSourceLoad.length); i++) {
+                let rowData = [];
+                headers.forEach((header: any) => {
+                    rowData.push({ key: header.key, value: '' });
+                });
+                if (self.displayFormat == '0') {
+                    self.displayDataLst.push({ rowData, date: '' });
+                } else {
+                    self.displayDataLst.push({ rowData, employeeName: '' });
+                }
+            }
         }
 
+        let sumTimeKey = _.map((_.filter(data.lstControlDisplayItem.columnSettings, (o) => o.typeFormat == 5)), (x) => x.columnKey);
+        let sumNumKey = _.map((_.filter(data.lstControlDisplayItem.columnSettings, (o) => o.typeFormat == 2 || o.typeFormat == 3)), (x) => x.columnKey);
+        headers.forEach((header: any) => {
+            if (_.includes(sumTimeKey, header.key)) {
+                self.displaySumLst[header.key] = '00:00';
+            } else if (_.includes(sumNumKey, header.key)) {
+                self.displaySumLst[header.key] = 0;
+            } else {
+                self.displaySumLst[header.key] = '';
+            }
+
+        });
+        self.displayDataLst.forEach((row: any) => {
+            row.rowData.forEach((cell: any) => {
+                if (!_.isNil(cell.value) && '' != cell.value) {
+                    if (_.includes(sumTimeKey, cell.key)) {
+                        self.displaySumLst[cell.key] = this.$dt.timedr((new TimeDuration(self.displaySumLst[cell.key])).toNumber() + (new TimeDuration(cell.value)).toNumber());
+                    } else if (_.includes(sumNumKey, cell.key)) {
+                        self.displaySumLst[cell.key] = self.displaySumLst[cell.key] + cell.value;
+                    }
+                }
+            });
+        });
         self.resetTable++;
     }
 
@@ -231,6 +291,11 @@ export class Kdws03AComponent extends Vue {
         });
 
         return data;
+    }
+
+    public openEdit(id: any) {
+        let param1 = _.find(this.displayDataLst, (x) => x.id == id);
+        let param2 = this.displayHeaderLst;
     }
 }
 const servicePath = {

@@ -171,26 +171,28 @@ public class InitScreenMob {
 		screenDto.setClosureId(processor.getClosureId(companyId, sId, GeneralDate.today()));
 		
 		// 期間を変更する
-		DatePeriodInfo resultPeriod = processor.changeDateRange(dateRange, null, companyId, sId, screenDto, screenMode, displayFormat, false, param.dpStateParam);
+		DatePeriodInfo resultPeriod = processor.changeDateRange(dateRange, null, companyId, sId, screenDto, screenMode, displayFormat, param.dpStateParam);
 		dateRange = resultPeriod.getTargetRange();
 		screenDto.setDateRange(dateRange);
 		screenDto.setPeriodInfo(resultPeriod);
 
 		// 対象社員の特定
 		List<String> changeEmployeeIds = new ArrayList<>();
+		int initScreen = 0;
 		if (lstEmployee.isEmpty()) {
 			val employeeIds = lstEmployee.stream().map(x -> x.getId()).collect(Collectors.toList());
 			if(employeeIds.isEmpty()) needSortEmp = true;
 			changeEmployeeIds = processor.changeListEmployeeId(employeeIds, screenDto.getDateRange(), screenMode, false, screenDto.getClosureId(), screenDto);
 		} else {
 			changeEmployeeIds = lstEmployee.stream().map(x -> x.getId()).collect(Collectors.toList());
+			initScreen = 1;
 		}
 
 		// ログイン社員の日別実績の権限を取得する
 		screenDto.setAuthorityDto(processor.getAuthority(screenDto));
 
 		screenDto.setLstEmployee(findAllEmployee.findAllEmployee(changeEmployeeIds, dateRange.getEndDate()));
-		List<DailyPerformanceEmployeeDto> lstEmployeeData = processor.extractEmployeeData(0, sId,
+		List<DailyPerformanceEmployeeDto> lstEmployeeData = processor.extractEmployeeData(initScreen, sId,
 				screenDto.getLstEmployee(), null);
 		screenDto.setLstData(processor.getListData(lstEmployeeData, dateRange, displayFormat));
 
