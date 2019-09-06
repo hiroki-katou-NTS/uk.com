@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo;
 
-import java.util.List;
+import nts.arc.time.GeneralDate;
+
 import java.util.Optional;
 
 /**
@@ -20,6 +21,7 @@ public interface SocialInsurAcquisiInforRepository {
 
     void updated(String employeeId, int continReemAfterRetirement);
 
+    Optional<GeneralDate> getPersonInfo(String employeeId);
 
 
 }

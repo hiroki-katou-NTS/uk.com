@@ -10,7 +10,7 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
         depNotiAttach: KnockoutObservableArray<any>;
         selectedDepNotoAttach: any;
 
-        basicPension: KnockoutObservable<number>;
+        basicPension: KnockoutObservable<string>;
         salaryMonthly: KnockoutObservable<number>;
         salaryMonthlyActual: KnockoutObservable<number>;
         totalCompensation: KnockoutObservable<number>;
@@ -22,10 +22,10 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
         shortWorkHours: KnockoutObservable<boolean>;
         continuousEmpAfterRetire: KnockoutObservable<boolean>;
         otherNotes: KnockoutObservable<boolean>;
-        textOtherNotes: KnockoutObservable<boolean>;
+        textOtherNotes: KnockoutObservable<string>;
         shortTermResidence: KnockoutObservable<boolean>;
         otherNotes1: KnockoutObservable<boolean>;
-        textOtherNotes1: KnockoutObservable<boolean>;
+        textOtherNotes1: KnockoutObservable<string>;
 
         livingAbroad: KnockoutObservable<boolean>;
         //kcp009
@@ -36,14 +36,29 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
         listComponentOption: ComponentOption;
         selectedItem: KnockoutObservable<string>;
         tabindex: number;
+        //
+
+        personalNumber: KnockoutObservableArray<ItemModel>;
+        selectedCode: KnockoutObservable<string>;
+        isEnable: KnockoutObservable<boolean>;
+        isEditable: KnockoutObservable<boolean>;
+
 
         constructor() {
             block.invisible();
             let self = this;
-
+            let periodCommand: any;
             let params = getShared('QSI001_PARAMS_TO_SCREEN_B');
 
             if (params && params.listEmpId.length > 0) {
+
+
+                periodCommand = {
+                    empId: params.listEmpId[0].employeeId,
+                    startDate: params.startDate,
+                    endDate: params.endDate
+                };
+
                 self.loadKCP009(self.createEmployeeModel(params.listEmpId));
 
                 //起動する
@@ -80,8 +95,8 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
 
                 });
 
-                service.getPersonInfo(self.selectedItem()).done(r => {
-                    if (self.getAge(r.birthDay, params.date) >= 70) {
+                service.getPersonInfo(params.listEmpId[0].employeeId).done(r => {
+                    if (self.getAge(r, params.date) >= 70) {
                         self.applyToEmployeeOver70(true);
                         self.otherNotes(true);
                     }
@@ -89,9 +104,48 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
                     console.dir(f);
                 });
 
+                service.getMultiEmpWorkInfoById(params.listEmpId[0].employeeId).done(e =>{
+                    if(e){
+                        self.twoOrMoreEmployee(true);
+                    }else{
+                        self.twoOrMoreEmployee(false);
+                    }
+                }).fail(e =>{
+
+                });
+
+                service.getEmpBasicPenNumInforById(params.listEmpId[0].employeeId).done(e =>{
+                    if(e){
+                        self.basicPension(e.basicPenNumber);
+                    }else{
+                        self.basicPension(null);
+                    }
+                }).fail(e =>{
+
+                });
+
+
+
+
+                service.getCorWorkFormInfo(periodCommand).done(e =>{
+                    if(e){
+                        if(e.insPerCls == InsPerCls.SHORT_TIME_WORKERS){
+                            self.shortWorkHours(true);
+                        }else{
+                            self.shortWorkHours(false);
+                        }
+                    }
+
+                }).fail(e =>{
+
+                });
+
                 //社員を切り替える
                 //select employee
                 self.selectedItem.subscribe(e => {
+                    periodCommand = {
+
+                    };
                     service.getSocialInsurAcquisiInforById(self.selectedItem()).done(e => {
                         if (e) {
                             self.otherNotes(e.remarksOther == 1 ? true : false);
@@ -126,12 +180,32 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
                     });
 
                     service.getPersonInfo(self.selectedItem()).done(r => {
-                        if (self.getAge(r.birthDay, params.date) >= 70) {
+                        if (self.getAge(r, params.date) >= 70) {
                             self.applyToEmployeeOver70(true);
                             self.otherNotes(true);
                         }
                     }).fail(f => {
                         console.dir(f);
+                    });
+
+                    service.getMultiEmpWorkInfoById(self.selectedItem()).done(e =>{
+                        if(e){
+                            self.twoOrMoreEmployee(true);
+                        }else{
+                            self.twoOrMoreEmployee(false);
+                        }
+                    }).fail(e =>{
+
+                    });
+
+                    service.getEmpBasicPenNumInforById(self.selectedItem()).done(e =>{
+                        if(e){
+                            self.basicPension(e.basicPenNumber);
+                        }else{
+                            self.basicPension(null);
+                        }
+                    }).fail(e =>{
+
                     });
                 });
 
@@ -166,6 +240,17 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
             self.otherNotes1 = ko.observable(false);
             self.textOtherNotes1 = ko.observable(null);
 
+            self.personalNumber = ko.observableArray([
+                new ItemModel('0', '該当なし'),
+                new ItemModel('1', '海外在住'),
+                new ItemModel('2', '短期在留'),
+                new ItemModel('3', 'その他')
+            ]);
+
+            self.selectedCode = ko.observable('1');
+            self.isEnable = ko.observable(true);
+            self.isEditable = ko.observable(true);
+
 
             block.clear();
         }
@@ -195,39 +280,25 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
             }
             block.invisible();
             let data = {
-                socialInsurAcquisiInforCommand: {
-                    employeeId: self.selectedItem(),
-                    //70歳以上被用者
-                    percentOrMore: self.applyToEmployeeOver70() == true ? 1 : 0,
-                    //備考その他
-                    remarksOther: self.otherNotes() == true ? 1 : 0,
-                    //備考その他内容
-                    remarksAndOtherContents: self.textOtherNotes(),
-                    //報酬月額（現物）
-                    remunMonthlyAmountKind: Number(self.salaryMonthlyActual()),
-                    //報酬月額（金額）
-                    remunMonthlyAmount: Number(self.salaryMonthly()),
-                    //報酬月額合計
-                    totalMonthlyRemun: Number(self.totalCompensation()),
-                    //海外在住
-                    livingAbroad: self.livingAbroad() == true ? 1 : 0,
-                    //理由その他
-                    reasonOther: self.otherNotes1() == true ? 1 : 0,
-                    //理由その他内容
-                    reasonAndOtherContents: self.textOtherNotes1(),
-                    //短期在留
-                    shortStay: self.shortTermResidence() == true ? 1 : 0,
-                    //被扶養者届出区分
-                    depenAppoint: self.selectedDepNotiAttach(),
-                    qualifiDistin: null,
-                    //短時間労働者
-                    shortTimeWorkers: self.shortWorkHours() == true ? 1 : 0,
-                    //退職後の継続再雇用者
-                    continReemAfterRetirement: self.continuousEmpAfterRetire() == true ? 1 : 0
-                },
+
+                socialInsurAcquisiInforCommand : new SocialInsurAcquisiInforDTO(self.selectedItem(),
+                    self.applyToEmployeeOver70() == true ? 1 : 0,
+                    self.otherNotes() == true ? 1 : 0,
+                    self.textOtherNotes(),
+                    self.salaryMonthlyActual(),
+                    self.salaryMonthly(),
+                    self.totalCompensation(),
+                    self.selectedDepNotiAttach(),
+                    null,
+                    self.shortWorkHours() == true ? 1 : 0,
+                    self.continuousEmpAfterRetire() == true ? 1 : 0,
+                    Number(self.selectedCode()),
+                    self.textOtherNotes1()
+
+                    ),
                 empBasicPenNumInforCommand: {
                     employeeId: self.selectedItem(),
-                    basicPenNumber: Number(self.basicPension())
+                    basicPenNumber: self.basicPension()
 
                 },
                 multiEmpWorkInfoCommand: {
@@ -309,5 +380,112 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
         static PERSONNEL = 3;
         static ACCOUNTING = 4;
         static OH = 6;
+    }
+
+    export class InsPerCls{
+        //一般被保険者
+        static GEN_INS_PER = 0;
+        //パート扱い
+        static PART_HANDLING = 1;
+        //短時間労働者
+        static SHORT_TIME_WORKERS = 2;
+    }
+
+    export class ItemModel {
+        code: string;
+        name: string;
+
+        constructor(code: string, name: string) {
+            this.code = code;
+            this.name = name;
+        }
+    }
+
+    export class PersonalNumber {
+        static Not_Applicable = 0;
+        static Living_Abroad = 1;
+        static Short_Stay = 2;
+        static Other = 3;
+    }
+
+    export  class SocialInsurAcquisiInforDTO{
+
+        employeeId: string;
+        //70歳以上被用者
+        percentOrMore: number;
+        //備考その他
+        remarksOther: number;
+        //備考その他内容
+        remarksAndOtherContents: string;
+        //報酬月額（現物）
+        remunMonthlyAmountKind: number;
+        //報酬月額（金額）
+        remunMonthlyAmount: number;
+        //報酬月額合計
+        totalMonthlyRemun: number;
+
+        //被扶養者届出区分
+        depenAppoint: number;
+
+        qualifiDistin: number;
+        //短時間労働者
+        shortTimeWorkers: number;
+        //退職後の継続再雇用者
+        continReemAfterRetirement: number;
+
+
+        //短期在留
+        shortStay: number;
+        //海外在住
+        livingAbroad: number;
+        //理由その他
+        reasonOther: number;
+        //理由その他内容
+        reasonAndOtherContents: string;
+
+        constructor(employeeId:string,
+                    percentOrMore:number,
+                    remarksOther:number,
+                    remarksAndOtherContents: string,
+                    remunMonthlyAmountKind: number,
+                    remunMonthlyAmount:number,
+                    totalMonthlyRemun: number,
+                    depenAppoint: number,
+                    qualifiDistin:number,
+                    shortTimeWorkers: number,
+                    continReemAfterRetirement:number,
+                    personalNumber: number,
+                    reasonAndOtherContents: string
+                    ){
+
+            if(personalNumber == PersonalNumber.Living_Abroad){
+                this.livingAbroad = 1;
+                this.shortStay = null;
+                this.reasonOther = null;
+                this.reasonAndOtherContents = null;
+            }else if(personalNumber == PersonalNumber.Short_Stay){
+                this.livingAbroad = null;
+                this.shortStay = 1;
+                this.reasonOther = null;
+                this.reasonAndOtherContents = null;
+            }else if(personalNumber == PersonalNumber.Other){
+                this.livingAbroad = null;
+                this.shortStay = null;
+                this.reasonOther = 1;
+                this.reasonAndOtherContents = reasonAndOtherContents;
+            }
+
+            this.employeeId = employeeId;
+            this.percentOrMore = percentOrMore;
+            this.remarksOther = remarksOther;
+            this.remarksAndOtherContents = remarksAndOtherContents;
+            this.remunMonthlyAmountKind = remunMonthlyAmountKind;
+            this.remunMonthlyAmount = remunMonthlyAmount;
+            this.totalMonthlyRemun = totalMonthlyRemun;
+            this.depenAppoint = depenAppoint;
+            this.qualifiDistin = qualifiDistin;
+            this.shortTimeWorkers = shortTimeWorkers;
+            this.continReemAfterRetirement = continReemAfterRetirement;
+        }
     }
 }

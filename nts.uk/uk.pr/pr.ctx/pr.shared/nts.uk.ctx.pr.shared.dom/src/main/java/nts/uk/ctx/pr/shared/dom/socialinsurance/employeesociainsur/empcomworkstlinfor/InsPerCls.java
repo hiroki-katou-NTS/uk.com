@@ -22,4 +22,22 @@ public enum InsPerCls {
         this.value = value;
         this.nameId = nameId;
     }
+
+
+    public static InsPerCls valueOf(Integer value) {
+        // Invalid object.
+        if (value == null) {
+            return null;
+        }
+
+        // Find value.
+        for (InsPerCls val : InsPerCls.values()) {
+            if (val.value == value) {
+                return val;
+            }
+        }
+
+        // Not found.
+        return null;
+    }
 }

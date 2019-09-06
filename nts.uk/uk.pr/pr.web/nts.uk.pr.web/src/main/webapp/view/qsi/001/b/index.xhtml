@@ -130,20 +130,28 @@
                     </div>
                     <div data-bind="ntsFormLabel: {}">#{i18n.getText('QSI001_63')}</div>
                     <div style="margin-left: 20px">
-                        <div id="B222_23"
-                             data-bind="ntsCheckBox: { checked: livingAbroad }">#{i18n.getText('QSI001_64')}</div>
-                        <br></br>
-                        <div id="B222_24"
-                             data-bind="ntsCheckBox: { checked: shortTermResidence }">#{i18n.getText('QSI001_65')}</div>
-                        <br></br>
-                        <div id="B222_25"
-                             data-bind="ntsCheckBox: { checked: otherNotes1 }">#{i18n.getText('QSI001_66')}</div>
+                        <!-- 個人番号を記載できない理由 -->
+                        <div id="combo-box" data-bind="ntsComboBox: {
+                            name: 'Sample List',
+                            options: personalNumber,
+                            optionsValue: 'code',
+                            visibleItemsCount: 5,
+                            value: selectedCode,
+                            optionsText: 'name',
+                            editable: isEditable,
+                            enable: isEnable,
+                            required: false,
+                            columns: [
+                                { prop: 'code', length: 4 },
+                                { prop: 'name', length: 10 },
+                            ]}"></div>
+                        <br/>
                         <input data-bind="ntsTextEditor: {
                                     value: textOtherNotes1,
                                     name: '#{i18n.getText('QSI001_67')}',
                                     constraint: 'ReaForNotiOfQuatification',
                                     required: false,
-                                    enable: otherNotes1,
+                                    enable: selectedCode() === '3',
                                     readonly: false}"/>
                     </div>
                 </div>
