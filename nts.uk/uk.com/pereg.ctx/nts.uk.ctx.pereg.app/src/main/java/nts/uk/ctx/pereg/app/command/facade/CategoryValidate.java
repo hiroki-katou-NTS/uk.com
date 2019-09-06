@@ -2,6 +2,7 @@ package nts.uk.ctx.pereg.app.command.facade;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -56,12 +57,6 @@ public class CategoryValidate {
 			
 			validateSpaceCS0002(indexs, result, containerAdds);
 			
-			if(!indexs.isEmpty()) {
-				indexs.stream().forEach(i ->{
-					containerAdds.remove(Integer.valueOf(i).intValue());
-				});
-			}
-			
 			if(containerAdds.size()> 0) {
 				
 				historyValidate(result, containerAdds, baseDate, modeUpdate);
@@ -70,18 +65,11 @@ public class CategoryValidate {
 		}
 	}
 	
+	
 	public void validateUpdate(List<MyCustomizeException> result, List<PeregInputContainerCps003> containerAdds, GeneralDate baseDate, int modeUpdate) {
 		
 		List<String> indexs = new ArrayList<>();
 		validateSpaceCS0002(indexs, result, containerAdds);
-		
-		if(!indexs.isEmpty()) {
-			indexs.stream().forEach(i ->{
-				containerAdds.remove(Integer.valueOf(i).intValue());
-			});
-		}
-		
-		
 	}
 	
 	public void historyValidate(List<MyCustomizeException> result, List<PeregInputContainerCps003> containerAdds, GeneralDate baseDate, int modeUpdate) {
@@ -372,22 +360,22 @@ public class CategoryValidate {
 	 * @param result
 	 * @param containerAdds
 	 */
-	public void validateSpaceCS0002(List<String> indexs, List<MyCustomizeException> result, List<PeregInputContainerCps003> containerAdds) {
-		if(containerAdds.get(0).getInputs().getCategoryCd().equals("CS00002")) {
-			for(int i = 0; i < containerAdds.size(); i++ ) {
-				if(!containerAdds.isEmpty()) {
-					List<MyCustomizeException> errorlst = new ArrayList<>();
-					for(ItemValue item: containerAdds.get(i).getInputs().getItems()) {
-						MyCustomizeException exception = validateItemOfCS0002(item, containerAdds.get(i).getEmployeeId());
-						if(exception != null) {
-							errorlst.add(exception);
-							
-						}
+	public void validateSpaceCS0002(List<String> indexs, List<MyCustomizeException> result,
+			List<PeregInputContainerCps003> containerAdds) {
+		if (containerAdds.get(0).getInputs().getCategoryCd().equals("CS00002")) {
+			Iterator<PeregInputContainerCps003> itr = containerAdds.iterator();
+			while (itr.hasNext()) {
+				PeregInputContainerCps003 emp = itr.next();
+				List<MyCustomizeException> errorlst = new ArrayList<>();
+				Iterator<ItemValue> items = emp.getInputs().getItems().iterator();
+				while (items.hasNext()) {
+					ItemValue item = items.next();
+					MyCustomizeException exception = validateItemOfCS0002(item, emp.getEmployeeId());
+					if (exception != null) {
+						errorlst.add(exception);
+						itr.remove();
+
 					}
-					if(errorlst.size() > 0) {
-						result.addAll(errorlst);
-						indexs.add(String.valueOf(i));
-					}	
 				}
 			}
 		}
@@ -395,21 +383,19 @@ public class CategoryValidate {
 	
 	public void validateItemOfCS0069(List<MyCustomizeException> result, List<PeregInputContainerCps003> containerAdds){
 		if (containerAdds.get(0).getInputs().getCategoryCd().equals("CS00069")) {
-			List<String> indexs = new ArrayList<>();
 			List<String> sidErrors = new ArrayList<>();
-			String contractCode = AppContexts.user().contractCode();
-			for (int i = 0; i < containerAdds.size(); i++) {
-				if (!containerAdds.isEmpty()) {
-					for (ItemValue item : containerAdds.get(i).getInputs().getItems()) {
-						Optional<StampCard> stampCard = this.stampCardRepo.getByCardNoAndContractCode(item.valueAfter(),
-								contractCode);
-						if (stampCard.isPresent()) {
-							sidErrors.add(containerAdds.get(i).getEmployeeId());
-							containerAdds.remove(i);
-						}
-					}
-					if (sidErrors.size() > 0) {
-						indexs.add(String.valueOf(i));
+			String contractCode = AppContexts.user().contractCode();			
+			Iterator<PeregInputContainerCps003> itr = containerAdds.iterator();
+			while (itr.hasNext()) {
+				PeregInputContainerCps003 emp = itr.next();
+				Iterator<ItemValue> items = emp.getInputs().getItems().iterator();
+				while (items.hasNext()) {
+					ItemValue item = items.next();
+					Optional<StampCard> stampCard = this.stampCardRepo.getByCardNoAndContractCode(item.valueAfter(),
+							contractCode);
+					if (stampCard.isPresent()) {
+						sidErrors.add(emp.getEmployeeId());
+						itr.remove();
 					}
 				}
 			}

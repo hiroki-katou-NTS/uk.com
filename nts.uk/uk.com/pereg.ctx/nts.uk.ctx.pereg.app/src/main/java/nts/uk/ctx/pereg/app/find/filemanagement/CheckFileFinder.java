@@ -32,6 +32,7 @@ import nts.gul.excel.NtsExcelHeader;
 import nts.gul.excel.NtsExcelImport;
 import nts.gul.excel.NtsExcelReader;
 import nts.gul.excel.NtsExcelRow;
+import nts.gul.text.StringUtil;
 import nts.gul.time.minutesbased.MinutesBasedTimeParser;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
@@ -508,6 +509,11 @@ public class CheckFileFinder {
 						GeneralDate start = GeneralDate.fromString(period.getPeriods().get(0).getValue().toString(), "yyyy/MM/dd"); 
 						GeneralDate end = GeneralDate.fromString(period.getPeriods().get(1).getValue().toString(), "yyyy/MM/dd"); 
 						if(start.after(end)) {
+							employeeDto.getItems().stream().forEach(i ->{
+								if(i.getItemCode().equals(period.getPeriods().get(0).getItem())) {
+									i.setError(true);
+								}
+							});
 							ItemError error = new ItemError("", index, period.getPeriods().get(0).getItem(), "MsgB_2"); 
 							itemErrors.add(error);
 						}
@@ -694,8 +700,7 @@ public class CheckFileFinder {
 				}
 			}
 		} else {
-
-			if (!comboxKey.contains(value)) {
+			if (!comboxKey.contains(value) && !StringUtil.isNullOrEmpty(value, true)) {
 				ItemError error = new ItemError("", index, headerGrid.getItemCode(), "MsgB_2");
 				itemErrors.add(error);
 				empBody.setError(true);
