@@ -2,8 +2,11 @@ package nts.uk.ctx.pr.shared.ws.socialinsurance.employeesociainsur;
 
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.pr.shared.app.command.socialinsurance.employeesociainsur.empcomworkstlinfor.PeriodCommand;
 import nts.uk.ctx.pr.shared.app.command.socialinsurance.employeesociainsur.emphealinsurbeneinfo.AddEmpBasicPenNumInforCommandHandler;
 import nts.uk.ctx.pr.shared.app.command.socialinsurance.employeesociainsur.emphealinsurbeneinfo.CredentialAcquisitionInfoCommand;
+import nts.uk.ctx.pr.shared.app.find.socialinsurance.employeesociainsur.empcomworkstlinfor.CorEmpWorkHisFinder;
+import nts.uk.ctx.pr.shared.app.find.socialinsurance.employeesociainsur.empcomworkstlinfor.CorWorkFormInfoDto;
 import nts.uk.ctx.pr.shared.app.find.socialinsurance.employeesociainsur.emphealinsurbeneinfo.*;
 import nts.uk.ctx.pr.shared.dom.adapter.query.person.PersonInfoExportAdapter;
 import nts.uk.ctx.pr.shared.dom.adapter.query.person.PersonInfomationAdapter;
@@ -37,6 +40,9 @@ public class InforOnWelfPenInsurAccWebService extends WebService{
 
     @Inject
     private EmpBasicPenNumInforFinder empBasicPenNumInforFinder;
+
+    @Inject
+    private CorEmpWorkHisFinder corEmpWorkHisFinder;
 
 
     @POST
@@ -90,4 +96,14 @@ public class InforOnWelfPenInsurAccWebService extends WebService{
 
         return null;
     }
+
+
+    @POST
+    @Path("getCorWorkFormInfo")
+    public CorWorkFormInfoDto getCorWorkFormInfoDto(PeriodCommand command){
+        return corEmpWorkHisFinder.getCorWorkFormInfoDto(command.getEmpId(),command.getStartDate(),command.getEndDate());
+    }
+
+
+
 }

@@ -7,4 +7,5 @@ import java.util.Optional;
 */
 public interface CorWorkFormInfoRepository {
     Optional<CorWorkFormInfo> getCorWorkFormInfoByHisId(String hisId);
+    Optional<CorWorkFormInfo> getCorWorkFormInfoByHisId(String empID, String hisId);
 }

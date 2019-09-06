@@ -10,7 +10,8 @@ module nts.uk.pr.view.qsi001.b {
             getSocialInsurAcquisiInforById: "shared/employeesociainsur/getSocialInsurAcquisiInforById/{0}",
             add: "shared/employeesociainsur/add",
             getEmpBasicPenNumInforById: "shared/employeesociainsur/getEmpBasicPenNumInforById/{0}",
-            getMultiEmpWorkInfoById: "shared/employeesociainsur/getMultiEmpWorkInfoById/{0}"
+            getMultiEmpWorkInfoById: "shared/employeesociainsur/getMultiEmpWorkInfoById/{0}",
+            getCorWorkFormInfo: "shared/employeesociainsur/getCorWorkFormInfo"
         };
 
         export function getInforOnWelfPenInsurAccById(empId : string){
@@ -45,6 +46,10 @@ module nts.uk.pr.view.qsi001.b {
         export function getMultiEmpWorkInfoById(empId: string){
             let _path = nts.uk.text.format(path.getMultiEmpWorkInfoById, empId);
             return nts.uk.request.ajax("pr", _path);
+        }
+
+        export function getCorWorkFormInfo(data: any){
+            return nts.uk.request.ajax(path.getCorWorkFormInfo, data);
         }
 
 

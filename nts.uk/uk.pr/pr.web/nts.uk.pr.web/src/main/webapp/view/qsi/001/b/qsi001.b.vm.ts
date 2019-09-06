@@ -47,10 +47,18 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
         constructor() {
             block.invisible();
             let self = this;
-
+            let periodCommand: any;
             let params = getShared('QSI001_PARAMS_TO_SCREEN_B');
 
             if (params && params.listEmpId.length > 0) {
+
+
+                periodCommand = {
+                    empId: params.listEmpId[0].employeeId,
+                    startDate: params.startDate,
+                    endDate: params.endDate
+                };
+
                 self.loadKCP009(self.createEmployeeModel(params.listEmpId));
 
                 //起動する
@@ -116,9 +124,28 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
 
                 });
 
+
+
+
+                service.getCorWorkFormInfo(periodCommand).done(e =>{
+                    if(e){
+                        if(e.insPerCls == InsPerCls.SHORT_TIME_WORKERS){
+                            self.shortWorkHours(true);
+                        }else{
+                            self.shortWorkHours(false);
+                        }
+                    }
+
+                }).fail(e =>{
+
+                });
+
                 //社員を切り替える
                 //select employee
                 self.selectedItem.subscribe(e => {
+                    periodCommand = {
+
+                    };
                     service.getSocialInsurAcquisiInforById(self.selectedItem()).done(e => {
                         if (e) {
                             self.otherNotes(e.remarksOther == 1 ? true : false);
@@ -353,6 +380,15 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
         static PERSONNEL = 3;
         static ACCOUNTING = 4;
         static OH = 6;
+    }
+
+    export class InsPerCls{
+        //一般被保険者
+        static GEN_INS_PER = 0;
+        //パート扱い
+        static PART_HANDLING = 1;
+        //短時間労働者
+        static SHORT_TIME_WORKERS = 2;
     }
 
     export class ItemModel {
