@@ -22,18 +22,17 @@ export class Ccg033AComponent extends Vue {
         let appId = self.$route.query.appId;
         let programID = self.$route.query.programID;
         if (programID == 'cmm045') {
+            //CMMS45_申請一覧・承認一覧の「B：承認一覧」へ遷移する
             self.$goto('cmms45b');
         } else if (programID == 'kaf005') {
             let userAtr = self.$route.query.userAtr;
-            if (userAtr == '1') {//利用者 = 承認者
+            if (userAtr == '1' || userAtr == '2') {//利用者 = 承認者 || 申請本人&承認者
+                //CMMS45_申請一覧・承認一覧の「D：申請内容確認（承認）」へ遷移する
                 self.$modal('cmms45d', { 'listAppMeta': [appId], 'currentApp': appId });
             } else {
+                //CMMS45_申請一覧・承認一覧の「C：申請内容確認」へ遷移する
                 self.$modal('cmms45c', { 'listAppMeta': [appId], 'currentApp': appId });
             }
         }
     }
 }
-
-const servicePath = {
-    judgmentuser: 'at/request/application/approval/judgmentuser'
-};
