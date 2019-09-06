@@ -456,7 +456,7 @@ module nts.uk.at.view.kaf010.b {
                 return new common.OvertimeCaculation(
                         item.companyID, 
                         item.appID, 
-                        item.attendanceID, 
+                        item.attendanceType, 
                         "", 
                         item.frameNo, 
                         item.timeItemTypeAtr, 
@@ -878,7 +878,7 @@ module nts.uk.at.view.kaf010.b {
                         });  
                         if((nts.uk.util.isNullOrUndefined(oldValue)) || 
                             (nts.uk.util.isNullOrUndefined(oldValue.applicationTime)) || 
-                            (oldValue.applicationTime!=breakTime.applicationTime())){
+                            (ko.toJSON(oldValue).localeCompare(ko.toJSON(breakTime))!=0)){
                             breakTime.color(self.changeColor(2, breakTime.frameNo(), self.getErrorCode(calcOT.calcError, calcOT.preAppError, calcOT.actualError), beforeAppStatus, actualStatus));
                         }
                     }
@@ -1229,7 +1229,7 @@ module nts.uk.at.view.kaf010.b {
             
             beforeUpdateProcess(overtime: any){
                 let self = this;
-                service.checkBeforeRegister(overtime).done((data) => {    
+                service.checkBeforeUpdate(overtime).done((data) => {    
                     overtime.appOvertimeDetail = data.appOvertimeDetail;
                     self.updateOvertime(overtime);
                 }).fail((res) => {

@@ -1796,7 +1796,7 @@ public class ProgramsManager {
 			"/view/ksc/001/k/index.xhtml");
 	/** KAF000 */
 	public static final Program KAF000B = new Program(WebAppId.AT, ProgramIdConsts.KAF000B, "",
-			"/view/kaf/000/b/index.xhtml");
+			"/view/kaf/000/b/index.xhtml", ProgramIdConsts.CCGS33);
 	/** KAF001 */
 	public static final Program KAF001A = new Program(WebAppId.AT, ProgramIdConsts.KAF001A, "KAF001_1",
 			"/view/kaf/001/a/index.xhtml");
@@ -2297,6 +2297,9 @@ public class ProgramsManager {
 			"/cmm/s45/d");
 	public static final Program CMMS45E = new Program(WebAppId.MOBI, ProgramIdConsts.CMMS45E, "CMMS45E",
 			"/cmm/s45/e");
+	public static final Program CCGS33 = new Program(WebAppId.MOBI, ProgramIdConsts.CCGS33, "",
+			"/ccg/033/a");
+	
 	
 	/**
 	 * All programs map.
