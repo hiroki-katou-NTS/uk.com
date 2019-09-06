@@ -36,6 +36,7 @@ public class UkRequestFilterCollector implements RequestFilterCollector {
 			FILTERS.add(RequestFilterMapping.map(PathPattern.ALL_REQUESTS, new SharingSessionFilter()));
 			FILTERS.add(RequestFilterMapping.map(PathPattern.BATCH_WEB_APIS, new BatchRequestProcessor()));
 			FILTERS.add(RequestFilterMapping.map(PathPattern.ALL_WEB_APIS, new ProgramIdDetector()));
+			FILTERS.add(RequestFilterMapping.map(PathPattern.ALL_SCREENS, new RequestNavigateFilter()));
 			
 			if (ServerSystemProperties.isResponseTimeLogMode()) {
 				FILTERS.add(RequestFilterMapping.map(PathPattern.ALL_WEB_APIS, new ResponseTimeAggregateFilter()));
