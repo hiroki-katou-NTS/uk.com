@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.shared.app.find.socialinsurance.employeesociainsur.emphealinsurbeneinfo;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.SocialInsurAcquisiInfor;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.SocialInsurAcquisiInforRepository;
 
@@ -20,5 +21,15 @@ public class SocialInsurAcquisiInforFinder {
     public Optional<SocialInsurAcquisiInfor> getSocialInsurAcquisiInforById(String cid, String employeeId){
         return finder.getSocialInsurAcquisiInforByCIdEmpId(cid, employeeId);
     }
+
+    public GeneralDate getPersonInfo(String employeeId){
+        Optional<GeneralDate> date = finder.getPersonInfo(employeeId);
+        if(date.isPresent()){
+            return date.get();
+        }
+        return null;
+    }
+
+
 
 }

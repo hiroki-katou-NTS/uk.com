@@ -2,6 +2,7 @@ package nts.uk.ctx.pr.shared.ws.socialinsurance.employeesociainsur;
 
 
 import nts.arc.layer.ws.WebService;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.shared.app.command.socialinsurance.employeesociainsur.empcomworkstlinfor.PeriodCommand;
 import nts.uk.ctx.pr.shared.app.command.socialinsurance.employeesociainsur.emphealinsurbeneinfo.AddEmpBasicPenNumInforCommandHandler;
 import nts.uk.ctx.pr.shared.app.command.socialinsurance.employeesociainsur.emphealinsurbeneinfo.CredentialAcquisitionInfoCommand;
@@ -27,9 +28,6 @@ import java.util.Optional;
 public class InforOnWelfPenInsurAccWebService extends WebService{
 
     @Inject
-    private PersonInfomationAdapter adapter;
-
-    @Inject
     private AddEmpBasicPenNumInforCommandHandler commandHandler;
 
     @Inject
@@ -47,8 +45,8 @@ public class InforOnWelfPenInsurAccWebService extends WebService{
 
     @POST
     @Path("getPersonInfo/{empID}")
-    public PersonInfoExportAdapter getPersonInfo(@PathParam("empID")String empID){
-        return adapter.getPersonInfo(empID);
+    public GeneralDate getPersonInfo(@PathParam("empID")String empID){
+        return socialInsurAcquisiInforFinder.getPersonInfo(empID);
     }
 
     @POST

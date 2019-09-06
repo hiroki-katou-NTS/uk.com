@@ -20,7 +20,7 @@ public class CorEmpWorkHisFinder {
     private CorEmpWorkHisRepository repository;
 
     @Inject
-    CorWorkFormInfoRepository corWorkFormInfoRepository;
+    private CorWorkFormInfoRepository corWorkFormInfoRepository;
 
     public List<CorEmpWorkHisDto> getAllCorEmpWorkHisByEmpId(String empId){
         Optional<CorEmpWorkHis> domain  = repository.getAllCorEmpWorkHisByEmpId(empId);

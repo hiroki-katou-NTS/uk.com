@@ -1,6 +1,9 @@
 package nts.uk.ctx.pr.shared.infra.repository.socialinsurance.employeesociainsur.emphealinsurbeneinfo;
 
+import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.SocialInsurAcquisiInfor;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.SocialInsurAcquisiInforRepository;
 import nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.emphealinsurbeneinfo.QqsmtSocIsacquisiInfo;
@@ -8,6 +11,7 @@ import nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.emph
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
+import java.sql.PreparedStatement;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,6 +23,11 @@ public class JpaSocialInsurAcquisiInforRepository extends JpaRepository implemen
     private static final String SELECT_BY_KEY_STRINGS = "SELECT f FROM QqsmtSocIsacquisiInfo f WHERE  f.socIsacquisiInfoPk.employeeId =:employeeId AND f.socIsacquisiInfoPk.companyId =:companyId";
   //  private static final String UPDATE_SOCIAL_BY_KEY = "UPDATE QqsmtSocIsacquisiInfo f SET f.continReemAfterRetirement =:continReemAfterRetirement WHERE f.socIsacquisiInfoPk.employeeId =:employeeId";
 
+    private static final String GET_PERSON_INFO = "SELECT BIRTHDAY " +
+            " FROM (SELECT * " +
+            " FROM BSYMT_EMP_DTA_MNG_INFO " +
+            " WHERE SID = ? ) i " +
+            " INNER JOIN BPSMT_PERSON p ON p.PID = i.PID";
 
     @Override
     public void add(SocialInsurAcquisiInfor domain){
@@ -81,4 +90,21 @@ public class JpaSocialInsurAcquisiInforRepository extends JpaRepository implemen
                 .setParameter("employeeId", employeeId)
                 .executeUpdate();*/
     }
+
+    @Override
+    @SneakyThrows
+    public Optional<GeneralDate> getPersonInfo(String employeeId) {
+
+        try(PreparedStatement stmt = this.connection().prepareStatement(GET_PERSON_INFO)){
+            stmt.setString(1,employeeId);
+
+            return new NtsResultSet(stmt.executeQuery()).getSingle(x -> {
+                  return x.getGeneralDate(1);
+
+            });
+
+        }
+
+    }
+
 }

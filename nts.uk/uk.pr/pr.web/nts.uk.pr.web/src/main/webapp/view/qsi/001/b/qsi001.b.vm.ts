@@ -96,7 +96,7 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
                 });
 
                 service.getPersonInfo(params.listEmpId[0].employeeId).done(r => {
-                    if (self.getAge(r.birthDay, params.date) >= 70) {
+                    if (self.getAge(r, params.date) >= 70) {
                         self.applyToEmployeeOver70(true);
                         self.otherNotes(true);
                     }
@@ -180,7 +180,7 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
                     });
 
                     service.getPersonInfo(self.selectedItem()).done(r => {
-                        if (self.getAge(r.birthDay, params.date) >= 70) {
+                        if (self.getAge(r, params.date) >= 70) {
                             self.applyToEmployeeOver70(true);
                             self.otherNotes(true);
                         }
