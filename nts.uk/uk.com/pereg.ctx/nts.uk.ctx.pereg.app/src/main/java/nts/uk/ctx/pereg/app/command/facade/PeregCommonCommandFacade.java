@@ -562,13 +562,19 @@ public class PeregCommonCommandFacade {
 												if(ctgType == CategoryType.CONTINUOUSHISTORY || ctgType == CategoryType.CONTINUOUS_HISTORY_FOR_ENDDATE) {
 													if(item.itemCode().equals(dateRange.getStartDateCode())) {
 														if (!history[1].equals(" ")) {
-															GeneralDate oldEnd = GeneralDate.fromString(history[1].substring(1), "yyyy/MM/dd");
-															GeneralDate oldStart = GeneralDate.fromString(item.valueBefore(), "yyyy/MM/dd");
-															if (oldStart.addDays(-1).equals(oldEnd)) {
-																reviseInfo = new ReviseInfo(nameEndate,
-																		Optional.ofNullable(GeneralDate.fromString(item.valueAfter(), "yyyy/MM/dd").addDays(-1)),
-																		Optional.empty(), Optional.empty());
+															try {
+																GeneralDate oldEnd = GeneralDate.fromString(history[1].substring(1), "yyyy/MM/dd");
+																GeneralDate oldStart = GeneralDate.fromString(item.valueBefore(), "yyyy/MM/dd");
+																if (oldStart.addDays(-1).equals(oldEnd)) {
+																	reviseInfo = new ReviseInfo(nameEndate,
+																			Optional.ofNullable(GeneralDate.fromString(item.valueAfter(), "yyyy/MM/dd").addDays(-1)),
+																			Optional.empty(), Optional.empty());
+																}
+															}catch(Exception e) {
+																	reviseInfo = new ReviseInfo(nameEndate,
+																		Optional.empty(), Optional.empty(), Optional.empty());
 															}
+
 														}
 													}
 												}
