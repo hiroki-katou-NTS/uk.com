@@ -13,7 +13,7 @@ public class JpaHRDevMenuRepository extends JpaRepository implements HRDevMenuRe
 	
 	private static final String FIND_BY_AVAILABLE = "SELECT a FROM JcmmtHRDevMenu a "
 												+ "WHERE a.availableMenu = :availableMenu "
-												+ "ORDER BY a.eventId ASC ";
+												+ "ORDER BY a.dispOrder ASC ";
 	
 	/**
 	 * find item by id
