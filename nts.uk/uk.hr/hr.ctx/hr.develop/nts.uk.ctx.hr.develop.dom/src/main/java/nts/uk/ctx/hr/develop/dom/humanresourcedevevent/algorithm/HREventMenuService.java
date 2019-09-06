@@ -42,8 +42,13 @@ public class HREventMenuService {
 		if(!listEvent.isEmpty()){
 			available = true;
 			List<HRDevMenu> listMenu = this.getHrMenu();
-			return new AvailableEventAndMenuDto(listEvent, listMenu, available);
+			if(listMenu.isEmpty()){
+				available = false;
+				return new AvailableEventAndMenuDto(listEvent, new ArrayList<>(), available);
+			}else{
+				return new AvailableEventAndMenuDto(listEvent, listMenu, available);
+			}
 		}
-		return new AvailableEventAndMenuDto(listEvent, new ArrayList<>(), available);
+		return new AvailableEventAndMenuDto(new ArrayList<>(), new ArrayList<>(), available);
 	}
 }
