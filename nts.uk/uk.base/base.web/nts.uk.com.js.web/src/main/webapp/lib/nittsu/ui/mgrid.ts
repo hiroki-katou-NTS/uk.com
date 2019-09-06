@@ -6777,7 +6777,7 @@ module nts.uk.ui.mgrid {
                     return { c: calcCell };
                 } else {
                     if (cellValue === origVal || ((_.isNil(cellValue) || cellValue === "" || (cellValue instanceof moment && cellValue._i === "")) && ((origVal instanceof moment && origVal._i === "") || _.isNil(origVal) || origVal === "")) 
-                        || (cellValue instanceof Date && !_.isNil(cellValue) && !_.isNil(origVal) && cellValue.getTime() === origVal.getTime())) {
+                        || (cellValue instanceof Date && origVal instanceof Date && !_.isNil(cellValue) && !_.isNil(origVal) && cellValue.getTime() === origVal.getTime())) {
                         $cell = lch.cellAt($grid, coord.rowIdx, coord.columnKey, desc);
                         if (!$cell) {
                             if (!_.isNil(dirties[id]) && !_.isNil(dirties[id][coord.columnKey])) {

@@ -493,6 +493,15 @@ module cps003.a.vm {
                             });
                         } else {
                             let errLst = _.map(errorList, e => e);
+                            let ds = $grid.mGrid("dataSource");
+                            let errIds = _.chain(errLst).map(e => e.no - 1).uniq().map(no => (ds[no] || {}).id).value();
+                            forEach(updateDone, d => {
+                                if (!_.find(errIds, id => id === d.rowId)) {
+                                    $grid.mGrid("updateCell", d.rowId, d.columnKey, d.value, true);
+                                    $grid.mGrid("updateCell", d.rowId, "register", false, true);
+                                } 
+                            });
+                            
                             setShared("CPS003G_ERROR_LIST", errLst);
                             modeless("/view/cps/003/g/index.xhtml").onClosed(() => {
                                 
