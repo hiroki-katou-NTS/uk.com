@@ -201,23 +201,23 @@ export class Kdws03AComponent extends Vue {
                 if (_.has(rowDataSrc, header.key)) {
                     rowData.push({ key: header.key, value: rowDataSrc[header.key] });
                 } else {
-                    rowData.push({ key: header.group[1].key, value: rowDataSrc[header.group[1].key] });
+                    rowData.push({ key: header.key, groupKey: header.group[1].key, value: rowDataSrc[header.group[1].key] });
                 }
             });
 
             if (self.displayFormat == '0') {
-                self.displayDataLst.push({ rowData, date: rowDataSrc.date, id: rowDataSrc.id });
+                self.displayDataLst.push({ rowData, date: rowDataSrc.date, dateDetail: rowDataSrc.dateDetail, id: rowDataSrc.id });
             } else {
-                self.displayDataLst.push({ rowData, employeeName: rowDataSrc.employeeName, id: rowDataSrc.id });
+                self.displayDataLst.push({ rowData, employeeName: rowDataSrc.employeeName, employeeId: rowDataSrc.employeeId, id: rowDataSrc.id });
             }
         });
 
         self.displayDataLst.forEach((row: any) => {
             let states = _.filter(self.cellStates, (x) => x.rowId == row.id);
             row.rowData.forEach((cell: any) => {
-                if (!_.isNil(_.find(states, (x) => x.columnKey == cell.key))) {
+                if (!_.isNil(_.find(states, (x) => x.columnKey == cell.key || x.columnKey == cell.groupKey))) {
                     cell.class = '';
-                    let classArray = _.find(states, (x) => x.columnKey == cell.key).state;
+                    let classArray = _.find(states, (x) => x.columnKey == cell.key || x.columnKey == cell.groupKey).state;
                     _.forEach(classArray, (x) => cell.class = cell.class + x);
                 }
             });
@@ -233,9 +233,9 @@ export class Kdws03AComponent extends Vue {
                     rowData.push({ key: header.key, value: '' });
                 });
                 if (self.displayFormat == '0') {
-                    self.displayDataLst.push({ rowData, date: '' });
+                    self.displayDataLst.push({ rowData, date: '', id: '' });
                 } else {
-                    self.displayDataLst.push({ rowData, employeeName: '' });
+                    self.displayDataLst.push({ rowData, employeeName: '', id: '' });
                 }
             }
         }
@@ -294,6 +294,9 @@ export class Kdws03AComponent extends Vue {
     }
 
     public openEdit(id: any) {
+        if (id == '') {
+            return;
+        }
         let param1 = _.find(this.displayDataLst, (x) => x.id == id);
         let param2 = this.displayHeaderLst;
     }

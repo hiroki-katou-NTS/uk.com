@@ -257,9 +257,14 @@ public class InitScreenMob {
 		screenDto.setApprovalConfirmCache(new ApprovalConfirmCache(sId, listEmployeeId,
 				new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate()), screenMode, confirmResults,
 				approvalResults));
+		
+		Map<Pair<String, GeneralDate>, ConfirmStatusActualResult> mapConfirmResult = confirmResults.stream().collect(Collectors.toMap(x -> Pair.of(x.getEmployeeId(), x.getDate()), x -> x, (x, y) -> x));
+		Map<Pair<String, GeneralDate>, ApprovalStatusActualResult> mapApprovalResults = approvalResults.stream().collect(Collectors.toMap(x -> Pair.of(x.getEmployeeId(), x.getDate()), x -> x, (x, y) -> x));
+
 
 		// 提出済の申請の取得
-		Map<String, String> appMapDateSid = getApplication(listEmployeeId, dateRange, new HashMap<>());
+		Map<String, Boolean> disableSignMap = new HashMap<>();
+		Map<String, String> appMapDateSid = getApplication(listEmployeeId, dateRange, disableSignMap);
 
 		// 休暇管理状況をチェックする
 		// 10-1.年休の設定を取得する
@@ -317,11 +322,35 @@ public class InitScreenMob {
 			data.addCellData(new DPCellDataDto(DPText.COLUMN_SUBMITTED, "", "", ""));
 			data.addCellData(new DPCellDataDto(DPText.LOCK_APPLICATION, "", "", ""));
 			data.addCellData(new DPCellDataDto(DPText.LOCK_APPLICATION_LIST, "", "", ""));
+			
+			//set checkbox sign
+			ConfirmStatusActualResult dataSign = mapConfirmResult.get(Pair.of(data.getEmployeeId(), data.getDate()));
+			data.setSign(dataSign == null ? false : dataSign.isStatus());
+			// state check box sign
+			boolean disableSignApp = disableSignMap.containsKey(data.getEmployeeId() + "|" + data.getDate()) && disableSignMap.get(data.getEmployeeId() + "|" + data.getDate());
+			
+			ApprovalStatusActualResult dataApproval = mapApprovalResults.get(Pair.of(data.getEmployeeId(), data.getDate()));
+			//set checkbox approval
+			data.setApproval(dataApproval == null ? false : screenMode == ScreenMode.NORMAL.value ? dataApproval.isStatusNormal() : dataApproval.isStatus());
+			ApproveRootStatusForEmpDto approvalCheckMonth = dpLockDto.getLockCheckMonth().get(data.getEmployeeId() + "|" + data.getDate());
 
 			DailyModifyResult resultOfOneRow = getRow(resultDailyMap, data.getEmployeeId(), data.getDate());
 			boolean lockDaykWpl = false, lockDay = false, lockWpl = false, lockHist = false, lockApprovalMonth = false,
 					lockConfirmMonth = false;
 			if (resultOfOneRow != null && (displayFormat == 2 ? !data.getError().equals("") : true)) {
+				//set disable and lock
+				processor.lockDataCheckbox(sId, screenDto, data, identityProcessDtoOpt, approvalUseSettingDtoOpt, screenMode, data.isApproval(), data.isSign());
+
+				lockDay = processor.checkLockDay(dpLockDto.getLockDayAndWpl(), data);
+				lockWpl = processor.checkLockWork(dpLockDto.getLockDayAndWpl(), data);
+				lockHist = processor.lockHist(dpLockDto.getLockHist(), data);
+				lockApprovalMonth = approvalCheckMonth == null ? false : approvalCheckMonth.isCheckApproval();
+				lockConfirmMonth = processor.checkLockConfirmMonth(dpLockDto.getLockConfirmMonth(), data);
+				lockDaykWpl = lockDay || lockWpl;
+				lockDaykWpl = processor.lockAndDisable(screenDto, data, screenMode, lockDaykWpl,
+						dataApproval == null ? false : dataApproval.isStatusNormal(), lockHist, data.isSign(),
+						lockApprovalMonth, lockConfirmMonth);
+
 				if (!textColorSpr) {
 					setTextColorDay(screenDto, data.getDate(), "date", data.getId(), holidayDate);
 				}

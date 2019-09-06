@@ -37,7 +37,7 @@
             </div>
         </div>
     
-        <fix-table table-class="table table-bordered m-0  table-sm" :rowNumber="6" class="mx-n2" style="font-size: 11px" v-if="displayDataLst.length > 0" :key="resetTable">
+        <fix-table table-class="table table-bordered m-0 table-sm" :rowNumber="6" class="border-bottom mx-n2" style="font-size: 11px" v-if="displayDataLst.length > 0" :key="resetTable">
             <thead class="uk-bg-headline">
                 <tr>
                     <th c-width="64" style="height: 70px"></th>
@@ -65,7 +65,7 @@
                     </td>
                 </tr>
             </tbody>
-            <tfoot>
+            <tfoot class="d-none">
                 <tr>
                     <td>合計</td>
                     <td v-for="value in displaySumLst">{{value}}</td>
