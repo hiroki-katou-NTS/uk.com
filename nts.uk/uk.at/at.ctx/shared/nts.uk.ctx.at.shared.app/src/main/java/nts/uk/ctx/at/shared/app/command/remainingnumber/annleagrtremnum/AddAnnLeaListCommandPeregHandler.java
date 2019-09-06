@@ -16,10 +16,11 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremaini
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.pereg.app.command.MyCustomizeException;
 import nts.uk.shr.pereg.app.command.PeregAddCommandResult;
 import nts.uk.shr.pereg.app.command.PeregAddListCommandHandler;
 @Stateless
-public class AddAnnLeaListCommandPeregHandler extends CommandHandlerWithResult<List<AddAnnLeaGrantRemnNumPeregCommand>, List<PeregAddCommandResult>>
+public class AddAnnLeaListCommandPeregHandler extends CommandHandlerWithResult<List<AddAnnLeaGrantRemnNumPeregCommand>, List<MyCustomizeException>>
 implements PeregAddListCommandHandler<AddAnnLeaGrantRemnNumPeregCommand>{
 	
 	@Inject
@@ -36,7 +37,7 @@ implements PeregAddListCommandHandler<AddAnnLeaGrantRemnNumPeregCommand>{
 	}
 
 	@Override
-	protected List<PeregAddCommandResult> handle(
+	protected List<MyCustomizeException> handle(
 			CommandHandlerContext<List<AddAnnLeaGrantRemnNumPeregCommand>> context) {
 		List<AddAnnLeaGrantRemnNumPeregCommand> cmd = context.getCommand();
 		String cid = AppContexts.user().companyId();
@@ -78,6 +79,6 @@ implements PeregAddListCommandHandler<AddAnnLeaGrantRemnNumPeregCommand>{
 		if (empErrors.isEmpty()) {
 
 		}
-		return result;
+		return new ArrayList<>();
 	}
 }

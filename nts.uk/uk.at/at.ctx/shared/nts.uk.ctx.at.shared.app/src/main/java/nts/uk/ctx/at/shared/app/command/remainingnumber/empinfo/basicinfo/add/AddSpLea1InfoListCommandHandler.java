@@ -12,10 +12,10 @@ import nts.uk.ctx.at.shared.app.command.remainingnumber.empinfo.basicinfo.SpLeaI
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.SpecialLeaveCode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfo;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.pereg.app.command.PeregAddCommandResult;
+import nts.uk.shr.pereg.app.command.MyCustomizeException;
 import nts.uk.shr.pereg.app.command.PeregAddListCommandHandler;
 @Stateless
-public class AddSpLea1InfoListCommandHandler extends CommandHandlerWithResult<List<AddSpecialleave1informationCommand>, List<PeregAddCommandResult>>
+public class AddSpLea1InfoListCommandHandler extends CommandHandlerWithResult<List<AddSpecialleave1informationCommand>, List<MyCustomizeException>>
 implements PeregAddListCommandHandler<AddSpecialleave1informationCommand>{
 	@Inject
 	private SpLeaInfoCommandHandler addSpLeaInfoCommandHandler;
@@ -30,7 +30,7 @@ implements PeregAddListCommandHandler<AddSpecialleave1informationCommand>{
 	}
 
 	@Override
-	protected List<PeregAddCommandResult> handle(
+	protected List<MyCustomizeException> handle(
 			CommandHandlerContext<List<AddSpecialleave1informationCommand>> context) {
 		String cid = AppContexts.user().companyId();
 		List<AddSpecialleave1informationCommand> cmd = context.getCommand();

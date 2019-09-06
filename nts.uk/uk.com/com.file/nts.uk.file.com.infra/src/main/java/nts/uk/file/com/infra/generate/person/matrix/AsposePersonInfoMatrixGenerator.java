@@ -340,24 +340,23 @@ public class AsposePersonInfoMatrixGenerator extends AsposeCellsReportGenerator 
 			int hours = Integer.valueOf(valueSplit[0]).intValue();
 			int day = hours/24;
 			
-			if (day == -1) {
-				result = "前日" + hours + ":"+ valueSplit[1];
+			if (hours < -1) {
+				return "前日" + Math.abs(hours) + ":"+ valueSplit[1];
 			}
 			
 			if (day == 0) {
-				result = "当日" + hours + ":"+ valueSplit[1];
+				return "当日" + hours + ":"+ valueSplit[1];
 			}
 			
 			if(day == 1) {
-				result = "翌日" + (hours - 24) + ":"+ valueSplit[1];
+				return "翌日" + (hours - 24) + ":"+ valueSplit[1];
 			}
 			
 			if(day == 2) {
-				result = "翌々日" + (hours - 48) + ":"+ valueSplit[1];
+				return "翌々日" + (hours - 48) + ":"+ valueSplit[1];
 				
 			}
 		}
-		
 		return result;
 	}
 	

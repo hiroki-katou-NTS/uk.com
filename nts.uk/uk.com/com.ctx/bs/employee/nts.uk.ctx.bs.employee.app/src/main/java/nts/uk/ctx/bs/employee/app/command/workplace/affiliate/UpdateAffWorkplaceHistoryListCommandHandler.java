@@ -1,6 +1,7 @@
 package nts.uk.ctx.bs.employee.app.command.workplace.affiliate;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
@@ -65,31 +67,36 @@ implements PeregUpdateListCommandHandler<UpdateAffWorkplaceHistoryCommand> {
 		}
 
 		command.stream().forEach(c -> {
-			
-			if (c.getStartDate() != null) {
-				List<AffWorkplaceHistory> affWorkplaceHistoryLst = existHistMap.get(c.getEmployeeId());
-				if(affWorkplaceHistoryLst != null) {
-					AffWorkplaceHistory affWorkplaceHistory = affWorkplaceHistoryLst.get(0);
+			try {
+				if (c.getStartDate() != null) {
+					List<AffWorkplaceHistory> affWorkplaceHistoryLst = existHistMap.get(c.getEmployeeId());
+					if (affWorkplaceHistoryLst != null) {
+						AffWorkplaceHistory affWorkplaceHistory = affWorkplaceHistoryLst.get(0);
 
-					Optional<DateHistoryItem> itemToBeUpdate = affWorkplaceHistory.getHistoryItems().stream()
-							.filter(h -> h.identifier().equals(c.getHistoryId())).findFirst();
-					if (!itemToBeUpdate.isPresent()) {
+						Optional<DateHistoryItem> itemToBeUpdate = affWorkplaceHistory.getHistoryItems().stream()
+								.filter(h -> h.identifier().equals(c.getHistoryId())).findFirst();
+						if (!itemToBeUpdate.isPresent()) {
+							sidErrorLst.add(c.getEmployeeId());
+							return;
+						} else {
+							affWorkplaceHistory.changeSpan(itemToBeUpdate.get(), new DatePeriod(c.getStartDate(),
+									c.getEndDate() != null ? c.getEndDate() : ConstantUtils.maxDate()));
+							affWorkplaceHistories.add(
+									new AffWorkplaceHistoryIntermediate(affWorkplaceHistory, itemToBeUpdate.get()));
+						}
+					} else {
 						sidErrorLst.add(c.getEmployeeId());
 						return;
-					} else {
-						affWorkplaceHistory.changeSpan(itemToBeUpdate.get(), new DatePeriod(c.getStartDate(),
-								c.getEndDate() != null ? c.getEndDate() : ConstantUtils.maxDate()));
-						affWorkplaceHistories
-								.add(new AffWorkplaceHistoryIntermediate(affWorkplaceHistory, itemToBeUpdate.get()));
 					}
-				}else {
-					sidErrorLst.add(c.getEmployeeId());
-					return;
 				}
+				AffWorkplaceHistoryItem histItem = AffWorkplaceHistoryItem.createFromJavaType(c.getHistoryId(),
+						c.getEmployeeId(), c.getWorkplaceId(), c.getNormalWorkplaceId());
+				histItems.add(histItem);
+			} catch (BusinessException e) {
+				MyCustomizeException ex = new MyCustomizeException(e.getMessageId(), Arrays.asList(c.getEmployeeId()));
+				errorExceptionLst.add(ex);
 			}
-			AffWorkplaceHistoryItem histItem = AffWorkplaceHistoryItem.createFromJavaType(c.getHistoryId(),
-					c.getEmployeeId(), c.getWorkplaceId(), c.getNormalWorkplaceId());
-			histItems.add(histItem);
+
 		});
 		if(!affWorkplaceHistories.isEmpty()) {
 			affWorkplaceHistoryService.updateAll(affWorkplaceHistories);

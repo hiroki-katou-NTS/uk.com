@@ -1,6 +1,7 @@
 package nts.uk.ctx.bs.employee.app.command.jobtitle.affiliate;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -8,6 +9,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.text.IdentifierUtil;
@@ -20,10 +22,10 @@ import nts.uk.ctx.bs.person.dom.person.common.ConstantUtils;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
-import nts.uk.shr.pereg.app.command.PeregAddCommandResult;
+import nts.uk.shr.pereg.app.command.MyCustomizeException;
 import nts.uk.shr.pereg.app.command.PeregAddListCommandHandler;
 @Stateless
-public class AddAffJobTitleMainListCommandHandler extends CommandHandlerWithResult<List<AddAffJobTitleMainCommand>, List<PeregAddCommandResult>>
+public class AddAffJobTitleMainListCommandHandler extends CommandHandlerWithResult<List<AddAffJobTitleMainCommand>, List<MyCustomizeException>>
 implements PeregAddListCommandHandler<AddAffJobTitleMainCommand>{
 	@Inject
 	private AffJobTitleHistoryRepository affJobTitleHistoryRepository;
@@ -44,17 +46,18 @@ implements PeregAddListCommandHandler<AddAffJobTitleMainCommand>{
 	}
 
 	@Override
-	protected List<PeregAddCommandResult> handle(CommandHandlerContext<List<AddAffJobTitleMainCommand>> context) {
+	protected List<MyCustomizeException> handle(CommandHandlerContext<List<AddAffJobTitleMainCommand>> context) {
 		List<AddAffJobTitleMainCommand> command = context.getCommand();
 		String cid = AppContexts.user().companyId();
 		List<String> sids = command.stream().map(c -> c.getSid()).collect(Collectors.toList());
 		List<AffJobTitleHistoryItem> histItems = new ArrayList<>();
 		List<AffJobTitleHistory> affJobTitleHistoryLst = new ArrayList<>();
-		List<PeregAddCommandResult> result = new ArrayList<>();
+		List<MyCustomizeException> result = new ArrayList<>();
 		Map<String, List<AffJobTitleHistory>> existHistMap = affJobTitleHistoryRepository.getListBySids(cid, sids)
 				.stream().collect(Collectors.groupingBy(c -> c.getEmployeeId()));
 
 		command.stream().forEach(c -> {
+			try {
 			String histId = IdentifierUtil.randomUniqueId();
 			List<AffJobTitleHistory> affJobTitleHistory = existHistMap.get(c.getSid());
 			AffJobTitleHistory itemtoBeAdded = new AffJobTitleHistory(cid, c.getSid(), new ArrayList<>());
@@ -69,7 +72,10 @@ implements PeregAddListCommandHandler<AddAffJobTitleMainCommand>{
 			AffJobTitleHistoryItem histItem = AffJobTitleHistoryItem.createFromJavaType(histId, c.getSid(),
 					c.getJobTitleId(), c.getNote());
 			histItems.add(histItem);
-			result.add(new PeregAddCommandResult(histId));
+			} catch(BusinessException e) {
+				MyCustomizeException ex = new MyCustomizeException(e.getMessageId(), Arrays.asList(c.getSid()));
+				result.add(ex);
+			}
 		});
 		if (!affJobTitleHistoryLst.isEmpty()) {
 			affJobTitleHistoryService.addAll(affJobTitleHistoryLst);

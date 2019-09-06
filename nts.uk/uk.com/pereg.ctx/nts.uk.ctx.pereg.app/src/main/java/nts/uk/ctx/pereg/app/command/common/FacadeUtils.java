@@ -26,13 +26,17 @@ import nts.uk.ctx.at.shared.dom.workingcondition.ManageAtr;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
+import nts.uk.ctx.pereg.app.find.common.ComboBoxRetrieveFactory;
+import nts.uk.ctx.pereg.dom.person.info.category.PersonEmployeeType;
 import nts.uk.ctx.pereg.dom.person.info.item.InitValue;
 import nts.uk.ctx.pereg.dom.person.info.item.ItemBasicInfo;
 import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
+import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypes;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
+import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.ItemValue;
 import nts.uk.shr.pereg.app.ItemValueType;
 
@@ -44,6 +48,9 @@ public class FacadeUtils {
 	
 	@Inject
 	private PerInfoItemDefRepositoty perInfoItemRepo;
+	
+	@Inject
+	private ComboBoxRetrieveFactory combox;
 	
 	private static final List<String> historyCategoryCodeList = Arrays.asList("CS00003", "CS00004", "CS00014",
 			"CS00016", "CS00017", "CS00018", "CS00019", "CS00020", "CS00021", "CS00070");
@@ -211,6 +218,27 @@ public class FacadeUtils {
 			String[][] cs00025Item = { { "IS00296", numberType,	notUse, TextResource.localize("CPS001_100") } };
 			return FacadeUtils.createListItems(cs00025Item, listItemIfo);
 		}
+	}
+	
+	// CS00025
+	public List<ItemValue> getListDefaultEnum(List<ItemBasicInfo> listItemIfo) {
+		List<String> itemEnum = Arrays.asList("IS00297","IS00304","IS00311","IS00318", "IS00325","IS00332","IS00339","IS00346","IS00353","IS00360","IS00561","IS00568","IS00575",
+				"IS00582", "IS00589","IS00596","IS00603","IS00610","IS00617","IS00624");
+		List<ComboBoxObject> comboxs = this.combox.getComboBox(ReferenceTypes.ENUM, "E00012",
+				GeneralDate.today(), AppContexts.user().employeeId(), null, true,
+				PersonEmployeeType.EMPLOYEE, true, "CS00025", GeneralDate.today(),  false);
+		String numberType = String.valueOf(ItemValueType.NUMERIC.value);
+		List<ItemValue>  result = new ArrayList<>();
+		if (!CollectionUtil.isEmpty(comboxs)) {
+			listItemIfo.stream().forEach(c ->{
+				if(itemEnum.contains(c.getItemCode())) {
+					String[][] cs00025Item = {
+							{ c.getItemCode(), numberType, comboxs.get(0).getOptionValue(), comboxs.get(0).getOptionValue() } };
+					result.addAll(FacadeUtils.createListItems(cs00025Item, listItemIfo));
+				}
+			});
+		} 
+		return result;
 	}
 	
 	// CS00026

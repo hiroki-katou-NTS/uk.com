@@ -432,4 +432,172 @@ public class GridPeregProcessor {
 		
 		return 0;
 	}
+	
+	public GridEmployeeDto getGridLayoutRegister(PeregGridQuery query) {
+		// app context
+		LoginUserContext loginUser = AppContexts.user();
+		String contractCode = loginUser.contractCode();
+		String roleId = loginUser.roles().forPersonalInfo();
+
+		GridEmployeeDto geDto = new GridEmployeeDto(query.getCategoryId(), query.getStandardDate(), Arrays.asList(),
+				Arrays.asList());
+		// get category
+		PersonInfoCategory perInfoCtg = perInfoCtgRepositoty.getPerInfoCategory(query.getCategoryId(), contractCode)
+				.get();
+
+		// get header
+		{
+			// map PersonInfoItemDefinition → GridEmpHead
+			List<GridEmpHead> headers = getPerItemDefForLayout(perInfoCtg, contractCode, roleId).stream()
+					.map(m -> new GridEmpHead(m.getId(), m.getDispOrder(), m.getItemCode(), m.getItemParentCode(),
+							m.getItemName(), m.getItemTypeState(), m.getIsRequired() == 1, m.getResourceId(),
+							m.getLstChildItemDef().stream()
+							.sorted(Comparator.comparing(PerInfoItemDefDto::getItemCode, Comparator.naturalOrder()))
+									.map(c -> new GridEmpHead(c.getId(), m.getDispOrder(), c.getItemCode(),
+											c.getItemParentCode(), c.getItemName(), c.getItemTypeState(),
+											c.getIsRequired() == 1, c.getResourceId(), null))
+									.collect(Collectors.toList())))
+					.sorted(Comparator.comparing(GridEmpHead::getItemOrder, Comparator.naturalOrder()).thenComparing(GridEmpHead::getItemCode, Comparator.naturalOrder()))
+					.collect(Collectors.toList());
+
+			headers.addAll(headers.stream().flatMap(m -> m.getChilds().stream()).collect(Collectors.toList()));
+			geDto.setHeadDatas(headers.stream()
+					.map(m -> new GridEmpHead(m.getItemId(), m.getItemOrder(), m.getItemCode(), m.getItemParentCode(),
+							m.getItemName(), m.getItemTypeState(), m.isRequired(), m.getResourceId(), null))
+					.collect(Collectors.toList()));
+		}
+
+		// get body
+		if (!CollectionUtil.isEmpty(query.getLstEmployee())) {
+			
+			List<PerEmpData> personDatas = employeeMngRepo.getEmploymentInfos(query.getLstEmployee(), query.getStandardDate());
+			
+			PeregQueryByListEmp lquery = PeregQueryByListEmp.createQueryLayout(perInfoCtg.getPersonInfoCategoryId(),
+					perInfoCtg.getCategoryCode().v(), query.getStandardDate(),
+					personDatas.stream().map(m -> new PeregEmpInfoQuery(m.getPersonId(), m.getEmployeeId())).collect(Collectors.toList()));
+			
+			List<EmpMainCategoryDto> layouts = layoutProcessor.getCategoryDetailByListEmp(lquery);
+			
+			if(specialCode.contains(query.getCategoryCode())) {
+				if(query.getCategoryCode().equals("CS00024")) {
+					//アルゴリズム「次回年休情報を取得する」
+					List<AnnLeaEmpBasicInfo> params = layouts.stream().map(c ->  {
+						GeneralDate standardDate =null;
+						String grantTable = null;
+						Optional<GridEmpBody> grantDateOpt = c.getItems().stream().filter(item -> grantDateLst.contains(item.getItemCode())).findFirst();
+						Optional<GridEmpBody> grantTableOpt = c.getItems().stream().filter(item -> grantTableLst.contains(item.getItemCode())).findFirst();
+						if(grantDateOpt.isPresent()) {
+							standardDate = (GeneralDate) grantDateOpt.get().getValue();
+						}
+						
+						if(grantTableOpt.isPresent()) {
+							grantTable = (String) grantTableOpt.get().getValue();
+						}
+						return new AnnLeaEmpBasicInfo(c.getEmployeeId(),
+								standardDate, grantTable,
+								new DatePeriod(null, null), null, null);
+					}).collect(Collectors.toList());
+					
+					Map<String, NextTimeEventDto> yearHolidayMap = getYearHolidayInfo.getAllYearHolidayInfoBySids(params.stream().filter(c -> c.getGrantDate() != null).collect(Collectors.toList()));
+					layouts.stream().forEach(c ->{
+						//nextGrantDateLst
+						Optional<GridEmpBody> nextTimeGrantDateOpt = c.getItems().stream().filter(item -> nextGrantDateLst.contains(item.getItemCode())).findFirst();
+						Optional<GridEmpBody> nextTimeGrantDaysOpt = c.getItems().stream().filter(item -> nextGrantDayLst.contains(item.getItemCode())).findFirst();
+						Optional<GridEmpBody> nextTimeMaxTimeOpt = c.getItems().stream().filter(item -> nextTimeMaxTimeLst.contains(item.getItemCode())).findFirst();
+						
+						NextTimeEventDto nextTimeEventDto = yearHolidayMap.get(c.getEmployeeId());
+						if(nextTimeGrantDateOpt.isPresent()) {
+							nextTimeGrantDateOpt.get().setValue(nextTimeEventDto == null? null: nextTimeEventDto.getNextTimeGrantDate());
+						}
+						
+						if(nextTimeGrantDaysOpt.isPresent()) {
+							nextTimeGrantDaysOpt.get().setValue(nextTimeEventDto == null? null: nextTimeEventDto.getNextTimeGrantDays());
+						}
+						
+						if(nextTimeMaxTimeOpt.isPresent()) {
+							nextTimeMaxTimeOpt.get().setValue(nextTimeEventDto == null? null: nextTimeEventDto.getNextTimeMaxTime());
+						}
+					});	
+					
+				}else {
+					List<SpecialleaveInformation> params = layouts.stream().map(c ->  {
+						GeneralDate grantDate =null;
+						int appSet = 0;
+						Double grantDays = null;
+						String grantTable = null;
+						Optional<GridEmpBody> grantDateOpt = c.getItems().stream().filter(item -> grantDateLst.contains(item.getItemCode())).findFirst();
+						Optional<GridEmpBody> appSetOpt = c.getItems().stream().filter(item -> appSetLst.contains(item.getItemCode())).findFirst();
+						Optional<GridEmpBody> grantDayOpt = c.getItems().stream().filter(item -> grantDayLst.contains(item.getItemCode())).findFirst();
+						Optional<GridEmpBody> grantTableOpt = c.getItems().stream().filter(item -> grantTableLst.contains(item.getItemCode())).findFirst();
+						if(grantDateOpt.isPresent()) {
+							grantDate = (GeneralDate) grantDateOpt.get().getValue();
+						}
+						if(grantDate == null) return null;
+						if(appSetOpt.isPresent()) {
+							appSet = Integer.valueOf((String) appSetOpt.get().getValue()).intValue();
+						}
+						
+						if(grantDayOpt.isPresent()) {
+							if(grantDayOpt.get().getValue() instanceof Integer) {
+								grantDays = new Double (grantDayOpt.get().getValue().toString());
+							}
+							
+							if(grantDayOpt.get().getValue() instanceof Double) {
+								grantDays = (Double) grantDayOpt.get().getValue();
+							}
+							
+							if(grantDayOpt.get().getValue() instanceof BigDecimal) {
+								grantDays = (Double) grantDayOpt.get().getValue();
+							}
+							
+						}
+						if(grantTableOpt.isPresent()) {
+							grantTable = (String) grantTableOpt.get().getValue();
+						}
+						return new SpecialleaveInformation(c.getEmployeeId(), getSpecialCode(query.getCategoryCode()), grantDate, appSet, grantTable, grantDays, null, null);
+					}).collect(Collectors.toList());
+					Map<String, GeneralDate> nextGrantDateMap = getSPHolidayNextGrantDate.getAllSPHolidayGrantDateBySids(params.stream().filter(c -> c!= null).collect(Collectors.toList()));
+					layouts.stream().forEach(c ->{
+						//nextGrantDateLst
+						Optional<GridEmpBody> grantDateOpt = c.getItems().stream().filter(item -> nextGrantDateLst.contains(item.getItemCode())).findFirst();
+						GeneralDate nextGrantDateOpt = nextGrantDateMap.get(c.getEmployeeId());
+						if(grantDateOpt.isPresent()) {
+							grantDateOpt.get().setValue(nextGrantDateOpt == null? null: nextGrantDateOpt.toString());
+						}
+					});					
+					
+				}
+
+			}
+						
+			if (!CollectionUtil.isEmpty(layouts)) {
+				List<GridEmployeeInfoDto> resultsSync = Collections.synchronizedList(new ArrayList<>());
+				
+				query.getLstEmployee().stream().forEach(c ->{
+					List<EmpMainCategoryDto> layoutOpt = layouts.stream().filter(x -> x.getEmployeeId().equals(c)).collect(Collectors.toList());
+					if(CollectionUtil.isEmpty(layoutOpt)) return;
+					layoutOpt.stream().forEach(l ->{
+						personDatas.stream().filter(p -> p.getEmployeeId().equals(l.getEmployeeId())).findFirst()
+						.ifPresent(dto -> {
+							GridEmployeeInfoDto syncDto = new GridEmployeeInfoDto(dto.getPersonId(),
+									dto.getEmployeeId(), new CodeName(dto.getEmployeeCode(), dto.getEmployeeName()),
+									dto.getEmployeeBirthday(),
+									new CodeName(dto.getDepartmentCode(), dto.getDepartmentName()),
+									new CodeName(dto.getWorkplaceCode(), dto.getWorkplaceName()),
+									new CodeName(dto.getPositionCode(), dto.getPositionName()),
+									new CodeName(dto.getEmploymentCode(), dto.getEmploymentName()),
+									new CodeName(dto.getClassificationCode(), dto.getClassificationName()),
+									l.getItems());
+
+							resultsSync.add(syncDto);
+						});
+					});
+				});	
+				
+				geDto.setBodyDatas(new ArrayList<>(resultsSync));
+			}
+		}
+
+		return geDto;
+	}
 }

@@ -178,6 +178,7 @@ public class GetSPHolidayNextGrantDate {
 					entryDate, yearRefDate);
 			inputParams.add(inputParam);
 		});
+		if(inputParams.isEmpty()) return result;
 		Map<String, GrantDaysInfor> grantDaysInfos = SpecialLeaveGrantNextDateService.getNumberOfGrantDays(inputParams);
 		grantDaysInfos.entrySet().forEach(c ->{
 			result.put(c.getKey(), c.getValue().getYmd());

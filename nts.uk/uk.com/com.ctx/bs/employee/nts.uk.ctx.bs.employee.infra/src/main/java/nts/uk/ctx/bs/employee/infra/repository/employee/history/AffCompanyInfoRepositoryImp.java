@@ -94,7 +94,8 @@ public class AffCompanyInfoRepositoryImp extends JpaRepository implements AffCom
 					BsymtAffCompanyInfo entity = new BsymtAffCompanyInfo();
 					entity.bsymtAffCompanyInfoPk = new BsymtAffCompanyInfoPk(r.getString("HIST_ID"));
 					entity.sid = r.getString("SID");
-					entity.recruitmentCategoryCode = r.getString("RECRUIMENT_CATEGORY_CD");
+					String stringNotSpace = r.getString("RECRUIMENT_CATEGORY_CD").replace(" ", "");
+					entity.recruitmentCategoryCode = stringNotSpace;
 					entity.adoptionDate = r.getGeneralDate("ADOPTION_DATE");
 					entity.retirementAllowanceCalcStartDate = r.getGeneralDate("RETIREMENT_CALC_STR_D");
 					return toDomain(entity);

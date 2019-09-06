@@ -9,7 +9,6 @@ import lombok.Getter;
 import nts.gul.util.value.ValueWithType;
 import nts.uk.shr.com.validate.constraint.DataConstraint;
 import nts.uk.shr.com.validate.constraint.ValidatorType;
-import nts.uk.shr.com.validate.validator.ErrorIdFactory;
 
 @Getter
 public class DateConstraint extends DataConstraint {
@@ -38,7 +37,7 @@ public class DateConstraint extends DataConstraint {
 			String stringValue = value.getDecimal().toString();
 			return this.validateString(stringValue);
 		default:
-			return Optional.of(ErrorIdFactory.DateErrorId);
+			return Optional.of(getDefaultMessage());
 		}
 	}
 
@@ -65,12 +64,12 @@ public class DateConstraint extends DataConstraint {
 		}
 
 		if (!pattern.matcher(stringValue).matches()) {
-			return Optional.of(ErrorIdFactory.DateErrorId);
+			return Optional.of(getDefaultMessage());
 		}
 
 		if (this.dateType == DateType.DATE) {
 			if (!validateDate(stringValue)) {
-				return Optional.of(ErrorIdFactory.DateErrorId);
+				return Optional.of(getDefaultMessage());
 			}
 		}
 
@@ -87,6 +86,11 @@ public class DateConstraint extends DataConstraint {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	protected String getDefaultMessage() {
+		return "MsgB_54";
 	}
 
 }

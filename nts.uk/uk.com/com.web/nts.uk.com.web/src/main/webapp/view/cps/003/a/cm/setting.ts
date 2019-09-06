@@ -105,13 +105,13 @@ module nts.custombinding {
                 </div>`,
                 dialogVm = {
                     i18n: nts.uk.resource.getText,
-                    cursorDirection: ko.observable(CURSOR_DIRC.HORIZONTAL),
+                    cursorDirection: ko.observable(CURSOR_DIRC.VERTICAL),
                     fixCols: ko.observableArray([]),
                     pushData: () => {
                         let fixCols: Array<number> = ko.toJS(dialogVm.fixCols) || [],
                             access: KnockoutObservable<ISetting> = valueAccessor() ||
                                 ko.observable({
-                                    "cursorDirection": CURSOR_DIRC.HORIZONTAL,
+                                    "cursorDirection": CURSOR_DIRC.VERTICAL,
                                     "clsATR": NOT_USE,
                                     "jobATR": NOT_USE,
                                     "workPlaceATR": NOT_USE,
@@ -163,7 +163,7 @@ module nts.custombinding {
                 } else {
                     let bound = element.getBoundingClientRect(),
                         access: ISetting = ko.toJS(valueAccessor()) || {
-                            "cursorDirection": CURSOR_DIRC.HORIZONTAL,
+                            "cursorDirection": CURSOR_DIRC.VERTICAL,
                             "clsATR": NOT_USE,
                             "jobATR": NOT_USE,
                             "workPlaceATR": NOT_USE,
@@ -185,7 +185,7 @@ module nts.custombinding {
 
                     // bind data in
                     dialogVm.fixCols(fixCols.filter(f => f != -1));
-                    dialogVm.cursorDirection(access.cursorDirection || CURSOR_DIRC.HORIZONTAL);
+                    dialogVm.cursorDirection(access.cursorDirection || CURSOR_DIRC.VERTICAL);
                 }
             });
 

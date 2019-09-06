@@ -16,6 +16,7 @@ import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
@@ -414,10 +415,11 @@ public class JpaAffJobTitleHistoryRepository extends JpaRepository implements Af
 	@Override
 	public List<AffJobTitleHistory> getListBySids(String cid, List<String> sids) {
 		List<AffJobTitleHistory> data = new ArrayList<>();
+		
 		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			try (PreparedStatement statement = this.connection().prepareStatement(
-						"SELECT h.HIST_ID, h.SID, h.CID, h.END_DATE, h.START_DATE from BSYMT_AFF_JOB_HIST h"
-						+ " WHERE h.CID = ? AND h.SID IN (" + subList.stream().map(s -> "?").collect(Collectors.joining(",")) + ")")) {
+			String sql = "SELECT h.HIST_ID, h.SID, h.CID, h.END_DATE, h.START_DATE from BSYMT_AFF_JOB_HIST h"
+					+ " WHERE h.CID = ? AND h.SID IN (" + NtsStatement.In.createParamsString(subList) + ")"+ " ORDER BY h.SID, h.START_DATE DESC";;
+			try (PreparedStatement statement = this.connection().prepareStatement(sql)) {
 				statement.setString(1, cid);
 				for (int i = 0; i < subList.size(); i++) {
 					statement.setString( 2 + i, subList.get(i));

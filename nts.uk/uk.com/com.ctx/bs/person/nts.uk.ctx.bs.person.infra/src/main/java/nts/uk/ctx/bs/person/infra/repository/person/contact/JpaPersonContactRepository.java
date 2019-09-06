@@ -230,9 +230,9 @@ public class JpaPersonContactRepository extends JpaRepository implements PersonC
 			Optional<EmergencyContact> emergencyContact2 = c.getEmergencyContact2();
 			
 			if(emergencyContact2.isPresent()) {
-				sql = sql.replace("M2_VAL", emergencyContact2.get().getMemo().isPresent() == true? "'" +  emergencyContact1.get().getMemo().get().v() + "'": "null");
-				sql = sql.replace("CONTACT_2_VAL", emergencyContact2.get().getContactName().isPresent() == true? "'" +  emergencyContact1.get().getContactName().get().v() + "'": "null");
-				sql = sql.replace("PHONE_2_VAL", emergencyContact2.get().getPhoneNumber().isPresent() == true? "'" +  emergencyContact1.get().getPhoneNumber().get().v() + "'": "null");
+				sql = sql.replace("M2_VAL", emergencyContact2.get().getMemo().isPresent() == true? "'" +  emergencyContact2.get().getMemo().get().v() + "'": "null");
+				sql = sql.replace("CONTACT_2_VAL", emergencyContact2.get().getContactName().isPresent() == true? "'" +  emergencyContact2.get().getContactName().get().v() + "'": "null");
+				sql = sql.replace("PHONE_2_VAL", emergencyContact2.get().getPhoneNumber().isPresent() == true? "'" +  emergencyContact2.get().getPhoneNumber().get().v() + "'": "null");
 			}else {
 				sql = sql.replace("M2_VAL", "null");
 				sql = sql.replace("CONTACT_2_VAL", "null");
@@ -286,9 +286,9 @@ public class JpaPersonContactRepository extends JpaRepository implements PersonC
 			Optional<EmergencyContact> emergencyContact2 = c.getEmergencyContact2();
 			
 			if(emergencyContact2.isPresent()) {
-				sql = sql.replace("M2_VAL", emergencyContact2.get().getMemo().isPresent() == true? "'" +  emergencyContact1.get().getMemo().get().v() + "'": "null");
-				sql = sql.replace("CONTACT_2_VAL", emergencyContact2.get().getContactName().isPresent() == true? "'" +  emergencyContact1.get().getContactName().get().v() + "'": "null");
-				sql = sql.replace("PHONE_2_VAL", emergencyContact2.get().getPhoneNumber().isPresent() == true? "'" +  emergencyContact1.get().getPhoneNumber().get().v() + "'": "null");
+				sql = sql.replace("M2_VAL", emergencyContact2.get().getMemo().isPresent() == true? "'" +  emergencyContact2.get().getMemo().get().v() + "'": "null");
+				sql = sql.replace("CONTACT_2_VAL", emergencyContact2.get().getContactName().isPresent() == true? "'" +  emergencyContact2.get().getContactName().get().v() + "'": "null");
+				sql = sql.replace("PHONE_2_VAL", emergencyContact2.get().getPhoneNumber().isPresent() == true? "'" +  emergencyContact2.get().getPhoneNumber().get().v() + "'": "null");
 			}else {
 				sql = sql.replace("M2_VAL", "null");
 				sql = sql.replace("CONTACT_2_VAL", "null");

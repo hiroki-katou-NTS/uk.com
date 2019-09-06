@@ -341,7 +341,8 @@ public class JpaSWorkTimeHistoryRepository extends JpaRepository
 		List<ShortWorkTimeHistory> shortWorkTimeHistory = new ArrayList<>();
 		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
 			String sql = "SELECT * FROM BSHMT_WORKTIME_HIST" + " WHERE CID = ?  AND SID IN (" + NtsStatement.In.createParamsString(subList) + ")"
-					+" ORDER BY STR_YMD";
+					+" ORDER BY SID, STR_YMD";
+			
 
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 				stmt.setString(1, cid);

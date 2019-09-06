@@ -92,7 +92,7 @@ public class SpecialLeaveGrantNextDateServiceImpl implements SpecialLeaveGrantNe
 					c.getAnnualHolidayDate());
 			inputParams.add(inputParam);
 		});
-
+		if(inputParams.isEmpty()) return new HashMap<>();
 		return this.getGrantDataOfNextDay(inputParams);
 	}
 

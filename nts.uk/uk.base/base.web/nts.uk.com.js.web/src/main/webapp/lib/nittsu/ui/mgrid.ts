@@ -542,6 +542,8 @@ module nts.uk.ui.mgrid {
         export const VFACON_ASC = "view-facon-asc";
         export const FACON_ASC = "facon-asc";
         export const FACON_DESC = "facon-desc";
+        export const ALIGN_LEFT = "halign-left";
+        export const ALIGN_RIGHT = "halign-right";
         export const DefaultRowConfig = { css: { height: BODY_ROW_HEIGHT } };
         export let _voilerRows = {};
         export let _encarRows = [];
@@ -2373,8 +2375,12 @@ module nts.uk.ui.mgrid {
                 
                 let col = visibleColumnsMap[key];
                 if (!col) tdStyle += "; display: none;";
-                else if (col[0].columnCssClass === hpl.CURRENCY_CLS || col[0].columnCssClass === "halign-right") {
-                    td.classList.add(col[0].columnCssClass);
+                else if (!_.isNil(col[0].columnCssClass)) {
+                    col[0].columnCssClass.split(' ').forEach(clz => {
+                        if (clz === hpl.CURRENCY_CLS || clz === "halign-right") {
+                            td.classList.add(clz);
+                        }
+                    });
                 }
                 
                 if (key === "rowNumber") {
@@ -2724,8 +2730,12 @@ module nts.uk.ui.mgrid {
                 
                 let col = self.visibleColumnsMap[key];
                 if (!col) tdStyle += "; display: none;";
-                else if (col[0].columnCssClass === hpl.CURRENCY_CLS || col[0].columnCssClass === "halign-right") {
-                    td.classList.add(col[0].columnCssClass);
+                else if (!_.isNil(col[0].columnCssClass)) {
+                    col[0].columnCssClass.split(' ').forEach(clz => {
+                        if (clz === hpl.CURRENCY_CLS || clz === "halign-right") {
+                            td.classList.add(clz);
+                        }
+                    });
                 }
                 let controlDef = self.controlMap[key];
                 
@@ -4139,7 +4149,7 @@ module nts.uk.ui.mgrid {
                     $headerTable.insertAdjacentElement("beforebegin", self.$agency);
                     hiddenCount = 0;
                     _.forEach(self.headerColGroup[1], ($targetCol, i) => {
-                        if (i === self.headerColGroup[1].length - 1) return;
+//                        if (i === self.headerColGroup[1].length - 1) return;
                         if ($targetCol.style.display === "none") {
                             hiddenCount++;
                             return;
@@ -4595,7 +4605,7 @@ module nts.uk.ui.mgrid {
                 self.$agency.style.width = self.headerWrappers[i].style.width;
                 let left = 0, group = self.headerColGroup[i];
                 _.forEach(group, function($td: HTMLElement, index: number) {
-                    if ($td.style.display === "none" || (!self.actionDetails.isFixed && index === group.length - 1)) return;
+                    if ($td.style.display === "none" /*|| (!self.actionDetails.isFixed && index === group.length - 1)*/) return;
                     left += parseFloat($td.style.width);
                     if (index < self.actionDetails.gripIndex) return;
                     if (self.unshiftRight && index > self.actionDetails.gripIndex) return false;
@@ -6256,6 +6266,12 @@ module nts.uk.ui.mgrid {
                         $input.select();
                     }, 0);
                     
+                    if ($tCell.classList.contains(v.ALIGN_RIGHT)) {
+                        $input.classList.remove(v.ALIGN_LEFT);
+                    } else {
+                        $input.classList.add(v.ALIGN_LEFT);
+                    }
+                    
                     let coord = ti.getCellCoord($tCell);
                     $input.style.imeMode = "inactive";
                     if (coord) {
@@ -6324,6 +6340,12 @@ module nts.uk.ui.mgrid {
                     endEdit($grid);
                     $tCell.textContent = "";
                     $tCell.classList.add(dkn.CONTROL_CLS);
+                    if ($tCell.classList.contains(v.ALIGN_RIGHT)) {
+                        $input.classList.remove(v.ALIGN_LEFT);
+                    } else {
+                        $input.classList.add(v.ALIGN_LEFT);
+                    }
+                    
                     $tCell.appendChild($editor);
                     let data = $.data($tCell, v.DATA), mDate = moment(data, control.format, true),
                         mDisplayDate = mDate.isValid() ? mDate : moment();
@@ -6455,6 +6477,12 @@ module nts.uk.ui.mgrid {
                             let data = $.data($tCell, v.DATA);
                             $input.value = !_.isNil(data) ? data : "";
                             $input.select();
+                        }
+                        
+                        if ($tCell.classList.contains(v.ALIGN_RIGHT)) {
+                            $input.classList.remove(v.ALIGN_LEFT);
+                        } else {
+                            $input.classList.add(v.ALIGN_LEFT);
                         }
                         
                         cType.type = dkn.TEXTBOX;
@@ -7106,7 +7134,7 @@ module nts.uk.ui.mgrid {
                         currencyOpts.decimallength = _.isNil(constraint.decimalLength) ? 0 : constraint.decimalLength;
                         currencyOpts.currencyformat = constraint.currencyFormat ? constraint.currencyFormat : "JPY";
                         let groupSeparator = constraint.groupSeparator || ",";
-                        let rawValue = text.replaceAll(value, groupSeparator, "");
+                        let rawValue = text.replaceAll(String(value), groupSeparator, "");
                         let formatter = new uk.text.NumberFormatter({ option: currencyOpts });
                         let numVal = Number(rawValue);
                         if (!isNaN(numVal)) value = formatter.format(numVal);
@@ -8216,9 +8244,9 @@ module nts.uk.ui.mgrid {
                             data = data.toLocaleDateString("ja-JP", { year: "numeric", month: "2-digit", day: "2-digit" });
                         }
                         
-                        let tDate = moment.utc($editor.value, ctrl.format).format(ctrl.format[0]);
-                        if (/*data !== tDate &&*/ !d.classList.contains(khl.ERROR_CLS) && _.isFunction(ctrl.inputProcess)) {
-                            ctrl.inputProcess(tDate, _dataSource[coord.rowIdx]);
+                        let tDate = moment.utc($editor.value, ctrl.format, true);
+                        if (/*data !== tDate && !d.classList.contains(khl.ERROR_CLS) &&*/ _.isFunction(ctrl.inputProcess)) {
+                            ctrl.inputProcess(tDate.isValid() ? tDate.format(ctrl.format[0]) : $editor.value, _dataSource[coord.rowIdx]);
                         }
                         su.endEdit(_$grid[0]);
                     }
@@ -8619,7 +8647,8 @@ module nts.uk.ui.mgrid {
             
             if (_ramass[format]) {
                 if (!data.initValue || data.initValue === "") return "";
-                return moment(data.initValue, formats, true).format(formats[0]);
+                let momentObj = moment(data.initValue, formats, true);
+                return momentObj.isValid() ? momentObj.format(formats[0]) : data.initValue;
             }
             
             _ramass[format] = _prtDiv.cloneNode();
@@ -8916,7 +8945,8 @@ module nts.uk.ui.mgrid {
             });
             
             if (data.initValue && data.initValue !== "") {
-                return moment(data.initValue, formats, true).format(formats[0]);
+                let momentObj = moment(data.initValue, formats, true); 
+                return momentObj.isValid() ? momentObj.format(formats[0]) : data.initValue;
             }
             
             return "";
@@ -9004,7 +9034,7 @@ module nts.uk.ui.mgrid {
             let selected = _prtDiv.cloneNode(true);
             selected.classList.add("mgrid-refer-text");
             if (_.isNil(text) && !_.isNil(data.initValue)) {
-                text = data.initValue + " " + (data.controlDef.notFound || "");
+                text = _.isNil(data.controlDef.notFound) ? data.initValue : data.controlDef.notFound;
             }
             
             selected.textContent = text || "";

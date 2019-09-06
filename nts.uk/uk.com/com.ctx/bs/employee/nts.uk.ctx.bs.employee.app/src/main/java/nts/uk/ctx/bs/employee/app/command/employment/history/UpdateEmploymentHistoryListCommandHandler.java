@@ -1,6 +1,7 @@
 package nts.uk.ctx.bs.employee.app.command.employment.history;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -9,6 +10,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistory;
@@ -55,32 +57,40 @@ implements PeregUpdateListCommandHandler<UpdateEmploymentHistoryCommand>{
 		List<EmploymentHistoryIntermediate> domainIntermediates = new ArrayList<>();
 		List<EmploymentHistoryItem> employmentHistoryItems = new ArrayList<>();
 			Map<String, List<EmploymentHistory>> existHistMap = employmentHistoryRepository.getAllByCidAndSids(cid, sids).stream().collect(Collectors.groupingBy(c -> c.getEmployeeId()));
-			command.stream().forEach(c ->{
+		command.stream().forEach(c -> {
+			try {
 				// In case of date period are exist in the screen,
-				if(c.getStartDate() != null) {
+				if (c.getStartDate() != null) {
 					List<EmploymentHistory> existHistLst = existHistMap.get(c.getEmployeeId());
-					if(existHistLst != null) {
+					if (existHistLst != null) {
 						Optional<DateHistoryItem> itemToBeUpdate = existHistLst.get(0).getHistoryItems().stream()
 								.filter(h -> h.identifier().equals(c.getHistoryId())).findFirst();
-						if(itemToBeUpdate.isPresent()) {
-							existHistLst.get(0).changeSpan(itemToBeUpdate.get(), new DatePeriod(c.getStartDate(), c.getEndDate()!= null? c.getEndDate():  ConstantUtils.maxDate()));
-							domainIntermediates.add(new EmploymentHistoryIntermediate(existHistLst.get(0), itemToBeUpdate.get()));
-						}else {
+						if (itemToBeUpdate.isPresent()) {
+							existHistLst.get(0).changeSpan(itemToBeUpdate.get(), new DatePeriod(c.getStartDate(),
+									c.getEndDate() != null ? c.getEndDate() : ConstantUtils.maxDate()));
+							domainIntermediates
+									.add(new EmploymentHistoryIntermediate(existHistLst.get(0), itemToBeUpdate.get()));
+						} else {
 							sidErrorLst.add(c.getEmployeeId());
 							return;
 						}
-					}else {
+					} else {
 						sidErrorLst.add(c.getEmployeeId());
 						return;
-					}	
+					}
 				}
-				
+
 				// Update detail table
 				EmploymentHistoryItem histItem = EmploymentHistoryItem.createFromJavaType(c.getHistoryId(),
 						c.getEmployeeId(), c.getEmploymentCode(),
 						c.getSalarySegment() != null ? c.getSalarySegment().intValue() : null);
 				employmentHistoryItems.add(histItem);
-			});
+			} catch (BusinessException e) {
+				MyCustomizeException ex = new MyCustomizeException(e.getMessageId(), Arrays.asList(c.getEmployeeId()));
+				errorExceptionLst.add(ex);
+			}
+
+		});
 		
 		if(!domainIntermediates.isEmpty()) {
 			employmentHistoryService.updateAll(domainIntermediates);

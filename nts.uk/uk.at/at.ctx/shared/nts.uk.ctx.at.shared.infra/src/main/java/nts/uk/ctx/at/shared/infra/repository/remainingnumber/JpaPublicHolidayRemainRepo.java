@@ -120,9 +120,9 @@ public class JpaPublicHolidayRemainRepo extends JpaRepository implements PublicH
 			sql = sql.replace("UPD_SCD_VAL", "'" + updScd + "'");
 			sql = sql.replace("UPD_PG_VAL", "'" + updPg + "'");
 
-			sql = sql.replace("CID_VAL", "'" + c.getSID() + "'");
+			sql = sql.replace("CID_VAL", "'" + c.getCID() + "'");
 			sql = sql.replace("SID_VAL", "'" + c.getSID()+ "'");
-			sql = sql.replace("REMAIN_NUMBER_VAL", c.getRemainNumber() == null? "null": ""+c.getRemainNumber().v()+"");
+			sql = sql.replace("REMAIN_NUMBER_VAL", c.getRemainNumber() == null? "0": ""+c.getRemainNumber().v()+"");
 			sb.append(sql);
 		});
 
@@ -150,7 +150,7 @@ public class JpaPublicHolidayRemainRepo extends JpaRepository implements PublicH
 
 			sql = sql.replace("SID_VAL", "'" + c.getSID() + "'");
 			sql = sql.replace("CID_VAL", "'" + c.getCID()+ "'");
-			sql = sql.replace("REMAIN_NUMBER_VAL",  c.getRemainNumber() == null? "null": "" + c.getRemainNumber().v() + "");
+			sql = sql.replace("REMAIN_NUMBER_VAL",  c.getRemainNumber() == null? "0": "" + c.getRemainNumber().v() + "");
 			sb.append(sql);
 		});
 

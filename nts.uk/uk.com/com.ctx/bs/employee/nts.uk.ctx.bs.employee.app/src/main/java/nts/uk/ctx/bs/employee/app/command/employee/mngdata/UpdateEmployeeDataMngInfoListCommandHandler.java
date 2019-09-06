@@ -48,7 +48,7 @@ public class UpdateEmployeeDataMngInfoListCommandHandler extends CommandHandlerW
 		
 		List<EmployeeDataMngInfo> domains = command.stream().map(c -> {
 			return new EmployeeDataMngInfo(cid, c.getPersonId(), c.getEmployeeId(), c.getEmployeeCode(),
-					c.getExternalCode());
+					c.getExternalCode() == null? null: c.getExternalCode().equals("") == true ? null: c.getExternalCode());
 		}).collect(Collectors.toList());
 		
 		Iterator<EmployeeDataMngInfo> itr = domains.iterator();
@@ -57,7 +57,7 @@ public class UpdateEmployeeDataMngInfoListCommandHandler extends CommandHandlerW
         	List<EmployeeDataMngInfo> empLst = employeeDataMap.get(emp.getEmployeeCode().v());
         	if (!CollectionUtil.isEmpty(empLst)) {
         		empLst.stream().forEach(c ->{
-                    if (c.getEmployeeCode().equals(emp.getEmployeeCode())) {
+                    if (c.getEmployeeCode().equals(emp.getEmployeeCode()) && !emp.getEmployeeId().equals(c.getEmployeeId())) {
                     	sidErrorLst.add(emp.getEmployeeId());
                         itr.remove();
                     }
@@ -70,7 +70,7 @@ public class UpdateEmployeeDataMngInfoListCommandHandler extends CommandHandlerW
 		}
 		
 		if (sidErrorLst.size() > 0) {
-			errorExceptionLst.add(new MyCustomizeException("Msg_345", sidErrorLst, "社員CD"));
+			errorExceptionLst.add(new MyCustomizeException("Msg_345", sidErrorLst,""));
 		}
 		return errorExceptionLst;
 	}

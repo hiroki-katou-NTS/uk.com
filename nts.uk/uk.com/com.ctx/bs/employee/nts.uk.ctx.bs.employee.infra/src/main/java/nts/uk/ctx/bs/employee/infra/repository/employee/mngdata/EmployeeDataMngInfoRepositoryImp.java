@@ -136,7 +136,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 	private static final String SELECT_EMPL_NOT_DELETE_BY_CID = String.join(" ", SELECT_NO_PARAM, "WHERE e.companyId = :companyId AND e.delStatus = 0");
 
 	private static final String SELECT_FIXED_DATA = String.join(" ", "SELECT",
-			"mng.PID, mng.SID, mng.SCD, per.BUSINESS_NAME, per.PERSON_NAME, per.BIRTHDAY,",
+			"DISTINCT mng.PID, mng.SID, mng.SCD, per.BUSINESS_NAME, per.PERSON_NAME, per.BIRTHDAY,",
 			"dpi.CD, dpi.NAME,",
 			"wif.WKPCD, wif.WKP_DISPLAY_NAME, wif.WKP_NAME,",
 			"ji.JOB_CD, ji.JOB_NAME,",
@@ -191,7 +191,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 
 		if (entity != null) {
 			entity.employeeCode = domain.getEmployeeCode().v();
-			entity.extCode = domain.getExternalCode().v();
+			entity.extCode = domain.getExternalCode() == null? null: domain.getExternalCode().v();
 			commandProxy().update(entity);
 		}
 	}
@@ -315,7 +315,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 
 		return new BsymtEmployeeDataMngInfo(primaryKey, domain.getCompanyId(), domain.getEmployeeCode().v(),
 				domain.getDeletedStatus().value, domain.getDeleteDateTemporary(),
-				domain.getRemoveReason() != null ? domain.getRemoveReason().v() : null, domain.getExternalCode().v());
+				domain.getRemoveReason() != null ? domain.getRemoveReason().v() : null, domain.getExternalCode() == null? null: domain.getExternalCode().v());
 	}
 
 	// sonnlb code start
@@ -430,7 +430,8 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 					e.delStatus = r.getInt("DEL_STATUS_ATR");
 					e.delDateTmp = r.getGeneralDateTime("DEL_DATE");
 					e.removeReason = r.getString("REMV_REASON");
-					e.extCode = r.getString("EXT_CD");
+					String stringNotSpace = r.getString("EXT_CD") == null? null: r.getString("EXT_CD").replace(" ", "");
+					e.extCode = stringNotSpace;
 					return toDomain(e);
 				});
 				
@@ -749,7 +750,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 			sql = sql.replace("UPD_SCD_VAL", "'" + updScd +"'");
 			sql = sql.replace("UPD_PG_VAL", "'" + updPg +"'");
 			sql = sql.replace("SCD_VAL", "'" + c.getEmployeeCode().v() +"'");
-			sql = sql.replace("EXT_CD_VAL", "'" + c.getExternalCode().v() +"'");
+			sql = sql.replace("EXT_CD_VAL", c.getExternalCode() == null? "null": "'" + c.getExternalCode().v() +"'");
 			
 			sql = sql.replace("SID_VAL", "'" + c.getEmployeeId() +"'");
 			sql = sql.replace("PID_VAL", "'" + c.getPersonId() +"'");

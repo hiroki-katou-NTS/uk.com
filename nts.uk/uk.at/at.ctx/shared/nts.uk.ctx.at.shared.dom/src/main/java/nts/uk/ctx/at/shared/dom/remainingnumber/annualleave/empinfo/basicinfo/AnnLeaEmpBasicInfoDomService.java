@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.valueobject.AnnLeaRemNumValueObject;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnLeaGrantRemDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
@@ -147,12 +149,20 @@ public class AnnLeaEmpBasicInfoDomService{
 	// truyền list nhân viên đã được trả về trong list 年休残数
 	public Map<String, String> calculateLastGrantDate(String cid, List<String> sids) {
 		Map<String, String> result = new HashMap<>();
-		Map<String, List<AnnualLeaveGrantRemainingData>> annLeaveRemainData = annLeaDataRepo.findByCidAndSids(cid, sids)
+		Map<String, List<AnnualLeaveGrantRemainingData>> annLeaveRemainDataMap = annLeaDataRepo.findByCidAndSids(cid, sids)
 				.stream().collect(Collectors.groupingBy(c -> c.getEmployeeId()));
-		for (Map.Entry<String, List<AnnualLeaveGrantRemainingData>> entry : annLeaveRemainData.entrySet()) {
+		if(annLeaveRemainDataMap.size() < sids.size()) {
+			for(String sid: sids) {
+				List<AnnualLeaveGrantRemainingData> annLeaveRemainData = annLeaveRemainDataMap.get(sid);
+				if(CollectionUtil.isEmpty(annLeaveRemainData)) {
+					annLeaveRemainDataMap.put(sid, new ArrayList<AnnualLeaveGrantRemainingData>());
+				}
+			}
+		}
+		for (Map.Entry<String, List<AnnualLeaveGrantRemainingData>> entry : annLeaveRemainDataMap.entrySet()) {
 			String key = entry.getKey();
 			entry.getValue().stream().sorted(Comparator.comparing(AnnualLeaveGrantRemainingData::getGrantDate).reversed()).collect(Collectors.toList());
-			if(entry.getValue().size() > 0) {
+			if(entry.getValue().size() == 0) {
 				result.put(key, not_grant);
 			}else {
 				result.put(key, entry.getValue().get(0).getGrantDate().toString());

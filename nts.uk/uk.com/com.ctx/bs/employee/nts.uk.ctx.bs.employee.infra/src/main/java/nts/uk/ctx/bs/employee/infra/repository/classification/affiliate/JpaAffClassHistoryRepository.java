@@ -257,7 +257,7 @@ public class JpaAffClassHistoryRepository extends JpaRepository implements AffCl
 		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			String sql = "SELECT * FROM BSYMT_AFF_CLASS_HISTORY" 
 					+ " WHERE  CID = ?" 
-					+ " AND SID IN (" + NtsStatement.In.createParamsString(subList) + ")";
+					+ " AND SID IN (" + NtsStatement.In.createParamsString(subList) + ")"  + " ORDER BY SID, START_DATE DESC";
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 				stmt.setString(1, cid);
 				for (int i = 0; i < subList.size(); i++) {
@@ -366,5 +366,49 @@ public class JpaAffClassHistoryRepository extends JpaRepository implements AffCl
 		int  records = this.getEntityManager().createNativeQuery(sb.toString()).executeUpdate();
 		System.out.println(records);
 		
+	}
+
+	@Override
+	public List<AffClassHistory> getHistoryByEmployeeListWithBaseDate(String cid, List<String> employeeIds,
+			GeneralDate standardDate) {
+		List<BsymtAffClassHistory> entityLst = new ArrayList<>();
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			String sql = "SELECT * FROM BSYMT_AFF_CLASS_HISTORY" 
+					+ " WHERE  CID = ?" 
+					+ " AND START_DATE <= ?"
+					+ " AND END_DATE >= ?" 
+					+ " AND SID IN (" + NtsStatement.In.createParamsString(subList) + ")";
+			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+				stmt.setString(1, cid);
+				stmt.setDate(2, Date.valueOf(standardDate.localDate()));
+				stmt.setDate(3, Date.valueOf(standardDate.localDate()));
+				for (int i = 0; i < subList.size(); i++) {
+					stmt.setString(4 + i, subList.get(i));
+				}
+				List<BsymtAffClassHistory> histories = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
+					BsymtAffClassHistory history = new BsymtAffClassHistory();
+					history.historyId = rec.getString("HIST_ID");
+					history.cid = rec.getString("CID");
+					history.sid = rec.getString("SID");
+					history.startDate = rec.getGeneralDate("START_DATE");
+					history.endDate = rec.getGeneralDate("END_DATE");
+					return history;
+				}).stream().collect(Collectors.toList());
+				entityLst.addAll(histories);
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+		});
+		
+		Map<String, List<BsymtAffClassHistory>> entitiesByEmployee = entityLst.stream()
+				.collect(Collectors.groupingBy(BsymtAffClassHistory::getEmployeeId));
+		
+		String companyId = AppContexts.user().companyId();
+		List<AffClassHistory> resultList = new ArrayList<>();
+		entitiesByEmployee.forEach((employeeId, entitiesOfEmp) -> {
+			List<DateHistoryItem> historyItems = convertToHistoryItems(entitiesOfEmp);
+			resultList.add(new AffClassHistory(companyId, employeeId, historyItems));
+		});
+		return resultList;
 	}
 }

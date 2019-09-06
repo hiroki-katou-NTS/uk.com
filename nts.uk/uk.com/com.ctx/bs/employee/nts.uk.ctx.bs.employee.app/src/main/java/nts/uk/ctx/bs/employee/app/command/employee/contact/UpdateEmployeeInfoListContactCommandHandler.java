@@ -36,8 +36,8 @@ implements PeregUpdateListCommandHandler<UpdateEmployeeInfoContactCommand>{
 		List<EmployeeInfoContact> domains = cmd.stream().map(c ->{return new EmployeeInfoContact(cid, c.getSid(), c.getMailAddress(),
 				c.getSeatDialIn(), c.getSeatExtensionNo(), c.getPhoneMailAddress(),
 				c.getCellPhoneNo());}).collect(Collectors.toList());
-		if(domains.isEmpty()) {
-			employeeInfoContactRepository.addAll(domains);
+		if(!domains.isEmpty()) {
+			employeeInfoContactRepository.updateAll(domains);
 		}
 		
 		return new ArrayList<MyCustomizeException>();

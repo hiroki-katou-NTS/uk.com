@@ -412,7 +412,7 @@ public class SyEmployeePubImp implements SyEmployeePub {
 				.personId(mngInfo.getPersonId()).employeeId(mngInfo.getEmployeeId())
 				.employeeCode(mngInfo.getEmployeeCode().v()).deletedStatus(mngInfo.getDeletedStatus().value)
 				.deleteDateTemporary(mngInfo.getDeleteDateTemporary()).removeReason(mngInfo.getRemoveReason().v())
-				.externalCode(mngInfo.getExternalCode().v()).build());
+				.externalCode(mngInfo.getExternalCode() == null? null: mngInfo.getExternalCode().v()).build());
 	}
 
 	@Override

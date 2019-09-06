@@ -2,6 +2,8 @@ package nts.uk.ctx.pereg.app.find.filemanagement;
 
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -117,9 +119,11 @@ public class CheckFileFinder {
 	
 	private static String header;
 	
+	private static int index;
+	
 	private final static List<String> itemSpecialLst = Arrays.asList("IS00003", "IS00004","IS00015","IS00016");
 	
-	//private static int index;
+	private final static List<String> endDateLst = Arrays.asList("IS00021","IS00027","IS00067","IS00078","IS00083","IS00120","IS00782","IS00256");
 	
 	@SuppressWarnings("unused")
 	private static GeneralDate valueStartCode;
@@ -305,18 +309,18 @@ public class CheckFileFinder {
 		List<EmployeeRowDto> result = new ArrayList<>();
 		// lấy ra những item bị thiếu không file import ko có trong setting ở màn hình A, set RecordId, set actionRole
 		headerReal.removeAll(headerRemain);
-		//index = 0;
+		index = 0;
 		PeregQueryByListEmp lquery = PeregQueryByListEmp.createQueryLayout(category.getPersonInfoCategoryId(),
 				category.getCategoryCode().v(), GeneralDate.today(),
 				employees.stream().map(m -> new PeregEmpInfoQuery(m.getPersonId(), m.getEmployeeId())).collect(Collectors.toList()));
 		
 		List<EmpMainCategoryDto> layouts = layoutProcessor.getCategoryDetailByListEmp(lquery);
-		int index = 0;
+		
 		Iterator<EmployeeRowDto> itr = employeeDtos.iterator();
 		while (itr.hasNext()) {
 			EmployeeRowDto pdt = itr.next();
 			boolean isSelfAuth = sid.equals(pdt.getEmployeeId());
-			List<ItemError> errors = itemErrors.stream().filter(error -> error.getIndex() == 1).collect(Collectors.toList());
+			List<ItemError> errors = itemErrors.stream().filter(error -> error.getIndex() == index).collect(Collectors.toList());
 			// lấy full value của các item
 			List<ItemRowDto> itemDtos = new ArrayList<>();
 			List<EmpMainCategoryDto> empDtos = layouts.stream().filter(l -> l.getEmployeeId().equals(pdt.getEmployeeId())).collect(Collectors.toList());
@@ -359,10 +363,11 @@ public class CheckFileFinder {
 				items.stream().forEach(item -> {
 					pdt.getItems().stream().forEach(itemDto -> {
 						if (itemDto.getItemCode().equals(item.getItemCode())) {
-							Optional<ItemError> itemError = errors.stream().filter(e -> e.getColumnKey().equals(itemDto.getItemCode())).findFirst();
-							if(itemError.isPresent()) {
-								itemError.get().setRecordId(item.getRecordId());
-							}
+							errors.stream().forEach(error ->{
+								if(error.getColumnKey().equals(itemDto.getItemCode())) {
+									error.setRecordId(item.getRecordId());
+								}
+							});
 
 							itemDto.setRecordId(item.getRecordId());
 							// trường hợp ghi đè, item ko có trong file import thì sẽ chỉ được view thôi, ko được update giá trị
@@ -370,7 +375,7 @@ public class CheckFileFinder {
 								itemDto.setActionRole(item.getActionRole());
 							}
 							// trường hợp tạo mới lịch sử, item có trong file import nhưng không có quyền update thì sẽ lấy giá trị từ database
-							if(item.getActionRole() == ActionRole.VIEW_ONLY || item.getActionRole() == ActionRole.HIDDEN) {
+							if(endDateLst.contains(itemDto.getItemCode())&& (item.getActionRole() == ActionRole.VIEW_ONLY || item.getActionRole() == ActionRole.HIDDEN)) {
 								itemDto.setValue(item.getValue());
 							}
 							if(itemDto.getDataType() == 0) return; 
@@ -387,7 +392,6 @@ public class CheckFileFinder {
 										itemDto.setTextValue(textOpt.get().getOptionText());
 										itemDto.setDefText(textOpt.get().getOptionText());
 									}
-								
 								} else {
 									itemDto.setTextValue(attr.format(valueDb));
 									itemDto.setDefText(attr.format(valueDb));
@@ -399,8 +403,8 @@ public class CheckFileFinder {
 								DataValueAttribute attr = converType(itemDto.getDataType());
 								if (itemDto.getDataType() == 6 || itemDto.getDataType() == 7
 										|| itemDto.getDataType() == 8) {
-									Optional<ComboBoxObject> textOpt = item.getLstComboBoxValue().stream().filter(combo -> combo.getOptionValue().equals(item.getValue() == null? "":item.getValue().toString())).findFirst();
-									Optional<ComboBoxObject> defTextOpt = item.getLstComboBoxValue().stream().filter(combo -> combo.getOptionValue().equals(itemDto.getValue() == null?"": itemDto.getValue().toString())).findFirst();
+									Optional<ComboBoxObject> textOpt = item.getLstComboBoxValue().stream().filter(combo -> combo.getOptionValue().equals(itemDto.getValue() == null? "":itemDto.getValue().toString())).findFirst();
+									Optional<ComboBoxObject> defTextOpt = item.getLstComboBoxValue().stream().filter(combo -> combo.getOptionValue().equals(item.getValue() == null?"": item.getValue().toString())).findFirst();
 									if(textOpt.isPresent()) {
 										itemDto.setTextValue(textOpt.get().getOptionText());
 									}
@@ -419,7 +423,8 @@ public class CheckFileFinder {
 							}
 						}
 					});
-				});				
+				});		
+				
 			});
 
 			pdt.getItems().sort(Comparator.comparing(ItemRowDto::getItemOrder, Comparator.naturalOrder()));
@@ -451,6 +456,20 @@ public class CheckFileFinder {
                 	return s2.compareTo(s1);
                 }).thenComparing(EmployeeRowDto::getEmployeeCode);
 		result.sort(compareByName);
+		//set lại vị trí index sau khi sort
+		int index = 0;
+		for(EmployeeRowDto pdt: result) {
+			if(!CollectionUtil.isEmpty(pdt.getItems())) {
+				for(ItemError error : itemErrors) {
+					if(error.getRecordId() == pdt.getItems().get(0).getRecordId()) {
+						error.setIndex(index);
+					}
+				}
+			
+			}
+			index++;
+		}
+		
 		return new GridDto(header, result, itemErrors);
 	}
 	
@@ -483,11 +502,20 @@ public class CheckFileFinder {
 			if(employeeDto.getEmployeeCode()!= null) {
 				employeeDtos.add(employeeDto);
 			}
-//			if(category.isHistoryCategory()) {
-//				if(period.getPeriods().get(0).getValue() != null && period.getPeriods().get(1).getValue() != null) {
-//					
-//				}
-//			}
+			if(category.isHistoryCategory()) {
+				if(period.getPeriods().get(0).getValue() != null && period.getPeriods().get(1).getValue() != null) {
+					try {
+						GeneralDate start = GeneralDate.fromString(period.getPeriods().get(0).getValue().toString(), "yyyy/MM/dd"); 
+						GeneralDate end = GeneralDate.fromString(period.getPeriods().get(1).getValue().toString(), "yyyy/MM/dd"); 
+						if(start.after(end)) {
+							ItemError error = new ItemError("", index, period.getPeriods().get(0).getItem(), "MsgB_2"); 
+							itemErrors.add(error);
+						}
+					}catch(Exception e) {
+						System.out.println("invalid format date");
+					}
+				}
+			}
 			index++;
 		}
 
@@ -520,13 +548,45 @@ public class CheckFileFinder {
 			if(cell.getValue() != null) {
 				switch(cell.getValue().getType()) {
 				case TEXT:
-					value = cell.getValue().getText();
+					String tmp = cell.getValue().getText();
+					value = tmp.contains("-") == true ? tmp.replace("-", "/") : tmp;
+					List<String> ddMMyyy = Arrays.asList("dd/MM/yyyy", "dd-MM-yyyy");
+					List<String> MMddyyy = Arrays.asList("MM/dd/yyyy", "MM-dd-yyyy");
+					Optional<SimpleDateFormat> dateFormat = validateDate(value);
+					if (dateFormat.isPresent()) {
+
+						if (ddMMyyy.contains(dateFormat.get().toPattern())) {
+
+							String[] dateSplit = value.split("[-/]");
+
+							if (dateSplit.length == 3) {
+
+								value = GeneralDate.ymd(Integer.valueOf(dateSplit[2]).intValue(),
+										Integer.valueOf(dateSplit[1]).intValue(),
+										Integer.valueOf(dateSplit[0]).intValue()).toString();
+							}
+						}else if (MMddyyy.contains(dateFormat.get().toPattern())) {
+
+							String[] dateSplit = value.split("[-/]");
+
+							if (dateSplit.length == 3) {
+
+								value = GeneralDate.ymd(Integer.valueOf(dateSplit[2]).intValue(),
+										Integer.valueOf(dateSplit[0]).intValue(),
+										Integer.valueOf(dateSplit[1]).intValue()).toString();
+
+							}
+						}else {
+							value = GeneralDate.fromString(value, "yyyy/MM/dd").toString();
+						}
+					}
 					break;
 				case NUMBER:
 					value = value == ""? null:String.valueOf(cell.getValue().getDecimal());
 					break;
 				case DATE:
-					value = cell.getValue().getDate().toString();
+					String date = cell.getValue().getDate().toString();
+					value = date.contains("-") == true? date.replace("-", "/"): date;
 					break;
 				case DATETIME:
 					value = cell.getValue().getDateTime().toString();
@@ -598,6 +658,7 @@ public class CheckFileFinder {
 					}).findFirst();
 					empBody.setValue(combo.isPresent() == true ? combo.get().getOptionValue() : "");
 					empBody.setLstComboBoxValue(comboxLst);
+					validateCombox(headerGrid, empBody, itemErrors, index, comboxLst);
 					items.add(empBody);
 				} else {
 					if (!headerGrid.getItemName().equals(CheckFileFinder.header)) {
@@ -614,6 +675,32 @@ public class CheckFileFinder {
 			}
 		}
 		
+	}
+
+	private void validateCombox(GridEmpHead headerGrid, ItemRowDto empBody, List<ItemError> itemErrors,
+			int index, List<ComboBoxObject> combox) {
+		String value =(String) empBody.getValue();
+		List<String> comboxKey = combox.stream().map(c -> c.getOptionValue()).collect(Collectors.toList());
+		if (headerGrid.isRequired()) {
+			if ( value == null || value == "") {
+				ItemError error = new ItemError("", index, headerGrid.getItemCode(), "MsgB_2");
+				itemErrors.add(error);
+				empBody.setError(true);
+			} else {
+				if (!comboxKey.contains(value)) {
+					ItemError error = new ItemError("", index, headerGrid.getItemCode(), "MsgB_2");
+					itemErrors.add(error);
+					empBody.setError(true);
+				}
+			}
+		} else {
+
+			if (!comboxKey.contains(value)) {
+				ItemError error = new ItemError("", index, headerGrid.getItemCode(), "MsgB_2");
+				itemErrors.add(error);
+				empBody.setError(true);
+			}
+		}
 	}
 	
 	/**
@@ -672,7 +759,6 @@ public class CheckFileFinder {
 						break;
 					case 4:
 						type = StringCharType.NUMERIC;
-						break;
 					case 5:
 						type = StringCharType.KATAKANA;
 						break;
@@ -690,7 +776,11 @@ public class CheckFileFinder {
 				case 2:
 					NumericItemDto numericItemDto = (NumericItemDto) singleDto.getDataTypeState();
 					double max = Math.pow(10, numericItemDto.getIntegerPart()) - Math.pow(10, -(numericItemDto.getDecimalPart() == null? 0:numericItemDto.getDecimalPart().intValue()));
-					double minItem = numericItemDto.getNumericItemMin() == null? (numericItemDto.getNumericItemMinus() == 1? -max :  0) : numericItemDto.getNumericItemMin().doubleValue();
+					double minItem = numericItemDto.getNumericItemMin() == null
+							? (numericItemDto.getNumericItemMinus() == 1
+									? (numericItemDto.getNumericItemAmount() == 1 ? 0 : -max)
+									: 0)
+							: numericItemDto.getNumericItemMin().doubleValue();
 					double maxItem = numericItemDto.getNumericItemMax() == null? max : numericItemDto.getNumericItemMax().doubleValue();
 					obj = new NumericConstraint(0, numericItemDto.getNumericItemMinus() == 0 ? true : false,
 							new BigDecimal(minItem), new BigDecimal(maxItem),
@@ -800,7 +890,9 @@ public class CheckFileFinder {
 						} else {
 							if (string.isPresent()) {
 								itemDto.setError(true);
-								ItemError error = new ItemError("", index, itemDto.getItemCode(), string.get());
+								ItemError error = new ItemError("", index, itemDto.getItemCode(),
+										TextResource.localize(string.get(), Arrays.asList(gridHead.getItemName(),
+												String.valueOf(stringContraint.getMaxLenght()))));
 								itemErrors.add(error);
 								break;
 							}
@@ -823,18 +915,111 @@ public class CheckFileFinder {
 						Optional<String> string = numberContraint.validateString(value.toString());
 						if (string.isPresent()) {
 							itemDto.setError(true);
-							ItemError error = new ItemError("", index, itemDto.getItemCode(), string.get());
-							itemErrors.add(error);
+							if(string.get().equals("MsgB_11")) {
+								ItemError error = new ItemError("", index, itemDto.getItemCode(), 
+										TextResource.localize(string.get(), 
+												Arrays.asList(gridHead.getItemName(),
+												String.valueOf(numberContraint.getMin()), 
+												String.valueOf(numberContraint.getMax()),
+												String.valueOf(numberContraint.getDecimalPart()))));
+								itemErrors.add(error);
+								break;
+							}else if(string.get().equals("MsgB_8")) {
+								ItemError error = new ItemError("", index, itemDto.getItemCode(), 
+										TextResource.localize(string.get(), 
+												Arrays.asList(gridHead.getItemName(),
+												String.valueOf(numberContraint.getMin()),
+												String.valueOf(numberContraint.getMax()))));
+								itemErrors.add(error);
+								break;
+							}else if(string.get().equals("MsgB_12")) {
+								ItemError error = new ItemError("", index, itemDto.getItemCode(), 
+										TextResource.localize(string.get(), 
+												Arrays.asList(gridHead.getItemName(),
+												String.valueOf(numberContraint.getIntegerPart()),
+												String.valueOf(numberContraint.getDecimalPart()))));
+								itemErrors.add(error);
+								break;
+							}else if(string.get().equals("MsgB_9")) {
+								ItemError error = new ItemError("", index, itemDto.getItemCode(),
+										TextResource.localize(string.get(),
+												Arrays.asList(gridHead.getItemName(),
+												String.valueOf(numberContraint.getIntegerPart()))));
+								itemErrors.add(error);
+								break;
+							}else if(string.get().equals("MsgB_13")) {
+								ItemError error = new ItemError("", index, itemDto.getItemCode(),
+										TextResource.localize(string.get(), 
+												Arrays.asList(gridHead.getItemName(),
+												String.valueOf(numberContraint.getIntegerPart()),
+												String.valueOf(numberContraint.getDecimalPart()))));
+								itemErrors.add(error);
+								break;
+							}else if(string.get().equals("MsgB_10")) {
+								ItemError error = new ItemError("", index, itemDto.getItemCode(),
+										TextResource.localize(string.get(), 
+												Arrays.asList(gridHead.getItemName(),
+												String.valueOf(numberContraint.getIntegerPart()))));
+								itemErrors.add(error);
+								break;
+							}
 							break;
 						}
+						break;
 					}
 				} else {
 					if (itemDto.getValue() != null) {
 						Optional<String> string = numberContraint.validateString(value.toString());
 						if (string.isPresent()) {
 							itemDto.setError(true);
-							ItemError error = new ItemError("", index, itemDto.getItemCode(), string.get());
-							itemErrors.add(error);
+							if(string.get().equals("MsgB_11")) {
+								ItemError error = new ItemError("", index, itemDto.getItemCode(), 
+										TextResource.localize(string.get(), 
+												Arrays.asList(gridHead.getItemName(),
+												String.valueOf(numberContraint.getMin()), 
+												String.valueOf(numberContraint.getMax()),
+												String.valueOf(numberContraint.getDecimalPart()))));
+								itemErrors.add(error);
+								break;
+							}else if(string.get().equals("MsgB_8")) {
+								ItemError error = new ItemError("", index, itemDto.getItemCode(), 
+										TextResource.localize(string.get(), 
+												Arrays.asList(gridHead.getItemName(),
+												String.valueOf(numberContraint.getMin()),
+												String.valueOf(numberContraint.getMax()))));
+								itemErrors.add(error);
+								break;
+							}else if(string.get().equals("MsgB_12")) {
+								ItemError error = new ItemError("", index, itemDto.getItemCode(), 
+										TextResource.localize(string.get(), 
+												Arrays.asList(gridHead.getItemName(),
+												String.valueOf(numberContraint.getIntegerPart()),
+												String.valueOf(numberContraint.getDecimalPart()))));
+								itemErrors.add(error);
+								break;
+							}else if(string.get().equals("MsgB_9")) {
+								ItemError error = new ItemError("", index, itemDto.getItemCode(),
+										TextResource.localize(string.get(),
+												Arrays.asList(gridHead.getItemName(),
+												String.valueOf(numberContraint.getIntegerPart()))));
+								itemErrors.add(error);
+								break;
+							}else if(string.get().equals("MsgB_13")) {
+								ItemError error = new ItemError("", index, itemDto.getItemCode(),
+										TextResource.localize(string.get(), 
+												Arrays.asList(gridHead.getItemName(),
+												String.valueOf(numberContraint.getIntegerPart()),
+												String.valueOf(numberContraint.getDecimalPart()))));
+								itemErrors.add(error);
+								break;
+							}else if(string.get().equals("MsgB_10")) {
+								ItemError error = new ItemError("", index, itemDto.getItemCode(),
+										TextResource.localize(string.get(), 
+												Arrays.asList(gridHead.getItemName(),
+												String.valueOf(numberContraint.getIntegerPart()))));
+								itemErrors.add(error);
+								break;
+							}
 							break;
 						}
 					}
@@ -893,7 +1078,8 @@ public class CheckFileFinder {
 						Optional<String> string = timeContraint.validateString(value.toString());
 						if (string.isPresent()) {
 							itemDto.setError(true);
-							ItemError error = new ItemError("", index, itemDto.getItemCode(), string.get());
+							ItemError error = new ItemError("", index, itemDto.getItemCode(), TextResource.localize(string.get(),
+									Arrays.asList(gridHead.getItemName(), convertTime(timeContraint.getMin()), convertTime(timeContraint.getMax()))));
 							itemErrors.add(error);
 							break;
 						}
@@ -914,7 +1100,8 @@ public class CheckFileFinder {
 						Optional<String> string = timeContraint.validateString(value.toString());
 						if (string.isPresent()) {
 							itemDto.setError(true);
-							ItemError error = new ItemError("", index, itemDto.getItemCode(), string.get());
+							ItemError error = new ItemError("", index, itemDto.getItemCode(), TextResource.localize(string.get(),
+									Arrays.asList(gridHead.getItemName(), convertTime(timeContraint.getMin()), convertTime(timeContraint.getMax()))));
 							itemErrors.add(error);
 							break;
 						}
@@ -928,10 +1115,15 @@ public class CheckFileFinder {
 				if (gridHead.isRequired()) {
 					if (value != null && value != "") {
 						itemDto.setValue(convertTimepoint(value)); 
-						Optional<String> string = timePointContraint.validateString(value.toString());
+						Optional<String> string = timePointContraint.validateString(value);
 						if (string.isPresent()) {
 							itemDto.setError(true);
-							ItemError error = new ItemError("", index, itemDto.getItemCode(), string.get());
+							//MsgB_56
+							ItemError error = new ItemError("", index, itemDto.getItemCode(),
+									TextResource.localize(string.get(),
+											Arrays.asList(gridHead.getItemName(),
+													convertStringTimepoint(timePointContraint.getMin()),
+													convertStringTimepoint(timePointContraint.getMax()))));
 							itemErrors.add(error);
 							break;
 						}
@@ -942,10 +1134,14 @@ public class CheckFileFinder {
 				} else {
 					if (value != null && value != "") {
 						itemDto.setValue(convertTimepoint(value));
-						Optional<String> string = timePointContraint.validateString(value.toString());
+						Optional<String> string = timePointContraint.validateString(value);
 						if (string.isPresent()) {
 							itemDto.setError(true);
-							ItemError error = new ItemError("", index, itemDto.getItemCode(), string.get());
+							ItemError error = new ItemError("", index, itemDto.getItemCode(), 
+									TextResource.localize(string.get(),
+											Arrays.asList(gridHead.getItemName(),
+													convertStringTimepoint(timePointContraint.getMin()),
+													convertStringTimepoint(timePointContraint.getMax()))));
 							itemErrors.add(error);
 							break;
 						}
@@ -988,6 +1184,19 @@ public class CheckFileFinder {
 	}
 	
 	/**
+	 * danh cho item kieu time - 4
+	 * convertTimepoint -> int
+	 * @param value
+	 * @return
+	 */
+	private String convertTime(int value) {
+		int hours = value/60;
+		int minute = (value  - hours*60)%60;
+		String valueConvert = hours+":"+ (String.valueOf(minute).length() == 1? "0"+ minute : minute);
+		return valueConvert;
+	}
+	
+	/**
 	 * danh cho item kieu timepoint - 5
 	 * convertTimepoint -> int
 	 * @param value
@@ -1017,6 +1226,46 @@ public class CheckFileFinder {
 		return value;
 	}
 	
+	private String convertStringTimepoint(int value) {
+		int hours = value/60;
+		int minute = (value  - hours*60)%60;
+		String valueConvert = hours+":"+ (String.valueOf(minute).length() == 1? "0"+ minute : minute);
+		String result = "";
+		String[] valueSplit = valueConvert.split(":");
+		if(valueSplit.length > 0) {
+			if(valueSplit.length == 2) {
+				if(!isNumeric(valueSplit[0]) || !isNumeric(valueSplit[1])) return valueConvert;
+			}
+			if(valueSplit.length > 2) {
+				 return valueConvert;
+			}
+			
+			if(valueSplit.length == 1) {
+				if(!isNumeric(valueSplit[0])) return valueConvert;
+			}
+			
+			int day = hours/24;
+			
+			if (hours < -1) {
+				return "前日" + Math.abs(hours) + ":"+ valueSplit[1];
+			}
+			if (day == 0) {
+				result = "当日" + hours + ":"+ valueSplit[1];
+			}
+			
+			if(day == 1) {
+				result = "翌日" + (hours - 24) + ":"+ valueSplit[1];
+			}
+			
+			if(day == 2) {
+				result = "翌々日" + (hours - 48) + ":"+ valueSplit[1];
+				
+			}
+		}
+		
+		return result;
+	}
+	
 	private Object convertValue(int valueType, String value) {
 		ItemValueType itemValueType = EnumAdaptor.valueOf(valueType, ItemValueType.class);
 		
@@ -1035,8 +1284,8 @@ public class CheckFileFinder {
 		case TIME:
 		case TIMEPOINT:
 			try {
-			return new Integer(new BigDecimal(value).intValue());
-			}catch(Exception e) {
+				return new Integer(new BigDecimal(value).intValue());
+			} catch (Exception e) {
 				return value;
 			}
 		case NUMBERIC_BUTTON:
@@ -1047,9 +1296,46 @@ public class CheckFileFinder {
 				return value;
 			}
 		case DATE:
+			List<String> ddMMyyy = Arrays.asList("dd/MM/yyyy","dd-MM-yyyy");
+			List<String> MMddyyy = Arrays.asList("MM/dd/yyyy","MM-dd-yyyy");
 			try {
-			  return GeneralDate.fromString(value, "yyyy/MM/dd");
-			}catch(Exception e) {
+				Optional<SimpleDateFormat> dateFormat = validateDate(value);
+				
+				if (dateFormat.isPresent()) {
+					
+					if (ddMMyyy.contains(dateFormat.get().toPattern())) {
+						
+						String[] dateSplit = value.split("[-/]");
+						
+						if (dateSplit.length == 3) {
+							
+							return GeneralDate.ymd(Integer.valueOf(dateSplit[2]).intValue(),
+									Integer.valueOf(dateSplit[1]).intValue(), Integer.valueOf(dateSplit[0]).intValue());
+						} else {
+							
+							return value;
+							
+						}
+					}
+					if (MMddyyy.contains(dateFormat.get().toPattern())) {
+						
+						String[] dateSplit = value.split("[-/]");
+						
+						if (dateSplit.length == 3) {
+							
+							return GeneralDate.ymd(Integer.valueOf(dateSplit[2]).intValue(),
+									Integer.valueOf(dateSplit[0]).intValue(), Integer.valueOf(dateSplit[1]).intValue());
+						
+						} else {
+							
+							return value;
+							
+						}
+					} else {
+						return GeneralDate.fromString(value, "yyyy/MM/dd");
+					}
+				}
+			} catch (Exception e) {
 				return value;
 			}
 		default:
@@ -1124,6 +1410,38 @@ public class CheckFileFinder {
 
 	}
 	
+	private Optional<SimpleDateFormat> validateDate(String value) {
+		List<SimpleDateFormat> dateFormats = createSimpleDateFormat();
+		List<SimpleDateFormat> isDateLst = new ArrayList<>();
+		for(SimpleDateFormat dateFormat : dateFormats) {
+			try {
+				dateFormat.parse(value.trim());
+				isDateLst.add(dateFormat);
+			} catch (ParseException pe) {
+				
+			}
+			
+		}
+		if(!isDateLst.isEmpty()) return Optional.ofNullable(isDateLst.get(0));
+		return Optional.empty();
+	}
+	
+	private  List<SimpleDateFormat> createSimpleDateFormat(){
+		List<SimpleDateFormat> result = new ArrayList<>();
+		SimpleDateFormat yMd = new SimpleDateFormat("yyyy/MM/dd");
+		yMd.setLenient(false);
+		result.add(yMd);
+		SimpleDateFormat yMd1 = new SimpleDateFormat("yyyy-MM-dd");
+		yMd1.setLenient(false);
+		result.add(yMd1);
+		SimpleDateFormat dMy = new SimpleDateFormat("dd/MM/yyyy");
+		dMy.setLenient(false);
+		result.add(dMy);
+		SimpleDateFormat dMy1 = new SimpleDateFormat("dd-MM-yyyy");
+		dMy1.setLenient(false);
+		result.add(dMy1);
+		return result;
+	}
 	private Map<String, Periods> createPeriod(){
 		Map<String, Periods> aMap = new HashMap<>();
 		// 所属会社履歴

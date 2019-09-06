@@ -23,7 +23,7 @@ module cps003.g.vm {
                     id : a.employeeId + a.itemName + a.no,
                     empCd: a.empCd, empName: a.empName,
                     employeeId: a.employeeId, errorType: a.errorType == 0 ? text("CPS003_127") : text("CPS003_128"),
-                    isDisplayRegister: a.isDisplayRegister, itemName: a.itemName, message: a.message, no: a.no,
+                    isDisplayRegister: a.displayRegister, itemName: a.itemName, message: a.message, no: a.no,
                     resultRegister: a.errorType == 0 ? text("CPS003_126") : text("CPS003_125")
                 }
             });

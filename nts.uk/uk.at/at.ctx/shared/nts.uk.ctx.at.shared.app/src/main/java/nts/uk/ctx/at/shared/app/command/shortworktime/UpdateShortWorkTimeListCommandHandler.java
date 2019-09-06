@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.app.command.shortworktime;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
@@ -59,27 +61,34 @@ implements PeregUpdateListCommandHandler<UpdateShortWorkTimeCommand>{
 		}
 		
 		cmd.stream().forEach(c ->{
-			if(c.getStartDate() != null) {
-				DateHistoryItem dateItem = new DateHistoryItem(c.getHistoryId(), new DatePeriod(c.getStartDate(), c.getEndDate()!= null? c.getEndDate():  GeneralDate.max()));
-				Optional<ShortWorkTimeHistory> existHistOpt = existHistMaps.stream()
-						.filter(item -> item.getEmployeeId().equals(c.getEmployeeId())).findFirst();						
-				if (!existHistOpt.isPresent()) {
-					errorLst.add(c.getEmployeeId());
-					return;
+			try {
+				if(c.getStartDate() != null) {
+					DateHistoryItem dateItem = new DateHistoryItem(c.getHistoryId(), new DatePeriod(c.getStartDate(), c.getEndDate()!= null? c.getEndDate():  GeneralDate.max()));
+					Optional<ShortWorkTimeHistory> existHistOpt = existHistMaps.stream()
+							.filter(item -> item.getEmployeeId().equals(c.getEmployeeId())).findFirst();						
+					if (!existHistOpt.isPresent()) {
+						errorLst.add(c.getEmployeeId());
+						return;
+					}
+					Optional<DateHistoryItem> itemToBeUpdate = existHistOpt.get().getHistoryItems().stream()
+							.filter(h -> h.identifier().equals(c.getHistoryId())).findFirst();
+					if (!itemToBeUpdate.isPresent()){
+						errorLst.add(c.getEmployeeId());
+						return;
+					}
+					GeneralDate endDate = (c.getEndDate() != null) ? c.getEndDate() : GeneralDate.ymd(9999, 12, 31);
+					DatePeriod newSpan = new DatePeriod(c.getStartDate(), endDate);
+					existHistOpt.get().changeSpan(itemToBeUpdate.get(), newSpan);
+					dateHistItems.put(c.getEmployeeId(), dateItem);
 				}
-				Optional<DateHistoryItem> itemToBeUpdate = existHistOpt.get().getHistoryItems().stream()
-						.filter(h -> h.identifier().equals(c.getHistoryId())).findFirst();
-				if (!itemToBeUpdate.isPresent()){
-					errorLst.add(c.getEmployeeId());
-					return;
-				}
-				GeneralDate endDate = (c.getEndDate() != null) ? c.getEndDate() : GeneralDate.ymd(9999, 12, 31);
-				DatePeriod newSpan = new DatePeriod(c.getStartDate(), endDate);
-				existHistOpt.get().changeSpan(itemToBeUpdate.get(), newSpan);
-				dateHistItems.put(c.getEmployeeId(), dateItem);
+				ShortWorkTimeHistoryItem sWorkTime = new ShortWorkTimeHistoryItem(c);
+				histItems.add(sWorkTime);
+				
+			}catch(BusinessException e) {
+				MyCustomizeException ex = new MyCustomizeException(e.getMessageId(), Arrays.asList(c.getEmployeeId()));
+				errorExceptionLst.add(ex);
 			}
-			ShortWorkTimeHistoryItem sWorkTime = new ShortWorkTimeHistoryItem(c);
-			histItems.add(sWorkTime);
+
 		});
 		
 		if(!dateHistItems.isEmpty()) {

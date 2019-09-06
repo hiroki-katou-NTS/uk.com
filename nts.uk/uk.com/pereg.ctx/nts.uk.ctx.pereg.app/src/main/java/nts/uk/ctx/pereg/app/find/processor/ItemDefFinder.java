@@ -116,7 +116,10 @@ public class ItemDefFinder {
 
 		if(!gridPeregDto.isEmpty()) {
 			gridPeregDto.stream().forEach(m ->{
-				PeregEmpInfoQuery empQuery = new PeregEmpInfoQuery(m.getEmployeeId(), m.getPersonId(), m.getPeregDto() == null? null:  m.getPeregDto().getDomainDto().getRecordId());
+				PeregEmpInfoQuery empQuery = new PeregEmpInfoQuery(m.getEmployeeId(), m.getPersonId(),
+						m.getPeregDto() == null ? null
+								: (m.getPeregDto().getDomainDto() == null ? null
+										: m.getPeregDto().getDomainDto().getRecordId()));
 				List<ItemValue> lstItemDef = getItemDefFromDomain(lstPerInfoDef);
 				empLst.put(m.getEmployeeId(), new PeregMatrixByEmp(lstItemDef, empQuery, m.getPeregDto()));
 			});
@@ -296,7 +299,7 @@ public class ItemDefFinder {
 	 * @param peregDto
 	 */
 	private void setItemDefValueOfFixedCtg(Map<String, PeregMatrixByEmp> itemDefList) {
-		itemDefList.entrySet().parallelStream().forEach(c ->{
+		itemDefList.entrySet().stream().forEach(c ->{
 			Map<String, Object> itemCodeValueMap = MappingFactory.getFullDtoValue(c.getValue().getDto());
 			setItemValueFromMap(c.getValue().getItems(), itemCodeValueMap);
 		});

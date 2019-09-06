@@ -1,6 +1,7 @@
 package nts.uk.ctx.bs.employee.app.command.employee.history;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,7 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.text.IdentifierUtil;
@@ -23,10 +25,10 @@ import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyInfo;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyInfoRepository;
 import nts.uk.ctx.bs.person.dom.person.common.ConstantUtils;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
-import nts.uk.shr.pereg.app.command.PeregAddCommandResult;
+import nts.uk.shr.pereg.app.command.MyCustomizeException;
 import nts.uk.shr.pereg.app.command.PeregAddListCommandHandler;
 @Stateless
-public class AddAffCompanyHistoryListCommandHandler extends CommandHandlerWithResult<List<AddAffCompanyHistoryCommand>, List<PeregAddCommandResult>>
+public class AddAffCompanyHistoryListCommandHandler extends CommandHandlerWithResult<List<AddAffCompanyHistoryCommand>, List<MyCustomizeException>>
 implements PeregAddListCommandHandler<AddAffCompanyHistoryCommand>{
 	@Inject
 	private AffCompanyHistRepository affCompanyHistRepository;
@@ -49,9 +51,9 @@ implements PeregAddListCommandHandler<AddAffCompanyHistoryCommand>{
 	}
 
 	@Override
-	protected List<PeregAddCommandResult> handle(CommandHandlerContext<List<AddAffCompanyHistoryCommand>> context) {
+	protected List<MyCustomizeException> handle(CommandHandlerContext<List<AddAffCompanyHistoryCommand>> context) {
 		List<AddAffCompanyHistoryCommand> command = context.getCommand();
-		List<PeregAddCommandResult> recordIds = new ArrayList<>();
+		List<MyCustomizeException> result= new ArrayList<>();
 		//sidsPidsMap
 		List<String> sids = command.stream().map(c -> c.getSId()).collect(Collectors.toList());
 		Map<String, List<AffCompanyHist>> histLstMap = this.affCompanyHistRepository
@@ -60,6 +62,7 @@ implements PeregAddListCommandHandler<AddAffCompanyHistoryCommand>{
 		Map<String, AffCompanyHistByEmployee> itemToBeAddedMap = new HashMap<>();
 		List<AffCompanyInfo> affCompanyInfoLst = new ArrayList<>();
 		command.stream().forEach(c ->{
+			try {
 			AffCompanyHistByEmployee itemToBeAdded = new AffCompanyHistByEmployee(c.getSId(), new ArrayList<>());
 			List<AffCompanyHist> listHist = histLstMap.get(c.getSId());
 			if(listHist != null) {
@@ -81,11 +84,21 @@ implements PeregAddListCommandHandler<AddAffCompanyHistoryCommand>{
 							? c.getRecruitmentClassification() : " ",
 					c.getAdoptionDate(), c.getRetirementAllowanceCalcStartDate());
 			affCompanyInfoLst.add(histItem);
-			recordIds.add(new PeregAddCommandResult(newHistId));
+			}catch(BusinessException e) {
+				MyCustomizeException ex = new MyCustomizeException(e.getMessageId(), Arrays.asList(c.getSId()));
+				result.add(ex);
+			}
+			//recordIds.add(new PeregAddCommandResult(newHistId));
 		});
-		affCompanyHistService.addAll(itemToBeAddedMap);
-		affCompanyInfoRepository.addAll(affCompanyInfoLst);
-		return recordIds;
+		if(!itemToBeAddedMap.isEmpty()) {
+			affCompanyHistService.addAll(itemToBeAddedMap);
+		}
+		
+		if(!affCompanyInfoLst.isEmpty()) {
+			affCompanyInfoRepository.addAll(affCompanyInfoLst);
+		}
+		
+		return result;
 	}
 
 }

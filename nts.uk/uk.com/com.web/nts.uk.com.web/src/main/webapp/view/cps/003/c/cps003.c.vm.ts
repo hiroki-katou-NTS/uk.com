@@ -186,7 +186,7 @@ module cps003.c.vm {
                             });
                         }
                     } else {
-                        parent[d.itemCode] = d.itemName + d.itemCode;
+                        parent[d.itemCode] = d.itemName /*+ d.itemCode*/;
                     }
                 });
                 
@@ -231,7 +231,8 @@ module cps003.c.vm {
                         
                         if (!dt) return;
                         if (dt.cls.dataTypeValue === ITEM_SINGLE_TYPE.DATE && dt.cls.dateItemType === DateType.YEARMONTHDAY) {
-                            record[item.itemCode] = _.isNil(item.value) || item.value === "" ? item.value : moment.utc(item.value, "YYYY/MM/DD").toDate();
+                            let momentObj = moment.utc(item.value, "YYYY/MM/DD");
+                            record[item.itemCode] = _.isNil(item.value) || item.value === "" || !momentObj.isValid() ? item.value : momentObj.toDate();
                             if (self.category.catCode() === "CS00070" && (item.itemCode === "IS00781" || item.itemCode === "IS00782")) {
                                 states.push(new State(record.id, item.itemCode, ["mgrid-disable"]));
                                 disabled = true;
@@ -784,7 +785,7 @@ module cps003.c.vm {
             new nts.uk.ui.mgrid.MGrid($("#grid")[0], {
                 width: "1000px",
                 height: "800px",
-                headerHeight: "80px",
+                headerHeight: "40px",
                 subHeight: "140px",
                 subWidth: "100px",
                 dataSource: self.gridOptions.dataSource,
@@ -910,7 +911,11 @@ module cps003.c.vm {
                 });
                 
                 self.validateSpecial(regChecked, dataSource);
-                itemErrors = $grid.mGrid("errors");
+                itemErrors = _.filter($grid.mGrid("errors"), e => {
+                    let d = dataSource[e.index];
+                    return d && d.register;
+                });
+                
                 errObj = {};
                 if (itemErrors && itemErrors.length > 0) {
                     dataToG = _.map(itemErrors, err => {
@@ -956,17 +961,25 @@ module cps003.c.vm {
                             });
                         });
                     } else {
-                        info({ messageId: "Msg_15" }).then(() => {
-                            unblock();
-                            setShared("CPS003C_REG_DONE", true);
-                            forEach(updateDone, d => {
-                                let recData: Record = recId[d.rowId];
-                                regEmployeeIds.push(recData.employeeId);
+                        if (!errorList || errorList.length === 0) {
+                            info({ messageId: "Msg_15" }).then(() => {
+                                unblock();
+                                setShared("CPS003C_REG_DONE", true);
+                                forEach(updateDone, d => {
+                                    let recData: Record = recId[d.rowId];
+                                    regEmployeeIds.push(recData.employeeId);
+                                });
+                                
+                                setShared("CPS003C_REG_EMPID", regEmployeeIds);
+                                self.close();
                             });
-                            
-                            setShared("CPS003C_REG_EMPID", regEmployeeIds);
-                            self.close();
-                        });
+                        } else {
+                            let errLst = _.map(errorList, e => e);
+                            setShared("CPS003G_ERROR_LIST", errLst);
+                            modeless("/view/cps/003/g/index.xhtml").onClosed(() => {
+                                
+                            });
+                        }
                     }
                 }).fail((res) => {
                     unblock();
@@ -995,8 +1008,7 @@ module cps003.c.vm {
                         case ITEM_SELECT_TYPE.CODE_NAME:
                             return 1;
                         case ITEM_SELECT_TYPE.DESIGNATED_MASTER:
-                            case ITEM_SELECT_TYPE.DESIGNATED_MASTER:
-                            if (!_.isNil(value) && !isNaN(Number(value))) {
+                            if (!_.isNil(value) && !isNaN(Number(value)) && String(Number(value)) === String(value)) {
                                 return 2;
                             }
                             return 1;
@@ -1173,11 +1185,12 @@ module cps003.c.vm {
             this.employeeCode = data.employeeCode;
             this.employeeName = data.employeeName;
             this.register = false;
-            if (data.numberOfError === 0) {
-                this.status = "正常";
-            } else {
-                this.status = "エラー(" + data.numberOfError + "件)";
-            }
+            this.status = "正常";
+//            if (data.numberOfError === 0) {
+//                this.status = "正常";
+//            } else {
+//                this.status = "エラー(" + data.numberOfError + "件)";
+//            }
         }
     }
     
