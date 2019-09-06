@@ -1,5 +1,5 @@
 __viewContext.ready(function() {
-    debugger;
+    //debugger;
     var url_string = window.location.href;
     var urlID = _.split(url_string, '=')[1];
     var server_path = nts.uk.text.format("/ctx/sys/gateway/url/execution/{0}", urlID); 
