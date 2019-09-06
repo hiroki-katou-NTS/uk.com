@@ -514,7 +514,7 @@ public class CheckFileFinder {
 									i.setError(true);
 								}
 							});
-							ItemError error = new ItemError("", index, period.getPeriods().get(0).getItem(), "MsgB_2"); 
+							ItemError error = new ItemError("", index, period.getPeriods().get(0).getItem(), "Msg_861"); 
 							itemErrors.add(error);
 						}
 					}catch(Exception e) {
@@ -875,7 +875,9 @@ public class CheckFileFinder {
 						} else {
 							if (string.isPresent()) {
 								itemDto.setError(true);
-								ItemError error = new ItemError("", index, itemDto.getItemCode(), string.get());
+								ItemError error = new ItemError("", index, itemDto.getItemCode(),
+										TextResource.localize(string.get(), Arrays.asList(gridHead.getItemName(),
+										String.valueOf(stringContraint.getMaxLenght()))));
 								itemErrors.add(error);
 								break;
 							}
