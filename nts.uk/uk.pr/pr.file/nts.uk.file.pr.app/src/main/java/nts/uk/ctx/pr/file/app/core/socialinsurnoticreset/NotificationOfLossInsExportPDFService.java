@@ -3,6 +3,7 @@ package nts.uk.ctx.pr.file.app.core.socialinsurnoticreset;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsuranceOffice;
 import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsuranceOfficeRepository;
 import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.PersonalNumClass;
@@ -42,6 +43,8 @@ public class NotificationOfLossInsExportPDFService extends ExportService<Notific
 	protected void handle(ExportServiceContext<NotificationOfLossInsExportQuery> exportServiceContext) {
 		String userId = AppContexts.user().userId();
 		String cid = AppContexts.user().companyId();
+        GeneralDate start = exportServiceContext.getQuery().getStartDate();
+        GeneralDate end = exportServiceContext.getQuery().getEndDate();
 		NotificationOfLossInsExport socialInsurNotiCreateSet = exportServiceContext.getQuery().getSocialInsurNotiCreateSet();
 		SocialInsurNotiCreateSet domain = new SocialInsurNotiCreateSet(userId, cid,
 				socialInsurNotiCreateSet.getOfficeInformation(),
@@ -58,7 +61,7 @@ public class NotificationOfLossInsExportPDFService extends ExportService<Notific
 		socialInsNotifiCreateSetRegis(domain);
 		List<String> empIds = exportServiceContext.getQuery().getEmpIds();
 		//socialInsNotifiCreateSetRegis();
-		if(exportServiceContext.getQuery().getEndDate().before(exportServiceContext.getQuery().getStartDate())) {
+		if(end.before(start)) {
 			throw new BusinessException("Msg_812");
 		}
 		if(!checkHealthInsQualificationInformation(userId) && checkWelfarePenInsQualiInformation(userId)) {
@@ -66,7 +69,7 @@ public class NotificationOfLossInsExportPDFService extends ExportService<Notific
 		}
 
 		if( socialInsurNotiCreateSet.getPrintPersonNumber() == PersonalNumClass.DO_NOT_OUTPUT.value) {
-			List<InsLossDataExport> healthInsLoss = socialInsurNotiCreateSetEx.getHealthInsLoss(empIds);
+			List<InsLossDataExport> healthInsLoss = socialInsurNotiCreateSetEx.getHealthInsLoss(empIds, cid, start, end);
 			List<InsLossDataExport> welfPenInsLoss = socialInsurNotiCreateSetEx.getWelfPenInsLoss(empIds);
 			List<SocialInsuranceOffice> socialInsuranceOffice =  socialInsuranceOfficeRepository.findByCid(cid);
 			CompanyInfor company = socialInsurNotiCreateSetEx.getCompanyInfor(cid);

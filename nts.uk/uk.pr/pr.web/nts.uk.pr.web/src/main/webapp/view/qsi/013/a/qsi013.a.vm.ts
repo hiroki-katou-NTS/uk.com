@@ -167,7 +167,8 @@ module nts.uk.pr.view.qsi013.a.viewmodel {
                 },
                 empIds: self.getListEmpId(self.selectedCode(), self.employeeList()),
                 startDate: moment.utc(self.startDate(), "YYYY/MM/DD"),
-                endDate: moment.utc(self.endDate(), "YYYY/MM/DD")
+                endDate: moment.utc(self.endDate(), "YYYY/MM/DD"),
+                reference: moment.utc(self.filingDate(), "YYYY/MM/DD")
             };
 
             if(exportPDF == 0) {

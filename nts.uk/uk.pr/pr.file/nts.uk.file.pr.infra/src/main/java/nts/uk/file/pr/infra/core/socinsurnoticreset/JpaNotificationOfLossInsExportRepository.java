@@ -1,6 +1,7 @@
 package nts.uk.file.pr.infra.core.socinsurnoticreset;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.file.app.core.socialinsurnoticreset.CompanyInfor;
 import nts.uk.ctx.pr.file.app.core.socialinsurnoticreset.InsLossDataExport;
 import nts.uk.ctx.pr.file.app.core.socialinsurnoticreset.NotificationOfLossInsExRepository;
@@ -8,6 +9,8 @@ import nts.uk.ctx.pr.file.app.core.socialinsurnoticreset.NotificationOfLossInsEx
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -73,10 +76,10 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
     }
 
     @Override
-    public List<InsLossDataExport> getHealthInsLoss(List<String> empIds) {
+    public List<InsLossDataExport> getHealthInsLoss(List<String> empIds, String cid, GeneralDate startDate, GeneralDate endDate) {
         List<Object[]> resultQuery = null;
         StringBuilder exportSQL = new StringBuilder();
-        exportSQL.append("   SELECT qi.EMPLOYEE_ID,");
+        exportSQL.append("  SELECT qi.EMPLOYEE_ID,");
         exportSQL.append("      SOCIAL_INSURANCE_OFFICE_CD,");
         exportSQL.append("      OTHER,");
         exportSQL.append("      OTHER_REASON,");
@@ -98,12 +101,18 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
         exportSQL.append("      QUALIFI_DISTIN,");
         exportSQL.append("      CONTIN_REEM_AFTER_RETIREMENT,");
         exportSQL.append("      IS_MORE_EMP,");
-        exportSQL.append("      BASIC_PEN_NUMBER");
+        exportSQL.append("      BASIC_PEN_NUMBER,");
+        exportSQL.append("      PERSON_NAME,");
+        exportSQL.append("      PERSON_NAME_KANA,");
+        exportSQL.append("      OLDNAME_FNAME,");
+        exportSQL.append("      BIRTHDAY,");
+        exportSQL.append("      qi.END_DATE,");
+        exportSQL.append("      HEAL_INSUR_NUMBER");
         exportSQL.append("  FROM ");
         exportSQL.append("         (SELECT *");
         exportSQL.append("         FROM QQSMT_EMP_HEAL_INSUR_QI ");
         exportSQL.append("         WHERE START_DATE <= ?endDate AND START_DATE >= ?startDate");
-        exportSQL.append("         AND EMPLOYEE_ID IN (?empIds) )qi");
+        exportSQL.append("         AND EMPLOYEE_ID IN ('%s') )qi");
         exportSQL.append("  LEFT JOIN ");
         exportSQL.append("       (SELECT * ");
         exportSQL.append("       FROM QQSMT_EMP_CORP_OFF_HIS ");
@@ -113,17 +122,24 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
         exportSQL.append("  LEFT JOIN QQSMT_SOC_ISACQUISI_INFO info ON info.EMPLOYEE_ID = his.EMPLOYEE_ID");
         exportSQL.append("  LEFT JOIN QQSMT_MULTI_EMP_WORK_IF mt ON mt.EMPLOYEE_ID = his.EMPLOYEE_ID");
         exportSQL.append("  LEFT JOIN QQSMT_EMP_BA_PEN_NUM ba ON ba.EMPLOYEE_ID = his.EMPLOYEE_ID");
+        exportSQL.append("  LEFT JOIN (SELECT * ");
+        exportSQL.append("       FROM QPBMT_SOCIAL_INS_OFFICE");
+        exportSQL.append("       WHERE CID = ?cid) oi ");
+        exportSQL.append("       ON oi.CODE = his.SOCIAL_INSURANCE_OFFICE_CD");
         exportSQL.append("  INNER JOIN (SELECT * ");
-        exportSQL.append("      FROM BSYMT_EMP_DTA_MNG_INFO ");
-        exportSQL.append("      WHERE CID = ?cid) i");
-        exportSQL.append("      ON i.SID = qi.EMPLOYEE_ID");
+        exportSQL.append("       FROM BSYMT_EMP_DTA_MNG_INFO ");
+        exportSQL.append("       WHERE CID = ?cid) i");
+        exportSQL.append("       ON i.SID = qi.EMPLOYEE_ID");
         exportSQL.append("  INNER JOIN BPSMT_PERSON p ON p.PID = i.PID");
-        exportSQL.append("  ORDER BY SOCIAL_INSURANCE_OFFICE_CD");
-
+        exportSQL.append("  ORDER BY SOCIAL_INSURANCE_OFFICE_CD   ");
+        String sql = String.format(exportSQL.toString(), empIds.stream()
+                .map(String::valueOf)
+                .collect(Collectors.joining("','")));
         try {
-            resultQuery = this.getEntityManager().createNativeQuery(exportSQL.toString()).setParameter("empIds", empIds.stream()
-                    .map(String::valueOf)
-                    .collect(Collectors.joining(", ")))
+            resultQuery = this.getEntityManager().createNativeQuery(sql)
+                    .setParameter("startDate", this.convertDate(startDate.toString("yyyy-MM-dd")))
+                    .setParameter("endDate", this.convertDate(endDate.toString("yyyy-MM-dd")))
+                    .setParameter("cid", cid)
                     .getResultList();
         } catch (NoResultException e) {
             return Collections.emptyList();
@@ -136,6 +152,28 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
                 .caInsurance(i[4] == null ? null : ((BigDecimal) i[4]).intValue())
                 .numRecoved(i[5] == null ? null : ((BigDecimal) i[5]).intValue())
                 .cause(i[6] == null ? null : ((BigDecimal) i[6]).intValue())
+                .percentOrMore(i[7] == null ? null : i[7].toString())
+                .remarksOther(i[8] == null ? null : i[8].toString())
+                .remarksAndOtherContent(i[9] == null ? null : i[9].toString())
+                .remunMonthlyAmountKind(i[10] == null ? null : i[10].toString())
+                .remunMonthlyAmount(i[11] == null ? null : i[11].toString())
+                .totalMonthyRemun(i[12] == null ? null : i[12].toString())
+                .livingAbroad(i[13] == null ? null : i[13].toString())
+                .resonOther(i[14] == null ? null : i[14].toString())
+                .resonAndOtherContent(i[15] == null ? null : i[15].toString())
+                .shortTimeWorkes(i[16] == null ? null : i[16].toString())
+                .shortStay(i[17] == null ? null : i[17].toString())
+                .depenAppoint(i[18] == null ? null : i[18].toString())
+                .qualifiDistin(i[19] == null ? null : i[19].toString())
+                .continReemAfterRetirement(i[20] == null ? "" : i[20].toString())
+                .isMoreEmp(i[21] == null ? null : i[21].toString())
+                .basicPenNumber(i[22] == null ? null :i[22].toString())
+                .personName(i[23].toString())
+                .personNameKana(i[24] == null ? null : i[24].toString())
+                .oldName(i[25] == null ? null : i[25].toString())
+                .birthDay(i[26].toString())
+                .endDate(i[27] == null ? null : i[27].toString())
+                .healInsNumber(i[28] == null ? null : i[28].toString())
                 .build()
                 ).collect(Collectors.toList());
     }
@@ -164,7 +202,7 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
         exportSQL.append("    PHONE_NUMBER");
         exportSQL.append("  FROM  (SELECT * FROM BCMMT_COMPANY ");
         exportSQL.append("        WHERE CID = ?cid) c ");
-        exportSQL.append("    INNER JOIN BCMMT_ADDRESS i ON i.CID = c.CID");
+        exportSQL.append("  INNER JOIN BCMMT_ADDRESS i ON i.CID = c.CID");
         try {
             result = (Object[]) this.getEntityManager().createNativeQuery(exportSQL.toString()).setParameter("cid", cid)
                     .getSingleResult();
@@ -175,8 +213,8 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
                 .companyCode(result[0].toString())
                 .contractCd(result[1].toString())
                 .companyName(result[2].toString())
-                .startMonth((int)result[3])
-                .isAbolition((int)result[4])
+                .startMonth(((BigDecimal)result[3]).intValue())
+                .isAbolition(((BigDecimal)result[4]).intValue())
                 .repname(result[5] != null ? result[5].toString() : "")
                 .repost(result[6] != null ? result[6].toString() : "")
                 .comNameKana(result[7] != null ? result[7].toString() : "")
@@ -190,6 +228,18 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
                 .postCd(result[15] != null ? result[15].toString() : "")
                 .phoneNum(result[16] != null ? result[16].toString() : "").build()
                 ;
+    }
+    private java.sql.Date convertDate(String Date) {
+        java.util.Date date = null;
+        java.sql.Date sqlDate = null;
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            date = format.parse(Date);
+            sqlDate = new java.sql.Date(date.getTime());
+        } catch (ParseException e) {
+            return null;
+        }
+        return sqlDate;
     }
 
 }

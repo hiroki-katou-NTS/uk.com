@@ -1,9 +1,6 @@
 package nts.uk.file.pr.infra.core.socinsurnoticreset;
 
-import com.aspose.cells.Cells;
-import com.aspose.cells.Workbook;
-import com.aspose.cells.Worksheet;
-import com.aspose.cells.WorksheetCollection;
+import com.aspose.cells.*;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
@@ -27,10 +24,10 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
     private static final String FILE_NAME = "被保険者資格喪失届_帳票テンプレート";
     private static final int C1_1_ROW = 4;
     private static final int C1_1_COLUMN = 2;
-    private static final int C1_2_ROW = 6;
+    private static final int C1_2_ROW = 7;
     private static final int C1_2_COLUMN = 7;
     private static final int C1_3_ROW = 6;
-    private static final int C1_3_COLUMN = 19;
+    private static final int C1_3_COLUMN = 20;
     private static final int C1_4_ROW = 6;
     private static final int C1_4_COLUMN = 35;
     private static final int C1_5_ROW = 11;
@@ -67,21 +64,24 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
     private static final int C2_21_COLUMN = 19;
     private static final int C2_22_ROW = 6;
     private static final int C2_22_COLUMN = 35;
+    private static final int C2_23_ROW = 35;
+    private static final int C2_23_COLUMN = 35;
     private static final int C2_24_ROW = 12;
     private static final int C2_24_COLUMN = 7;
 
     @Override
     public void generate(FileGeneratorContext generatorContext, LossNotificationInformation data) {
-        List<SocialInsuranceOffice> socialInsuranceOffice = data.getSocialInsuranceOffice();
         CompanyInfor company = data.getCompany();
         try (AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE)) {
             Workbook workbook = reportContext.getWorkbook();
             WorksheetCollection worksheets = workbook.getWorksheets();
             reportContext.processDesigner();
             fillData(worksheets, data.getHealthInsLoss(), data.getBaseDate(), company, data.getSocialInsuranceOffice());
-            worksheets.removeAt(0);
-            reportContext.saveAsPdf(this.createNewFile(generatorContext,
-                    FILE_NAME + "_" + GeneralDateTime.now().toString("yyyyMMddHHmmss") + ".pdf"));
+            //worksheets.removeAt(0);
+            /*reportContext.saveAsPdf(this.createNewFile(generatorContext,
+                    FILE_NAME + "_" + GeneralDateTime.now().toString("yyyyMMddHHmmss") + ".pdf"));*/
+            reportContext.saveAsExcel(this.createNewFile(generatorContext,
+                    FILE_NAME + "_" + GeneralDateTime.now().toString("yyyyMMddHHmmss") + ".xlsx"));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -95,7 +95,6 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
             // Main Data
             for (int page = 0; page < data.size(); page += 4) {
                 worksheets.get(worksheets.addCopy(0)).setName(sheetName + page/4);
-                worksheet = worksheets.get(sheetName + page/4);
             }
             for (int i = 0; i < data.size(); i++) {
                 if (i % 4 == 0) {
@@ -114,9 +113,9 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
     private void fillCompanyHealthy(Cells cells, InsLossDataExport data, GeneralDate baseDate, CompanyInfor company, List<SocialInsuranceOffice> socialInsuranceOffice){
         SocialInsuranceOffice insOffice = this.findCompany(socialInsuranceOffice, data.getOfficeCd());
         cells.get(C1_1_ROW , C1_1_COLUMN).setValue(Objects.toString(baseDate, ""));
-        cells.get(C1_2_ROW , C1_2_COLUMN).setValue(Objects.toString(insOffice.getInsuranceMasterInformation().getOfficeOrganizeNumber().getHealthInsuranceOfficeNumber1().get().v() , ""));
-        cells.get(C1_3_ROW , C1_3_COLUMN).setValue(Objects.toString(insOffice.getInsuranceMasterInformation().getOfficeOrganizeNumber().getHealthInsuranceOfficeNumber2().get().v(), ""));
-        cells.get(C1_4_ROW , C1_4_COLUMN).setValue(Objects.toString(insOffice.getInsuranceMasterInformation().getHealthInsuranceOfficeNumber().get().v(), ""));
+        cells.get(C1_2_ROW, C1_2_COLUMN).setValue("0000000000");
+        cells.get(C1_3_ROW , C1_3_COLUMN).setValue(Objects.toString(insOffice.getInsuranceMasterInformation().getOfficeOrganizeNumber().getHealthInsuranceOfficeNumber2().isPresent() ? insOffice.getInsuranceMasterInformation().getOfficeOrganizeNumber().getHealthInsuranceOfficeNumber2().get().v() : "", ""));
+        cells.get(C1_4_ROW , C1_4_COLUMN).setValue(Objects.toString(insOffice.getInsuranceMasterInformation().getHealthInsuranceOfficeNumber().isPresent() ? insOffice.getInsuranceMasterInformation().getHealthInsuranceOfficeNumber().get() : "", ""));
         cells.get(C1_5_ROW , C1_5_COLUMN).setValue(Objects.toString(company.postCd, ""));
         cells.get(C1_6_ROW , C1_6_COLUMN).setValue(Objects.toString(company.add_1, ""));
         cells.get(C1_7_ROW , C1_7_COLUMN).setValue(Objects.toString(company.add_2, ""));
@@ -125,19 +124,21 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
     }
 
     private void fillDataEmployee(Cells cells, InsLossDataExport data){
-        cells.get(C2_1_ROW , C2_1_COLUMN).setValue(Objects.toString("", ""));
-        cells.get(C2_2_ROW , C2_2_COLUMN).setValue(Objects.toString("", ""));
-        cells.get(C2_3_ROW , C2_3_COLUMN).setValue(Objects.toString("", ""));
-        cells.get(C2_4_ROW , C2_4_COLUMN).setValue(Objects.toString("", ""));
-        cells.get(C2_5_ROW , C2_5_COLUMN).setValue(Objects.toString("", ""));
+        cells.get(C2_1_ROW , C2_1_COLUMN).setValue(Objects.toString(data.getHealInsNumber(), ""));
+        cells.get(C2_2_ROW , C2_2_COLUMN).setValue(Objects.toString(data.getPersonName(), ""));
+        cells.get(C2_3_ROW , C2_3_COLUMN).setValue(Objects.toString(data.getPersonNameKana(), ""));
+        cells.get(C2_4_ROW , C2_4_COLUMN).setValue(Objects.toString(data.getOldName(), ""));
+        cells.get(C2_5_ROW , C2_5_COLUMN).setValue(Objects.toString(data.getOldName(), ""));
         cells.get(C2_2_ROW , C2_2_COLUMN).setValue(Objects.toString("", ""));
         cells.get(C2_8_ROW , C2_8_COLUMN).setValue(Objects.toString("", ""));
-        cells.get(C2_9_ROW , C2_9_COLUMN).setValue(Objects.toString("", ""));
-        cells.get(C2_12_ROW , C2_12_COLUMN).setValue(Objects.toString("", ""));
+        cells.get(C2_9_ROW , C2_9_COLUMN).setValue(Objects.toString(data.getBirthDay(), ""));
+        //cells.get(C2_10_ROW, C2_10_COLUMN)
+        cells.get(C2_12_ROW , C2_12_COLUMN).setValue(Objects.toString(data.getBasicPenNumber(), ""));
         cells.get(C2_14_ROW , C2_14_COLUMN).setValue(Objects.toString("", ""));
         cells.get(C2_20_ROW , C2_20_COLUMN).setValue(Objects.toString("", ""));
         cells.get(C2_21_ROW , C2_21_COLUMN).setValue(Objects.toString("", ""));
-        cells.get(C2_22_ROW , C2_22_COLUMN).setValue(Objects.toString("", ""));
+        cells.get(C2_22_ROW , C2_22_COLUMN).setValue(Objects.toString(data.getCaInsurance(), ""));
+        cells.get(C2_23_ROW , C2_23_COLUMN).setValue(Objects.toString(data.getNumRecoved(), ""));
         cells.get(C2_24_ROW , C2_24_COLUMN).setValue(Objects.toString("", ""));
     }
 

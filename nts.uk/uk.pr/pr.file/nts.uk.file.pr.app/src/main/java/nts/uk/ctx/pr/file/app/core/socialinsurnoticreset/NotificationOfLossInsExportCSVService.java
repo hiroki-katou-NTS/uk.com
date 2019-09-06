@@ -82,7 +82,7 @@ public class NotificationOfLossInsExportCSVService extends ExportService<Notific
             throw new BusinessException("Msg_37");
         }
         if(domain.getOutputFormat().get() == OutputFormatClass.PEN_OFFICE){
-            List<InsLossDataExport> healthInsLoss = socialInsurNotiCreateSetEx.getHealthInsLoss(empIds);
+            //List<InsLossDataExport> healthInsLoss = socialInsurNotiCreateSetEx.getHealthInsLoss(empIds);
             List<InsLossDataExport> welfPenInsLoss = socialInsurNotiCreateSetEx.getWelfPenInsLoss(empIds);
 			/*notificationOfLossInsCSVFileGenerator.generate(exportServiceContext.getGeneratorContext(), new LossNotificationInformation(healthInsLoss, welfPenInsLoss, socialInsurNotiCreateSet));*/
         }
