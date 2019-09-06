@@ -508,6 +508,11 @@ public class CheckFileFinder {
 						GeneralDate start = GeneralDate.fromString(period.getPeriods().get(0).getValue().toString(), "yyyy/MM/dd"); 
 						GeneralDate end = GeneralDate.fromString(period.getPeriods().get(1).getValue().toString(), "yyyy/MM/dd"); 
 						if(start.after(end)) {
+							employeeDto.getItems().stream().forEach(i ->{
+								if(i.getItemCode().equals(period.getPeriods().get(0).getItem())) {
+									i.setError(true);
+								}
+							});
 							ItemError error = new ItemError("", index, period.getPeriods().get(0).getItem(), "MsgB_2"); 
 							itemErrors.add(error);
 						}
