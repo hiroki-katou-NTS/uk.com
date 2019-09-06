@@ -187,7 +187,7 @@ module nts.uk.com.view.jmm018.b {
                 let menu = [];
                 service.findEventMenu().done(function(data: any){
                     if(data.available == false){
-                        nts.uk.ui.dialog.error({ messageId: "JMsg_JMM018_1"});
+                        nts.uk.ui.dialog.error({ messageId: "MsgJ_JMM018_1"});
                     }
                     // A422_12, A422_13, A422_14, 
                     let eventNameList = _.map(data.listHrEvent, (item: any) => new MenuName({eventId: item.eventId, eventName: item.eventName}));
