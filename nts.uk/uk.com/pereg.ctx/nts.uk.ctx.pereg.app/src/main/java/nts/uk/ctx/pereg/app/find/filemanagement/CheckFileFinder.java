@@ -32,6 +32,7 @@ import nts.gul.excel.NtsExcelHeader;
 import nts.gul.excel.NtsExcelImport;
 import nts.gul.excel.NtsExcelReader;
 import nts.gul.excel.NtsExcelRow;
+import nts.gul.text.StringUtil;
 import nts.gul.time.minutesbased.MinutesBasedTimeParser;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
@@ -699,8 +700,7 @@ public class CheckFileFinder {
 				}
 			}
 		} else {
-
-			if (!comboxKey.contains(value)) {
+			if (!comboxKey.contains(value) && !StringUtil.isNullOrEmpty(value, true)) {
 				ItemError error = new ItemError("", index, headerGrid.getItemCode(), "MsgB_2");
 				itemErrors.add(error);
 				empBody.setError(true);
