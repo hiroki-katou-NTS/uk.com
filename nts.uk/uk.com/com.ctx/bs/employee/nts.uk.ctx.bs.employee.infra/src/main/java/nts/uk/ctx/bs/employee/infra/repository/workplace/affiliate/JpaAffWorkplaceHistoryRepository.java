@@ -9,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -446,13 +447,17 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements A
 					stmt.setString(2 + i, subList.get(i));
 				}
 
-				List<AffWorkplaceHistory> affWorkplaceHistLst = new NtsResultSet(stmt.executeQuery()).getList(r -> {
+				Map<String, List<BsymtAffiWorkplaceHist>> affWorkplaceHistLst = new NtsResultSet(stmt.executeQuery()).getList(r -> {
 					BsymtAffiWorkplaceHist history = new BsymtAffiWorkplaceHist(r.getString("HIST_ID"),
 							r.getString("SID"), r.getString("CID"), r.getGeneralDate("START_DATE"),
 							r.getGeneralDate("END_DATE"));
-					return toDomain(history);
-				}).stream().collect(Collectors.toList());
-				result.addAll(affWorkplaceHistLst);
+					return history;
+				}).stream().collect(Collectors.groupingBy(c -> c.getSid()));
+				
+				if(!affWorkplaceHistLst.isEmpty()) {
+					result.addAll(affWorkplaceHistLst.entrySet().stream().map(c -> toDomainTemp(c.getValue())).collect(Collectors.toList()));
+				}
+				
 			} catch (SQLException e) {
 				throw new RuntimeException(e);
 			}

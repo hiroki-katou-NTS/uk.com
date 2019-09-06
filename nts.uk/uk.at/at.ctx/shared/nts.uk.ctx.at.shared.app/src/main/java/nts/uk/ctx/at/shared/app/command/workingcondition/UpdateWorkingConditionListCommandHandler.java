@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.app.command.workingcondition;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -8,6 +9,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
@@ -59,26 +61,34 @@ implements PeregUpdateListCommandHandler<UpdateWorkingConditionCommand>{
 			List<WorkingCondition> listHistBySid =  workingConditionRepository.getBySidsAndCid(cid, sids);
 			listHistBySids.addAll(listHistBySid);
 		}
-		cmd.stream().forEach(c ->{
-			if(c.getStartDate() != null) {
-				List<WorkingCondition> workingCondOpt = listHistBySids.stream()
-						.filter(item -> item.getEmployeeId().equals(c.getEmployeeId())).collect(Collectors.toList());
-				if (CollectionUtil.isEmpty(workingCondOpt)) {
-					errorLst.add(c.getEmployeeId());
-					return;
+		cmd.stream().forEach(c -> {
+			try {
+				if (c.getStartDate() != null) {
+					List<WorkingCondition> workingCondOpt = listHistBySids.stream()
+							.filter(item -> item.getEmployeeId().equals(c.getEmployeeId()))
+							.collect(Collectors.toList());
+					if (CollectionUtil.isEmpty(workingCondOpt)) {
+						errorLst.add(c.getEmployeeId());
+						return;
+					}
+					WorkingCondition workingCond = workingCondOpt.get(0);
+					Optional<DateHistoryItem> itemToBeUpdated = workingCond.getDateHistoryItem().stream()
+							.filter(hist -> hist.identifier().equals(c.getHistId())).findFirst();
+					if (!itemToBeUpdated.isPresent()) {
+						errorLst.add(c.getEmployeeId());
+					}
+					GeneralDate endDate = c.getEndDate() != null ? c.getEndDate() : GeneralDate.max();
+					workingCond.changeSpan(itemToBeUpdated.get(), new DatePeriod(c.getStartDate(), endDate));
+					workingCondInserts.add(workingCond);
 				}
-				WorkingCondition workingCond = workingCondOpt.get(0);
-				Optional<DateHistoryItem> itemToBeUpdated = workingCond.getDateHistoryItem().stream().filter(hist->hist.identifier().equals(c.getHistId())).findFirst();
-				if (!itemToBeUpdated.isPresent()){
-					errorLst.add(c.getEmployeeId());
-				}
-				GeneralDate endDate = c.getEndDate() !=null? c.getEndDate() : GeneralDate.max();
-				workingCond.changeSpan(itemToBeUpdated.get(), new DatePeriod(c.getStartDate(), endDate));
-				workingCondInserts.add(workingCond);
+				WorkingConditionItem workingCondItem = updateWorkingConditionCommandAssembler.fromDTO(c);
+				workingCondItems.add(workingCondItem);
+			} catch (BusinessException e) {
+				MyCustomizeException ex = new MyCustomizeException(e.getMessageId(), Arrays.asList(c.getEmployeeId()));
+				errorExceptionLst.add(ex);
 			}
-			WorkingConditionItem  workingCondItem = updateWorkingConditionCommandAssembler.fromDTO(c);
-			workingCondItems.add(workingCondItem);
-		});	
+
+		});
 		
 		if(!workingCondInserts.isEmpty()) {
 			workingConditionRepository.saveAll(workingCondInserts);

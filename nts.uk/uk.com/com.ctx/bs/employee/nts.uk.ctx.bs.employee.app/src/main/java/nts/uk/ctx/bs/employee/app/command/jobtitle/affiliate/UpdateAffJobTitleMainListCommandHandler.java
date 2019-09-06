@@ -1,6 +1,7 @@
 package nts.uk.ctx.bs.employee.app.command.jobtitle.affiliate;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -9,6 +10,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistory;
@@ -57,28 +59,35 @@ implements PeregUpdateListCommandHandler<UpdateAffJobTitleMainCommand>{
 		Map<String, List<AffJobTitleHistory>> existHistMap = affJobTitleHistoryRepository.getListBySids(cid, sids)
 				.stream().collect(Collectors.groupingBy(c -> c.getEmployeeId()));
 		command.stream().forEach(c ->{
-			if (c.getStartDate() != null){
-				List<AffJobTitleHistory> affJobTitleHistoryLst = existHistMap.get(c.getSid());
-				if(affJobTitleHistoryLst != null) {
-					AffJobTitleHistory affJobTitleHistory = affJobTitleHistoryLst.get(0);
-					Optional<DateHistoryItem> itemToBeUpdate = affJobTitleHistory.getHistoryItems().stream()
-			                .filter(h -> h.identifier().equals(c.getHistoryId()))
-			                .findFirst();
-					if (itemToBeUpdate.isPresent()){
-						affJobTitleHistory.changeSpan(itemToBeUpdate.get(), new DatePeriod(c.getStartDate(), c.getEndDate()!= null? c.getEndDate():  ConstantUtils.maxDate()));
-						immedidately.add(new AffJobTitleHistoryImmediately(affJobTitleHistory, itemToBeUpdate.get()));
-					}else {
+			try {
+				if (c.getStartDate() != null) {
+					List<AffJobTitleHistory> affJobTitleHistoryLst = existHistMap.get(c.getSid());
+					if (affJobTitleHistoryLst != null) {
+						AffJobTitleHistory affJobTitleHistory = affJobTitleHistoryLst.get(0);
+						Optional<DateHistoryItem> itemToBeUpdate = affJobTitleHistory.getHistoryItems().stream()
+								.filter(h -> h.identifier().equals(c.getHistoryId())).findFirst();
+						if (itemToBeUpdate.isPresent()) {
+							affJobTitleHistory.changeSpan(itemToBeUpdate.get(), new DatePeriod(c.getStartDate(),
+									c.getEndDate() != null ? c.getEndDate() : ConstantUtils.maxDate()));
+							immedidately
+									.add(new AffJobTitleHistoryImmediately(affJobTitleHistory, itemToBeUpdate.get()));
+						} else {
+							sidErrorLst.add(c.getSid());
+							return;
+						}
+					} else {
 						sidErrorLst.add(c.getSid());
 						return;
 					}
-				}else {
-					sidErrorLst.add(c.getSid());
-					return;
 				}
+
+				AffJobTitleHistoryItem histItem = AffJobTitleHistoryItem.createFromJavaType(c.getHistoryId(),
+						c.getSid(), c.getJobTitleId(), c.getNote());
+				histItems.add(histItem);
+			} catch (BusinessException e) {
+				MyCustomizeException ex = new MyCustomizeException(e.getMessageId(), Arrays.asList(c.getSid()));
+				errorExceptionLst.add(ex);
 			}
-			
-			AffJobTitleHistoryItem histItem = AffJobTitleHistoryItem.createFromJavaType(c.getHistoryId(), c.getSid(), c.getJobTitleId(), c.getNote());
-			histItems.add(histItem);
 		});
 		
 		if(!immedidately.isEmpty()) {
