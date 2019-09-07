@@ -64,7 +64,7 @@ implements PeregAddListCommandHandler<AddStampCardCommand>{
 		}
 
 		if(!sids.isEmpty()) {
-			result.add(new MyCustomizeException("Msg_346", sids));
+			result.add(new MyCustomizeException("Msg_1106", sids));
 		}
 		
 		if(!insertLst.isEmpty()) {

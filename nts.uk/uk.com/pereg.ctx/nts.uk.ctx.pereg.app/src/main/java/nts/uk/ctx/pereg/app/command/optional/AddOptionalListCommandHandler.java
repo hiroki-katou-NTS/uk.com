@@ -70,7 +70,7 @@ public class AddOptionalListCommandHandler extends CommandHandler<List<PeregUser
 			if (c.getItems() == null || c.getItems().isEmpty()) {
 				errorLst.add(c);
 			} else {
-				if (StringUtil.isNullOrEmpty(c.getRecordId(), true)) {
+				if (!StringUtil.isNullOrEmpty(c.getRecordId(), true)) {
 					recordIds.add(c.getRecordId());
 				}
 				addLst.add(c);

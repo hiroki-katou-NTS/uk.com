@@ -48,7 +48,7 @@ implements PeregUpdateListCommandHandler<UpdateStampCardCommand>{
 						contractCode);
 
 				if (duplicate.isPresent() && origin.isPresent() && origin.get().getStampNumber().toString() != duplicate.get().getStampNumber().toString()) {
-					errorExceptionLst.add(new MyCustomizeException("Msg_346", Arrays.asList(command.getEmployeeId())));
+					errorExceptionLst.add(new MyCustomizeException("Msg_1106", Arrays.asList(command.getEmployeeId())));
 				}else {
 					// update domain
 					StampCard stampCard = StampCard.createFromJavaType(command.getStampNumberId(), command.getEmployeeId(),

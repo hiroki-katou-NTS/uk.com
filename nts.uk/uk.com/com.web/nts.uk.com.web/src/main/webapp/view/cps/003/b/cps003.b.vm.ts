@@ -31,7 +31,8 @@ module cps003.b.vm {
                     categoryId: self.currentMode().categoryId,
                     modeUpdate: self.currentMode().mode(),
                     columnChange: self.currentMode().columnChange,
-                    sids:  self.currentMode().sids
+                    sids:  self.currentMode().sids,
+                    baseDate: moment.utc(self.currentMode().systemDate, "YYYY/MM/DD").toISOString()
                 };
             
             if(_.isEmpty(self.currentFile().filename())){

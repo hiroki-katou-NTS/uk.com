@@ -168,7 +168,7 @@ public class CheckFileFinder {
 			List<EmployeeDataMngInfo> employees = this.getEmployeeIds(rows, params.getSids());
 			Periods period = peroidByCategory.get(ctgOptional.get().getCategoryCode().toString());
 			//GridDto dto = this.getGridInfo(excelReader, headerDb, ctgOptional.get(), employees, period == null? null: period.periods.get(0).getItem(), updateMode); 
-			GridDto dto = this.getGridInfo(excelReader, headerDb, ctgOptional.get(), employees, period, updateMode, itemAuths); 
+			GridDto dto = this.getGridInfo(excelReader, headerDb, ctgOptional.get(), employees, period, updateMode, itemAuths, params.getBaseDate()); 
 			//受入するファイルの列に、メイン画面の「個人情報一覧（A3_001）」に表示している可変列で更新可能な項目が１件でも存在するかチェックする
 			//check xem các header của item trong file import có khớp với màn hình A 
 			if (colums.size() == 0) {
@@ -289,7 +289,7 @@ public class CheckFileFinder {
 	 */
 	private GridDto getGridInfo(NtsExcelImport excelReader, List<GridEmpHead> headerReal, PersonInfoCategory category,
 			List<EmployeeDataMngInfo> employees, Periods period, UpdateMode updateMode,
-			List<PersonInfoItemAuth> itemAuths) {
+			List<PersonInfoItemAuth> itemAuths, GeneralDate baseDate) {
 		String sid = AppContexts.user().employeeId();
 		List<ItemRowDto> itemSelfDtos =  new ArrayList<>();
 		List<ItemRowDto> itemOtherDtos =  new ArrayList<>();
@@ -312,7 +312,7 @@ public class CheckFileFinder {
 		headerReal.removeAll(headerRemain);
 		index = 0;
 		PeregQueryByListEmp lquery = PeregQueryByListEmp.createQueryLayout(category.getPersonInfoCategoryId(),
-				category.getCategoryCode().v(), GeneralDate.today(),
+				category.getCategoryCode().v(), baseDate,
 				employees.stream().map(m -> new PeregEmpInfoQuery(m.getPersonId(), m.getEmployeeId())).collect(Collectors.toList()));
 		
 		List<EmpMainCategoryDto> layouts = layoutProcessor.getCategoryDetailByListEmp(lquery);
@@ -353,14 +353,13 @@ public class CheckFileFinder {
 				if(itemDtos.size() > 0) {
 					pdt.getItems().addAll(itemDtos);
 				}
-				// đếm số item bị lỗi của một employee
-				List<ItemRowDto>  itemErrorLst = pdt.getItems().stream().filter(x -> x.isError() == true).collect(Collectors.toList());
-				pdt.setNumberOfError(itemErrorLst.size());
+
 				//lấy thông tin recordId và actionRole
 				if(items.isEmpty()) {
 					pdt.getItems().removeAll(pdt.getItems());
 					itr.remove();
 				}
+
 				items.stream().forEach(item -> {
 					pdt.getItems().stream().forEach(itemDto -> {
 						if (itemDto.getItemCode().equals(item.getItemCode())) {
@@ -379,6 +378,17 @@ public class CheckFileFinder {
 							if(endDateLst.contains(itemDto.getItemCode())&& (item.getActionRole() == ActionRole.VIEW_ONLY || item.getActionRole() == ActionRole.HIDDEN)) {
 								itemDto.setValue(item.getValue());
 							}
+							
+							if(category.isHistoryCategory()) {
+									if (itemDto.getItemCode().equals(period.getPeriods().get(0).getItem())) {
+										period.getPeriods().get(0).setValue(itemDto.getValue());
+									}
+									
+									if (itemDto.getItemCode().equals(period.getPeriods().get(1).getItem())) {
+										period.getPeriods().get(1).setValue(item.getValue());
+									}
+							}
+							
 							if(itemDto.getDataType() == 0) return; 
 							Object valueDb = item.getValue() == null? null: this.convertValue(itemDto.getDataType(), item.getValue().toString());
 							Object valueExcel = itemDto.getValue() == null? null: this.convertValue(itemDto.getDataType(), itemDto.getValue().toString());
@@ -427,7 +437,30 @@ public class CheckFileFinder {
 				});		
 				
 			});
-
+			
+			if(category.isHistoryCategory()) {
+				pdt.getItems().stream().forEach(itemDto ->{
+					if(itemDto.getItemCode().equals(period.getPeriods().get(0).getItem())) {
+						if(period.getPeriods().get(0).getValue() != null && period.getPeriods().get(1).getValue() != null) {
+							try {
+								GeneralDate start = GeneralDate.fromString(period.getPeriods().get(0).getValue().toString(), "yyyy/MM/dd"); 
+								GeneralDate end = GeneralDate.fromString(period.getPeriods().get(1).getValue().toString(), "yyyy/MM/dd"); 
+								if(start.after(end)) {
+									itemDto.setError(true);
+									ItemError error = new ItemError(itemDto.getRecordId(), index, period.getPeriods().get(0).getItem(), "Msg_861"); 
+									itemErrors.add(error);
+								}
+							}catch(Exception e) {
+								System.out.println("invalid format date");
+							}
+						}
+					}
+				});
+			}
+			// đếm số item bị lỗi của một employee
+			List<ItemRowDto>  itemErrorLst = pdt.getItems().stream().filter(x -> x.isError() == true).collect(Collectors.toList());
+			pdt.setNumberOfError(itemErrorLst.size());
+			
 			pdt.getItems().sort(Comparator.comparing(ItemRowDto::getItemOrder, Comparator.naturalOrder()));
 			if (isSelfAuth == true) {
 				List<ItemRowDto> itemSelfDtoTmps = pdt.getItems().stream()
