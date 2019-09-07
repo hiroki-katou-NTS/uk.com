@@ -40,4 +40,6 @@ public class UrlResult {
 	public String webAppID;
 	public CheckChangePassDto changePw;
 	
+	public boolean smpDevice;
+	
 }

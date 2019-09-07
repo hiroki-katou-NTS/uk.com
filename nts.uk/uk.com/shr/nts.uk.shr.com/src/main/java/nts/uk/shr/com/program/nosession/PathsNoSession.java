@@ -34,6 +34,7 @@ public class PathsNoSession implements PathsToCheckCsrf {
 			"/view/spr/index.xhtml",
 			"/view/url/index.xhtml",
 			"/view/ccg/033/index.xhtml",
+			"/ccg/033/a",
 			ProgramsManager.CCG007A.getPPath(),
 			ProgramsManager.CCG007B.getPPath(),
 			ProgramsManager.CCG007C.getPPath(),
@@ -43,7 +44,8 @@ public class PathsNoSession implements PathsToCheckCsrf {
 			ProgramsManager.CCG007G.getPPath(),
 			ProgramsManager.CCG007H.getPPath(),
 			ProgramsManager.CCG007I.getPPath(),
-			ProgramsManager.KDW003A.getPPath()
+			ProgramsManager.KDW003A.getPPath(),
+			ProgramsManager.CCGS33.getPPath()
 			);
 
 	
