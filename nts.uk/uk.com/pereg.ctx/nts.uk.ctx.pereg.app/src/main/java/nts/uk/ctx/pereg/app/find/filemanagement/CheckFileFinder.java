@@ -536,25 +536,6 @@ public class CheckFileFinder {
 			if(employeeDto.getEmployeeCode()!= null) {
 				employeeDtos.add(employeeDto);
 			}
-			if(category.isHistoryCategory()) {
-				if(period.getPeriods().get(0).getValue() != null && period.getPeriods().get(1).getValue() != null) {
-					try {
-						GeneralDate start = GeneralDate.fromString(period.getPeriods().get(0).getValue().toString(), "yyyy/MM/dd"); 
-						GeneralDate end = GeneralDate.fromString(period.getPeriods().get(1).getValue().toString(), "yyyy/MM/dd"); 
-						if(start.after(end)) {
-							employeeDto.getItems().stream().forEach(i ->{
-								if(i.getItemCode().equals(period.getPeriods().get(0).getItem())) {
-									i.setError(true);
-								}
-							});
-							ItemError error = new ItemError("", index, period.getPeriods().get(0).getItem(), "Msg_861"); 
-							itemErrors.add(error);
-						}
-					}catch(Exception e) {
-						System.out.println("invalid format date");
-					}
-				}
-			}
 			index++;
 		}
 
