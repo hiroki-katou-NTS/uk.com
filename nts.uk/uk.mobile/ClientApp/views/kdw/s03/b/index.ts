@@ -1,5 +1,6 @@
 import { Vue, _ } from '@app/provider';
 import { component, Prop } from '@app/core/component';
+import { KdwS03DComponent } from 'views/kdw/s03/d';
 
 @component({
     name: 'kdws03b',
@@ -13,7 +14,10 @@ import { component, Prop } from '@app/core/component';
             valueType: 'TimePoint'
         }
     },
-    constraints: []
+    constraints: [],
+    components: {
+        'kdws03d': KdwS03DComponent
+    },
 })
 export class KdwS03BComponent extends Vue {
     @Prop({ default: () => ({ employeeName: '', date: new Date(), data: {}, contentType: {} }) })
@@ -56,6 +60,14 @@ export class KdwS03BComponent extends Vue {
 
     public getItemValue(value: RowData) {
         return value.value ? value.value : null;
+    }
+
+    public openDScreen() {
+        let self = this;
+        self.$modal('kdws03d', { employeeName: 'testName', date: new Date() }, { type : 'dropback' } )
+        .then((v) => {
+
+        });
     }
 }
 

@@ -23,7 +23,7 @@
     </div>
   </div>
   <div class="row uk-bg-light-coral mb-4">
-    <div class="btn w-100 text-left">
+    <div class="btn w-100 text-left" v-on:click="openDScreen">
       <div class="col-11 pl-0 pr-0 d-inline-block uk-text-quote">
         {{'KDWS03_36' | i18n}}
       </div>
@@ -70,7 +70,7 @@
       </div>
     </div>
   </div>
-  <div class="row">
+  <div class="row mt-4">
     <div class="col-3"></div>
     <div>
       <nts-checkbox v-model="checked1s" v-bind:value="2">{{'KDWS03_37' | i18n}} </nts-checkbox>
