@@ -2,6 +2,7 @@ import { _, Vue } from '@app/provider';
 import { component, Watch } from '@app/core/component';
 import { FixTableComponent } from '@app/components/fix-table';
 import { TimeWithDay, TimePoint, TimeDuration } from '@app/utils/time';
+import { KdwS03BComponent } from 'views/kdw/s03/b';
 
 @component({
     name: 'kdws03a',
@@ -11,7 +12,8 @@ import { TimeWithDay, TimePoint, TimeDuration } from '@app/utils/time';
     resource: require('./resources.json'),
     constraints: [],
     components: {
-        'fix-table': FixTableComponent
+        'fix-table': FixTableComponent,
+        'kdws03b': KdwS03BComponent
     },
     validations: {
         yearMonth: {
@@ -297,8 +299,20 @@ export class Kdws03AComponent extends Vue {
         if (id == '') {
             return;
         }
+        let self = this;
         let param1 = _.find(this.displayDataLst, (x) => x.id == id);
         let param2 = this.displayHeaderLst;
+
+        if (self.displayFormat == 0) {
+
+        } else {
+
+        }
+
+        self.$modal('kdws03b', { employeeName: 'testName', date: new Date(), data :param1.rowData, contentType: param2 }, { type : 'dropback' } )
+        .then((v) => {
+
+        });
     }
 }
 const servicePath = {
