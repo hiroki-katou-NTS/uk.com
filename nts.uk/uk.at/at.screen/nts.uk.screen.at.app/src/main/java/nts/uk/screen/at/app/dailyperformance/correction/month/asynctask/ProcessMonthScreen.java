@@ -1,5 +1,7 @@
 package nts.uk.screen.at.app.dailyperformance.correction.month.asynctask;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -53,7 +55,7 @@ public class ProcessMonthScreen {
 											param.employeeTarget.equals(sId) ? param.employmentCode
 													: processor.getEmploymentCode(companyId,
 															param.dateRange.getEndDate(), param.employeeTarget),
-											dailyPerformanceDto, param.autBussCode)));
+											dailyPerformanceDto, param.autBussCode, param.isLoadAfterCalc() ? param.getDomainMonthOpt() : Optional.empty())));
 			if (param.employeeTarget.equals(sId)) {
 				// 社員に対応する締め期間を取得する
 				DatePeriod period = closureService.findClosurePeriod(param.employeeTarget, param.dateRange.getEndDate());
@@ -66,7 +68,8 @@ public class ProcessMonthScreen {
 				} else {
 					// checkIndenityMonth
 					screenDto.setIndentityMonthResult(checkIndentityMonth
-							.checkIndenityMonth(new IndentityMonthParam(companyId, sId, GeneralDate.today())));
+							.checkIndenityMonth(new IndentityMonthParam(companyId, sId, GeneralDate.today(),
+									param.displayFormat, Optional.ofNullable(param.getIdentityUseSetDto())), param.getStateParam()));
 					// 対象日の本人確認が済んでいるかチェックする
 					screenDto.checkShowTighProcess(param.displayFormat, true);
 				}

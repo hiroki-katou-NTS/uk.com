@@ -23,9 +23,4 @@ public class IndentityMonthParam {
 	
 	public Optional<IdentityProcessUseSetDto> identityUseSetDto;
 
-	public IndentityMonthParam(String companyId, String employeeId, GeneralDate dateRefer) {
-		this.companyId = companyId;
-		this.employeeId = employeeId;
-		this.dateRefer = dateRefer;
-	}
 }

@@ -19,9 +19,11 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.ch
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyQueryProcessor;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyResult;
+import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
 import nts.uk.screen.at.app.dailyperformance.correction.GetDataDaily;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ApprovalConfirmCache;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.EmpAndDate;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.IdentityProcessUseSetDto;
 import nts.uk.screen.at.app.dailyperformance.correction.identitymonth.CheckIndentityMonth;
 import nts.uk.screen.at.app.dailyperformance.correction.identitymonth.IndentityMonthParam;
 import nts.uk.screen.at.app.dailyperformance.correction.identitymonth.IndentityMonthResult;
@@ -45,6 +47,9 @@ public class DPLoadVerProcessor {
 	
 	@Inject
 	private ConfirmStatusActualDayChange confirmStatusActualDayChange;
+	
+	@Inject
+	private DailyPerformanceScreenRepo repo;
 
 	public LoadVerDataResult loadVerAfterCheckbox(LoadVerData loadVerData) {
 		LoadVerDataResult result = new LoadVerDataResult();
@@ -79,8 +84,9 @@ public class DPLoadVerProcessor {
 				// screenDto.checkShowTighProcess(displayFormat, true);
 			} else {
 				// checkIndenityMonth
+				Optional<IdentityProcessUseSetDto> identityProcessDtoOpt = repo.findIdentityProcessUseSet(companyId);
 				result.setIndentityMonthResult(checkIndentityMonth
-						.checkIndenityMonth(new IndentityMonthParam(companyId, sId, GeneralDate.today())));
+						.checkIndenityMonth(new IndentityMonthParam(companyId, sId, GeneralDate.today(), loadVerData.getDisplayFormat(), identityProcessDtoOpt), loadVerData.getStateParam()));
 				// 対象日の本人確認が済んでいるかチェックする
 			}
 		} else {

@@ -19,8 +19,6 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.finddata.IFindDataDCR
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.IdentityProcessUseSet;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.IdentityProcessUseSetRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
-import nts.uk.shr.com.time.calendar.date.ClosureDate;
-
 /**
  * RQ586 : 月の実績の確認状況を取得する
  * 
@@ -39,9 +37,7 @@ public class ConfirmStatusMonthly {
 	@Inject
 	private ConfirmInfoAcqProcess confirmInfoAcqProcess;
 
-	public Optional<StatusConfirmMonthDto> getConfirmStatusMonthly(String companyId, Integer closureId,
-			ClosureDate closureDate, List<String> listEmployeeId, YearMonth yearmonthInput,
-			List<MonthlyModifyResultDto> results) {
+	public Optional<StatusConfirmMonthDto> getConfirmStatusMonthly(String companyId, List<String> listEmployeeId, YearMonth yearmonthInput) {
 		iFindDataDCRecord.clearAllStateless();
 		// ドメインモデル「本人確認処理の利用設定」を取得する
 		Optional<IdentityProcessUseSet> identityProcessUseSet = identityProcessUseSetRepo.findByKey(companyId);

@@ -20,6 +20,7 @@ import nts.uk.ctx.at.record.dom.adapter.company.SyCompanyRecordAdapter;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.ClosurePeriod;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.GetClosurePeriod;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.confirmstatusmonthly.AvailabilityAtr;
+import nts.uk.ctx.at.record.dom.workrecord.actualsituation.confirmstatusmonthly.ConfirmStatusMonthly;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.confirmstatusmonthly.ConfirmStatusResult;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.confirmstatusmonthly.ReleasedAtr;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.confirmstatusmonthly.StatusConfirmMonthDto;
@@ -55,6 +56,9 @@ public class CheckIndentityMonth {
 	
 	@Inject
 	private ClosureRepository closureRepository;
+	
+	@Inject
+	private ConfirmStatusMonthly confirmStatusMonthly;
 
 	// 月の本人確認をチェックする
 	public IndentityMonthResult checkIndenityMonth(IndentityMonthParam param) {
@@ -141,10 +145,9 @@ public class CheckIndentityMonth {
 			 return new IndentityMonthResult(false, false, true);
 		}
 		
-		
 		//TODO: [No.586]月の実績の確認状況を取得する（NEW）
-		
-		Optional<StatusConfirmMonthDto> statusOpt = Optional.empty();
+		Optional<StatusConfirmMonthDto> statusOpt = confirmStatusMonthly.getConfirmStatusMonthly(param.getCompanyId(),
+				Arrays.asList(param.employeeId), YearMonth.of(stateParam.getDateInfo().getYearMonth()));
 		if(!statusOpt.isPresent())  return new IndentityMonthResult(false, false, true);
 		List<ConfirmStatusResult> listConfirmStatus = statusOpt.get().getListConfirmStatus();
 		ConfirmStatusResult confirmResult = listConfirmStatus.stream()
