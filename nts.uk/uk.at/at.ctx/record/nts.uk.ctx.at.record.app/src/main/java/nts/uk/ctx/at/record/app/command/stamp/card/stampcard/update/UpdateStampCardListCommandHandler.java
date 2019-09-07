@@ -14,7 +14,6 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.pereg.app.command.MyCustomizeException;
 import nts.uk.shr.pereg.app.command.PeregUpdateListCommandHandler;
 @Stateless
@@ -49,8 +48,7 @@ implements PeregUpdateListCommandHandler<UpdateStampCardCommand>{
 						contractCode);
 
 				if (duplicate.isPresent() && origin.isPresent() && origin.get().getStampNumber().toString() != duplicate.get().getStampNumber().toString()) {
-					errorExceptionLst.add(new MyCustomizeException(TextResource.localize("Msg_346",
-							Arrays.asList(command.getStampNumber())), Arrays.asList(command.getEmployeeId())));
+					errorExceptionLst.add(new MyCustomizeException("Msg_346", Arrays.asList(command.getEmployeeId())));
 				}else {
 					// update domain
 					StampCard stampCard = StampCard.createFromJavaType(command.getStampNumberId(), command.getEmployeeId(),

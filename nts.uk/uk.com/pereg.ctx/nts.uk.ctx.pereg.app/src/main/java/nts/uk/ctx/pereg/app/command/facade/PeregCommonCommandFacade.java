@@ -307,7 +307,7 @@ public class PeregCommonCommandFacade {
 			List<MyCustomizeException> myEx =  handler.handlePeregCommand(containerAdds);
 			if(!myEx.isEmpty()) result.addAll(myEx);
 		    // xử lí cho những item optional
-			List<PeregUserDefAddCommand> commandForUserDef = containerAdds.stream().map(c -> { return new PeregUserDefAddCommand(c.getPersonId(), c.getEmployeeId(), c.getInputs().getCategoryCd(), c.getInputs());}).collect(Collectors.toList());
+			List<PeregUserDefAddCommand> commandForUserDef = containerAdds.stream().map(c -> { return new PeregUserDefAddCommand(c.getPersonId(), c.getEmployeeId(), c.getInputs().getRecordId(), c.getInputs());}).collect(Collectors.toList());
 			this.userDefAdd.handle(commandForUserDef);
 		}
 

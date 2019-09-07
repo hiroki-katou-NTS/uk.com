@@ -15,6 +15,7 @@ import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.gul.text.IdentifierUtil;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.pereg.dom.person.additemdata.category.EmInfoCtgDataRepository;
 import nts.uk.ctx.pereg.dom.person.additemdata.category.EmpInfoCtgData;
 import nts.uk.ctx.pereg.dom.person.additemdata.item.EmpInfoItemData;
@@ -52,17 +53,30 @@ public class AddOptionalListCommandHandler extends CommandHandler<List<PeregUser
 	@Override
 	protected void handle(CommandHandlerContext<List<PeregUserDefAddCommand>> context) {
 		val command = context.getCommand();
+		String cid = AppContexts.user().companyId();
+		List<String> itemIds = new ArrayList<>();
+		List<String> recordIds = new ArrayList<>();
 		List<PeregUserDefAddCommand> errorLst = new ArrayList<>();
-		List<PeregUserDefAddCommand> addLst = new ArrayList<>();
+		List<PeregUserDefAddCommand> addLst = new ArrayList<>();		
+		
+		command.stream().forEach(c ->{
+			c.getItems().forEach(item  ->{
+				itemIds.add(item.definitionId());
+			});
+		});
+		
+		// do itemId của các employee trong cung một công ty giống nhau  - ta sẽ lấy nhân viên đầu tiên để lấy ra được itemId
 		command.stream().forEach(c -> {
 			if (c.getItems() == null || c.getItems().isEmpty()) {
 				errorLst.add(c);
 			} else {
+				if (StringUtil.isNullOrEmpty(c.getRecordId(), true)) {
+					recordIds.add(c.getRecordId());
+				}
 				addLst.add(c);
 			}
 		});
-
-		String cid = AppContexts.user().companyId();
+		
 
 		// Do tất cả nhân viên đều có categoryCd giống nhau nên mình sẽ lấy categoryCd của nhân viên đầu tiên trong list
 		Optional<PersonInfoCategory> ctg = perInfoCategoryRepositoty
@@ -71,101 +85,131 @@ public class AddOptionalListCommandHandler extends CommandHandler<List<PeregUser
 		if (!ctg.isPresent()) {
 			throw new RuntimeException("invalid PersonInfoCategory");
 		}
-
+		
 		// In case of person
 		if (ctg.get().getPersonEmployeeType() == PersonEmployeeType.PERSON) {
-			insertPerson(ctg.get(), addLst);
-
+			List<PersonInfoItemData> itemUpdate = perInfoItemDataRepository.getAllInfoItemByRecordIdsAndItemIds(itemIds.stream().distinct().collect(Collectors.toList()), recordIds);
+			insertPerson(ctg.get(), addLst, itemUpdate);
 		} else if (ctg.get().getPersonEmployeeType() == PersonEmployeeType.EMPLOYEE){
-			insertEmployee(ctg.get(), addLst);
+			List<EmpInfoItemData> itemUpdate = empInfoItemDataRepository.getAllInfoItemByRecordId(itemIds.stream().distinct().collect(Collectors.toList()), recordIds);
+			insertEmployee(ctg.get(), addLst, itemUpdate);
 		}
 
 	}
 	
-	private void insertPerson(PersonInfoCategory ctg, List<PeregUserDefAddCommand> addLst) {
-		Map<String, String> recordIds = addLst.stream().collect(
-				Collectors.toMap(PeregUserDefAddCommand::getPersonId, PeregUserDefAddCommand::getRecordId));
-
-		// In case of optional category
-		recordIds.entrySet().stream().forEach(c -> {
-			if (StringUtils.isEmpty(c.getValue()) || c.getValue() == null) {
-				c.setValue(IdentifierUtil.randomUniqueId());
-			}
-		});
-
-		// Insert category data
-		List<PerInfoCtgData> ctgData = recordIds.entrySet().stream().map(c -> {
-			return new PerInfoCtgData(c.getValue(), ctg.getPersonInfoCategoryId(), c.getKey());
-		}).collect(Collectors.toList());
+	private void insertPerson(PersonInfoCategory ctg, List<PeregUserDefAddCommand> addLst, List<PersonInfoItemData> itemUpdates) {
 		
-		if(!ctg.isFixed() && ctgData.size() > 0) {
-			perInfoCtgDataRepository.addAll(ctgData);				
-		}
-		
-		List<PersonInfoItemData> items = new ArrayList<>();
+		List<PersonInfoItemData> insertLst = new ArrayList<>();
+		List<PersonInfoItemData> updateLst = new ArrayList<>();
 		
 		addLst.stream().forEach(c -> {
-			String recordId = recordIds.get(c.getPersonId());
 			c.getItems().stream().forEach(item -> {
+				Optional<PersonInfoItemData> itemUpdateOpt = itemUpdates.stream().filter(update -> update.getPerInfoItemDefId().equals(item.definitionId()) && update.getRecordId().equals(c.getRecordId())).findFirst();
 				// Insert item data
 				DataState state = null;
 				state = OptionalUtil.createDataState(item);
 				if (state != null) {
-					PersonInfoItemData itemData = new PersonInfoItemData(item.definitionId(), recordId, state);
-					items.add(itemData);
+					PersonInfoItemData itemData = new PersonInfoItemData(item.definitionId(), c.getRecordId(), state);
+					if(itemUpdateOpt.isPresent()) {
+						updateLst.add(itemData);
+					}else {
+						Optional<PersonInfoItemData> insertOpt = insertLst.stream()
+								.filter(insert -> insert.getPerInfoItemDefId().equals(item.definitionId())
+										&& insert.getRecordId().equals(c.getRecordId()))
+								.findFirst();
+						if(!insertOpt.isPresent()) {
+							insertLst.add(itemData);
+						}
+					}
 				}
-
 			});
 		});
 		
-		if(items.size() > 0) {
-			perInfoItemDataRepository.addAll(items);
+		if(insertLst.size() > 0) {
+			Map<String, String> recordIds = addLst.stream().collect(
+					Collectors.toMap(PeregUserDefAddCommand::getPersonId, PeregUserDefAddCommand::getRecordId));
+
+			// In case of optional category
+			recordIds.entrySet().stream().forEach(c -> {
+				if (StringUtils.isEmpty(c.getValue()) || c.getValue() == null) {
+					c.setValue(IdentifierUtil.randomUniqueId());
+				}
+			});
+
+			// Insert category data
+			List<PerInfoCtgData> ctgData = recordIds.entrySet().stream().map(c -> {
+				return new PerInfoCtgData(c.getValue(), ctg.getPersonInfoCategoryId(), c.getKey());
+			}).collect(Collectors.toList());
+			
+			if(!ctg.isFixed() && ctgData.size() > 0) {
+				perInfoCtgDataRepository.addAll(ctgData);				
+			}
+			
+			
+			perInfoItemDataRepository.addAll(insertLst);
+		}
+		
+		
+		if(updateLst.size() > 0) {
+			perInfoItemDataRepository.updateAll(updateLst);
 		}
 		
 	}
 	
-	private void insertEmployee(PersonInfoCategory ctg, List<PeregUserDefAddCommand> addLst) {
-		Map<String, String> recordIds = addLst.stream().collect(
-				Collectors.toMap(PeregUserDefAddCommand::getEmployeeId, PeregUserDefAddCommand::getRecordId));
-		
-		// In case of optional category
-		recordIds.entrySet().stream().forEach(c -> {
-			if (StringUtils.isEmpty(c.getValue()) || c.getValue() == null) {
-				c.setValue(IdentifierUtil.randomUniqueId());
-			}
-		});
-		
-		// Insert category data
-		List<EmpInfoCtgData> ctgData = recordIds.entrySet().stream().map(c -> {
-			return new EmpInfoCtgData(c.getValue(), ctg.getPersonInfoCategoryId(), c.getKey());
-		}).collect(Collectors.toList());
-		
-		// Add emp category data
-		if(!ctg.isFixed() && ctgData.size() > 0) {
-			emInfoCtgDataRepository.addAll(ctgData);
-		}
-		
+	private void insertEmployee(PersonInfoCategory ctg, List<PeregUserDefAddCommand> addLst, List<EmpInfoItemData> itemUpdates) {
 		// Add item data
-		List<EmpInfoItemData> items = new ArrayList<>();
+		List<EmpInfoItemData> itemUpdateLst = new ArrayList<>();
+		List<EmpInfoItemData> itemInsertLst = new ArrayList<>();
 		
 		addLst.stream().forEach(c -> {
-			String recordId = recordIds.get(c.getPersonId());
 			c.getItems().stream().forEach(item -> {
+				Optional<EmpInfoItemData> itemUpdateOpt = itemUpdates.stream().filter(update -> update.getPerInfoDefId().equals(item.definitionId()) && update.getRecordId().equals(c.getRecordId())).findFirst();
 				// Insert item data
 				DataState state = null;
 				state = OptionalUtil.createDataState(item);
 				if (state != null) {
-					EmpInfoItemData itemData = new EmpInfoItemData(item.definitionId(), recordId, state);
-					items.add(itemData);
+					EmpInfoItemData itemData = new EmpInfoItemData(item.definitionId(), c.getRecordId(), state);
+					if(itemUpdateOpt.isPresent()) {
+						itemUpdateLst.add(itemData);
+					}else {
+						Optional<EmpInfoItemData> insertOpt = itemInsertLst.stream()
+								.filter(insert -> insert.getPerInfoDefId().equals(item.definitionId())
+										&& insert.getRecordId().equals(c.getRecordId()))
+								.findFirst();
+						if(!insertOpt.isPresent()) {
+							itemInsertLst.add(itemData);
+						}
+					}
 				}
-
 			});
 		});
 		
-		if(items.size() > 0) {
-			empInfoItemDataRepository.addAll(items);
+		if(itemInsertLst.size() > 0) {
+			Map<String, String> recordIds = addLst.stream().collect(
+					Collectors.toMap(PeregUserDefAddCommand::getEmployeeId, PeregUserDefAddCommand::getRecordId));
+			
+			// In case of optional category
+			recordIds.entrySet().stream().forEach(c -> {
+				if (StringUtils.isEmpty(c.getValue()) || c.getValue() == null) {
+					c.setValue(IdentifierUtil.randomUniqueId());
+				}
+			});
+			
+			// Insert category data
+			List<EmpInfoCtgData> ctgData = recordIds.entrySet().stream().map(c -> {
+				return new EmpInfoCtgData(c.getValue(), ctg.getPersonInfoCategoryId(), c.getKey());
+			}).collect(Collectors.toList());
+			
+			// Add emp category data
+			if(!ctg.isFixed() && ctgData.size() > 0) {
+				emInfoCtgDataRepository.addAll(ctgData);
+			}
+			
+			empInfoItemDataRepository.addAll(itemInsertLst);
 		}
 		
+		if(itemUpdateLst.size() > 0) {
+			empInfoItemDataRepository.updateAll(itemUpdateLst);
+		}
 	}
-
 }
