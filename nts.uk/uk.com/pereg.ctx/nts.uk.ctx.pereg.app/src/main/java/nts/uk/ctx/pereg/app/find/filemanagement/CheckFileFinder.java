@@ -880,7 +880,9 @@ public class CheckFileFinder {
 						Optional<String> string = stringContraint.validateString(value.toString());
 						if (itemSpecialLst.contains(itemDto.getItemCode())) {
 							ItemError error = validateItemOfCS0002(sid, itemDto, value.toString(), index);
-							if (error!= null) {
+							if (error != null) {
+								itemErrors.add(error);
+							} else if (string.isPresent()) {
 								itemErrors.add(error);
 							}
 							break;
@@ -902,6 +904,8 @@ public class CheckFileFinder {
 							if(value.toString() != "") {
 								 ItemError error = validateItemOfCS0002(sid, itemDto, value.toString(),  index);
 									if (error != null) {
+										itemErrors.add(error);
+									} else if (string.isPresent()) {
 										itemErrors.add(error);
 									}
 							}
