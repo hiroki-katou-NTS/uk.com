@@ -101,8 +101,8 @@ module nts.uk.at.view.kdw003.a.service {
 
     }
 
-    export function loadMonth() {
-        return nts.uk.request.ajax(paths.loadMonth);
+    export function loadMonth(param) {
+        return nts.uk.request.ajax(paths.loadMonth, param);
     }
 
     export function initParam(param) {

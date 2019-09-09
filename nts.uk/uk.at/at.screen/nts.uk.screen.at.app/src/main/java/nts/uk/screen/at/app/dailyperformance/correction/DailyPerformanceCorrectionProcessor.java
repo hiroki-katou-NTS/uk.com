@@ -82,7 +82,7 @@ import nts.uk.ctx.bs.employee.pub.workplace.ResultRequest597Export;
 import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
 import nts.uk.ctx.sys.auth.dom.role.Role;
 import nts.uk.ctx.sys.auth.dom.role.RoleRepository;
-import nts.uk.screen.at.app.dailymodify.command.DailyModifyResCommandFacade;
+import nts.uk.screen.at.app.dailymodify.command.common.ProcessCommonCalc;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyQueryProcessor;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyResult;
 import nts.uk.screen.at.app.dailyperformance.correction.checkdata.ValidatorDataDailyRes;
@@ -1287,6 +1287,17 @@ public class DailyPerformanceCorrectionProcessor {
 						result.setFormatCode(formatCodeSelects.stream().collect(Collectors.toSet()));
 						result.setAutBussCode(result.getFormatCode());
 						authorityFomatDailys = repo.findAuthorityFomatDaily(companyId, formatCodeSelects);
+						if(CollectionUtil.isEmpty(authorityFomatDailys)) {
+							List<AuthorityFormatInitialDisplayDto> initialDisplayDtos = repo
+									.findAuthorityFormatInitialDisplay(companyId);
+							List<String> formatCodes = initialDisplayDtos.stream()
+									.map(x -> x.getDailyPerformanceFormatCode()).collect(Collectors.toList());
+							if (!CollectionUtil.isEmpty(formatCodes)) {
+								authorityFomatDailys = repo.findAuthorityFomatDaily(companyId, formatCodes);
+								result.setFormatCode(formatCodes.stream().collect(Collectors.toSet()));
+								result.setAutBussCode(result.getFormatCode());
+							}
+						}
 						List<BigDecimal> sheetNos = authorityFomatDailys.stream().map(x -> x.getSheetNo())
 								.collect(Collectors.toList());
 						authorityFormatSheets = sheetNos.isEmpty() ? Collections.emptyList()
@@ -1332,7 +1343,7 @@ public class DailyPerformanceCorrectionProcessor {
 					DCMessageError bundleExeption = new DCMessageError();
 					bundleExeption.setMessageId("Msg_1403");
 					screenDto.getLstData().stream()
-							.filter(DailyModifyResCommandFacade.distinctByKey(x -> x.getEmployeeId())).forEach(x -> {
+							.filter(ProcessCommonCalc.distinctByKey(x -> x.getEmployeeId())).forEach(x -> {
 								bundleExeption.setMessage(TextResource.localize("Msg_1403", x.getEmployeeCode() + " " + x.getEmployeeName()));
 								errors.add(bundleExeption);
 							});
@@ -1717,14 +1728,14 @@ public class DailyPerformanceCorrectionProcessor {
 	public DatePeriodInfo changeDateRange(DateRange dateRange, ObjectShare objectShare, String companyId, String sId,
 			DailyPerformanceCorrectionDto screenDto, Integer mode, Integer displayFormat, Boolean initScreenOther, DPCorrectionStateParam dpStateParam) {
 		
-		if (dateRange != null && !initScreenOther){
+		if (dateRange != null && (initScreenOther == null || !initScreenOther)){
 			screenDto.setEmploymentCode(getEmploymentCode(companyId, dateRange.getEndDate(), sId));
 			DatePeriodInfo dateInfo = dpStateParam.getDateInfo();
 			dateInfo.setTargetRange(dateRange);
 			return dateInfo;
 		}
 		
-		if(dateRange != null && initScreenOther) {
+		if(dateRange != null && initScreenOther != null && initScreenOther) {
 			return updatePeriod(Optional.empty(), displayFormat, sId, new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate()));
 		}
 

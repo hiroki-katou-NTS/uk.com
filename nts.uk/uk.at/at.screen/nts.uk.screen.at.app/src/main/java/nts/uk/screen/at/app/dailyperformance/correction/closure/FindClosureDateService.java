@@ -43,6 +43,7 @@ public class FindClosureDateService {
 	// 指定した年月日時点の社員の締め期間を取得する
 	public Optional<ClosurePeriod> getClosurePeriod(String employeeId, GeneralDate baseDate) {
 		Closure closure = closureService.getClosureDataByEmployee(employeeId, baseDate);
+		if(closure == null) return Optional.empty();
 		Optional<ClosurePeriod> closurePeriodOpt = closure.getClosurePeriodByYmd(baseDate);
 		return closurePeriodOpt;
 	}

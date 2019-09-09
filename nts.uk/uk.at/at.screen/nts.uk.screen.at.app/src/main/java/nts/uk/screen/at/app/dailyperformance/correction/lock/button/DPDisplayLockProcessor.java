@@ -143,7 +143,8 @@ public class DPDisplayLockProcessor {
 			// フレックス情報を表示する
 			if (listEmployeeId.get(0).equals(sId)) {
 				//checkIndenityMonth
-				result.setIndentityMonthResult(checkIndentityMonth.checkIndenityMonth(new IndentityMonthParam(companyId, sId, GeneralDate.today())));
+				result.setIndentityMonthResult(checkIndentityMonth.checkIndenityMonth(new IndentityMonthParam(companyId,
+						sId, GeneralDate.today(), displayFormat, identityProcessDtoOpt), param.getStateParam()));
 				//対象日の本人確認が済んでいるかチェックする
 				result.checkShowTighProcess(displayFormat, true);
 			}else {

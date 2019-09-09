@@ -274,6 +274,7 @@ module nts.uk.ui.mgrid {
                 if (tn.isEnable(self.features, tn.COPY)) _copie = true;
                 _$grid.mGrid("option", "errOccurred", self.errorOccurred);
                 _$grid.mGrid("option", "errResolved", self.errorResolved);
+                _$grid.mGrid("option", "errDismissed", self.errorDismissed);
             }
         }
         
@@ -2416,7 +2417,7 @@ module nts.uk.ui.mgrid {
                         let info = _vessel().checkedErrors[ei];
                         if (rData[_pk] === info.id && key === info.columnKey) {
                             info.element = td;
-                            khl.set(info, info.message, 1);
+                            khl.set(info, info.message, 1, true);
                             _vessel().checkedErrors.splice(ei, 1);
                             break;
                         }
@@ -2756,7 +2757,7 @@ module nts.uk.ui.mgrid {
                         let info = _vessel().checkedErrors[ei];
                         if (rData[_pk] === info.id && key === info.columnKey) {
                             info.element = td;
-                            khl.set(info, info.message);
+                            khl.set(info, info.message, null, true);
                             _vessel().checkedErrors.splice(ei, 1);
                             break;
                         }
@@ -5411,7 +5412,7 @@ module nts.uk.ui.mgrid {
                             if (item) content = item[controlDef.optionsText || "name"];
                         }
                         
-                        txt.innerHTML = content;
+                        txt.innerHTML = _.isNil(content) ? "" : content;
                         su.wedgeCell(_$grid[0], { rowIdx: idx, columnKey: key }, val, reset);
                         $.data($cell, v.DATA, val);
                     }
@@ -5513,7 +5514,7 @@ module nts.uk.ui.mgrid {
                         if (_.isNil(date)) date = null;
                         su.wedgeCell(_$grid[0], { rowIdx: idx, columnKey: key }, date, reset);
                         $.data($cell, v.DATA, date);
-                        $cell.innerHTML = _.isNil(txt) ? (mDate.isValid() ? mDate.format(cbx.format[0]) : (_.isNil(mDate._i) ? null : mDate._i)) : txt;
+                        $cell.innerHTML = _.isNil(txt) ? (mDate.isValid() ? mDate.format(cbx.format[0]) : (_.isNil(mDate._i) ? "" : mDate._i)) : txt;
                     }
                 }
                 
@@ -5767,15 +5768,15 @@ module nts.uk.ui.mgrid {
             removeInsertions: function() {
                 v.eliminRows(_.cloneDeep(v._encarRows).sort((a, b) => b - a));
             },
-            validate: function(lock) {
+            validate: function(lock, check) {
                 let errors = [];
                 _.forEach(_.keys(_mafollicle), k => {
                     if (k === SheetDef) return;
                     _.forEach(_mafollicle[k].dataSource, (data, i) => {
                         _.forEach(_cstifle(), c => {
                             let validator = _validators[c.key];
-                            if (!validator || _.find(_hiddenColumns, hidden => hidden === c.key)
-                                || (!lock && _.find(((_cellStates[data[_pk]] || {})[c.key] || [{ state: [] }])[0].state, st => st === color.Lock))) return; 
+                            if (!validator || _.find(_hiddenColumns, hidden => hidden === c.key) || (_.isFunction(check) && !check(data))
+                                || (!lock && _.find(((_cellStates[data[_pk]] || {})[c.key] || [{ state: [] }])[0].state, st => st === color.Lock || st === color.Disable))) return; 
                             let res = validator.probe(data[c.key], data[_pk]);
                             if (res && !res.isValid) {
                                 let err = { id: data[_pk], index: i, columnKey: c.key, message: res.errorMessage };
@@ -6685,7 +6686,7 @@ module nts.uk.ui.mgrid {
             let column = _columnsMap[coord.columnKey];
             
             if (column && _.toLower(column[0].dataType) === "number") {
-                cellValue = cellValue === "" ? null : parseFloat(cellValue);
+                cellValue = (_.isNil(cellValue) || cellValue === "") ? null : parseFloat(cellValue);
             }
            
             if (reset) {
@@ -7251,6 +7252,11 @@ module nts.uk.ui.mgrid {
                     if (!result.isValid) {
                         khl.set(cell, result.errorMessage);
                     }
+                    
+                    if (khl._infobulle) {
+                        ti.remove(khl._infobulle);
+                        dkn.closeDD(khl._infobulle, true);
+                    }
                 }
                 
                 formatted = su.format(col[0], data);
@@ -7311,6 +7317,11 @@ module nts.uk.ui.mgrid {
                         if (!result.isValid) {
                             khl.set(cell, result.errorMessage);
                         }
+                        
+                        if (khl._infobulle) {
+                            ti.remove(khl._infobulle);
+                            dkn.closeDD(khl._infobulle, true);
+                        }
                     }
                     
                     formatted = su.format(pointCol[0], c);
@@ -7347,7 +7358,7 @@ module nts.uk.ui.mgrid {
                 }
                 
                 if (coupe) {
-                    if (cell) {
+                    if (cell && !cell.classList.contains(color.Disable) && !cell.classList.contains(color.Lock)) {
                         coord = ti.getCellCoord(cell);
                         cell.innerHTML = "";
                         sess.o.push({ coord: coord, value: _dataSource[coord.rowIdx][coord.columnKey] });
@@ -9957,10 +9968,17 @@ module nts.uk.ui.mgrid {
                 return rowId === e.rowId && key === e.columnKey;
             });
             
-            if (removed.length > 0 && errors.length === 0) {
-                let resolved = _$grid.mGrid("option", "errResolved");
-                if (_.isFunction(resolved)) {
-                    resolved();
+            if (removed.length > 0) {
+                if (errors.length === 0) {
+                    let resolved = _$grid.mGrid("option", "errResolved");
+                    if (_.isFunction(resolved)) {
+                        resolved();
+                    }
+                } else {
+                    let dismiss = _$grid.mGrid("option", "errDismissed");
+                    if (_.isFunction(dismiss)) {
+                        dismiss();
+                    }
                 }
             }
         }
@@ -9968,7 +9986,7 @@ module nts.uk.ui.mgrid {
         /**
          * Set.
          */
-        export function set(cell: any, message: string, setType?: any) {
+        export function set(cell: any, message: string, setType?: any, rendered:? any) {
             if (!cell || ((!setType || setType === 1) && (!cell.element || any(cell)))) return;
             if (!setType || setType === 1) {
                 let $cell = cell.element;
@@ -9990,9 +10008,9 @@ module nts.uk.ui.mgrid {
             if (_.isFunction(notice)) {
                 if (_.isNil(cell.index)) {
                     let index = _.findIndex(_dataSource, d => d[_pk] === cell.id);
-                    if (index !== -1) notice(cell.id, cell.columnKey, _dataSource[index]);
+                    if (index !== -1) notice(cell.id, cell.columnKey, _dataSource[index], rendered);
                 } else {
-                    notice(cell.id, cell.columnKey, _dataSource[cell.index]);
+                    notice(cell.id, cell.columnKey, _dataSource[cell.index], rendered);
                 }
             }
         }
@@ -10424,6 +10442,22 @@ module nts.uk.ui.mgrid {
             }
             
             return cloneArr;
+        }
+         
+        export function forEach(arr: Array<any>, loop: any) {
+            if (_.isNil(arr)) return;
+            if (_.isObject(arr) && !_.isArray(arr)) {
+                let keys = _.keys(arr);
+                for (let i = 0; i < keys.length; i++) {
+                    if (loop(arr[keys[i]], keys[i]) === false) break;    
+                }
+                
+                return;
+            }
+            
+            for (let i = 0; i < arr.length; i++) {
+                if (loop(arr[i], i) === false) break;
+            }
         }
          
         export function isZero(value: any, name: any) {

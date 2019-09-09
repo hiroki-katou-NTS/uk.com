@@ -9,7 +9,7 @@ FixTableComponentの主な機能は:
 `FixTableComponent`は普通のコンポーネントではないからインポートしなければ使えないです。
 
 ```typescript
-import { FixTableComponent } from '@app/components';
+import { FixTableComponent } from '@app/components/fix-table';
 
 @component({
     components: {

@@ -90,7 +90,7 @@ nts.uk.ui.windows.sub.modeless("/view/sample/subwindow/subwindow.xhtml").onClose
 														<b>Return:</b> ScreenWindow<br/>
 														<b>Agruments:</b><br/>
 														<i>url: string</i> Relative URL usually start with "/view"<br/>
-														<i>option: object (optional)</i> Dialog option extend from <a class="color" href="http://api.jqueryui.com/dialog">JqueryUI Dialog option</a><br/>
+														<i>option: object</i> Please see bellow for Option Object.
 													</td>
 												</tr>
 												<tr>
@@ -100,11 +100,69 @@ nts.uk.ui.windows.sub.modeless("/view/sample/subwindow/subwindow.xhtml").onClose
 														<b>Return:</b> ScreenWindow<br/>
 														<b>Agruments:</b><br/>
 														<i>url: string</i> Relative URL usually start with "/view"<br/>
-														<i>option: object (optional)</i> Dialog option extend from <a class="color" href="http://api.jqueryui.com/dialog">JqueryUI Dialog option</a><br/>
+														<i>option: object</i> Please see bellow for Option Object.
 													</td>
 												</tr>
 											</tbody>
 										</table>
+										
+										<h2>The Option Object</h2>
+										<table class="table">
+                                            <colgroup>
+                                                <col width="200px" />
+                                            </colgroup>
+                                            <thead>
+                                                <tr>
+                                                    <th><h4>Property</h4></th>
+                                                    <th><h4>Type</h4></th>
+                                                    <th><h4>Default</h4></th>
+                                                    <th><h4>Description</h4></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>autoResize</td>
+                                                    <td>Boolean</td>
+                                                    <td>True</td>
+                                                    <td>
+                                                        If set to true, the dialog will be auto resized when the window's size change.
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>resizable</td>
+                                                    <td>Boolean</td>
+                                                    <td>False</td>
+                                                    <td>
+                                                        If set to true, the dialog will be resizable.
+                                                    </td>
+                                                </tr>
+                                                 <tr>
+                                                    <td>width</td>
+                                                    <td>Number</td>
+                                                    <td>300</td>
+                                                    <td>
+                                                        The width of the dialog, in pixels.
+                                                    </td>
+                                                </tr>
+                                                 <tr>
+                                                    <td>height</td>
+                                                    <td>Number</td>
+                                                    <td>Auto</td>
+                                                    <td>
+                                                        The height of the dialog.
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        
+                                        <div style="margin-top: 20px">
+                                            There is another way to set width and height of a dialog.
+                                            <br/>
+                                            Define a object with name is <b>dialogSize</b> and properties are <b>width</b> and <b>height</b> in global context of dialog.
+                                            <br/>
+                                            <br/>
+                                            <i>Note: The way that set width and height to Option Object will be given priority</i>
+                                        </div>
 									</article>
 								</div>
 							</div>

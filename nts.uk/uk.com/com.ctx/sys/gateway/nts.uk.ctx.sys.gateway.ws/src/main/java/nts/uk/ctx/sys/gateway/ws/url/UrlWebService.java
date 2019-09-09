@@ -37,6 +37,7 @@ import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.SDelAtr;
 import nts.uk.ctx.sys.gateway.dom.mail.UrlExecInfoRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.context.DeviceInfo;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.program.ProgramsManager;
 import nts.uk.shr.com.url.UrlExecInfo;
@@ -87,7 +88,7 @@ public class UrlWebService {
 		Map<String, String> result = new HashMap<>();
 		GeneralDateTime systemDateTime = GeneralDateTime.now();
 		
-		// URLパラメータの存在チェック
+		//URLパラメータの存在チェック(Check param URL)
 		if(Strings.isBlank(urlID)){
 			throw new BusinessException("");
 		}
@@ -97,11 +98,11 @@ public class UrlWebService {
 		if(!opUrlExecInfo.isPresent()){
 			throw new BusinessException("");
 		}
-		
-		// システム日時が「埋込URL実行情報.有効期限」を超えていないことを確認する
+		DeviceInfo device = AppContexts.deviceInfo();
+		//システム日時が「埋込URL実行情報.有効期限」を超えていないことを確認する (So sánh sysDate với EXpirationDate)
 		UrlExecInfo urlExecInfoExport = opUrlExecInfo.get();
 		if(urlExecInfoExport.getExpiredDate().before(systemDateTime)){
-			// record login
+			//アルゴリズム「ログイン記録」を実行する２ (Ghi log)
 			String employeeCD = Strings.isNotBlank(urlExecInfoExport.getScd()) ? urlExecInfoExport.getScd() + " " : "";
 			String loginID = Strings.isNotBlank(urlExecInfoExport.getLoginId()) ? urlExecInfoExport.getLoginId() + " " : "";
 			loginRecordRegistService.loginRecord(
@@ -115,10 +116,11 @@ public class UrlWebService {
 							employeeCD + loginID + TextResource.localize("Msg_1474") + " " + TextResource.localize("Msg_1095"), 
 							urlExecInfoExport.getSid()), 
 					urlExecInfoExport.getCid());
+			//メッセージ（#Msg_1095）を表示する（有効期間エラー）(Msg_1095: Lỗi kỳ hạn hiệu lực)
 			throw new BusinessException("Msg_1095");
 		}
 		
-		// アルゴリズム「埋込URL実行契約セット」を実行する
+		//アルゴリズム「埋込URL実行契約セット」を実行する (set contract)
 		String contractCD = urlExecInfoExport.getContractCd();
 		if(Strings.isBlank(contractCD)){
 			contractCD = "000000000000";
@@ -152,7 +154,8 @@ public class UrlWebService {
 			    urlExecInfoExport.getScd(),
 				result,
 				webAppID,
-				changePw);
+				changePw,
+				device.isSmartPhone());
 	}
 	
 	private Contract executionContractSet(String contractCD, UrlExecInfo urlExecInfoExport){

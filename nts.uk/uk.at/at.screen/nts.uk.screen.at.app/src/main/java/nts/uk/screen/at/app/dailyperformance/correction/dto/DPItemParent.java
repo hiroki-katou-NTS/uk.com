@@ -3,6 +3,7 @@ package nts.uk.screen.at.app.dailyperformance.correction.dto;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -11,7 +12,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
+import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyRecordWorkDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.month.DPMonthValue;
+import nts.uk.screen.at.app.dailyperformance.correction.month.asynctask.ParamCommonAsync;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -59,4 +62,8 @@ public class DPItemParent {
 	private boolean checkDailyChange;
 	
 	private ApprovalConfirmCache approvalConfirmCache;
+	
+	private Optional<MonthlyRecordWorkDto> domainMonthOpt = Optional.empty();
+	
+	private ParamCommonAsync paramCommonAsync;
 }
