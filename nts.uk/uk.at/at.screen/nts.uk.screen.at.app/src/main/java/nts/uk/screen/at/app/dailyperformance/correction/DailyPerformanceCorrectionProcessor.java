@@ -1284,8 +1284,7 @@ public class DailyPerformanceCorrectionProcessor {
 							throw new BusinessException(DPText.SCREEN_KDW003);
 						}
 					} else {
-						result.setFormatCode(formatCodeSelects.stream().collect(Collectors.toSet()));
-						result.setAutBussCode(result.getFormatCode());
+						
 						authorityFomatDailys = repo.findAuthorityFomatDaily(companyId, formatCodeSelects);
 						if(CollectionUtil.isEmpty(authorityFomatDailys)) {
 							List<AuthorityFormatInitialDisplayDto> initialDisplayDtos = repo
@@ -1296,8 +1295,12 @@ public class DailyPerformanceCorrectionProcessor {
 								authorityFomatDailys = repo.findAuthorityFomatDaily(companyId, formatCodes);
 								result.setFormatCode(formatCodes.stream().collect(Collectors.toSet()));
 								result.setAutBussCode(result.getFormatCode());
+								formatCodeSelects = formatCodes;
 							}
 						}
+						
+						result.setFormatCode(formatCodeSelects.stream().collect(Collectors.toSet()));
+						result.setAutBussCode(result.getFormatCode());
 						List<BigDecimal> sheetNos = authorityFomatDailys.stream().map(x -> x.getSheetNo())
 								.collect(Collectors.toList());
 						authorityFormatSheets = sheetNos.isEmpty() ? Collections.emptyList()
