@@ -787,7 +787,7 @@ public class CheckFileFinder {
 						break;
 					}
 
-					obj = new StringConstraint( 0, type, stringDto.getStringItemLength());
+					obj = new StringConstraint( 0, type, (type == StringCharType.ANY_HALF_WIDTH || type == StringCharType.KATAKANA)? stringDto.getStringItemLength()/2: stringDto.getStringItemLength());
 					contraintList.put(c.getItemCode(), obj);
 					break;
 				case 2:
@@ -879,11 +879,14 @@ public class CheckFileFinder {
 					} else {
 						Optional<String> string = stringContraint.validateString(value.toString());
 						if (itemSpecialLst.contains(itemDto.getItemCode())) {
-							ItemError error = validateItemOfCS0002(sid, itemDto, value.toString(), index);
-							if (error != null) {
-								itemErrors.add(error);
+							ItemError errorSpace = validateItemOfCS0002(sid, itemDto, value.toString(), index);
+							if (errorSpace != null) {
+								itemErrors.add(errorSpace);
 							} else if (string.isPresent()) {
-								itemErrors.add(error);
+								ItemError stringError = new ItemError(sid, "", index, itemDto.getItemCode(),
+										TextResource.localize(string.get(), Arrays.asList(gridHead.getItemName(),
+										String.valueOf(stringContraint.getMaxLenght()))));
+								itemErrors.add(stringError);
 							}
 							break;
 						} else {
@@ -902,11 +905,14 @@ public class CheckFileFinder {
 						Optional<String> string = stringContraint.validateString(value.toString());
 						if (itemSpecialLst.contains(itemDto.getItemCode())) {
 							if(value.toString() != "") {
-								 ItemError error = validateItemOfCS0002(sid, itemDto, value.toString(),  index);
-									if (error != null) {
-										itemErrors.add(error);
+								 ItemError errorSpace = validateItemOfCS0002(sid, itemDto, value.toString(),  index);
+									if (errorSpace != null) {
+										itemErrors.add(errorSpace);
 									} else if (string.isPresent()) {
-										itemErrors.add(error);
+										ItemError stringError = new ItemError(sid, "", index, itemDto.getItemCode(),
+												TextResource.localize(string.get(), Arrays.asList(gridHead.getItemName(),
+												String.valueOf(stringContraint.getMaxLenght()))));
+										itemErrors.add(stringError);
 									}
 							}
 							break;
