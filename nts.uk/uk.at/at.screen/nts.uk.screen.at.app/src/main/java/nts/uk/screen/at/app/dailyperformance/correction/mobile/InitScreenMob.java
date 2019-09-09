@@ -226,9 +226,19 @@ public class InitScreenMob {
 		// 表示項目を制御する（スマホ）
 		DisplayItem disItem = processor.getDisplayItems(null, new ArrayList<>(), companyId, screenDto, listEmployeeId,
 				false, dailyPerformanceDto);
+		if(disItem == null || !disItem.getErrors().isEmpty()) {
+			if(disItem != null) screenDto.setErrors(disItem.getErrors());
+			setStateParam(screenDto, resultPeriod, displayFormat, false);
+			return screenDto;
+		}
 		DPControlDisplayItem dPControlDisplayItem = processor.getItemIdNames(disItem, false);
 		screenDto.setLstControlDisplayItem(dPControlDisplayItem);
 
+		Map<Integer, DPAttendanceItem> mapDP = screenDto.getLstControlDisplayItem().getMapDPAttendance();		
+		// disable cell
+		screenDto.markLoginUser(sId);
+		screenDto.createAccessModifierCellState(mapDP);
+		
 		// 日次項目の取得
 		// 日別実績の取得
 		List<DailyModifyResult> results = new ArrayList<>();
@@ -262,6 +272,8 @@ public class InitScreenMob {
 		Map<Pair<String, GeneralDate>, ApprovalStatusActualResult> mapApprovalResults = approvalResults.stream().collect(Collectors.toMap(x -> Pair.of(x.getEmployeeId(), x.getDate()), x -> x, (x, y) -> x));
 
 
+		List<WorkInfoOfDailyPerformanceDto> workInfoOfDaily = repo.getListWorkInfoOfDailyPerformance(listEmployeeId,
+				dateRange);
 		// 提出済の申請の取得
 		Map<String, Boolean> disableSignMap = new HashMap<>();
 		Map<String, String> appMapDateSid = getApplication(listEmployeeId, dateRange, disableSignMap);
@@ -360,6 +372,13 @@ public class InitScreenMob {
 				processCellData(NAME_EMPTY, NAME_NOT_FOUND, screenDto, dPControlDisplayItem, mapGetName,
 						codeNameReasonMap, itemValueMap, data, lockDaykWpl, dailyRecEditSetsMap, null);
 				lstData.add(data);
+				Optional<WorkInfoOfDailyPerformanceDto> optWorkInfoOfDailyPerformanceDto = workInfoOfDaily.stream()
+						.filter(w -> w.getEmployeeId().equals(data.getEmployeeId())
+								&& w.getYmd().equals(data.getDate()))
+						.findFirst();
+				if (optWorkInfoOfDailyPerformanceDto.isPresent()
+						&& optWorkInfoOfDailyPerformanceDto.get().getState() == CalculationState.No_Calculated)
+					screenDto.setAlarmCellForFixedColumn(data.getId(), displayFormat);
 			}
 		}
 		screenDto.setLstData(lstData);

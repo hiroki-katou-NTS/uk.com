@@ -1,7 +1,8 @@
 import { _, Vue } from '@app/provider';
-import { component, Watch } from '@app/core/component';
+import { component, Watch, Prop } from '@app/core/component';
 import { FixTableComponent } from '@app/components/fix-table';
-import { TimeWithDay, TimePoint, TimeDuration } from '@app/utils/time';
+import { TimeDuration } from '@app/utils/time';
+import { storage } from '@app/utils';
 
 @component({
     name: 'kdws03a',
@@ -15,11 +16,14 @@ import { TimeWithDay, TimePoint, TimeDuration } from '@app/utils/time';
     },
     validations: {
         yearMonth: {
-            required: false
+            required: true
         },
     }
 })
 export class Kdws03AComponent extends Vue {
+    @Prop({default: 0})
+    public screenMode: number;
+
     public title: string = 'Kdws03A';
     public displayFormat: any = '0';
     public lstDataSourceLoad: Array<any> = [];
@@ -33,7 +37,7 @@ export class Kdws03AComponent extends Vue {
     public displayDataLst: Array<any> = [];
     public displayHeaderLst: Array<any> = [];
     public displaySumLst: any = {};
-    public hasErrorBuss: boolean = false;
+    public displayDataLstEx: Array<any> = [];
     public lstCellDisByLock: Array<any> = [];
     public lstEmployee: Array<any> = [];
     public yearMonth: number = 0;
@@ -43,6 +47,10 @@ export class Kdws03AComponent extends Vue {
     public selectedEmployee: string = '';
     public selectedDate: Date = new Date();
     public resetTable: number = 0;
+    public previousState: string = '';
+    public nextState: string = '';
+    public itemStart: number = 0;
+    public itemEnd: number = 0;
 
     @Watch('yearMonth')
     public changeYearMonth(value: any) {
@@ -60,6 +68,22 @@ export class Kdws03AComponent extends Vue {
         });
     }
 
+    @Watch('selectedEmployee')
+    public changeEmployee(value: any, valueOld: any) {
+        this.startPage();
+        if (_.isNil(valueOld)) {
+            return;
+        }
+    }
+
+    @Watch('actualTimeSelectedCode')
+    public changeDateRange(value: any, valueOld: any) {
+        this.startPage();
+        if (_.isNil(valueOld)) {
+            return;
+        }
+    }
+
     get dateRanger() {
         let self = this;
         if (!_.isNil(self.timePeriodAllInfo)) {
@@ -75,6 +99,13 @@ export class Kdws03AComponent extends Vue {
         if (this.$route.query.displayformat == '0' || this.$route.query.displayformat == '1') {
             this.displayFormat = this.$route.query.displayformat;
         }
+
+        if (this.screenMode == 0) {
+            this.pgName = this.displayFormat == '0' ? 'name1' : 'name2';
+        } else {
+            this.pgName = this.displayFormat == '0' ? 'name3' : 'name4';
+        }
+
         this.$auth.user.then((user: null | { employeeCode: string }) => {
             this.selectedEmployee = user.employeeCode;
         });
@@ -100,7 +131,7 @@ export class Kdws03AComponent extends Vue {
 
         let param = {
             changePeriodAtr: false,
-            screenMode: 0,
+            screenMode: self.screenMode,
             errorRefStartAtr: false,
             initDisplayDate: null,
             employeeID: self.selectedEmployee,
@@ -120,15 +151,14 @@ export class Kdws03AComponent extends Vue {
                 let messageId = 'Msg_1342';
                 if (dataInit.errorInfomation == DCErrorInfomation.APPROVAL_NOT_EMP) {
                     messageId = 'Msg_916';
-                    self.hasErrorBuss = true;
                 } else if (dataInit.errorInfomation == DCErrorInfomation.ITEM_HIDE_ALL) {
                     messageId = 'Msg_1452';
-                    self.hasErrorBuss = true;
                 } else if (dataInit.errorInfomation == DCErrorInfomation.NOT_EMP_IN_HIST) {
                     messageId = 'Msg_1543';
-                    self.hasErrorBuss = true;
                 }
-                this.$modal.error({ messageId });
+                this.$modal.error({ messageId }).then(() => {
+                    this.$goto('ccg008a');
+                });
             } else if (!_.isEmpty(dataInit.errors)) {
                 let errors = [];
                 _.forEach(dataInit.errors, (error) => {
@@ -141,6 +171,15 @@ export class Kdws03AComponent extends Vue {
                 // pending
             } else {
                 this.processMapData(result.data);
+                storage.local.setItem('dailyCorrectionState', {
+                    screenMode: self.screenMode,
+                    displayFormat: self.displayFormat,
+                    selectedEmployee: self.selectedEmployee,
+                    lstEmployee: self.lstEmployee,
+                    dateRange: self.displayFormat == '0' ?
+                        (!_.isNil(self.dateRanger) ? { startDate: self.$dt.fromString(self.dateRanger.startDate), endDate: self.$dt.fromString(self.dateRanger.endDate) } : null) :
+                        { startDate: self.selectedDate, endDate: self.selectedDate }
+                });
                 this.$mask('hide');
             }
         }).catch((res: any) => {
@@ -185,33 +224,50 @@ export class Kdws03AComponent extends Vue {
         _.remove(self.displayHeaderLst);
         _.remove(self.displaySumLst);
 
+        // create header data
         let headers = (_.filter(self.optionalHeader, (o) => o.hidden == false));
         headers.forEach((header: any) => {
+            let setting = _.find(data.lstControlDisplayItem.columnSettings, (x) => x.columnKey == header.key)
             self.displayHeaderLst.push({
                 key: header.key,
                 headerText: header.headerText,
                 color: header.color,
-                constraint: header.constraint
+                constraint: header.constraint,
+                typeFormat: setting.typeFormat
             });
         });
 
+        // create body data
         self.lstDataSourceLoad.forEach((rowDataSrc: any) => {
             let rowData = [];
             headers.forEach((header: any) => {
                 if (_.has(rowDataSrc, header.key)) {
-                    rowData.push({ key: header.key, value: rowDataSrc[header.key] });
+                    rowData.push({ 
+                        key: header.key, 
+                        value: rowDataSrc[header.key] });
                 } else {
-                    rowData.push({ key: header.key, groupKey: header.group[1].key, value: rowDataSrc[header.group[1].key] });
+                    rowData.push({ 
+                        key: header.key, 
+                        groupKey: header.group[1].key, 
+                        value: rowDataSrc[header.group[1].key] });
                 }
             });
 
             if (self.displayFormat == '0') {
-                self.displayDataLst.push({ rowData, date: rowDataSrc.date, dateDetail: rowDataSrc.dateDetail, id: rowDataSrc.id });
+                self.displayDataLst.push({ 
+                    rowData, 
+                    date: rowDataSrc.date, 
+                    dateDetail: rowDataSrc.dateDetail, id: rowDataSrc.id });
             } else {
-                self.displayDataLst.push({ rowData, employeeName: rowDataSrc.employeeName, employeeId: rowDataSrc.employeeId, id: rowDataSrc.id });
+                self.displayDataLst.push({ 
+                    rowData, 
+                    employeeName: rowDataSrc.employeeName, 
+                    employeeId: rowDataSrc.employeeId, 
+                    id: rowDataSrc.id });
             }
         });
 
+        // set cell color
         self.displayDataLst.forEach((row: any) => {
             let states = _.filter(self.cellStates, (x) => x.rowId == row.id);
             row.rowData.forEach((cell: any) => {
@@ -222,29 +278,60 @@ export class Kdws03AComponent extends Vue {
                 }
             });
             if (!_.isNil(_.find(states, (x) => x.columnKey == 'date'))) {
-                row.dateColor = _.find(states, (x) => x.columnKey == 'date').state[0];
+                row.dateColor = '';
+                let classArray = _.find(states, (x) => x.columnKey == 'date').state;
+                _.forEach(classArray, (x) => row.dateColor = row.dateColor + ' ' + x);
             }
         });
 
-        if (self.lstDataSourceLoad.length < 6) {
-            for (let i = 1; i <= (6 - self.lstDataSourceLoad.length); i++) {
-                let rowData = [];
-                headers.forEach((header: any) => {
-                    rowData.push({ key: header.key, value: '' });
-                });
-                if (self.displayFormat == '0') {
+        // fill blank row when no data
+        if (self.displayFormat == 0) {
+            if (self.lstDataSourceLoad.length < 6) {
+                for (let i = 1; i <= (6 - self.lstDataSourceLoad.length); i++) {
+                    let rowData = [];
+                    headers.forEach((header: any) => {
+                        rowData.push({ key: header.key, value: '' });
+                    });
                     self.displayDataLst.push({ rowData, date: '', id: '' });
-                } else {
-                    self.displayDataLst.push({ rowData, employeeName: '', id: '' });
                 }
+            }
+        } else {
+            
+            if (self.displayDataLst.length <= 6) {
+                if (self.displayDataLst.length == 0) {
+                    self.itemStart = 0;
+                    self.itemEnd = 0;
+                    self.previousState = '';
+                    self.nextState = '';
+                } else {
+                    self.itemStart = 1;
+                    self.itemEnd = self.displayDataLst.length;
+                    self.previousState = '';
+                    self.nextState = '';
+                }
+                self.displayDataLstEx = self.displayDataLst.slice();
+                for (let i = 1; i <= (6 - self.displayDataLst.length); i++) {
+                    let rowData = [];
+                    headers.forEach((header: any) => {
+                        rowData.push({ key: header.key, value: '' });
+                    });
+                    self.displayDataLstEx.push({ rowData, employeeName: '', id: '' });
+                }
+            } else {
+                self.displayDataLstEx = _.slice(self.displayDataLst, 0, 6);
+                self.itemStart = 1;
+                self.itemEnd = 6;
+                self.previousState = '';
+                self.nextState = 'button-active';
             }
         }
 
+        // create sum row
         let sumTimeKey = _.map((_.filter(data.lstControlDisplayItem.columnSettings, (o) => o.typeFormat == 5)), (x) => x.columnKey);
         let sumNumKey = _.map((_.filter(data.lstControlDisplayItem.columnSettings, (o) => o.typeFormat == 2 || o.typeFormat == 3)), (x) => x.columnKey);
         headers.forEach((header: any) => {
             if (_.includes(sumTimeKey, header.key)) {
-                self.displaySumLst[header.key] = '00:00';
+                self.displaySumLst[header.key] = '0:00';
             } else if (_.includes(sumNumKey, header.key)) {
                 self.displaySumLst[header.key] = 0;
             } else {
@@ -263,6 +350,7 @@ export class Kdws03AComponent extends Vue {
                 }
             });
         });
+
         self.resetTable++;
     }
 
@@ -299,6 +387,36 @@ export class Kdws03AComponent extends Vue {
         }
         let param1 = _.find(this.displayDataLst, (x) => x.id == id);
         let param2 = this.displayHeaderLst;
+    }
+
+    public nextPage() {
+        if (this.nextState == '') {
+            return;
+        }
+        this.itemStart = this.itemStart + 6;
+        if (this.displayDataLst.length - this.itemEnd > 6) {
+            this.itemEnd = this.itemEnd + 6;
+            this.nextState = 'button-active';
+            this.displayDataLstEx = _.slice(this.displayDataLst, this.itemStart - 2, 6);
+        } else {
+            this.itemEnd = this.displayDataLst.length;
+            this.nextState = '';
+            this.displayDataLstEx = _.slice(this.displayDataLst, this.displayDataLst.length - this.itemEnd);
+        }
+        this.previousState = 'button-active';
+    }
+
+    public previousPage() {
+        if (this.previousState == '') {
+            return;
+        }
+        this.itemEnd = this.itemEnd - 6;
+        this.itemStart = this.itemStart - 6;
+        this.displayDataLstEx = _.slice(this.displayDataLst, this.itemStart - 2, 6);
+        if (this.itemStart == 1) {
+            this.previousState = '';
+        }
+        this.previousState = 'button-active';
     }
 }
 const servicePath = {

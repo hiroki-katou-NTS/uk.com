@@ -28,11 +28,13 @@
         display: none;
     }
     .color-sunday {
-        background-color: #fabf8f !important;
-        color: #FF0000 !important;
+        color: #FF2D2D !important;
     }   
     .color-saturday {
-        background-color: #8bd8ff !important;
-        color: #0000FF !important;
+        color: #0086EA !important;
+    }
+    .button-active {
+        font-weight: bold;;
+        color: #0000FF;
     }
 }
