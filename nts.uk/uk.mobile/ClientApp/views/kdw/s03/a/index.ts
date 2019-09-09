@@ -229,7 +229,7 @@ export class Kdws03AComponent extends Vue {
         // create header data
         let headers = (_.filter(self.optionalHeader, (o) => o.hidden == false));
         headers.forEach((header: any) => {
-            let setting = _.find(data.lstControlDisplayItem.columnSettings, (x) => x.columnKey == header.key)
+            let setting = _.find(data.lstControlDisplayItem.columnSettings, (x) => x.columnKey == header.key);
             self.displayHeaderLst.push({
                 key: header.key,
                 headerText: header.headerText,
