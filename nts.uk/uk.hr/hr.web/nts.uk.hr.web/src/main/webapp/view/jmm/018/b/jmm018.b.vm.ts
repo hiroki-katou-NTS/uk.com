@@ -16,13 +16,14 @@ module nts.uk.com.view.jmm018.b {
             listMenuOper: KnockoutObservableArray<MenuOper> = ko.observableArray([]);
             // list item con bị disable, không được lưu vào db
             listNotSave: KnockoutObservableArray<MenuOper> = ko.observableArray([]);
+            setHeight: KnockoutObservable<number> = ko.observable(window.innerHeight-370);
             constructor(){
                 let self = this;
                 nts.uk.ui.guide.operateCurrent('guidance/guideOperate', {screenGuideParam :[{programId:'JMM018',screenId:'A'},{programId:'JMM017',screenId:'B'}]}, 
                 (programId, screenId) => {
                     if (programId === "JMM018" && screenId === "A") {
                         return "tabpanel-1";
-                    } 
+                    }
                 }, Page.SIDEBAR);
                 self.columns = ko.observableArray([
                                                     { headerText: getText('JMM018_A422_4'), key: 'programId', dataType: "string", hidden: true },
@@ -137,8 +138,14 @@ module nts.uk.com.view.jmm018.b {
                                                                     useNotice: query.rowData.useNotice
                                                                 }))
                         }
-                     });
-                     
+                    });
+                    $(window).resize(function() {
+                          var height = window.innerHeight;
+                          $("#treegrid").igTreeGrid({
+                              height: height - 350
+                          });
+//                            setTimeout(() => {$("#treegrid").igTreeGrid("dataBind");}, 0);
+                    });                   
                  });
                 
                  $("#treegrid").bind("igcontrolcreated", function(evt, query?: any) {
@@ -153,7 +160,8 @@ module nts.uk.com.view.jmm018.b {
                                     $("#treegrid").ntsTreeView("disableRows", disable);
                                 }
                             }                            
-                        });    
+                        }); 
+                         
                     });
                  });     
                 
