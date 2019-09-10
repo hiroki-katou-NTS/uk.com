@@ -49,6 +49,8 @@ public class InsLossDataExport {
 
     private String qualifiDistin;
 
+    private String continReemAfterRetirement;
+
     private String isMoreEmp;
 
     private String basicPenNumber;
@@ -58,5 +60,11 @@ public class InsLossDataExport {
     private String personNameKana;
 
     private String oldName;
+
+    private String birthDay;
+
+    private String endDate;
+
+    private String healInsNumber;
 
 }

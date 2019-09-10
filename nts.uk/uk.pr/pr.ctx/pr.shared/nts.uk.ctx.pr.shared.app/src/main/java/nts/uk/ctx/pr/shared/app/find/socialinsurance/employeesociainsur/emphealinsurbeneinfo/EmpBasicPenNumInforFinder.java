@@ -19,7 +19,7 @@ public class EmpBasicPenNumInforFinder
     @Inject
     private EmpBasicPenNumInforRepository finder;
 
-    Optional<EmpBasicPenNumInfor> getEmpBasicPenNumInforById(String employeeId){
+    public Optional<EmpBasicPenNumInfor> getEmpBasicPenNumInforById(String employeeId){
         return finder.getEmpBasicPenNumInforById(employeeId);
     }
 

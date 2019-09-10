@@ -5,9 +5,7 @@ import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurb
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 
 @Stateless
@@ -20,7 +18,7 @@ public class MultiEmpWorkInfoFinder
     @Inject
     private MultiEmpWorkInfoRepository finder;
 
-    Optional<MultiEmpWorkInfo> getMultiEmpWorkInfoById(String employeeId){
+    public Optional<MultiEmpWorkInfo> getMultiEmpWorkInfoById(String employeeId){
         return finder.getMultiEmpWorkInfoById(employeeId);
     }
 

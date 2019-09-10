@@ -4,15 +4,18 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsuranceOffice;
+import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsuranceOfficeRepository;
+import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsurancePrefectureInformation;
+import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsurancePrefectureInformationRepository;
 import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.*;
-import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.EmpWelfarePenInsQualiInfor;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.EmpWelfarePenInsQualiInforRepository;
-import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmplHealInsurQualifiInfor;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmplHealInsurQualifiInforRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 
 @Stateless
@@ -32,6 +35,12 @@ public class NotificationOfLossInsExportCSVService extends ExportService<Notific
 
 	@Inject
 	private NotificationOfLossInsExRepository socialInsurNotiCreateSetEx;
+
+	@Inject
+	private SocialInsuranceOfficeRepository socialInsuranceOfficeRepository;
+
+	@Inject
+	private SocialInsurancePrefectureInformationRepository socialInsuranceInfor;
 
 
 	@Override
@@ -58,9 +67,6 @@ public class NotificationOfLossInsExportCSVService extends ExportService<Notific
 		if(end.before(start)) {
 			throw new BusinessException("Msg_812");
 		}
-		if(!checkHealthInsQualificationInformation(userId) && checkWelfarePenInsQualiInformation(userId)) {
-			throw new BusinessException("Msg_37");
-		}
 		if(domain.getInsuredNumber() == InsurPersonNumDivision.DO_NOT_OUPUT) {
 			throw new BusinessException("MsgQ_174", "QSI013_21");
 		}
@@ -70,22 +76,30 @@ public class NotificationOfLossInsExportCSVService extends ExportService<Notific
 		if(!domain.getFdNumber().isPresent()) {
 			throw new BusinessException("MsgQ_5", "QSI013_32");
 		}
-        EmpWelfarePenInsQualiInfor empWelfarePenInsQualiInfor = empWelfarePenInsQualiInforRepository.getEmpWelfarePenInsQualiInfor(end, empIds);
-        EmplHealInsurQualifiInfor emplHealInsurQualifiInfor= emplHealInsurQualifiInforRepository.getEmplHealInsurQualifiInfor(end, empIds);
-		if(domain.getOutputFormat().get() == OutputFormatClass.PEN_OFFICE && empWelfarePenInsQualiInfor == null && emplHealInsurQualifiInfor == null) {
+        boolean empWelfarePenInsQualiInfor = empWelfarePenInsQualiInforRepository.checkEmpWelfarePenInsQualiInfor(end, empIds);
+        boolean emplHealInsurQualifiInfor= emplHealInsurQualifiInforRepository.checkEmplHealInsurQualifiInfor(end, empIds);
+		if(domain.getOutputFormat().get() == OutputFormatClass.PEN_OFFICE && empWelfarePenInsQualiInfor && emplHealInsurQualifiInfor) {
 		    throw new BusinessException("Msg_37");
 		}
-		if(domain.getOutputFormat().get() == OutputFormatClass.HEAL_INSUR_ASSO && emplHealInsurQualifiInfor == null) {
+		if(domain.getOutputFormat().get() == OutputFormatClass.HEAL_INSUR_ASSO && emplHealInsurQualifiInfor) {
 		    throw new BusinessException("Msg_37");
         }
-        if(domain.getOutputFormat().get() == OutputFormatClass.THE_WELF_PEN && empWelfarePenInsQualiInfor == null) {
+        if(domain.getOutputFormat().get() == OutputFormatClass.THE_WELF_PEN && empWelfarePenInsQualiInfor) {
             throw new BusinessException("Msg_37");
         }
         if(domain.getOutputFormat().get() == OutputFormatClass.PEN_OFFICE){
-            List<InsLossDataExport> healthInsLoss = socialInsurNotiCreateSetEx.getHealthInsLoss(empIds);
-            List<InsLossDataExport> welfPenInsLoss = socialInsurNotiCreateSetEx.getWelfPenInsLoss(empIds);
-			/*notificationOfLossInsCSVFileGenerator.generate(exportServiceContext.getGeneratorContext(), new LossNotificationInformation(healthInsLoss, welfPenInsLoss, socialInsurNotiCreateSet));*/
+			List<SocialInsurancePrefectureInformation> infor  = socialInsuranceInfor.findByHistory();
+			List<InsLossDataExport> healthInsLoss = socialInsurNotiCreateSetEx.getHealthInsLoss(empIds, cid, start, end);
+			List<InsLossDataExport> welfPenInsLoss = socialInsurNotiCreateSetEx.getWelfPenInsLoss(empIds, cid, start, end);
+			List<SocialInsuranceOffice> socialInsuranceOffice =  socialInsuranceOfficeRepository.findByCid(cid);
+			CompanyInfor company = socialInsurNotiCreateSetEx.getCompanyInfor(cid);
+			notificationOfLossInsCSVFileGenerator.generate(exportServiceContext.getGeneratorContext(),
+					new LossNotificationInformation(healthInsLoss, welfPenInsLoss, socialInsuranceOffice, socialInsurNotiCreateSet, exportServiceContext.getQuery().getReference(), company, infor));
         }
+
+        if(domain.getOutputFormat().get() == OutputFormatClass.HEAL_INSUR_ASSO) {
+			
+		}
 
     }
 
@@ -94,13 +108,4 @@ public class NotificationOfLossInsExportCSVService extends ExportService<Notific
 		socialInsurNotiCrSetRepository.update(domain);
 	}
 
-	//社員健康保険資格情報が存在するかチェックする
-	private boolean checkHealthInsQualificationInformation(String userId){
-		return emplHealInsurQualifiInforRepository.checkHealInsurQualifiInformation(userId);
-	}
-
-	//社員健康保険資格情報が存在するかチェックする
-	private boolean checkWelfarePenInsQualiInformation(String userId){
-		return empWelfarePenInsQualiInforRepository.checkEmpWelfarePenInsQualiInfor(userId);
-	}
 }
