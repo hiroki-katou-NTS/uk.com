@@ -72,7 +72,7 @@ export class Kdws03AComponent extends Vue {
 
     @Watch('selectedEmployee')
     public changeEmployee(value: any, valueOld: any) {
-        if (_.isNil(valueOld)) {
+        if (_.isNil(valueOld) || '' == valueOld) {
             return;
         }
         this.startPage();
