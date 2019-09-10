@@ -472,12 +472,15 @@ public class AsposePersonInfoMatrixGenerator extends AsposeCellsReportGenerator 
 	 */
 	private void setHeaderStyle(Cell cell, boolean isRequired, boolean isFixed) {
 		Style style = cell.getStyle();
+		//format cell string
+		style.setNumber(49);
 		style.setPattern(BackgroundType.SOLID);
 		style.setBorder(BorderType.LEFT_BORDER, CellBorderType.THIN, Color.getBlack());
 		style.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
 		style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
 		style.setBorder(BorderType.RIGHT_BORDER, CellBorderType.THIN, Color.getBlack());
 		style.setTextWrapped(true);
+		
 		if(isFixed) {
 			style.setForegroundColor(Color.getGray());
 		}else if(!isFixed && isRequired) {
@@ -498,6 +501,8 @@ public class AsposePersonInfoMatrixGenerator extends AsposeCellsReportGenerator 
 	 */
 	private void setBodyStyle(Cell cell) {
 		Style style = cell.getStyle();
+		//format cell string
+		style.setNumber(49);
 		style.setPattern(BackgroundType.SOLID);
 		style.setBorder(BorderType.LEFT_BORDER, CellBorderType.THIN, Color.getBlack());
 		style.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
