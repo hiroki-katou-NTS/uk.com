@@ -774,7 +774,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.indentityMonth(data.indentityMonthResult);
             if (!self.hasEmployee || data.errorInfomation == DCErrorInfomation.APPROVAL_NOT_EMP) return;
             self.loadKcp009();
-            if (!_.isEmpty(data.errors) || data.errorInfomation != 0) return;
+            if (!_.isEmpty(data.errors) || data.errorInfomation != 0) {
+              self.loadFirst = false;
+              return;  
+            }
             self.extractionData();
             console.log("khoi tao Object: " + (performance.now() - startTime));
             if ((_.isEmpty(data.lstControlDisplayItem.lstHeader)) || data.errorInfomation != 0) {

@@ -364,6 +364,9 @@ public class InitScreenMob {
 		}
 		screenDto.setLstData(lstData);
 		setStateParam(screenDto, resultPeriod, displayFormat, false);
+		screenDto.setApprovalConfirmCache(new ApprovalConfirmCache(sId, listEmployeeId,
+				new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate()), 0, confirmResults,
+				approvalResults));
 		return screenDto;
 	}
 
