@@ -28210,7 +28210,7 @@ var nts;
                                             $.data($item, "value", vali);
                                             var $comboItem = dkn.createItem(vali, i[controlDef_2.optionsText], $item, controlDef_2.displayMode), $comboValue = cbx_1.my.querySelector(".mcombo-value");
                                             $item.addXEventListener(ssk.CLICK_EVT, function (evt) {
-                                                var $combo = cbx_1.my.querySelector("." + CBX_CLS);
+                                                var $combo = cbx_1.my.querySelector("." + dkn.CBX_CLS);
                                                 $comboValue.innerHTML = "";
                                                 $comboValue.appendChild($comboItem.cloneNode(true));
                                                 _.forEach(itemList_1, function (i) {
@@ -28229,8 +28229,8 @@ var nts;
                                                     }
                                                     $.data($cbxCell, lo.CBX_SELECTED_TD, value);
                                                 }
-                                                closeDD(cbx_1.dropdown);
-                                                $combo.classList.remove(CBX_ACTIVE_CLS);
+                                                dkn.closeDD(cbx_1.dropdown);
+                                                $combo.classList.remove(dkn.CBX_ACTIVE_CLS);
                                                 var coord = ti.getCellCoord($cbxCell);
                                                 su.wedgeCell(_$grid[0], { rowIdx: coord.rowIdx, columnKey: key }, value);
                                                 var sCol = _specialColumn[key];

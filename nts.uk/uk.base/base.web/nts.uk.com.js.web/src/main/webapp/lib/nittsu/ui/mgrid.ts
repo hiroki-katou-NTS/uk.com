@@ -5469,7 +5469,7 @@ module nts.uk.ui.mgrid {
                                     $comboValue = cbx.my.querySelector(".mcombo-value");
                                 
                                 $item.addXEventListener(ssk.CLICK_EVT, evt => {
-                                    let $combo = cbx.my.querySelector("." + CBX_CLS);
+                                    let $combo = cbx.my.querySelector("." + dkn.CBX_CLS);
                                     $comboValue.innerHTML = "";
                                     $comboValue.appendChild($comboItem.cloneNode(true));
                                     _.forEach(itemList, i => {
@@ -5489,8 +5489,8 @@ module nts.uk.ui.mgrid {
                                         }
                                         $.data($cbxCell, lo.CBX_SELECTED_TD, value);
                                     }
-                                    closeDD(cbx.dropdown);
-                                    $combo.classList.remove(CBX_ACTIVE_CLS);
+                                    dkn.closeDD(cbx.dropdown);
+                                    $combo.classList.remove(dkn.CBX_ACTIVE_CLS);
                                     let coord = ti.getCellCoord($cbxCell);
                                     su.wedgeCell(_$grid[0], { rowIdx: coord.rowIdx, columnKey: key }, value);
                                     let sCol = _specialColumn[key];

@@ -722,7 +722,7 @@ module cps003.a.vm {
                 };
             
             _.forEach($grid.mGrid("dataSource"), (record: Record) => {
-                if (find(self.hiddenRows, id => id === record.id)) return;
+                if (/*find(self.hiddenRows, id => id === record.id)*/ find(self.hiddenEmpIds, id => id === record.employeeId)) return;
                 matrixData.detailData.push(new GridEmployeeInfoDataSource(record, matrixData.dynamicHeader, $grid));
             });
             
@@ -1283,6 +1283,7 @@ module cps003.a.vm {
             let self = this;
             $("#grid").mGrid("showHiddenRows");
             self.hiddenRows = [];
+            self.hiddenEmpIds = [];
         }
         
         combobox(id: any, item: IColumnData, states, record: any) {

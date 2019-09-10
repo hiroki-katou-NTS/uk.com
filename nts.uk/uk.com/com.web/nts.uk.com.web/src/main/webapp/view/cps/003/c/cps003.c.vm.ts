@@ -59,6 +59,15 @@ module cps003.c.vm {
                     let $grid = $("#grid");
 //                    $grid.mGrid("validate", null, () => true);
 //                    self.validateSpecial(null, self.gridOptions.dataSource);
+                    forEach(errs, e => {
+                        if (_.isNil(e.id)) {
+                            let rec = self.initDs[e.index];
+                            if (rec) {
+                                e.id = rec.id;
+                            }            
+                        }                    
+                    });
+                    
                     if (errs && errs.length > 0) {
                         $grid.mGrid("setErrors", errs);
                     }
@@ -891,6 +900,8 @@ module cps003.c.vm {
                         let recData: Record = recId[item.recordId];
                         let regEmp = regId[recData.id];
                         
+                        updateDone.push({ rowId: item.recordId, columnKey: item.itemCode, value: recData[item.itemCode] });
+                        
                         if (!regEmp) {
                             regEmp = { rowId: item.recordId, personId: recData.personId, employeeId: recData.employeeId, employeeCd: recData.employeeCode, employeeName: recData.employeeName, order: recData.rowNumber };
                             regEmp.input = { categoryId: self.category.catId(), categoryCd: self.category.catCode(), categoryName: cateName, categoryType: cateType, recordId: recData.id, delete: false, items: [] };
@@ -1072,7 +1083,11 @@ module cps003.c.vm {
                 case ITEM_SINGLE_TYPE.TIME:
                     if (!_.isNil(value)) return { value: nts.uk.time.parseTime(value).toValue(), text: value };
                 case ITEM_SINGLE_TYPE.TIMEPOINT:
-                    if (!_.isNil(value)) return { value: nts.uk.time.parseTime(value).toValue(), text: nts.uk.time.minutesBased.clock.dayattr.create(this.value).fullText() };
+                    if (!_.isNil(value)) {
+                        let ret = { value: nts.uk.time.parseTime(value).toValue() };
+                        ret.text = nts.uk.time.minutesBased.clock.dayattr.create(ret.value).fullText;
+                        return ret;
+                    }
                 case ITEM_SINGLE_TYPE.DATE:
                     if (_.isNil(value) || (value instanceof moment && !value.isValid())) {
                         return { value: null, text: null };    

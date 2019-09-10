@@ -437,14 +437,19 @@ module cps003 {
                     });
                 }
             },
-            CS00025_IS00297: (v, id) => {
+            CS00025_IS00297: (v, id, o) => {
                 let $grid = $("#grid");
                 _.forEach(['IS00298', 'IS00299'/*, 'IS00300'*/, 'IS00301'], code => {
                     $grid.mGrid(v === "1" ? "enableNtsControlAt" : "disableNtsControlAt", id, code);
                     if (v !== "1") {
                         $grid.mGrid("clearErrors", [{ id: id, columnKey: code }]);
                     }
-                });    
+                });
+                
+                specialOffGrantSetting(v, o, "IS00295", "IS00298", "IS00296", "IS00299", "IS00300", 1);
+            },
+            CS00025_IS00299: (v, id, o) => {
+                specialOffGrantTbl(v, o, "IS00295", "IS00297", "IS00298", "IS00296", "IS00300", 1);
             },
             CS00026_IS00303: (v, id, o) => {
                 let $grid = $("#grid");
@@ -463,14 +468,19 @@ module cps003 {
                     });
                 }
             },
-            CS00026_IS00304: (v, id) => {
+            CS00026_IS00304: (v, id, o) => {
                 let $grid = $("#grid");
                 _.forEach(['IS00305', 'IS00306'/*, 'IS00307'*/, 'IS00308'], code => {
                     $grid.mGrid(v === "1" ? "enableNtsControlAt" : "disableNtsControlAt", id, code);
                     if (v !== "1") {
                         $grid.mGrid("clearErrors", [{ id: id, columnKey: code }]);
                     }
-                });    
+                });
+                
+                specialOffGrantSetting(v, o, "IS00302", "IS00305", "IS00303", "IS00306", "IS00307", 2); 
+            },
+            CS00026_IS00306: (v, id, o) => {
+                specialOffGrantTbl(v, o, "IS00302", "IS00304", "IS00305", "IS00303", "IS00307", 2);
             },
             CS00027_IS00310: (v, id, o) => {
                 let $grid = $("#grid");
@@ -489,14 +499,19 @@ module cps003 {
                     });
                 }
             },
-            CS00027_IS00311: (v, id) => {
+            CS00027_IS00311: (v, id, o) => {
                 let $grid = $("#grid");
                 _.forEach(['IS00312', 'IS00313'/*, 'IS00314'*/, 'IS00315'], code => {
                     $grid.mGrid(v === "1" ? "enableNtsControlAt" : "disableNtsControlAt", id, code);
                     if (v !== "1") {
                         $grid.mGrid("clearErrors", [{ id: id, columnKey: code }]);
                     }
-                });    
+                });  
+                
+                specialOffGrantSetting(v, o, "IS00309", "IS00312", "IS00310", "IS00313", "IS00314", 3);
+            },
+            CS00027_IS00313: (v, id, o) => {
+                specialOffGrantTbl(v, o, "IS00309", "IS00311", "IS00312", "IS00310", "IS00314", 3);
             },
             CS00028_IS00317: (v, id, o) => {
                 let $grid = $("#grid");
@@ -515,7 +530,7 @@ module cps003 {
                     });
                 }
             },
-            CS00028_IS00318: (v, id) => {
+            CS00028_IS00318: (v, id, o) => {
                 let $grid = $("#grid");
                 _.forEach(['IS00319', 'IS00320'/*, 'IS00321'*/, 'IS00322'], code => {
                     $grid.mGrid(v === "1" ? "enableNtsControlAt" : "disableNtsControlAt", id, code);
@@ -523,6 +538,11 @@ module cps003 {
                         $grid.mGrid("clearErrors", [{ id: id, columnKey: code }]);
                     }
                 });    
+                
+                specialOffGrantSetting(v, o, "IS00316", "IS00319", "IS00317", "IS00320", "IS00321", 4);
+            },
+            CS00028_IS00320: (v, id, o) => {
+                specialOffGrantTbl(v, o, "IS00316", "IS00318", "IS00319", "IS00317", "IS00321", 4);
             },
             CS00029_IS00324: (v, id, o) => {
                 let $grid = $("#grid");
@@ -541,7 +561,7 @@ module cps003 {
                     });
                 }
             },
-            CS00029_IS00325: (v, id) => {
+            CS00029_IS00325: (v, id, o) => {
                 let $grid = $("#grid");
                 _.forEach(['IS00326', 'IS00327'/*, 'IS00328'*/, 'IS00329'], code => {
                     $grid.mGrid(v === "1" ? "enableNtsControlAt" : "disableNtsControlAt", id, code);
@@ -549,6 +569,11 @@ module cps003 {
                         $grid.mGrid("clearErrors", [{ id: id, columnKey: code }]);
                     }
                 });    
+                
+                specialOffGrantSetting(v, o, "IS00323", "IS00326", "IS00324", "IS00327", "IS00328", 5);
+            },
+            CS00029_IS00327: (v, id, o) => {
+                specialOffGrantTbl(v, o, "IS00323", "IS00325", "IS00326", "IS00324", "IS00328", 5);
             },
             CS00030_IS00331: (v, id, o) => {
                 let $grid = $("#grid");
@@ -567,14 +592,19 @@ module cps003 {
                     });
                 }
             },
-            CS00030_IS00332: (v, id) => {
+            CS00030_IS00332: (v, id, o) => {
                 let $grid = $("#grid");
                 _.forEach(['IS00333', 'IS00334'/*, 'IS00335'*/, 'IS00336'], code => {
                     $grid.mGrid(v === "1" ? "enableNtsControlAt" : "disableNtsControlAt", id, code);
                     if (v !== "1") {
                         $grid.mGrid("clearErrors", [{ id: id, columnKey: code }]);
                     }
-                });    
+                }); 
+                
+                specialOffGrantSetting(v, o, "IS00330", "IS00333", "IS00331", "IS00334", "IS00335", 6);
+            },
+            CS00030_IS00334: (v, id, o) => {
+                specialOffGrantTbl(v, o, "IS00330", "IS00332", "IS00333", "IS00331", "IS00335", 6);  
             },
             CS00031_IS00338: (v, id, o) => {
                 let $grid = $("#grid");
@@ -593,7 +623,7 @@ module cps003 {
                     });
                 }
             },
-            CS00031_IS00339: (v, id) => {
+            CS00031_IS00339: (v, id, o) => {
                 let $grid = $("#grid");
                 _.forEach(['IS00340', 'IS00341'/*, 'IS00342'*/, 'IS00343'], code => {
                     $grid.mGrid(v === "1" ? "enableNtsControlAt" : "disableNtsControlAt", id, code);
@@ -601,6 +631,11 @@ module cps003 {
                         $grid.mGrid("clearErrors", [{ id: id, columnKey: code }]);
                     }
                 });    
+                
+                specialOffGrantSetting(v, o, "IS00337", "IS00340", "IS00338", "IS00341", "IS00342", 7);
+            },
+            CS00031_IS00341: (v, id, o) => {
+                specialOffGrantTbl(v, o, "IS00337", "IS00339", "IS00340", "IS00338", "IS00342", 7);
             },
             CS00032_IS00345: (v, id, o) => {
                 let $grid = $("#grid");
@@ -619,7 +654,7 @@ module cps003 {
                     });
                 }
             },
-            CS00032_IS00346: (v, id) => {
+            CS00032_IS00346: (v, id, o) => {
                 let $grid = $("#grid");
                 _.forEach(['IS00347', 'IS00348'/*, 'IS00349'*/, 'IS00350'], code => {
                     $grid.mGrid(v === "1" ? "enableNtsControlAt" : "disableNtsControlAt", id, code);
@@ -627,6 +662,11 @@ module cps003 {
                         $grid.mGrid("clearErrors", [{ id: id, columnKey: code }]);
                     }
                 });    
+                
+                specialOffGrantSetting(v, o, "IS00344", "IS00347", "IS00345", "IS00348", "IS00349", 8);
+            },
+            CS00032_IS00348: (v, id, o) => {
+                specialOffGrantTbl(v, o, "IS00344", "IS00346", "IS00347", "IS00345", "IS00349", 8);
             },
             CS00033_IS00352: (v, id, o) => {
                 let $grid = $("#grid");
@@ -645,14 +685,19 @@ module cps003 {
                     });
                 }
             },
-            CS00033_IS00353: (v, id) => {
+            CS00033_IS00353: (v, id, o) => {
                 let $grid = $("#grid");
                 _.forEach(['IS00354', 'IS00355'/*, 'IS00356'*/, 'IS00357'], code => {
                     $grid.mGrid(v === "1" ? "enableNtsControlAt" : "disableNtsControlAt", id, code);
                     if (v !== "1") {
                         $grid.mGrid("clearErrors", [{ id: id, columnKey: code }]);
                     }
-                });    
+                });
+                
+                specialOffGrantSetting(v, o, "IS00351", "IS00354", "IS00352", "IS00355", "IS00356", 9);
+            },
+            CS00033_IS00355: (v, id, o) => {
+                specialOffGrantTbl(v, o, "IS00351", "IS00353", "IS00354", "IS00352", "IS00356", 9);
             },
             CS00034_IS00359: (v, id, o) => {
                 let $grid = $("#grid");
@@ -671,7 +716,7 @@ module cps003 {
                     });
                 }
             },
-            CS00034_IS00360: (v, id) => {
+            CS00034_IS00360: (v, id, o) => {
                 let $grid = $("#grid");
                 _.forEach(['IS00361', 'IS00362'/*, 'IS00363'*/, 'IS00364'], code => {
                     $grid.mGrid(v === "1" ? "enableNtsControlAt" : "disableNtsControlAt", id, code);
@@ -679,6 +724,11 @@ module cps003 {
                         $grid.mGrid("clearErrors", [{ id: id, columnKey: code }]);
                     }
                 });    
+                
+                specialOffGrantSetting(v, o, "IS00358", "IS00361", "IS00359", "IS00362", "IS00363", 10);
+            },
+            CS00034_IS00362: (v, id, o) => {
+                specialOffGrantTbl(v, o, "IS00358", "IS00360", "IS00361", "IS00359", "IS00363", 10);
             },
             CS00035_IS00370: (v, id) => {
                 let $grid = $("#grid");
@@ -724,7 +774,7 @@ module cps003 {
                     });
                 }
             },
-            CS00049_IS00561: (v, id) => {
+            CS00049_IS00561: (v, id, o) => {
                 let $grid = $("#grid");
                 _.forEach(['IS00562', 'IS00563'/*, 'IS00564'*/, 'IS00565'], code => {
                     $grid.mGrid(v === "1" ? "enableNtsControlAt" : "disableNtsControlAt", id, code);
@@ -732,6 +782,11 @@ module cps003 {
                         $grid.mGrid("clearErrors", [{ id: id, columnKey: code }]);
                     }
                 });
+                
+                specialOffGrantSetting(v, o, "IS00559", "IS00562", "IS00560", "IS00563", "IS00564", 11);
+            },
+            CS00049_IS00563: (v, id, o) => {
+                specialOffGrantTbl(v, o, "IS00559", "IS00561", "IS00562", "IS00560", "IS00564", 11);
             },
             CS00050_IS00567: (v, id, o) => {
                 let $grid = $("#grid");
@@ -750,7 +805,7 @@ module cps003 {
                     });
                 }
             },
-            CS00050_IS00568: (v, id) => {
+            CS00050_IS00568: (v, id, o) => {
                 let $grid = $("#grid");
                 _.forEach(['IS00569', 'IS00570'/*, 'IS00571'*/, 'IS00572'], code => {
                     $grid.mGrid(v === "1" ? "enableNtsControlAt" : "disableNtsControlAt", id, code);
@@ -758,6 +813,11 @@ module cps003 {
                         $grid.mGrid("clearErrors", [{ id: id, columnKey: code }]);
                     }
                 });
+                
+                specialOffGrantSetting(v, o, "IS00566", "IS00569", "IS00567", "IS00570", "IS00571", 12);
+            },
+            CS00050_IS00570: (v, id, o) => {
+                specialOffGrantTbl(v, o, "IS00566", "IS00568", "IS00569", "IS00567", "IS00571", 12);
             },
             CS00051_IS00574: (v, id, o) => {
                 let $grid = $("#grid");
@@ -776,7 +836,7 @@ module cps003 {
                     });
                 }
             },
-            CS00051_IS00575: (v, id) => {
+            CS00051_IS00575: (v, id, o) => {
                 let $grid = $("#grid");
                 _.forEach(['IS00576', 'IS00577'/*, 'IS00578'*/, 'IS00579'], code => {
                     $grid.mGrid(v === "1" ? "enableNtsControlAt" : "disableNtsControlAt", id, code);
@@ -784,6 +844,11 @@ module cps003 {
                         $grid.mGrid("clearErrors", [{ id: id, columnKey: code }]);
                     }
                 });
+                
+                specialOffGrantSetting(v, o, "IS00573", "IS00576", "IS00574", "IS00577", "IS00578", 13);
+            },
+            CS00051_IS00577: (v, id, o) => {
+                specialOffGrantTbl(v, o, "IS00573", "IS00575", "IS00576", "IS00574", "IS00578", 13);
             },
             CS00052_IS00581: (v, id, o) => {
                 let $grid = $("#grid");
@@ -802,7 +867,7 @@ module cps003 {
                     });
                 }
             },
-            CS00052_IS00582: (v, id) => {
+            CS00052_IS00582: (v, id, o) => {
                 let $grid = $("#grid");
                 _.forEach(['IS00583', 'IS00584'/*, 'IS00585'*/, 'IS00586'], code => {
                     $grid.mGrid(v === "1" ? "enableNtsControlAt" : "disableNtsControlAt", id, code);
@@ -810,6 +875,11 @@ module cps003 {
                         $grid.mGrid("clearErrors", [{ id: id, columnKey: code }]);
                     }
                 });
+                
+                specialOffGrantSetting(v, o, "IS00580", "IS00583", "IS00581", "IS00584", "IS00585", 14);
+            },
+            CS00052_IS00584: (v, id, o) => {
+                specialOffGrantTbl(v, o, "IS00580", "IS00582", "IS00583", "IS00581", "IS00585", 14);
             },
             CS00053_IS00588: (v, id, o) => {
                 let $grid = $("#grid");
@@ -828,7 +898,7 @@ module cps003 {
                     });
                 }
             },
-            CS00053_IS00589: (v, id) => {
+            CS00053_IS00589: (v, id, o) => {
                 let $grid = $("#grid");
                 _.forEach(['IS00590', 'IS00591'/*, 'IS00592'*/, 'IS00593'], code => {
                     $grid.mGrid(v === "1" ? "enableNtsControlAt" : "disableNtsControlAt", id, code);
@@ -836,6 +906,11 @@ module cps003 {
                         $grid.mGrid("clearErrors", [{ id: id, columnKey: code }]);
                     }
                 });
+                
+                specialOffGrantSetting(v, o, "IS00587", "IS00590", "IS00588", "IS00591", "IS00592", 15);
+            },
+            CS00053_IS00591: (v, id, o) => {
+                specialOffGrantTbl(v, o, "IS00587", "IS00589", "IS00590", "IS00588", "IS00592", 15);
             },
             CS00054_IS00595: (v, id, o) => {
                 let $grid = $("#grid");
@@ -854,7 +929,7 @@ module cps003 {
                     });
                 }
             },
-            CS00054_IS00596: (v, id) => {
+            CS00054_IS00596: (v, id, o) => {
                 let $grid = $("#grid");
                 _.forEach(['IS00597', 'IS00598'/*, 'IS00599'*/, 'IS00600'], code => {
                     $grid.mGrid(v === "1" ? "enableNtsControlAt" : "disableNtsControlAt", id, code);
@@ -862,6 +937,11 @@ module cps003 {
                         $grid.mGrid("clearErrors", [{ id: id, columnKey: code }]);
                     }
                 });
+                
+                specialOffGrantSetting(v, o, "IS00594", "IS00597", "IS00595", "IS00598", "IS00599", 16);
+            },
+            CS00054_IS00598: (v, id, o) => {
+                specialOffGrantTbl(v, o, "IS00594", "IS00596", "IS00597", "IS00595", "IS00599", 16);
             },
             CS00055_IS00602: (v, id, o) => {
                 let $grid = $("#grid");
@@ -880,7 +960,7 @@ module cps003 {
                     });
                 }
             },
-            CS00055_IS00603: (v, id) => {
+            CS00055_IS00603: (v, id, o) => {
                 let $grid = $("#grid");
                 _.forEach(['IS00604', 'IS00605'/*, 'IS00606'*/, 'IS00607'], code => {
                     $grid.mGrid(v === "1" ? "enableNtsControlAt" : "disableNtsControlAt", id, code);
@@ -888,6 +968,11 @@ module cps003 {
                         $grid.mGrid("clearErrors", [{ id: id, columnKey: code }]);
                     }
                 });
+                
+                specialOffGrantSetting(v, o, "IS00601", "IS00604", "IS00602", "IS00605", "IS00606", 17);
+            },
+            CS00055_IS00605: (v, id, o) => {
+                specialOffGrantTbl(v, o, "IS00601", "IS00603", "IS00604", "IS00602", "IS00606", 17);
             },
             CS00056_IS00609: (v, id, o) => {
                 let $grid = $("#grid");
@@ -906,7 +991,7 @@ module cps003 {
                     });
                 }
             },
-            CS00056_IS00610: (v, id) => {
+            CS00056_IS00610: (v, id, o) => {
                 let $grid = $("#grid");
                 _.forEach(['IS00611', 'IS00612'/*, 'IS00613'*/, 'IS00614'], code => {
                     $grid.mGrid(v === "1" ? "enableNtsControlAt" : "disableNtsControlAt", id, code);
@@ -914,6 +999,11 @@ module cps003 {
                         $grid.mGrid("clearErrors", [{ id: id, columnKey: code }]);
                     }
                 });
+                
+                specialOffGrantSetting(v, o, "IS00607", "IS00611", "IS00609", "IS00612", "IS00613", 18);
+            },
+            CS00056_IS00612: (v, id, o) => {
+                specialOffGrantTbl(v, o, "IS00607", "IS00610", "IS00611", "IS00609", "IS00613", 18);
             },
             CS00057_IS00616: (v, id, o) => {
                 let $grid = $("#grid");
@@ -932,7 +1022,7 @@ module cps003 {
                     });
                 }
             },
-            CS00057_IS00617: (v, id) => {
+            CS00057_IS00617: (v, id, o) => {
                 let $grid = $("#grid");
                 _.forEach(['IS00618', 'IS00619'/*, 'IS00620'*/, 'IS00621'], code => {
                     $grid.mGrid(v === "1" ? "enableNtsControlAt" : "disableNtsControlAt", id, code);
@@ -940,6 +1030,11 @@ module cps003 {
                         $grid.mGrid("clearErrors", [{ id: id, columnKey: code }]);
                     }
                 });
+                
+                specialOffGrantSetting(v, o, "IS00614", "IS00618", "IS00616", "IS00619", "IS00620", 19);
+            },
+            CS00057_IS00619: (v, id, o) => {
+                specialOffGrantTbl(v, o, "IS00614", "IS00617", "IS00618", "IS00616", "IS00620", 19);
             },
             CS00058_IS00623: (v, id, o) => {
                 let $grid = $("#grid");
@@ -958,7 +1053,7 @@ module cps003 {
                     });
                 }
             },
-            CS00058_IS00624: (v, id) => {
+            CS00058_IS00624: (v, id, o) => {
                 let $grid = $("#grid");
                 _.forEach(['IS00625', 'IS00626'/*, 'IS00627'*/, 'IS00628'], code => {
                     $grid.mGrid(v === "1" ? "enableNtsControlAt" : "disableNtsControlAt", id, code);
@@ -966,7 +1061,12 @@ module cps003 {
                         $grid.mGrid("clearErrors", [{ id: id, columnKey: code }]);
                     }
                 });
+                
+                specialOffGrantSetting(v, o, "IS00620", "IS00625", "IS00623", "IS00626", "IS00627", 20);
             },
+            CS00058_IS00626: (v, id, o) => {
+                specialOffGrantTbl(v, o, "IS00620", "IS00624", "IS00625", "IS00623", "IS00627", 20);
+            }
         },
         DATE_TIME = {
             CS00016_IS00077: (v, o) => {
@@ -1182,6 +1282,126 @@ module cps003 {
                 let dfd = $.Deferred(),
                     result = timeNumber(i, k, v, o, "IS00291", "IS00292", "IS00293");
                 dfd.resolve(result);
+                return dfd.promise();
+            },
+            CS00025_IS00298: (i, k, v, o) => {
+                let dfd = $.Deferred();
+                specialOffGrantDay(v, o, "IS00295", "IS00297", "IS00298", "IS00296", "IS00299", "IS00300", 1);
+                dfd.resolve();
+                return dfd.promise();
+            },
+            CS00026_IS00305: (i, k, v, o) => {
+                let dfd = $.Deferred();
+                specialOffGrantDay(v, o, "IS00302", "IS00304", "IS00305", "IS00303", "IS00306", "IS00307", 2);
+                dfd.resolve();
+                return dfd.promise();
+            },
+            CS00027_IS00312: (i, k, v, o) => {
+                let dfd = $.Deferred();
+                specialOffGrantDay(v, o, "IS00309", "IS00311", "IS00312", "IS00310", "IS00313", "IS00314", 3);
+                dfd.resolve();
+                return dfd.promise();
+            },
+            CS00028_IS00319: (i, k, v, o) => {
+                let dfd = $.Deferred();
+                specialOffGrantDay(v, o, "IS00316", "IS00318", "IS00319", "IS00317", "IS00320", "IS00321", 4);
+                dfd.resolve();
+                return dfd.promise();
+            },
+            CS00029_IS00326: (i, k, v, o) => {
+                let dfd = $.Deferred();
+                specialOffGrantDay(v, o, "IS00323", "IS00325", "IS00326", "IS00324", "IS00327", "IS00328", 5);
+                dfd.resolve();
+                return dfd.promise();
+            },
+            CS00030_IS00333: (i, k, v, o) => {
+                let dfd = $.Deferred();
+                specialOffGrantDay(v, o, "IS00330", "IS00332", "IS00333", "IS00331", "IS00334", "IS00335", 6);
+                dfd.resolve();
+                return dfd.promise();
+            },
+            CS00031_IS00340: (i, k, v, o) => {
+                let dfd = $.Deferred();
+                specialOffGrantDay(v, o, "IS00337", "IS00339", "IS00340", "IS00338", "IS00341", "IS00342", 7);
+                dfd.resolve();
+                return dfd.promise();
+            },
+            CS00032_IS00347: (i, k, v, o) => {
+                let dfd = $.Deferred();
+                specialOffGrantDay(v, o, "IS00344", "IS00346", "IS00347", "IS00345", "IS00348", "IS00349", 8);
+                dfd.resolve();
+                return dfd.promise();
+            },
+            CS00033_IS00354: (i, k, v, o) => {
+                let dfd = $.Deferred();
+                specialOffGrantDay(v, o, "IS00351", "IS00353", "IS00354", "IS00352", "IS00355", "IS00356", 9);
+                dfd.resolve();
+                return dfd.promise();
+            },
+            CS00034_IS00361: (i, k, v, o) => {
+                let dfd = $.Deferred();
+                specialOffGrantDay(v, o, "IS00358", "IS00360", "IS00361", "IS00359", "IS00362", "IS00363", 10);
+                dfd.resolve();
+                return dfd.promise();
+            },
+            CS00049_IS00562: (i, k, v, o) => {
+                let dfd = $.Deferred();
+                specialOffGrantDay(v, o, "IS00559", "IS00561", "IS00562", "IS00560", "IS00563", "IS00564", 11);
+                dfd.resolve();
+                return dfd.promise();
+            },
+            CS00050_IS00569: (i, k, v, o) => {
+                let dfd = $.Deferred();
+                specialOffGrantDay(v, o, "IS00566", "IS00568", "IS00569", "IS00567", "IS00570", "IS00571", 12);
+                dfd.resolve();
+                return dfd.promise();
+            }, 
+            CS00051_IS00576: (i, k, v, o) => {
+                let dfd = $.Deferred();
+                specialOffGrantDay(v, o, "IS00573", "IS00575", "IS00576", "IS00574", "IS00577", "IS00578", 13);
+                dfd.resolve();
+                return dfd.promise();
+            },
+            CS00052_IS00583: (i, k, v, o) => {
+                let dfd = $.Deferred();
+                specialOffGrantDay(v, o, "IS00580", "IS00582", "IS00583", "IS00581", "IS00584", "IS00585", 14);
+                dfd.resolve();
+                return dfd.promise();
+            },
+            CS00053_IS00590: (i, k, v, o) => {
+                let dfd = $.Deferred();
+                specialOffGrantDay(v, o, "IS00587", "IS00589", "IS00590", "IS00588", "IS00591", "IS00592", 15);
+                dfd.resolve();
+                return dfd.promise();
+            },
+            CS00054_IS00597: (i, k, v, o) => {
+                let dfd = $.Deferred();
+                specialOffGrantDay(v, o, "IS00594", "IS00596", "IS00597", "IS00595", "IS00598", "IS00599", 16);
+                dfd.resolve();
+                return dfd.promise();
+            },
+            CS00055_IS00604: (i, k, v, o) => {
+                let dfd = $.Deferred();
+                specialOffGrantDay(v, o, "IS00601", "IS00603", "IS00604", "IS00602", "IS00605", "IS00606", 17);
+                dfd.resolve();
+                return dfd.promise();
+            },
+            CS00056_IS00611: (i, k, v, o) => {
+                let dfd = $.Deferred();
+                specialOffGrantDay(v, o, "IS00608", "IS00610", "IS00611", "IS00609", "IS00612", "IS00613", 18);
+                dfd.resolve();
+                return dfd.promise();
+            },
+            CS00057_IS00618: (i, k, v, o) => {
+                let dfd = $.Deferred();
+                specialOffGrantDay(v, o, "IS00615", "IS00617", "IS00618", "IS00616", "IS00619", "IS00620", 19);
+                dfd.resolve();
+                return dfd.promise();
+            },
+            CS00058_IS00625: (i, k, v, o) => {
+                let dfd = $.Deferred();
+                specialOffGrantDay(v, o, "IS00622", "IS00624", "IS00625", "IS00623", "IS00626", "IS00627", 20);
+                dfd.resolve();
                 return dfd.promise();
             }
         },
@@ -1507,6 +1727,146 @@ module cps003 {
             fetch.get_sphd_nextGrantDate({
                 sid: sid,
                 grantDate: moment.utc(v).toDate(),
+                spLeaveCD: specialCd,
+                appSet: cbx,
+                grantDays: grantDay,
+                grantTable: grantTbl,
+                entryDate: moment.utc(hireDate).toDate(),
+                yearRefDate: moment.utc(yearRefDate).toDate()
+            }).done(res => {
+                if (!resultCode) return;
+                let x;
+                if (res && (x = moment.utc(ko.toJS(res))) && x.isValid()) {
+                    $grid.mGrid("updateCell", o.id, resultCode, x.format('YYYY/MM/DD'));
+                } else {
+                    $grid.mGrid("updateCell", o.id, resultCode, "");
+                }
+            });
+        }
+        
+        function specialOffGrantSetting(v, o, baseDateCode, grantDayCode, manageCode, grantTblCode, resultCode, specialCd) {
+            let sid = o.employeeId, hireDate, retireDate, yearRefDate, baseDate = o[baseDateCode],
+                cbx = v, grantDay = o[grantDayCode], manage = o[manageCode], grantTbl = o[grantTblCode], 
+                result = o[resultCode], $grid = $("#grid");
+            if (!baseDate || !cbx || !manage || manage === "0") { 
+                $grid.mGrid("updateCell", o.id, resultCode, "");
+                return;
+            }
+            
+            let consGrantDays;
+            if (grantDayCode) {
+                let grantDaysConstr = _.find(__viewContext.viewModel.gridOptions.columns, c => {
+                    return c.key === grantDayCode;
+                });
+                if (grantDaysConstr) {
+                    consGrantDays = __viewContext.primitiveValueConstraints[grantDaysConstr.itemId.replace(/[-_]/g, "")];
+                }
+            }
+            
+            let inputDate = moment.utc(baseDate);
+            if (!inputDate.isValid() || inputDate.diff(moment.utc("1900/01/01"), "days", true) < 0
+                || inputDate.diff(moment.utc("9999/12/31"), "days", true) > 0
+                || _.isNaN(grantDay) || (consGrantDays && !_.isNaN(grantDay) && (grantDay < consGrantDays.min || grantDay > consGrantDays.max))) {
+                return;
+            }
+            
+            fetch.get_sphd_nextGrantDate({
+                sid: sid,
+                grantDate: moment.utc(baseDate).toDate(),
+                spLeaveCD: specialCd,
+                appSet: cbx,
+                grantDays: grantDay,
+                grantTable: grantTbl,
+                entryDate: moment.utc(hireDate).toDate(),
+                yearRefDate: moment.utc(yearRefDate).toDate()
+            }).done(res => {
+                if (!resultCode) return;
+                let x;
+                if (res && (x = moment.utc(ko.toJS(res))) && x.isValid()) {
+                    $grid.mGrid("updateCell", o.id, resultCode, x.format('YYYY/MM/DD'));
+                } else {
+                    $grid.mGrid("updateCell", o.id, resultCode, "");
+                }
+            });
+        }
+        
+        function specialOffGrantDay(v, o, baseDateCode, cbxCode, grantDayCode, manageCode, grantTblCode, resultCode, specialCd) {
+            if (_.isNil(cbxCode)) return;
+            let sid = o.employeeId, hireDate, retireDate, yearRefDate, baseDate = o[baseDateCode],
+                cbx = o[cbxCode], grantDay = Number(v), manage = o[manageCode], grantTbl = o[grantTblCode], 
+                result = o[resultCode], $grid = $("#grid");
+            if (!baseDate || !cbx || !manage || manage === "0") { 
+                $grid.mGrid("updateCell", o.id, resultCode, "");
+                return;
+            }
+            
+            let consGrantDays;
+            if (grantDayCode) {
+                let grantDaysConstr = _.find(__viewContext.viewModel.gridOptions.columns, c => {
+                    return c.key === grantDayCode;
+                });
+                if (grantDaysConstr) {
+                    consGrantDays = __viewContext.primitiveValueConstraints[grantDaysConstr.itemId.replace(/[-_]/g, "")];
+                }
+            }
+            
+            let inputDate = moment.utc(baseDate);
+            if (!inputDate.isValid() || inputDate.diff(moment.utc("1900/01/01"), "days", true) < 0
+                || inputDate.diff(moment.utc("9999/12/31"), "days", true) > 0
+                || _.isNaN(grantDay) || (consGrantDays && !_.isNaN(grantDay) && (grantDay < consGrantDays.min || grantDay > consGrantDays.max))) {
+                return;
+            }
+            
+            fetch.get_sphd_nextGrantDate({
+                sid: sid,
+                grantDate: moment.utc(baseDate).toDate(),
+                spLeaveCD: specialCd,
+                appSet: cbx,
+                grantDays: grantDay,
+                grantTable: grantTbl,
+                entryDate: moment.utc(hireDate).toDate(),
+                yearRefDate: moment.utc(yearRefDate).toDate()
+            }).done(res => {
+                if (!resultCode) return;
+                let x;
+                if (res && (x = moment.utc(ko.toJS(res))) && x.isValid()) {
+                    $grid.mGrid("updateCell", o.id, resultCode, x.format('YYYY/MM/DD'));
+                } else {
+                    $grid.mGrid("updateCell", o.id, resultCode, "");
+                }
+            });
+        }
+        
+        function specialOffGrantTbl(v, o, baseDateCode, cbxCode, grantDayCode, manageCode, resultCode, specialCd) {
+            if (_.isNil(cbxCode)) return;
+            let sid = o.employeeId, hireDate, retireDate, yearRefDate, baseDate = o[baseDateCode],
+                cbx = o[cbxCode], grantDay = o[grantDayCode], manage = o[manageCode], grantTbl = v, 
+                result = o[resultCode], $grid = $("#grid");
+            if (!baseDate || !cbx || !manage || manage === "0") { 
+                $grid.mGrid("updateCell", o.id, resultCode, "");
+                return;
+            }
+            
+            let consGrantDays;
+            if (grantDayCode) {
+                let grantDaysConstr = _.find(__viewContext.viewModel.gridOptions.columns, c => {
+                    return c.key === grantDayCode;
+                });
+                if (grantDaysConstr) {
+                    consGrantDays = __viewContext.primitiveValueConstraints[grantDaysConstr.itemId.replace(/[-_]/g, "")];
+                }
+            }
+            
+            let inputDate = moment.utc(baseDate);
+            if (!inputDate.isValid() || inputDate.diff(moment.utc("1900/01/01"), "days", true) < 0
+                || inputDate.diff(moment.utc("9999/12/31"), "days", true) > 0
+                || _.isNaN(grantDay) || (consGrantDays && !_.isNaN(grantDay) && (grantDay < consGrantDays.min || grantDay > consGrantDays.max))) {
+                return;
+            }
+            
+            fetch.get_sphd_nextGrantDate({
+                sid: sid,
+                grantDate: moment.utc(baseDate).toDate(),
                 spLeaveCD: specialCd,
                 appSet: cbx,
                 grantDays: grantDay,
