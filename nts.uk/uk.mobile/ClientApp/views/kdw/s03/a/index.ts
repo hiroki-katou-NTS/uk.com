@@ -23,7 +23,7 @@ import { KdwS03BComponent } from 'views/kdw/s03/b';
     }
 })
 export class Kdws03AComponent extends Vue {
-    @Prop({default: 0})
+    @Prop({ default: 0 })
     public screenMode: number;
 
     public title: string = 'Kdws03A';
@@ -53,12 +53,21 @@ export class Kdws03AComponent extends Vue {
     public nextState: string = '';
     public itemStart: number = 0;
     public itemEnd: number = 0;
+    // backup item to recover when error
+    public actualTimeSelectedCodeTemp: number = 0;
+    public yearMonthTemp: number = 0;
+    public selectedEmployeeTemp: string = '';
 
     @Watch('yearMonth')
-    public changeYearMonth(value: any) {
+    public changeYearMonth(value: any, valueOld: any) {
         let self = this;
+        this.yearMonthTemp = valueOld;
+        this.selectedEmployeeTemp = this.selectedEmployee;
+        this.actualTimeSelectedCodeTemp = this.actualTimeSelectedCode;
+
         self.$http.post('at', servicePath.genDate, { yearMonth: value }).then((result: { data: any }) => {
             let data = result.data;
+            self.timePeriodAllInfo = data;
             _.remove(self.actualTimeOptionDisp);
             if (data.lstRange && data.lstRange.length > 0) {
                 for (let i = 0; i < data.lstRange.length; i++) {
@@ -75,11 +84,29 @@ export class Kdws03AComponent extends Vue {
         if (_.isNil(valueOld) || '' == valueOld) {
             return;
         }
+        this.selectedEmployeeTemp = valueOld;
+        this.yearMonthTemp = this.yearMonth;
+        this.actualTimeSelectedCodeTemp = this.actualTimeSelectedCode;
+        this.startPage();
+    }
+
+    @Watch('dateRanger', { deep: true })
+    public changeDateRange(value: any, valueOld: any) {
+        if (_.isNil(valueOld)) {
+            return;
+        }
         this.startPage();
     }
 
     @Watch('actualTimeSelectedCode')
-    public changeDateRange(value: any, valueOld: any) {
+    public changeTimeCode(value: any, valueOld: any) {
+        this.actualTimeSelectedCodeTemp = valueOld;
+        this.selectedEmployeeTemp = this.selectedEmployee;
+        this.yearMonthTemp = this.yearMonth;
+    }
+
+    @Watch('selectedDate')
+    public changeDate(value: any, valueOld: any) {
         if (_.isNil(valueOld)) {
             return;
         }
@@ -117,6 +144,12 @@ export class Kdws03AComponent extends Vue {
     public mounted() {
         this.$mask('show', { message: true });
     }
+    public updated() {
+        if (this.displayFormat == '1') {
+            let styleTag = document.querySelector('.table-body') as HTMLStyleElement;
+            styleTag.style.height = '100%';
+        }
+    }
 
     public startPage() {
         let self = this;
@@ -147,7 +180,7 @@ export class Kdws03AComponent extends Vue {
             transitionDesScreen: null,
         };
 
-        self.$http.post('at', servicePath.initMOB, param).then((result: { data: any }) => {
+        self.$http.post('at', servicePath.initMOB, param).then(async (result: { data: any }) => {
             let dataInit = result.data;
             if (dataInit.lstEmployee == undefined || dataInit.lstEmployee.length == 0 || dataInit.errorInfomation != 0) {
                 let messageId = 'Msg_1342';
@@ -162,15 +195,19 @@ export class Kdws03AComponent extends Vue {
                     this.$goto('ccg008a');
                 });
             } else if (!_.isEmpty(dataInit.errors)) {
-                let errors = [];
-                _.forEach(dataInit.errors, (error) => {
-                    errors.push({
-                        message: error.message,
-                        messageId: error.messageId,
-                        supplements: {}
+                for (let i = 0; i < dataInit.errors.length; i++) {
+                    await new Promise((next) => {
+                        this.$modal.error(dataInit.errors[i].message).then(() => {
+                            if (i == dataInit.errors.length - 1) {
+                                this.$mask('hide');
+                                this.actualTimeSelectedCode = this.actualTimeSelectedCodeTemp;
+                                this.yearMonth = this.yearMonthTemp;
+                                this.selectedEmployee = this.selectedEmployeeTemp;
+                            }
+                            next();
+                        });
                     });
-                });
-                // pending
+                }
             } else {
                 this.processMapData(result.data);
                 storage.local.setItem('dailyCorrectionState', {
@@ -210,7 +247,11 @@ export class Kdws03AComponent extends Vue {
         self.lstDataSourceLoad = self.formatDate(data.lstData);
         self.optionalHeader = data.lstControlDisplayItem.lstHeader;
         self.cellStates = data.lstCellState;
-        self.timePeriodAllInfo = data.periodInfo;
+
+        if (_.isNil(self.timePeriodAllInfo)) {
+            self.timePeriodAllInfo = data.periodInfo;
+            self.yearMonth = data.periodInfo.yearMonth;
+        }
 
         self.fixHeaders = data.lstFixedHeader;
         self.showPrincipal = data.showPrincipal;
@@ -219,7 +260,6 @@ export class Kdws03AComponent extends Vue {
             self.hasLstHeader = false;
         }
 
-        self.yearMonth = data.periodInfo.yearMonth;
         if (self.lstEmployee.length == 0) {
             self.lstEmployee = _.orderBy(data.lstEmployee, ['code'], ['asc']);
         }
@@ -246,28 +286,32 @@ export class Kdws03AComponent extends Vue {
             let rowData = [];
             headers.forEach((header: any) => {
                 if (_.has(rowDataSrc, header.key)) {
-                    rowData.push({ 
-                        key: header.key, 
-                        value: rowDataSrc[header.key] });
+                    rowData.push({
+                        key: header.key,
+                        value: rowDataSrc[header.key]
+                    });
                 } else {
-                    rowData.push({ 
-                        key: header.key, 
-                        groupKey: header.group[1].key, 
-                        value: rowDataSrc[header.group[1].key] });
+                    rowData.push({
+                        key: header.key,
+                        groupKey: header.group[1].key,
+                        value: rowDataSrc[header.group[1].key]
+                    });
                 }
             });
 
             if (self.displayFormat == '0') {
-                self.displayDataLst.push({ 
-                    rowData, 
-                    date: rowDataSrc.date, 
-                    dateDetail: rowDataSrc.dateDetail, id: rowDataSrc.id });
+                self.displayDataLst.push({
+                    rowData,
+                    date: rowDataSrc.date,
+                    dateDetail: rowDataSrc.dateDetail, id: rowDataSrc.id
+                });
             } else {
-                self.displayDataLst.push({ 
-                    rowData, 
-                    employeeName: rowDataSrc.employeeName, 
-                    employeeId: rowDataSrc.employeeId, 
-                    id: rowDataSrc.id });
+                self.displayDataLst.push({
+                    rowData,
+                    employeeName: rowDataSrc.employeeName,
+                    employeeId: rowDataSrc.employeeId,
+                    id: rowDataSrc.id
+                });
             }
         });
 
@@ -290,8 +334,8 @@ export class Kdws03AComponent extends Vue {
 
         // fill blank row when no data
         if (self.displayFormat == 0) {
-            if (self.lstDataSourceLoad.length < 6) {
-                for (let i = 1; i <= (6 - self.lstDataSourceLoad.length); i++) {
+            if (self.lstDataSourceLoad.length < 7) {
+                for (let i = 1; i <= (7 - self.lstDataSourceLoad.length); i++) {
                     let rowData = [];
                     headers.forEach((header: any) => {
                         rowData.push({ key: header.key, value: '' });
@@ -299,8 +343,8 @@ export class Kdws03AComponent extends Vue {
                     self.displayDataLst.push({ rowData, date: '', id: '' });
                 }
             }
-        } else {           
-            if (self.displayDataLst.length <= 6) {
+        } else {
+            if (self.displayDataLst.length <= 7) {
                 if (self.displayDataLst.length == 0) {
                     self.itemStart = 0;
                     self.itemEnd = 0;
@@ -313,7 +357,7 @@ export class Kdws03AComponent extends Vue {
                     self.nextState = '';
                 }
                 self.displayDataLstEx = self.displayDataLst.slice();
-                for (let i = 1; i <= (6 - self.displayDataLst.length); i++) {
+                for (let i = 1; i <= (7 - self.displayDataLst.length); i++) {
                     let rowData = [];
                     headers.forEach((header: any) => {
                         rowData.push({ key: header.key, value: '' });
@@ -321,9 +365,9 @@ export class Kdws03AComponent extends Vue {
                     self.displayDataLstEx.push({ rowData, employeeName: '', id: '' });
                 }
             } else {
-                self.displayDataLstEx = _.slice(self.displayDataLst, 0, 6);
+                self.displayDataLstEx = _.slice(self.displayDataLst, 0, 7);
                 self.itemStart = 1;
-                self.itemEnd = 6;
+                self.itemEnd = 7;
                 self.previousState = '';
                 self.nextState = 'button-active';
             }
@@ -348,7 +392,7 @@ export class Kdws03AComponent extends Vue {
                     if (_.includes(sumTimeKey, cell.key)) {
                         self.displaySumLst[cell.key] = this.$dt.timedr((new TimeDuration(self.displaySumLst[cell.key])).toNumber() + (new TimeDuration(cell.value)).toNumber());
                     } else if (_.includes(sumNumKey, cell.key)) {
-                        self.displaySumLst[cell.key] = self.displaySumLst[cell.key] + cell.value;
+                        self.displaySumLst[cell.key] = self.displaySumLst[cell.key] + Number(cell.value);
                     }
                 }
             });
@@ -398,21 +442,21 @@ export class Kdws03AComponent extends Vue {
 
         }
 
-        self.$modal('kdws03b', { employeeName: 'testName', date: new Date(), data :param1.rowData, contentType: param2 }, { type : 'dropback' } )
-        .then((v) => {
+        self.$modal('kdws03b', { employeeName: 'testName', date: new Date(), data: param1.rowData, contentType: param2 }, { type: 'dropback' })
+            .then((v) => {
 
-        });
+            });
     }
 
     public nextPage() {
         if (this.nextState == '') {
             return;
         }
-        this.itemStart = this.itemStart + 6;
-        if (this.displayDataLst.length - this.itemEnd > 6) {
-            this.itemEnd = this.itemEnd + 6;
+        this.itemStart = this.itemStart + 7;
+        if (this.displayDataLst.length - this.itemEnd > 7) {
+            this.itemEnd = this.itemEnd + 7;
             this.nextState = 'button-active';
-            this.displayDataLstEx = _.slice(this.displayDataLst, this.itemStart - 2, 6);
+            this.displayDataLstEx = _.slice(this.displayDataLst, this.itemStart - 2, 7);
         } else {
             this.itemEnd = this.displayDataLst.length;
             this.nextState = '';
@@ -425,9 +469,9 @@ export class Kdws03AComponent extends Vue {
         if (this.previousState == '') {
             return;
         }
-        this.itemEnd = this.itemEnd - 6;
-        this.itemStart = this.itemStart - 6;
-        this.displayDataLstEx = _.slice(this.displayDataLst, this.itemStart - 2, 6);
+        this.itemEnd = this.itemEnd - 7;
+        this.itemStart = this.itemStart - 7;
+        this.displayDataLstEx = _.slice(this.displayDataLst, this.itemStart - 2, 7);
         if (this.itemStart == 1) {
             this.previousState = '';
         }
