@@ -72,18 +72,18 @@ export class Kdws03AComponent extends Vue {
 
     @Watch('selectedEmployee')
     public changeEmployee(value: any, valueOld: any) {
-        this.startPage();
         if (_.isNil(valueOld)) {
             return;
         }
+        this.startPage();
     }
 
     @Watch('actualTimeSelectedCode')
     public changeDateRange(value: any, valueOld: any) {
-        this.startPage();
         if (_.isNil(valueOld)) {
             return;
         }
+        this.startPage();
     }
 
     get dateRanger() {
@@ -180,7 +180,9 @@ export class Kdws03AComponent extends Vue {
                     lstEmployee: self.lstEmployee,
                     dateRange: self.displayFormat == '0' ?
                         (!_.isNil(self.dateRanger) ? { startDate: self.$dt.fromString(self.dateRanger.startDate), endDate: self.$dt.fromString(self.dateRanger.endDate) } : null) :
-                        { startDate: self.selectedDate, endDate: self.selectedDate }
+                        { startDate: self.selectedDate, endDate: self.selectedDate },
+                    cellDataLst: this.displayDataLst,
+                    headerLst: this.displayHeaderLst
                 });
                 this.$mask('hide');
             }
@@ -297,8 +299,7 @@ export class Kdws03AComponent extends Vue {
                     self.displayDataLst.push({ rowData, date: '', id: '' });
                 }
             }
-        } else {
-            
+        } else {           
             if (self.displayDataLst.length <= 6) {
                 if (self.displayDataLst.length == 0) {
                     self.itemStart = 0;

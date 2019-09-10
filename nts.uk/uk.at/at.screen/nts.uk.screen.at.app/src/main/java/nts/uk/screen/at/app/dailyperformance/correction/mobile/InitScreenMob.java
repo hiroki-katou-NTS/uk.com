@@ -221,6 +221,12 @@ public class InitScreenMob {
 		
 		List<String> listEmployeeId = screenDto.getLstData().stream().map(e -> e.getEmployeeId())
 				.collect(Collectors.toSet()).stream().collect(Collectors.toList());
+		if(listEmployeeId.isEmpty()) {
+			//screenDto.setLstEmployee(Collections.emptyList());
+			screenDto.setErrorInfomation(DCErrorInfomation.NOT_EMP_IN_HIST.value);
+			setStateParam(screenDto, resultPeriod, displayFormat, false);
+			return screenDto;
+		}
 		
 		// フォーマットの特定（スマホ）
 		// 表示項目を制御する（スマホ）
