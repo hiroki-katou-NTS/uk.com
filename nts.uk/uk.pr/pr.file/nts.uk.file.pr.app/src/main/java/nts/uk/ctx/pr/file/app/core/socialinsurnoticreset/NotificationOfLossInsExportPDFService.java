@@ -6,6 +6,8 @@ import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsuranceOffice;
 import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsuranceOfficeRepository;
+import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsurancePrefectureInformation;
+import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsurancePrefectureInformationRepository;
 import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.PersonalNumClass;
 import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.SocialInsurNotiCrSetRepository;
 import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.SocialInsurNotiCreateSet;
@@ -60,7 +62,6 @@ public class NotificationOfLossInsExportPDFService extends ExportService<Notific
 		);
 		socialInsNotifiCreateSetRegis(domain);
 		List<String> empIds = exportServiceContext.getQuery().getEmpIds();
-		//socialInsNotifiCreateSetRegis();
 		if(end.before(start)) {
 			throw new BusinessException("Msg_812");
 		}
@@ -68,13 +69,13 @@ public class NotificationOfLossInsExportPDFService extends ExportService<Notific
 			throw new BusinessException("Msg_37");
 		}
 
-		if( socialInsurNotiCreateSet.getPrintPersonNumber() == PersonalNumClass.DO_NOT_OUTPUT.value) {
+		if( socialInsurNotiCreateSet.getOutputFormat() == PersonalNumClass.DO_NOT_OUTPUT.value) {
 			List<InsLossDataExport> healthInsLoss = socialInsurNotiCreateSetEx.getHealthInsLoss(empIds, cid, start, end);
-			List<InsLossDataExport> welfPenInsLoss = socialInsurNotiCreateSetEx.getWelfPenInsLoss(empIds);
+			List<InsLossDataExport> welfPenInsLoss = socialInsurNotiCreateSetEx.getWelfPenInsLoss(empIds, cid, start, end);
 			List<SocialInsuranceOffice> socialInsuranceOffice =  socialInsuranceOfficeRepository.findByCid(cid);
 			CompanyInfor company = socialInsurNotiCreateSetEx.getCompanyInfor(cid);
 			socialInsurNotiCreateSetFileGenerator.generate(exportServiceContext.getGeneratorContext(),
-					new LossNotificationInformation(healthInsLoss, welfPenInsLoss, socialInsuranceOffice, socialInsurNotiCreateSet, exportServiceContext.getQuery().getReference(), company));
+					new LossNotificationInformation(healthInsLoss, welfPenInsLoss, socialInsuranceOffice, socialInsurNotiCreateSet, exportServiceContext.getQuery().getReference(), company, null));
 		}
 	}
 
@@ -91,15 +92,5 @@ public class NotificationOfLossInsExportPDFService extends ExportService<Notific
 	//社員健康保険資格情報が存在するかチェックする
 	private boolean checkWelfarePenInsQualiInformation(String userId){
 		return empWelfarePenInsQualiInforRepository.checkEmpWelfarePenInsQualiInfor(userId);
-	}
-
-	//70歳以上被用者不該当届データ取得処理
-	private void getSociaInsNoticeSet(){
-
-	}
-
-	//被保険者資格喪失届取得処理
-	private void getInsPersonLossReport(){
-
 	}
 }
