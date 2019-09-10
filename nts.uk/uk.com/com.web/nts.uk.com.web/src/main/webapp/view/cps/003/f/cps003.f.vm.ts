@@ -778,8 +778,10 @@ module cps003.f.vm {
                             }
                         } else {
                             if ([0, 1, 2].indexOf(mode) > -1) {
-                                let valueTextMatch = value.matchValue;
-                                if (item.itemData.dataType == 4) {
+                                let valueTextMatch = value.matchValue;                                
+                                if (item.itemData.dataType == ITEM_SINGLE_TYPE.TIMEPOINT) {
+                                    valueTextMatch = parseTimeWidthDay(value.matchValue).fullText;
+                                } else if (item.itemData.dataType == ITEM_SINGLE_TYPE.TIME) {
                                     valueTextMatch = parseTime(value.matchValue, true).format();
                                 }
                                 if (value.replaceValue) {
