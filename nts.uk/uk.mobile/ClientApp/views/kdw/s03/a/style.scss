@@ -35,7 +35,10 @@
     }
     .button-active {
         font-weight: bold;
-        color: #0000FF;
+    }
+    .button-deactive {
+        font-weight: bold;
+        color: #CCC;
     }
     .table-custom {
         th {

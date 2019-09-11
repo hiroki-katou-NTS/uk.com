@@ -1033,19 +1033,6 @@ public class DPCorrectionProcessorMob {
 		}
 	}
 
-	public List<DailyPerformanceEmployeeDto> extractEmployeeData(Integer initScreen, String sId,
-			List<DailyPerformanceEmployeeDto> emps, ObjectShare share) {
-		if (initScreen == 0 && share == null) {
-			return emps.stream().filter(x -> x.getId().equals(sId)).collect(Collectors.toList());
-		}else if (initScreen == 0 && share.getDisplayFormat() == 0){
-			List<DailyPerformanceEmployeeDto> datas = new ArrayList<>();
-			if(!emps.isEmpty()) return emps.stream().filter(x-> x.getId().equals(share.getIndividualTarget())).collect(Collectors.toList());
-			return datas;
-		}
-		return emps;
-
-	}
-
 	public List<DailyPerformanceEmployeeDto> extractEmployeeList(List<DailyPerformanceEmployeeDto> lstEmployee,
 			String sId, DateRange range) {
 		if (!lstEmployee.isEmpty()) {

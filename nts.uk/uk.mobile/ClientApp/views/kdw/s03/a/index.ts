@@ -20,6 +20,9 @@ import { KdwS03BComponent } from 'views/kdw/s03/b';
         yearMonth: {
             required: true
         },
+        selectedDate: {
+            required: true
+        },
     }
 })
 export class Kdws03AComponent extends Vue {
@@ -49,8 +52,8 @@ export class Kdws03AComponent extends Vue {
     public selectedEmployee: string = '';
     public selectedDate: Date = new Date();
     public resetTable: number = 0;
-    public previousState: string = '';
-    public nextState: string = '';
+    public previousState: string = 'button-deactive';
+    public nextState: string = 'button-deactive';
     public itemStart: number = 0;
     public itemEnd: number = 0;
     // backup item to recover when error
@@ -81,7 +84,7 @@ export class Kdws03AComponent extends Vue {
 
     @Watch('selectedEmployee')
     public changeEmployee(value: any, valueOld: any) {
-        if (_.isNil(valueOld) || '' == valueOld) {
+        if (_.isNil(valueOld)) {
             return;
         }
         this.selectedEmployeeTemp = valueOld;
@@ -92,7 +95,7 @@ export class Kdws03AComponent extends Vue {
 
     @Watch('dateRanger', { deep: true })
     public changeDateRange(value: any, valueOld: any) {
-        if (_.isNil(valueOld)) {
+        if (_.isNil(valueOld) || _.isEqual(value, valueOld)) {
             return;
         }
         this.startPage();
@@ -135,34 +138,30 @@ export class Kdws03AComponent extends Vue {
             this.pgName = this.displayFormat == '0' ? 'name3' : 'name4';
         }
 
-        this.$auth.user.then((user: null | { employeeCode: string }) => {
-            this.selectedEmployee = user.employeeCode;
+        this.$auth.user.then((user: null | { employeeId: string }) => {
+            this.selectedEmployee = user.employeeId;
+            this.startPage();
         });
-        this.startPage();
+
     }
 
     public mounted() {
         this.$mask('show', { message: true });
     }
     public updated() {
+        let styleTag = null;
+        let styleTagAr: any = [];
         if (this.displayFormat == '1') {
-            let styleTag = document.querySelector('.table-body') as HTMLStyleElement;
+            styleTag = document.querySelector('.table-body') as HTMLStyleElement;
             styleTag.style.height = '100%';
         }
+        styleTagAr = document.querySelectorAll('.btn-sm');
+        _.forEach(styleTagAr, (x) => x.style.fontSize = '10px');
     }
 
     public startPage() {
         let self = this;
         self.$mask('show', { message: true });
-
-        let lstEmployeeParam = [];
-        if (self.lstEmployee.length != 0) {
-            if (self.displayFormat == '0') {
-                lstEmployeeParam = _.filter(self.lstEmployee, (o) => o.code == self.selectedEmployee);
-            } else {
-                lstEmployeeParam = self.lstEmployee;
-            }
-        }
 
         let param = {
             changePeriodAtr: false,
@@ -173,7 +172,7 @@ export class Kdws03AComponent extends Vue {
             objectDateRange: self.displayFormat == '0' ?
                 (!_.isNil(self.dateRanger) ? { startDate: self.$dt.fromString(self.dateRanger.startDate), endDate: self.$dt.fromString(self.dateRanger.endDate) } : null) :
                 { startDate: self.selectedDate, endDate: self.selectedDate },
-            lstEmployee: lstEmployeeParam,
+            lstEmployee: [],
             initClock: null,
             displayFormat: this.displayFormat,
             displayDateRange: null,
@@ -209,7 +208,10 @@ export class Kdws03AComponent extends Vue {
                     });
                 }
             } else {
-                this.processMapData(result.data);
+                await new Promise((next) => {
+                    this.processMapData(result.data);
+                    next();
+                });
                 storage.local.setItem('dailyCorrectionState', {
                     screenMode: self.screenMode,
                     displayFormat: self.displayFormat,
@@ -248,7 +250,7 @@ export class Kdws03AComponent extends Vue {
         self.optionalHeader = data.lstControlDisplayItem.lstHeader;
         self.cellStates = data.lstCellState;
 
-        if (_.isNil(self.timePeriodAllInfo)) {
+        if (_.isNil(self.timePeriodAllInfo) && self.displayFormat == 0) {
             self.timePeriodAllInfo = data.periodInfo;
             self.yearMonth = data.periodInfo.yearMonth;
         }
@@ -309,6 +311,7 @@ export class Kdws03AComponent extends Vue {
                 self.displayDataLst.push({
                     rowData,
                     employeeName: rowDataSrc.employeeName,
+                    employeeNameDis: this.countHalf(rowDataSrc.employeeName) > 10 ? rowDataSrc.employeeName.substring(0, 5) + '...' : rowDataSrc.employeeName,
                     employeeId: rowDataSrc.employeeId,
                     id: rowDataSrc.id
                 });
@@ -348,13 +351,13 @@ export class Kdws03AComponent extends Vue {
                 if (self.displayDataLst.length == 0) {
                     self.itemStart = 0;
                     self.itemEnd = 0;
-                    self.previousState = '';
-                    self.nextState = '';
+                    self.previousState = 'button-deactive';
+                    self.nextState = 'button-deactive';
                 } else {
                     self.itemStart = 1;
                     self.itemEnd = self.displayDataLst.length;
-                    self.previousState = '';
-                    self.nextState = '';
+                    self.previousState = 'button-deactive';
+                    self.nextState = 'button-deactive';
                 }
                 self.displayDataLstEx = self.displayDataLst.slice();
                 for (let i = 1; i <= (7 - self.displayDataLst.length); i++) {
@@ -362,13 +365,13 @@ export class Kdws03AComponent extends Vue {
                     headers.forEach((header: any) => {
                         rowData.push({ key: header.key, value: '' });
                     });
-                    self.displayDataLstEx.push({ rowData, employeeName: '', id: '' });
+                    self.displayDataLstEx.push({ rowData, employeeName: '', id: '', employeeNameDis: '' });
                 }
             } else {
                 self.displayDataLstEx = _.slice(self.displayDataLst, 0, 7);
                 self.itemStart = 1;
                 self.itemEnd = 7;
-                self.previousState = '';
+                self.previousState = 'button-deactive';
                 self.nextState = 'button-active';
             }
         }
@@ -449,33 +452,60 @@ export class Kdws03AComponent extends Vue {
     }
 
     public nextPage() {
-        if (this.nextState == '') {
+        if (this.nextState == 'button-deactive') {
             return;
         }
         this.itemStart = this.itemStart + 7;
         if (this.displayDataLst.length - this.itemEnd > 7) {
             this.itemEnd = this.itemEnd + 7;
             this.nextState = 'button-active';
-            this.displayDataLstEx = _.slice(this.displayDataLst, this.itemStart - 2, 7);
+            this.displayDataLstEx = _.slice(this.displayDataLst, this.itemStart - 1, this.itemStart + 6);
         } else {
             this.itemEnd = this.displayDataLst.length;
-            this.nextState = '';
-            this.displayDataLstEx = _.slice(this.displayDataLst, this.displayDataLst.length - this.itemEnd);
+            this.nextState = 'button-deactive';
+            this.displayDataLstEx = _.slice(this.displayDataLst, this.itemStart - 1);
+            for (let i = 1; i <= (6 - (this.itemEnd - this.itemStart)); i++) {
+                let rowData = [];
+                this.displayHeaderLst.forEach((header: any) => {
+                    rowData.push({ key: header.key, value: '' });
+                });
+                this.displayDataLstEx.push({ rowData, employeeName: '', id: '', employeeNameDis: '' });
+            }
         }
         this.previousState = 'button-active';
+        this.resetTable++;
     }
 
     public previousPage() {
-        if (this.previousState == '') {
+        if (this.previousState == 'button-deactive') {
             return;
         }
-        this.itemEnd = this.itemEnd - 7;
+
         this.itemStart = this.itemStart - 7;
-        this.displayDataLstEx = _.slice(this.displayDataLst, this.itemStart - 2, 7);
+        this.itemEnd = this.itemStart + 6;
         if (this.itemStart == 1) {
-            this.previousState = '';
+            this.previousState = 'button-deactive';
         }
-        this.previousState = 'button-active';
+        this.nextState = 'button-active';
+        this.displayDataLstEx = _.slice(this.displayDataLst, this.itemStart - 1, this.itemStart + 6);
+        this.resetTable++;
+    }
+
+    public countHalf(text: string) {
+        let count = 0;
+        for (let i = 0; i < text.length; i++) {
+            let c = text.charCodeAt(i);
+
+            // 0x20 ～ 0x80: 半角記号と半角英数字
+            // 0xff61 ～ 0xff9f: 半角カタカナ
+            if ((0x20 <= c && c <= 0x7e) || (0xff61 <= c && c <= 0xff9f)) {
+                count += 1;
+            } else {
+                count += 2;
+            }
+        }
+
+        return count;
     }
 }
 const servicePath = {

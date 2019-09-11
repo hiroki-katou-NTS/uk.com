@@ -4,7 +4,7 @@
             <div class="row">
                 <div class="col-9">
                     <nts-dropdown v-model="selectedEmployee">
-                        <option v-for="item in lstEmployee" :value="item.code">
+                        <option v-for="item in lstEmployee" :value="item.id">
                             {{item.code}} &nbsp;&nbsp;&nbsp; {{item.businessName}}
                         </option>
                     </nts-dropdown>
@@ -40,9 +40,9 @@
         <fix-table v-if="displayFormat == '0'" table-class="table table-bordered m-0 table-sm table-custom" :rowNumber="7" class="mx-n2" style="font-size: 11px" :key="resetTable">
             <thead class="uk-bg-headline">
                 <tr>
-                    <th c-width="55" style="height: 70px"></th>
-                    <th v-for="(item, i) of displayHeaderLst" v-bind:style="{ 'background-color': item.color }">{{item.headerText}}</th>
-                    <th c-width="50"></th>
+                    <th c-width="56" style="height: 70px"></th>
+                    <th v-for="(item, i) of displayHeaderLst" v-bind:style="{ 'background-color': item.color, 'word-wrap': 'break-word' }">{{item.headerText}}</th>
+                    <th c-width="48"></th>
                 </tr>
             </thead>
             <tbody>
@@ -66,14 +66,14 @@
         <fix-table v-if="displayFormat == '1'" table-class="table table-bordered m-0 table-sm table-custom" :rowNumber="7" class="mx-n2" style="font-size: 11px" :key="resetTable">
             <thead class="uk-bg-headline">
                 <tr>
-                    <th c-width="52" style="height: 70px"></th>
-                    <th v-for="(item, i) of displayHeaderLst" v-bind:style="{ 'background-color': item.color }">{{item.headerText}}</th>
-                    <th c-width="50"></th>
+                    <th c-width="58" style="height: 70px"></th>
+                    <th v-for="(item, i) of displayHeaderLst" v-bind:style="{ 'background-color': item.color, 'word-wrap': 'break-word' }">{{item.headerText}}</th>
+                    <th c-width="48"></th>
                 </tr>
             </thead>
             <tbody>
                 <tr v-for="(row, i) of displayDataLstEx">
-                    <td>{{row.employeeName}}</td>
+                    <td style="font-size: 8.3px">{{row.employeeNameDis}}</td>
                     <td v-for="(cell, j) of row.rowData" v-bind:class="cell.class">{{cell.value == '0:00' ? '' : cell.value}}</td>
                     <td>
                         <span style="color: red" class="fa fa-exclamation-circle fa-lg"></span>
@@ -84,12 +84,12 @@
             <tfoot>
                 <tr class="d-none">
                     <td>合計</td>
-                    <td v-for="value in displaySumLst">{{value}}</td>
+                    <td v-for="value in displayHeaderLst"></td>
                     <td></td>
                 </tr>
             </tfoot>
         </fix-table>
-        <div class="row mt-3" style="font-size: 11px" v-if="displayFormat == '1'">
+        <div class="row mt-3" style="font-size: 10px" v-if="displayFormat == '1'">
             <div class="col-3" v-bind:class="previousState">
                 <span v-on:click="previousPage">⇦前の7件</span>
             </div>

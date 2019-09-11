@@ -150,7 +150,6 @@ public class InitScreenMob {
 		String sId = AppContexts.user().employeeId();
 		DailyPerformanceCorrectionDto screenDto = new DailyPerformanceCorrectionDto();
 		List<DailyPerformanceEmployeeDto> lstEmployee = param.lstEmployee;
-		Boolean needSortEmp = Boolean.FALSE;
 		Integer screenMode = param.screenMode;
 		Integer displayFormat = param.displayFormat;
 		DateRange dateRange = param.objectDateRange;
@@ -177,23 +176,25 @@ public class InitScreenMob {
 		screenDto.setPeriodInfo(resultPeriod);
 
 		// 対象社員の特定
+		List<String> allIds = new ArrayList<>();
 		List<String> changeEmployeeIds = new ArrayList<>();
-		int initScreen = 0;
-		if (lstEmployee.isEmpty()) {
-			val employeeIds = lstEmployee.stream().map(x -> x.getId()).collect(Collectors.toList());
-			if(employeeIds.isEmpty()) needSortEmp = true;
-			changeEmployeeIds = processor.changeListEmployeeId(employeeIds, screenDto.getDateRange(), screenMode, false, screenDto.getClosureId(), screenDto);
-		} else {
-			changeEmployeeIds = lstEmployee.stream().map(x -> x.getId()).collect(Collectors.toList());
-			initScreen = 1;
-		}
+		
+		allIds = processor.changeListEmployeeId(new ArrayList<>(), screenDto.getDateRange(), screenMode, false, screenDto.getClosureId(), screenDto);
 
 		// ログイン社員の日別実績の権限を取得する
 		screenDto.setAuthorityDto(processor.getAuthority(screenDto));
 
-		screenDto.setLstEmployee(findAllEmployee.findAllEmployee(changeEmployeeIds, dateRange.getEndDate()));
-		List<DailyPerformanceEmployeeDto> lstEmployeeData = processor.extractEmployeeData(initScreen, sId,
-				screenDto.getLstEmployee(), null);
+		screenDto.setLstEmployee(findAllEmployee.findAllEmployee(allIds, dateRange.getEndDate()));
+		
+		List<DailyPerformanceEmployeeDto> lstEmployeeData = new ArrayList<>();
+		if (displayFormat == 0) {
+			lstEmployeeData = screenDto.getLstEmployee().stream().filter(x -> x.getId().equals(employeeID)).collect(Collectors.toList());
+			changeEmployeeIds.add(employeeID);
+		} else {
+			lstEmployeeData = screenDto.getLstEmployee();
+			changeEmployeeIds = allIds;
+		}
+
 		screenDto.setLstData(processor.getListData(lstEmployeeData, dateRange, displayFormat));
 
 		Map<String, WorkPlaceHistTemp> WPHMap = repo.getWplByListSidAndPeriod(companyId, changeEmployeeIds, screenDto.getDateRange().getEndDate());
@@ -202,10 +203,7 @@ public class InitScreenMob {
 			x.setWorkplaceName(wph == null ? "" : wph.getName());
 			return x;
 		}).collect(Collectors.toList());
-		if(displayFormat == 0){
-			String employeeSelect = lstEmployee.isEmpty() ? sId : lstEmployee.get(0).getId();
-			changeEmployeeIds = changeEmployeeIds.stream().filter(x -> x.equals(employeeSelect)).collect(Collectors.toList());
-		}
+
 		Map<String, List<AffComHistItemAtScreen>> affCompanyMap = repo.getAffCompanyHistoryOfEmployee(AppContexts.user().companyId(), changeEmployeeIds);
 		screenDto.setLstData(processor.setWorkPlace(WPHMap, affCompanyMap, screenDto.getLstData()));
 		
@@ -217,7 +215,9 @@ public class InitScreenMob {
 				}				
 			});			
 		}
-		screenDto.setLstData(needSortEmp ? listData.stream().sorted((x, y) ->x.getEmployeeCode().compareTo(y.getEmployeeCode())).collect(Collectors.toList()) : listData);
+		
+		screenDto.setLstData(displayFormat == 1 ? listData.stream().sorted((x, y) ->x.getEmployeeCode().compareTo(y.getEmployeeCode())).collect(Collectors.toList()) : listData);
+		
 		
 		List<String> listEmployeeId = screenDto.getLstData().stream().map(e -> e.getEmployeeId())
 				.collect(Collectors.toSet()).stream().collect(Collectors.toList());
