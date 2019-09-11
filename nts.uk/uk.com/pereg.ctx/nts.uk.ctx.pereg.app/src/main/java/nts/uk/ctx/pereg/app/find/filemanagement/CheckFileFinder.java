@@ -883,6 +883,7 @@ public class CheckFileFinder {
 							if (errorSpace != null) {
 								itemErrors.add(errorSpace);
 							} else if (string.isPresent()) {
+								itemDto.setError(true);
 								ItemError stringError = new ItemError(sid, "", index, itemDto.getItemCode(),
 										TextResource.localize(string.get(), Arrays.asList(gridHead.getItemName(),
 										String.valueOf(stringContraint.getMaxLenght()))));
@@ -909,6 +910,7 @@ public class CheckFileFinder {
 									if (errorSpace != null) {
 										itemErrors.add(errorSpace);
 									} else if (string.isPresent()) {
+										itemDto.setError(true);
 										ItemError stringError = new ItemError(sid, "", index, itemDto.getItemCode(),
 												TextResource.localize(string.get(), Arrays.asList(gridHead.getItemName(),
 												String.valueOf(stringContraint.getMaxLenght()))));
