@@ -19,6 +19,8 @@ public interface EmplHealInsurQualifiInforRepository {
 
     Optional<EmplHealInsurQualifiInfor> getEmplHealInsurQualifiInforById(String employeeId, String hisId);
 
+    Optional<HealInsurNumberInfor> getHealInsurNumberInforByHisId(String hisId);
+
     void add(EmplHealInsurQualifiInfor domain);
 
     void update(EmplHealInsurQualifiInfor domain);
