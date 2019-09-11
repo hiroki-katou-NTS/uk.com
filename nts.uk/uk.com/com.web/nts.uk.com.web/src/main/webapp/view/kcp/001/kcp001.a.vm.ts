@@ -123,6 +123,7 @@ module kcp001.a.viewmodel {
                 isShowNoSelectRow: self.isShowNoSelectionItem(),
                 alreadySettingList: self.alreadySettingList,
                 maxRows: 12,
+                autoAdjustHeight: window.autoAdjustHeight === true,
                 isDisplayClosureSelection: self.isDisplayClosureSelection(),
                 isDisplayFullClosureOption: self.isDisplayFullClosureOption(),
                 closureSelectionType: self.closureSelectionType(),

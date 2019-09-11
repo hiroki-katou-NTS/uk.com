@@ -1,5 +1,5 @@
 import { obj, dom } from '@app/utils';
-import { Vue, VueConstructor } from '@app/provider';
+import { _, Vue, VueConstructor } from '@app/provider';
 
 const vm = Vue.extend({
     data: () => ({
@@ -13,7 +13,7 @@ const vm = Vue.extend({
         opacity: null,
         className: ''
     }),
-    template: `<div v-bind:style="{ opacity }" class="modal-backdrop show" v-bind:class="className" v-on:touchstart.stop.prevent="onClick" v-on:click.stop.prevent="onClick">
+    template: `<div v-bind:style="{ opacity }" class="modal-backdrop position-absolute fade show" v-bind:class="className" v-on:touchstart.stop.prevent="onClick" v-on:click.stop.prevent="onClick">
         <template v-if="message">
             <div ref="spinner" class="spinner">
                 <div></div>
@@ -75,7 +75,7 @@ const vm = Vue.extend({
     destroyed() {
         let self = this;
 
-        document.body.removeChild(self.$el);
+        self.$el.remove();
 
         if (dom.modals.length <= 1) {
             let top = 0,
@@ -93,43 +93,116 @@ const vm = Vue.extend({
     }
 }), mask = {
     install(vue: VueConstructor<Vue>) {
-        vue.prototype.$mask = function (act: 'hide' | 'show', options: number | { color?: string; opacity?: number; message?: boolean | string; } = 0.2) {
-            let self = this;
+        const inst: Vue[] = [];
 
-            if (act === 'hide') {
-                if (self.$$mask) {
-                    if (!!self.$$mask.show) {
-                        self.$$mask.show = false;
+        vue.mixin({
+            beforeRouteLeave(__: any, ___: any, next: () => void) {
+                const vm: Vue = this as any;
+
+                setTimeout(() => vm.$mask('hide'), 1);
+
+                next();
+            }
+        });
+
+        vue.prototype.$mask = function (act: 'hide' | 'show', options: number | { color?: string; opacity?: number; message?: boolean | string; } = 0.75) {
+            let self = this,
+                el = self.$el as HTMLElement;
+
+            if (el) {
+                const ctner = el.closest('.modal-content'),
+                    rootEl = ctner ? ctner.querySelector('.modal-backdrop.position-absolute.fade.show') : document.querySelector('body>.modal-backdrop.position-absolute.fade.show');
+
+                if (dom.hasClass(el, 'modal-body') && ctner) {
+                    if (act === 'hide') {
+                        if (rootEl) {
+                            const ova: any = Vue.vmOf(rootEl as HTMLElement);
+
+                            if (ova) {
+                                if (!!ova.show) {
+                                    ova.show = false;
+                                } else {
+                                    ova.$destroy();
+                                }
+                            }
+                        }
+
+                        delete self.$$mask;
                     } else {
-                        self.$$mask.$destroy(true);
+                        if (!el.querySelector('.modal-backdrop.position-absolute.fade.show')) {
+                            self.$$mask = new vm();
+                            self.$$mask.$mount(dom.create('div'));
+
+                            if (dom.hasClass(self.$el, 'modal-body')) {
+                                self.$$mask.className = 'modal-frontdrop';
+                            }
+
+                            self.$$mask.show = true;
+
+                            if (typeof options === 'number') {
+                                self.$$mask.opacity = options;
+                            } else {
+                                self.$$mask.color = options.color;
+                                self.$$mask.opacity = options.opacity || 0.75;
+                                self.$$mask.message = options.message || false;
+                            }
+
+                            ctner.appendChild(self.$$mask.$el);
+                        }
                     }
+                } else {
+                    if (act === 'hide') {
+                        _.remove(inst, (i: Vue) => _.isEqual(self, i));
 
-                    delete self.$$mask;
-                }
-            } else if (act === 'show') {
-                if (!self.$$mask) {
-                    self.$$mask = new vm();
-                    self.$$mask.$mount(dom.create('div'));
+                        if (_.size(inst) === 0) {
+                            if (rootEl) {
+                                const ova: any = Vue.vmOf(rootEl as HTMLElement);
 
-                    if (dom.hasClass(self.$el, 'modal-body')) {
-                        self.$$mask.className = 'modal-frontdrop';
-                    }
+                                if (ova) {
+                                    if (!!ova.show) {
+                                        ova.show = false;
+                                    } else {
+                                        ova.$destroy();
+                                    }
+                                }
+                            }
+                        }
 
-                    self.$$mask.show = true;
-
-                    if (typeof options === 'number') {
-                        self.$$mask.opacity = options;
+                        delete self.$$mask;
                     } else {
-                        self.$$mask.color = options.color;
-                        self.$$mask.opacity = options.opacity;
-                        self.$$mask.message = options.message || false;
+                        if (!_.find(inst, (i: Vue) => _.isEqual(self, i))) {
+                            inst.push(self);
+
+                            if (rootEl) {
+                                const ova: any = Vue.vmOf(rootEl as HTMLElement);
+
+                                if (ova) {
+                                    self.$$mask = ova;
+                                }
+                            } else if (!self.$$mask) {
+                                self.$$mask = new vm();
+                                self.$$mask.$mount(dom.create('div'));
+
+                                self.$$mask.show = true;
+
+                                if (typeof options === 'number') {
+                                    self.$$mask.opacity = options;
+                                } else {
+                                    self.$$mask.color = options.color;
+                                    self.$$mask.opacity = options.opacity || 0.75;
+                                    self.$$mask.message = options.message || false;
+                                }
+
+                                document.body.appendChild(self.$$mask.$el);
+                            }
+                        }
                     }
-
-                    document.body.appendChild(self.$$mask.$el);
                 }
+            }
 
-                return {
-                    on(click: () => void, hide: () => void) {
+            return {
+                on(click: () => void, hide: () => void) {
+                    if (self.$$mask) {
                         if (obj.isFunction(hide)) {
                             self.$$mask.callback.hide = hide;
                         }
@@ -138,8 +211,8 @@ const vm = Vue.extend({
                             self.$$mask.callback.click = click;
                         }
                     }
-                };
-            }
+                }
+            };
         };
     }
 };

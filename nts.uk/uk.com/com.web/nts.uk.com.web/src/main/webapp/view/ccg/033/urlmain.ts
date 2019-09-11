@@ -1,5 +1,5 @@
 __viewContext.ready(function() {
-    debugger;
+    //debugger;
     var url_string = window.location.href;
     var urlID = _.split(url_string, '=')[1];
     var server_path = nts.uk.text.format("/ctx/sys/gateway/url/execution/{0}", urlID); 
@@ -74,6 +74,19 @@ function openDialogCCG007E(success, urlID) {
     })
 }
 function routeData(success, urlID){
+    if(success.smpDevice && (success.programID == 'kaf005' || success.programID == 'cmm045')){//Mobile
+        let path = "/view/kaf/000/b/index.xhtml" + '?programID=' + success.programID+'&appId='+ _.first(_.map(success.urlTaskValueList));
+        if(success.programID == 'kaf005'){
+            nts.uk.request.ajax("at", 'at/request/application/approval/judgmentuser', _.first(_.map(success.urlTaskValueList)))
+            .done((result) => {
+                path = path + '&userAtr=' + result;
+                nts.uk.request.jump("at",path);
+            });
+        }else{
+            nts.uk.request.jump("at",path);
+        }
+        return;
+    }
     switch(success.programID){
         case "ccg007": {
             let path = window.location.href;

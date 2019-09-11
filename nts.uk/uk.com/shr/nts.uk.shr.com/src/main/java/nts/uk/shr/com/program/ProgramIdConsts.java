@@ -1011,4 +1011,5 @@ public class ProgramIdConsts {
 	public static final String CMMS45C = "CMMS45C";
 	public static final String CMMS45D = "CMMS45B";
 	public static final String CMMS45E = "CMMS45E";
+	public static final String CCGS33 = "CCGS33";
 }

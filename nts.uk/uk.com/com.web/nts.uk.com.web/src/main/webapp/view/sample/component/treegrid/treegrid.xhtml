@@ -30,8 +30,8 @@
 					<h1>TreeGrid</h1>
 					<h2>Overview</h2>
 					<button data-bind="click: resetSelection">Reset</button>
-					<button data-bind="click: changeDataSource">Next
-						Datasource</button>
+					<button data-bind="click: changeDataSource">Next Datasource</button>
+					<button data-bind="click: disableRows">disable some rows</button>
 					<div class="cf">
 						<div style="float: left">
 							<h3>Single Selection</h3>
@@ -48,16 +48,17 @@
 										primaryText: 'nodeText',
 										multiple: false,
 										enable: true,
-										showCheckBox: false}">
+										showCheckBox: false,
+										filter: true }">
 							</table>
 							
 							<table id="treegrid2-limited"
 								data-bind="ntsTreeGridView:{
 										width: 1000,
 										height: 250,
-										dataSource: items2,
+										dataSource: itemsX,
 										value: singleSelectedCode,
-										columns: columns,
+										columns: columnsX, 
 										primaryKey: 'code',
 										childDataKey: 'childs',
 										primaryText: 'nodeText',
@@ -220,12 +221,68 @@
 										</tr>
 										<tr>
 											<td>columns</td>
-											<td><b>Type:</b> array&lt;column&gt;<br /> An array of
-												column objects:<br /> <i>headerText:</i> Text for header<br />
-												<i>prop / key:</i> Property in data array for column<br /> <i>width:</i>
-												Width for column<br /> <b><i>(*): Can use other
-														properties of columns of tree</i></b></td>
-										</tr><tr>
+											<td><b>Type:</b> array&lt;column&gt;<br /> An array of column objects:<br /> 
+												<table>
+													<tr>
+														<td>headerText</td>
+														<td>
+															<b>Type:</b> string<br/>
+															<b>Default:</b> ""<br/>
+															Text for header
+														</td>
+													</tr>
+													<tr>
+														<td>prop / key</td>
+														<td>
+															<b>Type:</b> string<br/>
+															<b>Required:</b><br/>
+															Property in data source for value used to build this column
+														</td>
+													</tr>
+													<tr>
+														<td>width</td>
+														<td>
+															<b>Type:</b> string|number<br/>
+															<b>Default:</b> ""<br/>
+															Width for column
+														</td>
+													</tr>
+													<tr>
+														<td>formatType</td>
+														<td>
+															<b>Type:</b> string<br/>
+															<b>Default:</b> ""<br/>
+															<b>Available values:</b><br/>
+															<ul style="list-style-type: circle; margin-left: 20px;">
+																<li>"checkbox": value type in source for this column is boolean, if null value -> checkbox is not rendered</li>
+															</ul>
+															setting special component type for column
+														</td>
+													</tr>
+													<tr>
+														<td>parentCompute</td>
+														<td>
+															<b>Type:</b> boolean<br/>
+															<b>Default:</b> false<br/>
+															setting parent compute with children values or otherwise on format type is checkbox
+														</td>
+													</tr>
+													<tr>
+														<td>filterOpts</td>
+														<td>
+															<b>Type:</b> Object<br/>
+															<b>Default:</b> null<br/>
+															<b>Sample value:</b> { trueOpt: nts.uk.resource.getText("Enum_UseAtr_Use"), falseOpt: nts.uk.resource.getText("Enum_UseAtr_NotUse") } <br/>
+															set options show when display filter dropdown for column with format "checkbox"
+														</td>
+													</tr>
+													<tr>
+														<td colspan="2"><i>(*): Can use other properties of columns of tree</i></td>
+													</tr>
+												</table>
+											</td>
+										</tr>
+										<tr>
 											<td>initialExpandDepth</td>
 											<td><b>Type:</b> number<br /> 
 												Set how many child are expanded when initial</td>
@@ -243,6 +300,53 @@
 										<tr>
 											<td>rows</td>
 											<td><b>Type:</b> number<br /> max rows are displayed in view and will have scroll and tooltip</td>
+										</tr>
+										<tr>
+											<td>filter</td>
+											<td><b>Type:</b> boolean<br /> Enables/disables filter feature</td>
+										</tr>
+									</tbody>
+								</table>
+								<br/><br/>
+								<h2>Methods</h2>
+								<table>
+									<colgroup>
+										<col width="200px" />
+									</colgroup>
+									<thead>
+										<tr>
+											<th><h4>sample</h4></th>
+											<th><h4>Description</h4></th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td>$("#treegrid2").ntsTreeView("disableRows", ["000001", "000002"]);</td>
+											<td>disables some rows by ids</td>
+										</tr>
+										<tr>
+											<td>$("#treegrid2").ntsTreeView("enableRows", ["000001", "000002"]);</td>
+											<td>enables some rows by ids</td>
+										</tr>
+									</tbody>
+								</table>
+								<br/><br/>
+								<h2>Events</h2>
+								<table>
+									<colgroup>
+										<col width="200px" />
+									</colgroup>
+									<thead>
+										<tr>
+											<th><h4>sample</h4></th>
+											<th><h4>Description</h4></th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td>checkboxChanging</td>
+											<td>Event for when check value updated by user.<br/> 
+												values can get from event: { value: boolean, rowId: string, column: string, rowData: any, element: Jquery }</td>
 										</tr>
 									</tbody>
 								</table>
