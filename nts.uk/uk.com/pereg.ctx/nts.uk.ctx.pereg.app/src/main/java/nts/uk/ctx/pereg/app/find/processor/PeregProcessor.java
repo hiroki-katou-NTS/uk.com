@@ -1021,6 +1021,7 @@ public class PeregProcessor {
 									result.add(dto);
 								}
 							}
+								MappingFactory.matchOptionalItemData(null, dto.getLayoutDtos(), new ArrayList<>());
 						}
 
 					}
