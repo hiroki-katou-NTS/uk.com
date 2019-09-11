@@ -6,11 +6,12 @@ package nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.inforunionfu
 */
 public enum SubscriptionType
 {
-    
-    新規(1, "新規"),
-    転入(2, "転入"),
-    復活(3, "復活"),
-    再加入(4, "再加入");
+
+    NEW(1, "新規"),
+    MOVING(2, "転入"),
+    REVIVAL(3, "復活"),
+    REJOIN(4, "再加入");
+
     
     /** The value. */
     public final int value;

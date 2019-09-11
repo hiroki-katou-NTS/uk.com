@@ -46,6 +46,21 @@ public class SocialInsurNotiCreateSetFinder {
         //*パラメータNo = “KS0002”*//*
         String paraNo = "KS002";
         Optional<SocialInsurNotiCreateSet> mSocialInsurNotiCreateSet = socialInsurNotiCrSetRepository.getSocialInsurNotiCreateSetById(uid, cid);
+        if(!mSocialInsurNotiCreateSet.isPresent()){
+            mSocialInsurNotiCreateSet = Optional.of(new SocialInsurNotiCreateSet("",
+                    "",
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    "",
+                    0,
+                    0,
+                    0
+            ));
+        }
         ParaHistoryAtr historyAtr = mSalGenParaIdentificationRepository.getSalGenParaIdentificationById(paraNo, cid).get().getHistoryAtr();
         String historyid;
         Optional<SalGenParaValue> mSalGenParaValue;
@@ -60,11 +75,11 @@ public class SocialInsurNotiCreateSetFinder {
                     mSalGenParaValue = mSalGenParaDateHistRepository.getSalGenParaValueById(historyid);
 
                 }
-                NotifiOfInsurQuaAcDto.fromDomain(mSocialInsurNotiCreateSet.get(), mSalGenParaValue.get());
+                NotifiOfInsurQuaAcDto.fromDomain( mSocialInsurNotiCreateSet.get(),mSalGenParaValue.get());
 
             }
 
-            return NotifiOfInsurQuaAcDto.fromDomain(mSocialInsurNotiCreateSet.get(), null);
+            return NotifiOfInsurQuaAcDto.fromDomain( mSocialInsurNotiCreateSet.get(), null);
 
         }
         historyid = mSalGenParaYMHistFinder.getHistoryIdByTargetDate(paraNo, targetDate);

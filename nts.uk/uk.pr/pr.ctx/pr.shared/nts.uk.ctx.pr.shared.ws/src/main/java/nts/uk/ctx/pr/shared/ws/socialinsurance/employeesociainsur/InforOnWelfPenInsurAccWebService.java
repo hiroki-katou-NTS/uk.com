@@ -9,8 +9,6 @@ import nts.uk.ctx.pr.shared.app.command.socialinsurance.employeesociainsur.emphe
 import nts.uk.ctx.pr.shared.app.find.socialinsurance.employeesociainsur.empcomworkstlinfor.CorEmpWorkHisFinder;
 import nts.uk.ctx.pr.shared.app.find.socialinsurance.employeesociainsur.empcomworkstlinfor.CorWorkFormInfoDto;
 import nts.uk.ctx.pr.shared.app.find.socialinsurance.employeesociainsur.emphealinsurbeneinfo.*;
-import nts.uk.ctx.pr.shared.dom.adapter.query.person.PersonInfoExportAdapter;
-import nts.uk.ctx.pr.shared.dom.adapter.query.person.PersonInfomationAdapter;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmpBasicPenNumInfor;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.MultiEmpWorkInfo;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.SocialInsurAcquisiInfor;
