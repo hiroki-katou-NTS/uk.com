@@ -15,6 +15,8 @@ public interface EmPensionFundPartiPeriodInforRepository
 
     List<EmPensionFundPartiPeriodInfor> getEmPensionFundPartiPeriodInforByEmpId(String employeeId);
 
+    List<FundMembership> getFundMembershipByEmpId(String employeeId);
+
     void add(EmPensionFundPartiPeriodInfor domain);
 
     void update(EmPensionFundPartiPeriodInfor domain);
