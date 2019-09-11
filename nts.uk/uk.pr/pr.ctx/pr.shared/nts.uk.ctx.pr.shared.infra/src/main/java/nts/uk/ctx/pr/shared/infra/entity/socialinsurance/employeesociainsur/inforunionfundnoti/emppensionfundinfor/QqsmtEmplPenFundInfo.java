@@ -93,7 +93,7 @@ public class QqsmtEmplPenFundInfo extends UkJpaEntity implements Serializable
     * 第２標準賞与月額
     */
     @Basic(optional = false)
-    @Column(name = "SEC_STAND_BONUS")
+    @Column(name = "SEC_ADD_BONUS")
     public String secAddBonus;
     
     /**
