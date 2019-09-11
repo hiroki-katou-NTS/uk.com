@@ -100,57 +100,53 @@
                     </div>
                     <div id="right-content">
                         <div class="valign-center control-group">
-                            <div style="margin-top: -20px; float: left; width: auto; height: 73px">
-							<div id="container" style="padding-top: 12px">
+                            <div style="margin-top: -10px; float: left; width: auto;">
 								<div id="emp-component"></div>
-							</div>
-							<div id = "date-extract" style="width: 480px; display: inline-flex;">
-										<div id="daterangepickererror"
-											data-bind="ntsDateRangePicker: { 
-											required: true, 
-											enable: showDateRange, 
-											showNextPrevious: true, 
-											value: dateRanger, 
-											startName: nts.uk.resource.getText('KDW003_25'),
-											endName: nts.uk.resource.getText('KDW003_26'),
-											maxRange: 'oneMonth'}" />
-											
-										<div id="daterangepicker">
-												<div id="yearMonthPicker" style="top: -9px; height: 27px;" data-bind="ntsDatePicker: { 
-															value: yearMonth,
-															name: '#[KDW003_40]',
-															required: true, 
-															dateFormat: 'yearmonth',
-															showJumpButtons: true,
-															enable: showDateRange,
-															valueFormat: 'YYYYMM'}" />
-												<div id="dislayFormatLbl" data-bind="ntsFormLabel: { required: false}" style="width: 50px ; text-align: center; margin-top: 10px">#{i18n.getText('KDW003_128')}</div>
-												<div  id="dislayFormatLbl" style="vertical-align: middle;  height: 27px;" data-bind="ntsComboBox: {
-														options: actualTimeOptionDisp,
-														optionsValue: 'code',
-														value: actualTimeSelectedCode,
-														optionsText: 'name',
-														enable: showDateRange() &amp;&amp; ko.computed(function() {
-																				        return actualTimeOptionDisp().length  > 1;
-																				    }, this),
-														name:'#[KDW003_128]',
-														columns: [
-															{ prop: 'name', length: 6 },
-														]}">
-												</div>
-										 </div>
-										<div id="cbListDate">
-											<div id="choosenDate"
-												data-bind="ntsDatePicker: {value: selectedDate, 
-												dateFormat: 'YYYY/MM/DD', 
-												showJumpButtons: true,
-												name: nts.uk.resource.getText('KDW003_27'),
-												enable: showDateRange}" />
+								<div id = "date-extract" style="width: 480px; display: inline-flex;">
+											<div id="daterangepickererror"
+												data-bind="ntsDateRangePicker: { 
+												required: true, 
+												enable: showDateRange, 
+												showNextPrevious: true, 
+												value: dateRanger, 
+												startName: nts.uk.resource.getText('KDW003_25'),
+												endName: nts.uk.resource.getText('KDW003_26'),
+												maxRange: 'oneMonth'}" />
+												
+											<div id="daterangepicker">
+													<div id="yearMonthPicker" style="top: -9px; height: 27px;" data-bind="ntsDatePicker: { 
+																value: yearMonth,
+																name: '#[KDW003_40]',
+																required: true, 
+																dateFormat: 'yearmonth',
+																showJumpButtons: true,
+																enable: showDateRange,
+																valueFormat: 'YYYYMM'}" />
+													<div id="dislayFormatLbl" data-bind="ntsFormLabel: { required: false}" style="width: 50px ; text-align: center; margin-top: 10px">#{i18n.getText('KDW003_128')}</div>
+													<div  id="dislayFormatLbl" style="vertical-align: middle;  height: 27px;" data-bind="ntsComboBox: {
+															options: actualTimeOptionDisp,
+															optionsValue: 'code',
+															value: actualTimeSelectedCode,
+															optionsText: 'name',
+															enable: showDateRange() &amp;&amp; ko.computed(function() {
+																					        return actualTimeOptionDisp().length  > 1;
+																					    }, this),
+															name:'#[KDW003_128]',
+															columns: [
+																{ prop: 'name', length: 6 },
+															]}">
+													</div>
+											 </div>
+											<div id="cbListDate">
+												<div id="choosenDate"
+													data-bind="ntsDatePicker: {value: selectedDate, 
+													dateFormat: 'YYYY/MM/DD', 
+													showJumpButtons: true,
+													name: nts.uk.resource.getText('KDW003_27'),
+													enable: showDateRange}" />
+											</div>
 										</div>
-									</div>
-		                            
-		                            <!-- visible: referenceVacation().allVacation -->
-		                            <div id="vacationRemaining-content">
+			                    <div id="vacationRemaining-content">
 		                            	<table>
 		                            		<tr>
 		                            			<td>
@@ -174,54 +170,51 @@
 		                            		</tr>
 		                            	</table>
 		                            </div>
-		                            <!-- visible: showButton().available23 -->
-	                            
-	                          <!--   <div id="container" style="padding-top: 12px">
-	                                <div id="emp-component"></div>
-	                            </div>         -->                      
                             </div>
-                            <div id="holiday-agree" class="agree-row">
-                            <div id="numberHoliday" style="float: left; margin-right: 5px">
-	                            <table id="fixed-table">
-	                                <thead>
-	                                    <tr>
-	                                        <th class="ui-widget-header">#{i18n.getText('KDW003_7',["#Com_CompensationHoliday"])}</th>
-	                                        <th class="ui-widget-header">#{i18n.getText('KDW003_7',["#Com_SubstituteHoliday"])}</th>
-	                                        <th class="ui-widget-header">#{i18n.getText('KDW003_7',["#Com_PaidHoliday"])}</th>
-	                                        <th class="ui-widget-header">#{i18n.getText('KDW003_7',["#Com_FundedPaidHoliday"])}</th>
-	                                    </tr>
-	                                </thead>
-	                                <tbody>
-	                                    <tr>
-	                                        <td class="ui-widget-body remain-compen-day">
-	                                        	<span class="text-holiday" data-bind="text: dataHoliday().compensationDay"></span>
-	                                       	</td>
-	                                        <td class="ui-widget-body remain-subst-day">
-	                                        	<span class="text-holiday" data-bind="text: dataHoliday().substitute"></span>
-	                                        </td>
-	                                        <td class="ui-widget-body remain-annual-day">
-	                                        	<span class="text-holiday" data-bind="text: dataHoliday().annualDay"></span>
-	                                        </td>
-	                                        <td class="ui-widget-body remain-reserve-day">
-	                                        	<span class="text-holiday" data-bind="text: dataHoliday().reserve"></span>
-	                                        </td>
-	                                    </tr>
-	                                    <!-- <tr>
-	                                        <td class="ui-widget-body remain-compen-time">
-	                                        	<span class="text-holiday" data-bind="text: dataHoliday().compensationTime"></span>
-	                                        </td>
-	                                        <td class="ui-widget-body"></td>
-	                                        <td class="ui-widget-body remain-annual-time">
-	                                        	<span class="text-holiday" data-bind="text: dataHoliday().annualTime"></span>
-	                                        </td>
-	                                        <td class="ui-widget-body"></td>
-	                                    </tr> -->
-	                                </tbody>
-	                            </table>
-	                            <label data-bind="text: dataHoliday().dispSysDate, visible: referenceVacation().allVacation()"></label>
-	                            <label style="padding-left: 20px" data-bind="text: dataHoliday().dispNextGrantDate, visible: referenceVacation().yearHoliday20()"></label>
-	                        </div>
-	                        <div class="agree-column" style="float: left;" data-bind="let: { fst: agreementInfomation() }">
+                            <div id="holiday-agree" class="agree-row" >
+	                            <div id="numberHoliday" style="float: left; margin-right: 5px ; max-width: 225px">
+		                            <table id="fixed-table">
+		                                <thead>
+		                                    <tr>
+		                                        <th class="ui-widget-header">#{i18n.getText('KDW003_7',["#Com_CompensationHoliday"])}</th>
+		                                        <th class="ui-widget-header">#{i18n.getText('KDW003_7',["#Com_SubstituteHoliday"])}</th>
+		                                        <th class="ui-widget-header">#{i18n.getText('KDW003_7',["#Com_PaidHoliday"])}</th>
+		                                        <th class="ui-widget-header">#{i18n.getText('KDW003_7',["#Com_FundedPaidHoliday"])}</th>
+		                                    </tr>
+		                                </thead>
+		                                <tbody>
+		                                    <tr>
+		                                        <td class="ui-widget-body remain-compen-day">
+		                                        	<span class="text-holiday" data-bind="text: dataHoliday().compensationDay"></span>
+		                                       	</td>
+		                                        <td class="ui-widget-body remain-subst-day">
+		                                        	<span class="text-holiday" data-bind="text: dataHoliday().substitute"></span>
+		                                        </td>
+		                                        <td class="ui-widget-body remain-annual-day">
+		                                        	<span class="text-holiday" data-bind="text: dataHoliday().annualDay"></span>
+		                                        </td>
+		                                        <td class="ui-widget-body remain-reserve-day">
+		                                        	<span class="text-holiday" data-bind="text: dataHoliday().reserve"></span>
+		                                        </td>
+		                                    </tr>
+		                                    <!-- <tr>
+		                                        <td class="ui-widget-body remain-compen-time">
+		                                        	<span class="text-holiday" data-bind="text: dataHoliday().compensationTime"></span>
+		                                        </td>
+		                                        <td class="ui-widget-body"></td>
+		                                        <td class="ui-widget-body remain-annual-time">
+		                                        	<span class="text-holiday" data-bind="text: dataHoliday().annualTime"></span>
+		                                        </td>
+		                                        <td class="ui-widget-body"></td>
+		                                    </tr> -->
+		                                </tbody>
+		                            </table>
+		                            <div style="width: 300px">
+		                            <label data-bind="text: dataHoliday().dispSysDate, visible: referenceVacation().allVacation()" style="max-width: 100px"></label>
+		                            <label style="max-width: 125px" data-bind="text: dataHoliday().dispNextGrantDate, visible: referenceVacation().yearHoliday20()"></label>
+		                            </div>
+		                        </div>
+		                        <div class="agree-column" style="float: left;" data-bind="let: { fst: agreementInfomation() }">
                                     <table id="agree-table"
                                            data-bind="visible : fst.showAgreement()">
                                         <thead>

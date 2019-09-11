@@ -195,8 +195,22 @@ public class ValidatorDataDailyRes {
 		// loc nhung thang chi duoc insert 1 trong 1 cap
 		itemCanCheck.forEach(x -> {
 			Integer itemCheck = INPUT_CHECK_MAP.get(x.getItemId());
-			if (!itemCheckMap.containsKey(itemCheck))
+			if (!itemCheckMap.containsKey(itemCheck)) {
 				itemCheckDBs.add(x);
+			}else {
+				if(itemCheck != null) {
+					 Integer itemId1 = x.getItemId();
+					 Integer itemId2 = INPUT_CHECK_MAP.get(itemId1);
+					 String valueItemIdStart = (itemId1 < itemId2) ? x.getValue()
+							: itemCheckMap.get(itemId2);
+					 String valueItemIdEnd = (itemId1 > itemId2) ? x.getValue()
+								: itemCheckMap.get(itemId1);
+					if (Integer.parseInt(valueItemIdStart) > Integer.parseInt(valueItemIdEnd)) {
+						x.setMessage("Msg_1400");
+						result.add(x);
+					}
+				}
+			}
 		});
 		if (itemCheckDBs.isEmpty())
 			return result;
@@ -209,7 +223,24 @@ public class ValidatorDataDailyRes {
 			if (valueGetFromDBMap.containsKey(INPUT_CHECK_MAP.get(x.getItemId()))
 					&& valueGetFromDBMap.get(INPUT_CHECK_MAP.get(x.getItemId())).equals("")
 			|| ((x.getValue() == null || x.getValue().equals("")) && !valueGetFromDBMap.get(INPUT_CHECK_MAP.get(x.getItemId())).equals(""))) {
+				x.setMessage("Msg_1108");
 				result.add(x);
+			}else {
+				Integer itemId = INPUT_CHECK_MAP.get(x.getItemId()); 
+				if(itemId != null) {
+					 Integer itemId1 = x.getItemId();
+					 Integer itemId2 = INPUT_CHECK_MAP.get(itemId1);
+					 String valueItemIdStart = (itemId1 < itemId2) ? x.getValue()
+							: itemCheckMap.containsKey(itemId2) ? itemCheckMap.get(itemId2)
+									: valueGetFromDBMap.get(itemId2);
+					 String valueItemIdEnd = (itemId1 > itemId2) ? x.getValue()
+								: itemCheckMap.containsKey(itemId1) ? itemCheckMap.get(itemId1)
+										: valueGetFromDBMap.get(itemId1);
+					if (Integer.parseInt(valueItemIdStart) > Integer.parseInt(valueItemIdEnd)) {
+						x.setMessage("Msg_1400");
+						result.add(x);
+					}
+				}
 			}
 		});
 		return result;

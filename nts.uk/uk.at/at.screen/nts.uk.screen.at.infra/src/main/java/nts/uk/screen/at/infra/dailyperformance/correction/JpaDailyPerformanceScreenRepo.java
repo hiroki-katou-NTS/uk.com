@@ -642,7 +642,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 				DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
 					try (PreparedStatement statement = this.connection()
 							.prepareStatement("select * from KCLMT_CLOSURE c" + " inner join KCLMT_CLOSURE_EMPLOYMENT e"
-									+ " on c.CLOSURE_ID = e.CLOSURE_ID" + " where e.CID = ?" + " and EMPLOYMENT_CD in ("
+									+ " on c.CLOSURE_ID = e.CLOSURE_ID and c.CID = e.CID" + " where e.CID = ?" + " and EMPLOYMENT_CD in ("
 									+ subList.stream().map(s -> "?").collect(Collectors.joining(",")) + ")")) {
 
 						statement.setString(1, AppContexts.user().companyId());

@@ -435,12 +435,12 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 	public RCDailyCorrectionResult processCalcMonth(List<DailyRecordWorkCommand> commandNew, List<DailyRecordWorkCommand> commandOld, List<IntegrationOfDaily> domainDailyNew, List<DailyItemValue> dailyItems, boolean isUpdate, UpdateMonthDailyParam month,  int mode) {
 		List<IntegrationOfMonthly> lstMonthDomain = new ArrayList<>();
 		//月次集計を実施する必要があるかチェックする
-		if (mode == 0 && month != null && month.getNeedCallCalc() != null && month.getNeedCallCalc()) {
-			lstMonthDomain = updateMonthAfterProcessDaily.updateMonth(commandNew,
-					(month == null || !month.getDomainMonth().isPresent()) ? domainDailyNew : Collections.emptyList(),
-					(month == null || !month.getDomainMonth().isPresent()) ? Optional.empty() : month.getDomainMonth(),
-					month);
-		}
+	//	if (mode == 0 && month != null && month.getNeedCallCalc() != null && month.getNeedCallCalc()) {
+		lstMonthDomain = updateMonthAfterProcessDaily.updateMonth(commandNew,
+				(month == null || !month.getDomainMonth().isPresent()) ? domainDailyNew : Collections.emptyList(),
+				(month == null || !month.getDomainMonth().isPresent()) ? Optional.empty() : month.getDomainMonth(),
+				month);
+	//	}
 
 		return new RCDailyCorrectionResult(domainDailyNew, lstMonthDomain, commandNew, commandOld, dailyItems, isUpdate);
 	}

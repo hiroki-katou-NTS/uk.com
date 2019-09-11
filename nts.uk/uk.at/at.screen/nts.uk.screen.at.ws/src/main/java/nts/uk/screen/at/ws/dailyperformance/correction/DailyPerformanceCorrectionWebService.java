@@ -221,6 +221,17 @@ public class DailyPerformanceCorrectionWebService {
 		DailyPerformanceCorrectionDto dtoResult = this.initScreenMob.initMOB(param);
 		session.setAttribute("domainOlds", dtoResult.getDomainOld());
 		session.setAttribute("dpStateParam", dtoResult.getStateParam());
+		//add
+		session.setAttribute("domainOldForLog", cloneListDto(dtoResult.getDomainOld()));
+		session.setAttribute("domainEdits", null);
+		session.setAttribute("itemIdRCs", dtoResult.getLstControlDisplayItem() == null ? null : dtoResult.getLstControlDisplayItem().getMapDPAttendance());
+		session.setAttribute("dataSource", dtoResult.getLstData());
+		session.setAttribute("closureId", dtoResult.getClosureId());
+		session.setAttribute("resultReturn", null);
+		session.setAttribute("approvalConfirm", dtoResult.getApprovalConfirmCache());
+		dtoResult.setApprovalConfirmCache(null);
+		removeSession();
+		dtoResult.setDomainOld(Collections.emptyList());
 		return dtoResult;
 	}
 	
