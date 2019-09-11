@@ -31,7 +31,7 @@ public class DPMobileAdUpParam {
 
 	private List<DPItemCheckBox> dataCheckSign = new ArrayList<>();
 
-	private List<DPItemCheckBox> dataCheckApproval = new ArrayList<>();;
+	private List<DPItemCheckBox> dataCheckApproval = new ArrayList<>();
 
 	private DateRange dateRange;
 
@@ -46,10 +46,6 @@ public class DPMobileAdUpParam {
 	private Map<Integer, DPAttendanceItem> lstAttendanceItem;
 
 	private List<DPItemValue> lstNotFoundWorkType = new ArrayList<>();
-
-	private Boolean showDialogError;
-
-	private boolean showFlex;
 
 	private boolean checkDailyChange;
 
