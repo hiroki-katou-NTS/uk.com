@@ -976,8 +976,8 @@ public class PeregProcessor {
 							empInfoQueryOpt.get().getEmployeeId().equals(selfEmployeeId)
 									? creatClassItemList(perItems.get(true), perInfoCtg)
 									: creatClassItemList(perItems.get(false), perInfoCtg));
-					MappingFactory.matchOptionalItemData(null, dto.getLayoutDtos(),
-							new ArrayList<>());
+					
+					MappingFactory.matchOptionalItemData(null, dto.getLayoutDtos(), new ArrayList<>());
 					// get Combo-Box List theo ngày trên màn hình
 					layoutControlComboBox.getComboBoxListForSelectionItems(empInfoQueryOpt.get().getEmployeeId(), perInfoCtg, dto.getLayoutDtos(),
 							query.getStandardDate());
@@ -1017,14 +1017,64 @@ public class PeregProcessor {
 											optionalItemDataDto);
 									// get Combo-Box List theo ngày trên màn hình
 									layoutControlComboBox.getComboBoxListForSelectionItems(empInfoQueryOpt.get().getEmployeeId(), perInfoCtg, dto.getLayoutDtos(),
+											datePeriod.start());
+									result.add(dto);
+								}
+							} else {
+								Optional<PeregEmpInfoQuery> empInfoQueryOpt = query.getEmpInfos().stream()
+										.filter(emp -> emp.getEmployeeId().equals(c.getKey())).findFirst();
+								if (empInfoQueryOpt.isPresent()) {
+									GridLayoutPersonInfoClsDto dto = new GridLayoutPersonInfoClsDto(
+											empInfoQueryOpt.get().getEmployeeId(), empInfoQueryOpt.get().getPersonId(),
+											empInfoQueryOpt.get().getEmployeeId().equals(selfEmployeeId)
+													? creatClassItemList(perItems.get(true), perInfoCtg)
+													: creatClassItemList(perItems.get(false), perInfoCtg));
+
+									MappingFactory.matchOptionalItemData(null, dto.getLayoutDtos(), new ArrayList<>());
+									// get Combo-Box List theo ngày trên màn hình
+									layoutControlComboBox.getComboBoxListForSelectionItems(
+											empInfoQueryOpt.get().getEmployeeId(), perInfoCtg, dto.getLayoutDtos(),
 											query.getStandardDate());
 									result.add(dto);
 								}
 							}
+						} else {
+							Optional<PeregEmpInfoQuery> empInfoQueryOpt = query.getEmpInfos().stream()
+									.filter(emp -> emp.getEmployeeId().equals(c.getKey())).findFirst();
+							if (empInfoQueryOpt.isPresent()) {
+								GridLayoutPersonInfoClsDto dto = new GridLayoutPersonInfoClsDto(
+										empInfoQueryOpt.get().getEmployeeId(), empInfoQueryOpt.get().getPersonId(),
+										empInfoQueryOpt.get().getEmployeeId().equals(selfEmployeeId)
+												? creatClassItemList(perItems.get(true), perInfoCtg)
+												: creatClassItemList(perItems.get(false), perInfoCtg));
+
 								MappingFactory.matchOptionalItemData(null, dto.getLayoutDtos(), new ArrayList<>());
+								// get Combo-Box List theo ngày trên màn hình
+								layoutControlComboBox.getComboBoxListForSelectionItems(
+										empInfoQueryOpt.get().getEmployeeId(), perInfoCtg, dto.getLayoutDtos(),
+										query.getStandardDate());
+								result.add(dto);
+							}
 						}
 
+					}else {
+						Optional<PeregEmpInfoQuery> empInfoQueryOpt = query.getEmpInfos().stream()
+								.filter(emp -> emp.getEmployeeId().equals(c.getKey())).findFirst();
+						if(empInfoQueryOpt.isPresent()){
+							GridLayoutPersonInfoClsDto dto = new GridLayoutPersonInfoClsDto(
+									empInfoQueryOpt.get().getEmployeeId(), empInfoQueryOpt.get().getPersonId(),
+									empInfoQueryOpt.get().getEmployeeId().equals(selfEmployeeId)
+											? creatClassItemList(perItems.get(true), perInfoCtg)
+											: creatClassItemList(perItems.get(false), perInfoCtg));
+							
+							MappingFactory.matchOptionalItemData(null, dto.getLayoutDtos(), new ArrayList<>());
+							// get Combo-Box List theo ngày trên màn hình
+							layoutControlComboBox.getComboBoxListForSelectionItems(empInfoQueryOpt.get().getEmployeeId(), perInfoCtg, dto.getLayoutDtos(),
+									query.getStandardDate());
+							result.add(dto);
+						}
 					}
+
 				}
 			}
 
@@ -1119,9 +1169,55 @@ public class PeregProcessor {
 											query.getStandardDate());
 									result.add(dto);
 								}
+							} else {
+								Optional<PeregEmpInfoQuery> empInfoQueryOpt = query.getEmpInfos().stream()
+										.filter(emp -> emp.getEmployeeId().equals(c.getKey())).findFirst();
+								if (empInfoQueryOpt.isPresent()) {
+									GridLayoutPersonInfoClsDto dto = new GridLayoutPersonInfoClsDto(
+											empInfoQueryOpt.get().getEmployeeId(), empInfoQueryOpt.get().getPersonId(),
+											empInfoQueryOpt.get().getEmployeeId().equals(selfEmployeeId)
+													? creatClassItemList(perItems.get(true), perInfoCtg)
+													: creatClassItemList(perItems.get(false), perInfoCtg));
+									MappingFactory.matchOptionalItemData(null, dto.getLayoutDtos(), new ArrayList<>());
+									// get Combo-Box List theo ngày trên màn hình
+									layoutControlComboBox.getComboBoxListForSelectionItems(
+											empInfoQueryOpt.get().getEmployeeId(), perInfoCtg, dto.getLayoutDtos(),
+											query.getStandardDate());
+									result.add(dto);
+								}
+							}
+						}else {
+							Optional<PeregEmpInfoQuery> empInfoQueryOpt = query.getEmpInfos().stream()
+									.filter(emp -> emp.getEmployeeId().equals(c.getKey())).findFirst();
+							if (empInfoQueryOpt.isPresent()) {
+								GridLayoutPersonInfoClsDto dto = new GridLayoutPersonInfoClsDto(
+										empInfoQueryOpt.get().getEmployeeId(), empInfoQueryOpt.get().getPersonId(),
+										empInfoQueryOpt.get().getEmployeeId().equals(selfEmployeeId)
+												? creatClassItemList(perItems.get(true), perInfoCtg)
+												: creatClassItemList(perItems.get(false), perInfoCtg));
+								MappingFactory.matchOptionalItemData(null, dto.getLayoutDtos(), new ArrayList<>());
+								// get Combo-Box List theo ngày trên màn hình
+								layoutControlComboBox.getComboBoxListForSelectionItems(empInfoQueryOpt.get().getEmployeeId(), perInfoCtg, dto.getLayoutDtos(),
+										query.getStandardDate());
+								result.add(dto);
 							}
 						}
 
+					}else {
+						Optional<PeregEmpInfoQuery> empInfoQueryOpt = query.getEmpInfos().stream()
+								.filter(emp -> emp.getEmployeeId().equals(c.getKey())).findFirst();
+						if (empInfoQueryOpt.isPresent()) {
+							GridLayoutPersonInfoClsDto dto = new GridLayoutPersonInfoClsDto(
+									empInfoQueryOpt.get().getEmployeeId(), empInfoQueryOpt.get().getPersonId(),
+									empInfoQueryOpt.get().getEmployeeId().equals(selfEmployeeId)
+											? creatClassItemList(perItems.get(true), perInfoCtg)
+											: creatClassItemList(perItems.get(false), perInfoCtg));
+							MappingFactory.matchOptionalItemData(null, dto.getLayoutDtos(), new ArrayList<>());
+							// get Combo-Box List theo ngày trên màn hình
+							layoutControlComboBox.getComboBoxListForSelectionItems(empInfoQueryOpt.get().getEmployeeId(), perInfoCtg, dto.getLayoutDtos(),
+									query.getStandardDate());
+							result.add(dto);
+						}
 					}
 				}				
 			}
