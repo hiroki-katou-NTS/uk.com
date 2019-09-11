@@ -27,17 +27,17 @@
 	<ui:define name="content">
 		<div id="functions-area">
 			<button id="A1_1" tabindex="1" class="proceed" style="margin-left: 70px;"
-					data-bind="click:  function(){ exportFile(0); }, enable: $root.errors.isEmpty">#{i18n.getText('QSI013_4')}</button>
+					data-bind="click:  function(){ exportFile(0); }, enable: $root.errors.isEmpty">#{i18n.getText('QSI013_A1_1')}</button>
 			<button id="A1_2" tabindex="2"
-					data-bind="click:  function(){ exportFile(1); }">#{i18n.getText('QSI013_5')}</button>
+					data-bind="click:  function(){ exportFile(1); }">#{i18n.getText('QSI013_A1_2')}</button>
 			<button id="A1_4" tabindex="3"
-					data-bind="click: openBScreen">#{i18n.getText('QSI013_7')}</button>
+					data-bind="click: openBScreen, enable: selectedCode().length">#{i18n.getText('QSI013_A1_3')}</button>
 			<button id="A1_5" tabindex="4"
-					data-bind="enable: false">#{i18n.getText('QSI013_9')}</button>
+					data-bind="enable: false">#{i18n.getText('QSI013_A1_4')}</button>
 			<button id="A1_6" tabindex="5"
-					data-bind="enable: false">#{i18n.getText('QSI013_10')}</button>
+					data-bind="enable: false">#{i18n.getText('QSI013_A1_5')}</button>
 			<button id="A1_3" tabindex="6"
-					data-bind="enable: false">#{i18n.getText('QSI013_6')}</button>
+					data-bind="enable: false">#{i18n.getText('QSI013_A1_6')}</button>
 		</div>
 
 		<div style="margin-top: 15px; min-width: 1000px;" class="contents-area fixed-flex-layout">
@@ -49,21 +49,21 @@
 							<i id="img-calendar" class="image image-calendar"/>
 							<span>#{i18n.getText('QSI013_11')}</span>
 							<div id = "A2_4" data-bind="ntsDatePicker: {
-																name: '#{i18n.getText('QSI013_12')}',
+																name: '#{i18n.getText('QSI013_A222_4')}',
 																value: startDate,
 																dateFormat: 'YYYY/MM/DD',
 																valueFormat: 'YYYYMMDD',
 																required: true
-																}" tabindex="1"></div>
+																}" tabindex="7"></div>
 							<span data-bind = "text: startDateJp" ></span>
 							<span>#{i18n.getText('QSI013_13')}</span>
 							<div id = "A2_7" data-bind="ntsDatePicker: {
-																name: '#{i18n.getText('QSI013_14')}',
+																name: '#{i18n.getText('QSI013_A222_7')}',
 																value: endDate,
 																dateFormat: 'YYYY/MM/DD',
 																valueFormat: 'YYYYMMDD',
 																required: true
-																}" tabindex="1"></div>
+																}" tabindex="8"></div>
 							<span data-bind = "text: endDateJp" ></span>
 						</div>
 				</div>

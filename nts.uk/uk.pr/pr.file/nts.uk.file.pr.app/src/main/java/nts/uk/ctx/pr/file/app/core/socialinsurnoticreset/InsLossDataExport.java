@@ -67,4 +67,27 @@ public class InsLossDataExport {
 
     private String healInsNumber;
 
+    private int prefectureNo;
+
+    private String officeNumber1;
+
+    private String officeNumber2;
+
+    private String officeNumber;
+
+    private String unionOfficeNumber;
+
+    private String portCd;
+
+    private String add1;
+
+    private String add2;
+
+    private String companyName;
+
+    private String repName;
+
+    private String phoneNumber;
+
+
 }
