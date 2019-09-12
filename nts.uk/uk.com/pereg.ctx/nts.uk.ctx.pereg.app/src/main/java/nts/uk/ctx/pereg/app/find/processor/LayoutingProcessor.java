@@ -124,7 +124,7 @@ public class LayoutingProcessor {
 			return new ArrayList<>();
 		}
 
-		List<String> recordIds = objectDto.stream().map(c -> Optional.ofNullable(c.getPeregDomainDto()).map(m  -> m.getRecordId()).orElse(""))
+		List<String> recordIds = objectDto.stream().filter(c -> c.getPeregDomainDto() != null).map(c -> Optional.ofNullable(c.getPeregDomainDto()).map(m  -> m.getRecordId()).orElse(""))
 				.filter(f -> !StringUtil.isNullOrEmpty(f, true))
 				.collect(Collectors.toList());
 
