@@ -1595,13 +1595,13 @@ public class DailyPerformanceCorrectionProcessor {
 			lstEmployeeId = lstInfoEmp.stream().map(x -> x.getSid()).distinct().collect(Collectors.toList());
 			lstEmployeeId.add(employeeIdLogin);
 			lstEmployeeId = lstEmployeeId.stream().distinct().collect(Collectors.toList());
-			if (closureId != null) {
-				Map<String, String> employmentWithSidMap = repo.getAllEmployment(companyId, lstEmployeeId,
-						new DateRange(range.getEndDate(), range.getEndDate()));
-				List<ClosureDto> closureDtos = repo.getClosureId(employmentWithSidMap, range.getEndDate());
-				lstEmployeeId = closureDtos.stream().filter(x -> x.getClosureId().intValue() == closureId.intValue())
-						.map(x -> x.getSid()).collect(Collectors.toSet()).stream().collect(Collectors.toList());
-			}
+//			if (closureId != null) {
+//				Map<String, String> employmentWithSidMap = repo.getAllEmployment(companyId, lstEmployeeId,
+//						new DateRange(range.getEndDate(), range.getEndDate()));
+//				List<ClosureDto> closureDtos = repo.getClosureId(employmentWithSidMap, range.getEndDate());
+//				lstEmployeeId = closureDtos.stream().filter(x -> x.getClosureId().intValue() == closureId.intValue())
+//						.map(x -> x.getSid()).collect(Collectors.toSet()).stream().collect(Collectors.toList());
+//			}
 //			} else {
 //				// No 338
 //				// RoleType 3:就業 EMPLOYMENT
@@ -1613,14 +1613,14 @@ public class DailyPerformanceCorrectionProcessor {
 			}
 			return lstEmployeeId;
 		} else if (mode == ScreenMode.APPROVAL.value) {
-			ApprovalRootOfEmployeeImport approvalRoot = approvalStatusAdapter.getApprovalRootOfEmloyee(range.getStartDate(), range.getEndDate(), employeeIdLogin, companyId, 1);
-			List<String> emloyeeIdApp = approvalRoot == null ? Collections.emptyList() : approvalRoot.getApprovalRootSituations().stream().map(x -> x.getTargetID()).collect(Collectors.toSet()).stream().collect(Collectors.toList());
 			if(employeeIds.isEmpty()){
+				// catch exception in case has not lst emp
+				ApprovalRootOfEmployeeImport approvalRoot = approvalStatusAdapter.getApprovalRootOfEmloyee(range.getStartDate(), range.getEndDate(), employeeIdLogin, companyId, 1);
+				List<String> emloyeeIdApp = approvalRoot == null ? Collections.emptyList() : approvalRoot.getApprovalRootSituations().stream().map(x -> x.getTargetID()).collect(Collectors.toSet()).stream().collect(Collectors.toList());
 				lstEmployeeId =  emloyeeIdApp;
-			}else{
-				Map<String, String> emloyeeIdAppMap = emloyeeIdApp.stream().collect(Collectors.toMap(x -> x, x -> ""));
-				lstEmployeeId = employeeIds.stream().filter(x -> emloyeeIdAppMap.containsKey(x)).collect(Collectors.toList());
-			}			
+			}else {
+				lstEmployeeId = employeeIds;
+			}
 			if(lstEmployeeId.isEmpty()){
 				//throw new BusinessException("Msg_916");
 				screenDto.setErrorInfomation(DCErrorInfomation.APPROVAL_NOT_EMP.value);
@@ -1728,8 +1728,8 @@ public class DailyPerformanceCorrectionProcessor {
 		return new ChangeSPR(change31, change34);
 	}
 	
-	public DatePeriodInfo changeDateRange(DateRange dateRange, ObjectShare objectShare, String companyId, String sId,
-			DailyPerformanceCorrectionDto screenDto, Integer mode, Integer displayFormat, Boolean initScreenOther, DPCorrectionStateParam dpStateParam) {
+	public DatePeriodInfo changeDateRange(DateRange dateRange, DateRange dateRangeInit, ObjectShare objectShare, String companyId, String sId,
+			DailyPerformanceCorrectionDto screenDto, Integer closureId, Integer mode, Integer displayFormat, Boolean initScreenOther, DPCorrectionStateParam dpStateParam) {
 		
 		if (dateRange != null && (initScreenOther == null || !initScreenOther)){
 			screenDto.setEmploymentCode(getEmploymentCode(companyId, dateRange.getEndDate(), sId));
@@ -1738,18 +1738,26 @@ public class DailyPerformanceCorrectionProcessor {
 			return dateInfo;
 		}
 		
-		if(dateRange != null && initScreenOther != null && initScreenOther) {
-			return updatePeriod(Optional.empty(), displayFormat, sId, new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate()));
+		if (dateRange != null && initScreenOther != null && initScreenOther) {
+			return updatePeriod(
+					(objectShare == null || objectShare.getYearMonth() == null) ? Optional.empty()
+							: Optional.of(YearMonth.of(objectShare.getYearMonth())),
+					Optional.empty(), objectShare == null ? Optional.empty() : Optional.of(objectShare.getDateTarget()),
+					displayFormat, sId, new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate()));
 		}
 
-		boolean isObjectShare = objectShare != null && objectShare.getStartDate() != null
-				&& objectShare.getEndDate() != null;
+		boolean isObjectShare = objectShare != null &&((objectShare.getStartDate() != null
+				&& objectShare.getEndDate() != null ) || objectShare.getYearMonth() != null);
 
 		if (isObjectShare && objectShare.getInitClock() == null) {
 			// get employmentCode
 			dateRange = new DateRange(objectShare.getStartDate(), objectShare.getEndDate());
 			screenDto.setEmploymentCode(getEmploymentCode(companyId, dateRange.getEndDate(), sId));
-			return updatePeriod(Optional.empty(), displayFormat, sId, new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate()));
+			return updatePeriod(
+					objectShare.getYearMonth() == null ? Optional.empty()
+							: Optional.ofNullable(YearMonth.of(objectShare.getYearMonth())),
+					Optional.empty(), Optional.empty(), displayFormat, sId,
+					new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate()));
 		} else {
 			GeneralDate dateRefer = GeneralDate.today();
 			if (isObjectShare && objectShare.getInitClock() != null) {
@@ -1767,23 +1775,25 @@ public class DailyPerformanceCorrectionProcessor {
 									: shClosurePub.find(companyId, closureEmploymentOptional.get().getClosureId());
 					dateRange = new DateRange(closingPeriod.get().getClosureStartDate(),
 							closingPeriod.get().getClosureEndDate());
-					return updatePeriod(Optional.empty(), displayFormat, sId, new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate()));
+					return updatePeriod(Optional.empty(), Optional.empty(), Optional.of(objectShare.getInitClock().getDateSpr()), displayFormat, sId, new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate()));
+				}else {
+					return updatePeriod(Optional.empty(), Optional.empty(), Optional.of(objectShare.getInitClock().getDateSpr()), displayFormat, sId, new DatePeriod(dateRefer, dateRefer));
 				}
 			} else {
 				screenDto.setEmploymentCode(getEmploymentCode(companyId, dateRefer, sId));
-				InitSwitchSetDto initSwitch = initSwitchSetAdapter.targetDateFromLogin();
-				if(initSwitch != null &&  !CollectionUtil.isEmpty(initSwitch.getListDateProcessed())) {
-					Optional<DateProcessedRecord> dateRecordOpt = initSwitch.getListDateProcessed().stream().filter(x -> x.getClosureID() == screenDto.getClosureId()).findFirst();
-					if(dateRecordOpt.isPresent() && dateRecordOpt.get().getDatePeriod() != null) {
-						DateRange rangeTemp =  new DateRange(dateRecordOpt.get().getDatePeriod().start(), dateRecordOpt.get().getDatePeriod().end());
-						return updatePeriod(Optional.empty(), displayFormat, sId, new DatePeriod(rangeTemp.getStartDate(), rangeTemp.getEndDate()));
-					}
+//				InitSwitchSetDto initSwitch = initSwitchSetAdapter.targetDateFromLogin();
+				if(dateRangeInit != null) {
+//					Optional<DateProcessedRecord> dateRecordOpt = initSwitch.getListDateProcessed().stream().filter(x -> x.getClosureID() == screenDto.getClosureId()).findFirst();
+//					if(dateRecordOpt.isPresent() && dateRecordOpt.get().getDatePeriod() != null) {
+//						DateRange rangeTemp =  new DateRange(dateRecordOpt.get().getDatePeriod().start(), dateRecordOpt.get().getDatePeriod().end());
+						return updatePeriod(Optional.empty(), Optional.empty(), Optional.empty(), displayFormat, sId, new DatePeriod(dateRangeInit.getStartDate(), dateRangeInit.getEndDate()));
+//					}
 				}
 			}
             
 			DateRange rangeTemp =  new DateRange(GeneralDate.legacyDate(new Date()).addMonths(-1).addDays(+1),
 					GeneralDate.legacyDate(new Date()));
-			return new DatePeriodInfo(Arrays.asList(rangeTemp), rangeTemp, 0, null, new ArrayList<>());
+			return updatePeriod(Optional.empty(), Optional.empty(), Optional.empty(), displayFormat, sId,  new DatePeriod(rangeTemp.getStartDate(), rangeTemp.getEndDate()));
 		}
 	}
 	
@@ -1808,7 +1818,7 @@ public class DailyPerformanceCorrectionProcessor {
 	}
 	
 	//対象期間の更新
-	public DatePeriodInfo updatePeriod(Optional<YearMonth> yearMonthOpt, int displayFormat, String empLogin, DatePeriod period) {
+	public DatePeriodInfo updatePeriod(Optional<YearMonth> yearMonthOpt, Optional<Integer> closureIdShare, Optional<GeneralDate> dateTransfer, int displayFormat, String empLogin, DatePeriod period) {
 		GeneralDate today = GeneralDate.today();
 		DateRange result = new DateRange(today, today);
 		ClosureId closureId = null;
@@ -1847,8 +1857,13 @@ public class DailyPerformanceCorrectionProcessor {
 			lstPeriod.addAll(lstAgg);
 			
 			//Optional<DateRange> dateOpt = lstAgg.stream().filter(x -> x.inRange(today)).findFirst();
-			
-			Optional<AggrPeriodEachActualClosure> dateAggOpt = lstAggrPeriod.stream().filter(x -> DateRange.convertPeriod(x.getPeriod()).inRange(today)).findFirst();
+			Optional<AggrPeriodEachActualClosure> dateAggOpt = Optional.empty();
+		
+			if(!closureIdShare.isPresent()) {
+				dateAggOpt = lstAggrPeriod.stream().filter(x -> DateRange.convertPeriod(x.getPeriod()).inRange(today)).findFirst();
+			}else {
+				dateAggOpt = lstAggrPeriod.stream().filter(x -> x.getClosureId().value == closureIdShare.get()).findFirst();
+			}
 			
 			AggrPeriodEachActualClosure dateAgg = dateAggOpt.isPresent() ? dateAggOpt.get() : lstAggrPeriod.get(0);
 			result = DateRange.convertPeriod(dateAgg.getPeriod());
@@ -1859,7 +1874,10 @@ public class DailyPerformanceCorrectionProcessor {
 		
 		} else if (displayFormat == DisplayFormat.ByDate.value) {
 			// 日付別(daily)
-			if(period.start().beforeOrEquals(today) && period.end().afterOrEquals(today)) {
+			if(dateTransfer.isPresent()) {
+				result = new DateRange(dateTransfer.get(), dateTransfer.get());
+			}
+			else if(period.start().beforeOrEquals(today) && period.end().afterOrEquals(today)) {
 				result = new DateRange(today, today);
 			}else {
 				result = new DateRange(period.start(), period.start());
@@ -1891,6 +1909,26 @@ public class DailyPerformanceCorrectionProcessor {
 				.filter(x -> x.start().beforeOrEquals(pairEmpDate.getRight()) && x.end().afterOrEquals(pairEmpDate.getRight()))
 				.findFirst();
 		return check.isPresent();
+	}
+	
+	public Pair<Integer, DateRange> identificationPeriod(Integer closureId, int mode, DateRange dateRange) {
+		String companyId = AppContexts.user().companyId();
+		String employeeId = AppContexts.user().employeeId();
+		DateRange rangeTemp = new DateRange(GeneralDate.today(), GeneralDate.today());
+		Integer closureIdResult = closureId == null ? getClosureId(companyId, employeeId, GeneralDate.today())
+				: closureId;
+		if (dateRange == null) {
+			InitSwitchSetDto initSwitch = initSwitchSetAdapter.targetDateFromLogin();
+			if (initSwitch != null && !CollectionUtil.isEmpty(initSwitch.getListDateProcessed())) {
+				Optional<DateProcessedRecord> dateRecordOpt = initSwitch.getListDateProcessed().stream()
+						.filter(x -> x.getClosureID() == closureIdResult).findFirst();
+				if (dateRecordOpt.isPresent() && dateRecordOpt.get().getDatePeriod() != null) {
+					rangeTemp = new DateRange(dateRecordOpt.get().getDatePeriod().start(),
+							dateRecordOpt.get().getDatePeriod().end());
+				}
+			}
+		}
+		return Pair.of(closureIdResult, rangeTemp);
 	}
 }
  

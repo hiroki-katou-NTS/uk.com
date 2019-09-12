@@ -16,7 +16,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.finddata.IFindDataDCRecord;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ApprovalUseSettingDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.CorrectionOfDailyPerformance;
@@ -117,14 +116,36 @@ public class InfomationInitScreenProcess {
 		//表示形式の特定 - xu ly tren UI la displayFormat
 		
 		// 社員に対応する処理締めを取得する
-		if (closureId == null) {
-			screenDto.setClosureId(processor.getClosureId(companyId, sId, GeneralDate.today()));
+//		if (closureId == null) {
+//			screenDto.setClosureId(processor.getClosureId(companyId, sId, GeneralDate.today()));
+//		} else {
+//			screenDto.setClosureId(closureId);
+//		}
+		
+		Pair<Integer, DateRange> resultIndentityPeriod = processor.identificationPeriod(closureId, mode, dateRange);
+		screenDto.setClosureId(resultIndentityPeriod.getLeft());
+		DateRange rangeInit = resultIndentityPeriod.getRight();
+		// 社員一覧を変更する -- Lấy nhân viên từ màn hinh khác hoặc lấy từ lần khởi động đầu
+		// tiên
+		// 対象社員の特定
+		List<String> changeEmployeeIds = new ArrayList<>();
+		if (lstEmployee.isEmpty()) {
+			val employeeIds = objectShare == null
+					? lstEmployee.stream().map(x -> x.getId()).collect(Collectors.toList())
+					: objectShare.getLstEmployeeShare();
+			if (employeeIds.isEmpty())
+				needSortEmp = true;
+			changeEmployeeIds = processor.changeListEmployeeId(employeeIds, rangeInit, mode,
+					objectShare != null, screenDto.getClosureId(), screenDto);
 		} else {
-			screenDto.setClosureId(closureId);
+			changeEmployeeIds = lstEmployee.stream().map(x -> x.getId()).collect(Collectors.toList());
 		}
+
+		List<String> employeeIdsOri = changeEmployeeIds;
+				
 		//<<Public>> パラメータに初期値を設定する
 		///期間を変更する
-		DatePeriodInfo resultPeriod = processor.changeDateRange(dateRange, objectShare, companyId, sId, screenDto, mode, displayFormat, initScreenOther, param.dpStateParam);
+		DatePeriodInfo resultPeriod = processor.changeDateRange(dateRange, rangeInit, objectShare, companyId, sId, screenDto, screenDto.getClosureId(), mode, displayFormat, initScreenOther, param.dpStateParam);
 		//TODO: empty dateRange
 		if(resultPeriod == null) {
 			throw new BusinessException(new RawErrorMessage("Error date range empty"));
@@ -141,20 +162,6 @@ public class InfomationInitScreenProcess {
 		}
 		screenDto.setDateRange(dateRange);
 		screenDto.setDatePeriodResult(datePeriodResult);
-		// 社員一覧を変更する -- Lấy nhân viên từ màn hinh khác hoặc lấy từ lần khởi động đầu tiên
-		// 対象社員の特定
-		List<String> changeEmployeeIds = new ArrayList<>();
-		if (lstEmployee.isEmpty()) {
-			val employeeIds = objectShare == null
-					? lstEmployee.stream().map(x -> x.getId()).collect(Collectors.toList())
-					: objectShare.getLstEmployeeShare();
-			if(employeeIds.isEmpty()) needSortEmp = true;
-			changeEmployeeIds = processor.changeListEmployeeId(employeeIds, screenDto.getDateRange(), mode, objectShare != null, screenDto.getClosureId(), screenDto);
-		} else {
-			changeEmployeeIds = lstEmployee.stream().map(x -> x.getId()).collect(Collectors.toList());
-		}
-		
-		List<String> employeeIdsOri = changeEmployeeIds;
 		
 		//if(changeEmployeeIds.isEmpty()) return screenDto;
 		// アルゴリズム「通常モードで起動する」を実行する

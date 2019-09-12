@@ -4758,7 +4758,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         setShared('KDL002_AllItemObj', nts.uk.util.isNullOrEmpty(self.listCode()) ? [] : self.listCode(), true);
                         //selected items
                         setShared('KDL002_SelectedItemId', [self.selectedCode()], true);
-                        modal('/view/kdl/002/a/index.xhtml', { title: '乖離時間の登録＞対象項目', }).onClosed(function(): any {
+                        modal('/view/kdl/002/a/index.xhtml', { title: '乖離時間の登録＞対象項目', width: 700 , height: 520}).onClosed(function(): any {
                             let lst = nts.uk.ui.windows.getShared('KDL002_SelectedNewItem');
                             if (lst != undefined && lst.length > 0 && lst[0].code != "") {
                                 self.updateCodeName(self.rowId(), self.attendenceId, lst[0].name, lst[0].code, self.selectedCode());
@@ -5238,6 +5238,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         endDate: any;//期間 khoảng thời gian
         startDateKDW004: any;//期間 khoảng thời gian KDW004
         endDateKDW004: any;//期間 khoảng thời gian KDW004
+        yearMonth: any;
         constructor() {
         }
         mapDataShare(dataInit: any, dataExtract: any, dataSPR: any) : boolean {
@@ -5256,6 +5257,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     $("#ccg001").hide();
                 }
                 checkDataShare = true;
+                self.yearMonth = dataInit.yearMonth;
             }
             if (dataExtract != undefined) {
                 self.dateTarget = moment(dataExtract.dateTarget, "YYYY/MM/DD");
@@ -5267,6 +5269,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 self.startDateKDW004 =  dataExtract.startDateKDW004;
                 self.endDateKDW004 =  dataExtract.endDateKDW004;
                 checkDataShare = true;
+                self.yearMonth = dataInit.yearMonth;
             }
 
             if (dataSPR != undefined) {
