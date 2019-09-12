@@ -1,14 +1,20 @@
 <template>
 <div class="kdws03g">
+  <div class="modal-header uk-bg-white-smoke pl-0 pr-0 rounded-0">
+    <div class="row uk-text-quote w-100 ml-0 mr-0" v-on:click="$close()">
+      <div class="col-1 pl-1"><i class="fas fa-arrow-left"></i></div>
+      <div class="col-6 pl-0 pr-2"><span>{{ empName }}</span></div>
+    </div>
+  </div>
     <div class="accordion accordion-mn3">
       <!-- G2_1: 休暇残数 -->
-      <div class="card  show border border-left-0 border-right-0">
+      <div class="card  show border border-left-0 border-right-0" v-if="!params.remainOrtime36">
         <div class="card-header uk-bg-accordion">
            <button class="btn btn-link" type="button">{{'KDWS03_70' | i18n}}</button>
         </div>
         <div class="collapse">
           <div class="card-body">
-              <div class="row">
+              <div class="row" v-if="remainNumber.manageYear">
                 <!-- G3_1: 年休残 -->
                 <div class="col-9">{{'KDWS03_47' | i18n}}</div>
                 <!-- G3_2: 年休残数 -->
@@ -20,19 +26,19 @@
                 <!-- G4_2: 次回付与日 -->
                 <div class="col-5 text-right">{{remainNumber.nextGrantDate}}</div>
               </div>
-              <div class="row pt-3">
+              <div class="row pt-3" v-if="remainNumber.manageReserve">
                 <!-- G5_1: 積立年休残 -->
                 <div class="col-9">{{'KDWS03_48' | i18n}}</div>
                 <!-- G5_2: 積立年休残数 -->
                 <div class="col-3 text-right">{{'KDWS03_52' | i18n(remainNumber.reserveRemain)}}</div>
               </div>
-              <div class="row pt-3">
+              <div class="row pt-3" v-if="remainNumber.manageCompensatory">
                 <!-- G6_1: 代休残 -->
                 <div class="col-9">{{'KDWS03_49' | i18n}}</div>
                 <!-- G6_2: 代休残数 -->
                 <div class="col-3 text-right">{{'KDWS03_52' | i18n(remainNumber.compensatoryRemain)}}</div>
               </div>
-              <div class="row pt-3">
+              <div class="row pt-3" v-if="remainNumber.manageSubStitute">
                 <!-- G7_1: 振休残 -->
                 <div class="col-9">{{'KDWS03_50' | i18n}}</div>
                 <!-- G7_2: 振休残数 -->
@@ -42,7 +48,7 @@
         </div>
       </div>
       <!-- G2_2: 時間外超過時間 -->
-      <div class="card show border border-left-0 border-right-0">
+      <div class="card show border border-left-0 border-right-0" v-if="time36.showAgreement && params.remainOrtime36">
         <div class="card-header uk-bg-accordion">
           <button class="btn btn-link" type="button">{{'KDWS03_53' | i18n}}</button>
         </div>
