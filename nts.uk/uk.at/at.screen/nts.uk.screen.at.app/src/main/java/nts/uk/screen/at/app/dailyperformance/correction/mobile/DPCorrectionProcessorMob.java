@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -32,7 +31,6 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.adapter.person.EmployeeInfoFunAdapterDto;
-import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.dom.adapter.employment.EmploymentHisOfEmployeeImport;
 import nts.uk.ctx.at.record.dom.adapter.initswitchsetting.DateProcessedRecord;
 import nts.uk.ctx.at.record.dom.adapter.initswitchsetting.InitSwitchSetAdapter;
@@ -43,15 +41,10 @@ import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproveRootStatusF
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalActionByEmpl;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalStatusForEmployee;
 import nts.uk.ctx.at.record.dom.daily.dailyperformance.classification.EnumCodeName;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.ApprovalStatusActualResult;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.ConfirmStatusActualResult;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.approval.ApprovalStatusActualDayChange;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.confirm.ConfirmStatusActualDayChange;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeUseSet;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.AggrPeriodEachActualClosure;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.GetClosurePeriod;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
-import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
@@ -67,10 +60,8 @@ import nts.uk.ctx.at.request.app.find.application.applicationlist.AppGroupExport
 import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationExportDto;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationListForScreen;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
-import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHolidayRepository;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemIdContainer;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapterDto;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
@@ -86,18 +77,12 @@ import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
 import nts.uk.ctx.sys.auth.dom.role.Role;
 import nts.uk.ctx.sys.auth.dom.role.RoleRepository;
 import nts.uk.screen.at.app.dailymodify.command.common.ProcessCommonCalc;
-import nts.uk.screen.at.app.dailymodify.query.DailyModifyQueryProcessor;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyResult;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
-import nts.uk.screen.at.app.dailyperformance.correction.GetDataDaily;
 import nts.uk.screen.at.app.dailyperformance.correction.checkdata.ValidatorDataDailyRes;
 import nts.uk.screen.at.app.dailyperformance.correction.closure.FindClosureDateService;
-import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeName;
-import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeNameType;
-import nts.uk.screen.at.app.dailyperformance.correction.datadialog.DataDialogWithTypeProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ActualLockDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AffEmploymentHistoryDto;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.ApprovalConfirmCache;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ApprovalUseSettingDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AuthorityFomatDailyDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AuthorityFormatInitialDisplayDto;
@@ -109,24 +94,18 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.DCMessageError;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPAttendanceItem;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPAttendanceItemControl;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPBusinessTypeControl;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.DPCellDataDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPControlDisplayItem;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPDataDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPErrorDto;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.DPErrorSettingDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPHeaderDto;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.DPHideControlCell;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemValue;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceCorrectionDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceEmployeeDto;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyRecEditSetDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DatePeriodInfo;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DisplayFormat;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DisplayItem;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DivergenceTimeDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ErAlWorkRecordShortDto;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.ErrorReferenceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.FormatDPCorrectionDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.IdentityProcessUseSetDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ObjectShare;
@@ -135,24 +114,16 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.OptionalItemDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.SPRCheck;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ScreenMode;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkFixedDto;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkInfoOfDailyPerformanceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.cache.AggrPeriodClosure;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.cache.DPCorrectionStateParam;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkapproval.ApproveRootStatusForEmpDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkshowbutton.DailyPerformanceAuthorityDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.companyhist.AffComHistItemAtScreen;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.mobile.EmployeeParam;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.type.TypeLink;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.workplacehist.WorkPlaceHistTemp;
 import nts.uk.screen.at.app.dailyperformance.correction.error.DCErrorInfomation;
-import nts.uk.screen.at.app.dailyperformance.correction.error.ShowDialogError;
-import nts.uk.screen.at.app.dailyperformance.correction.lock.CheckLockDataDaily;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.ClosureSidDto;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.ConfirmationMonthDto;
-import nts.uk.screen.at.app.dailyperformance.correction.lock.DPLock;
-import nts.uk.screen.at.app.dailyperformance.correction.lock.DPLockDto;
-import nts.uk.screen.at.app.dailyperformance.correction.month.ErrorMonthProcessor;
-import nts.uk.screen.at.app.dailyperformance.correction.process.CheckClosingEmployee;
 import nts.uk.screen.at.app.dailyperformance.correction.text.DPText;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
@@ -172,14 +143,8 @@ public class DPCorrectionProcessorMob {
 	private ClosureService closureService;
 
 	@Inject
-	private DailyModifyQueryProcessor dailyModifyQueryProcessor;
-
-	@Inject
 	private DailyAttendanceItemNameAdapter dailyAttendanceItemNameAdapter;
-
-	@Inject
-	private DataDialogWithTypeProcessor dataDialogWithTypeProcessor;
-
+	
 	@Inject
 	private ClosureEmploymentRepository closureEmploymentRepository;
 
@@ -194,24 +159,9 @@ public class DPCorrectionProcessorMob {
 	
 	@Inject
 	private TimeLeavingOfDailyPerformanceRepository timeLeavingOfDailyPerformanceRepository;
-
-	@Inject
-	private DPLock findLock;
-		
-	@Inject
-	private ShowDialogError showDialogError;
 	
 	@Resource
 	private ManagedExecutorService executorService;
-
-	@Inject
-	private ErrorMonthProcessor errorMonthProcessor;
-	
-	@Inject
-	private PublicHolidayRepository publicHolidayRepository;
-	
-	@Inject
-	private CheckClosingEmployee checkClosingEmployee;
 	
 	@Inject
 	private RoleRepository roleRepository;
@@ -220,16 +170,7 @@ public class DPCorrectionProcessorMob {
 	private SyWorkplacePub syWorkplacePub;
 	
 	@Inject
-	private CheckLockDataDaily checkLockDataDaily;
-	
-	@Inject
 	private InitSwitchSetAdapter initSwitchSetAdapter;
-	
-	@Inject
-	private ApprovalStatusActualDayChange approvalStatusActualDayChange;
-	
-	@Inject
-	private ConfirmStatusActualDayChange confirmStatusActualDayChange;
 
 	@Inject
 	private FindClosureDateService findClosureService;
@@ -280,281 +221,6 @@ public class DPCorrectionProcessorMob {
 	}
 	public String converDateToString(GeneralDate genDate) {
 		return DATE_FORMATTER.format(genDate.toLocalDate());
-	}
-
-	public DailyPerformanceCorrectionDto generateData(DailyPerformanceCorrectionDto screenDto,
-			List<DailyPerformanceEmployeeDto> lstEmployee, Integer initScreen, Integer mode, Integer displayFormat,
-			CorrectionOfDailyPerformance correct, List<String> formatCodes, Boolean showError, Boolean showLock, ObjectShare objectShare, Integer closureId) {
-		System.out.println("start daily");
-		long startTime = System.currentTimeMillis();
-		String NAME_EMPTY = TextResource.localize("KDW003_82");
-		String NAME_NOT_FOUND = TextResource.localize("KDW003_81");
-		List<String> listEmployeeId = screenDto.getEmployeeIds();
-		List<String> changeEmployeeIds = screenDto.getEmployeeIds();
-		String companyId = AppContexts.user().companyId();
-		String sId =  AppContexts.user().employeeId();
-		DateRange dateRange = screenDto.getDateRange();
-//		CountDownLatch countDownLatch = new CountDownLatch(1);
-		val dateRangeTemp = dateRange;
-		
-		Optional<IdentityProcessUseSetDto> identityProcessDtoOpt = screenDto.getIdentityProcessDtoOpt();
-		Optional<ApprovalUseSettingDto> approvalUseSettingDtoOpt = screenDto.getApprovalUseSettingDtoOpt();
-		List<DPErrorDto> lstError = screenDto.getDPErrorDto();
-		DisplayItem disItem = screenDto.getDisItem();
-		
-		Map<Integer, DPAttendanceItem> mapDP = screenDto.getLstControlDisplayItem().getMapDPAttendance();
-						
-		// disable cell
-		screenDto.markLoginUser(sId);
-		long start1 = System.currentTimeMillis();
-		screenDto.createAccessModifierCellState(mapDP);
-		System.out.println("time disable : " + (System.currentTimeMillis() - start1));
-		
-		// get data from DB
-		List<DailyModifyResult> results = new ArrayList<>();
-		Pair<List<DailyModifyResult>, List<DailyRecordDto>> resultPair = new GetDataDaily(listEmployeeId, dateRange, disItem.getLstAtdItemUnique(), dailyModifyQueryProcessor).getAllData();
-		results = resultPair.getLeft();
-		screenDto.setDomainOld(resultPair.getRight());
-		screenDto.getItemValues().addAll(results.isEmpty() ? new ArrayList<>() : results.get(0).getItems());
-//		List<ItemValue> dataValue = screenDto.getItemValues().stream().sorted((x, y) -> x.getItemId() - y.getItemId()).collect(Collectors.toList());
-		Map<String, DailyModifyResult> resultDailyMap = results.stream().collect(Collectors
-				.toMap(x -> mergeString(x.getEmployeeId(), "|", x.getDate().toString()), Function.identity(), (x, y) -> x));
-		
-		
-		//// 11. Excel: 未計算のアラームがある場合は日付又は名前に表示する
-		// Map<Integer, Integer> typeControl =
-		//// lstAttendanceItem.stream().collect(Collectors.toMap(DPAttendanceItem::
-		//// getId, DPAttendanceItem::getAttendanceAtr));
-		List<WorkInfoOfDailyPerformanceDto> workInfoOfDaily = repo.getListWorkInfoOfDailyPerformance(listEmployeeId,
-				dateRange);
-
-		// set error, alarm
-		if (screenDto.getLstEmployee().size() > 0) {
-			if (lstError.size() > 0) {
-				// Get list error setting
-				long timeT = System.currentTimeMillis();
-				List<DPErrorSettingDto> lstErrorSetting = this.repo
-						.getErrorSetting(companyId, lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()), true, true, false);
-				// Seperate Error and Alarm
-				if(lstErrorSetting.isEmpty()) {
-					lstError = new ArrayList<>();
-				}
-				System.out.println("time load Error: "+ (System.currentTimeMillis() - timeT));
-				screenDto.addErrorToResponseData(lstError, lstErrorSetting, mapDP, false);
-			}
-		}
-
-		// No 20 get submitted application
-		// disable check box sign
-		Map<String, Boolean> disableSignMap = new HashMap<>();
-		Map<String, String> appMapDateSid = getApplication(listEmployeeId, dateRange, disableSignMap);
-		
-		screenDto.getLstFixedHeader().forEach(column -> {
-			screenDto.getLstControlDisplayItem().getColumnSettings().add(new ColumnSetting(column.getKey(), false));
-		});
-		
-		DPLockDto dpLockDto = findLock.checkLockAll(companyId, listEmployeeId, dateRangeTemp, sId, mode, identityProcessDtoOpt, approvalUseSettingDtoOpt);
-//		String keyFind = IdentifierUtil.randomUniqueId();
-		long startTime1 = System.currentTimeMillis();
-		List<ConfirmStatusActualResult> confirmResults = new ArrayList<>();
-		List<ApprovalStatusActualResult> approvalResults = new ArrayList<>();
-		
-//		if (displayFormat != 1) {
-//			confirmResults = confirmApprovalStatusActualDay.processConfirmStatus(companyId, listEmployeeId,
-//					new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate()), screenDto.getClosureId(),
-//					Optional.of(keyFind));
-			confirmResults = confirmStatusActualDayChange.processConfirmStatus(companyId, sId, listEmployeeId, Optional.of(new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate())), Optional.empty());
-			System.out.println("thoi gian load checkbox 1:" + (System.currentTimeMillis() - startTime1));
-
-			approvalResults = approvalStatusActualDayChange.processApprovalStatus(companyId, sId, listEmployeeId, Optional.of(new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate())), Optional.empty(), mode);
-//			approvalResults = approvalStatusActualDay.processApprovalStatus(companyId, listEmployeeId,
-//					new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate()), screenDto.getClosureId(), mode,
-//					Optional.of(keyFind));
-			// approvalResults = new ArrayList<>();
-			System.out.println("thoi gian load checkbox 2:" + (System.currentTimeMillis() - startTime1));
-//		} else {
-//			confirmResults = confirmApprovalStatusActualDay.processConfirmStatus(companyId, listEmployeeId,
-//					dateRange.getStartDate(), screenDto.getClosureId());
-//			System.out.println("thoi gian load checkbox 1:" + (System.currentTimeMillis() - startTime1));
-//
-//			approvalResults = approvalStatusActualDay.processApprovalStatus(companyId, listEmployeeId,
-//					dateRange.getStartDate(), screenDto.getClosureId(), mode);
-//			// approvalResults = new ArrayList<>();
-//			System.out.println("thoi gian load checkbox 2:" + (System.currentTimeMillis() - startTime1));
-//		}
-		
-		// 社員の締めをチェックする
-		Map<String, List<EmploymentHisOfEmployeeImport>> mapClosingEmpResult = checkClosingEmployee
-				.checkClosingEmployee(companyId, changeEmployeeIds,
-						new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate()), screenDto.getClosureId());
-
-		List<DailyRecEditSetDto> dailyRecEditSets = repo.getDailyRecEditSet(listEmployeeId, dateRange);
-		Map<String, Integer> dailyRecEditSetsMap = dailyRecEditSets.stream()
-				.collect(Collectors.toMap(x -> mergeString(String.valueOf(x.getAttendanceItemId()), "|",
-						x.getEmployeeId(), "|", converDateToString(x.getProcessingYmd())), x -> x.getEditState()));
-		
-		mapDataIntoGrid(screenDto, sId, appMapDateSid, listEmployeeId, resultDailyMap, mode, displayFormat, showLock,
-				identityProcessDtoOpt, approvalUseSettingDtoOpt, dateRange, objectShare,
-				companyId, disItem, screenDto.getLstControlDisplayItem(), dailyRecEditSetsMap,
-				workInfoOfDaily, disableSignMap, NAME_EMPTY, NAME_NOT_FOUND, dpLockDto, confirmResults, approvalResults, mapClosingEmpResult);
-		// set cell data
-		System.out.println("time get data into cell : " + (System.currentTimeMillis() - start1));
-		//bug 107966 disable edit flex in case lock
-		if(displayFormat == 0 && screenDto.getMonthResult() != null && screenDto.getMonthResult().getFlexShortage() != null) {
-			boolean disableFlex = checkLockDataDaily.checkLockInPeriod(screenDto.getLstData(),
-					screenDto.getMonthResult().getFlexShortage().getPeriodCheckLock());
-			screenDto.setLockDisableFlex(disableFlex);
-			screenDto.setRangeLock(screenDto.getMonthResult().getFlexShortage().getRangeLock());
-		}
-		OperationOfDailyPerformanceDto dailyPerformanceDto = repo.findOperationOfDailyPerformance();
-		screenDto.setShowErrorDialog(showDialogError.showDialogError(lstError, showError, dailyPerformanceDto));
-		screenDto.setDateRange(screenDto.getDatePeriodResult());
-		screenDto.resetDailyInit();
-		System.out.println("end daily"+ (System.currentTimeMillis() - startTime));
-		screenDto.setApprovalConfirmCache(new ApprovalConfirmCache(sId, listEmployeeId,
-				new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate()), mode, confirmResults,
-				approvalResults));
-		return screenDto;
-	}
-
-	public void mapDataIntoGrid(DailyPerformanceCorrectionDto screenDto, String sId, Map<String, String> appMapDateSid, List<String> listEmployeeId, 
-			Map<String, DailyModifyResult> resultDailyMap, Integer mode, Integer displayFormat, Boolean showLock,
-			Optional<IdentityProcessUseSetDto> identityProcessDtoOpt, Optional<ApprovalUseSettingDto> approvalUseSettingDtoOpt,
-			DateRange dateRange, ObjectShare objectShare, String companyId,
-			DisplayItem disItem, DPControlDisplayItem dPControlDisplayItem,
-			Map<String, Integer> dailyRecEditSetsMap, List<WorkInfoOfDailyPerformanceDto> workInfoOfDaily, Map<String, Boolean> disableSignMap,
-			String NAME_EMPTY, String NAME_NOT_FOUND, DPLockDto dpLock, List<ConfirmStatusActualResult> confirmResults, List<ApprovalStatusActualResult> approvalResults,
-			Map<String, List<EmploymentHisOfEmployeeImport>> mapClosingEmpResult
-			){
-		Map<String, ItemValue> itemValueMap = new HashMap<>();
-		List<DPDataDto> lstData = new ArrayList<DPDataDto>();
-		Set<Integer> types = dPControlDisplayItem.getLstAttendanceItem() == null ? new HashSet<>()
-				: dPControlDisplayItem.getLstAttendanceItem().stream().map(x -> x.getTypeGroup()).filter(x -> x != null)
-						.collect(Collectors.toSet());
-		Map<Integer, Map<String, CodeName>> mapGetName = dataDialogWithTypeProcessor
-				.getAllCodeName(new ArrayList<>(types), companyId, dateRange.getEndDate());
-		CodeNameType codeNameReason = dataDialogWithTypeProcessor.getReason(companyId);
-		Map<String, CodeName> codeNameReasonMap = codeNameReason != null
-				? codeNameReason.getCodeNames().stream()
-						.collect(Collectors.toMap(x -> mergeString(x.getCode(), "|", x.getId()), x -> x))
-				: Collections.emptyMap();
-						//get status check box 
-		List<GeneralDate> holidayDate = publicHolidayRepository
-				.getpHolidayWhileDate(companyId, dateRange.getStartDate(), dateRange.getEndDate()).stream()
-				.map(x -> x.getDate()).collect(Collectors.toList());
-		Map<Pair<String, GeneralDate>, ConfirmStatusActualResult> mapConfirmResult = confirmResults.stream().collect(Collectors.toMap(x -> Pair.of(x.getEmployeeId(), x.getDate()), x -> x, (x, y) -> x));
-		Map<Pair<String, GeneralDate>, ApprovalStatusActualResult> mapApprovalResults = approvalResults.stream().collect(Collectors.toMap(x -> Pair.of(x.getEmployeeId(), x.getDate()), x -> x, (x, y) -> x));
-
-		//cell hide check box approval
-		List<DPHideControlCell> lstCellHideControl = new ArrayList<>();
-		for (DPDataDto data : screenDto.getLstData()) {
-			//filter Date in Period
-			if(!checkDataInClosing(Pair.of(data.getEmployeeId(), data.getDate()), mapClosingEmpResult)) {
-				continue;
-			}
-			boolean textColorSpr = false;
-			data.setEmploymentCode(screenDto.getEmploymentCode());
-			if (!sId.equals(data.getEmployeeId())) {
-				screenDto.setCellSate(data.getId(), DPText.LOCK_APPLICATION, DPText.STATE_DISABLE);
-			}
-			// map name submitted into cell
-			if (appMapDateSid.containsKey(data.getEmployeeId() + "|" + data.getDate())) {
-				data.addCellData(new DPCellDataDto(DPText.COLUMN_SUBMITTED,
-						appMapDateSid.get(data.getEmployeeId() + "|" + data.getDate()), "", ""));
-			} else {
-				data.addCellData(new DPCellDataDto(DPText.COLUMN_SUBMITTED, "", "", ""));
-			}
-			data.addCellData(new DPCellDataDto(DPText.COLUMN_SUBMITTED, "", "", ""));
-			data.addCellData(new DPCellDataDto(DPText.LOCK_APPLICATION, "", "", ""));
-			data.addCellData(new DPCellDataDto(DPText.LOCK_APPLICATION_LIST, "", "", ""));
-			
-			//set checkbox sign
-			ConfirmStatusActualResult dataSign = mapConfirmResult.get(Pair.of(data.getEmployeeId(), data.getDate()));
-			data.setSign(dataSign == null ? false : dataSign.isStatus());
-			// state check box sign
-			boolean disableSignApp = disableSignMap.containsKey(data.getEmployeeId() + "|" + data.getDate()) && disableSignMap.get(data.getEmployeeId() + "|" + data.getDate());
-			
-			ApprovalStatusActualResult dataApproval = mapApprovalResults.get(Pair.of(data.getEmployeeId(), data.getDate()));
-			//set checkbox approval
-			data.setApproval(dataApproval == null ? false : mode == ScreenMode.NORMAL.value ? dataApproval.isStatusNormal() : dataApproval.isStatus());
-				
-			ApproveRootStatusForEmpDto approvalCheckMonth = dpLock.getLockCheckMonth().get(data.getEmployeeId() + "|" + data.getDate());
-		//	}
-			DailyModifyResult resultOfOneRow = getRow(resultDailyMap, data.getEmployeeId(), data.getDate());
-			boolean lockDaykWpl = false, lockDay = false, lockWpl = false, lockHist = false, lockApprovalMonth = false, lockConfirmMonth = false;
-			if (resultOfOneRow != null && (displayFormat == 2 ? !data.getError().equals("") : true)) {
-				//set disable and lock
-				lockDataCheckbox(sId, screenDto, data, identityProcessDtoOpt, approvalUseSettingDtoOpt, mode, data.isApproval(), data.isSign());
-				if (showLock == null || showLock) {
-					lockDay = checkLockDay(dpLock.getLockDayAndWpl(), data);
-					lockWpl = checkLockWork(dpLock.getLockDayAndWpl(), data);
-					lockHist = lockHist(dpLock.getLockHist(), data);
-					lockApprovalMonth = approvalCheckMonth == null ? false : approvalCheckMonth.isCheckApproval();
-					lockConfirmMonth = checkLockConfirmMonth(dpLock.getLockConfirmMonth(), data);
-					lockDaykWpl = lockDay || lockWpl;
-					lockDaykWpl = lockAndDisable(screenDto, data, mode, lockDaykWpl, dataApproval == null ? false : dataApproval.isStatusNormal(), lockHist,
-							data.isSign(), lockApprovalMonth, lockConfirmMonth);
-				} else {
-					lockDaykWpl = lockAndDisable(screenDto, data, mode, lockDaykWpl, false, lockHist,
-							false, lockApprovalMonth, lockConfirmMonth);
-				}
-                
-				if(displayFormat == 0 && objectShare != null && objectShare.getInitClock() != null && data.getDate().equals(objectShare.getEndDate())){
-					// set question SPR 
-					screenDto.setShowQuestionSPR(checkSPR(companyId, disItem.getLstAtdItemUnique(), data.getState(), approvalUseSettingDtoOpt.get(), identityProcessDtoOpt.get(), data.isApproval(), data.isSign()).value);
-				    if(data.getDate().equals(objectShare.getEndDate())){
-				    	//screenDto.set().add(new TextStyle("_"+data.getId(), "date", "italic-text"));
-				    	screenDto.setCellSate(data.getId(), "date", DPText.ITALIC_TEXT);
-				    	textColorSpr = true;
-				    }
-				}
-				//set cell state day
-				if(!textColorSpr){
-					setTextColorDay(screenDto, data.getDate(), "date", data.getId(), holidayDate);
-				}
-				itemValueMap = resultOfOneRow.getItems().stream()
-						.collect(Collectors.toMap(x -> mergeString(String.valueOf(x.getItemId()), "|",
-								data.getEmployeeId(), "|", data.getDate().toString()), x -> x));
-				processCellData(NAME_EMPTY, NAME_NOT_FOUND, screenDto, dPControlDisplayItem, mapGetName, codeNameReasonMap,
-						itemValueMap,  data, lockDaykWpl, dailyRecEditSetsMap, objectShare);
-				lstData.add(data);
-				// DPCellDataDto bPCellDataDto = new DPCellDataDto(columnKey,
-				// value,
-				// dataType, type);
-				Optional<WorkInfoOfDailyPerformanceDto> optWorkInfoOfDailyPerformanceDto = workInfoOfDaily.stream()
-						.filter(w -> w.getEmployeeId().equals(data.getEmployeeId())
-								&& w.getYmd().equals(data.getDate()))
-						.findFirst();
-				if (optWorkInfoOfDailyPerformanceDto.isPresent()
-						&& optWorkInfoOfDailyPerformanceDto.get().getState() == CalculationState.No_Calculated)
-					screenDto.setAlarmCellForFixedColumn(data.getId(), displayFormat);
-			}
-			
-			if(lockDay || lockHist || dataSign == null || (!dataSign.isStatus() ? (!dataSign.notDisableForConfirm() ? true : disableSignApp) : !dataSign.notDisableForConfirm())){
-				screenDto.setCellSate(data.getId(), DPText.LOCK_SIGN, DPText.STATE_DISABLE);
-			}
-			
-			if(lockDay || lockHist || dataApproval == null || (mode == ScreenMode.NORMAL.value ? !dataApproval.notDisableNormal() : !dataApproval.notDisableApproval())) {
-				screenDto.setCellSate(data.getId(), DPText.LOCK_APPROVAL, DPText.STATE_DISABLE);
-			}
-			
-			if(dataApproval == null) {
-				screenDto.setCellSate(data.getId(), DPText.LOCK_APPROVAL, DPText.STATE_ERROR);
-				lstCellHideControl.add(new DPHideControlCell(data.getId(), DPText.LOCK_APPROVAL));
-			}
-		}
-		screenDto.setLstHideControl(lstCellHideControl);
-		// chech ca hai gia tri spr thay doi
-		if (displayFormat == 0 && objectShare != null && objectShare.getInitClock() != null) {
-			screenDto
-					.setShowQuestionSPR((screenDto.getChangeSPR().isChange31() || screenDto.getChangeSPR().isChange34())
-							&& screenDto.getShowQuestionSPR() != SPRCheck.INSERT.value ? SPRCheck.SHOW_CONFIRM.value
-									: SPRCheck.INSERT.value);
-		}
-		screenDto.setLstData(lstData);
-		screenDto.getChangeSPR().setPrincipal(screenDto.getShowPrincipal())
-				.setSupervisor(screenDto.getShowSupervisor());
-		
 	}
 	
 	public void setStateLock(DPDataDto data, String lockMessage){
@@ -615,161 +281,6 @@ public class DPCorrectionProcessorMob {
 		
 		if (mode == ScreenMode.APPROVAL.value) screenDto.setCellSate(data.getId(), DPText.LOCK_SIGN, DPText.STATE_DISABLE);
 		return lock;
-	}
-	
-	public void processCellData(String NAME_EMPTY, String NAME_NOT_FOUND, DailyPerformanceCorrectionDto screenDto,
-			DPControlDisplayItem dPControlDisplayItem,
-			Map<Integer, Map<String, CodeName>> mapGetName,  Map<String, CodeName> mapReasonName, Map<String, ItemValue> itemValueMap, DPDataDto data,
-			boolean lock, Map<String, Integer> dailyRecEditSetsMap, ObjectShare share) {
-		Set<DPCellDataDto> cellDatas = data.getCellDatas();
-		String typeGroup = "";
-		Integer cellEdit;
-		if (dPControlDisplayItem.getLstAttendanceItem() != null) {
-			for (DPAttendanceItem item : dPControlDisplayItem.getLstAttendanceItem()) {
-				//DPAttendanceItem dpAttenItem1 = mapDP.get(item.getId());
-				String itemIdAsString = item.getId().toString();
-				// int a = 1;
-				int attendanceAtr = item.getAttendanceAtr();
-				String attendanceAtrAsString = String.valueOf(item.getAttendanceAtr());
-				Integer groupType = item.getTypeGroup();
-				String key = mergeString(itemIdAsString, "|", data.getEmployeeId(), "|" + data.getDate().toString());
-				String value = itemValueMap.get(key) != null && itemValueMap.get(key).value() != null
-						? itemValueMap.get(key).value().toString() : "";
-				cellEdit = dailyRecEditSetsMap.get(mergeString(itemIdAsString, "|", data.getEmployeeId(), "|" + converDateToString(data.getDate())));
-				
-				if (attendanceAtr == DailyAttendanceAtr.Code.value
-						|| attendanceAtr == DailyAttendanceAtr.Classification.value) {
-					String nameColKey = mergeString(DPText.NAME, itemIdAsString);
-					if (attendanceAtr == DailyAttendanceAtr.Code.value) {
-						String codeColKey = mergeString(DPText.CODE, itemIdAsString);
-						typeGroup = typeGroup
-								+ mergeString(String.valueOf(item.getId()), ":", String.valueOf(groupType), "|");
-						if (lock) {
-							screenDto.setCellSate(data.getId(), codeColKey, DPText.STATE_DISABLE, true);
-							screenDto.setCellSate(data.getId(), nameColKey, DPText.STATE_DISABLE, true);
-						}
-						if (value.isEmpty() || value.equals("null")) {
-							cellDatas.add(new DPCellDataDto(mergeString(DPText.CODE, itemIdAsString), "",
-									attendanceAtrAsString, DPText.TYPE_LABEL));
-							value = NAME_EMPTY;
-						} else {
-							if (groupType != null) {
-								if (groupType == TypeLink.WORKPLACE.value || groupType == TypeLink.POSSITION.value) {
-//									Optional<CodeName> optCodeName = dataDialogWithTypeProcessor
-//											.getCodeNameWithId(groupType, data.getDate(), value);
-									val mapCodeNameAll = mapGetName.get(groupType).get(value);
-									cellDatas.add(new DPCellDataDto(codeColKey,
-											mapCodeNameAll != null ? mapCodeNameAll.getCode() : value,
-											attendanceAtrAsString, DPText.TYPE_LABEL));
-									value = mapCodeNameAll == null ? NAME_NOT_FOUND : mapCodeNameAll.getName();
-								}else if(groupType == TypeLink.REASON.value){
-									int group = DEVIATION_REASON_MAP.get(item.getId());
-									cellDatas.add(new DPCellDataDto(codeColKey, value,attendanceAtrAsString, DPText.TYPE_LABEL));
-									value = mapReasonName.containsKey(value+"|"+group) ? mapReasonName.get(value+"|"+group).getName() : NAME_NOT_FOUND;
-								}
-								else {
-									cellDatas.add(
-											new DPCellDataDto(codeColKey, value, attendanceAtrAsString, DPText.TYPE_LABEL));
-									value = mapGetName.get(groupType).containsKey(value)
-											? mapGetName.get(groupType).get(value).getName() : NAME_NOT_FOUND;
-								}
-							}
-						}
-						cellDatas.add(new DPCellDataDto(nameColKey, value, attendanceAtrAsString, DPText.TYPE_LINK));
-						// set color edit
-						cellEditColor(screenDto, data.getId(), nameColKey, cellEdit);
-						cellEditColor(screenDto, data.getId(), codeColKey, cellEdit);
-					} else {
-						String noColKey = mergeString(DPText.NO, itemIdAsString);
-						if (lock) {
-							screenDto.setCellSate(data.getId(), noColKey, DPText.STATE_DISABLE, true);
-							screenDto.setCellSate(data.getId(), nameColKey, DPText.STATE_DISABLE, true);
-						}
-						cellDatas.add(new DPCellDataDto(noColKey, Integer.parseInt(value), attendanceAtrAsString, DPText.TYPE_LABEL));
-						cellDatas.add(new DPCellDataDto(nameColKey, Integer.parseInt(value), attendanceAtrAsString, DPText.TYPE_LINK));
-						cellEditColor(screenDto, data.getId(), nameColKey, cellEdit);
-						cellEditColor(screenDto, data.getId(), noColKey, cellEdit);
-					}
-
-				} else {
-					String anyChar = mergeString(DPText.ADD_CHARACTER, itemIdAsString);
-					// set color edit
-					cellEditColor(screenDto, data.getId(), anyChar, cellEdit);
-					if (lock) {
-						screenDto.setCellSate(data.getId(), anyChar, DPText.STATE_DISABLE, true);
-					}
-					if (attendanceAtr == DailyAttendanceAtr.Time.value
-							|| attendanceAtr == DailyAttendanceAtr.TimeOfDay.value) {
-						//set SPR
-						if(share != null && share.getInitClock() != null && share.getDisplayFormat() == 0 && data.getDate().equals(share.getEndDate())){
-							boolean change31 = false;
-							boolean change34 = false;
-							if (!lock) {
-								if (screenDto.getShowQuestionSPR() != SPRCheck.NOT_INSERT.value) {
-									if (item.getId() == 31
-											&& data.getEmployeeId().equals(share.getInitClock().getEmployeeId())
-											&& data.getDate().equals(share.getInitClock().getDateSpr())) {
-										// value = share.getInitClock().getGoOut() != null ?
-										// share.getInitClock().getGoOut() : "";
-										if (!share.getInitClock().getGoOut().equals("")) {
-											// if (value.equals("") || (Integer.parseInt(value) !=
-											// Integer.parseInt(share.getInitClock().getGoOut())))
-											change31 = true;
-										}
-										ChangeSPR changeSPR31 = processSPR(data.getEmployeeId(), data.getDate(), share,
-												change31, false);
-										changeSPR31.setChange34(screenDto.getChangeSPR().isChange34());
-										screenDto.setChangeSPR(changeSPR31.setRow31(data.getId()));
-									} else if (item.getId() == 34
-											&& data.getEmployeeId().equals(share.getInitClock().getEmployeeId())
-											&& data.getDate().equals(share.getInitClock().getDateSpr())) {
-										if (!share.getInitClock().getLiveTime().equals("")) {
-											// if (value.equals("") || (Integer.parseInt(value) !=
-											// Integer.parseInt(share.getInitClock().getLiveTime())))
-											change34 = true;
-										}
-										ChangeSPR changeSPR34 = processSPR(data.getEmployeeId(), data.getDate(), share,
-												false, change34);
-										changeSPR34.setChange31(screenDto.getChangeSPR().isChange31());
-										screenDto.setChangeSPR(changeSPR34.setRow34(data.getId()));
-									}
-									// insertStampSourceInfo(data.getEmployeeId(), data.getDate(), att, leav);
-									screenDto.getChangeSPR().setShowSupervisor(data.isApproval());
-								}
-							} else {
-								ChangeSPR changeSpr = new ChangeSPR(change31, change34);
-								changeSpr.setMessageIdError("Msg_1531");
-								screenDto.setChangeSPR(changeSpr);
-							}
-						}
-						if (!value.isEmpty()) {
-							// convert HH:mm
-							int minute =0 ;
-							if(Integer.parseInt(value) >= 0){
-								minute = Integer.parseInt(value);
-							}else{
-								if (attendanceAtr == DailyAttendanceAtr.TimeOfDay.value) {
-									minute = 0 - ((Integer.parseInt(value)+ (1 + -Integer.parseInt(value) / DPText.MINUTES_OF_DAY) * DPText.MINUTES_OF_DAY));
-								} else {
-									minute = Integer.parseInt(value);
-								}
-							}
-							int hours = minute / 60;
-							int minutes = Math.abs(minute) % 60;
-							String valueConvert = (minute < 0 && hours == 0) ?  "-"+String.format(DPText.FORMAT_HH_MM, hours, minutes) : String.format(DPText.FORMAT_HH_MM, hours, minutes);
-							cellDatas.add(new DPCellDataDto(anyChar, valueConvert,
-									attendanceAtrAsString, DPText.TYPE_LABEL));
-						} else {
-							cellDatas.add(new DPCellDataDto(anyChar, value, attendanceAtrAsString, DPText.TYPE_LABEL));
-						}
-					} else {
-						cellDatas.add(new DPCellDataDto(anyChar, value, attendanceAtrAsString, DPText.TYPE_LABEL));
-					}
-				}
-			}
-		}
-		data.setTypeGroup(typeGroup);
-		data.setCellDatas(cellDatas);
 	}
 
 	public DailyModifyResult getRow(Map<String, DailyModifyResult> resultDailyMap, String sId, GeneralDate date) {
@@ -1140,103 +651,6 @@ public class DPCorrectionProcessorMob {
 			}
 		});
 		return shows;
-	}
-
-	public List<ErrorReferenceDto> getListErrorRefer(DateRange dateRange,
-			List<DailyPerformanceEmployeeDto> lstEmployee, Integer closureId) {
-		List<ErrorReferenceDto> lstErrorRefer = new ArrayList<>();
-		String companyId = AppContexts.user().companyId();
-		List<DPErrorDto> lstError = this.repo.getListDPError(dateRange,
-				lstEmployee.stream().map(e -> e.getId()).collect(Collectors.toList())).stream().distinct().collect(Collectors.toList());
-		Map<String, String> appMapDateSid = getApplication(new ArrayList<>(lstEmployee.stream().map(x -> x.getId()).collect(Collectors.toSet())), dateRange, null);
-		int rowId = 0;
-		if (lstError.size() > 0) {
-			// 対応するドメインモデル「勤務実績のエラーアラーム」をすべて取得する
-			// Get list error setting
-			List<DPErrorSettingDto> lstErrorSetting = this.repo
-					.getErrorSetting(companyId, lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()), true, true, false);
-			// convert to list error reference
-			//IntStream.range(0, lstError.size()).forEach(id -> {
-			for (int id = 0; id < lstError.size(); id++) {
-				for (DPErrorSettingDto errorSetting : lstErrorSetting) {
-					if (lstError.get(id).getErrorCode().equals(errorSetting.getErrorAlarmCode())) {
-						DPErrorDto value = lstError.get(id);
-						if (lstError.get(id).getAttendanceItemId().size() > 0) {
-							for (int x = 0; x < lstError.get(id).getAttendanceItemId().size(); x++) {
-								// lstError.get(id).getAttendanceItemId().forEach(x
-								// -> {
-								lstErrorRefer.add(new ErrorReferenceDto(String.valueOf(rowId), value.getEmployeeId(),
-										"", "", value.getProcessingDate(), value.getErrorCode(),
-										value.getErrorAlarmMessage() == null
-												? (errorSetting.getMessageDisplay() == null ? ""
-														: errorSetting.getMessageDisplay())
-												: value.getErrorAlarmMessage(),
-										lstError.get(id).getAttendanceItemId().get(x), "", errorSetting.isBoldAtr(),
-										errorSetting.getMessageColor(),
-										appMapDateSid
-												.containsKey(value.getEmployeeId() + "|" + value.getProcessingDate())
-														? appMapDateSid.get(
-																value.getEmployeeId() + "|" + value.getProcessingDate())
-														: "", false));
-								rowId++;
-							}
-						} else {
-							lstErrorRefer.add(new ErrorReferenceDto(String.valueOf(rowId), value.getEmployeeId(),
-									value.getProcessingDate(), value.getErrorCode(),
-									value.getErrorAlarmMessage() == null ? (errorSetting.getMessageDisplay() == null ? "" : errorSetting.getMessageDisplay()) : value.getErrorAlarmMessage(),
-									errorSetting.isBoldAtr(),
-									errorSetting.getMessageColor(),
-									appMapDateSid
-											.containsKey(value.getEmployeeId() + "|" + value.getProcessingDate())
-													? appMapDateSid.get(
-															value.getEmployeeId() + "|" + value.getProcessingDate())
-													: ""));
-							rowId++;
-						}
-					}
-				}
-			}
-		}
-			// get list item to add item name
-			Set<Integer> itemIds = lstError.stream().flatMap(x -> x.getAttendanceItemId().stream()).collect(Collectors.toSet());
-			
-			Map<Integer, String> lstAttendanceItem = dailyAttendanceItemNameAdapter.getDailyAttendanceItemName(new ArrayList<>(itemIds))
-					.stream().collect(Collectors.toMap(DailyAttendanceItemNameAdapterDto::getAttendanceItemId,
-							x -> x.getAttendanceItemName())); // 9s
-			
-			List<DPItemValue> dpItems = errorMonthProcessor.getErrorMonth(lstEmployee.stream().map(x -> x.getId()).collect(Collectors.toSet()), dateRange);
-			for(DPItemValue value : dpItems) {
-				lstErrorRefer.add(new ErrorReferenceDto(String.valueOf(rowId), value.getEmployeeId(),
-						value.getDate(), "", value.getMessage(), true));
-				rowId++;
-			}
-			
-			// add employee code & name
-			for (ErrorReferenceDto errorRefer : lstErrorRefer) {
-				String name = errorRefer == null ? null : lstAttendanceItem.get(errorRefer.getItemId());
-				errorRefer.setItemName(name == null ? "" : name);
-				for (DailyPerformanceEmployeeDto employee : lstEmployee) {
-					if (errorRefer.getEmployeeId().equals(employee.getId())) {
-						errorRefer.setEmployeeCode(employee.getCode());
-						errorRefer.setEmployeeName(employee.getBusinessName());
-					}
-				}
-			}
-			
-	   Map<String, List<EmploymentHisOfEmployeeImport>> mapClosingEmpResult = checkClosingEmployee.checkClosingEmployee(companyId, lstEmployee.stream().map(x -> x.getId()).distinct().collect(Collectors.toList()), 
-					new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate()), closureId);
-			
-		lstErrorRefer = lstErrorRefer.stream().filter(x -> {
-				if(x.getItemMonth().booleanValue()) {
-					return mapClosingEmpResult.containsKey(x.getEmployeeId());
-				}else {
-					return checkDataInClosing(Pair.of(x.getEmployeeId(), x.getDate()), mapClosingEmpResult);
-				}
-				
-			}).collect(Collectors.toList());
-			
-			
-		return lstErrorRefer;
 	}
 
 	/**
