@@ -1,4 +1,4 @@
-import { Vue } from '@app/provider';
+import { Vue, _ } from '@app/provider';
 import { component, Prop } from '@app/core/component';
 import { storage } from '@app/utils';
 
@@ -34,11 +34,13 @@ export class KdwS03GComponent extends Vue {
         maxExcessNumber: 0,
         showAgreement: false					
     };
+    public empName: string = '';
 
     public created() {
         let self = this;
         let cache: any = storage.local.getItem('dailyCorrectionState');
         let employeeIdSel = cache.selectedEmployee;
+        self.empName = (_.find(cache.lstEmployee, (c) => c.id == employeeIdSel) || { businessName: '' }).businessName;
         if (this.params.remainOrtime36 == 0) {//休暇残数
             self.$http.post('at', servicePath.getRemain + employeeIdSel).then((result: any) => {
                 let data = result.data;
@@ -47,9 +49,9 @@ export class KdwS03GComponent extends Vue {
                     yearRemain: data.annualLeave.annualLeaveRemain,
                     manageReserve: data.reserveLeave.manageRemainNumber,
                     reserveRemain: data.reserveLeave.remainNumber,
-                    manageCompensatory: data.compenLeaveRemain.manageCompenLeave,
+                    manageCompensatory: data.compensatoryLeave.manageCompenLeave,
                     compensatoryRemain: data.compensatoryLeave.compenLeaveRemain,
-                    manageSubStitute: data.substituteRemain.manageAtr,
+                    manageSubStitute: data.substitutionLeave.manageAtr,
                     substituteRemain: data.substitutionLeave.holidayRemain,
                     nextGrantDate: data.nextGrantDate
                 };

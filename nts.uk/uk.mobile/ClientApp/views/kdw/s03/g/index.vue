@@ -1,5 +1,11 @@
 <template>
 <div class="kdws03g">
+  <div class="modal-header uk-bg-white-smoke pl-0 pr-0 rounded-0">
+    <div class="row uk-text-quote w-100 ml-0 mr-0" v-on:click="$close()">
+      <div class="col-1 pl-1"><i class="fas fa-arrow-left"></i></div>
+      <div class="col-6 pl-0 pr-2"><span>{{ empName }}</span></div>
+    </div>
+  </div>
     <div class="accordion accordion-mn3">
       <!-- G2_1: 休暇残数 -->
       <div class="card  show border border-left-0 border-right-0" v-if="!params.remainOrtime36">
