@@ -9,5 +9,6 @@ public interface NotificationOfLossInsExRepository {
     List<InsLossDataExport> getWelfPenInsLoss(List<String> empIds, String cid, GeneralDate startDate, GeneralDate endDate);
     List<InsLossDataExport> getHealthInsLoss(List<String> empIds, String cid, GeneralDate startDate, GeneralDate endDate);
     CompanyInfor getCompanyInfor(String cid);
+    List<PensFundSubmissData> getHealthInsAssociation(List<String> empIds, String cid, GeneralDate startDate, GeneralDate endDate);
 
 }

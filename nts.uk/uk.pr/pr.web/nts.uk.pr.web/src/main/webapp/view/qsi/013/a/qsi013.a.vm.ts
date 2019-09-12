@@ -32,7 +32,7 @@ module nts.uk.pr.view.qsi013.a.viewmodel {
         /* kcp005 */
         baseDate: any;
         listComponentOption: any;
-        selectedCode: KnockoutObservable<string>;
+        selectedCode: KnockoutObservable<string> = ko.observable('');
         multiSelectedCode: KnockoutObservableArray<string>;
         isShowAlreadySet: KnockoutObservable<boolean>;
         alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
@@ -94,16 +94,24 @@ module nts.uk.pr.view.qsi013.a.viewmodel {
         openBScreen() {
             let self = this;
             let params = {
-                employeeList: self.employeeList()
+                employeeList: self.getListEmployee(self.selectedCode(), self.employeeList())
             };
             setShared("QSI013_PARAMS_B", params);
             modal("/view/qsi/013/b/index.xhtml");
         }
 
+        getListEmployee(empCode: Array, listEmp: Array){
+            let listEmployee: any = [];
+            _.each(empCode, (item) =>{
+                let emp = _.find(listEmp, function(itemEmp) { return itemEmp.code == item; });
+                listEmployee.push(emp);
+            });
+            return listEmployee;
+        }
+
         loadKCP005(){
             let self = this;
             self.baseDate = ko.observable(new Date());
-            self.selectedCode = ko.observable('');
             self.multiSelectedCode = ko.observableArray(['0', '1', '4']);
             self.isShowAlreadySet = ko.observable(false);
             self.alreadySettingList = ko.observableArray([
@@ -129,7 +137,8 @@ module nts.uk.pr.view.qsi013.a.viewmodel {
                 alreadySettingList: self.alreadySettingList,
                 isShowWorkPlaceName: self.isShowWorkPlaceName(),
                 isShowSelectAllButton: self.isShowSelectAllButton(),
-                disableSelection : self.disableSelection()
+                disableSelection : self.disableSelection(),
+                tabIndex: 10
             };
             $('#component-items-list').ntsListComponent(self.listComponentOption);
         }
@@ -222,7 +231,7 @@ module nts.uk.pr.view.qsi013.a.viewmodel {
                 showAllClosure: false,
                 showPeriod: false,
                 periodFormatYM: false,
-                tabindex: 5,
+                tabindex: 9,
                 /** Required parameter */
                 baseDate: moment().toISOString(),
                 periodStartDate: moment().toISOString(),

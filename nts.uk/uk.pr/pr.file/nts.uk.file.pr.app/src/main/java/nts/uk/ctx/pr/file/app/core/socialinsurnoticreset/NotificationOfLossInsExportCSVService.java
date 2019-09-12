@@ -15,7 +15,6 @@ import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.ArrayList;
 import java.util.List;
 
 @Stateless
@@ -97,8 +96,22 @@ public class NotificationOfLossInsExportCSVService extends ExportService<Notific
 					new LossNotificationInformation(healthInsLoss, welfPenInsLoss, socialInsuranceOffice, socialInsurNotiCreateSet, exportServiceContext.getQuery().getReference(), company, infor));
         }
 
-        if(domain.getOutputFormat().get() == OutputFormatClass.HEAL_INSUR_ASSO) {
-			
+        /*if(domain.getOutputFormat().get() == OutputFormatClass.HEAL_INSUR_ASSO) {
+			List<SocialInsurancePrefectureInformation> infor  = socialInsuranceInfor.findByHistory();
+			List<SocialInsuranceOffice> socialInsuranceOffice =  socialInsuranceOfficeRepository.findByCid(cid);
+			CompanyInfor company = socialInsurNotiCreateSetEx.getCompanyInfor(cid);
+			List<InsLossDataExport> healthInsAssociationData = socialInsurNotiCreateSetEx.getHealthInsAssociation(empIds, cid, start, end);
+			notificationOfLossInsCSVFileGenerator.generate(exportServiceContext.getGeneratorContext(),
+					new LossNotificationInformation(null, null, socialInsuranceOffice, socialInsurNotiCreateSet, exportServiceContext.getQuery().getReference(), company, infor));
+		}*/
+
+		if(domain.getOutputFormat().get() == OutputFormatClass.THE_WELF_PEN) {
+			List<SocialInsurancePrefectureInformation> infor  = socialInsuranceInfor.findByHistory();
+			List<SocialInsuranceOffice> socialInsuranceOffice =  socialInsuranceOfficeRepository.findByCid(cid);
+			CompanyInfor company = socialInsurNotiCreateSetEx.getCompanyInfor(cid);
+			List<PensFundSubmissData> healthInsAssociationData = socialInsurNotiCreateSetEx.getHealthInsAssociation(empIds, cid, start, end);
+			notificationOfLossInsCSVFileGenerator.generate(exportServiceContext.getGeneratorContext(),
+					new LossNotificationInformation(null, null, socialInsuranceOffice, socialInsurNotiCreateSet, exportServiceContext.getQuery().getReference(), company, infor));
 		}
 
     }

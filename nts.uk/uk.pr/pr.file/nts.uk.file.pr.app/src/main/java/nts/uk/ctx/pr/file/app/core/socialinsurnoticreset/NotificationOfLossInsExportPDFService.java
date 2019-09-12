@@ -12,12 +12,15 @@ import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.PersonalNumClass;
 import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.SocialInsurNotiCrSetRepository;
 import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.SocialInsurNotiCreateSet;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.EmpWelfarePenInsQualiInforRepository;
+import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.ReasonsForLossPensionIns;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmplHealInsurQualifiInforRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Stateless
 public class NotificationOfLossInsExportPDFService extends ExportService<NotificationOfLossInsExportQuery> {
@@ -69,13 +72,16 @@ public class NotificationOfLossInsExportPDFService extends ExportService<Notific
 			throw new BusinessException("Msg_37");
 		}
 
-		if( socialInsurNotiCreateSet.getOutputFormat() == PersonalNumClass.DO_NOT_OUTPUT.value) {
+		if( socialInsurNotiCreateSet.getPrintPersonNumber() == PersonalNumClass.DO_NOT_OUTPUT.value) {
 			List<InsLossDataExport> healthInsLoss = socialInsurNotiCreateSetEx.getHealthInsLoss(empIds, cid, start, end);
 			List<InsLossDataExport> welfPenInsLoss = socialInsurNotiCreateSetEx.getWelfPenInsLoss(empIds, cid, start, end);
+			List<InsLossDataExport> overSeventy = welfPenInsLoss.stream().filter(item-> item.getCause() == ReasonsForLossPensionIns.ONLY_PENSION_INSURANCE.value).collect(Collectors.toList());
+			List<InsLossDataExport> underSeventy = welfPenInsLoss.stream().filter(item-> item.getCause() != ReasonsForLossPensionIns.ONLY_PENSION_INSURANCE.value).collect(Collectors.toList());
+			healthInsLoss.addAll(underSeventy);
 			List<SocialInsuranceOffice> socialInsuranceOffice =  socialInsuranceOfficeRepository.findByCid(cid);
 			CompanyInfor company = socialInsurNotiCreateSetEx.getCompanyInfor(cid);
 			socialInsurNotiCreateSetFileGenerator.generate(exportServiceContext.getGeneratorContext(),
-					new LossNotificationInformation(healthInsLoss, welfPenInsLoss, socialInsuranceOffice, socialInsurNotiCreateSet, exportServiceContext.getQuery().getReference(), company, null));
+					new LossNotificationInformation(healthInsLoss, overSeventy, socialInsuranceOffice, socialInsurNotiCreateSet, exportServiceContext.getQuery().getReference(), company, null));
 		}
 	}
 
