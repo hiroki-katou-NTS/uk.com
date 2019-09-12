@@ -385,7 +385,7 @@ public class CheckFileFinder {
 									}
 									
 									if (itemDto.getItemCode().equals(period.getPeriods().get(1).getItem())) {
-										period.getPeriods().get(1).setValue(item.getValue());
+										period.getPeriods().get(1).setValue(itemDto.getValue());
 									}
 							}
 							
