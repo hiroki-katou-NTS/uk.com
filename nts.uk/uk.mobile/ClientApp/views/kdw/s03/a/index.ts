@@ -4,6 +4,7 @@ import { FixTableComponent } from '@app/components/fix-table';
 import { TimeDuration } from '@app/utils/time';
 import { storage } from '@app/utils';
 import { KdwS03BComponent } from 'views/kdw/s03/b';
+import { KdwS03AMenuComponent } from 'views/kdw/s03/a/menu';
 
 @component({
     name: 'kdws03a',
@@ -14,7 +15,8 @@ import { KdwS03BComponent } from 'views/kdw/s03/b';
     constraints: [],
     components: {
         'fix-table': FixTableComponent,
-        'kdws03b': KdwS03BComponent
+        'kdws03b': KdwS03BComponent,
+        'kdws03amenu': KdwS03AMenuComponent
     },
     validations: {
         yearMonth: {
@@ -221,7 +223,8 @@ export class Kdws03AComponent extends Vue {
                         (!_.isNil(self.dateRanger) ? { startDate: self.$dt.fromString(self.dateRanger.startDate), endDate: self.$dt.fromString(self.dateRanger.endDate) } : null) :
                         { startDate: self.selectedDate, endDate: self.selectedDate },
                     cellDataLst: this.displayDataLst,
-                    headerLst: this.displayHeaderLst
+                    headerLst: this.displayHeaderLst,
+                    timePeriodAllInfo: self.timePeriodAllInfo
                 });
                 this.$mask('hide');
             }
@@ -290,7 +293,7 @@ export class Kdws03AComponent extends Vue {
                 if (_.has(rowDataSrc, header.key)) {
                     rowData.push({
                         key: header.key,
-                        value: rowDataSrc[header.key]
+                        value: rowDataSrc[header.key],
                     });
                 } else {
                     rowData.push({
@@ -305,7 +308,8 @@ export class Kdws03AComponent extends Vue {
                 self.displayDataLst.push({
                     rowData,
                     date: rowDataSrc.date,
-                    dateDetail: rowDataSrc.dateDetail, id: rowDataSrc.id
+                    dateDetail: rowDataSrc.dateDetail, id: rowDataSrc.id,
+                    ERAL: rowDataSrc.error
                 });
             } else {
                 self.displayDataLst.push({
@@ -313,7 +317,8 @@ export class Kdws03AComponent extends Vue {
                     employeeName: rowDataSrc.employeeName,
                     employeeNameDis: this.countHalf(rowDataSrc.employeeName) > 10 ? rowDataSrc.employeeName.substring(0, 5) + '...' : rowDataSrc.employeeName,
                     employeeId: rowDataSrc.employeeId,
-                    id: rowDataSrc.id
+                    id: rowDataSrc.id,
+                    ERAL: rowDataSrc.error
                 });
             }
         });
@@ -446,6 +451,14 @@ export class Kdws03AComponent extends Vue {
         }
 
         self.$modal('kdws03b', { employeeName: 'testName', date: new Date(), data: param1.rowData, contentType: param2 }, { type: 'dropback' })
+            .then((v) => {
+
+            });
+    }
+
+    public openMenu() {
+
+        this.$modal('kdws03amenu', { }, { type: 'dropback',title:null })
             .then((v) => {
 
             });

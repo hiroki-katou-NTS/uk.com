@@ -66,6 +66,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.DPControlDisplayItem
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPCorrectionInitParam;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPDataDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPErrorDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DPErrorSettingDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPHideControlCell;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPSheetDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceCorrectionDto;
@@ -129,10 +130,10 @@ public class InitScreenMob {
 
 	@Inject
 	private PublicHolidayRepository publicHolidayRepository;
-	
+
 	@Inject
 	private CheckClosingEmployee checkClosingEmployee;
-	
+
 	@Inject
 	private FindAllEmployee findAllEmployee;
 
@@ -165,12 +166,13 @@ public class InitScreenMob {
 				: new IdentityProcessUseSetDto(false, false, null));
 		Optional<ApprovalUseSettingDto> approvalUseSettingDtoOpt = repo.findApprovalUseSettingDto(companyId);
 		screenDto.setApprovalUseSettingDtoOpt(approvalUseSettingDtoOpt);
-		
+
 		// 保持パラメータを生成する
 		screenDto.setClosureId(processor.getClosureId(companyId, sId, GeneralDate.today()));
-		
+
 		// 期間を変更する
-		DatePeriodInfo resultPeriod = processor.changeDateRange(dateRange, null, companyId, sId, screenDto, screenMode, displayFormat, param.dpStateParam);
+		DatePeriodInfo resultPeriod = processor.changeDateRange(dateRange, null, companyId, sId, screenDto, screenMode,
+				displayFormat, param.dpStateParam);
 		dateRange = resultPeriod.getTargetRange();
 		screenDto.setDateRange(dateRange);
 		screenDto.setPeriodInfo(resultPeriod);
@@ -178,17 +180,19 @@ public class InitScreenMob {
 		// 対象社員の特定
 		List<String> allIds = new ArrayList<>();
 		List<String> changeEmployeeIds = new ArrayList<>();
-		
-		allIds = processor.changeListEmployeeId(new ArrayList<>(), screenDto.getDateRange(), screenMode, false, screenDto.getClosureId(), screenDto);
+
+		allIds = processor.changeListEmployeeId(new ArrayList<>(), screenDto.getDateRange(), screenMode, false,
+				screenDto.getClosureId(), screenDto);
 
 		// ログイン社員の日別実績の権限を取得する
 		screenDto.setAuthorityDto(processor.getAuthority(screenDto));
 
 		screenDto.setLstEmployee(findAllEmployee.findAllEmployee(allIds, dateRange.getEndDate()));
-		
+
 		List<DailyPerformanceEmployeeDto> lstEmployeeData = new ArrayList<>();
 		if (displayFormat == 0) {
-			lstEmployeeData = screenDto.getLstEmployee().stream().filter(x -> x.getId().equals(employeeID)).collect(Collectors.toList());
+			lstEmployeeData = screenDto.getLstEmployee().stream().filter(x -> x.getId().equals(employeeID))
+					.collect(Collectors.toList());
 			changeEmployeeIds.add(employeeID);
 		} else {
 			lstEmployeeData = screenDto.getLstEmployee();
@@ -197,54 +201,60 @@ public class InitScreenMob {
 
 		screenDto.setLstData(processor.getListData(lstEmployeeData, dateRange, displayFormat));
 
-		Map<String, WorkPlaceHistTemp> WPHMap = repo.getWplByListSidAndPeriod(companyId, changeEmployeeIds, screenDto.getDateRange().getEndDate());
+		Map<String, WorkPlaceHistTemp> WPHMap = repo.getWplByListSidAndPeriod(companyId, changeEmployeeIds,
+				screenDto.getDateRange().getEndDate());
 		screenDto.getLstEmployee().stream().map(x -> {
 			val wph = WPHMap.get(x.getId());
 			x.setWorkplaceName(wph == null ? "" : wph.getName());
 			return x;
 		}).collect(Collectors.toList());
 
-		Map<String, List<AffComHistItemAtScreen>> affCompanyMap = repo.getAffCompanyHistoryOfEmployee(AppContexts.user().companyId(), changeEmployeeIds);
+		Map<String, List<AffComHistItemAtScreen>> affCompanyMap = repo
+				.getAffCompanyHistoryOfEmployee(AppContexts.user().companyId(), changeEmployeeIds);
 		screenDto.setLstData(processor.setWorkPlace(WPHMap, affCompanyMap, screenDto.getLstData()));
-		
+
 		List<DPDataDto> listData = new ArrayList<>();
 		for (String employeeId : changeEmployeeIds) {
 			screenDto.getLstData().stream().forEach(item -> {
-				if(item.getEmployeeId().equals(employeeId)){
+				if (item.getEmployeeId().equals(employeeId)) {
 					listData.add(item);
-				}				
-			});			
+				}
+			});
 		}
-		
-		screenDto.setLstData(displayFormat == 1 ? listData.stream().sorted((x, y) ->x.getEmployeeCode().compareTo(y.getEmployeeCode())).collect(Collectors.toList()) : listData);
-		
-		
+
+		screenDto.setLstData(
+				displayFormat == 1
+						? listData.stream().sorted((x, y) -> x.getEmployeeCode().compareTo(y.getEmployeeCode()))
+								.collect(Collectors.toList())
+						: listData);
+
 		List<String> listEmployeeId = screenDto.getLstData().stream().map(e -> e.getEmployeeId())
 				.collect(Collectors.toSet()).stream().collect(Collectors.toList());
-		if(listEmployeeId.isEmpty()) {
-			//screenDto.setLstEmployee(Collections.emptyList());
+		if (listEmployeeId.isEmpty()) {
+			// screenDto.setLstEmployee(Collections.emptyList());
 			screenDto.setErrorInfomation(DCErrorInfomation.NOT_EMP_IN_HIST.value);
 			setStateParam(screenDto, resultPeriod, displayFormat, false);
 			return screenDto;
 		}
-		
+
 		// フォーマットの特定（スマホ）
 		// 表示項目を制御する（スマホ）
 		DisplayItem disItem = processor.getDisplayItems(null, new ArrayList<>(), companyId, screenDto, listEmployeeId,
 				false, dailyPerformanceDto);
-		if(disItem == null || !disItem.getErrors().isEmpty()) {
-			if(disItem != null) screenDto.setErrors(disItem.getErrors());
+		if (disItem == null || !disItem.getErrors().isEmpty()) {
+			if (disItem != null)
+				screenDto.setErrors(disItem.getErrors());
 			setStateParam(screenDto, resultPeriod, displayFormat, false);
 			return screenDto;
 		}
 		DPControlDisplayItem dPControlDisplayItem = processor.getItemIdNames(disItem, false);
 		screenDto.setLstControlDisplayItem(dPControlDisplayItem);
 
-		Map<Integer, DPAttendanceItem> mapDP = screenDto.getLstControlDisplayItem().getMapDPAttendance();		
+		Map<Integer, DPAttendanceItem> mapDP = screenDto.getLstControlDisplayItem().getMapDPAttendance();
 		// disable cell
 		screenDto.markLoginUser(sId);
 		screenDto.createAccessModifierCellState(mapDP);
-		
+
 		// 日次項目の取得
 		// 日別実績の取得
 		List<DailyModifyResult> results = new ArrayList<>();
@@ -261,39 +271,67 @@ public class InitScreenMob {
 				identityProcessDtoOpt, approvalUseSettingDtoOpt);
 
 		// 確認、承認状況の取得
-		List<ConfirmStatusActualResult> confirmResults = new ArrayList<>();
+		// List<ConfirmStatusActualResult> confirmResults = new ArrayList<>();
 		List<ApprovalStatusActualResult> approvalResults = new ArrayList<>();
 
-		confirmResults = confirmStatusActualDayChange.processConfirmStatus(companyId, sId, listEmployeeId,
-				Optional.of(new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate())), Optional.empty());
+		// confirmResults = confirmStatusActualDayChange.processConfirmStatus(companyId,
+		// sId, listEmployeeId,
+		// Optional.of(new DatePeriod(dateRange.getStartDate(),
+		// dateRange.getEndDate())), Optional.empty());
 		approvalResults = approvalStatusActualDayChange.processApprovalStatus(companyId, sId, listEmployeeId,
 				Optional.of(new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate())), Optional.empty(),
 				screenMode);
 
-		screenDto.setApprovalConfirmCache(new ApprovalConfirmCache(sId, listEmployeeId,
-				new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate()), screenMode, confirmResults,
-				approvalResults));
-		
-		Map<Pair<String, GeneralDate>, ConfirmStatusActualResult> mapConfirmResult = confirmResults.stream().collect(Collectors.toMap(x -> Pair.of(x.getEmployeeId(), x.getDate()), x -> x, (x, y) -> x));
-		Map<Pair<String, GeneralDate>, ApprovalStatusActualResult> mapApprovalResults = approvalResults.stream().collect(Collectors.toMap(x -> Pair.of(x.getEmployeeId(), x.getDate()), x -> x, (x, y) -> x));
+		// screenDto.setApprovalConfirmCache(new ApprovalConfirmCache(sId,
+		// listEmployeeId,
+		// new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate()), screenMode,
+		// confirmResults,
+		// approvalResults));
 
+		// Map<Pair<String, GeneralDate>, ConfirmStatusActualResult> mapConfirmResult =
+		// confirmResults.stream().collect(Collectors.toMap(x ->
+		// Pair.of(x.getEmployeeId(), x.getDate()), x -> x, (x, y) -> x));
+		Map<Pair<String, GeneralDate>, ApprovalStatusActualResult> mapApprovalResults = approvalResults.stream()
+				.collect(Collectors.toMap(x -> Pair.of(x.getEmployeeId(), x.getDate()), x -> x, (x, y) -> x));
 
 		List<WorkInfoOfDailyPerformanceDto> workInfoOfDaily = repo.getListWorkInfoOfDailyPerformance(listEmployeeId,
 				dateRange);
+
+		// set error, alarm
+		List<DPErrorDto> lstError = screenDto.getDPErrorDto();
+		if (screenDto.getLstEmployee().size() > 0) {
+			if (lstError.size() > 0) {
+				// Get list error setting
+				long timeT = System.currentTimeMillis();
+				List<DPErrorSettingDto> lstErrorSetting = this.repo.getErrorSetting(companyId,
+						lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()), true, true, false);
+				// Seperate Error and Alarm
+				if (lstErrorSetting.isEmpty()) {
+					lstError = new ArrayList<>();
+				}
+				System.out.println("time load Error: " + (System.currentTimeMillis() - timeT));
+				screenDto.addErrorToResponseData(lstError, lstErrorSetting, mapDP, false);
+			}
+		}
 		// 提出済の申請の取得
 		Map<String, Boolean> disableSignMap = new HashMap<>();
 		Map<String, String> appMapDateSid = getApplication(listEmployeeId, dateRange, disableSignMap);
 
 		// 休暇管理状況をチェックする
 		// 10-1.年休の設定を取得する
-		//AnnualHolidaySetOutput annualHd = absenceTenProcess.getSettingForAnnualHoliday(companyId);
+		// AnnualHolidaySetOutput annualHd =
+		// absenceTenProcess.getSettingForAnnualHoliday(companyId);
 		// 10-2.代休の設定を取得する
-		//SubstitutionHolidayOutput subHd = absenceTenProcess.getSettingForSubstituteHoliday(companyId, sId,
-				//GeneralDate.today());
+		// SubstitutionHolidayOutput subHd =
+		// absenceTenProcess.getSettingForSubstituteHoliday(companyId, sId,
+		// GeneralDate.today());
 		// 10-3.振休の設定を取得する
-		//LeaveSetOutput leaveSet = absenceTenProcess.getSetForLeave(companyId, sId, GeneralDate.today());
+		// LeaveSetOutput leaveSet = absenceTenProcess.getSetForLeave(companyId, sId,
+		// GeneralDate.today());
 		// 10-4.積立年休の設定を取得する
-		//boolean isRetentionManage = absenceTenProcess.getSetForYearlyReserved(companyId, sId, GeneralDate.today());
+		// boolean isRetentionManage =
+		// absenceTenProcess.getSetForYearlyReserved(companyId, sId,
+		// GeneralDate.today());
 
 		// 実績の表示（スマホ）
 		// マスタの取得
@@ -340,24 +378,30 @@ public class InitScreenMob {
 			data.addCellData(new DPCellDataDto(DPText.COLUMN_SUBMITTED, "", "", ""));
 			data.addCellData(new DPCellDataDto(DPText.LOCK_APPLICATION, "", "", ""));
 			data.addCellData(new DPCellDataDto(DPText.LOCK_APPLICATION_LIST, "", "", ""));
-			
-			//set checkbox sign
-			ConfirmStatusActualResult dataSign = mapConfirmResult.get(Pair.of(data.getEmployeeId(), data.getDate()));
-			data.setSign(dataSign == null ? false : dataSign.isStatus());
+
+			// set checkbox sign
+			// ConfirmStatusActualResult dataSign =
+			// mapConfirmResult.get(Pair.of(data.getEmployeeId(), data.getDate()));
+			// data.setSign(dataSign == null ? false : dataSign.isStatus());
 			// state check box sign
-			boolean disableSignApp = disableSignMap.containsKey(data.getEmployeeId() + "|" + data.getDate()) && disableSignMap.get(data.getEmployeeId() + "|" + data.getDate());
-			
-			ApprovalStatusActualResult dataApproval = mapApprovalResults.get(Pair.of(data.getEmployeeId(), data.getDate()));
-			//set checkbox approval
-			data.setApproval(dataApproval == null ? false : screenMode == ScreenMode.NORMAL.value ? dataApproval.isStatusNormal() : dataApproval.isStatus());
-			ApproveRootStatusForEmpDto approvalCheckMonth = dpLockDto.getLockCheckMonth().get(data.getEmployeeId() + "|" + data.getDate());
+			boolean disableSignApp = disableSignMap.containsKey(data.getEmployeeId() + "|" + data.getDate())
+					&& disableSignMap.get(data.getEmployeeId() + "|" + data.getDate());
+
+			ApprovalStatusActualResult dataApproval = mapApprovalResults
+					.get(Pair.of(data.getEmployeeId(), data.getDate()));
+			// set checkbox approval
+			data.setApproval(dataApproval == null ? false
+					: screenMode == ScreenMode.NORMAL.value ? dataApproval.isStatusNormal() : dataApproval.isStatus());
+			ApproveRootStatusForEmpDto approvalCheckMonth = dpLockDto.getLockCheckMonth()
+					.get(data.getEmployeeId() + "|" + data.getDate());
 
 			DailyModifyResult resultOfOneRow = getRow(resultDailyMap, data.getEmployeeId(), data.getDate());
 			boolean lockDaykWpl = false, lockDay = false, lockWpl = false, lockHist = false, lockApprovalMonth = false,
 					lockConfirmMonth = false;
 			if (resultOfOneRow != null && (displayFormat == 2 ? !data.getError().equals("") : true)) {
-				//set disable and lock
-				processor.lockDataCheckbox(sId, screenDto, data, identityProcessDtoOpt, approvalUseSettingDtoOpt, screenMode, data.isApproval(), data.isSign());
+				// set disable and lock
+				processor.lockDataCheckbox(sId, screenDto, data, identityProcessDtoOpt, approvalUseSettingDtoOpt,
+						screenMode, data.isApproval(), data.isSign());
 
 				lockDay = processor.checkLockDay(dpLockDto.getLockDayAndWpl(), data);
 				lockWpl = processor.checkLockWork(dpLockDto.getLockDayAndWpl(), data);
@@ -389,9 +433,11 @@ public class InitScreenMob {
 		}
 		screenDto.setLstData(lstData);
 		setStateParam(screenDto, resultPeriod, displayFormat, false);
-		screenDto.setApprovalConfirmCache(new ApprovalConfirmCache(sId, listEmployeeId,
-				new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate()), 0, confirmResults,
-				approvalResults));
+		// screenDto.setApprovalConfirmCache(new ApprovalConfirmCache(sId,
+		// listEmployeeId,
+		// new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate()), 0,
+		// confirmResults,
+		// approvalResults));
 		return screenDto;
 	}
 
@@ -594,11 +640,13 @@ public class InitScreenMob {
 			}
 		}
 	}
-	
-	private void setStateParam(DailyPerformanceCorrectionDto screenDto, DatePeriodInfo info, int displayFormat, Boolean transferDesScreen) {
+
+	private void setStateParam(DailyPerformanceCorrectionDto screenDto, DatePeriodInfo info, int displayFormat,
+			Boolean transferDesScreen) {
 		DPCorrectionStateParam cacheParam = new DPCorrectionStateParam(
 				new DatePeriod(screenDto.getDateRange().getStartDate(), screenDto.getDateRange().getEndDate()),
-				screenDto.getEmployeeIds(), displayFormat, screenDto.getEmployeeIds(), screenDto.getLstControlDisplayItem(), info, transferDesScreen);
+				screenDto.getEmployeeIds(), displayFormat, screenDto.getEmployeeIds(),
+				screenDto.getLstControlDisplayItem(), info, transferDesScreen);
 		screenDto.setStateParam(cacheParam);
 
 	}

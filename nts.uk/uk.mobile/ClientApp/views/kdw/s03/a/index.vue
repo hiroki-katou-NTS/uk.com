@@ -10,7 +10,7 @@
                     </nts-dropdown>
                 </div>
                 <div class="col-3">
-                    <button type="button" class="btn btn-primary btn-block" v-on:click="">{{'KDWS03_23' | i18n}}</button>
+                    <button type="button" class="btn btn-primary btn-block" v-on:click="openMenu">{{'KDWS03_23' | i18n}}</button>
                 </div>
             </div>
             <div class="row">
@@ -32,7 +32,7 @@
                     <nts-date-input v-model="selectedDate" />
                 </div>
                 <div class="col-3">
-                    <button type="button" class="btn btn-primary btn-block" v-on:click="">{{'KDWS03_23' | i18n}}</button>
+                    <button type="button" class="btn btn-primary btn-block" v-on:click="openMenu">{{'KDWS03_23' | i18n}}</button>
                 </div>
             </div>
         </div>
