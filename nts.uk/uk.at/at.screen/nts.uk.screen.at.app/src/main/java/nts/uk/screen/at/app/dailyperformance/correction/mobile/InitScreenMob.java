@@ -25,6 +25,8 @@ import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
+import nts.uk.ctx.at.record.app.find.workrecord.operationsetting.DaiPerformanceFunDto;
+import nts.uk.ctx.at.record.app.find.workrecord.operationsetting.DaiPerformanceFunFinder;
 import nts.uk.ctx.at.record.dom.adapter.employment.EmploymentHisOfEmployeeImport;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.ApprovalStatusActualResult;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.ConfirmStatusActualResult;
@@ -64,6 +66,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.DPAttendanceItem;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPCellDataDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPControlDisplayItem;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPCorrectionInitParam;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DPCorrectionMenuDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPDataDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPErrorDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPErrorSettingDto;
@@ -91,6 +94,9 @@ import nts.uk.screen.at.app.dailyperformance.correction.error.DCErrorInfomation;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.DPLock;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.DPLockDto;
 import nts.uk.screen.at.app.dailyperformance.correction.month.asynctask.ParamCommonAsync;
+import nts.uk.screen.at.app.dailyperformance.correction.monthflex.DPMonthFlexParam;
+import nts.uk.screen.at.app.dailyperformance.correction.monthflex.DPMonthFlexProcessor;
+import nts.uk.screen.at.app.dailyperformance.correction.monthflex.DPMonthResult;
 import nts.uk.screen.at.app.dailyperformance.correction.process.CheckClosingEmployee;
 import nts.uk.screen.at.app.dailyperformance.correction.searchemployee.FindAllEmployee;
 import nts.uk.screen.at.app.dailyperformance.correction.text.DPText;
@@ -136,6 +142,12 @@ public class InitScreenMob {
 
 	@Inject
 	private FindAllEmployee findAllEmployee;
+
+	@Inject
+	private DPMonthFlexProcessor dPMonthFlexProcessor;
+
+	@Inject
+	private DaiPerformanceFunFinder daiPerformanceFunFinder;
 
 	private static final Integer[] DEVIATION_REASON = { 436, 438, 439, 441, 443, 444, 446, 448, 449, 451, 453, 454, 456,
 			458, 459, 799, 801, 802, 804, 806, 807, 809, 811, 812, 814, 816, 817, 819, 821, 822 };
@@ -255,6 +267,14 @@ public class InitScreenMob {
 		screenDto.markLoginUser(sId);
 		screenDto.createAccessModifierCellState(mapDP);
 
+		// set enable menu button
+		if (displayFormat == 0) {
+			DPMonthFlexParam dPMonthFlexParam = new DPMonthFlexParam(companyId, sId, dateRange.getEndDate(),
+					lstEmployeeData.get(0).getCode(), dailyPerformanceDto, disItem.getAutBussCode(), Optional.empty());
+			DPCorrectionMenuDto dPCorrectionMenuDto = this.setMenuItem(dPMonthFlexParam);
+			screenDto.setDPCorrectionMenuDto(dPCorrectionMenuDto);
+		}
+
 		// 日次項目の取得
 		// 日別実績の取得
 		List<DailyModifyResult> results = new ArrayList<>();
@@ -316,22 +336,6 @@ public class InitScreenMob {
 		// 提出済の申請の取得
 		Map<String, Boolean> disableSignMap = new HashMap<>();
 		Map<String, String> appMapDateSid = getApplication(listEmployeeId, dateRange, disableSignMap);
-
-		// 休暇管理状況をチェックする
-		// 10-1.年休の設定を取得する
-		// AnnualHolidaySetOutput annualHd =
-		// absenceTenProcess.getSettingForAnnualHoliday(companyId);
-		// 10-2.代休の設定を取得する
-		// SubstitutionHolidayOutput subHd =
-		// absenceTenProcess.getSettingForSubstituteHoliday(companyId, sId,
-		// GeneralDate.today());
-		// 10-3.振休の設定を取得する
-		// LeaveSetOutput leaveSet = absenceTenProcess.getSetForLeave(companyId, sId,
-		// GeneralDate.today());
-		// 10-4.積立年休の設定を取得する
-		// boolean isRetentionManage =
-		// absenceTenProcess.getSetForYearlyReserved(companyId, sId,
-		// GeneralDate.today());
 
 		// 実績の表示（スマホ）
 		// マスタの取得
@@ -439,6 +443,42 @@ public class InitScreenMob {
 		// confirmResults,
 		// approvalResults));
 		return screenDto;
+	}
+
+	private DPCorrectionMenuDto setMenuItem(DPMonthFlexParam param) {
+
+		// 休暇残数の参照ボタン表示チェック
+		Boolean restReferButtonDis = false;
+		// 月別実績の参照ボタン表示チェック
+		Boolean monthActualReferButtonDis = false;
+		// 時間外超過の参照ボタン表示チェック
+		Boolean timeExcessReferButtonDis = false;
+
+		String companyId = AppContexts.user().companyId();
+		String sId = AppContexts.user().employeeId();
+		// 休暇管理状況をチェックする
+		// 10-1.年休の設定を取得する
+		AnnualHolidaySetOutput annualHd = absenceTenProcess.getSettingForAnnualHoliday(companyId);
+		// 10-2.代休の設定を取得する
+		SubstitutionHolidayOutput subHd = absenceTenProcess.getSettingForSubstituteHoliday(companyId, sId,
+				GeneralDate.today());
+		// 10-3.振休の設定を取得する
+		LeaveSetOutput leaveSet = absenceTenProcess.getSetForLeave(companyId, sId, GeneralDate.today());
+		// 10-4.積立年休の設定を取得する
+		boolean isRetentionManage = absenceTenProcess.getSetForYearlyReserved(companyId, sId, GeneralDate.today());
+
+		if (annualHd.isYearHolidayManagerFlg() || subHd.isSubstitutionFlg() || leaveSet.isSubManageFlag()
+				|| isRetentionManage) {
+			restReferButtonDis = true;
+		}
+
+		DPMonthResult dPMonthResult = dPMonthFlexProcessor.getDPMonthFlex(param);
+		monthActualReferButtonDis = dPMonthResult != null ? dPMonthResult.isHasItem() : false;
+
+		DaiPerformanceFunDto daiPerformanceFunDto = daiPerformanceFunFinder.getDaiPerformanceFunById(companyId);
+		timeExcessReferButtonDis = daiPerformanceFunDto.getDisp36Atr() == 1 ? true : false;
+
+		return new DPCorrectionMenuDto(restReferButtonDis, monthActualReferButtonDis, timeExcessReferButtonDis);
 	}
 
 	public String mergeString(String... x) {

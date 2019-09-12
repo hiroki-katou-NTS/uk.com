@@ -15,33 +15,30 @@ import { KdwS03GComponent } from 'views/kdw/s03/g';
         'kdws03g': KdwS03GComponent,
     }
 })
-export class KdwS03AMenuComponent extends Vue {  
-    @Prop({ default: () => ({ displayFormat: ''})})
+export class KdwS03AMenuComponent extends Vue {
+    @Prop({ default: () => ({ displayFormat: '' }) })
     public params: MenuParam;
 
     public title: string = 'KdwS03AMenu';
-    public errorScreen: boolean = false;
-
-    public created() {
-        if (this.params.displayFormat == '0') {
-            this.errorScreen = true;
-        }
-    }
 
     public openKdws03c() {
-        this.$modal('kdws03c', { }, { type: 'dropback', title: 'KDWS03_6' })
+        this.$modal('kdws03c', {}, { type: 'dropback', title: 'KDWS03_6' })
             .then((v) => {
 
             });
     }
     public openKdws03f(param: number) {
-        this.$modal('kdws03f', {}, { type: 'dropback'});
+        this.$modal('kdws03f', {}, { type: 'dropback' });
     }
     public openKdws03g(param: number) {
         console.log(param);
-        this.$modal('kdws03g', { 'remainOrtime36' : param}, { type: 'dropback'});
+        this.$modal('kdws03g', { 'remainOrtime36': param }, { type: 'dropback' });
     }
 }
 interface MenuParam {
     displayFormat: string;
+    restReferButtonDis: boolean;
+    monthActualReferButtonDis: boolean;
+    timeExcessReferButtonDis: boolean;
+    allConfirmButtonDis: boolean;
 }

@@ -62,6 +62,7 @@ export class Kdws03AComponent extends Vue {
     public actualTimeSelectedCodeTemp: number = 0;
     public yearMonthTemp: number = 0;
     public selectedEmployeeTemp: string = '';
+    public dPCorrectionMenuDto: any = null;
 
     @Watch('yearMonth')
     public changeYearMonth(value: any, valueOld: any) {
@@ -249,6 +250,7 @@ export class Kdws03AComponent extends Vue {
 
     public processMapData(data: any) {
         let self = this;
+        self.dPCorrectionMenuDto = data.dpcorrectionMenuDto;
         self.lstDataSourceLoad = self.formatDate(data.lstData);
         self.optionalHeader = data.lstControlDisplayItem.lstHeader;
         self.cellStates = data.lstCellState;
@@ -458,8 +460,27 @@ export class Kdws03AComponent extends Vue {
 
     public openMenu() {
 
-        this.$modal('kdws03amenu', { displayFormat: this.displayFormat }, { type: 'dropback',title:null })
-            .then((v) => {
+        let allConfirmButtonDis = false;
+        this.$auth.user.then((user: null | { employeeId: string }) => {
+            if (this.selectedEmployee == user.employeeId) {
+                allConfirmButtonDis = true;
+            }
+        });
+
+        this.$modal(
+            'kdws03amenu',
+            {
+                displayFormat: this.displayFormat,
+                restReferButtonDis: this.dPCorrectionMenuDto.restReferButtonDis,
+                monthActualReferButtonDis: this.dPCorrectionMenuDto.monthActualReferButtonDis,
+                timeExcessReferButtonDis: this.dPCorrectionMenuDto.timeExcessReferButtonDis,
+                selectedEmployee: this.selectedEmployee,
+                allConfirmButtonDis
+            }, 
+            { 
+                type: 'dropback', 
+                title: null 
+            }).then((v) => {
 
             });
     }
