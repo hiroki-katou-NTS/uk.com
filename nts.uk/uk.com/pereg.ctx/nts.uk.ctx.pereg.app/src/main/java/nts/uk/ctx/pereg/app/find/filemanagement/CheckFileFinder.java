@@ -880,14 +880,14 @@ public class CheckFileFinder {
 						Optional<String> string = stringContraint.validateString(value.toString());
 						if (itemSpecialLst.contains(itemDto.getItemCode())) {
 							ItemError errorSpace = validateItemOfCS0002(sid, itemDto, value.toString(), index);
-							if (errorSpace != null) {
-								itemErrors.add(errorSpace);
-							} else if (string.isPresent()) {
+							if (string.isPresent()) {
 								itemDto.setError(true);
 								ItemError stringError = new ItemError(sid, "", index, itemDto.getItemCode(),
 										TextResource.localize(string.get(), Arrays.asList(gridHead.getItemName(),
-										String.valueOf(stringContraint.getMaxLenght()))));
+												String.valueOf(stringContraint.getMaxLenght()))));
 								itemErrors.add(stringError);
+							} else if (errorSpace != null) {
+								itemErrors.add(errorSpace);
 							}
 							break;
 						} else {
@@ -907,15 +907,15 @@ public class CheckFileFinder {
 						if (itemSpecialLst.contains(itemDto.getItemCode())) {
 							if(value.toString() != "") {
 								 ItemError errorSpace = validateItemOfCS0002(sid, itemDto, value.toString(),  index);
-									if (errorSpace != null) {
-										itemErrors.add(errorSpace);
-									} else if (string.isPresent()) {
-										itemDto.setError(true);
-										ItemError stringError = new ItemError(sid, "", index, itemDto.getItemCode(),
-												TextResource.localize(string.get(), Arrays.asList(gridHead.getItemName(),
-												String.valueOf(stringContraint.getMaxLenght()))));
-										itemErrors.add(stringError);
-									}
+								if (string.isPresent()) {
+									itemDto.setError(true);
+									ItemError stringError = new ItemError(sid, "", index, itemDto.getItemCode(),
+											TextResource.localize(string.get(), Arrays.asList(gridHead.getItemName(),
+													String.valueOf(stringContraint.getMaxLenght()))));
+									itemErrors.add(stringError);
+								} else if (errorSpace != null) {
+									itemErrors.add(errorSpace);
+								}
 							}
 							break;
 						} else {
