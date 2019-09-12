@@ -1,5 +1,6 @@
 import { Vue } from '@app/provider';
 import { component, Prop } from '@app/core/component';
+import { storage } from '@app/utils';
 
 @component({
     name: 'kdws03e',
@@ -25,6 +26,9 @@ export class KdwS03EComponent extends Vue {
 
     public created() {
         let self = this;
+        // if(storage.local.hasItem('dailyCorrectionState')) {
+        //     let a = storage.local.getItem('dailyCorrectionState');
+        // }
         let param = {
             employeeId: self.params.employeeId,
             date: self.params.date,
