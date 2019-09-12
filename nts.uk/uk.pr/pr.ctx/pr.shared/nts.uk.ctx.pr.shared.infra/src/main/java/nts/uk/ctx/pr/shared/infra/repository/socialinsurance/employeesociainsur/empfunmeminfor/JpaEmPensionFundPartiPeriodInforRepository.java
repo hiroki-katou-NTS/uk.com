@@ -3,6 +3,7 @@ package nts.uk.ctx.pr.shared.infra.repository.socialinsurance.employeesociainsur
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empfunmeminfor.EmPensionFundPartiPeriodInfor;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empfunmeminfor.EmPensionFundPartiPeriodInforRepository;
+import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empfunmeminfor.FundMembership;
 import nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.empfunmeminfor.QqsmtTemPenPartInfo;
 import nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.empfunmeminfor.QqsmtTemPenPartInfoPk;
 
@@ -41,6 +42,14 @@ public class JpaEmPensionFundPartiPeriodInforRepository extends JpaRepository im
                 .getList(x -> x.toDomain());
 
 
+
+    }
+
+    @Override
+    public List<FundMembership> getFundMembershipByEmpId(String employeeId) {
+        return this.queryProxy().query(SELECT_BY_KEY_STRING_BY_EMPID, QqsmtTemPenPartInfo.class)
+                .setParameter("employeeId", employeeId)
+                .getList(x -> x.toFundMembership());
 
     }
 

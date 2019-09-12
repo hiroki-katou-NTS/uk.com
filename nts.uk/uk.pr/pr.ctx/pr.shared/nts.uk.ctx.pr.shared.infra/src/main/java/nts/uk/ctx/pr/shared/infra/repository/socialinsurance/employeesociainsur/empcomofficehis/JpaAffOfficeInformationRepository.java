@@ -13,7 +13,7 @@ import java.util.Optional;
 @Stateless
 public class JpaAffOfficeInformationRepository extends JpaRepository implements AffOfficeInformationRepository{
 
-    private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QqbmtEmpCorpOffHis f";
+    private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QqsmtEmpCorpOffHis f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.empCorpOffHisPk.employeeId =:employeeId AND  f.empCorpOffHisPk.hisId =:hisId ";
 
 
