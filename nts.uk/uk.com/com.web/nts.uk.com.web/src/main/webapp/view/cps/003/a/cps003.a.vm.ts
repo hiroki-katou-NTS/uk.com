@@ -1191,15 +1191,15 @@ module cps003.a.vm {
                     
                     forEach(disItems, itm => states.push(new State(record.id, itm, ["mgrid-lock"])));
                     self.gridOptions.dataSource.push(record);
-                    if (hideRowAdd === false) {
+//                    if (hideRowAdd === false) {
                         if (self.category.cate().categoryType === IT_CAT_TYPE.DUPLICATE) {
                             if (__viewContext.user.employeeId === record.employeeId) {
-                                if (self.perInfoCatePermission().selfAllowAddMulti === 0 
+                                if (self.perInfoCatePermission().selfAllowAddHis === 0 
                                     || self.perInfoCatePermission().selfFutureHisAuth === 1 || self.perInfoCatePermission().selfFutureHisAuth === 2) {
                                     states.push(new State(record.id, "rowAdd", ["mgrid-disable"]));
                                 }
                             } else {
-                                if (self.perInfoCatePermission().otherAllowAddMulti === 0
+                                if (self.perInfoCatePermission().otherAllowAddHis === 0
                                     || self.perInfoCatePermission().otherFutureHisAuth === 1 || self.perInfoCatePermission().otherFutureHisAuth === 2) {
                                     states.push(new State(record.id, "rowAdd", ["mgrid-disable"]));
                                 }     
@@ -1211,7 +1211,7 @@ module cps003.a.vm {
                                 states.push(new State(record.id, "rowAdd", ["mgrid-disable"]));  
                             }
                         }
-                    }
+//                    }
                 });
                 
                 if (workTimeCodes.length > 0) {

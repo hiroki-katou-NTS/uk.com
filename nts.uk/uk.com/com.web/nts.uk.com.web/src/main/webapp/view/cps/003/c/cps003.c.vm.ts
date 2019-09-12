@@ -46,7 +46,7 @@ module cps003.c.vm {
             
             block();
             self.baseDate(param.baseDate);
-            self.updateMode(param.updateMode);
+            self.updateMode(paramB.updateMode);
             self.category.catId(param.catId);
             self.category.cate(param.cate);
             self.category.catCode(param.cate.categoryCode);
@@ -1213,6 +1213,7 @@ module cps003.c.vm {
         employees: Array<EmployeeRowDto>;
         errorItems: ItemRowDto;
         headDatas: GridEmpHead;
+        updateMode: any;
     }
 
     export interface EmployeeRowDto {
