@@ -1,7 +1,8 @@
 import { Vue, _ } from '@app/provider';
-import { component, Prop } from '@app/core/component';
+import { component } from '@app/core/component';
 import { CmmS45CComponent } from 'views/cmm/s45/c/index';
 import { CmmS45DComponent } from 'views/cmm/s45/d/index';
+import { storage } from '@app/utils';
 
 @component({
     name: 'ccg033a',
@@ -21,6 +22,7 @@ export class Ccg033AComponent extends Vue {
         let self = this;
         let appId = self.$route.query.appId;
         let programID = self.$route.query.programID;
+        storage.local.removeItem('CMMS45_AppListExtractCondition');
         if (programID == 'cmm045') {
             //CMMS45_申請一覧・承認一覧の「B：承認一覧」へ遷移する
             self.$goto('cmms45b');
