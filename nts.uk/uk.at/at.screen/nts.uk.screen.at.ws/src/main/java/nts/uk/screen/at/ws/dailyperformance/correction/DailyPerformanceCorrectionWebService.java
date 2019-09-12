@@ -40,7 +40,6 @@ import nts.uk.screen.at.app.dailyperformance.correction.DPUpdateColWidthCommandH
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceCorrectionProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.DisplayRemainingHolidayNumber;
 import nts.uk.screen.at.app.dailyperformance.correction.InfomationInitScreenProcess;
-import nts.uk.screen.at.app.dailyperformance.correction.mobile.InitScreenMob;
 import nts.uk.screen.at.app.dailyperformance.correction.UpdateColWidthCommand;
 import nts.uk.screen.at.app.dailyperformance.correction.calctime.DailyCorrectCalcTimeService;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeName;
@@ -56,11 +55,13 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceCorr
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DataResultAfterIU;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DatePeriodInfo;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.EmpAndDate;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.ErAlWorkRecordShortDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ErrorReferenceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.HolidayRemainNumberDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.cache.DPCorrectionStateParam;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.calctime.DCCalcTime;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.calctime.DCCalcTimeParam;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.mobile.ErrorParam;
 import nts.uk.screen.at.app.dailyperformance.correction.flex.CalcFlexDto;
 import nts.uk.screen.at.app.dailyperformance.correction.flex.CheckBeforeCalcFlex;
 import nts.uk.screen.at.app.dailyperformance.correction.gendate.GenDateDto;
@@ -76,6 +77,8 @@ import nts.uk.screen.at.app.dailyperformance.correction.loadupdate.onlycheckbox.
 import nts.uk.screen.at.app.dailyperformance.correction.loadupdate.onlycheckbox.LoadVerDataResult;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.button.DPDisplayLockParam;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.button.DPDisplayLockProcessor;
+import nts.uk.screen.at.app.dailyperformance.correction.mobile.DPCorrectionProcessorMob;
+import nts.uk.screen.at.app.dailyperformance.correction.mobile.InitScreenMob;
 import nts.uk.screen.at.app.dailyperformance.correction.month.asynctask.MonthParamInit;
 import nts.uk.screen.at.app.dailyperformance.correction.month.asynctask.ParamCommonAsync;
 import nts.uk.screen.at.app.dailyperformance.correction.month.asynctask.ProcessMonthScreen;
@@ -83,6 +86,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.searchemployee.DPEmploye
 import nts.uk.screen.at.app.dailyperformance.correction.searchemployee.FindEmployeeBase;
 import nts.uk.screen.at.app.dailyperformance.correction.selecterrorcode.DailyPerformanceErrorCodeProcessor;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * @author hungnm
@@ -163,6 +167,9 @@ public class DailyPerformanceCorrectionWebService {
 	
 	@Inject
 	private DailyModifyRCommandFacade dailyModifyRCommandFacade;
+	
+	@Inject
+	private DPCorrectionProcessorMob dpCorrectionProcessorMob;
 	
 	@POST
 	@Path("startScreen")
@@ -529,5 +536,14 @@ public class DailyPerformanceCorrectionWebService {
 	private void removeSession() {
 		session.setAttribute("lstSidDateErrorCalc", Collections.emptyList());
 		session.setAttribute("errorAllCalc", false);
+	}
+	
+	@POST
+	@Path("getErrorMobile")
+	public List<ErAlWorkRecordShortDto> getErrorMobile(ErrorParam errorParam) {
+		return dpCorrectionProcessorMob.getErrorMobile(
+				new DatePeriod(errorParam.getStartDate(), errorParam.getEndDate()), 
+				errorParam.getEmployeeLst(), 
+				errorParam.getAttendanceItemID());
 	}
 }

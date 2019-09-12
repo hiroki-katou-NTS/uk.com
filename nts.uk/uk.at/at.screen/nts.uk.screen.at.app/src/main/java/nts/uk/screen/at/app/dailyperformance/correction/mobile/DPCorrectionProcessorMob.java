@@ -52,6 +52,10 @@ import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.AggrPeriodEachActualClo
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.GetClosurePeriod;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnitType;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.YourselfConfirmError;
 import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
@@ -121,6 +125,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DisplayFormat;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DisplayItem;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DivergenceTimeDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.ErAlWorkRecordShortDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ErrorReferenceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.FormatDPCorrectionDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.IdentityProcessUseSetDto;
@@ -136,6 +141,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.cache.DPCorrectionSt
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkapproval.ApproveRootStatusForEmpDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkshowbutton.DailyPerformanceAuthorityDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.companyhist.AffComHistItemAtScreen;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.mobile.EmployeeParam;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.type.TypeLink;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.workplacehist.WorkPlaceHistTemp;
 import nts.uk.screen.at.app.dailyperformance.correction.error.DCErrorInfomation;
@@ -233,6 +239,12 @@ public class DPCorrectionProcessorMob {
 	
 	@Inject
 	private DPScreenRepoMob repoMob;
+	
+	@Inject
+	private ErrorAlarmWorkRecordRepository errorAlarmWorkRecordRepository;
+	
+	@Inject
+	private EmployeeDailyPerErrorRepository employeeDailyPerErrorRepository;
 	
     static final Integer[] DEVIATION_REASON  = {436, 438, 439, 441, 443, 444, 446, 448, 449, 451, 453, 454, 456, 458, 459, 799, 801, 802, 804, 806, 807, 809, 811, 812, 814, 816, 817, 819, 821, 822};
 	public static final Map<Integer, Integer> DEVIATION_REASON_MAP = IntStream.range(0, DEVIATION_REASON.length-1).boxed().collect(Collectors.toMap(x -> DEVIATION_REASON[x], x -> x/3 +1));
@@ -1829,6 +1841,42 @@ public class DPCorrectionProcessorMob {
 				.filter(x -> x.start().beforeOrEquals(pairEmpDate.getRight()) && x.end().afterOrEquals(pairEmpDate.getRight()))
 				.findFirst();
 		return check.isPresent();
+	}
+	
+	public List<ErAlWorkRecordShortDto> getErrorMobile(DatePeriod period, List<EmployeeParam> employeeLst, Integer attendanceItemID) {
+		String companyID = AppContexts.user().companyId();
+		// 対応するドメインモデル「勤務実績のエラーアラーム」をすべて取得する 
+		List<ErrorAlarmWorkRecord> errorAlarmWorkRecordLst = errorAlarmWorkRecordRepository.findMobByCompany(companyID);
+		// ドメインモデル「社員の日別実績エラー一覧」をすべて取得する 
+		List<EmployeeDailyPerError> empDailyPerErrorLst = employeeDailyPerErrorRepository.findsByCodeLst(
+				employeeLst.stream().map(x -> x.getEmployeeID()).collect(Collectors.toList()), 
+				period, 
+				errorAlarmWorkRecordLst.stream().map(x -> x.getCode().toString()).collect(Collectors.toList()));
+		// Input「対象勤怠項目」をチェックする
+		if(attendanceItemID != null) {
+			// Output「社員の日別実績エラー一覧」をInput「対象勤怠項目」で絞り込む
+			empDailyPerErrorLst = empDailyPerErrorLst.stream().filter(x -> x.getAttendanceItemList().contains(attendanceItemID)).collect(Collectors.toList());
+		}
+		// Output「社員の日別実績エラー一覧」の件数をチェックする
+		if(CollectionUtil.isEmpty(empDailyPerErrorLst)) {
+			// 情報メッセージ（Msg_1554）を表示する
+			throw new BusinessException("Msg_1554");
+		}
+		List<ErAlWorkRecordShortDto> result = new ArrayList<>();
+		// コードを指定してエラー/アラームを取得する
+		for(EmployeeDailyPerError employeeDailyPerError : empDailyPerErrorLst) {
+			errorAlarmWorkRecordLst.stream().filter(x -> x.getCode().equals(employeeDailyPerError.getErrorAlarmWorkRecordCode()))
+			.findAny().ifPresent((item) -> {
+				result.add(new ErAlWorkRecordShortDto(
+						employeeDailyPerError.getDate().toString("yyyy/MM/dd"), 
+						employeeDailyPerError.getEmployeeID(), 
+						employeeLst.stream().filter(y -> y.getEmployeeID().equals(employeeDailyPerError.getEmployeeID()))
+						.findAny().map(z -> z.getEmployeeCD()).orElse(null), 
+						item.getName().toString()));
+			});
+		}
+		return result;
+		
 	}
 }
  
