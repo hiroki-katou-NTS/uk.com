@@ -305,13 +305,14 @@ public class PeregCommonCommandFacade {
 		if (handler != null && itemFirstByCtg.isHaveSomeSystemItems()) {
 			List<MyCustomizeException> myEx =  handler.handlePeregCommand(containerAdds);
 			if(!myEx.isEmpty()) {
-				if(itemFirstByCtg.getCategoryCd().equals("CS00069 ")) {
-					myEx.stream().forEach(c ->{
-						c.setItemName(itemFirstByCtg.getByItemCode("IS00779").itemName());
-					});
+				if(itemFirstByCtg.getCategoryCd().equals("CS00069")) {
+					result.addAll(myEx.stream()
+							.map(c -> new MyCustomizeException(c.getMessageId(), c.getErrorLst(),
+									itemFirstByCtg.getByItemCode("IS00779").itemName()))
+							.collect(Collectors.toList()));
+				}else {
+					result.addAll(myEx);
 				}
-				
-				result.addAll(myEx);
 			}
 
 		    // xử lí cho những item optional
@@ -414,13 +415,15 @@ public class PeregCommonCommandFacade {
 			if (handler != null) {
 				List<MyCustomizeException> myEx = handler.handlePeregCommand(containerAdds);
 				if(!myEx.isEmpty()) {
-					if(itemFirstByCtg.getCategoryCd().equals("CS00069 ")) {
-						myEx.stream().forEach(c ->{
-							c.setItemName(itemFirstByCtg.getByItemCode("IS00779").itemName());
-						});
+					if(itemFirstByCtg.getCategoryCd().equals("CS00069")) {
+							result.addAll(myEx.stream()
+									.map(c -> new MyCustomizeException(c.getMessageId(), c.getErrorLst(),
+											itemFirstByCtg.getByItemCode("IS00779").itemName()))
+									.collect(Collectors.toList()));
+					}else {
+						result.addAll(myEx);
 					}
 				}
-				result.addAll(myEx);
 			}
 
 			val commandForUserDef = containerLst.stream().map(c -> {
