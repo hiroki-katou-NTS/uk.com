@@ -507,7 +507,7 @@ public class CheckFileFinder {
 			index++;
 		}
 		
-		return new GridDto(header, result, itemErrors);
+		return new GridDto(updateMode.value, header, result, itemErrors);
 	}
 	
 	/**

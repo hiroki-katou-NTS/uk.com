@@ -147,7 +147,7 @@ public class OtherHolidayInfoFinder implements PeregFinder<OtherHolidayInfoDto> 
 		Map<String, Double> subOfHDManagementData = substitutionOfHDManaDataRepository.getAllBysiDRemCod(cid, listEmp);
 		Map<String, Double> exHolidayManagement = excessHolidayManaDataRepository.getAllBySidWithExpCond(cid, listEmp,
 				LeaveExpirationStatus.AVAILABLE.value);
-		query.getEmpInfos().parallelStream().forEach(c -> {
+		query.getEmpInfos().stream().forEach(c -> {
 			List<PublicHolidayRemain> listHolidayRemain = listHolidayRemainMap.get(c.getEmployeeId());
 			List<ExcessLeaveInfo> listExcessLeave = listExcessLeaveMap.get(c.getEmployeeId());
 			PublicHolidayRemain publicHolidayRemain = null;

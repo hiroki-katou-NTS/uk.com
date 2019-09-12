@@ -202,7 +202,6 @@ public class PeregCommonCommandFacade {
 				List<MyCustomizeException> update = this.update(inputContainerLst, baseDate,  target, modeUpdate);
 				result.addAll(update);
 			}
-			
 			result.addAll(add);
 			
 		});
@@ -305,7 +304,16 @@ public class PeregCommonCommandFacade {
 		
 		if (handler != null && itemFirstByCtg.isHaveSomeSystemItems()) {
 			List<MyCustomizeException> myEx =  handler.handlePeregCommand(containerAdds);
-			if(!myEx.isEmpty()) result.addAll(myEx);
+			if(!myEx.isEmpty()) {
+				if(itemFirstByCtg.getCategoryCd().equals("CS00069 ")) {
+					myEx.stream().forEach(c ->{
+						c.setItemName(itemFirstByCtg.getByItemCode("IS00779").itemName());
+					});
+				}
+				
+				result.addAll(myEx);
+			}
+
 		    // xử lí cho những item optional
 			List<PeregUserDefAddCommand> commandForUserDef = containerAdds.stream().map(c -> { return new PeregUserDefAddCommand(c.getPersonId(), c.getEmployeeId(), c.getInputs().getRecordId(), c.getInputs());}).collect(Collectors.toList());
 			this.userDefAdd.handle(commandForUserDef);
@@ -404,7 +412,15 @@ public class PeregCommonCommandFacade {
 
 			// In case of optional category fix category doesn't exist
 			if (handler != null) {
-				result.addAll(handler.handlePeregCommand(containerAdds));
+				List<MyCustomizeException> myEx = handler.handlePeregCommand(containerAdds);
+				if(!myEx.isEmpty()) {
+					if(itemFirstByCtg.getCategoryCd().equals("CS00069 ")) {
+						myEx.stream().forEach(c ->{
+							c.setItemName(itemFirstByCtg.getByItemCode("IS00779").itemName());
+						});
+					}
+				}
+				result.addAll(myEx);
 			}
 
 			val commandForUserDef = containerLst.stream().map(c -> {
