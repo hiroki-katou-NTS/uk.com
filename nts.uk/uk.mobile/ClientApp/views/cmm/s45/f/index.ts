@@ -24,7 +24,11 @@ export class CmmS45FComponent extends Vue {
     // quay về màn CMMS45B
     public backToMenu() {
         let self = this;
-        self.$close({ destination: 1 });
+        if (self.$router.currentRoute.name == 'cmms45b') {
+            self.$close({ destination: 1 });
+        } else {
+            self.$goto('cmms45b', { 'CMMS45_FromMenu': false });
+        }
     }
 
     // tiến tới đơn tiếp theo

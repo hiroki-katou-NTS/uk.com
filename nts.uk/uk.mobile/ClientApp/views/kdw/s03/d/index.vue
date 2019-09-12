@@ -9,21 +9,30 @@
   <div class="row uk-bg-light-coral">
     {{'KDWS03_40' | i18n}}    
   </div>  
-  <fix-table table-class="table table-bordered m-0 table-sm" :rowNumber="6" class="border-bottom mx-n2" style="font-size: 11px">
-    <thead class="uk-bg-headline">
-        <tr>
-            <th>{{'KDWS03_41' | i18n}}</th>
-            <th>{{'KDWS03_42' | i18n}}</th>
-            <th>{{'KDWS03_43' | i18n}}</th>
-        </tr>
+  <div class="row">
+    <table class="table table-bordered">
+    <thead>
+      <tr class="uk-bg-green">
+        <th class="w-25">{{'KDWS03_41' | i18n}}</th>
+        <th class="w-25">{{'KDWS03_42' | i18n}}</th>
+        <th class="w-50">{{'KDWS03_43' | i18n}}</th>
+      </tr>
     </thead>
     <tbody>
-        <tr>
-            <td>{{'KDWS03_41' | i18n}}</td>
-            <td>{{'KDWS03_42' | i18n}}</td>
-            <td>{{'KDWS03_43' | i18n}}</td>
-        </tr>
+      <tr v-for="(rowData, index) in rowDatas" v-bind:key="index">
+        <th class="pl-0 pr-0 text-center">{{ rowData.date | date('DD日(dd)') }}</th>
+        <td>{{ rowData.code }}</td>
+        <td>
+          <div class="row">
+            <div class="w-100">
+              <div class="col-10 d-inline-block">{{ rowData.name }}</div>
+              <div class="d-inline-block fas fa-angle-right" v-on:click="openDialogE(index)"></div>
+            </div>
+          </div>
+        </td>
+      </tr>
     </tbody>
-  </fix-table>
+  </table>
+  </div>
 </div>
 </template>
