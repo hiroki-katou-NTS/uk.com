@@ -458,7 +458,7 @@ export class Kdws03AComponent extends Vue {
 
     public openMenu() {
 
-        this.$modal('kdws03amenu', { }, { type: 'dropback',title:null })
+        this.$modal('kdws03amenu', { displayFormat: this.displayFormat }, { type: 'dropback',title:null })
             .then((v) => {
 
             });
