@@ -31,7 +31,7 @@
             <button id="A1_2" data-bind=" click: exportFileCsv, enable: $root.errors.isEmpty"
                     tabindex="2">#{i18n.getText('QSI001_A1_2')}</button>
 
-            <button id="A1_3" tabindex="3" data-bind="click: openScreenB">#{i18n.getText('QSI001_A1_3')}</button>
+            <button id="A1_3" tabindex="3" data-bind="click: openScreenB, enable: currentCodeList().length">#{i18n.getText('QSI001_A1_3')}</button>
 
             <button id="A1_4" tabindex="4">#{i18n.getText('QSI001_A1_4')}</button>
 

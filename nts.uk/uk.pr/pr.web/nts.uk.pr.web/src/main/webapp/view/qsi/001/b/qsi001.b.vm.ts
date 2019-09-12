@@ -50,7 +50,7 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
             let periodCommand: any;
             let params = getShared('QSI001_PARAMS_TO_SCREEN_B');
 
-            if (params && params.listEmpId.length > 0) {
+            if (params && params.listEmpId &&  params.listEmpId.length > 0) {
 
 
                 periodCommand = {
