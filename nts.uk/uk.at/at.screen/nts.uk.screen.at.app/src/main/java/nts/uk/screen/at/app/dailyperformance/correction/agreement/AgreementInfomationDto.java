@@ -22,6 +22,6 @@ public class AgreementInfomationDto {
 	private String maxNumber;
 	
 	private String cssFrequency;
-	
+	/**36協定情報を表示する*/
 	private boolean showAgreement;
 }
