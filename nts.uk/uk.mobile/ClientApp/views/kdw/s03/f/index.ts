@@ -12,4 +12,8 @@ import { component } from '@app/core/component';
 })
 export class KdwS03FComponent extends Vue {
     public title: string = 'KdwS03F';
+
+
+
+    
 }
