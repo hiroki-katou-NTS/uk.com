@@ -465,24 +465,23 @@ export class Kdws03AComponent extends Vue {
             if (this.selectedEmployee == user.employeeId) {
                 allConfirmButtonDis = true;
             }
+            this.$modal(
+                'kdws03amenu',
+                {
+                    displayFormat: this.displayFormat,
+                    restReferButtonDis: this.dPCorrectionMenuDto.restReferButtonDis,
+                    monthActualReferButtonDis: this.dPCorrectionMenuDto.monthActualReferButtonDis,
+                    timeExcessReferButtonDis: this.dPCorrectionMenuDto.timeExcessReferButtonDis,
+                    selectedEmployee: this.selectedEmployee,
+                    allConfirmButtonDis
+                }, 
+                { 
+                    type: 'dropback', 
+                    title: null 
+                }).then((v) => {
+    
+                });
         });
-
-        this.$modal(
-            'kdws03amenu',
-            {
-                displayFormat: this.displayFormat,
-                restReferButtonDis: this.dPCorrectionMenuDto.restReferButtonDis,
-                monthActualReferButtonDis: this.dPCorrectionMenuDto.monthActualReferButtonDis,
-                timeExcessReferButtonDis: this.dPCorrectionMenuDto.timeExcessReferButtonDis,
-                selectedEmployee: this.selectedEmployee,
-                allConfirmButtonDis
-            }, 
-            { 
-                type: 'dropback', 
-                title: null 
-            }).then((v) => {
-
-            });
     }
 
     public nextPage() {
