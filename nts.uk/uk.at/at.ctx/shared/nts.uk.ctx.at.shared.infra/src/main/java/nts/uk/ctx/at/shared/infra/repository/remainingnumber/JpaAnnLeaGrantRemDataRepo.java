@@ -308,7 +308,8 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 		List<AnnualLeaveGrantRemainingData> result = new ArrayList<>();
 		
 		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String sql = "SELECT * FROM KRCMT_ANNLEA_REMAIN WHERE CID = ? AND SID IN (" + NtsStatement.In.createParamsString(subList) + ")";
+			String sql = "SELECT * FROM KRCMT_ANNLEA_REMAIN WHERE CID = ? AND SID IN (" + NtsStatement.In.createParamsString(subList) + ")"
+					+ " AND EXP_STATUS = 1  ORDER BY GRANT_DATE  DESC";
 			
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 				stmt.setString( 1, cid);
