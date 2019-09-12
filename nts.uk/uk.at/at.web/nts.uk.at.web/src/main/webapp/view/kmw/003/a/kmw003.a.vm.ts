@@ -1294,7 +1294,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                         let rowSelect = _.find(source, (value: any) => {
                             return value.id == data.id;
                         })
-                        let initParam = new DPCorrectionInitParam(ScreenMode.NORMAL, [rowSelect.employeeId], false, false, closureId, '/view/kmw/003/a/index.xhtml?initmode='+ initMode);
+                        let initParam = new DPCorrectionInitParam(ScreenMode.NORMAL, [rowSelect.employeeId], false, false, closureId, __viewContext.vm.yearMonth(), '/view/kmw/003/a/index.xhtml?initmode='+ initMode);
                         let extractionParam = new DPCorrectionExtractionParam(DPCorrectionDisplayFormat.INDIVIDUAl, rowSelect.startDate, rowSelect.endDate, [rowSelect.employeeId], rowSelect.employeeId);
                         nts.uk.request.jump("/view/kdw/003/a/index.xhtml", { initParam: initParam, extractionParam: extractionParam });
                     }
@@ -2079,8 +2079,10 @@ module nts.uk.at.view.kmw003.a.viewmodel {
         initClock: any;
         //遷移先の画面
         transitionDesScreen: any;
+        //対象年月
+        yearMonth: any;
 
-        constructor(screenMode, lstEmployee, errorRefStartAtr, changePeriodAtr, targetClosue, transitionDesScreen) {
+        constructor(screenMode, lstEmployee, errorRefStartAtr, changePeriodAtr, targetClosue, yearMonth, transitionDesScreen) {
             let self = this;
             self.screenMode = screenMode;
             self.lstEmployee = lstEmployee;
@@ -2088,6 +2090,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             self.changePeriodAtr = changePeriodAtr;
             self.targetClosure = targetClosue;
             self.transitionDesScreen = transitionDesScreen;
+            self.yearMonth = yearMonth;
         }
     }
 
