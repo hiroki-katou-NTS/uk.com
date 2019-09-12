@@ -223,8 +223,8 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
             self.salaryMonthlyActual = ko.observable(null);
             self.totalCompensation = ko.observable(null);
             self.depNotiAttach = ko.observableArray([
-                {code: '0', name: nts.uk.resource.getText('QSI001_54')},
-                {code: '1', name: nts.uk.resource.getText('QSI001_55')}
+                {code: '0', name: nts.uk.resource.getText('QSI001_B222_13')},
+                {code: '1', name: nts.uk.resource.getText('QSI001_B222_14')}
             ]);
             self.selectedDepNotiAttach = ko.observable(0);
 
@@ -241,10 +241,10 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
             self.textOtherNotes1 = ko.observable(null);
 
             self.personalNumber = ko.observableArray([
-                new ItemModel('0', '該当なし'),
-                new ItemModel('1', '海外在住'),
-                new ItemModel('2', '短期在留'),
-                new ItemModel('3', 'その他')
+                new ItemModel('0', nts.uk.resource.getText('QSI001_B222_24_0')),
+                new ItemModel('1', nts.uk.resource.getText('QSI001_B222_24_1')),
+                new ItemModel('2', nts.uk.resource.getText('QSI001_B222_24_2')),
+                new ItemModel('3', nts.uk.resource.getText('QSI001_B222_24_3'))
             ]);
 
             self.selectedCode = ko.observable('1');
