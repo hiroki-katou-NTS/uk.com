@@ -58,9 +58,10 @@
 
                 <div class="control-group">
                     <div data-bind="ntsFormLabel: {}">#{i18n.getText('QSI001_B222_5')}</div>
-                    <input style="margin-left: 12px" id="B222_6" data-bind="ntsNumberEditor: {
+                    <input  id="B222_6" data-bind="ntsNumberEditor: {
                                     value: salaryMonthly,
                                     name: '#{i18n.getText('QSI001_B222_6')}',
+                                    option: option,
                                     constraint: 'RemuneraMonthly',
                                     required: false,
                                     enable: true,
@@ -69,9 +70,10 @@
 
                 <div class="control-group">
                     <div data-bind="ntsFormLabel: {}">#{i18n.getText('QSI001_B222_7')}</div>
-                    <input style="margin-left: 11px" id="B222_8" data-bind="ntsNumberEditor: {
+                    <input  id="B222_8" data-bind="ntsNumberEditor: {
                                     value: salaryMonthlyActual,
                                     name: '#{i18n.getText('QSI001_B222_8')}',
+                                    option: option,
                                     constraint: 'RemuneraMonthly',
                                     required: false,
                                     enable: true,
@@ -80,9 +82,10 @@
 
                 <div class="control-group">
                     <div data-bind="ntsFormLabel: {}">#{i18n.getText('QSI001_B222_9')}</div>
-                    <input style="margin-left: 40px" id="B222_10" data-bind="ntsNumberEditor: {
+                    <input  id="B222_10" data-bind="ntsNumberEditor: {
                                     value: totalCompensation,
                                     name: '#{i18n.getText('QSI001_B222_10')}',
+                                    option: option,
                                     constraint: 'RemuneraMonthly',
                                     required: false,
                                     enable: true,
@@ -140,13 +143,9 @@
                             optionsText: 'name',
                             editable: isEditable,
                             enable: isEnable,
-                            required: false,
-                            columns: [
-                                { prop: 'code', length: 4 },
-                                { prop: 'name', length: 10 },
-                            ]}"></div>
+                            required: false}"></div>
                         <br/>
-                        <span class="label" style="margin-bottom: 15px;">#{i18n.getText('QSI001_B222_25')}</span>
+                        <div class="label" style="margin-bottom: 15px;">#{i18n.getText('QSI001_B222_25')}</div>
                         <input data-bind="ntsTextEditor: {
                                     value: textOtherNotes1,
                                     name: '#{i18n.getText('QSI001_B222_26')}',

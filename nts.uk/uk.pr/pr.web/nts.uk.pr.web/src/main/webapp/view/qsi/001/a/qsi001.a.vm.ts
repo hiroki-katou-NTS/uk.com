@@ -13,18 +13,22 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
         systemReference: KnockoutObservable<number>;
         isDisplayOrganizationName: KnockoutObservable<boolean>;
         targetBtnText: string;
-        baseDate: KnockoutObservable<Date>;
+
         listComponentOption: ComponentOption;
         selectedItem: KnockoutObservable<string>;
         tabindex: number;
         //
         //switch
         simpleValue: KnockoutObservable<string>;
-
+        employees: any;
         selectedRuleCode: any;
         //datepicker
-        date: KnockoutObservable<string>;
-        datePicker: KnockoutObservable<string>;
+        baseDate: KnockoutObservable<moment.Moment>;
+        startDate: KnockoutObservable<moment.Moment>;
+        endDate: KnockoutObservable<moment.Moment>;
+        japanStartDate: KnockoutObservable<string>;
+        japanEndDate: KnockoutObservable<string>;
+        japanBaseDate: KnockoutObservable<string>;
         //combobox
         itemList: KnockoutObservableArray<ItemModel>;
         isEnable: KnockoutObservable<boolean>;
@@ -33,7 +37,7 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
         columns: KnockoutObservableArray<any>;
         items: KnockoutObservableArray<ItemModelGrid>;
         currentCodeList: KnockoutObservableArray<any>;
-        listEmployee: any;
+        listEmployee: KnockoutObservableArray<any>;
 
         socialInsurNotiCrSet : KnockoutObservable<SocialInsurNotiCrSet> = ko.observable(new SocialInsurNotiCrSet({
             officeInformation: 0,
@@ -71,19 +75,54 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
         lineFeedCodes: KnockoutObservableArray<ItemModel> = ko.observableArray(getLineFeedCode());
 
 
+        //kcp005
 
+        listComponentOptionKCP005: any;
+        selectedCodeKCP005: KnockoutObservable<string>  = ko.observable('');
+        multiSelectedCode: KnockoutObservableArray<string>;
+        isShowAlreadySet: KnockoutObservable<boolean>;
+        alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
+        isDialog: KnockoutObservable<boolean>;
+        isShowNoSelectRow: KnockoutObservable<boolean>;
+        isMultiSelect: KnockoutObservable<boolean>;
+        isShowWorkPlaceName: KnockoutObservable<boolean>;
+        isShowSelectAllButton: KnockoutObservable<boolean>;
+        disableSelection : KnockoutObservable<boolean>;
+
+        employeeListKCP005: KnockoutObservableArray<UnitModel>;
 
         constructor() {
             block.invisible();
             let self = this;
-            self.loadCCG001();
+
             //init switch
             self.simpleValue = ko.observable("123");
 
+
+
             self.selectedRuleCode = ko.observable(1);
             //init datepicker
-            self.date = ko.observable('20000101');
-            self.datePicker = ko.observable(nts.uk.time.dateInJapanEmpire('20000101').toString());
+            self.startDate = ko.observable(moment());
+            self.startDate.subscribe(e => {
+                //self.japanStartDate = ko.observable(nts.uk.time.dateInJapanEmpire(moment.utc(self.startDate()).format("YYYYMMDD")).toString());
+                self.japanStartDate(nts.uk.time.dateInJapanEmpire(moment.utc(self.startDate()).format("YYYYMMDD")).toString());
+            });
+            self.japanStartDate = ko.observable(nts.uk.time.dateInJapanEmpire(moment.utc(self.startDate()).format("YYYYMMDD")).toString());
+            self.endDate = ko.observable(moment());
+            self.endDate.subscribe(e => {
+                self.japanEndDate(nts.uk.time.dateInJapanEmpire(moment.utc(self.endDate()).format("YYYYMMDD")).toString());
+            });
+            self.japanEndDate = ko.observable(nts.uk.time.dateInJapanEmpire(moment.utc(self.endDate()).format("YYYYMMDD")).toString());
+            self.baseDate = ko.observable(moment());
+            self.baseDate.subscribe(e => {
+                self.japanBaseDate(nts.uk.time.dateInJapanEmpire(moment.utc(self.baseDate()).format("YYYYMMDD")).toString());
+            });
+            self.japanBaseDate = ko.observable(nts.uk.time.dateInJapanEmpire(moment.utc(self.baseDate()).format("YYYYMMDD")).toString());
+
+
+
+
+
             //init combobox
             self.itemList = ko.observableArray([
                 new ItemModel('1', '基本給'),
@@ -102,31 +141,79 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
                 {headerText: '説明1', key: 'workplaceName', width: 150}
             ]);
 
-            this.items = ko.observableArray([]);
+            self.items = ko.observableArray([]);
 
-            this.currentCodeList = ko.observableArray([]);
-            this.listEmployee = ko.observable();
-            this.switchSubmittedName = ko.observable(0);
+            self.currentCodeList = ko.observableArray([]);
+            self.listEmployee = ko.observableArray([]);
+            self.switchSubmittedName = ko.observable(0);
+            self.loadCCG001();
+            self.loadKCP005();
             block.clear();
             self.initScreen();
 
+        }
+
+        getListEmployee(empCode: Array, listEmp: Array){
+            let listEmployee: any = [];
+            _.each(empCode, (item) =>{
+                let emp = _.find(listEmp, function(itemEmp) { return itemEmp.employeeCode === item; });
+                listEmployee.push(emp);
+            });
+            return listEmployee;
         }
 
         openScreenB() {
             let self = this;
 
             setShared('QSI001_PARAMS_TO_SCREEN_B', {
-                listEmpId: self.listEmployee(),
-                date: self.date(),
-                startDate: self.date(),
-                endDate: self.date()
+                listEmpId: self.getListEmployee(self.selectedCodeKCP005(),self.employees),
+                date: self.baseDate(),
+                startDate: self.endDate(),
+                endDate: self.startDate()
             });
 
             nts.uk.ui.windows.sub.modal("/view/qsi/001/b/index.xhtml").onClosed(() => {
 
             });
         }
+        //KCP005
+        loadKCP005(){
+            let self = this;
+            self.baseDate = ko.observable(new Date());
+            self.multiSelectedCode = ko.observableArray(['0', '1', '4']);
+            self.isShowAlreadySet = ko.observable(false);
+            self.alreadySettingList = ko.observableArray([
+                {code: '1', isAlreadySetting: true},
+                {code: '2', isAlreadySetting: true}
+            ]);
+            self.isDialog = ko.observable(false);
+            self.isShowNoSelectRow = ko.observable(false);
+            self.isMultiSelect = ko.observable(true);
+            self.isShowWorkPlaceName = ko.observable(true);
+            self.isShowSelectAllButton = ko.observable(false);
+            self.disableSelection = ko.observable(false);
 
+            self.employeeListKCP005 = self.listEmployee;
+            self.listComponentOptionKCP005 = {
+                isShowAlreadySet: self.isShowAlreadySet(),
+                isMultiSelect: self.isMultiSelect(),
+                listType: ListType.EMPLOYEE,
+                employeeInputList: self.employeeListKCP005,
+                selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                selectedCode: self.selectedCodeKCP005,
+                isDialog: self.isDialog(),
+                isShowNoSelectRow: self.isShowNoSelectRow(),
+                alreadySettingList: self.alreadySettingList,
+                isShowWorkPlaceName: self.isShowWorkPlaceName(),
+                isShowSelectAllButton: self.isShowSelectAllButton(),
+                disableSelection : self.disableSelection(),
+                showOptionalColumn: false,
+                optionalColumnName: nts.uk.resource.getText('KSM005_18'),
+                optionalColumnDatasource: ko.observableArray([])
+            };
+
+            $('#kcp005').ntsListComponent(self.listComponentOptionKCP005);
+        }
         /* CCG001 */
         loadCCG001() {
             let self = this;
@@ -170,7 +257,9 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
                  */
                 returnDataFromCcg001: function (data: Ccg001ReturnedData) {
                     self.createGridList(data.listEmployee);
-                    self.listEmployee(data.listEmployee);
+                    self.employees = data.listEmployee;
+                    self.loadKCP005();
+                    //self.listEmployee(data.listEmployee);
 
                 }
             }
@@ -197,8 +286,9 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
 
         createGridList(data) {
             let self = this;
+            self.listEmployee([]);
             _.each(data, data => {
-                self.items.push(new ItemModelGrid(data.employeeId, data.employeeCode, data.businessName, data.workplaceName));
+                self.listEmployee.push(new UnitModel(data.employeeCode, data.employeeName, data.workplaceName,false));
             });
 
         }
@@ -522,6 +612,21 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
 
     }
 
+    class UnitModel {
+        code: string;
+        name?: string;
+        workplaceName?: string;
+        isAlreadySetting?: boolean;
+
+        constructor(code:string, name: string, workplaceName: string, isAlreadySetting: boolean){
+            this.code = code;
+            this.name = name;
+            this.workplaceName = workplaceName;
+            this.isAlreadySetting = isAlreadySetting;
+        }
+    }
+
+
     class SalGenParaValue {
         // param value
         /**
@@ -583,8 +688,8 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
     export function getBusinessDivision(): Array<ItemModel> {
         return [
             new ItemModel('0', getText('Enum_BusinessDivision_OUTPUT_COMPANY_NAME')),
-            new ItemModel('1', getText('ENUM_BusinessDivision_OUTPUT_SIC_INSURES')),
-            new ItemModel('2', getText('ENUM_BusinessDivision_DO_NOT_OUTPUT'))
+            new ItemModel('1', getText('Enum_BusinessDivision_OUTPUT_SIC_INSURES')),
+            new ItemModel('2', getText('Enum_BusinessDivision_DO_NOT_OUTPUT'))
         ];
     }
     export function getBussEsimateClass(): Array<ItemModel> {
@@ -655,6 +760,28 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
             new ItemModel('1', getText('Enum_LineFeedCode_DO_NOT_ADD')),
             new ItemModel('2', getText('Enum_LineFeedCode_E_GOV'))
         ];
+    }
+
+    //CKP005
+
+    export class ListType {
+        static EMPLOYMENT = 1;
+        static Classification = 2;
+        static JOB_TITLE = 3;
+        static EMPLOYEE = 4;
+    }
+
+
+    export class SelectType {
+        static SELECT_BY_SELECTED_CODE = 1;
+        static SELECT_ALL = 2;
+        static SELECT_FIRST_ITEM = 3;
+        static NO_SELECT = 4;
+    }
+
+    export interface UnitAlreadySettingModel {
+        code: string;
+        isAlreadySetting: boolean;
     }
 
 }
