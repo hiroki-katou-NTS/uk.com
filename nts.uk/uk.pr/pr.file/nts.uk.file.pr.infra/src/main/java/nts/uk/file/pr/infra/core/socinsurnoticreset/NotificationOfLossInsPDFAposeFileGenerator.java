@@ -158,7 +158,7 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
         worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_2" : sheetName + "!A2_2" + "_" + ++stt).setValue(Objects.toString(data.getPersonName(), ""));
         worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_3" : sheetName + "!A2_3" + "_" + ++stt).setValue(Objects.toString(data.getPersonNameKana(), ""));
         worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_4" : sheetName + "!A2_4" + "_" + ++stt).setValue(Objects.toString(data.getOldName(), ""));
-        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_5" : sheetName + "!A2_5" + "_" + ++stt).setValue(Objects.toString(data.getOldName(), ""));
+        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_5" : sheetName + "!A2_5" + "_" + ++stt).setValue(Objects.toString(data.getOldNameKana(), ""));
         worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_9_1" : sheetName + "!A2_9_1" + "_" + ++stt).setValue(Objects.toString(dateJp.toString().charAt(2), ""));
         worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_9_2" : sheetName + "!A2_9_2" + "_" + ++stt).setValue(Objects.toString(dateJp.toString().charAt(3), ""));
         worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_9_3" : sheetName + "!A2_9_3" + "_" + ++stt).setValue(data.getBirthDay().charAt(5));

@@ -89,5 +89,6 @@ public class InsLossDataExport {
 
     private String phoneNumber;
 
+    private String oldNameKana;
 
 }
