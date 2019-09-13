@@ -227,7 +227,7 @@ export class Kdws03AComponent extends Vue {
                         { startDate: self.selectedDate, endDate: self.selectedDate },
                     cellDataLst: this.displayDataLst,
                     headerLst: this.displayHeaderLst,
-                    timePeriodAllInfo: self.timePeriodAllInfo
+                    timePeriodAllInfo: _.assign({}, self.timePeriodAllInfo, {closureId: ClosureId[self.timePeriodAllInfo.closureId]})
                 });
                 this.$mask('hide');
             }
@@ -258,9 +258,10 @@ export class Kdws03AComponent extends Vue {
         self.lstAttendanceItem = data.lstControlDisplayItem.lstAttendanceItem;
         self.cellStates = data.lstCellState;
 
-        if (_.isNil(self.timePeriodAllInfo) && self.displayFormat == 0) {
+        if (_.isNil(self.timePeriodAllInfo)) {
             self.timePeriodAllInfo = data.periodInfo;
             self.yearMonth = data.periodInfo.yearMonth;
+            self.selectedDate = this.$dt.fromString(self.timePeriodAllInfo.lstRange[0].startDate);
         }
 
         self.fixHeaders = data.lstFixedHeader;
@@ -304,7 +305,9 @@ export class Kdws03AComponent extends Vue {
                     rowData.push({
                         key: header.key,
                         groupKey: header.group[1].key,
-                        value: rowDataSrc[header.group[1].key]
+                        value: rowDataSrc[header.group[1].key],
+                        groupKey0: header.group[0].key,
+                        value0: rowDataSrc[header.group[0].key]
                     });
                 }
             });
@@ -557,4 +560,11 @@ enum DCErrorInfomation {
     APPROVAL_NOT_EMP = 1,
     ITEM_HIDE_ALL = 2,
     NOT_EMP_IN_HIST = 3
+}
+enum ClosureId {
+    RegularEmployee = 1,
+    PartTimeJob = 2,
+    ClosureThree = 3,
+    ClosureFour = 4,
+    ClosureFive = 5,
 }
