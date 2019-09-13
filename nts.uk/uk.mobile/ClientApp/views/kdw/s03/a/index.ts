@@ -66,6 +66,12 @@ export class Kdws03AComponent extends Vue {
     public dPCorrectionMenuDto: any = null;
     public lstAttendanceItem: Array<any> = [];
     public autBussCode: Array<any> = [];
+    //combobox
+    public comboItemsCalc: any = null;
+    public comboItemsReason: any = null;
+    public comboItemsDoWork: any = null;
+    public comboItemsCompact: any = null;
+    public comboTimeLimit: any = null;
 
     @Watch('yearMonth')
     public changeYearMonth(value: any, valueOld: any) {
@@ -228,7 +234,7 @@ export class Kdws03AComponent extends Vue {
                         { startDate: self.selectedDate, endDate: self.selectedDate },
                     cellDataLst: this.displayDataLst,
                     headerLst: this.displayHeaderLst,
-                    timePeriodAllInfo: _.assign({}, self.timePeriodAllInfo, {closureId: ClosureId[self.timePeriodAllInfo.closureId]}),
+                    timePeriodAllInfo: _.assign({}, self.timePeriodAllInfo, { closureId: ClosureId[self.timePeriodAllInfo.closureId] }),
                     autBussCode: self.autBussCode
                 });
                 this.$mask('hide');
@@ -254,6 +260,13 @@ export class Kdws03AComponent extends Vue {
 
     public processMapData(data: any) {
         let self = this;
+        // combo box
+        self.comboItemsCalc = data.lstControlDisplayItem.comboItemCalc;
+        self.comboItemsReason = data.lstControlDisplayItem.comboItemReason;
+        self.comboItemsDoWork = data.lstControlDisplayItem.comboItemDoWork;
+        self.comboItemsCompact = data.lstControlDisplayItem.comboItemCalcCompact;
+        self.comboTimeLimit = data.lstControlDisplayItem.comboTimeLimit;
+
         self.autBussCode = data.autBussCode;
         self.dPCorrectionMenuDto = data.dpcorrectionMenuDto;
         self.lstDataSourceLoad = self.formatDate(data.lstData);
@@ -305,10 +318,11 @@ export class Kdws03AComponent extends Vue {
                         value: rowDataSrc[header.key],
                     });
                 } else {
+                    let value = this.getFromCombo(header.group[1].ntsControl, rowDataSrc[header.group[1].key]);
                     rowData.push({
                         key: header.key,
                         groupKey: header.group[1].key,
-                        value: rowDataSrc[header.group[1].key],
+                        value,
                         groupKey0: header.group[0].key,
                         value0: rowDataSrc[header.group[0].key]
                     });
@@ -465,10 +479,10 @@ export class Kdws03AComponent extends Vue {
             date = self.selectedDate;
         }
 
-        self.$modal('kdws03b', { 'employeeName': employeeName, 'date': date, data :param1.rowData, contentType: param2 }, { type : 'dropback' } )
-        .then((v) => {
+        self.$modal('kdws03b', { 'employeeName': employeeName, 'date': date, data: param1.rowData, contentType: param2 }, { type: 'dropback' })
+            .then((v) => {
 
-        });
+            });
     }
 
     public openMenu() {
@@ -487,12 +501,12 @@ export class Kdws03AComponent extends Vue {
                     timeExcessReferButtonDis: this.dPCorrectionMenuDto.timeExcessReferButtonDis,
                     selectedEmployee: this.selectedEmployee,
                     allConfirmButtonDis
-                }, 
-                { 
-                    type: 'dropback', 
-                    title: null 
+                },
+                {
+                    type: 'dropback',
+                    title: null
                 }).then((v) => {
-    
+
                 });
         });
     }
@@ -552,6 +566,29 @@ export class Kdws03AComponent extends Vue {
         }
 
         return count;
+    }
+
+    public getFromCombo(ntsControl: string, code: string) {
+        switch (ntsControl) {
+            case 'ComboboxCalc': {
+                return (_.find(this.comboItemsCalc, (x) => x.code == code)).name;
+            }
+            case 'ComboboxReason': {
+                return (_.find(this.comboItemsReason, (x) => x.code == code)).name;
+            }
+            case 'ComboboxDoWork': {
+                return (_.find(this.comboItemsDoWork, (x) => x.code == code)).name;
+            }
+            case 'ComboItemsCompact': {
+                return (_.find(this.comboItemsCompact, (x) => x.code == code)).name;
+            }
+            case 'ComboboxTimeLimit': {
+                return (_.find(this.comboTimeLimit, (x) => x.code == code)).name;
+            }
+            default: {
+                return code;
+            }
+        }
     }
 }
 const servicePath = {
