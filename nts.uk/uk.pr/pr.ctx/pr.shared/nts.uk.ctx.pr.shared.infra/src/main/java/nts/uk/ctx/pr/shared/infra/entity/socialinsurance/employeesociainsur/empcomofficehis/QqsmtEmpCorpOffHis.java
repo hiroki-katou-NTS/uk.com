@@ -71,6 +71,12 @@ public class QqsmtEmpCorpOffHis extends UkJpaEntity implements Serializable
                 new SocialInsuranceOfficeCode(this.empCorpOffHisPk.socialInsuranceOfficeCd)
                 );
     }
+    public static AffOfficeInformation toDomainAff(List<QqsmtEmpCorpOffHis> qqsmtEmpCorpOffHis) {
+        return new AffOfficeInformation(
+                qqsmtEmpCorpOffHis.get(0).empCorpOffHisPk.historyId,
+                new SocialInsuranceOfficeCode(qqsmtEmpCorpOffHis.get(0).empCorpOffHisPk.socialInsuranceOfficeCd)
+               );
+    }
     public static QqsmtEmpCorpOffHis toEntity(EmpCorpHealthOffHis domain) {
         return null;
     }

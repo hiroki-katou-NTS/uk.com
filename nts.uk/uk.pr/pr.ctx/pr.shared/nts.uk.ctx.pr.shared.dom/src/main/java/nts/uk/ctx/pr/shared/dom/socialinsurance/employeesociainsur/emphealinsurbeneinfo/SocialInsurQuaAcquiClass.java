@@ -1,5 +1,8 @@
 package nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo;
 
+/**
+ * 社会保険資格取得区分
+ */
 public enum SocialInsurQuaAcquiClass {
 
     //新1
