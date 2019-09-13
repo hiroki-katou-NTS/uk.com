@@ -5,6 +5,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmpHealthInsurBenefits;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmplHealInsurQualifiInfor;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmplHealInsurQualifiInforRepository;
+import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.HealInsurNumberInfor;
 import nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.emphealinsurbeneinfo.QqsmtEmpHealInsurQi;
 import nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.emphealinsurbeneinfo.QqsmtEmpHealInsurQiPk;
 import nts.uk.shr.com.history.DateHistoryItem;
@@ -22,6 +23,7 @@ public class JpaEmplHealInsurQualifiInforRepository extends JpaRepository implem
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.empHealInsurQiPk.employeeId =:employeeId AND  f.empHealInsurQiPk.hisId =:hisId ";
     private static final String SELECT_BY_LIST_EMP_START = SELECT_ALL_QUERY_STRING + " WHERE  f.empHealInsurQiPk.employeeId IN :employeeIds  AND f.startDate <= :startDate AND f.endDate >= :startDate";
     private static final String SELECT_BY_EMPLID = SELECT_ALL_QUERY_STRING + " WHERE  f.empHealInsurQiPk.employeeId =:employeeId ";
+    private static final String SELECT_BY_HISID = SELECT_ALL_QUERY_STRING + " WHERE  f.empHealInsurQiPk.hisId =:hisId ";
 
     @Override
     public boolean checkEmplHealInsurQualifiInfor(GeneralDate start, List<String> empIds){
@@ -60,6 +62,13 @@ public class JpaEmplHealInsurQualifiInforRepository extends JpaRepository implem
         .setParameter("hisId", hisId)
         .getList();
         return qqsmtEmpHealInsurQi == null ? Optional.empty() : Optional.of(QqsmtEmpHealInsurQi.toDomain(qqsmtEmpHealInsurQi));
+    }
+
+    @Override
+    public Optional<HealInsurNumberInfor> getHealInsurNumberInforByHisId(String hisId) {
+        return this.queryProxy().query(SELECT_BY_HISID, QqsmtEmpHealInsurQi.class)
+                .setParameter("hisId", hisId)
+                .getSingle(x -> x.toHealInsurNumberInfor());
     }
 
     @Override

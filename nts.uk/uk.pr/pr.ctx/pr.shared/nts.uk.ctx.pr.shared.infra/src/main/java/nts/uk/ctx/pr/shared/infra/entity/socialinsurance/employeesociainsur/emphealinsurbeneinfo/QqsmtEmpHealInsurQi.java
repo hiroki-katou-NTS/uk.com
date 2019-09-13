@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmpHealthInsurBenefits;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmplHealInsurQualifiInfor;
+import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.HealInsurNumberInfor;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -71,6 +72,10 @@ public class QqsmtEmpHealInsurQi extends UkJpaEntity implements Serializable
                 qqsmtEmpHealInsurQi.get(0).empHealInsurQiPk.employeeId,
                 qqsmtEmpHealInsurQi.stream().map(i -> new EmpHealthInsurBenefits(i.empHealInsurQiPk.hisId , new DateHistoryItem(i.empHealInsurQiPk.hisId, new DatePeriod(i.startDate, i.endDate))))
                         .collect(Collectors.toList()));
+    }
+
+    public  HealInsurNumberInfor toHealInsurNumberInfor(){
+        return new HealInsurNumberInfor(this.empHealInsurQiPk.hisId,this.careIsNumber,this.healInsurNumber);
     }
 
     public static QqsmtEmpHealInsurQi toEntity(EmplHealInsurQualifiInfor domain) {

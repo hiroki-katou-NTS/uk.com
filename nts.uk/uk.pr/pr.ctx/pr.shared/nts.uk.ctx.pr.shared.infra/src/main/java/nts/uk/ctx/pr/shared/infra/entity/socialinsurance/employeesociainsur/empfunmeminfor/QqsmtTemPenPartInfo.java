@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empfunmeminfor.EmPensionFundPartiPeriodInfor;
+import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empfunmeminfor.FundMembership;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -63,6 +64,10 @@ public class QqsmtTemPenPartInfo extends UkJpaEntity implements Serializable
         DateHistoryItem historyItem = new DateHistoryItem(this.temPenPartInfoPk.historyId,period);
         return new EmPensionFundPartiPeriodInfor(this.temPenPartInfoPk.employeeId,historyItem);
 
+    }
+
+    public FundMembership toFundMembership(){
+        return new FundMembership(this.temPenPartInfoPk.historyId, this.memberNumber);
     }
 
 

@@ -13,6 +13,8 @@ public interface HealInsurPortPerIntellRepository
 
     Optional<HealInsurPortPerIntell> getHealInsurPortPerIntellById(String employeeId, String hisId);
 
+    List<HealInsurPortPerIntell> getHealInsurPortPerIntellById(String employeeId);
+
     void add(HealInsurPortPerIntell domain);
 
     void update(HealInsurPortPerIntell domain);

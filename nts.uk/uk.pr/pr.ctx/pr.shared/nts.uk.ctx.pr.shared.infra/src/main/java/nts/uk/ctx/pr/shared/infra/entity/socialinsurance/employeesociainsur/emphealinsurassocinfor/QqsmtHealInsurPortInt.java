@@ -4,10 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurassocinfor.HealInsurPortPerIntell;
+import nts.uk.shr.com.history.DateHistoryItem;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 
 /**
@@ -55,7 +58,10 @@ public class QqsmtHealInsurPortInt extends UkJpaEntity implements Serializable
     }
 
     public HealInsurPortPerIntell toDomain() {
-        return null;
+        return new HealInsurPortPerIntell(
+                this.healInsurPortIntPk.employeeId,
+                new DateHistoryItem(this.healInsurPortIntPk.hisId, new DatePeriod(this.startDate,this.endDate)));
+
     }
     public static QqsmtHealInsurPortInt toEntity(HealInsurPortPerIntell domain) {
         return null;

@@ -17,6 +17,7 @@ public class JpaHealInsurPortPerIntellRepository extends JpaRepository implement
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QqsmtHealInsurPortInt f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.healInsurPortIntPk.employeeId =:employeeId AND  f.healInsurPortIntPk.hisId =:hisId ";
+    private static final String SELECT_BY_EMPID = SELECT_ALL_QUERY_STRING + " WHERE  f.healInsurPortIntPk.employeeId =:employeeId ";
 
     @Override
     public List<HealInsurPortPerIntell> getAllHealInsurPortPerIntell(){
@@ -30,6 +31,13 @@ public class JpaHealInsurPortPerIntellRepository extends JpaRepository implement
         .setParameter("employeeId", employeeId)
         .setParameter("hisId", hisId)
         .getSingle(c->c.toDomain());
+    }
+
+    @Override
+    public List<HealInsurPortPerIntell> getHealInsurPortPerIntellById(String employeeId) {
+        return this.queryProxy().query(SELECT_BY_KEY_STRING, QqsmtHealInsurPortInt.class)
+                .setParameter("employeeId", employeeId)
+                .getList(x -> x.toDomain());
     }
 
     @Override
