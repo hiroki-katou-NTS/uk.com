@@ -58,8 +58,15 @@ module nts.uk.pr.view.qsi013.a.viewmodel {
                 }));
         constructor() {
             let self = this;
-            this.loadKCP005();
-            this.loadCCG001();
+            let today = new Date();
+            let dd = today.getDate()
+            let mm = today.getMonth() + 1;
+            let ms = today.getMonth();
+            let yyyy = today.getFullYear();
+            self.startDate(yyyy + "/" + ms + "/" + dd);
+            self.endDate(yyyy + "/" + mm  + "/" + dd);
+            self.loadKCP005();
+            self.loadCCG001();
 
             self.startDate.subscribe((data) =>{
                 self.startDateJp(" (" + nts.uk.time.dateInJapanEmpire(data) + ")");
@@ -73,6 +80,8 @@ module nts.uk.pr.view.qsi013.a.viewmodel {
                 self.filingDateJp(" (" + nts.uk.time.dateInJapanEmpire(data) + ")");
             });
         }
+
+
 
         initScreen(): JQueryPromise<any> {
             let self = this;
@@ -160,6 +169,11 @@ module nts.uk.pr.view.qsi013.a.viewmodel {
             if(self.validate()){
                 return;
             }
+            let employList = self.getListEmpId(self.selectedCode(), self.employeeList());
+            if(employList.length == 0) {
+                dialog.alertError({ messageId: 'Msg_37' });
+                return;
+            }
             let data: any = {
                 socialInsurNotiCreateSet: {
                     officeInformation: self.socInsurNotiCreSet().officeInformation(),
@@ -174,7 +188,7 @@ module nts.uk.pr.view.qsi013.a.viewmodel {
                     outputFormat: self.socInsurNotiCreSet().outputFormat(),
                     lineFeedCode: self.socInsurNotiCreSet().lineFeedCode()
                 },
-                empIds: self.getListEmpId(self.selectedCode(), self.employeeList()),
+                empIds: employList,
                 startDate: moment.utc(self.startDate(), "YYYY/MM/DD"),
                 endDate: moment.utc(self.endDate(), "YYYY/MM/DD"),
                 reference: moment.utc(self.filingDate(), "YYYY/MM/DD")
