@@ -154,43 +154,48 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
         this.selectMoreEmp(worksheets, data.getIsMoreEmp(), sheetName, stt);
         this.selectContinReemAfterRetirement(worksheets, data.getContinReemAfterRetirement(), sheetName, stt);
         this.selectOther(worksheets, data.getOther(), sheetName, stt);
-        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_1" : sheetName + "!A2_1" + "_" + ++stt).setValue(Objects.toString(data.getHealInsNumber(), ""));
-        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_2" : sheetName + "!A2_2" + "_" + ++stt).setValue(Objects.toString(data.getPersonName(), ""));
-        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_3" : sheetName + "!A2_3" + "_" + ++stt).setValue(Objects.toString(data.getPersonNameKana(), ""));
-        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_4" : sheetName + "!A2_4" + "_" + ++stt).setValue(Objects.toString(data.getOldName(), ""));
-        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_5" : sheetName + "!A2_5" + "_" + ++stt).setValue(Objects.toString(data.getOldNameKana(), ""));
-        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_9_1" : sheetName + "!A2_9_1" + "_" + ++stt).setValue(Objects.toString(dateJp.toString().charAt(2), ""));
-        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_9_2" : sheetName + "!A2_9_2" + "_" + ++stt).setValue(Objects.toString(dateJp.toString().charAt(3), ""));
-        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_9_3" : sheetName + "!A2_9_3" + "_" + ++stt).setValue(data.getBirthDay().charAt(5));
-        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_9_4" : sheetName + "!A2_9_4" + "_" + ++stt).setValue(data.getBirthDay().charAt(6));
-        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_9_5" : sheetName + "!A2_9_5" + "_" + ++stt).setValue(data.getBirthDay().charAt(8));
-        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_9_6" : sheetName + "!A2_9_6" + "_" + ++stt).setValue(data.getBirthDay().charAt(9));
-        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_13_1" : sheetName + "!A2_13_1" + "_" + ++stt).setValue(Objects.toString(endDate.year(), ""));
-        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_13_2" : sheetName + "!A2_13_2" + "_" + ++stt).setValue(data.getEndDate() != null ? data.getEndDate().substring(5,7) : "");
-        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_13_3" : sheetName + "!A2_13_3" + "_" + ++stt).setValue(data.getEndDate() != null ? data.getEndDate().substring(8,10) : "");
-        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_10_1" : sheetName + "!A2_10_1" +  "_" + ++stt).setValue(data.getBasicPenNumber() != null ? data.getBasicPenNumber().charAt(0) : "");
-        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_10_2" : sheetName + "!A2_10_2" +  "_" + ++stt).setValue(data.getBasicPenNumber() != null ? data.getBasicPenNumber().length() > 1 ? data.getBasicPenNumber().charAt(1) : "" : "");
-        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_10_3" : sheetName + "!A2_10_3" +  "_" + ++stt).setValue(data.getBasicPenNumber() != null ? data.getBasicPenNumber().length() > 2 ? data.getBasicPenNumber().charAt(2) : "" : "");
-        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_10_4" : sheetName + "!A2_10_4" +  "_" + ++stt).setValue(data.getBasicPenNumber() != null ? data.getBasicPenNumber().length() > 3 ? data.getBasicPenNumber().charAt(3) : "" : "");
-        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_10_5" : sheetName + "!A2_10_5" +  "_" + ++stt).setValue(data.getBasicPenNumber() != null ? data.getBasicPenNumber().length() > 4 ? data.getBasicPenNumber().charAt(4) : "" : "");
-        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_10_6" : sheetName + "!A2_10_6" +  "_" + ++stt).setValue(data.getBasicPenNumber() != null ? data.getBasicPenNumber().length() > 5 ? data.getBasicPenNumber().charAt(5) : "" : "");
-        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_10_7" : sheetName + "!A2_10_7" +  "_" + ++stt).setValue(data.getBasicPenNumber() != null ? data.getBasicPenNumber().length() > 6 ? data.getBasicPenNumber().charAt(6) : "" : "");
-        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_10_8" : sheetName + "!A2_10_8" +  "_" + ++stt).setValue(data.getBasicPenNumber() != null ? data.getBasicPenNumber().length() > 7 ? data.getBasicPenNumber().charAt(7) : "" : "");
-        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_11_1" : sheetName + "!A2_11_1" +  "_" + ++stt).setValue(Objects.toString(data.getEndDate().charAt(1), ""));
-        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_11_2" : sheetName + "!A2_11_2" +  "_" + ++stt).setValue(Objects.toString(data.getEndDate().charAt(2), ""));
-        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_11_3" : sheetName + "!A2_11_3" +  "_" + ++stt).setValue(Objects.toString(data.getEndDate().charAt(3), ""));
-        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_11_4" : sheetName + "!A2_11_4" +  "_" + ++stt).setValue(Objects.toString(data.getEndDate().charAt(4), ""));
-        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_11_5" : sheetName + "!A2_11_5" +  "_" + ++stt).setValue(Objects.toString(data.getEndDate().charAt(5), ""));
-        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_11_6" : sheetName + "!A2_11_6" +  "_" + ++stt).setValue(Objects.toString(data.getEndDate().charAt(6), ""));
-        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_21" : sheetName + "!A2_21" + "_" + ++stt).setValue(Objects.toString(data.getOtherReason(), ""));
-        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_22" : sheetName + "!A2_22" + "_" + ++stt).setValue(Objects.toString(data.getCaInsurance(), ""));
-        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_23" : sheetName + "!A2_23" + "_" + ++stt).setValue(Objects.toString(data.getNumRecoved(), ""));
-        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_25_1" : sheetName + "!A2_25_1" + "_" + ++stt).setValue(Objects.toString(endDate.toString().charAt(2), ""));
-        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_25_2" : sheetName + "!A2_25_2" + "_" + ++stt).setValue(Objects.toString(endDate.toString().charAt(3), ""));
-        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_25_3" : sheetName + "!A2_25_3" + "_" + ++stt).setValue(Objects.toString(endDate.toString().charAt(5), ""));
-        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_25_4" : sheetName + "!A2_25_4" + "_" + ++stt).setValue(Objects.toString(endDate.toString().charAt(6), ""));
-        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_25_5" : sheetName + "!A2_25_5" + "_" + ++stt).setValue(Objects.toString(endDate.toString().charAt(8), ""));
-        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_25_6" : sheetName + "!A2_25_6" + "_" + ++stt).setValue(Objects.toString(endDate.toString().charAt(9), ""));
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_1", stt)).setValue(Objects.toString(data.getHealInsNumber(), ""));
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_2", stt)).setValue(Objects.toString(data.getPersonName(), ""));
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_3", stt)).setValue(Objects.toString(data.getPersonNameKana(), ""));
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_4", stt)).setValue(Objects.toString(data.getOldName(), ""));
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_5", stt)).setValue(Objects.toString(data.getOldNameKana(), ""));
+
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_9_1", stt)).setValue(Objects.toString(dateJp.toString().charAt(2), ""));
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_9_2", stt)).setValue(Objects.toString(dateJp.toString().charAt(3), ""));
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_9_3", stt)).setValue(data.getBirthDay().charAt(5));
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_9_4", stt)).setValue(data.getBirthDay().charAt(6));
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_9_5", stt)).setValue(data.getBirthDay().charAt(8));
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_9_6", stt)).setValue(data.getBirthDay().charAt(9));
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_13_1", stt)).setValue(Objects.toString(endDate.year(), ""));
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_13_2", stt)).setValue(data.getEndDate() != null ? data.getEndDate().substring(5,7) : "");
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_13_3", stt)).setValue(data.getEndDate() != null ? data.getEndDate().substring(8,10) : "");
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_10_1", stt)).setValue(data.getBasicPenNumber() != null ? data.getBasicPenNumber().charAt(0) : "");
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_10_2", stt)).setValue(data.getBasicPenNumber() != null ? data.getBasicPenNumber().length() > 1 ? data.getBasicPenNumber().charAt(1) : "" : "");
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_10_3", stt)).setValue(data.getBasicPenNumber() != null ? data.getBasicPenNumber().length() > 2 ? data.getBasicPenNumber().charAt(2) : "" : "");
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_10_4", stt)).setValue(data.getBasicPenNumber() != null ? data.getBasicPenNumber().length() > 3 ? data.getBasicPenNumber().charAt(3) : "" : "");
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_10_5", stt)).setValue(data.getBasicPenNumber() != null ? data.getBasicPenNumber().length() > 4 ? data.getBasicPenNumber().charAt(4) : "" : "");
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_10_6", stt)).setValue(data.getBasicPenNumber() != null ? data.getBasicPenNumber().length() > 5 ? data.getBasicPenNumber().charAt(5) : "" : "");
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_10_7", stt)).setValue(data.getBasicPenNumber() != null ? data.getBasicPenNumber().length() > 6 ? data.getBasicPenNumber().charAt(6) : "" : "");
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_10_8", stt)).setValue(data.getBasicPenNumber() != null ? data.getBasicPenNumber().length() > 7 ? data.getBasicPenNumber().charAt(7) : "" : "");
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_11_1", stt)).setValue(Objects.toString(data.getEndDate().charAt(1), ""));
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_11_2", stt)).setValue(Objects.toString(data.getEndDate().charAt(2), ""));
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_11_3", stt)).setValue(Objects.toString(data.getEndDate().charAt(3), ""));
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_11_4", stt)).setValue(Objects.toString(data.getEndDate().charAt(4), ""));
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_11_5", stt)).setValue(Objects.toString(data.getEndDate().charAt(5), ""));
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_11_6", stt)).setValue(Objects.toString(data.getEndDate().charAt(6), ""));
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_21", stt)).setValue(Objects.toString(data.getOtherReason(), ""));
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_22", stt)).setValue(Objects.toString(data.getCaInsurance(), ""));
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_23", stt)).setValue(Objects.toString(data.getNumRecoved(), ""));
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_25_1", stt)).setValue(Objects.toString(endDate.toString().charAt(2), ""));
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_25_2", stt)).setValue(Objects.toString(endDate.toString().charAt(3), ""));
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_25_3", stt)).setValue(Objects.toString(endDate.toString().charAt(5), ""));
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_25_4", stt)).setValue(Objects.toString(endDate.toString().charAt(6), ""));
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_25_5", stt)).setValue(Objects.toString(endDate.toString().charAt(8), ""));
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_25_6", stt)).setValue(Objects.toString(endDate.toString().charAt(9), ""));
+    }
+
+    private String getRangeName(String sheetName, String pos, int stt){
+        return stt == 0 ? sheetName + "!" + pos : sheetName + "!" + pos + ++stt;
     }
 
     private void fillEmployeeOverSeventy(WorksheetCollection worksheets, InsLossDataExport data, String sheetName){
