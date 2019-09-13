@@ -17,8 +17,6 @@ public class JpaEmpWelfarePenInsQualiInforRepository extends JpaRepository imple
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QqsmtEmpWelfInsQcIf f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.empWelfInsQcIfPk.employeeId =:employeeId AND  f.empWelfInsQcIfPk.historyId =:historyId ";
     private static final String SELECT_BY_LIST_EMP = SELECT_ALL_QUERY_STRING + " WHERE  f.empWelfInsQcIfPk.employeeId IN :employeeIds  AND f.startDate <= :startDate AND f.endDate >= :startDate";
-    private static final String SELECT_BY_LIST_EMP_END = SELECT_ALL_QUERY_STRING + " WHERE  f.empWelfInsQcIfPk.employeeId IN :employeeIds  AND f.startDate <= :endDate AND f.endDate >= :endDate";
-    private static final String SELECT_BY_KEY_STRING_BY_EMP_ID = SELECT_ALL_QUERY_STRING + " WHERE f.empWelfInsQcIfPk.employeeId =:employeeId ";
 
     @Override
     public boolean checkEmpWelfarePenInsQualiInfor(GeneralDate start, List<String> empIds) {
@@ -27,12 +25,6 @@ public class JpaEmpWelfarePenInsQualiInforRepository extends JpaRepository imple
                 .setParameter("startDate", start)
                 .getList();
         return qqsmtEmpWelfInsQcIf.isEmpty();
-    }
-
-
-    @Override
-    public boolean checkEmpWelfarePenInsQualiInfor(String empIds) {
-        return false;
     }
 
     @Override

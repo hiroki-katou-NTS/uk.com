@@ -46,13 +46,13 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
         exportSQL.append("      CONTIN_REEM_AFTER_RETIREMENT,");
         exportSQL.append("      IS_MORE_EMP,");
         exportSQL.append("      BASIC_PEN_NUMBER,");
+        exportSQL.append("      BUSINESS_NAME,");
+        exportSQL.append("      BUSINESS_NAME_KANA,");
         exportSQL.append("      PERSON_NAME,");
-        exportSQL.append("      PERSON_NAME_KANA,");
-        exportSQL.append("      OLDNAME_FNAME,");
         exportSQL.append("      BIRTHDAY,");
         exportSQL.append("      qi.END_DATE,");
         exportSQL.append("      WEL_PEN_NUMBER,");
-        exportSQL.append("      OLDNAME_FNAME_KANA,");
+        exportSQL.append("      PERSON_NAME_KANA,");
         exportSQL.append("      WELFARE_PENSION_OFFICE_NUMBER_1,");
         exportSQL.append("      WELFARE_PENSION_OFFICE_NUMBER_2,");
         exportSQL.append("      WELFARE_PENSION_OFFICE_NUMBER,");
@@ -130,8 +130,8 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
                 .shortStay(i[17] == null ? null : i[17].toString())
                 .depenAppoint(i[18] == null ? null : i[18].toString())
                 .qualifiDistin(i[19] == null ? null : i[19].toString())
-                .continReemAfterRetirement(i[20] == null ? "" : i[20].toString())
-                .isMoreEmp(i[21] == null ? null : i[21].toString())
+                .continReemAfterRetirement(((BigDecimal) i[20]).intValue())
+                .isMoreEmp(((BigDecimal)i[21]).intValue())
                 .basicPenNumber(i[22] == null ? null :i[22].toString())
                 .personName(i[23].toString())
                 .personNameKana(i[24] == null ? null : i[24].toString())
@@ -179,9 +179,9 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
         exportSQL.append("      CONTIN_REEM_AFTER_RETIREMENT,");
         exportSQL.append("      IS_MORE_EMP,");
         exportSQL.append("      BASIC_PEN_NUMBER,");
+        exportSQL.append("      BUSINESS_NAME,");
+        exportSQL.append("      BUSINESS_NAME_KANA,");
         exportSQL.append("      PERSON_NAME,");
-        exportSQL.append("      PERSON_NAME_KANA,");
-        exportSQL.append("      OLDNAME_FNAME,");
         exportSQL.append("      BIRTHDAY,");
         exportSQL.append("      qi.END_DATE,");
         exportSQL.append("      HEAL_INSUR_NUMBER,");
@@ -189,7 +189,8 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
         exportSQL.append("      HEALTH_INSURANCE_OFFICE_NUMBER_1,");
         exportSQL.append("      HEALTH_INSURANCE_OFFICE_NUMBER_2,");
         exportSQL.append("      HEALTH_INSURANCE_OFFICE_NUMBER,");
-        exportSQL.append("      HEALTH_INSURANCE_UNION_OFFICE_NUMBER");
+        exportSQL.append("      HEALTH_INSURANCE_UNION_OFFICE_NUMBER,");
+        exportSQL.append("      PERSON_NAME_KANA");
         exportSQL.append("  FROM ");
         exportSQL.append("         (SELECT *");
         exportSQL.append("         FROM QQSMT_EMP_HEAL_INSUR_QI ");
@@ -228,8 +229,8 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
         }
         return resultQuery.stream().map(i -> InsLossDataExport.builder()
                 .empId(i[0].toString())
-                .officeCd(i[1].toString())
-                .other(((BigDecimal) i[2]).intValue())
+                .officeCd(i[1] == null ? i[1].toString() : "")
+                .other(i[2] == null ? 0 : ((BigDecimal) i[2]).intValue())
                 .otherReason(i[3] == null ? null : i[3].toString())
                 .caInsurance(i[4] == null ? null : ((BigDecimal) i[4]).intValue())
                 .numRecoved(i[5] == null ? null : ((BigDecimal) i[5]).intValue())
@@ -247,9 +248,9 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
                 .shortStay(i[17] == null ? null : i[17].toString())
                 .depenAppoint(i[18] == null ? null : i[18].toString())
                 .qualifiDistin(i[19] == null ? null : i[19].toString())
-                .continReemAfterRetirement(i[20] == null ? "" : i[20].toString())
-                .isMoreEmp(i[21] == null ? null : i[21].toString())
-                .basicPenNumber(i[22] == null ? null :i[22].toString())
+                .continReemAfterRetirement(((BigDecimal) i[20]).intValue())
+                .isMoreEmp(((BigDecimal) i[21]).intValue())
+                .basicPenNumber(i[22] == null ? null : i[22].toString())
                 .personName(i[23].toString())
                 .personNameKana(i[24] == null ? null : i[24].toString())
                 .oldName(i[25] == null ? null : i[25].toString())
@@ -259,7 +260,8 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
                 .officeNumber1(i[29] == null ? null : i[29].toString())
                 .officeNumber2(i[30] == null ? null : i[30].toString())
                 .officeNumber(i[31] == null ? null : i[31].toString())
-                .unionOfficeNumber(i[31] == null ? null : i[31].toString())
+                .unionOfficeNumber(i[32] == null ? null : i[32].toString())
+                .oldNameKana(i[33] == null ? null : i[33].toString())
                 .build()
                 ).collect(Collectors.toList());
     }

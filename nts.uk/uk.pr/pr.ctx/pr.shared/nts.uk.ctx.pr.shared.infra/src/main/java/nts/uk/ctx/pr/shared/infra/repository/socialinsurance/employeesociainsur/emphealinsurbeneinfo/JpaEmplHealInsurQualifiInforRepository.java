@@ -54,10 +54,6 @@ public class JpaEmplHealInsurQualifiInforRepository extends JpaRepository implem
         });
         return dateHistoryItems;
     }
-    @Override
-    public boolean checkHealInsurQualifiInformation(String userIds) {
-        return false;
-    }
 
     @Override
     public Optional<EmplHealInsurQualifiInfor> getEmplHealInsurQualifiInforById(String employeeId, String hisId){
