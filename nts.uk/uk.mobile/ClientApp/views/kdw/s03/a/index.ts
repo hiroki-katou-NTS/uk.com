@@ -72,6 +72,8 @@ export class Kdws03AComponent extends Vue {
     public comboItemsDoWork: any = null;
     public comboItemsCompact: any = null;
     public comboTimeLimit: any = null;
+    // param B screen
+    public paramData: any = null;
 
     @Watch('yearMonth')
     public changeYearMonth(value: any, valueOld: any) {
@@ -260,13 +262,15 @@ export class Kdws03AComponent extends Vue {
 
     public processMapData(data: any) {
         let self = this;
+        // param B screen
+        this.paramData = data;
         // combo box
         self.comboItemsCalc = data.lstControlDisplayItem.comboItemCalc;
         self.comboItemsReason = data.lstControlDisplayItem.comboItemReason;
         self.comboItemsDoWork = data.lstControlDisplayItem.comboItemDoWork;
         self.comboItemsCompact = data.lstControlDisplayItem.comboItemCalcCompact;
         self.comboTimeLimit = data.lstControlDisplayItem.comboTimeLimit;
-
+        
         self.autBussCode = data.autBussCode;
         self.dPCorrectionMenuDto = data.dpcorrectionMenuDto;
         self.lstDataSourceLoad = self.formatDate(data.lstData);
@@ -466,20 +470,19 @@ export class Kdws03AComponent extends Vue {
             return;
         }
         let self = this;
-        let param1 = _.find(this.displayDataLst, (x) => x.id == id);
-        let param2 = this.displayHeaderLst;
-        let param3 = this.lstAttendanceItem;
+        let paramData = self.paramData;
+        let rowData = _.find(self.displayDataLst, (x) => x.id == id);
         let employeeName = '';
         let date = new Date();
         if (self.displayFormat == 0) {
             employeeName = _.find(self.lstEmployee, (emp) => emp.id == self.selectedEmployee).businessName;
-            date = new Date(param1.dateDetail);
+            date = new Date(rowData.dateDetail);
         } else {
-            employeeName = param1.employeeName;
+            employeeName = rowData.employeeName;
             date = self.selectedDate;
         }
 
-        self.$modal('kdws03b', { 'employeeName': employeeName, 'date': date, data: param1.rowData, contentType: param2 }, { type: 'dropback' })
+        self.$modal('kdws03b', { 'employeeName': employeeName, 'date': date, data: rowData.rowData, 'paramData': paramData }, { type: 'dropback' })
             .then((v) => {
 
             });
