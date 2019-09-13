@@ -16,6 +16,10 @@
         <com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web"/>
         <com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web"/>
 
+        <!-- KCP 005 -->
+
+        <com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
+
 
         <com:scriptfile path="qsi001.a.vm.js"/>
         <com:scriptfile path="qsi001.a.start.js"/>
@@ -25,13 +29,13 @@
 
     <ui:define name="content">
         <div id="functions-area" style="min-width: 1000px;">
-            <button id="A1_1" data-bind=" click: exportFileExcel, enable: $root.errors.isEmpty" tabindex="1"
+            <button id="A1_1" data-bind=" click: exportFileExcel, enable: $root.errors.isEmpty &amp;&amp; selectedCodeKCP005().length > 0"  tabindex="1"
                     class="proceed">#{i18n.getText('QSI001_A1_1')}</button>
 
-            <button id="A1_2" data-bind=" click: exportFileCsv, enable: $root.errors.isEmpty"
+            <button id="A1_2" data-bind=" click: exportFileCsv, enable: $root.errors.isEmpty &amp;&amp; selectedCodeKCP005().length > 0"
                     tabindex="2">#{i18n.getText('QSI001_A1_2')}</button>
 
-            <button id="A1_3" tabindex="3" data-bind="click: openScreenB, enable: currentCodeList().length">#{i18n.getText('QSI001_A1_3')}</button>
+            <button id="A1_3" tabindex="3" data-bind="click: openScreenB, enable: selectedCodeKCP005().length">#{i18n.getText('QSI001_A1_3')}</button>
 
             <button id="A1_4" tabindex="4">#{i18n.getText('QSI001_A1_4')}</button>
 
@@ -52,13 +56,13 @@
                         <i class="image image-calendar"/>
                         <span>#{i18n.getText('QSI001_A222_3')}</span>
                     </span>
-                    <div data-bind="ntsDatePicker: { value: date, dateFormat: 'YYYY/MM/DD', name: '#{i18n.getText('QSI001_A222_4')}'}"></div>
-                    <span data-bind="text: datePicker"></span>
-                    <span>#{i18n.getText('QSI001_A222_6')}</span>
-                    <div data-bind="ntsDatePicker: { value: date, dateFormat: 'YYYY/MM/DD', name: '#{i18n.getText('QSI001_A222_7')}'}"></div>
-                    <span data-bind="text: datePicker"></span>
+                    <div data-bind="ntsDatePicker: { value: startDate, dateFormat: 'YYYY/MM/DD', name: '#{i18n.getText('QSI001_A222_4')}'}"></div>
+                    <span data-bind="text: japanStartDate"></span>
+                    <span class="label" >#{i18n.getText('QSI001_A222_6')}</span>
+                    <div data-bind="ntsDatePicker: { value: endDate, dateFormat: 'YYYY/MM/DD', name: '#{i18n.getText('QSI001_A222_7')}'}"></div>
+                    <span data-bind="text: japanEndDate"></span>
                 </div>
-                <div class="panel panel-frame">
+                <!--<div class="panel panel-frame">
                     <table id="multi-list" data-bind="ntsGridList: {
                     height: 350,
                     options: items,
@@ -68,21 +72,23 @@
                     value: currentCodeList
                 }"></table>
 
-                </div>
 
+
+                </div>-->
+            <div id="kcp005"></div>
             </div>
             <!-- div right -->
-            <div class="fixed-flex-layout-right" data-bind="with: socialInsurNotiCrSet">
+            <div class=" panel panel-frame fixed-flex-layout-right" data-bind="with: socialInsurNotiCrSet">
                 <span class="label" style="margin-bottom: 15px;">#{i18n.getText('QSI001_A222_12')}</span>
                 <div class="control-group">
                     <div id="A4_3"
                          data-bind="ntsFormLabel: {constrant: '', required:true}">#{i18n.getText('QSI001_A222_13')}</div>
                     <div style="margin-left:100px;" data-bind="ntsDatePicker: {
-                        value: $parent.date,
+                        value: $parent.baseDate,
                      dateFormat: 'YYYY/MM/DD',
                       name: '#{i18n.getText('QSI001_A222_14')}'
                       }"></div>
-                    <span style="margin-left:20px" data-bind="text: $parent.datePicker"></span>
+                    <span style="margin-left:20px" data-bind="text: $parent.japanBaseDate"></span>
                 </div>
 
                 <div class="control-group valign-center">
@@ -96,7 +102,7 @@
                         value: submittedName,
                         required: true,
                         enable: true }"></div>
-                    <button data-bind="ntsHelpButton: {image: 'QSI001Image01.png', position: 'right top', enable: true }">?</button>
+                    <button data-bind="ntsHelpButton: {image: 'QSI001Image01.png', position: 'bottom center', enable: true }">?</button>
                 </div>
 
                 <div class="control-group valign-center">
@@ -179,7 +185,7 @@
                         editable: false,
                         enable: true,
                         required: true}"></div>
-                    <button data-bind="ntsHelpButton: {image: 'QSI001Image02.png', position: 'right top', enable: true }">?</button>
+                    <button data-bind="ntsHelpButton: {image: 'QSI001Image02.png', position: 'bottom center', enable: true }">?</button>
                 </div>
 
                 <div class="control-group valign-center">
@@ -214,7 +220,7 @@
                 <div class="control-group">
                     <div data-bind="ntsFormLabel: {constrant: '', required:false}">#{i18n.getText('QSI001_A222_50')}</div>
                     <input style="margin-left:75px"
-                           data-bind="ntsTextEditor: {value: fdNumber, name: '#{i18n.getText('QSI001_A222_51')}'}"/>
+                           data-bind="ntsNumberEditor: {value: fdNumber, name: '#{i18n.getText('QSI001_A222_51')}'}"/>
                 </div>
             </div>
             <!--end-->

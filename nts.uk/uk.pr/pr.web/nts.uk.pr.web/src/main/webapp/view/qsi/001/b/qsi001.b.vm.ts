@@ -9,6 +9,7 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
 
         depNotiAttach: KnockoutObservableArray<any>;
         selectedDepNotoAttach: any;
+        option:any;
 
         basicPension: KnockoutObservable<string>;
         salaryMonthly: KnockoutObservable<number>;
@@ -214,7 +215,11 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
 
 
             //init
-
+            self.option = new nts.uk.ui.option.CurrencyEditorOption({
+                grouplength: 3,
+                decimallength: 0,
+                currencyformat: "JPY"
+            });
             self.depNotiAttach = ko.observableArray([]);
             self.selectedDepNotoAttach = ko.observable({});
 

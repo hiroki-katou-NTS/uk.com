@@ -89,8 +89,9 @@ public class QqsmtSocIsacquisiInfo extends UkJpaEntity implements Serializable
     public String reasonAndOtherContents;
     
     /**
-    * 社員ID
-    */
+    * 短時間労働者
+
+     */
     @Basic(optional = true)
     @Column(name = "SHORT_TIME_WORKES")
     public Integer shortTimeWorkes;
@@ -186,7 +187,7 @@ public class QqsmtSocIsacquisiInfo extends UkJpaEntity implements Serializable
                  domain.getShortTimeWorkers().isPresent() ? domain.getShortTimeWorkers().get() : null,
                  domain.getShortStay().isPresent() ? domain.getShortStay().get() : null,
                  domain.getDepenAppoint().isPresent() ? domain.getDepenAppoint().get().value : null,
-                 domain.getQualifiDistin().isPresent() ? domain.getQualifiDistin().get().intValue() : null,
+                 domain.getQualifiDistin().isPresent() ? domain.getQualifiDistin().get().value : null,
                  domain.getContinReemAfterRetirement().isPresent() ? domain.getContinReemAfterRetirement().get() : null
          );
 
