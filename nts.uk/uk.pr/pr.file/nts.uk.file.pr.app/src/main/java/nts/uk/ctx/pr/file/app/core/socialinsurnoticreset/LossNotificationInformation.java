@@ -7,6 +7,7 @@ import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsuranceOffice;
 import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsurancePrefectureInformation;
+import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.SocialInsurNotiCreateSet;
 
 import java.util.List;
 
@@ -18,7 +19,7 @@ public class LossNotificationInformation {
     List<InsLossDataExport> healthInsLoss;
     List<InsLossDataExport> welfPenInsLoss;
     List<SocialInsuranceOffice> socialInsuranceOffice;
-    NotificationOfLossInsExport socialInsurNotiCreateSet;
+    SocialInsurNotiCreateSet socialInsurNotiCreateSet;
     GeneralDate baseDate;
     CompanyInfor company;
     List<SocialInsurancePrefectureInformation> infor;

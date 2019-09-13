@@ -29,11 +29,11 @@ public class InsLossDataExport {
 
     private String remarksAndOtherContent;
 
-    private String remunMonthlyAmountKind;
+    private Integer remunMonthlyAmountKind;
 
-    private String remunMonthlyAmount;
+    private Integer remunMonthlyAmount;
 
-    private String totalMonthyRemun;
+    private Integer totalMonthyRemun;
 
     private String livingAbroad;
 
@@ -90,5 +90,17 @@ public class InsLossDataExport {
     private String phoneNumber;
 
     private String oldNameKana;
+
+    private String welfOfficeNumber1;
+
+    private String welfOfficeNumber2;
+
+    private String welfOfficeNumber;
+
+    private String welfPenNumber;
+
+    private String healInsUnionNumber;
+
+    private String memberNumber;
 
 }

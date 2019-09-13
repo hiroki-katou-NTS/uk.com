@@ -69,7 +69,7 @@ public class NotificationOfLossInsExportPDFService extends ExportService<Notific
 			List<SocialInsuranceOffice> socialInsuranceOffice =  socialInsuranceOfficeRepository.findByCid(cid);
 			CompanyInfor company = socialInsurNotiCreateSetEx.getCompanyInfor(cid);
 			socialInsurNotiCreateSetFileGenerator.generate(exportServiceContext.getGeneratorContext(),
-					new LossNotificationInformation(healthInsLoss, overSeventy, socialInsuranceOffice, socialInsurNotiCreateSet, exportServiceContext.getQuery().getReference(), company, null));
+					new LossNotificationInformation(healthInsLoss, overSeventy, socialInsuranceOffice, domain, exportServiceContext.getQuery().getReference(), company, null));
 		}
 	}
 

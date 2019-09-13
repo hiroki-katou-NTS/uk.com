@@ -8,6 +8,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsurancePrefectureInformation;
 import nts.uk.ctx.pr.file.app.core.socialinsurnoticreset.*;
 import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.OutputFormatClass;
+import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.SocialInsurNotiCreateSet;
 import nts.uk.shr.com.time.japanese.JapaneseDate;
 import nts.uk.shr.com.time.japanese.JapaneseEraName;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
@@ -40,13 +41,13 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
         val reportContext = this.createEmptyContext(REPORT_ID);
         val workbook = reportContext.getWorkbook();
         val sheet = workbook.getWorksheets().get(0);
-        if(data.getSocialInsurNotiCreateSet().getOutputFormat() == OutputFormatClass.PEN_OFFICE.value) {
+        if(data.getSocialInsurNotiCreateSet().getOutputFormat().get() == OutputFormatClass.PEN_OFFICE) {
             fillPensionOffice(data.getHealthInsLoss(), sheet, data.getInfor(), data.getSocialInsurNotiCreateSet(), data.getBaseDate());
         }
-        if(data.getSocialInsurNotiCreateSet().getOutputFormat() == OutputFormatClass.HEAL_INSUR_ASSO.value) {
+        if(data.getSocialInsurNotiCreateSet().getOutputFormat().get() == OutputFormatClass.HEAL_INSUR_ASSO) {
             fillHealthInsAssociation(data.getHealthInsLoss(), sheet, data.getSocialInsurNotiCreateSet(), data.getBaseDate());
         }
-        if(data.getSocialInsurNotiCreateSet().getOutputFormat() == OutputFormatClass.THE_WELF_PEN.value) {
+        if(data.getSocialInsurNotiCreateSet().getOutputFormat().get() == OutputFormatClass.THE_WELF_PEN) {
             fillEmpPensionFund(data.getHealthInsLoss(), sheet, data.getSocialInsurNotiCreateSet(), data.getBaseDate());
         }
         reportContext.processDesigner();
@@ -54,7 +55,7 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
     }
 
     private void fillPensionOffice(List<InsLossDataExport> healthInsLoss, Worksheet worksheet,
-                                   List<SocialInsurancePrefectureInformation> infor, NotificationOfLossInsExport socialInsurNotiCreateSet, GeneralDate baseDate){
+                                   List<SocialInsurancePrefectureInformation> infor, SocialInsurNotiCreateSet socialInsurNotiCreateSet, GeneralDate baseDate){
         Cells cells = worksheet.getCells();
         int startRow = 0;
         for(int i = 0; i < healthInsLoss.size(); i++){
@@ -89,7 +90,7 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
         return Integer.parseInt(date.substring(0,4) + date.substring(4,6));
     }
 
-    private void fillHealthInsAssociation(List<InsLossDataExport> healthInsAssociation, Worksheet worksheet, NotificationOfLossInsExport socialInsurNotiCreateSet, GeneralDate baseDate){
+    private void fillHealthInsAssociation(List<InsLossDataExport> healthInsAssociation, Worksheet worksheet, SocialInsurNotiCreateSet socialInsurNotiCreateSet, GeneralDate baseDate){
         Cells cells = worksheet.getCells();
         int startRow = 0;
         for(int i = 0; i < healthInsAssociation.size(); i++){
@@ -106,7 +107,7 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
         }
     }
 
-    private void fillEmpPensionFund(List<InsLossDataExport> healthInsAssociation, Worksheet worksheet, NotificationOfLossInsExport socialInsurNotiCreateSet, GeneralDate baseDate){
+    private void fillEmpPensionFund(List<InsLossDataExport> healthInsAssociation, Worksheet worksheet, SocialInsurNotiCreateSet socialInsurNotiCreateSet, GeneralDate baseDate){
         Cells cells = worksheet.getCells();
         int startRow = 0;
         for(int i = 0; i < healthInsAssociation.size(); i++){

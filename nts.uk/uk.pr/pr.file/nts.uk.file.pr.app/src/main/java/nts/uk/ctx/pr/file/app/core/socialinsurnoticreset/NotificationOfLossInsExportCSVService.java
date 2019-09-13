@@ -93,7 +93,7 @@ public class NotificationOfLossInsExportCSVService extends ExportService<Notific
 			List<SocialInsuranceOffice> socialInsuranceOffice =  socialInsuranceOfficeRepository.findByCid(cid);
 			CompanyInfor company = socialInsurNotiCreateSetEx.getCompanyInfor(cid);
 			notificationOfLossInsCSVFileGenerator.generate(exportServiceContext.getGeneratorContext(),
-					new LossNotificationInformation(healthInsLoss, welfPenInsLoss, socialInsuranceOffice, socialInsurNotiCreateSet, exportServiceContext.getQuery().getReference(), company, infor));
+					new LossNotificationInformation(healthInsLoss, welfPenInsLoss, socialInsuranceOffice, domain, exportServiceContext.getQuery().getReference(), company, infor));
         }
 
         /*if(domain.getOutputFormat().get() == OutputFormatClass.HEAL_INSUR_ASSO) {
@@ -111,7 +111,7 @@ public class NotificationOfLossInsExportCSVService extends ExportService<Notific
 			CompanyInfor company = socialInsurNotiCreateSetEx.getCompanyInfor(cid);
 			List<PensFundSubmissData> healthInsAssociationData = socialInsurNotiCreateSetEx.getHealthInsAssociation(empIds, cid, start, end);
 			notificationOfLossInsCSVFileGenerator.generate(exportServiceContext.getGeneratorContext(),
-					new LossNotificationInformation(null, null, socialInsuranceOffice, socialInsurNotiCreateSet, exportServiceContext.getQuery().getReference(), company, infor));
+					new LossNotificationInformation(null, null, socialInsuranceOffice, domain, exportServiceContext.getQuery().getReference(), company, infor));
 		}
 
     }

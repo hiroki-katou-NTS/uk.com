@@ -16,53 +16,53 @@ public class CompanyInfor {
 	private String companyId;
 
 	/** 会社コード */
-	public String companyCode;
+	private String companyCode;
 
 	/** 契約コード */
-	public String contractCd;
+	private String contractCd;
 
 	/** 会社名 */
-	public String companyName;
+	private String companyName;
 
 	/**  期首月 */
-	public int startMonth;
+	private int startMonth;
 
 	/** 廃止区分 */
-	public int isAbolition;
+	private int isAbolition;
 
 	/** 代表者名 */
-	public String repname;
+	private String repname;
 
 	/** 代表者職位 */
-	public String repost;
+	private String repost;
 
 	/** 会社名カナ */
-	public String comNameKana;
+	private String comNameKana;
 
 	/** 会社名カナ */
-	public String shortComName;
+	private String shortComName;
 
 	/** 法人マイナンバー */
-	public String taxNo;
+	private String taxNo;
 
 	/** FAX番号*/
-	public String faxNum;
+	private String faxNum;
 
 	/** 住所１ */
-	public String add_1;
+	private String add_1;
 
 	/** 住所２ */
-	public String add_2;
+	private String add_2;
 
 	/**  住所カナ１ */
-	public String addKana_1;
+	private String addKana_1;
 
 	/** 住所カナ２ */
-	public String addKana_2;
+	private String addKana_2;
 
 	/** 郵便番号 */
-	public String postCd;
+	private String postCd;
 
 	/** 電話番号 */
-	public String phoneNum;
+	private String phoneNum;
 }
