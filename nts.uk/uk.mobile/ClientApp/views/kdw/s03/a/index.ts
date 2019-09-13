@@ -1,4 +1,5 @@
-import { _, Vue } from '@app/provider';
+
+import { _, Vue, moment } from '@app/provider';
 import { component, Watch, Prop } from '@app/core/component';
 import { FixTableComponent } from '@app/components/fix-table';
 import { TimeDuration } from '@app/utils/time';
@@ -445,17 +446,20 @@ export class Kdws03AComponent extends Vue {
         let self = this;
         let param1 = _.find(this.displayDataLst, (x) => x.id == id);
         let param2 = this.displayHeaderLst;
-
+        let employeeName = '';
+        let date = new Date();
         if (self.displayFormat == 0) {
-
+            employeeName = _.find(self.lstEmployee, (emp) => emp.id == self.selectedEmployee).businessName;
+            date = new Date(param1.dateDetail);
         } else {
-
+            employeeName = param1.employeeName;
+            date = self.selectedDate;
         }
 
-        self.$modal('kdws03b', { employeeName: 'testName', date: new Date(), data: param1.rowData, contentType: param2 }, { type: 'dropback' })
-            .then((v) => {
+        self.$modal('kdws03b', { 'employeeName': employeeName, 'date': date, data :param1.rowData, contentType: param2 }, { type : 'dropback' } )
+        .then((v) => {
 
-            });
+        });
     }
 
     public openMenu() {
