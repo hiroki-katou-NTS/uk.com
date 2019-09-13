@@ -228,8 +228,8 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
         }
         return resultQuery.stream().map(i -> InsLossDataExport.builder()
                 .empId(i[0].toString())
-                .officeCd(i[1].toString())
-                .other(((BigDecimal) i[2]).intValue())
+                .officeCd(i[1] == null ? i[1].toString() : "")
+                .other(i[2] == null ? 0 : ((BigDecimal) i[2]).intValue())
                 .otherReason(i[3] == null ? null : i[3].toString())
                 .caInsurance(i[4] == null ? null : ((BigDecimal) i[4]).intValue())
                 .numRecoved(i[5] == null ? null : ((BigDecimal) i[5]).intValue())

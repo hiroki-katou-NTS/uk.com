@@ -131,7 +131,6 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
 
     private void selectEra(WorksheetCollection worksheets, String era, String sheetName, int stt){
         if(era.equals(SHOWA)) {
-            worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_7" : "A2_7" +  "_" + ++stt).getName();
             worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_7" : "A2_7" +  "_" + ++stt));
             worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_8" : "A2_8" +  "_" + ++stt));
         }
@@ -162,22 +161,21 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
         worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_5" : sheetName + "!A2_5" + "_" + ++stt).setValue(Objects.toString(data.getOldName(), ""));
         worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_9_1" : sheetName + "!A2_9_1" + "_" + ++stt).setValue(Objects.toString(dateJp.toString().charAt(2), ""));
         worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_9_2" : sheetName + "!A2_9_2" + "_" + ++stt).setValue(Objects.toString(dateJp.toString().charAt(3), ""));
-        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_9_3" : sheetName + "!A2_9_3" + "_" + ++stt).setValue(Objects.toString(dateJp.toString().charAt(5), ""));
-        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_9_4" : sheetName + "!A2_9_4" + "_" + ++stt).setValue(Objects.toString(dateJp.toString().charAt(6), ""));
-        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_9_5" : sheetName + "!A2_9_5" + "_" + ++stt).setValue(Objects.toString(Objects.toString(dateJp.toString().charAt(8), "")));
-        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_9_6" : sheetName + "!A2_9_6" + "_" + ++stt).setValue(Objects.toString(Objects.toString(dateJp.toString().charAt(9), "")));
+        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_9_3" : sheetName + "!A2_9_3" + "_" + ++stt).setValue(data.getBirthDay().charAt(5));
+        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_9_4" : sheetName + "!A2_9_4" + "_" + ++stt).setValue(data.getBirthDay().charAt(6));
+        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_9_5" : sheetName + "!A2_9_5" + "_" + ++stt).setValue(data.getBirthDay().charAt(8));
+        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_9_6" : sheetName + "!A2_9_6" + "_" + ++stt).setValue(data.getBirthDay().charAt(9));
         worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_13_1" : sheetName + "!A2_13_1" + "_" + ++stt).setValue(Objects.toString(endDate.year(), ""));
-        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_13_2" : sheetName + "!A2_13_2" + "_" + ++stt).setValue(Objects.toString(endDate.month(), ""));
-        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_13_3" : sheetName + "!A2_13_3" + "_" + ++stt).setValue(Objects.toString(endDate.day(), ""));
-        // check null
-        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_10_1" : sheetName + "!A2_10_1" +  "_" + ++stt).setValue(data.getPhoneNumber() != null ? data.getPhoneNumber().charAt(0) : ""));
-        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_10_2" : sheetName + "!A2_10_2" +  "_" + ++stt).setValue(data.getPhoneNumber() != null ? data.getPhoneNumber().charAt(1) : ""));
-        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_10_3" : sheetName + "!A2_10_3" +  "_" + ++stt).setValue(data.getPhoneNumber() != null ? data.getPhoneNumber().charAt(2) : ""));
-        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_10_4" : sheetName + "!A2_10_4" +  "_" + ++stt).setValue(data.getPhoneNumber() != null ? data.getPhoneNumber().charAt(3) : ""));
-        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_10_5" : sheetName + "!A2_10_5" +  "_" + ++stt).setValue(data.getPhoneNumber() != null ? data.getPhoneNumber().charAt(4) : ""));
-        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_10_6" : sheetName + "!A2_10_6" +  "_" + ++stt).setValue(data.getPhoneNumber() != null ? data.getPhoneNumber().charAt(5) : ""));
-        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_10_7" : sheetName + "!A2_10_7" +  "_" + ++stt).setValue(data.getPhoneNumber() != null ? data.getPhoneNumber().charAt(6) : ""));
-        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_10_8" : sheetName + "!A2_10_8" +  "_" + ++stt).setValue(data.getPhoneNumber() != null ? data.getPhoneNumber().charAt(7) : ""));
+        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_13_2" : sheetName + "!A2_13_2" + "_" + ++stt).setValue(data.getEndDate() != null ? data.getEndDate().substring(5,7) : "");
+        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_13_3" : sheetName + "!A2_13_3" + "_" + ++stt).setValue(data.getEndDate() != null ? data.getEndDate().substring(8,10) : "");
+        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_10_1" : sheetName + "!A2_10_1" +  "_" + ++stt).setValue(data.getBasicPenNumber() != null ? data.getBasicPenNumber().charAt(0) : "");
+        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_10_2" : sheetName + "!A2_10_2" +  "_" + ++stt).setValue(data.getBasicPenNumber() != null ? data.getBasicPenNumber().length() > 1 ? data.getBasicPenNumber().charAt(1) : "" : "");
+        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_10_3" : sheetName + "!A2_10_3" +  "_" + ++stt).setValue(data.getBasicPenNumber() != null ? data.getBasicPenNumber().length() > 2 ? data.getBasicPenNumber().charAt(2) : "" : "");
+        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_10_4" : sheetName + "!A2_10_4" +  "_" + ++stt).setValue(data.getBasicPenNumber() != null ? data.getBasicPenNumber().length() > 3 ? data.getBasicPenNumber().charAt(3) : "" : "");
+        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_10_5" : sheetName + "!A2_10_5" +  "_" + ++stt).setValue(data.getBasicPenNumber() != null ? data.getBasicPenNumber().length() > 4 ? data.getBasicPenNumber().charAt(4) : "" : "");
+        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_10_6" : sheetName + "!A2_10_6" +  "_" + ++stt).setValue(data.getBasicPenNumber() != null ? data.getBasicPenNumber().length() > 5 ? data.getBasicPenNumber().charAt(5) : "" : "");
+        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_10_7" : sheetName + "!A2_10_7" +  "_" + ++stt).setValue(data.getBasicPenNumber() != null ? data.getBasicPenNumber().length() > 6 ? data.getBasicPenNumber().charAt(6) : "" : "");
+        worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_10_8" : sheetName + "!A2_10_8" +  "_" + ++stt).setValue(data.getBasicPenNumber() != null ? data.getBasicPenNumber().length() > 7 ? data.getBasicPenNumber().charAt(7) : "" : "");
         worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_11_1" : sheetName + "!A2_11_1" +  "_" + ++stt).setValue(Objects.toString(data.getEndDate().charAt(1), ""));
         worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_11_2" : sheetName + "!A2_11_2" +  "_" + ++stt).setValue(Objects.toString(data.getEndDate().charAt(2), ""));
         worksheets.getRangeByName(stt == 0 ? sheetName + "!A2_11_3" : sheetName + "!A2_11_3" +  "_" + ++stt).setValue(Objects.toString(data.getEndDate().charAt(3), ""));
