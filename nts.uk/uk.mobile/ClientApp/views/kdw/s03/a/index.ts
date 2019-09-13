@@ -63,7 +63,11 @@ export class Kdws03AComponent extends Vue {
     public actualTimeSelectedCodeTemp: number = 0;
     public yearMonthTemp: number = 0;
     public selectedEmployeeTemp: string = '';
-    public dPCorrectionMenuDto: any = null;
+    public dPCorrectionMenuDto: any = {
+        restReferButtonDis: false,
+        monthActualReferButtonDis: false,
+        timeExcessReferButtonDis: false
+    };
     public lstAttendanceItem: Array<any> = [];
     public autBussCode: Array<any> = [];
     //combobox
@@ -272,7 +276,9 @@ export class Kdws03AComponent extends Vue {
         self.comboTimeLimit = data.lstControlDisplayItem.comboTimeLimit;
         
         self.autBussCode = data.autBussCode;
-        self.dPCorrectionMenuDto = data.dpcorrectionMenuDto;
+        if (self.displayFormat == '0') {
+            self.dPCorrectionMenuDto = data.dpcorrectionMenuDto;
+        }       
         self.lstDataSourceLoad = self.formatDate(data.lstData);
         self.optionalHeader = data.lstControlDisplayItem.lstHeader;
         self.lstAttendanceItem = data.lstControlDisplayItem.lstAttendanceItem;

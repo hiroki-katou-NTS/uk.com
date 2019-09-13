@@ -77,6 +77,7 @@
                     <td v-for="(cell, j) of row.rowData" v-bind:class="cell.class" v-bind:style="{ 'word-wrap': 'break-word' }">{{cell.value == '0:00' ? '' : cell.value}}</td>
                     <td>
                         <span style="color: red" class="fa fa-exclamation-circle fa-lg" v-if="!isNaN(row.ERAL) && row.ERAL.includes('ER')"></span>
+                        <span style="color: red" class="fa fa-exclamation-triangle fa-lg" v-if="!isNaN(row.ERAL) && !row.ERAL.includes('ER') && row.ERAL.includes('AL')"></span>
                         <span class="pl-1" v-on:click="openEdit(row.id)" v-if="row.employeeNameDis != ''">></span>
                     </td>
                 </tr>
