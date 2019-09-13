@@ -64,6 +64,7 @@ export class Kdws03AComponent extends Vue {
     public yearMonthTemp: number = 0;
     public selectedEmployeeTemp: string = '';
     public dPCorrectionMenuDto: any = null;
+    public lstAttendanceItem: Array<any> = [];
 
     @Watch('yearMonth')
     public changeYearMonth(value: any, valueOld: any) {
@@ -254,6 +255,7 @@ export class Kdws03AComponent extends Vue {
         self.dPCorrectionMenuDto = data.dpcorrectionMenuDto;
         self.lstDataSourceLoad = self.formatDate(data.lstData);
         self.optionalHeader = data.lstControlDisplayItem.lstHeader;
+        self.lstAttendanceItem = data.lstControlDisplayItem.lstAttendanceItem;
         self.cellStates = data.lstCellState;
 
         if (_.isNil(self.timePeriodAllInfo) && self.displayFormat == 0) {
@@ -446,6 +448,7 @@ export class Kdws03AComponent extends Vue {
         let self = this;
         let param1 = _.find(this.displayDataLst, (x) => x.id == id);
         let param2 = this.displayHeaderLst;
+        let param3 = this.lstAttendanceItem;
         let employeeName = '';
         let date = new Date();
         if (self.displayFormat == 0) {
