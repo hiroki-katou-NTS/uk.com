@@ -261,6 +261,7 @@ public class InitScreenMob {
 		}
 		DPControlDisplayItem dPControlDisplayItem = processor.getItemIdNames(disItem, false);
 		screenDto.setLstControlDisplayItem(dPControlDisplayItem);
+		screenDto.setAutBussCode(disItem.getAutBussCode());
 
 		Map<Integer, DPAttendanceItem> mapDP = screenDto.getLstControlDisplayItem().getMapDPAttendance();
 		// disable cell

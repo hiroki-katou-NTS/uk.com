@@ -53,7 +53,7 @@ export class Kdws03AComponent extends Vue {
     public timePeriodAllInfo: any = null;
     public actualTimeSelectedCode: number = 0;
     public selectedEmployee: string = '';
-    public selectedDate: Date = new Date();
+    public selectedDate: Date = null;
     public resetTable: number = 0;
     public previousState: string = 'button-deactive';
     public nextState: string = 'button-deactive';
@@ -65,6 +65,7 @@ export class Kdws03AComponent extends Vue {
     public selectedEmployeeTemp: string = '';
     public dPCorrectionMenuDto: any = null;
     public lstAttendanceItem: Array<any> = [];
+    public autBussCode: Array<any> = [];
 
     @Watch('yearMonth')
     public changeYearMonth(value: any, valueOld: any) {
@@ -176,7 +177,7 @@ export class Kdws03AComponent extends Vue {
             employeeID: self.selectedEmployee,
             objectDateRange: self.displayFormat == '0' ?
                 (!_.isNil(self.dateRanger) ? { startDate: self.$dt.fromString(self.dateRanger.startDate), endDate: self.$dt.fromString(self.dateRanger.endDate) } : null) :
-                { startDate: self.selectedDate, endDate: self.selectedDate },
+                (!_.isNil(self.selectedDate) ? { startDate: self.selectedDate, endDate: self.selectedDate } : null),
             lstEmployee: [],
             initClock: null,
             displayFormat: this.displayFormat,
@@ -227,7 +228,8 @@ export class Kdws03AComponent extends Vue {
                         { startDate: self.selectedDate, endDate: self.selectedDate },
                     cellDataLst: this.displayDataLst,
                     headerLst: this.displayHeaderLst,
-                    timePeriodAllInfo: _.assign({}, self.timePeriodAllInfo, {closureId: ClosureId[self.timePeriodAllInfo.closureId]})
+                    timePeriodAllInfo: _.assign({}, self.timePeriodAllInfo, {closureId: ClosureId[self.timePeriodAllInfo.closureId]}),
+                    autBussCode: self.autBussCode
                 });
                 this.$mask('hide');
             }
@@ -252,6 +254,7 @@ export class Kdws03AComponent extends Vue {
 
     public processMapData(data: any) {
         let self = this;
+        self.autBussCode = data.autBussCode;
         self.dPCorrectionMenuDto = data.dpcorrectionMenuDto;
         self.lstDataSourceLoad = self.formatDate(data.lstData);
         self.optionalHeader = data.lstControlDisplayItem.lstHeader;
@@ -261,7 +264,7 @@ export class Kdws03AComponent extends Vue {
         if (_.isNil(self.timePeriodAllInfo)) {
             self.timePeriodAllInfo = data.periodInfo;
             self.yearMonth = data.periodInfo.yearMonth;
-            self.selectedDate = this.$dt.fromString(self.timePeriodAllInfo.lstRange[0].startDate);
+            self.selectedDate = this.$dt.fromString(self.timePeriodAllInfo.targetRange.startDate);
         }
 
         self.fixHeaders = data.lstFixedHeader;
