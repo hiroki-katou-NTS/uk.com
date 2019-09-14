@@ -98,7 +98,7 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
 
     private void fillCompanyPension( WorksheetCollection worksheets, InsLossDataExport data, GeneralDate baseDate, CompanyInfor company,String sheetName,boolean isHeal, BusinessDivision typeOff){
         JapaneseDate dateJp = toJapaneseDate(baseDate);
-        worksheets.getRangeByName(sheetName + "!D1_1_1").setValue(dateJp.year());
+        worksheets.getRangeByName(sheetName + "!D1_1_1").setValue(dateJp.year() + 1);
         worksheets.getRangeByName(sheetName + "!D1_1_2").setValue(dateJp.month());
         worksheets.getRangeByName(sheetName + "!D1_1_3").setValue(dateJp.day());
         worksheets.getRangeByName(sheetName + "!D1_2").setValue(isHeal ? data.getOfficeNumber1() : data.getWelfOfficeNumber1());
@@ -118,7 +118,7 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
 
     private void fillCompanyHealthy(WorksheetCollection worksheets, InsLossDataExport data, GeneralDate baseDate, CompanyInfor company, String sheetName, boolean isHeal, BusinessDivision typeOff){
         JapaneseDate dateJp = toJapaneseDate(baseDate);
-        worksheets.getRangeByName(sheetName + "!A1_1_1").setValue(dateJp.year());
+        worksheets.getRangeByName(sheetName + "!A1_1_1").setValue(dateJp.year() + 1);
         worksheets.getRangeByName(sheetName + "!A1_1_2").setValue(dateJp.month());
         worksheets.getRangeByName(sheetName + "!A1_1_3").setValue(dateJp.day());
         worksheets.getRangeByName(sheetName + "!A1_2").setValue(isHeal ? data.getOfficeNumber1() : data.getWelfOfficeNumber1());
@@ -174,13 +174,13 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
                 ins.getSubmittedName() == SubNameClass.PERSONAL_NAME ? data.getOldName() : data.getOldNameKana());
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_5", stt)).setValue(
                 ins.getSubmittedName() == SubNameClass.PERSONAL_NAME ? data.getOldName() : data.getOldNameKana());
-        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_9_1", stt)).setValue(Objects.toString(birthDay.toString().charAt(2), ""));
-        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_9_2", stt)).setValue(Objects.toString(birthDay.toString().charAt(3), ""));
-        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_9_3", stt)).setValue(data.getBirthDay().charAt(5));
-        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_9_4", stt)).setValue(data.getBirthDay().charAt(6));
-        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_9_5", stt)).setValue(data.getBirthDay().charAt(8));
-        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_9_6", stt)).setValue(data.getBirthDay().charAt(9));
-        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_13_1", stt)).setValue(Objects.toString(endDate.year(), ""));
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_9_1", stt)).setValue(convertJpDate(birthDay).charAt(0));
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_9_2", stt)).setValue(convertJpDate(birthDay).charAt(1));
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_9_3", stt)).setValue(convertJpDate(birthDay).charAt(2));
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_9_4", stt)).setValue(convertJpDate(birthDay).charAt(3));
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_9_5", stt)).setValue(convertJpDate(birthDay).charAt(4));
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_9_6", stt)).setValue(convertJpDate(birthDay).charAt(5));
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_13_1", stt)).setValue(Objects.toString(endDate.year() + 1, ""));
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_13_2", stt)).setValue(data.getEndDate() != null ? data.getEndDate().substring(5,7) : "");
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_13_3", stt)).setValue(data.getEndDate() != null ? data.getEndDate().substring(8,10) : "");
         if(ins.getPrintPersonNumber() != PersonalNumClass.DO_NOT_OUTPUT && ins.getPrintPersonNumber() != PersonalNumClass.OUTPUT_PER_NUMBER) {
@@ -193,21 +193,21 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
             worksheets.getRangeByName(this.getRangeName(sheetName, "A2_10_7", stt)).setValue(data.getBasicPenNumber() != null ? data.getBasicPenNumber().length() > 6 ? data.getBasicPenNumber().charAt(6) : "" : "");
             worksheets.getRangeByName(this.getRangeName(sheetName, "A2_10_8", stt)).setValue(data.getBasicPenNumber() != null ? data.getBasicPenNumber().length() > 7 ? data.getBasicPenNumber().charAt(7) : "" : "");
         }
-        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_11_1", stt)).setValue(Objects.toString(data.getEndDate().charAt(1), ""));
-        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_11_2", stt)).setValue(Objects.toString(data.getEndDate().charAt(2), ""));
-        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_11_3", stt)).setValue(Objects.toString(data.getEndDate().charAt(3), ""));
-        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_11_4", stt)).setValue(Objects.toString(data.getEndDate().charAt(4), ""));
-        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_11_5", stt)).setValue(Objects.toString(data.getEndDate().charAt(5), ""));
-        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_11_6", stt)).setValue(Objects.toString(data.getEndDate().charAt(6), ""));
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_11_1", stt)).setValue(convertJpDate(endDate).charAt(0));
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_11_2", stt)).setValue(convertJpDate(endDate).charAt(1));
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_11_3", stt)).setValue(convertJpDate(endDate).charAt(2));
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_11_4", stt)).setValue(convertJpDate(endDate).charAt(3));
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_11_5", stt)).setValue(convertJpDate(endDate).charAt(4));
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_11_6", stt)).setValue(convertJpDate(endDate).charAt(5));
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_21", stt)).setValue(Objects.toString(data.getOtherReason(), ""));
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_22", stt)).setValue(Objects.toString(data.getCaInsurance(), ""));
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_23", stt)).setValue(Objects.toString(data.getNumRecoved(), ""));
-        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_25_1", stt)).setValue(Objects.toString(endDate.toString().charAt(2), ""));
-        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_25_2", stt)).setValue(Objects.toString(endDate.toString().charAt(3), ""));
-        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_25_3", stt)).setValue(Objects.toString(endDate.toString().charAt(5), ""));
-        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_25_4", stt)).setValue(Objects.toString(endDate.toString().charAt(6), ""));
-        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_25_5", stt)).setValue(Objects.toString(endDate.toString().charAt(8), ""));
-        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_25_6", stt)).setValue(Objects.toString(endDate.toString().charAt(9), ""));
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_25_1", stt)).setValue(convertJpDate(endDate).charAt(0));
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_25_2", stt)).setValue(convertJpDate(endDate).charAt(0));
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_25_3", stt)).setValue(convertJpDate(endDate).charAt(0));
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_25_4", stt)).setValue(convertJpDate(endDate).charAt(0));
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_25_5", stt)).setValue(convertJpDate(endDate).charAt(0));
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_25_6", stt)).setValue(convertJpDate(endDate).charAt(0));
     }
 
     private String getRangeName(String sheetName, String pos, int stt){
@@ -226,8 +226,8 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
         worksheets.getRangeByName(sheetName + "!D2_2").setValue(
                 ins.getSubmittedName() == SubNameClass.PERSONAL_NAME ? data.getPersonName() : data.getPersonNameKana());
         worksheets.getRangeByName(sheetName + "!D2_3").setValue(Objects.toString(data.getPersonNameKana(), ""));
-        worksheets.getRangeByName(sheetName + "!D2_4_1").setValue(birthDay.toString().charAt(2));
-        worksheets.getRangeByName(sheetName + "!D2_4_2").setValue(birthDay.toString().charAt(3));
+        worksheets.getRangeByName(sheetName + "!D2_4_1").setValue(Objects.toString(birthDay.year() + 1 > 9 ? Objects.toString(birthDay.year() + 1).charAt(0) : 0));
+        worksheets.getRangeByName(sheetName + "!D2_4_2").setValue(Objects.toString(birthDay.year() + 1 > 9 ? Objects.toString(birthDay.year() + 1).charAt(1) : birthDay.year() + 1));
         worksheets.getRangeByName(sheetName + "!D2_4_3").setValue(data.getBirthDay().charAt(5));
         worksheets.getRangeByName(sheetName + "!D2_4_4").setValue(data.getBirthDay().charAt(6));
         worksheets.getRangeByName(sheetName + "!D2_4_5").setValue(data.getBirthDay().charAt(8));
@@ -309,5 +309,16 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
     private JapaneseDate toJapaneseDate (GeneralDate date) {
         Optional<JapaneseEraName> era = this.adapter.getAllEras().eraOf(date);
         return new JapaneseDate(date, era.get());
+    }
+
+    private String convertJpDate(JapaneseDate date){
+        int y = date.year() + 1;
+        int m = date.month();
+        int d = date.day();
+        StringBuilder result = new StringBuilder();
+        result.append(y > 9 ? "0" + y : y);
+        result.append(m > 9 ? "0" + m : y);
+        result.append(d > 9 ? "0" + d : d);
+        return result.toString();
     }
 }
