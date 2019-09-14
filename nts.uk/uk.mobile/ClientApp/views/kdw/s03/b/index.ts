@@ -37,7 +37,7 @@ export class KdwS03BComponent extends Vue {
         data: Array<RowData>, 
         paramData: any
     };
-    public checked1s: Array<number> = [1, 3];
+    public checked1s: Array<number> = [];
     public screenData: any = {};
     private masterDialogData: any = {
         workType: [],
@@ -93,7 +93,6 @@ export class KdwS03BComponent extends Vue {
         }).catch((res: any) => {
             console.log('FAIL');
         });
-        console.log('start');
     }
 
     private createPrimitiveAll(data: any) {
@@ -259,11 +258,18 @@ export class KdwS03BComponent extends Vue {
 
     public register() {
         let self = this;
-        // console.log(self.params.data);
-        self.$validate();
-        console.log(self.$errors);
-        console.log(self.$valid);
-        self.$http.post('at', API.register, self.createRegisterParam());
+        self.$mask('show');
+        self.$http.post('at', API.register, self.createRegisterParam())
+        .then(() => {
+            self.$mask('hide');
+            self.$modal.info('Msg_15');
+        }).catch((res: any) => {
+            self.$mask('hide');
+            self.$modal.error(res.messageId)
+                .then(() => {
+                    self.$close();
+                });
+        });
     }
 
     private createRegisterParam() {
@@ -285,7 +291,21 @@ export class KdwS03BComponent extends Vue {
             }
             
         });
-        let dataCheckSign = [];
+        let checkValue = false;
+        if (!_.isEmpty(self.checked1s)) {
+            checkValue = true;           
+        }
+        let dataCheckSign = [
+            {
+                rowId: self.params.rowId,
+                itemId: '',
+                value: checkValue,
+                valueType: '',
+                employeeId: self.params.employeeID,
+                date: self.params.date,
+                flagRemoveAll: false
+            }
+        ];
         
         return {
             'employeeId': self.params.employeeID,
