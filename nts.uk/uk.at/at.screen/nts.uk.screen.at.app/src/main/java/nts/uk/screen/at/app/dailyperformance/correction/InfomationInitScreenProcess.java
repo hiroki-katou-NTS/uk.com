@@ -148,7 +148,10 @@ public class InfomationInitScreenProcess {
 		DatePeriodInfo resultPeriod = processor.changeDateRange(dateRange, rangeInit, objectShare, companyId, sId, screenDto, screenDto.getClosureId(), mode, displayFormat, initScreenOther, param.dpStateParam);
 		//TODO: empty dateRange
 		if(resultPeriod == null) {
-			throw new BusinessException(new RawErrorMessage("Error date range empty"));
+			//throw new BusinessException(new RawErrorMessage("Error date range empty"));
+			screenDto.setErrorInfomation(DCErrorInfomation.NOT_EMP_IN_HIST.value);
+			//setStateParam(screenDto, resultPeriod, displayFormat, initScreenOther);
+			return Pair.of(screenDto, null);
 		}
 		dateRange = resultPeriod.getTargetRange();
 		screenDto.setPeriodInfo(resultPeriod);
