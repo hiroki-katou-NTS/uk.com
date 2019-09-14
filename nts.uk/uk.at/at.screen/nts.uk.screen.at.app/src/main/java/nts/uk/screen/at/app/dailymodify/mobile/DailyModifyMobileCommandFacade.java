@@ -96,19 +96,18 @@ public class DailyModifyMobileCommandFacade {
 		boolean errorMonthAfterCalc = false;
 		boolean editFlex = (dataParent.getMode() == 0 && dataParent.getMonthValue() != null
 				&& !CollectionUtil.isEmpty(dataParent.getMonthValue().getItems()));
+		dataParent.setCheckDailyChange(true);
 		// insert flex
 		UpdateMonthDailyParam monthParam = null;
-		if (dataParent.getParamCommonAsync() != null && dataParent.getParamCommonAsync().getStateParam() != null
-				&& dataParent.getParamCommonAsync().getStateParam().getDateInfo() != null) {
-			DatePeriodInfo paramCommon = dataParent.getParamCommonAsync().getStateParam().getDateInfo();
+		if (dataParent.getStateParam() != null && dataParent.getStateParam().getDateInfo() != null) {
+			DatePeriodInfo paramCommon = dataParent.getStateParam().getDateInfo();
 			AggrPeriodClosure aggrClosure = paramCommon.getLstClosureCache().stream()
 					.filter(x -> x.getClosureId().value == paramCommon.getClosureId().value).findFirst().orElse(null);
 			Optional<IntegrationOfMonthly> domainMonthOpt = Optional.empty();
 			if (aggrClosure != null)
-				monthParam = new UpdateMonthDailyParam(aggrClosure.getYearMonth(),
-						dataParent.getParamCommonAsync().getEmployeeTarget(), aggrClosure.getClosureId().value,
-						ClosureDateDto.from(aggrClosure.getClosureDate()), domainMonthOpt,
-						new DatePeriod(dataParent.getDateRange().getStartDate(),
+				monthParam = new UpdateMonthDailyParam(aggrClosure.getYearMonth(), dataParent.getEmployeeId(),
+						aggrClosure.getClosureId().value, ClosureDateDto.from(aggrClosure.getClosureDate()),
+						domainMonthOpt, new DatePeriod(dataParent.getDateRange().getStartDate(),
 								dataParent.getDateRange().getEndDate()),
 						"", true, true, 0L);
 		}

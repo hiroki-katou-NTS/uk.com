@@ -478,20 +478,30 @@ export class Kdws03AComponent extends Vue {
         let self = this;
         let paramData = self.paramData;
         let rowData = _.find(self.displayDataLst, (x) => x.id == id);
+        let employeeID = '';
         let employeeName = '';
         let date = new Date();
         if (self.displayFormat == 0) {
-            employeeName = _.find(self.lstEmployee, (emp) => emp.id == self.selectedEmployee).businessName;
+            employeeID = self.selectedEmployee;
+            employeeName = _.find(self.lstEmployee, (emp) => emp.id == employeeID).businessName;
             date = new Date(rowData.dateDetail);
         } else {
+            employeeID = rowData.employeeID;
             employeeName = rowData.employeeName;
             date = self.selectedDate;
         }
 
-        self.$modal('kdws03b', { 'employeeName': employeeName, 'date': date, data: rowData.rowData, 'paramData': paramData }, { type: 'dropback' })
-            .then((v) => {
+        self.$modal('kdws03b', { 
+            'rowId': rowData.id,
+            'employeeID': employeeID,
+            'employeeName': employeeName, 
+            'date': date, 
+            data: rowData.rowData, 
+            'paramData': paramData }, 
+        { type: 'dropback' })
+        .then((v) => {
 
-            });
+        });
     }
 
     public openMenu() {

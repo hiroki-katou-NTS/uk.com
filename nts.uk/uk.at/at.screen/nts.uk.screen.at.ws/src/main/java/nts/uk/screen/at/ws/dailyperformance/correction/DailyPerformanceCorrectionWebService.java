@@ -48,6 +48,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.ApprovalConfirmCache
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPAttendanceItem;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPCorrectionInitParam;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPDataDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DPHeaderDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemParent;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPParams;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceCalculationDto;
@@ -62,6 +63,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.cache.DPCorrectionSt
 import nts.uk.screen.at.app.dailyperformance.correction.dto.calctime.DCCalcTime;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.calctime.DCCalcTimeParam;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.mobile.ErrorParam;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.mobile.MasterDialogParam;
 import nts.uk.screen.at.app.dailyperformance.correction.flex.CalcFlexDto;
 import nts.uk.screen.at.app.dailyperformance.correction.flex.CheckBeforeCalcFlex;
 import nts.uk.screen.at.app.dailyperformance.correction.gendate.GenDateDto;
@@ -545,5 +547,22 @@ public class DailyPerformanceCorrectionWebService {
 				new DatePeriod(errorParam.getStartDate(), errorParam.getEndDate()), 
 				errorParam.getEmployeeLst(), 
 				errorParam.getAttendanceItemID());
+	}
+	
+	@POST
+	@Path("getMasterDialogMob")
+	public Map<Integer, List<CodeName>> getMasterDialog(MasterDialogParam masterDialogParam) {
+		String companyID = AppContexts.user().companyId();
+		Map<Integer, Map<String, CodeName>> allMasterData = dialogProcessor.getAllCodeName(
+				masterDialogParam.getTypes(), 
+				companyID,
+				masterDialogParam.getDate());
+		return allMasterData.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> new ArrayList<CodeName>(entry.getValue().values())));
+	}
+	
+	@POST
+	@Path("getPrimitiveAll")
+	public Map<Integer, String> getPrimitiveAll() {
+		return DPHeaderDto.getPrimitiveAll();
 	}
 }

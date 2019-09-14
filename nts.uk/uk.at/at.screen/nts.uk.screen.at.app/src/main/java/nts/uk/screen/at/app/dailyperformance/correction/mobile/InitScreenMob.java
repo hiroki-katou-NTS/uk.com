@@ -292,13 +292,12 @@ public class InitScreenMob {
 				identityProcessDtoOpt, approvalUseSettingDtoOpt);
 
 		// 確認、承認状況の取得
-		// List<ConfirmStatusActualResult> confirmResults = new ArrayList<>();
+		List<ConfirmStatusActualResult> confirmResults = new ArrayList<>();
 		List<ApprovalStatusActualResult> approvalResults = new ArrayList<>();
 
-		// confirmResults = confirmStatusActualDayChange.processConfirmStatus(companyId,
-		// sId, listEmployeeId,
-		// Optional.of(new DatePeriod(dateRange.getStartDate(),
-		// dateRange.getEndDate())), Optional.empty());
+		confirmResults = confirmStatusActualDayChange.processConfirmStatus(companyId, sId, listEmployeeId,
+				Optional.of(new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate())), Optional.empty());
+		
 		approvalResults = approvalStatusActualDayChange.processApprovalStatus(companyId, sId, listEmployeeId,
 				Optional.of(new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate())), Optional.empty(),
 				screenMode);
@@ -438,11 +437,8 @@ public class InitScreenMob {
 		}
 		screenDto.setLstData(lstData);
 		setStateParam(screenDto, resultPeriod, displayFormat, false);
-		// screenDto.setApprovalConfirmCache(new ApprovalConfirmCache(sId,
-		// listEmployeeId,
-		// new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate()), 0,
-		// confirmResults,
-		// approvalResults));
+		screenDto.setApprovalConfirmCache(new ApprovalConfirmCache(sId, listEmployeeId,
+				new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate()), 0, confirmResults, approvalResults));
 		return screenDto;
 	}
 
