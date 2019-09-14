@@ -3800,7 +3800,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 dataSourceMIGrid: any[] = [{ monthYear: self.monthYear() }],
                 columnsMIGrid: any[] = [{ headerText: getText("KDW003_40"), key: 'monthYear', dataType: 'string', width: '75px' }],
                 totalWidthColumn: number = 75,
-                maxWidth: number = window.screen.availWidth - 200;
+                maxWidth: number = window.innerWidth - 200;
 
             _.forEach(self.listAttendanceItemId(), (id) => {
                 let attendanceItemId: any = _.find(data, { 'attendanceItemId': id.itemId }),
