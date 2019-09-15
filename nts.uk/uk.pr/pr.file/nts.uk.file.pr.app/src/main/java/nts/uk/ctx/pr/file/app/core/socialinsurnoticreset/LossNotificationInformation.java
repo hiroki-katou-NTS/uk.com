@@ -18,7 +18,7 @@ import java.util.List;
 public class LossNotificationInformation {
     List<InsLossDataExport> healthInsLoss;
     List<InsLossDataExport> welfPenInsLoss;
-    List<SocialInsuranceOffice> socialInsuranceOffice;
+    List<PensFundSubmissData> healthInsAssociationData;
     SocialInsurNotiCreateSet socialInsurNotiCreateSet;
     GeneralDate baseDate;
     CompanyInfor company;

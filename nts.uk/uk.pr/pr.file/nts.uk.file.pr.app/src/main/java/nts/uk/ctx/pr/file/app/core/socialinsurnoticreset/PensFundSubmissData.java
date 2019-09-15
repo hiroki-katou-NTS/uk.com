@@ -45,4 +45,49 @@ public class PensFundSubmissData {
 
     private String memberNumber;
 
+    private String welPenOfficeNumber;
+
+    private int prefectureNo;
+
+    private String endDate;
+
+    private String personName;
+
+    private String personNameKana;
+
+    private String oldName;
+
+    private String oldNameKana;
+
+    private  String birthDay;
+
+    private String portCd;
+
+    private String retirementAddBefore;
+
+    private String retirementAdd;
+
+    private String reasonForLoss;
+
+    private String addAppCtgSal;
+
+    private String reason;
+
+    private String addSal;
+
+    private String standSal;
+
+    private String secAddSalary;
+
+    private String secStandSal;
+
+    private int cause;
+
+    private String isMoreEmp;
+
+    private String otherReason;
+
+    private String continReemAfterRetirement;
+
+    private String basicPenNumber;
 }

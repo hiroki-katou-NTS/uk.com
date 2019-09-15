@@ -103,4 +103,6 @@ public class InsLossDataExport {
 
     private String memberNumber;
 
+    private String healInsInherenPr;
+
 }

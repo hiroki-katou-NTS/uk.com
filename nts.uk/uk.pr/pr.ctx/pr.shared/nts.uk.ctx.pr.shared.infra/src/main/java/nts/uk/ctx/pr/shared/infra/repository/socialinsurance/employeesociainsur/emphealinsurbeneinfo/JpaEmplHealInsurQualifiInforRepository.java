@@ -21,15 +21,16 @@ public class JpaEmplHealInsurQualifiInforRepository extends JpaRepository implem
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QqsmtEmpHealInsurQi f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.empHealInsurQiPk.employeeId =:employeeId AND  f.empHealInsurQiPk.hisId =:hisId ";
-    private static final String SELECT_BY_LIST_EMP_START = SELECT_ALL_QUERY_STRING + " WHERE  f.empHealInsurQiPk.employeeId IN :employeeIds  AND f.startDate <= :startDate AND f.endDate >= :startDate";
+    private static final String SELECT_BY_LIST_EMP_START = SELECT_ALL_QUERY_STRING + " WHERE  f.empHealInsurQiPk.employeeId IN :employeeIds  AND f.endDate >= :startDate AND f.endDate <= :endDate";
     private static final String SELECT_BY_EMPLID = SELECT_ALL_QUERY_STRING + " WHERE  f.empHealInsurQiPk.employeeId =:employeeId ";
     private static final String SELECT_BY_HISID = SELECT_ALL_QUERY_STRING + " WHERE  f.empHealInsurQiPk.hisId =:hisId ";
 
     @Override
-    public boolean checkEmplHealInsurQualifiInfor(GeneralDate start, List<String> empIds){
+    public boolean checkEmplHealInsurQualifiInfor(GeneralDate start,GeneralDate end, List<String> empIds){
         List<QqsmtEmpHealInsurQi> qqsmtEmpHealInsurQi =  this.queryProxy().query(SELECT_BY_LIST_EMP_START, QqsmtEmpHealInsurQi.class)
                 .setParameter("employeeIds", empIds)
                 .setParameter("startDate", start)
+                .setParameter("endDate", end)
                 .getList();
         return qqsmtEmpHealInsurQi.isEmpty();
     }

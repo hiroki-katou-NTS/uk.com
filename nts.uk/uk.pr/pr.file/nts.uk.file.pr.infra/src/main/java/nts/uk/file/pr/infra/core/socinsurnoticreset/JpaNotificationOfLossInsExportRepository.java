@@ -64,7 +64,8 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
         exportSQL.append("      PHONE_NUMBER,");
         exportSQL.append("      pf.WEL_PEN_NUMBER,");
         exportSQL.append("      HEAL_INSUR_UNION_NMBER,");
-        exportSQL.append("      MEMBER_NUMBER");
+        exportSQL.append("      MEMBER_NUMBER,");
+        exportSQL.append("      WELFARE_PENSION_PREFECTURE_NO");
         exportSQL.append("    FROM ");
         exportSQL.append("         (SELECT *");
         exportSQL.append("         FROM QQSMT_EMP_WELF_INS_QC_IF");
@@ -168,6 +169,7 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
                 .welfPenNumber(i[38] == null ? null : i[38].toString())
                 .healInsUnionNumber(i[39] == null ? null : i[39].toString())
                 .memberNumber(i[40] == null ? null : i[40].toString())
+                .prefectureNo(i[41] == null ? 0 : ((BigDecimal) i[20]).intValue())
                 .build()
         ).collect(Collectors.toList());
     }
@@ -216,7 +218,8 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
         exportSQL.append("      WELFARE_PENSION_OFFICE_NUMBER,");
         exportSQL.append("      WEL_PEN_NUMBER,");
         exportSQL.append("      HEAL_INSUR_UNION_NMBER,");
-        exportSQL.append("      MEMBER_NUMBER");
+        exportSQL.append("      MEMBER_NUMBER,");
+        exportSQL.append("      HEAL_INSUR_INHEREN_PR");
         exportSQL.append("  FROM ");
         exportSQL.append("         (SELECT *");
         exportSQL.append("         FROM QQSMT_EMP_HEAL_INSUR_QI ");
@@ -242,6 +245,7 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
         exportSQL.append("       WHERE END_DATE <= ?endDate AND END_DATE >= ?startDate) his");
         exportSQL.append("       ON qi.EMPLOYEE_ID = his.EMPLOYEE_ID");
         exportSQL.append("  LEFT JOIN QQSMT_HEALTH_INS_LOSS loss ON loss.EMP_ID = his.EMPLOYEE_ID");
+        exportSQL.append("  LEFT JOIN QQSMT_EMP_HEAL_INS_UNION iu ON iu.EMPLOYEE_ID = loss.EMP_ID");
         exportSQL.append("  LEFT JOIN QQSMT_SOC_ISACQUISI_INFO info ON info.EMPLOYEE_ID = his.EMPLOYEE_ID");
         exportSQL.append("  LEFT JOIN QQSMT_MULTI_EMP_WORK_IF mt ON mt.EMPLOYEE_ID = his.EMPLOYEE_ID");
         exportSQL.append("  LEFT JOIN QQSMT_EMP_BA_PEN_NUM ba ON ba.EMPLOYEE_ID = his.EMPLOYEE_ID");
@@ -308,6 +312,7 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
                 .welfPenNumber(i[37] == null ? null : i[37].toString())
                 .healInsUnionNumber(i[38] == null ? null : i[38].toString())
                 .memberNumber(i[39] == null ? null : i[39].toString())
+                .healInsInherenPr(i[40] == null ? null : i[40].toString())
                 .build()
                 ).collect(Collectors.toList());
     }
@@ -387,7 +392,30 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
         exportSQL.append("      WEL_PEN_NUMBER,");
         exportSQL.append("      HEAL_INSUR_UNION_NMBER,");
         exportSQL.append("      MEMBER_NUMBER,");
-        exportSQL.append("      TODOKEDE_FNAME_KANA");
+        exportSQL.append("      TODOKEDE_FNAME_KANA,");
+        exportSQL.append("      WELFARE_PENSION_OFFICE_NUMBER,");
+        exportSQL.append("      WELFARE_PENSION_PREFECTURE_NO,");
+        exportSQL.append("      qi.END_DATE,");
+        exportSQL.append("      BUSINESS_NAME,");
+        exportSQL.append("      BUSINESS_NAME_KANA,");
+        exportSQL.append("      PERSON_NAME,");
+        exportSQL.append("      PERSON_NAME_KANA,");
+        exportSQL.append("      BIRTHDAY,");
+        exportSQL.append("      POST_CD,");
+        exportSQL.append("      RETIREMENT_ADD_BEFORE,");
+        exportSQL.append("      RETIREMENT_ADD,");
+        exportSQL.append("      REASON_FOR_LOSS,");
+        exportSQL.append("      ADD_APP_CTG_SAL,");
+        exportSQL.append("      REASON,");
+        exportSQL.append("      STAND_SAL,");
+        exportSQL.append("      STAND_SAL,");
+        exportSQL.append("      SEC_ADD_SALARY,");
+        exportSQL.append("      SEC_STAND_SAL,");
+        exportSQL.append("      CAUSE,");
+        exportSQL.append("      IS_MORE_EMP,");
+        exportSQL.append("      OTHER_REASON,");
+        exportSQL.append("      CONTIN_REEM_AFTER_RETIREMENT,");
+        exportSQL.append("      BASIC_PEN_NUMBER");
         exportSQL.append("  FROM ");
         exportSQL.append("         (SELECT *");
         exportSQL.append("         FROM QQSMT_EMP_WELF_INS_QC_IF ");
@@ -410,7 +438,7 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
         exportSQL.append("  INNER JOIN QQSMT_EMPL_PEN_FUND_INFO fi ON fi.EMPLOYEE_ID = qi.EMPLOYEE_ID");
         exportSQL.append("   INNER JOIN (SELECT * ");
         exportSQL.append("        FROM BSYMT_EMP_DTA_MNG_INFO ");
-        exportSQL.append("        WHERE CID = '000000000000-0001') i");
+        exportSQL.append("        WHERE CID = ?cid) i");
         exportSQL.append("        ON i.SID = qi.EMPLOYEE_ID");
         exportSQL.append("  INNER JOIN BPSMT_PERSON p ON p.PID = i.PID");
         exportSQL.append("  INNER JOIN (SELECT *");
@@ -422,6 +450,17 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
         exportSQL.append("       FROM QQSMT_HEAL_INSUR_PORT_INT ");
         exportSQL.append("       WHERE START_DATE <= '?endDate' AND START_DATE >= ?startDate) pri");
         exportSQL.append("       ON pri.EMPLOYEE_ID = qi.EMPLOYEE_ID");
+        exportSQL.append("  INNER JOIN (SELECT * ");
+        exportSQL.append("       FROM BSYMT_EMP_DTA_MNG_INFO ");
+        exportSQL.append("       WHERE CID = ?cid) i");
+        exportSQL.append("       ON i.SID = qi.EMPLOYEE_ID");
+        exportSQL.append("  INNER JOIN BPSMT_PERSON p ON p.PID = i.PID");
+        exportSQL.append("  LEFT JOIN QQSMT_MULTI_EMP_WORK_IF mi ON mi.EMPLOYEE_ID = qi.EMPLOYEE_ID");
+        exportSQL.append("  LEFT JOIN (SELECT * ");
+        exportSQL.append("              FROM QQSMT_SOC_ISACQUISI_INFO");
+        exportSQL.append("              WHERE CID = ?cid) ii ON ii.EMPLOYEE_ID = qi.EMPLOYEE_ID");
+        exportSQL.append("  LEFT JOIN QQSMT_EMP_BA_PEN_NUM bp ON bp.EMPLOYEE_ID = qi.EMPLOYEE_ID");
+        exportSQL.append("  ORDER BY SOCIAL_INSURANCE_OFFICE_CD   ");
         String sql = String.format(exportSQL.toString(), empIds.stream()
                 .map(String::valueOf)
                 .collect(Collectors.joining("','")));
@@ -441,11 +480,11 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
                 .funSpecific3(i[3] != null ? i[3].toString() : "")
                 .funSpecific4(i[4] != null ? i[4].toString() : "")
                 .funSpecific5(i[5] != null ? i[5].toString() : "")
-                .funSpecific1(i[6] != null ? i[6].toString() : "")
-                .funSpecific1(i[7] != null ? i[7].toString() : "")
-                .funSpecific1(i[8] != null ? i[8].toString() : "")
-                .funSpecific1(i[9] != null ? i[9].toString() : "")
-                .funSpecific1(i[10] != null ? i[10].toString() : "")
+                .funSpecific6(i[6] != null ? i[6].toString() : "")
+                .funSpecific7(i[7] != null ? i[7].toString() : "")
+                .funSpecific8(i[8] != null ? i[8].toString() : "")
+                .funSpecific9(i[9] != null ? i[9].toString() : "")
+                .funSpecific10(i[10] != null ? i[10].toString() : "")
                 .funMember(i[11] != null ? i[11].toString() : "")
                 .officeNumber1(i[12] != null ? i[12].toString() : "")
                 .officeNumber2(i[13] != null ? i[13].toString() : "")
@@ -453,6 +492,9 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
                 .welNumber(i[15] != null ? i[15].toString() : "")
                 .healInsUnionNumber(i[16] != null ? i[16].toString() : "")
                 .memberNumber(i[16] != null ? i[16].toString() : "")
+                .welPenOfficeNumber(i[17] != null ? i[17].toString() : "")
+                .endDate(i[18] != null ? i[18].toString() : "")
+                .prefectureNo(i[19] != null ?  ((BigDecimal) i[19]).intValue() : 0)
                 .build() ).collect(Collectors.toList());
 
     }

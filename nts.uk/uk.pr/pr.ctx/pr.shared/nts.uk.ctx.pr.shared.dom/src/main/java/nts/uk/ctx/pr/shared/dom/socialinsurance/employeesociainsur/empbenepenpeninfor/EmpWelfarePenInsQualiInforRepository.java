@@ -10,7 +10,7 @@ import java.util.Optional;
 */
 public interface EmpWelfarePenInsQualiInforRepository {
 
-    boolean checkEmpWelfarePenInsQualiInfor(GeneralDate start, List<String> empId);
+    boolean checkEmpWelfarePenInsQualiInfor(GeneralDate start,GeneralDate end, List<String> empId);
 
     Optional<EmpWelfarePenInsQualiInfor> getEmpWelfarePenInsQualiInforById(String employeeId, String historyId);
 

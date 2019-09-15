@@ -128,10 +128,10 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
         /*design cho 対象区分（0：資格取得、1:資格喪失） == 1*/
         if (/*điều kiện chưa có */ 0 == 1) {
             /*アルゴリズム「社員健康保険資格情報が存在するかチェックする」を実行する*/
-            check = mEmplHealInsurQualifiInforRepository.checkEmplHealInsurQualifiInfor(startDate, employeeIds);
+            check = mEmplHealInsurQualifiInforRepository.checkEmplHealInsurQualifiInfor(startDate, endDate, employeeIds);
         } else {
             /*アルゴリズム「社員厚生年金保険資格情報が存在するかチェックする」を実行する*/
-            check = mEmplHealInsurQualifiInforRepository.checkEmplHealInsurQualifiInfor(endDate, employeeIds);
+            check = mEmplHealInsurQualifiInforRepository.checkEmplHealInsurQualifiInfor(startDate, endDate, employeeIds);
         }
         if (!check) {
             throw new BusinessException("Msg_37");
@@ -366,12 +366,12 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
                 boolean empWelfarePenInsQualiInfor;
 
                 if (/*対象区分（0：資格取得、1:資格喪失）KH cho == 0*/ 0 == 0) {
-                    emplHealInsurQualifiInfor = mEmplHealInsurQualifiInforRepository.checkEmplHealInsurQualifiInfor(startDate, employeeIds);
-                    empWelfarePenInsQualiInfor = mEmpWelfarePenInsQualiInforRepository.checkEmpWelfarePenInsQualiInfor(startDate, employeeIds);
+                    emplHealInsurQualifiInfor = mEmplHealInsurQualifiInforRepository.checkEmplHealInsurQualifiInfor(startDate, endDate, employeeIds);
+                    empWelfarePenInsQualiInfor = mEmpWelfarePenInsQualiInforRepository.checkEmpWelfarePenInsQualiInfor(startDate, endDate, employeeIds);
 
                 } else {
-                    emplHealInsurQualifiInfor = mEmplHealInsurQualifiInforRepository.checkEmplHealInsurQualifiInfor(endDate, employeeIds);
-                    empWelfarePenInsQualiInfor = mEmpWelfarePenInsQualiInforRepository.checkEmpWelfarePenInsQualiInfor(endDate, employeeIds);
+                    emplHealInsurQualifiInfor = mEmplHealInsurQualifiInforRepository.checkEmplHealInsurQualifiInfor(startDate, endDate, employeeIds);
+                    empWelfarePenInsQualiInfor = mEmpWelfarePenInsQualiInforRepository.checkEmpWelfarePenInsQualiInfor(startDate, endDate, employeeIds);
 
                 }
                 if (emplHealInsurQualifiInfor && empWelfarePenInsQualiInfor) {
@@ -383,10 +383,10 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
             case HEAL_INSUR_ASS: {
                 boolean emplHealInsurQualifiInfor;
                 if (/* 対象区分（0：資格取得、1:資格喪失）KH cho == 0*/ 0 == 0) {
-                    emplHealInsurQualifiInfor = mEmplHealInsurQualifiInforRepository.checkEmplHealInsurQualifiInfor(startDate, employeeIds);
+                    emplHealInsurQualifiInfor = mEmplHealInsurQualifiInforRepository.checkEmplHealInsurQualifiInfor(startDate, endDate, employeeIds);
 
                 } else {
-                    emplHealInsurQualifiInfor = mEmplHealInsurQualifiInforRepository.checkEmplHealInsurQualifiInfor(endDate, employeeIds);
+                    emplHealInsurQualifiInfor = mEmplHealInsurQualifiInforRepository.checkEmplHealInsurQualifiInfor(startDate, endDate, employeeIds);
                 }
                 if (emplHealInsurQualifiInfor) {
                     throw new BusinessException("Msg_37");
@@ -398,9 +398,9 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
                 boolean empWelfarePenInsQualiInfor;
 
                 if (/* 対象区分（0：資格取得、1:資格喪失）KH cho == 0*/ 0 == 0) {
-                    empWelfarePenInsQualiInfor = mEmpWelfarePenInsQualiInforRepository.checkEmpWelfarePenInsQualiInfor(startDate, employeeIds);
+                    empWelfarePenInsQualiInfor = mEmpWelfarePenInsQualiInforRepository.checkEmpWelfarePenInsQualiInfor(startDate, endDate, employeeIds);
                 } else {
-                    empWelfarePenInsQualiInfor = mEmpWelfarePenInsQualiInforRepository.checkEmpWelfarePenInsQualiInfor(endDate, employeeIds);
+                    empWelfarePenInsQualiInfor = mEmpWelfarePenInsQualiInforRepository.checkEmpWelfarePenInsQualiInfor(startDate, endDate, employeeIds);
 
                 }
                 if (empWelfarePenInsQualiInfor) {

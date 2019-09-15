@@ -14,6 +14,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -66,10 +67,11 @@ public class NotificationOfLossInsExportPDFService extends ExportService<Notific
 			List<InsLossDataExport> overSeventy = welfPenInsLoss.stream().filter(item-> item.getCause() == ReasonsForLossPensionIns.ONLY_PENSION_INSURANCE.value).collect(Collectors.toList());
 			List<InsLossDataExport> underSeventy = welfPenInsLoss.stream().filter(item-> item.getCause() != ReasonsForLossPensionIns.ONLY_PENSION_INSURANCE.value).collect(Collectors.toList());
 			healthInsLoss.addAll(underSeventy);
-			List<SocialInsuranceOffice> socialInsuranceOffice =  socialInsuranceOfficeRepository.findByCid(cid);
+			healthInsLoss.stream().sorted(Comparator.comparing(InsLossDataExport::getOfficeCd));
+			/*List<SocialInsuranceOffice> socialInsuranceOffice =  socialInsuranceOfficeRepository.findByCid(cid);*/
 			CompanyInfor company = socialInsurNotiCreateSetEx.getCompanyInfor(cid);
 			socialInsurNotiCreateSetFileGenerator.generate(exportServiceContext.getGeneratorContext(),
-					new LossNotificationInformation(healthInsLoss, overSeventy, socialInsuranceOffice, domain, exportServiceContext.getQuery().getReference(), company, null));
+					new LossNotificationInformation(healthInsLoss, overSeventy,null, domain, exportServiceContext.getQuery().getReference(), company, null));
 		}
 	}
 

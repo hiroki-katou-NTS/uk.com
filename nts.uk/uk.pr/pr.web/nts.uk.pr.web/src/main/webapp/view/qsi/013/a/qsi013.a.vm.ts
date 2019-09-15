@@ -65,6 +65,7 @@ module nts.uk.pr.view.qsi013.a.viewmodel {
             let yyyy = today.getFullYear();
             self.startDate(yyyy + "/" + ms + "/" + dd);
             self.endDate(yyyy + "/" + mm  + "/" + dd);
+            self.filingDate(yyyy + "/" + mm  + "/" + dd);
             self.loadKCP005();
             self.loadCCG001();
 
