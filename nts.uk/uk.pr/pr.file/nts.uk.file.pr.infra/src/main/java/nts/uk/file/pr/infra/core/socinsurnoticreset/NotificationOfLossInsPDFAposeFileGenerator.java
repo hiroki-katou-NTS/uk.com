@@ -192,13 +192,13 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
                 ins.getInsuredNumber() == InsurPersonNumDivision.OUTPUT_HEAL_INSUR_UNION ? data.getHealInsUnionNumber() :
                 ins.getInsuredNumber() == InsurPersonNumDivision.OUTPUT_THE_FUN_MEMBER ? data.getMemberNumber() : "");
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_2", stt)).setValue(
-                ins.getSubmittedName() == SubNameClass.PERSONAL_NAME ? data.getPersonName() : data.getPersonNameKana());
+                ins.getSubmittedName() == SubNameClass.PERSONAL_NAME ? data.getPersonName().split("　")[0] : data.getPersonNameKana().split("　")[0]);
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_3", stt)).setValue(
-                ins.getSubmittedName() == SubNameClass.PERSONAL_NAME ? data.getPersonName() : data.getPersonName());
+                ins.getSubmittedName() == SubNameClass.PERSONAL_NAME ? data.getPersonName().split("　")[1] : data.getPersonNameKana().split("　")[1]);
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_4", stt)).setValue(
-                ins.getSubmittedName() == SubNameClass.PERSONAL_NAME ? data.getOldName() : data.getOldNameKana());
+                ins.getSubmittedName() == SubNameClass.PERSONAL_NAME ? data.getOldName().split("　")[0] : data.getOldNameKana().split("　")[0]);
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_5", stt)).setValue(
-                ins.getSubmittedName() == SubNameClass.PERSONAL_NAME ? data.getOldName() : data.getOldNameKana());
+                ins.getSubmittedName() == SubNameClass.PERSONAL_NAME ? data.getOldName().split("　")[1] : data.getOldNameKana().split("　")[1]);
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_9_1", stt)).setValue(convertJpDate(birthDay).charAt(0));
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_9_2", stt)).setValue(convertJpDate(birthDay).charAt(1));
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_9_3", stt)).setValue(convertJpDate(birthDay).charAt(2));
