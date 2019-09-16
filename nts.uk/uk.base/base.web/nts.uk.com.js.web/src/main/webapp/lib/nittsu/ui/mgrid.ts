@@ -10003,7 +10003,7 @@ module nts.uk.ui.mgrid {
         /**
          * Set.
          */
-        export function set(cell: any, message: string, setType?: any, rendered:? any) {
+        export function set(cell: any, message: string, setType?: any, rendered?: any) {
             if (!cell || ((!setType || setType === 1) && (!cell.element || any(cell)))) return;
             if (!setType || setType === 1) {
                 let $cell = cell.element;
