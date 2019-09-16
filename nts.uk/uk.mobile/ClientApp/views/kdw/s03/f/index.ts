@@ -4,7 +4,6 @@ import { storage } from '@app/utils';
 
 @component({
     name: 'kdws03f',
-    route: '/kdw/s03/f',
     style: require('./style.scss'),
     template: require('./index.vue'),
     resource: require('./resources.json'),
@@ -12,25 +11,28 @@ import { storage } from '@app/utils';
     constraints: []
 })
 export class KdwS03FComponent extends Vue {
-    public empName: string = '';
-    public date: number;
-
+    public empName: string = '';//対象社員名
+    public date: number;//対象年月
     public monthData: Array<IMonthData> = [];
     
+    //月別実績の参照を起動
     public created() {
         let self = this;
+        self.$mask('show');
+        //A画面のキャッシュを取得する
         let cache: any = storage.local.getItem('dailyCorrectionState');
         self.date = cache.timePeriodAllInfo.yearMonth;
         self.empName = (_.find(cache.lstEmployee, (emp) => emp.id == cache.selectedEmployee) || { businessName: '' }).businessName;
         let param = {
-            employeeId: cache.selectedEmployee,
-            formatCode: cache.autBussCode,
-            yearMonth: cache.timePeriodAllInfo.yearMonth,
-            closureId: cache.timePeriodAllInfo.closureId,
-            closureDate: new Date(cache.timePeriodAllInfo.targetRange.endDate)
+            employeeId: cache.selectedEmployee,//社員ID
+            formatCode: cache.autBussCode,//フォーマットコード
+            yearMonth: cache.timePeriodAllInfo.yearMonth,//年月
+            closureId: cache.timePeriodAllInfo.closureId,//締めID
+            closureDate: new Date(cache.timePeriodAllInfo.targetRange.endDate)//締め日
         };
+        //月別実績のデータを取得する
         self.$http.post('at', servicePath.getMonthlyPer, param).then((result: any) => {
-            console.log(result);
+            self.$mask('hide');
             _.each(result.data, (item) => {
                 self.monthData.push({
                     id: item.itemId,
@@ -38,8 +40,11 @@ export class KdwS03FComponent extends Vue {
                     value: self.valueDis(item.value, item.type)
                 });
             });
+        }).catch(() => {
+            self.$mask('hide');
         });
     }
+    //convert value by type
     public valueDis(value: string, type: number) {
         if (value == null) {return '';}
         if (type == ValueType.CLOCK || type == ValueType.TIME) {
@@ -56,9 +61,9 @@ const servicePath = {
     getMonthlyPer: 'screen/at/dailyperformance/monthly-perfomance'
 };
 interface IMonthData {
-    id: string;
-    name: string;
-    value: any;
+    id: string;//勤怠項目ID
+    name: string;//勤怠項目名
+    value: any;//勤怠項目の値
 }
 
 enum ValueType {

@@ -18,33 +18,33 @@ export class KdwS03EComponent extends Vue {
     public readonly params: { employeeId: string, empName: string, date: Date, code: string };
 
     public errorInfo: IErrorInfo = {
-        code: '001',
-        name: 'error1',
-        errMsg: 'msg1'
+        code: '',
+        name: '',
+        errMsg: ''
     };
     public displayE71: boolean = true;
 
     public created() {
         let self = this;
-        // if(storage.local.hasItem('dailyCorrectionState')) {
-        //     let a = storage.local.getItem('dailyCorrectionState');
-        // }
+        self.$mask('show');
+        let cache = storage.local.getItem('dailyCorrectionState');
+
         let param = {
-            employeeId: self.params.employeeId,
-            date: self.params.date,
-            errCode: self.params.code
+            employeeId: self.params.employeeId,//社員ID
+            date: self.params.date,//日
+            errCode: self.params.code//エラーアラームコード
         };
         self.$http.post('at', servicePath.getError, param).then((result: any) => {
+            self.$mask('hide');
             console.log(result);
             self.errorInfo = {
                 code: result.data.code,
                 name: result.data.name,
                 errMsg: result.data.errMsg
             };
+        }).catch(() => {
+            self.$mask('hide');
         });
-    }
-    public backD() {
-        this.$close();
     }
 
     public editData() {
@@ -64,7 +64,7 @@ const servicePath = {
 };
 
 interface IErrorInfo {
-    code: string;
-    name: string;
-    errMsg: string;
+    code: string;//コード
+    name: string;//エラー内容
+    errMsg: string;//メッセージ
 }

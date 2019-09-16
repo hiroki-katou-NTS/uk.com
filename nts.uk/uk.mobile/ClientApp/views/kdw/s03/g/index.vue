@@ -1,8 +1,10 @@
 <template>
 <div class="kdws03g">
   <div class="modal-header uk-bg-white-smoke pl-0 pr-0 rounded-0">
-    <div class="row uk-text-quote w-100 ml-0 mr-0" v-on:click="$close()">
-      <div class="col-1 pl-1"><i class="fas fa-arrow-left"></i></div>
+    <div class="row uk-text-quote w-100 ml-0 mr-0">
+      <!-- G1_1: 戻るボタン -->
+      <div class="col-1 pl-1" v-on:click="$close()"><i class="fas fa-arrow-left"></i></div>
+      <!-- G1_2: 対象社員名 -->
       <div class="col-6 pl-0 pr-2"><span>{{ empName }}</span></div>
     </div>
   </div>

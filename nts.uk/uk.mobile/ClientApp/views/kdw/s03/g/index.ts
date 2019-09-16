@@ -4,7 +4,6 @@ import { storage } from '@app/utils';
 
 @component({
     name: 'kdws03g',
-    route: '/kdw/s03/g',
     style: require('./style.scss'),
     template: require('./index.vue'),
     resource: require('./resources.json'),
@@ -12,8 +11,6 @@ import { storage } from '@app/utils';
     constraints: []
 })
 export class KdwS03GComponent extends Vue {
-    public title: string = 'KdwS03G';
-
     @Prop({ default: () => ({ remainOrtime36: 0}) })
     public readonly params: { remainOrtime36: Number };//0: 休暇残数; 1: 時間外超過
     public remainNumber: IRemainNumber = {
@@ -38,11 +35,13 @@ export class KdwS03GComponent extends Vue {
 
     public created() {
         let self = this;
+        self.$mask('show');
         let cache: any = storage.local.getItem('dailyCorrectionState');
         let employeeIdSel = cache.selectedEmployee;
         self.empName = (_.find(cache.lstEmployee, (c) => c.id == employeeIdSel) || { businessName: '' }).businessName;
         if (this.params.remainOrtime36 == 0) {//休暇残数
             self.$http.post('at', servicePath.getRemain + employeeIdSel).then((result: any) => {
+                self.$mask('hide');
                 let data = result.data;
                 self.remainNumber = {
                     manageYear: data.annualLeave.manageYearOff,
@@ -55,15 +54,18 @@ export class KdwS03GComponent extends Vue {
                     substituteRemain: data.substitutionLeave.holidayRemain,
                     nextGrantDate: data.nextGrantDate
                 };
+            }).catch(() => {
+                self.$mask('hide');
             });
         } else {//時間外超過
             let yearMonth = cache.timePeriodAllInfo.yearMonth;
             let param36 = {
-                employeeId: employeeIdSel,
-                year: Math.floor(yearMonth / 100),
-                month: Math.floor(yearMonth % 100)
+                employeeId: employeeIdSel,//社員ID
+                year: Math.floor(yearMonth / 100),//年度
+                month: Math.floor(yearMonth % 100)//月度
             };
             self.$http.post('at', servicePath.get36AgreementInfo, param36).then((result: any) => {
+                self.$mask('hide');
                 let time = result.data;
                 self.time36 = {
                     time36: time.agreementTime36 || 0,
@@ -72,6 +74,8 @@ export class KdwS03GComponent extends Vue {
                     maxExcessNumber: time.maxNumber || 0,
                     showAgreement: time.showAgreement
                 };
+            }).catch(() => {
+                self.$mask('hide');
             });
         }
     }
