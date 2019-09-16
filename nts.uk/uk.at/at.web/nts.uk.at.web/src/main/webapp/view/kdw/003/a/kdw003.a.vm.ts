@@ -5395,8 +5395,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         }
 
         binDataChangeError(dataCalc: CalcFlex) {
+            if(_.isEmpty(dataCalc)){
+                return;
+            }
             let self = this,
-                val18 = dataCalc.value18 == null ? 0 : dataCalc.value18.value,
+                val18 =  dataCalc.value18 == null ? 0 : dataCalc.value18.value,
                 val19 = dataCalc.value19 == null ? 0 : dataCalc.value19.value,
                 val21 = dataCalc.value21 == null ? 0 : dataCalc.value21.value,
                 val189 = dataCalc.value189 == null ? 0 : dataCalc.value189.value,
