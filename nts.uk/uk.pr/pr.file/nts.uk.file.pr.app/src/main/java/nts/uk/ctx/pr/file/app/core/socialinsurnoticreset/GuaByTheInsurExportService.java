@@ -45,7 +45,7 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
     @Override
     protected void handle(ExportServiceContext<GuaByTheInsurExportQuery> exportServiceContext) {
         final int TYPE_EXPORT_EXCEL_FILE = 0;
-
+        CompanyInfor company = repo.getCompanyInfor(AppContexts.user().companyId());
         ExportDataCsv exportData = ExportDataCsv.builder()
                 .lstHeader(this.finHeader())
                 .listContent(printInsuredQualifiNoti(exportServiceContext.getQuery().getEmpIds(),
@@ -341,16 +341,16 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
         final int DO_NOT_OUPUT = 0;
         Optional<SocialInsurNotiCreateSet> socialInsurNotiCreateSet = mSocialInsurNotiCrSetRepository.getSocialInsurNotiCreateSetById(uid, cid);
         if (socialInsurNotiCreateSet.get().getInsuredNumber().value == DO_NOT_OUPUT) {
-            throw new BusinessException("Msg_812", new String[]{TextResource.localize("QSI001_27")});
+            throw new BusinessException("Msg_812",TextResource.localize("QSI001_27"));
         }
         if (socialInsurNotiCreateSet.get().getOfficeInformation().value == DO_NOT_OUPUT) {
-            throw new BusinessException("Msg_174", new String[]{TextResource.localize("QSI001_27")});
+            throw new BusinessException("Msg_174", TextResource.localize("QSI001_27"));
         }
         if (!socialInsurNotiCreateSet.get().getFdNumber().isPresent()) {
-            throw new BusinessException("Msg_5", new String[]{TextResource.localize("QSI001_46")});
+            throw new BusinessException("Msg_5", TextResource.localize("QSI001_46"));
         }
         if (!socialInsurNotiCreateSet.get().getOutputFormat().isPresent()) {
-            throw new BusinessException("Msg_5", new String[]{TextResource.localize("QSI001_46")});
+            throw new BusinessException("Msg_5", TextResource.localize("QSI001_46"));
         }
         // check output k cần for vì đã có câu query
         boolean checkOutput = false;

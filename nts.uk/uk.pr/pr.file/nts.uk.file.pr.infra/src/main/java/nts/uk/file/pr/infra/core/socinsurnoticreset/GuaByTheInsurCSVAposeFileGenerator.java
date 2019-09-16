@@ -19,7 +19,7 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
     private static final String REPORT_ID = "CSV_GENERATOR";
 
     /** The Constant EXPORT_FILE_NAME. */
-    private static final String EXPORT_FILE_NAME = "QSI001.csv";
+    private static final String EXPORT_FILE_NAME = "QSI001";
 
     /** The Constant EXTENSION_FILE. */
     private static final String EXTENSION_FILE = ".csv";
@@ -73,7 +73,7 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
         this.writeData(worksheet, exportData);
 
         // setting page
-        this.settingPage(worksheet, exportData.listContent.size());
+        this.settingPage(worksheet, exportData.getListContent().size());
     }
 
     /**
@@ -98,10 +98,10 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
      */
     private void writeData(Worksheet worksheet, ExportDataCsv exportData) {
         // write header
-        this.writeHeader(worksheet, exportData.lstHeader);
+        this.writeHeader(worksheet, exportData.getLstHeader());
 
         // write content error
-        this.writeContent(worksheet, exportData.listContent);
+        this.writeContent(worksheet, exportData.getListContent());
     }
 
     /**

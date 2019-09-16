@@ -2,10 +2,12 @@ package nts.uk.file.pr.infra.core.socinsurnoticreset;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.pr.file.app.core.socialinsurnoticreset.CompanyInfor;
 import nts.uk.ctx.pr.file.app.core.socialinsurnoticreset.GuaByTheInsurExportRepository;
 
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
@@ -103,7 +105,7 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("   (SELECT * ");
         exportSQL.append("    FROM QQSMT_EMP_CORP_OFF_HIS QECOH ");
         exportSQL.append("    WHERE EMPLOYEE_ID IN ('%s') ");
-        exportSQL.append("      AND QECOH.START_DATE <= ?startDate ");
+        exportSQL.append("      AND QECOH.END_DATE <= ?endDate ");
         exportSQL.append("      AND QECOH.END_DATE >= ?startDate  ) AS ROOT ");
         exportSQL.append(" LEFT JOIN QQSMT_SOC_INSU_NOTI_SET QSINS ON QSINS.CID = ?cid  ");
         exportSQL.append(" AND QSINS.USER_ID = ?userId ");
@@ -117,13 +119,13 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("   (SELECT * ");
         exportSQL.append("    FROM QQSMT_TEM_PEN_PART_INFO QTPPITEM ");
         exportSQL.append("    WHERE ");
-        exportSQL.append("       QTPPITEM.START_DATE <= ?startDate ");
+        exportSQL.append("       QTPPITEM.END_DATE <= ?endDate ");
         exportSQL.append("      AND QTPPITEM.END_DATE >= ?startDate ) AS QTPPI ");
         exportSQL.append(" ON QTPPI.EMPLOYEE_ID = ROOT.EMPLOYEE_ID ");
         exportSQL.append(" LEFT JOIN ");
         exportSQL.append("   (SELECT * ");
         exportSQL.append("    FROM QQSMT_EMP_PEN_INS QEPITEM ");
-        exportSQL.append("    WHERE QEPITEM.START_DATE <= ?startDate ");
+        exportSQL.append("    WHERE QEPITEM.END_DATE <= ?endDate ");
         exportSQL.append("      AND QEPITEM.END_DATE >= ?startDate ) AS QEPI ");
         exportSQL.append(" ON QEPI.EMPLOYEE_ID = ROOT.EMPLOYEE_ID ");
         exportSQL.append(" LEFT JOIN QQSMT_SOC_ISACQUISI_INFO QSII ");
@@ -133,7 +135,7 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append(" LEFT JOIN ");
         exportSQL.append("   (SELECT * ");
         exportSQL.append("    FROM QQSMT_EMP_HEAL_INSUR_QI QEHIQTEM ");
-        exportSQL.append("    WHERE QEHIQTEM.START_DATE <= ?startDate ");
+        exportSQL.append("    WHERE QEHIQTEM.END_DATE <= ?endDate ");
         exportSQL.append("      AND QEHIQTEM.END_DATE >= ?startDate ) AS QEHIQ ");
         exportSQL.append(" ON QEHIQ.EMPLOYEE_ID = ROOT.EMPLOYEE_ID ");
         exportSQL.append(" LEFT JOIN QQSMT_MULTI_EMP_WORK_IF QMEWI ");
@@ -141,7 +143,7 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append(" LEFT JOIN ");
         exportSQL.append("   (SELECT * ");
         exportSQL.append("    FROM QQSMT_EMP_WELF_INS_QC_IF QEWIQITEMP ");
-        exportSQL.append("    WHERE QEWIQITEMP.START_DATE <= ?startDate ");
+        exportSQL.append("    WHERE QEWIQITEMP.END_DATE <= ?endDate ");
         exportSQL.append("      AND QEWIQITEMP.END_DATE >= ?startDate ) AS QEWIQI ");
         exportSQL.append(" ON QEWIQI.EMPLOYEE_ID = ROOT.EMPLOYEE_ID ");
         String sql = String.format(exportSQL.toString(), empIds.stream()
@@ -150,6 +152,7 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         try {
             resultQuery = this.getEntityManager().createNativeQuery(sql)
                     .setParameter("startDate", convertDate(startDate))
+                    .setParameter("endDate", convertDate(endDate))
                     .setParameter("cid", cid)
                     .setParameter("userId", userId)
                     .getResultList();
@@ -160,8 +163,8 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
     }
     private java.sql.Date convertDate(GeneralDate baseDate) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        java.sql.Date sqlDate = null;
         java.util.Date date = null;
+        java.sql.Date sqlDate = null;
         try {
             date = format.parse(baseDate.toString("yyyy-MM-dd"));
             sqlDate = new java.sql.Date(date.getTime());
@@ -169,5 +172,56 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
             return null;
         }
         return sqlDate;
+    }
+
+    @Override
+    public CompanyInfor getCompanyInfor(String cid) {
+        Object[] result = null;
+        StringBuilder exportSQL = new StringBuilder();
+        exportSQL.append("  SELECT");
+        exportSQL.append("    CONTRACT_CD,");
+        exportSQL.append("    NAME,");
+        exportSQL.append("    MONTH_STR,");
+        exportSQL.append("    ABOLITION_ATR,");
+        exportSQL.append("    REPRESENTATIVE_NAME,");
+        exportSQL.append("    REPRESENTATIVE_JOB,");
+        exportSQL.append("    KNNAME,");
+        exportSQL.append("    ABNAME,");
+        exportSQL.append("    TAX_NO,");
+        exportSQL.append("    FAX_NUM,");
+        exportSQL.append("    ADDRESS_1,");
+        exportSQL.append("    ADDRESS_2,");
+        exportSQL.append("    KNNAME_1,");
+        exportSQL.append("    KNNAME_2,");
+        exportSQL.append("    POSTAL_CODE,");
+        exportSQL.append("    PHONE_NUMBER");
+        exportSQL.append("  FROM  (SELECT * FROM BCMMT_COMPANY ");
+        exportSQL.append("        WHERE CID = ?cid) c ");
+        exportSQL.append("  INNER JOIN BCMMT_ADDRESS i ON i.CID = c.CID");
+        try {
+            result = (Object[]) this.getEntityManager().createNativeQuery(exportSQL.toString()).setParameter("cid", cid)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+        return CompanyInfor.builder().companyId(cid)
+                .companyCode(result[0].toString())
+                .companyName(result[2].toString())
+                .startMonth(((BigDecimal)result[3]).intValue())
+                .isAbolition(((BigDecimal)result[4]).intValue())
+                .repname(result[5] != null ? result[5].toString() : "")
+                .repost(result[6] != null ? result[6].toString() : "")
+                .comNameKana(result[7] != null ? result[7].toString() : "")
+                .shortComName(result[8] != null ? result[8].toString() : "")
+                .taxNo(result[9] != null ? result[9].toString() : "")
+                .faxNum(result[10] != null ? result[10].toString() : "")
+                .add_1(result[11] != null ? result[11].toString() : "")
+                .add_2(result[12] != null ? result[12].toString() : "")
+                .addKana_1(result[13] != null ? result[13].toString() : "")
+                .addKana_2(result[14] != null ? result[14].toString() : "")
+                .postCd(result[15] != null ? result[15].toString() : "")
+                .phoneNum(result[16] != null ? result[16].toString() : "")
+                .build()
+                ;
     }
 }

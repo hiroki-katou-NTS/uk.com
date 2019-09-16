@@ -39,7 +39,7 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
             Workbook wb = reportContext.getWorkbook();
             WorksheetCollection wsc = wb.getWorksheets();
 
-            this.writeFileExcel(wsc, exportData.listContent, "");
+            this.writeFileExcel(wsc, exportData.getListContent(), "");
             reportContext.processDesigner();
             reportContext.saveAsPdf(this.createNewFile(fileContext, this.getReportName(REPORT_FILE_NAME)));
         } catch (Exception e) {

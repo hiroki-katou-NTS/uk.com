@@ -331,10 +331,34 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
                 nts.uk.ui.block.clear();
             });
         }
+
+
         exportFileCsv(): void {
             let self = this;
+            let employList = self.getListEmpId(self.selectedCodeKCP005(), self.employees);
+            if(employList.length == 0) {
+                dialog.alertError({ messageId: 'Msg_37' });
+                return;
+            }
             let data: any = {
-                typeExport : 1
+                socialInsurNotiCreateSetQuery: {
+                    officeInformation: self.socialInsurNotiCrSet().officeInformation(),
+                    fdNumber: self.socialInsurNotiCrSet().fdNumber(),
+                    printPersonNumber: self.socialInsurNotiCrSet().printPersonNumber(),
+                    businessArrSymbol: self.socialInsurNotiCrSet().businessArrSymbol(),
+                    outputOrder: self.socialInsurNotiCrSet().outputOrder(),
+                    submittedName: self.socialInsurNotiCrSet().submittedName(),
+                    insuredNumber: self.socialInsurNotiCrSet().insuredNumber(),
+                    fdNumber: self.socialInsurNotiCrSet().fdNumber(),
+                    textPersonNumber: self.socialInsurNotiCrSet().textPersonNumber(),
+                    outputFormat: self.socialInsurNotiCrSet().outputFormat(),
+                    lineFeedCode: self.socialInsurNotiCrSet().lineFeedCode()
+                },
+                typeExport : 1,
+                empIds: employList,
+                startDate: moment.utc(self.startDate(), "YYYY/MM/DD"),
+                endDate: moment.utc(self.endDate(), "YYYY/MM/DD"),
+                baseDate: moment.utc(self.baseDate(), "YYYY/MM/DD")
             };
             nts.uk.ui.block.grayout();
             service.exportFile(data).done(function() {

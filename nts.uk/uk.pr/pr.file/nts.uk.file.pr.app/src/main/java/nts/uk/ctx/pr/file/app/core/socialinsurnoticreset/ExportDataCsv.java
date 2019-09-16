@@ -1,17 +1,21 @@
 package nts.uk.ctx.pr.file.app.core.socialinsurnoticreset;
 
 import lombok.Builder;
+import lombok.Getter;
+import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.SocialInsurNotiCreateSet;
 
 import java.util.List;
 
 @Builder
+@Getter
 public class ExportDataCsv {
 
     /** The lst header. */
-    public List<String> lstHeader;
+    private List<String> lstHeader;
 
+    private CompanyInfor company;
     /** The lst error. */
-    public List<GuaByTheInsurExportDto> listContent;
+    private List<GuaByTheInsurExportDto> listContent;
 
 
 }
