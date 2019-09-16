@@ -21,11 +21,19 @@ export class KdwS03AMenuComponent extends Vue {
 
     public title: string = 'KdwS03AMenu';
 
-    public openKdws03c() {
-        this.$modal('kdws03c', {}, { type: 'dropback', title: 'KDWS03_6' })
+    public openErrorList() {
+        if (this.params.displayFormat == '1') {
+            this.$modal('kdws03c', {}, { type: 'dropback', title: 'KDWS03_6' })
             .then((v) => {
 
             });
+        } else {
+            this.$modal('kdws03d', {}, { type: 'dropback', title: 'KDWS03_6' })
+            .then((v) => {
+
+            });
+        }
+        
     }
     public openKdws03f(param: number) {
         this.$modal('kdws03f', {}, { type: 'dropback' });

@@ -88,6 +88,11 @@ export class Kdws03AComponent extends Vue {
 
         self.$http.post('at', servicePath.genDate, { yearMonth: value }).then((result: { data: any }) => {
             let data = result.data;
+            if (_.isNil(data.lstRange)) {
+                this.yearMonth = this.yearMonthTemp;
+
+                return;
+            }
             self.timePeriodAllInfo = data;
             _.remove(self.actualTimeOptionDisp);
             if (data.lstRange && data.lstRange.length > 0) {

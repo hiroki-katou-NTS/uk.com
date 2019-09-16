@@ -100,6 +100,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.monthflex.DPMonthResult;
 import nts.uk.screen.at.app.dailyperformance.correction.process.CheckClosingEmployee;
 import nts.uk.screen.at.app.dailyperformance.correction.searchemployee.FindAllEmployee;
 import nts.uk.screen.at.app.dailyperformance.correction.text.DPText;
+import nts.uk.screen.at.app.monthlyperformance.correction.dto.FormatDailyDto;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -144,7 +145,7 @@ public class InitScreenMob {
 	private FindAllEmployee findAllEmployee;
 
 	@Inject
-	private DPMonthFlexProcessor dPMonthFlexProcessor;
+	private MonthlyPerfomanceMob monthlyPerfomanceMob;
 
 	@Inject
 	private DaiPerformanceFunFinder daiPerformanceFunFinder;
@@ -270,9 +271,7 @@ public class InitScreenMob {
 
 		// set enable menu button
 		if (displayFormat == 0) {
-			DPMonthFlexParam dPMonthFlexParam = new DPMonthFlexParam(companyId, sId, dateRange.getEndDate(),
-					lstEmployeeData.get(0).getCode(), dailyPerformanceDto, disItem.getAutBussCode(), Optional.empty());
-			DPCorrectionMenuDto dPCorrectionMenuDto = this.setMenuItem(dPMonthFlexParam);
+			DPCorrectionMenuDto dPCorrectionMenuDto = this.setMenuItem(disItem.getAutBussCode());
 			screenDto.setDPCorrectionMenuDto(dPCorrectionMenuDto);
 		}
 
@@ -443,7 +442,7 @@ public class InitScreenMob {
 		return screenDto;
 	}
 
-	private DPCorrectionMenuDto setMenuItem(DPMonthFlexParam param) {
+	private DPCorrectionMenuDto setMenuItem(Set<String> formatCode) {
 
 		// 休暇残数の参照ボタン表示チェック
 		Boolean restReferButtonDis = false;
@@ -470,8 +469,9 @@ public class InitScreenMob {
 			restReferButtonDis = true;
 		}
 
-		DPMonthResult dPMonthResult = dPMonthFlexProcessor.getDPMonthFlex(param);
-		monthActualReferButtonDis = dPMonthResult != null ? dPMonthResult.isHasItem() : false;
+		OperationOfDailyPerformanceDto dailyPerDto = repo.findOperationOfDailyPerformance();
+		List<FormatDailyDto> formatDailyDto = monthlyPerfomanceMob.getFormatCode(formatCode, dailyPerDto.getSettingUnit(), companyId);
+		monthActualReferButtonDis = formatDailyDto == null || formatDailyDto.isEmpty()  ? false : true;
 
 		DaiPerformanceFunDto daiPerformanceFunDto = daiPerformanceFunFinder.getDaiPerformanceFunById(companyId);
 		timeExcessReferButtonDis = daiPerformanceFunDto.getDisp36Atr() == 1 ? true : false;

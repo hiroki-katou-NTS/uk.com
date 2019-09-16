@@ -6,7 +6,7 @@
             <li class="list-group-item border-0">
                 <button type="button" class="btn btn-primary w-100 btn-lg" v-if="params.displayFormat == 0 && params.allConfirmButtonDis">{{'KDWS03_25' | i18n}}</button></li>
             <li class="list-group-item border-0">
-                <button type="button" class="btn btn-primary w-100 btn-lg" v-on:click="openKdws03c" v-if="params.displayFormat == 1">{{'KDWS03_30' | i18n}}</button></li>
+                <button type="button" class="btn btn-primary w-100 btn-lg" v-on:click="openErrorList">{{'KDWS03_30' | i18n}}</button></li>
             <li class="list-group-item border-0">
                 <button type="button" class="btn btn-primary w-100 btn-lg" v-on:click="openKdws03g(0)" v-if="params.displayFormat == 0 && params.restReferButtonDis">{{'KDWS03_31' | i18n}}</button></li>
             <li class="list-group-item border-0">

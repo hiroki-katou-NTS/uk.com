@@ -94,7 +94,7 @@ public class MonthlyPerfomanceMob {
 		Collections.sort(data, Comparator.comparing(MonthlyPerData::getOrder));
 		return data;
 	}
-	private List<FormatDailyDto> getFormatCode(Collection<String> formatCode, SettingUnitType settingUnit, String companyId) {
+	public List<FormatDailyDto> getFormatCode(Collection<String> formatCode, SettingUnitType settingUnit, String companyId) {
 		
 		if (formatCode.isEmpty()) {
 			return new ArrayList<>();
