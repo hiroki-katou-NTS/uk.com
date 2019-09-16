@@ -48,7 +48,9 @@
             <tbody>
                 <tr v-for="(row, i) of displayDataLst">
                     <td v-bind:class="row.dateColor">{{row.date}}</td>
-                    <td v-for="(cell, j) of row.rowData" v-bind:class="cell.class" v-bind:style="{ 'word-wrap': 'break-word' }">{{cell.value == '0:00' ? '' : cell.value}}</td>
+                    <td v-for="(cell, j) of row.rowData" v-bind:class="cell.class" v-bind:style="{ 'word-wrap': 'break-word' }">
+                        {{cell.value == '0:00' || cell.value == '0.0' ? '' : cell.value}}
+                    </td>
                     <td>
                         <span style="color: red" class="fa fa-exclamation-circle fa-lg" v-if="null != row.ERAL && row.ERAL.includes('ER')"></span>
                         <span style="color: red" class="fa fa-exclamation-triangle fa-lg" v-if="null != row.ERAL && !row.ERAL.includes('ER') && row.ERAL.includes('AL')"></span>
@@ -75,7 +77,9 @@
             <tbody>
                 <tr v-for="(row, i) of displayDataLstEx">
                     <td style="font-size: 8.3px; word-wrap: break-word">{{row.employeeNameDis}}</td>
-                    <td v-for="(cell, j) of row.rowData" v-bind:class="cell.class" v-bind:style="{ 'word-wrap': 'break-word' }">{{cell.value == '0:00' ? '' : cell.value}}</td>
+                    <td v-for="(cell, j) of row.rowData" v-bind:class="cell.class" v-bind:style="{ 'word-wrap': 'break-word' }">
+                        {{cell.value == '0:00' || cell.value == '0.0' ? '' : cell.value}}
+                    </td>
                     <td>
                         <span style="color: red" class="fa fa-exclamation-circle fa-lg" v-if="null != row.ERAL && row.ERAL.includes('ER')"></span>
                         <span style="color: red" class="fa fa-exclamation-triangle fa-lg" v-if="null != row.ERAL && !row.ERAL.includes('ER') && row.ERAL.includes('AL')"></span>
