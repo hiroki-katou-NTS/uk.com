@@ -6216,6 +6216,11 @@ module nts.uk.ui.mgrid {
                     || $tCell.classList.contains(color.Lock)
                     || $tCell.classList.contains(dkn.LABEL_CLS)) return;
                 
+                if (_.keys(ssk.KeyPressed).length > 0) {
+                    evt.preventDefault();
+                    return;
+                }   
+                
                 let coord = ti.getCellCoord($tCell);
                 let control = dkn.controlType[coord.columnKey];
                 let cEditor = _mEditor;
@@ -6357,6 +6362,11 @@ module nts.uk.ui.mgrid {
             
             document.addXEventListener(ssk.MOUSE_DOWN, evt => {
                 if (!evt.target) return;
+                if (_.keys(ssk.KeyPressed).length > 0) {
+                    evt.preventDefault();
+                    return;
+                }
+                
                 if (!selector.is(evt.target, "input.medit")
                     && !selector.is(evt.target, "div[class*='mcombo']")) {
                     endEdit($grid, true);
@@ -9126,7 +9136,8 @@ module nts.uk.ui.mgrid {
             
             $grid.addXEventListener(ssk.MOUSE_DOWN, function(evt: any) {
                 let $target = evt.target;
-                if (!selector.is($target, ".mcell")) return;
+                if (!selector.is($target, ".mcell")
+                    || _.chain(ssk.KeyPressed).keys().filter(k => k !== "16" && k !== "17").value().length > 0) return;
                 isSelecting = true;
                 
                 window.addXEventListener(ssk.MOUSE_UP + ".block", function(evt: any) {
