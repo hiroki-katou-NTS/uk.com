@@ -97,10 +97,9 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
                 }
                 fillEmployeeUnderSeventy(worksheets, dataRow, sheetName + page, stt, ins);
             }
-            if(stt != EMP_IN_PAGE - 1) {
-                unSelectAll(worksheets,sheetName + page, stt +1);
+            if(stt != 3) {
+                unSelectAll(worksheets,sheetName + page, stt +2);
             }
-
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
