@@ -58,7 +58,6 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
             timeValue: 0,
             targetAtr: 0
         }));
-        salGenParaValue: KnockoutObservable<SalGenParaValue>;
 
         //switch submiit name
         switchSubmittedName : KnockoutObservable<number> = ko.observable(0);
@@ -294,8 +293,29 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
         }
         exportFileExcel(): void {
             let self = this;
+            let employList = self.getListEmpId(self.selectedCodeKCP005(), self.employees);
+            if(employList.length == 0) {
+                dialog.alertError({ messageId: 'Msg_37' });
+                return;
+            }
             let data: any = {
-                typeExport : 0
+                socialInsurNotiCreateSet: {
+                    officeInformation: self.socialInsurNotiCrSet().officeInformation(),
+                    fdNumber: self.socialInsurNotiCrSet().fdNumber(),
+                    printPersonNumber: self.socialInsurNotiCrSet().printPersonNumber(),
+                    businessArrSymbol: self.socialInsurNotiCrSet().businessArrSymbol(),
+                    outputOrder: self.socialInsurNotiCrSet().outputOrder(),
+                    submittedName: self.socialInsurNotiCrSet().submittedName(),
+                    insuredNumber: self.socialInsurNotiCrSet().insuredNumber(),
+                    fdNumber: self.socialInsurNotiCrSet().fdNumber(),
+                    textPersonNumber: self.socialInsurNotiCrSet().textPersonNumber(),
+                    outputFormat: self.socialInsurNotiCrSet().outputFormat(),
+                    lineFeedCode: self.socialInsurNotiCrSet().lineFeedCode()
+                },
+                empIds: employList,
+                startDate: moment.utc(self.startDate(), "YYYY/MM/DD"),
+                endDate: moment.utc(self.endDate(), "YYYY/MM/DD"),
+                baseDate: moment.utc(self.baseDate(), "YYYY/MM/DD")
             };
             nts.uk.ui.block.grayout();
             service.exportFile(data).done(function() {
@@ -317,6 +337,15 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
             }).always(function() {
                 nts.uk.ui.block.clear();
             });
+        }
+
+        getListEmpId(empCode: Array, listEmp: Array){
+            let listEmpId =[];
+            _.each(empCode, (item) =>{
+                let emp = _.find(listEmp, function(itemEmp) { return itemEmp.employeeCode == item; });
+                listEmpId.push(emp.employeeId);
+            });
+            return listEmpId;
         }
 
 
