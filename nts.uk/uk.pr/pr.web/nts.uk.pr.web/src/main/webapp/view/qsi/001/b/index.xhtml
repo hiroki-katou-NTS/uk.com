@@ -46,8 +46,8 @@
             <!-- div left -->
             <div class="pull-left" style="margin-left: 30px">
                 <div class="control-group">
-                    <div data-bind="ntsFormLabel: {}">#{i18n.getText('QSI001_B222_3')}</div>
-                    <input style="margin-left: 40px" id="B222_4" data-bind="ntsTextEditor: {
+                    <div class="column-1" data-bind="ntsFormLabel: {}">#{i18n.getText('QSI001_B222_3')}</div>
+                    <input  id="B222_4" data-bind="ntsTextEditor: {
                                     value: basicPension,
                                     name: '#{i18n.getText('QSI001_B222_4')}',
                                     constraint: 'BasicPenNumber',
@@ -57,7 +57,7 @@
                 </div>
 
                 <div class="control-group">
-                    <div data-bind="ntsFormLabel: {}">#{i18n.getText('QSI001_B222_5')}</div>
+                    <div class="column-1" data-bind="ntsFormLabel: {}">#{i18n.getText('QSI001_B222_5')}</div>
                     <input  id="B222_6" data-bind="ntsNumberEditor: {
                                     value: salaryMonthly,
                                     name: '#{i18n.getText('QSI001_B222_6')}',
@@ -69,7 +69,7 @@
                 </div>
 
                 <div class="control-group">
-                    <div data-bind="ntsFormLabel: {}">#{i18n.getText('QSI001_B222_7')}</div>
+                    <div class="column-1" data-bind="ntsFormLabel: {}">#{i18n.getText('QSI001_B222_7')}</div>
                     <input  id="B222_8" data-bind="ntsNumberEditor: {
                                     value: salaryMonthlyActual,
                                     name: '#{i18n.getText('QSI001_B222_8')}',
@@ -81,7 +81,7 @@
                 </div>
 
                 <div class="control-group">
-                    <div data-bind="ntsFormLabel: {}">#{i18n.getText('QSI001_B222_9')}</div>
+                    <div class="column-1" data-bind="ntsFormLabel: {}">#{i18n.getText('QSI001_B222_9')}</div>
                     <input  id="B222_10" data-bind="ntsNumberEditor: {
                                     value: totalCompensation,
                                     name: '#{i18n.getText('QSI001_B222_10')}',
@@ -93,7 +93,7 @@
                 </div>
 
                 <div class="control-group">
-                    <div data-bind="ntsFormLabel: {}">#{i18n.getText('QSI001_B222_11')}</div>
+                    <div class="column-1" data-bind="ntsFormLabel: {}">#{i18n.getText('QSI001_B222_11')}</div>
                     <div class="cf" data-bind="ntsSwitchButton: {
                         name: '#{i18n.getText('QSI001_B222_12')}',
                         options: depNotiAttach,
