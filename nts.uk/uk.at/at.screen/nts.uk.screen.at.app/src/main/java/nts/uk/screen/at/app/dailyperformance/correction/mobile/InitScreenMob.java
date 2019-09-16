@@ -318,6 +318,7 @@ public class InitScreenMob {
 				dateRange);
 
 		// set error, alarm
+		screenDto.setDPErrorDto(processor.getErrorList(screenDto, listEmployeeId));
 		List<DPErrorDto> lstError = screenDto.getDPErrorDto();
 		if (screenDto.getLstEmployee().size() > 0) {
 			if (lstError.size() > 0) {

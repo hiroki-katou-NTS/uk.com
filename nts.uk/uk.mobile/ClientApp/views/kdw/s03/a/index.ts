@@ -322,20 +322,43 @@ export class Kdws03AComponent extends Vue {
         self.lstDataSourceLoad.forEach((rowDataSrc: any) => {
             let rowData = [];
             headers.forEach((header: any) => {
-                if (_.has(rowDataSrc, header.key)) {
-                    rowData.push({
-                        key: header.key,
-                        value: rowDataSrc[header.key],
-                    });
+                if (_.has(rowDataSrc, header.key)) {                   
+                    if (!_.isNil(header.constraint.cdisplayType) && (header.constraint.cdisplayType.indexOf('Currency') != -1)) {
+                        rowData.push({
+                            key: header.key,
+                            value: this.formatMoney(rowDataSrc[header.key]),
+                            class: 'currency-symbol'
+                        });
+                    } else {
+                        rowData.push({
+                            key: header.key,
+                            value: rowDataSrc[header.key],
+                            class: ''
+                        });
+                    }
+                    
                 } else {
                     let value = this.getFromCombo(header.group[1].ntsControl, rowDataSrc[header.group[1].key]);
-                    rowData.push({
-                        key: header.key,
-                        groupKey: header.group[1].key,
-                        value,
-                        groupKey0: header.group[0].key,
-                        value0: rowDataSrc[header.group[0].key]
-                    });
+                    if (!_.isNil(header.constraint.cdisplayType) && (header.constraint.cdisplayType.indexOf('Currency') != -1)) {
+                        rowData.push({
+                            key: header.key,
+                            groupKey: header.group[1].key,
+                            value: this.formatMoney(value),
+                            groupKey0: header.group[0].key,
+                            value0: rowDataSrc[header.group[0].key],
+                            class: 'currency-symbol'
+                        });
+                    } else {
+                        rowData.push({
+                            key: header.key,
+                            groupKey: header.group[1].key,
+                            value,
+                            groupKey0: header.group[0].key,
+                            value0: rowDataSrc[header.group[0].key],
+                            class: ''
+                        });
+                    }
+                    
                 }
             });
 
@@ -363,9 +386,8 @@ export class Kdws03AComponent extends Vue {
             let states = _.filter(self.cellStates, (x) => x.rowId == row.id);
             row.rowData.forEach((cell: any) => {
                 if (!_.isNil(_.find(states, (x) => x.columnKey == cell.key || x.columnKey == cell.groupKey))) {
-                    cell.class = '';
                     let classArray = _.find(states, (x) => x.columnKey == cell.key || x.columnKey == cell.groupKey).state;
-                    _.forEach(classArray, (x) => cell.class = cell.class + x);
+                    _.forEach(classArray, (x) => cell.class = cell.class + ' ' + x);
                 }
             });
             if (!_.isNil(_.find(states, (x) => x.columnKey == 'date'))) {
@@ -609,6 +631,11 @@ export class Kdws03AComponent extends Vue {
             }
         }
     }
+
+    public formatMoney(value: string) {
+        return Number(value) == 0 ? '' : Number(value).toFixed(0);
+    }
+
 }
 const servicePath = {
     initMOB: 'screen/at/correctionofdailyperformance/initMOB',
