@@ -86,7 +86,7 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
             for (int i = 0; i < data.size(); i++, stt++) {
                 InsLossDataExport  dataRow = data.get(i);
                 if(stt % EMP_IN_PAGE == 0 || !companyCd.equals(data.get(i).getOfficeCd())) {
-                    if(!companyCd.equals(data.get(i).getOfficeCd()) && stt != 0){
+                    if(!companyCd.equals(data.get(i).getOfficeCd()) && stt % EMP_IN_PAGE != 0){
                         unSelectAll(worksheets,sheetName + page, stt + 1);
                     }
                     page++;
@@ -97,7 +97,10 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
                 }
                 fillEmployeeUnderSeventy(worksheets, dataRow, sheetName + page, stt, ins);
             }
-            unSelectAll(worksheets,sheetName + page, stt +1);
+            if(stt != EMP_IN_PAGE - 1) {
+                unSelectAll(worksheets,sheetName + page, stt +1);
+            }
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
