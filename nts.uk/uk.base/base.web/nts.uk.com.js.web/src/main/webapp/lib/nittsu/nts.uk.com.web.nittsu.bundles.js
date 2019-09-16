@@ -29222,6 +29222,10 @@ var nts;
                                 || $tCell.classList.contains(color.Lock)
                                 || $tCell.classList.contains(dkn.LABEL_CLS))
                                 return;
+                            if (_.keys(ssk.KeyPressed).length > 0) {
+                                evt.preventDefault();
+                                return;
+                            }
                             var coord = ti.getCellCoord($tCell);
                             var control = dkn.controlType[coord.columnKey];
                             var cEditor = _mEditor;
@@ -29356,6 +29360,10 @@ var nts;
                         document.addXEventListener(ssk.MOUSE_DOWN, function (evt) {
                             if (!evt.target)
                                 return;
+                            if (_.keys(ssk.KeyPressed).length > 0) {
+                                evt.preventDefault();
+                                return;
+                            }
                             if (!selector.is(evt.target, "input.medit")
                                 && !selector.is(evt.target, "div[class*='mcombo']")) {
                                 endEdit($grid, true);
@@ -32083,7 +32091,8 @@ var nts;
                         var isSelecting;
                         $grid.addXEventListener(ssk.MOUSE_DOWN, function (evt) {
                             var $target = evt.target;
-                            if (!selector.is($target, ".mcell"))
+                            if (!selector.is($target, ".mcell")
+                                || _.chain(ssk.KeyPressed).keys().filter(function (k) { return k !== "16" && k !== "17"; }).value().length > 0)
                                 return;
                             isSelecting = true;
                             window.addXEventListener(ssk.MOUSE_UP + ".block", function (evt) {
