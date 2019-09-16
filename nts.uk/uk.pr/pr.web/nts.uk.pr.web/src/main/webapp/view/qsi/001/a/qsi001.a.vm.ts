@@ -299,7 +299,7 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
                 return;
             }
             let data: any = {
-                socialInsurNotiCreateSet: {
+                socialInsurNotiCreateSetQuery: {
                     officeInformation: self.socialInsurNotiCrSet().officeInformation(),
                     fdNumber: self.socialInsurNotiCrSet().fdNumber(),
                     printPersonNumber: self.socialInsurNotiCrSet().printPersonNumber(),

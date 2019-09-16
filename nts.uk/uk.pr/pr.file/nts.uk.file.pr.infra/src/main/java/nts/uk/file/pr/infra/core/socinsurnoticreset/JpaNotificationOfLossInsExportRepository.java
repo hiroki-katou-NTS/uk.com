@@ -273,12 +273,12 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
         }
         return resultQuery.stream().map(i -> InsLossDataExport.builder()
                 .empId(i[0].toString())
-                .officeCd(i[1] == null ? i[1].toString() : "")
+                .officeCd(i[1] == null ? "" : i[1].toString())
                 .other(i[2] == null ? 0 : ((BigDecimal) i[2]).intValue())
-                .otherReason(i[3] == null ? null : i[3].toString())
-                .caInsurance(i[4] == null ? null : ((BigDecimal) i[4]).intValue())
-                .numRecoved(i[5] == null ? null : ((BigDecimal) i[5]).intValue())
-                .cause(i[6] == null ? null : ((BigDecimal) i[6]).intValue())
+                .otherReason(i[3] == null ? "" : i[3].toString())
+                .caInsurance(i[4] == null ? 0 : ((BigDecimal) i[4]).intValue())
+                .numRecoved(i[5] == null ? 0 : ((BigDecimal) i[5]).intValue())
+                .cause(i[6] == null ? 0 : ((BigDecimal) i[6]).intValue())
                 .percentOrMore(i[7] == null ? "" : i[7].toString())
                 .remarksOther(i[8] == null ? "" : i[8].toString())
                 .remarksAndOtherContent(i[9] == null ? "" : i[9].toString())
@@ -419,17 +419,17 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
         exportSQL.append("  FROM ");
         exportSQL.append("         (SELECT *");
         exportSQL.append("         FROM QQSMT_EMP_WELF_INS_QC_IF ");
-        exportSQL.append("         WHERE START_DATE <= '?endDate' AND START_DATE >= ?startDate");
+        exportSQL.append("         WHERE END_DATE <= '?endDate' AND END_DATE >= ?startDate");
         exportSQL.append("         AND EMPLOYEE_ID IN ('%s') )qi");
         exportSQL.append("  INNER JOIN ");
         exportSQL.append("       (SELECT * ");
         exportSQL.append("       FROM QQSMT_EMP_CORP_OFF_HIS ");
-        exportSQL.append("       WHERE START_DATE <= '?endDate' AND START_DATE >= ?startDate) his");
+        exportSQL.append("       WHERE END_DATE <= '?endDate' AND END_DATE >= ?startDate) his");
         exportSQL.append("       ON qi.EMPLOYEE_ID = his.EMPLOYEE_ID");
         exportSQL.append("  INNER JOIN QQSMT_WELF_PEN_INS_LOSS loss on loss.EMP_ID = qi.EMPLOYEE_ID");
         exportSQL.append("  INNER JOIN (SELECT *  ");
         exportSQL.append("        FROM QQSMT_TEM_PEN_PART_INFO");
-        exportSQL.append("        WHERE START_DATE <= '?endDate' AND START_DATE >= ?startDate) ppi ");
+        exportSQL.append("        WHERE END_DATE <= '?endDate' AND END_DATE >= ?startDate) ppi ");
         exportSQL.append("        ON qi.EMPLOYEE_ID = ppi.EMPLOYEE_ID");
         exportSQL.append("  INNER JOIN (SELECT * ");
         exportSQL.append("        FROM QPBMT_SOCIAL_INS_OFFICE");
@@ -443,12 +443,12 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
         exportSQL.append("  INNER JOIN BPSMT_PERSON p ON p.PID = i.PID");
         exportSQL.append("  INNER JOIN (SELECT *");
         exportSQL.append("       FROM QQSMT_EMP_HEAL_INSUR_QI ");
-        exportSQL.append("       WHERE START_DATE <= '?endDate' AND START_DATE >= ?startDate) wi ");
+        exportSQL.append("       WHERE END_DATE <= '?endDate' AND END_DATE >= ?startDate) wi ");
         exportSQL.append("       ON wi.EMPLOYEE_ID = qi.EMPLOYEE_ID");
         exportSQL.append("  INNER JOIN QQSMT_WEL_PEN_NUM_INFO ni ON ni.AFF_MOUR_PERIOD_HISID = qi.HISTORY_ID");
         exportSQL.append("  INNER JOIN (SELECT *");
         exportSQL.append("       FROM QQSMT_HEAL_INSUR_PORT_INT ");
-        exportSQL.append("       WHERE START_DATE <= '?endDate' AND START_DATE >= ?startDate) pri");
+        exportSQL.append("       WHERE END_DATE <= '?endDate' AND END_DATE >= ?startDate) pri");
         exportSQL.append("       ON pri.EMPLOYEE_ID = qi.EMPLOYEE_ID");
         exportSQL.append("  INNER JOIN (SELECT * ");
         exportSQL.append("       FROM BSYMT_EMP_DTA_MNG_INFO ");

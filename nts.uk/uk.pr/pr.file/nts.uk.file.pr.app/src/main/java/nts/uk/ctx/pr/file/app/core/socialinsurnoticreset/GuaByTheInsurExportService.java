@@ -42,18 +42,16 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
     private EmplHealInsurQualifiInforRepository mEmplHealInsurQualifiInforRepository;
 
 
-
-
     @Override
     protected void handle(ExportServiceContext<GuaByTheInsurExportQuery> exportServiceContext) {
         final int TYPE_EXPORT_EXCEL_FILE = 0;
 
         ExportDataCsv exportData = ExportDataCsv.builder()
                 .lstHeader(this.finHeader())
-                .listContent(printInsuredQualifiNoti(exportServiceContext.getQuery().empIds,
-                        exportServiceContext.getQuery().socialInsurNotiCreateSetQuery,
-                        GeneralDate.fromString(exportServiceContext.getQuery().startDate, "yyyy/MM/dd"),
-                        GeneralDate.fromString(exportServiceContext.getQuery().endDate, "yyyy/MM/dd"))
+                .listContent(printInsuredQualifiNoti(exportServiceContext.getQuery().getEmpIds(),
+                        exportServiceContext.getQuery().getSocialInsurNotiCreateSetQuery(),
+                        exportServiceContext.getQuery().getStartDate(),
+                        exportServiceContext.getQuery().getEndDate())
                 )
                 .build();
 
