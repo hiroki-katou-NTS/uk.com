@@ -50,13 +50,16 @@
       <div class="col-12">
         <div class="row pl-2 mb-1">{{ rowData.getItemText }}</div>
         <div class="row mb-1">
-          <div class="col-2"></div>
+          <div class="col-2 p-1 text-right">
+            <i class="fas fa-exclamation-circle align-bottom text-danger" v-if="rowData.getColorCode=='ERROR'"></i>
+            <i class="fas fa-exclamation-triangle align-bottom text-danger" v-if="rowData.getColorCode=='ALARM'"></i>
+          </div>
           <div class="col-9 pl-0 pr-0">
             <div class="row">
               <div class="w-100">
                 <div class="col-9 d-inline-block align-middle"><h4><span class="badge badge-secondary">{{ rowData.value }}</span></h4></div>
                 <div class="d-inline-block">
-                  <button type="button" class="btn btn-secondary" v-on:click="openDialog(rowData, rowData.getItemDialogType)">{{'KDWS03_71' | i18n}}</button>
+                  <button type="button" class="btn btn-secondary" v-on:click="openDialog(rowData, rowData.getItemMasterType)">{{'KDWS03_71' | i18n}}</button>
                 </div>
               </div>
             </div>
@@ -69,7 +72,10 @@
       <div class="col-12">
         <div class="row pl-2 mb-1">{{ rowData.getItemText }}</div>
         <div class="row">
-          <div class="col-2"></div>
+          <div class="col-2 p-1 text-right">
+            <i class="fas fa-exclamation-circle align-bottom text-danger" v-if="rowData.getColorCode=='ERROR'"></i>
+            <i class="fas fa-exclamation-triangle align-bottom text-danger" v-if="rowData.getColorCode=='ALARM'"></i>
+          </div>
           <div class="col-9 pl-0 pr-0"><nts-number-editor class="mb-3" v-model="rowData.value" /></div>
         </div>
       </div>
@@ -79,14 +85,51 @@
     </div>
     <!-- ComboBox -->
     <div class="row" v-if="rowData.getItemType==itemType.ComboBox">
+      <div class="col-12">
+        <div class="row pl-2 mb-1">{{ rowData.getItemText }}</div>
+        <div class="row">
+          <div class="col-2 p-1 text-right">
+            <i class="fas fa-exclamation-circle align-bottom text-danger" v-if="rowData.getColorCode=='ERROR'"></i>
+            <i class="fas fa-exclamation-triangle align-bottom text-danger" v-if="rowData.getColorCode=='ALARM'"></i>
+          </div>
+          <div class="col-9 pl-0 pr-0">
+            <nts-dropdown v-if="rowData.getItemMasterType==masterType.DoWork" v-model="rowData.value0">
+              <option v-for="(item, k) in masterData.lstDoWork" v-bind:key="k" :value="item.value0">
+                {{item.value0}} &nbsp;&nbsp;&nbsp;  {{item.value}}
+              </option>
+            </nts-dropdown>
+            <nts-dropdown v-if="rowData.getItemMasterType==masterType.Calc && rowData.isSpecCalcLst" v-model="rowData.value0">
+              <option v-for="(item, k) in masterData.lstCalc" v-bind:key="k" :value="item.value0">
+                {{item.value0}} &nbsp;&nbsp;&nbsp;  {{item.value}}
+              </option>
+            </nts-dropdown>
+            <nts-dropdown v-if="rowData.getItemMasterType==masterType.Calc && !rowData.isSpecCalcLst" v-model="rowData.value0">
+              <option v-for="(item, k) in masterData.lstCalcCompact" v-bind:key="k" :value="item.value0">
+                {{item.value0}} &nbsp;&nbsp;&nbsp;  {{item.value}}
+              </option>
+            </nts-dropdown>
+            <nts-dropdown v-if="rowData.getItemMasterType==masterType.ReasonGoOut" v-model="rowData.value0">
+              <option v-for="(item, k) in masterData.lstReasonGoOut" v-bind:key="k" :value="item.value0">
+                {{item.value0}} &nbsp;&nbsp;&nbsp;  {{item.value}}
+              </option>
+            </nts-dropdown>
+            <nts-dropdown v-if="rowData.getItemMasterType==masterType.TimeLimit" v-model="rowData.value0">
+              <option v-for="(item, k) in masterData.lstTimeLimit" v-bind:key="k" :value="item.value0">
+                {{item.value0}} &nbsp;&nbsp;&nbsp;  {{item.value}}
+              </option>
+            </nts-dropdown>
+          </div>
+        </div>
+      </div>
     </div>
     <!-- Time -->
     <div class="row" v-if="rowData.getItemType==itemType.Time">
       <div class="col-12">
         <div class="row pl-2 mb-1">{{ rowData.getItemText }}</div>
         <div class="row">
-          <div class="col-2">
-            <i class="fas fa-exclamation-triangle align-bottom text-danger"></i>
+          <div class="col-2 p-1 text-right">
+            <i class="fas fa-exclamation-circle align-bottom text-danger" v-if="rowData.getColorCode=='ERROR'"></i>
+            <i class="fas fa-exclamation-triangle align-bottom text-danger" v-if="rowData.getColorCode=='ALARM'"></i>
           </div>
           <div class="col-9 pl-0 pr-0">
             <nts-time-editor class="mb-3" v-if="rowData.key=='A532'" v-model="screenData.A532" time-input-type="time-duration" />
@@ -100,7 +143,10 @@
       <div class="col-12">
         <div class="row pl-2 mb-1">{{ rowData.getItemText }}</div>
         <div class="row">
-          <div class="col-2 pr-2 text-right"></div>
+          <div class="col-2 p-1 text-right">
+            <i class="fas fa-exclamation-circle align-bottom text-danger" v-if="rowData.getColorCode=='ERROR'"></i>
+            <i class="fas fa-exclamation-triangle align-bottom text-danger" v-if="rowData.getColorCode=='ALARM'"></i>
+          </div>
           <div class="col-9 pl-0 pr-0">
             <nts-time-editor class="mb-3" v-model="rowData.value" time-input-type="time-with-day" />
           </div>
@@ -112,7 +158,10 @@
       <div class="col-12">
         <div class="row pl-2 mb-1">{{ rowData.getItemText }}</div>
         <div class="row">
-          <div class="col-2"></div>
+          <div class="col-2 p-1 text-right">
+            <i class="fas fa-exclamation-circle align-bottom text-danger" v-if="rowData.getColorCode=='ERROR'"></i>
+            <i class="fas fa-exclamation-triangle align-bottom text-danger" v-if="rowData.getColorCode=='ALARM'"></i>
+          </div>
           <div class="col-9 pl-0 pr-0"><nts-text-editor class="mb-3" v-model="rowData.value" /></div>
         </div>
       </div>

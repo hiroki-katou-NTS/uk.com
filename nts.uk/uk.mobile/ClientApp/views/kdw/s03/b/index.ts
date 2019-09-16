@@ -39,10 +39,15 @@ export class KdwS03BComponent extends Vue {
     };
     public checked1s: Array<number> = [];
     public screenData: any = {};
-    private masterDialogData: any = {
+    private masterData: any = {
         workType: [],
         workTime: [],
-        workPlace: []
+        workPlace: [],
+        lstDoWork: [],
+        lstCalc: [],
+        lstCalcCompact: [],
+        lstReasonGoOut: [],
+        lstTimeLimit: []
     };
     private masterDialogParam: Array<number> = [];
     private primitiveAll: any = {};
@@ -66,6 +71,14 @@ export class KdwS03BComponent extends Vue {
         return self.params.paramData.itemValues;
     }
 
+    get itemType() {
+        return ItemType;
+    }
+
+    get masterType() {
+        return MasterType;
+    }
+
     public created() {
         let self = this;
         let fakeValid = {};
@@ -73,12 +86,15 @@ export class KdwS03BComponent extends Vue {
             self.formatData(rowData);
             self.setItemType(rowData);
             self.setItemText(rowData);
-            self.setItemDialogType(rowData);
+            self.setItemMasterType(rowData);
+            self.setSpecCalcLst(rowData);
+            self.setColorCode(rowData);
             self.addMasterDialogParam(rowData);
             fakeValid[rowData.key] = { required: false };
         });
         self.oldData = self.toJS(self.params.data);
         self.$updateValidator('screenData', fakeValid);
+        self.createMasterComboBox();
         self.$http.post('at', API.getPrimitiveAll)
         .then((primitiveData: any) => {
             // self.createPrimitiveAll(primitiveData.data);
@@ -104,11 +120,31 @@ export class KdwS03BComponent extends Vue {
         self.primitiveAll(primitiveAll);
     }
 
+    private createMasterComboBox() {
+        let self = this;
+        let lstControlDisplayItem: any = self.params.paramData.lstControlDisplayItem;
+        _.forEach(lstControlDisplayItem.comboItemDoWork, (o) => { 
+            self.masterData.lstDoWork.push({ 'value0': o.code, 'value': o.name });
+        });
+        _.forEach(lstControlDisplayItem.comboItemCalc, (o) => { 
+            self.masterData.lstCalc.push({ 'value0': o.code, 'value': o.name });
+        });
+        _.forEach(lstControlDisplayItem.comboItemCalcCompact, (o) => { 
+            self.masterData.lstCalcCompact.push({ 'value0': o.code, 'value': o.name });
+        });
+        _.forEach(lstControlDisplayItem.comboItemReason, (o) => { 
+            self.masterData.lstReasonGoOut.push({ 'value0': o.code, 'value': o.name });
+        });
+        _.forEach(lstControlDisplayItem.comboTimeLimit, (o) => { 
+            self.masterData.lstTimeLimit.push({ 'value0': o.code, 'value': o.name });
+        });
+    }
+
     private createMasterData(data: any) {
         let self = this;
-        self.masterDialogData.workTime = data[DialogType.KDLS01_WorkTime];
-        self.masterDialogData.workType = data[DialogType.KDLS02_WorkType];
-        self.masterDialogData.workPlace = data[DialogType.CDLS08_WorkPlace];
+        self.masterData.workTime = data[MasterType.KDLS01_WorkTime];
+        self.masterData.workType = data[MasterType.KDLS02_WorkType];
+        self.masterData.workPlace = data[MasterType.CDLS08_WorkPlace];
     }
 
     private formatData(rowData: RowData) {
@@ -148,13 +184,44 @@ export class KdwS03BComponent extends Vue {
         
     }
 
-    private setItemDialogType(rowData: RowData) {
+    private setItemMasterType(rowData: RowData) {
         let self = this;
-        Object.defineProperty(rowData, 'getItemDialogType', {
+        Object.defineProperty(rowData, 'getItemMasterType', {
             get() {
                 let attendanceItem = self.getAttendanceItem(rowData.key);
 
                 return attendanceItem.typeGroup;
+            }
+        });
+        
+    }
+
+    private setSpecCalcLst(rowData: RowData) {
+        let self = this;
+        let specLst = [628, 630, 631, 632];
+        Object.defineProperty(rowData, 'isSpecCalcLst', {
+            get() {
+                let attendanceItem = self.getAttendanceItem(rowData.key);
+
+                return _.includes(specLst, attendanceItem.id);
+            }
+        });
+        
+    }
+
+    private setColorCode(rowData: RowData) {
+        let self = this;
+        let specLst = [628, 630, 631, 632];
+        Object.defineProperty(rowData, 'getColorCode', {
+            get() {
+                if (rowData.class.includes('mgrid-error')) {
+                    return 'ERROR';
+                }
+                if (rowData.class.includes('mgrid-alarm')) {
+                    return 'ALARM';
+                }
+
+                return '';
             }
         });
         
@@ -188,15 +255,24 @@ export class KdwS03BComponent extends Vue {
         let self = this;
         let idKey = rowData.key.replace('A', '');
         let attendanceItem = _.find(self.lstAttendanceItem, (item: any) => item.id == idKey);
-        if (attendanceItem.attendanceAtr == ItemType.InputStringCode || attendanceItem.attendanceAtr == ItemType.ButtonDialog) { 
-            if (!_.includes(self.masterDialogParam, attendanceItem.typeGroup)) {
-                self.masterDialogParam.push(attendanceItem.typeGroup);
-            }
+        switch (attendanceItem.attendanceAtr) {
+            case ItemType.InputStringCode: 
+                if (!_.includes(self.masterDialogParam, attendanceItem.typeGroup)) {
+                    self.masterDialogParam.push(attendanceItem.typeGroup);
+                }
+                break;
+            case ItemType.ButtonDialog: 
+                if (!_.includes(self.masterDialogParam, attendanceItem.typeGroup)) {
+                    self.masterDialogParam.push(attendanceItem.typeGroup);
+                }
+                break;
+            case ItemType.ComboBox: 
+                if (!_.includes(self.masterDialogParam, attendanceItem.typeGroup)) {
+                    self.masterDialogParam.push(attendanceItem.typeGroup);
+                }
+                break;
+            default: break;
         }
-    }
-
-    get itemType() {
-        return ItemType;
     }
 
     public openDScreen() {
@@ -207,18 +283,18 @@ export class KdwS03BComponent extends Vue {
         });
     }
 
-    public openDialog(rowData: RowData, value: DialogType) {
+    public openDialog(rowData: RowData, value: MasterType) {
         let self = this;
         switch (value) {
-            case DialogType.KDLS02_WorkType: self.openKDLS02(rowData); break;
-            case DialogType.KDLS01_WorkTime: self.openKDLS01(rowData); break;
+            case MasterType.KDLS02_WorkType: self.openKDLS02(rowData); break;
+            case MasterType.KDLS01_WorkTime: self.openKDLS01(rowData); break;
             default: break;
         }
     }
 
     private openKDLS02(rowData: RowData) {
         let self = this;
-        let workTypeCDLst = _.map(self.masterDialogData.workType, (o) => o.code);
+        let workTypeCDLst = _.map(self.masterData.workType, (o) => o.code);
         self.$modal(
             'kdls02',
             {
@@ -232,14 +308,14 @@ export class KdwS03BComponent extends Vue {
         ).then((data: any) => {
             if (data) {
                 rowData.value0 = data.selectedWorkType.workTypeCode;
-                rowData.value = _.find(self.masterDialogData.workType, (o) => o.code == rowData.value0).name;
+                rowData.value = _.find(self.masterData.workType, (o) => o.code == rowData.value0).name;
             }
         });
     }
 
     private openKDLS01(rowData: RowData) {
         let self = this;
-        let workTimeCDLst = _.map(self.masterDialogData.workTime, (o) => o.code);
+        let workTimeCDLst = _.map(self.masterData.workTime, (o) => o.code);
         self.$modal(
             'kdls01',
             {
@@ -251,7 +327,7 @@ export class KdwS03BComponent extends Vue {
         ).then((data: any) => {
             if (data) {
                 rowData.value0 = data.selectedWorkTime.code;
-                rowData.value = _.find(self.masterDialogData.workTime, (o) => o.code == rowData.value0).name;
+                rowData.value = _.find(self.masterData.workTime, (o) => o.code == rowData.value0).name;
             }
         });
     }
@@ -278,12 +354,20 @@ export class KdwS03BComponent extends Vue {
         _.forEach(self.params.data, (rowData: RowData, index) => {
             let itemValue: DPItemValue;
             let attendanceItem = self.getAttendanceItem(rowData.key);
-            if (attendanceItem.attendanceAtr == ItemType.InputStringCode || 
-                attendanceItem.attendanceAtr == ItemType.ButtonDialog) {
+            switch (attendanceItem.attendanceAtr) {
+                case ItemType.InputStringCode: 
                     itemValue = new DPItemValue(attendanceItem, rowData.value0, self.params, self.itemValues);
-            } else {
-                rowData.value = self.screenData[rowData.key];
-                itemValue = new DPItemValue(attendanceItem, rowData.value, self.params, self.itemValues);
+                    break;
+                case ItemType.ButtonDialog: 
+                    itemValue = new DPItemValue(attendanceItem, rowData.value0, self.params, self.itemValues);
+                    break;
+                case ItemType.ComboBox: 
+                    itemValue = new DPItemValue(attendanceItem, parseInt(rowData.value0), self.params, self.itemValues);
+                    break;
+                default: 
+                    rowData.value = self.screenData[rowData.key];
+                    itemValue = new DPItemValue(attendanceItem, rowData.value, self.params, self.itemValues);
+                    break;
             }
             let oldRow = _.find(self.oldData, (o) => o.key == rowData.key);
             if (JSON.stringify(oldRow).localeCompare(JSON.stringify(rowData)) != 0) {
@@ -345,13 +429,20 @@ export enum ItemType {
     InputStringChar = 7
 }
 
-export enum DialogType {
+export enum MasterType {
     KDLS02_WorkType = 1,
     KDLS01_WorkTime = 2,
-    CDLS08_WorkPlace = 5
+    CDLS08_WorkPlace = 5,
+    DoWork = 9,
+    Calc = 10,
+    ReasonGoOut = 11,
+    Remasks = 12,
+    TimeLimit = 13,
+    BusinessType = 14
 }
 
 interface RowData {
+    class: any;
     key: string;
     value: any;
     groupKey: string;
