@@ -301,18 +301,19 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
                 .birthDay(i[26] == null ? "" : i[26].toString())
                 .endDate(i[27] == null ? null : i[27].toString())
                 .healInsNumber(i[28] == null ? "" : i[28].toString())
-                .officeNumber1(i[29] == null ? "" : i[29].toString())
-                .officeNumber2(i[30] == null ? "" : i[30].toString())
-                .officeNumber(i[31] == null ? "" : i[31].toString())
-                .unionOfficeNumber(i[32] == null ? "" : i[32].toString())
-                .oldNameKana(i[33] == null ? null : i[33].toString())
-                .welfOfficeNumber1(i[34] == null ? "" : i[34].toString())
-                .welfOfficeNumber2(i[35] == null ? "" : i[35].toString())
-                .welfOfficeNumber(i[36] == null ? "" : i[36].toString())
-                .welfPenNumber(i[37] == null ? "" : i[37].toString())
-                .healInsUnionNumber(i[38] == null ? "" : i[38].toString())
-                .memberNumber(i[39] == null ? "" : i[39].toString())
-                .healInsInherenPr(i[40] == null ? "" : i[40].toString())
+                .prefectureNo(i[29]== null ? 0 : ((BigDecimal) i[29]).intValue())
+                .officeNumber1(i[30] == null ? "" : i[30].toString())
+                .officeNumber2(i[31] == null ? "" : i[31].toString())
+                .officeNumber(i[32] == null ? "" : i[32].toString())
+                .unionOfficeNumber(i[33] == null ? "" : i[33].toString())
+                .oldNameKana(i[34] == null ? null : i[34].toString())
+                .welfOfficeNumber1(i[35] == null ? "" : i[35].toString())
+                .welfOfficeNumber2(i[36] == null ? "" : i[36].toString())
+                .welfOfficeNumber(i[37] == null ? "" : i[37].toString())
+                .welfPenNumber(i[38] == null ? "" : i[38].toString())
+                .healInsUnionNumber(i[39] == null ? "" : i[39].toString())
+                .memberNumber(i[40] == null ? "" : i[40].toString())
+                .healInsInherenPr(i[41] == null ? "" : i[41].toString())
                 .build()
                 ).collect(Collectors.toList());
     }
@@ -392,7 +393,6 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
         exportSQL.append("      WEL_PEN_NUMBER,");
         exportSQL.append("      HEAL_INSUR_UNION_NMBER,");
         exportSQL.append("      MEMBER_NUMBER,");
-        exportSQL.append("      TODOKEDE_FNAME_KANA,");
         exportSQL.append("      WELFARE_PENSION_OFFICE_NUMBER,");
         exportSQL.append("      WELFARE_PENSION_PREFECTURE_NO,");
         exportSQL.append("      qi.END_DATE,");
@@ -407,7 +407,7 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
         exportSQL.append("      REASON_FOR_LOSS,");
         exportSQL.append("      ADD_APP_CTG_SAL,");
         exportSQL.append("      REASON,");
-        exportSQL.append("      STAND_SAL,");
+        exportSQL.append("      ADD_SAL,");
         exportSQL.append("      STAND_SAL,");
         exportSQL.append("      SEC_ADD_SALARY,");
         exportSQL.append("      SEC_STAND_SAL,");
@@ -491,10 +491,26 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
                 .healInsNumber(i[14] != null ? i[14].toString() : "")
                 .welNumber(i[15] != null ? i[15].toString() : "")
                 .healInsUnionNumber(i[16] != null ? i[16].toString() : "")
-                .memberNumber(i[16] != null ? i[16].toString() : "")
-                .welPenOfficeNumber(i[17] != null ? i[17].toString() : "")
-                .endDate(i[18] != null ? i[18].toString() : "")
-                .prefectureNo(i[19] != null ?  ((BigDecimal) i[19]).intValue() : 0)
+                .memberNumber(i[17] != null ? i[17].toString() : "")
+                .welPenOfficeNumber(i[18] != null ? i[18].toString() : "")
+                .prefectureNo(i[20] != null ?  ((BigDecimal) i[20]).intValue() : 0)
+                .personName(i[21] != null ? i[21].toString() : "")
+                .personNameKana(i[22] != null ? i[22].toString() : "")
+                .birthDay(i[23] != null ? i[23].toString() : "")
+                .portCd(i[24] != null ? i[24].toString() : "")
+                .retirementAddBefore(i[25] != null ? i[25].toString() : "")
+                .retirementAdd(i[26] != null ? i[26].toString() : "")
+                .reasonForLoss(i[27] != null ? i[27].toString() : "")
+                .addAppCtgSal(i[28] != null ? i[28].toString() : "")
+                .reason(i[29] != null ? i[29].toString() : "")
+                .standSal(i[30] != null ? i[30].toString() : "")
+                .secAddSalary(i[31] != null ? i[31].toString() : "")
+                .secStandSal(i[32] != null ? i[32].toString() : "")
+                .cause(i[33] != null ? ((BigDecimal) i[33]).intValue() : 0)
+                .isMoreEmp(i[34] != null ? i[34].toString() : "")
+                .otherReason(i[35] != null ? i[35].toString() : "")
+                .continReemAfterRetirement(i[36] != null ? i[36].toString() : "")
+                .basicPenNumber(i[37] != null ? i[37].toString() : "")
                 .build() ).collect(Collectors.toList());
 
     }
