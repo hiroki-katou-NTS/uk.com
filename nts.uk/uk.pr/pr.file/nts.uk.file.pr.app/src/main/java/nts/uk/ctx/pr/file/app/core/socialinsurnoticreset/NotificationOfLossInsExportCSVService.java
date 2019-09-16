@@ -49,7 +49,7 @@ public class NotificationOfLossInsExportCSVService extends ExportService<Notific
         List<String> empIds = exportServiceContext.getQuery().getEmpIds();
         GeneralDate start = exportServiceContext.getQuery().getStartDate();
         GeneralDate end = exportServiceContext.getQuery().getEndDate();
-		SocialInsurNotiCreateSet domain = new SocialInsurNotiCreateSet(cid, userId,
+		SocialInsurNotiCreateSet domain = new SocialInsurNotiCreateSet(userId,cid,
 				socialInsurNotiCreateSet.getOfficeInformation(),
 				socialInsurNotiCreateSet.getBusinessArrSymbol(),
 				socialInsurNotiCreateSet.getOutputOrder(),
@@ -58,8 +58,8 @@ public class NotificationOfLossInsExportCSVService extends ExportService<Notific
 				socialInsurNotiCreateSet.getInsuredNumber(),
 				socialInsurNotiCreateSet.getFdNumber(),
 				socialInsurNotiCreateSet.getTextPersonNumber(),
-				socialInsurNotiCreateSet.getLineFeedCode(),
-				socialInsurNotiCreateSet.getOutputFormat()
+                socialInsurNotiCreateSet.getOutputFormat(),
+				socialInsurNotiCreateSet.getLineFeedCode()
 		);
 		socialInsNotifiCreateSetRegis(domain);
 		if(end.before(start)) {

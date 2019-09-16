@@ -174,8 +174,6 @@ module nts.uk.pr.view.qsi013.b.viewmodel {
 
             self.itemListHealth = ko.observableArray(model.getCauseTypeHealthLossInfo());
             self.itemListPension = ko.observableArray(model.getCauseTypePensionLossInfo());
-            self.getDataLossInfo(self.selectedItem());
-
             self.selectedItem.subscribe((data) => {
                 self.getDataLossInfo(data);
             });

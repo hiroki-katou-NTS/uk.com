@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.file.app.core.socialinsurnoticreset;
 
 import lombok.Data;
+import nts.arc.time.GeneralDate;
 
 import java.util.List;
 
@@ -9,7 +10,7 @@ import java.util.List;
 public class GuaByTheInsurExportQuery {
     int typeExport;
     List<String> empIds;
-    String startDate;
-    String endDate;
+    GeneralDate startDate;
+    GeneralDate endDate;
     SocialInsurNotiCreateSetQuery socialInsurNotiCreateSetQuery;
 }

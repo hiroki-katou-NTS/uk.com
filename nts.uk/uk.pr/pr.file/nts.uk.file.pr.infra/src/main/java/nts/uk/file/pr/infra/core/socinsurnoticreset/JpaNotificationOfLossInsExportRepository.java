@@ -129,46 +129,46 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
         }
         return resultQuery.stream().map(i -> InsLossDataExport.builder()
                 .empId(i[0].toString())
-                .officeCd(i[1].toString())
+                .officeCd(i[1] != null ? "" : i[1].toString())
                 .other(((BigDecimal) i[2]).intValue())
-                .otherReason(i[3] == null ? null : i[3].toString())
-                .caInsurance(i[4] == null ? null : ((BigDecimal) i[4]).intValue())
-                .numRecoved(i[5] == null ? null : ((BigDecimal) i[5]).intValue())
-                .cause(i[6] == null ? null : ((BigDecimal) i[6]).intValue())
-                .percentOrMore(i[7] == null ? null : i[7].toString())
-                .remarksOther(i[8] == null ? null : i[8].toString())
-                .remarksAndOtherContent(i[9] == null ? null : i[9].toString())
+                .otherReason(i[3] == null ? "" : i[3].toString())
+                .caInsurance(i[4] == null ? 0 : ((BigDecimal) i[4]).intValue())
+                .numRecoved(i[5] == null ? 0 : ((BigDecimal) i[5]).intValue())
+                .cause(i[6] == null ? 0 : ((BigDecimal) i[6]).intValue())
+                .percentOrMore(i[7] == null ? "" : i[7].toString())
+                .remarksOther(i[8] == null ? "" : i[8].toString())
+                .remarksAndOtherContent(i[9] == null ? "" : i[9].toString())
                 .remunMonthlyAmountKind(i[10] == null ? 0 : ((BigDecimal) i[10]).intValue())
                 .remunMonthlyAmount(i[11] == null ? 0 : ((BigDecimal) i[11]).intValue())
                 .totalMonthyRemun(i[12] == null ? 0 : ((BigDecimal) i[12]).intValue())
-                .livingAbroad(i[13] == null ? null : i[13].toString())
-                .resonOther(i[14] == null ? null : i[14].toString())
-                .resonAndOtherContent(i[15] == null ? null : i[15].toString())
-                .shortTimeWorkes(i[16] == null ? null : i[16].toString())
-                .shortStay(i[17] == null ? null : i[17].toString())
-                .depenAppoint(i[18] == null ? null : i[18].toString())
-                .qualifiDistin(i[19] == null ? null : i[19].toString())
+                .livingAbroad(i[13] == null ? "" : i[13].toString())
+                .resonOther(i[14] == null ? "" : i[14].toString())
+                .resonAndOtherContent(i[15] == null ? "" : i[15].toString())
+                .shortTimeWorkes(i[16] == null ? "" : i[16].toString())
+                .shortStay(i[17] == null ? "" : i[17].toString())
+                .depenAppoint(i[18] == null ? "" : i[18].toString())
+                .qualifiDistin(i[19] == null ? "" : i[19].toString())
                 .continReemAfterRetirement(i[20] == null ? 0 : ((BigDecimal) i[20]).intValue())
-                .isMoreEmp(((BigDecimal)i[21]).intValue())
-                .basicPenNumber(i[22] == null ? null :i[22].toString())
-                .personName(i[23].toString())
-                .personNameKana(i[24] == null ? null : i[24].toString())
-                .oldName(i[25] == null ? null : i[25].toString())
-                .birthDay(i[26].toString())
-                .endDate(i[27] == null ? null : i[27].toString())
-                .healInsNumber(i[28] == null ? null : i[28].toString())
-                .officeNumber1(i[29] == null ? null : i[29].toString())
-                .officeNumber2(i[30] == null ? null : i[30].toString())
-                .officeNumber(i[31] == null ? null : i[31].toString())
-                .portCd(i[32] == null ? null : i[32].toString())
-                .add1(i[33] == null ? null : i[33].toString())
-                .add2(i[34] == null ? null : i[34].toString())
-                .companyName(i[35] == null ? null : i[35].toString())
-                .repName(i[36] == null ? null : i[36].toString())
-                .phoneNumber(i[37] == null ? null : i[37].toString())
-                .welfPenNumber(i[38] == null ? null : i[38].toString())
-                .healInsUnionNumber(i[39] == null ? null : i[39].toString())
-                .memberNumber(i[40] == null ? null : i[40].toString())
+                .isMoreEmp(i[21] == null ? 0 :((BigDecimal)i[21]).intValue())
+                .basicPenNumber(i[22] == null ? "" :i[22].toString())
+                .personName(i[23] == null ? "" : i[23].toString() )
+                .personNameKana(i[24] == null ? "" : i[24].toString())
+                .oldName(i[25] == null ? "" : i[25].toString())
+                .birthDay(i[26] == null ? "" :i[26].toString())
+                .endDate(i[27] == null ? "" : i[27].toString())
+                .healInsNumber(i[28] == null ? "" : i[28].toString())
+                .officeNumber1(i[29] == null ? "" : i[29].toString())
+                .officeNumber2(i[30] == null ? "" : i[30].toString())
+                .officeNumber(i[31] == null ? "" : i[31].toString())
+                .portCd(i[32] == null ? "" : i[32].toString())
+                .add1(i[33] == null ? "" : i[33].toString())
+                .add2(i[34] == null ? "" : i[34].toString())
+                .companyName(i[35] == null ? "" : i[35].toString())
+                .repName(i[36] == null ? "" : i[36].toString())
+                .phoneNumber(i[37] == null ? "" : i[37].toString())
+                .welfPenNumber(i[38] == null ? "" : i[38].toString())
+                .healInsUnionNumber(i[39] == null ? "" : i[39].toString())
+                .memberNumber(i[40] == null ? "" : i[40].toString())
                 .prefectureNo(i[41] == null ? 0 : ((BigDecimal) i[20]).intValue())
                 .build()
         ).collect(Collectors.toList());
@@ -273,46 +273,46 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
         }
         return resultQuery.stream().map(i -> InsLossDataExport.builder()
                 .empId(i[0].toString())
-                .officeCd(i[1] == null ? i[1].toString() : "")
+                .officeCd(i[1] == null ? "" : i[1].toString())
                 .other(i[2] == null ? 0 : ((BigDecimal) i[2]).intValue())
-                .otherReason(i[3] == null ? null : i[3].toString())
-                .caInsurance(i[4] == null ? null : ((BigDecimal) i[4]).intValue())
-                .numRecoved(i[5] == null ? null : ((BigDecimal) i[5]).intValue())
-                .cause(i[6] == null ? null : ((BigDecimal) i[6]).intValue())
-                .percentOrMore(i[7] == null ? null : i[7].toString())
-                .remarksOther(i[8] == null ? null : i[8].toString())
-                .remarksAndOtherContent(i[9] == null ? null : i[9].toString())
+                .otherReason(i[3] == null ? "" : i[3].toString())
+                .caInsurance(i[4] == null ? 0 : ((BigDecimal) i[4]).intValue())
+                .numRecoved(i[5] == null ? 0 : ((BigDecimal) i[5]).intValue())
+                .cause(i[6] == null ? 0 : ((BigDecimal) i[6]).intValue())
+                .percentOrMore(i[7] == null ? "" : i[7].toString())
+                .remarksOther(i[8] == null ? "" : i[8].toString())
+                .remarksAndOtherContent(i[9] == null ? "" : i[9].toString())
                 .remunMonthlyAmountKind(i[10] == null ? 0 : ((BigDecimal) i[10]).intValue())
                 .remunMonthlyAmount(i[11] == null ? 0 : ((BigDecimal) i[11]).intValue())
                 .totalMonthyRemun(i[12] == null ? 0 : ((BigDecimal) i[12]).intValue())
-                .livingAbroad(i[13] == null ? null : i[13].toString())
-                .resonOther(i[14] == null ? null : i[14].toString())
-                .resonAndOtherContent(i[15] == null ? null : i[15].toString())
-                .shortTimeWorkes(i[16] == null ? null : i[16].toString())
+                .livingAbroad(i[13] == null ? "" : i[13].toString())
+                .resonOther(i[14] == null ? "" : i[14].toString())
+                .resonAndOtherContent(i[15] == null ? "" : i[15].toString())
+                .shortTimeWorkes(i[16] == null ? "" : i[16].toString())
                 .shortStay(i[17] == null ? null : i[17].toString())
-                .depenAppoint(i[18] == null ? null : i[18].toString())
-                .qualifiDistin(i[19] == null ? null : i[19].toString())
-                .continReemAfterRetirement(((BigDecimal) i[20]).intValue())
-                .isMoreEmp(((BigDecimal) i[21]).intValue())
-                .basicPenNumber(i[22] == null ? null : i[22].toString())
-                .personName(i[23].toString())
-                .personNameKana(i[24] == null ? null : i[24].toString())
+                .depenAppoint(i[18] == null ? "" : i[18].toString())
+                .qualifiDistin(i[19] == null ? "" : i[19].toString())
+                .continReemAfterRetirement(i[20] == null ? 0: ((BigDecimal) i[20]).intValue())
+                .isMoreEmp(i[21] == null ? 0 :((BigDecimal) i[21]).intValue())
+                .basicPenNumber(i[22] == null ? "" : i[22].toString())
+                .personName(i[23] == null ? "" : i[23].toString())
+                .personNameKana(i[24] == null ? "" : i[24].toString())
                 .oldName(i[25] == null ? null : i[25].toString())
-                .birthDay(i[26].toString())
+                .birthDay(i[26] == null ? "" : i[26].toString())
                 .endDate(i[27] == null ? null : i[27].toString())
-                .healInsNumber(i[28] == null ? null : i[28].toString())
-                .officeNumber1(i[29] == null ? null : i[29].toString())
-                .officeNumber2(i[30] == null ? null : i[30].toString())
-                .officeNumber(i[31] == null ? null : i[31].toString())
-                .unionOfficeNumber(i[32] == null ? null : i[32].toString())
+                .healInsNumber(i[28] == null ? "" : i[28].toString())
+                .officeNumber1(i[29] == null ? "" : i[29].toString())
+                .officeNumber2(i[30] == null ? "" : i[30].toString())
+                .officeNumber(i[31] == null ? "" : i[31].toString())
+                .unionOfficeNumber(i[32] == null ? "" : i[32].toString())
                 .oldNameKana(i[33] == null ? null : i[33].toString())
-                .welfOfficeNumber1(i[34] == null ? null : i[34].toString())
-                .welfOfficeNumber2(i[35] == null ? null : i[35].toString())
-                .welfOfficeNumber(i[36] == null ? null : i[36].toString())
-                .welfPenNumber(i[37] == null ? null : i[37].toString())
-                .healInsUnionNumber(i[38] == null ? null : i[38].toString())
-                .memberNumber(i[39] == null ? null : i[39].toString())
-                .healInsInherenPr(i[40] == null ? null : i[40].toString())
+                .welfOfficeNumber1(i[34] == null ? "" : i[34].toString())
+                .welfOfficeNumber2(i[35] == null ? "" : i[35].toString())
+                .welfOfficeNumber(i[36] == null ? "" : i[36].toString())
+                .welfPenNumber(i[37] == null ? "" : i[37].toString())
+                .healInsUnionNumber(i[38] == null ? "" : i[38].toString())
+                .memberNumber(i[39] == null ? "" : i[39].toString())
+                .healInsInherenPr(i[40] == null ? "" : i[40].toString())
                 .build()
                 ).collect(Collectors.toList());
     }
@@ -419,17 +419,17 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
         exportSQL.append("  FROM ");
         exportSQL.append("         (SELECT *");
         exportSQL.append("         FROM QQSMT_EMP_WELF_INS_QC_IF ");
-        exportSQL.append("         WHERE START_DATE <= '?endDate' AND START_DATE >= ?startDate");
+        exportSQL.append("         WHERE END_DATE <= '?endDate' AND END_DATE >= ?startDate");
         exportSQL.append("         AND EMPLOYEE_ID IN ('%s') )qi");
         exportSQL.append("  INNER JOIN ");
         exportSQL.append("       (SELECT * ");
         exportSQL.append("       FROM QQSMT_EMP_CORP_OFF_HIS ");
-        exportSQL.append("       WHERE START_DATE <= '?endDate' AND START_DATE >= ?startDate) his");
+        exportSQL.append("       WHERE END_DATE <= '?endDate' AND END_DATE >= ?startDate) his");
         exportSQL.append("       ON qi.EMPLOYEE_ID = his.EMPLOYEE_ID");
         exportSQL.append("  INNER JOIN QQSMT_WELF_PEN_INS_LOSS loss on loss.EMP_ID = qi.EMPLOYEE_ID");
         exportSQL.append("  INNER JOIN (SELECT *  ");
         exportSQL.append("        FROM QQSMT_TEM_PEN_PART_INFO");
-        exportSQL.append("        WHERE START_DATE <= '?endDate' AND START_DATE >= ?startDate) ppi ");
+        exportSQL.append("        WHERE END_DATE <= '?endDate' AND END_DATE >= ?startDate) ppi ");
         exportSQL.append("        ON qi.EMPLOYEE_ID = ppi.EMPLOYEE_ID");
         exportSQL.append("  INNER JOIN (SELECT * ");
         exportSQL.append("        FROM QPBMT_SOCIAL_INS_OFFICE");
@@ -443,12 +443,12 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
         exportSQL.append("  INNER JOIN BPSMT_PERSON p ON p.PID = i.PID");
         exportSQL.append("  INNER JOIN (SELECT *");
         exportSQL.append("       FROM QQSMT_EMP_HEAL_INSUR_QI ");
-        exportSQL.append("       WHERE START_DATE <= '?endDate' AND START_DATE >= ?startDate) wi ");
+        exportSQL.append("       WHERE END_DATE <= '?endDate' AND END_DATE >= ?startDate) wi ");
         exportSQL.append("       ON wi.EMPLOYEE_ID = qi.EMPLOYEE_ID");
         exportSQL.append("  INNER JOIN QQSMT_WEL_PEN_NUM_INFO ni ON ni.AFF_MOUR_PERIOD_HISID = qi.HISTORY_ID");
         exportSQL.append("  INNER JOIN (SELECT *");
         exportSQL.append("       FROM QQSMT_HEAL_INSUR_PORT_INT ");
-        exportSQL.append("       WHERE START_DATE <= '?endDate' AND START_DATE >= ?startDate) pri");
+        exportSQL.append("       WHERE END_DATE <= '?endDate' AND END_DATE >= ?startDate) pri");
         exportSQL.append("       ON pri.EMPLOYEE_ID = qi.EMPLOYEE_ID");
         exportSQL.append("  INNER JOIN (SELECT * ");
         exportSQL.append("       FROM BSYMT_EMP_DTA_MNG_INFO ");
