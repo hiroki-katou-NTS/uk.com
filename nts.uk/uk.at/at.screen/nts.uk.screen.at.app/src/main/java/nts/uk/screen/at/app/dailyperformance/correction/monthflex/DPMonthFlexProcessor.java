@@ -13,11 +13,13 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.repository.AuthorityFormatMonthlyRepository;
+import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyRecordWorkDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypeFormatMonthlyRepository;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnitType;
 import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.MonthlyItemControlByAuthDto;
 import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.MonthlyItemControlByAuthFinder;
+import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
@@ -70,10 +72,10 @@ public class DPMonthFlexProcessor {
     
     @Inject
     private MonthlyItemControlByAuthFinder monthlyItemControlByAuthFinder;
+    
 
 	private static final List<Integer> DAFAULT_ITEM = Arrays.asList(18, 19, 21, 189, 190, 191, 202, 204);
 	
-//	private static final String FORMAT_HH_MM = "%d:%02d";
 
 	public DPMonthResult getDPMonthFlex(DPMonthFlexParam param) {
 		String companyId = param.getCompanyId();
@@ -104,13 +106,23 @@ public class DPMonthFlexProcessor {
 				closureEmploymentOptional.get().getClosureId(), closingPeriod.get().getClosureDate().getClosureDay().intValue(),
 				closingPeriod.get().getClosureDate().getLastDayOfMonth().booleanValue() ? 1 : 0);
 		
-		List<MonthlyModifyResult> mResult = monthlyModifyQueryProcessor.initScreen(
-				new MonthlyMultiQuery(Arrays.asList(param.getEmployeeId())), 
+		Optional<MonthlyRecordWorkDto> monthOpt =  !param.getMonthOpt().isPresent() ? monthlyModifyQueryProcessor.getDataMonthAll(new MonthlyMultiQuery(Arrays.asList(param.getEmployeeId())), 
 				Stream.concat(itemIds.stream(), DAFAULT_ITEM.stream()).collect(Collectors.toList()),
 				closingPeriod.get().getProcessingYm(),
 				ClosureId.valueOf(closureEmploymentOptional.get().getClosureId()),
 				new ClosureDate(closingPeriod.get().getClosureDate().getClosureDay(),
-						closingPeriod.get().getClosureDate().getLastDayOfMonth()));
+						closingPeriod.get().getClosureDate().getLastDayOfMonth())) : param.getMonthOpt();
+		
+		List<MonthlyModifyResult> mResult = monthOpt.isPresent() ? AttendanceItemUtil.toItemValues(Arrays.asList(monthOpt.get()),
+				Stream.concat(itemIds.stream(), DAFAULT_ITEM.stream()).collect(Collectors.toList()),
+				AttendanceItemUtil.AttendanceItemType.MONTHLY_ITEM).entrySet().stream().map(record -> {
+					return MonthlyModifyResult.builder().items(record.getValue())
+							.employeeId(record.getKey().getEmployeeId()).yearMonth(record.getKey().getYearMonth().v())
+							.closureId(record.getKey().getClosureID()).closureDate(record.getKey().getClosureDate())
+							.workDatePeriod(record.getKey().getAttendanceTime().getDatePeriod().toDomain())
+							.version(record.getKey().getAffiliation().getVersion()).completed();
+				}).collect(Collectors.toList()) : new ArrayList<>();
+		
 		
 		if(!mResult.isEmpty()){
 			MonthlyModifyResult firstDT = mResult.get(0);
@@ -153,7 +165,7 @@ public class DPMonthFlexProcessor {
 		//setAgreeItem(itemMonthFlexResults, agreeDto);
 		
 		return new DPMonthResult(flexShortageDto, itemMonthResults, !itemIds.isEmpty() && !itemMonthResults.isEmpty(),
-				closingPeriod.get().getProcessingYm().v(), formatDaily, agreeDto);
+				closingPeriod.get().getProcessingYm().v(), formatDaily, agreeDto, monthOpt);
 	}
 
 	private List<FormatDailyDto> getFormatCode(DPMonthFlexParam param, String companyId) {
@@ -162,7 +174,7 @@ public class DPMonthFlexProcessor {
 			return new ArrayList<>();
 		}
 		
-		if (param.dailyPerformanceDto.getSettingUnit() == SettingUnitType.AUTHORITY) {
+		if (param.getDailyPerformanceDto().getSettingUnit() == SettingUnitType.AUTHORITY) {
 			return authorityFormatMonthlyRepository
 					.getListAuthorityFormatDaily(companyId, param.getFormatCode()).stream()
 					.map(x -> new FormatDailyDto(x.getDailyPerformanceFormatCode().v(), new Integer(x.getAttendanceItemId()),

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -13,6 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyRecordWorkDto;
 import nts.uk.screen.at.app.dailyperformance.correction.checkdata.dto.FlexShortageRCDto;
 
 @Data
@@ -41,6 +43,8 @@ public class DataResultAfterIU {
 	boolean canFlex = false;
 	
 	List<EmpErrorCode> lstErOldHoliday;
+	
+	Optional<MonthlyRecordWorkDto> domainMonthOpt = Optional.empty();
 
 	public DataResultAfterIU(Map<Integer, List<DPItemValue>> errorMap, FlexShortageRCDto flexShortage,
 			Boolean showErrorDialog, String messageAlert) {

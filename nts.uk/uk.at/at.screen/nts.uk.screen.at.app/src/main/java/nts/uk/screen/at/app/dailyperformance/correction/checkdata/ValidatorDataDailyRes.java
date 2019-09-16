@@ -19,10 +19,15 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.app.command.dailyperform.month.UpdateMonthDailyParam;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.app.service.workrecord.erroralarm.recordcheck.ErAlWorkRecordCheckService;
 import nts.uk.ctx.at.record.app.service.workrecord.erroralarm.recordcheck.result.ContinuousHolidayCheckResult;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.ApprovalStatusActualResult;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.ConfirmStatusActualResult;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.approval.ApprovalStatusActualDayChange;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.confirm.ConfirmStatusActualDayChange;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.monthly.erroralarm.EmployeeMonthlyPerError;
 import nts.uk.ctx.at.record.dom.monthly.erroralarm.ErrorType;
@@ -44,6 +49,8 @@ import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyResult;
 import nts.uk.screen.at.app.dailyperformance.correction.checkdata.dto.FlexShortageRCDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.ApprovalConfirmCache;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemCheckBox;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemValue;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ResultReturnDCUpdateData;
@@ -72,6 +79,12 @@ public class ValidatorDataDailyRes {
 	
 	@Inject
 	private ErrorAlarmWorkRecordRepository errorAlarmWRRepo;
+	
+	@Inject
+	private ApprovalStatusActualDayChange approvalStatusActualDayChange;
+	
+	@Inject
+	private ConfirmStatusActualDayChange confirmStatusActualDayChange;
 
 	private static final Integer[] CHILD_CARE = { 759, 760, 761, 762 };
 	private static final Integer[] CARE = { 763, 764, 765, 766 };
@@ -182,8 +195,22 @@ public class ValidatorDataDailyRes {
 		// loc nhung thang chi duoc insert 1 trong 1 cap
 		itemCanCheck.forEach(x -> {
 			Integer itemCheck = INPUT_CHECK_MAP.get(x.getItemId());
-			if (!itemCheckMap.containsKey(itemCheck))
+			if (!itemCheckMap.containsKey(itemCheck)) {
 				itemCheckDBs.add(x);
+			}else {
+				if(itemCheck != null) {
+					 Integer itemId1 = x.getItemId();
+					 Integer itemId2 = INPUT_CHECK_MAP.get(itemId1);
+					 String valueItemIdStart = (itemId1 < itemId2) ? x.getValue()
+							: itemCheckMap.get(itemId2);
+					 String valueItemIdEnd = (itemId1 > itemId2) ? x.getValue()
+								: itemCheckMap.get(itemId1);
+					if (Integer.parseInt(valueItemIdStart) > Integer.parseInt(valueItemIdEnd)) {
+						x.setMessage("Msg_1400");
+						result.add(x);
+					}
+				}
+			}
 		});
 		if (itemCheckDBs.isEmpty())
 			return result;
@@ -196,7 +223,24 @@ public class ValidatorDataDailyRes {
 			if (valueGetFromDBMap.containsKey(INPUT_CHECK_MAP.get(x.getItemId()))
 					&& valueGetFromDBMap.get(INPUT_CHECK_MAP.get(x.getItemId())).equals("")
 			|| ((x.getValue() == null || x.getValue().equals("")) && !valueGetFromDBMap.get(INPUT_CHECK_MAP.get(x.getItemId())).equals(""))) {
+				x.setMessage("Msg_1108");
 				result.add(x);
+			}else {
+				Integer itemId = INPUT_CHECK_MAP.get(x.getItemId()); 
+				if(itemId != null) {
+					 Integer itemId1 = x.getItemId();
+					 Integer itemId2 = INPUT_CHECK_MAP.get(itemId1);
+					 String valueItemIdStart = (itemId1 < itemId2) ? x.getValue()
+							: itemCheckMap.containsKey(itemId2) ? itemCheckMap.get(itemId2)
+									: valueGetFromDBMap.get(itemId2);
+					 String valueItemIdEnd = (itemId1 > itemId2) ? x.getValue()
+								: itemCheckMap.containsKey(itemId1) ? itemCheckMap.get(itemId1)
+										: valueGetFromDBMap.get(itemId1);
+					if (Integer.parseInt(valueItemIdStart) > Integer.parseInt(valueItemIdEnd)) {
+						x.setMessage("Msg_1400");
+						result.add(x);
+					}
+				}
 			}
 		});
 		return result;
@@ -521,6 +565,9 @@ public class ValidatorDataDailyRes {
 	 */
 	public List<DPItemValue> releaseDivergence(List<IntegrationOfDaily> dailyResults) {
 		// 乖離エラーのチェック
+		if(CollectionUtil.isEmpty(dailyResults)) {
+			return new ArrayList<>();
+		}
 		List<DPItemValue> divergenceErrors = new ArrayList<>();
 		for (IntegrationOfDaily d : dailyResults) {
 			List<EmployeeDailyPerError> employeeError = d.getEmployeeError();
@@ -665,6 +712,36 @@ public class ValidatorDataDailyRes {
 			}
 		}).collect(Collectors.toList());
 		return lstError;
+	}
+	
+	//日の確認承認の排他チェック
+    public void checkVerConfirmApproval(ApprovalConfirmCache cacheOld, List<DPItemCheckBox> dataCheckSign, List<DPItemCheckBox> dataCheckApproval, List<DPItemValue> itemValues) {
+		String companyId = AppContexts.user().companyId();
+		String sId = AppContexts.user().employeeId();
+        List<Pair<String, GeneralDate>> signChangeMap = dataCheckSign.stream().map(x -> Pair.of(x.getEmployeeId(), x.getDate())).collect(Collectors.toList());
+        List<Pair<String, GeneralDate>> approvalChangeMap = dataCheckApproval.stream().map(x -> Pair.of(x.getEmployeeId(), x.getDate())).collect(Collectors.toList());
+        List<Pair<String, GeneralDate>> mapItemChange = itemValues.stream().map(x -> Pair.of(x.getEmployeeId(), x.getDate())).collect(Collectors.toList());
+		List<ConfirmStatusActualResult> confirmResults = confirmStatusActualDayChange.processConfirmStatus(companyId, sId, cacheOld.getEmployeeIds(), Optional.of(cacheOld.getPeriod()), Optional.empty());
+		List<ApprovalStatusActualResult> approvalResults = approvalStatusActualDayChange.processApprovalStatus(companyId, sId, cacheOld.getEmployeeIds(), Optional.of(cacheOld.getPeriod()), Optional.empty(), cacheOld.getMode());
+		confirmResults = confirmResults.stream()
+				.filter(x -> signChangeMap.contains(Pair.of(x.getEmployeeId(), x.getDate()))
+						|| mapItemChange.contains(Pair.of(x.getEmployeeId(), x.getDate())))
+				.collect(Collectors.toList());
+		approvalResults = approvalResults.stream()
+				.filter(x -> approvalChangeMap.contains(Pair.of(x.getEmployeeId(), x.getDate()))
+						|| mapItemChange.contains(Pair.of(x.getEmployeeId(), x.getDate())))
+				.collect(Collectors.toList());
+		ApprovalConfirmCache cacheOldTemp = new ApprovalConfirmCache(sId, cacheOld.getEmployeeIds(), cacheOld.getPeriod(), cacheOld.getMode(), new ArrayList<>(), new ArrayList<>());
+		cacheOldTemp.setLstConfirm(cacheOld.getLstConfirm().stream()
+				.filter(x -> signChangeMap.contains(Pair.of(x.getEmployeeId(), x.getDate()))
+						|| mapItemChange.contains(Pair.of(x.getEmployeeId(), x.getDate())))
+				.collect(Collectors.toList()));
+		cacheOldTemp.setLstApproval(cacheOld.getLstApproval().stream()
+				.filter(x -> approvalChangeMap.contains(Pair.of(x.getEmployeeId(), x.getDate()))
+						|| mapItemChange.contains(Pair.of(x.getEmployeeId(), x.getDate())))
+				.collect(Collectors.toList()));
+		ApprovalConfirmCache cacheNew = new ApprovalConfirmCache(sId,  cacheOld.getEmployeeIds(), cacheOld.getPeriod(), cacheOld.getMode(), confirmResults, approvalResults);
+		cacheOldTemp.checkVer(cacheNew);
 	}
     
 }

@@ -20,6 +20,7 @@ import lombok.Setter;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.cache.DPCorrectionStateParam;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkshowbutton.DailyPerformanceAuthorityDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.style.TextStyle;
 import nts.uk.screen.at.app.dailyperformance.correction.error.DCErrorInfomation;
@@ -46,6 +47,8 @@ public class DailyPerformanceCorrectionDto implements Serializable{
 	private Com60HVacationDto com60HVacationDto;
 
 	private DateRange dateRange;
+	
+	private DatePeriodInfo periodInfo;
 
 	private List<DailyPerformanceEmployeeDto> lstEmployee;
 
@@ -127,6 +130,10 @@ public class DailyPerformanceCorrectionDto implements Serializable{
 //	private List<DPErrorDto> lstError;
 	
 	private DisplayItem disItem;
+	
+	private ApprovalConfirmCache approvalConfirmCache;
+
+	private DPCorrectionStateParam stateParam;
 	
 	public DailyPerformanceCorrectionDto() {
 		super();

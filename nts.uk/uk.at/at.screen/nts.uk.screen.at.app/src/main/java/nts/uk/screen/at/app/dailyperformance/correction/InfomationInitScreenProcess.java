@@ -15,20 +15,23 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.val;
 import nts.arc.error.BusinessException;
-import nts.arc.time.GeneralDate;
+import nts.arc.error.RawErrorMessage;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.finddata.IFindDataDCRecord;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ApprovalUseSettingDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.CorrectionOfDailyPerformance;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPControlDisplayItem;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPDataDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPErrorDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DPParams;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceCorrectionDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceEmployeeDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DatePeriodInfo;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DisplayItem;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.IdentityProcessUseSetDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ObjectShare;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.OperationOfDailyPerformanceDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.cache.DPCorrectionStateParam;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.companyhist.AffComHistItemAtScreen;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.workplacehist.WorkPlaceHistTemp;
 import nts.uk.screen.at.app.dailyperformance.correction.error.DCErrorInfomation;
@@ -36,6 +39,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.finddata.IFindData;
 import nts.uk.screen.at.app.dailyperformance.correction.month.asynctask.ParamCommonAsync;
 import nts.uk.screen.at.app.dailyperformance.correction.searchemployee.FindAllEmployee;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class InfomationInitScreenProcess {
@@ -58,9 +62,20 @@ public class InfomationInitScreenProcess {
 	@Inject
 	private DailyPerformanceCorrectionProcessor processor;
 
-	public Pair<DailyPerformanceCorrectionDto, ParamCommonAsync> initGetParam(DateRange dateRange,
-			List<DailyPerformanceEmployeeDto> lstEmployee, Integer initScreen, Integer mode, Integer displayFormat,
-			CorrectionOfDailyPerformance correct, List<String> formatCodes, Boolean showError, Boolean showLock, ObjectShare objectShare, Integer closureId) {
+	public Pair<DailyPerformanceCorrectionDto, ParamCommonAsync> initGetParam(DPParams param) {
+		
+		DateRange dateRange = param.dateRange;
+		List<DailyPerformanceEmployeeDto> lstEmployee = param.lstEmployee;
+		Integer initScreen = param.initScreen;
+		Integer mode = param.mode;
+		Integer displayFormat = param.displayFormat;
+		CorrectionOfDailyPerformance correct = param.correctionOfDaily; 
+		List<String> formatCodes = param.formatCodes;
+//		Boolean showError = param.showError; 
+//		Boolean showLock = param.showLock;
+		ObjectShare objectShare = param.objectShare; 
+		Integer closureId = param.closureId;
+		Boolean initScreenOther = param.initFromScreenOther;
 		long timeStart = System.currentTimeMillis();
 		String sId = AppContexts.user().employeeId();
 		String companyId = AppContexts.user().companyId();
@@ -70,22 +85,24 @@ public class InfomationInitScreenProcess {
 		DailyPerformanceCorrectionDto screenDto = new DailyPerformanceCorrectionDto();
 		findData.destroyFindData();
 		iFindDataDCRecord.clearAllStateless();
+		
+		////起動に必要な情報の取得
 		// identityProcessDto show button A2_6
 		//アルゴリズム「本人確認処理の利用設定を取得する」を実行する
 		Optional<IdentityProcessUseSetDto> identityProcessDtoOpt = repo.findIdentityProcessUseSet(companyId);
 		screenDto.setIdentityProcessDtoOpt(identityProcessDtoOpt);
-		//TODO: IdentityProcessDto
 		screenDto.setIdentityProcessDto(identityProcessDtoOpt.isPresent() ? identityProcessDtoOpt.get()
 				: new IdentityProcessUseSetDto(false, false, null));
 		Optional<ApprovalUseSettingDto> approvalUseSettingDtoOpt = repo.findApprovalUseSettingDto(companyId);	
 		screenDto.setApprovalUseSettingDtoOpt(approvalUseSettingDtoOpt);
-		processor.setHideCheckbox(screenDto, identityProcessDtoOpt, approvalUseSettingDtoOpt, companyId, mode);
 		
-		// アルゴリズム「休暇の管理状況をチェックする」を実行する | Get holiday setting data --休暇の管理状況をチェックする
-//		getHolidaySettingData(screenDto);
+		processor.setHideCheckbox(screenDto, identityProcessDtoOpt, approvalUseSettingDtoOpt, companyId, mode);
 		
 		//アルゴリズム「実績修正画面で利用するフォーマットを取得する」を実行する(thực hiện xử lý 「実績修正画面で利用するフォーマットを取得する」)
 		OperationOfDailyPerformanceDto dailyPerformanceDto = repo.findOperationOfDailyPerformance();
+		
+		// アルゴリズム「休暇の管理状況をチェックする」を実行する | Get holiday setting data --休暇の管理状況をチェックする
+//		getHolidaySettingData(screenDto);
 		
 		/**
 		 * システム日付を基準に1ヵ月前の期間を設定する | Set date range one month before system date
@@ -93,23 +110,52 @@ public class InfomationInitScreenProcess {
 		/** 画面制御に関する情報を取得する | Acquire information on screen control */
 		// アルゴリズム「社員の日別実績の権限をすべて取得する」を実行する | Execute "Acquire all permissions of
 		// ログイン社員の日別実績の権限を取得する(Lấy tất cả quyền về 日別実績 của nhân viên)
-		//TODO: AuthorityDto
 		screenDto.setAuthorityDto(processor.getAuthority(screenDto));
 
 		//保持パラメータを生成する(Tạo retentionParam-Param lưu giữ )
+		//表示形式の特定 - xu ly tren UI la displayFormat
 		
 		// 社員に対応する処理締めを取得する
-		if (closureId == null) {
-			screenDto.setClosureId(processor.getClosureId(companyId, sId, GeneralDate.today()));
+//		if (closureId == null) {
+//			screenDto.setClosureId(processor.getClosureId(companyId, sId, GeneralDate.today()));
+//		} else {
+//			screenDto.setClosureId(closureId);
+//		}
+		
+		Pair<Integer, DateRange> resultIndentityPeriod = processor.identificationPeriod(closureId, mode, dateRange);
+		screenDto.setClosureId(resultIndentityPeriod.getLeft());
+		DateRange rangeInit = resultIndentityPeriod.getRight();
+		// 社員一覧を変更する -- Lấy nhân viên từ màn hinh khác hoặc lấy từ lần khởi động đầu
+		// tiên
+		// 対象社員の特定
+		List<String> changeEmployeeIds = new ArrayList<>();
+		if (lstEmployee.isEmpty()) {
+			val employeeIds = objectShare == null
+					? lstEmployee.stream().map(x -> x.getId()).collect(Collectors.toList())
+					: objectShare.getLstEmployeeShare();
+			if (employeeIds.isEmpty())
+				needSortEmp = true;
+			changeEmployeeIds = processor.changeListEmployeeId(employeeIds, rangeInit, mode,
+					objectShare != null, screenDto.getClosureId(), screenDto);
 		} else {
-			screenDto.setClosureId(closureId);
+			changeEmployeeIds = lstEmployee.stream().map(x -> x.getId()).collect(Collectors.toList());
 		}
-		//TODO: ClosureId
+
+		List<String> employeeIdsOri = changeEmployeeIds;
+				
 		//<<Public>> パラメータに初期値を設定する
 		///期間を変更する
-		dateRange = processor.changeDateRange(dateRange, objectShare, companyId, sId, screenDto, mode);
-		
-		///TODO 表示形式を変更する -- get from Characteristic 
+		DatePeriodInfo resultPeriod = processor.changeDateRange(dateRange, rangeInit, objectShare, companyId, sId, screenDto, screenDto.getClosureId(), mode, displayFormat, initScreenOther, param.dpStateParam);
+		//TODO: empty dateRange
+		if(resultPeriod == null) {
+			//throw new BusinessException(new RawErrorMessage("Error date range empty"));
+			screenDto.setErrorInfomation(DCErrorInfomation.NOT_EMP_IN_HIST.value);
+			//setStateParam(screenDto, resultPeriod, displayFormat, initScreenOther);
+			return Pair.of(screenDto, null);
+		}
+		dateRange = resultPeriod.getTargetRange();
+		screenDto.setPeriodInfo(resultPeriod);
+		///表示形式を変更する -- get from Characteristic 
 		DateRange datePeriodResult = dateRange;
 		if(initScreen == 0 && objectShare != null && objectShare.getDisplayFormat() == 1){
 			dateRange = new DateRange(objectShare.getDateTarget(), objectShare.getDateTarget());
@@ -119,19 +165,6 @@ public class InfomationInitScreenProcess {
 		}
 		screenDto.setDateRange(dateRange);
 		screenDto.setDatePeriodResult(datePeriodResult);
-		/// 社員一覧を変更する -- Lấy nhân viên từ màn hinh khác hoặc lấy từ lần khởi động đầu tiên
-		List<String> changeEmployeeIds = new ArrayList<>();
-		if (lstEmployee.isEmpty()) {
-			val employeeIds = objectShare == null
-					? lstEmployee.stream().map(x -> x.getId()).collect(Collectors.toList())
-					: objectShare.getLstEmployeeShare();
-			if(employeeIds.isEmpty()) needSortEmp = true;
-			changeEmployeeIds = processor.changeListEmployeeId(employeeIds, screenDto.getDateRange(), mode, objectShare != null, screenDto.getClosureId(), screenDto);
-		} else {
-			changeEmployeeIds = lstEmployee.stream().map(x -> x.getId()).collect(Collectors.toList());
-		}
-		
-		List<String> employeeIdsOri = changeEmployeeIds;
 		
 		//if(changeEmployeeIds.isEmpty()) return screenDto;
 		// アルゴリズム「通常モードで起動する」を実行する
@@ -155,7 +188,6 @@ public class InfomationInitScreenProcess {
 			x.setWorkplaceName(wph == null ? "" : wph.getName());
 			return x;
 		}).collect(Collectors.toList());
-		//TODO: List<DailyPerformanceEmployeeDto>
 		if(displayFormat == 0){
 			String employeeSelect = objectShare == null ?  (lstEmployee.isEmpty() ? sId : lstEmployee.get(0).getId()) : objectShare. getIndividualTarget();
 			changeEmployeeIds = changeEmployeeIds.stream().filter(x -> x.equals(employeeSelect)).collect(Collectors.toList());
@@ -185,6 +217,7 @@ public class InfomationInitScreenProcess {
 		if(listEmployeeId.isEmpty()) {
 			//screenDto.setLstEmployee(Collections.emptyList());
 			screenDto.setErrorInfomation(DCErrorInfomation.NOT_EMP_IN_HIST.value);
+			setStateParam(screenDto, resultPeriod, displayFormat, initScreenOther);
 			return Pair.of(screenDto, null);
 		}
 		System.out.println("time map data wplhis, date:" + (System.currentTimeMillis() - timeStart3));
@@ -198,16 +231,16 @@ public class InfomationInitScreenProcess {
 		/// アルゴリズム「実績エラーをすべて取得する」を実行する | Execute "Acquire all actual errors"
 		List<DPErrorDto> lstError = processor.getErrorList(screenDto, listEmployeeId);
 		screenDto.setDPErrorDto(lstError);
-		//TODO: List<DPErrorDto>
-		Map<String, String> listEmployeeError = lstError.stream()
-				.collect(Collectors.toMap(e -> e.getEmployeeId(), e -> "", (x, y) -> x));
+		
+//		Map<String, String> listEmployeeError = lstError.stream()
+//				.collect(Collectors.toMap(e -> e.getEmployeeId(), e -> "", (x, y) -> x));
 		if (displayFormat == 2) {
 			// only filter data error
-			if(listEmployeeError.isEmpty()) throw new BusinessException("Msg_672");
-			listEmployeeId = listEmployeeId.stream().filter(x -> listEmployeeError.containsKey(x))
-					.collect(Collectors.toList());
-			screenDto.setLstData(screenDto.getLstData().stream()
-					.filter(x -> listEmployeeError.containsKey(x.getEmployeeId())).collect(Collectors.toList()));
+//			if(listEmployeeError.isEmpty()) throw new BusinessException("Msg_672");
+//			listEmployeeId = listEmployeeId.stream().filter(x -> listEmployeeError.containsKey(x))
+//					.collect(Collectors.toList());
+//			screenDto.setLstData(screenDto.getLstData().stream()
+//					.filter(x -> listEmployeeError.containsKey(x.getEmployeeId())).collect(Collectors.toList()));
 		}
 		
 		List<DPDataDto> listData = new ArrayList<>();
@@ -220,10 +253,9 @@ public class InfomationInitScreenProcess {
 			
 		}
 		screenDto.setLstData(needSortEmp ? listData.stream().sorted((x, y) ->x.getEmployeeCode().compareTo(y.getEmployeeCode())).collect(Collectors.toList()) : listData);
-		//TODO: List<DPDataDto>
 		// アルゴリズム「社員に対応する処理締めを取得する」を実行する | Execute "Acquire Process Tightening
 		// Corresponding to Employees"--
-		/// TODO : アルゴリズム「対象日に対応する承認者確認情報を取得する」を実行する | Execute "Acquire Approver
+		/// アルゴリズム「対象日に対応する承認者確認情報を取得する」を実行する | Execute "Acquire Approver
 		/// Confirmation Information Corresponding to Target Date"
 		// アルゴリズム「就業確定情報を取得する」を実行する
 		/// アルゴリズム「日別実績のロックを取得する」を実行する (Tiến hành xử lý "Lấy về lock của thành
@@ -244,7 +276,12 @@ public class InfomationInitScreenProcess {
 		DisplayItem disItem = processor.getDisplayItems(correct, formatCodes, companyId, screenDto, listEmployeeId, showButton, dailyPerformanceDto);
 		if(disItem == null || !disItem.getErrors().isEmpty()) {
 			if(disItem != null) screenDto.setErrors(disItem.getErrors());
-			return Pair.of(screenDto, listEmployeeId.isEmpty() ? null : new ParamCommonAsync(listEmployeeId.get(0), dateRange, screenDto.getEmploymentCode(), screenDto.getAutBussCode(), displayFormat, screenDto.getIdentityProcessDto()));
+			setStateParam(screenDto, resultPeriod, displayFormat, initScreenOther);
+			return Pair.of(screenDto,
+					listEmployeeId.isEmpty() ? null
+							: new ParamCommonAsync(listEmployeeId.get(0), dateRange, screenDto.getEmploymentCode(),
+									screenDto.getAutBussCode(), displayFormat, screenDto.getIdentityProcessDto(),
+									screenDto.getStateParam(), Optional.empty(), false));
 		}
 		screenDto.setAutBussCode(disItem.getAutBussCode());
 		screenDto.setEmployeeIds(listEmployeeId);
@@ -253,7 +290,20 @@ public class InfomationInitScreenProcess {
 		DPControlDisplayItem dPControlDisplayItem = processor.getItemIdNames(disItem, showButton);
 		screenDto.setLstControlDisplayItem(dPControlDisplayItem);
 		screenDto.setDisItem(disItem);
+		setStateParam(screenDto, resultPeriod, displayFormat, initScreenOther);
 		System.out.println("time init All" + (System.currentTimeMillis() - timeStart));
-		return Pair.of(screenDto, listEmployeeId.isEmpty() ? null : new ParamCommonAsync(listEmployeeId.get(0), dateRange, screenDto.getEmploymentCode(), screenDto.getAutBussCode(), displayFormat, screenDto.getIdentityProcessDto()));
+		return Pair.of(screenDto,
+				listEmployeeId.isEmpty() ? null
+						: new ParamCommonAsync(listEmployeeId.get(0), dateRange, screenDto.getEmploymentCode(),
+								screenDto.getAutBussCode(), displayFormat, screenDto.getIdentityProcessDto(),
+								screenDto.getStateParam(),  Optional.empty(), false));
+	}
+	
+	private void setStateParam(DailyPerformanceCorrectionDto screenDto, DatePeriodInfo info, int displayFormat, Boolean transferDesScreen) {
+		DPCorrectionStateParam cacheParam = new DPCorrectionStateParam(
+				new DatePeriod(screenDto.getDateRange().getStartDate(), screenDto.getDateRange().getEndDate()),
+				screenDto.getEmployeeIds(), displayFormat, screenDto.getEmployeeIds(), screenDto.getLstControlDisplayItem(), info, transferDesScreen);
+		screenDto.setStateParam(cacheParam);
+
 	}
 }
