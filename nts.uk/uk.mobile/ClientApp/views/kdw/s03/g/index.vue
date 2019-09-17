@@ -28,7 +28,7 @@
                 <!-- G4_2: 次回付与日 -->
                 <div class="col-5 text-right">{{remainNumber.nextGrantDate}}</div>
               </div>
-              <div class="row" v-if="remainNumber.manageReserve" v-bind:class="{'pt-3': remainNumber.manageYear}">
+              <div class="row" v-if="remainNumber.manageReserve && remainNumber.manageYear" v-bind:class="{'pt-3': remainNumber.manageYear}">
                 <!-- G5_1: 積立年休残 -->
                 <div class="col-9">{{'KDWS03_48' | i18n}}</div>
                 <!-- G5_2: 積立年休残数 -->
