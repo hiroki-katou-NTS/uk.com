@@ -89,9 +89,10 @@ public class MonthlyPerfomanceMob {
 		List<MonthlyPerData> data = new ArrayList<>();
 		for(ItemValue item : items){
 			data.add(new MonthlyPerData(item.getItemId(), this.findName(lstName, item.getItemId()),
-					item.getValue(), item.getValueType().value, this.findOrder(formatDaily, item.getItemId())));
+					item.getValue(), item.getValueType() != null ? item.getValueType().value : null,
+							this.findOrder(formatDaily, item.getItemId())));
 		}
-		Collections.sort(data, Comparator.comparing(MonthlyPerData::getOrder));
+//		Collections.sort(data, Comparator.comparing(MonthlyPerData::getOrder));
 		return data;
 	}
 	public List<FormatDailyDto> getFormatCode(Collection<String> formatCode, SettingUnitType settingUnit, String companyId) {

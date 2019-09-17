@@ -9,6 +9,6 @@ public class MonthlyPerData {
     private Integer itemId;
     private String name;
     private String value;
-    private int type;
-    private int order;
+    private Integer type;
+    private Integer order;
 }
