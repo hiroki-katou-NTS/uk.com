@@ -24,7 +24,7 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
 
     private static final String TEMPLATE_FILE = "report/被保険者資格取得届_帳票テンプレート.xlsx";
 
-    private static final String REPORT_FILE_NAME = "被保険者資格取得届_帳票テンプレート.pdf";
+    private static final String REPORT_FILE_NAME = "被保険者資格取得届.pdf";
 
     private static final int FIRST_ROW_FILL = 3;
 

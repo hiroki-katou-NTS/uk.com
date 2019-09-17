@@ -28,7 +28,7 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
 
     private static final String TEMPLATE_FILE_70 = "report/70歳以上被用者該当届_帳票テンプレート.xlsx";
     private static final String TEMPLATE_FILE_OTHER = "report/70歳以上被用者不該当届_帳票テンプレート.xlsx";
-    private static final String FILE_NAME = "70歳以上被用者不該当届_帳票テンプレート";
+    private static final String FILE_NAME = "被保険者資格喪失届.pdf";
 
     @Inject
     private JapaneseErasAdapter adapter;
@@ -56,8 +56,7 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
             fillDataOverSevenTy(worksheets, data.getWelfPenInsLoss(), data.getBaseDate(), company, data.getSocialInsurNotiCreateSet());
             worksheets.removeAt(1);
             worksheets.removeAt(0);
-            reportContext.saveAsPdf(this.createNewFile(generatorContext,
-                    FILE_NAME + "_" + GeneralDateTime.now().toString("yyyyMMddHHmmss") + ".pdf"));
+            reportContext.saveAsPdf(this.createNewFile(generatorContext, FILE_NAME));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

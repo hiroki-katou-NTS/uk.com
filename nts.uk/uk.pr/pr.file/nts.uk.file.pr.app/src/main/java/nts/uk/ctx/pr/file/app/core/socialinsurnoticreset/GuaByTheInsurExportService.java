@@ -31,7 +31,6 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
     @Inject
     private GuaByTheInsurExportRepository repo;
 
-
     @Inject
     private EmpWelfarePenInsQualiInforRepository mEmpWelfarePenInsQualiInforRepository;
 
@@ -41,11 +40,14 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
     @Inject
     private EmplHealInsurQualifiInforRepository mEmplHealInsurQualifiInforRepository;
 
+    @Inject
+    private NotificationOfLossInsExRepository notificationOfLossInsExRepository;
+
 
     @Override
     protected void handle(ExportServiceContext<GuaByTheInsurExportQuery> exportServiceContext) {
         final int TYPE_EXPORT_EXCEL_FILE = 0;
-        CompanyInfor company = repo.getCompanyInfor(AppContexts.user().companyId());
+        CompanyInfor company = notificationOfLossInsExRepository.getCompanyInfor(AppContexts.user().companyId());
         ExportDataCsv exportData = ExportDataCsv.builder()
                 .lstHeader(this.finHeader())
                 .listContent(printInsuredQualifiNoti(exportServiceContext.getQuery().getEmpIds(),
