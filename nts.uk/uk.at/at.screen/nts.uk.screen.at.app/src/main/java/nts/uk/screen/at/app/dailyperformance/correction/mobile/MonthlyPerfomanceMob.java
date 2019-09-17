@@ -92,7 +92,7 @@ public class MonthlyPerfomanceMob {
 					item.getValue(), item.getValueType() != null ? item.getValueType().value : null,
 							this.findOrder(formatDaily, item.getItemId())));
 		}
-//		Collections.sort(data, Comparator.comparing(MonthlyPerData::getOrder));
+		Collections.sort(data, Comparator.comparing(MonthlyPerData::getOrder));
 		return data;
 	}
 	public List<FormatDailyDto> getFormatCode(Collection<String> formatCode, SettingUnitType settingUnit, String companyId) {
@@ -135,7 +135,7 @@ public class MonthlyPerfomanceMob {
 	}
 	private Integer findOrder(List<FormatDailyDto> formatDaily, Integer itemId){
 		for(FormatDailyDto format : formatDaily){
-			if(format.getAttendanceItemId() == itemId) return format.getOrder();
+			if(format.getAttendanceItemId().equals(itemId)) return format.getOrder();
 		}
 		return null;
 	}
