@@ -1,5 +1,6 @@
 package nts.uk.screen.at.app.dailyperformance.correction.mobile;
 
+import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -69,6 +70,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.OperationOfDailyPerf
 import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkInfoOfDailyPerformanceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.cache.DPCorrectionStateParam;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkapproval.ApproveRootStatusForEmpDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.checkshowbutton.DailyPerformanceAuthorityDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.companyhist.AffComHistItemAtScreen;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.type.TypeLink;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.workplacehist.WorkPlaceHistTemp;
@@ -244,10 +246,9 @@ public class InitScreenMob {
 		screenDto.createAccessModifierCellState(mapDP);
 
 		// set enable menu button
-		if (displayFormat == 0) {
-			DPCorrectionMenuDto dPCorrectionMenuDto = this.setMenuItem(disItem.getAutBussCode());
-			screenDto.setDPCorrectionMenuDto(dPCorrectionMenuDto);
-		}
+		DPCorrectionMenuDto dPCorrectionMenuDto = this.setMenuItem(disItem.getAutBussCode(),
+				screenDto.getAuthorityDto(), employeeID, displayFormat);
+		screenDto.setDPCorrectionMenuDto(dPCorrectionMenuDto);
 
 		// 日次項目の取得
 		// 日別実績の取得
@@ -270,7 +271,7 @@ public class InitScreenMob {
 
 		confirmResults = confirmStatusActualDayChange.processConfirmStatus(companyId, sId, listEmployeeId,
 				Optional.of(new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate())), Optional.empty());
-		
+
 		approvalResults = approvalStatusActualDayChange.processApprovalStatus(companyId, sId, listEmployeeId,
 				Optional.of(new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate())), Optional.empty(),
 				screenMode);
@@ -328,9 +329,11 @@ public class InitScreenMob {
 				.getpHolidayWhileDate(companyId, dateRange.getStartDate(), dateRange.getEndDate()).stream()
 				.map(x -> x.getDate()).collect(Collectors.toList());
 		// 社員の締めをチェックする
-		//Map<String, List<EmploymentHisOfEmployeeImport>> mapClosingEmpResult = checkClosingEmployee
-				//.checkClosingEmployee(companyId, changeEmployeeIds,
-						//new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate()), screenDto.getClosureId());
+		// Map<String, List<EmploymentHisOfEmployeeImport>> mapClosingEmpResult =
+		// checkClosingEmployee
+		// .checkClosingEmployee(companyId, changeEmployeeIds,
+		// new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate()),
+		// screenDto.getClosureId());
 
 		List<DailyRecEditSetDto> dailyRecEditSets = repo.getDailyRecEditSet(listEmployeeId, dateRange);
 		Map<String, Integer> dailyRecEditSetsMap = dailyRecEditSets.stream()
@@ -362,14 +365,16 @@ public class InitScreenMob {
 			// mapConfirmResult.get(Pair.of(data.getEmployeeId(), data.getDate()));
 			// data.setSign(dataSign == null ? false : dataSign.isStatus());
 			// state check box sign
-			// boolean disableSignApp = disableSignMap.containsKey(data.getEmployeeId() + "|" + data.getDate())
-					// && disableSignMap.get(data.getEmployeeId() + "|" + data.getDate());
+			// boolean disableSignApp = disableSignMap.containsKey(data.getEmployeeId() +
+			// "|" + data.getDate())
+			// && disableSignMap.get(data.getEmployeeId() + "|" + data.getDate());
 
 			ApprovalStatusActualResult dataApproval = mapApprovalResults
 					.get(Pair.of(data.getEmployeeId(), data.getDate()));
 			// set checkbox approval
 			// data.setApproval(dataApproval == null ? false
-					// : screenMode == ScreenMode.NORMAL.value ? dataApproval.isStatusNormal() : dataApproval.isStatus());
+			// : screenMode == ScreenMode.NORMAL.value ? dataApproval.isStatusNormal() :
+			// dataApproval.isStatus());
 			ApproveRootStatusForEmpDto approvalCheckMonth = dpLockDto.getLockCheckMonth()
 					.get(data.getEmployeeId() + "|" + data.getDate());
 
@@ -416,8 +421,13 @@ public class InitScreenMob {
 		return screenDto;
 	}
 
-	private DPCorrectionMenuDto setMenuItem(Set<String> formatCode) {
+	private DPCorrectionMenuDto setMenuItem(Set<String> formatCode, List<DailyPerformanceAuthorityDto> authorityDtos,
+			String employeeID, Integer displayFormat) {
 
+		// 一括確認ボタン表示チェック
+		Boolean allConfirmButtonDis = false;
+		// エラー参照ボタン表示チェック
+		Boolean errorReferButtonDis = false;
 		// 休暇残数の参照ボタン表示チェック
 		Boolean restReferButtonDis = false;
 		// 月別実績の参照ボタン表示チェック
@@ -438,19 +448,30 @@ public class InitScreenMob {
 		// 10-4.積立年休の設定を取得する
 		boolean isRetentionManage = absenceTenProcess.getSetForYearlyReserved(companyId, sId, GeneralDate.today());
 
-		if (annualHd.isYearHolidayManagerFlg() || subHd.isSubstitutionFlg() || leaveSet.isSubManageFlag()
-				|| isRetentionManage) {
+		if ((annualHd.isYearHolidayManagerFlg() || subHd.isSubstitutionFlg() || leaveSet.isSubManageFlag()
+				|| isRetentionManage) && displayFormat == 0) {
 			restReferButtonDis = true;
 		}
 
 		OperationOfDailyPerformanceDto dailyPerDto = repo.findOperationOfDailyPerformance();
-		List<FormatDailyDto> formatDailyDto = monthlyPerfomanceMob.getFormatCode(formatCode, dailyPerDto.getSettingUnit(), companyId);
-		monthActualReferButtonDis = formatDailyDto == null || formatDailyDto.isEmpty()  ? false : true;
+		List<FormatDailyDto> formatDailyDto = monthlyPerfomanceMob.getFormatCode(formatCode,
+				dailyPerDto.getSettingUnit(), companyId);
+		monthActualReferButtonDis = formatDailyDto != null && !formatDailyDto.isEmpty() && displayFormat == 0 ? true : false;
 
 		DaiPerformanceFunDto daiPerformanceFunDto = daiPerformanceFunFinder.getDaiPerformanceFunById(companyId);
-		timeExcessReferButtonDis = daiPerformanceFunDto.getDisp36Atr() == 1 ? true : false;
+		timeExcessReferButtonDis = daiPerformanceFunDto.getDisp36Atr() == 1 && displayFormat == 0 ? true : false;
 
-		return new DPCorrectionMenuDto(restReferButtonDis, monthActualReferButtonDis, timeExcessReferButtonDis);
+		Optional<DailyPerformanceAuthorityDto> authorityDto = authorityDtos.stream().filter(x -> x.getFunctionNo().compareTo(new BigDecimal(25)) == 0).findFirst();
+		if (authorityDto.isPresent()) {
+			allConfirmButtonDis = authorityDto.get().isAvailability() && displayFormat == 0 && sId == employeeID ? true : false;
+		}
+		authorityDto = authorityDtos.stream().filter(x -> x.getFunctionNo().compareTo(new BigDecimal(24)) == 0).findFirst();
+		if (authorityDto.isPresent()) {
+			errorReferButtonDis = authorityDto.get().isAvailability() ? true : false;
+		}
+
+		return new DPCorrectionMenuDto(allConfirmButtonDis, errorReferButtonDis, restReferButtonDis,
+				monthActualReferButtonDis, timeExcessReferButtonDis);
 	}
 
 	public String mergeString(String... x) {

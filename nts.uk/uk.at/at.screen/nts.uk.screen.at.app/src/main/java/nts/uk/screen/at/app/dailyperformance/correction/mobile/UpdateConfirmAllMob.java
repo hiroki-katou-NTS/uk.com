@@ -19,7 +19,14 @@ public class UpdateConfirmAllMob {
 
 	public void confirmAll(List<DPItemCheckBox> dataCheckSign, List<DailyRecordDto> dailyRecordDtos) {
 		if (GeneralDate.today().before(dataCheckSign.get(0).getDate())) {
-			throw new BusinessException("Msg_1545"); 
+			// 確認
+			if (dataCheckSign.get(0).isValue()) {
+				throw new BusinessException("Msg_1545");
+			// 解除`
+			} else {
+				throw new BusinessException("Msg_1545");
+			}
+			
 		} else {
 			// insert sign
 			dailyModifyRCommandFacade.insertSign(dataCheckSign, dailyRecordDtos, dailyRecordDtos, new HashSet<>());

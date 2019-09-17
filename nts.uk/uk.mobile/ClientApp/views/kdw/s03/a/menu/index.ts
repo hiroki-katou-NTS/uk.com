@@ -17,7 +17,7 @@ import { KdwS03GComponent } from 'views/kdw/s03/g';
     }
 })
 export class KdwS03AMenuComponent extends Vue {
-    @Prop({ default: () => ({ displayFormat: '' }) })
+    @Prop({ default: () => ({}) })
     public params: MenuParam;
 
     public title: string = 'KdwS03AMenu';
@@ -82,6 +82,7 @@ export class KdwS03AMenuComponent extends Vue {
 }
 interface MenuParam {
     displayFormat: string;
+    errorReferButtonDis: boolean;
     restReferButtonDis: boolean;
     monthActualReferButtonDis: boolean;
     timeExcessReferButtonDis: boolean;

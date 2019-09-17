@@ -64,6 +64,8 @@ export class Kdws03AComponent extends Vue {
     public yearMonthTemp: number = 0;
     public selectedEmployeeTemp: string = '';
     public dPCorrectionMenuDto: any = {
+        allConfirmButtonDis: false,
+        errorReferButtonDis: false,
         restReferButtonDis: false,
         monthActualReferButtonDis: false,
         timeExcessReferButtonDis: false
@@ -279,11 +281,9 @@ export class Kdws03AComponent extends Vue {
         self.comboItemsDoWork = data.lstControlDisplayItem.comboItemDoWork;
         self.comboItemsCompact = data.lstControlDisplayItem.comboItemCalcCompact;
         self.comboTimeLimit = data.lstControlDisplayItem.comboTimeLimit;
-        
+
         self.autBussCode = data.autBussCode;
-        if (self.displayFormat == '0') {
-            self.dPCorrectionMenuDto = data.dpcorrectionMenuDto;
-        }       
+        self.dPCorrectionMenuDto = data.dpcorrectionMenuDto;
         self.lstDataSourceLoad = self.formatDate(data.lstData);
         self.optionalHeader = data.lstControlDisplayItem.lstHeader;
         self.lstAttendanceItem = data.lstControlDisplayItem.lstAttendanceItem;
@@ -327,7 +327,7 @@ export class Kdws03AComponent extends Vue {
         self.lstDataSourceLoad.forEach((rowDataSrc: any) => {
             let rowData = [];
             headers.forEach((header: any) => {
-                if (_.has(rowDataSrc, header.key)) {                   
+                if (_.has(rowDataSrc, header.key)) {
                     if (!_.isNil(header.constraint.cdisplayType) && (header.constraint.cdisplayType.indexOf('Currency') != -1)) {
                         rowData.push({
                             key: header.key,
@@ -341,7 +341,7 @@ export class Kdws03AComponent extends Vue {
                             class: ''
                         });
                     }
-                    
+
                 } else {
                     let value = this.getFromCombo(header.group[1].ntsControl, rowDataSrc[header.group[1].key]);
                     if (!_.isNil(header.constraint.cdisplayType) && (header.constraint.cdisplayType.indexOf('Currency') != -1)) {
@@ -363,7 +363,7 @@ export class Kdws03AComponent extends Vue {
                             class: ''
                         });
                     }
-                    
+
                 }
             });
 
@@ -371,7 +371,7 @@ export class Kdws03AComponent extends Vue {
                 self.displayDataLst.push({
                     rowData,
                     date: rowDataSrc.date,
-                    dateDetail: rowDataSrc.dateDetail, 
+                    dateDetail: rowDataSrc.dateDetail,
                     id: rowDataSrc.id,
                     ERAL: rowDataSrc.error
                 });
@@ -524,43 +524,38 @@ export class Kdws03AComponent extends Vue {
             date = self.selectedDate;
         }
 
-        self.$modal('kdws03b', { 
+        self.$modal('kdws03b', {
             'rowId': rowData.id,
             'employeeID': employeeID,
-            'employeeName': employeeName, 
-            'date': date, 
-            data: rowData.rowData, 
-            'paramData': paramData }, 
-        { type: 'dropback' })
-        .then((v) => {
+            'employeeName': employeeName,
+            'date': date,
+            data: rowData.rowData,
+            'paramData': paramData
+        },
+            { type: 'dropback' })
+            .then((v) => {
 
-        });
+            });
     }
 
     public openMenu() {
 
-        let allConfirmButtonDis = false;
-        this.$auth.user.then((user: null | { employeeId: string }) => {
-            if (this.selectedEmployee == user.employeeId) {
-                allConfirmButtonDis = true;
-            }
-            this.$modal(
-                'kdws03amenu',
-                {
-                    displayFormat: this.displayFormat,
-                    restReferButtonDis: this.dPCorrectionMenuDto.restReferButtonDis,
-                    monthActualReferButtonDis: this.dPCorrectionMenuDto.monthActualReferButtonDis,
-                    timeExcessReferButtonDis: this.dPCorrectionMenuDto.timeExcessReferButtonDis,
-                    selectedEmployee: this.selectedEmployee,
-                    allConfirmButtonDis
-                },
-                {
-                    type: 'dropback',
-                    title: null
-                }).then((v) => {
+        this.$modal(
+            'kdws03amenu',
+            {
+                displayFormat: this.displayFormat,
+                allConfirmButtonDis: this.dPCorrectionMenuDto.allConfirmButtonDis,
+                errorReferButtonDis: this.dPCorrectionMenuDto.errorReferButtonDis,
+                restReferButtonDis: this.dPCorrectionMenuDto.restReferButtonDis,
+                monthActualReferButtonDis: this.dPCorrectionMenuDto.monthActualReferButtonDis,
+                timeExcessReferButtonDis: this.dPCorrectionMenuDto.timeExcessReferButtonDis,
+            },
+            {
+                type: 'dropback',
+                title: null
+            }).then((v) => {
 
-                });
-        });
+            });
     }
 
     public nextPage() {
