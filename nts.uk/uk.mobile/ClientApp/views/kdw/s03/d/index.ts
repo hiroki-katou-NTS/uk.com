@@ -1,5 +1,6 @@
 import { Vue, moment } from '@app/provider';
 import { component, Prop } from '@app/core/component';
+import { KdwS03EComponent } from 'views/kdw/s03/e';
 
 @component({
     name: 'kdws03d',
@@ -7,11 +8,14 @@ import { component, Prop } from '@app/core/component';
     template: require('./index.vue'),
     resource: require('./resources.json'),
     validations: {},
-    constraints: []
+    constraints: [],
+    components: {
+        'kdws03e': KdwS03EComponent,
+    },
 })
 export class KdwS03DComponent extends Vue {
-    @Prop({ default: () => ({ employeeName: '', date: new Date(), data: {}, contentType: {} }) })
-    public readonly params!: { employeeName: '', date: Date };
+    @Prop({ default: () => ({ employeeID: '', employeeName: '', date: new Date() }) })
+    public readonly params!: { employeeID: string, employeeName: string, date: Date };
     public title: string = 'KdwS03D';
     public rowDatas: Array<RowData> = [];
 
@@ -19,9 +23,9 @@ export class KdwS03DComponent extends Vue {
         let self = this;
         self.$mask('show');
         this.$http.post('at', API.getError, {
-            startDate: new Date('2019-08-19'), 
-            endDate: new Date('2019-08-19'),
-            employeeLst: [{'employeeID': '292ae91c-508c-4c6e-8fe8-3e72277dec16', 'employeeCD': '000001'}],
+            startDate: self.params.date, 
+            endDate: self.params.date,
+            employeeIDLst: [ self.params.employeeID ],
             attendanceItemID: null
         }).then((data: any) => {
             self.rowDatas = data.data;
@@ -35,12 +39,17 @@ export class KdwS03DComponent extends Vue {
         });
     }
 
-    public mounted() {
-        
-    }
+    public openDialogE(rowData: RowData) {
+        let self = this;
+        self.$modal('kdws03e', { 
+            employeeId: self.params.employeeID, 
+            empName: self.params.employeeName, 
+            date: self.params.date, 
+            code: rowData.code
+        }, { type : 'dropback' } )
+        .then((v) => {
 
-    public openDialogE(index: number) {
-
+        });
     }
 }
 
@@ -50,7 +59,7 @@ const API = {
 
 interface RowData {
     date: Date;
-    employeeCD: string;
+    code: string;
     name: string;
     employeeID: string;    
 }

@@ -13,20 +13,20 @@
     <table class="table table-bordered">
     <thead>
       <tr class="uk-bg-green">
-        <th class="w-25">{{'KDWS03_41' | i18n}}</th>
-        <th class="w-25">{{'KDWS03_42' | i18n}}</th>
-        <th class="w-50">{{'KDWS03_43' | i18n}}</th>
+        <th>{{'KDWS03_41' | i18n}}</th>
+        <th>{{'KDWS03_42' | i18n}}</th>
+        <th>{{'KDWS03_43' | i18n}}</th>
       </tr>
     </thead>
     <tbody>
       <tr v-for="(rowData, index) in rowDatas" v-bind:key="index">
         <th class="pl-0 pr-0 text-center">{{ rowData.date | date('DD日(dd)') }}</th>
-        <td>{{ rowData.code }}</td>
+        <td class="pl-0 pr-0 text-center">{{ rowData.code }}</td>
         <td>
           <div class="row">
             <div class="w-100">
-              <div class="col-10 d-inline-block">{{ rowData.name }}</div>
-              <div class="d-inline-block fas fa-angle-right" v-on:click="openDialogE(index)"></div>
+              <div class="col-10 pl-2 pr-2 d-inline-block">{{ rowData.name }}</div>
+              <div class="d-inline-block fas fa-angle-right" v-on:click="openDialogE(rowData)"></div>
             </div>
           </div>
         </td>

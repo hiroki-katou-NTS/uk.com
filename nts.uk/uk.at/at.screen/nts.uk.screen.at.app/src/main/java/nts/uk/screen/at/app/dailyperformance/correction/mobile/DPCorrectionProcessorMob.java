@@ -119,7 +119,6 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.cache.DPCorrectionSt
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkapproval.ApproveRootStatusForEmpDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkshowbutton.DailyPerformanceAuthorityDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.companyhist.AffComHistItemAtScreen;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.mobile.EmployeeParam;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.workplacehist.WorkPlaceHistTemp;
 import nts.uk.screen.at.app.dailyperformance.correction.error.DCErrorInfomation;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.ClosureSidDto;
@@ -1257,13 +1256,14 @@ public class DPCorrectionProcessorMob {
 		return check.isPresent();
 	}
 	
-	public List<ErAlWorkRecordShortDto> getErrorMobile(DatePeriod period, List<EmployeeParam> employeeLst, Integer attendanceItemID) {
+	public List<ErAlWorkRecordShortDto> getErrorMobile(DatePeriod period, List<String> employeeIDLst, Integer attendanceItemID) {
 		String companyID = AppContexts.user().companyId();
+		List<Integer> typeAtrLst = Arrays.asList(0,1);
 		// 対応するドメインモデル「勤務実績のエラーアラーム」をすべて取得する 
-		List<ErrorAlarmWorkRecord> errorAlarmWorkRecordLst = errorAlarmWorkRecordRepository.findMobByCompany(companyID);
+		List<ErrorAlarmWorkRecord> errorAlarmWorkRecordLst = errorAlarmWorkRecordRepository.findMobByCompany(companyID, typeAtrLst);
 		// ドメインモデル「社員の日別実績エラー一覧」をすべて取得する 
 		List<EmployeeDailyPerError> empDailyPerErrorLst = employeeDailyPerErrorRepository.findsByCodeLst(
-				employeeLst.stream().map(x -> x.getEmployeeID()).collect(Collectors.toList()), 
+				employeeIDLst,
 				period, 
 				errorAlarmWorkRecordLst.stream().map(x -> x.getCode().toString()).collect(Collectors.toList()));
 		// Input「対象勤怠項目」をチェックする
@@ -1284,13 +1284,11 @@ public class DPCorrectionProcessorMob {
 				result.add(new ErAlWorkRecordShortDto(
 						employeeDailyPerError.getDate().toString("yyyy/MM/dd"), 
 						employeeDailyPerError.getEmployeeID(), 
-						employeeLst.stream().filter(y -> y.getEmployeeID().equals(employeeDailyPerError.getEmployeeID()))
-						.findAny().map(z -> z.getEmployeeCD()).orElse(null), 
-						item.getName().toString()));
+						item.getCode().v(), 
+						item.getName().v()));
 			});
 		}
 		return result;
-		
 	}
 }
  

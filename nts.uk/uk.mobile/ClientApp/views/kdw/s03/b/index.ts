@@ -277,7 +277,11 @@ export class KdwS03BComponent extends Vue {
 
     public openDScreen() {
         let self = this;
-        self.$modal('kdws03d', { employeeName: self.params.employeeName, date: self.params.date }, { type : 'dropback' } )
+        self.$modal('kdws03d', { 
+            employeeID: self.params.employeeID, 
+            employeeName: self.params.employeeName,
+            date: self.params.date 
+        }, { type : 'dropback' } )
         .then((v) => {
 
         });

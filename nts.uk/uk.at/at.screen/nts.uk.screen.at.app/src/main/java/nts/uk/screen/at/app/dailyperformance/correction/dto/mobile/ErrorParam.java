@@ -16,7 +16,7 @@ public class ErrorParam {
 	
 	private GeneralDate endDate;
 	
-	private List<EmployeeParam> employeeLst;
+	private List<String> employeeIDLst;
 	
 	private Integer attendanceItemID;
 }

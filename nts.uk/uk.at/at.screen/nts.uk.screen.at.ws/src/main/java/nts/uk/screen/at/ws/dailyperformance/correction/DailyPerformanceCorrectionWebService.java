@@ -559,7 +559,7 @@ public class DailyPerformanceCorrectionWebService {
 	public List<ErAlWorkRecordShortDto> getErrorMobile(ErrorParam errorParam) {
 		return dpCorrectionProcessorMob.getErrorMobile(
 				new DatePeriod(errorParam.getStartDate(), errorParam.getEndDate()), 
-				errorParam.getEmployeeLst(), 
+				errorParam.getEmployeeIDLst(), 
 				errorParam.getAttendanceItemID());
 	}
 	

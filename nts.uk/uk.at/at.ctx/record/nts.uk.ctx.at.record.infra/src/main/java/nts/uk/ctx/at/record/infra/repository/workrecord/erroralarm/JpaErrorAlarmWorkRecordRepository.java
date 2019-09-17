@@ -63,7 +63,8 @@ public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements 
 	
 	private static final String SELECT_ERAL_BY_LIST_CODE_REMARK = "SELECT s FROM KwrmtErAlWorkRecord s WHERE s.kwrmtErAlWorkRecordPK.errorAlarmCode IN :listCode AND s.kwrmtErAlWorkRecordPK.companyId = :companyId AND s.remarkCancelErrorInput = 1";
 	
-	private static final String FIND_MOB_BY_COMPANY = "SELECT a FROM KwrmtErAlWorkRecord a WHERE a.kwrmtErAlWorkRecordPK.companyId = :companyId AND a.typeAtr = 1";
+	private static final String FIND_MOB_BY_COMPANY = "SELECT a FROM KwrmtErAlWorkRecord a WHERE a.kwrmtErAlWorkRecordPK.companyId = :companyId "
+			+ "AND a.typeAtr IN :typeAtrLst";
 
 	@Override
 	public Optional<ErrorAlarmWorkRecord> findByCode(String code) {
@@ -716,9 +717,11 @@ public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements 
 	}
 	
 	@Override
-	public List<ErrorAlarmWorkRecord> findMobByCompany(String companyID) {
+	public List<ErrorAlarmWorkRecord> findMobByCompany(String companyID, List<Integer> typeAtrLst) {
 		List<KwrmtErAlWorkRecord> lstData = this.queryProxy().query(FIND_MOB_BY_COMPANY, KwrmtErAlWorkRecord.class)
-				.setParameter("companyId", companyID).getList();
+				.setParameter("companyId", companyID)
+				.setParameter("typeAtrLst", typeAtrLst)
+				.getList();
 		return lstData.stream().map(entity -> KwrmtErAlWorkRecord.toDomain(entity)).collect(Collectors.toList());
 	}
 

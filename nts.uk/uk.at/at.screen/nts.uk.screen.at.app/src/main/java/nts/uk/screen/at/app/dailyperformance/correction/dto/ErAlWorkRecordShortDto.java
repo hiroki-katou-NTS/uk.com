@@ -11,7 +11,7 @@ public class ErAlWorkRecordShortDto {
 	
 	private String employeeID;
 	
-	private String employeeCD;
+	private String code;
 	
 	private String name;
 	
