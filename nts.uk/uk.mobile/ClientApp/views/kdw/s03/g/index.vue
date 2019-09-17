@@ -5,7 +5,7 @@
       <!-- G1_1: 戻るボタン -->
       <div class="col-1 pl-1" v-on:click="$close()"><i class="fas fa-arrow-left"></i></div>
       <!-- G1_2: 対象社員名 -->
-      <div class="col-6 pl-0 pr-2"><span>{{ empName }}</span></div>
+      <div class="col-11 pl-0 pr-2"><span>{{ empName }}</span></div>
     </div>
   </div>
     <div class="accordion accordion-mn3">
@@ -22,25 +22,26 @@
                 <!-- G3_2: 年休残数 -->
                 <div class="col-3 text-right">{{'KDWS03_52' | i18n(remainNumber.yearRemain)}}</div>
               </div>
-              <div class="row pt-3">
+              <div class="row" v-if="remainNumber.manageYear" v-bind:class="{'pt-3': remainNumber.manageYear}">
                 <!-- G4_1: 次回付与 -->
                 <div class="col-7">{{'KDWS03_51' | i18n}}</div>
                 <!-- G4_2: 次回付与日 -->
                 <div class="col-5 text-right">{{remainNumber.nextGrantDate}}</div>
               </div>
-              <div class="row pt-3" v-if="remainNumber.manageReserve">
+              <div class="row" v-if="remainNumber.manageReserve" v-bind:class="{'pt-3': remainNumber.manageYear}">
                 <!-- G5_1: 積立年休残 -->
                 <div class="col-9">{{'KDWS03_48' | i18n}}</div>
                 <!-- G5_2: 積立年休残数 -->
                 <div class="col-3 text-right">{{'KDWS03_52' | i18n(remainNumber.reserveRemain)}}</div>
               </div>
-              <div class="row pt-3" v-if="remainNumber.manageCompensatory">
+              <div class="row" v-if="remainNumber.manageCompensatory" v-bind:class="{'pt-3': remainNumber.manageReserve || remainNumber.manageYear}">
                 <!-- G6_1: 代休残 -->
                 <div class="col-9">{{'KDWS03_49' | i18n}}</div>
                 <!-- G6_2: 代休残数 -->
                 <div class="col-3 text-right">{{'KDWS03_52' | i18n(remainNumber.compensatoryRemain)}}</div>
               </div>
-              <div class="row pt-3" v-if="remainNumber.manageSubStitute">
+              <div class="row" v-if="remainNumber.manageSubStitute" 
+                v-bind:class="{'pt-3': remainNumber.manageCompensatory || remainNumber.manageReserve || remainNumber.manageYear}">
                 <!-- G7_1: 振休残 -->
                 <div class="col-9">{{'KDWS03_50' | i18n}}</div>
                 <!-- G7_2: 振休残数 -->
