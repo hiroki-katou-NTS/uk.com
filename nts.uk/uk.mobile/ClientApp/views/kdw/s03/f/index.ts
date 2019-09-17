@@ -48,7 +48,10 @@ export class KdwS03FComponent extends Vue {
     public valueDis(value: string, type: number) {
         if (value == null) {return '';}
         if (type == ValueType.CLOCK || type == ValueType.TIME) {
-            return this.$dt.timedr(Number(value));
+            let hour = Math.floor(Number(value) / 60);
+            let min = Math.floor(Number(value) - hour * 60);
+
+            return min < 10 ? (hour + ':0' + min) : (hour + ':' + min);
         }
         if (type == ValueType.DATE) {
             return this.$dt.date(new Date(value));
