@@ -371,7 +371,8 @@ export class Kdws03AComponent extends Vue {
                 self.displayDataLst.push({
                     rowData,
                     date: rowDataSrc.date,
-                    dateDetail: rowDataSrc.dateDetail, id: rowDataSrc.id,
+                    dateDetail: rowDataSrc.dateDetail, 
+                    id: rowDataSrc.id,
                     ERAL: rowDataSrc.error
                 });
             } else {
@@ -380,6 +381,7 @@ export class Kdws03AComponent extends Vue {
                     employeeName: rowDataSrc.employeeName,
                     employeeNameDis: this.countHalf(rowDataSrc.employeeName) > 10 ? rowDataSrc.employeeName.substring(0, 5) + '...' : rowDataSrc.employeeName,
                     employeeId: rowDataSrc.employeeId,
+                    employmentCode: rowDataSrc.employmentCode,
                     id: rowDataSrc.id,
                     ERAL: rowDataSrc.error
                 });
@@ -399,6 +401,10 @@ export class Kdws03AComponent extends Vue {
                 row.dateColor = '';
                 let classArray = _.find(states, (x) => x.columnKey == 'date').state;
                 _.forEach(classArray, (x) => row.dateColor = row.dateColor + ' ' + x);
+            }
+            if (!_.isNil(_.find(states, (x) => x.columnKey == 'sign'))) {
+                let classArray = _.find(states, (x) => x.columnKey == 'sign').state;
+                row.confirmDisable = _.includes(classArray, 'mgrid-disable') ? true : false;
             }
         });
 

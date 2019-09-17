@@ -49,6 +49,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.DPAttendanceItem;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPCorrectionInitParam;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPDataDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPHeaderDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemCheckBox;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemParent;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPParams;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceCalculationDto;
@@ -81,6 +82,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.lock.button.DPDisplayLoc
 import nts.uk.screen.at.app.dailyperformance.correction.lock.button.DPDisplayLockProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.mobile.DPCorrectionProcessorMob;
 import nts.uk.screen.at.app.dailyperformance.correction.mobile.InitScreenMob;
+import nts.uk.screen.at.app.dailyperformance.correction.mobile.UpdateConfirmAllMob;
 import nts.uk.screen.at.app.dailyperformance.correction.month.asynctask.MonthParamInit;
 import nts.uk.screen.at.app.dailyperformance.correction.month.asynctask.ParamCommonAsync;
 import nts.uk.screen.at.app.dailyperformance.correction.month.asynctask.ProcessMonthScreen;
@@ -173,6 +175,9 @@ public class DailyPerformanceCorrectionWebService {
 	@Inject
 	private DPCorrectionProcessorMob dpCorrectionProcessorMob;
 	
+	@Inject
+	private UpdateConfirmAllMob updateConfirmAllMob;
+	
 	@POST
 	@Path("startScreen")
 	public DailyPerformanceCorrectionDto startScreen(DPParams params ) throws InterruptedException{
@@ -242,6 +247,15 @@ public class DailyPerformanceCorrectionWebService {
 		removeSession();
 		dtoResult.setDomainOld(Collections.emptyList());
 		return dtoResult;
+	}
+	
+	@POST
+	@Path("confirmAll")
+	@SuppressWarnings("unchecked")
+	public void confirmAll(List<DPItemCheckBox> dataCheckSign) throws InterruptedException{
+		List<DailyRecordDto> dailyRecordDtos = (List<DailyRecordDto>) session.getAttribute("domainOlds");
+		updateConfirmAllMob.confirmAll(dataCheckSign, dailyRecordDtos);
+		return;
 	}
 	
 	@POST

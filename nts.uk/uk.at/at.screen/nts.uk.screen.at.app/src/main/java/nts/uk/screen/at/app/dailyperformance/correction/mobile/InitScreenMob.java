@@ -1,9 +1,7 @@
 package nts.uk.screen.at.app.dailyperformance.correction.mobile;
 
-import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -22,18 +20,15 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.val;
-import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.app.find.workrecord.operationsetting.DaiPerformanceFunDto;
 import nts.uk.ctx.at.record.app.find.workrecord.operationsetting.DaiPerformanceFunFinder;
-import nts.uk.ctx.at.record.dom.adapter.employment.EmploymentHisOfEmployeeImport;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.ApprovalStatusActualResult;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.ConfirmStatusActualResult;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.approval.ApprovalStatusActualDayChange;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.confirm.ConfirmStatusActualDayChange;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
-import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnitType;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.AppGroupExportDto;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationExportDto;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationListForScreen;
@@ -45,10 +40,8 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.Abse
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AnnualHolidaySetOutput;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.LeaveSetOutput;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.SubstitutionHolidayOutput;
-import nts.uk.screen.at.app.dailymodify.command.DailyModifyResCommandFacade;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyQueryProcessor;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyResult;
-import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceCorrectionProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
 import nts.uk.screen.at.app.dailyperformance.correction.GetDataDaily;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeName;
@@ -56,12 +49,6 @@ import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeNameType;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.DataDialogWithTypeProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ApprovalConfirmCache;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ApprovalUseSettingDto;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.AuthorityFomatDailyDto;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.AuthorityFormatInitialDisplayDto;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.AuthorityFormatSheetDto;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.ChangeSPR;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.CorrectionOfDailyPerformance;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.DCMessageError;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPAttendanceItem;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPCellDataDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPControlDisplayItem;
@@ -70,20 +57,15 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.DPCorrectionMenuDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPDataDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPErrorDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPErrorSettingDto;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.DPHideControlCell;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.DPSheetDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceCorrectionDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceEmployeeDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyRecEditSetDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DatePeriodInfo;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DisplayItem;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.FormatDPCorrectionDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.IdentityProcessUseSetDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ObjectShare;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.OperationOfDailyPerformanceDto;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.SPRCheck;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.ScreenMode;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkInfoOfDailyPerformanceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.cache.DPCorrectionStateParam;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkapproval.ApproveRootStatusForEmpDto;
@@ -93,11 +75,6 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.workplacehist.WorkPl
 import nts.uk.screen.at.app.dailyperformance.correction.error.DCErrorInfomation;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.DPLock;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.DPLockDto;
-import nts.uk.screen.at.app.dailyperformance.correction.month.asynctask.ParamCommonAsync;
-import nts.uk.screen.at.app.dailyperformance.correction.monthflex.DPMonthFlexParam;
-import nts.uk.screen.at.app.dailyperformance.correction.monthflex.DPMonthFlexProcessor;
-import nts.uk.screen.at.app.dailyperformance.correction.monthflex.DPMonthResult;
-import nts.uk.screen.at.app.dailyperformance.correction.process.CheckClosingEmployee;
 import nts.uk.screen.at.app.dailyperformance.correction.searchemployee.FindAllEmployee;
 import nts.uk.screen.at.app.dailyperformance.correction.text.DPText;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.FormatDailyDto;
@@ -139,9 +116,6 @@ public class InitScreenMob {
 	private PublicHolidayRepository publicHolidayRepository;
 
 	@Inject
-	private CheckClosingEmployee checkClosingEmployee;
-
-	@Inject
 	private FindAllEmployee findAllEmployee;
 
 	@Inject
@@ -163,7 +137,7 @@ public class InitScreenMob {
 		String companyId = AppContexts.user().companyId();
 		String sId = AppContexts.user().employeeId();
 		DailyPerformanceCorrectionDto screenDto = new DailyPerformanceCorrectionDto();
-		List<DailyPerformanceEmployeeDto> lstEmployee = param.lstEmployee;
+		// List<DailyPerformanceEmployeeDto> lstEmployee = param.lstEmployee;
 		Integer screenMode = param.screenMode;
 		Integer displayFormat = param.displayFormat;
 		DateRange dateRange = param.objectDateRange;
@@ -354,9 +328,9 @@ public class InitScreenMob {
 				.getpHolidayWhileDate(companyId, dateRange.getStartDate(), dateRange.getEndDate()).stream()
 				.map(x -> x.getDate()).collect(Collectors.toList());
 		// 社員の締めをチェックする
-		Map<String, List<EmploymentHisOfEmployeeImport>> mapClosingEmpResult = checkClosingEmployee
-				.checkClosingEmployee(companyId, changeEmployeeIds,
-						new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate()), screenDto.getClosureId());
+		//Map<String, List<EmploymentHisOfEmployeeImport>> mapClosingEmpResult = checkClosingEmployee
+				//.checkClosingEmployee(companyId, changeEmployeeIds,
+						//new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate()), screenDto.getClosureId());
 
 		List<DailyRecEditSetDto> dailyRecEditSets = repo.getDailyRecEditSet(listEmployeeId, dateRange);
 		Map<String, Integer> dailyRecEditSetsMap = dailyRecEditSets.stream()
@@ -388,14 +362,14 @@ public class InitScreenMob {
 			// mapConfirmResult.get(Pair.of(data.getEmployeeId(), data.getDate()));
 			// data.setSign(dataSign == null ? false : dataSign.isStatus());
 			// state check box sign
-			boolean disableSignApp = disableSignMap.containsKey(data.getEmployeeId() + "|" + data.getDate())
-					&& disableSignMap.get(data.getEmployeeId() + "|" + data.getDate());
+			// boolean disableSignApp = disableSignMap.containsKey(data.getEmployeeId() + "|" + data.getDate())
+					// && disableSignMap.get(data.getEmployeeId() + "|" + data.getDate());
 
 			ApprovalStatusActualResult dataApproval = mapApprovalResults
 					.get(Pair.of(data.getEmployeeId(), data.getDate()));
 			// set checkbox approval
-			data.setApproval(dataApproval == null ? false
-					: screenMode == ScreenMode.NORMAL.value ? dataApproval.isStatusNormal() : dataApproval.isStatus());
+			// data.setApproval(dataApproval == null ? false
+					// : screenMode == ScreenMode.NORMAL.value ? dataApproval.isStatusNormal() : dataApproval.isStatus());
 			ApproveRootStatusForEmpDto approvalCheckMonth = dpLockDto.getLockCheckMonth()
 					.get(data.getEmployeeId() + "|" + data.getDate());
 
