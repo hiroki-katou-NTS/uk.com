@@ -1,5 +1,7 @@
 package nts.uk.screen.at.app.dailyperformance.correction.dto;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -14,5 +16,7 @@ public class ErAlWorkRecordShortDto {
 	private String code;
 	
 	private String name;
+	
+	private List<Integer> attendanceItemList;
 	
 }

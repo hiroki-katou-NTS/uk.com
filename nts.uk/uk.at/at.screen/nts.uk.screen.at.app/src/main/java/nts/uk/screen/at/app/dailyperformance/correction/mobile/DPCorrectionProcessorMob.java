@@ -1285,7 +1285,8 @@ public class DPCorrectionProcessorMob {
 						employeeDailyPerError.getDate().toString("yyyy/MM/dd"), 
 						employeeDailyPerError.getEmployeeID(), 
 						item.getCode().v(), 
-						item.getName().v()));
+						item.getName().v(),
+						employeeDailyPerError.getAttendanceItemList()));
 			});
 		}
 		return result;
