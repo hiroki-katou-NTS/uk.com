@@ -1,5 +1,5 @@
 <template>
-<div class="kdws03g">
+<div class="kdws03g p-0">
   <div class="modal-header uk-bg-white-smoke pl-0 pr-0 rounded-0">
     <div class="row uk-text-quote w-100 ml-0 mr-0">
       <!-- G1_1: 戻るボタン -->
