@@ -14,8 +14,8 @@ import { KdwS03EComponent } from 'views/kdw/s03/e';
     },
 })
 export class KdwS03DComponent extends Vue {
-    @Prop({ default: () => ({ employeeID: '', employeeName: '', date: new Date() }) })
-    public readonly params!: { employeeID: string, employeeName: string, date: Date };
+    @Prop({ default: () => ({ employeeID: '', employeeName: '', startDate: new Date(), endDate: new Date() }) })
+    public readonly params!: { employeeID: string, employeeName: string, startDate: Date, endDate: Date };
     public title: string = 'KdwS03D';
     public rowDatas: Array<RowData> = [];
 
@@ -23,8 +23,8 @@ export class KdwS03DComponent extends Vue {
         let self = this;
         self.$mask('show');
         this.$http.post('at', API.getError, {
-            startDate: self.params.date, 
-            endDate: self.params.date,
+            startDate: self.params.startDate, 
+            endDate: self.params.endDate,
             employeeIDLst: [ self.params.employeeID ],
             attendanceItemID: null
         }).then((data: any) => {
@@ -44,7 +44,7 @@ export class KdwS03DComponent extends Vue {
         self.$modal('kdws03e', { 
             employeeId: self.params.employeeID, 
             empName: self.params.employeeName, 
-            date: self.params.date, 
+            date: rowData.date, 
             code: rowData.code,
             attendanceItemList: rowData.attendanceItemList
         }, { type : 'dropback' } )
