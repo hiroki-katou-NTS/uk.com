@@ -191,7 +191,7 @@ public class DailyCorrectCalcTimeService {
 		return employee.equals(itemEdit.getEmployeeId()) && date.equals(itemEdit.getDate());
 	}
 
-	private void getWplPosId(List<DPItemValue> itemEdits) {
+	public void getWplPosId(List<DPItemValue> itemEdits) {
 		// map id -> code possition and workplace
 		itemEdits.stream().map(itemEdit -> {
 			if (itemEdit.getTypeGroup() == null)

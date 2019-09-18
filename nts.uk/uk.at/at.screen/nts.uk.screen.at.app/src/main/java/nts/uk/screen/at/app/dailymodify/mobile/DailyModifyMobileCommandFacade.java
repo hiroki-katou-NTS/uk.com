@@ -49,6 +49,7 @@ import nts.uk.screen.at.app.dailymodify.command.common.ProcessMonthlyCalc;
 import nts.uk.screen.at.app.dailymodify.mobile.dto.DPMobileAdUpParam;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyQuery;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyResult;
+import nts.uk.screen.at.app.dailyperformance.correction.calctime.DailyCorrectCalcTimeService;
 import nts.uk.screen.at.app.dailyperformance.correction.checkdata.ValidatorDataDailyRes;
 import nts.uk.screen.at.app.dailyperformance.correction.checkdata.dto.ErrorAfterCalcDaily;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemValue;
@@ -86,6 +87,9 @@ public class DailyModifyMobileCommandFacade {
 
 	@Inject
 	private DailyModifyRCommandFacade dailyRCommandFacade;
+	
+	@Inject
+	private DailyCorrectCalcTimeService dCCalcTimeService;
 
 	public DataResultAfterIU insertItemDomain(DPMobileAdUpParam dataParent) {
 		// Map<Integer, List<DPItemValue>> resultError = new HashMap<>();
@@ -116,9 +120,10 @@ public class DailyModifyMobileCommandFacade {
 				.collect(Collectors.groupingBy(x -> Pair.of(x.getEmployeeId(), x.getDate())));
 
 		Map<Pair<String, GeneralDate>, List<DPItemValue>> mapSidDateNotChange = dataParent.getItemValues().stream()
-				.filter(x -> !DPText.ITEM_CHANGE.contains(x.getItemId()))
+				.filter(x -> !DPText.ITEM_CHANGE_MOBI.contains(x.getItemId()))
 				.collect(Collectors.groupingBy(x -> Pair.of(x.getEmployeeId(), x.getDate())));
 
+		dCCalcTimeService.getWplPosId(dataParent.getItemValues());
 		List<DailyModifyQuery> querys = dailyRCommandFacade.createQuerys(mapSidDate);
 		List<DailyModifyQuery> queryNotChanges = dailyRCommandFacade.createQuerys(mapSidDateNotChange);
 		// map to list result -> check error;
