@@ -473,6 +473,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		builderString.append("WHERE a.kfnmtAuthorityDailyItemPK.companyId = :companyId ");
 		builderString
 				.append("AND a.kfnmtAuthorityDailyItemPK.dailyPerformanceFormatCode IN :dailyPerformanceFormatCodes ");
+		builderString.append("ORDER BY a.displayOrder  ASC ");
 		SEL_AUTHOR_DAILY_ITEM = builderString.toString();
 
 		builderString = new StringBuilder();

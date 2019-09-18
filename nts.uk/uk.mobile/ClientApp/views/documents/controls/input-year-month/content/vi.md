@@ -35,5 +35,10 @@ export class ViewModel extends Vue {
 
 Khi khai báo nts-year-month trong index.html, bạn có thể truyền thêm các tham số này nếu muốn.  
 
+---
+(update tài liệu 09/09/2019)  
+Với item tùy chọn, khi bật picker lên, sẽ hiển thị button "xóa". Trong khi đó, item bắt buộc sẽ không hiển thị button "xóa".  
+Để biết cách cài đặt item là "tùy chọn" hay "bắt buộc", xem [Validations](/nts.uk.mobile.web/documents/plugins/validation)
+
 **Tạo bởi: Phạm Văn Dân**
 
