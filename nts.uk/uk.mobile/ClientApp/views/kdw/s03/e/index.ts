@@ -31,7 +31,6 @@ export class KdwS03EComponent extends Vue {
         //A画面のキャッシュを取得する
         let cache: any = storage.local.getItem('dailyCorrectionState');
         self.displayE71 = self.checkEsxit(cache.headerLst, self.params.attendanceItemList);
-        console.log(self.params.attendanceItemList);
         let param = {
             employeeId: self.params.employeeId,//社員ID
             date: self.params.date,//日
@@ -39,7 +38,6 @@ export class KdwS03EComponent extends Vue {
         };
         self.$http.post('at', servicePath.getError, param).then((result: any) => {
             self.$mask('hide');
-            console.log(result);
             self.errorInfo = {
                 code: result.data.code,
                 name: result.data.name,
@@ -55,7 +53,6 @@ export class KdwS03EComponent extends Vue {
         for (let k = 0; k < lstErr.length; k++) {
             let esxit1 = false;
             for (let i = 0; i < lstA.length; i++) {
-                console.log(lstA[i].key);
                 if (lstA[i].key === 'A' + lstErr[k]) {
                     esxit1 = true;
                     break;
