@@ -52,9 +52,11 @@
                         {{cell.value == '0:00' || cell.value == '0.0' || cell.value == '0' ? '' : cell.value}}
                     </td>
                     <td>
-                        <span style="color: red" class="fa fa-exclamation-circle fa-lg" v-if="null != row.ERAL && row.ERAL.includes('ER')"></span>
-                        <span style="color: red" class="fa fa-exclamation-triangle fa-lg" v-if="null != row.ERAL && !row.ERAL.includes('ER') && row.ERAL.includes('AL')"></span>
-                        <span class="pl-1" v-on:click="openEdit(row.id)" v-if="row.date != ''">></span>
+                        <div style="text-align: right">
+                            <span style="color: red" class="fa fa-exclamation-circle fa-lg" v-if="null != row.ERAL && row.ERAL.includes('ER')"></span>
+                            <span style="color: red" class="fa fa-exclamation-triangle fa-lg" v-if="null != row.ERAL && !row.ERAL.includes('ER') && row.ERAL.includes('AL')"></span>
+                            <span class="pl-1" v-on:click="openEdit(row.id)" v-if="row.date != ''">></span>
+                        </div>
                     </td>
                 </tr>
             </tbody>
@@ -81,9 +83,11 @@
                         {{cell.value == '0:00' || cell.value == '0.0' ? '' : cell.value}}
                     </td>
                     <td>
-                        <span style="color: red" class="fa fa-exclamation-circle fa-lg" v-if="null != row.ERAL && row.ERAL.includes('ER')"></span>
-                        <span style="color: red" class="fa fa-exclamation-triangle fa-lg" v-if="null != row.ERAL && !row.ERAL.includes('ER') && row.ERAL.includes('AL')"></span>
-                        <span class="pl-1" v-on:click="openEdit(row.id)" v-if="row.employeeNameDis != ''">></span>
+                        <div style="text-align: right">
+                            <span style="color: red" class="fa fa-exclamation-circle fa-lg" v-if="null != row.ERAL && row.ERAL.includes('ER')"></span>
+                            <span style="color: red" class="fa fa-exclamation-triangle fa-lg" v-if="null != row.ERAL && !row.ERAL.includes('ER') && row.ERAL.includes('AL')"></span>
+                            <span class="pl-1" v-on:click="openEdit(row.id)" v-if="row.employeeNameDis != ''">></span>
+                        </div>
                     </td>
                 </tr>
             </tbody>
