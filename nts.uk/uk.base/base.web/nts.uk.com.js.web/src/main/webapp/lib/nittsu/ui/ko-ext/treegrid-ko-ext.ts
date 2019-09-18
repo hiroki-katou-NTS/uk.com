@@ -177,7 +177,8 @@ module nts.uk.ui.koExtentions {
                                         $(trueOpt).find(".ui-iggrid-filterddlistitemcontainer").html(currentCol.filterOpts.trueOpt);//nts.uk.resource.getText("Enum_UseAtr_Use"));
                                         $(falseOpt).find(".ui-iggrid-filterddlistitemcontainer").html(currentCol.filterOpts.falseOpt);//nts.uk.resource.getText("Enum_UseAtr_NotUse"));
                                     } 
-                                } });
+                                },
+                                filterSummaryAlwaysVisible : false });
             }
             
 
