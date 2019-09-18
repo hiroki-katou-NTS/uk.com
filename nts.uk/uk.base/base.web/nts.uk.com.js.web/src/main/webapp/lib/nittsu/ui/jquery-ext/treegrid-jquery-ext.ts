@@ -256,6 +256,7 @@ module nts.uk.ui.jqueryExtentions {
             
             if(showCheckBox != true){
                 $treegrid.closest(".nts-treegridview").addClass("no-selector");
+                $treegrid.closest(".nts-treegridview").find("col[data-skip='true']").addClass("no-width");
             }
         };
         
