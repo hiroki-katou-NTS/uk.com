@@ -268,6 +268,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         initFromScreenOther: boolean = false;
         clickChangeMonth: boolean = true;
         
+        dateReferCCg: KnockoutObservable<any> = ko.observable(0);
+        
         constructor(dataShare: any) {
             var self = this;
 
@@ -332,13 +334,20 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                               //Combobox display actual time
                               self.initActualTime(data);
                               self.timePeriodAllInfo = data;
-                               self.clickChangeMonth = true;
+                              self.clickChangeMonth = true;
+                              self.genDateExtract(false);
+                              self.dateReferCCg(value);
+                              self.dateReferCCg(self.dateRanger().endDate);
                           }else{
                                self.yearMonth(self.timePeriodAllInfo.yearMonth);
                                self.clickChangeMonth = true;
                           }
                       });
                   }
+            });
+            
+            self.selectedDate.subscribe(value =>{
+                self.dateReferCCg(value);
             });
             
             //$("#fixed-table").ntsFixedTable({ height: 50, width: 300 });
@@ -431,7 +440,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             var self = this;
             self.dateRanger.subscribe((dateRange) => {
                 if (dateRange && dateRange.startDate && dateRange.endDate) {
-
+                    self.dateReferCCg(dateRange.endDate);
+                    self.selectedDate(dateRange.endDate);
                     var elementDate = dateRange.startDate;
                     //                    if (moment(elementDate, "YYYY/MM/DD").isValid()) {
                     //                        while (!moment(elementDate, "YYYY/MM/DD").isAfter(moment(dateRange.endDate, "YYYY/MM/DD"))) {
@@ -3509,21 +3519,22 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 showEmployeeSelection: false, // 検索タイプ
                 showQuickSearchTab: true, // クイック検索
                 showAdvancedSearchTab: true, // 詳細検索
-                showBaseDate: false, // 基準日利用
-                showClosure: true, // 就業締め日利用
+                showBaseDate: true, // 基準日利用
+                showClosure: false, // 就業締め日利用
                 showAllClosure: false, // 全締め表示
-                showPeriod: true, // 対象期間利用
+                showPeriod: false, // 対象期間利用
                 periodFormatYM: false, // 対象期間精度
 
                 /** Required parameter */
                 //baseDate: self.baseDate().toISOString(), // 基準日
                 //                periodStartDate: self.dateRanger() == null ? new Date().toISOString() :  self.dateRanger().startDate, // 対象期間開始日
                 //                periodEndDate: self.dateRanger() == null ? new Date().toISOString() : self.dateRanger().endDate, // 対象期間終了日
-                dateRangePickerValue: self.dateRanger,
+                //dateRangePickerValue: self.dateRanger,
                 inService: true, // 在職区分
                 leaveOfAbsence: true, // 休職区分
                 closed: true, // 休業区分
                 retirement: false, // 退職区分
+                baseDate: self.dateReferCCg,
 
                 /** Quick search tab options */
                 showAllReferableEmployee: true, // 参照可能な社員すべて
