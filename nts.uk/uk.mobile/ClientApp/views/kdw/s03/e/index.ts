@@ -1,6 +1,7 @@
-import { Vue } from '@app/provider';
+import { Vue, _ } from '@app/provider';
 import { component, Prop } from '@app/core/component';
 import { storage } from '@app/utils';
+import { LoDashStatic } from 'lodash';
 
 @component({
     name: 'kdws03e',
@@ -14,8 +15,8 @@ import { storage } from '@app/utils';
 export class KdwS03EComponent extends Vue {
     public title: string = 'KdwS03E';
 
-    @Prop({ default: () => ({ employeeId: '292ae91c-508c-4c6e-8fe8-3e72277dec16', empName: 'NV000001', date: new Date('2019/08/01'), code: 'S001'}) })
-    public readonly params: { employeeId: string, empName: string, date: Date, code: string };
+    @Prop({ default: () => ({ employeeId: '', empName: '', date: new Date(), code: '', attendanceItemList: []}) })
+    public readonly params: { employeeId: string, empName: string, date: Date, code: string, attendanceItemList: Array<number> };
 
     public errorInfo: IErrorInfo = {
         code: '',
@@ -27,8 +28,10 @@ export class KdwS03EComponent extends Vue {
     public created() {
         let self = this;
         self.$mask('show');
-        let cache = storage.local.getItem('dailyCorrectionState');
-
+        //A画面のキャッシュを取得する
+        let cache: any = storage.local.getItem('dailyCorrectionState');
+        self.displayE71 = self.checkEsxit(cache.headerLst, self.params.attendanceItemList);
+        console.log(self.params.attendanceItemList);
         let param = {
             employeeId: self.params.employeeId,//社員ID
             date: self.params.date,//日
@@ -42,11 +45,31 @@ export class KdwS03EComponent extends Vue {
                 name: result.data.name,
                 errMsg: result.data.errMsg
             };
+            // if ()
         }).catch(() => {
             self.$mask('hide');
         });
     }
+    //修正画面に遷移できるかチェックする
+    public checkEsxit(lstA: Array<any>, lstErr: Array<number>) {
+        
+        let esxit = true;
+        // _.each(lstErr, function(err) {
+        for (let k = 0; k < lstErr.length; k++) {
+            let esxit1 = false;
+            for (let i = 0; i < lstA.length; i++) {
+                console.log(lstA[i].key);
+                if (lstA[i].key === 'A' + lstErr[k]) {
+                    esxit1 = true;
+                    break;
+                }
+            }
+            if (!esxit1) {return false;}
+        }
 
+        return false;
+    }
+    //実績を修正する
     public editData() {
         let self = this;
         let paramOpenB = {
