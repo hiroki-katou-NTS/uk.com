@@ -4,6 +4,8 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -576,6 +578,7 @@ public class CheckFileFinder {
 					List<String> ddMMyyy = Arrays.asList("dd/MM/yyyy", "dd-MM-yyyy");
 					List<String> MMddyyy = Arrays.asList("MM/dd/yyyy", "MM-dd-yyyy");
 					Optional<SimpleDateFormat> dateFormat = validateDate(value);
+					Optional<DateTimeFormatter> dateTime = validateDateTime(value);
 					if (dateFormat.isPresent()) {
 
 						if (ddMMyyy.contains(dateFormat.get().toPattern())) {
@@ -602,6 +605,18 @@ public class CheckFileFinder {
 						}else {
 							value = GeneralDate.fromString(value, "yyyy/MM/dd").toString();
 						}
+					}
+					
+					if (dateTime.isPresent()) {
+						List<String> yyyyMMdd = Arrays.asList("yyyyMMdd");
+						if (yyyyMMdd.contains("yyyyMMdd")) {
+							try {
+								value = LocalDate.parse(value, dateTime.get()).toString().replace("-", "/");
+							} catch (Exception e) {
+								break;
+							}
+						}
+
 					}
 					break;
 				case NUMBER:
@@ -764,9 +779,11 @@ public class CheckFileFinder {
 				case 1:
 					StringItemDto stringDto = (StringItemDto) singleDto.getDataTypeState();
 					StringCharType type;
+					int length = stringDto.getStringItemLength();
 					switch (stringDto.getStringItemType()) {
 					case 1:
 						type = StringCharType.ANY;
+						length = length/2;
 						break;
 					case 2:
 						type = StringCharType.ANY_HALF_WIDTH;
@@ -778,16 +795,18 @@ public class CheckFileFinder {
 						type = StringCharType.NUMERIC;
 					case 5:
 						type = StringCharType.KATAKANA;
+						length = length/2;
 						break;
 					case 6:
 						
 					case 7:
 					default: 
 						type = StringCharType.ANY;
+						length = length/2;
 						break;
 					}
 
-					obj = new StringConstraint( 0, type, (type == StringCharType.ANY_HALF_WIDTH || type == StringCharType.KATAKANA)? stringDto.getStringItemLength()/2: stringDto.getStringItemLength());
+					obj = new StringConstraint( 0, type, length);
 					contraintList.put(c.getItemCode(), obj);
 					break;
 				case 2:
@@ -1457,6 +1476,21 @@ public class CheckFileFinder {
 		return Optional.empty();
 	}
 	
+	private Optional<DateTimeFormatter> validateDateTime(String value) {
+		List<DateTimeFormatter> dateFormats = createDateTimeFormatter();
+		List<DateTimeFormatter> isDateLst = new ArrayList<>();
+		for(DateTimeFormatter dateFormat : dateFormats) {
+			try {
+			dateFormat.parse(value.trim());
+			isDateLst.add(dateFormat);
+			}catch(Exception e) {
+				System.out.println("HEHHE");
+			}
+		}
+		if(!isDateLst.isEmpty()) return Optional.ofNullable(isDateLst.get(0));
+		return Optional.empty();
+	}
+	
 	private  List<SimpleDateFormat> createSimpleDateFormat(){
 		List<SimpleDateFormat> result = new ArrayList<>();
 		SimpleDateFormat yMd = new SimpleDateFormat("yyyy/MM/dd");
@@ -1471,6 +1505,17 @@ public class CheckFileFinder {
 		SimpleDateFormat dMy1 = new SimpleDateFormat("dd-MM-yyyy");
 		dMy1.setLenient(false);
 		result.add(dMy1);
+		return result;
+	}
+	
+	private  List<DateTimeFormatter> createDateTimeFormatter(){
+		List<DateTimeFormatter> result = new ArrayList<>();
+		DateTimeFormatter yMd = DateTimeFormatter.ofPattern("yyyyMMdd");
+		result.add(yMd);
+		DateTimeFormatter mdy = DateTimeFormatter.ofPattern("MMddyyyy");
+		result.add(mdy);
+		DateTimeFormatter dmy = DateTimeFormatter.ofPattern("ddMMyyyy");
+		result.add(dmy);
 		return result;
 	}
 	private Map<String, Periods> createPeriod(){
