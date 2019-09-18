@@ -221,7 +221,11 @@ export class Kdws03AComponent extends Vue {
             } else if (!_.isEmpty(dataInit.errors)) {
                 for (let i = 0; i < dataInit.errors.length; i++) {
                     await new Promise((next) => {
-                        this.$modal.error(dataInit.errors[i].message).then(() => {
+                        let employeeCode = (_.find(dataInit.lstEmployee, (x) => x.id == dataInit.changeEmployeeIds[0] )).code;
+                        let employeeName = (_.find(dataInit.lstEmployee, (x) => x.id == dataInit.changeEmployeeIds[0] )).businessName;
+                        this.$modal.error(dataInit.errors[i].messageId == 'Msg_1403' ? 
+                            {messageId: 'Msg_1403', messageParams: [employeeCode + ' ' + employeeName]} : 
+                            {messageId: dataInit.errors[i].messageId}).then(() => {
                             if (i == dataInit.errors.length - 1) {
                                 this.$mask('hide');
                                 this.actualTimeSelectedCode = this.actualTimeSelectedCodeTemp;

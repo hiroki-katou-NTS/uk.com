@@ -162,6 +162,10 @@ public class InitScreenMob {
 		// 期間を変更する
 		DatePeriodInfo resultPeriod = processor.changeDateRange(dateRange, null, companyId, sId, screenDto, screenMode,
 				displayFormat, param.dpStateParam);
+		if(resultPeriod == null) {
+			screenDto.setErrorInfomation(DCErrorInfomation.NOT_EMP_IN_HIST.value);
+			return screenDto;
+		}
 		dateRange = resultPeriod.getTargetRange();
 		screenDto.setDateRange(dateRange);
 		screenDto.setPeriodInfo(resultPeriod);
@@ -210,6 +214,7 @@ public class InitScreenMob {
 				}
 			});
 		}
+		screenDto.setChangeEmployeeIds(changeEmployeeIds);
 
 		screenDto.setLstData(
 				displayFormat == 1

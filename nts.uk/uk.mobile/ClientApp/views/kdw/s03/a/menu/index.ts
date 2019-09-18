@@ -24,7 +24,7 @@ export class KdwS03AMenuComponent extends Vue {
 
     public openErrorList() {
         if (this.params.displayFormat == '1') {
-            this.$modal('kdws03c', {}, { type: 'dropback', title: 'KDWS03_6' })
+            this.$modal('kdws03c', {}, { type: 'dropback' })
                 .then((v) => {
 
                 });
