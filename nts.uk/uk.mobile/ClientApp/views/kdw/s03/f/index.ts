@@ -60,7 +60,10 @@ export class KdwS03FComponent extends Vue {
         if (type == ValueType.DATE) {
             return this.$dt.date(new Date(value));
         }
-
+        if (type == ValueType.AMOUNT) {
+            return '￥' + value;
+        }
+        
         return value;
     }
 }

@@ -52,9 +52,6 @@ export class KdwS03EComponent extends Vue {
     }
     //修正画面に遷移できるかチェックする
     public checkEsxit(lstA: Array<any>, lstErr: Array<number>) {
-        
-        let esxit = true;
-        // _.each(lstErr, function(err) {
         for (let k = 0; k < lstErr.length; k++) {
             let esxit1 = false;
             for (let i = 0; i < lstA.length; i++) {
@@ -67,7 +64,7 @@ export class KdwS03EComponent extends Vue {
             if (!esxit1) {return false;}
         }
 
-        return false;
+        return true;
     }
     //実績を修正する
     public editData() {
