@@ -74,8 +74,8 @@ public class NotificationOfLossInsExportCSVService extends ExportService<Notific
 		if(!domain.getFdNumber().isPresent()) {
 			throw new BusinessException("MsgQ_5", "QSI013_32");
 		}
-        boolean empWelfarePenInsQualiInfor = empWelfarePenInsQualiInforRepository.checkEmpWelfarePenInsQualiInfor(start, end, empIds);
-        boolean emplHealInsurQualifiInfor= emplHealInsurQualifiInforRepository.checkEmplHealInsurQualifiInfor(start, end, empIds);
+        boolean empWelfarePenInsQualiInfor = empWelfarePenInsQualiInforRepository.checkEmpWelfarePenInsQualiInforEnd(start, end, empIds);
+        boolean emplHealInsurQualifiInfor= emplHealInsurQualifiInforRepository.checkEmplHealInsurQualifiInforEndDate(start, end, empIds);
 		if(domain.getOutputFormat().get() == OutputFormatClass.PEN_OFFICE && empWelfarePenInsQualiInfor && emplHealInsurQualifiInfor) {
 		    throw new BusinessException("Msg_37");
 		}

@@ -26,10 +26,6 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
 
     private static final String REPORT_FILE_NAME = "被保険者資格取得届.pdf";
 
-    private static final int FIRST_ROW_FILL = 3;
-
-    private static final String TITLE = "法定調書用会社の登録";
-
     @Inject
     private JapaneseErasAdapter adapter;
 

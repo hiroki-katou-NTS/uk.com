@@ -70,14 +70,23 @@ module nts.uk.pr.view.qsi013.a.viewmodel {
             self.loadCCG001();
 
             self.startDate.subscribe((data) =>{
+                if(nts.uk.util.isNullOrEmpty(data)){
+                    return;
+                }
                 self.startDateJp(" (" + nts.uk.time.dateInJapanEmpire(data) + ")");
             });
 
             self.endDate.subscribe((data) =>{
+                if(nts.uk.util.isNullOrEmpty(data)){
+                    return;
+                }
                 self.endDateJp(" (" + nts.uk.time.dateInJapanEmpire(data) + ")");
             });
 
             self.filingDate.subscribe((data)=>{
+                if(nts.uk.util.isNullOrEmpty(data)){
+                    return;
+                }
                 self.filingDateJp(" (" + nts.uk.time.dateInJapanEmpire(data) + ")");
             });
         }

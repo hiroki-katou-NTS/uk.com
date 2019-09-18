@@ -35,8 +35,6 @@ public class EmpPenFundSubData {
 
     private String welOfficeNumber2;
 
-    private String healInsNumber;
-
     private String welNumber;
 
     private String healInsUnionNumber;
