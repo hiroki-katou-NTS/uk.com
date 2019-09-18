@@ -29,5 +29,10 @@ export class KdwS03CComponent extends Vue {
         if (!this.createDone) {
             this.$mask('show', {message : true});
         }
+        if (this.displayData.length == 0) {
+            this.$modal.error({ messageId: 'Msg_1528' }).then(() => {
+                this.$close();
+            });
+        }
     }
 }

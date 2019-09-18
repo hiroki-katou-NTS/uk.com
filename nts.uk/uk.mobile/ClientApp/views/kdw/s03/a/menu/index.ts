@@ -26,7 +26,9 @@ export class KdwS03AMenuComponent extends Vue {
         if (this.params.displayFormat == '1') {
             this.$modal('kdws03c', {}, { type: 'dropback' })
                 .then((v) => {
-
+                    if (v != 'NotCloseMenu') {
+                        this.$close();
+                    }
                 });
         } else {
             this.$modal('kdws03d', {}, { type: 'dropback', title: 'KDWS03_6' })
