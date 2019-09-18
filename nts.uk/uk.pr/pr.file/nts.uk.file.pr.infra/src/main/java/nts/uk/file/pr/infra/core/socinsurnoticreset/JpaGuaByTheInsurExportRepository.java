@@ -33,7 +33,7 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("      BUSINESS_NAME_KANA,");
         exportSQL.append("      PERSON_NAME,");
         exportSQL.append("      PERSON_NAME_KANA,");
-        exportSQL.append("      BIRTHDAY");
+        exportSQL.append("      BIRTHDAY,");
         exportSQL.append(" 	    GENDER,");
         exportSQL.append("      UNDERGOUND_DIVISION,");
         exportSQL.append("      LIVING_ABROAD,");
@@ -69,7 +69,7 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("       (SELECT *");
         exportSQL.append("       FROM QQSMT_EMP_WELF_INS_QC_IF ");
         exportSQL.append("       WHERE END_DATE <= ?endDate AND END_DATE >= ?startDate");
-        exportSQL.append("       AND EMPLOYEE_ID IN ('%s') ) wi");
+        exportSQL.append("        ) wi");
         exportSQL.append("       ON qi.EMPLOYEE_ID = wi.EMPLOYEE_ID");
         exportSQL.append("  LEFT JOIN ");
         exportSQL.append("       (SELECT * ");
@@ -138,9 +138,9 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
                 .continReemAfterRetirement(i[26] == null ? 0 : ((BigDecimal)i[26]).intValue())
                 .remarksAndOtherContent(i[27] == null ? 0 : ((BigDecimal)i[27]).intValue())
                 .healPrefectureNo(i[28] == null ? 0 : ((BigDecimal) i[28]).intValue())
-                .welPrefectureNo(i[28] == null ? 0 : ((BigDecimal) i[28]).intValue())
-                .healInsCtg(i[29] == null ? 0 : ((BigDecimal) i[29]).intValue())
-                .distin(i[29] == null ? "" : i[29].toString())
+                .welPrefectureNo(i[29] == null ? 0 : ((BigDecimal) i[29]).intValue())
+                .healInsCtg(i[30] == null ? 0 : ((BigDecimal) i[30]).intValue())
+                .distin(i[31] == null ? "" : i[31].toString())
                 .build()
         ).collect(Collectors.toList());
     }
@@ -204,13 +204,14 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("  QSII.REASON_OTHER,");
         exportSQL.append("  QSII.REASON_AND_OTHER_CONTENTS, ");
         exportSQL.append("  QSIO.HEALTH_INSURANCE_OFFICE_NUMBER,");
-        exportSQL.append("  QSIO.WELFARE_PENSION_OFFICE_NUMBER ");
+        exportSQL.append("  QSIO.WELFARE_PENSION_OFFICE_NUMBER, ");
+        exportSQL.append("  SOCIAL_INSURANCE_OFFICE_CD");
         exportSQL.append(" FROM ");
         exportSQL.append("   (SELECT * ");
         exportSQL.append("    FROM QQSMT_EMP_CORP_OFF_HIS QECOH ");
         exportSQL.append("    WHERE EMPLOYEE_ID IN ('%s') ");
-        exportSQL.append("      AND QECOH.END_DATE <= ?endDate ");
-        exportSQL.append("      AND QECOH.END_DATE >= ?startDate  ) AS ROOT ");
+        exportSQL.append("      AND QECOH.START_DATE <= ?endDate ");
+        exportSQL.append("      AND QECOH.START_DATE >= ?startDate  ) AS ROOT ");
         exportSQL.append(" LEFT JOIN QQSMT_SOC_INSU_NOTI_SET QSINS ON QSINS.CID = ?cid  ");
         exportSQL.append(" AND QSINS.USER_ID = ?userId ");
         exportSQL.append(" LEFT JOIN QPBMT_SOCIAL_INS_OFFICE QSIO ");
@@ -223,14 +224,14 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("   (SELECT * ");
         exportSQL.append("    FROM QQSMT_TEM_PEN_PART_INFO QTPPITEM ");
         exportSQL.append("    WHERE ");
-        exportSQL.append("       QTPPITEM.END_DATE <= ?endDate ");
-        exportSQL.append("      AND QTPPITEM.END_DATE >= ?startDate ) AS QTPPI ");
+        exportSQL.append("       QTPPITEM.START_DATE <= ?endDate ");
+        exportSQL.append("      AND QTPPITEM.START_DATE >= ?startDate ) AS QTPPI ");
         exportSQL.append(" ON QTPPI.EMPLOYEE_ID = ROOT.EMPLOYEE_ID ");
         exportSQL.append(" LEFT JOIN ");
         exportSQL.append("   (SELECT * ");
         exportSQL.append("    FROM QQSMT_EMP_PEN_INS QEPITEM ");
-        exportSQL.append("    WHERE QEPITEM.END_DATE <= ?endDate ");
-        exportSQL.append("      AND QEPITEM.END_DATE >= ?startDate ) AS QEPI ");
+        exportSQL.append("    WHERE QEPITEM.START_DATE <= ?endDate ");
+        exportSQL.append("      AND QEPITEM.START_DATE >= ?startDate ) AS QEPI ");
         exportSQL.append(" ON QEPI.EMPLOYEE_ID = ROOT.EMPLOYEE_ID ");
         exportSQL.append(" LEFT JOIN QQSMT_SOC_ISACQUISI_INFO QSII ");
         exportSQL.append(" ON QSII.EMPLOYEE_ID = ROOT.EMPLOYEE_ID AND QSII.CID =  QSIO.CID ");
@@ -239,17 +240,18 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append(" LEFT JOIN ");
         exportSQL.append("   (SELECT * ");
         exportSQL.append("    FROM QQSMT_EMP_HEAL_INSUR_QI QEHIQTEM ");
-        exportSQL.append("    WHERE QEHIQTEM.END_DATE <= ?endDate ");
-        exportSQL.append("      AND QEHIQTEM.END_DATE >= ?startDate ) AS QEHIQ ");
+        exportSQL.append("    WHERE QEHIQTEM.START_DATE <= ?endDate ");
+        exportSQL.append("      AND QEHIQTEM.START_DATE >= ?startDate ) AS QEHIQ ");
         exportSQL.append(" ON QEHIQ.EMPLOYEE_ID = ROOT.EMPLOYEE_ID ");
         exportSQL.append(" LEFT JOIN QQSMT_MULTI_EMP_WORK_IF QMEWI ");
         exportSQL.append(" ON QMEWI.EMPLOYEE_ID = ROOT.EMPLOYEE_ID ");
         exportSQL.append(" LEFT JOIN ");
         exportSQL.append("   (SELECT * ");
         exportSQL.append("    FROM QQSMT_EMP_WELF_INS_QC_IF QEWIQITEMP ");
-        exportSQL.append("    WHERE QEWIQITEMP.END_DATE <= ?endDate ");
-        exportSQL.append("      AND QEWIQITEMP.END_DATE >= ?startDate ) AS QEWIQI ");
+        exportSQL.append("    WHERE QEWIQITEMP.START_DATE <= ?endDate ");
+        exportSQL.append("      AND QEWIQITEMP.START_DATE >= ?startDate ) AS QEWIQI ");
         exportSQL.append(" ON QEWIQI.EMPLOYEE_ID = ROOT.EMPLOYEE_ID ");
+        exportSQL.append("  ORDER BY SOCIAL_INSURANCE_OFFICE_CD");
         String sql = String.format(exportSQL.toString(), empIds.stream()
                 .map(String::valueOf)
                 .collect(Collectors.joining("','")));

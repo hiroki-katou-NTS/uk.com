@@ -154,7 +154,7 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
     }
 
     private int convertDateToYearMonth(String date){
-        return Integer.parseInt(date.substring(0,4) + date.substring(4,6));
+        return Integer.parseInt(date.substring(0,4) + date.substring(5,7));
     }
 
     private void fillHealthInsAssociationOffice(List<InsLossDataExport> healthInsAssociation, Worksheet worksheet,List<SocialInsurancePrefectureInformation> infor, CompanyInfor company, SocialInsurNotiCreateSet ins, GeneralDate baseDate){
@@ -170,6 +170,7 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
                 cells.get(startRow, 5).setValue(data.getHealInsInherenPr().length() > 20 ? data.getHealInsInherenPr().substring(10, 20) : "");
                 cells.get(startRow, 6).setValue(data.getHealInsInherenPr().length() > 30 ? data.getHealInsInherenPr().substring(20, 30) : "");
                 cells.get(startRow, 7).setValue(data.getHealInsInherenPr().length() > 40 ? data.getHealInsInherenPr().substring(30, 40) : "");
+                startRow = startRow + 1;
                 cells.get(startRow, 8).setValue("[kanri]");
                 startRow = startRow + 1;
                 cells.get(startRow, 1).setValue("001");

@@ -207,4 +207,6 @@ public class GuaByTheInsurExportDto {
      * 理由（その他内容）
      */
     private String reasonOtherContent;
+
+    private String officeCd;
 }

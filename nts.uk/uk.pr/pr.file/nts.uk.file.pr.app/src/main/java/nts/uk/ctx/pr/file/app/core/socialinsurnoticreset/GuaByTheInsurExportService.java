@@ -4,6 +4,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.time.GeneralDate;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsurancePrefectureInformation;
 import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsurancePrefectureInformationRepository;
 import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.OutputFormatClass;
@@ -100,11 +101,12 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
                 .build();
 
         if (exportServiceContext.getQuery().getTypeExport() == TYPE_EXPORT_EXCEL_FILE) {
-            checkAcquiNotiInsurProcess(exportServiceContext.getQuery().getEmpIds(), exportServiceContext.getQuery().getStartDate(), exportServiceContext.getQuery().getStartDate());
+            checkAcquiNotiInsurProcess(exportServiceContext.getQuery().getEmpIds(), exportServiceContext.getQuery().getStartDate(), exportServiceContext.getQuery().getEndDate());
             generatorExcel.generate(exportServiceContext.getGeneratorContext(), exportData);
-            return;
         }
-        generatorCsv.generate(exportServiceContext.getGeneratorContext(), exportData);
+        if (exportServiceContext.getQuery().getTypeExport() != TYPE_EXPORT_EXCEL_FILE) {
+            generatorCsv.generate(exportServiceContext.getGeneratorContext(), exportData);
+        }
     }
 
     private List<GuaByTheInsurExportDto> printInsuredQualifiNoti(List<String> employeeIds, GeneralDate startDate, GeneralDate endDate) {
@@ -132,6 +134,9 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
 
         List<GuaByTheInsurExportDto> data = new ArrayList<>();
         List<Object[]> dataExport = repo.getDataExport(employeeIds,cid,uid,startDate,endDate);
+        if(dataExport == null || dataExport.isEmpty()) {
+            throw new BusinessException("Msg_37");
+        }
         dataExport.forEach(element -> {
             GuaByTheInsurExportDto temp = new GuaByTheInsurExportDto();
 
@@ -148,7 +153,7 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
                     //C1_7
                     temp.setBusinessName(element[1] != null ? element[1].toString() : "");
                     //C1_8
-                    temp.setBusinessName1(element[11] != null ? element[12].toString() : "");
+                    temp.setBusinessName1(element[11] != null ? element[11].toString() : "");
                     //C1_9
                     temp.setPhoneNumber(element[7] != null ? element[7].toString() : "");
                     //C2_28
@@ -158,7 +163,6 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
             }
             else{
                 //set data to file output
-                {
                     //C1_4
                     temp.setOfficePostalCode(element[10] != null ? element[10].toString() : "");
                     //C1_5
@@ -175,7 +179,6 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
                     temp.setStreetAddress(element[4] != null ? element[4].toString() : "");
                     //C2_29
                     temp.setAddressKana(element[6] != null ? element[6].toString() : "");
-                }
             }
             if(Integer.valueOf(element[14].toString()) == Enum_BussEsimateClass_HEAL_INSUR_OFF_ARR_SYMBOL){
                 //C1_1
@@ -285,6 +288,7 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
             temp.setReasonOther(element[50] != null ? Integer.valueOf(element[50].toString()) : 1);
             //C2_39
             temp.setReasonOtherContent(element[51] != null ? element[51].toString() : "");
+            temp.setOfficeCd(element[52] != null ? element[52].toString() : "");
             data.add(temp);
         });
 
