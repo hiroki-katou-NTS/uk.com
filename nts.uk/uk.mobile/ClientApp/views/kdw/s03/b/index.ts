@@ -1,9 +1,10 @@
 import { Vue, _ } from '@app/provider';
 import { component, Prop, Watch } from '@app/core/component';
+import { TimeDuration } from '@app/utils';
 import { KdwS03DComponent } from 'views/kdw/s03/d';
 import { Kdl001Component } from 'views/kdl/001';
 import { KDL002Component } from 'views/kdl/002';
-import { TimeDuration } from '@app/utils';
+import { Cdl008AComponent } from 'views/cdl/s08/a';
 
 @component({
     name: 'kdws03b',
@@ -17,7 +18,8 @@ import { TimeDuration } from '@app/utils';
     components: {
         'kdws03d': KdwS03DComponent,
         'kdls01': Kdl001Component,
-        'kdls02': KDL002Component
+        'kdls02': KDL002Component,
+        'cdls08a': Cdl008AComponent
     },
 })
 export class KdwS03BComponent extends Vue {
@@ -42,12 +44,18 @@ export class KdwS03BComponent extends Vue {
     private masterData: any = {
         workType: [],
         workTime: [],
+        servicePlace: [],
+        reason: [],
         workPlace: [],
+        classification: [],
+        possition: [],
+        employment: [],
         lstDoWork: [],
         lstCalc: [],
         lstCalcCompact: [],
         lstReasonGoOut: [],
-        lstTimeLimit: []
+        lstTimeLimit: [],
+        businessType: []
     };
     private masterDialogParam: Array<number> = [];
     private primitiveAll: any = {};
@@ -145,6 +153,43 @@ export class KdwS03BComponent extends Vue {
         self.masterData.workTime = data[MasterType.KDLS01_WorkTime];
         self.masterData.workType = data[MasterType.KDLS02_WorkType];
         self.masterData.workPlace = data[MasterType.CDLS08_WorkPlace];
+        // tạo dữ liệu conbo box tạm thời cho các dialog chưa dc làm
+        _.forEach(data[MasterType.KDLS10_ServicePlace], (o) => { 
+            self.masterData.servicePlace.push({ 'value0': o.code, 'value': o.name });
+        });
+        if (_.isEmpty(self.masterData.servicePlace)) {
+            self.masterData.servicePlace.push({ 'value0': '', 'value': 'なし' });
+        }
+        _.forEach(data[MasterType.KDLS32_Reason], (o) => { 
+            self.masterData.reason.push({ 'value0': o.code, 'value': o.name });
+        });
+        if (_.isEmpty(self.masterData.reason)) {
+            self.masterData.reason.push({ 'value0': '', 'value': 'なし' });
+        }
+        _.forEach(data[MasterType.KCPS02_Classification], (o) => { 
+            self.masterData.classification.push({ 'value0': o.code, 'value': o.name });
+        });
+        if (_.isEmpty(self.masterData.classification)) {
+            self.masterData.classification.push({ 'value0': '', 'value': 'なし' });
+        }
+        _.forEach(data[MasterType.KCPS03_Possition], (o) => { 
+            self.masterData.possition.push({ 'value0': o.code, 'value': o.name });
+        });
+        if (_.isEmpty(self.masterData.possition)) {
+            self.masterData.possition.push({ 'value0': '', 'value': 'なし' });
+        }
+        _.forEach(data[MasterType.KCPS01_Employment], (o) => { 
+            self.masterData.employment.push({ 'value0': o.code, 'value': o.name });
+        });
+        if (_.isEmpty(self.masterData.employment)) {
+            self.masterData.employment.push({ 'value0': '', 'value': 'なし' });
+        }
+        _.forEach(data[MasterType.KCP001_BusinessType], (o) => { 
+            self.masterData.businessType.push({ 'value0': o.code, 'value': o.name });
+        });
+        if (_.isEmpty(self.masterData.businessType)) {
+            self.masterData.businessType.push({ 'value0': '', 'value': 'なし' });
+        }
     }
 
     private formatData(rowData: RowData) {
@@ -292,6 +337,7 @@ export class KdwS03BComponent extends Vue {
         switch (value) {
             case MasterType.KDLS02_WorkType: self.openKDLS02(rowData); break;
             case MasterType.KDLS01_WorkTime: self.openKDLS01(rowData); break;
+            case MasterType.CDLS08_WorkPlace: self.openCDLS08(rowData); break;
             default: break;
         }
     }
@@ -333,6 +379,38 @@ export class KdwS03BComponent extends Vue {
                 rowData.value0 = data.selectedWorkTime.code;
                 rowData.value = _.find(self.masterData.workTime, (o) => o.code == rowData.value0).name;
             }
+        });
+    }
+
+    private openCDLS08(rowData: RowData) {
+        let self = this;
+        let id = '';
+        let selectedItem: any = _.find(self.masterData.workPlace, (o) => o.code == rowData.value0);
+        if (!_.isUndefined(selectedItem)) {
+            id = selectedItem.id;
+        }
+        self.$modal(
+            'cdls08a', 
+            {
+                workPlaceType: 0,
+                startMode: false,
+                baseDate: self.params.date,
+                systemType: 2,
+                referenceRangeNarrow: true,
+                selectedItem: [id],
+                isSelectionRequired: true
+            }, 
+            { 
+                title: 'CDLS08_1' 
+            }
+        ).then((data: any) => {
+            if (data) {
+                let selectedWkp = _.find(self.masterData.workPlace, (o) => o.id == data.workplaceId);
+                rowData.value0 = selectedWkp.code;
+                rowData.value = selectedWkp.name;
+            } 
+            
+            return 0;    
         });
     }
 
@@ -436,13 +514,18 @@ export enum ItemType {
 export enum MasterType {
     KDLS02_WorkType = 1,
     KDLS01_WorkTime = 2,
+    KDLS10_ServicePlace = 3,
+    KDLS32_Reason = 4,
     CDLS08_WorkPlace = 5,
+    KCPS02_Classification = 6,
+    KCPS03_Possition = 7,
+    KCPS01_Employment = 8,
     DoWork = 9,
     Calc = 10,
     ReasonGoOut = 11,
     Remasks = 12,
     TimeLimit = 13,
-    BusinessType = 14
+    KCP001_BusinessType = 14
 }
 
 interface RowData {

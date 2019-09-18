@@ -47,7 +47,8 @@
     -->
     <!-- ButtonDialog -->
     <div class="row" v-if="rowData.getItemType==itemType.InputStringCode || rowData.getItemType==itemType.ButtonDialog">
-      <div class="col-12">
+      <div class="col-12" v-if="rowData.getItemMasterType==masterType.KDLS02_WorkType ||
+                            rowData.getItemMasterType==masterType.KDLS01_WorkTime || rowData.getItemMasterType==masterType.CDLS08_WorkPlace">
         <div class="row pl-2 mb-1">{{ rowData.getItemText }}</div>
         <div class="row mb-1">
           <div class="col-2 p-1 text-right">
@@ -63,6 +64,47 @@
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-12" v-else>
+        <div class="row pl-2 mb-1">{{ rowData.getItemText }}</div>
+        <div class="row">
+          <div class="col-2 p-1 text-right">
+            <i class="fas fa-exclamation-circle align-bottom text-danger" v-if="rowData.getColorCode=='ERROR'"></i>
+            <i class="fas fa-exclamation-triangle align-bottom text-danger" v-if="rowData.getColorCode=='ALARM'"></i>
+          </div>
+          <div class="col-9 pl-0 pr-0">
+            <nts-dropdown v-if="rowData.getItemMasterType==masterType.KDLS10_ServicePlace" v-model="rowData.value0">
+              <option v-for="(item, k) in masterData.servicePlace" v-bind:key="k" :value="item.value0">
+                {{item.value0}} &nbsp;&nbsp;&nbsp;  {{item.value}}
+              </option>
+            </nts-dropdown>
+            <nts-dropdown v-if="rowData.getItemMasterType==masterType.KDLS32_Reason" v-model="rowData.value0">
+              <option v-for="(item, k) in masterData.reason" v-bind:key="k" :value="item.value0">
+                {{item.value0}} &nbsp;&nbsp;&nbsp;  {{item.value}}
+              </option>
+            </nts-dropdown>
+            <nts-dropdown v-if="rowData.getItemMasterType==masterType.KCPS02_Classification" v-model="rowData.value0">
+              <option v-for="(item, k) in masterData.classification" v-bind:key="k" :value="item.value0">
+                {{item.value0}} &nbsp;&nbsp;&nbsp;  {{item.value}}
+              </option>
+            </nts-dropdown>
+            <nts-dropdown v-if="rowData.getItemMasterType==masterType.KCPS03_Possition" v-model="rowData.value0">
+              <option v-for="(item, k) in masterData.possition" v-bind:key="k" :value="item.value0">
+                {{item.value0}} &nbsp;&nbsp;&nbsp;  {{item.value}}
+              </option>
+            </nts-dropdown>
+            <nts-dropdown v-if="rowData.getItemMasterType==masterType.KCPS01_Employment" v-model="rowData.value0">
+              <option v-for="(item, k) in masterData.employment" v-bind:key="k" :value="item.value0">
+                {{item.value0}} &nbsp;&nbsp;&nbsp;  {{item.value}}
+              </option>
+            </nts-dropdown>
+            <nts-dropdown v-if="rowData.getItemMasterType==masterType.KCP001_BusinessType" v-model="rowData.value0">
+              <option v-for="(item, k) in masterData.businessType" v-bind:key="k" :value="item.value0">
+                {{item.value0}} &nbsp;&nbsp;&nbsp;  {{item.value}}
+              </option>
+            </nts-dropdown>
           </div>
         </div>
       </div>
