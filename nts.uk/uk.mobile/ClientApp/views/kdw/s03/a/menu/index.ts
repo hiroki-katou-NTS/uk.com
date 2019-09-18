@@ -2,6 +2,7 @@ import { Vue, _ } from '@app/provider';
 import { component, Prop } from '@app/core/component';
 import { storage } from '@app/utils';
 import { KdwS03CComponent } from 'views/kdw/s03/c';
+import { KdwS03DComponent } from 'views/kdw/s03/d';
 import { KdwS03FComponent } from 'views/kdw/s03/f';
 import { KdwS03GComponent } from 'views/kdw/s03/g';
 
@@ -12,6 +13,7 @@ import { KdwS03GComponent } from 'views/kdw/s03/g';
     resource: require('../resources.json'),
     components: {
         'kdws03c': KdwS03CComponent,
+        'kdws03d': KdwS03DComponent,
         'kdws03f': KdwS03FComponent,
         'kdws03g': KdwS03GComponent,
     }
@@ -31,7 +33,7 @@ export class KdwS03AMenuComponent extends Vue {
                     }
                 });
         } else {
-            this.$modal('kdws03d', {}, { type: 'dropback', title: 'KDWS03_6' })
+            this.$modal('kdws03d', {}, { type: 'dropback'})
                 .then((v) => {
 
                 });

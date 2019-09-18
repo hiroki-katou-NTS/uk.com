@@ -1,5 +1,7 @@
 <template>
     <div class="kdws03a">
+        <div class="modal-header" style="display:none">
+        </div>
         <ul class="list-group border-0">
             <li class="list-group-item border-0" v-if="params.allConfirmButtonDis">
                 <button type="button" class="btn btn-primary w-100 btn-lg" v-on:click="processConfirmAll('confirm')">{{'KDWS03_24' | i18n}}</button></li>
