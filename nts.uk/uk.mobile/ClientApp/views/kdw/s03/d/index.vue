@@ -1,7 +1,7 @@
 <template>
 <div class="kdws03d">
   <div class="modal-header uk-bg-white-smoke pl-0 pr-0 rounded-0">
-    <div class="row uk-text-quote w-100 ml-0 mr-0" v-on:click="$close()">
+    <div class="row uk-text-quote w-100 ml-0 mr-0" v-on:click="$close('NotCloseMenu')">
       <div class="col-1 pl-1"><i class="fas fa-arrow-left"></i></div>
       <div><span>{{ params.employeeName }}</span></div>
     </div>

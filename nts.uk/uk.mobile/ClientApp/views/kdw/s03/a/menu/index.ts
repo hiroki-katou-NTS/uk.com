@@ -21,8 +21,13 @@ import { KdwS03GComponent } from 'views/kdw/s03/g';
 export class KdwS03AMenuComponent extends Vue {
     @Prop({ default: () => ({}) })
     public params: MenuParam;
+    public dailyCorrectionState: any = null;
 
     public title: string = 'KdwS03AMenu';
+
+    public created() {
+        this.dailyCorrectionState = _.cloneWith(storage.local.getItem('dailyCorrectionState'));
+    }
 
     public openErrorList() {
         if (this.params.displayFormat == '1') {
@@ -33,9 +38,16 @@ export class KdwS03AMenuComponent extends Vue {
                     }
                 });
         } else {
-            this.$modal('kdws03d', {}, { type: 'dropback'})
+            this.$modal('kdws03d', {
+                employeeID: this.dailyCorrectionState.selectedEmployee,
+                employeeName: (_.find(this.dailyCorrectionState.lstEmployee, (x) => x.id == this.dailyCorrectionState.selectedEmployee)).businessName,
+                startDate: this.dailyCorrectionState.dateRange.startDate, 
+                endDate: this.dailyCorrectionState.dateRange.endDate
+            }, { type: 'dropback' })
                 .then((v) => {
-
+                    if (v != 'NotCloseMenu') {
+                        this.$close();
+                    }
                 });
         }
 
@@ -49,24 +61,23 @@ export class KdwS03AMenuComponent extends Vue {
     }
 
     public processConfirmAll(processFlag: string) {
-        let dailyCorrectionState: any = _.cloneWith(storage.local.getItem('dailyCorrectionState'));
         let dataCheckSign: Array<any> = [];
-        let dateRange: any = dailyCorrectionState.dateRange;
+        let dateRange: any = this.dailyCorrectionState.dateRange;
         if (this.$dt.fromString(dateRange.startDate) <= new Date()) {
-            _.forEach(dailyCorrectionState.cellDataLst, (x) => {
+            _.forEach(this.dailyCorrectionState.cellDataLst, (x) => {
                 if (!x.confirmDisable) {
                     dataCheckSign.push({
                         rowId: x.id,
                         itemId: 'sign',
                         value: processFlag == 'confirm' ? true : false,
-                        employeeId: dailyCorrectionState.selectedEmployee,
+                        employeeId: this.dailyCorrectionState.selectedEmployee,
                         date: this.$dt.fromString(x.dateDetail),
                         flagRemoveAll: false
                     });
                 }
             });
 
-            this.$http.post('at', servicePath.confirmAll, dataCheckSign).then((result: { data: any }) => { 
+            this.$http.post('at', servicePath.confirmAll, dataCheckSign).then((result: { data: any }) => {
                 if (processFlag == 'confirm') {
                     this.$modal.info({ messageId: 'Msg_15' });
                 } else {
@@ -80,7 +91,7 @@ export class KdwS03AMenuComponent extends Vue {
             } else {
                 this.$modal.error({ messageId: 'Msg_1546' });
             }
-            
+
         }
     }
 }
