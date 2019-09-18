@@ -180,10 +180,6 @@ module nts.uk.pr.view.qsi013.a.viewmodel {
                 return;
             }
             let employList = self.getListEmpId(self.selectedCode(), self.employeeList());
-            if(employList.length == 0) {
-                dialog.alertError({ messageId: 'Msg_37' });
-                return;
-            }
             let data: any = {
                 socialInsurNotiCreateSet: {
                     officeInformation: self.socInsurNotiCreSet().officeInformation(),

@@ -100,7 +100,7 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
                 .build();
 
         if (exportServiceContext.getQuery().getTypeExport() == TYPE_EXPORT_EXCEL_FILE) {
-            checkAcquiNotiInsurProcess(exportServiceContext.getQuery().getEmpIds(), exportServiceContext.getQuery().getStartDate(), exportServiceContext.getQuery().getStartDate())
+            checkAcquiNotiInsurProcess(exportServiceContext.getQuery().getEmpIds(), exportServiceContext.getQuery().getStartDate(), exportServiceContext.getQuery().getStartDate());
             generatorExcel.generate(exportServiceContext.getGeneratorContext(), exportData);
             return;
         }

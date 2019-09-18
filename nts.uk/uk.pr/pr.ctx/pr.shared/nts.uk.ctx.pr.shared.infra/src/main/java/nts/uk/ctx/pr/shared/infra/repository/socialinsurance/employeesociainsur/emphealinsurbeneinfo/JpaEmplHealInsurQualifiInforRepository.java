@@ -68,15 +68,6 @@ public class JpaEmplHealInsurQualifiInforRepository extends JpaRepository implem
     }
 
     @Override
-    public Optional<EmplHealInsurQualifiInfor> getEmplHealInsurQualifiInforById(String employeeId, String hisId){
-        List<QqsmtEmpHealInsurQi> qqsmtEmpHealInsurQi = this.queryProxy().query(SELECT_BY_KEY_STRING, QqsmtEmpHealInsurQi.class)
-        .setParameter("employeeId", employeeId)
-        .setParameter("hisId", hisId)
-        .getList();
-        return qqsmtEmpHealInsurQi == null ? Optional.empty() : Optional.of(QqsmtEmpHealInsurQi.toDomain(qqsmtEmpHealInsurQi));
-    }
-
-    @Override
     public Optional<HealInsurNumberInfor> getHealInsurNumberInforByHisId(String hisId) {
         return this.queryProxy().query(SELECT_BY_HISID, QqsmtEmpHealInsurQi.class)
                 .setParameter("hisId", hisId)
