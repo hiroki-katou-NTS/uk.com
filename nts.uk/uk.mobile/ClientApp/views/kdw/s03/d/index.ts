@@ -45,7 +45,8 @@ export class KdwS03DComponent extends Vue {
             employeeId: self.params.employeeID, 
             empName: self.params.employeeName, 
             date: self.params.date, 
-            code: rowData.code
+            code: rowData.code,
+            attendanceItemList: rowData.attendanceItemList
         }, { type : 'dropback' } )
         .then((v) => {
 
@@ -61,5 +62,6 @@ interface RowData {
     date: Date;
     code: string;
     name: string;
-    employeeID: string;    
+    employeeID: string; 
+    attendanceItemList: Array<number>;   
 }
