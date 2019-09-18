@@ -325,7 +325,8 @@ export class KdwS03BComponent extends Vue {
         self.$modal('kdws03d', { 
             employeeID: self.params.employeeID, 
             employeeName: self.params.employeeName,
-            date: self.params.date 
+            startDate: self.params.date, 
+            endDate: self.params.date
         }, { type : 'dropback' } )
         .then((v) => {
 
@@ -443,12 +444,29 @@ export class KdwS03BComponent extends Vue {
                 case ItemType.ButtonDialog: 
                     itemValue = new DPItemValue(attendanceItem, rowData.value0, self.params, self.itemValues);
                     break;
+                case ItemType.InputNumber:
+                    rowData.value = self.screenData[rowData.key];
+                    itemValue = new DPItemValue(attendanceItem, rowData.value, self.params, self.itemValues);
+                    break;
+                case ItemType.InputMoney:
+                    rowData.value = self.screenData[rowData.key];
+                    itemValue = new DPItemValue(attendanceItem, rowData.value, self.params, self.itemValues);
+                    break;
                 case ItemType.ComboBox: 
                     itemValue = new DPItemValue(attendanceItem, parseInt(rowData.value0), self.params, self.itemValues);
                     break;
-                default: 
+                case ItemType.Time:
                     rowData.value = self.screenData[rowData.key];
                     itemValue = new DPItemValue(attendanceItem, rowData.value, self.params, self.itemValues);
+                    break;
+                case ItemType.TimeWithDay:
+                    itemValue = new DPItemValue(attendanceItem, rowData.value, self.params, self.itemValues);
+                    break;
+                case ItemType.InputStringChar:
+                    rowData.value = self.screenData[rowData.key];
+                    itemValue = new DPItemValue(attendanceItem, rowData.value, self.params, self.itemValues);
+                    break;
+                default: 
                     break;
             }
             let oldRow = _.find(self.oldData, (o) => o.key == rowData.key);
