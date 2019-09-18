@@ -149,7 +149,7 @@ module nts.uk.ui.koExtentions {
                                         let currentExp = _.find(ui.newExpressions, (exp) => exp.fieldName === ui.columnKey);
                                         
                                         if (!_.isNil(currentExp)) {
-                                            let isFilterTrue = currentExp.expr.toLowerCase() === "true"; 
+                                            let isFilterTrue = currentExp.expr.toLowerCase() === "check"; 
                                             $treegrid.closest(".nts-treegridview").find(".ui-iggrid-filterrow")
                                                 .find("td[aria-describedby='" + treeId + "_" + ui.columnKey + "']")
                                                 .find(".ui-iggrid-filtereditor")
@@ -166,21 +166,30 @@ module nts.uk.ui.koExtentions {
                                         });
                                         $treegrid.data("customExpression", shouldRemove);
                                     } 
+                                    
+                                    $treegrid.data("filterIdx", 0);
+                                    $treegrid.data("previousCol", null);
                                 }, dropDownOpening: function (evt, ui) {
-                                    let dropId = ui.dropDown.attr("id"), idParts = dropId.split("_"), colName = idParts[idParts.length - 1],
+                                    let colName = ui.dropDown.attr("aria-describedby"),
                                         currentCol = _.find(ui.owner.grid.options.columns, (c) => c.key === colName);
-                                    if (!_.isNil(currentCol) && currentCol.formatType === "checkbox" && !_.isNil(currentCol.filterOpts)) {
+                                    if (!_.isNil(currentCol) && currentCol.formatType === "checkbox") {
                                         let filterOpts = ui.dropDown.find(".ui-iggrid-filterddlistitemicons"),
-                                            trueOpt = _.find(filterOpts, (f) => !_.isNil($(f).data("cond")) && $(f).data("cond").toLowerCase() === "true"),
-                                            falseOpt = _.find(filterOpts, (f) => !_.isNil($(f).data("cond")) && $(f).data("cond").toLowerCase() === "false");
+                                            trueOpt = _.find(filterOpts, (f) => !_.isNil($(f).data("cond")) && $(f).data("cond").toString().toLowerCase().contains("check")),
+                                            falseOpt = _.find(filterOpts, (f) => !_.isNil($(f).data("cond")) && $(f).data("cond").toString().toLowerCase().contains("noncheck")),
+                                            norTrueOpt = _.find(filterOpts, (f) => !_.isNil($(f).data("cond")) && $(f).data("cond").toString().toLowerCase() === "true"),
+                                            norFalseOpt = _.find(filterOpts, (f) => !_.isNil($(f).data("cond")) && $(f).data("cond").toString().toLowerCase() === "false");
                                         
-                                        $(trueOpt).find(".ui-iggrid-filterddlistitemcontainer").html(currentCol.filterOpts.trueOpt);//nts.uk.resource.getText("Enum_UseAtr_Use"));
-                                        $(falseOpt).find(".ui-iggrid-filterddlistitemcontainer").html(currentCol.filterOpts.falseOpt);//nts.uk.resource.getText("Enum_UseAtr_NotUse"));
+                                        $(norTrueOpt).remove();
+                                        $(norFalseOpt).remove();
+                                        
+                                        if (!_.isNil(currentCol.filterOpts)) {
+                                            $(trueOpt).find(".ui-iggrid-filterddlistitemcontainer").html(currentCol.filterOpts.trueOpt);//nts.uk.resource.getText("Enum_UseAtr_Use"));
+                                            $(falseOpt).find(".ui-iggrid-filterddlistitemcontainer").html(currentCol.filterOpts.falseOpt);//nts.uk.resource.getText("Enum_UseAtr_NotUse"));
+                                        }
                                     } 
                                 },
                                 filterSummaryAlwaysVisible : false });
             }
-            
 
             $treegrid.data("expand", new ExpandNodeHolder());
             $treegrid.data("autoExpanding", false);
