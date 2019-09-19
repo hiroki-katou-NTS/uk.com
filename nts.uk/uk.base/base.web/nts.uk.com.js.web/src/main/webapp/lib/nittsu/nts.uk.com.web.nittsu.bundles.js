@@ -6009,7 +6009,7 @@ var nts;
                         var $button = $(e.target);
                         var $dammy = $("<div>")
                             .css({
-                            background: "white",
+                            background: "transparent",
                             position: "absolute",
                             width: $button.outerWidth(),
                             height: parseInt($button.css("top"), 10),
@@ -6158,7 +6158,7 @@ var nts;
                                     $dialogDocument.on("keydown", ":tabbable", function (evt) {
                                         var code = evt.which || evt.keyCode;
                                         if (code.toString() === "9") {
-                                            var focusableElements = $dialogContentDoc.find(":tabbable");
+                                            var focusableElements = _.sortBy($dialogContentDoc.find(":tabbable"), function (o) { return parseInt($(o).attr("tabindex")); });
                                             if ($(evt.target).hasClass("ui-dialog-titlebar-close") && evt.shiftKey === false) {
                                                 focusableElements.first().focus();
                                                 evt.preventDefault();
@@ -6173,7 +6173,7 @@ var nts;
                                     $dialogContentDoc.on("keydown", ":tabbable", function (evt) {
                                         var code = evt.which || evt.keyCode;
                                         if (code.toString() === "9") {
-                                            var focusableElements = $dialogContentDoc.find(":tabbable");
+                                            var focusableElements = _.sortBy($dialogContentDoc.find(":tabbable"), function (o) { return parseInt($(o).attr("tabindex")); });
                                             if ($(evt.target).is(focusableElements.last()) && evt.shiftKey === false) {
                                                 focusableElements.first().focus();
                                                 evt.preventDefault();
@@ -7206,6 +7206,13 @@ var nts;
                         _this.symbolPosition = (option !== undefined && option.symbolPosition !== undefined) ? option.symbolPosition : "right";
                         _this.unitID = (option !== undefined && option.unitID !== undefined) ? option.unitID : "";
                         _this.defaultValue = (option !== undefined && !nts.uk.util.isNullOrEmpty(option.defaultValue)) ? option.defaultValue : "";
+                        _this.numberGroup = (option !== undefined && option.numberGroup !== undefined) ? option.numberGroup : null;
+                        if (_this.numberGroup == true) {
+                            _this.grouplength = 3;
+                        }
+                        else if (_this.numberGroup == false) {
+                            _this.grouplength = 0;
+                        }
                         return _this;
                     }
                     return NumberEditorOption;
@@ -7228,6 +7235,13 @@ var nts;
                         _this.textalign = (option !== undefined && option.textalign !== undefined) ? option.textalign : "right";
                         _this.defaultValue = (option !== undefined && !nts.uk.util.isNullOrEmpty(option.defaultValue)) ? option.defaultValue : "";
                         _this.unitID = (option !== undefined && option.unitID !== undefined) ? option.unitID : "";
+                        _this.numberGroup = (option !== undefined && option.numberGroup !== undefined) ? option.numberGroup : null;
+                        if (_this.numberGroup == true) {
+                            _this.grouplength = 3;
+                        }
+                        else if (_this.numberGroup == false) {
+                            _this.grouplength = 0;
+                        }
                         return _this;
                     }
                     return CurrencyEditorOption;
@@ -16354,17 +16368,47 @@ var nts;
                      * Init.
                      */
                     DatePickerBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        var container = $(element);
                         var data = valueAccessor();
                         var value = data.value;
                         var name = data.name !== undefined ? ko.unwrap(data.name) : "";
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
                         var pickOnly = !uk.util.isNullOrUndefined(data.pickOnly) ? ko.unwrap(data.pickOnly) : false;
                         var dateFormat = (data.dateFormat !== undefined) ? ko.unwrap(data.dateFormat) : "YYYY/MM/DD";
+                        var valueFormat = (data.valueFormat !== undefined) ? ko.unwrap(data.valueFormat) : "";
+                        var jumpButtonsDisplay = data.showJumpButtons !== undefined ? ko.unwrap(data.showJumpButtons) : false;
+                        var tabIndex = nts.uk.util.isNullOrEmpty(container.attr("tabindex")) ? "0" : container.attr("tabindex");
+                        var fiscalYear = data.fiscalYear !== undefined ? ko.unwrap(data.fiscalYear) : false;
+                        var dateType = (data.type !== undefined) ? ko.unwrap(data.type) : "";
+                        if (dateType === "yearmonth") {
+                            dateFormat = 'yearmonth';
+                            valueFormat = 'YYYYMM';
+                        }
+                        else if (dateType === "year") {
+                            dateFormat = 'YYYY';
+                            valueFormat = 'YYYY';
+                        }
+                        else if (dateType === "fiscalYear") {
+                            dateFormat = 'YYYY';
+                            valueFormat = 'YYYY';
+                            fiscalYear = true;
+                        }
+                        else if (dateType === "dateWeek") {
+                            dateFormat = 'YYYY/MM/DD ddd';
+                            valueFormat = 'YYYY/MM/DD';
+                        }
+                        else if (dateType === "dateWeekFull") {
+                            dateFormat = 'YYYY/MM/DD dddd';
+                            valueFormat = 'YYYY/MM/DD';
+                        }
+                        else {
+                            dateFormat = 'YYYY/MM/DD';
+                            valueFormat = 'YYYY/MM/DD';
+                        }
                         var ISOFormat = uk.text.getISOFormat(dateFormat);
                         var hasDayofWeek = (ISOFormat.indexOf("ddd") !== -1);
                         var dayofWeekFormat = ISOFormat.replace(/[^d]/g, "");
                         ISOFormat = ISOFormat.replace(/d/g, "").trim();
-                        var valueFormat = (data.valueFormat !== undefined) ? ko.unwrap(data.valueFormat) : "";
                         var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
                         var button = (data.button !== undefined) ? ko.unwrap(data.button) : false;
                         var startDate = (data.startDate !== undefined) ? ko.unwrap(data.startDate) : null;
@@ -16388,7 +16432,6 @@ var nts;
                                 valueType = "moment";
                             }
                         }
-                        var container = $(element);
                         var idString;
                         if (!container.attr("id")) {
                             idString = nts.uk.util.randomId();
@@ -16397,7 +16440,6 @@ var nts;
                             idString = container.attr("id");
                             container.removeAttr("id");
                         }
-                        var tabIndex = nts.uk.util.isNullOrEmpty(container.attr("tabindex")) ? "0" : container.attr("tabindex");
                         container.removeAttr("tabindex");
                         var containerClass = container.attr('class');
                         container.removeClass(containerClass);
@@ -16407,8 +16449,6 @@ var nts;
                         $input.addClass(containerClass).attr("id", idString).attr("data-name", container.data("name"));
                         container.append($input);
                         $input.data("required", required);
-                        var jumpButtonsDisplay = data.showJumpButtons !== undefined ? ko.unwrap(data.showJumpButtons) : false;
-                        var fiscalYear = data.fiscalYear !== undefined ? ko.unwrap(data.fiscalYear) : false;
                         var $prevButton, $nextButton;
                         if (jumpButtonsDisplay) {
                             $prevButton = $("<button/>").addClass("ntsDateNextButton ntsButton ntsDatePickerButton ntsDatePicker_Component auto-height")
@@ -16603,11 +16643,38 @@ var nts;
                         var data = valueAccessor();
                         var value = data.value;
                         var dateFormat = (data.dateFormat !== undefined) ? ko.unwrap(data.dateFormat) : "YYYY/MM/DD";
+                        var valueFormat = (data.valueFormat !== undefined) ? ko.unwrap(data.valueFormat) : ISOFormat;
+                        var fiscalYear = data.fiscalYear !== undefined ? ko.unwrap(data.fiscalYear) : false;
+                        var dateType = (data.type !== undefined) ? ko.unwrap(data.type) : "";
+                        if (dateType === "yearmonth") {
+                            dateFormat = 'yearmonth';
+                            valueFormat = 'YYYYMM';
+                        }
+                        else if (dateType === "year") {
+                            dateFormat = 'YYYY';
+                            valueFormat = 'YYYY';
+                        }
+                        else if (dateType === "fiscalYear") {
+                            dateFormat = 'YYYY';
+                            valueFormat = 'YYYY';
+                            fiscalYear = true;
+                        }
+                        else if (dateType === "dateWeek") {
+                            dateFormat = 'YYYY/MM/DD ddd';
+                            valueFormat = 'YYYY/MM/DD';
+                        }
+                        else if (dateType === "dateWeekFull") {
+                            dateFormat = 'YYYY/MM/DD dddd';
+                            valueFormat = 'YYYY/MM/DD';
+                        }
+                        else {
+                            dateFormat = 'YYYY/MM/DD';
+                            valueFormat = 'YYYY/MM/DD';
+                        }
                         var ISOFormat = uk.text.getISOFormat(dateFormat);
                         var hasDayofWeek = (ISOFormat.indexOf("ddd") !== -1);
                         var dayofWeekFormat = ISOFormat.replace(/[^d]/g, "");
                         ISOFormat = ISOFormat.replace(/d/g, "").trim();
-                        var valueFormat = (data.valueFormat !== undefined) ? ko.unwrap(data.valueFormat) : ISOFormat;
                         var disabled = (data.disabled !== undefined) ? ko.unwrap(data.disabled) : false;
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : undefined;
                         var startDate = (data.startDate !== undefined) ? ko.unwrap(data.startDate) : null;
@@ -18578,10 +18645,23 @@ var nts;
                         return new nts.uk.ui.option.NumberEditorOption();
                     };
                     NumberEditorProcessor.prototype.getFormatter = function (data) {
+                        var option = !nts.uk.util.isNullOrUndefined(data.option) ? ko.toJS(data.option) : {};
+                        if (option.numberGroup == true) {
+                            this.editorOption.grouplength = 3;
+                        }
+                        else if (option.numberGroup == false) {
+                            this.editorOption.grouplength = 0;
+                        }
                         return new uk.text.NumberFormatter({ option: this.editorOption });
                     };
                     NumberEditorProcessor.prototype.getValidator = function (data) {
                         var option = !nts.uk.util.isNullOrUndefined(data.option) ? ko.toJS(data.option) : {}, eOption = $.extend(this.getDefaultOption(), option), required = (data.required !== undefined) ? ko.unwrap(data.required) : false, constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "", name = nts.uk.resource.getControlName(data.name !== undefined ? ko.unwrap(data.name) : "");
+                        if (option.numberGroup == true) {
+                            option.grouplength = 3;
+                        }
+                        else if (option.numberGroup == false) {
+                            option.grouplength = 0;
+                        }
                         // update editor option
                         $.extend(this.editorOption, {
                             required: required,
@@ -22018,7 +22098,7 @@ var nts;
                                     if (!_.isNil(currentCol) && currentCol.formatType === "checkbox" && !_.isNil(currentCol.filterOpts)) {
                                         var currentExp = _.find(ui.newExpressions, function (exp) { return exp.fieldName === ui.columnKey; });
                                         if (!_.isNil(currentExp)) {
-                                            var isFilterTrue = currentExp.expr.toLowerCase() === "true";
+                                            var isFilterTrue = currentExp.expr.toLowerCase() === "check";
                                             $treegrid.closest(".nts-treegridview").find(".ui-iggrid-filterrow")
                                                 .find("td[aria-describedby='" + treeId + "_" + ui.columnKey + "']")
                                                 .find(".ui-iggrid-filtereditor")
@@ -22034,14 +22114,21 @@ var nts;
                                         });
                                         $treegrid.data("customExpression", shouldRemove_1);
                                     }
+                                    $treegrid.data("filterIdx", 0);
+                                    $treegrid.data("previousCol", null);
                                 }, dropDownOpening: function (evt, ui) {
-                                    var dropId = ui.dropDown.attr("id"), idParts = dropId.split("_"), colName = idParts[idParts.length - 1], currentCol = _.find(ui.owner.grid.options.columns, function (c) { return c.key === colName; });
-                                    if (!_.isNil(currentCol) && currentCol.formatType === "checkbox" && !_.isNil(currentCol.filterOpts)) {
-                                        var filterOpts = ui.dropDown.find(".ui-iggrid-filterddlistitemicons"), trueOpt = _.find(filterOpts, function (f) { return !_.isNil($(f).data("cond")) && $(f).data("cond").toLowerCase() === "true"; }), falseOpt = _.find(filterOpts, function (f) { return !_.isNil($(f).data("cond")) && $(f).data("cond").toLowerCase() === "false"; });
-                                        $(trueOpt).find(".ui-iggrid-filterddlistitemcontainer").html(currentCol.filterOpts.trueOpt); //nts.uk.resource.getText("Enum_UseAtr_Use"));
-                                        $(falseOpt).find(".ui-iggrid-filterddlistitemcontainer").html(currentCol.filterOpts.falseOpt); //nts.uk.resource.getText("Enum_UseAtr_NotUse"));
+                                    var colName = ui.dropDown.attr("aria-describedby"), currentCol = _.find(ui.owner.grid.options.columns, function (c) { return c.key === colName; });
+                                    if (!_.isNil(currentCol) && currentCol.formatType === "checkbox") {
+                                        var filterOpts = ui.dropDown.find(".ui-iggrid-filterddlistitemicons"), trueOpt = _.find(filterOpts, function (f) { return !_.isNil($(f).data("cond")) && $(f).data("cond").toString().toLowerCase().contains("check"); }), falseOpt = _.find(filterOpts, function (f) { return !_.isNil($(f).data("cond")) && $(f).data("cond").toString().toLowerCase().contains("noncheck"); }), norTrueOpt = _.find(filterOpts, function (f) { return !_.isNil($(f).data("cond")) && $(f).data("cond").toString().toLowerCase() === "true"; }), norFalseOpt = _.find(filterOpts, function (f) { return !_.isNil($(f).data("cond")) && $(f).data("cond").toString().toLowerCase() === "false"; });
+                                        $(norTrueOpt).remove();
+                                        $(norFalseOpt).remove();
+                                        if (!_.isNil(currentCol.filterOpts)) {
+                                            $(trueOpt).find(".ui-iggrid-filterddlistitemcontainer").html(currentCol.filterOpts.trueOpt); //nts.uk.resource.getText("Enum_UseAtr_Use"));
+                                            $(falseOpt).find(".ui-iggrid-filterddlistitemcontainer").html(currentCol.filterOpts.falseOpt); //nts.uk.resource.getText("Enum_UseAtr_NotUse"));
+                                        }
                                     }
-                                } });
+                                },
+                                filterSummaryAlwaysVisible: false });
                         }
                         $treegrid.data("expand", new ExpandNodeHolder());
                         $treegrid.data("autoExpanding", false);
@@ -22129,6 +22216,7 @@ var nts;
                         $treegrid.setupSearchScroll("igTreeGrid");
                         if (showCheckBox != true) {
                             $treegrid.closest(".nts-treegridview").addClass("no-selector");
+                            $treegrid.closest(".nts-treegridview").find("col[data-skip='true']").addClass("no-width");
                         }
                     };
                     /**
@@ -42311,7 +42399,7 @@ var nts;
                                     if (!_.isNil(currentCol) && currentCol.formatType === "checkbox" && !_.isNil(currentCol.filterOpts)) {
                                         var currentExp = _.find(ui.newExpressions, function (exp) { return exp.fieldName === ui.columnKey; });
                                         if (!_.isNil(currentExp)) {
-                                            var isFilterTrue = currentExp.expr.toLowerCase() === "true";
+                                            var isFilterTrue = currentExp.expr.toLowerCase() === "check";
                                             $treegrid.closest(".nts-treegridview").find(".ui-iggrid-filterrow")
                                                 .find("td[aria-describedby='" + treeId + "_" + ui.columnKey + "']")
                                                 .find(".ui-iggrid-filtereditor")
@@ -42327,14 +42415,22 @@ var nts;
                                         });
                                         $treegrid.data("customExpression", shouldRemove_2);
                                     }
+                                    _.forEach(ui.newExpressions, function (ex) {
+                                        $treegrid.data("filterIdx_" + ex.fieldName, 0);
+                                    });
                                 }, dropDownOpening: function (evt, ui) {
-                                    var dropId = ui.dropDown.attr("id"), idParts = dropId.split("_"), colName = idParts[idParts.length - 1], currentCol = _.find(ui.owner.grid.options.columns, function (c) { return c.key === colName; });
-                                    if (!_.isNil(currentCol) && currentCol.formatType === "checkbox" && !_.isNil(currentCol.filterOpts)) {
-                                        var filterOpts = ui.dropDown.find(".ui-iggrid-filterddlistitemicons"), trueOpt = _.find(filterOpts, function (f) { return !_.isNil($(f).data("cond")) && $(f).data("cond").toLowerCase() === "true"; }), falseOpt = _.find(filterOpts, function (f) { return !_.isNil($(f).data("cond")) && $(f).data("cond").toLowerCase() === "false"; });
-                                        $(trueOpt).find(".ui-iggrid-filterddlistitemcontainer").html(currentCol.filterOpts.trueOpt); //nts.uk.resource.getText("Enum_UseAtr_Use"));
-                                        $(falseOpt).find(".ui-iggrid-filterddlistitemcontainer").html(currentCol.filterOpts.falseOpt); //nts.uk.resource.getText("Enum_UseAtr_NotUse"));
+                                    var colName = ui.dropDown.attr("aria-describedby"), currentCol = _.find(ui.owner.grid.options.columns, function (c) { return c.key === colName; });
+                                    if (!_.isNil(currentCol) && currentCol.formatType === "checkbox") {
+                                        var filterOpts = ui.dropDown.find(".ui-iggrid-filterddlistitemicons"), trueOpt = _.find(filterOpts, function (f) { return !_.isNil($(f).data("cond")) && $(f).data("cond").toString().toLowerCase().contains("check"); }), falseOpt = _.find(filterOpts, function (f) { return !_.isNil($(f).data("cond")) && $(f).data("cond").toString().toLowerCase().contains("noncheck"); }), norTrueOpt = _.find(filterOpts, function (f) { return !_.isNil($(f).data("cond")) && $(f).data("cond").toString().toLowerCase() === "true"; }), norFalseOpt = _.find(filterOpts, function (f) { return !_.isNil($(f).data("cond")) && $(f).data("cond").toString().toLowerCase() === ("false"); });
+                                        $(norTrueOpt).remove();
+                                        $(norFalseOpt).remove();
+                                        if (!_.isNil(currentCol.filterOpts)) {
+                                            $(trueOpt).find(".ui-iggrid-filterddlistitemcontainer").html(currentCol.filterOpts.trueOpt); //nts.uk.resource.getText("Enum_UseAtr_Use"));
+                                            $(falseOpt).find(".ui-iggrid-filterddlistitemcontainer").html(currentCol.filterOpts.falseOpt); //nts.uk.resource.getText("Enum_UseAtr_NotUse"));
+                                        }
                                     }
-                                } });
+                                },
+                                filterSummaryAlwaysVisible: false });
                         }
                         $treegrid.data("expand", new ui_26.koExtentions.ExpandNodeHolder());
                         $treegrid.data("autoExpanding", false);
@@ -42418,6 +42514,7 @@ var nts;
                         $treegrid.setupSearchScroll("igTreeGrid");
                         if (showCheckBox != true) {
                             $treegrid.closest(".nts-treegridview").addClass("no-selector");
+                            $treegrid.closest(".nts-treegridview").find("col[data-skip='true']").addClass("no-width");
                         }
                     };
                     function selectRows($treegrid, selectedValue) {
@@ -42500,7 +42597,7 @@ var nts;
                         RATIO: 0.2,
                         MAX: 30
                     };
-                    $.fn.ntsTreeView = function (action, param) {
+                    $.fn.ntsTreeView = function (action, param, param2) {
                         var $tree = $(this);
                         switch (action) {
                             case 'getSelected':
@@ -42512,7 +42609,7 @@ var nts;
                             case 'virtualScrollTo':
                                 return virtualScroll($tree, param);
                             case 'formatColumns':
-                                return formatColumns($tree, param);
+                                return formatColumns($tree, param, param2);
                             case 'disableRows':
                                 return disableRows($tree, param);
                             case 'enableRows':
@@ -42579,78 +42676,79 @@ var nts;
                         });
                         $tree.data("rowDisabled", _.difference(disabled, rowIds));
                     }
-                    function formatColumns($tree, columns) {
+                    function formatColumns($tree, columns, features) {
                         $tree.data("CB_SELECTED", {});
                         $tree.data("UNIQ", _.isNil($tree.attr("id")) ? nts.uk.util.randomId() : $tree.attr("id"));
+                        var helper = {
+                            updateX: function (data, val, key, childKey, primaryKey) {
+                                if (!_.isEmpty(data)) {
+                                    _.forEach(data, function (child) {
+                                        var rId = child[primaryKey], controlCls = "nts-grid-control-" + $tree.data("UNIQ") + "-" + key + "-" + rId, $wrapper = $tree.find("." + controlCls), checkbox = $wrapper.find("input[type='checkbox']");
+                                        if (checkbox.length > 0) {
+                                            if (checkbox.is(":checked") !== val) {
+                                                $wrapper.data("changeByParent", true);
+                                                checkbox.click();
+                                            }
+                                        }
+                                        else {
+                                            $tree.data("igTreeGrid").dataSource.setCellValue(rId, key, val, true);
+                                            $tree.data("igTreeGridUpdating")._notifyCellUpdated(rId);
+                                            helper.updateX(child[childKey], val, key, childKey, primaryKey);
+                                        }
+                                    });
+                                }
+                            }, checkChildSiblings: function (source, key, childKey, primaryKey) {
+                                var isAllCheck = _.isNil(_.find(source[childKey], function (c) {
+                                    var controlCls = "nts-grid-control-" + $tree.data("UNIQ") + "-" + key + "-" + c[primaryKey], checkbox = $tree.find("." + controlCls).find("input[type='checkbox']");
+                                    return !checkbox.is(":checked");
+                                }));
+                                var controlCls = "nts-grid-control-" + $tree.data("UNIQ") + "-" + key + "-" + source[primaryKey], $wrapper = $tree.find("." + controlCls), $checkbox = $wrapper.find("input[type='checkbox']");
+                                if (isAllCheck !== $checkbox.is(":checked")) {
+                                    $wrapper.data("changeByChild", true);
+                                    $checkbox.click();
+                                }
+                                return isAllCheck;
+                            }, checkSiblings: function (rowId, source, key, childKey, primaryKey) {
+                                //let source = $tree.igTreeGrid("option", "dataSource");
+                                for (var i = 0; i < source.length; i++) {
+                                    if (!_.isEmpty(source[i][childKey])) {
+                                        var isParentOf = _.find(source[i][childKey], function (c) { return c[primaryKey] === rowId; });
+                                        if (isParentOf) {
+                                            var isAllCheck = helper.checkChildSiblings(source[i], key, childKey, primaryKey);
+                                            return { process: true, value: isAllCheck };
+                                        }
+                                        else {
+                                            var checkRel = helper.checkSiblings(rowId, source[i][childKey], key, childKey, primaryKey);
+                                            if (checkRel.process) {
+                                                var isAllCheck = helper.checkChildSiblings(source[i], key, childKey, primaryKey);
+                                                return { process: true, value: isAllCheck };
+                                            }
+                                        }
+                                    }
+                                }
+                                return { process: false, value: false };
+                            }, getTrueRowData: function (rowId, primaryKey, childKey) {
+                                var dataSource = $tree.data("igTreeGrid").dataSource._origDs, flatSource = helper.flatChild(dataSource, childKey);
+                                return _.find(flatSource, function (s) { return s[primaryKey] === rowId; });
+                            }, flatChild: function (dataSource, childKey) {
+                                var result = [];
+                                if (_.isEmpty(dataSource)) {
+                                    return result;
+                                }
+                                _.forEach(dataSource, function (s) {
+                                    result = _.concat(result, s, helper.flatChild(s[childKey], childKey));
+                                });
+                                return result;
+                            }
+                        };
                         var newColumns = _.map(columns, function (colO) {
                             var col = _.cloneDeep(colO);
                             if (_.lowerCase(col.formatType) === "checkbox") {
-                                var oldFormatter = col.formatte, isParentCompute_1 = _.isNil(col.parentCompute) || !col.parentCompute ? false : true, helper_1 = {
-                                    updateX: function (data, val, key, childKey, primaryKey) {
-                                        if (!_.isEmpty(data)) {
-                                            _.forEach(data, function (child) {
-                                                var rId = child[primaryKey], controlCls = "nts-grid-control-" + $tree.data("UNIQ") + "-" + key + "-" + rId, $wrapper = $tree.find("." + controlCls), checkbox = $wrapper.find("input[type='checkbox']");
-                                                if (checkbox.length > 0) {
-                                                    if (checkbox.is(":checked") !== val) {
-                                                        $wrapper.data("changeByParent", true);
-                                                        checkbox.click();
-                                                    }
-                                                }
-                                                else {
-                                                    $tree.data("igTreeGrid").dataSource.setCellValue(rId, key, val, true);
-                                                    $tree.data("igTreeGridUpdating")._notifyCellUpdated(rId);
-                                                    helper_1.updateX(child[childKey], val, key, childKey, primaryKey);
-                                                }
-                                            });
-                                        }
-                                    }, checkChildSiblings: function (source, key, childKey, primaryKey) {
-                                        var isAllCheck = _.isNil(_.find(source[childKey], function (c) {
-                                            var controlCls = "nts-grid-control-" + $tree.data("UNIQ") + "-" + key + "-" + c[primaryKey], checkbox = $tree.find("." + controlCls).find("input[type='checkbox']");
-                                            return !checkbox.is(":checked");
-                                        }));
-                                        var controlCls = "nts-grid-control-" + $tree.data("UNIQ") + "-" + key + "-" + source[primaryKey], $wrapper = $tree.find("." + controlCls), $checkbox = $wrapper.find("input[type='checkbox']");
-                                        if (isAllCheck !== $checkbox.is(":checked")) {
-                                            $wrapper.data("changeByChild", true);
-                                            $checkbox.click();
-                                        }
-                                        return isAllCheck;
-                                    }, checkSiblings: function (rowId, source, key, childKey, primaryKey) {
-                                        //let source = $tree.igTreeGrid("option", "dataSource");
-                                        for (var i = 0; i < source.length; i++) {
-                                            if (!_.isEmpty(source[i][childKey])) {
-                                                var isParentOf = _.find(source[i][childKey], function (c) { return c[primaryKey] === rowId; });
-                                                if (isParentOf) {
-                                                    var isAllCheck = helper_1.checkChildSiblings(source[i], key, childKey, primaryKey);
-                                                    return { process: true, value: isAllCheck };
-                                                }
-                                                else {
-                                                    var checkRel = helper_1.checkSiblings(rowId, source[i][childKey], key, childKey, primaryKey);
-                                                    if (checkRel.process) {
-                                                        var isAllCheck = helper_1.checkChildSiblings(source[i], key, childKey, primaryKey);
-                                                        return { process: true, value: isAllCheck };
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        return { process: false, value: false };
-                                    }, getTrueRowData: function (rowId, primaryKey, childKey) {
-                                        var dataSource = $tree.data("igTreeGrid").dataSource._origDs, flatSource = helper_1.flatChild(dataSource, childKey);
-                                        return _.find(flatSource, function (s) { return s[primaryKey] === rowId; });
-                                    }, flatChild: function (dataSource, childKey) {
-                                        var result = [];
-                                        if (_.isEmpty(dataSource)) {
-                                            return result;
-                                        }
-                                        _.forEach(dataSource, function (s) {
-                                            result = _.concat(result, s, helper_1.flatChild(s[childKey], childKey));
-                                        });
-                                        return result;
-                                    }
-                                };
+                                var oldFormatter = col.formatte, isParentCompute_1 = _.isNil(col.parentCompute) || !col.parentCompute ? false : true;
                                 col.formatter = function (value, rowObj) {
                                     if (_.isNil(rowObj))
-                                        return value;
-                                    var primaryKey = $tree.data("igTreeGrid").options.primaryKey, childKey = $tree.data("igTreeGrid").options.childDataKey, rowId = rowObj[primaryKey], trueRowValue = helper_1.getTrueRowData(rowId, primaryKey, childKey);
+                                        return "";
+                                    var primaryKey = $tree.data("igTreeGrid").options.primaryKey, childKey = $tree.data("igTreeGrid").options.childDataKey, rowId = rowObj[primaryKey], trueRowValue = helper.getTrueRowData(rowId, primaryKey, childKey);
                                     if (_.isNil(trueRowValue) || _.isNil(trueRowValue[col.key]))
                                         return "";
                                     var rowsDisables = $tree.data("rowDisabled"), isRowEnable = _.isNil(rowsDisables) ? true : _.isNil(_.find(rowsDisables, function (r) { return r === rowId; })), controlCls = "nts-grid-control-" + $tree.data("UNIQ") + "-" + col.key + "-" + rowId, $wrapper = $("<div/>").addClass(controlCls).css({ "text-align": 'center', "height": "30px" }), $container = $("<div/>").append($wrapper), $_self = $tree, data = {
@@ -42666,12 +42764,12 @@ var nts;
                                                 $tree.data("igTreeGrid").dataSource.setCellValue(rowId, col.key, val, true);
                                                 $tree.data("igTreeGridUpdating")._notifyCellUpdated(rowId);
                                                 if (isParentCompute_1) {
-                                                    helper_1.updateX(rowObj[childKey], val, col.key, childKey, primaryKey);
+                                                    helper.updateX(rowObj[childKey], val, col.key, childKey, primaryKey);
                                                     if ($wrapper_1.data("changeByParent")) {
                                                         $wrapper_1.data("changeByParent", false);
                                                         return;
                                                     }
-                                                    helper_1.checkSiblings(rowId, $tree.igTreeGrid("option", "dataSource"), col.key, childKey, primaryKey);
+                                                    helper.checkSiblings(rowId, $tree.igTreeGrid("option", "dataSource"), col.key, childKey, primaryKey);
                                                 }
                                                 $tree.trigger("cellChanging");
                                                 $tree.trigger("checkboxChanging", { value: val, rowId: rowId, column: col.key, rowData: rowObj, element: $wrapper_1 });
@@ -42711,6 +42809,55 @@ var nts;
                             }
                             return col;
                         });
+                        var filterFeature = _.find(features, function (f) { return f.name === "Filtering"; });
+                        if (!_.isNil(filterFeature)) {
+                            var filterFunc_1 = function (value, expression, dataType, ignoreCase, preciseDateFormat, colKey) {
+                                var flatData = $tree.data("igTreeGrid").dataSource._flatData, currentIdx = $tree.data("filterIdx"), prevCol = $tree.data("previousCol"), primaryKey = $tree.data("igTreeGrid").options.primaryKey, childKey = $tree.data("igTreeGrid").options.childDataKey;
+                                if (currentIdx === 0) {
+                                    $tree.data("previousCol", colKey);
+                                }
+                                if (!_.isNil(prevCol) && prevCol !== colKey) {
+                                    currentIdx--;
+                                }
+                                var trueRowValue = helper.getTrueRowData(flatData[currentIdx][primaryKey], primaryKey, childKey);
+                                currentIdx++;
+                                $tree.data("filterIdx", currentIdx);
+                                if (!_.isNil(trueRowValue)) {
+                                    if (expression === "check") {
+                                        return trueRowValue[colKey] == true;
+                                    }
+                                    else {
+                                        return trueRowValue[colKey] == false;
+                                    }
+                                }
+                                return false;
+                            };
+                            var customFilter = _.map(_.filter(newColumns, function (c) { return c.formatType === "checkbox"; }), function (c) {
+                                return {
+                                    columnKey: c.key,
+                                    customConditions: {
+                                        check: {
+                                            labelText: "true",
+                                            expressionText: "check",
+                                            requireExpr: false,
+                                            filterFunc: function (value, expression, dataType, ignoreCase, preciseDateFormat, colKey) {
+                                                return filterFunc_1(value, expression, dataType, ignoreCase, preciseDateFormat, colKey);
+                                            }
+                                        },
+                                        nonCheck: {
+                                            labelText: "false",
+                                            expressionText: "non_check",
+                                            requireExpr: false,
+                                            filterFunc: function (value, expression, dataType, ignoreCase, preciseDateFormat, colKey) {
+                                                return filterFunc_1(value, expression, dataType, ignoreCase, preciseDateFormat, colKey);
+                                            }
+                                        }
+                                    },
+                                    conditionList: []
+                                };
+                            });
+                            filterFeature.columnSettings = customFilter;
+                        }
                         return newColumns;
                     }
                     function getSelected($tree) {
@@ -43917,7 +44064,7 @@ var nts;
                         if (endDate.isBefore(startDate)) {
                             self.$ntsDateRange.ntsError('set', self.getMessage("MsgB_21", [self.rangeName]), "MsgB_21");
                         }
-                        else if (self.dateFormat === "YYYY/MM/DD" && self.maxRange === "oneMonth") {
+                        else if (self.isFullDateFormat() && self.maxRange === "oneMonth") {
                             var maxDate = startDate.add(31, "days");
                             if (endDate.isSameOrAfter(maxDate)) {
                                 self.$ntsDateRange.ntsError('set', self.getMessage("MsgB_22", [self.rangeName]), "MsgB_22");
@@ -43925,7 +44072,7 @@ var nts;
                         }
                         else if (self.maxRange === "oneYear") {
                             var maxDate = _.cloneDeep(startDate);
-                            if (self.dateFormat === "YYYY/MM/DD") {
+                            if (self.isFullDateFormat()) {
                                 var currentDate = startDate.date();
                                 var isEndMonth = currentDate === startDate.endOf("months").date();
                                 var isStartMonth = currentDate === 1;
@@ -43940,7 +44087,7 @@ var nts;
                                     maxDate = maxDate.date(currentDate - 1);
                                 }
                             }
-                            else if (self.dateFormat === "YYYY/MM") {
+                            else if (self.isYearMonthFormat()) {
                                 maxDate = maxDate.add(1, 'year').add(-1, "months");
                             }
                             else {
@@ -43951,6 +44098,12 @@ var nts;
                             }
                         }
                     };
+                    DateRangeHelper.prototype.isFullDateFormat = function () {
+                        return this.dateFormat === 'YYYY/MM/DD';
+                    };
+                    DateRangeHelper.prototype.isYearMonthFormat = function () {
+                        return this.dateFormat === 'YYYY/MM';
+                    };
                     DateRangeHelper.prototype.createStartBinding = function (parentBinding, name, format) {
                         var self = this;
                         return { required: parentBinding.required,
@@ -43958,8 +44111,10 @@ var nts;
                             value: self.startValue,
                             dateFormat: self.dateFormat,
                             valueFormat: self.dateFormat,
+                            'type': parentBinding.type,
                             enable: parentBinding.enable,
-                            disabled: parentBinding.disabled
+                            disabled: parentBinding.disabled,
+                            pickOnly: parentBinding.pickOnly
                         };
                     };
                     DateRangeHelper.prototype.createEndBinding = function (parentBinding, name) {
@@ -43969,8 +44124,10 @@ var nts;
                             value: self.endValue,
                             dateFormat: self.dateFormat,
                             valueFormat: self.dateFormat,
+                            'type': parentBinding.type,
                             enable: parentBinding.enable,
-                            disabled: parentBinding.disabled
+                            disabled: parentBinding.disabled,
+                            pickOnly: parentBinding.pickOnly
                         };
                     };
                     return DateRangeHelper;

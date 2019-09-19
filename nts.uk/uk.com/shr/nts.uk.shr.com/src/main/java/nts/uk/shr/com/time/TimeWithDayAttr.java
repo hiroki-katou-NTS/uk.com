@@ -11,7 +11,7 @@ import nts.uk.shr.com.enumcommon.DayAttr;
 @TimeRange(min = "-12:00", max = "71:59")
 public class TimeWithDayAttr extends TimeClockPrimitiveValue<TimeWithDayAttr>{
 
-	private static final int MAX_MINUTES_IN_DAY = 24 * 60;
+	public static final int MAX_MINUTES_IN_DAY = 24 * 60;
 
 	/** 12:00 at the previous day */
 	public static final TimeWithDayAttr THE_PREVIOUS_DAY_1200 = new TimeWithDayAttr(-12 * 60);

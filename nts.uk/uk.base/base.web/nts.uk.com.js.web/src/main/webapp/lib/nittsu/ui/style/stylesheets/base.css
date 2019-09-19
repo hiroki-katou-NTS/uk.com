@@ -3046,6 +3046,7 @@ button.nts-switch-button[disabled].selected {
   color: #333;
 }
 
+
 /* line 32, ../sass/components/_treegridview.scss */
 .no-selector table th:first-child.ui-iggrid-rowselector-class {
   visibility: hidden;
@@ -3053,6 +3054,10 @@ button.nts-switch-button[disabled].selected {
 /* line 36, ../sass/components/_treegridview.scss */
 .no-selector table th:first-child.ui-iggrid-rowselector-header {
   visibility: hidden;
+}
+
+.no-width{
+	width: 0% !important;
 }
 
 /* line 2, ../sass/components/_combobox.scss */
