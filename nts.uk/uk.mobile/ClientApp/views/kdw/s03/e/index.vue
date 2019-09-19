@@ -14,24 +14,24 @@
     <div>{{'KDWS03_43' | i18n}}</div>
     <div class="row pt-2">
         <!-- E3_1,2: Label コード－ -->
-        <div class="col-4">{{'KDWS03_42' | i18n}}</div>
-        <div class="col-1">{{'KDWS03_46' | i18n}}</div>
+        <div class="col-4 p-0 pl-3">{{'KDWS03_42' | i18n}}</div>
+        <div class="col-1 p-0">{{'KDWS03_46' | i18n}}</div>
         <!-- E3_3: コード -->
-        <div class="col-7">{{errorInfo.code}}</div>
+        <div class="col-7 p-0">{{errorInfo.code}}</div>
     </div>
     <div class="row pt-2">
         <!-- E4_1,2: Label エラー内容－ -->
-        <div class="col-4">{{'KDWS03_43' | i18n}}</div>
-        <div class="col-1">{{'KDWS03_46' | i18n}}</div>
+        <div class="col-4 p-0 pl-3">{{'KDWS03_43' | i18n}}</div>
+        <div class="col-1 p-0">{{'KDWS03_46' | i18n}}</div>
         <!-- E4_3: エラー内容 -->
-        <div class="col-7">{{errorInfo.name}}</div>
+        <div class="col-7 p-0">{{errorInfo.name}}</div>
     </div>
     <div class="row pt-2">
         <!-- E5_1,2: Label メーセージ－ -->
-        <div class="col-4">{{'KDWS03_44' | i18n}}</div>
-        <div class="col-1">{{'KDWS03_46' | i18n}}</div>
+        <div class="col-4 p-0 pl-3">{{'KDWS03_44' | i18n}}</div>
+        <div class="col-1 p-0">{{'KDWS03_46' | i18n}}</div>
         <!-- E5_3: メーセージ -->
-        <div class="col-7">{{errorInfo.errMsg}}</div>
+        <div class="col-7 p-0">{{errorInfo.errMsg}}</div>
     </div>
     <!-- E7_1: 修正ボタン -->
     <div class="fixed-bottom border-0 button-shuusei" v-if="displayE71">

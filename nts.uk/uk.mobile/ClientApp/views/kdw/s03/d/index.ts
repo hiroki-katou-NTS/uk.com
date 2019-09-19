@@ -52,6 +52,9 @@ export class KdwS03DComponent extends Vue {
             if (paramOpenB != undefined && paramOpenB.openB) {
                 self.$close(paramOpenB);
             }
+            if (paramOpenB != 'NotCloseMenu') {
+                this.$close();
+            }
         });
     }
 }

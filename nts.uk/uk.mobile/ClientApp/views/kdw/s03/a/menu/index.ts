@@ -59,11 +59,19 @@ export class KdwS03AMenuComponent extends Vue {
 
     }
     public openKdws03f(param: number) {
-        this.$modal('kdws03f', {}, { type: 'dropback' });
+        this.$modal('kdws03f', {}, { type: 'dropback' }).then((v: any) => {
+            if (v != 'NotCloseMenu') {
+                this.$close();
+            }
+        });
     }
     public openKdws03g(param: number) {
         console.log(param);
-        this.$modal('kdws03g', { 'remainOrtime36': param }, { type: 'dropback' });
+        this.$modal('kdws03g', { 'remainOrtime36': param }, { type: 'dropback' }).then((v: any) => {
+            if (v != 'NotCloseMenu') {
+                this.$close();
+            }
+        });
     }
 
     public processConfirmAll(processFlag: string) {
