@@ -562,11 +562,10 @@ export class Kdws03AComponent extends Vue {
         }
 
         self.$modal('kdws03b', {
-            'rowId': rowData.id,
             'employeeID': employeeID,
             'employeeName': employeeName,
             'date': date,
-            'data': rowData.rowData,
+            'rowData': rowData,
             'paramData': paramData
         },
             { type: 'dropback' })
@@ -601,11 +600,10 @@ export class Kdws03AComponent extends Vue {
                     }
                     
                     self.$modal('kdws03b', {
-                        'rowId': '',
                         'employeeID': paramOpenB.employeeId,
                         'employeeName': paramOpenB.employeeName,
                         'date': paramOpenB.date,
-                        'data': rowData.rowData,
+                        'rowData': rowData,
                         'paramData': self.paramData
                     },
                         { type: 'dropback' })
