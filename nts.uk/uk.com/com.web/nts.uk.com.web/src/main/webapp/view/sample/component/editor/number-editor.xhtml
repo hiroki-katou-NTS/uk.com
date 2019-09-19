@@ -106,7 +106,7 @@
 			value: ko.observable(12),
 			constraint: '',
 			option: new nts.uk.ui.option.NumberEditorOption({
-				grouplength: 3,
+				numberGroup: true,
 				decimallength: 2,
 				placeholder: "Placeholder for number editor",
 				width: "",
@@ -145,7 +145,7 @@
             value: ko.observable(1200),
             constraint: '',
             option: new nts.uk.ui.option.CurrencyEditorOption({
-                grouplength: 3,
+                numberGroup: true,
                 decimallength: 2,
                 currencyformat: "JPY"
             }),
@@ -226,7 +226,15 @@
 															</thead>
 															<tbody>
 																<tr>
-																	<td>grouplength<br/><i>(optional)</i></td>
+																	<td>numberGroup<br/><i>(optional)</i></td>
+																	<td>
+																		<b>Type:</b> KnockoutObservable&lt;boolean&gt; | boolean<br/>
+																		<b>Default:</b> null<br/>
+																		group number with length 3
+																	</td>
+																</tr>
+																<tr>
+																	<td>grouplength<br/><i>(optional, Deprecated)</i></td>
 																	<td>
 																		<b>Type:</b> KnockoutObservable&lt;number&gt; | number<br/>
 																		<b>Default:</b> 0<br/>
@@ -317,7 +325,15 @@
 															</thead>
 															<tbody>
 																<tr>
-																	<td>grouplength<br/><i>(optional)</i></td>
+																	<td>numberGroup<br/><i>(optional)</i></td>
+																	<td>
+																		<b>Type:</b> KnockoutObservable&lt;boolean&gt; | boolean<br/>
+																		<b>Default:</b> null<br/>
+																		group number with length 3
+																	</td>
+																</tr>
+																<tr>
+																	<td>grouplength<br/><i>(optional, Deprecated)</i></td>
 																	<td>
 																		<b>Type:</b> KnockoutObservable&lt;number&gt; | number<br/>
 																		<b>Default:</b> 0<br/>

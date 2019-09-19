@@ -257,14 +257,14 @@ module nts.uk.ui.koExtentions {
             let endDate = moment(oldValue.endDate, self.dateFormat);
             if (endDate.isBefore(startDate)) {
                 self.$ntsDateRange.ntsError('set', self.getMessage("MsgB_21", [self.rangeName]), "MsgB_21");    
-            } else if(self.dateFormat === "YYYY/MM/DD" && self.maxRange === "oneMonth"){
+            } else if(self.isFullDateFormat() && self.maxRange === "oneMonth"){
                 let maxDate = startDate.add(31, "days");
                 if(endDate.isSameOrAfter(maxDate)){
                     self.$ntsDateRange.ntsError('set', self.getMessage("MsgB_22", [self.rangeName]), "MsgB_22");         
                 }
             } else if (self.maxRange === "oneYear"){
                 let maxDate = _.cloneDeep(startDate);
-                if(self.dateFormat === "YYYY/MM/DD"){
+                if(self.isFullDateFormat()){
                     let currentDate = startDate.date();
                     let isEndMonth = currentDate === startDate.endOf("months").date();
                     let isStartMonth = currentDate === 1;
@@ -276,7 +276,7 @@ module nts.uk.ui.koExtentions {
                     } else {
                         maxDate = maxDate.date(currentDate - 1);    
                     }    
-                } else if(self.dateFormat === "YYYY/MM"){
+                } else if(self.isYearMonthFormat()){
                     maxDate = maxDate.add(1, 'year').add(-1, "months");   
                 } else {
                     maxDate = maxDate.add(1, 'year');
@@ -287,6 +287,16 @@ module nts.uk.ui.koExtentions {
             }  
         }
         
+        private isFullDateFormat(): boolean {
+            
+            return this.dateFormat === 'YYYY/MM/DD';    
+        }
+        
+        private isYearMonthFormat(): boolean {
+            
+            return this.dateFormat === 'YYYY/MM';    
+        }
+        
         public createStartBinding(parentBinding: any, name, format: string): any {
             let self = this;
             return { required: parentBinding.required, 
@@ -294,8 +304,10 @@ module nts.uk.ui.koExtentions {
                      value: self.startValue, 
                      dateFormat: self.dateFormat, 
                      valueFormat: self.dateFormat, 
+                     'type': parentBinding.type,
                      enable: parentBinding.enable, 
-                     disabled: parentBinding.disabled 
+                     disabled: parentBinding.disabled,
+                     pickOnly: parentBinding.pickOnly 
                    };
         }
         
@@ -305,9 +317,11 @@ module nts.uk.ui.koExtentions {
                      name: self.endName, 
                      value: self.endValue, 
                      dateFormat: self.dateFormat, 
-                     valueFormat: self.dateFormat, 
+                     valueFormat: self.dateFormat,  
+                     'type': parentBinding.type,
                      enable: parentBinding.enable, 
-                     disabled: parentBinding.disabled 
+                     disabled: parentBinding.disabled,
+                     pickOnly: parentBinding.pickOnly
                    };
         }
     }

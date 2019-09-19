@@ -46,7 +46,7 @@ __viewContext.ready(function() {
                 constraint: '',
                 option: new editoroption.CurrencyEditorOption({
                     width: "200",
-                    grouplength: 3,
+                    numberGroup: true,
                     decimallength: 2,
                     currencyformat: "JPY"
                 }),
@@ -60,7 +60,7 @@ __viewContext.ready(function() {
                 constraint: '',
                 option: new editoroption.CurrencyEditorOption({
                     width: "200",
-                    grouplength: 3,
+                    numberGroup: false,
                     decimallength: 2,
                     currencyformat: "USD"
                 }),
