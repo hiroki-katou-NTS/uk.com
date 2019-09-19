@@ -98,13 +98,18 @@ export class Kdws03AComponent extends Vue {
             }
             self.timePeriodAllInfo = data;
             _.remove(self.actualTimeOptionDisp);
+            let selectItem = 0;
             if (data.lstRange && data.lstRange.length > 0) {
                 for (let i = 0; i < data.lstRange.length; i++) {
                     let startDate = data.lstRange[i].startDate,
                         endDate = data.lstRange[i].endDate;
+                    if (data.targetRange.startDate == startDate) {
+                        selectItem = i; 
+                    }
                     self.actualTimeOptionDisp.push({ code: i, name: (i + 1) + ': ' + this.$dt(startDate, 'M/D') + '～' + this.$dt(endDate, 'M/D') });
                 }
             }
+            this.actualTimeSelectedCode = selectItem;
         });
     }
 
