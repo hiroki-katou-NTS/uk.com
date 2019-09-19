@@ -287,9 +287,8 @@ public class InitScreenMob {
 		// confirmResults,
 		// approvalResults));
 
-		// Map<Pair<String, GeneralDate>, ConfirmStatusActualResult> mapConfirmResult =
-		// confirmResults.stream().collect(Collectors.toMap(x ->
-		// Pair.of(x.getEmployeeId(), x.getDate()), x -> x, (x, y) -> x));
+		Map<Pair<String, GeneralDate>, ConfirmStatusActualResult> mapConfirmResult = confirmResults.stream().
+				collect(Collectors.toMap(x ->Pair.of(x.getEmployeeId(), x.getDate()), x -> x, (x, y) -> x));
 		Map<Pair<String, GeneralDate>, ApprovalStatusActualResult> mapApprovalResults = approvalResults.stream()
 				.collect(Collectors.toMap(x -> Pair.of(x.getEmployeeId(), x.getDate()), x -> x, (x, y) -> x));
 
@@ -366,13 +365,11 @@ public class InitScreenMob {
 			data.addCellData(new DPCellDataDto(DPText.LOCK_APPLICATION_LIST, "", "", ""));
 
 			// set checkbox sign
-			// ConfirmStatusActualResult dataSign =
-			// mapConfirmResult.get(Pair.of(data.getEmployeeId(), data.getDate()));
-			// data.setSign(dataSign == null ? false : dataSign.isStatus());
+			ConfirmStatusActualResult dataSign = mapConfirmResult.get(Pair.of(data.getEmployeeId(), data.getDate()));
+			data.setSign(dataSign == null ? false : dataSign.isStatus());
 			// state check box sign
-			// boolean disableSignApp = disableSignMap.containsKey(data.getEmployeeId() +
-			// "|" + data.getDate())
-			// && disableSignMap.get(data.getEmployeeId() + "|" + data.getDate());
+			// boolean disableSignApp = disableSignMap.containsKey(data.getEmployeeId() + "|" + data.getDate()) && 
+					// disableSignMap.get(data.getEmployeeId() + "|" + data.getDate());
 
 			ApprovalStatusActualResult dataApproval = mapApprovalResults
 					.get(Pair.of(data.getEmployeeId(), data.getDate()));

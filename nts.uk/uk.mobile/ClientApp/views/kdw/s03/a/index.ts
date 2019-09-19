@@ -63,6 +63,7 @@ export class Kdws03AComponent extends Vue {
     public actualTimeSelectedCodeTemp: number = 0;
     public yearMonthTemp: number = 0;
     public selectedEmployeeTemp: string = '';
+    public selectedDateTemp: Date = null;
     public dPCorrectionMenuDto: any = {
         allConfirmButtonDis: false,
         errorReferButtonDis: false,
@@ -135,9 +136,10 @@ export class Kdws03AComponent extends Vue {
 
     @Watch('selectedDate')
     public changeDate(value: any, valueOld: any) {
-        if (_.isNil(valueOld)) {
+        if (_.isNil(valueOld) || this.selectedDate == this.selectedDateTemp) {
             return;
         }
+        this.selectedDateTemp = valueOld;
         this.startPage();
     }
 
@@ -216,7 +218,14 @@ export class Kdws03AComponent extends Vue {
                     messageId = 'Msg_1543';
                 }
                 this.$modal.error({ messageId }).then(() => {
-                    this.$goto('ccg008a');
+                    this.$mask('hide');
+                    if (this.displayFormat == '0') {
+                        this.actualTimeSelectedCode = this.actualTimeSelectedCodeTemp;
+                        this.yearMonth = this.yearMonthTemp;
+                        this.selectedEmployee = this.selectedEmployeeTemp;
+                    } else {
+                        this.selectedDate = this.selectedDateTemp;
+                    }
                 });
             } else if (!_.isEmpty(dataInit.errors)) {
                 for (let i = 0; i < dataInit.errors.length; i++) {
@@ -228,9 +237,13 @@ export class Kdws03AComponent extends Vue {
                             {messageId: dataInit.errors[i].messageId}).then(() => {
                             if (i == dataInit.errors.length - 1) {
                                 this.$mask('hide');
-                                this.actualTimeSelectedCode = this.actualTimeSelectedCodeTemp;
-                                this.yearMonth = this.yearMonthTemp;
-                                this.selectedEmployee = this.selectedEmployeeTemp;
+                                if (this.displayFormat == '0') {
+                                    this.actualTimeSelectedCode = this.actualTimeSelectedCodeTemp;
+                                    this.yearMonth = this.yearMonthTemp;
+                                    this.selectedEmployee = this.selectedEmployeeTemp;
+                                } else {
+                                    this.selectedDate = this.selectedDateTemp;
+                                }
                             }
                             next();
                         });
@@ -241,7 +254,7 @@ export class Kdws03AComponent extends Vue {
                     this.processMapData(result.data);
                     next();
                 });
-                storage.local.setItem('dailyCorrectionState', {
+                storage.session.setItem('dailyCorrectionState', {
                     screenMode: self.screenMode,
                     displayFormat: self.displayFormat,
                     selectedEmployee: self.selectedEmployee,

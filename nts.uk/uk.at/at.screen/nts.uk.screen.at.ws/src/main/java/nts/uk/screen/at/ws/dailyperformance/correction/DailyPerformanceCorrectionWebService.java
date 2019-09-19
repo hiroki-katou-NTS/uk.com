@@ -233,8 +233,11 @@ public class DailyPerformanceCorrectionWebService {
 	public DailyPerformanceCorrectionDto initScreen(DPCorrectionInitParam param) throws InterruptedException{
 		param.dpStateParam = (DPCorrectionStateParam)session.getAttribute("dpStateParam");
 		DailyPerformanceCorrectionDto dtoResult = this.initScreenMob.initMOB(param);
-		session.setAttribute("domainOlds", dtoResult.getDomainOld());
 		session.setAttribute("dpStateParam", dtoResult.getStateParam());
+		if (dtoResult.getErrorInfomation() != 0 || !dtoResult.getErrors().isEmpty()) {
+			return dtoResult;
+		}
+		session.setAttribute("domainOlds", dtoResult.getDomainOld());		
 		//add
 		session.setAttribute("domainOldForLog", cloneListDto(dtoResult.getDomainOld()));
 		session.setAttribute("domainEdits", null);

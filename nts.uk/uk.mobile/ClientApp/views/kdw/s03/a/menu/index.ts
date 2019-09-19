@@ -26,7 +26,7 @@ export class KdwS03AMenuComponent extends Vue {
     public title: string = 'KdwS03AMenu';
 
     public created() {
-        this.dailyCorrectionState = _.cloneWith(storage.local.getItem('dailyCorrectionState'));
+        this.dailyCorrectionState = _.cloneWith(storage.session.getItem('dailyCorrectionState'));
     }
 
     public openErrorList() {
@@ -44,7 +44,7 @@ export class KdwS03AMenuComponent extends Vue {
             this.$modal('kdws03d', {
                 employeeID: this.dailyCorrectionState.selectedEmployee,
                 employeeName: (_.find(this.dailyCorrectionState.lstEmployee, (x) => x.id == this.dailyCorrectionState.selectedEmployee)).businessName,
-                startDate: this.dailyCorrectionState.dateRange.startDate, 
+                startDate: this.dailyCorrectionState.dateRange.startDate,
                 endDate: this.dailyCorrectionState.dateRange.endDate
             }, { type: 'dropback' })
                 .then((v: any) => {
@@ -67,6 +67,7 @@ export class KdwS03AMenuComponent extends Vue {
     }
 
     public processConfirmAll(processFlag: string) {
+        this.$mask('show', 0.5);
         let dataCheckSign: Array<any> = [];
         let dateRange: any = this.dailyCorrectionState.dateRange;
         if (this.$dt.fromString(dateRange.startDate) <= new Date()) {
@@ -85,17 +86,29 @@ export class KdwS03AMenuComponent extends Vue {
 
             this.$http.post('at', servicePath.confirmAll, dataCheckSign).then((result: { data: any }) => {
                 if (processFlag == 'confirm') {
-                    this.$modal.info({ messageId: 'Msg_15' });
+                    this.$modal.info({ messageId: 'Msg_15' }).then((v: any) => {
+                        window.location.reload();
+                    });
                 } else {
-                    this.$modal.info({ messageId: 'Msg_1445' });
+                    this.$modal.info({ messageId: 'Msg_1445' }).then((v: any) => {
+                        window.location.reload();
+                    });
                 }
+            }).catch((res: any) => {
+                this.$modal.error({ messageId: res.messageId }).then((v: any) => {
+                    this.$mask('hide');
+                });
             });
 
         } else {
             if (processFlag == 'confirm') {
-                this.$modal.error({ messageId: 'Msg_1545' });
+                this.$modal.error({ messageId: 'Msg_1545' }).then((v: any) => {
+                    this.$mask('hide');
+                });
             } else {
-                this.$modal.error({ messageId: 'Msg_1546' });
+                this.$modal.error({ messageId: 'Msg_1546' }).then((v: any) => {
+                    this.$mask('hide');
+                });
             }
 
         }
