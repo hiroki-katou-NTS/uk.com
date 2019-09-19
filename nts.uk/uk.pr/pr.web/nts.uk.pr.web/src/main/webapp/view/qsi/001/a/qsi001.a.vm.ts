@@ -191,7 +191,7 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
                 {code: '1', isAlreadySetting: true},
                 {code: '2', isAlreadySetting: true}
             ]);
-            self.isDialog = ko.observable(false);
+            self.isDialog = ko.observable(true);
             self.isShowNoSelectRow = ko.observable(false);
             self.isMultiSelect = ko.observable(true);
             self.isShowWorkPlaceName = ko.observable(true);
@@ -753,7 +753,8 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
             new ItemModel('1', getText('Enum_BussEsimateClass_EMPEN_ESTAB_REARSIGN'))
         ];
     }
-    export function getSocialInsurOutOrder(): Array<ItemModel> {
+
+    /*export function getSocialInsurOutOrder(): Array<ItemModel> {
         return [
             new ItemModel('0', getText('Enum_SocialInsurOutOrder_HEAL_INSUR_NUMBER_ORDER')),
             new ItemModel('1', getText('Enum_SocialInsurOutOrder_WELF_AREPEN_NUMBER_ORDER')),
@@ -762,6 +763,20 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
             new ItemModel('4', getText('Enum_SocialInsurOutOrder_HEAL_INSUR_OFF_ARR_SYMBOL')),
             new ItemModel('5', getText('Enum_SocialInsurOutOrder_EMPLOYEE_CODE_ORDER')),
             new ItemModel('6', getText('Enum_SocialInsurOutOrder_EMPLOYEE_KANA_ORDER')),
+            new ItemModel('7', getText('Enum_SocialInsurOutOrder_INSURED_PER_NUMBER_ORDER'))
+        ];
+    }
+    */
+
+    export function getSocialInsurOutOrder(): Array<ItemModel> {
+        return [
+            new ItemModel('0', getText('Enum_SocialInsurOutOrder_DIVISION_EMP_ORDER')),
+            new ItemModel('1', getText('Enum_SocialInsurOutOrder_EMPLOYEE_CODE_ORDER')),
+            new ItemModel('2', getText('Enum_SocialInsurOutOrder_EMPLOYEE_KANA_ORDER')),
+            new ItemModel('3', getText('Enum_SocialInsurOutOrder_HEAL_INSUR_NUMBER_ORDER')),
+            new ItemModel('4', getText('Enum_SocialInsurOutOrder_WELF_AREPEN_NUMBER_ORDER')),
+            new ItemModel('5', getText('Enum_SocialInsurOutOrder_HEAL_INSUR_NUMBER_UNION_ORDER')),
+            new ItemModel('6', getText('Enum_SocialInsurOutOrder_ORDER_BY_FUND')),
             new ItemModel('7', getText('Enum_SocialInsurOutOrder_INSURED_PER_NUMBER_ORDER'))
         ];
     }
@@ -838,5 +853,7 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
         code: string;
         isAlreadySetting: boolean;
     }
+
+
 
 }

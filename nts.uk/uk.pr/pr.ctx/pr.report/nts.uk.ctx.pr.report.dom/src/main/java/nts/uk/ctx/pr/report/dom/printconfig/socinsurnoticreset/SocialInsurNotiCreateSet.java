@@ -70,7 +70,7 @@ public class SocialInsurNotiCreateSet extends AggregateRoot {
      */
     private Optional<LineFeedCode> lineFeedCode;
 
-    public SocialInsurNotiCreateSet(String userId, String cid, int officeInformation, int businessArrSymbol, int outputOrder, int printPersonNumber, int submittedName, int insuredNumber, String fdNumber, Integer textPersonNumber, Integer outputFormat, Integer lineFeedCode) {
+    public SocialInsurNotiCreateSet(String userId, String cid, int officeInformation, int businessArrSymbol, int outputOrder, int printPersonNumber, Integer submittedName, int insuredNumber, String fdNumber, Integer textPersonNumber, Integer outputFormat, Integer lineFeedCode) {
         this.cid = cid;
         this.userId = userId;
         this.officeInformation = EnumAdaptor.valueOf(officeInformation, BusinessDivision.class);
@@ -84,4 +84,6 @@ public class SocialInsurNotiCreateSet extends AggregateRoot {
         this.outputFormat = outputFormat == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(outputFormat, OutputFormatClass.class));
         this.lineFeedCode = lineFeedCode == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(lineFeedCode, LineFeedCode.class));
     }
+
+
 }

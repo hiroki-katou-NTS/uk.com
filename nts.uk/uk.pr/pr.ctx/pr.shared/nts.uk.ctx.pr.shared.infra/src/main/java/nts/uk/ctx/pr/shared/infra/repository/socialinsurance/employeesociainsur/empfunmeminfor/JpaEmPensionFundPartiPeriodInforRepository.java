@@ -37,7 +37,7 @@ public class JpaEmPensionFundPartiPeriodInforRepository extends JpaRepository im
 
     @Override
     public List<EmPensionFundPartiPeriodInfor> getEmPensionFundPartiPeriodInforByEmpId(String employeeId) {
-        return this.queryProxy().query(SELECT_BY_KEY_STRING, QqsmtTemPenPartInfo.class)
+        return this.queryProxy().query(SELECT_BY_KEY_STRING_BY_EMPID, QqsmtTemPenPartInfo.class)
                 .setParameter("employeeId", employeeId)
                 .getList(x -> x.toDomain());
 
@@ -46,10 +46,11 @@ public class JpaEmPensionFundPartiPeriodInforRepository extends JpaRepository im
     }
 
     @Override
-    public List<FundMembership> getFundMembershipByEmpId(String employeeId) {
-        return this.queryProxy().query(SELECT_BY_KEY_STRING_BY_EMPID, QqsmtTemPenPartInfo.class)
+    public Optional<FundMembership> getFundMembershipByEmpId(String employeeId, String hisId) {
+        return this.queryProxy().query(SELECT_BY_KEY_STRING, QqsmtTemPenPartInfo.class)
                 .setParameter("employeeId", employeeId)
-                .getList(x -> x.toFundMembership());
+                .setParameter("historyId", hisId)
+                .getSingle(x -> x.toFundMembership());
 
     }
 

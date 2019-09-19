@@ -17,6 +17,7 @@ public class JpaEmpCorpHealthOffHisRepository extends JpaRepository implements E
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QqbmtEmpCorpOffHis f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.empCorpOffHisPk.employeeId =:employeeId AND  f.empCorpOffHisPk.hisId =:hisId ";
+    private static final String SELECT_BY_EMPID = SELECT_ALL_QUERY_STRING + " WHERE  f.empCorpOffHisPk.employeeId =:employeeId ";
     private static final String SELECT_BY_KEY_EMPID = SELECT_ALL_QUERY_STRING + " WHERE  f.empCorpOffHisPk.employeeId IN :employeeIds  AND f.startDate <= :startDate AND f.endDate >= :startDate ";
 
     @Override
@@ -27,6 +28,15 @@ public class JpaEmpCorpHealthOffHisRepository extends JpaRepository implements E
     @Override
     public Optional<EmpCorpHealthOffHis> getEmpCorpHealthOffHisById(String employeeId, String hisId){
         return null;
+    }
+
+    @Override
+    public Optional<EmpCorpHealthOffHis> getEmpCorpHealthOffHisById(String employeeId) {
+        List<QqsmtEmpCorpOffHis> qqsmtEmpCorpOffHis =  this.queryProxy().query(SELECT_BY_EMPID, QqsmtEmpCorpOffHis.class)
+                .setParameter("employeeIds", employeeId)
+                .getList();
+       return Optional.ofNullable(QqsmtEmpCorpOffHis.toDomain(qqsmtEmpCorpOffHis));
+
     }
 
     @Override
