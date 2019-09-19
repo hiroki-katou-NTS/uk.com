@@ -2272,6 +2272,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 $('#fixed-table').show();
                 $('#content-all-grid').attr('style', 'top: -5px !IMPORTANT ; position: relative; clear: both');
                 $('#content-grid-not').attr('style', 'margin-top: -3px !IMPORTANT');
+                $('#date-extract').attr('style', 'padding-top: 0px; height: 42px');
                 //  $("#content-grid").attr('style', 'top: 244px !IMPORTANT');
             } else if (self.displayFormat() == 1) {
                 self.displayFormatOld = 1;
@@ -2283,9 +2284,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 $('#numberHoliday').hide();
                 $('#fixed-table').hide();
                 $('#flex').hide();
-                $('#content-all-grid').attr('style', 'top: 15px !IMPORTANT ; position: relative; clear: both');
+                $('#content-all-grid').attr('style', 'top: -12px !IMPORTANT ; position: relative; clear: both');
                 // $("#content-grid").attr('style', 'top: 225px !IMPORTANT');
-                 $('#content-grid-not').attr('style', 'margin-top: -45px !IMPORTANT');
+                $('#content-grid-not').attr('style', 'margin-top: -45px !IMPORTANT');
+                $('#date-extract').attr('style', 'margin-top: -10px; height: 42px');
             } else {
                 self.displayFormatOld = 2;
                 $("#daterangepickererror").css("display", "block");
@@ -2296,9 +2298,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 $('#numberHoliday').hide();
                 $('#fixed-table').hide();
                 $('#flex').hide();
-                $('#content-all-grid').attr('style', 'top: 15px !IMPORTANT ; position: relative; clear: both');
+                $('#content-all-grid').attr('style', 'top: -12px !IMPORTANT ; position: relative; clear: both');
                 $('#content-grid-not').attr('style', 'margin-top: -45px !IMPORTANT');
                 // $("#content-grid").attr('style', 'top: 180px !IMPORTANT');
+                $('#date-extract').attr('style', 'margin-top: -10px; height: 42px');
             }
         }
 
