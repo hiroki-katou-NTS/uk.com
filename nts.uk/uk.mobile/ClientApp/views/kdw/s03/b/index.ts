@@ -142,30 +142,9 @@ export class KdwS03BComponent extends Vue {
 
     public created() {
         let self = this;
-        let screenData1: any = {};
-        _.forEach(self.params.rowData.rowData, (rowData: RowData, index) => {
-            self.formatData(rowData);
-            self.addMasterDialogParam(rowData);
-            let attendanceItem = self.getAttendanceItem(rowData.key);
-            switch (attendanceItem.attendanceAtr) {
-                case ItemType.InputStringCode:
-                    self.$set(screenData1, rowData.key, rowData.value0);
-                    break;
-                case ItemType.ButtonDialog:
-                    self.$set(screenData1, rowData.key, rowData.value0);
-                    break;
-                case ItemType.ComboBox:
-                    self.$set(screenData1, rowData.key, rowData.value0);
-                    break;
-                default:
-                    self.$set(screenData1, rowData.key, rowData.value);
-                    break;
-            }
-        });
-        self.screenData = [screenData1];
+        self.addCustomValid();
         self.oldData = self.toJS(self.params.rowData.rowData);
         self.createMasterComboBox();
-        self.addCustomValid();
         self.$http.post('at', API.masterDialogData, {
             types: self.masterDialogParam,
             date: new Date()
@@ -176,10 +155,9 @@ export class KdwS03BComponent extends Vue {
         });
     }
 
-    public beforeUpdate() {
+    public updated() {
         let self = this;
-        // self.addCustomConstraint();
-        // self.$updateValidator({ screenData: { A461: _.get(self.validations.fixedConstraint, 'WorkTimes') } }); 
+        self.addCustomConstraint();
     }
 
     public getLockContent() {
@@ -353,11 +331,21 @@ export class KdwS03BComponent extends Vue {
     private addCustomValid() {
         let self = this;
         let screenDataValid: any = {};
+        let screenData1: any = {};
         _.forEach(self.params.rowData.rowData, (rowData: RowData, index) => {
+            self.formatData(rowData);
+            self.addMasterDialogParam(rowData);
             let attendanceItem = self.getAttendanceItem(rowData.key);
             let contraint = _.find(self.contentType, (item: ItemHeader) => item.key == rowData.key).constraint;
             switch (attendanceItem.attendanceAtr) {
+                case ItemType.InputStringCode:
+                    self.$set(screenData1, rowData.key, rowData.value0);
+                    break;
+                case ItemType.ButtonDialog:
+                    self.$set(screenData1, rowData.key, rowData.value0);
+                    break;
                 case ItemType.InputNumber:
+                    self.$set(screenData1, rowData.key, rowData.value);
                     if (contraint.cdisplayType == 'Primitive') {
                         screenDataValid[rowData.key] = {
                             loop: true,
@@ -373,6 +361,7 @@ export class KdwS03BComponent extends Vue {
                     }
                     break;
                 case ItemType.InputMoney:
+                    self.$set(screenData1, rowData.key, rowData.value);
                     if (contraint.cdisplayType == 'Primitive') {
                         screenDataValid[rowData.key] = {
                             loop: true,
@@ -388,7 +377,11 @@ export class KdwS03BComponent extends Vue {
                         };
                     }
                     break;
+                case ItemType.ComboBox:
+                    self.$set(screenData1, rowData.key, rowData.value0);
+                    break;
                 case ItemType.Time:
+                    self.$set(screenData1, rowData.key, rowData.value);
                     if (contraint.cdisplayType == 'Primitive') {
                         screenDataValid[rowData.key] = {
                             loop: true,
@@ -405,6 +398,7 @@ export class KdwS03BComponent extends Vue {
                     }
                     break;
                 case ItemType.InputStringChar:
+                    self.$set(screenData1, rowData.key, rowData.value);
                     if (contraint.cdisplayType == 'Primitive') {
                         screenDataValid[rowData.key] = {
                             loop: true,
@@ -418,9 +412,11 @@ export class KdwS03BComponent extends Vue {
                     }
                     break;
                 default:
+                    self.$set(screenData1, rowData.key, rowData.value);
                     break;
             }
         });
+        self.screenData = [screenData1];
         self.$updateValidator('screenData', screenDataValid);
         // self.$updateValidator(`screenData.${index}`, newObj);
     }
@@ -815,18 +811,6 @@ export class KdwS03BComponent extends Vue {
         let idKey = value.replace('A', '');
 
         return _.find(self.lstAttendanceItem, (item: any) => item.id == idKey);
-    }
-
-    @Watch('screenData', { deep: true })
-    public screenDataWatcher(value: any) {
-        let self = this;
-        // console.log(self.screenData);
-    }
-
-    @Watch('$errors', { deep: true })
-    public errorWatcher(value: any) {
-        let self = this;
-        console.log(self.$errors);
     }
 }
 
