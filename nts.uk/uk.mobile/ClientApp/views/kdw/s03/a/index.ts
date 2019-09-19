@@ -182,12 +182,7 @@ export class Kdws03AComponent extends Vue {
         this.$mask('show', { message: true });
     }
     public updated() {
-        let styleTag = null;
         let styleTagAr: any = [];
-        if (this.displayFormat == '1') {
-            styleTag = document.querySelector('.table-body') as HTMLStyleElement;
-            styleTag.style.height = styleTag.style.height + 2;
-        }
         styleTagAr = document.querySelectorAll('.btn-sm');
         _.forEach(styleTagAr, (x) => x.style.fontSize = '10px');
     }
