@@ -999,6 +999,12 @@ module nts.uk.ui.koExtentions {
         }
 
         getFormatter(data: any): format.IFormatter {
+            let option: any = !nts.uk.util.isNullOrUndefined(data.option) ? ko.toJS(data.option) : {};
+            if (option.numberGroup == true) {
+                this.editorOption.grouplength = 3;    
+            } else if (option.numberGroup == false) {
+                this.editorOption.grouplength = 0;
+            }
             return new text.NumberFormatter({ option: this.editorOption });
         }
 
@@ -1008,7 +1014,11 @@ module nts.uk.ui.koExtentions {
                 required = (data.required !== undefined) ? ko.unwrap(data.required) : false,
                 constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "",
                 name = nts.uk.resource.getControlName(data.name !== undefined ? ko.unwrap(data.name) : "");
-
+            if (option.numberGroup == true) {
+                option.grouplength = 3;    
+            } else if (option.numberGroup == false) {
+                option.grouplength = 0;
+            }   
             // update editor option
             $.extend(this.editorOption, {
                 required: required,
