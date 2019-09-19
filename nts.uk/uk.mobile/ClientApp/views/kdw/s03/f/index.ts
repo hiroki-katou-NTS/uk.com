@@ -14,6 +14,7 @@ export class KdwS03FComponent extends Vue {
     public empName: string = '';//対象社員名
     public date: number;//対象年月
     public monthData: Array<IMonthData> = [];
+    public dataRes: boolean = false;
     
     //月別実績の参照を起動
     public created() {
@@ -34,6 +35,11 @@ export class KdwS03FComponent extends Vue {
         //月別実績のデータを取得する
         self.$http.post('at', servicePath.getMonthlyPer, param).then((result: any) => {
             self.$mask('hide');
+            if (_.isEmpty(result.data) || result.data.length == 0) {
+                self.dataRes = true;
+
+                return;
+            }
             _.each(result.data, (item) => {
                 self.monthData.push({
                     id: item.itemId,

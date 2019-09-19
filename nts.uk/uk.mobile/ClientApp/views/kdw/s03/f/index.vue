@@ -21,5 +21,7 @@
       </tr>
     </tbody>
   </table>
+  <!-- F3_2: 実績無メッセージ -->
+  <div v-if="dataRes" class="p-3">{{ 'KDWS03_74' | i18n }}</div>
 </div>
 </template>
