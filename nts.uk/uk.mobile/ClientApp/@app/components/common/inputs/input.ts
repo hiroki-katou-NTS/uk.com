@@ -59,7 +59,7 @@ export const input = (tagName: 'input' | 'textarea' | 'select' = 'input') => com
                         v-bind:tabindex="tabindex"
                         v-bind:placeholder="$placeholder"
                         v-bind:class="classInput"
-                        v-on:click="evt => { click(); $emit('click', evt); }"
+                        v-click:500="evt => { click(); $emit('click', evt); }"
                         v-on:keydown.13="click()"
                         v-on:input="input()"
                         v-on:keydown="evt => $emit('keydown', evt)"

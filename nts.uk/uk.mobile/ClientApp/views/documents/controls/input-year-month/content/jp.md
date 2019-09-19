@@ -31,4 +31,9 @@ export class ViewModel extends Vue {
 | inlineTitle | boolean | false | ラベルと拘束は一行で表示する？ |
 | columns | {title, input} | {title: 'col-md-12', input: 'col-md-12'} | ラベルとインプットを一行に表示したい時、これを修正ください。（例えば：{ title: 'col-md-6', input: 'col-md-6'}）|
 
+---
+(変更日 2019/09/09)  
+任意項目なら、ピッカーに「削除」ボタンがあるが必須項目のピッカーには「削除」ボタンがない。  
+任意項目や必須項目の設定方法について、 [Validations](/nts.uk.mobile.web/documents/plugins/validation)を参照してください。
+
 **著者: Pham Van Dan**

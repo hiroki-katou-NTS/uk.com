@@ -44,7 +44,7 @@ export class KdwS03DComponent extends Vue {
         self.$modal('kdws03e', { 
             employeeId: self.params.employeeID, 
             empName: self.params.employeeName, 
-            date: rowData.date, 
+            date: new Date(rowData.date), 
             code: rowData.code,
             attendanceItemList: rowData.attendanceItemList
         }, { type : 'dropback' } )
