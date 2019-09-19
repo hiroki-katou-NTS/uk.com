@@ -14,8 +14,7 @@ import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsura
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmpBasicPenNumInfor;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmpHealthInsurBenefits;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.HealInsurNumberInfor;
-import nts.uk.shr.com.company.CompanyInfor;
-
+import nts.uk.ctx.pr.file.app.core.socialinsurnoticreset.CompanyInfor;
 
 @Getter
 @Setter
@@ -23,29 +22,33 @@ import nts.uk.shr.com.company.CompanyInfor;
 @AllArgsConstructor
 public class InsuredNameChangedNotiExportData {
 
-    String empId;
+    private String empId;
 
-    CompanyInfor companyInfor;
+    private CompanyInfor companyInfor;
 
-    SocialInsuranceOffice socialInsuranceOffice;
+    private SocialInsuranceOffice socialInsuranceOffice;
 
-    WelfPenNumInformation welfPenNumInformation;
+    private WelfPenNumInformation welfPenNumInformation;
 
-    HealthCarePortInfor healthCarePortInfor;
+    private HealthCarePortInfor healthCarePortInfor;
 
-    EmpBasicPenNumInfor empBasicPenNumInfor;
+    private EmpBasicPenNumInfor empBasicPenNumInfor;
 
-    WelfarePenTypeInfor welfarePenTypeInfor;
+    private WelfarePenTypeInfor welfarePenTypeInfor;
 
-    EmPensionFundPartiPeriodInfor emPensionFundPartiPeriodInfor;
+    private EmPensionFundPartiPeriodInfor emPensionFundPartiPeriodInfor;
 
-    EmpNameChangeNotiInfor empNameChangeNotiInfor;
+    private EmpNameChangeNotiInfor empNameChangeNotiInfor;
 
-    FundMembership fundMembership;
+    private FundMembership fundMembership;
 
-    HealInsurNumberInfor healInsurNumberInfor;
+    private HealInsurNumberInfor healInsurNumberInfor;
 
-    EmpHealthInsurBenefits empHealthInsurBenefits;
+    private EmpHealthInsurBenefits empHealthInsurBenefits;
+
+    private boolean processSate;
+
+    private String employeeName;
 
 
 }

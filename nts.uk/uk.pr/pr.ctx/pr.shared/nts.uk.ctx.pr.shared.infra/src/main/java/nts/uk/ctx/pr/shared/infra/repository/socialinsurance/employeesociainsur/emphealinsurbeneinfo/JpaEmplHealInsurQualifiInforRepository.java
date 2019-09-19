@@ -75,6 +75,11 @@ public class JpaEmplHealInsurQualifiInforRepository extends JpaRepository implem
     }
 
     @Override
+    public Optional<HealInsurNumberInfor> getHealInsurNumberInforByHisId(String empId, String hisId) {
+        return Optional.empty();
+    }
+
+    @Override
     public void add(EmplHealInsurQualifiInfor domain){
         this.commandProxy().insert(QqsmtEmpHealInsurQi.toEntity(domain));
     }

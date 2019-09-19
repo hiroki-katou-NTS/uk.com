@@ -5,7 +5,7 @@ import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsuranceOffice;
 import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsuranceOfficeRepository;
-import nts.uk.ctx.pr.file.app.core.bank.BankExportFileGenerator;
+import nts.uk.ctx.pr.file.app.core.socialinsurnoticreset.NotificationOfLossInsExRepository;
 import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.*;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.*;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empcomofficehis.AffOfficeInformation;
@@ -21,7 +21,7 @@ import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsura
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurassocinfor.HealthCarePortInforRepository;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.*;
 import nts.uk.shr.com.company.CompanyAdapter;
-import nts.uk.shr.com.company.CompanyInfor;
+import nts.uk.ctx.pr.file.app.core.socialinsurnoticreset.CompanyInfor;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 
@@ -31,17 +31,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+
 @Stateless
 public class InsuredNameChangedNotiService extends ExportService<InsuredNameChangedNotiQuery> {
 
-    //@Inject
-    //private ExportFileGenerator exportFileGenerator;
+    @Inject
+    private InsuredNameChangedExportFileGenerator fileGenerator;
 
     @Inject
     private CompanyAdapter company;
-
-    @Inject
-    private BankExportFileGenerator generator;
 
     @Inject
     private SocialInsurNotiCrSetRepository socialInsurNotiCrSetRepository;
@@ -84,17 +82,19 @@ public class InsuredNameChangedNotiService extends ExportService<InsuredNameChan
 
     private InsuredNameChangedNotiExportData data;
 
-    private boolean processSate = false;
+    //get company infor
+    private NotificationOfLossInsExRepository notificationOfLossInsExRepository;
 
-    private String nameEmployee = null;
+
+    List<InsuredNameChangedNotiExportData> listData = new ArrayList<>();
 
     List<SocialInsuranceOffice> listSocialInsuranceOffice = new ArrayList<SocialInsuranceOffice>();
 
     @Override
     protected void handle(ExportServiceContext<InsuredNameChangedNotiQuery> exportServiceContext) {
-        data = new InsuredNameChangedNotiExportData();
-        Optional<CompanyInfor> companyInfo = this.company.getCurrentCompany();
-        String companyName = companyInfo.isPresent() ? companyInfo.get().getCompanyName() : "";
+
+
+
         String cid = AppContexts.user().companyId();
         String userId = AppContexts.user().userId();
         InsuredNameChangedNotiQuery query = exportServiceContext.getQuery();
@@ -113,9 +113,11 @@ public class InsuredNameChangedNotiService extends ExportService<InsuredNameChan
 
 
 
+        //fill to A2_???
         if(socialInsurNotiCreateSet.getOfficeInformation().value == BusinessDivision.OUTPUT_COMPANY_NAME.value){
-            Optional<CompanyInfor> companyInfor = company.getCurrentCompany();
-            data.setCompanyInfor(companyInfor.get());
+            //Optional<CompanyInfor> companyInfor = company.getCurrentCompany();
+            CompanyInfor companyInfor = notificationOfLossInsExRepository.getCompanyInfor(cid);
+            //data.setCompanyInfor(companyInfor);
         }else if(socialInsurNotiCreateSet.getOfficeInformation().value == BusinessDivision.OUTPUT_SIC_INSURES.value){
             listSocialInsuranceOffice = socialInsuranceOfficeRepository.findByCid(cid);
             //印刷対象社員リストの社員ごとに、以下の処理をループする
@@ -123,13 +125,20 @@ public class InsuredNameChangedNotiService extends ExportService<InsuredNameChan
         }
 
         query.getListEmpId().forEach(x -> {
-            this.get(listSocialInsuranceOffice,socialInsurNotiCreateSetDomain.get(),x,query.getDate());
+            InsuredNameChangedNotiExportData insuredNameChangedNotiExportData =  this.get(listSocialInsuranceOffice,socialInsurNotiCreateSetDomain.get(),x,query.getDate());
+
+            if(insuredNameChangedNotiExportData.isProcessSate()){
+                listData.add(insuredNameChangedNotiExportData);
+            }
         });
+
+        fileGenerator.generate(exportServiceContext.getGeneratorContext(),listData,socialInsurNotiCreateSet);
 
     }
 
-    private void get(List<SocialInsuranceOffice> listSocialInsuranceOffice, SocialInsurNotiCreateSet socialInsurNotiCreateSetDomain, String empId, GeneralDate date){
-
+    private InsuredNameChangedNotiExportData get(List<SocialInsuranceOffice> listSocialInsuranceOffice, SocialInsurNotiCreateSet socialInsurNotiCreateSetDomain, String empId, GeneralDate date){
+        data = new InsuredNameChangedNotiExportData();
+        data.setEmpId(empId);
         //ドメインモデル「社員厚生年金保険資格情報」を取得する
         Optional<EmpWelfarePenInsQualiInfor> empWelfarePenInsQualiInfors = empWelfarePenInsQualiInforRepository.getEmpWelfarePenInsQualiInforByEmpId(empId);
 
@@ -156,7 +165,7 @@ public class InsuredNameChangedNotiService extends ExportService<InsuredNameChan
                     if(emPensionFundPartiPeriodInfor.isPresent()){
                         data.setEmPensionFundPartiPeriodInfor(emPensionFundPartiPeriodInfor.get());
                     }else{
-                        processSate = false;
+                        data.setProcessSate(false);
                     }
 
                 }else{
@@ -171,11 +180,14 @@ public class InsuredNameChangedNotiService extends ExportService<InsuredNameChan
                         //チェック条件を満たすデータが取得できたか確認する
                         if(empHealthInsurBenefits.isPresent()){
                             data.setEmpHealthInsurBenefits(empHealthInsurBenefits.get());
+
                         }else{
-                            processSate = false;
+                            data.setProcessSate(false);
+                            return data;
                         }
                     }else{
-                        processSate = false;
+                        data.setProcessSate(false);
+                        return  data;
                     }
 
                 }
@@ -183,8 +195,11 @@ public class InsuredNameChangedNotiService extends ExportService<InsuredNameChan
 
         }
         this.checkInsuredNumber(listSocialInsuranceOffice,date,empId,socialInsurNotiCreateSetDomain,empWelfarePenInsQualiInfors.get(),data.getEmPensionFundPartiPeriodInfor(),data.getEmpHealthInsurBenefits());
+
+        return data;
     }
     //社会保険届作成設定・被保険者整理番号区分を確認する
+    // fill to A1_2 item
     private void checkInsuredNumber(List<SocialInsuranceOffice> listSocialInsuranceOffice, GeneralDate date, String empId, SocialInsurNotiCreateSet socialInsurNotiCreateSet, EmpWelfarePenInsQualiInfor empWelfarePenInsQualiInfor , EmPensionFundPartiPeriodInfor emPensionFundPartiPeriodInfor,EmpHealthInsurBenefits empHealthInsurBenefits){
 
         if(socialInsurNotiCreateSet.getInsuredNumber() == InsurPersonNumDivision.OUTPUT_THE_WELF_PENNUMBER){
@@ -220,16 +235,18 @@ public class InsuredNameChangedNotiService extends ExportService<InsuredNameChan
             }
         }
 
-        this.checkPersonNumberClass(listSocialInsuranceOffice,socialInsurNotiCreateSet,empId,date,processSate);
+        this.checkPersonNumberClass(listSocialInsuranceOffice,socialInsurNotiCreateSet,empId,date);
     }
 
     //個人番号区分
     // 1
-    private void checkPersonNumberClass(List<SocialInsuranceOffice> listSocialInsuranceOffice, SocialInsurNotiCreateSet socialInsurNotiCreateSet, String empId,GeneralDate date, boolean processSate){
+    private void checkPersonNumberClass(List<SocialInsuranceOffice> listSocialInsuranceOffice, SocialInsurNotiCreateSet socialInsurNotiCreateSet, String empId,GeneralDate date){
 
 
         if(socialInsurNotiCreateSet.getPrintPersonNumber() == PersonalNumClass.OUTPUT_BASIC_PEN_NOPER || socialInsurNotiCreateSet.getPrintPersonNumber() == PersonalNumClass.OUTPUT_BASIC_PER_NUMBER){
+
             Optional<EmpBasicPenNumInfor> empBasicPenNumInfor = empBasicPenNumInforRepository.getEmpBasicPenNumInforById(empId);
+            //fill to A1_3
             data.setEmpBasicPenNumInfor(empBasicPenNumInfor.isPresent() ? empBasicPenNumInfor.get() : null);
 
         }
@@ -253,8 +270,9 @@ public class InsuredNameChangedNotiService extends ExportService<InsuredNameChan
         }
         //ドメインモデル「社員氏名変更届情報」を取得する
         Optional<EmpNameChangeNotiInfor> empNameChangeNotiInfor = empNameChangeNotiInforRepository.getEmpNameChangeNotiInforById(empId,AppContexts.user().companyId());
+        //fill to A1_21, A1_23
         data.setEmpNameChangeNotiInfor(empNameChangeNotiInfor.isPresent() ? empNameChangeNotiInfor.get() : null);
-        processSate = true;
+        data.setProcessSate(true);
 
     }
 
