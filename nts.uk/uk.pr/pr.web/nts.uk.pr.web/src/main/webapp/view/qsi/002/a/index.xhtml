@@ -25,7 +25,7 @@
 
     <ui:define name="content">
         <div id="functions-area" style = "min-width: 1000px;">
-            <button id="A1_1" tabindex="1" class="proceed">#{i18n.getText('QSI002_3')}</button>
+            <button id="A1_1" tabindex="1" data-bind="click: exportPDF" class="proceed">#{i18n.getText('QSI002_3')}</button>
 
             <button id="A1_2" tabindex="2" >#{i18n.getText('QSI002_4')}</button>
 
@@ -55,7 +55,7 @@
                 <span id="A3_2" class="label" style="margin-bottom: 15px;">#{i18n.getText('QSI002_6')}</span>
                 <div class="control-group">
                     <div id="A3_3" data-bind="ntsFormLabel: {constrant: '', required:true}">#{i18n.getText('QSI002_7')}</div>
-                    <div tabindex="6" id="A3_4" style="margin-left:100px;" data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD', name: '#{i18n.getText('QSI002_8')}'}"></div>
+                    <div tabindex="6" id="A3_4" style="margin-left:100px;" data-bind="ntsDatePicker: {value: baseDate1, dateFormat: 'YYYY/MM/DD', name: '#{i18n.getText('QSI002_8')}'}"></div>
                     <span id="A3_5" style="margin-left:20px" data-bind="text: datePicker"></span>
                 </div>
 
@@ -76,94 +76,74 @@
                     <div id="A3_11" data-bind="ntsFormLabel: {constrant: '', required:true}">#{i18n.getText('QSI002_13')}</div>
                     <div tabindex="8" style="margin-left:100px" id="A3_12" data-bind="ntsComboBox: {
                         name: '#{i18n.getText('QSI002_14')}',
-                        options: itemList,
+                        options: socialInsurOutOrder,
                         optionsValue: 'code',
                         visibleItemsCount: 5,
-                        value: selectedCode,
+                        value: selectedSocialInsurOutOrder,
                         optionsText: 'name',
                         editable: true,
                         enable: true,
                         required: true,
-                        selectFirstIfNull: true,
-                        columns: [
-                            { prop: 'code', length: 4 },
-                            { prop: 'name', length: 10 },
-                        ]}"></div>
+                        selectFirstIfNull: true}"></div>
                 </div>
 
                 <div class="control-group valign-center">
                     <div id="A3_14" data-bind="ntsFormLabel: {constrant: '', required:true}">#{i18n.getText('QSI002_15')}</div>
                     <div tabindex="9" id="A3_15" style="margin-left:30px" data-bind="ntsComboBox: {
                         name: '#{i18n.getText('QSI002_16')}',
-                        options: itemList,
+                        options: insurPersonNumDivision,
                         optionsValue: 'code',
                         visibleItemsCount: 5,
-                        value: selectedCode,
+                        value: selectedInsurPersonNumDivision,
                         optionsText: 'name',
                         editable: true,
                         enable: true,
                         required: true,
-                        selectFirstIfNull: true,
-                        columns: [
-                            { prop: 'code', length: 4 },
-                            { prop: 'name', length: 10 },
-                        ]}"></div>
+                        selectFirstIfNull: true}"></div>
                 </div>
 
                 <div class="control-group valign-center">
                     <div id="A3_17" data-bind="ntsFormLabel: {constrant: '', required:true}">#{i18n.getText('QSI002_17')}</div>
                     <div tabindex="10" id="A3_18" style="margin-left:44px" data-bind="ntsComboBox: {
                         name: '#{i18n.getText('QSI002_18')}',
-                        options: itemList,
+                        options: bussEsimateClass,
                         optionsValue: 'code',
                         visibleItemsCount: 5,
-                        value: selectedCode,
+                        value: selectedBussEsimateClass,
                         optionsText: 'name',
                         editable: true,
                         enable: true,
                         required: true,
-                        selectFirstIfNull: true,
-                        columns: [
-                            { prop: 'code', length: 4 },
-                            { prop: 'name', length: 10 },
-                        ]}"></div>
+                        selectFirstIfNull: true}"></div>
                 </div>
                 <div class="control-group valign-center">
                 <div id="A3_20" data-bind="ntsFormLabel: {constrant: '', required:true}">#{i18n.getText('QSI002_19')}</div>
                 <div tabindex="11" id="A3_21" style="margin-left:73px" data-bind="ntsComboBox: {
                         name: '#{i18n.getText('QSI002_20')}',
-                        options: itemList,
+                        options: businessDivision,
                         optionsValue: 'code',
                         visibleItemsCount: 5,
-                        value: selectedCode,
+                        value: selectedBusinessDivision,
                         optionsText: 'name',
                         editable: true,
                         enable: true,
                         required: true,
-                        selectFirstIfNull: true,
-                        columns: [
-                            { prop: 'code', length: 4 },
-                            { prop: 'name', length: 10 },
-                        ]}"></div>
+                        selectFirstIfNull: true}"></div>
             </div>
 
                 <div class="control-group valign-center">
                     <div id="A3_23" data-bind="ntsFormLabel: {constrant: '', required:true}">#{i18n.getText('QSI002_21')}</div>
                     <div tabindex="12" id="A3_24" style="margin-left:87px" data-bind="ntsComboBox: {
                         name: '#{i18n.getText('QSI002_22')}',
-                        options: itemList,
+                        options: personalNumClass,
                         optionsValue: 'code',
                         visibleItemsCount: 5,
-                        value: selectedCode,
+                        value: selectedPersonalNumClass,
                         optionsText: 'name',
                         editable: true,
                         enable: true,
                         required: true,
-                        selectFirstIfNull: true,
-                        columns: [
-                            { prop: 'code', length: 4 },
-                            { prop: 'name', length: 10 },
-                        ]}"></div>
+                        selectFirstIfNull: true}"></div>
                 </div>
 
 
