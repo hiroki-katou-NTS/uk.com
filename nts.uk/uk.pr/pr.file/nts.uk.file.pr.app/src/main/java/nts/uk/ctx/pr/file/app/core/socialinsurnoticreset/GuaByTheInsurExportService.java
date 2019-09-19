@@ -143,7 +143,7 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
             GuaByTheInsurExportDto temp = new GuaByTheInsurExportDto();
 
             //C1_10
-            temp.setFilingDate(startDate.toString());
+            temp.setFilingDate(startDate);
 
             if(Integer.valueOf(element[0].toString()) == Enum_BusinessDivision_OUTPUT_COMPANY_NAME){
                     //C1_4
