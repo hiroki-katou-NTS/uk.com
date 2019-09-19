@@ -13,12 +13,7 @@
         <div class="card-header pl-0 pr-0 uk-bg-light-coral">
           <button class="btn btn-link" type="button">{{'KDWS03_35' | i18n}}</button>
         </div>
-        <div class="collapse uk-bg-light-coral">
-          <div class="card-body">
-            Content of group Item #1<br>
-            Elements
-          </div>
-        </div>
+        <div class="collapse uk-bg-light-coral" v-html="getLockContent()"></div>
       </div>
     </div>
   </div>
@@ -32,35 +27,23 @@
       </div>
     </div>
   </div>
-  <div v-for="(rowData, rowDataKey) in params.data" v-bind:key="rowDataKey">
-    <!-- InputStringCode -->
-    <!--
-    <div class="row" v-if="getItemTypeCode(rowData)==itemType.InputStringCode">
-      <div class="col-12">
-        <div class="row pl-2 mb-1">{{ getItemText(rowData) }}</div>
-        <div class="row">
-          <div class="col-2"></div>
-          <div class="col-9 pl-0 pr-0"><nts-text-editor class="mb-3" v-model="rowData.value" /></div>
-        </div>
-      </div>
-    </div>
-    -->
-    <!-- ButtonDialog -->
-    <div class="row" v-if="rowData.getItemType==itemType.InputStringCode || rowData.getItemType==itemType.ButtonDialog">
-      <div class="col-12" v-if="rowData.getItemMasterType==masterType.KDLS02_WorkType ||
-                            rowData.getItemMasterType==masterType.KDLS01_WorkTime || rowData.getItemMasterType==masterType.CDLS08_WorkPlace">
-        <div class="row pl-2 mb-1">{{ rowData.getItemText }}</div>
+  <div v-for="(rowData, key) in screenData[0]" v-bind:key="key">
+    <!-- InputStringCode && ButtonDialog -->
+    <div class="row" v-if="getItemType(key)==itemType.InputStringCode || getItemType(key)==itemType.ButtonDialog">
+      <div class="col-12" v-if="getItemMasterType(key)==masterType.KDLS02_WorkType ||
+                            getItemMasterType(key)==masterType.KDLS01_WorkTime || getItemMasterType(key)==masterType.CDLS08_WorkPlace">
+        <div class="row pl-2 mb-1">{{ getItemText(key) }}</div>
         <div class="row mb-1">
           <div class="col-2 p-1 text-right">
-            <i class="fas fa-exclamation-circle align-bottom text-danger" v-if="rowData.getColorCode=='ERROR'"></i>
-            <i class="fas fa-exclamation-triangle align-bottom text-danger" v-if="rowData.getColorCode=='ALARM'"></i>
+            <i class="fas fa-exclamation-circle align-bottom text-danger" v-if="getColorCode(key)=='ERROR'"></i>
+            <i class="fas fa-exclamation-triangle align-bottom text-danger" v-if="getColorCode(key)=='ALARM'"></i>
           </div>
           <div class="col-9 pl-0 pr-0">
             <div class="row">
               <div class="w-100">
                 <div class="col-9 d-inline-block align-middle"><h4><span class="badge badge-secondary">{{ rowData.value }}</span></h4></div>
                 <div class="d-inline-block">
-                  <button type="button" class="btn btn-secondary" v-on:click="openDialog(rowData, rowData.getItemMasterType)">{{'KDWS03_71' | i18n}}</button>
+                  <button type="button" class="btn btn-secondary" v-on:click="openDialog(rowData, getItemMasterType(key))">{{'KDWS03_71' | i18n}}</button>
                 </div>
               </div>
             </div>
@@ -68,39 +51,39 @@
         </div>
       </div>
       <div class="col-12" v-else>
-        <div class="row pl-2 mb-1">{{ rowData.getItemText }}</div>
+        <div class="row pl-2 mb-1">{{ getItemText(key) }}</div>
         <div class="row">
           <div class="col-2 p-1 text-right">
-            <i class="fas fa-exclamation-circle align-bottom text-danger" v-if="rowData.getColorCode=='ERROR'"></i>
-            <i class="fas fa-exclamation-triangle align-bottom text-danger" v-if="rowData.getColorCode=='ALARM'"></i>
+            <i class="fas fa-exclamation-circle align-bottom text-danger" v-if="getColorCode(key)=='ERROR'"></i>
+            <i class="fas fa-exclamation-triangle align-bottom text-danger" v-if="getColorCode(key)=='ALARM'"></i>
           </div>
           <div class="col-9 pl-0 pr-0">
-            <nts-dropdown v-if="rowData.getItemMasterType==masterType.KDLS10_ServicePlace" v-model="rowData.value0">
+            <nts-dropdown v-if="getItemMasterType(key)==masterType.KDLS10_ServicePlace" v-model="rowData.value0">
               <option v-for="(item, k) in masterData.servicePlace" v-bind:key="k" :value="item.value0">
                 {{item.value0}} &nbsp;&nbsp;&nbsp;  {{item.value}}
               </option>
             </nts-dropdown>
-            <nts-dropdown v-if="rowData.getItemMasterType==masterType.KDLS32_Reason" v-model="rowData.value0">
+            <nts-dropdown v-if="getItemMasterType(key)==masterType.KDLS32_Reason" v-model="rowData.value0">
               <option v-for="(item, k) in masterData.reason" v-bind:key="k" :value="item.value0">
                 {{item.value0}} &nbsp;&nbsp;&nbsp;  {{item.value}}
               </option>
             </nts-dropdown>
-            <nts-dropdown v-if="rowData.getItemMasterType==masterType.KCPS02_Classification" v-model="rowData.value0">
+            <nts-dropdown v-if="getItemMasterType(key)==masterType.KCPS02_Classification" v-model="rowData.value0">
               <option v-for="(item, k) in masterData.classification" v-bind:key="k" :value="item.value0">
                 {{item.value0}} &nbsp;&nbsp;&nbsp;  {{item.value}}
               </option>
             </nts-dropdown>
-            <nts-dropdown v-if="rowData.getItemMasterType==masterType.KCPS03_Possition" v-model="rowData.value0">
+            <nts-dropdown v-if="getItemMasterType(key)==masterType.KCPS03_Possition" v-model="rowData.value0">
               <option v-for="(item, k) in masterData.possition" v-bind:key="k" :value="item.value0">
                 {{item.value0}} &nbsp;&nbsp;&nbsp;  {{item.value}}
               </option>
             </nts-dropdown>
-            <nts-dropdown v-if="rowData.getItemMasterType==masterType.KCPS01_Employment" v-model="rowData.value0">
+            <nts-dropdown v-if="getItemMasterType(key)==masterType.KCPS01_Employment" v-model="rowData.value0">
               <option v-for="(item, k) in masterData.employment" v-bind:key="k" :value="item.value0">
                 {{item.value0}} &nbsp;&nbsp;&nbsp;  {{item.value}}
               </option>
             </nts-dropdown>
-            <nts-dropdown v-if="rowData.getItemMasterType==masterType.KCP001_BusinessType" v-model="rowData.value0">
+            <nts-dropdown v-if="getItemMasterType(key)==masterType.KCP001_BusinessType" v-model="rowData.value0">
               <option v-for="(item, k) in masterData.businessType" v-bind:key="k" :value="item.value0">
                 {{item.value0}} &nbsp;&nbsp;&nbsp;  {{item.value}}
               </option>
@@ -110,52 +93,67 @@
       </div>
     </div>
     <!-- InputNumber -->
-    <div class="row" v-if="rowData.getItemType==itemType.InputNumber">
+    <div class="row" v-if="getItemType(key)==itemType.InputNumber">
       <div class="col-12">
-        <div class="row pl-2 mb-1">{{ rowData.getItemText }}</div>
+        <div class="row pl-2 mb-1">{{ getItemText(key) }}</div>
         <div class="row">
           <div class="col-2 p-1 text-right">
-            <i class="fas fa-exclamation-circle align-bottom text-danger" v-if="rowData.getColorCode=='ERROR'"></i>
-            <i class="fas fa-exclamation-triangle align-bottom text-danger" v-if="rowData.getColorCode=='ALARM'"></i>
+            <i class="fas fa-exclamation-circle align-bottom text-danger" v-if="getColorCode(key)=='ERROR'"></i>
+            <i class="fas fa-exclamation-triangle align-bottom text-danger" v-if="getColorCode(key)=='ALARM'"></i>
           </div>
-          <div class="col-9 pl-0 pr-0"><nts-number-editor class="mb-3" v-model="rowData.value" /></div>
+          <div class="col-9 pl-0 pr-0">
+            <nts-number-editor class="mb-3" v-model="screenData[0][key]" v-bind:record-name="key" v-bind:key="key" />
+          </div>
         </div>
       </div>
     </div>
     <!-- InputMoney -->
-    <div class="row" v-if="rowData.getItemType==itemType.InputMoney">
-    </div>
-    <!-- ComboBox -->
-    <div class="row" v-if="rowData.getItemType==itemType.ComboBox">
+    <div class="row" v-if="getItemType(key)==itemType.InputMoney">
       <div class="col-12">
-        <div class="row pl-2 mb-1">{{ rowData.getItemText }}</div>
+        <div class="row pl-2 mb-1">{{ getItemText(key) }}</div>
         <div class="row">
           <div class="col-2 p-1 text-right">
-            <i class="fas fa-exclamation-circle align-bottom text-danger" v-if="rowData.getColorCode=='ERROR'"></i>
-            <i class="fas fa-exclamation-triangle align-bottom text-danger" v-if="rowData.getColorCode=='ALARM'"></i>
+            <i class="fas fa-exclamation-circle align-bottom text-danger" v-if="getColorCode(key)=='ERROR'"></i>
+            <i class="fas fa-exclamation-triangle align-bottom text-danger" v-if="getColorCode(key)=='ALARM'"></i>
+          </div>
+          <div class="col-9 pl-0 pr-0">  
+            <nts-number-editor class="mb-3" v-model="screenData[0][key]" v-bind:record-name="key" v-bind:key="key" 
+              class-input="" v-bind:icons="{ after: '$' }" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- ComboBox -->
+    <div class="row" v-if="getItemType(key)==itemType.ComboBox">
+      <div class="col-12">
+        <div class="row pl-2 mb-1">{{ getItemText(key) }}</div>
+        <div class="row">
+          <div class="col-2 p-1 text-right">
+            <i class="fas fa-exclamation-circle align-bottom text-danger" v-if="getColorCode(key)=='ERROR'"></i>
+            <i class="fas fa-exclamation-triangle align-bottom text-danger" v-if="getColorCode(key)=='ALARM'"></i>
           </div>
           <div class="col-9 pl-0 pr-0">
-            <nts-dropdown v-if="rowData.getItemMasterType==masterType.DoWork" v-model="rowData.value0">
+            <nts-dropdown v-if="getItemMasterType(key)==masterType.DoWork" v-model="rowData.value0">
               <option v-for="(item, k) in masterData.lstDoWork" v-bind:key="k" :value="item.value0">
                 {{item.value0}} &nbsp;&nbsp;&nbsp;  {{item.value}}
               </option>
             </nts-dropdown>
-            <nts-dropdown v-if="rowData.getItemMasterType==masterType.Calc && rowData.isSpecCalcLst" v-model="rowData.value0">
+            <nts-dropdown v-if="getItemMasterType(key)==masterType.Calc && rowData.isSpecCalcLst" v-model="rowData.value0">
               <option v-for="(item, k) in masterData.lstCalc" v-bind:key="k" :value="item.value0">
                 {{item.value0}} &nbsp;&nbsp;&nbsp;  {{item.value}}
               </option>
             </nts-dropdown>
-            <nts-dropdown v-if="rowData.getItemMasterType==masterType.Calc && !rowData.isSpecCalcLst" v-model="rowData.value0">
+            <nts-dropdown v-if="getItemMasterType(key)==masterType.Calc && !rowData.isSpecCalcLst" v-model="rowData.value0">
               <option v-for="(item, k) in masterData.lstCalcCompact" v-bind:key="k" :value="item.value0">
                 {{item.value0}} &nbsp;&nbsp;&nbsp;  {{item.value}}
               </option>
             </nts-dropdown>
-            <nts-dropdown v-if="rowData.getItemMasterType==masterType.ReasonGoOut" v-model="rowData.value0">
+            <nts-dropdown v-if="getItemMasterType(key)==masterType.ReasonGoOut" v-model="rowData.value0">
               <option v-for="(item, k) in masterData.lstReasonGoOut" v-bind:key="k" :value="item.value0">
                 {{item.value0}} &nbsp;&nbsp;&nbsp;  {{item.value}}
               </option>
             </nts-dropdown>
-            <nts-dropdown v-if="rowData.getItemMasterType==masterType.TimeLimit" v-model="rowData.value0">
+            <nts-dropdown v-if="getItemMasterType(key)==masterType.TimeLimit" v-model="rowData.value0">
               <option v-for="(item, k) in masterData.lstTimeLimit" v-bind:key="k" :value="item.value0">
                 {{item.value0}} &nbsp;&nbsp;&nbsp;  {{item.value}}
               </option>
@@ -165,29 +163,28 @@
       </div>
     </div>
     <!-- Time -->
-    <div class="row" v-if="rowData.getItemType==itemType.Time">
+    <div class="row" v-if="getItemType(key)==itemType.Time">
       <div class="col-12">
-        <div class="row pl-2 mb-1">{{ rowData.getItemText }}</div>
+        <div class="row pl-2 mb-1">{{ getItemText(key) }}</div>
         <div class="row">
           <div class="col-2 p-1 text-right">
-            <i class="fas fa-exclamation-circle align-bottom text-danger" v-if="rowData.getColorCode=='ERROR'"></i>
-            <i class="fas fa-exclamation-triangle align-bottom text-danger" v-if="rowData.getColorCode=='ALARM'"></i>
+            <i class="fas fa-exclamation-circle align-bottom text-danger" v-if="getColorCode(key)=='ERROR'"></i>
+            <i class="fas fa-exclamation-triangle align-bottom text-danger" v-if="getColorCode(key)=='ALARM'"></i>
           </div>
           <div class="col-9 pl-0 pr-0">
-            <nts-time-editor class="mb-3" v-if="rowData.key=='A532'" v-model="screenData.A532" time-input-type="time-duration" />
-            <nts-time-editor class="mb-3" v-else v-model="rowData.value" time-input-type="time-duration" />
+            <nts-time-editor class="mb-3" v-model="screenData[0][key]" v-bind:record-name="key" v-bind:key="key" time-input-type="time-duration" />
           </div>
         </div>
       </div>
     </div>
     <!-- TimeWithDay -->
-    <div class="row" v-if="rowData.getItemType==itemType.TimeWithDay">
+    <div class="row" v-if="getItemType(key)==itemType.TimeWithDay">
       <div class="col-12">
-        <div class="row pl-2 mb-1">{{ rowData.getItemText }}</div>
+        <div class="row pl-2 mb-1">{{ getItemText(key) }}</div>
         <div class="row">
           <div class="col-2 p-1 text-right">
-            <i class="fas fa-exclamation-circle align-bottom text-danger" v-if="rowData.getColorCode=='ERROR'"></i>
-            <i class="fas fa-exclamation-triangle align-bottom text-danger" v-if="rowData.getColorCode=='ALARM'"></i>
+            <i class="fas fa-exclamation-circle align-bottom text-danger" v-if="getColorCode(key)=='ERROR'"></i>
+            <i class="fas fa-exclamation-triangle align-bottom text-danger" v-if="getColorCode(key)=='ALARM'"></i>
           </div>
           <div class="col-9 pl-0 pr-0">
             <nts-time-editor class="mb-3" v-model="rowData.value" time-input-type="time-with-day" />
@@ -196,15 +193,17 @@
       </div>
     </div>
     <!-- InputStringChar -->
-    <div class="row" v-if="rowData.getItemType==itemType.InputStringChar">
+    <div class="row" v-if="getItemType(key)==itemType.InputStringChar">
       <div class="col-12">
-        <div class="row pl-2 mb-1">{{ rowData.getItemText }}</div>
+        <div class="row pl-2 mb-1">{{ getItemText(key) }}</div>
         <div class="row">
           <div class="col-2 p-1 text-right">
-            <i class="fas fa-exclamation-circle align-bottom text-danger" v-if="rowData.getColorCode=='ERROR'"></i>
-            <i class="fas fa-exclamation-triangle align-bottom text-danger" v-if="rowData.getColorCode=='ALARM'"></i>
+            <i class="fas fa-exclamation-circle align-bottom text-danger" v-if="getColorCode(key)=='ERROR'"></i>
+            <i class="fas fa-exclamation-triangle align-bottom text-danger" v-if="getColorCode(key)=='ALARM'"></i>
           </div>
-          <div class="col-9 pl-0 pr-0"><nts-text-editor class="mb-3" v-model="rowData.value" /></div>
+          <div class="col-9 pl-0 pr-0">
+            <nts-text-area class="mb-3" v-model="screenData[0][key]" v-bind:record-name="key" v-bind:key="key" />
+          </div>
         </div>
       </div>
     </div>
