@@ -31,8 +31,8 @@
         <div class="col-8">{{errorInfo.errMsg}}</div>
     </div>
     <!-- E7_1: 修正ボタン -->
-    <div class="fixed-bottom" v-if="displayE71">
-      <button class = 'btn uk-bg-process btn-block modal-dialog dropback'>{{'KDWS03_72' | i18n}}</button>
+    <div class="fixed-bottom border-0 button-shuusei" v-if="displayE71">
+      <button class = 'btn btn-success btn-block rounded-0'>{{'KDWS03_72' | i18n}}</button>
     </div>
 </div>
 </template>

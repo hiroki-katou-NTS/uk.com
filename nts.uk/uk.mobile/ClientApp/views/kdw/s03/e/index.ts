@@ -5,7 +5,6 @@ import { LoDashStatic } from 'lodash';
 
 @component({
     name: 'kdws03e',
-    route: '/kdw/s03/e',
     style: require('./style.scss'),
     template: require('./index.vue'),
     resource: require('./resources.json'),
