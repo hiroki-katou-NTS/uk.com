@@ -392,7 +392,7 @@ export class Kdws03AComponent extends Vue {
                     dateDetail: rowDataSrc.dateDetail,
                     id: rowDataSrc.id,
                     ERAL: rowDataSrc.error,
-                    state: rowDataSrc.error
+                    state: rowDataSrc.state
                 });
             } else {
                 self.displayDataLst.push({
@@ -403,7 +403,7 @@ export class Kdws03AComponent extends Vue {
                     employmentCode: rowDataSrc.employmentCode,
                     id: rowDataSrc.id,
                     ERAL: rowDataSrc.error,
-                    state: rowDataSrc.error
+                    state: rowDataSrc.state
                 });
             }
         });
