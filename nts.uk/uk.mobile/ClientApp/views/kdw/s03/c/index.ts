@@ -19,7 +19,7 @@ export class KdwS03CComponent extends Vue {
     public createDone: boolean = false;
 
     public created() {
-        this.dailyCorrectionState = storage.local.getItem('dailyCorrectionState');
+        this.dailyCorrectionState = storage.session.getItem('dailyCorrectionState');
         if (this.dailyCorrectionState.displayFormat == '1') {
             this.displayData = _.filter(this.dailyCorrectionState.cellDataLst, (x) => x.ERAL.includes('ER') || x.ERAL.includes('AL'));
         }
