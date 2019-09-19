@@ -32,8 +32,10 @@ module nts.uk.com.view.jmm018.b {
                                                     { headerText: getText('JMM018_A422_4'), key: 'nodeText', width: '30%', dataType: "string" },
                                                     { headerText: getText('JMM018_A422_5'), key: 'useEventOrMenu', width: '20%', dataType: "boolean", formatType : "checkbox",
                                                                 filterOpts : { trueOpt: nts.uk.resource.getText("Enum_UseAtr_Use"), falseOpt: nts.uk.resource.getText("Enum_UseAtr_NotUse") }},
-                                                    { headerText: getText('JMM018_A422_6'), key: 'useNotice', width: '20%', dataType: "boolean", formatType : "checkbox"},
-                                                    { headerText: getText('JMM018_A422_7'), key: 'useApproval', width: '20%', dataType: "boolean", formatType : "checkbox"}
+                                                    { headerText: getText('JMM018_A422_6'), key: 'useNotice', width: '20%', dataType: "boolean", formatType : "checkbox",
+                                                                filterOpts : { trueOpt: nts.uk.resource.getText("Enum_UseAtr_Use"), falseOpt: nts.uk.resource.getText("Enum_UseAtr_NotUse") }},
+                                                    { headerText: getText('JMM018_A422_7'), key: 'useApproval', width: '20%', dataType: "boolean", formatType : "checkbox",
+                                                                filterOpts : { trueOpt: nts.uk.resource.getText("Enum_UseAtr_Use"), falseOpt: nts.uk.resource.getText("Enum_UseAtr_NotUse") }}
                                                 ]);
                 // thêm help button trong header
                  $(document).delegate("#treegrid", "igtreegriddatarendered", function (evt, ui) {
