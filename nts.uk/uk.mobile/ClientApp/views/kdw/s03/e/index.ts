@@ -68,7 +68,8 @@ export class KdwS03EComponent extends Vue {
         let paramOpenB = {
             openB: true,
             employeeId: self.params.employeeId,
-            date: self.params.date
+            employeeName: self.params.empName,
+            date: self.$dt.date(self.params.date, 'YYYY/MM/DD')
         };
         self.$close(paramOpenB);
     }

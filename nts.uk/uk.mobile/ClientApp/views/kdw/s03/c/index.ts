@@ -42,11 +42,14 @@ export class KdwS03CComponent extends Vue {
         this.$modal('kdws03d', {
             employeeID: employeeId,
             employeeName: (_.find(this.dailyCorrectionState.lstEmployee, (x) => x.id == employeeId)).businessName,
-            startDate: this.dailyCorrectionState.dateRange.startDate, 
+            startDate: this.dailyCorrectionState.dateRange.startDate,
             endDate: this.dailyCorrectionState.dateRange.endDate
         }, { type: 'dropback' })
-            .then((v) => {
-                if (v != 'NotCloseMenu') {
+            .then((paramOpenB: any) => {
+                if (paramOpenB != undefined && paramOpenB.openB) {
+                    this.$close(paramOpenB);
+                }
+                if (paramOpenB != 'NotCloseMenu') {
                     this.$close();
                 }
             });

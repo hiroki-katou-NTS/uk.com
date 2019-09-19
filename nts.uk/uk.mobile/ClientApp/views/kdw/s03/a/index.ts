@@ -524,7 +524,7 @@ export class Kdws03AComponent extends Vue {
             employeeName = _.find(self.lstEmployee, (emp) => emp.id == employeeID).businessName;
             date = new Date(rowData.dateDetail);
         } else {
-            employeeID = rowData.employeeID;
+            employeeID = rowData.employeeId;
             employeeName = rowData.employeeName;
             date = self.selectedDate;
         }
@@ -534,7 +534,7 @@ export class Kdws03AComponent extends Vue {
             'employeeID': employeeID,
             'employeeName': employeeName,
             'date': date,
-            data: rowData.rowData,
+            'data': rowData.rowData,
             'paramData': paramData
         },
             { type: 'dropback' })
@@ -544,7 +544,7 @@ export class Kdws03AComponent extends Vue {
     }
 
     public openMenu() {
-
+        let self = this;
         this.$modal(
             'kdws03amenu',
             {
@@ -558,8 +558,29 @@ export class Kdws03AComponent extends Vue {
             {
                 type: 'dropback',
                 title: null
-            }).then((v) => {
+            }).then((paramOpenB: any) => {
+                if (paramOpenB != undefined && paramOpenB.openB) {
+                    //open B
+                    let rowData = null;
+                    if (self.displayFormat == '0') {
+                        rowData = _.find(self.displayDataLst, (x) => x.dateDetail == paramOpenB.date);
+                    } else {
+                        rowData = _.find(self.displayDataLst, (x) => x.employeeId == paramOpenB.employeeId);
+                    }
+                    
+                    self.$modal('kdws03b', {
+                        'rowId': '',
+                        'employeeID': paramOpenB.employeeId,
+                        'employeeName': paramOpenB.employeeName,
+                        'date': paramOpenB.date,
+                        'data': rowData.rowData,
+                        'paramData': self.paramData
+                    },
+                        { type: 'dropback' })
+                        .then((v) => {
 
+                        });
+                }
             });
     }
 

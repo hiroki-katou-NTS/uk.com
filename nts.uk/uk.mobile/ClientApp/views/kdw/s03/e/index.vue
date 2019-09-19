@@ -32,7 +32,7 @@
     </div>
     <!-- E7_1: 修正ボタン -->
     <div class="fixed-bottom border-0 button-shuusei" v-if="displayE71">
-      <button class = 'btn btn-success btn-block rounded-0'>{{'KDWS03_72' | i18n}}</button>
+      <button class = 'btn btn-success btn-block rounded-0' v-on:click="editData">{{'KDWS03_72' | i18n}}</button>
     </div>
 </div>
 </template>

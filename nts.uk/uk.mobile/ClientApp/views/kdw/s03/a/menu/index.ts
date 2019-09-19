@@ -32,7 +32,10 @@ export class KdwS03AMenuComponent extends Vue {
     public openErrorList() {
         if (this.params.displayFormat == '1') {
             this.$modal('kdws03c', {}, { type: 'dropback' })
-                .then((v) => {
+                .then((v: any) => {
+                    if (v != undefined && v.openB) {
+                        this.$close(v);
+                    }
                     if (v != 'NotCloseMenu') {
                         this.$close();
                     }
@@ -44,7 +47,10 @@ export class KdwS03AMenuComponent extends Vue {
                 startDate: this.dailyCorrectionState.dateRange.startDate, 
                 endDate: this.dailyCorrectionState.dateRange.endDate
             }, { type: 'dropback' })
-                .then((v) => {
+                .then((v: any) => {
+                    if (v != undefined && v.openB) {
+                        this.$close(v);
+                    }
                     if (v != 'NotCloseMenu') {
                         this.$close();
                     }

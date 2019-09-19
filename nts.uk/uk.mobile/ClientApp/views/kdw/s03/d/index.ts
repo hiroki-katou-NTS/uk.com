@@ -48,8 +48,10 @@ export class KdwS03DComponent extends Vue {
             code: rowData.code,
             attendanceItemList: rowData.attendanceItemList
         }, { type : 'dropback' } )
-        .then((v) => {
-
+        .then((paramOpenB: any) => {
+            if (paramOpenB != undefined && paramOpenB.openB) {
+                self.$close(paramOpenB);
+            }
         });
     }
 }
