@@ -27,7 +27,7 @@ export class KdwS03EComponent extends Vue {
         self.$mask('show');
         self.empName = self.params.empName.length <= 7 ? self.params.empName : self.params.empName.substr(0, 7) + '...';
         //A画面のキャッシュを取得する
-        let cache: any = storage.local.getItem('dailyCorrectionState');
+        let cache: any = storage.session.getItem('dailyCorrectionState');
         self.displayE71 = self.checkEsxit(cache.headerLst, self.params.attendanceItemList);
         console.log(self.params.attendanceItemList);
         let param = {
@@ -42,7 +42,6 @@ export class KdwS03EComponent extends Vue {
                 name: result.data.name,
                 errMsg: result.data.errMsg
             };
-            // if ()
         }).catch(() => {
             self.$mask('hide');
         });

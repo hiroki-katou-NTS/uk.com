@@ -21,7 +21,7 @@ export class KdwS03FComponent extends Vue {
         let self = this;
         self.$mask('show');
         //A画面のキャッシュを取得する
-        let cache: any = storage.local.getItem('dailyCorrectionState');
+        let cache: any = storage.session.getItem('dailyCorrectionState');
         self.date = cache.timePeriodAllInfo.yearMonth;
         let empName: string = (_.find(cache.lstEmployee, (emp) => emp.id == cache.selectedEmployee) || { businessName: '' }).businessName;
         self.empName = empName.length <= 7 ? empName : empName.substr(0, 7) + '...';

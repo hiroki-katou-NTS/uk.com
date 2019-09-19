@@ -36,7 +36,7 @@ export class KdwS03GComponent extends Vue {
     public created() {
         let self = this;
         self.$mask('show');
-        let cache: any = storage.local.getItem('dailyCorrectionState');
+        let cache: any = storage.session.getItem('dailyCorrectionState');
         let employeeIdSel = cache.selectedEmployee;
         self.empName = (_.find(cache.lstEmployee, (c) => c.id == employeeIdSel) || { businessName: '' }).businessName;
         if (this.params.remainOrtime36 == 0) {//休暇残数
