@@ -35,11 +35,11 @@ public class PensionOfficeDataExport {
 
     private String underDivision;
 
-    private String livingAbroad;
+    private Integer livingAbroad;
 
-    private String shortStay;
+    private Integer shortStay;
 
-    private String resonOther;
+    private Integer resonOther;
 
     private String resonAndOtherContent;
 
@@ -63,7 +63,7 @@ public class PensionOfficeDataExport {
 
     private Integer continReemAfterRetirement;
 
-    private Integer remarksAndOtherContent;
+    private String remarksAndOtherContent;
 
     private Integer healPrefectureNo;
 
@@ -94,5 +94,7 @@ public class PensionOfficeDataExport {
     private String distin;
 
     private String healInsInherenPr;
+
+    private String healUnionNumber;
 
 }

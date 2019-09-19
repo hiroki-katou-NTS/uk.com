@@ -122,9 +122,9 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
                 .birthDay(i[10] == null ? "" : i[10].toString())
                 .gender(i[11] == null ?  "" : i[11].toString())
                 .underDivision(i[12] == null ? "" : i[12].toString())
-                .livingAbroad(i[13] == null ? "" : i[13].toString())
-                .shortStay(i[14] == null ? "" : i[14].toString())
-                .resonOther(i[15] == null ? "" : i[15].toString())
+                .livingAbroad(i[13] == null ? 0 : ((BigDecimal) i[13]).intValue())
+                .shortStay(i[14] == null ? 0 : ((BigDecimal) i[14]).intValue())
+                .resonOther(i[15] == null ? 0 : ((BigDecimal) i[15]).intValue())
                 .resonAndOtherContent(i[16] == null ? "" : i[16].toString())
                 .startDate1(i[17] == null ? "" : i[17].toString())
                 .startDate2(i[18] == null ? "" : i[18].toString())
@@ -136,7 +136,7 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
                 .isMoreEmp(i[24] == null ? 0 : ((BigDecimal)i[24]).intValue())
                 .shortTimeWorkes(i[25] == null ? 0 : ((BigDecimal)i[25]).intValue())
                 .continReemAfterRetirement(i[26] == null ? 0 : ((BigDecimal)i[26]).intValue())
-                .remarksAndOtherContent(i[27] == null ? 0 : ((BigDecimal)i[27]).intValue())
+                .remarksAndOtherContent(i[27] == null ? "" : i[27].toString())
                 .healPrefectureNo(i[28] == null ? 0 : ((BigDecimal) i[28]).intValue())
                 .welPrefectureNo(i[29] == null ? 0 : ((BigDecimal) i[29]).intValue())
                 .healInsCtg(i[30] == null ? 0 : ((BigDecimal) i[30]).intValue())
@@ -314,7 +314,8 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("      HEALTH_INSURANCE_PREFECTURE_NO,");
         exportSQL.append("      WELFARE_PENSION_PREFECTURE_NO,");
         exportSQL.append("      HEAL_INSUR_SAME_CTG,     ");
-        exportSQL.append("      HEAL_INSUR_INHEREN_PR");
+        exportSQL.append("      HEAL_INSUR_INHEREN_PR,");
+        exportSQL.append("      HEAL_INSUR_UNION_NMBER");
         exportSQL.append("   FROM    ");
         exportSQL.append("       (SELECT *");
         exportSQL.append("         FROM QQSMT_EMP_HEAL_INSUR_QI ");
@@ -384,9 +385,9 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
                 .birthDay(i[10] == null ? "" : i[10].toString())
                 .gender(i[11] == null ? "" : i[11].toString())
                 .underDivision(i[12] == null ? "" : i[12].toString())
-                .livingAbroad(i[13] == null ? "" : i[13].toString())
-                .shortStay(i[14] == null ? "" : i[14].toString())
-                .resonOther(i[15] == null ? "" : i[15].toString())
+                .livingAbroad(i[13] == null ? 0 : ((BigDecimal) i[13]).intValue())
+                .shortStay(i[14] == null ?  0 : ((BigDecimal) i[14]).intValue())
+                .resonOther(i[15] == null ?  0 : ((BigDecimal) i[15]).intValue())
                 .resonAndOtherContent(i[16] == null ? "" : i[16].toString())
                 .startDate1(i[17] == null ? "" : i[17].toString())
                 .startDate2(i[18] == null ? "" : i[18].toString())
@@ -398,11 +399,12 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
                 .isMoreEmp(i[24] == null ? 0 : ((BigDecimal) i[24]).intValue())
                 .shortTimeWorkes(i[25] == null ? 0 : ((BigDecimal) i[25]).intValue())
                 .continReemAfterRetirement(i[26] == null ? 0 : ((BigDecimal) i[26]).intValue())
-                .remarksAndOtherContent(i[27] == null ? 0 : ((BigDecimal) i[27]).intValue())
+                .remarksAndOtherContent(i[27] == null ? "" : i[27].toString())
                 .healPrefectureNo(i[28] == null ? 0 : ((BigDecimal) i[28]).intValue())
-                .welPrefectureNo(i[28] == null ? 0 : ((BigDecimal) i[28]).intValue())
-                .healInsCtg(i[29] == null ? 0 : ((BigDecimal) i[29]).intValue())
-                .distin(i[29] == null ? "" : i[29].toString())
+                .welPrefectureNo(i[29] == null ? 0 : ((BigDecimal) i[29]).intValue())
+                .healInsCtg(i[30] == null ? 0 : ((BigDecimal) i[30]).intValue())
+                .distin(i[31] == null ? "" : i[31].toString())
+                .healUnionNumber(i[32] == null ? "" : i[32].toString())
                 .build()
         ).collect(Collectors.toList());
     }

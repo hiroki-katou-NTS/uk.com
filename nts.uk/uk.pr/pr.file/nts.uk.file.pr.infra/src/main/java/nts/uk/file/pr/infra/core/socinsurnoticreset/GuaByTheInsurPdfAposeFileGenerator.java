@@ -35,7 +35,6 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
         try (AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE)) {
             Workbook wb = reportContext.getWorkbook();
             WorksheetCollection wsc = wb.getWorksheets();
-
             this.writeFileExcel(wsc, exportData.getListContent());
             reportContext.processDesigner();
             wsc.removeAt(0);

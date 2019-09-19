@@ -25,7 +25,6 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
 
     private static final String FILE_NAME = "TEMP";
 
-
     private static final String SHOWA = "昭和";
 
     private static final String HEISEI = "平成";
@@ -47,13 +46,22 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
             if(exportData.getIns().getOutputFormat().get() == OutputFormatClass.THE_WELF_PEN) {
                 fillEmpPensionFundOffice(exportData.getEmpPenFundSub(), worksheets.get(0), exportData.getInfor(), exportData.getCompany(), exportData.getIns(), exportData.getBaseDate());
             }
-
             reportContext.getDesigner().setWorkbook(workbook);
             reportContext.processDesigner();
-            reportContext.saveAsCSV((this.createNewFile(generatorContext, FILE_NAME + ".csv")));
+            reportContext.saveAsCSV((this.createNewFile(generatorContext, getFileName(exportData.getIns().getOutputFormat().get()) + ".csv")));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private String getFileName(OutputFormatClass output){
+        if( output == OutputFormatClass.PEN_OFFICE) {
+            return "SHFD0006";
+        }
+        if( output == OutputFormatClass.HEAL_INSUR_ASSO) {
+            return "KPFD0006";
+        }
+        return "KNFD0006";
     }
 
     private void fillPensionOffice(List<PensionOfficeDataExport> pensionOfficeData, Worksheet worksheet,
@@ -106,6 +114,8 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
     private void fillPensionEmployee(PensionOfficeDataExport data, Cells cells,
                                      List<SocialInsurancePrefectureInformation> infor, SocialInsurNotiCreateSet ins, int startRow){
         JapaneseDate dateJp = toJapaneseDate( GeneralDate.fromString(data.getBirthDay().substring(0,10), "yyyy-MM-dd"));
+        JapaneseDate healStart = toJapaneseDate( GeneralDate.fromString(data.getStartDate1().substring(0,10), "yyyy-MM-dd"));
+        JapaneseDate welStart = toJapaneseDate( GeneralDate.fromString(data.getStartDate2().substring(0,10), "yyyy-MM-dd"));
         cells.get(startRow, 0).setValue("2200700");
         cells.get(startRow, 1).setValue(getPreferCode(data.getHealPrefectureNo(), data.getStartDate1(), infor));
         cells.get(startRow, 2).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? data.getHealOfficeNumber1().length() > 2 ? data.getHealOfficeNumber1().substring(0, 2) : data.getHealOfficeNumber1() :
@@ -122,8 +132,12 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
         cells.get(startRow, 9).setValue(convertJpDate(dateJp));
         cells.get(startRow, 10).setValue(ins.getPrintPersonNumber() != PersonalNumClass.DO_NOT_OUTPUT && ins.getPrintPersonNumber() != PersonalNumClass.OUTPUT_PER_NUMBER ? data.getGender() : data.getHealInsCtg());
         cells.get(startRow, 11).setValue(data.getDistin());
-        cells.get(startRow, 13).setValue(ins.getTextPersonNumber().get() == TextPerNumberClass.OUTPUT_NUMBER ? data.getLivingAbroad() : ins.getTextPersonNumber().get() == TextPerNumberClass.OUPUT_BASIC_PEN_NUMBER ? data.getShortStay() : data.getResonOther());
+        cells.get(startRow, 13).setValue(data.getLivingAbroad() == 1 ? data.getLivingAbroad() :  data.getShortStay() == 1 ? data.getShortStay() : data.getResonOther());
         cells.get(startRow, 14).setValue(data.getResonAndOtherContent());
+
+        cells.get(startRow, 17).setValue(conpareDate(data.getStartDate1(), data.getStartDate2()) ? healStart.era().equals(HEISEI) ? 7 : dateJp.era().equals(SHOWA) ? 5 : 9 : welStart.era().equals(HEISEI) ? 7 : dateJp.era().equals(SHOWA) ? 5 : 9);
+        cells.get(startRow, 18).setValue(conpareDate(data.getStartDate1(), data.getStartDate2()) ? convertJpDate(healStart) : convertJpDate(welStart));
+
         cells.get(startRow, 21).setValue(data.getDepenAppoint());
         cells.get(startRow, 22).setValue(data.getRemunMonthlyAmount());
         cells.get(startRow, 23).setValue(data.getRemunMonthlyAmountKind());
@@ -132,8 +146,13 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
         cells.get(startRow, 26).setValue(data.getIsMoreEmp() == 1 ? 1 : "") ;
         cells.get(startRow, 27).setValue(data.getShortTimeWorkes() == 1 ? 1 : "");
         cells.get(startRow, 28).setValue(data.getContinReemAfterRetirement() == 1 ? 1 : "");
-        cells.get(startRow, 29).setValue(data.getRemarksAndOtherContent() == 1 ? 1 : "");
+        cells.get(startRow, 29).setValue(checkLength(data.getRemarksAndOtherContent(),37));
         cells.get(startRow, 34).setValue(data.getPercentOrMore() == 1 ? 1 : "");
+    }
+
+
+    private boolean conpareDate(String start1 ,String start2){
+        return GeneralDate.fromString(start1.substring(0,10), "yyyy-MM-dd").after(GeneralDate.fromString(start2.substring(0,10), "yyyy-MM-dd"));
     }
 
     private void fillHealthInsAssociationOffice(List<PensionOfficeDataExport> healthInsAssociation, Worksheet worksheet,List<SocialInsurancePrefectureInformation> infor, CompanyInfor company, SocialInsurNotiCreateSet ins, GeneralDate baseDate){
@@ -197,9 +216,9 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
         cells.get(startRow, 26).setValue(data.getIsMoreEmp() == 1 ? 1 : "") ;
         cells.get(startRow, 27).setValue(data.getShortTimeWorkes() == 1 ? 1 : "");
         cells.get(startRow, 28).setValue(data.getContinReemAfterRetirement() == 1 ? 1 : "");
-        cells.get(startRow, 29).setValue(data.getRemarksAndOtherContent() == 1 ? 1 : "");
-        cells.get(startRow, 34).setValue(data.getPercentOrMore() == 1 ? 1 : "");
-        //cells.get(startRow,35).setValue(data.getHealUni); 健康保険組合番号
+        cells.get(startRow, 29).setValue(checkLength(data.getRemarksAndOtherContent(),37));
+        cells.get(startRow, 33).setValue(data.getPercentOrMore() == 1 ? 1 : "");
+        cells.get(startRow,34).setValue(data.getHealUnionNumber());
         cells.get(startRow,35).setValue(data.getHealInsInherenPr());
     }
 

@@ -128,7 +128,7 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
             return Collections.emptyList();
         }
         return resultQuery.stream().map(i -> InsLossDataExport.builder()
-                .empId(i[0].toString())
+                .empCd(i[0].toString())
                 .officeCd(i[1] != null ? "" : i[1].toString())
                 .other(((BigDecimal) i[2]).intValue())
                 .otherReason(i[3] == null ? "" : i[3].toString())
@@ -179,7 +179,7 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
     public List<InsLossDataExport> getHealthInsLoss(List<String> empIds, String cid, GeneralDate startDate, GeneralDate endDate) {
         List<Object[]> resultQuery = null;
         StringBuilder exportSQL = new StringBuilder();
-        exportSQL.append("  SELECT qi.EMPLOYEE_ID,");
+        exportSQL.append("  SELECT i.SCD,");
         exportSQL.append("      SOCIAL_INSURANCE_OFFICE_CD,");
         exportSQL.append("      OTHER,");
         exportSQL.append("      OTHER_REASON,");
@@ -273,7 +273,7 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
             return Collections.emptyList();
         }
         return resultQuery.stream().map(i -> InsLossDataExport.builder()
-                .empId(i[0].toString())
+                .empCd(i[0].toString())
                 .officeCd(i[1] == null ? "" : i[1].toString())
                 .other(i[2] == null ? 0 : ((BigDecimal) i[2]).intValue())
                 .otherReason(i[3] == null ? "" : i[3].toString())

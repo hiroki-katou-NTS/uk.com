@@ -48,7 +48,17 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
             fillEmpPensionFundOffice(data.getHealthInsAssociationData(), sheet, data.getInfor(), company, data.getSocialInsurNotiCreateSet(), data.getBaseDate());
         }
         reportContext.processDesigner();
-        reportContext.saveAsCSV(this.createNewFile(generatorContext, FILE_NAME + ".csv"));
+        reportContext.saveAsCSV(this.createNewFile(generatorContext, getFileName(data.getSocialInsurNotiCreateSet().getOutputFormat().get() ) + ".csv"));
+    }
+
+    private String getFileName(OutputFormatClass output){
+        if( output == OutputFormatClass.PEN_OFFICE) {
+            return "SHFD0006";
+        }
+        if( output == OutputFormatClass.HEAL_INSUR_ASSO) {
+            return "KPFD0006";
+        }
+        return "KNFD0006";
     }
 
     private void fillPensionOffice(List<InsLossDataExport> healthInsLoss, Worksheet worksheet,
@@ -170,7 +180,7 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
                 cells.get(startRow, 5).setValue(data.getHealInsInherenPr().length() > 20 ? data.getHealInsInherenPr().substring(10, 20) : "");
                 cells.get(startRow, 6).setValue(data.getHealInsInherenPr().length() > 30 ? data.getHealInsInherenPr().substring(20, 30) : "");
                 cells.get(startRow, 7).setValue(data.getHealInsInherenPr().length() > 40 ? data.getHealInsInherenPr().substring(30, 40) : "");
-                startRow = startRow + 1;
+
                 cells.get(startRow, 8).setValue("[kanri]");
                 startRow = startRow + 1;
                 cells.get(startRow, 1).setValue("001");

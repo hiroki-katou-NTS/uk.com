@@ -67,8 +67,7 @@ public class NotificationOfLossInsExportPDFService extends ExportService<Notific
 			List<InsLossDataExport> overSeventy = welfPenInsLoss.stream().filter(item-> item.getCause() == ReasonsForLossPensionIns.ONLY_PENSION_INSURANCE.value).collect(Collectors.toList());
 			List<InsLossDataExport> underSeventy = welfPenInsLoss.stream().filter(item-> item.getCause() != ReasonsForLossPensionIns.ONLY_PENSION_INSURANCE.value).collect(Collectors.toList());
 			healthInsLoss.addAll(underSeventy);
-			healthInsLoss.stream().sorted(Comparator.comparing(InsLossDataExport::getOfficeCd));
-			/*List<SocialInsuranceOffice> socialInsuranceOffice =  socialInsuranceOfficeRepository.findByCid(cid);*/
+			healthInsLoss.stream().sorted(Comparator.comparing(InsLossDataExport::getOfficeCd).thenComparing(InsLossDataExport::getEmpCd));
 			CompanyInfor company = socialInsurNotiCreateSetEx.getCompanyInfor(cid);
 			socialInsurNotiCreateSetFileGenerator.generate(exportServiceContext.getGeneratorContext(),
 					new LossNotificationInformation(healthInsLoss, overSeventy,null, domain, exportServiceContext.getQuery().getReference(), company, null));
