@@ -5,7 +5,7 @@
       <!-- E1_1: 戻るボタン -->
       <div class="col-1 pl-1" v-on:click="$close()"><i class="fas fa-arrow-left"></i></div>
       <!-- E1_2: 対象社員名 -->
-      <div class="col-6 pl-0 pr-2"><span>{{ params.empName }}</span></div>
+      <div class="col-6 pl-0 pr-2"><span>{{ empName }}</span></div>
       <!-- E1_3: 対象年月日 -->
       <div class="col-5 pl-0 pr-0"><span>{{ params.date  | date('YYYY年MM月DD日')}}</span></div>
     </div>

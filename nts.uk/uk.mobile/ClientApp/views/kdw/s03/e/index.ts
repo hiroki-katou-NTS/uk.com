@@ -12,11 +12,9 @@ import { LoDashStatic } from 'lodash';
     constraints: []
 })
 export class KdwS03EComponent extends Vue {
-    public title: string = 'KdwS03E';
-
     @Prop({ default: () => ({ employeeId: '', empName: '', date: new Date(), code: '', attendanceItemList: []}) })
     public readonly params: { employeeId: string, empName: string, date: Date, code: string, attendanceItemList: Array<number> };
-
+    public empName: string = '';//対象社員名
     public errorInfo: IErrorInfo = {
         code: '',
         name: '',
@@ -27,9 +25,11 @@ export class KdwS03EComponent extends Vue {
     public created() {
         let self = this;
         self.$mask('show');
+        self.empName = self.params.empName.length <= 7 ? self.params.empName : self.params.empName.substr(0, 7) + '...';
         //A画面のキャッシュを取得する
         let cache: any = storage.local.getItem('dailyCorrectionState');
         self.displayE71 = self.checkEsxit(cache.headerLst, self.params.attendanceItemList);
+        console.log(self.params.attendanceItemList);
         let param = {
             employeeId: self.params.employeeId,//社員ID
             date: self.params.date,//日

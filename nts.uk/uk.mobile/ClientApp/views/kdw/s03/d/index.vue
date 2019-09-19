@@ -20,7 +20,7 @@
     </thead>
     <tbody>
       <tr v-for="(rowData, index) in rowDatas" v-bind:key="index" v-on:click="openDialogE(rowData)">
-        <th class="pl-0 pr-0 text-center">{{ rowData.date | date('DD日(dd)') }}</th>
+        <td class="pl-0 pr-0 text-center">{{ rowData.date | date('DD日(dd)') }}</td>
         <td class="pl-0 pr-0 text-center">{{ rowData.code }}</td>
         <td>
           <div class="row">
