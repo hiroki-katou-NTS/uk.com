@@ -51,14 +51,19 @@ public class MonthlyPerfomanceMob {
 	private AuthorityFormatMonthlySRepository authMFormatMonthlyRepo;
 	@Inject
 	private BusinessTypeSFormatMonthlyRepository bussSFormatMonthlyRepo;
-    
+    /**
+     * F：月別実績の参照を起動する
+     * @param param
+     * @return 月別実績
+     */
 	public List<MonthlyPerData> getMonthlyPerData(MonthlyPerParamMob param){
 		String companyId = AppContexts.user().companyId();
+		//get フォーマット種類
 		OperationOfDailyPerformanceDto dailyPerDto = repo.findOperationOfDailyPerformance();
-		
+		//get フォーマット
 		List<FormatDailyDto> formatDaily = this.getFormatCode(param.getFormatCode(),
 				dailyPerDto.getSettingUnit(), companyId);
-		
+		//get ItemId
 		List<Integer> itemIds = this.getItemIds(companyId, formatDaily);
 		GeneralDate date = param.getClosureDate();
 		Boolean lastDayOfMonth = false;
@@ -66,13 +71,14 @@ public class MonthlyPerfomanceMob {
 			lastDayOfMonth = true;
 		}
 		Integer a = Integer.valueOf(date.day());
-		
+		//get 月別実績
 		Optional<MonthlyRecordWorkDto> monthOpt =  monModifyQueryPro.getDataMonthAll(
 				new MonthlyMultiQuery(Arrays.asList(param.getEmployeeId())), 
 				itemIds.stream().collect(Collectors.toList()),
 				new YearMonth(param.getYearMonth()),
 				ClosureId.valueOf(param.getClosureId()),
 				new ClosureDate(a, lastDayOfMonth));
+		//convert data
 		List<MonthlyModifyResult> mResult = monthOpt.isPresent() ? AttendanceItemUtil.toItemValues(Arrays.asList(monthOpt.get()),
 				itemIds.stream().collect(Collectors.toList()),
 				AttendanceItemUtil.AttendanceItemType.MONTHLY_ITEM).entrySet().stream().map(record -> {
@@ -85,6 +91,7 @@ public class MonthlyPerfomanceMob {
 		if(mResult.isEmpty()) return null;
 		List<ItemValue> items = mResult.get(0).getItems();
 		List<Integer> lstId = items.stream().map(c -> c.getItemId()).collect(Collectors.toList());
+		//勤怠項目に対応する名称を生成する
 		List<AttItemName> lstName = companyMonthlyItemService.getMonthlyItems(companyId, Optional.empty(), lstId, null);
 		List<MonthlyPerData> data = new ArrayList<>();
 		for(ItemValue item : items){
@@ -92,25 +99,39 @@ public class MonthlyPerfomanceMob {
 					item.getValue(), item.getValueType() != null ? item.getValueType().value : null,
 							this.findOrder(formatDaily, item.getItemId())));
 		}
+		//【ソート】・パラメータ「日別実績の修正の状態．表示する項目．月次の勤怠項目一覧．並び順」（ASC）
 		Collections.sort(data, Comparator.comparing(MonthlyPerData::getOrder));
 		return data;
 	}
+	/**
+	 * 月別実績のフォーマットの設定を取得する
+	 * @param formatCode
+	 * @param settingUnit
+	 * @param companyId
+	 * @return
+	 */
 	public List<FormatDailyDto> getFormatCode(Collection<String> formatCode, SettingUnitType settingUnit, String companyId) {
 		
 		if (formatCode.isEmpty()) {
 			return new ArrayList<>();
 		}
 		
-		if (settingUnit == SettingUnitType.AUTHORITY) {
+		if (settingUnit == SettingUnitType.AUTHORITY) {//権限の場合
 			List<AuthoritySFomatMonthly> authMonthly = authMFormatMonthlyRepo.getListAuthorityFormatDaily(companyId, formatCode);
 			return authMonthly.stream().map(c -> new FormatDailyDto(null, 
 					c.getAttendanceItemId(), c.getColumnWidthTable(), c.getDisplayOrder())).collect(Collectors.toList());
 		}
-		
+		//勤務種別の場合
 		List<BusinessTypeSFormatMonthly> bussMonthly = bussSFormatMonthlyRepo.getListBusinessTypeFormat(companyId, formatCode);
 		return bussMonthly.stream().map(c -> new FormatDailyDto(c.getBusinessTypeCode().v(),
 				c.getAttendanceItemId(), null, c.getOrder())).collect(Collectors.toList());
 	}
+	/**
+	 * get Item ID
+	 * @param companyId
+	 * @param formatDaily
+	 * @return
+	 */
 	private List<Integer> getItemIds(String companyId, List<FormatDailyDto> formatDaily) {
 		if (!formatDaily.isEmpty()) {
 			// 対応するドメインモデル「権限別月次項目制御」を取得する
@@ -127,12 +148,14 @@ public class MonthlyPerfomanceMob {
 		}
 		return new ArrayList<>();
 	}
+	//find 勤怠項目の名称
 	private String findName(List<AttItemName> lstName, Integer itemId){
 		for(AttItemName name : lstName){
 			if(name.getAttendanceItemId() == itemId) return name.getAttendanceItemName();
 		}
 		return null;
 	}
+	//find order of 勤怠項目
 	private Integer findOrder(List<FormatDailyDto> formatDaily, Integer itemId){
 		for(FormatDailyDto format : formatDaily){
 			if(format.getAttendanceItemId().equals(itemId)) return format.getOrder();
