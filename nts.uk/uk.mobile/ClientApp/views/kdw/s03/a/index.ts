@@ -186,7 +186,7 @@ export class Kdws03AComponent extends Vue {
         let styleTagAr: any = [];
         if (this.displayFormat == '1') {
             styleTag = document.querySelector('.table-body') as HTMLStyleElement;
-            styleTag.style.height = '100%';
+            styleTag.style.height = styleTag.style.height + 2;
         }
         styleTagAr = document.querySelectorAll('.btn-sm');
         _.forEach(styleTagAr, (x) => x.style.fontSize = '10px');
@@ -470,6 +470,12 @@ export class Kdws03AComponent extends Vue {
                     });
                     self.displayDataLstEx.push({ rowData, employeeName: '', id: '', employeeNameDis: '' });
                 }
+            } else if (7 < self.displayDataLst.length && self.displayDataLst.length < 20) {
+                self.displayDataLstEx = _.slice(self.displayDataLst, 0, 20);
+                self.itemStart = 1;
+                self.itemEnd = self.displayDataLst.length;
+                self.previousState = 'button-deactive';
+                self.nextState = 'button-deactive';
             } else {
                 self.displayDataLstEx = _.slice(self.displayDataLst, 0, 20);
                 self.itemStart = 1;

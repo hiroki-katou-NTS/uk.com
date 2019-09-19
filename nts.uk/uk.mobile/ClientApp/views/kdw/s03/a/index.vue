@@ -68,7 +68,7 @@
                 </tr>
             </tfoot>
         </fix-table>
-        <fix-table v-if="displayFormat == '1'" table-class="table table-bordered m-0 table-sm table-custom" :rowNumber="20" class="mx-n2" style="font-size: 11px" :key="resetTable">
+        <fix-table v-if="displayFormat == '1'" table-class="table table-bordered m-0 table-sm table-custom" :rowNumber="7" class="mx-n2" style="font-size: 11px" :key="resetTable">
             <thead class="uk-bg-headline">
                 <tr>
                     <th c-width="58" style="height: 70px"></th>
@@ -99,15 +99,17 @@
                 </tr>
             </tfoot>
         </fix-table>
-        <div class="row mt-3" style="font-size: 10px" v-if="displayFormat == '1'">
-            <div class="col-3 pr-1" v-bind:class="previousState">
-                <span class="mr-n1" v-on:click="previousPage">⇦前の20件</span>
-            </div>
-            <div class="col-6 text-center">
-                <span>{{itemStart}}～{{itemEnd}}件（{{displayDataLst.length}}件中）</span>
-            </div>
-            <div class="col-3 pl-2" v-bind:class="nextState">
-                <span v-on:click="nextPage">次の20件⇨</span>
+        <div class="mx-n2 border-top" style="font-size: 10px" v-if="displayFormat == '1'">
+            <div class="row mt-3 ">
+                <div class="col-3 pr-1" v-bind:class="previousState">
+                    <span class="mr-n1" v-on:click="previousPage">⇦前の20件</span>
+                </div>
+                <div class="col-6 text-center">
+                    <span>{{itemStart}}～{{itemEnd}}件（{{displayDataLst.length}}件中）</span>
+                </div>
+                <div class="col-3 pl-2" v-bind:class="nextState">
+                    <span v-on:click="nextPage">次の20件⇨</span>
+                </div>
             </div>
         </div>
     </div>
