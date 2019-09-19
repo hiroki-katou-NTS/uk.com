@@ -78,7 +78,9 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
         ws.getRangeByName(this.getRangeName(sheetName,"A1_1", stt)).setValue(element.getBusinessstablishmentbCode1());
         ws.getRangeByName(this.getRangeName(sheetName,"A1_2", stt)).setValue(element.getBusinessstablishmentbCode2());
         ws.getRangeByName(this.getRangeName(sheetName,"A1_3", stt)).setValue(element.getOfficeNumber());
-        ws.getRangeByName(this.getRangeName(sheetName,"A1_4", stt)).setValue(element.getOfficePostalCode());
+        ws.getRangeByName(this.getRangeName(sheetName,"A1_4_1", stt)).setValue(element.getOfficePostalCode().length() > 3 ? element.getOfficePostalCode().substring(0,3) : element.getOfficePostalCode());
+        ws.getRangeByName(this.getRangeName(sheetName,"A1_4_2", stt)).setValue(element.getOfficePostalCode().length() >=  7 ? element.getOfficePostalCode().substring(3,7)
+                :  element.getOfficePostalCode().length() > 3 ? element.getOfficePostalCode().substring(3,element.getOfficePostalCode().length()) : "");
         ws.getRangeByName(this.getRangeName(sheetName,"A1_5", stt)).setValue(element.getOfficeAddress1());
         ws.getRangeByName(this.getRangeName(sheetName,"A1_6", stt)).setValue(element.getOfficeAddress2());
         ws.getRangeByName(this.getRangeName(sheetName,"A1_7", stt)).setValue(element.getBusinessName());
