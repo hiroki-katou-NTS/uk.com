@@ -1,5 +1,5 @@
 import { $ } from '@app/utils';
-import { Vue } from '@app/provider';
+import { _, Vue } from '@app/provider';
 import { component } from '@app/core/component';
 
 @component({
@@ -20,6 +20,17 @@ import { component } from '@app/core/component';
         },
         numberValue: {
             required: true
+        },
+        items: {
+            name: {
+                loop: true,
+                required: true,
+                constraint: 'SampleStringKana'
+            },
+            age: {
+                loop: true,
+                required: true
+            }
         }
     },
     constraints: [
@@ -32,4 +43,24 @@ export class DocumentsPluginsValidationComponent extends Vue {
     public textValue: string = 'nittsu';
     public numberValue: number = 1;
 
+    public items: Array<{ name: string; age: number; }> = [{
+        name: 'a',
+        age: 100
+    }, {
+        name: 'b',
+        age: 100
+    }, {
+        name: 'c',
+        age: 100
+    }, {
+        name: 'd',
+        age: 100
+    }, {
+        name: 'e',
+        age: 100
+    }];
+
+    public created() {
+        Object.assign(window, { _, vm: this });
+    }
 }
