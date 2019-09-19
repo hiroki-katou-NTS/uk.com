@@ -1,6 +1,5 @@
 package nts.uk.file.pr.infra.core.socinsurnoticreset;
 
-import com.aspose.cells.ShapeCollection;
 import com.aspose.cells.Workbook;
 import com.aspose.cells.WorksheetCollection;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
@@ -24,14 +23,12 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
 
     private static final String TEMPLATE_FILE = "report/被保険者資格取得届_帳票テンプレート.xlsx";
 
-    private static final String REPORT_FILE_NAME = "被保険者資格取得届_帳票テンプレート.pdf";
-
-    private static final int FIRST_ROW_FILL = 3;
-
-    private static final String TITLE = "法定調書用会社の登録";
+    private static final String REPORT_FILE_NAME = "被保険者資格取得届.pdf";
 
     @Inject
     private JapaneseErasAdapter adapter;
+
+    private static final int EMP_IN_PAGE = 2;
 
     @Override
     public void generate(FileGeneratorContext fileContext, ExportDataCsv exportData) {
@@ -39,263 +36,162 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
             Workbook wb = reportContext.getWorkbook();
             WorksheetCollection wsc = wb.getWorksheets();
 
-            this.writeFileExcel(wsc, exportData.listContent, "");
+            this.writeFileExcel(wsc, exportData.getListContent());
             reportContext.processDesigner();
-            reportContext.saveAsPdf(this.createNewFile(fileContext, this.getReportName(REPORT_FILE_NAME)));
+            wsc.removeAt(0);
+            reportContext.saveAsPdf(this.createNewFile(fileContext, REPORT_FILE_NAME));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void writeFileExcel(WorksheetCollection ws, List<GuaByTheInsurExportDto> exportData, String companyName) {
-
-
-        // Main Data
+    private void writeFileExcel(WorksheetCollection ws, List<GuaByTheInsurExportDto> exportData) {
+        int stt = 0;
+        int page = 0;
         String sheetName = "INS";
-        for (int page = 0; page < exportData.size(); page += 4) {
-            for (int i = 0; i < exportData.size(); i += 4) {
-                try {
-                    GuaByTheInsurExportDto element = exportData.get(i);
-                    ShapeCollection shapes =  ws.get(0).getShapes();
-                    if (element != null) {
-
-                        ws.getRangeByName("A1_10").setValue(element.getFilingDate());
-
-                        ws.getRangeByName("A1_1").setValue(element.getBusinessstablishmentbCode1());
-                        ws.getRangeByName("A1_2").setValue(element.getBusinessstablishmentbCode2());
-                        ws.getRangeByName("A1_3").setValue(element.getOfficeNumber());
-                        ws.getRangeByName("A1_4").setValue(element.getOfficePostalCode());
-                        ws.getRangeByName("A1_5").setValue(element.getOfficeAddress1());
-                        ws.getRangeByName("A1_6").setValue(element.getOfficeAddress2());
-                        ws.getRangeByName("A1_7").setValue(element.getBusinessName());
-                        ws.getRangeByName("A1_8").setValue(element.getBusinessName1());
-                        ws.getRangeByName("A1_9").setValue(element.getPhoneNumber());
-
-                        ws.getRangeByName("A2_1").setValue("Chưa có");
-                        ws.getRangeByName("A2_2").setValue(element.getNameOfInsuredPersonMr());
-                        ws.getRangeByName("A2_3").setValue(element.getNameOfInsuredPerson());
-                        ws.getRangeByName("A2_4").setValue(element.getNameOfInsuredPersonMrK());
-                        ws.getRangeByName("A2_5").setValue(element.getNameOfInsuredPerson1());
-                        {
-                            //pick data
-                        }
-                        ws.getRangeByName("A2_8").setValue(element.getBrithDay());
-                        {
-                            // fill data gender
-                            if(element.getTypeMale() == 0){
-                                shapes.remove( ws.get(0).getShapes().get("A2_9"));
-                            }
-                            else{
-                                shapes.remove( ws.get(0).getShapes().get("A2_10"));
-                            }
-                        }
-                        {
-                            //fill date undergroundDivision
-
-                        }
-                        ws.getRangeByName("A2_20").setValue(element.getQualificationDate());
-                        {
-                            // depen apoint yes or no
-                            if(element.getDependentNo() == 0){
-                                shapes.remove( ws.get(0).getShapes().get("A2_21"));
-                            }
-                            else{
-                                shapes.remove( ws.get(0).getShapes().get("A2_22"));
-                            }
-                        }
-                        ws.getRangeByName("A2_23").setValue(element.getMonRemunerationAmountInCurrency());
-                        ws.getRangeByName("A2_24").setValue(element.getMonRemunerationAmountOfActualItem());
-                        ws.getRangeByName("A2_25").setValue(element.getCompenMonthlyAamountTotal());
-                        ws.getRangeByName("A2_26").setValue(element.getPostalCode());
-                        ws.getRangeByName("A2_27").setValue(element.getStreetAddress());
-                        ws.getRangeByName("A2_28").setValue(element.getAddressKana());
-                        if(element.getRemarks70OldAndOverEmployees() == 1){
-                            shapes.remove( ws.get(0).getShapes().get("A2_29"));
-                        }
-                        if(element.getRemarksTwoOrMoreOfficeWorkers() == 1){
-                            shapes.remove( ws.get(0).getShapes().get("A2_30"));
-                        }
-                        if(element.getRemarksShortTimeWorkers() == 1){
-                            shapes.remove( ws.get(0).getShapes().get("A2_31"));
-                        }
-                        if(element.getRemarksContReemAfterRetirement() == 1){
-                            shapes.remove( ws.get(0).getShapes().get("A2_32"));
-                        }
-                        if(element.getRemarksOther() == 1){
-                            shapes.remove( ws.get(0).getShapes().get("A2_33"));
-                        }
-
-                        if(element.getReasonResidentAbroad() == 1){
-                            shapes.remove( ws.get(0).getShapes().get("A2_35"));
-                        }
-                        if(element.getReasonShortTermResidence() == 1){
-                            shapes.remove( ws.get(0).getShapes().get("A2_36"));
-                        }
-                        if(element.getReasonOther() == 1){
-                            shapes.remove( ws.get(0).getShapes().get("A2_37"));
-                        }
-                        ws.get(0).getShapes().get("A2_38").setText(element.getReasonOtherContent());
-                    } else {
-                        return;
+        String companyCd = "";
+        try {
+            for (int i = 0; i < exportData.size(); i++,stt++) {
+                GuaByTheInsurExportDto element = exportData.get(i);
+                if (stt % EMP_IN_PAGE == 0 || !companyCd.equals(element.getOfficeCd())) {
+                    if (!companyCd.equals(element.getOfficeCd()) && stt % EMP_IN_PAGE != 0) {
+                        unSelectAll(ws, sheetName + page, stt);
                     }
-                    // Fill element 2nd
-                    GuaByTheInsurExportDto element1 = exportData.get(i + 1);
-                    if (element1!= null) {
-                        ws.getRangeByName("A1_10").setValue(element1.getFilingDate());
-
-                        ws.getRangeByName("A2_1_1").setValue("Chưa có");
-                        ws.getRangeByName("A2_2_1").setValue(element1.getNameOfInsuredPersonMr());
-                        ws.getRangeByName("A2_3_1").setValue(element1.getNameOfInsuredPerson());
-                        ws.getRangeByName("A2_4_1").setValue(element1.getNameOfInsuredPersonMrK());
-                        ws.getRangeByName("A2_5_1").setValue(element1.getNameOfInsuredPerson1());
-                        {
-                            //pick data
-                        }
-                        ws.getRangeByName("A2_8_1").setValue(element.getBrithDay());
-                        {
-                            // fill data gender
-                            if(element.getTypeMale() == 0){
-                                shapes.remove( ws.get(0).getShapes().get("A2_9_1"));
-                            }
-                            else{
-                                shapes.remove( ws.get(0).getShapes().get("A2_10_1"));
-                            }
-                        }
-                        {
-                            //fill date undergroundDivision
-
-                        }
-                        ws.getRangeByName("A2_20_1").setValue(element.getQualificationDate());
-                        {
-                            // depen apoint yes or no
-                            if(element.getDependentNo() == 0){
-                                shapes.remove( ws.get(0).getShapes().get("A2_21_1"));
-                            }
-                            else{
-                                shapes.remove( ws.get(0).getShapes().get("A2_22_1"));
-                            }
-                        }
-                        ws.getRangeByName("A2_23_1").setValue(element1.getMonRemunerationAmountInCurrency());
-                        ws.getRangeByName("A2_24_1").setValue(element1.getMonRemunerationAmountOfActualItem());
-                        ws.getRangeByName("A2_25_1").setValue(element1.getCompenMonthlyAamountTotal());
-                        ws.getRangeByName("A2_26_1").setValue(element1.getPostalCode());
-                        ws.getRangeByName("A2_27_1").setValue(element1.getStreetAddress());
-                        ws.getRangeByName("A2_28_1").setValue(element1.getAddressKana());
-                    }
-                    else{
-                        return;
-                    }
-                    // Fill element 3nd
-                    GuaByTheInsurExportDto element2 = exportData.get(i + 2);
-                    if (element2!= null) {
-                        ws.getRangeByName("A1_10").setValue(element.getFilingDate());
-
-
-
-                        ws.getRangeByName("A2_1_2").setValue("Chưa có");
-                        ws.getRangeByName("A2_2_2").setValue(element2.getNameOfInsuredPersonMr());
-                        ws.getRangeByName("A2_3_2").setValue(element2.getNameOfInsuredPerson());
-                        ws.getRangeByName("A2_4_2").setValue(element2.getNameOfInsuredPersonMrK());
-                        ws.getRangeByName("A2_5_2").setValue(element2.getNameOfInsuredPerson1());
-                        {
-                            //pick data
-                        }
-                            ws.getRangeByName("A2_8_2").setValue(element.getBrithDay());
-                            {
-                                // fill data gender
-                                if(element.getTypeMale() == 0){
-                                    shapes.remove( ws.get(0).getShapes().get("A2_9_2"));
-                                }
-                                else{
-                                    shapes.remove( ws.get(0).getShapes().get("A2_10_2"));
-                                }
-                            }
-                            {
-                                //fill date undergroundDivision
-
-                            }
-                            ws.getRangeByName("A2_20_2").setValue(element.getQualificationDate());
-                            {
-                                // depen apoint yes or no
-                                if(element.getDependentNo() == 0){
-                                    shapes.remove( ws.get(0).getShapes().get("A2_21_2"));
-                                }
-                                else{
-                                    shapes.remove( ws.get(0).getShapes().get("A2_22_2"));
-                                }
-                            }
-                        ws.getRangeByName("A2_23_2").setValue(element2.getMonRemunerationAmountInCurrency());
-                        ws.getRangeByName("A2_24_2").setValue(element2.getMonRemunerationAmountOfActualItem());
-                        ws.getRangeByName("A2_25_2").setValue(element2.getCompenMonthlyAamountTotal());
-                        ws.getRangeByName("A2_26_2").setValue(element2.getPostalCode());
-                        ws.getRangeByName("A2_27_2").setValue(element2.getStreetAddress());
-                        ws.getRangeByName("A2_28_2").setValue(element2.getAddressKana());
-                    }
-                    else{
-                        return;
-                    }
-                    // Fill element 4nd
-                    GuaByTheInsurExportDto element3 = exportData.get(i + 3);
-                    if (element3!= null) {
-                        ws.getRangeByName("A1_10").setValue(element3.getFilingDate());
-
-
-
-                        ws.getRangeByName("A2_1_3").setValue("Chưa có");
-                        ws.getRangeByName("A2_2_3").setValue(element3.getNameOfInsuredPersonMr());
-                        ws.getRangeByName("A2_3_3").setValue(element3.getNameOfInsuredPerson());
-                        ws.getRangeByName("A2_4_3").setValue(element3.getNameOfInsuredPersonMrK());
-                        ws.getRangeByName("A2_5_3").setValue(element3.getNameOfInsuredPerson1());
-                        {
-                            //pick data
-                        }
-                        ws.getRangeByName("A2_8_3").setValue(element.getBrithDay());
-                        {
-                            // fill data gender
-                            if(element.getTypeMale() == 0){
-                                shapes.remove( ws.get(0).getShapes().get("A2_9_3"));
-                            }
-                            else{
-                                shapes.remove( ws.get(0).getShapes().get("A2_10_3"));
-                            }
-                        }
-                        {
-                            //fill date undergroundDivision
-
-                        }
-                        ws.getRangeByName("A2_20_3").setValue(element.getQualificationDate());
-                        {
-                            // depen apoint yes or no
-                            if(element.getDependentNo() == 0){
-                                shapes.remove( ws.get(0).getShapes().get("A2_21_3"));
-                            }
-                            else{
-                                shapes.remove( ws.get(0).getShapes().get("A2_22_3"));
-                            }
-                        }
-                        ws.getRangeByName("A2_23_3").setValue(element3.getMonRemunerationAmountInCurrency());
-                        ws.getRangeByName("A2_24_3").setValue(element3.getMonRemunerationAmountOfActualItem());
-                        ws.getRangeByName("A2_25_3").setValue(element3.getCompenMonthlyAamountTotal());
-                        ws.getRangeByName("A2_26_3").setValue(element3.getPostalCode());
-                        ws.getRangeByName("A2_27_3").setValue(element3.getStreetAddress());
-                        ws.getRangeByName("A2_28_3").setValue(element3.getAddressKana());
-                    }
-                    else{
-                        return;
-                    }
-
-                    ws.get(ws.addCopy(0)).setName(sheetName + page / 4);
-                } catch (Exception e) {
-                    e.printStackTrace();
+                    page++;
+                    ws.get(ws.addCopy(0)).setName(sheetName + page);
+                    companyCd = element.getOfficeCd();
+                    fillDataOffice(ws, element, sheetName + page, stt );
+                    stt = 0;
                 }
+                fillEmployee(ws, element, sheetName + page, stt );
             }
+            unSelectAll(ws,sheetName + page, stt);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-
     }
-    private JapaneseDate toJapaneseDate(GeneralDate date) {
+
+    private void fillDataOffice(WorksheetCollection ws, GuaByTheInsurExportDto element, String sheetName, int stt) {
+        ws.getRangeByName(this.getRangeName(sheetName,"A1_10",stt)).setValue(element.getFilingDate());
+        ws.getRangeByName(this.getRangeName(sheetName,"A1_1",stt)).setValue(element.getBusinessstablishmentbCode1());
+        ws.getRangeByName(this.getRangeName(sheetName,"A1_2",stt)).setValue(element.getBusinessstablishmentbCode2());
+        ws.getRangeByName(this.getRangeName(sheetName,"A1_3",stt)).setValue(element.getOfficeNumber());
+        ws.getRangeByName(this.getRangeName(sheetName,"A1_4",stt)).setValue(element.getOfficePostalCode());
+        ws.getRangeByName(this.getRangeName(sheetName,"A1_5",stt)).setValue(element.getOfficeAddress1());
+        ws.getRangeByName(this.getRangeName(sheetName,"A1_6",stt)).setValue(element.getOfficeAddress2());
+        ws.getRangeByName(this.getRangeName(sheetName,"A1_7",stt)).setValue(element.getBusinessName());
+        ws.getRangeByName(this.getRangeName(sheetName,"A1_8",stt)).setValue(element.getBusinessName1());
+        ws.getRangeByName(this.getRangeName(sheetName,"A1_9",stt)).setValue(element.getPhoneNumber());
+    }
+
+    private void fillEmployee(WorksheetCollection worksheets, GuaByTheInsurExportDto data, String sheetName, int stt){
+        JapaneseDate birthDay = toJapaneseDate( GeneralDate.fromString(data.getBrithDay().substring(0,10), "yyyy-MM-dd"));
+        //JapaneseDate endDate = toJapaneseDate( GeneralDate.fromString(data.getSt().substring(0,10), "yyyy-MM-dd"));
+        /*this.selectEra(worksheets, birthDay.era(), sheetName, stt);
+        this.selectCause(worksheets, data.getCause(), sheetName, stt);
+        this.selectUnder(worksheets, data.getIsMoreEmp(),"A2_18", sheetName, stt);
+        this.selectUnder(worksheets, data.getContinReemAfterRetirement(),"A2_19", sheetName, stt);
+        this.selectUnder(worksheets, data.getOther(),"A2_20", sheetName, stt);*/
+        this.selectItem(worksheets, data, sheetName, stt);
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_2", stt)).setValue(data.getNameOfInsuredPersonMr());
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_3", stt)).setValue(data.getNameOfInsuredPerson());
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_4", stt)).setValue(data.getNameOfInsuredPersonMrK());
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_5", stt)).setValue(data.getNameOfInsuredPerson1());
+        worksheets.getRangeByName(this.getRangeName(sheetName,stt !=0 ? "A2_9_1" : "A2_99_1", stt)).setValue(convertJpDate(birthDay).charAt(0));
+        worksheets.getRangeByName(this.getRangeName(sheetName,stt !=0 ? "A2_9_2" : "A2_99_2", stt)).setValue(convertJpDate(birthDay).charAt(1));
+        worksheets.getRangeByName(this.getRangeName(sheetName,stt !=0 ? "A2_9_3" : "A2_99_3", stt)).setValue(convertJpDate(birthDay).charAt(2));
+        worksheets.getRangeByName(this.getRangeName(sheetName,stt !=0 ? "A2_9_4" : "A2_99_4", stt)).setValue(convertJpDate(birthDay).charAt(3));
+        worksheets.getRangeByName(this.getRangeName(sheetName,stt !=0 ? "A2_9_5" :"A2_99_5", stt)).setValue(convertJpDate(birthDay).charAt(4));
+        worksheets.getRangeByName(this.getRangeName(sheetName,stt !=0 ? "A2_9_6" :"A2_99_6", stt)).setValue(convertJpDate(birthDay).charAt(5));
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_19_1", stt)).setValue(data.getPersonalNumber().length() > 0 ? data.getPersonalNumber().substring(0,1) : data.getPersonalNumber());
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_19_2", stt)).setValue(data.getPersonalNumber().length() > 1 ? data.getPersonalNumber().substring(1,2) : "");
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_19_3", stt)).setValue(data.getPersonalNumber().length() > 2 ? data.getPersonalNumber().substring(2,3) : "");
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_19_4", stt)).setValue(data.getPersonalNumber().length() > 3 ? data.getPersonalNumber().substring(3,4) : "");
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_19_5", stt)).setValue(data.getPersonalNumber().length() > 4 ? data.getPersonalNumber().substring(4,5) : "");
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_19_6", stt)).setValue(data.getPersonalNumber().length() > 5 ? data.getPersonalNumber().substring(5,6) : "");
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_19_7", stt)).setValue(data.getPersonalNumber().length() > 6 ? data.getPersonalNumber().substring(6,7) : "");
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_19_8", stt)).setValue(data.getPersonalNumber().length() > 7 ? data.getPersonalNumber().substring(7,8) : "");
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_23", stt)).setValue(data.getMonRemunerationAmountInCurrency());
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_24", stt)).setValue(data.getMonRemunerationAmountOfActualItem());
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_25", stt)).setValue(data.getCompenMonthlyAamountTotal());
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_26", stt)).setValue(data.getPostalCode());
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_27", stt)).setValue(data.getStreetAddress());
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_28", stt)).setValue(data.getAddressKana());
+        worksheets.getRangeByName("A2_38").setValue(data.getReasonOtherContent());
+    }
+
+    private void unSelectAll(WorksheetCollection worksheets, String sheetName, int stt){
+        for(int i = stt ; i< EMP_IN_PAGE;  i++) {
+            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_29_" + i));
+            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_30_" + i));
+            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_31_" + i));
+            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_33_" + i));
+            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_35_" + i));
+            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_36_" + i));
+            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_37_" + i));
+            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_9_" + i));
+            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_10_" + i));
+            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_21_" + i));
+            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_22_" + i));
+        }
+    }
+
+    private void selectItem(WorksheetCollection worksheets, GuaByTheInsurExportDto element, String sheetName, int stt){
+        if(element.getRemarks70OldAndOverEmployees() == 1){
+            worksheets.get(sheetName).getShapes().remove( worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_29" : "A2_29_" + stt));
+        }
+        if(element.getRemarksTwoOrMoreOfficeWorkers() == 1){
+            worksheets.get(sheetName).getShapes().remove( worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_30" : "A2_30_" + stt));
+        }
+        if(element.getRemarksShortTimeWorkers() == 1){
+            worksheets.get(sheetName).getShapes().remove( worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_31" : "A2_31_" + stt));
+        }
+        if(element.getRemarksContReemAfterRetirement() == 1){
+            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_32" : "A2_32_" + stt));
+        }
+        if(element.getRemarksOther() == 1){
+            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_33" : "A2_33_" + stt));
+        }
+        if(element.getReasonResidentAbroad() == 1){
+            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_35" : "A2_35_" + stt));
+        }
+        if(element.getReasonShortTermResidence() == 1){
+            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_36" : "A2_36_" + stt));
+        }
+        if(element.getReasonOther() == 1){
+            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_37" : "A2_37_" + stt));
+        }
+        if(element.getTypeMale() == 0){
+            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_9" : "A2_9_" + stt));
+        } else{
+            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_10" : "A2_10_" + stt));
+        }
+        if(element.getDependentNo() == 0){
+            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_21" : "A2_21_" + stt));
+        } else{
+            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_22" : "A2_22_" + stt));
+        }
+    }
+
+    private JapaneseDate toJapaneseDate (GeneralDate date) {
         Optional<JapaneseEraName> era = this.adapter.getAllEras().eraOf(date);
         return new JapaneseDate(date, era.get());
     }
+
+    private String convertJpDate(JapaneseDate date){
+        int y = date.year() + 1;
+        int d = date.day();
+        int m = date.month();
+        StringBuilder result = new StringBuilder();
+        result.append(y > 9 ? y: "0" + y);
+        result.append(m > 9 ? m : "0" + m);
+        result.append(d > 9 ? d: "0" + d);
+        return result.toString();
+    }
+
+    private String getRangeName(String sheetName, String pos, int stt){
+        return stt == 0 ? sheetName + "!" + pos : sheetName + "!" + pos + "_" + ++stt;
+    }
+
 
 }

@@ -74,8 +74,8 @@ public class NotificationOfLossInsExportCSVService extends ExportService<Notific
 		if(!domain.getFdNumber().isPresent()) {
 			throw new BusinessException("MsgQ_5", "QSI013_32");
 		}
-        boolean empWelfarePenInsQualiInfor = empWelfarePenInsQualiInforRepository.checkEmpWelfarePenInsQualiInfor(start, end, empIds);
-        boolean emplHealInsurQualifiInfor= emplHealInsurQualifiInforRepository.checkEmplHealInsurQualifiInfor(start, end, empIds);
+        boolean empWelfarePenInsQualiInfor = empWelfarePenInsQualiInforRepository.checkEmpWelfarePenInsQualiInforEnd(start, end, empIds);
+        boolean emplHealInsurQualifiInfor= emplHealInsurQualifiInforRepository.checkEmplHealInsurQualifiInforEndDate(start, end, empIds);
 		if(domain.getOutputFormat().get() == OutputFormatClass.PEN_OFFICE && empWelfarePenInsQualiInfor && emplHealInsurQualifiInfor) {
 		    throw new BusinessException("Msg_37");
 		}
@@ -89,7 +89,6 @@ public class NotificationOfLossInsExportCSVService extends ExportService<Notific
 			List<SocialInsurancePrefectureInformation> infor  = socialInsuranceInfor.findByHistory();
 			List<InsLossDataExport> healthInsLoss = socialInsurNotiCreateSetEx.getHealthInsLoss(empIds, cid, start, end);
 			List<InsLossDataExport> welfPenInsLoss = socialInsurNotiCreateSetEx.getWelfPenInsLoss(empIds, cid, start, end);
-			/*List<SocialInsuranceOffice> socialInsuranceOffice =  socialInsuranceOfficeRepository.findByCid(cid);*/
 			CompanyInfor company = socialInsurNotiCreateSetEx.getCompanyInfor(cid);
 			notificationOfLossInsCSVFileGenerator.generate(exportServiceContext.getGeneratorContext(),
 					new LossNotificationInformation(healthInsLoss, welfPenInsLoss,null, domain, exportServiceContext.getQuery().getReference(), company, infor));
@@ -97,7 +96,6 @@ public class NotificationOfLossInsExportCSVService extends ExportService<Notific
 
         if(domain.getOutputFormat().get() == OutputFormatClass.HEAL_INSUR_ASSO) {
 			List<SocialInsurancePrefectureInformation> infor  = socialInsuranceInfor.findByHistory();
-			/*List<SocialInsuranceOffice> socialInsuranceOffice =  socialInsuranceOfficeRepository.findByCid(cid);*/
 			CompanyInfor company = socialInsurNotiCreateSetEx.getCompanyInfor(cid);
 			List<InsLossDataExport> healthInsAssociationData = socialInsurNotiCreateSetEx.getHealthInsLoss(empIds, cid, start, end);
 			notificationOfLossInsCSVFileGenerator.generate(exportServiceContext.getGeneratorContext(),

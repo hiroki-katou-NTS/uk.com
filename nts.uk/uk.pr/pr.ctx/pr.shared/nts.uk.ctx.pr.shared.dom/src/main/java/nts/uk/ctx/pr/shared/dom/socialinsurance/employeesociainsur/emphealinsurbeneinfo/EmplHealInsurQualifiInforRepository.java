@@ -10,11 +10,11 @@ import java.util.Optional;
 */
 public interface EmplHealInsurQualifiInforRepository {
 
-    boolean checkEmplHealInsurQualifiInfor(GeneralDate start,GeneralDate end, List<String> empIds);
+    boolean checkEmplHealInsurQualifiInforEndDate(GeneralDate start, GeneralDate end, List<String> empIds);
+
+    boolean checkEmplHealInsurQualifiInforStartDate(GeneralDate start, GeneralDate end, List<String> empIds);
 
     Optional<EmplHealInsurQualifiInfor> getEmplHealInsurQualifiInforByEmpId(String empId);
-
-    Optional<EmplHealInsurQualifiInfor> getEmplHealInsurQualifiInforById(String employeeId, String hisId);
 
     Optional<HealInsurNumberInfor> getHealInsurNumberInforByHisId(String hisId);
 

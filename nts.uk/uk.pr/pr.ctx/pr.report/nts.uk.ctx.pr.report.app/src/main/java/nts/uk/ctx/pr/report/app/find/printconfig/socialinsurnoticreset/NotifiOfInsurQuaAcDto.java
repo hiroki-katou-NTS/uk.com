@@ -108,10 +108,10 @@ public class NotifiOfInsurQuaAcDto {
             dto.setPrintPersonNumber(domain.getPrintPersonNumber().value);
             dto.setSubmittedName(domain.getSubmittedName().value);
             dto.setInsuredNumber(domain.getInsuredNumber().value);
-            dto.setFdNumber(domain.getFdNumber().isPresent() ? domain.getFdNumber().get().v().toString() : null);
-            dto.setTextPersonNumber(domain.getTextPersonNumber().isPresent() ? domain.getTextPersonNumber().get().value : null);
-            dto.setOutputFormat(domain.getOutputFormat().isPresent() ? domain.getOutputFormat().get().value : null);
-            dto.setLineFeedCode(domain.getLineFeedCode().isPresent() ? domain.getLineFeedCode().get().value : null);
+            dto.setFdNumber(domain.getFdNumber().isPresent() ? domain.getFdNumber().get().v() : "");
+            dto.setTextPersonNumber(domain.getTextPersonNumber().isPresent() ? domain.getTextPersonNumber().get().value : 0);
+            dto.setOutputFormat(domain.getOutputFormat().isPresent() ? domain.getOutputFormat().get().value : 0);
+            dto.setLineFeedCode(domain.getLineFeedCode().isPresent() ? domain.getLineFeedCode().get().value : 0);
 
         }
         if (domainParaValue != null) {
