@@ -252,7 +252,8 @@ export class Kdws03AComponent extends Vue {
                     cellDataLst: this.displayDataLst,
                     headerLst: this.displayHeaderLst,
                     timePeriodAllInfo: _.assign({}, self.timePeriodAllInfo, { closureId: ClosureId[self.timePeriodAllInfo.closureId] }),
-                    autBussCode: self.autBussCode
+                    autBussCode: self.autBussCode,
+                    paramData: self.paramData
                 });
                 this.$mask('hide');
             }
@@ -278,7 +279,7 @@ export class Kdws03AComponent extends Vue {
     public processMapData(data: any) {
         let self = this;
         // param B screen
-        this.paramData = data;
+        self.paramData = data;
         // combo box
         self.comboItemsCalc = data.lstControlDisplayItem.comboItemCalc;
         self.comboItemsReason = data.lstControlDisplayItem.comboItemReason;

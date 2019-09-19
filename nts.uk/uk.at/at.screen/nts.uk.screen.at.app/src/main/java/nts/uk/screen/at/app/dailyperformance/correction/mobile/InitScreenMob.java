@@ -468,7 +468,7 @@ public class InitScreenMob {
 
 		Optional<DailyPerformanceAuthorityDto> authorityDto = authorityDtos.stream().filter(x -> x.getFunctionNo().compareTo(new BigDecimal(25)) == 0).findFirst();
 		if (authorityDto.isPresent()) {
-			allConfirmButtonDis = authorityDto.get().isAvailability() && displayFormat == 0 && sId == employeeID ? true : false;
+			allConfirmButtonDis = authorityDto.get().isAvailability() && displayFormat == 0 && sId.equals(employeeID) ? true : false;
 		}
 		authorityDto = authorityDtos.stream().filter(x -> x.getFunctionNo().compareTo(new BigDecimal(24)) == 0).findFirst();
 		if (authorityDto.isPresent()) {
