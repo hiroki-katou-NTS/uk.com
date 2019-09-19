@@ -84,6 +84,9 @@ export class InputComponent extends Vue {
     public type: string = '';
 
     @Prop({ default: () => null })
+    public readonly index!: number | string | null;
+
+    @Prop({ default: () => null })
     public readonly rows!: number | string | null;
 
     public editable: boolean = true;
@@ -175,7 +178,7 @@ export class InputComponent extends Vue {
             regex = new RegExp('\\[.+\\]\\.'),
             props = self.$vnode.componentOptions.propsData,
             exprs = (((self.$vnode.data as any) || { model: { expression: '' } }).model || { expression: '' }).expression,
-            exprs2 = exprs.replace(regex, `.$${self.$vnode.key}.`);
+            exprs2 = exprs.replace(regex, `.$${self.index}.`);
 
         if (obj.has(self.$parent, exprs2) && !obj.has(props, 'errors') &&
             (obj.isBoolean(self.errorsAlways) || self.errorsAlways == undefined)) {
@@ -197,7 +200,7 @@ export class InputComponent extends Vue {
             props = self.$vnode.componentOptions.propsData,
             exprs = (((self.$vnode.data as any) || { model: { expression: '' } }).model || { expression: '' }).expression,
             exprs2 = exprs.replace(regex, '.'),
-            exprs3 = exprs.replace(regex, `.$${self.$vnode.key}.`);
+            exprs3 = exprs.replace(regex, `.$${self.index}.`);
 
         if ((obj.has(self.$parent, exprs3) || (regex.test(exprs) && obj.get(newValidts, exprs2))) && !obj.has(props, 'constraint')) {
             Vue.set(self, 'constraints', obj.get(newValidts, exprs2));
