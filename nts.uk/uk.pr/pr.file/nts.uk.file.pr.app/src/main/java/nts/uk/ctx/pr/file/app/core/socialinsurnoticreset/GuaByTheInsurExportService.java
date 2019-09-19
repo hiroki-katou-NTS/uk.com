@@ -75,6 +75,9 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
                 exportServiceContext.getQuery().getSocialInsurNotiCreateSetQuery().getOutputFormat()
         );
         mSocialInsurNotiCrSetRepository.update(ins);
+        if (exportServiceContext.getQuery().getTypeExport() == TYPE_EXPORT_EXCEL_FILE) {
+            checkAcquiNotiInsurProcess(exportServiceContext.getQuery().getEmpIds(), exportServiceContext.getQuery().getStartDate(), exportServiceContext.getQuery().getEndDate());
+        }
         if (exportServiceContext.getQuery().getTypeExport() != TYPE_EXPORT_EXCEL_FILE) {
             if(ins.getOutputFormat().get() == OutputFormatClass.PEN_OFFICE) {
                 pension = guaByTheInsurExportRepository.getDataExportCSV(exportServiceContext.getQuery().getEmpIds(), cid,
@@ -101,7 +104,6 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
                 .build();
 
         if (exportServiceContext.getQuery().getTypeExport() == TYPE_EXPORT_EXCEL_FILE) {
-            checkAcquiNotiInsurProcess(exportServiceContext.getQuery().getEmpIds(), exportServiceContext.getQuery().getStartDate(), exportServiceContext.getQuery().getEndDate());
             generatorExcel.generate(exportServiceContext.getGeneratorContext(), exportData);
         }
         if (exportServiceContext.getQuery().getTypeExport() != TYPE_EXPORT_EXCEL_FILE) {

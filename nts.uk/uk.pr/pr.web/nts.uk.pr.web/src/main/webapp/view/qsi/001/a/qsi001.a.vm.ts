@@ -300,10 +300,6 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
         exportFileExcel(): void {
             let self = this;
             let employList = self.getListEmpId(self.selectedCodeKCP005(), self.employees);
-            if(employList.length == 0) {
-                dialog.alertError({ messageId: 'Msg_37' });
-                return;
-            }
             let data: any = {
                 socialInsurNotiCreateSetQuery: {
                     officeInformation: self.socialInsurNotiCrSet().officeInformation(),
