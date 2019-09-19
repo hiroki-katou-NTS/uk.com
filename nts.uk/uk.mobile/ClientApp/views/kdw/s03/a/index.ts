@@ -33,6 +33,7 @@ export class Kdws03AComponent extends Vue {
     public screenMode: number;
 
     public title: string = 'Kdws03A';
+    public isFirstLoad: boolean = true;
     public displayFormat: any = '0';
     public lstDataSourceLoad: Array<any> = [];
     public lstDataHeader: Array<any> = [];
@@ -206,7 +207,7 @@ export class Kdws03AComponent extends Vue {
                 (!_.isNil(self.selectedDate) ? { startDate: self.selectedDate, endDate: self.selectedDate } : null),
             lstEmployee: [],
             initClock: null,
-            displayFormat: this.displayFormat,
+            displayFormat: self.displayFormat,
             displayDateRange: null,
             transitionDesScreen: null,
         };
@@ -222,32 +223,36 @@ export class Kdws03AComponent extends Vue {
                 } else if (dataInit.errorInfomation == DCErrorInfomation.NOT_EMP_IN_HIST) {
                     messageId = 'Msg_1543';
                 }
-                this.$modal.error({ messageId }).then(() => {
-                    this.$mask('hide');
-                    if (this.displayFormat == '0') {
-                        this.actualTimeSelectedCode = this.actualTimeSelectedCodeTemp;
-                        this.yearMonth = this.yearMonthTemp;
-                        this.selectedEmployee = this.selectedEmployeeTemp;
+                self.$modal.error({ messageId }).then(() => {
+                    self.$mask('hide');
+                    if (self.isFirstLoad) {
+                        self.$goto('ccg008a');
                     } else {
-                        this.selectedDate = this.selectedDateTemp;
-                    }
+                        if (self.displayFormat == '0') {
+                            self.actualTimeSelectedCode = self.actualTimeSelectedCodeTemp;
+                            self.yearMonth = self.yearMonthTemp;
+                            self.selectedEmployee = self.selectedEmployeeTemp;
+                        } else {
+                            self.selectedDate = self.selectedDateTemp;
+                        }
+                    }                   
                 });
             } else if (!_.isEmpty(dataInit.errors)) {
                 for (let i = 0; i < dataInit.errors.length; i++) {
                     await new Promise((next) => {
                         let employeeCode = (_.find(dataInit.lstEmployee, (x) => x.id == dataInit.changeEmployeeIds[0] )).code;
                         let employeeName = (_.find(dataInit.lstEmployee, (x) => x.id == dataInit.changeEmployeeIds[0] )).businessName;
-                        this.$modal.error(dataInit.errors[i].messageId == 'Msg_1403' ? 
+                        self.$modal.error(dataInit.errors[i].messageId == 'Msg_1403' ? 
                             {messageId: 'Msg_1403', messageParams: [employeeCode + ' ' + employeeName]} : 
                             {messageId: dataInit.errors[i].messageId}).then(() => {
                             if (i == dataInit.errors.length - 1) {
-                                this.$mask('hide');
-                                if (this.displayFormat == '0') {
-                                    this.actualTimeSelectedCode = this.actualTimeSelectedCodeTemp;
-                                    this.yearMonth = this.yearMonthTemp;
-                                    this.selectedEmployee = this.selectedEmployeeTemp;
+                                self.$mask('hide');
+                                if (self.displayFormat == '0') {
+                                    self.actualTimeSelectedCode = self.actualTimeSelectedCodeTemp;
+                                    self.yearMonth = self.yearMonthTemp;
+                                    self.selectedEmployee = self.selectedEmployeeTemp;
                                 } else {
-                                    this.selectedDate = this.selectedDateTemp;
+                                    self.selectedDate = self.selectedDateTemp;
                                 }
                             }
                             next();
@@ -256,7 +261,7 @@ export class Kdws03AComponent extends Vue {
                 }
             } else {
                 await new Promise((next) => {
-                    this.processMapData(result.data);
+                    self.processMapData(result.data);
                     next();
                 });
                 storage.session.setItem('dailyCorrectionState', {
@@ -267,21 +272,21 @@ export class Kdws03AComponent extends Vue {
                     dateRange: self.displayFormat == '0' ?
                         (!_.isNil(self.dateRanger) ? { startDate: self.$dt.fromString(self.dateRanger.startDate), endDate: self.$dt.fromString(self.dateRanger.endDate) } : null) :
                         { startDate: self.selectedDate, endDate: self.selectedDate },
-                    cellDataLst: this.displayDataLst,
-                    headerLst: this.displayHeaderLst,
+                    cellDataLst: self.displayDataLst,
+                    headerLst: self.displayHeaderLst,
                     timePeriodAllInfo: _.assign({}, self.timePeriodAllInfo, { closureId: ClosureId[self.timePeriodAllInfo.closureId] }),
                     autBussCode: self.autBussCode,
                     paramData: self.paramData
                 });
-                this.$mask('hide');
+                self.$mask('hide');
             }
         }).catch((res: any) => {
             if (res.messageId == 'Msg_672') {
-                this.$modal.info({ messageId: res.messageId });
+                self.$modal.info({ messageId: res.messageId });
             } else {
                 if (res.messageId != undefined) {
-                    this.$modal.error(res.messageId == 'Msg_1430' ? res.message : { messageId: res.messageId }).then(() => {
-                        this.$goto('ccg008a');
+                    self.$modal.error(res.messageId == 'Msg_1430' ? res.message : { messageId: res.messageId }).then(() => {
+                        self.$goto('ccg008a');
                     });
 
                 } else if ((res.messageId == undefined && res.errors.length > 0)) {
@@ -466,9 +471,9 @@ export class Kdws03AComponent extends Vue {
                     self.displayDataLstEx.push({ rowData, employeeName: '', id: '', employeeNameDis: '' });
                 }
             } else {
-                self.displayDataLstEx = _.slice(self.displayDataLst, 0, 7);
+                self.displayDataLstEx = _.slice(self.displayDataLst, 0, 20);
                 self.itemStart = 1;
-                self.itemEnd = 7;
+                self.itemEnd = 20;
                 self.previousState = 'button-deactive';
                 self.nextState = 'button-active';
             }
@@ -500,6 +505,7 @@ export class Kdws03AComponent extends Vue {
         });
 
         self.resetTable++;
+        self.isFirstLoad = false;
     }
 
     public formatDate(lstData: any) {
@@ -608,16 +614,16 @@ export class Kdws03AComponent extends Vue {
         if (this.nextState == 'button-deactive') {
             return;
         }
-        this.itemStart = this.itemStart + 7;
-        if (this.displayDataLst.length - this.itemEnd > 7) {
-            this.itemEnd = this.itemEnd + 7;
+        this.itemStart = this.itemStart + 20;
+        if (this.displayDataLst.length - this.itemEnd > 20) {
+            this.itemEnd = this.itemEnd + 20;
             this.nextState = 'button-active';
-            this.displayDataLstEx = _.slice(this.displayDataLst, this.itemStart - 1, this.itemStart + 6);
+            this.displayDataLstEx = _.slice(this.displayDataLst, this.itemStart - 1, this.itemStart + 19);
         } else {
             this.itemEnd = this.displayDataLst.length;
             this.nextState = 'button-deactive';
             this.displayDataLstEx = _.slice(this.displayDataLst, this.itemStart - 1);
-            for (let i = 1; i <= (6 - (this.itemEnd - this.itemStart)); i++) {
+            for (let i = 1; i <= (19 - (this.itemEnd - this.itemStart)); i++) {
                 let rowData = [];
                 this.displayHeaderLst.forEach((header: any) => {
                     rowData.push({ key: header.key, value: '' });
@@ -634,13 +640,13 @@ export class Kdws03AComponent extends Vue {
             return;
         }
 
-        this.itemStart = this.itemStart - 7;
-        this.itemEnd = this.itemStart + 6;
+        this.itemStart = this.itemStart - 20;
+        this.itemEnd = this.itemStart + 19;
         if (this.itemStart == 1) {
             this.previousState = 'button-deactive';
         }
         this.nextState = 'button-active';
-        this.displayDataLstEx = _.slice(this.displayDataLst, this.itemStart - 1, this.itemStart + 6);
+        this.displayDataLstEx = _.slice(this.displayDataLst, this.itemStart - 1, this.itemStart + 19);
         this.resetTable++;
     }
 

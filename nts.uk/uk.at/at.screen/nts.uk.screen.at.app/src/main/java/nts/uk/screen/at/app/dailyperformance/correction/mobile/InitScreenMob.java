@@ -157,11 +157,12 @@ public class InitScreenMob {
 		screenDto.setApprovalUseSettingDtoOpt(approvalUseSettingDtoOpt);
 
 		// 保持パラメータを生成する
-		screenDto.setClosureId(processor.getClosureId(companyId, sId, GeneralDate.today()));
+		Pair<Integer, DateRange> resultIndentityPeriod = processor.identificationPeriod(null, screenMode, dateRange);
+		screenDto.setClosureId(resultIndentityPeriod.getLeft());
+		DateRange rangeInit = resultIndentityPeriod.getRight();
 
 		// 期間を変更する
-		DatePeriodInfo resultPeriod = processor.changeDateRange(dateRange, null, companyId, sId, screenDto, screenMode,
-				displayFormat, param.dpStateParam);
+		DatePeriodInfo resultPeriod = processor.changeDateRange(dateRange, rangeInit, null, companyId, sId, screenDto, screenDto.getClosureId(), screenMode, displayFormat, false, param.dpStateParam);
 		if(resultPeriod == null) {
 			screenDto.setErrorInfomation(DCErrorInfomation.NOT_EMP_IN_HIST.value);
 			return screenDto;
@@ -174,7 +175,7 @@ public class InitScreenMob {
 		List<String> allIds = new ArrayList<>();
 		List<String> changeEmployeeIds = new ArrayList<>();
 
-		allIds = processor.changeListEmployeeId(new ArrayList<>(), screenDto.getDateRange(), screenMode, false,
+		allIds = processor.changeListEmployeeId(new ArrayList<>(), rangeInit, screenMode, false,
 				screenDto.getClosureId(), screenDto);
 
 		// ログイン社員の日別実績の権限を取得する
