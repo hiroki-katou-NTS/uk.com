@@ -328,6 +328,38 @@ export class KdwS03BComponent extends Vue {
         return '';
     }
 
+    public getItemDialogName(value: any) {
+        let self = this;
+        let rowData = _.find(self.params.rowData.rowData, (rowData: RowData) => rowData.key == value);
+        let attendanceItem = self.getAttendanceItem(value);
+        let item: any = {};
+        switch (attendanceItem.typeGroup) {
+            case MasterType.KDLS02_WorkType:
+                item = _.find(self.masterData.workType, (o) => o.code == rowData.value0);
+                if (item) {
+                    return item.name;
+                } else {
+                    return rowData.value;
+                }
+            case MasterType.KDLS01_WorkTime: 
+                item = _.find(self.masterData.workTime, (o) => o.code == rowData.value0); 
+                if (item) {
+                    return item.name;
+                } else {
+                    return rowData.value;
+                }
+            case MasterType.CDLS08_WorkPlace: 
+                item = _.find(self.masterData.workPlace, (o) => o.code == rowData.value0); 
+                if (item) {
+                    return item.name;
+                } else {
+                    return rowData.value;
+                }
+            default: 
+                break;
+        }
+    }
+
     private addCustomValid() {
         let self = this;
         let screenDataValid: any = {};
