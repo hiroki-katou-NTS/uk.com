@@ -129,7 +129,7 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_27_2", stt)).setValue(data.getPostalCode().length() >= 7 ? data.getPostalCode().substring(3,7) : data.getPostalCode());
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_28", stt)).setValue(data.getStreetAddress());
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_29", stt)).setValue(data.getAddressKana());
-        worksheets.getRangeByName("A2_38").setValue(data.getReasonOtherContent());
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_39", stt)).setValue(data.getReasonOtherContent());
     }
 
     private void unSelectAll(WorksheetCollection worksheets, String sheetName, int stt){
@@ -158,7 +158,7 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
 
     private void selectItem(WorksheetCollection worksheets, GuaByTheInsurExportDto element, String sheetName, int stt){
         if(element.getRemarks70OldAndOverEmployees() == 1){
-            worksheets.get(sheetName).getShapes().remove( worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_30" : "A2_30_" + stt));
+            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_30" : "A2_30_" + stt));
         }
         if(element.getRemarksTwoOrMoreOfficeWorkers() == 1){
             worksheets.get(sheetName).getShapes().remove( worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_31" : "A2_31_" + stt));
@@ -210,7 +210,7 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
     }
 
     private String getRangeName(String sheetName, String pos, int stt){
-        return stt == 0 ? sheetName + "!" + pos : sheetName + "!" + pos + "_" + ++stt;
+        return stt == 0 ? sheetName + "!" + pos : sheetName + "!" + pos + "_" + stt;
     }
 
 
