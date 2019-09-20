@@ -20,7 +20,7 @@ public class GenDateProcessor {
 	//対象年月の変更
 	public DatePeriodInfo genDateFromYearMonth(GenDateDto param) {
 		return processor.updatePeriod(Optional.of(YearMonth.of(param.getYearMonth())), Optional.empty(), Optional.empty(), DisplayFormat.Individual.value,
-				AppContexts.user().employeeId(), null);
+				param.empTarget == null ? AppContexts.user().employeeId() : param.empTarget, null);
 	}
 
 }

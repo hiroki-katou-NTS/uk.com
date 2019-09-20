@@ -1818,7 +1818,7 @@ public class DailyPerformanceCorrectionProcessor {
 	}
 	
 	//対象期間の更新
-	public DatePeriodInfo updatePeriod(Optional<YearMonth> yearMonthOpt, Optional<Integer> closureIdShare, Optional<GeneralDate> dateTransfer, int displayFormat, String empLogin, DatePeriod period) {
+	public DatePeriodInfo updatePeriod(Optional<YearMonth> yearMonthOpt, Optional<Integer> closureIdShare, Optional<GeneralDate> dateTransfer, int displayFormat, String empTarget, DatePeriod period) {
 		GeneralDate today = GeneralDate.today();
 		DateRange result = new DateRange(today, today);
 		ClosureId closureId = null;
@@ -1826,6 +1826,7 @@ public class DailyPerformanceCorrectionProcessor {
 		List<nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.ClosurePeriod> lstClosurePeriod  = new ArrayList<>();
 		List<DateRange> lstPeriod = new ArrayList<>();
 		List<AggrPeriodClosure> lstClosureCache = new ArrayList<>();
+		String empLogin = AppContexts.user().employeeId();
 		// 個人別
 		if (displayFormat == DisplayFormat.Individual.value) {
 			if (yearMonthOpt.isPresent()) {
@@ -1833,7 +1834,7 @@ public class DailyPerformanceCorrectionProcessor {
 						yearMonthOpt.get().lastDateInMonth());
 				yearMonth = yearMonthOpt.get();
 				lstClosurePeriod.addAll(getClosurePeriod
-						.fromYearMonth(empLogin, dateRefer, yearMonthOpt.get()));
+						.fromYearMonth(empTarget, dateRefer, yearMonthOpt.get()));
 			} else {
 				Optional<ClosurePeriod> closurePeriodOpt = findClosureService.getClosurePeriod(empLogin,
 						period.start());

@@ -325,7 +325,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                           return;
                       }
                       let param = {
-                          yearMonth: value
+                          yearMonth: value,
+                          empTarget: _.isEmpty(self.selectedEmployee()) ? null : self.selectedEmployee()
                        };
                       self.clickChangeMonth = false;
                       service.genDate(param).done((data) => {
@@ -348,6 +349,31 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             
             self.selectedDate.subscribe(value =>{
                 self.dateReferCCg(value);
+            });
+            
+            self.selectedEmployee.subscribe(value =>{
+                if (!self.loadFirst && self.displayFormat() == 0 && !_.isEmpty(value)) {
+                     let param = {
+                          yearMonth: self.yearMonth(),
+                          empTarget: value,
+                       };
+                      self.clickChangeMonth = false;
+                      service.genDate(param).done((data) => {
+                          if (data) {
+                              self.yearMonth(data.yearMonth);
+                              //Combobox display actual time
+                              self.initActualTime(data);
+                              self.timePeriodAllInfo = data;
+                              self.clickChangeMonth = true;
+                              self.genDateExtract(false);
+                              self.dateReferCCg(value);
+                              self.dateReferCCg(self.dateRanger().endDate);
+                          }else{
+                               self.yearMonth(self.timePeriodAllInfo.yearMonth);
+                               self.clickChangeMonth = true;
+                          }
+                      });
+                }
             });
             
             //$("#fixed-table").ntsFixedTable({ height: 50, width: 300 });
