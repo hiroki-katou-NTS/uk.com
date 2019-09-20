@@ -23,8 +23,6 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
 
     private static final String REPORT_ID = "CSV_GENERATOR";
 
-    private static final String FILE_NAME = "TEMP";
-
     private static final String SHOWA = "昭和";
 
     private static final String HEISEI = "平成";
@@ -80,6 +78,7 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
                 cells.get(startRow, 5).setValue("22223");
                 startRow++;
                 cells.get(startRow, 0).setValue("[kanri]");
+                startRow++;
                 cells.get(startRow, 0).setValue("");
                 cells.get(startRow, 1).setValue("001");
                 startRow++;
@@ -334,6 +333,6 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
     }
 
     private int convertDateToYearMonth(String date){
-        return Integer.parseInt(date.substring(0,4) + date.substring(4,6));
+        return Integer.parseInt(date.substring(0,4) + date.substring(5,6));
     }
 }
