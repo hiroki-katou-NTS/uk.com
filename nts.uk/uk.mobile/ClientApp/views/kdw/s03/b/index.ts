@@ -12,9 +12,57 @@ import { Cdl008AComponent } from 'views/cdl/s08/a';
     template: require('./index.vue'),
     resource: require('./resources.json'),
     validations: {
-        screenData: {}
+        screenData: {},
+        fixedConstraint: {
+            AttendanceTime: { constraint: 'AttendanceTime' },
+            AttendanceTimeOfExistMinus: { constraint: 'AttendanceTimeOfExistMinus' },
+            WorkTimes: { constraint: 'WorkTimes' },
+            WorkTypeCode: { constraint: 'WorkTypeCode' },
+            WorkTimeCode: { constraint: 'WorkTimeCode' },
+            WorkLocationCD: { constraint: 'WorkLocationCD' },
+            EmploymentCode: { constraint: 'EmploymentCode' },
+            ClassificationCode: { constraint: 'ClassificationCode' },
+            JobTitleCode: { constraint: 'JobTitleCode' },
+            WorkplaceCode: { constraint: 'WorkplaceCode' },
+            DivergenceReasonContent: { constraint: 'DivergenceReasonContent' },
+            BreakTimeGoOutTimes: { constraint: 'BreakTimeGoOutTimes' },
+            RecordRemarks: { constraint: 'RecordRemarks' },
+            DiverdenceReasonCode: { constraint: 'DiverdenceReasonCode' },
+            TimeWithDayAttr: { constraint: 'TimeWithDayAttr' },
+            BusinessTypeCode: { constraint: 'BusinessTypeCode' },
+            AnyItemAmount: { constraint: 'AnyItemAmount' },
+            AnyAmountMonth: { constraint: 'AnyAmountMonth' },
+            AnyItemTime: { constraint: 'AnyItemTime' },
+            AnyTimeMonth: { constraint: 'AnyTimeMonth' },
+            AnyItemTimes: { constraint: 'AnyItemTimes' },
+            AnyTimesMonth: { constraint: 'AnyTimesMonth' }
+        }
     },
-    constraints: [],
+    constraints: [
+        'nts.uk.ctx.at.shared.dom.common.time.AttendanceTime',
+        'nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus',
+        'nts.uk.ctx.at.record.dom.daily.WorkTimes',
+        'nts.uk.ctx.at.schedule.dom.shift.pattern.WorkTypeCode',
+        'nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.WorkTimeCode',
+        'nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD',
+        'nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode',
+        'nts.uk.ctx.at.schedule.dom.shift.basicworkregister.ClassificationCode',
+        'nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleCode',
+        'nts.uk.shr.com.primitive.WorkplaceCode',
+        'nts.uk.ctx.at.record.dom.divergencetime.DivergenceReasonContent',
+        'nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeGoOutTimes',
+        'nts.uk.ctx.at.record.dom.daily.remarks.RecordRemarks',
+        'nts.uk.ctx.at.record.dom.divergencetime.DiverdenceReasonCode',
+        'nts.uk.shr.com.time.TimeWithDayAttr',
+        'nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode',
+        'nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemAmount',
+        'nts.uk.ctx.at.shared.dom.common.anyitem.AnyAmountMonth',
+        'nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemTime',
+        'nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimeMonth',
+        'nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemTimes',
+        'nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimesMonth',
+        'nts.uk.ctx.at.record.dom.divergencetime.DiverdenceReasonCode'
+    ],
     components: {
         'kdws03d': KdwS03DComponent,
         'kdls01': Kdl001Component,
@@ -23,20 +71,20 @@ import { Cdl008AComponent } from 'views/cdl/s08/a';
     },
 })
 export class KdwS03BComponent extends Vue {
-    @Prop({ default: () => ({ 
-        rowId: '',
-        employeeID: '',
-        employeeName: '', 
-        date: new Date(), 
-        data: {}, 
-        paramData: {}
-    }) })
+    @Prop({
+        default: () => ({
+            employeeID: '',
+            employeeName: '',
+            date: new Date(),
+            rowData: {},
+            paramData: {}
+        })
+    })
     public readonly params!: {
-        rowId: string, 
         employeeID: string,
-        employeeName: string, 
-        date: Date, 
-        data: Array<RowData>, 
+        employeeName: string,
+        date: Date,
+        rowData: any,
         paramData: any
     };
     public checked1s: Array<number> = [];
@@ -58,8 +106,13 @@ export class KdwS03BComponent extends Vue {
         businessType: []
     };
     private masterDialogParam: Array<number> = [];
-    private primitiveAll: any = {};
     private oldData: any = [];
+    private listCareError: any = [];
+    private listCareInputError: any = [];
+    private listErAlHolidays: any = [];
+    private listCheck28: any = [];
+    private listCheckDeviation: any = [];
+    private listErrorMonth: any = [];
 
     get lstAttendanceItem() {
         let self = this;
@@ -89,61 +142,82 @@ export class KdwS03BComponent extends Vue {
 
     public created() {
         let self = this;
-        let fakeValid = {};
-        _.forEach(self.params.data, (rowData: RowData, index) => {
-            self.formatData(rowData);
-            self.setItemType(rowData);
-            self.setItemText(rowData);
-            self.setItemMasterType(rowData);
-            self.setSpecCalcLst(rowData);
-            self.setColorCode(rowData);
-            self.addMasterDialogParam(rowData);
-            fakeValid[rowData.key] = { required: false };
-        });
-        self.oldData = self.toJS(self.params.data);
-        self.$updateValidator('screenData', fakeValid);
+        self.addCustomValid();
+        self.oldData = self.toJS(self.params.rowData.rowData);
         self.createMasterComboBox();
-        self.$http.post('at', API.getPrimitiveAll)
-        .then((primitiveData: any) => {
-            // self.createPrimitiveAll(primitiveData.data);
-            self.addCustomValid();
-
-            return self.$http.post('at', API.masterDialogData, {
-                types: self.masterDialogParam,
-                date: new Date()
-            });
+        self.$http.post('at', API.masterDialogData, {
+            types: self.masterDialogParam,
+            date: new Date()
         }).then((masterData: any) => {
-            self.createMasterData(masterData.data);    
+            self.createMasterData(masterData.data);
         }).catch((res: any) => {
             console.log('FAIL');
         });
     }
 
-    private createPrimitiveAll(data: any) {
+    public updated() {
         let self = this;
-        let primitiveAll = [];
-        _.forEach(data.keys(), (o) => { 
-            primitiveAll.push({ 'id': o, 'value': data[o] });
-        });
-        self.primitiveAll(primitiveAll);
+        self.addCustomConstraint();
+    }
+
+    public getLockContent() {
+        let self = this;
+        let data: any = self.params.rowData.state;
+        if (data != '') {
+            let lock = data.split('|');
+            let tempD = `<div class="card-body pt-0 pb-2"><span>`;
+            for (let i = 1; i < lock.length; i++) {
+                switch (lock[i]) {
+                    case 'D':
+                        tempD += self.$i18n('KDW003_66') + `<br/>`;
+                        break;
+                    case 'M':
+                        tempD += self.$i18n('KDW003_66') + `<br/>`;
+                        break;
+                    case 'C':
+                        tempD += self.$i18n('KDW003_67') + `<br/>`;
+                        break;
+                    case 'S':
+                        tempD += self.$i18n('KDW003_113') + `<br/>`;
+                        break;
+                    case 'CM':
+                        tempD += self.$i18n('KDW003_112') + `<br/>`;
+                        break;
+                    case 'AM':
+                        tempD += self.$i18n('KDW003_68') + `<br/>`;
+                        break;
+                    case 'H':
+                        tempD += self.$i18n('KDW003_70') + `<br/>`;
+                        break;
+                    case 'A':
+                        tempD += self.$i18n('KDW003_69') + `<br/>`;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            tempD += `</span></div>`;
+
+            return tempD;
+        }
     }
 
     private createMasterComboBox() {
         let self = this;
         let lstControlDisplayItem: any = self.params.paramData.lstControlDisplayItem;
-        _.forEach(lstControlDisplayItem.comboItemDoWork, (o) => { 
+        _.forEach(lstControlDisplayItem.comboItemDoWork, (o) => {
             self.masterData.lstDoWork.push({ 'value0': o.code, 'value': o.name });
         });
-        _.forEach(lstControlDisplayItem.comboItemCalc, (o) => { 
+        _.forEach(lstControlDisplayItem.comboItemCalc, (o) => {
             self.masterData.lstCalc.push({ 'value0': o.code, 'value': o.name });
         });
-        _.forEach(lstControlDisplayItem.comboItemCalcCompact, (o) => { 
+        _.forEach(lstControlDisplayItem.comboItemCalcCompact, (o) => {
             self.masterData.lstCalcCompact.push({ 'value0': o.code, 'value': o.name });
         });
-        _.forEach(lstControlDisplayItem.comboItemReason, (o) => { 
+        _.forEach(lstControlDisplayItem.comboItemReason, (o) => {
             self.masterData.lstReasonGoOut.push({ 'value0': o.code, 'value': o.name });
         });
-        _.forEach(lstControlDisplayItem.comboTimeLimit, (o) => { 
+        _.forEach(lstControlDisplayItem.comboTimeLimit, (o) => {
             self.masterData.lstTimeLimit.push({ 'value0': o.code, 'value': o.name });
         });
     }
@@ -154,37 +228,37 @@ export class KdwS03BComponent extends Vue {
         self.masterData.workType = data[MasterType.KDLS02_WorkType];
         self.masterData.workPlace = data[MasterType.CDLS08_WorkPlace];
         // tạo dữ liệu conbo box tạm thời cho các dialog chưa dc làm
-        _.forEach(data[MasterType.KDLS10_ServicePlace], (o) => { 
+        _.forEach(data[MasterType.KDLS10_ServicePlace], (o) => {
             self.masterData.servicePlace.push({ 'value0': o.code, 'value': o.name });
         });
         if (_.isEmpty(self.masterData.servicePlace)) {
             self.masterData.servicePlace.push({ 'value0': '', 'value': 'なし' });
         }
-        _.forEach(data[MasterType.KDLS32_Reason], (o) => { 
+        _.forEach(data[MasterType.KDLS32_Reason], (o) => {
             self.masterData.reason.push({ 'value0': o.code, 'value': o.name });
         });
         if (_.isEmpty(self.masterData.reason)) {
             self.masterData.reason.push({ 'value0': '', 'value': 'なし' });
         }
-        _.forEach(data[MasterType.KCPS02_Classification], (o) => { 
+        _.forEach(data[MasterType.KCPS02_Classification], (o) => {
             self.masterData.classification.push({ 'value0': o.code, 'value': o.name });
         });
         if (_.isEmpty(self.masterData.classification)) {
             self.masterData.classification.push({ 'value0': '', 'value': 'なし' });
         }
-        _.forEach(data[MasterType.KCPS03_Possition], (o) => { 
+        _.forEach(data[MasterType.KCPS03_Possition], (o) => {
             self.masterData.possition.push({ 'value0': o.code, 'value': o.name });
         });
         if (_.isEmpty(self.masterData.possition)) {
             self.masterData.possition.push({ 'value0': '', 'value': 'なし' });
         }
-        _.forEach(data[MasterType.KCPS01_Employment], (o) => { 
+        _.forEach(data[MasterType.KCPS01_Employment], (o) => {
             self.masterData.employment.push({ 'value0': o.code, 'value': o.name });
         });
         if (_.isEmpty(self.masterData.employment)) {
             self.masterData.employment.push({ 'value0': '', 'value': 'なし' });
         }
-        _.forEach(data[MasterType.KCP001_BusinessType], (o) => { 
+        _.forEach(data[MasterType.KCP001_BusinessType], (o) => {
             self.masterData.businessType.push({ 'value0': o.code, 'value': o.name });
         });
         if (_.isEmpty(self.masterData.businessType)) {
@@ -196,104 +270,200 @@ export class KdwS03BComponent extends Vue {
         let self = this;
         let attendanceItem = self.getAttendanceItem(rowData.key);
         switch (attendanceItem.attendanceAtr) {
+            case ItemType.InputNumber:
+                rowData.value = _.isEmpty(rowData.value) ? null : _.toNumber(rowData.value);
+                break;
+            case ItemType.InputMoney:
+                rowData.value = _.isEmpty(rowData.value) ? null : _.toNumber(rowData.value);
+                break;
             case ItemType.Time:
-                rowData.value = _.isEmpty(rowData.value) ? null : new TimeDuration(rowData.value).toNumber(); 
+                rowData.value = _.isEmpty(rowData.value) ? null : new TimeDuration(rowData.value).toNumber();
                 break;
-            case ItemType.TimeWithDay: 
-                rowData.value = _.isEmpty(rowData.value) ? null : new TimeDuration(rowData.value).toNumber(); 
+            case ItemType.TimeWithDay:
+                rowData.value = _.isEmpty(rowData.value) ? null : new TimeDuration(rowData.value).toNumber();
                 break;
-            default: 
+            default:
                 break;
         }
     }
 
-    private setItemType(rowData: RowData) {
+    public getItemType(value: any) {
         let self = this;
-        Object.defineProperty(rowData, 'getItemType', {
-            get() {
-                let attendanceItem = self.getAttendanceItem(rowData.key);
+        let attendanceItem = self.getAttendanceItem(value);
 
-                return attendanceItem.attendanceAtr;
-            }
-        });
-        
+        return attendanceItem.attendanceAtr;
     }
 
-    private setItemText(rowData: RowData) {
+    public getItemText(value: any) {
         let self = this;
-        Object.defineProperty(rowData, 'getItemText', {
-            get() {
-                return _.find(self.contentType, (item: ItemHeader) => item.key == rowData.key).headerText;
-            }
-        });
-        
+
+        return _.find(self.contentType, (item: ItemHeader) => item.key == value).headerText;
     }
 
-    private setItemMasterType(rowData: RowData) {
+    public getItemMasterType(value: any) {
         let self = this;
-        Object.defineProperty(rowData, 'getItemMasterType', {
-            get() {
-                let attendanceItem = self.getAttendanceItem(rowData.key);
+        let attendanceItem = self.getAttendanceItem(value);
 
-                return attendanceItem.typeGroup;
-            }
-        });
-        
+        return attendanceItem.typeGroup;
     }
 
-    private setSpecCalcLst(rowData: RowData) {
+    public isSpecCalcLst(value: any) {
         let self = this;
         let specLst = [628, 630, 631, 632];
-        Object.defineProperty(rowData, 'isSpecCalcLst', {
-            get() {
-                let attendanceItem = self.getAttendanceItem(rowData.key);
+        let attendanceItem = self.getAttendanceItem(value);
 
-                return _.includes(specLst, attendanceItem.id);
-            }
-        });
-        
+        return _.includes(specLst, attendanceItem.id);
     }
 
-    private setColorCode(rowData: RowData) {
+    public getColorCode(value: any) {
         let self = this;
-        let specLst = [628, 630, 631, 632];
-        Object.defineProperty(rowData, 'getColorCode', {
-            get() {
-                if (rowData.class.includes('mgrid-error')) {
-                    return 'ERROR';
-                }
-                if (rowData.class.includes('mgrid-alarm')) {
-                    return 'ALARM';
-                }
+        let rowClass = _.find(self.params.rowData.rowData, (rowData: RowData) => rowData.key == value).class;
+        if (rowClass.includes('mgrid-error')) {
+            return 'ERROR';
+        }
+        if (rowClass.includes('mgrid-alarm')) {
+            return 'ALARM';
+        }
 
-                return '';
-            }
-        });
-        
+        return '';
     }
 
     private addCustomValid() {
         let self = this;
         let screenDataValid: any = {};
-        _.forEach(self.params.data, (rowData: RowData, index) => {
-            self.$set(self.screenData, rowData.key, rowData.value);
+        let screenData1: any = {};
+        _.forEach(self.params.rowData.rowData, (rowData: RowData, index) => {
+            self.formatData(rowData);
+            self.addMasterDialogParam(rowData);
             let attendanceItem = self.getAttendanceItem(rowData.key);
+            let contraint = _.find(self.contentType, (item: ItemHeader) => item.key == rowData.key).constraint;
             switch (attendanceItem.attendanceAtr) {
-                case ItemType.Time: 
-                    let contraint = _.find(self.contentType, (item: ItemHeader) => item.key == rowData.key).constraint;
-                    screenDataValid[rowData.key] = {
-                        required: contraint.required,
-                        min: new TimeDuration(contraint.min).toNumber(),
-                        max: new TimeDuration(contraint.max).toNumber(),
-                        valueType: 'Duration'
-                    };
+                case ItemType.InputStringCode:
+                    self.$set(screenData1, rowData.key, rowData.value0);
                     break;
-                default: 
+                case ItemType.ButtonDialog:
+                    self.$set(screenData1, rowData.key, rowData.value0);
+                    break;
+                case ItemType.InputNumber:
+                    self.$set(screenData1, rowData.key, rowData.value);
+                    if (contraint.cdisplayType == 'Primitive') {
+                        screenDataValid[rowData.key] = {
+                            loop: true,
+                            required: contraint.required
+                        };
+                    } else {
+                        screenDataValid[rowData.key] = {
+                            loop: true,
+                            required: contraint.required,
+                            min: _.toNumber(contraint.min),
+                            max: _.toNumber(contraint.max)
+                        };
+                    }
+                    break;
+                case ItemType.InputMoney:
+                    self.$set(screenData1, rowData.key, rowData.value);
+                    if (contraint.cdisplayType == 'Primitive') {
+                        screenDataValid[rowData.key] = {
+                            loop: true,
+                            required: contraint.required
+                        };
+                    } else {
+                        screenDataValid[rowData.key] = {
+                            loop: true,
+                            required: contraint.required,
+                            min: _.toNumber(contraint.min),
+                            max: _.toNumber(contraint.max),
+                            valueType: 'Integer'
+                        };
+                    }
+                    break;
+                case ItemType.ComboBox:
+                    self.$set(screenData1, rowData.key, rowData.value0);
+                    break;
+                case ItemType.Time:
+                    self.$set(screenData1, rowData.key, rowData.value);
+                    if (contraint.cdisplayType == 'Primitive') {
+                        screenDataValid[rowData.key] = {
+                            loop: true,
+                            required: contraint.required
+                        };
+                    } else {
+                        screenDataValid[rowData.key] = {
+                            loop: true,
+                            required: contraint.required,
+                            min: new TimeDuration(contraint.min).toNumber(),
+                            max: new TimeDuration(contraint.max).toNumber(),
+                            valueType: 'Duration'
+                        };
+                    }
+                    break;
+                case ItemType.InputStringChar:
+                    self.$set(screenData1, rowData.key, rowData.value);
+                    if (contraint.cdisplayType == 'Primitive') {
+                        screenDataValid[rowData.key] = {
+                            loop: true,
+                            required: contraint.required
+                        };
+                    } else {
+                        screenDataValid[rowData.key] = {
+                            loop: true,
+                            required: contraint.required
+                        };
+                    }
+                    break;
+                default:
+                    self.$set(screenData1, rowData.key, rowData.value);
                     break;
             }
         });
+        self.screenData = [screenData1];
         self.$updateValidator('screenData', screenDataValid);
         // self.$updateValidator(`screenData.${index}`, newObj);
+    }
+
+    public addCustomConstraint() {
+        let self = this;
+        _.forEach(self.params.rowData.rowData, (rowData: RowData, index) => {
+            let attendanceItem = self.getAttendanceItem(rowData.key);
+            let contraint = _.find(self.contentType, (item: ItemHeader) => item.key == rowData.key).constraint;
+            let constraintObj: any = {};
+            switch (attendanceItem.attendanceAtr) {
+                case ItemType.InputNumber:
+                    if (contraint.cdisplayType == 'Primitive') {
+                        constraintObj = _.get(self.validations.fixedConstraint, PrimitiveAll['No' + attendanceItem.primitive]);
+                        constraintObj.loop = true;
+                        constraintObj.required = contraint.required;
+                        self.$updateValidator( `screenData.${rowData.key}`, constraintObj);
+                    } 
+                    break;
+                case ItemType.InputMoney:
+                    if (contraint.cdisplayType == 'Primitive') {
+                        constraintObj = _.get(self.validations.fixedConstraint, PrimitiveAll['No' + attendanceItem.primitive]);
+                        constraintObj.loop = true;
+                        constraintObj.required = contraint.required;
+                        self.$updateValidator( `screenData.${rowData.key}`, constraintObj);
+                    } 
+                    break;
+                case ItemType.Time:
+                    if (contraint.cdisplayType == 'Primitive') {
+                        constraintObj = _.get(self.validations.fixedConstraint, PrimitiveAll['No' + attendanceItem.primitive]);
+                        constraintObj.loop = true;
+                        constraintObj.required = contraint.required;
+                        self.$updateValidator( `screenData.${rowData.key}`, constraintObj);
+                    } 
+                    break;
+                case ItemType.InputStringChar:
+                    if (contraint.cdisplayType == 'Primitive') {
+                        constraintObj = _.get(self.validations.fixedConstraint, PrimitiveAll['No' + attendanceItem.primitive]);
+                        constraintObj.loop = true;
+                        constraintObj.required = contraint.required;
+                        self.$updateValidator( `screenData.${rowData.key}`, constraintObj);
+                    }
+                    break;
+                default:
+                    break;
+            }
+        });
     }
 
     private addMasterDialogParam(rowData: RowData) {
@@ -301,17 +471,17 @@ export class KdwS03BComponent extends Vue {
         let idKey = rowData.key.replace('A', '');
         let attendanceItem = _.find(self.lstAttendanceItem, (item: any) => item.id == idKey);
         switch (attendanceItem.attendanceAtr) {
-            case ItemType.InputStringCode: 
+            case ItemType.InputStringCode:
                 if (!_.includes(self.masterDialogParam, attendanceItem.typeGroup)) {
                     self.masterDialogParam.push(attendanceItem.typeGroup);
                 }
                 break;
-            case ItemType.ButtonDialog: 
+            case ItemType.ButtonDialog:
                 if (!_.includes(self.masterDialogParam, attendanceItem.typeGroup)) {
                     self.masterDialogParam.push(attendanceItem.typeGroup);
                 }
                 break;
-            case ItemType.ComboBox: 
+            case ItemType.ComboBox:
                 if (!_.includes(self.masterDialogParam, attendanceItem.typeGroup)) {
                     self.masterDialogParam.push(attendanceItem.typeGroup);
                 }
@@ -322,15 +492,15 @@ export class KdwS03BComponent extends Vue {
 
     public openDScreen() {
         let self = this;
-        self.$modal('kdws03d', { 
-            employeeID: self.params.employeeID, 
+        self.$modal('kdws03d', {
+            employeeID: self.params.employeeID,
             employeeName: self.params.employeeName,
-            startDate: self.params.date, 
+            startDate: self.params.date,
             endDate: self.params.date
-        }, { type : 'dropback' } )
-        .then((v) => {
+        }, { type: 'dropback' })
+            .then((v) => {
 
-        });
+            });
     }
 
     public openDialog(rowData: RowData, value: MasterType) {
@@ -391,7 +561,7 @@ export class KdwS03BComponent extends Vue {
             id = selectedItem.id;
         }
         self.$modal(
-            'cdls08a', 
+            'cdls08a',
             {
                 workPlaceType: 0,
                 startMode: false,
@@ -400,18 +570,18 @@ export class KdwS03BComponent extends Vue {
                 referenceRangeNarrow: true,
                 selectedItem: [id],
                 isSelectionRequired: true
-            }, 
-            { 
-                title: 'CDLS08_1' 
+            },
+            {
+                title: 'CDLS08_1'
             }
         ).then((data: any) => {
             if (data) {
                 let selectedWkp = _.find(self.masterData.workPlace, (o) => o.id == data.workplaceId);
                 rowData.value0 = selectedWkp.code;
                 rowData.value = selectedWkp.name;
-            } 
-            
-            return 0;    
+            }
+
+            return 0;
         });
     }
 
@@ -419,29 +589,161 @@ export class KdwS03BComponent extends Vue {
         let self = this;
         self.$mask('show');
         self.$http.post('at', API.register, self.createRegisterParam())
-        .then(() => {
-            self.$mask('hide');
-            self.$modal.info('Msg_15');
-        }).catch((res: any) => {
-            self.$mask('hide');
-            self.$modal.error(res.messageId)
-                .then(() => {
-                    self.$close();
-                });
+            .then((data: any) => {
+                let dataAfter = data.data;
+                if ((_.isEmpty(dataAfter.errorMap) && dataAfter.errorMap[5] == undefined)) {
+                    if (!_.isEmpty(dataAfter.messageAlert) && dataAfter.messageAlert == 'Msg_15') {
+                        self.$modal.info('Msg_15');
+                    }
+                    if (dataAfter.errorMap[6] != undefined) {
+                        self.$modal.info('Msg_1455');
+                    }
+                } else {
+                    let errorAll = false,
+                        errorReleaseCheckbox = false, errorMonth = false;
+                    let errorNoReload = true;
+                    if (dataAfter.errorMap[6] != undefined) {
+                        errorReleaseCheckbox = true;
+                    }
+                    if (dataAfter.errorMap[0] != undefined) {
+                        self.listCareError(dataAfter.errorMap[0]);
+                        errorAll = true;
+                    }
+                    if (dataAfter.errorMap[1] != undefined) {
+                        self.listCareInputError(dataAfter.errorMap[1]);
+                        errorAll = true;
+                    }
+                    if (dataAfter.errorMap[2] != undefined) {
+                        self.listErAlHolidays = dataAfter.errorMap[2];
+                        errorNoReload = false;
+                    }
+                    if (dataAfter.errorMap[3] != undefined) {
+                        self.listCheck28(dataAfter.errorMap[3]);
+                        errorAll = true;
+                    }
+                    if (dataAfter.errorMap[4] != undefined) {
+                        self.listCheckDeviation = dataAfter.errorMap[4];
+                        errorAll = true;
+                    }
+                    if (dataAfter.errorMap[5] != undefined) {
+                        self.listErrorMonth = dataAfter.errorMap[5];
+                        errorMonth = true;
+                        errorAll = true;
+                    }
+                    if (dataAfter.errorMap[7] != undefined) {
+                        errorAll = true;
+                    }
+                    if (!_.isEmpty(dataAfter.messageAlert) && dataAfter.messageAlert == 'Msg_15') {
+                        if (errorReleaseCheckbox) {
+                            self.$modal.info('Msg_1455').then(() => {
+                                self.$modal.info('Msg_15').then(() => {
+                                    if (dataAfter.showErrorDialog) {
+                                        self.showErrorDialog();
+                                    }
+                                });
+                            });
+                        } else {
+                            self.$modal.info('Msg_15').then(() => {
+                                if (dataAfter.showErrorDialog) {
+                                    self.showErrorDialog();
+                                }
+                            });
+                        }
+                    } else {
+                        let errorShowMessage = errorAll;
+                        if (errorShowMessage && errorReleaseCheckbox) {
+                            self.$modal.info('Msg_1455').then(() => {
+                                self.showErrorDialog();
+                            });
+                        } else if (errorShowMessage) {
+                            self.showErrorDialog();
+                        } else if (errorReleaseCheckbox) {
+                            self.$modal.info('Msg_1455');
+                        } else {
+                            if (dataAfter.showErrorDialog) {
+                                self.showErrorDialog();
+                            }
+                        }
+                    }
+                }
+                self.$mask('hide');
+            }).catch((res: any) => {
+                self.$mask('hide');
+                self.$modal.error(res.messageId)
+                    .then(() => {
+                        self.$close();
+                    });
+            });
+    }
+
+    private showErrorDialog(messageAlert?: string) {
+        let self = this;
+        let lstEmployee = [];
+        let errorValidateScreeen: any = [];
+
+        _.each(self.listCareError(), (value) => {
+            let object = { date: '', employeeCode: '', employeeName: '', message: self.$i18n('Msg_996'), itemName: '', columnKey: value.itemId };
+            errorValidateScreeen.push(object);
+        });
+
+        _.each(self.listCareInputError(), (value) => {
+            let object = { date: '', employeeCode: '', employeeName: '', message: value.message, itemName: '', columnKey: value.itemId };
+            let item = _.find(self.contentType, (data) => {
+                return String(data.key) === 'A' + value.itemId;
+            });
+            object.itemName = (item == undefined) ? '' : item.headerText;
+            let itemOtherInGroup = CHECK_INPUT[value.itemId + ''];
+            let itemGroup = self.params.paramData.lstControlDisplayItem.itemInputName[Number(itemOtherInGroup)];
+            let nameGroup: any = (itemGroup == undefined) ? '' : itemGroup;
+            object.message = self.$i18n(value.message, [object.itemName, nameGroup]);
+            errorValidateScreeen.push(object);
+        });
+
+        _.each(self.listCheck28(), (value) => {
+
+            let object = { date: '', employeeCode: '', employeeName: '', message: value.layoutCode, itemName: '', columnKey: value.itemId };
+            let item = _.find(self.contentType, (data) => {
+                if (data.group != undefined && data.group != null) {
+                    return String(data.group[0].key) === 'Code' + value.itemId;
+                } else {
+                    return String(data.key) === 'A' + value.itemId;
+                }
+            });
+            object.itemName = (item == undefined) ? '' : item.headerText;
+            errorValidateScreeen.push(object);
+        });
+
+        _.each(self.listCheckDeviation, (value) => {
+            let object = { date: '', employeeCode: '', employeeName: '', message: value.valueType, itemName: '', columnKey: value.itemId };
+            let item = _.find(self.contentType, (data) => {
+                if (data.group != undefined && data.group != null) {
+                    return String(data.group[0].key) === 'Code' + value.itemId;
+                } else {
+                    return data.key != undefined && String(data.key) === 'A' + value.itemId;
+                }
+            });
+            object.itemName = (item == undefined) ? '' : item.headerText;
+            object.message = self.$i18n('Msg_996', [object.itemName, value.value]);
+            errorValidateScreeen.push(object);
+        });
+
+        _.each(self.listErrorMonth, (value) => {
+            let object = { date: '', employeeCode: '', employeeName: '', value, message: value.message, columnKey: '' };
+            errorValidateScreeen.push(object);
         });
     }
 
     private createRegisterParam() {
         let self = this;
         let itemValues: any = [];
-        _.forEach(self.params.data, (rowData: RowData, index) => {
+        _.forEach(self.params.rowData.rowData, (rowData: RowData, index) => {
             let itemValue: DPItemValue;
             let attendanceItem = self.getAttendanceItem(rowData.key);
             switch (attendanceItem.attendanceAtr) {
-                case ItemType.InputStringCode: 
+                case ItemType.InputStringCode:
                     itemValue = new DPItemValue(attendanceItem, rowData.value0, self.params, self.itemValues);
                     break;
-                case ItemType.ButtonDialog: 
+                case ItemType.ButtonDialog:
                     itemValue = new DPItemValue(attendanceItem, rowData.value0, self.params, self.itemValues);
                     break;
                 case ItemType.InputNumber:
@@ -452,7 +754,7 @@ export class KdwS03BComponent extends Vue {
                     rowData.value = self.screenData[rowData.key];
                     itemValue = new DPItemValue(attendanceItem, rowData.value, self.params, self.itemValues);
                     break;
-                case ItemType.ComboBox: 
+                case ItemType.ComboBox:
                     itemValue = new DPItemValue(attendanceItem, parseInt(rowData.value0), self.params, self.itemValues);
                     break;
                 case ItemType.Time:
@@ -466,22 +768,22 @@ export class KdwS03BComponent extends Vue {
                     rowData.value = self.screenData[rowData.key];
                     itemValue = new DPItemValue(attendanceItem, rowData.value, self.params, self.itemValues);
                     break;
-                default: 
+                default:
                     break;
             }
             let oldRow = _.find(self.oldData, (o) => o.key == rowData.key);
             if (JSON.stringify(oldRow).localeCompare(JSON.stringify(rowData)) != 0) {
                 itemValues.push(itemValue);
             }
-            
+
         });
         let checkValue = false;
         if (!_.isEmpty(self.checked1s)) {
-            checkValue = true;           
+            checkValue = true;
         }
         let dataCheckSign = [
             {
-                rowId: self.params.rowId,
+                rowId: self.params.rowData.id,
                 itemId: '',
                 value: checkValue,
                 valueType: '',
@@ -490,7 +792,7 @@ export class KdwS03BComponent extends Vue {
                 flagRemoveAll: false
             }
         ];
-        
+
         return {
             'employeeId': self.params.employeeID,
             'itemValues': itemValues,
@@ -517,6 +819,53 @@ const API = {
     masterDialogData: 'screen/at/correctionofdailyperformance/getMasterDialogMob',
     register: 'screen/at/correctionofdailyperformance/addUpMobile'
 };
+
+const CHECK_INPUT = {
+    '759': '760', '760': '759', '761': '762',
+    '762': '761', '763': '764', '764': '763',
+    '765': '766', '766': '765', '157': '159',
+    '159': '157', '163': '165', '165': '163',
+    '169': '171', '171': '169',
+    '175': '177', '177': '175', '181': '183',
+    '183': '181', '187': '189', '189': '187',
+    '193': '195', '195': '193', '199': '201',
+    '201': '199', '205': '207', '207': '205',
+    '211': '213', '213': '211',
+    '7': '8', '8': '7', '9': '10',
+    '10': '9', '11': '12', '12': '11',
+    '13': '14', '14': '13', '15': '16',
+    '16': '15',
+    '17': '18', '18': '17', '19': '20',
+    '20': '19', '21': '22', '22': '21',
+    '23': '24', '24': '23', '25': '26',
+    '26': '25'
+};
+
+export enum PrimitiveAll {
+    No1 = 'AttendanceTime',
+    No2 = 'AttendanceTimeOfExistMinus',
+    No3 = 'WorkTimes',
+    No4 = 'WorkTypeCode',
+    No5 = 'WorkTimeCode',
+    No6 = 'WorkLocationCD',
+    No7 = 'EmploymentCode',
+    No8 = 'ClassificationCode',
+    No9 = 'JobTitleCode',
+    No10 = 'WorkplaceCode',
+    No11 = 'DivergenceReasonContent',
+    No12 = 'BreakTimeGoOutTimes',
+    No13 = 'RecordRemarks',
+    No14 = 'DiverdenceReasonCode',
+    No15 = 'TimeWithDayAttr',
+    No21 = 'BusinessTypeCode',
+    No54 = 'AnyItemAmount',
+    No55 = 'AnyAmountMonth',
+    No56 = 'AnyItemTime',
+    No57 = 'AnyTimeMonth',
+    No58 = 'AnyItemTimes',
+    No59 = 'AnyTimesMonth',
+    No60 = 'DiverdenceReasonCode',
+}
 
 export enum ItemType {
     InputStringCode = 0,
@@ -591,7 +940,7 @@ class DPItemValue {
         this.layoutCode = _.find(itemValues, (o) => o.itemId == this.itemId).layoutCode;
         this.employeeId = params.employeeID;
         this.date = params.date;
-        this.typeGroup = attendanceItem.typeGroup;    
+        this.typeGroup = attendanceItem.typeGroup;
         this.message = '';
     }
 
