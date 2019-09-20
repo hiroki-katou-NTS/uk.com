@@ -599,7 +599,7 @@ export class KdwS03BComponent extends Vue {
         let self = this;
         let id = '';
         let rowData = _.find(self.params.rowData.rowData, (o) => o.key == key);
-        let selectedItem: any = _.find(self.masterData.workPlace, (o) => o.code == key);
+        let selectedItem: any = _.find(self.masterData.workPlace, (o) => o.code == self.screenData[0][key]);
         if (!_.isUndefined(selectedItem)) {
             id = selectedItem.id;
         }
