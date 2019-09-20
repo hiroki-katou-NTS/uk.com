@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.function.infra.entity.dailyperformanceformat.KfnmtAuthorityDailyItem;
 import nts.uk.ctx.at.function.infra.entity.dailyperformanceformat.KfnmtAuthorityDailySItem;
 import nts.uk.ctx.at.function.infra.entity.dailyperformanceformat.KrcmtBusinessTypeSDaily;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AuthorityFomatDailyDto;
@@ -63,6 +62,7 @@ public class JpaDPScreenRepoMob extends JpaRepository implements DPScreenRepoMob
 
 	}
 
+	@Override
 	public List<FormatDPCorrectionDto> getListFormatDPCorrection(List<String> lstBusinessType) {
 		if (lstBusinessType.size() > 1) {
 			return this.queryProxy().query(SEL_FORMAT_DP_CORRECTION_MULTI, KrcmtBusinessTypeSDaily.class)
