@@ -744,7 +744,8 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
         return [
             new ItemModel('0', getText('Enum_BusinessDivision_OUTPUT_COMPANY_NAME')),
             new ItemModel('1', getText('Enum_BusinessDivision_OUTPUT_SIC_INSURES')),
-            new ItemModel('2', getText('Enum_BusinessDivision_DO_NOT_OUTPUT'))
+            new ItemModel('2', getText('Enum_BusinessDivision_DO_NOT_OUTPUT')),
+            new ItemModel('3', getText('Enum_BusinessDivision_DO_NOT_OUTPUT_BUSINESS'))
         ];
     }
     export function getBussEsimateClass(): Array<ItemModel> {
