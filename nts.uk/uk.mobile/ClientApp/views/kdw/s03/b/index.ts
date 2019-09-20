@@ -143,7 +143,7 @@ export class KdwS03BComponent extends Vue {
     public created() {
         let self = this;
         self.addCustomValid();
-        self.oldData = self.toJS(self.params.rowData.rowData);
+        self.oldData = self.toJS(self.screenData[0]);
         self.createMasterComboBox();
         self.$http.post('at', API.masterDialogData, {
             types: self.masterDialogParam,
@@ -777,46 +777,46 @@ export class KdwS03BComponent extends Vue {
     private createRegisterParam() {
         let self = this;
         let itemValues: any = [];
-        _.forEach(self.params.rowData.rowData, (rowData: RowData, index) => {
+        _.forEach(Object.keys(self.screenData[0]), (key: string) => {
             let itemValue: DPItemValue;
-            let attendanceItem = self.getAttendanceItem(rowData.key);
-            switch (attendanceItem.attendanceAtr) {
-                case ItemType.InputStringCode:
-                    itemValue = new DPItemValue(attendanceItem, rowData.value0, self.params, self.itemValues);
-                    break;
-                case ItemType.ButtonDialog:
-                    itemValue = new DPItemValue(attendanceItem, rowData.value0, self.params, self.itemValues);
-                    break;
-                case ItemType.InputNumber:
-                    rowData.value = self.screenData[rowData.key];
-                    itemValue = new DPItemValue(attendanceItem, rowData.value, self.params, self.itemValues);
-                    break;
-                case ItemType.InputMoney:
-                    rowData.value = self.screenData[rowData.key];
-                    itemValue = new DPItemValue(attendanceItem, rowData.value, self.params, self.itemValues);
-                    break;
-                case ItemType.ComboBox:
-                    itemValue = new DPItemValue(attendanceItem, parseInt(rowData.value0), self.params, self.itemValues);
-                    break;
-                case ItemType.Time:
-                    rowData.value = self.screenData[rowData.key];
-                    itemValue = new DPItemValue(attendanceItem, rowData.value, self.params, self.itemValues);
-                    break;
-                case ItemType.TimeWithDay:
-                    itemValue = new DPItemValue(attendanceItem, rowData.value, self.params, self.itemValues);
-                    break;
-                case ItemType.InputStringChar:
-                    rowData.value = self.screenData[rowData.key];
-                    itemValue = new DPItemValue(attendanceItem, rowData.value, self.params, self.itemValues);
-                    break;
-                default:
-                    break;
-            }
-            let oldRow = _.find(self.oldData, (o) => o.key == rowData.key);
-            if (JSON.stringify(oldRow).localeCompare(JSON.stringify(rowData)) != 0) {
+            let attendanceItem = self.getAttendanceItem(key);
+            let rowData = _.find(self.params.rowData.rowData, (o) => o.key == key);
+            let oldRow = self.oldData[key];
+            if (JSON.stringify(oldRow).localeCompare(JSON.stringify(self.screenData[0][key])) != 0) {
+                switch (attendanceItem.attendanceAtr) {
+                    case ItemType.InputStringCode:
+                        itemValue = new DPItemValue(attendanceItem, self.screenData[0][key], self.params, self.itemValues);
+                        break;
+                    case ItemType.ButtonDialog:
+                        itemValue = new DPItemValue(attendanceItem, self.screenData[0][key], self.params, self.itemValues);
+                        break;
+                    case ItemType.InputNumber:
+                        rowData.value = self.screenData[0][key];
+                        itemValue = new DPItemValue(attendanceItem, self.screenData[0][key], self.params, self.itemValues);
+                        break;
+                    case ItemType.InputMoney:
+                        rowData.value = self.screenData[0][key];
+                        itemValue = new DPItemValue(attendanceItem, self.screenData[0][key], self.params, self.itemValues);
+                        break;
+                    case ItemType.ComboBox:
+                        itemValue = new DPItemValue(attendanceItem, parseInt(self.screenData[0][key]), self.params, self.itemValues);
+                        break;
+                    case ItemType.Time:
+                        rowData.value = self.screenData[0][key];
+                        itemValue = new DPItemValue(attendanceItem, self.screenData[0][key], self.params, self.itemValues);
+                        break;
+                    case ItemType.TimeWithDay:
+                        itemValue = new DPItemValue(attendanceItem, self.screenData[0][key], self.params, self.itemValues);
+                        break;
+                    case ItemType.InputStringChar:
+                        rowData.value = self.screenData[0][key];
+                        itemValue = new DPItemValue(attendanceItem, self.screenData[0][key], self.params, self.itemValues);
+                        break;
+                    default:
+                        break;
+                }
                 itemValues.push(itemValue);
             }
-
         });
         let checkValue = false;
         if (!_.isEmpty(self.checked1s)) {
