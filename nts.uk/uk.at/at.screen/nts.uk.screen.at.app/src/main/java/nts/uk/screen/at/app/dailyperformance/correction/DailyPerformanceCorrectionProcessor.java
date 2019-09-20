@@ -276,7 +276,7 @@ public class DailyPerformanceCorrectionProcessor {
 		String NAME_EMPTY = TextResource.localize("KDW003_82");
 		String NAME_NOT_FOUND = TextResource.localize("KDW003_81");
 		List<String> listEmployeeId = screenDto.getEmployeeIds();
-		List<String> changeEmployeeIds = screenDto.getEmployeeIds();
+		//List<String> changeEmployeeIds = screenDto.getEmployeeIds();
 		String companyId = AppContexts.user().companyId();
 		String sId =  AppContexts.user().employeeId();
 		DateRange dateRange = screenDto.getDateRange();
@@ -370,9 +370,9 @@ public class DailyPerformanceCorrectionProcessor {
 //		}
 		
 		// 社員の締めをチェックする
-		Map<String, List<EmploymentHisOfEmployeeImport>> mapClosingEmpResult = checkClosingEmployee
-				.checkClosingEmployee(companyId, changeEmployeeIds,
-						new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate()), screenDto.getClosureId());
+//		Map<String, List<EmploymentHisOfEmployeeImport>> mapClosingEmpResult = checkClosingEmployee
+//				.checkClosingEmployee(companyId, changeEmployeeIds,
+//						new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate()), screenDto.getClosureId());
 
 		List<DailyRecEditSetDto> dailyRecEditSets = repo.getDailyRecEditSet(listEmployeeId, dateRange);
 		Map<String, Integer> dailyRecEditSetsMap = dailyRecEditSets.stream()
@@ -382,7 +382,7 @@ public class DailyPerformanceCorrectionProcessor {
 		mapDataIntoGrid(screenDto, sId, appMapDateSid, listEmployeeId, resultDailyMap, mode, displayFormat, showLock,
 				identityProcessDtoOpt, approvalUseSettingDtoOpt, dateRange, objectShare,
 				companyId, disItem, screenDto.getLstControlDisplayItem(), dailyRecEditSetsMap,
-				workInfoOfDaily, disableSignMap, NAME_EMPTY, NAME_NOT_FOUND, dpLockDto, confirmResults, approvalResults, mapClosingEmpResult);
+				workInfoOfDaily, disableSignMap, NAME_EMPTY, NAME_NOT_FOUND, dpLockDto, confirmResults, approvalResults);
 		// set cell data
 		System.out.println("time get data into cell : " + (System.currentTimeMillis() - start1));
 		//bug 107966 disable edit flex in case lock
@@ -409,8 +409,8 @@ public class DailyPerformanceCorrectionProcessor {
 			DateRange dateRange, ObjectShare objectShare, String companyId,
 			DisplayItem disItem, DPControlDisplayItem dPControlDisplayItem,
 			Map<String, Integer> dailyRecEditSetsMap, List<WorkInfoOfDailyPerformanceDto> workInfoOfDaily, Map<String, Boolean> disableSignMap,
-			String NAME_EMPTY, String NAME_NOT_FOUND, DPLockDto dpLock, List<ConfirmStatusActualResult> confirmResults, List<ApprovalStatusActualResult> approvalResults,
-			Map<String, List<EmploymentHisOfEmployeeImport>> mapClosingEmpResult
+			String NAME_EMPTY, String NAME_NOT_FOUND, DPLockDto dpLock, List<ConfirmStatusActualResult> confirmResults, List<ApprovalStatusActualResult> approvalResults
+//			Map<String, List<EmploymentHisOfEmployeeImport>> mapClosingEmpResult
 			){
 		Map<String, ItemValue> itemValueMap = new HashMap<>();
 		List<DPDataDto> lstData = new ArrayList<DPDataDto>();
@@ -435,9 +435,9 @@ public class DailyPerformanceCorrectionProcessor {
 		List<DPHideControlCell> lstCellHideControl = new ArrayList<>();
 		for (DPDataDto data : screenDto.getLstData()) {
 			//filter Date in Period
-			if(!checkDataInClosing(Pair.of(data.getEmployeeId(), data.getDate()), mapClosingEmpResult)) {
-				continue;
-			}
+//			if(!checkDataInClosing(Pair.of(data.getEmployeeId(), data.getDate()), mapClosingEmpResult)) {
+//				continue;
+//			}
 			boolean textColorSpr = false;
 			data.setEmploymentCode(screenDto.getEmploymentCode());
 			if (!sId.equals(data.getEmployeeId())) {
