@@ -177,9 +177,9 @@ export class KdwS03BComponent extends Vue {
         let data: any = self.params.rowData.state;
         if (data != '') {
             let lock = data.split('|');
-            let tempD = `<div class="card-body pt-0 pb-2"><span>`;
-            for (let i = 1; i < lock.length; i++) {
-                switch (lock[i]) {
+            let tempD = `<span>`;
+            _.forEach(lock, (char) => {
+                switch (char) {
                     case 'D':
                         tempD += self.$i18n('KDW003_66') + `<br/>`;
                         break;
@@ -207,8 +207,8 @@ export class KdwS03BComponent extends Vue {
                     default:
                         break;
                 }
-            }
-            tempD += `</span></div>`;
+            });
+            tempD += `</span>`;
 
             return tempD;
         }
