@@ -35,8 +35,7 @@
         <div class="row pl-2 mb-1">{{ getItemText(key) }}</div>
         <div class="row mb-1">
           <div class="col-2 p-1 text-right">
-            <i class="fas fa-exclamation-circle align-bottom text-danger" v-if="getColorCode(key)=='ERROR'"></i>
-            <i class="fas fa-exclamation-triangle align-bottom text-danger" v-if="getColorCode(key)=='ALARM'"></i>
+            <i :class="`${getIcon(key) }`"></i>
           </div>
           <div class="col-9 pl-0 pr-0">
             <div class="row">
@@ -54,36 +53,41 @@
         <div class="row pl-2 mb-1">{{ getItemText(key) }}</div>
         <div class="row">
           <div class="col-2 p-1 text-right">
-            <i class="fas fa-exclamation-circle align-bottom text-danger" v-if="getColorCode(key)=='ERROR'"></i>
-            <i class="fas fa-exclamation-triangle align-bottom text-danger" v-if="getColorCode(key)=='ALARM'"></i>
+            <i :class="`${getIcon(key) }`"></i>
           </div>
           <div class="col-9 pl-0 pr-0">
-            <nts-dropdown v-if="getItemMasterType(key)==masterType.KDLS10_ServicePlace" v-model="screenData[0][key]" v-bind:record-name="key" v-bind:key="key">
+            <nts-dropdown v-if="getItemMasterType(key)==masterType.KDLS10_ServicePlace" v-model="screenData[0][key]" v-bind:record-name="key" v-bind:key="key"
+              :class-input="`${ getBackGroundColor(key) }`">
               <option v-for="(item, k) in masterData.servicePlace" v-bind:key="k" :value="item.code">
                 {{item.code}} &nbsp;&nbsp;&nbsp;  {{item.name}}
               </option>
             </nts-dropdown>
-            <nts-dropdown v-if="getItemMasterType(key)==masterType.KDLS32_Reason" v-model="screenData[0][key]" v-bind:record-name="key" v-bind:key="key">
+            <nts-dropdown v-if="getItemMasterType(key)==masterType.KDLS32_Reason" v-model="screenData[0][key]" v-bind:record-name="key" v-bind:key="key"
+              :class-input="`${ getBackGroundColor(key) }`">
               <option v-for="(item, k) in masterData.reason" v-bind:key="k" :value="item.code">
                 {{item.code}} &nbsp;&nbsp;&nbsp;  {{item.name}}
               </option>
             </nts-dropdown>
-            <nts-dropdown v-if="getItemMasterType(key)==masterType.KCPS02_Classification" v-model="screenData[0][key]" v-bind:record-name="key" v-bind:key="key">
+            <nts-dropdown v-if="getItemMasterType(key)==masterType.KCPS02_Classification" v-model="screenData[0][key]" v-bind:record-name="key" v-bind:key="key"
+              :class-input="`${ getBackGroundColor(key) }`">
               <option v-for="(item, k) in masterData.classification" v-bind:key="k" :value="item.code">
                 {{item.code}} &nbsp;&nbsp;&nbsp;  {{item.name}}
               </option>
             </nts-dropdown>
-            <nts-dropdown v-if="getItemMasterType(key)==masterType.KCPS03_Possition" v-model="screenData[0][key]" v-bind:record-name="key" v-bind:key="key">
+            <nts-dropdown v-if="getItemMasterType(key)==masterType.KCPS03_Possition" v-model="screenData[0][key]" v-bind:record-name="key" v-bind:key="key"
+              :class-input="`${ getBackGroundColor(key) }`">
               <option v-for="(item, k) in masterData.possition" v-bind:key="k" :value="item.code">
                 {{item.code}} &nbsp;&nbsp;&nbsp;  {{item.name}}
               </option>
             </nts-dropdown>
-            <nts-dropdown v-if="getItemMasterType(key)==masterType.KCPS01_Employment" v-model="screenData[0][key]" v-bind:record-name="key" v-bind:key="key">
+            <nts-dropdown v-if="getItemMasterType(key)==masterType.KCPS01_Employment" v-model="screenData[0][key]" v-bind:record-name="key" v-bind:key="key"
+              :class-input="`${ getBackGroundColor(key) }`">
               <option v-for="(item, k) in masterData.employment" v-bind:key="k" :value="item.code">
                 {{item.code}} &nbsp;&nbsp;&nbsp;  {{item.name}}
               </option>
             </nts-dropdown>
-            <nts-dropdown v-if="getItemMasterType(key)==masterType.KCP001_BusinessType" v-model="screenData[0][key]" v-bind:record-name="key" v-bind:key="key">
+            <nts-dropdown v-if="getItemMasterType(key)==masterType.KCP001_BusinessType" v-model="screenData[0][key]" v-bind:record-name="key" v-bind:key="key"
+              :class-input="`${ getBackGroundColor(key) }`">
               <option v-for="(item, k) in masterData.businessType" v-bind:key="k" :value="item.code">
                 {{item.code}} &nbsp;&nbsp;&nbsp;  {{item.name}}
               </option>
@@ -98,11 +102,11 @@
         <div class="row pl-2 mb-1">{{ getItemText(key) }}</div>
         <div class="row">
           <div class="col-2 p-1 text-right">
-            <i class="fas fa-exclamation-circle align-bottom text-danger" v-if="getColorCode(key)=='ERROR'"></i>
-            <i class="fas fa-exclamation-triangle align-bottom text-danger" v-if="getColorCode(key)=='ALARM'"></i>
+            <i :class="`${getIcon(key) }`"></i>
           </div>
           <div class="col-9 pl-0 pr-0">
-            <nts-number-editor class="mb-3" v-model="screenData[0][key]" v-bind:record-name="key" v-bind:key="key" />
+            <nts-number-editor class="mb-3" v-model="screenData[0][key]" v-bind:record-name="key" v-bind:key="key" 
+              :class-input="`${ getBackGroundColor(key) }`"/>
           </div>
         </div>
       </div>
@@ -113,12 +117,11 @@
         <div class="row pl-2 mb-1">{{ getItemText(key) }}</div>
         <div class="row">
           <div class="col-2 p-1 text-right">
-            <i class="fas fa-exclamation-circle align-bottom text-danger" v-if="getColorCode(key)=='ERROR'"></i>
-            <i class="fas fa-exclamation-triangle align-bottom text-danger" v-if="getColorCode(key)=='ALARM'"></i>
+            <i :class="`${getIcon(key) }`"></i>
           </div>
           <div class="col-9 pl-0 pr-0">  
             <nts-number-editor class="mb-3" v-model="screenData[0][key]" v-bind:record-name="key" v-bind:key="key" 
-              class-input="" v-bind:icons="{ after: '$' }" />
+              :class-input="`${ getBackGroundColor(key) }`" v-bind:icons="{ after: '$' }" />
           </div>
         </div>
       </div>
@@ -129,31 +132,35 @@
         <div class="row pl-2 mb-1">{{ getItemText(key) }}</div>
         <div class="row">
           <div class="col-2 p-1 text-right">
-            <i class="fas fa-exclamation-circle align-bottom text-danger" v-if="getColorCode(key)=='ERROR'"></i>
-            <i class="fas fa-exclamation-triangle align-bottom text-danger" v-if="getColorCode(key)=='ALARM'"></i>
+            <i :class="`${getIcon(key) }`"></i>
           </div>
           <div class="col-9 pl-0 pr-0">
-            <nts-dropdown v-if="getItemMasterType(key)==masterType.DoWork" v-model="screenData[0][key]" v-bind:record-name="key" v-bind:key="key">
+            <nts-dropdown v-if="getItemMasterType(key)==masterType.DoWork" v-model="screenData[0][key]" v-bind:record-name="key" v-bind:key="key"
+              :class-input="`${ getBackGroundColor(key) }`">
               <option v-for="(item, k) in masterData.lstDoWork" v-bind:key="k" :value="item.code">
                 {{item.code}} &nbsp;&nbsp;&nbsp;  {{item.name}}
               </option>
             </nts-dropdown>
-            <nts-dropdown v-if="getItemMasterType(key)==masterType.Calc && isSpecCalcLst(key)" v-model="screenData[0][key]" v-bind:record-name="key" v-bind:key="key">
+            <nts-dropdown v-if="getItemMasterType(key)==masterType.Calc && isSpecCalcLst(key)" v-model="screenData[0][key]" v-bind:record-name="key" v-bind:key="key"
+              :class-input="`${ getBackGroundColor(key) }`">
               <option v-for="(item, k) in masterData.lstCalc" v-bind:key="k" :value="item.code">
                 {{item.code}} &nbsp;&nbsp;&nbsp;  {{item.name}}
               </option>
             </nts-dropdown>
-            <nts-dropdown v-if="getItemMasterType(key)==masterType.Calc && !isSpecCalcLst(key)" v-model="screenData[0][key]" v-bind:record-name="key" v-bind:key="key">
+            <nts-dropdown v-if="getItemMasterType(key)==masterType.Calc && !isSpecCalcLst(key)" v-model="screenData[0][key]" v-bind:record-name="key" v-bind:key="key"
+              :class-input="`${ getBackGroundColor(key) }`">
               <option v-for="(item, k) in masterData.lstCalcCompact" v-bind:key="k" :value="item.code">
                 {{item.code}} &nbsp;&nbsp;&nbsp;  {{item.name}}
               </option>
             </nts-dropdown>
-            <nts-dropdown v-if="getItemMasterType(key)==masterType.ReasonGoOut" v-model="screenData[0][key]" v-bind:record-name="key" v-bind:key="key">
+            <nts-dropdown v-if="getItemMasterType(key)==masterType.ReasonGoOut" v-model="screenData[0][key]" v-bind:record-name="key" v-bind:key="key"
+              :class-input="`${ getBackGroundColor(key) }`">
               <option v-for="(item, k) in masterData.lstReasonGoOut" v-bind:key="k" :value="item.code">
                 {{item.code}} &nbsp;&nbsp;&nbsp;  {{item.name}}
               </option>
             </nts-dropdown>
-            <nts-dropdown v-if="getItemMasterType(key)==masterType.TimeLimit" v-model="screenData[0][key]" v-bind:record-name="key" v-bind:key="key">
+            <nts-dropdown v-if="getItemMasterType(key)==masterType.TimeLimit" v-model="screenData[0][key]" v-bind:record-name="key" v-bind:key="key"
+              :class-input="`${ getBackGroundColor(key) }`">
               <option v-for="(item, k) in masterData.lstTimeLimit" v-bind:key="k" :value="item.code">
                 {{item.code}} &nbsp;&nbsp;&nbsp;  {{item.name}}
               </option>
@@ -168,11 +175,11 @@
         <div class="row pl-2 mb-1">{{ getItemText(key) }}</div>
         <div class="row">
           <div class="col-2 p-1 text-right">
-            <i class="fas fa-exclamation-circle align-bottom text-danger" v-if="getColorCode(key)=='ERROR'"></i>
-            <i class="fas fa-exclamation-triangle align-bottom text-danger" v-if="getColorCode(key)=='ALARM'"></i>
+            <i :class="`${getIcon(key) }`"></i>
           </div>
           <div class="col-9 pl-0 pr-0">
-            <nts-time-editor class="mb-3" v-model="screenData[0][key]" v-bind:record-name="key" v-bind:key="key" time-input-type="time-duration" />
+            <nts-time-editor class="mb-3" v-model="screenData[0][key]" v-bind:record-name="key" v-bind:key="key" time-input-type="time-duration" 
+              :class-input="`${ getBackGroundColor(key) }`"/>
           </div>
         </div>
       </div>
@@ -183,11 +190,11 @@
         <div class="row pl-2 mb-1">{{ getItemText(key) }}</div>
         <div class="row">
           <div class="col-2 p-1 text-right">
-            <i class="fas fa-exclamation-circle align-bottom text-danger" v-if="getColorCode(key)=='ERROR'"></i>
-            <i class="fas fa-exclamation-triangle align-bottom text-danger" v-if="getColorCode(key)=='ALARM'"></i>
+            <i :class="`${getIcon(key) }`"></i>
           </div>
           <div class="col-9 pl-0 pr-0">
-            <nts-time-editor class="mb-3" v-model="screenData[0][key]" v-bind:record-name="key" v-bind:key="key" time-input-type="time-with-day" />
+            <nts-time-editor class="mb-3" v-model="screenData[0][key]" v-bind:record-name="key" v-bind:key="key" time-input-type="time-with-day" 
+              :class-input="`${ getBackGroundColor(key) }`"/>
           </div>
         </div>
       </div>
@@ -198,11 +205,11 @@
         <div class="row pl-2 mb-1">{{ getItemText(key) }}</div>
         <div class="row">
           <div class="col-2 p-1 text-right">
-            <i class="fas fa-exclamation-circle align-bottom text-danger" v-if="getColorCode(key)=='ERROR'"></i>
-            <i class="fas fa-exclamation-triangle align-bottom text-danger" v-if="getColorCode(key)=='ALARM'"></i>
+            <i :class="`${getIcon(key) }`"></i>
           </div>
           <div class="col-9 pl-0 pr-0">
-            <nts-text-area class="mb-3" v-model="screenData[0][key]" v-bind:record-name="key" v-bind:key="key" />
+            <nts-text-area class="mb-3" v-model="screenData[0][key]" v-bind:record-name="key" v-bind:key="key" 
+              :class-input="`${ getBackGroundColor(key) }`"/>
           </div>
         </div>
       </div>

@@ -89,6 +89,7 @@ export class KdwS03BComponent extends Vue {
     };
     public checked1s: Array<number> = [];
     public screenData: any = {};
+    public screenData1: any = {};
     private masterData: any = {
         workType: [],
         workTime: [],
@@ -154,7 +155,10 @@ export class KdwS03BComponent extends Vue {
             self.$mask('hide');
         }).catch((res: any) => {
             self.$mask('hide');
-            console.log('FAIL');
+            self.$modal.error(res.messageId)
+                .then(() => {
+                    self.$close();
+                });
         });
     }
 
@@ -320,17 +324,30 @@ export class KdwS03BComponent extends Vue {
         return _.includes(specLst, attendanceItem.id);
     }
 
-    public getColorCode(key: string) {
+    public getIcon(key: string) {
         let self = this;
         let rowClass = _.find(self.params.rowData.rowData, (rowData: RowData) => rowData.key == key).class;
         if (rowClass.includes('mgrid-error')) {
-            return 'ERROR';
+            return 'fas fa-exclamation-circle align-bottom text-danger';
         }
         if (rowClass.includes('mgrid-alarm')) {
-            return 'ALARM';
+            return 'fas fa-exclamation-triangle align-bottom text-danger';
         }
 
         return '';
+    }
+
+    public getBackGroundColor(key: string) {
+        let self = this;
+        let rowClass = _.find(self.params.rowData.rowData, (rowData: RowData) => rowData.key == key).class;
+        if (rowClass.includes('mgrid-error')) {
+            return 'uk-bg-schedule-no-empl-insurance';
+        }
+        if (rowClass.includes('mgrid-alarm')) {
+            return 'uk-bg-schedule-work-by-dow';
+        }
+
+        return '';    
     }
 
     public getItemDialogName(key: string) {
@@ -368,7 +385,6 @@ export class KdwS03BComponent extends Vue {
     private addCustomValid() {
         let self = this;
         let screenDataValid: any = {};
-        let screenData1: any = {};
         _.forEach(self.params.rowData.rowData, (rowData: RowData, index) => {
             self.formatData(rowData);
             self.addMasterDialogParam(rowData);
@@ -376,13 +392,13 @@ export class KdwS03BComponent extends Vue {
             let contraint = _.find(self.contentType, (item: ItemHeader) => item.key == rowData.key).constraint;
             switch (attendanceItem.attendanceAtr) {
                 case ItemType.InputStringCode:
-                    self.$set(screenData1, rowData.key, rowData.value0);
+                    self.$set(self.screenData1, rowData.key, rowData.value0);
                     break;
                 case ItemType.ButtonDialog:
-                    self.$set(screenData1, rowData.key, rowData.value0);
+                    self.$set(self.screenData1, rowData.key, rowData.value0);
                     break;
                 case ItemType.InputNumber:
-                    self.$set(screenData1, rowData.key, rowData.value);
+                    self.$set(self.screenData1, rowData.key, rowData.value);
                     if (contraint.cdisplayType == 'Primitive') {
                         screenDataValid[rowData.key] = {
                             loop: true,
@@ -398,7 +414,7 @@ export class KdwS03BComponent extends Vue {
                     }
                     break;
                 case ItemType.InputMoney:
-                    self.$set(screenData1, rowData.key, rowData.value);
+                    self.$set(self.screenData1, rowData.key, rowData.value);
                     if (contraint.cdisplayType == 'Primitive') {
                         screenDataValid[rowData.key] = {
                             loop: true,
@@ -415,10 +431,10 @@ export class KdwS03BComponent extends Vue {
                     }
                     break;
                 case ItemType.ComboBox:
-                    self.$set(screenData1, rowData.key, rowData.value0);
+                    self.$set(self.screenData1, rowData.key, rowData.value0);
                     break;
                 case ItemType.Time:
-                    self.$set(screenData1, rowData.key, rowData.value);
+                    self.$set(self.screenData1, rowData.key, rowData.value);
                     if (contraint.cdisplayType == 'Primitive') {
                         screenDataValid[rowData.key] = {
                             loop: true,
@@ -435,7 +451,7 @@ export class KdwS03BComponent extends Vue {
                     }
                     break;
                 case ItemType.InputStringChar:
-                    self.$set(screenData1, rowData.key, rowData.value);
+                    self.$set(self.screenData1, rowData.key, rowData.value);
                     if (contraint.cdisplayType == 'Primitive') {
                         screenDataValid[rowData.key] = {
                             loop: true,
@@ -449,11 +465,11 @@ export class KdwS03BComponent extends Vue {
                     }
                     break;
                 default:
-                    self.$set(screenData1, rowData.key, rowData.value);
+                    self.$set(self.screenData1, rowData.key, rowData.value);
                     break;
             }
         });
-        self.screenData = [screenData1];
+        self.screenData = [self.screenData1];
         self.$updateValidator('screenData', screenDataValid);
         // self.$updateValidator(`screenData.${index}`, newObj);
     }
@@ -783,6 +799,38 @@ export class KdwS03BComponent extends Vue {
 
     private createRegisterParam() {
         let self = this;
+        let itemValues: any = self.getItemChange();
+        let checkValue = false;
+        if (!_.isEmpty(self.checked1s)) {
+            checkValue = true;
+        }
+        let dataCheckSign = [
+            {
+                rowId: self.params.rowData.id,
+                itemId: '',
+                value: checkValue,
+                valueType: '',
+                employeeId: self.params.employeeID,
+                date: self.params.date,
+                flagRemoveAll: false
+            }
+        ];
+
+        return {
+            'employeeId': self.params.employeeID,
+            'itemValues': itemValues,
+            'dataCheckSign': dataCheckSign,
+            'dataCheckApproval': [],
+            'dateRange': {
+                'startDate': self.params.date,
+                'endDate': self.params.date
+            },
+            'lstNotFoundWorkType': []
+        };
+    }
+
+    private getItemChange() {
+        let self = this;
         let itemValues: any = [];
         _.forEach(Object.keys(self.screenData[0]), (key: string) => {
             let itemValue: DPItemValue;
@@ -824,34 +872,9 @@ export class KdwS03BComponent extends Vue {
                 }
                 itemValues.push(itemValue);
             }
-        });
-        let checkValue = false;
-        if (!_.isEmpty(self.checked1s)) {
-            checkValue = true;
-        }
-        let dataCheckSign = [
-            {
-                rowId: self.params.rowData.id,
-                itemId: '',
-                value: checkValue,
-                valueType: '',
-                employeeId: self.params.employeeID,
-                date: self.params.date,
-                flagRemoveAll: false
-            }
-        ];
+        });    
 
-        return {
-            'employeeId': self.params.employeeID,
-            'itemValues': itemValues,
-            'dataCheckSign': dataCheckSign,
-            'dataCheckApproval': [],
-            'dateRange': {
-                'startDate': self.params.date,
-                'endDate': self.params.date
-            },
-            'lstNotFoundWorkType': []
-        };
+        return itemValues;
     }
 
     private getAttendanceItem(value: any) {
@@ -860,12 +883,95 @@ export class KdwS03BComponent extends Vue {
 
         return _.find(self.lstAttendanceItem, (item: any) => item.id == idKey);
     }
+
+    private autoCalc(key: string) {
+        let self = this;
+        let attendanceItem = self.getAttendanceItem(key);
+        let itemValues = self.getItemChange();
+        if (_.isEmpty(itemValues)) {
+            return;
+        }
+        _.forEach(itemValues, (item) => {
+            if (item.itemId != attendanceItem.id) {
+                item.columnKey = 'USE';
+            }
+        });
+        let param = {
+            dailyEdits: [],
+            itemEdits: itemValues,
+            changeSpr31: false,
+            changeSpr34: false,
+            notChangeCell: false
+        };
+        self.$http.post('at', API.linkItemCalc, param)
+        .then((data: any) => {
+            _.forEach(data.data.cellEdits, (item: any) => {
+                if (!_.isUndefined(self.screenData1[item.item])) {
+                    let attendanceItemLoop = self.getAttendanceItem(item.item);
+                    switch (attendanceItemLoop.attendanceAtr) {
+                        case ItemType.InputNumber:
+                            self.screenData1[item.item] = _.isEmpty(item.value) ? null : _.toNumber(item.value);
+                            break;
+                        case ItemType.InputMoney:
+                            self.screenData1[item.item] = _.isEmpty(item.value) ? null : _.toNumber(item.value);
+                            break;
+                        case ItemType.Time:
+                            self.screenData1[item.item] = _.isEmpty(item.value) ? null : new TimeDuration(item.value).toNumber();
+                            break;
+                        case ItemType.TimeWithDay:
+                            self.screenData1[item.item] = _.isEmpty(item.value) ? null : new TimeDuration(item.value).toNumber();
+                            break;
+                        default:
+                            self.screenData1[item.item] = item.value;
+                            break;
+                    }
+                }
+            });
+        });
+    }
+
+    @Watch('screenData1.A28')
+    public watcherA28(value: any) {
+        let self = this;
+        self.autoCalc('A28');    
+    }
+
+    @Watch('screenData1.A29')
+    public watcherA29(value: any) {
+        let self = this;
+        self.autoCalc('A29');    
+    }
+
+    @Watch('screenData1.A31')
+    public watcherA31(value: any) {
+        let self = this;
+        self.autoCalc('A31');    
+    }
+
+    @Watch('screenData1.A34')
+    public watcherA34(value: any) {
+        let self = this;
+        self.autoCalc('A34');    
+    }
+
+    @Watch('screenData1.A41')
+    public watcherA41(value: any) {
+        let self = this;
+        self.autoCalc('A41');    
+    }
+
+    @Watch('screenData1.A44')
+    public watcherA44(value: any) {
+        let self = this;
+        self.autoCalc('A44');    
+    }
 }
 
 const API = {
     getPrimitiveAll: 'screen/at/correctionofdailyperformance/getPrimitiveAll',
     masterDialogData: 'screen/at/correctionofdailyperformance/getMasterDialogMob',
-    register: 'screen/at/correctionofdailyperformance/addUpMobile'
+    register: 'screen/at/correctionofdailyperformance/addUpMobile',
+    linkItemCalc: 'screen/at/correctionofdailyperformance/calcTime'
 };
 
 const CHECK_INPUT = {
