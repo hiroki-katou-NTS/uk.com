@@ -18,6 +18,7 @@ export class KdwS03CComponent extends Vue {
     public displayData: any;
     public createDone: boolean = false;
 
+    //起動
     public created() {
         this.dailyCorrectionState = storage.session.getItem('dailyCorrectionState');
         if (this.dailyCorrectionState.displayFormat == '1') {
@@ -27,6 +28,7 @@ export class KdwS03CComponent extends Vue {
         this.$mask('hide');
     }
 
+    //マスクの作成
     public mounted() {
         if (!this.createDone) {
             this.$mask('show', { message: true });
@@ -40,6 +42,7 @@ export class KdwS03CComponent extends Vue {
         }
     }
 
+    //エラーリストを取得する
     public openErrorList(employeeId: any) {
         this.$modal('kdws03d', {
             employeeID: employeeId,

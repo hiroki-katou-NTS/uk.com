@@ -188,14 +188,14 @@ export class Kdws03AComponent extends Vue {
         this.$mask('show', { message: true });
     }
     
-    // fix-tableのレイアウトを変更する
+    //fix-tableのレイアウトを変更する
     public updated() {
         let styleTagAr: any = [];
         styleTagAr = document.querySelectorAll('.btn-sm');
         _.forEach(styleTagAr, (x) => x.style.fontSize = '10px');
     }
 
-    // 日別実績データの取得
+    //日別実績データの取得
     public startPage() {
         let self = this;
         self.$mask('show', { message: true });
@@ -549,7 +549,7 @@ export class Kdws03AComponent extends Vue {
         return data;
     }
 
-    // 修正画面を開く
+    //修正画面を開く
     public openEdit(id: any) {
         if (id == '') {
             return;
@@ -583,7 +583,7 @@ export class Kdws03AComponent extends Vue {
             });
     }
 
-    // メニュー画面を開く
+    //メニュー画面を開く
     public openMenu() {
         let self = this;
         this.$modal(
@@ -624,7 +624,7 @@ export class Kdws03AComponent extends Vue {
             });
     }
 
-    // 次ページを押下処理
+    //次ページを押下処理
     public nextPage() {
         if (this.nextState == 'button-deactive') {
             return;
@@ -652,7 +652,7 @@ export class Kdws03AComponent extends Vue {
         this.resetTable++;
     }
 
-    // 前ページを押下処理
+    //前ページを押下処理
     public previousPage() {
         if (this.previousState == 'button-deactive') {
             return;
@@ -668,7 +668,7 @@ export class Kdws03AComponent extends Vue {
         this.resetTable++;
     }
 
-    // 文字数の数え処理
+    //文字数の数え処理
     public countHalf(text: string) {
         let count = 0;
         for (let i = 0; i < text.length; i++) {
@@ -686,7 +686,7 @@ export class Kdws03AComponent extends Vue {
         return count;
     }
 
-    // ComboBoxから項目値を取得する
+    //ComboBoxから項目値を取得する
     public getFromCombo(ntsControl: string, code: string) {
         switch (ntsControl) {
             case 'ComboboxCalc': {
@@ -710,20 +710,20 @@ export class Kdws03AComponent extends Vue {
         }
     }
 
-    // お金値のフォーマット
+    //お金値のフォーマット
     public formatMoney(value: string) {
         return Number(value) == 0 ? '' : Number(value).toFixed(0);
     }
 
 }
 
-// サーバパス
+//サーバパス
 const servicePath = {
     initMOB: 'screen/at/correctionofdailyperformance/initMOB',
     genDate: 'screen/at/correctionofdailyperformance/gendate'
 };
 
-// エラータイプ
+//エラータイプ
 enum DCErrorInfomation {
     NORMAL = 0,
     APPROVAL_NOT_EMP = 1,
@@ -731,7 +731,7 @@ enum DCErrorInfomation {
     NOT_EMP_IN_HIST = 3
 }
 
-//　締めタイプ
+//締めタイプ
 enum ClosureId {
     RegularEmployee = 1,
     PartTimeJob = 2,
