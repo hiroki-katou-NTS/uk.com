@@ -154,7 +154,10 @@ export class KdwS03BComponent extends Vue {
             self.$mask('hide');
         }).catch((res: any) => {
             self.$mask('hide');
-            console.log('FAIL');
+            self.$modal.error(res.messageId)
+                .then(() => {
+                    self.$close();
+                });
         });
     }
 
@@ -320,17 +323,30 @@ export class KdwS03BComponent extends Vue {
         return _.includes(specLst, attendanceItem.id);
     }
 
-    public getColorCode(key: string) {
+    public getIcon(key: string) {
         let self = this;
         let rowClass = _.find(self.params.rowData.rowData, (rowData: RowData) => rowData.key == key).class;
         if (rowClass.includes('mgrid-error')) {
-            return 'ERROR';
+            return 'fas fa-exclamation-circle align-bottom text-danger';
         }
         if (rowClass.includes('mgrid-alarm')) {
-            return 'ALARM';
+            return 'fas fa-exclamation-triangle align-bottom text-danger';
         }
 
         return '';
+    }
+
+    public getBackGroundColor(key: string) {
+        let self = this;
+        let rowClass = _.find(self.params.rowData.rowData, (rowData: RowData) => rowData.key == key).class;
+        if (rowClass.includes('mgrid-error')) {
+            return 'uk-bg-schedule-no-empl-insurance';
+        }
+        if (rowClass.includes('mgrid-alarm')) {
+            return 'uk-bg-schedule-work-by-dow';
+        }
+
+        return '';    
     }
 
     public getItemDialogName(key: string) {
