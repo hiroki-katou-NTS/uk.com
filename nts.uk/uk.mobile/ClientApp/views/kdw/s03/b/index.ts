@@ -142,6 +142,7 @@ export class KdwS03BComponent extends Vue {
 
     public created() {
         let self = this;
+        self.$mask('show');
         self.addCustomValid();
         self.oldData = self.toJS(self.screenData[0]);
         self.createMasterComboBox();
@@ -150,7 +151,9 @@ export class KdwS03BComponent extends Vue {
             date: new Date()
         }).then((masterData: any) => {
             self.createMasterData(masterData.data);
+            self.$mask('hide');
         }).catch((res: any) => {
+            self.$mask('hide');
             console.log('FAIL');
         });
     }
@@ -208,19 +211,19 @@ export class KdwS03BComponent extends Vue {
         let self = this;
         let lstControlDisplayItem: any = self.params.paramData.lstControlDisplayItem;
         _.forEach(lstControlDisplayItem.comboItemDoWork, (o) => {
-            self.masterData.lstDoWork.push({ 'value0': o.code, 'value': o.name });
+            self.masterData.lstDoWork.push({ code: o.code, name: o.name });
         });
         _.forEach(lstControlDisplayItem.comboItemCalc, (o) => {
-            self.masterData.lstCalc.push({ 'value0': o.code, 'value': o.name });
+            self.masterData.lstCalc.push({ code: o.code, name: o.name });
         });
         _.forEach(lstControlDisplayItem.comboItemCalcCompact, (o) => {
-            self.masterData.lstCalcCompact.push({ 'value0': o.code, 'value': o.name });
+            self.masterData.lstCalcCompact.push({ code: o.code, name: o.name });
         });
         _.forEach(lstControlDisplayItem.comboItemReason, (o) => {
-            self.masterData.lstReasonGoOut.push({ 'value0': o.code, 'value': o.name });
+            self.masterData.lstReasonGoOut.push({ code: o.code, name: o.name });
         });
         _.forEach(lstControlDisplayItem.comboTimeLimit, (o) => {
-            self.masterData.lstTimeLimit.push({ 'value0': o.code, 'value': o.name });
+            self.masterData.lstTimeLimit.push({ code: o.code, name: o.name });
         });
     }
 
@@ -231,40 +234,40 @@ export class KdwS03BComponent extends Vue {
         self.masterData.workPlace = data[MasterType.CDLS08_WorkPlace];
         // tạo dữ liệu conbo box tạm thời cho các dialog chưa dc làm
         _.forEach(data[MasterType.KDLS10_ServicePlace], (o) => {
-            self.masterData.servicePlace.push({ 'value0': o.code, 'value': o.name });
+            self.masterData.servicePlace.push({ code: o.code, name: o.name });
         });
         if (_.isEmpty(self.masterData.servicePlace)) {
-            self.masterData.servicePlace.push({ 'value0': '', 'value': 'なし' });
+            self.masterData.servicePlace.push({ code: '', name: 'なし' });
         }
         _.forEach(data[MasterType.KDLS32_Reason], (o) => {
-            self.masterData.reason.push({ 'value0': o.code, 'value': o.name });
+            self.masterData.reason.push({ code: o.code, name: o.name });
         });
         if (_.isEmpty(self.masterData.reason)) {
-            self.masterData.reason.push({ 'value0': '', 'value': 'なし' });
+            self.masterData.reason.push({ code: '', name: 'なし' });
         }
         _.forEach(data[MasterType.KCPS02_Classification], (o) => {
-            self.masterData.classification.push({ 'value0': o.code, 'value': o.name });
+            self.masterData.classification.push({ code: o.code, name: o.name });
         });
         if (_.isEmpty(self.masterData.classification)) {
-            self.masterData.classification.push({ 'value0': '', 'value': 'なし' });
+            self.masterData.classification.push({ code: '', name: 'なし' });
         }
         _.forEach(data[MasterType.KCPS03_Possition], (o) => {
-            self.masterData.possition.push({ 'value0': o.code, 'value': o.name });
+            self.masterData.possition.push({ code: o.code, name: o.name });
         });
         if (_.isEmpty(self.masterData.possition)) {
-            self.masterData.possition.push({ 'value0': '', 'value': 'なし' });
+            self.masterData.possition.push({ code: '', name: 'なし' });
         }
         _.forEach(data[MasterType.KCPS01_Employment], (o) => {
-            self.masterData.employment.push({ 'value0': o.code, 'value': o.name });
+            self.masterData.employment.push({ code: o.code, name: o.name });
         });
         if (_.isEmpty(self.masterData.employment)) {
-            self.masterData.employment.push({ 'value0': '', 'value': 'なし' });
+            self.masterData.employment.push({ code: '', name: 'なし' });
         }
         _.forEach(data[MasterType.KCP001_BusinessType], (o) => {
-            self.masterData.businessType.push({ 'value0': o.code, 'value': o.name });
+            self.masterData.businessType.push({ code: o.code, name: o.name });
         });
         if (_.isEmpty(self.masterData.businessType)) {
-            self.masterData.businessType.push({ 'value0': '', 'value': 'なし' });
+            self.masterData.businessType.push({ code: '', name: 'なし' });
         }
     }
 
@@ -492,6 +495,7 @@ export class KdwS03BComponent extends Vue {
                         constraintObj.loop = true;
                         constraintObj.required = contraint.required;
                         self.$updateValidator( `screenData.${rowData.key}`, constraintObj);
+                        // self.$updateValidator( {screenData : { [rowData.key] : constraintObj}});
                     }
                     break;
                 default:

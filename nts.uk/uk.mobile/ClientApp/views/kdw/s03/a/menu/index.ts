@@ -36,8 +36,8 @@ export class KdwS03AMenuComponent extends Vue {
                     if (v != undefined && v.openB) {
                         this.$close(v);
                     }
-                    if (v != 'NotCloseMenu') {
-                        this.$close();
+                    if (v == 'dropback') {
+                        this.$close('dropback');
                     }
                 });
         } else {
@@ -51,8 +51,8 @@ export class KdwS03AMenuComponent extends Vue {
                     if (v != undefined && v.openB) {
                         this.$close(v);
                     }
-                    if (v != 'NotCloseMenu') {
-                        this.$close();
+                    if (v == 'dropback') {
+                        this.$close('dropback');
                     }
                 });
         }
@@ -60,16 +60,16 @@ export class KdwS03AMenuComponent extends Vue {
     }
     public openKdws03f(param: number) {
         this.$modal('kdws03f', {}, { type: 'dropback' }).then((v: any) => {
-            if (v != 'NotCloseMenu') {
-                this.$close();
+            if (v == 'dropback') {
+                this.$close('dropback');
             }
         });
     }
     public openKdws03g(param: number) {
         console.log(param);
         this.$modal('kdws03g', { 'remainOrtime36': param }, { type: 'dropback' }).then((v: any) => {
-            if (v != 'NotCloseMenu') {
-                this.$close();
+            if (v == 'dropback') {
+                this.$close('dropback');
             }
         });
     }

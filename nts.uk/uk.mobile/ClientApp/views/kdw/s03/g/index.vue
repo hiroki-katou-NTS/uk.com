@@ -59,15 +59,15 @@
           <div class="card-body">
                 <div class="row">
                 <!-- G8_1: 超過時間 -->
-                <div class="col-9">{{'KDWS03_54' | i18n}}</div>
+                <div class="col-8">{{'KDWS03_54' | i18n}}</div>
                 <!-- G8_2: 超過時間 -->
-                <div class="col-3 text-right">{{time36.time36 | timedr}}</div>
+                <div class="col-4 text-right">{{time36.time36 | timedr}}</div>
               </div>
               <div class="row pt-3">
                 <!-- G9_1: 超過上限時間 -->
-                <div class="col-9">{{'KDWS03_55' | i18n}}</div>
+                <div class="col-8">{{'KDWS03_55' | i18n}}</div>
                 <!-- G9_2: 超過上限時間 -->
-                <div class="col-3 text-right">{{time36.maxTime36 | timedr}}</div>
+                <div class="col-4 text-right">{{time36.maxTime36 | timedr}}</div>
               </div>
               <div class="row pt-3">
                 <!-- G10_1: 超過回数 -->
