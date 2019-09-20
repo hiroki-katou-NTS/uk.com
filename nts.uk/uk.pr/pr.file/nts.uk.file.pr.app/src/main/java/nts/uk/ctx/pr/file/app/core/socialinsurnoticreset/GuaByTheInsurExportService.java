@@ -101,6 +101,7 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
                 .company(company)
                 .empPenFundSub(empPensionFund)
                 .pensionOfficeData(pension.isEmpty() ? healthInsAss : pension)
+                .baseDate(exportServiceContext.getQuery().getBaseDate())
                 .build();
 
         if (exportServiceContext.getQuery().getTypeExport() == TYPE_EXPORT_EXCEL_FILE) {
@@ -190,9 +191,9 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
                 //C1_3
                 temp.setOfficeNumber(element[52] != null ? element[52].toString() : "");
                 //C2_20
-                temp.setDateOfQualifiRyowa(element[33] != null ? element[33].toString() : "");
+                temp.setDateOfQualifiRyowa(element[34] != null ? element[34].toString() : "");
                 //C2_21
-                temp.setQualificationDate(element[33] != null ? element[33].toString() : "");
+                temp.setQualificationDate(element[35] != null ? element[35].toString() : "");
             }
             else{
                 //C1_1
@@ -204,7 +205,7 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
                 //C2_20
                 temp.setDateOfQualifiRyowa(element[34] != null ? element[34].toString() : "");
                 //C2_21
-                temp.setQualificationDate(element[34] != null ? element[34].toString() : "");
+                temp.setQualificationDate(element[35] != null ? element[35].toString() : "");
             }
             if(Integer.valueOf(element[14].toString()) == Enum_SubNameClass_PERSONAL_NAME){
                 //C2_2

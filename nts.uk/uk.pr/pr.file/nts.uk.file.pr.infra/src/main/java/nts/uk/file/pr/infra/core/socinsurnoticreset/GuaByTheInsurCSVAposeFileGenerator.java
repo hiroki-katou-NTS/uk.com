@@ -85,12 +85,12 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
                 cells.get(startRow, 0).setValue(getPreferCode(data.getHealPrefectureNo(), data.getStartDate1(), infor));
                 cells.get(startRow, 1).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? checkLength(data.getHealOfficeNumber1(),2) :
                         checkLength(data.getWelOfficeNumber1(),2));
-                cells.get(startRow, 2).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? data.getOfficeNumber2().length() > 4 ? data.getOfficeNumber2().substring(0, 4) :
-                        data.getOfficeNumber2() : data.getWelOfficeNumber2().length() > 4 ? data.getWelOfficeNumber2().substring(0, 4) : data.getWelOfficeNumber2());
+                cells.get(startRow, 2).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? data.getHealOfficeNumber2().length() > 4 ? data.getHealOfficeNumber2().substring(0, 4) :
+                        data.getHealOfficeNumber2() : data.getHealOfficeNumber2().length() > 4 ? data.getWelOfficeNumber2().substring(0, 4) : data.getWelOfficeNumber2());
                 cells.get(startRow, 4).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? data.getHealOfficeNumber() : data.getWelOfficeNumber());
                 cells.get(startRow, 5).setValue(company.getPostCd().length() > 3 ? company.getPostCd().substring(0, 3) : company.getPostCd());
                 cells.get(startRow, 6).setValue(company.getPostCd().length() == 8 ? company.getPostCd().substring(0, 4) : "");
-                cells.get(startRow, 7).setValue((company.getAdd_1() + company.getAdd_2()).length() > 0 ? (company.getAdd_1() + company.getAdd_2()).substring(0, 37) : company.getAdd_1() + company.getAdd_2());
+                cells.get(startRow, 7).setValue((company.getAdd_1() + company.getAdd_2()).length() > 37 ? (company.getAdd_1() + company.getAdd_2()).substring(0, 37) : company.getAdd_1() + company.getAdd_2());
                 cells.get(startRow, 8).setValue(company.getCompanyName().length() > 25 ? company.getCompanyName().substring(0, 25) : company.getCompanyName());
                 cells.get(startRow, 9).setValue(company.getRepname());
                 cells.get(startRow, 10).setValue(company.getPhoneNum().length() > 5 ? company.getPhoneNum().substring(0, 5) : company.getPhoneNum());
@@ -119,7 +119,7 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
         cells.get(startRow, 1).setValue(getPreferCode(data.getHealPrefectureNo(), data.getStartDate1(), infor));
         cells.get(startRow, 2).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? data.getHealOfficeNumber1().length() > 2 ? data.getHealOfficeNumber1().substring(0, 2) : data.getHealOfficeNumber1() :
                 data.getWelOfficeNumber1().length() > 2 ? data.getWelOfficeNumber1().substring(0, 2) : data.getWelOfficeNumber1());
-        cells.get(startRow, 3).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? data.getOfficeNumber2().length() > 4 ? data.getOfficeNumber2().substring(0, 4) : data.getOfficeNumber2() :
+        cells.get(startRow, 3).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? data.getHealOfficeNumber2().length() > 4 ? data.getHealOfficeNumber2().substring(0, 4) : data.getHealOfficeNumber2() :
                 data.getWelOfficeNumber2().length() > 4 ? data.getWelOfficeNumber2().substring(0, 4) : data.getWelOfficeNumber2());
         cells.get(startRow, 4).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? data.getHealOfficeNumber() : data.getWelOfficeNumber());
 

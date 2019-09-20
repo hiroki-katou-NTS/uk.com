@@ -11,6 +11,7 @@ public class GuaByTheInsurExportQuery {
     private int typeExport;
     private List<String> empIds;
     private GeneralDate startDate;
+    private GeneralDate baseDate;
     private GeneralDate endDate;
     private SocialInsurNotiCreateSetQuery socialInsurNotiCreateSetQuery;
 }
