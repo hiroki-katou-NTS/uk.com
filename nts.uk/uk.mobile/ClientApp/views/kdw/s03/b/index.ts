@@ -143,7 +143,7 @@ export class KdwS03BComponent extends Vue {
     public created() {
         let self = this;
         self.addCustomValid();
-        self.oldData = self.toJS(self.params.rowData.rowData);
+        self.oldData = self.toJS(self.screenData[0]);
         self.createMasterComboBox();
         self.$http.post('at', API.masterDialogData, {
             types: self.masterDialogParam,
@@ -155,9 +155,11 @@ export class KdwS03BComponent extends Vue {
         });
     }
 
-    public updated() {
+    public beforeUpdate() {
         let self = this;
-        self.addCustomConstraint();
+        if (self.validations.fixedConstraint) {
+            self.addCustomConstraint();
+        }
     }
 
     public getLockContent() {
@@ -287,37 +289,37 @@ export class KdwS03BComponent extends Vue {
         }
     }
 
-    public getItemType(value: any) {
+    public getItemType(key: string) {
         let self = this;
-        let attendanceItem = self.getAttendanceItem(value);
+        let attendanceItem = self.getAttendanceItem(key);
 
         return attendanceItem.attendanceAtr;
     }
 
-    public getItemText(value: any) {
+    public getItemText(key: string) {
         let self = this;
 
-        return _.find(self.contentType, (item: ItemHeader) => item.key == value).headerText;
+        return _.find(self.contentType, (item: ItemHeader) => item.key == key).headerText;
     }
 
-    public getItemMasterType(value: any) {
+    public getItemMasterType(key: string) {
         let self = this;
-        let attendanceItem = self.getAttendanceItem(value);
+        let attendanceItem = self.getAttendanceItem(key);
 
         return attendanceItem.typeGroup;
     }
 
-    public isSpecCalcLst(value: any) {
+    public isSpecCalcLst(key: string) {
         let self = this;
         let specLst = [628, 630, 631, 632];
-        let attendanceItem = self.getAttendanceItem(value);
+        let attendanceItem = self.getAttendanceItem(key);
 
         return _.includes(specLst, attendanceItem.id);
     }
 
-    public getColorCode(value: any) {
+    public getColorCode(key: string) {
         let self = this;
-        let rowClass = _.find(self.params.rowData.rowData, (rowData: RowData) => rowData.key == value).class;
+        let rowClass = _.find(self.params.rowData.rowData, (rowData: RowData) => rowData.key == key).class;
         if (rowClass.includes('mgrid-error')) {
             return 'ERROR';
         }
@@ -326,6 +328,38 @@ export class KdwS03BComponent extends Vue {
         }
 
         return '';
+    }
+
+    public getItemDialogName(key: string) {
+        let self = this;
+        let rowData = _.find(self.params.rowData.rowData, (rowData: RowData) => rowData.key == key);
+        let attendanceItem = self.getAttendanceItem(key);
+        let item: any = {};
+        switch (attendanceItem.typeGroup) {
+            case MasterType.KDLS02_WorkType:
+                item = _.find(self.masterData.workType, (o) => o.code == rowData.value0);
+                if (item) {
+                    return item.name;
+                } else {
+                    return rowData.value;
+                }
+            case MasterType.KDLS01_WorkTime: 
+                item = _.find(self.masterData.workTime, (o) => o.code == rowData.value0); 
+                if (item) {
+                    return item.name;
+                } else {
+                    return rowData.value;
+                }
+            case MasterType.CDLS08_WorkPlace: 
+                item = _.find(self.masterData.workPlace, (o) => o.code == rowData.value0); 
+                if (item) {
+                    return item.name;
+                } else {
+                    return rowData.value;
+                }
+            default: 
+                break;
+        }
     }
 
     private addCustomValid() {
@@ -464,6 +498,7 @@ export class KdwS03BComponent extends Vue {
                     break;
             }
         });
+        delete self.validations.fixedConstraint;
     }
 
     private addMasterDialogParam(rowData: RowData) {
@@ -503,24 +538,27 @@ export class KdwS03BComponent extends Vue {
             });
     }
 
-    public openDialog(rowData: RowData, value: MasterType) {
+    public openDialog(key: string) {
         let self = this;
-        switch (value) {
-            case MasterType.KDLS02_WorkType: self.openKDLS02(rowData); break;
-            case MasterType.KDLS01_WorkTime: self.openKDLS01(rowData); break;
-            case MasterType.CDLS08_WorkPlace: self.openCDLS08(rowData); break;
+        let type: MasterType = self.getItemMasterType(key);
+        switch (type) {
+            case MasterType.KDLS02_WorkType: self.openKDLS02(key); break;
+            case MasterType.KDLS01_WorkTime: self.openKDLS01(key); break;
+            case MasterType.CDLS08_WorkPlace: self.openCDLS08(key); break;
             default: break;
         }
     }
 
-    private openKDLS02(rowData: RowData) {
+    private openKDLS02(key: string) {
         let self = this;
+        let rowData = _.find(self.params.rowData.rowData, (o) => o.key == key);
+        let selectedCD = self.screenData[0][key];
         let workTypeCDLst = _.map(self.masterData.workType, (o) => o.code);
         self.$modal(
             'kdls02',
             {
                 seledtedWkTypeCDs: workTypeCDLst,
-                selectedWorkTypeCD: rowData.value0,
+                selectedWorkTypeCD: selectedCD,
                 isAddNone: false,
                 seledtedWkTimeCDs: null,
                 selectedWorkTimeCD: null,
@@ -528,35 +566,40 @@ export class KdwS03BComponent extends Vue {
             }
         ).then((data: any) => {
             if (data) {
+                self.screenData[0][key] = data.selectedWorkType.workTypeCode;
                 rowData.value0 = data.selectedWorkType.workTypeCode;
                 rowData.value = _.find(self.masterData.workType, (o) => o.code == rowData.value0).name;
             }
         });
     }
 
-    private openKDLS01(rowData: RowData) {
+    private openKDLS01(key: string) {
         let self = this;
+        let rowData = _.find(self.params.rowData.rowData, (o) => o.key == key);
+        let selectedCD = self.screenData[0][key];
         let workTimeCDLst = _.map(self.masterData.workTime, (o) => o.code);
         self.$modal(
             'kdls01',
             {
                 isAddNone: true,
                 seledtedWkTimeCDs: workTimeCDLst,
-                selectedWorkTimeCD: rowData.value0,
+                selectedWorkTimeCD: selectedCD,
                 isSelectWorkTime: false
             }
         ).then((data: any) => {
             if (data) {
+                self.screenData[0][key] = data.selectedWorkTime.code;
                 rowData.value0 = data.selectedWorkTime.code;
                 rowData.value = _.find(self.masterData.workTime, (o) => o.code == rowData.value0).name;
             }
         });
     }
 
-    private openCDLS08(rowData: RowData) {
+    private openCDLS08(key: string) {
         let self = this;
         let id = '';
-        let selectedItem: any = _.find(self.masterData.workPlace, (o) => o.code == rowData.value0);
+        let rowData = _.find(self.params.rowData.rowData, (o) => o.key == key);
+        let selectedItem: any = _.find(self.masterData.workPlace, (o) => o.code == self.screenData[0][key]);
         if (!_.isUndefined(selectedItem)) {
             id = selectedItem.id;
         }
@@ -577,6 +620,7 @@ export class KdwS03BComponent extends Vue {
         ).then((data: any) => {
             if (data) {
                 let selectedWkp = _.find(self.masterData.workPlace, (o) => o.id == data.workplaceId);
+                self.screenData[0][key] = selectedWkp.code;
                 rowData.value0 = selectedWkp.code;
                 rowData.value = selectedWkp.name;
             }
@@ -736,46 +780,46 @@ export class KdwS03BComponent extends Vue {
     private createRegisterParam() {
         let self = this;
         let itemValues: any = [];
-        _.forEach(self.params.rowData.rowData, (rowData: RowData, index) => {
+        _.forEach(Object.keys(self.screenData[0]), (key: string) => {
             let itemValue: DPItemValue;
-            let attendanceItem = self.getAttendanceItem(rowData.key);
-            switch (attendanceItem.attendanceAtr) {
-                case ItemType.InputStringCode:
-                    itemValue = new DPItemValue(attendanceItem, rowData.value0, self.params, self.itemValues);
-                    break;
-                case ItemType.ButtonDialog:
-                    itemValue = new DPItemValue(attendanceItem, rowData.value0, self.params, self.itemValues);
-                    break;
-                case ItemType.InputNumber:
-                    rowData.value = self.screenData[rowData.key];
-                    itemValue = new DPItemValue(attendanceItem, rowData.value, self.params, self.itemValues);
-                    break;
-                case ItemType.InputMoney:
-                    rowData.value = self.screenData[rowData.key];
-                    itemValue = new DPItemValue(attendanceItem, rowData.value, self.params, self.itemValues);
-                    break;
-                case ItemType.ComboBox:
-                    itemValue = new DPItemValue(attendanceItem, parseInt(rowData.value0), self.params, self.itemValues);
-                    break;
-                case ItemType.Time:
-                    rowData.value = self.screenData[rowData.key];
-                    itemValue = new DPItemValue(attendanceItem, rowData.value, self.params, self.itemValues);
-                    break;
-                case ItemType.TimeWithDay:
-                    itemValue = new DPItemValue(attendanceItem, rowData.value, self.params, self.itemValues);
-                    break;
-                case ItemType.InputStringChar:
-                    rowData.value = self.screenData[rowData.key];
-                    itemValue = new DPItemValue(attendanceItem, rowData.value, self.params, self.itemValues);
-                    break;
-                default:
-                    break;
-            }
-            let oldRow = _.find(self.oldData, (o) => o.key == rowData.key);
-            if (JSON.stringify(oldRow).localeCompare(JSON.stringify(rowData)) != 0) {
+            let attendanceItem = self.getAttendanceItem(key);
+            let rowData = _.find(self.params.rowData.rowData, (o) => o.key == key);
+            let oldRow = self.oldData[key];
+            if (JSON.stringify(oldRow).localeCompare(JSON.stringify(self.screenData[0][key])) != 0) {
+                switch (attendanceItem.attendanceAtr) {
+                    case ItemType.InputStringCode:
+                        itemValue = new DPItemValue(attendanceItem, self.screenData[0][key], self.params, self.itemValues);
+                        break;
+                    case ItemType.ButtonDialog:
+                        itemValue = new DPItemValue(attendanceItem, self.screenData[0][key], self.params, self.itemValues);
+                        break;
+                    case ItemType.InputNumber:
+                        rowData.value = self.screenData[0][key];
+                        itemValue = new DPItemValue(attendanceItem, self.screenData[0][key], self.params, self.itemValues);
+                        break;
+                    case ItemType.InputMoney:
+                        rowData.value = self.screenData[0][key];
+                        itemValue = new DPItemValue(attendanceItem, self.screenData[0][key], self.params, self.itemValues);
+                        break;
+                    case ItemType.ComboBox:
+                        itemValue = new DPItemValue(attendanceItem, parseInt(self.screenData[0][key]), self.params, self.itemValues);
+                        break;
+                    case ItemType.Time:
+                        rowData.value = self.screenData[0][key];
+                        itemValue = new DPItemValue(attendanceItem, self.screenData[0][key], self.params, self.itemValues);
+                        break;
+                    case ItemType.TimeWithDay:
+                        itemValue = new DPItemValue(attendanceItem, self.screenData[0][key], self.params, self.itemValues);
+                        break;
+                    case ItemType.InputStringChar:
+                        rowData.value = self.screenData[0][key];
+                        itemValue = new DPItemValue(attendanceItem, self.screenData[0][key], self.params, self.itemValues);
+                        break;
+                    default:
+                        break;
+                }
                 itemValues.push(itemValue);
             }
-
         });
         let checkValue = false;
         if (!_.isEmpty(self.checked1s)) {
