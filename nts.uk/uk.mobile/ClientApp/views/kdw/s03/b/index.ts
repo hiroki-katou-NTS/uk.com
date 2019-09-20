@@ -155,9 +155,11 @@ export class KdwS03BComponent extends Vue {
         });
     }
 
-    public updated() {
+    public beforeUpdate() {
         let self = this;
-        self.addCustomConstraint();
+        if (self.validations.fixedConstraint) {
+            self.addCustomConstraint();
+        }
     }
 
     public getLockContent() {
@@ -496,6 +498,7 @@ export class KdwS03BComponent extends Vue {
                     break;
             }
         });
+        delete self.validations.fixedConstraint;
     }
 
     private addMasterDialogParam(rowData: RowData) {
