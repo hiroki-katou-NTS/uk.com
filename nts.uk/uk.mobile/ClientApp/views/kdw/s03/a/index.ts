@@ -83,6 +83,11 @@ export class Kdws03AComponent extends Vue {
     // param B screen
     public paramData: any = null;
 
+    @Watch('$route')
+    public changeParamUrl(value: any, valueOld: any) {
+        window.location.reload();
+    }
+
     @Watch('yearMonth')
     public changeYearMonth(value: any, valueOld: any) {
         let self = this;
