@@ -165,6 +165,7 @@ export class Kdws03AComponent extends Vue {
         }
     }
 
+    // 起動
     public created() {
         if (this.$route.query.displayformat == '0' || this.$route.query.displayformat == '1') {
             this.displayFormat = this.$route.query.displayformat;
@@ -186,12 +187,15 @@ export class Kdws03AComponent extends Vue {
     public mounted() {
         this.$mask('show', { message: true });
     }
+    
+    // fix-tableのレイアウトを変更する
     public updated() {
         let styleTagAr: any = [];
         styleTagAr = document.querySelectorAll('.btn-sm');
         _.forEach(styleTagAr, (x) => x.style.fontSize = '10px');
     }
 
+    // 日別実績データの取得
     public startPage() {
         let self = this;
         self.$mask('show', { message: true });
@@ -282,7 +286,9 @@ export class Kdws03AComponent extends Vue {
             }
         }).catch((res: any) => {
             if (res.messageId == 'Msg_672') {
-                self.$modal.info({ messageId: res.messageId });
+                self.$modal.info({ messageId: res.messageId }).then(() => {
+                    self.$mask('hide');
+                });
             } else {
                 if (res.messageId != undefined) {
                     self.$modal.error(res.messageId == 'Msg_1430' ? res.message : { messageId: res.messageId }).then(() => {
@@ -299,6 +305,7 @@ export class Kdws03AComponent extends Vue {
         });
     }
 
+    //サーバから取得データをUIに表示するように処理する
     public processMapData(data: any) {
         let self = this;
         // param B screen
@@ -514,6 +521,7 @@ export class Kdws03AComponent extends Vue {
         self.isFirstLoad = false;
     }
 
+    //各項目のデータを取得する
     public formatDate(lstData: any) {
         let data = lstData.map((data) => {
             let object = {
@@ -541,6 +549,7 @@ export class Kdws03AComponent extends Vue {
         return data;
     }
 
+    // 修正画面を開く
     public openEdit(id: any) {
         if (id == '') {
             return;
@@ -574,6 +583,7 @@ export class Kdws03AComponent extends Vue {
             });
     }
 
+    // メニュー画面を開く
     public openMenu() {
         let self = this;
         this.$modal(
@@ -614,6 +624,7 @@ export class Kdws03AComponent extends Vue {
             });
     }
 
+    // 次ページを押下処理
     public nextPage() {
         if (this.nextState == 'button-deactive') {
             return;
@@ -627,18 +638,21 @@ export class Kdws03AComponent extends Vue {
             this.itemEnd = this.displayDataLst.length;
             this.nextState = 'button-deactive';
             this.displayDataLstEx = _.slice(this.displayDataLst, this.itemStart - 1);
-            for (let i = 1; i <= (19 - (this.itemEnd - this.itemStart)); i++) {
-                let rowData = [];
-                this.displayHeaderLst.forEach((header: any) => {
-                    rowData.push({ key: header.key, value: '' });
-                });
-                this.displayDataLstEx.push({ rowData, employeeName: '', id: '', employeeNameDis: '' });
-            }
+            if (this.itemEnd - this.itemStart < 7) {
+                for (let i = 1; i <= (6 - (this.itemEnd - this.itemStart)); i++) {
+                    let rowData = [];
+                    this.displayHeaderLst.forEach((header: any) => {
+                        rowData.push({ key: header.key, value: '' });
+                    });
+                    this.displayDataLstEx.push({ rowData, employeeName: '', id: '', employeeNameDis: '' });
+                }
+            }          
         }
         this.previousState = 'button-active';
         this.resetTable++;
     }
 
+    // 前ページを押下処理
     public previousPage() {
         if (this.previousState == 'button-deactive') {
             return;
@@ -654,6 +668,7 @@ export class Kdws03AComponent extends Vue {
         this.resetTable++;
     }
 
+    // 文字数の数え処理
     public countHalf(text: string) {
         let count = 0;
         for (let i = 0; i < text.length; i++) {
@@ -671,6 +686,7 @@ export class Kdws03AComponent extends Vue {
         return count;
     }
 
+    // ComboBoxから項目値を取得する
     public getFromCombo(ntsControl: string, code: string) {
         switch (ntsControl) {
             case 'ComboboxCalc': {
@@ -694,21 +710,28 @@ export class Kdws03AComponent extends Vue {
         }
     }
 
+    // お金値のフォーマット
     public formatMoney(value: string) {
         return Number(value) == 0 ? '' : Number(value).toFixed(0);
     }
 
 }
+
+// サーバパス
 const servicePath = {
     initMOB: 'screen/at/correctionofdailyperformance/initMOB',
     genDate: 'screen/at/correctionofdailyperformance/gendate'
 };
+
+// エラータイプ
 enum DCErrorInfomation {
     NORMAL = 0,
     APPROVAL_NOT_EMP = 1,
     ITEM_HIDE_ALL = 2,
     NOT_EMP_IN_HIST = 3
 }
+
+//　締めタイプ
 enum ClosureId {
     RegularEmployee = 1,
     PartTimeJob = 2,

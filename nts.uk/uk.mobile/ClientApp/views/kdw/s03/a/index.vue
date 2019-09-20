@@ -100,14 +100,14 @@
             </tfoot>
         </fix-table>
         <div class="mx-n2 border-top" style="font-size: 10px" v-if="displayFormat == '1'">
-            <div class="row mt-3 ">
-                <div class="col-3 pr-1" v-bind:class="previousState">
+            <div class="row m-2 mt-3">
+                <div class="col-3 pl-1" v-bind:class="previousState">
                     <span class="mr-n1" v-on:click="previousPage">⇦前の20件</span>
                 </div>
                 <div class="col-6 text-center">
                     <span>{{itemStart}}～{{itemEnd}}件（{{displayDataLst.length}}件中）</span>
                 </div>
-                <div class="col-3 pl-2" v-bind:class="nextState">
+                <div class="col-3 pr-1 text-right" v-bind:class="nextState">
                     <span v-on:click="nextPage">次の20件⇨</span>
                 </div>
             </div>
