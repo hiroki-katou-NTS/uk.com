@@ -715,7 +715,7 @@ public class DPCorrectionProcessorMob {
 							result.setFormatCode(formatCodes.stream().collect(Collectors.toSet()));
 							result.setAutBussCode(result.getFormatCode());
 							// Lấy về domain model "会社の日別実績の修正のフォーマット" tương ứng
-							authorityFomatDailys = repo.findAuthorityFomatDaily(companyId, formatCodes);
+							authorityFomatDailys = repoMob.findAuthorityFomatDaily(companyId, formatCodes);
 							if (authorityFomatDailys.isEmpty())
 								throw new BusinessException("Msg_1402");
 						} else {
@@ -724,19 +724,18 @@ public class DPCorrectionProcessorMob {
 					} else {
 						result.setFormatCode(formatCodeSelects.stream().collect(Collectors.toSet()));
 						result.setAutBussCode(result.getFormatCode());
-						authorityFomatDailys = repo.findAuthorityFomatDaily(companyId, formatCodeSelects);
+						authorityFomatDailys = repoMob.findAuthorityFomatDaily(companyId, formatCodeSelects);
 					}
 				} else {
 					// Lấy về domain model "会社の日別実績の修正のフォーマット" tương ứng
 					List<String> formatCodes = Arrays.asList(correct.getPreviousDisplayItem());
 					result.setFormatCode(formatCodes.stream().collect(Collectors.toSet()));
-					authorityFomatDailys = repo.findAuthorityFomatDaily(companyId, formatCodes);
+					authorityFomatDailys = repoMob.findAuthorityFomatDaily(companyId, formatCodes);
 				}
 				if (!authorityFomatDailys.isEmpty()) {
 					lstFormat = authorityFomatDailys.stream()
 							.map(x -> new FormatDPCorrectionDto(companyId, x.getDailyPerformanceFormatCode(),
-									x.getAttendanceItemId(), x.getSheetNo().toString(), x.getDisplayOrder(),
-									x.getColumnWidth().intValue()))
+									x.getAttendanceItemId(), null, x.getDisplayOrder(), 0))
 							.collect(Collectors.toList());
 					lstAtdItem = lstFormat.stream().map(f -> f.getAttendanceItemId()).collect(Collectors.toList());
 					lstAtdItemUnique = new HashSet<Integer>(lstAtdItem).stream().collect(Collectors.toList());
