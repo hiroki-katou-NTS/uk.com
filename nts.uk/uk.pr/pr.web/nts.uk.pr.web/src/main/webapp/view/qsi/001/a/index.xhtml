@@ -52,10 +52,10 @@
                         <i class="image image-calendar"/>
                         <span>#{i18n.getText('QSI001_A222_3')}</span>
                     </span>
-                    <div data-bind="ntsDatePicker: { value: startDate, dateFormat: 'YYYY/MM/DD', name: '#{i18n.getText('QSI001_A222_4')}'}"></div>
+                    <div id = "A2_4" data-bind="ntsDatePicker: { value: startDate, required: true, dateFormat: 'YYYY/MM/DD', name: '#{i18n.getText('QSI001_A222_4')}'}"></div>
                     <span data-bind="text: japanStartDate"></span>
                     <span class="label" >#{i18n.getText('QSI001_A222_6')}</span>
-                    <div data-bind="ntsDatePicker: { value: endDate, dateFormat: 'YYYY/MM/DD', name: '#{i18n.getText('QSI001_A222_7')}'}"></div>
+                    <div id = "A2_7" data-bind="ntsDatePicker: { value: endDate, dateFormat: 'YYYY/MM/DD',required: true, name: '#{i18n.getText('QSI001_A222_7')}'}"></div>
                     <span data-bind="text: japanEndDate"></span>
                 </div>
 
@@ -67,7 +67,8 @@
                 <div class="control-group">
                     <div class="column-1" id="A4_3"
                          data-bind="ntsFormLabel: {constrant: '', required:true}">#{i18n.getText('QSI001_A222_13')}</div>
-                    <div  data-bind="ntsDatePicker: {
+                    <div  id = "A4_4" data-bind="ntsDatePicker: {
+                        required: true,
                         value: $parent.baseDate,
                      dateFormat: 'YYYY/MM/DD',
                       name: '#{i18n.getText('QSI001_A222_14')}'
@@ -100,7 +101,7 @@
                         selectFirstIfNull: true,
                         value: outputOrder,
                         optionsText: 'name',
-                        editable: true,
+                        editable: false,
                         enable: true,
                         required: true}"></div>
                 </div>
@@ -115,7 +116,7 @@
                         visibleItemsCount: 5,
                         value: businessArrSymbol,
                         optionsText: 'name',
-                        editable: true,
+                        editable: false,
                         enable: true,
                         required: true,
                         selectFirstIfNull: true}"></div>
@@ -132,7 +133,7 @@
                         selectFirstIfNull: true,
                         value: officeInformation,
                         optionsText: 'name',
-                        editable: true,
+                        editable: false,
                         enable: true,
                         required: true,
                         selectFirstIfNull: true}"></div>
@@ -149,7 +150,7 @@
                         visibleItemsCount: 5,
                         value: printPersonNumber,
                         optionsText: 'name',
-                        editable: true,
+                        editable: false,
                         enable: true,
                         required: true,
                         selectFirstIfNull: true}"></div>
@@ -182,7 +183,7 @@
                         value: textPersonNumber,
                         optionsText: 'name',
                         editable: true,
-                        enable: true,
+                        enable: outputFormat() == 0,
                         required: true,
                         selectFirstIfNull: true}"></div>
 

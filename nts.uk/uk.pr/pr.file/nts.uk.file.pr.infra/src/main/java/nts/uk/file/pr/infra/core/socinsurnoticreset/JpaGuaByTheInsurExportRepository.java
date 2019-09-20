@@ -251,7 +251,7 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("    WHERE QEWIQITEMP.START_DATE <= ?endDate ");
         exportSQL.append("      AND QEWIQITEMP.START_DATE >= ?startDate ) AS QEWIQI ");
         exportSQL.append(" ON QEWIQI.EMPLOYEE_ID = ROOT.EMPLOYEE_ID ");
-        exportSQL.append("  ORDER BY SOCIAL_INSURANCE_OFFICE_CD");
+        exportSQL.append("  ORDER BY SOCIAL_INSURANCE_OFFICE_CD, SCD");
         String sql = String.format(exportSQL.toString(), empIds.stream()
                 .map(String::valueOf)
                 .collect(Collectors.joining("','")));

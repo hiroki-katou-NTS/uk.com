@@ -46,8 +46,10 @@
 			<div class="fixed-flex-layout-left" style="margin-left: 20px;margin-right: 10px;">
 				<div class="panel panel-frame" style="margin-left: 50px; width: 650px;">
 						<div class="valign-center control-group ">
-							<i id="img-calendar" class="image image-calendar"/>
-							<span>#{i18n.getText('QSI013_A222_2')}</span>
+							<span class="label with-image">
+								<i id="img-calendar" class="image image-calendar"/>
+								<span>#{i18n.getText('QSI013_A222_2')}</span>
+							</span>
 							<div id = "A2_4" data-bind="ntsDatePicker: {
 																name: '#{i18n.getText('QSI013_A222_4')}',
 																value: startDate,

@@ -1,6 +1,7 @@
 module nts.uk.pr.view.qsi001.a.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+    import errors = nts.uk.ui.errors;
     import block = nts.uk.ui.block;
     import dialog = nts.uk.ui.dialog;
     import getText = nts.uk.resource.getText;
@@ -297,8 +298,20 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
             });
 
         }
+
+        validate(){
+            errors.clearAll();
+            $("#A2_4").trigger("validate");
+            $("#A2_7").trigger("validate");
+            $("#A4_4").trigger("validate");
+            return errors.hasError();
+        }
+
         exportFileExcel(): void {
             let self = this;
+            if(self.validate()){
+                return;
+            }
             let employList = self.getListEmpId(self.selectedCodeKCP005(), self.employees);
             let data: any = {
                 socialInsurNotiCreateSetQuery: {
