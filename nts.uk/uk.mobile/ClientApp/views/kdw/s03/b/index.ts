@@ -143,6 +143,9 @@ export class KdwS03BComponent extends Vue {
 
     public created() {
         let self = this;
+        if (self.params.rowData.sign) {
+            self.checked1s.push(2);
+        }
         self.$mask('show');
         self.addCustomValid();
         self.oldData = self.toJS(self.screenData[0]);

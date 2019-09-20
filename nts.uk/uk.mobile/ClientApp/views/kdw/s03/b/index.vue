@@ -218,7 +218,7 @@
   <div class="row mt-4">
     <div class="col-3"></div>
     <div>
-      <nts-checkbox v-model="checked1s" v-bind:value="2">{{'KDWS03_37' | i18n}} </nts-checkbox>
+      <nts-checkbox v-show="params.paramData.showPrincipal" v-model="checked1s" v-bind:value="2">{{'KDWS03_37' | i18n}} </nts-checkbox>
     </div>
   </div>
   <div class="card invisible">
