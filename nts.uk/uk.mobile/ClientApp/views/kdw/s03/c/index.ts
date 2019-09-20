@@ -54,8 +54,8 @@ export class KdwS03CComponent extends Vue {
                 if (paramOpenB != undefined && paramOpenB.openB) {
                     this.$close(paramOpenB);
                 }
-                if (paramOpenB != 'NotCloseMenu') {
-                    this.$close();
+                if (paramOpenB == 'dropback') {
+                    this.$close('dropback');
                 }
             });
 
