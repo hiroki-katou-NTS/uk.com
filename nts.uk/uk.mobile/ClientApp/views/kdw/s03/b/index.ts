@@ -652,10 +652,23 @@ export class KdwS03BComponent extends Vue {
         });
     }
 
+    public isEnableRegister() {
+        let self = this;
+        if (!self.params.paramData.showPrincipal) {
+            return self.$valid;
+        }
+
+        return self.$valid && self.params.paramData.showPrincipal && !_.isEmpty(self.checked1s);
+    }
+
     public register() {
         let self = this;
+        let registerParam = self.createRegisterParam();
+        if (_.isEmpty(registerParam.itemValues)) {
+            return;
+        }
         self.$mask('show');
-        self.$http.post('at', API.register, self.createRegisterParam())
+        self.$http.post('at', API.register, registerParam)
             .then((data: any) => {
                 let dataAfter = data.data;
                 if ((_.isEmpty(dataAfter.errorMap) && dataAfter.errorMap[5] == undefined)) {

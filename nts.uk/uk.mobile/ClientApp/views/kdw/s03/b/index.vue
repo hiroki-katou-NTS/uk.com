@@ -229,7 +229,7 @@
     </div>
   </div>
   <div class="fixed-bottom text-center register">
-    <button type="button" class="btn btn-success btn-block" v-bind:disabled="!$valid" v-on:click="register()">{{'KDWS03_38' | i18n}}</button>
+    <button type="button" class="btn btn-success btn-block" v-bind:disabled="!isEnableRegister()" v-on:click="register()">{{'KDWS03_38' | i18n}}</button>
   </div>
   
 </div>
