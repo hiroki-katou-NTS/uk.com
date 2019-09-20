@@ -1,4 +1,4 @@
-import { Vue, moment } from '@app/provider';
+import { Vue } from '@app/provider';
 import { component, Prop } from '@app/core/component';
 import { KdwS03EComponent } from 'views/kdw/s03/e';
 
@@ -16,12 +16,12 @@ import { KdwS03EComponent } from 'views/kdw/s03/e';
 export class KdwS03DComponent extends Vue {
     @Prop({ default: () => ({ employeeID: '', employeeName: '', startDate: new Date(), endDate: new Date() }) })
     public readonly params!: { employeeID: string, employeeName: string, startDate: Date, endDate: Date };
-    public title: string = 'KdwS03D';
-    public rowDatas: Array<RowData> = [];
+    public rowDatas: Array<RowData> = [];//エラー一覧
 
     public created() {
         let self = this;
         self.$mask('show');
+        //get list error/alarm
         this.$http.post('at', API.getError, {
             startDate: self.params.startDate, 
             endDate: self.params.endDate,
@@ -39,6 +39,7 @@ export class KdwS03DComponent extends Vue {
         });
     }
 
+    //エラーを選択する
     public openDialogE(rowData: RowData) {
         let self = this;
         self.$modal('kdws03e', { 
@@ -64,9 +65,9 @@ const API = {
 };
 
 interface RowData {
-    date: Date;
-    code: string;
-    name: string;
+    date: Date;//日付
+    code: string;//コード
+    name: string;//エラー内容
     employeeID: string; 
     attendanceItemList: Array<number>;   
 }
