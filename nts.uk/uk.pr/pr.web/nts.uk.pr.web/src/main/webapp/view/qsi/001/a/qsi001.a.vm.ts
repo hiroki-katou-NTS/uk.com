@@ -97,9 +97,6 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
 
             //init switch
             self.simpleValue = ko.observable("123");
-
-
-
             self.selectedRuleCode = ko.observable(1);
             let _endDate = moment();
             let month = _endDate.month();
