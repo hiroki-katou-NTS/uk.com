@@ -287,37 +287,37 @@ export class KdwS03BComponent extends Vue {
         }
     }
 
-    public getItemType(value: any) {
+    public getItemType(key: string) {
         let self = this;
-        let attendanceItem = self.getAttendanceItem(value);
+        let attendanceItem = self.getAttendanceItem(key);
 
         return attendanceItem.attendanceAtr;
     }
 
-    public getItemText(value: any) {
+    public getItemText(key: string) {
         let self = this;
 
-        return _.find(self.contentType, (item: ItemHeader) => item.key == value).headerText;
+        return _.find(self.contentType, (item: ItemHeader) => item.key == key).headerText;
     }
 
-    public getItemMasterType(value: any) {
+    public getItemMasterType(key: string) {
         let self = this;
-        let attendanceItem = self.getAttendanceItem(value);
+        let attendanceItem = self.getAttendanceItem(key);
 
         return attendanceItem.typeGroup;
     }
 
-    public isSpecCalcLst(value: any) {
+    public isSpecCalcLst(key: string) {
         let self = this;
         let specLst = [628, 630, 631, 632];
-        let attendanceItem = self.getAttendanceItem(value);
+        let attendanceItem = self.getAttendanceItem(key);
 
         return _.includes(specLst, attendanceItem.id);
     }
 
-    public getColorCode(value: any) {
+    public getColorCode(key: string) {
         let self = this;
-        let rowClass = _.find(self.params.rowData.rowData, (rowData: RowData) => rowData.key == value).class;
+        let rowClass = _.find(self.params.rowData.rowData, (rowData: RowData) => rowData.key == key).class;
         if (rowClass.includes('mgrid-error')) {
             return 'ERROR';
         }
@@ -328,10 +328,10 @@ export class KdwS03BComponent extends Vue {
         return '';
     }
 
-    public getItemDialogName(value: any) {
+    public getItemDialogName(key: string) {
         let self = this;
-        let rowData = _.find(self.params.rowData.rowData, (rowData: RowData) => rowData.key == value);
-        let attendanceItem = self.getAttendanceItem(value);
+        let rowData = _.find(self.params.rowData.rowData, (rowData: RowData) => rowData.key == key);
+        let attendanceItem = self.getAttendanceItem(key);
         let item: any = {};
         switch (attendanceItem.typeGroup) {
             case MasterType.KDLS02_WorkType:
@@ -535,24 +535,27 @@ export class KdwS03BComponent extends Vue {
             });
     }
 
-    public openDialog(rowData: RowData, value: MasterType) {
+    public openDialog(key: string) {
         let self = this;
-        switch (value) {
-            case MasterType.KDLS02_WorkType: self.openKDLS02(rowData); break;
-            case MasterType.KDLS01_WorkTime: self.openKDLS01(rowData); break;
-            case MasterType.CDLS08_WorkPlace: self.openCDLS08(rowData); break;
+        let type: MasterType = self.getItemMasterType(key);
+        switch (type) {
+            case MasterType.KDLS02_WorkType: self.openKDLS02(key); break;
+            case MasterType.KDLS01_WorkTime: self.openKDLS01(key); break;
+            case MasterType.CDLS08_WorkPlace: self.openCDLS08(key); break;
             default: break;
         }
     }
 
-    private openKDLS02(rowData: RowData) {
+    private openKDLS02(key: string) {
         let self = this;
+        let rowData = _.find(self.params.rowData.rowData, (o) => o.key == key);
+        let selectedCD = self.screenData[0][key];
         let workTypeCDLst = _.map(self.masterData.workType, (o) => o.code);
         self.$modal(
             'kdls02',
             {
                 seledtedWkTypeCDs: workTypeCDLst,
-                selectedWorkTypeCD: rowData.value0,
+                selectedWorkTypeCD: selectedCD,
                 isAddNone: false,
                 seledtedWkTimeCDs: null,
                 selectedWorkTimeCD: null,
@@ -560,35 +563,40 @@ export class KdwS03BComponent extends Vue {
             }
         ).then((data: any) => {
             if (data) {
+                self.screenData[0][key] = data.selectedWorkType.workTypeCode;
                 rowData.value0 = data.selectedWorkType.workTypeCode;
                 rowData.value = _.find(self.masterData.workType, (o) => o.code == rowData.value0).name;
             }
         });
     }
 
-    private openKDLS01(rowData: RowData) {
+    private openKDLS01(key: string) {
         let self = this;
+        let rowData = _.find(self.params.rowData.rowData, (o) => o.key == key);
+        let selectedCD = self.screenData[0][key];
         let workTimeCDLst = _.map(self.masterData.workTime, (o) => o.code);
         self.$modal(
             'kdls01',
             {
                 isAddNone: true,
                 seledtedWkTimeCDs: workTimeCDLst,
-                selectedWorkTimeCD: rowData.value0,
+                selectedWorkTimeCD: selectedCD,
                 isSelectWorkTime: false
             }
         ).then((data: any) => {
             if (data) {
+                self.screenData[0][key] = data.selectedWorkTime.code;
                 rowData.value0 = data.selectedWorkTime.code;
                 rowData.value = _.find(self.masterData.workTime, (o) => o.code == rowData.value0).name;
             }
         });
     }
 
-    private openCDLS08(rowData: RowData) {
+    private openCDLS08(key: string) {
         let self = this;
         let id = '';
-        let selectedItem: any = _.find(self.masterData.workPlace, (o) => o.code == rowData.value0);
+        let rowData = _.find(self.params.rowData.rowData, (o) => o.key == key);
+        let selectedItem: any = _.find(self.masterData.workPlace, (o) => o.code == key);
         if (!_.isUndefined(selectedItem)) {
             id = selectedItem.id;
         }
@@ -609,6 +617,7 @@ export class KdwS03BComponent extends Vue {
         ).then((data: any) => {
             if (data) {
                 let selectedWkp = _.find(self.masterData.workPlace, (o) => o.id == data.workplaceId);
+                self.screenData[0][key] = selectedWkp.code;
                 rowData.value0 = selectedWkp.code;
                 rowData.value = selectedWkp.name;
             }
