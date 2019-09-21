@@ -580,4 +580,25 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 				.collect(Collectors.toList()));
 	}
 
+	@Override
+	public List<EmployeeDailyPerError> findsByCodeLst(List<String> employeeIDLst, DatePeriod period, List<String> codeLst) {
+		List<EmployeeDailyPerError> result = new ArrayList<>();
+		StringBuilder query = new StringBuilder("SELECT a FROM KrcdtSyainDpErList a ");
+		query.append("WHERE a.employeeId IN :employeeId ");
+		query.append("AND a.processingDate >= :startDate ");
+		query.append("AND a.processingDate <= :endDate ");
+		query.append("AND a.errorCode IN :codeLst");
+		TypedQueryWrapper<KrcdtSyainDpErList> tQuery = this.queryProxy().query(query.toString(), KrcdtSyainDpErList.class);
+		
+		CollectionUtil.split(employeeIDLst, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, employeeID -> {
+			result.addAll(tQuery
+					.setParameter("employeeId", employeeID)
+					.setParameter("startDate", period.start())
+					.setParameter("endDate", period.end())
+					.setParameter("codeLst", codeLst)
+					.getList(x -> x.toDomain()));
+		});
+		return result;
+	}
+
 }

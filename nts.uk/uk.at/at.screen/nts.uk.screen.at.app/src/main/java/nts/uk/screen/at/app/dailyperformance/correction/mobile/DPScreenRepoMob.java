@@ -4,6 +4,8 @@
 package nts.uk.screen.at.app.dailyperformance.correction.mobile;
 
 import java.util.List;
+
+import nts.uk.screen.at.app.dailyperformance.correction.dto.AuthorityFomatDailyDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.FormatDPCorrectionDto;
 
 /**
@@ -13,5 +15,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.FormatDPCorrectionDt
 public interface DPScreenRepoMob {
 
 	public List<FormatDPCorrectionDto> getListFormatDPCorrection(List<String> lstBusinessType);
+	
+	public List<AuthorityFomatDailyDto> findAuthorityFomatDaily(String companyId, List<String> formatCodes);
 
 }

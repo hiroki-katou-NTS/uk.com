@@ -15,8 +15,8 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.DPAttendanceItem;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemCheckBox;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemValue;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.cache.DPCorrectionStateParam;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.month.DPMonthValue;
-import nts.uk.screen.at.app.dailyperformance.correction.month.asynctask.ParamCommonAsync;
 
 @Data
 @NoArgsConstructor
@@ -53,5 +53,5 @@ public class DPMobileAdUpParam {
 
 	private Optional<MonthlyRecordWorkDto> domainMonthOpt = Optional.empty();
 
-	private ParamCommonAsync paramCommonAsync;
+	private DPCorrectionStateParam stateParam;
 }

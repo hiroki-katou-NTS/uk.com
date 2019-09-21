@@ -20,6 +20,7 @@ import nts.uk.screen.at.app.dailymodify.mobile.dto.DPMobileAdUpParam;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ApprovalConfirmCache;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPAttendanceItem;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DataResultAfterIU;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.cache.DPCorrectionStateParam;
 
 @Path("screen/at/correctionofdailyperformance")
 @Produces("application/json")
@@ -47,7 +48,7 @@ public class DailyPerformanceMobileWebService {
 		dataParent.setDailyOldForLog((List<DailyRecordDto>) session.getAttribute("domainOldForLog"));
 		dataParent.setLstAttendanceItem((Map<Integer, DPAttendanceItem>) session.getAttribute("itemIdRCs"));
 		dataParent.setApprovalConfirmCache((ApprovalConfirmCache) session.getAttribute("approvalConfirm"));
-
+		dataParent.setStateParam((DPCorrectionStateParam)session.getAttribute("dpStateParam"));
 		Object objectCacheMonth = session.getAttribute("domainMonths");
 		Optional<MonthlyRecordWorkDto> domainMonthOpt = objectCacheMonth == null ? Optional.empty()
 				: (Optional<MonthlyRecordWorkDto>) objectCacheMonth;

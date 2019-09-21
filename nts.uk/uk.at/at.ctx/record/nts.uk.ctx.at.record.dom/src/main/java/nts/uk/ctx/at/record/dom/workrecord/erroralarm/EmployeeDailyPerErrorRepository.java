@@ -52,4 +52,6 @@ public interface EmployeeDailyPerErrorRepository {
 	void removeNotOTK(Map<String, List<GeneralDate>> param);
 	
 	void update(List<EmployeeDailyPerError> employeeDailyPerformanceError);
+	
+	List<EmployeeDailyPerError> findsByCodeLst(List<String> employeeIDLst, DatePeriod period, List<String> codeLst);
 }

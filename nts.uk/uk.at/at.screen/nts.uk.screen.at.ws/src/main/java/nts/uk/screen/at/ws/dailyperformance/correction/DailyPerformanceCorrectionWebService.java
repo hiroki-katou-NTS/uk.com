@@ -40,7 +40,6 @@ import nts.uk.screen.at.app.dailyperformance.correction.DPUpdateColWidthCommandH
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceCorrectionProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.DisplayRemainingHolidayNumber;
 import nts.uk.screen.at.app.dailyperformance.correction.InfomationInitScreenProcess;
-import nts.uk.screen.at.app.dailyperformance.correction.mobile.InitScreenMob;
 import nts.uk.screen.at.app.dailyperformance.correction.UpdateColWidthCommand;
 import nts.uk.screen.at.app.dailyperformance.correction.calctime.DailyCorrectCalcTimeService;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeName;
@@ -49,6 +48,8 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.ApprovalConfirmCache
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPAttendanceItem;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPCorrectionInitParam;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPDataDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DPHeaderDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemCheckBox;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemParent;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPParams;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceCalculationDto;
@@ -56,11 +57,14 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceCorr
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DataResultAfterIU;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DatePeriodInfo;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.EmpAndDate;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.ErAlWorkRecordShortDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ErrorReferenceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.HolidayRemainNumberDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.cache.DPCorrectionStateParam;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.calctime.DCCalcTime;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.calctime.DCCalcTimeParam;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.mobile.ErrorParam;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.mobile.MasterDialogParam;
 import nts.uk.screen.at.app.dailyperformance.correction.flex.CalcFlexDto;
 import nts.uk.screen.at.app.dailyperformance.correction.flex.CheckBeforeCalcFlex;
 import nts.uk.screen.at.app.dailyperformance.correction.gendate.GenDateDto;
@@ -76,6 +80,9 @@ import nts.uk.screen.at.app.dailyperformance.correction.loadupdate.onlycheckbox.
 import nts.uk.screen.at.app.dailyperformance.correction.loadupdate.onlycheckbox.LoadVerDataResult;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.button.DPDisplayLockParam;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.button.DPDisplayLockProcessor;
+import nts.uk.screen.at.app.dailyperformance.correction.mobile.DPCorrectionProcessorMob;
+import nts.uk.screen.at.app.dailyperformance.correction.mobile.InitScreenMob;
+import nts.uk.screen.at.app.dailyperformance.correction.mobile.UpdateConfirmAllMob;
 import nts.uk.screen.at.app.dailyperformance.correction.month.asynctask.MonthParamInit;
 import nts.uk.screen.at.app.dailyperformance.correction.month.asynctask.ParamCommonAsync;
 import nts.uk.screen.at.app.dailyperformance.correction.month.asynctask.ProcessMonthScreen;
@@ -83,6 +90,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.searchemployee.DPEmploye
 import nts.uk.screen.at.app.dailyperformance.correction.searchemployee.FindEmployeeBase;
 import nts.uk.screen.at.app.dailyperformance.correction.selecterrorcode.DailyPerformanceErrorCodeProcessor;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * @author hungnm
@@ -164,6 +172,12 @@ public class DailyPerformanceCorrectionWebService {
 	@Inject
 	private DailyModifyRCommandFacade dailyModifyRCommandFacade;
 	
+	@Inject
+	private DPCorrectionProcessorMob dpCorrectionProcessorMob;
+	
+	@Inject
+	private UpdateConfirmAllMob updateConfirmAllMob;
+	
 	@POST
 	@Path("startScreen")
 	public DailyPerformanceCorrectionDto startScreen(DPParams params ) throws InterruptedException{
@@ -219,8 +233,11 @@ public class DailyPerformanceCorrectionWebService {
 	public DailyPerformanceCorrectionDto initScreen(DPCorrectionInitParam param) throws InterruptedException{
 		param.dpStateParam = (DPCorrectionStateParam)session.getAttribute("dpStateParam");
 		DailyPerformanceCorrectionDto dtoResult = this.initScreenMob.initMOB(param);
-		session.setAttribute("domainOlds", dtoResult.getDomainOld());
 		session.setAttribute("dpStateParam", dtoResult.getStateParam());
+		if (dtoResult.getErrorInfomation() != 0 || !dtoResult.getErrors().isEmpty()) {
+			return dtoResult;
+		}
+		session.setAttribute("domainOlds", dtoResult.getDomainOld());		
 		//add
 		session.setAttribute("domainOldForLog", cloneListDto(dtoResult.getDomainOld()));
 		session.setAttribute("domainEdits", null);
@@ -233,6 +250,15 @@ public class DailyPerformanceCorrectionWebService {
 		removeSession();
 		dtoResult.setDomainOld(Collections.emptyList());
 		return dtoResult;
+	}
+	
+	@POST
+	@Path("confirmAll")
+	@SuppressWarnings("unchecked")
+	public void confirmAll(List<DPItemCheckBox> dataCheckSign) throws InterruptedException{
+		List<DailyRecordDto> dailyRecordDtos = (List<DailyRecordDto>) session.getAttribute("domainOlds");
+		updateConfirmAllMob.confirmAll(dataCheckSign, dailyRecordDtos);
+		return;
 	}
 	
 	@POST
@@ -529,5 +555,31 @@ public class DailyPerformanceCorrectionWebService {
 	private void removeSession() {
 		session.setAttribute("lstSidDateErrorCalc", Collections.emptyList());
 		session.setAttribute("errorAllCalc", false);
+	}
+	
+	@POST
+	@Path("getErrorMobile")
+	public List<ErAlWorkRecordShortDto> getErrorMobile(ErrorParam errorParam) {
+		return dpCorrectionProcessorMob.getErrorMobile(
+				new DatePeriod(errorParam.getStartDate(), errorParam.getEndDate()), 
+				errorParam.getEmployeeIDLst(), 
+				errorParam.getAttendanceItemID());
+	}
+	
+	@POST
+	@Path("getMasterDialogMob")
+	public Map<Integer, List<CodeName>> getMasterDialog(MasterDialogParam masterDialogParam) {
+		String companyID = AppContexts.user().companyId();
+		Map<Integer, Map<String, CodeName>> allMasterData = dialogProcessor.getAllCodeName(
+				masterDialogParam.getTypes(), 
+				companyID,
+				masterDialogParam.getDate());
+		return allMasterData.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> new ArrayList<CodeName>(entry.getValue().values())));
+	}
+	
+	@POST
+	@Path("getPrimitiveAll")
+	public Map<Integer, String> getPrimitiveAll() {
+		return DPHeaderDto.getPrimitiveAll();
 	}
 }

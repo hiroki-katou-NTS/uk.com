@@ -135,6 +135,8 @@ public class DailyPerformanceCorrectionDto implements Serializable{
 
 	private DPCorrectionStateParam stateParam;
 	
+	private DPCorrectionMenuDto dPCorrectionMenuDto;
+	
 	public DailyPerformanceCorrectionDto() {
 		super();
 		this.lstFixedHeader = DPHeaderDto.GenerateFixedHeader();

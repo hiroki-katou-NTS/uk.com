@@ -334,6 +334,10 @@ export class FixTableComponent extends Vue {
             return;
         }
 
+        if (xDiff === 0) {
+            return;
+        }
+
         if (xDiff > 0) {
             this.next();
         } else {

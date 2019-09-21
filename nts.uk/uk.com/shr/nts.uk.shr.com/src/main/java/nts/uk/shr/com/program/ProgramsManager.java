@@ -2299,7 +2299,8 @@ public class ProgramsManager {
 			"/cmm/s45/e");
 	public static final Program CCGS33 = new Program(WebAppId.MOBI, ProgramIdConsts.CCGS33, "",
 			"/ccg/033/a");
-	
+	public static final Program KDWS03A = new Program(WebAppId.MOBI, ProgramIdConsts.KDWS03A, "",
+			"/kdw/s03/a");
 	
 	/**
 	 * All programs map.

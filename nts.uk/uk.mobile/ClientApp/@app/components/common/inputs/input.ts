@@ -59,7 +59,7 @@ export const input = (tagName: 'input' | 'textarea' | 'select' = 'input') => com
                         v-bind:tabindex="tabindex"
                         v-bind:placeholder="$placeholder"
                         v-bind:class="classInput"
-                        v-on:click="evt => { click(); $emit('click', evt); }"
+                        v-click:500="evt => { click(); $emit('click', evt); }"
                         v-on:keydown.13="click()"
                         v-on:input="input()"
                         v-on:keydown="evt => $emit('keydown', evt)"
@@ -82,6 +82,12 @@ export class InputComponent extends Vue {
     public click() { }
 
     public type: string = '';
+
+    @Prop({ default: () => 0 })
+    public readonly recordId!: number | string;
+
+    @Prop({ default: () => '' })
+    public readonly recordName!: number | string;
 
     @Prop({ default: () => null })
     public readonly rows!: number | string | null;
@@ -172,10 +178,16 @@ export class InputComponent extends Vue {
     @Watch('$parent.$errors', { deep: true })
     public wErrs(newErrs: any) {
         let self = this,
-            regex = new RegExp('\\[.+\\]\\.'),
-            props = self.$vnode.componentOptions.propsData,
+            ridx = /\[[a-z0-9]+\]/,
+            rname = /\[('|")[a-z0-9]+('|")\]/g,
+            props: any = self.$vnode.componentOptions.propsData,
             exprs = (((self.$vnode.data as any) || { model: { expression: '' } }).model || { expression: '' }).expression,
-            exprs2 = exprs.replace(regex, `.$${self.$vnode.key}.`);
+            exprs2 = exprs
+                .replace(rname, (match: string) => match.replace(/\[('|")|('|")\]/g, '.'))
+                .replace(ridx, `.$${self.recordId}.`)
+                .replace(ridx, `.${self.recordName}`)
+                .replace(/\.{1,}/g, '.')
+                .replace(/\.$/, '');
 
         if (obj.has(self.$parent, exprs2) && !obj.has(props, 'errors') &&
             (obj.isBoolean(self.errorsAlways) || self.errorsAlways == undefined)) {
@@ -193,13 +205,24 @@ export class InputComponent extends Vue {
     @Watch('$parent.validations', { immediate: true, deep: true })
     public wConsts(newValidts: any) {
         let self = this,
-            regex = new RegExp('\\[.+\\]\\.'),
-            props = self.$vnode.componentOptions.propsData,
+            ridx = /\[[a-z0-9]+\]/,
+            rname = /\[('|")[a-z0-9]+('|")\]/g,
+            props: any = self.$vnode.componentOptions.propsData,
             exprs = (((self.$vnode.data as any) || { model: { expression: '' } }).model || { expression: '' }).expression,
-            exprs2 = exprs.replace(regex, '.'),
-            exprs3 = exprs.replace(regex, `.$${self.$vnode.key}.`);
+            exprs2 = exprs
+                .replace(rname, (match: string) => match.replace(/\[('|")|('|")\]/g, '.'))
+                .replace(ridx, `.`)
+                .replace(ridx, `.${self.recordName}`)
+                .replace(/\.{1,}/g, '.')
+                .replace(/\.$/, ''),
+            exprs3 = exprs
+                .replace(rname, (match: string) => match.replace(/\[('|")|('|")\]/g, '.'))
+                .replace(ridx, `.$${self.recordId}.`)
+                .replace(ridx, `.${self.recordName}`)
+                .replace(/\.{1,}/g, '.')
+                .replace(/\.$/, '');
 
-        if ((obj.has(self.$parent, exprs3) || (regex.test(exprs) && obj.get(newValidts, exprs2))) && !obj.has(props, 'constraint')) {
+        if ((obj.has(self.$parent, exprs3) || (ridx.test(exprs) && obj.get(newValidts, exprs2))) && !obj.has(props, 'constraint')) {
             Vue.set(self, 'constraints', obj.get(newValidts, exprs2));
         }
     }

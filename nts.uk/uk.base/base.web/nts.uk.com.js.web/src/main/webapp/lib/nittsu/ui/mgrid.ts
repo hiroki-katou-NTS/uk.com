@@ -6909,7 +6909,10 @@ module nts.uk.ui.mgrid {
                             if (!maf) {
                                 _mafollicle[currentPage][s] = { errors: [] };
                                 maf = _mafollicle[currentPage][s];
+                            } else if (_.isNil(maf.errors)) {
+                                maf.errors = [];
                             }
+                            
                             khl.addCellError(errDetail, maf);
                         }
                     }
@@ -7194,6 +7197,8 @@ module nts.uk.ui.mgrid {
                 let $editor = dkn.controlType[dkn.TEXTBOX].my;
                 let $input = $editor.querySelector("input.medit");
                 $input.value = data;
+                evt.preventDefault();
+                $input.focus();
                 return;
             }
             

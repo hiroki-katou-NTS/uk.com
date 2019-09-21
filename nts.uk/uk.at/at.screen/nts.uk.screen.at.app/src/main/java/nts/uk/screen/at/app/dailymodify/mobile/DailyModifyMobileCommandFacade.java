@@ -49,6 +49,7 @@ import nts.uk.screen.at.app.dailymodify.command.common.ProcessMonthlyCalc;
 import nts.uk.screen.at.app.dailymodify.mobile.dto.DPMobileAdUpParam;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyQuery;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyResult;
+import nts.uk.screen.at.app.dailyperformance.correction.calctime.DailyCorrectCalcTimeService;
 import nts.uk.screen.at.app.dailyperformance.correction.checkdata.ValidatorDataDailyRes;
 import nts.uk.screen.at.app.dailyperformance.correction.checkdata.dto.ErrorAfterCalcDaily;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemValue;
@@ -86,6 +87,9 @@ public class DailyModifyMobileCommandFacade {
 
 	@Inject
 	private DailyModifyRCommandFacade dailyRCommandFacade;
+	
+	@Inject
+	private DailyCorrectCalcTimeService dCCalcTimeService;
 
 	public DataResultAfterIU insertItemDomain(DPMobileAdUpParam dataParent) {
 		// Map<Integer, List<DPItemValue>> resultError = new HashMap<>();
@@ -96,19 +100,18 @@ public class DailyModifyMobileCommandFacade {
 		boolean errorMonthAfterCalc = false;
 		boolean editFlex = (dataParent.getMode() == 0 && dataParent.getMonthValue() != null
 				&& !CollectionUtil.isEmpty(dataParent.getMonthValue().getItems()));
+		dataParent.setCheckDailyChange(true);
 		// insert flex
 		UpdateMonthDailyParam monthParam = null;
-		if (dataParent.getParamCommonAsync() != null && dataParent.getParamCommonAsync().getStateParam() != null
-				&& dataParent.getParamCommonAsync().getStateParam().getDateInfo() != null) {
-			DatePeriodInfo paramCommon = dataParent.getParamCommonAsync().getStateParam().getDateInfo();
+		if (dataParent.getStateParam() != null && dataParent.getStateParam().getDateInfo() != null) {
+			DatePeriodInfo paramCommon = dataParent.getStateParam().getDateInfo();
 			AggrPeriodClosure aggrClosure = paramCommon.getLstClosureCache().stream()
 					.filter(x -> x.getClosureId().value == paramCommon.getClosureId().value).findFirst().orElse(null);
 			Optional<IntegrationOfMonthly> domainMonthOpt = Optional.empty();
 			if (aggrClosure != null)
-				monthParam = new UpdateMonthDailyParam(aggrClosure.getYearMonth(),
-						dataParent.getParamCommonAsync().getEmployeeTarget(), aggrClosure.getClosureId().value,
-						ClosureDateDto.from(aggrClosure.getClosureDate()), domainMonthOpt,
-						new DatePeriod(dataParent.getDateRange().getStartDate(),
+				monthParam = new UpdateMonthDailyParam(aggrClosure.getYearMonth(), dataParent.getEmployeeId(),
+						aggrClosure.getClosureId().value, ClosureDateDto.from(aggrClosure.getClosureDate()),
+						domainMonthOpt, new DatePeriod(dataParent.getDateRange().getStartDate(),
 								dataParent.getDateRange().getEndDate()),
 						"", true, true, 0L);
 		}
@@ -117,9 +120,10 @@ public class DailyModifyMobileCommandFacade {
 				.collect(Collectors.groupingBy(x -> Pair.of(x.getEmployeeId(), x.getDate())));
 
 		Map<Pair<String, GeneralDate>, List<DPItemValue>> mapSidDateNotChange = dataParent.getItemValues().stream()
-				.filter(x -> !DPText.ITEM_CHANGE.contains(x.getItemId()))
+				.filter(x -> !DPText.ITEM_CHANGE_MOBI.contains(x.getItemId()))
 				.collect(Collectors.groupingBy(x -> Pair.of(x.getEmployeeId(), x.getDate())));
 
+		dCCalcTimeService.getWplPosId(dataParent.getItemValues());
 		List<DailyModifyQuery> querys = dailyRCommandFacade.createQuerys(mapSidDate);
 		List<DailyModifyQuery> queryNotChanges = dailyRCommandFacade.createQuerys(mapSidDateNotChange);
 		// map to list result -> check error;
