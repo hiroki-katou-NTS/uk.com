@@ -1,7 +1,9 @@
 package command.person.contact;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -37,7 +39,7 @@ implements PeregAddListCommandHandler<AddPerContactCommand>{
 		if(!domains.isEmpty()) {
 			personContactRepository.addAll(domains);
 		}
-		return new ArrayList<>();
+		return new ArrayList<MyCustomizeException>();
 	}
 
 }

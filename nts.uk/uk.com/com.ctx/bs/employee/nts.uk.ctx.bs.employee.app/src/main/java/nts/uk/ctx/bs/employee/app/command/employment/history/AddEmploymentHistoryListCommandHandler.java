@@ -2,6 +2,7 @@ package nts.uk.ctx.bs.employee.app.command.employment.history;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -49,15 +50,17 @@ implements PeregAddListCommandHandler<AddEmploymentHistoryCommand>{
 	protected List<MyCustomizeException> handle(CommandHandlerContext<List<AddEmploymentHistoryCommand>> context) {
 		List<AddEmploymentHistoryCommand> command = context.getCommand();
 		String cid = AppContexts.user().companyId();
+		Map<String, String> recordIds = new HashMap<>();
 		List<MyCustomizeException> result = new ArrayList<>();
 		List<EmploymentHistoryIntermediate> domains = new ArrayList<>();
 		List<EmploymentHistoryItem> employmentHistoryItems = new ArrayList<>();
 		List<String> sids = command.stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
 		Map<String, List<EmploymentHistory>> histBySidsMap = employmentHistoryRepository.getAllByCidAndSids(cid, sids)
 				.stream().collect(Collectors.groupingBy(c -> c.getEmployeeId()));
-
+		
 		command.stream().forEach(c -> {
 			try {
+				
 				String newHistID = IdentifierUtil.randomUniqueId();
 				DateHistoryItem dateItem = new DateHistoryItem(newHistID,
 						new DatePeriod(c.getStartDate() != null ? c.getStartDate() : ConstantUtils.minDate(),
@@ -73,6 +76,7 @@ implements PeregAddListCommandHandler<AddEmploymentHistoryCommand>{
 						c.getEmploymentCode(), c.getSalarySegment() != null ? c.getSalarySegment().intValue() : null);
 				domains.add(new EmploymentHistoryIntermediate(itemtoBeAdded, dateItem));
 				employmentHistoryItems.add(histItem);
+				recordIds.put(c.getEmployeeId(), newHistID);
 				
 			}catch(BusinessException e) {
 				MyCustomizeException ex = new MyCustomizeException(e.getMessageId(), Arrays.asList(c.getEmployeeId()));
@@ -87,6 +91,10 @@ implements PeregAddListCommandHandler<AddEmploymentHistoryCommand>{
 
 		if (!employmentHistoryItems.isEmpty()) {
 			employmentHistoryItemRepository.addAll(employmentHistoryItems);
+		}
+		
+		if(!recordIds.isEmpty()) {
+			result.add(new MyCustomizeException("NOERROR", recordIds));
 		}
 
 		return result;

@@ -2,6 +2,7 @@ package nts.uk.ctx.bs.employee.app.command.classification.affiliate;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -57,6 +58,7 @@ implements PeregAddListCommandHandler<AddAffClassificationCommand>{
 		List<MyCustomizeException> result = new ArrayList<>();
 		List<AffClassHistItem> histItemDomains = new ArrayList<>();
 		List<AffClassHistory> affClassHistDomains = new ArrayList<>();
+		Map<String, String> recordIds = new HashMap<>();
 		List<String> sids = command.stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
 		
 		Map<String, List<AffClassHistory>> historiesMap = affClassHistoryRepo.getBySidsWithCid(cid, sids).stream().collect(Collectors.groupingBy(c -> c.getEmployeeId()));
@@ -80,6 +82,7 @@ implements PeregAddListCommandHandler<AddAffClassificationCommand>{
 			AffClassHistItem histItem = AffClassHistItem.createFromJavaType(c.getEmployeeId(), newHistoryId,
 					c.getClassificationCode());
 			histItemDomains.add(histItem);
+			recordIds.put(c.getEmployeeId(), newHistoryId);
 			
 			}catch(BusinessException e) {
 				MyCustomizeException ex = new MyCustomizeException(e.getMessageId(), Arrays.asList(c.getEmployeeId()));
@@ -94,6 +97,9 @@ implements PeregAddListCommandHandler<AddAffClassificationCommand>{
 			affClassHistItemRepo.addAll(histItemDomains);
 		}
 		
+		if(!recordIds.isEmpty()) {
+			result.add(new MyCustomizeException("NOERROR", recordIds));
+		}
 		return result;
 	}
 

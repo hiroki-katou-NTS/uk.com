@@ -61,6 +61,7 @@ implements PeregAddListCommandHandler<AddAffCompanyHistoryCommand>{
 				.collect(Collectors.groupingBy(c -> c.getPId()));
 		Map<String, AffCompanyHistByEmployee> itemToBeAddedMap = new HashMap<>();
 		List<AffCompanyInfo> affCompanyInfoLst = new ArrayList<>();
+		Map<String, String> recordIds = new HashMap<>();
 		command.stream().forEach(c ->{
 			try {
 			AffCompanyHistByEmployee itemToBeAdded = new AffCompanyHistByEmployee(c.getSId(), new ArrayList<>());
@@ -84,11 +85,13 @@ implements PeregAddListCommandHandler<AddAffCompanyHistoryCommand>{
 							? c.getRecruitmentClassification() : " ",
 					c.getAdoptionDate(), c.getRetirementAllowanceCalcStartDate());
 			affCompanyInfoLst.add(histItem);
+			recordIds.put(c.getSId(), newHistId);
+			
 			}catch(BusinessException e) {
 				MyCustomizeException ex = new MyCustomizeException(e.getMessageId(), Arrays.asList(c.getSId()));
 				result.add(ex);
 			}
-			//recordIds.add(new PeregAddCommandResult(newHistId));
+			
 		});
 		if(!itemToBeAddedMap.isEmpty()) {
 			affCompanyHistService.addAll(itemToBeAddedMap);
@@ -98,6 +101,9 @@ implements PeregAddListCommandHandler<AddAffCompanyHistoryCommand>{
 			affCompanyInfoRepository.addAll(affCompanyInfoLst);
 		}
 		
+		if(!recordIds.isEmpty()) {
+			result.add(new MyCustomizeException("NOERROR", recordIds));
+		}
 		return result;
 	}
 

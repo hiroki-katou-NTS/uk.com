@@ -1,7 +1,9 @@
 package nts.uk.shr.pereg.app.command;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -17,10 +19,20 @@ public class MyCustomizeException extends BusinessException {
 	private List<String> errorLst = new ArrayList<>();
 	
 	private String itemName;
+	
+	private Map<String, String> recordIdBySid = new HashMap<>();
 
 	public MyCustomizeException(String messageId, List<String> errorLst) {
 		super(messageId);
 		this.errorLst.addAll(errorLst);
+	}
+	
+	public MyCustomizeException(String messageId, Map<String, String> recordIdBySid) {
+		super(messageId);
+		if(!recordIdBySid.isEmpty()) {
+			this.recordIdBySid.putAll(recordIdBySid);
+		}
+		
 	}
 	
 	public MyCustomizeException(String messageId, List<String> errorLst, String itemName) {

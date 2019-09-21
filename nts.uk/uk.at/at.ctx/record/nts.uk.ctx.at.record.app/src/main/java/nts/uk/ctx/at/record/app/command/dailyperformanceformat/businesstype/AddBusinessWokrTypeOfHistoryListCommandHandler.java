@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.app.command.dailyperformanceformat.businesstype;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -52,6 +53,7 @@ implements PeregAddListCommandHandler<AddBusinessWokrTypeOfHistoryCommand>{
 			CommandHandlerContext<List<AddBusinessWokrTypeOfHistoryCommand>> context) {
 		List<AddBusinessWokrTypeOfHistoryCommand> cmd  = context.getCommand();
 		String cid = AppContexts.user().companyId();
+		Map<String, String> recordIds = new HashMap<>();
 		List<MyCustomizeException> result =  new ArrayList<>();
 		List<BusinessTypeOfEmployee> bTypeOfEmployeeLst = new ArrayList<>();
 		List<BusinessTypeOfEmployeeHistory> bTypeOfEmployeeHistoryLst = new ArrayList<>();
@@ -80,6 +82,8 @@ implements PeregAddListCommandHandler<AddBusinessWokrTypeOfHistoryCommand>{
 				BusinessTypeOfEmployee bEmployee = BusinessTypeOfEmployee.createFromJavaType(c.getBusinessTypeCode(), historyId,
 						c.getEmployeeId());
 				bTypeOfEmployeeLst.add(bEmployee);
+				recordIds.put(c.getEmployeeId(), historyId);
+				
 			}catch(BusinessException e) {
 				MyCustomizeException ex = new MyCustomizeException(e.getMessageId(), Arrays.asList(c.getEmployeeId()));
 				result.add(ex);
@@ -94,6 +98,11 @@ implements PeregAddListCommandHandler<AddBusinessWokrTypeOfHistoryCommand>{
 		if(!bTypeOfEmployeeLst.isEmpty()) {
 			typeOfEmployeeRepos.addAll(bTypeOfEmployeeLst);
 		}
+		
+		if(!recordIds.isEmpty()) {
+			result.add(new MyCustomizeException("NOERROR", recordIds));
+		}
+		
 		return result;
 	}
 

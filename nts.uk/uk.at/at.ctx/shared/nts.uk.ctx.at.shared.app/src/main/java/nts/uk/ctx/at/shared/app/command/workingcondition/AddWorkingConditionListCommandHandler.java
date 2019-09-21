@@ -2,7 +2,9 @@ package nts.uk.ctx.at.shared.app.command.workingcondition;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -48,13 +50,16 @@ implements PeregAddListCommandHandler<AddWorkingConditionCommand>{
 	protected List<MyCustomizeException> handle(CommandHandlerContext<List<AddWorkingConditionCommand>> context) {
 		List<AddWorkingConditionCommand> cmd = context.getCommand();
 		String cid = AppContexts.user().companyId();
-		// sidsPidsMap
-		List<String> sids = cmd.stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
 		
-		List<WorkingCondition> listHistBySid =  workingConditionRepository.getBySidsAndCid(cid, sids);
+		Map<String, String> recordIds = new HashMap<>();
+		List<MyCustomizeException> result = new ArrayList<>();
 		List<WorkingCondition> workingCondInserts = new ArrayList<>();
 		List<WorkingConditionItem> workingCondItems = new ArrayList<>();
-		List<MyCustomizeException> result = new ArrayList<>();
+		// sidsPidsMap
+		List<String> sids = cmd.stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
+		List<WorkingCondition> listHistBySid =  workingConditionRepository.getBySidsAndCid(cid, sids);
+
+		
 		cmd.stream().forEach(c ->{
 			try {
 				String histId = IdentifierUtil.randomUniqueId();
@@ -69,6 +74,8 @@ implements PeregAddListCommandHandler<AddWorkingConditionCommand>{
 				workingCondInserts.add(workingCond);
 				WorkingConditionItem  workingCondItem = addWorkingConditionCommandAssembler.fromDTO(histId, c);
 				workingCondItems.add(workingCondItem);
+				recordIds.put(c.getEmployeeId(), histId);
+				
 			}catch(BusinessException  e) {
 				MyCustomizeException ex = new MyCustomizeException(e.getMessageId(), Arrays.asList(c.getEmployeeId()));
 				result.add(ex);	
@@ -83,6 +90,11 @@ implements PeregAddListCommandHandler<AddWorkingConditionCommand>{
 		if(!workingCondItems.isEmpty()) {
 			workingConditionItemRepository.addAll(workingCondItems);
 		}
+		
+		if(!recordIds.isEmpty()) {
+			result.add(new MyCustomizeException("NOERROR", recordIds));
+		}
+		
 		return result;
 	}
 

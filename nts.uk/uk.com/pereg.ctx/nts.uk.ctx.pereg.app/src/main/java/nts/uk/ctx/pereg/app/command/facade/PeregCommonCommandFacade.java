@@ -306,7 +306,7 @@ public class PeregCommonCommandFacade {
 			List<MyCustomizeException> myEx =  handler.handlePeregCommand(containerAdds);
 			if(!myEx.isEmpty()) {
 				if(itemFirstByCtg.getCategoryCd().equals("CS00069")) {
-					result.addAll(myEx.stream()
+					result.addAll(myEx.stream().filter(c -> !c.getMessageId().equals("NOERROR"))
 							.map(c -> new MyCustomizeException(c.getMessageId(), c.getErrorLst(),
 									itemFirstByCtg.getByItemCode("IS00779").itemName()))
 							.collect(Collectors.toList()));
@@ -314,13 +314,28 @@ public class PeregCommonCommandFacade {
 					result.addAll(myEx);
 				}
 			}
-
+			Map<String, String> recordIds = new HashMap<>();
+			
+			result.stream().filter(c -> c.getMessageId().equals("NOERROR")).forEach(c -> {
+				
+				if(!c.getRecordIdBySid().isEmpty()) {
+					
+					recordIds.putAll(c.getRecordIdBySid());
+					
+				}
+				
+			});
+			
 		    // xử lí cho những item optional
-			List<PeregUserDefAddCommand> commandForUserDef = containerAdds.stream().map(c -> { return new PeregUserDefAddCommand(c.getPersonId(), c.getEmployeeId(), c.getInputs().getRecordId(), c.getInputs());}).collect(Collectors.toList());
+			List<PeregUserDefAddCommand> commandForUserDef = containerAdds.stream().map(c -> {
+				return new PeregUserDefAddCommand(c.getPersonId(), c.getEmployeeId(),
+						modeUpdate == 2 ? recordIds.get(c.getEmployeeId()) : c.getInputs().getRecordId(),
+						c.getInputs());
+			}).collect(Collectors.toList());
 			this.userDefAdd.handle(commandForUserDef);
 		}
 
-		return result;
+		return result.stream().filter(c -> !c.getMessageId().equals("NOERROR")).collect(Collectors.toList());
 	}
 	
 	private int convertType(ItemTypeStateDto itemTypeStateDto, Object value) {
