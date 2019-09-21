@@ -683,83 +683,25 @@ export class KdwS03BComponent extends Vue {
         self.$mask('show');
         self.$http.post('at', API.register, registerParam)
             .then((data: any) => {
-                let dataAfter = data.data;
-                if ((_.isEmpty(dataAfter.errorMap) && dataAfter.errorMap[5] == undefined)) {
-                    if (!_.isEmpty(dataAfter.messageAlert) && dataAfter.messageAlert == 'Msg_15') {
-                        self.$modal.info('Msg_15');
-                    }
-                    if (dataAfter.errorMap[6] != undefined) {
-                        self.$modal.info('Msg_1455');
-                    }
-                } else {
-                    let errorAll = false,
-                        errorReleaseCheckbox = false, errorMonth = false;
-                    let errorNoReload = true;
-                    if (dataAfter.errorMap[6] != undefined) {
-                        errorReleaseCheckbox = true;
-                    }
-                    if (dataAfter.errorMap[0] != undefined) {
-                        self.listCareError(dataAfter.errorMap[0]);
-                        errorAll = true;
-                    }
-                    if (dataAfter.errorMap[1] != undefined) {
-                        self.listCareInputError(dataAfter.errorMap[1]);
-                        errorAll = true;
-                    }
-                    if (dataAfter.errorMap[2] != undefined) {
-                        self.listErAlHolidays = dataAfter.errorMap[2];
-                        errorNoReload = false;
-                    }
-                    if (dataAfter.errorMap[3] != undefined) {
-                        self.listCheck28(dataAfter.errorMap[3]);
-                        errorAll = true;
-                    }
-                    if (dataAfter.errorMap[4] != undefined) {
-                        self.listCheckDeviation = dataAfter.errorMap[4];
-                        errorAll = true;
-                    }
-                    if (dataAfter.errorMap[5] != undefined) {
-                        self.listErrorMonth = dataAfter.errorMap[5];
-                        errorMonth = true;
-                        errorAll = true;
-                    }
-                    if (dataAfter.errorMap[7] != undefined) {
-                        errorAll = true;
-                    }
-                    if (!_.isEmpty(dataAfter.messageAlert) && dataAfter.messageAlert == 'Msg_15') {
-                        if (errorReleaseCheckbox) {
-                            self.$modal.info('Msg_1455').then(() => {
-                                self.$modal.info('Msg_15').then(() => {
-                                    if (dataAfter.showErrorDialog) {
-                                        self.showErrorDialog();
-                                    }
-                                });
-                            });
-                        } else {
-                            self.$modal.info('Msg_15').then(() => {
-                                if (dataAfter.showErrorDialog) {
-                                    self.showErrorDialog();
-                                }
-                            });
-                        }
-                    } else {
-                        let errorShowMessage = errorAll;
-                        if (errorShowMessage && errorReleaseCheckbox) {
-                            self.$modal.info('Msg_1455').then(() => {
-                                self.showErrorDialog();
-                            });
-                        } else if (errorShowMessage) {
-                            self.showErrorDialog();
-                        } else if (errorReleaseCheckbox) {
-                            self.$modal.info('Msg_1455');
-                        } else {
-                            if (dataAfter.showErrorDialog) {
-                                self.showErrorDialog();
-                            }
-                        }
-                    }
-                }
                 self.$mask('hide');
+                let dataAfter = data.data;
+                if (dataAfter.messageAlert == 'Msg_15') {
+                    self.$modal.info('Msg_15').then(() => {
+                        self.$close();
+                    });
+                }
+                let errorOutput = '';
+                _.forEach(dataAfter.errorMap, (typeItem) => {
+                    _.forEach(typeItem, (item) => {
+                        if (item.message) {
+                            errorOutput += self.$i18n(item.message);
+                        }
+                    });
+                });
+
+                self.$modal.error(errorOutput).then(() => {
+                    self.$close();
+                });
             }).catch((res: any) => {
                 self.$mask('hide');
                 self.$modal.error(res.messageId)
@@ -767,63 +709,6 @@ export class KdwS03BComponent extends Vue {
                         self.$close();
                     });
             });
-    }
-
-    private showErrorDialog(messageAlert?: string) {
-        let self = this;
-        let lstEmployee = [];
-        let errorValidateScreeen: any = [];
-
-        _.each(self.listCareError(), (value) => {
-            let object = { date: '', employeeCode: '', employeeName: '', message: self.$i18n('Msg_996'), itemName: '', columnKey: value.itemId };
-            errorValidateScreeen.push(object);
-        });
-
-        _.each(self.listCareInputError(), (value) => {
-            let object = { date: '', employeeCode: '', employeeName: '', message: value.message, itemName: '', columnKey: value.itemId };
-            let item = _.find(self.contentType, (data) => {
-                return String(data.key) === 'A' + value.itemId;
-            });
-            object.itemName = (item == undefined) ? '' : item.headerText;
-            let itemOtherInGroup = CHECK_INPUT[value.itemId + ''];
-            let itemGroup = self.params.paramData.lstControlDisplayItem.itemInputName[Number(itemOtherInGroup)];
-            let nameGroup: any = (itemGroup == undefined) ? '' : itemGroup;
-            object.message = self.$i18n(value.message, [object.itemName, nameGroup]);
-            errorValidateScreeen.push(object);
-        });
-
-        _.each(self.listCheck28(), (value) => {
-
-            let object = { date: '', employeeCode: '', employeeName: '', message: value.layoutCode, itemName: '', columnKey: value.itemId };
-            let item = _.find(self.contentType, (data) => {
-                if (data.group != undefined && data.group != null) {
-                    return String(data.group[0].key) === 'Code' + value.itemId;
-                } else {
-                    return String(data.key) === 'A' + value.itemId;
-                }
-            });
-            object.itemName = (item == undefined) ? '' : item.headerText;
-            errorValidateScreeen.push(object);
-        });
-
-        _.each(self.listCheckDeviation, (value) => {
-            let object = { date: '', employeeCode: '', employeeName: '', message: value.valueType, itemName: '', columnKey: value.itemId };
-            let item = _.find(self.contentType, (data) => {
-                if (data.group != undefined && data.group != null) {
-                    return String(data.group[0].key) === 'Code' + value.itemId;
-                } else {
-                    return data.key != undefined && String(data.key) === 'A' + value.itemId;
-                }
-            });
-            object.itemName = (item == undefined) ? '' : item.headerText;
-            object.message = self.$i18n('Msg_996', [object.itemName, value.value]);
-            errorValidateScreeen.push(object);
-        });
-
-        _.each(self.listErrorMonth, (value) => {
-            let object = { date: '', employeeCode: '', employeeName: '', value, message: value.message, columnKey: '' };
-            errorValidateScreeen.push(object);
-        });
     }
 
     private createRegisterParam() {
