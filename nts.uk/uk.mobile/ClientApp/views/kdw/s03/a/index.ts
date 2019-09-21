@@ -444,6 +444,8 @@ export class Kdws03AComponent extends Vue {
             if (!_.isNil(_.find(states, (x) => x.columnKey == 'sign'))) {
                 let classArray = _.find(states, (x) => x.columnKey == 'sign').state;
                 row.confirmDisable = _.includes(classArray, 'mgrid-disable') ? true : false;
+            } else {
+                row.confirmDisable = false;
             }
         });
 
