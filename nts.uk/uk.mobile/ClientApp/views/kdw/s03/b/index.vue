@@ -19,7 +19,7 @@
       </div>
     </div>
   </div>
-  <div class="row uk-bg-light-coral mb-4" v-if="params.rowData.ERAL=='ER'">
+  <div class="row uk-bg-light-coral mb-4" v-if="isDisplayError">
     <div class="btn w-100 text-left" v-on:click="openDScreen">
       <div class="col-11 pl-0 pr-0 d-inline-block uk-text-quote">
         {{'KDWS03_36' | i18n}}
@@ -220,7 +220,8 @@
   <div class="row mt-4">
     <div class="col-3"></div>
     <div>
-      <nts-checkbox v-show="params.paramData.showPrincipal" v-model="checked1s" v-bind:value="2">{{'KDWS03_37' | i18n}} </nts-checkbox>
+      <nts-checkbox v-show="params.paramData.showPrincipal" v-bind:disabled="params.rowData.confirmDisable" 
+        v-model="checked1s" v-bind:value="2">{{'KDWS03_37' | i18n}} </nts-checkbox>
     </div>
   </div>
   <div class="card invisible">
@@ -229,7 +230,7 @@
     </div>
   </div>
   <div class="fixed-bottom text-center register">
-    <button type="button" class="btn btn-success btn-block" v-bind:disabled="!isEnableRegister()" v-on:click="register()">{{'KDWS03_38' | i18n}}</button>
+    <button type="button" class="btn btn-success btn-block" v-bind:disabled="!$valid" v-on:click="register()">{{'KDWS03_38' | i18n}}</button>
   </div>
   
 </div>

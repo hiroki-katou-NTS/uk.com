@@ -108,6 +108,7 @@ export class KdwS03BComponent extends Vue {
     };
     private masterDialogParam: Array<number> = [];
     private oldData: any = [];
+    private oldCheckBox: Array<number> = [];
     private listCareError: any = [];
     private listCareInputError: any = [];
     private listErAlHolidays: any = [];
@@ -146,6 +147,7 @@ export class KdwS03BComponent extends Vue {
         if (self.params.rowData.sign) {
             self.checked1s.push(2);
         }
+        self.oldCheckBox = self.checked1s;
         self.$mask('show');
         self.addCustomValid();
         self.oldData = self.toJS(self.screenData[0]);
@@ -212,6 +214,12 @@ export class KdwS03BComponent extends Vue {
 
             return tempD;
         }
+    }
+
+    get isDisplayError() {
+        let self = this;
+
+        return !_.isEmpty(self.params.rowData.ERAL);
     }
 
     private createMasterComboBox() {
@@ -652,19 +660,18 @@ export class KdwS03BComponent extends Vue {
         });
     }
 
-    public isEnableRegister() {
+    private isChangeDataRegister() {
         let self = this;
-        if (!self.params.paramData.showPrincipal) {
-            return self.$valid;
-        }
+        let isChangeCheckBox = JSON.stringify(self.oldCheckBox).localeCompare(JSON.stringify(self.checked1s)) != 0;
+        let registerParam = self.createRegisterParam();
 
-        return self.$valid && self.params.paramData.showPrincipal && !_.isEmpty(self.checked1s);
+        return isChangeCheckBox || !_.isEmpty(registerParam.itemValues);
     }
 
     public register() {
         let self = this;
         let registerParam = self.createRegisterParam();
-        if (_.isEmpty(registerParam.itemValues)) {
+        if (!self.isChangeDataRegister()) {
             return;
         }
         self.$mask('show');
