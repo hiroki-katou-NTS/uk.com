@@ -155,6 +155,7 @@ public class InitScreenMob {
 				: new IdentityProcessUseSetDto(false, false, null));
 		Optional<ApprovalUseSettingDto> approvalUseSettingDtoOpt = repo.findApprovalUseSettingDto(companyId);
 		screenDto.setApprovalUseSettingDtoOpt(approvalUseSettingDtoOpt);
+		processor.setHideCheckbox(screenDto, identityProcessDtoOpt, approvalUseSettingDtoOpt, companyId, screenMode);
 
 		// 保持パラメータを生成する
 		Pair<Integer, DateRange> resultIndentityPeriod = processor.identificationPeriod(null, screenMode, dateRange);
