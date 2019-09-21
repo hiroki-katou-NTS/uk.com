@@ -37,12 +37,12 @@
         <div class="row pl-2 mb-1">{{ getItemText(key) }}</div>
         <div class="row mb-1">
           <div class="col-2 p-1 text-right">
-            <i :class="`${getIcon(key) }`"></i>
+            <button class="border-0 bg-transparent" v-on:click="openDScreen()"><i :class="`${getIcon(key) }`"></i></button>
           </div>
           <div class="col-9 pl-0 pr-0">
             <div class="row">
               <div class="w-100">
-                <div class="col-9 d-inline-block align-middle"><h5><span class="badge badge-secondary">{{ getItemDialogName(key) }}</span></h5></div>
+                <div class="col-9 d-inline-block align-middle"><h5 class="mb-0"><span class="badge badge-secondary">{{ getItemDialogName(key) }}</span></h5></div>
                 <div class="d-inline-block">
                   <button type="button" class="btn btn-secondary" v-bind:disabled="getItemLock(key)" v-on:click="openDialog(key)">{{'KDWS03_71' | i18n}}</button>
                 </div>
@@ -55,7 +55,7 @@
         <div class="row pl-2 mb-1">{{ getItemText(key) }}</div>
         <div class="row">
           <div class="col-2 p-1 text-right">
-            <i :class="`${getIcon(key) }`"></i>
+            <button class="border-0 bg-transparent" v-on:click="openDScreen()"><i :class="`${getIcon(key) }`"></i></button>
           </div>
           <div class="col-9 pl-0 pr-0">
             <nts-dropdown v-if="getItemMasterType(key)==masterType.KDLS10_ServicePlace" v-model="screenData[0][key]" v-bind:record-name="key" v-bind:key="key"
@@ -104,7 +104,7 @@
         <div class="row pl-2 mb-1">{{ getItemText(key) }}</div>
         <div class="row">
           <div class="col-2 p-1 text-right">
-            <i :class="`${getIcon(key) }`"></i>
+            <button class="border-0 bg-transparent" v-on:click="openDScreen()"><i :class="`${getIcon(key) }`"></i></button>
           </div>
           <div class="col-9 pl-0 pr-0">
             <nts-number-editor class="mb-3" v-model="screenData[0][key]" v-bind:record-name="key" v-bind:key="key" 
@@ -119,7 +119,7 @@
         <div class="row pl-2 mb-1">{{ getItemText(key) }}</div>
         <div class="row">
           <div class="col-2 p-1 text-right">
-            <i :class="`${getIcon(key) }`"></i>
+            <button class="border-0 bg-transparent" v-on:click="openDScreen()"><i :class="`${getIcon(key) }`"></i></button>
           </div>
           <div class="col-9 pl-0 pr-0">  
             <nts-number-editor class="mb-3" v-model="screenData[0][key]" v-bind:record-name="key" v-bind:key="key" 
@@ -134,7 +134,7 @@
         <div class="row pl-2 mb-1">{{ getItemText(key) }}</div>
         <div class="row">
           <div class="col-2 p-1 text-right">
-            <i :class="`${getIcon(key) }`"></i>
+            <button class="border-0 bg-transparent" v-on:click="openDScreen()"><i :class="`${getIcon(key) }`"></i></button>
           </div>
           <div class="col-9 pl-0 pr-0">
             <nts-dropdown v-if="getItemMasterType(key)==masterType.DoWork" v-model="screenData[0][key]" v-bind:record-name="key" v-bind:key="key"
@@ -177,7 +177,7 @@
         <div class="row pl-2 mb-1">{{ getItemText(key) }}</div>
         <div class="row">
           <div class="col-2 p-1 text-right">
-            <i :class="`${getIcon(key) }`"></i>
+            <button class="border-0 bg-transparent" v-on:click="openDScreen()"><i :class="`${getIcon(key) }`"></i></button>
           </div>
           <div class="col-9 pl-0 pr-0">
             <nts-time-editor class="mb-3" v-model="screenData[0][key]" v-bind:record-name="key" v-bind:key="key" time-input-type="time-duration" 
@@ -192,7 +192,7 @@
         <div class="row pl-2 mb-1">{{ getItemText(key) }}</div>
         <div class="row">
           <div class="col-2 p-1 text-right">
-            <i :class="`${getIcon(key) }`"></i>
+            <button class="border-0 bg-transparent" v-on:click="openDScreen()"><i :class="`${getIcon(key) }`"></i></button>
           </div>
           <div class="col-9 pl-0 pr-0">
             <nts-time-editor class="mb-3" v-model="screenData[0][key]" v-bind:record-name="key" v-bind:key="key" time-input-type="time-with-day" 
@@ -207,7 +207,7 @@
         <div class="row pl-2 mb-1">{{ getItemText(key) }}</div>
         <div class="row">
           <div class="col-2 p-1 text-right">
-            <i :class="`${getIcon(key) }`"></i>
+            <button class="border-0 bg-transparent" v-on:click="openDScreen()"><i :class="`${getIcon(key) }`"></i></button>
           </div>
           <div class="col-9 pl-0 pr-0">
             <nts-text-area class="mb-3" v-model="screenData[0][key]" v-bind:record-name="key" v-bind:key="key" 

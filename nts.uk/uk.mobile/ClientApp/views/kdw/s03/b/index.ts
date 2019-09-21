@@ -443,16 +443,14 @@ export class KdwS03BComponent extends Vue {
                     if (contraint.cdisplayType == 'Primitive') {
                         screenDataValid[rowData.key] = {
                             loop: true,
-                            required: contraint.required,
-                            charType: 'Numeric'
+                            required: contraint.required
                         };
                     } else {
                         screenDataValid[rowData.key] = {
                             loop: true,
                             required: contraint.required,
                             min: _.toNumber(contraint.min),
-                            max: _.toNumber(contraint.max),
-                            charType: 'Numeric'
+                            max: _.toNumber(contraint.max)
                         };
                     }
                     break;
@@ -461,8 +459,7 @@ export class KdwS03BComponent extends Vue {
                     if (contraint.cdisplayType == 'Primitive') {
                         screenDataValid[rowData.key] = {
                             loop: true,
-                            required: contraint.required,
-                            charType: 'Numeric'
+                            required: contraint.required
                         };
                     } else {
                         screenDataValid[rowData.key] = {
@@ -470,8 +467,7 @@ export class KdwS03BComponent extends Vue {
                             required: contraint.required,
                             min: _.toNumber(contraint.min),
                             max: _.toNumber(contraint.max),
-                            valueType: 'Integer',
-                            charType: 'Numeric'
+                            valueType: 'Integer'
                         };
                     }
                     break;
@@ -531,7 +527,6 @@ export class KdwS03BComponent extends Vue {
                         constraintObj = _.get(self.validations.fixedConstraint, PrimitiveAll['No' + attendanceItem.primitive]);
                         constraintObj.loop = true;
                         constraintObj.required = contraint.required;
-                        constraintObj.charType = 'Numeric';
                         self.$updateValidator( `screenData.${rowData.key}`, constraintObj);
                     } 
                     break;
@@ -540,7 +535,6 @@ export class KdwS03BComponent extends Vue {
                         constraintObj = _.get(self.validations.fixedConstraint, PrimitiveAll['No' + attendanceItem.primitive]);
                         constraintObj.loop = true;
                         constraintObj.required = contraint.required;
-                        constraintObj.charType = 'Numeric';
                         self.$updateValidator( `screenData.${rowData.key}`, constraintObj);
                     } 
                     break;
@@ -738,7 +732,6 @@ export class KdwS03BComponent extends Vue {
                 self.$mask('hide');
                 self.$modal.error(res.messageId)
                     .then(() => {
-                        self.$close();
                     });
             });
     }
@@ -905,8 +898,10 @@ export class KdwS03BComponent extends Vue {
             changeSpr34: false,
             notChangeCell: false
         };
+        self.$mask('show');
         self.$http.post('at', API.linkItemCalc, param)
         .then((data: any) => {
+            self.$mask('hide');
             _.forEach(data.data.cellEdits, (item: any) => {
                 if (!_.isUndefined(self.screenData1[item.item])) {
                     let rowDataLoop = _.find(self.params.rowData.rowData, (o) => o.key == item.item);
@@ -935,6 +930,11 @@ export class KdwS03BComponent extends Vue {
                     }
                 }
             });
+        }).catch((res: any) => {
+            self.$mask('hide');
+            self.$modal.error(res.messageId)
+                .then(() => {
+                });   
         });
     }
 
