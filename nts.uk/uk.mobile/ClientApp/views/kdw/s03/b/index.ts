@@ -109,12 +109,7 @@ export class KdwS03BComponent extends Vue {
     private masterDialogParam: Array<number> = [];
     private oldData: any = [];
     private oldCheckBox: Array<number> = [];
-    private listCareError: any = [];
-    private listCareInputError: any = [];
-    private listErAlHolidays: any = [];
-    private listCheck28: any = [];
-    private listCheckDeviation: any = [];
-    private listErrorMonth: any = [];
+    private listAutoCalc: any = [];
 
     get lstAttendanceItem() {
         let self = this;
@@ -594,8 +589,10 @@ export class KdwS03BComponent extends Vue {
             startDate: self.params.date,
             endDate: self.params.date
         }, { type: 'dropback' })
-            .then((v) => {
-
+            .then((v: any) => {
+                if (v == 'dropback') {
+                    this.$close('dropback');
+                }
             });
     }
 
@@ -826,14 +823,15 @@ export class KdwS03BComponent extends Vue {
     private getAutoCalcChangeItem() {
         let self = this;
         let itemValues: any = [];
+        let mapAutoCalcLst = _.map(self.listAutoCalc, (item) => item.item);
         _.forEach(Object.keys(self.screenData[0]), (key: string) => {
             let itemValue: DPItemValue;
-            let attendanceItem = self.getAttendanceItem(key);
             let rowData = _.find(self.params.rowData.rowData, (o) => o.key == key);
-            if (rowData.isAutoCalc) {
+            if (_.includes(mapAutoCalcLst, key)) {
                 return;
-            }
-            let oldRow = rowData.beforeChangeValue ? rowData.beforeChangeValue : self.oldData[key];
+            } 
+            let attendanceItem = self.getAttendanceItem(key);
+            let oldRow = self.oldData[key];
             if (JSON.stringify(oldRow).localeCompare(JSON.stringify(self.screenData[0][key])) != 0) {
                 switch (attendanceItem.attendanceAtr) {
                     case ItemType.InputStringCode:
@@ -877,7 +875,9 @@ export class KdwS03BComponent extends Vue {
     private autoCalc(key: string) {
         let self = this;
         let rowData = _.find(self.params.rowData.rowData, (o) => o.key == key);
-        if (rowData.isAutoCalc) {
+        if (rowData.isCalc) {  
+            rowData.isCalc = false;
+            
             return;
         }
         let attendanceItem = self.getAttendanceItem(key);
@@ -885,12 +885,15 @@ export class KdwS03BComponent extends Vue {
         if (_.isEmpty(itemValues)) {
             return;
         }
-        rowData.beforeChangeValue = self.screenData1[key];
         _.forEach(itemValues, (item) => {
             if (item.itemId != attendanceItem.id) {
                 item.columnKey = 'USE';
             }
         });
+        if (!_.find(itemValues, (item) => item.itemId == attendanceItem.id)) {
+            let mainObj = new DPItemValue(attendanceItem, self.screenData[0][key], self.params, self.itemValues);
+            itemValues.push(mainObj);
+        }
         let param = {
             dailyEdits: [],
             itemEdits: itemValues,
@@ -902,29 +905,30 @@ export class KdwS03BComponent extends Vue {
         self.$http.post('at', API.linkItemCalc, param)
         .then((data: any) => {
             self.$mask('hide');
-            _.forEach(data.data.cellEdits, (item: any) => {
+            self.listAutoCalc = data.data.cellEdits;
+            _.forEach(self.listAutoCalc, (item: any) => {
                 if (!_.isUndefined(self.screenData1[item.item])) {
                     let rowDataLoop = _.find(self.params.rowData.rowData, (o) => o.key == item.item);
                     let attendanceItemLoop = self.getAttendanceItem(item.item);
                     switch (attendanceItemLoop.attendanceAtr) {
                         case ItemType.InputNumber:
-                            rowDataLoop.isAutoCalc = true;
+                            rowDataLoop.isCalc = true;
                             self.screenData1[item.item] = _.isEmpty(item.value) ? null : _.toNumber(item.value);
                             break;
                         case ItemType.InputMoney:
-                            rowDataLoop.isAutoCalc = true;
+                            rowDataLoop.isCalc = true;
                             self.screenData1[item.item] = _.isEmpty(item.value) ? null : _.toNumber(item.value);
                             break;
                         case ItemType.Time:
-                            rowDataLoop.isAutoCalc = true;
+                            rowDataLoop.isCalc = true;
                             self.screenData1[item.item] = _.isEmpty(item.value) ? null : new TimeDuration(item.value).toNumber();
                             break;
                         case ItemType.TimeWithDay:
-                            rowDataLoop.isAutoCalc = true;
+                            rowDataLoop.isCalc = true;
                             self.screenData1[item.item] = _.isEmpty(item.value) ? null : new TimeDuration(item.value).toNumber();
                             break;
                         default:
-                            rowDataLoop.isAutoCalc = true;
+                            rowDataLoop.isCalc = true;
                             self.screenData1[item.item] = item.value;
                             break;
                     }
@@ -1094,7 +1098,7 @@ class DPItemValue {
     public message: string;
 
     constructor(attendanceItem: any, value: any, params: any, itemValues: any) {
-        this.rowId = params.rowId;
+        this.rowId = params.rowData.id;
         this.columnKey = '';
         this.itemId = attendanceItem.id;
         this.value = value;
