@@ -569,6 +569,7 @@ module nts.custombinding {
                             }
                             break;
                         case ITEM_SINGLE_TYPE.TIMEPOINT:
+                            vm.mode(undefined);
                             ko.utils.setHtml(element, template.timep);
                             break;
                         case ITEM_SINGLE_TYPE.NUMERIC:
