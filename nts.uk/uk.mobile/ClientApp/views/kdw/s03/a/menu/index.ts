@@ -75,12 +75,21 @@ export class KdwS03AMenuComponent extends Vue {
     }
 
     public processConfirmAll(processFlag: string) {
-        this.$mask('show', 0.5);
         let dataCheckSign: Array<any> = [];
         let dateRange: any = this.dailyCorrectionState.dateRange;
+        let updateItemExist = false;
         if (this.$dt.fromString(dateRange.startDate) <= new Date()) {
             _.forEach(this.dailyCorrectionState.cellDataLst, (x) => {
                 if (!x.confirmDisable) {
+                    if (processFlag == 'confirm') {
+                        if (x.sign == false) {
+                            updateItemExist = true;
+                        }
+                    } else {
+                        if (x.sign == true) {
+                            updateItemExist = true;
+                        }
+                    }
                     dataCheckSign.push({
                         rowId: x.id,
                         itemId: 'sign',
@@ -92,7 +101,12 @@ export class KdwS03AMenuComponent extends Vue {
                 }
             });
 
+            if (updateItemExist == false) {
+                return;
+            }
+
             this.$http.post('at', servicePath.confirmAll, dataCheckSign).then((result: { data: any }) => {
+                this.$mask('show', 0.5);
                 if (processFlag == 'confirm') {
                     this.$modal.info({ messageId: 'Msg_15' }).then((v: any) => {
                         window.location.reload();

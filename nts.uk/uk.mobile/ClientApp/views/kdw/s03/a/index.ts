@@ -110,7 +110,7 @@ export class Kdws03AComponent extends Vue {
                     let startDate = data.lstRange[i].startDate,
                         endDate = data.lstRange[i].endDate;
                     if (data.targetRange.startDate == startDate) {
-                        selectItem = i; 
+                        selectItem = i;
                     }
                     self.actualTimeOptionDisp.push({ code: i, name: (i + 1) + ': ' + this.$dt(startDate, 'M/D') + '～' + this.$dt(endDate, 'M/D') });
                 }
@@ -187,7 +187,7 @@ export class Kdws03AComponent extends Vue {
     public mounted() {
         this.$mask('show', { message: true });
     }
-    
+
     //fix-tableのレイアウトを変更する
     public updated() {
         let styleTagAr: any = [];
@@ -239,28 +239,28 @@ export class Kdws03AComponent extends Vue {
                         } else {
                             self.selectedDate = self.selectedDateTemp;
                         }
-                    }                   
+                    }
                 });
             } else if (!_.isEmpty(dataInit.errors)) {
                 for (let i = 0; i < dataInit.errors.length; i++) {
                     await new Promise((next) => {
-                        let employeeCode = (_.find(dataInit.lstEmployee, (x) => x.id == dataInit.changeEmployeeIds[0] )).code;
-                        let employeeName = (_.find(dataInit.lstEmployee, (x) => x.id == dataInit.changeEmployeeIds[0] )).businessName;
-                        self.$modal.error(dataInit.errors[i].messageId == 'Msg_1403' ? 
-                            {messageId: 'Msg_1403', messageParams: [employeeCode + ' ' + employeeName]} : 
-                            {messageId: dataInit.errors[i].messageId}).then(() => {
-                            if (i == dataInit.errors.length - 1) {
-                                self.$mask('hide');
-                                if (self.displayFormat == '0') {
-                                    self.actualTimeSelectedCode = self.actualTimeSelectedCodeTemp;
-                                    self.yearMonth = self.yearMonthTemp;
-                                    self.selectedEmployee = self.selectedEmployeeTemp;
-                                } else {
-                                    self.selectedDate = self.selectedDateTemp;
+                        let employeeCode = (_.find(dataInit.lstEmployee, (x) => x.id == dataInit.changeEmployeeIds[0])).code;
+                        let employeeName = (_.find(dataInit.lstEmployee, (x) => x.id == dataInit.changeEmployeeIds[0])).businessName;
+                        self.$modal.error(dataInit.errors[i].messageId == 'Msg_1403' ?
+                            { messageId: 'Msg_1403', messageParams: [employeeCode + ' ' + employeeName] } :
+                            { messageId: dataInit.errors[i].messageId }).then(() => {
+                                if (i == dataInit.errors.length - 1) {
+                                    self.$mask('hide');
+                                    if (self.displayFormat == '0') {
+                                        self.actualTimeSelectedCode = self.actualTimeSelectedCodeTemp;
+                                        self.yearMonth = self.yearMonthTemp;
+                                        self.selectedEmployee = self.selectedEmployeeTemp;
+                                    } else {
+                                        self.selectedDate = self.selectedDateTemp;
+                                    }
                                 }
-                            }
-                            next();
-                        });
+                                next();
+                            });
                     });
                 }
             } else {
@@ -582,8 +582,10 @@ export class Kdws03AComponent extends Vue {
             'paramData': paramData
         },
             { type: 'dropback' })
-            .then((v) => {
-
+            .then((v: any) => {
+                if (v.reload == true) {
+                    window.location.reload();
+                }
             });
     }
 
@@ -612,7 +614,7 @@ export class Kdws03AComponent extends Vue {
                     } else {
                         rowData = _.find(self.displayDataLst, (x) => x.employeeId == paramOpenB.employeeId);
                     }
-                    
+
                     self.$modal('kdws03b', {
                         'employeeID': paramOpenB.employeeId,
                         'employeeName': paramOpenB.employeeName,
@@ -650,7 +652,7 @@ export class Kdws03AComponent extends Vue {
                     });
                     this.displayDataLstEx.push({ rowData, employeeName: '', id: '', employeeNameDis: '' });
                 }
-            }          
+            }
         }
         this.previousState = 'button-active';
         this.resetTable++;
