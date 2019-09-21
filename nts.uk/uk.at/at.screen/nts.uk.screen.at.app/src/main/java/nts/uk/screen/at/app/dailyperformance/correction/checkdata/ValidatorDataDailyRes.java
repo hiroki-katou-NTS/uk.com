@@ -204,7 +204,7 @@ public class ValidatorDataDailyRes {
 					 String valueItemIdStart = (itemId1 < itemId2) ? x.getValue()
 							: itemCheckMap.get(itemId2);
 					 String valueItemIdEnd = (itemId1 > itemId2) ? x.getValue()
-								: itemCheckMap.get(itemId1);
+								: itemCheckMap.get(itemId2);
 					if (valueItemIdStart!= null && valueItemIdEnd != null && Integer.parseInt(valueItemIdStart) > Integer.parseInt(valueItemIdEnd)) {
 						x.setMessage("Msg_1400");
 						result.add(x);
@@ -234,8 +234,8 @@ public class ValidatorDataDailyRes {
 							: itemCheckMap.containsKey(itemId2) ? itemCheckMap.get(itemId2)
 									: valueGetFromDBMap.get(itemId2);
 					 String valueItemIdEnd = (itemId1 > itemId2) ? x.getValue()
-								: itemCheckMap.containsKey(itemId1) ? itemCheckMap.get(itemId1)
-										: valueGetFromDBMap.get(itemId1);
+								: itemCheckMap.containsKey(itemId2) ? itemCheckMap.get(itemId2)
+										: valueGetFromDBMap.get(itemId2);
 					if (valueItemIdStart!= null && valueItemIdEnd != null && Integer.parseInt(valueItemIdStart) > Integer.parseInt(valueItemIdEnd)) {
 						x.setMessage("Msg_1400");
 						result.add(x);
