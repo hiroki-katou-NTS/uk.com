@@ -222,6 +222,21 @@ export class KdwS03BComponent extends Vue {
         }
     }
 
+    public getItemLock(key: string) {
+        let self = this;
+        let lstCellState = _.filter(self.params.paramData.lstCellState, (item) => item.rowId == self.params.rowData.id);
+        let itemHeader = _.find(self.contentType, (item) => item.key == key);
+        let cellKey = '';
+        if (_.isEmpty(itemHeader.group)) {
+            cellKey = itemHeader.key;
+        } else {
+            cellKey = itemHeader.group[0].key;
+        }
+        let lstState =_.find(lstCellState, (item) => item.columnKey == cellKey).state;
+
+        return _.find(lstState, (item) => item.includes('mgrid-disable'));
+    }
+
     get isDisplayError() {
         let self = this;
 
@@ -693,8 +708,10 @@ export class KdwS03BComponent extends Vue {
                 let dataAfter = data.data;
                 if (dataAfter.messageAlert == 'Msg_15') {
                     self.$modal.info('Msg_15').then(() => {
-                        self.$close();
+                        self.$close({ reload: true });
                     });
+                    
+                    return;
                 }
                 let errorOutput = '';
                 _.forEach(dataAfter.errorMap, (typeItem) => {
@@ -706,7 +723,7 @@ export class KdwS03BComponent extends Vue {
                 });
 
                 self.$modal.error(errorOutput).then(() => {
-                    self.$close();
+                    self.$close({ reload: true });
                 });
             }).catch((res: any) => {
                 self.$mask('hide');
