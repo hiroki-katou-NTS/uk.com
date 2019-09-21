@@ -142,6 +142,12 @@ export class KdwS03BComponent extends Vue {
         return MasterType;
     }
 
+    get canRegister() {
+        let self = this;
+        
+        return _.find(self.params.paramData.authorityDto, (item) => item.functionNo == 1 && item.availability);
+    }
+
     public created() {
         let self = this;
         if (self.params.rowData.sign) {
