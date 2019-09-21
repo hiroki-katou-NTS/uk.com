@@ -7,17 +7,19 @@
       <div class="col-5 pl-0 pr-0"><span>{{ params.date  | date('YYYY年MM月DD日') }}</span></div>
     </div>
   </div>
-  <div class="row">
+  <div class="row" v-if="params.rowData.state">
     <div class="accordion w-100">
       <div class="card border-0 pl-0">
         <div class="card-header pl-0 pr-0 uk-bg-light-coral">
           <button class="btn btn-link" type="button">{{'KDWS03_35' | i18n}}</button>
         </div>
-        <div class="collapse uk-bg-light-coral" v-html="getLockContent()"></div>
+        <div class="collapse uk-bg-light-coral" >
+          <div class="card-body pt-0 pb-2" v-html="getLockContent()"></div>
+        </div>
       </div>
     </div>
   </div>
-  <div class="row uk-bg-light-coral mb-4">
+  <div class="row uk-bg-light-coral mb-4" v-if="params.rowData.ERAL=='ER'">
     <div class="btn w-100 text-left" v-on:click="openDScreen">
       <div class="col-11 pl-0 pr-0 d-inline-block uk-text-quote">
         {{'KDWS03_36' | i18n}}
@@ -218,7 +220,7 @@
   <div class="row mt-4">
     <div class="col-3"></div>
     <div>
-      <nts-checkbox v-model="checked1s" v-bind:value="2">{{'KDWS03_37' | i18n}} </nts-checkbox>
+      <nts-checkbox v-show="params.paramData.showPrincipal" v-model="checked1s" v-bind:value="2">{{'KDWS03_37' | i18n}} </nts-checkbox>
     </div>
   </div>
   <div class="card invisible">
@@ -227,7 +229,7 @@
     </div>
   </div>
   <div class="fixed-bottom text-center register">
-    <button type="button" class="btn btn-success btn-block" v-bind:disabled="!$valid" v-on:click="register()">{{'KDWS03_38' | i18n}}</button>
+    <button type="button" class="btn btn-success btn-block" v-bind:disabled="!isEnableRegister()" v-on:click="register()">{{'KDWS03_38' | i18n}}</button>
   </div>
   
 </div>

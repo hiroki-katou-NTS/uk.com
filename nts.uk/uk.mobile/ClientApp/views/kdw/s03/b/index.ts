@@ -143,6 +143,9 @@ export class KdwS03BComponent extends Vue {
 
     public created() {
         let self = this;
+        if (self.params.rowData.sign) {
+            self.checked1s.push(2);
+        }
         self.$mask('show');
         self.addCustomValid();
         self.oldData = self.toJS(self.screenData[0]);
@@ -174,9 +177,9 @@ export class KdwS03BComponent extends Vue {
         let data: any = self.params.rowData.state;
         if (data != '') {
             let lock = data.split('|');
-            let tempD = `<div class="card-body pt-0 pb-2"><span>`;
-            for (let i = 1; i < lock.length; i++) {
-                switch (lock[i]) {
+            let tempD = `<span>`;
+            _.forEach(lock, (char) => {
+                switch (char) {
                     case 'D':
                         tempD += self.$i18n('KDW003_66') + `<br/>`;
                         break;
@@ -204,8 +207,8 @@ export class KdwS03BComponent extends Vue {
                     default:
                         break;
                 }
-            }
-            tempD += `</span></div>`;
+            });
+            tempD += `</span>`;
 
             return tempD;
         }
@@ -331,7 +334,7 @@ export class KdwS03BComponent extends Vue {
             return 'fas fa-exclamation-circle align-bottom text-danger';
         }
         if (rowClass.includes('mgrid-alarm')) {
-            return 'fas fa-exclamation-triangle align-bottom text-danger';
+            return 'fas fa-exclamation-triangle align-bottom uk-text-yellow';
         }
 
         return '';
@@ -649,10 +652,23 @@ export class KdwS03BComponent extends Vue {
         });
     }
 
+    public isEnableRegister() {
+        let self = this;
+        if (!self.params.paramData.showPrincipal) {
+            return self.$valid;
+        }
+
+        return self.$valid && self.params.paramData.showPrincipal && !_.isEmpty(self.checked1s);
+    }
+
     public register() {
         let self = this;
+        let registerParam = self.createRegisterParam();
+        if (_.isEmpty(registerParam.itemValues)) {
+            return;
+        }
         self.$mask('show');
-        self.$http.post('at', API.register, self.createRegisterParam())
+        self.$http.post('at', API.register, registerParam)
             .then((data: any) => {
                 let dataAfter = data.data;
                 if ((_.isEmpty(dataAfter.errorMap) && dataAfter.errorMap[5] == undefined)) {
