@@ -582,8 +582,10 @@ export class Kdws03AComponent extends Vue {
             'paramData': paramData
         },
             { type: 'dropback' })
-            .then((v) => {
-
+            .then((v: any) => {
+                if (v.reload == true) {
+                    window.location.reload();
+                }
             });
     }
 
