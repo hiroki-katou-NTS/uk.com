@@ -225,16 +225,25 @@ export class KdwS03BComponent extends Vue {
     public getItemLock(key: string) {
         let self = this;
         let lstCellState = _.filter(self.params.paramData.lstCellState, (item) => item.rowId == self.params.rowData.id);
+        if (_.isEmpty(lstCellState)) {
+            return false;
+        }
         let itemHeader = _.find(self.contentType, (item) => item.key == key);
+        if (_.isEmpty(itemHeader)) {
+            return false;
+        }
         let cellKey = '';
         if (_.isEmpty(itemHeader.group)) {
             cellKey = itemHeader.key;
         } else {
             cellKey = itemHeader.group[0].key;
         }
-        let lstState =_.find(lstCellState, (item) => item.columnKey == cellKey).state;
+        let cellState =_.find(lstCellState, (item) => item.columnKey == cellKey);
+        if (_.isUndefined(cellState)) { 
+            return false;
+        }
 
-        return _.find(lstState, (item) => item.includes('mgrid-disable'));
+        return _.find(cellState.state, (item) => item.includes('mgrid-disable'));
     }
 
     get isDisplayError() {
