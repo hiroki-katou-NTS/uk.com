@@ -143,13 +143,13 @@
                 {{item.code}} &nbsp;&nbsp;&nbsp;  {{item.name}}
               </option>
             </nts-dropdown>
-            <nts-dropdown v-if="getItemMasterType(key)==masterType.Calc && isSpecCalcLst(key)" v-model="screenData[0][key]" v-bind:record-name="key" v-bind:key="key"
+            <nts-dropdown v-if="getItemMasterType(key)==masterType.Calc && !isSpecCalcLst(key)" v-model="screenData[0][key]" v-bind:record-name="key" v-bind:key="key"
               :class-input="`${ getBackGroundColor(key) }`" v-bind:disabled="getItemLock(key)">
               <option v-for="(item, k) in masterData.lstCalc" v-bind:key="k" :value="item.code">
                 {{item.code}} &nbsp;&nbsp;&nbsp;  {{item.name}}
               </option>
             </nts-dropdown>
-            <nts-dropdown v-if="getItemMasterType(key)==masterType.Calc && !isSpecCalcLst(key)" v-model="screenData[0][key]" v-bind:record-name="key" v-bind:key="key"
+            <nts-dropdown v-if="getItemMasterType(key)==masterType.Calc && isSpecCalcLst(key)" v-model="screenData[0][key]" v-bind:record-name="key" v-bind:key="key"
               :class-input="`${ getBackGroundColor(key) }`" v-bind:disabled="getItemLock(key)">
               <option v-for="(item, k) in masterData.lstCalcCompact" v-bind:key="k" :value="item.code">
                 {{item.code}} &nbsp;&nbsp;&nbsp;  {{item.name}}
