@@ -334,7 +334,7 @@ export class KdwS03BComponent extends Vue {
             return 'fas fa-exclamation-circle align-bottom text-danger';
         }
         if (rowClass.includes('mgrid-alarm')) {
-            return 'fas fa-exclamation-triangle align-bottom text-danger';
+            return 'fas fa-exclamation-triangle align-bottom uk-text-yellow';
         }
 
         return '';
