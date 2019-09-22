@@ -16,8 +16,6 @@
         <com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
         <com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
         <com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
-        <com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
-        <com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
         <com:scriptfile path="/view/kcp/009/kcp009.js" of="/nts.uk.com.web" />
         <com:stylefile path="/view/kcp/009/style.css" of="/nts.uk.com.web" />
         <com:ValidatorScript>
@@ -91,7 +89,7 @@
                    <input id="B222_18" style="margin-left: 20px;" tabindex="11" data-bind="ntsTextEditor: {
                                                                             name: '#{i18n.getText('QSI013_B222_18')}',
                                                                             value: hOtherReason,
-                                                                            enable: $vm.hOther(),
+                                                                            enable: hOther,
                                                                             constraint: 'RemarkForQuaCompany'}" />
                </div>
                <div class="valign-center control-group" style="margin-top : 10px;">
@@ -136,7 +134,7 @@
                    <input id="B222_31" style="margin-left: 20px;" tabindex="16" data-bind="ntsTextEditor: {
                                                                            name: '#{i18n.getText('QSI013_B222_31')}',
                                                                            value: pOtherReason,
-                                                                           enable: $vm.pOther(),
+                                                                           enable: pOther,
                                                                            constraint: 'RemarkForQuaCompany'}" />
                </div>
            </div>

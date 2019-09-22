@@ -28,7 +28,7 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
     @Inject
     private JapaneseErasAdapter adapter;
 
-    private static final int EMP_IN_PAGE = 2;
+    private static final int EMP_IN_PAGE = 4;
 
     @Override
     public void generate(FileGeneratorContext fileContext, ExportDataCsv exportData) {
@@ -59,7 +59,7 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
                     page++;
                     ws.get(ws.addCopy(0)).setName(sheetName + page);
                     companyCd = element.getOfficeCd();
-                    fillDataOffice(ws, element, sheetName + page, stt );
+                    fillDataOffice(ws, element, sheetName + page);
                     stt = 0;
                 }
                 fillEmployee(ws, element, sheetName + page, stt );
@@ -70,27 +70,27 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
         }
     }
 
-    private void fillDataOffice(WorksheetCollection ws, GuaByTheInsurExportDto element, String sheetName, int stt) {
+    private void fillDataOffice(WorksheetCollection ws, GuaByTheInsurExportDto element, String sheetName) {
         JapaneseDate dateJp = toJapaneseDate(element.getFilingDate());
-        ws.getRangeByName(this.getRangeName(sheetName,"A1_10_1", stt)).setValue(dateJp.year() + 1);
-        ws.getRangeByName(this.getRangeName(sheetName,"A1_10_2", stt)).setValue(dateJp.month());
-        ws.getRangeByName(this.getRangeName(sheetName,"A1_10_3", stt)).setValue(dateJp.day());
-        ws.getRangeByName(this.getRangeName(sheetName,"A1_1", stt)).setValue(element.getBusinessstablishmentbCode1());
-        ws.getRangeByName(this.getRangeName(sheetName,"A1_2", stt)).setValue(element.getBusinessstablishmentbCode2());
-        ws.getRangeByName(this.getRangeName(sheetName,"A1_3", stt)).setValue(element.getOfficeNumber());
-        ws.getRangeByName(this.getRangeName(sheetName,"A1_4_1", stt)).setValue(element.getOfficePostalCode().length() > 3 ? element.getOfficePostalCode().substring(0,3) : element.getOfficePostalCode());
-        ws.getRangeByName(this.getRangeName(sheetName,"A1_4_2", stt)).setValue(element.getOfficePostalCode().length() >=  7 ? element.getOfficePostalCode().substring(3,7)
+        ws.getRangeByName(sheetName + "!A1_10_1").setValue(dateJp.year() + 1);
+        ws.getRangeByName(sheetName + "!A1_10_2").setValue(dateJp.month());
+        ws.getRangeByName(sheetName + "!A1_10_3" ).setValue(dateJp.day());
+        ws.getRangeByName(sheetName + "!A1_1").setValue(element.getBusinessstablishmentbCode1());
+        ws.getRangeByName(sheetName + "!A1_2").setValue(element.getBusinessstablishmentbCode2());
+        ws.getRangeByName(sheetName + "!A1_3").setValue(element.getOfficeNumber());
+        ws.getRangeByName(sheetName + "!A1_4_1").setValue(element.getOfficePostalCode().length() > 3 ? element.getOfficePostalCode().substring(0,3) : element.getOfficePostalCode());
+        ws.getRangeByName(sheetName + "!A1_4_2").setValue(element.getOfficePostalCode().length() >=  7 ? element.getOfficePostalCode().substring(3,7)
                 :  element.getOfficePostalCode().length() > 3 ? element.getOfficePostalCode().substring(3,element.getOfficePostalCode().length()) : "");
-        ws.getRangeByName(this.getRangeName(sheetName,"A1_5", stt)).setValue(element.getOfficeAddress1());
-        ws.getRangeByName(this.getRangeName(sheetName,"A1_6", stt)).setValue(element.getOfficeAddress2());
-        ws.getRangeByName(this.getRangeName(sheetName,"A1_7", stt)).setValue(element.getBusinessName());
+        ws.getRangeByName(sheetName + "!A1_5").setValue(element.getOfficeAddress1());
+        ws.getRangeByName(sheetName +"!A1_6").setValue(element.getOfficeAddress2());
+        ws.getRangeByName(sheetName + "!A1_7").setValue(element.getBusinessName());
         //ws.getRangeByName(this.getRangeName(sheetName,"A1_8", stt)).setValue(element.getBusinessName1());
-        ws.getRangeByName(this.getRangeName(sheetName,"A1_9", stt)).setValue(element.getPhoneNumber());
+        ws.getRangeByName(sheetName + "!A1_9").setValue(element.getPhoneNumber());
     }
 
     private void fillEmployee(WorksheetCollection worksheets, GuaByTheInsurExportDto data, String sheetName, int stt){
         JapaneseDate birthDay = toJapaneseDate( GeneralDate.fromString(data.getBrithDay().substring(0,10), "yyyy-MM-dd"));
-        JapaneseDate startDate = toJapaneseDate( GeneralDate.fromString(data.getQualificationDate().substring(0,10), "yyyy-MM-dd"));
+        JapaneseDate startDate = data.getQualificationDate().length() >= 10 ? toJapaneseDate( GeneralDate.fromString(data.getQualificationDate().substring(0,10), "yyyy-MM-dd")) : null;
         //JapaneseDate endDate = toJapaneseDate( GeneralDate.fromString(data.getSt().substring(0,10), "yyyy-MM-dd"));
         /*this.selectEra(worksheets, birthDay.era(), sheetName, stt);
         this.selectCause(worksheets, data.getCause(), sheetName, stt);
@@ -140,6 +140,9 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
             worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_10_" + i));
             worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_11_" + i));
             worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_12_" + i));
+            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_13_" + i));
+            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_14_" + i));
+            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_15_" + i));
             worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_16_" + i));
             worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_17_" + i));
             worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_18_" + i));
@@ -199,6 +202,9 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
     }
 
     private String convertJpDate(JapaneseDate date){
+        if(date == null) {
+            return "      ";
+        }
         int y = date.year() + 1;
         int d = date.day();
         int m = date.month();
