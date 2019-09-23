@@ -5,4 +5,3 @@ import '@views/documents';
 import '@views/kaf';
 import '@views/kdl';
 import '@views/kdw';
-import '@views/test';
