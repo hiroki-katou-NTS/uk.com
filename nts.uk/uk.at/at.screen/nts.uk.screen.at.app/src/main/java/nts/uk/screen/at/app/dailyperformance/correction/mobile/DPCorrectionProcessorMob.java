@@ -1002,13 +1002,13 @@ public class DPCorrectionProcessorMob {
 			lstEmployeeId = lstInfoEmp.stream().map(x -> x.getSid()).distinct().collect(Collectors.toList());
 			lstEmployeeId.add(employeeIdLogin);
 			lstEmployeeId = lstEmployeeId.stream().distinct().collect(Collectors.toList());
-			if (closureId != null) {
-				Map<String, String> employmentWithSidMap = repo.getAllEmployment(companyId, lstEmployeeId,
-						new DateRange(range.getEndDate(), range.getEndDate()));
-				List<ClosureDto> closureDtos = repo.getClosureId(employmentWithSidMap, range.getEndDate());
-				lstEmployeeId = closureDtos.stream().filter(x -> x.getClosureId().intValue() == closureId.intValue())
-						.map(x -> x.getSid()).collect(Collectors.toSet()).stream().collect(Collectors.toList());
-			}
+//			if (closureId != null) {
+//				Map<String, String> employmentWithSidMap = repo.getAllEmployment(companyId, lstEmployeeId,
+//						new DateRange(range.getEndDate(), range.getEndDate()));
+//				List<ClosureDto> closureDtos = repo.getClosureId(employmentWithSidMap, range.getEndDate());
+//				lstEmployeeId = closureDtos.stream().filter(x -> x.getClosureId().intValue() == closureId.intValue())
+//						.map(x -> x.getSid()).collect(Collectors.toSet()).stream().collect(Collectors.toList());
+//			}
 //			} else {
 //				// No 338
 //				// RoleType 3:就業 EMPLOYMENT
