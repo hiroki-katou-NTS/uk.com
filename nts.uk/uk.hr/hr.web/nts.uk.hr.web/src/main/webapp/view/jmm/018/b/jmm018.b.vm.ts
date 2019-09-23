@@ -37,6 +37,7 @@ module nts.uk.com.view.jmm018.b {
                                                     { headerText: getText('JMM018_A422_7'), key: 'useApproval', width: '20%', dataType: "boolean", formatType : "checkbox",
                                                                 filterOpts : { trueOpt: nts.uk.resource.getText("Enum_UseAtr_Use"), falseOpt: nts.uk.resource.getText("Enum_UseAtr_NotUse") }}
                                                 ]);
+                
                 // thêm help button trong header
                  $(document).delegate("#treegrid", "igtreegriddatarendered", function (evt, ui) {
                      let first = $(evt.target).data('_first_event');
@@ -161,27 +162,27 @@ module nts.uk.com.view.jmm018.b {
                  });     
                 
                 
-            $("#buttonExpandAll").igButton({
-                click: function (evt, args) {
-                    for (var i = 0; i < self.listEventId().length; i++) {
-                        $("#treegrid").igTreeGrid("expandRow", self.listEventId()[i].key);
+                $("#buttonExpandAll").igButton({
+                    click: function (evt, args) {
+                        for (var i = 0; i < self.listEventId().length; i++) {
+                            $("#treegrid").igTreeGrid("expandRow", self.listEventId()[i].key);
+                        }
                     }
-                }
-            });
-            
-            $("#buttonCollapseAll").igButton({
-                click: function (evt, args) {
-                    for (var i = 0; i < self.listEventId().length; i++) {
-                        $("#treegrid").igTreeGrid("collapseRow", self.listEventId()[i].key);
+                });
+                
+                $("#buttonCollapseAll").igButton({
+                    click: function (evt, args) {
+                        for (var i = 0; i < self.listEventId().length; i++) {
+                            $("#treegrid").igTreeGrid("collapseRow", self.listEventId()[i].key);
+                        }
                     }
-                }
-            });
+                });
             
-                // Không phải đoạn lệnh này không chạy mà do nó được đặt nhầm chỗ
+                // resize
                 let doit = -1,
                     resizedw = () => {
                         clearTimeout(doit);
-
+ 
                         $("#treegrid").igTreeGrid({ height: window.innerHeight - 350 });
 
                         $("#treegrid").igTreeGrid("dataBind");
@@ -202,10 +203,12 @@ module nts.uk.com.view.jmm018.b {
                 blockUI.invisible();
                 let listParent = [];
                 let menu = [];
+                
                 service.findEventMenu().done(function(data: any){
                     if(data.available == false){
                         nts.uk.ui.dialog.error({ messageId: "MsgJ_JMM018_1"});
                     }
+                    
                     // A422_12, A422_13, A422_14, 
                     let eventNameList = _.map(data.listHrEvent, (item: any) => new MenuName({eventId: item.eventId, eventName: item.eventName}));
                     _.forEach(eventNameList, (a) => {
@@ -217,6 +220,7 @@ module nts.uk.com.view.jmm018.b {
                                 self.listEventId(listParent);
                             }
                     });
+                    
                     // A422_16 -> A422-20
                     let listNoticeDevMenu = _.map(data.hrdevMenuList, (item: any) => new Program(item.programId, item.availableNotice));
                     let listApprovalDevMenu = _.map(data.hrdevMenuList, (item: any) => new Program(item.programId, item.availableApproval));
@@ -233,6 +237,7 @@ module nts.uk.com.view.jmm018.b {
                                                 useApproval: agur.useApproval,
                                                 useNotice: agur.useNotice} ) );
                     });
+                    
                     // xét điều kiện để biết check box nào bị visiable trong hai cột 通知機能の使用(cột 3) 承認機能の使用 (cột 4)
                     _.forEach(menu, (e) =>{
                         let obj = _.find(listNoticeDevMenu, function(b) {
