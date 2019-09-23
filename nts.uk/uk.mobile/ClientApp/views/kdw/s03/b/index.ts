@@ -727,6 +727,13 @@ export class KdwS03BComponent extends Vue {
             .then((data: any) => {
                 self.$mask('hide');
                 let dataAfter = data.data;
+                if (dataAfter.optimisticLock === true) {
+                    self.$modal.error('Msg_1528').then(() => {
+                        self.$close({ reload: true });
+                    });
+                    
+                    return;
+                }
                 if (dataAfter.messageAlert == 'Msg_15') {
                     self.$modal.info('Msg_15').then(() => {
                         self.$close({ reload: true });
@@ -735,16 +742,50 @@ export class KdwS03BComponent extends Vue {
                     return;
                 }
                 let errorOutput = '';
-                _.forEach(dataAfter.errorMap, (typeItem) => {
-                    _.forEach(typeItem, (item) => {
-                        if (item.message) {
-                            errorOutput += self.$i18n(item.message);
-                        }
+                if (dataAfter.errorMap[0] != undefined) {
+                    _.forEach(dataAfter.errorMap[0], (value) => {
+                        errorOutput += self.$i18n('Msg_996');
                     });
-                });
-
+                }
+                if (dataAfter.errorMap[1] != undefined) {
+                    _.forEach(dataAfter.errorMap[1], (value) => {
+                        errorOutput += self.$i18n('Msg_996');
+                        let item = _.find(self.contentType, (data) => {
+                            return String(data.key) === 'A' + value.itemId;
+                        });
+                        let itemName = (item == undefined) ? '' : item.headerText;
+                        let itemOtherInGroup = CHECK_INPUT[value.itemId + ''];
+                        let itemGroup = self.params.paramData.lstControlDisplayItem.itemInputName[Number(itemOtherInGroup)];
+                        let nameGroup: any = (itemGroup == undefined) ? '' : itemGroup;
+                        let message = self.$i18n(value.message, [itemName, nameGroup]);
+                        errorOutput += message;
+                    });    
+                }
+                if (dataAfter.errorMap[3] != undefined) {
+                    _.forEach(dataAfter.errorMap[3], (value) => {
+                        errorOutput += self.$i18n(value.layoutCode);
+                    });
+                }
+                if (dataAfter.errorMap[4] != undefined) {
+                    _.forEach(dataAfter.errorMap[4], (value) => {
+                        let item = _.find(self.contentType, (data) => {
+                            if (data.group != undefined && data.group != null) {
+                                return String(data.group[0].key) === 'Code' + value.itemId;
+                            } else {
+                                return data.key != undefined && String(data.key) === 'A' + value.itemId;
+                            }
+                        });
+                        let itemName = (item == undefined) ? '' : item.headerText;
+                        let message = self.$i18n('Msg_1298', [itemName, value.value]);
+                        errorOutput += message;
+                    });
+                }
+                if (dataAfter.errorMap[5] != undefined) {
+                    _.forEach(dataAfter.errorMap[5], (value) => {
+                        errorOutput += self.$i18n(value.message);
+                    });    
+                }
                 self.$modal.error(errorOutput).then(() => {
-                    self.$close({ reload: true });
                 });
             }).catch((res: any) => {
                 self.$mask('hide');
