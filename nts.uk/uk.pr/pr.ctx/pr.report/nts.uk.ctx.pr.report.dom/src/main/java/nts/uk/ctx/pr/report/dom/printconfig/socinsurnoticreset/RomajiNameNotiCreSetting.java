@@ -25,10 +25,10 @@ public class RomajiNameNotiCreSetting extends AggregateRoot {
      */
     private BusinessDivision addressOutputClass;
 
-    public RomajiNameNotiCreSetting(String userId, String cid, int addressOutputClass) {
+    public RomajiNameNotiCreSetting(String userId, String cid, Integer addressOutputClass) {
         this.cid = cid;
         this.userId = userId;
-        this.addressOutputClass = EnumAdaptor.valueOf(addressOutputClass, BusinessDivision.class);
+        this.addressOutputClass = addressOutputClass != null ?  EnumAdaptor.valueOf(addressOutputClass, BusinessDivision.class) : EnumAdaptor.valueOf(0, BusinessDivision.class);
     }
 
 }

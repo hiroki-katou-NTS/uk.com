@@ -9,14 +9,11 @@
     <ui:define name="htmlHead">
         <com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
         <com:scriptfile set="IGNITE" />
-
-
+        <com:scriptfile path="../share/model.js"/>
         <com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
         <com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
         <com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
         <com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
-
-
         <com:scriptfile path="qsi003.a.vm.js" />
         <com:scriptfile path="qsi003.a.start.js" />
         <com:scriptfile path="qsi003.a.service.js" />
@@ -25,11 +22,11 @@
 
     <ui:define name="content">
         <div id="functions-area" style = "min-width: 1000px;">
-            <button id="A1_1" tabindex="1" class="proceed">#{i18n.getText('QSI003_3')}</button>
+            <button id="A1_1" tabindex="1" class="proceed" data-bind="click : exportData">#{i18n.getText('QSI003_3')}</button>
 
             <button id="A1_2" tabindex="2" >#{i18n.getText('QSI003_2')}</button>
 
-            <button id="A1_3" tabindex="3" data-bind="click: openScreenB" >#{i18n.getText('QSI003_4')}</button>
+            <button id="A1_3" tabindex="3" data-bind="click: openBScreen" >#{i18n.getText('QSI003_4')}</button>
 
         </div>
         <div id="contents-area">
@@ -37,56 +34,42 @@
             <div id="com-ccg001"></div>
 
             <!-- div left -->
-            <div class="pull-left" style="margin-left: 100px">
-
-                <table id="multi-list" data-bind="ntsGridList: {
-                    height: 350,
-                    options: items,
-                    optionsValue: 'code',
-                    columns: columns,
-                    multiple: true,
-                    value: currentCodeList
-                }"></table>
-
-
+            <div class="pull-left" id="A2_2" style="margin-left: 100px">
+                <div id="component-items-list"></div>
             </div>
             <!-- div right -->
-            <div  class="pull-left" style="margin-left: 100px;    border-radius: 8px;border: 1px solid grey;padding: 10px;">
+            <div  class="pull-right" id="A3_1" style="margin-left: 100px;    border-radius: 8px;border: 1px solid grey;padding: 10px;">
                 <span id="A3_2" class="label" style="margin-bottom: 15px;">#{i18n.getText('QSI003_5')}</span>
                 <div class="control-group">
                     <div id="A3_3" data-bind="ntsFormLabel: {constrant: '', required:true}">#{i18n.getText('QSI003_6')}</div>
-                    <div style="margin-left:100px;" data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD', name: '#{i18n.getText('QSI003_6')}'}"></div>
-                    <span style="margin-left:20px" data-bind="text: datePicker"></span>
+                    <div id= "A3_4" style="margin-left:100px;" data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD',valueFormat: 'YYYYMMDD',name: '#{i18n.getText('QSI003_6')}'}"></div>
+                    <span id= "A3_5" style="margin-left:20px" data-bind="text: datePicker"></span>
                 </div>
 
                 <div class="control-group valign-center">
                     <div id="A3_6" data-bind="ntsFormLabel: {constrant: '', required:true}">#{i18n.getText('QSI003_7')}</div>
                     <div style="margin-left:72px" class="cf" data-bind="ntsSwitchButton: {
                         name: '#{i18n.getText('QSI003_7')}',
-                        options: roundingRules,
+                        options: $vm.notificationTarget(),
                         optionsValue: 'code',
                         optionsText: 'name',
-                        value: selectedRuleCode,
-                        required: true,
-                        enable: true }"></div>
-                        <button data-bind="ntsHelpButton: {image: 'QSI003Image01.png', position: 'right top', enable: true }">?</button>
+                        value: personTarget,
+                        required: true
+                        }"></div>
+                    <button data-bind="ntsHelpButton: {image: 'QSI003Image01.png', position: 'bottom center', enable: true }">?</button>
                 </div>
 
                 <div class="control-group valign-center">
                     <div id="A3_11" data-bind="ntsFormLabel: {constrant: '', required:true}">#{i18n.getText('QSI003_10')}</div>
                     <div id="A3_12" style="margin-left:71px"  data-bind="ntsComboBox: {
                         name: '#{i18n.getText('QSI003_11')}',
-                        options: itemList,
+                        options: $vm.addressOutClass(),
                         optionsValue: 'code',
                         visibleItemsCount: 5,
-                        value: selectedCode,
+                        value: addressOutputClass,
                         optionsText: 'name',
-                        editable: true,
-                        enable: true,
-                        required: true,
                         selectFirstIfNull: true,
                         columns: [
-                            { prop: 'code', length: 4 },
                             { prop: 'name', length: 10 },
                         ]}"></div>
                 </div>
