@@ -1,0 +1,96 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="ccg029.a.style.css" />
+			<com:scriptfile path="ccg029.a.vm.js" />
+			<com:scriptfile path="ccg029.a.service.js" />
+			<com:scriptfile path="ccg029.a.start.js" />
+<!-- 			<com:ValidatorScript> -->
+<!-- 					nts.uk.ctx.hr.shared.dom.primitiveValue.String_Any_20 -->
+<!-- 			</com:ValidatorScript> -->
+		</ui:define>
+		<ui:define name="content">
+
+							<div class="component-search-employee">
+								<div class="row">
+									<div class ="inline lable mr5"><span>#{i18n.getText('CCG029_A1_1')}</span></div>
+									<div class ="inline" data-bind="ntsDatePicker: {value: processingDate, name: '#{i18n.getText('CCG029_A1_2')}', dateFormat: 'YYYY/MM/DD'}"></div>
+								</div>
+								<div class="row">
+									<div class ="inline mr10">
+										<input  tabindex="6" data-bind="ntsTextEditor: {
+											name: 'ssss', 
+											value: keySearch,
+											option: {width: '240px', placeholder: 'コード・氏名・カナ氏名で検索･･･'}}" />
+									</div>
+									<button tabindex="10" id="findBtn" class="inline" data-bind="click: find ">#{i18n.getText('CCG029_A1_4')}</button>
+								</div>
+								<div class="row">
+									<button tabindex="10" id="" class="inline mr10" data-bind="click: find">#{i18n.getText('Com_Workplace')}選択表示</button>
+									<button tabindex="10" id="" class="inline mr10" data-bind="click: find ">#{i18n.getText('CCG029_A1_6')}</button>
+									<button tabindex="10" id="" class="inline" data-bind="click: expandDipslay ">#{i18n.getText('CCG029_A1_16')}</button>
+								</div>
+								<div class="row">
+									<div id="gridListEmployeesContent">
+										<table id="gridListEmployees"></table>
+									</div>
+								</div>
+							</div>
+							<div class="test">
+								<div class="row">
+									<div class ="inline lable mr5"><span>#{i18n.getText('CCG029_A1_1')}</span></div>
+									<div class ="inline" data-bind="ntsDatePicker: {value: processingDate, name: '#{i18n.getText('CCG029_A1_2')}', dateFormat: 'YYYY/MM/DD'}"></div>
+								</div>
+								<div class="row">
+									<div class ="inline lable mr5"><span>#{i18n.getText('CCG029_A1_1')}</span></div>
+									<div class ="inline" data-bind="ntsDatePicker: {value: processingDate, name: '#{i18n.getText('CCG029_A1_2')}', dateFormat: 'YYYY/MM/DD'}"></div>
+								</div>
+								<div class="row">
+									<div class ="inline lable mr5"><span>#{i18n.getText('CCG029_A1_1')}</span></div>
+									<div class ="inline" data-bind="ntsDatePicker: {value: processingDate, name: '#{i18n.getText('CCG029_A1_2')}', dateFormat: 'YYYY/MM/DD'}"></div>
+								</div>
+								<div class="row">
+									<div class ="inline lable mr5"><span>#{i18n.getText('CCG029_A1_1')}</span></div>
+									<div class ="inline" data-bind="ntsDatePicker: {value: processingDate, name: '#{i18n.getText('CCG029_A1_2')}', dateFormat: 'YYYY/MM/DD'}"></div>
+								</div>
+								<div class="row">
+									<div class ="inline lable mr5"><span>#{i18n.getText('CCG029_A1_1')}</span></div>
+									<div class ="inline" data-bind="ntsDatePicker: {value: processingDate, name: '#{i18n.getText('CCG029_A1_2')}', dateFormat: 'YYYY/MM/DD'}"></div>
+								</div>
+								<div class="row">
+									<div class ="inline lable mr5"><span>#{i18n.getText('CCG029_A1_1')}</span></div>
+									<div class ="inline" data-bind="ntsDatePicker: {value: processingDate, name: '#{i18n.getText('CCG029_A1_2')}', dateFormat: 'YYYY/MM/DD'}"></div>
+								</div>
+								<div class="row">
+									<div class ="inline lable mr5"><span>#{i18n.getText('CCG029_A1_1')}</span></div>
+									<div class ="inline" data-bind="ntsDatePicker: {value: processingDate, name: '#{i18n.getText('CCG029_A1_2')}', dateFormat: 'YYYY/MM/DD'}"></div>
+								</div>
+								<div class="row">
+									<div class ="inline lable mr5"><span>#{i18n.getText('CCG029_A1_1')}</span></div>
+									<div class ="inline" data-bind="ntsDatePicker: {value: processingDate, name: '#{i18n.getText('CCG029_A1_2')}', dateFormat: 'YYYY/MM/DD'}"></div>
+								</div>
+								<div class="row">
+									<div class ="inline lable mr5"><span>#{i18n.getText('CCG029_A1_1')}</span></div>
+									<div class ="inline" data-bind="ntsDatePicker: {value: processingDate, name: '#{i18n.getText('CCG029_A1_2')}', dateFormat: 'YYYY/MM/DD'}"></div>
+								</div>
+								<div class="row">
+									<div class ="inline lable mr5"><span>#{i18n.getText('CCG029_A1_1')}</span></div>
+									<div class ="inline" data-bind="ntsDatePicker: {value: processingDate, name: '#{i18n.getText('CCG029_A1_2')}', dateFormat: 'YYYY/MM/DD'}"></div>
+								</div>
+								<div class="row">
+									<div class ="inline lable mr5"><span>#{i18n.getText('CCG029_A1_1')}</span></div>
+									<div class ="inline" data-bind="ntsDatePicker: {value: processingDate, name: '#{i18n.getText('CCG029_A1_2')}', dateFormat: 'YYYY/MM/DD'}"></div>
+								</div>
+								
+							</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

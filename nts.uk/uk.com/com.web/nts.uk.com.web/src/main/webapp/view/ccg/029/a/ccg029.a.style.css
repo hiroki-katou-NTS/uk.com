@@ -1,0 +1,37 @@
+.component-search-employee{
+	width: 350px;
+	display: inline-block;
+    vertical-align: top;
+}
+.test{
+	width: 350px;
+	display: inline-block;
+}
+.component-search-employee .row {
+	margin: 10px 5px;
+	width: 350px;
+}
+
+.component-search-employee .row .inline {
+	display: inline-block;
+	vertical-align: middle;
+}
+
+.component-search-employee .row .mr5 {
+	margin-right: 5px;
+}
+
+.component-search-employee .row .mr3 {
+	margin-right: 3px;
+}
+
+.component-search-employee #gridListEmployeesContent {
+	height: 400px;
+	width: 340px;
+	position: relative;
+	z-index: 99;
+}
+
+.component-search-employee #gridListEmployeesContent.showFullColumn {
+	width: 640px;
+}
