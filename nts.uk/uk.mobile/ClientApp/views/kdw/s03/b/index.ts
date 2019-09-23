@@ -900,9 +900,6 @@ export class KdwS03BComponent extends Vue {
         }
         let attendanceItem = self.getAttendanceItem(key);
         let itemValues = self.getAutoCalcChangeItem();
-        if (_.isEmpty(itemValues)) {
-            return;
-        }
         _.forEach(itemValues, (item) => {
             if (item.itemId != attendanceItem.id) {
                 item.columnKey = 'USE';
@@ -912,12 +909,14 @@ export class KdwS03BComponent extends Vue {
             let mainObj = new DPItemValue(attendanceItem, self.screenData[0][key], self.params, self.itemValues);
             itemValues.push(mainObj);
         }
+        let oldRow = self.oldData[key];
+        let notChangeCellValue = (JSON.stringify(oldRow).localeCompare(JSON.stringify(self.screenData[0][key])) == 0) ? true : false;
         let param = {
             dailyEdits: [],
             itemEdits: itemValues,
             changeSpr31: false,
             changeSpr34: false,
-            notChangeCell: false
+            notChangeCell: notChangeCellValue
         };
         self.$mask('show');
         self.$http.post('at', API.linkItemCalc, param)
