@@ -9,14 +9,8 @@ import java.util.Optional;
 public interface RomajiNameNotiCreSetRepository
 {
 
-    List<RomajiNameNotiCreSetting> getAllRomajiNameNotiCreSetting();
+    Optional<RomajiNameNotiCreSetting> getRomajiNameNotiCreSettingById();
+    void register(RomajiNameNotiCreSetting domain);
 
-    Optional<RomajiNameNotiCreSetting> getRomajiNameNotiCreSettingById(String cid, String userId);
-
-    void add(RomajiNameNotiCreSetting domain);
-
-    void update(RomajiNameNotiCreSetting domain);
-
-    void remove();
 
 }

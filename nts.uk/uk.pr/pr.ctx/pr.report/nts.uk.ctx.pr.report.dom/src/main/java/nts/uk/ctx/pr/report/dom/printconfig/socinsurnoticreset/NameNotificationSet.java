@@ -2,6 +2,7 @@ package nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
 
 import java.util.Optional;
@@ -42,5 +43,13 @@ public class NameNotificationSet extends DomainObject {
     * その他理由内容
     */
     private Optional<ReasonsForRegisRoman> otherReason;
-    
+
+    public NameNotificationSet(int other, int listed, int residentCard, int addressOverseas, int shortResident, String otherReason) {
+        this.other = other;
+        this.listed = listed;
+        this.residentCard = EnumAdaptor.valueOf(residentCard, ResidentCardCls.class);
+        this.addressOverseas = addressOverseas;
+        this.shortResident = shortResident;
+        this.otherReason = otherReason == null ? Optional.empty() : Optional.of(new ReasonsForRegisRoman(otherReason));
+    }
 }

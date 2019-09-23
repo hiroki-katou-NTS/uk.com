@@ -1,6 +1,8 @@
 module nts.uk.pr.view.qsi003.a.viewmodel {
-
-    import block = nts.uk.ui.block;
+    import model = nts.uk.pr.view.qsi003.share.model;
+    import dialog = nts.uk.ui.dialog;
+    import setShared = nts.uk.ui.windows.setShared;
+    import modal = nts.uk.ui.windows.sub.modal;
     export class ScreenModel {
         ccg001ComponentOption: GroupOption;
         employeeInputList: KnockoutObservableArray<EmployeeModel>;
@@ -10,71 +12,141 @@ module nts.uk.pr.view.qsi003.a.viewmodel {
         isDisplayOrganizationName: KnockoutObservable<boolean>;
         targetBtnText: string;
         baseDate: KnockoutObservable<Date>;
-        listComponentOption: ComponentOption;
+        /*listComponentOption: ComponentOption;*/
         selectedItem: KnockoutObservable<string>;
+        selectedCode: KnockoutObservable<string>  = ko.observable('');
         tabindex: number;
         //
         //switch
         simpleValue: KnockoutObservable<string>;
         roundingRules: KnockoutObservableArray<any>;
-        selectedRuleCode: any;
+        personTarget: any;
         //datepicker
-        date: KnockoutObservable<string>;
-        datePicker: KnockoutObservable<string>;
+        date: KnockoutObservable<string> = ko.observable('');
+        datePicker: KnockoutObservable<string>  = ko.observable('');
         //combobox
         itemList: KnockoutObservableArray<ItemModel>;
-        selectedCode: KnockoutObservable<string>;
+        addressOutputClass: KnockoutObservable<number> = ko.observable(0);
         isEnable: KnockoutObservable<boolean>;
         isEditable: KnockoutObservable<boolean>;
-        //grid
-        columns: KnockoutObservableArray<any>;
-        items: KnockoutObservableArray<ItemModelGrid>;
-        currentCodeList: KnockoutObservableArray<any>;
+
+        //start kcp 005
+        listComponentOption: any;
+        multiSelectedCode: KnockoutObservableArray<string>;
+        isShowAlreadySet: KnockoutObservable<boolean>;
+        alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
+        isDialog: KnockoutObservable<boolean>;
+        isShowNoSelectRow: KnockoutObservable<boolean>;
+        isMultiSelect: KnockoutObservable<boolean>;
+        isShowWorkPlaceName: KnockoutObservable<boolean>;
+        isShowSelectAllButton: KnockoutObservable<boolean>;
+        disableSelection: KnockoutObservable<boolean>;
+        employeeList: KnockoutObservableArray<UnitModel> = ko.observableArray<UnitModel>([]);
+
+        //get data enum
+        notificationTarget: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNotificationTarget());
+        addressOutClass: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getAddressOutClass());
 
         constructor() {
-            block.invisible();
             let self = this;
-            self.loadCCG001();
-            //init switch
-            self.simpleValue = ko.observable("123");
-            self.roundingRules = ko.observableArray([
-                { code: '1', name: nts.uk.resource.getText('QSI003_8') },
-                { code: '2', name: nts.uk.resource.getText('QSI003_9') }
-            ]);
-            self.selectedRuleCode = ko.observable(1);
-            //init datepicker
-            self.date = ko.observable('20000101');
-            self.datePicker = ko.observable(nts.uk.time.dateInJapanEmpire('20000101').toString());
-            //init combobox
-            self.itemList = ko.observableArray([
-                new ItemModel('1', '基本給'),
-                new ItemModel('2', '役職手当'),
-                new ItemModel('3', '基本給ながい文字列ながい文字列ながい文字列')
-            ]);
+            this.getRomajiNameNoti();
+            this.loadCCG001();
+            this.loadKCP005();
 
-            self.selectedCode = ko.observable('1');
+
+            //init switch
+            self.personTarget = ko.observable(0);
+            self.date.subscribe((data)=>{
+                self.datePicker(" (" + nts.uk.time.dateInJapanEmpire(data) + ")");
+            });
+
             self.isEnable = ko.observable(true);
             self.isEditable = ko.observable(true);
-            //grid
-
-            this.columns = ko.observableArray([
-                { headerText: 'コード', key: 'id', width: 100, hidden: true },
-                { headerText: '名称', key: 'code', width: 150},
-                { headerText: '説明', key: 'businessName', width: 150 },
-                { headerText: '説明1', key: 'workplaceName', width: 150}
-            ]);
-
-            this.items = ko.observableArray([]);
-
-            this.currentCodeList = ko.observableArray([]);
-            block.clear();
         }
 
-        openScreenB(){
-            nts.uk.ui.windows.sub.modal("/view/qsi/003/b/index.xhtml").onClosed( ()=> {
+        openBScreen() {
+            let self = this;
+            let params = {
+                employeeList: self.getListEmpId(self.selectedCode(), self.employeeList())
+            };
+            setShared("QSI003_PARAMS_B", params);
+            modal("/view/qsi/003/b/index.xhtml");
+        }
 
+
+        getRomajiNameNoti(){
+            var self = this;
+            nts.uk.pr.view.qsi003.a.service.getRomajiNameNotiCreSettingById().done(function (data: any) {
+                if(data){
+                    self.addressOutputClass(data.addressOutputClass);
+                }
             });
         }
+
+        getListEmpId(empCode: Array, listEmp: Array){
+            let listEmpId =[];
+            _.each(empCode, (item) =>{
+                let emp = _.find(listEmp, function(itemEmp) { return itemEmp.code == item; });
+                listEmpId.push(emp.id);
+            });
+            return listEmpId;
+        }
+
+        exportData(){
+            var self = this;
+            let romajiNameNotiCreSetCommand: any = {
+                date : moment.utc(self.date(),"YYYY/MM/DD" ),
+                personTarget : self.personTarget(),
+                addressOutputClass : self.addressOutputClass(),
+                empIds: self.getListEmpId(self.selectedCode(), self.employeeList())
+            };
+            nts.uk.pr.view.qsi003.a.service.exportData(romajiNameNotiCreSetCommand).done( function() {
+
+            }).fail(error => {
+                dialog.alertError(error);
+            });
+        }
+
+        /*KCP005*/
+        loadKCP005(){
+            let self = this;
+            self.baseDate = ko.observable(new Date());
+            self.selectedCode = ko.observable('1');
+            self.multiSelectedCode = ko.observableArray(['0', '1', '4']);
+            self.isShowAlreadySet = ko.observable(false);
+            self.alreadySettingList = ko.observableArray([
+                {code: '1', isAlreadySetting: true},
+                {code: '2', isAlreadySetting: true}
+            ]);
+            self.isDialog = ko.observable(false);
+            self.isShowNoSelectRow = ko.observable(false);
+            self.isMultiSelect = ko.observable(true);
+            self.isShowWorkPlaceName = ko.observable(false);
+            self.isShowSelectAllButton = ko.observable(false);
+            self.disableSelection = ko.observable(false);
+            /*this.employeeList = ko.observableArray<UnitModel>([
+                { code: '1', name: 'Angela Baby', workplaceName: 'HN' },
+                { code: '2', name: 'Xuan Toc Do', workplaceName: 'HN' },
+                { code: '3', name: 'Park Shin Hye', workplaceName: 'HCM' },
+                { code: '4', name: 'Vladimir Nabokov', workplaceName: 'HN' }
+            ]);*/
+            self.listComponentOption = {
+                isShowAlreadySet: self.isShowAlreadySet(),
+                isMultiSelect: self.isMultiSelect(),
+                listType: ListType.EMPLOYEE,
+                employeeInputList: self.employeeList,
+                selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                selectedCode: self.selectedCode,
+                isDialog: self.isDialog(),
+                isShowNoSelectRow: self.isShowNoSelectRow(),
+                alreadySettingList: self.alreadySettingList,
+                isShowWorkPlaceName: self.isShowWorkPlaceName(),
+                isShowSelectAllButton: self.isShowSelectAllButton(),
+                disableSelection : self.disableSelection()
+            };
+            $('#component-items-list').ntsListComponent(self.listComponentOption);
+        }
+
         /* CCG001 */
         loadCCG001(){
             let self = this;
@@ -117,13 +189,24 @@ module nts.uk.pr.view.qsi003.a.viewmodel {
                  * @param: data: the data return from CCG001
                  */
                 returnDataFromCcg001: function(data: Ccg001ReturnedData) {
-                    self.createGridList(data.listEmployee);
-
+                    self.employeeList(self.setEmployee(data.listEmployee));
                 }
             }
 
             $('#com-ccg001').ntsGroupComponent(self.ccg001ComponentOption);
 
+        }
+
+        setEmployee(item){
+            let listEmployee = [];
+            _.each(item, (item) => {
+                let employee: Employee = new Employee(
+                    item.employeeId,
+                    item.employeeCode,
+                    item.employeeName);
+                listEmployee.push(employee);
+            });
+            return listEmployee;
         }
 
         createEmployeeModel(data){
@@ -133,25 +216,26 @@ module nts.uk.pr.view.qsi003.a.viewmodel {
                 listEmployee.push({
                     id: data.employeeId,
                     code: data.employeeCode,
-                    businessName: data.employeeName,
-                    workplaceName: data.workplaceName
+                    name: data.employeeName
                 });
 
             });
 
             return listEmployee;
         }
-
-        createGridList(data){
-            let self = this;
-            _.each(data, data=>{
-                self.items.push(new ItemModelGrid(data.employeeId,data.employeeCode, data.businessName, data.workplaceName));
-            });
-
-        }
-
     }
 
+    export class Employee {
+        id: string;
+        code: string;
+        name: string;
+
+        constructor(employeeId: string, employeeCode: string, employeeName: string) {
+            this.id = employeeId;
+            this.code = employeeCode;
+            this.name = employeeName;
+        }
+    }
     // Note: Defining these interfaces are optional
     export interface GroupOption {
         /** Common properties */
@@ -207,9 +291,7 @@ module nts.uk.pr.view.qsi003.a.viewmodel {
     export interface EmployeeSearchDto {
         employeeId: string;
         employeeCode: string;
-        employeeName: string;
-        affiliationId: string; // departmentId or workplaceId based on system type
-        affiliationName: string; // departmentName or workplaceName based on system type
+        employeeName: string; // departmentName or workplaceName based on system type
     }
     export interface Ccg001ReturnedData {
         baseDate: string; // 基準日
@@ -222,7 +304,7 @@ module nts.uk.pr.view.qsi003.a.viewmodel {
     export interface ComponentOption {
         systemReference: SystemType;
         isDisplayOrganizationName: boolean;
-        employeeInputList: KnockoutObservableArray<EmployeeModel>;
+        employeeInputList: KnockoutObservableArray<EmployeeSearchDto>;
         targetBtnText: string;
         selectedItem: KnockoutObservable<string>;
         tabIndex: number;
@@ -232,15 +314,12 @@ module nts.uk.pr.view.qsi003.a.viewmodel {
         id: string;
         code: string;
         businessName: string;
-        depName?: string;
-        workplaceName?: string;
     }
     export class SystemType {
-        static EMPLOYMENT = 1;
-        static SALARY = 2;
-        static PERSONNEL = 3;
-        static ACCOUNTING = 4;
-        static OH = 6;
+        static SELECT_BY_SELECTED_CODE = 1;
+        static SELECT_ALL = 2;
+        static SELECT_FIRST_ITEM = 3;
+        static NO_SELECT = 4;
     }
     export class ItemModel {
         code: string;
@@ -251,18 +330,28 @@ module nts.uk.pr.view.qsi003.a.viewmodel {
             this.name = name;
         }
     }
-
-    class ItemModelGrid {
-        id: string;
+    export class ListType {
+        static EMPLOYMENT = 1;
+        static Classification = 2;
+        static JOB_TITLE = 3;
+        static EMPLOYEE = 4;
+    }
+    export interface UnitAlreadySettingModel {
         code: string;
-        businessName: string;
-        workplaceName: string;
-        constructor(id: string, code: string, businessName: string, workplaceName: string) {
-            this.id = id;
-            this.code = code;
-            this.businessName = businessName;
-            this.workplaceName = workplaceName;
-        }
+        isAlreadySetting: boolean;
     }
 
+    export class SelectType {
+        static SELECT_BY_SELECTED_CODE = 1;
+        static SELECT_ALL = 2;
+        static SELECT_FIRST_ITEM = 3;
+        static NO_SELECT = 4;
+    }
+    export interface UnitModel {
+        id: string;
+        code: string;
+        name?: string;
+        workplaceName?: string;
+        isAlreadySetting?: boolean;
+    }
 }
