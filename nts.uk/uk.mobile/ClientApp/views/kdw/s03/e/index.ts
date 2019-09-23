@@ -1,4 +1,4 @@
-import { Vue, _ } from '@app/provider';
+import { Vue, _, moment } from '@app/provider';
 import { component, Prop } from '@app/core/component';
 import { storage } from '@app/utils';
 import { LoDashStatic } from 'lodash';
@@ -24,6 +24,7 @@ export class KdwS03EComponent extends Vue {
 
     public created() {
         let self = this;
+        self.params.date = moment(self.params.date).utc().toDate();
         self.$mask('show');
         self.empName = self.params.empName.length <= 7 ? self.params.empName : self.params.empName.substr(0, 7) + '...';
         //A画面のキャッシュを取得する

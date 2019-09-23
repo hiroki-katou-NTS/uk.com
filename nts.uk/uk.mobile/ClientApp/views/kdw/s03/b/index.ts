@@ -1,4 +1,4 @@
-import { Vue, _ } from '@app/provider';
+import { Vue, _, moment } from '@app/provider';
 import { component, Prop, Watch } from '@app/core/component';
 import { TimeDuration } from '@app/utils';
 import { KdwS03DComponent } from 'views/kdw/s03/d';
@@ -110,6 +110,7 @@ export class KdwS03BComponent extends Vue {
     private oldData: any = [];
     private oldCheckBox: Array<number> = [];
     private listAutoCalc: any = [];
+    private isReady = false;
 
     get lstAttendanceItem() {
         let self = this;
@@ -145,6 +146,7 @@ export class KdwS03BComponent extends Vue {
 
     public created() {
         let self = this;
+        self.params.date = moment(self.params.date).utc().toDate();
         if (self.params.rowData.sign) {
             self.checked1s.push(2);
         }
@@ -172,6 +174,7 @@ export class KdwS03BComponent extends Vue {
         let self = this;
         if (self.validations.fixedConstraint) {
             self.addCustomConstraint();
+            self.isReady = true;
         }
     }
 
@@ -962,37 +965,50 @@ export class KdwS03BComponent extends Vue {
     @Watch('screenData1.A28')
     public watcherA28(value: any) {
         let self = this;
-        self.autoCalc('A28');    
+        if (self.isReady) {
+            self.autoCalc('A28');  
+        }
     }
 
     @Watch('screenData1.A29')
     public watcherA29(value: any) {
         let self = this;
-        self.autoCalc('A29');    
+        if (self.isReady) {
+            self.autoCalc('A29'); 
+        }
     }
 
     @Watch('screenData1.A31')
     public watcherA31(value: any) {
         let self = this;
-        self.autoCalc('A31');    
+        if (self.isReady) {
+            self.autoCalc('A31');   
+        }
     }
 
     @Watch('screenData1.A34')
     public watcherA34(value: any) {
         let self = this;
-        self.autoCalc('A34');    
+        if (self.isReady) {
+            self.autoCalc('A34'); 
+        }
     }
 
     @Watch('screenData1.A41')
     public watcherA41(value: any) {
         let self = this;
-        self.autoCalc('A41');    
+        if (self.isReady) {
+            self.autoCalc('A41'); 
+        }
+           
     }
 
     @Watch('screenData1.A44')
     public watcherA44(value: any) {
         let self = this;
-        self.autoCalc('A44');    
+        if (self.isReady) {
+            self.autoCalc('A44');
+        }
     }
 }
 

@@ -1,4 +1,4 @@
-import { Vue } from '@app/provider';
+import { Vue, moment } from '@app/provider';
 import { component, Prop } from '@app/core/component';
 import { KdwS03EComponent } from 'views/kdw/s03/e';
 
@@ -20,9 +20,11 @@ export class KdwS03DComponent extends Vue {
 
     public created() {
         let self = this;
+        self.params.startDate = moment(self.params.startDate).utc().toDate();
+        self.params.endDate = moment(self.params.endDate).utc().toDate();
         self.$mask('show');
         //get list error/alarm
-        this.$http.post('at', API.getError, {
+        self.$http.post('at', API.getError, {
             startDate: self.params.startDate, 
             endDate: self.params.endDate,
             employeeIDLst: [ self.params.employeeID ],
@@ -45,7 +47,7 @@ export class KdwS03DComponent extends Vue {
         self.$modal('kdws03e', { 
             employeeId: self.params.employeeID, 
             empName: self.params.employeeName, 
-            date: new Date(rowData.date), 
+            date: moment(rowData.date).utc().toDate(), 
             code: rowData.code,
             attendanceItemList: rowData.attendanceItemList
         }, { type : 'dropback' } )
