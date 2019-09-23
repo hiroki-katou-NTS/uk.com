@@ -49,7 +49,7 @@
                 <tr v-for="(row, i) of displayDataLst">
                     <td v-bind:class="row.dateColor">{{row.date}}</td>
                     <td v-for="(cell, j) of row.rowData" v-bind:class="cell.class" v-bind:style="{ 'word-wrap': 'break-word' }">
-                        {{cell.value == '0:00' || cell.value == '0.0' || cell.value == '0' ? '' : cell.value}}
+                        {{cell.displayvalue}}
                     </td>
                     <td>
                         <div style="text-align: right" v-click:500="() => openEdit(row.id)">
@@ -80,7 +80,7 @@
                 <tr v-for="(row, i) of displayDataLstEx">
                     <td style="font-size: 8.3px; word-wrap: break-word">{{row.employeeNameDis}}</td>
                     <td v-for="(cell, j) of row.rowData" v-bind:class="cell.class" v-bind:style="{ 'word-wrap': 'break-word' }">
-                        {{cell.value == '0:00' || cell.value == '0.0' ? '' : cell.value}}
+                        {{cell.displayvalue}}
                     </td>
                     <td>
                         <div style="text-align: right" v-click:500="() => openEdit(row.id)">

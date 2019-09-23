@@ -2,7 +2,7 @@
 import { _, Vue, moment } from '@app/provider';
 import { component, Watch, Prop } from '@app/core/component';
 import { FixTableComponent } from '@app/components/fix-table';
-import { TimeDuration } from '@app/utils/time';
+import { TimeDuration, TimeWithDay } from '@app/utils/time';
 import { storage } from '@app/utils';
 import { KdwS03BComponent } from 'views/kdw/s03/b';
 import { KdwS03AMenuComponent } from 'views/kdw/s03/a/menu';
@@ -362,31 +362,35 @@ export class Kdws03AComponent extends Vue {
         self.lstDataSourceLoad.forEach((rowDataSrc: any) => {
             let rowData = [];
             headers.forEach((header: any) => {
+                let setting = _.find(data.lstControlDisplayItem.columnSettings, (x) => x.columnKey == header.key);
                 if (_.has(rowDataSrc, header.key)) {
-                    if (!_.isNil(header.constraint.cdisplayType) && (header.constraint.cdisplayType.indexOf('Currency') != -1)) {
+                    if (!_.isNil(header.constraint.cdisplayType) && (setting.typeFormat == '3')) {
                         rowData.push({
                             key: header.key,
-                            value: this.formatMoney(rowDataSrc[header.key]),
-                            class: 'currency-symbol'
+                            value: rowDataSrc[header.key],
+                            class: 'currency-symbol',
+                            displayvalue: this.formatDisplay(rowDataSrc[header.key], setting),
                         });
                     } else {
                         rowData.push({
                             key: header.key,
                             value: rowDataSrc[header.key],
-                            class: ''
+                            class: '',
+                            displayvalue: this.formatDisplay(rowDataSrc[header.key], setting),
                         });
                     }
 
                 } else {
                     let value = this.getFromCombo(header.group[1].ntsControl, rowDataSrc[header.group[1].key]);
-                    if (!_.isNil(header.constraint.cdisplayType) && (header.constraint.cdisplayType.indexOf('Currency') != -1)) {
+                    if (!_.isNil(header.constraint.cdisplayType) && (setting.typeFormat == '3')) {
                         rowData.push({
                             key: header.key,
                             groupKey: header.group[1].key,
-                            value: this.formatMoney(value),
+                            value,
                             groupKey0: header.group[0].key,
                             value0: rowDataSrc[header.group[0].key],
-                            class: 'currency-symbol'
+                            class: 'currency-symbol',
+                            displayvalue: this.formatDisplay(rowDataSrc[header.key], setting),
                         });
                     } else {
                         rowData.push({
@@ -395,7 +399,8 @@ export class Kdws03AComponent extends Vue {
                             value,
                             groupKey0: header.group[0].key,
                             value0: rowDataSrc[header.group[0].key],
-                            class: ''
+                            class: '',
+                            displayvalue: this.formatDisplay(rowDataSrc[header.key], setting),
                         });
                     }
 
@@ -719,9 +724,19 @@ export class Kdws03AComponent extends Vue {
         }
     }
 
-    //お金値のフォーマット
-    public formatMoney(value: string) {
-        return Number(value) == 0 ? '' : Number(value).toFixed(0);
+    //フォーマット
+    public formatDisplay(value: string, setting: any) {
+        if (value == '0:00' || value == '0.0' || value == '0') {
+            return '';
+        } else {
+            if (setting.typeFormat == '6') {
+                return new TimeWithDay(value);
+            } else if (setting.typeFormat == '3') {
+                return Number(value) == 0 ? '' : Number(value).toFixed(0);
+            } else {
+                return value;
+            }
+        }
     }
 
 }
