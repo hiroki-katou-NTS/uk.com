@@ -58,6 +58,7 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
                     }
                     page++;
                     ws.get(ws.addCopy(0)).setName(sheetName + page);
+                    ws.get(sheetName + page).autoFitRows(true);
                     companyCd = element.getOfficeCd();
                     fillDataOffice(ws, element, sheetName + page);
                     stt = 0;
@@ -218,6 +219,4 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
     private String getRangeName(String sheetName, String pos, int stt){
         return stt == 0 ? sheetName + "!" + pos : sheetName + "!" + pos + "_" + stt;
     }
-
-
 }

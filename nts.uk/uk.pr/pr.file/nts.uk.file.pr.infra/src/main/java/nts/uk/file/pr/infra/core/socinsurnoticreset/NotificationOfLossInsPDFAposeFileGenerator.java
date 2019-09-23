@@ -90,6 +90,7 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
                     }
                     page++;
                     worksheets.get(worksheets.addCopy(0)).setName(sheetName + page);
+                    worksheets.get(sheetName + page).autoFitRows(true);
                     companyCd = data.get(i).getOfficeCd();
                     fillCompanyHealthy(worksheets, dataRow, baseDate, company, sheetName + page, ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL, ins.getOfficeInformation());
                     stt = 0;
