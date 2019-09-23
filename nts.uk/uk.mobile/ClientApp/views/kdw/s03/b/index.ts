@@ -317,6 +317,33 @@ export class KdwS03BComponent extends Vue {
         if (_.isEmpty(self.masterData.businessType)) {
             self.masterData.businessType.push({ code: '', name: 'なし' });
         }
+        _.forEach(self.screenData1, (value, key) => {
+            let attendanceItem = self.getAttendanceItem(key);
+            if (!(self.getItemType(key) == ItemType.InputStringCode || self.getItemType(key) == ItemType.ButtonDialog)) {
+                return;
+            }
+            switch (attendanceItem.typeGroup) {
+                case MasterType.KDLS10_ServicePlace:
+                    self.masterData.servicePlace.push({ code: value, name: 'マスタ未登録' });
+                    break;        
+                case MasterType.KDLS32_Reason: 
+                    self.masterData.reason.push({ code: value, name: 'マスタ未登録' });
+                    break;
+                case MasterType.KCPS02_Classification:
+                    self.masterData.classification.push({ code: value, name: 'マスタ未登録' });
+                    break;
+                case MasterType.KCPS03_Possition:
+                    self.masterData.possition.push({ code: value, name: 'マスタ未登録' });
+                    break;
+                case MasterType.KCPS01_Employment:
+                    self.masterData.employment.push({ code: value, name: 'マスタ未登録' });
+                    break;
+                case MasterType.KCP001_BusinessType:
+                    self.masterData.businessType.push({ code: value, name: 'マスタ未登録' });
+                    break;
+                default: break;
+            }
+        });
     }
 
     private formatData(rowData: RowData) {
@@ -1025,12 +1052,6 @@ export class KdwS03BComponent extends Vue {
         });
     }
 
-    public handleItem(key: string) {
-        let self = this;
-        let rowData = _.find(self.params.rowData.rowData, (o) => o.key == key);
-        rowData.isHandle = true;
-    }
-
     public screenDataWatch() {
         let self = this;
         _.forEach(self.screenData1, (item, key) => {
@@ -1128,57 +1149,6 @@ export class KdwS03BComponent extends Vue {
         });
         
     }
-
-    /*
-    @Watch('screenData1.A28')
-    public watcherA28(value: any) {
-        let self = this;
-        if (self.isReady) {
-            self.autoCalc('A28');  
-        }
-    }
-
-    @Watch('screenData1.A29')
-    public watcherA29(value: any) {
-        let self = this;
-        if (self.isReady) {
-            self.autoCalc('A29'); 
-        }
-    }
-
-    @Watch('screenData1.A31')
-    public watcherA31(value: any) {
-        let self = this;
-        if (self.isReady) {
-            self.autoCalc('A31');   
-        }
-    }
-
-    @Watch('screenData1.A34')
-    public watcherA34(value: any) {
-        let self = this;
-        if (self.isReady) {
-            self.autoCalc('A34'); 
-        }
-    }
-
-    @Watch('screenData1.A41')
-    public watcherA41(value: any) {
-        let self = this;
-        if (self.isReady) {
-            self.autoCalc('A41'); 
-        }
-           
-    }
-
-    @Watch('screenData1.A44')
-    public watcherA44(value: any) {
-        let self = this;
-        if (self.isReady) {
-            self.autoCalc('A44');
-        }
-    }
-    */
 }
 
 const API = {

@@ -393,7 +393,7 @@ public class DataDialogWithTypeProcessor {
 				List<WorkTypeChangedDto> dtos = repo.findWorkTypeChanged(aff.getEmploymentCode(), workTypeOld, companyId);
 			    Set<String> workTypeCodes = dtos.stream().map(x -> x.getTypeCode()).collect(Collectors.toSet());
 				if(workTypeCodes.isEmpty()){
-					return new HashMap<>();
+					return toMap(repo.findWorkType(companyId, new HashSet<>()));
 				}
 				
 		        List<CodeName> codeNameResults = repo.findWorkType(companyId, workTypeCodes);
