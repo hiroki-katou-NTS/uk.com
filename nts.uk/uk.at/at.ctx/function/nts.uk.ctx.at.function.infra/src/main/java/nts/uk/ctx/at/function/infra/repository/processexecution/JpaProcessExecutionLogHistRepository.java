@@ -49,6 +49,14 @@ public class JpaProcessExecutionLogHistRepository extends JpaRepository
 	
 	@Override
 	public void insert(ProcessExecutionLogHistory domain) {
+		Optional<KfnmtProcessExecutionLogHistory> data = this.queryProxy().query(SELECT_All_BY_CID_EXECCD_EXECID, KfnmtProcessExecutionLogHistory.class)
+			.setParameter("companyId", domain.getCompanyId())
+			.setParameter("execItemCd", domain.getExecItemCd())
+			.setParameter("execId", domain.getExecId()).getSingle();
+		if(data.isPresent()) {
+			this.commandProxy().remove(data.get());
+			this.getEntityManager().flush();
+		}
 		this.commandProxy().insert(KfnmtProcessExecutionLogHistory.toEntity(domain));
 		this.getEntityManager().flush();
 	}
@@ -57,6 +65,7 @@ public class JpaProcessExecutionLogHistRepository extends JpaRepository
 	public void update(ProcessExecutionLogHistory domain) {
 		KfnmtProcessExecutionLogHistory newEntity = KfnmtProcessExecutionLogHistory.toEntity2(domain);
 		
+<<<<<<< HEAD
 //		KfnmtProcessExecutionLogHistory updateEntity = this.queryProxy().query(SELECT_All_BY_CID_EXECCD_EXECID, KfnmtProcessExecutionLogHistory.class)
 //		.setParameter("companyId", domain.getCompanyId())
 //		.setParameter("execItemCd", domain.getExecItemCd())
@@ -128,6 +137,30 @@ public class JpaProcessExecutionLogHistRepository extends JpaRepository
 		}catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+=======
+		KfnmtProcessExecutionLogHistory updateEntity = this.queryProxy().query(SELECT_All_BY_CID_EXECCD_EXECID, KfnmtProcessExecutionLogHistory.class)
+		.setParameter("companyId", domain.getCompanyId())
+		.setParameter("execItemCd", domain.getExecItemCd())
+		.setParameter("execId", domain.getExecId()).getSingle().get();
+		updateEntity.overallStatus = newEntity.overallStatus;
+		updateEntity.errorDetail = newEntity.errorDetail;
+		updateEntity.prevExecDateTime = newEntity.prevExecDateTime;
+		updateEntity.schCreateStart = newEntity.schCreateStart;
+		updateEntity.schCreateEnd = newEntity.schCreateEnd;
+		updateEntity.dailyCreateStart = newEntity.dailyCreateStart;
+		updateEntity.dailyCreateEnd = newEntity.dailyCreateEnd;
+		updateEntity.dailyCalcStart = newEntity.dailyCalcStart;
+		updateEntity.dailyCalcEnd = newEntity.dailyCalcEnd;
+		updateEntity.reflectApprovalResultStart = newEntity.reflectApprovalResultStart;
+		updateEntity.reflectApprovalResultEnd = newEntity.reflectApprovalResultEnd;
+		updateEntity.taskLogList = newEntity.taskLogList;
+		updateEntity.lastEndExecDateTime = newEntity.lastEndExecDateTime;
+		updateEntity.errorSystem = newEntity.errorSystem;
+		updateEntity.errorBusiness = newEntity.errorBusiness;
+		updateEntity.taskLogList = newEntity.taskLogList;
+		this.commandProxy().update(updateEntity);		
+		this.getEntityManager().flush();
+>>>>>>> 2d85ea9... fixbug kbt002 108717
 	}
 	
 	@Override

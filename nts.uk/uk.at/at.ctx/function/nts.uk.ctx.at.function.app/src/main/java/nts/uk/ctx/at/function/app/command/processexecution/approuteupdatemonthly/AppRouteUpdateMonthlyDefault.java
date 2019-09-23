@@ -65,6 +65,11 @@ public class AppRouteUpdateMonthlyDefault implements AppRouteUpdateMonthlyServic
 	@Inject
 	private AppDataInfoMonthlyRepository appDataInfoMonthlyRepo;
 	
+<<<<<<< HEAD
+=======
+//	@Inject
+//	private EmployeeManageAdapter employeeManageAdapter;
+>>>>>>> 2d85ea9... fixbug kbt002 108717
 	
 	public static int MAX_DELAY_PARALLEL = 0;
 
@@ -76,6 +81,10 @@ public class AppRouteUpdateMonthlyDefault implements AppRouteUpdateMonthlyServic
 		for (ExecutionTaskLog executionTaskLog : procExecLog.getTaskLogList()) {
 			if (executionTaskLog.getProcExecTask() == ProcessExecutionTask.APP_ROUTE_U_MON) {
 				executionTaskLog.setStatus(null);
+				executionTaskLog.setLastExecDateTime(GeneralDateTime.now());
+				executionTaskLog.setErrorBusiness(null);
+				executionTaskLog.setErrorSystem(null);
+				executionTaskLog.setLastEndExecDateTime(null);
 				break;
 			}
 		}
@@ -87,6 +96,7 @@ public class AppRouteUpdateMonthlyDefault implements AppRouteUpdateMonthlyServic
 			for (ExecutionTaskLog executionTaskLog : procExecLog.getTaskLogList()) {
 				if (executionTaskLog.getProcExecTask() == ProcessExecutionTask.APP_ROUTE_U_MON) {
 					executionTaskLog.setStatus(Optional.of(EndStatus.NOT_IMPLEMENT));
+					executionTaskLog.setLastExecDateTime(null);
 					break;
 				}
 			}
@@ -147,6 +157,7 @@ public class AppRouteUpdateMonthlyDefault implements AppRouteUpdateMonthlyServic
 		
 		log.info("承認ルート更新(月別) END PARALLEL: " + ((System.currentTimeMillis() - startTime) / 1000) + "秒");
 		log.info("更新処理自動実行_承認ルート更新（月次）_END_"+procExec.getExecItemCd()+"_"+GeneralDateTime.now());
+<<<<<<< HEAD
 		boolean checkError = false;
 		/*終了状態で「エラーあり」が返ってきたか確認する*/
 		for(CheckCreateperApprovalClosure checkCreateperApprovalClosure :listCheckCreateApp) {
@@ -174,6 +185,32 @@ public class AppRouteUpdateMonthlyDefault implements AppRouteUpdateMonthlyServic
 		//ドメインモデル「更新処理自動実行ログ」を更新する( domain 「更新処理自動実行ログ」)
 		processExecutionLogRepo.update(procExecLog);
 		return new OutputAppRouteMonthly(false,checkError1552);
+=======
+//		boolean checkError = false;
+//		/*終了状態で「エラーあり」が返ってきたか確認する*/
+//		for(CheckCreateperApprovalClosure checkCreateperApprovalClosure :listCheckCreateApp) {
+//			//エラーがあった場合
+//			if(checkCreateperApprovalClosure.isCheckCreateperApproval()) {
+//				checkError = true;
+//				break;
+//			}
+//		}
+//		for(ExecutionTaskLog executionTaskLog : procExecLog.getTaskLogList()) {
+//			//【条件 - dieu kien】 各処理の終了状態.更新処理　＝　承認ルート更新（月次）
+//			if(executionTaskLog.getProcExecTask() ==ProcessExecutionTask.APP_ROUTE_U_MON) {
+//				if(checkError) {
+//					//各処理の終了状態　＝　[承認ルート更新（月次）、異常終了]
+//					executionTaskLog.setStatus(Optional.of(EndStatus.ABNORMAL_END));
+//				}else {
+//					//各処理の終了状態　＝　[承認ルート更新（月次）、正常終了]
+//					executionTaskLog.setStatus(Optional.of(EndStatus.SUCCESS));
+//				}
+//			}
+//		}
+//		//ドメインモデル「更新処理自動実行ログ」を更新する( domain 「更新処理自動実行ログ」)
+//		processExecutionLogRepo.update(procExecLog);
+		return checkError1552;
+>>>>>>> 2d85ea9... fixbug kbt002 108717
 	}
 
 }

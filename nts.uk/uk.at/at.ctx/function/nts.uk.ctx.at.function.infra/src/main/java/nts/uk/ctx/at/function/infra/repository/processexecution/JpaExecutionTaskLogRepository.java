@@ -32,6 +32,7 @@ public class JpaExecutionTaskLogRepository extends JpaRepository
 			+ "AND etl.kfnmtExecTaskLogPK.execId = :execId ";
 	@Override
 	public List<ExecutionTaskLog> getAllByCidExecCdExecId(String companyId, String execItemCd, String execId) {
+<<<<<<< HEAD
 		String SELECT_LIST = "SELECT * FROM KFNMT_EXEC_TASK_LOG WHERE CID =? AND EXEC_ITEM_CD = ? AND EXEC_ID = ? ";
 		try (PreparedStatement statement = this.connection().prepareStatement(SELECT_LIST)) {
 			statement.setString(1, companyId);
@@ -50,6 +51,12 @@ public class JpaExecutionTaskLogRepository extends JpaRepository
 //				.setParameter("companyId", companyId)
 //				.setParameter("execItemCd", execItemCd)
 //				.setParameter("execId", execId).getList(c -> c.toDomain());
+=======
+		return this.queryProxy().query(SELECT_LIST, KfnmtExecutionTaskLog.class)
+				.setParameter("companyId", companyId)
+				.setParameter("execItemCd", execItemCd)
+				.setParameter("execId", execId).getList(c -> c.toNewDomain());
+>>>>>>> 2d85ea9... fixbug kbt002 108717
 	}
 	
 	/**
