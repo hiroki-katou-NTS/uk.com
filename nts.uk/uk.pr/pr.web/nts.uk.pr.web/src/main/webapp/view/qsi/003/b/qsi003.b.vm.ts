@@ -1,117 +1,61 @@
 module nts.uk.pr.view.qsi003.b.viewmodel {
-
+    import service = nts.uk.pr.view.qsi003.b.service;
+    import getShared = nts.uk.ui.windows.getShared;
+    import dialog = nts.uk.ui.dialog;
     import block = nts.uk.ui.block;
+    import model = nts.uk.pr.view.qsi003.share.model;
+
+
     export class ScreenModel {
+        screenMode: KnockoutObservable<model.SCREEN_MODE> = ko.observable(null);
         ccg001ComponentOption: GroupOption;
-        employeeInputList: KnockoutObservableArray<EmployeeModel>;
+        employeeInputList: KnockoutObservableArray<EmployeeModel>= ko.observableArray([]);
 
         //kcp009
+        constraint: string = 'LayoutCode';
         systemReference: KnockoutObservable<number>;
         isDisplayOrganizationName: KnockoutObservable<boolean>;
         targetBtnText: string;
         baseDate: KnockoutObservable<Date>;
         listComponentOption: ComponentOption;
-        selectedItem: KnockoutObservable<string>;
+        selectedItem: KnockoutObservable<string>= ko.observable('');
         tabindex: number;
-        //
-
-        texteditor: any;
-        simpleValue: KnockoutObservable<string>;
-
+        inline: KnockoutObservable<boolean>;
+        required: KnockoutObservable<boolean>;
+        enable: KnockoutObservable<boolean>;
+        isEnable: KnockoutObservable<boolean>;
+        isEditable: KnockoutObservable<boolean>;
         roundingRules: KnockoutObservableArray<any>;
-        selectedRuleCode: any;
 
-        constructor() {
-            block.invisible();
-            let self = this;
-            self.loadCCG001();
-            self.simpleValue = ko.observable("123");
+        //param
+        basicPenNumber : KnockoutObservable<string> = ko.observable('');
+        empId : KnockoutObservable<string> = ko.observable('');
+        others : KnockoutObservable<boolean> = ko.observable(true);
+        listeds : KnockoutObservable<boolean> = ko.observable(true);
+        residentCards : KnockoutObservable<number> = ko.observable(0);
+        addressOverseas : KnockoutObservable<boolean> = ko.observable(true);
+        otherReasons : KnockoutObservable<string> = ko.observable('');
+        shortResidents : KnockoutObservable<boolean> = ko.observable(true);
 
-            self.roundingRules = ko.observableArray([
-                { code: '1', name: nts.uk.resource.getText('QSI003_18') },
-                { code: '2', name: nts.uk.resource.getText('QSI003_19') }
-            ]);
-            self.selectedRuleCode = ko.observable(1);
+        otherp : KnockoutObservable<boolean> = ko.observable(true);
+        listedp : KnockoutObservable<boolean> = ko.observable(true);
+        residentCardp : KnockoutObservable<number> = ko.observable(0);
+        addressOverseap : KnockoutObservable<boolean> = ko.observable(true);
+        otherReasonp : KnockoutObservable<string> = ko.observable('');
+        shortResidentp : KnockoutObservable<boolean> = ko.observable(true);
 
-            block.clear();
-        }
-        cancel(){
-            nts.uk.ui.windows.close();
-        }
-        /* CCG001 */
-        loadCCG001(){
-            let self = this;
-            self.ccg001ComponentOption = {
-                /** Common properties */
-                systemType: 1,
-                showEmployeeSelection: true,
-                showQuickSearchTab: false,
-                showAdvancedSearchTab: true,
-                showBaseDate: false,
-                showClosure: false,
-                showAllClosure: false,
-                showPeriod: false,
-                periodFormatYM: false,
-                tabindex: 5,
-                /** Required parameter */
-                baseDate: moment().toISOString(),
-                periodStartDate: moment().toISOString(),
-                periodEndDate: moment().toISOString(),
-                inService: true,
-                leaveOfAbsence: true,
-                closed: true,
-                retirement: true,
+        loadKCP009(){
+            var self = this;
+            self.inline = ko.observable(true);
+            self.required = ko.observable(true)
+            self.enable = ko.observable(true);
+            self.systemReference = ko.observable(SystemType.SALARY);
+            self.isDisplayOrganizationName = ko.observable(false);
+            self.targetBtnText = nts.uk.resource.getText("対象者");
+            self.isEnable = ko.observable(true);
+            self.isEditable = ko.observable(true);
+            self.tabindex = 3;
 
-                /** Quick search tab options */
-                showAllReferableEmployee: true,
-                showOnlyMe: true,
-                showSameWorkplace: true,
-                showSameWorkplaceAndChild: true,
-
-                /** Advanced search properties */
-                showEmployment: true,
-                showWorkplace: true,
-                showClassification: true,
-                showJobTitle: true,
-                showWorktype: true,
-                isMutipleCheck: true,
-                /**
-                 * Self-defined function: Return data from CCG001
-                 * @param: data: the data return from CCG001
-                 */
-                returnDataFromCcg001: function(data: Ccg001ReturnedData) {
-
-                    self.loadKCP009(self.createEmployeeModel(data.listEmployee));
-
-                }
-            }
-
-            $('#com-ccg001').ntsGroupComponent(self.ccg001ComponentOption);
-
-        }
-
-        createEmployeeModel(data){
-            let listEmployee = [];
-            _.each(data, data => {
-                listEmployee.push({
-                    id: data.employeeId,
-                    code: data.employeeCode,
-                    businessName: data.employeeName,
-                    workplaceName: data.workplaceName
-                });
-            });
-
-            return listEmployee;
-        }
-        loadKCP009(data){
-            let self = this;
-            self.employeeInputList = ko.observableArray(data);
-            self.systemReference = ko.observable(SystemType.EMPLOYMENT);
-            self.isDisplayOrganizationName = ko.observable(true);
-            self.targetBtnText = nts.uk.resource.getText("KCP009_3");
-            self.selectedItem = ko.observable(null);
-            self.tabindex = 1;
-            // Initial listComponentOption
             self.listComponentOption = {
                 systemReference: self.systemReference(),
                 isDisplayOrganizationName: self.isDisplayOrganizationName(),
@@ -120,10 +64,137 @@ module nts.uk.pr.view.qsi003.b.viewmodel {
                 selectedItem: self.selectedItem,
                 tabIndex: self.tabindex
             };
+        }
+
+        constructor() {
+            let self = this;
+            this.loadKCP009();
+
+            let list = getShared("QSI003_PARAMS_B");
+            self.employeeInputList(list.employeeList);
+
+            self.selectedItem(self.employeeInputList()[0].id);
+
             $('#emp-component').ntsLoadListComponent(self.listComponentOption);
+
+            self.roundingRules = ko.observableArray([
+                { code: '0', name: nts.uk.resource.getText('QSI003_18') },
+                { code: '1', name: nts.uk.resource.getText('QSI003_19') }
+            ]);
+
+            self.selectedItem.subscribe((data) => {
+                self.getDataRomaji(data);
+            });
+        }
+        cancel(){
+            nts.uk.ui.windows.close();
+        }
+
+        getDefault(){
+            let self = this;
+            self.others  = ko.observable(true);
+            self.listeds  = ko.observable(true);
+            self.residentCards  = ko.observable(0);
+            self.addressOverseas  = ko.observable(true);
+            self.otherReasons = ko.observable('');
+            self.shortResidents  = ko.observable(true);
+
+            self.otherp = ko.observable(true);
+            self.listedp  = ko.observable(true);
+            self.residentCardp  = ko.observable(0);
+            self.addressOverseap  = ko.observable(true);
+            self.otherReasonp = ko.observable('');
+            self.shortResidentp  = ko.observable(true);
+            self.screenMode(model.SCREEN_MODE.NEW);
+        }
+
+        getDataRomaji(empId: string) {
+            block.invisible();
+            let self = this;
+            service.getReasonRomajiName(empId).done(function (data: any) {
+                if(data){
+                    self.basicPenNumber = ko.observable(data.basicPenNumber);
+                    self.others  = ko.observable(data.empNameReport.spouse.others == 0);
+                    self.listeds  = ko.observable(data.empNameReport.spouse.listeds == 0);
+                    self.residentCards  = ko.observable(data.empNameReport.spouse);
+                    self.addressOverseas  = ko.observable(data.empNameReport.addressOverseas == 0 ? true : false);
+                    self.otherReasons = ko.observable(data.empNameReport.otherReasons);
+                    self.shortResidents  = ko.observable(data.empNameReport.shortResidents == 0 ? true : false);
+
+                    self.otherp = ko.observable(data.empNameReport.otherp == 0 ? true : false);
+                    self.listedp  = ko.observable(data.empNameReport.listedp == 0 ? true : false);
+                    self.residentCardp  = ko.observable(data.empNameReport.residentCards);
+                    self.addressOverseap  = ko.observable(data.empNameReport.addressOverseas == 0 ? true : false);
+                    self.otherReasonp = ko.observable(data.empNameReport.otherReasonp);
+                    self.shortResidentp  = ko.observable(data.empNameReport.shortResidentp == 0 ? true : false);
+                    self.screenMode(model.SCREEN_MODE.UPDATE);
+                } else {
+                    this.getDefault();
+                }
+            }).fail(error => {
+                dialog.alertError(error);
+            });
+            block.clear();
+        }
+
+        createEmployeeModel(data){
+            let listEmployee = [];
+            _.each(data, data => {
+                listEmployee.push({
+                    id: data.employeeId,
+                    code: data.employeeCode,
+                    name: data.employeeName
+                });
+            });
+
+            return listEmployee;
         }
 
 
+        updateReasonRomajiName(){
+            var self = this;
+
+            let spouse : any = {
+                other :  self.others == true ? 1 : 0,
+                listed :  self.listeds == true ? 1 : 0,
+                residentCard : self.residentCards,
+                addressOverseas : self.addressOverseas == true ? 1 : 0,
+                otherReason : self.otherReasons,
+                shortResident : self.shortResidents == true ? 1 : 0
+            }
+
+            let personalSet : any = {
+                other :  self.otherp == true ? 1 : 0,
+                listed :  self.listedp == true ? 1 : 0,
+                residentCard : self.residentCardp,
+                addressOverseas : self.addressOverseap == true ? 1 : 0,
+                otherReason : self.otherReasonp,
+                shortResident : self.shortResidentp == true ? 1 : 0
+            }
+
+            let empNameReportCommand: any = {
+                empId: self.selectedItem(),
+                spouse : spouse,
+                personalSet : personalSet
+            };
+
+            let reasonRomajiNameCommand: any = {
+                empId: self.selectedItem(),
+                basicPenNumber : self.basicPenNumber,
+                empNameReportCommand : empNameReportCommand,
+                screenMode: model.SCREEN_MODE.UPDATE
+            };
+
+           service.updateReasonRomajiName(reasonRomajiNameCommand).done( function() {
+                dialog.info({ messageId: "Msg_15" }).then(() => {
+                    self.screenMode(model.SCREEN_MODE.UPDATE);
+                    self.getDataRomaji(self.selectedItem());
+                });
+            }).fail(error => {
+                dialog.alertError(error);
+            });
+            $("#B2_2").focus();
+        }
     }
 
     // Note: Defining these interfaces are optional
@@ -182,8 +253,6 @@ module nts.uk.pr.view.qsi003.b.viewmodel {
         employeeId: string;
         employeeCode: string;
         employeeName: string;
-        affiliationId: string; // departmentId or workplaceId based on system type
-        affiliationName: string; // departmentName or workplaceName based on system type
     }
     export interface Ccg001ReturnedData {
         baseDate: string; // 基準日
@@ -206,8 +275,6 @@ module nts.uk.pr.view.qsi003.b.viewmodel {
         id: string;
         code: string;
         businessName: string;
-        depName?: string;
-        workplaceName?: string;
     }
     export class SystemType {
         static EMPLOYMENT = 1;
