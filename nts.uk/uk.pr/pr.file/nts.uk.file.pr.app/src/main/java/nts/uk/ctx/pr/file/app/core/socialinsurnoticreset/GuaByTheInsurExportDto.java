@@ -3,6 +3,7 @@ package nts.uk.ctx.pr.file.app.core.socialinsurnoticreset;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.arc.time.GeneralDate;
 
 @Getter
 @Setter
@@ -12,7 +13,7 @@ public class GuaByTheInsurExportDto {
     /**
      * 提出日
      */
-    private String filingDate;
+    private GeneralDate filingDate;
     /**
      * 事業所番号
      */
@@ -207,4 +208,6 @@ public class GuaByTheInsurExportDto {
      * 理由（その他内容）
      */
     private String reasonOtherContent;
+
+    private String officeCd;
 }

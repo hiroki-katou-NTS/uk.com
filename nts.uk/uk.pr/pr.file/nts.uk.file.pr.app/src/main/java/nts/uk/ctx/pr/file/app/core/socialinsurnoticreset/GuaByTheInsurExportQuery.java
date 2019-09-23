@@ -8,9 +8,10 @@ import java.util.List;
 
 @Data
 public class GuaByTheInsurExportQuery {
-    int typeExport;
-    List<String> empIds;
-    GeneralDate startDate;
-    GeneralDate endDate;
-    SocialInsurNotiCreateSetQuery socialInsurNotiCreateSetQuery;
+    private int typeExport;
+    private List<String> empIds;
+    private GeneralDate startDate;
+    private GeneralDate baseDate;
+    private GeneralDate endDate;
+    private SocialInsurNotiCreateSetQuery socialInsurNotiCreateSetQuery;
 }

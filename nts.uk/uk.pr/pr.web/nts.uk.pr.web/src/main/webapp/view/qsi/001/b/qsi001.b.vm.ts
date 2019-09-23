@@ -294,7 +294,7 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
                     self.salaryMonthly(),
                     self.totalCompensation(),
                     self.selectedDepNotiAttach(),
-                    null,
+                    0,
                     self.shortWorkHours() == true ? 1 : 0,
                     self.continuousEmpAfterRetire() == true ? 1 : 0,
                     Number(self.selectedCode()),

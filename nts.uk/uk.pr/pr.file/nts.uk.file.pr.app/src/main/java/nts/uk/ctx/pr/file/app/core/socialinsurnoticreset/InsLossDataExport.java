@@ -9,7 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 public class InsLossDataExport {
 
-    private String empId;
+    private String empCd;
 
     private String officeCd;
 

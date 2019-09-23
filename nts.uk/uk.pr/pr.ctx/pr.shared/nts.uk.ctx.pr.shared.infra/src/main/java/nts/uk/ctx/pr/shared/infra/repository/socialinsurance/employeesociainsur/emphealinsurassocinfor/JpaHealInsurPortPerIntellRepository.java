@@ -35,7 +35,7 @@ public class JpaHealInsurPortPerIntellRepository extends JpaRepository implement
 
     @Override
     public List<HealInsurPortPerIntell> getHealInsurPortPerIntellById(String employeeId) {
-        return this.queryProxy().query(SELECT_BY_KEY_STRING, QqsmtHealInsurPortInt.class)
+        return this.queryProxy().query(SELECT_BY_EMPID, QqsmtHealInsurPortInt.class)
                 .setParameter("employeeId", employeeId)
                 .getList(x -> x.toDomain());
     }

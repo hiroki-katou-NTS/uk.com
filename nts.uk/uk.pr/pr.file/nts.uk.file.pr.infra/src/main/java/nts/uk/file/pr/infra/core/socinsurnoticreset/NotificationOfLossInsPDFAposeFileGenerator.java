@@ -28,7 +28,7 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
 
     private static final String TEMPLATE_FILE_70 = "report/70歳以上被用者該当届_帳票テンプレート.xlsx";
     private static final String TEMPLATE_FILE_OTHER = "report/70歳以上被用者不該当届_帳票テンプレート.xlsx";
-    private static final String FILE_NAME = "70歳以上被用者不該当届_帳票テンプレート";
+    private static final String FILE_NAME = "被保険者資格喪失届.pdf";
 
     @Inject
     private JapaneseErasAdapter adapter;
@@ -56,8 +56,7 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
             fillDataOverSevenTy(worksheets, data.getWelfPenInsLoss(), data.getBaseDate(), company, data.getSocialInsurNotiCreateSet());
             worksheets.removeAt(1);
             worksheets.removeAt(0);
-            reportContext.saveAsPdf(this.createNewFile(generatorContext,
-                    FILE_NAME + "_" + GeneralDateTime.now().toString("yyyyMMddHHmmss") + ".pdf"));
+            reportContext.saveAsPdf(this.createNewFile(generatorContext, FILE_NAME));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -98,7 +97,7 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
                 fillEmployeeUnderSeventy(worksheets, dataRow, sheetName + page, stt, ins);
             }
             if(stt != 3) {
-                unSelectAll(worksheets,sheetName + page, stt +2);
+                unSelectAll(worksheets,sheetName + page, stt +1);
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -110,11 +109,32 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
         worksheets.getRangeByName(sheetName + "!D1_1_1").setValue(dateJp.year() + 1);
         worksheets.getRangeByName(sheetName + "!D1_1_2").setValue(dateJp.month());
         worksheets.getRangeByName(sheetName + "!D1_1_3").setValue(dateJp.day());
-        worksheets.getRangeByName(sheetName + "!D1_2").setValue(isHeal ? data.getOfficeNumber1() : data.getWelfOfficeNumber1());
-        worksheets.getRangeByName(sheetName + "!D1_3").setValue(isHeal ? data.getOfficeNumber2() : data.getWelfOfficeNumber2());
-        worksheets.getRangeByName(sheetName + "!D1_4").setValue(isHeal ? data.getOfficeNumber() : data.getWelfOfficeNumber());
-        worksheets.getRangeByName(sheetName + "!D1_5").setValue(typeOff == BusinessDivision.OUTPUT_COMPANY_NAME ? company.getPostCd() :
-                typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? data.getPortCd() : "");
+        worksheets.getRangeByName(sheetName + "!D1_2_1").setValue(isHeal ? data.getOfficeNumber1().length() > 0 ? data.getOfficeNumber1().substring(0,1) : ""
+                : data.getWelfOfficeNumber1().length() > 1 ? data.getWelfOfficeNumber1().substring(0,1) : "");
+        worksheets.getRangeByName(sheetName + "!D1_2_1").setValue(isHeal ? data.getOfficeNumber1().length() > 1 ? data.getOfficeNumber1().substring(1,2) : ""
+                : data.getWelfOfficeNumber1().length() >= 2 ? data.getWelfOfficeNumber1().substring(1,2) : "");
+        worksheets.getRangeByName(sheetName + "!D1_3_1").setValue(isHeal ? data.getOfficeNumber2().length() > 0 ? data.getOfficeNumber2().substring(0,1) : ""
+                : data.getWelfOfficeNumber2().length() > 1 ? data.getWelfOfficeNumber2().substring(0,1) : "");
+        worksheets.getRangeByName(sheetName + "!D1_3_2").setValue(isHeal ? data.getOfficeNumber2().length() > 1 ? data.getOfficeNumber2().substring(1,2) : ""
+                : data.getWelfOfficeNumber2().length() > 1 ? data.getWelfOfficeNumber2().substring(0,1) : "");
+        worksheets.getRangeByName(sheetName + "!D1_3_3").setValue(isHeal ? data.getOfficeNumber2().length() > 2 ? data.getOfficeNumber2().substring(2,3) : ""
+                : data.getWelfOfficeNumber2().length() > 1 ? data.getWelfOfficeNumber2().substring(0,1) : "");
+        worksheets.getRangeByName(sheetName + "!D1_3_4").setValue(isHeal ? data.getOfficeNumber2().length() > 3 ? data.getOfficeNumber2().substring(3,4) : ""
+                : data.getWelfOfficeNumber2().length() > 1 ? data.getWelfOfficeNumber2().substring(0,1) : "");
+        worksheets.getRangeByName(sheetName + "!D1_4_1").setValue(isHeal ? data.getOfficeNumber().length() > 0 ? data.getOfficeNumber().substring(0,1) : ""
+                : data.getWelfOfficeNumber().length() > 0 ? data.getWelfOfficeNumber().substring(0,1) : "");
+        worksheets.getRangeByName(sheetName + "!D1_4_2").setValue(isHeal ? data.getOfficeNumber().length() > 1 ? data.getOfficeNumber().substring(1,2) : ""
+                : data.getWelfOfficeNumber().length() > 1 ? data.getWelfOfficeNumber().substring(1,2) : "");
+        worksheets.getRangeByName(sheetName + "!D1_4_3").setValue(isHeal ? data.getOfficeNumber().length() > 2 ? data.getOfficeNumber().substring(2,3) : ""
+                : data.getWelfOfficeNumber().length() > 2 ? data.getWelfOfficeNumber().substring(2,3) : "");
+        worksheets.getRangeByName(sheetName + "!D1_4_4").setValue(isHeal ? data.getOfficeNumber().length() > 3 ? data.getOfficeNumber().substring(3,4) : ""
+                : data.getWelfOfficeNumber().length() > 3 ? data.getWelfOfficeNumber().substring(3,4) : "");
+        worksheets.getRangeByName(sheetName + "!D1_4_5").setValue(isHeal ? data.getOfficeNumber().length() > 4 ? data.getOfficeNumber().substring(4,5) : ""
+                : data.getWelfOfficeNumber().length() > 4 ? data.getWelfOfficeNumber().substring(4,5) : "");
+        worksheets.getRangeByName(sheetName + "!D1_5_1").setValue(typeOff == BusinessDivision.OUTPUT_COMPANY_NAME ? company.getPostCd().length() > 2 ? company.getPostCd().substring(0,3) : company.getPostCd() :
+                typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? data.getPortCd().length() > 2 ? data.getPortCd().substring(0,3) : data.getPortCd() : "");
+        worksheets.getRangeByName(sheetName + "!D1_5_2").setValue(typeOff == BusinessDivision.OUTPUT_COMPANY_NAME ? company.getPostCd().length() > 6 ? company.getPostCd().substring(3,7) : company.getPostCd() :
+                typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? data.getPortCd().length() > 6 ? data.getPortCd().substring(3,7) : "" : "");
         worksheets.getRangeByName(sheetName + "!D1_6").setValue(typeOff == BusinessDivision.OUTPUT_COMPANY_NAME ? company.getAdd_1() + company.getAdd_2() :
                 typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? data.getAdd1() + data.getAdd2() : "");
         worksheets.getRangeByName(sheetName + "!D1_7").setValue(typeOff == BusinessDivision.OUTPUT_COMPANY_NAME ? company.getCompanyName() :
@@ -192,13 +212,13 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
                 ins.getInsuredNumber() == InsurPersonNumDivision.OUTPUT_HEAL_INSUR_UNION ? data.getHealInsUnionNumber() :
                 ins.getInsuredNumber() == InsurPersonNumDivision.OUTPUT_THE_FUN_MEMBER ? data.getMemberNumber() : "");
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_2", stt)).setValue(
-                ins.getSubmittedName() == SubNameClass.PERSONAL_NAME ? data.getPersonName() : data.getPersonNameKana());
+                ins.getSubmittedName() == SubNameClass.PERSONAL_NAME ? data.getPersonName().split("　")[0] : data.getPersonNameKana().split("　")[0]);
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_3", stt)).setValue(
-                ins.getSubmittedName() == SubNameClass.PERSONAL_NAME ? data.getPersonName() : data.getPersonName());
+                ins.getSubmittedName() == SubNameClass.PERSONAL_NAME ? data.getPersonName().split("　")[1] : data.getPersonNameKana().split("　")[1]);
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_4", stt)).setValue(
-                ins.getSubmittedName() == SubNameClass.PERSONAL_NAME ? data.getOldName() : data.getOldNameKana());
+                ins.getSubmittedName() == SubNameClass.PERSONAL_NAME ? data.getOldName().split("　")[0] : data.getOldNameKana().split("　")[0]);
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_5", stt)).setValue(
-                ins.getSubmittedName() == SubNameClass.PERSONAL_NAME ? data.getOldName() : data.getOldNameKana());
+                ins.getSubmittedName() == SubNameClass.PERSONAL_NAME ? data.getOldName().split("　")[1] : data.getOldNameKana().split("　")[1]);
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_9_1", stt)).setValue(convertJpDate(birthDay).charAt(0));
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_9_2", stt)).setValue(convertJpDate(birthDay).charAt(1));
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_9_3", stt)).setValue(convertJpDate(birthDay).charAt(2));
@@ -350,4 +370,6 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
         result.append(d > 9 ? d: "0" + d);
         return result.toString();
     }
+
+
 }

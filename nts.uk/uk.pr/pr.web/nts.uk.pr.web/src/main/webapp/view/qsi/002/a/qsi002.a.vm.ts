@@ -19,17 +19,33 @@ module nts.uk.pr.view.qsi002.a.viewmodel {
         roundingRules: KnockoutObservableArray<any>;
         selectedRuleCode: any;
         //datepicker
-        date: KnockoutObservable<string>;
+        baseDate1: KnockoutObservable<moment.Moment>;
         datePicker: KnockoutObservable<string>;
         //combobox
         itemList: KnockoutObservableArray<ItemModel>;
         selectedCode: KnockoutObservable<string>;
+
+        listEmployee: KnockoutObservableArray<string>;
+
+
+
         isEnable: KnockoutObservable<boolean>;
         isEditable: KnockoutObservable<boolean>;
         //grid
         columns: KnockoutObservableArray<any>;
         items: KnockoutObservableArray<ItemModelGrid>;
         currentCodeList: KnockoutObservableArray<any>;
+
+        socialInsurOutOrder: KnockoutObservableArray<ItemModel>;
+        selectedSocialInsurOutOrder: KnockoutObservable<string>;
+        insurPersonNumDivision: KnockoutObservableArray<ItemModel>;
+        selectedInsurPersonNumDivision: KnockoutObservable<string>;
+        bussEsimateClass: KnockoutObservableArray<ItemModel>;
+        selectedBussEsimateClass: KnockoutObservable<string>;
+        businessDivision: KnockoutObservableArray<ItemModel>;
+        selectedBusinessDivision:  KnockoutObservable<string>;
+        personalNumClass: KnockoutObservableArray<ItemModel>;
+        selectedPersonalNumClass: KnockoutObservable<string>;
 
         constructor() {
             block.invisible();
@@ -43,14 +59,26 @@ module nts.uk.pr.view.qsi002.a.viewmodel {
             ]);
             self.selectedRuleCode = ko.observable(1);
             //init datepicker
-            self.date = ko.observable('20000101');
-            self.datePicker = ko.observable(nts.uk.time.dateInJapanEmpire('20000101').toString());
+            self.baseDate1 = ko.observable(moment());
+            self.datePicker = ko.observable(nts.uk.time.dateInJapanEmpire(self.baseDate1()));
             //init combobox
             self.itemList = ko.observableArray([
                 new ItemModel('1', '基本給'),
                 new ItemModel('2', '役職手当'),
                 new ItemModel('3', '基本給ながい文字列ながい文字列ながい文字列')
             ]);
+
+            self.socialInsurOutOrder = ko.observableArray(getSocialInsurOutOrder());
+            self.insurPersonNumDivision = ko.observableArray(getInsurPersonNumDivision());
+            self.bussEsimateClass = ko.observableArray(getBussEsimateClass());
+            self.businessDivision = ko.observableArray(getBusinessDivision());
+            self.personalNumClass = ko.observableArray(getPersonalNumClass());
+
+            self.selectedSocialInsurOutOrder = ko.observable('0');
+            self.selectedInsurPersonNumDivision = ko.observable('0');
+            self.selectedBussEsimateClass =ko.observable('0');
+            self.selectedBusinessDivision = ko.observable('0');
+            self.selectedPersonalNumClass = ko.observable('0');
 
             self.selectedCode = ko.observable('1');
             self.isEnable = ko.observable(true);
@@ -67,7 +95,58 @@ module nts.uk.pr.view.qsi002.a.viewmodel {
             this.items = ko.observableArray([]);
 
             this.currentCodeList = ko.observableArray([]);
+
+            self.listEmployee = ko.observableArray([]);
+
+
+            //loadpage
+            self.loadPage();
+
             block.clear();
+        }
+
+        loadPage(){
+            let self = this;
+            block.invisible();
+            let data: any = {
+                officeInformation: self.selectedBusinessDivision(),
+                businessArrSymbol: self.selectedBussEsimateClass(),
+                outputOrder: self.selectedSocialInsurOutOrder(),
+                printPersonNumber: self.selectedPersonalNumClass(),
+                insuredNumber: self.selectedInsurPersonNumDivision()
+            };
+            service.index(data).done(e =>{
+                block.clear()
+            }).fail(e =>{
+                block.clear()
+            });
+            block.clear()
+        }
+
+        exportPDF(){
+            let self = this;
+
+            let data: any = {
+                socialInsurNotiCreateSetDto: new SocialInsurNotiCreateSetDto(
+                    Number(self.selectedBusinessDivision()),
+                    Number(self.selectedBussEsimateClass()),
+                    Number(self.selectedSocialInsurOutOrder()),
+                    Number(self.selectedPersonalNumClass()),
+                    0,
+                    Number(self.selectedInsurPersonNumDivision()),
+                    null,
+                    null,
+                    null,
+                    null
+                ),
+                listEmpId: self.listEmployee(),
+                date: moment.utc(self.baseDate1(), "YYYY/MM/DD")
+            };
+            service.exportPDF(data).done(e =>{
+
+            }).fail(e =>{
+
+            });
         }
 
         openScreenB(){
@@ -118,6 +197,9 @@ module nts.uk.pr.view.qsi002.a.viewmodel {
                  */
                 returnDataFromCcg001: function(data: Ccg001ReturnedData) {
                     self.createGridList(data.listEmployee);
+                    data.listEmployee.forEach(e => {
+                        self.listEmployee.push(e.employeeId);
+                    })
 
                 }
             }
@@ -252,6 +334,82 @@ module nts.uk.pr.view.qsi002.a.viewmodel {
         }
     }
 
+    //社会保険出力順
+
+    export function getSocialInsurOutOrder() : Array<ItemModel>{
+        return [
+
+            //部門社員順
+            new ItemModel('0', "Enum_SocialInsurOutOrder_DIVISION_EMP_ORDER"),
+            //社員コード順
+            new ItemModel('1', "Enum_SocialInsurOutOrder_EMPLOYEE_CODE_ORDER"),
+            //社員カナ順
+            new ItemModel('2', "Enum_SocialInsurOutOrder_EMPLOYEE_KANA_ORDER"),
+            //健康保険番号順
+            new ItemModel('3', "Enum_SocialInsurOutOrder_HEAL_INSUR_NUMBER_ORDER"),
+            //厚生年金番号順
+            new ItemModel('4', "Enum_SocialInsurOutOrder_WELF_AREPEN_NUMBER_ORDER"),
+            //健保組合番号順
+            new ItemModel('5', "Enum_SocialInsurOutOrder_HEAL_INSUR_NUMBER_UNION_ORDER"),
+            //基金加入員番号順
+            new ItemModel('6', "Enum_SocialInsurOutOrder_ORDER_BY_FUND"),
+            //被保険者整理番号順
+            new ItemModel('7', "Enum_SocialInsurOutOrder_INSURED_PER_NUMBER_ORDER")
+        ]
+    }
+
+    //被保険者整理番号区分
+
+    export function getInsurPersonNumDivision(): Array<ItemModel>{
+        return [
+            //出力しない
+            new ItemModel('0', "Enum_InsurPersonNumDivision_DO_NOT_OUPUT"),
+            //健康保険番号を出力
+            new ItemModel('1', "Enum_InsurPersonNumDivision_OUTPUT_HEAL_INSUR_NUM"),
+            //厚生年金番号を出力
+            new ItemModel('2', "Enum_InsurPersonNumDivision_OUTPUT_THE_WELF_PENNUMBER"),
+            //健保組合番号を出力
+            new ItemModel('3', "Enum_InsurPersonNumDivision_OUTPUT_HEAL_INSUR_UNION"),
+            //基金加入員番号を出力
+            new ItemModel('4', "Enum_InsurPersonNumDivision_OUTPUT_THE_FUN_MEMBER")
+        ]
+    }
+
+    //事業所整理記号区分
+    export  function getBussEsimateClass(): Array<ItemModel>{
+        return [
+            //健保整理記号
+            new ItemModel('0', "Enum_BussEsimateClass_HEAL_INSUR_OFF_ARR_SYMBOL"),
+            //厚生整理記号
+            new ItemModel('1', "Enum_BussEsimateClass_EMPEN_ESTAB_REARSIGN")
+        ]
+    }
+
+    export function getBusinessDivision(): Array<ItemModel>{
+        return [
+            //会社名・住所を出力
+            new ItemModel('0', "Enum_BusinessDivision_OUTPUT_COMPANY_NAME"),
+            //社会保険事業所名・住所を出力
+            new ItemModel('1', "Enum_BusinessDivision_OUTPUT_SIC_INSURES"),
+            new ItemModel('2', "Enum_BusinessDivision_DO_NOT_OUTPUT"),
+            /*出力しない（事業所）*/
+            new ItemModel('3', "Enum_BusinessDivision_DO_NOT_OUTPUT_BUSINESS"),
+        ]
+    }
+
+    export function getPersonalNumClass(): Array<ItemModel>{
+        return [
+            //個人番号を出力する
+            new ItemModel('0', "Enum_PersonalNumClass_OUTPUT_PER_NUMBER"),
+            //基礎年金番号を出力する
+            new ItemModel('1', "Enum_PersonalNumClass_OUTPUT_BASIC_PER_NUMBER"),
+            //個人番号が無ければ基礎年金番号を出力する
+            new ItemModel('2', "Enum_PersonalNumClass_OUTPUT_BASIC_PEN_NOPER"),
+            //出力しない
+            new ItemModel('3', "Enum_PersonalNumClass_DO_NOT_OUTPUT")
+        ]
+    }
+
     class ItemModelGrid {
         id: string;
         code: string;
@@ -262,6 +420,81 @@ module nts.uk.pr.view.qsi002.a.viewmodel {
             this.code = code;
             this.businessName = businessName;
             this.workplaceName = workplaceName;
+        }
+    }
+
+    export class SocialInsurNotiCreateSetDto{
+        /**
+         * 事業所情報
+         */
+        officeInformation: number;
+
+        /**
+         * 事業所整理記号
+         */
+        businessArrSymbol: number;
+
+        /**
+         * 出力順
+         */
+        outputOrder: number;
+        /**
+         * 印刷個人番号
+         */
+        printPersonNumber: number;
+        /**
+         * 提出氏名区分
+         */
+        submittedName: number;
+
+        /**
+         * 被保険者整理番号
+         */
+        insuredNumber: number;
+
+        /**
+         * FD番号
+         */
+        fdNumber: number;
+
+        /**
+         * テキスト個人番号
+         */
+        textPersonNumber: number;
+
+        /**
+         * 出力形式
+         */
+        outputFormat: number;
+
+        /**
+         * 改行コード
+         */
+        lineFeedCode: number;
+
+        constructor(officeInformation: number,
+                    businessArrSymbol: number,
+                    outputOrder: number,
+                    printPersonNumber: number,
+                    submittedName: number,
+                    insuredNumber: number,
+                    fdNumber: number,
+                    textPersonNumber: number,
+                    outputFormat: number,
+                    lineFeedCode: number){
+
+            this.officeInformation = officeInformation;
+            this.businessArrSymbol = businessArrSymbol;
+            this.outputOrder = outputOrder;
+            this.printPersonNumber = printPersonNumber;
+            this.submittedName = submittedName;
+            this.insuredNumber = insuredNumber;
+            this.fdNumber = fdNumber;
+            this.textPersonNumber = textPersonNumber;
+            this.outputFormat = outputFormat;
+            this.lineFeedCode = lineFeedCode;
+
+
         }
     }
 

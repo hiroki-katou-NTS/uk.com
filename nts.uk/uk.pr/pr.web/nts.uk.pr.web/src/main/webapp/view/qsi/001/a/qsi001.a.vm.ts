@@ -1,6 +1,7 @@
 module nts.uk.pr.view.qsi001.a.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+    import errors = nts.uk.ui.errors;
     import block = nts.uk.ui.block;
     import dialog = nts.uk.ui.dialog;
     import getText = nts.uk.resource.getText;
@@ -96,18 +97,21 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
 
             //init switch
             self.simpleValue = ko.observable("123");
-
-
-
             self.selectedRuleCode = ko.observable(1);
+            let _endDate = moment();
+            let month = _endDate.month();
+            let _startDate = moment();
+            _startDate.month(month - 1);
             //init datepicker
-            self.startDate = ko.observable(moment());
+            self.startDate = ko.observable(_startDate);
             self.startDate.subscribe(e => {
                 //self.japanStartDate = ko.observable(nts.uk.time.dateInJapanEmpire(moment.utc(self.startDate()).format("YYYYMMDD")).toString());
                 self.japanStartDate(nts.uk.time.dateInJapanEmpire(moment.utc(self.startDate()).format("YYYYMMDD")).toString());
             });
+
+
             self.japanStartDate = ko.observable(nts.uk.time.dateInJapanEmpire(moment.utc(self.startDate()).format("YYYYMMDD")).toString());
-            self.endDate = ko.observable(moment());
+            self.endDate = ko.observable(_endDate);
             self.endDate.subscribe(e => {
                 self.japanEndDate(nts.uk.time.dateInJapanEmpire(moment.utc(self.endDate()).format("YYYYMMDD")).toString());
             });
@@ -185,7 +189,7 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
                 {code: '1', isAlreadySetting: true},
                 {code: '2', isAlreadySetting: true}
             ]);
-            self.isDialog = ko.observable(false);
+            self.isDialog = ko.observable(true);
             self.isShowNoSelectRow = ko.observable(false);
             self.isMultiSelect = ko.observable(true);
             self.isShowWorkPlaceName = ko.observable(true);
@@ -227,7 +231,7 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
                 showAllClosure: false,
                 showPeriod: false,
                 periodFormatYM: false,
-                tabindex: 5,
+                tabindex: 9,
                 /** Required parameter */
                 baseDate: moment().toISOString(),
                 periodStartDate: moment().toISOString(),
@@ -291,13 +295,21 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
             });
 
         }
+
+        validate(){
+            errors.clearAll();
+            $("#A2_4").trigger("validate");
+            $("#A2_7").trigger("validate");
+            $("#A4_4").trigger("validate");
+            return errors.hasError();
+        }
+
         exportFileExcel(): void {
             let self = this;
-            let employList = self.getListEmpId(self.selectedCodeKCP005(), self.employees);
-            if(employList.length == 0) {
-                dialog.alertError({ messageId: 'Msg_37' });
+            if(self.validate()){
                 return;
             }
+            let employList = self.getListEmpId(self.selectedCodeKCP005(), self.employees);
             let data: any = {
                 socialInsurNotiCreateSetQuery: {
                     officeInformation: self.socialInsurNotiCrSet().officeInformation(),
@@ -325,10 +337,34 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
                 nts.uk.ui.block.clear();
             });
         }
+
+
         exportFileCsv(): void {
             let self = this;
+            let employList = self.getListEmpId(self.selectedCodeKCP005(), self.employees);
+            if(employList.length == 0) {
+                dialog.alertError({ messageId: 'Msg_37' });
+                return;
+            }
             let data: any = {
-                typeExport : 1
+                socialInsurNotiCreateSetQuery: {
+                    officeInformation: self.socialInsurNotiCrSet().officeInformation(),
+                    fdNumber: self.socialInsurNotiCrSet().fdNumber(),
+                    printPersonNumber: self.socialInsurNotiCrSet().printPersonNumber(),
+                    businessArrSymbol: self.socialInsurNotiCrSet().businessArrSymbol(),
+                    outputOrder: self.socialInsurNotiCrSet().outputOrder(),
+                    submittedName: self.socialInsurNotiCrSet().submittedName(),
+                    insuredNumber: self.socialInsurNotiCrSet().insuredNumber(),
+                    fdNumber: self.socialInsurNotiCrSet().fdNumber(),
+                    textPersonNumber: self.socialInsurNotiCrSet().textPersonNumber(),
+                    outputFormat: self.socialInsurNotiCrSet().outputFormat(),
+                    lineFeedCode: self.socialInsurNotiCrSet().lineFeedCode()
+                },
+                typeExport : 1,
+                empIds: employList,
+                startDate: moment.utc(self.startDate(), "YYYY/MM/DD"),
+                endDate: moment.utc(self.endDate(), "YYYY/MM/DD"),
+                baseDate: moment.utc(self.baseDate(), "YYYY/MM/DD")
             };
             nts.uk.ui.block.grayout();
             service.exportFile(data).done(function() {
@@ -718,7 +754,8 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
         return [
             new ItemModel('0', getText('Enum_BusinessDivision_OUTPUT_COMPANY_NAME')),
             new ItemModel('1', getText('Enum_BusinessDivision_OUTPUT_SIC_INSURES')),
-            new ItemModel('2', getText('Enum_BusinessDivision_DO_NOT_OUTPUT'))
+            new ItemModel('2', getText('Enum_BusinessDivision_DO_NOT_OUTPUT')),
+            new ItemModel('3', getText('Enum_BusinessDivision_DO_NOT_OUTPUT_BUSINESS'))
         ];
     }
     export function getBussEsimateClass(): Array<ItemModel> {
@@ -727,7 +764,8 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
             new ItemModel('1', getText('Enum_BussEsimateClass_EMPEN_ESTAB_REARSIGN'))
         ];
     }
-    export function getSocialInsurOutOrder(): Array<ItemModel> {
+
+    /*export function getSocialInsurOutOrder(): Array<ItemModel> {
         return [
             new ItemModel('0', getText('Enum_SocialInsurOutOrder_HEAL_INSUR_NUMBER_ORDER')),
             new ItemModel('1', getText('Enum_SocialInsurOutOrder_WELF_AREPEN_NUMBER_ORDER')),
@@ -736,6 +774,20 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
             new ItemModel('4', getText('Enum_SocialInsurOutOrder_HEAL_INSUR_OFF_ARR_SYMBOL')),
             new ItemModel('5', getText('Enum_SocialInsurOutOrder_EMPLOYEE_CODE_ORDER')),
             new ItemModel('6', getText('Enum_SocialInsurOutOrder_EMPLOYEE_KANA_ORDER')),
+            new ItemModel('7', getText('Enum_SocialInsurOutOrder_INSURED_PER_NUMBER_ORDER'))
+        ];
+    }
+    */
+
+    export function getSocialInsurOutOrder(): Array<ItemModel> {
+        return [
+            new ItemModel('0', getText('Enum_SocialInsurOutOrder_DIVISION_EMP_ORDER')),
+            new ItemModel('1', getText('Enum_SocialInsurOutOrder_EMPLOYEE_CODE_ORDER')),
+            new ItemModel('2', getText('Enum_SocialInsurOutOrder_EMPLOYEE_KANA_ORDER')),
+            new ItemModel('3', getText('Enum_SocialInsurOutOrder_HEAL_INSUR_NUMBER_ORDER')),
+            new ItemModel('4', getText('Enum_SocialInsurOutOrder_WELF_AREPEN_NUMBER_ORDER')),
+            new ItemModel('5', getText('Enum_SocialInsurOutOrder_HEAL_INSUR_NUMBER_UNION_ORDER')),
+            new ItemModel('6', getText('Enum_SocialInsurOutOrder_ORDER_BY_FUND')),
             new ItemModel('7', getText('Enum_SocialInsurOutOrder_INSURED_PER_NUMBER_ORDER'))
         ];
     }
@@ -812,5 +864,7 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
         code: string;
         isAlreadySetting: boolean;
     }
+
+
 
 }

@@ -31,15 +31,15 @@ module nts.uk.pr.view.qsi013.b.viewmodel {
 
         //checked
         isMoreEmp: KnockoutObservable<boolean> = ko.observable();
-        hOther: KnockoutObservable<boolean> = ko.observable();
-        pOther: KnockoutObservable<boolean> = ko.observable();
+        hOther: KnockoutObservable<boolean> = ko.observable(false);
+        pOther: KnockoutObservable<boolean> = ko.observable(false);
 
         //number editor
-        hCaInsurance: KnockoutObservable<number> = ko.observable();
-        continReemAfterRetirement: KnockoutObservable<boolean> = ko.observable();
-        hNumRecoved: KnockoutObservable<number> = ko.observable();
-        pCaInsurance: KnockoutObservable<number> = ko.observable();
-        pNumRecoved: KnockoutObservable<number> = ko.observable();
+        hCaInsurance: KnockoutObservable<number> = ko.observable(null);
+        continReemAfterRetirement: KnockoutObservable<boolean> = ko.observable(false);
+        hNumRecoved: KnockoutObservable<number> = ko.observable(null);
+        pCaInsurance: KnockoutObservable<number> = ko.observable(null);
+        pNumRecoved: KnockoutObservable<number> = ko.observable(null);
         basicPenNumber: KnockoutObservable<string> = ko.observable('');
 
         //combo box
@@ -61,22 +61,6 @@ module nts.uk.pr.view.qsi013.b.viewmodel {
             let self = this;
             // for new mode
             //set default value
-            self.hCause(0);
-            self.hNumRecoved(null);
-            self.hOther(false);
-            self.hCaInsurance(null);
-            self.hOtherReason('');
-
-            self.pCause(0);
-            self.pNumRecoved(null);
-            self.pOther(false);
-            self.pCaInsurance(null);
-            self.pOtherReason('');
-
-            self.isMoreEmp(null);
-            self.continReemAfterRetirement(null);
-            self.basicPenNumber('');
-
             self.screenMode(model.SCREEN_MODE.NEW);
         }
         getDataLossInfo(empId: string) {
@@ -91,12 +75,6 @@ module nts.uk.pr.view.qsi013.b.viewmodel {
                         self.hOther(data.healthInsLossInfo.other == 1);
                         self.hCaInsurance(data.healthInsLossInfo.caInsurance);
                         self.hOtherReason(data.healthInsLossInfo.otherReason);
-                    } else {
-                        self.hCause(0);
-                        self.hNumRecoved(null);
-                        self.hOther(false);
-                        self.hCaInsurance(null);
-                        self.hOtherReason('');
                     }
 
                     if(data.welfPenInsLossIf){
@@ -105,30 +83,18 @@ module nts.uk.pr.view.qsi013.b.viewmodel {
                         self.pOther(data.welfPenInsLossIf.other ==1);
                         self.pCaInsurance(data.welfPenInsLossIf.caInsuarace);
                         self.pOtherReason(data.welfPenInsLossIf.otherReason);
-                    } else{
-                        self.pCause(0);
-                        self.pNumRecoved(null);
-                        self.pOther(false);
-                        self.pCaInsurance(null);
-                        self.pOtherReason('');
                     }
 
                     if(data.multiEmpWorkInfo){
                         self.isMoreEmp(data.multiEmpWorkInfo.isMoreEmp == 1);
-                    } else {
-                        self.isMoreEmp(null);
                     }
 
-                    if(data.empBasicPenNumInfor){
+                    if(data.empBasicPenNumInfor) {
                         self.basicPenNumber(data.empBasicPenNumInfor.basicPenNumber);
-                    } else{
-                        self.basicPenNumber('');
                     }
 
                     if(data.socialInsurAcquisiInfor){
                         self.continReemAfterRetirement(data.socialInsurAcquisiInfor.continReemAfterRetirement == 1 );
-                    } else{
-                        self.continReemAfterRetirement(null);
                     }
                     self.screenMode(model.SCREEN_MODE.UPDATE);
 

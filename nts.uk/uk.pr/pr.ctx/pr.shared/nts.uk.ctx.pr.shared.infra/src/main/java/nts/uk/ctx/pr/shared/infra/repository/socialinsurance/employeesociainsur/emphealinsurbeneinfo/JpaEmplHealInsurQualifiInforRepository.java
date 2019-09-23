@@ -24,10 +24,21 @@ public class JpaEmplHealInsurQualifiInforRepository extends JpaRepository implem
     private static final String SELECT_BY_LIST_EMP_START = SELECT_ALL_QUERY_STRING + " WHERE  f.empHealInsurQiPk.employeeId IN :employeeIds  AND f.endDate >= :startDate AND f.endDate <= :endDate";
     private static final String SELECT_BY_EMPLID = SELECT_ALL_QUERY_STRING + " WHERE  f.empHealInsurQiPk.employeeId =:employeeId ";
     private static final String SELECT_BY_HISID = SELECT_ALL_QUERY_STRING + " WHERE  f.empHealInsurQiPk.hisId =:hisId ";
+    private static final String SELECT_BY_LIST_EMP = SELECT_ALL_QUERY_STRING + " WHERE  f.empHealInsurQiPk.employeeId IN :employeeIds  AND f.startDate >= :startDate AND f.startDate <= :endDate";
 
     @Override
-    public boolean checkEmplHealInsurQualifiInfor(GeneralDate start,GeneralDate end, List<String> empIds){
+    public boolean checkEmplHealInsurQualifiInforEndDate(GeneralDate start, GeneralDate end, List<String> empIds){
         List<QqsmtEmpHealInsurQi> qqsmtEmpHealInsurQi =  this.queryProxy().query(SELECT_BY_LIST_EMP_START, QqsmtEmpHealInsurQi.class)
+                .setParameter("employeeIds", empIds)
+                .setParameter("startDate", start)
+                .setParameter("endDate", end)
+                .getList();
+        return qqsmtEmpHealInsurQi.isEmpty();
+    }
+
+    @Override
+    public boolean checkEmplHealInsurQualifiInforStartDate(GeneralDate start, GeneralDate end, List<String> empIds){
+        List<QqsmtEmpHealInsurQi> qqsmtEmpHealInsurQi =  this.queryProxy().query(SELECT_BY_LIST_EMP, QqsmtEmpHealInsurQi.class)
                 .setParameter("employeeIds", empIds)
                 .setParameter("startDate", start)
                 .setParameter("endDate", end)
@@ -57,19 +68,15 @@ public class JpaEmplHealInsurQualifiInforRepository extends JpaRepository implem
     }
 
     @Override
-    public Optional<EmplHealInsurQualifiInfor> getEmplHealInsurQualifiInforById(String employeeId, String hisId){
-        List<QqsmtEmpHealInsurQi> qqsmtEmpHealInsurQi = this.queryProxy().query(SELECT_BY_KEY_STRING, QqsmtEmpHealInsurQi.class)
-        .setParameter("employeeId", employeeId)
-        .setParameter("hisId", hisId)
-        .getList();
-        return qqsmtEmpHealInsurQi == null ? Optional.empty() : Optional.of(QqsmtEmpHealInsurQi.toDomain(qqsmtEmpHealInsurQi));
-    }
-
-    @Override
     public Optional<HealInsurNumberInfor> getHealInsurNumberInforByHisId(String hisId) {
         return this.queryProxy().query(SELECT_BY_HISID, QqsmtEmpHealInsurQi.class)
                 .setParameter("hisId", hisId)
                 .getSingle(x -> x.toHealInsurNumberInfor());
+    }
+
+    @Override
+    public Optional<HealInsurNumberInfor> getHealInsurNumberInforByHisId(String empId, String hisId) {
+        return Optional.empty();
     }
 
     @Override
