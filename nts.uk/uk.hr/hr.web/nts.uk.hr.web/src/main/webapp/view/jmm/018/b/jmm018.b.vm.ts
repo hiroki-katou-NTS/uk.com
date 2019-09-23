@@ -141,13 +141,6 @@ module nts.uk.com.view.jmm018.b {
                                                                 }))
                         }
                     });
-                    $(window).resize(function() {
-                          var height = window.innerHeight;
-                          $("#treegrid").igTreeGrid({
-                              height: height - 350
-                          });
-//                            setTimeout(() => {$("#treegrid").igTreeGrid("dataBind");}, 0);
-                    });                   
                  });
                 
                  $("#treegrid").bind("igcontrolcreated", function(evt, query?: any) {
@@ -183,7 +176,21 @@ module nts.uk.com.view.jmm018.b {
                     }
                 }
             });
-                
+            
+                // Không phải đoạn lệnh này không chạy mà do nó được đặt nhầm chỗ
+                let doit = -1,
+                    resizedw = () => {
+                        clearTimeout(doit);
+
+                        $("#treegrid").igTreeGrid({ height: window.innerHeight - 350 });
+
+                        $("#treegrid").igTreeGrid("dataBind");
+                    };
+
+                $(window).resize(function () {
+                    clearTimeout(doit);
+                    doit = setTimeout(resizedw, 10);
+                });
             }
             
             /**
