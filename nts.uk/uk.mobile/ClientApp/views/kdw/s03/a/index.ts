@@ -579,7 +579,8 @@ export class Kdws03AComponent extends Vue {
             'employeeName': employeeName,
             'date': date,
             'rowData': rowData,
-            'paramData': paramData
+            'paramData': paramData,
+            'screenMode': self.screenMode
         },
             { type: 'dropback' })
             .then((v: any) => {
