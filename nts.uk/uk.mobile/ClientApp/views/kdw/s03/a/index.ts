@@ -564,6 +564,7 @@ export class Kdws03AComponent extends Vue {
         let employeeID = '';
         let employeeName = '';
         let date = new Date();
+        let displayformat = 0;
         if (self.displayFormat == 0) {
             employeeID = self.selectedEmployee;
             employeeName = _.find(self.lstEmployee, (emp) => emp.id == employeeID).businessName;
@@ -572,6 +573,7 @@ export class Kdws03AComponent extends Vue {
             employeeID = rowData.employeeId;
             employeeName = rowData.employeeName;
             date = self.selectedDate;
+            displayformat = 1;
         }
 
         self.$modal('kdws03b', {
@@ -580,7 +582,7 @@ export class Kdws03AComponent extends Vue {
             'date': date,
             'rowData': rowData,
             'paramData': paramData,
-            'screenMode': self.screenMode
+            'displayformat': displayformat
         },
             { type: 'dropback' })
             .then((v: any) => {

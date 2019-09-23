@@ -55,7 +55,9 @@ import nts.uk.screen.at.app.dailyperformance.correction.checkdata.dto.ErrorAfter
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemValue;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DataResultAfterIU;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DatePeriodInfo;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DisplayFormat;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ResultReturnDCUpdateData;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.ScreenMode;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.TypeError;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.cache.AggrPeriodClosure;
 import nts.uk.screen.at.app.dailyperformance.correction.text.DPText;
@@ -267,40 +269,43 @@ public class DailyModifyMobileCommandFacade {
 			if (dataParent.isCheckDailyChange()) {
 				domainDailyNew = resultIU.getLstDailyDomain();
 			}
-
-			//// 月別実績の集計
-			DailyCalcResult resultCalcMonth = processMonthlyCalc.processMonthCalc(commandNew, commandOld,
-					domainDailyNew, dailyItems, monthParam, dataParent.getMonthValue(), errorMonthHoliday,
-					dataParent.getDateRange(), dataParent.getMode(), editFlex);
-			RCDailyCorrectionResult resultMonth = resultCalcMonth.getResultUI();
-			ErrorAfterCalcDaily errorMonth = resultCalcMonth.getErrorAfterCheck();
-			// map error holiday into result
-			List<DPItemValue> lstItemErrorMonth = errorMonth.getResultErrorMonth().get(TypeError.ERROR_MONTH.value);
-			if (lstItemErrorMonth != null) {
-				List<DPItemValue> itemErrorMonth = dataResultAfterIU.getErrorMap().get(TypeError.ERROR_MONTH.value);
-				if (itemErrorMonth == null) {
-					// dataResultAfterIU.getErrorMap().put(TypeError.ERROR_MONTH.value,
-					// lstItemErrorMonth);
-					resultErrorMonth.put(TypeError.ERROR_MONTH.value, lstItemErrorMonth);
-				} else {
-					lstItemErrorMonth.addAll(itemErrorMonth);
-					// dataResultAfterIU.getErrorMap().put(TypeError.ERROR_MONTH.value,
-					// lstItemErrorMonth);
-					resultErrorMonth.put(TypeError.ERROR_MONTH.value, lstItemErrorMonth);
+            
+			if (dataParent.getMode() == DisplayFormat.Individual.value) {
+				//// 月別実績の集計
+				DailyCalcResult resultCalcMonth = processMonthlyCalc.processMonthCalc(commandNew, commandOld,
+						domainDailyNew, dailyItems, monthParam, dataParent.getMonthValue(), errorMonthHoliday,
+						dataParent.getDateRange(), dataParent.getMode(), editFlex);
+				RCDailyCorrectionResult resultMonth = resultCalcMonth.getResultUI();
+				ErrorAfterCalcDaily errorMonth = resultCalcMonth.getErrorAfterCheck();
+				// map error holiday into result
+				List<DPItemValue> lstItemErrorMonth = errorMonth.getResultErrorMonth().get(TypeError.ERROR_MONTH.value);
+				if (lstItemErrorMonth != null) {
+					List<DPItemValue> itemErrorMonth = dataResultAfterIU.getErrorMap().get(TypeError.ERROR_MONTH.value);
+					if (itemErrorMonth == null) {
+						// dataResultAfterIU.getErrorMap().put(TypeError.ERROR_MONTH.value,
+						// lstItemErrorMonth);
+						resultErrorMonth.put(TypeError.ERROR_MONTH.value, lstItemErrorMonth);
+					} else {
+						lstItemErrorMonth.addAll(itemErrorMonth);
+						// dataResultAfterIU.getErrorMap().put(TypeError.ERROR_MONTH.value,
+						// lstItemErrorMonth);
+						resultErrorMonth.put(TypeError.ERROR_MONTH.value, lstItemErrorMonth);
+					}
 				}
-			}
-			// 月次登録処理
-			errorMonthAfterCalc = errorMonth.getHasError();
-			if (!errorMonthAfterCalc) {
-				this.insertAllData.handlerInsertAllMonth(resultMonth.getLstMonthDomain(), monthParam);
-				Map<Integer, OptionalItem> optionalMaster = optionalMasterRepo.findAll(AppContexts.user().companyId())
-						.stream().collect(Collectors.toMap(c -> c.getOptionalItemNo().v(), c -> c));
-				dataResultAfterIU.setDomainMonthOpt(resultMonth.getLstMonthDomain().isEmpty() ? Optional.empty()
-						: resultMonth.getLstMonthDomain().stream()
-								.map(x -> MonthlyRecordWorkDto.fromDtoWithOptional(x, optionalMaster)).findFirst());
-				// }
-				// dataResultAfterIU.setErrorMap(errorMonth.getResultError());
-				dataResultAfterIU.setFlexShortage(errorMonth.getFlexShortage());
+				// 月次登録処理
+				errorMonthAfterCalc = errorMonth.getHasError();
+				if (!errorMonthAfterCalc) {
+					this.insertAllData.handlerInsertAllMonth(resultMonth.getLstMonthDomain(), monthParam);
+					Map<Integer, OptionalItem> optionalMaster = optionalMasterRepo
+							.findAll(AppContexts.user().companyId()).stream()
+							.collect(Collectors.toMap(c -> c.getOptionalItemNo().v(), c -> c));
+					dataResultAfterIU.setDomainMonthOpt(resultMonth.getLstMonthDomain().isEmpty() ? Optional.empty()
+							: resultMonth.getLstMonthDomain().stream()
+									.map(x -> MonthlyRecordWorkDto.fromDtoWithOptional(x, optionalMaster)).findFirst());
+					// }
+					// dataResultAfterIU.setErrorMap(errorMonth.getResultError());
+					dataResultAfterIU.setFlexShortage(errorMonth.getFlexShortage());
+				}
 			}
 
 			try {

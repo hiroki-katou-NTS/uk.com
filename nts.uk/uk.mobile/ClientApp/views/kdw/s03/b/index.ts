@@ -78,7 +78,7 @@ export class KdwS03BComponent extends Vue {
             date: new Date(),
             rowData: {},
             paramData: {},
-            screenMode: 0
+            displayformat: 0
         })
     })
     public readonly params!: {
@@ -87,7 +87,7 @@ export class KdwS03BComponent extends Vue {
         date: Date,
         rowData: any,
         paramData: any,
-        screenMode: number
+        displayformat: number
     };
     public checked1s: Array<number> = [];
     public screenData: any = {};
@@ -817,7 +817,7 @@ export class KdwS03BComponent extends Vue {
         ];
 
         return {
-            'mode': self.params.screenMode,
+            'mode': self.params.displayformat,
             'employeeId': self.params.employeeID,
             'itemValues': itemValues,
             'dataCheckSign': dataCheckSign,
