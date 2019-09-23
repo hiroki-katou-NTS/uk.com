@@ -10,7 +10,7 @@
                     </nts-dropdown>
                 </div>
                 <div class="col-3">
-                    <button type="button" class="btn btn-primary btn-block" v-on:click="openMenu">{{'KDWS03_23' | i18n}}</button>
+                    <button type="button" class="btn btn-primary btn-block" v-click:500="openMenu">{{'KDWS03_23' | i18n}}</button>
                 </div>
             </div>
             <div class="row">
@@ -32,7 +32,7 @@
                     <nts-date-input v-model="selectedDate" />
                 </div>
                 <div class="col-3">
-                    <button type="button" class="btn btn-primary btn-block" v-on:click="openMenu">{{'KDWS03_23' | i18n}}</button>
+                    <button type="button" class="btn btn-primary btn-block" v-click:500="openMenu">{{'KDWS03_23' | i18n}}</button>
                 </div>
             </div>
         </div>
@@ -52,7 +52,7 @@
                         {{cell.value == '0:00' || cell.value == '0.0' || cell.value == '0' ? '' : cell.value}}
                     </td>
                     <td>
-                        <div style="text-align: right" v-on:click="openEdit(row.id)">
+                        <div style="text-align: right" v-click:500="openEdit(row.id)">
                             <span style="color: red" class="fa fa-exclamation-circle fa-lg" v-if="null != row.ERAL && row.ERAL.includes('ER')"></span>
                             <span style="color: red" class="fa fa-exclamation-triangle fa-lg uk-text-yellow" v-if="null != row.ERAL && !row.ERAL.includes('ER') && row.ERAL.includes('AL')"></span>
                             <span class="pl-1" v-if="row.date != ''">></span>
@@ -83,7 +83,7 @@
                         {{cell.value == '0:00' || cell.value == '0.0' ? '' : cell.value}}
                     </td>
                     <td>
-                        <div style="text-align: right" v-on:click="openEdit(row.id)">
+                        <div style="text-align: right" v-click:500="openEdit(row.id)">
                             <span style="color: red" class="fa fa-exclamation-circle fa-lg" v-if="null != row.ERAL && row.ERAL.includes('ER')"></span>
                             <span style="color: red" class="fa fa-exclamation-triangle fa-lg" v-if="null != row.ERAL && !row.ERAL.includes('ER') && row.ERAL.includes('AL')"></span>
                             <span class="pl-1" v-if="row.employeeNameDis != ''">></span>
@@ -102,13 +102,13 @@
         <div class="mx-n2 border-top" style="font-size: 10px" v-if="displayFormat == '1'">
             <div class="row m-2 mt-3">
                 <div class="col-3 pl-1" v-bind:class="previousState">
-                    <span class="mr-n1" v-on:click="previousPage">⇦前の20件</span>
+                    <span class="mr-n1" v-click:500="previousPage">⇦前の20件</span>
                 </div>
                 <div class="col-6 text-center">
                     <span>{{itemStart}}～{{itemEnd}}件（{{displayDataLst.length}}件中）</span>
                 </div>
                 <div class="col-3 pr-1 text-right" v-bind:class="nextState">
-                    <span v-on:click="nextPage">次の20件⇨</span>
+                    <span v-click:500="nextPage">次の20件⇨</span>
                 </div>
             </div>
         </div>
