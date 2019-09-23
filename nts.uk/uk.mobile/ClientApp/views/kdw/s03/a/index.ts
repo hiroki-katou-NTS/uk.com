@@ -583,7 +583,7 @@ export class Kdws03AComponent extends Vue {
         },
             { type: 'dropback' })
             .then((v: any) => {
-                if (v.reload == true) {
+                if (!_.isNil(v) && v.reload == true) {
                     window.location.reload();
                 }
             });

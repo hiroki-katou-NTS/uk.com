@@ -626,7 +626,13 @@ export class KdwS03BComponent extends Vue {
             if (data) {
                 self.screenData[0][key] = data.selectedWorkType.workTypeCode;
                 rowData.value0 = data.selectedWorkType.workTypeCode;
-                rowData.value = _.find(self.masterData.workType, (o) => o.code == rowData.value0).name;
+                let result = _.find(self.masterData.workType, (o) => o.code == rowData.value0);
+                if (result) {
+                    rowData.value = result.name;
+                } else {
+                    rowData.value = '選択なし';
+                }
+                
             }
         });
     }
@@ -648,7 +654,13 @@ export class KdwS03BComponent extends Vue {
             if (data) {
                 self.screenData[0][key] = data.selectedWorkTime.code;
                 rowData.value0 = data.selectedWorkTime.code;
-                rowData.value = _.find(self.masterData.workTime, (o) => o.code == rowData.value0).name;
+                let result = _.find(self.masterData.workTime, (o) => o.code == rowData.value0);
+                if (result) {
+                    rowData.value = result.name;
+                } else {
+                    rowData.value = '選択なし';
+                }
+                
             }
         });
     }
@@ -678,9 +690,15 @@ export class KdwS03BComponent extends Vue {
         ).then((data: any) => {
             if (data) {
                 let selectedWkp = _.find(self.masterData.workPlace, (o) => o.id == data.workplaceId);
-                self.screenData[0][key] = selectedWkp.code;
-                rowData.value0 = selectedWkp.code;
-                rowData.value = selectedWkp.name;
+                if (selectedWkp) {
+                    self.screenData[0][key] = selectedWkp.code;
+                    rowData.value0 = selectedWkp.code;
+                    rowData.value = selectedWkp.name;
+                } else {
+                    self.screenData[0][key] = '';
+                    rowData.value0 = '';
+                    rowData.value = '選択なし';
+                }
             }
 
             return 0;
