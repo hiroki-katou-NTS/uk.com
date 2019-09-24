@@ -112,7 +112,7 @@ module nts.uk.pr.view.qsi013.b.viewmodel {
             self.required = ko.observable(true)
             self.enable = ko.observable(true);
             self.systemReference = ko.observable(model.SystemType.SALARY);
-            self.isDisplayOrganizationName = ko.observable(false);
+            self.isDisplayOrganizationName = ko.observable(true);
             self.targetBtnText = nts.uk.resource.getText("KCP009_3");
             self.isEnable = ko.observable(true);
             self.isEditable = ko.observable(true);

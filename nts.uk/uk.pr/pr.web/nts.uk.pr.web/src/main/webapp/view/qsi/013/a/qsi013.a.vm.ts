@@ -279,6 +279,7 @@ module nts.uk.pr.view.qsi013.a.viewmodel {
                  */
                 returnDataFromCcg001: function(data: Ccg001ReturnedData) {
                     self.employeeList(self.setEmployee(data.listEmployee));
+                    self.loadKCP005();
                 }
             };
 
