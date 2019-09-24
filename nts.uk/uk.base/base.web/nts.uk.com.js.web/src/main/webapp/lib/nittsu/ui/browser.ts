@@ -156,3 +156,4 @@ export class browser {
         return d.promise();
     }
 }
+}
