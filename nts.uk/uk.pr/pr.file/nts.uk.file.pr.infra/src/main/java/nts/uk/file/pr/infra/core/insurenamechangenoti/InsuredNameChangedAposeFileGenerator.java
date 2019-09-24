@@ -52,9 +52,7 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
             Workbook wb = reportContext.getWorkbook();
             WorksheetCollection wsc = wb.getWorksheets();
 
-
-            //pagination
-            for (InsuredNameChangedNotiExportData item : data) {
+            for(int i = 1; i < data.size(); i ++){
                 wsc.addCopy(0);
             }
 
@@ -74,7 +72,6 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
     private void writePDF(WorksheetCollection wsc, InsuredNameChangedNotiExportData data, SocialInsurNotiCreateSet socialInsurNotiCreateSet, int index){
 
         String empBasicPenNumInfor[];
-
 
         Worksheet ws = wsc.get(index);
 
@@ -115,11 +112,38 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
 
         //fill to A1_4 -> A1_7
 
-
-
         JapaneseDate dateJp = toJapaneseDate(data.getEmployeeInfo().getBirthDay());
+        String day[] = String.valueOf(dateJp.day()).split("");
+        String month[] = String.valueOf(dateJp.month()).split("");
+        String year[] = String.valueOf(dateJp.year()).split("");
+
+        if(day.length == 2){
+            ws.getCells().get("AB12").putValue(day[0]);
+            ws.getCells().get("AC12").putValue(day[1]);
+        }else{
+            ws.getCells().get("AC12").putValue(day[0]);
+        }
+
+        if(month.length == 2){
+            ws.getCells().get("AD12").putValue(month[0]);
+            ws.getCells().get("AE12").putValue(month[1]);
+        }else{
+            ws.getCells().get("AE12").putValue(month[0]);
+        }
+
+        if(year.length == 2){
+            ws.getCells().get("AF12").putValue(year[0]);
+            ws.getCells().get("AG12").putValue(year[1]);
+        }else{
+            ws.getCells().get("AG12").putValue(year[0]);
+        }
 
         this.selectEra(ws,dateJp.era());
+
+        JapaneseDate submitDate = toJapaneseDate(data.getSubmitDate());
+        ws.getCells().get("W20").putValue(submitDate.day());
+        ws.getCells().get("Y20").putValue(submitDate.month());
+        ws.getCells().get("AA20").putValue(submitDate.year());
 
         if(data.getEmployeeInfo() != null){
             ws.getCells().get("J17").putValue(data.getEmployeeInfo().getPName());
@@ -194,7 +218,7 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
         if(socialInsurNotiCreateSet.getOfficeInformation().value == BusinessDivision.OUTPUT_COMPANY_NAME.value){
 
             if(data.getCompanyInfor() != null){
-                ws.getCells().get("J22").putValue(data.getCompanyInfor().getPostCd());
+                ws.getCells().get("J22").putValue("〒 " + data.getCompanyInfor().getPostCd().substring(0,3) + " － " + data.getCompanyInfor().getPostCd().substring(4));
                 ws.getCells().get("M22").putValue(data.getCompanyInfor().getAdd_1());
                 ws.getCells().get("M23").putValue(data.getCompanyInfor().getAdd_2());
                 ws.getCells().get("J24").putValue(data.getCompanyInfor().getCompanyName());
@@ -204,7 +228,7 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
 
         }else{
             if(data.getSocialInsuranceOffice() != null){
-                ws.getCells().get("J22").putValue(data.getSocialInsuranceOffice().getBasicInformation().getAddress().isPresent() ? data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getPostalCode().get().v() : null);
+                ws.getCells().get("J22").putValue(data.getSocialInsuranceOffice().getBasicInformation().getAddress().isPresent() ? ("〒 " + data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getPostalCode().get().v().substring(0,3) + " － " + data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getPostalCode().get().v().substring(4)) : null);
                 ws.getCells().get("M22").putValue(data.getSocialInsuranceOffice().getBasicInformation().getAddress().isPresent() ? data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getAddress1().get().v() : null);
                 ws.getCells().get("M23").putValue(data.getSocialInsuranceOffice().getBasicInformation().getAddress().isPresent() ? data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getAddress2().get().v() : null);
                 ws.getCells().get("J24").putValue(data.getSocialInsuranceOffice().getName().v());
