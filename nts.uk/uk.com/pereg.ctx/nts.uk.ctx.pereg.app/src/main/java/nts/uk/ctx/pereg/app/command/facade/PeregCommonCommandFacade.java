@@ -253,7 +253,7 @@ public class PeregCommonCommandFacade {
 				itemFirstByCtg.getCategoryCd(), baseDate,
 				containerAdds.stream().map(c -> c.getEmployeeId()).collect(Collectors.toList())));
 		
-		List<GridEmpHead> itemRequireds = gridEmpDto.getHeadDatas().stream().filter(c -> c.isRequired() == true && c.getItemTypeState().getItemType() == 2).collect(Collectors.toList());
+		List<GridEmpHead> itemRequireds = gridEmpDto.getHeadDatas().stream().filter(c -> c.getItemTypeState().getItemType() == 2).collect(Collectors.toList());
 		containerAdds.stream().forEach(c -> {
 			Optional<GridEmployeeInfoDto> gridEmployeeInfoDto = gridEmpDto.getBodyDatas().stream()
 					.filter(p -> p.getEmployeeId().equals(c.getEmployeeId())).findFirst();
