@@ -27,11 +27,11 @@
 	<ui:define name="content">
 		<div id="functions-area">
 			<button id="A1_1" tabindex="1" class="proceed" style="margin-left: 70px;"
-					data-bind="enable: selectedCode().length &amp;&amp; $root.errors.isEmpty, click:  function(){ exportFile(0); }">#{i18n.getText('QSI013_A1_1')}</button>
+					data-bind="enable: selectedCode().length > 0 &amp;&amp; $root.errors.isEmpty, click:  function(){ exportFile(0); }">#{i18n.getText('QSI013_A1_1')}</button>
 			<button id="A1_2" tabindex="2"
-					data-bind="enable: selectedCode().length &amp;&amp; $root.errors.isEmpty, click:  function(){ exportFile(1); }">#{i18n.getText('QSI013_A1_2')}</button>
+					data-bind="enable: selectedCode().length > 0 &amp;&amp; $root.errors.isEmpty, click:  function(){ exportFile(1); }">#{i18n.getText('QSI013_A1_2')}</button>
 			<button id="A1_4" tabindex="3"
-					data-bind="click: openBScreen, enable: selectedCode().length">#{i18n.getText('QSI013_A1_3')}</button>
+					data-bind="click: openBScreen, enable: selectedCode().length > 0">#{i18n.getText('QSI013_A1_3')}</button>
 			<button id="A1_5" tabindex="4"
 					data-bind="enable: false">#{i18n.getText('QSI013_A1_4')}</button>
 			<button id="A1_6" tabindex="5"
