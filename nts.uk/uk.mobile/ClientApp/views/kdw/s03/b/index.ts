@@ -142,7 +142,7 @@ export class KdwS03BComponent extends Vue {
 
     get canRegister() {
         let self = this;
-        
+
         return _.find(self.params.paramData.authorityDto, (item) => item.functionNo == 1 && item.availability);
     }
 
@@ -160,7 +160,7 @@ export class KdwS03BComponent extends Vue {
         self.$http.post('at', API.masterDialogData, {
             types: self.masterDialogParam,
             date: new Date(),
-            employeeID: self.params.employeeID, 
+            employeeID: self.params.employeeID,
             workTypeCD: self.screenData1.A28
         }).then((masterData: any) => {
             self.createMasterData(masterData.data);
@@ -241,8 +241,8 @@ export class KdwS03BComponent extends Vue {
         } else {
             cellKey = itemHeader.group[0].key;
         }
-        let cellState =_.find(lstCellState, (item) => item.columnKey == cellKey);
-        if (_.isUndefined(cellState)) { 
+        let cellState = _.find(lstCellState, (item) => item.columnKey == cellKey);
+        if (_.isUndefined(cellState)) {
             return false;
         }
 
@@ -284,37 +284,37 @@ export class KdwS03BComponent extends Vue {
         _.forEach(data[MasterType.KDLS10_ServicePlace], (o) => {
             self.masterData.servicePlace.push({ code: o.code, name: o.name });
         });
-        if (_.isEmpty(self.masterData.servicePlace)) {
+        if (!_.find(self.masterData.servicePlace, (item) => item.code == '')) {
             self.masterData.servicePlace.push({ code: '', name: 'なし' });
         }
         _.forEach(data[MasterType.KDLS32_Reason], (o) => {
             self.masterData.reason.push({ code: o.code, name: o.name });
         });
-        if (_.isEmpty(self.masterData.reason)) {
+        if (!_.find(self.masterData.reason, (item) => item.code == '')) {
             self.masterData.reason.push({ code: '', name: 'なし' });
         }
         _.forEach(data[MasterType.KCPS02_Classification], (o) => {
             self.masterData.classification.push({ code: o.code, name: o.name });
         });
-        if (_.isEmpty(self.masterData.classification)) {
+        if (!_.find(self.masterData.classification, (item) => item.code == '')) {
             self.masterData.classification.push({ code: '', name: 'なし' });
         }
         _.forEach(data[MasterType.KCPS03_Possition], (o) => {
             self.masterData.possition.push({ code: o.code, name: o.name });
         });
-        if (_.isEmpty(self.masterData.possition)) {
+        if (!_.find(self.masterData.possition, (item) => item.code == '')) {
             self.masterData.possition.push({ code: '', name: 'なし' });
         }
         _.forEach(data[MasterType.KCPS01_Employment], (o) => {
             self.masterData.employment.push({ code: o.code, name: o.name });
         });
-        if (_.isEmpty(self.masterData.employment)) {
+        if (!_.find(self.masterData.employment, (item) => item.code == '')) {
             self.masterData.employment.push({ code: '', name: 'なし' });
         }
         _.forEach(data[MasterType.KCP001_BusinessType], (o) => {
             self.masterData.businessType.push({ code: o.code, name: o.name });
         });
-        if (_.isEmpty(self.masterData.businessType)) {
+        if (!_.find(self.masterData.businessType, (item) => item.code == '')) {
             self.masterData.businessType.push({ code: '', name: 'なし' });
         }
         _.forEach(self.screenData1, (value, key) => {
@@ -322,28 +322,53 @@ export class KdwS03BComponent extends Vue {
             if (!(self.getItemType(key) == ItemType.InputStringCode || self.getItemType(key) == ItemType.ButtonDialog)) {
                 return;
             }
+            let rowData = _.find(self.params.rowData.rowData, (rowData: RowData) => rowData.key == key);
             switch (attendanceItem.typeGroup) {
                 case MasterType.KDLS10_ServicePlace:
-                    self.masterData.servicePlace.push({ code: value, name: 'マスタ未登録' });
-                    break;        
-                case MasterType.KDLS32_Reason: 
-                    self.masterData.reason.push({ code: value, name: 'マスタ未登録' });
+                    rowData.comboLst = self.masterData.servicePlace;
+                    if (!_.find(rowData.comboLst, (item) => item.code == value)) {
+                        rowData.comboLst.push({ code: value, name: 'マスタ未登録' });
+                    }
+                    break;
+                case MasterType.KDLS32_Reason:
+                    rowData.comboLst = self.masterData.reason;
+                    if (!_.find(rowData.comboLst, (item) => item.code == value)) {
+                        rowData.comboLst.push({ code: value, name: 'マスタ未登録' });
+                    }
                     break;
                 case MasterType.KCPS02_Classification:
-                    self.masterData.classification.push({ code: value, name: 'マスタ未登録' });
+                    rowData.comboLst = self.masterData.classification;
+                    if (!_.find(rowData.comboLst, (item) => item.code == value)) {
+                        rowData.comboLst.push({ code: value, name: 'マスタ未登録' });
+                    }
                     break;
                 case MasterType.KCPS03_Possition:
-                    self.masterData.possition.push({ code: value, name: 'マスタ未登録' });
+                    rowData.comboLst = self.masterData.possition;
+                    if (!_.find(rowData.comboLst, (item) => item.code == value)) {
+                        rowData.comboLst.push({ code: value, name: 'マスタ未登録' });
+                    }
                     break;
                 case MasterType.KCPS01_Employment:
-                    self.masterData.employment.push({ code: value, name: 'マスタ未登録' });
+                    rowData.comboLst = self.masterData.employment;
+                    if (!_.find(rowData.comboLst, (item) => item.code == value)) {
+                        rowData.comboLst.push({ code: value, name: 'マスタ未登録' });
+                    }
                     break;
                 case MasterType.KCP001_BusinessType:
-                    self.masterData.businessType.push({ code: value, name: 'マスタ未登録' });
+                    rowData.comboLst = self.masterData.businessType;
+                    if (!_.find(rowData.comboLst, (item) => item.code == value)) {
+                        rowData.comboLst.push({ code: value, name: 'マスタ未登録' });
+                    }
                     break;
                 default: break;
             }
         });
+    }
+
+    public getRowComboBox(key) {
+        let self = this;
+        
+        return _.find(self.params.rowData.rowData, (rowData: RowData) => rowData.key == key).comboLst;
     }
 
     private formatData(rowData: RowData) {
@@ -409,16 +434,10 @@ export class KdwS03BComponent extends Vue {
     }
 
     public getBackGroundColor(key: string) {
-        let self = this;
-        let rowClass = _.find(self.params.rowData.rowData, (rowData: RowData) => rowData.key == key).class;
-        if (rowClass.includes('mgrid-error')) {
-            return 'uk-bg-schedule-no-empl-insurance';
-        }
-        if (rowClass.includes('mgrid-alarm')) {
-            return 'uk-bg-schedule-work-by-dow';
-        }
+        let self = this,
+            rowData = _.get(self, 'params.rowData.rowData') || [];
 
-        return '';    
+        return _.get(_.find(rowData, (r: any) => r.key === key), 'class');
     }
 
     public getItemDialogName(key: string) {
@@ -434,21 +453,21 @@ export class KdwS03BComponent extends Vue {
                 } else {
                     return rowData.value;
                 }
-            case MasterType.KDLS01_WorkTime: 
-                item = _.find(self.masterData.workTime, (o) => o.code == rowData.value0); 
+            case MasterType.KDLS01_WorkTime:
+                item = _.find(self.masterData.workTime, (o) => o.code == rowData.value0);
                 if (item) {
                     return item.name;
                 } else {
                     return rowData.value;
                 }
-            case MasterType.CDLS08_WorkPlace: 
-                item = _.find(self.masterData.workPlace, (o) => o.code == rowData.value0); 
+            case MasterType.CDLS08_WorkPlace:
+                item = _.find(self.masterData.workPlace, (o) => o.code == rowData.value0);
                 if (item) {
                     return item.name;
                 } else {
                     return rowData.value;
                 }
-            default: 
+            default:
                 break;
         }
     }
@@ -557,31 +576,31 @@ export class KdwS03BComponent extends Vue {
                         constraintObj = _.get(self.validations.fixedConstraint, PrimitiveAll['No' + attendanceItem.primitive]);
                         constraintObj.loop = true;
                         constraintObj.required = contraint.required;
-                        self.$updateValidator( `screenData.${rowData.key}`, constraintObj);
-                    } 
+                        self.$updateValidator(`screenData.${rowData.key}`, constraintObj);
+                    }
                     break;
                 case ItemType.InputMoney:
                     if (contraint.cdisplayType == 'Primitive') {
                         constraintObj = _.get(self.validations.fixedConstraint, PrimitiveAll['No' + attendanceItem.primitive]);
                         constraintObj.loop = true;
                         constraintObj.required = contraint.required;
-                        self.$updateValidator( `screenData.${rowData.key}`, constraintObj);
-                    } 
+                        self.$updateValidator(`screenData.${rowData.key}`, constraintObj);
+                    }
                     break;
                 case ItemType.Time:
                     if (contraint.cdisplayType == 'Primitive') {
                         constraintObj = _.get(self.validations.fixedConstraint, PrimitiveAll['No' + attendanceItem.primitive]);
                         constraintObj.loop = true;
                         constraintObj.required = contraint.required;
-                        self.$updateValidator( `screenData.${rowData.key}`, constraintObj);
-                    } 
+                        self.$updateValidator(`screenData.${rowData.key}`, constraintObj);
+                    }
                     break;
                 case ItemType.InputStringChar:
                     if (contraint.cdisplayType == 'Primitive') {
                         constraintObj = _.get(self.validations.fixedConstraint, PrimitiveAll['No' + attendanceItem.primitive]);
                         constraintObj.loop = true;
                         constraintObj.required = contraint.required;
-                        self.$updateValidator( `screenData.${rowData.key}`, constraintObj);
+                        self.$updateValidator(`screenData.${rowData.key}`, constraintObj);
                         // self.$updateValidator( {screenData : { [rowData.key] : constraintObj}});
                     }
                     break;
@@ -667,7 +686,7 @@ export class KdwS03BComponent extends Vue {
                 } else {
                     rowData.value = '選択なし';
                 }
-                
+
             }
         });
     }
@@ -695,7 +714,7 @@ export class KdwS03BComponent extends Vue {
                 } else {
                     rowData.value = '選択なし';
                 }
-                
+
             }
         });
     }
@@ -763,14 +782,14 @@ export class KdwS03BComponent extends Vue {
                     self.$modal.error('Msg_1528').then(() => {
                         self.$close({ reload: true });
                     });
-                    
+
                     return;
                 }
                 if (dataAfter.messageAlert == 'Msg_15') {
                     self.$modal.info('Msg_15').then(() => {
                         self.$close({ reload: true });
                     });
-                    
+
                     return;
                 }
                 let errorOutput = [];
@@ -791,7 +810,7 @@ export class KdwS03BComponent extends Vue {
                         let nameGroup: any = (itemGroup == undefined) ? '' : itemGroup;
                         let message = self.$i18n(value.message, [itemName, nameGroup]);
                         errorOutput.push(message);
-                    });    
+                    });
                 }
                 if (dataAfter.errorMap[3] != undefined) {
                     _.forEach(dataAfter.errorMap[3], (value) => {
@@ -815,7 +834,7 @@ export class KdwS03BComponent extends Vue {
                 if (dataAfter.errorMap[5] != undefined) {
                     _.forEach(dataAfter.errorMap[5], (value) => {
                         errorOutput.push(self.$i18n(value.message));
-                    });    
+                    });
                 }
                 errorOutput = _.uniq(errorOutput);
                 self.$modal.error('').then(() => {
@@ -878,7 +897,7 @@ export class KdwS03BComponent extends Vue {
             let rowData = _.find(self.params.rowData.rowData, (o) => o.key == key);
             if (_.includes(self.listAutoCalc, key)) {
                 return;
-            } 
+            }
             let oldRow = self.oldData[key];
             if (JSON.stringify(oldRow).localeCompare(JSON.stringify(self.screenData[0][key])) != 0) {
                 switch (attendanceItem.attendanceAtr) {
@@ -915,7 +934,7 @@ export class KdwS03BComponent extends Vue {
                 }
                 itemValues.push(itemValue);
             }
-        });    
+        });
 
         return itemValues;
     }
@@ -935,7 +954,7 @@ export class KdwS03BComponent extends Vue {
             let rowData = _.find(self.params.rowData.rowData, (o) => o.key == key);
             if (_.includes(self.listAutoCalc, key)) {
                 return;
-            } 
+            }
             let attendanceItem = self.getAttendanceItem(key);
             let oldRow = self.oldData[key];
             if (JSON.stringify(oldRow).localeCompare(JSON.stringify(self.screenData[0][key])) != 0) {
@@ -973,17 +992,17 @@ export class KdwS03BComponent extends Vue {
                 }
                 itemValues.push(itemValue);
             }
-        });    
+        });
 
-        return itemValues;    
+        return itemValues;
     }
 
     private autoCalc(key: string) {
         let self = this;
         let rowData = _.find(self.params.rowData.rowData, (o) => o.key == key);
-        if (rowData.isCalc) {  
+        if (rowData.isCalc) {
             rowData.isCalc = false;
-            
+
             return;
         }
         let attendanceItem = self.getAttendanceItem(key);
@@ -1009,47 +1028,47 @@ export class KdwS03BComponent extends Vue {
         };
         self.$mask('show');
         self.$http.post('at', API.linkItemCalc, param)
-        .then((data: any) => {
-            self.$mask('hide');
-            _.forEach(data.data.cellEdits, (item: any) => {
-                if (!_.includes(self.listAutoCalc, item.item)) {
-                    self.listAutoCalc.push(item.item);
-                }
-            });
-            _.forEach(data.data.cellEdits, (item: any) => {
-                if (!_.isUndefined(self.screenData1[item.item])) {
-                    let rowDataLoop = _.find(self.params.rowData.rowData, (o) => o.key == item.item);
-                    let attendanceItemLoop = self.getAttendanceItem(item.item);
-                    switch (attendanceItemLoop.attendanceAtr) {
-                        case ItemType.InputNumber:
-                            rowDataLoop.isCalc = true;
-                            self.screenData1[item.item] = _.isEmpty(item.value) ? null : _.toNumber(item.value);
-                            break;
-                        case ItemType.InputMoney:
-                            rowDataLoop.isCalc = true;
-                            self.screenData1[item.item] = _.isEmpty(item.value) ? null : _.toNumber(item.value);
-                            break;
-                        case ItemType.Time:
-                            rowDataLoop.isCalc = true;
-                            self.screenData1[item.item] = _.isEmpty(item.value) ? null : new TimeDuration(item.value).toNumber();
-                            break;
-                        case ItemType.TimeWithDay:
-                            rowDataLoop.isCalc = true;
-                            self.screenData1[item.item] = _.isEmpty(item.value) ? null : new TimeDuration(item.value).toNumber();
-                            break;
-                        default:
-                            rowDataLoop.isCalc = true;
-                            self.screenData1[item.item] = item.value;
-                            break;
+            .then((data: any) => {
+                self.$mask('hide');
+                _.forEach(data.data.cellEdits, (item: any) => {
+                    if (!_.includes(self.listAutoCalc, item.item)) {
+                        self.listAutoCalc.push(item.item);
                     }
-                }
+                });
+                _.forEach(data.data.cellEdits, (item: any) => {
+                    if (!_.isUndefined(self.screenData1[item.item])) {
+                        let rowDataLoop = _.find(self.params.rowData.rowData, (o) => o.key == item.item);
+                        let attendanceItemLoop = self.getAttendanceItem(item.item);
+                        switch (attendanceItemLoop.attendanceAtr) {
+                            case ItemType.InputNumber:
+                                rowDataLoop.isCalc = true;
+                                self.screenData1[item.item] = _.isEmpty(item.value) ? null : _.toNumber(item.value);
+                                break;
+                            case ItemType.InputMoney:
+                                rowDataLoop.isCalc = true;
+                                self.screenData1[item.item] = _.isEmpty(item.value) ? null : _.toNumber(item.value);
+                                break;
+                            case ItemType.Time:
+                                rowDataLoop.isCalc = true;
+                                self.screenData1[item.item] = _.isEmpty(item.value) ? null : new TimeDuration(item.value).toNumber();
+                                break;
+                            case ItemType.TimeWithDay:
+                                rowDataLoop.isCalc = true;
+                                self.screenData1[item.item] = _.isEmpty(item.value) ? null : new TimeDuration(item.value).toNumber();
+                                break;
+                            default:
+                                rowDataLoop.isCalc = true;
+                                self.screenData1[item.item] = item.value;
+                                break;
+                        }
+                    }
+                });
+            }).catch((res: any) => {
+                self.$mask('hide');
+                self.$modal.error(res.messageId)
+                    .then(() => {
+                    });
             });
-        }).catch((res: any) => {
-            self.$mask('hide');
-            self.$modal.error(res.messageId)
-                .then(() => {
-                });   
-        });
     }
 
     public screenDataWatch() {
@@ -1062,9 +1081,9 @@ export class KdwS03BComponent extends Vue {
                         return;
                     }
                     let rowData = _.find(self.params.rowData.rowData, (o) => o.key == key);
-                    if (rowData.isCalc) {  
+                    if (rowData.isCalc) {
                         rowData.isCalc = false;
-                        
+
                         return;
                     }
                     let attendanceItem = self.getAttendanceItem(key);
@@ -1090,47 +1109,47 @@ export class KdwS03BComponent extends Vue {
                     };
                     self.$mask('show');
                     self.$http.post('at', API.linkItemCalc, param)
-                    .then((data: any) => {
-                        self.$mask('hide');
-                        _.forEach(data.data.cellEdits, (item: any) => {
-                            if (!_.includes(self.listAutoCalc, item.item)) {
-                                self.listAutoCalc.push(item.item);
-                            }
-                        });
-                        _.forEach(data.data.cellEdits, (item: any) => {
-                            if (!_.isUndefined(self.screenData1[item.item])) {
-                                let rowDataLoop = _.find(self.params.rowData.rowData, (o) => o.key == item.item);
-                                let attendanceItemLoop = self.getAttendanceItem(item.item);
-                                switch (attendanceItemLoop.attendanceAtr) {
-                                    case ItemType.InputNumber:
-                                        rowDataLoop.isCalc = true;
-                                        self.screenData1[item.item] = _.isEmpty(item.value) ? null : _.toNumber(item.value);
-                                        break;
-                                    case ItemType.InputMoney:
-                                        rowDataLoop.isCalc = true;
-                                        self.screenData1[item.item] = _.isEmpty(item.value) ? null : _.toNumber(item.value);
-                                        break;
-                                    case ItemType.Time:
-                                        rowDataLoop.isCalc = true;
-                                        self.screenData1[item.item] = _.isEmpty(item.value) ? null : new TimeDuration(item.value).toNumber();
-                                        break;
-                                    case ItemType.TimeWithDay:
-                                        rowDataLoop.isCalc = true;
-                                        self.screenData1[item.item] = _.isEmpty(item.value) ? null : new TimeDuration(item.value).toNumber();
-                                        break;
-                                    default:
-                                        rowDataLoop.isCalc = true;
-                                        self.screenData1[item.item] = item.value;
-                                        break;
+                        .then((data: any) => {
+                            self.$mask('hide');
+                            _.forEach(data.data.cellEdits, (item: any) => {
+                                if (!_.includes(self.listAutoCalc, item.item)) {
+                                    self.listAutoCalc.push(item.item);
                                 }
-                            }
+                            });
+                            _.forEach(data.data.cellEdits, (item: any) => {
+                                if (!_.isUndefined(self.screenData1[item.item])) {
+                                    let rowDataLoop = _.find(self.params.rowData.rowData, (o) => o.key == item.item);
+                                    let attendanceItemLoop = self.getAttendanceItem(item.item);
+                                    switch (attendanceItemLoop.attendanceAtr) {
+                                        case ItemType.InputNumber:
+                                            rowDataLoop.isCalc = true;
+                                            self.screenData1[item.item] = _.isEmpty(item.value) ? null : _.toNumber(item.value);
+                                            break;
+                                        case ItemType.InputMoney:
+                                            rowDataLoop.isCalc = true;
+                                            self.screenData1[item.item] = _.isEmpty(item.value) ? null : _.toNumber(item.value);
+                                            break;
+                                        case ItemType.Time:
+                                            rowDataLoop.isCalc = true;
+                                            self.screenData1[item.item] = _.isEmpty(item.value) ? null : new TimeDuration(item.value).toNumber();
+                                            break;
+                                        case ItemType.TimeWithDay:
+                                            rowDataLoop.isCalc = true;
+                                            self.screenData1[item.item] = _.isEmpty(item.value) ? null : new TimeDuration(item.value).toNumber();
+                                            break;
+                                        default:
+                                            rowDataLoop.isCalc = true;
+                                            self.screenData1[item.item] = item.value;
+                                            break;
+                                    }
+                                }
+                            });
+                        }).catch((res: any) => {
+                            self.$mask('hide');
+                            self.$modal.error(res.messageId)
+                                .then(() => {
+                                });
                         });
-                    }).catch((res: any) => {
-                        self.$mask('hide');
-                        self.$modal.error(res.messageId)
-                            .then(() => {
-                            });   
-                    });
                 });
             } else {
                 self.$watch(`screenData1.${key}`, () => {
@@ -1138,16 +1157,16 @@ export class KdwS03BComponent extends Vue {
                         return;
                     }
                     let rowData = _.find(self.params.rowData.rowData, (o) => o.key == key);
-                    if (rowData.isCalc) {  
+                    if (rowData.isCalc) {
                         rowData.isCalc = false;
-                        
+
                         return;
                     }
                     _.remove(self.listAutoCalc, key);
                 });
             }
         });
-        
+
     }
 }
 

@@ -60,37 +60,37 @@
           <div class="col-9 pl-0 pr-0">
             <nts-dropdown v-if="getItemMasterType(key)==masterType.KDLS10_ServicePlace" v-model="screenData[0][key]" v-bind:record-name="key" v-bind:key="key"
               :class-input="`${ getBackGroundColor(key) }`" v-bind:disabled="getItemLock(key)">
-              <option v-for="(item, k) in masterData.servicePlace" v-bind:key="k" :value="item.code">
+              <option v-for="(item, k) in getRowComboBox(key)" v-bind:key="k" :value="item.code">
                 {{item.code}} &nbsp;&nbsp;&nbsp;  {{item.name}}
               </option>
             </nts-dropdown>
             <nts-dropdown v-if="getItemMasterType(key)==masterType.KDLS32_Reason" v-model="screenData[0][key]" v-bind:record-name="key" v-bind:key="key"
               :class-input="`${ getBackGroundColor(key) }`" v-bind:disabled="getItemLock(key)">
-              <option v-for="(item, k) in masterData.reason" v-bind:key="k" :value="item.code">
+              <option v-for="(item, k) in getRowComboBox(key)" v-bind:key="k" :value="item.code">
                 {{item.code}} &nbsp;&nbsp;&nbsp;  {{item.name}}
               </option>
             </nts-dropdown>
             <nts-dropdown v-if="getItemMasterType(key)==masterType.KCPS02_Classification" v-model="screenData[0][key]" v-bind:record-name="key" v-bind:key="key"
               :class-input="`${ getBackGroundColor(key) }`" v-bind:disabled="getItemLock(key)">
-              <option v-for="(item, k) in masterData.classification" v-bind:key="k" :value="item.code">
+              <option v-for="(item, k) in getRowComboBox(key)" v-bind:key="k" :value="item.code">
                 {{item.code}} &nbsp;&nbsp;&nbsp;  {{item.name}}
               </option>
             </nts-dropdown>
             <nts-dropdown v-if="getItemMasterType(key)==masterType.KCPS03_Possition" v-model="screenData[0][key]" v-bind:record-name="key" v-bind:key="key"
               :class-input="`${ getBackGroundColor(key) }`" v-bind:disabled="getItemLock(key)">
-              <option v-for="(item, k) in masterData.possition" v-bind:key="k" :value="item.code">
+              <option v-for="(item, k) in getRowComboBox(key)" v-bind:key="k" :value="item.code">
                 {{item.code}} &nbsp;&nbsp;&nbsp;  {{item.name}}
               </option>
             </nts-dropdown>
             <nts-dropdown v-if="getItemMasterType(key)==masterType.KCPS01_Employment" v-model="screenData[0][key]" v-bind:record-name="key" v-bind:key="key"
               :class-input="`${ getBackGroundColor(key) }`" v-bind:disabled="getItemLock(key)">
-              <option v-for="(item, k) in masterData.employment" v-bind:key="k" :value="item.code">
+              <option v-for="(item, k) in getRowComboBox(key)" v-bind:key="k" :value="item.code">
                 {{item.code}} &nbsp;&nbsp;&nbsp;  {{item.name}}
               </option>
             </nts-dropdown>
             <nts-dropdown v-if="getItemMasterType(key)==masterType.KCP001_BusinessType" v-model="screenData[0][key]" v-bind:record-name="key" v-bind:key="key"
               :class-input="`${ getBackGroundColor(key) }`" v-bind:disabled="getItemLock(key)">
-              <option v-for="(item, k) in masterData.businessType" v-bind:key="k" :value="item.code">
+              <option v-for="(item, k) in getRowComboBox(key)" v-bind:key="k" :value="item.code">
                 {{item.code}} &nbsp;&nbsp;&nbsp;  {{item.name}}
               </option>
             </nts-dropdown>
