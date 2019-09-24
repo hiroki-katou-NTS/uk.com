@@ -276,7 +276,6 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 				+ " UPD_DATE , UPD_CCD , UPD_SCD , UPD_PG," 
 				+ " HIST_ID, SID, TEMP_ABS_FRAME_NO,"
 				+ " REMARKS, SO_INS_PAY_CATEGORY";
-		TempAbsenceHisItem tempAbsenceHisItem = domains.get(0);
 		String insCcd = AppContexts.user().companyCode();
 		String insScd = AppContexts.user().employeeCode();
 		String insPg = AppContexts.programId();
@@ -436,7 +435,7 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 				String sql6 = SQL  + ")"+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
 						+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL,"
 						+ " HIST_ID_VAL, SID_VAL, TEMP_ABS_FRAME_NO_VAL, REMARKS_VAL, SO_INS_PAY_CATEGORY_VAL); ";
-				SickLeave sickLeave1 = (SickLeave) c;
+				AnyLeave anyLeave = (AnyLeave) c;
 				sql6 = sql6.replace("INS_DATE_VAL", "'" + GeneralDateTime.now() + "'");
 				sql6 = sql6.replace("INS_CCD_VAL", "'" + insCcd + "'");
 				sql6 = sql6.replace("INS_SCD_VAL", "'" + insScd + "'");
@@ -447,11 +446,11 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 				sql6 = sql6.replace("UPD_SCD_VAL", "'" + updScd + "'");
 				sql6 = sql6.replace("UPD_PG_VAL", "'" + updPg + "'");
 				
-				sql6 = sql6.replace("HIST_ID_VAL", "'" + sickLeave1.getHistoryId() + "'");
-				sql6 = sql6.replace("SID_VAL", "'" + sickLeave1.getEmployeeId() + "'");
+				sql6 = sql6.replace("HIST_ID_VAL", "'" + anyLeave.getHistoryId() + "'");
+				sql6 = sql6.replace("SID_VAL", "'" + anyLeave.getEmployeeId() + "'");
 				sql6 = sql6.replace("TEMP_ABS_FRAME_NO_VAL", "" + tempAbsenceFrNo + "");
-				sql6 = sql6.replace("REMARKS_VAL", sickLeave1.getRemarks()== null? "null" : "'" + sickLeave1.getRemarks() + "'");
-				sql6 = sql6.replace("SO_INS_PAY_CATEGORY_VAL", sickLeave1.getSoInsPayCategory() == null? "null": "" +  sickLeave1.getSoInsPayCategory().intValue() + "");
+				sql6 = sql6.replace("REMARKS_VAL", anyLeave.getRemarks()== null? "null" : "'" + anyLeave.getRemarks() + "'");
+				sql6 = sql6.replace("SO_INS_PAY_CATEGORY_VAL", anyLeave.getSoInsPayCategory() == null? "null": "" +  anyLeave.getSoInsPayCategory().intValue() + "");
 	
 				sb.append(sql6);
 				break;
