@@ -17,6 +17,10 @@
         <com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
 
 
+        <!-- KCP 005 -->
+
+        <com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
+
         <com:scriptfile path="qsi002.a.vm.js" />
         <com:scriptfile path="qsi002.a.start.js" />
         <com:scriptfile path="qsi002.a.service.js" />
@@ -25,11 +29,11 @@
 
     <ui:define name="content">
         <div id="functions-area" style = "min-width: 1000px;">
-            <button id="A1_1" tabindex="1" data-bind="click: exportPDF" class="proceed">#{i18n.getText('QSI002_3')}</button>
+            <button id="A1_1" tabindex="1" data-bind="click: exportPDF, enable: $root.errors.isEmpty &amp;&amp; selectedCodeKCP005().length > 0" class="proceed">#{i18n.getText('QSI002_3')}</button>
 
-            <button id="A1_2" tabindex="2" >#{i18n.getText('QSI002_4')}</button>
+            <button id="A1_2" tabindex="2" data-bind="click: openScreenB, enable: false" >#{i18n.getText('QSI002_4')}</button>
 
-            <button id="A1_3" tabindex="3" data-bind="click: openScreenB" >#{i18n.getText('QSI002_5')}</button>
+            <button id="A1_3" tabindex="3" data-bind="click: openScreenB, enable: false" >#{i18n.getText('QSI002_5')}</button>
 
         </div>
         <div id="contents-area">
@@ -39,14 +43,7 @@
             <!-- div left -->
             <div class="pull-left" style="margin-left: 100px">
 
-                <table tabindex="5" id="multi-list" data-bind="ntsGridList: {
-                    height: 350,
-                    options: items,
-                    optionsValue: 'code',
-                    columns: columns,
-                    multiple: true,
-                    value: currentCodeList
-                }"></table>
+                <div class = "panel panel-frame" id="kcp005" tabindex="10"></div>
 
 
             </div>

@@ -25,7 +25,7 @@ module nts.uk.pr.view.qsi002.a.viewmodel {
         itemList: KnockoutObservableArray<ItemModel>;
         selectedCode: KnockoutObservable<string>;
 
-        listEmployee: KnockoutObservableArray<string>;
+        listEmployee: KnockoutObservableArray<any>;
 
 
 
@@ -46,6 +46,24 @@ module nts.uk.pr.view.qsi002.a.viewmodel {
         selectedBusinessDivision:  KnockoutObservable<string>;
         personalNumClass: KnockoutObservableArray<ItemModel>;
         selectedPersonalNumClass: KnockoutObservable<string>;
+
+
+        //kcp005
+
+        listComponentOptionKCP005: any;
+        selectedCodeKCP005: KnockoutObservable<string>  = ko.observable('');
+        multiSelectedCode: KnockoutObservableArray<string>;
+        isShowAlreadySet: KnockoutObservable<boolean>;
+        alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
+        isDialog: KnockoutObservable<boolean>;
+        isShowNoSelectRow: KnockoutObservable<boolean>;
+        isMultiSelect: KnockoutObservable<boolean>;
+        isShowWorkPlaceName: KnockoutObservable<boolean>;
+        isShowSelectAllButton: KnockoutObservable<boolean>;
+        disableSelection : KnockoutObservable<boolean>;
+
+        employeeListKCP005: KnockoutObservableArray<UnitModel>;
+        employees: any;
 
         constructor() {
             block.invisible();
@@ -101,8 +119,48 @@ module nts.uk.pr.view.qsi002.a.viewmodel {
 
             //loadpage
             self.loadPage();
+            self.loadKCP005();
 
             block.clear();
+        }
+
+        //KCP005
+        loadKCP005(){
+            let self = this;
+            self.baseDate = ko.observable(new Date());
+            self.multiSelectedCode = ko.observableArray(['0', '1', '4']);
+            self.isShowAlreadySet = ko.observable(false);
+            self.alreadySettingList = ko.observableArray([
+                {code: '1', isAlreadySetting: true},
+                {code: '2', isAlreadySetting: true}
+            ]);
+            self.isDialog = ko.observable(true);
+            self.isShowNoSelectRow = ko.observable(false);
+            self.isMultiSelect = ko.observable(true);
+            self.isShowWorkPlaceName = ko.observable(true);
+            self.isShowSelectAllButton = ko.observable(false);
+            self.disableSelection = ko.observable(false);
+
+            self.employeeListKCP005 = self.listEmployee;
+            self.listComponentOptionKCP005 = {
+                isShowAlreadySet: self.isShowAlreadySet(),
+                isMultiSelect: self.isMultiSelect(),
+                listType: ListType.EMPLOYEE,
+                employeeInputList: self.employeeListKCP005,
+                selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                selectedCode: self.selectedCodeKCP005,
+                isDialog: self.isDialog(),
+                isShowNoSelectRow: self.isShowNoSelectRow(),
+                alreadySettingList: self.alreadySettingList,
+                isShowWorkPlaceName: self.isShowWorkPlaceName(),
+                isShowSelectAllButton: self.isShowSelectAllButton(),
+                disableSelection : self.disableSelection(),
+                showOptionalColumn: false,
+                optionalColumnName: nts.uk.resource.getText('KSM005_18'),
+                optionalColumnDatasource: ko.observableArray([])
+            };
+
+            $('#kcp005').ntsListComponent(self.listComponentOptionKCP005);
         }
 
         loadPage(){
@@ -139,7 +197,7 @@ module nts.uk.pr.view.qsi002.a.viewmodel {
                     null,
                     null
                 ),
-                listEmpId: self.listEmployee(),
+                listEmpId: self.getListEmployee(self.selectedCodeKCP005(),self.employees),
                 date: moment.utc(self.baseDate1(), "YYYY/MM/DD")
             };
             service.exportPDF(data).done(e =>{
@@ -154,6 +212,16 @@ module nts.uk.pr.view.qsi002.a.viewmodel {
 
             });
         }
+
+        getListEmployee(empCode: Array, listEmp: Array){
+            let listEmployee: any = [];
+            _.each(empCode, (item) =>{
+                let emp = _.find(listEmp, function(itemEmp) { return itemEmp.employeeCode === item; });
+                listEmployee.push(emp.employeeId);
+            });
+            return listEmployee;
+        }
+
         /* CCG001 */
         loadCCG001(){
             let self = this;
@@ -197,14 +265,22 @@ module nts.uk.pr.view.qsi002.a.viewmodel {
                  */
                 returnDataFromCcg001: function(data: Ccg001ReturnedData) {
                     self.createGridList(data.listEmployee);
-                    data.listEmployee.forEach(e => {
-                        self.listEmployee.push(e.employeeId);
-                    })
+                    self.employees = data.listEmployee;
+                    self.loadKCP005();
 
                 }
             }
 
             $('#com-ccg001').ntsGroupComponent(self.ccg001ComponentOption);
+
+        }
+
+        createGridList(data) {
+            let self = this;
+            self.listEmployee([]);
+            _.each(data, data => {
+                self.listEmployee.push(new UnitModel(data.employeeCode, data.employeeName, data.workplaceName,false));
+            });
 
         }
 
@@ -224,16 +300,21 @@ module nts.uk.pr.view.qsi002.a.viewmodel {
             return listEmployee;
         }
 
-        createGridList(data){
-            let self = this;
-            _.each(data, data=>{
-                self.items.push(new ItemModelGrid(data.employeeId,data.employeeCode, data.businessName, data.workplaceName));
-            });
-
-        }
-
     }
 
+    class UnitModel {
+        code: string;
+        name?: string;
+        workplaceName?: string;
+        isAlreadySetting?: boolean;
+
+        constructor(code:string, name: string, workplaceName: string, isAlreadySetting: boolean){
+            this.code = code;
+            this.name = name;
+            this.workplaceName = workplaceName;
+            this.isAlreadySetting = isAlreadySetting;
+        }
+    }
     // Note: Defining these interfaces are optional
     export interface GroupOption {
         /** Common properties */
@@ -496,6 +577,28 @@ module nts.uk.pr.view.qsi002.a.viewmodel {
 
 
         }
+    }
+
+    //CKP005
+
+    export class ListType {
+        static EMPLOYMENT = 1;
+        static Classification = 2;
+        static JOB_TITLE = 3;
+        static EMPLOYEE = 4;
+    }
+
+
+    export class SelectType {
+        static SELECT_BY_SELECTED_CODE = 1;
+        static SELECT_ALL = 2;
+        static SELECT_FIRST_ITEM = 3;
+        static NO_SELECT = 4;
+    }
+
+    export interface UnitAlreadySettingModel {
+        code: string;
+        isAlreadySetting: boolean;
     }
 
 }

@@ -47,7 +47,7 @@ public class QqsmtWelPenNumInfo extends UkJpaEntity implements Serializable
     }
 
     public WelfPenNumInformation toDomain() {
-       return null;
+       return new WelfPenNumInformation(this.welPenNumInfoPk.affMourPeriodHisid,this.healInsurSameCtg,this.welPenNumber);
     }
     public static QqsmtWelPenNumInfo toEntity(WelfPenNumInformation domain) {
         return null;

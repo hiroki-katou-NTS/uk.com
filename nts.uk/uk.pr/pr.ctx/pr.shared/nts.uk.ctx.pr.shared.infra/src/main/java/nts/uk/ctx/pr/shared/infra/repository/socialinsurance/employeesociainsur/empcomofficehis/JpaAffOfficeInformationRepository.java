@@ -14,7 +14,7 @@ import java.util.Optional;
 public class JpaAffOfficeInformationRepository extends JpaRepository implements AffOfficeInformationRepository{
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QqsmtEmpCorpOffHis f";
-    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.empCorpOffHisPk.employeeId =:employeeId AND  f.empCorpOffHisPk.hisId =:hisId ";
+    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.empCorpOffHisPk.employeeId =:employeeId AND  f.empCorpOffHisPk.historyId =:historyId ";
 
 
     @Override
@@ -27,7 +27,7 @@ public class JpaAffOfficeInformationRepository extends JpaRepository implements 
     public Optional<AffOfficeInformation> getAffOfficeInformationById(String empId, String hisId) {
         return this.queryProxy().query(SELECT_BY_KEY_STRING, QqsmtEmpCorpOffHis.class)
                 .setParameter("employeeId", empId)
-                .setParameter("hisId",hisId)
+                .setParameter("historyId",hisId)
                 .getSingle(x -> x.toDomain());
     }
 

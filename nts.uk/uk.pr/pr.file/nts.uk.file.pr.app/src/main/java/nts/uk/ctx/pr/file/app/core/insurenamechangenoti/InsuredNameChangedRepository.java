@@ -1,4 +1,6 @@
 package nts.uk.ctx.pr.file.app.core.insurenamechangenoti;
 
-public class InsuredNameChangedRepository {
+public interface InsuredNameChangedRepository {
+
+    Object[] getPersonInfo(String empId);
 }
