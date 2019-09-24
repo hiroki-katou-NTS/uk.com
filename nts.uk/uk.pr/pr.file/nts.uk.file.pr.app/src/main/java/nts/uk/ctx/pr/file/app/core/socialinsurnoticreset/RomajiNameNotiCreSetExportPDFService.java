@@ -123,9 +123,14 @@ public class RomajiNameNotiCreSetExportPDFService extends ExportService<RomajiNa
             //get CODE
             List<String> emps = new ArrayList<String>();
             emps.add(empId);
-            empCorpHealthOffHis = empCorpHealthOffHisRepository.getEmpCorpHealthOffHisById(emps, date).get();
-            affOfficeInformation = affOfficeInformationRepository.getAffOfficeInformationById(empId, empCorpHealthOffHis.getPeriod().get(0).identifier()).get();
-            socialInsuranceOffice = socialInsuranceOfficeRepository.findByCodeAndCid(cid, affOfficeInformation.getSocialInsurOfficeCode().toString()).get();
+            empCorpHealthOffHis = empCorpHealthOffHisRepository.getEmpCorpHealthOffHisById(emps, date).orElse(null);
+
+            if (empCorpHealthOffHis != null ){
+                affOfficeInformation = affOfficeInformationRepository.getAffOfficeInformationById(empId, empCorpHealthOffHis.getPeriod().get(0).identifier()).orElse(null);
+                if (affOfficeInformation != null ){
+                    socialInsuranceOffice = socialInsuranceOfficeRepository.findByCodeAndCid(cid, affOfficeInformation.getSocialInsurOfficeCode().toString()).orElse(null);
+                }
+            }
 
             empNameReport = empNameReportRepository.getEmpNameReportById(empId).orElse(null);
             RomajiNameNotification romajiNameNotification  = new RomajiNameNotification(

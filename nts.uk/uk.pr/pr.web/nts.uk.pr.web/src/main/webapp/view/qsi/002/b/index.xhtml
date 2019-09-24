@@ -28,7 +28,7 @@
 
     <ui:define name="content">
         <div id="functions-area" style = "min-width: 1000px;">
-            <button id="B1_1" tabindex="1" class="proceed">#{i18n.getText('QSI002_23')}</button>
+            <button id="B1_1" tabindex="1" class="proceed" data-bind="click: add"  >#{i18n.getText('QSI002_23')}</button>
 
             <button id="B1_2" tabindex="2" data-bind="click: cancel"  >#{i18n.getText('QSI001_24')}</button>
 
@@ -45,9 +45,9 @@
                 <div>
                     <div id="A3_1" data-bind="ntsFormLabel: {}">#{i18n.getText('QSI002_26')}</div>
                     <div>
-                        <div id="A3_2" tabindex="5" data-bind="ntsCheckBox: { checked: true }">#{i18n.getText('QSI002_27')}</div>
+                        <div id="A3_2" tabindex="5" data-bind="ntsCheckBox: { checked: checkOther }">#{i18n.getText('QSI002_27')}</div>
                         <input id="A3_3" tabindex="6" data-bind="ntsTextEditor: {
-                                    value: simpleValue,
+                                    value: otherRemarks,
                                     name: '#{i18n.getText('QSI002_28')}',
                                     constraint: '',
                                     required: true,
@@ -56,7 +56,7 @@
                     </div>
                     <div id="A3_4" data-bind="ntsFormLabel: {}">#{i18n.getText('QSI002_29')}</div>
                     <div>
-                        <div id="A3_5" tabindex="7" data-bind="ntsCheckBox: { checked: true }">#{i18n.getText('QSI002_30')}</div>
+                        <div id="A3_5" tabindex="7" data-bind="ntsCheckBox: { checked: checkHealthInsurance }">#{i18n.getText('QSI002_30')}</div>
                     </div>
                 </div>
 

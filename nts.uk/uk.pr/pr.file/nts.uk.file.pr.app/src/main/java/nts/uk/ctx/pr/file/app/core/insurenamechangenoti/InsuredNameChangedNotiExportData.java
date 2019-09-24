@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.pr.core.dom.adapter.employee.employee.EmployeeInfoEx;
 import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsuranceOffice;
 import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.EmpNameChangeNotiInfor;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.WelfPenNumInformation;
@@ -16,6 +18,7 @@ import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurb
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.HealInsurNumberInfor;
 import nts.uk.ctx.pr.file.app.core.socialinsurnoticreset.CompanyInfor;
 
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -25,6 +28,8 @@ public class InsuredNameChangedNotiExportData {
     private String empId;
 
     private CompanyInfor companyInfor;
+
+    private EmployeeInfoEx employeeInfo;
 
     private SocialInsuranceOffice socialInsuranceOffice;
 
@@ -50,5 +55,6 @@ public class InsuredNameChangedNotiExportData {
 
     private String employeeName;
 
+    private GeneralDate submitDate;
 
 }

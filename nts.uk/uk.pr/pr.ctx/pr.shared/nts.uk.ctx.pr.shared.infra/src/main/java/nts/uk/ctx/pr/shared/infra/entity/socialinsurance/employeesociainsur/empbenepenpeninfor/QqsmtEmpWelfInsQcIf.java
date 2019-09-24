@@ -12,7 +12,6 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -55,6 +54,9 @@ public class QqsmtEmpWelfInsQcIf extends UkJpaEntity implements Serializable
 
 
     public static EmpWelfarePenInsQualiInfor toDomain(List<QqsmtEmpWelfInsQcIf> qqsmtEmpWelfInsQcIf) {
+        if(qqsmtEmpWelfInsQcIf.size() <= 0){
+            return null;
+        }
         return new EmpWelfarePenInsQualiInfor(
                 qqsmtEmpWelfInsQcIf.get(0).empWelfInsQcIfPk.employeeId,
                 qqsmtEmpWelfInsQcIf.stream().map(i -> new EmployWelPenInsurAche(i.empWelfInsQcIfPk.historyId, new DateHistoryItem(i.empWelfInsQcIfPk.historyId, new DatePeriod(i.startDate, i.endDate))))

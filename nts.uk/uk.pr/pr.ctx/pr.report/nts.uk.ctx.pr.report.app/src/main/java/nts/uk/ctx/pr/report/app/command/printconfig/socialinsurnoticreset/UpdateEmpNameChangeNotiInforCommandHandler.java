@@ -4,6 +4,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.EmpNameChangeNotiInfor;
 import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.EmpNameChangeNotiInforRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -20,7 +21,8 @@ public class UpdateEmpNameChangeNotiInforCommandHandler extends CommandHandler<E
     @Override
     protected void handle(CommandHandlerContext<EmpNameChangeNotiInforCommand> context) {
         EmpNameChangeNotiInforCommand command = context.getCommand();
-        repository.update(new EmpNameChangeNotiInfor(command.getEmployeeId(), command.getCompanyId(), command.getHealInsurPersonNoNeed(), command.getOther(), command.getOtherRemarks()));
+        String cid = AppContexts.user().companyId();
+        repository.update(new EmpNameChangeNotiInfor(command.getEmployeeId(), cid, command.getHealInsurPersonNoNeed(), command.getOther(), command.getOtherRemarks()));
     
     }
 }

@@ -54,6 +54,9 @@ public class QqsmtEmpCorpOffHis extends UkJpaEntity implements Serializable
     }
 
     public static EmpCorpHealthOffHis toDomain(List<QqsmtEmpCorpOffHis> entity) {
+        if(entity.size() <= 0){
+            return null;
+        }
         String empID = entity.get(0).empCorpOffHisPk.employeeId;
         String historyID = entity.get(0).empCorpOffHisPk.historyId;
         List<DateHistoryItem> period = new ArrayList<>();

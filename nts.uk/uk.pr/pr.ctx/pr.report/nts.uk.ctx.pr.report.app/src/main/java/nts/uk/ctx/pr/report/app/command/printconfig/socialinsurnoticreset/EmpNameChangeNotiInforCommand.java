@@ -10,11 +10,7 @@ public class EmpNameChangeNotiInforCommand
     * 社員ID
     */
     private String employeeId;
-    
-    /**
-    * 会社ID
-    */
-    private String companyId;
+
     
     /**
     * 健康保険被保険者証不要

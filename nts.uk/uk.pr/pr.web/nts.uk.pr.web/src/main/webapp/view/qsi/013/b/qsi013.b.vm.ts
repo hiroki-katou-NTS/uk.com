@@ -68,7 +68,6 @@ module nts.uk.pr.view.qsi013.b.viewmodel {
             let self = this;
             nts.uk.pr.view.qsi013.b.service.getLossInfoById(empId).done(function (data: any) {
                 if (data) {
-
                     if(data.healthInsLossInfo){
                         self.hCause(data.healthInsLossInfo.cause);
                         self.hNumRecoved(data.healthInsLossInfo.numRecoved);
@@ -117,8 +116,6 @@ module nts.uk.pr.view.qsi013.b.viewmodel {
             self.targetBtnText = nts.uk.resource.getText("KCP009_3");
             self.isEnable = ko.observable(true);
             self.isEditable = ko.observable(true);
-
-
             self.listComponentOption = {
                 systemReference: self.systemReference(),
                 isDisplayOrganizationName: self.isDisplayOrganizationName(),
@@ -127,6 +124,7 @@ module nts.uk.pr.view.qsi013.b.viewmodel {
                 selectedItem: self.selectedItem,
                 tabIndex: 0
             };
+            $('#emp-component').ntsLoadListComponent(self.listComponentOption);
         }
         constructor() {
 
@@ -135,9 +133,6 @@ module nts.uk.pr.view.qsi013.b.viewmodel {
             let list = getShared("QSI013_PARAMS_B");
             self.employeeInputList(list.employeeList);
             self.selectedItem(self.employeeInputList()[0].id);
-
-            $('#emp-component').ntsLoadListComponent(self.listComponentOption);
-
             self.itemListHealth = ko.observableArray(model.getCauseTypeHealthLossInfo());
             self.itemListPension = ko.observableArray(model.getCauseTypePensionLossInfo());
             self.selectedItem.subscribe((data) => {
@@ -156,7 +151,7 @@ module nts.uk.pr.view.qsi013.b.viewmodel {
             let healthInsLossInfo: any = {
                 empId: self.selectedItem(),
                 other : self.hOther() == true ? 1 : 0,
-                otherReason : self.hOther() == true ? self.hOtherReason() : '',
+                otherReason : self.hOther() == true ? self.hOtherReason() : null,
                 caInsurance: self.hCaInsurance(),
                 numRecoved: self.hNumRecoved(),
                 cause: self.hCause(),
@@ -165,7 +160,7 @@ module nts.uk.pr.view.qsi013.b.viewmodel {
             let welfPenInsLossIf: any = {
                 empId: self.selectedItem(),
                 other : self.pOther() == true ? 1 : 0,
-                otherReason : self.pOther() == true ? self.pOtherReason() : '',
+                otherReason : self.pOther() == true ? self.pOtherReason() : null,
                 caInsuarace: self.pCaInsurance(),
                 numRecoved: self.pNumRecoved(),
                 cause: self.pCause(),
