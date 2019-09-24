@@ -2,7 +2,7 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
 
     import block = nts.uk.ui.block;
     import getShared = nts.uk.ui.windows.getShared;
-
+    import getText = nts.uk.resource.getText;
     export class ScreenModel {
         employeeInputList: KnockoutObservableArray<EmployeeModel>;
         //
@@ -245,12 +245,7 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
             self.otherNotes1 = ko.observable(false);
             self.textOtherNotes1 = ko.observable(null);
 
-            self.personalNumber = ko.observableArray([
-                new ItemModel('0', nts.uk.resource.getText('QSI001_B222_24_0')),
-                new ItemModel('1', nts.uk.resource.getText('QSI001_B222_24_1')),
-                new ItemModel('2', nts.uk.resource.getText('QSI001_B222_24_2')),
-                new ItemModel('3', nts.uk.resource.getText('QSI001_B222_24_3'))
-            ]);
+            self.personalNumber = ko.observableArray(getPersonalNumber());
 
             self.selectedCode = ko.observable('1');
             self.isEnable = ko.observable(true);
@@ -360,6 +355,14 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
 
     }
 
+    export function getPersonalNumber(): Array<ItemModel> {
+        return [
+            new ItemModel('0', getText('Enum_PersonalNumber_SHORT_STAY')),
+            new ItemModel('1', getText('Enum_PersonalNumber_TIME')),
+            new ItemModel('2', getText('Enum_PersonalNumber_RESON_OTHER')),
+            new ItemModel('3', getText('Enum_PersonalNumber_LIVING_ABROAD')),
+        ];
+    }
 
     export interface ComponentOption {
         systemReference: SystemType;
