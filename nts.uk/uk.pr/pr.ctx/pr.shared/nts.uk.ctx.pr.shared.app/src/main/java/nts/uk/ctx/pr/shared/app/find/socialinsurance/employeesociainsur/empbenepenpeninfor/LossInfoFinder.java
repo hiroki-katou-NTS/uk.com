@@ -27,7 +27,6 @@ public class LossInfoFinder {
     @Inject
     private EmpBasicPenNumInforRepository finderBacsicPen;
 
-
     @Inject
     private SocialInsurAcquisiInforRepository finderSocial;
 
@@ -39,18 +38,6 @@ public class LossInfoFinder {
         Optional<EmpBasicPenNumInfor> domainBasicPen = finderBacsicPen.getEmpBasicPenNumInforById(empId);
         Optional<SocialInsurAcquisiInfor> domainSocial = finderSocial.getSocialInsurAcquisiInforByCIdEmpId(companyId, empId );
 
-
-        /*if(domainWelPen.isPresent() && domainHealth.isPresent() && domainBasicPen.isPresent() && domainMultiWork.isPresent() && domainSocial.isPresent()){
-            return new LossInfoDto(
-                    HealthInLossInfoDto.fromDomain(domainHealth.get()),
-                    WelfPenInsLossIfDto.fromDomain(domainWelPen.get()),
-                    EmpBasicPenNumInforDto.fromDomain(domainBasicPen.get()),
-                    MultiEmpWorkInfoDto.fromDomain(domainMultiWork.get()),
-                    SocialInsurAcquisiInforDto.fromDomain(domainSocial.get()),
-                    1);
-        }
-        return null;*/
-
         return new LossInfoDto(
                 domainHealth.isPresent() ? HealthInLossInfoDto.fromDomain(domainHealth.get()) : null,
                 domainWelPen.isPresent() ? WelfPenInsLossIfDto.fromDomain(domainWelPen.get()) : null,
@@ -59,6 +46,4 @@ public class LossInfoFinder {
                 domainSocial.isPresent() ? SocialInsurAcquisiInforDto.fromDomain(domainSocial.get()): null,
                 1);
     }
-
-
 }

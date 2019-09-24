@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.shared.dom.familyinfo.empfamilysocialins.EmpFamilyInsHis;
+import nts.uk.ctx.pr.shared.dom.familyinfo.empfamilysocialins.EmpFamilySocialIns;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -82,6 +83,10 @@ public class QqsmtEmpFamilyInsHis extends UkJpaEntity implements Serializable
         List<DateHistoryItem> dateHistoryItem = empFamilyInsHis.stream().map(i -> { return
                 new DateHistoryItem(i.empFamilyInsHisPk.historyId, new DatePeriod(i.startDate, i.endDate));}).collect(Collectors.toList());
         return  new EmpFamilyInsHis(empFamilyInsHis.get(0).empFamilyInsHisPk.empId, empFamilyInsHis.get(0).empFamilyInsHisPk.familyId, dateHistoryItem);
+    }
+
+    public EmpFamilySocialIns toDomains() {
+        return new EmpFamilySocialIns(this.insCareDivision, this.empFamilyInsHisPk.historyId,this.socialInsuranceCls, this.fmBsPenNum);
     }
 
 }

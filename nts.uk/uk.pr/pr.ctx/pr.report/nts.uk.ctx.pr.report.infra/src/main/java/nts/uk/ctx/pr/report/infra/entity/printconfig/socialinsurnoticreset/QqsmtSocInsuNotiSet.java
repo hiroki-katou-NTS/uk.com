@@ -127,7 +127,7 @@ public class QqsmtSocInsuNotiSet extends UkJpaEntity implements Serializable
     }
 
     public RomajiNameNotiCreSetting toDomainRomaji(){
-        return new RomajiNameNotiCreSetting(this.socInsuNotiSetPk.cid, this.socInsuNotiSetPk.userId, this.addOutputClass);
+        return new RomajiNameNotiCreSetting(this.socInsuNotiSetPk.userId, this.socInsuNotiSetPk.cid , this.addOutputClass);
     }
 
     public static QqsmtSocInsuNotiSet toEntity(SocialInsurNotiCreateSet domain) {

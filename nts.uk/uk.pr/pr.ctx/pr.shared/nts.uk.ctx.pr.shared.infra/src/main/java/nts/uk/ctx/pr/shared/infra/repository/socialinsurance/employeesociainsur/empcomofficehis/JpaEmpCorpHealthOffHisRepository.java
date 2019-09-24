@@ -46,7 +46,7 @@ public class JpaEmpCorpHealthOffHisRepository extends JpaRepository implements E
                 .setParameter("employeeIds", employeeIds)
                 .setParameter("startDate", startDate)
                 .getList();
-        return Optional.of(qqsmtEmpCorpOffHis == null ? null : QqsmtEmpCorpOffHis.toDomain(qqsmtEmpCorpOffHis));
+        return Optional.of(qqsmtEmpCorpOffHis != null ? QqsmtEmpCorpOffHis.toDomain(qqsmtEmpCorpOffHis) :  null);
     }
 
 }

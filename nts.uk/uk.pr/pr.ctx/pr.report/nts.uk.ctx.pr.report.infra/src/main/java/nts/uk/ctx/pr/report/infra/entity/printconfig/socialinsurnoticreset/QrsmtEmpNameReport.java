@@ -2,6 +2,9 @@ package nts.uk.ctx.pr.report.infra.entity.printconfig.socialinsurnoticreset;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.val;
+import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.EmpNameReport;
+import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.NameNotificationSet;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
@@ -114,4 +117,42 @@ public class QrsmtEmpNameReport extends UkJpaEntity implements Serializable
         return empNameReportPk;
     }
 
+    public EmpNameReport toDomain(){
+
+        return new EmpNameReport(empNameReportPk.empId,
+                new NameNotificationSet(
+                        personalSetOther,
+                        personalSetListed,
+                        personalResidentCard,
+                        personalAddressOverseas,
+                        personalShortResident,
+                        personalOtherReason),
+                new NameNotificationSet(
+                        spouseSetOther,
+                        spouseSetListed,
+                        spouseResidentCard,
+                        spouseAddressOverseas,
+                        spouseShortResident,
+                        spouseOtherReason )
+                );
+    }
+
+    public static QrsmtEmpNameReport toEntity(EmpNameReport domain){
+        return new QrsmtEmpNameReport(
+                new QrsmtEmpNameReportPk(
+                        domain.getEmpId()),
+                        domain.getPersonalSet().getOther(),
+                        domain.getPersonalSet().getListed(),
+                        domain.getPersonalSet().getResidentCard().value,
+                        domain.getPersonalSet().getAddressOverseas(),
+                        domain.getPersonalSet().getShortResident(),
+                        domain.getPersonalSet().getOtherReason().map(i -> i.v()).orElse(null),
+                        domain.getSpouse().getOther(),
+                        domain.getSpouse().getListed(),
+                        domain.getSpouse().getResidentCard().value,
+                        domain.getSpouse().getAddressOverseas(),
+                        domain.getSpouse().getShortResident(),
+                        domain.getSpouse().getOtherReason().map(i -> i.v()).orElse(null)
+        );
+    }
 }
