@@ -113,7 +113,7 @@ module nts.uk.pr.view.qsi013.share.model {
     export interface EmployeeModel {
         id: string;
         code: string;
-        name: string;
+        businessName: string;
         depName?: string;
         workplaceName?: string;
     }
