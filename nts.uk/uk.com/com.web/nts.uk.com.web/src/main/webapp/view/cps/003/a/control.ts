@@ -1731,7 +1731,7 @@ module cps003 {
                 appSet: cbx,
                 grantDays: grantDay,
                 grantTable: grantTbl,
-                entryDate: moment.utc(hireDate).toDate(),
+                entryDate: null, //moment.utc(hireDate).toDate(),
                 yearRefDate: moment.utc(yearRefDate).toDate()
             }).done(res => {
                 if (!resultCode) return;
@@ -1777,7 +1777,7 @@ module cps003 {
                 appSet: cbx,
                 grantDays: grantDay,
                 grantTable: grantTbl,
-                entryDate: moment.utc(hireDate).toDate(),
+                entryDate: null, //moment.utc(hireDate).toDate(),
                 yearRefDate: moment.utc(yearRefDate).toDate()
             }).done(res => {
                 if (!resultCode) return;
@@ -1824,7 +1824,7 @@ module cps003 {
                 appSet: cbx,
                 grantDays: grantDay,
                 grantTable: grantTbl,
-                entryDate: moment.utc(hireDate).toDate(),
+                entryDate: null, //moment.utc(hireDate).toDate(),
                 yearRefDate: moment.utc(yearRefDate).toDate()
             }).done(res => {
                 if (!resultCode) return;
@@ -1871,7 +1871,7 @@ module cps003 {
                 appSet: cbx,
                 grantDays: grantDay,
                 grantTable: grantTbl,
-                entryDate: moment.utc(hireDate).toDate(),
+                entryDate: null, //moment.utc(hireDate).toDate(),
                 yearRefDate: moment.utc(yearRefDate).toDate()
             }).done(res => {
                 if (!resultCode) return;

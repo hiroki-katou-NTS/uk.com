@@ -230,6 +230,7 @@ module cps003.c.vm {
                     let record = new Record(d), disItems = _.cloneDeep(displayItems);
                     _.forEach(d.items, (item: ItemRowDto) => {
                         let dt = self.dataTypes[item.itemCode], disabled;
+                        if (_.isNil(item.recordId)) item.recordId = record.id;
                         if (item.update) {
                             if (_.has(self.updatedDatas, record.id)) {
                                 self.updatedDatas[record.id].push(item);
@@ -896,7 +897,7 @@ module cps003.c.vm {
                 _.forEach(regChecked, r => {
                     let items: Array<ItemRowDto> = self.updatedDatas[r];
                     _.forEach(items, (item: ItemRowDto) => {
-                        if (_.find(errObj[item.recordId], it => it === item.itemCode)) return;
+                        if (errObj[item.recordId]) return;
                         let recData: Record = recId[item.recordId];
                         let regEmp = regId[recData.id];
                         

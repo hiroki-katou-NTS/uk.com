@@ -150,103 +150,107 @@ module cps003.a.vm {
                 }
             });
 
-            self.category.catId.subscribe((cid: string) => {
+            self.category.catId.subscribe((cid: string) => { 
                 if (cid) {
                     let cate = _.find(self.category.items(), c => c.id === self.category.catId());
                     if (cate) {
                         self.category.cate(cate);
                         self.category.catCode(cate.categoryCode);
                         let roleId = __viewContext.user.role.personalInfo;
-                        if (cate.categoryType === IT_CAT_TYPE.SINGLE) {
-                            self.histType(nts.uk.resource.getText("CPS003_108"));
-                            self.updateMode(1);
-                            self.updateModeEnable(false);
-                            self.baseDateEnable(true);
-                        } else {
-                            service.fetch.permission(roleId, cid).done(permission => {
-                                if (permission) self.perInfoCatePermission(permission);
-                                switch (cate.categoryType) {
-                                    case IT_CAT_TYPE.SINGLE:
-                                        break;
-                                    case IT_CAT_TYPE.MULTI:
-                                        self.histType(nts.uk.resource.getText("CPS003_109"));
-                                        self.updateMode(1);
-                                        self.updateModeEnable(false);
-                                        self.baseDateEnable(true);
-                                        break;
-                                    case IT_CAT_TYPE.CONTINU:
-                                    case IT_CAT_TYPE.CONTINUWED:
-                                        self.histType(nts.uk.resource.getText("CPS003_110"));
-                                        if (permission && permission.otherFutureHisAuth === 1 && permission.otherPastHisAuth === 1
-                                            && permission.selfFutureHisAuth === 1 && permission.selfPastHisAuth === 1) {
-                                            self.baseDateEnable(false);
-                                        } else {
-                                            self.baseDateEnable(true);
-                                        }
-                                        
-                                        if (permission && permission.otherAllowAddHis === 0 && permission.selfAllowAddHis === 0) {
-                                            self.updateMode(1);
-                                            self.updateModeEnable(false);
-                                        } else {
-                                            self.updateModeEnable(true);
-                                        }
-                                        break;
-                                    case IT_CAT_TYPE.NODUPLICATE:
-                                        self.histType(nts.uk.resource.getText("CPS003_111"));
-                                        if (permission && permission.otherFutureHisAuth === 1 && permission.otherPastHisAuth === 1
-                                            && permission.selfFutureHisAuth === 1 && permission.selfPastHisAuth === 1) { 
-                                            self.baseDateEnable(false);
-                                        } else {
-                                            self.baseDateEnable(true);
-                                        }
-                                        
-                                        if (permission && permission.otherAllowAddHis === 0 && permission.selfAllowAddHis === 0) {
-                                            self.updateMode(1);
-                                            self.updateModeEnable(false);
-                                        } else {
-                                            self.updateModeEnable(true);
-                                        }
-                                        break;
-                                    case IT_CAT_TYPE.DUPLICATE:
-                                        self.histType(nts.uk.resource.getText("CPS003_112"));
-                                        if (permission && permission.otherFutureHisAuth === 1 && permission.otherPastHisAuth === 1
-                                            && permission.selfFutureHisAuth === 1 && permission.selfPastHisAuth === 1) {
-                                            self.baseDateEnable(false);
-                                        } else {
-                                            self.baseDateEnable(true);
-                                        }
-                                        
-                                        if (permission && permission.otherAllowAddHis === 0 && permission.selfAllowAddHis === 0) {
-                                            self.updateMode(1);
-                                            self.updateModeEnable(false);
-                                        } else {
-                                            self.updateModeEnable(true);
-                                        }
-                                        break;
-                                }
-                                
-                                if (self.category.cate().categoryCode === "CS00003"
-                                    || self.category.cate().categoryCode === "CS00070") {
+                        
+                        service.fetch.permission(roleId, cid).done(permission => {
+                            if (permission) self.perInfoCatePermission(permission);
+                        });
+                        
+                        // fetch all setting
+                        service.fetch.setting(cid).done((data: ISettingData) => {
+                            self.requestData(data).done(() => {
+                                if (cate.categoryType === IT_CAT_TYPE.SINGLE) {
+                                    self.histType(nts.uk.resource.getText("CPS003_108"));
+                                    self.updateMode(1);
                                     self.updateModeEnable(false);
+                                    self.baseDateEnable(true);
+                                } else {
+                                    let permission = self.perInfoCatePermission();
+                                    switch (cate.categoryType) {
+                                        case IT_CAT_TYPE.SINGLE:
+                                            break;
+                                        case IT_CAT_TYPE.MULTI:
+                                            self.histType(nts.uk.resource.getText("CPS003_109"));
+                                            self.updateMode(1);
+                                            self.updateModeEnable(false);
+                                            self.baseDateEnable(true);
+                                            break;
+                                        case IT_CAT_TYPE.CONTINU:
+                                        case IT_CAT_TYPE.CONTINUWED:
+                                            self.histType(nts.uk.resource.getText("CPS003_110"));
+                                            if (permission && permission.otherFutureHisAuth === 1 && permission.otherPastHisAuth === 1
+                                                && permission.selfFutureHisAuth === 1 && permission.selfPastHisAuth === 1) {
+                                                self.baseDateEnable(false);
+                                            } else {
+                                                self.baseDateEnable(true);
+                                            }
+                                            
+                                            if (permission && permission.otherAllowAddHis === 0 && permission.selfAllowAddHis === 0) {
+                                                self.updateMode(1);
+                                                self.updateModeEnable(false);
+                                            } else {
+                                                self.updateModeEnable(true);
+                                            }
+                                            break;
+                                        case IT_CAT_TYPE.NODUPLICATE:
+                                            self.histType(nts.uk.resource.getText("CPS003_111"));
+                                            if (permission && permission.otherFutureHisAuth === 1 && permission.otherPastHisAuth === 1
+                                                && permission.selfFutureHisAuth === 1 && permission.selfPastHisAuth === 1) { 
+                                                self.baseDateEnable(false);
+                                            } else {
+                                                self.baseDateEnable(true);
+                                            }
+                                            
+                                            if (permission && permission.otherAllowAddHis === 0 && permission.selfAllowAddHis === 0) {
+                                                self.updateMode(1);
+                                                self.updateModeEnable(false);
+                                            } else {
+                                                self.updateModeEnable(true);
+                                            }
+                                            break;
+                                        case IT_CAT_TYPE.DUPLICATE:
+                                            self.histType(nts.uk.resource.getText("CPS003_112"));
+                                            if (permission && permission.otherFutureHisAuth === 1 && permission.otherPastHisAuth === 1
+                                                && permission.selfFutureHisAuth === 1 && permission.selfPastHisAuth === 1) {
+                                                self.baseDateEnable(false);
+                                            } else {
+                                                self.baseDateEnable(true);
+                                            }
+                                            
+                                            if (permission && permission.otherAllowAddHis === 0 && permission.selfAllowAddHis === 0) {
+                                                self.updateMode(1);
+                                                self.updateModeEnable(false);
+                                            } else {
+                                                self.updateModeEnable(true);
+                                            }
+                                            break;
+                                    }
+                                    
+                                    if (self.category.cate().categoryCode === "CS00003"
+                                        || self.category.cate().categoryCode === "CS00070") {
+                                        self.updateModeEnable(false);
+                                    }
                                 }
                             });
-                        }
+                            
+                            if (ko.isObservable(self.settings.matrixDisplay)) {
+                                if (_.size(self.settings.matrixDisplay()) == 0) {
+                                    self.settings.matrixDisplay(data.matrixDisplay);
+                                }
+                            }
+    
+                            if (ko.isObservable(self.settings.perInfoData)) {
+                                self.settings.perInfoData(data.perInfoData);
+                            }
+                        });
                     }
                     
-                    // fetch all setting
-                    service.fetch.setting(cid).done((data: ISettingData) => {
-                        self.requestData(data);
-                        
-                        if (ko.isObservable(self.settings.matrixDisplay)) {
-                            if (_.size(self.settings.matrixDisplay()) == 0) {
-                                self.settings.matrixDisplay(data.matrixDisplay);
-                            }
-                        }
-
-                        if (ko.isObservable(self.settings.perInfoData)) {
-                            self.settings.perInfoData(data.perInfoData);
-                        }
-                    });
                 }
             });
 
@@ -352,6 +356,7 @@ module cps003.a.vm {
                 return;
             }
             
+            if (_.chain($grid.mGrid("updatedCells")).filter(item => item.columnKey === "register").value().length === 0) return;
             confirm({ messageId: self.updateMode() === 1 ? "Msg_749" : "Msg_748" }).ifYes(() => {
                 $grid.mGrid("validate", false, data => data.register);
                 let errObj = {}, dataToG,
@@ -469,6 +474,11 @@ module cps003.a.vm {
                 }
                 
                 command = { baseDate: moment.utc(self.baseDate(), "YYYY/MM/DD").toISOString(), editMode: self.updateMode(), employees: employees };
+                if (command.employees && command.employees.length == 0) {
+                    unblock();
+                    return;
+                }
+                
                 service.push.register(command).done((errorList) => {
                     if (dataToG && dataToG.length > 0) {
                         setShared("CPS003G_ERROR_LIST", dataToG);
@@ -825,7 +835,7 @@ module cps003.a.vm {
 
         requestData(settingData: ISettingData, employeeSelect: any, regEmpIds: any) {
             // { categoryId: 'COM1_00000000000000000000000_CS00020', lstEmployee: [], standardDate: '2818/01/01' };
-            let self = this;
+            let self = this, dfd = $.Deferred();
             if ($("#base-date").ntsError("hasError")) return;
             if (!employeeSelect) block();
             
@@ -881,8 +891,11 @@ module cps003.a.vm {
                     self.disableCS00035();
                     unblock();
                     if ($(window).data("blockUI.isBlocked") === 1) unblock();
+                    dfd.resolve();
                 });
             });
+            
+            return dfd.promise();
         }
         
         disableCS00035() {
