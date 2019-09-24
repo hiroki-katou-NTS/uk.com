@@ -19,10 +19,12 @@ import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.affiliate.BsymtAffiWorkplaceHistItem;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -274,6 +276,76 @@ public class JpaAffWorkplaceHistoryItemRepository extends JpaRepository implemen
 		return lstSid;
 	}
 
+	@Override
+	public void addAll(List<AffWorkplaceHistoryItem> domain) {
+		String INS_SQL = "INSERT INTO BSYMT_AFF_WPL_HIST_ITEM (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
+				+ " UPD_DATE , UPD_CCD , UPD_SCD , UPD_PG," 
+				+ " HIST_ID, SID, WORKPLACE_ID,"
+				+ " NORMAL_WORKPLACE_ID)"
+				+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
+				+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL,"
+				+ " HIST_ID_VAL, SID_VAL, WORKPLACE_ID_VAL, NORMAL_ID_VAL); ";
+		String insCcd = AppContexts.user().companyCode();
+		String insScd = AppContexts.user().employeeCode();
+		String insPg = AppContexts.programId();
+		
+		String updCcd = insCcd;
+		String updScd = insScd;
+		String updPg = insPg;
+		StringBuilder sb = new StringBuilder();
+		domain.stream().forEach(c ->{
+			String sql = INS_SQL;
+			sql = sql.replace("INS_DATE_VAL", "'" + GeneralDateTime.now() + "'");
+			sql = sql.replace("INS_CCD_VAL", "'" + insCcd + "'");
+			sql = sql.replace("INS_SCD_VAL", "'" + insScd + "'");
+			sql = sql.replace("INS_PG_VAL", "'" + insPg + "'");
+
+			sql = sql.replace("UPD_DATE_VAL", "'" + GeneralDateTime.now() + "'");
+			sql = sql.replace("UPD_CCD_VAL", "'" + updCcd + "'");
+			sql = sql.replace("UPD_SCD_VAL", "'" + updScd + "'");
+			sql = sql.replace("UPD_PG_VAL", "'" + updPg + "'");
+			
+			sql = sql.replace("HIST_ID_VAL", "'" + c.getHistoryId() + "'");
+			sql = sql.replace("SID_VAL", "'" + c.getEmployeeId() + "'");
+			sql = sql.replace("WORKPLACE_ID_VAL", c.getWorkplaceId() == null? "null": "'" + c.getWorkplaceId() + "'");
+			sql = sql.replace("NORMAL_ID_VAL", c.getNormalWorkplaceId() == null? "null" : "'" +  c.getNormalWorkplaceId() + "'");
+			
+			sb.append(sql);
+		});
+		
+		int records = this.getEntityManager().createNativeQuery(sb.toString()).executeUpdate();
+		System.out.println(records);
+		
+	}
+
+	@Override
+	public void updateAll(List<AffWorkplaceHistoryItem> domain) {
+		
+		String UP_SQL = "UPDATE BSYMT_AFF_WPL_HIST_ITEM SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL, UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
+				+ " WORKPLACE_ID = WORKPLACE_ID_VAL, NORMAL_WORKPLACE_ID = NORMAL_ID_VAL"
+				+ " WHERE HIST_ID = HIST_ID_VAL AND SID = SID_VAL;";
+		String updCcd = AppContexts.user().companyCode();
+		String updScd = AppContexts.user().employeeCode();
+		String updPg = AppContexts.programId();
+		
+		StringBuilder sb = new StringBuilder();
+		domain.stream().forEach(c ->{
+			String sql = UP_SQL;
+			sql = UP_SQL.replace("UPD_DATE_VAL", "'" + GeneralDateTime.now() +"'");
+			sql = sql.replace("UPD_CCD_VAL", "'" + updCcd +"'");
+			sql = sql.replace("UPD_SCD_VAL", "'" + updScd +"'");
+			sql = sql.replace("UPD_PG_VAL", "'" + updPg +"'");
+			
+			sql = sql.replace("WORKPLACE_ID_VAL", c.getWorkplaceId() == null? "null" : "'" + c.getWorkplaceId() + "'");
+			sql = sql.replace("NORMAL_ID_VAL", c.getNormalWorkplaceId() == null? "null" : "'" +  c.getNormalWorkplaceId() + "'");
+			
+			sql = sql.replace("HIST_ID_VAL", "'" + c.getHistoryId() +"'");
+			sql = sql.replace("SID_VAL", "'" + c.getEmployeeId() +"'");
+			sb.append(sql);
+		});
+		int  records = this.getEntityManager().createNativeQuery(sb.toString()).executeUpdate();
+		System.out.println(records);
+	}
 	@SneakyThrows
 	@Override
 	public List<String> getHistIdLstBySidAndPeriod(String sid, DatePeriod period) {

@@ -585,4 +585,13 @@ public class PerInfoItemDefFinder {
 		}).collect(Collectors.toList());
 
 	}
+	
+	/**
+	 * Get listName by itemCode 4 CPS003F
+	 * @param itemCodes
+	 * @return List<{ itemCode: string; itemName: string; }>
+	 */
+	public Map<String, String> getNamesByCodes(List<String> itemCodes) {
+		return pernfoItemDefRep.getNamesByCodes(itemCodes);
+	}
 }

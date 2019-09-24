@@ -149,6 +149,21 @@ public interface EmployeeDataMngInfoRepository {
 	 */
 	List<EmployeeDataMngInfo> getAllEmpNotDeleteByCid(String companyId);
 	
+
+	/**
+	 * Get personIds by employeeIds
+	 * @param sids
+	 * @return List<PerEmpData>
+	 * */
+	List<PerEmpData> getEmploymentInfos(List<String> sids, GeneralDate baseDate);
+	
+	/**
+	 * update all domain
+	 * @param domains
+	 * @author lanlt
+	 */
+	void updateAll(List<EmployeeDataMngInfo> domains);
+	
 	// request list 596
 	List<EmployeeDataMngInfo> findBySidDel(List<String> sid);
 	

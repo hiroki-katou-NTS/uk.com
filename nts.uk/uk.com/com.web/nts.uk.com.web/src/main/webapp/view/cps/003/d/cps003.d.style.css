@@ -21,3 +21,23 @@
 #swap-list-search-area-input {
 	width: 150px !important;
 }
+
+label.ntsControl.limited-label {
+    width: 250px;
+}
+
+.valign-center.control-group{
+	height: 45px;
+    width: 100%;
+    border-bottom: solid 1px #B1B1B1;
+}
+#contents-area .form-group.main {
+	position: relative;
+}
+#contents-area .form-group.main>* {
+	vertical-align: top;
+}
+
+#contents-area .form-group.main>.cps003d-grid-list {
+	float: right;
+}

@@ -242,7 +242,7 @@ public class JpaBusinessTypeEmpOfHistory extends JpaRepository
 		List<BusinessTypeOfEmployeeHistory> result = new ArrayList<>();
 		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
 			String sql = "SELECT * FROM KRCMT_BUS_TYPE_HIST WHERE CID = ? AND SID IN ("
-					+ NtsStatement.In.createParamsString(subList) + ")" + " ORDER BY START_DATE DESC";
+					+ NtsStatement.In.createParamsString(subList) + ")" + " ORDER BY SID, START_DATE DESC";
 
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 				stmt.setString(1, cid);
@@ -276,6 +276,32 @@ public class JpaBusinessTypeEmpOfHistory extends JpaRepository
 		});
 		return result;
 	}
+	
+	@Override
+	public List<DateHistoryItem> getListByListSidsNoWithPeriod(String cid, List<String> sids) {
+		List<DateHistoryItem> result = new ArrayList<>();
+		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
+			String sql = "SELECT * FROM KRCMT_BUS_TYPE_HIST WHERE CID = ? AND SID IN ("
+					+ NtsStatement.In.createParamsString(subList) + ")" + " ORDER BY START_DATE ASC";
+
+			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+				stmt.setString(1, cid);
+				for (int i = 0; i < subList.size(); i++) {
+					stmt.setString(2 + i, subList.get(i));
+				}
+
+				List<DateHistoryItem> lstObj = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
+					return new DateHistoryItem(rec.getString("HIST_ID"),
+							new DatePeriod(rec.getGeneralDate("START_DATE"), rec.getGeneralDate("END_DATE")));
+				}).stream().collect(Collectors.toList());
+				result.addAll(lstObj);
+			
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+		});
+		return result;
+	}
 
 	@Override
 	public void addAll(Map<String, DateHistoryItem> dateHistItems) {
@@ -295,7 +321,8 @@ public class JpaBusinessTypeEmpOfHistory extends JpaRepository
 		String updScd = insScd;
 		String updPg = insPg;
 		StringBuilder sb = new StringBuilder();
-		dateHistItems.entrySet().parallelStream().forEach(c ->{
+
+		dateHistItems.entrySet().stream().forEach(c ->{
 			String sql = INS_SQL;
 			DateHistoryItem dateHistItem = c.getValue();
 			sql = sql.replace("INS_DATE_VAL", "'" + GeneralDateTime.now() + "'");
@@ -333,7 +360,8 @@ public class JpaBusinessTypeEmpOfHistory extends JpaRepository
 		String updPg = AppContexts.programId();
 		
 		StringBuilder sb = new StringBuilder();
-		dateHistItems.entrySet().parallelStream().forEach(c ->{
+
+		dateHistItems.entrySet().stream().forEach(c ->{
 			DateHistoryItem dateHistItem = c.getValue();
 			String sql = UP_SQL;
 			sql = UP_SQL.replace("UPD_DATE_VAL", "'" + GeneralDateTime.now() +"'");
@@ -352,6 +380,46 @@ public class JpaBusinessTypeEmpOfHistory extends JpaRepository
 		int  records = this.getEntityManager().createNativeQuery(sb.toString()).executeUpdate();
 		System.out.println(records);
 		
+	}
+
+	@Override
+	public List<BusinessTypeOfEmployeeHistory> findByBaseDate(GeneralDate baseDate, List<String> sIds) {
+		List<BusinessTypeOfEmployeeHistory> result= new ArrayList<>();
+		CollectionUtil.split(sIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
+			String sql = "SELECT * FROM KRCMT_BUS_TYPE_HIST WHERE CID = ? AND START_DATE <= ? AND END_DATE >= ? AND SID IN (" + NtsStatement.In.createParamsString(subList) + ")";
+					
+			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+				stmt.setString(1, AppContexts.user().companyId());
+				stmt.setDate(2, Date.valueOf(baseDate.localDate()));
+				stmt.setDate(3, Date.valueOf(baseDate.localDate()));
+				for (int i = 0; i < subList.size(); i++) {
+					stmt.setString(4 + i, subList.get(i));
+				}
+				List<Map<String, Object>> map = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
+					Map<String, Object> m = new HashMap<>();
+					m.put("HIST_ID", rec.getString("HIST_ID"));
+					m.put("CID", rec.getString("CID"));
+					m.put("SID", rec.getString("SID"));
+					m.put("START_DATE", rec.getGeneralDate("START_DATE"));
+					m.put("END_DATE", rec.getGeneralDate("END_DATE"));
+					return m;
+				});
+
+				map.stream().collect(Collectors.groupingBy(c -> c.get("SID"),
+						Collectors.collectingAndThen(Collectors.toList(), list -> {
+							BusinessTypeOfEmployeeHistory his = new BusinessTypeOfEmployeeHistory(
+									list.get(0).get("CID").toString(), list.stream().map(c -> {
+										return new DateHistoryItem(c.get("HIST_ID").toString(), new DatePeriod(
+												(GeneralDate) c.get("START_DATE"), (GeneralDate) c.get("END_DATE")));
+									}).collect(Collectors.toList()), list.get(0).get("SID").toString());
+							result.add(his);
+							return his;
+						})));
+			}catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+		});
+		return result;
 	}
 
 //	@Override

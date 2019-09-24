@@ -1,18 +1,29 @@
 package nts.uk.ctx.at.shared.infra.repository.remainingnumber;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
 import nts.arc.error.BusinessException;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementDataRepository;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.paymana.KrcmtPayoutManaData;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 
@@ -250,6 +261,136 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 				.setParameter("unUsedDays", unUse)
 				.setParameter("stateAtr", state.value).getList();
 		return list.stream().map(i -> toDomain(i)).collect(Collectors.toList());
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementDataRepository#getSidWithCod(java.lang.String, java.util.List, int)
+	 */
+	@Override
+	public Map<String ,Double> getAllSidWithCod(String cid, List<String> sid, int state) {
+		Map <String ,Double> result = new HashMap<>();
+		CollectionUtil.split(sid, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			String sql = "SELECT * FROM KRCMT_PAYOUT_MANA_DATA WHERE  CID = ? AND STATE_ATR = ?   AND SID IN ("
+					+ NtsStatement.In.createParamsString(subList) + ")";
+			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+				stmt.setString(1, cid);
+				stmt.setInt(2, state);
+				for (int i = 0; i < subList.size(); i++) {
+					stmt.setString(3 + i, subList.get(i));
+				}
+				List<KrcmtPayoutManaData> data = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
+					KrcmtPayoutManaData entity = new KrcmtPayoutManaData();
+					
+					entity.cID = rec.getString("CID");
+					entity.sID = rec.getString("SID");
+					entity.unUsedDays = rec.getDouble("UNUSED_DAYS");
+					return entity;
+			
+				});
+				Map<String, List<KrcmtPayoutManaData>> dataMap = data.parallelStream().collect(Collectors.groupingBy(c -> c.sID));
+				dataMap.entrySet().parallelStream().forEach(c ->{
+					result.put(c.getKey(), c.getValue().parallelStream().mapToDouble(i -> i.unUsedDays).sum());
+				});
+			
+			}
+			catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+		});
+		return result;
+	}
+
+	@Override
+	public List<PayoutManagementData> getBySidsAndCid(String cid, List<String> sid) {
+		List<PayoutManagementData> result = new ArrayList<>();
+		CollectionUtil.split(sid, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			String sql = "SELECT * FROM KRCMT_PAYOUT_MANA_DATA WHERE  CID = ?  AND SID IN ("
+					+ NtsStatement.In.createParamsString(subList) + ")";
+			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+				stmt.setString(1, cid);
+				for (int i = 0; i < subList.size(); i++) {
+					stmt.setString(2 + i, subList.get(i));
+				}
+				List<PayoutManagementData> data = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
+					KrcmtPayoutManaData entity = new KrcmtPayoutManaData();
+					entity.payoutId = rec.getString("PAYOUT_ID");
+					entity.cID = rec.getString("CID");
+					entity.sID = rec.getString("SID");
+					entity.unknownDate = rec.getBoolean("UNKNOWN_DATE");
+					
+					entity.dayOff = rec.getGeneralDate("DAYOFF_DATE");
+					entity.expiredDate = rec.getGeneralDate("EXPIRED_DATE");
+					entity.lawAtr = rec.getInt("LAW_ATR");
+					
+					entity.occurredDays = rec.getDouble("OCCURRENCE_DAYS");
+					entity.unUsedDays = rec.getDouble("UNUSED_DAYS");
+					
+					entity.stateAtr = rec.getInt("STATE_ATR");
+					entity.disapearDate = rec.getGeneralDate("DISAPEAR_DATE");
+					return toDomain(entity);
+			
+				});
+				result.addAll(data);
+			}
+			catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+		});
+		return result;
+	}
+
+	@Override
+	public void addAll(List<PayoutManagementData> domains) {
+		String INS_SQL = "INSERT INTO KRCMT_PAYOUT_MANA_DATA (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
+				+ " UPD_DATE , UPD_CCD , UPD_SCD , UPD_PG," 
+				+ " PAYOUT_ID, CID, SID, UNKNOWN_DATE, DAYOFF_DATE, EXPIRED_DATE, LAW_ATR, OCCURRENCE_DAYS,"
+				+ " UNUSED_DAYS, STATE_ATR, DISAPEAR_DATE)"
+				+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
+				+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL,"
+				+ " PAYOUT_ID_VAL, CID_VAL, SID_VAL, UNKNOWN_DATE_VAL, DAYOFF_DATE_VAL, EXPIRED_DATE_VAL, LAW_ATR_VAL, OCCURRENCE_DAYS_VAL,"
+				+ " UNUSED_DAYS_VAL, STATE_ATR_VAL, DATE_VAL); ";
+		String insCcd = AppContexts.user().companyCode();
+		String insScd = AppContexts.user().employeeCode();
+		String insPg = AppContexts.programId();
+		
+		String updCcd = insCcd;
+		String updScd = insScd;
+		String updPg = insPg;
+		StringBuilder sb = new StringBuilder();
+		domains.parallelStream().forEach(c -> {
+			String sql = INS_SQL;
+			sql = sql.replace("INS_DATE_VAL", "'" + GeneralDateTime.now() + "'");
+			sql = sql.replace("INS_CCD_VAL", "'" + insCcd + "'");
+			sql = sql.replace("INS_SCD_VAL", "'" + insScd + "'");
+			sql = sql.replace("INS_PG_VAL", "'" + insPg + "'");
+
+			sql = sql.replace("UPD_DATE_VAL", "'" + GeneralDateTime.now() + "'");
+			sql = sql.replace("UPD_CCD_VAL", "'" + updCcd + "'");
+			sql = sql.replace("UPD_SCD_VAL", "'" + updScd + "'");
+			sql = sql.replace("UPD_PG_VAL", "'" + updPg + "'");
+
+			sql = sql.replace("PAYOUT_ID_VAL", "'" + c.getPayoutId() + "'");
+			sql = sql.replace("CID_VAL", "'" + c.getCID()+ "'");
+			sql = sql.replace("SID_VAL", "'" + c.getSID()+ "'");
+			
+			sql = sql.replace("UNKNOWN_DATE_VAL", c.getPayoutDate().isUnknownDate() == true? "1":"0");
+			sql = sql.replace("DAYOFF_DATE_VAL", c.getPayoutDate().getDayoffDate().isPresent()
+					? "'" + c.getPayoutDate().getDayoffDate().get() +"'" : "null");
+			sql = sql.replace("EXPIRED_DATE_VAL", c.getExpiredDate() == null? "null" : "'" + c.getExpiredDate() + "'");
+			
+			sql = sql.replace("LAW_ATR_VAL", ""+ c.getLawAtr().value +"");
+			sql = sql.replace("OCCURRENCE_DAYS_VAL", c.getOccurredDays() == null? "null": ""+ c.getOccurredDays().v() + "");
+			
+			
+			sql = sql.replace("UNUSED_DAYS_VAL", c.getUnUsedDays() == null? "null": "" + c.getUnUsedDays().v() +"");
+			sql = sql.replace("STATE_ATR_VAL", "" + c.getStateAtr().value +"");
+			sql = sql.replace("DATE_VAL", c.getDisapearDate() == null? "null": (c.getDisapearDate().isPresent()? "'"+ c.getDisapearDate().get()+"'": "null"));
+			sb.append(sql);
+		});
+
+		int records = this.getEntityManager().createNativeQuery(sb.toString()).executeUpdate();
+		System.out.println(records);
+		
 	}
 
 }

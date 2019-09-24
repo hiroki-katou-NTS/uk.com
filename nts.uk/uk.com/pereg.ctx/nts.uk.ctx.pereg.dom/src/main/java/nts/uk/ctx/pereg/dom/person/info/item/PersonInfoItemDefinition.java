@@ -14,8 +14,10 @@ import nts.uk.ctx.pereg.dom.person.info.category.IsAbolition;
 import nts.uk.ctx.pereg.dom.person.info.category.IsFixed;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypeState;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypes;
+import nts.uk.ctx.pereg.dom.person.info.selectionitem.SelectionItem;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeState;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
+import nts.uk.ctx.pereg.dom.person.info.singleitem.SingleItem;
 
 @Getter
 @Setter
@@ -401,5 +403,89 @@ public class PersonInfoItemDefinition extends AggregateRoot {
 	
 	public boolean haveNotParentCode() {
 		return this.itemParentCode == null || this.itemParentCode.v().equals("");
+
 	}	
+	
+	public boolean isSingleItem() {
+		return this.itemTypeState.itemType == ItemType.SINGLE_ITEM;
+	}
+	
+	public boolean isSelection() {
+		if (isSingleItem() == false) return false;
+		SingleItem singleItem = (SingleItem) this.itemTypeState;
+		DataTypeState dataTypeState = (DataTypeState) singleItem.getDataTypeState();
+		DataTypeValue dataTypeValue =  dataTypeState.getDataTypeValue();
+		if (dataTypeValue == DataTypeValue.SELECTION || dataTypeValue == DataTypeValue.SELECTION_BUTTON
+				|| dataTypeValue == DataTypeValue.SELECTION_RADIO) {
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean isEnum() {
+		
+		if (isSingleItem() == false) return false;
+		
+		SingleItem singleItem = (SingleItem) this.itemTypeState;
+		
+		DataTypeState dataTypeState = (DataTypeState) singleItem.getDataTypeState();
+		
+		DataTypeValue dataTypeValue = (DataTypeValue) dataTypeState.getDataTypeValue();
+		
+		if (dataTypeValue == DataTypeValue.SELECTION_RADIO) return true;
+		
+		if (dataTypeValue == DataTypeValue.SELECTION){
+			
+			SelectionItem selectionItem = (SelectionItem) dataTypeState;
+			
+			ReferenceTypes referenceType = selectionItem.getReferenceTypes();
+			
+			if(referenceType == ReferenceTypes.ENUM) return true;
+		}
+		return false;
+	}
+	
+	public boolean isCodeName() {
+		
+		if (isSingleItem() == false) return false;
+		
+		SingleItem singleItem = (SingleItem) this.itemTypeState;
+		
+		DataTypeState dataTypeState = (DataTypeState) singleItem.getDataTypeState();
+		
+		DataTypeValue dataTypeValue = (DataTypeValue) dataTypeState.getDataTypeValue();
+		
+		if (dataTypeValue == DataTypeValue.SELECTION) {
+			SelectionItem selectionItem = (SelectionItem) dataTypeState;
+			
+			ReferenceTypes referenceType = selectionItem.getReferenceTypes();
+			
+			if(referenceType == ReferenceTypes.CODE_NAME) return true;
+		}
+		return false;
+	}
+	
+	public boolean isDesignateMaster() {
+		
+		if (isSingleItem() == false) return false;
+		
+		SingleItem singleItem = (SingleItem) this.itemTypeState;
+		
+		DataTypeState dataTypeState = (DataTypeState) singleItem.getDataTypeState();
+		
+		DataTypeValue dataTypeValue = (DataTypeValue) dataTypeState.getDataTypeValue();
+		
+		if (dataTypeValue == DataTypeValue.SELECTION_BUTTON) return true;
+		
+		if (dataTypeValue == DataTypeValue.SELECTION ) {
+			
+			SelectionItem selectionItem = (SelectionItem) dataTypeState;
+			
+			ReferenceTypes referenceType = selectionItem.getReferenceTypes();
+			
+			if(referenceType == ReferenceTypes.DESIGNATED_MASTER) return true;
+			
+		}
+		return false;
+	}
 }

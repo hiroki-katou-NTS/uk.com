@@ -2377,8 +2377,9 @@ module nts.uk.ui.mgrid {
                 if (!col) tdStyle += "; display: none;";
                 else if (!_.isNil(col[0].columnCssClass)) {
                     col[0].columnCssClass.split(' ').forEach(clz => {
-                        if (clz === hpl.CURRENCY_CLS || clz === "halign-right")
+                        if (clz === hpl.CURRENCY_CLS || clz === "halign-right") {
                             td.classList.add(clz);
+                        }
                     });
                 }
                 
@@ -2609,6 +2610,12 @@ module nts.uk.ui.mgrid {
                     self.hoover(evt, true);
                 });
                 
+                if (_.keys(_voilerRows).length > 0
+                    && _.includes(_voilerRows[Math.floor(rowIdx / (aho._bloc * 2 - 1))], rowIdx)) {
+                    fixedTr.style.display = "none";
+                    tr.style.display = "none";
+                }
+                
                 let ret = { fixedRow: fixedTr, row: tr, fixedElements: fixedElements, elements: elements }; 
                 if (rowIdx === 0) {
                     ret.fixedColIdxes = fixedColIdxes;
@@ -2725,8 +2732,9 @@ module nts.uk.ui.mgrid {
                 if (!col) tdStyle += "; display: none;";
                 else if (!_.isNil(col[0].columnCssClass)) {
                     col[0].columnCssClass.split(' ').forEach(clz => {
-                        if (clz === hpl.CURRENCY_CLS || clz === "halign-right")
+                        if (clz === hpl.CURRENCY_CLS || clz === "halign-right") {
                             td.classList.add(clz);
+                        }
                     });
                 }
                 let controlDef = self.controlMap[key];
@@ -3062,26 +3070,37 @@ module nts.uk.ui.mgrid {
         }
         
         export function voilerRow(idx: any) {
-            if (_.isNil(idx) || idx > _end || idx < _start) return;
+            if (_.isNil(idx)) return;
             let nama = Math.floor(idx / (aho._bloc * 2 - 1));
             
             if (!_voilerRows[nama]) _voilerRows[nama] = [];
             _voilerRows[nama].push(idx);
-            idx -= _start;
             
-            _.forEach(_bodyWrappers, b => {
-                let r = b.querySelector("tr:nth-of-type(" + (idx + 2) + ")");
-                if (r) r.style.display = "none";
-//                let last = b.querySelector("tr:last-child");
-//                if (last) last.style.height = parseFloat(last.style.height) - BODY_ROW_HEIGHT + "px";
-            });
-            
-            _.forEach(_.keys(_mafollicle[SheetDef]), k => {
-                let maf = _mafollicle[_currentPage][k];
-                if (k === _currentSheet || !maf || !maf.$bBody) return;
-                let r = maf.$bBody.querySelector("tr:nth-of-type(" + (idx + 2) + ")");
-                if (r) r.style.display = "none";
-            });
+            if (idx <=_end && idx >= _start) {
+                idx -= _start;
+                _.forEach(_bodyWrappers, b => {
+                    let r = b.querySelector("tr:nth-of-type(" + (idx + 2) + ")");
+                    if (r) r.style.display = "none";
+    //                let last = b.querySelector("tr:last-child");
+    //                if (last) last.style.height = parseFloat(last.style.height) - BODY_ROW_HEIGHT + "px";
+                });
+                
+                _.forEach(_.keys(_mafollicle[SheetDef]), k => {
+                    let maf = _mafollicle[_currentPage][k];
+                    if (k === _currentSheet || !maf || !maf.$bBody) return;
+                    let r = maf.$bBody.querySelector("tr:nth-of-type(" + (idx + 2) + ")");
+                    if (r) r.style.display = "none";
+                });
+            } else {
+                _.forEach(_.keys(_mafollicle[SheetDef]), k => {
+                    let maf = _mafollicle[_currentPage][k];
+                    if (!maf || !maf.desc) return;
+                    let r = maf.desc.rowElements[idx];
+                    if (r) r.style.display = "none";
+                    let fr = maf.desc.fixedRowElements[idx];
+                    if (fr) fr.style.display = "none";
+                });
+            }
         }
         
         export function encarterRow(idx: any, copy: any, cssClass: any, numText: any) {
@@ -4130,7 +4149,7 @@ module nts.uk.ui.mgrid {
                     $headerTable.insertAdjacentElement("beforebegin", self.$agency);
                     hiddenCount = 0;
                     _.forEach(self.headerColGroup[1], ($targetCol, i) => {
-                        if (i === self.headerColGroup[1].length - 1) return;
+//                        if (i === self.headerColGroup[1].length - 1) return;
                         if ($targetCol.style.display === "none") {
                             hiddenCount++;
                             return;
@@ -4586,7 +4605,7 @@ module nts.uk.ui.mgrid {
                 self.$agency.style.width = self.headerWrappers[i].style.width;
                 let left = 0, group = self.headerColGroup[i];
                 _.forEach(group, function($td: HTMLElement, index: number) {
-                    if ($td.style.display === "none" || (!self.actionDetails.isFixed && index === group.length - 1)) return;
+                    if ($td.style.display === "none" /*|| (!self.actionDetails.isFixed && index === group.length - 1)*/) return;
                     left += parseFloat($td.style.width);
                     if (index < self.actionDetails.gripIndex) return;
                     if (self.unshiftRight && index > self.actionDetails.gripIndex) return false;
@@ -4872,6 +4891,7 @@ module nts.uk.ui.mgrid {
                             if (btn) btn.disabled = true;
                             break;
                         case dkn.FLEX_IMAGE:
+                        case dkn.IMAGE:
                             let img = $cell.querySelector("span");
                             if (img) {
                                 img.removeXEventListener(ssk.CLICK_EVT);
@@ -4945,6 +4965,7 @@ module nts.uk.ui.mgrid {
                             }
                             break;
                         case dkn.FLEX_IMAGE:
+                        case dkn.IMAGE:
                             let img = $cell.querySelector("span");
                             if (img) {
                                 img.addXEventListener(ssk.CLICK_EVT, $.data(img, ssk.CLICK_EVT));
@@ -5336,6 +5357,9 @@ module nts.uk.ui.mgrid {
                     _cloud.painter.painters[!_hasFixed || !ufx ? 0 : 1].unbubColumn(col, i);
                 }
             },
+            hideRow: function(idx) {
+                v.voilerRow(idx);    
+            },
             updateCell: function(id, key, val, reset, ackDis, ls) {
                 let idx = _.findIndex(_dataSource, r => r[_pk] === id);
                 if (idx === -1 || _.isNil(idx)) return;
@@ -5451,7 +5475,7 @@ module nts.uk.ui.mgrid {
                                     $comboValue = cbx.my.querySelector(".mcombo-value");
                                 
                                 $item.addXEventListener(ssk.CLICK_EVT, evt => {
-                                    let $combo = cbx.my.querySelector("." + CBX_CLS);
+                                    let $combo = cbx.my.querySelector("." + dkn.CBX_CLS);
                                     $comboValue.innerHTML = "";
                                     $comboValue.appendChild($comboItem.cloneNode(true));
                                     _.forEach(itemList, i => {
@@ -5471,8 +5495,8 @@ module nts.uk.ui.mgrid {
                                         }
                                         $.data($cbxCell, lo.CBX_SELECTED_TD, value);
                                     }
-                                    closeDD(cbx.dropdown);
-                                    $combo.classList.remove(CBX_ACTIVE_CLS);
+                                    dkn.closeDD(cbx.dropdown);
+                                    $combo.classList.remove(dkn.CBX_ACTIVE_CLS);
                                     let coord = ti.getCellCoord($cbxCell);
                                     su.wedgeCell(_$grid[0], { rowIdx: coord.rowIdx, columnKey: key }, value);
                                     let sCol = _specialColumn[key];
@@ -6327,6 +6351,12 @@ module nts.uk.ui.mgrid {
                     endEdit($grid);
                     $tCell.textContent = "";
                     $tCell.classList.add(dkn.CONTROL_CLS);
+                    if ($tCell.classList.contains(v.ALIGN_RIGHT)) {
+                        $input.classList.remove(v.ALIGN_LEFT);
+                    } else {
+                        $input.classList.add(v.ALIGN_LEFT);
+                    }
+                    
                     $tCell.appendChild($editor);
                     let data = $.data($tCell, v.DATA), mDate = moment(data, control.format, true),
                         mDisplayDate = mDate.isValid() ? mDate : moment();
@@ -6763,7 +6793,7 @@ module nts.uk.ui.mgrid {
                     return { c: calcCell };
                 } else {
                     if (cellValue === origVal || ((_.isNil(cellValue) || cellValue === "" || (cellValue instanceof moment && cellValue._i === "")) && ((origVal instanceof moment && origVal._i === "") || _.isNil(origVal) || origVal === "")) 
-                        || (cellValue instanceof Date && !_.isNil(cellValue) && !_.isNil(origVal) && cellValue.getTime() === origVal.getTime())) {
+                        || (cellValue instanceof Date && origVal instanceof Date && !_.isNil(cellValue) && !_.isNil(origVal) && cellValue.getTime() === origVal.getTime())) {
                         $cell = lch.cellAt($grid, coord.rowIdx, coord.columnKey, desc);
                         if (!$cell) {
                             if (!_.isNil(dirties[id]) && !_.isNil(dirties[id][coord.columnKey])) {
@@ -7123,7 +7153,7 @@ module nts.uk.ui.mgrid {
                         currencyOpts.decimallength = _.isNil(constraint.decimalLength) ? 0 : constraint.decimalLength;
                         currencyOpts.currencyformat = constraint.currencyFormat ? constraint.currencyFormat : "JPY";
                         let groupSeparator = constraint.groupSeparator || ",";
-                        let rawValue = text.replaceAll(value, groupSeparator, "");
+                        let rawValue = text.replaceAll(String(value), groupSeparator, "");
                         let formatter = new uk.text.NumberFormatter({ option: currencyOpts });
                         let numVal = Number(rawValue);
                         if (!isNaN(numVal)) value = formatter.format(numVal);
@@ -8235,9 +8265,9 @@ module nts.uk.ui.mgrid {
                             data = data.toLocaleDateString("ja-JP", { year: "numeric", month: "2-digit", day: "2-digit" });
                         }
                         
-                        let tDate = moment.utc($editor.value, ctrl.format).format(ctrl.format[0]);
-                        if (/*data !== tDate &&*/ !d.classList.contains(khl.ERROR_CLS) && _.isFunction(ctrl.inputProcess)) {
-                            ctrl.inputProcess(tDate, _dataSource[coord.rowIdx]);
+                        let tDate = moment.utc($editor.value, ctrl.format, true);
+                        if (/*data !== tDate && !d.classList.contains(khl.ERROR_CLS) &&*/ _.isFunction(ctrl.inputProcess)) {
+                            ctrl.inputProcess(tDate.isValid() ? tDate.format(ctrl.format[0]) : $editor.value, _dataSource[coord.rowIdx]);
                         }
                         su.endEdit(_$grid[0]);
                     }
@@ -8570,13 +8600,18 @@ module nts.uk.ui.mgrid {
                 let list = $dd.querySelector(".mcombo-list");
                 let items = list.querySelectorAll("li");
                 if (items) {
-                    let top = 0;
+                    let top = 0, selected;
                     _.forEach(items, li => {
-                        if (li.classList.contains("selecteditem")) return false;
+                        if (li.classList.contains("selecteditem")) {
+                            selected = true;
+                            return false;
+                        }
+                        
                         top += 26;
                     });
                     
-                    if (top >= 0) list.scrollTop = top;
+                    if (top >= 0 && selected) list.scrollTop = top;
+                    else list.scrollTop = 0;
                 }
             }
             
@@ -8633,7 +8668,8 @@ module nts.uk.ui.mgrid {
             
             if (_ramass[format]) {
                 if (!data.initValue || data.initValue === "") return "";
-                return moment(data.initValue, formats, true).format(formats[0]);
+                let momentObj = moment(data.initValue, formats, true);
+                return momentObj.isValid() ? momentObj.format(formats[0]) : data.initValue;
             }
             
             _ramass[format] = _prtDiv.cloneNode();
@@ -8930,7 +8966,8 @@ module nts.uk.ui.mgrid {
             });
             
             if (data.initValue && data.initValue !== "") {
-                return moment(data.initValue, formats, true).format(formats[0]);
+                let momentObj = moment(data.initValue, formats, true); 
+                return momentObj.isValid() ? momentObj.format(formats[0]) : data.initValue;
             }
             
             return "";
@@ -9018,7 +9055,7 @@ module nts.uk.ui.mgrid {
             let selected = _prtDiv.cloneNode(true);
             selected.classList.add("mgrid-refer-text");
             if (_.isNil(text) && !_.isNil(data.initValue)) {
-                text = data.initValue + " " + (data.controlDef.notFound || "");
+                text = _.isNil(data.controlDef.notFound) ? data.initValue : data.controlDef.notFound;
             }
             
             selected.textContent = text || "";
@@ -9094,20 +9131,34 @@ module nts.uk.ui.mgrid {
             $span.className = data.controlDef.source;
             $container.appendChild($span);
             
+            let clickHandle;
             if (data.controlDef.source === "hidden-button") {
-                $span.addXEventListener(ssk.CLICK_EVT, evt => {
+                clickHandle = evt => {
                     let r = ti.closest($span, "tr");
-                    if (r) v.voilerRow(parseFloat($.data(r, lo.VIEW)));
-                });
-                $span.style.cursor = "pointer";
+                    if (r) {
+                        let view = parseFloat($.data(r, lo.VIEW));
+                        v.voilerRow(view);
+                        if (_.isFunction(data.controlDef.click)) {
+                            data.controlDef.click(view);    
+                        }
+                    }
+                };
             } else if (_.includes(data.controlDef.source, "plus-button")) {
-                $span.addXEventListener(ssk.CLICK_EVT, evt => {
+                clickHandle = evt => {
                     let r = ti.closest($span, "tr");
                     let noTd = r.querySelector("td." + v.STT_CLS);
                     if (r) v.encarterRow(parseFloat($.data(r, lo.VIEW)), data.controlDef.copy, data.controlDef.cssClass, noTd && noTd.innerHTML && parseInt(noTd.innerHTML) + 1);
-                });
-                $span.style.cursor = "pointer";
+                };    
             }
+            
+            if (clickHandle) {
+                if (data.enable) {
+                    $span.addXEventListener(ssk.CLICK_EVT, clickHandle);
+                    $span.style.cursor = "pointer";
+                }
+                
+                $.data($span, ssk.CLICK_EVT, clickHandle);
+            }   
             
             if (!controlType[data.columnKey]) {
                 controlType[data.columnKey] = IMAGE;

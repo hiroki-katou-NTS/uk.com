@@ -69,6 +69,7 @@ public class LayoutPersonInfoValueDto {
 	/**
 	 * combo box value list when item type selection
 	 */
+	
 	private List<ComboBoxObject> lstComboBoxValue;
 
 	/*

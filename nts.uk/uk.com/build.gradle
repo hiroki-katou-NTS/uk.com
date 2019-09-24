@@ -1350,6 +1350,8 @@ project (':pereg.ctx:nts.uk.ctx.pereg.app') {
 		compile project (':wk.ctx:nts.uk.ctx.workflow.app')
 		compile project (':wk.ctx:nts.uk.ctx.workflow.dom')
 		
+		compile project (':query:nts.uk.query.model')
+		
 		compile group: 'at.auth', name: 'nts.uk.ctx.at.auth.app', version: version
 		compile group: 'at.auth', name: 'nts.uk.ctx.at.auth.dom', version: version
 		compile group: 'at.function', name: 'nts.uk.ctx.at.function.app', version: version

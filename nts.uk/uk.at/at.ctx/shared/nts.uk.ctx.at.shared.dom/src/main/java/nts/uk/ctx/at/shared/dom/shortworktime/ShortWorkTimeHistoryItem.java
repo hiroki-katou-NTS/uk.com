@@ -44,6 +44,13 @@ public class ShortWorkTimeHistoryItem extends AggregateRoot {
 		this.lstTimeSlot = memento.getLstTimeSlot();
 	}
 	
+	public ShortWorkTimeHistoryItem(String employeeId, String historyId, ChildCareAtr childCareAtr, List<SChildCareFrame> lstTimeSlot) {
+		this.historyId = historyId;
+		this.employeeId = employeeId;
+		this.childCareAtr = childCareAtr;
+		this.lstTimeSlot = lstTimeSlot;
+	}
+	
 	/**
 	 * Save to memento.
 	 *

@@ -14,6 +14,12 @@ public interface SpecialLeaveGrantRepository {
 	List<SpecialLeaveGrantRemainingData> getAllByExpStatus(String employeeId, int specialCode, int expirationStatus);
 	
 	void add(SpecialLeaveGrantRemainingData data);
+	
+	/**
+	 * @author lanlt
+	 * @param domains
+	 */
+	void addAll(List<SpecialLeaveGrantRemainingData> domains);
 
 	void update(SpecialLeaveGrantRemainingData data);
 
@@ -32,6 +38,22 @@ public interface SpecialLeaveGrantRepository {
 	List<SpecialLeaveGrantRemainingData> getByPeriodStatus(String sid, int specialLeaveCode, LeaveExpirationStatus expirationStatus,
 			GeneralDate grantDate, GeneralDate deadlineDate);
 	boolean isHasData(String sid, String specialID,GeneralDate grantDate, int specialLeaCode);
+	
+	/**
+	 * 
+	 * @param employeeId
+	 * @param specialCode
+	 * @return
+	 */
+	List<SpecialLeaveGrantRemainingData> getAllByExpStatus(String cid, List<String> sids , int specialCode, int expirationStatus);
+
+	/**
+	 * @param listEmpID
+	 * @param specialLeaveCD
+	 * @return
+	 */
+	List<SpecialLeaveGrantRemainingData> getAllByListEmpID(List<String> listEmpID, int specialLeaveCD);
+
 	/**
 	 * 特別休暇付与残数データ
 	 * @param sid ・社員ID=INPUT．社員ID
@@ -42,5 +64,13 @@ public interface SpecialLeaveGrantRepository {
 	 * @return 
 	 */
 	List<SpecialLeaveGrantRemainingData> getByNextDate(String sid, int speCode, DatePeriod datePriod, GeneralDate startDate, LeaveExpirationStatus expirationStatus);
+	
+	/**
+	 * for cps013
+	 * @param listEmpID
+	 * @param specialLeaveCD
+	 * @return
+	 */
+	List<Object[]> getAllBySids(List<String> sids, int specialLeaveCD);
 
 }
