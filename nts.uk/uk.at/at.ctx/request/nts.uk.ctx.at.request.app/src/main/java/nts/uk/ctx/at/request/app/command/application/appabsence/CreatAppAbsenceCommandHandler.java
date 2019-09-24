@@ -211,7 +211,7 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 	public void checkBeforeRegister(CreatAppAbsenceCommand command,GeneralDate startDate,GeneralDate endDate,boolean isInsert,
 			List<GeneralDate> lstDateIsHoliday){
 		String companyID = AppContexts.user().companyId();
-		String sID = AppContexts.user().employeeId();
+		String sID = Strings.isBlank(command.getEmployeeID()) ? AppContexts.user().employeeId() : command.getEmployeeID();
 		//hoatt 2019.02.11
 		//EA修正履歴 No.3104
 //		int countDay = 0;
