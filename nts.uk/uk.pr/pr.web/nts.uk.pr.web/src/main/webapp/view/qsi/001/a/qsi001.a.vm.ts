@@ -202,7 +202,7 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
                 isMultiSelect: self.isMultiSelect(),
                 listType: ListType.EMPLOYEE,
                 employeeInputList: self.employeeListKCP005,
-                selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                selectType: SelectType.SELECT_ALL,
                 selectedCode: self.selectedCodeKCP005,
                 isDialog: self.isDialog(),
                 isShowNoSelectRow: self.isShowNoSelectRow(),
