@@ -126,10 +126,10 @@ public class GetYearHolidayInfo {
 	public Map<String, NextTimeEventDto> getAllYearHolidayInfoBySids(List<AnnLeaEmpBasicInfo> annLeas){
 		Map<String, NextTimeEventDto> result = Collections.synchronizedMap(new HashMap<>());
 		List<AnnLeaEmpBasicInfo> annLeasSynchronized = Collections.synchronizedList(new ArrayList<>(annLeas));
-		List<String> sids = annLeasSynchronized.parallelStream().map(c -> c.getSid()).collect(Collectors.toList());
+		List<String> sids = annLeasSynchronized.stream().map(c -> c.getSid()).collect(Collectors.toList());
 		// 次回休暇付与を計算する開始日を取得する
 		Map<String, GeneralDate> baseDateMap =  getCalcStartForNextLeaveGrant.algorithm(sids);
-		annLeasSynchronized.parallelStream().forEach(c ->{
+		annLeasSynchronized.stream().forEach(c ->{
 			GeneralDate baseDate = baseDateMap.get(c.getSid());
 			if(baseDate == null) {
 				result.put(c.getSid(), NextTimeEventDto.fromDomain(new YearHolidayInfoResult(null, null, Optional.empty())));

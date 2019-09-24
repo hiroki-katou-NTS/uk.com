@@ -47,8 +47,9 @@ public class JpaStampCardRepository extends JpaRepository implements StampCardRe
 			+ " WHERE c.contractCd = :contractCode AND c.cardNo LIKE CONCAT(:cardNo, '%')"
 			+ " ORDER BY c.cardNo DESC";
 	
-	private static final String GET_LST_STAMP_BY_SIDS = "SELECT sc.CARD_ID, sc.SID, sc.CARD_NUMBER, sc.REGISTER_DATE, sc.CONTRACT_CODE FROM KWKDT_STAMP_CARD sc WHERE sc.SID IN ('{sids}')";
+	private static final String GET_LST_STAMP_BY_SIDS = "SELECT sc.CARD_ID, sc.SID, sc.CARD_NUMBER, sc.REGISTER_DATE, sc.CONTRACT_CODE FROM KWKDT_STAMP_CARD sc WHERE sc.SID IN ('{sids}') ORDER BY sc.SID, sc.REGISTER_DATE ASC, sc.CARD_NUMBER ASC";
 
+	
 	@Override
 	public List<StampCard> getListStampCard(String sid) {
 		List<KwkdtStampCard> entities = this.queryProxy().query(GET_ALL_BY_SID, KwkdtStampCard.class)

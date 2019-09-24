@@ -465,7 +465,8 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 		
 		CollectionUtil.split(employeeCodes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
 			String sql = "SELECT * FROM BSYMT_EMP_DTA_MNG_INFO WHERE CID = ? AND SCD IN ("
-					+ NtsStatement.In.createParamsString(subList) + ")";
+					+ NtsStatement.In.createParamsString(subList) + ")"
+					+ " AND DEL_STATUS_ATR = 0";
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 				stmt.setString( 1, companyId);
 				for (int i = 0; i < subList.size(); i++) {

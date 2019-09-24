@@ -23,7 +23,6 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.pereg.app.command.MyCustomizeException;
-import nts.uk.shr.pereg.app.command.PeregAddCommandResult;
 import nts.uk.shr.pereg.app.command.PeregAddListCommandHandler;
 @Stateless
 public class AddShortWorkTimeListCommandHandler extends CommandHandlerWithResult<List<AddShortWorkTimeCommand>, List<MyCustomizeException>>
@@ -47,10 +46,11 @@ implements PeregAddListCommandHandler<AddShortWorkTimeCommand>{
 	protected List<MyCustomizeException> handle(CommandHandlerContext<List<AddShortWorkTimeCommand>> context) {
 		List<AddShortWorkTimeCommand> cmd = context.getCommand();
 		String cid = AppContexts.user().companyId();
-		List<PeregAddCommandResult> result =  new ArrayList<>();
+		Map<String, String> recordIds = new HashMap<>();
+		List<MyCustomizeException> result = new ArrayList<>();
 		Map<String, DateHistoryItem> histItemMap = new HashMap<>();
 		List<ShortWorkTimeHistoryItem> histItems = new ArrayList<>();
-		List<MyCustomizeException> myEx = new ArrayList<>();
+
 		// sidsPidsMap
 		List<String> sids = cmd.stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
 		Map<String, List<ShortWorkTimeHistory>> existHistMap = sWorkTimeHistoryRepository.getBySidsAndCid(cid, sids).stream().collect(Collectors.groupingBy(c -> c.getEmployeeId()));
@@ -72,10 +72,10 @@ implements PeregAddListCommandHandler<AddShortWorkTimeCommand>{
 				histItemMap.put(c.getEmployeeId(), dateItem);
 				ShortWorkTimeHistoryItem sWorkTime = new ShortWorkTimeHistoryItem(c);
 				histItems.add(sWorkTime);
-				result.add(new PeregAddCommandResult(newHist));
+				recordIds.put(c.getEmployeeId(), newHist);
 			} catch (BusinessException e) {
 				MyCustomizeException ex = new MyCustomizeException(e.getMessageId(), Arrays.asList(c.getEmployeeId()));
-				myEx.add(ex);
+				result.add(ex);
 			}
 			
 		});
@@ -87,7 +87,11 @@ implements PeregAddListCommandHandler<AddShortWorkTimeCommand>{
 		if(!histItems.isEmpty()) {
 			sWorkTimeHistItemRepository.addAll(histItems);
 		}
-		return myEx;
+		
+		if(!recordIds.isEmpty()) {
+			result.add(new MyCustomizeException("NOERROR", recordIds));
+		}
+		return result;
 	}
 
 }

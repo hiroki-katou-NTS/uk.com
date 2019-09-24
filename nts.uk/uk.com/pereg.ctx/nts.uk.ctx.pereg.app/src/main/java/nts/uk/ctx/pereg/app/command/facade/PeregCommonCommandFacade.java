@@ -202,7 +202,6 @@ public class PeregCommonCommandFacade {
 				List<MyCustomizeException> update = this.update(inputContainerLst, baseDate,  target, modeUpdate);
 				result.addAll(update);
 			}
-			
 			result.addAll(add);
 			
 		});
@@ -305,13 +304,38 @@ public class PeregCommonCommandFacade {
 		
 		if (handler != null && itemFirstByCtg.isHaveSomeSystemItems()) {
 			List<MyCustomizeException> myEx =  handler.handlePeregCommand(containerAdds);
-			if(!myEx.isEmpty()) result.addAll(myEx);
+			if(!myEx.isEmpty()) {
+				if(itemFirstByCtg.getCategoryCd().equals("CS00069")) {
+					result.addAll(myEx.stream().filter(c -> !c.getMessageId().equals("NOERROR"))
+							.map(c -> new MyCustomizeException(c.getMessageId(), c.getErrorLst(),
+									itemFirstByCtg.getByItemCode("IS00779").itemName()))
+							.collect(Collectors.toList()));
+				}else {
+					result.addAll(myEx);
+				}
+			}
+			Map<String, String> recordIds = new HashMap<>();
+			
+			result.stream().filter(c -> c.getMessageId().equals("NOERROR")).forEach(c -> {
+				
+				if(!c.getRecordIdBySid().isEmpty()) {
+					
+					recordIds.putAll(c.getRecordIdBySid());
+					
+				}
+				
+			});
+			
 		    // xử lí cho những item optional
-			List<PeregUserDefAddCommand> commandForUserDef = containerAdds.stream().map(c -> { return new PeregUserDefAddCommand(c.getPersonId(), c.getEmployeeId(), c.getInputs().getCategoryCd(), c.getInputs());}).collect(Collectors.toList());
+			List<PeregUserDefAddCommand> commandForUserDef = containerAdds.stream().map(c -> {
+				return new PeregUserDefAddCommand(c.getPersonId(), c.getEmployeeId(),
+						modeUpdate == 2 ? recordIds.get(c.getEmployeeId()) : c.getInputs().getRecordId(),
+						c.getInputs());
+			}).collect(Collectors.toList());
 			this.userDefAdd.handle(commandForUserDef);
 		}
 
-		return result;
+		return result.stream().filter(c -> !c.getMessageId().equals("NOERROR")).collect(Collectors.toList());
 	}
 	
 	private int convertType(ItemTypeStateDto itemTypeStateDto, Object value) {
@@ -404,7 +428,17 @@ public class PeregCommonCommandFacade {
 
 			// In case of optional category fix category doesn't exist
 			if (handler != null) {
-				result.addAll(handler.handlePeregCommand(containerAdds));
+				List<MyCustomizeException> myEx = handler.handlePeregCommand(containerAdds);
+				if(!myEx.isEmpty()) {
+					if(itemFirstByCtg.getCategoryCd().equals("CS00069")) {
+							result.addAll(myEx.stream()
+									.map(c -> new MyCustomizeException(c.getMessageId(), c.getErrorLst(),
+											itemFirstByCtg.getByItemCode("IS00779").itemName()))
+									.collect(Collectors.toList()));
+					}else {
+						result.addAll(myEx);
+					}
+				}
 			}
 
 			val commandForUserDef = containerLst.stream().map(c -> {
@@ -562,13 +596,19 @@ public class PeregCommonCommandFacade {
 												if(ctgType == CategoryType.CONTINUOUSHISTORY || ctgType == CategoryType.CONTINUOUS_HISTORY_FOR_ENDDATE) {
 													if(item.itemCode().equals(dateRange.getStartDateCode())) {
 														if (!history[1].equals(" ")) {
-															GeneralDate oldEnd = GeneralDate.fromString(history[1].substring(1), "yyyy/MM/dd");
-															GeneralDate oldStart = GeneralDate.fromString(item.valueBefore(), "yyyy/MM/dd");
-															if (oldStart.addDays(-1).equals(oldEnd)) {
-																reviseInfo = new ReviseInfo(nameEndate,
-																		Optional.ofNullable(GeneralDate.fromString(item.valueAfter(), "yyyy/MM/dd").addDays(-1)),
-																		Optional.empty(), Optional.empty());
+															try {
+																GeneralDate oldEnd = GeneralDate.fromString(history[1].substring(1), "yyyy/MM/dd");
+																GeneralDate oldStart = GeneralDate.fromString(item.valueBefore(), "yyyy/MM/dd");
+																if (oldStart.addDays(-1).equals(oldEnd)) {
+																	reviseInfo = new ReviseInfo(nameEndate,
+																			Optional.ofNullable(GeneralDate.fromString(item.valueAfter(), "yyyy/MM/dd").addDays(-1)),
+																			Optional.empty(), Optional.empty());
+																}
+															}catch(Exception e) {
+																	reviseInfo = new ReviseInfo(nameEndate,
+																		Optional.empty(), Optional.empty(), Optional.empty());
 															}
+
 														}
 													}
 												}

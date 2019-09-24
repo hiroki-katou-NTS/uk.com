@@ -11,6 +11,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveAppSetting;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
@@ -405,21 +406,24 @@ public class NotDepentSpecialLeaveOfEmployeeImpl implements NotDepentSpecialLeav
 				if (!c.getGrantTblCd().isPresent()) {
 					result.put(c.getSid(), outputData);
 				} else {
-					elapseYearPre = elapseYearMap.get(c.getGrantTblCd().get());
+					if(!CollectionUtil.isEmpty(elapseYearMap.get(c.getGrantTblCd().get()))){
+						elapseYearPre.addAll(elapseYearMap.get(c.getGrantTblCd().get()));
+					}
+					
 				}
 			}else {
 				//パラメータ「特別休暇適用設定」＝所定の条件を適用する　の場合
 				//　規定のテーブルとする＝TRUE
 				elapseYearPre.addAll(elapseYear);
 			}
-			if(elapseYear.isEmpty()) {
+			if(elapseYearPre.isEmpty()) {
 				result.put(c.getSid(), outputData);
 			}
 			
 			//パラメータ「付与基準日」をパラメータ「比較年月日」にセットする
 			GeneralDate baseDate = c.getGrantDate();
 			List<GrantDaysInfor> lstGrantDays = new ArrayList<>();
-			for (ElapseYear yearData : elapseYear) {
+			for (ElapseYear yearData : elapseYearPre) {
 				//パラメータ「比較年月日」に取得したドメインモデル「特別休暇付与テーブル．経過年数に対する付与日数．経過年数」を加算する
 				GeneralDate loopDate = baseDate.addYears(yearData.getYears().v());
 				loopDate = loopDate.addMonths(yearData.getMonths().v());

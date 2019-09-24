@@ -493,6 +493,15 @@ module cps003.a.vm {
                             });
                         } else {
                             let errLst = _.map(errorList, e => e);
+                            let ds = $grid.mGrid("dataSource");
+                            let errIds = _.chain(errLst).map(e => e.no - 1).uniq().map(no => (ds[no] || {}).id).value();
+                            forEach(updateDone, d => {
+                                if (!_.find(errIds, id => id === d.rowId)) {
+                                    $grid.mGrid("updateCell", d.rowId, d.columnKey, d.value, true);
+                                    $grid.mGrid("updateCell", d.rowId, "register", false, true);
+                                } 
+                            });
+                            
                             setShared("CPS003G_ERROR_LIST", errLst);
                             modeless("/view/cps/003/g/index.xhtml").onClosed(() => {
                                 
@@ -713,7 +722,7 @@ module cps003.a.vm {
                 };
             
             _.forEach($grid.mGrid("dataSource"), (record: Record) => {
-                if (find(self.hiddenRows, id => id === record.id)) return;
+                if (/*find(self.hiddenRows, id => id === record.id)*/ find(self.hiddenEmpIds, id => id === record.employeeId)) return;
                 matrixData.detailData.push(new GridEmployeeInfoDataSource(record, matrixData.dynamicHeader, $grid));
             });
             
@@ -1182,15 +1191,15 @@ module cps003.a.vm {
                     
                     forEach(disItems, itm => states.push(new State(record.id, itm, ["mgrid-lock"])));
                     self.gridOptions.dataSource.push(record);
-                    if (hideRowAdd === false) {
+//                    if (hideRowAdd === false) {
                         if (self.category.cate().categoryType === IT_CAT_TYPE.DUPLICATE) {
                             if (__viewContext.user.employeeId === record.employeeId) {
-                                if (self.perInfoCatePermission().selfAllowAddMulti === 0 
+                                if (self.perInfoCatePermission().selfAllowAddHis === 0 
                                     || self.perInfoCatePermission().selfFutureHisAuth === 1 || self.perInfoCatePermission().selfFutureHisAuth === 2) {
                                     states.push(new State(record.id, "rowAdd", ["mgrid-disable"]));
                                 }
                             } else {
-                                if (self.perInfoCatePermission().otherAllowAddMulti === 0
+                                if (self.perInfoCatePermission().otherAllowAddHis === 0
                                     || self.perInfoCatePermission().otherFutureHisAuth === 1 || self.perInfoCatePermission().otherFutureHisAuth === 2) {
                                     states.push(new State(record.id, "rowAdd", ["mgrid-disable"]));
                                 }     
@@ -1202,7 +1211,7 @@ module cps003.a.vm {
                                 states.push(new State(record.id, "rowAdd", ["mgrid-disable"]));  
                             }
                         }
-                    }
+//                    }
                 });
                 
                 if (workTimeCodes.length > 0) {
@@ -1274,6 +1283,7 @@ module cps003.a.vm {
             let self = this;
             $("#grid").mGrid("showHiddenRows");
             self.hiddenRows = [];
+            self.hiddenEmpIds = [];
         }
         
         combobox(id: any, item: IColumnData, states, record: any) {

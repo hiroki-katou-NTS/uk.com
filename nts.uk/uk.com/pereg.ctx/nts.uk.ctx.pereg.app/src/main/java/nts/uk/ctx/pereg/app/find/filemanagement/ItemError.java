@@ -10,6 +10,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ItemError {
+	private String sid;
 	private String recordId;
 	private int index;
 	private String columnKey;

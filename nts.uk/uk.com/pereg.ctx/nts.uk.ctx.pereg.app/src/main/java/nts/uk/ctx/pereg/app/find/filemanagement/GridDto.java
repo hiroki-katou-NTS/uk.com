@@ -8,6 +8,7 @@ import nts.uk.ctx.pereg.app.find.layoutdef.classification.GridEmpHead;
 @Data
 @AllArgsConstructor
 public class GridDto {
+	private int updateMode;
 	// định nghĩa kiểu dữ liệu item
 	private List<GridEmpHead> headDatas;
 	// danh sách employees, dữ liệu từng dòng

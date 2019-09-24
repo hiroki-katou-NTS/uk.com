@@ -31,7 +31,8 @@ module cps003.b.vm {
                     categoryId: self.currentMode().categoryId,
                     modeUpdate: self.currentMode().mode(),
                     columnChange: self.currentMode().columnChange,
-                    sids:  self.currentMode().sids
+                    sids:  self.currentMode().sids,
+                    baseDate: moment.utc(self.currentMode().systemDate, "YYYY/MM/DD").toISOString()
                 };
             
             if(_.isEmpty(self.currentFile().filename())){
@@ -143,13 +144,16 @@ module cps003.b.vm {
 
                 };
             
+            block.invisible();
             $("#file-upload").ntsFileUpload({ stereoType: "excelFile" }).done(function(res) {
                 self.fileId(res[0].id);
                 self.imageSize("(" +format(text('CCG013_99'), res[0].originalSize)+")");
+                block.clear();
             }).fail(function(err) {
                 __viewContext.viewModel.currentFile().filename("");
                 __viewContext.viewModel.currentFile().imageSize("");
                 alertError({ messageId: "Msg_1466" });
+                block.clear();
             });
         }
     

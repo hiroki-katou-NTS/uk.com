@@ -2,6 +2,7 @@ package nts.uk.ctx.bs.employee.app.command.workplace.affiliate;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -50,10 +51,12 @@ implements PeregAddListCommandHandler<AddAffWorkplaceHistoryCommand>{
 	protected List<MyCustomizeException> handle(CommandHandlerContext<List<AddAffWorkplaceHistoryCommand>> context) {
 		List<AddAffWorkplaceHistoryCommand> command = context.getCommand();
 		String cid = AppContexts.user().companyId();
-		List<String> sids = command.stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
+		Map<String, String> recordIds = new HashMap<>();
+		List<MyCustomizeException> result = new ArrayList<>();
 		List<AffWorkplaceHistoryItem> histItems = new ArrayList<>();
 		List<AffWorkplaceHistory> affJobTitleHistoryLst = new ArrayList<>();
-		List<MyCustomizeException> result = new ArrayList<>();
+		List<String> sids = command.stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
+		
 		Map<String, List<AffWorkplaceHistory>> existHistMap = affWorkplaceHistoryRepository.getBySidsAndCid(cid, sids)
 				.stream().collect(Collectors.groupingBy(c -> c.getEmployeeId()));
 		command.stream().forEach(c -> {
@@ -71,6 +74,7 @@ implements PeregAddListCommandHandler<AddAffWorkplaceHistoryCommand>{
 			affJobTitleHistoryLst.add(itemtoBeAdded);
 			AffWorkplaceHistoryItem histItem =AffWorkplaceHistoryItem.createFromJavaType(histId,  c.getEmployeeId(), c.getWorkplaceId(), c.getNormalWorkplaceId());
 			histItems.add(histItem);
+			recordIds.put(c.getEmployeeId(), histId);
 			}catch(BusinessException e) {
 				MyCustomizeException ex = new MyCustomizeException(e.getMessageId(), Arrays.asList(c.getEmployeeId()));
 				result.add(ex);
@@ -84,6 +88,11 @@ implements PeregAddListCommandHandler<AddAffWorkplaceHistoryCommand>{
 		if(!histItems.isEmpty()) {
 			affWorkplaceHistoryItemRepository.addAll(histItems);
 		}
+		
+		if(!recordIds.isEmpty()) {
+			result.add(new MyCustomizeException("NOERROR", recordIds));
+		}
+		
 		return result;
 	}
 

@@ -703,11 +703,11 @@ module cps003.f.vm {
                 }
             } else { // 一致する社員のみ（F1_009）が選択されている場合
                 let isNumber = (item.itemData.dataType == ITEM_SINGLE_TYPE.NUMERIC || item.itemData.dataType == ITEM_SINGLE_TYPE.NUMBERIC_BUTTON || item.itemData.dataType == ITEM_SINGLE_TYPE.TIME|| item.itemData.dataType == ITEM_SINGLE_TYPE.TIMEPOINT);
-                if (value.matchValue || (value.matchValue === 0 && isNumber)) {
+                if (value.matchValue || ((value.matchValue === 0) && isNumber)) {
                     if (mode == null) {
                         let checkArray = Array.isArray(value.replaceValue),
                             replaceValue = checkArray == true ? value.replaceValue[0] : value.replaceValue;
-                        if (replaceValue || (replaceValue === 0 && isNumber)) {
+                        if (replaceValue || ((replaceValue === 0) && isNumber)) {
                             let matchText = value.matchValue,
                                 replaceText = value.replaceValue;
                             if (item.itemData.dataType == ITEM_SINGLE_TYPE.SELECTION || item.itemData.dataType == ITEM_SINGLE_TYPE.SEL_BUTTON) {
@@ -778,8 +778,10 @@ module cps003.f.vm {
                             }
                         } else {
                             if ([0, 1, 2].indexOf(mode) > -1) {
-                                let valueTextMatch = value.matchValue;
-                                if (item.itemData.dataType == 4) {
+                                let valueTextMatch = value.matchValue;                                
+                                if (item.itemData.dataType == ITEM_SINGLE_TYPE.TIMEPOINT) {
+                                    valueTextMatch = parseTimeWidthDay(value.matchValue).fullText;
+                                } else if (item.itemData.dataType == ITEM_SINGLE_TYPE.TIME) {
                                     valueTextMatch = parseTime(value.matchValue, true).format();
                                 }
                                 if (value.replaceValue) {
@@ -812,7 +814,7 @@ module cps003.f.vm {
                     if (mode == null) {
                         let checkArray = Array.isArray(value.replaceValue),
                             replaceValue = checkArray == true ? value.replaceValue[0] : value.replaceValue;
-                        if (replaceValue || (replaceValue == 0 && (item.itemData.dataType == ITEM_SINGLE_TYPE.NUMERIC || item.itemData.dataType == ITEM_SINGLE_TYPE.NUMBERIC_BUTTON || item.itemData.dataType == ITEM_SINGLE_TYPE.TIME || item.itemData.dataType == ITEM_SINGLE_TYPE.TIMEPOINT))) {
+                        if (replaceValue || (replaceValue === 0 && (item.itemData.dataType == ITEM_SINGLE_TYPE.NUMERIC || item.itemData.dataType == ITEM_SINGLE_TYPE.NUMBERIC_BUTTON || item.itemData.dataType == ITEM_SINGLE_TYPE.TIME || item.itemData.dataType == ITEM_SINGLE_TYPE.TIMEPOINT))) {
                             confirm({ messageId: 'Msg_637', messageParams: [item.name, item.replacer] }).ifYes(() => {
                                 setShared('CPS003F_VALUE', value);
                                 close();

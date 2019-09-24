@@ -3,6 +3,7 @@ package nts.uk.ctx.bs.employee.app.command.temporaryabsence;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -50,6 +51,7 @@ implements PeregAddListCommandHandler<AddTemporaryAbsenceCommand>{
 	protected List<MyCustomizeException> handle(CommandHandlerContext<List<AddTemporaryAbsenceCommand>> context) {
 		List<AddTemporaryAbsenceCommand> command  = context.getCommand();
 		String cid = AppContexts.user().companyId();
+		Map<String, String> recordIds = new HashMap<>();
 		List<MyCustomizeException> result =  new ArrayList<>();
 		List<TempAbsenceHisItem> temporaryAbsenceLst = new ArrayList<>();
 		List<TempAbsenceHistory> tempAbsenceHistoryLst = new ArrayList<>();
@@ -94,6 +96,8 @@ implements PeregAddListCommandHandler<AddTemporaryAbsenceCommand>{
 						c.getChildType() != null ? c.getChildType().intValue() : null, c.getCreateDate(),
 						spouseIsLeave, c.getSameFamilyDays() != null ? c.getSameFamilyDays().intValue() : null);
 				temporaryAbsenceLst.add(temporaryAbsence);	
+				recordIds.put(c.getEmployeeId(), newHistID);
+				
 			}catch(BusinessException e) {
 				MyCustomizeException ex = new MyCustomizeException(e.getMessageId(), Arrays.asList(c.getEmployeeId()));
 				result.add(ex);
@@ -107,6 +111,10 @@ implements PeregAddListCommandHandler<AddTemporaryAbsenceCommand>{
 		
 		if(!temporaryAbsenceLst.isEmpty()) {
 			temporaryAbsenceRepository.addAll(temporaryAbsenceLst);
+		}
+		
+		if(!recordIds.isEmpty()) {
+			result.add(new MyCustomizeException("NOERROR", recordIds));
 		}
 		
 		return result;

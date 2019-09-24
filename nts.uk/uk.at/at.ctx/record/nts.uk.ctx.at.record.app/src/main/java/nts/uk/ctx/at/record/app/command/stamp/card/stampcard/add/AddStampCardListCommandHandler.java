@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.app.command.stamp.card.stampcard.add;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,25 +39,32 @@ implements PeregAddListCommandHandler<AddStampCardCommand>{
 		List<StampCard> insertLst = new ArrayList<>();
 		List<String> sids= new ArrayList<>();
 		List<MyCustomizeException> result = new ArrayList<>();
-		cmd.stream().forEach(c ->{
+		Iterator<AddStampCardCommand> itr = cmd.iterator();
+		while (itr.hasNext()) {
+			AddStampCardCommand c = itr.next();
 			// create new domain and add
 			if (c.getStampNumber() != null) {
-				String stampCardId = IdentifierUtil.randomUniqueId();
-				Optional<StampCard> stampCardOpt = this.stampCardRepo.getByCardNoAndContractCode(c.getStampNumber(), contractCode);
+				Optional<StampCard> stampCardOpt = this.stampCardRepo.getByCardNoAndContractCode(c.getStampNumber(),
+						contractCode);
 				if (stampCardOpt.isPresent()) {
 					sids.add(c.getEmployeeId());
+					itr.remove();
 				} else {
+					String stampCardId = IdentifierUtil.randomUniqueId();
 					StampCard stampCard = StampCard.createFromJavaType(stampCardId, c.getEmployeeId(),
 							c.getStampNumber(), GeneralDate.today(), contractCode);
 					insertLst.add(stampCard);
 				}
-
+			} else {
+				String stampCardId = IdentifierUtil.randomUniqueId();
+				StampCard stampCard = StampCard.createFromJavaType(stampCardId, c.getEmployeeId(), c.getStampNumber(),
+						GeneralDate.today(), contractCode);
+				insertLst.add(stampCard);
 			}
+		}
 
-		});
-		
 		if(!sids.isEmpty()) {
-			result.add(new MyCustomizeException("Msg_346", sids));
+			result.add(new MyCustomizeException("Msg_1106", sids));
 		}
 		
 		if(!insertLst.isEmpty()) {

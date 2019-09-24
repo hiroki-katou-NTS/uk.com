@@ -2,6 +2,7 @@ package nts.uk.ctx.bs.employee.app.command.jobtitle.affiliate;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -49,10 +50,12 @@ implements PeregAddListCommandHandler<AddAffJobTitleMainCommand>{
 	protected List<MyCustomizeException> handle(CommandHandlerContext<List<AddAffJobTitleMainCommand>> context) {
 		List<AddAffJobTitleMainCommand> command = context.getCommand();
 		String cid = AppContexts.user().companyId();
-		List<String> sids = command.stream().map(c -> c.getSid()).collect(Collectors.toList());
+		Map<String, String> recordIds = new HashMap<>();
+		List<MyCustomizeException> result = new ArrayList<>();
 		List<AffJobTitleHistoryItem> histItems = new ArrayList<>();
 		List<AffJobTitleHistory> affJobTitleHistoryLst = new ArrayList<>();
-		List<MyCustomizeException> result = new ArrayList<>();
+		
+		List<String> sids = command.stream().map(c -> c.getSid()).collect(Collectors.toList());
 		Map<String, List<AffJobTitleHistory>> existHistMap = affJobTitleHistoryRepository.getListBySids(cid, sids)
 				.stream().collect(Collectors.groupingBy(c -> c.getEmployeeId()));
 
@@ -72,6 +75,8 @@ implements PeregAddListCommandHandler<AddAffJobTitleMainCommand>{
 			AffJobTitleHistoryItem histItem = AffJobTitleHistoryItem.createFromJavaType(histId, c.getSid(),
 					c.getJobTitleId(), c.getNote());
 			histItems.add(histItem);
+			recordIds.put(c.getSid(), histId);
+			
 			} catch(BusinessException e) {
 				MyCustomizeException ex = new MyCustomizeException(e.getMessageId(), Arrays.asList(c.getSid()));
 				result.add(ex);
@@ -82,6 +87,10 @@ implements PeregAddListCommandHandler<AddAffJobTitleMainCommand>{
 		}
 		if (!histItems.isEmpty()) {
 			affJobTitleHistoryItemRepository.addAll(histItems);
+		}
+		
+		if(!recordIds.isEmpty()) {
+			result.add(new MyCustomizeException("NOERROR", recordIds));
 		}
 
 		return result;

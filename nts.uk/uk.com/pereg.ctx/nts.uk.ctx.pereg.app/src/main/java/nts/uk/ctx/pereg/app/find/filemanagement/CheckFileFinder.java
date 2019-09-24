@@ -4,6 +4,8 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -32,6 +34,7 @@ import nts.gul.excel.NtsExcelHeader;
 import nts.gul.excel.NtsExcelImport;
 import nts.gul.excel.NtsExcelReader;
 import nts.gul.excel.NtsExcelRow;
+import nts.gul.text.StringUtil;
 import nts.gul.time.minutesbased.MinutesBasedTimeParser;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
@@ -167,7 +170,7 @@ public class CheckFileFinder {
 			List<EmployeeDataMngInfo> employees = this.getEmployeeIds(rows, params.getSids());
 			Periods period = peroidByCategory.get(ctgOptional.get().getCategoryCode().toString());
 			//GridDto dto = this.getGridInfo(excelReader, headerDb, ctgOptional.get(), employees, period == null? null: period.periods.get(0).getItem(), updateMode); 
-			GridDto dto = this.getGridInfo(excelReader, headerDb, ctgOptional.get(), employees, period, updateMode, itemAuths); 
+			GridDto dto = this.getGridInfo(excelReader, headerDb, ctgOptional.get(), employees, period, updateMode, itemAuths, params.getBaseDate()); 
 			//受入するファイルの列に、メイン画面の「個人情報一覧（A3_001）」に表示している可変列で更新可能な項目が１件でも存在するかチェックする
 			//check xem các header của item trong file import có khớp với màn hình A 
 			if (colums.size() == 0) {
@@ -288,7 +291,7 @@ public class CheckFileFinder {
 	 */
 	private GridDto getGridInfo(NtsExcelImport excelReader, List<GridEmpHead> headerReal, PersonInfoCategory category,
 			List<EmployeeDataMngInfo> employees, Periods period, UpdateMode updateMode,
-			List<PersonInfoItemAuth> itemAuths) {
+			List<PersonInfoItemAuth> itemAuths, GeneralDate baseDate) {
 		String sid = AppContexts.user().employeeId();
 		List<ItemRowDto> itemSelfDtos =  new ArrayList<>();
 		List<ItemRowDto> itemOtherDtos =  new ArrayList<>();
@@ -311,7 +314,7 @@ public class CheckFileFinder {
 		headerReal.removeAll(headerRemain);
 		index = 0;
 		PeregQueryByListEmp lquery = PeregQueryByListEmp.createQueryLayout(category.getPersonInfoCategoryId(),
-				category.getCategoryCode().v(), GeneralDate.today(),
+				category.getCategoryCode().v(), baseDate,
 				employees.stream().map(m -> new PeregEmpInfoQuery(m.getPersonId(), m.getEmployeeId())).collect(Collectors.toList()));
 		
 		List<EmpMainCategoryDto> layouts = layoutProcessor.getCategoryDetailByListEmp(lquery);
@@ -352,14 +355,13 @@ public class CheckFileFinder {
 				if(itemDtos.size() > 0) {
 					pdt.getItems().addAll(itemDtos);
 				}
-				// đếm số item bị lỗi của một employee
-				List<ItemRowDto>  itemErrorLst = pdt.getItems().stream().filter(x -> x.isError() == true).collect(Collectors.toList());
-				pdt.setNumberOfError(itemErrorLst.size());
+
 				//lấy thông tin recordId và actionRole
 				if(items.isEmpty()) {
 					pdt.getItems().removeAll(pdt.getItems());
 					itr.remove();
 				}
+
 				items.stream().forEach(item -> {
 					pdt.getItems().stream().forEach(itemDto -> {
 						if (itemDto.getItemCode().equals(item.getItemCode())) {
@@ -378,6 +380,17 @@ public class CheckFileFinder {
 							if(endDateLst.contains(itemDto.getItemCode())&& (item.getActionRole() == ActionRole.VIEW_ONLY || item.getActionRole() == ActionRole.HIDDEN)) {
 								itemDto.setValue(item.getValue());
 							}
+							
+							if(category.isHistoryCategory()) {
+									if (itemDto.getItemCode().equals(period.getPeriods().get(0).getItem())) {
+										period.getPeriods().get(0).setValue(itemDto.getValue());
+									}
+									
+									if (itemDto.getItemCode().equals(period.getPeriods().get(1).getItem())) {
+										period.getPeriods().get(1).setValue(itemDto.getValue());
+									}
+							}
+							
 							if(itemDto.getDataType() == 0) return; 
 							Object valueDb = item.getValue() == null? null: this.convertValue(itemDto.getDataType(), item.getValue().toString());
 							Object valueExcel = itemDto.getValue() == null? null: this.convertValue(itemDto.getDataType(), itemDto.getValue().toString());
@@ -426,7 +439,30 @@ public class CheckFileFinder {
 				});		
 				
 			});
-
+			
+			if(category.isHistoryCategory()) {
+				pdt.getItems().stream().forEach(itemDto ->{
+					if(itemDto.getItemCode().equals(period.getPeriods().get(0).getItem())) {
+						if(period.getPeriods().get(0).getValue() != null && period.getPeriods().get(1).getValue() != null) {
+							try {
+								GeneralDate start = GeneralDate.fromString(period.getPeriods().get(0).getValue().toString(), "yyyy/MM/dd"); 
+								GeneralDate end = GeneralDate.fromString(period.getPeriods().get(1).getValue().toString(), "yyyy/MM/dd"); 
+								if(start.after(end)) {
+									itemDto.setError(true);
+									ItemError error = new ItemError(pdt.getEmployeeId(), itemDto.getRecordId(), index, period.getPeriods().get(0).getItem(), "Msg_861"); 
+									itemErrors.add(error);
+								}
+							}catch(Exception e) {
+								System.out.println("invalid format date");
+							}
+						}
+					}
+				});
+			}
+			// đếm số item bị lỗi của một employee
+			List<ItemRowDto>  itemErrorLst = pdt.getItems().stream().filter(x -> x.isError() == true).collect(Collectors.toList());
+			pdt.setNumberOfError(itemErrorLst.size());
+			
 			pdt.getItems().sort(Comparator.comparing(ItemRowDto::getItemOrder, Comparator.naturalOrder()));
 			if (isSelfAuth == true) {
 				List<ItemRowDto> itemSelfDtoTmps = pdt.getItems().stream()
@@ -458,10 +494,13 @@ public class CheckFileFinder {
 		result.sort(compareByName);
 		//set lại vị trí index sau khi sort
 		int index = 0;
+		
 		for(EmployeeRowDto pdt: result) {
 			if(!CollectionUtil.isEmpty(pdt.getItems())) {
 				for(ItemError error : itemErrors) {
-					if(error.getRecordId() == pdt.getItems().get(0).getRecordId()) {
+					if((error.getRecordId() == pdt.getItems().get(0).getRecordId() && error.getSid().equals(pdt.getEmployeeId()))) {
+						error.setIndex(index);
+					}else if(error.getSid().equals(pdt.getEmployeeId())){
 						error.setIndex(index);
 					}
 				}
@@ -470,7 +509,7 @@ public class CheckFileFinder {
 			index++;
 		}
 		
-		return new GridDto(header, result, itemErrors);
+		return new GridDto(updateMode.value, header, result, itemErrors);
 	}
 	
 	/**
@@ -501,20 +540,6 @@ public class CheckFileFinder {
 			employeeDto.setItems(items);
 			if(employeeDto.getEmployeeCode()!= null) {
 				employeeDtos.add(employeeDto);
-			}
-			if(category.isHistoryCategory()) {
-				if(period.getPeriods().get(0).getValue() != null && period.getPeriods().get(1).getValue() != null) {
-					try {
-						GeneralDate start = GeneralDate.fromString(period.getPeriods().get(0).getValue().toString(), "yyyy/MM/dd"); 
-						GeneralDate end = GeneralDate.fromString(period.getPeriods().get(1).getValue().toString(), "yyyy/MM/dd"); 
-						if(start.after(end)) {
-							ItemError error = new ItemError("", index, period.getPeriods().get(0).getItem(), "MsgB_2"); 
-							itemErrors.add(error);
-						}
-					}catch(Exception e) {
-						System.out.println("invalid format date");
-					}
-				}
 			}
 			index++;
 		}
@@ -553,6 +578,7 @@ public class CheckFileFinder {
 					List<String> ddMMyyy = Arrays.asList("dd/MM/yyyy", "dd-MM-yyyy");
 					List<String> MMddyyy = Arrays.asList("MM/dd/yyyy", "MM-dd-yyyy");
 					Optional<SimpleDateFormat> dateFormat = validateDate(value);
+					Optional<DateTimeFormatter> dateTime = validateDateTime(value);
 					if (dateFormat.isPresent()) {
 
 						if (ddMMyyy.contains(dateFormat.get().toPattern())) {
@@ -579,6 +605,18 @@ public class CheckFileFinder {
 						}else {
 							value = GeneralDate.fromString(value, "yyyy/MM/dd").toString();
 						}
+					}
+					
+					if (dateTime.isPresent()) {
+						List<String> yyyyMMdd = Arrays.asList("yyyyMMdd");
+						if (yyyyMMdd.contains("yyyyMMdd")) {
+							try {
+								value = LocalDate.parse(value, dateTime.get()).toString().replace("-", "/");
+							} catch (Exception e) {
+								break;
+							}
+						}
+
 					}
 					break;
 				case NUMBER:
@@ -623,11 +661,6 @@ public class CheckFileFinder {
 							valueStartCode = value == null ? GeneralDate.today()
 									: GeneralDate.fromString(value, "yyyy/MM/dd");
 						}
-						period.getPeriods().get(0).setValue(value);
-					}
-					
-					if (headerGrid.getItemCode().equals(period.getPeriods().get(1).getItem())) {
-						period.getPeriods().get(1).setValue(value);
 					}
 				}
 				ItemRowDto empBody = new ItemRowDto();
@@ -658,14 +691,14 @@ public class CheckFileFinder {
 					}).findFirst();
 					empBody.setValue(combo.isPresent() == true ? combo.get().getOptionValue() : "");
 					empBody.setLstComboBoxValue(comboxLst);
-					validateCombox(headerGrid, empBody, itemErrors, index, comboxLst);
+					validateCombox(employeeDto.getEmployeeId(), headerGrid, empBody, itemErrors, index, comboxLst);
 					items.add(empBody);
 				} else {
 					if (!headerGrid.getItemName().equals(CheckFileFinder.header)) {
 						empBody.setItemCode(headerGrid.getItemCode());
 						empBody.setItemName(headerGrid.getItemName());
 						empBody.setItemOrder(headerGrid.getItemOrder());
-						convertValue(empBody, headerGrid,
+						convertValue(employeeDto.getEmployeeId(), empBody, headerGrid,
 								cell.getValue() == null ? null : value, contraint, itemErrors, index);
 						empBody.setTextValue(empBody.getValue() == null ? "" : empBody.getValue().toString());
 						items.add(empBody);
@@ -677,26 +710,25 @@ public class CheckFileFinder {
 		
 	}
 
-	private void validateCombox(GridEmpHead headerGrid, ItemRowDto empBody, List<ItemError> itemErrors,
+	private void validateCombox(String sid, GridEmpHead headerGrid, ItemRowDto empBody, List<ItemError> itemErrors,
 			int index, List<ComboBoxObject> combox) {
 		String value =(String) empBody.getValue();
 		List<String> comboxKey = combox.stream().map(c -> c.getOptionValue()).collect(Collectors.toList());
 		if (headerGrid.isRequired()) {
 			if ( value == null || value == "") {
-				ItemError error = new ItemError("", index, headerGrid.getItemCode(), "MsgB_2");
+				ItemError error = new ItemError(sid, "", index, headerGrid.getItemCode(), "MsgB_2");
 				itemErrors.add(error);
 				empBody.setError(true);
 			} else {
 				if (!comboxKey.contains(value)) {
-					ItemError error = new ItemError("", index, headerGrid.getItemCode(), "MsgB_2");
+					ItemError error = new ItemError(sid, "", index, headerGrid.getItemCode(), "MsgB_2");
 					itemErrors.add(error);
 					empBody.setError(true);
 				}
 			}
 		} else {
-
-			if (!comboxKey.contains(value)) {
-				ItemError error = new ItemError("", index, headerGrid.getItemCode(), "MsgB_2");
+			if (!comboxKey.contains(value) && !StringUtil.isNullOrEmpty(value, true)) {
+				ItemError error = new ItemError(sid, "", index, headerGrid.getItemCode(), "MsgB_2");
 				itemErrors.add(error);
 				empBody.setError(true);
 			}
@@ -747,9 +779,11 @@ public class CheckFileFinder {
 				case 1:
 					StringItemDto stringDto = (StringItemDto) singleDto.getDataTypeState();
 					StringCharType type;
+					int length = stringDto.getStringItemLength();
 					switch (stringDto.getStringItemType()) {
 					case 1:
 						type = StringCharType.ANY;
+						length = length/2;
 						break;
 					case 2:
 						type = StringCharType.ANY_HALF_WIDTH;
@@ -761,16 +795,18 @@ public class CheckFileFinder {
 						type = StringCharType.NUMERIC;
 					case 5:
 						type = StringCharType.KATAKANA;
+						length = length/2;
 						break;
 					case 6:
 						
 					case 7:
 					default: 
 						type = StringCharType.ANY;
+						length = length/2;
 						break;
 					}
 
-					obj = new StringConstraint( 0, type, stringDto.getStringItemLength());
+					obj = new StringConstraint( 0, type, length);
 					contraintList.put(c.getItemCode(), obj);
 					break;
 				case 2:
@@ -843,7 +879,7 @@ public class CheckFileFinder {
 	 * @param value
 	 * @param contraint
 	 */
-	private void convertValue(ItemRowDto itemDto, GridEmpHead gridHead, String value, Object contraint, List<ItemError> itemErrors, int index) {
+	private void convertValue(String sid, ItemRowDto itemDto, GridEmpHead gridHead, String value, Object contraint, List<ItemError> itemErrors, int index) {
 		if (gridHead.getItemTypeState().getItemType() == 2) {
 			SingleItemDto singleDto = (SingleItemDto) gridHead.getItemTypeState();
 			DataTypeStateDto dataTypeState = (DataTypeStateDto) singleDto.getDataTypeState();
@@ -855,22 +891,30 @@ public class CheckFileFinder {
 				StringConstraint stringContraint = (StringConstraint) contraint;
 				if (gridHead.isRequired()) {
 					if (value == null || value =="") {
-						ItemError error = new ItemError("", index, itemDto.getItemCode(), "FND_E_REQ_INPUT");
+						ItemError error = new ItemError(sid, "", index, itemDto.getItemCode(), "FND_E_REQ_INPUT");
 						itemDto.setError(true);
 						itemErrors.add(error);
 						break;
 					} else {
 						Optional<String> string = stringContraint.validateString(value.toString());
 						if (itemSpecialLst.contains(itemDto.getItemCode())) {
-							ItemError error = validateItemOfCS0002(itemDto, value.toString(), index);
-							if (error!= null) {
-								itemErrors.add(error);
+							ItemError errorSpace = validateItemOfCS0002(sid, itemDto, value.toString(), index);
+							if (string.isPresent()) {
+								itemDto.setError(true);
+								ItemError stringError = new ItemError(sid, "", index, itemDto.getItemCode(),
+										TextResource.localize(string.get(), Arrays.asList(gridHead.getItemName(),
+												String.valueOf(stringContraint.getMaxLenght()))));
+								itemErrors.add(stringError);
+							} else if (errorSpace != null) {
+								itemErrors.add(errorSpace);
 							}
 							break;
 						} else {
 							if (string.isPresent()) {
 								itemDto.setError(true);
-								ItemError error = new ItemError("", index, itemDto.getItemCode(), string.get());
+								ItemError error = new ItemError(sid, "", index, itemDto.getItemCode(),
+										TextResource.localize(string.get(), Arrays.asList(gridHead.getItemName(),
+										String.valueOf(stringContraint.getMaxLenght()))));
 								itemErrors.add(error);
 								break;
 							}
@@ -881,16 +925,22 @@ public class CheckFileFinder {
 						Optional<String> string = stringContraint.validateString(value.toString());
 						if (itemSpecialLst.contains(itemDto.getItemCode())) {
 							if(value.toString() != "") {
-								 ItemError error = validateItemOfCS0002(itemDto, value.toString(),  index);
-									if (error != null) {
-										itemErrors.add(error);
-									}
+								 ItemError errorSpace = validateItemOfCS0002(sid, itemDto, value.toString(),  index);
+								if (string.isPresent()) {
+									itemDto.setError(true);
+									ItemError stringError = new ItemError(sid, "", index, itemDto.getItemCode(),
+											TextResource.localize(string.get(), Arrays.asList(gridHead.getItemName(),
+													String.valueOf(stringContraint.getMaxLenght()))));
+									itemErrors.add(stringError);
+								} else if (errorSpace != null) {
+									itemErrors.add(errorSpace);
+								}
 							}
 							break;
 						} else {
 							if (string.isPresent()) {
 								itemDto.setError(true);
-								ItemError error = new ItemError("", index, itemDto.getItemCode(),
+								ItemError error = new ItemError(sid, "", index, itemDto.getItemCode(),
 										TextResource.localize(string.get(), Arrays.asList(gridHead.getItemName(),
 												String.valueOf(stringContraint.getMaxLenght()))));
 								itemErrors.add(error);
@@ -908,7 +958,7 @@ public class CheckFileFinder {
 				if (gridHead.isRequired()) {
 					if (itemDto.getValue() == null) {
 						itemDto.setError(true);
-						ItemError error = new ItemError("", index, itemDto.getItemCode(), "FND_E_REQ_INPUT");
+						ItemError error = new ItemError(sid, "", index, itemDto.getItemCode(), "FND_E_REQ_INPUT");
 						itemErrors.add(error);
 						break;
 					} else {
@@ -916,7 +966,7 @@ public class CheckFileFinder {
 						if (string.isPresent()) {
 							itemDto.setError(true);
 							if(string.get().equals("MsgB_11")) {
-								ItemError error = new ItemError("", index, itemDto.getItemCode(), 
+								ItemError error = new ItemError(sid, "", index, itemDto.getItemCode(), 
 										TextResource.localize(string.get(), 
 												Arrays.asList(gridHead.getItemName(),
 												String.valueOf(numberContraint.getMin()), 
@@ -925,7 +975,7 @@ public class CheckFileFinder {
 								itemErrors.add(error);
 								break;
 							}else if(string.get().equals("MsgB_8")) {
-								ItemError error = new ItemError("", index, itemDto.getItemCode(), 
+								ItemError error = new ItemError(sid, "", index, itemDto.getItemCode(), 
 										TextResource.localize(string.get(), 
 												Arrays.asList(gridHead.getItemName(),
 												String.valueOf(numberContraint.getMin()),
@@ -933,7 +983,7 @@ public class CheckFileFinder {
 								itemErrors.add(error);
 								break;
 							}else if(string.get().equals("MsgB_12")) {
-								ItemError error = new ItemError("", index, itemDto.getItemCode(), 
+								ItemError error = new ItemError(sid, "", index, itemDto.getItemCode(), 
 										TextResource.localize(string.get(), 
 												Arrays.asList(gridHead.getItemName(),
 												String.valueOf(numberContraint.getIntegerPart()),
@@ -941,14 +991,14 @@ public class CheckFileFinder {
 								itemErrors.add(error);
 								break;
 							}else if(string.get().equals("MsgB_9")) {
-								ItemError error = new ItemError("", index, itemDto.getItemCode(),
+								ItemError error = new ItemError(sid, "", index, itemDto.getItemCode(),
 										TextResource.localize(string.get(),
 												Arrays.asList(gridHead.getItemName(),
 												String.valueOf(numberContraint.getIntegerPart()))));
 								itemErrors.add(error);
 								break;
 							}else if(string.get().equals("MsgB_13")) {
-								ItemError error = new ItemError("", index, itemDto.getItemCode(),
+								ItemError error = new ItemError(sid, "", index, itemDto.getItemCode(),
 										TextResource.localize(string.get(), 
 												Arrays.asList(gridHead.getItemName(),
 												String.valueOf(numberContraint.getIntegerPart()),
@@ -956,7 +1006,7 @@ public class CheckFileFinder {
 								itemErrors.add(error);
 								break;
 							}else if(string.get().equals("MsgB_10")) {
-								ItemError error = new ItemError("", index, itemDto.getItemCode(),
+								ItemError error = new ItemError(sid, "", index, itemDto.getItemCode(),
 										TextResource.localize(string.get(), 
 												Arrays.asList(gridHead.getItemName(),
 												String.valueOf(numberContraint.getIntegerPart()))));
@@ -973,7 +1023,7 @@ public class CheckFileFinder {
 						if (string.isPresent()) {
 							itemDto.setError(true);
 							if(string.get().equals("MsgB_11")) {
-								ItemError error = new ItemError("", index, itemDto.getItemCode(), 
+								ItemError error = new ItemError(sid, "", index, itemDto.getItemCode(), 
 										TextResource.localize(string.get(), 
 												Arrays.asList(gridHead.getItemName(),
 												String.valueOf(numberContraint.getMin()), 
@@ -982,7 +1032,7 @@ public class CheckFileFinder {
 								itemErrors.add(error);
 								break;
 							}else if(string.get().equals("MsgB_8")) {
-								ItemError error = new ItemError("", index, itemDto.getItemCode(), 
+								ItemError error = new ItemError(sid, "", index, itemDto.getItemCode(), 
 										TextResource.localize(string.get(), 
 												Arrays.asList(gridHead.getItemName(),
 												String.valueOf(numberContraint.getMin()),
@@ -990,7 +1040,7 @@ public class CheckFileFinder {
 								itemErrors.add(error);
 								break;
 							}else if(string.get().equals("MsgB_12")) {
-								ItemError error = new ItemError("", index, itemDto.getItemCode(), 
+								ItemError error = new ItemError(sid, "", index, itemDto.getItemCode(), 
 										TextResource.localize(string.get(), 
 												Arrays.asList(gridHead.getItemName(),
 												String.valueOf(numberContraint.getIntegerPart()),
@@ -998,14 +1048,14 @@ public class CheckFileFinder {
 								itemErrors.add(error);
 								break;
 							}else if(string.get().equals("MsgB_9")) {
-								ItemError error = new ItemError("", index, itemDto.getItemCode(),
+								ItemError error = new ItemError(sid, "", index, itemDto.getItemCode(),
 										TextResource.localize(string.get(),
 												Arrays.asList(gridHead.getItemName(),
 												String.valueOf(numberContraint.getIntegerPart()))));
 								itemErrors.add(error);
 								break;
 							}else if(string.get().equals("MsgB_13")) {
-								ItemError error = new ItemError("", index, itemDto.getItemCode(),
+								ItemError error = new ItemError(sid, "", index, itemDto.getItemCode(),
 										TextResource.localize(string.get(), 
 												Arrays.asList(gridHead.getItemName(),
 												String.valueOf(numberContraint.getIntegerPart()),
@@ -1013,7 +1063,7 @@ public class CheckFileFinder {
 								itemErrors.add(error);
 								break;
 							}else if(string.get().equals("MsgB_10")) {
-								ItemError error = new ItemError("", index, itemDto.getItemCode(),
+								ItemError error = new ItemError(sid, "", index, itemDto.getItemCode(),
 										TextResource.localize(string.get(), 
 												Arrays.asList(gridHead.getItemName(),
 												String.valueOf(numberContraint.getIntegerPart()))));
@@ -1031,14 +1081,14 @@ public class CheckFileFinder {
 				if (gridHead.isRequired()) {
 					if (itemDto.getValue() == null) {
 						itemDto.setError(true);
-						ItemError error = new ItemError("", index, itemDto.getItemCode(), "FND_E_REQ_INPUT");
+						ItemError error = new ItemError(sid, "", index, itemDto.getItemCode(), "FND_E_REQ_INPUT");
 						itemErrors.add(error);
 						break;
 					} else {
 						Optional<String>  string = dateContraint.validateString(value.toString());
 						if (string.isPresent()) {
 							itemDto.setError(true);
-							ItemError error = new ItemError("", index, itemDto.getItemCode(), string.get());
+							ItemError error = new ItemError(sid, "", index, itemDto.getItemCode(), string.get());
 							itemErrors.add(error);
 							break;
 						}
@@ -1048,7 +1098,7 @@ public class CheckFileFinder {
 						Optional<String>  string = dateContraint.validateString(value.toString());
 						if (string.isPresent()) {
 							itemDto.setError(true);
-							ItemError error = new ItemError("", index, itemDto.getItemCode(), string.get());
+							ItemError error = new ItemError(sid, "", index, itemDto.getItemCode(), string.get());
 							itemErrors.add(error);
 							break;
 						}
@@ -1060,7 +1110,7 @@ public class CheckFileFinder {
 				if (gridHead.isRequired()) {
 					if (value == null || value =="") {
 						itemDto.setError(true);
-						ItemError error = new ItemError("", index, itemDto.getItemCode(), "FND_E_REQ_INPUT");
+						ItemError error = new ItemError(sid, "", index, itemDto.getItemCode(), "FND_E_REQ_INPUT");
 						itemErrors.add(error);
 						break;
 					} else if (value != null  && value != "") {
@@ -1078,7 +1128,7 @@ public class CheckFileFinder {
 						Optional<String> string = timeContraint.validateString(value.toString());
 						if (string.isPresent()) {
 							itemDto.setError(true);
-							ItemError error = new ItemError("", index, itemDto.getItemCode(), TextResource.localize(string.get(),
+							ItemError error = new ItemError(sid, "", index, itemDto.getItemCode(), TextResource.localize(string.get(),
 									Arrays.asList(gridHead.getItemName(), convertTime(timeContraint.getMin()), convertTime(timeContraint.getMax()))));
 							itemErrors.add(error);
 							break;
@@ -1100,7 +1150,7 @@ public class CheckFileFinder {
 						Optional<String> string = timeContraint.validateString(value.toString());
 						if (string.isPresent()) {
 							itemDto.setError(true);
-							ItemError error = new ItemError("", index, itemDto.getItemCode(), TextResource.localize(string.get(),
+							ItemError error = new ItemError(sid, "", index, itemDto.getItemCode(), TextResource.localize(string.get(),
 									Arrays.asList(gridHead.getItemName(), convertTime(timeContraint.getMin()), convertTime(timeContraint.getMax()))));
 							itemErrors.add(error);
 							break;
@@ -1119,7 +1169,7 @@ public class CheckFileFinder {
 						if (string.isPresent()) {
 							itemDto.setError(true);
 							//MsgB_56
-							ItemError error = new ItemError("", index, itemDto.getItemCode(),
+							ItemError error = new ItemError(sid, "", index, itemDto.getItemCode(),
 									TextResource.localize(string.get(),
 											Arrays.asList(gridHead.getItemName(),
 													convertStringTimepoint(timePointContraint.getMin()),
@@ -1137,7 +1187,7 @@ public class CheckFileFinder {
 						Optional<String> string = timePointContraint.validateString(value);
 						if (string.isPresent()) {
 							itemDto.setError(true);
-							ItemError error = new ItemError("", index, itemDto.getItemCode(), 
+							ItemError error = new ItemError(sid, "", index, itemDto.getItemCode(), 
 									TextResource.localize(string.get(),
 											Arrays.asList(gridHead.getItemName(),
 													convertStringTimepoint(timePointContraint.getMin()),
@@ -1170,13 +1220,13 @@ public class CheckFileFinder {
 	 * @param itemDto
 	 * @param value
 	*/
-	private ItemError validateItemOfCS0002(ItemRowDto itemDto, String value, int index){
+	private ItemError validateItemOfCS0002(String sid, ItemRowDto itemDto, String value, int index){
 		for (String itemCode : itemSpecialLst) {
 			if (itemDto.getItemCode().equals(itemCode)) {
 				if (value.startsWith(JP_SPACE) || value.endsWith(JP_SPACE)
 						|| !value.contains(JP_SPACE)) {
 					itemDto.setError(true);
-					return new ItemError("", index, itemDto.getItemCode(), "Msg_924");
+					return new ItemError(sid, "", index, itemDto.getItemCode(), "Msg_924");
 				}
 			}
 		}
@@ -1426,6 +1476,21 @@ public class CheckFileFinder {
 		return Optional.empty();
 	}
 	
+	private Optional<DateTimeFormatter> validateDateTime(String value) {
+		List<DateTimeFormatter> dateFormats = createDateTimeFormatter();
+		List<DateTimeFormatter> isDateLst = new ArrayList<>();
+		for(DateTimeFormatter dateFormat : dateFormats) {
+			try {
+			dateFormat.parse(value.trim());
+			isDateLst.add(dateFormat);
+			}catch(Exception e) {
+				System.out.println("HEHHE");
+			}
+		}
+		if(!isDateLst.isEmpty()) return Optional.ofNullable(isDateLst.get(0));
+		return Optional.empty();
+	}
+	
 	private  List<SimpleDateFormat> createSimpleDateFormat(){
 		List<SimpleDateFormat> result = new ArrayList<>();
 		SimpleDateFormat yMd = new SimpleDateFormat("yyyy/MM/dd");
@@ -1440,6 +1505,17 @@ public class CheckFileFinder {
 		SimpleDateFormat dMy1 = new SimpleDateFormat("dd-MM-yyyy");
 		dMy1.setLenient(false);
 		result.add(dMy1);
+		return result;
+	}
+	
+	private  List<DateTimeFormatter> createDateTimeFormatter(){
+		List<DateTimeFormatter> result = new ArrayList<>();
+		DateTimeFormatter yMd = DateTimeFormatter.ofPattern("yyyyMMdd");
+		result.add(yMd);
+		DateTimeFormatter mdy = DateTimeFormatter.ofPattern("MMddyyyy");
+		result.add(mdy);
+		DateTimeFormatter dmy = DateTimeFormatter.ofPattern("ddMMyyyy");
+		result.add(dmy);
 		return result;
 	}
 	private Map<String, Periods> createPeriod(){

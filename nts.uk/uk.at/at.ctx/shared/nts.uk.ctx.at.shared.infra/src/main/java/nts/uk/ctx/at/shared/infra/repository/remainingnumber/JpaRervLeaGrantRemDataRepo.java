@@ -138,8 +138,9 @@ public class JpaRervLeaGrantRemDataRepo extends JpaRepository implements RervLea
 		List<ReserveLeaveGrantRemainingData> result = new ArrayList<>();
 
 		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String sql = "SELECT * FROM KRCMT_RVSLEA_REMAIN WHERE CID = ? AND EXP_STATUS = 1 AND SID IN ("
-					+ NtsStatement.In.createParamsString(subList) + ")";
+			String sql = "SELECT * FROM KRCMT_RVSLEA_REMAIN WHERE CID = ? AND SID IN ("
+					+ NtsStatement.In.createParamsString(subList) + ")"
+					+ " AND EXP_STATUS = 1  ORDER BY GRANT_DATE DESC";
 
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 				stmt.setString(1, cid);

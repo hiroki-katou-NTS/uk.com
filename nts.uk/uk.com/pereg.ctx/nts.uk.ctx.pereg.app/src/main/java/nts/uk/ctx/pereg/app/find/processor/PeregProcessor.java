@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pereg.app.find.common.InitDefaultValue;
@@ -400,6 +399,14 @@ public class PeregProcessor {
 			Map<String, List<EmpInfoCtgData>> empInfoCtgDatas = empInCtgDataRepo
 					.getBySidsAndCtgId(sids, perInfoCtg.getPersonInfoCategoryId()).stream()
 					.collect(Collectors.groupingBy(c -> c.getEmployeeId()));
+			if(empInfoCtgDatas.size() < sids.size()) {
+				sids.stream().forEach(c ->{
+					List<EmpInfoCtgData> empInfoCtgData = empInfoCtgDatas.get(c);
+					if(CollectionUtil.isEmpty(empInfoCtgData)) {
+						empInfoCtgDatas.put(c, new ArrayList<>());
+					}
+				});
+			}
 			if (!empInfoCtgDatas.isEmpty()) {
 				List<GridLayoutPersonInfoClsDto> empResult = getAndMapEmpOptionItem(new ArrayList<>(empInfoCtgDatas.keySet()), query, selfEmployeeId, perItems, perInfoCtg);
 				result.addAll(empResult);
@@ -410,6 +417,14 @@ public class PeregProcessor {
 			// person option data
 			Map<String, List<PerInfoCtgData>> perInfoCtgDatas = perInCtgDataRepo.getAllByPidsAndCtgId(pids, perInfoCtg.getPersonInfoCategoryId()).stream()
 					.collect(Collectors.groupingBy(c -> c.getPersonId()));
+			if( perInfoCtgDatas.size() < pids.size()) {
+				pids.stream().forEach(c ->{
+					List<PerInfoCtgData> perInfoCtgData = perInfoCtgDatas.get(c);
+					if(CollectionUtil.isEmpty(perInfoCtgData)) {
+						perInfoCtgDatas.put(c, new ArrayList<>());
+					}
+				});
+			}
 			if (!perInfoCtgDatas.isEmpty()) {
 				List<GridLayoutPersonInfoClsDto> perResult = getAndMapPerOptionItem(new ArrayList<>(perInfoCtgDatas.keySet()), query, selfEmployeeId, perItems, perInfoCtg);
 				result.addAll(perResult);
@@ -423,7 +438,7 @@ public class PeregProcessor {
 			}
 		});
 		
-		return new ArrayList<>();
+		return result;
 	}
 	
 	private List<GridLayoutPersonInfoClsDto> setOptionDataWithRecordId(PersonInfoCategory perInfoCtg,
@@ -436,9 +451,18 @@ public class PeregProcessor {
 	
 	private List<GridLayoutPersonInfoClsDto> getAndMapEmpOptionItem(List<String> recordIds, PeregQueryByListEmp query, String selfEmployeeId, HashMap<Boolean, List<PerInfoItemDefForLayoutDto>> perItems, PersonInfoCategory perInfoCtg) {
 		List<GridLayoutPersonInfoClsDto> result = new ArrayList<>();
-		Map<String, List<OptionalItemDataDto>> empOptionItemData =  this.empInfoItemDataRepository.getAllInfoItemByRecordId(recordIds)
+		Map<String, List<OptionalItemDataDto>> empOptionItemDatas =  this.empInfoItemDataRepository.getAllInfoItemByRecordId(recordIds)
 				.stream().map(c -> c.genToPeregDto()).collect(Collectors.groupingBy(x -> x.getRecordId()));
-		empOptionItemData.entrySet().forEach(c ->{
+		if(empOptionItemDatas.size() < recordIds.size()) {
+			recordIds.stream().forEach(c ->{
+				List<OptionalItemDataDto> empOptionItemData = empOptionItemDatas.get(c);
+				if(CollectionUtil.isEmpty(empOptionItemData)) {
+					empOptionItemDatas.put(c, new ArrayList<>());
+				}
+				
+			});
+		}
+		empOptionItemDatas.entrySet().forEach(c ->{
 			Optional<PeregEmpInfoQuery> empInfo = query.getEmpInfos().stream().filter(emp -> emp.getEmployeeId().equals(c.getKey())).findFirst();
 			if(empInfo.isPresent()) {
 				GridLayoutPersonInfoClsDto dto = new GridLayoutPersonInfoClsDto(empInfo.get().getEmployeeId(), empInfo.get().getPersonId(), empInfo.get().getEmployeeId().equals(selfEmployeeId) ? creatClassItemList(perItems.get(true), perInfoCtg) :  creatClassItemList(perItems.get(false), perInfoCtg));
@@ -457,8 +481,17 @@ public class PeregProcessor {
 		List<GridLayoutPersonInfoClsDto> result = new ArrayList<>();
 		List<OptionalItemDataDto> itemDataLst = perInfoItemDataRepository.getAllInfoItemByRecordId(recordIds).stream().map(c -> c.genToPeregDto()).collect(Collectors.toList());;
 		Map<String, List<OptionalItemDataDto>> perOptionItemDatas = itemDataLst.stream().collect(Collectors.groupingBy(x -> x.getRecordId()));
+		if(perOptionItemDatas.size() < recordIds.size()) {
+			recordIds.stream().forEach(c ->{
+				List<OptionalItemDataDto> empOptionItemData = perOptionItemDatas.get(c);
+				if(CollectionUtil.isEmpty(empOptionItemData)) {
+					perOptionItemDatas.put(c, new ArrayList<>());
+				}
+				
+			});
+		}
 		perOptionItemDatas.entrySet().forEach(c ->{
-			Optional<PeregEmpInfoQuery> empInfo = query.getEmpInfos().stream().filter(emp -> emp.getEmployeeId().equals(c.getKey())).findFirst();
+			Optional<PeregEmpInfoQuery> empInfo = query.getEmpInfos().stream().filter(emp -> emp.getPersonId().equals(c.getKey())).findFirst();
 			if(empInfo.isPresent()) {
 				GridLayoutPersonInfoClsDto dto = new GridLayoutPersonInfoClsDto(empInfo.get().getEmployeeId(), empInfo.get().getPersonId(), empInfo.get().getEmployeeId().equals(selfEmployeeId) ? creatClassItemList(perItems.get(true), perInfoCtg) :  creatClassItemList(perItems.get(false), perInfoCtg));
 				MappingFactory.matchOptionalItemData(c.getKey(), dto.getLayoutDtos(), new ArrayList<>(c.getValue()));
@@ -762,21 +795,43 @@ public class PeregProcessor {
 		List<GridLayoutPersonInfoClsDto> result = new ArrayList<>();
 		Map<String, List<EmpInfoCtgData>> empInfoCtgDatas = empInCtgDataRepo
 				.getBySidsAndCtgId(sids, query.getCategoryId()).stream().collect(Collectors.groupingBy(c -> c.getEmployeeId()));
+		if(empInfoCtgDatas.size() < sids.size()) {
+			sids.stream().forEach(c ->{
+				List<EmpInfoCtgData> empInfoCtgData = empInfoCtgDatas.get(c);
+				if(CollectionUtil.isEmpty(empInfoCtgData)) {
+					empInfoCtgDatas.put(c, new ArrayList<>());
+				}
+			});
+			
+		}
 		empInfoCtgDatas.entrySet().forEach(c ->{
-			List<String> recordIds = c.getValue().stream().map(ctg -> ctg.getRecordId()).distinct().collect(Collectors.toList());
-			Map<String, List<EmpInfoItemData>> itemDatas = empInfoItemDataRepository.getAllInfoItemByRecordId(recordIds).stream().collect(Collectors.groupingBy(i -> i.getRecordId()));
-			Optional<PeregEmpInfoQuery> empInfoQueryOpt =  query.getEmpInfos().stream().filter(emp -> emp.getEmployeeId().equals(c.getKey())).findFirst();
-			if(empInfoQueryOpt.isPresent() && !itemDatas.isEmpty()){
-				itemDatas.entrySet().forEach(item ->{
-					GridLayoutPersonInfoClsDto dto = new GridLayoutPersonInfoClsDto(empInfoQueryOpt.get().getEmployeeId(), empInfoQueryOpt.get().getPersonId(), empInfoQueryOpt.get().getEmployeeId().equals(selfEmployeeId) ? creatClassItemList(perItems.get(true), perInfoCtg) :  creatClassItemList(perItems.get(false), perInfoCtg));
-					MappingFactory.matchOptionalItemData(item.getKey(), dto.getLayoutDtos(),
-							item.getValue().stream().map(i -> i.genToPeregDto()).collect(Collectors.toList()));
-					// get Combo-Box List theo ngày trên màn hình
-					layoutControlComboBox.getComboBoxListForSelectionItems(empInfoQueryOpt.get().getEmployeeId(), perInfoCtg, dto.getLayoutDtos(),
-							query.getStandardDate());
-					result.add(dto);
-				});
+			if(CollectionUtil.isEmpty(c.getValue())) {
+				Optional<PeregEmpInfoQuery> empInfoQueryOpt =  query.getEmpInfos().stream().filter(emp -> emp.getEmployeeId().equals(c.getKey())).findFirst();
+				if(empInfoQueryOpt.isPresent()){
+						GridLayoutPersonInfoClsDto dto = new GridLayoutPersonInfoClsDto(empInfoQueryOpt.get().getEmployeeId(), empInfoQueryOpt.get().getPersonId(), empInfoQueryOpt.get().getEmployeeId().equals(selfEmployeeId) ? creatClassItemList(perItems.get(true), perInfoCtg) :  creatClassItemList(perItems.get(false), perInfoCtg));
+						MappingFactory.matchOptionalItemData(null, dto.getLayoutDtos(), new ArrayList<>());
+						// get Combo-Box List theo ngày trên màn hình
+						layoutControlComboBox.getComboBoxListForSelectionItems(empInfoQueryOpt.get().getEmployeeId(), perInfoCtg, dto.getLayoutDtos(),
+								query.getStandardDate());
+						result.add(dto);
+				}				
+			}else {
+				List<String> recordIds = c.getValue().stream().map(ctg -> ctg.getRecordId()).distinct().collect(Collectors.toList());
+				Map<String, List<EmpInfoItemData>> itemDatas = empInfoItemDataRepository.getAllInfoItemByRecordId(recordIds).stream().collect(Collectors.groupingBy(i -> i.getRecordId()));
+				Optional<PeregEmpInfoQuery> empInfoQueryOpt =  query.getEmpInfos().stream().filter(emp -> emp.getEmployeeId().equals(c.getKey())).findFirst();
+				if(empInfoQueryOpt.isPresent() && !itemDatas.isEmpty()){
+					itemDatas.entrySet().forEach(item ->{
+						GridLayoutPersonInfoClsDto dto = new GridLayoutPersonInfoClsDto(empInfoQueryOpt.get().getEmployeeId(), empInfoQueryOpt.get().getPersonId(), empInfoQueryOpt.get().getEmployeeId().equals(selfEmployeeId) ? creatClassItemList(perItems.get(true), perInfoCtg) :  creatClassItemList(perItems.get(false), perInfoCtg));
+						MappingFactory.matchOptionalItemData(item.getKey(), dto.getLayoutDtos(),
+								item.getValue().stream().map(i -> i.genToPeregDto()).collect(Collectors.toList()));
+						// get Combo-Box List theo ngày trên màn hình
+						layoutControlComboBox.getComboBoxListForSelectionItems(empInfoQueryOpt.get().getEmployeeId(), perInfoCtg, dto.getLayoutDtos(),
+								query.getStandardDate());
+						result.add(dto);
+					});
+				}				
 			}
+
 		});
 		
 		query.getEmpInfos().forEach(c ->{
@@ -802,23 +857,42 @@ public class PeregProcessor {
 		List<String> pids = query.getEmpInfos().stream().map(c -> c.getPersonId()).collect(Collectors.toList());
 		List<GridLayoutPersonInfoClsDto> result = new ArrayList<>();
 		Map<String, List<PerInfoCtgData>> perInfoCtgDatas = perInCtgDataRepo.getAllByPidsAndCtgId(pids, query.getCategoryId()).stream().collect(Collectors.groupingBy(c -> c.getPersonId()));
+		if(perInfoCtgDatas.size() < pids.size()) {
+			pids.stream().forEach(c ->{
+				List<PerInfoCtgData> perInfoCtgData = perInfoCtgDatas.get(c);
+				if(CollectionUtil.isEmpty(perInfoCtgData)) {
+					perInfoCtgDatas.put(c, new ArrayList<>());
+				}
+			});
+		}
 		perInfoCtgDatas.entrySet().forEach(c ->{
-			List<String> recordIds = c.getValue().stream().map(i -> i.getRecordId()).collect(Collectors.toList());
-			Optional<PeregEmpInfoQuery> empInfoQueryOpt =  query.getEmpInfos().stream().filter(emp -> emp.getEmployeeId().equals(c.getKey())).findFirst();
-			Map<String, List<PersonInfoItemData>> itemDatas  = perInfoItemDataRepository.getAllInfoItemByRecordId(recordIds).stream().collect(Collectors.groupingBy(i -> i.getRecordId()));
-			if(empInfoQueryOpt.isPresent() && !itemDatas.isEmpty()){
-				itemDatas.entrySet().forEach(item ->{
-					GridLayoutPersonInfoClsDto dto = new GridLayoutPersonInfoClsDto(empInfoQueryOpt.get().getEmployeeId(), empInfoQueryOpt.get().getPersonId(), empInfoQueryOpt.get().getEmployeeId().equals(selfEmployeeId) ? creatClassItemList(perItems.get(true), perInfoCtg) :  creatClassItemList(perItems.get(false), perInfoCtg));
-					MappingFactory.matchOptionalItemData(item.getKey(), dto.getLayoutDtos(),
-							item.getValue().stream().map(i -> i.genToPeregDto()).collect(Collectors.toList()));
-					// get Combo-Box List theo ngày trên màn hình
-					layoutControlComboBox.getComboBoxListForSelectionItems(empInfoQueryOpt.get().getEmployeeId(), perInfoCtg, dto.getLayoutDtos(),
-							query.getStandardDate());
-					result.add(dto);
-				});
+			if(CollectionUtil.isEmpty(c.getValue())) {
+				Optional<PeregEmpInfoQuery> empInfoQueryOpt =  query.getEmpInfos().stream().filter(emp -> emp.getEmployeeId().equals(c.getKey())).findFirst();
+				if(empInfoQueryOpt.isPresent()){
+						GridLayoutPersonInfoClsDto dto = new GridLayoutPersonInfoClsDto(empInfoQueryOpt.get().getEmployeeId(), empInfoQueryOpt.get().getPersonId(), empInfoQueryOpt.get().getEmployeeId().equals(selfEmployeeId) ? creatClassItemList(perItems.get(true), perInfoCtg) :  creatClassItemList(perItems.get(false), perInfoCtg));
+						MappingFactory.matchOptionalItemData(null, dto.getLayoutDtos(), new ArrayList<>());
+						// get Combo-Box List theo ngày trên màn hình
+						layoutControlComboBox.getComboBoxListForSelectionItems(empInfoQueryOpt.get().getEmployeeId(), perInfoCtg, dto.getLayoutDtos(),
+								query.getStandardDate());
+						result.add(dto);
+				}
+			}else {
+				List<String> recordIds = c.getValue().stream().map(i -> i.getRecordId()).collect(Collectors.toList());
+				Optional<PeregEmpInfoQuery> empInfoQueryOpt =  query.getEmpInfos().stream().filter(emp -> emp.getEmployeeId().equals(c.getKey())).findFirst();
+				Map<String, List<PersonInfoItemData>> itemDatas  = perInfoItemDataRepository.getAllInfoItemByRecordId(recordIds).stream().collect(Collectors.groupingBy(i -> i.getRecordId()));
+				if(empInfoQueryOpt.isPresent() && !itemDatas.isEmpty()){
+					itemDatas.entrySet().forEach(item ->{
+						GridLayoutPersonInfoClsDto dto = new GridLayoutPersonInfoClsDto(empInfoQueryOpt.get().getEmployeeId(), empInfoQueryOpt.get().getPersonId(), empInfoQueryOpt.get().getEmployeeId().equals(selfEmployeeId) ? creatClassItemList(perItems.get(true), perInfoCtg) :  creatClassItemList(perItems.get(false), perInfoCtg));
+						MappingFactory.matchOptionalItemData(item.getKey(), dto.getLayoutDtos(),
+								item.getValue().stream().map(i -> i.genToPeregDto()).collect(Collectors.toList()));
+						// get Combo-Box List theo ngày trên màn hình
+						layoutControlComboBox.getComboBoxListForSelectionItems(empInfoQueryOpt.get().getEmployeeId(), perInfoCtg, dto.getLayoutDtos(),
+								query.getStandardDate());
+						result.add(dto);
+					});
+				}				
 			}
 		});
-		
 		query.getEmpInfos().forEach(c ->{
 			List<GridLayoutPersonInfoClsDto> empLstOpt = result.stream().filter(i -> i.getEmployeeId().equals(c.getEmployeeId())).collect(Collectors.toList());
 			if(CollectionUtil.isEmpty(empLstOpt)) {
@@ -879,52 +953,131 @@ public class PeregProcessor {
 		Map<String, List<EmpInfoCtgData>> empInfoCtgDatas = empInCtgDataRepo
 				.getBySidsAndCtgId(sids, query.getCategoryId()).stream()
 				.collect(Collectors.groupingBy(c -> c.getEmployeeId()));
+		if(empInfoCtgDatas.size() < sids.size()) {
+			sids.stream().forEach(c ->{
+				List<EmpInfoCtgData> empInfoCtgData = empInfoCtgDatas.get(c);
+				if(CollectionUtil.isEmpty(empInfoCtgData)) {
+					empInfoCtgDatas.put(c, new ArrayList<>());
+				}
+			});
+		}
 		// lấy recordId
 		if (empInfoCtgDatas.size() == 0) {
 			
 		}
 		// muc dích lấy ra DatePeroid
 		empInfoCtgDatas.entrySet().forEach(c -> {
-			for (EmpInfoCtgData empInfoCtgData : c.getValue()) {
-				// get option text
-				List<GeneralDate> optionText = new ArrayList<>();
-				List<EmpInfoItemData> lstEmpInfoCtgItemData = empInfoItemDataRepository
-						.getAllInfoItemByRecordId(empInfoCtgData.getRecordId());
-				if (lstEmpInfoCtgItemData.size() != 0) {
-					for (EmpInfoItemData itemData : lstEmpInfoCtgItemData) {
-						if (timePerInfoItemDefIds.contains(itemData.getPerInfoDefId())) {
-							optionText.add(itemData.getDataState().getDateValue() == null ? GeneralDate.max()
-									: itemData.getDataState().getDateValue());
+			if(CollectionUtil.isEmpty(c.getValue())) {
+				Optional<PeregEmpInfoQuery> empInfoQueryOpt = query.getEmpInfos().stream()
+						.filter(emp -> emp.getEmployeeId().equals(c.getKey())).findFirst();
+				if(empInfoQueryOpt.isPresent()){
+					GridLayoutPersonInfoClsDto dto = new GridLayoutPersonInfoClsDto(
+							empInfoQueryOpt.get().getEmployeeId(), empInfoQueryOpt.get().getPersonId(),
+							empInfoQueryOpt.get().getEmployeeId().equals(selfEmployeeId)
+									? creatClassItemList(perItems.get(true), perInfoCtg)
+									: creatClassItemList(perItems.get(false), perInfoCtg));
+					
+					MappingFactory.matchOptionalItemData(null, dto.getLayoutDtos(), new ArrayList<>());
+					// get Combo-Box List theo ngày trên màn hình
+					layoutControlComboBox.getComboBoxListForSelectionItems(empInfoQueryOpt.get().getEmployeeId(), perInfoCtg, dto.getLayoutDtos(),
+							query.getStandardDate());
+					result.add(dto);
+				}
+
+			}else {
+				for (EmpInfoCtgData empInfoCtgData : c.getValue()) {
+					// get option text
+					List<GeneralDate> optionText = new ArrayList<>();
+					List<EmpInfoItemData> lstEmpInfoCtgItemData = empInfoItemDataRepository
+							.getAllInfoItemByRecordId(empInfoCtgData.getRecordId());
+					if (lstEmpInfoCtgItemData.size() != 0) {
+						for (EmpInfoItemData itemData : lstEmpInfoCtgItemData) {
+							if (timePerInfoItemDefIds.contains(itemData.getPerInfoDefId())) {
+								optionText.add(itemData.getDataState().getDateValue() == null ? GeneralDate.max()
+										: itemData.getDataState().getDateValue());
+							}
 						}
-					}
-					sortDate(optionText);
-					if (optionText.size() > 0) {
-						DatePeriod datePeriod = new DatePeriod((GeneralDate) optionText.get(0),
-								(GeneralDate) optionText.get(1));
-						if (datePeriod.start().beforeOrEquals(query.getStandardDate()) == true
-								&& datePeriod.end().afterOrEquals(query.getStandardDate()) == true) {
-							List<OptionalItemDataDto> optionalItemDataDto = lstEmpInfoCtgItemData.stream()
-									.map(i -> i.genToPeregDto()).collect(Collectors.toList());
+						sortDate(optionText);
+						if (optionText.size() > 0) {
+							DatePeriod datePeriod = new DatePeriod((GeneralDate) optionText.get(0),
+									(GeneralDate) optionText.get(1));
+							if (datePeriod.start().beforeOrEquals(query.getStandardDate()) == true
+									&& datePeriod.end().afterOrEquals(query.getStandardDate()) == true) {
+								List<OptionalItemDataDto> optionalItemDataDto = lstEmpInfoCtgItemData.stream()
+										.map(i -> i.genToPeregDto()).collect(Collectors.toList());
+								Optional<PeregEmpInfoQuery> empInfoQueryOpt = query.getEmpInfos().stream()
+										.filter(emp -> emp.getEmployeeId().equals(c.getKey())).findFirst();
+								if (!CollectionUtil.isEmpty(optionalItemDataDto) && empInfoQueryOpt.isPresent()) {
+									GridLayoutPersonInfoClsDto dto = new GridLayoutPersonInfoClsDto(
+											empInfoQueryOpt.get().getEmployeeId(), empInfoQueryOpt.get().getPersonId(),
+											empInfoQueryOpt.get().getEmployeeId().equals(selfEmployeeId)
+													? creatClassItemList(perItems.get(true), perInfoCtg)
+													: creatClassItemList(perItems.get(false), perInfoCtg));
+									MappingFactory.matchOptionalItemData(empInfoCtgData.getRecordId(), dto.getLayoutDtos(),
+											optionalItemDataDto);
+									// get Combo-Box List theo ngày trên màn hình
+									layoutControlComboBox.getComboBoxListForSelectionItems(empInfoQueryOpt.get().getEmployeeId(), perInfoCtg, dto.getLayoutDtos(),
+											datePeriod.start());
+									result.add(dto);
+								}
+							} else {
+								Optional<PeregEmpInfoQuery> empInfoQueryOpt = query.getEmpInfos().stream()
+										.filter(emp -> emp.getEmployeeId().equals(c.getKey())).findFirst();
+								if (empInfoQueryOpt.isPresent()) {
+									GridLayoutPersonInfoClsDto dto = new GridLayoutPersonInfoClsDto(
+											empInfoQueryOpt.get().getEmployeeId(), empInfoQueryOpt.get().getPersonId(),
+											empInfoQueryOpt.get().getEmployeeId().equals(selfEmployeeId)
+													? creatClassItemList(perItems.get(true), perInfoCtg)
+													: creatClassItemList(perItems.get(false), perInfoCtg));
+
+									MappingFactory.matchOptionalItemData(null, dto.getLayoutDtos(), new ArrayList<>());
+									// get Combo-Box List theo ngày trên màn hình
+									layoutControlComboBox.getComboBoxListForSelectionItems(
+											empInfoQueryOpt.get().getEmployeeId(), perInfoCtg, dto.getLayoutDtos(),
+											query.getStandardDate());
+									result.add(dto);
+								}
+							}
+						} else {
 							Optional<PeregEmpInfoQuery> empInfoQueryOpt = query.getEmpInfos().stream()
 									.filter(emp -> emp.getEmployeeId().equals(c.getKey())).findFirst();
-							if (!CollectionUtil.isEmpty(optionalItemDataDto) && empInfoQueryOpt.isPresent()) {
+							if (empInfoQueryOpt.isPresent()) {
 								GridLayoutPersonInfoClsDto dto = new GridLayoutPersonInfoClsDto(
 										empInfoQueryOpt.get().getEmployeeId(), empInfoQueryOpt.get().getPersonId(),
 										empInfoQueryOpt.get().getEmployeeId().equals(selfEmployeeId)
 												? creatClassItemList(perItems.get(true), perInfoCtg)
 												: creatClassItemList(perItems.get(false), perInfoCtg));
-								MappingFactory.matchOptionalItemData(empInfoCtgData.getRecordId(), dto.getLayoutDtos(),
-										optionalItemDataDto);
+
+								MappingFactory.matchOptionalItemData(null, dto.getLayoutDtos(), new ArrayList<>());
 								// get Combo-Box List theo ngày trên màn hình
-								layoutControlComboBox.getComboBoxListForSelectionItems(empInfoQueryOpt.get().getEmployeeId(), perInfoCtg, dto.getLayoutDtos(),
+								layoutControlComboBox.getComboBoxListForSelectionItems(
+										empInfoQueryOpt.get().getEmployeeId(), perInfoCtg, dto.getLayoutDtos(),
 										query.getStandardDate());
 								result.add(dto);
 							}
+						}
+
+					}else {
+						Optional<PeregEmpInfoQuery> empInfoQueryOpt = query.getEmpInfos().stream()
+								.filter(emp -> emp.getEmployeeId().equals(c.getKey())).findFirst();
+						if(empInfoQueryOpt.isPresent()){
+							GridLayoutPersonInfoClsDto dto = new GridLayoutPersonInfoClsDto(
+									empInfoQueryOpt.get().getEmployeeId(), empInfoQueryOpt.get().getPersonId(),
+									empInfoQueryOpt.get().getEmployeeId().equals(selfEmployeeId)
+											? creatClassItemList(perItems.get(true), perInfoCtg)
+											: creatClassItemList(perItems.get(false), perInfoCtg));
+							
+							MappingFactory.matchOptionalItemData(null, dto.getLayoutDtos(), new ArrayList<>());
+							// get Combo-Box List theo ngày trên màn hình
+							layoutControlComboBox.getComboBoxListForSelectionItems(empInfoQueryOpt.get().getEmployeeId(), perInfoCtg, dto.getLayoutDtos(),
+									query.getStandardDate());
+							result.add(dto);
 						}
 					}
 
 				}
 			}
+
 		});
 		
 		
@@ -955,50 +1108,120 @@ public class PeregProcessor {
 		Map<String, List<PerInfoCtgData>> lstPerInfoCtgData = perInCtgDataRepo
 				.getAllByPidsAndCtgId(pids, query.getCategoryId()).stream()
 				.collect(Collectors.groupingBy(c -> c.getPersonId()));
-		if (lstPerInfoCtgData.size() == 0)
-			return result;
-
+		if(lstPerInfoCtgData.size() < pids.size()) {
+			pids.stream().forEach(c ->{
+				List<PerInfoCtgData> perInfoCtgData = lstPerInfoCtgData.get(c);
+				if(CollectionUtil.isEmpty(perInfoCtgData)) {
+					lstPerInfoCtgData.put(c, new ArrayList<>());
+				}
+			});
+			
+		}
 		// get lst item data and filter base on item def
 		List<PersonInfoItemData> lstValidItemData = new ArrayList<>();
 		lstPerInfoCtgData.entrySet().forEach(c ->{
-			for (PerInfoCtgData perInfoCtgData : c.getValue()) {
-				// get option value value combo box
-				// get option text
-				List<GeneralDate> optionText = new ArrayList<>();
-				List<PersonInfoItemData> lstPerInfoCtgItemData = perInfoItemDataRepository
-						.getAllInfoItemByRecordId(perInfoCtgData.getRecordId());
-				if (lstPerInfoCtgItemData.size() != 0) {
-					for (PersonInfoItemData itemData : lstValidItemData) {
-						if (timePerInfoItemDefIds.contains(itemData.getPerInfoItemDefId())) {
-							optionText.add(itemData.getDataState().getDateValue() == null ? GeneralDate.max() : itemData.getDataState().getDateValue());
+			if(CollectionUtil.isEmpty(c.getValue())) {
+				Optional<PeregEmpInfoQuery> empInfoQueryOpt = query.getEmpInfos().stream()
+						.filter(emp -> emp.getEmployeeId().equals(c.getKey())).findFirst();
+				if (empInfoQueryOpt.isPresent()) {
+					GridLayoutPersonInfoClsDto dto = new GridLayoutPersonInfoClsDto(
+							empInfoQueryOpt.get().getEmployeeId(), empInfoQueryOpt.get().getPersonId(),
+							empInfoQueryOpt.get().getEmployeeId().equals(selfEmployeeId)
+									? creatClassItemList(perItems.get(true), perInfoCtg)
+									: creatClassItemList(perItems.get(false), perInfoCtg));
+					MappingFactory.matchOptionalItemData(null, dto.getLayoutDtos(), new ArrayList<>());
+					// get Combo-Box List theo ngày trên màn hình
+					layoutControlComboBox.getComboBoxListForSelectionItems(empInfoQueryOpt.get().getEmployeeId(), perInfoCtg, dto.getLayoutDtos(),
+							query.getStandardDate());
+					result.add(dto);
+				}
+			}else {
+				for (PerInfoCtgData perInfoCtgData : c.getValue()) {
+					// get option value value combo box
+					// get option text
+					List<GeneralDate> optionText = new ArrayList<>();
+					List<PersonInfoItemData> lstPerInfoCtgItemData = perInfoItemDataRepository
+							.getAllInfoItemByRecordId(perInfoCtgData.getRecordId());
+					if (lstPerInfoCtgItemData.size() != 0) {
+						for (PersonInfoItemData itemData : lstValidItemData) {
+							if (timePerInfoItemDefIds.contains(itemData.getPerInfoItemDefId())) {
+								optionText.add(itemData.getDataState().getDateValue() == null ? GeneralDate.max() : itemData.getDataState().getDateValue());
+							}
 						}
-					}
-					sortDate(optionText);
-					if (optionText.size() > 0) {
-						DatePeriod datePeriod = new DatePeriod((GeneralDate) optionText.get(0), (GeneralDate) optionText.get(1));
-						if (datePeriod.start().beforeOrEquals(query.getStandardDate()) == true
-								&& datePeriod.end().afterOrEquals(query.getStandardDate()) == true) {
-							List<OptionalItemDataDto> optionalItemDataDto = lstPerInfoCtgItemData.stream().map(i -> i.genToPeregDto()).collect(Collectors.toList());
+						sortDate(optionText);
+						if (optionText.size() > 0) {
+							DatePeriod datePeriod = new DatePeriod((GeneralDate) optionText.get(0), (GeneralDate) optionText.get(1));
+							if (datePeriod.start().beforeOrEquals(query.getStandardDate()) == true
+									&& datePeriod.end().afterOrEquals(query.getStandardDate()) == true) {
+								List<OptionalItemDataDto> optionalItemDataDto = lstPerInfoCtgItemData.stream().map(i -> i.genToPeregDto()).collect(Collectors.toList());
+								Optional<PeregEmpInfoQuery> empInfoQueryOpt = query.getEmpInfos().stream()
+										.filter(emp -> emp.getEmployeeId().equals(c.getKey())).findFirst();
+								if (CollectionUtil.isEmpty(optionalItemDataDto) && empInfoQueryOpt.isPresent()) {
+									GridLayoutPersonInfoClsDto dto = new GridLayoutPersonInfoClsDto(
+											empInfoQueryOpt.get().getEmployeeId(), empInfoQueryOpt.get().getPersonId(),
+											empInfoQueryOpt.get().getEmployeeId().equals(selfEmployeeId)
+													? creatClassItemList(perItems.get(true), perInfoCtg)
+													: creatClassItemList(perItems.get(false), perInfoCtg));
+									MappingFactory.matchOptionalItemData(perInfoCtgData.getRecordId(), dto.getLayoutDtos(),
+											optionalItemDataDto);
+									// get Combo-Box List theo ngày trên màn hình
+									layoutControlComboBox.getComboBoxListForSelectionItems(empInfoQueryOpt.get().getEmployeeId(), perInfoCtg, dto.getLayoutDtos(),
+											query.getStandardDate());
+									result.add(dto);
+								}
+							} else {
+								Optional<PeregEmpInfoQuery> empInfoQueryOpt = query.getEmpInfos().stream()
+										.filter(emp -> emp.getEmployeeId().equals(c.getKey())).findFirst();
+								if (empInfoQueryOpt.isPresent()) {
+									GridLayoutPersonInfoClsDto dto = new GridLayoutPersonInfoClsDto(
+											empInfoQueryOpt.get().getEmployeeId(), empInfoQueryOpt.get().getPersonId(),
+											empInfoQueryOpt.get().getEmployeeId().equals(selfEmployeeId)
+													? creatClassItemList(perItems.get(true), perInfoCtg)
+													: creatClassItemList(perItems.get(false), perInfoCtg));
+									MappingFactory.matchOptionalItemData(null, dto.getLayoutDtos(), new ArrayList<>());
+									// get Combo-Box List theo ngày trên màn hình
+									layoutControlComboBox.getComboBoxListForSelectionItems(
+											empInfoQueryOpt.get().getEmployeeId(), perInfoCtg, dto.getLayoutDtos(),
+											query.getStandardDate());
+									result.add(dto);
+								}
+							}
+						}else {
 							Optional<PeregEmpInfoQuery> empInfoQueryOpt = query.getEmpInfos().stream()
 									.filter(emp -> emp.getEmployeeId().equals(c.getKey())).findFirst();
-							if (CollectionUtil.isEmpty(optionalItemDataDto) && empInfoQueryOpt.isPresent()) {
+							if (empInfoQueryOpt.isPresent()) {
 								GridLayoutPersonInfoClsDto dto = new GridLayoutPersonInfoClsDto(
 										empInfoQueryOpt.get().getEmployeeId(), empInfoQueryOpt.get().getPersonId(),
 										empInfoQueryOpt.get().getEmployeeId().equals(selfEmployeeId)
 												? creatClassItemList(perItems.get(true), perInfoCtg)
 												: creatClassItemList(perItems.get(false), perInfoCtg));
-								MappingFactory.matchOptionalItemData(perInfoCtgData.getRecordId(), dto.getLayoutDtos(),
-										optionalItemDataDto);
+								MappingFactory.matchOptionalItemData(null, dto.getLayoutDtos(), new ArrayList<>());
 								// get Combo-Box List theo ngày trên màn hình
 								layoutControlComboBox.getComboBoxListForSelectionItems(empInfoQueryOpt.get().getEmployeeId(), perInfoCtg, dto.getLayoutDtos(),
 										query.getStandardDate());
 								result.add(dto);
 							}
 						}
-					}
 
-				}
+					}else {
+						Optional<PeregEmpInfoQuery> empInfoQueryOpt = query.getEmpInfos().stream()
+								.filter(emp -> emp.getEmployeeId().equals(c.getKey())).findFirst();
+						if (empInfoQueryOpt.isPresent()) {
+							GridLayoutPersonInfoClsDto dto = new GridLayoutPersonInfoClsDto(
+									empInfoQueryOpt.get().getEmployeeId(), empInfoQueryOpt.get().getPersonId(),
+									empInfoQueryOpt.get().getEmployeeId().equals(selfEmployeeId)
+											? creatClassItemList(perItems.get(true), perInfoCtg)
+											: creatClassItemList(perItems.get(false), perInfoCtg));
+							MappingFactory.matchOptionalItemData(null, dto.getLayoutDtos(), new ArrayList<>());
+							// get Combo-Box List theo ngày trên màn hình
+							layoutControlComboBox.getComboBoxListForSelectionItems(empInfoQueryOpt.get().getEmployeeId(), perInfoCtg, dto.getLayoutDtos(),
+									query.getStandardDate());
+							result.add(dto);
+						}
+					}
+				}				
 			}
+
 		});
 	
 		return result;

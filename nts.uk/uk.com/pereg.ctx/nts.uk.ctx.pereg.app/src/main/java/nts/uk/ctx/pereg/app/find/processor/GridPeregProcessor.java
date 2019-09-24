@@ -16,6 +16,7 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.PerEmpData;
 import nts.uk.ctx.pereg.app.find.common.AnnLeaEmpBasicInfo;
@@ -233,6 +234,9 @@ public class GridPeregProcessor {
 						}
 						if(grantTableOpt.isPresent()) {
 							grantTable = (String) grantTableOpt.get().getValue();
+							if(StringUtil.isNullOrEmpty(grantTable, true)) {
+								grantTable = null;
+							}
 						}
 						return new SpecialleaveInformation(c.getEmployeeId(), getSpecialCode(query.getCategoryCode()), grantDate, appSet, grantTable, grantDays, null, null);
 					}).collect(Collectors.toList());
