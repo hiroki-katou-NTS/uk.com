@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.file.app.core.insurenamechangenoti;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.time.GeneralDate;
@@ -134,28 +135,21 @@ public class InsuredNameChangedNotiService extends ExportService<InsuredNameChan
                 listData.add(insuredNameChangedNotiExportData);
             }
         }
-        /*employeeInfo.forEach(x ->{
-            InsuredNameChangedNotiExportData insuredNameChangedNotiExportData =  this.get(x,companyInfor,listSocialInsuranceOffice,socialInsurNotiCreateSetDomain.get(),x.getEmployeeId(),query.getDate());
 
-            if(insuredNameChangedNotiExportData.isProcessSate()){
-                listData.add(insuredNameChangedNotiExportData);
-            }
-        });*/
-        /*query.getListEmpId().forEach(x -> {
-            InsuredNameChangedNotiExportData insuredNameChangedNotiExportData =  this.get(companyInfor,listSocialInsuranceOffice,socialInsurNotiCreateSetDomain.get(),x,query.getDate());
+        if(listData.size() > 0){
+            fileGenerator.generate(exportServiceContext.getGeneratorContext(),listData,socialInsurNotiCreateSet);
+        }else{
+            throw new BusinessException("Msg_37");
+        }
 
-            if(insuredNameChangedNotiExportData.isProcessSate()){
-                listData.add(insuredNameChangedNotiExportData);
-            }
-        });*/
 
-        fileGenerator.generate(exportServiceContext.getGeneratorContext(),listData,socialInsurNotiCreateSet);
 
     }
 
     private InsuredNameChangedNotiExportData get(EmployeeInfoEx employeeInfo, CompanyInfor companyInfor, List<SocialInsuranceOffice> listSocialInsuranceOffice, SocialInsurNotiCreateSet socialInsurNotiCreateSetDomain, String empId, GeneralDate date){
         data = new InsuredNameChangedNotiExportData();
         data.setEmpId(empId);
+        data.setSubmitDate(date);
 
         data.setEmployeeInfo(employeeInfo);
 
@@ -176,7 +170,7 @@ public class InsuredNameChangedNotiService extends ExportService<InsuredNameChan
                 if(dateHistoryItem != null){
                     //ドメインモデル「厚生年金種別情報」を取得する
                     Optional<WelfarePenTypeInfor> welfarePenTypeInfor = welfarePenTypeInforRepository.getWelfarePenTypeInforById(dateHistoryItem.identifier());
-                    data.setWelfarePenTypeInfor(welfarePenTypeInfor.get());
+                    data.setWelfarePenTypeInfor(welfarePenTypeInfor.isPresent() ? welfarePenTypeInfor.get() : null);
 
                     //ドメインモデル「厚生年金基金加入期間情報」を取得する
                     List<EmPensionFundPartiPeriodInfor> listEmPensionFundPartiPeriodInfor = emPensionFundPartiPeriodInforRepository.getEmPensionFundPartiPeriodInforByEmpId(empId);
@@ -229,20 +223,20 @@ public class InsuredNameChangedNotiService extends ExportService<InsuredNameChan
             //ドメインモデル「厚生年金番号情報」を取得する
             if(empWelfarePenInsQualiInfor != null){
                 Optional<WelfPenNumInformation> welfPenNumInformation = welfPenNumInformationRepository.getWelfPenNumInformationById(empWelfarePenInsQualiInfor.getEmployeeId());
-                data.setWelfPenNumInformation(welfPenNumInformation.get());
+                data.setWelfPenNumInformation(welfPenNumInformation.isPresent() ? welfPenNumInformation.get() : null);
             }
 
         }else if(socialInsurNotiCreateSet.getInsuredNumber() == InsurPersonNumDivision.OUTPUT_THE_FUN_MEMBER){
             //ドメインモデル「基金加入員情報」を取得する
             Optional<FundMembership> fundMembership =  emPensionFundPartiPeriodInforRepository.getFundMembershipByEmpId(empId,emPensionFundPartiPeriodInfor.getDatePeriod().identifier());
-            data.setFundMembership(fundMembership.get());
+            data.setFundMembership(fundMembership.isPresent() ? fundMembership.get() : null);
         }else  if(socialInsurNotiCreateSet.getInsuredNumber() ==  InsurPersonNumDivision.OUTPUT_HEAL_INSUR_NUM || socialInsurNotiCreateSet.getInsuredNumber() == InsurPersonNumDivision.OUTPUT_HEAL_INSUR_UNION){
             //社会保険届作成設定・被保険者整理番号区分を確認する
             //健康保険番号を出力
             if(socialInsurNotiCreateSet.getInsuredNumber() == InsurPersonNumDivision.OUTPUT_HEAL_INSUR_NUM){
                 //ドメインモデル「健保番号情報」を取得する
                 Optional<HealInsurNumberInfor> healInsurNumberInfor = emplHealInsurQualifiInforRepository.getHealInsurNumberInforByHisId(empHealthInsurBenefits.getDatePeriod().identifier());
-                data.setHealInsurNumberInfor(healInsurNumberInfor.get());
+                data.setHealInsurNumberInfor(healInsurNumberInfor.isPresent() ? healInsurNumberInfor.get() : null);
                 //go to 1
                 //健保組合番号を出力
             }else if(socialInsurNotiCreateSet.getInsuredNumber() == InsurPersonNumDivision.OUTPUT_HEAL_INSUR_UNION){
@@ -254,7 +248,7 @@ public class InsuredNameChangedNotiService extends ExportService<InsuredNameChan
                     if(dateHistoryItem.isPresent()){
                         //ドメインモデル「健保組合情報」を取得する
                         Optional<HealthCarePortInfor>  healthCarePortInfor = healthCarePortInforRepository.getHealthCarePortInforById(dateHistoryItem.get().getDatePeriod().identifier());
-                        data.setHealthCarePortInfor(healthCarePortInfor.get());
+                        data.setHealthCarePortInfor(healthCarePortInfor.isPresent() ? healthCarePortInfor.get() : null);
                     }
                 }
 
