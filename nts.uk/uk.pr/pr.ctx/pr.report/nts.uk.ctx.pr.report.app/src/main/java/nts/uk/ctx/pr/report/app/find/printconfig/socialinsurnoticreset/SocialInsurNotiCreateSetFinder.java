@@ -61,37 +61,7 @@ public class SocialInsurNotiCreateSetFinder {
                     0
             ));
         }
-        ParaHistoryAtr historyAtr = mSalGenParaIdentificationRepository.getSalGenParaIdentificationById(paraNo, cid).get().getHistoryAtr();
-        String historyid;
-        Optional<SalGenParaValue> mSalGenParaValue;
-        if (historyAtr.value == DATE_HISTORY) {
-            //*開始日≦対象年月日≦終了日*//*
-            historyid = mSalGenParaDateHistFinder.getHistoryIdByTargetDate(paraNo, targetDate);
-            if(!historyid.equals("")){
-                mSalGenParaValue = mSalGenParaDateHistRepository.getSalGenParaValueById(historyid);
-                if (!mSalGenParaValue.isPresent()) {
-                    //*開始日 = 最も古い開始日の履歴*//*
-                    historyid = mSalGenParaDateHistFinder.getHistoryIdByStartDate(paraNo, targetDate);
-                    mSalGenParaValue = mSalGenParaDateHistRepository.getSalGenParaValueById(historyid);
 
-                }
-                NotifiOfInsurQuaAcDto.fromDomain( mSocialInsurNotiCreateSet.get(),mSalGenParaValue.get());
-
-            }
-
-            return NotifiOfInsurQuaAcDto.fromDomain( mSocialInsurNotiCreateSet.get(), null);
-
-        }
-        historyid = mSalGenParaYMHistFinder.getHistoryIdByTargetDate(paraNo, targetDate);
-        if(!historyid.equals("")){
-            mSalGenParaValue = mSalGenParaYMHistRepository.getSalGenParaValueById(historyid);
-            if (!mSalGenParaValue.isPresent()) {
-                historyid = mSalGenParaYMHistFinder.getHistoryIdByStartDate(paraNo);
-                mSalGenParaValue = mSalGenParaYMHistRepository.getSalGenParaValueById(historyid);
-            }
-            return  NotifiOfInsurQuaAcDto.fromDomain(mSocialInsurNotiCreateSet.get(), mSalGenParaValue.get());
-
-        }
         return NotifiOfInsurQuaAcDto.fromDomain(mSocialInsurNotiCreateSet.get(), null);
 
 
