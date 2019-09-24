@@ -16,7 +16,10 @@ module nts.uk.pr.view.qsi002.b.viewmodel {
         //
 
         texteditor: any;
-        simpleValue: KnockoutObservable<string>;
+        otherRemarks: KnockoutObservable<string>;
+        checkOther: KnockoutObservable<boolean>;
+        checkHealthInsurance: KnockoutObservable<boolean>;
+
 
         roundingRules: KnockoutObservableArray<any>;
         selectedRuleCode: any;
@@ -25,18 +28,50 @@ module nts.uk.pr.view.qsi002.b.viewmodel {
             block.invisible();
             let self = this;
             self.loadCCG001();
-            self.simpleValue = ko.observable("123");
-
+            self.otherRemarks = ko.observable();
+            self.checkOther = ko.observable(false);
+            self.checkHealthInsurance = ko.observable(false);
             self.roundingRules = ko.observableArray([
                 { code: '1', name: nts.uk.resource.getText('QSI001_54') },
                 { code: '2', name: nts.uk.resource.getText('QSI001_55') }
             ]);
             self.selectedRuleCode = ko.observable(1);
+            self.loadPage();
 
+            self.selectedItem.subscribe(e =>{
+                self.loadPage();
+            });
             block.clear();
         }
         cancel(){
             nts.uk.ui.windows.close();
+        }
+
+        add(){
+            let self = this;
+            let data : any = {
+                employeeId: self.selectedItem() ,
+                healInsurPersonNoNeed: self.checkHealthInsurance(),
+                other: self.checkOther(),
+                otherRemarks: self.otherRemarks(),
+            };
+
+            service.add(data).done(e => {
+
+            }).fail(e =>{
+
+            });
+
+        }
+
+        loadPage(){
+            let self = this;
+            service.getEmpNameChangeNotiInfor(self.selectedItem()).done(e =>{
+
+            }).fail(e=>{
+
+            });
+
         }
         /* CCG001 */
         loadCCG001(){

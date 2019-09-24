@@ -1,6 +1,5 @@
 module nts.uk.pr.view.qsi001.a.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
-    import getShared = nts.uk.ui.windows.getShared;
     import errors = nts.uk.ui.errors;
     import block = nts.uk.ui.block;
     import dialog = nts.uk.ui.dialog;
@@ -24,7 +23,7 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
         employees: any;
         selectedRuleCode: any;
         //datepicker
-        baseDate: KnockoutObservable<moment.Moment>;
+        baseDate1: KnockoutObservable<moment.Moment>;
         startDate: KnockoutObservable<moment.Moment>;
         endDate: KnockoutObservable<moment.Moment>;
         japanStartDate: KnockoutObservable<string>;
@@ -116,11 +115,15 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
                 self.japanEndDate(nts.uk.time.dateInJapanEmpire(moment.utc(self.endDate()).format("YYYYMMDD")).toString());
             });
             self.japanEndDate = ko.observable(nts.uk.time.dateInJapanEmpire(moment.utc(self.endDate()).format("YYYYMMDD")).toString());
-            self.baseDate = ko.observable(moment());
-            self.baseDate.subscribe(e => {
-                self.japanBaseDate(nts.uk.time.dateInJapanEmpire(moment.utc(self.baseDate()).format("YYYYMMDD")).toString());
+
+
+            self.baseDate1 = ko.observable(moment());
+
+            self.baseDate1.subscribe(e => {
+                self.japanBaseDate(nts.uk.time.dateInJapanEmpire(moment.utc(self.baseDate1()).format("YYYYMMDD")).toString());
             });
-            self.japanBaseDate = ko.observable(nts.uk.time.dateInJapanEmpire(moment.utc(self.baseDate()).format("YYYYMMDD")).toString());
+            self.japanBaseDate = ko.observable(nts.uk.time.dateInJapanEmpire(moment.utc(self.baseDate1()).format("YYYYMMDD")).toString());
+
 
 
 
@@ -262,7 +265,6 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
                     self.createGridList(data.listEmployee);
                     self.employees = data.listEmployee;
                     self.loadKCP005();
-                    //self.listEmployee(data.listEmployee);
 
                 }
             }
@@ -765,19 +767,6 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
         ];
     }
 
-    /*export function getSocialInsurOutOrder(): Array<ItemModel> {
-        return [
-            new ItemModel('0', getText('Enum_SocialInsurOutOrder_HEAL_INSUR_NUMBER_ORDER')),
-            new ItemModel('1', getText('Enum_SocialInsurOutOrder_WELF_AREPEN_NUMBER_ORDER')),
-            new ItemModel('2', getText('Enum_SocialInsurOutOrder_HEAL_INSUR_NUMBER_UNION_ORDER')),
-            new ItemModel('3', getText('Enum_SocialInsurOutOrder_ORDER_BY_FUND')),
-            new ItemModel('4', getText('Enum_SocialInsurOutOrder_HEAL_INSUR_OFF_ARR_SYMBOL')),
-            new ItemModel('5', getText('Enum_SocialInsurOutOrder_EMPLOYEE_CODE_ORDER')),
-            new ItemModel('6', getText('Enum_SocialInsurOutOrder_EMPLOYEE_KANA_ORDER')),
-            new ItemModel('7', getText('Enum_SocialInsurOutOrder_INSURED_PER_NUMBER_ORDER'))
-        ];
-    }
-    */
 
     export function getSocialInsurOutOrder(): Array<ItemModel> {
         return [
@@ -794,9 +783,6 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
 
     export function getPersonalNumClass(): Array<ItemModel> {
         return [
-            new ItemModel('0', getText('Enum_PersonalNumClass_OUTPUT_PER_NUMBER')),
-            new ItemModel('1', getText('Enum_PersonalNumClass_OUTPUT_BASIC_PER_NUMBER')),
-            new ItemModel('2', getText('Enum_PersonalNumClass_OUTPUT_BASIC_PEN_NOPER')),
             new ItemModel('3', getText('Enum_PersonalNumClass_DO_NOT_OUTPUT'))
         ];
     }

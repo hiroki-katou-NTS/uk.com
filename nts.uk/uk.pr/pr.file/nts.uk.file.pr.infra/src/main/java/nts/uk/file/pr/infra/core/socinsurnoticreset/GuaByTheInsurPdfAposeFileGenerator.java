@@ -1,5 +1,6 @@
 package nts.uk.file.pr.infra.core.socinsurnoticreset;
 
+import com.aspose.cells.AutoFitterOptions;
 import com.aspose.cells.Workbook;
 import com.aspose.cells.WorksheetCollection;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
@@ -49,6 +50,8 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
         int page = 0;
         String sheetName = "INS";
         String companyCd = "";
+        AutoFitterOptions autoOpts = new AutoFitterOptions();
+        autoOpts.setOnlyAuto(true);
         try {
             for (int i = 0; i < exportData.size(); i++,stt++) {
                 GuaByTheInsurExportDto element = exportData.get(i);
@@ -91,12 +94,6 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
     private void fillEmployee(WorksheetCollection worksheets, GuaByTheInsurExportDto data, String sheetName, int stt){
         JapaneseDate birthDay = toJapaneseDate( GeneralDate.fromString(data.getBrithDay().substring(0,10), "yyyy-MM-dd"));
         JapaneseDate startDate = data.getQualificationDate().length() >= 10 ? toJapaneseDate( GeneralDate.fromString(data.getQualificationDate().substring(0,10), "yyyy-MM-dd")) : null;
-        //JapaneseDate endDate = toJapaneseDate( GeneralDate.fromString(data.getSt().substring(0,10), "yyyy-MM-dd"));
-        /*this.selectEra(worksheets, birthDay.era(), sheetName, stt);
-        this.selectCause(worksheets, data.getCause(), sheetName, stt);
-        this.selectUnder(worksheets, data.getIsMoreEmp(),"A2_18", sheetName, stt);
-        this.selectUnder(worksheets, data.getContinReemAfterRetirement(),"A2_19", sheetName, stt);
-        this.selectUnder(worksheets, data.getOther(),"A2_20", sheetName, stt);*/
         this.selectItem(worksheets, data, sheetName, stt);
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_2", stt)).setValue(data.getNameOfInsuredPersonMr());
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_3", stt)).setValue(data.getNameOfInsuredPerson());
@@ -218,6 +215,4 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
     private String getRangeName(String sheetName, String pos, int stt){
         return stt == 0 ? sheetName + "!" + pos : sheetName + "!" + pos + "_" + stt;
     }
-
-
 }
