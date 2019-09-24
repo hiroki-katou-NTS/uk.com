@@ -365,7 +365,7 @@ export class KdwS03BComponent extends Vue {
         });
     }
 
-    public getRowComboBox(key) {
+    public getRowComboBox(key: string) {
         let self = this;
         let masterType = self.getItemMasterType(key);
         switch (masterType) {
@@ -907,44 +907,20 @@ export class KdwS03BComponent extends Vue {
         let self = this;
         let itemValues: any = [];
         _.forEach(Object.keys(self.screenData[0]), (key: string) => {
-            let itemValue: DPItemValue;
-            let attendanceItem = self.getAttendanceItem(key);
-            let rowData = _.find(self.params.rowData.rowData, (o) => o.key == key);
             if (_.includes(self.listAutoCalc, key)) {
                 return;
             }
+            let itemValue: DPItemValue;
+            let attendanceItem = self.getAttendanceItem(key);
             let oldRow = self.oldData[key];
-            if (JSON.stringify(oldRow).localeCompare(JSON.stringify(self.screenData[0][key])) != 0) {
+            let newRow = self.screenData[0][key];
+            if (JSON.stringify(oldRow).localeCompare(JSON.stringify(newRow)) != 0) {
                 switch (attendanceItem.attendanceAtr) {
-                    case ItemType.InputStringCode:
-                        itemValue = new DPItemValue(attendanceItem, self.screenData[0][key], self.params, self.itemValues);
-                        break;
-                    case ItemType.ButtonDialog:
-                        itemValue = new DPItemValue(attendanceItem, self.screenData[0][key], self.params, self.itemValues);
-                        break;
-                    case ItemType.InputNumber:
-                        rowData.value = self.screenData[0][key];
-                        itemValue = new DPItemValue(attendanceItem, self.screenData[0][key], self.params, self.itemValues);
-                        break;
-                    case ItemType.InputMoney:
-                        rowData.value = self.screenData[0][key];
-                        itemValue = new DPItemValue(attendanceItem, self.screenData[0][key], self.params, self.itemValues);
-                        break;
                     case ItemType.ComboBox:
-                        itemValue = new DPItemValue(attendanceItem, parseInt(self.screenData[0][key]), self.params, self.itemValues);
-                        break;
-                    case ItemType.Time:
-                        rowData.value = self.screenData[0][key];
-                        itemValue = new DPItemValue(attendanceItem, self.screenData[0][key], self.params, self.itemValues);
-                        break;
-                    case ItemType.TimeWithDay:
-                        itemValue = new DPItemValue(attendanceItem, self.screenData[0][key], self.params, self.itemValues);
-                        break;
-                    case ItemType.InputStringChar:
-                        rowData.value = self.screenData[0][key];
-                        itemValue = new DPItemValue(attendanceItem, self.screenData[0][key], self.params, self.itemValues);
+                        itemValue = new DPItemValue(attendanceItem, parseInt(newRow), self.params, self.itemValues);
                         break;
                     default:
+                        itemValue = new DPItemValue(attendanceItem, newRow, self.params, self.itemValues);
                         break;
                 }
                 itemValues.push(itemValue);
@@ -959,131 +935,6 @@ export class KdwS03BComponent extends Vue {
         let idKey = value.replace('A', '');
 
         return _.find(self.lstAttendanceItem, (item: any) => item.id == idKey);
-    }
-
-    private getAutoCalcChangeItem() {
-        let self = this;
-        let itemValues: any = [];
-        _.forEach(Object.keys(self.screenData[0]), (key: string) => {
-            let itemValue: DPItemValue;
-            let rowData = _.find(self.params.rowData.rowData, (o) => o.key == key);
-            if (_.includes(self.listAutoCalc, key)) {
-                return;
-            }
-            let attendanceItem = self.getAttendanceItem(key);
-            let oldRow = self.oldData[key];
-            if (JSON.stringify(oldRow).localeCompare(JSON.stringify(self.screenData[0][key])) != 0) {
-                switch (attendanceItem.attendanceAtr) {
-                    case ItemType.InputStringCode:
-                        itemValue = new DPItemValue(attendanceItem, self.screenData[0][key], self.params, self.itemValues);
-                        break;
-                    case ItemType.ButtonDialog:
-                        itemValue = new DPItemValue(attendanceItem, self.screenData[0][key], self.params, self.itemValues);
-                        break;
-                    case ItemType.InputNumber:
-                        rowData.value = self.screenData[0][key];
-                        itemValue = new DPItemValue(attendanceItem, self.screenData[0][key], self.params, self.itemValues);
-                        break;
-                    case ItemType.InputMoney:
-                        rowData.value = self.screenData[0][key];
-                        itemValue = new DPItemValue(attendanceItem, self.screenData[0][key], self.params, self.itemValues);
-                        break;
-                    case ItemType.ComboBox:
-                        itemValue = new DPItemValue(attendanceItem, parseInt(self.screenData[0][key]), self.params, self.itemValues);
-                        break;
-                    case ItemType.Time:
-                        rowData.value = self.screenData[0][key];
-                        itemValue = new DPItemValue(attendanceItem, self.screenData[0][key], self.params, self.itemValues);
-                        break;
-                    case ItemType.TimeWithDay:
-                        itemValue = new DPItemValue(attendanceItem, self.screenData[0][key], self.params, self.itemValues);
-                        break;
-                    case ItemType.InputStringChar:
-                        rowData.value = self.screenData[0][key];
-                        itemValue = new DPItemValue(attendanceItem, self.screenData[0][key], self.params, self.itemValues);
-                        break;
-                    default:
-                        break;
-                }
-                itemValues.push(itemValue);
-            }
-        });
-
-        return itemValues;
-    }
-
-    private autoCalc(key: string) {
-        let self = this;
-        let rowData = _.find(self.params.rowData.rowData, (o) => o.key == key);
-        if (rowData.isCalc) {
-            rowData.isCalc = false;
-
-            return;
-        }
-        let attendanceItem = self.getAttendanceItem(key);
-        let itemValues = self.getAutoCalcChangeItem();
-        _.forEach(itemValues, (item) => {
-            if (item.itemId != attendanceItem.id) {
-                item.columnKey = 'USE';
-            }
-        });
-        if (!_.find(itemValues, (item) => item.itemId == attendanceItem.id)) {
-            let mainObj = new DPItemValue(attendanceItem, self.screenData[0][key], self.params, self.itemValues);
-            itemValues.push(mainObj);
-        }
-        _.remove(self.listAutoCalc, key);
-        let oldRow = self.oldData[key];
-        let notChangeCellValue = (JSON.stringify(oldRow).localeCompare(JSON.stringify(self.screenData[0][key])) == 0) ? true : false;
-        let param = {
-            dailyEdits: [],
-            itemEdits: itemValues,
-            changeSpr31: false,
-            changeSpr34: false,
-            notChangeCell: notChangeCellValue
-        };
-        self.$mask('show');
-        self.$http.post('at', API.linkItemCalc, param)
-            .then((data: any) => {
-                self.$mask('hide');
-                _.forEach(data.data.cellEdits, (item: any) => {
-                    if (!_.includes(self.listAutoCalc, item.item)) {
-                        self.listAutoCalc.push(item.item);
-                    }
-                });
-                _.forEach(data.data.cellEdits, (item: any) => {
-                    if (!_.isUndefined(self.screenData1[item.item])) {
-                        let rowDataLoop = _.find(self.params.rowData.rowData, (o) => o.key == item.item);
-                        let attendanceItemLoop = self.getAttendanceItem(item.item);
-                        switch (attendanceItemLoop.attendanceAtr) {
-                            case ItemType.InputNumber:
-                                rowDataLoop.isCalc = true;
-                                self.screenData1[item.item] = _.isEmpty(item.value) ? null : _.toNumber(item.value);
-                                break;
-                            case ItemType.InputMoney:
-                                rowDataLoop.isCalc = true;
-                                self.screenData1[item.item] = _.isEmpty(item.value) ? null : _.toNumber(item.value);
-                                break;
-                            case ItemType.Time:
-                                rowDataLoop.isCalc = true;
-                                self.screenData1[item.item] = _.isEmpty(item.value) ? null : new TimeDuration(item.value).toNumber();
-                                break;
-                            case ItemType.TimeWithDay:
-                                rowDataLoop.isCalc = true;
-                                self.screenData1[item.item] = _.isEmpty(item.value) ? null : new TimeDuration(item.value).toNumber();
-                                break;
-                            default:
-                                rowDataLoop.isCalc = true;
-                                self.screenData1[item.item] = item.value;
-                                break;
-                        }
-                    }
-                });
-            }).catch((res: any) => {
-                self.$mask('hide');
-                self.$modal.error(res.messageId)
-                    .then(() => {
-                    });
-            });
     }
 
     public screenDataWatch() {
@@ -1102,7 +953,7 @@ export class KdwS03BComponent extends Vue {
                         return;
                     }
                     let attendanceItem = self.getAttendanceItem(key);
-                    let itemValues = self.getAutoCalcChangeItem();
+                    let itemValues = self.getItemChange();
                     _.forEach(itemValues, (item) => {
                         if (item.itemId != attendanceItem.id) {
                             item.columnKey = 'USE';
@@ -1134,26 +985,22 @@ export class KdwS03BComponent extends Vue {
                             _.forEach(data.data.cellEdits, (item: any) => {
                                 if (!_.isUndefined(self.screenData1[item.item])) {
                                     let rowDataLoop = _.find(self.params.rowData.rowData, (o) => o.key == item.item);
+                                    rowDataLoop.isCalc = true;
                                     let attendanceItemLoop = self.getAttendanceItem(item.item);
                                     switch (attendanceItemLoop.attendanceAtr) {
                                         case ItemType.InputNumber:
-                                            rowDataLoop.isCalc = true;
                                             self.screenData1[item.item] = _.isEmpty(item.value) ? null : _.toNumber(item.value);
                                             break;
                                         case ItemType.InputMoney:
-                                            rowDataLoop.isCalc = true;
                                             self.screenData1[item.item] = _.isEmpty(item.value) ? null : _.toNumber(item.value);
                                             break;
                                         case ItemType.Time:
-                                            rowDataLoop.isCalc = true;
                                             self.screenData1[item.item] = _.isEmpty(item.value) ? null : new TimeDuration(item.value).toNumber();
                                             break;
                                         case ItemType.TimeWithDay:
-                                            rowDataLoop.isCalc = true;
                                             self.screenData1[item.item] = _.isEmpty(item.value) ? null : new TimeDuration(item.value).toNumber();
                                             break;
                                         default:
-                                            rowDataLoop.isCalc = true;
                                             self.screenData1[item.item] = item.value;
                                             break;
                                     }
