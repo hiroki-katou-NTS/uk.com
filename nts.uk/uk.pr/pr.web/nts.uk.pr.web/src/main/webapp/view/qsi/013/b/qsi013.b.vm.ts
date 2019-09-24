@@ -129,10 +129,10 @@ module nts.uk.pr.view.qsi013.b.viewmodel {
         constructor() {
 
             var self = this;
-            this.init();
             let list = getShared("QSI013_PARAMS_B");
             self.employeeInputList(list.employeeList);
             self.selectedItem(self.employeeInputList()[0].id);
+            this.init();
             self.itemListHealth = ko.observableArray(model.getCauseTypeHealthLossInfo());
             self.itemListPension = ko.observableArray(model.getCauseTypePensionLossInfo());
             self.selectedItem.subscribe((data) => {
