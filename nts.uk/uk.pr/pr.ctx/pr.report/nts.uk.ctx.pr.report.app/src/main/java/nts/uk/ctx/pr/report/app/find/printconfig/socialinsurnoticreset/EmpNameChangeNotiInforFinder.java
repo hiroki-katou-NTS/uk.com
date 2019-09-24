@@ -1,11 +1,11 @@
 package nts.uk.ctx.pr.report.app.find.printconfig.socialinsurnoticreset;
 
+import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.EmpNameChangeNotiInfor;
 import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.EmpNameChangeNotiInforRepository;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Stateless
 /**
@@ -17,9 +17,9 @@ public class EmpNameChangeNotiInforFinder
     @Inject
     private EmpNameChangeNotiInforRepository finder;
 
-    public List<EmpNameChangeNotiInforDto> getAllEmpNameChangeNotiInfor(){
-        return finder.getAllEmpNameChangeNotiInfor().stream().map(item -> EmpNameChangeNotiInforDto.fromDomain(item))
-                .collect(Collectors.toList());
+    public EmpNameChangeNotiInfor getEmpNameChangeNotiInforById(String employeeId, String cid){
+        Optional<EmpNameChangeNotiInfor> empNameChangeNotiInfor = finder.getEmpNameChangeNotiInforById(employeeId,cid);
+        return empNameChangeNotiInfor.isPresent() ? empNameChangeNotiInfor.get() : null;
     }
 
 }

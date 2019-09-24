@@ -1,14 +1,21 @@
 package nts.uk.ctx.pr.report.ws.printdata.insurenamechangenoti;
 
 
+import nts.uk.ctx.pr.report.app.command.printconfig.socialinsurnoticreset.AddEmpNameChangeNotiInforCommandHandler;
+import nts.uk.ctx.pr.report.app.command.printconfig.socialinsurnoticreset.EmpNameChangeNotiInforCommand;
 import nts.uk.ctx.pr.report.app.command.socinsurnoticreset.SocialInsurNotiCreateSetCommand;
+import nts.uk.ctx.pr.report.app.find.printconfig.socialinsurnoticreset.EmpNameChangeNotiInforDto;
+import nts.uk.ctx.pr.report.app.find.printconfig.socialinsurnoticreset.EmpNameChangeNotiInforFinder;
+import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.EmpNameChangeNotiInfor;
 import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.SocialInsurNotiCreateSet;
 import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.SocialInsurNotiCreateSetService;
+import nts.uk.shr.com.communicate.PathToWebApi;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 @Path("ctx/pr/report/printdata/insurenamechangenoti")
@@ -17,6 +24,12 @@ public class InsuredNameChangedNotiWebService {
 
     @Inject
     private SocialInsurNotiCreateSetService service;
+
+    @Inject
+    private EmpNameChangeNotiInforFinder empNameChangeNotiInforFinder;
+
+    @Inject
+    private AddEmpNameChangeNotiInforCommandHandler addEmpNameChangeNotiInforCommandHandler;
 
 
     @POST
@@ -39,5 +52,19 @@ public class InsuredNameChangedNotiWebService {
 
         );
         service.checkSocialInsurNotiCrSet(domain,userID,cid);
+    }
+
+    @POST
+    @Path("/getEmpNameChangeNotiInfor/{empId}")
+    public EmpNameChangeNotiInforDto getEmpNameChangeNotiInfor(@PathParam("empId") String empId ){
+        String cid = AppContexts.user().companyId();
+        EmpNameChangeNotiInfor empNameChangeNotiInfor = empNameChangeNotiInforFinder.getEmpNameChangeNotiInforById(empId,cid);
+        return EmpNameChangeNotiInforDto.fromDomain(empNameChangeNotiInfor);
+    }
+
+    @POST
+    @Path("/add")
+    public void add(EmpNameChangeNotiInforCommand command){
+        addEmpNameChangeNotiInforCommandHandler.handle(command);
     }
 }
