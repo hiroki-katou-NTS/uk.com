@@ -66,26 +66,7 @@ module nts.uk.pr.view.qsi003.b.viewmodel {
             };
         }
 
-        constructor() {
-            let self = this;
-            this.loadKCP009();
 
-            let list = getShared("QSI003_PARAMS_B");
-            self.employeeInputList(list.employeeList);
-
-            self.selectedItem(self.employeeInputList()[0].id);
-
-            $('#emp-component').ntsLoadListComponent(self.listComponentOption);
-
-            self.roundingRules = ko.observableArray([
-                { code: '0', name: nts.uk.resource.getText('QSI003_18') },
-                { code: '1', name: nts.uk.resource.getText('QSI003_19') }
-            ]);
-
-            self.selectedItem.subscribe((data) => {
-                self.getDataRomaji(data);
-            });
-        }
         cancel(){
             nts.uk.ui.windows.close();
         }
@@ -113,20 +94,20 @@ module nts.uk.pr.view.qsi003.b.viewmodel {
             let self = this;
             service.getReasonRomajiName(empId).done(function (data: any) {
                 if(data){
-                    self.basicPenNumber = ko.observable(data.basicPenNumber);
-                    self.others  = ko.observable(data.empNameReport.spouse.others == 0);
+                    self.basicPenNumber(data.basicPenNumber);
+                    self.others(data.empNameReport.spouse.others == 0);
                     self.listeds  = ko.observable(data.empNameReport.spouse.listeds == 0);
                     self.residentCards  = ko.observable(data.empNameReport.spouse);
-                    self.addressOverseas  = ko.observable(data.empNameReport.addressOverseas == 0 ? true : false);
+                    self.addressOverseas  = ko.observable(data.empNameReport.addressOverseas == 0);
                     self.otherReasons = ko.observable(data.empNameReport.otherReasons);
-                    self.shortResidents  = ko.observable(data.empNameReport.shortResidents == 0 ? true : false);
+                    self.shortResidents  = ko.observable(data.empNameReport.shortResidents == 0);
 
-                    self.otherp = ko.observable(data.empNameReport.otherp == 0 ? true : false);
-                    self.listedp  = ko.observable(data.empNameReport.listedp == 0 ? true : false);
+                    self.otherp = ko.observable(data.empNameReport.otherp == 0);
+                    self.listedp  = ko.observable(data.empNameReport.listedp == 0);
                     self.residentCardp  = ko.observable(data.empNameReport.residentCards);
-                    self.addressOverseap  = ko.observable(data.empNameReport.addressOverseas == 0 ? true : false);
+                    self.addressOverseap  = ko.observable(data.empNameReport.addressOverseas == 0);
                     self.otherReasonp = ko.observable(data.empNameReport.otherReasonp);
-                    self.shortResidentp  = ko.observable(data.empNameReport.shortResidentp == 0 ? true : false);
+                    self.shortResidentp  = ko.observable(data.empNameReport.shortResidentp == 0);
                     self.screenMode(model.SCREEN_MODE.UPDATE);
                 } else {
                     this.getDefault();
@@ -150,6 +131,24 @@ module nts.uk.pr.view.qsi003.b.viewmodel {
             return listEmployee;
         }
 
+        constructor() {
+            let self = this;
+            this.loadKCP009();
+            self.selectedItem.subscribe((data) => {
+                self.getDataRomaji(data);
+            });
+            let list = getShared("QSI003_PARAMS_B");
+            self.employeeInputList(list.employeeList);
+            self.selectedItem(self.employeeInputList()[0].id);
+
+            $('#emp-component').ntsLoadListComponent(self.listComponentOption);
+
+            self.roundingRules = ko.observableArray([
+                { code: '0', name: nts.uk.resource.getText('QSI003_18') },
+                { code: '1', name: nts.uk.resource.getText('QSI003_19') }
+            ]);
+
+        }
 
         updateReasonRomajiName(){
             var self = this;
