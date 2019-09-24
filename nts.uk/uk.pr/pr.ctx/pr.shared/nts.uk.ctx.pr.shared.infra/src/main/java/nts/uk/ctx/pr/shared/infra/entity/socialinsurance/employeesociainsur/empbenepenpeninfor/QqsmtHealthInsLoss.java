@@ -75,7 +75,7 @@ public class QqsmtHealthInsLoss extends UkJpaEntity implements Serializable
                 healthInsLossInfo.getCaInsurance().map(i -> i.v()).orElse(null),
                 healthInsLossInfo.getNumRecoved().map(i -> i.v()).orElse(null),
                 healthInsLossInfo.getCause().map(i -> i.value).orElse(null));
-                //.isPresent() ? healthInsLossInfo.getCause().get().value : null
+
     }
 
     public HealthInsLossInfo toDomain(){

@@ -39,4 +39,6 @@ public class JpaHealthInsLossInfoRepository extends JpaRepository implements Hea
 
 
 
+
+
 }

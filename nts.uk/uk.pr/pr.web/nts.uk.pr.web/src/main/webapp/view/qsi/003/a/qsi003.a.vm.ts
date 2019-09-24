@@ -87,7 +87,7 @@ module nts.uk.pr.view.qsi003.a.viewmodel {
             let listEmpId =[];
             _.each(empCode, (item) =>{
                 let emp = _.find(listEmp, function(itemEmp) { return itemEmp.code == item; });
-                listEmpId.push(emp.id);
+                listEmpId.push(emp);
             });
             return listEmpId;
         }
