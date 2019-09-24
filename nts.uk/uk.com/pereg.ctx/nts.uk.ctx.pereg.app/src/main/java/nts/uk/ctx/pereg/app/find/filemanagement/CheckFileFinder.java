@@ -1484,7 +1484,6 @@ public class CheckFileFinder {
 			dateFormat.parse(value.trim());
 			isDateLst.add(dateFormat);
 			}catch(Exception e) {
-				System.out.println("HEHHE");
 			}
 		}
 		if(!isDateLst.isEmpty()) return Optional.ofNullable(isDateLst.get(0));

@@ -14,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.gul.collection.CollectionUtil;
 import nts.gul.text.IdentifierUtil;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.pereg.dom.person.additemdata.category.EmInfoCtgDataRepository;
@@ -118,7 +119,14 @@ public class AddOptionalListCommandHandler extends CommandHandler<List<PeregUser
 										&& insert.getRecordId().equals(c.getRecordId()))
 								.findFirst();
 						if(!insertOpt.isPresent()) {
-							insertLst.add(itemData);
+							// In case of optional category
+							if(!ctg.isFixed() && c.getRecordId()!= null) {
+								itemData.setRecordId(IdentifierUtil.randomUniqueId());
+							}
+							
+							if(itemData.getRecordId() != null) {
+								insertLst.add(itemData);
+							}
 						}
 					}
 				}
@@ -126,7 +134,7 @@ public class AddOptionalListCommandHandler extends CommandHandler<List<PeregUser
 		});
 		
 		if(insertLst.size() > 0) {
-			Map<String, String> recordIds = addLst.stream().collect(
+			Map<String, String> recordIds = addLst.stream().filter(c -> c.getRecordId() != null).collect(
 					Collectors.toMap(PeregUserDefAddCommand::getPersonId, PeregUserDefAddCommand::getRecordId));
 
 			// In case of optional category
@@ -145,10 +153,13 @@ public class AddOptionalListCommandHandler extends CommandHandler<List<PeregUser
 				perInfoCtgDataRepository.addAll(ctgData);				
 			}
 			
+			List<PersonInfoItemData> itemInsertFinal = insertLst.stream().filter(c -> c.getRecordId() != null).collect(Collectors.toList());
 			
-			perInfoItemDataRepository.addAll(insertLst);
+			if(!CollectionUtil.isEmpty(itemInsertFinal)) {
+				perInfoItemDataRepository.addAll(itemInsertFinal);
+			}
+			
 		}
-		
 		
 		if(updateLst.size() > 0) {
 			perInfoItemDataRepository.updateAll(updateLst);
@@ -177,7 +188,16 @@ public class AddOptionalListCommandHandler extends CommandHandler<List<PeregUser
 										&& insert.getRecordId().equals(c.getRecordId()))
 								.findFirst();
 						if(!insertOpt.isPresent()) {
-							itemInsertLst.add(itemData);
+							
+							// In case of optional category
+							if(!ctg.isFixed() && c.getRecordId()!= null) {
+								itemData.setRecordId(IdentifierUtil.randomUniqueId());
+							}
+							
+							if(itemData.getRecordId() != null) {
+								itemInsertLst.add(itemData);
+							}
+							
 						}
 					}
 				}
@@ -185,7 +205,7 @@ public class AddOptionalListCommandHandler extends CommandHandler<List<PeregUser
 		});
 		
 		if(itemInsertLst.size() > 0) {
-			Map<String, String> recordIds = addLst.stream().collect(
+			Map<String, String> recordIds = addLst.stream().filter(c -> c.getRecordId()!= null).collect(
 					Collectors.toMap(PeregUserDefAddCommand::getEmployeeId, PeregUserDefAddCommand::getRecordId));
 			
 			// In case of optional category
@@ -205,7 +225,12 @@ public class AddOptionalListCommandHandler extends CommandHandler<List<PeregUser
 				emInfoCtgDataRepository.addAll(ctgData);
 			}
 			
-			empInfoItemDataRepository.addAll(itemInsertLst);
+			List<EmpInfoItemData> itemInsertFinal = itemInsertLst.stream().filter(c -> c.getRecordId() != null).collect(Collectors.toList());
+			
+			if (!CollectionUtil.isEmpty(itemInsertFinal)) {
+				empInfoItemDataRepository.addAll(itemInsertFinal);
+			}
+			
 		}
 		
 		if(itemUpdateLst.size() > 0) {
