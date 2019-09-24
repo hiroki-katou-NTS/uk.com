@@ -367,8 +367,23 @@ export class KdwS03BComponent extends Vue {
 
     public getRowComboBox(key) {
         let self = this;
-        
-        return _.find(self.params.rowData.rowData, (rowData: RowData) => rowData.key == key).comboLst;
+        let masterType = self.getItemMasterType(key);
+        switch (masterType) {
+            case MasterType.DoWork:
+                return self.masterData.lstDoWork;
+            case MasterType.Calc:
+                if (self.isSpecCalcLst(key)) {
+                    return self.masterData.lstCalcCompact;
+                } else {
+                    return self.masterData.lstCalc;
+                }   
+            case MasterType.ReasonGoOut:
+                return self.masterData.lstReasonGoOut;
+            case MasterType.TimeLimit:
+                return self.masterData.lstTimeLimit;
+            default: 
+                return _.find(self.params.rowData.rowData, (rowData: RowData) => rowData.key == key).comboLst;
+        }
     }
 
     private formatData(rowData: RowData) {
