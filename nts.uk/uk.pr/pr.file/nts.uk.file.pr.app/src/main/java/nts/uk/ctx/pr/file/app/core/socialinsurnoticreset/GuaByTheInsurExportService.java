@@ -71,8 +71,8 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
                 exportServiceContext.getQuery().getSocialInsurNotiCreateSetQuery().getInsuredNumber(),
                 exportServiceContext.getQuery().getSocialInsurNotiCreateSetQuery().getFdNumber(),
                 exportServiceContext.getQuery().getSocialInsurNotiCreateSetQuery().getTextPersonNumber(),
-                exportServiceContext.getQuery().getSocialInsurNotiCreateSetQuery().getLineFeedCode(),
-                exportServiceContext.getQuery().getSocialInsurNotiCreateSetQuery().getOutputFormat()
+                exportServiceContext.getQuery().getSocialInsurNotiCreateSetQuery().getOutputFormat(),
+                exportServiceContext.getQuery().getSocialInsurNotiCreateSetQuery().getLineFeedCode()
         );
         mSocialInsurNotiCrSetRepository.update(ins);
         if (exportServiceContext.getQuery().getTypeExport() == TYPE_EXPORT_EXCEL_FILE) {
