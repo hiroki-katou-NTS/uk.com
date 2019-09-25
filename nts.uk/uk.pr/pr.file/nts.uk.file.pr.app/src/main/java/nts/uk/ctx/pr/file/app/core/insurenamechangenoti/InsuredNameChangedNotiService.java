@@ -3,6 +3,7 @@ package nts.uk.ctx.pr.file.app.core.insurenamechangenoti;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
+import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.core.dom.adapter.employee.employee.EmployeeInfoAdapter;
 import nts.uk.ctx.pr.core.dom.adapter.employee.employee.EmployeeInfoEx;
@@ -87,6 +88,9 @@ public class InsuredNameChangedNotiService extends ExportService<InsuredNameChan
 
     private InsuredNameChangedNotiExportData data;
 
+    @Inject
+    private ManagedParallelWithContext parallel;
+
     //get company infor
     @Inject
     private NotificationOfLossInsExRepository notificationOfLossInsExRepository;
@@ -128,13 +132,13 @@ public class InsuredNameChangedNotiService extends ExportService<InsuredNameChan
 
         List<EmployeeInfoEx> employeeInfo = employeeInfoAdapter.findBySIds(query.getListEmpId());
 
-        for (EmployeeInfoEx x : employeeInfo){
+        parallel.forEach(employeeInfo, x->{
             InsuredNameChangedNotiExportData insuredNameChangedNotiExportData =  this.get(x,companyInfor,listSocialInsuranceOffice,socialInsurNotiCreateSetDomain.get(),x.getEmployeeId(),query.getDate());
 
             if(insuredNameChangedNotiExportData.isProcessSate()){
                 listData.add(insuredNameChangedNotiExportData);
             }
-        }
+        });
 
         if(listData.size() > 0){
             fileGenerator.generate(exportServiceContext.getGeneratorContext(),listData,socialInsurNotiCreateSet);
