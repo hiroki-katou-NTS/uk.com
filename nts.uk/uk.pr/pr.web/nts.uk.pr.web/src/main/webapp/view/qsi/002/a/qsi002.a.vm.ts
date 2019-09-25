@@ -73,8 +73,8 @@ module nts.uk.pr.view.qsi002.a.viewmodel {
             //init switch
             self.simpleValue = ko.observable("123");
             self.roundingRules = ko.observableArray([
-                { code: '1', name: nts.uk.resource.getText('QSI002_11') },
-                { code: '2', name: nts.uk.resource.getText('QSI002_12') }
+                { code: '0', name: nts.uk.resource.getText('QSI002_A222_10') },
+                { code: '1', name: nts.uk.resource.getText('QSI002_A222_11') }
             ]);
             self.selectedRuleCode = ko.observable(1);
             //init datepicker
@@ -178,6 +178,16 @@ module nts.uk.pr.view.qsi002.a.viewmodel {
                 printPersonNumber: self.selectedPersonalNumClass(),
                 insuredNumber: self.selectedInsurPersonNumDivision()
             };
+
+            service.getSocialInsurNotiCreateSetById().done(e =>{
+                self.selectedBusinessDivision(e.officeInformation);
+                self.selectedBussEsimateClass(e.businessArrSymbol);
+                self.selectedSocialInsurOutOrder(e.outputOrder);
+                self.selectedPersonalNumClass(e.printPersonNumber);
+                self.selectedInsurPersonNumDivision(e.insuredNumber);
+            }).fail(e =>{
+
+            });
             service.index(data).done(e =>{
                 block.clear()
             }).fail(e =>{
