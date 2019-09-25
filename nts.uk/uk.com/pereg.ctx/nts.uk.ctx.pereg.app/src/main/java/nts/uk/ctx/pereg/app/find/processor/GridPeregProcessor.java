@@ -240,7 +240,7 @@ public class GridPeregProcessor {
 						}
 						return new SpecialleaveInformation(c.getEmployeeId(), getSpecialCode(query.getCategoryCode()), grantDate, appSet, grantTable, grantDays, null, null);
 					}).collect(Collectors.toList());
-					Map<String, GeneralDate> nextGrantDateMap = getSPHolidayNextGrantDate.getAllSPHolidayGrantDateBySids(params.stream().filter(c -> c!= null).collect(Collectors.toList()));
+					Map<String, GeneralDate> nextGrantDateMap = getSPHolidayNextGrantDate.getAllSPHolidayGrantDateBySids(params.stream().filter(c -> (c!= null && c.getAppSet() == 0)).collect(Collectors.toList()));
 					layouts.stream().forEach(c ->{
 						//nextGrantDateLst
 						Optional<GridEmpBody> grantDateOpt = c.getItems().stream().filter(item -> nextGrantDateLst.contains(item.getItemCode())).findFirst();
