@@ -316,10 +316,9 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
             let data: any = {
                 socialInsurNotiCreateSetQuery: {
                     officeInformation: self.socialInsurNotiCrSet().officeInformation(),
-                    fdNumber: self.socialInsurNotiCrSet().fdNumber(),
-                    printPersonNumber: self.socialInsurNotiCrSet().printPersonNumber(),
                     businessArrSymbol: self.socialInsurNotiCrSet().businessArrSymbol(),
                     outputOrder: self.socialInsurNotiCrSet().outputOrder(),
+                    printPersonNumber: self.socialInsurNotiCrSet().printPersonNumber(),
                     submittedName: self.socialInsurNotiCrSet().submittedName(),
                     insuredNumber: self.socialInsurNotiCrSet().insuredNumber(),
                     fdNumber: self.socialInsurNotiCrSet().fdNumber(),

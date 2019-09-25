@@ -4,7 +4,6 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.time.GeneralDate;
-import nts.gul.text.StringUtil;
 import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsurancePrefectureInformation;
 import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsurancePrefectureInformationRepository;
 import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.OutputFormatClass;
@@ -14,6 +13,7 @@ import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpen
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmplHealInsurQualifiInforRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
+import nts.uk.shr.com.time.japanese.JapaneseErasAdapter;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -51,6 +51,9 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
     @Inject
     private GuaByTheInsurExportRepository guaByTheInsurExportRepository;
 
+    @Inject
+    private JapaneseErasAdapter adapter;
+
 
     @Override
     protected void handle(ExportServiceContext<GuaByTheInsurExportQuery> exportServiceContext) {
@@ -71,8 +74,8 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
                 exportServiceContext.getQuery().getSocialInsurNotiCreateSetQuery().getInsuredNumber(),
                 exportServiceContext.getQuery().getSocialInsurNotiCreateSetQuery().getFdNumber(),
                 exportServiceContext.getQuery().getSocialInsurNotiCreateSetQuery().getTextPersonNumber(),
-                exportServiceContext.getQuery().getSocialInsurNotiCreateSetQuery().getLineFeedCode(),
-                exportServiceContext.getQuery().getSocialInsurNotiCreateSetQuery().getOutputFormat()
+                exportServiceContext.getQuery().getSocialInsurNotiCreateSetQuery().getOutputFormat(),
+                exportServiceContext.getQuery().getSocialInsurNotiCreateSetQuery().getLineFeedCode()
         );
         mSocialInsurNotiCrSetRepository.update(ins);
         if (exportServiceContext.getQuery().getTypeExport() == TYPE_EXPORT_EXCEL_FILE) {
@@ -120,7 +123,7 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
         if (startDate.after(endDate)) {
             throw new BusinessException("Msg_812");
         }
-        boolean checkHealInsur = mEmplHealInsurQualifiInforRepository.checkEmplHealInsurQualifiInforEndDate(startDate, endDate, employeeIds);
+        boolean checkHealInsur = mEmplHealInsurQualifiInforRepository.checkEmplHealInsurQualifiInforStartDate(startDate, endDate, employeeIds);
         boolean checkWelfarePen = mEmpWelfarePenInsQualiInforRepository.checkEmpWelfarePenInsQualiInforStart(startDate, endDate, employeeIds);
         if (checkHealInsur && checkWelfarePen) {
             throw new BusinessException("Msg_37");
@@ -193,7 +196,7 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
                 //C2_20
                 temp.setDateOfQualifiRyowa(element[34] != null ? element[34].toString() : "");
                 //C2_21
-                temp.setQualificationDate(element[35] != null ? element[35].toString() : "");
+                temp.setQualificationDate(element[36] != null ? element[36].toString() : "");
             }
             else{
                 //C1_1
@@ -203,30 +206,30 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
                 //C1_3
                 temp.setOfficeNumber(element[53] != null ? element[53].toString() : "");
                 //C2_20
-                temp.setDateOfQualifiRyowa(element[34] != null ? element[34].toString() : "");
+                temp.setDateOfQualifiRyowa(element[35] != null ? element[35].toString() : "");
                 //C2_21
-                temp.setQualificationDate(element[35] != null ? element[35].toString() : "");
+                temp.setQualificationDate(element[37] != null ? element[37].toString() : "");
             }
             if(Integer.valueOf(element[14].toString()) == Enum_SubNameClass_PERSONAL_NAME){
                 //C2_2
                 temp.setNameOfInsuredPersonMr(element[19] != null ? element[19].toString() : "");
                 //C2_3
-                temp.setNameOfInsuredPerson(element[19] != null ? element[19].toString() : "");
+                temp.setNameOfInsuredPerson(element[21] != null ? element[21].toString() : "");
                 //C2_4
                 temp.setNameOfInsuredPersonMrK(element[23] != null ? element[23].toString() : "");
                 //C2_5
-                temp.setNameOfInsuredPerson1(element[24] != null ? element[24].toString() : "");
+                temp.setNameOfInsuredPerson1(element[25] != null ? element[25].toString() : "");
 
             }
             else{
                 //C2_2
                 temp.setNameOfInsuredPersonMr(element[20] != null ? element[20].toString() : "");
                 //C2_3
-                temp.setNameOfInsuredPerson(element[20] != null ? element[20].toString() : "");
+                temp.setNameOfInsuredPerson(element[22] != null ? element[22].toString() : "");
                 //C2_4
                 temp.setNameOfInsuredPersonMrK(element[24] != null ? element[24].toString() : "");
                 //C2_5
-                temp.setNameOfInsuredPerson1(element[24] != null ? element[24].toString() : "");
+                temp.setNameOfInsuredPerson1(element[26] != null ? element[26].toString() : "");
             }
             //C1_10
             //C2_6 => covert to Date of birth (Showa)
@@ -298,6 +301,7 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
         return data;
 
     }
+
 
     private void reportTextOutputCheck(List<String> employeeIds, GeneralDate startDate, GeneralDate endDate) {
         if (startDate.after(endDate)) {

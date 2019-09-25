@@ -59,6 +59,21 @@ module nts.uk.pr.view.qsi013.b.viewmodel {
 
         getDataDefault(){
             let self = this;
+            self.hCause(0);
+            self.hNumRecoved(null);
+            self.hOther(false);
+            self.hCaInsurance(null);
+            self.hOtherReason('');
+
+            self.pCause(0);
+            self.pNumRecoved(null);
+            self.pOther(false);
+            self.pCaInsurance(null);
+            self.pOtherReason('');
+
+            self.isMoreEmp(null);
+            self.continReemAfterRetirement(null);
+            self.basicPenNumber('');
             // for new mode
             //set default value
             self.screenMode(model.SCREEN_MODE.NEW);
