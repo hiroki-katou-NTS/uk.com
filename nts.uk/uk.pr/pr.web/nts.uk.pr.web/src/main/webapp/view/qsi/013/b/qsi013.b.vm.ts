@@ -190,7 +190,7 @@ module nts.uk.pr.view.qsi013.b.viewmodel {
 
             let empBasicPenNumInfor: any = {
                 employeeId: self.selectedItem(),
-                basicPenNumber: self.basicPenNumber()
+                basicPenNumber: self.basicPenNumber().length > 0 ? self.basicPenNumber() : null
             };
 
             let socialInsurAcquisiInfo: any = {
