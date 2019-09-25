@@ -13,7 +13,6 @@ import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.at.function.app.command.processexecution.ListLeaderOrNotEmpOutput;
 import nts.uk.ctx.at.function.app.command.processexecution.approuteupdatedaily.transfereeperson.TransfereePerson;
 import nts.uk.ctx.at.function.dom.adapter.closure.FunClosureAdapter;
 import nts.uk.ctx.at.function.dom.adapter.closure.PresentClosingPeriodFunImport;
@@ -28,6 +27,7 @@ import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecution
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionTask;
 import nts.uk.ctx.at.function.dom.processexecution.listempautoexec.ListEmpAutoExec;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogRepository;
+import nts.uk.ctx.at.function.dom.processexecution.updateprocessexecsetting.changepersionlistforsche.ChangePersionListForSche;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.createapproval.dailyperformance.AppDataInfoDaily;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.createapproval.dailyperformance.AppDataInfoDailyRepository;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.createapproval.dailyperformance.ErrorMessageRC;
@@ -70,7 +70,14 @@ public class AppRouteUpdateDailyDefault implements AppRouteUpdateDailyService {
 	@Inject
 	private AppDataInfoDailyRepository appDataInfoDailyRepo;
 	
+<<<<<<< HEAD
 
+=======
+	@Inject
+	private ChangePersionListForSche changePersionListForSche;
+//	@Inject
+//	private EmployeeManageAdapter employeeManageAdapter;
+>>>>>>> 145c063... fixbug 108989
 	
 	public static int MAX_DELAY_PARALLEL = 0;
 	
@@ -144,6 +151,7 @@ public class AppRouteUpdateDailyDefault implements AppRouteUpdateDailyService {
 				checkError1552 = true;
 				break;
 			}
+<<<<<<< HEAD
 			
 			if(procExec.getProcessExecType() == ProcessExecType.NORMAL_EXECUTION) {
 				//通常実行の場合
@@ -151,14 +159,30 @@ public class AppRouteUpdateDailyDefault implements AppRouteUpdateDailyService {
 				
 			}else {
 				//再作成の場合
+=======
+			System.out.println("対象者-承認ルート日次: " + listEmp);
+			//通常実行の場合
+			/**「対象社員を取得する」で取得した社員IDを社員ID（List）とする*/
+			//再作成の場合
+			if(procExec.getProcessExecType() == ProcessExecType.RE_CREATE) {
+>>>>>>> 145c063... fixbug 108989
 				if(!listEmp.isEmpty()) {
-					/**異動者、勤務種別変更者、休職者・休業者のみの社員ID（List）を作成する*/	
-					DatePeriod maxPeriodBetweenCalAndCreate = new DatePeriod(closureData.getClosureStartDate(), GeneralDate.fromString("9999/12/31", "yyyy/MM/dd"));
-					ListLeaderOrNotEmpOutput listLeaderOrNotEmpOutput = transfereePerson.createProcessForChangePerOrWorktype(itemClosure.getClosureId().value, procExec.getCompanyId(),
-							listEmp, 
-							maxPeriodBetweenCalAndCreate, procExec);
-					listEmp.addAll(listLeaderOrNotEmpOutput.getLeaderEmpIdList());
-					listEmp.addAll(listLeaderOrNotEmpOutput.getNoLeaderEmpIdList());
+//					/**異動者、勤務種別変更者、休職者・休業者のみの社員ID（List）を作成する*/	
+//					DatePeriod maxPeriodBetweenCalAndCreate = new DatePeriod(closureData.getClosureStartDate(), GeneralDate.fromString("9999/12/31", "yyyy/MM/dd"));
+//					ListLeaderOrNotEmpOutput listLeaderOrNotEmpOutput = transfereePerson.createProcessForChangePerOrWorktype(itemClosure.getClosureId().value, procExec.getCompanyId(),
+//							listEmp, 
+//							maxPeriodBetweenCalAndCreate, procExec);
+					//Input = output
+					// ・社員ID（異動者、勤務種別変更者、休職者・休業者）（List）
+					List<String> reEmployeeList = new ArrayList<>();
+					// 社員ID（新入社員）（List）
+					List<String> newEmployeeList = new ArrayList<>();
+					// 社員ID（休職者・休業者）（List）
+					List<String> temporaryEmployeeList = new ArrayList<>();
+					changePersionListForSche.filterEmployeeList(procExec, listEmp, reEmployeeList, newEmployeeList, temporaryEmployeeList);
+//					listEmp.addAll(listLeaderOrNotEmpOutput.getLeaderEmpIdList());
+//					listEmp.addAll(listLeaderOrNotEmpOutput.getNoLeaderEmpIdList());
+					listEmp = reEmployeeList;
 				}
 			}
 			
