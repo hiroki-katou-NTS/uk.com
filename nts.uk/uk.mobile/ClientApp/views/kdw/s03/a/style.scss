@@ -55,4 +55,16 @@
         color: #999;
         padding-right: 4px;
     }
+    .crop-text {
+        -webkit-line-clamp: 2;
+        overflow : hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+    }
+    .row-style {
+        word-break: break-word;
+        overflow-wrap: break-word;
+        text-align: right;
+    }
 }

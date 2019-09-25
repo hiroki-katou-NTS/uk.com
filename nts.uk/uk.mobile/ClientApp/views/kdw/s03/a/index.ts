@@ -193,6 +193,14 @@ export class Kdws03AComponent extends Vue {
         let styleTagAr: any = [];
         styleTagAr = document.querySelectorAll('.btn-sm');
         _.forEach(styleTagAr, (x) => x.style.fontSize = '10px');
+
+        if (this.displayFormat == '1') {
+            let styleTableBody: any = [];
+            styleTableBody = document.querySelectorAll('.table-body');
+            if (!_.isEmpty(styleTableBody)) {
+                styleTableBody[0].style.marginBottom = '0px';
+            }
+        }        
     }
 
     //日別実績データの取得
@@ -364,46 +372,23 @@ export class Kdws03AComponent extends Vue {
             headers.forEach((header: any) => {
                 let setting = _.find(data.lstControlDisplayItem.columnSettings, (x) => x.columnKey == header.key);
                 if (_.has(rowDataSrc, header.key)) {
-                    if (!_.isNil(header.constraint.cdisplayType) && (setting.typeFormat == '3')) {
-                        rowData.push({
-                            key: header.key,
-                            value: rowDataSrc[header.key],
-                            class: 'currency-symbol',
-                            displayvalue: this.formatDisplay(rowDataSrc[header.key], setting),
-                        });
-                    } else {
-                        rowData.push({
-                            key: header.key,
-                            value: rowDataSrc[header.key],
-                            class: '',
-                            displayvalue: this.formatDisplay(rowDataSrc[header.key], setting),
-                        });
-                    }
-
+                    rowData.push({
+                        key: header.key,
+                        value: rowDataSrc[header.key],
+                        class: setting.typeFormat == '3' ? 'currency-symbol row-style' : 'row-style',
+                        displayvalue: this.formatDisplay(rowDataSrc[header.key], setting),
+                    });
                 } else {
-                    let value = this.getFromCombo(header.group[1].ntsControl, rowDataSrc[header.group[1].key]);
-                    if (!_.isNil(header.constraint.cdisplayType) && (setting.typeFormat == '3')) {
-                        rowData.push({
-                            key: header.key,
-                            groupKey: header.group[1].key,
-                            value,
-                            groupKey0: header.group[0].key,
-                            value0: rowDataSrc[header.group[0].key],
-                            class: 'currency-symbol',
-                            displayvalue: this.formatDisplay(rowDataSrc[header.key], setting),
-                        });
-                    } else {
-                        rowData.push({
-                            key: header.key,
-                            groupKey: header.group[1].key,
-                            value,
-                            groupKey0: header.group[0].key,
-                            value0: rowDataSrc[header.group[0].key],
-                            class: '',
-                            displayvalue: this.formatDisplay(rowDataSrc[header.key], setting),
-                        });
-                    }
-
+                    let resultValue = this.getFromCombo(header.group[1].ntsControl, rowDataSrc[header.group[1].key]);
+                    rowData.push({
+                        key: header.key,
+                        groupKey: header.group[1].key,
+                        value: resultValue,
+                        groupKey0: header.group[0].key,
+                        value0: rowDataSrc[header.group[0].key],
+                        class: '',
+                        displayvalue: resultValue,
+                    });
                 }
             });
 
@@ -421,7 +406,6 @@ export class Kdws03AComponent extends Vue {
                 self.displayDataLst.push({
                     rowData,
                     employeeName: rowDataSrc.employeeName,
-                    employeeNameDis: this.countHalf(rowDataSrc.employeeName) > 10 ? rowDataSrc.employeeName.substring(0, 5) + '...' : rowDataSrc.employeeName,
                     employeeId: rowDataSrc.employeeId,
                     employmentCode: rowDataSrc.employmentCode,
                     id: rowDataSrc.id,
@@ -484,7 +468,7 @@ export class Kdws03AComponent extends Vue {
                     headers.forEach((header: any) => {
                         rowData.push({ key: header.key, value: '' });
                     });
-                    self.displayDataLstEx.push({ rowData, employeeName: '', id: '', employeeNameDis: '' });
+                    self.displayDataLstEx.push({ rowData, employeeName: '', id: '' });
                 }
             } else if (7 < self.displayDataLst.length && self.displayDataLst.length < 20) {
                 self.displayDataLstEx = _.slice(self.displayDataLst, 0, 20);
@@ -658,7 +642,7 @@ export class Kdws03AComponent extends Vue {
                     this.displayHeaderLst.forEach((header: any) => {
                         rowData.push({ key: header.key, value: '' });
                     });
-                    this.displayDataLstEx.push({ rowData, employeeName: '', id: '', employeeNameDis: '' });
+                    this.displayDataLstEx.push({ rowData, employeeName: '', id: '' });
                 }
             }
         }
@@ -726,7 +710,8 @@ export class Kdws03AComponent extends Vue {
 
     //フォーマット
     public formatDisplay(value: string, setting: any) {
-        if (value == '0:00' || value == '0.0' || value == '0') {
+        let chkArray = ['00:00', '0:00', '0.0', '0', ''];
+        if (_.includes(chkArray, value)) {
             return '';
         } else {
             if (setting.typeFormat == '6') {
