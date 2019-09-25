@@ -191,6 +191,32 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
         } else{
             worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_23" : "A2_23_" + stt));
         }
+        // convert to japan date
+        JapaneseDate startDateOfQualifiRyowa = element.getDateOfQualifiRyowa().length() >= 10 ? toJapaneseDate( GeneralDate.fromString(element.getDateOfQualifiRyowa().substring(0,10), "yyyy-MM-dd")) : null;
+        if(!startDateOfQualifiRyowa.toString().substring(0,2).equals("令和")){
+            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_20" : "A2_20_" + stt));
+        }
+        // remove shape brithday
+        JapaneseDate birthDay = toJapaneseDate( GeneralDate.fromString(element.getBrithDay().substring(0,10), "yyyy-MM-dd"));
+        switch (birthDay.toString().substring(0,2)){
+            case "昭和" : {
+                worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_7" : "A2_7_" + stt));
+                worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_8" : "A2_8_" + stt));
+                break;
+            }
+            case "平成" : {
+                worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_6" : "A2_6_" + stt));
+                worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_8" : "A2_8_" + stt));
+                break;
+            }
+            case "令和" : {
+                worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_6" : "A2_6_" + stt));
+                worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_7" : "A2_7_" + stt));
+                break;
+            }
+        }
+
+
     }
 
     private JapaneseDate toJapaneseDate (GeneralDate date) {
