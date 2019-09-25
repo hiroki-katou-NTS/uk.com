@@ -215,6 +215,7 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
                 isShowSelectAllButton: self.isShowSelectAllButton(),
                 disableSelection : self.disableSelection(),
                 showOptionalColumn: false,
+                maxRows: 18,
                 optionalColumnName: nts.uk.resource.getText('KSM005_18'),
                 optionalColumnDatasource: ko.observableArray([])
             };

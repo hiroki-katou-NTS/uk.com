@@ -131,8 +131,8 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
                 typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? data.getCompanyName() : "");
         worksheets.getRangeByName(sheetName + "!D1_8").setValue(typeOff == BusinessDivision.OUTPUT_COMPANY_NAME ? company.getRepname() :
                 typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? data.getRepName() : "");
-        worksheets.getRangeByName(sheetName + "!D1_9").setValue(typeOff == BusinessDivision.OUTPUT_COMPANY_NAME ? company.getPhoneNum() :
-                typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? data.getPhoneNumber() : "");
+        worksheets.getRangeByName(sheetName + "!D1_9").setValue(typeOff == BusinessDivision.OUTPUT_COMPANY_NAME ? formatPhoneNumber(company.getPhoneNum()) :
+                typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? formatPhoneNumber(data.getPhoneNumber()) : "");
     }
 
     private void fillCompanyHealthy(WorksheetCollection worksheets, InsLossDataExport data, GeneralDate baseDate, CompanyInfor company, String sheetName, boolean isHeal, BusinessDivision typeOff){

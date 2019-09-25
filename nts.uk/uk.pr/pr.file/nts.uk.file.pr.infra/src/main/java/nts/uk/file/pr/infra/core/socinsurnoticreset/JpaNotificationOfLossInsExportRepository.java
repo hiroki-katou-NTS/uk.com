@@ -23,7 +23,7 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
     public List<InsLossDataExport> getWelfPenInsLoss(List<String> empIds,String cid, GeneralDate startDate, GeneralDate endDate) {
         List<Object[]> resultQuery = null;
         StringBuilder exportSQL = new StringBuilder();
-        exportSQL.append("  SELECT qi.EMPLOYEE_ID,");
+        exportSQL.append("  SELECT i.SCD,");
         exportSQL.append("      SOCIAL_INSURANCE_OFFICE_CD,");
         exportSQL.append("      OTHER,");
         exportSQL.append("      OTHER_REASON,");
@@ -220,7 +220,13 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
         exportSQL.append("      WEL_PEN_NUMBER,");
         exportSQL.append("      HEAL_INSUR_UNION_NMBER,");
         exportSQL.append("      MEMBER_NUMBER,");
-        exportSQL.append("      HEAL_INSUR_INHEREN_PR");
+        exportSQL.append("      HEAL_INSUR_INHEREN_PR,");
+        exportSQL.append("      POSTAL_CODE,");
+        exportSQL.append("      ADDRESS_1,");
+        exportSQL.append("      ADDRESS_2,");
+        exportSQL.append("      NAME,");
+        exportSQL.append("      REPRESENTATIVE_NAME,");
+        exportSQL.append("      PHONE_NUMBER");
         exportSQL.append("  FROM ");
         exportSQL.append("         (SELECT *");
         exportSQL.append("         FROM QQSMT_EMP_HEAL_INSUR_QI ");
@@ -250,7 +256,7 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
         exportSQL.append("  LEFT JOIN QQSMT_SOC_ISACQUISI_INFO info ON info.EMPLOYEE_ID = his.EMPLOYEE_ID");
         exportSQL.append("  LEFT JOIN QQSMT_MULTI_EMP_WORK_IF mt ON mt.EMPLOYEE_ID = his.EMPLOYEE_ID");
         exportSQL.append("  LEFT JOIN QQSMT_EMP_BA_PEN_NUM ba ON ba.EMPLOYEE_ID = his.EMPLOYEE_ID");
-        exportSQL.append("  LEFT JOIN (SELECT * ");
+        exportSQL.append("  INNER JOIN (SELECT * ");
         exportSQL.append("       FROM QPBMT_SOCIAL_INS_OFFICE");
         exportSQL.append("       WHERE CID = ?cid) oi ");
         exportSQL.append("       ON oi.CODE = his.SOCIAL_INSURANCE_OFFICE_CD");
@@ -315,6 +321,12 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
                 .healInsUnionNumber(i[39] == null ? "" : i[39].toString())
                 .memberNumber(i[40] == null ? "" : i[40].toString())
                 .healInsInherenPr(i[41] == null ? "" : i[41].toString())
+                .portCd(i[42] == null ? "" : i[42].toString())
+                .add1(i[43] == null ? "" : i[43].toString())
+                .add2(i[44] == null ? "" : i[44].toString())
+                .companyName(i[45] == null ? "" : i[45].toString())
+                .repName(i[46] == null ? "" : i[46].toString())
+                .phoneNumber(i[47] == null ? "" : i[47].toString())
                 .build()
                 ).collect(Collectors.toList());
     }
