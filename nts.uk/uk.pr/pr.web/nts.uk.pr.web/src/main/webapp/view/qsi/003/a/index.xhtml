@@ -21,12 +21,12 @@
     </ui:define>
 
     <ui:define name="content">
-        <div id="functions-area" style = "min-width: 1000px;">
-            <button id="A1_1" tabindex="1" class="proceed" data-bind="click : exportData">#{i18n.getText('QSI003_3')}</button>
+        <div id="functions-area" style = "min-width: 1000px; padding-left : 98px;">
+            <button id="A1_1" tabindex="1" class="proceed" data-bind="enable:selectedCode().length > 0 &amp;&amp; $root.errors.isEmpty , click : exportData">#{i18n.getText('QSI003_3')}</button>
 
-            <button id="A1_2" tabindex="2" >#{i18n.getText('QSI003_2')}</button>
+            <button id="A1_2" tabindex="2" data-bind="enable :selectedCode().length > 0 &amp;&amp; $root.errors.isEmpty, click: openBScreen">#{i18n.getText('QSI003_2')}</button>
 
-            <button id="A1_3" tabindex="3" data-bind="click: openBScreen" >#{i18n.getText('QSI003_4')}</button>
+            <button id="A1_3" tabindex="3" data-bind = "enable: false" >#{i18n.getText('QSI003_4')}</button>
 
         </div>
         <div id="contents-area">
@@ -34,15 +34,15 @@
             <div id="com-ccg001"></div>
 
             <!-- div left -->
-            <div class="pull-left" id="A2_2" style="margin-left: 100px">
+            <div class="panel panel-frame pull-left" id="A2_2" style="margin-left: 100px; padding: 30px; width: 560px;">
                 <div id="component-items-list"></div>
             </div>
             <!-- div right -->
-            <div  class="pull-right" id="A3_1" style="margin-left: 100px;    border-radius: 8px;border: 1px solid grey;padding: 10px;">
+            <div  class="fixed-flex-layout-right" id="A3_1" style="border-radius: 8px;border: 2px solid #B1B1B1;padding: 10px;float: right;width: 569px;height: 398px;">
                 <span id="A3_2" class="label" style="margin-bottom: 15px;">#{i18n.getText('QSI003_5')}</span>
                 <div class="control-group">
                     <div id="A3_3" data-bind="ntsFormLabel: {constrant: '', required:true}">#{i18n.getText('QSI003_6')}</div>
-                    <div id= "A3_4" style="margin-left:100px;" data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD',valueFormat: 'YYYYMMDD',name: '#{i18n.getText('QSI003_6')}'}"></div>
+                    <div id= "A3_4" style="margin-left:100px;" data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD',valueFormat: 'YYYYMMDD', constrant: '', required:true ,name: '#{i18n.getText('QSI003_6')}'}"></div>
                     <span id= "A3_5" style="margin-left:20px" data-bind="text: datePicker"></span>
                 </div>
 
@@ -56,7 +56,7 @@
                         value: personTarget,
                         required: true
                         }"></div>
-                    <button data-bind="ntsHelpButton: {image: 'QSI003Image01.png', position: 'bottom center', enable: true }">?</button>
+                    <button data-bind="ntsHelpButton: {image: '../resoures/QSI003Image01.png', position: 'bottom center', enable: true }">?</button>
                 </div>
 
                 <div class="control-group valign-center">

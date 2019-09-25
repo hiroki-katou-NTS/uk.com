@@ -311,13 +311,16 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
         String cid = AppContexts.user().companyId();
         String uid = AppContexts.user().userId();
 
-        final int DO_NOT_OUPUT = 0;
+        final int DO_NOT_OUPUT = 2;
         Optional<SocialInsurNotiCreateSet> socialInsurNotiCreateSet = mSocialInsurNotiCrSetRepository.getSocialInsurNotiCreateSetById(uid, cid);
-        if (socialInsurNotiCreateSet.get().getInsuredNumber().value == DO_NOT_OUPUT) {
-            throw new BusinessException("Msg_812",TextResource.localize("QSI001_27"));
-        }
+        /**
+         * //画面上存在していない処理 2019/8/21　河村
+         */
+//        if (socialInsurNotiCreateSet.get().getInsuredNumber().value == DO_NOT_OUPUT) {
+//            throw new BusinessException("Msg_812",TextResource.localize("QSI001_27"));
+//        }
         if (socialInsurNotiCreateSet.get().getOfficeInformation().value == DO_NOT_OUPUT) {
-            throw new BusinessException("Msg_174", TextResource.localize("QSI001_27"));
+            throw new BusinessException("Msg_174", TextResource.localize("QSI001_31"));
         }
         if (!socialInsurNotiCreateSet.get().getFdNumber().isPresent()) {
             throw new BusinessException("Msg_5", TextResource.localize("QSI001_46"));
