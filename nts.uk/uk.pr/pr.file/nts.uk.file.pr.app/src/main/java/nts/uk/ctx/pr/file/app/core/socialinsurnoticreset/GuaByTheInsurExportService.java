@@ -123,7 +123,7 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
         if (startDate.after(endDate)) {
             throw new BusinessException("Msg_812");
         }
-        boolean checkHealInsur = mEmplHealInsurQualifiInforRepository.checkEmplHealInsurQualifiInforEndDate(startDate, endDate, employeeIds);
+        boolean checkHealInsur = mEmplHealInsurQualifiInforRepository.checkEmplHealInsurQualifiInforStartDate(startDate, endDate, employeeIds);
         boolean checkWelfarePen = mEmpWelfarePenInsQualiInforRepository.checkEmpWelfarePenInsQualiInforStart(startDate, endDate, employeeIds);
         if (checkHealInsur && checkWelfarePen) {
             throw new BusinessException("Msg_37");
