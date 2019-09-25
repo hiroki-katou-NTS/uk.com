@@ -44,10 +44,10 @@ public class NameNotificationSet extends DomainObject {
     */
     private Optional<ReasonsForRegisRoman> otherReason;
 
-    public NameNotificationSet(int other, int listed, int residentCard, int addressOverseas, int shortResident, String otherReason) {
+    public NameNotificationSet(int other, int listed, Integer residentCard, int addressOverseas, int shortResident, String otherReason) {
         this.other = other;
         this.listed = listed;
-        this.residentCard = EnumAdaptor.valueOf(residentCard, ResidentCardCls.class);
+        this.residentCard = residentCard != null ? EnumAdaptor.valueOf(residentCard, ResidentCardCls.class) : EnumAdaptor.valueOf(1, ResidentCardCls.class);
         this.addressOverseas = addressOverseas;
         this.shortResident = shortResident;
         this.otherReason = otherReason == null ? Optional.empty() : Optional.of(new ReasonsForRegisRoman(otherReason));

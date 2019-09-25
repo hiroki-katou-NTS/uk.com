@@ -115,7 +115,7 @@ public class SocialInsurAcquisiInfor extends AggregateRoot {
         this.remunMonthlyAmountKind = remunMonthlyAmountKind == null ? Optional.empty() : Optional.of(new RemuneraMonthly(remunMonthlyAmountKind));
         this.totalMonthlyRemun = totalMonthlyRemun == null ? Optional.empty() : Optional.of(new RemuneraMonthly(totalMonthlyRemun));
         this.depenAppoint = depenAppoint == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(depenAppoint, DepenNotiAttachCtg.class));
-        this.qualifiDistin = qualifiDistin == null ? Optional.of(EnumAdaptor.valueOf(0, SocialInsurQuaAcquiClass.class)) : Optional.of(EnumAdaptor.valueOf(qualifiDistin, SocialInsurQuaAcquiClass.class));
+        this.qualifiDistin = qualifiDistin == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(qualifiDistin, SocialInsurQuaAcquiClass.class));
         this.PercentOrMore = Optional.ofNullable(PercentOrMore);
         this.shortTimeWorkers = Optional.ofNullable(shortTimeWorkes);
         this.continReemAfterRetirement = Optional.ofNullable(continReemAfterRetirement);
@@ -152,7 +152,7 @@ public class SocialInsurAcquisiInfor extends AggregateRoot {
         this.remunMonthlyAmountKind = remunMonthlyAmountKind == null ? Optional.empty() : Optional.of(new RemuneraMonthly(remunMonthlyAmountKind));
         this.totalMonthlyRemun = totalMonthlyRemun == null ? Optional.empty() : Optional.of(new RemuneraMonthly(totalMonthlyRemun));
         this.depenAppoint = depenAppoint == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(depenAppoint, DepenNotiAttachCtg.class));
-        this.qualifiDistin = Optional.ofNullable(EnumAdaptor.valueOf(qualifiDistin, SocialInsurQuaAcquiClass.class));
+        this.qualifiDistin = qualifiDistin == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(qualifiDistin, SocialInsurQuaAcquiClass.class));
         this.PercentOrMore = Optional.ofNullable(PercentOrMore);
         this.shortTimeWorkers = Optional.ofNullable(shortTimeWorkes);
         this.continReemAfterRetirement = Optional.ofNullable(continReemAfterRetirement);

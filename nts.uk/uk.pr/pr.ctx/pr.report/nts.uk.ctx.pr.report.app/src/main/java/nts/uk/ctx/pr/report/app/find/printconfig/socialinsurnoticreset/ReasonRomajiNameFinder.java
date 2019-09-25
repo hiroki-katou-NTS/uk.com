@@ -24,7 +24,7 @@ public class ReasonRomajiNameFinder {
         if (empBasicPenNumInfor.isPresent() && empNameReport.isPresent()){
             return new ReasonRomajiNameDto(
                     empId,
-                    empBasicPenNumInfor.get().getBasicPenNumber().toString(),
+                    empBasicPenNumInfor.get().getBasicPenNumber().isPresent() ? empBasicPenNumInfor.get().getBasicPenNumber().get().toString() : null,
                     new EmpNameReportDto(
                             NameNotificationSetDto.fromDomain(empNameReport.get().getPersonalSet()),
                             NameNotificationSetDto.fromDomain(empNameReport.get().getSpouse()))
