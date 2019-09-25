@@ -1222,17 +1222,17 @@ public class DailyPerformanceCorrectionProcessor {
 				}
 			}
 			
-	   Map<String, List<EmploymentHisOfEmployeeImport>> mapClosingEmpResult = checkClosingEmployee.checkClosingEmployee(companyId, lstEmployee.stream().map(x -> x.getId()).distinct().collect(Collectors.toList()), 
-					new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate()), closureId);
-			
-		lstErrorRefer = lstErrorRefer.stream().filter(x -> {
-				if(x.getItemMonth().booleanValue()) {
-					return mapClosingEmpResult.containsKey(x.getEmployeeId());
-				}else {
-					return checkDataInClosing(Pair.of(x.getEmployeeId(), x.getDate()), mapClosingEmpResult);
-				}
-				
-			}).collect(Collectors.toList());
+//	   Map<String, List<EmploymentHisOfEmployeeImport>> mapClosingEmpResult = checkClosingEmployee.checkClosingEmployee(companyId, lstEmployee.stream().map(x -> x.getId()).distinct().collect(Collectors.toList()), 
+//					new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate()), closureId);
+//			
+//		lstErrorRefer = lstErrorRefer.stream().filter(x -> {
+//				if(x.getItemMonth().booleanValue()) {
+//					return mapClosingEmpResult.containsKey(x.getEmployeeId());
+//				}else {
+//					return checkDataInClosing(Pair.of(x.getEmployeeId(), x.getDate()), mapClosingEmpResult);
+//				}
+//				
+//			}).collect(Collectors.toList());
 			
 			
 		return lstErrorRefer;

@@ -84,6 +84,7 @@ public class DPMonthFlexProcessor {
 		//nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService.getClosureDataByEmployee
 		// 社員に対応する処理締めを取得する
 		Closure closure = closureService.getClosureDataByEmployee(param.getEmployeeId(), param.getDate());
+		if(closure == null) return null;
 		Optional<ClosurePeriod> closurePeriodOpt = closure.getClosurePeriodByYmd(param.getDate());
 		
 //		Optional<ClosureEmployment> closureEmploymentOptional = this.closureEmploymentRepository
