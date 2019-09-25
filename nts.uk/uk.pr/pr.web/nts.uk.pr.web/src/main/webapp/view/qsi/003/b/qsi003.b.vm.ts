@@ -139,15 +139,14 @@ module nts.uk.pr.view.qsi003.b.viewmodel {
             if(nts.uk.util.isNullOrEmpty(list) || nts.uk.util.isNullOrEmpty(list.employeeList)) {
                 close();
             }
-            self.employeeInputList(self.createEmployeeModel(list.employeeList));
-
-           /* self.employeeInputList(list.employeeList);
-            self.selectedItem(self.employeeInputList()[0].id);*/
-            self.selectedItem(self.employeeInputList()[0].id);
-            this.loadKCP009();
             self.selectedItem.subscribe((data) => {
                 self.getDataRomaji(data);
             });
+
+            self.employeeInputList(self.createEmployeeModel(list.employeeList));
+            self.selectedItem(self.employeeInputList()[0].id);
+            this.loadKCP009();
+
 
         }
 
