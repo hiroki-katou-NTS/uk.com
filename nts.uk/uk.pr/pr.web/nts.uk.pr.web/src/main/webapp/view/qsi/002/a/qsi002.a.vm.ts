@@ -21,7 +21,7 @@ module nts.uk.pr.view.qsi002.a.viewmodel {
         selectedRuleCode: any;
         //datepicker
         baseDate1: KnockoutObservable<moment.Moment>;
-        datePicker: KnockoutObservable<string>;
+        japanBaseDate: KnockoutObservable<string>;
         //combobox
         itemList: KnockoutObservableArray<ItemModel>;
         selectedCode: KnockoutObservable<string>;
@@ -79,7 +79,11 @@ module nts.uk.pr.view.qsi002.a.viewmodel {
             self.selectedRuleCode = ko.observable(1);
             //init datepicker
             self.baseDate1 = ko.observable(moment());
-            self.datePicker = ko.observable(nts.uk.time.dateInJapanEmpire(self.baseDate1()));
+
+            self.japanBaseDate = ko.observable(nts.uk.time.dateInJapanEmpire(moment.utc(self.baseDate1()).format("YYYYMMDD")).toString());
+            self.baseDate1.subscribe(e => {
+                self.japanBaseDate(nts.uk.time.dateInJapanEmpire(moment.utc(self.baseDate1()).format("YYYYMMDD")).toString());
+            });
             //init combobox
             self.itemList = ko.observableArray([
                 new ItemModel('1', '基本給'),
@@ -148,7 +152,7 @@ module nts.uk.pr.view.qsi002.a.viewmodel {
                 isMultiSelect: self.isMultiSelect(),
                 listType: ListType.EMPLOYEE,
                 employeeInputList: self.employeeListKCP005,
-                selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                selectType: SelectType.SELECT_ALL,
                 selectedCode: self.selectedCodeKCP005,
                 isDialog: self.isDialog(),
                 isShowNoSelectRow: self.isShowNoSelectRow(),
