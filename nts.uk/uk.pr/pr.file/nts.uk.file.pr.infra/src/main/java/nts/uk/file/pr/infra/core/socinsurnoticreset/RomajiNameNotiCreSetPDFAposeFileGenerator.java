@@ -141,7 +141,8 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
                     worksheet.get(i).getCells().get(11, 18).setValue(Objects.toString(pushDataCell( convertJpDate(birthDay).substring(6,7), 1 ),  ""));*/
 
                     //A1_3 ~ A1_6
-                    this.selectShapes(worksheet, personInfo.getGender() , i, "A1_3", "A1_4" );
+                    this.selectShapes(worksheet, personInfo.getGender() , i, "A1_3" );
+                    this.selectShapes(worksheet, personInfo.getGender() , i, "A1_4" );
                 }
 
                 worksheet.getRangeByName(i +"!A2_1" ).setValue(Objects.toString(personInfo != null ? personInfo.getPersonName():  ""));
@@ -151,11 +152,12 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
                 worksheet.getRangeByName(i + "!A4_5").setValue(Objects.toString(empNameReport != null && empNameReport.getPersonalSet().getOther() == 1 ? empNameReport.getPersonalSet().getOtherReason(): ""));
 
                 if( empNameReport != null) {
-                    this.selectShapes(worksheet, empNameReport.getPersonalSet().getResidentCard().value , i, "A1_5", "A1_6" );
-                    this.selectShapes(worksheet, empNameReport.getPersonalSet().getShortResident() , i, "A4_1", "A1_0" );
-                    this.selectShapes(worksheet, empNameReport.getPersonalSet().getAddressOverseas() , i, "A4_2", "A1_0" );
-                    this.selectShapes(worksheet, empNameReport.getPersonalSet().getListed() , i, "A4_3", "A1_0" );
-                    this.selectShapes(worksheet, empNameReport.getPersonalSet().getOther() , i, "A4_4", "A1_0" );
+                    this.selectShapes(worksheet, empNameReport.getPersonalSet().getResidentCard().value , i, "A1_5" );
+                    this.selectShapes(worksheet, empNameReport.getPersonalSet().getResidentCard().value , i, "A1_6" );
+                    this.selectShapes(worksheet, empNameReport.getPersonalSet().getShortResident() , i, "A4_1" );
+                    this.selectShapes(worksheet, empNameReport.getPersonalSet().getAddressOverseas() , i, "A4_2" );
+                    this.selectShapes(worksheet, empNameReport.getPersonalSet().getListed() , i, "A4_3" );
+                    this.selectShapes(worksheet, empNameReport.getPersonalSet().getOther() , i, "A4_4" );
                 }
 
             } else {
@@ -186,7 +188,8 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
                     worksheet.get(i).getCells().get(11, 18).setValue(Objects.toString(pushDataCell( convertJpDate(birthDayf).substring(6,7), 1 ),  ""));*/
 
                     //A1_3 ~ A1_6
-                    this.selectShapes(worksheet, familyMember.getGender() , i, "A1_3", "A1_4" );
+                    this.selectShapes(worksheet, familyMember.getGender() , i, "A1_3" );
+                    this.selectShapes(worksheet, familyMember.getGender() , i, "A1_4" );
                 }
 
                 worksheet.getRangeByName(i +"!A2_1" ).setValue(Objects.toString(familyMember != null ? familyMember.getNameRomajiFull():  ""));
@@ -196,11 +199,12 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
                 worksheet.getRangeByName(i + "!A4_5").setValue(Objects.toString(empNameReport != null && empNameReport.getSpouse().getOther() == 1 ? empNameReport.getSpouse().getOtherReason(): ""));
 
                 if( empNameReport != null) {
-                    this.selectShapes(worksheet, empNameReport.getSpouse().getResidentCard().value , i, "A1_5", "A1_6" );
-                    this.selectShapes(worksheet, empNameReport.getSpouse().getShortResident() , i, "A4_1", "A1_0" );
-                    this.selectShapes(worksheet, empNameReport.getSpouse().getAddressOverseas() , i, "A4_2", "A1_0" );
-                    this.selectShapes(worksheet, empNameReport.getSpouse().getListed() , i, "A4_3", "A1_0" );
-                    this.selectShapes(worksheet, empNameReport.getSpouse().getOther() , i, "A4_4", "A1_0" );
+                    this.selectShapes(worksheet, empNameReport.getSpouse().getResidentCard().value , i, "A1_5" );
+                    this.selectShapes(worksheet, empNameReport.getSpouse().getResidentCard().value , i, "A1_6" );
+                    this.selectShapes(worksheet, empNameReport.getSpouse().getShortResident() , i, "A4_1" );
+                    this.selectShapes(worksheet, empNameReport.getSpouse().getAddressOverseas() , i, "A4_2" );
+                    this.selectShapes(worksheet, empNameReport.getSpouse().getListed() , i, "A4_3" );
+                    this.selectShapes(worksheet, empNameReport.getSpouse().getOther() , i, "A4_4" );
                 }
             }
 
@@ -222,7 +226,7 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
 
             //A3_7
             JapaneseDate japaneseDate = toJapaneseDate(date);
-            worksheet.getRangeByName(i +"!A3_7" ).setValue(japaneseDate);
+            worksheet.getRangeByName(i +"!A3_7" ).setValue(japaneseDate.toString());
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -234,8 +238,11 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
         return new JapaneseDate(date, era.get());
     }
 
-    private void selectShapes(WorksheetCollection worksheets, int value, String sheetName, String option1, String option2){
-        worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(value == 1 ? option2 : option1 ));
+    private void selectShapes(WorksheetCollection worksheets, int value, String sheetName, String option){
+        if(value!=1){
+            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(option));
+        }
+
     }
 
     private String formatValue(String pc) {
