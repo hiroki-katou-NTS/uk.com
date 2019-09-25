@@ -92,13 +92,22 @@ module nts.uk.pr.view.qsi003.a.viewmodel {
             return listEmpId;
         }
 
+        getListEmpIds(empCode: Array, listEmp: Array){
+            let listEmpId =[];
+            _.each(empCode, (item) =>{
+                let emp = _.find(listEmp, function(itemEmp) { return itemEmp.code == item; });
+                listEmpId.push(emp.id);
+            });
+            return listEmpId;
+        }
+
         exportData(){
             var self = this;
             let romajiNameNotiCreSetCommand: any = {
                 date : moment.utc(self.date(),"YYYY/MM/DD" ),
                 personTarget : self.personTarget(),
                 addressOutputClass : self.addressOutputClass(),
-                empIds: self.getListEmpId(self.selectedCode(), self.employeeList())
+                empIds: self.getListEmpIds(self.selectedCode(), self.employeeList())
             };
             nts.uk.pr.view.qsi003.a.service.exportData(romajiNameNotiCreSetCommand).done( function() {
 
@@ -124,12 +133,7 @@ module nts.uk.pr.view.qsi003.a.viewmodel {
             self.isShowWorkPlaceName = ko.observable(false);
             self.isShowSelectAllButton = ko.observable(false);
             self.disableSelection = ko.observable(false);
-            /*this.employeeList = ko.observableArray<UnitModel>([
-                { code: '1', name: 'Angela Baby', workplaceName: 'HN' },
-                { code: '2', name: 'Xuan Toc Do', workplaceName: 'HN' },
-                { code: '3', name: 'Park Shin Hye', workplaceName: 'HCM' },
-                { code: '4', name: 'Vladimir Nabokov', workplaceName: 'HN' }
-            ]);*/
+            
             self.listComponentOption = {
                 isShowAlreadySet: self.isShowAlreadySet(),
                 isMultiSelect: self.isMultiSelect(),

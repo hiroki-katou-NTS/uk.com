@@ -358,7 +358,7 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
     export function getPersonalNumber(): Array<ItemModel> {
         return [
             new ItemModel('0', getText('Enum_PersonalNumber_SHORT_STAY')),
-            new ItemModel('1', getText('Enum_PersonalNumber_TIME')),
+            new ItemModel('1', getText('Enum_PersonalNumber_SHORT_TIME')),
             new ItemModel('2', getText('Enum_PersonalNumber_RESON_OTHER')),
             new ItemModel('3', getText('Enum_PersonalNumber_LIVING_ABROAD')),
         ];

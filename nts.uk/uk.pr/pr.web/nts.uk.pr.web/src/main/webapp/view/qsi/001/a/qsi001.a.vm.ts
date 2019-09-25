@@ -23,6 +23,7 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
         employees: any;
         selectedRuleCode: any;
         //datepicker
+        baseDate: KnockoutObservable<moment.Moment>;
         baseDate1: KnockoutObservable<moment.Moment>;
         startDate: KnockoutObservable<moment.Moment>;
         endDate: KnockoutObservable<moment.Moment>;
@@ -173,7 +174,7 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
 
             setShared('QSI001_PARAMS_TO_SCREEN_B', {
                 listEmpId: self.getListEmployee(self.selectedCodeKCP005(),self.employees),
-                date: self.baseDate(),
+                date: self.baseDate1(),
                 startDate: self.endDate(),
                 endDate: self.startDate()
             });
@@ -329,7 +330,7 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
                 empIds: employList,
                 startDate: moment.utc(self.startDate(), "YYYY/MM/DD"),
                 endDate: moment.utc(self.endDate(), "YYYY/MM/DD"),
-                baseDate: moment.utc(self.baseDate(), "YYYY/MM/DD")
+                baseDate: moment.utc(self.baseDate1(), "YYYY/MM/DD")
             };
             nts.uk.ui.block.grayout();
             service.exportFile(data).done(function() {

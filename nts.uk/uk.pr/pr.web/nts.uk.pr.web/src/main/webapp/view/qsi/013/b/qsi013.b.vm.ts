@@ -59,6 +59,21 @@ module nts.uk.pr.view.qsi013.b.viewmodel {
 
         getDataDefault(){
             let self = this;
+            self.hCause(0);
+            self.hNumRecoved(null);
+            self.hOther(false);
+            self.hCaInsurance(null);
+            self.hOtherReason('');
+
+            self.pCause(0);
+            self.pNumRecoved(null);
+            self.pOther(false);
+            self.pCaInsurance(null);
+            self.pOtherReason('');
+
+            self.isMoreEmp(null);
+            self.continReemAfterRetirement(null);
+            self.basicPenNumber('');
             // for new mode
             //set default value
             self.screenMode(model.SCREEN_MODE.NEW);
@@ -111,7 +126,7 @@ module nts.uk.pr.view.qsi013.b.viewmodel {
             self.inline = ko.observable(true);
             self.required = ko.observable(true)
             self.enable = ko.observable(true);
-            self.systemReference = ko.observable(model.SystemType.SALARY);
+            self.systemReference = ko.observable(model.SystemType.EMPLOYMENT);
             self.isDisplayOrganizationName = ko.observable(false);
             self.targetBtnText = nts.uk.resource.getText("KCP009_3");
             self.isEnable = ko.observable(true);
@@ -129,9 +144,12 @@ module nts.uk.pr.view.qsi013.b.viewmodel {
         constructor() {
 
             var self = this;
-            this.init();
             let list = getShared("QSI013_PARAMS_B");
-            self.employeeInputList(list.employeeList);
+            if(nts.uk.util.isNullOrEmpty(list) || nts.uk.util.isNullOrEmpty(list.employeeList)) {
+                close();
+            }
+            self.employeeInputList(self.createEmployeeModel(list.employeeList));
+            this.init();
             self.selectedItem(self.employeeInputList()[0].id);
             self.itemListHealth = ko.observableArray(model.getCauseTypeHealthLossInfo());
             self.itemListPension = ko.observableArray(model.getCauseTypePensionLossInfo());
@@ -203,5 +221,20 @@ module nts.uk.pr.view.qsi013.b.viewmodel {
             });
             $("#B2_2").focus();
         }
+
+        createEmployeeModel(data) {
+            let listEmployee = [];
+            _.each(data, data => {
+                listEmployee.push({
+                    id: data.id,
+                    code: data.code,
+                    businessName: data.name,
+                    workplaceName: data.workplaceName
+                });
+            });
+
+            return listEmployee;
+        }
+
     }
 }

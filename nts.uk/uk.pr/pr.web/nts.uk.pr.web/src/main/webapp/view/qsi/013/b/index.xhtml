@@ -56,7 +56,7 @@
                    <div id="B222_9" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('QSI013_B222_9')}</div>
                    <div id="B222_10" style="margin-left: 100px;" tabindex="7" data-bind="ntsComboBox: {
                 name: '#{i18n.getText('QSI013_B222_10')}',
-                width: '185px',
+                width: '250px',
                 options: itemListHealth,
                 optionsValue: 'code',
                 visibleItemsCount: 5,
@@ -70,14 +70,14 @@
                </div>
                <div class="valign-center control-group">
                    <div id="B222_12" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('QSI013_B222_12')}</div>
-                   <input id="B222_13" style="margin-left: 60px;" tabindex="8" data-bind="ntsNumberEditor: {
+                   <input id="B222_13" style="width: 227px;margin-left: 60px;" tabindex="8" data-bind="ntsNumberEditor: {
                                                                          name: '#{i18n.getText('QSI013_B222_13')}',
                                                                          value: hCaInsurance,
                                                                          constraint: 'NumInsCards'}" />
                </div>
                <div class="valign-center control-group">
                    <div id="B222_14" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('QSI013_B222_14')}</div>
-                   <input id="B222_15" style="margin-left: 45px;" tabindex="9" data-bind="
+                   <input id="B222_15" style="width: 227px;margin-left: 45px;" tabindex="9" data-bind="
                                                                     ntsNumberEditor: {
                                                                     name: '#{i18n.getText('QSI013_B222_15')}',
                                                                     value: hNumRecoved,
@@ -86,22 +86,23 @@
                <div class=" control-group_">
                    <div id="B222_16" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('QSI013_B222_16')}</div>
                    <div id="B222_17" style="margin-left: 152px;" tabindex="10" data-bind="ntsCheckBox: {checked: hOther}">#{i18n.getText('QSI013_B222_17')}</div>
-                   <input id="B222_18" style="margin-left: 20px;" tabindex="11" data-bind="ntsTextEditor: {
+                   <input id="B222_18" style="width: 227px; margin-left: 20px;" tabindex="11" data-bind="ntsTextEditor: {
                                                                             name: '#{i18n.getText('QSI013_B222_18')}',
                                                                             value: hOtherReason,
                                                                             enable: hOther,
+                                                                            width: '250px',
                                                                             constraint: 'RemarkForQuaCompany'}" />
                </div>
                <div class="valign-center control-group" style="margin-top : 10px;">
                    <label id="B222_19">#{i18n.getText('QSI013_B222_19')}</label>
-                   <label id="B222_20" style="margin-left: 125px;" >#{i18n.getText('QSI013_B222_20')}</label>
+                   <label id="B222_20" style="width: 227px; margin-left: 125px;" >#{i18n.getText('QSI013_B222_20')}</label>
                </div>
                <hr id="B222_21"></hr>
                <div class="valign-center control-group">
                    <div id="B222_22" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('QSI013_B222_22')}</div>
                    <div id="B222_23" style="margin-left: 100px;" tabindex="12" data-bind="ntsComboBox: {
                 name: '#{i18n.getText('QSI013_B222_23')}',
-                width: '185px',
+                width: '250px',
                 options: itemListPension,
                 optionsValue: 'code',
                 visibleItemsCount: 5,
@@ -115,14 +116,14 @@
                </div>
                <div class="valign-center control-group">
                    <div id="B222_25" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('QSI013_B222_25')}</div>
-                   <input id="B222_26" style="margin-left: 60px;" tabindex="13" data-bind="ntsNumberEditor: {
+                   <input id="B222_26" style="width: 227px; margin-left: 60px;" tabindex="13" data-bind="ntsNumberEditor: {
                                                                                      name: '#{i18n.getText('QSI013_B222_26')}',
                                                                                      value: pCaInsurance,
                                                                                      constraint: 'NumInsCards'}" />
                </div>
                <div class="valign-center control-group">
                    <div id="B222_27" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('QSI013_B222_27')}</div>
-                   <input id="B222_28" style="margin-left: 45px;" tabindex="14" data-bind="ntsNumberEditor: {
+                   <input id="B222_28" style="width: 227px;margin-left: 45px;" tabindex="14" data-bind="ntsNumberEditor: {
                                                                                        name: '#{i18n.getText('QSI013_B222_28')}',
                                                                                        value: pNumRecoved,
                                                                                        constraint: 'NumInsCards'
@@ -131,7 +132,7 @@
                <div class="valign-center control-group">
                    <div id="B222_29" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('QSI013_B222_29')}</div>
                    <div id="B222_30" style="margin-left: 152px;" tabindex="15" data-bind="ntsCheckBox: {checked: pOther}">#{i18n.getText('QSI013_B222_30')}</div>
-                   <input id="B222_31" style="margin-left: 20px;" tabindex="16" data-bind="ntsTextEditor: {
+                   <input id="B222_31" style="width: 227px;margin-left: 20px;" tabindex="16" data-bind="ntsTextEditor: {
                                                                            name: '#{i18n.getText('QSI013_B222_31')}',
                                                                            value: pOtherReason,
                                                                            enable: pOther,

@@ -1,6 +1,7 @@
 module nts.uk.pr.view.qsi002.a.viewmodel {
 
     import block = nts.uk.ui.block;
+    import getText = nts.uk.resource.getText;
     export class ScreenModel {
         ccg001ComponentOption: GroupOption;
         employeeInputList: KnockoutObservableArray<EmployeeModel>;
@@ -417,78 +418,53 @@ module nts.uk.pr.view.qsi002.a.viewmodel {
 
     //社会保険出力順
 
-    export function getSocialInsurOutOrder() : Array<ItemModel>{
+    export function getSocialInsurOutOrder(): Array<ItemModel> {
         return [
-
-            //部門社員順
-            new ItemModel('0', "Enum_SocialInsurOutOrder_DIVISION_EMP_ORDER"),
-            //社員コード順
-            new ItemModel('1', "Enum_SocialInsurOutOrder_EMPLOYEE_CODE_ORDER"),
-            //社員カナ順
-            new ItemModel('2', "Enum_SocialInsurOutOrder_EMPLOYEE_KANA_ORDER"),
-            //健康保険番号順
-            new ItemModel('3', "Enum_SocialInsurOutOrder_HEAL_INSUR_NUMBER_ORDER"),
-            //厚生年金番号順
-            new ItemModel('4', "Enum_SocialInsurOutOrder_WELF_AREPEN_NUMBER_ORDER"),
-            //健保組合番号順
-            new ItemModel('5', "Enum_SocialInsurOutOrder_HEAL_INSUR_NUMBER_UNION_ORDER"),
-            //基金加入員番号順
-            new ItemModel('6', "Enum_SocialInsurOutOrder_ORDER_BY_FUND"),
-            //被保険者整理番号順
-            new ItemModel('7', "Enum_SocialInsurOutOrder_INSURED_PER_NUMBER_ORDER")
-        ]
+            new ItemModel('0', getText('Enum_SocialInsurOutOrder_DIVISION_EMP_ORDER')),
+            new ItemModel('1', getText('Enum_SocialInsurOutOrder_EMPLOYEE_CODE_ORDER')),
+            new ItemModel('2', getText('Enum_SocialInsurOutOrder_EMPLOYEE_KANA_ORDER')),
+            new ItemModel('3', getText('Enum_SocialInsurOutOrder_HEAL_INSUR_NUMBER_ORDER')),
+            new ItemModel('4', getText('Enum_SocialInsurOutOrder_WELF_AREPEN_NUMBER_ORDER')),
+            new ItemModel('5', getText('Enum_SocialInsurOutOrder_HEAL_INSUR_NUMBER_UNION_ORDER')),
+            new ItemModel('6', getText('Enum_SocialInsurOutOrder_ORDER_BY_FUND')),
+            new ItemModel('7', getText('Enum_SocialInsurOutOrder_INSURED_PER_NUMBER_ORDER'))
+        ];
     }
 
     //被保険者整理番号区分
 
-    export function getInsurPersonNumDivision(): Array<ItemModel>{
+    export function getInsurPersonNumDivision(): Array<ItemModel> {
         return [
-            //出力しない
-            new ItemModel('0', "Enum_InsurPersonNumDivision_DO_NOT_OUPUT"),
-            //健康保険番号を出力
-            new ItemModel('1', "Enum_InsurPersonNumDivision_OUTPUT_HEAL_INSUR_NUM"),
-            //厚生年金番号を出力
-            new ItemModel('2', "Enum_InsurPersonNumDivision_OUTPUT_THE_WELF_PENNUMBER"),
-            //健保組合番号を出力
-            new ItemModel('3', "Enum_InsurPersonNumDivision_OUTPUT_HEAL_INSUR_UNION"),
-            //基金加入員番号を出力
-            new ItemModel('4', "Enum_InsurPersonNumDivision_OUTPUT_THE_FUN_MEMBER")
-        ]
+            new ItemModel('0', getText('Enum_InsurPersonNumDivision_DO_NOT_OUPUT')),
+            new ItemModel('1', getText('Enum_InsurPersonNumDivision_OUTPUT_HEAL_INSUR_NUM')),
+            new ItemModel('2', getText('Enum_InsurPersonNumDivision_OUTPUT_THE_WELF_PENNUMBER')),
+            new ItemModel('3', getText('Enum_InsurPersonNumDivision_OUTPUT_HEAL_INSUR_UNION')),
+            new ItemModel('4', getText('Enum_InsurPersonNumDivision_OUTPUT_THE_FUN_MEMBER'))
+        ];
     }
 
     //事業所整理記号区分
-    export  function getBussEsimateClass(): Array<ItemModel>{
+    export function getBussEsimateClass(): Array<ItemModel> {
         return [
-            //健保整理記号
-            new ItemModel('0', "Enum_BussEsimateClass_HEAL_INSUR_OFF_ARR_SYMBOL"),
-            //厚生整理記号
-            new ItemModel('1', "Enum_BussEsimateClass_EMPEN_ESTAB_REARSIGN")
-        ]
+            new ItemModel('0', getText('Enum_BussEsimateClass_HEAL_INSUR_OFF_ARR_SYMBOL')),
+            new ItemModel('1', getText('Enum_BussEsimateClass_EMPEN_ESTAB_REARSIGN'))
+        ];
     }
 
-    export function getBusinessDivision(): Array<ItemModel>{
+
+    export function getBusinessDivision(): Array<ItemModel> {
         return [
-            //会社名・住所を出力
-            new ItemModel('0', "Enum_BusinessDivision_OUTPUT_COMPANY_NAME"),
-            //社会保険事業所名・住所を出力
-            new ItemModel('1', "Enum_BusinessDivision_OUTPUT_SIC_INSURES"),
-            new ItemModel('2', "Enum_BusinessDivision_DO_NOT_OUTPUT"),
-            /*出力しない（事業所）*/
-            new ItemModel('3', "Enum_BusinessDivision_DO_NOT_OUTPUT_BUSINESS"),
-        ]
+            new ItemModel('0', getText('Enum_BusinessDivision_OUTPUT_COMPANY_NAME')),
+            new ItemModel('1', getText('Enum_BusinessDivision_OUTPUT_SIC_INSURES')),
+            new ItemModel('2', getText('Enum_BusinessDivision_DO_NOT_OUTPUT')),
+            new ItemModel('3', getText('Enum_BusinessDivision_DO_NOT_OUTPUT_BUSINESS'))
+        ];
     }
 
-    export function getPersonalNumClass(): Array<ItemModel>{
+    export function getPersonalNumClass(): Array<ItemModel> {
         return [
-            //個人番号を出力する
-            new ItemModel('0', "Enum_PersonalNumClass_OUTPUT_PER_NUMBER"),
-            //基礎年金番号を出力する
-            new ItemModel('1', "Enum_PersonalNumClass_OUTPUT_BASIC_PER_NUMBER"),
-            //個人番号が無ければ基礎年金番号を出力する
-            new ItemModel('2', "Enum_PersonalNumClass_OUTPUT_BASIC_PEN_NOPER"),
-            //出力しない
-            new ItemModel('3', "Enum_PersonalNumClass_DO_NOT_OUTPUT")
-        ]
+            new ItemModel('3', getText('Enum_PersonalNumClass_DO_NOT_OUTPUT'))
+        ];
     }
 
     class ItemModelGrid {

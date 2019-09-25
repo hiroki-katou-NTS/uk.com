@@ -50,7 +50,7 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
             for (int i  = 0; i < data.size() ; i ++){
                 worksheets.get(worksheets.addCopy(0)).setName(sheetName + i);
                 romajiNameNotification = data.get(i);
-                if(romajiNameNotification.getPersonInfo() != null ){
+
                     //push data
                     this.pushData(worksheets,
                             romajiNameNotification.getPersonTarget(),
@@ -64,7 +64,7 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
                             romajiNameNotification.getRomajiNameNotiCreSetting(),
                             romajiNameNotification.getDate(),
                             sheetName + i);
-                }
+
 
             }
 
@@ -93,6 +93,10 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
                           String i){
         try {
 
+            //for hash code
+            personInfo = new PersonInfo("1999-10-15", "Hoadaika0", "Hoadaikakataa1", "123455", 1);
+            familyMember = new FamilyMember("1999-11-15", "Hoadaika1");
+            companyInfor = new CompanyInfor("1234567", "add1", "add2", "hoadaikacompany", "hoadaikarepresent", "0123456789");
 
             //For the person
             if ( personTarget.equals("0")){
@@ -188,7 +192,6 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
 
             if( romajiNameNotiCreSetting.getAddressOutputClass().equals(BusinessDivision.OUTPUT_COMPANY_NAME) || romajiNameNotiCreSetting.getAddressOutputClass().equals(BusinessDivision.OUTPUT_SIC_INSURES)){
                 worksheet.getRangeByName(i + "!A3_1").setValue(Objects.toString(companyInfor != null ? "〒"+formatValue(companyInfor.getPostCd().toString()) : null));
-                //worksheet.getRangeByName(i + "!A3_2").setValue(Objects.toString(companyInfor != null ? companyInfor.getAdd_1():  ""));
                 worksheet.getRangeByName(i + "!A3_3").setValue(Objects.toString(companyInfor != null ? companyInfor.getAdd_1()+companyInfor.getAdd_2(): ""));
                 worksheet.getRangeByName(i + "!A3_4").setValue(Objects.toString(companyInfor != null ?  companyInfor.getCompanyName(): ""));
                 worksheet.getRangeByName(i + "!A3_5").setValue(Objects.toString(companyInfor != null ?  companyInfor.getRepname(): ""));
@@ -197,7 +200,6 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
             } else if (romajiNameNotiCreSetting.getAddressOutputClass().equals(BusinessDivision.DO_NOT_OUTPUT) ||
                     romajiNameNotiCreSetting.getAddressOutputClass().equals(BusinessDivision.DO_NOT_OUTPUT_BUSINESS)) {
                 worksheet.getRangeByName(i + "!A3_1").setValue(Objects.toString(socialInsuranceOffice != null ? "〒"+formatValue(socialInsuranceOffice.getBasicInformation().getAddress().get().getPostalCode().get().toString()):""));
-                //worksheet.getRangeByName(i + "!A3_2").setValue(Objects.toString(socialInsuranceOffice != null ?  socialInsuranceOffice.getBasicInformation().getAddress().get().getAddress1(): ""));
                 worksheet.getRangeByName(i + "!A3_3").setValue(Objects.toString(socialInsuranceOffice != null ? socialInsuranceOffice.getBasicInformation().getAddress().get().getAddress1().get().toString()+socialInsuranceOffice.getBasicInformation().getAddress().get().getAddress2().get().toString():""));
                 worksheet.getRangeByName(i + "!A3_4").setValue(Objects.toString(socialInsuranceOffice != null ? socialInsuranceOffice.getName():""));
                 worksheet.getRangeByName(i + "!A3_5").setValue(Objects.toString(socialInsuranceOffice != null ?  socialInsuranceOffice.getBasicInformation().getRepresentativeName().get():""));

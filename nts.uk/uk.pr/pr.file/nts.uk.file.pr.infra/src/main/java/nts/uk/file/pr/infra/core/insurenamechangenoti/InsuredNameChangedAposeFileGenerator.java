@@ -218,21 +218,21 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
         if(socialInsurNotiCreateSet.getOfficeInformation().value == BusinessDivision.OUTPUT_COMPANY_NAME.value){
 
             if(data.getCompanyInfor() != null){
-                ws.getCells().get("J22").putValue("〒 " + data.getCompanyInfor().getPostCd().substring(0,3) + " － " + data.getCompanyInfor().getPostCd().substring(4));
+                ws.getCells().get("J22").putValue("〒 " + data.getCompanyInfor().getPostCd().substring(0,3) + " － " + data.getCompanyInfor().getPostCd().substring(3));
                 ws.getCells().get("M22").putValue(data.getCompanyInfor().getAdd_1());
                 ws.getCells().get("M23").putValue(data.getCompanyInfor().getAdd_2());
-                ws.getCells().get("J24").putValue(data.getCompanyInfor().getCompanyName());
-                ws.getCells().get("J25").putValue(data.getCompanyInfor().getRepname());
+                ws.getCells().get("K24").putValue(data.getCompanyInfor().getCompanyName());
+                ws.getCells().get("K25").putValue(data.getCompanyInfor().getRepname());
                 ws.getCells().get("J27").putValue(data.getCompanyInfor().getPhoneNum());
             }
 
         }else{
             if(data.getSocialInsuranceOffice() != null){
-                ws.getCells().get("J22").putValue(data.getSocialInsuranceOffice().getBasicInformation().getAddress().isPresent() ? ("〒 " + data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getPostalCode().get().v().substring(0,3) + " － " + data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getPostalCode().get().v().substring(4)) : null);
+                ws.getCells().get("J22").putValue(data.getSocialInsuranceOffice().getBasicInformation().getAddress().isPresent() ? ("〒 " + data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getPostalCode().get().v().substring(0,3) + " － " + data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getPostalCode().get().v().substring(3)) : null);
                 ws.getCells().get("M22").putValue(data.getSocialInsuranceOffice().getBasicInformation().getAddress().isPresent() ? data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getAddress1().get().v() : null);
                 ws.getCells().get("M23").putValue(data.getSocialInsuranceOffice().getBasicInformation().getAddress().isPresent() ? data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getAddress2().get().v() : null);
-                ws.getCells().get("J24").putValue(data.getSocialInsuranceOffice().getName().v());
-                ws.getCells().get("J25").putValue(data.getSocialInsuranceOffice().getBasicInformation().getRepresentativeName().isPresent() ? data.getSocialInsuranceOffice().getBasicInformation().getRepresentativeName().get().v() : null);
+                ws.getCells().get("K24").putValue(data.getSocialInsuranceOffice().getName().v());
+                ws.getCells().get("K25").putValue(data.getSocialInsuranceOffice().getBasicInformation().getRepresentativeName().isPresent() ? data.getSocialInsuranceOffice().getBasicInformation().getRepresentativeName().get().v() : null);
                 ws.getCells().get("J27").putValue(data.getSocialInsuranceOffice().getBasicInformation().getAddress().isPresent() ? data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getPhoneNumber().get().v() : null);
             }
 
