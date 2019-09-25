@@ -67,5 +67,10 @@ public class SocialInsurNotiCreateSetFinder {
 
     }
 
+    public SocialInsurNotiCreateSetDto getSocialInsurNotiCreateSetById(String userId, String cid){
+        Optional<SocialInsurNotiCreateSet> domain = socialInsurNotiCrSetRepository.getSocialInsurNotiCreateSetById(userId,cid);
+        return SocialInsurNotiCreateSetDto.fromDomain(domain.isPresent() ? domain.get() : null);
+    }
+
 
 }
