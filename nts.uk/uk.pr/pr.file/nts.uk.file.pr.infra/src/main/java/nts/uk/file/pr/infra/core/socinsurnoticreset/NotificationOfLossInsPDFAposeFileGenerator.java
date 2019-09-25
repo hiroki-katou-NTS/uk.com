@@ -151,8 +151,13 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
                 typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? data.getCompanyName() : "");
         worksheets.getRangeByName(sheetName + "!A1_8").setValue(typeOff == BusinessDivision.OUTPUT_COMPANY_NAME ? company.getRepname() :
                 typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? data.getRepName() : "");
-        worksheets.getRangeByName(sheetName + "!A1_9").setValue(typeOff == BusinessDivision.OUTPUT_COMPANY_NAME ? company.getPhoneNum() :
-                typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? data.getPhoneNumber() : "");
+        worksheets.getRangeByName(sheetName + "!A1_9").setValue(typeOff == BusinessDivision.OUTPUT_COMPANY_NAME ? formatPhoneNumber(company.getPhoneNum()):
+                typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? formatPhoneNumber(data.getPhoneNumber()) : "");
+    }
+
+    private String formatPhoneNumber(String phone){
+        String result = phone.replace("-","");
+        return result.length() > 6 ? result.substring(0,3) + "(" + result.substring(3,6) + ")" + result.substring(6,result.length()) : result;
     }
 
     private void selectEra(WorksheetCollection worksheets, String era, String sheetName, int stt){
@@ -351,13 +356,13 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
     }
 
     private String convertJpDate(JapaneseDate date){
+        StringBuilder result = new StringBuilder();
         int y = date.year() + 1;
         int m = date.month();
         int d = date.day();
-        StringBuilder result = new StringBuilder();
         result.append(y > 9 ? y: "0" + y);
-        result.append(m > 9 ? m : "0" + m);
         result.append(d > 9 ? d: "0" + d);
+        result.append(m > 9 ? m : "0" + m);
         return result.toString();
     }
 

@@ -320,13 +320,13 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
 //            throw new BusinessException("Msg_812",TextResource.localize("QSI001_27"));
 //        }
         if (socialInsurNotiCreateSet.get().getOfficeInformation().value == DO_NOT_OUPUT) {
-            throw new BusinessException("Msg_174", TextResource.localize("QSI001_31"));
+            throw new BusinessException("Msg_174", "QSI001_31");
         }
         if (!socialInsurNotiCreateSet.get().getFdNumber().isPresent()) {
-            throw new BusinessException("Msg_5", TextResource.localize("QSI001_46"));
+            throw new BusinessException("Msg_5", "QSI001_46");
         }
         if (!socialInsurNotiCreateSet.get().getOutputFormat().isPresent()) {
-            throw new BusinessException("Msg_5", TextResource.localize("QSI001_46"));
+            throw new BusinessException("Msg_5", "QSI001_46");
         }
         // check output k cần for vì đã có câu query
         boolean checkOutput = false;
