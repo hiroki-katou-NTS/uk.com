@@ -114,7 +114,13 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
                                      List<SocialInsurancePrefectureInformation> infor, SocialInsurNotiCreateSet ins, int startRow){
         JapaneseDate dateJp = toJapaneseDate( GeneralDate.fromString(data.getBirthDay().substring(0,10), "yyyy-MM-dd"));
         JapaneseDate healStart = toJapaneseDate( GeneralDate.fromString(data.getStartDate1().substring(0,10), "yyyy-MM-dd"));
-        JapaneseDate welStart = toJapaneseDate( GeneralDate.fromString(data.getStartDate2().substring(0,10), "yyyy-MM-dd"));
+        if(!data.getStartDate2().equals("")){
+            JapaneseDate welStart = toJapaneseDate( GeneralDate.fromString(data.getStartDate2().substring(0,10), "yyyy-MM-dd"));
+            cells.get(startRow, 17).setValue(conpareDate(data.getStartDate1(), data.getStartDate2()) ? healStart.era().equals(HEISEI) ? 7 : dateJp.era().equals(SHOWA) ? 5 : 9 : welStart.era().equals(HEISEI) ? 7 : dateJp.era().equals(SHOWA) ? 5 : 9);
+            cells.get(startRow, 18).setValue(conpareDate(data.getStartDate1(), data.getStartDate2()) ? convertJpDate(healStart) : convertJpDate(welStart));
+
+        }
+
         cells.get(startRow, 0).setValue("2200700");
         cells.get(startRow, 1).setValue(getPreferCode(data.getHealPrefectureNo(), data.getStartDate1(), infor));
         cells.get(startRow, 2).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? data.getHealOfficeNumber1().length() > 2 ? data.getHealOfficeNumber1().substring(0, 2) : data.getHealOfficeNumber1() :
@@ -133,9 +139,6 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
         cells.get(startRow, 11).setValue(data.getDistin());
         cells.get(startRow, 13).setValue(data.getLivingAbroad() == 1 ? data.getLivingAbroad() :  data.getShortStay() == 1 ? data.getShortStay() : data.getResonOther());
         cells.get(startRow, 14).setValue(data.getResonAndOtherContent());
-
-        cells.get(startRow, 17).setValue(conpareDate(data.getStartDate1(), data.getStartDate2()) ? healStart.era().equals(HEISEI) ? 7 : dateJp.era().equals(SHOWA) ? 5 : 9 : welStart.era().equals(HEISEI) ? 7 : dateJp.era().equals(SHOWA) ? 5 : 9);
-        cells.get(startRow, 18).setValue(conpareDate(data.getStartDate1(), data.getStartDate2()) ? convertJpDate(healStart) : convertJpDate(welStart));
 
         cells.get(startRow, 21).setValue(data.getDepenAppoint());
         cells.get(startRow, 22).setValue(data.getRemunMonthlyAmount());
