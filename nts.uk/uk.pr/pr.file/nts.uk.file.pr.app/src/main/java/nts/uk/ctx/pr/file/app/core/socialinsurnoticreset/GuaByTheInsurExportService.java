@@ -82,6 +82,7 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
             checkAcquiNotiInsurProcess(exportServiceContext.getQuery().getEmpIds(), exportServiceContext.getQuery().getStartDate(), exportServiceContext.getQuery().getEndDate());
         }
         if (exportServiceContext.getQuery().getTypeExport() != TYPE_EXPORT_EXCEL_FILE) {
+            reportTextOutputCheck(exportServiceContext.getQuery().getEmpIds(), exportServiceContext.getQuery().getStartDate(), exportServiceContext.getQuery().getEndDate());
             if(ins.getOutputFormat().get() == OutputFormatClass.PEN_OFFICE) {
                 pension = guaByTheInsurExportRepository.getDataExportCSV(exportServiceContext.getQuery().getEmpIds(), cid,
                         exportServiceContext.getQuery().getStartDate(), exportServiceContext.getQuery().getEndDate());
