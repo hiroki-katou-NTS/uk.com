@@ -127,7 +127,6 @@ module nts.uk.pr.view.qsi003.a.viewmodel {
         loadKCP005(){
             let self = this;
             self.baseDate = ko.observable(new Date());
-            self.selectedCode = ko.observable('1');
             self.multiSelectedCode = ko.observableArray(['0', '1', '4']);
             self.isShowAlreadySet = ko.observable(false);
             self.alreadySettingList = ko.observableArray([
