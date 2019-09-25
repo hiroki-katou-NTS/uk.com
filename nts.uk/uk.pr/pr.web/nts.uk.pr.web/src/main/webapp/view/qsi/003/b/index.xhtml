@@ -26,6 +26,7 @@
         <com:stylefile path="qsi003.b.style.css" />
         <com:ValidatorScript>
             nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.BasicPenNumber
+            nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.ReasonsForRegisRoman
         </com:ValidatorScript>
     </ui:define>
 
@@ -56,7 +57,6 @@
                                     value: basicPenNumber,
                                     name: '#{i18n.getText('QSI003_16')}',
                                     constraint: 'BasicPenNumber',
-                                    required: true,
                                     enable: true,
                                     readonly: false}" />
                 </div>
@@ -87,8 +87,8 @@
                                     name: '#{i18n.getText('QSI003_25')}',
                                     constraint: '',
                                     required: true,
-                                     enable: $vm.others(),
-                                    readonly: false}" />
+                                    enable: $vm.others(),
+                                    constraint: 'RemarkForQuaCompany'}" />
                     </div>
                 </div>
             </div>
@@ -125,7 +125,7 @@
                                     constraint: '',
                                     required: true,
                                     enable: $vm.otherp(),
-                                    readonly: false}" />
+                                    constraint: 'RemarkForQuaCompany'}" />
                     </div>
                 </div>
             </div>

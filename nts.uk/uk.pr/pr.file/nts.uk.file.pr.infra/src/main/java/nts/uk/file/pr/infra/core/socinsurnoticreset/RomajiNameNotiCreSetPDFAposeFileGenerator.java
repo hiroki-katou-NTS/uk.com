@@ -40,10 +40,7 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
             AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE);
             Workbook workbook = reportContext.getWorkbook();
             WorksheetCollection worksheets = workbook.getWorksheets();
-
-
             reportContext.processDesigner();
-
             String sheetName = "INS";
             RomajiNameNotification romajiNameNotification = null ;
 
@@ -64,8 +61,6 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
                             romajiNameNotification.getRomajiNameNotiCreSetting(),
                             romajiNameNotification.getDate(),
                             sheetName + i);
-
-
             }
 
             worksheets.removeAt(0);
@@ -93,63 +88,24 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
                           String i){
         try {
 
-            //for hash code
-            personInfo = new PersonInfo("1999-10-15", "Hoadaika0", "Hoadaikakataa1", "123455", 1);
-            familyMember = new FamilyMember("1999-11-15", "Hoadaika1");
-            companyInfor = new CompanyInfor("1234567", "add1", "add2", "hoadaikacompany", "hoadaikarepresent", "0123456789");
+            if ( personTarget.equals("0")) {
 
-            //get year
-            worksheet.get(i).getCells().get(11, 11).setValue("1");
-            worksheet.get(i).getCells().get(11, 12).setValue("2");
-            worksheet.get(i).getCells().get(11, 13).setValue("3");
-            worksheet.get(i).getCells().get(11, 14).setValue("4");
-
-            //get month
-            worksheet.get(i).getCells().get(11, 15).setValue("5");
-            worksheet.get(i).getCells().get(11, 16).setValue("6");
-
-            //get day
-            worksheet.get(i).getCells().get(11, 17).setValue("7");
-            worksheet.get(i).getCells().get(11, 18).setValue("8");
-
-            //For the person
-            if ( personTarget.equals("0")){
-
-                //A1_1
                 if (empBasicPenNumInfor != null ) {
-                    for (int h = 0; h < empBasicPenNumInfor.getBasicPenNumber().get().toString().length() ; h++) {
-                        worksheet.get(i).getCells().get(11, h+1).setValue(Objects.toString(pushDataCell(empBasicPenNumInfor.getBasicPenNumber().get().toString(), h),""));
-                    }
+                    this.pushName(empBasicPenNumInfor.getBasicPenNumber().get().toString(), worksheet, i, 11, 0);
                 }
 
-                //A1-2
                 if ( personInfo != null) {
-
-                    /*JapaneseDate birthDay = toJapaneseDate( GeneralDate.fromString(personInfo.getBirthday().substring(0,10), "yyyyMMdd"));
-                    //get year
-                    worksheet.get(i).getCells().get(11, 11).setValue(Objects.toString(pushDataCell( convertJpDate(birthDay).substring(0,3), 0 ),  ""));
-                    worksheet.get(i).getCells().get(11, 12).setValue(Objects.toString(pushDataCell( convertJpDate(birthDay).substring(0,3), 1 ),  ""));
-                    worksheet.get(i).getCells().get(11, 13).setValue(Objects.toString(pushDataCell( convertJpDate(birthDay).substring(0,3), 2 ),  ""));
-                    worksheet.get(i).getCells().get(11, 14).setValue(Objects.toString(pushDataCell( convertJpDate(birthDay).substring(0,3), 3 ),  ""));
-
-                    //get month
-                    worksheet.get(i).getCells().get(11, 15).setValue(Objects.toString(pushDataCell( convertJpDate(birthDay).substring(4,5), 0 ),  ""));
-                    worksheet.get(i).getCells().get(11, 16).setValue(Objects.toString(pushDataCell( convertJpDate(birthDay).substring(4,5), 1 ),  ""));
-
-                    //get day
-                    worksheet.get(i).getCells().get(11, 17).setValue(Objects.toString(pushDataCell( convertJpDate(birthDay).substring(6,7), 0 ),  ""));
-                    worksheet.get(i).getCells().get(11, 18).setValue(Objects.toString(pushDataCell( convertJpDate(birthDay).substring(6,7), 1 ),  ""));*/
-
-                    //A1_3 ~ A1_6
+                    this.pushBirthDay(personInfo.getBirthday(), worksheet, i);
                     this.selectShapes(worksheet, personInfo.getGender() , i, "A1_3" );
                     this.selectShapes(worksheet, personInfo.getGender() , i, "A1_4" );
                 }
 
-                worksheet.getRangeByName(i +"!A2_1" ).setValue(Objects.toString(personInfo != null ? personInfo.getPersonName():  ""));
-                worksheet.getRangeByName(i +"!A2_2" ).setValue(Objects.toString(personInfo != null ? personInfo.getPersonName():  ""));
-                worksheet.getRangeByName(i +"!A2_3" ).setValue(Objects.toString(personInfo != null ? personInfo.getPersonNameKana(): ""));
-                worksheet.getRangeByName(i +"!A2_4" ).setValue(Objects.toString(personInfo != null ? personInfo.getPersonNameKana(): ""));
-                worksheet.getRangeByName(i + "!A4_5").setValue(Objects.toString(empNameReport != null && empNameReport.getPersonalSet().getOther() == 1 ? empNameReport.getPersonalSet().getOtherReason(): ""));
+                this.pushName(personInfo.getPersonName(), worksheet, i, 14, 4);
+                this.pushName(personInfo.getPersonName(), worksheet, i, 14, 18);
+                this.pushName(personInfo.getPersonNameKana(), worksheet, i, 13, 4);
+                this.pushName(personInfo.getPersonNameKana(), worksheet, i, 13, 18);
+
+                worksheet.getRangeByName(i + "!A4_5").setValue(Objects.toString(empNameReport != null &&  empNameReport.getPersonalSet().getOther() == 1 ? empNameReport.getPersonalSet().getOtherReason(): ""));
 
                 if( empNameReport != null) {
                     this.selectShapes(worksheet, empNameReport.getPersonalSet().getResidentCard().value , i, "A1_5" );
@@ -162,41 +118,25 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
 
             } else {
 
-                //A1_1
                 if (empFamilySocialIns != null ) {
                     for (int h1 = 0; h1 < empFamilySocialIns.getFmBsPenNum().length() ; h1++) {
                         worksheet.get(i).getCells().get(12, h1+1).setValue(Objects.toString(pushDataCell(empFamilySocialIns.getFmBsPenNum(), h1),  ""));
                     }
                 }
 
-                //A1-2
                 if ( familyMember != null ) {
-
-                   /* JapaneseDate birthDayf = toJapaneseDate( GeneralDate.fromString(familyMember.getBirthday().substring(0,10), "yyyyMMdd"));
-                    //get year
-                    worksheet.get(i).getCells().get(11, 11).setValue(pushDataCell(convertJpDate(birthDayf).substring(0,3), 0 ));
-                    worksheet.get(i).getCells().get(11, 12).setValue(pushDataCell( convertJpDate(birthDayf).substring(0,3), 1 ));
-                    worksheet.get(i).getCells().get(11, 13).setValue(pushDataCell( convertJpDate(birthDayf).substring(0,3), 2 ));
-                    worksheet.get(i).getCells().get(11, 14).setValue(pushDataCell( convertJpDate(birthDayf).substring(0,3), 3 ));
-
-                    //get month
-                    worksheet.get(i).getCells().get(11, 15).setValue(pushDataCell( convertJpDate(birthDayf).substring(4,5), 0 ));
-                    worksheet.get(i).getCells().get(11, 16).setValue(pushDataCell( convertJpDate(birthDayf).substring(4,5), 1 ));
-
-                    //get day
-                    worksheet.get(i).getCells().get(11, 17).setValue(Objects.toString(pushDataCell( convertJpDate(birthDayf).substring(6,7), 0 ),  ""));
-                    worksheet.get(i).getCells().get(11, 18).setValue(Objects.toString(pushDataCell( convertJpDate(birthDayf).substring(6,7), 1 ),  ""));*/
-
-                    //A1_3 ~ A1_6
+                    this.pushBirthDay(familyMember.getBirthday(), worksheet, i);
                     this.selectShapes(worksheet, familyMember.getGender() , i, "A1_3" );
                     this.selectShapes(worksheet, familyMember.getGender() , i, "A1_4" );
                 }
 
-                worksheet.getRangeByName(i +"!A2_1" ).setValue(Objects.toString(familyMember != null ? familyMember.getNameRomajiFull():  ""));
-                worksheet.getRangeByName(i +"!A2_2" ).setValue(Objects.toString(familyMember != null ? familyMember.getNameRomajiFull():  ""));
-                worksheet.getRangeByName(i +"!A2_3" ).setValue(Objects.toString(familyMember != null ? familyMember.getNameRomajiFull(): ""));
-                worksheet.getRangeByName(i +"!A2_4" ).setValue(Objects.toString(familyMember != null ? familyMember.getNameRomajiFull(): ""));
-                worksheet.getRangeByName(i + "!A4_5").setValue(Objects.toString(empNameReport != null && empNameReport.getSpouse().getOther() == 1 ? empNameReport.getSpouse().getOtherReason(): ""));
+                this.pushName(familyMember.getNameRomajiFull(), worksheet, i, 14, 4);
+                this.pushName(familyMember.getNameRomajiFull(), worksheet, i, 14, 18);
+                this.pushName(familyMember.getNameRomajiFull(), worksheet, i, 13, 4);
+                this.pushName(familyMember.getNameRomajiFull(), worksheet, i, 13, 18);
+
+                worksheet.getRangeByName(i + "!A4_5").setValue(Objects.toString(empNameReport != null &&
+                        empNameReport.getSpouse().getOther() == 1 ? empNameReport.getSpouse().getOtherReason(): ""));
 
                 if( empNameReport != null) {
                     this.selectShapes(worksheet, empNameReport.getSpouse().getResidentCard().value , i, "A1_5" );
@@ -208,15 +148,15 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
                 }
             }
 
-            if( romajiNameNotiCreSetting.getAddressOutputClass().equals(BusinessDivision.OUTPUT_COMPANY_NAME) || romajiNameNotiCreSetting.getAddressOutputClass().equals(BusinessDivision.OUTPUT_SIC_INSURES)){
+            if( romajiNameNotiCreSetting.getAddressOutputClass().equals(BusinessDivision.OUTPUT_COMPANY_NAME) ||
+                    romajiNameNotiCreSetting.getAddressOutputClass().equals(BusinessDivision.OUTPUT_SIC_INSURES)){
                 worksheet.getRangeByName(i + "!A3_1").setValue(Objects.toString(companyInfor != null ? "〒"+formatValue(companyInfor.getPostCd().toString()) : null));
                 worksheet.getRangeByName(i + "!A3_3").setValue(Objects.toString(companyInfor != null ? companyInfor.getAdd_1()+companyInfor.getAdd_2(): ""));
                 worksheet.getRangeByName(i + "!A3_4").setValue(Objects.toString(companyInfor != null ?  companyInfor.getCompanyName(): ""));
                 worksheet.getRangeByName(i + "!A3_5").setValue(Objects.toString(companyInfor != null ?  companyInfor.getRepname(): ""));
                 worksheet.getRangeByName(i + "!A3_6").setValue(Objects.toString(companyInfor != null ? formatValue( companyInfor.getPhoneNum().toString()) : null));
 
-            } else if (romajiNameNotiCreSetting.getAddressOutputClass().equals(BusinessDivision.DO_NOT_OUTPUT) ||
-                    romajiNameNotiCreSetting.getAddressOutputClass().equals(BusinessDivision.DO_NOT_OUTPUT_BUSINESS)) {
+            } else if (romajiNameNotiCreSetting.getAddressOutputClass().equals(BusinessDivision.DO_NOT_OUTPUT) || romajiNameNotiCreSetting.getAddressOutputClass().equals(BusinessDivision.DO_NOT_OUTPUT_BUSINESS)) {
                 worksheet.getRangeByName(i + "!A3_1").setValue(Objects.toString(socialInsuranceOffice != null ? "〒"+formatValue(socialInsuranceOffice.getBasicInformation().getAddress().get().getPostalCode().get().toString()):""));
                 worksheet.getRangeByName(i + "!A3_3").setValue(Objects.toString(socialInsuranceOffice != null ? socialInsuranceOffice.getBasicInformation().getAddress().get().getAddress1().get().toString()+socialInsuranceOffice.getBasicInformation().getAddress().get().getAddress2().get().toString():""));
                 worksheet.getRangeByName(i + "!A3_4").setValue(Objects.toString(socialInsuranceOffice != null ? socialInsuranceOffice.getName():""));
@@ -224,7 +164,6 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
                 worksheet.getRangeByName(i + "!A3_6").setValue(Objects.toString(socialInsuranceOffice != null ? formatValue(socialInsuranceOffice.getBasicInformation().getAddress().get().getPhoneNumber().get().toString()):""));
             }
 
-            //A3_7
             JapaneseDate japaneseDate = toJapaneseDate(date);
             worksheet.getRangeByName(i +"!A3_7" ).setValue(japaneseDate.toString());
 
@@ -239,10 +178,9 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
     }
 
     private void selectShapes(WorksheetCollection worksheets, int value, String sheetName, String option){
-        if(value!=1){
+        if(value != 1){
             worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(option));
         }
-
     }
 
     private String formatValue(String pc) {
@@ -261,14 +199,24 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
         }
     }
 
-    private String convertJpDate(JapaneseDate date){
-        int y = date.year() + 1;
-        int m = date.month();
-        int d = date.day();
-        StringBuilder result = new StringBuilder();
-        result.append(y > 9 ? y: "0" + y);
-        result.append(m > 9 ? m : "0" + m);
-        result.append(d > 9 ? d: "0" + d);
-        return result.toString();
+
+    private void pushBirthDay(String day, WorksheetCollection worksheet, String i ){
+        StringBuffer birthDate = new StringBuffer(day).reverse();
+        worksheet.get(i).getCells().get(11, 11).setValue(Objects.toString(pushDataCell( birthDate.substring(0,4), 0 ),  ""));
+        worksheet.get(i).getCells().get(11, 12).setValue(Objects.toString(pushDataCell( birthDate.substring(0,4), 1 ),  ""));
+        worksheet.get(i).getCells().get(11, 13).setValue(Objects.toString(pushDataCell( birthDate.substring(0,4), 2 ),  ""));
+        worksheet.get(i).getCells().get(11, 14).setValue(Objects.toString(pushDataCell( birthDate.substring(0,4), 3 ),  ""));
+        worksheet.get(i).getCells().get(11, 15).setValue(Objects.toString(pushDataCell( birthDate.substring(5,7), 0 ),  ""));
+        worksheet.get(i).getCells().get(11, 16).setValue(Objects.toString(pushDataCell( birthDate.substring(5,7), 1 ),  ""));
+        worksheet.get(i).getCells().get(11, 17).setValue(Objects.toString(pushDataCell( birthDate.substring(8), 0 ),  ""));
+        worksheet.get(i).getCells().get(11, 18).setValue(Objects.toString(pushDataCell( birthDate.substring(8), 1 ),  ""));
+    }
+
+    private void pushName(String name, WorksheetCollection worksheet, String i, int row, int column){
+        if (name  != null ) {
+            for (int k = column; k < name.length()+column ; k++) {
+                worksheet.get(i).getCells().get(row, k+1).setValue(Objects.toString(pushDataCell(name, k),""));
+            }
+        }
     }
 }

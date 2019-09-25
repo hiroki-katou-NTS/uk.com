@@ -53,9 +53,10 @@ public class FamilyMember {
 
     private Integer gender;
 
-    public FamilyMember(String birthday, String nameRomajiFull ) {
+    public FamilyMember(String birthday, String nameRomajiFull, String familyMemberId ) {
         this.birthday = birthday;
         this.nameRomajiFull = nameRomajiFull;
+        this.familyMemberId = familyMemberId;
     }
 
 }
