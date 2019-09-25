@@ -743,5 +743,4 @@ public class ValidatorDataDailyRes {
 		ApprovalConfirmCache cacheNew = new ApprovalConfirmCache(sId,  cacheOld.getEmployeeIds(), cacheOld.getPeriod(), cacheOld.getMode(), confirmResults, approvalResults);
 		cacheOldTemp.checkVer(cacheNew);
 	}
-    
 }

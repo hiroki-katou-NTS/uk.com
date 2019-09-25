@@ -570,9 +570,11 @@ public class DailyPerformanceCorrectionWebService {
 	@Path("getMasterDialogMob")
 	public Map<Integer, List<CodeName>> getMasterDialog(MasterDialogParam masterDialogParam) {
 		String companyID = AppContexts.user().companyId();
-		Map<Integer, Map<String, CodeName>> allMasterData = dialogProcessor.getAllCodeName(
-				masterDialogParam.getTypes(), 
+		Map<Integer, Map<String, CodeName>> allMasterData = dialogProcessor.getAllCodeNameWT(
+				masterDialogParam.getTypes(),
 				companyID,
+				masterDialogParam.getEmployeeID(),
+				masterDialogParam.getWorkTypeCD(),
 				masterDialogParam.getDate());
 		return allMasterData.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> new ArrayList<CodeName>(entry.getValue().values())));
 	}

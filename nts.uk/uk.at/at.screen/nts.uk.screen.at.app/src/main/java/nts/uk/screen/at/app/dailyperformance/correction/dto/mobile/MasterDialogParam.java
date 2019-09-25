@@ -15,4 +15,8 @@ public class MasterDialogParam {
 	private List<Integer> types; 
 	
 	private GeneralDate date;
+	
+	private String employeeID;
+	
+	private String workTypeCD;
 }

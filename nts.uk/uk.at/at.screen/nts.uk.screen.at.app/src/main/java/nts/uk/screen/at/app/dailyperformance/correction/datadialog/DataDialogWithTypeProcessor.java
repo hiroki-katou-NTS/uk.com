@@ -381,7 +381,53 @@ public class DataDialogWithTypeProcessor {
 		}));
 	}
 	
-
+	public Map<Integer, Map<String, CodeName>> getAllCodeNameWT(List<Integer> types, String companyId, String employeeId, String workTypeOld, GeneralDate date) {
+		return types.stream().collect(Collectors.toMap(type -> type, type -> {
+			switch (type) {
+			case 1:
+				// KDL002
+				AffEmploymentHistoryDto aff = repo.getAffEmploymentHistory(companyId, employeeId, date);
+				if(aff == null){
+					return new HashMap<>();
+				}
+				List<WorkTypeChangedDto> dtos = repo.findWorkTypeChanged(aff.getEmploymentCode(), workTypeOld, companyId);
+			    Set<String> workTypeCodes = dtos.stream().map(x -> x.getTypeCode()).collect(Collectors.toSet());
+				if(workTypeCodes.isEmpty()){
+					return toMap(repo.findWorkType(companyId, new HashSet<>()));
+				}
+				
+		        List<CodeName> codeNameResults = repo.findWorkType(companyId, workTypeCodes);
+				return toMap(codeNameResults);
+			case 2:
+				// KDL001
+				return toMap(this.getWorkHoursAll(companyId).getCodeNames());
+			case 3:
+				// KDL010
+				return toMap(this.getServicePlace(companyId).getCodeNames());
+			case 4:
+				// KDL032
+				return new HashMap<>();
+			case 5:
+				// CDL008 WPL
+				return toMapID(this.getWorkPlace(companyId, date).getCodeNames());
+			case 6:
+				// KCP002
+				return toMap(this.getClassification(companyId).getCodeNames());
+			case 7:
+				// KCP003 POS
+				return toMapID(this.getPossition(companyId, date).getCodeNames());
+			case 8:
+				// KCP001
+				return toMap(this.getEmployment(companyId).getCodeNames());
+			case 14:
+				// CDL024
+				return toMap(this.getBussinessType(companyId).getCodeNames());
+			default:
+				return new HashMap<>();
+			}
+		}));
+	}
+	
 	private Map<String, CodeNameInfo> toMapMaster(List<CodeName> codeNames) {
 		return codeNames.stream().filter(distinctByKey(x -> x.getCode()))
 				.collect(Collectors.toMap(x -> x.getCode(), x -> new CodeNameInfo(x.getCode(), x.getName(), x.getId())));
