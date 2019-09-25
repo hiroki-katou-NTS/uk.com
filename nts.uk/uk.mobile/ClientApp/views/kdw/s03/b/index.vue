@@ -19,13 +19,12 @@
       </div>
     </div>
   </div>
-  <div class="row uk-bg-light-coral mb-4" v-if="isDisplayError">
-    <div class="btn w-100 text-left" v-on:click="openDScreen">
-      <div class="col-11 pl-0 pr-0 d-inline-block uk-text-quote">
-        {{'KDWS03_36' | i18n}}
-      </div>
-      <div class="d-inline-block">
-        <h4 class="fas fa-angle-right uk-text-quote font-weight-bold align-text-top mb-0"></h4>
+  <div class="row" v-if="isDisplayError">
+    <div class="accordion w-100" v-on:click="openDScreen">
+      <div class="card border-0 pl-0 custom-show">
+        <div class="card-header pl-0 pr-0 uk-bg-light-coral db-caret-right">
+          <button class="btn btn-link" type="button">{{'KDWS03_36' | i18n}}</button>
+        </div>
       </div>
     </div>
   </div>
