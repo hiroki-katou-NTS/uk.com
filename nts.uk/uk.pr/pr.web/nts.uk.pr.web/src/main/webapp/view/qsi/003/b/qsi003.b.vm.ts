@@ -120,34 +120,18 @@ module nts.uk.pr.view.qsi003.b.viewmodel {
             block.clear();
         }
 
-        createEmployeeModel(data){
-            let listEmployee = [];
-            _.each(data, data => {
-                listEmployee.push({
-                    id: data.employeeId,
-                    code: data.employeeCode,
-                    name: data.employeeName
-                });
-            });
-
-            return listEmployee;
-        }
-
         constructor() {
             let self = this;
+            self.selectedItem.subscribe((data) => {
+                self.getDataRomaji(data);
+            });
             let list = getShared("QSI003_PARAMS_B");
             if(nts.uk.util.isNullOrEmpty(list) || nts.uk.util.isNullOrEmpty(list.employeeList)) {
                 close();
             }
-            self.selectedItem.subscribe((data) => {
-                self.getDataRomaji(data);
-            });
-
-            self.employeeInputList(self.createEmployeeModel(list.employeeList));
-            self.selectedItem(self.employeeInputList()[0].id);
+            self.employeeInputList(list.employeeList);
             this.loadKCP009();
-
-
+            self.selectedItem(self.employeeInputList()[0].id);
         }
 
         updateReasonRomajiName(){

@@ -98,6 +98,20 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
             familyMember = new FamilyMember("1999-11-15", "Hoadaika1");
             companyInfor = new CompanyInfor("1234567", "add1", "add2", "hoadaikacompany", "hoadaikarepresent", "0123456789");
 
+            //get year
+            worksheet.get(i).getCells().get(11, 11).setValue("1");
+            worksheet.get(i).getCells().get(11, 12).setValue("2");
+            worksheet.get(i).getCells().get(11, 13).setValue("3");
+            worksheet.get(i).getCells().get(11, 14).setValue("4");
+
+            //get month
+            worksheet.get(i).getCells().get(11, 15).setValue("5");
+            worksheet.get(i).getCells().get(11, 16).setValue("6");
+
+            //get day
+            worksheet.get(i).getCells().get(11, 17).setValue("7");
+            worksheet.get(i).getCells().get(11, 18).setValue("8");
+
             //For the person
             if ( personTarget.equals("0")){
 
@@ -111,7 +125,7 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
                 //A1-2
                 if ( personInfo != null) {
 
-                    JapaneseDate birthDay = toJapaneseDate( GeneralDate.fromString(personInfo.getBirthday().substring(0,10), "yyyyMMdd"));
+                    /*JapaneseDate birthDay = toJapaneseDate( GeneralDate.fromString(personInfo.getBirthday().substring(0,10), "yyyyMMdd"));
                     //get year
                     worksheet.get(i).getCells().get(11, 11).setValue(Objects.toString(pushDataCell( convertJpDate(birthDay).substring(0,3), 0 ),  ""));
                     worksheet.get(i).getCells().get(11, 12).setValue(Objects.toString(pushDataCell( convertJpDate(birthDay).substring(0,3), 1 ),  ""));
@@ -124,7 +138,7 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
 
                     //get day
                     worksheet.get(i).getCells().get(11, 17).setValue(Objects.toString(pushDataCell( convertJpDate(birthDay).substring(6,7), 0 ),  ""));
-                    worksheet.get(i).getCells().get(11, 18).setValue(Objects.toString(pushDataCell( convertJpDate(birthDay).substring(6,7), 1 ),  ""));
+                    worksheet.get(i).getCells().get(11, 18).setValue(Objects.toString(pushDataCell( convertJpDate(birthDay).substring(6,7), 1 ),  ""));*/
 
                     //A1_3 ~ A1_6
                     this.selectShapes(worksheet, personInfo.getGender() , i, "A1_3", "A1_4" );
@@ -156,7 +170,7 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
                 //A1-2
                 if ( familyMember != null ) {
 
-                    JapaneseDate birthDayf = toJapaneseDate( GeneralDate.fromString(familyMember.getBirthday().substring(0,10), "yyyyMMdd"));
+                   /* JapaneseDate birthDayf = toJapaneseDate( GeneralDate.fromString(familyMember.getBirthday().substring(0,10), "yyyyMMdd"));
                     //get year
                     worksheet.get(i).getCells().get(11, 11).setValue(pushDataCell(convertJpDate(birthDayf).substring(0,3), 0 ));
                     worksheet.get(i).getCells().get(11, 12).setValue(pushDataCell( convertJpDate(birthDayf).substring(0,3), 1 ));
@@ -169,7 +183,7 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
 
                     //get day
                     worksheet.get(i).getCells().get(11, 17).setValue(Objects.toString(pushDataCell( convertJpDate(birthDayf).substring(6,7), 0 ),  ""));
-                    worksheet.get(i).getCells().get(11, 18).setValue(Objects.toString(pushDataCell( convertJpDate(birthDayf).substring(6,7), 1 ),  ""));
+                    worksheet.get(i).getCells().get(11, 18).setValue(Objects.toString(pushDataCell( convertJpDate(birthDayf).substring(6,7), 1 ),  ""));*/
 
                     //A1_3 ~ A1_6
                     this.selectShapes(worksheet, familyMember.getGender() , i, "A1_3", "A1_4" );

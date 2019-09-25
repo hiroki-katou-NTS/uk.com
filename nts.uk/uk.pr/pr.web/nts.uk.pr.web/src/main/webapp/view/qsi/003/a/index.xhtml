@@ -22,9 +22,9 @@
 
     <ui:define name="content">
         <div id="functions-area" style = "min-width: 1000px; padding-left : 98px;">
-            <button id="A1_1" tabindex="1" class="proceed" data-bind="enable:$vm.selectedCode().length > 0 &amp;&amp; $root.errors.isEmpty , click : exportData">#{i18n.getText('QSI003_3')}</button>
+            <button id="A1_1" tabindex="1" class="proceed" data-bind="enable:selectedCode().length > 0 &amp;&amp; $root.errors.isEmpty , click : exportData">#{i18n.getText('QSI003_3')}</button>
 
-            <button id="A1_2" tabindex="2" data-bind="enable:$vm.selectedCode().length > 0 &amp;&amp; $root.errors.isEmpty, click: openBScreen">#{i18n.getText('QSI003_2')}</button>
+            <button id="A1_2" tabindex="2" data-bind="enable :selectedCode().length > 0 &amp;&amp; $root.errors.isEmpty, click: openBScreen">#{i18n.getText('QSI003_2')}</button>
 
             <button id="A1_3" tabindex="3" data-bind = "enable: false" >#{i18n.getText('QSI003_4')}</button>
 
