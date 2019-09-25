@@ -152,7 +152,7 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
         worksheets.getRangeByName(sheetName + "!A1_8").setValue(typeOff == BusinessDivision.OUTPUT_COMPANY_NAME ? company.getRepname() :
                 typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? data.getRepName() : "");
         worksheets.getRangeByName(sheetName + "!A1_9").setValue(typeOff == BusinessDivision.OUTPUT_COMPANY_NAME ? formatPhoneNumber(company.getPhoneNum()):
-                typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? data.getPhoneNumber() : "");
+                typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? formatPhoneNumber(data.getPhoneNumber()) : "");
     }
 
     private String formatPhoneNumber(String phone){
