@@ -23,7 +23,6 @@ import java.util.Optional;
 public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsReportGenerator implements NotificationOfLossInsCSVFileGenerator {
 
     private static final String REPORT_ID = "CSV_GENERATOR";
-    private static final String FILE_NAME = "TEMP";
 
     @Inject
     private JapaneseErasAdapter adapter;

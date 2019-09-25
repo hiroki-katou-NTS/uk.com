@@ -351,13 +351,12 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
             let data: any = {
                 socialInsurNotiCreateSetQuery: {
                     officeInformation: self.socialInsurNotiCrSet().officeInformation(),
-                    fdNumber: self.socialInsurNotiCrSet().fdNumber(),
                     printPersonNumber: self.socialInsurNotiCrSet().printPersonNumber(),
                     businessArrSymbol: self.socialInsurNotiCrSet().businessArrSymbol(),
                     outputOrder: self.socialInsurNotiCrSet().outputOrder(),
                     submittedName: self.socialInsurNotiCrSet().submittedName(),
                     insuredNumber: self.socialInsurNotiCrSet().insuredNumber(),
-                    fdNumber: self.socialInsurNotiCrSet().fdNumber(),
+                    fdNumber: self.socialInsurNotiCrSet().fdNumber().trim() == '' ? null : self.socialInsurNotiCrSet().fdNumber(),
                     textPersonNumber: self.socialInsurNotiCrSet().textPersonNumber(),
                     outputFormat: self.socialInsurNotiCrSet().outputFormat(),
                     lineFeedCode: self.socialInsurNotiCrSet().lineFeedCode()
