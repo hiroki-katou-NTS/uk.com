@@ -65,4 +65,14 @@ public class CompanyInfor {
 
 	/** 電話番号 */
 	private String phoneNum;
+
+	public CompanyInfor(String postCd, String add_1, String add_2, String companyName, String repname, String phoneNum) {
+		this.postCd = postCd;
+		this.add_1 = add_1;
+		this.add_2= add_2;
+		this.companyName = companyName;
+		this.repname = repname;
+		this.phoneNum = phoneNum;
+
+	}
 }

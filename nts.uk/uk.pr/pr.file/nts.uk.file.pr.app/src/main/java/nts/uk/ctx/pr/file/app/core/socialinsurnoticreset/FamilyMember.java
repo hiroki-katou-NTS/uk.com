@@ -53,4 +53,9 @@ public class FamilyMember {
 
     private Integer gender;
 
+    public FamilyMember(String birthday, String nameRomajiFull ) {
+        this.birthday = birthday;
+        this.nameRomajiFull = nameRomajiFull;
+    }
+
 }
