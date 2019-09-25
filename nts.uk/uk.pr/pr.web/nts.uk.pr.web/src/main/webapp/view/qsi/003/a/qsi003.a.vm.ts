@@ -6,6 +6,7 @@ module nts.uk.pr.view.qsi003.a.viewmodel {
     export class ScreenModel {
         ccg001ComponentOption: GroupOption;
         employeeInputList: KnockoutObservableArray<EmployeeModel>;
+        constraint: string = 'LayoutCode';
 
         //kcp009
         systemReference: KnockoutObservable<number>;
@@ -50,14 +51,20 @@ module nts.uk.pr.view.qsi003.a.viewmodel {
         constructor() {
             let self = this;
             this.getRomajiNameNoti();
+            let today = new Date();
+            let dd = today.getDate()
+            let ms = today.getMonth()+1;
+            let yyyy = today.getFullYear();
+            self.date(yyyy + "/" + ms + "/" + dd);
             this.loadCCG001();
             this.loadKCP005();
-
 
             //init switch
             self.personTarget = ko.observable(0);
             self.date.subscribe((data)=>{
-                self.datePicker(" (" + nts.uk.time.dateInJapanEmpire(data) + ")");
+                if(data) {
+                    self.datePicker(" (" + nts.uk.time.dateInJapanEmpire(data) + ")");
+                }
             });
 
             self.isEnable = ko.observable(true);

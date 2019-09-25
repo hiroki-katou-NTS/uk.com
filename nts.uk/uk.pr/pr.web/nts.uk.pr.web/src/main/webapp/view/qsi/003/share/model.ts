@@ -31,4 +31,12 @@ module nts.uk.pr.view.qsi003.share.model {
             new ItemModel(3, getText('Enum_BusinessDivision_DO_NOT_OUTPUT_BUSINESS'))
         ];
     }
+
+    export function roundingRules(): Array<ItemModel> {
+        return [
+            new ItemModel(1, getText('QSI003_18')),
+            new ItemModel(2, getText('QSI003_19'))
+
+        ];
+    }
 }
