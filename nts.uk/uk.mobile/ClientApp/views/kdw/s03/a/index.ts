@@ -198,7 +198,7 @@ export class Kdws03AComponent extends Vue {
             let styleTableBody: any = [];
             styleTableBody = document.querySelectorAll('.table-body');
             if (!_.isEmpty(styleTableBody)) {
-                styleTableBody[0].style.marginBottom = '0px';
+                styleTableBody[0].style.height = '295px';
             }
         }        
     }
