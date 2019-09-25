@@ -69,8 +69,8 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
             }
 
             worksheets.removeAt(0);
-            reportContext.saveAsExcel(this.createNewFile(fileContext,
-                    FILE_NAME + "_" + GeneralDateTime.now().toString("yyyyMMddHHmmss") + ".xlsx"));
+            reportContext.saveAsPdf(this.createNewFile(fileContext,
+                    FILE_NAME + "_" + GeneralDateTime.now().toString("yyyyMMddHHmmss") + ".pdf"));
         }catch (Exception e){
             throw new RuntimeException(e);
         }
