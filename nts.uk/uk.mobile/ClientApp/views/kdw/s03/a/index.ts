@@ -375,7 +375,7 @@ export class Kdws03AComponent extends Vue {
                     rowData.push({
                         key: header.key,
                         value: rowDataSrc[header.key],
-                        class: setting.typeFormat == '3' ? 'currency-symbol row-style' : 'row-style',
+                        class: setting.typeFormat == 3 ? 'currency-symbol row-style' : (_.includes([2, 5], setting.typeFormat) ? 'row-style' : ''),
                         displayvalue: this.formatDisplay(rowDataSrc[header.key], setting),
                     });
                 } else {

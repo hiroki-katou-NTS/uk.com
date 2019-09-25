@@ -48,9 +48,7 @@
             <tbody>
                 <tr v-for="(row, i) of displayDataLst">
                     <td v-bind:class="row.dateColor">{{row.date}}</td>
-                    <td v-for="(cell, j) of row.rowData" v-bind:class="cell.class" v-bind:style="{ 'word-wrap': 'break-word' }">
-                        {{cell.displayvalue}}
-                    </td>
+                    <td v-for="(cell, j) of row.rowData" v-bind:class="cell.class"><span class="crop-text">{{cell.displayvalue}}</span></td>
                     <td>
                         <div style="text-align: right" v-click:500="() => openEdit(row.id)">
                             <span style="color: red" class="fa fa-exclamation-circle fa-lg" v-if="null != row.ERAL && row.ERAL.includes('ER')"></span>
@@ -79,9 +77,7 @@
             <tbody>
                 <tr v-for="(row, i) of displayDataLstEx">
                     <td><span class="crop-text">{{row.employeeName}}</span></td>
-                    <td v-for="(cell, j) of row.rowData" v-bind:class="cell.class" v-bind:style="{ 'word-wrap': 'break-word' }">
-                        {{cell.displayvalue}}
-                    </td>
+                    <td v-for="(cell, j) of row.rowData" v-bind:class="cell.class"><span class="crop-text">{{cell.displayvalue}}</span></td>
                     <td>
                         <div style="text-align: right" v-click:500="() => openEdit(row.id)">
                             <span style="color: red" class="fa fa-exclamation-circle fa-lg" v-if="null != row.ERAL && row.ERAL.includes('ER')"></span>
