@@ -158,7 +158,7 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
                             self.otherNotes1(e.reasonOther == 1 ? true : false);
                             self.textOtherNotes1(e.reasonAndOtherContents);
                             self.shortTermResidence(e.shortStay == 1 ? true : false);
-                            self.selectedDepNotiAttach(e.depenAppoint);
+                            self.selectedDepNotiAttach(e.depenAppoint == null ? 0 : e.depenAppoint);
                             self.shortWorkHours(e.shortTimeWorkers == 1 ? true : false);
                             self.continuousEmpAfterRetire(e.continReemAfterRetirement == 1 ? true : false);
                         } else {
