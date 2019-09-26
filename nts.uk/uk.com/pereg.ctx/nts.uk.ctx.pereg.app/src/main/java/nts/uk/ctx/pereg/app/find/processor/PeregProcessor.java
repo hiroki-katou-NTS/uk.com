@@ -226,20 +226,22 @@ public class PeregProcessor {
 		
 		
 		//EA修正履歴3679 未来履歴　：#Msg_1574, 過去履歴　：#Msg_1575
-		if(!query.getStandardDate().equals(today)) {
-			PersonInfoCategoryAuth ctgAuth = ctgAuthOpt.get();
-			if ((ctgAuth.getSelfFutureHisAuth() == PersonInfoAuthType.HIDE
-					|| ctgAuth.getOtherFutureHisAuth() == PersonInfoAuthType.HIDE)
-					&& today.before(query.getStandardDate())) {
-				throw new BusinessException("Msg_1574");
+		if(perInfoCtg.isHistoryCategory()) {
+			if(!query.getStandardDate().equals(today)) {
+				PersonInfoCategoryAuth ctgAuth = ctgAuthOpt.get();
+				if ((ctgAuth.getSelfFutureHisAuth() == PersonInfoAuthType.HIDE
+						|| ctgAuth.getOtherFutureHisAuth() == PersonInfoAuthType.HIDE)
+						&& today.before(query.getStandardDate())) {
+					throw new BusinessException("Msg_1574");
+				}
+				
+				if ((ctgAuth.getSelfPastHisAuth() == PersonInfoAuthType.HIDE
+						|| ctgAuth.getOtherPastHisAuth() == PersonInfoAuthType.HIDE)
+						&& query.getStandardDate().before(today)) {
+					throw new BusinessException("Msg_1575");
+				}
+				
 			}
-			
-			if ((ctgAuth.getSelfPastHisAuth() == PersonInfoAuthType.HIDE
-					|| ctgAuth.getOtherPastHisAuth() == PersonInfoAuthType.HIDE)
-					&& query.getStandardDate().before(today)) {
-				throw new BusinessException("Msg_1575");
-			}
-			
 		}
 		
 		/**
