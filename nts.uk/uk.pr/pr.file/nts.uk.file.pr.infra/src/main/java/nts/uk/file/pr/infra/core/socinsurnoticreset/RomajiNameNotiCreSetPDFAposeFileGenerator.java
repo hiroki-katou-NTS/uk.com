@@ -189,7 +189,7 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
             int y = japaneseDate.year() + 1;
             int m = japaneseDate.month();
             int d = japaneseDate.day();
-            worksheet.getRangeByName(i +"!A3_7" ).setValue(japaneseDate.era() + String.valueOf(y) + "年" + String.valueOf(m) + "月" + String.valueOf(d) + "日  提出");
+            worksheet.getRangeByName(i +"!A3_7" ).setValue(japaneseDate.era() + String.valueOf(y) + "年" + String.valueOf(m) + "月" + String.valueOf(d) + "日");
 
         } catch (Exception e) {
             throw new RuntimeException(e);

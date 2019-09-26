@@ -108,15 +108,12 @@ public class RomajiNameNotiCreSetExportPDFService extends ExportService<RomajiNa
                 if (familyMember != null ){
                     int familyId  = Integer.parseInt(familyMember.getFamilyMemberId());
                     empFamilyInsHis = empFamilyInsHisRepository.getListEmFamilyHis(empId, familyId).orElse(null);
-                    //get history id
-                    List<DateHistoryItem> dateHistoryItemList = empFamilyInsHis.getDateHistoryItem();
-
-                    String historyId = null;
-                    for (int j = 0; j < dateHistoryItemList.size(); j ++ ) {
-                        if(date.compareTo(dateHistoryItemList.get(j).start()) >= 0 && date.compareTo(dateHistoryItemList.get(j).end()) < 0 ) {
-                            historyId = dateHistoryItemList.get(j).identifier();
-                            empFamilySocialIns = empFamilySocialInsRepository.getEmpFamilySocialInsById(historyId).orElse(null);
-                        }
+                    if (empFamilyInsHis != null) {
+                        //get history id
+                        List<DateHistoryItem> dateHistoryItemList = empFamilyInsHis.getDateHistoryItem();
+                       if(!this.getHistory(dateHistoryItemList, date).isEmpty()){
+                           empFamilySocialIns = empFamilySocialInsRepository.getEmpFamilySocialInsById(empId, String.valueOf(familyId), this.getHistory(dateHistoryItemList, date)).orElse(null);
+                       }
                     }
                 }
                 //personInfo = romajiNameNotiCreSetExReposity.getPersonInfo(familyMember.getPersonId());
@@ -159,5 +156,19 @@ public class RomajiNameNotiCreSetExportPDFService extends ExportService<RomajiNa
 
         //export PDF
         romajiNameNotiCreSetFileGenerator.generate(exportServiceContext.getGeneratorContext(), romajiNameNotificationList);
+    }
+
+    private String getHistory(List<DateHistoryItem> dateHistoryItemList, GeneralDate date){
+        if(!dateHistoryItemList.isEmpty()) {
+            String historyId = null;
+            for (int j = 0; j < dateHistoryItemList.size(); j ++ ) {
+                if(date.compareTo(dateHistoryItemList.get(j).start()) >= 0 && date.compareTo(dateHistoryItemList.get(j).end()) < 0 ) {
+                    historyId = dateHistoryItemList.get(j).identifier();
+                }
+            }
+            return historyId;
+        } else {
+            return null;
+        }
     }
 }

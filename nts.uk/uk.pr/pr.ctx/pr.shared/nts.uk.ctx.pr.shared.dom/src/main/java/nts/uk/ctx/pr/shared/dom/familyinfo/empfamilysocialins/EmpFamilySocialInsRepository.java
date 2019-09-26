@@ -9,6 +9,6 @@ import java.util.List;
 * 社員家族社会保険情報
 */
 public interface EmpFamilySocialInsRepository {
-    Optional<EmpFamilySocialIns> getEmpFamilySocialInsById (String historyId);
+    Optional<EmpFamilySocialIns> getEmpFamilySocialInsById (String empId, String familyId, String historyId);
 
 }

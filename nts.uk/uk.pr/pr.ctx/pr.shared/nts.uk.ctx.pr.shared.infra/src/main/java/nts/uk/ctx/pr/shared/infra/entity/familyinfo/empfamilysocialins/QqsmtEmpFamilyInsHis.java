@@ -80,9 +80,14 @@ public class QqsmtEmpFamilyInsHis extends UkJpaEntity implements Serializable
     }
 
     public static EmpFamilyInsHis toDomainEmpFamilyInsHis(List<QqsmtEmpFamilyInsHis> empFamilyInsHis) {
-        List<DateHistoryItem> dateHistoryItem = empFamilyInsHis.stream().map(i -> { return
+        if (empFamilyInsHis.isEmpty()) {
+            return null;
+        }
+        else {
+            List<DateHistoryItem> dateHistoryItem = empFamilyInsHis.stream().map(i -> {return
                 new DateHistoryItem(i.empFamilyInsHisPk.historyId, new DatePeriod(i.startDate, i.endDate));}).collect(Collectors.toList());
-        return  new EmpFamilyInsHis(empFamilyInsHis.get(0).empFamilyInsHisPk.empId, empFamilyInsHis.get(0).empFamilyInsHisPk.familyId, dateHistoryItem);
+            return new EmpFamilyInsHis(empFamilyInsHis.get(0).empFamilyInsHisPk.empId, empFamilyInsHis.get(0).empFamilyInsHisPk.familyId, dateHistoryItem);
+        }
     }
 
     public EmpFamilySocialIns toDomains() {
