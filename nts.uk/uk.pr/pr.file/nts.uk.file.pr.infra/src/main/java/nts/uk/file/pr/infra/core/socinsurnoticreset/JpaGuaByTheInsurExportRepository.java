@@ -187,14 +187,19 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("  QSIO.HEALTH_INSURANCE_OFFICE_NUMBER_2,");
         exportSQL.append("  QSIO.WELFARE_PENSION_OFFICE_NUMBER_1,");
         exportSQL.append("  QSIO.WELFARE_PENSION_OFFICE_NUMBER_2,");
+
         exportSQL.append("  BP.PERSON_NAME,");
         exportSQL.append("  BP.TODOKEDE_FNAME,");
+
         exportSQL.append("  BP.PERSON_NAME,");
         exportSQL.append("  BP.TODOKEDE_FNAME,");
+
         exportSQL.append("  BP.PERSON_NAME_KANA,");
         exportSQL.append("  BP.TODOKEDE_FNAME_KANA,");
+
         exportSQL.append("  BP.PERSON_NAME_KANA,");
         exportSQL.append("  BP.TODOKEDE_FNAME_KANA,");
+
         exportSQL.append("  BP.BIRTHDAY,");
         exportSQL.append("  BP.BIRTHDAY,");
         exportSQL.append("  BP.GENDER,");
@@ -254,7 +259,7 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append(" ON QSII.EMPLOYEE_ID = ROOT.EMPLOYEE_ID AND QSII.CID =  QSIO.CID ");
         exportSQL.append(" LEFT JOIN QQSMT_EMP_BA_PEN_NUM QEBPN ");
         exportSQL.append(" ON QEBPN.EMPLOYEE_ID = ROOT.EMPLOYEE_ID ");
-        exportSQL.append(" LEFT JOIN ");
+        exportSQL.append(" INNER JOIN ");
         exportSQL.append("   (SELECT * ");
         exportSQL.append("    FROM QQSMT_EMP_HEAL_INSUR_QI QEHIQTEM ");
         exportSQL.append("    WHERE QEHIQTEM.START_DATE <= ?endDate ");
