@@ -135,7 +135,7 @@ module nts.uk.ui.koExtentions {
                                     }
                                     
                                 }, dataFiltering: function (evt, ui) {
-                                    let disabled = $treegrid.data("rowDisabled"), treeId = $treegrid.attr("id"), 
+                                    let disabled = $treegrid.data("rowDisabled"), 
                                         currentCol = _.find(ui.owner.grid.options.columns, (c) => c.key === ui.columnKey), 
                                         shouldRemove = $treegrid.data("customExpression");
                                     
@@ -150,9 +150,7 @@ module nts.uk.ui.koExtentions {
                                         
                                         if (!_.isNil(currentExp)) {
                                             let isFilterTrue = currentExp.expr.toLowerCase() === "check"; 
-                                            $treegrid.closest(".nts-treegridview").find(".ui-iggrid-filterrow")
-                                                .find("td[aria-describedby='" + treeId + "_" + ui.columnKey + "']")
-                                                .find(".ui-iggrid-filtereditor")
+                                            ui.owner._currentTarget.find(".ui-iggrid-filtereditor")
                                                 .val(isFilterTrue ? currentCol.filterOpts.trueOpt : currentCol.filterOpts.falseOpt);
                                         }
                                     }
@@ -187,8 +185,9 @@ module nts.uk.ui.koExtentions {
                                             $(falseOpt).find(".ui-iggrid-filterddlistitemcontainer").html(currentCol.filterOpts.falseOpt);//nts.uk.resource.getText("Enum_UseAtr_NotUse"));
                                         }
                                     } 
-                                },
-                                filterSummaryAlwaysVisible : false });
+                                }, dropDownClosed: function (evt, ui) {
+                                    ui.owner._currentTarget.closest(".ui-iggrid-filtercell").find(".ui-iggrid-filterbutton").removeClass("ui-state-active ui-iggrid-filterbuttonactive");
+                                }, filterSummaryAlwaysVisible : false });
             }
 
             $treegrid.data("expand", new ExpandNodeHolder());
