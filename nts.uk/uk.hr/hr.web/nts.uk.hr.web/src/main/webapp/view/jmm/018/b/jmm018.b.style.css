@@ -12,7 +12,7 @@
 	overflow: visible !important;
 } */
 
-#treegrid_nodeText > div.ntsControl.ntsHelpButton{
+/* #treegrid_nodeText > div.ntsControl.ntsHelpButton{
 	float: right;
 	margin-right: 10px;
 }
@@ -30,7 +30,7 @@
 #treegrid_useApproval > div.ntsControl.ntsHelpButton{
 	float: right;
 	margin-right: 10px;
-}
+} */
 
 .sidebar-content{
 	overflow: inherit !important;
@@ -64,3 +64,14 @@
 /* .content-a{
 	height: 675px;
 } */
+
+
+.nts-treegridview .ui-iggrid-headertable tr:first-child {
+	    height: 40px !important;
+}
+
+.nts-treegridview .ui-iggrid-headertable th div.ntsControl.ntsHelpButton{
+	    position: absolute;
+    right: 10px;
+    top: 3px;
+}
