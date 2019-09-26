@@ -3,6 +3,7 @@ module nts.uk.pr.view.qsi013.b.viewmodel {
     import dialog = nts.uk.ui.dialog;
     import block = nts.uk.ui.block;
     import getShared = nts.uk.ui.windows.getShared;
+    import errors = nts.uk.ui.errors;
 
     export interface ComponentOption {
         systemReference: model.SystemType;
@@ -180,6 +181,7 @@ module nts.uk.pr.view.qsi013.b.viewmodel {
         constructor() {
             var self = this;
             self.selectedItem.subscribe((data) => {
+                errors.clearAll();
                 self.getDataLossInfo(data);
             });
             let list = getShared("QSI013_PARAMS_B");
