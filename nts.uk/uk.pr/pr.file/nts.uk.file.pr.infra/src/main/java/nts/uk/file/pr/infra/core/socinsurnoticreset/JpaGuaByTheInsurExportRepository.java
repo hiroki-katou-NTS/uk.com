@@ -426,7 +426,8 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
                 .welPrefectureNo(i[29] == null ? 0 : ((BigDecimal) i[29]).intValue())
                 .healInsCtg(i[30] == null ? 0 : ((BigDecimal) i[30]).intValue())
                 .distin(i[31] == null ? "" : i[31].toString())
-                .healUnionNumber(i[32] == null ? "" : i[32].toString())
+                .healInsInherenPr(i[32] == null ? "" : i[32].toString())
+                .healUnionNumber(i[33] == null ? "" : i[33].toString())
                 .build()
         ).collect(Collectors.toList());
     }

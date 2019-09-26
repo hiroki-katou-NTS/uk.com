@@ -163,19 +163,19 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
     }
 
     private void selectItem(WorksheetCollection worksheets, GuaByTheInsurExportDto element, String sheetName, int stt){
-        if(element.getRemarks70OldAndOverEmployees() == 1){
+        if(element.getRemarks70OldAndOverEmployees() == 0){
             worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_30" : "A2_30_" + stt));
         }
-        if(element.getRemarksTwoOrMoreOfficeWorkers() == 1){
+        if(element.getRemarksTwoOrMoreOfficeWorkers() == 0){
             worksheets.get(sheetName).getShapes().remove( worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_31" : "A2_31_" + stt));
         }
-        if(element.getRemarksShortTimeWorkers() == 1){
+        if(element.getRemarksShortTimeWorkers() == 0){
             worksheets.get(sheetName).getShapes().remove( worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_32" : "A2_32_" + stt));
         }
-        if(element.getRemarksContReemAfterRetirement() == 1){
+        if(element.getRemarksContReemAfterRetirement() == 0){
             worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_33" : "A2_33_" + stt));
         }
-        if(element.getRemarksOther() == 1){
+        if(element.getRemarksOther() == 0){
             worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_34" : "A2_34_" + stt));
         }
         if(element.getReasonResidentAbroad() == 1){
