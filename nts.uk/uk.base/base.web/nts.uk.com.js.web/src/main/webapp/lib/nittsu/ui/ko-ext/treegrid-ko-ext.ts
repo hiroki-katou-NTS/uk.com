@@ -150,7 +150,7 @@ module nts.uk.ui.koExtentions {
                                         
                                         if (!_.isNil(currentExp)) {
                                             let isFilterTrue = currentExp.expr.toLowerCase() === "check"; 
-                                            ui.owner._currentTarget.find(".ui-iggrid-filtereditor")
+                                            ui.owner._currentTarget.closest(".ui-iggrid-filtercell").find(".ui-iggrid-filtereditor")
                                                 .val(isFilterTrue ? currentCol.filterOpts.trueOpt : currentCol.filterOpts.falseOpt);
                                         }
                                     }
