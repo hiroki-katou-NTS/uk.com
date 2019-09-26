@@ -30,6 +30,7 @@ export class KdwS03AMenuComponent extends Vue {
     }
 
     public openErrorList() {
+        this.createMask();
         if (this.params.displayFormat == '1') {
             this.$modal('kdws03c', {}, { type: 'dropback' })
                 .then((v: any) => {
@@ -59,6 +60,7 @@ export class KdwS03AMenuComponent extends Vue {
 
     }
     public openKdws03f(param: number) {
+        this.createMask();
         this.$modal('kdws03f', {}, { type: 'dropback' }).then((v: any) => {
             if (v == 'dropback') {
                 this.$close('dropback');
@@ -66,6 +68,7 @@ export class KdwS03AMenuComponent extends Vue {
         });
     }
     public openKdws03g(param: number) {
+        this.createMask();
         console.log(param);
         this.$modal('kdws03g', { 'remainOrtime36': param }, { type: 'dropback' }).then((v: any) => {
             if (v == 'dropback') {
@@ -75,6 +78,7 @@ export class KdwS03AMenuComponent extends Vue {
     }
 
     public processConfirmAll(processFlag: string) {
+        this.createMask();
         let dataCheckSign: Array<any> = [];
         let dateRange: any = this.dailyCorrectionState.dateRange;
         let updateItemExist = false;
@@ -134,6 +138,13 @@ export class KdwS03AMenuComponent extends Vue {
             }
 
         }
+    }
+
+    public createMask() {
+        this.$mask('show');
+        setTimeout(() => {
+            this.$mask('hide');
+        }, 500);
     }
 }
 interface MenuParam {
