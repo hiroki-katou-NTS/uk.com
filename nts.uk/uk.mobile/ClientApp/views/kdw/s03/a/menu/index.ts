@@ -67,10 +67,10 @@ export class KdwS03AMenuComponent extends Vue {
             }
         });
     }
-    public openKdws03g(param: number) {
+
+    public openKdws03g(param: boolean) {
         this.createMask();
-        console.log(param);
-        this.$modal('kdws03g', { 'remainOrtime36': param }, { type: 'dropback' }).then((v: any) => {
+        this.$modal('kdws03g', { 'remainDisplay': param }, { type: 'dropback' }).then((v: any) => {
             if (v == 'dropback') {
                 this.$close('dropback');
             }
