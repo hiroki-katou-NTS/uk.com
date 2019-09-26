@@ -22098,7 +22098,7 @@ var nts;
                                         $treegrid.ntsTreeView("disableRows", disabled);
                                     }
                                 }, dataFiltering: function (evt, ui) {
-                                    var disabled = $treegrid.data("rowDisabled"), treeId = $treegrid.attr("id"), currentCol = _.find(ui.owner.grid.options.columns, function (c) { return c.key === ui.columnKey; }), shouldRemove = $treegrid.data("customExpression");
+                                    var disabled = $treegrid.data("rowDisabled"), currentCol = _.find(ui.owner.grid.options.columns, function (c) { return c.key === ui.columnKey; }), shouldRemove = $treegrid.data("customExpression");
                                     _.remove(ui.newExpressions, function (ex) { return _.isNil(ex.expr); });
                                     if (!_.isEmpty(shouldRemove)) {
                                         _.remove(ui.newExpressions, function (ex) { return !_.isNil(_.find(shouldRemove, function (sr) { return _.isEqual(sr, ex); })); });
@@ -22108,9 +22108,7 @@ var nts;
                                         var currentExp = _.find(ui.newExpressions, function (exp) { return exp.fieldName === ui.columnKey; });
                                         if (!_.isNil(currentExp)) {
                                             var isFilterTrue = currentExp.expr.toLowerCase() === "check";
-                                            $treegrid.closest(".nts-treegridview").find(".ui-iggrid-filterrow")
-                                                .find("td[aria-describedby='" + treeId + "_" + ui.columnKey + "']")
-                                                .find(".ui-iggrid-filtereditor")
+                                            ui.owner._currentTarget.find(".ui-iggrid-filtereditor")
                                                 .val(isFilterTrue ? currentCol.filterOpts.trueOpt : currentCol.filterOpts.falseOpt);
                                         }
                                     }
@@ -22136,8 +22134,9 @@ var nts;
                                             $(falseOpt).find(".ui-iggrid-filterddlistitemcontainer").html(currentCol.filterOpts.falseOpt); //nts.uk.resource.getText("Enum_UseAtr_NotUse"));
                                         }
                                     }
-                                },
-                                filterSummaryAlwaysVisible: false });
+                                }, dropDownClosed: function (evt, ui) {
+                                    ui.owner._currentTarget.closest(".ui-iggrid-filtercell").find(".ui-iggrid-filterbutton").removeClass("ui-state-active ui-iggrid-filterbuttonactive");
+                                }, filterSummaryAlwaysVisible: false });
                         }
                         $treegrid.data("expand", new ExpandNodeHolder());
                         $treegrid.data("autoExpanding", false);
@@ -42448,8 +42447,9 @@ var nts;
                                             $(falseOpt).find(".ui-iggrid-filterddlistitemcontainer").html(currentCol.filterOpts.falseOpt); //nts.uk.resource.getText("Enum_UseAtr_NotUse"));
                                         }
                                     }
-                                },
-                                filterSummaryAlwaysVisible: false });
+                                }, dropDownClosed: function (evt, ui) {
+                                    ui.owner._currentTarget.closest(".ui-iggrid-filtercell").find(".ui-iggrid-filterbutton").removeClass("ui-state-active ui-iggrid-filterbuttonactive");
+                                }, filterSummaryAlwaysVisible: false });
                         }
                         $treegrid.data("expand", new ui_26.koExtentions.ExpandNodeHolder());
                         $treegrid.data("autoExpanding", false);
