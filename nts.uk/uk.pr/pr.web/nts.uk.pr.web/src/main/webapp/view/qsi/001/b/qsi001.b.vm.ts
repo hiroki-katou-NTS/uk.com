@@ -3,8 +3,12 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
     import block = nts.uk.ui.block;
     import getShared = nts.uk.ui.windows.getShared;
     import getText = nts.uk.resource.getText;
-    var alertError = nts.uk.ui.dialog.alertError;
+    var dialog = nts.uk.ui.dialog;
     export class ScreenModel {
+
+        //dummydata
+
+        dummyBirthDay: KnockoutObservable<string>;
         employeeInputList: KnockoutObservableArray<EmployeeModel>;
         //
 
@@ -52,6 +56,7 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
             let self = this;
             let periodCommand: any;
             let params = getShared('QSI001_PARAMS_TO_SCREEN_B');
+            self.dummyBirthDay = ko.observable("1988/12/10");
             self.tempApplyToEmployeeOver70 = ko.observable();
             //init
             self.option = new nts.uk.ui.option.CurrencyEditorOption({
@@ -105,7 +110,6 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
                 //load page
                 service.getSocialInsurAcquisiInforById(params.listEmpId[0].employeeId).done(e => {
                     if (e) {
-                        self.applyToEmployeeOver70(e.percentOrMore);
                         self.tempApplyToEmployeeOver70(e.percentOrMore);
                         self.otherNotes(e.remarksOther == 1 ? true : false);
                         self.textOtherNotes(e.remarksAndOtherContents);
@@ -138,15 +142,12 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
 
                 });
 
-                service.getPersonInfo(params.listEmpId[0].employeeId).done(r => {
-                    if (self.getAge(r, params.date) >= 70) {
-                        self.applyToEmployeeOver70(true);
-                    }else{
-                        self.applyToEmployeeOver70(false);
-                    }
-                }).fail(f => {
-                    console.dir(f);
-                });
+                if (self.getAge(self.dummyBirthDay, params.date) >= 70) {
+                    self.applyToEmployeeOver70(true);
+
+                }else{
+                    self.applyToEmployeeOver70(false);
+                }
 
                 service.getMultiEmpWorkInfoById(params.listEmpId[0].employeeId).done(e =>{
                     if(e){
@@ -192,12 +193,11 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
                     };
                     service.getSocialInsurAcquisiInforById(self.selectedItem()).done(e => {
                         if (e) {
-                            self.applyToEmployeeOver70(e.percentOrMore);
                             self.tempApplyToEmployeeOver70(e.percentOrMore);
                             self.otherNotes(e.remarksOther == 1 ? true : false);
                             self.textOtherNotes(e.remarksAndOtherContents);
                             self.salaryMonthlyActual(e.remunMonthlyAmountKind);
-                            self.salaryMonthly(e.remunMonthlyAmount);
+                            self.salaryMonthly  (e.remunMonthlyAmount);
                             self.totalCompensation(e.totalMonthlyRemun);
                             self.livingAbroad(e.livingAbroad == 1 ? true : false);
                             self.otherNotes1(e.reasonOther == 1 ? true : false);
@@ -226,16 +226,14 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
 
                     });
 
-                    service.getPersonInfo(self.selectedItem()).done(r => {
-                        if (self.getAge(r, params.date) >= 70) {
-                            self.applyToEmployeeOver70(true);
 
-                        }else{
-                            self.applyToEmployeeOver70(false);
-                        }
-                    }).fail(f => {
-                        console.dir(f);
-                    });
+                    if (self.getAge(self.dummyBirthDay, params.date) >= 70) {
+                        self.applyToEmployeeOver70(true);
+
+                    }else{
+                        self.applyToEmployeeOver70(false);
+                    }
+
 
                     service.getMultiEmpWorkInfoById(self.selectedItem()).done(e =>{
                         if(e){
@@ -287,6 +285,7 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
         add() {
             let self = this;
             nts.uk.ui.errors.clearAll();
+            let params = getShared('QSI001_PARAMS_TO_SCREEN_B');
             $("input").trigger("validate");
             if (nts.uk.ui.errors.hasError()) {
                 return;
@@ -324,8 +323,19 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
 
             service.add(data).done(e => {
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(e=>{
+                    if (self.getAge(self.dummyBirthDay, params.date) >= 70) {
+                        if(self.tempApplyToEmployeeOver70() != self.applyToEmployeeOver70()){
+                            dialog.info({ messageId: "Msg_177" });
+                        }
+                    }else{
+
+                        if(self.tempApplyToEmployeeOver70() != self.applyToEmployeeOver70()){
+                            dialog.info({ messageId: "Msg_176" });
+                        }
+                    }
                     block.clear();
-                })
+                });
+
             }).fail(e => {
                 block.clear();
             });
