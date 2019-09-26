@@ -90,33 +90,11 @@ export class Kdws03AComponent extends Vue {
 
     @Watch('yearMonth')
     public changeYearMonth(value: any, valueOld: any) {
-        let self = this;
         this.yearMonthTemp = valueOld;
         this.selectedEmployeeTemp = this.selectedEmployee;
         this.actualTimeSelectedCodeTemp = this.actualTimeSelectedCode;
 
-        self.$http.post('at', servicePath.genDate, { yearMonth: value }).then((result: { data: any }) => {
-            let data = result.data;
-            if (_.isNil(data.lstRange)) {
-                this.yearMonth = this.yearMonthTemp;
-
-                return;
-            }
-            self.timePeriodAllInfo = data;
-            _.remove(self.actualTimeOptionDisp);
-            let selectItem = 0;
-            if (data.lstRange && data.lstRange.length > 0) {
-                for (let i = 0; i < data.lstRange.length; i++) {
-                    let startDate = data.lstRange[i].startDate,
-                        endDate = data.lstRange[i].endDate;
-                    if (data.targetRange.startDate == startDate) {
-                        selectItem = i;
-                    }
-                    self.actualTimeOptionDisp.push({ code: i, name: (i + 1) + ': ' + this.$dt(startDate, 'M/D') + '～' + this.$dt(endDate, 'M/D') });
-                }
-            }
-            this.actualTimeSelectedCode = selectItem;
-        });
+        this.initActualTime(value, this.selectedEmployee);        
     }
 
     @Watch('selectedEmployee')
@@ -127,12 +105,13 @@ export class Kdws03AComponent extends Vue {
         this.selectedEmployeeTemp = valueOld;
         this.yearMonthTemp = this.yearMonth;
         this.actualTimeSelectedCodeTemp = this.actualTimeSelectedCode;
-        this.startPage();
+
+        this.initActualTime(this.yearMonth, this.selectedEmployee);
     }
 
     @Watch('dateRanger', { deep: true })
     public changeDateRange(value: any, valueOld: any) {
-        if (_.isNil(valueOld) || _.isEqual(value, valueOld)) {
+        if (_.isNil(valueOld) && this.displayFormat == '1') {
             return;
         }
         this.startPage();
@@ -720,6 +699,33 @@ export class Kdws03AComponent extends Vue {
                 return value;
             }
         }
+    }
+
+    //期間取得
+    public initActualTime(value: any, selectedEmployee: string ) {
+        let self = this;
+        self.$http.post('at', servicePath.genDate, { yearMonth: value, empTarget: selectedEmployee}).then((result: { data: any }) => {
+            let data = result.data;
+            if (_.isNil(data.lstRange)) {
+                this.yearMonth = this.yearMonthTemp;
+
+                return;
+            }
+            self.timePeriodAllInfo = data;
+            _.remove(self.actualTimeOptionDisp);
+            let selectItem = 0;
+            if (data.lstRange && data.lstRange.length > 0) {
+                for (let i = 0; i < data.lstRange.length; i++) {
+                    let startDate = data.lstRange[i].startDate,
+                        endDate = data.lstRange[i].endDate;
+                    if (data.targetRange.startDate == startDate) {
+                        selectItem = i;
+                    }
+                    self.actualTimeOptionDisp.push({ code: i, name: (i + 1) + ': ' + this.$dt(startDate, 'M/D') + '～' + this.$dt(endDate, 'M/D') });
+                }
+            }
+            this.actualTimeSelectedCode = selectItem;
+        });
     }
 
 }
