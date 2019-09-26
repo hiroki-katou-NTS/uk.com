@@ -79,9 +79,11 @@ public class PensionOfficeDataExport {
 
     private String portCd;
 
-    private String add1;
+    // = add 1 + add 2
+    private String add;
+    // = add kana 1 + add kana 2
+    private String addKana;
 
-    private String add2;
 
     private String companyName;
 

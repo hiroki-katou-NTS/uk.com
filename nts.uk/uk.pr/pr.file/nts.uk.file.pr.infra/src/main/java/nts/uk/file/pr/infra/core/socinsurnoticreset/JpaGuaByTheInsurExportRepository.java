@@ -54,7 +54,12 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("      HEALTH_INSURANCE_PREFECTURE_NO,");
         exportSQL.append("      WELFARE_PENSION_PREFECTURE_NO,");
         exportSQL.append("      HEAL_INSUR_SAME_CTG,");
-        exportSQL.append("      QUALIFI_DISTIN");
+        exportSQL.append("      QUALIFI_DISTIN,");
+        exportSQL.append("      POSTAL_CODE,");
+        exportSQL.append("      ADDRESS_1,");
+        exportSQL.append("      ADDRESS_2,");
+        exportSQL.append("      ADDRESS_KANA_1,");
+        exportSQL.append("      ADDRESS_KANA_2");
         exportSQL.append("  FROM");
         exportSQL.append("      (SELECT *");
         exportSQL.append("         FROM QQSMT_EMP_HEAL_INSUR_QI ");
@@ -141,6 +146,9 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
                 .welPrefectureNo(i[29] == null ? 0 : ((BigDecimal) i[29]).intValue())
                 .healInsCtg(i[30] == null ? 0 : ((BigDecimal) i[30]).intValue())
                 .distin(i[31] == null ? "" : i[31].toString())
+                .portCd(i[32] == null ? "" : i[32].toString())
+                .add(i[33] == null && i[34] == null ? "" : i[33].toString()+ " " + i[34].toString())
+                .addKana(i[35] == null && i[36] == null ? "" : i[35].toString()+ " " + i[36].toString())
                 .build()
         ).collect(Collectors.toList());
     }
