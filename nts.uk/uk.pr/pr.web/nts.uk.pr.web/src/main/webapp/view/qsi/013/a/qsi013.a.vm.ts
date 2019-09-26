@@ -67,7 +67,6 @@ module nts.uk.pr.view.qsi013.a.viewmodel {
             self.filingDate(yyyy + "/" + mm  + "/" + dd);
             self.loadKCP005();
             self.loadCCG001();
-
             self.startDate.subscribe((data) =>{
                 if(nts.uk.util.isNullOrEmpty(data)){
                     return;
@@ -88,6 +87,7 @@ module nts.uk.pr.view.qsi013.a.viewmodel {
                 }
                 self.filingDateJp(" (" + nts.uk.time.dateInJapanEmpire(data) + ")");
             });
+            self.initScreen();
         }
 
 
@@ -99,7 +99,16 @@ module nts.uk.pr.view.qsi013.a.viewmodel {
 
             service.getSocialInsurNotiCreateSet().done(function(data: ISocInsurNotiCreSet) {
                 if(data != null) {
-                    self.socInsurNotiCreSet(data);
+                    self.socInsurNotiCreSet().officeInformation(data.officeInformation);
+                    self.socInsurNotiCreSet().printPersonNumber(data.printPersonNumber);
+                    self.socInsurNotiCreSet().businessArrSymbol(data.businessArrSymbol);
+                    self.socInsurNotiCreSet().outputOrder(data.outputOrder);
+                    self.socInsurNotiCreSet().submittedName(data.submittedName);
+                    self.socInsurNotiCreSet().insuredNumber(data.insuredNumber);
+                    self.socInsurNotiCreSet().fdNumber(data.fdNumber);
+                    self.socInsurNotiCreSet().textPersonNumber(data.textPersonNumber == null ? 0 : data.textPersonNumber);
+                    self.socInsurNotiCreSet().outputFormat(data.outputFormat == null ? 0 : data.outputFormat);
+                    self.socInsurNotiCreSet().lineFeedCode(data.lineFeedCode == null ? 0 : data.lineFeedCode);
                 }
             }).fail(function(result) {
                 dialog.alertError(result.errorMessage);

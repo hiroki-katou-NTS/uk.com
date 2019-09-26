@@ -69,15 +69,14 @@ public class NotificationOfLossInsExportPDFService extends ExportService<Notific
 			throw new BusinessException("Msg_37");
 		}
 
-		if( socialInsurNotiCreateSet.getPrintPersonNumber() == PersonalNumClass.DO_NOT_OUTPUT.value) {
-			List<InsLossDataExport> overSeventy = welfPenInsLoss.stream().filter(item-> item.getCause() == ReasonsForLossPensionIns.ONLY_PENSION_INSURANCE.value).collect(Collectors.toList());
-			List<InsLossDataExport> underSeventy = welfPenInsLoss.stream().filter(item-> item.getCause() != ReasonsForLossPensionIns.ONLY_PENSION_INSURANCE.value).collect(Collectors.toList());
-			healthInsLoss.addAll(underSeventy);
-			healthInsLoss.stream().sorted(Comparator.comparing(InsLossDataExport::getOfficeCd).thenComparing(InsLossDataExport::getEmpCd));
-			CompanyInfor company = socialInsurNotiCreateSetEx.getCompanyInfor(cid);
-			socialInsurNotiCreateSetFileGenerator.generate(exportServiceContext.getGeneratorContext(),
-					new LossNotificationInformation(healthInsLoss, overSeventy,null, domain, exportServiceContext.getQuery().getReference(), company, null));
-		}
+		List<InsLossDataExport> overSeventy = welfPenInsLoss.stream().filter(item -> item.getCause() == ReasonsForLossPensionIns.ONLY_PENSION_INSURANCE.value).collect(Collectors.toList());
+		List<InsLossDataExport> underSeventy = welfPenInsLoss.stream().filter(item -> item.getCause() != ReasonsForLossPensionIns.ONLY_PENSION_INSURANCE.value).collect(Collectors.toList());
+		healthInsLoss.addAll(underSeventy);
+		healthInsLoss.stream().sorted(Comparator.comparing(InsLossDataExport::getOfficeCd).thenComparing(InsLossDataExport::getEmpCd));
+		CompanyInfor company = socialInsurNotiCreateSetEx.getCompanyInfor(cid);
+		socialInsurNotiCreateSetFileGenerator.generate(exportServiceContext.getGeneratorContext(),
+				new LossNotificationInformation(healthInsLoss, overSeventy, null, domain, exportServiceContext.getQuery().getReference(), company, null));
+
 	}
 
 	//社会保険届作成設定登録処理
