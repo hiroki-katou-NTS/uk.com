@@ -156,8 +156,8 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
                 .portCd(i[32] == null ? "" : i[32].toString())
                 .add(i[33] == null && i[34] == null ? "" : i[33].toString()+ " " + i[34].toString())
                 .addKana(i[35] == null && i[36] == null ? "" : i[35].toString()+ " " + i[36].toString())
-                .healInsInherenPr(i[37] == null ? "" : i[32].toString())
-                .healUnionNumber(i[38] == null ? "" : i[33].toString())
+                .healInsInherenPr(i[37] == null ? "" : i[37].toString())
+                .healUnionNumber(i[38] == null ? "" : i[38].toString())
                 .build()
         ).collect(Collectors.toList());
     }
