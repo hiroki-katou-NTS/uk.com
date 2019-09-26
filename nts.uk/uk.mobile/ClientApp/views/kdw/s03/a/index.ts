@@ -34,6 +34,7 @@ export class Kdws03AComponent extends Vue {
 
     public title: string = 'Kdws03A';
     public isFirstLoad: boolean = true;
+    public isReLoad: boolean = true;
     public displayFormat: any = '0';
     public lstDataSourceLoad: Array<any> = [];
     public lstDataHeader: Array<any> = [];
@@ -106,12 +107,16 @@ export class Kdws03AComponent extends Vue {
         this.yearMonthTemp = this.yearMonth;
         this.actualTimeSelectedCodeTemp = this.actualTimeSelectedCode;
 
+        this.startPage();
+        this.isReLoad = false;
         this.initActualTime(this.yearMonth, this.selectedEmployee);
     }
 
     @Watch('dateRanger', { deep: true })
     public changeDateRange(value: any, valueOld: any) {
-        if (_.isNil(valueOld) && this.displayFormat == '1') {
+        if (_.isNil(valueOld) || this.displayFormat == '1' || _.isEqual(value, valueOld) || !this.isReLoad) {
+            this.isReLoad = true;
+
             return;
         }
         this.startPage();
@@ -554,7 +559,7 @@ export class Kdws03AComponent extends Vue {
         },
             { type: 'dropback' })
             .then((v: any) => {
-                window.location.reload();
+                self.$http.post('at', servicePath.resetCacheDomain).then((result: { data: any }) => {});
             });
     }
 
@@ -694,7 +699,9 @@ export class Kdws03AComponent extends Vue {
             if (setting.typeFormat == '6') {
                 return new TimeWithDay(value);
             } else if (setting.typeFormat == '3') {
-                return Number(value) == 0 ? '' : Number(value).toFixed(0);
+                return Number(value) == 0 ? '' : Number(Number(value).toFixed(0)).toLocaleString('en-US');
+            } else if (setting.typeFormat == '2') {
+                return Number(value) == 0 ? '' : Number(value).toLocaleString();
             } else {
                 return value;
             }
@@ -733,7 +740,8 @@ export class Kdws03AComponent extends Vue {
 //サーバパス
 const servicePath = {
     initMOB: 'screen/at/correctionofdailyperformance/initMOB',
-    genDate: 'screen/at/correctionofdailyperformance/gendate'
+    genDate: 'screen/at/correctionofdailyperformance/gendate',
+    resetCacheDomain: 'screen/at/correctionofdailyperformance/resetCacheDomain',
 };
 
 //エラータイプ

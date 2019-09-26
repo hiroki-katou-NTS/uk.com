@@ -63,7 +63,7 @@ public class DailyPerformanceMobileWebService {
 
 	@POST
 	@Path("resetCacheDomain")
-	public void calcTime() {
+	public void resetCacheDomain() {
 		session.setAttribute("domainEdits", null);
 		return ;
 	}
