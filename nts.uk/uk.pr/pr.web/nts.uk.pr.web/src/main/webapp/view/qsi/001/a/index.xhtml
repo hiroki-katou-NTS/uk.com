@@ -29,7 +29,7 @@
     </ui:define>
 
     <ui:define name="content">
-        <div id="functions-area" style="min-width: 1000px;">
+        <div id="functions-area" style="min-width: 1000px; padding-left: 55px">
             <button id="A1_1" data-bind=" click: exportFileExcel, enable: $root.errors.isEmpty &amp;&amp; selectedCodeKCP005().length > 0"  tabindex="1"
                     class="proceed">#{i18n.getText('QSI001_A1_1')}</button>
 
@@ -45,12 +45,12 @@
             <button id="A1_6" tabindex="6" data-bind="enable: false" >#{i18n.getText('QSI001_A1_6')}</button>
 
         </div>
-        <div style="margin-top: 15px; min-width: 1000px;" class="contents-area fixed-flex-layout">
+        <div style="margin-top: 15px; min-width: 1000px" class="contents-area fixed-flex-layout">
             <!-- ccg001 -->
             <div id="com-ccg001"></div>
 
             <!-- div left -->
-            <div class="fixed-flex-layout-left" style="margin-left: 50px;">
+            <div class="fixed-flex-layout-left" style="margin-left: 70px;">
 
                 <div class="panel panel-frame " style="margin-bottom: 10px">
                     <span class="label with-image">
@@ -64,7 +64,7 @@
                     <span data-bind="text: japanEndDate"></span>
                 </div>
 
-            <div class = "panel panel-frame" id="kcp005" tabindex="10"></div>
+            <div style="height: 600px;" class = "panel panel-frame" id="kcp005" tabindex="10"></div>
             </div>
             <!-- div right -->
             <div class=" panel panel-frame fixed-flex-layout-right" data-bind="with: socialInsurNotiCrSet">

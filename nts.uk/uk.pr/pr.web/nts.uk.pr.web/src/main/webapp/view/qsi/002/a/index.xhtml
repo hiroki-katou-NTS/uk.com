@@ -28,7 +28,7 @@
     </ui:define>
 
     <ui:define name="content">
-        <div id="functions-area" style = "min-width: 1000px;">
+        <div id="functions-area" style = "min-width: 1000px;padding-left: 75px">
             <button id="A1_1" tabindex="1" data-bind="click: exportPDF, enable: $root.errors.isEmpty &amp;&amp; selectedCodeKCP005().length > 0" class="proceed">#{i18n.getText('QSI002_A1_1')}</button>
 
             <button id="A1_2" tabindex="2" data-bind="click: openScreenB, enable: false" >#{i18n.getText('QSI002_4')}</button>
@@ -41,14 +41,14 @@
             <div id="com-ccg001"></div>
 
             <!-- div left -->
-            <div class="pull-left" style="margin-left: 100px">
+            <div class="pull-left" style=" margin-left: 80px">
 
-                <div class = "panel panel-frame" id="kcp005" tabindex="5"></div>
+                <div style="height: 435px;" class = "panel panel-frame" id="kcp005" tabindex="5"></div>
 
 
             </div>
             <!-- div right -->
-            <div  class="pull-left" style="margin-left: 10px;    border-radius: 8px;border: 1px solid grey;padding: 10px;">
+            <div  class="pull-left panel panel-frame" style="height:435px; margin-left: 15px;padding: 10px;">
                 <span id="A3_2" class="label" style="margin-bottom: 15px;">#{i18n.getText('QSI002_A222_4')}</span>
                 <div class="control-group">
                     <div id="A3_3" data-bind="ntsFormLabel: {constrant: '', required:true}">#{i18n.getText('QSI002_A222_5')}</div>

@@ -7,7 +7,7 @@
 <body>
 <ui:composition template="../../../../master/dialog.xhtml">
     <ui:define name="htmlHead">
-        <script>var dialogSize = { width: 1280, height: 620 };</script>
+        <script>var dialogSize = { width: 1000, height: 600 };</script>
         <com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
         <com:scriptfile set="IGNITE" />
 
@@ -85,8 +85,6 @@
                         <input id = "B3_14"  data-bind="ntsTextEditor: {
                                     value: otherReasons,
                                     name: '#{i18n.getText('QSI003_25')}',
-                                    constraint: '',
-                                    required: true,
                                     enable: $vm.others(),
                                     constraint: 'RemarkForQuaCompany'}" />
                     </div>
@@ -122,8 +120,6 @@
                         <input id = "B4_12" data-bind="ntsTextEditor: {
                                     value: otherReasonp,
                                     name: '#{i18n.getText('QSI003_32')}',
-                                    constraint: '',
-                                    required: true,
                                     enable: $vm.otherp(),
                                     constraint: 'RemarkForQuaCompany'}" />
                     </div>

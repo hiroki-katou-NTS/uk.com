@@ -2554,13 +2554,6 @@ public class ProgramsManager {
 	public static final Program QMM042A = new Program(WebAppId.PR, ProgramIdConsts.QMM042A, "QMM042_1",
 			"/view/qmm/042/a/index.xhtml");
 
-	/**
-	 * QSI013
-	 */
-	public static final Program QSI013A = new Program(WebAppId.PR, ProgramIdConsts.QSI013A, "QSI013_A",
-			"/view/qsi/013/a/index.xhtml");
-	public static final Program QSI013B = new Program(WebAppId.PR, ProgramIdConsts.QSI013B, "QSI013_B",
-			"/view/qsi/013/b/index.xhtml");
 
 	/**
 	 * QSI001
@@ -2569,6 +2562,30 @@ public class ProgramsManager {
 			"/view/qsi/001/a/index.xhtml");
 	public static final Program QSI001B = new Program(WebAppId.PR, ProgramIdConsts.QSI001B, "QSI001_B",
 			"/view/qsi/001/b/index.xhtml");
+
+	/**
+	 * QSI002
+	 */
+	public static final Program QSI002A = new Program(WebAppId.PR, ProgramIdConsts.QSI002A, "QSI002_A",
+			"/view/qsi/002/a/index.xhtml");
+	public static final Program QSI002B = new Program(WebAppId.PR, ProgramIdConsts.QSI002B, "QSI002_B",
+			"/view/qsi/002/b/index.xhtml");
+
+	/**
+	 * QSI003
+	 */
+	public static final Program QSI003A = new Program(WebAppId.PR, ProgramIdConsts.QSI003A, "QSI003_A",
+			"/view/qsi/003/a/index.xhtml");
+	public static final Program QSI003B = new Program(WebAppId.PR, ProgramIdConsts.QSI003B, "QSI003_B",
+			"/view/qsi/003/b/index.xhtml");
+
+	/**
+	 * QSI013
+	 */
+	public static final Program QSI013A = new Program(WebAppId.PR, ProgramIdConsts.QSI013A, "QSI013_A",
+			"/view/qsi/013/a/index.xhtml");
+	public static final Program QSI013B = new Program(WebAppId.PR, ProgramIdConsts.QSI013B, "QSI013_B",
+			"/view/qsi/013/b/index.xhtml");
 
 	/**
 	 * All programs map.
