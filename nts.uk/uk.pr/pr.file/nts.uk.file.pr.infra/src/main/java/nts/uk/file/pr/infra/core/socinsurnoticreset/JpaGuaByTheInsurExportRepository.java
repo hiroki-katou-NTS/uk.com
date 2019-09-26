@@ -55,6 +55,11 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("      WELFARE_PENSION_PREFECTURE_NO,");
         exportSQL.append("      HEAL_INSUR_SAME_CTG,");
         exportSQL.append("      QUALIFI_DISTIN,");
+        exportSQL.append("      POSTAL_CODE,");
+        exportSQL.append("      ADDRESS_1,");
+        exportSQL.append("      ADDRESS_2,");
+        exportSQL.append("      ADDRESS_KANA_1,");
+        exportSQL.append("      ADDRESS_KANA_2");
         exportSQL.append("      HEAL_INSUR_INHEREN_PR,");
         exportSQL.append("      HEAL_INSUR_UNION_NMBER");
         exportSQL.append("  FROM");
@@ -102,6 +107,7 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("        FROM QPBMT_SOCIAL_INS_OFFICE");
         exportSQL.append("        WHERE CID = ?cid) oi");
         exportSQL.append("        ON oi.CODE = his.SOCIAL_INSURANCE_OFFICE_CD");
+        exportSQL.append("    LEFT JOIN QQSMT_EMP_HEAL_INS_UNION iu ON qi.EMPLOYEE_ID = iu.EMPLOYEE_ID");
         String sql = String.format(exportSQL.toString(), empIds.stream()
                 .map(String::valueOf)
                 .collect(Collectors.joining("','")));
@@ -147,8 +153,11 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
                 .welPrefectureNo(i[29] == null ? 0 : ((BigDecimal) i[29]).intValue())
                 .healInsCtg(i[30] == null ? 0 : ((BigDecimal) i[30]).intValue())
                 .distin(i[31] == null ? "" : i[31].toString())
-                .healInsInherenPr(i[32] == null ? "" : i[32].toString())
-                .healUnionNumber(i[33] == null ? "" : i[33].toString())
+                .portCd(i[32] == null ? "" : i[32].toString())
+                .add(i[33] == null && i[34] == null ? "" : i[33].toString()+ " " + i[34].toString())
+                .addKana(i[35] == null && i[36] == null ? "" : i[35].toString()+ " " + i[36].toString())
+                .healInsInherenPr(i[37] == null ? "" : i[37].toString())
+                .healUnionNumber(i[38] == null ? "" : i[38].toString())
                 .build()
         ).collect(Collectors.toList());
     }

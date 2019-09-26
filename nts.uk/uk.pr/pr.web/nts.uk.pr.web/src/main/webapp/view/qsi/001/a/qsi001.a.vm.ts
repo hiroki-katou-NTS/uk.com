@@ -215,6 +215,7 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
                 isShowSelectAllButton: self.isShowSelectAllButton(),
                 disableSelection : self.disableSelection(),
                 showOptionalColumn: false,
+                maxRows: 18,
                 optionalColumnName: nts.uk.resource.getText('KSM005_18'),
                 optionalColumnDatasource: ko.observableArray([])
             };
@@ -777,6 +778,9 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
 
     export function getPersonalNumClass(): Array<ItemModel> {
         return [
+            new ItemModel('0', getText('Enum_PersonalNumClass_OUTPUT_PER_NUMBER')),
+            new ItemModel('1', getText('Enum_PersonalNumClass_OUTPUT_BASIC_PER_NUMBER')),
+            new ItemModel('2', getText('Enum_PersonalNumClass_OUTPUT_BASIC_PEN_NOPER')),
             new ItemModel('3', getText('Enum_PersonalNumClass_DO_NOT_OUTPUT'))
         ];
     }

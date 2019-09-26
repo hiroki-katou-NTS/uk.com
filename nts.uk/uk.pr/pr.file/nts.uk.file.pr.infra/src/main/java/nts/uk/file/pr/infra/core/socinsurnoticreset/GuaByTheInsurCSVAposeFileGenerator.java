@@ -144,11 +144,17 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
         cells.get(startRow, 22).setValue(data.getRemunMonthlyAmount());
         cells.get(startRow, 23).setValue(data.getRemunMonthlyAmountKind());
         cells.get(startRow, 24).setValue(data.getTotalMonthyRemun());
-        cells.get(startRow, 25).setValue(data.getPercentOrMore());
+        cells.get(startRow, 25).setValue(data.getPercentOrMore() == 1 ? 1 : "");
         cells.get(startRow, 26).setValue(data.getIsMoreEmp() == 1 ? 1 : "") ;
         cells.get(startRow, 27).setValue(data.getShortTimeWorkes() == 1 ? 1 : "");
         cells.get(startRow, 28).setValue(data.getContinReemAfterRetirement() == 1 ? 1 : "");
         cells.get(startRow, 29).setValue(checkLength(data.getRemarksAndOtherContent(),37));
+        // bổ sung design
+        cells.get(startRow, 30).setValue(data.getPortCd());
+        cells.get(startRow, 31).setValue(data.getPortCd());
+        cells.get(startRow, 32).setValue(data.getAdd());
+        cells.get(startRow, 33).setValue(data.getAddKana());
+        //
         cells.get(startRow, 34).setValue(data.getPercentOrMore() == 1 ? 1 : "");
     }
 

@@ -126,7 +126,7 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_27_2", stt)).setValue(data.getPostalCode().length() >= 7 ? data.getPostalCode().substring(3,7) : data.getPostalCode());
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_28", stt)).setValue(data.getStreetAddress());
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_29", stt)).setValue(data.getAddressKana());
-        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_39", stt)).setValue(data.getReasonOtherContent());
+        worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_39" : "A2_39_" + stt).setText(data.getReasonOtherContent());
     }
 
     private String formatPhoneNumber(String phone){
@@ -148,6 +148,7 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
             worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_16_" + i));
             worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_17_" + i));
             worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_18_" + i));
+            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_20_" + i));
             worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_22_" + i));
             worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_23_" + i));
             worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_30_" + i));
@@ -244,6 +245,9 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
     }
 
     private String getRangeName(String sheetName, String pos, int stt){
+        return stt == 0 ? sheetName + "!" + pos : sheetName + "!" + pos + "_" + stt;
+    }
+    private String getShapeName(String sheetName, String pos, int stt){
         return stt == 0 ? sheetName + "!" + pos : sheetName + "!" + pos + "_" + stt;
     }
 }
