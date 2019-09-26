@@ -3,6 +3,7 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
     import block = nts.uk.ui.block;
     import getShared = nts.uk.ui.windows.getShared;
     import getText = nts.uk.resource.getText;
+    var alertError = nts.uk.ui.dialog.alertError;
     export class ScreenModel {
         employeeInputList: KnockoutObservableArray<EmployeeModel>;
         //
@@ -19,6 +20,7 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
         selectedDepNotiAttach: any;
 
         applyToEmployeeOver70: KnockoutObservable<boolean>;
+        tempApplyToEmployeeOver70: KnockoutObservable<boolean>;
         twoOrMoreEmployee: KnockoutObservable<boolean>;
         shortWorkHours: KnockoutObservable<boolean>;
         continuousEmpAfterRetire: KnockoutObservable<boolean>;
@@ -50,7 +52,43 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
             let self = this;
             let periodCommand: any;
             let params = getShared('QSI001_PARAMS_TO_SCREEN_B');
+            self.tempApplyToEmployeeOver70 = ko.observable();
+            //init
+            self.option = new nts.uk.ui.option.CurrencyEditorOption({
+                grouplength: 3,
+                decimallength: 0,
+                currencyformat: "JPY"
+            });
+            self.depNotiAttach = ko.observableArray([]);
+            self.selectedDepNotoAttach = ko.observable({});
 
+            self.basicPension = ko.observable(null);
+            self.salaryMonthly = ko.observable(null);
+            self.salaryMonthlyActual = ko.observable(null);
+            self.totalCompensation = ko.observable(null);
+            self.depNotiAttach = ko.observableArray([
+                {code: '0', name: nts.uk.resource.getText('QSI001_B222_13')},
+                {code: '1', name: nts.uk.resource.getText('QSI001_B222_14')}
+            ]);
+            self.selectedDepNotiAttach = ko.observable(0);
+
+            self.applyToEmployeeOver70 = ko.observable(false);
+            self.twoOrMoreEmployee = ko.observable(false);
+            self.shortWorkHours = ko.observable(false);
+            self.continuousEmpAfterRetire = ko.observable(false);
+            self.otherNotes = ko.observable(false);
+            self.textOtherNotes = ko.observable(null);
+
+            self.livingAbroad = ko.observable(false);
+            self.shortTermResidence = ko.observable(false);
+            self.otherNotes1 = ko.observable(false);
+            self.textOtherNotes1 = ko.observable(null);
+
+            self.personalNumber = ko.observableArray(getPersonalNumber());
+
+            self.selectedCode = ko.observable('1');
+            self.isEnable = ko.observable(true);
+            self.isEditable = ko.observable(true);
             if (params && params.listEmpId &&  params.listEmpId.length > 0) {
 
 
@@ -67,6 +105,8 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
                 //load page
                 service.getSocialInsurAcquisiInforById(params.listEmpId[0].employeeId).done(e => {
                     if (e) {
+                        self.applyToEmployeeOver70(e.percentOrMore);
+                        self.tempApplyToEmployeeOver70(e.percentOrMore);
                         self.otherNotes(e.remarksOther == 1 ? true : false);
                         self.textOtherNotes(e.remarksAndOtherContents);
                         self.salaryMonthlyActual(e.remunMonthlyAmountKind);
@@ -80,6 +120,7 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
                         self.shortWorkHours(e.shortTimeWorkers == 1 ? true : false);
                         self.continuousEmpAfterRetire(e.continReemAfterRetirement == 1 ? true : false);
                     } else {
+                        self.applyToEmployeeOver70(false);
                         self.otherNotes(false);
                         self.textOtherNotes(null);
                         self.salaryMonthlyActual(null);
@@ -100,7 +141,8 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
                 service.getPersonInfo(params.listEmpId[0].employeeId).done(r => {
                     if (self.getAge(r, params.date) >= 70) {
                         self.applyToEmployeeOver70(true);
-                        self.otherNotes(true);
+                    }else{
+                        self.applyToEmployeeOver70(false);
                     }
                 }).fail(f => {
                     console.dir(f);
@@ -150,6 +192,8 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
                     };
                     service.getSocialInsurAcquisiInforById(self.selectedItem()).done(e => {
                         if (e) {
+                            self.applyToEmployeeOver70(e.percentOrMore);
+                            self.tempApplyToEmployeeOver70(e.percentOrMore);
                             self.otherNotes(e.remarksOther == 1 ? true : false);
                             self.textOtherNotes(e.remarksAndOtherContents);
                             self.salaryMonthlyActual(e.remunMonthlyAmountKind);
@@ -163,6 +207,7 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
                             self.shortWorkHours(e.shortTimeWorkers == 1 ? true : false);
                             self.continuousEmpAfterRetire(e.continReemAfterRetirement == 1 ? true : false);
                         } else {
+                            self.applyToEmployeeOver70(false);
                             self.otherNotes(false);
                             self.textOtherNotes(null);
                             self.salaryMonthlyActual(null);
@@ -184,7 +229,9 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
                     service.getPersonInfo(self.selectedItem()).done(r => {
                         if (self.getAge(r, params.date) >= 70) {
                             self.applyToEmployeeOver70(true);
-                            self.otherNotes(true);
+
+                        }else{
+                            self.applyToEmployeeOver70(false);
                         }
                     }).fail(f => {
                         console.dir(f);
@@ -215,42 +262,7 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
             }
 
 
-            //init
-            self.option = new nts.uk.ui.option.CurrencyEditorOption({
-                grouplength: 3,
-                decimallength: 0,
-                currencyformat: "JPY"
-            });
-            self.depNotiAttach = ko.observableArray([]);
-            self.selectedDepNotoAttach = ko.observable({});
 
-            self.basicPension = ko.observable(null);
-            self.salaryMonthly = ko.observable(null);
-            self.salaryMonthlyActual = ko.observable(null);
-            self.totalCompensation = ko.observable(null);
-            self.depNotiAttach = ko.observableArray([
-                {code: '0', name: nts.uk.resource.getText('QSI001_B222_13')},
-                {code: '1', name: nts.uk.resource.getText('QSI001_B222_14')}
-            ]);
-            self.selectedDepNotiAttach = ko.observable(0);
-
-            self.applyToEmployeeOver70 = ko.observable(false);
-            self.twoOrMoreEmployee = ko.observable(false);
-            self.shortWorkHours = ko.observable(false);
-            self.continuousEmpAfterRetire = ko.observable(false);
-            self.otherNotes = ko.observable(false);
-            self.textOtherNotes = ko.observable(null);
-
-            self.livingAbroad = ko.observable(false);
-            self.shortTermResidence = ko.observable(false);
-            self.otherNotes1 = ko.observable(false);
-            self.textOtherNotes1 = ko.observable(null);
-
-            self.personalNumber = ko.observableArray(getPersonalNumber());
-
-            self.selectedCode = ko.observable('1');
-            self.isEnable = ko.observable(true);
-            self.isEditable = ko.observable(true);
 
 
             block.clear();

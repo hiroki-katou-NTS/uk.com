@@ -4,6 +4,7 @@ module nts.uk.pr.view.qsi003.b.viewmodel {
     import dialog = nts.uk.ui.dialog;
     import block = nts.uk.ui.block;
     import model = nts.uk.pr.view.qsi003.share.model;
+    import errors = nts.uk.ui.errors;
 
 
     export class ScreenModel {
@@ -123,6 +124,7 @@ module nts.uk.pr.view.qsi003.b.viewmodel {
         constructor() {
             let self = this;
             self.selectedItem.subscribe((data) => {
+                errors.clearAll();
                 self.getDataRomaji(data);
             });
             let list = getShared("QSI003_PARAMS_B");
