@@ -94,7 +94,7 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
             if ( personTarget.equals("0")) {
 
                 if (empBasicPenNumInfor != null ) {
-                    this.pushName(empBasicPenNumInfor.getBasicPenNumber() != null ? empBasicPenNumInfor.getBasicPenNumber().get().toString() : null, worksheet, i, 11, 1);
+                    this.pushName(empBasicPenNumInfor.getBasicPenNumber().isPresent() ? empBasicPenNumInfor.getBasicPenNumber().get().toString() : null, worksheet, i, 11, 1);
                 }
 
                 if ( personInfo != null) {
