@@ -56,7 +56,7 @@
         </div>
       </div>
       <!-- G2_2: 時間外超過時間 -->
-      <div class="card border border-left-0 border-right-0" v-if="time36.showAgreement" v-bind:class="{'show':  !params.remainDisplay}">
+      <div class="card border border-left-0 border-right-0" v-if="time36Display" v-bind:class="{'show':  !params.remainDisplay}">
         <div class="card-header uk-bg-accordion">
           <button class="btn btn-link" type="button">{{'KDWS03_53' | i18n}}</button>
         </div>

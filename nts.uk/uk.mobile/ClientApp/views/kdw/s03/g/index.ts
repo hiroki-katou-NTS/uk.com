@@ -32,6 +32,7 @@ export class KdwS03GComponent extends Vue {
         showAgreement: false
     };
     public empName: string = '';
+    public time36Display: boolean = false;
 
     public created() {
         let self = this;
@@ -39,6 +40,7 @@ export class KdwS03GComponent extends Vue {
         let cache: any = storage.session.getItem('dailyCorrectionState');
         let employeeIdSel = cache.selectedEmployee;
         self.empName = (_.find(cache.lstEmployee, (c) => c.id == employeeIdSel) || { businessName: '' }).businessName;
+        self.time36Display = cache.dPCorrectionMenuDto;
         //休暇残数
         self.$http.post('at', servicePath.getRemain + employeeIdSel).then((result: any) => {
             self.$mask('hide');
@@ -58,25 +60,27 @@ export class KdwS03GComponent extends Vue {
             self.$mask('hide');
         });
         //時間外超過
-        let yearMonth = cache.timePeriodAllInfo.yearMonth;
-        let param36 = {
-            employeeId: employeeIdSel,//社員ID
-            year: Math.floor(yearMonth / 100),//年度
-            month: Math.floor(yearMonth % 100)//月度
-        };
-        self.$http.post('at', servicePath.get36AgreementInfo, param36).then((result: any) => {
-            self.$mask('hide');
-            let time = result.data;
-            self.time36 = {
-                time36: time.agreementTime36 || 0,
-                maxTime36: time.maxTime || 0,
-                excessNumber: time.excessFrequency || 0,
-                maxExcessNumber: time.maxNumber || 0,
-                showAgreement: time.showAgreement
+        if (self.time36Display) {
+            let yearMonth = cache.timePeriodAllInfo.yearMonth;
+            let param36 = {
+                employeeId: employeeIdSel,//社員ID
+                year: Math.floor(yearMonth / 100),//年度
+                month: Math.floor(yearMonth % 100)//月度
             };
-        }).catch(() => {
-            self.$mask('hide');
-        });
+            self.$http.post('at', servicePath.get36AgreementInfo, param36).then((result: any) => {
+                self.$mask('hide');
+                let time = result.data;
+                self.time36 = {
+                    time36: time.agreementTime36 || 0,
+                    maxTime36: time.maxTime || 0,
+                    excessNumber: time.excessFrequency || 0,
+                    maxExcessNumber: time.maxNumber || 0,
+                    showAgreement: time.showAgreement
+                };
+            }).catch(() => {
+                self.$mask('hide');
+            });
+        }
     }
 }
 const servicePath = {
