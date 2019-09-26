@@ -34,7 +34,7 @@ export class Kdws03AComponent extends Vue {
 
     public title: string = 'Kdws03A';
     public isFirstLoad: boolean = true;
-    public isReLoad: boolean = true;
+    public isReLoadByDate: boolean = true;
     public displayFormat: any = '0';
     public lstDataSourceLoad: Array<any> = [];
     public lstDataHeader: Array<any> = [];
@@ -107,15 +107,15 @@ export class Kdws03AComponent extends Vue {
         this.yearMonthTemp = this.yearMonth;
         this.actualTimeSelectedCodeTemp = this.actualTimeSelectedCode;
 
+        this.isReLoadByDate = false;
         this.startPage();
-        this.isReLoad = false;
         this.initActualTime(this.yearMonth, this.selectedEmployee);
     }
 
     @Watch('dateRanger', { deep: true })
     public changeDateRange(value: any, valueOld: any) {
-        if (_.isNil(valueOld) || this.displayFormat == '1' || _.isEqual(value, valueOld) || !this.isReLoad) {
-            this.isReLoad = true;
+        if (_.isNil(valueOld) || this.displayFormat == '1' || _.isEqual(value, valueOld) || !this.isReLoadByDate) {
+            this.isReLoadByDate = true;
 
             return;
         }
@@ -199,7 +199,7 @@ export class Kdws03AComponent extends Vue {
             initDisplayDate: null,
             employeeID: self.selectedEmployee,
             objectDateRange: self.displayFormat == '0' ?
-                (!_.isNil(self.dateRanger) ? { startDate: self.$dt.fromString(self.dateRanger.startDate), endDate: self.$dt.fromString(self.dateRanger.endDate) } : null) :
+                ((!_.isNil(self.dateRanger) && self.isReLoadByDate) ? { startDate: self.$dt.fromString(self.dateRanger.startDate), endDate: self.$dt.fromString(self.dateRanger.endDate) } : null) :
                 (!_.isNil(self.selectedDate) ? { startDate: self.selectedDate, endDate: self.selectedDate } : null),
             lstEmployee: [],
             initClock: null,
@@ -559,7 +559,11 @@ export class Kdws03AComponent extends Vue {
         },
             { type: 'dropback' })
             .then((v: any) => {
-                self.$http.post('at', servicePath.resetCacheDomain).then((result: { data: any }) => {});
+                if (v.reload) {
+                    this.startPage();
+                } else {
+                    self.$http.post('at', servicePath.resetCacheDomain).then((result: { data: any }) => {});
+                }              
             });
     }
 
