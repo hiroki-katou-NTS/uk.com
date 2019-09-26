@@ -162,7 +162,8 @@ module nts.uk.pr.view.qsi002.a.viewmodel {
                 disableSelection : self.disableSelection(),
                 showOptionalColumn: false,
                 optionalColumnName: nts.uk.resource.getText('KSM005_18'),
-                optionalColumnDatasource: ko.observableArray([])
+                optionalColumnDatasource: ko.observableArray([]),
+                maxRows: 16
             };
 
             $('#kcp005').ntsListComponent(self.listComponentOptionKCP005);

@@ -217,7 +217,7 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
                 showOptionalColumn: false,
                 maxRows: 18,
                 optionalColumnName: nts.uk.resource.getText('KSM005_18'),
-                optionalColumnDatasource: ko.observableArray([])
+                optionalColumnDatasource: ko.observableArray([]),
             };
 
             $('#kcp005').ntsListComponent(self.listComponentOptionKCP005);
