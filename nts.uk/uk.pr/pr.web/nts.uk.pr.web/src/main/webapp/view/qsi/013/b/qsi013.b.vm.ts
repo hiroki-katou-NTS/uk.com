@@ -116,7 +116,7 @@ module nts.uk.pr.view.qsi013.b.viewmodel {
                         self.hCaInsurance(data.healthInsLossInfo.caInsurance);
                         self.hOtherReason(data.healthInsLossInfo.otherReason);
                     } else {
-                        this.setDefaultHealth();
+                        self.setDefaultHealth();
                     }
 
                     if(data.welfPenInsLossIf){
@@ -126,30 +126,30 @@ module nts.uk.pr.view.qsi013.b.viewmodel {
                         self.pCaInsurance(data.welfPenInsLossIf.caInsuarace);
                         self.pOtherReason(data.welfPenInsLossIf.otherReason);
                     } else {
-                        this.setDefaultWell();
+                        self.setDefaultWell();
                     }
 
                     if(data.multiEmpWorkInfo){
                         self.isMoreEmp(data.multiEmpWorkInfo.isMoreEmp == 1);
                     } else {
-                        this.setDefaultMul();
+                        self.setDefaultMul();
                     }
 
                     if(data.empBasicPenNumInfor) {
                         self.basicPenNumber(data.empBasicPenNumInfor.basicPenNumber);
                     } else {
-                        this.setDefaultEmp();
+                        self.setDefaultEmp();
                     }
 
                     if(data.socialInsurAcquisiInfor){
                         self.continReemAfterRetirement(data.socialInsurAcquisiInfor.continReemAfterRetirement == 1 );
                     } else {
-                        this.setDefaultIns();
+                        self.setDefaultIns();
                     }
                     self.screenMode(model.SCREEN_MODE.UPDATE);
 
                 } else {
-                    this.getDataDefault();
+                    self.getDataDefault();
                 }
             }).fail(error => {
                 dialog.alertError(error);
