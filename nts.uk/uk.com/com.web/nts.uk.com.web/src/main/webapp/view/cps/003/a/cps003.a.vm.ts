@@ -88,6 +88,7 @@ module cps003.a.vm {
 
         baseDate: KnockoutObservable<Date> = ko.observable();
         baseDateEnable: KnockoutObservable<boolean> = ko.observable(true);
+        baseDateChangeHist: Array<any> = [];
         histType: KnockoutObservable<string> = ko.observable();
         updateMode: KnockoutObservable<number> = ko.observable(1);
         updateModeEnable: KnockoutObservable<boolean> = ko.observable(true);
@@ -147,6 +148,11 @@ module cps003.a.vm {
             self.baseDate.subscribe(date => {
                 if (!$("#base-date").ntsError("hasError") && self.category.catId() !== "" && !_.isNil(self.category.catId())) {
                     self.requestData();
+                }
+                
+                if (!_.isNil(date) 
+                    && (date !== self.baseDateChangeHist[self.baseDateChangeHist.length - 1] || self.baseDateChangeHist.length == 0)) {
+                    self.baseDateChangeHist.push(date);
                 }
             });
 
@@ -642,7 +648,6 @@ module cps003.a.vm {
         
         checkError() {
             let self = this, $grid = $("#grid");
-            $grid.mGrid("validate", false, data => data.register);
             let dataSource = $grid.mGrid("dataSource"), regChecked = [];
             
             forEach($grid.mGrid("updatedCells"), item => {
@@ -652,6 +657,7 @@ module cps003.a.vm {
             });
             
             self.validateSpecial(regChecked, dataSource);
+            $grid.mGrid("validate", false, data => data.register);
             let errors = _.filter($grid.mGrid("errors"), e => {
                 let d = dataSource[e.index];
                 return d && d.register;
@@ -892,6 +898,12 @@ module cps003.a.vm {
                     unblock();
                     if ($(window).data("blockUI.isBlocked") === 1) unblock();
                     dfd.resolve();
+                });
+            }).fail(res => {
+                alertError({ messageId: res.messageId }).then(() => {
+                    if (self.baseDateChangeHist.length > 1) {
+                        self.baseDate(self.baseDateChangeHist[self.baseDateChangeHist.length - 2]);
+                    }
                 });
             });
             
