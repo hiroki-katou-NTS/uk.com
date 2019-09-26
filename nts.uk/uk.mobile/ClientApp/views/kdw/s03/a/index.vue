@@ -2,7 +2,7 @@
     <div class="kdw003a">
         <div v-if="displayFormat == '0'" class="mx-n2 mt-n1">
             <div class="row">
-                <div class="col-9">
+                <div class="col-9 pr-1">
                     <nts-dropdown v-model="selectedEmployee">
                         <option v-for="item in lstEmployee" :value="item.id">
                             {{item.code}} &nbsp;&nbsp;&nbsp; {{item.businessName}}
@@ -14,7 +14,7 @@
                 </div>
             </div>
             <div class="row mt-n2">
-                <div class="col-5">
+                <div class="col-5 pr-1">
                     <nts-year-month v-model="yearMonth"/>
                 </div>
                 <div class="col-7">
