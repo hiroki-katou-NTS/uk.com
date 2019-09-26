@@ -1,12 +1,18 @@
 <template>
 <div class="kdws03b pt-0">
-  <div class="modal-header uk-bg-white-smoke pl-0 pr-0 rounded-0">
-    <div class="row uk-text-quote w-100 ml-0 mr-0" v-on:click="$close()">
-      <div class="col-1 pl-1"><i class="fas fa-arrow-left"></i></div>
-      <div class="col-6 pl-0 pr-2 text-truncate"><span>{{ params.employeeName }}</span></div>
+    <div class="modal-header rounded-0 d-block p-0">
+      <div class="uk-bg-teal p-2">
+          <h4 class="modal-title text-white">
+              <i class="fas fa-angle-left mr-1" v-on:click="$close"></i>
+              <span>{{ 'KDWS03_75' | i18n }}</span>
+          </h4>
+      </div>
+    </div>
+    <div class="row uk-text-quote py-2 pl-2 uk-bg-white-smoke">
+      <div class="col-7 pl-0 pr-2 text-truncate"><span>{{ params.employeeName }}</span></div>
       <div class="col-5 pl-0 pr-0"><span>{{ params.date  | date('YYYY年MM月DD日') }}</span></div>
     </div>
-  </div>
+
   <div class="row" v-if="params.rowData.state">
     <div class="accordion w-100">
       <div class="card border-0 pl-0">

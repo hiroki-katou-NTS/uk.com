@@ -1,13 +1,18 @@
 <template>
 <div class="kdws03g p-0">
-  <div class="modal-header uk-bg-white-smoke pl-0 pr-0 rounded-0">
-    <div class="row uk-text-quote w-100 ml-0 mr-0">
-      <!-- G1_1: 戻るボタン -->
-      <div class="col-1 pl-1" v-on:click="$close()"><i class="fas fa-arrow-left"></i></div>
-      <!-- G1_2: 対象社員名 -->
-      <div class="col-11 pl-0 pr-2"><span>{{ empName }}</span></div>
+    <div class="modal-header rounded-0 d-block p-0">
+      <div class="uk-bg-teal p-2">
+          <h4 class="modal-title text-white">
+              <i class="fas fa-angle-left mr-1" v-on:click="$close"></i>
+              <span>{{ 'KDWS03_75' | i18n }}</span>
+          </h4>
+      </div>
     </div>
-  </div>
+    <div class="row uk-text-quote py-2 pl-2 uk-bg-white-smoke">
+      <!-- G1_2: 対象社員名 -->
+      <div class="col-11 pr-2 text-truncate"><span>{{ empName }}</span></div>
+    </div>
+
     <div class="accordion accordion-mn3">
       <!-- G2_1: 休暇残数 -->
       <div class="card border border-left-0 border-right-0" v-bind:class="{'show':  params.remainDisplay}">

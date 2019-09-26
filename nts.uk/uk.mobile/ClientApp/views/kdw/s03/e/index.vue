@@ -1,17 +1,22 @@
 <template>
-<div class="kdws03e">
-  <div class="modal-header uk-bg-white-smoke pl-0 pr-0 rounded-0">
-    <div class="row uk-text-quote w-100 ml-0 mr-0">
-      <!-- E1_1: 戻るボタン -->
-      <div class="col-1 pl-1" v-on:click="$close()"><i class="fas fa-arrow-left"></i></div>
+<div class="kdws03e pt-0">
+    <div class="modal-header rounded-0 d-block p-0">
+      <div class="uk-bg-teal p-2">
+          <h4 class="modal-title text-white">
+              <i class="fas fa-angle-left mr-1" v-on:click="$close"></i>
+              <span>{{ 'KDWS03_75' | i18n }}</span>
+          </h4>
+      </div>
+    </div>
+    <div class="row uk-text-quote py-2 pl-2 uk-bg-white-smoke">
       <!-- E1_2: 対象社員名 -->
       <div class="col-6 pl-0 pr-2"><span>{{ empName }}</span></div>
       <!-- E1_3: 対象年月日 -->
       <div class="col-5 pl-0 pr-0"><span>{{ params.date  | date('YYYY年MM月DD日')}}</span></div>
     </div>
-  </div>
+
     <!-- E2_1: エラー内容 -->
-    <div>{{'KDWS03_43' | i18n}}</div>
+    <div class="pt-2">{{'KDWS03_43' | i18n}}</div>
     <div class="row pt-2">
         <!-- E3_1,2: Label コード－ -->
         <div class="col-4 p-0 pl-3">{{'KDWS03_42' | i18n}}</div>
