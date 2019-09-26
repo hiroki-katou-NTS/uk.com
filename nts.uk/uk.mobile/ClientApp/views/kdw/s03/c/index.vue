@@ -1,18 +1,24 @@
 <template>
-    <div class="kdws03c">
-        <div class="modal-header uk-bg-white-smoke pl-0 pr-0 rounded-0">
-            <div class="row uk-text-quote w-100 ml-0 mr-0" v-on:click="$close()">
-                <div class="col-1 pl-1"><i class="fas fa-arrow-left"></i></div>
-                <div class="col-11 pl-0 pr-2"><span>{{'KDWS03_6' | i18n}}</span></div>
+    <div class="kdws03c py-0">
+        <div class="modal-header rounded-0 d-block p-0">
+            <div class="uk-bg-teal p-2">
+                <h4 class="modal-title text-white">
+                    <i class="fas fa-angle-left mr-1" v-on:click="$close"></i>
+                    <span>{{ 'KDWS03_75' | i18n }}</span>
+                </h4>
             </div>
         </div>
-        <div class="card card-label mt-n3">
+    <div class="row uk-text-quote py-2 pl-2 uk-bg-white-smoke">
+      <div><span>{{'KDWS03_6' | i18n}}</span></div>
+    </div>
+
+        <div class="card card-label">
             <div class="card-header pl-0 pr-0 uk-bg-light-coral">
                 <span>{{'KDWS03_39' | i18n}}</span>
             </div>
     
             <div class="card-body">
-                <ul class="list-group list-group-selection">
+                <ul class="list-group list-group-selection m-n3">
                     <li class="list-group-item" v-for="item in displayData" v-click:500="() => openErrorList(item.employeeId)">{{item.employeeName}}</li>
                 </ul>
             </div>
