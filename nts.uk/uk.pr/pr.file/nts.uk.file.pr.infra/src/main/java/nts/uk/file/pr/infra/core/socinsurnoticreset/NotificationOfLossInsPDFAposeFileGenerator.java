@@ -110,28 +110,17 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
         worksheets.getRangeByName(sheetName + "!D1_1_1").setValue(dateJp.year() + 1);
         worksheets.getRangeByName(sheetName + "!D1_1_2").setValue(dateJp.month());
         worksheets.getRangeByName(sheetName + "!D1_1_3").setValue(dateJp.day());
-        worksheets.getRangeByName(sheetName + "!D1_2_1").setValue(isHeal ? data.getOfficeNumber1().length() > 0 ? data.getOfficeNumber1().substring(0,1) : ""
-                : data.getWelfOfficeNumber1().length() > 1 ? data.getWelfOfficeNumber1().substring(0,1) : "");
-        worksheets.getRangeByName(sheetName + "!D1_2_1").setValue(isHeal ? data.getOfficeNumber1().length() > 1 ? data.getOfficeNumber1().substring(1,2) : ""
-                : data.getWelfOfficeNumber1().length() >= 2 ? data.getWelfOfficeNumber1().substring(1,2) : "");
-        worksheets.getRangeByName(sheetName + "!D1_3_1").setValue(isHeal ? data.getOfficeNumber2().length() > 0 ? data.getOfficeNumber2().substring(0,1) : ""
-                : data.getWelfOfficeNumber2().length() > 1 ? data.getWelfOfficeNumber2().substring(0,1) : "");
-        worksheets.getRangeByName(sheetName + "!D1_3_2").setValue(isHeal ? data.getOfficeNumber2().length() > 1 ? data.getOfficeNumber2().substring(1,2) : ""
-                : data.getWelfOfficeNumber2().length() > 1 ? data.getWelfOfficeNumber2().substring(0,1) : "");
-        worksheets.getRangeByName(sheetName + "!D1_3_3").setValue(isHeal ? data.getOfficeNumber2().length() > 2 ? data.getOfficeNumber2().substring(2,3) : ""
-                : data.getWelfOfficeNumber2().length() > 1 ? data.getWelfOfficeNumber2().substring(0,1) : "");
-        worksheets.getRangeByName(sheetName + "!D1_3_4").setValue(isHeal ? data.getOfficeNumber2().length() > 3 ? data.getOfficeNumber2().substring(3,4) : ""
-                : data.getWelfOfficeNumber2().length() > 1 ? data.getWelfOfficeNumber2().substring(0,1) : "");
-        worksheets.getRangeByName(sheetName + "!D1_4_1").setValue(isHeal ? data.getOfficeNumber().length() > 0 ? data.getOfficeNumber().substring(0,1) : ""
-                : data.getWelfOfficeNumber().length() > 0 ? data.getWelfOfficeNumber().substring(0,1) : "");
-        worksheets.getRangeByName(sheetName + "!D1_4_2").setValue(isHeal ? data.getOfficeNumber().length() > 1 ? data.getOfficeNumber().substring(1,2) : ""
-                : data.getWelfOfficeNumber().length() > 1 ? data.getWelfOfficeNumber().substring(1,2) : "");
-        worksheets.getRangeByName(sheetName + "!D1_4_3").setValue(isHeal ? data.getOfficeNumber().length() > 2 ? data.getOfficeNumber().substring(2,3) : ""
-                : data.getWelfOfficeNumber().length() > 2 ? data.getWelfOfficeNumber().substring(2,3) : "");
-        worksheets.getRangeByName(sheetName + "!D1_4_4").setValue(isHeal ? data.getOfficeNumber().length() > 3 ? data.getOfficeNumber().substring(3,4) : ""
-                : data.getWelfOfficeNumber().length() > 3 ? data.getWelfOfficeNumber().substring(3,4) : "");
-        worksheets.getRangeByName(sheetName + "!D1_4_5").setValue(isHeal ? data.getOfficeNumber().length() > 4 ? data.getOfficeNumber().substring(4,5) : ""
-                : data.getWelfOfficeNumber().length() > 4 ? data.getWelfOfficeNumber().substring(4,5) : "");
+        worksheets.getRangeByName(sheetName + "!D1_2_1").setValue(data.getOfficeNumber1().length() > 0 ? data.getOfficeNumber1().substring(0,1) : data.getOfficeNumber1());
+        worksheets.getRangeByName(sheetName + "!D1_2_1").setValue(data.getOfficeNumber1().length() > 1 ? data.getOfficeNumber1().substring(1,2) : "") ;
+        worksheets.getRangeByName(sheetName + "!D1_3_1").setValue(data.getOfficeNumber2().length() > 0 ? data.getOfficeNumber2().substring(0,1) : "");
+        worksheets.getRangeByName(sheetName + "!D1_3_2").setValue(data.getOfficeNumber2().length() > 1 ? data.getOfficeNumber2().substring(1,2) : "");
+        worksheets.getRangeByName(sheetName + "!D1_3_3").setValue(data.getOfficeNumber2().length() > 2 ? data.getOfficeNumber2().substring(2,3) : "");
+        worksheets.getRangeByName(sheetName + "!D1_3_4").setValue(data.getOfficeNumber2().length() > 3 ? data.getOfficeNumber2().substring(3,4) : "");
+        worksheets.getRangeByName(sheetName + "!D1_4_1").setValue(data.getOfficeNumber().length() > 0 ? data.getOfficeNumber().substring(0,1) : "");
+        worksheets.getRangeByName(sheetName + "!D1_4_2").setValue(data.getOfficeNumber().length() > 1 ? data.getOfficeNumber().substring(1,2) : "");
+        worksheets.getRangeByName(sheetName + "!D1_4_3").setValue(data.getOfficeNumber().length() > 2 ? data.getOfficeNumber().substring(2,3) : "");
+        worksheets.getRangeByName(sheetName + "!D1_4_4").setValue(data.getOfficeNumber().length() > 3 ? data.getOfficeNumber().substring(3,4) : "");
+        worksheets.getRangeByName(sheetName + "!D1_4_5").setValue(data.getOfficeNumber().length() > 4 ? data.getOfficeNumber().substring(4,5) : "");
         worksheets.getRangeByName(sheetName + "!D1_5_1").setValue(typeOff == BusinessDivision.OUTPUT_COMPANY_NAME ? company.getPostCd().length() > 2 ? company.getPostCd().substring(0,3) : company.getPostCd() :
                 typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? data.getPortCd().length() > 2 ? data.getPortCd().substring(0,3) : data.getPortCd() : "");
         worksheets.getRangeByName(sheetName + "!D1_5_2").setValue(typeOff == BusinessDivision.OUTPUT_COMPANY_NAME ? company.getPostCd().length() > 6 ? company.getPostCd().substring(3,7) : company.getPostCd() :
@@ -142,8 +131,8 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
                 typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? data.getCompanyName() : "");
         worksheets.getRangeByName(sheetName + "!D1_8").setValue(typeOff == BusinessDivision.OUTPUT_COMPANY_NAME ? company.getRepname() :
                 typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? data.getRepName() : "");
-        worksheets.getRangeByName(sheetName + "!D1_9").setValue(typeOff == BusinessDivision.OUTPUT_COMPANY_NAME ? company.getPhoneNum() :
-                typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? data.getPhoneNumber() : "");
+        worksheets.getRangeByName(sheetName + "!D1_9").setValue(typeOff == BusinessDivision.OUTPUT_COMPANY_NAME ? formatPhoneNumber(company.getPhoneNum()) :
+                typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? formatPhoneNumber(data.getPhoneNumber()) : "");
     }
 
     private void fillCompanyHealthy(WorksheetCollection worksheets, InsLossDataExport data, GeneralDate baseDate, CompanyInfor company, String sheetName, boolean isHeal, BusinessDivision typeOff){
@@ -162,8 +151,13 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
                 typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? data.getCompanyName() : "");
         worksheets.getRangeByName(sheetName + "!A1_8").setValue(typeOff == BusinessDivision.OUTPUT_COMPANY_NAME ? company.getRepname() :
                 typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? data.getRepName() : "");
-        worksheets.getRangeByName(sheetName + "!A1_9").setValue(typeOff == BusinessDivision.OUTPUT_COMPANY_NAME ? company.getPhoneNum() :
-                typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? data.getPhoneNumber() : "");
+        worksheets.getRangeByName(sheetName + "!A1_9").setValue(typeOff == BusinessDivision.OUTPUT_COMPANY_NAME ? formatPhoneNumber(company.getPhoneNum()):
+                typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? formatPhoneNumber(data.getPhoneNumber()) : "");
+    }
+
+    private String formatPhoneNumber(String phone){
+        String result = phone.replace("-","");
+        return result.length() > 6 ? result.substring(0,3) + "(" + result.substring(3,6) + ")" + result.substring(6,result.length()) : result;
     }
 
     private void selectEra(WorksheetCollection worksheets, String era, String sheetName, int stt){
@@ -362,13 +356,13 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
     }
 
     private String convertJpDate(JapaneseDate date){
+        StringBuilder result = new StringBuilder();
         int y = date.year() + 1;
         int m = date.month();
         int d = date.day();
-        StringBuilder result = new StringBuilder();
         result.append(y > 9 ? y: "0" + y);
-        result.append(m > 9 ? m : "0" + m);
         result.append(d > 9 ? d: "0" + d);
+        result.append(m > 9 ? m : "0" + m);
         return result.toString();
     }
 

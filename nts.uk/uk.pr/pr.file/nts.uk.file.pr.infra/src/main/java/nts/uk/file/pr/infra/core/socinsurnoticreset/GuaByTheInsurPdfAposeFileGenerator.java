@@ -88,7 +88,7 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
         ws.getRangeByName(sheetName +"!A1_6").setValue(element.getOfficeAddress2());
         ws.getRangeByName(sheetName + "!A1_7").setValue(element.getBusinessName());
         //ws.getRangeByName(this.getRangeName(sheetName,"A1_8", stt)).setValue(element.getBusinessName1());
-        ws.getRangeByName(sheetName + "!A1_9").setValue(element.getPhoneNumber());
+        ws.getRangeByName(sheetName + "!A1_9").setValue(formatPhoneNumber(element.getPhoneNumber()));
     }
 
     private void fillEmployee(WorksheetCollection worksheets, GuaByTheInsurExportDto data, String sheetName, int stt){
@@ -127,6 +127,11 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_28", stt)).setValue(data.getStreetAddress());
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_29", stt)).setValue(data.getAddressKana());
         worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_39" : "A2_39_" + stt).setText(data.getReasonOtherContent());
+    }
+
+    private String formatPhoneNumber(String phone){
+        String result = phone.replace("-","");
+        return result.length() > 6 ? result.substring(0,3) + "(" + result.substring(3,6) + ")" + result.substring(6,result.length()) : result;
     }
 
     private void unSelectAll(WorksheetCollection worksheets, String sheetName, int stt){

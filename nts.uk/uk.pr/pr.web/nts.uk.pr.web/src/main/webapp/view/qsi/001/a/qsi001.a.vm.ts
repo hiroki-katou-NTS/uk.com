@@ -215,6 +215,7 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
                 isShowSelectAllButton: self.isShowSelectAllButton(),
                 disableSelection : self.disableSelection(),
                 showOptionalColumn: false,
+                maxRows: 18,
                 optionalColumnName: nts.uk.resource.getText('KSM005_18'),
                 optionalColumnDatasource: ko.observableArray([])
             };
@@ -351,13 +352,12 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
             let data: any = {
                 socialInsurNotiCreateSetQuery: {
                     officeInformation: self.socialInsurNotiCrSet().officeInformation(),
-                    fdNumber: self.socialInsurNotiCrSet().fdNumber(),
                     printPersonNumber: self.socialInsurNotiCrSet().printPersonNumber(),
                     businessArrSymbol: self.socialInsurNotiCrSet().businessArrSymbol(),
                     outputOrder: self.socialInsurNotiCrSet().outputOrder(),
                     submittedName: self.socialInsurNotiCrSet().submittedName(),
                     insuredNumber: self.socialInsurNotiCrSet().insuredNumber(),
-                    fdNumber: self.socialInsurNotiCrSet().fdNumber(),
+                    fdNumber: self.socialInsurNotiCrSet().fdNumber().trim() == '' ? null : self.socialInsurNotiCrSet().fdNumber(),
                     textPersonNumber: self.socialInsurNotiCrSet().textPersonNumber(),
                     outputFormat: self.socialInsurNotiCrSet().outputFormat(),
                     lineFeedCode: self.socialInsurNotiCrSet().lineFeedCode()
@@ -772,12 +772,7 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
         return [
             new ItemModel('0', getText('Enum_SocialInsurOutOrder_DIVISION_EMP_ORDER')),
             new ItemModel('1', getText('Enum_SocialInsurOutOrder_EMPLOYEE_CODE_ORDER')),
-            new ItemModel('2', getText('Enum_SocialInsurOutOrder_EMPLOYEE_KANA_ORDER')),
-            new ItemModel('3', getText('Enum_SocialInsurOutOrder_HEAL_INSUR_NUMBER_ORDER')),
-            new ItemModel('4', getText('Enum_SocialInsurOutOrder_WELF_AREPEN_NUMBER_ORDER')),
-            new ItemModel('5', getText('Enum_SocialInsurOutOrder_HEAL_INSUR_NUMBER_UNION_ORDER')),
-            new ItemModel('6', getText('Enum_SocialInsurOutOrder_ORDER_BY_FUND')),
-            new ItemModel('7', getText('Enum_SocialInsurOutOrder_INSURED_PER_NUMBER_ORDER'))
+            new ItemModel('2', getText('Enum_SocialInsurOutOrder_EMPLOYEE_KANA_ORDER'))
         ];
     }
 

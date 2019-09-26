@@ -16,7 +16,6 @@ module nts.uk.pr.view.qsi013.a.viewmodel {
         endDateJp: KnockoutObservable<string> = ko.observable('');
         filingDate: KnockoutObservable<string> = ko.observable('');
         filingDateJp: KnockoutObservable<string> = ko.observable('');
-        selectedRuleCode: KnockoutObservable<string> = ko.observable('0');
 
         officeInformations: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getBusinessDivision());
         businessArrSymbols: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getBussEsimateClass());
@@ -156,7 +155,8 @@ module nts.uk.pr.view.qsi013.a.viewmodel {
                 alreadySettingList: self.alreadySettingList,
                 isShowWorkPlaceName: self.isShowWorkPlaceName(),
                 isShowSelectAllButton: self.isShowSelectAllButton(),
-                disableSelection : self.disableSelection()
+                disableSelection : self.disableSelection(),
+                maxRows: 18
             };
             $('#component-items-list').ntsListComponent(self.listComponentOption);
         }
@@ -182,13 +182,12 @@ module nts.uk.pr.view.qsi013.a.viewmodel {
             let data: any = {
                 socialInsurNotiCreateSet: {
                     officeInformation: self.socInsurNotiCreSet().officeInformation(),
-                    fdNumber: self.socInsurNotiCreSet().fdNumber(),
                     printPersonNumber: self.socInsurNotiCreSet().printPersonNumber(),
                     businessArrSymbol: self.socInsurNotiCreSet().businessArrSymbol(),
                     outputOrder: self.socInsurNotiCreSet().outputOrder(),
                     submittedName: self.socInsurNotiCreSet().submittedName(),
                     insuredNumber: self.socInsurNotiCreSet().insuredNumber(),
-                    fdNumber: self.socInsurNotiCreSet().fdNumber(),
+                    fdNumber: self.socInsurNotiCreSet().fdNumber().trim() == '' ? null : self.socInsurNotiCreSet().fdNumber(),
                     textPersonNumber: self.socInsurNotiCreSet().textPersonNumber(),
                     outputFormat: self.socInsurNotiCreSet().outputFormat(),
                     lineFeedCode: self.socInsurNotiCreSet().lineFeedCode()

@@ -6,6 +6,8 @@ import nts.uk.ctx.pr.report.app.command.printconfig.socialinsurnoticreset.EmpNam
 import nts.uk.ctx.pr.report.app.command.socinsurnoticreset.SocialInsurNotiCreateSetCommand;
 import nts.uk.ctx.pr.report.app.find.printconfig.socialinsurnoticreset.EmpNameChangeNotiInforDto;
 import nts.uk.ctx.pr.report.app.find.printconfig.socialinsurnoticreset.EmpNameChangeNotiInforFinder;
+import nts.uk.ctx.pr.report.app.find.printconfig.socialinsurnoticreset.SocialInsurNotiCreateSetDto;
+import nts.uk.ctx.pr.report.app.find.printconfig.socialinsurnoticreset.SocialInsurNotiCreateSetFinder;
 import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.EmpNameChangeNotiInfor;
 import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.SocialInsurNotiCreateSet;
 import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.SocialInsurNotiCreateSetService;
@@ -31,6 +33,8 @@ public class InsuredNameChangedNotiWebService {
     @Inject
     private AddEmpNameChangeNotiInforCommandHandler addEmpNameChangeNotiInforCommandHandler;
 
+    @Inject
+    private SocialInsurNotiCreateSetFinder socialInsurNotiCreateSetFinder;
 
     @POST
     @Path("/index")
@@ -60,6 +64,14 @@ public class InsuredNameChangedNotiWebService {
         String cid = AppContexts.user().companyId();
         EmpNameChangeNotiInfor empNameChangeNotiInfor = empNameChangeNotiInforFinder.getEmpNameChangeNotiInforById(empId,cid);
         return EmpNameChangeNotiInforDto.fromDomain(empNameChangeNotiInfor);
+    }
+
+    @POST
+    @Path("/getSocialInsurNotiCreateSetById")
+    public SocialInsurNotiCreateSetDto getSocialInsurNotiCreateSetById(){
+        String cid = AppContexts.user().companyId();
+        String userId = AppContexts.user().userId();
+        return socialInsurNotiCreateSetFinder.getSocialInsurNotiCreateSetById(userId,cid);
     }
 
     @POST

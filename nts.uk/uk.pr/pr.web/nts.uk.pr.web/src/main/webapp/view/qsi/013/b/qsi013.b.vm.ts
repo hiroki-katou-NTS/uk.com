@@ -142,8 +142,10 @@ module nts.uk.pr.view.qsi013.b.viewmodel {
             $('#emp-component').ntsLoadListComponent(self.listComponentOption);
         }
         constructor() {
-
             var self = this;
+            self.selectedItem.subscribe((data) => {
+                self.getDataLossInfo(data);
+            });
             let list = getShared("QSI013_PARAMS_B");
             if(nts.uk.util.isNullOrEmpty(list) || nts.uk.util.isNullOrEmpty(list.employeeList)) {
                 close();
@@ -153,9 +155,7 @@ module nts.uk.pr.view.qsi013.b.viewmodel {
             self.selectedItem(self.employeeInputList()[0].id);
             self.itemListHealth = ko.observableArray(model.getCauseTypeHealthLossInfo());
             self.itemListPension = ko.observableArray(model.getCauseTypePensionLossInfo());
-            self.selectedItem.subscribe((data) => {
-                self.getDataLossInfo(data);
-            });
+
         }
 
         //set cancel method
@@ -190,7 +190,7 @@ module nts.uk.pr.view.qsi013.b.viewmodel {
 
             let empBasicPenNumInfor: any = {
                 employeeId: self.selectedItem(),
-                basicPenNumber: self.basicPenNumber()
+                basicPenNumber: self.basicPenNumber().length > 0 ? self.basicPenNumber() : null
             };
 
             let socialInsurAcquisiInfo: any = {

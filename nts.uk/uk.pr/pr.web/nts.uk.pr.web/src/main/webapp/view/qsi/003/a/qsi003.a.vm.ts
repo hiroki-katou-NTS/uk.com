@@ -6,6 +6,7 @@ module nts.uk.pr.view.qsi003.a.viewmodel {
     export class ScreenModel {
         ccg001ComponentOption: GroupOption;
         employeeInputList: KnockoutObservableArray<EmployeeModel>;
+        constraint: string = 'LayoutCode';
 
         //kcp009
         systemReference: KnockoutObservable<number>;
@@ -50,14 +51,20 @@ module nts.uk.pr.view.qsi003.a.viewmodel {
         constructor() {
             let self = this;
             this.getRomajiNameNoti();
+            let today = new Date();
+            let dd = today.getDate()
+            let ms = today.getMonth()+1;
+            let yyyy = today.getFullYear();
+            self.date(yyyy + "/" + ms + "/" + dd);
             this.loadCCG001();
             this.loadKCP005();
-
 
             //init switch
             self.personTarget = ko.observable(0);
             self.date.subscribe((data)=>{
-                self.datePicker(" (" + nts.uk.time.dateInJapanEmpire(data) + ")");
+                if(data) {
+                    self.datePicker(" (" + nts.uk.time.dateInJapanEmpire(data) + ")");
+                }
             });
 
             self.isEnable = ko.observable(true);
@@ -120,17 +127,16 @@ module nts.uk.pr.view.qsi003.a.viewmodel {
         loadKCP005(){
             let self = this;
             self.baseDate = ko.observable(new Date());
-            self.selectedCode = ko.observable('1');
             self.multiSelectedCode = ko.observableArray(['0', '1', '4']);
             self.isShowAlreadySet = ko.observable(false);
             self.alreadySettingList = ko.observableArray([
                 {code: '1', isAlreadySetting: true},
                 {code: '2', isAlreadySetting: true}
             ]);
-            self.isDialog = ko.observable(false);
+            self.isDialog = ko.observable(true);
             self.isShowNoSelectRow = ko.observable(false);
             self.isMultiSelect = ko.observable(true);
-            self.isShowWorkPlaceName = ko.observable(false);
+            self.isShowWorkPlaceName = ko.observable(true);
             self.isShowSelectAllButton = ko.observable(false);
             self.disableSelection = ko.observable(false);
             
@@ -139,14 +145,15 @@ module nts.uk.pr.view.qsi003.a.viewmodel {
                 isMultiSelect: self.isMultiSelect(),
                 listType: ListType.EMPLOYEE,
                 employeeInputList: self.employeeList,
-                selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                selectType: SelectType.SELECT_ALL,
                 selectedCode: self.selectedCode,
                 isDialog: self.isDialog(),
                 isShowNoSelectRow: self.isShowNoSelectRow(),
                 alreadySettingList: self.alreadySettingList,
                 isShowWorkPlaceName: self.isShowWorkPlaceName(),
                 isShowSelectAllButton: self.isShowSelectAllButton(),
-                disableSelection : self.disableSelection()
+                disableSelection : self.disableSelection(),
+                maxRows: 16
             };
             $('#component-items-list').ntsListComponent(self.listComponentOption);
         }
@@ -194,6 +201,7 @@ module nts.uk.pr.view.qsi003.a.viewmodel {
                  */
                 returnDataFromCcg001: function(data: Ccg001ReturnedData) {
                     self.employeeList(self.setEmployee(data.listEmployee));
+                    self.loadKCP005();
                 }
             }
 

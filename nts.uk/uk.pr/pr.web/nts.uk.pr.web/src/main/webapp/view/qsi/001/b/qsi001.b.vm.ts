@@ -61,6 +61,7 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
                 };
 
                 self.loadKCP009(self.createEmployeeModel(params.listEmpId));
+                self.selectedItem(params.listEmpId[0].employeeId);
 
                 //起動する
                 //load page

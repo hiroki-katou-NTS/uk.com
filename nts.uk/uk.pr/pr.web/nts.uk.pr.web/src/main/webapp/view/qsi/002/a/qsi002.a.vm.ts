@@ -73,8 +73,8 @@ module nts.uk.pr.view.qsi002.a.viewmodel {
             //init switch
             self.simpleValue = ko.observable("123");
             self.roundingRules = ko.observableArray([
-                { code: '1', name: nts.uk.resource.getText('QSI002_11') },
-                { code: '2', name: nts.uk.resource.getText('QSI002_12') }
+                { code: '0', name: nts.uk.resource.getText('QSI002_A222_10') },
+                { code: '1', name: nts.uk.resource.getText('QSI002_A222_11') }
             ]);
             self.selectedRuleCode = ko.observable(1);
             //init datepicker
@@ -178,6 +178,16 @@ module nts.uk.pr.view.qsi002.a.viewmodel {
                 printPersonNumber: self.selectedPersonalNumClass(),
                 insuredNumber: self.selectedInsurPersonNumDivision()
             };
+
+            service.getSocialInsurNotiCreateSetById().done(e =>{
+                self.selectedBusinessDivision(e.officeInformation);
+                self.selectedBussEsimateClass(e.businessArrSymbol);
+                self.selectedSocialInsurOutOrder(e.outputOrder);
+                self.selectedPersonalNumClass(e.printPersonNumber);
+                self.selectedInsurPersonNumDivision(e.insuredNumber);
+            }).fail(e =>{
+
+            });
             service.index(data).done(e =>{
                 block.clear()
             }).fail(e =>{
@@ -426,12 +436,7 @@ module nts.uk.pr.view.qsi002.a.viewmodel {
         return [
             new ItemModel('0', getText('Enum_SocialInsurOutOrder_DIVISION_EMP_ORDER')),
             new ItemModel('1', getText('Enum_SocialInsurOutOrder_EMPLOYEE_CODE_ORDER')),
-            new ItemModel('2', getText('Enum_SocialInsurOutOrder_EMPLOYEE_KANA_ORDER')),
-            new ItemModel('3', getText('Enum_SocialInsurOutOrder_HEAL_INSUR_NUMBER_ORDER')),
-            new ItemModel('4', getText('Enum_SocialInsurOutOrder_WELF_AREPEN_NUMBER_ORDER')),
-            new ItemModel('5', getText('Enum_SocialInsurOutOrder_HEAL_INSUR_NUMBER_UNION_ORDER')),
-            new ItemModel('6', getText('Enum_SocialInsurOutOrder_ORDER_BY_FUND')),
-            new ItemModel('7', getText('Enum_SocialInsurOutOrder_INSURED_PER_NUMBER_ORDER'))
+            new ItemModel('2', getText('Enum_SocialInsurOutOrder_EMPLOYEE_KANA_ORDER'))
         ];
     }
 

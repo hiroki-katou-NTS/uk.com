@@ -34,8 +34,8 @@ public class ReasonRomajiNameCommandHandle extends CommandHandler<ReasonRomajiNa
         handleNameReport.update(
                 new EmpNameReportCommand(
                         employeeId,
-                        personalSet,
-                        spouse
+                        spouse,
+                        personalSet
                 ).toDomain(),
                 context.getCommand().getScreenMode()
         );

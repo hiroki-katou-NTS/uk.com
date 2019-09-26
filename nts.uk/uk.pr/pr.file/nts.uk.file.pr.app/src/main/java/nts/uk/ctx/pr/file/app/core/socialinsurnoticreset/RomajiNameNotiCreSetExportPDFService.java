@@ -74,13 +74,13 @@ public class RomajiNameNotiCreSetExportPDFService extends ExportService<RomajiNa
         SocialInsuranceOffice socialInsuranceOffice = null ;
         if (romajiNameNotiCreSetting.getAddressOutputClass().value == BusinessDivision.OUTPUT_COMPANY_NAME.value ||
                 romajiNameNotiCreSetting.getAddressOutputClass().value == BusinessDivision.OUTPUT_SIC_INSURES.value) {
-            companyInfor = notificationOfLossInsExRepository.getCompanyInfor(cid);
+            //companyInfor = notificationOfLossInsExRepository.getCompanyInfor(cid);
+            companyInfor = new CompanyInfor("1008945", "霞ヶ関１－２－２", "千代田区", "年金サービス　株式会社", "年　金　 良　一", "0312345678");
         } else {
             List<SocialInsuranceOffice> list = socialInsuranceOfficeRepository.findByCid(cid);
-            //k có design mới
-           /* if (list.isEmpty()) {
+            if (list.isEmpty()) {
                 throw new BusinessException("MsgQ_93");
-            }*/
+            }
         }
 
         List<String> listEmp = exportServiceContext.getQuery().getEmpIds();
@@ -100,9 +100,11 @@ public class RomajiNameNotiCreSetExportPDFService extends ExportService<RomajiNa
             GeneralDate date  = exportServiceContext.getQuery().getDate();
             if (isSpouse.equals("0")) {
                 empBasicPenNumInfor = empBasicPenNumInforRepository.getEmpBasicPenNumInforById(empId).orElse(null);
-                personInfo = romajiNameNotiCreSetExReposity.getPersonInfo(empId);
+                //personInfo = romajiNameNotiCreSetExReposity.getPersonInfo(empId);
+
             } else {
-                familyMember = romajiNameNotiCreSetExReposity.getFamilyInfo(empId, isSpouse);
+                //familyMember = romajiNameNotiCreSetExReposity.getFamilyInfo(empId, isSpouse);
+                familyMember = new FamilyMember("1980-01-01", "HONG KILDONG", "11" );
                 if (familyMember != null ){
                     int familyId  = Integer.parseInt(familyMember.getFamilyMemberId());
                     empFamilyInsHis = empFamilyInsHisRepository.getListEmFamilyHis(empId, familyId).orElse(null);
@@ -117,10 +119,12 @@ public class RomajiNameNotiCreSetExportPDFService extends ExportService<RomajiNa
                         }
                     }
                 }
-                personInfo = romajiNameNotiCreSetExReposity.getPersonInfo(familyMember.getPersonId());
+                //personInfo = romajiNameNotiCreSetExReposity.getPersonInfo(familyMember.getPersonId());
             }
 
-            //get CODE
+            personInfo = new PersonInfo("1980-01-01", "洪吉童", "ホンギルトン", "ADB3171F-B5A7-40A7-9B8A-DAE80EECB44B", 1);
+
+            //get code
             List<String> emps = new ArrayList<String>();
             emps.add(empId);
             empCorpHealthOffHis = empCorpHealthOffHisRepository.getEmpCorpHealthOffHisById(emps, date).orElse(null);
@@ -148,6 +152,11 @@ public class RomajiNameNotiCreSetExportPDFService extends ExportService<RomajiNa
 
            romajiNameNotificationList.add( romajiNameNotification );
         }
+
+        if(romajiNameNotificationList.isEmpty()){
+            throw new BusinessException("MsgQ_37");
+        }
+
         //export PDF
         romajiNameNotiCreSetFileGenerator.generate(exportServiceContext.getGeneratorContext(), romajiNameNotificationList);
     }

@@ -25,24 +25,24 @@ module nts.uk.pr.view.qsi003.b.viewmodel {
         enable: KnockoutObservable<boolean>;
         isEnable: KnockoutObservable<boolean>;
         isEditable: KnockoutObservable<boolean>;
-        roundingRules: KnockoutObservableArray<any>;
+        roundingRules: KnockoutObservableArray<model.ItemModel> =  ko.observableArray(model.roundingRules());
 
         //param
         basicPenNumber : KnockoutObservable<string> = ko.observable('');
         empId : KnockoutObservable<string> = ko.observable('');
-        others : KnockoutObservable<boolean> = ko.observable(true);
-        listeds : KnockoutObservable<boolean> = ko.observable(true);
+        others : KnockoutObservable<boolean> = ko.observable(false);
+        listeds : KnockoutObservable<boolean> = ko.observable(false);
         residentCards : KnockoutObservable<number> = ko.observable(1);
-        addressOverseas : KnockoutObservable<boolean> = ko.observable(true);
+        addressOverseas : KnockoutObservable<boolean> = ko.observable(false);
         otherReasons : KnockoutObservable<string> = ko.observable('');
-        shortResidents : KnockoutObservable<boolean> = ko.observable(true);
+        shortResidents : KnockoutObservable<boolean> = ko.observable(false);
 
-        otherp : KnockoutObservable<boolean> = ko.observable(true);
-        listedp : KnockoutObservable<boolean> = ko.observable(true);
+        otherp : KnockoutObservable<boolean> = ko.observable(false);
+        listedp : KnockoutObservable<boolean> = ko.observable(false);
         residentCardp : KnockoutObservable<number> = ko.observable(1);
-        addressOverseap : KnockoutObservable<boolean> = ko.observable(true);
+        addressOverseap : KnockoutObservable<boolean> = ko.observable(false);
         otherReasonp : KnockoutObservable<string> = ko.observable('');
-        shortResidentp : KnockoutObservable<boolean> = ko.observable(true);
+        shortResidentp : KnockoutObservable<boolean> = ko.observable(false);
 
         loadKCP009(){
             var self = this;
@@ -75,19 +75,19 @@ module nts.uk.pr.view.qsi003.b.viewmodel {
 
         getDefault(){
             let self = this;
-            self.others(true);
-            self.listeds(true);
+            self.others(false);
+            self.listeds(false);
             self.residentCards(1);
-            self.addressOverseas(true);
-            self.otherReasons(null);
-            self.shortResidents(true);
+            self.addressOverseas(false);
+            self.otherReasons('');
+            self.shortResidents(false);
 
-            self.otherp(true);
-            self.listedp(true);
+            self.otherp(false);
+            self.listedp(false);
             self.residentCardp(1);
-            self.addressOverseap(true);
-            self.otherReasonp = ko.observable(null);
-            self.shortResidentp(true);
+            self.addressOverseap(false);
+            self.otherReasonp = ko.observable('');
+            self.shortResidentp(false);
             self.screenMode(model.SCREEN_MODE.NEW);
         }
 
@@ -97,19 +97,19 @@ module nts.uk.pr.view.qsi003.b.viewmodel {
             nts.uk.pr.view.qsi003.b.service.getReasonRomajiName(empId).done(function (data: any) {
                 if(data){
                     self.basicPenNumber(data.basicPenNumber);
-                    self.others(data.empNameReport.spouse.others == 0);
-                    self.listeds(data.empNameReport.spouse.listeds == 0);
-                    self.residentCards(data.empNameReport.spouse.residentCards);
-                    self.addressOverseas(data.empNameReport.spouse.addressOverseas == 0);
-                    self.otherReasons(data.empNameReport.spouse.otherReasons);
-                    self.shortResidents(data.empNameReport.spouse.shortResidents == 0);
+                    self.others(data.empNameReport.spouse.other != 0);
+                    self.listeds(data.empNameReport.spouse.listed != 0);
+                    self.residentCards(data.empNameReport.spouse.residentCard);
+                    self.addressOverseas(data.empNameReport.spouse.addressOverseas != 0);
+                    self.otherReasons(data.empNameReport.spouse.otherReason);
+                    self.shortResidents(data.empNameReport.spouse.shortResident != 0);
 
-                    self.otherp(data.empNameReport.personalSet.otherp == 0);
-                    self.listedp(data.empNameReport.personalSet.listedp == 0);
-                    self.residentCardp(data.empNameReport.personalSet.residentCardp);
-                    self.addressOverseap(data.empNameReport.personalSet.addressOverseas == 0);
-                    self.otherReasonp(data.empNameReport.personalSet.otherReasonp);
-                    self.shortResidentp(data.empNameReport.personalSet.shortResidentp == 0);
+                    self.otherp(data.empNameReport.personalSet.other != 0);
+                    self.listedp(data.empNameReport.personalSet.listed != 0);
+                    self.residentCardp(data.empNameReport.personalSet.residentCard);
+                    self.addressOverseap(data.empNameReport.personalSet.addressOverseas != 0);
+                    self.otherReasonp(data.empNameReport.personalSet.otherReason);
+                    self.shortResidentp(data.empNameReport.personalSet.shortResident != 0);
                     self.screenMode(model.SCREEN_MODE.UPDATE);
                 } else {
                     self.getDefault();
@@ -120,32 +120,18 @@ module nts.uk.pr.view.qsi003.b.viewmodel {
             block.clear();
         }
 
-        createEmployeeModel(data){
-            let listEmployee = [];
-            _.each(data, data => {
-                listEmployee.push({
-                    id: data.employeeId,
-                    code: data.employeeCode,
-                    name: data.employeeName
-                });
-            });
-
-            return listEmployee;
-        }
-
         constructor() {
             let self = this;
-            let list = getShared("QSI003_PARAMS_B");
-            self.employeeInputList(list.employeeList);
-            self.selectedItem(self.employeeInputList()[0].id);
-            this.loadKCP009();
             self.selectedItem.subscribe((data) => {
                 self.getDataRomaji(data);
             });
-            self.roundingRules = ko.observableArray([
-                { code: '1', name: nts.uk.resource.getText('QSI003_18') },
-                { code: '2', name: nts.uk.resource.getText('QSI003_19') }
-            ]);
+            let list = getShared("QSI003_PARAMS_B");
+            if(nts.uk.util.isNullOrEmpty(list) || nts.uk.util.isNullOrEmpty(list.employeeList)) {
+                close();
+            }
+            self.employeeInputList(list.employeeList);
+            this.loadKCP009();
+            self.selectedItem(self.employeeInputList()[0].id);
         }
 
         updateReasonRomajiName(){
@@ -156,7 +142,7 @@ module nts.uk.pr.view.qsi003.b.viewmodel {
                 listed :  self.listeds() == true ? 1 : 0,
                 residentCard : self.residentCards(),
                 addressOverseas : self.addressOverseas() == true ? 1 : 0,
-                otherReason : self.otherReasons(),
+                otherReason : self.others() == true ? self.otherReasons() : null,
                 shortResident : self.shortResidents() == true ? 1 : 0
             }
 
@@ -165,7 +151,7 @@ module nts.uk.pr.view.qsi003.b.viewmodel {
                 listed :  self.listedp() == true ? 1 : 0,
                 residentCard : self.residentCardp(),
                 addressOverseas : self.addressOverseap() == true ? 1 : 0,
-                otherReason : self.otherReasonp(),
+                otherReason : self.otherp() == true ? self.otherReasonp() : null,
                 shortResident : self.shortResidentp() == true ? 1 : 0
             }
 
@@ -177,7 +163,7 @@ module nts.uk.pr.view.qsi003.b.viewmodel {
 
             let reasonRomajiNameCommand: any = {
                 empId: self.selectedItem(),
-                basicPenNumber : self.basicPenNumber(),
+                basicPenNumber : self.basicPenNumber().length > 0 ? self.basicPenNumber() : null,
                 empNameReportCommand : empNameReportCommand,
                 screenMode: model.SCREEN_MODE.UPDATE
             };
@@ -250,6 +236,7 @@ module nts.uk.pr.view.qsi003.b.viewmodel {
         employeeId: string;
         employeeCode: string;
         employeeName: string;
+
     }
     export interface Ccg001ReturnedData {
         baseDate: string; // 基準日

@@ -60,6 +60,8 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("      ADDRESS_2,");
         exportSQL.append("      ADDRESS_KANA_1,");
         exportSQL.append("      ADDRESS_KANA_2");
+        exportSQL.append("      HEAL_INSUR_INHEREN_PR,");
+        exportSQL.append("      HEAL_INSUR_UNION_NMBER");
         exportSQL.append("  FROM");
         exportSQL.append("      (SELECT *");
         exportSQL.append("         FROM QQSMT_EMP_HEAL_INSUR_QI ");
@@ -76,6 +78,10 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("       WHERE END_DATE <= ?endDate AND END_DATE >= ?startDate");
         exportSQL.append("        ) wi");
         exportSQL.append("       ON qi.EMPLOYEE_ID = wi.EMPLOYEE_ID");
+        exportSQL.append("  LEFT JOIN (SELECT * ");
+        exportSQL.append("          FROM QQSMT_HEAL_INSUR_PORT_INT ");
+        exportSQL.append("          WHERE END_DATE <= ?endDate AND END_DATE >= ?startDate  ) ppi" );
+        exportSQL.append("          ON qi.EMPLOYEE_ID = ppi.EMPLOYEE_ID");
         exportSQL.append("  LEFT JOIN ");
         exportSQL.append("       (SELECT * ");
         exportSQL.append("       FROM QQSMT_EMP_PEN_INS ");
@@ -101,6 +107,7 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("        FROM QPBMT_SOCIAL_INS_OFFICE");
         exportSQL.append("        WHERE CID = ?cid) oi");
         exportSQL.append("        ON oi.CODE = his.SOCIAL_INSURANCE_OFFICE_CD");
+        exportSQL.append("    LEFT JOIN QQSMT_EMP_HEAL_INS_UNION iu ON qi.EMPLOYEE_ID = iu.EMPLOYEE_ID");
         String sql = String.format(exportSQL.toString(), empIds.stream()
                 .map(String::valueOf)
                 .collect(Collectors.joining("','")));
@@ -149,6 +156,8 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
                 .portCd(i[32] == null ? "" : i[32].toString())
                 .add(i[33] == null && i[34] == null ? "" : i[33].toString()+ " " + i[34].toString())
                 .addKana(i[35] == null && i[36] == null ? "" : i[35].toString()+ " " + i[36].toString())
+                .healInsInherenPr(i[37] == null ? "" : i[32].toString())
+                .healUnionNumber(i[38] == null ? "" : i[33].toString())
                 .build()
         ).collect(Collectors.toList());
     }
