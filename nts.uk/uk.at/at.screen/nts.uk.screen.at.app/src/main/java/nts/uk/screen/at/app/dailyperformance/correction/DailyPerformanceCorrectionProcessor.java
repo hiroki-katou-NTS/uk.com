@@ -1729,9 +1729,9 @@ public class DailyPerformanceCorrectionProcessor {
 	}
 	
 	public DatePeriodInfo changeDateRange(DateRange dateRange, DateRange dateRangeInit, ObjectShare objectShare, String companyId, String sId,
-			DailyPerformanceCorrectionDto screenDto, Integer closureId, Integer mode, Integer displayFormat, Boolean initScreenOther, DPCorrectionStateParam dpStateParam) {
+			DailyPerformanceCorrectionDto screenDto, Integer closureId, Integer mode, Integer displayFormat, boolean changeFormat, Boolean initScreenOther, DPCorrectionStateParam dpStateParam) {
 		
-		if (dateRange != null && (initScreenOther == null || !initScreenOther)){
+		if (dateRange != null && (initScreenOther == null || !initScreenOther) && !changeFormat){
 			screenDto.setEmploymentCode(getEmploymentCode(companyId, dateRange.getEndDate(), sId));
 			DatePeriodInfo dateInfo = dpStateParam.getDateInfo();
 			dateInfo.setTargetRange(dateRange);
@@ -1928,6 +1928,8 @@ public class DailyPerformanceCorrectionProcessor {
 							dateRecordOpt.get().getDatePeriod().end());
 				}
 			}
+		}else {
+			rangeTemp = dateRange;
 		}
 		return Pair.of(closureIdResult, rangeTemp);
 	}
