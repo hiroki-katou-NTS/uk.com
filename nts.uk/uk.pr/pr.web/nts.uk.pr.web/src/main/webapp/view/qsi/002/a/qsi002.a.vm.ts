@@ -76,7 +76,7 @@ module nts.uk.pr.view.qsi002.a.viewmodel {
                 { code: '0', name: nts.uk.resource.getText('QSI002_A222_10') },
                 { code: '1', name: nts.uk.resource.getText('QSI002_A222_11') }
             ]);
-            self.selectedRuleCode = ko.observable(1);
+            self.selectedRuleCode = ko.observable(0);
             //init datepicker
             self.baseDate1 = ko.observable(moment());
 
