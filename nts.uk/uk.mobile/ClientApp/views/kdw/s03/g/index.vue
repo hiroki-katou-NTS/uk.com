@@ -10,7 +10,7 @@
   </div>
     <div class="accordion accordion-mn3">
       <!-- G2_1: 休暇残数 -->
-      <div class="card  show border border-left-0 border-right-0" v-if="!params.remainOrtime36">
+      <div class="card border border-left-0 border-right-0" v-bind:class="{'show':  params.remainDisplay}">
         <div class="card-header uk-bg-accordion">
            <button class="btn btn-link" type="button">{{'KDWS03_70' | i18n}}</button>
         </div>
@@ -51,7 +51,7 @@
         </div>
       </div>
       <!-- G2_2: 時間外超過時間 -->
-      <div class="card show border border-left-0 border-right-0" v-if="time36.showAgreement && params.remainOrtime36">
+      <div class="card border border-left-0 border-right-0" v-if="time36.showAgreement" v-bind:class="{'show':  !params.remainDisplay}">
         <div class="card-header uk-bg-accordion">
           <button class="btn btn-link" type="button">{{'KDWS03_53' | i18n}}</button>
         </div>
