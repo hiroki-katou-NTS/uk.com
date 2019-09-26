@@ -36,7 +36,7 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
         try (AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE)) {
             Workbook wb = reportContext.getWorkbook();
             WorksheetCollection wsc = wb.getWorksheets();
-            this.writeFileExcel(wsc, exportData.getListContent());
+            this.writeFileExcel(wsc, exportData.getListContent(),exportData.getBaseDate());
             reportContext.processDesigner();
             wsc.removeAt(0);
             reportContext.saveAsPdf(this.createNewFile(fileContext, REPORT_FILE_NAME));
@@ -45,7 +45,7 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
         }
     }
 
-    private void writeFileExcel(WorksheetCollection ws, List<GuaByTheInsurExportDto> exportData) {
+    private void writeFileExcel(WorksheetCollection ws, List<GuaByTheInsurExportDto> exportData,GeneralDate baseDate ) {
         int stt = 0;
         int page = 0;
         String sheetName = "INS";
@@ -62,7 +62,7 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
                     page++;
                     ws.get(ws.addCopy(0)).setName(sheetName + page);
                     companyCd = element.getOfficeCd();
-                    fillDataOffice(ws, element, sheetName + page);
+                    fillDataOffice(ws, element, sheetName + page,baseDate);
                     stt = 0;
                 }
                 fillEmployee(ws, element, sheetName + page, stt );
@@ -73,8 +73,8 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
         }
     }
 
-    private void fillDataOffice(WorksheetCollection ws, GuaByTheInsurExportDto element, String sheetName) {
-        JapaneseDate dateJp = toJapaneseDate(element.getFilingDate());
+    private void fillDataOffice(WorksheetCollection ws, GuaByTheInsurExportDto element, String sheetName, GeneralDate baseDate) {
+        JapaneseDate dateJp = toJapaneseDate(baseDate);
         ws.getRangeByName(sheetName + "!A1_10_1").setValue(dateJp.year() + 1);
         ws.getRangeByName(sheetName + "!A1_10_2").setValue(dateJp.month());
         ws.getRangeByName(sheetName + "!A1_10_3" ).setValue(dateJp.day());
