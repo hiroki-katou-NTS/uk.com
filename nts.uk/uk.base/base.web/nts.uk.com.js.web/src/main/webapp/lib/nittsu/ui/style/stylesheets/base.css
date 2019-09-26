@@ -3046,6 +3046,25 @@ button.nts-switch-button[disabled].selected {
   color: #333;
 }
 
+.nts-treegridview .ui-icon-triangle-1-e {
+	display : none;
+}
+
+.nts-treegridview .ui-igtreegrid-expandcell {
+	margin-top: -10px !important;
+}
+
+.nts-treegridview .ui-iggrid-headertable th {
+	position: relative;
+}
+
+.nts-treegridview .ui-iggrid-headertable th span.ui-iggrid-headertext {
+	width: 100%;
+	display: inline-block;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+}
 
 /* line 32, ../sass/components/_treegridview.scss */
 .no-selector table th:first-child.ui-iggrid-rowselector-class {

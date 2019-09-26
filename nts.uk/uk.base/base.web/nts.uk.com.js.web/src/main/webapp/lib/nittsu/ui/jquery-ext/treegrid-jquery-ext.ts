@@ -174,8 +174,9 @@ module nts.uk.ui.jqueryExtentions {
                                             $(falseOpt).find(".ui-iggrid-filterddlistitemcontainer").html(currentCol.filterOpts.falseOpt);//nts.uk.resource.getText("Enum_UseAtr_NotUse"));
                                         }
                                     } 
-                                },
-                                filterSummaryAlwaysVisible : false });
+                                }, dropDownClosed: function (evt, ui) {
+                                    ui.owner._currentTarget.closest(".ui-iggrid-filtercell").find(".ui-iggrid-filterbutton").removeClass("ui-state-active ui-iggrid-filterbuttonactive");
+                                }, filterSummaryAlwaysVisible : false });
             }
 
             $treegrid.data("expand", new koExtentions.ExpandNodeHolder());
