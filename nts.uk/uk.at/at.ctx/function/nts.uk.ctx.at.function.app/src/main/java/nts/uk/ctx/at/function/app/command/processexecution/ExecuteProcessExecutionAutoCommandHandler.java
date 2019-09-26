@@ -888,10 +888,18 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 						loginContext, calculateSchedulePeriod, listEmp);
 
 				try {
+<<<<<<< HEAD
 					this.scheduleExecution.handle(scheduleCommand);
 					log.info("更新処理自動実行_個人スケジュール作成_END_" + context.getCommand().getExecItemCd() + "_"
 							+ GeneralDateTime.now());
 					if (checkStop(execId)) {
+=======
+					AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand> ctx = new AsyncCommandHandlerContext<>(scheduleCommand);
+					this.scheduleExecution.handle(ctx);
+//					this.scheduleExecution.handle(scheduleCommand);
+					log.info("更新処理自動実行_個人スケジュール作成_END_"+context.getCommand().getExecItemCd()+"_"+GeneralDateTime.now());
+					if(checkStop(execId)) {
+>>>>>>> 68293b9... fixbug 109028
 						checkStopExec = true;
 					}
 					runSchedule = true;
@@ -931,7 +939,9 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 							// AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand> ctxNew = new
 							// AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand>(scheduleCreatorExecutionOneEmp);
 							// ctxNew.setTaskId(context.asAsync().getTaskId());
-							this.scheduleExecution.handle(scheduleCreatorExecutionOneEmp2);
+							AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand> ctx = new AsyncCommandHandlerContext<>(scheduleCreatorExecutionOneEmp2);
+							this.scheduleExecution.handle(ctx);
+//							this.scheduleExecution.handle(scheduleCreatorExecutionOneEmp2);
 							ScheduleCreatorExecutionCommand scheduleCreatorExecutionOneEmp3 = this
 									.getScheduleCreatorExecutionOneEmp(execId, procExec, loginContext,
 											calculateSchedulePeriod, temporaryEmployeeList);
@@ -941,10 +951,18 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 								checkStopExec = true;
 							}
 							if(!checkStopExec) {
+<<<<<<< HEAD
 								this.scheduleExecution.handle(scheduleCreatorExecutionOneEmp3);
 								log.info("更新処理自動実行_個人スケジュール作成_END_" + context.getCommand().getExecItemCd() + "_"
 										+ GeneralDateTime.now());
 								if (checkStop(execId)) {
+=======
+								AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand> ctx2 = new AsyncCommandHandlerContext<>(scheduleCreatorExecutionOneEmp3);
+								this.scheduleExecution.handle(ctx2);
+//								this.scheduleExecution.handle(scheduleCreatorExecutionOneEmp3);
+								log.info("更新処理自動実行_個人スケジュール作成_END_"+context.getCommand().getExecItemCd()+"_"+GeneralDateTime.now());
+								if(checkStop(execId)) {
+>>>>>>> 68293b9... fixbug 109028
 									checkStopExec = true;
 								}
 								runSchedule = true;
@@ -964,6 +982,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 					if (!CollectionUtil.isEmpty(reEmployeeList) && !checkStopExec) {
 						// 異動者、勤務種別変更者、休職者・休業者の期間の計算
 						GeneralDate endDate = basicScheduleRepository.findMaxDateByListSid(reEmployeeList);
+<<<<<<< HEAD
 						if (endDate != null) {
 							DatePeriod periodDate = this.getMinPeriodFromStartDate(companyId);
 							ScheduleCreatorExecutionCommand scheduleCreatorExecutionOneEmp1 = this
@@ -985,6 +1004,27 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 									checkStopExec = true;
 								}
 								errorMessage = "Msg_1339";
+=======
+						DatePeriod periodDate = this.getMinPeriodFromStartDate(companyId);
+						ScheduleCreatorExecutionCommand scheduleCreatorExecutionOneEmp1 = this
+								.getScheduleCreatorExecutionOneEmp(execId, procExec, loginContext,
+										calculateSchedulePeriod, reEmployeeList);
+						scheduleCreatorExecutionOneEmp1.getScheduleExecutionLog()
+								.setPeriod(new DatePeriod(periodDate.start(), endDate));
+						try {
+							AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand> ctx = new AsyncCommandHandlerContext<>(scheduleCreatorExecutionOneEmp1);
+							this.scheduleExecution.handle(ctx);
+//							this.scheduleExecution.handle(scheduleCreatorExecutionOneEmp1);
+							log.info("更新処理自動実行_個人スケジュール作成_END_"+context.getCommand().getExecItemCd()+"_"+GeneralDateTime.now());
+							if(checkStop(execId)) {
+								return false;
+							}
+							runSchedule = true;
+						} catch (Exception e) {
+							// 再実行の場合にExceptionが発生したかどうかを確認する。
+							if (procExec.getProcessExecType() == ProcessExecType.RE_CREATE) {
+								checkStopExec = true;
+>>>>>>> 68293b9... fixbug 109028
 							}
 						}
 					}
@@ -3029,6 +3069,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 		if(!listIsInterrupt.isEmpty()) {
 			isInterrupt = true;
 		}
+<<<<<<< HEAD
 		List<ErrMessageInfo> errMessageInfos = this.errMessageInfoRepository
 				.getAllErrMessageInfoByEmpID(empCalAndSumExeLog.getEmpCalAndSumExecLogID());
 
@@ -3046,6 +3087,25 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 				throw new DailyCalculateException(null);
 			}
 		}
+=======
+//		List<ErrMessageInfo> errMessageInfos = this.errMessageInfoRepository
+//				.getAllErrMessageInfoByEmpID(empCalAndSumExeLog.getEmpCalAndSumExecLogID());
+//		
+//		if ("日別作成".equals(typeExecution)) {
+//
+//			if (!errMessageInfos.stream()
+//					.filter(c -> c.getExecutionContent().value == ExecutionContent.DAILY_CREATION.value)
+//					.collect(Collectors.toList()).isEmpty()) {
+//				throw new CreateDailyException(null);
+//			}
+//		} else {
+//			if (!errMessageInfos.stream()
+//					.filter(c -> c.getExecutionContent().value == ExecutionContent.DAILY_CALCULATION.value)
+//					.collect(Collectors.toList()).isEmpty()) {
+//				throw new DailyCalculateException(null);
+//			}
+//		}
+>>>>>>> 68293b9... fixbug 109028
 		if (isInterrupt) {
 			return true;
 		}

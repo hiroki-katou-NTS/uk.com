@@ -901,9 +901,13 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 						loginContext, calculateSchedulePeriod, listEmp);
 
 				try {
-					handle = this.scheduleExecution.handle(scheduleCommand);
+					AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand> ctx = new AsyncCommandHandlerContext<>(scheduleCommand);
+					this.scheduleExecution.handle(ctx);
+//					handle = this.scheduleExecution.handle(scheduleCommand);
 					log.info("更新処理自動実行_個人スケジュール作成_END_" + context.getCommand().getExecItemCd() + "_"
 							+ GeneralDateTime.now());
+					//handle.getStatus().value == AsyncTaskStatus
+					//handle.wait();
 					if (checkStop(execId)) {
 						checkStopExec = true;
 					}
@@ -944,7 +948,8 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 							// AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand> ctxNew = new
 							// AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand>(scheduleCreatorExecutionOneEmp);
 							// ctxNew.setTaskId(context.asAsync().getTaskId());
-							handle = this.scheduleExecution.handle(scheduleCreatorExecutionOneEmp2);
+							AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand> ctx = new AsyncCommandHandlerContext<>(scheduleCreatorExecutionOneEmp2);
+							this.scheduleExecution.handle(ctx);
 							ScheduleCreatorExecutionCommand scheduleCreatorExecutionOneEmp3 = this
 									.getScheduleCreatorExecutionOneEmp(execId, procExec, loginContext,
 											calculateSchedulePeriod, temporaryEmployeeList);
@@ -954,7 +959,8 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 								checkStopExec = true;
 							}
 							if(!checkStopExec) {
-								handle = this.scheduleExecution.handle(scheduleCreatorExecutionOneEmp3);
+								AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand> ctx2 = new AsyncCommandHandlerContext<>(scheduleCreatorExecutionOneEmp3);
+								this.scheduleExecution.handle(ctx2);
 								log.info("更新処理自動実行_個人スケジュール作成_END_" + context.getCommand().getExecItemCd() + "_"
 										+ GeneralDateTime.now());
 								if (checkStop(execId)) {
@@ -977,6 +983,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 					if (!CollectionUtil.isEmpty(reEmployeeList) && !checkStopExec) {
 						// 異動者、勤務種別変更者、休職者・休業者の期間の計算
 						GeneralDate endDate = basicScheduleRepository.findMaxDateByListSid(reEmployeeList);
+<<<<<<< HEAD
 						if (endDate != null) {
 							DatePeriod periodDate = this.getMinPeriodFromStartDate(companyId);
 							ScheduleCreatorExecutionCommand scheduleCreatorExecutionOneEmp1 = this
@@ -998,6 +1005,28 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 									checkStopExec = true;
 								}
 								errorMessage = "Msg_1339";
+=======
+						DatePeriod periodDate = this.getMinPeriodFromStartDate(companyId);
+						ScheduleCreatorExecutionCommand scheduleCreatorExecutionOneEmp1 = this
+								.getScheduleCreatorExecutionOneEmp(execId, procExec, loginContext,
+										calculateSchedulePeriod, reEmployeeList);
+						scheduleCreatorExecutionOneEmp1.getScheduleExecutionLog()
+								.setPeriod(new DatePeriod(periodDate.start(), endDate));
+						try {
+							AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand> ctx = new AsyncCommandHandlerContext<>(scheduleCreatorExecutionOneEmp1);
+							this.scheduleExecution.handle(ctx);
+//							handle = this.scheduleExecution.handle(scheduleCreatorExecutionOneEmp1);
+							log.info("更新処理自動実行_個人スケジュール作成_END_" + context.getCommand().getExecItemCd() + "_"
+									+ GeneralDateTime.now());
+							if (checkStop(execId)) {
+								checkStopExec = true;
+							}
+							runSchedule = true;
+						} catch (Exception e) {
+							// 再実行の場合にExceptionが発生したかどうかを確認する。
+							if (procExec.getProcessExecType() == ProcessExecType.RE_CREATE) {
+								checkStopExec = true;
+>>>>>>> 68293b9... fixbug 109028
 							}
 						}
 					}
@@ -1019,9 +1048,9 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 			
 		}
 		TaskDataSetter dataSetter = context.asAsync().getDataSetter();
-		if (handle != null) {
-			dataSetter.updateData("taskId", handle.getId());
-		}
+//		if (handle != null) {
+//			dataSetter.updateData("taskId", handle.getId());
+//		}
 		int timeOut = 1;
 		boolean isInterruption = false;
 //		if (runSchedule) {
@@ -2976,24 +3005,24 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		if (!listIsInterrupt.isEmpty()) {
 			isInterrupt = true;
 		}
-		List<ErrMessageInfo> errMessageInfos = this.errMessageInfoRepository
-				.getAllErrMessageInfoByEmpID(empCalAndSumExeLog.getEmpCalAndSumExecLogID());
+//		List<ErrMessageInfo> errMessageInfos = this.errMessageInfoRepository
+//				.getAllErrMessageInfoByEmpID(empCalAndSumExeLog.getEmpCalAndSumExecLogID());
 //		List<String> errorMessage = errMessageInfos.stream().map(error -> {
 //			return error.getMessageError().v();
 //		}).collect(Collectors.toList());
-		if ("日別作成".equals(typeExecution)) {
-			
-			if (!errMessageInfos.stream().filter(c -> c.getExecutionContent().value == ExecutionContent.DAILY_CREATION.value)
-					.collect(Collectors.toList()).isEmpty()) {
-				throw new CreateDailyException(null);
-			}
-		} else {
-			if (!errMessageInfos.stream()
-					.filter(c -> c.getExecutionContent().value == ExecutionContent.DAILY_CALCULATION.value)
-					.collect(Collectors.toList()).isEmpty()) {
-				throw new DailyCalculateException(null);
-			}
-		}
+//		if ("日別作成".equals(typeExecution)) {
+//			
+//			if (!errMessageInfos.stream().filter(c -> c.getExecutionContent().value == ExecutionContent.DAILY_CREATION.value)
+//					.collect(Collectors.toList()).isEmpty()) {
+//				throw new CreateDailyException(null);
+//			}
+//		} else {
+//			if (!errMessageInfos.stream()
+//					.filter(c -> c.getExecutionContent().value == ExecutionContent.DAILY_CALCULATION.value)
+//					.collect(Collectors.toList()).isEmpty()) {
+//				throw new DailyCalculateException(null);
+//			}
+//		}
 		if (isInterrupt) {
 			return true;
 		}
