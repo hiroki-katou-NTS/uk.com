@@ -19,7 +19,7 @@
     
             <div class="card-body">
                 <ul class="list-group list-group-selection m-n3">
-                    <li class="list-group-item" v-for="item in displayData" v-click:500="() => openErrorList(item.employeeId)">{{item.employeeName}}</li>
+                    <li class="list-group-item pl-2" v-for="item in displayData" v-click:500="() => openErrorList(item.employeeId)">{{item.employeeName}}</li>
                 </ul>
             </div>
         </div>
