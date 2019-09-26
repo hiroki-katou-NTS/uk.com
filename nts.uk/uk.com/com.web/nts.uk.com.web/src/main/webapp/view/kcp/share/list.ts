@@ -396,23 +396,28 @@ module kcp.share.list {
                     // update datasource
                     gridList.ntsGridList("setDataSource", self.itemList());
                     
-                    if (self.listType !== ListType.EMPLOYEE) {
-                        searchBox.ntsSearchBox("setDataSource", self.itemList());        
-                    }
-
-                    // select all items in multi mode
-                    if (self.isSelectAllAfterReload && !_.isEmpty(self.itemList()) && self.isMultipleSelect) {
-                        let selectedValues = _.map(self.itemList(), item => self.listType == ListType.JOB_TITLE ? item.id : item.code);
-                        self.selectedCodes(selectedValues);
-                        gridList.ntsGridList("setSelectedValue", []);
-                        gridList.ntsGridList("setSelectedValue", selectedValues);
-                        setTimeout(function() {
-                            let chk = gridList.closest('.ui-iggrid').find(".ui-iggrid-rowselector-header").find("span[data-role='checkbox']");
-                            if (chk[0].getAttribute("data-chk") == "off") {
-                                chk.click();
+                    _.defer(() => {
+                        if (self.listType !== ListType.EMPLOYEE) {
+                            searchBox.ntsSearchBox("setDataSource", self.itemList());        
+                        }
+    
+                        // select all items in multi mode
+                        if (self.isSelectAllAfterReload && !_.isEmpty(self.itemList()) && self.isMultipleSelect) {
+                            let selectedValues = _.map(self.itemList(), item => self.listType == ListType.JOB_TITLE ? item.id : item.code);
+                            if (_.isEmpty(selectedValues)){
+                                self.selectedCodes([]);
+                            } else {
+                                gridList.ntsGridList("setSelectedValue", selectedValues);
                             }
-                        }, 1);
-                    }
+                            
+                            /*setTimeout(function() {
+                                let chk = gridList.closest('.ui-iggrid').find(".ui-iggrid-rowselector-header").find("span[data-role='checkbox']");
+                                if (chk[0].getAttribute("data-chk") == "off") { 
+                                    chk.click();
+                                }
+                            }, 1);*/
+                        }    
+                    });
                 });
             }
         }
@@ -489,8 +494,9 @@ module kcp.share.list {
                 const selectedValues = gridList.ntsGridList("getSelectedValue");
                 const selectedIds = self.isMultipleSelect ? _.map(selectedValues, o => o.id) : selectedValues.id;
                 if(!_.isEqual(self.selectedCodes(), selectedIds)){
-                    self.selectedCodes(selectedIds);  
+                    self.selectedCodes(selectedIds);        
                 }
+                
             });
             gridList.on('selectChange', evt => {
                 // scroll to top if select all

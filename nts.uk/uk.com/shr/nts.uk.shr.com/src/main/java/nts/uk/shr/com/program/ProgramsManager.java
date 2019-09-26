@@ -2303,6 +2303,15 @@ public class ProgramsManager {
 			"/kdw/s03/a");
 	
 	/**
+	 * CPS013
+	 */
+	public static final Program CPS013A = new Program(WebAppId.COM, ProgramIdConsts.CPS013A, "CPS013_34",
+			"/view/cps/013/a/index.xhtml");
+	public static final Program CPS013B = new Program(WebAppId.COM, ProgramIdConsts.CPS013B, "CPS013_35",
+			"/view/cps/013/b/index.xhtml");
+
+	
+	/**
 	 * All programs map.
 	 */
 	private static final Map<WebAppId, List<Program>> PROGRAMS;

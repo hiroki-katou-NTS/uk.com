@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.app.find.workingcondition;
 
+import java.util.Map;
 import java.util.Optional;
 
 import lombok.Getter;
@@ -492,7 +493,9 @@ public class WorkingConditionDto extends PeregDomainDto {
 			dto.setMonthlyPattern(mp.v());
 		});
 
-		setScheduleMethod(dto, workingConditionItem.getScheduleMethod().get());
+		if (workingConditionItem.getScheduleMethod().isPresent()) {
+			setScheduleMethod(dto, workingConditionItem.getScheduleMethod().get());
+		}
 
 		PersonalWorkCategory workCategory = workingConditionItem.getWorkCategory();
 
@@ -531,17 +534,97 @@ public class WorkingConditionDto extends PeregDomainDto {
 		dto.setVacationAddedTimeAtr(workingConditionItem.getVacationAddedTimeAtr().value);
 
 		workingConditionItem.getHolidayAddTimeSet().ifPresent(hat -> {
-			Optional.of(hat.getOneDay()).ifPresent(od -> dto.setOneDay(od.v()));
+			Optional.ofNullable(hat.getOneDay()).ifPresent(od -> dto.setOneDay(od.v()));
 
-			Optional.of(hat.getMorning()).ifPresent(od -> dto.setMorning(od.v()));
+			Optional.ofNullable(hat.getMorning()).ifPresent(od -> dto.setMorning(od.v()));
 
-			Optional.of(hat.getAfternoon()).ifPresent(od -> dto.setAfternoon(od.v()));
+			Optional.ofNullable(hat.getAfternoon()).ifPresent(od -> dto.setAfternoon(od.v()));
 		});
 
 		dto.setLaborSystem(workingConditionItem.getLaborSystem().value);
 		dto.setContractTime(workingConditionItem.getContractTime().v());
 		dto.setAutoStampSetAtr(workingConditionItem.getAutoStampSetAtr().value);
 
+		return dto;
+	}
+	
+	public static WorkingConditionDto createWorkingConditionDtoEnum(DateHistoryItem dateHistoryItem,
+			WorkingConditionItem workingConditionItem, Map<String, Object> enums) {
+		WorkingConditionDto dto = new WorkingConditionDto(dateHistoryItem.identifier());
+		
+		dto.setRecordId(dateHistoryItem.identifier());
+		dto.setStartDate(dateHistoryItem.start());
+		dto.setEndDate(dateHistoryItem.end());
+
+		Integer hourlyPaymentAtr = (Integer) enums.get("IS00259");
+		dto.setHourlyPaymentAtr(hourlyPaymentAtr == null? null: hourlyPaymentAtr.intValue());
+
+		workingConditionItem.getTimeApply().ifPresent(wci -> {
+			dto.setTimeApply(wci.v());
+		});
+		
+		Integer scheduleManagementAtr = (Integer)enums.get("IS00121");
+		dto.setScheduleManagementAtr(scheduleManagementAtr == null? null: scheduleManagementAtr.intValue());
+
+		// 予定作成方法
+		workingConditionItem.getMonthlyPattern().ifPresent(mp -> {
+			dto.setMonthlyPattern(mp.v());
+		});
+
+		if (workingConditionItem.getScheduleMethod().isPresent()) {
+			setScheduleMethodCPS013(dto, workingConditionItem.getScheduleMethod().get(), enums);
+		}
+
+		PersonalWorkCategory workCategory = workingConditionItem.getWorkCategory();
+
+		// 休日出勤時
+		setHolidayTime(dto, workCategory.getHolidayTime());
+
+		// 平日時
+		setWeekDay(dto, workCategory.getWeekdayTime());
+
+		// 休日出勤時
+		setWorkInHoliday(dto, workCategory.getHolidayWork());
+
+		// 公休出勤時
+		workCategory.getPublicHolidayWork().ifPresent(phw -> {
+			setWorkInPublicHoliday(dto, phw);
+		});
+
+		// 法内休出時
+		workCategory.getInLawBreakTime().ifPresent(ilbt -> {
+			setInLawBreakTime(dto, ilbt);
+		});
+
+		// 法外休出時
+		workCategory.getOutsideLawBreakTime().ifPresent(olbt -> {
+			setOutsideLawBreakTime(dto, olbt);
+		});
+
+		// 祝日出勤時
+		workCategory.getHolidayAttendanceTime().ifPresent(at -> {
+			setHolidayAttendanceTime(dto, at);
+		});
+
+//		PersonalDayOfWeek workDayOfWeek = workingConditionItem.getWorkDayOfWeek();
+		Integer autoIntervalSetAtr = (Integer)enums.get("IS00247");
+		Integer vacationAddedTimeAtr = (Integer)enums.get("IS00248");
+		dto.setAutoIntervalSetAtr(autoIntervalSetAtr == null? workingConditionItem.getAutoIntervalSetAtr().value: autoIntervalSetAtr.intValue());
+		dto.setVacationAddedTimeAtr(vacationAddedTimeAtr == null? workingConditionItem.getVacationAddedTimeAtr().value: vacationAddedTimeAtr.intValue());
+
+		workingConditionItem.getHolidayAddTimeSet().ifPresent(hat -> {
+			Optional.ofNullable(hat.getOneDay()).ifPresent(od -> dto.setOneDay(od.v()));
+
+			Optional.ofNullable(hat.getMorning()).ifPresent(od -> dto.setMorning(od.v()));
+
+			Optional.ofNullable(hat.getAfternoon()).ifPresent(od -> dto.setAfternoon(od.v()));
+		});
+
+		Integer laborSystem = (Integer)enums.get("IS00252");
+		Integer autoStampSetAtr = (Integer)enums.get("IS00258");
+		dto.setLaborSystem(laborSystem == null? workingConditionItem.getLaborSystem().value: laborSystem.intValue());
+		dto.setContractTime(workingConditionItem.getContractTime().v());
+		dto.setAutoStampSetAtr(autoStampSetAtr == null? workingConditionItem.getAutoStampSetAtr().value: autoStampSetAtr.intValue());
 		return dto;
 	}
 
@@ -553,7 +636,6 @@ public class WorkingConditionDto extends PeregDomainDto {
 			dto.setReferenceBusinessDayCalendar(wsb.getReferenceBusinessDayCalendar().value);
 		});
 
-		// cần xem lại thuật toán thực thi đoạn mã này
 		switch (scheduleMethod.getBasicCreateMethod()) {
 		case BUSINESS_DAY_CALENDAR:
 			scheduleMethod.getWorkScheduleBusCal().ifPresent(wsb -> {
@@ -566,11 +648,50 @@ public class WorkingConditionDto extends PeregDomainDto {
 			});
 			break;
 		default:
-			if(scheduleMethod.getWorkScheduleBusCal().isPresent()) {
+			if (scheduleMethod.getWorkScheduleBusCal().isPresent()) {
 				dto.setReferenceType(scheduleMethod.getWorkScheduleBusCal().get().getReferenceWorkingHours().value);
-			}else if(scheduleMethod.getMonthlyPatternWorkScheduleCre().isPresent()) {
+			} else if (scheduleMethod.getMonthlyPatternWorkScheduleCre().isPresent()) {
 				dto.setReferenceType(scheduleMethod.getMonthlyPatternWorkScheduleCre().get().getReferenceType().value);
-			}else {
+			} else {
+				dto.setReferenceType(0);
+			}
+			break;
+		}
+	}
+	
+	private static void setScheduleMethodCPS013(WorkingConditionDto dto, ScheduleMethod scheduleMethod, Map<String, Object> enums) {
+		Integer basicCreateMethod = (Integer) enums.get("IS00123");
+		dto.setBasicCreateMethod(basicCreateMethod == null? null: basicCreateMethod.intValue());
+
+		scheduleMethod.getWorkScheduleBusCal().ifPresent(wsb -> {
+			Integer referenceBasicWork = (Integer) enums.get("IS00125");
+			Integer referenceBusinessDayCalendar = (Integer) enums.get("IS00124");
+			dto.setReferenceBasicWork(referenceBasicWork == null? null: referenceBasicWork.intValue());
+			dto.setReferenceBusinessDayCalendar(referenceBusinessDayCalendar == null? null: referenceBusinessDayCalendar.intValue());
+		});
+
+		switch (basicCreateMethod) {
+			
+		case 0: // BUSINESS_DAY_CALENDAR
+			scheduleMethod.getWorkScheduleBusCal().ifPresent(wsb -> {
+				Integer referenceType = (Integer) enums.get("IS00126");
+				dto.setReferenceType(referenceType == null? 0: referenceType.intValue());
+			});
+			break;
+		case 1: // MONTHLY_PATTERN
+			scheduleMethod.getMonthlyPatternWorkScheduleCre().ifPresent(mps -> {
+				Integer referenceType = (Integer) enums.get("IS00126");
+				dto.setReferenceType(referenceType == null? 0: referenceType.intValue());
+			});
+			break;
+		default:
+			if (scheduleMethod.getWorkScheduleBusCal().isPresent()) {
+				Integer referenceType = (Integer) enums.get("IS00126");
+				dto.setReferenceType(referenceType == null? 0: referenceType.intValue());
+			} else if (scheduleMethod.getMonthlyPatternWorkScheduleCre().isPresent()) {
+				Integer referenceType = (Integer) enums.get("IS00126");
+				dto.setReferenceType(referenceType == null? 0: referenceType.intValue());
+			} else {
 				dto.setReferenceType(0);
 			}
 			break;
@@ -584,7 +705,7 @@ public class WorkingConditionDto extends PeregDomainDto {
 	}
 
 	private static void setWeekDay(WorkingConditionDto dto, SingleDaySchedule weekDay) {
-		Optional.of(weekDay).ifPresent(wd -> {
+		Optional.ofNullable(weekDay).ifPresent(wd -> {
 			dto.setWeekdayWorkTypeCode(wd.getWorkTypeCode().map(i->i.v()).orElse(null));
 
 			wd.getWorkTimeCode().ifPresent(wt -> dto.setWeekdayWorkTimeCode(wt.v()));
@@ -607,24 +728,26 @@ public class WorkingConditionDto extends PeregDomainDto {
 	}
 
 	private static void setWorkInHoliday(WorkingConditionDto dto, SingleDaySchedule workInHoliday) {
-		dto.setWorkInHolidayWorkTypeCode(workInHoliday.getWorkTypeCode().map(i->i.v()).orElse(null));
-
-		workInHoliday.getWorkTimeCode().ifPresent(wtc -> dto.setWorkInHolidayWorkTimeCode(wtc.v()));
-
-		Optional<TimeZone> timeZone1 = workInHoliday.getWorkingHours().stream()
-				.filter(timeZone -> timeZone.getCnt() == 1).findFirst();
-
-		Optional<TimeZone> timeZone2 = workInHoliday.getWorkingHours().stream()
-				.filter(timeZone -> timeZone.getCnt() == 2).findFirst();
-
-		timeZone1.ifPresent(tz -> {
-			dto.setWorkInHolidayStartTime1(tz.getStart().v());
-			dto.setWorkInHolidayEndTime1(tz.getEnd().v());
-		});
-
-		timeZone2.ifPresent(tz -> {
-			dto.setWorkInHolidayStartTime2(tz.getStart().v());
-			dto.setWorkInHolidayEndTime2(tz.getEnd().v());
+		Optional.ofNullable(workInHoliday).ifPresent(wih -> {				
+			dto.setWorkInHolidayWorkTypeCode(wih.getWorkTypeCode().map(i->i.v()).orElse(""));
+	
+			wih.getWorkTimeCode().ifPresent(wtc -> dto.setWorkInHolidayWorkTimeCode(wtc.v()));
+	
+			Optional<TimeZone> timeZone1 = wih.getWorkingHours().stream()
+					.filter(timeZone -> timeZone.getCnt() == 1).findFirst();
+	
+			Optional<TimeZone> timeZone2 = wih.getWorkingHours().stream()
+					.filter(timeZone -> timeZone.getCnt() == 2).findFirst();
+	
+			timeZone1.ifPresent(tz -> {
+				dto.setWorkInHolidayStartTime1(tz.getStart().v());
+				dto.setWorkInHolidayEndTime1(tz.getEnd().v());
+			});
+	
+			timeZone2.ifPresent(tz -> {
+				dto.setWorkInHolidayStartTime2(tz.getStart().v());
+				dto.setWorkInHolidayEndTime2(tz.getEnd().v());
+			});
 		});
 	}
 

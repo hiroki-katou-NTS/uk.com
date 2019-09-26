@@ -575,7 +575,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     objectShare: _.isEmpty(self.shareObject()) ? null : self.shareObject(),
                     showError: _.isEmpty(self.shareObject()) ? null : self.shareObject().errorRefStartAtr,
                     closureId: self.closureId,
-                    initFromScreenOther: self.initFromScreenOther
+                    initFromScreenOther: self.initFromScreenOther,
+                    changeFormat: false
                 };
                 // delete grid in localStorage
                 self.deleteGridInLocalStorage();
@@ -667,7 +668,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                     mode: _.isEmpty(self.shareObject()) ? 0 : self.shareObject().screenMode,
                                     lstEmployee: [],
                                     formatCodes: data,
-                                    objectShare: _.isEmpty(self.shareObject()) ? null : self.shareObject()
+                                    objectShare: _.isEmpty(self.shareObject()) ? null : self.shareObject(), 
+                                    changeFormat: false
                                 };
                                 self.characteristics.authenSelectFormat = param.formatCodes;
                                 self.characteristics.employeeId = __viewContext.user.employeeId;
@@ -2350,9 +2352,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 //                }
                 if(!self.initFromScreenOther) self.genDateExtract(hasChangeFormat);
                 let param = {
-                    dateRange: ((self.hasEmployee && !hasChangeFormat) || self.initFromScreenOther)? {
-                        startDate: self.displayFormat() === 1 ? moment(self.selectedDate()) : moment(self.dateRanger().startDate).utc().toISOString(),
-                        endDate: self.displayFormat() === 1 ? moment(self.selectedDate()) : moment(self.dateRanger().endDate).utc().toISOString()
+                    dateRange: ((self.hasEmployee) || self.initFromScreenOther)? {
+                        startDate:  moment(self.dateRanger().startDate).utc().toISOString(),
+                        endDate: moment(self.dateRanger().endDate).utc().toISOString()
                     } : null,
                     displayFormat: self.hasEmployee ? self.displayFormat() : _.isEmpty(self.shareObject()) ? 0 : self.shareObject().displayFormat,
                     initScreen: self.hasEmployee ? 1 : 0,
@@ -2362,7 +2364,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     objectShare: null,
                     showLock: self.showLock(),
                     closureId: self.closureId,
-                    initFromScreenOther: self.initFromScreenOther
+                    initFromScreenOther: self.initFromScreenOther,
+                    changeFormat: hasChangeFormat
                 };
                 self.characteristics.formatExtract = param.displayFormat;
                 character.save('characterKdw003a', self.characteristics);
@@ -2903,7 +2906,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             lstEmployee: lstEmployee,
                             formatCodes: data,
                             objectShare: null,
-                            showLock: self.showLock()
+                            showLock: self.showLock(),
+                            changeFormat: false
                         };
                         self.characteristics.authenSelectFormat = data;
                         self.characteristics.employeeId = __viewContext.user.employeeId;

@@ -22,31 +22,34 @@ import nts.uk.shr.pereg.app.find.dto.PeregDto;
  * @author danpv
  *
  */
-public class MappingFactory {
-
-	
+public class MappingFactory {	
 	public static Map<String, Object> getFullDtoValue(PeregDto peregDto) {
 		// Map<itemcode, Object: value of field>
 		Map<String, Object> itemCodeValueMap = new HashMap<String, Object>();
 
 		// map from domain data
 		PeregDomainDto domainDto = peregDto.getDomainDto();
+		
 		if (domainDto == null) {
 			return itemCodeValueMap;
 		}
 
 		FieldsWorkerStream lstField = AnnotationUtil.getStreamOfFieldsAnnotated(peregDto.getDtoClass(),
 				PeregItem.class);
+		
 		lstField.forEach(field -> {
 			String itemCode = field.getAnnotation(PeregItem.class).value();
 			Object obj = ReflectionUtil.getFieldValue(field, domainDto);
+			
 			itemCodeValueMap.put(itemCode, obj);
 		});
 
 		// map from option data
-		peregDto.getOptionalItemData()
-				.forEach(empData -> itemCodeValueMap.put(empData.getItemCode(), empData.getValue()));
-
+		if (peregDto.getOptionalItemData() != null) {
+			peregDto.getOptionalItemData()
+					.forEach(empData -> itemCodeValueMap.put(empData.getItemCode(), empData.getValue()));
+		}
+		
 		return itemCodeValueMap;
 	}
 	
@@ -57,6 +60,7 @@ public class MappingFactory {
 
 		// map from domain data
 		PeregDomainDto domainDto = peregDto.getDomainDto();
+		
 		if (domainDto == null) {
 			return itemCodeValueMap;
 		}
@@ -66,6 +70,7 @@ public class MappingFactory {
 		lstField.forEach(field -> {
 			String itemCode = field.getAnnotation(PeregItem.class).value();
 			Object obj = ReflectionUtil.getFieldValue(field, domainDto);
+			
 			itemCodeValueMap.put(itemCode, obj);
 		});
 
@@ -84,37 +89,73 @@ public class MappingFactory {
 	 */
 	public static void mapListItemClass(PeregDto peregDto, List<LayoutPersonInfoClsDto> classItemsOfCategory) {
 
-		// map data
-		Map<String, Object> itemCodeValueMap = getFullDtoValue(peregDto);
-		String recordId = peregDto.getDomainDto() == null? null: peregDto.getDomainDto().getRecordId();
-		for (LayoutPersonInfoClsDto classItem : classItemsOfCategory) {
-			for (LayoutPersonInfoValueDto valueItem : classItem.getItems()) {
-				Object value = getValue(itemCodeValueMap, valueItem);
-				if(recordId == null) {
-					valueItem.setValue(valueItem.getInitValue());
-				}else {
-					valueItem.setValue(value);
+		if(peregDto != null) {
+			// map data
+			Map<String, Object> itemCodeValueMap = getFullDtoValue(peregDto);
+			String recordId = peregDto.getDomainDto() == null? null:  peregDto.getDomainDto().getRecordId();
+
+			for (LayoutPersonInfoClsDto classItem : classItemsOfCategory) {
+				for (LayoutPersonInfoValueDto valueItem : classItem.getItems()) {
+					Object value = getValue(itemCodeValueMap, valueItem);
+					if(recordId == null) {
+						valueItem.setValue(valueItem.getInitValue());
+					}else {
+						valueItem.setValue(value);
+					}
+					// update 2018/02/22 bug 87560
+					valueItem.setShowColor(false);
+					
+					// trong 1 category, hoặc là tất cả các classItem đều có recordId hoặc là tất cả đều không có recordId
+					valueItem.setRecordId(recordId);
 				}
-				// update 2018/02/22 bug 87560
-				valueItem.setShowColor(false);
-				
-				// trong 1 category, hoặc là tất cả các classItem đều có recordId hoặc là tất cả đều không có recordId
-				valueItem.setRecordId(recordId);
 			}
 		}
-
+	}
+	
+	/**
+	 * dùng cho cps003
+	 * map peregDto to classItemList which is same category
+	 * 
+	 * @param peregDto
+	 * @param classItemsOfCategory
+	 */
+	public static void mapListItemClassCPS003(PeregDto peregDto, List<LayoutPersonInfoClsDto> classItemsOfCategory) {
+		if(peregDto != null) {
+			// map data
+			Map<String, Object> itemCodeValueMap = getFullDtoValue(peregDto);
+			String recordId = peregDto.getDomainDto() == null? null:  peregDto.getDomainDto().getRecordId();
+			for (LayoutPersonInfoClsDto classItem : classItemsOfCategory) {
+				for (LayoutPersonInfoValueDto valueItem : classItem.getItems()) {
+					
+					Object value = getValue(itemCodeValueMap, valueItem);
+					if(recordId == null) {
+						valueItem.setValue(valueItem.getInitValue());
+					}else {
+						valueItem.setValue(value);
+					}					
+					// update 2018/02/22 bug 87560
+					valueItem.setShowColor(false);
+					
+					// trong 1 category, hoặc là tất cả các classItem đều có recordId hoặc là tất cả đều không có recordId
+					valueItem.setRecordId(peregDto.getDomainDto() == null ? null: peregDto.getDomainDto().getRecordId());
+				}
+			}
+		}
 	}
 	
 	private static Object getValue(Map<String, Object> itemCodeValueMap, LayoutPersonInfoValueDto valueItem) {
 		Object value = itemCodeValueMap.get(valueItem.getItemCode());
+		
 		if (valueItem.getItem() != null) {
 			int itemType = valueItem.getItem().getDataTypeValue() ;
+			
 			if(itemType == DataTypeValue.SELECTION.value || 
 					itemType == DataTypeValue.SELECTION_BUTTON.value || 
 					itemType == DataTypeValue.SELECTION_RADIO.value) {
 				value = value == null ? valueItem.getInitValue() : value.toString();
 			}
 		}
+		
 		return value;
 	}
 
@@ -123,7 +164,6 @@ public class MappingFactory {
 		for (LayoutPersonInfoClsDto classItem : classItemList) {
 			matchDataToValueItems(recordId, classItem.getItems(), dataItems);
 		}
-
 	}
 	
 	public static void matchDataToValueItems(String recordId, List<LayoutPersonInfoValueDto> valueItems,
@@ -138,12 +178,10 @@ public class MappingFactory {
 
 			// data
 			for (OptionalItemDataDto dataItem : dataItems) {
-				if (valueItem.getItemCode().equals(dataItem.getItemCode())) {
-					
+				if (valueItem.getItemCode().equals(dataItem.getItemCode())) {					
 					valueItem.setValue(dataItem.getValue());
 				}
 			}
 		}
 	}
-
 }

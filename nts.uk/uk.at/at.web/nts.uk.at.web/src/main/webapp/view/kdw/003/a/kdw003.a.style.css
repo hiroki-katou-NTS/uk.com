@@ -346,6 +346,12 @@
 	margin: -10px;
 }
 
+.agree-column {
+	min-width: 235px;
+    position: absolute;
+    display: inline-block;
+}
+
 /* .agree-column {
 	display: table-cell;
 }

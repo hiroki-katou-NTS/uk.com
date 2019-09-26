@@ -60,7 +60,7 @@ public class AffWorlplaceHistItemDto extends PeregDomainDto {
 				.collect(Collectors.toList());
 	}
 
-	private static AffWorlplaceHistItemDto getBaseOnDateHist(AffWorkplaceHistoryItem affWrkplcHistItem,
+	public static AffWorlplaceHistItemDto getBaseOnDateHist(AffWorkplaceHistoryItem affWrkplcHistItem,
 			GeneralDate startDate, GeneralDate endDate) {
 		AffWorlplaceHistItemDto dto = new AffWorlplaceHistItemDto(affWrkplcHistItem.getHistoryId());
 		dto.setRecordId(affWrkplcHistItem.getHistoryId());

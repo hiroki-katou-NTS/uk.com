@@ -9,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -22,6 +23,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
@@ -54,8 +56,8 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements A
 			+ " INNER JOIN BsymtAffiWorkplaceHistItem awit on aw.hisId = awit.hisId"
 			+ " WHERE awit.workPlaceId = :workplaceId AND aw.strDate <= :standDate AND :standDate <= aw.endDate";
 
-	private static final String SELECT_BY_LIST_EMPID_STANDDATE = "SELECT aw FROM BsymtAffiWorkplaceHist aw"
-			+ " WHERE aw.sid IN :employeeIds AND aw.strDate <= :standDate AND :standDate <= aw.endDate";
+//	private static final String SELECT_BY_LIST_EMPID_STANDDATE = "SELECT aw FROM BsymtAffiWorkplaceHist aw"
+//			+ " WHERE aw.sid IN :employeeIds AND aw.strDate <= :standDate AND :standDate <= aw.endDate";
 
 	private static final String SELECT_BY_LIST_EMPID_BY_LIST_WKPIDS_BASEDATE = "SELECT aw FROM BsymtAffiWorkplaceHist aw"
 			+ " INNER JOIN BsymtAffiWorkplaceHistItem awit on aw.hisId = awit.hisId"
@@ -312,21 +314,37 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements A
 		}).collect(Collectors.toList());
 	}
 
+	//fix sửa thành jdbc -> tăng tốc độ truy vấn
 	@Override
 	public List<AffWorkplaceHistory> getWorkplaceHistoryByEmpIdsAndDate(GeneralDate baseDate,
 			List<String> employeeIds) {
-		List<BsymtAffiWorkplaceHist> resultList = new ArrayList<>();
+		List<AffWorkplaceHistory> result = new ArrayList<>();
+		
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			resultList.addAll(this.queryProxy().query(SELECT_BY_LIST_EMPID_STANDDATE, BsymtAffiWorkplaceHist.class)
-					.setParameter("employeeIds", subList).setParameter("standDate", baseDate).getList());
+			String sql = "SELECT * FROM BSYMT_AFF_WORKPLACE_HIST WHERE  START_DATE <= ? AND END_DATE >= ? AND SID IN ("
+					+ NtsStatement.In.createParamsString(subList) + ")";
+
+			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+				stmt.setDate(1, Date.valueOf(baseDate.toLocalDate()));
+				stmt.setDate(2, Date.valueOf(baseDate.toLocalDate()));
+				for (int i = 0; i < subList.size(); i++) {
+					stmt.setString(3 + i, subList.get(i));
+				}
+
+				List<AffWorkplaceHistory> affWorkplaceHistLst = new NtsResultSet(stmt.executeQuery()).getList(r -> {
+					BsymtAffiWorkplaceHist history = new BsymtAffiWorkplaceHist(r.getString("HIST_ID"),
+							r.getString("SID"), r.getString("CID"), r.getGeneralDate("START_DATE"),
+							r.getGeneralDate("END_DATE"));
+					return toDomain(history);
+				}).stream().collect(Collectors.toList());
+				result.addAll(affWorkplaceHistLst);
+
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
 		});
-		if (resultList.isEmpty()) {
-			return Collections.emptyList();
-		}
-		return resultList.stream().map(e -> {
-			AffWorkplaceHistory domain = this.toDomain(e);
-			return domain;
-		}).collect(Collectors.toList());
+
+		return result;
 	}
 
 	@Override
@@ -402,18 +420,76 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements A
 	}
 	
 	@Override
-	 public List<AffWorkplaceHistory> getByListSid(List<String> listSid) {
+	public List<AffWorkplaceHistory> getByListSid(List<String> listSid) {
 	  
-	  // Split query.
-	  List<BsymtAffiWorkplaceHist> resultList = new ArrayList<>();
-	  
-	  CollectionUtil.split(listSid, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
-	   resultList.addAll(this.queryProxy().query(SELECT_BY_LISTSID, BsymtAffiWorkplaceHist.class)
-	     .setParameter("listSid", subList).getList());
-	  });
+		// Split query.
+		List<BsymtAffiWorkplaceHist> resultList = new ArrayList<>();
 
-	  return resultList.stream().map(entity -> this.toDomain(entity)).collect(Collectors.toList());
-	 }
+		CollectionUtil.split(listSid, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
+			resultList.addAll(this.queryProxy().query(SELECT_BY_LISTSID, BsymtAffiWorkplaceHist.class)
+				.setParameter("listSid", subList).getList());
+		});
+
+		return resultList.stream().map(entity -> this.toDomain(entity)).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<AffWorkplaceHistory> getBySidsAndCid(String cid, List<String> sids) {
+		List<AffWorkplaceHistory> result = new ArrayList<>();
+		
+		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			String sql = "SELECT * FROM BSYMT_AFF_WORKPLACE_HIST WHERE  CID = ? AND SID IN ("
+					+ NtsStatement.In.createParamsString(subList) + ")" + " ORDER BY SID, START_DATE DESC";
+
+			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+				stmt.setString( 1, cid);
+				for (int i = 0; i < subList.size(); i++) {
+					stmt.setString(2 + i, subList.get(i));
+				}
+
+				Map<String, List<BsymtAffiWorkplaceHist>> affWorkplaceHistLst = new NtsResultSet(stmt.executeQuery()).getList(r -> {
+					BsymtAffiWorkplaceHist history = new BsymtAffiWorkplaceHist(r.getString("HIST_ID"),
+							r.getString("SID"), r.getString("CID"), r.getGeneralDate("START_DATE"),
+							r.getGeneralDate("END_DATE"));
+					return history;
+				}).stream().collect(Collectors.groupingBy(c -> c.getSid()));
+				
+				if(!affWorkplaceHistLst.isEmpty()) {
+					result.addAll(affWorkplaceHistLst.entrySet().stream().map(c -> toDomainTemp(c.getValue())).collect(Collectors.toList()));
+				}
+				
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+		});
+		return result;
+	}
+	
+	// get data cps013
+	@Override
+	public List<DateHistoryItem> getListByListSidsNoWithPeriod(String cid, List<String> sids) {
+		
+		List<DateHistoryItem> result = new ArrayList<>();
+		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			try (PreparedStatement statement = this.connection().prepareStatement(
+						"SELECT * from BSYMT_AFF_WORKPLACE_HIST h"
+						+ " WHERE h.CID = ? AND h.SID IN (" + subList.stream().map(s -> "?").collect(Collectors.joining(",")) + ")" + " ORDER BY START_DATE ASC ")) {
+				statement.setString(1, cid);
+				for (int i = 0; i < subList.size(); i++) {
+					statement.setString( 2 + i, subList.get(i));
+				}
+				List<DateHistoryItem> lstObj = new NtsResultSet(statement.executeQuery()).getList(rec -> {
+					return new DateHistoryItem(rec.getString("HIST_ID"),
+							new DatePeriod(rec.getGeneralDate("START_DATE"), rec.getGeneralDate("END_DATE")));
+				}).stream().collect(Collectors.toList());
+				result.addAll(lstObj);
+				
+			}catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		});
+		return result;
+ 	}
 
 	@Override
 	@SneakyThrows
@@ -446,8 +522,82 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements A
 				throw new RuntimeException(e);
 			}
 		});
-		
 		return result;
+	}
+
+	@Override
+	public void addAll(Map<String, DateHistoryItem> dateHistItems) {
+		String cid = AppContexts.user().companyId();
+		String INS_SQL = "INSERT INTO BSYMT_AFF_WORKPLACE_HIST (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
+				+ " UPD_DATE , UPD_CCD , UPD_SCD , UPD_PG," 
+				+ " HIST_ID, SID, CID,"
+				+ " START_DATE, END_DATE)"
+				+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
+				+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL,"
+				+ " HIST_ID_VAL, SID_VAL, CID_VAL, START_DATE_VAL, END_DATE_VAL); ";
+		String insCcd = AppContexts.user().companyCode();
+		String insScd = AppContexts.user().employeeCode();
+		String insPg = AppContexts.programId();
+		
+		String updCcd = insCcd;
+		String updScd = insScd;
+		String updPg = insPg;
+		StringBuilder sb = new StringBuilder();
+		dateHistItems.entrySet().stream().forEach(c ->{
+			String sql = INS_SQL;
+			DateHistoryItem dateHistItem = c.getValue();
+			sql = sql.replace("INS_DATE_VAL", "'" + GeneralDateTime.now() + "'");
+			sql = sql.replace("INS_CCD_VAL", "'" + insCcd + "'");
+			sql = sql.replace("INS_SCD_VAL", "'" + insScd + "'");
+			sql = sql.replace("INS_PG_VAL", "'" + insPg + "'");
+
+			sql = sql.replace("UPD_DATE_VAL", "'" + GeneralDateTime.now() + "'");
+			sql = sql.replace("UPD_CCD_VAL", "'" + updCcd + "'");
+			sql = sql.replace("UPD_SCD_VAL", "'" + updScd + "'");
+			sql = sql.replace("UPD_PG_VAL", "'" + updPg + "'");
+			
+			sql = sql.replace("HIST_ID_VAL", "'" + dateHistItem.identifier() + "'");
+			sql = sql.replace("CID_VAL", "'" + cid + "'");
+			sql = sql.replace("SID_VAL", "'" + c.getKey() + "'");
+			sql = sql.replace("START_DATE_VAL", "'" + dateHistItem.start() + "'");
+			sql = sql.replace("END_DATE_VAL","'" +  dateHistItem.end() + "'");
+			
+			sb.append(sql);
+		});
+		
+		int records = this.getEntityManager().createNativeQuery(sb.toString()).executeUpdate();
+		System.out.println(records);
+		
+	}
+
+	@Override
+	public void updateAll(List<DateHistoryItem> items) {
+		
+		String UP_SQL = "UPDATE BSYMT_AFF_WORKPLACE_HIST SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL, UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
+				+ " START_DATE = START_DATE_VAL, END_DATE = END_DATE_VAL"
+				+ " WHERE HIST_ID = HIST_ID_VAL AND CID = CID_VAL;";
+		String cid = AppContexts.user().companyId();
+		String updCcd = AppContexts.user().companyCode();
+		String updScd = AppContexts.user().employeeCode();
+		String updPg = AppContexts.programId();
+		
+		StringBuilder sb = new StringBuilder();
+		items.stream().forEach(c ->{
+			String sql = UP_SQL;
+			sql = UP_SQL.replace("UPD_DATE_VAL", "'" + GeneralDateTime.now() +"'");
+			sql = sql.replace("UPD_CCD_VAL", "'" + updCcd +"'");
+			sql = sql.replace("UPD_SCD_VAL", "'" + updScd +"'");
+			sql = sql.replace("UPD_PG_VAL", "'" + updPg +"'");
+			
+			sql = sql.replace("START_DATE_VAL", "'" + c.start() + "'");
+			sql = sql.replace("END_DATE_VAL","'" +  c.end() + "'");
+			
+			sql = sql.replace("HIST_ID_VAL", "'" + c.identifier() +"'");
+			sql = sql.replace("CID_VAL", "'" + cid +"'");
+			sb.append(sql);
+		});
+		int  records = this.getEntityManager().createNativeQuery(sb.toString()).executeUpdate();
+		System.out.println(records);
 	}
 
 }

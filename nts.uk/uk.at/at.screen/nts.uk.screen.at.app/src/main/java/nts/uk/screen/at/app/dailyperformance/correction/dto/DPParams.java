@@ -28,4 +28,5 @@ public class DPParams {
     public Integer closureId;
     public Boolean initFromScreenOther;
     public DPCorrectionStateParam dpStateParam;
+    public boolean changeFormat = false;
 }

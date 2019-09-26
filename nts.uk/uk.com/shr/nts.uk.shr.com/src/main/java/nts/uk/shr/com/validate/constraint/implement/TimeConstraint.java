@@ -39,7 +39,7 @@ public class TimeConstraint extends DataConstraint {
 		return Optional.of(getDefaultMessage());
 	}
 
-	private Optional<String> validateString(String value) {
+	public Optional<String> validateString(String value) {
 
 		// validate style
 		if (!validateTimeStyle(value)) {

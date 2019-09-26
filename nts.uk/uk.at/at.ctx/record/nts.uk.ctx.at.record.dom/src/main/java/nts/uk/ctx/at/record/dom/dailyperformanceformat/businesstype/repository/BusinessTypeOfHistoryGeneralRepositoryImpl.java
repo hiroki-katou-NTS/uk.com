@@ -67,7 +67,7 @@ public class BusinessTypeOfHistoryGeneralRepositoryImpl implements BusinessTypeO
 	@Override
 	public void addAll(List<BusinessTypeOfEmployeeHistory> domains) {
 		Map<String, DateHistoryItem> dateHistItemMaps = new HashMap<>();
-		domains.parallelStream().forEach(c ->{
+		domains.stream().forEach(c ->{
 			List<DateHistoryItem> history = c.getHistory();
 			DateHistoryItem item = history.get(history.size() - 1);
 			dateHistItemMaps.put(c.getEmployeeId(), item);
@@ -75,9 +75,34 @@ public class BusinessTypeOfHistoryGeneralRepositoryImpl implements BusinessTypeO
 		
 		if(!dateHistItemMaps.isEmpty()) {
 			historyRepos.addAll(dateHistItemMaps);
+			updateAllItemBefore(domains);
 		}
+	}
 		
 		
+	
+	/**
+	 * @author lanlt
+	 * updateAllItemBefore - cps003
+	 * @param histories
+	 */
+	private void updateAllItemBefore(List<BusinessTypeOfEmployeeHistory> histories) {
+		Map<String, DateHistoryItem> dateHistItemMaps = new HashMap<>();
+		// Update item before
+		histories.stream().forEach(c ->{
+			if(c.getHistory().size() > 1) {
+				int max = c.getHistory().size();
+				DateHistoryItem historyItem  = c.getHistory().get(max - 1);
+				Optional<DateHistoryItem> beforeItemOpt = c.immediatelyBefore(historyItem);
+				if (!beforeItemOpt.isPresent()) {
+					return;
+				}
+				dateHistItemMaps.put(c.getEmployeeId(), beforeItemOpt.get());
+			}
+		});
+		if(!dateHistItemMaps.isEmpty()) {
+			historyRepos.updateAll(dateHistItemMaps);
+		}
 	}
 
 	/**
@@ -87,9 +112,8 @@ public class BusinessTypeOfHistoryGeneralRepositoryImpl implements BusinessTypeO
 	@Override
 	public void updateAll(List<BusinessTypeOfEmployeeHistoryInter> domainsInter) {
 		Map<String, DateHistoryItem> dateHistItemMaps = new HashMap<>();
-		domainsInter.parallelStream().forEach(c ->{
+		domainsInter.stream().forEach(c ->{
 			dateHistItemMaps.put(c.getBEmployeeHistory().getEmployeeId(), c.getItem());
-			
 		});
 		
 		if(!dateHistItemMaps.isEmpty()) {
@@ -105,7 +129,8 @@ public class BusinessTypeOfHistoryGeneralRepositoryImpl implements BusinessTypeO
 	 */
 	public void updateAllItemsBefore(List<BusinessTypeOfEmployeeHistoryInter> domainsInter) {
 		Map<String, DateHistoryItem> dateHistItemMaps = new HashMap<>();
-		domainsInter.parallelStream().forEach(c -> {
+
+		domainsInter.stream().forEach(c -> {
 			Optional<DateHistoryItem> optinal = c.getBEmployeeHistory().immediatelyBefore(c.getItem());
 
 			if (optinal.isPresent()) {

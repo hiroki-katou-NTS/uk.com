@@ -4,6 +4,8 @@ import java.util.List;
 
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.dto.DataClassification;
+import nts.uk.shr.pereg.app.find.dto.GridPeregDomainBySidDto;
+import nts.uk.shr.pereg.app.find.dto.GridPeregDomainDto;
 import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 
 public interface PeregFinder<T> {
@@ -32,6 +34,19 @@ public interface PeregFinder<T> {
 	List<PeregDomainDto> getListData(PeregQuery query);
 	
 	List<ComboBoxObject> getListFirstItems(PeregQuery query);
+	/**
+	 * lấy danh sách theo sids
+	 * @param query
+	 * @return
+	 */
+	List<GridPeregDomainDto> getAllData(PeregQueryByListEmp query);
+	
+	/**
+	 * lấy tất cả dữ liệu của nhân viên
+	 * @param query
+	 * @return
+	 */
+	List<GridPeregDomainBySidDto> getListData(PeregQueryByListEmp query);
 
 	default PeregDomainDto findSingle(PeregQuery query) {
 		return this.getSingleData(query);
@@ -45,4 +60,12 @@ public interface PeregFinder<T> {
 		return this.getListFirstItems(query);
 	}
 	
+	default List<GridPeregDomainDto> findAllData(PeregQueryByListEmp query) {
+		return this.getAllData(query);
+	}
+	
+	default List<GridPeregDomainBySidDto> getAllDatas(PeregQueryByListEmp query) {
+		return this.getListData(query);
+	}
+
 }

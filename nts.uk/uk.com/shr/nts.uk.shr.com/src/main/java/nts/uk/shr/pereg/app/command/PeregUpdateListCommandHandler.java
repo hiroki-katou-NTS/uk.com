@@ -18,7 +18,8 @@ public interface PeregUpdateListCommandHandler <C> extends PeregCommandHandler<C
 
 	default List<MyCustomizeException> handlePeregCommand(List<PeregInputContainerCps003> input) {
 		val commandLst = new ArrayList<>();
-		input.parallelStream().forEach(c ->{
+
+		input.stream().forEach(c ->{
 			ItemsByCategory itemsByCategory = c.getInputs();
 			commandLst.add(itemsByCategory.createCommandForSystemDomain(
 					c.getPersonId(), c.getEmployeeId(), this.commandClass()));

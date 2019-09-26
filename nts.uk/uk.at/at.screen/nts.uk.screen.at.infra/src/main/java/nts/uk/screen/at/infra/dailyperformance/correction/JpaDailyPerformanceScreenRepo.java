@@ -1518,7 +1518,8 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	@Override
 	public void updateColumnsWidth(Map<Integer, Integer> lstHeader, List<String> formatCodes) {
-		List<AuthorityFomatDailyDto> items = this.findAuthorityFomatDaily(AppContexts.user().companyId(), formatCodes);
+		List<AuthorityFomatDailyDto> items = this.findAuthorityFomatDaily(AppContexts.user().companyId(), formatCodes)
+				.stream().filter(x -> lstHeader.containsKey(x.getAttendanceItemId())).collect(Collectors.toList());
 		List<KfnmtAuthorityDailyItem> entitys = items.stream()
 				.map(x -> new KfnmtAuthorityDailyItem(
 						new KfnmtAuthorityDailyItemPK(x.getCompanyId(), x.getDailyPerformanceFormatCode(),
