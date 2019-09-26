@@ -61,6 +61,13 @@ public class DailyPerformanceMobileWebService {
 		return dataResultAfterIU;
 	}
 
+	@POST
+	@Path("resetCacheDomain")
+	public void calcTime() {
+		session.setAttribute("domainEdits", null);
+		return ;
+	}
+	
 	private List<DailyRecordDto> cloneListDto(List<DailyRecordDto> dtos) {
 		if (dtos == null)
 			return new ArrayList<>();
