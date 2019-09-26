@@ -59,7 +59,7 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("      ADDRESS_1,");
         exportSQL.append("      ADDRESS_2,");
         exportSQL.append("      ADDRESS_KANA_1,");
-        exportSQL.append("      ADDRESS_KANA_2");
+        exportSQL.append("      ADDRESS_KANA_2,");
         exportSQL.append("      HEAL_INSUR_INHEREN_PR,");
         exportSQL.append("      HEAL_INSUR_UNION_NMBER");
         exportSQL.append("  FROM");
