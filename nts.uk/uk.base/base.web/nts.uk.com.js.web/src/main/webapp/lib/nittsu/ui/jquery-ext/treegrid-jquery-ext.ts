@@ -136,9 +136,7 @@ module nts.uk.ui.jqueryExtentions {
                                         
                                         if (!_.isNil(currentExp)) {
                                             let isFilterTrue = currentExp.expr.toLowerCase() === "check"; 
-                                            $treegrid.closest(".nts-treegridview").find(".ui-iggrid-filterrow")
-                                                .find("td[aria-describedby='" + treeId + "_" + ui.columnKey + "']")
-                                                .find(".ui-iggrid-filtereditor")
+                                            ui.owner._currentTarget.closest(".ui-iggrid-filtercell").find(".ui-iggrid-filtereditor")
                                                 .val(isFilterTrue ? currentCol.filterOpts.trueOpt : currentCol.filterOpts.falseOpt);
                                         }
                                     }

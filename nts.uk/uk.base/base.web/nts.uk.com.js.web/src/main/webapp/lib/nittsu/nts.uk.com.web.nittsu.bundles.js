@@ -22099,7 +22099,7 @@ var nts;
                                         var currentExp = _.find(ui.newExpressions, function (exp) { return exp.fieldName === ui.columnKey; });
                                         if (!_.isNil(currentExp)) {
                                             var isFilterTrue = currentExp.expr.toLowerCase() === "check";
-                                            ui.owner._currentTarget.find(".ui-iggrid-filtereditor")
+                                            ui.owner._currentTarget.closest(".ui-iggrid-filtercell").find(".ui-iggrid-filtereditor")
                                                 .val(isFilterTrue ? currentCol.filterOpts.trueOpt : currentCol.filterOpts.falseOpt);
                                         }
                                     }
@@ -42399,9 +42399,7 @@ var nts;
                                         var currentExp = _.find(ui.newExpressions, function (exp) { return exp.fieldName === ui.columnKey; });
                                         if (!_.isNil(currentExp)) {
                                             var isFilterTrue = currentExp.expr.toLowerCase() === "check";
-                                            $treegrid.closest(".nts-treegridview").find(".ui-iggrid-filterrow")
-                                                .find("td[aria-describedby='" + treeId + "_" + ui.columnKey + "']")
-                                                .find(".ui-iggrid-filtereditor")
+                                            ui.owner._currentTarget.closest(".ui-iggrid-filtercell").find(".ui-iggrid-filtereditor")
                                                 .val(isFilterTrue ? currentCol.filterOpts.trueOpt : currentCol.filterOpts.falseOpt);
                                         }
                                     }
