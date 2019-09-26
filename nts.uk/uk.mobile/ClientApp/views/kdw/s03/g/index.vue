@@ -15,7 +15,8 @@
 
     <div class="accordion accordion-mn3">
       <!-- G2_1: 休暇残数 -->
-      <div class="card border border-left-0 border-right-0" v-bind:class="{'show':  params.remainDisplay}">
+      <div class="card border border-left-0 border-right-0" v-if="remainNumber.manageYear || remainNumber.manageReserve 
+        || remainNumber.manageCompensatory || remainNumber.manageSubStitute" v-bind:class="{'show':  params.remainDisplay}">
         <div class="card-header uk-bg-accordion">
            <button class="btn btn-link" type="button">{{'KDWS03_70' | i18n}}</button>
         </div>
