@@ -131,8 +131,26 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
                 typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? data.getCompanyName() : "");
         worksheets.getRangeByName(sheetName + "!D1_8").setValue(typeOff == BusinessDivision.OUTPUT_COMPANY_NAME ? company.getRepname() :
                 typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? data.getRepName() : "");
-        worksheets.getRangeByName(sheetName + "!D1_9").setValue(typeOff == BusinessDivision.OUTPUT_COMPANY_NAME ? formatPhoneNumber(company.getPhoneNum()) :
-                typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? formatPhoneNumber(data.getPhoneNumber()) : "");
+        worksheets.getRangeByName(sheetName + "!D1_9_1").setValue(typeOff == BusinessDivision.OUTPUT_COMPANY_NAME ? formatPhoneNumber(company.getPhoneNum(),1) :
+                typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? formatPhoneNumber(data.getPhoneNumber(),1) : "");
+        worksheets.getRangeByName(sheetName + "!D1_9_2").setValue(typeOff == BusinessDivision.OUTPUT_COMPANY_NAME ? formatPhoneNumber(company.getPhoneNum(),2) :
+                typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? formatPhoneNumber(data.getPhoneNumber(),2) : "");
+        worksheets.getRangeByName(sheetName + "!D1_9_3").setValue(typeOff == BusinessDivision.OUTPUT_COMPANY_NAME ? formatPhoneNumber(company.getPhoneNum(),3) :
+                typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? formatPhoneNumber(data.getPhoneNumber(),3) : "");
+    }
+
+    private String formatPhoneNumber(String phone, int stt) {
+        String result = phone.replace("-", "");
+        if (stt == 1 && result.length() >= 3) {
+            return result.substring(0, 3);
+        }
+        if (stt == 2 && result.length() >= 6) {
+            return phone.substring(3, 6);
+        }
+        if (stt == 3 && result.length() > 6) {
+            return result.substring(6, result.length());
+        }
+        return "";
     }
 
     private void fillCompanyHealthy(WorksheetCollection worksheets, InsLossDataExport data, GeneralDate baseDate, CompanyInfor company, String sheetName, boolean isHeal, BusinessDivision typeOff){
@@ -151,13 +169,12 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
                 typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? data.getCompanyName() : "");
         worksheets.getRangeByName(sheetName + "!A1_8").setValue(typeOff == BusinessDivision.OUTPUT_COMPANY_NAME ? company.getRepname() :
                 typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? data.getRepName() : "");
-        worksheets.getRangeByName(sheetName + "!A1_9").setValue(typeOff == BusinessDivision.OUTPUT_COMPANY_NAME ? formatPhoneNumber(company.getPhoneNum()):
-                typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? formatPhoneNumber(data.getPhoneNumber()) : "");
-    }
-
-    private String formatPhoneNumber(String phone){
-        String result = phone.replace("-","");
-        return result.length() > 6 ? result.substring(0,3) + "(" + result.substring(3,6) + ")" + result.substring(6,result.length()) : result;
+        worksheets.getRangeByName(sheetName + "!A1_9_1").setValue(typeOff == BusinessDivision.OUTPUT_COMPANY_NAME ? formatPhoneNumber(company.getPhoneNum(),1):
+                typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? formatPhoneNumber(data.getPhoneNumber(),1) : "");
+        worksheets.getRangeByName(sheetName + "!A1_9_2").setValue(typeOff == BusinessDivision.OUTPUT_COMPANY_NAME ? formatPhoneNumber(company.getPhoneNum(),2):
+                typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? formatPhoneNumber(data.getPhoneNumber(),2) : "");
+        worksheets.getRangeByName(sheetName + "!A1_9_3").setValue(typeOff == BusinessDivision.OUTPUT_COMPANY_NAME ? formatPhoneNumber(company.getPhoneNum(),3):
+                typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? formatPhoneNumber(data.getPhoneNumber(),3) : "");
     }
 
     private void selectEra(WorksheetCollection worksheets, String era, String sheetName, int stt){
