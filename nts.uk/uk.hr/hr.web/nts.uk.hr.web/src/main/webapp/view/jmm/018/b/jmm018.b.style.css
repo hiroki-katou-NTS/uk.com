@@ -12,7 +12,7 @@
 	overflow: visible !important;
 } */
 
-/* #treegrid_nodeText > div.ntsControl.ntsHelpButton{
+ /*#treegrid_nodeText > div.ntsControl.ntsHelpButton{
 	float: right;
 	margin-right: 10px;
 }
@@ -71,7 +71,13 @@
 }
 
 .nts-treegridview .ui-iggrid-headertable th div.ntsControl.ntsHelpButton{
-	    position: absolute;
-    right: 10px;
+    position: absolute;
+    left: 10px;
     top: 3px;
+}
+
+.nts-treegridview .ui-iggrid-headertable th span.ui-iggrid-headertext {
+	margin-left: 40px !important;
+    width: calc(100% - 30px);
+    box-sizing: border-box;
 }
