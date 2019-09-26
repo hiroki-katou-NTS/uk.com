@@ -188,8 +188,11 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
                 //社員を切り替える
                 //select employee
                 self.selectedItem.subscribe(e => {
+                    nts.uk.ui.errors.clearAll();
                     periodCommand = {
-
+                        empId: params.listEmpId[0].employeeId,
+                        startDate: params.startDate,
+                        endDate: params.endDate
                     };
                     service.getSocialInsurAcquisiInforById(self.selectedItem()).done(e => {
                         if (e) {
