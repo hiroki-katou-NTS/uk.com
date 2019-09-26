@@ -95,7 +95,7 @@ export class Kdws03AComponent extends Vue {
         this.selectedEmployeeTemp = this.selectedEmployee;
         this.actualTimeSelectedCodeTemp = this.actualTimeSelectedCode;
 
-        this.initActualTime(value, this.selectedEmployee);        
+        this.initActualTime(value, this.selectedEmployee);
     }
 
     @Watch('selectedEmployee')
@@ -114,12 +114,15 @@ export class Kdws03AComponent extends Vue {
 
     @Watch('dateRanger', { deep: true })
     public changeDateRange(value: any, valueOld: any) {
-        if (_.isNil(valueOld) || this.displayFormat == '1' || _.isEqual(value, valueOld) || !this.isReLoadByDate) {
+        if (_.isNil(value) || _.isNil(valueOld) || this.displayFormat == '1' || _.isEqual(value, valueOld) || !this.isReLoadByDate) {
+            return;
+        } else if (_.isEqual(value, valueOld) || !this.isReLoadByDate) {
             this.isReLoadByDate = true;
 
             return;
-        }
-        this.startPage();
+        } else {
+            this.startPage();
+        }   
     }
 
     @Watch('actualTimeSelectedCode')
@@ -131,7 +134,7 @@ export class Kdws03AComponent extends Vue {
 
     @Watch('selectedDate')
     public changeDate(value: any, valueOld: any) {
-        if (_.isNil(valueOld) || this.selectedDate == this.selectedDateTemp) {
+        if (_.isNil(valueOld) || this.selectedDate.toString() == this.selectedDateTemp.toString()) {
             return;
         }
         this.selectedDateTemp = valueOld;
@@ -140,7 +143,7 @@ export class Kdws03AComponent extends Vue {
 
     get dateRanger() {
         let self = this;
-        if (!_.isNil(self.timePeriodAllInfo)) {
+        if (!_.isNil(self.timePeriodAllInfo) && this.isReLoadByDate) {
             for (let i = 0; i < self.timePeriodAllInfo.lstRange.length; i++) {
                 if (self.actualTimeSelectedCode == i) {
                     return ({ startDate: self.timePeriodAllInfo.lstRange[i].startDate, endDate: self.timePeriodAllInfo.lstRange[i].endDate });
@@ -178,13 +181,19 @@ export class Kdws03AComponent extends Vue {
         styleTagAr = document.querySelectorAll('.btn-sm');
         _.forEach(styleTagAr, (x) => x.style.fontSize = '10px');
 
+        let styleContainer: any = [];
+        styleContainer = document.querySelectorAll('.container-fluid');
+        if (!_.isEmpty(styleContainer)) {
+            styleContainer[0].style.overflow = 'hidden';
+        }
+
         if (this.displayFormat == '1') {
             let styleTableBody: any = [];
             styleTableBody = document.querySelectorAll('.table-body');
             if (!_.isEmpty(styleTableBody)) {
                 styleTableBody[0].style.height = '295px';
             }
-        }        
+        }
     }
 
     //日別実績データの取得
@@ -272,7 +281,8 @@ export class Kdws03AComponent extends Vue {
                     headerLst: self.displayHeaderLst,
                     timePeriodAllInfo: _.assign({}, self.timePeriodAllInfo, { closureId: ClosureId[self.timePeriodAllInfo.closureId] }),
                     autBussCode: self.autBussCode,
-                    paramData: self.paramData
+                    paramData: self.paramData,
+                    dPCorrectionMenuDto: self.dPCorrectionMenuDto
                 });
                 self.$mask('hide');
             }
@@ -316,11 +326,9 @@ export class Kdws03AComponent extends Vue {
         self.lstAttendanceItem = data.lstControlDisplayItem.lstAttendanceItem;
         self.cellStates = data.lstCellState;
 
-        if (_.isNil(self.timePeriodAllInfo)) {
-            self.timePeriodAllInfo = data.periodInfo;
-            self.yearMonth = data.periodInfo.yearMonth;
-            self.selectedDate = this.$dt.fromString(self.timePeriodAllInfo.targetRange.startDate);
-        }
+        self.timePeriodAllInfo = data.periodInfo;
+        self.yearMonth = data.periodInfo.yearMonth;
+        self.selectedDate = this.$dt.fromString(self.timePeriodAllInfo.targetRange.startDate);
 
         self.fixHeaders = data.lstFixedHeader;
         self.showPrincipal = data.showPrincipal;
@@ -562,8 +570,8 @@ export class Kdws03AComponent extends Vue {
                 if (v.reload) {
                     this.startPage();
                 } else {
-                    self.$http.post('at', servicePath.resetCacheDomain).then((result: { data: any }) => {});
-                }              
+                    self.$http.post('at', servicePath.resetCacheDomain).then((result: { data: any }) => { });
+                }
             });
     }
 
@@ -713,9 +721,9 @@ export class Kdws03AComponent extends Vue {
     }
 
     //期間取得
-    public initActualTime(value: any, selectedEmployee: string ) {
+    public initActualTime(value: any, selectedEmployee: string) {
         let self = this;
-        self.$http.post('at', servicePath.genDate, { yearMonth: value, empTarget: selectedEmployee}).then((result: { data: any }) => {
+        self.$http.post('at', servicePath.genDate, { yearMonth: value, empTarget: selectedEmployee }).then((result: { data: any }) => {
             let data = result.data;
             if (_.isNil(data.lstRange)) {
                 this.yearMonth = this.yearMonthTemp;
