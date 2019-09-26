@@ -75,7 +75,7 @@ public class RomajiNameNotiCreSetExportPDFService extends ExportService<RomajiNa
         if (romajiNameNotiCreSetting.getAddressOutputClass().value == BusinessDivision.OUTPUT_COMPANY_NAME.value ||
                 romajiNameNotiCreSetting.getAddressOutputClass().value == BusinessDivision.OUTPUT_SIC_INSURES.value) {
             //companyInfor = notificationOfLossInsExRepository.getCompanyInfor(cid);
-            companyInfor = new CompanyInfor("1008945", "霞ヶ関１－２－２", "千代田区", "年金サービス　株式会社", "年　金　 良　一", "0312345678");
+            companyInfor = new CompanyInfor("1008945", "千代田区", "霞ヶ関１－２－２", "年金サービス 株式会社", "年金 良一", "0312234567");
         } else {
             List<SocialInsuranceOffice> list = socialInsuranceOfficeRepository.findByCid(cid);
             if (list.isEmpty()) {
@@ -104,7 +104,7 @@ public class RomajiNameNotiCreSetExportPDFService extends ExportService<RomajiNa
 
             } else {
                 //familyMember = romajiNameNotiCreSetExReposity.getFamilyInfo(empId, isSpouse);
-                familyMember = new FamilyMember("1980-01-01", "HONG KILDONG", "11" );
+                familyMember = new FamilyMember("1980-01-01", "HONG KILDONG", "11" , 2);
                 if (familyMember != null ){
                     int familyId  = Integer.parseInt(familyMember.getFamilyMemberId());
                     empFamilyInsHis = empFamilyInsHisRepository.getListEmFamilyHis(empId, familyId).orElse(null);
@@ -122,7 +122,7 @@ public class RomajiNameNotiCreSetExportPDFService extends ExportService<RomajiNa
                 //personInfo = romajiNameNotiCreSetExReposity.getPersonInfo(familyMember.getPersonId());
             }
 
-            personInfo = new PersonInfo("1980-01-01", "洪吉童", "ホンギルトン", "ADB3171F-B5A7-40A7-9B8A-DAE80EECB44B", 1);
+            personInfo = new PersonInfo("1980-01-01", "洪吉童", "ホン ギルトン", "ADB3171F-B5A7-40A7-9B8A-DAE80EECB44B", 1);
 
             //get code
             List<String> emps = new ArrayList<String>();
