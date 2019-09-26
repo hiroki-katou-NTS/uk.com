@@ -272,7 +272,8 @@ export class Kdws03AComponent extends Vue {
                     headerLst: self.displayHeaderLst,
                     timePeriodAllInfo: _.assign({}, self.timePeriodAllInfo, { closureId: ClosureId[self.timePeriodAllInfo.closureId] }),
                     autBussCode: self.autBussCode,
-                    paramData: self.paramData
+                    paramData: self.paramData,
+                    dPCorrectionMenuDto: self.dPCorrectionMenuDto
                 });
                 self.$mask('hide');
             }
