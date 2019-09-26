@@ -193,18 +193,18 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
             worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_11" : "A2_11_" + stt));
         }
         if(element.getDependentNo() == 0){
-            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_22" : "A2_22_" + stt));
-        } else{
             worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_23" : "A2_23_" + stt));
+        } else{
+            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_22" : "A2_22_" + stt));
         }
         // convert to japan date
         JapaneseDate startDateOfQualifiRyowa = element.getDateOfQualifiRyowa().length() >= 10 ? toJapaneseDate( GeneralDate.fromString(element.getDateOfQualifiRyowa().substring(0,10), "yyyy-MM-dd")) : null;
-        if(!startDateOfQualifiRyowa.toString().substring(0,2).equals("令和")){
+        if(!startDateOfQualifiRyowa.era().equals("令和")){
             worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_20" : "A2_20_" + stt));
         }
         // remove shape brithday
         JapaneseDate birthDay = toJapaneseDate( GeneralDate.fromString(element.getBrithDay().substring(0,10), "yyyy-MM-dd"));
-        switch (birthDay.toString().substring(0,2)){
+        switch (birthDay.era()){
             case "昭和" : {
                 worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_7" : "A2_7_" + stt));
                 worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_8" : "A2_8_" + stt));
@@ -218,6 +218,12 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
             case "令和" : {
                 worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_6" : "A2_6_" + stt));
                 worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_7" : "A2_7_" + stt));
+                break;
+            }
+            default:{
+                worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_6" : "A2_6_" + stt));
+                worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_7" : "A2_7_" + stt));
+                worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_8" : "A2_8_" + stt));
                 break;
             }
         }
