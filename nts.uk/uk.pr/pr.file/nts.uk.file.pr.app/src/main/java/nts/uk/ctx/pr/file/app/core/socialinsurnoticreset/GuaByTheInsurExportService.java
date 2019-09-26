@@ -12,7 +12,6 @@ import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.SocialInsurNotiCr
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.EmpWelfarePenInsQualiInforRepository;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmplHealInsurQualifiInforRepository;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.japanese.JapaneseErasAdapter;
 
 import javax.ejb.Stateless;
