@@ -49,15 +49,11 @@ export class KdwS03CComponent extends Vue {
             employeeName: (_.find(this.dailyCorrectionState.lstEmployee, (x) => x.id == employeeId)).businessName,
             startDate: this.dailyCorrectionState.dateRange.startDate,
             endDate: this.dailyCorrectionState.dateRange.endDate
-        }, { type: 'dropback' })
-            .then((paramOpenB: any) => {
-                if (paramOpenB != undefined && paramOpenB.openB) {
-                    this.$close(paramOpenB);
-                }
-                if (paramOpenB == 'dropback') {
-                    this.$close('dropback');
-                }
-            });
+        }).then((paramOpenB: any) => {
+            if (paramOpenB != undefined && paramOpenB.openB) {
+                this.$close(paramOpenB);
+            }
+        });
 
     }
 }

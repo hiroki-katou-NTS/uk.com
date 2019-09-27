@@ -28,11 +28,11 @@
         </div>
         <div v-if="displayFormat == '1'" class="m-n2">
             <div class="row">
-                <div class="col-9 pr-1">
+                <div class="col-8 pr-1">
                     <nts-date-input v-model="selectedDate" />
                 </div>
-                <div class="col-3">
-                    <button type="button" class="btn btn-primary btn-block" v-click:500="openMenu">{{'KDWS03_23' | i18n}}</button>
+                <div class="col-4">
+                    <button type="button" class="btn btn-primary btn-block" v-click:500="openMenu">{{'KDWS03_76' | i18n}}</button>
                 </div>
             </div>
         </div>
@@ -40,7 +40,7 @@
         <fix-table v-if="displayFormat == '0'" table-class="table table-bordered m-0 table-sm table-custom" :rowNumber="7" class="mx-n3 mt-n2" style="font-size: 11px" :key="resetTable">
             <thead class="uk-bg-headline">
                 <tr>
-                    <th c-width="56" style="height: 50px"></th>
+                    <th c-width="56" style="height: 50px; text-align:center"></th>
                     <th v-for="(item, i) of displayHeaderLst" v-bind:style="{ 'background-color': item.color}"><span class="crop-text">{{item.headerText}}</span></th>
                     <th c-width="48"></th>
                 </tr>
@@ -69,7 +69,7 @@
         <fix-table v-if="displayFormat == '1'" table-class="table table-bordered m-0 table-sm table-custom" :rowNumber="7" class="mx-n3 mt-n2" style="font-size: 11px" :key="resetTable">
             <thead class="uk-bg-headline">
                 <tr>
-                    <th c-width="58" style="height: 50px"></th>
+                    <th c-width="58" style="height: 50px; text-align:center"></th>
                     <th v-for="(item, i) of displayHeaderLst" v-bind:style="{ 'background-color': item.color}"><span class="crop-text">{{item.headerText}}</span></th>
                     <th c-width="48"></th>
                 </tr>

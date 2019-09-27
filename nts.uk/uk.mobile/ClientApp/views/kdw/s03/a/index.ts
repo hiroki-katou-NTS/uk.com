@@ -6,6 +6,7 @@ import { TimeDuration, TimeWithDay } from '@app/utils/time';
 import { storage } from '@app/utils';
 import { KdwS03BComponent } from 'views/kdw/s03/b';
 import { KdwS03AMenuComponent } from 'views/kdw/s03/a/menu';
+import { KdwS03CComponent } from 'views/kdw/s03/c';
 
 @component({
     name: 'kdws03a',
@@ -17,7 +18,8 @@ import { KdwS03AMenuComponent } from 'views/kdw/s03/a/menu';
     components: {
         'fix-table': FixTableComponent,
         'kdws03b': KdwS03BComponent,
-        'kdws03amenu': KdwS03AMenuComponent
+        'kdws03amenu': KdwS03AMenuComponent,
+        'kdws03c': KdwS03CComponent
     },
     validations: {
         yearMonth: {
@@ -172,7 +174,7 @@ export class Kdws03AComponent extends Vue {
     public updated() {
         let styleTagAr: any = [];
         styleTagAr = document.querySelectorAll('.btn-sm');
-        _.forEach(styleTagAr, (x) => x.style.fontSize = '10px');
+        _.forEach(styleTagAr, (x) => x.style.fontSize = '11px');
 
         let styleContainer: any = [];
         styleContainer = document.querySelectorAll('.container-fluid');
@@ -562,22 +564,20 @@ export class Kdws03AComponent extends Vue {
             'rowData': rowData,
             'paramData': paramData,
             'displayformat': displayformat
-        },
-            { type: 'dropback' })
-            .then((v: any) => {
-                if (v.reload) {
-                    this.startPage();
-                } else {
-                    self.$http.post('at', servicePath.resetCacheDomain).then((result: { data: any }) => { });
-                }
-            });
+        }).then((v: any) => {
+            if (v.reload) {
+                this.startPage();
+            } else {
+                self.$http.post('at', servicePath.resetCacheDomain).then((result: { data: any }) => { });
+            }
+        });
     }
 
     //メニュー画面を開く
     public openMenu() {
         let self = this;
-        this.$modal(
-            'kdws03amenu',
+        if (self.displayFormat == '0') {//個人別モード
+            self.$modal('kdws03amenu',
             {
                 displayFormat: this.displayFormat,
                 allConfirmButtonDis: this.dPCorrectionMenuDto.allConfirmButtonDis,
@@ -585,10 +585,6 @@ export class Kdws03AComponent extends Vue {
                 restReferButtonDis: this.dPCorrectionMenuDto.restReferButtonDis,
                 monthActualReferButtonDis: this.dPCorrectionMenuDto.monthActualReferButtonDis,
                 timeExcessReferButtonDis: this.dPCorrectionMenuDto.timeExcessReferButtonDis,
-            },
-            {
-                type: 'dropback',
-                title: null
             }).then((paramOpenB: any) => {
                 if (paramOpenB != undefined && paramOpenB.openB) {
                     //open B
@@ -605,13 +601,30 @@ export class Kdws03AComponent extends Vue {
                         'date': paramOpenB.date,
                         'rowData': rowData,
                         'paramData': self.paramData
-                    },
-                        { type: 'dropback' })
-                        .then((v) => {
-
-                        });
+                    });
                 }
             });
+        } else {//日付別モード
+            this.$modal('kdws03c').then((paramOpenB: any) => {
+                if (paramOpenB != undefined && paramOpenB.openB) {
+                    //open B
+                    let rowData = null;
+                    if (self.displayFormat == '0') {
+                        rowData = _.find(self.displayDataLst, (x) => x.dateDetail == paramOpenB.date);
+                    } else {
+                        rowData = _.find(self.displayDataLst, (x) => x.employeeId == paramOpenB.employeeId);
+                    }
+
+                    self.$modal('kdws03b', {
+                        'employeeID': paramOpenB.employeeId,
+                        'employeeName': paramOpenB.employeeName,
+                        'date': paramOpenB.date,
+                        'rowData': rowData,
+                        'paramData': self.paramData
+                    });
+                }
+            });
+        }
     }
 
     //次ページを押下処理
