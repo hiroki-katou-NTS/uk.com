@@ -172,7 +172,7 @@ export class Kdws03AComponent extends Vue {
     public updated() {
         let styleTagAr: any = [];
         styleTagAr = document.querySelectorAll('.btn-sm');
-        _.forEach(styleTagAr, (x) => x.style.fontSize = '10px');
+        _.forEach(styleTagAr, (x) => x.style.fontSize = '11px');
 
         let styleContainer: any = [];
         styleContainer = document.querySelectorAll('.container-fluid');
