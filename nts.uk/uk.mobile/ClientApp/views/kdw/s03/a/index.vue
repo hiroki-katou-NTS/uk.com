@@ -1,6 +1,6 @@
 <template>
     <div class="kdw003a">
-        <div v-if="displayFormat == '0'" class="mx-n2 mt-n1">
+        <div v-if="displayFormat == '0'" class="mt-n1 mx-n2">
             <div class="row">
                 <div class="col-9 pr-1">
                     <nts-dropdown v-model="selectedEmployee">
@@ -28,7 +28,7 @@
         </div>
         <div v-if="displayFormat == '1'" class="m-n2">
             <div class="row">
-                <div class="col-9">
+                <div class="col-9 pr-1">
                     <nts-date-input v-model="selectedDate" />
                 </div>
                 <div class="col-3">
