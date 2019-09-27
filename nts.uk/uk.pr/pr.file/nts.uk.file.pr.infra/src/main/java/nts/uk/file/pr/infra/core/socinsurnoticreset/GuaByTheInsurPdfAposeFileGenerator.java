@@ -84,9 +84,9 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
         ws.getRangeByName(sheetName + "!A1_4_1").setValue(element.getOfficePostalCode().length() > 3 ? element.getOfficePostalCode().substring(0,3) : element.getOfficePostalCode());
         ws.getRangeByName(sheetName + "!A1_4_2").setValue(element.getOfficePostalCode().length() >=  7 ? element.getOfficePostalCode().substring(3,7)
                 :  element.getOfficePostalCode().length() > 3 ? element.getOfficePostalCode().substring(3,element.getOfficePostalCode().length()) : "");
-        ws.getRangeByName(sheetName + "!A1_5").setValue(element.getOfficeAddress1());
-        ws.getRangeByName(sheetName +"!A1_6").setValue(element.getOfficeAddress2());
-        ws.getRangeByName(sheetName + "!A1_7").setValue(element.getBusinessName());
+        ws.getRangeByName(sheetName + "!A1_5").setValue(element.getOfficeAddress1()+"　"+element.getOfficeAddress2());
+        ws.getRangeByName(sheetName +"!A1_6").setValue(element.getBusinessName());
+        ws.getRangeByName(sheetName + "!A1_7").setValue(element.getBusinessName1());
         //ws.getRangeByName(this.getRangeName(sheetName,"A1_8", stt)).setValue(element.getBusinessName1());
         ws.getRangeByName(sheetName + "!A1_9_1").setValue(formatPhoneNumber(element.getPhoneNumber(),1));
         ws.getRangeByName(sheetName + "!A1_9_2").setValue(formatPhoneNumber(element.getPhoneNumber(),2));
@@ -98,9 +98,9 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
         JapaneseDate startDate = data.getQualificationDate().length() >= 10 ? toJapaneseDate( GeneralDate.fromString(data.getQualificationDate().substring(0,10), "yyyy-MM-dd")) : null;
         this.selectItem(worksheets, data, sheetName, stt);
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_2", stt)).setValue(data.getNameOfInsuredPersonMr().split("　")[0] );
-        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_3", stt)).setValue(data.getNameOfInsuredPerson().split("　")[1]);
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_3", stt)).setValue(data.getNameOfInsuredPersonMr().split("　").length > 1 ? data.getNameOfInsuredPerson().split("　")[1] : "");
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_4", stt)).setValue(data.getNameOfInsuredPersonMrK().split("　")[0]);
-        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_5", stt)).setValue(data.getNameOfInsuredPerson1().split("　")[1]);
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_5", stt)).setValue(data.getNameOfInsuredPerson1().split("　").length > 1 ? data.getNameOfInsuredPerson1().split("　")[1] : "");
         worksheets.getRangeByName(this.getRangeName(sheetName,"A2_9_1" , stt)).setValue(convertJpDate(birthDay).charAt(0));
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_9_2" , stt)).setValue(convertJpDate(birthDay).charAt(1));
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_9_3" , stt)).setValue(convertJpDate(birthDay).charAt(2));
@@ -198,11 +198,26 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
         if(element.getReasonOther() == 1){
             worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_38" : "A2_38_" + stt));
         }
-        if(element.getTypeMale() == 0){
+        //
+        if(element.getTypeMale() == 0 ){
             worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_10" : "A2_10_" + stt));
-        } else{
+        }
+        if(element.getTypeFeMale() == 0 ){
             worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_11" : "A2_11_" + stt));
         }
+        if(element.getTypeMiner() == 0 ){
+            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_12" : "A2_12_" + stt));
+        }
+        if(element.getTypeMaleFund() == 0 ){
+            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_13" : "A2_13_" + stt));
+        }
+        if(element.getTypeFeMaleFund() == 0 ){
+            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_14" : "A2_14_" + stt));
+        }
+        if(element.getTypeMineWorkerFund() == 0 ){
+            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_15" : "A2_15_" + stt));
+        }
+        //
         if(element.getDependentNo() == 0){
             worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_23" : "A2_23_" + stt));
         } else{

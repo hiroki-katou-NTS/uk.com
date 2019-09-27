@@ -249,7 +249,7 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("       QTPPITEM.START_DATE <= ?endDate ");
         exportSQL.append("      AND QTPPITEM.START_DATE >= ?startDate ) AS QTPPI ");
         exportSQL.append(" ON QTPPI.EMPLOYEE_ID = ROOT.EMPLOYEE_ID ");
-        exportSQL.append(" LEFT JOIN ");
+        exportSQL.append(" INNER JOIN ");
         exportSQL.append("   (SELECT * ");
         exportSQL.append("    FROM QQSMT_EMP_PEN_INS QEPITEM ");
         exportSQL.append("    WHERE QEPITEM.START_DATE <= ?endDate ");
