@@ -2045,6 +2045,15 @@ module cps003.a.vm {
                                 return replaceValue.matchValue === `${value.getFullYear()}/${value.toLocaleDateString("en-US", { month: "2-digit" }).replace(/[^0-9-]/g, "")}/${value.toLocaleDateString("en-US", { day: "2-digit" }).replace(/[^0-9-]/g, "")}`;    
                             }
                             
+                            if (value instanceof moment) {
+                                if (value.isValid()) {
+                                    return replaceValue.matchValue === value.format("YYYY/MM/DD");
+                                } else {
+                                    return ((_.isNil(value._i) || value._i === "") && (_.isNil(replaceValue.matchValue) || replaceValue.matchValue === ""))
+                                        || value._i === replaceValue.matchValue;
+                                }
+                            }
+                            
                             return replaceValue.matchValue === value;
                         }, () => replaceValue.replaceValue, true);
                     } else if (replaceValue.replaceFormat === REPLACE_FORMAT.GRAND_DATE) { //　年休付与基準日
@@ -2058,6 +2067,15 @@ module cps003.a.vm {
                                     if (replaceValue.replaceAll) return true;
                                     if (value instanceof Date) {
                                         return replaceValue.matchValue === `${value.getFullYear()}/${value.toLocaleDateString("en-US", { month: "2-digit" }).replace(/[^0-9-]/g, "")}/${value.toLocaleDateString("en-US", { day: "2-digit" }).replace(/[^0-9-]/g, "")}`;
+                                    }
+                                    
+                                    if (value instanceof moment) {
+                                        if (value.isValid()) {
+                                            return replaceValue.matchValue === value.format("YYYY/MM/DD");
+                                        } else {
+                                            return ((_.isNil(value._i) || value._i === "") && (_.isNil(replaceValue.matchValue) || replaceValue.matchValue === ""))
+                                                || value._i === replaceValue.matchValue;
+                                        }
                                     }
                                     
                                     return replaceValue.matchValue === value;
@@ -2082,6 +2100,15 @@ module cps003.a.vm {
                                     if (replaceValue.replaceAll) return true;
                                     if (value instanceof Date) {
                                         return replaceValue.matchValue === `${value.getFullYear()}/${value.toLocaleDateString("en-US", { month: "2-digit" }).replace(/[^0-9-]/g, "")}/${value.toLocaleDateString("en-US", { day: "2-digit" }).replace(/[^0-9-]/g, "")}`;
+                                    }
+                                    
+                                    if (value instanceof moment) {
+                                        if (value.isValid()) {
+                                            return replaceValue.matchValue === value.format("YYYY/MM/DD");
+                                        } else {
+                                            return ((_.isNil(value._i) || value._i === "") && (_.isNil(replaceValue.matchValue) || replaceValue.matchValue === ""))
+                                                || value._i === replaceValue.matchValue;
+                                        }
                                     }
                                     
                                     return replaceValue.matchValue === value;
@@ -2109,7 +2136,12 @@ module cps003.a.vm {
                                         if (value instanceof Date) {
                                             v = moment(value).format("YYYY/MM/DD");
                                         } else if (value instanceof moment) {
-                                            v = value.format("YYYY/MM/DD");
+                                            if (value.isValid()) {
+                                                v = value.format("YYYY/MM/DD");
+                                            } else {
+                                                return ((_.isNil(replaceValue.matchValue) || replaceValue.matchValue === "") && (_.isNil(value._i) || value._i === ""))
+                                                    || replaceValue.matchValue === value._i;
+                                            }
                                         } else v = value;
                                         
                                         return replaceValue.matchValue === v;
