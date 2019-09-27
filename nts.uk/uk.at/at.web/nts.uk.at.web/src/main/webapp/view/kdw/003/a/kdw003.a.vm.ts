@@ -2351,11 +2351,21 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 //                    }
 //                }
                 if(!self.initFromScreenOther) self.genDateExtract(hasChangeFormat);
-                let param = {
-                    dateRange: ((self.hasEmployee) || self.initFromScreenOther)? {
-                        startDate:  moment(self.dateRanger().startDate).utc().toISOString(),
+                
+                let dateRangeTemp: any = null;
+                if((self.hasEmployee && !hasChangeFormat) || self.initFromScreenOther){
+                    dateRangeTemp = {
+                        startDate: self.displayFormat() === 1 ? moment(self.selectedDate()) : moment(self.dateRanger().startDate).utc().toISOString(),
+                        endDate: self.displayFormat() === 1 ? moment(self.selectedDate()) : moment(self.dateRanger().endDate).utc().toISOString()
+                    }
+                }else if((self.hasEmployee && hasChangeFormat)){
+                     dateRangeTemp = {
+                        startDate: moment(self.dateRanger().startDate).utc().toISOString(),
                         endDate: moment(self.dateRanger().endDate).utc().toISOString()
-                    } : null,
+                    }
+                }
+                let param = {
+                    dateRange: dateRangeTemp,
                     displayFormat: self.hasEmployee ? self.displayFormat() : _.isEmpty(self.shareObject()) ? 0 : self.shareObject().displayFormat,
                     initScreen: self.hasEmployee ? 1 : 0,
                     mode: _.isEmpty(self.shareObject()) ? 0 : self.shareObject().screenMode,
