@@ -34,7 +34,6 @@ export class Kdws03AComponent extends Vue {
 
     public title: string = 'Kdws03A';
     public isFirstLoad: boolean = true;
-    public isReLoadByDate: boolean = true;
     public displayFormat: any = '0';
     public lstDataSourceLoad: Array<any> = [];
     public lstDataHeader: Array<any> = [];
@@ -107,18 +106,12 @@ export class Kdws03AComponent extends Vue {
         this.yearMonthTemp = this.yearMonth;
         this.actualTimeSelectedCodeTemp = this.actualTimeSelectedCode;
 
-        this.isReLoadByDate = false;
-        this.startPage();
         this.initActualTime(this.yearMonth, this.selectedEmployee);
     }
 
     @Watch('dateRanger', { deep: true })
     public changeDateRange(value: any, valueOld: any) {
-        if (_.isNil(value) || _.isNil(valueOld) || this.displayFormat == '1' || _.isEqual(value, valueOld) || !this.isReLoadByDate) {
-            return;
-        } else if (_.isEqual(value, valueOld) || !this.isReLoadByDate) {
-            this.isReLoadByDate = true;
-
+        if (_.isNil(value) || _.isNil(valueOld) || this.displayFormat == '1' || _.isEqual(value, valueOld)) {
             return;
         } else {
             this.startPage();
@@ -134,7 +127,7 @@ export class Kdws03AComponent extends Vue {
 
     @Watch('selectedDate')
     public changeDate(value: any, valueOld: any) {
-        if (_.isNil(valueOld) || this.selectedDate.toString() == this.selectedDateTemp.toString()) {
+        if (_.isNil(valueOld) || (!_.isNil(this.selectedDateTemp) && this.selectedDate.toString() == this.selectedDateTemp.toString())) {
             return;
         }
         this.selectedDateTemp = valueOld;
@@ -143,7 +136,7 @@ export class Kdws03AComponent extends Vue {
 
     get dateRanger() {
         let self = this;
-        if (!_.isNil(self.timePeriodAllInfo) && this.isReLoadByDate) {
+        if (!_.isNil(self.timePeriodAllInfo)) {
             for (let i = 0; i < self.timePeriodAllInfo.lstRange.length; i++) {
                 if (self.actualTimeSelectedCode == i) {
                     return ({ startDate: self.timePeriodAllInfo.lstRange[i].startDate, endDate: self.timePeriodAllInfo.lstRange[i].endDate });
@@ -208,7 +201,7 @@ export class Kdws03AComponent extends Vue {
             initDisplayDate: null,
             employeeID: self.selectedEmployee,
             objectDateRange: self.displayFormat == '0' ?
-                ((!_.isNil(self.dateRanger) && self.isReLoadByDate) ? { startDate: self.$dt.fromString(self.dateRanger.startDate), endDate: self.$dt.fromString(self.dateRanger.endDate) } : null) :
+                (!_.isNil(self.dateRanger) ? { startDate: self.$dt.fromString(self.dateRanger.startDate), endDate: self.$dt.fromString(self.dateRanger.endDate) } : null) :
                 (!_.isNil(self.selectedDate) ? { startDate: self.selectedDate, endDate: self.selectedDate } : null),
             lstEmployee: [],
             initClock: null,
@@ -326,9 +319,14 @@ export class Kdws03AComponent extends Vue {
         self.lstAttendanceItem = data.lstControlDisplayItem.lstAttendanceItem;
         self.cellStates = data.lstCellState;
 
-        self.timePeriodAllInfo = data.periodInfo;
-        self.yearMonth = data.periodInfo.yearMonth;
-        self.selectedDate = this.$dt.fromString(self.timePeriodAllInfo.targetRange.startDate);
+        if (self.isFirstLoad) {
+            self.timePeriodAllInfo = data.periodInfo;
+            self.yearMonth = data.periodInfo.yearMonth;
+        }
+        
+        if (self.displayFormat == 1) {
+            self.selectedDate = this.$dt.fromString(self.timePeriodAllInfo.targetRange.startDate);
+        }       
 
         self.fixHeaders = data.lstFixedHeader;
         self.showPrincipal = data.showPrincipal;
