@@ -549,10 +549,34 @@
 
     export class WebStorageWrapper {
 
-        nativeStorage: Storage;
+        nativeStorage: Storage | any;
 
         constructor(nativeStorage: Storage) {
-            this.nativeStorage = nativeStorage;
+            nts.uk.ui.browser.private.then(priv => {
+                if (priv && nts.uk.ui.browser.version === 'Safari 10' && nts.uk.ui.browser.mobile) {
+                    nts.uk.ui.dialog.alert({ messageId: 'Msg_1533' });
+                    this.nativeStorage = {
+                        setItem(key: string, value: string) {
+
+                        },
+                        getItem(key: string) {
+                            return util.optional.empty();
+                        },
+                        removeItem(key: string) {
+
+                        },
+                        key(key: number) {
+                            return null;
+                        }
+                    };
+                } else {
+                    this.nativeStorage = nativeStorage;
+                }
+            });
+        }
+
+        key(index: number) {
+            return this.nativeStorage.key(index);
         }
 
         setItem(key: string, value: string) {
