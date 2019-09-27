@@ -28,8 +28,8 @@ public class CreateperApprovalDailyDefault implements CreateperApprovalDailyServ
 	private SyCompanyRecordAdapter syCompanyRecordAdapter;
 
 	@Inject
-	private AppDataInfoDailyRepository appDataInfoDailyRepo;
 
+	private AppDataInfoDailyRepository appDataInfoDailyRepo;
 	@Inject
 	private CreateDailyApproverAdapter createDailyApproverAdapter;
 
@@ -45,6 +45,7 @@ public class CreateperApprovalDailyDefault implements CreateperApprovalDailyServ
 			GeneralDate endDateClosure) {
 		AtomicBoolean checkStop = new AtomicBoolean(false);
 		/** パラメータ.実行種別をチェック */
+<<<<<<< HEAD
 		// 通常実行の場合 : processExecType = 0(通常実行) - 再作成の場合 : processExecType = 1(再作成)
 		// RequestList211
 		List<AffCompanyHistImport> listAffCompanyHistImport = syCompanyRecordAdapter
@@ -63,6 +64,29 @@ public class CreateperApprovalDailyDefault implements CreateperApprovalDailyServ
 						affComHist = affCompanyHistImport;
 						checkAffComHist = true;
 						break;
+=======
+		// 通常実行の場合 : processExecType = 0(通常実行) - // 再作成の場合 : processExecType = 1(再作成)
+//		if (processExecType == 0) {
+			// RequestList211
+			List<AffCompanyHistImport> listAffCompanyHistImport = syCompanyRecordAdapter
+					.getAffCompanyHistByEmployee(employeeIDs,
+							new DatePeriod(startDateClosure, GeneralDate.today()));
+			
+			this.parallel.forEach(employeeIDs, employeeID -> {
+				
+				// 年月日　←「システム日付の前日」
+				GeneralDate ymd = GeneralDate.today().addDays(-1);
+				if (createNewEmp == 1) {	
+					/** Imported「所属会社履歴（社員別）」を取得する(lấy thông tin Imported「所属会社履歴（社員別）」) */
+					AffCompanyHistImport affComHist = new AffCompanyHistImport();
+					boolean checkAffComHist = false;
+					for (AffCompanyHistImport affCompanyHistImport : listAffCompanyHistImport) {
+						if (affCompanyHistImport.getEmployeeId().equals(employeeID)) {
+							affComHist = affCompanyHistImport;
+							checkAffComHist = true;
+							break;
+						}
+>>>>>>> 1054a53... fixbug 108989 ver 3
 					}
 				}
 				// 年月日 ← 取得した「所属会社履歴（社員別）.所属期間.開始日」
@@ -78,6 +102,7 @@ public class CreateperApprovalDailyDefault implements CreateperApprovalDailyServ
 			AppRootInsContentFnImport appRootInsContentFnImport = createDailyApproverAdapter
 					.createDailyApprover(employeeID, 1, ymd, startDateClosure);
 
+<<<<<<< HEAD
 			boolean flagError = appRootInsContentFnImport.getErrorFlag().intValue() == 0 ? false : true;
 			String errorMessage = appRootInsContentFnImport.getErrorMsgID();
 			// 取得したエラーフラグ != エラーなし
@@ -101,6 +126,19 @@ public class CreateperApprovalDailyDefault implements CreateperApprovalDailyServ
 		if (checkStop.get()) {
 			return new OutputCreatePerApprovalDaily(false, true);
 		}
+=======
+				boolean flagError = appRootInsContentFnImport.getErrorFlag().intValue() == 0 ? false:true;
+				String errorMessage = appRootInsContentFnImport.getErrorMsgID();
+				// 取得したエラーフラグ != エラーなし
+				if (flagError) {
+					/** ドメインモデル「承認中間データエラーメッセージ情報（日別実績）」を追加する */
+					AppDataInfoDaily appDataInfoDaily = new AppDataInfoDaily(employeeID, executionId,
+							new ErrorMessageRC(TextResource.localize(errorMessage)));
+					appDataInfoDailyRepo.addAppDataInfoDaily(appDataInfoDaily);
+				}
+			}); // end for listEmployee
+//		}
+>>>>>>> 1054a53... fixbug 108989 ver 3
 
 		/** ドメインモデル「承認中間データエラーメッセージ情報（日別実績）」を取得する */
 		List<AppDataInfoDaily> listAppDataInfoDaily = appDataInfoDailyRepo.getAppDataInfoDailyByExeID(executionId);
