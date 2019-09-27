@@ -1,15 +1,20 @@
 <template>
 <div class="kdws03f p-0">
-    <div class="modal-header uk-bg-white-smoke pl-0 pr-0 rounded-0 py-1">
-    <div class="row uk-text-quote ml-0 mr-0 w-100">
-      <!-- F1_1: 戻るボタン -->
-      <div class="col-1 pl-1" v-on:click="$close()"><i class="fas fa-arrow-left"></i></div>
+    <div class="modal-header rounded-0 d-block p-0">
+      <div class="uk-bg-teal p-2">
+          <h4 class="modal-title text-white">
+              <i class="fas fa-angle-left mr-1" v-on:click="$close"></i>
+              <span>{{ 'KDWS03_75' | i18n }}</span>
+          </h4>
+      </div>
+    </div>
+    <div class="row uk-text-quote py-2 pl-2 uk-bg-white-smoke">
       <!-- F1_2: 対象社員名 -->
-      <div class="col-5 pl-0 pr-2"><span>{{ empName }}</span></div>
+      <div class="col-6 pr-2"><span>{{ empName }}</span></div>
       <!-- F1_3: 対象年月 -->
       <div class="col-6 pl-0 pr-3 text-right"><span>{{ date  | yearmonth('YYYY年MM月')}}</span></div>
     </div>
-  </div>
+
     <!-- F2_1: 月別実績一覧 -->
     <table class="table table-bordered pt-0 mb-0">
     <tbody>

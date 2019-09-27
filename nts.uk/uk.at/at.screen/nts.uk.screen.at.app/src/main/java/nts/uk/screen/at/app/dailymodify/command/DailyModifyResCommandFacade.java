@@ -934,18 +934,18 @@ public class DailyModifyResCommandFacade {
 		if (unit == WorkTypeUnit.OneDay) {
 			val oneDay = wt.getDailyWork().getOneDay();
 			if (oneDay == WorkTypeClassification.AnnualHoliday || oneDay == WorkTypeClassification.SpecialHoliday
-					|| oneDay == WorkTypeClassification.SubstituteHoliday || oneDay == WorkTypeClassification.Pause)
+					|| oneDay == WorkTypeClassification.SubstituteHoliday || oneDay == WorkTypeClassification.Pause || oneDay == WorkTypeClassification.YearlyReserved)
 				return oneDay;
 			// AnnualHoliday , SpecialHoliday, SubstituteHoliday, Pause
 		} else {
 			val morDay = wt.getDailyWork().getMorning();
 			val aftDay = wt.getDailyWork().getAfternoon();
 			if (morDay == WorkTypeClassification.AnnualHoliday || morDay == WorkTypeClassification.SpecialHoliday
-					|| morDay == WorkTypeClassification.SubstituteHoliday || morDay == WorkTypeClassification.Pause)
+					|| morDay == WorkTypeClassification.SubstituteHoliday || morDay == WorkTypeClassification.Pause || morDay == WorkTypeClassification.YearlyReserved)
 				return morDay;
 
 			if (aftDay == WorkTypeClassification.AnnualHoliday || aftDay == WorkTypeClassification.SpecialHoliday
-					|| aftDay == WorkTypeClassification.SubstituteHoliday || aftDay == WorkTypeClassification.Pause)
+					|| aftDay == WorkTypeClassification.SubstituteHoliday || aftDay == WorkTypeClassification.Pause || aftDay == WorkTypeClassification.YearlyReserved)
 				return aftDay;
 		}
 		return null;
@@ -964,6 +964,9 @@ public class DailyModifyResCommandFacade {
 
 		case Pause:
 			return ErrorType.REMAIN_LEFT;
+			
+		case YearlyReserved:
+		    return ErrorType.NUMBER_OF_MISSED_PIT;
 
 		default:
 			return ErrorType.YEARLY_HOLIDAY;

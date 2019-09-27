@@ -150,9 +150,9 @@ public class DailyPerformanceErrorCodeProcessor {
 
 		List<String> listEmployeeId = lstEmployee.stream().map(e -> e.getId()).collect(Collectors.toList());
 		// 社員の締めをチェックする
-		Map<String, List<EmploymentHisOfEmployeeImport>> mapClosingEmpResult = checkClosingEmployee
-				.checkClosingEmployee(companyId, listEmployeeId,
-						new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate()), screenDto.getClosureId());
+//		Map<String, List<EmploymentHisOfEmployeeImport>> mapClosingEmpResult = checkClosingEmployee
+//				.checkClosingEmployee(companyId, listEmployeeId,
+//						new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate()), screenDto.getClosureId());
 		List<DPErrorDto> lstError = this.repo.getListDPError(screenDto.getDateRange(), listEmployeeId, errorCodes);
 		Map<String, String> mapIdError = new HashMap<>();
 		for (DPErrorDto dto : lstError) {
@@ -283,9 +283,9 @@ public class DailyPerformanceErrorCodeProcessor {
 		Map<String, ItemValue> itemValueMap = new HashMap<>();
 		for (DPDataDto data : screenDto.getLstData()) {
 			//filter Date in Period
-			if(!dailyProcessor.checkDataInClosing(Pair.of(data.getEmployeeId(), data.getDate()), mapClosingEmpResult)) {
-				continue;
-			}
+//			if(!dailyProcessor.checkDataInClosing(Pair.of(data.getEmployeeId(), data.getDate()), mapClosingEmpResult)) {
+//				continue;
+//			}
 			
 			data.setEmploymentCode(screenDto.getEmploymentCode());
 			if (!sId.equals(data.getEmployeeId())) {

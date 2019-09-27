@@ -49,10 +49,22 @@
             height: 42px;
         }
     }
-    .currency-symbol:before {
-        content: '\00a5';
-        top: 6px;
-        color: #999;
-        padding-right: 4px;
+    .currency-symbol {
+        span:before {
+            content: '\00a5';
+            top: 6px;
+            color: #999;
+            padding-right: 4px;
+        }       
+    }
+    .crop-text {
+        -webkit-line-clamp: 2;
+        overflow : hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+    }
+    .row-style {
+        text-align: right;
     }
 }

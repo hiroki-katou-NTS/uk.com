@@ -34,6 +34,7 @@ export class Kdws03AComponent extends Vue {
 
     public title: string = 'Kdws03A';
     public isFirstLoad: boolean = true;
+    public isReLoadByDate: boolean = true;
     public displayFormat: any = '0';
     public lstDataSourceLoad: Array<any> = [];
     public lstDataHeader: Array<any> = [];
@@ -90,33 +91,11 @@ export class Kdws03AComponent extends Vue {
 
     @Watch('yearMonth')
     public changeYearMonth(value: any, valueOld: any) {
-        let self = this;
         this.yearMonthTemp = valueOld;
         this.selectedEmployeeTemp = this.selectedEmployee;
         this.actualTimeSelectedCodeTemp = this.actualTimeSelectedCode;
 
-        self.$http.post('at', servicePath.genDate, { yearMonth: value }).then((result: { data: any }) => {
-            let data = result.data;
-            if (_.isNil(data.lstRange)) {
-                this.yearMonth = this.yearMonthTemp;
-
-                return;
-            }
-            self.timePeriodAllInfo = data;
-            _.remove(self.actualTimeOptionDisp);
-            let selectItem = 0;
-            if (data.lstRange && data.lstRange.length > 0) {
-                for (let i = 0; i < data.lstRange.length; i++) {
-                    let startDate = data.lstRange[i].startDate,
-                        endDate = data.lstRange[i].endDate;
-                    if (data.targetRange.startDate == startDate) {
-                        selectItem = i;
-                    }
-                    self.actualTimeOptionDisp.push({ code: i, name: (i + 1) + ': ' + this.$dt(startDate, 'M/D') + '～' + this.$dt(endDate, 'M/D') });
-                }
-            }
-            this.actualTimeSelectedCode = selectItem;
-        });
+        this.initActualTime(value, this.selectedEmployee);        
     }
 
     @Watch('selectedEmployee')
@@ -127,12 +106,17 @@ export class Kdws03AComponent extends Vue {
         this.selectedEmployeeTemp = valueOld;
         this.yearMonthTemp = this.yearMonth;
         this.actualTimeSelectedCodeTemp = this.actualTimeSelectedCode;
+
+        this.isReLoadByDate = false;
         this.startPage();
+        this.initActualTime(this.yearMonth, this.selectedEmployee);
     }
 
     @Watch('dateRanger', { deep: true })
     public changeDateRange(value: any, valueOld: any) {
-        if (_.isNil(valueOld) || _.isEqual(value, valueOld)) {
+        if (_.isNil(valueOld) || this.displayFormat == '1' || _.isEqual(value, valueOld) || !this.isReLoadByDate) {
+            this.isReLoadByDate = true;
+
             return;
         }
         this.startPage();
@@ -193,6 +177,14 @@ export class Kdws03AComponent extends Vue {
         let styleTagAr: any = [];
         styleTagAr = document.querySelectorAll('.btn-sm');
         _.forEach(styleTagAr, (x) => x.style.fontSize = '10px');
+
+        if (this.displayFormat == '1') {
+            let styleTableBody: any = [];
+            styleTableBody = document.querySelectorAll('.table-body');
+            if (!_.isEmpty(styleTableBody)) {
+                styleTableBody[0].style.height = '295px';
+            }
+        }        
     }
 
     //日別実績データの取得
@@ -207,7 +199,7 @@ export class Kdws03AComponent extends Vue {
             initDisplayDate: null,
             employeeID: self.selectedEmployee,
             objectDateRange: self.displayFormat == '0' ?
-                (!_.isNil(self.dateRanger) ? { startDate: self.$dt.fromString(self.dateRanger.startDate), endDate: self.$dt.fromString(self.dateRanger.endDate) } : null) :
+                ((!_.isNil(self.dateRanger) && self.isReLoadByDate) ? { startDate: self.$dt.fromString(self.dateRanger.startDate), endDate: self.$dt.fromString(self.dateRanger.endDate) } : null) :
                 (!_.isNil(self.selectedDate) ? { startDate: self.selectedDate, endDate: self.selectedDate } : null),
             lstEmployee: [],
             initClock: null,
@@ -280,7 +272,8 @@ export class Kdws03AComponent extends Vue {
                     headerLst: self.displayHeaderLst,
                     timePeriodAllInfo: _.assign({}, self.timePeriodAllInfo, { closureId: ClosureId[self.timePeriodAllInfo.closureId] }),
                     autBussCode: self.autBussCode,
-                    paramData: self.paramData
+                    paramData: self.paramData,
+                    dPCorrectionMenuDto: self.dPCorrectionMenuDto
                 });
                 self.$mask('hide');
             }
@@ -364,46 +357,23 @@ export class Kdws03AComponent extends Vue {
             headers.forEach((header: any) => {
                 let setting = _.find(data.lstControlDisplayItem.columnSettings, (x) => x.columnKey == header.key);
                 if (_.has(rowDataSrc, header.key)) {
-                    if (!_.isNil(header.constraint.cdisplayType) && (setting.typeFormat == '3')) {
-                        rowData.push({
-                            key: header.key,
-                            value: rowDataSrc[header.key],
-                            class: 'currency-symbol',
-                            displayvalue: this.formatDisplay(rowDataSrc[header.key], setting),
-                        });
-                    } else {
-                        rowData.push({
-                            key: header.key,
-                            value: rowDataSrc[header.key],
-                            class: '',
-                            displayvalue: this.formatDisplay(rowDataSrc[header.key], setting),
-                        });
-                    }
-
+                    rowData.push({
+                        key: header.key,
+                        value: rowDataSrc[header.key],
+                        class: setting.typeFormat == 3 ? 'currency-symbol row-style' : (_.includes([2, 5], setting.typeFormat) ? 'row-style' : ''),
+                        displayvalue: this.formatDisplay(rowDataSrc[header.key], setting),
+                    });
                 } else {
-                    let value = this.getFromCombo(header.group[1].ntsControl, rowDataSrc[header.group[1].key]);
-                    if (!_.isNil(header.constraint.cdisplayType) && (setting.typeFormat == '3')) {
-                        rowData.push({
-                            key: header.key,
-                            groupKey: header.group[1].key,
-                            value,
-                            groupKey0: header.group[0].key,
-                            value0: rowDataSrc[header.group[0].key],
-                            class: 'currency-symbol',
-                            displayvalue: this.formatDisplay(rowDataSrc[header.key], setting),
-                        });
-                    } else {
-                        rowData.push({
-                            key: header.key,
-                            groupKey: header.group[1].key,
-                            value,
-                            groupKey0: header.group[0].key,
-                            value0: rowDataSrc[header.group[0].key],
-                            class: '',
-                            displayvalue: this.formatDisplay(rowDataSrc[header.key], setting),
-                        });
-                    }
-
+                    let resultValue = this.getFromCombo(header.group[1].ntsControl, rowDataSrc[header.group[1].key]);
+                    rowData.push({
+                        key: header.key,
+                        groupKey: header.group[1].key,
+                        value: resultValue,
+                        groupKey0: header.group[0].key,
+                        value0: rowDataSrc[header.group[0].key],
+                        class: '',
+                        displayvalue: resultValue,
+                    });
                 }
             });
 
@@ -421,7 +391,6 @@ export class Kdws03AComponent extends Vue {
                 self.displayDataLst.push({
                     rowData,
                     employeeName: rowDataSrc.employeeName,
-                    employeeNameDis: this.countHalf(rowDataSrc.employeeName) > 10 ? rowDataSrc.employeeName.substring(0, 5) + '...' : rowDataSrc.employeeName,
                     employeeId: rowDataSrc.employeeId,
                     employmentCode: rowDataSrc.employmentCode,
                     id: rowDataSrc.id,
@@ -484,7 +453,7 @@ export class Kdws03AComponent extends Vue {
                     headers.forEach((header: any) => {
                         rowData.push({ key: header.key, value: '' });
                     });
-                    self.displayDataLstEx.push({ rowData, employeeName: '', id: '', employeeNameDis: '' });
+                    self.displayDataLstEx.push({ rowData, employeeName: '', id: '' });
                 }
             } else if (7 < self.displayDataLst.length && self.displayDataLst.length < 20) {
                 self.displayDataLstEx = _.slice(self.displayDataLst, 0, 20);
@@ -591,7 +560,11 @@ export class Kdws03AComponent extends Vue {
         },
             { type: 'dropback' })
             .then((v: any) => {
-                window.location.reload();
+                if (v.reload) {
+                    this.startPage();
+                } else {
+                    self.$http.post('at', servicePath.resetCacheDomain).then((result: { data: any }) => {});
+                }              
             });
     }
 
@@ -656,7 +629,7 @@ export class Kdws03AComponent extends Vue {
                     this.displayHeaderLst.forEach((header: any) => {
                         rowData.push({ key: header.key, value: '' });
                     });
-                    this.displayDataLstEx.push({ rowData, employeeName: '', id: '', employeeNameDis: '' });
+                    this.displayDataLstEx.push({ rowData, employeeName: '', id: '' });
                 }
             }
         }
@@ -724,17 +697,47 @@ export class Kdws03AComponent extends Vue {
 
     //フォーマット
     public formatDisplay(value: string, setting: any) {
-        if (value == '0:00' || value == '0.0' || value == '0') {
+        let chkArray = ['00:00', '0:00', '0.0', '0', ''];
+        if (_.includes(chkArray, value)) {
             return '';
         } else {
             if (setting.typeFormat == '6') {
                 return new TimeWithDay(value);
             } else if (setting.typeFormat == '3') {
-                return Number(value) == 0 ? '' : Number(value).toFixed(0);
+                return Number(value) == 0 ? '' : Number(Number(value).toFixed(0)).toLocaleString('en-US');
+            } else if (setting.typeFormat == '2') {
+                return Number(value) == 0 ? '' : Number(value).toLocaleString();
             } else {
                 return value;
             }
         }
+    }
+
+    //期間取得
+    public initActualTime(value: any, selectedEmployee: string ) {
+        let self = this;
+        self.$http.post('at', servicePath.genDate, { yearMonth: value, empTarget: selectedEmployee}).then((result: { data: any }) => {
+            let data = result.data;
+            if (_.isNil(data.lstRange)) {
+                this.yearMonth = this.yearMonthTemp;
+
+                return;
+            }
+            self.timePeriodAllInfo = data;
+            _.remove(self.actualTimeOptionDisp);
+            let selectItem = 0;
+            if (data.lstRange && data.lstRange.length > 0) {
+                for (let i = 0; i < data.lstRange.length; i++) {
+                    let startDate = data.lstRange[i].startDate,
+                        endDate = data.lstRange[i].endDate;
+                    if (data.targetRange.startDate == startDate) {
+                        selectItem = i;
+                    }
+                    self.actualTimeOptionDisp.push({ code: i, name: (i + 1) + ': ' + this.$dt(startDate, 'M/D') + '～' + this.$dt(endDate, 'M/D') });
+                }
+            }
+            this.actualTimeSelectedCode = selectItem;
+        });
     }
 
 }
@@ -742,7 +745,8 @@ export class Kdws03AComponent extends Vue {
 //サーバパス
 const servicePath = {
     initMOB: 'screen/at/correctionofdailyperformance/initMOB',
-    genDate: 'screen/at/correctionofdailyperformance/gendate'
+    genDate: 'screen/at/correctionofdailyperformance/gendate',
+    resetCacheDomain: 'screen/at/correctionofdailyperformance/resetCacheDomain',
 };
 
 //エラータイプ

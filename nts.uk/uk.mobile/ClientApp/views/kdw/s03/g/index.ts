@@ -11,8 +11,8 @@ import { storage } from '@app/utils';
     constraints: []
 })
 export class KdwS03GComponent extends Vue {
-    @Prop({ default: () => ({ remainOrtime36: 0}) })
-    public readonly params: { remainOrtime36: Number };//0: 休暇残数; 1: 時間外超過
+    @Prop({ default: () => ({ remainDisplay: true }) })
+    public readonly params: { remainDisplay: boolean };//0: 休暇残数; 1: 時間外超過
     public remainNumber: IRemainNumber = {
         manageYear: false,
         yearRemain: 0,
@@ -20,18 +20,19 @@ export class KdwS03GComponent extends Vue {
         reserveRemain: 0,
         manageCompensatory: false,
         compensatoryRemain: 0,
-        manageSubStitute:false,
+        manageSubStitute: false,
         substituteRemain: 0,
         nextGrantDate: null
     };
     public time36: ITime36 = {
-        time36: 0,					
-        maxTime36: 0,						
-        excessNumber: 0,						
+        time36: 0,
+        maxTime36: 0,
+        excessNumber: 0,
         maxExcessNumber: 0,
-        showAgreement: false					
+        showAgreement: false
     };
     public empName: string = '';
+    public time36Display: boolean = false;
 
     public created() {
         let self = this;
@@ -39,25 +40,27 @@ export class KdwS03GComponent extends Vue {
         let cache: any = storage.session.getItem('dailyCorrectionState');
         let employeeIdSel = cache.selectedEmployee;
         self.empName = (_.find(cache.lstEmployee, (c) => c.id == employeeIdSel) || { businessName: '' }).businessName;
-        if (this.params.remainOrtime36 == 0) {//休暇残数
-            self.$http.post('at', servicePath.getRemain + employeeIdSel).then((result: any) => {
-                self.$mask('hide');
-                let data = result.data;
-                self.remainNumber = {
-                    manageYear: data.annualLeave.manageYearOff,
-                    yearRemain: data.annualLeave.annualLeaveRemain,
-                    manageReserve: data.reserveLeave.manageRemainNumber,
-                    reserveRemain: data.reserveLeave.remainNumber,
-                    manageCompensatory: data.compensatoryLeave.manageCompenLeave,
-                    compensatoryRemain: data.compensatoryLeave.compenLeaveRemain,
-                    manageSubStitute: data.substitutionLeave.manageAtr,
-                    substituteRemain: data.substitutionLeave.holidayRemain,
-                    nextGrantDate: data.nextGrantDate
-                };
-            }).catch(() => {
-                self.$mask('hide');
-            });
-        } else {//時間外超過
+        self.time36Display = cache.dPCorrectionMenuDto;
+        //休暇残数
+        self.$http.post('at', servicePath.getRemain + employeeIdSel).then((result: any) => {
+            self.$mask('hide');
+            let data = result.data;
+            self.remainNumber = {
+                manageYear: data.annualLeave.manageYearOff,
+                yearRemain: data.annualLeave.annualLeaveRemain,
+                manageReserve: data.reserveLeave.manageRemainNumber,
+                reserveRemain: data.reserveLeave.remainNumber,
+                manageCompensatory: data.compensatoryLeave.manageCompenLeave,
+                compensatoryRemain: data.compensatoryLeave.compenLeaveRemain,
+                manageSubStitute: data.substitutionLeave.manageAtr,
+                substituteRemain: data.substitutionLeave.holidayRemain,
+                nextGrantDate: data.nextGrantDate
+            };
+        }).catch(() => {
+            self.$mask('hide');
+        });
+        //時間外超過
+        if (self.time36Display) {
             let yearMonth = cache.timePeriodAllInfo.yearMonth;
             let param36 = {
                 employeeId: employeeIdSel,//社員ID
@@ -81,7 +84,7 @@ export class KdwS03GComponent extends Vue {
     }
 }
 const servicePath = {
-    getRemain : 'screen/at/correctionofdailyperformance/getRemainNum/',
+    getRemain: 'screen/at/correctionofdailyperformance/getRemainNum/',
     get36AgreementInfo: 'screen/at/dailyperformance/36AgreementInfo'
 };
 interface IRemainNumber {
