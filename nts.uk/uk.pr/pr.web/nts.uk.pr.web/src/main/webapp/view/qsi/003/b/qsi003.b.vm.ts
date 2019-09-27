@@ -141,7 +141,6 @@ module nts.uk.pr.view.qsi003.b.viewmodel {
 
         updateReasonRomajiName(){
             var self = this;
-
             $('.nts-input').trigger("validate");
             if (nts.uk.ui.errors.hasError()) {
                 return;
