@@ -50,6 +50,7 @@ module nts.uk.pr.view.qsi003.a.viewmodel {
 
         constructor() {
             let self = this;
+            self.getProgramName();
             this.getRomajiNameNoti();
             let today = new Date();
             let dd = today.getDate()
@@ -78,6 +79,17 @@ module nts.uk.pr.view.qsi003.a.viewmodel {
             };
             setShared("QSI003_PARAMS_B", params);
             modal("/view/qsi/003/b/index.xhtml");
+        }
+
+        getProgramName(){
+            var namePath = nts.uk.text.format("sys/portal/standardmenu/findProgramName/{0}/{1}", "QSI003", "A");
+            nts.uk.request.ajax("com", namePath).done((value) => {
+                if(!nts.uk.util.isNullOrEmpty(value)){
+                    $("#pg-name").text(value);
+                }else{
+                    $("#pg-name").text('');
+                }
+            });
         }
 
 
