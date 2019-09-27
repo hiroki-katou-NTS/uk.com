@@ -28,11 +28,11 @@
         </div>
         <div v-if="displayFormat == '1'" class="m-n2">
             <div class="row">
-                <div class="col-9 pr-1">
+                <div class="col-8 pr-1">
                     <nts-date-input v-model="selectedDate" />
                 </div>
-                <div class="col-3">
-                    <button type="button" class="btn btn-primary btn-block" v-click:500="openMenu">{{'KDWS03_23' | i18n}}</button>
+                <div class="col-4">
+                    <button type="button" class="btn btn-primary btn-block" v-click:500="openMenu">{{'KDWS03_76' | i18n}}</button>
                 </div>
             </div>
         </div>

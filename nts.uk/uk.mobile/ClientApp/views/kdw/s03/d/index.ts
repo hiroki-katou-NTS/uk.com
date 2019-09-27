@@ -50,13 +50,9 @@ export class KdwS03DComponent extends Vue {
             date: moment(rowData.date).utc().toDate(), 
             code: rowData.code,
             attendanceItemList: rowData.attendanceItemList
-        }, { type : 'dropback' } )
-        .then((paramOpenB: any) => {
+        }).then((paramOpenB: any) => {
             if (paramOpenB != undefined && paramOpenB.openB) {
                 self.$close(paramOpenB);
-            }
-            if (paramOpenB == 'dropback') {
-                this.$close('dropback');
             }
         });
     }

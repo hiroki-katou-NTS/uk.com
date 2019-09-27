@@ -1,14 +1,14 @@
 <template>
 <div class="kdws03f p-0">
     <div class="modal-header rounded-0 d-block p-0">
-      <div class="uk-bg-teal p-2">
-          <h4 class="modal-title text-white">
-              <i class="fas fa-angle-left mr-1" v-on:click="$close"></i>
+      <div class="uk-bg-teal py-2">
+          <h4 class="col-3 modal-title text-white" v-on:click="$close">
+              <i class="fas fa-angle-left mr-1"></i>
               <span>{{ 'KDWS03_75' | i18n }}</span>
           </h4>
       </div>
     </div>
-    <div class="row uk-text-quote py-2 pl-2 uk-bg-white-smoke">
+    <div class="row uk-text-quote py-2 mx-0 uk-bg-white-smoke">
       <!-- F1_2: 対象社員名 -->
       <div class="col-6 pr-2"><span>{{ empName }}</span></div>
       <!-- F1_3: 対象年月 -->

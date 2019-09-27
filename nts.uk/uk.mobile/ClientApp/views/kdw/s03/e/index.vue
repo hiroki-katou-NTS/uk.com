@@ -1,9 +1,9 @@
 <template>
 <div class="kdws03e pt-0">
     <div class="modal-header rounded-0 d-block p-0">
-      <div class="uk-bg-teal p-2">
-          <h4 class="modal-title text-white">
-              <i class="fas fa-angle-left mr-1" v-on:click="$close"></i>
+      <div class="uk-bg-teal py-2">
+          <h4 class="col-3 modal-title text-white" v-on:click="$close">
+              <i class="fas fa-angle-left mr-1"></i>
               <span>{{ 'KDWS03_75' | i18n }}</span>
           </h4>
       </div>
@@ -39,7 +39,7 @@
         <div class="col-7 p-0">{{errorInfo.errMsg}}</div>
     </div>
     <!-- E7_1: 修正ボタン -->
-    <div class="fixed-bottom border-0 button-shuusei" v-if="displayE71">
+    <div class="fixed-bottom border-0" v-if="displayE71">
       <button class = 'btn uk-bg-process btn-block rounded-0' v-on:click="editData">{{'KDWS03_72' | i18n}}</button>
     </div>
 </div>
