@@ -85,6 +85,14 @@ public class GuaByTheInsurExportDto {
      * 生年月日
      */
     private String brithDay;
+    /**
+     *
+     */
+    private String hisId;
+    /**
+     *坑内員区分
+     */
+    private int undergoundDivision;
     //C2_10
     /**
      * 種別（男）
@@ -97,19 +105,19 @@ public class GuaByTheInsurExportDto {
     /**
      *  種別（坑内員）
      */
-    private String typeMiner;
+    private int typeMiner;
     /**
      * 種別（男(基金)）
      */
-    private String typeMaleFund;
+    private int typeMaleFund;
     /**
      *  種別（女(基金)）
      */
-    private String typeFeMaleFund;
+    private int typeFeMaleFund;
     /**
      * 種別（坑内員(基金)）
      */
-    private String typeMineWorkerFund;
+    private int typeMineWorkerFund;
 
     /**
      * 取得区分（健保・厚年）
