@@ -1,7 +1,9 @@
 package nts.uk.ctx.pr.shared.dom.salgenpurposeparam;
 
 
+import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
@@ -51,6 +53,21 @@ public class SalGenParaYearMonthHistoryService {
             yearMonthHistory.get().exCorrectToRemove(lastestItem);
             salGenParaYMHistRepository.update(lastestItem, cId, yearMonthHistory.get().getParaNo());
         }
+    }
+    public String getHistoryIdByTargetDate(String paraNo,GeneralDate targetDate){
+        Optional<SalGenParaYearMonthHistory> objectHis = salGenParaYMHistRepository.getAllSalGenParaYMHist(AppContexts.user().companyId(),paraNo);
+        YearMonth yearMonth = YearMonth.of(targetDate.year(),targetDate.month());
+        return objectHis.get().getHistory()
+                .stream()
+                .filter(e -> e.start().lessThanOrEqualTo(yearMonth) && e.end().greaterThanOrEqualTo(yearMonth))
+                .findFirst().get().identifier();
+    }
+    public String getHistoryIdByStartDate(String paraNo){
+        Optional<SalGenParaYearMonthHistory> objectHis = salGenParaYMHistRepository.getAllSalGenParaYMHist(AppContexts.user().companyId(),paraNo);
+        return objectHis.get().getHistory()
+                .stream()
+                .reduce((first, second) -> second).get().identifier();
+
     }
 
 }

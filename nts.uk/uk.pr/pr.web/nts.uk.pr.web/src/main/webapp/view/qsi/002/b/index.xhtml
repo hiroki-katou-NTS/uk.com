@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="../../../../master/dialog.xhtml">
+    <ui:define name="htmlHead">
+        <script>var dialogSize = { width: 1280, height: 620 };</script>
+        <com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+        <com:scriptfile set="IGNITE" />
+
+        <com:scriptfile path="/view/kcp/009/kcp009.js" of="/nts.uk.com.web" />
+        <com:stylefile path="/view/kcp/009/style.css" of="/nts.uk.com.web" />
+
+        <com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+        <com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+        <com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
+        <com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+
+
+        <com:scriptfile path="qsi002.b.vm.js" />
+        <com:scriptfile path="qsi002.b.start.js" />
+        <com:scriptfile path="qsi002.b.service.js" />
+        <com:stylefile path="qsi002.b.style.css" />
+    </ui:define>
+
+    <ui:define name="content">
+        <div id="functions-area" style = "min-width: 1000px;">
+            <button id="B1_1" tabindex="1" class="proceed" data-bind="click: add"  >#{i18n.getText('QSI002_23')}</button>
+
+            <button id="B1_2" tabindex="2" data-bind="click: cancel"  >#{i18n.getText('QSI001_24')}</button>
+
+        </div>
+        <div id="contents-area">
+            <!-- kcp009-->
+            <div id="emp-component"></div>
+
+            <!-- ccg001 -->
+            <div id="com-ccg001"></div>
+
+            <!-- div right -->
+            <div class="pull-left" style="margin-left: 100px">
+                <div>
+                    <div id="A3_1" data-bind="ntsFormLabel: {}">#{i18n.getText('QSI002_26')}</div>
+                    <div>
+                        <div id="A3_2" tabindex="5" data-bind="ntsCheckBox: { checked: checkOther }">#{i18n.getText('QSI002_27')}</div>
+                        <input id="A3_3" tabindex="6" data-bind="ntsTextEditor: {
+                                    value: otherRemarks,
+                                    name: '#{i18n.getText('QSI002_28')}',
+                                    constraint: '',
+                                    required: true,
+                                    enable: true,
+                                    readonly: false}" />
+                    </div>
+                    <div id="A3_4" data-bind="ntsFormLabel: {}">#{i18n.getText('QSI002_29')}</div>
+                    <div>
+                        <div id="A3_5" tabindex="7" data-bind="ntsCheckBox: { checked: checkHealthInsurance }">#{i18n.getText('QSI002_30')}</div>
+                    </div>
+                </div>
+
+            </div>
+
+
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

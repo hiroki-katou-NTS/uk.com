@@ -1,0 +1,49 @@
+package nts.uk.ctx.pr.shared.infra.repository.socialinsurance.employeesociainsur.emphealinsurbeneinfo;
+
+import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmpBasicPenNumInfor;
+import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmpBasicPenNumInforRepository;
+import nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.emphealinsurbeneinfo.QqsmtEmpBaPenNum;
+import nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.emphealinsurbeneinfo.QqsmtEmpBaPenNumPk;
+
+import javax.ejb.Stateless;
+import java.util.List;
+import java.util.Optional;
+
+@Stateless
+public class JpaEmpBasicPenNumInforRepository extends JpaRepository implements EmpBasicPenNumInforRepository
+{
+
+    private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QqsmtEmpBaPenNum f";
+    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.empBaPenNumPk.employeeId =:employeeId ";
+
+    @Override
+    public List<EmpBasicPenNumInfor> getAllEmpBasicPenNumInfor(){
+        return this.queryProxy().query(SELECT_ALL_QUERY_STRING, QqsmtEmpBaPenNum.class)
+                .getList(item -> item.toDomain());
+    }
+
+    @Override
+    public Optional<EmpBasicPenNumInfor> getEmpBasicPenNumInforById(String employeeId){
+        return this.queryProxy().query(SELECT_BY_KEY_STRING, QqsmtEmpBaPenNum.class)
+        .setParameter("employeeId", employeeId)
+        .getSingle(c->c.toDomain());
+    }
+
+
+    @Override
+    public void add(EmpBasicPenNumInfor domain){
+
+        this.commandProxy().insert(QqsmtEmpBaPenNum.toEntity(domain));
+    }
+
+    @Override
+    public void update(EmpBasicPenNumInfor domain){
+        this.commandProxy().update(QqsmtEmpBaPenNum.toEntity(domain));
+    }
+
+    @Override
+    public void remove(String employeeId){
+        this.commandProxy().remove(QqsmtEmpBaPenNum.class, new QqsmtEmpBaPenNumPk(employeeId));
+    }
+}
