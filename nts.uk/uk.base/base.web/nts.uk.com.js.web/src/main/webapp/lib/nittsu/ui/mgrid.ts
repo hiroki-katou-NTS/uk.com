@@ -4998,9 +4998,13 @@ module nts.uk.ui.mgrid {
                 let idx = _.findIndex(_dataSource, r => r[_pk] === id);
                 if (_.isNil(idx)) return;
                 let $cell = lch.cellAt(_$grid[0], idx, key);
-                let ftPrint = false, 
+                let ftPrint = false, cloneStates = _.cloneDeep(states),
                     setShtCellState = function($c) {
                     let disabled;
+                    if (states && states.length !== cloneStates.length) {
+                        states = _.cloneDeep(cloneStates);
+                    }
+                        
                     _.forEach(states, s => {
                         if (s === color.Disable) {
                             self.disableNtsControlAt(id, key, $c);
@@ -5015,8 +5019,10 @@ module nts.uk.ui.mgrid {
                     });
                     
                     if (disabled) _.remove(states, s => s === color.Disable);
-                    color.pushState(id, key, states);  
-                    if (!ftPrint) ftPrint = true;   
+                    if (!ftPrint) {
+                        color.pushState(id, key, states);
+                        ftPrint = true;   
+                    }   
                 };
                 
                 if ($cell) {
@@ -6282,6 +6288,11 @@ module nts.uk.ui.mgrid {
                     || $tCell.classList.contains(color.Lock)
                     || $tCell.classList.contains(dkn.LABEL_CLS)) return;
                 
+                if (_.keys(ssk.KeyPressed).length > 0) {
+                    evt.preventDefault();
+                    return;
+                }
+                
                 let coord = ti.getCellCoord($tCell);
                 let control = dkn.controlType[coord.columnKey];
                 let cEditor = _mEditor;
@@ -6429,6 +6440,11 @@ module nts.uk.ui.mgrid {
             
             document.addXEventListener(ssk.MOUSE_DOWN, evt => {
                 if (!evt.target) return;
+                if (_.keys(ssk.KeyPressed).length > 0) {
+                    evt.preventDefault();
+                    return;
+                }
+                
                 if (!selector.is(evt.target, "input.medit")
                     && !selector.is(evt.target, "div[class*='mcombo']")) {
                     endEdit($grid, true);
@@ -6971,7 +6987,10 @@ module nts.uk.ui.mgrid {
                             if (!maf) {
                                 _mafollicle[currentPage][s] = { errors: [] };
                                 maf = _mafollicle[currentPage][s];
+                            } else if (_.isNil(maf.errors)) {
+                                maf.errors = [];
                             }
+                            
                             khl.addCellError(errDetail, maf);
                         }
                     }
@@ -7256,6 +7275,8 @@ module nts.uk.ui.mgrid {
                 let $editor = dkn.controlType[dkn.TEXTBOX].my;
                 let $input = $editor.querySelector("input.medit");
                 $input.value = data;
+                evt.preventDefault();
+                $input.focus();
                 return;
             }
             
@@ -9219,7 +9240,8 @@ module nts.uk.ui.mgrid {
             
             $grid.addXEventListener(ssk.MOUSE_DOWN, function(evt: any) {
                 let $target = evt.target;
-                if (!selector.is($target, ".mcell")) return;
+                if (!selector.is($target, ".mcell")
+                    || _.chain(ssk.KeyPressed).keys().filter(k => k !== "16" && k !== "17").value().length > 0) return;
                 isSelecting = true;
                 
                 window.addXEventListener(ssk.MOUSE_UP + ".block", function(evt: any) {

@@ -27719,8 +27719,11 @@ var nts;
                             if (_.isNil(idx))
                                 return;
                             var $cell = lch.cellAt(_$grid[0], idx, key);
-                            var ftPrint = false, setShtCellState = function ($c) {
+                            var ftPrint = false, cloneStates = _.cloneDeep(states), setShtCellState = function ($c) {
                                 var disabled;
+                                if (states && states.length !== cloneStates.length) {
+                                    states = _.cloneDeep(cloneStates);
+                                }
                                 _.forEach(states, function (s) {
                                     if (s === color.Disable) {
                                         self.disableNtsControlAt(id, key, $c);
@@ -27735,9 +27738,10 @@ var nts;
                                 });
                                 if (disabled)
                                     _.remove(states, function (s) { return s === color.Disable; });
-                                color.pushState(id, key, states);
-                                if (!ftPrint)
+                                if (!ftPrint) {
+                                    color.pushState(id, key, states);
                                     ftPrint = true;
+                                }
                             };
                             if ($cell) {
                                 setShtCellState($cell);
@@ -29086,6 +29090,10 @@ var nts;
                                 || $tCell.classList.contains(color.Lock)
                                 || $tCell.classList.contains(dkn.LABEL_CLS))
                                 return;
+                            if (_.keys(ssk.KeyPressed).length > 0) {
+                                evt.preventDefault();
+                                return;
+                            }
                             var coord = ti.getCellCoord($tCell);
                             var control = dkn.controlType[coord.columnKey];
                             var cEditor = _mEditor;
@@ -29226,6 +29234,10 @@ var nts;
                         document.addXEventListener(ssk.MOUSE_DOWN, function (evt) {
                             if (!evt.target)
                                 return;
+                            if (_.keys(ssk.KeyPressed).length > 0) {
+                                evt.preventDefault();
+                                return;
+                            }
                             if (!selector.is(evt.target, "input.medit")
                                 && !selector.is(evt.target, "div[class*='mcombo']")) {
                                 endEdit($grid, true);
@@ -29767,6 +29779,9 @@ var nts;
                                             _mafollicle[currentPage][s] = { errors: [] };
                                             maf = _mafollicle[currentPage][s];
                                         }
+                                        else if (_.isNil(maf.errors)) {
+                                            maf.errors = [];
+                                        }
                                         khl.addCellError(errDetail, maf);
                                     }
                                 }
@@ -30082,6 +30097,8 @@ var nts;
                             var $editor = dkn.controlType[dkn.TEXTBOX].my;
                             var $input = $editor.querySelector("input.medit");
                             $input.value = data;
+                            evt.preventDefault();
+                            $input.focus();
                             return;
                         }
                         if (su.afterCollertar)
@@ -31970,7 +31987,8 @@ var nts;
                         var isSelecting;
                         $grid.addXEventListener(ssk.MOUSE_DOWN, function (evt) {
                             var $target = evt.target;
-                            if (!selector.is($target, ".mcell"))
+                            if (!selector.is($target, ".mcell")
+                                || _.chain(ssk.KeyPressed).keys().filter(function (k) { return k !== "16" && k !== "17"; }).value().length > 0)
                                 return;
                             isSelecting = true;
                             window.addXEventListener(ssk.MOUSE_UP + ".block", function (evt) {
