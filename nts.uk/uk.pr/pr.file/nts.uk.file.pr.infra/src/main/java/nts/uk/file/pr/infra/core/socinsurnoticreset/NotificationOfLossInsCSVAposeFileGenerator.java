@@ -85,15 +85,15 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
                         checkLength(data.getWelfOfficeNumber1(),2));
                 cells.get(startRow, 2).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? checkLength(data.getOfficeNumber2(),4):
                         checkLength(data.getWelfOfficeNumber2(),4));
-                cells.get(startRow, 4).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? data.getOfficeNumber() : data.getWelfOfficeNumber());
-                cells.get(startRow, 5).setValue(checkLength(company.getPostCd(),3));
-                cells.get(startRow, 6).setValue(company.getPostCd().length() == 8 ? company.getPostCd().substring(4, 8) : "");
-                cells.get(startRow, 7).setValue(checkLength(company.getAdd_1() + company.getAdd_2(),75));
-                cells.get(startRow, 8).setValue(checkLength(company.getCompanyName(), 50));
-                cells.get(startRow, 9).setValue(company.getRepname());
-                cells.get(startRow, 10).setValue(company.getPhoneNum().length() > 5 ? company.getPhoneNum().substring(0, 5) : company.getPhoneNum());
-                cells.get(startRow, 11).setValue(company.getPhoneNum().length() > 11 ? company.getPhoneNum().substring(6, 10) : "");
-                cells.get(startRow, 12).setValue(company.getPhoneNum().length() > 16 ? company.getPhoneNum().substring(11, 16) : "");
+                cells.get(startRow, 3).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? data.getOfficeNumber() : data.getWelfOfficeNumber());
+                cells.get(startRow, 4).setValue(checkLength(company.getPostCd(),3));
+                cells.get(startRow, 5).setValue(company.getPostCd().length() == 8 ? company.getPostCd().substring(4, 8) : "");
+                cells.get(startRow, 6).setValue(checkLength(company.getAdd_1() + company.getAdd_2(),75));
+                cells.get(startRow, 7).setValue(checkLength(company.getCompanyName(), 50));
+                cells.get(startRow, 8).setValue(company.getRepname());
+                cells.get(startRow, 9).setValue(company.getPhoneNum().length() > 5 ? company.getPhoneNum().substring(0, 5) : company.getPhoneNum());
+                cells.get(startRow, 10).setValue(company.getPhoneNum().length() > 11 ? company.getPhoneNum().substring(6, 10) : "");
+                cells.get(startRow, 11).setValue(company.getPhoneNum().length() > 16 ? company.getPhoneNum().substring(11, 16) : "");
                 startRow++;
                 cells.get(startRow, 0).setValue("[data]");
             }
@@ -179,7 +179,7 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
                 cells.get(startRow, 5).setValue(data.getHealInsInherenPr().length() > 20 ? data.getHealInsInherenPr().substring(10, 20) : "");
                 cells.get(startRow, 6).setValue(data.getHealInsInherenPr().length() > 30 ? data.getHealInsInherenPr().substring(20, 30) : "");
                 cells.get(startRow, 7).setValue(data.getHealInsInherenPr().length() > 40 ? data.getHealInsInherenPr().substring(30, 40) : "");
-
+                startRow = startRow + 1;
                 cells.get(startRow, 8).setValue("[kanri]");
                 startRow = startRow + 1;
                 cells.get(startRow, 1).setValue("001");

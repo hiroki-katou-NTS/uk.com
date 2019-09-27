@@ -103,7 +103,7 @@ public class NotificationOfLossInsExportCSVService extends ExportService<Notific
 		}
 
 		if(domain.getOutputFormat().get() == OutputFormatClass.THE_WELF_PEN) {
-			List<SocialInsurancePrefectureInformation> infor  = socialInsuranceInfor.findByHistory();;
+			List<SocialInsurancePrefectureInformation> infor  = socialInsuranceInfor.findByHistory();
 			CompanyInfor company = socialInsurNotiCreateSetEx.getCompanyInfor(cid);
 			List<PensFundSubmissData> healthInsAssociationData = socialInsurNotiCreateSetEx.getHealthInsAssociation(empIds, cid, start, end);
 			notificationOfLossInsCSVFileGenerator.generate(exportServiceContext.getGeneratorContext(),
