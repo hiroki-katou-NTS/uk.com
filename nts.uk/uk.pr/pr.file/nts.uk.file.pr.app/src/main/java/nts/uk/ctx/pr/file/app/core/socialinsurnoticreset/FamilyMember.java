@@ -53,11 +53,12 @@ public class FamilyMember {
 
     private Integer gender;
 
-    public FamilyMember(String birthday, String nameRomajiFull, String familyMemberId, int gender ) {
+    public FamilyMember(String birthday, String fullName, String familyMemberId, int gender , String fullNameKana) {
         this.birthday = birthday;
-        this.nameRomajiFull = nameRomajiFull;
+        this.fullName = fullName;
         this.familyMemberId = familyMemberId;
         this.gender = gender;
+        this.fullNameKana = fullNameKana;
     }
 
 }

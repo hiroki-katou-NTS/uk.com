@@ -104,7 +104,7 @@ public class RomajiNameNotiCreSetExportPDFService extends ExportService<RomajiNa
 
             } else {
                 //familyMember = romajiNameNotiCreSetExReposity.getFamilyInfo(empId, isSpouse);
-                familyMember = new FamilyMember("1980-01-01", "HONG KILDONG", "11" , 2);
+                familyMember = new FamilyMember("1980-01-02", "HONG KILDONGS WIFE", "11" , 2, "ホン ギルトンノツマ");
                 if (familyMember != null ){
                     int familyId  = Integer.parseInt(familyMember.getFamilyMemberId());
                     empFamilyInsHis = empFamilyInsHisRepository.getListEmFamilyHis(empId, familyId).orElse(null);
