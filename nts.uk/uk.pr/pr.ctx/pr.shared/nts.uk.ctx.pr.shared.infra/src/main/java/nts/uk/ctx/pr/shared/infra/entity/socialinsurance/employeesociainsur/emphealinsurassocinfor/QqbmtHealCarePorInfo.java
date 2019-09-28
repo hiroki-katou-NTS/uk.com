@@ -40,7 +40,7 @@ public class QqbmtHealCarePorInfo extends UkJpaEntity implements Serializable
     }
 
     public HealthCarePortInfor toDomain() {
-        return null;
+        return new HealthCarePortInfor(this.healCarePorInfoPk.hisId,String.valueOf(this.healInsurUnionNmber));
     }
     public static QqbmtHealCarePorInfo toEntity(HealthCarePortInfor domain) {
         return null;

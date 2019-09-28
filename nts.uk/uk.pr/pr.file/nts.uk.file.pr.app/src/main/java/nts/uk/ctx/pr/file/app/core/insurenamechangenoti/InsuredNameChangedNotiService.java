@@ -146,8 +146,6 @@ public class InsuredNameChangedNotiService extends ExportService<InsuredNameChan
             throw new BusinessException("Msg_37");
         }
 
-
-
     }
 
     private InsuredNameChangedNotiExportData get(EmployeeInfoEx employeeInfo, CompanyInfor companyInfor, List<SocialInsuranceOffice> listSocialInsuranceOffice, SocialInsurNotiCreateSet socialInsurNotiCreateSetDomain, String empId, GeneralDate date){
@@ -211,6 +209,27 @@ public class InsuredNameChangedNotiService extends ExportService<InsuredNameChan
                         return  data;
                     }
 
+                }
+            }else{
+                //ドメインモデル「社員健康保険資格情報」を取得する
+
+                Optional<EmplHealInsurQualifiInfor> emplHealInsurQualifiInfor = emplHealInsurQualifiInforRepository.getEmplHealInsurQualifiInforByEmpId(empId);
+                if(emplHealInsurQualifiInfor.isPresent()){
+                    //取得した「社員健康保険資格情報」をチェックする
+                    Optional<EmpHealthInsurBenefits>  empHealthInsurBenefits = emplHealInsurQualifiInfor.get().getMourPeriod().stream().filter(x -> {
+                        return date.afterOrEquals(x.getDatePeriod().start()) && date.beforeOrEquals(x.getDatePeriod().end());
+                    }).findFirst();
+                    //チェック条件を満たすデータが取得できたか確認する
+                    if(empHealthInsurBenefits.isPresent()){
+                        data.setEmpHealthInsurBenefits(empHealthInsurBenefits.get());
+
+                    }else{
+                        data.setProcessSate(false);
+                        return data;
+                    }
+                }else{
+                    data.setProcessSate(false);
+                    return  data;
                 }
             }
 
