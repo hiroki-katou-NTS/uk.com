@@ -75,6 +75,14 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
 
         Worksheet ws = wsc.get(index);
 
+        GeneralDate dummyBirthday = GeneralDate.fromString("1988/12/10","yyyy/MM/dd");
+
+        int dummyGender = 2;
+        String dummyOldName = "健保 陽子";
+        String dummyName = "厚年 陽子";
+        String dummyNameKana = "コウネン ヨウコ";
+
+
         if(socialInsurNotiCreateSet.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL){
             ws.getCells().get("K11").putValue(data.getSocialInsuranceOffice() != null ? data.getSocialInsuranceOffice().getInsuranceMasterInformation().getOfficeOrganizeNumber().getHealthInsuranceOfficeNumber1() : null);
         }else{
@@ -112,7 +120,7 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
 
         //fill to A1_4 -> A1_7
 
-        JapaneseDate dateJp = toJapaneseDate(data.getEmployeeInfo().getBirthDay());
+        JapaneseDate dateJp = toJapaneseDate(dummyBirthday);
         String day[] = String.valueOf(dateJp.day()).split("");
         String month[] = String.valueOf(dateJp.month()).split("");
         String year[] = String.valueOf(dateJp.year()).split("");
@@ -145,27 +153,26 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
         ws.getCells().get("Y20").putValue(submitDate.month());
         ws.getCells().get("AA20").putValue(submitDate.year());
 
-        if(data.getEmployeeInfo() != null){
-            ws.getCells().get("J17").putValue(data.getEmployeeInfo().getPName());
-            ws.getCells().get("M17").putValue(data.getEmployeeInfo().getPName());
-            ws.getCells().get("J19").putValue(data.getEmployeeInfo().getPName());
-            ws.getCells().get("M19").putValue(data.getEmployeeInfo().getPName());
+            ws.getCells().get("J17").putValue(dummyName);
+            ws.getCells().get("M17").putValue(dummyName);
+            ws.getCells().get("J19").putValue(dummyNameKana);
+            ws.getCells().get("M19").putValue(dummyNameKana);
 
-            ws.getCells().get("U17").putValue(data.getEmployeeInfo().getPName());
-            ws.getCells().get("Z17").putValue(data.getEmployeeInfo().getPName());
-        }
+            ws.getCells().get("U17").putValue(dummyOldName);
+            ws.getCells().get("Z17").putValue(dummyOldName);
+
 
         //厚生年金種別情報
 
         if(data.getWelfarePenTypeInfor() != null && data.getFundMembership() != null && data.getEmployeeInfo() != null){
-            if(data.getEmployeeInfo().getGender() == 1 && data.getWelfarePenTypeInfor().getUndergroundDivision().value == PitInsiderDivision.NOTTARGETED.value && data.getFundMembership().getHistoryId() == null){
+            if(dummyGender == 1 && data.getWelfarePenTypeInfor().getUndergroundDivision().value == PitInsiderDivision.NOTTARGETED.value && data.getFundMembership().getHistoryId() == null){
                 //1
                 ws.getShapes().remove(ws.getShapes().get("C1_10"));
                 ws.getShapes().remove(ws.getShapes().get("C1_11"));
                 ws.getShapes().remove(ws.getShapes().get("C1_12"));
                 ws.getShapes().remove(ws.getShapes().get("C1_13"));
                 ws.getShapes().remove(ws.getShapes().get("C1_14"));
-            }else if(data.getEmployeeInfo().getGender() == 2 && data.getWelfarePenTypeInfor().getUndergroundDivision().value == PitInsiderDivision.NOTTARGETED.value && data.getFundMembership().getHistoryId() == null){
+            }else if(dummyGender == 2 && data.getWelfarePenTypeInfor().getUndergroundDivision().value == PitInsiderDivision.NOTTARGETED.value && data.getFundMembership().getHistoryId() == null){
                 //2
 
                 ws.getShapes().remove(ws.getShapes().get("C1_9"));
@@ -173,14 +180,14 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
                 ws.getShapes().remove(ws.getShapes().get("C1_12"));
                 ws.getShapes().remove(ws.getShapes().get("C1_13"));
                 ws.getShapes().remove(ws.getShapes().get("C1_14"));
-            }else if((data.getEmployeeInfo().getGender() == 1 || data.getEmployeeInfo().getGender() == 2) && data.getWelfarePenTypeInfor().getUndergroundDivision().value == PitInsiderDivision.TARGET.value && data.getFundMembership().getHistoryId() == null){
+            }else if((dummyGender == 1 || dummyGender == 2) && data.getWelfarePenTypeInfor().getUndergroundDivision().value == PitInsiderDivision.TARGET.value && data.getFundMembership().getHistoryId() == null){
                 //3
                 ws.getShapes().remove(ws.getShapes().get("C1_9"));
                 ws.getShapes().remove(ws.getShapes().get("C1_10"));
                 ws.getShapes().remove(ws.getShapes().get("C1_12"));
                 ws.getShapes().remove(ws.getShapes().get("C1_13"));
                 ws.getShapes().remove(ws.getShapes().get("C1_14"));
-            }else if(data.getEmployeeInfo().getGender() == 1 && data.getWelfarePenTypeInfor().getUndergroundDivision().value == PitInsiderDivision.NOTTARGETED.value && data.getFundMembership().getHistoryId() != null ){
+            }else if(dummyGender == 1 && data.getWelfarePenTypeInfor().getUndergroundDivision().value == PitInsiderDivision.NOTTARGETED.value && data.getFundMembership().getHistoryId() != null ){
                 //5
 
                 ws.getShapes().remove(ws.getShapes().get("C1_9"));
@@ -188,14 +195,14 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
                 ws.getShapes().remove(ws.getShapes().get("C1_11"));
                 ws.getShapes().remove(ws.getShapes().get("C1_13"));
                 ws.getShapes().remove(ws.getShapes().get("C1_14"));
-            }else if(data.getEmployeeInfo().getGender() == 2 && data.getWelfarePenTypeInfor().getUndergroundDivision().value == PitInsiderDivision.NOTTARGETED.value && data.getFundMembership().getHistoryId() != null ){
+            }else if(dummyGender == 2 && data.getWelfarePenTypeInfor().getUndergroundDivision().value == PitInsiderDivision.NOTTARGETED.value && data.getFundMembership().getHistoryId() != null ){
                 //6
                 ws.getShapes().remove(ws.getShapes().get("C1_9"));
                 ws.getShapes().remove(ws.getShapes().get("C1_10"));
                 ws.getShapes().remove(ws.getShapes().get("C1_11"));
                 ws.getShapes().remove(ws.getShapes().get("C1_12"));
                 ws.getShapes().remove(ws.getShapes().get("C1_14"));
-            }else if((data.getEmployeeInfo().getGender() == 1 || data.getEmployeeInfo().getGender() == 2) && data.getWelfarePenTypeInfor().getUndergroundDivision().value == PitInsiderDivision.TARGET.value && data.getFundMembership().getHistoryId() != null){
+            }else if((dummyGender == 1 || dummyGender == 2) && data.getWelfarePenTypeInfor().getUndergroundDivision().value == PitInsiderDivision.TARGET.value && data.getFundMembership().getHistoryId() != null){
                 //7
 
                 ws.getShapes().remove(ws.getShapes().get("C1_9"));
