@@ -144,7 +144,7 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
             return result.substring(0, 3);
         }
         if (stt == 2 && result.length() > 6) {
-            return result.substring(6, result.length());
+            return result.substring(3, result.length());
         }
         if (stt == 1 && result.length() < 3) {
             return result;
