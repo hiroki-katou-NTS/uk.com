@@ -238,11 +238,14 @@ public class InsuredNameChangedNotiService extends ExportService<InsuredNameChan
             //社会保険届作成設定・被保険者整理番号区分を確認する
             //健康保険番号を出力
             if(socialInsurNotiCreateSet.getInsuredNumber() == InsurPersonNumDivision.OUTPUT_HEAL_INSUR_NUM){
-                //ドメインモデル「健保番号情報」を取得する
-                Optional<HealInsurNumberInfor> healInsurNumberInfor = emplHealInsurQualifiInforRepository.getHealInsurNumberInforByHisId(empHealthInsurBenefits.getDatePeriod().identifier());
-                data.setHealInsurNumberInfor(healInsurNumberInfor.isPresent() ? healInsurNumberInfor.get() : null);
-                //go to 1
-                //健保組合番号を出力
+                if(empHealthInsurBenefits != null){
+                    //ドメインモデル「健保番号情報」を取得する
+                    Optional<HealInsurNumberInfor> healInsurNumberInfor = emplHealInsurQualifiInforRepository.getHealInsurNumberInforByHisId(empHealthInsurBenefits.getDatePeriod().identifier());
+                    data.setHealInsurNumberInfor(healInsurNumberInfor.isPresent() ? healInsurNumberInfor.get() : null);
+                    //go to 1
+                    //健保組合番号を出力
+                }
+
             }else if(socialInsurNotiCreateSet.getInsuredNumber() == InsurPersonNumDivision.OUTPUT_HEAL_INSUR_UNION){
                 List<HealInsurPortPerIntell> listHealInsurPortPerIntell = healInsurPortPerIntellRepository.getHealInsurPortPerIntellById(empId);
                 //取得した「健保組合加入期間情報」をチェックする
