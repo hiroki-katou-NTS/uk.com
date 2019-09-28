@@ -27,7 +27,6 @@
         <com:ValidatorScript>
             nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.BasicPenNumber
             nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.ReasonsForRegisRoman
-            nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.RemarkForQuaCompany
         </com:ValidatorScript>
     </ui:define>
 
@@ -87,7 +86,7 @@
                                     value: otherReasons,
                                     name: '#{i18n.getText('QSI003_25')}',
                                     enable: $vm.others(),
-                                    constraint: 'RemarkForQuaCompany'}" />
+                                    constraint: 'ReasonsForRegisRoman'}" />
                     </div>
                 </div>
             </div>
@@ -122,7 +121,7 @@
                                     value: otherReasonp,
                                     name: '#{i18n.getText('QSI003_32')}',
                                     enable: $vm.otherp(),
-                                    constraint: 'RemarkForQuaCompany'}" />
+                                    constraint: 'ReasonsForRegisRoman'}" />
                     </div>
                 </div>
             </div>
