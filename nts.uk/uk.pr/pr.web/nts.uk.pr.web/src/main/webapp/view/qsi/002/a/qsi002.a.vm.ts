@@ -186,6 +186,7 @@ module nts.uk.pr.view.qsi002.a.viewmodel {
                 self.selectedSocialInsurOutOrder(e.outputOrder);
                 self.selectedPersonalNumClass(e.printPersonNumber);
                 self.selectedInsurPersonNumDivision(e.insuredNumber);
+                self.selectedRuleCode(e.submittedName);
             }).fail(e =>{
 
             });
@@ -206,7 +207,7 @@ module nts.uk.pr.view.qsi002.a.viewmodel {
                     Number(self.selectedBussEsimateClass()),
                     Number(self.selectedSocialInsurOutOrder()),
                     Number(self.selectedPersonalNumClass()),
-                    0,
+                    self.selectedRuleCode(),
                     Number(self.selectedInsurPersonNumDivision()),
                     null,
                     null,
