@@ -14,6 +14,8 @@ import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Stateless
@@ -89,9 +91,11 @@ public class NotificationOfLossInsExportCSVService extends ExportService<Notific
 			List<SocialInsurancePrefectureInformation> infor  = socialInsuranceInfor.findByHistory();
 			List<InsLossDataExport> healthInsLoss = socialInsurNotiCreateSetEx.getHealthInsLoss(empIds, cid, start, end);
 			List<InsLossDataExport> welfPenInsLoss = socialInsurNotiCreateSetEx.getWelfPenInsLoss(empIds, cid, start, end);
+			healthInsLoss.addAll(welfPenInsLoss);
+			healthInsLoss.stream().sorted(Comparator.comparing(InsLossDataExport::getOfficeCd).thenComparing(InsLossDataExport::getEmpCd));
 			CompanyInfor company = socialInsurNotiCreateSetEx.getCompanyInfor(cid);
 			notificationOfLossInsCSVFileGenerator.generate(exportServiceContext.getGeneratorContext(),
-					new LossNotificationInformation(healthInsLoss, welfPenInsLoss,null, domain, exportServiceContext.getQuery().getReference(), company, infor));
+					new LossNotificationInformation(healthInsLoss, null,null, domain, exportServiceContext.getQuery().getReference(), company, infor));
         }
 
         if(domain.getOutputFormat().get() == OutputFormatClass.HEAL_INSUR_ASSO) {
