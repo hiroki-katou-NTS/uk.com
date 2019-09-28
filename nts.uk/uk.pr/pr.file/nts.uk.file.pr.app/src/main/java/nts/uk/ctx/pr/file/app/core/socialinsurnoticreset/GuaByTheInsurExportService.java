@@ -328,10 +328,10 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
 //            throw new BusinessException("Msg_812",TextResource.localize("QSI001_27"));
 //        }
         if (socialInsurNotiCreateSet.get().getOfficeInformation().value == DO_NOT_OUPUT) {
-            throw new BusinessException("MsgQ_174", "QSI001_31");
+            throw new BusinessException("MsgQ_174", "QSI001_A222_27");
         }
         if (!socialInsurNotiCreateSet.get().getFdNumber().isPresent()) {
-            throw new BusinessException("MsgQ_5", "QSI001_46");
+            throw new BusinessException("MsgQ_5", "QSI001_A222_50");
         }
         if (!socialInsurNotiCreateSet.get().getOutputFormat().isPresent()) {
             throw new BusinessException("MsgQ_5", "QSI001_46");
