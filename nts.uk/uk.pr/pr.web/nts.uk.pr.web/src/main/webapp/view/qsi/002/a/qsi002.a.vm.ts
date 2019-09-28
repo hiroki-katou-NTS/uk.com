@@ -76,7 +76,7 @@ module nts.uk.pr.view.qsi002.a.viewmodel {
                 { code: '0', name: nts.uk.resource.getText('QSI002_A222_10') },
                 { code: '1', name: nts.uk.resource.getText('QSI002_A222_11') }
             ]);
-            self.selectedRuleCode = ko.observable(1);
+            self.selectedRuleCode = ko.observable(0);
             //init datepicker
             self.baseDate1 = ko.observable(moment());
 
@@ -186,6 +186,7 @@ module nts.uk.pr.view.qsi002.a.viewmodel {
                 self.selectedSocialInsurOutOrder(e.outputOrder);
                 self.selectedPersonalNumClass(e.printPersonNumber);
                 self.selectedInsurPersonNumDivision(e.insuredNumber);
+                self.selectedRuleCode(e.submittedName);
             }).fail(e =>{
 
             });
@@ -206,7 +207,7 @@ module nts.uk.pr.view.qsi002.a.viewmodel {
                     Number(self.selectedBussEsimateClass()),
                     Number(self.selectedSocialInsurOutOrder()),
                     Number(self.selectedPersonalNumClass()),
-                    0,
+                    self.selectedRuleCode(),
                     Number(self.selectedInsurPersonNumDivision()),
                     null,
                     null,
