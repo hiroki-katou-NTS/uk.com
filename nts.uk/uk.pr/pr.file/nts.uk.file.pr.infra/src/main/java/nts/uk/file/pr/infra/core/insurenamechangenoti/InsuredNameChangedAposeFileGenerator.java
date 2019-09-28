@@ -82,11 +82,31 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
         String dummyName = "厚年 陽子";
         String dummyNameKana = "コウネン ヨウコ";
 
+        String healthInsuranceOfficeNumber1[];
+
 
         if(socialInsurNotiCreateSet.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL){
-            ws.getCells().get("K11").putValue(data.getSocialInsuranceOffice() != null ? data.getSocialInsuranceOffice().getInsuranceMasterInformation().getOfficeOrganizeNumber().getHealthInsuranceOfficeNumber1() : null);
+            if(data.getSocialInsuranceOffice() != null){
+                healthInsuranceOfficeNumber1 = data.getSocialInsuranceOffice().getInsuranceMasterInformation().getOfficeOrganizeNumber().getHealthInsuranceOfficeNumber1().get().v().split("");
+                ws.getCells().get("E12").putValue(healthInsuranceOfficeNumber1[0]);
+                ws.getCells().get("F12").putValue(healthInsuranceOfficeNumber1[1]);
+                ws.getCells().get("G12").putValue(healthInsuranceOfficeNumber1[2]);
+                ws.getCells().get("H12").putValue(healthInsuranceOfficeNumber1[3]);
+                ws.getCells().get("I12").putValue(healthInsuranceOfficeNumber1[4]);
+                ws.getCells().get("J12").putValue(healthInsuranceOfficeNumber1[5]);
+            }
+
         }else{
-            ws.getCells().get("K11").putValue(data.getSocialInsuranceOffice() != null ? data.getSocialInsuranceOffice().getInsuranceMasterInformation().getOfficeOrganizeNumber().getWelfarePensionOfficeNumber1() : null);
+            if(data.getSocialInsuranceOffice() != null){
+                healthInsuranceOfficeNumber1 = data.getSocialInsuranceOffice().getInsuranceMasterInformation().getOfficeOrganizeNumber().getWelfarePensionOfficeNumber1().get().v().split("");
+                ws.getCells().get("E12").putValue(healthInsuranceOfficeNumber1[0]);
+                ws.getCells().get("F12").putValue(healthInsuranceOfficeNumber1[1]);
+                ws.getCells().get("G12").putValue(healthInsuranceOfficeNumber1[2]);
+                ws.getCells().get("H12").putValue(healthInsuranceOfficeNumber1[3]);
+                ws.getCells().get("I12").putValue(healthInsuranceOfficeNumber1[4]);
+                ws.getCells().get("J12").putValue(healthInsuranceOfficeNumber1[5]);
+            }
+
         }
 
         //fill to A1_2
