@@ -137,7 +137,7 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
             return result.substring(0, 3);
         }
         if (stt == 2 && result.length() >= 6) {
-            return phone.substring(3, 6);
+            return result.substring(3, 6);
         }
         if (stt == 3 && result.length() > 6) {
             return result.substring(6, result.length());
