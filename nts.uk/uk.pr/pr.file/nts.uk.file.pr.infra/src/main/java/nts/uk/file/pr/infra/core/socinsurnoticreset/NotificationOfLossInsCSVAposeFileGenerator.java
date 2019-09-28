@@ -87,7 +87,7 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
                         checkLength(data.getWelfOfficeNumber2(),4));
                 cells.get(startRow, 3).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? data.getOfficeNumber() : data.getWelfOfficeNumber());
                 cells.get(startRow, 4).setValue(checkLength(company.getPostCd(),3));
-                cells.get(startRow, 5).setValue(company.getPostCd().length() == 8 ? company.getPostCd().substring(4, 8) : "");
+                cells.get(startRow, 5).setValue(company.getPostCd().length() == 8 ? company.getPostCd().substring(4, 8) : company.getPostCd().length() > 4 ? company.getPostCd().substring(4, company.getPostCd().length()) : "");
                 cells.get(startRow, 6).setValue(checkLength(company.getAdd_1() + company.getAdd_2(),75));
                 cells.get(startRow, 7).setValue(checkLength(company.getCompanyName(), 50));
                 cells.get(startRow, 8).setValue(company.getRepname());
@@ -186,7 +186,7 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
                 startRow = startRow + 1;
                 cells.get(startRow, 0).setValue(data.getUnionOfficeNumber());
                 cells.get(startRow, 1).setValue(checkLength(company.getPostCd(), 3));
-                cells.get(startRow, 2).setValue(company.getPostCd().length() == 8 ? company.getPostCd().substring(4, 8) : "");
+                cells.get(startRow, 2).setValue(company.getPostCd().length() == 8 ? company.getPostCd().substring(4, 8) : company.getPostCd().length() > 4 ? company.getPostCd().substring(4, company.getPostCd().length()) : "");
                 cells.get(startRow, 3).setValue(checkLength(company.getAdd_1() + company.getAdd_2(),75));
                 cells.get(startRow, 4).setValue(checkLength(company.getCompanyName(), 50));
                 cells.get(startRow, 5).setValue(company.getRepname());
@@ -260,7 +260,7 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
                 cells.get(startRow, 0).setValue(data.getFunMember());
                 cells.get(startRow, 1).setValue(data.getWelPenOfficeNumber());
                 cells.get(startRow, 2).setValue(checkLength(company.getPostCd(),3));
-                cells.get(startRow, 3).setValue(company.getPostCd().length() == 8  ? company.getPostCd().substring(4, 8) : "");
+                cells.get(startRow, 3).setValue(company.getPostCd().length() == 8 ? company.getPostCd().substring(4, 8) : company.getPostCd().length() > 4 ? company.getPostCd().substring(4, company.getPostCd().length()) : "");
                 cells.get(startRow, 4).setValue(checkLength(company.getAdd_1() + company.getAdd_2(), 75));
                 cells.get(startRow, 5).setValue(checkLength(company.getCompanyName(),50));
                 cells.get(startRow, 6).setValue(company.getRepname());
