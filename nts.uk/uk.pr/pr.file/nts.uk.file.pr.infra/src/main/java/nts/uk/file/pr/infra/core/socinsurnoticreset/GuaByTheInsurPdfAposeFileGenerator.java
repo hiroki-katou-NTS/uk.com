@@ -81,9 +81,8 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
         ws.getRangeByName(sheetName + "!A1_1").setValue(element.getBusinessstablishmentbCode1());
         ws.getRangeByName(sheetName + "!A1_2").setValue(element.getBusinessstablishmentbCode2());
         ws.getRangeByName(sheetName + "!A1_3").setValue(element.getOfficeNumber());
-        ws.getRangeByName(sheetName + "!A1_4_1").setValue(element.getOfficePostalCode().length() > 3 ? element.getOfficePostalCode().substring(0,3) : element.getOfficePostalCode());
-        ws.getRangeByName(sheetName + "!A1_4_2").setValue(element.getOfficePostalCode().length() >=  7 ? element.getOfficePostalCode().substring(3,7)
-                :  element.getOfficePostalCode().length() > 3 ? element.getOfficePostalCode().substring(3,element.getOfficePostalCode().length()) : "");
+        ws.getRangeByName(sheetName + "!A1_4_1").setValue(formatPortCd(element.getPostalCode(),1));
+        ws.getRangeByName(sheetName + "!A1_4_2").setValue(formatPortCd(element.getPostalCode(),3));
         ws.getRangeByName(sheetName + "!A1_5").setValue(element.getOfficeAddress1()+"　"+element.getOfficeAddress2());
         ws.getRangeByName(sheetName +"!A1_6").setValue(element.getBusinessName());
         ws.getRangeByName(sheetName + "!A1_7").setValue(element.getBusinessName1());
@@ -124,8 +123,8 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_24", stt)).setValue(data.getMonRemunerationAmountInCurrency());
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_25", stt)).setValue(data.getMonRemunerationAmountOfActualItem());
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_26", stt)).setValue(data.getCompenMonthlyAamountTotal());
-        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_27_1", stt)).setValue(data.getPostalCode().length() > 3 ? data.getPostalCode().substring(0,3) : data.getPostalCode());
-        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_27_2", stt)).setValue(data.getPostalCode().length() >= 7 ? data.getPostalCode().substring(3,7) : data.getPostalCode());
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_27_1", stt)).setValue(formatPortCd(data.getPostalCode(),stt));
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_27_2", stt)).setValue(formatPortCd(data.getPostalCode(),stt));
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_28", stt)).setValue(data.getStreetAddress());
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_29", stt)).setValue(data.getAddressKana());
         worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_39" : "A2_39_" + stt).setText(data.getReasonOtherContent());
@@ -141,6 +140,22 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
         }
         if (stt == 3 && result.length() > 6) {
             return result.substring(6, result.length());
+        }
+        return "";
+    }
+    private String formatPortCd(String portCd, int stt){
+        String result = portCd.replace("-", "");
+        if (stt == 1 && result.length() >= 3) {
+            return result.substring(0, 3);
+        }
+        if (stt == 2 && result.length() > 6) {
+            return result.substring(3, result.length());
+        }
+        if (stt == 1 && result.length() < 3) {
+            return result;
+        }
+        if (stt == 1 && result.length() < 3) {
+            return result;
         }
         return "";
     }
