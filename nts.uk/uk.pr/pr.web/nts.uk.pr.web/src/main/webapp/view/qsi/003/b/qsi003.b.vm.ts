@@ -95,6 +95,7 @@ module nts.uk.pr.view.qsi003.b.viewmodel {
         getDataRomaji(empId: string) {
             block.invisible();
             let self = this;
+            let dfd = $.Deferred();
             nts.uk.pr.view.qsi003.b.service.getReasonRomajiName(empId).done(function (data: any) {
                 if(data){
                     self.basicPenNumber(data.basicPenNumber);
@@ -117,8 +118,10 @@ module nts.uk.pr.view.qsi003.b.viewmodel {
                 }
             }).fail(error => {
                 dialog.alertError(error);
+                dfd.reject();
             });
             block.clear();
+            return dfd.promise();
         }
 
         constructor() {
@@ -138,7 +141,10 @@ module nts.uk.pr.view.qsi003.b.viewmodel {
 
         updateReasonRomajiName(){
             var self = this;
-
+            $('.nts-input').trigger("validate");
+            if (nts.uk.ui.errors.hasError()) {
+                return;
+            }
             let spouse : any = {
                 other :  self.others() == true ? 1 : 0,
                 listed :  self.listeds() == true ? 1 : 0,

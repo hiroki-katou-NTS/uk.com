@@ -68,7 +68,7 @@ public class NotificationOfLossInsExportCSVService extends ExportService<Notific
 		if(domain.getInsuredNumber() == InsurPersonNumDivision.DO_NOT_OUPUT) {
 			throw new BusinessException("MsgQ_174", "QSI013_21");
 		}
-		if(domain.getOfficeInformation() == BusinessDivision.OUTPUT_COMPANY_NAME) {
+		if(domain.getOfficeInformation() == BusinessDivision.DO_NOT_OUTPUT) {
 			throw new BusinessException("MsgQ_174", "QSI013_23");
 		}
 		if(!domain.getFdNumber().isPresent()) {
@@ -103,7 +103,7 @@ public class NotificationOfLossInsExportCSVService extends ExportService<Notific
 		}
 
 		if(domain.getOutputFormat().get() == OutputFormatClass.THE_WELF_PEN) {
-			List<SocialInsurancePrefectureInformation> infor  = socialInsuranceInfor.findByHistory();;
+			List<SocialInsurancePrefectureInformation> infor  = socialInsuranceInfor.findByHistory();
 			CompanyInfor company = socialInsurNotiCreateSetEx.getCompanyInfor(cid);
 			List<PensFundSubmissData> healthInsAssociationData = socialInsurNotiCreateSetEx.getHealthInsAssociation(empIds, cid, start, end);
 			notificationOfLossInsCSVFileGenerator.generate(exportServiceContext.getGeneratorContext(),

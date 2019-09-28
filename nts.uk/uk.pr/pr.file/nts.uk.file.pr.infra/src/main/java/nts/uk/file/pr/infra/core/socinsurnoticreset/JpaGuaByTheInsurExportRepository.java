@@ -249,7 +249,7 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("       QTPPITEM.START_DATE <= ?endDate ");
         exportSQL.append("      AND QTPPITEM.START_DATE >= ?startDate ) AS QTPPI ");
         exportSQL.append(" ON QTPPI.EMPLOYEE_ID = ROOT.EMPLOYEE_ID ");
-        exportSQL.append(" LEFT JOIN ");
+        exportSQL.append(" INNER JOIN ");
         exportSQL.append("   (SELECT * ");
         exportSQL.append("    FROM QQSMT_EMP_PEN_INS QEPITEM ");
         exportSQL.append("    WHERE QEPITEM.START_DATE <= ?endDate ");
@@ -336,6 +336,7 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("      HEALTH_INSURANCE_PREFECTURE_NO,");
         exportSQL.append("      WELFARE_PENSION_PREFECTURE_NO,");
         exportSQL.append("      HEAL_INSUR_SAME_CTG,     ");
+        exportSQL.append("      QUALIFI_DISTIN,");
         exportSQL.append("      HEAL_INSUR_INHEREN_PR,");
         exportSQL.append("      HEAL_INSUR_UNION_NMBER");
         exportSQL.append("   FROM    ");
@@ -426,7 +427,8 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
                 .welPrefectureNo(i[29] == null ? 0 : ((BigDecimal) i[29]).intValue())
                 .healInsCtg(i[30] == null ? 0 : ((BigDecimal) i[30]).intValue())
                 .distin(i[31] == null ? "" : i[31].toString())
-                .healUnionNumber(i[32] == null ? "" : i[32].toString())
+                .healInsInherenPr(i[32] == null ? "" : i[32].toString())
+                .healUnionNumber(i[33] == null ? "" : i[33].toString())
                 .build()
         ).collect(Collectors.toList());
     }

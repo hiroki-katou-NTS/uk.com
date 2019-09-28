@@ -108,6 +108,7 @@ module nts.uk.pr.view.qsi013.b.viewmodel {
         getDataLossInfo(empId: string) {
             block.invisible();
             let self = this;
+            let dfd = $.Deferred();
             nts.uk.pr.view.qsi013.b.service.getLossInfoById(empId).done(function (data: any) {
                 if (data) {
                     if(data.healthInsLossInfo){
@@ -154,8 +155,10 @@ module nts.uk.pr.view.qsi013.b.viewmodel {
                 }
             }).fail(error => {
                 dialog.alertError(error);
+                dfd.reject();
             });
             block.clear();
+            return dfd.promise();
         }
 
         init(){
@@ -203,6 +206,10 @@ module nts.uk.pr.view.qsi013.b.viewmodel {
 
         registerLossInfo() {
             var self = this;
+            $('.nts-input').trigger("validate");
+            if (nts.uk.ui.errors.hasError()) {
+                return;
+            }
             //for register info
             let healthInsLossInfo: any = {
                 empId: self.selectedItem(),

@@ -90,7 +90,7 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
                 cells.get(startRow, 4).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? data.getHealOfficeNumber() : data.getWelOfficeNumber());
                 cells.get(startRow, 5).setValue(company.getPostCd().length() > 3 ? company.getPostCd().substring(0, 3) : company.getPostCd());
                 cells.get(startRow, 6).setValue(company.getPostCd().length() == 8 ? company.getPostCd().substring(0, 4) : "");
-                cells.get(startRow, 7).setValue((company.getAdd_1() + company.getAdd_2()).length() > 37 ? (company.getAdd_1() + company.getAdd_2()).substring(0, 37) : company.getAdd_1() + company.getAdd_2());
+                cells.get(startRow, 7).setValue(checkLength(company.getAdd_1() + company.getAdd_2(),37));
                 cells.get(startRow, 8).setValue(company.getCompanyName().length() > 25 ? company.getCompanyName().substring(0, 25) : company.getCompanyName());
                 cells.get(startRow, 9).setValue(company.getRepname());
                 cells.get(startRow, 10).setValue(company.getPhoneNum().length() > 5 ? company.getPhoneNum().substring(0, 5) : company.getPhoneNum());
@@ -180,7 +180,7 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
                 startRow = startRow + 1;
                 cells.get(startRow, 1).setValue(company.getPostCd().length() > 3 ? company.getPostCd().substring(0, 3) : company.getPostCd());
                 cells.get(startRow, 2).setValue(company.getPostCd().length() == 8 ? company.getPostCd().substring(4, 8) : "");
-                cells.get(startRow, 3).setValue((company.getAdd_1() + company.getAdd_2()).length() > 0 ? (company.getAdd_1() + company.getAdd_2()).substring(0, 37) : company.getAdd_1() + company.getAdd_2());
+                cells.get(startRow, 3).setValue(checkLength(company.getAdd_1() + company.getAdd_2(),37));
                 cells.get(startRow, 4).setValue(company.getCompanyName().length() > 25 ? company.getCompanyName().substring(0, 25) : company.getCompanyName());
                 cells.get(startRow, 5).setValue(company.getRepname().length() > 7 ? company.getRepname().substring(0,7) : company.getRepname());
                 cells.get(startRow, 10).setValue(company.getPhoneNum().length() > 5 ? company.getPhoneNum().substring(0, 5) : company.getPhoneNum());
@@ -257,7 +257,7 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
                 cells.get(startRow, 2).setValue(data.getFunMember());
                 cells.get(startRow, 3).setValue(company.getPostCd().length() > 3 ? company.getPostCd().substring(0, 3) : company.getPostCd());
                 cells.get(startRow, 4).setValue(company.getPostCd().length() == 8  ? company.getPostCd().substring(4, 8) : "");
-                cells.get(startRow, 5).setValue((company.getAdd_1() + company.getAdd_2()).length() > 0 ? (company.getAdd_1() + company.getAdd_2()).substring(0, 25) : company.getAdd_1() + company.getAdd_2());
+                cells.get(startRow, 5).setValue(checkLength(company.getAdd_1() + company.getAdd_2(),25));
                 cells.get(startRow, 4).setValue(company.getCompanyName().length() > 25 ? company.getCompanyName().substring(0, 25) : company.getCompanyName());
                 cells.get(startRow, 5).setValue(company.getRepname());
                 cells.get(startRow, 10).setValue(company.getPhoneNum().length() > 5 ? company.getPhoneNum().substring(0, 5) : company.getPhoneNum());
@@ -344,4 +344,5 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
     private int convertDateToYearMonth(String date){
         return Integer.parseInt(date.substring(0,4) + date.substring(5,6));
     }
+
 }
