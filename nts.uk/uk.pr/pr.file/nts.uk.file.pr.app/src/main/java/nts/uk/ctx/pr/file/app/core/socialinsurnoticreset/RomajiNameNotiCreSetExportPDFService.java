@@ -84,9 +84,11 @@ public class RomajiNameNotiCreSetExportPDFService extends ExportService<RomajiNa
         }
 
         List<String> listEmp = exportServiceContext.getQuery().getEmpIds();
+        GeneralDate date  = exportServiceContext.getQuery().getDate();
         String empId = null;
         String isSpouse = exportServiceContext.getQuery().getPersonTarget();
         List<RomajiNameNotification> romajiNameNotificationList = new ArrayList<RomajiNameNotification>();
+        EmpCorpHealthOffHis empCorpHealthOffHis = empCorpHealthOffHisRepository.getEmpCorpHealthOffHisById(listEmp, date).orElse(null);
         for (int i = 0; i < listEmp.size(); i++) {
             EmpBasicPenNumInfor empBasicPenNumInfor = null;
             PersonInfo personInfo = null;
@@ -95,9 +97,8 @@ public class RomajiNameNotiCreSetExportPDFService extends ExportService<RomajiNa
             EmpFamilySocialIns empFamilySocialIns  = null;
             EmpFamilyInsHis empFamilyInsHis = null;
             FamilyMember familyMember = null ;
-            EmpCorpHealthOffHis empCorpHealthOffHis = null;
+
             AffOfficeInformation affOfficeInformation = null;
-            GeneralDate date  = exportServiceContext.getQuery().getDate();
             if (isSpouse.equals("0")) {
                 empBasicPenNumInfor = empBasicPenNumInforRepository.getEmpBasicPenNumInforById(empId).orElse(null);
                 //personInfo = romajiNameNotiCreSetExReposity.getPersonInfo(empId);
@@ -106,13 +107,13 @@ public class RomajiNameNotiCreSetExportPDFService extends ExportService<RomajiNa
                 //familyMember = romajiNameNotiCreSetExReposity.getFamilyInfo(empId, isSpouse);
                 familyMember = new FamilyMember("1980-01-02", "HONG KILDONGS WIFE", "11" , 2, "ホン ギルトンノツマ");
                 if (familyMember != null ){
-                    int familyId  = Integer.parseInt(familyMember.getFamilyMemberId());
+                    String familyId  = familyMember.getFamilyMemberId();
                     empFamilyInsHis = empFamilyInsHisRepository.getListEmFamilyHis(empId, familyId).orElse(null);
                     if (empFamilyInsHis != null) {
                         //get history id
                         List<DateHistoryItem> dateHistoryItemList = empFamilyInsHis.getDateHistoryItem();
                        if(!this.getHistory(dateHistoryItemList, date).isEmpty()){
-                           empFamilySocialIns = empFamilySocialInsRepository.getEmpFamilySocialInsById(empId, String.valueOf(familyId), this.getHistory(dateHistoryItemList, date)).orElse(null);
+                           empFamilySocialIns = empFamilySocialInsRepository.getEmpFamilySocialInsById(empId, familyId, this.getHistory(dateHistoryItemList, date)).orElse(null);
                        }
                     }
                 }
@@ -120,11 +121,6 @@ public class RomajiNameNotiCreSetExportPDFService extends ExportService<RomajiNa
             }
 
             personInfo = new PersonInfo("1980-01-01", "洪吉童", "ホン ギルトン", "ADB3171F-B5A7-40A7-9B8A-DAE80EECB44B", 1);
-
-            //get code
-            List<String> emps = new ArrayList<String>();
-            emps.add(empId);
-            empCorpHealthOffHis = empCorpHealthOffHisRepository.getEmpCorpHealthOffHisById(emps, date).orElse(null);
 
             if (empCorpHealthOffHis != null ){
                 affOfficeInformation = affOfficeInformationRepository.getAffOfficeInformationById(empId, empCorpHealthOffHis.getPeriod().get(0).identifier()).orElse(null);

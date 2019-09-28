@@ -82,7 +82,7 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("          FROM QQSMT_HEAL_INSUR_PORT_INT ");
         exportSQL.append("          WHERE END_DATE <= ?endDate AND END_DATE >= ?startDate  ) ppi" );
         exportSQL.append("          ON qi.EMPLOYEE_ID = ppi.EMPLOYEE_ID");
-        exportSQL.append("  LEFT JOIN ");
+        exportSQL.append("  INNER JOIN ");
         exportSQL.append("       (SELECT * ");
         exportSQL.append("       FROM QQSMT_EMP_PEN_INS ");
         exportSQL.append("       WHERE END_DATE <= ?endDate AND END_DATE >= ?startDate) pi");
@@ -132,8 +132,8 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
                 .oldName(i[8] == null ? "" : i[8].toString())
                 .oldNameKana(i[9] == null ? "" : i[9].toString())
                 .birthDay(i[10] == null ? "" : i[10].toString())
-                .gender(i[11] == null ?  "" : i[11].toString())
-                .underDivision(i[12] == null ? "" : i[12].toString())
+                .gender(Integer.valueOf(i[11].toString()))
+                .underDivision(Integer.valueOf(i[12].toString()))
                 .livingAbroad(i[13] == null ? 0 : ((BigDecimal) i[13]).intValue())
                 .shortStay(i[14] == null ? 0 : ((BigDecimal) i[14]).intValue())
                 .resonOther(i[15] == null ? 0 : ((BigDecimal) i[15]).intValue())
@@ -339,7 +339,8 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("      QUALIFI_DISTIN,");
         exportSQL.append("      HEAL_INSUR_INHEREN_PR,");
         exportSQL.append("      HEAL_INSUR_UNION_NMBER,");
-        exportSQL.append("      HEALTH_INSURANCE_UNION_OFFICE_NUMBER ");
+        exportSQL.append("      HEALTH_INSURANCE_UNION_OFFICE_NUMBER, ");
+        exportSQL.append("      ti.HISTORY_ID ");
         exportSQL.append("   FROM    ");
         exportSQL.append("       (SELECT *");
         exportSQL.append("         FROM QQSMT_EMP_HEAL_INSUR_QI ");
@@ -365,7 +366,7 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("       FROM QQSMT_EMP_WELF_INS_QC_IF ");
         exportSQL.append("       WHERE START_DATE <= ?endDate AND START_DATE >= ?startDate) wi");
         exportSQL.append("       ON wi.EMPLOYEE_ID = qi.EMPLOYEE_ID");
-        exportSQL.append("    LEFT JOIN (SELECT *");
+        exportSQL.append("    INNER JOIN (SELECT *");
         exportSQL.append("       FROM QQSMT_EMP_PEN_INS ");
         exportSQL.append("       WHERE START_DATE <= ?endDate AND START_DATE >= ?startDate) pi");
         exportSQL.append("       ON pi.EMPLOYEE_ID = qi.EMPLOYEE_ID");
@@ -407,8 +408,8 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
                 .oldName(i[8] == null ? "" : i[8].toString())
                 .oldNameKana(i[9] == null ? "" : i[9].toString())
                 .birthDay(i[10] == null ? "" : i[10].toString())
-                .gender(i[11] == null ? "" : i[11].toString())
-                .underDivision(i[12] == null ? "" : i[12].toString())
+                .gender(Integer.valueOf(i[11].toString()))
+                .underDivision(Integer.valueOf(i[12].toString()))
                 .livingAbroad(i[13] == null ? 0 : ((BigDecimal) i[13]).intValue())
                 .shortStay(i[14] == null ?  0 : ((BigDecimal) i[14]).intValue())
                 .resonOther(i[15] == null ?  0 : ((BigDecimal) i[15]).intValue())
@@ -431,6 +432,7 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
                 .healInsInherenPr(i[32] == null ? "" : i[32].toString())
                 .healUnionNumber(i[33] == null ? "" : i[33].toString())
                 .unionOfficeNumber(i[34] == null ? "" : i[34].toString())
+                .hisId(i[35] == null ? "" : i[35].toString())
                 .build()
         ).collect(Collectors.toList());
     }
