@@ -172,20 +172,21 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
                 cells.get(startRow, 0).setValue(data.getUnionOfficeNumber());
                 cells.get(startRow, 1).setValue(Objects.toString(ins.getFdNumber().orElse(null), "001"));
                 cells.get(startRow, 2).setValue(baseDate.toString("yyyyMMdd"));
-                cells.get(startRow, 4).setValue(data.getHealInsInherenPr().length() > 10 ? data.getHealInsInherenPr().substring(0, 10) : data.getHealInsInherenPr());
+                cells.get(startRow, 3).setValue(data.getHealInsInherenPr().length() > 10 ? data.getHealInsInherenPr().substring(0, 10) : data.getHealInsInherenPr());
                 startRow = startRow + 1;
                 cells.get(startRow, 0).setValue("[kanri]");
                 startRow = startRow + 1;
                 cells.get(startRow, 1).setValue("001");
                 startRow = startRow + 1;
+                cells.get(startRow, 0).setValue(data.getUnionOfficeNumber());
                 cells.get(startRow, 1).setValue(company.getPostCd().length() > 3 ? company.getPostCd().substring(0, 3) : company.getPostCd());
                 cells.get(startRow, 2).setValue(company.getPostCd().length() == 8 ? company.getPostCd().substring(4, 8) : "");
                 cells.get(startRow, 3).setValue(checkLength(company.getAdd_1() + company.getAdd_2(),37));
                 cells.get(startRow, 4).setValue(company.getCompanyName().length() > 25 ? company.getCompanyName().substring(0, 25) : company.getCompanyName());
                 cells.get(startRow, 5).setValue(company.getRepname().length() > 7 ? company.getRepname().substring(0,7) : company.getRepname());
-                cells.get(startRow, 10).setValue(company.getPhoneNum().length() > 5 ? company.getPhoneNum().substring(0, 5) : company.getPhoneNum());
-                cells.get(startRow, 11).setValue(company.getPhoneNum().length() > 10 ? company.getPhoneNum().substring(6, 10) : "");
-                cells.get(startRow, 12).setValue(company.getPhoneNum().length() > 16 ? company.getPhoneNum().substring(11, 16) : "");
+                cells.get(startRow, 6).setValue(company.getPhoneNum().length() > 5 ? company.getPhoneNum().substring(0, 5) : company.getPhoneNum());
+                cells.get(startRow, 7).setValue(company.getPhoneNum().length() > 10 ? company.getPhoneNum().substring(6, 10) : "");
+                cells.get(startRow, 8).setValue(company.getPhoneNum().length() > 16 ? company.getPhoneNum().substring(11, 16) : "");
                 startRow++;
                 cells.get(startRow, 0).setValue("[data]");
             }
