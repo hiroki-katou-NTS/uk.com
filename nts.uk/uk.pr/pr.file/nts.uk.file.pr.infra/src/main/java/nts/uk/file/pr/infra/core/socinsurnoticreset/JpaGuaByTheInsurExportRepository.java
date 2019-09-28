@@ -338,7 +338,8 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("      HEAL_INSUR_SAME_CTG,     ");
         exportSQL.append("      QUALIFI_DISTIN,");
         exportSQL.append("      HEAL_INSUR_INHEREN_PR,");
-        exportSQL.append("      HEAL_INSUR_UNION_NMBER");
+        exportSQL.append("      HEAL_INSUR_UNION_NMBER,");
+        exportSQL.append("      HEALTH_INSURANCE_UNION_OFFICE_NUMBER ");
         exportSQL.append("   FROM    ");
         exportSQL.append("       (SELECT *");
         exportSQL.append("         FROM QQSMT_EMP_HEAL_INSUR_QI ");
@@ -429,6 +430,7 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
                 .distin(i[31] == null ? "" : i[31].toString())
                 .healInsInherenPr(i[32] == null ? "" : i[32].toString())
                 .healUnionNumber(i[33] == null ? "" : i[33].toString())
+                .unionOfficeNumber(i[34] == null ? "" : i[34].toString())
                 .build()
         ).collect(Collectors.toList());
     }
