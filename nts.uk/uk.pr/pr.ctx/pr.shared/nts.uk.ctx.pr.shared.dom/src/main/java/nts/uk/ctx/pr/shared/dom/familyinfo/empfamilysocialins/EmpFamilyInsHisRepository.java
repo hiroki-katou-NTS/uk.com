@@ -10,7 +10,7 @@ public interface EmpFamilyInsHisRepository {
 
     EmpFamilyInsHis getAllEmpFamilyInsHis(String empId);
 
-    Optional<EmpFamilyInsHis> getListEmFamilyHis(String empId, int familyId);
+    Optional<EmpFamilyInsHis> getListEmFamilyHis(String empId, String familyId);
 
 
 }
