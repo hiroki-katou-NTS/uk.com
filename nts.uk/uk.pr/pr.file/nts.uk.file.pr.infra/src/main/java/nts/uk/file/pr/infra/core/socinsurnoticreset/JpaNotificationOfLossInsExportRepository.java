@@ -513,14 +513,15 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
                 .reasonForLoss(i[28] != null ? i[28].toString() : "")
                 .addAppCtgSal(i[29] != null ? i[29].toString() : "")
                 .reason(i[30] != null ? i[30].toString() : "")
-                .standSal(i[31] != null ? i[31].toString() : "")
-                .secAddSalary(i[32] != null ? i[32].toString() : "")
-                .secStandSal(i[33] != null ? i[33].toString() : "")
-                .cause(i[34] != null ? ((BigDecimal) i[34]).intValue() : 0)
-                .isMoreEmp(i[35] != null ? i[35].toString() : "")
-                .otherReason(i[36] != null ? i[36].toString() : "")
-                .continReemAfterRetirement(i[37] != null ? i[37].toString() : "")
-                .basicPenNumber(i[38] != null ? i[38].toString() : "")
+                .addSal(i[31] != null ? i[31].toString() : "")
+                .standSal(i[32] != null ? i[32].toString() : "")
+                .secAddSalary(i[33] != null ? i[33].toString() : "")
+                .secStandSal(i[34] != null ? i[33].toString() : "")
+                .cause(i[35] != null ? ((BigDecimal) i[34]).intValue() : 0)
+                .isMoreEmp(i[36] != null ? i[36].toString() : "")
+                .otherReason(i[37] != null ? i[37].toString() : "")
+                .continReemAfterRetirement(i[38] != null ? i[38].toString() : "")
+                .basicPenNumber(i[39] != null ? i[39].toString() : "")
                 .build() ).collect(Collectors.toList());
     }
 
