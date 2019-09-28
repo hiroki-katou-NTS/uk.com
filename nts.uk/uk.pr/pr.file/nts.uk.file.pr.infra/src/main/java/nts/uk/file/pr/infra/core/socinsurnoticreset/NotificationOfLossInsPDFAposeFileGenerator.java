@@ -140,19 +140,13 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
 
     private String formatPortCd(String portCd, int stt){
         String result = portCd.replace("-", "");
-        if (stt == 1 && result.length() >= 3) {
+        if (result.length() >= 3 && stt == 1) {
             return result.substring(0, 3);
         }
-        if (stt == 2 && result.length() > 6) {
+        if (stt == 2 && result.length() > 3) {
             return result.substring(3, result.length());
         }
-        if (stt == 1 && result.length() < 3) {
-            return result;
-        }
-        if (stt == 1 && result.length() < 3) {
-            return result;
-        }
-        return "";
+        return result;
     }
 
     private String formatPhoneNumber(String phone, int stt) {

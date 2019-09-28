@@ -157,8 +157,8 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
 
     private String getPreferCode(int prefectureNo, String endDate, List<SocialInsurancePrefectureInformation> infor){
         Optional<SocialInsurancePrefectureInformation> refecture =  infor.stream().filter(item -> item.getNo() == prefectureNo
-                && item.getEndYearMonth() > convertDateToYearMonth(endDate)
-                && item.getStartYearMonth() < convertDateToYearMonth(endDate)).findFirst();
+                && item.getEndYearMonth() >= convertDateToYearMonth(endDate)
+                && item.getStartYearMonth() <= convertDateToYearMonth(endDate)).findFirst();
         return refecture.isPresent() ? refecture.get().getPrefectureCode().v() : "";
     }
 

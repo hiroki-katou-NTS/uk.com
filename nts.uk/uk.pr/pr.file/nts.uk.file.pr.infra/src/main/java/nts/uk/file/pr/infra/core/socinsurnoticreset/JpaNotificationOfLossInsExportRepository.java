@@ -339,8 +339,6 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
         exportSQL.append("    CCD,");
         exportSQL.append("    CONTRACT_CD,");
         exportSQL.append("    NAME,");
-        exportSQL.append("    MONTH_STR,");
-        exportSQL.append("    ABOLITION_ATR,");
         exportSQL.append("    REPRESENTATIVE_NAME,");
         exportSQL.append("    REPRESENTATIVE_JOB,");
         exportSQL.append("    KNNAME,");
@@ -355,7 +353,7 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
         exportSQL.append("    PHONE_NUMBER");
         exportSQL.append("  FROM  (SELECT * FROM BCMMT_COMPANY ");
         exportSQL.append("        WHERE CID = ?cid) c ");
-        exportSQL.append("  INNER JOIN BCMMT_ADDRESS i ON i.CID = c.CID");
+        exportSQL.append("  LEFT JOIN BCMMT_ADDRESS i ON i.CID = c.CID");
         try {
             result = (Object[]) this.getEntityManager().createNativeQuery(exportSQL.toString()).setParameter("cid", cid)
                     .getSingleResult();
@@ -363,23 +361,21 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
             return null;
         }
         return CompanyInfor.builder().companyId(cid)
-                .companyCode(result[0].toString())
-                .contractCd(result[1].toString())
-                .companyName(result[2].toString())
-                .startMonth(((BigDecimal)result[3]).intValue())
-                .isAbolition(((BigDecimal)result[4]).intValue())
-                .repname(result[5] != null ? result[5].toString() : "")
-                .repost(result[6] != null ? result[6].toString() : "")
-                .comNameKana(result[7] != null ? result[7].toString() : "")
-                .shortComName(result[8] != null ? result[8].toString() : "")
-                .taxNo(result[9] != null ? result[9].toString() : "")
-                .faxNum(result[10] != null ? result[10].toString() : "")
-                .add_1(result[11] != null ? result[11].toString() : "")
-                .add_2(result[12] != null ? result[12].toString() : "")
-                .addKana_1(result[13] != null ? result[13].toString() : "")
-                .addKana_2(result[14] != null ? result[14].toString() : "")
-                .postCd(result[15] != null ? result[15].toString() : "")
-                .phoneNum(result[16] != null ? result[16].toString() : "")
+                .companyCode(result[0] != null ? result[0].toString() : "")
+                .contractCd(result[1] != null ? result[1].toString() : "")
+                .companyName(result[2] != null ? result[2].toString() : "")
+                .repname(result[3] != null ? result[3].toString() : "")
+                .repost(result[4] != null ? result[4].toString() : "")
+                .comNameKana(result[5] != null ? result[5].toString() : "")
+                .shortComName(result[6] != null ? result[6].toString() : "")
+                .taxNo(result[7] != null ? result[7].toString() : "")
+                .faxNum(result[8] != null ? result[8].toString() : "")
+                .add_1(result[9] != null ? result[9].toString() : "")
+                .add_2(result[10] != null ? result[10].toString() : "")
+                .addKana_1(result[11] != null ? result[11].toString() : "")
+                .addKana_2(result[12] != null ? result[12].toString() : "")
+                .postCd(result[13] != null ? result[13].toString() : "")
+                .phoneNum(result[14] != null ? result[14].toString() : "")
                 .build()
                 ;
     }
