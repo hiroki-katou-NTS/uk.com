@@ -384,6 +384,12 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
             worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_16" : "A2_16_" + (stt + 1)));
             worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_12" : "A2_12_" + (stt + 1)));
         }
+        if((cause != ReasonsForLossHealthyIns.RETIREMENT.value) && (cause != ReasonsForLossHealthyIns.DEATH.value) && (cause != ReasonsForLossHealthyIns.DISABILITY_AUTHORIZATION.value)) {
+            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_14" : "A2_14_" + (stt + 1)));
+            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_16" : "A2_16_" + (stt + 1)));
+            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_17" : "A2_17_" + (stt + 1)));
+            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_12" : "A2_12_" + (stt + 1)));
+        }
     }
 
     private JapaneseDate toJapaneseDate (GeneralDate date) {
