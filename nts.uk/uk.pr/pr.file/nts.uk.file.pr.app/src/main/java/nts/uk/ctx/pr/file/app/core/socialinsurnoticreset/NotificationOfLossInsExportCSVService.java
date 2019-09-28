@@ -14,9 +14,11 @@ import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 @Stateless
 public class NotificationOfLossInsExportCSVService extends ExportService<NotificationOfLossInsExportQuery> {
@@ -91,7 +93,22 @@ public class NotificationOfLossInsExportCSVService extends ExportService<Notific
 			List<SocialInsurancePrefectureInformation> infor  = socialInsuranceInfor.findByHistory();
 			List<InsLossDataExport> healthInsLoss = socialInsurNotiCreateSetEx.getHealthInsLoss(empIds, cid, start, end);
 			List<InsLossDataExport> welfPenInsLoss = socialInsurNotiCreateSetEx.getWelfPenInsLoss(empIds, cid, start, end);
-			healthInsLoss.addAll(welfPenInsLoss);
+
+			if(domain.getBusinessArrSymbol() == BussEsimateClass.EMPEN_ESTAB_REARSIGN) {
+				List<InsLossDataExport> heal = new ArrayList<>();
+				healthInsLoss.forEach(h -> {
+					Optional<InsLossDataExport> temp = welfPenInsLoss.stream().filter(w -> w.getEmpCd().equals(h.getEmpCd())).findFirst();
+					if(temp.isPresent()) {
+						heal.add(temp.get());
+					}
+					if(!temp.isPresent()) {
+						h.setOtherReason("");
+						h.setCaInsurance(null);
+					}
+				});
+				healthInsLoss.removeAll(heal);
+				healthInsLoss.addAll(welfPenInsLoss);
+			}
 			healthInsLoss.stream().sorted(Comparator.comparing(InsLossDataExport::getOfficeCd).thenComparing(InsLossDataExport::getEmpCd));
 			CompanyInfor company = socialInsurNotiCreateSetEx.getCompanyInfor(cid);
 			notificationOfLossInsCSVFileGenerator.generate(exportServiceContext.getGeneratorContext(),
