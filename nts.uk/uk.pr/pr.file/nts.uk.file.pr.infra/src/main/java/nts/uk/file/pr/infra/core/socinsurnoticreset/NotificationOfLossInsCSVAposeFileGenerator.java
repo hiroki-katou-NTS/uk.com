@@ -285,7 +285,7 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
         if(result.length == 0 && phone.length() > 9 && stt == 2){
             return phone.length() >= 14 ? phone.substring(9, 14) : phone.substring(9, phone.length());
         }
-        return result.length >= stt ? result[stt] : "";
+        return result.length > stt ? result[stt] : "";
     }
 
     private void fillEmpPensionFund(PensFundSubmissData data, Cells cells,
