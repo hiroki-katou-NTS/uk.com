@@ -245,12 +245,19 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
         if(socialInsurNotiCreateSet.getOfficeInformation().value == BusinessDivision.OUTPUT_COMPANY_NAME.value){
 
             if(data.getCompanyInfor() != null){
-                ws.getCells().get("J22").putValue("〒 " + data.getCompanyInfor().getPostCd().substring(0,3) + " － " + data.getCompanyInfor().getPostCd().substring(3));
+                /*ws.getCells().get("J22").putValue("〒 " + data.getCompanyInfor().getPostCd().substring(0,3) + " － " + data.getCompanyInfor().getPostCd().substring(3));
                 ws.getCells().get("M22").putValue(data.getCompanyInfor().getAdd_1());
                 ws.getCells().get("M23").putValue(data.getCompanyInfor().getAdd_2());
                 ws.getCells().get("K24").putValue(data.getCompanyInfor().getCompanyName());
                 ws.getCells().get("K25").putValue(data.getCompanyInfor().getRepname());
-                ws.getCells().get("J27").putValue(data.getCompanyInfor().getPhoneNum());
+                ws.getCells().get("J27").putValue(data.getCompanyInfor().getPhoneNum());*/
+
+                ws.getCells().get("J22").putValue("〒 " + "168" + " － " + "8500");
+                ws.getCells().get("M22").putValue("杉並区");
+                ws.getCells().get("M23").putValue("高井戸３－２－１");
+                ws.getCells().get("K24").putValue("健保 良一");
+                ws.getCells().get("K25").putValue("健保 良一");
+                ws.getCells().get("J27").putValue("354326789");
             }
 
         }else{
@@ -264,9 +271,6 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
             }
 
         }
-
-
-
     }
 
     private JapaneseDate toJapaneseDate (GeneralDate date) {
