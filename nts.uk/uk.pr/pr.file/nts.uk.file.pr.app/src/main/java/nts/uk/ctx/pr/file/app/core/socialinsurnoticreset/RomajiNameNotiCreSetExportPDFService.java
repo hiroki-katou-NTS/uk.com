@@ -88,6 +88,7 @@ public class RomajiNameNotiCreSetExportPDFService extends ExportService<RomajiNa
         String empId = null;
         String isSpouse = exportServiceContext.getQuery().getPersonTarget();
         List<RomajiNameNotification> romajiNameNotificationList = new ArrayList<RomajiNameNotification>();
+        List<EmpNameReport> empNameReportList = new ArrayList<EmpNameReport>();
         EmpCorpHealthOffHis empCorpHealthOffHis = empCorpHealthOffHisRepository.getEmpCorpHealthOffHisById(listEmp, date).orElse(null);
         for (int i = 0; i < listEmp.size(); i++) {
             EmpBasicPenNumInfor empBasicPenNumInfor = null;
@@ -142,11 +143,11 @@ public class RomajiNameNotiCreSetExportPDFService extends ExportService<RomajiNa
                     socialInsuranceOffice,
                     romajiNameNotiCreSetting
             );
-
+            empNameReportList.add(empNameReport);
            romajiNameNotificationList.add( romajiNameNotification );
         }
 
-        if(romajiNameNotificationList.isEmpty()){
+        if(empNameReportList.isEmpty()){
             throw new BusinessException("MsgQ_37");
         }
 
