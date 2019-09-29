@@ -197,7 +197,6 @@ module nts.uk.pr.view.qsi002.a.viewmodel {
                 }).fail(e =>{
                     block.clear()
                 });
-
             }).fail(e =>{
 
             });
