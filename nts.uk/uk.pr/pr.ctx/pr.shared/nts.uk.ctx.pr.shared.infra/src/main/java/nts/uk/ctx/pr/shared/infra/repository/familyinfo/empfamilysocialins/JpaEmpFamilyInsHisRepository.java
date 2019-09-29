@@ -28,7 +28,7 @@ public class JpaEmpFamilyInsHisRepository extends JpaRepository implements EmpFa
     }
 
     @Override
-    public Optional<EmpFamilyInsHis> getListEmFamilyHis(String empId, String familyId) {
+    public Optional<EmpFamilyInsHis> getListEmFamilyHis(String empId, int familyId) {
         List<QqsmtEmpFamilyInsHis> history  =
                 this.queryProxy().query(SELECT_EM_FAMILY, QqsmtEmpFamilyInsHis.class)
                 .setParameter("empId", empId)
@@ -38,10 +38,10 @@ public class JpaEmpFamilyInsHisRepository extends JpaRepository implements EmpFa
     }
 
     @Override
-    public Optional<EmpFamilySocialIns> getEmpFamilySocialInsById(String empId, String familyId, String historyId) {
+    public Optional<EmpFamilySocialIns> getEmpFamilySocialInsById(String empId, int familyId, String historyId) {
         return this.queryProxy().query(SELECT_FAMILY_SOCIAL, QqsmtEmpFamilyInsHis.class)
                 .setParameter("historyId", historyId)
-                .setParameter("familyId", Integer.parseInt(familyId))
+                .setParameter("familyId", familyId)
                 .setParameter("empId", empId)
                 .getSingle(c->c.toDomains());
 }
