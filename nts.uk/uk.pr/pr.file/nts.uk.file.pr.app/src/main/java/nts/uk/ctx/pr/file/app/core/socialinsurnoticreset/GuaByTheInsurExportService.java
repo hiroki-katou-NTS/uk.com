@@ -231,7 +231,6 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
                 //C2_5
                 temp.setNameOfInsuredPerson1(element[26] != null ? element[26].toString() : "");
             }
-            //C1_10
             //C2_6 => covert to Date of birth (Showa)
             temp.setBrithDayShowa(element[27] != null ? element[27].toString() : "");
             //C2_7 => covert to Date of birth (Heisei)
@@ -241,8 +240,7 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
             //C2_9
             temp.setBrithDay(element[27] != null ? element[27].toString() : "");
 
-            temp.setHisId(element[28] != null ? element[28].toString() : "");
-
+            temp.setHisId(element[30] != null ? element[30].toString() : "");
             //Male(1), Female(2)
             String hisId = element[30] != null ? element[30].toString() : "";
             int gender = Integer.valueOf(element[29].toString());
