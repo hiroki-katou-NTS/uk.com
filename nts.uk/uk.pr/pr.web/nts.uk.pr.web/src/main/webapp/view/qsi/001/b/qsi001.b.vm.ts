@@ -49,6 +49,7 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
         selectedCode: KnockoutObservable<string>;
         isEnable: KnockoutObservable<boolean>;
         isEditable: KnockoutObservable<boolean>;
+        tempTextOtherNotes1: KnockoutObservable<string>;
 
 
         constructor() {
@@ -83,6 +84,7 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
             self.continuousEmpAfterRetire = ko.observable(false);
             self.otherNotes = ko.observable(false);
             self.textOtherNotes = ko.observable(null);
+            self.tempTextOtherNotes1 = ko.observable();
 
             self.livingAbroad = ko.observable(false);
             self.shortTermResidence = ko.observable(false);
@@ -94,6 +96,14 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
             self.selectedCode = ko.observable('0');
             self.isEnable = ko.observable(true);
             self.isEditable = ko.observable(true);
+
+            self.selectedCode.subscribe(e =>{
+                self.selectedCode(e);
+                self.textOtherNotes1('');
+                if(e == PersonalNumber.Other){
+                    self.textOtherNotes1(self.tempTextOtherNotes1());
+                }
+            });
             if (params && params.listEmpId &&  params.listEmpId.length > 0) {
 
 
@@ -119,6 +129,7 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
                         self.livingAbroad(e.livingAbroad == 1 ? true : false);
                         self.otherNotes1(e.reasonOther == 1 ? true : false);
                         self.textOtherNotes1(e.reasonAndOtherContents);
+                        self.tempTextOtherNotes1(e.reasonAndOtherContents);
                         self.shortTermResidence(e.shortStay == 1 ? true : false);
                         self.selectedDepNotiAttach((e.depenAppoint == null || e.depenAppoint == 0) ? false : true);
                         self.shortWorkHours(e.shortTimeWorkers == 1 ? true : false);
@@ -144,6 +155,7 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
                         self.livingAbroad(false);
                         self.otherNotes1(false);
                         self.textOtherNotes1(null);
+                        self.tempTextOtherNotes1(null);
                         self.shortTermResidence(false);
                         self.selectedDepNotiAttach(0);
                         self.shortWorkHours(false);
