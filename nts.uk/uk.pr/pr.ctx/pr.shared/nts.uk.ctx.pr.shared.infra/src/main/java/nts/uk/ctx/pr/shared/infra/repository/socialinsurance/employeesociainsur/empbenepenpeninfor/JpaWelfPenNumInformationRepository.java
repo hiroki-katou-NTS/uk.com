@@ -3,8 +3,7 @@ package nts.uk.ctx.pr.shared.infra.repository.socialinsurance.employeesociainsur
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.WelfPenNumInformation;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.WelfPenNumInformationRepository;
-import nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.empbenepenpeninfor.QqsmtWelPenNumInfo;
-import nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.empbenepenpeninfor.QqsmtWelPenNumInfoPk;
+import nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.empbenepenpeninfor.QqsmtEmpPenIns;
 
 import javax.ejb.Stateless;
 import java.util.List;
@@ -14,34 +13,20 @@ import java.util.Optional;
 public class JpaWelfPenNumInformationRepository extends JpaRepository implements WelfPenNumInformationRepository
 {
 
-    private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QqsmtWelPenNumInfo f";
-    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.welPenNumInfoPk.affMourPeriodHisid =:affMourPeriodHisid ";
+    private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QqsmtEmpPenIns f";
+    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.empPenInsPk.historyId =:historyId ";
 
     @Override
     public List<WelfPenNumInformation> getAllWelfPenNumInformation(){
-        return this.queryProxy().query(SELECT_ALL_QUERY_STRING, QqsmtWelPenNumInfo.class)
-                .getList(item -> item.toDomain());
+        return null;
     }
 
     @Override
-    public Optional<WelfPenNumInformation> getWelfPenNumInformationById(String affMourPeriodHisid){
-        return this.queryProxy().query(SELECT_BY_KEY_STRING, QqsmtWelPenNumInfo.class)
-        .setParameter("affMourPeriodHisid", affMourPeriodHisid)
+    public Optional<WelfPenNumInformation> getWelfPenNumInformationById(String historyId){
+        return this.queryProxy().query(SELECT_BY_KEY_STRING, QqsmtEmpPenIns.class)
+        .setParameter("historyId", historyId)
         .getSingle(c->c.toDomain());
     }
 
-    @Override
-    public void add(WelfPenNumInformation domain){
-        this.commandProxy().insert(QqsmtWelPenNumInfo.toEntity(domain));
-    }
-
-    @Override
-    public void update(WelfPenNumInformation domain){
-        this.commandProxy().update(QqsmtWelPenNumInfo.toEntity(domain));
-    }
-
-    @Override
-    public void remove(String affMourPeriodHisid){
-        this.commandProxy().remove(QqsmtWelPenNumInfo.class, new QqsmtWelPenNumInfoPk(affMourPeriodHisid));
-    }
+   
 }
