@@ -128,10 +128,13 @@ module nts.uk.pr.view.qsi003.a.viewmodel {
                 addressOutputClass : self.addressOutputClass(),
                 empIds: self.getListEmpIds(self.selectedCode(), self.employeeList())
             };
+            nts.uk.ui.block.grayout();
             nts.uk.pr.view.qsi003.a.service.exportData(romajiNameNotiCreSetCommand).done( function() {
 
             }).fail(error => {
                 dialog.alertError(error);
+            }).always(function() {
+                nts.uk.ui.block.clear();
             });
         }
 
