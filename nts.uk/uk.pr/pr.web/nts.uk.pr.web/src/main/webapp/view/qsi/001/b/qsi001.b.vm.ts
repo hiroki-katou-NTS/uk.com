@@ -91,7 +91,7 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
 
             self.personalNumber = ko.observableArray(getPersonalNumber());
 
-            self.selectedCode = ko.observable('1');
+            self.selectedCode = ko.observable('0');
             self.isEnable = ko.observable(true);
             self.isEditable = ko.observable(true);
             if (params && params.listEmpId &&  params.listEmpId.length > 0) {
@@ -120,9 +120,20 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
                         self.otherNotes1(e.reasonOther == 1 ? true : false);
                         self.textOtherNotes1(e.reasonAndOtherContents);
                         self.shortTermResidence(e.shortStay == 1 ? true : false);
-                        self.selectedDepNotiAttach(e.depenAppoint);
+                        self.selectedDepNotiAttach((e.depenAppoint == null || e.depenAppoint == 0) ? false : true);
                         self.shortWorkHours(e.shortTimeWorkers == 1 ? true : false);
                         self.continuousEmpAfterRetire(e.continReemAfterRetirement == 1 ? true : false);
+
+
+                        //living abroad
+                        if(e.livingAbroad){
+                            self.selectedCode(PersonalNumber.Living_Abroad + '');
+                        }else if(e.shortStay){
+                            self.selectedCode(PersonalNumber.Short_Stay + '');
+                        }else{
+                            self.selectedCode(PersonalNumber.Other + '');
+                        }
+
                     } else {
                         self.applyToEmployeeOver70(false);
                         self.otherNotes(false);
@@ -137,6 +148,7 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
                         self.selectedDepNotiAttach(0);
                         self.shortWorkHours(false);
                         self.continuousEmpAfterRetire(false);
+                        self.selectedCode('0');
                     }
                 }).fail(e => {
 
@@ -303,7 +315,7 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
                     self.salaryMonthlyActual(),
                     self.salaryMonthly(),
                     self.totalCompensation(),
-                    self.selectedDepNotiAttach(),
+                    self.selectedDepNotiAttach() == false ? 0 : 1,
                     0,
                     self.shortWorkHours() == true ? 1 : 0,
                     self.continuousEmpAfterRetire() == true ? 1 : 0,
@@ -438,8 +450,8 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
     export class PersonalNumber {
         static Not_Applicable = 0;
         static Living_Abroad = 1;
-        static Short_Stay = 2;
-        static Other = 3;
+        static Short_Stay = 3;
+        static Other = 2;
     }
 
     export  class SocialInsurAcquisiInforDTO{
