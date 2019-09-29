@@ -41,9 +41,9 @@ public class JpaEmpFamilyInsHisRepository extends JpaRepository implements EmpFa
     public Optional<EmpFamilySocialIns> getEmpFamilySocialInsById(String empId, String familyId, String historyId) {
         return this.queryProxy().query(SELECT_FAMILY_SOCIAL, QqsmtEmpFamilyInsHis.class)
                 .setParameter("historyId", historyId)
-                .setParameter("familyId", familyId)
+                .setParameter("familyId", Integer.parseInt(familyId))
                 .setParameter("empId", empId)
                 .getSingle(c->c.toDomains());
-    }
+}
 
 }
