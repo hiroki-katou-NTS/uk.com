@@ -68,7 +68,7 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
 
             worksheets.removeAt(0);
             reportContext.saveAsPdf(this.createNewFile(fileContext,
-                    FILE_NAME + "_" + ".pdf"));
+                    FILE_NAME + ".pdf"));
         }catch (Exception e){
             throw new RuntimeException(e);
         }
@@ -102,7 +102,7 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
                     this.selectShapesRadio(worksheet, personInfo.getGender() , i, "A1_3","A1_4");
                 }
 
-                this.pushName(personInfo.getPersonName(), worksheet, i, 14, 4);
+                this.pushName(personInfo.getPersonNameRomaji(), worksheet, i, 14, 4);
                 this.pushName(personInfo.getPersonNameKana(), worksheet, i, 13, 4);
 
                 worksheet.getRangeByName(i + "!A4_5").setValue(Objects.toString(empNameReport != null &&

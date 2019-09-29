@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class PersonInfo {
     private String birthday;
-    private String personName;
+    private String personNameRomaji;
     private String personNameKana;
     private String personId;
     private Integer gender;

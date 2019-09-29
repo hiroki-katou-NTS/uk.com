@@ -120,7 +120,7 @@ public class RomajiNameNotiCreSetExportPDFService extends ExportService<RomajiNa
                 //personInfo = romajiNameNotiCreSetExReposity.getPersonInfo(familyMember.getPersonId());
             }
 
-            personInfo = new PersonInfo("1980-01-01", "洪吉童", "ホン ギルトン", "ADB3171F-B5A7-40A7-9B8A-DAE80EECB44B", 1);
+            personInfo = new PersonInfo("1980-01-01", "HONG KILDONG", "ホン ギルトン", "ADB3171F-B5A7-40A7-9B8A-DAE80EECB44B", 1);
 
             if (empCorpHealthOffHis != null ){
                 affOfficeInformation = affOfficeInformationRepository.getAffOfficeInformationById(empId, empCorpHealthOffHis.getPeriod().get(0).identifier()).orElse(null);
