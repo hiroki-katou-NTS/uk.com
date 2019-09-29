@@ -11,7 +11,7 @@ import java.io.Serializable;
 
 
 /**
-* 厚生年金種別情報
+* 社会保険届作成設定
 */
 @AllArgsConstructor
 @NoArgsConstructor

@@ -13,10 +13,5 @@ public interface WelfPenNumInformationRepository
 
     Optional<WelfPenNumInformation> getWelfPenNumInformationById(String affMourPeriodHisid);
 
-    void add(WelfPenNumInformation domain);
-
-    void update(WelfPenNumInformation domain);
-
-    void remove(String affMourPeriodHisid);
 
 }

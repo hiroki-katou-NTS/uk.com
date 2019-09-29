@@ -3,6 +3,7 @@ package nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.emp
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.WelfPenNumInformation;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.WelfarePenTypeInfor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -68,8 +69,9 @@ public class QqsmtEmpPenIns extends UkJpaEntity implements Serializable
         return empPenInsPk;
     }
 
-    public WelfarePenTypeInfor toDomain() {
-        return null; }
+    public WelfPenNumInformation toDomain() {
+        return new WelfPenNumInformation(this.empPenInsPk.historyId,this.healInsurSameCtg,this.welPenNumber);
+    }
     public static QqsmtEmpPenIns toEntity(WelfarePenTypeInfor domain) {
         return null;
     }

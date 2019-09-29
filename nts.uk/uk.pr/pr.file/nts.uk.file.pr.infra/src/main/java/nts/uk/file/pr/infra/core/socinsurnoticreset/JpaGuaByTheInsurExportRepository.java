@@ -521,7 +521,7 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("        WHERE CID = ?cid) i");
         exportSQL.append("        ON i.SID = qi.EMPLOYEE_ID");
         exportSQL.append("  INNER JOIN BPSMT_PERSON p ON p.PID = i.PID");
-        exportSQL.append("  INNER JOIN QQSMT_WEL_PEN_NUM_INFO ni ON ni.AFF_MOUR_PERIOD_HISID = qi.HISTORY_ID");
+        exportSQL.append("  INNER JOIN QQSMT_EMP_PEN_INS ni ON ni.HISTORY_ID = qi.HISTORY_ID");
         exportSQL.append("  INNER JOIN (SELECT *");
         exportSQL.append("       FROM QQSMT_HEAL_INSUR_PORT_INT ");
         exportSQL.append("       WHERE START_DATE <= ?endDate AND START_DATE >= ?startDate) pri");

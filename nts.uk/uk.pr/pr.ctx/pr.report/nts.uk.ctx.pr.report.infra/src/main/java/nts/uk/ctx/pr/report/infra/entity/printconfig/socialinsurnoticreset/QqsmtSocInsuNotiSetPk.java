@@ -10,7 +10,7 @@ import javax.persistence.Embeddable;
 import java.io.Serializable;
 
 /**
-* 厚生年金種別情報: 主キー情報
+* 社会保険届作成設定: 主キー情報
 */
 @EqualsAndHashCode
 @AllArgsConstructor
