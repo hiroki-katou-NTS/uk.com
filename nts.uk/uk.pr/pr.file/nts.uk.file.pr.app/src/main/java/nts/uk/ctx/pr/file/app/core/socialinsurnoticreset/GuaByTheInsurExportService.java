@@ -210,7 +210,7 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
                 //C2_21
                 temp.setQualificationDate(element[37] != null ? element[37].toString() : "");
             }
-            if(Integer.valueOf(element[14].toString()) == Enum_SubNameClass_PERSONAL_NAME){
+            if(Integer.valueOf(element[13].toString()) == Enum_SubNameClass_PERSONAL_NAME){
                 //C2_2
                 temp.setNameOfInsuredPersonMr(element[19] != null ? element[19].toString() : "");
                 //C2_3
