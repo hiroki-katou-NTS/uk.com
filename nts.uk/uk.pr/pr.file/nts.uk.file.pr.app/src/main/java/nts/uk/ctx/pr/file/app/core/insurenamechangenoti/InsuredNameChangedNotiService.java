@@ -202,7 +202,7 @@ public class InsuredNameChangedNotiService extends ExportService<InsuredNameChan
 
                         }else{
                             data.setProcessSate(false);
-                            return data;
+                            //return data;
                         }
                     }else{
                         data.setProcessSate(false);
@@ -225,19 +225,43 @@ public class InsuredNameChangedNotiService extends ExportService<InsuredNameChan
 
                     }else{
                         data.setProcessSate(false);
-                        return data;
+                        //return data;
                     }
                 }else{
                     data.setProcessSate(false);
-                    return  data;
+                    //return  data;
                 }
             }
 
+        }else{
+            //ドメインモデル「社員健康保険資格情報」を取得する
+
+            Optional<EmplHealInsurQualifiInfor> emplHealInsurQualifiInfor = emplHealInsurQualifiInforRepository.getEmplHealInsurQualifiInforByEmpId(empId);
+            if(emplHealInsurQualifiInfor.isPresent()){
+                //取得した「社員健康保険資格情報」をチェックする
+                Optional<EmpHealthInsurBenefits>  empHealthInsurBenefits = emplHealInsurQualifiInfor.get().getMourPeriod().stream().filter(x -> {
+                    return date.afterOrEquals(x.getDatePeriod().start()) && date.beforeOrEquals(x.getDatePeriod().end());
+                }).findFirst();
+                //チェック条件を満たすデータが取得できたか確認する
+                if(empHealthInsurBenefits.isPresent()){
+                    data.setEmpHealthInsurBenefits(empHealthInsurBenefits.get());
+
+                }else{
+                    data.setProcessSate(false);
+                    //return data;
+                }
+            }else{
+                data.setProcessSate(false);
+                //return  data;
+            }
         }
         this.checkInsuredNumber(listSocialInsuranceOffice,date,empId,socialInsurNotiCreateSetDomain,empWelfarePenInsQualiInfors.isPresent() ? empWelfarePenInsQualiInfors.get() : null,data.getEmPensionFundPartiPeriodInfor(),data.getEmpHealthInsurBenefits());
 
         return data;
     }
+
+
+
     //社会保険届作成設定・被保険者整理番号区分を確認する
     // fill to A1_2 item
     private void checkInsuredNumber(List<SocialInsuranceOffice> listSocialInsuranceOffice, GeneralDate date, String empId, SocialInsurNotiCreateSet socialInsurNotiCreateSet, EmpWelfarePenInsQualiInfor empWelfarePenInsQualiInfor , EmPensionFundPartiPeriodInfor emPensionFundPartiPeriodInfor,EmpHealthInsurBenefits empHealthInsurBenefits){
@@ -259,7 +283,7 @@ public class InsuredNameChangedNotiService extends ExportService<InsuredNameChan
             if(socialInsurNotiCreateSet.getInsuredNumber() == InsurPersonNumDivision.OUTPUT_HEAL_INSUR_NUM){
                 if(empHealthInsurBenefits != null){
                     //ドメインモデル「健保番号情報」を取得する
-                    Optional<HealInsurNumberInfor> healInsurNumberInfor = emplHealInsurQualifiInforRepository.getHealInsurNumberInforByHisId(empHealthInsurBenefits.getDatePeriod().identifier());
+                    Optional<HealInsurNumberInfor> healInsurNumberInfor = emplHealInsurQualifiInforRepository.getHealInsurNumberInforByHisId(empId,empHealthInsurBenefits.getDatePeriod().identifier());
                     data.setHealInsurNumberInfor(healInsurNumberInfor.isPresent() ? healInsurNumberInfor.get() : null);
                     //go to 1
                     //健保組合番号を出力

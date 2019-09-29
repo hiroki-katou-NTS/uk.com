@@ -52,15 +52,26 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
             Workbook wb = reportContext.getWorkbook();
             WorksheetCollection wsc = wb.getWorksheets();
 
-            for(int i = 1; i < data.size(); i ++){
-                wsc.addCopy(0);
-            }
+            //Worksheet ws = wsc.get(0);
+            //wsc.add(ws);
 
-            for (InsuredNameChangedNotiExportData item : data) {
+            /*for(int i = 1; i < data.size(); i ++){
+                wsc.addCopy(0);
+
+            }*/
+
+            /*for (InsuredNameChangedNotiExportData item : data) {
                 this.writePDF(wsc,item,socialInsurNotiCreateSet,index);
                 index ++;
+
+            }*/
+
+            for(int i = 1; i < data.size() ; i ++){
+                wsc.addCopy(0);
+                this.writePDF(wsc,data.get(i),socialInsurNotiCreateSet,i);
             }
 
+            this.writePDF(wsc,data.get(0),socialInsurNotiCreateSet,0);
 
             reportContext.processDesigner();
             reportContext.saveAsPdf(this.createNewFile(fileContext,this.getReportName(REPORT_FILE_NAME)));

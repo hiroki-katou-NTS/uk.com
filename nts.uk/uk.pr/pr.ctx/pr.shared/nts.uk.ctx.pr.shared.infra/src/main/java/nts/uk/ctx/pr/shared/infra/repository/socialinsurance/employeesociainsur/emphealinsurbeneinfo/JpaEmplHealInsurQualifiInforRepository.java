@@ -76,7 +76,12 @@ public class JpaEmplHealInsurQualifiInforRepository extends JpaRepository implem
 
     @Override
     public Optional<HealInsurNumberInfor> getHealInsurNumberInforByHisId(String empId, String hisId) {
-        return Optional.empty();
+
+        return this.queryProxy().query(SELECT_BY_KEY_STRING, QqsmtEmpHealInsurQi.class)
+                .setParameter("employeeId",empId)
+                .setParameter("hisId", hisId)
+                .getSingle(x -> x.toHealInsurNumberInfor());
+
     }
 
     @Override
