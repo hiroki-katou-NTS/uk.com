@@ -68,7 +68,7 @@ public class JpaRomajiNameNotiCreSetExReposity extends JpaRepository implements 
         }
         return PersonInfo.builder()
                 .birthday(result[0] != null ? result[0].toString() : "")
-                .personName(result[1] != null ? result[1].toString() : "")
+                .personNameRomaji(result[1] != null ? result[1].toString() : "")
                 .personNameKana(result[2] != null ? result[2].toString() : "")
                 .gender(result[3] != null ? ((BigDecimal) result[3]).intValue() : 0)
                 .build();

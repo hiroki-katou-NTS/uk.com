@@ -243,9 +243,9 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_3", stt)).setValue(
                 ins.getSubmittedName() == SubNameClass.PERSONAL_NAME ? (data.getPersonNameKana().split("　").length > 1 ? data.getPersonNameKana().split("　")[1] : "" ): (data.getOldNameKana().split("　").length > 1 ? data.getOldNameKana().split("　")[1] : ""));
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_4", stt)).setValue(
-                ins.getSubmittedName() == SubNameClass.PERSONAL_NAME ? data.getPersonName().split("　")[0] : data.getOldNameKana().split("　")[0]);
+                ins.getSubmittedName() == SubNameClass.PERSONAL_NAME ? data.getPersonName().split("　")[0] : data.getOldName().split("　")[0]);
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_5", stt)).setValue(
-                ins.getSubmittedName() == SubNameClass.PERSONAL_NAME ? (data.getPersonName().split("　").length > 1 ? data.getPersonName().split("　")[1] : "") : (data.getOldNameKana().split("　").length > 1 ? data.getOldNameKana().split("　")[1] : ""));
+                ins.getSubmittedName() == SubNameClass.PERSONAL_NAME ? (data.getPersonName().split("　").length > 1 ? data.getPersonName().split("　")[1] : "") : (data.getOldName().split("　").length > 1 ? data.getOldName().split("　")[1] : ""));
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_9_1", stt)).setValue(convertJpDate(birthDay).charAt(0));
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_9_2", stt)).setValue(convertJpDate(birthDay).charAt(1));
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_9_3", stt)).setValue(convertJpDate(birthDay).charAt(2));
