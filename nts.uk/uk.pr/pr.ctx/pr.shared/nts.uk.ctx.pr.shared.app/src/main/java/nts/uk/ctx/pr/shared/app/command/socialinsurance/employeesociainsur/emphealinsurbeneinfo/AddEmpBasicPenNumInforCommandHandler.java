@@ -89,6 +89,9 @@ public class AddEmpBasicPenNumInforCommandHandler extends CommandHandler<Credent
                 EmpBasicPenNumInfor domain = new EmpBasicPenNumInfor(empBasicPenNumInforCommand.getEmployeeId(),empBasicPenNumInforCommand.getBasicPenNumber().isEmpty() ? null : empBasicPenNumInforCommand.getBasicPenNumber());
                 empBasicPenNumInforRepository.add(domain);
             }
+        }else{
+            EmpBasicPenNumInfor domain = new EmpBasicPenNumInfor(empBasicPenNumInforCommand.getEmployeeId(),null);
+            empBasicPenNumInforRepository.update(domain);
         }
         Optional<MultiEmpWorkInfo>  multiEmpWorkInfo = multiEmpWorkInfoRepository.getMultiEmpWorkInfoById(multiEmpWorkInfoCommand.getEmployeeId());
 
