@@ -87,7 +87,6 @@ public class RomajiNameNotiCreSetExportPDFService extends ExportService<RomajiNa
         String empId = null;
         String isSpouse = exportServiceContext.getQuery().getPersonTarget();
         List<RomajiNameNotification> romajiNameNotificationList = new ArrayList<RomajiNameNotification>();
-        List<EmpNameReport> empNameReportList = new ArrayList<EmpNameReport>();
         EmpCorpHealthOffHis empCorpHealthOffHis = empCorpHealthOffHisRepository.getEmpCorpHealthOffHisById(listEmp, date).orElse(null);
         for (int i = 0; i < listEmp.size(); i++) {
             EmpBasicPenNumInfor empBasicPenNumInfor = null;
@@ -130,23 +129,24 @@ public class RomajiNameNotiCreSetExportPDFService extends ExportService<RomajiNa
             }
 
             empNameReport = empNameReportRepository.getEmpNameReportById(empId).orElse(null);
-            RomajiNameNotification romajiNameNotification  = new RomajiNameNotification(
-                    empNameReport,
-                    empFamilySocialIns,
-                    familyMember,
-                    empBasicPenNumInfor,
-                    personInfo,
-                    companyInfor,
-                    exportServiceContext.getQuery().getDate(),
-                    exportServiceContext.getQuery().getPersonTarget(),
-                    socialInsuranceOffice,
-                    romajiNameNotiCreSetting
-            );
-            empNameReportList.add(empNameReport);
-           romajiNameNotificationList.add( romajiNameNotification );
+            if(empNameReport !=  null) {
+                RomajiNameNotification romajiNameNotification  = new RomajiNameNotification(
+                        empNameReport,
+                        empFamilySocialIns,
+                        familyMember,
+                        empBasicPenNumInfor,
+                        personInfo,
+                        companyInfor,
+                        exportServiceContext.getQuery().getDate(),
+                        exportServiceContext.getQuery().getPersonTarget(),
+                        socialInsuranceOffice,
+                        romajiNameNotiCreSetting
+                );
+                romajiNameNotificationList.add( romajiNameNotification );
+            }
         }
 
-        if(empNameReportList.isEmpty()){
+        if(romajiNameNotificationList.isEmpty()){
             throw new BusinessException("MsgQ_37");
         }
 
