@@ -72,11 +72,10 @@ public class RomajiNameNotiCreSetExportPDFService extends ExportService<RomajiNa
 
         CompanyInfor companyInfor =  null;
         SocialInsuranceOffice socialInsuranceOffice = null ;
-        if (romajiNameNotiCreSetting.getAddressOutputClass().value == BusinessDivision.OUTPUT_COMPANY_NAME.value ||
-                romajiNameNotiCreSetting.getAddressOutputClass().value == BusinessDivision.OUTPUT_SIC_INSURES.value) {
+        if (romajiNameNotiCreSetting.getAddressOutputClass().value == BusinessDivision.OUTPUT_COMPANY_NAME.value) {
             //companyInfor = notificationOfLossInsExRepository.getCompanyInfor(cid);
             companyInfor = new CompanyInfor("1008945", "千代田区", "霞ヶ関１－２－２", "年金サービス 株式会社", "年金 良一", "0312234567");
-        } else {
+        } else if (romajiNameNotiCreSetting.getAddressOutputClass().value == BusinessDivision.OUTPUT_SIC_INSURES.value){
             List<SocialInsuranceOffice> list = socialInsuranceOfficeRepository.findByCid(cid);
             if (list.isEmpty()) {
                 throw new BusinessException("MsgQ_93");
@@ -130,20 +129,21 @@ public class RomajiNameNotiCreSetExportPDFService extends ExportService<RomajiNa
             }
 
             empNameReport = empNameReportRepository.getEmpNameReportById(empId).orElse(null);
-            RomajiNameNotification romajiNameNotification  = new RomajiNameNotification(
-                    empNameReport,
-                    empFamilySocialIns,
-                    familyMember,
-                    empBasicPenNumInfor,
-                    personInfo,
-                    companyInfor,
-                    exportServiceContext.getQuery().getDate(),
-                    exportServiceContext.getQuery().getPersonTarget(),
-                    socialInsuranceOffice,
-                    romajiNameNotiCreSetting
-            );
-
-           romajiNameNotificationList.add( romajiNameNotification );
+            if(empNameReport !=  null) {
+                RomajiNameNotification romajiNameNotification  = new RomajiNameNotification(
+                        empNameReport,
+                        empFamilySocialIns,
+                        familyMember,
+                        empBasicPenNumInfor,
+                        personInfo,
+                        companyInfor,
+                        exportServiceContext.getQuery().getDate(),
+                        exportServiceContext.getQuery().getPersonTarget(),
+                        socialInsuranceOffice,
+                        romajiNameNotiCreSetting
+                );
+                romajiNameNotificationList.add( romajiNameNotification );
+            }
         }
 
         if(romajiNameNotificationList.isEmpty()){
