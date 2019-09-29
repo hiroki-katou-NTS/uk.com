@@ -104,6 +104,7 @@ public class NotificationOfLossInsExportCSVService extends ExportService<Notific
 					if(!temp.isPresent()) {
 						h.setOtherReason("");
 						h.setCaInsurance(null);
+						h.setCause(null);
 					}
 				});
 				healthInsLoss.removeAll(heal);

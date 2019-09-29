@@ -129,9 +129,9 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
                 data.getBasicPenNumber().length() > 4 ? data.getBasicPenNumber().substring(4,data.getBasicPenNumber().length()) : "" : "");
         cells.get(startRow, 13).setValue(9);
         cells.get(startRow, 14).setValue(data.getEndDate().substring(0,4) + data.getEndDate().substring(5,7) + data.getEndDate().substring(8,10));
-        cells.get(startRow, 15).setValue(data.getCause());
+        cells.get(startRow, 15).setValue(data.getCause() == null ? "" : data.getCause());
         cells.get(startRow, 16).setValue(9);
-        cells.get(startRow, 17).setValue(data.getCause() == 4 && data.getCause() == 5 ? data.getEndDate().substring(0,4) + data.getEndDate().substring(5,7) + data.getEndDate().substring(8,10) : "");
+        cells.get(startRow, 17).setValue(data.getCause() == null ? ""  : data.getCause() == 4 && data.getCause() == 5 ? data.getEndDate().substring(0,4) + data.getEndDate().substring(5,7) + data.getEndDate().substring(8,10) : "");
         cells.get(startRow, 18).setValue(data.getIsMoreEmp());
         cells.get(startRow, 19).setValue(data.getContinReemAfterRetirement());
         cells.get(startRow, 20).setValue(data.getOtherReason());
@@ -139,8 +139,8 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
         cells.get(startRow, 22).setValue(Objects.toString(data.getCaInsurance(), ""));
         cells.get(startRow, 23).setValue(data.getPercentOrMore());
         cells.get(startRow, 24).setValue(data.getPercentOrMore().equals("1") ? 9 : "");
-        cells.get(startRow, 25).setValue(data.getCause() == 1 ? convertDate(data.getEndDate()) : "");
-        cells.get(startRow, 26).setValue(data.getCause() == 6 ? "" : 1);
+        cells.get(startRow, 25).setValue(data.getCause() == null ? "" : data.getCause() == 1 ? convertDate(data.getEndDate()) : "");
+        cells.get(startRow, 26).setValue(data.getCause() == null ? "" : data.getCause() == 6 ? "" : 1);
 
     }
 
@@ -326,7 +326,7 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
         cells.get(startRow, 25).setValue(data.getCause() == 6 ? data.getEndDate().substring(0,4) + data.getEndDate().substring(5,7) + data.getEndDate().substring(8,10) : "");
         cells.get(startRow, 27).setValue(data.getFunMember());
         cells.get(startRow, 28).setValue(data.getWelPenOfficeNumber());
-        cells.get(startRow, 29).setValue(data.getFunMember());
+        cells.get(startRow, 29).setValue(data.getMemberNumber());
         cells.get(startRow,30).setValue(checkLength(data.getPortCd(),3));
         cells.get(startRow, 31).setValue(data.getPortCd().length() > 7 ? data.getPortCd().substring(3,7) : "");
         cells.get(startRow, 32).setValue(checkLength(data.getRetirementAddBefore(),75));
