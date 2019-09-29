@@ -334,10 +334,10 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
         cells.get(startRow, 34).setValue(data.getReasonForLoss());
         cells.get(startRow, 35).setValue(data.getAddAppCtgSal());
         cells.get(startRow, 36).setValue(data.getReason());
-        cells.get(startRow, 37).setValue(data.getAddSal().isEmpty() ? "" : Integer.parseInt(data.getAddSal()) > 10000000 ? "9999999" : data.getAddSal());
-        cells.get(startRow, 38).setValue(data.getStandSal().isEmpty() ? "" : Integer.parseInt(data.getStandSal()) > 10000000 ? "9999" : data.getStandSal().length() > 4 ? data.getStandSal().substring(0,data.getStandSal().length() - 3) : data.getStandSal());
-        cells.get(startRow, 39).setValue(data.getSecAddSalary().isEmpty() ? "" : Integer.parseInt(data.getSecAddSalary()) > 10000000 ? "9999999" : data.getSecAddSalary());
-        cells.get(startRow, 40).setValue(data.getSecStandSal().isEmpty() ? "" : Integer.parseInt(data.getSecStandSal()) > 10000000 ? "9999" : data.getSecStandSal().length() > 4 ? data.getSecStandSal().substring(0,data.getSecStandSal().length() - 3) : data.getSecStandSal());
+        cells.get(startRow, 37).setValue(data.getAddSal().isEmpty() ? "" : Double.parseDouble(data.getAddSal().trim()) > 10000000 ? "9999999" : data.getAddSal());
+        cells.get(startRow, 38).setValue(data.getStandSal().isEmpty() ? "" : Double.parseDouble(data.getStandSal().trim()) > 10000000 ? "9999" : data.getStandSal().length() > 4 ? data.getStandSal().substring(0,data.getStandSal().length() - 3) : data.getStandSal());
+        cells.get(startRow, 39).setValue(data.getSecAddSalary().isEmpty() ? "" : Double.parseDouble(data.getSecAddSalary().trim()) > 10000000 ? "9999999" : data.getSecAddSalary());
+        cells.get(startRow, 40).setValue(data.getSecStandSal().isEmpty() ? "" : Double.parseDouble(data.getSecStandSal().trim()) > 10000000 ? "9999" : data.getSecStandSal().length() > 4 ? data.getSecStandSal().substring(0,data.getSecStandSal().length() - 3) : data.getSecStandSal());
         cells.get(startRow, 41).setValue(data.getFunSpecific1());
         cells.get(startRow, 42).setValue(data.getFunSpecific2());
         cells.get(startRow, 43).setValue(data.getFunSpecific3());
