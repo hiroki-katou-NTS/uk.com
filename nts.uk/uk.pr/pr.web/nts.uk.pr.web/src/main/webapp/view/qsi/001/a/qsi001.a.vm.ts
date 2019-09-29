@@ -98,12 +98,12 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
             //init switch
             self.simpleValue = ko.observable("123");
             self.selectedRuleCode = ko.observable(1);
-            let _endDate = moment();
-            let month = _endDate.month();
-            let _startDate = moment();
-            _startDate.month(month - 1);
+            let today  = new Date();
+            let start = new Date();
+            start.setDate(start.getDate() - 1);
+            start.setMonth(start.getMonth() - 1);
             //init datepicker
-            self.startDate = ko.observable(_startDate);
+            self.startDate = ko.observable(moment.utc(start, "YYYY/MM/DD").toISOString());
             self.startDate.subscribe(e => {
                 //self.japanStartDate = ko.observable(nts.uk.time.dateInJapanEmpire(moment.utc(self.startDate()).format("YYYYMMDD")).toString());
                 self.japanStartDate(nts.uk.time.dateInJapanEmpire(moment.utc(self.startDate()).format("YYYYMMDD")).toString());
@@ -111,7 +111,7 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
 
 
             self.japanStartDate = ko.observable(nts.uk.time.dateInJapanEmpire(moment.utc(self.startDate()).format("YYYYMMDD")).toString());
-            self.endDate = ko.observable(_endDate);
+            self.endDate = ko.observable(moment.utc(today, "YYYY/MM/DD").toISOString());
             self.endDate.subscribe(e => {
                 self.japanEndDate(nts.uk.time.dateInJapanEmpire(moment.utc(self.endDate()).format("YYYYMMDD")).toString());
             });
