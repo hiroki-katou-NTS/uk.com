@@ -140,19 +140,13 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
 
     private String formatPortCd(String portCd, int stt){
         String result = portCd.replace("-", "");
-        if (stt == 1 && result.length() >= 3) {
+        if (result.length() >= 3 && stt == 1) {
             return result.substring(0, 3);
         }
-        if (stt == 2 && result.length() > 6) {
+        if (stt == 2 && result.length() > 3) {
             return result.substring(3, result.length());
         }
-        if (stt == 1 && result.length() < 3) {
-            return result;
-        }
-        if (stt == 1 && result.length() < 3) {
-            return result;
-        }
-        return "";
+        return result;
     }
 
     private String formatPhoneNumber(String phone, int stt) {
@@ -388,6 +382,12 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
         if(cause == ReasonsForLossHealthyIns.DISABILITY_AUTHORIZATION.value){
             worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_14" : "A2_14_" + (stt + 1)));
             worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_16" : "A2_16_" + (stt + 1)));
+            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_12" : "A2_12_" + (stt + 1)));
+        }
+        if((cause != ReasonsForLossHealthyIns.RETIREMENT.value) && (cause != ReasonsForLossHealthyIns.DEATH.value) && (cause != ReasonsForLossHealthyIns.DISABILITY_AUTHORIZATION.value)) {
+            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_14" : "A2_14_" + (stt + 1)));
+            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_16" : "A2_16_" + (stt + 1)));
+            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_17" : "A2_17_" + (stt + 1)));
             worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_12" : "A2_12_" + (stt + 1)));
         }
     }
