@@ -285,10 +285,11 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
         exportSQL.append("       WHERE CID = ?cid) i");
         exportSQL.append("       ON i.SID = qi.EMPLOYEE_ID");
         exportSQL.append("  INNER JOIN BPSMT_PERSON p ON p.PID = i.PID");
-        exportSQL.append("  ORDER BY SOCIAL_INSURANCE_OFFICE_CD ,SID  ");
-        String sql = String.format(exportSQL.toString(), empIds.stream()
+        exportSQL.append("  ORDER BY SOCIAL_INSURANCE_OFFICE_CD ,SCD  ");
+        String emp = empIds.stream()
                 .map(String::valueOf)
-                .collect(Collectors.joining("','")));
+                .collect(Collectors.joining("','"));
+        String sql = String.format(exportSQL.toString(), emp,emp);
         try {
             resultQuery = this.getEntityManager().createNativeQuery(sql)
                     .setParameter("startDate", this.convertDate(startDate.toString("yyyy-MM-dd")))
