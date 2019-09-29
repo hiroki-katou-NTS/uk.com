@@ -62,7 +62,7 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
         exportSQL.append("      NAME,");
         exportSQL.append("      REPRESENTATIVE_NAME,");
         exportSQL.append("      PHONE_NUMBER,");
-        exportSQL.append("      WEL_PEN_NUMBER,");
+        exportSQL.append("      ni.WEL_PEN_NUMBER,");
         exportSQL.append("      HEAL_INSUR_UNION_NMBER,");
         exportSQL.append("      MEMBER_NUMBER,");
         exportSQL.append("      WELFARE_PENSION_PREFECTURE_NO");

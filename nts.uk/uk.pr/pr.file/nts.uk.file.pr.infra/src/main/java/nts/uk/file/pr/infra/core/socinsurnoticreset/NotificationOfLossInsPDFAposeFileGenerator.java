@@ -211,17 +211,39 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
 
     private void unSelectAll(WorksheetCollection worksheets, String sheetName, int stt){
         for(int i = stt ; i<= EMP_IN_PAGE;  i++) {
-            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_6_" + i));
-            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_7_" + i));
-            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_8_" + i));
-            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_12_" + i));
-            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_14_" + i));
-            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_16_" + i));
-            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_17_" + i));
-            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_18_" + i));
-            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_19_" + i));
-            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_20_" + i));
-            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_24_" + i));
+            if(worksheets.get(sheetName).getShapes().get("A2_6_" + i) != null ) {
+                worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_6_" + i));
+            }
+            if(worksheets.get(sheetName).getShapes().get("A2_7_" + i) != null ) {
+                worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_7_" + i));
+            }
+            if(worksheets.get(sheetName).getShapes().get("A2_8_" + i) != null) {
+                worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_8_" + i));
+            }
+            if(worksheets.get(sheetName).getShapes().get("A2_12_" + i) != null) {
+                worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_12_" + i));
+            }
+            if(worksheets.get(sheetName).getShapes().get("A2_14_" + i) != null) {
+                worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_14_" + i));
+            }
+            if(worksheets.get(sheetName).getShapes().get("A2_16_" + i) != null){
+                worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_16_" + i));
+            }
+            if(worksheets.get(sheetName).getShapes().get("A2_17_" + i) != null) {
+                worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_17_" + i));
+            }
+            if(worksheets.get(sheetName).getShapes().get("A2_18_" + i) != null) {
+                worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_18_" + i));
+            }
+            if(worksheets.get(sheetName).getShapes().get("A2_19_" + i) != null) {
+                worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_19_" + i));
+            }
+            if(worksheets.get(sheetName).getShapes().get("A2_20_" + i) != null) {
+                worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_20_" + i));
+            }
+            if(worksheets.get(sheetName).getShapes().get("A2_24_" + i) != null) {
+                worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_24_" + i));
+            }
         }
     }
 
