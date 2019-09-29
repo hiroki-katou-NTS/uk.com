@@ -351,7 +351,7 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
     }
 
     private String checkLength(String s, int digitsNumber){
-        return (s != null && s.length() > digitsNumber) ? s.substring(0,digitsNumber) : s;
+        return (s != null && s.length() >= digitsNumber) ? s.substring(0,digitsNumber) : s;
     }
 
 }
