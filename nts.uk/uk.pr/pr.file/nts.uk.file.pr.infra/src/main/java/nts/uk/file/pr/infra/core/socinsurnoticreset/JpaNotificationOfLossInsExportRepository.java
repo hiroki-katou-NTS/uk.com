@@ -107,7 +107,7 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
         exportSQL.append("                         WHERE wi.END_DATE = hi.END_DATE)) loss ");
         exportSQL.append("       ON loss.EMP_ID = his.EMPLOYEE_ID");
         exportSQL.append("       INNER JOIN QQSMT_SOC_ISACQUISI_INFO info ON info.EMPLOYEE_ID = his.EMPLOYEE_ID");
-        exportSQL.append("       INNER JOIN QQSMT_EMP_PEN_INS pi ON pi.AFF_MOUR_PERIOD_HISID = his.HISTORY_ID");
+        exportSQL.append("       INNER JOIN QQSMT_EMP_PEN_INS pi ON pi.HISTORY_ID = his.HISTORY_ID");
         exportSQL.append("       INNER JOIN QQSMT_MULTI_EMP_WORK_IF mt ON mt.EMPLOYEE_ID = his.EMPLOYEE_ID");
         exportSQL.append("       LEFT JOIN QQSMT_EMP_BA_PEN_NUM ba ON ba.EMPLOYEE_ID = his.EMPLOYEE_ID");
         exportSQL.append("       LEFT JOIN (SELECT * ");
@@ -240,7 +240,8 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
         exportSQL.append("      wloss.OTHER_REASON,");
         exportSQL.append("      wloss.CA_INSURANCE,");
         exportSQL.append("      wloss.NUM_RECOVED,");
-        exportSQL.append("      wloss.CAUSE");
+        exportSQL.append("      wloss.CAUSE,");
+        exportSQL.append("      wi.END_DATE");
         exportSQL.append("  FROM ");
         exportSQL.append("         (SELECT *");
         exportSQL.append("         FROM QQSMT_EMP_HEAL_INSUR_QI ");
@@ -352,7 +353,8 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
                 .otherReason2(i[49] == null ? "" : i[49].toString())
                 .caInsurance2(i[50] == null ? 0 : ((BigDecimal) i[50]).intValue())
                 .numRecoved2(i[51] == null ? 0 : ((BigDecimal) i[51]).intValue())
-                 .cause2(i[52] == null ? 0 : ((BigDecimal) i[52]).intValue())
+                .cause2(i[52] == null ? 0 : ((BigDecimal) i[52]).intValue())
+                .endDate2(i[53] == null ? "" :  i[53].toString())
                 .build()
                 ).collect(Collectors.toList());
     }

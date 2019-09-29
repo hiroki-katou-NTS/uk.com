@@ -172,29 +172,35 @@ module nts.uk.pr.view.qsi002.a.viewmodel {
         loadPage(){
             let self = this;
             block.invisible();
-            let data: any = {
-                officeInformation: self.selectedBusinessDivision(),
-                businessArrSymbol: self.selectedBussEsimateClass(),
-                outputOrder: self.selectedSocialInsurOutOrder(),
-                printPersonNumber: self.selectedPersonalNumClass(),
-                insuredNumber: self.selectedInsurPersonNumDivision()
-            };
+
 
             service.getSocialInsurNotiCreateSetById().done(e =>{
-                self.selectedBusinessDivision(e.officeInformation);
-                self.selectedBussEsimateClass(e.businessArrSymbol);
-                self.selectedSocialInsurOutOrder(e.outputOrder);
-                self.selectedPersonalNumClass(e.printPersonNumber);
-                self.selectedInsurPersonNumDivision(e.insuredNumber);
-                self.selectedRuleCode(e.submittedName);
+                if(e){
+                    self.selectedBusinessDivision(e.officeInformation);
+                    self.selectedBussEsimateClass(e.businessArrSymbol);
+                    self.selectedSocialInsurOutOrder(e.outputOrder);
+                    self.selectedPersonalNumClass(e.printPersonNumber);
+                    self.selectedInsurPersonNumDivision(e.insuredNumber);
+                    self.selectedRuleCode(e.submittedName);
+                }
+
+                let data: any = {
+                    officeInformation: self.selectedBusinessDivision(),
+                    businessArrSymbol: self.selectedBussEsimateClass(),
+                    outputOrder: self.selectedSocialInsurOutOrder(),
+                    printPersonNumber: self.selectedPersonalNumClass(),
+                    insuredNumber: self.selectedInsurPersonNumDivision()
+                };
+
+                service.index(data).done(e =>{
+                    block.clear()
+                }).fail(e =>{
+                    block.clear()
+                });
             }).fail(e =>{
 
             });
-            service.index(data).done(e =>{
-                block.clear()
-            }).fail(e =>{
-                block.clear()
-            });
+
             block.clear()
         }
 
