@@ -189,7 +189,8 @@ module nts.uk.pr.view.qsi002.a.viewmodel {
                     businessArrSymbol: self.selectedBussEsimateClass(),
                     outputOrder: self.selectedSocialInsurOutOrder(),
                     printPersonNumber: self.selectedPersonalNumClass(),
-                    insuredNumber: self.selectedInsurPersonNumDivision()
+                    insuredNumber: self.selectedInsurPersonNumDivision(),
+                    submittedName: self.selectedRuleCode()
                 };
 
                 service.index(data).done(e =>{
