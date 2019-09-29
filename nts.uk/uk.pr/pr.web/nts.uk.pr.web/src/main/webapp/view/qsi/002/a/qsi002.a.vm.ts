@@ -181,12 +181,15 @@ module nts.uk.pr.view.qsi002.a.viewmodel {
             };
 
             service.getSocialInsurNotiCreateSetById().done(e =>{
-                self.selectedBusinessDivision(e.officeInformation);
-                self.selectedBussEsimateClass(e.businessArrSymbol);
-                self.selectedSocialInsurOutOrder(e.outputOrder);
-                self.selectedPersonalNumClass(e.printPersonNumber);
-                self.selectedInsurPersonNumDivision(e.insuredNumber);
-                self.selectedRuleCode(e.submittedName);
+                if(e){
+                    self.selectedBusinessDivision(e.officeInformation);
+                    self.selectedBussEsimateClass(e.businessArrSymbol);
+                    self.selectedSocialInsurOutOrder(e.outputOrder);
+                    self.selectedPersonalNumClass(e.printPersonNumber);
+                    self.selectedInsurPersonNumDivision(e.insuredNumber);
+                    self.selectedRuleCode(e.submittedName);
+                }
+
             }).fail(e =>{
 
             });
