@@ -175,11 +175,6 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
                 .healInsUnionNumber(i[40] == null ? "" : i[40].toString())
                 .memberNumber(i[41] == null ? "" : i[41].toString())
                 .prefectureNo(i[42] == null ? 0 : ((BigDecimal) i[42]).intValue())
-                .other2(i[43] == null ?  0 : ((BigDecimal) i[43]).intValue())
-                .otherReason2(i[44] == null ? "" : i[44].toString())
-                .caInsurance2(i[45] == null ? 0 : ((BigDecimal) i[45]).intValue())
-                .numRecoved2(i[46] == null ? 0 : ((BigDecimal) i[46]).intValue())
-                .cause2(i[47] == null ? 0 : ((BigDecimal) i[47]).intValue())
                 .build()
         ).collect(Collectors.toList());
     }
