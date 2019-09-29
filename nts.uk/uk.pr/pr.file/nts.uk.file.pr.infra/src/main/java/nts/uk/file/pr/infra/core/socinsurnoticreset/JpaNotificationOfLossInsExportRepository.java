@@ -211,9 +211,9 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
         exportSQL.append("      CONTIN_REEM_AFTER_RETIREMENT,");
         exportSQL.append("      IS_MORE_EMP,");
         exportSQL.append("      BASIC_PEN_NUMBER,");
-        exportSQL.append("      BUSINESS_NAME,");
-        exportSQL.append("      BUSINESS_NAME_KANA,");
-        exportSQL.append("      PERSON_NAME,");
+        exportSQL.append("      PERSON_NAME ,");
+        exportSQL.append("      PERSON_NAME_KANA ,");
+        exportSQL.append("      TODOKEDE_FNAME ,");
         exportSQL.append("      BIRTHDAY,");
         exportSQL.append("      qi.END_DATE,");
         exportSQL.append("      HEAL_INSUR_NUMBER,");
@@ -222,7 +222,7 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
         exportSQL.append("      HEALTH_INSURANCE_OFFICE_NUMBER_2,");
         exportSQL.append("      HEALTH_INSURANCE_OFFICE_NUMBER,");
         exportSQL.append("      HEALTH_INSURANCE_UNION_OFFICE_NUMBER,");
-        exportSQL.append("      PERSON_NAME_KANA,");
+        exportSQL.append("      TODOKEDE_FNAME_KANA,");
         exportSQL.append("      WELFARE_PENSION_OFFICE_NUMBER_1,");
         exportSQL.append("      WELFARE_PENSION_OFFICE_NUMBER_2,");
         exportSQL.append("      WELFARE_PENSION_OFFICE_NUMBER,");
