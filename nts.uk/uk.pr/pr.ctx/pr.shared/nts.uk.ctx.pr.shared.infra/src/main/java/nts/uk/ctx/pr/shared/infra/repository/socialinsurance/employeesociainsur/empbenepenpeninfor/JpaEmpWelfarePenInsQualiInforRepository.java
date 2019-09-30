@@ -2,8 +2,7 @@ package nts.uk.ctx.pr.shared.infra.repository.socialinsurance.employeesociainsur
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.EmpWelfarePenInsQualiInfor;
-import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.EmpWelfarePenInsQualiInforRepository;
+import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.*;
 import nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.empbenepenpeninfor.QqsmtEmpWelfInsQcIf;
 
 import javax.ejb.Stateless;
@@ -12,10 +11,10 @@ import java.util.Optional;
 
 
 @Stateless
-public class JpaEmpWelfarePenInsQualiInforRepository extends JpaRepository implements EmpWelfarePenInsQualiInforRepository {
+public class JpaEmpWelfarePenInsQualiInforRepository extends JpaRepository implements EmpWelfarePenInsQualiInforRepository, WelfPenNumInformationRepository, WelfarePenTypeInforRepository {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QqsmtEmpWelfInsQcIf f";
-    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.empWelfInsQcIfPk.employeeId =:employeeId AND  f.empWelfInsQcIfPk.historyId =:historyId ";
+    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.empWelfInsQcIfPk.historyId =:historyId ";
     private static final String SELECT_BY_LIST_EMP = SELECT_ALL_QUERY_STRING + " WHERE  f.empWelfInsQcIfPk.employeeId IN :employeeIds  AND f.endDate >= :startDate AND f.endDate <= :endDate";
     private static final String SELECT_BY_EMPID = SELECT_ALL_QUERY_STRING + " WHERE  f.empWelfInsQcIfPk.employeeId =:employeeId";
     private static final String SELECT_BY_LIST_EMP_START = SELECT_ALL_QUERY_STRING + " WHERE  f.empWelfInsQcIfPk.employeeId IN :employeeIds  AND f.endDate >= :startDate AND f.endDate <= :endDate";
@@ -41,25 +40,6 @@ public class JpaEmpWelfarePenInsQualiInforRepository extends JpaRepository imple
     }
 
     @Override
-    public Optional<EmpWelfarePenInsQualiInfor> getEmpWelfarePenInsQualiInforById(String employeeId, String historyId){
-        List<QqsmtEmpWelfInsQcIf> qqsmtEmpWelfInsQcIf =  this.queryProxy().query(SELECT_BY_KEY_STRING, QqsmtEmpWelfInsQcIf.class)
-        .setParameter("employeeId", employeeId)
-        .setParameter("historyId", historyId)
-        .getList();
-        return qqsmtEmpWelfInsQcIf.isEmpty() ? Optional.empty() : Optional.of(QqsmtEmpWelfInsQcIf.toDomain(qqsmtEmpWelfInsQcIf));
-    }
-
-    @Override
-    public void add(EmpWelfarePenInsQualiInfor domain){
-        this.commandProxy().insert(QqsmtEmpWelfInsQcIf.toEntity(domain));
-    }
-
-    @Override
-    public void update(EmpWelfarePenInsQualiInfor domain){
-        this.commandProxy().update(QqsmtEmpWelfInsQcIf.toEntity(domain));
-    }
-
-    @Override
     public Optional<EmpWelfarePenInsQualiInfor> getEmpWelfarePenInsQualiInforByEmpId(String employeeId) {
          List<QqsmtEmpWelfInsQcIf> qqsmtEmpWelfInsQcIf =  this.queryProxy().query(SELECT_BY_EMPID, QqsmtEmpWelfInsQcIf.class)
                 .setParameter("employeeId", employeeId)
@@ -68,4 +48,17 @@ public class JpaEmpWelfarePenInsQualiInforRepository extends JpaRepository imple
          return Optional.ofNullable(QqsmtEmpWelfInsQcIf.toDomain(qqsmtEmpWelfInsQcIf));
     }
 
+    @Override
+    public Optional<WelfPenNumInformation> getWelfPenNumInformationById(String historyId){
+        return this.queryProxy().query(SELECT_BY_KEY_STRING, QqsmtEmpWelfInsQcIf.class)
+                .setParameter("historyId", historyId)
+                .getSingle(c->c.toWelfPenNumInformation());
+    }
+
+    @Override
+    public Optional<WelfarePenTypeInfor> getWelfarePenTypeInforById(String historyId){
+        return this.queryProxy().query(SELECT_BY_KEY_STRING, QqsmtEmpWelfInsQcIf.class)
+                .setParameter("historyId", historyId)
+                .getSingle(c->c.toWelfarePenTypeI());
+    }
 }

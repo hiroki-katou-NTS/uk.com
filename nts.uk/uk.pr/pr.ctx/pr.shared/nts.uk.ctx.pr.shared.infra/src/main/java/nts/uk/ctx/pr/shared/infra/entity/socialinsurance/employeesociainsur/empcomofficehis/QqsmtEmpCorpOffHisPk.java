@@ -34,11 +34,4 @@ public class QqsmtEmpCorpOffHisPk implements Serializable
     @Column(name = "HIST_ID")
     public String historyId;
     
-    /**
-    * 社会保険事業所コード
-    */
-    @Basic(optional = false)
-    @Column(name = "SYAHO_OFFICE_CD")
-    public String socialInsuranceOfficeCd;
-    
 }

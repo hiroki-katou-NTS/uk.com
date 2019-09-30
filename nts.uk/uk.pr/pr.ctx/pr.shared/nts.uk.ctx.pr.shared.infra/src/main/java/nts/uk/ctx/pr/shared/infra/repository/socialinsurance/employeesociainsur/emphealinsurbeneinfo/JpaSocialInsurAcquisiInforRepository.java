@@ -79,8 +79,6 @@ public class JpaSocialInsurAcquisiInforRepository extends JpaRepository implemen
                     null,
                     null,
                     null,
-                    null,
-                    null,
                     continReemAfterRetirement );
             this.commandProxy().insert(qqsmtSocIsacquisiInfo);
         }

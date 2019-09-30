@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurassocinfor.HealInsurPortPerIntell;
+import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurassocinfor.HealthCarePortInfor;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -19,7 +20,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "QQSMT_HEAL_INSUR_PORT_INT")
+@Table(name = "QQSDT_KNKUM_INFO")
 public class QqsmtHealInsurPortInt extends UkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
@@ -48,8 +49,8 @@ public class QqsmtHealInsurPortInt extends UkJpaEntity implements Serializable
     * 健康保険組合番号
     */
     @Basic(optional = false)
-    @Column(name = "HEAL_INSUR_UNION_NMBER")
-    public int healInsurUnionNmber;
+    @Column(name = "KNKUM_NUM")
+    public String healInsurUnionNmber;
     
     @Override
     protected Object getKey()
@@ -65,6 +66,10 @@ public class QqsmtHealInsurPortInt extends UkJpaEntity implements Serializable
     }
     public static QqsmtHealInsurPortInt toEntity(HealInsurPortPerIntell domain) {
         return null;
+    }
+
+    public HealthCarePortInfor toDomainHealthCare(){
+        return new HealthCarePortInfor(this.healInsurPortIntPk.hisId, this.healInsurUnionNmber);
     }
 
 }

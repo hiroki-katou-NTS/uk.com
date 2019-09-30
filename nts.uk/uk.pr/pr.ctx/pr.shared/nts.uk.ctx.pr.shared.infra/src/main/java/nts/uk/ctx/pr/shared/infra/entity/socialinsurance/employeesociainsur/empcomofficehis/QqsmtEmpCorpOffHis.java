@@ -46,6 +46,13 @@ public class QqsmtEmpCorpOffHis extends UkJpaEntity implements Serializable
     @Basic(optional = false)
     @Column(name = "END_DATE")
     public GeneralDate endDate;
+
+    /**
+     * 社会保険事業所コード
+     */
+    @Basic(optional = false)
+    @Column(name = "SYAHO_OFFICE_CD")
+    public String socialInsuranceOfficeCd;
     
     @Override
     protected Object getKey()
@@ -71,13 +78,13 @@ public class QqsmtEmpCorpOffHis extends UkJpaEntity implements Serializable
 
     public  AffOfficeInformation toDomain(){
         return new AffOfficeInformation(this.empCorpOffHisPk.historyId,
-                new SocialInsuranceOfficeCode(this.empCorpOffHisPk.socialInsuranceOfficeCd)
+                new SocialInsuranceOfficeCode(this.socialInsuranceOfficeCd)
                 );
     }
     public static AffOfficeInformation toDomainAff(List<QqsmtEmpCorpOffHis> qqsmtEmpCorpOffHis) {
         return new AffOfficeInformation(
                 qqsmtEmpCorpOffHis.get(0).empCorpOffHisPk.historyId,
-                new SocialInsuranceOfficeCode(qqsmtEmpCorpOffHis.get(0).empCorpOffHisPk.socialInsuranceOfficeCd)
+                new SocialInsuranceOfficeCode(qqsmtEmpCorpOffHis.get(0).socialInsuranceOfficeCd)
                );
     }
     public static QqsmtEmpCorpOffHis toEntity(EmpCorpHealthOffHis domain) {

@@ -13,10 +13,4 @@ public interface HealthCarePortInforRepository
 
     Optional<HealthCarePortInfor> getHealthCarePortInforById(String hisId);
 
-    void add(HealthCarePortInfor domain);
-
-    void update(HealthCarePortInfor domain);
-
-    void remove(String hisId,String employeeId);
-
 }

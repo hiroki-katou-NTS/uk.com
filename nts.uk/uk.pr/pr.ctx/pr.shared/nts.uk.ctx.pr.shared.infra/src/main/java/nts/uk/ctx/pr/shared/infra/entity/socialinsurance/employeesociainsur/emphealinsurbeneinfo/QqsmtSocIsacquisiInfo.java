@@ -69,23 +69,18 @@ public class QqsmtSocIsacquisiInfo extends UkJpaEntity implements Serializable
     
     /**
     * 海外在住
+      短期在留
+      理由その他
     */
     @Basic(optional = true)
     @Column(name = "LIVING_ABROAD")
     public Integer livingAbroad;
-    
-    /**
-    * 理由その他
-    */
-    @Basic(optional = true)
-    @Column(name = "REASON_OTHER")
-    public Integer reasonOther;
-    
+
     /**
     * 理由その他内容
     */
     @Basic(optional = true)
-    @Column(name = "REASON_AND_OTHER_CONTENTS")
+    @Column(name = "NO_MYNUM_REASON")
     public String reasonAndOtherContents;
     
     /**
@@ -95,13 +90,6 @@ public class QqsmtSocIsacquisiInfo extends UkJpaEntity implements Serializable
     @Basic(optional = true)
     @Column(name = "SHORTTIME_WORKERS_ATR")
     public Integer shortTimeWorkes;
-    
-    /**
-    * 短期在留
-    */
-    @Basic(optional = true)
-    @Column(name = "SHORT_STAY")
-    public Integer shortStay;
     
     /**
     * 被扶養者届出区分
@@ -138,11 +126,11 @@ public class QqsmtSocIsacquisiInfo extends UkJpaEntity implements Serializable
                 this.remunMonthlyAmountKind,
                 this.remunMonthlyAmount,
                 this.totalMonthlyRemun,
-                this.livingAbroad,
-                this.reasonOther,
+                this.livingAbroad == 1 ? 1 : 0,
+                this.livingAbroad == 2 ? 1 : 0,
                 this.reasonAndOtherContents,
                 this.shortTimeWorkes,
-                this.shortStay,
+                this.livingAbroad == 3 ? 1 : 0,
                 this.depenAppoint,
                 this.qualifiDistin,
                 this.continReemAfterRetirement
@@ -159,11 +147,11 @@ public class QqsmtSocIsacquisiInfo extends UkJpaEntity implements Serializable
                 this.remunMonthlyAmountKind,
                 this.remunMonthlyAmount,
                 this.totalMonthlyRemun,
-                this.livingAbroad,
-                this.reasonOther,
+                this.livingAbroad == 1 ? 1 : 0,
+                this.livingAbroad == 2 ? 1 : 0,
                 this.reasonAndOtherContents,
                 this.shortTimeWorkes,
-                this.shortStay,
+                this.livingAbroad == 3 ? 1 : 0,
                 this.depenAppoint,
                 this.qualifiDistin,
                 this.continReemAfterRetirement
@@ -173,24 +161,37 @@ public class QqsmtSocIsacquisiInfo extends UkJpaEntity implements Serializable
 
 
     public static QqsmtSocIsacquisiInfo toEntity(SocialInsurAcquisiInfor domain) {
-         return new QqsmtSocIsacquisiInfo(
-                 new QqsmtSocIsacquisiInfoPk(domain.getCompanyId(),domain.getEmployeeId()),
-                 domain.getPercentOrMore().isPresent() ? domain.getPercentOrMore().get() : null,
-                 domain.getRemarksOther().isPresent() ? domain.getRemarksOther().get(): null,
-                 domain.getRemarksAndOtherContents().isPresent() ? domain.getRemarksAndOtherContents().get().v(): null,
-                 domain.getRemunMonthlyAmountKind().isPresent() ? domain.getRemunMonthlyAmountKind().get().v() : null,
-                 domain.getRemunMonthlyAmount().isPresent() ? domain.getRemunMonthlyAmount().get().v() : null,
-                 domain.getTotalMonthlyRemun().isPresent() ? domain.getTotalMonthlyRemun().get().v() : null,
-                 domain.getLivingAbroad().isPresent() ? domain.getLivingAbroad().get() : null,
-                 domain.getReasonOther().isPresent() ? domain.getReasonOther().get() : null,
-                 domain.getReasonAndOtherContents().isPresent() ? domain.getReasonAndOtherContents().get().v() : null,
-                 domain.getShortTimeWorkers().isPresent() ? domain.getShortTimeWorkers().get() : null,
-                 domain.getShortStay().isPresent() ? domain.getShortStay().get() : null,
-                 domain.getDepenAppoint().isPresent() ? domain.getDepenAppoint().get().value : null,
-                 domain.getQualifiDistin().isPresent() ? domain.getQualifiDistin().get().value : null,
-                 domain.getContinReemAfterRetirement().isPresent() ? domain.getContinReemAfterRetirement().get() : null
-         );
+        return new QqsmtSocIsacquisiInfo(
+                new QqsmtSocIsacquisiInfoPk(domain.getCompanyId(),domain.getEmployeeId()),
+                domain.getPercentOrMore().isPresent() ? domain.getPercentOrMore().get() : null,
+                domain.getRemarksOther().isPresent() ? domain.getRemarksOther().get(): null,
+                domain.getRemarksAndOtherContents().isPresent() ? domain.getRemarksAndOtherContents().get().v(): null,
+                domain.getRemunMonthlyAmountKind().isPresent() ? domain.getRemunMonthlyAmountKind().get().v() : null,
+                domain.getRemunMonthlyAmount().isPresent() ? domain.getRemunMonthlyAmount().get().v() : null,
+                domain.getTotalMonthlyRemun().isPresent() ? domain.getTotalMonthlyRemun().get().v() : null,
+                QqsmtSocIsacquisiInfo.getLiving(domain),
+                domain.getReasonAndOtherContents().isPresent() ? domain.getReasonAndOtherContents().get().v() : null,
+                domain.getShortTimeWorkers().isPresent() ? domain.getShortTimeWorkers().get() : null,
+                domain.getDepenAppoint().isPresent() ? domain.getDepenAppoint().get().value : null,
+                domain.getQualifiDistin().isPresent() ? domain.getQualifiDistin().get().value : null,
+                domain.getContinReemAfterRetirement().isPresent() ? domain.getContinReemAfterRetirement().get() : null
+        );
 
+    }
+
+    public static Integer getLiving(SocialInsurAcquisiInfor domain){
+        if(domain.getLivingAbroad().isPresent() && domain.getLivingAbroad().get() == 1){
+            return 1;
+        }
+
+        if(domain.getReasonOther().isPresent() && domain.getReasonOther().get() == 1) {
+            return 2;
+        }
+
+        if(domain.getShortStay().isPresent() && domain.getShortStay().get() == 1) {
+            return 3;
+        }
+        return 0;
     }
 
 }

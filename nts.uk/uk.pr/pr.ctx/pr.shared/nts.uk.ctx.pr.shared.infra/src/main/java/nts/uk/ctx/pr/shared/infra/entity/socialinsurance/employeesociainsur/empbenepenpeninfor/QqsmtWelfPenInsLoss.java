@@ -15,7 +15,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "QQSMT_WELF_PEN_INS_LOSS")
+@Table(name = "QQSDT_KOUHO_LOSS_INFO")
 public class QqsmtWelfPenInsLoss extends UkJpaEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
