@@ -105,6 +105,8 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
                 .empPenFundSub(empPensionFund)
                 .pensionOfficeData(pension.isEmpty() ? healthInsAss : pension)
                 .baseDate(exportServiceContext.getQuery().getBaseDate())
+                .startDate(exportServiceContext.getQuery().getStartDate())
+                .endDate(exportServiceContext.getQuery().getEndDate())
                 .build();
 
         if (exportServiceContext.getQuery().getTypeExport() == TYPE_EXPORT_EXCEL_FILE) {
