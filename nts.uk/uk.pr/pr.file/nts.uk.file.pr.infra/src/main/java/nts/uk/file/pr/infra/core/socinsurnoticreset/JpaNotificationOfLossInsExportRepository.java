@@ -260,7 +260,7 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
             exportSQL.append("            (SELECT *");
             exportSQL.append("       FROM QQSMT_COR_EMP_WORK_HIS ");
             exportSQL.append("       WHERE END_YM <= ?endYm AND END_YM >= ?startYm) wh ");
-            exportSQL.append("       ON wh.EMPLOYEE_ID = qi.EMPLOYEE_ID");
+            exportSQL.append("       ON wh.EMP_ID = qi.EMPLOYEE_ID");
             exportSQL.append("  LEFT JOIN (SELECT * ");
             exportSQL.append("          FROM QQSMT_HEAL_INSUR_PORT_INT ");
             exportSQL.append("          WHERE END_DATE <= ?endDate AND END_DATE >= ?startDate  ) pi");
