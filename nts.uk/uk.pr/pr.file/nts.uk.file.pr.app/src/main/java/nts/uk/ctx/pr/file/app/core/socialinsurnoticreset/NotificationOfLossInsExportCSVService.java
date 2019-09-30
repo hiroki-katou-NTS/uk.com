@@ -9,6 +9,7 @@ import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsura
 import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsurancePrefectureInformationRepository;
 import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.*;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.EmpWelfarePenInsQualiInforRepository;
+import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empcomworkstlinfor.CorWorkFormInfoRepository;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmplHealInsurQualifiInforRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -39,12 +40,10 @@ public class NotificationOfLossInsExportCSVService extends ExportService<Notific
 	private NotificationOfLossInsExRepository socialInsurNotiCreateSetEx;
 
 	@Inject
-	private SocialInsuranceOfficeRepository socialInsuranceOfficeRepository;
-
-	@Inject
 	private SocialInsurancePrefectureInformationRepository socialInsuranceInfor;
 
-
+    @Inject
+    private CorWorkFormInfoRepository corWorkFormInfoRepository;
 
 
 	@Override

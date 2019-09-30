@@ -12,12 +12,15 @@ import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.PersonalNumClass;
 import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.SocialInsurNotiCrSetRepository;
 import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.SocialInsurNotiCreateSet;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.ReasonsForLossPensionIns;
+import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empcomworkstlinfor.CorEmpWorkHis;
+import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empcomworkstlinfor.CorEmpWorkHisRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Stateless
@@ -37,6 +40,10 @@ public class NotificationOfLossInsExportPDFService extends ExportService<Notific
 
 	@Inject
 	private EmployeeInfoAdapter employeeInfoAdapter;
+
+	@Inject
+	private CorEmpWorkHisRepository corEmpWorkHisRepository;
+
 
 	@Override
 	protected void handle(ExportServiceContext<NotificationOfLossInsExportQuery> exportServiceContext) {
