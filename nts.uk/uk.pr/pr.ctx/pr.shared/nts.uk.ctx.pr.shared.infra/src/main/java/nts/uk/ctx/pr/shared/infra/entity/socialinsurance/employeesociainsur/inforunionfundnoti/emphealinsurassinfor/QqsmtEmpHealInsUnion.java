@@ -3,6 +3,7 @@ package nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.inf
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.inforunionfundnoti.emphealinsurassinfor.EmpHealthInsurUnion;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
@@ -10,12 +11,12 @@ import java.io.Serializable;
 
 
 /**
-* emphealinsurassinfor
+* 社員健康保険組合情報
 */
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "QQSMT_EMP_HEAL_INS_UNION")
+@Table(name = "QQSDT_KNKUM_EGOV_INFO")
 public class QqsmtEmpHealInsUnion extends UkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
@@ -30,7 +31,7 @@ public class QqsmtEmpHealInsUnion extends UkJpaEntity implements Serializable
     * 健保固有項目
     */
     @Basic(optional = false)
-    @Column(name = "HEAL_INSUR_INHEREN_PR")
+    @Column(name = "KNKUM_ITEM")
     public String healInsurInherenPr;
     
     @Override
@@ -43,7 +44,7 @@ public class QqsmtEmpHealInsUnion extends UkJpaEntity implements Serializable
         return new EmpHealthInsurUnion(this.empHealInsUnionPk.employeeId, this.healInsurInherenPr);
     }
     public static QqsmtEmpHealInsUnion toEntity(EmpHealthInsurUnion domain) {
-        return new QqsmtEmpHealInsUnion(new QqsmtEmpHealInsUnionPk(domain.getEmployeeId()),domain.getHealthInsurInherentProject().map(i->i.v()).orElse(null));
+        return new QqsmtEmpHealInsUnion(new QqsmtEmpHealInsUnionPk(domain.getEmployeeId(), AppContexts.user().companyId()),domain.getHealthInsurInherentProject().map(i->i.v()).orElse(null));
     }
 
 }

@@ -15,7 +15,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "QQBMT_HEAL_CARE_POR_INFO")
+@Table(name = "QQSDT_KNKUM_INFO")
 public class QqbmtHealCarePorInfo extends UkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
@@ -30,7 +30,7 @@ public class QqbmtHealCarePorInfo extends UkJpaEntity implements Serializable
     * 健康保険組合番号
     */
     @Basic(optional = false)
-    @Column(name = "HEAL_INSUR_UNION_NMBER")
+    @Column(name = "KNKUM_NUM")
     public int healInsurUnionNmber;
     
     @Override

@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "QQSMT_EMP_HEAL_INSUR_QI")
+@Table(name = "QQSDT_KENHO_INFO")
 public class QqsmtEmpHealInsurQi extends UkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
@@ -34,14 +34,14 @@ public class QqsmtEmpHealInsurQi extends UkJpaEntity implements Serializable
     public QqsmtEmpHealInsurQiPk empHealInsurQiPk;
     
     /**
-    * 開始日
+    * 健康保険資格取得日
     */
     @Basic(optional = false)
     @Column(name = "START_DATE")
     public GeneralDate startDate;
     
     /**
-    * 終了日
+    * 健康保険資格喪失日
     */
     @Basic(optional = false)
     @Column(name = "END_DATE")
@@ -51,14 +51,14 @@ public class QqsmtEmpHealInsurQi extends UkJpaEntity implements Serializable
      * 介護保険番号
      */
     @Basic(optional = true)
-    @Column(name = "CARE_IS_NUMBER")
+    @Column(name = "KAIHO_NUM")
     public String careIsNumber;
 
     /**
      * 健康保険番号
      */
     @Basic(optional = true)
-    @Column(name = "HEAL_INSUR_NUMBER")
+    @Column(name = "KENHO_NUM")
     public String healInsurNumber;
     
     @Override

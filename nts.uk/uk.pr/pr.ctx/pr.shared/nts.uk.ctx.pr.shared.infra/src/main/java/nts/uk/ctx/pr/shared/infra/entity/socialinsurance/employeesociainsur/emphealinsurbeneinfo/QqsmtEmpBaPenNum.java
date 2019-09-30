@@ -3,6 +3,7 @@ package nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.emp
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmpBasicPenNumInfor;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
@@ -15,7 +16,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "QQSMT_EMP_BA_PEN_NUM")
+@Table(name = "QQSDT_SYAHO_KNEN_NUM")
 public class QqsmtEmpBaPenNum extends UkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
@@ -30,7 +31,7 @@ public class QqsmtEmpBaPenNum extends UkJpaEntity implements Serializable
     * 基礎年金番号
     */
     @Basic(optional = true)
-    @Column(name = "BASIC_PEN_NUMBER")
+    @Column(name = "KISONEN_NUM")
     public String basicPenNumber;
     
     @Override
@@ -43,7 +44,7 @@ public class QqsmtEmpBaPenNum extends UkJpaEntity implements Serializable
         return new EmpBasicPenNumInfor(this.empBaPenNumPk.employeeId, this.basicPenNumber);
     }
     public static QqsmtEmpBaPenNum toEntity(EmpBasicPenNumInfor domain) {
-        return new QqsmtEmpBaPenNum(new QqsmtEmpBaPenNumPk(domain.getEmployeeId()), domain.getBasicPenNumber().map(i -> i.v()).orElse(null));
+        return new QqsmtEmpBaPenNum(new QqsmtEmpBaPenNumPk(domain.getEmployeeId(), AppContexts.user().companyId()), domain.getBasicPenNumber().map(i -> i.v()).orElse(null));
     }
 
 }

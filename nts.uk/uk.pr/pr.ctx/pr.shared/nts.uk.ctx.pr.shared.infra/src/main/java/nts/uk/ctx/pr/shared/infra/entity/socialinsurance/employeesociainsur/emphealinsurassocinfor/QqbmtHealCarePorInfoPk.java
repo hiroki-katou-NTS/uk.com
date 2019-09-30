@@ -26,5 +26,17 @@ public class QqbmtHealCarePorInfoPk implements Serializable
     @Basic(optional = false)
     @Column(name = "HIS_ID")
     public String hisId;
+    /**
+     * 社員ID
+     */
+    @Basic(optional = false)
+    @Column(name = "SID")
+    public String employeeId;
+    /**
+     * 会社ID
+     */
+    @Basic(optional = false)
+    @Column(name = "CID")
+    public String cid;
     
 }
