@@ -101,10 +101,15 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
             let end  = new Date();
             let start = new Date();
             start.setMonth(start.getMonth() - 1);
-            start.setDate(start.getDate() + 2);
-            end.setDate(end.getDate() + 1);
+            start.setDate(start.getDate() + 1);
+            let mmStart = start.getMonth() + 1;
+            let dStart = start.getDate();
+            let mmEnd = end.getMonth() + 1;
+            let dEnd = end.getDate();
+            let yyyyS = start.getFullYear();
+            let yyyyE = end.getFullYear();
             //init datepicker
-            self.startDate = ko.observable(moment.utc(start, "YYYY/MM/DD").toISOString());
+            self.startDate = ko.observable(yyyyS + "/" +  mmStart + "/" + dStart);
             self.startDate.subscribe(e => {
                 //self.japanStartDate = ko.observable(nts.uk.time.dateInJapanEmpire(moment.utc(self.startDate()).format("YYYYMMDD")).toString());
                 self.japanStartDate(nts.uk.time.dateInJapanEmpire(moment.utc(self.startDate()).format("YYYYMMDD")).toString());
@@ -112,14 +117,14 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
 
 
             self.japanStartDate = ko.observable(nts.uk.time.dateInJapanEmpire(moment.utc(self.startDate()).format("YYYYMMDD")).toString());
-            self.endDate = ko.observable(moment.utc(end, "YYYY/MM/DD").toISOString());
+            self.endDate = ko.observable(yyyyE + "/" +  mmEnd + "/" + dEnd);
             self.endDate.subscribe(e => {
                 self.japanEndDate(nts.uk.time.dateInJapanEmpire(moment.utc(self.endDate()).format("YYYYMMDD")).toString());
             });
             self.japanEndDate = ko.observable(nts.uk.time.dateInJapanEmpire(moment.utc(self.endDate()).format("YYYYMMDD")).toString());
 
 
-            self.baseDate1 = ko.observable(moment());
+            self.baseDate1 = ko.observable(yyyyE + "/" +  mmEnd + "/" + dEnd);
 
             self.baseDate1.subscribe(e => {
                 self.japanBaseDate(nts.uk.time.dateInJapanEmpire(moment.utc(self.baseDate1()).format("YYYYMMDD")).toString());
