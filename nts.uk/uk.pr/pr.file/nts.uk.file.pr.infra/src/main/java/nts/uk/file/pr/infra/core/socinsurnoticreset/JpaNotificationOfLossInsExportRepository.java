@@ -31,7 +31,7 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
             exportSQL.append("      loss.NUM_OF_ATTACHED,");
             exportSQL.append("      loss.NUM_OF_UNCOLLECTABLE,");
             exportSQL.append("      loss.LOSS_CASE_ATR,");
-            exportSQL.append("      70_OVER_ATR,");
+            exportSQL.append("      OVER_ATR,");
             exportSQL.append("      SYAHO_GET_ATR,");
             exportSQL.append("      CONTINUE_REEMPLOYED_ATR,");
             exportSQL.append("      HOSYU_IN_KIND,");

@@ -48,7 +48,7 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("      REMUN_MONTHLY_AMOUNT,");
         exportSQL.append("      REMUN_MONTHLY_AMOUNT_KIND,");
         exportSQL.append("      TOTAL_MONTHLY_REMUN,");
-        exportSQL.append("      70_OVER_ATR,");
+        exportSQL.append("      OVER_ATR,");
         exportSQL.append("      MULTI_OFFICE_ATR,");
         exportSQL.append("      SHORT_TIME_WORKES,");
         exportSQL.append("      CONTINUE_REEMPLOYED_ATR,");
@@ -207,7 +207,7 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("  QSII.REMUN_MONTHLY_AMOUNT,");
         exportSQL.append("  QSII.REMUN_MONTHLY_AMOUNT_KIND,");
         exportSQL.append("  QSII.TOTAL_MONTHLY_REMUN,");
-        exportSQL.append("  QSII.70_OVER_ATR,");
+        exportSQL.append("  QSII.OVER_ATR,");
         exportSQL.append("  QMEWI.MULTI_OFFICE_ATR,");
         exportSQL.append("  QSII.SHORT_TIME_WORKES,");
         exportSQL.append("  QSII.CONTINUE_REEMPLOYED_ATR,");
@@ -310,7 +310,7 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("      REMUN_MONTHLY_AMOUNT,");
         exportSQL.append("      REMUN_MONTHLY_AMOUNT_KIND,");
         exportSQL.append("      TOTAL_MONTHLY_REMUN,");
-        exportSQL.append("      70_OVER_ATR,");
+        exportSQL.append("      OVER_ATR,");
         exportSQL.append("      MULTI_OFFICE_ATR,");
         exportSQL.append("      SHORT_TIME_WORKES,");
         exportSQL.append("      CONTINUE_REEMPLOYED_ATR,");
@@ -465,7 +465,7 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("      GENDER,");
         exportSQL.append("      ni.COAL_MINER_ATR,");
         exportSQL.append("      QUALIFI_DISTIN,");
-        exportSQL.append("      70_OVER_ATR,");
+        exportSQL.append("      OVER_ATR,");
         exportSQL.append("      BIKO_SONOTA_ATR,");
         exportSQL.append("      CONTINUE_REEMPLOYED_ATR,");
         exportSQL.append("      HOSYU_IN_KIND,");
