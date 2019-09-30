@@ -18,6 +18,21 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
             self.employeeList = [];
             self.isShowfull = ko.observable(false);
             self.btnSelectionText = getText('CCG029_A1_5','部門');
+            
+             $(".searchTips-area").ntsPopup({
+                position: {
+                    my: "left top",
+                    at: "left bottom",
+                    of: "#searchTipsBtn"
+                },
+                showOnStart: false,
+                dismissible: false
+            });
+            
+            $("#searchTipsBtn").click(function() {
+                $(".searchTips-area").ntsPopup("toggle");
+            });
+            
         }
         startPage(): JQueryPromise<any> {
             var self = this;
@@ -109,8 +124,9 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
                 ]
             });
         }
+        
     }
-
+    
     class CareerType {
         id: string;
         code: string;
