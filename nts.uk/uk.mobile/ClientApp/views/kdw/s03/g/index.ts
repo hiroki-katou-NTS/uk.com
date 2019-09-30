@@ -40,7 +40,7 @@ export class KdwS03GComponent extends Vue {
         let cache: any = storage.session.getItem('dailyCorrectionState');
         let employeeIdSel = cache.selectedEmployee;
         self.empName = (_.find(cache.lstEmployee, (c) => c.id == employeeIdSel) || { businessName: '' }).businessName;
-        self.time36Display = cache.dPCorrectionMenuDto;
+        self.time36Display = cache.dPCorrectionMenuDto.timeExcessReferButtonDis;
         //休暇残数
         self.$http.post('at', servicePath.getRemain + employeeIdSel).then((result: any) => {
             self.$mask('hide');

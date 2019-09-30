@@ -1,9 +1,9 @@
 <template>
 <div class="kdws03b pt-0">
     <div class="modal-header rounded-0 d-block p-0">
-      <div class="uk-bg-teal p-2">
-          <h4 class="modal-title text-white">
-              <i class="fas fa-angle-left mr-1" v-on:click="$close"></i>
+      <div class="uk-bg-teal py-2">
+          <h4 class="col-3 modal-title text-white" v-on:click="$close">
+              <i class="fas fa-angle-left mr-1"></i>
               <span>{{ 'KDWS03_75' | i18n }}</span>
           </h4>
       </div>
@@ -114,7 +114,7 @@
       Hidden Content
     </div>
   </div>
-  <div class="fixed-bottom text-center register" v-if="canRegister">
+  <div class="fixed-bottom text-center" v-if="canRegister">
     <button type="button" class="btn btn-success btn-block shadow-none" v-bind:disabled="!$valid" v-on:click="register()">{{'KDWS03_38' | i18n}}</button>
   </div>
   

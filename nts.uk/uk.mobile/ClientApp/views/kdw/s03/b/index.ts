@@ -657,12 +657,7 @@ export class KdwS03BComponent extends Vue {
             employeeName: self.params.employeeName,
             startDate: self.params.date,
             endDate: self.params.date
-        }, { type: 'dropback' })
-            .then((v: any) => {
-                if (v == 'dropback') {
-                    this.$close('dropback');
-                }
-            });
+        });
     }
 
     public openDialog(key: string) {
