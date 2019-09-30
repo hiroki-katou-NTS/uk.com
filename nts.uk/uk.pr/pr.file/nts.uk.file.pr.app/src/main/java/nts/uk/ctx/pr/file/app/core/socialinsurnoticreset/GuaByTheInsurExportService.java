@@ -87,7 +87,7 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
                         exportServiceContext.getQuery().getStartDate(), exportServiceContext.getQuery().getEndDate());
             }
             if(ins.getOutputFormat().get() == OutputFormatClass.HEAL_INSUR_ASSO) {
-                healthInsAss = guaByTheInsurExportRepository.getDataHealthInsAss(exportServiceContext.getQuery().getEmpIds(), cid,
+                healthInsAss = guaByTheInsurExportRepository.getDataHealthInsAss(exportServiceContext.getQuery().getEmpIds(), cid, userId,
                         exportServiceContext.getQuery().getStartDate(), exportServiceContext.getQuery().getEndDate());
             }
             if(ins.getOutputFormat().get() == OutputFormatClass.THE_WELF_PEN) {
