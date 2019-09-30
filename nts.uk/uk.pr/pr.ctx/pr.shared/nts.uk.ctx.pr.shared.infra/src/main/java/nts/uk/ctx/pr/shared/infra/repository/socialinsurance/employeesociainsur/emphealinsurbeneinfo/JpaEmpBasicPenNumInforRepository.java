@@ -5,6 +5,7 @@ import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurb
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmpBasicPenNumInforRepository;
 import nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.emphealinsurbeneinfo.QqsmtEmpBaPenNum;
 import nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.emphealinsurbeneinfo.QqsmtEmpBaPenNumPk;
+import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import java.util.List;
@@ -44,6 +45,6 @@ public class JpaEmpBasicPenNumInforRepository extends JpaRepository implements E
 
     @Override
     public void remove(String employeeId){
-        this.commandProxy().remove(QqsmtEmpBaPenNum.class, new QqsmtEmpBaPenNumPk(employeeId));
+        this.commandProxy().remove(QqsmtEmpBaPenNum.class, new QqsmtEmpBaPenNumPk(employeeId, AppContexts.user().companyId()));
     }
 }

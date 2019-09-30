@@ -17,6 +17,6 @@ public interface HealthCarePortInforRepository
 
     void update(HealthCarePortInfor domain);
 
-    void remove(String hisId);
+    void remove(String hisId,String employeeId);
 
 }

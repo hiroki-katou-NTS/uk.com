@@ -22,7 +22,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "QQSMT_EMP_CORP_OFF_HIS")
+@Table(name = "QQSDT_SYAHO_OFFICE_INFO")
 public class QqsmtEmpCorpOffHis extends UkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;

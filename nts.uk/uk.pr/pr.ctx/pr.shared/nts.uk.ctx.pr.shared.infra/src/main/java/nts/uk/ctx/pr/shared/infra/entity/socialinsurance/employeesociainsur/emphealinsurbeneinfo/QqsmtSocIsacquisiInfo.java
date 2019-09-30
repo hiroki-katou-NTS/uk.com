@@ -14,7 +14,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "QQSMT_SOC_ISACQUISI_INFO")
+@Table(name = "QQSDT_SYAHO_GET_INFO")
 public class QqsmtSocIsacquisiInfo extends UkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
@@ -29,42 +29,42 @@ public class QqsmtSocIsacquisiInfo extends UkJpaEntity implements Serializable
     * 70歳以上被用者
     */
     @Basic(optional = true)
-    @Column(name = "PERCENT_OR_MORE")
+    @Column(name = "70_OVER_ATR")
     public Integer percentOrMore;
     
     /**
     * 備考その他
     */
     @Basic(optional = true)
-    @Column(name = "REMARKS_OTHER")
+    @Column(name = "BIKO_SONOTA_ATR")
     public Integer remarksOther;
     
     /**
     * 備考その他内容
     */
     @Basic(optional = true)
-    @Column(name = "REMARKS_AND_OTHER_CONTENTS")
+    @Column(name = "BIKO_SONOTA_REASON")
     public String remarksAndOtherContents;
     
     /**
     * 報酬月額（現物）
     */
     @Basic(optional = true)
-    @Column(name = "REMUN_MONTHLY_AMOUNT_KIND")
+    @Column(name = "HOSYU_IN_KIND")
     public Integer remunMonthlyAmountKind;
     
     /**
     * 報酬月額（金額）
     */
     @Basic(optional = true)
-    @Column(name = "REMUN_MONTHLY_AMOUNT")
+    @Column(name = "HOSYU_CURR")
     public Integer remunMonthlyAmount;
     
     /**
     * 報酬月額合計
     */
     @Basic(optional = true)
-    @Column(name = "TOTAL_MONTHLY_REMUN")
+    @Column(name = "HOSYU_MONTHLY")
     public Integer totalMonthlyRemun;
     
     /**
@@ -93,7 +93,7 @@ public class QqsmtSocIsacquisiInfo extends UkJpaEntity implements Serializable
 
      */
     @Basic(optional = true)
-    @Column(name = "SHORT_TIME_WORKES")
+    @Column(name = "SHORTTIME_WORKERS_ATR")
     public Integer shortTimeWorkes;
     
     /**
@@ -107,7 +107,7 @@ public class QqsmtSocIsacquisiInfo extends UkJpaEntity implements Serializable
     * 被扶養者届出区分
     */
     @Basic(optional = true)
-    @Column(name = "DEPEN_APPOINT")
+    @Column(name = "RPT_SUBMIT_ATR")
     public Integer depenAppoint;
     
     /**
@@ -121,7 +121,7 @@ public class QqsmtSocIsacquisiInfo extends UkJpaEntity implements Serializable
     * 退職後の継続再雇用者
     */
     @Basic(optional = true)
-    @Column(name = "CONTIN_REEM_AFTER_RETIREMENT")
+    @Column(name = "CONTINUE_REEMPLOYED_ATR")
     public Integer continReemAfterRetirement;
     
     @Override

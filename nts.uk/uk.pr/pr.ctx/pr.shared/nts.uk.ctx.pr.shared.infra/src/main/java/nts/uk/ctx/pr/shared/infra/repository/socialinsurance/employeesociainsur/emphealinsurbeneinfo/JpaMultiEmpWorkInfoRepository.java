@@ -5,10 +5,12 @@ import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurb
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.MultiEmpWorkInfoRepository;
 import nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.emphealinsurbeneinfo.QqsmtMultiEmpWorkIf;
 import nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.emphealinsurbeneinfo.QqsmtMultiEmpWorkIfPk;
+import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
-import java.util.List;
-import java.util.Optional;;
+import java.util.Optional;
+
+;
 
 @Stateless
 public class JpaMultiEmpWorkInfoRepository extends JpaRepository implements MultiEmpWorkInfoRepository
@@ -36,6 +38,6 @@ public class JpaMultiEmpWorkInfoRepository extends JpaRepository implements Mult
 
     @Override
     public void remove(String employeeId){
-        this.commandProxy().remove(QqsmtMultiEmpWorkIf.class, new QqsmtMultiEmpWorkIfPk(employeeId));
+        this.commandProxy().remove(QqsmtMultiEmpWorkIf.class, new QqsmtMultiEmpWorkIfPk(employeeId, AppContexts.user().companyId()));
     }
 }
