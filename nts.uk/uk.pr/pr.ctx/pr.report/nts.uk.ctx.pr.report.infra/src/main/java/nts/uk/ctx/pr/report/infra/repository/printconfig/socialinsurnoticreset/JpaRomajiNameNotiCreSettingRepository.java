@@ -20,8 +20,8 @@ public class JpaRomajiNameNotiCreSettingRepository extends JpaRepository impleme
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QrsmtRomanmRptSetting f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.romanmRptSettingPk.cid =:cid AND  f.romanmRptSettingPk.userId =:userId ";
 
-    private static final String ROMAJI_INFO = "SELECT f FROM QqsmtSocInsuNotiSet f " +
-            "WHERE f.socInsuNotiSetPk.userId =:userId AND f.socInsuNotiSetPk.cid =:cid";
+    private static final String ROMAJI_INFO = "SELECT f FROM QrsmtRomanmRptSetting f " +
+            "WHERE f.romanmRptSettingPk.userId =:userId AND f.romanmRptSettingPk.cid =:cid";
 
     @Override
     public Optional<RomajiNameNotiCreSetting> getRomajiNameNotiCreSettingById() {
@@ -33,7 +33,7 @@ public class JpaRomajiNameNotiCreSettingRepository extends JpaRepository impleme
 
     @Override
     public void register(RomajiNameNotiCreSetting domain) {
-        QrsmtRomanmRptSetting qqsmtSocInsuNotiSet =  this.getEntityManager().find(QrsmtRomanmRptSetting.class,new QrsmtRomanmRptSettingPk(AppContexts.user().userId(), AppContexts.user().companyId()));
+        QrsmtRomanmRptSetting qqsmtSocInsuNotiSet =  this.getEntityManager().find(QrsmtRomanmRptSetting.class,new QrsmtRomanmRptSettingPk(AppContexts.user().companyId(), AppContexts.user().userId()));
         if(qqsmtSocInsuNotiSet != null){
             this.commandProxy().update(QrsmtRomanmRptSetting.toEntity(domain));
         } else {

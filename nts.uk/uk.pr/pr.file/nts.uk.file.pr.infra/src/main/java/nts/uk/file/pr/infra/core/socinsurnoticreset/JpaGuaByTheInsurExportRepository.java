@@ -334,7 +334,7 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("      HEAL_INSUR_INHEREN_PR,");
         exportSQL.append("      HEAL_INSUR_UNION_NMBER,");
         exportSQL.append("      HEALTH_INSURANCE_UNION_OFFICE_NUMBER, ");
-        exportSQL.append("      ti.HISTORY_ID, ");
+        exportSQL.append("      wi.HISTORY_ID, ");
         exportSQL.append("      oi.PHONE_NUMBER, ");
         exportSQL.append("      QSINS.BUSSINESS_ARR_SYMBOL ");
         exportSQL.append("   FROM    ");
@@ -493,7 +493,12 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("      SHORT_TIME_WORKES,");
         exportSQL.append("      DEPEN_APPOINT,");
         exportSQL.append("      SUB_TYPE,");
-        exportSQL.append("      APP_FORM_CLS");
+        exportSQL.append("      APP_FORM_CLS,");
+        exportSQL.append("      qi.HISTORY_ID, ");
+        exportSQL.append("      oi.ADDRESS_1,");
+        exportSQL.append("      oi.ADDRESS_2,");
+        exportSQL.append("      oi.ADDRESS_KANA_1,");
+        exportSQL.append("      oi.ADDRESS_KANA_2 ");
         exportSQL.append("  FROM ");
         exportSQL.append("         (SELECT *");
         exportSQL.append("         FROM QQSMT_EMP_WELF_INS_QC_IF ");
@@ -560,7 +565,7 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
                 .memberNumber(i[15] == null ? "" : i[15].toString())
                 .welPenOfficeNumber(i[16] == null ? "" : i[16].toString())
                 .prefectureNo(i[17] == null ? 0 : ((BigDecimal)i[17]).intValue())
-                .endDate(i[18] == null ? "" : i[18].toString())
+                .startDate(i[18] == null ? "" : i[18].toString())
                 .personName(i[19] == null ? "" : i[19].toString())
                 .personNameKana(i[20] == null ? "" : i[20].toString())
                 .oldName(i[21] == null ? "" : i[21].toString())
@@ -581,8 +586,8 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
                 .otherReason(i[36] == null ? "" : i[36].toString())
                 .continReemAfterRetirement(i[37] == null ? "" : i[37].toString())
                 .basicPenNumber(i[38] == null ? "" : i[38].toString())
-                .gender(i[39] == null ? "" : i[39].toString())
-                .underDivision(i[40] == null ? "" : i[40].toString())
+                .gender(Integer.valueOf(i[39].toString()))
+                .underDivision(Integer.valueOf(i[40].toString()))
                 .qualifiDistin(i[41] == null ? "" : i[41].toString())
                 .percentOrMore(i[42] == null ? 0 : ((BigDecimal)i[42]).intValue())
                 .remarksOther(i[43] == null ? 0 : ((BigDecimal)i[43]).intValue())
@@ -597,6 +602,9 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
                 .depenAppoint(i[52] == null ? 0 : ((BigDecimal)i[52]).intValue())
                 .subType(i[53] == null ?  0 : ((BigDecimal)i[53]).intValue())
                 .appFormCls(i[54] == null ? 0 : ((BigDecimal)i[54]).intValue())
+                .hisId(i[54] == null ? "" : i[54].toString())
+                .add(i[55] == null ? "" : i[55].toString())
+                .addKana(i[57] == null ? "" : i[57].toString())
                 .build()
         ).collect(Collectors.toList());
     }

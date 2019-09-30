@@ -27,9 +27,18 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
 
     private static final String REPORT_ID = "CSV_GENERATOR";
 
+
     private static final String SHOWA = "昭和";
 
     private static final String HEISEI = "平成";
+
+    private static final String PEACE = "令和";
+
+    private static final int EMP_IN_PAGE = 4;
+
+    private static final String TAISO = "明治";
+
+    private static final String MEI = "大正";
 
     @Inject
     private JapaneseErasAdapter adapter;
@@ -355,6 +364,7 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
 
     private void fillEmpPensionFund(EmpPenFundSubData data, Cells cells,
                                     List<SocialInsurancePrefectureInformation> infor, SocialInsurNotiCreateSet ins, int startRow, int startDate, int endDate) {
+        JapaneseDate addAppCtgSal = !data.getBirthDay().isEmpty() ? toJapaneseDate( GeneralDate.fromString(data.getAddAppCtgSal().substring(0,10), "yyyy-MM-dd")) : null;
         JapaneseDate dateJp = toJapaneseDate(GeneralDate.fromString(data.getBirthDay().substring(0, 10), "yyyy-MM-dd"));
         cells.get(startRow, 0).setValue("2200700");
         cells.get(startRow, 1).setValue(getPreferCode(data.getPrefectureNo(), startDate, endDate, infor));
@@ -365,39 +375,124 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
         cells.get(startRow, 7).setValue(ins.getSubmittedName() == SubNameClass.PERSONAL_NAME ? data.getOldName() : data.getOldNameKana());
         cells.get(startRow, 8).setValue(dateJp.era().equals(HEISEI) ? 7 : dateJp.era().equals(SHOWA) ? 5 : 9);
         cells.get(startRow, 9).setValue(convertJpDate(dateJp));
-        cells.get(startRow, 11).setValue(ins.getTextPersonNumber().get() != TextPerNumberClass.OUTPUT_NUMBER ? data.getGender() : data.getUnderDivision());
-        cells.get(startRow, 12).setValue(data.getQualifiDistin());
+        //Male(1), Female(2)
+        String hisId = data.getHisId();
+        int undergoundDivision = data.getUnderDivision();
+        int gender = data.getGender();
+        if (hisId.equals("")) {
+            if (gender == 1 && undergoundDivision == 0) {
+                cells.get(startRow, 10).setValue("1");
+
+            }
+            if (gender == 2 && undergoundDivision == 0) {
+                cells.get(startRow, 10).setValue("2");
+
+            }
+            if (undergoundDivision == 1) {
+                cells.get(startRow, 10).setValue("3");
+
+            }
+        } else {
+            if (gender == 1 && undergoundDivision == 0) {
+                cells.get(startRow, 10).setValue("5");
+
+            }
+            if (gender == 2 && undergoundDivision == 0) {
+                cells.get(startRow, 10).setValue("6");
+
+            }
+            if (undergoundDivision == 1) {
+                cells.get(startRow, 10).setValue("7");
+
+            }
+        }
+
+        cells.get(startRow, 11).setValue(data.getQualifiDistin());
+        cells.get(startRow, 12).setValue("");
+        cells.get(startRow, 13).setValue("");
+        cells.get(startRow, 14).setValue("");
+        cells.get(startRow, 15).setValue(ins.getTextPersonNumber().get() != TextPerNumberClass.OUTPUT_NUMBER ? checkLength(data.getBasicPenNumber(),4) : "");
+        cells.get(startRow, 16).setValue(ins.getTextPersonNumber().get() != TextPerNumberClass.OUTPUT_NUMBER ? data.getBasicPenNumber().length() > 10 ? data.getBasicPenNumber().substring(4,10) :
+                data.getBasicPenNumber().length() > 4 ? data.getBasicPenNumber().substring(4,data.getBasicPenNumber().length()) : "" : "");
         cells.get(startRow, 17).setValue(9);
-        cells.get(startRow, 18).setValue(data.getEndDate().substring(0, 4) + data.getEndDate().substring(5, 7) + data.getEndDate().substring(8, 10));
+        cells.get(startRow, 18).setValue(data.getStartDate().substring(0, 4) + data.getEndDate().substring(5, 7) + data.getEndDate().substring(8, 10));
         cells.get(startRow, 19).setValue(data.getDepenAppoint());
         cells.get(startRow, 20).setValue(data.getRemunMonthlyAmount());
-        cells.get(startRow, 17).setValue(data.getRemunMonthlyAmountKind());
-        cells.get(startRow, 18).setValue(data.getTotalMonthlyRemun());
-        cells.get(startRow, 19).setValue(data.getPercentOrMore());
-        cells.get(startRow, 20).setValue(data.getIsMoreEmp());
-        cells.get(startRow, 23).setValue(data.getShortStay());
-        cells.get(startRow, 24).setValue(data.getContinReemAfterRetirement());
-        cells.get(startRow, 25).setValue(data.getRemarksAndOtherContents());
-        cells.get(startRow, 27).setValue(data.getFunMember());
-        cells.get(startRow, 28).setValue(data.getWelPenOfficeNumber());
-        cells.get(startRow, 29).setValue(data.getMemberNumber());
-        cells.get(startRow, 30).setValue(data.getSubType());
-        cells.get(startRow, 31).setValue(data.getAddAppCtgSal());
-        cells.get(startRow, 32).setValue(data.getAppFormCls());
-        cells.get(startRow, 33).setValue(data.getAddSal());
+        cells.get(startRow, 21).setValue(data.getRemunMonthlyAmountKind());
+        cells.get(startRow, 22).setValue(data.getTotalMonthlyRemun());
+        cells.get(startRow, 23).setValue(data.getPercentOrMore());
+        cells.get(startRow, 24).setValue(data.getIsMoreEmp());
+        cells.get(startRow, 25).setValue(data.getShortStay());
+        cells.get(startRow, 26).setValue(data.getContinReemAfterRetirement());
+        cells.get(startRow, 27).setValue(data.getRemarksAndOtherContents());
+        cells.get(startRow, 28).setValue(formatPortCd(data.getPortCd(), 1));
+        cells.get(startRow, 29).setValue(formatPortCd(data.getPortCd(), 2));
+        cells.get(startRow, 30).setValue(data.getAdd());
+        cells.get(startRow, 31).setValue(data.getAddKana());
+        cells.get(startRow, 32).setValue("");
+        cells.get(startRow, 33).setValue(data.getFunMember());
+        cells.get(startRow, 34).setValue(data.getWelPenOfficeNumber());
+        cells.get(startRow, 35).setValue(data.getMemberNumber());
+        cells.get(startRow, 36).setValue(data.getSubType());
+        cells.get(startRow, 37).setValue(findEra(addAppCtgSal.era()));
+        cells.get(startRow, 38).setValue(convertJpDate(addAppCtgSal));
+        cells.get(startRow, 39).setValue(data.getAddAppCtgSal());
+        cells.get(startRow, 40).setValue(findSubscriptionType(data.getAppFormCls()));
+        cells.get(startRow, 41).setValue(data.getAddSal().isEmpty() ? "" : Double.parseDouble(data.getAddSal().trim()) > 10000000 ? "9999999" : data.getAddSal());
+        cells.get(startRow, 42).setValue(data.getStandSal().isEmpty() ? "" : Double.parseDouble(data.getStandSal().trim()) > 10000000 ? "9999" : data.getStandSal().length() > 4 ? data.getStandSal().substring(0,data.getStandSal().length() - 3) : data.getStandSal());
+        cells.get(startRow, 43).setValue(data.getSecAddSalary().isEmpty() ? "" : Double.parseDouble(data.getSecAddSalary().trim()) > 10000000 ? "9999999" : data.getSecAddSalary());
+        cells.get(startRow, 44).setValue(data.getSecStandSal().isEmpty() ? "" : Double.parseDouble(data.getSecStandSal().trim()) > 10000000 ? "9999" : data.getSecStandSal().length() > 4 ? data.getSecStandSal().substring(0,data.getSecStandSal().length() - 3) : data.getSecStandSal());
+        cells.get(startRow, 45).setValue(data.getFunSpecific1());
+        cells.get(startRow, 46).setValue(data.getFunSpecific2());
+        cells.get(startRow, 47).setValue(data.getFunSpecific3());
+        cells.get(startRow, 48).setValue(data.getFunSpecific4());
+        cells.get(startRow, 49).setValue(data.getFunSpecific5());
+        cells.get(startRow, 50).setValue(data.getFunSpecific6());
+        cells.get(startRow, 51).setValue(data.getFunSpecific7());
+        cells.get(startRow, 52).setValue(data.getFunSpecific8());
+        cells.get(startRow, 53).setValue(data.getFunSpecific9());
+        cells.get(startRow, 54).setValue(data.getFunSpecific10());
+    }
 
-        cells.get(startRow, 39).setValue(data.getSecAddSalary());
-        cells.get(startRow, 40).setValue(data.getSecStandSal());
-        cells.get(startRow, 41).setValue(data.getFunSpecific1());
-        cells.get(startRow, 42).setValue(data.getFunSpecific2());
-        cells.get(startRow, 43).setValue(data.getFunSpecific3());
-        cells.get(startRow, 44).setValue(data.getFunSpecific4());
-        cells.get(startRow, 45).setValue(data.getFunSpecific5());
-        cells.get(startRow, 46).setValue(data.getFunSpecific6());
-        cells.get(startRow, 47).setValue(data.getFunSpecific7());
-        cells.get(startRow, 54).setValue(data.getFunSpecific8());
-        cells.get(startRow, 54).setValue(data.getFunSpecific9());
-        cells.get(startRow, 55).setValue(data.getFunSpecific10());
+    private String findEra(String era) {
+        if (era.equals(TAISO)) {
+            return "1";
+        }
+        if (era.equals(MEI)) {
+            return "3";
+        }
+        if (era.equals(SHOWA)) {
+            return "5";
+        }
+        if (era.equals(HEISEI)) {
+            return "7";
+        }
+        if (era.equals(PEACE)) {
+            return "9";
+        }
+        return "";
+    }
+    private String findSubscriptionType(int applFormClass) {
+        //    NEW(1, "新規"),
+        //    MOVING(2, "転入"),
+        //    REVIVAL(3, "復活"),
+        //    REJOIN(4, "再加入");
+       switch (applFormClass){
+           case 1 : {
+               return "1";
+           }
+           case 2 : {
+               return "2";
+           }
+           case 3 : {
+               return "3";
+           }
+           case 4 : {
+               return "4";
+           }
+
+       }
+       return "";
     }
 
     private String convertJpDate(JapaneseDate date) {

@@ -16,7 +16,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "QQSMT_SOC_INSU_NOTI_SET")
+@Table(name = "QRSMT_SYAHO_RPT_SETTING")
 public class QqsmtSocInsuNotiSet extends UkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
@@ -31,78 +31,71 @@ public class QqsmtSocInsuNotiSet extends UkJpaEntity implements Serializable
     * 事業所情報
     */
     @Basic(optional = false)
-    @Column(name = "OFFICE_INFORMATION")
+    @Column(name = "OUTPUT_UNIT_ATR")
     public int officeInformation;
     
     /**
     * 事業所整理記号
     */
     @Basic(optional = false)
-    @Column(name = "BUSSINESS_ARR_SYMBOL")
+    @Column(name = "OUTPUT_OFFICE_SRNUM")
     public int bussinessArrSymbol;
     
     /**
     * 出力順
     */
     @Basic(optional = false)
-    @Column(name = "OUTPUT_ORDER")
+    @Column(name = "OUTPUT_ORDER_ATR")
     public int outputOrder;
     
     /**
     * 印刷個人番号
     */
     @Basic(optional = false)
-    @Column(name = "PRINT_PERSON_NUMBER")
+    @Column(name = "PRINT_MYNUM_ATR")
     public int printPersonNumber;
     
     /**
     * 提出氏名
     */
     @Basic(optional = false)
-    @Column(name = "SUBMITTED_NAME")
+    @Column(name = "SUBMIT_NAME_ATR")
     public int submittedName;
     
     /**
     * 被保険者整理番号
     */
     @Basic(optional = false)
-    @Column(name = "INSURED_NUMBER")
+    @Column(name = "SYAHO_NUM_ATR")
     public int insuredNumber;
     
     /**
     * FD番号
     */
     @Basic(optional = true)
-    @Column(name = "FD_NUMBER")
+    @Column(name = "FD_NUM")
     public String fdNumber;
     
     /**
     * テキスト個人番号
     */
     @Basic(optional = true)
-    @Column(name = "TEXT_PERSON_NUMBER")
+    @Column(name = "TEXT_MYNUM_ATR")
     public Integer textPersonNumber;
     
     /**
     * 出力形式
     */
     @Basic(optional = true)
-    @Column(name = "OUTPUT_FORMAT")
+    @Column(name = "OUTPUT_FORMAT_ATR")
     public Integer outputFormat;
     
     /**
     * 改行コード
     */
     @Basic(optional = true)
-    @Column(name = "LINE_FEED_CODE")
+    @Column(name = "LINE_FEED_CODE_ATR")
     public Integer lineFeedCode;
-
-    /**
-     * 住所出力区分
-     */
-    @Basic(optional = true)
-    @Column(name = "ADD_OUTPUT_CLASS")
-    public Integer addOutputClass;
 
     @Override
     protected Object getKey()
@@ -137,8 +130,8 @@ public class QqsmtSocInsuNotiSet extends UkJpaEntity implements Serializable
                domain.getFdNumber().isPresent() ? domain.getFdNumber().get().v() : null,
                domain.getTextPersonNumber().isPresent() ? domain.getTextPersonNumber().get().value : null,
                domain.getOutputFormat().isPresent() ? domain.getOutputFormat().get().value : null,
-               domain.getLineFeedCode().isPresent() ? domain.getLineFeedCode().get().value : null,
-                null);
+               domain.getLineFeedCode().isPresent() ? domain.getLineFeedCode().get().value : null
+                );
     }
 
 }

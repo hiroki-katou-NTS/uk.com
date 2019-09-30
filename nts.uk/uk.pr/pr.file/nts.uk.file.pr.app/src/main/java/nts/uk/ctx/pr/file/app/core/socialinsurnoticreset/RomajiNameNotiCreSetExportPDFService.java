@@ -63,8 +63,8 @@ public class RomajiNameNotiCreSetExportPDFService extends ExportService<RomajiNa
         String cid = AppContexts.user().companyId();
 
         romajiNameNotiCreSetRepository.register(new RomajiNameNotiCreSetting(
-                AppContexts.user().userId(),
                 cid,
+                AppContexts.user().userId(),
                 exportServiceContext.getQuery().getAddressOutputClass()
         ));
 
