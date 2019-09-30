@@ -1,15 +1,15 @@
 <template>
     <div class="kdws03c py-0">
         <div class="modal-header rounded-0 d-block p-0">
-            <div class="uk-bg-teal p-2">
-                <h4 class="modal-title text-white">
-                    <i class="fas fa-angle-left mr-1" v-on:click="$close"></i>
+            <div class="uk-bg-teal py-2">
+                <h4 class="col-3 modal-title text-white" v-on:click="$close">
+                    <i class="fas fa-angle-left mr-1"></i>
                     <span>{{ 'KDWS03_75' | i18n }}</span>
                 </h4>
             </div>
         </div>
-    <div class="row uk-text-quote py-2 pl-2 uk-bg-white-smoke">
-      <div><span>{{'KDWS03_6' | i18n}}</span></div>
+    <div class="uk-text-quote py-2 mx-n3 uk-bg-white-smoke">
+      <div class="pl-2"><span>{{'KDWS03_6' | i18n}}</span></div>
     </div>
 
         <div class="card card-label">

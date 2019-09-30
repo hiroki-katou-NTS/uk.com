@@ -6,6 +6,7 @@ import { TimeDuration, TimeWithDay } from '@app/utils/time';
 import { storage } from '@app/utils';
 import { KdwS03BComponent } from 'views/kdw/s03/b';
 import { KdwS03AMenuComponent } from 'views/kdw/s03/a/menu';
+import { KdwS03CComponent } from 'views/kdw/s03/c';
 
 @component({
     name: 'kdws03a',
@@ -17,7 +18,8 @@ import { KdwS03AMenuComponent } from 'views/kdw/s03/a/menu';
     components: {
         'fix-table': FixTableComponent,
         'kdws03b': KdwS03BComponent,
-        'kdws03amenu': KdwS03AMenuComponent
+        'kdws03amenu': KdwS03AMenuComponent,
+        'kdws03c': KdwS03CComponent
     },
     validations: {
         yearMonth: {
@@ -34,7 +36,6 @@ export class Kdws03AComponent extends Vue {
 
     public title: string = 'Kdws03A';
     public isFirstLoad: boolean = true;
-    public isReLoadByDate: boolean = true;
     public displayFormat: any = '0';
     public lstDataSourceLoad: Array<any> = [];
     public lstDataHeader: Array<any> = [];
@@ -95,7 +96,7 @@ export class Kdws03AComponent extends Vue {
         this.selectedEmployeeTemp = this.selectedEmployee;
         this.actualTimeSelectedCodeTemp = this.actualTimeSelectedCode;
 
-        this.initActualTime(value, this.selectedEmployee);        
+        this.initActualTime(value, this.selectedEmployee);
     }
 
     @Watch('selectedEmployee')
@@ -107,19 +108,16 @@ export class Kdws03AComponent extends Vue {
         this.yearMonthTemp = this.yearMonth;
         this.actualTimeSelectedCodeTemp = this.actualTimeSelectedCode;
 
-        this.isReLoadByDate = false;
-        this.startPage();
         this.initActualTime(this.yearMonth, this.selectedEmployee);
     }
 
     @Watch('dateRanger', { deep: true })
     public changeDateRange(value: any, valueOld: any) {
-        if (_.isNil(valueOld) || this.displayFormat == '1' || _.isEqual(value, valueOld) || !this.isReLoadByDate) {
-            this.isReLoadByDate = true;
-
+        if (_.isNil(value) || _.isNil(valueOld) || this.displayFormat == '1') {
             return;
-        }
-        this.startPage();
+        } else {
+            this.startPage();
+        }   
     }
 
     @Watch('actualTimeSelectedCode')
@@ -131,7 +129,7 @@ export class Kdws03AComponent extends Vue {
 
     @Watch('selectedDate')
     public changeDate(value: any, valueOld: any) {
-        if (_.isNil(valueOld) || this.selectedDate == this.selectedDateTemp) {
+        if (_.isNil(valueOld) || (!_.isNil(this.selectedDateTemp) && this.selectedDate.toString() == this.selectedDateTemp.toString())) {
             return;
         }
         this.selectedDateTemp = valueOld;
@@ -176,7 +174,13 @@ export class Kdws03AComponent extends Vue {
     public updated() {
         let styleTagAr: any = [];
         styleTagAr = document.querySelectorAll('.btn-sm');
-        _.forEach(styleTagAr, (x) => x.style.fontSize = '10px');
+        _.forEach(styleTagAr, (x) => x.style.fontSize = '11px');
+
+        let styleContainer: any = [];
+        styleContainer = document.querySelectorAll('.container-fluid');
+        if (!_.isEmpty(styleContainer)) {
+            styleContainer[0].style.overflow = 'hidden';
+        }
 
         if (this.displayFormat == '1') {
             let styleTableBody: any = [];
@@ -184,7 +188,7 @@ export class Kdws03AComponent extends Vue {
             if (!_.isEmpty(styleTableBody)) {
                 styleTableBody[0].style.height = '295px';
             }
-        }        
+        }
     }
 
     //日別実績データの取得
@@ -199,7 +203,7 @@ export class Kdws03AComponent extends Vue {
             initDisplayDate: null,
             employeeID: self.selectedEmployee,
             objectDateRange: self.displayFormat == '0' ?
-                ((!_.isNil(self.dateRanger) && self.isReLoadByDate) ? { startDate: self.$dt.fromString(self.dateRanger.startDate), endDate: self.$dt.fromString(self.dateRanger.endDate) } : null) :
+                (!_.isNil(self.dateRanger) ? { startDate: self.$dt.fromString(self.dateRanger.startDate), endDate: self.$dt.fromString(self.dateRanger.endDate) } : null) :
                 (!_.isNil(self.selectedDate) ? { startDate: self.selectedDate, endDate: self.selectedDate } : null),
             lstEmployee: [],
             initClock: null,
@@ -285,6 +289,7 @@ export class Kdws03AComponent extends Vue {
             } else {
                 if (res.messageId != undefined) {
                     self.$modal.error(res.messageId == 'Msg_1430' ? res.message : { messageId: res.messageId }).then(() => {
+                        self.$mask('hide');
                         self.$goto('ccg008a');
                     });
 
@@ -317,11 +322,14 @@ export class Kdws03AComponent extends Vue {
         self.lstAttendanceItem = data.lstControlDisplayItem.lstAttendanceItem;
         self.cellStates = data.lstCellState;
 
-        if (_.isNil(self.timePeriodAllInfo)) {
+        if (self.isFirstLoad) {
             self.timePeriodAllInfo = data.periodInfo;
             self.yearMonth = data.periodInfo.yearMonth;
-            self.selectedDate = this.$dt.fromString(self.timePeriodAllInfo.targetRange.startDate);
         }
+        
+        if (self.displayFormat == 1) {
+            self.selectedDate = this.$dt.fromString(self.timePeriodAllInfo.targetRange.startDate);
+        }       
 
         self.fixHeaders = data.lstFixedHeader;
         self.showPrincipal = data.showPrincipal;
@@ -557,22 +565,20 @@ export class Kdws03AComponent extends Vue {
             'rowData': rowData,
             'paramData': paramData,
             'displayformat': displayformat
-        },
-            { type: 'dropback' })
-            .then((v: any) => {
-                if (v.reload) {
-                    this.startPage();
-                } else {
-                    self.$http.post('at', servicePath.resetCacheDomain).then((result: { data: any }) => {});
-                }              
-            });
+        }).then((v: any) => {
+            if (v.reload) {
+                this.startPage();
+            } else {
+                self.$http.post('at', servicePath.resetCacheDomain).then((result: { data: any }) => { });
+            }
+        });
     }
 
     //メニュー画面を開く
     public openMenu() {
         let self = this;
-        this.$modal(
-            'kdws03amenu',
+        if (self.displayFormat == '0') {//個人別モード
+            self.$modal('kdws03amenu',
             {
                 displayFormat: this.displayFormat,
                 allConfirmButtonDis: this.dPCorrectionMenuDto.allConfirmButtonDis,
@@ -580,10 +586,6 @@ export class Kdws03AComponent extends Vue {
                 restReferButtonDis: this.dPCorrectionMenuDto.restReferButtonDis,
                 monthActualReferButtonDis: this.dPCorrectionMenuDto.monthActualReferButtonDis,
                 timeExcessReferButtonDis: this.dPCorrectionMenuDto.timeExcessReferButtonDis,
-            },
-            {
-                type: 'dropback',
-                title: null
             }).then((paramOpenB: any) => {
                 if (paramOpenB != undefined && paramOpenB.openB) {
                     //open B
@@ -600,13 +602,30 @@ export class Kdws03AComponent extends Vue {
                         'date': paramOpenB.date,
                         'rowData': rowData,
                         'paramData': self.paramData
-                    },
-                        { type: 'dropback' })
-                        .then((v) => {
-
-                        });
+                    });
                 }
             });
+        } else {//日付別モード
+            this.$modal('kdws03c').then((paramOpenB: any) => {
+                if (paramOpenB != undefined && paramOpenB.openB) {
+                    //open B
+                    let rowData = null;
+                    if (self.displayFormat == '0') {
+                        rowData = _.find(self.displayDataLst, (x) => x.dateDetail == paramOpenB.date);
+                    } else {
+                        rowData = _.find(self.displayDataLst, (x) => x.employeeId == paramOpenB.employeeId);
+                    }
+
+                    self.$modal('kdws03b', {
+                        'employeeID': paramOpenB.employeeId,
+                        'employeeName': paramOpenB.employeeName,
+                        'date': paramOpenB.date,
+                        'rowData': rowData,
+                        'paramData': self.paramData
+                    });
+                }
+            });
+        }
     }
 
     //次ページを押下処理
@@ -714,9 +733,9 @@ export class Kdws03AComponent extends Vue {
     }
 
     //期間取得
-    public initActualTime(value: any, selectedEmployee: string ) {
+    public initActualTime(value: any, selectedEmployee: string) {
         let self = this;
-        self.$http.post('at', servicePath.genDate, { yearMonth: value, empTarget: selectedEmployee}).then((result: { data: any }) => {
+        self.$http.post('at', servicePath.genDate, { yearMonth: value, empTarget: selectedEmployee }).then((result: { data: any }) => {
             let data = result.data;
             if (_.isNil(data.lstRange)) {
                 this.yearMonth = this.yearMonthTemp;
