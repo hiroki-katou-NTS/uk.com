@@ -874,7 +874,19 @@ module cps003.c.vm {
                 let regChecked = [];
                 _.forEach(updates, item => {
                     if (item.columnKey === "register") {
-                        if (item.value) regChecked.push(item.rowId);
+                        if (item.value) {
+                            regChecked.push(item.rowId);
+                            if (errObj[item.rowId]) return;
+                            let recData: Record = recId[item.rowId];
+                            let regEmp = regId[recData.id];
+                            if (!regEmp) {
+                                regEmp = { rowId: item.rowId, personId: recData.personId, employeeId: recData.employeeId, employeeCd: recData.employeeCode, employeeName: recData.employeeName, order: recData.rowNumber };
+                                regEmp.input = { categoryId: self.category.catId(), categoryCd: self.category.catCode(), categoryName: cateName, categoryType: cateType, recordId: recData.id, delete: false, items: [] };
+                                regId[recData.id] = regEmp;
+                                employees.push(regEmp);
+                            }
+                        }
+                        
                         return;
                     }
                     
@@ -956,6 +968,11 @@ module cps003.c.vm {
                 });
                 
                 command = { baseDate:  moment.utc(self.baseDate(), "YYYY/MM/DD").toISOString(), editMode: self.updateMode(), employees: employees };
+                if (command.employees && command.employees.length === 0) {
+                    unblock();
+                    return;
+                }
+                
                 service.push.register(command).done((errorList) => {
                     let regEmployeeIds = [];
                     if (dataToG && dataToG.length > 0) {

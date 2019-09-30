@@ -413,7 +413,21 @@ module cps003.a.vm {
                 let regChecked = [];
                 _.forEach(updates, item => {
                     if (item.columnKey === "register") {
-                        if (item.value && _.isNil(find(self.hiddenRows, (id) => id === item.rowId))) regChecked.push(item.rowId);
+                        if (item.value && _.isNil(find(self.hiddenRows, (id) => id === item.rowId))) {
+                            regChecked.push(item.rowId);
+                            
+                            // Add employee without items
+                            if (errObj[item.rowId]) return;
+                            let recData: Record = recId[item.rowId];
+                            let regEmp = regId[recData.id];
+                            if (!regEmp) {
+                                regEmp = { rowId: item.rowId, personId: recData.personId, employeeId: recData.employeeId, employeeCd: recData.employeeCode, employeeName: recData.employeeName, order: recData.rowNumber };
+                                regEmp.input = { categoryId: self.category.catId(), categoryCd: self.category.catCode(), categoryName: cateName, categoryType: cateType, recordId: recData instanceof Record ? recData.id : null, delete: false, items: [] };
+                                regId[recData.id] = regEmp;
+                                employees.push(regEmp);
+                            }
+                        }
+                        
                         return;
                     }
                     
