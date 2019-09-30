@@ -285,7 +285,6 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
         if(data.getResonOther() == 1){
             cells.get(startRow, 13).setValue("3");
         }
-        cells.get(startRow, 13).setValue(data.getDistin());
         //
         cells.get(startRow, 14).setValue(data.getResonAndOtherContent());
         cells.get(startRow, 17).setValue(startDateJp.era().equals(HEISEI) ? 7 : dateJp.era().equals(SHOWA) ? 5 : 9);

@@ -358,7 +358,7 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("       FROM QQSMT_EMP_WELF_INS_QC_IF ");
         exportSQL.append("       WHERE START_DATE <= ?endDate AND START_DATE >= ?startDate) wi");
         exportSQL.append("       ON wi.EMPLOYEE_ID = qi.EMPLOYEE_ID");
-        exportSQL.append("    INNER JOIN  QQSMT_EMP_PEN_INS ni ON  ni.HISTORY_ID = wi.HISTORY_ID AND pi.EMPLOYEE_ID = qi.EMPLOYEE_ID");
+        exportSQL.append("    INNER JOIN  QQSMT_EMP_PEN_INS ni ON  ni.HISTORY_ID = wi.HISTORY_ID AND ni.EMPLOYEE_ID = qi.EMPLOYEE_ID");
         exportSQL.append("    LEFT JOIN (SELECT *");
         exportSQL.append("       FROM QQSMT_TEM_PEN_PART_INFO ");
         exportSQL.append("       WHERE START_DATE <= ?endDate AND START_DATE >= ?startDate) ti");
