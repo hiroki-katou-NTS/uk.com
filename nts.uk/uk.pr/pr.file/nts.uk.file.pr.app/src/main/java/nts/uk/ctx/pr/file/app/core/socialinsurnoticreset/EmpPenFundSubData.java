@@ -46,6 +46,7 @@ public class EmpPenFundSubData {
     private int prefectureNo;
 
     private String endDate;
+    private String startDate;
 
     private String personName;
 
@@ -87,9 +88,9 @@ public class EmpPenFundSubData {
 
     private String basicPenNumber;
 
-    private String gender;
+    private int gender;
 
-    private String underDivision;
+    private int underDivision;
 
     private String qualifiDistin;
 
@@ -118,5 +119,10 @@ public class EmpPenFundSubData {
     private Integer subType;
 
     private Integer appFormCls;
+
+    private String hisId;
+
+    private String add;
+    private String addKana;
 
 }
