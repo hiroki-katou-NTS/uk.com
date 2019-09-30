@@ -183,80 +183,30 @@ public class InsuredNameChangedNotiService extends ExportService<InsuredNameChan
 
                     if(emPensionFundPartiPeriodInfor.isPresent()){
                         data.setEmPensionFundPartiPeriodInfor(emPensionFundPartiPeriodInfor.get());
-                    }else{
-                        data.setProcessSate(false);
                     }
 
-                }else{
-                    //ドメインモデル「社員健康保険資格情報」を取得する
-
-                    Optional<EmplHealInsurQualifiInfor> emplHealInsurQualifiInfor = emplHealInsurQualifiInforRepository.getEmplHealInsurQualifiInforByEmpId(empId);
-                    if(emplHealInsurQualifiInfor.isPresent()){
-                        //取得した「社員健康保険資格情報」をチェックする
-                        Optional<EmpHealthInsurBenefits>  empHealthInsurBenefits = emplHealInsurQualifiInfor.get().getMourPeriod().stream().filter(x -> {
-                            return date.afterOrEquals(x.getDatePeriod().start()) && date.beforeOrEquals(x.getDatePeriod().end());
-                        }).findFirst();
-                        //チェック条件を満たすデータが取得できたか確認する
-                        if(empHealthInsurBenefits.isPresent()){
-                            data.setEmpHealthInsurBenefits(empHealthInsurBenefits.get());
-
-                        }else{
-                            data.setProcessSate(false);
-                            //return data;
-                        }
-                    }else{
-                        data.setProcessSate(false);
-                        return  data;
-                    }
-
-                }
-            }else{
-                //ドメインモデル「社員健康保険資格情報」を取得する
-
-                Optional<EmplHealInsurQualifiInfor> emplHealInsurQualifiInfor = emplHealInsurQualifiInforRepository.getEmplHealInsurQualifiInforByEmpId(empId);
-                if(emplHealInsurQualifiInfor.isPresent()){
-                    //取得した「社員健康保険資格情報」をチェックする
-                    Optional<EmpHealthInsurBenefits>  empHealthInsurBenefits = emplHealInsurQualifiInfor.get().getMourPeriod().stream().filter(x -> {
-                        return date.afterOrEquals(x.getDatePeriod().start()) && date.beforeOrEquals(x.getDatePeriod().end());
-                    }).findFirst();
-                    //チェック条件を満たすデータが取得できたか確認する
-                    if(empHealthInsurBenefits.isPresent()){
-                        data.setEmpHealthInsurBenefits(empHealthInsurBenefits.get());
-
-                    }else{
-                        data.setProcessSate(false);
-                        //return data;
-                    }
-                }else{
-                    data.setProcessSate(false);
-                    //return  data;
                 }
             }
 
-        }else{
-            //ドメインモデル「社員健康保険資格情報」を取得する
+        }
 
-            Optional<EmplHealInsurQualifiInfor> emplHealInsurQualifiInfor = emplHealInsurQualifiInforRepository.getEmplHealInsurQualifiInforByEmpId(empId);
-            if(emplHealInsurQualifiInfor.isPresent()){
-                //取得した「社員健康保険資格情報」をチェックする
-                Optional<EmpHealthInsurBenefits>  empHealthInsurBenefits = emplHealInsurQualifiInfor.get().getMourPeriod().stream().filter(x -> {
-                    return date.afterOrEquals(x.getDatePeriod().start()) && date.beforeOrEquals(x.getDatePeriod().end());
-                }).findFirst();
-                //チェック条件を満たすデータが取得できたか確認する
-                if(empHealthInsurBenefits.isPresent()){
-                    data.setEmpHealthInsurBenefits(empHealthInsurBenefits.get());
+        //ドメインモデル「社員健康保険資格情報」を取得する
 
-                }else{
-                    data.setProcessSate(false);
-                    //return data;
-                }
-            }else{
-                data.setProcessSate(false);
-                //return  data;
+        Optional<EmplHealInsurQualifiInfor> emplHealInsurQualifiInfor = emplHealInsurQualifiInforRepository.getEmplHealInsurQualifiInforByEmpId(empId);
+        if(emplHealInsurQualifiInfor.isPresent()){
+            //取得した「社員健康保険資格情報」をチェックする
+            Optional<EmpHealthInsurBenefits>  empHealthInsurBenefits = emplHealInsurQualifiInfor.get().getMourPeriod().stream().filter(x -> {
+                return date.afterOrEquals(x.getDatePeriod().start()) && date.beforeOrEquals(x.getDatePeriod().end());
+            }).findFirst();
+            //チェック条件を満たすデータが取得できたか確認する
+            if(empHealthInsurBenefits.isPresent()){
+                data.setEmpHealthInsurBenefits(empHealthInsurBenefits.get());
+
             }
         }
-        this.checkInsuredNumber(listSocialInsuranceOffice,date,empId,socialInsurNotiCreateSetDomain,empWelfarePenInsQualiInfors.isPresent() ? empWelfarePenInsQualiInfors.get() : null,data.getEmPensionFundPartiPeriodInfor(),data.getEmpHealthInsurBenefits());
 
+        this.checkInsuredNumber(listSocialInsuranceOffice,date,empId,socialInsurNotiCreateSetDomain,empWelfarePenInsQualiInfors.isPresent() ? empWelfarePenInsQualiInfors.get() : null,data.getEmPensionFundPartiPeriodInfor(),data.getEmpHealthInsurBenefits());
+        data.setProcessSate(true);
         return data;
     }
 
@@ -271,12 +221,19 @@ public class InsuredNameChangedNotiService extends ExportService<InsuredNameChan
             if(empWelfarePenInsQualiInfor != null){
                 Optional<WelfPenNumInformation> welfPenNumInformation = welfPenNumInformationRepository.getWelfPenNumInformationById(empWelfarePenInsQualiInfor.getEmployeeId());
                 data.setWelfPenNumInformation(welfPenNumInformation.isPresent() ? welfPenNumInformation.get() : null);
+            }else{
+                data.setProcessSate(true);
             }
 
         }else if(socialInsurNotiCreateSet.getInsuredNumber() == InsurPersonNumDivision.OUTPUT_THE_FUN_MEMBER){
-            //ドメインモデル「基金加入員情報」を取得する
-            Optional<FundMembership> fundMembership =  emPensionFundPartiPeriodInforRepository.getFundMembershipByEmpId(empId,emPensionFundPartiPeriodInfor.getDatePeriod().identifier());
-            data.setFundMembership(fundMembership.isPresent() ? fundMembership.get() : null);
+            if(emPensionFundPartiPeriodInfor != null){
+                //ドメインモデル「基金加入員情報」を取得する
+                Optional<FundMembership> fundMembership =  emPensionFundPartiPeriodInforRepository.getFundMembershipByEmpId(empId,emPensionFundPartiPeriodInfor.getDatePeriod().identifier());
+                data.setFundMembership(fundMembership.isPresent() ? fundMembership.get() : null);
+            }else{
+                data.setProcessSate(true);
+            }
+
         }else  if(socialInsurNotiCreateSet.getInsuredNumber() ==  InsurPersonNumDivision.OUTPUT_HEAL_INSUR_NUM || socialInsurNotiCreateSet.getInsuredNumber() == InsurPersonNumDivision.OUTPUT_HEAL_INSUR_UNION){
             //社会保険届作成設定・被保険者整理番号区分を確認する
             //健康保険番号を出力
@@ -287,6 +244,8 @@ public class InsuredNameChangedNotiService extends ExportService<InsuredNameChan
                     data.setHealInsurNumberInfor(healInsurNumberInfor.isPresent() ? healInsurNumberInfor.get() : null);
                     //go to 1
                     //健保組合番号を出力
+                }else{
+                    data.setProcessSate(true);
                 }
 
             }else if(socialInsurNotiCreateSet.getInsuredNumber() == InsurPersonNumDivision.OUTPUT_HEAL_INSUR_UNION){
@@ -344,7 +303,6 @@ public class InsuredNameChangedNotiService extends ExportService<InsuredNameChan
         Optional<EmpNameChangeNotiInfor> empNameChangeNotiInfor = empNameChangeNotiInforRepository.getEmpNameChangeNotiInforById(empId,AppContexts.user().companyId());
         //fill to A1_21, A1_23
         data.setEmpNameChangeNotiInfor(empNameChangeNotiInfor.isPresent() ? empNameChangeNotiInfor.get() : null);
-        data.setProcessSate(true);
 
     }
 
