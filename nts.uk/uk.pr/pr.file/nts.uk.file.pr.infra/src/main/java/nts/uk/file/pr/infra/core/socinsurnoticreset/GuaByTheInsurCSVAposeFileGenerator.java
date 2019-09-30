@@ -227,9 +227,10 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
                 cells.get(startRow, 3).setValue(checkLength(company.getAdd_1() + company.getAdd_2(), 37));
                 cells.get(startRow, 4).setValue(company.getCompanyName().length() > 25 ? company.getCompanyName().substring(0, 25) : company.getCompanyName());
                 cells.get(startRow, 5).setValue(company.getRepname().length() > 7 ? company.getRepname().substring(0, 7) : company.getRepname());
-                cells.get(startRow, 6).setValue(formatPhone(company.getPhoneNum(), 0));
-                cells.get(startRow, 7).setValue(formatPhone(company.getPhoneNum(), 1));
-                cells.get(startRow, 8).setValue(formatPhone(company.getPhoneNum(), 2));
+                String phoneNumber = data.getBussinesArrSybol() == 0 ? company.getPhoneNum() : data.getPhoneNumber();
+                cells.get(startRow, 6).setValue(formatPhone(phoneNumber, 0));
+                cells.get(startRow, 7).setValue(formatPhone(phoneNumber, 1));
+                cells.get(startRow, 8).setValue(formatPhone(phoneNumber, 2));
                 startRow++;
                 cells.get(startRow, 0).setValue("[data]");
             }
