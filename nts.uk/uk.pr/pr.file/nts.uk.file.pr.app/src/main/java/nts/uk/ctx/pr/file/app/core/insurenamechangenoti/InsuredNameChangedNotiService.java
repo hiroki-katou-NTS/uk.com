@@ -132,13 +132,20 @@ public class InsuredNameChangedNotiService extends ExportService<InsuredNameChan
 
         List<EmployeeInfoEx> employeeInfo = employeeInfoAdapter.findBySIds(query.getListEmpId());
 
-        parallel.forEach(employeeInfo, x->{
-            InsuredNameChangedNotiExportData insuredNameChangedNotiExportData =  this.get(x,companyInfor,listSocialInsuranceOffice,socialInsurNotiCreateSetDomain.get(),x.getEmployeeId(),query.getDate());
+        query.getListEmpId().forEach(x ->{
+            InsuredNameChangedNotiExportData insuredNameChangedNotiExportData =  this.get(listSocialInsuranceOffice,socialInsurNotiCreateSetDomain.get(),x,query.getDate());
 
             if(insuredNameChangedNotiExportData.isProcessSate()){
                 listData.add(insuredNameChangedNotiExportData);
             }
         });
+        /*parallel.forEach(employeeInfo, x->{
+            InsuredNameChangedNotiExportData insuredNameChangedNotiExportData =  this.get(companyInfor,listSocialInsuranceOffice,socialInsurNotiCreateSetDomain.get(),x.getEmployeeId(),query.getDate());
+
+            if(insuredNameChangedNotiExportData.isProcessSate()){
+                listData.add(insuredNameChangedNotiExportData);
+            }
+        });*/
 
         if(listData.size() > 0){
             fileGenerator.generate(exportServiceContext.getGeneratorContext(),listData,socialInsurNotiCreateSet);
@@ -148,12 +155,11 @@ public class InsuredNameChangedNotiService extends ExportService<InsuredNameChan
 
     }
 
-    private InsuredNameChangedNotiExportData get(EmployeeInfoEx employeeInfo, CompanyInfor companyInfor, List<SocialInsuranceOffice> listSocialInsuranceOffice, SocialInsurNotiCreateSet socialInsurNotiCreateSetDomain, String empId, GeneralDate date){
+    private InsuredNameChangedNotiExportData get(List<SocialInsuranceOffice> listSocialInsuranceOffice, SocialInsurNotiCreateSet socialInsurNotiCreateSetDomain, String empId, GeneralDate date){
         data = new InsuredNameChangedNotiExportData();
+        data.setProcessSate(true);
         data.setEmpId(empId);
         data.setSubmitDate(date);
-
-        data.setEmployeeInfo(employeeInfo);
 
         if(socialInsurNotiCreateSetDomain.getOfficeInformation().value == BusinessDivision.OUTPUT_COMPANY_NAME.value){
             data.setCompanyInfor(companyInfor);
@@ -201,12 +207,11 @@ public class InsuredNameChangedNotiService extends ExportService<InsuredNameChan
             //チェック条件を満たすデータが取得できたか確認する
             if(empHealthInsurBenefits.isPresent()){
                 data.setEmpHealthInsurBenefits(empHealthInsurBenefits.get());
-
             }
         }
 
         this.checkInsuredNumber(listSocialInsuranceOffice,date,empId,socialInsurNotiCreateSetDomain,empWelfarePenInsQualiInfors.isPresent() ? empWelfarePenInsQualiInfors.get() : null,data.getEmPensionFundPartiPeriodInfor(),data.getEmpHealthInsurBenefits());
-        data.setProcessSate(true);
+
         return data;
     }
 
@@ -222,7 +227,7 @@ public class InsuredNameChangedNotiService extends ExportService<InsuredNameChan
                 Optional<WelfPenNumInformation> welfPenNumInformation = welfPenNumInformationRepository.getWelfPenNumInformationById(empWelfarePenInsQualiInfor.getEmployeeId());
                 data.setWelfPenNumInformation(welfPenNumInformation.isPresent() ? welfPenNumInformation.get() : null);
             }else{
-                data.setProcessSate(true);
+                data.setProcessSate(false);
             }
 
         }else if(socialInsurNotiCreateSet.getInsuredNumber() == InsurPersonNumDivision.OUTPUT_THE_FUN_MEMBER){
@@ -231,7 +236,7 @@ public class InsuredNameChangedNotiService extends ExportService<InsuredNameChan
                 Optional<FundMembership> fundMembership =  emPensionFundPartiPeriodInforRepository.getFundMembershipByEmpId(empId,emPensionFundPartiPeriodInfor.getDatePeriod().identifier());
                 data.setFundMembership(fundMembership.isPresent() ? fundMembership.get() : null);
             }else{
-                data.setProcessSate(true);
+                data.setProcessSate(false);
             }
 
         }else  if(socialInsurNotiCreateSet.getInsuredNumber() ==  InsurPersonNumDivision.OUTPUT_HEAL_INSUR_NUM || socialInsurNotiCreateSet.getInsuredNumber() == InsurPersonNumDivision.OUTPUT_HEAL_INSUR_UNION){
@@ -245,7 +250,7 @@ public class InsuredNameChangedNotiService extends ExportService<InsuredNameChan
                     //go to 1
                     //健保組合番号を出力
                 }else{
-                    data.setProcessSate(true);
+                    data.setProcessSate(false);
                 }
 
             }else if(socialInsurNotiCreateSet.getInsuredNumber() == InsurPersonNumDivision.OUTPUT_HEAL_INSUR_UNION){
