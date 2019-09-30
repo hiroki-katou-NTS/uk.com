@@ -363,7 +363,7 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
                         });
                     }
                 }
-
+                block.clear();
             }).fail(e => {
                 block.clear();
             });
