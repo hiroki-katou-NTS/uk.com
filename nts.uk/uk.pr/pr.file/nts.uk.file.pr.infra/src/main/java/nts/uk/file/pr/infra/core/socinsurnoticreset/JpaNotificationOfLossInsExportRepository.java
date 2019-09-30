@@ -1,7 +1,6 @@
 package nts.uk.file.pr.infra.core.socinsurnoticreset;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.file.app.core.socialinsurnoticreset.CompanyInfor;
 import nts.uk.ctx.pr.file.app.core.socialinsurnoticreset.InsLossDataExport;
@@ -21,199 +20,39 @@ import java.util.stream.Collectors;
 public class JpaNotificationOfLossInsExportRepository extends JpaRepository implements NotificationOfLossInsExRepository {
 
     @Override
-    public List<InsLossDataExport> getWelfPenInsLoss(List<String> empIds, String cid, GeneralDate startDate, GeneralDate endDate) {
-        List<Object[]> resultQuery = null;
-        StringBuilder exportSQL = new StringBuilder();
-        exportSQL.append("  SELECT i.SCD,");
-        exportSQL.append("      SOCIAL_INSURANCE_OFFICE_CD,");
-        exportSQL.append("      OTHER,");
-        exportSQL.append("      OTHER_REASON,");
-        exportSQL.append("      CA_INSURANCE,");
-        exportSQL.append("      NUM_RECOVED,");
-        exportSQL.append("      CAUSE,");
-        exportSQL.append("      PERCENT_OR_MORE,");
-        exportSQL.append("      REMARKS_OTHER,");
-        exportSQL.append("      REMARKS_AND_OTHER_CONTENTS,");
-        exportSQL.append("      REMUN_MONTHLY_AMOUNT_KIND,");
-        exportSQL.append("      REMUN_MONTHLY_AMOUNT,");
-        exportSQL.append("      TOTAL_MONTHLY_REMUN,");
-        exportSQL.append("      LIVING_ABROAD,");
-        exportSQL.append("      REASON_OTHER,");
-        exportSQL.append("      REASON_AND_OTHER_CONTENTS,");
-        exportSQL.append("      SHORT_TIME_WORKES,");
-        exportSQL.append("      SHORT_STAY,");
-        exportSQL.append("      DEPEN_APPOINT,");
-        exportSQL.append("      QUALIFI_DISTIN,");
-        exportSQL.append("      CONTIN_REEM_AFTER_RETIREMENT,");
-        exportSQL.append("      IS_MORE_EMP,");
-        exportSQL.append("      BASIC_PEN_NUMBER,");
-        exportSQL.append("      BUSINESS_NAME,");
-        exportSQL.append("      BUSINESS_NAME_KANA,");
-        exportSQL.append("      PERSON_NAME,");
-        exportSQL.append("      BIRTHDAY,");
-        exportSQL.append("      qi.END_DATE,");
-        exportSQL.append("      HEAL_INSUR_NUMBER,");
-        exportSQL.append("      PERSON_NAME_KANA,");
-        exportSQL.append("      WELFARE_PENSION_OFFICE_NUMBER_1,");
-        exportSQL.append("      WELFARE_PENSION_OFFICE_NUMBER_2,");
-        exportSQL.append("      WELFARE_PENSION_OFFICE_NUMBER,");
-        exportSQL.append("      POSTAL_CODE,");
-        exportSQL.append("      ADDRESS_1,");
-        exportSQL.append("      ADDRESS_2,");
-        exportSQL.append("      NAME,");
-        exportSQL.append("      REPRESENTATIVE_NAME,");
-        exportSQL.append("      PHONE_NUMBER,");
-        exportSQL.append("      ni.WEL_PEN_NUMBER,");
-        exportSQL.append("      HEAL_INSUR_UNION_NMBER,");
-        exportSQL.append("      MEMBER_NUMBER,");
-        exportSQL.append("      WELFARE_PENSION_PREFECTURE_NO");
-        exportSQL.append("    FROM ");
-        exportSQL.append("         (SELECT *");
-        exportSQL.append("         FROM QQSMT_EMP_WELF_INS_QC_IF");
-        exportSQL.append("         WHERE END_DATE <= ?endDate AND END_DATE >= ?startDate");
-        exportSQL.append("         AND EMPLOYEE_ID IN ('%s') )qi");
-        exportSQL.append("  LEFT JOIN ");
-        exportSQL.append("          (SELECT *");
-        exportSQL.append("          FROM QQSMT_EMP_HEAL_INSUR_QI ");
-        exportSQL.append("          WHERE END_DATE <= ?endDate AND END_DATE >= ?startDate  ) wi");
-        exportSQL.append("          ON qi.EMPLOYEE_ID = wi.EMPLOYEE_ID ");
-        exportSQL.append("  INNER JOIN ");
-        exportSQL.append("            (SELECT *");
-        exportSQL.append("       FROM QQSMT_EMP_PEN_INS ");
-        exportSQL.append("       WHERE END_DATE <= ?endDate AND END_DATE >= ?startDate) ni ");
-        exportSQL.append("       ON ni.EMPLOYEE_ID = qi.EMPLOYEE_ID");
-        exportSQL.append("  LEFT JOIN (SELECT * ");
-        exportSQL.append("          FROM QQSMT_HEAL_INSUR_PORT_INT ");
-        exportSQL.append("          WHERE END_DATE <= ?endDate AND END_DATE >= ?startDate  ) ppi");
-        exportSQL.append("          ON qi.EMPLOYEE_ID = ppi.EMPLOYEE_ID");
-        exportSQL.append("  LEFT JOIN (SELECT *");
-        exportSQL.append("          FROM QQSMT_TEM_PEN_PART_INFO");
-        exportSQL.append("          WHERE END_DATE <= ?endDate AND END_DATE >= ?startDate  ) ti");
-        exportSQL.append("          ON qi.EMPLOYEE_ID = ti.EMPLOYEE_ID");
-        exportSQL.append("  LEFT JOIN ");
-        exportSQL.append("       (SELECT * ");
-        exportSQL.append("       FROM QQSMT_EMP_CORP_OFF_HIS ");
-        exportSQL.append("       WHERE END_DATE <= ?endDate AND END_DATE >= ?startDate) his");
-        exportSQL.append("       ON qi.EMPLOYEE_ID = his.EMPLOYEE_ID");
-        exportSQL.append("  INNER JOIN (SELECT *");
-        exportSQL.append("        FROM QQSMT_WELF_PEN_INS_LOSS w");
-        exportSQL.append("        WHERE EMP_ID NOT IN (SELECT w.EMP_ID");
-        exportSQL.append("                         FROM ");
-        exportSQL.append("                           (SELECT *");
-        exportSQL.append("                           FROM QQSMT_EMP_WELF_INS_QC_IF ");
-        exportSQL.append("                           WHERE END_DATE <= ?endDate AND END_DATE >= ?startDate) wi");
-        exportSQL.append("                         INNER JOIN QQSMT_WELF_PEN_INS_LOSS w ON w.EMP_ID = wi.EMPLOYEE_ID");
-        exportSQL.append("                         INNER JOIN QQSMT_HEALTH_INS_LOSS h ON w.EMP_ID = h.EMP_ID");
-        exportSQL.append("                         INNER JOIN QQSMT_EMP_HEAL_INSUR_QI hi ON hi.EMPLOYEE_ID = h.EMP_ID");
-        exportSQL.append("                         WHERE wi.END_DATE = hi.END_DATE)) loss ");
-        exportSQL.append("       ON loss.EMP_ID = his.EMPLOYEE_ID");
-        exportSQL.append("       INNER JOIN QQSMT_SOC_ISACQUISI_INFO info ON info.EMPLOYEE_ID = his.EMPLOYEE_ID");
-        exportSQL.append("       INNER JOIN QQSMT_EMP_PEN_INS pi ON pi.HISTORY_ID = his.HISTORY_ID");
-        exportSQL.append("       INNER JOIN QQSMT_MULTI_EMP_WORK_IF mt ON mt.EMPLOYEE_ID = his.EMPLOYEE_ID");
-        exportSQL.append("       LEFT JOIN QQSMT_EMP_BA_PEN_NUM ba ON ba.EMPLOYEE_ID = his.EMPLOYEE_ID");
-        exportSQL.append("       LEFT JOIN (SELECT * ");
-        exportSQL.append("            FROM QPBMT_SOCIAL_INS_OFFICE");
-        exportSQL.append("            WHERE CID = ?cid) oi ");
-        exportSQL.append("            ON oi.CODE = his.SOCIAL_INSURANCE_OFFICE_CD");
-        exportSQL.append("       INNER JOIN (SELECT * ");
-        exportSQL.append("             FROM BSYMT_EMP_DTA_MNG_INFO ");
-        exportSQL.append("             WHERE CID = ?cid) i");
-        exportSQL.append("             ON i.SID = qi.EMPLOYEE_ID");
-        exportSQL.append("       INNER JOIN BPSMT_PERSON p ON p.PID = i.PID");
-        String sql = String.format(exportSQL.toString(), empIds.stream()
-                .map(String::valueOf)
-                .collect(Collectors.joining("','")));
-        try {
-            resultQuery = this.getEntityManager().createNativeQuery(sql)
-                    .setParameter("startDate", this.convertDate(startDate.toString("yyyy-MM-dd")))
-                    .setParameter("endDate", this.convertDate(endDate.toString("yyyy-MM-dd")))
-                    .setParameter("cid", cid)
-                    .getResultList();
-        } catch (NoResultException e) {
-            return Collections.emptyList();
-        }
-        return resultQuery.stream().map(i -> InsLossDataExport.builder()
-                .empCd(i[0].toString())
-                .officeCd(i[1] != null ? "" : i[1].toString())
-                .other(i[2] != null ? 0 : ((BigDecimal) i[2]).intValue())
-                .otherReason(i[3] == null ? "" : i[3].toString())
-                .caInsurance(i[4] == null ? 0 : ((BigDecimal) i[4]).intValue())
-                .numRecoved(i[5] == null ? 0 : ((BigDecimal) i[5]).intValue())
-                .cause(i[6] == null ? 0 : ((BigDecimal) i[6]).intValue())
-                .percentOrMore(i[7] == null ? "" : i[7].toString())
-                .remarksOther(i[8] == null ? "" : i[8].toString())
-                .remarksAndOtherContent(i[9] == null ? "" : i[9].toString())
-                .remunMonthlyAmountKind(i[10] == null ? 0 : ((BigDecimal) i[10]).intValue())
-                .remunMonthlyAmount(i[11] == null ? 0 : ((BigDecimal) i[11]).intValue())
-                .totalMonthyRemun(i[12] == null ? 0 : ((BigDecimal) i[12]).intValue())
-                .livingAbroad(i[13] == null ? "" : i[13].toString())
-                .resonOther(i[14] == null ? "" : i[14].toString())
-                .resonAndOtherContent(i[15] == null ? "" : i[15].toString())
-                .shortTimeWorkes(i[16] == null ? "" : i[16].toString())
-                .shortStay(i[17] == null ? "" : i[17].toString())
-                .depenAppoint(i[18] == null ? "" : i[18].toString())
-                .qualifiDistin(i[19] == null ? "" : i[19].toString())
-                .continReemAfterRetirement(i[20] == null ? 0 : ((BigDecimal) i[20]).intValue())
-                .isMoreEmp(i[21] == null ? 0 : ((BigDecimal) i[21]).intValue())
-                .basicPenNumber(i[22] == null ? "" : i[22].toString())
-                .personName(i[23] == null ? "" : i[23].toString())
-                .personNameKana(i[24] == null ? "" : i[24].toString())
-                .oldName(i[25] == null ? "" : i[25].toString())
-                .birthDay(i[26] == null ? "" : i[26].toString())
-                .endDate(i[27] == null ? "" : i[27].toString())
-                .healInsNumber(i[28] == null ? "" : i[28].toString())
-                .oldNameKana(i[29] == null ? "" : i[29].toString())
-                .officeNumber1(i[30] == null ? "" : i[30].toString())
-                .officeNumber2(i[31] == null ? "" : i[31].toString())
-                .officeNumber(i[32] == null ? "" : i[32].toString())
-                .portCd(i[33] == null ? "" : i[33].toString())
-                .add1(i[34] == null ? "" : i[34].toString())
-                .add2(i[35] == null ? "" : i[35].toString())
-                .companyName(i[36] == null ? "" : i[36].toString())
-                .repName(i[37] == null ? "" : i[37].toString())
-                .phoneNumber(i[38] == null ? "" : i[38].toString())
-                .welfPenNumber(i[39] == null ? "" : i[39].toString())
-                .healInsUnionNumber(i[40] == null ? "" : i[40].toString())
-                .memberNumber(i[41] == null ? "" : i[41].toString())
-                .prefectureNo(i[42] == null ? 0 : ((BigDecimal) i[42]).intValue())
-                .build()
-        ).collect(Collectors.toList());
-    }
-
-    @Override
     public List<InsLossDataExport> getHealthInsLoss(List<String> empIds, String cid, GeneralDate startDate, GeneralDate endDate) {
         try {
             List<Object[]> resultQuery = null;
             StringBuilder exportSQL = new StringBuilder();
             exportSQL.append("  SELECT i.SCD,");
-            exportSQL.append("      SOCIAL_INSURANCE_OFFICE_CD,");
-            exportSQL.append("      loss.OTHER,");
-            exportSQL.append("      loss.OTHER_REASON,");
-            exportSQL.append("      loss.CA_INSURANCE,");
-            exportSQL.append("      loss.NUM_RECOVED,");
-            exportSQL.append("      loss.CAUSE,");
-            exportSQL.append("      PERCENT_OR_MORE,");
-            exportSQL.append("      REMARKS_OTHER,");
-            exportSQL.append("      REMARKS_AND_OTHER_CONTENTS,");
-            exportSQL.append("      REMUN_MONTHLY_AMOUNT_KIND,");
-            exportSQL.append("      REMUN_MONTHLY_AMOUNT,");
-            exportSQL.append("      TOTAL_MONTHLY_REMUN,");
-            exportSQL.append("      LIVING_ABROAD,");
-            exportSQL.append("      REASON_OTHER,");
-            exportSQL.append("      REASON_AND_OTHER_CONTENTS,");
-            exportSQL.append("      SHORT_TIME_WORKES,");
-            exportSQL.append("      SHORT_STAY,");
-            exportSQL.append("      DEPEN_APPOINT,");
+            exportSQL.append("      SYAHO_OFFICE_CD,");
+            exportSQL.append("      loss.OTHER_ATR,");
+            exportSQL.append("      loss.OTHER_REASONS,");
+            exportSQL.append("      loss.NUM_OF_ATTACHED,");
+            exportSQL.append("      loss.NUM_OF_UNCOLLECTABLE,");
+            exportSQL.append("      loss.LOSS_CASE_ATR,");
+            exportSQL.append("      70_OVER_ATR,");
+            exportSQL.append("      SYAHO_GET_ATR,");
+            exportSQL.append("      CONTINUE_REEMPLOYED_ATR,");
+            exportSQL.append("      HOSYU_IN_KIND,");
+            exportSQL.append("      HOSYU_CURR,");
+            exportSQL.append("      HOSYU_MONTHLY,");
+            exportSQL.append("      NO_MYNUM_ATR,");
+            exportSQL.append("      NO_MYNUM_ATR,");
+            exportSQL.append("      NO_MYNUM_REASON,");
+            exportSQL.append("      SHORTTIME_WORKERS_ATR,");
+            exportSQL.append("      NO_MYNUM_ATR,");
+            exportSQL.append("      RPT_SUBMIT_ATR,");
             exportSQL.append("      QUALIFI_DISTIN,");
-            exportSQL.append("      CONTIN_REEM_AFTER_RETIREMENT,");
-            exportSQL.append("      IS_MORE_EMP,");
-            exportSQL.append("      BASIC_PEN_NUMBER,");
+            exportSQL.append("      CONTINUE_REEMPLOYED_ATR,");
+            exportSQL.append("      MULTI_OFFICE_ATR,");
+            exportSQL.append("      KISONEN_NUM,");
             exportSQL.append("      PERSON_NAME ,");
             exportSQL.append("      PERSON_NAME_KANA ,");
             exportSQL.append("      TODOKEDE_FNAME ,");
             exportSQL.append("      BIRTHDAY,");
             exportSQL.append("      qi.END_DATE,");
-            exportSQL.append("      HEAL_INSUR_NUMBER,");
+            exportSQL.append("      KENHO_NUM,");
             exportSQL.append("      HEALTH_INSURANCE_PREFECTURE_NO,");
             exportSQL.append("      HEALTH_INSURANCE_OFFICE_NUMBER_1,");
             exportSQL.append("      HEALTH_INSURANCE_OFFICE_NUMBER_2,");
@@ -223,73 +62,68 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
             exportSQL.append("      WELFARE_PENSION_OFFICE_NUMBER_1,");
             exportSQL.append("      WELFARE_PENSION_OFFICE_NUMBER_2,");
             exportSQL.append("      WELFARE_PENSION_OFFICE_NUMBER,");
-            exportSQL.append("      WEL_PEN_NUMBER,");
-            exportSQL.append("      HEAL_INSUR_UNION_NMBER,");
-            exportSQL.append("      MEMBER_NUMBER,");
-            exportSQL.append("      HEAL_INSUR_INHEREN_PR,");
+            exportSQL.append("      KOUHO_NU,");
+            exportSQL.append("      KNKUM_NUM,");
+            exportSQL.append("      KIKIN_NUM,");
+            exportSQL.append("      KNKUM_ITEM,");
             exportSQL.append("      POSTAL_CODE,");
             exportSQL.append("      ADDRESS_1,");
             exportSQL.append("      ADDRESS_2,");
             exportSQL.append("      NAME,");
             exportSQL.append("      REPRESENTATIVE_NAME,");
             exportSQL.append("      PHONE_NUMBER,");
-            exportSQL.append("      wloss.OTHER,");
-            exportSQL.append("      wloss.OTHER_REASON,");
-            exportSQL.append("      wloss.CA_INSURANCE,");
-            exportSQL.append("      wloss.NUM_RECOVED,");
-            exportSQL.append("      wloss.CAUSE,");
+            exportSQL.append("      wloss.OTHER_ATR,");
+            exportSQL.append("      wloss.OTHER_REASONS,");
+            exportSQL.append("      wloss.NUM_OF_ATTACHED,");
+            exportSQL.append("      wloss.NUM_OF_UNCOLLECTABLE,");
+            exportSQL.append("      wloss.LOSS_CASE_ATR,");
             exportSQL.append("      wi.END_DATE,");
-            exportSQL.append("      INS_PER_CLS");
+            exportSQL.append("      INSURED_ATR");
             exportSQL.append("  FROM ");
             exportSQL.append("         (SELECT *");
-            exportSQL.append("         FROM QQSMT_EMP_HEAL_INSUR_QI ");
-            exportSQL.append("         WHERE END_DATE <= ?endDate AND END_DATE >= ?startDate");
-            exportSQL.append("         AND EMPLOYEE_ID IN ('%s') )qi");
+            exportSQL.append("         FROM QQSDT_KENHO_INFO ");
+            exportSQL.append("         WHERE END_DATE <= ?endDate AND END_DATE >= ?startDate AND CID = ?cid");
+            exportSQL.append("         AND SID IN ('%s') )qi");
             exportSQL.append("  FULL JOIN ");
             exportSQL.append("          (SELECT *");
-            exportSQL.append("          FROM QQSMT_EMP_WELF_INS_QC_IF ");
-            exportSQL.append("          WHERE END_DATE <= ?endDate AND END_DATE >= ?startDate ");
-            exportSQL.append("         AND EMPLOYEE_ID IN ('%s') ) wi");
-            exportSQL.append("          ON qi.EMPLOYEE_ID = wi.EMPLOYEE_ID ");
-            exportSQL.append("  INNER JOIN ");
-            exportSQL.append("            (SELECT *");
-            exportSQL.append("       FROM QQSMT_EMP_PEN_INS ");
-            exportSQL.append("       WHERE END_DATE <= ?endDate AND END_DATE >= ?startDate) ni ");
-            exportSQL.append("       ON ni.EMPLOYEE_ID = qi.EMPLOYEE_ID");
-            exportSQL.append("  LEFT JOIN ");
-            exportSQL.append("            (SELECT *");
-            exportSQL.append("       FROM QQSMT_COR_EMP_WORK_HIS ");
-            exportSQL.append("       WHERE END_YM <= ?endYm AND END_YM >= ?startYm) wh ");
-            exportSQL.append("       ON wh.EMP_ID = qi.EMPLOYEE_ID");
-            exportSQL.append("  LEFT JOIN (SELECT * ");
-            exportSQL.append("          FROM QQSMT_HEAL_INSUR_PORT_INT ");
-            exportSQL.append("          WHERE END_DATE <= ?endDate AND END_DATE >= ?startDate  ) pi");
-            exportSQL.append("          ON qi.EMPLOYEE_ID = pi.EMPLOYEE_ID");
-            exportSQL.append("  LEFT JOIN (SELECT *");
-            exportSQL.append("          FROM QQSMT_TEM_PEN_PART_INFO");
-            exportSQL.append("          WHERE END_DATE <= ?endDate AND END_DATE >= ?startDate  ) ti");
-            exportSQL.append("          ON qi.EMPLOYEE_ID = ti.EMPLOYEE_ID");
+            exportSQL.append("          FROM QQSDT_KOUHO_INFO ");
+            exportSQL.append("          WHERE END_DATE <= ?endDate AND END_DATE >= ?startDate  AND CID = ?cid");
+            exportSQL.append("         AND SID IN ('%s') ) wi");
+            exportSQL.append("          ON qi.SID = wi.SID ");
             exportSQL.append("  INNER JOIN ");
             exportSQL.append("       (SELECT * ");
-            exportSQL.append("       FROM QQSMT_EMP_CORP_OFF_HIS ");
-            exportSQL.append("       WHERE END_DATE <= ?endDate AND END_DATE >= ?startDate) his");
-            exportSQL.append("       ON qi.EMPLOYEE_ID = his.EMPLOYEE_ID");
-            exportSQL.append("  LEFT JOIN QQSMT_HEALTH_INS_LOSS loss ON loss.EMP_ID = his.EMPLOYEE_ID");
-            exportSQL.append("  LEFT JOIN QQSMT_WELF_PEN_INS_LOSS wloss ON wloss.EMP_ID = his.EMPLOYEE_ID");
-            exportSQL.append("  LEFT JOIN QQSMT_EMP_HEAL_INS_UNION iu ON iu.EMPLOYEE_ID = loss.EMP_ID");
-            exportSQL.append("  LEFT JOIN QQSMT_SOC_ISACQUISI_INFO info ON info.EMPLOYEE_ID = his.EMPLOYEE_ID");
-            exportSQL.append("  LEFT JOIN QQSMT_MULTI_EMP_WORK_IF mt ON mt.EMPLOYEE_ID = his.EMPLOYEE_ID");
-            exportSQL.append("  LEFT JOIN QQSMT_EMP_BA_PEN_NUM ba ON ba.EMPLOYEE_ID = his.EMPLOYEE_ID");
+            exportSQL.append("       FROM QQSDT_SYAHO_OFFICE_INFO ");
+            exportSQL.append("       WHERE END_DATE <= ?endDate AND END_DATE >= ?startDate AND CID = ?cid) his");
+            exportSQL.append("       ON qi.SID = his.SID OR wI.SID = his.SID");
+            exportSQL.append("  LEFT JOIN ");
+            exportSQL.append("            (SELECT *");
+            exportSQL.append("       FROM QQSDT_SYAHO_WORKFORM_INFO ");
+            exportSQL.append("       WHERE END_YM <= ?endYm AND END_YM >= ?startYm AND CID = ?cid ) wh ");
+            exportSQL.append("       ON wh.SID = qi.SID");
+            exportSQL.append("  LEFT JOIN (SELECT * ");
+            exportSQL.append("          FROM QQSDT_KNKUM_INFO ");
+            exportSQL.append("          WHERE END_DATE <= ?endDate AND END_DATE >= ?startDate  AND CID = ?cid) pi");
+            exportSQL.append("          ON qi.SID = pi.SID");
+            exportSQL.append("  LEFT JOIN (SELECT *");
+            exportSQL.append("          FROM QQSDT_KIKIN_INFO");
+            exportSQL.append("          WHERE END_DATE <= ?endDate AND END_DATE >= ?startDate  AND CID = ?cid) ti");
+            exportSQL.append("          ON qi.SID = ti.SID");
+            exportSQL.append("  LEFT JOIN QQSDT_KENHO_LOSS_INFO loss ON loss.SID = his.SID AND loss.CID = qi.CID");
+            exportSQL.append("  LEFT JOIN QQSDT_KOUHO_LOSS_INFO wloss ON wloss.SID = his.SID AND wloss.CID = wi.CID ");
+            exportSQL.append("  LEFT JOIN QQSDT_KNKUM_EGOV_INFO iu ON iu.SID = loss.SID AND iu.CID = his.CID");
+            exportSQL.append("  LEFT JOIN QQSDT_SYAHO_GET_INFO info ON info.SID = his.SID AND info.CID = his.CID");
+            exportSQL.append("  LEFT JOIN QQSDT_SYAHO_MULTI_OFFICE mt ON mt.SID = his.SID AND mt.CID = his.CID");
+            exportSQL.append("  LEFT JOIN QQSDT_SYAHO_KNEN_NUM ba ON ba.SID = his.SID AND ba.CID = his.CID");
             exportSQL.append("  INNER JOIN (SELECT * ");
             exportSQL.append("       FROM QPBMT_SOCIAL_INS_OFFICE");
             exportSQL.append("       WHERE CID = ?cid) oi ");
-            exportSQL.append("       ON oi.CODE = his.SOCIAL_INSURANCE_OFFICE_CD");
+            exportSQL.append("       ON oi.CODE = his.SYAHO_OFFICE_CD");
             exportSQL.append("  INNER JOIN (SELECT * ");
             exportSQL.append("       FROM BSYMT_EMP_DTA_MNG_INFO ");
             exportSQL.append("       WHERE CID = ?cid) i");
-            exportSQL.append("       ON i.SID = qi.EMPLOYEE_ID");
+            exportSQL.append("       ON i.SID = qi.SID");
             exportSQL.append("  INNER JOIN BPSMT_PERSON p ON p.PID = i.PID");
-            exportSQL.append("  ORDER BY SOCIAL_INSURANCE_OFFICE_CD ,SCD  ");
+            exportSQL.append("  ORDER BY SYAHO_OFFICE_CD ,SCD  ");
             String emp = empIds.stream()
                     .map(String::valueOf)
                     .collect(Collectors.joining("','"));
@@ -427,23 +261,23 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
             List<Object[]> result = null;
             StringBuilder exportSQL = new StringBuilder();
             exportSQL.append("  SELECT  ");
-            exportSQL.append("      FUND_SPECIFIC1,");
-            exportSQL.append("      FUND_SPECIFIC2,");
-            exportSQL.append("      FUND_SPECIFIC3,");
-            exportSQL.append("      FUND_SPECIFIC4,");
-            exportSQL.append("      FUND_SPECIFIC5,");
-            exportSQL.append("      FUND_SPECIFIC6,");
-            exportSQL.append("      FUND_SPECIFIC7,");
-            exportSQL.append("      FUND_SPECIFIC8,");
-            exportSQL.append("      FUND_SPECIFIC9,");
-            exportSQL.append("      FUND_SPECIFIC10,");
+            exportSQL.append("      SPECIFIC_ITEM_1,");
+            exportSQL.append("      SPECIFIC_ITEM_2,");
+            exportSQL.append("      SPECIFIC_ITEM_3,");
+            exportSQL.append("      SPECIFIC_ITEM_4,");
+            exportSQL.append("      SPECIFIC_ITEM_5,");
+            exportSQL.append("      SPECIFIC_ITEM_6,");
+            exportSQL.append("      SPECIFIC_ITEM_7,");
+            exportSQL.append("      SPECIFIC_ITEM_8,");
+            exportSQL.append("      SPECIFIC_ITEM_9,");
+            exportSQL.append("      SPECIFIC_ITEM_10,");
             exportSQL.append("      WELFARE_PENSION_FUND_NUMBER,");
             exportSQL.append("      WELFARE_PENSION_OFFICE_NUMBER_1,");
             exportSQL.append("      WELFARE_PENSION_OFFICE_NUMBER_2,");
-            exportSQL.append("      HEAL_INSUR_NUMBER,");
-            exportSQL.append("      WEL_PEN_NUMBER,");
-            exportSQL.append("      HEAL_INSUR_UNION_NMBER,");
-            exportSQL.append("      MEMBER_NUMBER,");
+            exportSQL.append("      KENHO_NUM,");
+            exportSQL.append("      KOUHO_NU,");
+            exportSQL.append("      KNKUM_NUM,");
+            exportSQL.append("      KIKIN_NUM,");
             exportSQL.append("      WELFARE_PENSION_OFFICE_NUMBER,");
             exportSQL.append("      WELFARE_PENSION_PREFECTURE_NO,");
             exportSQL.append("      qi.END_DATE,");
@@ -452,65 +286,64 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
             exportSQL.append("      PERSON_NAME,");
             exportSQL.append("      PERSON_NAME_KANA,");
             exportSQL.append("      BIRTHDAY,");
-            exportSQL.append("      POST_CD,");
-            exportSQL.append("      RETIREMENT_ADD_BEFORE,");
-            exportSQL.append("      RETIREMENT_ADD,");
-            exportSQL.append("      REASON_FOR_LOSS,");
-            exportSQL.append("      ADD_APP_CTG_SAL,");
-            exportSQL.append("      REASON,");
-            exportSQL.append("      ADD_SAL,");
-            exportSQL.append("      STAND_SAL,");
-            exportSQL.append("      SEC_ADD_SALARY,");
-            exportSQL.append("      SEC_STAND_SAL,");
-            exportSQL.append("      CAUSE,");
-            exportSQL.append("      IS_MORE_EMP,");
+            exportSQL.append("      POSTALCD_AFTER_RETIRE,");
+            exportSQL.append("      ADDRESS_KN_AFTER_RETIRE,");
+            exportSQL.append("      ADDRESS_AFTER_RETIRE,");
+            exportSQL.append("      LOSS_REASON_ATR,");
+            exportSQL.append("      S_ADDITION_ATR,");
+            exportSQL.append("      END_REASON_ATR,");
+            exportSQL.append("      S_ADD_MONTHLY_AMOUNT_1,");
+            exportSQL.append("      S_SRD_MONTHLY_AMOUNT_1,");
+            exportSQL.append("      SEC_S_ADD_MONTHLY_AMOUNT_1ARY,");
+            exportSQL.append("      S_SRD_MONTHLY_AMOUNT_2,");
+            exportSQL.append("      LOSS_CASE_ATR,");
+            exportSQL.append("      MULTI_OFFICE_ATR,");
             exportSQL.append("      OTHER_REASON,");
-            exportSQL.append("      CONTIN_REEM_AFTER_RETIREMENT,");
-            exportSQL.append("      BASIC_PEN_NUMBER");
+            exportSQL.append("      CONTINUE_REEMPLOYED_ATR,");
+            exportSQL.append("      KISONEN_NUM");
             exportSQL.append("  FROM ");
             exportSQL.append("         (SELECT *");
-            exportSQL.append("         FROM QQSMT_EMP_WELF_INS_QC_IF ");
-            exportSQL.append("         WHERE END_DATE <= ?endDate AND END_DATE >= ?startDate");
-            exportSQL.append("         AND EMPLOYEE_ID IN ('%s') )qi");
+            exportSQL.append("         FROM QQSDT_KOUHO_LOSS_INFO ");
+            exportSQL.append("         WHERE END_DATE <= ?endDate AND END_DATE >= ?startDate AND CID = ?cid");
+            exportSQL.append("         AND SID IN ('%s') )qi");
             exportSQL.append("  INNER JOIN ");
             exportSQL.append("       (SELECT * ");
-            exportSQL.append("       FROM QQSMT_EMP_CORP_OFF_HIS ");
-            exportSQL.append("       WHERE END_DATE <= ?endDate AND END_DATE >= ?startDate) his");
-            exportSQL.append("       ON qi.EMPLOYEE_ID = his.EMPLOYEE_ID");
-            exportSQL.append("  INNER JOIN QQSMT_WELF_PEN_INS_LOSS loss on loss.EMP_ID = qi.EMPLOYEE_ID");
+            exportSQL.append("       FROM QQSDT_SYAHO_OFFICE_INFO ");
+            exportSQL.append("       WHERE END_DATE <= ?endDate AND END_DATE >= ?startDate AND CID = ?cid) his");
+            exportSQL.append("       ON qi.SID = his.SID ");
             exportSQL.append("  INNER JOIN (SELECT *  ");
-            exportSQL.append("        FROM QQSMT_TEM_PEN_PART_INFO");
-            exportSQL.append("        WHERE END_DATE <= ?endDate AND END_DATE >= ?startDate) ppi ");
-            exportSQL.append("        ON qi.EMPLOYEE_ID = ppi.EMPLOYEE_ID");
+            exportSQL.append("        FROM QQSDT_KIKIN_INFO");
+            exportSQL.append("        WHERE END_DATE <= ?endDate AND END_DATE >= ?startDate AND CID = ?cid) ppi ");
+            exportSQL.append("        ON qi.SID = ppi.SID");
             exportSQL.append("  INNER JOIN (SELECT * ");
             exportSQL.append("        FROM QPBMT_SOCIAL_INS_OFFICE");
             exportSQL.append("        WHERE CID = ?cid) oi");
-            exportSQL.append("        ON oi.CODE = his.SOCIAL_INSURANCE_OFFICE_CD");
-            exportSQL.append("  INNER JOIN QQSMT_EMPL_PEN_FUND_INFO fi ON fi.EMPLOYEE_ID = qi.EMPLOYEE_ID");
+            exportSQL.append("        ON oi.CODE = his.SYAHO_OFFICE_CD");
+            exportSQL.append("  INNER JOIN QQSDT_KIKIN_EGOV_INFO fi ON fi.SID = qi.SID AND fi.CID = qi.CID");
             exportSQL.append("  INNER JOIN (SELECT *");
-            exportSQL.append("       FROM QQSMT_EMP_HEAL_INSUR_QI ");
+            exportSQL.append("       FROM QQSDT_KENHO_INFO ");
             exportSQL.append("       WHERE END_DATE <= ?endDate AND END_DATE >= ?startDate) wi ");
-            exportSQL.append("       ON wi.EMPLOYEE_ID = qi.EMPLOYEE_ID");
+            exportSQL.append("       ON wi.SID = qi.SID AND wi.CID = qi.CID");
             exportSQL.append("  INNER JOIN ");
             exportSQL.append("            (SELECT *");
-            exportSQL.append("       FROM QQSMT_EMP_PEN_INS ");
+            exportSQL.append("       FROM QQSDT_KOUHO_INFO ");
             exportSQL.append("       WHERE END_DATE <= ?endDate AND END_DATE >= ?startDate) ni ");
-            exportSQL.append("       ON ni.EMPLOYEE_ID = qi.EMPLOYEE_ID");
+            exportSQL.append("       ON ni.SID = qi.SID AND ni.CID = qi.CID");
             exportSQL.append("  INNER JOIN (SELECT *");
-            exportSQL.append("       FROM QQSMT_HEAL_INSUR_PORT_INT ");
+            exportSQL.append("       FROM QQSDT_KNKUM_INFO ");
             exportSQL.append("       WHERE END_DATE <= ?endDate AND END_DATE >= ?startDate) pri");
-            exportSQL.append("       ON pri.EMPLOYEE_ID = qi.EMPLOYEE_ID");
+            exportSQL.append("       ON pri.SID = qi.SID AND pri.CID = qi.CID");
             exportSQL.append("  INNER JOIN (SELECT * ");
             exportSQL.append("       FROM BSYMT_EMP_DTA_MNG_INFO ");
             exportSQL.append("       WHERE CID = ?cid) i");
-            exportSQL.append("       ON i.SID = qi.EMPLOYEE_ID");
+            exportSQL.append("       ON i.SID = qi.SID");
             exportSQL.append("  INNER JOIN BPSMT_PERSON p ON p.PID = i.PID");
-            exportSQL.append("  LEFT JOIN QQSMT_MULTI_EMP_WORK_IF mi ON mi.EMPLOYEE_ID = qi.EMPLOYEE_ID");
+            exportSQL.append("  LEFT JOIN QQSDT_SYAHO_MULTI_OFFICE mi ON mi.SID = qi.SID");
             exportSQL.append("  LEFT JOIN (SELECT * ");
-            exportSQL.append("              FROM QQSMT_SOC_ISACQUISI_INFO");
-            exportSQL.append("              WHERE CID = ?cid) ii ON ii.EMPLOYEE_ID = qi.EMPLOYEE_ID");
-            exportSQL.append("  LEFT JOIN QQSMT_EMP_BA_PEN_NUM bp ON bp.EMPLOYEE_ID = qi.EMPLOYEE_ID");
-            exportSQL.append("  ORDER BY SOCIAL_INSURANCE_OFFICE_CD   ");
+            exportSQL.append("              FROM QQSDT_SYAHO_GET_INFO");
+            exportSQL.append("              WHERE CID = ?cid) ii ON ii.SID = qi.SID");
+            exportSQL.append("  LEFT JOIN QQSDT_SYAHO_KNEN_NUM bp ON bp.SID = qi.SID");
+            exportSQL.append("  ORDER BY SYAHO_OFFICE_CD   ");
             String sql = String.format(exportSQL.toString(), empIds.stream()
                     .map(String::valueOf)
                     .collect(Collectors.joining("','")));

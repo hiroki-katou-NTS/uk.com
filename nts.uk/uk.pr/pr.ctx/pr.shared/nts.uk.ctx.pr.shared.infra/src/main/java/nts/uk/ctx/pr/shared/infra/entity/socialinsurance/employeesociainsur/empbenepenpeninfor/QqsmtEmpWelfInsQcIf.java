@@ -5,6 +5,8 @@ import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.EmpWelfarePenInsQualiInfor;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.EmployWelPenInsurAche;
+import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.WelfPenNumInformation;
+import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.WelfarePenTypeInfor;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -21,7 +23,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "QQSMT_EMP_WELF_INS_QC_IF")
+@Table(name = "QQSDT_KOUHO_INFO")
 public class QqsmtEmpWelfInsQcIf extends UkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
@@ -45,6 +47,27 @@ public class QqsmtEmpWelfInsQcIf extends UkJpaEntity implements Serializable
     @Basic(optional = false)
     @Column(name = "END_DATE")
     public GeneralDate endDate;
+
+    /**
+     * 健保同一区分
+     */
+    @Basic(optional = false)
+    @Column(name = "SAME_KENHO_ATR")
+    public int healInsurSameCtg;
+
+    /**
+     * 厚生年金番号
+     */
+    @Basic(optional = true)
+    @Column(name = "KOUHO_NU")
+    public String welPenNumber;
+
+    /**
+     * 坑内員区分
+     */
+    @Basic(optional = false)
+    @Column(name = "COAL_MINER_ATR")
+    public int undergoundDivision;
     
     @Override
     protected Object getKey()
@@ -63,12 +86,13 @@ public class QqsmtEmpWelfInsQcIf extends UkJpaEntity implements Serializable
                         .collect(Collectors.toList()));
     }
 
-    public static QqsmtEmpWelfInsQcIf toEntity(EmpWelfarePenInsQualiInfor domain) {
-        return new QqsmtEmpWelfInsQcIf(
-                new QqsmtEmpWelfInsQcIfPk(domain.getEmployeeId(),domain.getMournPeriod().get(0).getHistoryId()),
-                domain.getMournPeriod().get(0).getDatePeriod().start(),
-                domain.getMournPeriod().get(0).getDatePeriod().end()
-        );
+    public WelfPenNumInformation toWelfPenNumInformation(){
+        return new WelfPenNumInformation(this.empWelfInsQcIfPk.historyId, this.healInsurSameCtg,this.welPenNumber);
+    }
+
+
+    public WelfarePenTypeInfor toWelfarePenTypeI(){
+        return new WelfarePenTypeInfor(this.empWelfInsQcIfPk.historyId, this.undergoundDivision);
     }
 
 }

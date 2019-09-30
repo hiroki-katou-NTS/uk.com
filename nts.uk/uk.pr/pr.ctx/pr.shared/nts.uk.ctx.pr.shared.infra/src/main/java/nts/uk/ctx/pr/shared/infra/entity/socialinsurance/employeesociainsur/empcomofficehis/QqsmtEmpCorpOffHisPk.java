@@ -24,21 +24,14 @@ public class QqsmtEmpCorpOffHisPk implements Serializable
     * 社員ID
     */
     @Basic(optional = false)
-    @Column(name = "EMPLOYEE_ID")
+    @Column(name = "SID")
     public String employeeId;
     
     /**
     * 履歴ID
     */
     @Basic(optional = false)
-    @Column(name = "HISTORY_ID")
+    @Column(name = "HIST_ID")
     public String historyId;
-    
-    /**
-    * 社会保険事業所コード
-    */
-    @Basic(optional = false)
-    @Column(name = "SOCIAL_INSURANCE_OFFICE_CD")
-    public String socialInsuranceOfficeCd;
     
 }
