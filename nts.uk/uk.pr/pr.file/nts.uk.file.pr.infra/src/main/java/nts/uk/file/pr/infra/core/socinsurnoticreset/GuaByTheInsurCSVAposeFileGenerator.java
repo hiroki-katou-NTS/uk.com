@@ -82,8 +82,7 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
             if (i == 0) {
                 cells.get(startRow, 0).setValue(getPreferCode(data.getHealPrefectureNo(), startDate, endDate, infor));
                 cells.get(startRow, 1).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? checkLength(data.getHealOfficeNumber1(), 2) : checkLength(data.getWelOfficeNumber(), 2));
-                cells.get(startRow, 2).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ?
-                        checkLength(data.getHealOfficeNumber2(), 4) : checkLength(data.getWelOfficeNumber2(), 4));
+                cells.get(startRow, 2).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? checkLength(data.getHealOfficeNumber2(), 4) : checkLength(data.getWelOfficeNumber2(), 4));
                 cells.get(startRow, 3).setValue(ins.getFdNumber().isPresent() ? ins.getFdNumber().get() : "001");
                 cells.get(startRow, 4).setValue(baseDate.toString("yyyyMMdd"));
                 cells.get(startRow, 5).setValue("22223");
@@ -94,10 +93,8 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
                 cells.get(startRow, 1).setValue("001");
                 startRow++;
                 cells.get(startRow, 0).setValue(getPreferCode(data.getHealPrefectureNo(), startDate, endDate, infor));
-                cells.get(startRow, 1).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? checkLength(data.getHealOfficeNumber1(), 2) :
-                        checkLength(data.getWelOfficeNumber1(), 2));
-                cells.get(startRow, 2).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? data.getHealOfficeNumber2().length() > 4 ? data.getHealOfficeNumber2().substring(0, 4) :
-                        data.getHealOfficeNumber2() : data.getHealOfficeNumber2().length() > 4 ? data.getWelOfficeNumber2().substring(0, 4) : data.getWelOfficeNumber2());
+                cells.get(startRow, 1).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? checkLength(data.getHealOfficeNumber1(), 2) :checkLength(data.getWelOfficeNumber1(), 2));
+                cells.get(startRow, 2).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? checkLength(data.getHealOfficeNumber1(), 4) :checkLength(data.getWelOfficeNumber1(), 4));
                 cells.get(startRow, 3).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? data.getHealOfficeNumber() : data.getWelOfficeNumber());
                 cells.get(startRow, 4).setValue(formatPortCd(company.getPostCd(), 1));
                 cells.get(startRow, 5).setValue(formatPortCd(company.getPostCd(), 2));
@@ -137,19 +134,13 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
 
     private String formatPortCd(String portCd, int stt) {
         String result = portCd.replace("-", "");
-        if (stt == 1 && result.length() >= 3) {
+        if (result.length() >= 3 && stt == 1) {
             return result.substring(0, 3);
         }
-        if (stt == 2 && result.length() > 6) {
-            return result.substring(6, result.length());
+        if (stt == 2 && result.length() > 3) {
+            return result.substring(3, result.length());
         }
-        if (stt == 1 && result.length() < 3) {
-            return result;
-        }
-        if (stt == 1 && result.length() < 3) {
-            return result;
-        }
-        return "";
+        return result;
     }
 
     private void fillPensionEmployee(PensionOfficeDataExport data, Cells cells,
