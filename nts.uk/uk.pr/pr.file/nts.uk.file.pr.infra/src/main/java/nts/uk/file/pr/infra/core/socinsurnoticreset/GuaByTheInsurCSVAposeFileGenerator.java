@@ -342,15 +342,17 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
                 cells.get(startRow, 0).setValue("[kanri]");
                 startRow++;
                 cells.get(startRow, 1).setValue("001");
-                cells.get(startRow, 2).setValue(data.getFunMember());
-                cells.get(startRow, 3).setValue(formatPortCd(company.getPostCd(), 1));
-                cells.get(startRow, 4).setValue(formatPortCd(company.getPostCd(), 2));
-                cells.get(startRow, 5).setValue(checkLength(company.getAdd_1() + company.getAdd_2(), 25));
-                cells.get(startRow, 4).setValue(company.getCompanyName().length() > 25 ? company.getCompanyName().substring(0, 25) : company.getCompanyName());
-                cells.get(startRow, 5).setValue(company.getRepname());
-                cells.get(startRow, 10).setValue(formatPhone(company.getPhoneNum(), 0));
-                cells.get(startRow, 11).setValue(formatPhone(company.getPhoneNum(), 1));
-                cells.get(startRow, 12).setValue(formatPhone(company.getPhoneNum(), 2));
+                startRow++;
+                cells.get(startRow, 0).setValue(data.getFunMember());
+                cells.get(startRow, 1).setValue(data.getWelPenOfficeNumber());
+                cells.get(startRow, 2).setValue(formatPortCd(company.getPostCd(), 1));
+                cells.get(startRow, 3).setValue(formatPortCd(company.getPostCd(), 2));
+                cells.get(startRow, 4).setValue(checkLength(company.getAdd_1() + company.getAdd_2(), 25));
+                cells.get(startRow, 5).setValue(company.getCompanyName().length() > 25 ? company.getCompanyName().substring(0, 25) : company.getCompanyName());
+                cells.get(startRow, 6).setValue(company.getRepname());
+                cells.get(startRow, 7).setValue(formatPhone(company.getPhoneNum(), 0));
+                cells.get(startRow, 8).setValue(formatPhone(company.getPhoneNum(), 1));
+                cells.get(startRow, 9).setValue(formatPhone(company.getPhoneNum(), 2));
                 startRow++;
                 cells.get(startRow, 0).setValue("[data]");
             }
