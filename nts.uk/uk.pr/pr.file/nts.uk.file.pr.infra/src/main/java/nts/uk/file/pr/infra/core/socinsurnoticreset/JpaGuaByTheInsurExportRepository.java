@@ -428,7 +428,7 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
                 .unionOfficeNumber(i[34] == null ? "" : i[34].toString())
                 .hisId(i[35] == null ? "" : i[35].toString())
                 .phoneNumber(i[36] == null ? "" : i[36].toString())
-                .bussinesArrSybol(Integer.valueOf(i[36].toString()))
+                .bussinesArrSybol(Integer.valueOf(i[37].toString()))
                 .build()
         ).collect(Collectors.toList());
     }
