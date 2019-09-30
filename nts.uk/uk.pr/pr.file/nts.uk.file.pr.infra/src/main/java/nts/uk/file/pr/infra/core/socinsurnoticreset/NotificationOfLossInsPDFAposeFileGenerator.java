@@ -308,12 +308,12 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_9_4", stt)).setValue(convertJpDate(birthDay).charAt(3));
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_9_5", stt)).setValue(convertJpDate(birthDay).charAt(4));
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_9_6", stt)).setValue(convertJpDate(birthDay).charAt(5));
-        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_13_1", stt)).setValue(Objects.toString(endDate != null ? endDate.year() + 1 : null, ""));
-        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_13_2", stt)).setValue(data.getEndDate() != null ? data.getEndDate().substring(5,7) : "");
-        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_13_3", stt)).setValue(data.getEndDate() != null ? data.getEndDate().substring(8,10) : "");
-        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_15_1", stt)).setValue(Objects.toString(endDate!= null ? endDate.year() + 1 : null, ""));
-        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_15_2", stt)).setValue(data.getEndDate() != null ? data.getEndDate().substring(5,7) : "");
-        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_15_3", stt)).setValue(data.getEndDate() != null ? data.getEndDate().substring(8,10) : "");
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_13_1", stt)).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? endDate != null ? endDate.year() + 1 : "" :  endDate2 != null ? endDate2.year() + 1 : "");
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_13_2", stt)).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? data.getEndDate() != null ? data.getEndDate().substring(5,7) : "" : data.getEndDate2() != null ? data.getEndDate2().substring(5,7) : "");
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_13_3", stt)).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? data.getEndDate() != null ? data.getEndDate().substring(8,10) : "" : data.getEndDate2() != null ? data.getEndDate2().substring(5,7) : "");
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_15_1", stt)).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? endDate!= null ? endDate.year() + 1 : "" : endDate2!= null ? endDate2.year() + 1 : "");
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_15_2", stt)).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? data.getEndDate() != null ? data.getEndDate().substring(5,7) : "" : data.getEndDate2() != null ? data.getEndDate2().substring(5,7) : "");
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_15_3", stt)).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? data.getEndDate() != null ? data.getEndDate().substring(8,10) : "" : data.getEndDate2() != null ? data.getEndDate2().substring(8,10) : "");
         if(ins.getPrintPersonNumber() != PersonalNumClass.DO_NOT_OUTPUT && ins.getPrintPersonNumber() != PersonalNumClass.OUTPUT_PER_NUMBER) {
             worksheets.getRangeByName(this.getRangeName(sheetName, "A2_10_9", stt)).setValue(data.getBasicPenNumber() != null ? data.getBasicPenNumber().length() > 0 ? data.getBasicPenNumber().charAt(0) : "" : "");
             worksheets.getRangeByName(this.getRangeName(sheetName, "A2_10_10", stt)).setValue(data.getBasicPenNumber() != null ? data.getBasicPenNumber().length() > 1 ? data.getBasicPenNumber().charAt(1) : "" : "");
@@ -355,7 +355,7 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
         JapaneseDate birthDay = !data.getBirthDay().isEmpty() ? toJapaneseDate( GeneralDate.fromString(data.getBirthDay().substring(0,10), "yyyy-MM-dd")) : null;
         JapaneseDate endDate = !data.getEndDate2().isEmpty() ? toJapaneseDate( GeneralDate.fromString(data.getEndDate2().substring(0,10), "yyyy-MM-dd")) : null;
         this.selectOver(worksheets, data.getIsMoreEmp() , "D2_6", sheetName);
-        this.selectOver(worksheets, data.getInsPerCls() , "D2_7", sheetName);
+        this.selectOver(worksheets, data.getInsPerCls() == 2 ? 1 : 0 , "D2_7", sheetName);
         this.selectOver(worksheets, data.getOther2(),"D2_8", sheetName);
         worksheets.getRangeByName(sheetName + "!D2_1").setValue(
                 ins.getInsuredNumber() == InsurPersonNumDivision.OUTPUT_HEAL_INSUR_NUM ? data.getHealInsNumber() :
