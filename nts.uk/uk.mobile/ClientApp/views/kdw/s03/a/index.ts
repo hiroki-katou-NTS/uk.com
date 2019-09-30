@@ -289,6 +289,7 @@ export class Kdws03AComponent extends Vue {
             } else {
                 if (res.messageId != undefined) {
                     self.$modal.error(res.messageId == 'Msg_1430' ? res.message : { messageId: res.messageId }).then(() => {
+                        self.$mask('hide');
                         self.$goto('ccg008a');
                     });
 
