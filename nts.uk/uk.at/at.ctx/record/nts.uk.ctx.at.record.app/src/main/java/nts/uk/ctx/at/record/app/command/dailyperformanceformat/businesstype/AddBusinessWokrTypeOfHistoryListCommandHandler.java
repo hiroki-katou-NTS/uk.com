@@ -66,7 +66,7 @@ implements PeregAddListCommandHandler<AddBusinessWokrTypeOfHistoryCommand>{
 				// update in case of startDate is null set to minDate
 				GeneralDate startDate = c.getStartDate() != null ? c.getStartDate() : GeneralDate.min();
 				// update in case of endDate is null set to maxDate
-				GeneralDate endDate = c.getEndDate() != null ? c.getEndDate() : GeneralDate.max();
+				GeneralDate endDate = GeneralDate.max();
 				List<BusinessTypeOfEmployeeHistory> bTypeOfEmployeeHist = bTypeOfEmployeeHistLst.get(c.getEmployeeId());
 				List<DateHistoryItem> history = new ArrayList<DateHistoryItem>();
 				BusinessTypeOfEmployeeHistory bEmployeeHistory = new BusinessTypeOfEmployeeHistory(cid, history, c.getEmployeeId());
