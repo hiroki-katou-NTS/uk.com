@@ -78,6 +78,7 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
         String dummyOldName = "健保 陽子";
         String dummyName = "厚年 陽子";
         String dummyNameKana = "コウネン ヨウコ";
+        String dummnyPhonenumber = "354326789";
 
         String healthInsuranceOfficeNumber1[];
 
@@ -166,9 +167,9 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
         this.selectEra(ws,dateJp.era());
 
         JapaneseDate submitDate = toJapaneseDate(data.getSubmitDate());
-        ws.getCells().get("W20").putValue(submitDate.day());
+        ws.getCells().get("W20").putValue( submitDate.year() + 1);
         ws.getCells().get("Y20").putValue(submitDate.month());
-        ws.getCells().get("AA20").putValue(submitDate.year());
+        ws.getCells().get("AA20").putValue(submitDate.day());
 
             ws.getCells().get("J17").putValue(dummyName);
             ws.getCells().get("M17").putValue(dummyName);
@@ -241,26 +242,38 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
         //fill to A2_1
         if(socialInsurNotiCreateSet.getOfficeInformation().value == BusinessDivision.OUTPUT_COMPANY_NAME.value){
 
-            if(data.getCompanyInfor() != null){
-
-                ws.getCells().get("J22").putValue("〒 " + "168" + " － " + "8500");
-                ws.getCells().get("M22").putValue("杉並区");
-                ws.getCells().get("M23").putValue("高井戸３－２－１");
-                ws.getCells().get("K24").putValue("健保 良一");
-                ws.getCells().get("K25").putValue("健保 良一");
-                ws.getCells().get("J27").putValue("（354326789局）");
-            }
+            ws.getCells().get("J22").putValue("〒 " + "168" + " － " + "8500");
+            ws.getCells().get("K23").putValue("杉並区高井戸３－２－１");
+            ws.getCells().get("K24").putValue("株式会社 健保産業");
+            ws.getCells().get("K25").putValue("健保 良一");
+            ws.getCells().get("J27").putValue(this.formatValue(dummnyPhonenumber));
 
         }else{
             if(data.getSocialInsuranceOffice() != null){
-                ws.getCells().get("J22").putValue(data.getSocialInsuranceOffice().getBasicInformation().getAddress().isPresent() ? ("〒 " + data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getPostalCode().get().v().substring(0,3) + " － " + data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getPostalCode().get().v().substring(3)) : null);
-                ws.getCells().get("M22").putValue(data.getSocialInsuranceOffice().getBasicInformation().getAddress().isPresent() ? data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getAddress1().get().v() : null);
-                ws.getCells().get("M23").putValue(data.getSocialInsuranceOffice().getBasicInformation().getAddress().isPresent() ? data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getAddress2().get().v() : null);
+                ws.getCells().get("J22").putValue(data.getSocialInsuranceOffice().getBasicInformation().getAddress().isPresent() &&  data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getPostalCode().isPresent() ? ("〒 " + data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getPostalCode().get().v().substring(0,3) + " － " + data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getPostalCode().get().v().substring(3)) : null);
+                ws.getCells().get("M22").putValue(data.getSocialInsuranceOffice().getBasicInformation().getAddress().isPresent() && data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getAddress1().isPresent() ? data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getAddress1().get().v() : null);
+                ws.getCells().get("M23").putValue(data.getSocialInsuranceOffice().getBasicInformation().getAddress().isPresent() && data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getAddress2().isPresent() ? data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getAddress2().get().v() : null);
                 ws.getCells().get("K24").putValue(data.getSocialInsuranceOffice().getName().v());
                 ws.getCells().get("K25").putValue(data.getSocialInsuranceOffice().getBasicInformation().getRepresentativeName().isPresent() ? data.getSocialInsuranceOffice().getBasicInformation().getRepresentativeName().get().v() : null);
-                ws.getCells().get("J27").putValue(data.getSocialInsuranceOffice().getBasicInformation().getAddress().isPresent() ? data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getPhoneNumber().get().v() : null);
+                ws.getCells().get("J27").putValue(data.getSocialInsuranceOffice().getBasicInformation().getAddress().isPresent() && data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getPhoneNumber().isPresent() ? this.formatValue(data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getPhoneNumber().get().v())  : null);
             }
 
+        }
+    }
+
+    private String formatValue(String pc) {
+        if (pc != null) {
+            String[] list = pc.split("");
+            StringBuffer st = new StringBuffer("");
+            for (int i = 0; i < list.length; i++) {
+                st.append(list[i]);
+                if((i+1)%3==0 && list.length > st.length()) {
+                    st.append("-");
+                }
+            }
+            return st.toString();
+        } else {
+            return  null;
         }
     }
 

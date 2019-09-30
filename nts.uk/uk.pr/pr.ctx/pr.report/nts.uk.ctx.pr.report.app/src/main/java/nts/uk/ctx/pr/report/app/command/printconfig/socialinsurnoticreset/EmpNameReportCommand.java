@@ -12,7 +12,7 @@ public class EmpNameReportCommand {
     private NameNotificationSetCommand spouse;
 
     public EmpNameReport toDomain(){
-        return new EmpNameReport(empId, personalSet.toDomains(), spouse.toDomains());
+        return new EmpNameReport(empId,   personalSet.toDomains(), spouse.toDomains());
     }
 
 }
