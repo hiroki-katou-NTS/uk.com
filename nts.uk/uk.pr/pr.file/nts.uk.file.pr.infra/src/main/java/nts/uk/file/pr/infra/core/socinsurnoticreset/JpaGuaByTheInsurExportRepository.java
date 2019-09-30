@@ -82,11 +82,7 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("          FROM QQSMT_HEAL_INSUR_PORT_INT ");
         exportSQL.append("          WHERE END_DATE <= ?endDate AND END_DATE >= ?startDate  ) ppi" );
         exportSQL.append("          ON qi.EMPLOYEE_ID = ppi.EMPLOYEE_ID");
-        exportSQL.append("  INNER JOIN ");
-        exportSQL.append("       (SELECT * ");
-        exportSQL.append("       FROM QQSMT_EMP_PEN_INS ");
-        exportSQL.append("       WHERE END_DATE <= ?endDate AND END_DATE >= ?startDate) pi");
-        exportSQL.append("       ON qi.EMPLOYEE_ID = pi.EMPLOYEE_ID");
+        exportSQL.append("  INNER JOIN  QQSMT_EMP_PEN_INS pi ON pi.HISTORY_ID = wi.HISTORY_ID AND qi.EMPLOYEE_ID = pi.EMPLOYEE_ID");
         exportSQL.append("  LEFT JOIN ");
         exportSQL.append("       (SELECT * ");
         exportSQL.append("       FROM QQSMT_TEM_PEN_PART_INFO ");
@@ -249,12 +245,13 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("       QTPPITEM.START_DATE <= ?endDate ");
         exportSQL.append("      AND QTPPITEM.START_DATE >= ?startDate ) AS QTPPI ");
         exportSQL.append(" ON QTPPI.EMPLOYEE_ID = ROOT.EMPLOYEE_ID ");
-        exportSQL.append(" INNER JOIN ");
+        exportSQL.append(" LEFT JOIN ");
         exportSQL.append("   (SELECT * ");
-        exportSQL.append("    FROM QQSMT_EMP_PEN_INS QEPITEM ");
-        exportSQL.append("    WHERE QEPITEM.START_DATE <= ?endDate ");
-        exportSQL.append("      AND QEPITEM.START_DATE >= ?startDate ) AS QEPI ");
-        exportSQL.append(" ON QEPI.EMPLOYEE_ID = ROOT.EMPLOYEE_ID ");
+        exportSQL.append("    FROM QQSMT_EMP_WELF_INS_QC_IF QEWIQITEMP ");
+        exportSQL.append("    WHERE QEWIQITEMP.START_DATE <= ?endDate ");
+        exportSQL.append("      AND QEWIQITEMP.START_DATE >= ?startDate ) AS QEWIQI ");
+        exportSQL.append(" ON QEWIQI.EMPLOYEE_ID = ROOT.EMPLOYEE_ID ");
+        exportSQL.append(" INNER JOIN  QQSMT_EMP_PEN_INS QEPI  ON QEPI.HISTORY_ID = QEWIQI.HISTORY_ID AND QEPI.EMPLOYEE_ID = ROOT.EMPLOYEE_ID ");
         exportSQL.append(" LEFT JOIN QQSMT_SOC_ISACQUISI_INFO QSII ");
         exportSQL.append(" ON QSII.EMPLOYEE_ID = ROOT.EMPLOYEE_ID AND QSII.CID =  QSIO.CID ");
         exportSQL.append(" LEFT JOIN QQSMT_EMP_BA_PEN_NUM QEBPN ");
@@ -267,12 +264,7 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append(" ON QEHIQ.EMPLOYEE_ID = ROOT.EMPLOYEE_ID ");
         exportSQL.append(" LEFT JOIN QQSMT_MULTI_EMP_WORK_IF QMEWI ");
         exportSQL.append(" ON QMEWI.EMPLOYEE_ID = ROOT.EMPLOYEE_ID ");
-        exportSQL.append(" LEFT JOIN ");
-        exportSQL.append("   (SELECT * ");
-        exportSQL.append("    FROM QQSMT_EMP_WELF_INS_QC_IF QEWIQITEMP ");
-        exportSQL.append("    WHERE QEWIQITEMP.START_DATE <= ?endDate ");
-        exportSQL.append("      AND QEWIQITEMP.START_DATE >= ?startDate ) AS QEWIQI ");
-        exportSQL.append(" ON QEWIQI.EMPLOYEE_ID = ROOT.EMPLOYEE_ID ");
+
         exportSQL.append("  ORDER BY SOCIAL_INSURANCE_OFFICE_CD, SCD");
         String sql = String.format(exportSQL.toString(), empIds.stream()
                 .map(String::valueOf)
@@ -366,10 +358,7 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("       FROM QQSMT_EMP_WELF_INS_QC_IF ");
         exportSQL.append("       WHERE START_DATE <= ?endDate AND START_DATE >= ?startDate) wi");
         exportSQL.append("       ON wi.EMPLOYEE_ID = qi.EMPLOYEE_ID");
-        exportSQL.append("    INNER JOIN (SELECT *");
-        exportSQL.append("       FROM QQSMT_EMP_PEN_INS ");
-        exportSQL.append("       WHERE START_DATE <= ?endDate AND START_DATE >= ?startDate) pi");
-        exportSQL.append("       ON pi.EMPLOYEE_ID = qi.EMPLOYEE_ID");
+        exportSQL.append("    INNER JOIN  QQSMT_EMP_PEN_INS ni ON  ni.HISTORY_ID = wi.HISTORY_ID AND ni.EMPLOYEE_ID = qi.EMPLOYEE_ID");
         exportSQL.append("    LEFT JOIN (SELECT *");
         exportSQL.append("       FROM QQSMT_TEM_PEN_PART_INFO ");
         exportSQL.append("       WHERE START_DATE <= ?endDate AND START_DATE >= ?startDate) ti");
@@ -481,7 +470,7 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("      CONTIN_REEM_AFTER_RETIREMENT,");
         exportSQL.append("      BASIC_PEN_NUMBER,");
         exportSQL.append("      GENDER,");
-        exportSQL.append("      UNDERGOUND_DIVISION,");
+        exportSQL.append("      ni.UNDERGOUND_DIVISION,");
         exportSQL.append("      QUALIFI_DISTIN,");
         exportSQL.append("      PERCENT_OR_MORE,");
         exportSQL.append("      REMARKS_OTHER,");
@@ -521,7 +510,7 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("        WHERE CID = ?cid) i");
         exportSQL.append("        ON i.SID = qi.EMPLOYEE_ID");
         exportSQL.append("  INNER JOIN BPSMT_PERSON p ON p.PID = i.PID");
-        exportSQL.append("  INNER JOIN QQSMT_EMP_PEN_INS ni ON ni.HISTORY_ID = qi.HISTORY_ID");
+        exportSQL.append("  INNER JOIN QQSMT_EMP_PEN_INS ni ON ni.HISTORY_ID = qi.HISTORY_ID AND qi.EMPLOYEE_ID = ni.EMPLOYEE_ID");
         exportSQL.append("  INNER JOIN (SELECT *");
         exportSQL.append("       FROM QQSMT_HEAL_INSUR_PORT_INT ");
         exportSQL.append("       WHERE START_DATE <= ?endDate AND START_DATE >= ?startDate) pri");
@@ -531,10 +520,6 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("       FROM QQSMT_SOC_ISACQUISI_INFO");
         exportSQL.append("        WHERE CID = ?cid) ii ON ii.EMPLOYEE_ID = qi.EMPLOYEE_ID");
         exportSQL.append("  LEFT JOIN QQSMT_EMP_BA_PEN_NUM bp ON bp.EMPLOYEE_ID = qi.EMPLOYEE_ID");
-        exportSQL.append("  LEFT JOIN (SELECT *");
-        exportSQL.append("       FROM QQSMT_EMP_PEN_INS ");
-        exportSQL.append("       WHERE START_DATE <= ?endDate AND START_DATE >= ?startDate) epi");
-        exportSQL.append("       ON epi.EMPLOYEE_ID = qi.EMPLOYEE_ID");
         String sql = String.format(exportSQL.toString(), empIds.stream()
                 .map(String::valueOf)
                 .collect(Collectors.joining("','")));

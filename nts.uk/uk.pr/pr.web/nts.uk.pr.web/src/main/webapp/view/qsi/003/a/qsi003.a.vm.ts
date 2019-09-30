@@ -377,7 +377,7 @@ module nts.uk.pr.view.qsi003.a.viewmodel {
     export interface UnitModel {
         id: string;
         code: string;
-        name?: string;
+        name: string;
         workplaceName?: string;
         isAlreadySetting?: boolean;
     }
