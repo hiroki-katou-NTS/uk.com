@@ -141,8 +141,10 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
                             self.selectedCode(PersonalNumber.Living_Abroad + '');
                         }else if(e.shortStay){
                             self.selectedCode(PersonalNumber.Short_Stay + '');
-                        }else{
+                        }else if(e.reasonOther){
                             self.selectedCode(PersonalNumber.Other + '');
+                        }else{
+                            self.selectedCode(PersonalNumber.Not_Applicable + '');
                         }
 
                     } else {
@@ -355,13 +357,16 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
                             block.clear();
                         });
                     }
-                }else{
-
+                } else if (self.getAge(self.dummyBirthDay, params.date) < 70){
                     if(self.tempApplyToEmployeeOver70() != self.applyToEmployeeOver70()){
                         dialog.info({ messageId: "Msg_176" }).then(e =>{
                             block.clear();
                         });
                     }
+                }else{
+                    dialog.info({ messageId: "Msg_15" }).then(e =>{
+                        block.clear();
+                    });
                 }
                 block.clear();
             }).fail(e => {
@@ -516,8 +521,12 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
                     personalNumber: number,
                     reasonAndOtherContents: string
                     ){
-
-            if(personalNumber == PersonalNumber.Living_Abroad){
+            if(personalNumber == PersonalNumber.Not_Applicable){
+                this.livingAbroad = null;
+                this.shortStay = null;
+                this.reasonOther = null;
+                this.reasonAndOtherContents = null;
+            }else if(personalNumber == PersonalNumber.Living_Abroad){
                 this.livingAbroad = 1;
                 this.shortStay = null;
                 this.reasonOther = null;
