@@ -207,6 +207,7 @@ module nts.uk.pr.view.qsi002.a.viewmodel {
 
         exportPDF(){
             let self = this;
+            block.invisible();
 
             let data: any = {
                 socialInsurNotiCreateSetDto: new SocialInsurNotiCreateSetDto(
@@ -227,7 +228,11 @@ module nts.uk.pr.view.qsi002.a.viewmodel {
             service.exportPDF(data).done(e =>{
 
             }).fail(e =>{
-
+                if(e){
+                    nts.uk.ui.dialog.alertError(e);
+                }
+            }).always(e =>{
+                block.clear();
             });
         }
 
