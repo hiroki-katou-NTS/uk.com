@@ -148,6 +148,9 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
 
 
     private String convertDate(String date){
+        if(date.length() < 10)  {
+            return "";
+        }
         GeneralDate temp = GeneralDate.fromString(date.substring(0,4) + date.substring(5,7) + date.substring(8,10), "yyyy-MM-dd");
         return temp.addDays(-1).toString("yyyyMMdd");
     }

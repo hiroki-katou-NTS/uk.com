@@ -40,7 +40,7 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
 
     private static final int EMP_IN_PAGE = 4;
 
-    private static final String TAISO = "大正";
+    private static final String TAISO = "明治";
 
     private static final String MEI = "大正";
 
@@ -346,7 +346,8 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
         JapaneseDate birthDay = !data.getBirthDay().isEmpty() ? toJapaneseDate( GeneralDate.fromString(data.getBirthDay().substring(0,10), "yyyy-MM-dd")) : null;
         JapaneseDate endDate = !data.getEndDate2().isEmpty() ? toJapaneseDate( GeneralDate.fromString(data.getEndDate2().substring(0,10), "yyyy-MM-dd")) : null;
         this.selectOver(worksheets, data.getIsMoreEmp() , "D2_6", sheetName);
-        this.selectOver(worksheets, data.getOther2() == null ? 0 : data.getOther2(),"D2_8", sheetName);
+        this.selectOver(worksheets, data.getInsPerCls() , "D2_7", sheetName);
+        this.selectOver(worksheets, data.getOther2(),"D2_8", sheetName);
         worksheets.getRangeByName(sheetName + "!D2_1").setValue(
                 ins.getInsuredNumber() == InsurPersonNumDivision.OUTPUT_HEAL_INSUR_NUM ? data.getHealInsNumber() :
                 ins.getInsuredNumber() == InsurPersonNumDivision.OUTPUT_THE_WELF_PENNUMBER ? data.getWelfPenNumber() :
@@ -399,8 +400,8 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
         worksheets.getRangeByName(sheetName + "!D2_14_8").setValue(total.length() > 7 ? total.charAt(7) : "");
     }
 
-    private void selectOver(WorksheetCollection worksheets, int value,  String shapeName, String sheetName){
-        if(value == 0) {
+    private void selectOver(WorksheetCollection worksheets, Integer value,  String shapeName, String sheetName){
+        if(value == null || value == 0) {
             worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(shapeName));
         }
     }
