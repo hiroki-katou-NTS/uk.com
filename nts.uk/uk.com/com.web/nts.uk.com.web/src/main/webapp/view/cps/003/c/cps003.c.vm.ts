@@ -944,6 +944,7 @@ module cps003.c.vm {
                 });
                 
                 self.validateSpecial(regChecked, dataSource);
+                $grid.mGrid("validate", false, data => data.register);
                 itemErrors = _.filter($grid.mGrid("errors"), e => {
                     let d = dataSource[e.index];
                     return d && d.register;
@@ -968,7 +969,7 @@ module cps003.c.vm {
                 });
                 
                 command = { baseDate:  moment.utc(self.baseDate(), "YYYY/MM/DD").toISOString(), editMode: self.updateMode(), employees: employees };
-                if (command.employees && command.employees.length === 0) {
+                if (command.employees && command.employees.length === 0 && dataToG.length === 0) {
                     unblock();
                     return;
                 }
