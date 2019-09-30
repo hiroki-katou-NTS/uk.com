@@ -48,7 +48,7 @@ public class InsuredNameChangedNotiWebService {
                 command.getBusinessArrSymbol(),
                 command.getOutputOrder(),
                 command.getPrintPersonNumber(),
-                0,
+                command.getSubmittedName(),
                 command.getInsuredNumber(),
                 null,null,
                 null,

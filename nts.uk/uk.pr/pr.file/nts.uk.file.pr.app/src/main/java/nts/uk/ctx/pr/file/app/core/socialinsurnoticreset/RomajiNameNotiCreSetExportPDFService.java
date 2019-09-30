@@ -88,48 +88,47 @@ public class RomajiNameNotiCreSetExportPDFService extends ExportService<RomajiNa
         String isSpouse = exportServiceContext.getQuery().getPersonTarget();
         List<RomajiNameNotification> romajiNameNotificationList = new ArrayList<RomajiNameNotification>();
         EmpCorpHealthOffHis empCorpHealthOffHis = empCorpHealthOffHisRepository.getEmpCorpHealthOffHisById(listEmp, date).orElse(null);
+        EmpBasicPenNumInfor empBasicPenNumInfor = null;
+        PersonInfo personInfo = null;
+        EmpNameReport empNameReport = null;
+        EmpFamilySocialIns empFamilySocialIns  = null;
+        EmpFamilyInsHis empFamilyInsHis = null;
+        FamilyMember familyMember = null ;
+        AffOfficeInformation affOfficeInformation = null;
         for (int i = 0; i < listEmp.size(); i++) {
-            EmpBasicPenNumInfor empBasicPenNumInfor = null;
-            PersonInfo personInfo = null;
             empId = listEmp.get(i);
-            EmpNameReport empNameReport = null;
-            EmpFamilySocialIns empFamilySocialIns  = null;
-            EmpFamilyInsHis empFamilyInsHis = null;
-            FamilyMember familyMember = null ;
+            empNameReport = empNameReportRepository.getEmpNameReportById(empId).orElse(null);
+            if( empNameReport !=  null) {
+                if (isSpouse.equals("0")) {
+                    empBasicPenNumInfor = empBasicPenNumInforRepository.getEmpBasicPenNumInforById(empId).orElse(null);
+                    //personInfo = romajiNameNotiCreSetExReposity.getPersonInfo(empId);
 
-            AffOfficeInformation affOfficeInformation = null;
-            if (isSpouse.equals("0")) {
-                empBasicPenNumInfor = empBasicPenNumInforRepository.getEmpBasicPenNumInforById(empId).orElse(null);
-                //personInfo = romajiNameNotiCreSetExReposity.getPersonInfo(empId);
+                } else {
+                    //familyMember = romajiNameNotiCreSetExReposity.getFamilyInfo(empId, isSpouse);
+                    familyMember = new FamilyMember("1980-01-02", "HONG KILDONGS WIFE", "11" , 2, "ホン ギルトンノツマ");
+                    if (familyMember != null ){
+                        int  familyId  = Integer.valueOf(familyMember.getFamilyMemberId());
+                        empFamilyInsHis = empFamilyInsHisRepository.getListEmFamilyHis(empId, familyId).orElse(null);
+                        if (empFamilyInsHis != null) {
+                            //get history id
+                            List<DateHistoryItem> dateHistoryItemList = empFamilyInsHis.getDateHistoryItem();
+                           if(!this.getHistory(dateHistoryItemList, date).isEmpty()){
+                               empFamilySocialIns = empFamilySocialInsRepository.getEmpFamilySocialInsById(empId, familyId, this.getHistory(dateHistoryItemList, date)).orElse(null);
+                           }
+                        }
+                    }
+                    //personInfo = romajiNameNotiCreSetExReposity.getPersonInfo(familyMember.getPersonId());
+                }
 
-            } else {
-                //familyMember = romajiNameNotiCreSetExReposity.getFamilyInfo(empId, isSpouse);
-                familyMember = new FamilyMember("1980-01-02", "HONG KILDONGS WIFE", "11" , 2, "ホン ギルトンノツマ");
-                if (familyMember != null ){
-                    String familyId  = familyMember.getFamilyMemberId();
-                    empFamilyInsHis = empFamilyInsHisRepository.getListEmFamilyHis(empId, familyId).orElse(null);
-                    if (empFamilyInsHis != null) {
-                        //get history id
-                        List<DateHistoryItem> dateHistoryItemList = empFamilyInsHis.getDateHistoryItem();
-                       if(!this.getHistory(dateHistoryItemList, date).isEmpty()){
-                           empFamilySocialIns = empFamilySocialInsRepository.getEmpFamilySocialInsById(empId, familyId, this.getHistory(dateHistoryItemList, date)).orElse(null);
-                       }
+                personInfo = new PersonInfo("1980-01-01", "HONG KILDONG", "ホン ギルトン", "ADB3171F-B5A7-40A7-9B8A-DAE80EECB44B", 1);
+
+                if (empCorpHealthOffHis != null ){
+                    affOfficeInformation = affOfficeInformationRepository.getAffOfficeInformationById(empId, empCorpHealthOffHis.getPeriod().get(0).identifier()).orElse(null);
+                    if (affOfficeInformation != null ){
+                        socialInsuranceOffice = socialInsuranceOfficeRepository.findByCodeAndCid(cid, affOfficeInformation.getSocialInsurOfficeCode().toString()).orElse(null);
                     }
                 }
-                //personInfo = romajiNameNotiCreSetExReposity.getPersonInfo(familyMember.getPersonId());
-            }
 
-            personInfo = new PersonInfo("1980-01-01", "HONG KILDONG", "ホン ギルトン", "ADB3171F-B5A7-40A7-9B8A-DAE80EECB44B", 1);
-
-            if (empCorpHealthOffHis != null ){
-                affOfficeInformation = affOfficeInformationRepository.getAffOfficeInformationById(empId, empCorpHealthOffHis.getPeriod().get(0).identifier()).orElse(null);
-                if (affOfficeInformation != null ){
-                    socialInsuranceOffice = socialInsuranceOfficeRepository.findByCodeAndCid(cid, affOfficeInformation.getSocialInsurOfficeCode().toString()).orElse(null);
-                }
-            }
-
-            empNameReport = empNameReportRepository.getEmpNameReportById(empId).orElse(null);
-            if(empNameReport !=  null) {
                 RomajiNameNotification romajiNameNotification  = new RomajiNameNotification(
                         empNameReport,
                         empFamilySocialIns,

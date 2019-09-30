@@ -96,7 +96,7 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
                 }
                 fillEmployeeUnderSeventy(worksheets, dataRow, sheetName + page, stt, ins);
             }
-            if(stt != 3) {
+            if(stt != 3 && stt !=0) {
                 unSelectAll(worksheets,sheetName + page, stt +1);
             }
         } catch (Exception e) {
@@ -109,17 +109,17 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
         worksheets.getRangeByName(sheetName + "!D1_1_1").setValue(dateJp.year() + 1);
         worksheets.getRangeByName(sheetName + "!D1_1_2").setValue(dateJp.month());
         worksheets.getRangeByName(sheetName + "!D1_1_3").setValue(dateJp.day());
-        worksheets.getRangeByName(sheetName + "!D1_2_1").setValue(data.getOfficeNumber1().length() > 0 ? data.getOfficeNumber1().substring(0,1) : data.getOfficeNumber1());
-        worksheets.getRangeByName(sheetName + "!D1_2_1").setValue(data.getOfficeNumber1().length() > 1 ? data.getOfficeNumber1().substring(1,2) : "") ;
-        worksheets.getRangeByName(sheetName + "!D1_3_1").setValue(data.getOfficeNumber2().length() > 0 ? data.getOfficeNumber2().substring(0,1) : "");
-        worksheets.getRangeByName(sheetName + "!D1_3_2").setValue(data.getOfficeNumber2().length() > 1 ? data.getOfficeNumber2().substring(1,2) : "");
-        worksheets.getRangeByName(sheetName + "!D1_3_3").setValue(data.getOfficeNumber2().length() > 2 ? data.getOfficeNumber2().substring(2,3) : "");
-        worksheets.getRangeByName(sheetName + "!D1_3_4").setValue(data.getOfficeNumber2().length() > 3 ? data.getOfficeNumber2().substring(3,4) : "");
-        worksheets.getRangeByName(sheetName + "!D1_4_1").setValue(data.getOfficeNumber().length() > 0 ? data.getOfficeNumber().substring(0,1) : "");
-        worksheets.getRangeByName(sheetName + "!D1_4_2").setValue(data.getOfficeNumber().length() > 1 ? data.getOfficeNumber().substring(1,2) : "");
-        worksheets.getRangeByName(sheetName + "!D1_4_3").setValue(data.getOfficeNumber().length() > 2 ? data.getOfficeNumber().substring(2,3) : "");
-        worksheets.getRangeByName(sheetName + "!D1_4_4").setValue(data.getOfficeNumber().length() > 3 ? data.getOfficeNumber().substring(3,4) : "");
-        worksheets.getRangeByName(sheetName + "!D1_4_5").setValue(data.getOfficeNumber().length() > 4 ? data.getOfficeNumber().substring(4,5) : "");
+        worksheets.getRangeByName(sheetName + "!D1_2_1").setValue(isHeal ? data.getOfficeNumber1().length() > 0 ? data.getOfficeNumber1().substring(0,1) : "" : data.getWelfOfficeNumber1().length() > 0 ? data.getWelfOfficeNumber1().substring(0,1) : "" );
+        worksheets.getRangeByName(sheetName + "!D1_2_2").setValue(isHeal ? data.getOfficeNumber1().length() > 1 ? data.getOfficeNumber1().substring(1,2) : "" : data.getWelfOfficeNumber1().length() > 1 ? data.getWelfOfficeNumber1().substring(1,2) : "" ) ;
+        worksheets.getRangeByName(sheetName + "!D1_3_1").setValue(isHeal ? data.getOfficeNumber2().length() > 0 ? data.getOfficeNumber2().substring(0,1) : "" : data.getWelfOfficeNumber2().length() > 0 ? data.getWelfOfficeNumber2().substring(0,1) : "" );
+        worksheets.getRangeByName(sheetName + "!D1_3_2").setValue(isHeal ? data.getOfficeNumber2().length() > 1 ? data.getOfficeNumber2().substring(1,2) : "" : data.getWelfOfficeNumber2().length() > 1 ? data.getWelfOfficeNumber2().substring(1,2) : "" );
+        worksheets.getRangeByName(sheetName + "!D1_3_3").setValue(isHeal ? data.getOfficeNumber2().length() > 2 ? data.getOfficeNumber2().substring(2,3) : "" : data.getWelfOfficeNumber2().length() > 2 ? data.getWelfOfficeNumber2().substring(2,3) : "" );
+        worksheets.getRangeByName(sheetName + "!D1_3_4").setValue(isHeal ? data.getOfficeNumber2().length() > 3 ? data.getOfficeNumber2().substring(3,4) : "" : data.getWelfOfficeNumber2().length() > 3 ? data.getWelfOfficeNumber2().substring(3,4) : "" );
+        worksheets.getRangeByName(sheetName + "!D1_4_1").setValue(isHeal ? data.getOfficeNumber().length() > 0 ? data.getOfficeNumber().substring(0,1) : "" : data.getWelfOfficeNumber().length() > 0 ? data.getWelfOfficeNumber().substring(0,1) : "" );
+        worksheets.getRangeByName(sheetName + "!D1_4_2").setValue(isHeal ? data.getOfficeNumber().length() > 1 ? data.getOfficeNumber().substring(1,2) : "" : data.getWelfOfficeNumber().length() > 1 ? data.getWelfOfficeNumber().substring(1,2) : "" );
+        worksheets.getRangeByName(sheetName + "!D1_4_3").setValue(isHeal ? data.getOfficeNumber().length() > 2 ? data.getOfficeNumber().substring(2,3) : "" : data.getWelfOfficeNumber().length() > 2 ? data.getWelfOfficeNumber().substring(2,3) : "" );
+        worksheets.getRangeByName(sheetName + "!D1_4_4").setValue(isHeal ? data.getOfficeNumber().length() > 3 ? data.getOfficeNumber().substring(3,4) : "" : data.getWelfOfficeNumber().length() > 3 ? data.getWelfOfficeNumber().substring(3,4) : "" );
+        worksheets.getRangeByName(sheetName + "!D1_4_5").setValue(isHeal ? data.getOfficeNumber().length() > 4 ? data.getOfficeNumber().substring(4,5) : "" : data.getWelfOfficeNumber().length() > 4 ? data.getWelfOfficeNumber().substring(4,5) : "" );
         worksheets.getRangeByName(sheetName + "!D1_5_1").setValue(typeOff == BusinessDivision.OUTPUT_COMPANY_NAME ? company.getPostCd().length() > 2 ? company.getPostCd().substring(0,3) : company.getPostCd() :
                 typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? data.getPortCd().length() > 2 ? data.getPortCd().substring(0,3) : data.getPortCd() : "");
         worksheets.getRangeByName(sheetName + "!D1_5_2").setValue(typeOff == BusinessDivision.OUTPUT_COMPANY_NAME ? company.getPostCd().length() > 7 ? company.getPostCd().substring(4,8) : company.getPostCd() :
@@ -211,29 +211,52 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
 
     private void unSelectAll(WorksheetCollection worksheets, String sheetName, int stt){
         for(int i = stt ; i<= EMP_IN_PAGE;  i++) {
-            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_6_" + i));
-            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_7_" + i));
-            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_8_" + i));
-            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_12_" + i));
-            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_14_" + i));
-            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_16_" + i));
-            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_17_" + i));
-            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_18_" + i));
-            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_19_" + i));
-            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_20_" + i));
-            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_24_" + i));
+            if(worksheets.get(sheetName).getShapes().get("A2_6_" + i) != null ) {
+                worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_6_" + i));
+            }
+            if(worksheets.get(sheetName).getShapes().get("A2_7_" + i) != null ) {
+                worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_7_" + i));
+            }
+            if(worksheets.get(sheetName).getShapes().get("A2_8_" + i) != null) {
+                worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_8_" + i));
+            }
+            if(worksheets.get(sheetName).getShapes().get("A2_12_" + i) != null) {
+                worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_12_" + i));
+            }
+            if(worksheets.get(sheetName).getShapes().get("A2_14_" + i) != null) {
+                worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_14_" + i));
+            }
+            if(worksheets.get(sheetName).getShapes().get("A2_16_" + i) != null){
+                worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_16_" + i));
+            }
+            if(worksheets.get(sheetName).getShapes().get("A2_17_" + i) != null) {
+                worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_17_" + i));
+            }
+            if(worksheets.get(sheetName).getShapes().get("A2_18_" + i) != null) {
+                worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_18_" + i));
+            }
+            if(worksheets.get(sheetName).getShapes().get("A2_19_" + i) != null) {
+                worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_19_" + i));
+            }
+            if(worksheets.get(sheetName).getShapes().get("A2_20_" + i) != null) {
+                worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_20_" + i));
+            }
+            if(worksheets.get(sheetName).getShapes().get("A2_24_" + i) != null) {
+                worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get("A2_24_" + i));
+            }
         }
     }
 
     private void fillEmployeeUnderSeventy(WorksheetCollection worksheets, InsLossDataExport data, String sheetName, int stt, SocialInsurNotiCreateSet ins){
         JapaneseDate birthDay = toJapaneseDate( GeneralDate.fromString(data.getBirthDay().substring(0,10), "yyyy-MM-dd"));
-        JapaneseDate endDate = data.getEndDate() != null ? toJapaneseDate( GeneralDate.fromString(data.getEndDate().substring(0,10), "yyyy-MM-dd")) : null;
-        JapaneseDate endDate2 = data.getEndDate2() != null ? toJapaneseDate( GeneralDate.fromString(data.getEndDate2().substring(0,10), "yyyy-MM-dd")) : null;
+        JapaneseDate endDate = !data.getEndDate().isEmpty() ? toJapaneseDate( GeneralDate.fromString(data.getEndDate().substring(0,10), "yyyy-MM-dd")) : null;
+        JapaneseDate endDate2 = !data.getEndDate2().isEmpty() ? toJapaneseDate( GeneralDate.fromString(data.getEndDate2().substring(0,10), "yyyy-MM-dd")) : null;
         this.selectEra(worksheets, birthDay.era(), sheetName, stt);
         this.selectCause(worksheets, ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? data.getCause() : data.getCause2(), sheetName, stt);
         this.selectUnder(worksheets, data.getIsMoreEmp(),"A2_18", sheetName, stt);
         this.selectUnder(worksheets, data.getContinReemAfterRetirement(),"A2_19", sheetName, stt);
         this.selectUnder(worksheets, data.getOther(),"A2_20", sheetName, stt);
+        this.selectUnder(worksheets, data.getCause2() != 6 ? 0 : 1,"A2_24", sheetName, stt);
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_1", stt)).setValue(
                 ins.getInsuredNumber() == InsurPersonNumDivision.OUTPUT_HEAL_INSUR_NUM ? data.getHealInsNumber() :
                 ins.getInsuredNumber() == InsurPersonNumDivision.OUTPUT_THE_WELF_PENNUMBER ? data.getWelfPenNumber() :
@@ -253,10 +276,10 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_9_4", stt)).setValue(convertJpDate(birthDay).charAt(3));
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_9_5", stt)).setValue(convertJpDate(birthDay).charAt(4));
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_9_6", stt)).setValue(convertJpDate(birthDay).charAt(5));
-        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_13_1", stt)).setValue(Objects.toString(endDate.year() + 1, ""));
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_13_1", stt)).setValue(Objects.toString(endDate != null ? endDate.year() + 1 : null, ""));
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_13_2", stt)).setValue(data.getEndDate() != null ? data.getEndDate().substring(5,7) : "");
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_13_3", stt)).setValue(data.getEndDate() != null ? data.getEndDate().substring(8,10) : "");
-        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_15_1", stt)).setValue(Objects.toString(endDate.year() + 1, ""));
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_15_1", stt)).setValue(Objects.toString(endDate!= null ? endDate.year() + 1 : null, ""));
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_15_2", stt)).setValue(data.getEndDate() != null ? data.getEndDate().substring(5,7) : "");
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_15_3", stt)).setValue(data.getEndDate() != null ? data.getEndDate().substring(8,10) : "");
         if(ins.getPrintPersonNumber() != PersonalNumClass.DO_NOT_OUTPUT && ins.getPrintPersonNumber() != PersonalNumClass.OUTPUT_PER_NUMBER) {
@@ -297,18 +320,18 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
     }
 
     private void fillEmployeeOverSeventy(WorksheetCollection worksheets, InsLossDataExport data, String sheetName, SocialInsurNotiCreateSet ins){
-        JapaneseDate birthDay = toJapaneseDate( GeneralDate.fromString(data.getBirthDay().substring(0,10), "yyyy-MM-dd"));
-        JapaneseDate endDate = toJapaneseDate( GeneralDate.fromString(data.getEndDate().substring(0,10), "yyyy-MM-dd"));
-        this.selectOver(worksheets, data.getIsMoreEmp(), "D2_6", sheetName);
-        this.selectOver(worksheets, data.getOther(),"D2_8", sheetName);
+        JapaneseDate birthDay = !data.getBirthDay().isEmpty() ? toJapaneseDate( GeneralDate.fromString(data.getBirthDay().substring(0,10), "yyyy-MM-dd")) : null;
+        JapaneseDate endDate = !data.getEndDate2().isEmpty() ? toJapaneseDate( GeneralDate.fromString(data.getEndDate2().substring(0,10), "yyyy-MM-dd")) : null;
+        this.selectOver(worksheets, data.getIsMoreEmp() , "D2_6", sheetName);
+        this.selectOver(worksheets, data.getOther2() == null ? 0 : data.getOther2(),"D2_8", sheetName);
         worksheets.getRangeByName(sheetName + "!D2_1").setValue(
                 ins.getInsuredNumber() == InsurPersonNumDivision.OUTPUT_HEAL_INSUR_NUM ? data.getHealInsNumber() :
                 ins.getInsuredNumber() == InsurPersonNumDivision.OUTPUT_THE_WELF_PENNUMBER ? data.getWelfPenNumber() :
                 ins.getInsuredNumber() == InsurPersonNumDivision.OUTPUT_HEAL_INSUR_UNION ? data.getHealInsUnionNumber() :
                 ins.getInsuredNumber() == InsurPersonNumDivision.OUTPUT_THE_FUN_MEMBER ? data.getMemberNumber() : "");
         worksheets.getRangeByName(sheetName + "!D2_2").setValue(
-                ins.getSubmittedName() == SubNameClass.PERSONAL_NAME ? data.getPersonName() : data.getPersonNameKana());
-        worksheets.getRangeByName(sheetName + "!D2_3").setValue(Objects.toString(data.getPersonNameKana(), ""));
+                ins.getSubmittedName() == SubNameClass.PERSONAL_NAME ?  data.getPersonNameKana() : data.getOldNameKana());
+        worksheets.getRangeByName(sheetName + "!D2_3").setValue(Objects.toString(birthDay.era(), ""));
         worksheets.getRangeByName(sheetName + "!D2_4_1").setValue(convertJpDate(birthDay).charAt(0));
         worksheets.getRangeByName(sheetName + "!D2_4_2").setValue(convertJpDate(birthDay).charAt(1));
         worksheets.getRangeByName(sheetName + "!D2_4_3").setValue(convertJpDate(birthDay).charAt(2));
@@ -327,7 +350,7 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
             worksheets.getRangeByName(sheetName + "!D2_5_7").setValue(data.getBasicPenNumber() != null ? data.getBasicPenNumber().length() > 8 ? data.getBasicPenNumber().charAt(8) : "" : "");
             worksheets.getRangeByName(sheetName + "!D2_5_8").setValue(data.getBasicPenNumber() != null ? data.getBasicPenNumber().length() > 9 ? data.getBasicPenNumber().charAt(9) : "" : "");
         }
-        worksheets.getRangeByName(sheetName + "!D2_9").setValue(data.getOtherReason());
+        worksheets.getRangeByName(sheetName + "!D2_9").setValue(data.getOtherReason2());
         worksheets.getRangeByName(sheetName + "!D2_10_1").setValue(convertJpDate(endDate).charAt(0));
         worksheets.getRangeByName(sheetName + "!D2_10_2").setValue(convertJpDate(endDate).charAt(1));
         worksheets.getRangeByName(sheetName + "!D2_10_3").setValue(convertJpDate(endDate).charAt(2));

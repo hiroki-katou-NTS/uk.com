@@ -92,25 +92,6 @@ public class NotificationOfLossInsExportCSVService extends ExportService<Notific
         if(domain.getOutputFormat().get() == OutputFormatClass.PEN_OFFICE){
 			List<SocialInsurancePrefectureInformation> infor  = socialInsuranceInfor.findByHistory();
 			List<InsLossDataExport> healthInsLoss = socialInsurNotiCreateSetEx.getHealthInsLoss(empIds, cid, start, end);
-			List<InsLossDataExport> welfPenInsLoss = socialInsurNotiCreateSetEx.getWelfPenInsLoss(empIds, cid, start, end);
-
-			if(domain.getBusinessArrSymbol() == BussEsimateClass.EMPEN_ESTAB_REARSIGN) {
-				List<InsLossDataExport> heal = new ArrayList<>();
-				healthInsLoss.forEach(h -> {
-					Optional<InsLossDataExport> temp = welfPenInsLoss.stream().filter(w -> w.getEmpCd().equals(h.getEmpCd())).findFirst();
-					if(temp.isPresent()) {
-						heal.add(temp.get());
-					}
-					if(!temp.isPresent()) {
-						h.setOtherReason("");
-						h.setCaInsurance(null);
-						h.setCause(null);
-					}
-				});
-				healthInsLoss.removeAll(heal);
-				healthInsLoss.addAll(welfPenInsLoss);
-			}
-			healthInsLoss.stream().sorted(Comparator.comparing(InsLossDataExport::getOfficeCd).thenComparing(InsLossDataExport::getEmpCd));
 			CompanyInfor company = socialInsurNotiCreateSetEx.getCompanyInfor(cid);
 			notificationOfLossInsCSVFileGenerator.generate(exportServiceContext.getGeneratorContext(),
 					new LossNotificationInformation(healthInsLoss, null,null, domain, exportServiceContext.getQuery().getReference(), company, infor));
