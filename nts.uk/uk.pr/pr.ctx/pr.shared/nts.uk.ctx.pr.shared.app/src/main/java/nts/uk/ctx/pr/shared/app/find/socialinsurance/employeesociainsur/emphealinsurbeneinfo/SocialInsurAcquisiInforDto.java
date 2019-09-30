@@ -95,7 +95,7 @@ public class SocialInsurAcquisiInforDto
                 domain.getRemarksOther().map(i->i.intValue()).orElse(null),
                 domain.getRemarksAndOtherContents().map(i->i.v()).orElse(null),
                 domain.getRemunMonthlyAmountKind().map(i->i.v()).orElse(null),
-                domain.getTotalMonthlyRemun().map(i->i.v()).orElse(null),
+                domain.getRemunMonthlyAmount().map(i->i.v()).orElse(null),
                 domain.getTotalMonthlyRemun().map(i->i.v()).orElse(null),
                 domain.getLivingAbroad().map(i->i.intValue()).orElse(null),
                 domain.getReasonOther().map(i->i.intValue()).orElse(null),
