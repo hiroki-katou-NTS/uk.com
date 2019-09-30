@@ -296,7 +296,7 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         return sqlDate;
     }
 
-    public List<PensionOfficeDataExport> getDataHealthInsAss(List<String> empIds,String cid, GeneralDate startDate, GeneralDate endDate) {
+    public List<PensionOfficeDataExport> getDataHealthInsAss(List<String> empIds,String cid,String userId, GeneralDate startDate, GeneralDate endDate) {
         List<Object[]> resultQuery;
         StringBuilder exportSQL = new StringBuilder();
         exportSQL.append("  SELECT HEALTH_INSURANCE_OFFICE_NUMBER_1,");
@@ -378,6 +378,7 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("        ON i.SID = qi.EMPLOYEE_ID");
         exportSQL.append("  INNER JOIN BPSMT_PERSON p ON p.PID = i.PID");
         exportSQL.append("  INNER JOIN QQSMT_SOC_INSU_NOTI_SET QSINS ON QSINS.CID = ?cid ");
+        exportSQL.append("  AND QSINS.USER_ID = ?userId ");
         String sql = String.format(exportSQL.toString(), empIds.stream()
                 .map(String::valueOf)
                 .collect(Collectors.joining("','")));
@@ -386,6 +387,7 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
                     .setParameter("startDate", convertDate(startDate))
                     .setParameter("endDate", convertDate(endDate))
                     .setParameter("cid", cid)
+                    .setParameter("userId", userId)
                     .getResultList();
         } catch (NoResultException e) {
             return Collections.emptyList();
