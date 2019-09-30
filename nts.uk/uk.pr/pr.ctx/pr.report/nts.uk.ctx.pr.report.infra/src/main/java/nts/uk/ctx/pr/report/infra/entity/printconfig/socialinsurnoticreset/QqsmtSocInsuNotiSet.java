@@ -126,10 +126,6 @@ public class QqsmtSocInsuNotiSet extends UkJpaEntity implements Serializable
                this.lineFeedCode);
     }
 
-    public RomajiNameNotiCreSetting toDomainRomaji(){
-        return new RomajiNameNotiCreSetting(this.socInsuNotiSetPk.userId, this.socInsuNotiSetPk.cid , this.addOutputClass);
-    }
-
     public static QqsmtSocInsuNotiSet toEntity(SocialInsurNotiCreateSet domain) {
         return new QqsmtSocInsuNotiSet(new QqsmtSocInsuNotiSetPk(domain.getUserId(), domain.getCid()),
                domain.getOfficeInformation().value,
@@ -144,25 +140,5 @@ public class QqsmtSocInsuNotiSet extends UkJpaEntity implements Serializable
                domain.getLineFeedCode().isPresent() ? domain.getLineFeedCode().get().value : null,
                 null);
     }
-
-
-    public  static QqsmtSocInsuNotiSet toEntitys(RomajiNameNotiCreSetting domain){
-            return  new QqsmtSocInsuNotiSet(
-                    new QqsmtSocInsuNotiSetPk(domain.getUserId(), domain.getCid()),
-                    0,
-                    0,
-                    0,
-                    0,
-                    0,
-                    0,
-                    null,
-                    null,
-                    null,
-                    null,
-                    domain.getAddressOutputClass().value
-            );
-    }
-
-
 
 }
