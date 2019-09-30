@@ -267,7 +267,7 @@ module nts.uk.pr.view.qsi003.b.viewmodel {
     export interface EmployeeModel {
         id: string;
         code: string;
-        name: string;
+        businessName: string;
     }
     export class SystemType {
         static EMPLOYMENT = 1;
