@@ -30,7 +30,7 @@ public class QqsmtHealthInsLossPk implements Serializable
      * 会社ID
      */
     @Basic(optional = false)
-    @Column(name = "EMP_ID")
+    @Column(name = "CID")
     public String cid;
     
 }

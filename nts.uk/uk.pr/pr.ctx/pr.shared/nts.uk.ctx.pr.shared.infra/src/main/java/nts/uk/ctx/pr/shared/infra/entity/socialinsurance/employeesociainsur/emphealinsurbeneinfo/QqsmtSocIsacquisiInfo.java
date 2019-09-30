@@ -73,7 +73,7 @@ public class QqsmtSocIsacquisiInfo extends UkJpaEntity implements Serializable
       理由その他
     */
     @Basic(optional = true)
-    @Column(name = "LIVING_ABROAD")
+    @Column(name = "NO_MYNUM_ATR")
     public Integer livingAbroad;
 
     /**
