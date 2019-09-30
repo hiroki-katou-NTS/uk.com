@@ -2,7 +2,9 @@ package nts.uk.file.pr.infra.core.socinsurnoticreset;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.pr.file.app.core.socialinsurnoticreset.*;
+import nts.uk.ctx.pr.file.app.core.socialinsurnoticreset.EmpPenFundSubData;
+import nts.uk.ctx.pr.file.app.core.socialinsurnoticreset.GuaByTheInsurExportRepository;
+import nts.uk.ctx.pr.file.app.core.socialinsurnoticreset.PensionOfficeDataExport;
 
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
@@ -230,7 +232,7 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("    WHERE EMPLOYEE_ID IN ('%s') ");
         exportSQL.append("      AND QECOH.START_DATE <= ?endDate ");
         exportSQL.append("      AND QECOH.START_DATE >= ?startDate  ) AS ROOT ");
-        exportSQL.append(" LEFT JOIN QQSMT_SOC_INSU_NOTI_SET QSINS ON QSINS.CID = ?cid  ");
+        exportSQL.append(" INNER JOIN QQSMT_SOC_INSU_NOTI_SET QSINS ON QSINS.CID = ?cid  ");
         exportSQL.append(" AND QSINS.USER_ID = ?userId ");
         exportSQL.append(" LEFT JOIN QPBMT_SOCIAL_INS_OFFICE QSIO ");
         exportSQL.append(" ON QSIO.CID = ?cid AND QSIO.CODE = ROOT.SOCIAL_INSURANCE_OFFICE_CD ");
@@ -332,7 +334,9 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("      HEAL_INSUR_INHEREN_PR,");
         exportSQL.append("      HEAL_INSUR_UNION_NMBER,");
         exportSQL.append("      HEALTH_INSURANCE_UNION_OFFICE_NUMBER, ");
-        exportSQL.append("      ti.HISTORY_ID ");
+        exportSQL.append("      ti.HISTORY_ID, ");
+        exportSQL.append("      oi.PHONE_NUMBER, ");
+        exportSQL.append("      QSINS.BUSSINESS_ARR_SYMBOL ");
         exportSQL.append("   FROM    ");
         exportSQL.append("       (SELECT *");
         exportSQL.append("         FROM QQSMT_EMP_HEAL_INSUR_QI ");
@@ -373,6 +377,7 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("        WHERE CID = ?cid) i");
         exportSQL.append("        ON i.SID = qi.EMPLOYEE_ID");
         exportSQL.append("  INNER JOIN BPSMT_PERSON p ON p.PID = i.PID");
+        exportSQL.append("  INNER JOIN QQSMT_SOC_INSU_NOTI_SET QSINS ON QSINS.CID = ?cid ");
         String sql = String.format(exportSQL.toString(), empIds.stream()
                 .map(String::valueOf)
                 .collect(Collectors.joining("','")));
@@ -422,6 +427,8 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
                 .healUnionNumber(i[33] == null ? "" : i[33].toString())
                 .unionOfficeNumber(i[34] == null ? "" : i[34].toString())
                 .hisId(i[35] == null ? "" : i[35].toString())
+                .phoneNumber(i[36] == null ? "" : i[36].toString())
+                .bussinesArrSybol(Integer.valueOf(i[36].toString()))
                 .build()
         ).collect(Collectors.toList());
     }
