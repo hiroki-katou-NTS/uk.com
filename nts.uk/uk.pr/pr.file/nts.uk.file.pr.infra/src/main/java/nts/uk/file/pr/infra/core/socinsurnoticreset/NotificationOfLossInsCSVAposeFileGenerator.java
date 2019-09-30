@@ -141,7 +141,7 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
         cells.get(startRow, 22).setValue(Objects.toString(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? data.getCaInsurance() : data.getNumRecoved2(), ""));
         cells.get(startRow, 23).setValue(data.getPercentOrMore().equals("1") ? 1 : "");
         cells.get(startRow, 24).setValue(data.getPercentOrMore().equals("1") ? 9 : "");
-        cells.get(startRow, 25).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? data.getPercentOrMore() == null ? "" : data.getPercentOrMore().equals("1")  ? convertDate(data.getEndDate()) : "" : convertDate(data.getEndDate2()));
+        cells.get(startRow, 25).setValue(data.getPercentOrMore() == null ? "" : data.getPercentOrMore().equals("1")  ? convertDate(data.getEndDate()) : convertDate(data.getEndDate2()));
         cells.get(startRow, 26).setValue(data.getCause2() == null ? "" : data.getCause2() == 6 ? "" : 1);
 
     }
@@ -151,7 +151,7 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
         if(date.length() < 10)  {
             return "";
         }
-        GeneralDate temp = GeneralDate.fromString(date.substring(0,4) + date.substring(5,7) + date.substring(8,10), "yyyy-MM-dd");
+        GeneralDate temp = GeneralDate.fromString(date.substring(0,10), "yyyy-MM-dd");
         return temp.addDays(-1).toString("yyyyMMdd");
     }
 
