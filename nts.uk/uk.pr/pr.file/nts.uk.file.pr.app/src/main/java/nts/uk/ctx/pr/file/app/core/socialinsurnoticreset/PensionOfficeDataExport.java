@@ -99,5 +99,7 @@ public class PensionOfficeDataExport {
 
     private String healUnionNumber;
     private String hisId;
+    private int endDate;
+    private int bussinesArrSybol;
 
 }
