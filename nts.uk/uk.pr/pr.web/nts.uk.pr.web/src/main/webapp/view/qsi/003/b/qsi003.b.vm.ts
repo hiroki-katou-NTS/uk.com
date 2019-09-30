@@ -134,10 +134,25 @@ module nts.uk.pr.view.qsi003.b.viewmodel {
             if(nts.uk.util.isNullOrEmpty(list) || nts.uk.util.isNullOrEmpty(list.employeeList)) {
                 close();
             }
-            self.employeeInputList(list.employeeList);
+            self.employeeInputList(self.createEmployeeModel(list.employeeList));
             this.loadKCP009();
             self.selectedItem(self.employeeInputList()[0].id);
         }
+
+        createEmployeeModel(data) {
+            let listEmployee = [];
+            _.each(data, data => {
+                listEmployee.push({
+                    id: data.id,
+                    code: data.code,
+                    businessName: data.name,
+                    workplaceName: data.workplaceName
+                });
+            });
+
+            return listEmployee;
+        }
+
 
         updateReasonRomajiName(){
             var self = this;
