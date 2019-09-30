@@ -118,6 +118,8 @@ public class InsLossDataExport {
 
     private Integer cause2;
 
+    private Integer insPerCls;
+
     private int underSeventy;
 
 }

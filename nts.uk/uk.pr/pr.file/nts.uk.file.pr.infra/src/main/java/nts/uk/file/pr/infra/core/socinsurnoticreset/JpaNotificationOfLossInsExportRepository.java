@@ -351,6 +351,7 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
                     .numRecoved2(i[51] == null ? null : ((BigDecimal) i[51]).intValue())
                     .cause2(i[52] == null ? null : ((BigDecimal) i[52]).intValue())
                     .endDate2(i[53] == null ? "" : i[53].toString())
+                    .insPerCls(i[54] == null ? null : ((BigDecimal) i[54]).intValue())
                     .build()
             ).collect(Collectors.toList());
         } catch (Exception e) {

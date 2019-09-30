@@ -45,6 +45,8 @@ public class NotificationOfLossInsExportCSVService extends ExportService<Notific
 	private SocialInsurancePrefectureInformationRepository socialInsuranceInfor;
 
 
+
+
 	@Override
 	protected void handle(ExportServiceContext<NotificationOfLossInsExportQuery> exportServiceContext) {
 		String userId = AppContexts.user().userId();

@@ -9,6 +9,7 @@ import nts.uk.ctx.pr.report.app.find.socinsurnoticreset.NameNotificationSetDto;
 @Data
 @AllArgsConstructor
 public class EmpNameReportDto {
-    private NameNotificationSetDto spouse;
     private NameNotificationSetDto personalSet;
+    private NameNotificationSetDto spouse;
+
 }

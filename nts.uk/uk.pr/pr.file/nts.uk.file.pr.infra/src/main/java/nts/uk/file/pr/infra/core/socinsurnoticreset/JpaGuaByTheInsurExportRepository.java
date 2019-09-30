@@ -550,7 +550,7 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
                 .funSpecific6(i[5] == null ? "" : i[5].toString())
                 .funSpecific7(i[6] == null ? "" : i[6].toString())
                 .funSpecific8(i[7] == null ? "" : i[7].toString())
-                .funSpecific8(i[8] == null ? "" : i[8].toString())
+                .funSpecific9(i[8] == null ? "" : i[8].toString())
                 .funSpecific10(i[9] == null ? "" : i[9].toString())
                 .funMember(i[10] == null ? "" : i[10].toString())
                 .welOfficeNumber1(i[11] == null ? "" : i[11].toString())
