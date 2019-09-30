@@ -349,19 +349,20 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
 
 
             service.add(data).done(e => {
-                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(e=>{
-                    if (self.getAge(self.dummyBirthDay, params.date) >= 70) {
-                        if(self.tempApplyToEmployeeOver70() != self.applyToEmployeeOver70()){
-                            dialog.info({ messageId: "Msg_177" });
-                        }
-                    }else{
-
-                        if(self.tempApplyToEmployeeOver70() != self.applyToEmployeeOver70()){
-                            dialog.info({ messageId: "Msg_176" });
-                        }
+                if (self.getAge(self.dummyBirthDay, params.date) >= 70) {
+                    if(self.tempApplyToEmployeeOver70() != self.applyToEmployeeOver70()){
+                        dialog.info({ messageId: "Msg_177" }).then(e=>{
+                            block.clear();
+                        });
                     }
-                    block.clear();
-                });
+                }else{
+
+                    if(self.tempApplyToEmployeeOver70() != self.applyToEmployeeOver70()){
+                        dialog.info({ messageId: "Msg_176" }).then(e =>{
+                            block.clear();
+                        });
+                    }
+                }
 
             }).fail(e => {
                 block.clear();
