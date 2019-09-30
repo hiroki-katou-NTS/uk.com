@@ -119,9 +119,7 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
             } else {
 
                 if (empFamilySocialIns != null ) {
-                    for (int h1 = 0; h1 < empFamilySocialIns.getFmBsPenNum().length() ; h1++) {
-                        worksheet.get(i).getCells().get(12, h1+1).setValue(Objects.toString(pushDataCell(empFamilySocialIns.getFmBsPenNum(), h1),  ""));
-                    }
+                    this.pushName(empFamilySocialIns.getFmBsPenNum() != null ? empFamilySocialIns.getFmBsPenNum().toString() : null, worksheet, i, 11, 1);
                 }
 
                 if ( familyMember != null ) {
