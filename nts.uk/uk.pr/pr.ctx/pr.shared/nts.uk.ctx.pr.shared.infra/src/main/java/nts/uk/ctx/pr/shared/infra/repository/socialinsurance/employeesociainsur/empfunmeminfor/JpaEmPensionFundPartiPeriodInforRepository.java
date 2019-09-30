@@ -6,6 +6,7 @@ import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empfunmeminfo
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empfunmeminfor.FundMembership;
 import nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.empfunmeminfor.QqsmtTemPenPartInfo;
 import nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.empfunmeminfor.QqsmtTemPenPartInfoPk;
+import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import java.util.List;
@@ -66,6 +67,6 @@ public class JpaEmPensionFundPartiPeriodInforRepository extends JpaRepository im
 
     @Override
     public void remove(String employeeId, String historyId){
-        this.commandProxy().remove(QqsmtTemPenPartInfo.class, new QqsmtTemPenPartInfoPk(employeeId, historyId));
+        this.commandProxy().remove(QqsmtTemPenPartInfo.class, new QqsmtTemPenPartInfoPk(employeeId, historyId, AppContexts.user().companyId()));
     }
 }

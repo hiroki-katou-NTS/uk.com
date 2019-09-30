@@ -5,6 +5,7 @@ import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsura
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurassocinfor.HealthCarePortInforRepository;
 import nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.emphealinsurassocinfor.QqbmtHealCarePorInfo;
 import nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.emphealinsurassocinfor.QqbmtHealCarePorInfoPk;
+import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import java.util.List;
@@ -40,7 +41,7 @@ public class JpaHealthCarePortInforRepository extends JpaRepository implements H
     }
 
     @Override
-    public void remove(String hisId){
-        this.commandProxy().remove(QqbmtHealCarePorInfo.class, new QqbmtHealCarePorInfoPk(hisId));
+    public void remove(String hisId,String employeeId){
+        this.commandProxy().remove(QqbmtHealCarePorInfo.class, new QqbmtHealCarePorInfoPk(hisId,employeeId, AppContexts.user().companyId()));
     }
 }

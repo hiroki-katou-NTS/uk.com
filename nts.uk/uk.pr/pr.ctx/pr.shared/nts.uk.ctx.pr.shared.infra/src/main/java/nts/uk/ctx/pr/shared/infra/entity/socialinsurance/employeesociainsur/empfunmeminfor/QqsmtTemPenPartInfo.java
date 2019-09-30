@@ -11,8 +11,6 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.List;
-import java.util.Optional;
 
 
 /**
@@ -21,7 +19,7 @@ import java.util.Optional;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "QQSMT_TEM_PEN_PART_INFO")
+@Table(name = "QQSDT_KIKIN_INFO")
 public class QqsmtTemPenPartInfo extends UkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
@@ -50,7 +48,7 @@ public class QqsmtTemPenPartInfo extends UkJpaEntity implements Serializable
     * 基金加入員番号
     */
     @Basic(optional = false)
-    @Column(name = "MEMBER_NUMBER")
+    @Column(name = "KIKIN_NUM")
     public String memberNumber;
     
     @Override

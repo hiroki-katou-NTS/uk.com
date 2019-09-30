@@ -2,9 +2,8 @@ package nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.emp
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.arc.primitive.constraint.IntegerRange;
-import nts.arc.primitive.constraint.StringMaxLength;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.HealthInsLossInfo;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
@@ -16,7 +15,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "QQSMT_HEALTH_INS_LOSS")
+@Table(name = "QQSDT_KENHO_LOSS_INFO")
 public class QqsmtHealthInsLoss extends UkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
@@ -31,35 +30,35 @@ public class QqsmtHealthInsLoss extends UkJpaEntity implements Serializable
     * その他
     */
     @Basic(optional = false)
-    @Column(name = "OTHER")
+    @Column(name = "OTHER_ATR")
     public int other;
     
     /**
     * その他理由
     */
     @Basic(optional = true)
-    @Column(name = "OTHER_REASON")
+    @Column(name = "OTHER_REASONS")
     public String otherReason;
     
     /**
     * 保険証回収添付枚数
     */
     @Basic(optional = true)
-    @Column(name = "CA_INSURANCE")
+    @Column(name = "NUM_OF_ATTACHED")
     public Integer caInsurance;
     
     /**
     * 保険証回収返不能枚数
     */
     @Basic(optional = true)
-    @Column(name = "NUM_RECOVED")
+    @Column(name = "NUM_OF_UNCOLLECTABLE")
     public Integer numRecoved;
     
     /**
     * 資格喪失原因
     */
     @Basic(optional = true)
-    @Column(name = "CAUSE")
+    @Column(name = "LOSS_CASE_ATR")
     public Integer cause;
     
     @Override
@@ -69,7 +68,7 @@ public class QqsmtHealthInsLoss extends UkJpaEntity implements Serializable
     }
 
     public static QqsmtHealthInsLoss toEntity(HealthInsLossInfo healthInsLossInfo){
-        return new QqsmtHealthInsLoss(new QqsmtHealthInsLossPk(healthInsLossInfo.getEmpId()),
+        return new QqsmtHealthInsLoss(new QqsmtHealthInsLossPk(healthInsLossInfo.getEmpId(), AppContexts.user().companyId()),
                 healthInsLossInfo.getOther(),
                 healthInsLossInfo.getOtherReason().map(i -> i.v()).orElse(null),
                 healthInsLossInfo.getCaInsurance().map(i -> i.v()).orElse(null),
