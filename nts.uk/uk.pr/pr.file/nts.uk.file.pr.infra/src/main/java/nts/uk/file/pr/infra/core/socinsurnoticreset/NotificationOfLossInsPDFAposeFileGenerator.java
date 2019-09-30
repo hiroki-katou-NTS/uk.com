@@ -40,6 +40,10 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
 
     private static final int EMP_IN_PAGE = 4;
 
+    private static final String TAISO = "大正";
+
+    private static final String MEI = "大正";
+
     @Override
     public void generate(FileGeneratorContext generatorContext, LossNotificationInformation data) {
         CompanyInfor company = data.getCompany();
@@ -102,6 +106,25 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private String findEra(String era) {
+        if (era.equals(TAISO)) {
+            return "1";
+        }
+        if (era.equals(MEI)) {
+            return "3";
+        }
+        if (era.equals(SHOWA)) {
+            return "5";
+        }
+        if (era.equals(HEISEI)) {
+            return "7";
+        }
+        if (era.equals(PEACE)) {
+            return "9";
+        }
+        return "";
     }
 
     private void fillCompanyPension( WorksheetCollection worksheets, InsLossDataExport data, GeneralDate baseDate, CompanyInfor company,String sheetName,boolean isHeal, BusinessDivision typeOff){
@@ -331,7 +354,7 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
                 ins.getInsuredNumber() == InsurPersonNumDivision.OUTPUT_THE_FUN_MEMBER ? data.getMemberNumber() : "");
         worksheets.getRangeByName(sheetName + "!D2_2").setValue(
                 ins.getSubmittedName() == SubNameClass.PERSONAL_NAME ?  data.getPersonNameKana() : data.getOldNameKana());
-        worksheets.getRangeByName(sheetName + "!D2_3").setValue(Objects.toString(birthDay.era(), ""));
+        worksheets.getRangeByName(sheetName + "!D2_3").setValue(findEra(birthDay.era()));
         worksheets.getRangeByName(sheetName + "!D2_4_1").setValue(convertJpDate(birthDay).charAt(0));
         worksheets.getRangeByName(sheetName + "!D2_4_2").setValue(convertJpDate(birthDay).charAt(1));
         worksheets.getRangeByName(sheetName + "!D2_4_3").setValue(convertJpDate(birthDay).charAt(2));
