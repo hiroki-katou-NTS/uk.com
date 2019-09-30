@@ -1,6 +1,7 @@
 package nts.uk.file.pr.infra.core.socinsurnoticreset;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.file.app.core.socialinsurnoticreset.CompanyInfor;
 import nts.uk.ctx.pr.file.app.core.socialinsurnoticreset.InsLossDataExport;
@@ -237,7 +238,8 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
             exportSQL.append("      wloss.CA_INSURANCE,");
             exportSQL.append("      wloss.NUM_RECOVED,");
             exportSQL.append("      wloss.CAUSE,");
-            exportSQL.append("      wi.END_DATE");
+            exportSQL.append("      wi.END_DATE,");
+            exportSQL.append("      INS_PER_CLS");
             exportSQL.append("  FROM ");
             exportSQL.append("         (SELECT *");
             exportSQL.append("         FROM QQSMT_EMP_HEAL_INSUR_QI ");
@@ -254,6 +256,11 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
             exportSQL.append("       FROM QQSMT_EMP_PEN_INS ");
             exportSQL.append("       WHERE END_DATE <= ?endDate AND END_DATE >= ?startDate) ni ");
             exportSQL.append("       ON ni.EMPLOYEE_ID = qi.EMPLOYEE_ID");
+            exportSQL.append("  LEFT JOIN ");
+            exportSQL.append("            (SELECT *");
+            exportSQL.append("       FROM QQSMT_COR_EMP_WORK_HIS ");
+            exportSQL.append("       WHERE END_YM <= ?endYm AND END_YM >= ?startYm) wh ");
+            exportSQL.append("       ON wh.EMPLOYEE_ID = qi.EMPLOYEE_ID");
             exportSQL.append("  LEFT JOIN (SELECT * ");
             exportSQL.append("          FROM QQSMT_HEAL_INSUR_PORT_INT ");
             exportSQL.append("          WHERE END_DATE <= ?endDate AND END_DATE >= ?startDate  ) pi");
@@ -291,6 +298,8 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
                 resultQuery = this.getEntityManager().createNativeQuery(sql)
                         .setParameter("startDate", this.convertDate(startDate.toString("yyyy-MM-dd")))
                         .setParameter("endDate", this.convertDate(endDate.toString("yyyy-MM-dd")))
+                        .setParameter("startYm", this.convertDateToInt(startDate))
+                        .setParameter("endYm", this.convertDateToInt(endDate))
                         .setParameter("cid", cid)
                         .getResultList();
             } catch (NoResultException e) {
@@ -559,6 +568,10 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
         } catch (Exception e) {
             return Collections.emptyList();
         }
+    }
+
+    private Integer convertDateToInt(GeneralDate date){
+        return Integer.parseInt(date.toString("yyyyMM"));
     }
 
     private java.sql.Date convertDate(String Date) {

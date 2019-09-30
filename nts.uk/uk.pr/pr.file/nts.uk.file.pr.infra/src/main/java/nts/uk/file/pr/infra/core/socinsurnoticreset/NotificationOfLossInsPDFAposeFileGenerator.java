@@ -143,10 +143,10 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
         worksheets.getRangeByName(sheetName + "!D1_4_3").setValue(isHeal ? data.getOfficeNumber().length() > 2 ? data.getOfficeNumber().substring(2,3) : "" : data.getWelfOfficeNumber().length() > 2 ? data.getWelfOfficeNumber().substring(2,3) : "" );
         worksheets.getRangeByName(sheetName + "!D1_4_4").setValue(isHeal ? data.getOfficeNumber().length() > 3 ? data.getOfficeNumber().substring(3,4) : "" : data.getWelfOfficeNumber().length() > 3 ? data.getWelfOfficeNumber().substring(3,4) : "" );
         worksheets.getRangeByName(sheetName + "!D1_4_5").setValue(isHeal ? data.getOfficeNumber().length() > 4 ? data.getOfficeNumber().substring(4,5) : "" : data.getWelfOfficeNumber().length() > 4 ? data.getWelfOfficeNumber().substring(4,5) : "" );
-        worksheets.getRangeByName(sheetName + "!D1_5_1").setValue(typeOff == BusinessDivision.OUTPUT_COMPANY_NAME ? company.getPostCd().length() > 2 ? company.getPostCd().substring(0,3) : company.getPostCd() :
-                typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? data.getPortCd().length() > 2 ? data.getPortCd().substring(0,3) : data.getPortCd() : "");
-        worksheets.getRangeByName(sheetName + "!D1_5_2").setValue(typeOff == BusinessDivision.OUTPUT_COMPANY_NAME ? company.getPostCd().length() > 7 ? company.getPostCd().substring(4,8) : company.getPostCd() :
-                typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? data.getPortCd().length() > 7 ? data.getPortCd().substring(4,8) : "" : "");
+        worksheets.getRangeByName(sheetName + "!D1_5_1").setValue(typeOff == BusinessDivision.OUTPUT_COMPANY_NAME ? formatPortCd(company.getPostCd(),1) :
+                typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? formatPortCd(data.getPortCd(),2) : "");
+        worksheets.getRangeByName(sheetName + "!D1_5_2").setValue(typeOff == BusinessDivision.OUTPUT_COMPANY_NAME ? formatPortCd(company.getPostCd(),2) :
+                typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? formatPortCd(data.getPortCd(),2) : "");
         worksheets.getRangeByName(sheetName + "!D1_6").setValue(typeOff == BusinessDivision.OUTPUT_COMPANY_NAME ? company.getAdd_1() + company.getAdd_2() :
                 typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? data.getAdd1() + data.getAdd2() : "");
         worksheets.getRangeByName(sheetName + "!D1_7").setValue(typeOff == BusinessDivision.OUTPUT_COMPANY_NAME ? company.getCompanyName() :
@@ -173,15 +173,24 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
     }
 
     private String formatPhoneNumber(String phone, int stt) {
-        String result = phone.replace("-", "");
-        if (stt == 1 && result.length() >= 3) {
-            return result.substring(0, 3);
+        String[] sub = phone.split("-");
+        if (stt == 1 && sub.length > 1) {
+            return sub[0];
         }
-        if (stt == 3 && result.length() > 6) {
-            return result.substring(6, result.length());
+        if (stt == 3 && sub.length >= 2) {
+            return sub[1];
         }
-        if (stt == 2 && result.length() >= 6) {
-            return result.substring(3, 6);
+        if (stt == 2 && sub.length >= 3) {
+            return sub[2];
+        }
+        if (sub.length == 1 && stt == 1 && phone.length() >= 3) {
+            return phone.substring(0, 3);
+        }
+        if (sub.length == 1 && stt == 3 && phone.length() > 6) {
+            return phone.substring(6, phone.length());
+        }
+        if (sub.length == 1 && stt == 2 && phone.length() >= 6) {
+            return phone.substring(3, 6);
         }
         return "";
     }
