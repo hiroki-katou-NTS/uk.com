@@ -11,6 +11,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -114,9 +115,9 @@ public class SpecialLeaveGrantNextDateServiceImpl implements SpecialLeaveGrantNe
 				param.getSpeGrantDataCode())).collect(Collectors.toList());
 		Map<String, InforSpecialLeaveOfEmployee> speInforMap = notDepentSpeService.getNotDepentInfoSpecialLeave(inputDatas);
 		if(speInforMap.isEmpty()) return new HashMap<>();
-		speInforMap.entrySet().stream().forEach(c ->{
+		speInforMap.entrySet().stream().filter(c -> c.getValue()!= null).forEach(c ->{
 			//Output「付与日数一覧」をチェックする
-			if(c.getValue().getSpeHolidayInfor().isEmpty()) {
+			if(CollectionUtil.isEmpty(c.getValue().getSpeHolidayInfor())) {
 				return;
 			}
 			result.put(c.getKey(), c.getValue().getSpeHolidayInfor().get(0).getGrantDaysInfor());
