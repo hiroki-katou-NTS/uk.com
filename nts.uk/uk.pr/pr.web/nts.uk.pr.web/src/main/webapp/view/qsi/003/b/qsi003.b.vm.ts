@@ -165,8 +165,9 @@ module nts.uk.pr.view.qsi003.b.viewmodel {
 
             let empNameReportCommand: any = {
                 empId: self.selectedItem(),
-                spouse : spouse,
-                personalSet : personalSet
+                personalSet : personalSet,
+                spouse : spouse
+
             };
 
             let reasonRomajiNameCommand: any = {
@@ -266,7 +267,7 @@ module nts.uk.pr.view.qsi003.b.viewmodel {
     export interface EmployeeModel {
         id: string;
         code: string;
-        businessName: string;
+        name: string;
     }
     export class SystemType {
         static EMPLOYMENT = 1;
