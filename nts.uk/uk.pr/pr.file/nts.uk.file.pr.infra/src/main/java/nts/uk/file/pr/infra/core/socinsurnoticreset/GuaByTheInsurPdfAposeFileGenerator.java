@@ -210,22 +210,22 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
             worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_38" : "A2_38_" + stt));
         }
         //
-        if(element.getTypeMale() == 0 ){
+        if(element.getTypeMale() == 1 ){
             worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_10" : "A2_10_" + stt));
         }
-        if(element.getTypeFeMale() == 0 ){
+        if(element.getTypeFeMale() == 1){
             worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_11" : "A2_11_" + stt));
         }
-        if(element.getTypeMiner() == 0 ){
+        if(element.getTypeMiner() == 1 ){
             worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_12" : "A2_12_" + stt));
         }
-        if(element.getTypeMaleFund() == 0 ){
+        if(element.getTypeMaleFund() == 1 ){
             worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_13" : "A2_13_" + stt));
         }
-        if(element.getTypeFeMaleFund() == 0 ){
+        if(element.getTypeFeMaleFund() == 1 ){
             worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_14" : "A2_14_" + stt));
         }
-        if(element.getTypeMineWorkerFund() == 0 ){
+        if(element.getTypeMineWorkerFund() == 1){
             worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_15" : "A2_15_" + stt));
         }
         //
