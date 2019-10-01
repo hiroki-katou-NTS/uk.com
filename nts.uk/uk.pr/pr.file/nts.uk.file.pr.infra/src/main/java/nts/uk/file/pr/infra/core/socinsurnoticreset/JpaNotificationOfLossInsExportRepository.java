@@ -94,7 +94,7 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
             exportSQL.append("       (SELECT * ");
             exportSQL.append("       FROM QQSDT_SYAHO_OFFICE_INFO ");
             exportSQL.append("       WHERE END_DATE <= ?endDate AND END_DATE >= ?startDate AND CID = ?cid) his");
-            exportSQL.append("       ON qi.SID = his.SID OR wI.SID = his.SID");
+            exportSQL.append("       ON qi.SID = his.SID OR wi.SID = his.SID");
             exportSQL.append("  LEFT JOIN ");
             exportSQL.append("            (SELECT *");
             exportSQL.append("       FROM QQSDT_SYAHO_WORKFORM_INFO ");
