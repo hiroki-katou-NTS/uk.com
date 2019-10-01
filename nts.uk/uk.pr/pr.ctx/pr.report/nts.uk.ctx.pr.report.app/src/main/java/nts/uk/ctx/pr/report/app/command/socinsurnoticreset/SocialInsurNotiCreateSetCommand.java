@@ -30,4 +30,24 @@ public class SocialInsurNotiCreateSetCommand {
 
     private int submittedName;
 
+    /**
+     * FD番号
+     */
+    private String fdNumber;
+
+    /**
+     * テキスト個人番号
+     */
+    private int textPersonNumber;
+
+    /**
+     * 出力形式
+     */
+    private int outputFormat;
+
+    /**
+     * 改行コード
+     */
+    private int lineFeedCode;
+
 }

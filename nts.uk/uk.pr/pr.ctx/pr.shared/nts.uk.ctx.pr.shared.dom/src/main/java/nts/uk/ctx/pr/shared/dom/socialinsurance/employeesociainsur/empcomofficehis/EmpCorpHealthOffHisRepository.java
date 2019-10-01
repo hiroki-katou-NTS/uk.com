@@ -17,6 +17,8 @@ public interface EmpCorpHealthOffHisRepository
 
     Optional<EmpCorpHealthOffHis> getEmpCorpHealthOffHisById(String employeeId);
 
+    Optional<String> getSocialInsuranceOfficeCd(String cid, String employeeId, GeneralDate baseDate);
+
     Optional<EmpCorpHealthOffHis> getEmpCorpHealthOffHisById(List<String> employeeIds, GeneralDate startDate);
 
 }

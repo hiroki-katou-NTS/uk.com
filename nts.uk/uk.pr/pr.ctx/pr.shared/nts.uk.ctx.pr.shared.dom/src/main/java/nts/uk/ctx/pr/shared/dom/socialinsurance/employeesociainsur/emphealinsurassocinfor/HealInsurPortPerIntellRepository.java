@@ -1,5 +1,7 @@
 package nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurassocinfor;
 
+import nts.arc.time.GeneralDate;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -13,7 +15,7 @@ public interface HealInsurPortPerIntellRepository
 
     Optional<HealInsurPortPerIntell> getHealInsurPortPerIntellById(String employeeId, String hisId);
 
-    List<HealInsurPortPerIntell> getHealInsurPortPerIntellById(String employeeId);
+    Optional<HealthCarePortInfor> getHealInsurPortPerIntellById(String cid, String employeeId, GeneralDate baseDate);
 
     void add(HealInsurPortPerIntell domain);
 

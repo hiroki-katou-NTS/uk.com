@@ -79,30 +79,34 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
         String dummyName = "厚年 陽子";
         String dummyNameKana = "コウネン ヨウコ";
         String dummnyPhonenumber = "354326789";
+        String address = "";
+        String address1 = "";
+        String address2 = "";
 
         String healthInsuranceOfficeNumber1[];
+        String welfarePensionOfficeNumber1[];
 
 
         if(socialInsurNotiCreateSet.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL){
             if(data.getSocialInsuranceOffice() != null){
                 healthInsuranceOfficeNumber1 = data.getSocialInsuranceOffice().getInsuranceMasterInformation().getOfficeOrganizeNumber().getHealthInsuranceOfficeNumber1().get().v().split("");
-                ws.getCells().get("E12").putValue(healthInsuranceOfficeNumber1[0]);
-                ws.getCells().get("F12").putValue(healthInsuranceOfficeNumber1[1]);
-                ws.getCells().get("G12").putValue(healthInsuranceOfficeNumber1[2]);
-                ws.getCells().get("H12").putValue(healthInsuranceOfficeNumber1[3]);
-                ws.getCells().get("I12").putValue(healthInsuranceOfficeNumber1[4]);
-                ws.getCells().get("J12").putValue(healthInsuranceOfficeNumber1[5]);
+                ws.getCells().get("E12").putValue(healthInsuranceOfficeNumber1.length > 0 ? healthInsuranceOfficeNumber1[0] : "");
+                ws.getCells().get("F12").putValue(healthInsuranceOfficeNumber1.length > 1 ? healthInsuranceOfficeNumber1[1] : "");
+                ws.getCells().get("G12").putValue(healthInsuranceOfficeNumber1.length > 2 ? healthInsuranceOfficeNumber1[2] : "");
+                ws.getCells().get("H12").putValue(healthInsuranceOfficeNumber1.length > 3 ? healthInsuranceOfficeNumber1[3] : "");
+                ws.getCells().get("I12").putValue(healthInsuranceOfficeNumber1.length > 4 ? healthInsuranceOfficeNumber1[4] : "");
+                ws.getCells().get("J12").putValue(healthInsuranceOfficeNumber1.length > 5 ? healthInsuranceOfficeNumber1[5] : "");
             }
 
         }else{
             if(data.getSocialInsuranceOffice() != null){
-                healthInsuranceOfficeNumber1 = data.getSocialInsuranceOffice().getInsuranceMasterInformation().getOfficeOrganizeNumber().getWelfarePensionOfficeNumber1().get().v().split("");
-                ws.getCells().get("E12").putValue(healthInsuranceOfficeNumber1[0]);
-                ws.getCells().get("F12").putValue(healthInsuranceOfficeNumber1[1]);
-                ws.getCells().get("G12").putValue(healthInsuranceOfficeNumber1[2]);
-                ws.getCells().get("H12").putValue(healthInsuranceOfficeNumber1[3]);
-                ws.getCells().get("I12").putValue(healthInsuranceOfficeNumber1[4]);
-                ws.getCells().get("J12").putValue(healthInsuranceOfficeNumber1[5]);
+                welfarePensionOfficeNumber1 = data.getSocialInsuranceOffice().getInsuranceMasterInformation().getOfficeOrganizeNumber().getWelfarePensionOfficeNumber1().get().v().split("");
+                ws.getCells().get("E12").putValue(welfarePensionOfficeNumber1.length > 0 ? welfarePensionOfficeNumber1[0] : "");
+                ws.getCells().get("F12").putValue(welfarePensionOfficeNumber1.length > 1 ? welfarePensionOfficeNumber1[1] : "");
+                ws.getCells().get("G12").putValue(welfarePensionOfficeNumber1.length > 2 ? welfarePensionOfficeNumber1[2] : "");
+                ws.getCells().get("H12").putValue(welfarePensionOfficeNumber1.length > 3 ? welfarePensionOfficeNumber1[3] : "");
+                ws.getCells().get("I12").putValue(welfarePensionOfficeNumber1.length > 4 ? welfarePensionOfficeNumber1[4] : "");
+                ws.getCells().get("J12").putValue(welfarePensionOfficeNumber1.length > 5 ? welfarePensionOfficeNumber1[5] : "");
             }
 
         }
@@ -122,16 +126,16 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
         if(socialInsurNotiCreateSet.getPrintPersonNumber() == PersonalNumClass.OUTPUT_BASIC_PEN_NOPER || socialInsurNotiCreateSet.getPrintPersonNumber() == PersonalNumClass.OUTPUT_BASIC_PER_NUMBER){
             if(data.getEmpBasicPenNumInfor() != null && data.getEmpBasicPenNumInfor().getBasicPenNumber().isPresent()){
                 empBasicPenNumInfor = data.getEmpBasicPenNumInfor().getBasicPenNumber().get().v().split("");
-                ws.getCells().get("N12").putValue(empBasicPenNumInfor[0]);
-                ws.getCells().get("O12").putValue(empBasicPenNumInfor[1]);
-                ws.getCells().get("P12").putValue(empBasicPenNumInfor[2]);
-                ws.getCells().get("Q12").putValue(empBasicPenNumInfor[3]);
-                ws.getCells().get("R12").putValue(empBasicPenNumInfor[4]);
-                ws.getCells().get("S12").putValue(empBasicPenNumInfor[5]);
-                ws.getCells().get("T12").putValue(empBasicPenNumInfor[6]);
-                ws.getCells().get("U12").putValue(empBasicPenNumInfor[7]);
-                ws.getCells().get("V12").putValue(empBasicPenNumInfor[8]);
-                ws.getCells().get("W12").putValue(empBasicPenNumInfor[10]);
+                ws.getCells().get("N12").putValue(empBasicPenNumInfor.length > 0 ? empBasicPenNumInfor[0] : "");
+                ws.getCells().get("O12").putValue(empBasicPenNumInfor.length > 1 ? empBasicPenNumInfor[1] : "");
+                ws.getCells().get("P12").putValue(empBasicPenNumInfor.length > 2 ? empBasicPenNumInfor[2] : "");
+                ws.getCells().get("Q12").putValue(empBasicPenNumInfor.length > 3 ? empBasicPenNumInfor[3] : "");
+                ws.getCells().get("R12").putValue(empBasicPenNumInfor.length > 4 ? empBasicPenNumInfor[4] : "");
+                ws.getCells().get("S12").putValue(empBasicPenNumInfor.length > 5 ? empBasicPenNumInfor[5] : "");
+                ws.getCells().get("T12").putValue(empBasicPenNumInfor.length > 6 ? empBasicPenNumInfor[6] : "");
+                ws.getCells().get("U12").putValue(empBasicPenNumInfor.length > 7 ? empBasicPenNumInfor[7] : "");
+                ws.getCells().get("V12").putValue(empBasicPenNumInfor.length > 8 ? empBasicPenNumInfor[8] : "");
+                ws.getCells().get("W12").putValue(empBasicPenNumInfor.length > 9 ? empBasicPenNumInfor[9] : "");
             }
 
         }
@@ -141,13 +145,13 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
         JapaneseDate dateJp = toJapaneseDate(dummyBirthday);
         String day[] = String.valueOf(dateJp.day()).split("");
         String month[] = String.valueOf(dateJp.month()).split("");
-        String year[] = String.valueOf(dateJp.year()).split("");
+        String year[] = String.valueOf(dateJp.year() + 1).split("");
 
         if(day.length == 2){
-            ws.getCells().get("AB12").putValue(day[0]);
-            ws.getCells().get("AC12").putValue(day[1]);
+            ws.getCells().get("AF12").putValue(day[0]);
+            ws.getCells().get("AG12").putValue(day[1]);
         }else{
-            ws.getCells().get("AC12").putValue(day[0]);
+            ws.getCells().get("AG12").putValue(day[0]);
         }
 
         if(month.length == 2){
@@ -158,10 +162,10 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
         }
 
         if(year.length == 2){
-            ws.getCells().get("AF12").putValue(year[0]);
-            ws.getCells().get("AG12").putValue(year[1]);
+            ws.getCells().get("AB12").putValue(year[0]);
+            ws.getCells().get("AC12").putValue(year[1]);
         }else{
-            ws.getCells().get("AG12").putValue(year[0]);
+            ws.getCells().get("AC12").putValue(year[0]);
         }
 
         this.selectEra(ws,dateJp.era());
@@ -250,9 +254,11 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
 
         }else{
             if(data.getSocialInsuranceOffice() != null){
+                address1 = data.getSocialInsuranceOffice().getBasicInformation().getAddress().isPresent() && data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getAddress1().isPresent() ? data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getAddress1().get().v() : "";
+                address2 = data.getSocialInsuranceOffice().getBasicInformation().getAddress().isPresent() && data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getAddress2().isPresent() ? data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getAddress2().get().v() : "";
+                address = address1 + address2;
                 ws.getCells().get("J22").putValue(data.getSocialInsuranceOffice().getBasicInformation().getAddress().isPresent() &&  data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getPostalCode().isPresent() ? ("〒 " + data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getPostalCode().get().v().substring(0,3) + " － " + data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getPostalCode().get().v().substring(3)) : null);
-                ws.getCells().get("K23").putValue(data.getSocialInsuranceOffice().getBasicInformation().getAddress().isPresent() && data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getAddress1().isPresent() ? data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getAddress1().get().v() : "" +
-                        (data.getSocialInsuranceOffice().getBasicInformation().getAddress().isPresent() && data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getAddress2().isPresent() ? data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getAddress2().get().v() : ""));
+                ws.getCells().get("K23").putValue(address);
                 ws.getCells().get("K24").putValue(data.getSocialInsuranceOffice().getName().v());
                 ws.getCells().get("K25").putValue(data.getSocialInsuranceOffice().getBasicInformation().getRepresentativeName().isPresent() ? data.getSocialInsuranceOffice().getBasicInformation().getRepresentativeName().get().v() : null);
                 ws.getCells().get("J27").putValue(data.getSocialInsuranceOffice().getBasicInformation().getAddress().isPresent() && data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getPhoneNumber().isPresent() ? this.formatValue(data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getPhoneNumber().get().v())  : null);
