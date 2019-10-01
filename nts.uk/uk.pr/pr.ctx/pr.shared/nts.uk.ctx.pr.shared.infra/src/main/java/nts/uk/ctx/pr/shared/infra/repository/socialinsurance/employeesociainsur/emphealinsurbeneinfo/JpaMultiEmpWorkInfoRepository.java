@@ -17,13 +17,14 @@ public class JpaMultiEmpWorkInfoRepository extends JpaRepository implements Mult
 {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QqsmtMultiEmpWorkIf f";
-    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.multiEmpWorkIfPk.employeeId =:employeeId ";
+    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.multiEmpWorkIfPk.employeeId =:employeeId AND f.multiEmpWorkIfPk.cid =:cid";
 
     @Override
     public Optional<MultiEmpWorkInfo> getMultiEmpWorkInfoById(String employeeId){
         return this.queryProxy().query(SELECT_BY_KEY_STRING, QqsmtMultiEmpWorkIf.class)
-        .setParameter("employeeId", employeeId)
-        .getSingle(c->c.toDomain());
+                .setParameter("employeeId", employeeId)
+                .setParameter("cid", AppContexts.user().companyId())
+                .getSingle(c->c.toDomain());
     }
 
     @Override

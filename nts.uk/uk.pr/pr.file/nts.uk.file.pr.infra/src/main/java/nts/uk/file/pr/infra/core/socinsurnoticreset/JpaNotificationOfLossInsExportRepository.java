@@ -21,7 +21,7 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
 
     @Override
     public List<InsLossDataExport> getHealthInsLoss(List<String> empIds, String cid, GeneralDate startDate, GeneralDate endDate) {
-        try {
+
             List<Object[]> resultQuery = null;
             StringBuilder exportSQL = new StringBuilder();
             exportSQL.append("  SELECT i.SCD,");
@@ -32,7 +32,7 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
             exportSQL.append("      loss.NUM_OF_UNCOLLECTABLE,");
             exportSQL.append("      loss.LOSS_CASE_ATR,");
             exportSQL.append("      OVER_ATR,");
-            exportSQL.append("      SYAHO_GET_ATR,");
+            exportSQL.append("      BIKO_SONOTA_ATR,");
             exportSQL.append("      CONTINUE_REEMPLOYED_ATR,");
             exportSQL.append("      HOSYU_IN_KIND,");
             exportSQL.append("      HOSYU_CURR,");
@@ -43,7 +43,7 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
             exportSQL.append("      SHORTTIME_WORKERS_ATR,");
             exportSQL.append("      NO_MYNUM_ATR,");
             exportSQL.append("      RPT_SUBMIT_ATR,");
-            exportSQL.append("      QUALIFI_DISTIN,");
+            exportSQL.append("      SYAHO_GET_ATR,");
             exportSQL.append("      CONTINUE_REEMPLOYED_ATR,");
             exportSQL.append("      MULTI_OFFICE_ATR,");
             exportSQL.append("      KISONEN_NUM,");
@@ -197,9 +197,6 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
                     .insPerCls(i[54] == null ? null : ((BigDecimal) i[54]).intValue())
                     .build()
             ).collect(Collectors.toList());
-        } catch (Exception e) {
-            return Collections.emptyList();
-        }
     }
 
     @Override
@@ -257,7 +254,6 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
 
     @Override
     public List<PensFundSubmissData> getHealthInsAssociation(List<String> empIds, String cid, GeneralDate startDate, GeneralDate endDate) {
-        try {
             List<Object[]> result = null;
             StringBuilder exportSQL = new StringBuilder();
             exportSQL.append("  SELECT  ");
@@ -398,9 +394,6 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
                     .continReemAfterRetirement(i[38] != null ? i[38].toString() : "")
                     .basicPenNumber(i[39] != null ? i[39].toString() : "")
                     .build()).collect(Collectors.toList());
-        } catch (Exception e) {
-            return Collections.emptyList();
-        }
     }
 
     private Integer convertDateToInt(GeneralDate date){
