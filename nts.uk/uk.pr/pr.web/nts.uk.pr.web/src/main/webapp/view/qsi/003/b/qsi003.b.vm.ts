@@ -76,6 +76,7 @@ module nts.uk.pr.view.qsi003.b.viewmodel {
 
         getDefault(){
             let self = this;
+            self.basicPenNumber('');
             self.others(false);
             self.listeds(false);
             self.residentCards(1);
@@ -87,7 +88,7 @@ module nts.uk.pr.view.qsi003.b.viewmodel {
             self.listedp(false);
             self.residentCardp(1);
             self.addressOverseap(false);
-            self.otherReasonp = ko.observable('');
+            self.otherReasonp('');
             self.shortResidentp(false);
             self.screenMode(model.SCREEN_MODE.NEW);
         }
