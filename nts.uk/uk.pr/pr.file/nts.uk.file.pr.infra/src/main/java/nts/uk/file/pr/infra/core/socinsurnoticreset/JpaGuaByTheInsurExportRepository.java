@@ -25,7 +25,8 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
     public List<PensionOfficeDataExport> getDataExportCSV(List<String> empIds, String cid, GeneralDate startDate, GeneralDate endDate) {
         List<Object[]> resultQuery ;
         StringBuilder exportSQL = new StringBuilder();
-        exportSQL.append(" SELECT HEALTH_INSURANCE_OFFICE_NUMBER_1,");
+        exportSQL.append(" SELECT ");
+        exportSQL.append("      HEALTH_INSURANCE_OFFICE_NUMBER_1,");
         exportSQL.append("      WELFARE_PENSION_OFFICE_NUMBER_1,");
         exportSQL.append("      HEALTH_INSURANCE_OFFICE_NUMBER_2,");
         exportSQL.append("      WELFARE_PENSION_OFFICE_NUMBER_2,");
@@ -494,7 +495,10 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("      oi.ADDRESS_1,");
         exportSQL.append("      oi.ADDRESS_2,");
         exportSQL.append("      oi.ADDRESS_KANA_1,");
-        exportSQL.append("      oi.ADDRESS_KANA_2 ");
+        exportSQL.append("      oi.ADDRESS_KANA_2, ");
+        exportSQL.append("      oi.NAME, ");
+        exportSQL.append("      oi.PHONE_NUMBER, ");
+        exportSQL.append("      oi.REPRESENTATIVE_NAME ");
         exportSQL.append("  FROM ");
         exportSQL.append("         (SELECT *");
         exportSQL.append("         FROM QQSDT_KOUHO_INFO ");
@@ -529,6 +533,7 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("       FROM QQSDT_SYAHO_GET_INFO");
         exportSQL.append("        WHERE CID = ?cid) ii ON ii.SID = qi.SID");
         exportSQL.append("  LEFT JOIN QQSDT_SYAHO_KNEN_NUM bp ON bp.SID = qi.SID AND bp.CID = qi.CID");
+
         String sql = String.format(exportSQL.toString(), empIds.stream()
                 .map(String::valueOf)
                 .collect(Collectors.joining("','")));
@@ -600,6 +605,9 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
                 .hisId(i[54] == null ? "" : i[54].toString())
                 .add(i[55] == null ? "" : i[55].toString())
                 .addKana(i[57] == null ? "" : i[57].toString())
+                .companyName(i[58] == null ? "" : i[58].toString())
+                .phoneNumber(i[59] == null ? "" : i[59].toString())
+                .repName(i[60] == null ? "" : i[60].toString())
                 .build()
         ).collect(Collectors.toList());
     }
