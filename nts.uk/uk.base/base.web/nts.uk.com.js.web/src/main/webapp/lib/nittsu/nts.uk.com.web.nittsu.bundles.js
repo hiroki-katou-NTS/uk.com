@@ -189,6 +189,11 @@ var nts;
                 return browser;
             }());
             util.browser = browser;
+            nts.uk.util.browser.private.then(function (priv) {
+                if (priv && nts.uk.util.browser.version === 'Safari 10' && nts.uk.util.browser.mobile) {
+                    alert(nts.uk.resource.getText('Msg_1533'));
+                }
+            });
         })(util = uk.util || (uk.util = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -844,27 +849,7 @@ var nts;
         })(util = uk.util || (uk.util = {}));
         var WebStorageWrapper = (function () {
             function WebStorageWrapper(nativeStorage) {
-                var _this = this;
-                nts.uk.util.browser.private.then(function (priv) {
-                    if (priv && nts.uk.util.browser.version === 'Safari 10' && nts.uk.util.browser.mobile) {
-                        nts.uk.util.dialog.alert({ messageId: 'Msg_1533' });
-                        _this.nativeStorage = {
-                            setItem: function (key, value) {
-                            },
-                            getItem: function (key) {
-                                return util.optional.empty();
-                            },
-                            removeItem: function (key) {
-                            },
-                            key: function (key) {
-                                return null;
-                            }
-                        };
-                    }
-                    else {
-                        _this.nativeStorage = nativeStorage;
-                    }
-                });
+                this.nativeStorage = nativeStorage;
             }
             WebStorageWrapper.prototype.key = function (index) {
                 return this.nativeStorage.key(index);
