@@ -190,7 +190,11 @@ module nts.uk.pr.view.qsi002.a.viewmodel {
                     outputOrder: self.selectedSocialInsurOutOrder(),
                     printPersonNumber: self.selectedPersonalNumClass(),
                     insuredNumber: self.selectedInsurPersonNumDivision(),
-                    submittedName: self.selectedRuleCode()
+                    submittedName: self.selectedRuleCode(),
+                    fdNumber: e.fdNumber,
+                    textPersonNumber: e.textPersonNumber,
+                    outputFormat: e.outputFormat,
+                    lineFeedCode: e.lineFeedCode
                 };
 
                 service.index(data).done(e =>{
@@ -209,31 +213,40 @@ module nts.uk.pr.view.qsi002.a.viewmodel {
             let self = this;
             block.invisible();
 
-            let data: any = {
-                socialInsurNotiCreateSetDto: new SocialInsurNotiCreateSetDto(
-                    Number(self.selectedBusinessDivision()),
-                    Number(self.selectedBussEsimateClass()),
-                    Number(self.selectedSocialInsurOutOrder()),
-                    Number(self.selectedPersonalNumClass()),
-                    self.selectedRuleCode(),
-                    Number(self.selectedInsurPersonNumDivision()),
-                    null,
-                    null,
-                    null,
-                    null
-                ),
-                listEmpId: self.getListEmployee(self.selectedCodeKCP005(),self.employees),
-                date: moment.utc(self.baseDate1(), "YYYY/MM/DD")
-            };
-            service.exportPDF(data).done(e =>{
+            service.getSocialInsurNotiCreateSetById().done(e =>{
+
+                let data: any = {
+                    socialInsurNotiCreateSetDto: new SocialInsurNotiCreateSetDto(
+                        Number(self.selectedBusinessDivision()),
+                        Number(self.selectedBussEsimateClass()),
+                        Number(self.selectedSocialInsurOutOrder()),
+                        Number(self.selectedPersonalNumClass()),
+                        self.selectedRuleCode(),
+                        Number(self.selectedInsurPersonNumDivision()),
+                        e.fdNumber,,
+                        e.textPersonNumber,
+                        e.outputFormat,
+                        e.lineFeedCode
+                    ),
+                    listEmpId: self.getListEmployee(self.selectedCodeKCP005(),self.employees),
+                    date: moment.utc(self.baseDate1(), "YYYY/MM/DD")
+                };
+                service.exportPDF(data).done(e =>{
+
+                }).fail(e =>{
+                    if(e){
+                        nts.uk.ui.dialog.alertError(e);
+                    }
+                }).always(e =>{
+                    block.clear();
+                });
+
 
             }).fail(e =>{
-                if(e){
-                    nts.uk.ui.dialog.alertError(e);
-                }
-            }).always(e =>{
-                block.clear();
+
             });
+
+
         }
 
         openScreenB(){

@@ -19,7 +19,12 @@ import java.io.Serializable;
 public class QqsmtEmpCorpOffHisPk implements Serializable
 {
     private static final long serialVersionUID = 1L;
-    
+
+
+    @Basic(optional = false)
+    @Column(name = "CID")
+    public String cid;
+
     /**
     * 社員ID
     */

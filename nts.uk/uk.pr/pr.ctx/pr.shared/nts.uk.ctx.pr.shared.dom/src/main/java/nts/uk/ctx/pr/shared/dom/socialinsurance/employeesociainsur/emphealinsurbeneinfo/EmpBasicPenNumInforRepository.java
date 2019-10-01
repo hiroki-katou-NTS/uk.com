@@ -13,6 +13,8 @@ public interface EmpBasicPenNumInforRepository
 
     Optional<EmpBasicPenNumInfor> getEmpBasicPenNumInforById(String employeeId);
 
+    Optional<EmpBasicPenNumInfor> getEmpBasicPenNumInforById(String cid, String employeeId);
+
     void add(EmpBasicPenNumInfor domain);
 
     void update(EmpBasicPenNumInfor domain);

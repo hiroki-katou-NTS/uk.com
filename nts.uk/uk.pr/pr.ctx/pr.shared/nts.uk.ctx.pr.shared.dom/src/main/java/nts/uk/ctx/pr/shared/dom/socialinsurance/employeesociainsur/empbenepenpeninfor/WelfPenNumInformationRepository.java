@@ -8,4 +8,6 @@ import java.util.Optional;
 public interface WelfPenNumInformationRepository{
 
     Optional<WelfPenNumInformation> getWelfPenNumInformationById(String affMourPeriodHisid);
+
+    Optional<WelfPenNumInformation> getWelfPenNumInformationById(String cid, String affMourPeriodHisid,String empId);
 }
