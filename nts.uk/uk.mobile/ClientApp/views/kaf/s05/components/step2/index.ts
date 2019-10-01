@@ -9,23 +9,20 @@ import { Kafs05Model } from '../common/CommonClass';
     validations: {
         kafs05ModelStep2: {
             overtimeHours: {
-                check: {
-                    test(value: any) {
-                        if (this.kafs05ModelStep2.enableOvertimeInput) {
-                            for (let i of value) {
-                                if (!_.isNil(i.applicationTime)) {
-                                    return true;
-                                }
-                            }
-
-                            return false;
-                        }
-
-                        return true;
-                    },
-                    messageId: 'MsgB_30'
+                applicationTime: {
+                    loop: true,
+                    min: 0,
+                    max: 2880,
+                    valueType: 'Duration',
                 },
-
+            },
+            bonusTimes: {
+                applicationTime: {
+                    loop: true,
+                    min: 0,
+                    max: 2880,
+                    valueType: 'Duration',
+                },
             },
             selectedReason: {
                 checkNull: {
@@ -117,6 +114,11 @@ import { Kafs05Model } from '../common/CommonClass';
             },
             constraint: 'AppReason'
         },
+        hasInputOverTime: {
+            test(value: any) {
+                return value ? '' : 'MsgB_30';
+            },
+        }
 
     },
     constraints: ['nts.uk.ctx.at.request.dom.application.AppReason'],
@@ -127,6 +129,7 @@ export class KafS05aStep2Component extends Vue {
 
     private hasPreAppError: boolean = false;
     private hasActualError: boolean = false;
+    private hasInputOverTime: boolean = false;
 
     @Watch('kafs05ModelStep2.selectedReason')
     public validateSelectedReason() {
@@ -153,8 +156,18 @@ export class KafS05aStep2Component extends Vue {
     }
 
     @Watch('kafs05ModelStep2.overtimeHours', { deep: true, immediate: false })
-    public validateOvertimeHours(value: any, oldValue: any) {
-        this.$validate('kafs05ModelStep2.overtimeHours');
+    public validateOvertimeHours(value: any) {
+        for (let item of value) {
+            if (!_.isNil(item.applicationTime)) {
+                this.hasInputOverTime = true;
+                break;
+            }
+            this.hasInputOverTime = false;
+        }
+
+        if (this.hasInputOverTime) {
+            this.$validate('kafs05ModelStep2.overtimeHours');
+        }
     }
 
     public created() {

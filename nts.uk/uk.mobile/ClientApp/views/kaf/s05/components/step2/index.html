@@ -49,7 +49,7 @@
                 <span class="badge badge-warning">必須</span>
             </div>
             <div class="card-body">
-                <v-errors v-model="$errors.kafs05ModelStep2.overtimeHours" class="d-block mt-0 mb-2" />
+                <v-errors v-model="$errors.hasInputOverTime" class="d-block mt-0 mb-2" />
                 <div v-for="(item, i) of kafs05ModelStep2.overtimeHours">
                     <div class="row">
                         <div class="col-4">
@@ -78,9 +78,12 @@
                             <span class="far fa-clock" v-if="null == item.caculationTime">実績[--:--]</span>
                         </div>
                     </div>
-                    <nts-time-editor time-input-type="time-duration" v-model="item.applicationTime"
-                        v-bind:disabled="!kafs05ModelStep2.enableOvertimeInput" 
-                        v-bind:errors="$errors.kafs05ModelStep2.overtimeHours"
+                    <nts-time-editor time-input-type="time-duration" v-model="kafs05ModelStep2.overtimeHours[i].applicationTime" v-if="hasInputOverTime"
+                        v-bind:disabled="!kafs05ModelStep2.enableOvertimeInput"
+                        v-bind:record-id="i"/>
+                    <nts-time-editor time-input-type="time-duration" v-model="kafs05ModelStep2.overtimeHours[i].applicationTime" v-if="!hasInputOverTime"
+                        v-bind:disabled="!kafs05ModelStep2.enableOvertimeInput"
+                        v-bind:errors="$errors.hasInputOverTime"
                         v-bind:show-error="false"/>
                     <div class="invalid-feedback mt-1 d-block mt-0 mb-2" v-if="item.preAppExceedState"><span>{{ 'Msg_1561' | i18n(item.frameName) }}</span></div>
                     <div class="invalid-feedback mt-1 d-block mt-0 mb-2" v-if="item.actualExceedState"><span>{{ 'Msg_1560' | i18n(item.frameName) }}</span></div>
@@ -110,7 +113,7 @@
                             <span class="far fa-clock" v-if="null == item.preAppTime">事前[--:--]</span>
                         </div>
                     </div>
-                    <nts-time-editor v-model="item.applicationTime" time-input-type="time-duration" />
+                    <nts-time-editor v-model="kafs05ModelStep2.bonusTimes[i].applicationTime" time-input-type="time-duration" v-bind:record-id="i"/>
                 </div>
             </div>
         </div>
