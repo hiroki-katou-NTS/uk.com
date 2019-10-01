@@ -143,7 +143,11 @@ public class InfomationInitScreenProcess {
 				
 		//<<Public>> パラメータに初期値を設定する
 		///期間を変更する
-		DatePeriodInfo resultPeriod = processor.changeDateRange(dateRange, rangeInit, objectShare, companyId, sId,
+		String empSelected = sId;
+		if(displayFormat == 0){
+			empSelected = objectShare == null ?  (lstEmployee.isEmpty() ? sId : lstEmployee.get(0).getId()) : objectShare. getIndividualTarget();
+		}
+		DatePeriodInfo resultPeriod = processor.changeDateRange(dateRange, rangeInit, objectShare, companyId, empSelected,
 				screenDto, screenDto.getClosureId(), mode, displayFormat, param.changeFormat, initScreenOther, param.dpStateParam);
 		//TODO: empty dateRange
 		if(resultPeriod == null) {
