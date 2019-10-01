@@ -844,16 +844,7 @@ var nts;
         })(util = uk.util || (uk.util = {}));
         var WebStorageWrapper = (function () {
             function WebStorageWrapper(nativeStorage) {
-                var _this = this;
-                this.nativeStorage = null;
-                nts.uk.util.browser.private.then(function (priv) {
-                    if (priv && nts.uk.util.browser.version === 'Safari 10' && nts.uk.util.browser.mobile) {
-                        nts.uk.util.dialog.alert({ messageId: 'Msg_1533' });
-                    }
-                    else {
-                        _this.nativeStorage = nativeStorage;
-                    }
-                });
+                this.nativeStorage = nativeStorage;
             }
             WebStorageWrapper.prototype.key = function (index) {
                 return this.nativeStorage && this.nativeStorage.key(index);
