@@ -552,9 +552,9 @@
         nativeStorage: Storage | any;
 
         constructor(nativeStorage: Storage) {
-            nts.uk.ui.browser.private.then(priv => {
-                if (priv && nts.uk.ui.browser.version === 'Safari 10' && nts.uk.ui.browser.mobile) {
-                    nts.uk.ui.dialog.alert({ messageId: 'Msg_1533' });
+            nts.uk.util.browser.private.then(priv => {
+                if (priv && nts.uk.util.browser.version === 'Safari 10' && nts.uk.util.browser.mobile) {
+                    nts.uk.util.dialog.alert({ messageId: 'Msg_1533' });
                     this.nativeStorage = {
                         setItem(key: string, value: string) {
 

@@ -1,4 +1,4 @@
-module nts.uk.ui {
+module nts.uk.util {
     
 export class browser {
     public static get portrait() {
