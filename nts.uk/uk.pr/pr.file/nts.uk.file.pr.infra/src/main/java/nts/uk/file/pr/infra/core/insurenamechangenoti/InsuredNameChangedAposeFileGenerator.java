@@ -123,7 +123,7 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
         }
 
         // fill to A1_3
-        if(socialInsurNotiCreateSet.getPrintPersonNumber() == PersonalNumClass.OUTPUT_BASIC_PEN_NOPER || socialInsurNotiCreateSet.getPrintPersonNumber() == PersonalNumClass.OUTPUT_BASIC_PER_NUMBER){
+        /*if(socialInsurNotiCreateSet.getPrintPersonNumber() == PersonalNumClass.OUTPUT_BASIC_PEN_NOPER || socialInsurNotiCreateSet.getPrintPersonNumber() == PersonalNumClass.OUTPUT_BASIC_PER_NUMBER){
             if(data.getEmpBasicPenNumInfor() != null && data.getEmpBasicPenNumInfor().getBasicPenNumber().isPresent()){
                 empBasicPenNumInfor = data.getEmpBasicPenNumInfor().getBasicPenNumber().get().v().split("");
                 ws.getCells().get("N12").putValue(empBasicPenNumInfor.length > 0 ? empBasicPenNumInfor[0] : "");
@@ -138,7 +138,7 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
                 ws.getCells().get("W12").putValue(empBasicPenNumInfor.length > 9 ? empBasicPenNumInfor[9] : "");
             }
 
-        }
+        }*/
 
         //fill to A1_4 -> A1_7
 
@@ -186,15 +186,15 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
 
         //厚生年金種別情報
 
-        if(data.getWelfarePenTypeInfor() != null && data.getFundMembership() != null){
-            if(dummyGender == 1 && data.getWelfarePenTypeInfor().getUndergroundDivision().value == PitInsiderDivision.NOTTARGETED.value && data.getFundMembership().getHistoryId() == null){
+        if(data.getWelfarePenTypeInfor() != null) {
+            if (dummyGender == 1 && data.getWelfarePenTypeInfor().getUndergroundDivision().value == PitInsiderDivision.NOTTARGETED.value && data.getFundMembership() == null) {
                 //1
                 ws.getShapes().remove(ws.getShapes().get("C1_10"));
                 ws.getShapes().remove(ws.getShapes().get("C1_11"));
                 ws.getShapes().remove(ws.getShapes().get("C1_12"));
                 ws.getShapes().remove(ws.getShapes().get("C1_13"));
                 ws.getShapes().remove(ws.getShapes().get("C1_14"));
-            }else if(dummyGender == 2 && data.getWelfarePenTypeInfor().getUndergroundDivision().value == PitInsiderDivision.NOTTARGETED.value && data.getFundMembership().getHistoryId() == null){
+            } else if (dummyGender == 2 && data.getWelfarePenTypeInfor().getUndergroundDivision().value == PitInsiderDivision.NOTTARGETED.value && data.getFundMembership() == null) {
                 //2
 
                 ws.getShapes().remove(ws.getShapes().get("C1_9"));
@@ -202,14 +202,14 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
                 ws.getShapes().remove(ws.getShapes().get("C1_12"));
                 ws.getShapes().remove(ws.getShapes().get("C1_13"));
                 ws.getShapes().remove(ws.getShapes().get("C1_14"));
-            }else if((dummyGender == 1 || dummyGender == 2) && data.getWelfarePenTypeInfor().getUndergroundDivision().value == PitInsiderDivision.TARGET.value && data.getFundMembership().getHistoryId() == null){
+            } else if ((dummyGender == 1 || dummyGender == 2) && data.getWelfarePenTypeInfor().getUndergroundDivision().value == PitInsiderDivision.TARGET.value && data.getFundMembership() == null) {
                 //3
                 ws.getShapes().remove(ws.getShapes().get("C1_9"));
                 ws.getShapes().remove(ws.getShapes().get("C1_10"));
                 ws.getShapes().remove(ws.getShapes().get("C1_12"));
                 ws.getShapes().remove(ws.getShapes().get("C1_13"));
                 ws.getShapes().remove(ws.getShapes().get("C1_14"));
-            }else if(dummyGender == 1 && data.getWelfarePenTypeInfor().getUndergroundDivision().value == PitInsiderDivision.NOTTARGETED.value && data.getFundMembership().getHistoryId() != null ){
+            } else if (dummyGender == 1 && data.getWelfarePenTypeInfor().getUndergroundDivision().value == PitInsiderDivision.NOTTARGETED.value && data.getFundMembership() != null) {
                 //5
 
                 ws.getShapes().remove(ws.getShapes().get("C1_9"));
@@ -217,14 +217,14 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
                 ws.getShapes().remove(ws.getShapes().get("C1_11"));
                 ws.getShapes().remove(ws.getShapes().get("C1_13"));
                 ws.getShapes().remove(ws.getShapes().get("C1_14"));
-            }else if(dummyGender == 2 && data.getWelfarePenTypeInfor().getUndergroundDivision().value == PitInsiderDivision.NOTTARGETED.value && data.getFundMembership().getHistoryId() != null ){
+            } else if (dummyGender == 2 && data.getWelfarePenTypeInfor().getUndergroundDivision().value == PitInsiderDivision.NOTTARGETED.value && data.getFundMembership() != null) {
                 //6
                 ws.getShapes().remove(ws.getShapes().get("C1_9"));
                 ws.getShapes().remove(ws.getShapes().get("C1_10"));
                 ws.getShapes().remove(ws.getShapes().get("C1_11"));
                 ws.getShapes().remove(ws.getShapes().get("C1_12"));
                 ws.getShapes().remove(ws.getShapes().get("C1_14"));
-            }else if((dummyGender == 1 || dummyGender == 2) && data.getWelfarePenTypeInfor().getUndergroundDivision().value == PitInsiderDivision.TARGET.value && data.getFundMembership().getHistoryId() != null){
+            } else if ((dummyGender == 1 || dummyGender == 2) && data.getWelfarePenTypeInfor().getUndergroundDivision().value == PitInsiderDivision.TARGET.value && data.getFundMembership() != null) {
                 //7
 
                 ws.getShapes().remove(ws.getShapes().get("C1_9"));
@@ -232,15 +232,16 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
                 ws.getShapes().remove(ws.getShapes().get("C1_11"));
                 ws.getShapes().remove(ws.getShapes().get("C1_12"));
                 ws.getShapes().remove(ws.getShapes().get("C1_13"));
+            } else {
+                ws.getShapes().remove(ws.getShapes().get("C1_9"));
+                ws.getShapes().remove(ws.getShapes().get("C1_10"));
+                ws.getShapes().remove(ws.getShapes().get("C1_11"));
+                ws.getShapes().remove(ws.getShapes().get("C1_12"));
+                ws.getShapes().remove(ws.getShapes().get("C1_13"));
+                ws.getShapes().remove(ws.getShapes().get("C1_14"));
             }
-        }else{
-            ws.getShapes().remove(ws.getShapes().get("C1_9"));
-            ws.getShapes().remove(ws.getShapes().get("C1_10"));
-            ws.getShapes().remove(ws.getShapes().get("C1_11"));
-            ws.getShapes().remove(ws.getShapes().get("C1_12"));
-            ws.getShapes().remove(ws.getShapes().get("C1_13"));
-            ws.getShapes().remove(ws.getShapes().get("C1_14"));
         }
+
 
         //会社名・住所を出力
         //fill to A2_1
