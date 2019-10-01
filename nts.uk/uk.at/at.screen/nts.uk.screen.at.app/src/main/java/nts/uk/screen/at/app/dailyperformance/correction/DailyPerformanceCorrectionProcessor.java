@@ -1836,7 +1836,7 @@ public class DailyPerformanceCorrectionProcessor {
 				lstClosurePeriod.addAll(getClosurePeriod
 						.fromYearMonth(empTarget, dateRefer, yearMonthOpt.get()));
 			} else {
-				Optional<ClosurePeriod> closurePeriodOpt = findClosureService.getClosurePeriod(empLogin,
+				Optional<ClosurePeriod> closurePeriodOpt = findClosureService.getClosurePeriod(empTarget,
 						period.start());
 				if(!closurePeriodOpt.isPresent()) return null;
 				GeneralDate dateRefer = GeneralDate.ymd(closurePeriodOpt.get().getYearMonth().year(),
@@ -1844,7 +1844,7 @@ public class DailyPerformanceCorrectionProcessor {
 						closurePeriodOpt.get().getYearMonth().lastDateInMonth());
 				yearMonth = closurePeriodOpt.get().getYearMonth();
 				lstClosurePeriod.addAll(getClosurePeriod
-						.fromYearMonth(empLogin, dateRefer, closurePeriodOpt.get().getYearMonth()));
+						.fromYearMonth(empTarget, dateRefer, closurePeriodOpt.get().getYearMonth()));
 			}
 			if(lstClosurePeriod.isEmpty()) return null;
 			
