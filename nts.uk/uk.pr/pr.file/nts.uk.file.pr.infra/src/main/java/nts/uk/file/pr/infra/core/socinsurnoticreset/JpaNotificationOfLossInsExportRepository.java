@@ -290,16 +290,16 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
             exportSQL.append("      END_REASON_ATR,");
             exportSQL.append("      S_ADD_MONTHLY_AMOUNT_1,");
             exportSQL.append("      S_SRD_MONTHLY_AMOUNT_1,");
-            exportSQL.append("      SEC_S_ADD_MONTHLY_AMOUNT_1ARY,");
+            exportSQL.append("      S_ADD_MONTHLY_AMOUNT_2,");
             exportSQL.append("      S_SRD_MONTHLY_AMOUNT_2,");
             exportSQL.append("      LOSS_CASE_ATR,");
             exportSQL.append("      MULTI_OFFICE_ATR,");
-            exportSQL.append("      OTHER_REASON,");
+            exportSQL.append("      OTHER_REASONS,");
             exportSQL.append("      CONTINUE_REEMPLOYED_ATR,");
             exportSQL.append("      KISONEN_NUM");
             exportSQL.append("  FROM ");
             exportSQL.append("         (SELECT *");
-            exportSQL.append("         FROM QQSDT_KOUHO_LOSS_INFO ");
+            exportSQL.append("         FROM QQSDT_KOUHO_INFO ");
             exportSQL.append("         WHERE END_DATE <= ?endDate AND END_DATE >= ?startDate AND CID = ?cid");
             exportSQL.append("         AND SID IN ('%s') )qi");
             exportSQL.append("  INNER JOIN ");
@@ -320,10 +320,7 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
             exportSQL.append("       FROM QQSDT_KENHO_INFO ");
             exportSQL.append("       WHERE END_DATE <= ?endDate AND END_DATE >= ?startDate) wi ");
             exportSQL.append("       ON wi.SID = qi.SID AND wi.CID = qi.CID");
-            exportSQL.append("  INNER JOIN ");
-            exportSQL.append("            (SELECT *");
-            exportSQL.append("       FROM QQSDT_KOUHO_INFO ");
-            exportSQL.append("       WHERE END_DATE <= ?endDate AND END_DATE >= ?startDate) ni ");
+            exportSQL.append("  INNER JOIN  QQSDT_KOUHO_LOSS_INFO ni ");
             exportSQL.append("       ON ni.SID = qi.SID AND ni.CID = qi.CID");
             exportSQL.append("  INNER JOIN (SELECT *");
             exportSQL.append("       FROM QQSDT_KNKUM_INFO ");
@@ -339,7 +336,7 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
             exportSQL.append("              FROM QQSDT_SYAHO_GET_INFO");
             exportSQL.append("              WHERE CID = ?cid) ii ON ii.SID = qi.SID");
             exportSQL.append("  LEFT JOIN QQSDT_SYAHO_KNEN_NUM bp ON bp.SID = qi.SID");
-            exportSQL.append("  ORDER BY SYAHO_OFFICE_CD   ");
+            exportSQL.append("  ORDER BY SYAHO_OFFICE_CD, SCD   ");
             String sql = String.format(exportSQL.toString(), empIds.stream()
                     .map(String::valueOf)
                     .collect(Collectors.joining("','")));
