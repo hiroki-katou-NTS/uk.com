@@ -223,7 +223,7 @@ module nts.uk.pr.view.qsi002.a.viewmodel {
                         Number(self.selectedPersonalNumClass()),
                         self.selectedRuleCode(),
                         Number(self.selectedInsurPersonNumDivision()),
-                        e.fdNumber,,
+                        e.fdNumber,
                         e.textPersonNumber,
                         e.outputFormat,
                         e.lineFeedCode
