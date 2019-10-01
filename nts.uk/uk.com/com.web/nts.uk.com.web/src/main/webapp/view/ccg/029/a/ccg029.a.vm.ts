@@ -13,7 +13,7 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
         
         constructor() {
             var self = this;
-            self.processingDate = ko.observable("");
+            self.processingDate = ko.observable(moment(new Date()).format("YYYY/MM/DD"));
             self.keySearch = ko.observable("");
             self.employeeList = [];
             self.isShowfull = ko.observable(false);
