@@ -27369,6 +27369,10 @@ var nts;
                                 _.forEach(_.keys(_vessel().desc.fixedColIdxes), function (k) {
                                     var i = parseFloat(_vessel().desc.fixedColIdxes[k]);
                                     if (i === tidx) {
+                                        if (_.find(_fixedHiddenColumns, function (c) { return c === k; })) {
+                                            tidx++;
+                                            return;
+                                        }
                                         leftCol = k;
                                         if (self.actionDetails.breakArea || leftCol)
                                             return false;
@@ -27387,6 +27391,10 @@ var nts;
                                 _.forEach(_.keys(_vessel().desc.colIdxes), function (k) {
                                     var i = parseFloat(_vessel().desc.colIdxes[k]);
                                     if (i === tidx) {
+                                        if (_.find(_hiddenColumns, function (c) { return c === k; })) {
+                                            tidx++;
+                                            return;
+                                        }
                                         leftCol = k;
                                         return false;
                                     }
@@ -28435,6 +28443,7 @@ var nts;
                                         $itemHolder_1.classList.add("mcombo-listitemholder");
                                         if (!controlMap || !(controlDef_2 = controlMap[key]))
                                             return;
+                                        //                            dkn.closeDD(cbx.dropdown);
                                         if (cbx_1.optionsMap && !_.isNil(listType = cbx_1.optionsMap[id])) {
                                             panelz = listType + 1;
                                             cbx_1.optionsList[listType] = _.cloneDeep(val);
@@ -28495,8 +28504,40 @@ var nts;
                                             $itemHolder_1.innerHTML = nts.uk.resource.getMessage("Msg_37");
                                             maxHeight_1 += 26;
                                         }
+                                        var panel = cbx_1.panel[panelz];
                                         cbx_1.panel[panelz] = $itemHolder_1;
                                         cbx_1.maxHeight[panelz] = Math.min(104, maxHeight_1);
+                                        // Reload combo list
+                                        if (_mEditor && _mEditor.type === dkn.COMBOBOX && _mEditor.columnKey === key && _mEditor.rowIdx === idx) {
+                                            var comboList = cbx_1.dropdown.querySelector(".mcombo-list");
+                                            comboList.replaceChild($itemHolder_1, panel);
+                                            cbx_1.dropdown.style.maxHeight = cbx_1.maxHeight[panelz] + "px";
+                                            var items = cbx_1.dropdown.querySelectorAll(".mcombo-listitem");
+                                            var $comboValue_1 = cbx_1.my.querySelector(".mcombo-value");
+                                            var selected_2, code_1 = $.data($cell, lo.CBX_SELECTED_TD);
+                                            _.forEach(items, function (i) {
+                                                var value = $.data(i, lo.CBX_ITEM_VALUE);
+                                                if (i.classList.contains("selecteditem")) {
+                                                    i.classList.remove("selecteditem");
+                                                }
+                                                if (code_1 === value) {
+                                                    var $item = i.querySelector(".mcombo-item");
+                                                    if ($item) {
+                                                        $comboValue_1.innerHTML = "";
+                                                        $comboValue_1.appendChild($item.cloneNode(true));
+                                                        i.classList.add("selecteditem");
+                                                        selected_2 = true;
+                                                    }
+                                                }
+                                            });
+                                            if (!selected_2) {
+                                                $comboValue_1.innerHTML = "";
+                                                var empty = _prtDiv.cloneNode(true);
+                                                empty.style.display = "inline-block";
+                                                $comboValue_1.appendChild(empty);
+                                            }
+                                            dkn.openDD(cbx_1.dropdown, cbx_1.my);
+                                        }
                                     }
                                     else {
                                         var y = void 0, options = void 0;
@@ -29335,7 +29376,7 @@ var nts;
                                 }
                             }
                             else if (control.type === dkn.COMBOBOX && !$tCell.querySelector(".mcombo-wrapper")) {
-                                endEdit($grid);
+                                endEdit($grid, true);
                                 $tCell.textContent = "";
                                 $tCell.classList.add(dkn.CONTROL_CLS);
                                 var stt = void 0, panel = void 0, comboList = void 0, itemHolder = void 0, height = void 0;
@@ -29356,38 +29397,38 @@ var nts;
                                     }
                                 }
                                 var $combo = control.my.querySelector("." + dkn.CBX_CLS);
-                                var $comboValue_1 = control.my.querySelector(".mcombo-value");
+                                var $comboValue_2 = control.my.querySelector(".mcombo-value");
                                 var items = control.dropdown.querySelectorAll(".mcombo-listitem");
-                                var selected_2, code_1 = $.data($tCell, lo.CBX_SELECTED_TD);
+                                var selected_3, code_2 = $.data($tCell, lo.CBX_SELECTED_TD);
                                 _.forEach(items, function (i) {
                                     var value = $.data(i, lo.CBX_ITEM_VALUE);
                                     if (i.classList.contains("selecteditem")) {
                                         i.classList.remove("selecteditem");
                                     }
-                                    if (code_1 === value) {
+                                    if (code_2 === value) {
                                         var $item = i.querySelector(".mcombo-item");
                                         if ($item) {
-                                            $comboValue_1.innerHTML = "";
-                                            $comboValue_1.appendChild($item.cloneNode(true));
+                                            $comboValue_2.innerHTML = "";
+                                            $comboValue_2.appendChild($item.cloneNode(true));
                                             i.classList.add("selecteditem");
-                                            selected_2 = true;
+                                            selected_3 = true;
                                         }
                                     }
                                 });
-                                if (!selected_2) {
-                                    $comboValue_1.innerHTML = "";
+                                if (!selected_3) {
+                                    $comboValue_2.innerHTML = "";
                                     var empty = _prtDiv.cloneNode(true);
                                     empty.style.display = "inline-block";
-                                    $comboValue_1.appendChild(empty);
+                                    $comboValue_2.appendChild(empty);
                                 }
                                 $tCell.appendChild(control.my);
-                                $.data(control.my, lo.CBX_SELECTED, code_1);
+                                $.data(control.my, lo.CBX_SELECTED, code_2);
                                 dkn.openDD(control.dropdown, control.my);
                                 $combo.classList.add(dkn.CBX_ACTIVE_CLS);
                                 cType.type = dkn.COMBOBOX;
                             }
                             else if (control.type === dkn.DATE_PICKER && !$tCell.querySelector("input")) {
-                                endEdit($grid);
+                                endEdit($grid, true);
                                 $tCell.textContent = "";
                                 $tCell.classList.add(dkn.CONTROL_CLS);
                                 if ($tCell.classList.contains(v.ALIGN_RIGHT)) {
@@ -30964,12 +31005,12 @@ var nts;
                                 rows: [],
                                 rowElements: []
                             };
-                            var dirties_1 = {}, selected_3 = {};
+                            var dirties_1 = {}, selected_4 = {};
                             if (_selected) {
                                 _.forEach(_.keys(_selected), function (r) {
                                     var selectArr = _.filter(_selected[r], function (c) { return _.some(_fixedColumns, function (fc) { return fc.key === c; }); });
                                     if (selectArr.length > 0) {
-                                        selected_3[r] = selectArr;
+                                        selected_4[r] = selectArr;
                                     }
                                 });
                             }
@@ -30986,7 +31027,7 @@ var nts;
                                     }
                                 });
                             }
-                            _mafollicle[_currentPage][_currentSheet] = { desc: desc, errors: [], dirties: dirties_1, zeroHidden: _zeroHidden, selected: selected_3, histoire: [] };
+                            _mafollicle[_currentPage][_currentSheet] = { desc: desc, errors: [], dirties: dirties_1, zeroHidden: _zeroHidden, selected: selected_4, histoire: [] };
                         }
                         else if (!_vessel().desc) {
                             var desc = {
@@ -30997,12 +31038,12 @@ var nts;
                                 rows: [],
                                 rowElements: []
                             };
-                            var selected_4 = {};
+                            var selected_5 = {};
                             if (_selected) {
                                 _.forEach(_.keys(_selected), function (r) {
                                     var selectArr = _.filter(_selected[r], function (c) { return _.some(_fixedColumns, function (fc) { return fc.key === c; }); });
                                     if (selectArr.length > 0) {
-                                        selected_4[r] = selectArr;
+                                        selected_5[r] = selectArr;
                                     }
                                 });
                             }
@@ -31020,7 +31061,7 @@ var nts;
                                 });
                             }
                             _vessel().desc = desc;
-                            _vessel().selected = selected_4;
+                            _vessel().selected = selected_5;
                             _vessel().zeroHidden = _zeroHidden;
                             if (!_vessel().errors)
                                 _vessel().errors = [];
@@ -31610,15 +31651,15 @@ var nts;
                             var list = $dd.querySelector(".mcombo-list");
                             var items = list.querySelectorAll("li");
                             if (items) {
-                                var top_1 = 0, selected_5;
+                                var top_1 = 0, selected_6;
                                 _.forEach(items, function (li) {
                                     if (li.classList.contains("selecteditem")) {
-                                        selected_5 = true;
+                                        selected_6 = true;
                                         return false;
                                     }
                                     top_1 += 26;
                                 });
-                                if (top_1 >= 0 && selected_5)
+                                if (top_1 >= 0 && selected_6)
                                     list.scrollTop = top_1;
                                 else
                                     list.scrollTop = 0;
@@ -35980,11 +36021,11 @@ var nts;
                         };
                         $grid.bind('selectionchanged', function () {
                             if (options.multiple) {
-                                var selected_6 = $grid.ntsGridList('getSelected');
+                                var selected_7 = $grid.ntsGridList('getSelected');
                                 var disables_2 = $grid.data("selectionDisables");
                                 var disableIds_2 = [];
                                 if (disables_2) {
-                                    _.forEach(selected_6, function (s, i) {
+                                    _.forEach(selected_7, function (s, i) {
                                         _.forEach(disables_2, function (d) {
                                             if (d === s.id && uk.util.isNullOrUndefined(_.find(value, function (iv) { return iv === d; }))) {
                                                 $grid.igGridSelection("deselectRowById", d);
@@ -35994,16 +36035,16 @@ var nts;
                                         });
                                     });
                                     disableIds_2.sort(function (i1, i2) { return i2 - i1; }).forEach(function (d) {
-                                        selected_6.splice(d, 1);
+                                        selected_7.splice(d, 1);
                                     });
                                     var valueCount = _.intersection(disables_2, value).length;
                                     var ds = $grid.igGrid("option", "dataSource");
-                                    if (selected_6.length === ds.length - disables_2.length + valueCount) {
+                                    if (selected_7.length === ds.length - disables_2.length + valueCount) {
                                         checkAll();
                                     }
                                 }
-                                if (!nts.uk.util.isNullOrEmpty(selected_6)) {
-                                    var newValue = _.map(selected_6, function (s) { return s.id; });
+                                if (!nts.uk.util.isNullOrEmpty(selected_7)) {
+                                    var newValue = _.map(selected_7, function (s) { return s.id; });
                                     newValue = _.union(_.intersection(disables_2, value), newValue);
                                     setValue($grid, newValue);
                                 }

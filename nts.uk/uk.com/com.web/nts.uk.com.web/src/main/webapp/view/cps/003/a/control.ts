@@ -6,6 +6,8 @@ module cps003 {
     import writeConstraint = nts.uk.ui.validation.writeConstraint;
     import parseTime = nts.uk.time.parseTime;
     import parseTimeWithDay = nts.uk.time.minutesBased.clock.dayattr.create;
+    import block = nts.uk.ui.block.grayout;
+    import unblock = nts.uk.ui.block.clear;
     let ITEM_SINGLE_TYPE = (cps003.a || cps003.c).vm.ITEM_SINGLE_TYPE;
     let ITEM_STRING_TYPE = (cps003.a || cps003.c).vm.ITEM_STRING_TYPE;
     let ITEM_SELECT_TYPE = (cps003.a || cps003.c).vm.ITEM_SELECT_TYPE;
@@ -1731,7 +1733,7 @@ module cps003 {
                 appSet: cbx,
                 grantDays: grantDay,
                 grantTable: grantTbl,
-                entryDate: moment.utc(hireDate).toDate(),
+                entryDate: null, //moment.utc(hireDate).toDate(),
                 yearRefDate: moment.utc(yearRefDate).toDate()
             }).done(res => {
                 if (!resultCode) return;
@@ -1777,7 +1779,7 @@ module cps003 {
                 appSet: cbx,
                 grantDays: grantDay,
                 grantTable: grantTbl,
-                entryDate: moment.utc(hireDate).toDate(),
+                entryDate: null, //moment.utc(hireDate).toDate(),
                 yearRefDate: moment.utc(yearRefDate).toDate()
             }).done(res => {
                 if (!resultCode) return;
@@ -1824,7 +1826,7 @@ module cps003 {
                 appSet: cbx,
                 grantDays: grantDay,
                 grantTable: grantTbl,
-                entryDate: moment.utc(hireDate).toDate(),
+                entryDate: null, //moment.utc(hireDate).toDate(),
                 yearRefDate: moment.utc(yearRefDate).toDate()
             }).done(res => {
                 if (!resultCode) return;
@@ -1871,7 +1873,7 @@ module cps003 {
                 appSet: cbx,
                 grantDays: grantDay,
                 grantTable: grantTbl,
-                entryDate: moment.utc(hireDate).toDate(),
+                entryDate: null, //moment.utc(hireDate).toDate(),
                 yearRefDate: moment.utc(yearRefDate).toDate()
             }).done(res => {
                 if (!resultCode) return;
@@ -1893,6 +1895,7 @@ module cps003 {
                 return;
             }
             
+//            block();
             fetch.get_cb_data({
                 comboBoxType: comboData.cls.referenceType,
                 categoryId: catId(),
@@ -1908,6 +1911,9 @@ module cps003 {
 //                if (code === "IS00079") {
                     $("#grid").mGrid("updateCell", o.id, code, cbx, null, null, true);
 //                }
+//                unblock();
+            }).fail(() => {
+//                unblock();
             });
         }
         
