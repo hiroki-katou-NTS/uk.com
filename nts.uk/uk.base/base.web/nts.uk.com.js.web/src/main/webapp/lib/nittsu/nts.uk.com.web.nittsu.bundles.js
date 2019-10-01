@@ -33503,8 +33503,9 @@ var nts;
                      * Remove.
                      */
                     function remove(node) {
-                        if (isIE() && node && node.parentNode) {
-                            node.parentNode.removeChild(node);
+                        if (isIE()) {
+                            if (node && node.parentNode)
+                                node.parentNode.removeChild(node);
                             return;
                         }
                         node.remove();

@@ -754,7 +754,20 @@ module cps003.c.vm {
                     timeNumber = cps003.control.NUMBER[self.category.catCode() + "_" + item.key];
                     if (timeNumber) item.inputProcess = timeNumber;
                     let timeRange = cps003.control.TIME_RANGE[self.category.catCode() + "_" + item.key];
-                    if (timeRange) item.inputProcess = timeRange.bind(null, item.required, item.constraint.primitiveValue, item.headerText);
+                    let timeRangeGroup = cps003.control.TIME_RANGE_GROUP[self.category.catCode() + "_" + item.key];
+                    if (timeRange && timeRangeGroup) {
+                        item.inputProcess = () => {
+                            let dfd = $.Deferred(), args = arguments;
+                            timeRange.apply(void 0, [item.required, item.constraint.primitiveValue, item.headerText].concat(...arguments)).fail(hasError => {
+                                if (hasError) return;
+                                timeRangeGroup(...args);
+                            });
+                            
+                            dfd.reject();
+                            return dfd.promise();
+                        };
+                    } else if (timeRange) item.inputProcess = timeRange.bind(null, item.required, item.constraint.primitiveValue, item.headerText);
+                    else if (timeRangeGroup) item.inputProcess = timeRangeGroup;
                     break;
                 case ITEM_SINGLE_TYPE.SELECTION:
                 case ITEM_SINGLE_TYPE.SEL_RADIO:
@@ -1086,7 +1099,15 @@ module cps003.c.vm {
                     let column = find(self.gridOptions.columns, c => c.key === range.start);
                     if (column) {
                         let vd = cps003.control.TIME_RANGE[range.ctgCode + "_" + range.start];
-                        if (_.isFunction(vd)) vd(column.required, column.constraint.primitiveValue, column.headerText, data.id, range.start, data[range.start], data);
+                        if (_.isFunction(vd)) {
+                            let timeRangeGroup = cps003.control.TIME_RANGE_GROUP[range.ctgCode + "_" + range.start];
+                            vd(column.required, column.constraint.primitiveValue, column.headerText, data.id, range.start, data[range.start], data).fail(hasError => {
+                                if (hasError) return;
+                                if (timeRangeGroup) {
+                                    timeRangeGroup(data.id, range.start, data[range.start], data);
+                                }   
+                            });
+                        }
                     }
                 });
                 
