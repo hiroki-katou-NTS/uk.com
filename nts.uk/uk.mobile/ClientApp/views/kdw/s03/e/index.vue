@@ -2,7 +2,7 @@
 <div class="kdws03e pt-0">
     <div class="modal-header rounded-0 d-block p-0">
       <div class="uk-bg-teal py-2">
-          <h4 class="col-3 modal-title text-white" v-on:click="$close">
+          <h4 class="col-4 modal-title text-white" v-on:click="$close">
               <i class="fas fa-angle-left mr-1"></i>
               <span>{{ 'KDWS03_75' | i18n }}</span>
           </h4>

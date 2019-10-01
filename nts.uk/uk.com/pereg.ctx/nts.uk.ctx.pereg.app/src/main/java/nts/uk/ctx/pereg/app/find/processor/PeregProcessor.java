@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pereg.app.find.common.InitDefaultValue;
@@ -46,6 +47,8 @@ import nts.uk.ctx.pereg.dom.person.personinfoctgdata.categor.PerInfoCtgDataRepos
 import nts.uk.ctx.pereg.dom.person.personinfoctgdata.item.PerInfoItemDataRepository;
 import nts.uk.ctx.pereg.dom.person.personinfoctgdata.item.PersonInfoItemData;
 import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoAuthType;
+import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoCategoryAuth;
+import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoCategoryAuthRepository;
 import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuth;
 import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuthRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -188,6 +191,8 @@ public class PeregProcessor {
 		return classItemList;
 	}
 	
+	@Inject
+	private PersonInfoCategoryAuthRepository personInfoCategoryAuthRepository;
 	
 	/**
 	 * Processor for layout in cps003
@@ -197,20 +202,46 @@ public class PeregProcessor {
 	public List<EmpMainCategoryDto> getCategoryDetailByListEmp(PeregQueryByListEmp query) {
 		// app context
 		LoginUserContext loginUser = AppContexts.user();
+		
+		GeneralDate today = GeneralDate.today();
 
 		String categoryId = query.getCategoryId(),
-				//loginEmpId = loginUser.employeeId(),
+			//loginEmpId = loginUser.employeeId(),
 				contractCode = loginUser.contractCode(),
 				roleId = loginUser.roles().forPersonalInfo();
 		
 		List<String> employeeIds = query.getEmpInfos().stream().map(m -> m.getEmployeeId()).collect(Collectors.toList());
-
+		
 		// get category
 		PersonInfoCategory perInfoCtg = perInfoCtgRepositoty.getPerInfoCategory(categoryId, contractCode).orElse(null);
-
+		
 		// if not has category, return null list
 		if (perInfoCtg == null) {
 			return new ArrayList<>();
+		}
+		
+		// get perInfoCtgAuth
+		Optional<PersonInfoCategoryAuth> ctgAuthOpt = personInfoCategoryAuthRepository
+				.getDetailPersonCategoryAuthByPId(roleId, perInfoCtg.getPersonInfoCategoryId());
+		
+		
+		//EA修正履歴3679 未来履歴　：#Msg_1574, 過去履歴　：#Msg_1575
+		if(perInfoCtg.isHistoryCategory()) {
+			if(!query.getStandardDate().equals(today)) {
+				PersonInfoCategoryAuth ctgAuth = ctgAuthOpt.get();
+				if ((ctgAuth.getSelfFutureHisAuth() == PersonInfoAuthType.HIDE
+						|| ctgAuth.getOtherFutureHisAuth() == PersonInfoAuthType.HIDE)
+						&& today.before(query.getStandardDate())) {
+					throw new BusinessException("Msg_1574");
+				}
+				
+				if ((ctgAuth.getSelfPastHisAuth() == PersonInfoAuthType.HIDE
+						|| ctgAuth.getOtherPastHisAuth() == PersonInfoAuthType.HIDE)
+						&& query.getStandardDate().before(today)) {
+					throw new BusinessException("Msg_1575");
+				}
+				
+			}
 		}
 		
 		/**

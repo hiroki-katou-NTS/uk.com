@@ -223,7 +223,7 @@ public class ItemDefFinder {
 			setItemDefValueOfFixedCtg(emp);
 		} else {
 			// mục tiêu trả về một list recordIf
-			Map<String, String> recordIdsBySid = query.getEmpInfos().parallelStream()
+			Map<String, String> recordIdsBySid = query.getEmpInfos().stream().filter(c -> c.getInfoId()!= null)
 					.collect(Collectors.toMap(PeregEmpInfoQuery::getEmployeeId, PeregEmpInfoQuery::getInfoId));
 			if (perInfoCtg.getCategoryType() == CategoryType.SINGLEINFO) {
 				recordIdsBySid.clear();

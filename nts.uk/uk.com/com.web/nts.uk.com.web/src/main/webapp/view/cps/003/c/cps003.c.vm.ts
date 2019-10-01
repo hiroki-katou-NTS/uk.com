@@ -160,7 +160,16 @@ module cps003.c.vm {
                             if (control.controlType === "DatePicker") {
                                 let dp = cps003.control.DATE_RANGE[self.category.catCode() + "_" + d.itemCode];
                                 if (dp) {
-                                    control.inputProcess = dp.bind(null, d.required, control.format);
+                                    if (control.inputProcess) {
+                                        let existedProcess = control.inputProcess;
+                                        let format = control.format;
+                                        control.inputProcess = function() {
+                                            existedProcess.apply(null, arguments);
+                                            dp.apply(null, _.concat(d.required, format, arguments));
+                                        };
+                                    } else {
+                                        control.inputProcess = dp.bind(null, d.required, control.format);
+                                    }
                                 }
                             }
                         }
@@ -230,6 +239,7 @@ module cps003.c.vm {
                     let record = new Record(d), disItems = _.cloneDeep(displayItems);
                     _.forEach(d.items, (item: ItemRowDto) => {
                         let dt = self.dataTypes[item.itemCode], disabled;
+                        if (_.isNil(item.recordId)) item.recordId = record.id;
                         if (item.update) {
                             if (_.has(self.updatedDatas, record.id)) {
                                 self.updatedDatas[record.id].push(item);
@@ -864,7 +874,19 @@ module cps003.c.vm {
                 let regChecked = [];
                 _.forEach(updates, item => {
                     if (item.columnKey === "register") {
-                        if (item.value) regChecked.push(item.rowId);
+                        if (item.value) {
+                            regChecked.push(item.rowId);
+                            if (errObj[item.rowId]) return;
+                            let recData: Record = recId[item.rowId];
+                            let regEmp = regId[recData.id];
+                            if (!regEmp) {
+                                regEmp = { rowId: item.rowId, personId: recData.personId, employeeId: recData.employeeId, employeeCd: recData.employeeCode, employeeName: recData.employeeName, order: recData.rowNumber };
+                                regEmp.input = { categoryId: self.category.catId(), categoryCd: self.category.catCode(), categoryName: cateName, categoryType: cateType, recordId: recData.id, delete: false, items: [] };
+                                regId[recData.id] = regEmp;
+                                employees.push(regEmp);
+                            }
+                        }
+                        
                         return;
                     }
                     
@@ -896,7 +918,7 @@ module cps003.c.vm {
                 _.forEach(regChecked, r => {
                     let items: Array<ItemRowDto> = self.updatedDatas[r];
                     _.forEach(items, (item: ItemRowDto) => {
-                        if (_.find(errObj[item.recordId], it => it === item.itemCode)) return;
+                        if (errObj[item.recordId]) return;
                         let recData: Record = recId[item.recordId];
                         let regEmp = regId[recData.id];
                         
@@ -922,6 +944,7 @@ module cps003.c.vm {
                 });
                 
                 self.validateSpecial(regChecked, dataSource);
+                $grid.mGrid("validate", false, data => data.register);
                 itemErrors = _.filter($grid.mGrid("errors"), e => {
                     let d = dataSource[e.index];
                     return d && d.register;
@@ -946,6 +969,11 @@ module cps003.c.vm {
                 });
                 
                 command = { baseDate:  moment.utc(self.baseDate(), "YYYY/MM/DD").toISOString(), editMode: self.updateMode(), employees: employees };
+                if (command.employees && command.employees.length === 0 && dataToG.length === 0) {
+                    unblock();
+                    return;
+                }
+                
                 service.push.register(command).done((errorList) => {
                     let regEmployeeIds = [];
                     if (dataToG && dataToG.length > 0) {
@@ -1114,7 +1142,6 @@ module cps003.c.vm {
         
         checkError() {
             let self = this, $grid = $("#grid");
-            $grid.mGrid("validate", false, data => data.register);
             let dataSource = $grid.mGrid("dataSource"), regChecked = [];
             forEach($grid.mGrid("updatedCells"), item => {
                 if (item.columnKey === "register" && item.value) {
@@ -1123,6 +1150,7 @@ module cps003.c.vm {
             });
             
             self.validateSpecial(regChecked, dataSource);
+            $grid.mGrid("validate", false, data => data.register);
             let errors = _.filter($grid.mGrid("errors"), e => {
                 let d = dataSource[e.index];
                 return d && d.register;
