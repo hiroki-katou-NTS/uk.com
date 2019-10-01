@@ -39,15 +39,9 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append(" 	    GENDER,");
         exportSQL.append("      COAL_MINER_ATR,");
         exportSQL.append("      NO_MYNUM_ATR,");
-<<<<<<< HEAD
-        exportSQL.append("      SHORT_STAY,");
-        exportSQL.append("      REASON_OTHER,");
-        exportSQL.append("      REASON_AND_OTHER_CONTENTS,");
-=======
         exportSQL.append("      NO_MYNUM_ATR,");
         exportSQL.append("      NO_MYNUM_ATR,");
         exportSQL.append("      NO_MYNUM_REASON,");
->>>>>>> f37b6845d2a61af269eb7b5ce4fe2a5a60aa8693
         exportSQL.append("      qi.START_DATE,");
         exportSQL.append("      pi.START_DATE,");
         exportSQL.append("      RPT_SUBMIT_ATR,");
@@ -223,21 +217,12 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("  QMEWI.MULTI_OFFICE_ATR,");
         exportSQL.append("  QSII.SHORTTIME_WORKERS_ATR,");
         exportSQL.append("  QSII.CONTINUE_REEMPLOYED_ATR,");
-<<<<<<< HEAD
-        exportSQL.append("  QSII.REMARKS_OTHER,");
-        exportSQL.append("  QSII.REMARKS_AND_OTHER_CONTENTS,");
-        exportSQL.append("  QSII.NO_MYNUM_ATR,");
-        exportSQL.append("  QSII.SHORT_STAY,");
-        exportSQL.append("  QSII.REASON_OTHER,");
-        exportSQL.append("  QSII.REASON_AND_OTHER_CONTENTS, ");
-=======
         exportSQL.append("  QSII.BIKO_SONOTA_ATR,");
         exportSQL.append("  QSII.BIKO_SONOTA_REASON,");
         exportSQL.append("  QSII.NO_MYNUM_ATR,");
         exportSQL.append("  QSII.NO_MYNUM_ATR,");
         exportSQL.append("  QSII.NO_MYNUM_ATR,");
         exportSQL.append("  QSII.NO_MYNUM_REASON, ");
->>>>>>> f37b6845d2a61af269eb7b5ce4fe2a5a60aa8693
         exportSQL.append("  QSIO.HEALTH_INSURANCE_OFFICE_NUMBER,");
         exportSQL.append("  QSIO.WELFARE_PENSION_OFFICE_NUMBER, ");
         exportSQL.append("  SYAHO_OFFICE_CD");
