@@ -79,6 +79,9 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
         String dummyName = "厚年 陽子";
         String dummyNameKana = "コウネン ヨウコ";
         String dummnyPhonenumber = "354326789";
+        String address = "";
+        String address1 = "";
+        String address2 = "";
 
         String healthInsuranceOfficeNumber1[];
         String welfarePensionOfficeNumber1[];
@@ -142,13 +145,13 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
         JapaneseDate dateJp = toJapaneseDate(dummyBirthday);
         String day[] = String.valueOf(dateJp.day()).split("");
         String month[] = String.valueOf(dateJp.month()).split("");
-        String year[] = String.valueOf(dateJp.year()).split("");
+        String year[] = String.valueOf(dateJp.year() + 1).split("");
 
         if(day.length == 2){
-            ws.getCells().get("AB12").putValue(day[0]);
-            ws.getCells().get("AC12").putValue(day[1]);
+            ws.getCells().get("AF12").putValue(day[0]);
+            ws.getCells().get("AG12").putValue(day[1]);
         }else{
-            ws.getCells().get("AC12").putValue(day[0]);
+            ws.getCells().get("AG12").putValue(day[0]);
         }
 
         if(month.length == 2){
@@ -159,10 +162,10 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
         }
 
         if(year.length == 2){
-            ws.getCells().get("AF12").putValue(year[0]);
-            ws.getCells().get("AG12").putValue(year[1]);
+            ws.getCells().get("AB12").putValue(year[0]);
+            ws.getCells().get("AC12").putValue(year[1]);
         }else{
-            ws.getCells().get("AG12").putValue(year[0]);
+            ws.getCells().get("AC12").putValue(year[0]);
         }
 
         this.selectEra(ws,dateJp.era());
@@ -251,9 +254,11 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
 
         }else{
             if(data.getSocialInsuranceOffice() != null){
+                address1 = data.getSocialInsuranceOffice().getBasicInformation().getAddress().isPresent() && data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getAddress1().isPresent() ? data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getAddress1().get().v() : "";
+                address2 = data.getSocialInsuranceOffice().getBasicInformation().getAddress().isPresent() && data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getAddress2().isPresent() ? data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getAddress2().get().v() : "";
+                address = address1 + address2;
                 ws.getCells().get("J22").putValue(data.getSocialInsuranceOffice().getBasicInformation().getAddress().isPresent() &&  data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getPostalCode().isPresent() ? ("〒 " + data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getPostalCode().get().v().substring(0,3) + " － " + data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getPostalCode().get().v().substring(3)) : null);
-                ws.getCells().get("K23").putValue(data.getSocialInsuranceOffice().getBasicInformation().getAddress().isPresent() && data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getAddress1().isPresent() ? data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getAddress1().get().v() : "" +
-                        (data.getSocialInsuranceOffice().getBasicInformation().getAddress().isPresent() && data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getAddress2().isPresent() ? data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getAddress2().get().v() : ""));
+                ws.getCells().get("K23").putValue(address);
                 ws.getCells().get("K24").putValue(data.getSocialInsuranceOffice().getName().v());
                 ws.getCells().get("K25").putValue(data.getSocialInsuranceOffice().getBasicInformation().getRepresentativeName().isPresent() ? data.getSocialInsuranceOffice().getBasicInformation().getRepresentativeName().get().v() : null);
                 ws.getCells().get("J27").putValue(data.getSocialInsuranceOffice().getBasicInformation().getAddress().isPresent() && data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getPhoneNumber().isPresent() ? this.formatValue(data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getPhoneNumber().get().v())  : null);

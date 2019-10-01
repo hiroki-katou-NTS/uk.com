@@ -123,7 +123,7 @@ public class InsuredNameChangedNotiService extends ExportService<InsuredNameChan
 
 
         query.getListEmpId().forEach(x ->{
-            InsuredNameChangedNotiExportData insuredNameChangedNotiExportData =  this.get(cid,listSocialInsuranceOffice,socialInsurNotiCreateSetDomain.get(),x,query.getDate());
+            InsuredNameChangedNotiExportData insuredNameChangedNotiExportData =  this.get(cid,listSocialInsuranceOffice,socialInsurNotiCreateSet,x,query.getDate());
 
             if(insuredNameChangedNotiExportData.isProcessSate()){
                 listData.add(insuredNameChangedNotiExportData);
@@ -265,7 +265,6 @@ public class InsuredNameChangedNotiService extends ExportService<InsuredNameChan
                 Optional<SocialInsuranceOffice>  socialInsuranceOffice = listSocialInsuranceOffice.stream().filter(x -> x.getCode().v().equals(socialInsuranceOfficeCd.get())).findFirst();
                 data.setSocialInsuranceOffice(socialInsuranceOffice.isPresent() ? socialInsuranceOffice.get() : null);
             }
-
         }
         //ドメインモデル「社員氏名変更届情報」を取得する
         Optional<EmpNameChangeNotiInfor> empNameChangeNotiInfor = empNameChangeNotiInforRepository.getEmpNameChangeNotiInforById(empId,cid);
