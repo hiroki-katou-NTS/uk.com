@@ -102,7 +102,7 @@ public class QqsmtSocIsacquisiInfo extends UkJpaEntity implements Serializable
     * 社会保険資格取得区分
     */
     @Basic(optional = true)
-    @Column(name = "QUALIFI_DISTIN")
+    @Column(name = "SYAHO_GET_ATR")
     public Integer qualifiDistin;
     
     /**
@@ -157,8 +157,6 @@ public class QqsmtSocIsacquisiInfo extends UkJpaEntity implements Serializable
                 this.continReemAfterRetirement
         );
     }
-
-
 
     public static QqsmtSocIsacquisiInfo toEntity(SocialInsurAcquisiInfor domain) {
         return new QqsmtSocIsacquisiInfo(
