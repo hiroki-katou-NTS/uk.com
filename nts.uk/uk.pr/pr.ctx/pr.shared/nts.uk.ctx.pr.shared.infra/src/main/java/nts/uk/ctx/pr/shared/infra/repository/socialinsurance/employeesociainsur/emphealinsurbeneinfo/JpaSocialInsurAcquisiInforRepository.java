@@ -82,11 +82,6 @@ public class JpaSocialInsurAcquisiInforRepository extends JpaRepository implemen
                     continReemAfterRetirement );
             this.commandProxy().insert(qqsmtSocIsacquisiInfo);
         }
-
-        /*this.getEntityManager().createQuery(UPDATE_SOCIAL_BY_KEY, QqsmtSocIsacquisiInfo.class )
-                .setParameter("continReemAfterRetirement", continReemAfterRetirement)
-                .setParameter("employeeId", employeeId)
-                .executeUpdate();*/
     }
 
     @Override
