@@ -38,7 +38,7 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("      BIRTHDAY,");
         exportSQL.append(" 	    GENDER,");
         exportSQL.append("      COAL_MINER_ATR,");
-        exportSQL.append("      LIVING_ABROAD,");
+        exportSQL.append("      NO_MYNUM_ATR,");
         exportSQL.append("      SHORT_STAY,");
         exportSQL.append("      REASON_OTHER,");
         exportSQL.append("      REASON_AND_OTHER_CONTENTS,");
@@ -213,7 +213,7 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("  QSII.CONTINUE_REEMPLOYED_ATR,");
         exportSQL.append("  QSII.REMARKS_OTHER,");
         exportSQL.append("  QSII.REMARKS_AND_OTHER_CONTENTS,");
-        exportSQL.append("  QSII.LIVING_ABROAD,");
+        exportSQL.append("  QSII.NO_MYNUM_ATR,");
         exportSQL.append("  QSII.SHORT_STAY,");
         exportSQL.append("  QSII.REASON_OTHER,");
         exportSQL.append("  QSII.REASON_AND_OTHER_CONTENTS, ");
@@ -300,7 +300,7 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("      BIRTHDAY,");
         exportSQL.append("      GENDER,");
         exportSQL.append("      COAL_MINER_ATR,");
-        exportSQL.append("      LIVING_ABROAD,");
+        exportSQL.append("      NO_MYNUM_ATR,");
         exportSQL.append("      SHORT_STAY,");
         exportSQL.append("      REASON_OTHER,");
         exportSQL.append("      REASON_AND_OTHER_CONTENTS,");
@@ -471,8 +471,8 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("      HOSYU_IN_KIND,");
         exportSQL.append("      HOSYU_CURR,");
         exportSQL.append("      HOSYU_MONTHLY,");
-        exportSQL.append("      LIVING_ABROAD,");
-        exportSQL.append("      LIVING_ABROAD,");
+        exportSQL.append("      NO_MYNUM_ATR,");
+        exportSQL.append("      NO_MYNUM_ATR,");
         exportSQL.append("      NO_MYNUM_REASON,");
         exportSQL.append("      SHORTTIME_WORKERS_ATR,");
         exportSQL.append("      RPT_SUBMIT_ATR,");
