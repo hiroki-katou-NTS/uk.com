@@ -23,6 +23,13 @@ public class QqsmtEmplPenFundInfoPk implements Serializable
      * 社員ID
      */
     @Basic(optional = true)
-    @Column(name = "EMPLOYEE_ID")
+    @Column(name = "SID")
     public String employeeId;
+
+    /**
+     * 会社ID
+     */
+    @Basic(optional = true)
+    @Column(name = "CID")
+    public String cid;
 }

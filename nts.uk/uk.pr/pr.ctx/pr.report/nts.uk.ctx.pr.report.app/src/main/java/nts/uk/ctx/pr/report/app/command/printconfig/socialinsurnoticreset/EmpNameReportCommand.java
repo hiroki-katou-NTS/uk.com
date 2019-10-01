@@ -8,11 +8,11 @@ import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.EmpNameReport;
 @AllArgsConstructor
 public class EmpNameReportCommand {
     private String empId;
-    private NameNotificationSetCommand spouse;
     private NameNotificationSetCommand personalSet;
+    private NameNotificationSetCommand spouse;
 
     public EmpNameReport toDomain(){
-        return new EmpNameReport(empId, spouse.toDomains(), personalSet.toDomains());
+        return new EmpNameReport(empId,   personalSet.toDomains(), spouse.toDomains());
     }
 
 }

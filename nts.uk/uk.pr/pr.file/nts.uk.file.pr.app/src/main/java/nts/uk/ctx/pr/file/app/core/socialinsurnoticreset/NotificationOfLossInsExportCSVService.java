@@ -9,12 +9,17 @@ import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsura
 import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsurancePrefectureInformationRepository;
 import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.*;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.EmpWelfarePenInsQualiInforRepository;
+import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empcomworkstlinfor.CorWorkFormInfoRepository;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmplHealInsurQualifiInforRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.swing.text.html.Option;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 @Stateless
 public class NotificationOfLossInsExportCSVService extends ExportService<NotificationOfLossInsExportQuery> {
@@ -35,10 +40,10 @@ public class NotificationOfLossInsExportCSVService extends ExportService<Notific
 	private NotificationOfLossInsExRepository socialInsurNotiCreateSetEx;
 
 	@Inject
-	private SocialInsuranceOfficeRepository socialInsuranceOfficeRepository;
-
-	@Inject
 	private SocialInsurancePrefectureInformationRepository socialInsuranceInfor;
+
+    @Inject
+    private CorWorkFormInfoRepository corWorkFormInfoRepository;
 
 
 	@Override
@@ -88,10 +93,9 @@ public class NotificationOfLossInsExportCSVService extends ExportService<Notific
         if(domain.getOutputFormat().get() == OutputFormatClass.PEN_OFFICE){
 			List<SocialInsurancePrefectureInformation> infor  = socialInsuranceInfor.findByHistory();
 			List<InsLossDataExport> healthInsLoss = socialInsurNotiCreateSetEx.getHealthInsLoss(empIds, cid, start, end);
-			List<InsLossDataExport> welfPenInsLoss = socialInsurNotiCreateSetEx.getWelfPenInsLoss(empIds, cid, start, end);
 			CompanyInfor company = socialInsurNotiCreateSetEx.getCompanyInfor(cid);
 			notificationOfLossInsCSVFileGenerator.generate(exportServiceContext.getGeneratorContext(),
-					new LossNotificationInformation(healthInsLoss, welfPenInsLoss,null, domain, exportServiceContext.getQuery().getReference(), company, infor));
+					new LossNotificationInformation(healthInsLoss, null,null, domain, exportServiceContext.getQuery().getReference(), company, infor));
         }
 
         if(domain.getOutputFormat().get() == OutputFormatClass.HEAL_INSUR_ASSO) {

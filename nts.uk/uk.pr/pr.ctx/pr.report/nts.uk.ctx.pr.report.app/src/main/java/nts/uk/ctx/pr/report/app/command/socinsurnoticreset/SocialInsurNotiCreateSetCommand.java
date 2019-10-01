@@ -28,4 +28,6 @@ public class SocialInsurNotiCreateSetCommand {
      */
     private int insuredNumber;
 
+    private int submittedName;
+
 }

@@ -19,6 +19,6 @@ public interface HealInsurPortPerIntellRepository
 
     void update(HealInsurPortPerIntell domain);
 
-    void remove(String employeeId, String hisId);
+    void remove(String employeeId, String hisId, String cid);
 
 }

@@ -57,14 +57,19 @@ module nts.uk.pr.view.qsi013.a.viewmodel {
                 }));
         constructor() {
             let self = this;
-            let today = new Date();
-            let dd = today.getDate()
-            let mm = today.getMonth() + 1;
-            let ms = today.getMonth();
-            let yyyy = today.getFullYear();
-            self.startDate(yyyy + "/" + ms + "/" + dd);
-            self.endDate(yyyy + "/" + mm  + "/" + dd);
-            self.filingDate(yyyy + "/" + mm  + "/" + dd);
+            let today  = new Date();
+            let start = new Date();
+            start.setMonth(start.getMonth() - 1);
+            start.setDate(start.getDate() + 1);
+            let mmStart = start.getMonth() + 1;
+            let dStart = start.getDate();
+            let mmEnd = today.getMonth() + 1;
+            let dEnd = today.getDate();
+            let yyyyS = start.getFullYear();
+            let yyyyE = today.getFullYear();
+            self.startDate(yyyyS + "/" +  mmStart + "/" + dStart);
+            self.endDate(yyyyE + "/" + mmEnd  + "/" + dEnd);
+            self.filingDate(yyyyE + "/" + mmEnd  + "/" + dEnd);
             self.loadKCP005();
             self.loadCCG001();
             self.startDate.subscribe((data) =>{

@@ -28,5 +28,8 @@ public class ExportDataCsv {
 
     private CompanyInfor company;
 
+    private GeneralDate  startDate;
+    private GeneralDate endDate;
+
 
 }

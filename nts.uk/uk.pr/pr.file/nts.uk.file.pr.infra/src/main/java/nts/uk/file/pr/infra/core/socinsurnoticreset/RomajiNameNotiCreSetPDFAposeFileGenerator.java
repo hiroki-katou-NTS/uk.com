@@ -67,8 +67,8 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
             }
 
             worksheets.removeAt(0);
-            reportContext.saveAsExcel(this.createNewFile(fileContext,
-                    FILE_NAME + "_" + ".xlsx"));
+            reportContext.saveAsPdf(this.createNewFile(fileContext,
+                    FILE_NAME + ".pdf"));
         }catch (Exception e){
             throw new RuntimeException(e);
         }
@@ -102,7 +102,7 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
                     this.selectShapesRadio(worksheet, personInfo.getGender() , i, "A1_3","A1_4");
                 }
 
-                this.pushName(personInfo.getPersonName(), worksheet, i, 14, 4);
+                this.pushName(personInfo.getPersonNameRomaji(), worksheet, i, 14, 4);
                 this.pushName(personInfo.getPersonNameKana(), worksheet, i, 13, 4);
 
                 worksheet.getRangeByName(i + "!A4_5").setValue(Objects.toString(empNameReport != null &&
@@ -119,9 +119,7 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
             } else {
 
                 if (empFamilySocialIns != null ) {
-                    for (int h1 = 0; h1 < empFamilySocialIns.getFmBsPenNum().length() ; h1++) {
-                        worksheet.get(i).getCells().get(12, h1+1).setValue(Objects.toString(pushDataCell(empFamilySocialIns.getFmBsPenNum(), h1),  ""));
-                    }
+                    this.pushName(empFamilySocialIns.getFmBsPenNum() != null ? empFamilySocialIns.getFmBsPenNum().toString() : null, worksheet, i, 11, 1);
                 }
 
                 if ( familyMember != null ) {

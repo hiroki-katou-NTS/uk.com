@@ -19,19 +19,28 @@ import java.io.Serializable;
 public class QqsmtEmpWelfInsQcIfPk implements Serializable
 {
     private static final long serialVersionUID = 1L;
-    
+
     /**
-    * 社員ID
-    */
+     * 社員ID
+     */
     @Basic(optional = false)
-    @Column(name = "EMPLOYEE_ID")
+    @Column(name = "SID")
     public String employeeId;
-    
+
     /**
-    * 厚年得喪期間履歴ID
-    */
+     * 厚年得喪期間履歴ID
+     */
     @Basic(optional = false)
-    @Column(name = "HISTORY_ID")
+    @Column(name = "HIST_ID")
     public String historyId;
+
+    /**
+     * 厚年得喪期間履歴ID
+     */
+    @Basic(optional = false)
+    @Column(name = "CID")
+    public String cid;
+
+
     
 }

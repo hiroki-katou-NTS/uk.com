@@ -5,6 +5,7 @@ import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.inforunionfun
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.inforunionfundnoti.emphealinsurassinfor.EmpHealthInsurUnionRepository;
 import nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.inforunionfundnoti.emphealinsurassinfor.QqsmtEmpHealInsUnion;
 import nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.inforunionfundnoti.emphealinsurassinfor.QqsmtEmpHealInsUnionPk;
+import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import java.util.List;
@@ -42,6 +43,6 @@ public class JpaEmpHealthInsurUnionRepository extends JpaRepository implements E
 
     @Override
     public void remove(String employeeId){
-        this.commandProxy().remove(QqsmtEmpHealInsUnion.class, new QqsmtEmpHealInsUnionPk(employeeId));
+        this.commandProxy().remove(QqsmtEmpHealInsUnion.class, new QqsmtEmpHealInsUnionPk(employeeId, AppContexts.user().companyId()));
     }
 }

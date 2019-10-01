@@ -24,7 +24,14 @@ public class QqsmtMultiEmpWorkIfPk implements Serializable
     * 社員ID
     */
     @Basic(optional = false)
-    @Column(name = "EMPLOYEE_ID")
+    @Column(name = "SID")
     public String employeeId;
+
+    /**
+     * cid
+     */
+    @Basic(optional = false)
+    @Column(name = "CID")
+    public String cid;
     
 }

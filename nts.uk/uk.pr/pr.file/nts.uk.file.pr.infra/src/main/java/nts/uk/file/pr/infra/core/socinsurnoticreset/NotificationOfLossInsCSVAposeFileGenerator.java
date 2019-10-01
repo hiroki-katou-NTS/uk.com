@@ -31,6 +31,8 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
 
     private static final String HEISEI = "平成";
 
+
+
     @Override
     public void generate(FileGeneratorContext generatorContext, LossNotificationInformation data) {
         CompanyInfor company = data.getCompany();
@@ -87,19 +89,18 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
                         checkLength(data.getWelfOfficeNumber2(),4));
                 cells.get(startRow, 3).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? data.getOfficeNumber() : data.getWelfOfficeNumber());
                 cells.get(startRow, 4).setValue(checkLength(company.getPostCd(),3));
-                cells.get(startRow, 5).setValue(company.getPostCd().length() == 8 ? company.getPostCd().substring(4, 8) : "");
+                cells.get(startRow, 5).setValue(company.getPostCd().length() == 8 ? company.getPostCd().substring(4, 8) : company.getPostCd().length() > 4 ? company.getPostCd().substring(4, company.getPostCd().length()) : "");
                 cells.get(startRow, 6).setValue(checkLength(company.getAdd_1() + company.getAdd_2(),75));
                 cells.get(startRow, 7).setValue(checkLength(company.getCompanyName(), 50));
                 cells.get(startRow, 8).setValue(company.getRepname());
-                cells.get(startRow, 9).setValue(company.getPhoneNum().length() > 5 ? company.getPhoneNum().substring(0, 5) : company.getPhoneNum());
-                cells.get(startRow, 10).setValue(company.getPhoneNum().length() > 11 ? company.getPhoneNum().substring(6, 10) : "");
-                cells.get(startRow, 11).setValue(company.getPhoneNum().length() > 16 ? company.getPhoneNum().substring(11, 16) : "");
+                cells.get(startRow, 9).setValue(formatPhone(company.getPhoneNum(),0));
+                cells.get(startRow, 10).setValue(formatPhone(company.getPhoneNum(),1));
+                cells.get(startRow, 11).setValue(formatPhone(company.getPhoneNum(),2));
                 startRow++;
                 cells.get(startRow, 0).setValue("[data]");
             }
             startRow++;
             fillPensionEmployee( data, cells, infor, ins, startRow);
-
         }
     }
 
@@ -119,29 +120,39 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
         cells.get(startRow, 3).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ?
                 checkLength(data.getOfficeNumber2(),4) : checkLength(data.getWelfOfficeNumber2(),4));
         cells.get(startRow, 4).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? data.getOfficeNumber() : data.getWelfOfficeNumber());
-        cells.get(startRow, 5).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? data.getHealInsUnionNumber() : data.getWelfPenNumber());
+        cells.get(startRow, 5).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? data.getHealInsNumber() : data.getWelfPenNumber());
         cells.get(startRow, 6).setValue(ins.getSubmittedName() == SubNameClass.PERSONAL_NAME ? checkLength(data.getPersonName(),25) : checkLength(data.getPersonNameKana(),25));
         cells.get(startRow, 7).setValue(ins.getSubmittedName() == SubNameClass.PERSONAL_NAME ? checkLength(data.getOldName(),12) : checkLength(data.getOldNameKana(),12));
         cells.get(startRow, 8).setValue(dateJp.era().equals(HEISEI) ? 7 : dateJp.era().equals(SHOWA) ? 5 : 9);
         cells.get(startRow, 9).setValue(convertJpDate(dateJp));
         cells.get(startRow, 10).setValue(ins.getPrintPersonNumber() != PersonalNumClass.DO_NOT_OUTPUT && ins.getPrintPersonNumber() != PersonalNumClass.OUTPUT_PER_NUMBER ? data.getBasicPenNumber() : "");
         cells.get(startRow, 11).setValue(ins.getTextPersonNumber().get() != TextPerNumberClass.OUTPUT_NUMBER ? checkLength(data.getBasicPenNumber(),4) : "");
-        cells.get(startRow, 12).setValue(ins.getTextPersonNumber().get() != TextPerNumberClass.OUTPUT_NUMBER ? data.getBasicPenNumber().length() > 10 ? data.getBasicPenNumber().substring(4,10) : "" : "");
+        cells.get(startRow, 12).setValue(ins.getTextPersonNumber().get() != TextPerNumberClass.OUTPUT_NUMBER ? data.getBasicPenNumber().length() > 10 ? data.getBasicPenNumber().substring(4,10) :
+                data.getBasicPenNumber().length() > 4 ? data.getBasicPenNumber().substring(4,data.getBasicPenNumber().length()) : "" : "");
         cells.get(startRow, 13).setValue(9);
         cells.get(startRow, 14).setValue(data.getEndDate().substring(0,4) + data.getEndDate().substring(5,7) + data.getEndDate().substring(8,10));
-        cells.get(startRow, 15).setValue(data.getCause());
+        cells.get(startRow, 15).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? data.getCause() == null ? "" : data.getCause() : data.getCause2() == null ? "": data.getCause2());
         cells.get(startRow, 16).setValue(9);
-        cells.get(startRow, 17).setValue(data.getCause() == 4 && data.getCause() == 5 ? data.getEndDate().substring(0,4) + data.getEndDate().substring(5,7) + data.getEndDate().substring(8,10) : "");
+        cells.get(startRow, 17).setValue(data.getCause() == null ? ""  : data.getCause() == 4 && data.getCause() == 5 ? ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? convertDate(data.getEndDate()) : convertDate(data.getEndDate2()) : "");
         cells.get(startRow, 18).setValue(data.getIsMoreEmp());
         cells.get(startRow, 19).setValue(data.getContinReemAfterRetirement());
-        cells.get(startRow, 20).setValue(data.getOtherReason());
-        cells.get(startRow, 21).setValue(data.getCaInsurance());
-        cells.get(startRow, 22).setValue(data.getNumRecoved());
-        cells.get(startRow, 23).setValue(data.getCause());
-        cells.get(startRow, 24).setValue(data.getCause() == 1 ? 9 : "");
-        cells.get(startRow, 25).setValue(data.getCause() == 1 ? data.getEndDate().substring(0,4) + data.getEndDate().substring(5,7) + data.getEndDate().substring(8,10) : "");
-        cells.get(startRow, 26).setValue(data.getCause() == 6 ? "" : 1);
+        cells.get(startRow, 20).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? data.getOtherReason() : data.getOtherReason2());
+        cells.get(startRow, 21).setValue(Objects.toString(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? data.getCaInsurance() : data.getNumRecoved2(), ""));
+        cells.get(startRow, 22).setValue(Objects.toString(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? data.getCaInsurance() : data.getNumRecoved2(), ""));
+        cells.get(startRow, 23).setValue(data.getPercentOrMore().equals("1") ? 1 : "");
+        cells.get(startRow, 24).setValue(data.getPercentOrMore().equals("1") ? 9 : "");
+        cells.get(startRow, 25).setValue(data.getPercentOrMore() == null ? "" : data.getPercentOrMore().equals("1")  ? convertDate(data.getEndDate()) : convertDate(data.getEndDate2()));
+        cells.get(startRow, 26).setValue(data.getCause2() == null ? "" : data.getCause2() == 6 ? "" : 1);
 
+    }
+
+
+    private String convertDate(String date){
+        if(date.length() < 10)  {
+            return "";
+        }
+        GeneralDate temp = GeneralDate.fromString(date.substring(0,10), "yyyy-MM-dd");
+        return temp.addDays(-1).toString("yyyyMMdd");
     }
 
     private String convertJpDate(JapaneseDate date){
@@ -157,8 +168,8 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
 
     private String getPreferCode(int prefectureNo, String endDate, List<SocialInsurancePrefectureInformation> infor){
         Optional<SocialInsurancePrefectureInformation> refecture =  infor.stream().filter(item -> item.getNo() == prefectureNo
-                && item.getEndYearMonth() > convertDateToYearMonth(endDate)
-                && item.getEndYearMonth() < convertDateToYearMonth(endDate)).findFirst();
+                && item.getEndYearMonth() >= convertDateToYearMonth(endDate)
+                && item.getStartYearMonth() <= convertDateToYearMonth(endDate)).findFirst();
         return refecture.isPresent() ? refecture.get().getPrefectureCode().v() : "";
     }
 
@@ -180,19 +191,19 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
                 cells.get(startRow, 6).setValue(data.getHealInsInherenPr().length() > 30 ? data.getHealInsInherenPr().substring(20, 30) : "");
                 cells.get(startRow, 7).setValue(data.getHealInsInherenPr().length() > 40 ? data.getHealInsInherenPr().substring(30, 40) : "");
                 startRow = startRow + 1;
-                cells.get(startRow, 8).setValue("[kanri]");
+                cells.get(startRow, 0).setValue("[kanri]");
                 startRow = startRow + 1;
                 cells.get(startRow, 1).setValue("001");
                 startRow = startRow + 1;
                 cells.get(startRow, 0).setValue(data.getUnionOfficeNumber());
                 cells.get(startRow, 1).setValue(checkLength(company.getPostCd(), 3));
-                cells.get(startRow, 2).setValue(company.getPostCd().length() == 8 ? company.getPostCd().substring(4, 8) : "");
+                cells.get(startRow, 2).setValue(company.getPostCd().length() == 8 ? company.getPostCd().substring(4, 8) : company.getPostCd().length() > 4 ? company.getPostCd().substring(4, company.getPostCd().length()) : "");
                 cells.get(startRow, 3).setValue(checkLength(company.getAdd_1() + company.getAdd_2(),75));
                 cells.get(startRow, 4).setValue(checkLength(company.getCompanyName(), 50));
                 cells.get(startRow, 5).setValue(company.getRepname());
-                cells.get(startRow, 10).setValue(checkLength(company.getPhoneNum(),5));
-                cells.get(startRow, 11).setValue(company.getPhoneNum().length() > 11 ? company.getPhoneNum().substring(6, 10) : "");
-                cells.get(startRow, 12).setValue(company.getPhoneNum().length() > 16 ? company.getPhoneNum().substring(11, 16) : "");
+                cells.get(startRow, 6).setValue(formatPhone(company.getPhoneNum(),0));
+                cells.get(startRow, 7).setValue(formatPhone(company.getPhoneNum(),1));
+                cells.get(startRow, 8).setValue(formatPhone(company.getPhoneNum(),2));
                 startRow++;
                 cells.get(startRow, 0).setValue("[data]");
             }
@@ -205,19 +216,20 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
     private void fillHealthInsAssociation(InsLossDataExport data, Cells cells,
                                           List<SocialInsurancePrefectureInformation> infor, SocialInsurNotiCreateSet ins, int startRow){
         JapaneseDate dateJp = toJapaneseDate( GeneralDate.fromString(data.getBirthDay().substring(0,10), "yyyy-MM-dd"));
-        cells.get(startRow, 0).setValue("2200700");
+        cells.get(startRow, 0).setValue("2201700");
         cells.get(startRow, 1).setValue(getPreferCode(data.getPrefectureNo(), data.getEndDate(), infor));
         cells.get(startRow, 2).setValue(checkLength(data.getOfficeNumber1(),2));
         cells.get(startRow, 3).setValue(checkLength(data.getOfficeNumber2(),4));
         cells.get(startRow, 4).setValue(data.getOfficeNumber());
         cells.get(startRow, 5).setValue(data.getHealInsNumber());
-        cells.get(startRow, 6).setValue(ins.getSubmittedName() == SubNameClass.PERSONAL_NAME ? checkLength(data.getPersonName(),25) : checkLength(data.getPersonNameKana(),25));
-        cells.get(startRow, 7).setValue(ins.getSubmittedName() == SubNameClass.PERSONAL_NAME ? checkLength(data.getOldName(),12) : checkLength(data.getOldNameKana(),12));
+        cells.get(startRow, 6).setValue(ins.getSubmittedName() == SubNameClass.PERSONAL_NAME ? checkLength(data.getPersonNameKana(),25) : checkLength(data.getOldNameKana(),25));
+        cells.get(startRow, 7).setValue(ins.getSubmittedName() == SubNameClass.PERSONAL_NAME ? checkLength(data.getPersonName(),12) : checkLength(data.getOldName(),12));
         cells.get(startRow, 8).setValue(dateJp.era().equals(HEISEI) ? 7 : dateJp.era().equals(SHOWA) ? 5 : 9);
         cells.get(startRow, 9).setValue(convertJpDate(dateJp));
         cells.get(startRow, 10).setValue(ins.getPrintPersonNumber() != PersonalNumClass.DO_NOT_OUTPUT && ins.getPrintPersonNumber() != PersonalNumClass.OUTPUT_PER_NUMBER ? data.getBasicPenNumber() : "");
         cells.get(startRow, 11).setValue(ins.getTextPersonNumber().get() != TextPerNumberClass.OUTPUT_NUMBER ? checkLength(data.getBasicPenNumber(),4) : "");
-        cells.get(startRow, 12).setValue(ins.getTextPersonNumber().get() != TextPerNumberClass.OUTPUT_NUMBER ? data.getBasicPenNumber().substring(4,10) : "");
+        cells.get(startRow, 12).setValue(ins.getTextPersonNumber().get() != TextPerNumberClass.OUTPUT_NUMBER ? data.getBasicPenNumber().length() > 10 ? data.getBasicPenNumber().substring(4,10) :
+                data.getBasicPenNumber().length() > 4 ? data.getBasicPenNumber().substring(4,data.getBasicPenNumber().length()) : "" : "");
         cells.get(startRow, 13).setValue(9);
         cells.get(startRow, 14).setValue(data.getEndDate().substring(0,4) + data.getEndDate().substring(5,7) + data.getEndDate().substring(8,10));
         cells.get(startRow, 15).setValue(data.getCause());
@@ -256,16 +268,18 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
                 startRow++;
                 cells.get(startRow, 0).setValue("[kanri]");
                 startRow++;
+                cells.get(startRow, 1).setValue("001");
+                startRow++;
                 cells.get(startRow, 0).setValue(data.getFunMember());
                 cells.get(startRow, 1).setValue(data.getWelPenOfficeNumber());
                 cells.get(startRow, 2).setValue(checkLength(company.getPostCd(),3));
-                cells.get(startRow, 3).setValue(company.getPostCd().length() == 8  ? company.getPostCd().substring(4, 8) : "");
+                cells.get(startRow, 3).setValue(company.getPostCd().length() == 8 ? company.getPostCd().substring(4, 8) : company.getPostCd().length() > 4 ? company.getPostCd().substring(4, company.getPostCd().length()) : "");
                 cells.get(startRow, 4).setValue(checkLength(company.getAdd_1() + company.getAdd_2(), 75));
-                cells.get(startRow, 4).setValue(checkLength(company.getCompanyName(),50));
-                cells.get(startRow, 5).setValue(company.getRepname());
-                cells.get(startRow, 10).setValue(company.getPhoneNum().length() > 5 ? company.getPhoneNum().substring(0, 5) : company.getPhoneNum());
-                cells.get(startRow, 11).setValue(company.getPhoneNum().length() > 11 ? company.getPhoneNum().substring(6, 10) : "");
-                cells.get(startRow, 12).setValue(company.getPhoneNum().length() > 16 ? company.getPhoneNum().substring(11, 16) : "");
+                cells.get(startRow, 5).setValue(checkLength(company.getCompanyName(),50));
+                cells.get(startRow, 6).setValue(company.getRepname());
+                cells.get(startRow, 7).setValue(formatPhone(company.getPhoneNum(),0));
+                cells.get(startRow, 8).setValue(formatPhone(company.getPhoneNum(),1));
+                cells.get(startRow, 9).setValue(formatPhone(company.getPhoneNum(),2));
                 startRow++;
                 cells.get(startRow, 0).setValue("[data]");
             }
@@ -273,6 +287,20 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
             fillEmpPensionFund(data, cells, infor , socialInsurNotiCreateSet, startRow);
         }
 
+    }
+
+    private String formatPhone(String phone, int stt){
+        String[] result = phone.split("-");
+        if(result.length == 1 && phone.length() > 0 && stt == 0){
+            return phone.length() > 5 ? phone.substring(0, 5) : phone.substring(0, phone.length());
+        }
+        if(result.length == 1 && phone.length() > 5 && stt == 1){
+            return phone.length() > 9 ? phone.substring(5,9) : phone.substring(5, phone.length());
+        }
+        if(result.length == 1 && phone.length() > 9 && stt == 2){
+            return phone.length() >= 14 ? phone.substring(9, 14) : phone.substring(9, phone.length());
+        }
+        return result.length > 1 ? result[stt] : "";
     }
 
     private void fillEmpPensionFund(PensFundSubmissData data, Cells cells,
@@ -289,12 +317,13 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
         cells.get(startRow, 8).setValue(dateJp.era().equals(HEISEI) ? 7 : dateJp.era().equals(SHOWA) ? 5 : 9);
         cells.get(startRow, 9).setValue(convertJpDate(dateJp));
         cells.get(startRow, 11).setValue(ins.getTextPersonNumber().get() != TextPerNumberClass.OUTPUT_NUMBER ? data.getBasicPenNumber().substring(0,4) : "");
-        cells.get(startRow, 12).setValue(ins.getTextPersonNumber().get() != TextPerNumberClass.OUTPUT_NUMBER ? data.getBasicPenNumber().substring(4,10) : "");
+        cells.get(startRow, 12).setValue(ins.getTextPersonNumber().get() != TextPerNumberClass.OUTPUT_NUMBER ? data.getBasicPenNumber().length() > 10 ? data.getBasicPenNumber().substring(4,10) :
+                data.getBasicPenNumber().length() > 4 ? data.getBasicPenNumber().substring(4,data.getBasicPenNumber().length()) : "" : "");
         cells.get(startRow, 13).setValue(9);
         cells.get(startRow, 14).setValue(data.getEndDate().substring(0,4) + data.getEndDate().substring(5,7) + data.getEndDate().substring(8,10));
         cells.get(startRow, 15).setValue(data.getCause());
         cells.get(startRow, 16).setValue(9);
-        cells.get(startRow, 17).setValue(data.getCause() == 4 && data.getCause() == 5 ? data.getEndDate().substring(0,4) + data.getEndDate().substring(5,7) + data.getEndDate().substring(8,10) : "");
+        cells.get(startRow, 17).setValue(data.getCause() == 4 && data.getCause() == 5 ? convertDate(data.getEndDate()) : "");
         cells.get(startRow, 18).setValue(data.getIsMoreEmp());
         cells.get(startRow, 19).setValue(data.getContinReemAfterRetirement());
         cells.get(startRow, 20).setValue(data.getOtherReason());
@@ -303,7 +332,7 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
         cells.get(startRow, 25).setValue(data.getCause() == 6 ? data.getEndDate().substring(0,4) + data.getEndDate().substring(5,7) + data.getEndDate().substring(8,10) : "");
         cells.get(startRow, 27).setValue(data.getFunMember());
         cells.get(startRow, 28).setValue(data.getWelPenOfficeNumber());
-        cells.get(startRow, 29).setValue(data.getFunMember());
+        cells.get(startRow, 29).setValue(data.getMemberNumber());
         cells.get(startRow,30).setValue(checkLength(data.getPortCd(),3));
         cells.get(startRow, 31).setValue(data.getPortCd().length() > 7 ? data.getPortCd().substring(3,7) : "");
         cells.get(startRow, 32).setValue(checkLength(data.getRetirementAddBefore(),75));
@@ -311,10 +340,10 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
         cells.get(startRow, 34).setValue(data.getReasonForLoss());
         cells.get(startRow, 35).setValue(data.getAddAppCtgSal());
         cells.get(startRow, 36).setValue(data.getReason());
-        cells.get(startRow, 37).setValue(data.getAddSal());
-        cells.get(startRow, 38).setValue(data.getStandSal());
-        cells.get(startRow, 39).setValue(data.getSecAddSalary());
-        cells.get(startRow, 40).setValue(data.getSecStandSal());
+        cells.get(startRow, 37).setValue(data.getAddSal().isEmpty() ? "" : Double.parseDouble(data.getAddSal().trim()) > 10000000 ? "9999999" : data.getAddSal());
+        cells.get(startRow, 38).setValue(data.getStandSal().isEmpty() ? "" : Double.parseDouble(data.getStandSal().trim()) > 10000000 ? "9999" : data.getStandSal().length() > 4 ? data.getStandSal().substring(0,data.getStandSal().length() - 3) : data.getStandSal());
+        cells.get(startRow, 39).setValue(data.getSecAddSalary().isEmpty() ? "" : Double.parseDouble(data.getSecAddSalary().trim()) > 10000000 ? "9999999" : data.getSecAddSalary());
+        cells.get(startRow, 40).setValue(data.getSecStandSal().isEmpty() ? "" : Double.parseDouble(data.getSecStandSal().trim()) > 10000000 ? "9999" : data.getSecStandSal().length() > 4 ? data.getSecStandSal().substring(0,data.getSecStandSal().length() - 3) : data.getSecStandSal());
         cells.get(startRow, 41).setValue(data.getFunSpecific1());
         cells.get(startRow, 42).setValue(data.getFunSpecific2());
         cells.get(startRow, 43).setValue(data.getFunSpecific3());
@@ -328,7 +357,7 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
     }
 
     private String checkLength(String s, int digitsNumber){
-        return (s != null && s.length() > digitsNumber) ? s.substring(0,digitsNumber) : s;
+        return (s != null && s.length() >= digitsNumber) ? s.substring(0,digitsNumber) : s;
     }
 
 }

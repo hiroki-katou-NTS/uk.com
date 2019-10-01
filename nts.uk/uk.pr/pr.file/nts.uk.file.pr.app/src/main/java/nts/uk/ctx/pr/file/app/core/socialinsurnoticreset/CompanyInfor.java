@@ -24,12 +24,6 @@ public class CompanyInfor {
 	/** 会社名 */
 	private String companyName;
 
-	/**  期首月 */
-	private int startMonth;
-
-	/** 廃止区分 */
-	private int isAbolition;
-
 	/** 代表者名 */
 	private String repname;
 

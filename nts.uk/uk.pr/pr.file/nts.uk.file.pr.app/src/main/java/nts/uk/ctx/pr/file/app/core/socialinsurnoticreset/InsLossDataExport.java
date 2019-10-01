@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.file.app.core.socialinsurnoticreset;
 
 import lombok.*;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
 
 @Getter
 @Setter
@@ -104,5 +105,21 @@ public class InsLossDataExport {
     private String memberNumber;
 
     private String healInsInherenPr;
+
+    private String endDate2;
+
+    private Integer other2;
+
+    private String otherReason2;
+
+    private Integer caInsurance2;
+
+    private Integer numRecoved2;
+
+    private Integer cause2;
+
+    private Integer insPerCls;
+
+    private int underSeventy;
 
 }

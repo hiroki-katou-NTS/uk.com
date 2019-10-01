@@ -12,12 +12,15 @@ import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.PersonalNumClass;
 import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.SocialInsurNotiCrSetRepository;
 import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.SocialInsurNotiCreateSet;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.ReasonsForLossPensionIns;
+import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empcomworkstlinfor.CorEmpWorkHis;
+import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empcomworkstlinfor.CorEmpWorkHisRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Stateless
@@ -37,6 +40,10 @@ public class NotificationOfLossInsExportPDFService extends ExportService<Notific
 
 	@Inject
 	private EmployeeInfoAdapter employeeInfoAdapter;
+
+	@Inject
+	private CorEmpWorkHisRepository corEmpWorkHisRepository;
+
 
 	@Override
 	protected void handle(ExportServiceContext<NotificationOfLossInsExportQuery> exportServiceContext) {
@@ -64,18 +71,15 @@ public class NotificationOfLossInsExportPDFService extends ExportService<Notific
 			throw new BusinessException("Msg_812");
 		}
 		List<InsLossDataExport> healthInsLoss = socialInsurNotiCreateSetEx.getHealthInsLoss(empIds, cid, start, end);
-		List<InsLossDataExport> welfPenInsLoss = socialInsurNotiCreateSetEx.getWelfPenInsLoss(empIds, cid, start, end);
-		if(healthInsLoss.isEmpty() && welfPenInsLoss.isEmpty()) {
+		if(healthInsLoss.isEmpty()) {
 			throw new BusinessException("Msg_37");
 		}
 
-		List<InsLossDataExport> overSeventy = welfPenInsLoss.stream().filter(item -> item.getCause() == ReasonsForLossPensionIns.ONLY_PENSION_INSURANCE.value).collect(Collectors.toList());
-		List<InsLossDataExport> underSeventy = welfPenInsLoss.stream().filter(item -> item.getCause() != ReasonsForLossPensionIns.ONLY_PENSION_INSURANCE.value).collect(Collectors.toList());
-		healthInsLoss.addAll(underSeventy);
-		healthInsLoss.stream().sorted(Comparator.comparing(InsLossDataExport::getOfficeCd).thenComparing(InsLossDataExport::getEmpCd));
+		List<InsLossDataExport> overSeventy = healthInsLoss.stream().filter(item -> item.getCause2() == ReasonsForLossPensionIns.ONLY_PENSION_INSURANCE.value).collect(Collectors.toList());
+		List<InsLossDataExport> underSeventy = healthInsLoss.stream().filter(item -> item.getCause2() != ReasonsForLossPensionIns.ONLY_PENSION_INSURANCE.value).collect(Collectors.toList());
 		CompanyInfor company = socialInsurNotiCreateSetEx.getCompanyInfor(cid);
 		socialInsurNotiCreateSetFileGenerator.generate(exportServiceContext.getGeneratorContext(),
-				new LossNotificationInformation(healthInsLoss, overSeventy, null, domain, exportServiceContext.getQuery().getReference(), company, null));
+				new LossNotificationInformation(underSeventy, overSeventy, null, domain, exportServiceContext.getQuery().getReference(), company, null));
 
 	}
 

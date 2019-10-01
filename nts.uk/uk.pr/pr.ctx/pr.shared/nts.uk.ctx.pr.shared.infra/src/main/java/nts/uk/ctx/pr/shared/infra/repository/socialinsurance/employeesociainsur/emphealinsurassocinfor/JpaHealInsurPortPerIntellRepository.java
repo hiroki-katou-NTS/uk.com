@@ -3,6 +3,8 @@ package nts.uk.ctx.pr.shared.infra.repository.socialinsurance.employeesociainsur
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurassocinfor.HealInsurPortPerIntell;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurassocinfor.HealInsurPortPerIntellRepository;
+import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurassocinfor.HealthCarePortInfor;
+import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurassocinfor.HealthCarePortInforRepository;
 import nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.emphealinsurassocinfor.QqsmtHealInsurPortInt;
 import nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.emphealinsurassocinfor.QqsmtHealInsurPortIntPk;
 
@@ -12,8 +14,7 @@ import java.util.Optional;
 
 
 @Stateless
-public class JpaHealInsurPortPerIntellRepository extends JpaRepository implements HealInsurPortPerIntellRepository
-{
+public class JpaHealInsurPortPerIntellRepository extends JpaRepository implements HealInsurPortPerIntellRepository, HealthCarePortInforRepository {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QqsmtHealInsurPortInt f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.healInsurPortIntPk.employeeId =:employeeId AND  f.healInsurPortIntPk.hisId =:hisId ";
@@ -23,6 +24,19 @@ public class JpaHealInsurPortPerIntellRepository extends JpaRepository implement
     public List<HealInsurPortPerIntell> getAllHealInsurPortPerIntell(){
         return this.queryProxy().query(SELECT_ALL_QUERY_STRING, QqsmtHealInsurPortInt.class)
                 .getList(item -> item.toDomain());
+    }
+
+    @Override
+    public Optional<HealthCarePortInfor> getHealthCarePortInforById(String hisId){
+        return this.queryProxy().query(SELECT_BY_KEY_STRING, QqsmtHealInsurPortInt.class)
+                .setParameter("hisId", hisId)
+                .getSingle(c->c.toDomainHealthCare());
+    }
+
+    @Override
+    public List<HealthCarePortInfor> getAllHealthCarePortInfor(){
+        return this.queryProxy().query(SELECT_ALL_QUERY_STRING, QqsmtHealInsurPortInt.class)
+                .getList(item -> item.toDomainHealthCare());
     }
 
     @Override
@@ -51,7 +65,7 @@ public class JpaHealInsurPortPerIntellRepository extends JpaRepository implement
     }
 
     @Override
-    public void remove(String employeeId, String hisId){
-        this.commandProxy().remove(QqsmtHealInsurPortInt.class, new QqsmtHealInsurPortIntPk(employeeId, hisId));
+    public void remove(String employeeId, String hisId, String cid){
+        this.commandProxy().remove(QqsmtHealInsurPortInt.class, new QqsmtHealInsurPortIntPk(employeeId, hisId, cid));
     }
 }

@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "QQSMT_COR_EMP_WORK_HIS")
+@Table(name = "QQSDT_SYAHO_WORKFORM_INFO")
 public class QqsmtCorEmpWorkHis extends UkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
@@ -34,7 +34,7 @@ public class QqsmtCorEmpWorkHis extends UkJpaEntity implements Serializable
     * 被保険者区分
     */
     @Basic(optional = false)
-    @Column(name = "INS_PER_CLS")
+    @Column(name = "INSURED_ATR")
     public int insPerCls;
     
     /**

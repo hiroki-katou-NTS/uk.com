@@ -98,12 +98,18 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
             //init switch
             self.simpleValue = ko.observable("123");
             self.selectedRuleCode = ko.observable(1);
-            let _endDate = moment();
-            let month = _endDate.month();
-            let _startDate = moment();
-            _startDate.month(month - 1);
+            let end  = new Date();
+            let start = new Date();
+            start.setMonth(start.getMonth() - 1);
+            start.setDate(start.getDate() + 1);
+            let mmStart = start.getMonth() + 1;
+            let dStart = start.getDate();
+            let mmEnd = end.getMonth() + 1;
+            let dEnd = end.getDate();
+            let yyyyS = start.getFullYear();
+            let yyyyE = end.getFullYear();
             //init datepicker
-            self.startDate = ko.observable(_startDate);
+            self.startDate = ko.observable(yyyyS + "/" +  mmStart + "/" + dStart);
             self.startDate.subscribe(e => {
                 //self.japanStartDate = ko.observable(nts.uk.time.dateInJapanEmpire(moment.utc(self.startDate()).format("YYYYMMDD")).toString());
                 self.japanStartDate(nts.uk.time.dateInJapanEmpire(moment.utc(self.startDate()).format("YYYYMMDD")).toString());
@@ -111,14 +117,14 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
 
 
             self.japanStartDate = ko.observable(nts.uk.time.dateInJapanEmpire(moment.utc(self.startDate()).format("YYYYMMDD")).toString());
-            self.endDate = ko.observable(_endDate);
+            self.endDate = ko.observable(yyyyE + "/" +  mmEnd + "/" + dEnd);
             self.endDate.subscribe(e => {
                 self.japanEndDate(nts.uk.time.dateInJapanEmpire(moment.utc(self.endDate()).format("YYYYMMDD")).toString());
             });
             self.japanEndDate = ko.observable(nts.uk.time.dateInJapanEmpire(moment.utc(self.endDate()).format("YYYYMMDD")).toString());
 
 
-            self.baseDate1 = ko.observable(moment());
+            self.baseDate1 = ko.observable(yyyyE + "/" +  mmEnd + "/" + dEnd);
 
             self.baseDate1.subscribe(e => {
                 self.japanBaseDate(nts.uk.time.dateInJapanEmpire(moment.utc(self.baseDate1()).format("YYYYMMDD")).toString());

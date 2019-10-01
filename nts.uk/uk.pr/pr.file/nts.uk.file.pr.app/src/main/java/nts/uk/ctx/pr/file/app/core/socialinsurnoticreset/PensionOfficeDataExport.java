@@ -31,9 +31,9 @@ public class PensionOfficeDataExport {
 
     private String birthDay;
 
-    private String gender;
+    private int gender;
 
-    private String underDivision;
+    private int underDivision;
 
     private Integer livingAbroad;
 
@@ -98,5 +98,8 @@ public class PensionOfficeDataExport {
     private String healInsInherenPr;
 
     private String healUnionNumber;
+    private String hisId;
+    private int endDate;
+    private int bussinesArrSybol;
 
 }

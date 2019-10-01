@@ -9,14 +9,6 @@ import java.util.Optional;
 public interface WelfarePenTypeInforRepository
 {
 
-    List<WelfarePenTypeInfor> getAllWelfarePenTypeInfor();
-
     Optional<WelfarePenTypeInfor> getWelfarePenTypeInforById(String historyId);
-
-    void add(WelfarePenTypeInfor domain);
-
-    void update(WelfarePenTypeInfor domain);
-
-    void remove(String historyId);
 
 }

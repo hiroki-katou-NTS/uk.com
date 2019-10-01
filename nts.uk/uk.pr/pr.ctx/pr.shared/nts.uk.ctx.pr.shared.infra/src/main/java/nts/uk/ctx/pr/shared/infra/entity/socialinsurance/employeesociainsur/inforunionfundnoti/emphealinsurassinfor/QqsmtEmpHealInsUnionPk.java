@@ -10,7 +10,7 @@ import javax.persistence.Embeddable;
 import java.io.Serializable;
 
 /**
-* emphealinsurassinfor: 主キー情報
+* 社員健康保険組合情報: 主キー情報
 */
 @EqualsAndHashCode
 @AllArgsConstructor
@@ -24,7 +24,14 @@ public class QqsmtEmpHealInsUnionPk implements Serializable
     * 社員ID
     */
     @Basic(optional = false)
-    @Column(name = "EMPLOYEE_ID")
+    @Column(name = "SID")
     public String employeeId;
+
+    /**
+     * 会社ID
+     */
+    @Basic(optional = false)
+    @Column(name = "CID")
+    public String cid;
     
 }

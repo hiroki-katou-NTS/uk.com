@@ -24,14 +24,21 @@ public class QqsmtTemPenPartInfoPk implements Serializable
     * 社員ID
     */
     @Basic(optional = false)
-    @Column(name = "EMPLOYEE_ID")
+    @Column(name = "SID")
     public String employeeId;
     
     /**
     * 履歴ID
     */
     @Basic(optional = false)
-    @Column(name = "HISTORY_ID")
+    @Column(name = "HIST_ID")
     public String historyId;
+
+    /**
+     * 会社ID
+     */
+    @Basic(optional = false)
+    @Column(name = "CID")
+    public String cid;
     
 }
