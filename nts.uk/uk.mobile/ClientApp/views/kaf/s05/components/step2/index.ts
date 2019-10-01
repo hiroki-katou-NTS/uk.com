@@ -129,7 +129,6 @@ export class KafS05aStep2Component extends Vue {
 
     private hasPreAppError: boolean = false;
     private hasActualError: boolean = false;
-    private hasInputOverTime: boolean = false;
 
     @Watch('kafs05ModelStep2.selectedReason')
     public validateSelectedReason() {
@@ -155,18 +154,14 @@ export class KafS05aStep2Component extends Vue {
         this.$validate('kafs05ModelStep2.selectedReason2');
     }
 
-    @Watch('kafs05ModelStep2.overtimeHours', { deep: true, immediate: false })
-    public validateOvertimeHours(value: any) {
-        for (let item of value) {
+    get hasInputOverTime() {
+        for (let item of this.kafs05ModelStep2.overtimeHours) {
             if (!_.isNil(item.applicationTime)) {
-                this.hasInputOverTime = true;
+                return true;
                 break;
             }
-            this.hasInputOverTime = false;
-        }
 
-        if (this.hasInputOverTime) {
-            this.$validate('kafs05ModelStep2.overtimeHours');
+            return false;
         }
     }
 
