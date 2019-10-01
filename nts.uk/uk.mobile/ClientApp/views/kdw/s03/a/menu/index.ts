@@ -115,7 +115,7 @@ export class KdwS03AMenuComponent extends Vue {
     }
 
     public createMask() {
-        this.$mask('show');
+        this.$mask('show', 0);
         setTimeout(() => {
             this.$mask('hide');
         }, 500);

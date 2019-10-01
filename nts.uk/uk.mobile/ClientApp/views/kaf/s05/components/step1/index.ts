@@ -313,6 +313,7 @@ export class KafS05aStep1Component extends Vue {
                 this.$modal.error({ messageId: 'Msg_1508', messageParams: [res.parameterIds[0]] });
             } else {
                 this.$modal.error({ messageId: res.messageId }).then(() => {
+                    this.$mask('hide');
                     this.$goto('ccg008a');
                 });
             }
@@ -342,6 +343,7 @@ export class KafS05aStep1Component extends Vue {
                     this.$validate('clear');
                 }).catch((res: any) => {
                     this.$modal.error({ messageId: res.messageId }).then(() => {
+                        this.$mask('hide');
                         this.$goto('ccg008a');
                     });
                 });
@@ -376,6 +378,7 @@ export class KafS05aStep1Component extends Vue {
                     });
                 } else {
                     this.$modal.error({ messageId: res.messageId }).then(() => {
+                        this.$mask('hide');
                         this.$goto('ccg008a');
                     });
                 }
