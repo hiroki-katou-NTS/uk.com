@@ -81,28 +81,29 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
         String dummnyPhonenumber = "354326789";
 
         String healthInsuranceOfficeNumber1[];
+        String welfarePensionOfficeNumber1[];
 
 
         if(socialInsurNotiCreateSet.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL){
             if(data.getSocialInsuranceOffice() != null){
                 healthInsuranceOfficeNumber1 = data.getSocialInsuranceOffice().getInsuranceMasterInformation().getOfficeOrganizeNumber().getHealthInsuranceOfficeNumber1().get().v().split("");
-                ws.getCells().get("E12").putValue(healthInsuranceOfficeNumber1[0]);
-                ws.getCells().get("F12").putValue(healthInsuranceOfficeNumber1[1]);
-                ws.getCells().get("G12").putValue(healthInsuranceOfficeNumber1[2]);
-                ws.getCells().get("H12").putValue(healthInsuranceOfficeNumber1[3]);
-                ws.getCells().get("I12").putValue(healthInsuranceOfficeNumber1[4]);
-                ws.getCells().get("J12").putValue(healthInsuranceOfficeNumber1[5]);
+                ws.getCells().get("E12").putValue(healthInsuranceOfficeNumber1.length > 0 ? healthInsuranceOfficeNumber1[0] : "");
+                ws.getCells().get("F12").putValue(healthInsuranceOfficeNumber1.length > 1 ? healthInsuranceOfficeNumber1[1] : "");
+                ws.getCells().get("G12").putValue(healthInsuranceOfficeNumber1.length > 2 ? healthInsuranceOfficeNumber1[2] : "");
+                ws.getCells().get("H12").putValue(healthInsuranceOfficeNumber1.length > 3 ? healthInsuranceOfficeNumber1[3] : "");
+                ws.getCells().get("I12").putValue(healthInsuranceOfficeNumber1.length > 4 ? healthInsuranceOfficeNumber1[4] : "");
+                ws.getCells().get("J12").putValue(healthInsuranceOfficeNumber1.length > 5 ? healthInsuranceOfficeNumber1[5] : "");
             }
 
         }else{
             if(data.getSocialInsuranceOffice() != null){
-                healthInsuranceOfficeNumber1 = data.getSocialInsuranceOffice().getInsuranceMasterInformation().getOfficeOrganizeNumber().getWelfarePensionOfficeNumber1().get().v().split("");
-                ws.getCells().get("E12").putValue(healthInsuranceOfficeNumber1[0]);
-                ws.getCells().get("F12").putValue(healthInsuranceOfficeNumber1[1]);
-                ws.getCells().get("G12").putValue(healthInsuranceOfficeNumber1[2]);
-                ws.getCells().get("H12").putValue(healthInsuranceOfficeNumber1[3]);
-                ws.getCells().get("I12").putValue(healthInsuranceOfficeNumber1[4]);
-                ws.getCells().get("J12").putValue(healthInsuranceOfficeNumber1[5]);
+                welfarePensionOfficeNumber1 = data.getSocialInsuranceOffice().getInsuranceMasterInformation().getOfficeOrganizeNumber().getWelfarePensionOfficeNumber1().get().v().split("");
+                ws.getCells().get("E12").putValue(welfarePensionOfficeNumber1.length > 0 ? welfarePensionOfficeNumber1[0] : "");
+                ws.getCells().get("F12").putValue(welfarePensionOfficeNumber1.length > 1 ? welfarePensionOfficeNumber1[1] : "");
+                ws.getCells().get("G12").putValue(welfarePensionOfficeNumber1.length > 2 ? welfarePensionOfficeNumber1[2] : "");
+                ws.getCells().get("H12").putValue(welfarePensionOfficeNumber1.length > 3 ? welfarePensionOfficeNumber1[3] : "");
+                ws.getCells().get("I12").putValue(welfarePensionOfficeNumber1.length > 4 ? welfarePensionOfficeNumber1[4] : "");
+                ws.getCells().get("J12").putValue(welfarePensionOfficeNumber1.length > 5 ? welfarePensionOfficeNumber1[5] : "");
             }
 
         }
@@ -122,16 +123,16 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
         if(socialInsurNotiCreateSet.getPrintPersonNumber() == PersonalNumClass.OUTPUT_BASIC_PEN_NOPER || socialInsurNotiCreateSet.getPrintPersonNumber() == PersonalNumClass.OUTPUT_BASIC_PER_NUMBER){
             if(data.getEmpBasicPenNumInfor() != null && data.getEmpBasicPenNumInfor().getBasicPenNumber().isPresent()){
                 empBasicPenNumInfor = data.getEmpBasicPenNumInfor().getBasicPenNumber().get().v().split("");
-                ws.getCells().get("N12").putValue(empBasicPenNumInfor[0]);
-                ws.getCells().get("O12").putValue(empBasicPenNumInfor[1]);
-                ws.getCells().get("P12").putValue(empBasicPenNumInfor[2]);
-                ws.getCells().get("Q12").putValue(empBasicPenNumInfor[3]);
-                ws.getCells().get("R12").putValue(empBasicPenNumInfor[4]);
-                ws.getCells().get("S12").putValue(empBasicPenNumInfor[5]);
-                ws.getCells().get("T12").putValue(empBasicPenNumInfor[6]);
-                ws.getCells().get("U12").putValue(empBasicPenNumInfor[7]);
-                ws.getCells().get("V12").putValue(empBasicPenNumInfor[8]);
-                ws.getCells().get("W12").putValue(empBasicPenNumInfor[10]);
+                ws.getCells().get("N12").putValue(empBasicPenNumInfor.length > 0 ? empBasicPenNumInfor[0] : "");
+                ws.getCells().get("O12").putValue(empBasicPenNumInfor.length > 1 ? empBasicPenNumInfor[1] : "");
+                ws.getCells().get("P12").putValue(empBasicPenNumInfor.length > 2 ? empBasicPenNumInfor[2] : "");
+                ws.getCells().get("Q12").putValue(empBasicPenNumInfor.length > 3 ? empBasicPenNumInfor[3] : "");
+                ws.getCells().get("R12").putValue(empBasicPenNumInfor.length > 4 ? empBasicPenNumInfor[4] : "");
+                ws.getCells().get("S12").putValue(empBasicPenNumInfor.length > 5 ? empBasicPenNumInfor[5] : "");
+                ws.getCells().get("T12").putValue(empBasicPenNumInfor.length > 6 ? empBasicPenNumInfor[6] : "");
+                ws.getCells().get("U12").putValue(empBasicPenNumInfor.length > 7 ? empBasicPenNumInfor[7] : "");
+                ws.getCells().get("V12").putValue(empBasicPenNumInfor.length > 8 ? empBasicPenNumInfor[8] : "");
+                ws.getCells().get("W12").putValue(empBasicPenNumInfor.length > 9 ? empBasicPenNumInfor[9] : "");
             }
 
         }

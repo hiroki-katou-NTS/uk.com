@@ -75,8 +75,8 @@ public class NotificationOfLossInsExportPDFService extends ExportService<Notific
 			throw new BusinessException("Msg_37");
 		}
 
-		List<InsLossDataExport> overSeventy = healthInsLoss.stream().filter(item -> item.getCause2() == ReasonsForLossPensionIns.ONLY_PENSION_INSURANCE.value).collect(Collectors.toList());
-		List<InsLossDataExport> underSeventy = healthInsLoss.stream().filter(item -> item.getCause2() != ReasonsForLossPensionIns.ONLY_PENSION_INSURANCE.value).collect(Collectors.toList());
+		List<InsLossDataExport> overSeventy = healthInsLoss.stream().filter(item -> item.getCause2() != null && item.getCause2() == ReasonsForLossPensionIns.ONLY_PENSION_INSURANCE.value).collect(Collectors.toList());
+		List<InsLossDataExport> underSeventy = healthInsLoss.stream().filter(item -> (item.getCause2() != null && item.getCause2() != ReasonsForLossPensionIns.ONLY_PENSION_INSURANCE.value) || item.getCause2() == null).collect(Collectors.toList());
 		CompanyInfor company = socialInsurNotiCreateSetEx.getCompanyInfor(cid);
 		socialInsurNotiCreateSetFileGenerator.generate(exportServiceContext.getGeneratorContext(),
 				new LossNotificationInformation(underSeventy, overSeventy, null, domain, exportServiceContext.getQuery().getReference(), company, null));

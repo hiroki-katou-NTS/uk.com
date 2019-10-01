@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.shared.infra.repository.socialinsurance.employeesociainsur.emphealinsurassocinfor;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurassocinfor.HealInsurPortPerIntell;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurassocinfor.HealInsurPortPerIntellRepository;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurassocinfor.HealthCarePortInfor;
@@ -19,7 +20,7 @@ public class JpaHealInsurPortPerIntellRepository extends JpaRepository implement
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QqsmtHealInsurPortInt f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.healInsurPortIntPk.employeeId =:employeeId AND  f.healInsurPortIntPk.hisId =:hisId ";
     private static final String SELECT_BY_EMPID = SELECT_ALL_QUERY_STRING + " WHERE  f.healInsurPortIntPk.employeeId =:employeeId ";
-
+    private static final String SELECT_BY_ID = SELECT_ALL_QUERY_STRING + " WHERE  f.healInsurPortIntPk.cid =:cid AND f.healInsurPortIntPk.employeeId =:employeeId AND f.startDate <= :baseDate AND f.endDate >= :baseDate";
     @Override
     public List<HealInsurPortPerIntell> getAllHealInsurPortPerIntell(){
         return this.queryProxy().query(SELECT_ALL_QUERY_STRING, QqsmtHealInsurPortInt.class)
@@ -48,10 +49,12 @@ public class JpaHealInsurPortPerIntellRepository extends JpaRepository implement
     }
 
     @Override
-    public List<HealInsurPortPerIntell> getHealInsurPortPerIntellById(String employeeId) {
-        return this.queryProxy().query(SELECT_BY_EMPID, QqsmtHealInsurPortInt.class)
+    public Optional<HealthCarePortInfor> getHealInsurPortPerIntellById(String cid, String employeeId, GeneralDate baseDate) {
+        return this.queryProxy().query(SELECT_BY_ID, QqsmtHealInsurPortInt.class)
+                .setParameter("cid",cid)
                 .setParameter("employeeId", employeeId)
-                .getList(x -> x.toDomain());
+                .setParameter("baseDate",baseDate)
+                .getSingle(x -> x.toDomainHealthCare());
     }
 
     @Override

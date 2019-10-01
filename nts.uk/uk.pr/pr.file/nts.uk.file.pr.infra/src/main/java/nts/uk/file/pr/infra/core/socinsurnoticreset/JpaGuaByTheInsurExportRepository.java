@@ -185,19 +185,14 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("  QSIO.HEALTH_INSURANCE_OFFICE_NUMBER_2,");
         exportSQL.append("  QSIO.WELFARE_PENSION_OFFICE_NUMBER_1,");
         exportSQL.append("  QSIO.WELFARE_PENSION_OFFICE_NUMBER_2,");
-
         exportSQL.append("  BP.PERSON_NAME,");
         exportSQL.append("  BP.TODOKEDE_FNAME,");
-
         exportSQL.append("  BP.PERSON_NAME,");
         exportSQL.append("  BP.TODOKEDE_FNAME,");
-
         exportSQL.append("  BP.PERSON_NAME_KANA,");
         exportSQL.append("  BP.TODOKEDE_FNAME_KANA,");
-
         exportSQL.append("  BP.PERSON_NAME_KANA,");
         exportSQL.append("  BP.TODOKEDE_FNAME_KANA,");
-
         exportSQL.append("  BP.BIRTHDAY,");
         exportSQL.append("  BP.BIRTHDAY,");
         exportSQL.append("  BP.GENDER,");
@@ -266,7 +261,6 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append(" ON QEHIQ.SID = ROOT.SID ");
         exportSQL.append(" LEFT JOIN QQSDT_SYAHO_MULTI_OFFICE QMEWI ");
         exportSQL.append(" ON QMEWI.SID = ROOT.SID ");
-
         exportSQL.append("  ORDER BY SYAHO_OFFICE_CD, SCD");
         String sql = String.format(exportSQL.toString(), empIds.stream()
                 .map(String::valueOf)
@@ -505,7 +499,7 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("         (SELECT *");
         exportSQL.append("         FROM QQSDT_KOUHO_INFO ");
         exportSQL.append("         WHERE START_DATE <= ?endDate AND START_DATE >= ?startDate");
-        exportSQL.append("         AND.SID IN ('%s') )qi");
+        exportSQL.append("         AND SID IN ('%s') )qi");
         exportSQL.append("  INNER JOIN ");
         exportSQL.append("       (SELECT * ");
         exportSQL.append("       FROM QQSDT_SYAHO_OFFICE_INFO ");
