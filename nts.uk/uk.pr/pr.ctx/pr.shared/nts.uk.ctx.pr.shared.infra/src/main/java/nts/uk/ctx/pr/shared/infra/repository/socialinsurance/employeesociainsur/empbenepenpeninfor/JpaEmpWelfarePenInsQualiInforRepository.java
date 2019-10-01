@@ -17,7 +17,7 @@ public class JpaEmpWelfarePenInsQualiInforRepository extends JpaRepository imple
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.empWelfInsQcIfPk.historyId =:historyId ";
     private static final String SELECT_BY_LIST_EMP = SELECT_ALL_QUERY_STRING + " WHERE  f.empWelfInsQcIfPk.employeeId IN :employeeIds  AND f.endDate >= :startDate AND f.endDate <= :endDate";
     private static final String SELECT_BY_EMPID = SELECT_ALL_QUERY_STRING + " WHERE  f.empWelfInsQcIfPk.employeeId =:employeeId";
-    private static final String SELECT_BY_LIST_EMP_START = SELECT_ALL_QUERY_STRING + " WHERE  f.empWelfInsQcIfPk.employeeId IN :employeeIds  AND f.endDate >= :startDate AND f.endDate <= :endDate";
+    private static final String SELECT_BY_LIST_EMP_START = SELECT_ALL_QUERY_STRING + " WHERE  f.empWelfInsQcIfPk.employeeId IN :employeeIds  AND f.startDate >= :startDate AND f.startDate <= :endDate";
     private static final String SELECT_BY_KEY_ID = SELECT_ALL_QUERY_STRING + " WHERE  f.empWelfInsQcIfPk.cid = :cid AND f.empWelfInsQcIfPk.historyId =:historyId AND f.empWelfInsQcIfPk.employeeId = :employeeId";
     private static final String SELECT_BY_ID = SELECT_ALL_QUERY_STRING + " WHERE  f.empWelfInsQcIfPk.cid = :cid AND f.empWelfInsQcIfPk.employeeId =:employeeId";
     private static final String SELECT_BY_HISID = SELECT_ALL_QUERY_STRING + " WHERE  f.empWelfInsQcIfPk.cid = :cid AND  f.empWelfInsQcIfPk.historyId =:historyId ";

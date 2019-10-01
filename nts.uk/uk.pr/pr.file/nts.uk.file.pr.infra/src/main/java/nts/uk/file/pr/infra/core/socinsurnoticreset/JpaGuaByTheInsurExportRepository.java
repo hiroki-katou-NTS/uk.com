@@ -448,7 +448,7 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("      WELFARE_PENSION_FUND_NUMBER,");
         exportSQL.append("      WELFARE_PENSION_OFFICE_NUMBER_1,");
         exportSQL.append("      WELFARE_PENSION_OFFICE_NUMBER_2,");
-        exportSQL.append("      WEL_PEN_NUMBER,");
+        exportSQL.append("      KOUHO_NU,");
         exportSQL.append("      KNKUM_NUM,");
         exportSQL.append("      KIKIN_NUM,");
         exportSQL.append("      WELFARE_PENSION_OFFICE_NUMBER,");
@@ -467,15 +467,15 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("      END_REASON_ATR,");
         exportSQL.append("      S_ADD_MONTHLY_AMOUNT_1,");
         exportSQL.append("      S_SRD_MONTHLY_AMOUNT_1,");
-        exportSQL.append("      SEC_S_ADD_MONTHLY_AMOUNT_1ARY,");
+        exportSQL.append("      S_ADD_MONTHLY_AMOUNT_2,");
         exportSQL.append("      S_SRD_MONTHLY_AMOUNT_2,");
-        exportSQL.append("      CAUSE,");
+        exportSQL.append("      LOSS_CASE_ATR,");
         exportSQL.append("      MULTI_OFFICE_ATR,");
         exportSQL.append("      OTHER_REASONS,");
         exportSQL.append("      CONTINUE_REEMPLOYED_ATR,");
         exportSQL.append("      KISONEN_NUM,");
         exportSQL.append("      GENDER,");
-        exportSQL.append("      ni.COAL_MINER_ATR,");
+        exportSQL.append("      COAL_MINER_ATR,");
         exportSQL.append("      QUALIFI_DISTIN,");
         exportSQL.append("      OVER_ATR,");
         exportSQL.append("      BIKO_SONOTA_ATR,");

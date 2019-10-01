@@ -292,7 +292,7 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
         this.selectUnder(worksheets, data.getIsMoreEmp(),"A2_18", sheetName, stt);
         this.selectUnder(worksheets, data.getContinReemAfterRetirement(),"A2_19", sheetName, stt);
         this.selectUnder(worksheets, data.getOther(),"A2_20", sheetName, stt);
-        this.selectUnder(worksheets, data.getCause2() != 6 ? 0 : 1,"A2_24", sheetName, stt);
+        this.selectUnder(worksheets, data.getCause2() != null && data.getCause2() != 6 ? 0 : 1,"A2_24", sheetName, stt);
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_1", stt)).setValue(
                 ins.getInsuredNumber() == InsurPersonNumDivision.OUTPUT_HEAL_INSUR_NUM ? data.getHealInsNumber() :
                 ins.getInsuredNumber() == InsurPersonNumDivision.OUTPUT_THE_WELF_PENNUMBER ? data.getWelfPenNumber() :
