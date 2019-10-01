@@ -155,10 +155,4 @@ module nts.uk.util {
             return d.promise();
         }
     }
-
-    nts.uk.util.browser.private.then(priv => {
-        if (priv && nts.uk.util.browser.version === 'Safari 10' && nts.uk.util.browser.mobile) {
-            alert(nts.uk.resource.getText('Msg_1533'));
-        }
-    });
 }
