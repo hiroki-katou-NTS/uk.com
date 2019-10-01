@@ -189,11 +189,6 @@ var nts;
                 return browser;
             }());
             util.browser = browser;
-            nts.uk.util.browser.private.then(function (priv) {
-                if (priv && nts.uk.util.browser.version === 'Safari 10' && nts.uk.util.browser.mobile) {
-                    alert(nts.uk.resource.getText('Msg_1533'));
-                }
-            });
         })(util = uk.util || (uk.util = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -849,16 +844,25 @@ var nts;
         })(util = uk.util || (uk.util = {}));
         var WebStorageWrapper = (function () {
             function WebStorageWrapper(nativeStorage) {
-                this.nativeStorage = nativeStorage;
+                var _this = this;
+                this.nativeStorage = null;
+                nts.uk.util.browser.private.then(function (priv) {
+                    if (priv && nts.uk.util.browser.version === 'Safari 10' && nts.uk.util.browser.mobile) {
+                        nts.uk.util.dialog.alert({ messageId: 'Msg_1533' });
+                    }
+                    else {
+                        _this.nativeStorage = nativeStorage;
+                    }
+                });
             }
             WebStorageWrapper.prototype.key = function (index) {
-                return this.nativeStorage.key(index);
+                return this.nativeStorage && this.nativeStorage.key(index);
             };
             WebStorageWrapper.prototype.setItem = function (key, value) {
                 if (value === undefined) {
                     return;
                 }
-                this.nativeStorage.setItem(key, value);
+                this.nativeStorage && this.nativeStorage.setItem(key, value);
             };
             WebStorageWrapper.prototype.setItemAsJson = function (key, value) {
                 this.setItem(key, JSON.stringify(value));
@@ -868,7 +872,7 @@ var nts;
             };
             ;
             WebStorageWrapper.prototype.getItem = function (key) {
-                var value = this.nativeStorage.getItem(key);
+                var value = this.nativeStorage && this.nativeStorage.getItem(key) || null;
                 if (value === null || value === undefined || value === 'undefined') {
                     return util.optional.empty();
                 }
@@ -880,10 +884,10 @@ var nts;
                 return item;
             };
             WebStorageWrapper.prototype.removeItem = function (key) {
-                this.nativeStorage.removeItem(key);
+                this.nativeStorage && this.nativeStorage.removeItem(key);
             };
             WebStorageWrapper.prototype.clear = function () {
-                this.nativeStorage.clear();
+                this.nativeStorage && this.nativeStorage.clear();
             };
             return WebStorageWrapper;
         }());
