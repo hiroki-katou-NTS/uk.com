@@ -115,7 +115,7 @@ import { Kafs05Model } from '../common/CommonClass';
             constraint: 'AppReason'
         },
         hasInputOverTime: {
-            test(value: any) {
+            test(value: boolean) {
                 return value ? '' : 'MsgB_30';
             },
         }
@@ -155,14 +155,12 @@ export class KafS05aStep2Component extends Vue {
     }
 
     get hasInputOverTime() {
-        for (let item of this.kafs05ModelStep2.overtimeHours) {
-            if (!_.isNil(item.applicationTime)) {
-                return true;
-                break;
-            }
-
-            return false;
+        let result = _.find(this.kafs05ModelStep2.overtimeHours, (item) => !_.isNil(item.applicationTime));
+        if (!_.isEmpty(result)) {
+            return true;
         }
+
+        return false;
     }
 
     public created() {
