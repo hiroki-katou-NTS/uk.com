@@ -14,7 +14,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "QQSMT_EMPL_PEN_FUND_INFO")
+@Table(name = "QQSDT_KIKIN_EGOV_INFO")
 public class QqsmtEmplPenFundInfo extends UkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
@@ -30,189 +30,189 @@ public class QqsmtEmplPenFundInfo extends UkJpaEntity implements Serializable
     * 加算適用区分(給与)
     */
     @Basic(optional = false)
-    @Column(name = "ADD_APP_CTG_SAL")
+    @Column(name = "S_ADDITION_ATR")
     public int addAppCtgSal;
     
     /**
     * 加算給与月額
     */
     @Basic(optional = false)
-    @Column(name = "ADD_SAL")
+    @Column(name = "S_ADD_MONTHLY_AMOUNT_1")
     public String addSal;
     
     /**
     * 標準給与月額
     */
     @Basic(optional = false)
-    @Column(name = "STAND_SAL")
+    @Column(name = "S_SRD_MONTHLY_AMOUNT_1")
     public String standSal;
     
     /**
     * 第２加算給与月額
     */
     @Basic(optional = false)
-    @Column(name = "SEC_ADD_SALARY")
+    @Column(name = "S_ADD_MONTHLY_AMOUNT_2")
     public String secAddSalary;
     
     /**
     * 第２標準給与月額
     */
     @Basic(optional = false)
-    @Column(name = "SEC_STAND_SAL")
+    @Column(name = "S_SRD_MONTHLY_AMOUNT_2")
     public String secStandSal;
     
     /**
     * 加算適用区分(賞与)
     */
     @Basic(optional = false)
-    @Column(name = "ADD_APP_CTG_BS")
+    @Column(name = "B_ADDITION_ATE")
     public int addAppCtgBs;
     
     /**
     * 加算賞与月額
     */
     @Basic(optional = false)
-    @Column(name = "ADD_BONUS")
+    @Column(name = "B_ADD_MONTHLY_AMOUNT_1")
     public String addBonus;
     
     /**
     * 標準賞与月額
     */
     @Basic(optional = false)
-    @Column(name = "STAND_BONUS")
+    @Column(name = "B_SRD_MONTHLY_AMOUNT_1")
     public String standBonus;
     
     /**
     * 第２加算賞与月額
     */
     @Basic(optional = false)
-    @Column(name = "SEC_STAND_BONUS")
+    @Column(name = "B_ADD_MONTHLY_AMOUNT_2")
     public String secStandBonus;
     
     /**
     * 第２標準賞与月額
     */
     @Basic(optional = false)
-    @Column(name = "SEC_ADD_BONUS")
+    @Column(name = "B_SRD_MONTHLY_AMOUNT_2")
     public String secAddBonus;
     
     /**
     * 基金固有項目１
     */
     @Basic(optional = false)
-    @Column(name = "FUND_SPECIFIC1")
+    @Column(name = "SPECIFIC_ITEM_1")
     public String fundSpecific1;
     
     /**
     * 基金固有項目２
     */
     @Basic(optional = false)
-    @Column(name = "FUND_SPECIFIC2")
+    @Column(name = "SPECIFIC_ITEM_2")
     public String fundSpecific2;
     
     /**
     * 基金固有項目３
     */
     @Basic(optional = false)
-    @Column(name = "FUND_SPECIFIC3")
+    @Column(name = "SPECIFIC_ITEM_3")
     public String fundSpecific3;
     
     /**
     * 基金固有項目４
     */
     @Basic(optional = false)
-    @Column(name = "FUND_SPECIFIC4")
+    @Column(name = "SPECIFIC_ITEM_4")
     public String fundSpecific4;
     
     /**
     * 基金固有項目５
     */
     @Basic(optional = false)
-    @Column(name = "FUND_SPECIFIC5")
+    @Column(name = "SPECIFIC_ITEM_5")
     public String fundSpecific5;
     
     /**
     * 基金固有項目７
     */
     @Basic(optional = false)
-    @Column(name = "FUND_SPECIFIC7")
+    @Column(name = "SPECIFIC_ITEM_7")
     public String fundSpecific7;
     
     /**
     * 基金固有項目８
     */
     @Basic(optional = false)
-    @Column(name = "FUND_SPECIFIC8")
+    @Column(name = "SPECIFIC_ITEM_8")
     public String fundSpecific8;
     
     /**
     * 基金固有項目９
     */
     @Basic(optional = false)
-    @Column(name = "FUND_SPECIFIC9")
+    @Column(name = "SPECIFIC_ITEM_9")
     public String fundSpecific9;
     
     /**
     * 基金固有項目１０
     */
     @Basic(optional = false)
-    @Column(name = "FUND_SPECIFIC10")
+    @Column(name = "SPECIFIC_ITEM_10")
     public String fundSpecific10;
     
     /**
     * 加入形態区分
     */
     @Basic(optional = false)
-    @Column(name = "SUB_TYPE")
+    @Column(name = "ENTRY_TYPE_ATR")
     public int subType;
     
     /**
     * 適用形態区分
     */
     @Basic(optional = false)
-    @Column(name = "APP_FORM_CLS")
+    @Column(name = "APPLY_TYPE_ATR")
     public int appFormCls;
     
     /**
     * 退職後の郵便番号
     */
     @Basic(optional = false)
-    @Column(name = "POST_CD")
+    @Column(name = "POSTALCD_AFTER_RETIRE")
     public String postCd;
     
     /**
     * 退職後の住所カナ
     */
     @Basic(optional = false)
-    @Column(name = "RETIREMENT_ADD_BEFORE")
+    @Column(name = "ADDRESS_KN_AFTER_RETIRE")
     public String retirementAddBefore;
     
     /**
     * 退職後の住所
     */
     @Basic(optional = false)
-    @Column(name = "RETIREMENT_ADD")
+    @Column(name = "ADDRESS_AFTER_RETIRE")
     public String retirementAdd;
     
     /**
     * 喪失理由区分
     */
     @Basic(optional = false)
-    @Column(name = "REASON_FOR_LOSS")
+    @Column(name = "LOSS_REASON_ATR")
     public int reasonForLoss;
     
     /**
     * 適用終了理由区分
     */
     @Basic(optional = false)
-    @Column(name = "REASON")
+    @Column(name = "END_REASON_ATR")
     public int reason;
     
     /**
     * 基金固有項目６
     */
     @Basic(optional = false)
-    @Column(name = "FUND_SPECIFIC6")
+    @Column(name = "SPECIFIC_ITEM_6")
     public String fundSpecific6;
 
 

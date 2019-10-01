@@ -16,8 +16,7 @@ public class JpaEmpFamilyInsHisRepository extends JpaRepository implements EmpFa
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QqsmtEmpFamilyInsHis f";
     private static final String SELECT_BY_EMP_ID = SELECT_ALL_QUERY_STRING + " WHERE  f.empFamilyInsHisPk.empId =:empId ";
     private static final  String SELECT_EM_FAMILY = "SELECT f FROM QqsmtEmpFamilyInsHis f WHERE f.empFamilyInsHisPk.empId =:empId AND f.empFamilyInsHisPk.familyId =:familyId";
-    private static final String SELECT_FAMILY_SOCIAL  = "SELECT f FROM QqsmtEmpFamilyInsHis f " +
-            "WHERE f.empFamilyInsHisPk.historyId =:historyId AND f.empFamilyInsHisPk.empId =:empId  AND f.empFamilyInsHisPk.familyId =:familyId";
+    private static final String SELECT_FAMILY_SOCIAL  = "SELECT f FROM QqsmtEmpFamilyInsHis f WHERE f.empFamilyInsHisPk.historyId =:historyId AND f.empFamilyInsHisPk.empId =:empId  AND f.empFamilyInsHisPk.familyId =:familyId";
 
 
 
@@ -39,12 +38,12 @@ public class JpaEmpFamilyInsHisRepository extends JpaRepository implements EmpFa
     }
 
     @Override
-    public Optional<EmpFamilySocialIns> getEmpFamilySocialInsById(String empId, String familyId, String historyId) {
+    public Optional<EmpFamilySocialIns> getEmpFamilySocialInsById(String empId, int familyId, String historyId) {
         return this.queryProxy().query(SELECT_FAMILY_SOCIAL, QqsmtEmpFamilyInsHis.class)
                 .setParameter("historyId", historyId)
                 .setParameter("familyId", familyId)
                 .setParameter("empId", empId)
                 .getSingle(c->c.toDomains());
-    }
+}
 
 }

@@ -8,6 +8,7 @@ import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurb
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.HealInsurNumberInfor;
 import nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.emphealinsurbeneinfo.QqsmtEmpHealInsurQi;
 import nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.emphealinsurbeneinfo.QqsmtEmpHealInsurQiPk;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -76,7 +77,12 @@ public class JpaEmplHealInsurQualifiInforRepository extends JpaRepository implem
 
     @Override
     public Optional<HealInsurNumberInfor> getHealInsurNumberInforByHisId(String empId, String hisId) {
-        return Optional.empty();
+
+        return this.queryProxy().query(SELECT_BY_KEY_STRING, QqsmtEmpHealInsurQi.class)
+                .setParameter("employeeId",empId)
+                .setParameter("hisId", hisId)
+                .getSingle(x -> x.toHealInsurNumberInfor());
+
     }
 
     @Override
@@ -91,6 +97,6 @@ public class JpaEmplHealInsurQualifiInforRepository extends JpaRepository implem
 
     @Override
     public void remove(String employeeId, String hisId){
-        this.commandProxy().remove(QqsmtEmpHealInsurQi.class, new QqsmtEmpHealInsurQiPk(employeeId, hisId));
+        this.commandProxy().remove(QqsmtEmpHealInsurQi.class, new QqsmtEmpHealInsurQiPk(employeeId, hisId, AppContexts.user().companyId()));
     }
 }

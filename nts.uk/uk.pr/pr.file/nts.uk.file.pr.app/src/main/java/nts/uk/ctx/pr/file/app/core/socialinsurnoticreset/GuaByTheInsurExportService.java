@@ -87,7 +87,7 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
                         exportServiceContext.getQuery().getStartDate(), exportServiceContext.getQuery().getEndDate());
             }
             if(ins.getOutputFormat().get() == OutputFormatClass.HEAL_INSUR_ASSO) {
-                healthInsAss = guaByTheInsurExportRepository.getDataHealthInsAss(exportServiceContext.getQuery().getEmpIds(), cid,
+                healthInsAss = guaByTheInsurExportRepository.getDataHealthInsAss(exportServiceContext.getQuery().getEmpIds(), cid, userId,
                         exportServiceContext.getQuery().getStartDate(), exportServiceContext.getQuery().getEndDate());
             }
             if(ins.getOutputFormat().get() == OutputFormatClass.THE_WELF_PEN) {
@@ -105,6 +105,8 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
                 .empPenFundSub(empPensionFund)
                 .pensionOfficeData(pension.isEmpty() ? healthInsAss : pension)
                 .baseDate(exportServiceContext.getQuery().getBaseDate())
+                .startDate(exportServiceContext.getQuery().getStartDate())
+                .endDate(exportServiceContext.getQuery().getEndDate())
                 .build();
 
         if (exportServiceContext.getQuery().getTypeExport() == TYPE_EXPORT_EXCEL_FILE) {
@@ -210,7 +212,7 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
                 //C2_21
                 temp.setQualificationDate(element[37] != null ? element[37].toString() : "");
             }
-            if(Integer.valueOf(element[14].toString()) == Enum_SubNameClass_PERSONAL_NAME){
+            if(Integer.valueOf(element[13].toString()) == Enum_SubNameClass_PERSONAL_NAME){
                 //C2_2
                 temp.setNameOfInsuredPersonMr(element[19] != null ? element[19].toString() : "");
                 //C2_3
@@ -231,7 +233,6 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
                 //C2_5
                 temp.setNameOfInsuredPerson1(element[26] != null ? element[26].toString() : "");
             }
-            //C1_10
             //C2_6 => covert to Date of birth (Showa)
             temp.setBrithDayShowa(element[27] != null ? element[27].toString() : "");
             //C2_7 => covert to Date of birth (Heisei)
@@ -241,8 +242,7 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
             //C2_9
             temp.setBrithDay(element[27] != null ? element[27].toString() : "");
 
-            temp.setHisId(element[28] != null ? element[28].toString() : "");
-
+            temp.setHisId(element[30] != null ? element[30].toString() : "");
             //Male(1), Female(2)
             String hisId = element[30] != null ? element[30].toString() : "";
             int gender = Integer.valueOf(element[29].toString());
@@ -328,10 +328,10 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
 //            throw new BusinessException("Msg_812",TextResource.localize("QSI001_27"));
 //        }
         if (socialInsurNotiCreateSet.get().getOfficeInformation().value == DO_NOT_OUPUT) {
-            throw new BusinessException("MsgQ_174", "QSI001_31");
+            throw new BusinessException("MsgQ_174", "QSI001_A222_27");
         }
         if (!socialInsurNotiCreateSet.get().getFdNumber().isPresent()) {
-            throw new BusinessException("MsgQ_5", "QSI001_46");
+            throw new BusinessException("MsgQ_5", "QSI001_A222_50");
         }
         if (!socialInsurNotiCreateSet.get().getOutputFormat().isPresent()) {
             throw new BusinessException("MsgQ_5", "QSI001_46");
@@ -348,12 +348,12 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
                 boolean empWelfarePenInsQualiInfor;
 
                 if (/*対象区分（0：資格取得、1:資格喪失）KH cho == 0*/ 0 == 0) {
-                    emplHealInsurQualifiInfor = mEmplHealInsurQualifiInforRepository.checkEmplHealInsurQualifiInforEndDate(startDate, endDate, employeeIds);
-                    empWelfarePenInsQualiInfor = mEmpWelfarePenInsQualiInforRepository.checkEmpWelfarePenInsQualiInforEnd(startDate, endDate, employeeIds);
+                    emplHealInsurQualifiInfor = mEmplHealInsurQualifiInforRepository.checkEmplHealInsurQualifiInforStartDate(startDate, endDate, employeeIds);
+                    empWelfarePenInsQualiInfor = mEmpWelfarePenInsQualiInforRepository.checkEmpWelfarePenInsQualiInforStart(startDate, endDate, employeeIds);
 
                 } else {
-                    emplHealInsurQualifiInfor = mEmplHealInsurQualifiInforRepository.checkEmplHealInsurQualifiInforEndDate(startDate, endDate, employeeIds);
-                    empWelfarePenInsQualiInfor = mEmpWelfarePenInsQualiInforRepository.checkEmpWelfarePenInsQualiInforEnd(startDate, endDate, employeeIds);
+                    emplHealInsurQualifiInfor = mEmplHealInsurQualifiInforRepository.checkEmplHealInsurQualifiInforStartDate(startDate, endDate, employeeIds);
+                    empWelfarePenInsQualiInfor = mEmpWelfarePenInsQualiInforRepository.checkEmpWelfarePenInsQualiInforStart(startDate, endDate, employeeIds);
 
                 }
                 if (emplHealInsurQualifiInfor && empWelfarePenInsQualiInfor) {
@@ -365,10 +365,10 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
             case HEAL_INSUR_ASS: {
                 boolean emplHealInsurQualifiInfor;
                 if (/* 対象区分（0：資格取得、1:資格喪失）KH cho == 0*/ 0 == 0) {
-                    emplHealInsurQualifiInfor = mEmplHealInsurQualifiInforRepository.checkEmplHealInsurQualifiInforEndDate(startDate, endDate, employeeIds);
+                    emplHealInsurQualifiInfor = mEmplHealInsurQualifiInforRepository.checkEmplHealInsurQualifiInforStartDate(startDate, endDate, employeeIds);
 
                 } else {
-                    emplHealInsurQualifiInfor = mEmplHealInsurQualifiInforRepository.checkEmplHealInsurQualifiInforEndDate(startDate, endDate, employeeIds);
+                    emplHealInsurQualifiInfor = mEmplHealInsurQualifiInforRepository.checkEmplHealInsurQualifiInforStartDate(startDate, endDate, employeeIds);
                 }
                 if (emplHealInsurQualifiInfor) {
                     throw new BusinessException("Msg_37");
@@ -380,9 +380,9 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
                 boolean empWelfarePenInsQualiInfor;
 
                 if (/* 対象区分（0：資格取得、1:資格喪失）KH cho == 0*/ 0 == 0) {
-                    empWelfarePenInsQualiInfor = mEmpWelfarePenInsQualiInforRepository.checkEmpWelfarePenInsQualiInforEnd(startDate, endDate, employeeIds);
+                    empWelfarePenInsQualiInfor = mEmpWelfarePenInsQualiInforRepository.checkEmpWelfarePenInsQualiInforStart(startDate, endDate, employeeIds);
                 } else {
-                    empWelfarePenInsQualiInfor = mEmpWelfarePenInsQualiInforRepository.checkEmpWelfarePenInsQualiInforEnd(startDate, endDate, employeeIds);
+                    empWelfarePenInsQualiInfor = mEmpWelfarePenInsQualiInforRepository.checkEmpWelfarePenInsQualiInforStart(startDate, endDate, employeeIds);
 
                 }
                 if (empWelfarePenInsQualiInfor) {

@@ -24,14 +24,20 @@ public class QqsmtEmpHealInsurQiPk implements Serializable
     * 社員ID
     */
     @Basic(optional = false)
-    @Column(name = "EMPLOYEE_ID")
+    @Column(name = "SID")
     public String employeeId;
     
     /**
     * 履歴ID
     */
     @Basic(optional = false)
-    @Column(name = "HIS_ID")
+    @Column(name = "HIST_ID")
     public String hisId;
+    /**
+     * 会社ID
+     */
+    @Basic(optional = false)
+    @Column(name = "CID")
+    public String cid;
     
 }
