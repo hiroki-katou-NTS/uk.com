@@ -16,7 +16,7 @@ public class JpaEmpBasicPenNumInforRepository extends JpaRepository implements E
 {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QqsmtEmpBaPenNum f";
-    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.empBaPenNumPk.employeeId =:employeeId ";
+    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.empBaPenNumPk.employeeId =:employeeId AND f.empBaPenNumPk.cid =:cid";
 
     @Override
     public List<EmpBasicPenNumInfor> getAllEmpBasicPenNumInfor(){
@@ -27,8 +27,9 @@ public class JpaEmpBasicPenNumInforRepository extends JpaRepository implements E
     @Override
     public Optional<EmpBasicPenNumInfor> getEmpBasicPenNumInforById(String employeeId){
         return this.queryProxy().query(SELECT_BY_KEY_STRING, QqsmtEmpBaPenNum.class)
-        .setParameter("employeeId", employeeId)
-        .getSingle(c->c.toDomain());
+                .setParameter("employeeId", employeeId)
+                .setParameter("cid", AppContexts.user().companyId())
+                .getSingle(c->c.toDomain());
     }
 
 
