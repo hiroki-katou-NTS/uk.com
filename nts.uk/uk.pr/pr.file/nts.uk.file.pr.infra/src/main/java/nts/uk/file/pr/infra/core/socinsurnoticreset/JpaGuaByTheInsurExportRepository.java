@@ -337,7 +337,7 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("      HEALTH_INSURANCE_UNION_OFFICE_NUMBER, ");
         exportSQL.append("      ni.HIST_ID, ");
         exportSQL.append("      oi.PHONE_NUMBER, ");
-        exportSQL.append("      QSINS.OUTPUT_OFFICE_SRNUM ");
+        exportSQL.append("      QSINS.OUTPUT_OFFICE_SRNUM, ");
         exportSQL.append("      oi.NAME, ");
         exportSQL.append("      oi.REPRESENTATIVE_NAME, ");
         exportSQL.append("      oi.POSTAL_CODE ");
@@ -584,7 +584,7 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
                 .oldName(i[21] == null ? "" : i[21].toString())
                 .oldNameKana(i[22] == null ? "" : i[22].toString())
                 .birthDay(i[23] == null ? "" : i[23].toString())
-                .portCd(i[24] == null ? "" : i[24].toString())
+                .portCd(i[61] == null ? "" : i[61].toString())
                 .retirementAddBefore(i[25] == null ? "" : i[25].toString())
                 .retirementAdd(i[26] == null ? "" : i[26].toString())
                 .reasonForLoss(i[27] == null ? "" : i[27].toString())
