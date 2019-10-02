@@ -29,7 +29,7 @@
 
     <ui:define name="content">
         <div id="functions-area" style = "min-width: 1000px;padding-left: 75px">
-            <button id="A1_1" tabindex="1" data-bind="click: exportPDF, enable: $root.errors.isEmpty() &amp;&amp; selectedCodeKCP005().length > 0" class="proceed">#{i18n.getText('QSI002_A1_1')}</button>
+            <button id="A1_1" tabindex="1" style="margin-left:5px;" data-bind=", click: exportPDF, enable: $root.errors.isEmpty() &amp;&amp; selectedCodeKCP005().length > 0" class="proceed">#{i18n.getText('QSI002_A1_1')}</button>
 
             <button id="A1_2" tabindex="2" data-bind="click: openScreenB, enable: false" >#{i18n.getText('QSI002_4')}</button>
 
