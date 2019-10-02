@@ -3,7 +3,7 @@ module kcp.share.list {
         id?: string;
         code: string;
         name?: string;
-        workplaceName?: string;
+        affiliationName?: string;
         isAlreadySetting?: boolean;
         optionalColumn?: any;
     }
@@ -562,7 +562,7 @@ module kcp.share.list {
             // workplace name column
             if (self.listType == ListType.EMPLOYEE && self.isShowWorkPlaceName) {
                 self.listComponentColumn.push({
-                    headerText: nts.uk.resource.getText('KCP005_4'), prop: 'workplaceName', width: self.gridStyle.workplaceColumnSize,
+                    headerText: nts.uk.resource.getText('KCP005_4'), prop: 'affiliationName', width: self.gridStyle.workplaceColumnSize,
                     template: "<td class='list-component-name-col'>${workplaceName}</td>"
                 });
             }

@@ -22,9 +22,6 @@ public class EmployeeDataView_ {
 	/** The job end date. */
 	public static volatile SingularAttribute<EmployeeDataView, GeneralDateTime> jobEndDate;
 
-	/** The wpl end date. */
-	public static volatile SingularAttribute<EmployeeDataView, GeneralDateTime> wplEndDate;
-
 	/** The class str date. */
 	public static volatile SingularAttribute<EmployeeDataView, GeneralDateTime> classStrDate;
 
@@ -42,9 +39,6 @@ public class EmployeeDataView_ {
 
 	/** The abs str date. */
 	public static volatile SingularAttribute<EmployeeDataView, GeneralDateTime> absStrDate;
-
-	/** The wpl info end date. */
-	public static volatile SingularAttribute<EmployeeDataView, GeneralDateTime> wplInfoEndDate;
 
 	/** The emp cd. */
 	public static volatile SingularAttribute<EmployeeDataView, String> empCd;
@@ -70,26 +64,17 @@ public class EmployeeDataView_ {
 	/** The temp abs frame no. */
 	public static volatile SingularAttribute<EmployeeDataView, Integer> tempAbsFrameNo;
 
-	/** The workplace id. */
-	public static volatile SingularAttribute<EmployeeDataView, String> workplaceId;
-
 	/** The class end date. */
 	public static volatile SingularAttribute<EmployeeDataView, GeneralDateTime> classEndDate;
 
 	/** The work type str date. */
 	public static volatile SingularAttribute<EmployeeDataView, GeneralDate> workTypeStrDate;
 
-	/** The wpl str date. */
-	public static volatile SingularAttribute<EmployeeDataView, GeneralDateTime> wplStrDate;
-
 	/** The del status atr. */
 	public static volatile SingularAttribute<EmployeeDataView, Integer> delStatusAtr;
 
 	/** The job info str date. */
 	public static volatile SingularAttribute<EmployeeDataView, GeneralDateTime> jobInfoStrDate;
-
-	/** The wpl name. */
-	public static volatile SingularAttribute<EmployeeDataView, String> wplName;
 
 	/** The job info end date. */
 	public static volatile SingularAttribute<EmployeeDataView, GeneralDateTime> jobInfoEndDate;
@@ -103,17 +88,11 @@ public class EmployeeDataView_ {
 	/** The person name kana. */
 	public static volatile SingularAttribute<EmployeeDataView, String> personNameKana;
 
-	/** The wpl cd. */
-	public static volatile SingularAttribute<EmployeeDataView, String> wplCd;
-
 	/** The job cd. */
 	public static volatile SingularAttribute<EmployeeDataView, String> jobCd;
 
 	/** The employment end date. */
 	public static volatile SingularAttribute<EmployeeDataView, GeneralDateTime> employmentEndDate;
-
-	/** The wpl info str date. */
-	public static volatile SingularAttribute<EmployeeDataView, GeneralDateTime> wplInfoStrDate;
 
 	/** The cid. */
 	public static volatile SingularAttribute<EmployeeDataView, String> cid;
@@ -124,19 +103,87 @@ public class EmployeeDataView_ {
 	/** The closure id. */
 	public static volatile SingularAttribute<EmployeeDataView, Integer> closureId;
 
-	/** The wpl hierarchy code. */
-	public static volatile SingularAttribute<EmployeeDataView, String> wplHierarchyCode;
-
-	/** The wkp conf end date. */
-	public static volatile SingularAttribute<EmployeeDataView, GeneralDateTime> wkpConfEndDate;
-
-	/** The wkp conf str date. */
-	public static volatile SingularAttribute<EmployeeDataView, GeneralDateTime> wkpConfStrDate;
-
 	/** The job seq disp. */
 	public static volatile SingularAttribute<EmployeeDataView, Integer> jobSeqDisp;
 	
 	/** The business name kana. */
 	public static volatile SingularAttribute<EmployeeDataView, String> businessNameKana;
 
+	/** The department id. */
+	public static volatile SingularAttribute<EmployeeDataView, String> depId;
+
+	/** The department start date. */
+	public static volatile SingularAttribute<EmployeeDataView, GeneralDateTime> depStrDate;
+
+	/** The department end date. */
+	public static volatile SingularAttribute<EmployeeDataView, GeneralDateTime> depEndDate;
+
+	/** The department code. */
+	public static volatile SingularAttribute<EmployeeDataView, String> depCode;
+
+	/** The department name. */
+	public static volatile SingularAttribute<EmployeeDataView, String> depName;
+
+	/** The department delete flag. */
+	public static volatile SingularAttribute<EmployeeDataView, Boolean> depDeleteFlag;
+
+	/** The department generic. */
+	public static volatile SingularAttribute<EmployeeDataView, String> depGeneric;
+
+	/** The department display name. */
+	public static volatile SingularAttribute<EmployeeDataView, String> depDisplayName;
+
+	/** The department hierarchy code. */
+	public static volatile SingularAttribute<EmployeeDataView, String> depHierarchyCode;
+
+	/** The department external code. */
+	public static volatile SingularAttribute<EmployeeDataView, String> depExternalCode;
+
+	/** The department history id. */
+	public static volatile SingularAttribute<EmployeeDataView, String> depHistoryId;
+
+	/** The department config start date. */
+	public static volatile SingularAttribute<EmployeeDataView, GeneralDate> depConfStrDate;
+
+	/** The department config end date. */
+	public static volatile SingularAttribute<EmployeeDataView, GeneralDate> depConfEndDate;
+
+	/** The workplace id. */
+	public static volatile SingularAttribute<EmployeeDataView, String> wkpId;
+
+	/** The workplace start date. */
+	public static volatile SingularAttribute<EmployeeDataView, GeneralDateTime> wkpStrDate;
+
+	/** The workplace end date. */
+	public static volatile SingularAttribute<EmployeeDataView, GeneralDateTime> wkpEndDate;
+
+	/** The workplace code. */
+	public static volatile SingularAttribute<EmployeeDataView, String> wkpCode;
+
+	/** The workplace name. */
+	public static volatile SingularAttribute<EmployeeDataView, String> wkpName;
+
+	/** The workplace delete flag. */
+	public static volatile SingularAttribute<EmployeeDataView, Boolean> wkpDeleteFlag;
+
+	/** The workplace generic. */
+	public static volatile SingularAttribute<EmployeeDataView, String> wkpGeneric;
+
+	/** The workplace display name. */
+	public static volatile SingularAttribute<EmployeeDataView, String> wkpDisplayName;
+
+	/** The workplace hierarchy code. */
+	public static volatile SingularAttribute<EmployeeDataView, String> wkpHierarchyCode;
+
+	/** The workplace external code. */
+	public static volatile SingularAttribute<EmployeeDataView, String> wkpExternalCode;
+
+	/** The workplace history id. */
+	public static volatile SingularAttribute<EmployeeDataView, String> wkpHistoryId;
+
+	/** The workplace config start date. */
+	public static volatile SingularAttribute<EmployeeDataView, GeneralDate> wkpConfStrDate;
+
+	/** The workplace config end date. */
+	public static volatile SingularAttribute<EmployeeDataView, GeneralDate> wkpConfEndDate;
 }
