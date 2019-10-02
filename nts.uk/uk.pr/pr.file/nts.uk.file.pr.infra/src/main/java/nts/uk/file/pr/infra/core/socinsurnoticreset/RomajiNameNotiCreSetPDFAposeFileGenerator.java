@@ -209,6 +209,9 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
             String[] list = pc.split("");
             StringBuffer st = new StringBuffer("");
             for (int i = 0; i < list.length; i++) {
+                if("-".equals(list[i])){
+                    return pc;
+                }
                 st.append(list[i]);
                 if((i+1)%3==0 && list.length > st.length()) {
                     st.append("-");
