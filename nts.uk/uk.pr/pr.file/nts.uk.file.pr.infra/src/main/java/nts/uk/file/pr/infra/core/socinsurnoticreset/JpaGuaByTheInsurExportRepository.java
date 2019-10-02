@@ -64,7 +64,10 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("      ADDRESS_KANA_1,");
         exportSQL.append("      ADDRESS_KANA_2,");
         exportSQL.append("      KNKUM_ITEM,");
-        exportSQL.append("      KNKUM_NUM");
+        exportSQL.append("      KNKUM_NUM,");
+        exportSQL.append("      oi.NAME, ");
+        exportSQL.append("      oi.PHONE_NUMBER, ");
+        exportSQL.append("      oi.REPRESENTATIVE_NAME ");
         exportSQL.append("  FROM");
         exportSQL.append("      (SELECT *");
         exportSQL.append("         FROM QQSDT_KENHO_INFO ");
@@ -157,6 +160,9 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
                 .addKana(i[35] == null && i[36] == null ? "" : i[35].toString()+ " " + i[36].toString())
                 .healInsInherenPr(i[37] == null ? "" : i[37].toString())
                 .healUnionNumber(i[38] == null ? "" : i[38].toString())
+                .companyName(i[39] == null ? "" : i[39].toString())
+                .phoneNumber(i[40] == null ? "" : i[40].toString())
+                .repName(i[41] == null ? "" : i[41].toString())
                 .build()
         ).collect(Collectors.toList());
     }
@@ -331,7 +337,10 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("      HEALTH_INSURANCE_UNION_OFFICE_NUMBER, ");
         exportSQL.append("      ni.HIST_ID, ");
         exportSQL.append("      oi.PHONE_NUMBER, ");
-        exportSQL.append("      QSINS.OUTPUT_OFFICE_SRNUM ");
+        exportSQL.append("      QSINS.OUTPUT_OFFICE_SRNUM, ");
+        exportSQL.append("      oi.NAME, ");
+        exportSQL.append("      oi.REPRESENTATIVE_NAME, ");
+        exportSQL.append("      oi.POSTAL_CODE ");
         exportSQL.append("   FROM    ");
         exportSQL.append("       (SELECT *");
         exportSQL.append("         FROM QQSDT_KENHO_INFO ");
@@ -428,6 +437,9 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
                 .hisId(i[35] == null ? "" : i[35].toString())
                 .phoneNumber(i[36] == null ? "" : i[36].toString())
                 .bussinesArrSybol(Integer.valueOf(i[37].toString()))
+                .companyName(i[38] == null ? "" : i[38].toString())
+                .repName(i[39] == null ? "" : i[39].toString())
+                .portCd(i[40] == null ? "" : i[40].toString())
                 .build()
         ).collect(Collectors.toList());
     }
@@ -498,7 +510,8 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("      oi.ADDRESS_KANA_2, ");
         exportSQL.append("      oi.NAME, ");
         exportSQL.append("      oi.PHONE_NUMBER, ");
-        exportSQL.append("      oi.REPRESENTATIVE_NAME ");
+        exportSQL.append("      oi.REPRESENTATIVE_NAME, ");
+        exportSQL.append("      oi.POSTAL_CODE ");
         exportSQL.append("  FROM ");
         exportSQL.append("         (SELECT *");
         exportSQL.append("         FROM QQSDT_KOUHO_INFO ");
@@ -571,7 +584,7 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
                 .oldName(i[21] == null ? "" : i[21].toString())
                 .oldNameKana(i[22] == null ? "" : i[22].toString())
                 .birthDay(i[23] == null ? "" : i[23].toString())
-                .portCd(i[24] == null ? "" : i[24].toString())
+                .portCd(i[61] == null ? "" : i[61].toString())
                 .retirementAddBefore(i[25] == null ? "" : i[25].toString())
                 .retirementAdd(i[26] == null ? "" : i[26].toString())
                 .reasonForLoss(i[27] == null ? "" : i[27].toString())

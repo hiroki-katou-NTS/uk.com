@@ -382,6 +382,7 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
                                     List<SocialInsurancePrefectureInformation> infor, SocialInsurNotiCreateSet ins, int startRow, int startDate, int endDate,CompanyInfor company) {
         JapaneseDate addAppCtgSal = !data.getBirthDay().isEmpty() ? toJapaneseDate( GeneralDate.fromString(data.getBirthDay().substring(0,10), "yyyy-MM-dd")) : null;
         JapaneseDate dateJp = toJapaneseDate(GeneralDate.fromString(data.getBirthDay().substring(0, 10), "yyyy-MM-dd"));
+        JapaneseDate startDateKohoInfo = toJapaneseDate(GeneralDate.fromString(data.getStartDate().substring(0, 10), "yyyy-MM-dd"));
         cells.get(startRow, 0).setValue("2200700");
         cells.get(startRow, 1).setValue(getPreferCode(data.getPrefectureNo(), startDate, endDate, infor));
         cells.get(startRow, 2).setValue(data.getWelOfficeNumber1().length() > 2 ? data.getWelOfficeNumber1().substring(0, 2) : data.getWelOfficeNumber1());
@@ -431,7 +432,7 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
         cells.get(startRow, 16).setValue(ins.getTextPersonNumber().get() != TextPerNumberClass.OUTPUT_NUMBER ? data.getBasicPenNumber().length() > 10 ? data.getBasicPenNumber().substring(4,10) :
                 data.getBasicPenNumber().length() > 4 ? data.getBasicPenNumber().substring(4,data.getBasicPenNumber().length()) : "" : "");
         cells.get(startRow, 17).setValue(9);
-        cells.get(startRow, 18).setValue(data.getStartDate().substring(0, 4) + data.getEndDate().substring(5, 7) + data.getEndDate().substring(8, 10));
+        cells.get(startRow, 18).setValue(convertJpDate(startDateKohoInfo));
         cells.get(startRow, 19).setValue(data.getDepenAppoint());
         cells.get(startRow, 20).setValue(data.getRemunMonthlyAmount());
         cells.get(startRow, 21).setValue(data.getRemunMonthlyAmountKind());
