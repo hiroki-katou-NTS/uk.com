@@ -325,7 +325,7 @@ export class Kdws03AComponent extends Vue {
             self.yearMonth = data.periodInfo.yearMonth;
         }
 
-        if (self.displayFormat == 1) {
+        if (self.displayFormat == 1 && self.isFirstLoad) {
             self.selectedDate = this.$dt.fromString(self.timePeriodAllInfo.targetRange.startDate);
         }
 
