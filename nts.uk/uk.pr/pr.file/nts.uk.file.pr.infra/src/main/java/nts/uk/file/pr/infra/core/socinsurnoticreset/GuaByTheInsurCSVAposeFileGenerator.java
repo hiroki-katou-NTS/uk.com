@@ -232,7 +232,8 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
                 String portCd = ins.getOfficeInformation().value == 0 ? company.getPostCd() : data.getPortCd();
                 cells.get(startRow, 1).setValue(formatPortCd(portCd, 1));
                 cells.get(startRow, 2).setValue(formatPortCd(portCd, 2));
-                cells.get(startRow, 3).setValue(checkLength(company.getAdd_1() + company.getAdd_2(), 37));
+                String add = ins.getOfficeInformation().value == 0 ? company.getAdd_1() +" "+ company.getAdd_2() : data.getAdd();
+                cells.get(startRow, 3).setValue(checkLength(add, 37));
                 String companyName = ins.getOfficeInformation().value == 0 ? company.getCompanyName() : data.getCompanyName();
                 cells.get(startRow, 4).setValue(companyName.length() > 25 ? companyName.substring(0, 25) : companyName);
                 String repName = ins.getOfficeInformation().value == 0 ? company.getRepname() : data.getRepName();
