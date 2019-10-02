@@ -417,6 +417,9 @@ public class InitScreenMob {
 						&& optWorkInfoOfDailyPerformanceDto.get().getState() == CalculationState.No_Calculated)
 					screenDto.setAlarmCellForFixedColumn(data.getId(), displayFormat);
 			}
+			if(lockDay || lockHist || dataSign == null || (!dataSign.isStatus() ? (!dataSign.notDisableForConfirm() ? true : false) : !dataSign.notDisableForConfirm())){
+				screenDto.setCellSate(data.getId(), DPText.LOCK_SIGN, DPText.STATE_DISABLE);
+			}
 		}
 		screenDto.setLstData(lstData);
 		setStateParam(screenDto, resultPeriod, displayFormat, false);

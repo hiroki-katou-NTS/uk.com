@@ -1,6 +1,6 @@
 import { Vue, _, moment } from '@app/provider';
 import { component, Prop, Watch } from '@app/core/component';
-import { TimeDuration } from '@app/utils';
+import { TimeDuration, TimeWithDay } from '@app/utils';
 import { KdwS03DComponent } from 'views/kdw/s03/d';
 import { Kdl001Component } from 'views/kdl/001';
 import { KDL002Component } from 'views/kdl/002';
@@ -400,7 +400,7 @@ export class KdwS03BComponent extends Vue {
                 rowData.value = _.isEmpty(rowData.value) ? null : new TimeDuration(rowData.value).toNumber();
                 break;
             case ItemType.TimeWithDay:
-                rowData.value = _.isEmpty(rowData.value) ? null : new TimeDuration(rowData.value).toNumber();
+                rowData.value = _.isEmpty(rowData.value) ? null : new TimeWithDay(rowData.value).toNumber();
                 break;
             default:
                 break;
@@ -993,7 +993,7 @@ export class KdwS03BComponent extends Vue {
                                             self.screenData1[item.item] = _.isEmpty(item.value) ? null : new TimeDuration(item.value).toNumber();
                                             break;
                                         case ItemType.TimeWithDay:
-                                            self.screenData1[item.item] = _.isEmpty(item.value) ? null : new TimeDuration(item.value).toNumber();
+                                            self.screenData1[item.item] = _.isEmpty(item.value) ? null : new TimeWithDay(item.value).toNumber();
                                             break;
                                         default:
                                             self.screenData1[item.item] = item.value;

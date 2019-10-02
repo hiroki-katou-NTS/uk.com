@@ -18,7 +18,7 @@
   </div>  
   <div class="row">
     <!-- D3_1: エラー一覧 -->
-    <table class="table table-bordered">
+  <table class="table table-bordered border-left-0 border-right-0">
     <thead>
       <tr class="uk-bg-green">
         <!-- D3_2: 日付（ヘッダ）-->
@@ -35,13 +35,11 @@
         <td class="pl-0 pr-0 text-center">{{ rowData.date | date('DD日(dd)') }}</td>
         <!-- D3_6: 日付-->
         <td class="pl-0 pr-0 text-center">{{ rowData.code }}</td>
-        <td>
-          <div class="row">
-            <div class="w-100">
-              <!-- D3_7: 日付-->
-              <div class="col-10 pl-2 pr-2 d-inline-block">{{ rowData.name }}</div>
-              <div class="d-inline-block fas fa-angle-right"></div>
-            </div>
+        <td class="pl-0 pr-0">
+          <div class="w-100">
+            <!-- D3_7: 日付-->
+            <div class="col-11 pl-2 pr-2 d-inline-block text-truncate">{{ rowData.name }}</div>
+            <div class="col-1 pl-0 pr-0 ml-n2 d-inline-block fas fa-angle-right text-right align-text-top"></div>
           </div>
         </td>
       </tr>
