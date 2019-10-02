@@ -71,13 +71,13 @@ public class NotificationOfLossInsExportCSVService extends ExportService<Notific
 			throw new BusinessException("Msg_812");
 		}
 		if(domain.getInsuredNumber() == InsurPersonNumDivision.DO_NOT_OUPUT) {
-			throw new BusinessException("MsgQ_174", "QSI013_21");
+			throw new BusinessException("MsgQ_174", "QSI013_A222_24");
 		}
-		if(domain.getOfficeInformation() == BusinessDivision.DO_NOT_OUTPUT) {
-			throw new BusinessException("MsgQ_174", "QSI013_23");
+		if(domain.getOfficeInformation() == BusinessDivision.DO_NOT_OUTPUT || domain.getOfficeInformation() == BusinessDivision.DO_NOT_OUTPUT_BUSINESS) {
+			throw new BusinessException("MsgQ_174", "QSI013_A222_30");
 		}
 		if(!domain.getFdNumber().isPresent()) {
-			throw new BusinessException("MsgQ_5", "QSI013_32");
+			throw new BusinessException("MsgQ_5", "QSI013_A222_53");
 		}
         boolean empWelfarePenInsQualiInfor = empWelfarePenInsQualiInforRepository.checkEmpWelfarePenInsQualiInforEnd(start, end, empIds);
         boolean emplHealInsurQualifiInfor= emplHealInsurQualifiInforRepository.checkEmplHealInsurQualifiInforEndDate(start, end, empIds);
