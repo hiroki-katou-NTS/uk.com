@@ -3729,7 +3729,7 @@ var nts;
                 }
                 // keep alive sub sessions
                 function keepAliveSubSessionId() {
-                    uk.localStorage.setItem(SubSessionIdKey + subSession.currentId, +new Date());
+                    window.localStorage.setItem(SubSessionIdKey + subSession.currentId, +new Date());
                 }
                 keepAliveSubSessionId();
                 setInterval(keepAliveSubSessionId, SecondsIntervalToReportAlive * 1000);
@@ -3737,14 +3737,14 @@ var nts;
                     var aliveIds = [];
                     var deadIds = [];
                     for (var i = 0;; i++) {
-                        var key = uk.localStorage.key(i);
+                        var key = window.localStorage.key(i);
                         if (key == null)
                             break;
                         if (key.indexOf(SubSessionIdKey) !== 0)
                             continue;
                         var id = key.slice(SubSessionIdKey.length);
-                        var lastReportTime = uk.localStorage.getItem(SubSessionIdKey + id);
-                        var duration = +new Date() - Number(lastReportTime);
+                        var lastReportTime = window.localStorage.getItem(SubSessionIdKey + id);
+                        var duration = +new Date() - lastReportTime;
                         if (duration <= SecondsToKeepSubSession * 1000) {
                             aliveIds.push(id);
                         }
@@ -3754,7 +3754,7 @@ var nts;
                     }
                     // prune dead IDs
                     deadIds.forEach(function (deadId) {
-                        uk.localStorage.removeItem(SubSessionIdKey + deadId);
+                        window.localStorage.removeItem(SubSessionIdKey + deadId);
                     });
                     return aliveIds;
                 }
