@@ -431,13 +431,14 @@ export class Kdws03AComponent extends Vue {
 
         // fill blank row when no data
         if (self.displayFormat == 0) {
+            self.displayDataLstEx = self.displayDataLst.slice();
             if (self.lstDataSourceLoad.length < 7) {
                 for (let i = 1; i <= (7 - self.lstDataSourceLoad.length); i++) {
                     let rowData = [];
                     headers.forEach((header: any) => {
                         rowData.push({ key: header.key, value: '' });
                     });
-                    self.displayDataLst.push({ rowData, date: '', id: '' });
+                    self.displayDataLstEx.push({ rowData, date: '', id: '' });
                 }
             }
         } else {

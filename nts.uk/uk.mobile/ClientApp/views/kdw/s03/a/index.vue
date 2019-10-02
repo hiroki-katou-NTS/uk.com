@@ -46,7 +46,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="(row, i) of displayDataLst">
+                <tr v-for="(row, i) of displayDataLstEx">
                     <td v-bind:class="row.dateColor">{{row.date}}</td>
                     <td v-for="(cell, j) of row.rowData" v-bind:class="cell.class"><span class="crop-text">{{cell.displayvalue}}</span></td>
                     <td>
