@@ -186,12 +186,11 @@ public class InitScreenMob {
 
 		List<DailyPerformanceEmployeeDto> lstEmployeeData = new ArrayList<>();
 		if (displayFormat == 0) {
-			lstEmployeeData = screenDto.getLstEmployee().stream().filter(x -> x.getId().equals(employeeID))
-					.collect(Collectors.toList());
 			changeEmployeeIds.add(employeeID);
+			lstEmployeeData = findAllEmployee.findAllEmployee(changeEmployeeIds, dateRange.getEndDate());			
 		} else {
-			lstEmployeeData = screenDto.getLstEmployee();
 			changeEmployeeIds = allIds;
+			lstEmployeeData = screenDto.getLstEmployee();
 		}
 
 		screenDto.setLstData(processor.getListData(lstEmployeeData, dateRange, displayFormat));
