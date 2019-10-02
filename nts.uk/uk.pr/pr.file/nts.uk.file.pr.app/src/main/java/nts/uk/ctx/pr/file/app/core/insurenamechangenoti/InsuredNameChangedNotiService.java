@@ -163,7 +163,7 @@ public class InsuredNameChangedNotiService extends ExportService<InsuredNameChan
                     //ドメインモデル「厚生年金種別情報」を取得する
                     Optional<WelfarePenTypeInfor> welfarePenTypeInfor = welfarePenTypeInforRepository.getWelfarePenTypeInforById(cid,dateHistoryItem.identifier(),empId);
                     data.setWelfarePenTypeInfor(welfarePenTypeInfor.isPresent() ? welfarePenTypeInfor.get() : null);
-
+                    //data.setWelfPenNumInformation(welfPenNumInformation.isPresent() ? welfPenNumInformation.get() : null);
                     //ドメインモデル「厚生年金基金加入期間情報」を取得する
                     Optional<FundMembership> emPensionFundPartiPeriodInfor = emPensionFundPartiPeriodInforRepository.getEmPensionFundPartiPeriodInfor(cid,empId,date);
                     //取得した「厚生年金基金加入期間情報」をチェックする
@@ -234,8 +234,6 @@ public class InsuredNameChangedNotiService extends ExportService<InsuredNameChan
                 if(healthCarePortInfor.isPresent()){
                     data.setHealthCarePortInfor(healthCarePortInfor.get());
                 }
-
-
             }
         }
 

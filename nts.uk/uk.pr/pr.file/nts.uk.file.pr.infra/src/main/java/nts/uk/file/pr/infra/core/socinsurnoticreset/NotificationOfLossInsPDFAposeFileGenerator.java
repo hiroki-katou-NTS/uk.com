@@ -185,7 +185,7 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
             return sub[1];
         }
         if (stt == 3 && sub.length >= 3) {
-            return sub[1];
+            return sub[2];
         }
         if (sub.length == 1 && stt == 1 && phone.length() >= 3) {
             return phone.substring(0, 3);
@@ -313,11 +313,11 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_9_5", stt)).setValue(convertJpDate(birthDay).charAt(4));
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_9_6", stt)).setValue(convertJpDate(birthDay).charAt(5));
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_13_1", stt)).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? endDate != null ? endDate.year() + 1 : "" :  endDate2 != null ? endDate2.year() + 1 : "");
-        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_13_2", stt)).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? data.getEndDate() != null ? data.getEndDate().substring(5,7) : "" : data.getEndDate2() != null ? data.getEndDate2().substring(5,7) : "");
-        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_13_3", stt)).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? data.getEndDate() != null ? data.getEndDate().substring(8,10) : "" : data.getEndDate2() != null ? data.getEndDate2().substring(5,7) : "");
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_13_2", stt)).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? !data.getEndDate().isEmpty() ? data.getEndDate().substring(5,7) : "" : !data.getEndDate2().isEmpty() ? data.getEndDate2().substring(5,7) : "");
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_13_3", stt)).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? !data.getEndDate().isEmpty() ? data.getEndDate().substring(8,10) : "" : !data.getEndDate2().isEmpty() ? data.getEndDate2().substring(5,7) : "");
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_15_1", stt)).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? endDate!= null ? endDate.year() + 1 : "" : endDate2!= null ? endDate2.year() + 1 : "");
-        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_15_2", stt)).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? data.getEndDate() != null ? data.getEndDate().substring(5,7) : "" : data.getEndDate2() != null ? data.getEndDate2().substring(5,7) : "");
-        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_15_3", stt)).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? data.getEndDate() != null ? data.getEndDate().substring(8,10) : "" : data.getEndDate2() != null ? data.getEndDate2().substring(8,10) : "");
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_15_2", stt)).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? !data.getEndDate().isEmpty() ? data.getEndDate().substring(5,7) : "" : !data.getEndDate2().isEmpty() ? data.getEndDate2().substring(5,7) : "");
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_15_3", stt)).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? data.getEndDate().isEmpty() ? data.getEndDate().substring(8,10) : "" : !data.getEndDate2().isEmpty() ? data.getEndDate2().substring(8,10) : "");
         if(ins.getPrintPersonNumber() != PersonalNumClass.DO_NOT_OUTPUT && ins.getPrintPersonNumber() != PersonalNumClass.OUTPUT_PER_NUMBER) {
             worksheets.getRangeByName(this.getRangeName(sheetName, "A2_10_9", stt)).setValue(data.getBasicPenNumber() != null ? data.getBasicPenNumber().length() > 0 ? data.getBasicPenNumber().charAt(0) : "" : "");
             worksheets.getRangeByName(this.getRangeName(sheetName, "A2_10_10", stt)).setValue(data.getBasicPenNumber() != null ? data.getBasicPenNumber().length() > 1 ? data.getBasicPenNumber().charAt(1) : "" : "");
@@ -419,8 +419,8 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
         }
     }
 
-    private void selectUnder(WorksheetCollection worksheets, int value, String shapeName, String sheetName, int stt){
-        if(value == 0) {
+    private void selectUnder(WorksheetCollection worksheets, Integer value, String shapeName, String sheetName, int stt){
+        if(value == null || value == 0) {
             worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? shapeName : shapeName +  "_" + ++stt));
         }
     }

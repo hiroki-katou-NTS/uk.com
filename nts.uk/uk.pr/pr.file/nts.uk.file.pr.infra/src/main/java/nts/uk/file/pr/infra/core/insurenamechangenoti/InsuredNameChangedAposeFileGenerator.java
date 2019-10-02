@@ -113,7 +113,7 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
 
         //fill to A1_2
         if(socialInsurNotiCreateSet.getInsuredNumber() == InsurPersonNumDivision.OUTPUT_THE_WELF_PENNUMBER){
-            ws.getCells().get("K11").putValue(data.getWelfarePenTypeInfor() != null ? data.getWelfarePenTypeInfor().getUndergroundDivision().value : null);
+            ws.getCells().get("K11").putValue(data.getWelfPenNumInformation() != null ? data.getWelfPenNumInformation().getWelPenNumber().get() : null);
         }else if(socialInsurNotiCreateSet.getInsuredNumber() == InsurPersonNumDivision.OUTPUT_THE_FUN_MEMBER){
             ws.getCells().get("K11").putValue(data.getFundMembership() != null ? data.getFundMembership().getMembersNumber().v() : null);
         }else if(socialInsurNotiCreateSet.getInsuredNumber() == InsurPersonNumDivision.OUTPUT_HEAL_INSUR_NUM){
@@ -240,6 +240,13 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
                 ws.getShapes().remove(ws.getShapes().get("C1_13"));
                 ws.getShapes().remove(ws.getShapes().get("C1_14"));
             }
+        }else{
+            ws.getShapes().remove(ws.getShapes().get("C1_9"));
+            ws.getShapes().remove(ws.getShapes().get("C1_10"));
+            ws.getShapes().remove(ws.getShapes().get("C1_11"));
+            ws.getShapes().remove(ws.getShapes().get("C1_12"));
+            ws.getShapes().remove(ws.getShapes().get("C1_13"));
+            ws.getShapes().remove(ws.getShapes().get("C1_14"));
         }
 
 

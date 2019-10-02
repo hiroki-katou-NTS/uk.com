@@ -21,7 +21,7 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
 
     @Override
     public List<InsLossDataExport> getHealthInsLoss(List<String> empIds, String cid, GeneralDate startDate, GeneralDate endDate) {
-
+        try {
             List<Object[]> resultQuery = null;
             StringBuilder exportSQL = new StringBuilder();
             exportSQL.append("  SELECT i.SCD,");
@@ -153,11 +153,11 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
                     .remunMonthlyAmountKind(i[10] == null ? 0 : ((BigDecimal) i[10]).intValue())
                     .remunMonthlyAmount(i[11] == null ? 0 : ((BigDecimal) i[11]).intValue())
                     .totalMonthyRemun(i[12] == null ? 0 : ((BigDecimal) i[12]).intValue())
-                    .livingAbroad(i[13] != null && ((BigDecimal) i[13]).intValue() == 1  ? "1" : "0")
-                    .resonOther(i[14] != null && ((BigDecimal) i[14]).intValue() != 2 ?  "1" : "0")
+                    .livingAbroad(i[13] != null && ((BigDecimal) i[13]).intValue() == 1 ? "1" : "0")
+                    .resonOther(i[14] != null && ((BigDecimal) i[14]).intValue() != 2 ? "1" : "0")
                     .resonAndOtherContent(i[15] == null ? "" : i[15].toString())
                     .shortTimeWorkes(i[16] == null ? "" : i[16].toString())
-                    .shortStay(i[17] != null && ((BigDecimal) i[17]).intValue() != 3 ?  "1" : "0")
+                    .shortStay(i[17] != null && ((BigDecimal) i[17]).intValue() != 3 ? "1" : "0")
                     .depenAppoint(i[18] == null ? "" : i[18].toString())
                     .qualifiDistin(i[19] == null ? "" : i[19].toString())
                     .continReemAfterRetirement(i[20] == null ? 0 : ((BigDecimal) i[20]).intValue())
@@ -197,6 +197,9 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
                     .insPerCls(i[54] == null ? null : ((BigDecimal) i[54]).intValue())
                     .build()
             ).collect(Collectors.toList());
+        } catch (Exception e) {
+            return Collections.emptyList();
+        }
     }
 
     @Override
@@ -254,6 +257,7 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
 
     @Override
     public List<PensFundSubmissData> getHealthInsAssociation(List<String> empIds, String cid, GeneralDate startDate, GeneralDate endDate) {
+        try {
             List<Object[]> result = null;
             StringBuilder exportSQL = new StringBuilder();
             exportSQL.append("  SELECT  ");
@@ -290,16 +294,16 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
             exportSQL.append("      END_REASON_ATR,");
             exportSQL.append("      S_ADD_MONTHLY_AMOUNT_1,");
             exportSQL.append("      S_SRD_MONTHLY_AMOUNT_1,");
-            exportSQL.append("      SEC_S_ADD_MONTHLY_AMOUNT_1ARY,");
+            exportSQL.append("      S_ADD_MONTHLY_AMOUNT_2,");
             exportSQL.append("      S_SRD_MONTHLY_AMOUNT_2,");
             exportSQL.append("      LOSS_CASE_ATR,");
             exportSQL.append("      MULTI_OFFICE_ATR,");
-            exportSQL.append("      OTHER_REASON,");
+            exportSQL.append("      OTHER_REASONS,");
             exportSQL.append("      CONTINUE_REEMPLOYED_ATR,");
             exportSQL.append("      KISONEN_NUM");
             exportSQL.append("  FROM ");
             exportSQL.append("         (SELECT *");
-            exportSQL.append("         FROM QQSDT_KOUHO_LOSS_INFO ");
+            exportSQL.append("         FROM QQSDT_KOUHO_INFO ");
             exportSQL.append("         WHERE END_DATE <= ?endDate AND END_DATE >= ?startDate AND CID = ?cid");
             exportSQL.append("         AND SID IN ('%s') )qi");
             exportSQL.append("  INNER JOIN ");
@@ -320,10 +324,7 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
             exportSQL.append("       FROM QQSDT_KENHO_INFO ");
             exportSQL.append("       WHERE END_DATE <= ?endDate AND END_DATE >= ?startDate) wi ");
             exportSQL.append("       ON wi.SID = qi.SID AND wi.CID = qi.CID");
-            exportSQL.append("  INNER JOIN ");
-            exportSQL.append("            (SELECT *");
-            exportSQL.append("       FROM QQSDT_KOUHO_INFO ");
-            exportSQL.append("       WHERE END_DATE <= ?endDate AND END_DATE >= ?startDate) ni ");
+            exportSQL.append("  INNER JOIN  QQSDT_KOUHO_LOSS_INFO ni ");
             exportSQL.append("       ON ni.SID = qi.SID AND ni.CID = qi.CID");
             exportSQL.append("  INNER JOIN (SELECT *");
             exportSQL.append("       FROM QQSDT_KNKUM_INFO ");
@@ -339,7 +340,7 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
             exportSQL.append("              FROM QQSDT_SYAHO_GET_INFO");
             exportSQL.append("              WHERE CID = ?cid) ii ON ii.SID = qi.SID");
             exportSQL.append("  LEFT JOIN QQSDT_SYAHO_KNEN_NUM bp ON bp.SID = qi.SID");
-            exportSQL.append("  ORDER BY SYAHO_OFFICE_CD   ");
+            exportSQL.append("  ORDER BY SYAHO_OFFICE_CD, SCD   ");
             String sql = String.format(exportSQL.toString(), empIds.stream()
                     .map(String::valueOf)
                     .collect(Collectors.joining("','")));
@@ -394,6 +395,9 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
                     .continReemAfterRetirement(i[38] != null ? i[38].toString() : "")
                     .basicPenNumber(i[39] != null ? i[39].toString() : "")
                     .build()).collect(Collectors.toList());
+        }catch (Exception e) {
+            return Collections.emptyList();
+        }
     }
 
     private Integer convertDateToInt(GeneralDate date){
