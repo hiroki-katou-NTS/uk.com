@@ -2307,7 +2307,8 @@ module cps003 {
                         value = nts.uk.time.minutesBased.clock.dayattr.parseString(val || ""),
                         $grid = $("#grid");
                     if (max.success && value.success) {
-                        if (max.asMinutes < value.asMinutes) {
+                        let endDate = data[range.end];
+                        if (max.asMinutes < value.asMinutes && (!_.isNil(endDate) && endDate !== "")) {
                             let index = _.findIndex($grid.mGrid("dataSource", true), d => d.id === data.id),
                                 maxVal = nts.uk.time.minutesBased.clock.dayattr.create(max.asMinutes - 1),
                                 minVal = nts.uk.time.minutesBased.clock.dayattr.create(nts.uk.time.minutesBased.clock.dayattr.parseString(pv.min).asMinutes),
@@ -2348,7 +2349,8 @@ module cps003 {
                         value = nts.uk.time.minutesBased.clock.dayattr.parseString(val || ""),
                         $grid = $("#grid");
                     if (min.success) {
-                        if (min.asMinutes > value.asMinutes) {
+                        let startDate = data[range.start];
+                        if (min.asMinutes > value.asMinutes && (!_.isNil(startDate) && startDate !== "")) {
                             let index = _.findIndex($grid.mGrid("dataSource", true), d => d.id === data.id),
                                 minVal = nts.uk.time.minutesBased.clock.dayattr.create(min.asMinutes + 1),
                                 maxVal = nts.uk.time.minutesBased.clock.dayattr.create(nts.uk.time.minutesBased.clock.dayattr.parseString(pv.max).asMinutes),
