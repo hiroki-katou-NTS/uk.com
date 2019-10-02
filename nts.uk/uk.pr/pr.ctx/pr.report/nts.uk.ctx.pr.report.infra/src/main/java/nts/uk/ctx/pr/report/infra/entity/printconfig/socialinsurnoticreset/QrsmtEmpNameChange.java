@@ -31,14 +31,14 @@ public class QrsmtEmpNameChange extends UkJpaEntity implements Serializable
     * 健康保険被保険者証不要
     */
     @Basic(optional = false)
-    @Column(name = "HEAL_INSUR_PER_NONEED")
+    @Column(name = "HEAL_INSUR_PER_NONEED_ATR")
     public int healInsurPerNoneed;
     
     /**
     * その他
     */
     @Basic(optional = false)
-    @Column(name = "OTHER")
+    @Column(name = "OTHER_ATR")
     public int other;
     
     /**
