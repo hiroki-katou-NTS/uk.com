@@ -117,7 +117,7 @@ export class Kdws03AComponent extends Vue {
             return;
         } else {
             this.startPage();
-        }   
+        }
     }
 
     @Watch('actualTimeSelectedCode')
@@ -182,12 +182,10 @@ export class Kdws03AComponent extends Vue {
             styleContainer[0].style.overflow = 'hidden';
         }
 
-        if (this.displayFormat == '1') {
-            let styleTableBody: any = [];
-            styleTableBody = document.querySelectorAll('.table-body');
-            if (!_.isEmpty(styleTableBody)) {
-                styleTableBody[0].style.height = '295px';
-            }
+        let styleTableBody: any = [];
+        styleTableBody = document.querySelectorAll('.table-body');
+        if (!_.isEmpty(styleTableBody)) {
+            styleTableBody[0].style.height = '295px';
         }
     }
 
@@ -326,10 +324,10 @@ export class Kdws03AComponent extends Vue {
             self.timePeriodAllInfo = data.periodInfo;
             self.yearMonth = data.periodInfo.yearMonth;
         }
-        
+
         if (self.displayFormat == 1) {
             self.selectedDate = this.$dt.fromString(self.timePeriodAllInfo.targetRange.startDate);
-        }       
+        }
 
         self.fixHeaders = data.lstFixedHeader;
         self.showPrincipal = data.showPrincipal;
@@ -579,36 +577,36 @@ export class Kdws03AComponent extends Vue {
         let self = this;
         if (self.displayFormat == '0') {//個人別モード
             self.$modal('kdws03amenu',
-            {
-                displayFormat: this.displayFormat,
-                allConfirmButtonDis: this.dPCorrectionMenuDto.allConfirmButtonDis,
-                errorReferButtonDis: this.dPCorrectionMenuDto.errorReferButtonDis,
-                restReferButtonDis: this.dPCorrectionMenuDto.restReferButtonDis,
-                monthActualReferButtonDis: this.dPCorrectionMenuDto.monthActualReferButtonDis,
-                timeExcessReferButtonDis: this.dPCorrectionMenuDto.timeExcessReferButtonDis,
-            }).then((param: any) => {
-                if (param != undefined && param.openB) {
-                    //open B
-                    let rowData = null;
-                    if (self.displayFormat == '0') {
-                        rowData = _.find(self.displayDataLst, (x) => x.dateDetail == param.date);
-                    } else {
-                        rowData = _.find(self.displayDataLst, (x) => x.employeeId == param.employeeId);
+                {
+                    displayFormat: this.displayFormat,
+                    allConfirmButtonDis: this.dPCorrectionMenuDto.allConfirmButtonDis,
+                    errorReferButtonDis: this.dPCorrectionMenuDto.errorReferButtonDis,
+                    restReferButtonDis: this.dPCorrectionMenuDto.restReferButtonDis,
+                    monthActualReferButtonDis: this.dPCorrectionMenuDto.monthActualReferButtonDis,
+                    timeExcessReferButtonDis: this.dPCorrectionMenuDto.timeExcessReferButtonDis,
+                }).then((param: any) => {
+                    if (param != undefined && param.openB) {
+                        //open B
+                        let rowData = null;
+                        if (self.displayFormat == '0') {
+                            rowData = _.find(self.displayDataLst, (x) => x.dateDetail == param.date);
+                        } else {
+                            rowData = _.find(self.displayDataLst, (x) => x.employeeId == param.employeeId);
+                        }
+
+                        self.$modal('kdws03b', {
+                            'employeeID': param.employeeId,
+                            'employeeName': param.employeeName,
+                            'date': param.date,
+                            'rowData': rowData,
+                            'paramData': self.paramData
+                        });
+                    }
+                    if (!_.isNil(param) && param.reload) {
+                        this.startPage();
                     }
 
-                    self.$modal('kdws03b', {
-                        'employeeID': param.employeeId,
-                        'employeeName': param.employeeName,
-                        'date': param.date,
-                        'rowData': rowData,
-                        'paramData': self.paramData
-                    });
-                }
-                if (!_.isNil(param) && param.reload) {
-                    this.startPage();
-                }
-
-            });
+                });
         } else {//日付別モード
             this.$modal('kdws03c').then((paramOpenB: any) => {
                 if (paramOpenB != undefined && paramOpenB.openB) {
