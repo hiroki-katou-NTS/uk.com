@@ -179,7 +179,7 @@ module nts.uk.request {
 
         // keep alive sub sessions
         function keepAliveSubSessionId() {
-            uk.localStorage.setItem(SubSessionIdKey + currentId, +new Date());
+            window.localStorage.setItem(SubSessionIdKey + currentId, +new Date());
         }
         keepAliveSubSessionId();
         setInterval(keepAliveSubSessionId, SecondsIntervalToReportAlive * 1000);
@@ -188,13 +188,13 @@ module nts.uk.request {
             let aliveIds = [];
             let deadIds = [];
             for (let i = 0; ; i++) {
-                let key = uk.localStorage.key(i);
+                let key = window.localStorage.key(i);
                 if (key == null) break;
                 if (key.indexOf(SubSessionIdKey) !== 0) continue;
 
                 let id = key.slice(SubSessionIdKey.length);
-                let lastReportTime = uk.localStorage.getItem(SubSessionIdKey + id);
-                let duration = +new Date() - Number(lastReportTime);
+                let lastReportTime = window.localStorage.getItem(SubSessionIdKey + id);
+                let duration = +new Date() - lastReportTime;
                 if (duration <= SecondsToKeepSubSession * 1000) {
                     aliveIds.push(id);
                 } else {
@@ -204,7 +204,7 @@ module nts.uk.request {
 
             // prune dead IDs
             deadIds.forEach(deadId => {
-                uk.localStorage.removeItem(SubSessionIdKey + deadId);
+                window.localStorage.removeItem(SubSessionIdKey + deadId);
             });
 
             return aliveIds;

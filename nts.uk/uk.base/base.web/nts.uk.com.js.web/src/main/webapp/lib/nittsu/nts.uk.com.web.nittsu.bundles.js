@@ -189,11 +189,6 @@ var nts;
                 return browser;
             }());
             util.browser = browser;
-            nts.uk.util.browser.private.then(function (priv) {
-                if (priv && nts.uk.util.browser.version === 'Safari 10' && nts.uk.util.browser.mobile) {
-                    alert(nts.uk.resource.getText('Msg_1533'));
-                }
-            });
         })(util = uk.util || (uk.util = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -852,13 +847,13 @@ var nts;
                 this.nativeStorage = nativeStorage;
             }
             WebStorageWrapper.prototype.key = function (index) {
-                return this.nativeStorage.key(index);
+                return this.nativeStorage && this.nativeStorage.key(index);
             };
             WebStorageWrapper.prototype.setItem = function (key, value) {
                 if (value === undefined) {
                     return;
                 }
-                this.nativeStorage.setItem(key, value);
+                this.nativeStorage && this.nativeStorage.setItem(key, value);
             };
             WebStorageWrapper.prototype.setItemAsJson = function (key, value) {
                 this.setItem(key, JSON.stringify(value));
@@ -868,7 +863,7 @@ var nts;
             };
             ;
             WebStorageWrapper.prototype.getItem = function (key) {
-                var value = this.nativeStorage.getItem(key);
+                var value = this.nativeStorage && this.nativeStorage.getItem(key) || null;
                 if (value === null || value === undefined || value === 'undefined') {
                     return util.optional.empty();
                 }
@@ -880,10 +875,10 @@ var nts;
                 return item;
             };
             WebStorageWrapper.prototype.removeItem = function (key) {
-                this.nativeStorage.removeItem(key);
+                this.nativeStorage && this.nativeStorage.removeItem(key);
             };
             WebStorageWrapper.prototype.clear = function () {
-                this.nativeStorage.clear();
+                this.nativeStorage && this.nativeStorage.clear();
             };
             return WebStorageWrapper;
         }());
@@ -3734,7 +3729,7 @@ var nts;
                 }
                 // keep alive sub sessions
                 function keepAliveSubSessionId() {
-                    uk.localStorage.setItem(SubSessionIdKey + subSession.currentId, +new Date());
+                    window.localStorage.setItem(SubSessionIdKey + subSession.currentId, +new Date());
                 }
                 keepAliveSubSessionId();
                 setInterval(keepAliveSubSessionId, SecondsIntervalToReportAlive * 1000);
@@ -3742,14 +3737,14 @@ var nts;
                     var aliveIds = [];
                     var deadIds = [];
                     for (var i = 0;; i++) {
-                        var key = uk.localStorage.key(i);
+                        var key = window.localStorage.key(i);
                         if (key == null)
                             break;
                         if (key.indexOf(SubSessionIdKey) !== 0)
                             continue;
                         var id = key.slice(SubSessionIdKey.length);
-                        var lastReportTime = uk.localStorage.getItem(SubSessionIdKey + id);
-                        var duration = +new Date() - Number(lastReportTime);
+                        var lastReportTime = window.localStorage.getItem(SubSessionIdKey + id);
+                        var duration = +new Date() - lastReportTime;
                         if (duration <= SecondsToKeepSubSession * 1000) {
                             aliveIds.push(id);
                         }
@@ -3759,7 +3754,7 @@ var nts;
                     }
                     // prune dead IDs
                     deadIds.forEach(function (deadId) {
-                        uk.localStorage.removeItem(SubSessionIdKey + deadId);
+                        window.localStorage.removeItem(SubSessionIdKey + deadId);
                     });
                     return aliveIds;
                 }
