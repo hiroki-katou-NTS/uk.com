@@ -16,4 +16,6 @@ public interface EmpWelfarePenInsQualiInforRepository {
 
     Optional<EmpWelfarePenInsQualiInfor> getEmpWelfarePenInsQualiInforByEmpId(String employeeId);
 
+    Optional<EmpWelfarePenInsQualiInfor> getEmpWelfarePenInsQualiInforByEmpId(String cid, String employeeId);
+
 }

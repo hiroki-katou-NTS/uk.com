@@ -123,6 +123,11 @@ public class EmpPenFundSubData {
     private String hisId;
 
     private String add;
+
     private String addKana;
+
+    private String phoneNumber;
+     private String companyName ;
+     private String repName;
 
 }

@@ -10,5 +10,6 @@ public interface WelfarePenTypeInforRepository
 {
 
     Optional<WelfarePenTypeInfor> getWelfarePenTypeInforById(String historyId);
+    Optional<WelfarePenTypeInfor> getWelfarePenTypeInforById(String cid, String empID, String historyId);
 
 }

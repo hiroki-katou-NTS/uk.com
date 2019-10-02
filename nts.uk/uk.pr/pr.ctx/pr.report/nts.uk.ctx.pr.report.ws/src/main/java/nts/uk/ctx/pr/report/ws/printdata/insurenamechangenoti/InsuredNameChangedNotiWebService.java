@@ -50,9 +50,9 @@ public class InsuredNameChangedNotiWebService {
                 command.getPrintPersonNumber(),
                 command.getSubmittedName(),
                 command.getInsuredNumber(),
-                null,null,
-                null,
-                null
+                command.getFdNumber(),command.getTextPersonNumber(),
+                command.getOutputFormat(),
+                command.getLineFeedCode()
 
         );
         service.checkSocialInsurNotiCrSet(domain,userID,cid);
