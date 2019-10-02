@@ -586,24 +586,28 @@ export class Kdws03AComponent extends Vue {
                 restReferButtonDis: this.dPCorrectionMenuDto.restReferButtonDis,
                 monthActualReferButtonDis: this.dPCorrectionMenuDto.monthActualReferButtonDis,
                 timeExcessReferButtonDis: this.dPCorrectionMenuDto.timeExcessReferButtonDis,
-            }).then((paramOpenB: any) => {
-                if (paramOpenB != undefined && paramOpenB.openB) {
+            }).then((param: any) => {
+                if (param != undefined && param.openB) {
                     //open B
                     let rowData = null;
                     if (self.displayFormat == '0') {
-                        rowData = _.find(self.displayDataLst, (x) => x.dateDetail == paramOpenB.date);
+                        rowData = _.find(self.displayDataLst, (x) => x.dateDetail == param.date);
                     } else {
-                        rowData = _.find(self.displayDataLst, (x) => x.employeeId == paramOpenB.employeeId);
+                        rowData = _.find(self.displayDataLst, (x) => x.employeeId == param.employeeId);
                     }
 
                     self.$modal('kdws03b', {
-                        'employeeID': paramOpenB.employeeId,
-                        'employeeName': paramOpenB.employeeName,
-                        'date': paramOpenB.date,
+                        'employeeID': param.employeeId,
+                        'employeeName': param.employeeName,
+                        'date': param.date,
                         'rowData': rowData,
                         'paramData': self.paramData
                     });
                 }
+                if (!_.isNil(param) && param.reload) {
+                    this.startPage();
+                }
+
             });
         } else {//日付別モード
             this.$modal('kdws03c').then((paramOpenB: any) => {

@@ -87,11 +87,11 @@ export class KdwS03AMenuComponent extends Vue {
                 this.$mask('show', 0.5);
                 if (processFlag == 'confirm') {
                     this.$modal.info({ messageId: 'Msg_15' }).then((v: any) => {
-                        window.location.reload();
+                        this.$close({reload: true});
                     });
                 } else {
                     this.$modal.info({ messageId: 'Msg_1445' }).then((v: any) => {
-                        window.location.reload();
+                        this.$close({reload: true});
                     });
                 }
             }).catch((res: any) => {
