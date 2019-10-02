@@ -353,12 +353,16 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
 
 
             service.add(data).done(e => {
-                if (self.getAge(self.dummyBirthDay(), moment.utc(params.date, "YYYY/MM/DD")) >= 70) {
+                if (self.getAge(self.dummyBirthDay(), moment.utc(params.date, "YYYY/MM/DD")) >= 70 && self.applyToEmployeeOver70 () === false) {
                     dialog.info({ messageId: "Msg_177" }).then(e=>{
                         block.clear();
                     });
-                } else if (self.getAge(self.dummyBirthDay(), moment.utc(params.date, "YYYY/MM/DD")) < 70){
+                } else if ((self.getAge(self.dummyBirthDay(), moment.utc(params.date, "YYYY/MM/DD")) < 70) && self.applyToEmployeeOver70 () === true){
                     dialog.info({ messageId: "Msg_176" }).then(e =>{
+                        block.clear();
+                    });
+                }else{
+                    dialog.info({ messageId: "Msg_15" }).then(e =>{
                         block.clear();
                     });
                 }

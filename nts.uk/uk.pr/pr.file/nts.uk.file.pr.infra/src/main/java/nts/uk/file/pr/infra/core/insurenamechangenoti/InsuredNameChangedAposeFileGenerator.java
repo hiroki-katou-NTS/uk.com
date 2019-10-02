@@ -320,10 +320,20 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
         if(numberSplit.length > 1){
             numberPhone = numberSplit[0] + "（   　" + numberSplit[1] + "   　局）" + numberSplit[2];
         }else{
-            temp[0] = number.substring(0,3);
-            temp[1] = number.substring(3,6);
-            temp[2] = number.substring(6,number.length());
-            numberPhone = temp[0] + "（   　" + temp[1] + "   　局）" + temp[2];
+            if(number.length() <= 3){
+                temp[0] = number.substring(0,number.length());
+                numberPhone = temp[0];
+            }else if(number.length() > 3 && number.length() <=6){
+                temp[0] = number.substring(0,3);
+                temp[1] = number.substring(3,number.length());
+                numberPhone = temp[0] + "（   　" + temp[1] + "   　局）";
+            }else if(number.length() > 6){
+                temp[0] = number.substring(0,3);
+                temp[1] = number.substring(3,6);
+                temp[2] = number.substring(6,number.length());
+                numberPhone = temp[0] + "（   　" + temp[1] + "   　局）" + temp[2];
+            }
+
         }
 
         return numberPhone;
