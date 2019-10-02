@@ -26,7 +26,7 @@ public class JpaEmplHealInsurQualifiInforRepository extends JpaRepository implem
     private static final String SELECT_BY_EMPLID = SELECT_ALL_QUERY_STRING + " WHERE  f.empHealInsurQiPk.employeeId =:employeeId ";
     private static final String SELECT_BY_HISID = SELECT_ALL_QUERY_STRING + " WHERE  f.empHealInsurQiPk.hisId =:hisId ";
     private static final String SELECT_BY_LIST_EMP = SELECT_ALL_QUERY_STRING + " WHERE  f.empHealInsurQiPk.employeeId IN :employeeIds  AND f.startDate >= :startDate AND f.startDate <= :endDate";
-
+    private static final String SELECT_BY_ID = SELECT_ALL_QUERY_STRING + " WHERE  f.empHealInsurQiPk.cid =:cid AND f.empHealInsurQiPk.employeeId =:employeeId AND f.startDate <= :baseDate AND f.endDate >= :baseDate";
     @Override
     public boolean checkEmplHealInsurQualifiInforEndDate(GeneralDate start, GeneralDate end, List<String> empIds){
         List<QqsmtEmpHealInsurQi> qqsmtEmpHealInsurQi =  this.queryProxy().query(SELECT_BY_LIST_EMP_START, QqsmtEmpHealInsurQi.class)
@@ -54,6 +54,17 @@ public class JpaEmplHealInsurQualifiInforRepository extends JpaRepository implem
                 .getList();
          return Optional.of(new EmplHealInsurQualifiInfor(empId,toDomain(qqsmtEmpHealInsurQi)));
     }
+
+    @Override
+    public Optional<HealInsurNumberInfor> getEmplHealInsurQualifiInforByEmpId(String cid, String empId, GeneralDate baseDate) {
+
+        return this.queryProxy().query(SELECT_BY_ID, QqsmtEmpHealInsurQi.class)
+                .setParameter("cid",cid)
+                .setParameter("employeeId", empId)
+                .setParameter("baseDate",baseDate)
+                .getSingle(x -> x.toHealInsurNumberInfor());
+    }
+
     private List<EmpHealthInsurBenefits> toDomain(List<QqsmtEmpHealInsurQi> entities) {
         List<EmpHealthInsurBenefits> dateHistoryItems = new ArrayList<EmpHealthInsurBenefits>();
         if (entities == null || entities.isEmpty()) {

@@ -168,7 +168,7 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
 
                 });
 
-                if (self.getAge(self.dummyBirthDay, params.date) >= 70) {
+                if (self.getAge(self.dummyBirthDay(), params.date) >= 70) {
                     self.applyToEmployeeOver70(true);
 
                 }else{
@@ -256,7 +256,7 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
                     });
 
 
-                    if (self.getAge(self.dummyBirthDay, params.date) >= 70) {
+                    if (self.getAge(self.dummyBirthDay(), params.date) >= 70) {
                         self.applyToEmployeeOver70(true);
 
                     }else{
@@ -313,8 +313,10 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
 
         add() {
             let self = this;
+
             nts.uk.ui.errors.clearAll();
             let params = getShared('QSI001_PARAMS_TO_SCREEN_B');
+            let baseDate = moment.utc(params.date, "YYYY/MM/DD");
             $("input").trigger("validate");
             if (nts.uk.ui.errors.hasError()) {
                 return;
@@ -351,20 +353,12 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
 
 
             service.add(data).done(e => {
-                if (self.getAge(self.dummyBirthDay, params.date) >= 70) {
-                    if(self.tempApplyToEmployeeOver70() != self.applyToEmployeeOver70()){
-                        dialog.info({ messageId: "Msg_177" }).then(e=>{
-                            block.clear();
-                        });
-                    }
-                } else if (self.getAge(self.dummyBirthDay, params.date) < 70){
-                    if(self.tempApplyToEmployeeOver70() != self.applyToEmployeeOver70()){
-                        dialog.info({ messageId: "Msg_176" }).then(e =>{
-                            block.clear();
-                        });
-                    }
-                }else{
-                    dialog.info({ messageId: "Msg_15" }).then(e =>{
+                if (self.getAge(self.dummyBirthDay(), moment.utc(params.date, "YYYY/MM/DD")) >= 70) {
+                    dialog.info({ messageId: "Msg_177" }).then(e=>{
+                        block.clear();
+                    });
+                } else if (self.getAge(self.dummyBirthDay(), moment.utc(params.date, "YYYY/MM/DD")) < 70){
+                    dialog.info({ messageId: "Msg_176" }).then(e =>{
                         block.clear();
                     });
                 }

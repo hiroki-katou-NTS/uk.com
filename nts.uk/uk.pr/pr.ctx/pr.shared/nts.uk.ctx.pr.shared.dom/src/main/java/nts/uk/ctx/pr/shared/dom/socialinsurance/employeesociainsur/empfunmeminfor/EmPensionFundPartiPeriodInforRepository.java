@@ -1,5 +1,7 @@
 package nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empfunmeminfor;
 
+import nts.arc.time.GeneralDate;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -15,7 +17,11 @@ public interface EmPensionFundPartiPeriodInforRepository
 
     List<EmPensionFundPartiPeriodInfor> getEmPensionFundPartiPeriodInforByEmpId(String employeeId);
 
+    Optional<FundMembership> getEmPensionFundPartiPeriodInfor(String cid, String employeeId, GeneralDate baseDate);
+
     Optional<FundMembership> getFundMembershipByEmpId(String employeeId, String hisId);
+
+    Optional<FundMembership> getFundMembershipByEmpId(String cid, String employeeId, String hisId);
 
     void add(EmPensionFundPartiPeriodInfor domain);
 
