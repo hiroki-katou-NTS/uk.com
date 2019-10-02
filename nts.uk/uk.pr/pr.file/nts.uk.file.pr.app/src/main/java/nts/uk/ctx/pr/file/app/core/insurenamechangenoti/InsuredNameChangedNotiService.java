@@ -153,7 +153,7 @@ public class InsuredNameChangedNotiService extends ExportService<InsuredNameChan
 
         //取得できた
         if(empWelfarePenInsQualiInfors.isPresent()){
-            //ドメインモデル「厚生年金種別情報」を取得する
+            //ドメインモデル「厚生年金  種別情報」を取得する
             Optional<EmployWelPenInsurAche> employWelPenInsurAche = empWelfarePenInsQualiInfors.get().getMournPeriod().stream().filter(x -> date.afterOrEquals(x.getDatePeriod().start()) && date.beforeOrEquals(x.getDatePeriod().end())).findFirst();
             //チェック条件を満たすデータが取得できたか確認する
             if(employWelPenInsurAche.isPresent()){
