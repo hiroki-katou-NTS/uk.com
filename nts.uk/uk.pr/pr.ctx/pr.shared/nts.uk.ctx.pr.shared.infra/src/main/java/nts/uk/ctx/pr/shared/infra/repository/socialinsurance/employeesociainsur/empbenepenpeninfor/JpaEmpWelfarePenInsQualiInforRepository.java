@@ -84,11 +84,11 @@ public class JpaEmpWelfarePenInsQualiInforRepository extends JpaRepository imple
     }
 
     @Override
-    public Optional<WelfarePenTypeInfor> getWelfarePenTypeInforById(String cid,String empID, String historyId) {
+    public Optional<WelfPenNumInformation> getWelfarePenTypeInforById(String cid,String empID, String historyId) {
         return this.queryProxy().query(SELECT_BY_KEY_ID, QqsmtEmpWelfInsQcIf.class)
                 .setParameter("cid",cid)
                 .setParameter("historyId", historyId)
                 .setParameter("employeeId",empID)
-                .getSingle(c->c.toWelfarePenTypeI());
+                .getSingle(c->c.toWelfPenNumInformation());
     }
 }

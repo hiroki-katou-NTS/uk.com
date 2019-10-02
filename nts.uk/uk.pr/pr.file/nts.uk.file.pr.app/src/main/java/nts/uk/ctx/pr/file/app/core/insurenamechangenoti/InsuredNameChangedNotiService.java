@@ -161,9 +161,9 @@ public class InsuredNameChangedNotiService extends ExportService<InsuredNameChan
                 //チェック条件を満たすデータが取得できたか確認する
                 if(dateHistoryItem != null){
                     //ドメインモデル「厚生年金種別情報」を取得する
-                    Optional<WelfarePenTypeInfor> welfarePenTypeInfor = welfarePenTypeInforRepository.getWelfarePenTypeInforById(cid,dateHistoryItem.identifier(),empId);
-                    data.setWelfarePenTypeInfor(welfarePenTypeInfor.isPresent() ? welfarePenTypeInfor.get() : null);
-
+                    Optional<WelfPenNumInformation> welfPenNumInformation = welfarePenTypeInforRepository.getWelfarePenTypeInforById(cid,dateHistoryItem.identifier(),empId);
+                   // data.setWelfarePenTypeInfor(welfarePenTypeInfor.isPresent() ? welfarePenTypeInfor.get() : null);
+                    data.setWelfPenNumInformation(welfPenNumInformation.isPresent() ? welfPenNumInformation.get() : null);
                     //ドメインモデル「厚生年金基金加入期間情報」を取得する
                     Optional<FundMembership> emPensionFundPartiPeriodInfor = emPensionFundPartiPeriodInforRepository.getEmPensionFundPartiPeriodInfor(cid,empId,date);
                     //取得した「厚生年金基金加入期間情報」をチェックする
@@ -209,12 +209,15 @@ public class InsuredNameChangedNotiService extends ExportService<InsuredNameChan
 
         if(socialInsurNotiCreateSet.getInsuredNumber() == InsurPersonNumDivision.OUTPUT_THE_WELF_PENNUMBER){
             //ドメインモデル「厚生年金番号情報」を取得する
-            if(empWelfarePenInsQualiInfor != null){
+            if(data.getWelfPenNumInformation() == null){
+                data.setProcessSate(false);
+            }
+            /*if(empWelfarePenInsQualiInfor != null){
                 Optional<WelfPenNumInformation> welfPenNumInformation = welfPenNumInformationRepository.getWelfPenNumInformationById(cid,empWelfarePenInsQualiInfor.getMournPeriod().get(0).getHistoryId(),empId);
                 data.setWelfPenNumInformation(welfPenNumInformation.isPresent() ? welfPenNumInformation.get() : null);
             }else{
                 data.setProcessSate(false);
-            }
+            }*/
 
         }else if(socialInsurNotiCreateSet.getInsuredNumber() == InsurPersonNumDivision.OUTPUT_THE_FUN_MEMBER){
             if(data.getFundMembership() == null){
