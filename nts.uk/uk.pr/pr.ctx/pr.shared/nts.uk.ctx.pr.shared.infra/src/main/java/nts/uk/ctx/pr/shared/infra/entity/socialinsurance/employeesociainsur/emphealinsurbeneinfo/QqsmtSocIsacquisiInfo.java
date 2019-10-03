@@ -29,7 +29,7 @@ public class QqsmtSocIsacquisiInfo extends UkJpaEntity implements Serializable
     * 70歳以上被用者
     */
     @Basic(optional = true)
-    @Column(name = "OVER_ATR")
+    @Column(name = "OVER_70_ATR")
     public Integer percentOrMore;
     
     /**
