@@ -273,7 +273,7 @@ module nts.uk.pr.view.qsi002.a.viewmodel {
                 showEmployeeSelection: true,
                 showQuickSearchTab: false,
                 showAdvancedSearchTab: true,
-                showBaseDate: false,
+                showBaseDate: true,
                 showClosure: false,
                 showAllClosure: false,
                 showPeriod: false,
@@ -291,12 +291,12 @@ module nts.uk.pr.view.qsi002.a.viewmodel {
                 /** Quick search tab options */
                 showAllReferableEmployee: true,
                 showOnlyMe: true,
-                showSameWorkplace: true,
-                showSameWorkplaceAndChild: true,
+                showSameWorkplace: false,
+                showSameWorkplaceAndChild: false,
 
                 /** Advanced search properties */
                 showEmployment: true,
-                showWorkplace: true,
+                showWorkplace: false,
                 showClassification: true,
                 showJobTitle: true,
                 showWorktype: true,

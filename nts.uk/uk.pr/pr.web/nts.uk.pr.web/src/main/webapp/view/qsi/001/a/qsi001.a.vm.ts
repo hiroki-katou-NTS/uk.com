@@ -254,13 +254,16 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
 
                 /** Quick search tab options */
                 showAllReferableEmployee: true,
-                showOnlyMe: true,
-                showSameWorkplace: true,
-                showSameWorkplaceAndChild: true,
+                showOnlyMe: false,
+                showSameDepartment:false,
+                showSameDepartmentAndChild: false,
+                showSameWorkplace: false,
+                showSameWorkplaceAndChild: false,
 
                 /** Advanced search properties */
                 showEmployment: true,
-                showWorkplace: true,
+                showDepartment: true,
+                showWorkplace: false,
                 showClassification: true,
                 showJobTitle: true,
                 showWorktype: true,
