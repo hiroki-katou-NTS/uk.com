@@ -93,9 +93,9 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
                 cells.get(startRow, 6).setValue(checkLength(company.getAdd_1() + company.getAdd_2(),75));
                 cells.get(startRow, 7).setValue(checkLength(company.getCompanyName(), 50));
                 cells.get(startRow, 8).setValue(company.getRepname());
-                cells.get(startRow, 9).setValue(formatPhone(company.getPhoneNum(),0));
-                cells.get(startRow, 10).setValue(formatPhone(company.getPhoneNum(),1));
-                cells.get(startRow, 11).setValue(formatPhone(company.getPhoneNum(),2));
+                cells.get(startRow, 9).setValue(formatPhoneNumber(company.getPhoneNum(),0));
+                cells.get(startRow, 10).setValue(formatPhoneNumber(company.getPhoneNum(),1));
+                cells.get(startRow, 11).setValue(formatPhoneNumber(company.getPhoneNum(),2));
                 startRow++;
                 cells.get(startRow, 0).setValue("[data]");
             }
@@ -201,9 +201,9 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
                 cells.get(startRow, 3).setValue(checkLength(company.getAdd_1() + company.getAdd_2(),75));
                 cells.get(startRow, 4).setValue(checkLength(company.getCompanyName(), 50));
                 cells.get(startRow, 5).setValue(company.getRepname());
-                cells.get(startRow, 6).setValue(formatPhone(company.getPhoneNum(),0));
-                cells.get(startRow, 7).setValue(formatPhone(company.getPhoneNum(),1));
-                cells.get(startRow, 8).setValue(formatPhone(company.getPhoneNum(),2));
+                cells.get(startRow, 6).setValue(formatPhoneNumber(company.getPhoneNum(),0));
+                cells.get(startRow, 7).setValue(formatPhoneNumber(company.getPhoneNum(),1));
+                cells.get(startRow, 8).setValue(formatPhoneNumber(company.getPhoneNum(),2));
                 startRow++;
                 cells.get(startRow, 0).setValue("[data]");
             }
@@ -277,9 +277,9 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
                 cells.get(startRow, 4).setValue(checkLength(company.getAdd_1() + company.getAdd_2(), 75));
                 cells.get(startRow, 5).setValue(checkLength(company.getCompanyName(),50));
                 cells.get(startRow, 6).setValue(company.getRepname());
-                cells.get(startRow, 7).setValue(formatPhone(company.getPhoneNum(),0));
-                cells.get(startRow, 8).setValue(formatPhone(company.getPhoneNum(),1));
-                cells.get(startRow, 9).setValue(formatPhone(company.getPhoneNum(),2));
+                cells.get(startRow, 7).setValue(formatPhoneNumber(company.getPhoneNum(),0));
+                cells.get(startRow, 8).setValue(formatPhoneNumber(company.getPhoneNum(),1));
+                cells.get(startRow, 9).setValue(formatPhoneNumber(company.getPhoneNum(),2));
                 startRow++;
                 cells.get(startRow, 0).setValue("[data]");
             }
@@ -300,9 +300,6 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
         if (stt == 2 && sub.length >= 2) {
             return sub[1];
         }
-        if (sub.length == 1 && stt == 1 && phone.length() < 3) {
-            return phone;
-        }
         if (sub.length == 1 && stt == 1 && phone.length() >= 3) {
             return phone.substring(0, 3);
         }
@@ -311,6 +308,9 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
         }
         if (sub.length == 1 && stt == 2 && phone.length() >= 6) {
             return phone.substring(3, 6);
+        }
+        if (sub.length == 1 && phone.length() < 3) {
+            return phone;
         }
         return "";
     }
