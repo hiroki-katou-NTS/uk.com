@@ -36,6 +36,7 @@ export class Kdws03AComponent extends Vue {
 
     public title: string = 'Kdws03A';
     public isFirstLoad: boolean = true;
+    public rownum: number = 0;
     public displayFormat: any = '0';
     public lstDataSourceLoad: Array<any> = [];
     public lstDataHeader: Array<any> = [];
@@ -117,7 +118,7 @@ export class Kdws03AComponent extends Vue {
             return;
         } else {
             this.startPage();
-        }   
+        }
     }
 
     @Watch('actualTimeSelectedCode')
@@ -153,6 +154,7 @@ export class Kdws03AComponent extends Vue {
             this.displayFormat = this.$route.query.displayformat;
         }
 
+        this.rownum = this.displayFormat == '0' ? Math.floor((window.outerHeight - 242) / 42) : Math.floor((window.outerHeight - 190) / 42);
         if (this.screenMode == 0) {
             this.pgName = this.displayFormat == '0' ? 'name1' : 'name2';
         } else {
@@ -182,12 +184,10 @@ export class Kdws03AComponent extends Vue {
             styleContainer[0].style.overflow = 'hidden';
         }
 
-        if (this.displayFormat == '1') {
-            let styleTableBody: any = [];
-            styleTableBody = document.querySelectorAll('.table-body');
-            if (!_.isEmpty(styleTableBody)) {
-                styleTableBody[0].style.height = '295px';
-            }
+        let styleTableBody: any = [];
+        styleTableBody = document.querySelectorAll('.table-body');
+        if (!_.isEmpty(styleTableBody)) {
+            styleTableBody[0].style.height = this.rownum * 42 + 1 + 'px';
         }
     }
 
@@ -326,10 +326,10 @@ export class Kdws03AComponent extends Vue {
             self.timePeriodAllInfo = data.periodInfo;
             self.yearMonth = data.periodInfo.yearMonth;
         }
-        
-        if (self.displayFormat == 1) {
+
+        if (self.displayFormat == 1 && self.isFirstLoad) {
             self.selectedDate = this.$dt.fromString(self.timePeriodAllInfo.targetRange.startDate);
-        }       
+        }
 
         self.fixHeaders = data.lstFixedHeader;
         self.showPrincipal = data.showPrincipal;
@@ -433,17 +433,18 @@ export class Kdws03AComponent extends Vue {
 
         // fill blank row when no data
         if (self.displayFormat == 0) {
-            if (self.lstDataSourceLoad.length < 7) {
-                for (let i = 1; i <= (7 - self.lstDataSourceLoad.length); i++) {
+            self.displayDataLstEx = self.displayDataLst.slice();
+            if (self.lstDataSourceLoad.length < this.rownum) {
+                for (let i = 1; i <= (this.rownum - self.lstDataSourceLoad.length); i++) {
                     let rowData = [];
                     headers.forEach((header: any) => {
                         rowData.push({ key: header.key, value: '' });
                     });
-                    self.displayDataLst.push({ rowData, date: '', id: '' });
+                    self.displayDataLstEx.push({ rowData, date: '', id: '' });
                 }
             }
         } else {
-            if (self.displayDataLst.length <= 7) {
+            if (self.displayDataLst.length <= this.rownum) {
                 if (self.displayDataLst.length == 0) {
                     self.itemStart = 0;
                     self.itemEnd = 0;
@@ -456,14 +457,14 @@ export class Kdws03AComponent extends Vue {
                     self.nextState = 'button-deactive';
                 }
                 self.displayDataLstEx = self.displayDataLst.slice();
-                for (let i = 1; i <= (7 - self.displayDataLst.length); i++) {
+                for (let i = 1; i <= (this.rownum - self.displayDataLst.length); i++) {
                     let rowData = [];
                     headers.forEach((header: any) => {
                         rowData.push({ key: header.key, value: '' });
                     });
                     self.displayDataLstEx.push({ rowData, employeeName: '', id: '' });
                 }
-            } else if (7 < self.displayDataLst.length && self.displayDataLst.length < 20) {
+            } else if (this.rownum < self.displayDataLst.length && self.displayDataLst.length < 20) {
                 self.displayDataLstEx = _.slice(self.displayDataLst, 0, 20);
                 self.itemStart = 1;
                 self.itemEnd = self.displayDataLst.length;
@@ -579,36 +580,36 @@ export class Kdws03AComponent extends Vue {
         let self = this;
         if (self.displayFormat == '0') {//個人別モード
             self.$modal('kdws03amenu',
-            {
-                displayFormat: this.displayFormat,
-                allConfirmButtonDis: this.dPCorrectionMenuDto.allConfirmButtonDis,
-                errorReferButtonDis: this.dPCorrectionMenuDto.errorReferButtonDis,
-                restReferButtonDis: this.dPCorrectionMenuDto.restReferButtonDis,
-                monthActualReferButtonDis: this.dPCorrectionMenuDto.monthActualReferButtonDis,
-                timeExcessReferButtonDis: this.dPCorrectionMenuDto.timeExcessReferButtonDis,
-            }).then((param: any) => {
-                if (param != undefined && param.openB) {
-                    //open B
-                    let rowData = null;
-                    if (self.displayFormat == '0') {
-                        rowData = _.find(self.displayDataLst, (x) => x.dateDetail == param.date);
-                    } else {
-                        rowData = _.find(self.displayDataLst, (x) => x.employeeId == param.employeeId);
+                {
+                    displayFormat: this.displayFormat,
+                    allConfirmButtonDis: this.dPCorrectionMenuDto.allConfirmButtonDis,
+                    errorReferButtonDis: this.dPCorrectionMenuDto.errorReferButtonDis,
+                    restReferButtonDis: this.dPCorrectionMenuDto.restReferButtonDis,
+                    monthActualReferButtonDis: this.dPCorrectionMenuDto.monthActualReferButtonDis,
+                    timeExcessReferButtonDis: this.dPCorrectionMenuDto.timeExcessReferButtonDis,
+                }).then((param: any) => {
+                    if (param != undefined && param.openB) {
+                        //open B
+                        let rowData = null;
+                        if (self.displayFormat == '0') {
+                            rowData = _.find(self.displayDataLst, (x) => x.dateDetail == param.date);
+                        } else {
+                            rowData = _.find(self.displayDataLst, (x) => x.employeeId == param.employeeId);
+                        }
+
+                        self.$modal('kdws03b', {
+                            'employeeID': param.employeeId,
+                            'employeeName': param.employeeName,
+                            'date': param.date,
+                            'rowData': rowData,
+                            'paramData': self.paramData
+                        });
+                    }
+                    if (!_.isNil(param) && param.reload) {
+                        this.startPage();
                     }
 
-                    self.$modal('kdws03b', {
-                        'employeeID': param.employeeId,
-                        'employeeName': param.employeeName,
-                        'date': param.date,
-                        'rowData': rowData,
-                        'paramData': self.paramData
-                    });
-                }
-                if (!_.isNil(param) && param.reload) {
-                    this.startPage();
-                }
-
-            });
+                });
         } else {//日付別モード
             this.$modal('kdws03c').then((paramOpenB: any) => {
                 if (paramOpenB != undefined && paramOpenB.openB) {
@@ -646,8 +647,8 @@ export class Kdws03AComponent extends Vue {
             this.itemEnd = this.displayDataLst.length;
             this.nextState = 'button-deactive';
             this.displayDataLstEx = _.slice(this.displayDataLst, this.itemStart - 1);
-            if (this.itemEnd - this.itemStart < 7) {
-                for (let i = 1; i <= (6 - (this.itemEnd - this.itemStart)); i++) {
+            if (this.itemEnd - this.itemStart < this.rownum) {
+                for (let i = 1; i <= (this.rownum - 1 - (this.itemEnd - this.itemStart)); i++) {
                     let rowData = [];
                     this.displayHeaderLst.forEach((header: any) => {
                         rowData.push({ key: header.key, value: '' });

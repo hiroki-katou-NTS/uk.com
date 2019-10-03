@@ -1,3 +1,29 @@
 .kdws03d {
-
+    table {
+        table-layout: fixed;
+        th {
+            &:nth-child(1) {
+                width: 65px;
+            }
+            &:nth-child(2) {
+                width: 65px;
+            }
+        }
+        th {
+            &:first-child {
+                border-left: none;
+            }
+            &:last-child {
+                border-right: none;
+            }
+        }
+        td {
+            &:first-child {
+                border-left: none;
+            }
+            &:last-child {
+                border-right: none;
+            }
+        }
+    }
 }

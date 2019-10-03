@@ -186,12 +186,11 @@ public class InitScreenMob {
 
 		List<DailyPerformanceEmployeeDto> lstEmployeeData = new ArrayList<>();
 		if (displayFormat == 0) {
-			lstEmployeeData = screenDto.getLstEmployee().stream().filter(x -> x.getId().equals(employeeID))
-					.collect(Collectors.toList());
 			changeEmployeeIds.add(employeeID);
+			lstEmployeeData = findAllEmployee.findAllEmployee(changeEmployeeIds, dateRange.getEndDate());			
 		} else {
-			lstEmployeeData = screenDto.getLstEmployee();
 			changeEmployeeIds = allIds;
+			lstEmployeeData = screenDto.getLstEmployee();
 		}
 
 		screenDto.setLstData(processor.getListData(lstEmployeeData, dateRange, displayFormat));
@@ -416,6 +415,9 @@ public class InitScreenMob {
 				if (optWorkInfoOfDailyPerformanceDto.isPresent()
 						&& optWorkInfoOfDailyPerformanceDto.get().getState() == CalculationState.No_Calculated)
 					screenDto.setAlarmCellForFixedColumn(data.getId(), displayFormat);
+			}
+			if(lockDay || lockHist || dataSign == null || (!dataSign.isStatus() ? (!dataSign.notDisableForConfirm() ? true : false) : !dataSign.notDisableForConfirm())){
+				screenDto.setCellSate(data.getId(), DPText.LOCK_SIGN, DPText.STATE_DISABLE);
 			}
 		}
 		screenDto.setLstData(lstData);

@@ -37,7 +37,7 @@
             </div>
         </div>
     
-        <fix-table v-if="displayFormat == '0'" table-class="table table-bordered m-0 table-sm table-custom" :rowNumber="7" class="mx-n3 mt-n2" style="font-size: 11px" :key="resetTable">
+        <fix-table v-if="displayFormat == '0'" table-class="table table-bordered m-0 table-sm table-custom" class="mx-n3 mt-n2" style="font-size: 11px" :key="resetTable">
             <thead class="uk-bg-headline">
                 <tr>
                     <th c-width="56" style="height: 50px; text-align:center"></th>
@@ -46,7 +46,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="(row, i) of displayDataLst">
+                <tr v-for="(row, i) of displayDataLstEx">
                     <td v-bind:class="row.dateColor">{{row.date}}</td>
                     <td v-for="(cell, j) of row.rowData" v-bind:class="cell.class"><span class="crop-text">{{cell.displayvalue}}</span></td>
                     <td>
@@ -66,7 +66,7 @@
                 </tr>
             </tfoot>
         </fix-table>
-        <fix-table v-if="displayFormat == '1'" table-class="table table-bordered m-0 table-sm table-custom" :rowNumber="7" class="mx-n3 mt-n2" style="font-size: 11px" :key="resetTable">
+        <fix-table v-if="displayFormat == '1'" table-class="table table-bordered m-0 table-sm table-custom" class="mx-n3 mt-n2" style="font-size: 11px" :key="resetTable">
             <thead class="uk-bg-headline">
                 <tr>
                     <th c-width="58" style="height: 50px; text-align:center"></th>
