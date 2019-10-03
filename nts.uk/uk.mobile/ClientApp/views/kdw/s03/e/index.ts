@@ -49,6 +49,7 @@ export class KdwS03EComponent extends Vue {
     }
     //修正画面に遷移できるかチェックする
     public checkEsxit(lstA: Array<any>, lstErr: Array<number>) {
+        if (_.isEmpty(lstErr)) return false;
         for (let k = 0; k < lstErr.length; k++) {
             let esxit1 = false;
             for (let i = 0; i < lstA.length; i++) {
