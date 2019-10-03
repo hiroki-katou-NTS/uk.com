@@ -228,6 +228,7 @@ public class PeregCommonCommandFacade {
 			}
 			
 		});
+		
 		if(containerAdds.size() == 0) {
 			return new ArrayList<MyCustomizeException>(); 
 		}
@@ -347,6 +348,7 @@ public class PeregCommonCommandFacade {
 			case 2:
 			case 4:
 			case 5:
+			case 11:
 				return 2;
 			case 3:
 				return 3;
