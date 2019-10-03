@@ -390,7 +390,7 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
             let self = this;
             self.employeeInputList = ko.observableArray(data);
             self.systemReference = ko.observable(SystemType.EMPLOYMENT);
-            self.isDisplayOrganizationName = ko.observable(true);
+            self.isDisplayOrganizationName = ko.observable(false);
             self.targetBtnText = nts.uk.resource.getText("KCP009_3");
             self.selectedItem = ko.observable(null);
             self.tabindex = 3;
