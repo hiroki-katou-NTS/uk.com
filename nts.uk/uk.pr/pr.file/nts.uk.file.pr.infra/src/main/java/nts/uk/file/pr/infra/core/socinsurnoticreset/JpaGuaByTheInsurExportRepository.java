@@ -49,7 +49,7 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("      HOSYU_CURR,");
         exportSQL.append("      HOSYU_IN_KIND,");
         exportSQL.append("      HOSYU_MONTHLY,");
-        exportSQL.append("      OVER_ATR,");
+        exportSQL.append("      OVER_70_ATR,");
         exportSQL.append("      MULTI_OFFICE_ATR,");
         exportSQL.append("      SHORTTIME_WORKERS_ATR,");
         exportSQL.append("      CONTINUE_REEMPLOYED_ATR,");
@@ -215,7 +215,7 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("  QSII.HOSYU_CURR,");
         exportSQL.append("  QSII.HOSYU_IN_KIND,");
         exportSQL.append("  QSII.HOSYU_MONTHLY,");
-        exportSQL.append("  QSII.OVER_ATR,");
+        exportSQL.append("  QSII.OVER_70_ATR,");
         exportSQL.append("  QMEWI.MULTI_OFFICE_ATR,");
         exportSQL.append("  QSII.SHORTTIME_WORKERS_ATR,");
         exportSQL.append("  QSII.CONTINUE_REEMPLOYED_ATR,");
@@ -323,7 +323,7 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("      HOSYU_CURR,");
         exportSQL.append("      HOSYU_IN_KIND,");
         exportSQL.append("      HOSYU_MONTHLY,");
-        exportSQL.append("      OVER_ATR,");
+        exportSQL.append("      OVER_70_ATR,");
         exportSQL.append("      MULTI_OFFICE_ATR,");
         exportSQL.append("      SHORTTIME_WORKERS_ATR,");
         exportSQL.append("      CONTINUE_REEMPLOYED_ATR,");
@@ -490,7 +490,7 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("      GENDER,");
         exportSQL.append("      COAL_MINER_ATR,");
         exportSQL.append("      QUALIFI_DISTIN,");
-        exportSQL.append("      OVER_ATR,");
+        exportSQL.append("      OVER_70_ATR,");
         exportSQL.append("      BIKO_SONOTA_ATR,");
         exportSQL.append("      CONTINUE_REEMPLOYED_ATR,");
         exportSQL.append("      HOSYU_IN_KIND,");
