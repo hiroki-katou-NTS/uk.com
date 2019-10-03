@@ -223,28 +223,28 @@ public class CheckFileFinder {
 			employeeIds.addAll(employeeMange.stream().map(c -> c.getEmployeeId()).collect(Collectors.toList()));
 		}
 		
-		if(!employeeIds.isEmpty()) {
+		if (!employeeIds.isEmpty()) {
 			// 社員リストを参照範囲で絞り込む - RequestList539 (RequestList338)
-			Optional<NarrowEmpByReferenceRange> narrow  = this.employeePub.findByEmpId(employeeIds, 8 );
-			Optional<Role> optRole = roleRepo.findByRoleId(roleId);
-			//受入する社員が存在する（ログイン者が操作できる社員として存在する）かチェックする
+			Optional<NarrowEmpByReferenceRange> narrow = this.employeePub.findByEmpId(employeeIds, 8);
+			// 受入する社員が存在する（ログイン者が操作できる社員として存在する）かチェックする
 			if (narrow.isPresent()) {
-				if (optRole.get().getEmployeeReferenceRange() != EmployeeReferenceRange.ALL_EMPLOYEE) {
+				if (CollectionUtil.isEmpty(narrow.get().getEmployeeID())) {
 					throw new BusinessException("Msg_724");
 				} else {
-					if (narrow.isPresent()) {
-						narrow.get().getEmployeeID().stream().forEach(c ->{
-							Optional<EmployeeDataMngInfo> employeeOpt = employeeMange.stream().filter(emp -> emp.getEmployeeId().equals(c.toString())).findFirst();
-							if(employeeOpt.isPresent()) {
-								result.add(employeeOpt.get());
-							}
-						});
-					}
+					narrow.get().getEmployeeID().stream().forEach(c -> {
+						Optional<EmployeeDataMngInfo> employeeOpt = employeeMange.stream()
+								.filter(emp -> emp.getEmployeeId().equals(c.toString())).findFirst();
+						if (employeeOpt.isPresent()) {
+							result.add(employeeOpt.get());
+						}
+					});
 				}
+
+			} else {
+				throw new BusinessException("Msg_724");
 			}
-		}else {
-			throw new BusinessException("Msg_724");
 		}
+
 		return result;
 	}
 	
