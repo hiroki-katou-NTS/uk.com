@@ -93,9 +93,9 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
                 cells.get(startRow, 6).setValue(checkLength(company.getAdd_1() + company.getAdd_2(),75));
                 cells.get(startRow, 7).setValue(checkLength(company.getCompanyName(), 50));
                 cells.get(startRow, 8).setValue(company.getRepname());
-                cells.get(startRow, 9).setValue(formatPhone(company.getPhoneNum(),0));
-                cells.get(startRow, 10).setValue(formatPhone(company.getPhoneNum(),1));
-                cells.get(startRow, 11).setValue(formatPhone(company.getPhoneNum(),2));
+                cells.get(startRow, 9).setValue(formatPhoneNumber(company.getPhoneNum(),0));
+                cells.get(startRow, 10).setValue(formatPhoneNumber(company.getPhoneNum(),1));
+                cells.get(startRow, 11).setValue(formatPhoneNumber(company.getPhoneNum(),2));
                 startRow++;
                 cells.get(startRow, 0).setValue("[data]");
             }
@@ -121,8 +121,8 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
                 checkLength(data.getOfficeNumber2(),4) : checkLength(data.getWelfOfficeNumber2(),4));
         cells.get(startRow, 4).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? data.getOfficeNumber() : data.getWelfOfficeNumber());
         cells.get(startRow, 5).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? data.getHealInsNumber() : data.getWelfPenNumber());
-        cells.get(startRow, 6).setValue(ins.getSubmittedName() == SubNameClass.PERSONAL_NAME ? checkLength(data.getPersonName(),25) : checkLength(data.getPersonNameKana(),25));
-        cells.get(startRow, 7).setValue(ins.getSubmittedName() == SubNameClass.PERSONAL_NAME ? checkLength(data.getOldName(),12) : checkLength(data.getOldNameKana(),12));
+        cells.get(startRow, 6).setValue(ins.getSubmittedName() == SubNameClass.PERSONAL_NAME ? checkLength(data.getPersonNameKana(),25) : checkLength(data.getOldNameKana(),25));
+        cells.get(startRow, 7).setValue(ins.getSubmittedName() == SubNameClass.PERSONAL_NAME ? checkLength(data.getPersonName(),12) : checkLength(data.getOldName(),12));
         cells.get(startRow, 8).setValue(dateJp.era().equals(HEISEI) ? 7 : dateJp.era().equals(SHOWA) ? 5 : 9);
         cells.get(startRow, 9).setValue(convertJpDate(dateJp));
         cells.get(startRow, 10).setValue(ins.getPrintPersonNumber() != PersonalNumClass.DO_NOT_OUTPUT && ins.getPrintPersonNumber() != PersonalNumClass.OUTPUT_PER_NUMBER ? data.getBasicPenNumber() : "");
@@ -201,9 +201,9 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
                 cells.get(startRow, 3).setValue(checkLength(company.getAdd_1() + company.getAdd_2(),75));
                 cells.get(startRow, 4).setValue(checkLength(company.getCompanyName(), 50));
                 cells.get(startRow, 5).setValue(company.getRepname());
-                cells.get(startRow, 6).setValue(formatPhone(company.getPhoneNum(),0));
-                cells.get(startRow, 7).setValue(formatPhone(company.getPhoneNum(),1));
-                cells.get(startRow, 8).setValue(formatPhone(company.getPhoneNum(),2));
+                cells.get(startRow, 6).setValue(formatPhoneNumber(company.getPhoneNum(),0));
+                cells.get(startRow, 7).setValue(formatPhoneNumber(company.getPhoneNum(),1));
+                cells.get(startRow, 8).setValue(formatPhoneNumber(company.getPhoneNum(),2));
                 startRow++;
                 cells.get(startRow, 0).setValue("[data]");
             }
@@ -277,9 +277,9 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
                 cells.get(startRow, 4).setValue(checkLength(company.getAdd_1() + company.getAdd_2(), 75));
                 cells.get(startRow, 5).setValue(checkLength(company.getCompanyName(),50));
                 cells.get(startRow, 6).setValue(company.getRepname());
-                cells.get(startRow, 7).setValue(formatPhone(company.getPhoneNum(),0));
-                cells.get(startRow, 8).setValue(formatPhone(company.getPhoneNum(),1));
-                cells.get(startRow, 9).setValue(formatPhone(company.getPhoneNum(),2));
+                cells.get(startRow, 7).setValue(formatPhoneNumber(company.getPhoneNum(),0));
+                cells.get(startRow, 8).setValue(formatPhoneNumber(company.getPhoneNum(),1));
+                cells.get(startRow, 9).setValue(formatPhoneNumber(company.getPhoneNum(),2));
                 startRow++;
                 cells.get(startRow, 0).setValue("[data]");
             }
@@ -289,18 +289,30 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
 
     }
 
-    private String formatPhone(String phone, int stt){
-        String[] result = phone.split("-");
-        if(result.length == 1 && phone.length() > 0 && stt == 0){
-            return phone.length() > 5 ? phone.substring(0, 5) : phone.substring(0, phone.length());
+    private String formatPhoneNumber(String phone, int stt) {
+        String[] sub = phone.split("-");
+        if (stt == 3 && sub.length >= 3) {
+            return sub[2];
         }
-        if(result.length == 1 && phone.length() > 5 && stt == 1){
-            return phone.length() > 9 ? phone.substring(5,9) : phone.substring(5, phone.length());
+        if (stt == 1 && sub.length > 1) {
+            return sub[0];
         }
-        if(result.length == 1 && phone.length() > 9 && stt == 2){
-            return phone.length() >= 14 ? phone.substring(9, 14) : phone.substring(9, phone.length());
+        if (stt == 2 && sub.length >= 2) {
+            return sub[1];
         }
-        return result.length > 1 ? result[stt] : "";
+        if (sub.length == 1 && stt == 1 && phone.length() >= 3) {
+            return phone.substring(0, 3);
+        }
+        if (sub.length == 1 && stt == 3 && phone.length() > 6) {
+            return phone.substring(6, phone.length());
+        }
+        if (sub.length == 1 && stt == 2 && phone.length() >= 6) {
+            return phone.substring(3, 6);
+        }
+        if (sub.length == 1 && phone.length() < 3) {
+            return phone;
+        }
+        return "";
     }
 
     private void fillEmpPensionFund(PensFundSubmissData data, Cells cells,
