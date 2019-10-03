@@ -289,18 +289,30 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
 
     }
 
-    private String formatPhone(String phone, int stt){
-        String[] result = phone.split("-");
-        if(result.length == 1 && phone.length() > 0 && stt == 0){
-            return phone.length() > 5 ? phone.substring(0, 5) : phone.substring(0, phone.length());
+    private String formatPhoneNumber(String phone, int stt) {
+        String[] sub = phone.split("-");
+        if (stt == 3 && sub.length >= 3) {
+            return sub[2];
         }
-        if(result.length == 1 && phone.length() > 5 && stt == 1){
-            return phone.length() > 9 ? phone.substring(5,9) : phone.substring(5, phone.length());
+        if (stt == 1 && sub.length > 1) {
+            return sub[0];
         }
-        if(result.length == 1 && phone.length() > 9 && stt == 2){
-            return phone.length() >= 14 ? phone.substring(9, 14) : phone.substring(9, phone.length());
+        if (stt == 2 && sub.length >= 2) {
+            return sub[1];
         }
-        return result.length > 1 ? result[stt] : "";
+        if (sub.length == 1 && stt == 1 && phone.length() < 3) {
+            return phone;
+        }
+        if (sub.length == 1 && stt == 1 && phone.length() >= 3) {
+            return phone.substring(0, 3);
+        }
+        if (sub.length == 1 && stt == 3 && phone.length() > 6) {
+            return phone.substring(6, phone.length());
+        }
+        if (sub.length == 1 && stt == 2 && phone.length() >= 6) {
+            return phone.substring(3, 6);
+        }
+        return "";
     }
 
     private void fillEmpPensionFund(PensFundSubmissData data, Cells cells,
