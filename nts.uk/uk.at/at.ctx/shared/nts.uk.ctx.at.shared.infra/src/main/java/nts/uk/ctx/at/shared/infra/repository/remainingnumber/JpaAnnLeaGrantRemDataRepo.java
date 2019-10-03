@@ -332,7 +332,7 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 					entity.usedDays = r.getDouble("USED_DAYS");
 					entity.usedMinutes = r.getInt("USED_MINUTES");
 					entity.stowageDays = r.getDouble("STOWAGE_DAYS");
-					entity.remainingDays = r.getInt("REMAINING_DAYS");
+					entity.remainingDays = r.getDouble("REMAINING_DAYS");
 					entity.remaningMinutes = r.getInt("REMAINING_MINUTES");
 					entity.usedPercent = r.getDouble("USED_PERCENT");
 					
