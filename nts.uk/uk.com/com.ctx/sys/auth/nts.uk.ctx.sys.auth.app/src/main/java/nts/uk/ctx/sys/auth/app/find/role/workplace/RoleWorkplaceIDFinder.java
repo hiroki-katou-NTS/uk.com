@@ -186,17 +186,17 @@ public class RoleWorkplaceIDFinder {
 		List<String> listWkpId = workplaceAdapter.getWorkplaceId(GeneralDate.today(), employeeId);
 				
 		// requestList #30 get aff workplace history
-		Optional<AffWorkplaceHistImport> opAffWorkplaceHistImport = workplaceAdapter
-				.findWkpByBaseDateAndEmployeeId(param.getBaseDate(), employeeId);
+//		Optional<AffWorkplaceHistImport> opAffWorkplaceHistImport = workplaceAdapter
+//				.findWkpByBaseDateAndEmployeeId(param.getBaseDate(), employeeId);
 
 		// Including management workplace = false
 
 		// RequestList No.30 get aff workplace history
-//		Optional<AffWorkplaceHistImport> optAffWorkplaceHistImport = sysAuthWorkplaceAdapter
-//				.findWkpByBaseDateAndEmpId(param.getBaseDate(), employeeId);
+		Optional<AffWorkplaceHistImport> optAffWorkplaceHistImport = sysAuthWorkplaceAdapter
+				.findWkpByBaseDateAndEmpId(param.getBaseDate(), employeeId);
 
-		if (opAffWorkplaceHistImport.isPresent()) {
-			workplaceId = opAffWorkplaceHistImport.get().getWorkplaceId();
+		if (optAffWorkplaceHistImport.isPresent()) {
+			workplaceId = optAffWorkplaceHistImport.get().getWorkplaceId();
 		}
 
         // check workplace id != null
