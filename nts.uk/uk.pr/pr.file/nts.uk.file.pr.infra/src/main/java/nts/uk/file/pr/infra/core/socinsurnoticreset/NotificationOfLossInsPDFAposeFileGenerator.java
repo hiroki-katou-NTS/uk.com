@@ -187,6 +187,9 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
         if (stt == 3 && sub.length >= 3) {
             return sub[2];
         }
+        if (sub.length == 1 && stt == 1 && phone.length() < 3) {
+            return phone;
+        }
         if (sub.length == 1 && stt == 1 && phone.length() >= 3) {
             return phone.substring(0, 3);
         }
@@ -196,7 +199,7 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
         if (sub.length == 1 && stt == 2 && phone.length() >= 6) {
             return phone.substring(3, 6);
         }
-        return phone;
+        return "";
     }
 
     private void fillCompanyHealthy(WorksheetCollection worksheets, InsLossDataExport data, GeneralDate baseDate, CompanyInfor company, String sheetName, boolean isHeal, BusinessDivision typeOff){
