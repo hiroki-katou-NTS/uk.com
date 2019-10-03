@@ -317,9 +317,20 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
         String[] numberSplit = number.split("-");
         String[] temp = new String[3];
 
-        if(numberSplit.length > 1){
+        if(numberSplit.length == 2){
+
+            if(numberSplit[1].length() <= 3){
+                temp[0] = numberSplit[1].substring(0,numberSplit[1].length());
+                numberPhone = numberSplit[0] + "（   　" + temp[0] + "   　局）";
+            }else{
+                temp[0] = numberSplit[1].substring(0,3);
+                temp[1] = numberSplit[1].substring(3,numberSplit[1].length());
+                numberPhone = numberSplit[0] + "（   　" + temp[0] + "   　局）" + temp[1];
+            }
+
+        }else if(numberSplit.length >= 3){
             numberPhone = numberSplit[0] + "（   　" + numberSplit[1] + "   　局）" + numberSplit[2];
-        }else{
+        }else if(numberSplit.length == 1){
             if(number.length() <= 3){
                 temp[0] = number.substring(0,number.length());
                 numberPhone = temp[0];
