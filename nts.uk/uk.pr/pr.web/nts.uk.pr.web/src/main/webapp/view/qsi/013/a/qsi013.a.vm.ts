@@ -255,7 +255,7 @@ module nts.uk.pr.view.qsi013.a.viewmodel {
             let self = this;
             self.ccg001ComponentOption = {
                 /** Common properties */
-                showEmployeeSelection: true,
+                showEmployeeSelection: false,
                 showQuickSearchTab: true,
                 showAdvancedSearchTab: true,
                 showBaseDate: true,
