@@ -36,6 +36,7 @@ export class Kdws03AComponent extends Vue {
 
     public title: string = 'Kdws03A';
     public isFirstLoad: boolean = true;
+    public rownum: number = 0;
     public displayFormat: any = '0';
     public lstDataSourceLoad: Array<any> = [];
     public lstDataHeader: Array<any> = [];
@@ -153,6 +154,7 @@ export class Kdws03AComponent extends Vue {
             this.displayFormat = this.$route.query.displayformat;
         }
 
+        this.rownum = this.displayFormat == '0' ? Math.floor((window.outerHeight - 242) / 42) : Math.floor((window.outerHeight - 190) / 42);
         if (this.screenMode == 0) {
             this.pgName = this.displayFormat == '0' ? 'name1' : 'name2';
         } else {
@@ -185,7 +187,7 @@ export class Kdws03AComponent extends Vue {
         let styleTableBody: any = [];
         styleTableBody = document.querySelectorAll('.table-body');
         if (!_.isEmpty(styleTableBody)) {
-            styleTableBody[0].style.height = '295px';
+            styleTableBody[0].style.height = this.rownum * 42 + 1 + 'px';
         }
     }
 
@@ -432,8 +434,8 @@ export class Kdws03AComponent extends Vue {
         // fill blank row when no data
         if (self.displayFormat == 0) {
             self.displayDataLstEx = self.displayDataLst.slice();
-            if (self.lstDataSourceLoad.length < 7) {
-                for (let i = 1; i <= (7 - self.lstDataSourceLoad.length); i++) {
+            if (self.lstDataSourceLoad.length < this.rownum) {
+                for (let i = 1; i <= (this.rownum - self.lstDataSourceLoad.length); i++) {
                     let rowData = [];
                     headers.forEach((header: any) => {
                         rowData.push({ key: header.key, value: '' });
@@ -442,7 +444,7 @@ export class Kdws03AComponent extends Vue {
                 }
             }
         } else {
-            if (self.displayDataLst.length <= 7) {
+            if (self.displayDataLst.length <= this.rownum) {
                 if (self.displayDataLst.length == 0) {
                     self.itemStart = 0;
                     self.itemEnd = 0;
@@ -455,14 +457,14 @@ export class Kdws03AComponent extends Vue {
                     self.nextState = 'button-deactive';
                 }
                 self.displayDataLstEx = self.displayDataLst.slice();
-                for (let i = 1; i <= (7 - self.displayDataLst.length); i++) {
+                for (let i = 1; i <= (this.rownum - self.displayDataLst.length); i++) {
                     let rowData = [];
                     headers.forEach((header: any) => {
                         rowData.push({ key: header.key, value: '' });
                     });
                     self.displayDataLstEx.push({ rowData, employeeName: '', id: '' });
                 }
-            } else if (7 < self.displayDataLst.length && self.displayDataLst.length < 20) {
+            } else if (this.rownum < self.displayDataLst.length && self.displayDataLst.length < 20) {
                 self.displayDataLstEx = _.slice(self.displayDataLst, 0, 20);
                 self.itemStart = 1;
                 self.itemEnd = self.displayDataLst.length;
@@ -645,8 +647,8 @@ export class Kdws03AComponent extends Vue {
             this.itemEnd = this.displayDataLst.length;
             this.nextState = 'button-deactive';
             this.displayDataLstEx = _.slice(this.displayDataLst, this.itemStart - 1);
-            if (this.itemEnd - this.itemStart < 7) {
-                for (let i = 1; i <= (6 - (this.itemEnd - this.itemStart)); i++) {
+            if (this.itemEnd - this.itemStart < this.rownum) {
+                for (let i = 1; i <= (this.rownum - 1 - (this.itemEnd - this.itemStart)); i++) {
                     let rowData = [];
                     this.displayHeaderLst.forEach((header: any) => {
                         rowData.push({ key: header.key, value: '' });
