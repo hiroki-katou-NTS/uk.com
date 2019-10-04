@@ -49,14 +49,14 @@ public class QqsmtEmpFamilyInsHis extends UkJpaEntity implements Serializable
     * 介護保険適用区分
     */
     @Basic(optional = false)
-    @Column(name = "INS_CARE_DIVISION")
+    @Column(name = "INS_CARE_DIVISION_ATR")
     public int insCareDivision;
     
     /**
     * 社会保険適用区分
     */
     @Basic(optional = false)
-    @Column(name = "SOCIAL_INSURANCE_CLS")
+    @Column(name = "SOCIAL_INSURANCE_CLS_ATR")
     public int socialInsuranceCls;
     
     /**
@@ -70,7 +70,7 @@ public class QqsmtEmpFamilyInsHis extends UkJpaEntity implements Serializable
     * 被扶養者区分
     */
     @Basic(optional = false)
-    @Column(name = "DEPENDENT")
+    @Column(name = "DEPENDENT_ATR")
     public int dependent;
     
     @Override

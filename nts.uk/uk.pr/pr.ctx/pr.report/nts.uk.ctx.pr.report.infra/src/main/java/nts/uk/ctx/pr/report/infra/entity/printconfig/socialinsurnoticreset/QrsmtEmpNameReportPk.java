@@ -25,7 +25,14 @@ public class QrsmtEmpNameReportPk implements Serializable
     * 社員ID
     */
     @Basic(optional = false)
-    @Column(name = "EMP_ID")
+    @Column(name = "SID")
     public String empId;
+
+    /**
+     * 社員ID
+     */
+    @Basic(optional = false)
+    @Column(name = "CID")
+    public String cid;
     
 }
