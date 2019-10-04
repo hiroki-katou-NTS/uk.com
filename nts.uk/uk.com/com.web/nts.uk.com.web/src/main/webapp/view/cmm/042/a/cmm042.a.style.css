@@ -16,6 +16,18 @@
 	}
 }
 
+#A_BTN_REGISTER {
+	margin-left: 22px;
+}
+
+#A_BTN_REMOVE {
+	margin-left: 22px;
+}
+
+#A_BTN_SHOWDIALOGB {
+	margin-left: -6px;
+}
+
 #contents-area {
 	overflow-x: auto;
 	overflow-y: auto;
