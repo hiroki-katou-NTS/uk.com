@@ -1,6 +1,7 @@
 package nts.uk.ctx.pereg.app.command.facade;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -9,6 +10,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import nts.uk.ctx.pereg.dom.person.error.ErrorWarningEmployeeInfo;
+import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.pereg.app.command.EmployeeInputContainer;
 import nts.uk.shr.pereg.app.command.GridInputContainer;
 import nts.uk.shr.pereg.app.command.MyCustomizeException;
@@ -34,7 +36,7 @@ public class GridCommandFacade {
 					//0 - error
 					//1 - warning
 					ErrorWarningEmployeeInfo errorWarning = new ErrorWarningEmployeeInfo(emp.get().getEmployeeId(),
-							emp.get().getEmployeeCd(), emp.get().getEmployeeName(), emp.get().getOrder(), true, 0, c.getItemName(), c.getMessage());	
+							emp.get().getEmployeeCd(), emp.get().getEmployeeName(), emp.get().getOrder(), true, 0, c.getMessageId().equals("Msg_1577") == true? TextResource.localize("Msg_1577", Arrays.asList(emp.get().getInput().getCategoryName())): c.getItemName(), c.getMessage());	
 					result.add(errorWarning);
 				}
 						
