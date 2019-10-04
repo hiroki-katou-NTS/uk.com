@@ -1,5 +1,5 @@
 .component-search-employee{
-	width: 350px;
+	width: 360px;
 	display: inline-block;
     vertical-align: top;
 }
@@ -8,7 +8,7 @@
 	display: inline-block;
 }
 .component-search-employee .row {
-	margin: 10px 5px;
+	margin: 10px;
 	width: 350px;
 }
 
@@ -33,5 +33,5 @@
 }
 
 .component-search-employee #gridListEmployeesContent.showFullColumn {
-	width: 640px;
+	width: 680px;
 }

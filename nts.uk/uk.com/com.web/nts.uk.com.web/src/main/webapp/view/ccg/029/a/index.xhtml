@@ -33,13 +33,25 @@
 									<button tabindex="10" id="findBtn" class="inline" data-bind="click: find ">#{i18n.getText('CCG029_A1_4')}</button>
 								</div>
 								<div class="row">
-									<button tabindex="10" id="searchTipsBtn" class="inline mr10">#{i18n.getText('CCG029_A1_6')}</button>
-									<button tabindex="10" id="" class="inline" data-bind="click: expandDipslay ">#{i18n.getText('CCG029_A1_16')}</button>
+									<button tabindex="10" id="searchTipsBtn" class="inline mr10">#{i18n.getText('CCG029_A1_5')}</button>
+									<button tabindex="10" id="" class="inline" data-bind="click: expandDipslay ">#{i18n.getText('CCG029_A1_21')}</button>
 								</div>
-								<div class="searchTips-area">
-									<h2>Popup 2!</h2>
-									<h2>Popup 2!</h2>
-									<h2>Popup 2!</h2>
+								<div class="searchTips-area" style="visibility: hidden;">
+									<h2>#{i18n.getText('CCG029_A1_7')}</h2>
+									<br />
+									<h2>#{i18n.getText('CCG029_A1_8')}</h2>
+									<h2 data-bind="visible:input.includePreEmployee">#{i18n.getText('CCG029_A1_9')}</h2>
+									<h2 data-bind="visible:!input.includePreEmployee">#{i18n.getText('CCG029_A1_10')}</h2>
+									<h2 data-bind="visible:input.includeRetirement">#{i18n.getText('CCG029_A1_11')}</h2>
+									<h2 data-bind="visible:!input.includeRetirement">#{i18n.getText('CCG029_A1_12')}</h2>
+									<h2 data-bind="visible:input.includeAbsence">#{i18n.getText('CCG029_A1_13')}</h2>
+									<h2 data-bind="visible:!input.includeAbsence">#{i18n.getText('CCG029_A1_14')}</h2>
+									<h2 data-bind="visible:input.includeClosed">#{i18n.getText('CCG029_A1_15')}</h2>
+									<h2 data-bind="visible:!input.includeClosed">#{i18n.getText('CCG029_A1_16')}</h2>
+									<h2 data-bind="visible:input.includeTransferEmployee">#{i18n.getText('CCG029_A1_17')}</h2>
+									<h2 data-bind="visible:!input.includeTransferEmployee">#{i18n.getText('CCG029_A1_18')}</h2>
+									<h2 data-bind="visible:input.includeAcceptanceTransferEmployee">#{i18n.getText('CCG029_A1_19')}</h2>
+									<h2 data-bind="visible:!input.includeAcceptanceTransferEmployee">#{i18n.getText('CCG029_A1_20')}</h2>
 								</div>
 								<div class="row">
 									<div id="gridListEmployeesContent">
