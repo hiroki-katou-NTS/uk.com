@@ -37,6 +37,7 @@ import nts.uk.ctx.at.function.app.command.processexecution.approuteupdatedaily.O
 import nts.uk.ctx.at.function.app.command.processexecution.approuteupdatemonthly.AppRouteUpdateMonthlyService;
 import nts.uk.ctx.at.function.app.command.processexecution.approuteupdatemonthly.OutputAppRouteMonthly;
 import nts.uk.ctx.at.function.app.command.processexecution.createlogfileexecution.CreateLogFileExecution;
+import nts.uk.ctx.at.function.app.command.processexecution.reflectapprovalresult.executionprocess.CalPeriodApprovalResult;
 import nts.uk.ctx.at.function.dom.adapter.WorkplaceWorkRecordAdapter;
 import nts.uk.ctx.at.function.dom.adapter.appreflectmanager.AppReflectManagerAdapter;
 import nts.uk.ctx.at.function.dom.adapter.appreflectmanager.ProcessStateReflectImport;
@@ -275,6 +276,8 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 	@Inject
 	private OverallErrorProcess overallErrorProcess;
 	
+	@Inject
+	private CalPeriodApprovalResult calPeriodApprovalResult;
 	public static int MAX_DELAY_PARALLEL = 0;
 
 	/**
@@ -1744,8 +1747,6 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 											.collect(Collectors.toList());
 									//職場情報変更期間を求める
 									listDatePeriodWorkplace =  wkplaceInfoChangePeriod.getWkplaceInfoChangePeriod(empLeader, datePeriod, workplaceItems, true);
-								}else {
-									listDatePeriodWorkplace.add(datePeriod);
 								}
 							}
 							boolean check =  false;
@@ -2377,19 +2378,41 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 						}
 					}
 				}
+				//異動者を再作成する
+				boolean isRecreateTransfer = processExecution.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTransfer();
+				//勤務種別者を再作成
+				boolean isRecreateTypeChangePerson = processExecution.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTypeChangePerson();
 				int sizeEmployee = lstRegulationInfoEmployeeNew.size();
 				for (int j = 0; j < sizeEmployee; j++) {
 					try {
 						String regulationInfoEmployeeAdapterDto = lstRegulationInfoEmployeeNew.get(j);
-						ProcessStateReflectImport processStateReflectImport = appReflectManagerAdapter
-								.reflectAppOfEmployeeTotal(execId, regulationInfoEmployeeAdapterDto,
-										newDatePeriod);
-						if (processStateReflectImport == ProcessStateReflectImport.INTERRUPTION) {
-							endStatusIsInterrupt = true;
-						}
-						if (endStatusIsInterrupt) {
-							checkStopExec = true;
-							break;
+						//INPUT．「実行種別」 = 再作成
+						if (processExecution.getProcessExecType() == ProcessExecType.RE_CREATE) {
+							//承認結果の再反映期間を計算する
+							List<DatePeriod> listPeriod =  calPeriodApprovalResult.calPeriodApprovalResult(companyId, regulationInfoEmployeeAdapterDto, newDatePeriod.start(), isRecreateTransfer, isRecreateTypeChangePerson);
+							for(DatePeriod p :listPeriod) {
+								ProcessStateReflectImport processStateReflectImport = appReflectManagerAdapter
+										.reflectAppOfEmployeeTotal(execId, regulationInfoEmployeeAdapterDto,
+												p);
+								if (processStateReflectImport == ProcessStateReflectImport.INTERRUPTION) {
+									endStatusIsInterrupt = true;
+								}
+								if (endStatusIsInterrupt) {
+									checkStopExec = true;
+									break;
+								}
+							}
+						}else {
+							ProcessStateReflectImport processStateReflectImport = appReflectManagerAdapter
+									.reflectAppOfEmployeeTotal(execId, regulationInfoEmployeeAdapterDto,
+											newDatePeriod);
+							if (processStateReflectImport == ProcessStateReflectImport.INTERRUPTION) {
+								endStatusIsInterrupt = true;
+							}
+							if (endStatusIsInterrupt) {
+								checkStopExec = true;
+								break;
+							}
 						}
 					} catch (Exception e) {
 						isHasException = true;
