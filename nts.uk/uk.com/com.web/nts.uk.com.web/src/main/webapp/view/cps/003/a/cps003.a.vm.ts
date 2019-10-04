@@ -1204,11 +1204,11 @@ module cps003.a.vm {
                             dt.specs.list[item.recordId] = dt.specs.pattern.length - 1;
                             if (cps003.control.WORK_TIME[item.itemCode]) {
                                 if (!_.isNil(item.value)) {
-                                    if (_.isNil(find(workTimeCodes, wt => wt === item.value))) {
+//                                    if (_.isNil(find(workTimeCodes, wt => wt === item.value))) {
                                         workTimeCodes.push(item.value);
                                         workTimeItems.push(item.itemCode);
-                                    }
-                                } else if (_.isNil(find(nullWorkTimeItems, nw => nw === item.itemCode))) {
+//                                    }
+                                } else /*if (_.isNil(find(nullWorkTimeItems, nw => nw === item.itemCode)))*/ {
                                     nullWorkTimeCodes.push(item.value);
                                     nullWorkTimeItems.push(item.itemCode);
                                 }
@@ -1216,17 +1216,17 @@ module cps003.a.vm {
                                 if (_.has(codes, item.value)) {
                                     let codeArr = codes[item.value], found;
                                     for (let k = 0; k < codeArr.length; k++) {
-                                        if (codeArr[k] === item.recordId) {
+                                        if (codeArr[k] && codeArr[k].id === record.id && codeArr[k].column === item.itemCode) {
                                             found = true;
                                             break;
                                         }
                                     }
                                     
                                     if (!found) {
-                                        codes[item.value].push(item.recordId);
+                                        codes[item.value].push({ id: record.id, column: item.itemCode });
                                     }
                                 } else {
-                                    codes[item.value] = [ item.recordId ];
+                                    codes[item.value] = [{ id: record.id, column: item.itemCode }];
                                 }
                             }
                         } else if (dt.cls.dataTypeValue === ITEM_SINGLE_TYPE.RELATE_CATEGORY) {
@@ -1270,29 +1270,49 @@ module cps003.a.vm {
                             if (head) {
                                 if (workTime.firstTimes && !head.startEnd) {
                                     forEach(codes[c], r => {
-                                        states.push(new State(r, workTime.firstTimes.start, ["mgrid-disable"]));
-                                        states.push(new State(r, workTime.firstTimes.end, ["mgrid-disable"]));
+                                        if (r.column === itemCode) {
+                                            states.push(new State(r.id, workTime.firstTimes.start, ["mgrid-disable"]));
+                                        }
+                                        
+                                        if (r.column === itemCode) {
+                                            states.push(new State(r.id, workTime.firstTimes.end, ["mgrid-disable"]));
+                                        }
                                     });
                                 }
                                 
                                 if (workTime.secondTimes && (!head.startEnd || !head.multiTime)) {
                                     forEach(codes[c], r => {
-                                        states.push(new State(r, workTime.secondTimes.start, ["mgrid-disable"]));
-                                        states.push(new State(r, workTime.secondTimes.end, ["mgrid-disable"]));
+                                        if (r.column === itemCode) {
+                                            states.push(new State(r.id, workTime.secondTimes.start, ["mgrid-disable"]));
+                                        }
+                                        
+                                        if (r.column === itemCode) {
+                                            states.push(new State(r.id, workTime.secondTimes.end, ["mgrid-disable"]));
+                                        }
                                     });
                                 }
                             } else {
                                 if (workTime.firstTimes) {
                                     forEach(codes[c], r => {
-                                        states.push(new State(r, workTime.firstTimes.start, ["mgrid-disable"]));
-                                        states.push(new State(r, workTime.firstTimes.end, ["mgrid-disable"]));
+                                        if (r.column === itemCode) {
+                                            states.push(new State(r.id, workTime.firstTimes.start, ["mgrid-disable"]));
+                                        }
+                                        
+                                        if (r.column === itemCode) {
+                                            states.push(new State(r.id, workTime.firstTimes.end, ["mgrid-disable"]));
+                                        }
                                     });
                                 }
                                 
                                 if (workTime.secondTimes) {
                                     forEach(codes[c], r => {
-                                        states.push(new State(r, workTime.secondTimes.start, ["mgrid-disable"]));
-                                        states.push(new State(r, workTime.secondTimes.end, ["mgrid-disable"]));
+                                        if (r.column === itemCode) {
+                                            states.push(new State(r.id, workTime.secondTimes.start, ["mgrid-disable"]));
+                                        }
+                                        
+                                        if (r.column === itemCode) {
+                                            states.push(new State(r.id, workTime.secondTimes.end, ["mgrid-disable"]));
+                                        }
                                     });
                                 }
                             }
@@ -1307,15 +1327,25 @@ module cps003.a.vm {
                         workTime = cps003.control.WORK_TIME[itemCode];    
                     if (workTime.firstTimes) {
                         forEach(codes[c], r => {
-                            states.push(new State(r, workTime.firstTimes.start, ["mgrid-disable"]));
-                            states.push(new State(r, workTime.firstTimes.end, ["mgrid-disable"]));
+                            if (r.column === itemCode) {
+                                states.push(new State(r.id, workTime.firstTimes.start, ["mgrid-disable"]));
+                            }
+                            
+                            if (r.column === itemCode) {
+                                states.push(new State(r.id, workTime.firstTimes.end, ["mgrid-disable"]));
+                            }
                         });
                     }
                     
                     if (workTime.secondTimes) {
                         forEach(codes[c], r => {
-                            states.push(new State(r, workTime.secondTimes.start, ["mgrid-disable"]));
-                            states.push(new State(r, workTime.secondTimes.end, ["mgrid-disable"]));
+                            if (r.column === itemCode) {
+                                states.push(new State(r.id, workTime.secondTimes.start, ["mgrid-disable"]));
+                            }
+                            
+                            if (r.column === itemCode) {
+                                states.push(new State(r.id, workTime.secondTimes.end, ["mgrid-disable"]));
+                            }
                         });
                     }
                 });
