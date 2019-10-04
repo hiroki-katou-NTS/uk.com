@@ -46,10 +46,8 @@ import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeName;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.DataDialogWithTypeProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ApprovalConfirmCache;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPAttendanceItem;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.DPCorrectionInitParam;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPDataDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPHeaderDto;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemCheckBox;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemParent;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPParams;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceCalculationDto;
@@ -81,8 +79,6 @@ import nts.uk.screen.at.app.dailyperformance.correction.loadupdate.onlycheckbox.
 import nts.uk.screen.at.app.dailyperformance.correction.lock.button.DPDisplayLockParam;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.button.DPDisplayLockProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.mobile.DPCorrectionProcessorMob;
-import nts.uk.screen.at.app.dailyperformance.correction.mobile.InitScreenMob;
-import nts.uk.screen.at.app.dailyperformance.correction.mobile.UpdateConfirmAllMob;
 import nts.uk.screen.at.app.dailyperformance.correction.month.asynctask.MonthParamInit;
 import nts.uk.screen.at.app.dailyperformance.correction.month.asynctask.ParamCommonAsync;
 import nts.uk.screen.at.app.dailyperformance.correction.month.asynctask.ProcessMonthScreen;
@@ -167,16 +163,10 @@ public class DailyPerformanceCorrectionWebService {
 	private GenDateProcessor genDateProcessor;
 	
 	@Inject
-	private InitScreenMob initScreenMob;
-	
-	@Inject
 	private DailyModifyRCommandFacade dailyModifyRCommandFacade;
 	
 	@Inject
 	private DPCorrectionProcessorMob dpCorrectionProcessorMob;
-	
-	@Inject
-	private UpdateConfirmAllMob updateConfirmAllMob;
 	
 	@POST
 	@Path("startScreen")
@@ -226,39 +216,6 @@ public class DailyPerformanceCorrectionWebService {
 		session.setAttribute("resultReturn", dtoResult.getLeft());
 		session.setAttribute("resultMonthReturn", dtoResult.getRight());
 		return dtoResult.getLeft();
-	}
-	
-	@POST
-	@Path("initMOB")
-	public DailyPerformanceCorrectionDto initScreen(DPCorrectionInitParam param) throws InterruptedException{
-		param.dpStateParam = (DPCorrectionStateParam)session.getAttribute("dpStateParam");
-		DailyPerformanceCorrectionDto dtoResult = this.initScreenMob.initMOB(param);
-		session.setAttribute("dpStateParam", dtoResult.getStateParam());
-		if (dtoResult.getErrorInfomation() != 0 || !dtoResult.getErrors().isEmpty()) {
-			return dtoResult;
-		}
-		session.setAttribute("domainOlds", dtoResult.getDomainOld());		
-		//add
-		session.setAttribute("domainOldForLog", cloneListDto(dtoResult.getDomainOld()));
-		session.setAttribute("domainEdits", null);
-		session.setAttribute("itemIdRCs", dtoResult.getLstControlDisplayItem() == null ? null : dtoResult.getLstControlDisplayItem().getMapDPAttendance());
-		session.setAttribute("dataSource", dtoResult.getLstData());
-		session.setAttribute("closureId", dtoResult.getClosureId());
-		session.setAttribute("resultReturn", null);
-		session.setAttribute("approvalConfirm", dtoResult.getApprovalConfirmCache());
-		dtoResult.setApprovalConfirmCache(null);
-		removeSession();
-		dtoResult.setDomainOld(Collections.emptyList());
-		return dtoResult;
-	}
-	
-	@POST
-	@Path("confirmAll")
-	@SuppressWarnings("unchecked")
-	public void confirmAll(List<DPItemCheckBox> dataCheckSign) throws InterruptedException{
-		List<DailyRecordDto> dailyRecordDtos = (List<DailyRecordDto>) session.getAttribute("domainOlds");
-		updateConfirmAllMob.confirmAll(dataCheckSign, dailyRecordDtos);
-		return;
 	}
 	
 	@POST

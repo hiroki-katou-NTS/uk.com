@@ -32,7 +32,7 @@
                     <nts-date-input v-model="selectedDate" />
                 </div>
                 <div class="col-4">
-                    <button type="button" class="btn btn-primary btn-block" v-click:500="openMenu">{{'KDWS03_76' | i18n}}</button>
+                    <button type="button" class="btn btn-primary btn-block" v-click:500="openMenu" v-if="dPCorrectionMenuDto.errorReferButtonDis">{{'KDWS03_76' | i18n}}</button>
                 </div>
             </div>
         </div>
