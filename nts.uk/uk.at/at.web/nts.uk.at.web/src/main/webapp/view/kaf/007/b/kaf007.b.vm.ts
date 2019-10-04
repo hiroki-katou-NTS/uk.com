@@ -407,9 +407,9 @@ module nts.uk.at.view.kaf007.b {
              * 「勤務就業選択」ボタンをクリックする
              * KDL003_勤務就業ダイアログを起動する
              */
-            openKDL003Click()  {
-                let self = nts.uk.ui._viewModel.content,
-                    workChange = self.appWorkChange().workChange();
+            openKDL003Click(vm: any)  {
+                let self = vm,
+                    workChange = vm.appWorkChange().workChange();
                 $("#inpStartTime1").ntsError('clear');
                 $("#inpEndTime1").ntsError('clear');                
                 nts.uk.ui.windows.setShared('parentCodes', {
