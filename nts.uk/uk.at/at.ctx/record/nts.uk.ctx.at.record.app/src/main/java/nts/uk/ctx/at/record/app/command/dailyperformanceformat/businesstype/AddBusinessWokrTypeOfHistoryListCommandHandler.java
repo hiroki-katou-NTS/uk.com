@@ -85,7 +85,7 @@ implements PeregAddListCommandHandler<AddBusinessWokrTypeOfHistoryCommand>{
 				recordIds.put(c.getEmployeeId(), historyId);
 				
 			}catch(BusinessException e) {
-				MyCustomizeException ex = new MyCustomizeException(e.getMessageId(), Arrays.asList(c.getEmployeeId()));
+				MyCustomizeException ex = new MyCustomizeException(e.getMessageId(), Arrays.asList(c.getEmployeeId()), "期間");
 				result.add(ex);
 			}
 

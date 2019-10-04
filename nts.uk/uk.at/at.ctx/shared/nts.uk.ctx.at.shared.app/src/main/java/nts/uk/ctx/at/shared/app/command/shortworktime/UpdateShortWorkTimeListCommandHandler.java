@@ -85,7 +85,7 @@ implements PeregUpdateListCommandHandler<UpdateShortWorkTimeCommand>{
 				histItems.add(sWorkTime);
 				
 			}catch(BusinessException e) {
-				MyCustomizeException ex = new MyCustomizeException(e.getMessageId(), Arrays.asList(c.getEmployeeId()));
+				MyCustomizeException ex = new MyCustomizeException(e.getMessageId(), Arrays.asList(c.getEmployeeId()), "ki");
 				errorExceptionLst.add(ex);
 			}
 

@@ -85,7 +85,7 @@ implements PeregUpdateListCommandHandler<UpdateAffJobTitleMainCommand>{
 						c.getSid(), c.getJobTitleId(), c.getNote());
 				histItems.add(histItem);
 			} catch (BusinessException e) {
-				MyCustomizeException ex = new MyCustomizeException(e.getMessageId(), Arrays.asList(c.getSid()));
+				MyCustomizeException ex = new MyCustomizeException(e.getMessageId(), Arrays.asList(c.getSid()), "期間");
 				errorExceptionLst.add(ex);
 			}
 		});

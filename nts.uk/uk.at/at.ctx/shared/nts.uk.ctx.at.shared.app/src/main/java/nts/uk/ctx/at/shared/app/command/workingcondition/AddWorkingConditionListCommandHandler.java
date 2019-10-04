@@ -72,12 +72,16 @@ implements PeregAddListCommandHandler<AddWorkingConditionCommand>{
 				DateHistoryItem itemToBeAdded = new DateHistoryItem(histId, new DatePeriod(c.getStartDate(), endDate));
 				workingCond.add(itemToBeAdded);
 				workingCondInserts.add(workingCond);
-				WorkingConditionItem  workingCondItem = addWorkingConditionCommandAssembler.fromDTO(histId, c);
-				workingCondItems.add(workingCondItem);
-				recordIds.put(c.getEmployeeId(), histId);
+				WokingConditionCommandCustom  workingCondItem = addWorkingConditionCommandAssembler.fromDTOCustom(histId, c);
+				if(CollectionUtil.isEmpty(workingCondItem.getEx())) {
+					workingCondItems.add(workingCondItem.getWorkingConditionItem());
+					recordIds.put(c.getEmployeeId(), histId);
+				}else {
+					result.addAll(workingCondItem.getEx());	
+				}
 				
 			}catch(BusinessException  e) {
-				MyCustomizeException ex = new MyCustomizeException(e.getMessageId(), Arrays.asList(c.getEmployeeId()));
+				MyCustomizeException ex = new MyCustomizeException(e.getMessageId(), Arrays.asList(c.getEmployeeId()), "期間");
 				result.add(ex);	
 			}
 

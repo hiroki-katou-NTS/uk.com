@@ -36,7 +36,7 @@ public class GridCommandFacade {
 					//0 - error
 					//1 - warning
 					ErrorWarningEmployeeInfo errorWarning = new ErrorWarningEmployeeInfo(emp.get().getEmployeeId(),
-							emp.get().getEmployeeCd(), emp.get().getEmployeeName(), emp.get().getOrder(), true, 0, c.getMessageId().equals("Msg_1577") == true? TextResource.localize("Msg_1577", Arrays.asList(emp.get().getInput().getCategoryName())): c.getItemName(), c.getMessage());	
+							emp.get().getEmployeeCd(), emp.get().getEmployeeName(), emp.get().getOrder(), true, 0,  c.getItemName(), c.getMessageId().equals("Msg_1577") == true? TextResource.localize("Msg_1577", Arrays.asList(emp.get().getInput().getCategoryName())):c.getMessage());	
 					result.add(errorWarning);
 				}
 						

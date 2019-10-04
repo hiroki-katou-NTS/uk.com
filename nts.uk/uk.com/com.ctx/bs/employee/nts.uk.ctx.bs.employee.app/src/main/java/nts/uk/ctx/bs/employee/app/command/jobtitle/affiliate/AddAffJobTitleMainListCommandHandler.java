@@ -78,7 +78,7 @@ implements PeregAddListCommandHandler<AddAffJobTitleMainCommand>{
 			recordIds.put(c.getSid(), histId);
 			
 			} catch(BusinessException e) {
-				MyCustomizeException ex = new MyCustomizeException(e.getMessageId(), Arrays.asList(c.getSid()));
+				MyCustomizeException ex = new MyCustomizeException(e.getMessageId(), Arrays.asList(c.getSid()), "期間");
 				result.add(ex);
 			}
 		});

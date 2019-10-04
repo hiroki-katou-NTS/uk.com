@@ -67,9 +67,6 @@ import nts.uk.ctx.pereg.dom.person.info.item.ItemType;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
 import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuth;
 import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuthRepository;
-import nts.uk.ctx.sys.auth.dom.role.EmployeeReferenceRange;
-import nts.uk.ctx.sys.auth.dom.role.Role;
-import nts.uk.ctx.sys.auth.dom.role.RoleRepository;
 import nts.uk.ctx.sys.auth.pub.employee.EmployeePublisher;
 import nts.uk.ctx.sys.auth.pub.employee.NarrowEmpByReferenceRange;
 import nts.uk.shr.com.context.AppContexts;
@@ -98,9 +95,6 @@ public class CheckFileFinder {
 	
 	@Inject
 	private StoredFileStreamService fileStreamService;
-	
-	@Inject
-	private RoleRepository roleRepo;
 	
 	@Inject
 	private GridPeregProcessor gridProcesor;
@@ -202,7 +196,6 @@ public class CheckFileFinder {
 		List<String> employeeIds = new ArrayList<>();
 		List<String> employeeCodes = new ArrayList<>();
 		String companyId = AppContexts.user().companyId();
-		String roleId = AppContexts.user().roles().forPersonalInfo();
 		List<EmployeeDataMngInfo> employeeMange = new ArrayList<>();
 		List<EmployeeDataMngInfo> result = new ArrayList<>();
 		//アルゴリズム「受入社員情報取得処理」を実行する
@@ -537,8 +530,9 @@ public class CheckFileFinder {
 				//setValueItemDto(category, employees, cell, employeeDto, header, headerTemp,  headerReal, contraintList, items,  headerRemain, period, itemErrors, index);
 				setValueItemDto(category, employees, cell, employeeDto, header, headerTemp,  headerReal, contraintList, items,  headerRemain, period, itemErrors, index);
 			}
+			
 			employeeDto.setItems(items);
-			if(employeeDto.getEmployeeCode()!= null) {
+			if(employeeDto.getEmployeeCode()!= null && employeeDto.getEmployeeId() != null) {
 				employeeDtos.add(employeeDto);
 			}
 			index++;
@@ -1178,7 +1172,11 @@ public class CheckFileFinder {
 							break;
 						}
 					}else {
+						//MsgB_1
+						ItemError error = new ItemError(sid, "", index, itemDto.getItemCode(),
+								TextResource.localize("MsgB_1", Arrays.asList(gridHead.getItemName())));
 						itemDto.setError(true);
+						itemErrors.add(error);
 					} 
 					
 				} else {

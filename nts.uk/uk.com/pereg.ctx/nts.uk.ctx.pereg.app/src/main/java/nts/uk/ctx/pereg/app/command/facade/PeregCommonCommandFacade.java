@@ -326,14 +326,26 @@ public class PeregCommonCommandFacade {
 				}
 				
 			});
+			List<String> sidErrors = new ArrayList<>();
+			result.stream().forEach(c ->{
+				sidErrors.addAll(c.getErrorLst());
+			});
 			
 		    // xử lí cho những item optional
-			List<PeregUserDefAddCommand> commandForUserDef = containerAdds.stream().map(c -> {
-				return new PeregUserDefAddCommand(c.getPersonId(), c.getEmployeeId(),
-						modeUpdate == 2 ? recordIds.get(c.getEmployeeId()) : c.getInputs().getRecordId(),
-						c.getInputs());
-			}).collect(Collectors.toList());
-			this.userDefAdd.handle(commandForUserDef);
+			List<PeregUserDefAddCommand> commandForUserDef = new ArrayList<>();
+			containerAdds.stream().forEach(c -> {
+				List<String> sidError = sidErrors.stream().filter(e -> e.equals(c.getEmployeeId()))
+						.collect(Collectors.toList());
+				if (CollectionUtil.isEmpty(sidError)) {
+					commandForUserDef.add(new PeregUserDefAddCommand(c.getPersonId(), c.getEmployeeId(),
+							modeUpdate == 2 ? recordIds.get(c.getEmployeeId()) : c.getInputs().getRecordId(),
+							c.getInputs()));
+				}
+
+			});
+			if (!CollectionUtil.isEmpty(commandForUserDef)) {
+				this.userDefAdd.handle(commandForUserDef);
+			}
 		}
 
 		return result.stream().filter(c -> !c.getMessageId().equals("NOERROR")).collect(Collectors.toList());
@@ -418,9 +430,31 @@ public class PeregCommonCommandFacade {
 			});
 
 			// đoạn nay update những item không xuất hiện trên màn hình, vì của các nhân  viên sẽ khác nhau nên sẽ lấy khác nhau, khả năng mình sẽ trả về một Map<sid, List<ItemValue>
-			updateInputCategoriesCps003(containerAdds , baseDate);
+			GridEmployeeDto gridEmpDto = this.gridProcessor.getGridLayout(new PeregGridQuery(itemFirstByCtg.getCategoryId(),
+					itemFirstByCtg.getCategoryCd(), baseDate,
+					containerAdds.stream().map(c -> c.getEmployeeId()).collect(Collectors.toList())));
+			
+			List<GridEmpHead> items = gridEmpDto.getHeadDatas().stream().filter(c -> c.getItemTypeState().getItemType() == 2).collect(Collectors.toList());
+			containerAdds.stream().forEach(c -> {
+				Optional<GridEmployeeInfoDto> gridEmployeeInfoDto = gridEmpDto.getBodyDatas().stream()
+						.filter(p -> p.getEmployeeId().equals(c.getEmployeeId())).findFirst();
+				if(gridEmployeeInfoDto.isPresent()) {
+						items.stream().forEach(r ->{
+							SingleItemDto single = (SingleItemDto) r.getItemTypeState();
+							if(single.getDataTypeState().getDataTypeValue() == 9 || single.getDataTypeState().getDataTypeValue() == 10 || single.getDataTypeState().getDataTypeValue() == 12) return;
+							Optional<ItemValue> required = c.getInputs().getItems().stream().filter(i -> i.itemCode().equals(r.getItemCode())).findFirst();
+							Optional<GridEmpBody> gridEmpOpt = gridEmployeeInfoDto.get().getItems().stream().filter(i -> i.getItemCode().equals(r.getItemCode())).findFirst();
+							if(!required.isPresent() && gridEmpOpt.isPresent()) {
+								GridEmpBody gridEmp = gridEmpOpt.get();
+								ItemValue itemValue = new ItemValue(r.getItemId(), r.getItemCode(),
+										r.getItemName(), gridEmp.getValue()== null? "":  gridEmp.getValue().toString(), gridEmp.getTextValue(), null, null,  this.convertType(r.getItemTypeState(), gridEmp.getValue()), single.getDataTypeState().getDataTypeValue());
+								c.getInputs().getItems().add(itemValue);
+							}
+						});
+				}
+			});
 
-			categoryValidate.historyValidate(result, containerAdds, baseDate, modeUpdate);
+			//categoryValidate.historyValidate(result, containerAdds, baseDate, modeUpdate);
 			
 			if(containerAdds.isEmpty()) return result;
 			
@@ -443,12 +477,13 @@ public class PeregCommonCommandFacade {
 				}
 			}
 
-			val commandForUserDef = containerLst.stream().map(c -> {
+			val commandForUserDef = containerAdds.stream().map(c -> {
 				return new PeregUserDefUpdateCommand(c.getPersonId(), c.getEmployeeId(), c.getInputs());
 			}).collect(Collectors.toList());
 			
 			this.userDefUpdate.handle(commandForUserDef);
 		}
+		
 		
 	}catch(Exception e) {
 		e.printStackTrace();

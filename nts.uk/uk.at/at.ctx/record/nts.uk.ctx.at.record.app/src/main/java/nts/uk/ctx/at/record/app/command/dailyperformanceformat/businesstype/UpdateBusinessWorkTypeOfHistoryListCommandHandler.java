@@ -98,7 +98,7 @@ implements PeregUpdateListCommandHandler<UpdateBusinessWorkTypeOfHistoryCommand>
 						c.getHistoryId(), c.getEmployeeId());
 				histItems.add(bEmployee);
 			} catch (BusinessException e) {
-				MyCustomizeException ex = new MyCustomizeException(e.getMessageId(), Arrays.asList(c.getEmployeeId()));
+				MyCustomizeException ex = new MyCustomizeException(e.getMessageId(), Arrays.asList(c.getEmployeeId()), "期間");
 				errorExceptionLst.add(ex);
 			}
 
@@ -113,7 +113,7 @@ implements PeregUpdateListCommandHandler<UpdateBusinessWorkTypeOfHistoryCommand>
 		}
 		
 		if(!errorLst.isEmpty()) {
-			errorExceptionLst.add(new MyCustomizeException("Msg_345", errorLst));
+			//
 		}
 		return errorExceptionLst;
 	}
