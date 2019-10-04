@@ -139,8 +139,16 @@ public class WorkingConditionCommandUtils {
 		 * 回数1の時間帯がない場合は、回数2の時間帯は登録できない。
 		 * #Msg_1576
 		 */
-		if (startTime1 == null && endTime1 == null && startTime2 != null && endTime2 != null) {
+		if ((startTime1 == null && endTime1 == null && startTime2 != null && endTime2 != null)) {
 			errors.add(new MyCustomizeException("Msg_1576", Arrays.asList(sid), itemName2));
+			return new TimeZoneCustom(listTimeZone, errors);
+		}
+		
+		if ((startTime1 == null && endTime1 != null && startTime2 != null && endTime2 != null)
+				|| (startTime1 != null && endTime1 == null && startTime2 != null && endTime2 != null)
+				|| (startTime1 != null && endTime1 != null && startTime2 != null && endTime2 == null)
+				|| (startTime1 != null && endTime1 != null && startTime2 == null && endTime2 != null)) {
+			errors.add(new MyCustomizeException("Msg_858", Arrays.asList(sid), itemName1));
 			return new TimeZoneCustom(listTimeZone, errors);
 		}
 		
