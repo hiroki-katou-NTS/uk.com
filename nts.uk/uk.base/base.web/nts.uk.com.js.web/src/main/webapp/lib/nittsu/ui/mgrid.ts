@@ -7275,7 +7275,7 @@ module nts.uk.ui.mgrid {
                 let $input = $editor.querySelector("input.medit");
                 $input.value = data;
                 evt.preventDefault();
-                $input.focus();
+                setTimeout(() => $input.focus());
                 return;
             }
             
