@@ -1,0 +1,42 @@
+.input_row1{
+	display: inline-block;
+}
+.component_row2{
+	display: inline-block;
+}
+.component_row3{
+	display: inline-block;
+}
+.component_row4{
+	display: inline-block;
+}
+.component_row5{
+	display: inline-block;
+}
+.component_row6{
+	display: inline-block;
+}
+
+.row2 {
+	margin-top: 15px;
+}
+
+.row3 {
+	margin-top: 15px;
+}
+
+.row4 {
+	margin-top: 15px;
+}
+.row5 {
+	margin-top: 15px;
+}
+
+.row6 {
+	margin-top: 15px;
+}
+
+.ntsRadioBox {
+    display: inline-block;
+    width: 133px;
+}

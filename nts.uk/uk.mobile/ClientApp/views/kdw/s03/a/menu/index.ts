@@ -80,6 +80,16 @@ export class KdwS03AMenuComponent extends Vue {
             });
 
             if (updateItemExist == false) {
+                if (processFlag == 'confirm') {
+                    this.$modal.error({ messageId: 'Msg_1545' }).then((v: any) => {
+                        this.$mask('hide');
+                    });
+                } else {
+                    this.$modal.error({ messageId: 'Msg_1546' }).then((v: any) => {
+                        this.$mask('hide');
+                    });
+                }
+                
                 return;
             }
 
@@ -111,6 +121,7 @@ export class KdwS03AMenuComponent extends Vue {
                 });
             }
 
+            return;
         }
     }
 
