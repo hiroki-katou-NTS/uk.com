@@ -17,7 +17,6 @@ import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empcomofficeh
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empfunmeminfor.EmPensionFundPartiPeriodInfor;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empfunmeminfor.EmPensionFundPartiPeriodInforRepository;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empfunmeminfor.FundMembership;
-import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurassocinfor.HealInsurPortPerIntell;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurassocinfor.HealInsurPortPerIntellRepository;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurassocinfor.HealthCarePortInfor;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurassocinfor.HealthCarePortInforRepository;
@@ -233,6 +232,8 @@ public class InsuredNameChangedNotiService extends ExportService<InsuredNameChan
 
                 if(healthCarePortInfor.isPresent()){
                     data.setHealthCarePortInfor(healthCarePortInfor.get());
+                }else{
+                    data.setProcessSate(false);
                 }
             }
         }

@@ -19,12 +19,19 @@ import lombok.NoArgsConstructor;
 @Embeddable
 public class QqsmtEmpFamilyInsHisPk implements Serializable {
     private static final long serialVersionUID = 1L;
+
+    /**
+     * CID
+     */
+    @Basic(optional = false)
+    @Column(name = "CID")
+    public String cid;
     
     /**
     * 社員ID
     */
     @Basic(optional = false)
-    @Column(name = "EMP_ID")
+    @Column(name = "SID")
     public String empId;
     
     /**
@@ -38,7 +45,8 @@ public class QqsmtEmpFamilyInsHisPk implements Serializable {
     * 履歴ID
     */
     @Basic(optional = false)
-    @Column(name = "HISTORY_ID")
+    @Column(name = "HIST_ID")
     public String historyId;
+
     
 }

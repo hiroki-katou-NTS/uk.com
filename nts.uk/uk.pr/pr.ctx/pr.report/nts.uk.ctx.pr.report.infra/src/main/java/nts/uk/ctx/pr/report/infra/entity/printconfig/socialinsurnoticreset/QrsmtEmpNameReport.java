@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.EmpNameReport;
 import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.NameNotificationSet;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
@@ -16,7 +17,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "QRSMT_EMP_NAME_REPORT")
+@Table(name = "QRSMT_EMP_ROMANNM_REPORT")
 public class QrsmtEmpNameReport extends UkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
@@ -31,77 +32,77 @@ public class QrsmtEmpNameReport extends UkJpaEntity implements Serializable
     * その他
     */
     @Basic(optional = false)
-    @Column(name = "PERSONAL_SET_OTHER")
+    @Column(name = "OTHER_ATR")
     public int personalSetOther;
     
     /**
     * ローマ字氏名が記載されていない
     */
     @Basic(optional = false)
-    @Column(name = "PERSONAL_SET_LISTED")
+    @Column(name = "SET_LISTED_ATR")
     public int personalSetListed;
     
     /**
     * 住民票
     */
     @Basic(optional = false)
-    @Column(name = "PERSONAL_RESIDENT_CARD")
+    @Column(name = "RESIDENT_CARD_ATR")
     public int personalResidentCard;
     
     /**
     * 海外に住所を有している
     */
     @Basic(optional = false)
-    @Column(name = "PERSONAL_ADDRESS_OVERSEAS")
+    @Column(name = "ADDRESS_OVERSEAS_ATR")
     public int personalAddressOverseas;
     
     /**
     * 短期在留者
     */
     @Basic(optional = false)
-    @Column(name = "PERSONAL_SHORT_RESIDENT")
+    @Column(name = "SHORT_RESIDENT_ATR")
     public int personalShortResident;
     
     /**
     * その他理由内容
     */
     @Basic(optional = true)
-    @Column(name = "PERSONAL_OTHER_REASON")
+    @Column(name = "OTHER_REASON")
     public String personalOtherReason;
     
     /**
     * その他
     */
     @Basic(optional = false)
-    @Column(name = "SPOUSE_SET_OTHER")
+    @Column(name = "SPOUSE_OTHER_ATR")
     public int spouseSetOther;
     
     /**
     * ローマ字氏名が記載されていない
     */
     @Basic(optional = false)
-    @Column(name = "SPOUSE_SET_LISTED")
+    @Column(name = "SPOUSE_SET_LISTED_ATR")
     public int spouseSetListed;
     
     /**
     * 住民票
     */
     @Basic(optional = false)
-    @Column(name = "SPOUSE_RESIDENT_CARD")
+    @Column(name = "SPOUSE_RESIDENT_CARD_ATR")
     public int spouseResidentCard;
     
     /**
     * 海外に住所を有している
     */
     @Basic(optional = false)
-    @Column(name = "SPOUSE_ADDRESS_OVERSEAS")
+    @Column(name = "SPOUSE_ADDRESS_OVERSEAS_ATR")
     public int spouseAddressOverseas;
     
     /**
     * 短期在留者
     */
     @Basic(optional = false)
-    @Column(name = "SPOUSE_SHORT_RESIDENT")
+    @Column(name = "SPOUSE_SHORT_RESIDENT_ATR")
     public int spouseShortResident;
     
     /**
@@ -119,7 +120,7 @@ public class QrsmtEmpNameReport extends UkJpaEntity implements Serializable
 
     public EmpNameReport toDomain(){
 
-        return new EmpNameReport(empNameReportPk.empId,
+        return new EmpNameReport(empNameReportPk.empId, empNameReportPk.cid,
                 new NameNotificationSet(
                         personalSetOther,
                         personalSetListed,
@@ -140,7 +141,8 @@ public class QrsmtEmpNameReport extends UkJpaEntity implements Serializable
     public static QrsmtEmpNameReport toEntity(EmpNameReport domain){
         return new QrsmtEmpNameReport(
                 new QrsmtEmpNameReportPk(
-                        domain.getEmpId()),
+                        domain.getEmpId(),
+                        domain.getCid()),
                         domain.getPersonalSet().getOther(),
                         domain.getPersonalSet().getListed(),
                         domain.getPersonalSet().getResidentCard().value,

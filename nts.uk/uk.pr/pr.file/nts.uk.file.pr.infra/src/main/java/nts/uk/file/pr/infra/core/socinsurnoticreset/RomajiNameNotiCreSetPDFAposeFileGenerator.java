@@ -143,18 +143,18 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
             }
 
             if( romajiNameNotiCreSetting.getAddressOutputClass().equals(BusinessDivision.OUTPUT_COMPANY_NAME)){
-                worksheet.getRangeByName(i + "!A3_1").setValue(Objects.toString(companyInfor != null ? "〒"+formatValue(companyInfor.getPostCd().toString()) : null));
+                worksheet.getRangeByName(i + "!A3_1").setValue(Objects.toString(companyInfor != null ? "〒"+formatPostCode(companyInfor.getPostCd().toString()) : null));
                 worksheet.getRangeByName(i + "!A3_3").setValue(Objects.toString(companyInfor != null ? companyInfor.getAdd_1()+companyInfor.getAdd_2(): ""));
                 worksheet.getRangeByName(i + "!A3_4").setValue(Objects.toString(companyInfor != null ?  companyInfor.getCompanyName(): ""));
                 worksheet.getRangeByName(i + "!A3_5").setValue(Objects.toString(companyInfor != null ?  companyInfor.getRepname(): ""));
-                worksheet.getRangeByName(i + "!A3_6").setValue(Objects.toString(companyInfor != null ? formatValue( companyInfor.getPhoneNum().toString()) : null));
+                worksheet.getRangeByName(i + "!A3_6").setValue(Objects.toString(companyInfor != null ? formatPhone( companyInfor.getPhoneNum().toString()) : null));
 
             } else if (romajiNameNotiCreSetting.getAddressOutputClass().equals(BusinessDivision.OUTPUT_SIC_INSURES)) {
 
                 if (socialInsuranceOffice != null ) {
                     Optional<SocialInsuranceBusinessAddress> address  = socialInsuranceOffice.getBasicInformation().getAddress();
 
-                    worksheet.getRangeByName(i + "!A3_1").setValue(Objects.toString(address.isPresent() && address.get().getPostalCode().isPresent() ? "〒"+formatValue(address.get().getPostalCode().get().toString()):""));
+                    worksheet.getRangeByName(i + "!A3_1").setValue(Objects.toString(address.isPresent() && address.get().getPostalCode().isPresent() ? "〒"+formatPostCode(address.get().getPostalCode().get().toString()):""));
                     if (address.isPresent()) {
                         Optional<Address1> address1 = address.get().getAddress1();
                         Optional<Address2> address2 = address.get().getAddress2();
@@ -169,7 +169,7 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
                         worksheet.getRangeByName(i + "!A3_3").setValue(Objects.toString(st.toString()));
 
                         if(address.get().getPhoneNumber().isPresent()){
-                            worksheet.getRangeByName(i + "!A3_6").setValue(Objects.toString(formatValue(address.get().getPhoneNumber().get().toString())));
+                            worksheet.getRangeByName(i + "!A3_6").setValue(Objects.toString(formatPhone(address.get().getPhoneNumber().get().toString())));
                         }
                     }
 
@@ -204,7 +204,7 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
         worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(value != 1 ? option1 : option2));
     }
 
-    private String formatValue(String pc) {
+    private static String formatPostCode(String pc) {
         if (pc != null) {
             String[] list = pc.split("");
             StringBuffer st = new StringBuffer("");
@@ -223,6 +223,59 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
         }
     }
 
+    /**
+     * cut character -
+     * @param pc
+     * @return after cut sring
+     */
+    private static String cutChar(String pc) {
+        String[] list = pc.split("");
+        StringBuffer st = new StringBuffer("");
+        for (int i = 0; i < list.length; i++) {
+            if(!"-".equals(list[i])) {
+                st.append(list[i]);
+            }
+        }
+        return st.toString();
+    }
+
+    private String formatPhone(String pc) {
+        if (pc != null) {
+            String[] sub = pc.split("");
+            String ch  = cutChar(pc);
+            String[] ch_sub  = ch.split("");
+            int num = pc.length() - ch.length();
+            boolean first = true;
+            StringBuffer st =  new StringBuffer("");
+
+            //case 2 "-"
+            if(num == 2) {
+                for (int i = 0; i < sub.length; i++) {
+                    if("-".equals(sub[i]) && first) {
+                        sub[i] = "(";
+                        first = false;
+                    } else if ("-".equals(sub[i]) && !first) {
+                        sub[i] = ")";
+                    }
+                    st.append(sub[i]);
+                }
+            } else {
+                for (int i = 0; i < ch_sub.length; i++) {
+                    if (ch_sub.length >= 7 && i==3) {
+                        ch_sub[i] = "(";
+                    }
+
+                    if (ch_sub.length >= 7 && i==7) {
+                        ch_sub[i] = ")";
+                    }
+                    st.append(ch_sub[i]);
+                }
+            }
+            return st.toString();
+        } else {
+            return  null;
+        }
+    }
 
     private void pushBirthDay(String birthDate, WorksheetCollection worksheet, String i ){
         worksheet.get(i).getCells().get(11, 11).setValue(Objects.toString(pushDataCell( birthDate.substring(0,4), 0 ),  ""));

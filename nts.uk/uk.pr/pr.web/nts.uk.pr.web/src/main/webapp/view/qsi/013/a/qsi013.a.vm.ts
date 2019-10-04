@@ -255,12 +255,12 @@ module nts.uk.pr.view.qsi013.a.viewmodel {
             let self = this;
             self.ccg001ComponentOption = {
                 /** Common properties */
-                showEmployeeSelection: true,
-                showQuickSearchTab: false,
+                showEmployeeSelection: false,
+                showQuickSearchTab: true,
                 showAdvancedSearchTab: true,
-                showBaseDate: false,
-                showClosure: false,
-                showAllClosure: false,
+                showBaseDate: true,
+                showClosure: true,
+                showAllClosure: true,
                 showPeriod: false,
                 periodFormatYM: false,
                 tabindex: 9,
@@ -283,8 +283,9 @@ module nts.uk.pr.view.qsi013.a.viewmodel {
                 showEmployment: true,
                 showWorkplace: true,
                 showClassification: true,
+                showDepartment: true,
                 showJobTitle: true,
-                showWorktype: true,
+                showWorktype: false,
                 isMutipleCheck: true,
                 /**
                  * Self-defined function: Return data from CCG001
@@ -333,6 +334,7 @@ module nts.uk.pr.view.qsi013.a.viewmodel {
         showWorkplace?: boolean; // 職場条件
         showClassification?: boolean; // 分類条件
         showJobTitle?: boolean; // 職位条件
+        showDepartment?: boolean;
         showWorktype?: boolean; // 勤種条件
         isMutipleCheck?: boolean; // 選択モード
         isTab2Lazy?: boolean;

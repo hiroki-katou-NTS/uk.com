@@ -13,6 +13,11 @@ public class EmpNameReport extends AggregateRoot {
     * 社員ID
     */
     private String empId;
+
+    /**
+     * CID
+     */
+    private String cid;
     
     /**
     * 本人設定
@@ -24,8 +29,9 @@ public class EmpNameReport extends AggregateRoot {
     */
     private NameNotificationSet spouse;
     
-    public EmpNameReport(String empId, NameNotificationSet personalSet, NameNotificationSet spouse) {
+    public EmpNameReport(String empId, String cid, NameNotificationSet personalSet, NameNotificationSet spouse) {
         this.empId = empId;
+        this.cid = cid;
         this.personalSet = personalSet;
         this.spouse = spouse;
     }
