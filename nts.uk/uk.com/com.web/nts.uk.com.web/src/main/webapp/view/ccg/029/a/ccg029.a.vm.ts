@@ -84,7 +84,7 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
                         headerText: getText('CCG029_A1_26'), key: 'katakanaName', dataType: 'string',  width: '100px'
                     },
                     {
-                        headerText: (self.input.systemType == 1 ? getText('Com_Workplace') : getText('Com_Department')) + 'コード', key: 'departmentCode', dataType: 'string',  width: '100px'
+                        headerText: self.input.systemType == 1 ? getText('CCG029_1') : getText('CCG029_2'), key: 'departmentCode', dataType: 'string',  width: '100px'
                     },
                     {
                         headerText: self.input.systemType == 1 ? getText('Com_Workplace') : getText('Com_Department'), key: 'department', dataType: 'string', width: '100px'
