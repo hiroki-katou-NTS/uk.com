@@ -514,7 +514,8 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("      oi.NAME, ");
         exportSQL.append("      oi.PHONE_NUMBER, ");
         exportSQL.append("      oi.REPRESENTATIVE_NAME, ");
-        exportSQL.append("      oi.POSTAL_CODE ");
+        exportSQL.append("      oi.POSTAL_CODE, ");
+        exportSQL.append("      BIKO_SONOTA_REASON ");
         exportSQL.append("  FROM ");
         exportSQL.append("         (SELECT *");
         exportSQL.append("         FROM QQSDT_KOUHO_INFO ");
@@ -601,14 +602,14 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
                 .cause(i[34] == null ? 0 : ((BigDecimal)i[34]).intValue())
                 .isMoreEmp(i[35] == null ? "" : i[35].toString())
                 .otherReason(i[36] == null ? "" : i[36].toString())
-                .continReemAfterRetirement(i[37] == null ? "" : i[37].toString())
+                .continReemAfterRetirement(i[44] == null ? "" : i[44].toString())
                 .basicPenNumber(i[38] == null ? "" : i[38].toString())
                 .gender(Integer.valueOf(i[39].toString()))
                 .underDivision(Integer.valueOf(i[40].toString()))
                 .qualifiDistin(i[41] == null ? "" : i[41].toString())
                 .percentOrMore(i[42] == null ? 0 : ((BigDecimal)i[42]).intValue())
                 .remarksOther(i[43] == null ? 0 : ((BigDecimal)i[43]).intValue())
-                .remarksAndOtherContents(i[44] == null ? "" : i[44].toString())
+                .remarksAndOtherContents(i[64] == null ? "" : i[64].toString())
                 .remunMonthlyAmountKind(i[45] == null ? 0 : ((BigDecimal)i[45]).intValue())
                 .remunMonthlyAmount(i[46] == null ? 0 : ((BigDecimal)i[46]).intValue())
                 .totalMonthlyRemun(i[47] == null ? 0 : ((BigDecimal)i[47]).intValue())

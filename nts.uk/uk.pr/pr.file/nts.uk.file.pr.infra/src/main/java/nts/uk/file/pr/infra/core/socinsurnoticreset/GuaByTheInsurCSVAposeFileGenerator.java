@@ -129,17 +129,29 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
     }
 
     private String formatPhone(String phone, int stt) {
-        String[] result = phone.split("-");
-        if (result.length == 0 && phone.length() > 0 && stt == 0) {
-            return phone.length() > 5 ? phone.substring(0, 5) : phone.substring(0, phone.length());
+        String[] sub = phone.split("-");
+        if (stt == 2 && sub.length >= 3) {
+            return sub[2];
         }
-        if (result.length == 0 && phone.length() > 5 && stt == 1) {
-            return phone.length() > 9 ? phone.substring(5, 9) : phone.substring(5, phone.length());
+        if (stt == 0 && sub.length > 1) {
+            return sub[0];
         }
-        if (result.length == 0 && phone.length() > 9 && stt == 2) {
-            return phone.length() >= 14 ? phone.substring(9, 14) : phone.substring(9, phone.length());
+        if (stt == 1 && sub.length >= 2) {
+            return sub[1];
         }
-        return result.length > stt ? result[stt] : "";
+        if (sub.length == 1 && stt == 0 && phone.length() >= 3) {
+            return phone.substring(0, 3);
+        }
+        if (sub.length == 1 && stt == 2 && phone.length() > 6) {
+            return phone.substring(6, phone.length());
+        }
+        if (sub.length == 1 && stt == 1 && phone.length() >= 6) {
+            return phone.substring(3, 6);
+        }
+        if (sub.length == 1 && phone.length() < 3) {
+            return phone;
+        }
+        return "";
     }
 
     private JapaneseDate toJapaneseDate(GeneralDate date) {
@@ -453,8 +465,8 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
         String addKana = ins.getOfficeInformation().value == 0 ? company.getAddKana_1()+" "+company.getAddKana_2() : data.getAddKana();
         cells.get(startRow, 28).setValue(formatPortCd(portCd, 1));
         cells.get(startRow, 29).setValue(formatPortCd(portCd, 2));
-        cells.get(startRow, 30).setValue(add);
-        cells.get(startRow, 31).setValue(addKana);
+        cells.get(startRow, 30).setValue(addKana);
+        cells.get(startRow, 31).setValue(add);
         cells.get(startRow, 32).setValue("");
         cells.get(startRow, 33).setValue(data.getFunMember());
         cells.get(startRow, 34).setValue(data.getWelPenOfficeNumber());
