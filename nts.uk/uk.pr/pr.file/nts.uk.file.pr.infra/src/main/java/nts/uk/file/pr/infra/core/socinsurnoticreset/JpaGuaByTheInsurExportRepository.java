@@ -518,9 +518,9 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("         WHERE START_DATE <= ?endDate AND START_DATE >= ?startDate");
         exportSQL.append("         AND SID IN ('%s') )qi");
         exportSQL.append("  INNER JOIN ");
-        exportSQL.append("       (SELECT * ");
+        exportSQL.append("       (SELECT TOP 1 * ");
         exportSQL.append("       FROM QQSDT_SYAHO_OFFICE_INFO ");
-        exportSQL.append("       WHERE START_DATE <= ?endDate AND START_DATE >= ?startDate) his");
+        exportSQL.append("       WHERE START_DATE <= ?endDate AND START_DATE >= ?startDate AND SID IN ('%s')) his");
         exportSQL.append("       ON qi.SID = his.SID");
         exportSQL.append("  INNER JOIN QQSDT_KOUHO_LOSS_INFO loss on loss.SID = qi.SID");
         exportSQL.append("  INNER JOIN (SELECT *  ");
@@ -547,9 +547,10 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("        WHERE CID = ?cid) ii ON ii.SID = qi.SID");
         exportSQL.append("  LEFT JOIN QQSDT_SYAHO_KNEN_NUM bp ON bp.SID = qi.SID AND bp.CID = qi.CID");
 
-        String sql = String.format(exportSQL.toString(), empIds.stream()
+        String emp = empIds.stream()
                 .map(String::valueOf)
-                .collect(Collectors.joining("','")));
+                .collect(Collectors.joining("','"));
+        String sql = String.format(exportSQL.toString(), emp, emp);
         try {
             resultQuery = this.getEntityManager().createNativeQuery(sql)
                     .setParameter("startDate", convertDate(startDate))
