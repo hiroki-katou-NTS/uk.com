@@ -12,6 +12,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -72,6 +73,13 @@ public class QqsmtEmpHealInsurQi extends UkJpaEntity implements Serializable
                 qqsmtEmpHealInsurQi.get(0).empHealInsurQiPk.employeeId,
                 qqsmtEmpHealInsurQi.stream().map(i -> new EmpHealthInsurBenefits(i.empHealInsurQiPk.hisId , new DateHistoryItem(i.empHealInsurQiPk.hisId, new DatePeriod(i.startDate, i.endDate))))
                         .collect(Collectors.toList()));
+    }
+
+    public EmplHealInsurQualifiInfor toDomain() {
+        List<EmpHealthInsurBenefits> date = new ArrayList<>();
+        date.add(new EmpHealthInsurBenefits(this.empHealInsurQiPk.hisId, new DateHistoryItem(this.empHealInsurQiPk.hisId, new DatePeriod(this.startDate, this.endDate))));
+        return new EmplHealInsurQualifiInfor(
+                this.empHealInsurQiPk.employeeId, date);
     }
 
     public  HealInsurNumberInfor toHealInsurNumberInfor(){

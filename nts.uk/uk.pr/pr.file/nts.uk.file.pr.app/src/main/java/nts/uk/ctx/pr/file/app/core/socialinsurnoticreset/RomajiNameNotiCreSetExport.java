@@ -1,35 +1,35 @@
 package nts.uk.ctx.pr.file.app.core.socialinsurnoticreset;
 
-import lombok.AllArgsConstructor;
-import lombok.Value;
-
-@Value
+import lombok.*;
+import nts.arc.time.GeneralDate;
+@Data
+@Builder
+@NoArgsConstructor
 @AllArgsConstructor
 public class RomajiNameNotiCreSetExport {
-/*    private String date;
-    private Integer personTarget;
-    private String cid;*/
     private String empId;
-    private Integer addressOutputClass;
+    private String cid;
+
     private String basicPenNumber;
     private String fmBsPenNum;
-    private String birthDay;
-    private String nameRomajiFull;
+
     private String postalCode;
     private String address1;
     private String address2;
     private String representativeName;
     private String name;
-    private String companyName;
-    private String otherReasonPersonSet;
-    private String otherReasonSpouse;
     private String phoneNumber;
-    private String personId;
-    private String repname;
 
-
-
-
-
-
+    private Integer personalSetOther;
+    private Integer personalSetListed;
+    private Integer personalResidentCard;
+    private Integer personalAddressOverseas;
+    private Integer personalShortResident;
+    private String personalOtherReason;
+    private Integer spouseSetOther;
+    private Integer spouseSetListed;
+    private Integer spouseResidentCard;
+    private Integer spouseAddressOverseas;
+    private Integer spouseShortResident;
+    private String spouseOtherReason;
 }
