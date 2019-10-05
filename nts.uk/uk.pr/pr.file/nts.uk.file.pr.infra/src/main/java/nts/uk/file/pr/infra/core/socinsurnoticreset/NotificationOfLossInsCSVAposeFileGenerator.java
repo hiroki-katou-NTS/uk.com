@@ -239,7 +239,7 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
         cells.get(startRow, 19).setValue(data.getContinReemAfterRetirement());
         cells.get(startRow, 20).setValue(data.getOtherReason());
         cells.get(startRow, 21).setValue(data.getCaInsurance());
-        cells.get(startRow, 22).setValue(data.getNumRecoved());
+        cells.get(startRow, 22).setValue(data.getCaInsurance());
         cells.get(startRow, 27).setValue(data.getUnionOfficeNumber());
         cells.get(startRow, 28).setValue(data.getHealInsUnionNumber());
         cells.get(startRow, 29).setValue(data.getHealInsInherenPr());
