@@ -271,10 +271,10 @@ module nts.uk.pr.view.qsi002.a.viewmodel {
                 /** Common properties */
                 systemType: 1,
                 showEmployeeSelection: true,
-                showQuickSearchTab: false,
-                showAdvancedSearchTab: true,
+                showQuickSearchTab: true,
+                showAdvancedSearchTab: false,
                 showBaseDate: true,
-                showClosure: false,
+                showClosure: true,
                 showAllClosure: false,
                 showPeriod: false,
                 periodFormatYM: false,
