@@ -113,6 +113,19 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
                     endDate: params.endDate
                 };
 
+                service.getPersonInfo(params.listEmpId[0].employeeId).done(e =>{
+                    self.dummyBirthDay(e);
+                    if (self.getAge(self.dummyBirthDay(), params.date) >= 70) {
+                        self.applyToEmployeeOver70(true);
+
+                    }else{
+                        self.applyToEmployeeOver70(false);
+                    }
+                }).fail(e=>{
+
+
+                });
+
                 self.loadKCP009(self.createEmployeeModel(params.listEmpId));
                 self.selectedItem(params.listEmpId[0].employeeId);
 
@@ -168,12 +181,7 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
 
                 });
 
-                if (self.getAge(self.dummyBirthDay(), params.date) >= 70) {
-                    self.applyToEmployeeOver70(true);
 
-                }else{
-                    self.applyToEmployeeOver70(false);
-                }
 
                 service.getMultiEmpWorkInfoById(params.listEmpId[0].employeeId).done(e =>{
                     if(e){
@@ -220,6 +228,19 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
                         startDate: params.startDate,
                         endDate: params.endDate
                     };
+
+                    service.getPersonInfo(self.selectedItem()).done(e =>{
+                        self.dummyBirthDay(e);
+
+                        if (self.getAge(self.dummyBirthDay(), params.date) >= 70) {
+                            self.applyToEmployeeOver70(true);
+
+                        }else{
+                            self.applyToEmployeeOver70(false);
+                        }
+                    }).fail(e=>{
+
+                    });
                     service.getSocialInsurAcquisiInforById(self.selectedItem()).done(e => {
                         if (e) {
                             self.tempApplyToEmployeeOver70(e.percentOrMore);
@@ -256,12 +277,7 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
                     });
 
 
-                    if (self.getAge(self.dummyBirthDay(), params.date) >= 70) {
-                        self.applyToEmployeeOver70(true);
 
-                    }else{
-                        self.applyToEmployeeOver70(false);
-                    }
 
 
                     service.getMultiEmpWorkInfoById(self.selectedItem()).done(e =>{
