@@ -81,7 +81,7 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
                 this.pushName(personInfo.getPersonNameRomaji(), worksheet, i, 14, 4);
                 this.pushName(personInfo.getPersonNameKana(), worksheet, i, 13, 4);
 
-                worksheet.getRangeByName(i + "!A4_5").setValue(Objects.toString(
+                worksheet.get(i).getTextBoxes().get("A4_5").setText(Objects.toString(
                         romajiNameNotiCreSetExport.getPersonalSetOther() == 1 && romajiNameNotiCreSetExport.getPersonalOtherReason() != null ? romajiNameNotiCreSetExport.getPersonalOtherReason().toString(): ""));
 
                 this.selectShapesRadio(worksheet, romajiNameNotiCreSetExport.getPersonalResidentCard() , i, "A1_5","A1_6" );
@@ -101,9 +101,11 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
                 this.pushName(familyMember.getFullName(), worksheet, i, 14, 4);
                 this.pushName(familyMember.getFullNameKana(), worksheet, i, 13, 4);
 
-                worksheet.getRangeByName(i + "!A4_5").setValue(Objects.toString(
+                /*worksheet.getRangeByName(i + "!A4_5").setValue(Objects.toString(
                         romajiNameNotiCreSetExport.getSpouseSetOther() == 1 && romajiNameNotiCreSetExport.getSpouseOtherReason().toString() != null ? romajiNameNotiCreSetExport.getSpouseOtherReason().toString(): ""));
-
+                 */
+                worksheet.get(i).getTextBoxes().get("A4_5").setText(Objects.toString(
+                        romajiNameNotiCreSetExport.getSpouseSetOther() == 1 && romajiNameNotiCreSetExport.getSpouseOtherReason().toString() != null ? romajiNameNotiCreSetExport.getSpouseOtherReason().toString(): ""));
                 this.selectShapesRadio(worksheet, romajiNameNotiCreSetExport.getSpouseResidentCard() , i, "A1_5","A1_6" );
                 this.selectShapes(worksheet, romajiNameNotiCreSetExport.getSpouseShortResident(), i, "A4_1" );
                 this.selectShapes(worksheet, romajiNameNotiCreSetExport.getSpouseAddressOverseas() , i, "A4_2" );

@@ -234,12 +234,12 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
             self.ccg001ComponentOption = {
                 /** Common properties */
                 systemType: 1,
-                showEmployeeSelection: true,
-                showQuickSearchTab: false,
+                showEmployeeSelection: false,
+                showQuickSearchTab: true,
                 showAdvancedSearchTab: true,
-                showBaseDate: false,
-                showClosure: false,
-                showAllClosure: false,
+                showBaseDate: true,
+                showClosure: true,
+                showAllClosure: true,
                 showPeriod: false,
                 periodFormatYM: false,
                 tabindex: 9,
