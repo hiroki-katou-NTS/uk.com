@@ -470,8 +470,8 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("      WELFARE_PENSION_OFFICE_NUMBER,");
         exportSQL.append("      WELFARE_PENSION_PREFECTURE_NO,");
         exportSQL.append("      qi.START_DATE,");
-        exportSQL.append("      BUSINESS_NAME,");
-        exportSQL.append("      BUSINESS_NAME_KANA,");
+        exportSQL.append("      TODOKEDE_FNAME,");
+        exportSQL.append("      TODOKEDE_FNAME_KANA,");
         exportSQL.append("      PERSON_NAME,");
         exportSQL.append("      PERSON_NAME_KANA,");
         exportSQL.append("      BIRTHDAY,");
@@ -583,12 +583,12 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
                 .welPenOfficeNumber(i[16] == null ? "" : i[16].toString())
                 .prefectureNo(i[17] == null ? 0 : ((BigDecimal)i[17]).intValue())
                 .startDate(i[18] == null ? "" : i[18].toString())
-                .personName(i[19] == null ? "" : i[19].toString())
-                .personNameKana(i[20] == null ? "" : i[20].toString())
-                .oldName(i[21] == null ? "" : i[21].toString())
-                .oldNameKana(i[22] == null ? "" : i[22].toString())
+                .personName(i[21] == null ? "" : i[21].toString())
+                .personNameKana(i[22] == null ? "" : i[22].toString())
+                .oldName(i[19] == null ? "" : i[19].toString())
+                .oldNameKana(i[20] == null ? "" : i[20].toString())
                 .birthDay(i[23] == null ? "" : i[23].toString())
-                .portCd(i[61] == null ? "" : i[61].toString())
+                .portCd(i[63] == null ? "" : i[63].toString())
                 .retirementAddBefore(i[25] == null ? "" : i[25].toString())
                 .retirementAdd(i[26] == null ? "" : i[26].toString())
                 .reasonForLoss(i[27] == null ? "" : i[27].toString())
@@ -619,12 +619,12 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
                 .depenAppoint(i[52] == null ? 0 : ((BigDecimal)i[52]).intValue())
                 .subType(i[53] == null ?  0 : ((BigDecimal)i[53]).intValue())
                 .appFormCls(i[54] == null ? 0 : ((BigDecimal)i[54]).intValue())
-                .hisId(i[54] == null ? "" : i[54].toString())
-                .add(i[55] == null ? "" : i[55].toString())
-                .addKana(i[57] == null ? "" : i[57].toString())
-                .companyName(i[58] == null ? "" : i[58].toString())
-                .phoneNumber(i[59] == null ? "" : i[59].toString())
-                .repName(i[60] == null ? "" : i[60].toString())
+                .hisId(i[55] == null ? "" : i[55].toString())
+                .add(i[56] == null && i[57] == null ? "" : i[56].toString()+" "+i[57].toString())
+                .addKana(i[58] == null && i[59] == null ? "" : i[58].toString()+" "+i[59].toString())
+                .companyName(i[60] == null ? "" : i[60].toString())
+                .phoneNumber(i[61] == null ? "" : i[61].toString())
+                .repName(i[62] == null ? "" : i[62].toString())
                 .build()
         ).collect(Collectors.toList());
     }

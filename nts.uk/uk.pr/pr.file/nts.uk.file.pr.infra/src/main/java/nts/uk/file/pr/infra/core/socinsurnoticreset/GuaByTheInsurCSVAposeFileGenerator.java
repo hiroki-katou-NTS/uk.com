@@ -310,6 +310,9 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
         if (data.getResonOther() == 3) {
             cells.get(startRow, 13).setValue("3");
         }
+        if (data.getShortTimeWorkes() == 3) {
+            cells.get(startRow, 13).setValue("3");
+        }
         //
         cells.get(startRow, 14).setValue(data.getResonAndOtherContent());
         cells.get(startRow, 17).setValue(startDateJp.era().equals(HEISEI) ? 7 : dateJp.era().equals(SHOWA) ? 5 : 9);
@@ -359,14 +362,16 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
                 String portCd = socialInsurNotiCreateSet.getOfficeInformation().value == 0 ? company.getPostCd() : data.getPortCd();
                 cells.get(startRow, 2).setValue(formatPortCd(portCd, 1));
                 cells.get(startRow, 3).setValue(formatPortCd(portCd, 2));
+
                 String add = socialInsurNotiCreateSet.getOfficeInformation().value == 0 ? company.getAdd_1()+" "+company.getAdd_2() : data.getAdd();
                 String addKana = socialInsurNotiCreateSet.getOfficeInformation().value == 0 ? company.getAddKana_1()+" "+company.getAddKana_2() : data.getAddKana();
-                cells.get(startRow, 4).setValue(checkLength(add, 25));
                 String companyName = socialInsurNotiCreateSet.getOfficeInformation().value == 0 ? company.getCompanyName() : data.getCompanyName();
                 String repName = socialInsurNotiCreateSet.getOfficeInformation().value == 0 ? company.getRepname() : data.getRepName();
+                String phoneNumber = socialInsurNotiCreateSet.getOfficeInformation().value == 0 ? company.getPhoneNum() : data.getPhoneNumber();
+
+                cells.get(startRow, 4).setValue(checkLength(add, 25));
                 cells.get(startRow, 5).setValue(companyName.length() > 25 ?companyName.substring(0, 25) : companyName);
                 cells.get(startRow, 6).setValue(repName);
-                String phoneNumber = socialInsurNotiCreateSet.getOfficeInformation().value == 0 ? company.getPhoneNum() : data.getPhoneNumber();
                 cells.get(startRow, 7).setValue(formatPhone(phoneNumber, 0));
                 cells.get(startRow, 8).setValue(formatPhone(phoneNumber, 1));
                 cells.get(startRow, 9).setValue(formatPhone(phoneNumber, 2));
@@ -389,9 +394,9 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
         cells.get(startRow, 2).setValue(data.getWelOfficeNumber1().length() > 2 ? data.getWelOfficeNumber1().substring(0, 2) : data.getWelOfficeNumber1());
         cells.get(startRow, 3).setValue(data.getWelOfficeNumber2().length() > 4 ? data.getWelOfficeNumber2().substring(0, 4) : data.getWelOfficeNumber2());
         cells.get(startRow, 4).setValue(data.getWelPenOfficeNumber());
-        cells.get(startRow, 6).setValue(ins.getSubmittedName() == SubNameClass.PERSONAL_NAME ? data.getPersonName() : data.getPersonNameKana());
-        cells.get(startRow, 7).setValue(ins.getSubmittedName() == SubNameClass.PERSONAL_NAME ? data.getOldName() : data.getOldNameKana());
-        cells.get(startRow, 8).setValue(dateJp.era().equals(HEISEI) ? 7 : dateJp.era().equals(SHOWA) ? 5 : 9);
+        cells.get(startRow, 6).setValue(ins.getSubmittedName() == SubNameClass.PERSONAL_NAME ? data.getPersonNameKana() : data.getOldNameKana());
+        cells.get(startRow, 7).setValue(ins.getSubmittedName() == SubNameClass.PERSONAL_NAME ? data.getPersonName() : data.getOldName());
+        cells.get(startRow, 8).setValue(findEra(dateJp.era()));
         cells.get(startRow, 9).setValue(convertJpDate(dateJp));
         //Male(1), Female(2)
         String hisId = data.getHisId();
