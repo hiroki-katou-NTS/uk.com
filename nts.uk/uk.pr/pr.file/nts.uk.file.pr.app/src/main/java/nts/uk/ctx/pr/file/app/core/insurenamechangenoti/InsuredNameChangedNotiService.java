@@ -105,11 +105,9 @@ public class InsuredNameChangedNotiService extends ExportService<InsuredNameChan
             //印刷対象社員リストの社員ごとに、以下の処理をループする
 
         }
-        List<EmpWelfarePenInsQualiInfor> empWelfarePenInsQualiInfors = empWelfarePenInsQualiInforRepository.getEmpWelfarePenInsQualiInfor(cid, query.getDate());
-
-        query.getListEmpId().forEach(x ->{
-            InsuredNameChangedNotiExportData insuredNameChangedNotiExportData =  this.get(cid,listSocialInsuranceOffice,socialInsurNotiCreateSet,x,query.getDate(),empWelfarePenInsQualiInfors);
-
+        List<EmpWelfarePenInsQualiInfor> empWelfarePenInsQualiInfors = empWelfarePenInsQualiInforRepository.getEmpWelfarePenInsQualiInfor(cid, query.getDate(),query.getListEmpId());
+        empWelfarePenInsQualiInfors.forEach(x ->{
+            InsuredNameChangedNotiExportData insuredNameChangedNotiExportData =  this.get(cid,listSocialInsuranceOffice,socialInsurNotiCreateSet,query.getDate(),x);
             if(insuredNameChangedNotiExportData.isProcessSate()){
                 listData.add(insuredNameChangedNotiExportData);
             }
@@ -124,33 +122,26 @@ public class InsuredNameChangedNotiService extends ExportService<InsuredNameChan
 
     }
 
-    private InsuredNameChangedNotiExportData get(String cid, List<SocialInsuranceOffice> listSocialInsuranceOffice, SocialInsurNotiCreateSet socialInsurNotiCreateSetDomain,
-                                                 String empId, GeneralDate date, List<EmpWelfarePenInsQualiInfor> empWelfarePenInsQualiInfors){
+    private InsuredNameChangedNotiExportData get(String cid, List<SocialInsuranceOffice> listSocialInsuranceOffice, SocialInsurNotiCreateSet socialInsurNotiCreateSetDomain, GeneralDate date, EmpWelfarePenInsQualiInfor empWelfarePenInsQualiInfor){
         data = new InsuredNameChangedNotiExportData();
         data.setProcessSate(true);
-        data.setEmpId(empId);
+        data.setEmpId(empWelfarePenInsQualiInfor.getEmployeeId());
         data.setSubmitDate(date);
         //ドメインモデル「社員厚生年金保険資格情報」を取得する
-        Optional<EmpWelfarePenInsQualiInfor> empWelfarePenInsQualiInfor = empWelfarePenInsQualiInfors.stream().filter(item -> empId.equals(item.getEmployeeId())).findFirst();
-
-        //取得できた
-        if (empWelfarePenInsQualiInfor.isPresent()) {
-
-            DateHistoryItem dateHistoryItem = empWelfarePenInsQualiInfor.get().getMournPeriod().get(0).getDatePeriod();
-            //チェック条件を満たすデータが取得できたか確認す
-            //ドメインモデル「厚生年金種別情報」を取得する
-            Optional<WelfarePenTypeInfor> welfarePenTypeInfor = welfarePenTypeInforRepository.getWelfarePenTypeInforById(cid, dateHistoryItem.identifier(), empId);
-            data.setWelfarePenTypeInfor(welfarePenTypeInfor.orElse(null));
-            //ドメインモデル「厚生年金基金加入期間情報」を取得する
-            Optional<FundMembership> emPensionFundPartiPeriodInfor = emPensionFundPartiPeriodInforRepository.getEmPensionFundPartiPeriodInfor(cid, empId, date);
-            //取得した「厚生年金基金加入期間情報」をチェックする
-            data.setFundMembership(emPensionFundPartiPeriodInfor.orElse(null));
-        }
+        DateHistoryItem dateHistoryItem = empWelfarePenInsQualiInfor.getMournPeriod().get(0).getDatePeriod();
+        //チェック条件を満たすデータが取得できたか確認す
+        //ドメインモデル「厚生年金種別情報」を取得する
+        Optional<WelfarePenTypeInfor> welfarePenTypeInfor = welfarePenTypeInforRepository.getWelfarePenTypeInforById(cid, dateHistoryItem.identifier(), empWelfarePenInsQualiInfor.getEmployeeId());
+        data.setWelfarePenTypeInfor(welfarePenTypeInfor.orElse(null));
+        //ドメインモデル「厚生年金基金加入期間情報」を取得する
+        Optional<FundMembership> emPensionFundPartiPeriodInfor = emPensionFundPartiPeriodInforRepository.getEmPensionFundPartiPeriodInfor(cid, empWelfarePenInsQualiInfor.getEmployeeId(), date);
+        //取得した「厚生年金基金加入期間情報」をチェックする
+        data.setFundMembership(emPensionFundPartiPeriodInfor.orElse(null));
         //ドメインモデル「社員健康保険資格情報」を取得する
 
-        Optional<HealInsurNumberInfor> emplHealInsurQualifiInfor = emplHealInsurQualifiInforRepository.getEmplHealInsurQualifiInforByEmpId(cid,empId,date);
+        Optional<HealInsurNumberInfor> emplHealInsurQualifiInfor = emplHealInsurQualifiInforRepository.getEmplHealInsurQualifiInforByEmpId(cid, empWelfarePenInsQualiInfor.getEmployeeId(),date);
         data.setHealInsurNumberInfor(emplHealInsurQualifiInfor.orElse(null));
-        this.checkInsuredNumber(cid,listSocialInsuranceOffice,date,empId,socialInsurNotiCreateSetDomain,empWelfarePenInsQualiInfor.orElse(null));
+        this.checkInsuredNumber(cid,listSocialInsuranceOffice, date, empWelfarePenInsQualiInfor.getEmployeeId(),socialInsurNotiCreateSetDomain,empWelfarePenInsQualiInfor);
         return data;
     }
 

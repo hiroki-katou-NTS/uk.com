@@ -21,7 +21,7 @@ public class JpaEmpWelfarePenInsQualiInforRepository extends JpaRepository imple
     private static final String SELECT_BY_KEY_ID = SELECT_ALL_QUERY_STRING + " WHERE  f.empWelfInsQcIfPk.cid = :cid AND f.empWelfInsQcIfPk.historyId =:historyId AND f.empWelfInsQcIfPk.employeeId = :employeeId";
     private static final String SELECT_BY_ID = SELECT_ALL_QUERY_STRING + " WHERE  f.empWelfInsQcIfPk.cid = :cid AND f.empWelfInsQcIfPk.employeeId =:employeeId";
     private static final String SELECT_BY_HISID = SELECT_ALL_QUERY_STRING + " WHERE  f.empWelfInsQcIfPk.cid = :cid AND  f.empWelfInsQcIfPk.historyId =:historyId ";
-    private static final String SELECT_BY_ID_AND_DATE = "SELECT f FROM QqsmtEmpWelfInsQcIf f  WHERE  f.empWelfInsQcIfPk.cid = :cid AND   f.startDate <= :date AND f.endDate >= :date";
+    private static final String SELECT_BY_ID_AND_DATE = "SELECT f FROM QqsmtEmpWelfInsQcIf f  WHERE  f.empWelfInsQcIfPk.cid = :cid AND   f.startDate <= :date AND f.endDate >= :date AND f.empWelfInsQcIfPk.employeeId IN :sids";
 
     @Override
     public boolean checkEmpWelfarePenInsQualiInforEnd(GeneralDate start, GeneralDate end, List<String> empIds) {
@@ -54,10 +54,11 @@ public class JpaEmpWelfarePenInsQualiInforRepository extends JpaRepository imple
     }
 
     @Override
-    public List<EmpWelfarePenInsQualiInfor> getEmpWelfarePenInsQualiInfor(String cid, GeneralDate date) {
+    public List<EmpWelfarePenInsQualiInfor> getEmpWelfarePenInsQualiInfor(String cid, GeneralDate date, List<String> sIds) {
         return this.queryProxy().query(SELECT_BY_ID_AND_DATE, QqsmtEmpWelfInsQcIf.class)
                 .setParameter("cid",cid)
                 .setParameter("date", date)
+                .setParameter("sids", sIds)
                 .getList(c -> c.toDomain());
     }
 
