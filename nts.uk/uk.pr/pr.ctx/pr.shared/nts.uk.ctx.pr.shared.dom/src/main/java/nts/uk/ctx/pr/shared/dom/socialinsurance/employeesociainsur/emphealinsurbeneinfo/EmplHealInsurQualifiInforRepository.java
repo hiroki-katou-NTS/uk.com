@@ -14,11 +14,9 @@ public interface EmplHealInsurQualifiInforRepository {
 
     boolean checkEmplHealInsurQualifiInforStartDate(GeneralDate start, GeneralDate end, List<String> empIds);
 
-    Optional<EmplHealInsurQualifiInfor> getEmplHealInsurQualifiInforByEmpId(String empId);
-    Optional<HealInsurNumberInfor> getEmplHealInsurQualifiInforByEmpId(String cid, String empId, GeneralDate date);
+    Optional<HealInsurNumberInfor> getEmplHealInsurQualifiInforByEmpId(String cid, String empId, GeneralDate date );
 
-    Optional<HealInsurNumberInfor> getHealInsurNumberInforByHisId(String hisId);
-    Optional<HealInsurNumberInfor> getHealInsurNumberInforByHisId(String empId, String hisId);
+    List<EmplHealInsurQualifiInfor> getListEmplHealInsurQualifiInfor(String cid, GeneralDate date);
 
     void add(EmplHealInsurQualifiInfor domain);
 
