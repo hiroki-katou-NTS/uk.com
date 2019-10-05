@@ -179,12 +179,12 @@ module nts.uk.pr.view.qsi003.a.viewmodel {
             self.ccg001ComponentOption = {
                 /** Common properties */
                 systemType: 1,
-                showEmployeeSelection: true,
+                showEmployeeSelection: false,
                 showQuickSearchTab: true,
-                showAdvancedSearchTab: false,
+                showAdvancedSearchTab: true,
                 showBaseDate: true,
                 showClosure: true,
-                showAllClosure: false,
+                showAllClosure: true,
                 showPeriod: false,
                 periodFormatYM: false,
                 tabindex: 5,
@@ -331,15 +331,15 @@ module nts.uk.pr.view.qsi003.a.viewmodel {
         listEmployee: Array<EmployeeSearchDto>; // 検索結果
     }
 
-    export interface ComponentOption {
+   /* export interface ComponentOption {
         systemReference: SystemType;
         isDisplayOrganizationName: boolean;
         employeeInputList: KnockoutObservableArray<EmployeeSearchDto>;
         targetBtnText: string;
         selectedItem: KnockoutObservable<string>;
         tabIndex: number;
-        baseDate?: KnockoutObservable<Date>;
-    }
+        /!*baseDate?: KnockoutObservable<Date>;*!/
+    }*/
     export interface EmployeeModel {
         id: string;
         code: string;
