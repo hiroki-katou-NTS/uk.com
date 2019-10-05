@@ -375,7 +375,7 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
                 empIds: employList,
                 startDate: moment.utc(self.startDate(), "YYYY/MM/DD"),
                 endDate: moment.utc(self.endDate(), "YYYY/MM/DD"),
-                baseDate: moment.utc(self.baseDate(), "YYYY/MM/DD")
+                baseDate: moment.utc(self.baseDate1(), "YYYY/MM/DD")
             };
             nts.uk.ui.block.grayout();
             service.exportFile(data).done(function() {
