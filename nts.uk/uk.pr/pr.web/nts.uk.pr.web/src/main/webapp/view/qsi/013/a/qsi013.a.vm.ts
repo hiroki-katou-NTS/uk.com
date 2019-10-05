@@ -110,7 +110,7 @@ module nts.uk.pr.view.qsi013.a.viewmodel {
                     self.socInsurNotiCreSet().outputOrder(data.outputOrder);
                     self.socInsurNotiCreSet().submittedName(data.submittedName);
                     self.socInsurNotiCreSet().insuredNumber(data.insuredNumber);
-                    self.socInsurNotiCreSet().fdNumber(data.fdNumber);
+                    self.socInsurNotiCreSet().fdNumber(data.fdNumber == null ? "0" : data.fdNumber);
                     self.socInsurNotiCreSet().textPersonNumber(data.textPersonNumber == null ? 0 : data.textPersonNumber);
                     self.socInsurNotiCreSet().outputFormat(data.outputFormat == null ? 0 : data.outputFormat);
                     self.socInsurNotiCreSet().lineFeedCode(data.lineFeedCode == null ? 0 : data.lineFeedCode);
