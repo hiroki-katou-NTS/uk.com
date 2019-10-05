@@ -199,19 +199,17 @@ module nts.uk.pr.view.qsi003.a.viewmodel {
 
                 /** Quick search tab options */
                 showAllReferableEmployee: true,
-                showOnlyMe: false,
-                showSameDepartment:false,
-                showSameDepartmentAndChild: false,
+                showOnlyMe: true,
                 showSameWorkplace: false,
                 showSameWorkplaceAndChild: false,
 
                 /** Advanced search properties */
                 showEmployment: true,
-                showDepartment: true,
-                showWorkplace: false,
+                showWorkplace: true,
                 showClassification: true,
+                showDepartment: true,
                 showJobTitle: true,
-                showWorktype: true,
+                showWorktype: false,
                 isMutipleCheck: true,
                 /**
                  * Self-defined function: Return data from CCG001
