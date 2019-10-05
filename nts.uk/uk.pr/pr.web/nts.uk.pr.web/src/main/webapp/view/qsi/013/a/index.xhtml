@@ -44,7 +44,7 @@
 			<div id="com-ccg001" ></div>
 
 			<div class="fixed-flex-layout-left" style="margin-left: 20px;margin-right: 10px;">
-				<div class="panel panel-frame" style="margin-left: 50px; width: 670px;">
+				<div class="panel panel-frame" style="margin-left: 50px; width: 640px;">
 						<div class="valign-center control-group ">
 							<span class="label with-image">
 								<i id="img-calendar" class="image image-calendar"/>
@@ -76,7 +76,7 @@
 				</div>
 			</div>
 			<div class="fixed-flex-layout-right" data-bind="with: socInsurNotiCreSet">
-				<div class="panel panel-frame " style="width: 460px; height: 591px;">
+				<div class="panel panel-frame " style="width: 490px; height: 591px;">
 					<!--A222_12-->
 					<div class = "label"> #{i18n.getText('QSI013_A222_12')}</div>
 					<!--A222_13-->
@@ -185,7 +185,7 @@
 					<div class="valign-center control-group ">
 						<!--A222_35-->
 						<div class="column-first" data-bind="ntsFormLabel: {constrant: '', required:true}">#{i18n.getText('QSI013_A222_35')}</div>
-						<div id="A5_5" style=" width: 300px;" tabindex="17" data-bind="ntsComboBox: {
+						<div id="A5_5" tabindex="17" style=" width: 300px;" data-bind="ntsComboBox: {
                         name: '#{i18n.getText('QSI013_A222_36')}',
                         options: $parent.printPersonNumbers,
                         optionsValue: 'code',
@@ -194,8 +194,7 @@
                         optionsText: 'name',
                         editable: false,
                         enable: true,
-                        required: true,
-                        selectFirstIfNull: true
+                        required: true
                         }"></div>
 					</div>
 
