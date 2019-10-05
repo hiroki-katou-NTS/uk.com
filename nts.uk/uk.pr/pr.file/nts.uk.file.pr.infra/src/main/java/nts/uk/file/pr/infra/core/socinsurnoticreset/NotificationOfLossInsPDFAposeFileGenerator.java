@@ -113,19 +113,19 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
     }
 
     private String findEra(String era) {
-        if (era.equals(TAISO)) {
+        if (TAISO.equals(era)) {
             return "1";
         }
-        if (era.equals(MEI)) {
+        if (MEI.equals(era)) {
             return "3";
         }
-        if (era.equals(SHOWA)) {
+        if (SHOWA.equals(era)) {
             return "5";
         }
-        if (era.equals(HEISEI)) {
+        if (HEISEI.equals(era)) {
             return "7";
         }
-        if (era.equals(PEACE)) {
+        if (PEACE.equals(era)) {
             return "9";
         }
         return "";
@@ -190,7 +190,7 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
         if (sub.length == 1 && stt == 1 && phone.length() < 3) {
             return phone;
         }
-        if (sub.length == 1 && stt == 1 && phone.length() >= 3) {
+        if (sub.length == 1 && stt == 1) {
             return phone.substring(0, 3);
         }
         if (sub.length == 1 && stt == 3 && phone.length() > 6) {
@@ -359,7 +359,7 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
     }
 
     private void fillEmployeeOverSeventy(WorksheetCollection worksheets, InsLossDataExport data, String sheetName, SocialInsurNotiCreateSet ins){
-        JapaneseDate birthDay = !data.getBirthDay().isEmpty() ? toJapaneseDate( GeneralDate.fromString(data.getBirthDay().substring(0,10), "yyyy-MM-dd")) : null;
+        JapaneseDate birthDay = toJapaneseDate( GeneralDate.fromString(data.getBirthDay().substring(0,10), "yyyy-MM-dd"));
         JapaneseDate endDate = !data.getEndDate2().isEmpty() ? toJapaneseDate( GeneralDate.fromString(data.getEndDate2().substring(0,10), "yyyy-MM-dd")) : null;
         this.selectOver(worksheets, data.getIsMoreEmp() , "D2_6", sheetName);
         this.selectOver(worksheets, data.getInsPerCls() != null && data.getInsPerCls() == 2 ? 1 : 0 , "D2_7", sheetName);
@@ -371,7 +371,7 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
                 ins.getInsuredNumber() == InsurPersonNumDivision.OUTPUT_THE_FUN_MEMBER ? data.getMemberNumber() : "");
         worksheets.getRangeByName(sheetName + "!D2_2").setValue(
                 ins.getSubmittedName() == SubNameClass.PERSONAL_NAME ?  data.getPersonNameKana() : data.getOldNameKana());
-        worksheets.getRangeByName(sheetName + "!D2_3").setValue(findEra(birthDay.era()));
+        worksheets.getRangeByName(sheetName + "!D2_3").setValue(findEra( birthDay.era()));
         worksheets.getRangeByName(sheetName + "!D2_4_1").setValue(convertJpDate(birthDay).charAt(0));
         worksheets.getRangeByName(sheetName + "!D2_4_2").setValue(convertJpDate(birthDay).charAt(1));
         worksheets.getRangeByName(sheetName + "!D2_4_3").setValue(convertJpDate(birthDay).charAt(2));
