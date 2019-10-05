@@ -405,7 +405,7 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
                 self.socialInsurNotiCrSet().outputOrder(data.outputOrder);
                 self.socialInsurNotiCrSet().submittedName(data.submittedName);
                 self.socialInsurNotiCrSet().insuredNumber(data.insuredNumber);
-                self.socialInsurNotiCrSet().fdNumber(data.fdNumber);
+                self.socialInsurNotiCrSet().fdNumber(data.fdNumber == null ? "0" : data.fdNumber);
                 self.socialInsurNotiCrSet().textPersonNumber(data ? data.textPersonNumber : null);
                 self.socialInsurNotiCrSet().outputFormat(data ? data.outputFormat : null);
                 self.socialInsurNotiCrSet().lineFeedCode(data ? data.lineFeedCode : null);
