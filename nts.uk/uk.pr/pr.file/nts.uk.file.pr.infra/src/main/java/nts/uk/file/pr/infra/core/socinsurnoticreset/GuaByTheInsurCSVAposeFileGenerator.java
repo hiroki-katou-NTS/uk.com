@@ -369,8 +369,8 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
                 startRow++;
                 cells.get(startRow, 1).setValue("001");
                 startRow++;
-                cells.get(startRow, 0).setValue(data.getFunMember());
-                cells.get(startRow, 1).setValue(data.getWelPenOfficeNumber());
+//                cells.get(startRow, 0).setValue(data.getFunMember());
+//                cells.get(startRow, 1).setValue(data.getWelPenOfficeNumber());
                 String portCd = socialInsurNotiCreateSet.getOfficeInformation().value == 0 ? company.getPostCd() : data.getPortCd();
                 cells.get(startRow, 2).setValue(formatPortCd(portCd, 1));
                 cells.get(startRow, 3).setValue(formatPortCd(portCd, 2));
@@ -446,9 +446,9 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
         cells.get(startRow, 12).setValue("");
         cells.get(startRow, 13).setValue("");
         cells.get(startRow, 14).setValue("");
-        cells.get(startRow, 15).setValue(ins.getTextPersonNumber().get() != TextPerNumberClass.OUTPUT_NUMBER ? checkLength(data.getBasicPenNumber(),4) : "");
-        cells.get(startRow, 16).setValue(ins.getTextPersonNumber().get() != TextPerNumberClass.OUTPUT_NUMBER ? data.getBasicPenNumber().length() > 10 ? data.getBasicPenNumber().substring(4,10) :
-                data.getBasicPenNumber().length() > 4 ? data.getBasicPenNumber().substring(4,data.getBasicPenNumber().length()) : "" : "");
+//        cells.get(startRow, 15).setValue(ins.getTextPersonNumber().get() != TextPerNumberClass.OUTPUT_NUMBER ? checkLength(data.getBasicPenNumber(),4) : "");
+//        cells.get(startRow, 16).setValue(ins.getTextPersonNumber().get() != TextPerNumberClass.OUTPUT_NUMBER ? data.getBasicPenNumber().length() > 10 ? data.getBasicPenNumber().substring(4,10) :
+//                data.getBasicPenNumber().length() > 4 ? data.getBasicPenNumber().substring(4,data.getBasicPenNumber().length()) : "" : "");
         cells.get(startRow, 17).setValue(9);
         cells.get(startRow, 18).setValue(convertJpDate(startDateKohoInfo));
         cells.get(startRow, 19).setValue(data.getDepenAppoint());
@@ -463,17 +463,17 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
         String portCd = ins.getOfficeInformation().value == 0 ? company.getPostCd() : data.getPortCd();
         String add = ins.getOfficeInformation().value == 0 ? company.getAdd_1()+" "+company.getAdd_2() : data.getAdd();
         String addKana = ins.getOfficeInformation().value == 0 ? company.getAddKana_1()+" "+company.getAddKana_2() : data.getAddKana();
-        cells.get(startRow, 28).setValue(formatPortCd(portCd, 1));
-        cells.get(startRow, 29).setValue(formatPortCd(portCd, 2));
-        cells.get(startRow, 30).setValue(addKana);
-        cells.get(startRow, 31).setValue(add);
-        cells.get(startRow, 32).setValue("");
-        cells.get(startRow, 33).setValue(data.getFunMember());
-        cells.get(startRow, 34).setValue(data.getWelPenOfficeNumber());
+//        cells.get(startRow, 28).setValue(formatPortCd(portCd, 1));
+//        cells.get(startRow, 29).setValue(formatPortCd(portCd, 2));
+//        cells.get(startRow, 30).setValue(addKana);
+//        cells.get(startRow, 31).setValue(add);
+//        cells.get(startRow, 32).setValue("");
+//        cells.get(startRow, 33).setValue(data.getFunMember());
+//        cells.get(startRow, 34).setValue(data.getWelPenOfficeNumber());
         cells.get(startRow, 35).setValue(data.getMemberNumber());
         cells.get(startRow, 36).setValue(data.getSubType());
-        cells.get(startRow, 37).setValue(findEra(addAppCtgSal.era()));
-        cells.get(startRow, 38).setValue(convertJpDate(addAppCtgSal));
+//        cells.get(startRow, 37).setValue(findEra(addAppCtgSal.era()));
+//        cells.get(startRow, 38).setValue(convertJpDate(addAppCtgSal));
         cells.get(startRow, 39).setValue(data.getAddAppCtgSal());
         cells.get(startRow, 40).setValue(findSubscriptionType(data.getAppFormCls()));
         cells.get(startRow, 41).setValue(data.getAddSal().isEmpty() ? "" : Double.parseDouble(data.getAddSal().trim()) > 10000000 ? "9999999" : data.getAddSal());
