@@ -137,8 +137,8 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
         cells.get(startRow, 18).setValue(data.getIsMoreEmp());
         cells.get(startRow, 19).setValue(data.getContinReemAfterRetirement());
         cells.get(startRow, 20).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? data.getOtherReason() : data.getOtherReason2());
-        cells.get(startRow, 21).setValue(Objects.toString(data.getCaInsurance(), ""));
-        cells.get(startRow, 22).setValue(Objects.toString(data.getCaInsurance(), ""));
+        cells.get(startRow, 21).setValue(Objects.toString(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? data.getCaInsurance() : data.getNumRecoved2(), ""));
+        cells.get(startRow, 22).setValue(Objects.toString(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? data.getCaInsurance() : data.getNumRecoved2(), ""));
         cells.get(startRow, 23).setValue(data.getPercentOrMore().equals("1") ? 1 : "");
         cells.get(startRow, 24).setValue(data.getPercentOrMore().equals("1") ? 9 : "");
         cells.get(startRow, 25).setValue(data.getPercentOrMore() == null ? "" : data.getPercentOrMore().equals("1")  ? convertDate(data.getEndDate()) : "");
