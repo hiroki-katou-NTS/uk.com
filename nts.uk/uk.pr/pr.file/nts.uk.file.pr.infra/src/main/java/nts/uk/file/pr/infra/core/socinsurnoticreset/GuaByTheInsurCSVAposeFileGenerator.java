@@ -313,17 +313,17 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
         //
         cells.get(startRow, 11).setValue(data.getDistin());
         //
-        if (data.getLivingAbroad()  == 1 ) {
+        if (data.getLivingAbroad()  == 3 ) {
             cells.get(startRow, 13).setValue("1");
         }
-        if (data.getShortStay() == 2) {
+        if (data.getShortStay() == 0) {
             cells.get(startRow, 13).setValue("2");
         }
-        if (data.getResonOther() == 3) {
+        if (data.getResonOther() == 2) {
             cells.get(startRow, 13).setValue("3");
         }
-        if (data.getShortTimeWorkes() == 3) {
-            cells.get(startRow, 13).setValue("3");
+        if (data.getShortTimeWorkes() == 1) {
+            cells.get(startRow, 13).setValue("");
         }
         //
         cells.get(startRow, 14).setValue(data.getResonAndOtherContent());
@@ -337,8 +337,8 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
         cells.get(startRow, 25).setValue(data.getPercentOrMore());
         cells.get(startRow, 26).setValue(data.getIsMoreEmp() == 1 ? 1 : "");
         cells.get(startRow, 27).setValue(data.getShortTimeWorkes() == 1 ? 1 : "");
-        cells.get(startRow, 28).setValue(data.getContinReemAfterRetirement() == 1 ? 1 : "");
-        cells.get(startRow, 29).setValue(checkLength(data.getRemarksAndOtherContent(), 37));
+//        cells.get(startRow, 28).setValue(data.getContinReemAfterRetirement() == 1 ? 1 : "");
+//        cells.get(startRow, 29).setValue(checkLength(data.getRemarksAndOtherContent(), 37));
         cells.get(startRow, 33).setValue(data.getPercentOrMore() == 1 ? 1 : "");
         cells.get(startRow, 34).setValue(data.getHealUnionNumber());
         cells.get(startRow, 35).setValue(data.getHealInsInherenPr());
