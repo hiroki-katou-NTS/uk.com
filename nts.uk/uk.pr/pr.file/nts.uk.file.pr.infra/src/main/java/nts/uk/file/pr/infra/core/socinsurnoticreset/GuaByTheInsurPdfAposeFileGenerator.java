@@ -233,6 +233,16 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
             worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_15" : "A2_15_" + stt));
         }
         //
+        if(element.getAcquiCtgHealthInsurWelfare() == 0 || element.getAcquiCtgHealthInsurWelfare() == 1){
+            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_16" : "A2_16_" + stt));
+        }
+        if(element.getAcquiCtgHealthInsurWelfare() == 3){
+            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_17" : "A2_17_" + stt));
+        }
+        if(element.getAcquiCtgHealthInsurWelfare() == 4){
+            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_18" : "A2_1_8" + stt));
+        }
+        //
         if(element.getDependentNo() == 0){
             worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_23" : "A2_23_" + stt));
         } else{
