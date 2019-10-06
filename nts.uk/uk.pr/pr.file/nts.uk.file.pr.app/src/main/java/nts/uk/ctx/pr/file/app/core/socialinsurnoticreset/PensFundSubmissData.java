@@ -90,4 +90,8 @@ public class PensFundSubmissData {
     private String continReemAfterRetirement;
 
     private String basicPenNumber;
+
+    private String percentOrMore;
+
+    private String livingAbroad;
 }
