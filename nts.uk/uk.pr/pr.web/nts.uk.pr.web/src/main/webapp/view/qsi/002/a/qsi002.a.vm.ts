@@ -296,10 +296,11 @@ module nts.uk.pr.view.qsi002.a.viewmodel {
 
                 /** Advanced search properties */
                 showEmployment: true,
-                showWorkplace: false,
+                showWorkplace: true,
                 showClassification: true,
+                showDepartment: true,
                 showJobTitle: true,
-                showWorktype: true,
+                showWorktype: false,
                 isMutipleCheck: true,
                 /**
                  * Self-defined function: Return data from CCG001

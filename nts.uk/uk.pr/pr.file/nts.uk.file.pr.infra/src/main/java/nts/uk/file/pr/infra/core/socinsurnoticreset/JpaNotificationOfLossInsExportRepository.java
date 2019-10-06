@@ -335,11 +335,11 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
             exportSQL.append("       WHERE CID = ?cid) i");
             exportSQL.append("       ON i.SID = qi.SID");
             exportSQL.append("  INNER JOIN BPSMT_PERSON p ON p.PID = i.PID");
-            exportSQL.append("  LEFT JOIN QQSDT_SYAHO_MULTI_OFFICE mi ON mi.SID = qi.SID");
+            exportSQL.append("  LEFT JOIN QQSDT_SYAHO_MULTI_OFFICE mi ON mi.SID = qi.SID AND mi.CID = qi.CID");
             exportSQL.append("  LEFT JOIN (SELECT * ");
             exportSQL.append("              FROM QQSDT_SYAHO_GET_INFO");
             exportSQL.append("              WHERE CID = ?cid) ii ON ii.SID = qi.SID");
-            exportSQL.append("  LEFT JOIN QQSDT_SYAHO_KNEN_NUM bp ON bp.SID = qi.SID");
+            exportSQL.append("  LEFT JOIN QQSDT_SYAHO_KNEN_NUM bp ON bp.SID = qi.SID AND bp.CID = qi.CID");
             exportSQL.append("  ORDER BY SYAHO_OFFICE_CD, SCD   ");
             String sql = String.format(exportSQL.toString(), empIds.stream()
                     .map(String::valueOf)
