@@ -252,7 +252,7 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
         for(int i = 0; i < healthInsAssociation.size(); i++){
             PensFundSubmissData data = healthInsAssociation.get(i);
             if(i == 0 ) {
-                cells.get(startRow, 0).setValue(data.getOfficeNumber());
+                cells.get(startRow, 0).setValue(data.getWelPenOfficeNumber());
                 cells.get(startRow, 1).setValue(Objects.toString(socialInsurNotiCreateSet.getFdNumber().orElse(null), "001"));
                 cells.get(startRow, 2).setValue(baseDate.toString("yyyyMMdd"));
                 cells.get(startRow, 13).setValue(data.getFunSpecific1());
