@@ -281,10 +281,10 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
             exportSQL.append("      WELFARE_PENSION_OFFICE_NUMBER,");
             exportSQL.append("      WELFARE_PENSION_PREFECTURE_NO,");
             exportSQL.append("      qi.END_DATE,");
-            exportSQL.append("      BUSINESS_NAME,");
-            exportSQL.append("      BUSINESS_NAME_KANA,");
             exportSQL.append("      PERSON_NAME,");
             exportSQL.append("      PERSON_NAME_KANA,");
+            exportSQL.append("      TODOKEDE_FNAME,");
+            exportSQL.append("      TODOKEDE_FNAME_KANA,");
             exportSQL.append("      BIRTHDAY,");
             exportSQL.append("      POSTALCD_AFTER_RETIRE,");
             exportSQL.append("      ADDRESS_KN_AFTER_RETIRE,");
