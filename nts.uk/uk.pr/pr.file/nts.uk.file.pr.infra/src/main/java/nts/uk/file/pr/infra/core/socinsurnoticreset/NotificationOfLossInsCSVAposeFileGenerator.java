@@ -340,8 +340,8 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
         cells.get(startRow, 19).setValue(data.getContinReemAfterRetirement());
         cells.get(startRow, 20).setValue(data.getOtherReason());
         cells.get(startRow, 23).setValue(data.getPercentOrMore().equals("1") ? 1 : "");
-        cells.get(startRow, 24).setValue(data.getCause() == 6 ? 9 : "");
-        cells.get(startRow, 25).setValue(data.getCause() == 6 ? data.getEndDate().substring(0,4) + data.getEndDate().substring(5,7) + data.getEndDate().substring(8,10) : "");
+        cells.get(startRow, 24).setValue(data.getPercentOrMore().equals("1") ? 9 : "");
+        cells.get(startRow, 25).setValue(data.getPercentOrMore().equals("1") ? data.getEndDate().substring(0,4) + data.getEndDate().substring(5,7) + data.getEndDate().substring(8,10) : "");
         cells.get(startRow, 27).setValue(data.getFunMember());
         cells.get(startRow, 28).setValue(data.getWelPenOfficeNumber());
         cells.get(startRow, 29).setValue(data.getMemberNumber());
