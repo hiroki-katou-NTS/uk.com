@@ -155,11 +155,11 @@ public class GuaByTheInsurExportDto {
     /**
      * 報酬月額（通貨によるものの額）
      */
-    private String monRemunerationAmountInCurrency;
+    private int monRemunerationAmountInCurrency;
     /**
      *  報酬月額（現物によるものの額）
      */
-    private String monRemunerationAmountOfActualItem;
+    private int monRemunerationAmountOfActualItem;
     /**
      *  報酬月額（合計）
      */

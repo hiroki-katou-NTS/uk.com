@@ -17,6 +17,7 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Stateless
@@ -122,9 +123,10 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_19_8", stt)).setValue(data.getPersonalNumber().length() > 7 ? data.getPersonalNumber().substring(7,8) : "");
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_19_9", stt)).setValue(data.getPersonalNumber().length() > 7 ? data.getPersonalNumber().substring(8,9) : "");
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_19_10", stt)).setValue(data.getPersonalNumber().length() > 7 ? data.getPersonalNumber().substring(9,10) : "");
-        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_24", stt)).setValue(data.getMonRemunerationAmountInCurrency());
-        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_25", stt)).setValue(data.getMonRemunerationAmountOfActualItem());
-        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_26", stt)).setValue(data.getCompenMonthlyAamountTotal());
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_24", stt)).setValue(data.getMonRemunerationAmountInCurrency()+"");
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_25", stt)).setValue(data.getMonRemunerationAmountOfActualItem()+"");
+        int total = data.getMonRemunerationAmountInCurrency() + data.getMonRemunerationAmountOfActualItem();
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_26", stt)).setValue(total+""/*data.getCompenMonthlyAamountTotal()*/);
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_27_1", stt)).setValue(formatPortCd(data.getPostalCode(),1));
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_27_2", stt)).setValue(formatPortCd(data.getPostalCode(),2));
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_28", stt)).setValue(data.getStreetAddress());
