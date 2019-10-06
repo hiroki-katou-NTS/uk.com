@@ -101,11 +101,11 @@ public class RomajiNameNotiCreSetExportPDFService extends ExportService<RomajiNa
                 romajiNameNotiCreSetExport.setPersonalShortResident(k.get().getPersonalShortResident());
 
                 romajiNameNotiCreSetExport.setSpouseSetListed(k.get().getSpouseSetListed());
-                romajiNameNotiCreSetExport.setPersonalShortResident(k.get().getPersonalShortResident());
-                romajiNameNotiCreSetExport.setPersonalSetOther(k.get().getPersonalSetOther());
-                romajiNameNotiCreSetExport.setPersonalResidentCard(k.get().getPersonalResidentCard());
-                romajiNameNotiCreSetExport.setPersonalAddressOverseas(k.get().getPersonalAddressOverseas());
-                romajiNameNotiCreSetExport.setPersonalOtherReason(k.get().getPersonalOtherReason());
+                romajiNameNotiCreSetExport.setSpouseShortResident(k.get().getPersonalShortResident());
+                romajiNameNotiCreSetExport.setSpouseSetOther(k.get().getSpouseSetOther());
+                romajiNameNotiCreSetExport.setSpouseResidentCard(k.get().getSpouseResidentCard());
+                romajiNameNotiCreSetExport.setSpouseAddressOverseas(k.get().getSpouseAddressOverseas());
+                romajiNameNotiCreSetExport.setSpouseOtherReason(k.get().getSpouseOtherReason());
             }
             dataList.add(romajiNameNotiCreSetExport);
         });

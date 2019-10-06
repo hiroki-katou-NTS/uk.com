@@ -105,7 +105,7 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
                         romajiNameNotiCreSetExport.getSpouseSetOther() == 1 && romajiNameNotiCreSetExport.getSpouseOtherReason().toString() != null ? romajiNameNotiCreSetExport.getSpouseOtherReason().toString(): ""));
                  */
                 worksheet.get(i).getTextBoxes().get("A4_5").setText(Objects.toString(
-                        romajiNameNotiCreSetExport.getSpouseSetOther() == 1 && romajiNameNotiCreSetExport.getSpouseOtherReason().toString() != null ? romajiNameNotiCreSetExport.getSpouseOtherReason().toString(): ""));
+                        romajiNameNotiCreSetExport.getSpouseSetOther() == 1 && romajiNameNotiCreSetExport.getSpouseOtherReason() != null ? romajiNameNotiCreSetExport.getSpouseOtherReason().toString(): ""));
                 this.selectShapesRadio(worksheet, romajiNameNotiCreSetExport.getSpouseResidentCard() , i, "A1_5","A1_6" );
                 this.selectShapes(worksheet, romajiNameNotiCreSetExport.getSpouseShortResident(), i, "A4_1" );
                 this.selectShapes(worksheet, romajiNameNotiCreSetExport.getSpouseAddressOverseas() , i, "A4_2" );
@@ -144,14 +144,15 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
         return new JapaneseDate(date, era.get());
     }
 
-    private void selectShapes(WorksheetCollection worksheets, int value, String sheetName, String option){
-        if( value != 1){
+    private void selectShapes(WorksheetCollection worksheets, Integer value, String sheetName, String option){
+        if( value!= null && value.intValue() != 1){
             worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(option));
         }
     }
 
-    private void selectShapesRadio(WorksheetCollection worksheets, int value, String sheetName, String option1, String option2){
-        worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(value != 1 ? option1 : option2));
+    private void selectShapesRadio(WorksheetCollection worksheets, Integer value, String sheetName, String option1, String option2){
+        if (value == null )return;
+        worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(value.intValue() != 1 ? option1 : option2));
     }
 
     private static String formatPostCode(String pc) {
