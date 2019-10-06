@@ -229,21 +229,21 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
     }
 
     private void selectEra(WorksheetCollection worksheets, String era, String sheetName, int stt){
-        if(era.equals(SHOWA)) {
+        if(SHOWA.equals(era)) {
             worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_7" : "A2_7_" + (stt + 1)));
             worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_8" : "A2_8_" + (stt + 1)));
         }
-        if(era.equals(HEISEI)) {
+        if(HEISEI.equals(era)) {
             worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_6" : "A2_6_" + (stt + 1)));
             worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_8" : "A2_8_" + (stt + 1)));
         }
-        if(era.equals(PEACE)) {
-            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_6" : "A2_6_" + stt + 1));
-            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_7" : "A2_7_" + stt + 1));
+        if(PEACE.equals(era)) {
+            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_6" : "A2_6_" + (stt + 1)));
+            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_7" : "A2_7_" + (stt + 1)));
         }
-        if(!era.equals(PEACE) && !era.equals(HEISEI) && !era.equals(SHOWA)) {
-            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_6" : "A2_6_" + stt + 1));
-            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_7" : "A2_7_" + stt + 1));
+        if(!PEACE.equals(era) && !HEISEI.equals(era) && !SHOWA.equals(era)) {
+            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_6" : "A2_6_" + (stt + 1)));
+            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_7" : "A2_7_" + (stt + 1)));
             worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_8" : "A2_8_" + (stt + 1)));
         }
     }
@@ -390,7 +390,7 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
             worksheets.getRangeByName(sheetName + "!D2_5_7").setValue(data.getBasicPenNumber() != null ? data.getBasicPenNumber().length() > 8 ? data.getBasicPenNumber().charAt(8) : "" : "");
             worksheets.getRangeByName(sheetName + "!D2_5_8").setValue(data.getBasicPenNumber() != null ? data.getBasicPenNumber().length() > 9 ? data.getBasicPenNumber().charAt(9) : "" : "");
         }
-        worksheets.getRangeByName(sheetName + "!D2_9").setValue(data.getOtherReason2());
+        worksheets.getRangeByName(sheetName + "!D2_9").setValue(" [　" + data.getOtherReason2() + "　]");
         worksheets.getRangeByName(sheetName + "!D2_10_1").setValue(convertJpDate(endDate).charAt(0));
         worksheets.getRangeByName(sheetName + "!D2_10_2").setValue(convertJpDate(endDate).charAt(1));
         worksheets.getRangeByName(sheetName + "!D2_10_3").setValue(convertJpDate(endDate).charAt(2));
