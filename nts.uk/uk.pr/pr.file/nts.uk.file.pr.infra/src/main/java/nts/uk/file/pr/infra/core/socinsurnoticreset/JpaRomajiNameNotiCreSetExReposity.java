@@ -61,8 +61,8 @@ public class JpaRomajiNameNotiCreSetExReposity extends JpaRepository implements 
                     .spouseSetListed(i[8] == null ? 0 : ((BigDecimal) i[8]).intValue())
                     .spouseResidentCard(i[9] == null ? 0 : ((BigDecimal) i[9]).intValue())
                     .spouseShortResident(i[10] == null ? 0 : ((BigDecimal) i[10]).intValue())
-                    .spouseOtherReason(i[10] == null ? "" : i[10].toString())
-                    .spouseAddressOverseas(i[11] == null ? 0 : ((BigDecimal) i[11]).intValue())
+                    .spouseOtherReason(i[11] == null ? "" : i[11].toString())
+                    .spouseAddressOverseas(i[12] == null ? 0 : ((BigDecimal) i[12]).intValue())
                     .build()
             ).collect(Collectors.toList());
         } catch (Exception e) {
