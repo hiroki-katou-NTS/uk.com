@@ -31,7 +31,8 @@ public class JpaRomajiNameNotiCreSetExReposity extends JpaRepository implements 
             exportSQL.append("	SPOUSE_SET_LISTED_ATR,");
             exportSQL.append("	SPOUSE_RESIDENT_CARD_ATR,");
             exportSQL.append("	SPOUSE_SHORT_RESIDENT_ATR,");
-            exportSQL.append("	SPOUSE_OTHER_REASON ");
+            exportSQL.append("	SPOUSE_OTHER_REASON, ");
+            exportSQL.append("	SPOUSE_ADDRESS_OVERSEAS_ATR ");
             exportSQL.append("FROM");
             exportSQL.append("	QRSMT_EMP_ROMANNM_REPORT ");
             exportSQL.append("WHERE");
@@ -61,6 +62,7 @@ public class JpaRomajiNameNotiCreSetExReposity extends JpaRepository implements 
                     .spouseResidentCard(i[9] == null ? 0 : ((BigDecimal) i[9]).intValue())
                     .spouseShortResident(i[10] == null ? 0 : ((BigDecimal) i[10]).intValue())
                     .spouseOtherReason(i[10] == null ? "" : i[10].toString())
+                    .spouseAddressOverseas(i[11] == null ? 0 : ((BigDecimal) i[11]).intValue())
                     .build()
             ).collect(Collectors.toList());
         } catch (Exception e) {
