@@ -300,7 +300,9 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
             exportSQL.append("      MULTI_OFFICE_ATR,");
             exportSQL.append("      OTHER_REASONS,");
             exportSQL.append("      CONTINUE_REEMPLOYED_ATR,");
-            exportSQL.append("      KISONEN_NUM");
+            exportSQL.append("      KISONEN_NUM,");
+            exportSQL.append("      OVER_70_ATR,");
+            exportSQL.append("      NO_MYNUM_ATR");
             exportSQL.append("  FROM ");
             exportSQL.append("         (SELECT *");
             exportSQL.append("         FROM QQSDT_KOUHO_INFO ");
@@ -394,6 +396,8 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
                     .otherReason(i[37] != null ? i[37].toString() : "")
                     .continReemAfterRetirement(i[38] != null ? i[38].toString() : "")
                     .basicPenNumber(i[39] != null ? i[39].toString() : "")
+                    .percentOrMore(i[40] != null ? i[40].toString() : "")
+                    .livingAbroad(i[41] != null ? i[41].toString() : "")
                     .build()).collect(Collectors.toList());
         }catch (Exception e) {
             return Collections.emptyList();
