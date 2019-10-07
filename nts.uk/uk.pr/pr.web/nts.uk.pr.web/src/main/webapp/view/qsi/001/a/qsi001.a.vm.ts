@@ -234,12 +234,12 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
             self.ccg001ComponentOption = {
                 /** Common properties */
                 systemType: 1,
-                showEmployeeSelection: true,
-                showQuickSearchTab: false,
+                showEmployeeSelection: false,
+                showQuickSearchTab: true,
                 showAdvancedSearchTab: true,
-                showBaseDate: false,
-                showClosure: false,
-                showAllClosure: false,
+                showBaseDate: true,
+                showClosure: true,
+                showAllClosure: true,
                 showPeriod: false,
                 periodFormatYM: false,
                 tabindex: 9,
@@ -254,19 +254,17 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
 
                 /** Quick search tab options */
                 showAllReferableEmployee: true,
-                showOnlyMe: false,
-                showSameDepartment:false,
-                showSameDepartmentAndChild: false,
+                showOnlyMe: true,
                 showSameWorkplace: false,
                 showSameWorkplaceAndChild: false,
 
                 /** Advanced search properties */
                 showEmployment: true,
-                showDepartment: true,
-                showWorkplace: false,
+                showWorkplace: true,
                 showClassification: true,
+                showDepartment: true,
                 showJobTitle: true,
-                showWorktype: true,
+                showWorktype: false,
                 isMutipleCheck: true,
                 /**
                  * Self-defined function: Return data from CCG001
@@ -375,7 +373,7 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
                 empIds: employList,
                 startDate: moment.utc(self.startDate(), "YYYY/MM/DD"),
                 endDate: moment.utc(self.endDate(), "YYYY/MM/DD"),
-                baseDate: moment.utc(self.baseDate(), "YYYY/MM/DD")
+                baseDate: moment.utc(self.baseDate1(), "YYYY/MM/DD")
             };
             nts.uk.ui.block.grayout();
             service.exportFile(data).done(function() {
@@ -405,7 +403,7 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
                 self.socialInsurNotiCrSet().outputOrder(data.outputOrder);
                 self.socialInsurNotiCrSet().submittedName(data.submittedName);
                 self.socialInsurNotiCrSet().insuredNumber(data.insuredNumber);
-                self.socialInsurNotiCrSet().fdNumber(data.fdNumber);
+                self.socialInsurNotiCrSet().fdNumber(data.fdNumber == null ? "0" : data.fdNumber);
                 self.socialInsurNotiCrSet().textPersonNumber(data ? data.textPersonNumber : null);
                 self.socialInsurNotiCrSet().outputFormat(data ? data.outputFormat : null);
                 self.socialInsurNotiCrSet().lineFeedCode(data ? data.lineFeedCode : null);

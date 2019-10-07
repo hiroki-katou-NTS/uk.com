@@ -274,9 +274,9 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
             //C2_23
             temp.setDependentYes(element[38] != null ? Integer.valueOf( element[38].toString()) : 0);
             //C2_24
-            temp.setMonRemunerationAmountInCurrency(element[39] != null ? element[39].toString() : "");
+            temp.setMonRemunerationAmountInCurrency(element[39] != null ? Integer.valueOf( element[39].toString()) : 0);
             //C2_25
-            temp.setMonRemunerationAmountOfActualItem(element[40] != null ? element[40].toString() : "");
+            temp.setMonRemunerationAmountOfActualItem(element[40] != null ? Integer.valueOf( element[40].toString()) : 0);
             //C2_26
             temp.setCompenMonthlyAamountTotal(element[41] != null ? element[41].toString() : "");
             //C2_27
@@ -296,11 +296,11 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
             temp.setRemarksOtherContent(element[47] != null ? element[47].toString() : "");
 
             //C2_36
-            temp.setReasonResidentAbroad(element[48] != null ? Integer.valueOf(element[48].toString())  == 1 ? 0 : 1 : 1);
+            temp.setReasonResidentAbroad(element[48] != null ? Integer.valueOf(element[48].toString())  == 3 ? 0 : 1 : 1);
             //C2_37
-            temp.setReasonShortTermResidence(element[49] != null ? Integer.valueOf(element[49].toString())  == 2 ? 0 : 1 : 1);
+            temp.setReasonShortTermResidence(element[49] != null ? Integer.valueOf(element[49].toString())  == 1 ? 0 : 1 : 1);
             //C2_38
-            temp.setReasonOther(element[50] != null ? Integer.valueOf(element[50].toString())  == 3 ? 0 : 1 : 1);
+            temp.setReasonOther(element[50] != null ? Integer.valueOf(element[50].toString())  == 2 ? 0 : 1 : 1);
             //C2_39
             temp.setReasonOtherContent(element[51] != null ? element[51].toString() : "");
             temp.setOfficeCd(element[54] != null ? element[54].toString() : "");

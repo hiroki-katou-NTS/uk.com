@@ -29,14 +29,14 @@
     </ui:define>
 
     <ui:define name="content">
-        <div id="functions-area" style="min-width: 1000px; padding-left: 55px">
-            <button id="A1_1" data-bind=" click: exportFileExcel, enable: $root.errors.isEmpty &amp;&amp; selectedCodeKCP005().length > 0"  tabindex="1"
-                    class="proceed">#{i18n.getText('QSI001_A1_1')}</button>
+        <div id="functions-area">
+            <button id="A1_1" data-bind=" click: exportFileExcel, enable: $root.errors.isEmpty() &amp;&amp; selectedCodeKCP005().length > 0"  tabindex="1"
+                    class="proceed"  style="margin-left: 70px;">#{i18n.getText('QSI001_A1_1')}</button>
 
-            <button id="A1_2" data-bind=" click: exportFileCsv, enable: $root.errors.isEmpty &amp;&amp; selectedCodeKCP005().length > 0"
+            <button id="A1_2" data-bind=" click: exportFileCsv, enable: $root.errors.isEmpty() &amp;&amp; selectedCodeKCP005().length > 0"
                     tabindex="2">#{i18n.getText('QSI001_A1_2')}</button>
 
-            <button id="A1_3" tabindex="3" data-bind="click: openScreenB, enable: selectedCodeKCP005().length">#{i18n.getText('QSI001_A1_3')}</button>
+            <button id="A1_3" tabindex="3" data-bind="click: openScreenB, enable: $root.errors.isEmpty() &amp;&amp; selectedCodeKCP005().length > 0">#{i18n.getText('QSI001_A1_3')}</button>
 
             <button id="A1_4" tabindex="4" data-bind="enable: false" >#{i18n.getText('QSI001_A1_4')}</button>
 
@@ -46,46 +46,50 @@
 
         </div>
         <div id= "contents-area">
-        <div style="margin-top: 15px; min-width: 1000px" class="contents-area fixed-flex-layout">
+        <div style="margin-top: 15px; min-width: 1000px" class="fixed-flex-layout">
             <!-- ccg001 -->
             <div id="com-ccg001"></div>
 
             <!-- div left -->
-            <div class="fixed-flex-layout-left" style="margin-left: 70px;">
+            <div class="fixed-flex-layout-left" style="margin-left: 70px; margin-right: 10px">
 
-                <div class="panel panel-frame " style="margin-bottom: 10px">
-                    <span class="label with-image">
+                <div class="panel panel-frame " style="margin-bottom: 15px; width: 640px;" >
+                    <div class="valign-center control-group">
+                        <span class="label with-image">
                         <i class="image image-calendar"/>
                         <span>#{i18n.getText('QSI001_A222_3')}</span>
                     </span>
-                    <div id = "A2_4" tabindex="7" data-bind="ntsDatePicker: { value: startDate, required: true, dateFormat: 'YYYY/MM/DD', name: '#{i18n.getText('QSI001_A222_4')}'}"></div>
-                    <span data-bind="text: japanStartDate"></span>
-                    <span class="label" >#{i18n.getText('QSI001_A222_6')}</span>
-                    <div id = "A2_7" tabindex="8" data-bind="ntsDatePicker: { value: endDate, dateFormat: 'YYYY/MM/DD',required: true, name: '#{i18n.getText('QSI001_A222_7')}'}"></div>
-                    <span data-bind="text: japanEndDate"></span>
+                        <div id = "A2_4" tabindex="7" data-bind="ntsDatePicker: { value: startDate, required: true, dateFormat: 'YYYY/MM/DD', name: '#{i18n.getText('QSI001_A222_4')}'}"></div>
+                        <span data-bind="text: japanStartDate"></span>
+                        <span class="label" >#{i18n.getText('QSI001_A222_6')}</span>
+                        <div id = "A2_7" tabindex="8" data-bind="ntsDatePicker: { value: endDate, dateFormat: 'YYYY/MM/DD',required: true, name: '#{i18n.getText('QSI001_A222_7')}'}"></div>
+                        <span data-bind="text: japanEndDate"></span>
+                    </div>
+
                 </div>
 
-            <div style="height: 600px;" class = "panel panel-frame" id="kcp005" tabindex="10"></div>
+            <div class = "panel panel-frame" id="kcp005" tabindex="10"></div>
             </div>
             <!-- div right -->
-            <div class=" panel panel-frame fixed-flex-layout-right" data-bind="with: socialInsurNotiCrSet">
-                <span class="label" style="margin-bottom: 15px;">#{i18n.getText('QSI001_A222_12')}</span>
-                <div class="control-group">
-                    <div class="column-1" id="A4_3"
-                         data-bind="ntsFormLabel: {constrant: '', required:true}">#{i18n.getText('QSI001_A222_13')}</div>
-                    <div  id = "A4_4" tabindex="11" data-bind="ntsDatePicker: {
+            <div class="fixed-flex-layout-right">
+                <div style="width: 495px; height: 592px;" class="panel panel-frame " data-bind="with: socialInsurNotiCrSet">
+                    <span class="label" style="margin-bottom: 15px;">#{i18n.getText('QSI001_A222_12')}</span>
+                    <div class="control-group">
+                        <div class="column-1" id="A4_3"
+                             data-bind="ntsFormLabel: {constrant: '', required:true}">#{i18n.getText('QSI001_A222_13')}</div>
+                        <div  id = "A4_4" tabindex="11" data-bind="ntsDatePicker: {
                         required: true,
                         value: $parent.baseDate1,
                      dateFormat: 'YYYY/MM/DD',
                       name: '#{i18n.getText('QSI001_A222_14')}'
                       }"></div>
-                    <span style="margin-left:20px" data-bind="text: $parent.japanBaseDate"></span>
-                </div>
+                        <span style="margin-left:20px" data-bind="text: $parent.japanBaseDate"></span>
+                    </div>
 
-                <div class="control-group valign-center">
-                    <div class="column-1" id="A4_6"
-                         data-bind="ntsFormLabel: {constrant: '', required:true}">#{i18n.getText('QSI001_A222_16')}</div>
-                    <div  class="cf" tabindex="12" data-bind="ntsSwitchButton: {
+                    <div class="control-group valign-center">
+                        <div class="column-1" id="A4_6"
+                             data-bind="ntsFormLabel: {constrant: '', required:true}">#{i18n.getText('QSI001_A222_16')}</div>
+                        <div  class="cf" tabindex="12" data-bind="ntsSwitchButton: {
                         name: '#{i18n.getText('QSI001_A222_17')}',
                         options: $parent.submittedNames,
                         optionsValue: 'code',
@@ -93,13 +97,13 @@
                         value: submittedName,
                         required: true,
                         enable: true }"></div>
-                    <button data-bind="ntsHelpButton: {image: '../resources/QSI001_1.png', position: 'bottom center', enable: true }">?</button>
-                </div>
+                        <button data-bind="ntsHelpButton: {image: '../resources/QSI001_1.png', position: 'bottom center', enable: true }">?</button>
+                    </div>
 
-                <div class="control-group valign-center">
-                    <div class="column-1" id="A4_11"
-                         data-bind="ntsFormLabel: {constrant: '', required:true}">#{i18n.getText('QSI001_A222_21')}</div>
-                    <div  id="A4_12" tabindex="13" style=" width: 310px;" data-bind="ntsComboBox: {
+                    <div class="control-group valign-center">
+                        <div class="column-1" id="A4_11"
+                             data-bind="ntsFormLabel: {constrant: '', required:true}">#{i18n.getText('QSI001_A222_21')}</div>
+                        <div  id="A4_12" tabindex="13" style=" width: 310px;" data-bind="ntsComboBox: {
                         name: '#{i18n.getText('QSI001_A222_23')}',
                         options: $parent.outputOrders,
                         optionsValue: 'code',
@@ -110,12 +114,12 @@
                         editable: false,
                         enable: true,
                         required: true}"></div>
-                </div>
+                    </div>
 
-                <div class="control-group valign-center">
-                    <div class="column-1" id="A4_14"
-                         data-bind="ntsFormLabel: {constrant: '', required:true}">#{i18n.getText('QSI001_24')}</div>
-                    <div id="A4_16" tabindex="14" style=" width: 310px;" data-bind="ntsComboBox: {
+                    <div class="control-group valign-center">
+                        <div class="column-1" id="A4_14"
+                             data-bind="ntsFormLabel: {constrant: '', required:true}">#{i18n.getText('QSI001_24')}</div>
+                        <div id="A4_16" tabindex="14" style=" width: 310px;" data-bind="ntsComboBox: {
                         name: '#{i18n.getText('QSI001_A222_26')}',
                         options: $parent.businessArrSymbols,
                         optionsValue: 'code',
@@ -126,12 +130,12 @@
                         enable: true,
                         required: true,
                         selectFirstIfNull: true}"></div>
-                </div>
+                    </div>
 
-                <div class="control-group valign-center">
-                    <div class="column-1" id="A4_17"
-                         data-bind="ntsFormLabel: {constrant: '', required:true}">#{i18n.getText('QSI001_A222_27')}</div>
-                    <div id="A4_19" tabindex="15" style=" width: 310px;" data-bind="ntsComboBox: {
+                    <div class="control-group valign-center">
+                        <div class="column-1" id="A4_17"
+                             data-bind="ntsFormLabel: {constrant: '', required:true}">#{i18n.getText('QSI001_A222_27')}</div>
+                        <div id="A4_19" tabindex="15" style=" width: 310px;" data-bind="ntsComboBox: {
                         name: '#{i18n.getText('QSI001_A222_29')}',
                         options: $parent.officeInformations,
                         optionsValue: 'code',
@@ -143,13 +147,13 @@
                         enable: true,
                         required: true,
                         selectFirstIfNull: true}"></div>
-                </div>
+                    </div>
 
-                <div style="border-bottom: 1px solid #bfb4b4;" class="control-group"><span
-                        class="label">#{i18n.getText('QSI001_A222_30')}</span></div>
-                <div class="control-group valign-center">
-                    <div class="column-1" data-bind="ntsFormLabel: {constrant: '', required:true}">#{i18n.getText('QSI001_A222_32')}</div>
-                    <div id="A5_5" tabindex="16" style=" width: 310px;" data-bind="ntsComboBox: {
+                    <div style="border-bottom: 1px solid #bfb4b4;" class="control-group"><span
+                            class="label">#{i18n.getText('QSI001_A222_30')}</span></div>
+                    <div class="control-group valign-center">
+                        <div class="column-1" data-bind="ntsFormLabel: {constrant: '', required:true}">#{i18n.getText('QSI001_A222_32')}</div>
+                        <div id="A5_5" tabindex="16" style=" width: 310px;" data-bind="ntsComboBox: {
                         name: '#{i18n.getText('QSI001_A222_34')}',
                         options: $parent.printPersonNumbers,
                         optionsValue: 'code',
@@ -160,13 +164,13 @@
                         enable: true,
                         required: true,
                         selectFirstIfNull: true}"></div>
-                </div>
+                    </div>
 
-                <div style="border-bottom: 1px solid #bfb4b4;" class="control-group"><span
-                        class="label">#{i18n.getText('QSI001_A222_35')}</span></div>
-                <div class="control-group valign-center">
-                    <div class="column-1" data-bind="ntsFormLabel: {constrant: '', required:true}">#{i18n.getText('QSI001_A222_37')}</div>
-                    <div id="A6_5" tabindex="17"  style=" width: 310px;" data-bind="ntsComboBox: {
+                    <div style="border-bottom: 1px solid #bfb4b4;" class="control-group"><span
+                            class="label">#{i18n.getText('QSI001_A222_35')}</span></div>
+                    <div class="control-group valign-center">
+                        <div class="column-1" data-bind="ntsFormLabel: {constrant: '', required:true}">#{i18n.getText('QSI001_A222_37')}</div>
+                        <div id="A6_5" tabindex="17"  style=" width: 310px;" data-bind="ntsComboBox: {
                         name: '#{i18n.getText('QSI001_A222_39')}',
                         options: $parent.outputFormats,
                         optionsValue: 'code',
@@ -176,12 +180,12 @@
                         editable: false,
                         enable: true,
                         required: true}"></div>
-                    <button tabindex="18" data-bind="ntsHelpButton: {image: '../resources/QSI001_2.png', position: 'bottom center', enable: true }">?</button>
-                </div>
+                        <button tabindex="18" data-bind="ntsHelpButton: {image: '../resources/QSI001_2.png', position: 'bottom center', enable: true }">?</button>
+                    </div>
 
-                <div class="control-group valign-center">
-                    <div class="column-1" data-bind="ntsFormLabel: {constrant: '', required:true}">#{i18n.getText('QSI001_A222_41')}</div>
-                    <div id="A6_9"  tabindex="19" style="width: 310px;"  data-bind="ntsComboBox: {
+                    <div class="control-group valign-center">
+                        <div class="column-1" data-bind="ntsFormLabel: {constrant: '', required:true}">#{i18n.getText('QSI001_A222_41')}</div>
+                        <div id="A6_9"  tabindex="19" style="width: 310px;"  data-bind="ntsComboBox: {
                         name: '#{i18n.getText('QSI001_A222_43')}',
                         options: $parent.textPersonNumbers,
                         optionsValue: 'code',
@@ -194,11 +198,11 @@
                         selectFirstIfNull: true,
                         }"></div>
 
-                </div>
+                    </div>
 
-                <div class="control-group">
-                    <div class="column-1" data-bind="ntsFormLabel: {constrant: '', required:true}">#{i18n.getText('QSI001_A222_44')}</div>
-                    <div class="cf" tabindex="20" data-bind="ntsSwitchButton: {
+                    <div class="control-group">
+                        <div class="column-1" data-bind="ntsFormLabel: {constrant: '', required:true}">#{i18n.getText('QSI001_A222_44')}</div>
+                        <div class="cf" tabindex="20" data-bind="ntsSwitchButton: {
                         name: '#{i18n.getText('QSI001_A222_45')}',
                         options:  $parent.lineFeedCodes,
                         optionsValue: 'code',
@@ -206,15 +210,17 @@
                         value: lineFeedCode,
                         required: true,
                         enable: true }"></div>
-                    <button tabindex="21" data-bind="ntsHelpButton: {image: '../resources/QSI001_3.png', position: 'right top', enable: true }">?</button>
-                </div>
+                        <button tabindex="21" data-bind="ntsHelpButton: {image: '../resources/QSI001_3.png', position: 'right top', enable: true }">?</button>
+                    </div>
 
-                <div class="control-group">
-                    <div class="column-1" data-bind="ntsFormLabel: {constrant: '', required:false}">#{i18n.getText('QSI001_A222_50')}</div>
-                    <input tabindex="22"
-                           data-bind="ntsNumberEditor: {value: fdNumber,constraint: 'FdNumber', name: '#{i18n.getText('QSI001_A222_51')}'}"/>
+                    <div class="control-group">
+                        <div class="column-1" data-bind="ntsFormLabel: {constrant: '', required:false}">#{i18n.getText('QSI001_A222_50')}</div>
+                        <input tabindex="22"
+                               data-bind="ntsNumberEditor: {value: fdNumber,constraint: 'FdNumber', name: '#{i18n.getText('QSI001_A222_51')}'}"/>
+                    </div>
                 </div>
             </div>
+
         </div>
             <!--end-->
 

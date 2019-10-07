@@ -13,6 +13,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -84,6 +85,13 @@ public class QqsmtEmpWelfInsQcIf extends UkJpaEntity implements Serializable
                 qqsmtEmpWelfInsQcIf.get(0).empWelfInsQcIfPk.employeeId,
                 qqsmtEmpWelfInsQcIf.stream().map(i -> new EmployWelPenInsurAche(i.empWelfInsQcIfPk.historyId, new DateHistoryItem(i.empWelfInsQcIfPk.historyId, new DatePeriod(i.startDate, i.endDate))))
                         .collect(Collectors.toList()));
+    }
+
+    public EmpWelfarePenInsQualiInfor toDomain() {
+        List<EmployWelPenInsurAche> employWelPenInsurAche = new ArrayList<>();
+        employWelPenInsurAche.add(new EmployWelPenInsurAche(this.empWelfInsQcIfPk.historyId, new DateHistoryItem(this.empWelfInsQcIfPk.historyId, new DatePeriod(this.startDate, this.endDate))));
+        return new EmpWelfarePenInsQualiInfor(
+                this.empWelfInsQcIfPk.employeeId, employWelPenInsurAche);
     }
 
     public WelfPenNumInformation toWelfPenNumInformation(){

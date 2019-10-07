@@ -19,15 +19,11 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RomajiNameNotification {
-    EmpNameReport empNameReport;
-    EmpFamilySocialIns empFamilySocialIns;
-    FamilyMember familyMember;
-    EmpBasicPenNumInfor empBasicPenNumInfor;
-    PersonInfo personInfo;
-    CompanyInfor companyInfor;
     GeneralDate date;
     String personTarget;
-    //RomajiNameNotiCreSetExport romajiNameNotiCreSetExport;
-    SocialInsuranceOffice socialInsuranceOffice;
+    CompanyInfor companyInfor;
+    PersonInfo personInfo;
+    FamilyMember familyMember;
     RomajiNameNotiCreSetting romajiNameNotiCreSetting;
+    List<RomajiNameNotiCreSetExport> romajiNameNotiCreSetExportList;
 }

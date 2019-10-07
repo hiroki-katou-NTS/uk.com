@@ -74,9 +74,9 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("         WHERE END_DATE <= ?endDate AND END_DATE >= ?startDate AND CID = ?cid ");
         exportSQL.append("         AND SID IN ('%s') )qi");
         exportSQL.append("  LEFT JOIN ");
-        exportSQL.append("       (SELECT * ");
+        exportSQL.append("       (SELECT TOP 1 * ");
         exportSQL.append("       FROM QQSDT_SYAHO_OFFICE_INFO ");
-        exportSQL.append("       WHERE END_DATE <= ?endDate AND END_DATE >= ?startDate AND CID = ?cid) his");
+        exportSQL.append("       WHERE END_DATE <= ?endDate AND END_DATE >= ?startDate AND CID = ?cid AND SID IN ('%s') ) his");
         exportSQL.append("       ON qi.SID = his.SID");
         exportSQL.append("  LEFT JOIN (SELECT * ");
         exportSQL.append("          FROM QQSDT_KNKUM_INFO ");
@@ -110,9 +110,10 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("        WHERE CID = ?cid) oi");
         exportSQL.append("        ON oi.CODE = his.SYAHO_OFFICE_CD");
         exportSQL.append("    LEFT JOIN QQSDT_KNKUM_EGOV_INFO iu ON qi.SID = iu.SID AND iu.CID = ?cid ");
-        String sql = String.format(exportSQL.toString(), empIds.stream()
+        String emp = empIds.stream()
                 .map(String::valueOf)
-                .collect(Collectors.joining("','")));
+                .collect(Collectors.joining("','"));
+        String sql = String.format(exportSQL.toString(), emp, emp);
         try {
             resultQuery = this.getEntityManager().createNativeQuery(sql)
                     .setParameter("startDate", convertDate(startDate))
@@ -229,11 +230,11 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("  QSIO.WELFARE_PENSION_OFFICE_NUMBER, ");
         exportSQL.append("  SYAHO_OFFICE_CD");
         exportSQL.append(" FROM ");
-        exportSQL.append("   (SELECT * ");
+        exportSQL.append("   (SELECT TOP 1 * ");
         exportSQL.append("    FROM QQSDT_SYAHO_OFFICE_INFO QECOH ");
         exportSQL.append("    WHERE SID IN ('%s') ");
         exportSQL.append("      AND QECOH.START_DATE <= ?endDate ");
-        exportSQL.append("      AND QECOH.START_DATE >= ?startDate  ) AS ROOT ");
+        exportSQL.append("      AND QECOH.START_DATE >= ?startDate AND SID IN ('%s') ) AS ROOT ");
         exportSQL.append(" INNER JOIN QRSMT_SYAHO_RPT_SETTING QSINS ON QSINS.CID = ?cid  ");
         exportSQL.append(" AND QSINS.USER_ID = ?userId ");
         exportSQL.append(" LEFT JOIN QPBMT_SOCIAL_INS_OFFICE QSIO ");
@@ -269,9 +270,10 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append(" LEFT JOIN QQSDT_SYAHO_MULTI_OFFICE QMEWI ");
         exportSQL.append(" ON QMEWI.SID = ROOT.SID ");
         exportSQL.append("  ORDER BY SYAHO_OFFICE_CD, SCD");
-        String sql = String.format(exportSQL.toString(), empIds.stream()
+        String emp = empIds.stream()
                 .map(String::valueOf)
-                .collect(Collectors.joining("','")));
+                .collect(Collectors.joining("','"));
+        String sql = String.format(exportSQL.toString(), emp, emp);
         try {
             resultQuery = this.getEntityManager().createNativeQuery(sql)
                     .setParameter("startDate", convertDate(startDate))
@@ -352,9 +354,9 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("       WHERE START_DATE <= ?endDate AND START_DATE >= ?startDate) pri");
         exportSQL.append("       ON pri.SID = qi.SID");
         exportSQL.append("    LEFT JOIN ");
-        exportSQL.append("       (SELECT * ");
+        exportSQL.append("       (SELECT TOP 1 * ");
         exportSQL.append("       FROM QQSDT_SYAHO_OFFICE_INFO ");
-        exportSQL.append("       WHERE END_DATE <= ?endDate AND END_DATE >= ?startDate) his");
+        exportSQL.append("       WHERE END_DATE <= ?endDate AND END_DATE >= ?startDate AND SID IN ('%s')) his");
         exportSQL.append("       ON qi.SID = his.SID");
         exportSQL.append("    LEFT JOIN ");
         exportSQL.append("       (SELECT * ");
@@ -385,9 +387,10 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("  INNER JOIN BPSMT_PERSON p ON p.PID = i.PID");
         exportSQL.append("  INNER JOIN QRSMT_SYAHO_RPT_SETTING QSINS ON QSINS.CID = ?cid ");
         exportSQL.append("  AND QSINS.USER_ID = ?userId ");
-        String sql = String.format(exportSQL.toString(), empIds.stream()
+        String emp = empIds.stream()
                 .map(String::valueOf)
-                .collect(Collectors.joining("','")));
+                .collect(Collectors.joining("','"));
+        String sql = String.format(exportSQL.toString(), emp, emp);
         try {
             resultQuery = this.getEntityManager().createNativeQuery(sql)
                     .setParameter("startDate", convertDate(startDate))
@@ -467,8 +470,8 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("      WELFARE_PENSION_OFFICE_NUMBER,");
         exportSQL.append("      WELFARE_PENSION_PREFECTURE_NO,");
         exportSQL.append("      qi.START_DATE,");
-        exportSQL.append("      BUSINESS_NAME,");
-        exportSQL.append("      BUSINESS_NAME_KANA,");
+        exportSQL.append("      TODOKEDE_FNAME,");
+        exportSQL.append("      TODOKEDE_FNAME_KANA,");
         exportSQL.append("      PERSON_NAME,");
         exportSQL.append("      PERSON_NAME_KANA,");
         exportSQL.append("      BIRTHDAY,");
@@ -511,16 +514,17 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("      oi.NAME, ");
         exportSQL.append("      oi.PHONE_NUMBER, ");
         exportSQL.append("      oi.REPRESENTATIVE_NAME, ");
-        exportSQL.append("      oi.POSTAL_CODE ");
+        exportSQL.append("      oi.POSTAL_CODE, ");
+        exportSQL.append("      BIKO_SONOTA_REASON ");
         exportSQL.append("  FROM ");
         exportSQL.append("         (SELECT *");
         exportSQL.append("         FROM QQSDT_KOUHO_INFO ");
         exportSQL.append("         WHERE START_DATE <= ?endDate AND START_DATE >= ?startDate");
         exportSQL.append("         AND SID IN ('%s') )qi");
         exportSQL.append("  INNER JOIN ");
-        exportSQL.append("       (SELECT * ");
+        exportSQL.append("       (SELECT TOP 1 * ");
         exportSQL.append("       FROM QQSDT_SYAHO_OFFICE_INFO ");
-        exportSQL.append("       WHERE START_DATE <= ?endDate AND START_DATE >= ?startDate) his");
+        exportSQL.append("       WHERE START_DATE <= ?endDate AND START_DATE >= ?startDate AND SID IN ('%s')) his");
         exportSQL.append("       ON qi.SID = his.SID");
         exportSQL.append("  INNER JOIN QQSDT_KOUHO_LOSS_INFO loss on loss.SID = qi.SID");
         exportSQL.append("  INNER JOIN (SELECT *  ");
@@ -547,9 +551,10 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("        WHERE CID = ?cid) ii ON ii.SID = qi.SID");
         exportSQL.append("  LEFT JOIN QQSDT_SYAHO_KNEN_NUM bp ON bp.SID = qi.SID AND bp.CID = qi.CID");
 
-        String sql = String.format(exportSQL.toString(), empIds.stream()
+        String emp = empIds.stream()
                 .map(String::valueOf)
-                .collect(Collectors.joining("','")));
+                .collect(Collectors.joining("','"));
+        String sql = String.format(exportSQL.toString(), emp, emp);
         try {
             resultQuery = this.getEntityManager().createNativeQuery(sql)
                     .setParameter("startDate", convertDate(startDate))
@@ -579,12 +584,12 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
                 .welPenOfficeNumber(i[16] == null ? "" : i[16].toString())
                 .prefectureNo(i[17] == null ? 0 : ((BigDecimal)i[17]).intValue())
                 .startDate(i[18] == null ? "" : i[18].toString())
-                .personName(i[19] == null ? "" : i[19].toString())
-                .personNameKana(i[20] == null ? "" : i[20].toString())
-                .oldName(i[21] == null ? "" : i[21].toString())
-                .oldNameKana(i[22] == null ? "" : i[22].toString())
+                .personName(i[21] == null ? "" : i[21].toString())
+                .personNameKana(i[22] == null ? "" : i[22].toString())
+                .oldName(i[19] == null ? "" : i[19].toString())
+                .oldNameKana(i[20] == null ? "" : i[20].toString())
                 .birthDay(i[23] == null ? "" : i[23].toString())
-                .portCd(i[61] == null ? "" : i[61].toString())
+                .portCd(i[63] == null ? "" : i[63].toString())
                 .retirementAddBefore(i[25] == null ? "" : i[25].toString())
                 .retirementAdd(i[26] == null ? "" : i[26].toString())
                 .reasonForLoss(i[27] == null ? "" : i[27].toString())
@@ -597,14 +602,14 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
                 .cause(i[34] == null ? 0 : ((BigDecimal)i[34]).intValue())
                 .isMoreEmp(i[35] == null ? "" : i[35].toString())
                 .otherReason(i[36] == null ? "" : i[36].toString())
-                .continReemAfterRetirement(i[37] == null ? "" : i[37].toString())
+                .continReemAfterRetirement(i[44] == null ? "" : i[44].toString())
                 .basicPenNumber(i[38] == null ? "" : i[38].toString())
                 .gender(Integer.valueOf(i[39].toString()))
                 .underDivision(Integer.valueOf(i[40].toString()))
                 .qualifiDistin(i[41] == null ? "" : i[41].toString())
                 .percentOrMore(i[42] == null ? 0 : ((BigDecimal)i[42]).intValue())
                 .remarksOther(i[43] == null ? 0 : ((BigDecimal)i[43]).intValue())
-                .remarksAndOtherContents(i[44] == null ? "" : i[44].toString())
+                .remarksAndOtherContents(i[64] == null ? "" : i[64].toString())
                 .remunMonthlyAmountKind(i[45] == null ? 0 : ((BigDecimal)i[45]).intValue())
                 .remunMonthlyAmount(i[46] == null ? 0 : ((BigDecimal)i[46]).intValue())
                 .totalMonthlyRemun(i[47] == null ? 0 : ((BigDecimal)i[47]).intValue())
@@ -615,12 +620,12 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
                 .depenAppoint(i[52] == null ? 0 : ((BigDecimal)i[52]).intValue())
                 .subType(i[53] == null ?  0 : ((BigDecimal)i[53]).intValue())
                 .appFormCls(i[54] == null ? 0 : ((BigDecimal)i[54]).intValue())
-                .hisId(i[54] == null ? "" : i[54].toString())
-                .add(i[55] == null ? "" : i[55].toString())
-                .addKana(i[57] == null ? "" : i[57].toString())
-                .companyName(i[58] == null ? "" : i[58].toString())
-                .phoneNumber(i[59] == null ? "" : i[59].toString())
-                .repName(i[60] == null ? "" : i[60].toString())
+                .hisId(i[55] == null ? "" : i[55].toString())
+                .add(i[56] == null && i[57] == null ? "" : i[56].toString()+" "+i[57].toString())
+                .addKana(i[58] == null && i[59] == null ? "" : i[58].toString()+" "+i[59].toString())
+                .companyName(i[60] == null ? "" : i[60].toString())
+                .phoneNumber(i[61] == null ? "" : i[61].toString())
+                .repName(i[62] == null ? "" : i[62].toString())
                 .build()
         ).collect(Collectors.toList());
     }

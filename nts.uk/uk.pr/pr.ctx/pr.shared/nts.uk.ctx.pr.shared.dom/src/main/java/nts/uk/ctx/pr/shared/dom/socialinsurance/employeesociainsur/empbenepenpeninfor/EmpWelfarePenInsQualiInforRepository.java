@@ -14,7 +14,7 @@ public interface EmpWelfarePenInsQualiInforRepository {
 
     boolean checkEmpWelfarePenInsQualiInforStart(GeneralDate start, GeneralDate end, List<String> empId);
 
-    Optional<EmpWelfarePenInsQualiInfor> getEmpWelfarePenInsQualiInforByEmpId(String employeeId);
+    List<EmpWelfarePenInsQualiInfor> getEmpWelfarePenInsQualiInfor(String cid, GeneralDate date, List<String> sIds);
 
     Optional<EmpWelfarePenInsQualiInfor> getEmpWelfarePenInsQualiInforByEmpId(String cid, String employeeId);
 

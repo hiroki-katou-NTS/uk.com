@@ -6,6 +6,7 @@ import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurb
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmplHealInsurQualifiInfor;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmplHealInsurQualifiInforRepository;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.HealInsurNumberInfor;
+import nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.empbenepenpeninfor.QqsmtEmpWelfInsQcIf;
 import nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.emphealinsurbeneinfo.QqsmtEmpHealInsurQi;
 import nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.emphealinsurbeneinfo.QqsmtEmpHealInsurQiPk;
 import nts.uk.shr.com.context.AppContexts;
@@ -21,12 +22,13 @@ import java.util.Optional;
 public class JpaEmplHealInsurQualifiInforRepository extends JpaRepository implements EmplHealInsurQualifiInforRepository {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QqsmtEmpHealInsurQi f";
-    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.empHealInsurQiPk.employeeId =:employeeId AND  f.empHealInsurQiPk.hisId =:hisId ";
+
     private static final String SELECT_BY_LIST_EMP_START = SELECT_ALL_QUERY_STRING + " WHERE  f.empHealInsurQiPk.employeeId IN :employeeIds  AND f.endDate >= :startDate AND f.endDate <= :endDate";
     private static final String SELECT_BY_EMPLID = SELECT_ALL_QUERY_STRING + " WHERE  f.empHealInsurQiPk.employeeId =:employeeId ";
-    private static final String SELECT_BY_HISID = SELECT_ALL_QUERY_STRING + " WHERE  f.empHealInsurQiPk.hisId =:hisId ";
     private static final String SELECT_BY_LIST_EMP = SELECT_ALL_QUERY_STRING + " WHERE  f.empHealInsurQiPk.employeeId IN :employeeIds  AND f.startDate >= :startDate AND f.startDate <= :endDate";
+    private static final String SELECT_BY_ID_AND_DATE = SELECT_ALL_QUERY_STRING  + "f.empHealInsurQiPk.cid =:cid WHERE AND f.startDate <= :date AND f.endDate >= date";
     private static final String SELECT_BY_ID = SELECT_ALL_QUERY_STRING + " WHERE  f.empHealInsurQiPk.cid =:cid AND f.empHealInsurQiPk.employeeId =:employeeId AND f.startDate <= :baseDate AND f.endDate >= :baseDate";
+
     @Override
     public boolean checkEmplHealInsurQualifiInforEndDate(GeneralDate start, GeneralDate end, List<String> empIds){
         List<QqsmtEmpHealInsurQi> qqsmtEmpHealInsurQi =  this.queryProxy().query(SELECT_BY_LIST_EMP_START, QqsmtEmpHealInsurQi.class)
@@ -48,22 +50,22 @@ public class JpaEmplHealInsurQualifiInforRepository extends JpaRepository implem
     }
 
     @Override
-    public Optional<EmplHealInsurQualifiInfor> getEmplHealInsurQualifiInforByEmpId(String empId) {
-        List<QqsmtEmpHealInsurQi> qqsmtEmpHealInsurQi = this.queryProxy().query(SELECT_BY_EMPLID, QqsmtEmpHealInsurQi.class)
-                .setParameter("employeeId", empId)
-                .getList();
-         return Optional.of(new EmplHealInsurQualifiInfor(empId,toDomain(qqsmtEmpHealInsurQi)));
-    }
-
-    @Override
     public Optional<HealInsurNumberInfor> getEmplHealInsurQualifiInforByEmpId(String cid, String empId, GeneralDate baseDate) {
-
         return this.queryProxy().query(SELECT_BY_ID, QqsmtEmpHealInsurQi.class)
                 .setParameter("cid",cid)
                 .setParameter("employeeId", empId)
                 .setParameter("baseDate",baseDate)
                 .getSingle(x -> x.toHealInsurNumberInfor());
     }
+
+    @Override
+    public List<EmplHealInsurQualifiInfor> getListEmplHealInsurQualifiInfor(String cid, GeneralDate date) {
+        return this.queryProxy().query(SELECT_BY_ID_AND_DATE, QqsmtEmpHealInsurQi.class)
+                .setParameter("cid",cid)
+                .setParameter("date", date)
+                .getList(c -> c.toDomain());
+    }
+
 
     private List<EmpHealthInsurBenefits> toDomain(List<QqsmtEmpHealInsurQi> entities) {
         List<EmpHealthInsurBenefits> dateHistoryItems = new ArrayList<EmpHealthInsurBenefits>();
@@ -79,22 +81,6 @@ public class JpaEmplHealInsurQualifiInforRepository extends JpaRepository implem
         return dateHistoryItems;
     }
 
-    @Override
-    public Optional<HealInsurNumberInfor> getHealInsurNumberInforByHisId(String hisId) {
-        return this.queryProxy().query(SELECT_BY_HISID, QqsmtEmpHealInsurQi.class)
-                .setParameter("hisId", hisId)
-                .getSingle(x -> x.toHealInsurNumberInfor());
-    }
-
-    @Override
-    public Optional<HealInsurNumberInfor> getHealInsurNumberInforByHisId(String empId, String hisId) {
-
-        return this.queryProxy().query(SELECT_BY_KEY_STRING, QqsmtEmpHealInsurQi.class)
-                .setParameter("employeeId",empId)
-                .setParameter("hisId", hisId)
-                .getSingle(x -> x.toHealInsurNumberInfor());
-
-    }
 
     @Override
     public void add(EmplHealInsurQualifiInfor domain){
