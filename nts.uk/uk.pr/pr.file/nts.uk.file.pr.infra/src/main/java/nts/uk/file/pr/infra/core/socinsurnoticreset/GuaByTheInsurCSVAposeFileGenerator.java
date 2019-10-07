@@ -199,10 +199,18 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
         cells.get(startRow, 14).setValue(data.getResonAndOtherContent());
 
         //bổ sung DD
-        cells.get(startRow, 17).setValue(data.getResonAndOtherContent());
-        cells.get(startRow, 17).setValue(data.getResonAndOtherContent());
-        cells.get(startRow, 18).setValue(data.getResonAndOtherContent());
-        cells.get(startRow, 18).setValue(data.getResonAndOtherContent());
+        GeneralDate a = GeneralDate.fromString(data.getStartDate1().substring(0, 10), "yyyy-MM-dd");
+        GeneralDate b = GeneralDate.fromString(data.getStartDate2().substring(0, 10), "yyyy-MM-dd");
+        if (a.afterOrEquals(b)) {
+            cells.get(startRow, 17).setValue( findEra(toJapaneseDate(a).era()));
+            cells.get(startRow, 18).setValue(toJapaneseDate(a));
+
+        }
+        else{
+            cells.get(startRow, 17).setValue( findEra(toJapaneseDate(b).era()));
+            cells.get(startRow, 18).setValue(toJapaneseDate(b));
+        }
+
 
         cells.get(startRow, 19).setValue(data.getDepenAppoint());
         cells.get(startRow, 20).setValue(data.getRemunMonthlyAmount() >= 10000000 ? "9999999" : data.getRemunMonthlyAmount());
