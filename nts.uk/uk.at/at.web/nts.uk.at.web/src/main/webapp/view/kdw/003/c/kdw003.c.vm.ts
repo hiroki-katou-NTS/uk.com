@@ -37,7 +37,8 @@ module nts.uk.at.view.kdw003.c.viewmodel {
                         dfd.resolve();
                     } else {
                          nts.uk.ui.dialog.error({messageId: "Msg_1402"}).then(() => {
-                              nts.uk.request.jumpToTopPage();
+                             setShared('KDW003C_Err', {jumpToppage: true});
+                             windows.close();
                          });
                     }
                 }).fail(function(error) {
@@ -52,7 +53,8 @@ module nts.uk.at.view.kdw003.c.viewmodel {
                         dfd.resolve();
                     } else {
                         nts.uk.ui.dialog.error({messageId: "Msg_1402"}).then(() => {
-                            nts.uk.request.jumpToTopPage();
+                            setShared('KDW003C_Err', {jumpToppage: true});
+                            windows.close();
                         });
                     }
                 }).fail(function(error) {

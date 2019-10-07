@@ -669,6 +669,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     } else {
                         setShared("selectedPerfFmtCodeList", "");
                         modal("/view/kdw/003/c/index.xhtml").onClosed(() => {
+                            let res = nts.uk.ui.windows.getShared('KDW003C_Err');
+                            if(!_.isEmpty(res) && res.jumpToppage){
+                                nts.uk.request.jumpToTopPage();
+                            }
                             var dataTemp = nts.uk.ui.windows.getShared('KDW003C_Output');
                             if (dataTemp != undefined) {
                                 let data = [dataTemp];
@@ -2926,6 +2930,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 self.flagCalculation = false;
                 setShared("selectedPerfFmtCodeList", self.formatCodes());
                 modal("/view/kdw/003/c/index.xhtml").onClosed(() => {
+                    let res = nts.uk.ui.windows.getShared('KDW003C_Err');
+                    if(!_.isEmpty(res) && res.jumpToppage){
+                        nts.uk.request.jumpToTopPage();
+                    }
                     var dataTemp = nts.uk.ui.windows.getShared('KDW003C_Output');
                     if (dataTemp != undefined) {
                         let data = [dataTemp];
