@@ -36,7 +36,7 @@ module nts.uk.at.view.kdw003.c.viewmodel {
                         self.lstFormatCodes(sortedData);
                         dfd.resolve();
                     } else {
-                         nts.uk.ui.dialog.error("Msg_1402").then(() => {
+                         nts.uk.ui.dialog.error({messageId: "Msg_1402"}).then(() => {
                               nts.uk.request.jumpToTopPage();
                          });
                     }
@@ -51,7 +51,7 @@ module nts.uk.at.view.kdw003.c.viewmodel {
                         self.lstFormatCodes(sortedData);
                         dfd.resolve();
                     } else {
-                        nts.uk.ui.dialog.error("Msg_1402").then(() => {
+                        nts.uk.ui.dialog.error({messageId: "Msg_1402"}).then(() => {
                             nts.uk.request.jumpToTopPage();
                         });
                     }
