@@ -489,8 +489,8 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 			String subIn1 = NtsStatement.In.createParamsString(lstRefReal);
 			CollectionUtil.split(scheStatus, SPLIT_650, lstRef -> {
 				String subIn2 = NtsStatement.In.createParamsString(lstRef);
-				CollectionUtil.split(appType, SPLIT_650, lstApp -> {
-					String subIn3 = NtsStatement.In.createParamsString(lstApp);					
+				CollectionUtil.split(appType, SPLIT_650, lstAppType -> {
+					String subIn3 = NtsStatement.In.createParamsString(lstAppType);					
 					String sql = "SELECT * FROM KRQDT_APPLICATION "
 							+ "WHERE  APPLICANTS_SID = ? "
 							+ " AND APP_START_DATE >= ? "
