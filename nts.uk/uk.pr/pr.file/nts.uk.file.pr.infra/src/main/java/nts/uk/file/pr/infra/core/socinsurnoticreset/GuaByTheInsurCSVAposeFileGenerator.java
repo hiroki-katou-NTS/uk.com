@@ -201,15 +201,17 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
 
         //bổ sung DD
         GeneralDate a = GeneralDate.fromString(data.getStartDate1().substring(0, 10), "yyyy-MM-dd");
+        a.addYears(1);
         GeneralDate b = GeneralDate.fromString(data.getStartDate2().substring(0, 10), "yyyy-MM-dd");
+        b.addYears(1);
         if (a.afterOrEquals(b)) {
             cells.get(startRow, 17).setValue( findEra(toJapaneseDate(a).era()));
-            cells.get(startRow, 18).setValue(toJapaneseDate(a));
+            cells.get(startRow, 18).setValue(convertJpDate(toJapaneseDate(a)));
 
         }
         else{
             cells.get(startRow, 17).setValue( findEra(toJapaneseDate(b).era()));
-            cells.get(startRow, 18).setValue(toJapaneseDate(b));
+            cells.get(startRow, 18).setValue(convertJpDate(toJapaneseDate(b)));
         }
 
 
@@ -228,10 +230,10 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
         String portCd = ins.getOfficeInformation().value == 0 ? company.getPostCd(): data.getPortCd();
         String add = ins.getOfficeInformation().value == 0 ? company.getAdd_1() +" "+ company.getAdd_2(): data.getAdd();
         String addKana = ins.getOfficeInformation().value == 0 ? company.getAddKana_1() + company.getAddKana_2(): data.getAddKana();
-        cells.get(startRow, 28).setValue(formatPortCd(portCd, 1));
-        cells.get(startRow, 29).setValue(formatPortCd(portCd, 2));
-        cells.get(startRow, 30).setValue(add);
-        cells.get(startRow, 31).setValue(addKana);
+        cells.get(startRow, 28).setValue("郵便番号 3 - dummy data");
+        cells.get(startRow, 29).setValue("郵便番号 4- dummy data");
+        cells.get(startRow, 30).setValue("住所カナ - dummy dataa");
+        cells.get(startRow, 31).setValue("住所 - dummy dataa");
         cells.get(startRow, 32).setValue(data.getPercentOrMore() == 1 ? 1 : "");
 
     }
@@ -354,8 +356,10 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
         cells.get(startRow, 25).setValue(data.getPercentOrMore());
         cells.get(startRow, 26).setValue(data.getIsMoreEmp() == 1 ? 1 : "");
         cells.get(startRow, 27).setValue(data.getShortTimeWorkes() == 1 ? 1 : "");
-//        cells.get(startRow, 28).setValue(data.getContinReemAfterRetirement() == 1 ? 1 : "");
-//        cells.get(startRow, 29).setValue(checkLength(data.getRemarksAndOtherContent(), 37));
+        cells.get(startRow, 28).setValue("郵便番号 3 = dummy data");
+        cells.get(startRow, 29).setValue("郵便番号 4 = dummy data");
+        cells.get(startRow, 30).setValue("住所カナ = dummy data");
+        cells.get(startRow, 31).setValue("住所 = dummy data");
         cells.get(startRow, 33).setValue(data.getPercentOrMore() == 1 ? 1 : "");
         cells.get(startRow, 34).setValue(data.getHealUnionNumber());
         cells.get(startRow, 35).setValue(data.getHealInsInherenPr());
@@ -480,13 +484,16 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
         String portCd = ins.getOfficeInformation().value == 0 ? company.getPostCd() : data.getPortCd();
         String add = ins.getOfficeInformation().value == 0 ? company.getAdd_1()+" "+company.getAdd_2() : data.getAdd();
         String addKana = ins.getOfficeInformation().value == 0 ? company.getAddKana_1()+" "+company.getAddKana_2() : data.getAddKana();
-//        cells.get(startRow, 28).setValue(formatPortCd(portCd, 1));
+        cells.get(startRow, 28).setValue("郵便番号 3 -dummy data");
+        cells.get(startRow, 29).setValue("郵便番号 4 -dummy data");
+        cells.get(startRow, 30).setValue("住所カナ -dummy data");
+        cells.get(startRow, 31).setValue("住所 -dummy data");
 //        cells.get(startRow, 29).setValue(formatPortCd(portCd, 2));
 //        cells.get(startRow, 30).setValue(addKana);
 //        cells.get(startRow, 31).setValue(add);
 //        cells.get(startRow, 32).setValue("");
-//        cells.get(startRow, 33).setValue(data.getFunMember());
-//        cells.get(startRow, 34).setValue(data.getWelPenOfficeNumber());
+        cells.get(startRow, 33).setValue(data.getFunMember());
+        cells.get(startRow, 34).setValue(data.getWelPenOfficeNumber());
         cells.get(startRow, 35).setValue(data.getMemberNumber());
         cells.get(startRow, 36).setValue(data.getSubType());
 //        cells.get(startRow, 37).setValue(findEra(addAppCtgSal.era()));
