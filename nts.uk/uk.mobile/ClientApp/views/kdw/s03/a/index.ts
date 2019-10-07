@@ -369,7 +369,7 @@ export class Kdws03AComponent extends Vue {
                         key: header.key,
                         value: rowDataSrc[header.key],
                         class: setting.typeFormat == 3 ? 'currency-symbol row-style' : (_.includes([2, 5], setting.typeFormat) ? 'row-style' : ''),
-                        displayvalue: this.formatDisplay(rowDataSrc[header.key], setting),
+                        displayvalue: this.formatDisplay(rowDataSrc[header.key], setting.typeFormat),
                     });
                 } else {
                     let resultValue = this.getFromCombo(header.group[1].ntsControl, rowDataSrc[header.group[1].key]);
@@ -481,11 +481,12 @@ export class Kdws03AComponent extends Vue {
 
         // create sum row
         let sumTimeKey = _.map((_.filter(data.lstControlDisplayItem.columnSettings, (o) => o.typeFormat == 5)), (x) => x.columnKey);
-        let sumNumKey = _.map((_.filter(data.lstControlDisplayItem.columnSettings, (o) => o.typeFormat == 2 || o.typeFormat == 3)), (x) => x.columnKey);
+        let sumNumKey = _.map((_.filter(data.lstControlDisplayItem.columnSettings, (o) => o.typeFormat == 2)), (x) => x.columnKey);
+        let sumMoneyKey = _.map((_.filter(data.lstControlDisplayItem.columnSettings, (o) => o.typeFormat == 3)), (x) => x.columnKey);
         headers.forEach((header: any) => {
             if (_.includes(sumTimeKey, header.key)) {
                 self.displaySumLst[header.key] = '0:00';
-            } else if (_.includes(sumNumKey, header.key)) {
+            } else if (_.includes(sumNumKey, header.key) || _.includes(sumMoneyKey, header.key)) {
                 self.displaySumLst[header.key] = 0;
             } else {
                 self.displaySumLst[header.key] = '';
@@ -496,12 +497,22 @@ export class Kdws03AComponent extends Vue {
             row.rowData.forEach((cell: any) => {
                 if (!_.isNil(cell.value) && '' != cell.value) {
                     if (_.includes(sumTimeKey, cell.key)) {
-                        self.displaySumLst[cell.key] = this.$dt.timedr((new TimeDuration(self.displaySumLst[cell.key])).toNumber() + (new TimeDuration(cell.value)).toNumber());
-                    } else if (_.includes(sumNumKey, cell.key)) {
+                        self.displaySumLst[cell.key] = this.$dt.timedr((new TimeDuration(self.displaySumLst[cell.key])).toNumber() + (new TimeDuration(cell.value)).toNumber());        
+                    } else if (_.includes(sumNumKey, cell.key) || _.includes(sumMoneyKey, cell.key)) {
                         self.displaySumLst[cell.key] = self.displaySumLst[cell.key] + Number(cell.value);
                     }
                 }
             });
+        });
+
+        headers.forEach((header: any) => {
+            if (_.includes(sumTimeKey, header.key)) {    
+                self.displaySumLst[header.key] = this.$dt.timedr(self.displaySumLst[header.key]).substring(0, 1) != '0' ? this.$dt.timedr(self.displaySumLst[header.key]) : this.$dt.timedr(self.displaySumLst[header.key]).substring(1, 5);
+            } else if (_.includes(sumNumKey, header.key)) {
+                self.displaySumLst[header.key] = this.formatDisplay(self.displaySumLst[header.key].toString(), '2');
+            } else if (_.includes(sumMoneyKey, header.key)) {
+                self.displaySumLst[header.key] = [this.formatDisplay(self.displaySumLst[header.key].toString(), '3'), 'currency-symbol'];
+            }
         });
 
         self.resetTable++;
@@ -725,12 +736,12 @@ export class Kdws03AComponent extends Vue {
         if (_.includes(chkArray, value)) {
             return '';
         } else {
-            if (setting.typeFormat == '6') {
+            if (setting == '6') {
                 return new TimeWithDay(value);
-            } else if (setting.typeFormat == '3') {
+            } else if (setting == '3') {
                 return Number(value) == 0 ? '' : Number(Number(value).toFixed(0)).toLocaleString('en-US');
-            } else if (setting.typeFormat == '2') {
-                return Number(value) == 0 ? '' : Number(value).toLocaleString();
+            } else if (setting == '2') {
+                return Number(value) == 0 ? '' : Number(value).toLocaleString('en-US');
             } else {
                 return value;
             }
