@@ -61,7 +61,6 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
             opts.setSeparator(',');
             opts.setQuoteType(TxtValueQuoteType.NEVER);
             opts.setEncoding(Encoding.getUTF8());
-            workbook.getWorksheets().get(0).getCells().deleteBlankColumns();
             workbook.save(outputStream, opts);
         } catch (Exception e) {
             throw new RuntimeException(e);
