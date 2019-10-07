@@ -270,12 +270,12 @@ module nts.uk.pr.view.qsi002.a.viewmodel {
             self.ccg001ComponentOption = {
                 /** Common properties */
                 systemType: 1,
-                showEmployeeSelection: true,
-                showQuickSearchTab: false,
+                showEmployeeSelection: false,
+                showQuickSearchTab: true,
                 showAdvancedSearchTab: true,
                 showBaseDate: true,
-                showClosure: false,
-                showAllClosure: false,
+                showClosure: true,
+                showAllClosure: true,
                 showPeriod: false,
                 periodFormatYM: false,
                 tabindex: 4,
@@ -296,10 +296,11 @@ module nts.uk.pr.view.qsi002.a.viewmodel {
 
                 /** Advanced search properties */
                 showEmployment: true,
-                showWorkplace: false,
+                showWorkplace: true,
                 showClassification: true,
+                showDepartment: true,
                 showJobTitle: true,
-                showWorktype: true,
+                showWorktype: false,
                 isMutipleCheck: true,
                 /**
                  * Self-defined function: Return data from CCG001

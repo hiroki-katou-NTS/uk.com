@@ -21,6 +21,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Stateless
 public class RomajiNameNotiCreSetExportPDFService extends ExportService<RomajiNameNotiCreSetExportQuery>{
@@ -32,48 +33,18 @@ public class RomajiNameNotiCreSetExportPDFService extends ExportService<RomajiNa
     private SocialInsuranceOfficeRepository socialInsuranceOfficeRepository;
 
     @Inject
-    private EmpBasicPenNumInforRepository empBasicPenNumInforRepository;
-
-    @Inject
-    private EmpFamilyInsHisRepository empFamilyInsHisRepository;
-
-    @Inject
-    private EmpFamilySocialInsRepository empFamilySocialInsRepository;
-
-    @Inject
-    private EmpNameReportRepository empNameReportRepository;
+    private RomajiNameNotiCreSetFileGenerator romajiNameNotiCreSetFileGenerator;
 
     @Inject
     private RomajiNameNotiCreSetExReposity romajiNameNotiCreSetExReposity;
 
-    @Inject
-    private NotificationOfLossInsExRepository notificationOfLossInsExRepository;
-
-    @Inject
-    private RomajiNameNotiCreSetFileGenerator romajiNameNotiCreSetFileGenerator;
-
-    @Inject
-    private EmpCorpHealthOffHisRepository empCorpHealthOffHisRepository;
-
-    @Inject
-    private AffOfficeInformationRepository affOfficeInformationRepository;
-
     @Override
     protected void handle(ExportServiceContext<RomajiNameNotiCreSetExportQuery> exportServiceContext) {
         String cid = AppContexts.user().companyId();
-
-        romajiNameNotiCreSetRepository.register(new RomajiNameNotiCreSetting(
-                cid,
-                AppContexts.user().userId(),
-                exportServiceContext.getQuery().getAddressOutputClass()
-        ));
-
+        romajiNameNotiCreSetRepository.register(new RomajiNameNotiCreSetting(cid,AppContexts.user().userId(),exportServiceContext.getQuery().getAddressOutputClass()));
+        CompanyInfor companyInfor = null;
         RomajiNameNotiCreSetting romajiNameNotiCreSetting = romajiNameNotiCreSetRepository.getRomajiNameNotiCreSettingById().get();
-
-        CompanyInfor companyInfor =  null;
-        SocialInsuranceOffice socialInsuranceOffice = null ;
         if (romajiNameNotiCreSetting.getAddressOutputClass().value == BusinessDivision.OUTPUT_COMPANY_NAME.value) {
-            //companyInfor = notificationOfLossInsExRepository.getCompanyInfor(cid);
             companyInfor = new CompanyInfor("1008945", "千代田区", "霞ヶ関１－２－２", "年金サービス 株式会社", "年金 良一", "0312234567");
         } else if (romajiNameNotiCreSetting.getAddressOutputClass().value == BusinessDivision.OUTPUT_SIC_INSURES.value){
             List<SocialInsuranceOffice> list = socialInsuranceOfficeRepository.findByCid(cid);
@@ -82,88 +53,74 @@ public class RomajiNameNotiCreSetExportPDFService extends ExportService<RomajiNa
             }
         }
 
-        List<String> listEmp = exportServiceContext.getQuery().getEmpIds();
-        GeneralDate date  = exportServiceContext.getQuery().getDate();
-        String empId = null;
-        String isSpouse = exportServiceContext.getQuery().getPersonTarget();
-        List<RomajiNameNotification> romajiNameNotificationList = new ArrayList<RomajiNameNotification>();
-        EmpCorpHealthOffHis empCorpHealthOffHis = empCorpHealthOffHisRepository.getEmpCorpHealthOffHisById(listEmp, date).orElse(null);
-        EmpBasicPenNumInfor empBasicPenNumInfor = null;
-        PersonInfo personInfo = null;
-        EmpNameReport empNameReport = null;
-        EmpFamilySocialIns empFamilySocialIns  = null;
-        EmpFamilyInsHis empFamilyInsHis = null;
-        FamilyMember familyMember = null ;
-        AffOfficeInformation affOfficeInformation = null;
-        for (int i = 0; i < listEmp.size(); i++) {
-            empId = listEmp.get(i);
-            empNameReport = empNameReportRepository.getEmpNameReportById(empId).orElse(null);
-            if( empNameReport !=  null) {
-                if (isSpouse.equals("0")) {
-                    empBasicPenNumInfor = empBasicPenNumInforRepository.getEmpBasicPenNumInforById(empId).orElse(null);
-                    //personInfo = romajiNameNotiCreSetExReposity.getPersonInfo(empId);
-
-                } else {
-                    //familyMember = romajiNameNotiCreSetExReposity.getFamilyInfo(empId, isSpouse);
-                    familyMember = new FamilyMember("1980-01-02", "HONG KILDONGS WIFE", "11" , 2, "ホン ギルトンノツマ");
-                    if (familyMember != null ){
-                        int  familyId  = Integer.valueOf(familyMember.getFamilyMemberId());
-                        empFamilyInsHis = empFamilyInsHisRepository.getListEmFamilyHis(empId, familyId).orElse(null);
-                        if (empFamilyInsHis != null) {
-                            //get history id
-                            List<DateHistoryItem> dateHistoryItemList = empFamilyInsHis.getDateHistoryItem();
-                           if(!this.getHistory(dateHistoryItemList, date).isEmpty()){
-                               empFamilySocialIns = empFamilySocialInsRepository.getEmpFamilySocialInsById(empId, familyId, this.getHistory(dateHistoryItemList, date)).orElse(null);
-                           }
-                        }
-                    }
-                    //personInfo = romajiNameNotiCreSetExReposity.getPersonInfo(familyMember.getPersonId());
-                }
-
-                personInfo = new PersonInfo("1980-01-01", "HONG KILDONG", "ホン ギルトン", "ADB3171F-B5A7-40A7-9B8A-DAE80EECB44B", 1);
-
-                if (empCorpHealthOffHis != null ){
-                    affOfficeInformation = affOfficeInformationRepository.getAffOfficeInformationById(empId, empCorpHealthOffHis.getPeriod().get(0).identifier()).orElse(null);
-                    if (affOfficeInformation != null ){
-                        socialInsuranceOffice = socialInsuranceOfficeRepository.findByCodeAndCid(cid, affOfficeInformation.getSocialInsurOfficeCode().toString()).orElse(null);
-                    }
-                }
-
-                RomajiNameNotification romajiNameNotification  = new RomajiNameNotification(
-                        empNameReport,
-                        empFamilySocialIns,
-                        familyMember,
-                        empBasicPenNumInfor,
-                        personInfo,
-                        companyInfor,
-                        exportServiceContext.getQuery().getDate(),
-                        exportServiceContext.getQuery().getPersonTarget(),
-                        socialInsuranceOffice,
-                        romajiNameNotiCreSetting
-                );
-                romajiNameNotificationList.add( romajiNameNotification );
-            }
-        }
-
-        if(romajiNameNotificationList.isEmpty()){
+        List<String> empIdList = exportServiceContext.getQuery().getEmpIds();
+        FamilyMember familyMember = new FamilyMember("1980-01-02", "HONG KILDONGS WIFE", "11" , 2, "ホン ギルトンノツマ");
+        PersonInfo personInfo = new PersonInfo("1980-01-01", "HONG KILDONG", "ホン ギルトン", "ADB3171F-B5A7-40A7-9B8A-DAE80EECB44B", 1);
+        List<RomajiNameNotiCreSetExport> empNameReportList = romajiNameNotiCreSetExReposity.getEmpNameReportList(empIdList, cid);
+        if(empNameReportList.isEmpty()){
             throw new BusinessException("MsgQ_37");
         }
+        List<String> empIds  = new ArrayList<>();
+        for (RomajiNameNotiCreSetExport list: empNameReportList) {
+            empIds.add(list.getEmpId());
+        }
+
+        List<RomajiNameNotiCreSetExport> socialInsuranceOfficeList = romajiNameNotiCreSetExReposity.getSocialInsuranceOfficeList(empIds, cid);
+        List<RomajiNameNotiCreSetExport> empFamilySocialInsList = romajiNameNotiCreSetExReposity.getEmpFamilySocialInsList(empIds, cid, Integer.valueOf(familyMember.getFamilyMemberId()), exportServiceContext.getQuery().getDate());
+        List<RomajiNameNotiCreSetExport> empBasicPenNumInforList = romajiNameNotiCreSetExReposity.getEmpBasicPenNumInforList(empIds, cid);
+        List<RomajiNameNotiCreSetExport> dataList  = new ArrayList<>();
+        empNameReportList.stream().forEach(i -> {
+            RomajiNameNotiCreSetExport romajiNameNotiCreSetExport = new RomajiNameNotiCreSetExport();
+            Optional<RomajiNameNotiCreSetExport> e = empFamilySocialInsList.stream().filter(item -> item.getEmpId().equals(i.getEmpId())).findFirst();
+            Optional<RomajiNameNotiCreSetExport> f = empBasicPenNumInforList.stream().filter(item -> item.getEmpId().equals(i.getEmpId())).findFirst();
+            Optional<RomajiNameNotiCreSetExport> l = socialInsuranceOfficeList.stream().filter(item -> item.getEmpId().equals(i.getEmpId())).findFirst();
+            Optional<RomajiNameNotiCreSetExport> k = empNameReportList.stream().filter(item -> item.getEmpId().equals(i.getEmpId())).findFirst();
+            if(e.isPresent()) {
+                romajiNameNotiCreSetExport.setFmBsPenNum(e.get().getFmBsPenNum());
+            }
+
+            if(f.isPresent()) {
+                romajiNameNotiCreSetExport.setBasicPenNumber(f.get().getBasicPenNumber());
+            }
+
+            if(l.isPresent()) {
+                romajiNameNotiCreSetExport.setName(l.get().getName());
+                romajiNameNotiCreSetExport.setRepresentativeName(l.get().getRepresentativeName());
+                romajiNameNotiCreSetExport.setAddress1(l.get().getAddress1());
+                romajiNameNotiCreSetExport.setAddress2(l.get().getAddress2());
+                romajiNameNotiCreSetExport.setPhoneNumber(l.get().getPhoneNumber());
+                romajiNameNotiCreSetExport.setPostalCode(l.get().getPostalCode());
+            }
+
+            if(k.isPresent()) {
+                romajiNameNotiCreSetExport.setPersonalSetListed(k.get().getPersonalSetListed());
+                romajiNameNotiCreSetExport.setPersonalAddressOverseas(k.get().getPersonalAddressOverseas());
+                romajiNameNotiCreSetExport.setPersonalOtherReason(k.get().getPersonalOtherReason());
+                romajiNameNotiCreSetExport.setPersonalResidentCard(k.get().getPersonalResidentCard());
+                romajiNameNotiCreSetExport.setPersonalSetOther(k.get().getPersonalSetOther());
+                romajiNameNotiCreSetExport.setPersonalShortResident(k.get().getPersonalShortResident());
+
+                romajiNameNotiCreSetExport.setSpouseSetListed(k.get().getSpouseSetListed());
+                romajiNameNotiCreSetExport.setSpouseShortResident(k.get().getSpouseShortResident());
+                romajiNameNotiCreSetExport.setSpouseSetOther(k.get().getSpouseSetOther());
+                romajiNameNotiCreSetExport.setSpouseResidentCard(k.get().getSpouseResidentCard());
+                romajiNameNotiCreSetExport.setSpouseAddressOverseas(k.get().getSpouseAddressOverseas());
+                romajiNameNotiCreSetExport.setSpouseOtherReason(k.get().getSpouseOtherReason());
+            }
+            dataList.add(romajiNameNotiCreSetExport);
+        });
+
+        RomajiNameNotification romajiNameNotification = new RomajiNameNotification(
+                exportServiceContext.getQuery().getDate(),
+                exportServiceContext.getQuery().getPersonTarget(),
+                companyInfor,
+                personInfo,
+                familyMember,
+                romajiNameNotiCreSetting,
+                dataList
+        );
 
         //export PDF
-        romajiNameNotiCreSetFileGenerator.generate(exportServiceContext.getGeneratorContext(), romajiNameNotificationList);
-    }
-
-    private String getHistory(List<DateHistoryItem> dateHistoryItemList, GeneralDate date){
-        if(!dateHistoryItemList.isEmpty()) {
-            String historyId = null;
-            for (int j = 0; j < dateHistoryItemList.size(); j ++ ) {
-                if(date.compareTo(dateHistoryItemList.get(j).start()) >= 0 && date.compareTo(dateHistoryItemList.get(j).end()) < 0 ) {
-                    historyId = dateHistoryItemList.get(j).identifier();
-                }
-            }
-            return historyId;
-        } else {
-            return null;
-        }
+        romajiNameNotiCreSetFileGenerator.generate(exportServiceContext.getGeneratorContext(), romajiNameNotification);
     }
 }

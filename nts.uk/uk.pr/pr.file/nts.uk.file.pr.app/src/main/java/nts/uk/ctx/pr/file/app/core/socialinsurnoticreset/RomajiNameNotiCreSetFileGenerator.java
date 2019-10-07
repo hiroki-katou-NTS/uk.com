@@ -5,5 +5,5 @@ import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import java.util.List;
 
 public interface RomajiNameNotiCreSetFileGenerator {
-    void generate(FileGeneratorContext fileContext, List<RomajiNameNotification> data);
+    void generate(FileGeneratorContext fileContext, RomajiNameNotification data);
 }
