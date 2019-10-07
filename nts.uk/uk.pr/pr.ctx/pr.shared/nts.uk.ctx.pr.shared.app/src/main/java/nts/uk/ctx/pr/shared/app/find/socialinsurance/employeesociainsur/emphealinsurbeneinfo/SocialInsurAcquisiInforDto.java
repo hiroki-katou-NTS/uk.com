@@ -73,6 +73,9 @@ public class SocialInsurAcquisiInforDto
     * 短期在留
     */
     private Integer shortStay;
+
+
+    private Integer shortTimeWorkers;
     
     /**
     * 被扶養者届出区分
@@ -101,6 +104,7 @@ public class SocialInsurAcquisiInforDto
                 domain.getReasonOther().map(i->i.intValue()).orElse(null),
                 domain.getReasonAndOtherContents().map(i->i.v()).orElse(null),
                 domain.getShortStay().map(i->i.intValue()).orElse(null),
+                domain.getShortTimeWorkers().map(i -> i.intValue()).orElse(null),
                 domain.getDepenAppoint().map(i->i.value).orElse(null),
                 //domain.getDepenAppoint() == null ? null : domain.getDepenAppoint().get().value,
                 domain.getContinReemAfterRetirement().map(i->i.intValue()).orElse(null));
