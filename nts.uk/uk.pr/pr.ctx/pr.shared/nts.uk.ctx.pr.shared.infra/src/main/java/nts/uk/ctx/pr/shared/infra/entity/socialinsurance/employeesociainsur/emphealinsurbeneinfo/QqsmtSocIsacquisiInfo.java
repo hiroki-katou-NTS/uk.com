@@ -183,11 +183,11 @@ public class QqsmtSocIsacquisiInfo extends UkJpaEntity implements Serializable
         }
 
         if(domain.getReasonOther().isPresent() && domain.getReasonOther().get() == 1) {
-            return 2;
+            return 3;
         }
 
         if(domain.getShortStay().isPresent() && domain.getShortStay().get() == 1) {
-            return 3;
+            return 2;
         }
         return 0;
     }
