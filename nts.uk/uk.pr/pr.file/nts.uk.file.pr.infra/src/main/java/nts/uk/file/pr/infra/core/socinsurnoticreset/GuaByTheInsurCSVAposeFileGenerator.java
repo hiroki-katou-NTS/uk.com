@@ -195,7 +195,8 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
         cells.get(startRow, 9).setValue(convertJpDate(dateJp));
         cells.get(startRow, 10).setValue(ins.getPrintPersonNumber() != PersonalNumClass.DO_NOT_OUTPUT && ins.getPrintPersonNumber() != PersonalNumClass.OUTPUT_PER_NUMBER ? data.getGender() : data.getHealInsCtg());
         cells.get(startRow, 11).setValue(data.getDistin());
-        cells.get(startRow, 13).setValue(data.getLivingAbroad() == 1 ? data.getLivingAbroad() : data.getShortStay() == 1 ? data.getShortStay() : data.getResonOther());
+        cells.get(startRow, 13).setValue(data.getLivingAbroad() == 0 ? "" : data.getLivingAbroad());
+
         cells.get(startRow, 14).setValue(data.getResonAndOtherContent());
 
         //bổ sung DD
