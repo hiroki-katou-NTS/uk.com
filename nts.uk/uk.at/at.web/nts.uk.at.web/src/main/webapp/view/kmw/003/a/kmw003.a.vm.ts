@@ -1715,6 +1715,10 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             let formatParam = { initMode: 1, selectedItem: "" };
             nts.uk.ui.windows.setShared("KDW003C_Param", formatParam);
             nts.uk.ui.windows.sub.modal("/view/kdw/003/c/index.xhtml").onClosed(() => {
+                let res = nts.uk.ui.windows.getShared('KDW003C_Err');
+                if(!_.isEmpty(res) && res.jumpToppage){
+                    nts.uk.request.jumpToTopPage();
+                }
                 let formatCd = nts.uk.ui.windows.getShared('KDW003C_Output');
                 if (formatCd) {
                     self.formatCodes.removeAll();
