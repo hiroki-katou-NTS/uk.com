@@ -254,8 +254,10 @@ public class InitScreenMob {
 		Map<String, DailyModifyResult> resultDailyMap = results.stream().collect(Collectors.toMap(
 				x -> mergeString(x.getEmployeeId(), "|", x.getDate().toString()), Function.identity(), (x, y) -> x));
 		
-		listEmployeeId = new ArrayList<>();
-		listEmployeeId = resultDailyMap.keySet().stream().map(e -> (e.substring(0, e.indexOf("|")))).collect(Collectors.toList());
+		if (displayFormat == 1) {
+			listEmployeeId = new ArrayList<>();
+			listEmployeeId = resultDailyMap.keySet().stream().map(e -> (e.substring(0, e.indexOf("|")))).collect(Collectors.toList());
+		}
 				
 		DPControlDisplayItem dPControlDisplayItem = processor.getItemIdNames(disItem, false);
 		screenDto.setLstControlDisplayItem(dPControlDisplayItem);
