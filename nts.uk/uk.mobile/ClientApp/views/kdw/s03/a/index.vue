@@ -51,7 +51,7 @@
                     <td v-for="(cell, j) of row.rowData" v-bind:class="cell.class"><span class="crop-text">{{cell.displayvalue}}</span></td>
                     <td>
                         <div style="text-align: right" v-click:500="() => openEdit(row.id)">
-                            <span style="color: red" class="fa fa-exclamation-circle fa-lg" v-if="null != row.ERAL && row.ERAL.includes('ER')"></span>
+                            <span style="color: red" class="fa fa-exclamation-circle fa-lg uk-text-crimson" v-if="null != row.ERAL && row.ERAL.includes('ER')"></span>
                             <span style="color: red" class="fa fa-exclamation-triangle fa-lg uk-text-yellow" v-if="null != row.ERAL && !row.ERAL.includes('ER') && row.ERAL.includes('AL')"></span>
                             <span class="pl-1" v-if="row.date != ''">></span>
                         </div>
@@ -80,8 +80,8 @@
                     <td v-for="(cell, j) of row.rowData" v-bind:class="cell.class"><span class="crop-text">{{cell.displayvalue}}</span></td>
                     <td>
                         <div style="text-align: right" v-click:500="() => openEdit(row.id)">
-                            <span style="color: red" class="fa fa-exclamation-circle fa-lg" v-if="null != row.ERAL && row.ERAL.includes('ER')"></span>
-                            <span style="color: red" class="fa fa-exclamation-triangle fa-lg" v-if="null != row.ERAL && !row.ERAL.includes('ER') && row.ERAL.includes('AL')"></span>
+                            <span style="color: red" class="fa fa-exclamation-circle fa-lg uk-text-crimson" v-if="null != row.ERAL && row.ERAL.includes('ER')"></span>
+                            <span style="color: red" class="fa fa-exclamation-triangle fa-lg uk-text-yellow" v-if="null != row.ERAL && !row.ERAL.includes('ER') && row.ERAL.includes('AL')"></span>
                             <span class="pl-1" v-if="row.employeeName != ''">></span>
                         </div>
                     </td>
