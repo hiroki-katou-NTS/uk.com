@@ -135,19 +135,32 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
 //        worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_35" : "A2_35_" + stt).setText(data.getRemarksOtherContent());
     }
 
-    private String formatPhoneNumber(String phone, int stt){
-        String result = phone.replace("-", "");
-        if (stt == 1 && result.length() >= 3) {
-            return result.substring(0, 3);
+    private String formatPhoneNumber(String phone, int stt) {
+        String[] sub = phone.split("-");
+        if (stt == 1 && sub.length > 1) {
+            return sub[0];
         }
-        if (stt == 2 && result.length() >= 6) {
-            return result.substring(3, 6);
+        if (stt == 2 && sub.length >= 2) {
+            return sub[1];
         }
-        if (stt == 3 && result.length() > 6) {
-            return result.substring(6, result.length());
+        if (stt == 3 && sub.length >= 3) {
+            return sub[2];
+        }
+        if (sub.length == 1 && stt == 1 && phone.length() < 3) {
+            return phone;
+        }
+        if (sub.length == 1 && stt == 3 && phone.length() > 6) {
+            return phone.substring(6, phone.length());
+        }
+        if (sub.length == 1 && stt == 2 && phone.length() >= 6) {
+            return phone.substring(3, 6);
+        }
+        if (sub.length == 1 && stt == 1) {
+            return phone.substring(0, 3);
         }
         return "";
     }
+
     private String formatPortCd(String portCd, int stt){
         String result = portCd.replace("-", "");
         if (result.length() >= 3 && stt == 1) {
