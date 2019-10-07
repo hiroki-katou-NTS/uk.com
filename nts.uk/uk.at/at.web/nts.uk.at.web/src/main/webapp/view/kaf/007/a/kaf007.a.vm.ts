@@ -535,9 +535,9 @@ module nts.uk.at.view.kaf007.a.viewmodel {
          * 「勤務就業選択」ボタンをクリックする
          * KDL003_勤務就業ダイアログを起動する
          */
-        openKDL003Click() {
-            let self = nts.uk.ui._viewModel.content,
-                dataWork = self.appWorkChange().dataWork(),
+        openKDL003Click(vm : any) {
+            let self = vm,
+                dataWork = vm.appWorkChange().dataWork(),
                 workChange = self.appWorkChange().workChange();
             $("#inpStartTime1").ntsError('clear');
             $("#inpEndTime1").ntsError('clear');

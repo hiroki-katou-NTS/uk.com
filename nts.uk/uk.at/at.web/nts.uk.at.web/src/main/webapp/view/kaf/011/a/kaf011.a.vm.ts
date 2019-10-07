@@ -202,6 +202,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
                 self.employeeList(_.map(data.employees, (emp) => { return { sid: emp.sid, code: emp.scd, name: emp.bussinessName } }));
                 self.employeeName(data.employeeName);
                 self.prePostSelectedCode(data.preOrPostType);
+                self.appTypeSet(new common.AppTypeSet(data.appTypeSet || null));
                 self.recWk().setWkTypes(data.recWkTypes || []);
                 self.absWk().setWkTypes(data.absWkTypes || []);
                 self.appReasons(data.appReasonComboItems || []);
@@ -211,7 +212,6 @@ module nts.uk.at.view.kaf011.a.screenModel {
                 self.drawalReqSet(new common.DrawalReqSet(data.drawalReqSet || null));
                 self.showReason(data.applicationSetting.appReasonDispAtr);
                 self.displayPrePostFlg(data.applicationSetting.displayPrePostFlg);
-                self.appTypeSet(new common.AppTypeSet(data.appTypeSet || null));
                 self.recWk().wkTimeName(data.wkTimeName || null);
                 self.recWk().wkTimeCD(data.wkTimeCD || null);
                 self.requiredReason(data.applicationSetting.requireAppReasonFlg == 1 ? true : false);
