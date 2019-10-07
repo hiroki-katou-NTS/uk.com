@@ -147,7 +147,7 @@ public class CheckIndentityMonth {
 		
 		//TODO: [No.586]月の実績の確認状況を取得する（NEW）
 		Optional<StatusConfirmMonthDto> statusOpt = confirmStatusMonthly.getConfirmStatusMonthly(param.getCompanyId(),
-				Arrays.asList(param.employeeId), YearMonth.of(stateParam.getDateInfo().getYearMonth()));
+				Arrays.asList(param.employeeId), YearMonth.of(stateParam.getDateInfo().getYearMonth()), closureIdOpt.get().getClosureId().value);
 		if(!statusOpt.isPresent())  return new IndentityMonthResult(false, false, true);
 		List<ConfirmStatusResult> listConfirmStatus = statusOpt.get().getListConfirmStatus();
 		ConfirmStatusResult confirmResult = listConfirmStatus.stream()
