@@ -79,11 +79,11 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
         ws.getRangeByName(sheetName + "!A1_10_1").setValue(dateJp.year() + 1);
         ws.getRangeByName(sheetName + "!A1_10_2").setValue(dateJp.month());
         ws.getRangeByName(sheetName + "!A1_10_3" ).setValue(dateJp.day());
-        ws.getRangeByName(sheetName + "!A1_1").setValue(element.getBusinessstablishmentbCode1());
-        ws.getRangeByName(sheetName + "!A1_2").setValue(element.getBusinessstablishmentbCode2());
+        ws.getRangeByName(sheetName + "!A1_1").setValue(element.getBusinessstablishmentbCode1().length() > 1 ? element.getBusinessstablishmentbCode1().substring(0,2) : element.getBusinessstablishmentbCode1());
+        ws.getRangeByName(sheetName + "!A1_2").setValue(element.getBusinessstablishmentbCode2().length() > 3 ? element.getBusinessstablishmentbCode2().substring(0,4): element.getBusinessstablishmentbCode2());
         ws.getRangeByName(sheetName + "!A1_3").setValue(element.getOfficeNumber());
-        ws.getRangeByName(sheetName + "!A1_4_1").setValue(formatPortCd(element.getPostalCode(),1));
-        ws.getRangeByName(sheetName + "!A1_4_2").setValue(formatPortCd(element.getPostalCode(),2));
+        ws.getRangeByName(sheetName + "!A1_4_1").setValue(formatPortCd(element.getOfficePostalCode(),1));
+        ws.getRangeByName(sheetName + "!A1_4_2").setValue(formatPortCd(element.getOfficePostalCode(),2));
         ws.getRangeByName(sheetName + "!A1_5").setValue(element.getOfficeAddress1()+"　"+element.getOfficeAddress2());
         ws.getRangeByName(sheetName +"!A1_6").setValue(element.getBusinessName());
         ws.getRangeByName(sheetName + "!A1_7").setValue(element.getBusinessName1());
@@ -218,13 +218,13 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
         }
         //
         switch (element.getReasonResidentAbroad()){
-            case 2 : {
+            case 1 : {
                 worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_37" : "A2_37_" + stt));
                 worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_38" : "A2_38_" + stt));
 
                 break;
             }
-            case 1 : {
+            case 2 : {
                 worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_36" : "A2_36_" + stt));
                 worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_38" : "A2_38_" + stt));
                 break;
