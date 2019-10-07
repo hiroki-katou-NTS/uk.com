@@ -378,7 +378,7 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
 
 
             service.getMultiEmpWorkInfoById(empId).done(e =>{
-                if(e){
+                if(e == 1){
                     self.twoOrMoreEmployee(true);
                 }else{
                     self.twoOrMoreEmployee(false);
@@ -400,7 +400,7 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
 
 
 
-            service.getCorWorkFormInfo(periodCommand).done(e =>{
+            /*service.getCorWorkFormInfo(periodCommand).done(e =>{
                 if(e){
                     if(e.insPerCls == InsPerCls.SHORT_TIME_WORKERS){
                         self.shortWorkHours(true);
@@ -411,7 +411,7 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
 
             }).fail(e =>{
 
-            });
+            });*/
         }
 
         getAge(DOB, date) {
@@ -488,7 +488,7 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
                     });
                 }
 
-                self.loadPage(self.selectedItem())
+                //self.loadPage(self.selectedItem())
                 block.clear();
             }).fail(e => {
                 block.clear();
