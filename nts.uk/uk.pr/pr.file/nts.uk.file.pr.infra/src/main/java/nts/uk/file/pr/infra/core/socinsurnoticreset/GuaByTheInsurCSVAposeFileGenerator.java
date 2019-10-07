@@ -198,25 +198,33 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
         cells.get(startRow, 13).setValue(data.getLivingAbroad() == 1 ? data.getLivingAbroad() : data.getShortStay() == 1 ? data.getShortStay() : data.getResonOther());
         cells.get(startRow, 14).setValue(data.getResonAndOtherContent());
 
-        cells.get(startRow, 21).setValue(data.getDepenAppoint());
-        cells.get(startRow, 22).setValue(data.getRemunMonthlyAmount());
-        cells.get(startRow, 23).setValue(data.getRemunMonthlyAmountKind());
-        cells.get(startRow, 24).setValue(data.getTotalMonthyRemun());
-        cells.get(startRow, 25).setValue(data.getPercentOrMore() == 1 ? 1 : "");
-        cells.get(startRow, 26).setValue(data.getIsMoreEmp() == 1 ? 1 : "");
-        cells.get(startRow, 27).setValue(data.getShortTimeWorkes() == 1 ? 1 : "");
-        cells.get(startRow, 28).setValue(data.getContinReemAfterRetirement() == 1 ? 1 : "");
-        cells.get(startRow, 29).setValue(checkLength(data.getRemarksAndOtherContent(), 37));
+        //bổ sung DD
+        cells.get(startRow, 17).setValue(data.getResonAndOtherContent());
+        cells.get(startRow, 17).setValue(data.getResonAndOtherContent());
+        cells.get(startRow, 18).setValue(data.getResonAndOtherContent());
+        cells.get(startRow, 18).setValue(data.getResonAndOtherContent());
+
+        cells.get(startRow, 19).setValue(data.getDepenAppoint());
+        cells.get(startRow, 20).setValue(data.getRemunMonthlyAmount() >= 10000000 ? "9999999" : data.getRemunMonthlyAmount());
+        cells.get(startRow, 21).setValue(data.getRemunMonthlyAmountKind() >= 10000000 ? "9999999" : data.getRemunMonthlyAmountKind());
+        int total = data.getRemunMonthlyAmount()+data.getRemunMonthlyAmountKind();
+        cells.get(startRow, 22).setValue(total>= 10000000 ? "9999999" : total);
+        cells.get(startRow, 23).setValue(data.getPercentOrMore() == 1 ? 1 : "");
+        cells.get(startRow, 24).setValue(data.getIsMoreEmp() == 1 ? 1 : "");
+        cells.get(startRow, 25).setValue(data.getShortTimeWorkes() == 1 ? 1 : "");
+        cells.get(startRow, 26).setValue(data.getContinReemAfterRetirement() == 1 ? 1 : "");
+        cells.get(startRow, 27).setValue(checkLength(data.getRemarksAndOtherContent(), 37));
+
         // bổ sung design
         String portCd = ins.getOfficeInformation().value == 0 ? company.getPostCd(): data.getPortCd();
         String add = ins.getOfficeInformation().value == 0 ? company.getAdd_1() +" "+ company.getAdd_2(): data.getAdd();
         String addKana = ins.getOfficeInformation().value == 0 ? company.getAddKana_1() + company.getAddKana_2(): data.getAddKana();
-        cells.get(startRow, 30).setValue(formatPortCd(portCd, 1));
-        cells.get(startRow, 31).setValue(formatPortCd(portCd, 2));
-        cells.get(startRow, 32).setValue(add);
-        cells.get(startRow, 33).setValue(addKana);
-        //
-        cells.get(startRow, 34).setValue(data.getPercentOrMore() == 1 ? 1 : "");
+        cells.get(startRow, 28).setValue(formatPortCd(portCd, 1));
+        cells.get(startRow, 29).setValue(formatPortCd(portCd, 2));
+        cells.get(startRow, 30).setValue(add);
+        cells.get(startRow, 31).setValue(addKana);
+        cells.get(startRow, 32).setValue(data.getPercentOrMore() == 1 ? 1 : "");
+
     }
 
 
