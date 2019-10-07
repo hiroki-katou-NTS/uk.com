@@ -235,7 +235,7 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
 
         }
         if(element.getReasonOther() == 1){
-            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_38" : "A2_38_" + stt));
+//            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_38" : "A2_38_" + stt));
             //
             worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_36" : "A2_36_" + stt));
             worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_37" : "A2_37_" + stt));
@@ -286,7 +286,7 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
 
                 break;
             }
-           
+
         }
 
         if(element.getDependentNo() == 0){
