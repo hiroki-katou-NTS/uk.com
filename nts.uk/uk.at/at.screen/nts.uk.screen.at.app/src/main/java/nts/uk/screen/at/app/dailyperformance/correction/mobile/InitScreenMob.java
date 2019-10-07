@@ -242,6 +242,21 @@ public class InitScreenMob {
 			setStateParam(screenDto, resultPeriod, displayFormat, false);
 			return screenDto;
 		}
+
+		// 日次項目の取得
+		// 日別実績の取得
+		List<DailyModifyResult> results = new ArrayList<>();
+		Pair<List<DailyModifyResult>, List<DailyRecordDto>> resultPair = new GetDataDaily(listEmployeeId, dateRange,
+				disItem.getLstAtdItemUnique(), dailyModifyQueryProcessor).getAllData();
+		results = resultPair.getLeft();
+		screenDto.setDomainOld(resultPair.getRight());
+		screenDto.getItemValues().addAll(results.isEmpty() ? new ArrayList<>() : results.get(0).getItems());
+		Map<String, DailyModifyResult> resultDailyMap = results.stream().collect(Collectors.toMap(
+				x -> mergeString(x.getEmployeeId(), "|", x.getDate().toString()), Function.identity(), (x, y) -> x));
+		
+		listEmployeeId = new ArrayList<>();
+		listEmployeeId = resultDailyMap.keySet().stream().map(e -> (e.substring(0, e.indexOf("|")))).collect(Collectors.toList());
+				
 		DPControlDisplayItem dPControlDisplayItem = processor.getItemIdNames(disItem, false);
 		screenDto.setLstControlDisplayItem(dPControlDisplayItem);
 		screenDto.setAutBussCode(disItem.getAutBussCode());
@@ -256,16 +271,7 @@ public class InitScreenMob {
 				screenDto.getAuthorityDto(), employeeID, displayFormat);
 		screenDto.setDPCorrectionMenuDto(dPCorrectionMenuDto);
 
-		// 日次項目の取得
-		// 日別実績の取得
-		List<DailyModifyResult> results = new ArrayList<>();
-		Pair<List<DailyModifyResult>, List<DailyRecordDto>> resultPair = new GetDataDaily(listEmployeeId, dateRange,
-				disItem.getLstAtdItemUnique(), dailyModifyQueryProcessor).getAllData();
-		results = resultPair.getLeft();
-		screenDto.setDomainOld(resultPair.getRight());
-		screenDto.getItemValues().addAll(results.isEmpty() ? new ArrayList<>() : results.get(0).getItems());
-		Map<String, DailyModifyResult> resultDailyMap = results.stream().collect(Collectors.toMap(
-				x -> mergeString(x.getEmployeeId(), "|", x.getDate().toString()), Function.identity(), (x, y) -> x));
+		
 
 		// ロック状態を更新する
 		DPLockDto dpLockDto = findLock.checkLockAll(companyId, listEmployeeId, dateRange, sId, screenMode,
