@@ -212,6 +212,8 @@ public class GuaByTheInsurExportDto {
      * 理由（その他）
      */
     private int reasonOther;
+
+    private int shortStay;
     /**
      * 理由（その他内容）
      */

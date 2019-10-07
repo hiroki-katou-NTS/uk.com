@@ -302,6 +302,8 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
             //C2_38
             temp.setReasonOther(element[50] != null ? Integer.valueOf(element[50].toString())  == 3 ? 0 : 1 : 1);
 
+            temp.setShortStay(element[50] != null ? Integer.valueOf(element[50].toString())  == 0 ? 0 : 1 : 1);
+
 
             //C2_39
             temp.setReasonOtherContent(element[51] != null ? element[51].toString() : "");
