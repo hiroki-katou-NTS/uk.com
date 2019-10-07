@@ -148,10 +148,10 @@ public class QqsmtSocIsacquisiInfo extends UkJpaEntity implements Serializable
                 this.remunMonthlyAmount,
                 this.totalMonthlyRemun,
                 this.livingAbroad != null && this.livingAbroad == 1 ? 1 : 0,
-                this.livingAbroad != null && this.livingAbroad == 2 ? 1 : 0,
+                this.livingAbroad != null && this.livingAbroad == 3 ? 1 : 0,
                 this.reasonAndOtherContents,
                 this.shortTimeWorkes,
-                this.livingAbroad != null && this.livingAbroad == 3 ? 1 : 0,
+                this.livingAbroad != null && this.livingAbroad == 2 ? 1 : 0,
                 this.depenAppoint,
                 this.qualifiDistin,
                 this.continReemAfterRetirement
