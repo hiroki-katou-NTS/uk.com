@@ -461,7 +461,7 @@ module nts.uk.pr.view.qsi002.a.viewmodel {
     //社会保険出力順
 
     export function getSocialInsurOutOrder(): Array<ItemModel> {
-        return 
+        return
             new ItemModel('0', getText('Enum_SocialInsurOutOrder_DIVISION_EMP_ORDER')),
             new ItemModel('1', getText('Enum_SocialInsurOutOrder_EMPLOYEE_CODE_ORDER')),
             new ItemModel('2', getText('Enum_SocialInsurOutOrder_EMPLOYEE_KANA_ORDER')),
