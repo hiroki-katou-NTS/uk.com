@@ -47,7 +47,7 @@
 				<div class="panel panel-frame" style="margin-left: 50px; width: 640px;">
 						<div class="valign-center control-group ">
 							<span class="label with-image">
-								<i id="img-calendar" class="image image-calendar"/>
+								<i id="img-calendar" class="image image-calendar" style="margin-left: 0px; margin-right: 0px"/>
 								<span>#{i18n.getText('QSI013_A222_3')}</span>
 							</span>
 							<div id = "A2_4" data-bind="ntsDatePicker: {
@@ -66,7 +66,7 @@
 																valueFormat: 'YYYYMMDD',
 																required: true
 																}" tabindex="8"></div>
-							<span data-bind = "text: endDateJp" ></span>
+							<span class="limited-label" style="width: 123px;" data-bind = "text: endDateJp" ></span>
 						</div>
 				</div>
 				<div class = "bottom" style="margin-top: 15px;margin-left: 50px;">

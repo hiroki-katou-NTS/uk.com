@@ -17,6 +17,7 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Stateless
@@ -122,29 +123,44 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_19_8", stt)).setValue(data.getPersonalNumber().length() > 7 ? data.getPersonalNumber().substring(7,8) : "");
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_19_9", stt)).setValue(data.getPersonalNumber().length() > 7 ? data.getPersonalNumber().substring(8,9) : "");
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_19_10", stt)).setValue(data.getPersonalNumber().length() > 7 ? data.getPersonalNumber().substring(9,10) : "");
-        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_24", stt)).setValue(data.getMonRemunerationAmountInCurrency());
-        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_25", stt)).setValue(data.getMonRemunerationAmountOfActualItem());
-        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_26", stt)).setValue(data.getCompenMonthlyAamountTotal());
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_24", stt)).setValue(data.getMonRemunerationAmountInCurrency()+"");
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_25", stt)).setValue(data.getMonRemunerationAmountOfActualItem()+"");
+        int total = data.getMonRemunerationAmountInCurrency() + data.getMonRemunerationAmountOfActualItem();
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_26", stt)).setValue(total+""/*data.getCompenMonthlyAamountTotal()*/);
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_27_1", stt)).setValue(formatPortCd(data.getPostalCode(),1));
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_27_2", stt)).setValue(formatPortCd(data.getPostalCode(),2));
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_28", stt)).setValue(data.getStreetAddress());
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_29", stt)).setValue(data.getAddressKana());
         worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_39" : "A2_39_" + stt).setText(data.getReasonOtherContent());
+//        worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_35" : "A2_35_" + stt).setText(data.getRemarksOtherContent());
     }
 
-    private String formatPhoneNumber(String phone, int stt){
-        String result = phone.replace("-", "");
-        if (stt == 1 && result.length() >= 3) {
-            return result.substring(0, 3);
+    private String formatPhoneNumber(String phone, int stt) {
+        String[] sub = phone.split("-");
+        if (stt == 1 && sub.length > 1) {
+            return sub[0];
         }
-        if (stt == 2 && result.length() >= 6) {
-            return result.substring(3, 6);
+        if (stt == 2 && sub.length >= 2) {
+            return sub[1];
         }
-        if (stt == 3 && result.length() > 6) {
-            return result.substring(6, result.length());
+        if (stt == 3 && sub.length >= 3) {
+            return sub[2];
+        }
+        if (sub.length == 1 && stt == 1 && phone.length() < 3) {
+            return phone;
+        }
+        if (sub.length == 1 && stt == 3 && phone.length() > 6) {
+            return phone.substring(6, phone.length());
+        }
+        if (sub.length == 1 && stt == 2 && phone.length() >= 6) {
+            return phone.substring(3, 6);
+        }
+        if (sub.length == 1 && stt == 1) {
+            return phone.substring(0, 3);
         }
         return "";
     }
+
     private String formatPortCd(String portCd, int stt){
         String result = portCd.replace("-", "");
         if (result.length() >= 3 && stt == 1) {
@@ -230,6 +246,32 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
             worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_15" : "A2_15_" + stt));
         }
         //
+        switch (element.getAcquiCtgHealthInsurWelfare()){
+            case 1 :{
+                worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_17" : "A2_17_" + stt));
+                worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_18" : "A2_1_8" + stt));
+                break;
+            }
+            case 2 :{
+                worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_17" : "A2_17_" + stt));
+                worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_18" : "A2_1_8" + stt));
+
+                break;
+            }
+            case 3 :{
+                worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_16" : "A2_16_" + stt));
+                worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_18" : "A2_1_8" + stt));
+
+                break;
+            }
+            case 4 :{
+                worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_17" : "A2_17_" + stt));
+                worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_16" : "A2_16_" + stt));
+
+                break;
+            }
+        }
+
         if(element.getDependentNo() == 0){
             worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_23" : "A2_23_" + stt));
         } else{

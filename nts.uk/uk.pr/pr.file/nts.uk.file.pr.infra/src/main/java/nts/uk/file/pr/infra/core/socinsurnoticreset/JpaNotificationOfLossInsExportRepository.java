@@ -281,10 +281,10 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
             exportSQL.append("      WELFARE_PENSION_OFFICE_NUMBER,");
             exportSQL.append("      WELFARE_PENSION_PREFECTURE_NO,");
             exportSQL.append("      qi.END_DATE,");
-            exportSQL.append("      BUSINESS_NAME,");
-            exportSQL.append("      BUSINESS_NAME_KANA,");
             exportSQL.append("      PERSON_NAME,");
             exportSQL.append("      PERSON_NAME_KANA,");
+            exportSQL.append("      TODOKEDE_FNAME,");
+            exportSQL.append("      TODOKEDE_FNAME_KANA,");
             exportSQL.append("      BIRTHDAY,");
             exportSQL.append("      POSTALCD_AFTER_RETIRE,");
             exportSQL.append("      ADDRESS_KN_AFTER_RETIRE,");
@@ -300,7 +300,9 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
             exportSQL.append("      MULTI_OFFICE_ATR,");
             exportSQL.append("      OTHER_REASONS,");
             exportSQL.append("      CONTINUE_REEMPLOYED_ATR,");
-            exportSQL.append("      KISONEN_NUM");
+            exportSQL.append("      KISONEN_NUM,");
+            exportSQL.append("      OVER_70_ATR,");
+            exportSQL.append("      NO_MYNUM_ATR");
             exportSQL.append("  FROM ");
             exportSQL.append("         (SELECT *");
             exportSQL.append("         FROM QQSDT_KOUHO_INFO ");
@@ -335,11 +337,11 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
             exportSQL.append("       WHERE CID = ?cid) i");
             exportSQL.append("       ON i.SID = qi.SID");
             exportSQL.append("  INNER JOIN BPSMT_PERSON p ON p.PID = i.PID");
-            exportSQL.append("  LEFT JOIN QQSDT_SYAHO_MULTI_OFFICE mi ON mi.SID = qi.SID");
+            exportSQL.append("  LEFT JOIN QQSDT_SYAHO_MULTI_OFFICE mi ON mi.SID = qi.SID AND mi.CID = qi.CID");
             exportSQL.append("  LEFT JOIN (SELECT * ");
             exportSQL.append("              FROM QQSDT_SYAHO_GET_INFO");
             exportSQL.append("              WHERE CID = ?cid) ii ON ii.SID = qi.SID");
-            exportSQL.append("  LEFT JOIN QQSDT_SYAHO_KNEN_NUM bp ON bp.SID = qi.SID");
+            exportSQL.append("  LEFT JOIN QQSDT_SYAHO_KNEN_NUM bp ON bp.SID = qi.SID AND bp.CID = qi.CID");
             exportSQL.append("  ORDER BY SYAHO_OFFICE_CD, SCD   ");
             String sql = String.format(exportSQL.toString(), empIds.stream()
                     .map(String::valueOf)
@@ -394,6 +396,8 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
                     .otherReason(i[37] != null ? i[37].toString() : "")
                     .continReemAfterRetirement(i[38] != null ? i[38].toString() : "")
                     .basicPenNumber(i[39] != null ? i[39].toString() : "")
+                    .percentOrMore(i[40] != null ? i[40].toString() : "")
+                    .livingAbroad(i[41] != null ? i[41].toString() : "")
                     .build()).collect(Collectors.toList());
         }catch (Exception e) {
             return Collections.emptyList();
