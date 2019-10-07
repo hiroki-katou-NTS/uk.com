@@ -6,13 +6,13 @@ package nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsur
 public enum SocialInsurQuaAcquiClass {
 
     //新1
-    NEW(1, "ENUM_SocialInsurQuaAcquiClass_NEW"),
+    NEW(0, "ENUM_SocialInsurQuaAcquiClass_NEW"),
     //再2
-    RE(2, "ENUM_SocialInsurQuaAcquiClass_RE"),
+    RE(1, "ENUM_SocialInsurQuaAcquiClass_RE"),
     //共3
-    COMMON(3, "ENUM_SocialInsurQuaAcquiClass_COMMON"),
+    COMMON(2, "ENUM_SocialInsurQuaAcquiClass_COMMON"),
     //船4
-    SHIP(4, "ENUM_SocialInsurQuaAcquiClass_SHIP");
+    SHIP(3, "ENUM_SocialInsurQuaAcquiClass_SHIP");
 
     /** The value. */
     public final int value;
