@@ -132,7 +132,7 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
 //        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_28", stt)).setValue(data.getStreetAddress());
 //        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_29", stt)).setValue(data.getAddressKana());
         worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_39" : "A2_39_" + stt).setText(data.getReasonOtherContent());
-        worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_35" : "A2_35_" + stt).setText(data.getRemarksOtherContent());
+//        worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_35" : "A2_35_" + stt).setText(data.getRemarksOtherContent());
     }
 
     private String formatPhoneNumber(String phone, int stt) {
@@ -217,34 +217,32 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
             worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_34" : "A2_34_" + stt));
         }
         //
+        switch (element.getReasonResidentAbroad()){
+            case 2 : {
+                worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_37" : "A2_37_" + stt));
+                worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_38" : "A2_38_" + stt));
 
-        if(element.getReasonResidentAbroad() == 1){
-//            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_36" : "A2_36_" + stt));
-            //
-            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_37" : "A2_37_" + stt));
-            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_38" : "A2_38_" + stt));
-
+                break;
+            }
+            case 3 : {
+                worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_36" : "A2_36_" + stt));
+                worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_38" : "A2_38_" + stt));
+                break;
+            }
+            case 1 : {
+                worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_36" : "A2_36_" + stt));
+                worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_37" : "A2_37_" + stt));
+                break;
+            }
+            case 0 : {
+                worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_36" : "A2_36_" + stt));
+                worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_37" : "A2_37_" + stt));
+                worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_38" : "A2_38_" + stt));
+                break;
+            }
 
         }
-        if(element.getReasonShortTermResidence() == 1){
-//            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_37" : "A2_37_" + stt));
-            //
-            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_36" : "A2_36_" + stt));
-            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_38" : "A2_38_" + stt));
 
-
-        }
-        if(element.getReasonOther() == 1){
-//            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_38" : "A2_38_" + stt));
-            //
-            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_36" : "A2_36_" + stt));
-            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_37" : "A2_37_" + stt));
-        }
-        if(element.getShortStay() == 1){
-            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_36" : "A2_36_" + stt));
-            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_37" : "A2_37_" + stt));
-            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_38" : "A2_38_" + stt));
-        }
 
         //
         if(element.getTypeMale() == 1 ){

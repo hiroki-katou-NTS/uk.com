@@ -329,16 +329,16 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
         //
         cells.get(startRow, 11).setValue(data.getDistin());
         //
-        if (data.getLivingAbroad()  == 3 ) {
+        if (data.getLivingAbroad()  == 1 ) {
             cells.get(startRow, 13).setValue("1");
         }
-        if (data.getShortStay() == 0) {
+        if (data.getShortStay() == 2) {
             cells.get(startRow, 13).setValue("2");
         }
-        if (data.getResonOther() == 2) {
+        if (data.getResonOther() == 3) {
             cells.get(startRow, 13).setValue("3");
         }
-        if (data.getShortTimeWorkes() == 1) {
+        if (data.getShortTimeWorkes() == 0) {
             cells.get(startRow, 13).setValue("");
         }
         //

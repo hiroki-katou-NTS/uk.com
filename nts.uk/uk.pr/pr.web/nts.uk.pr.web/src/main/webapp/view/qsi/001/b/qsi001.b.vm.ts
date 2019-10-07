@@ -534,10 +534,12 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
 
     export function getPersonalNumber(): Array<ItemModel> {
         return [
-            new ItemModel('0', getText('Enum_PersonalNumber_SHORT_STAY')),
-            new ItemModel('1', getText('Enum_PersonalNumber_SHORT_TIME')),
-            new ItemModel('2', getText('Enum_PersonalNumber_RESON_OTHER')),
-            new ItemModel('3', getText('Enum_PersonalNumber_LIVING_ABROAD')),
+
+            new ItemModel('1', getText('Enum_PersonalNumber_LIVING_ABROAD')),
+            new ItemModel('2', getText('Enum_PersonalNumber_SHORT_STAY')),
+            new ItemModel('3', getText('Enum_PersonalNumber_RESON_OTHER')),
+            new ItemModel('0', getText('Enum_PersonalNumber_SHORT_TIME')),
+
         ];
     }
 
@@ -589,8 +591,8 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
     export class PersonalNumber {
         static Not_Applicable = 0;
         static Living_Abroad = 1;
-        static Short_Stay = 3;
-        static Other = 2;
+        static Short_Stay = 2;
+        static Other = 3;
     }
 
     export  class SocialInsurAcquisiInforDTO{
