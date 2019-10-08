@@ -6,3 +6,7 @@
 .width{
     width: 165px;
 }
+
+body{
+    overflow-x: hidden;
+}

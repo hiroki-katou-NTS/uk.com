@@ -41,7 +41,7 @@ public class JpaRomajiNameNotiCreSetExReposity extends JpaRepository implements 
             String emp = empList.stream()
                     .map(String::valueOf)
                     .collect(Collectors.joining("','"));
-            String sql = String.format(exportSQL.toString(), emp, emp);
+            String sql = String.format(exportSQL.toString(), emp);
             try {
                 resultQuery = this.getEntityManager().createNativeQuery(sql)
                         .setParameter("cid", cid)
@@ -86,7 +86,7 @@ public class JpaRomajiNameNotiCreSetExReposity extends JpaRepository implements 
             String emp = empList.stream()
                     .map(String::valueOf)
                     .collect(Collectors.joining("','"));
-            String sql = String.format(exportSQL.toString(), emp, emp);
+            String sql = String.format(exportSQL.toString(), emp);
             try {
                 resultQuery = this.getEntityManager().createNativeQuery(sql)
                         .setParameter("cid", cid)
@@ -110,25 +110,25 @@ public class JpaRomajiNameNotiCreSetExReposity extends JpaRepository implements 
             List<Object[]> resultQuery = null;
             StringBuilder exportSQL = new StringBuilder();
             exportSQL.append("SELECT");
-            exportSQL.append("		SID,");
-            exportSQL.append("		FM_BS_PEN_NUM ");
-            exportSQL.append("	FROM");
-            exportSQL.append("		QQSMT_EMP_FAMILY_INS_HIS ");
-            exportSQL.append("	WHERE");
-            exportSQL.append("		CID = ?cid");
-            exportSQL.append("		AND FAMILY_ID = ?familyId");
-            exportSQL.append("		AND SID IN ('%s' )");
-            exportSQL.append("		AND START_DATE <= ?baseDate");
-            exportSQL.append("		AND END_DATE > ?baseDate");
+            exportSQL.append("	SID,");
+            exportSQL.append("	FM_BS_PEN_NUM ");
+            exportSQL.append("FROM");
+            exportSQL.append("	QQSMT_EMP_FAMILY_INS_HIS ");
+            exportSQL.append("WHERE");
+            exportSQL.append("	FAMILY_ID = ?familyId");
+            exportSQL.append("	AND SID IN ( '%s' ) ");
+            exportSQL.append("	AND CID = ?cid");
+            exportSQL.append("	AND START_DATE <= ?baseDate");
+            exportSQL.append("	AND END_DATE >  ?baseDate");
             String emp = empList.stream()
                     .map(String::valueOf)
                     .collect(Collectors.joining("','"));
-            String sql = String.format(exportSQL.toString(), emp, emp);
+            String sql = String.format(exportSQL.toString(), emp);
             try {
                 resultQuery = this.getEntityManager().createNativeQuery(sql)
                         .setParameter("cid", cid)
                         .setParameter("familyId", familyId)
-                        .setParameter("baseDate", baseDate)
+                        .setParameter("baseDate", baseDate.date())
                         .getResultList();
             } catch (NoResultException e) {
                 return Collections.emptyList();
@@ -145,12 +145,11 @@ public class JpaRomajiNameNotiCreSetExReposity extends JpaRepository implements 
 
     @Override
     public List<RomajiNameNotiCreSetExport> getSocialInsuranceOfficeList(List<String> empList, String cid) {
-
         try {
             List<Object[]> resultQuery = null;
             StringBuilder exportSQL = new StringBuilder();
             exportSQL.append("SELECT");
-            exportSQL.append("	sy.SID,");
+            exportSQL.append("	SID,");
             exportSQL.append("	NAME,");
             exportSQL.append("	REPRESENTATIVE_NAME,");
             exportSQL.append("	ADDRESS_1,");
@@ -158,14 +157,17 @@ public class JpaRomajiNameNotiCreSetExReposity extends JpaRepository implements 
             exportSQL.append("	PHONE_NUMBER,");
             exportSQL.append("	POSTAL_CODE ");
             exportSQL.append("FROM");
-            exportSQL.append("	QPBMT_SOCIAL_INS_OFFICE AS so");
-            exportSQL.append("	INNER JOIN QQSDT_SYAHO_OFFICE_INFO sy ON so.CODE = sy.SYAHO_OFFICE_CD ");
-            exportSQL.append("WHERE so.CID = ?cid　");
-            exportSQL.append("  AND sy.SID IN ('%s')");
+            exportSQL.append("	QPBMT_SOCIAL_INS_OFFICE");
+            exportSQL.append("	INNER JOIN QQSDT_SYAHO_OFFICE_INFO ");
+            exportSQL.append("	ON CODE = SYAHO_OFFICE_CD ");
+            exportSQL.append("	AND QQSDT_SYAHO_OFFICE_INFO.CID = QPBMT_SOCIAL_INS_OFFICE.CID ");
+            exportSQL.append("WHERE");
+            exportSQL.append("	QPBMT_SOCIAL_INS_OFFICE.CID = ?cid ");
+            exportSQL.append("	AND SID IN ( '%s' )");
             String emp = empList.stream()
                     .map(String::valueOf)
                     .collect(Collectors.joining("','"));
-            String sql = String.format(exportSQL.toString(), emp, emp);
+            String sql = String.format(exportSQL.toString(), emp);
             try {
                 resultQuery = this.getEntityManager().createNativeQuery(sql)
                         .setParameter("cid", cid)

@@ -32,10 +32,10 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("      WELFARE_PENSION_OFFICE_NUMBER_2,");
         exportSQL.append("      HEALTH_INSURANCE_OFFICE_NUMBER,");
         exportSQL.append("      WELFARE_PENSION_OFFICE_NUMBER,");
-        exportSQL.append("      BUSINESS_NAME,");
-        exportSQL.append("      BUSINESS_NAME_KANA,");
         exportSQL.append("      PERSON_NAME,");
         exportSQL.append("      PERSON_NAME_KANA,");
+        exportSQL.append("      TODOKEDE_FNAME,");
+        exportSQL.append("      TODOKEDE_FNAME_KANA,");
         exportSQL.append("      BIRTHDAY,");
         exportSQL.append(" 	    GENDER,");
         exportSQL.append("      COAL_MINER_ATR,");
@@ -57,7 +57,7 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("      HEALTH_INSURANCE_PREFECTURE_NO,");
         exportSQL.append("      WELFARE_PENSION_PREFECTURE_NO,");
         exportSQL.append("      SAME_KENHO_ATR,");
-        exportSQL.append("      QUALIFI_DISTIN,");
+        exportSQL.append("      SYAHO_GET_ATR,");
         exportSQL.append("      POSTAL_CODE,");
         exportSQL.append("      ADDRESS_1,");
         exportSQL.append("      ADDRESS_2,");
@@ -206,7 +206,7 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("  BP.GENDER,");
         exportSQL.append("  QTPPI.HIST_ID,");
         exportSQL.append("  QEPI.COAL_MINER_ATR,");
-        exportSQL.append("  QSII.QUALIFI_DISTIN,");
+        exportSQL.append("  QSII.SYAHO_GET_ATR,");
         exportSQL.append("  QEBPN.KISONEN_NUM,");
         exportSQL.append("  QEHIQ.START_DATE,");
         exportSQL.append("  QEPI.START_DATE,");
@@ -308,10 +308,10 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("      WELFARE_PENSION_OFFICE_NUMBER_2,");
         exportSQL.append("      HEALTH_INSURANCE_OFFICE_NUMBER,");
         exportSQL.append("      WELFARE_PENSION_OFFICE_NUMBER,");
-        exportSQL.append("      BUSINESS_NAME,");
-        exportSQL.append("      BUSINESS_NAME_KANA,");
         exportSQL.append("      PERSON_NAME,");
         exportSQL.append("      PERSON_NAME_KANA,");
+        exportSQL.append("      TODOKEDE_FNAME,");
+        exportSQL.append("      TODOKEDE_FNAME_KANA,");
         exportSQL.append("      BIRTHDAY,");
         exportSQL.append("      GENDER,");
         exportSQL.append("      COAL_MINER_ATR,");
@@ -333,7 +333,7 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("      HEALTH_INSURANCE_PREFECTURE_NO,");
         exportSQL.append("      WELFARE_PENSION_PREFECTURE_NO,");
         exportSQL.append("      SAME_KENHO_ATR,     ");
-        exportSQL.append("      QUALIFI_DISTIN,");
+        exportSQL.append("      SYAHO_GET_ATR,");
         exportSQL.append("      KNKUM_ITEM,");
         exportSQL.append("      KNKUM_NUM,");
         exportSQL.append("      HEALTH_INSURANCE_UNION_OFFICE_NUMBER, ");
@@ -492,7 +492,7 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("      KISONEN_NUM,");
         exportSQL.append("      GENDER,");
         exportSQL.append("      COAL_MINER_ATR,");
-        exportSQL.append("      QUALIFI_DISTIN,");
+        exportSQL.append("      SYAHO_GET_ATR,");
         exportSQL.append("      OVER_70_ATR,");
         exportSQL.append("      BIKO_SONOTA_ATR,");
         exportSQL.append("      CONTINUE_REEMPLOYED_ATR,");

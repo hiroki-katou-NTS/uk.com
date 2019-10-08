@@ -45,7 +45,7 @@
             <button id="A1_6" tabindex="6" data-bind="enable: false" >#{i18n.getText('QSI001_A1_6')}</button>
 
         </div>
-        <div id= "contents-area">
+        <div id= "contents-area" class="fixed-flex-layout">
         <div style="margin-top: 15px; min-width: 1000px" class="fixed-flex-layout">
             <!-- ccg001 -->
             <div id="com-ccg001"></div>
@@ -118,7 +118,7 @@
 
                     <div class="control-group valign-center">
                         <div class="column-1" id="A4_14"
-                             data-bind="ntsFormLabel: {constrant: '', required:true}">#{i18n.getText('QSI001_24')}</div>
+                             data-bind="ntsFormLabel: {constrant: '', required:true}">#{i18n.getText('QSI001_A222_24')}</div>
                         <div id="A4_16" tabindex="14" style=" width: 310px;" data-bind="ntsComboBox: {
                         name: '#{i18n.getText('QSI001_A222_26')}',
                         options: $parent.businessArrSymbols,
