@@ -11,6 +11,7 @@ import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsura
 import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.PersonalNumClass;
 import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.SocialInsurNotiCrSetRepository;
 import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.SocialInsurNotiCreateSet;
+import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.SocialInsurOutOrder;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.ReasonsForLossPensionIns;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empcomworkstlinfor.CorEmpWorkHis;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empcomworkstlinfor.CorEmpWorkHisRepository;
@@ -51,7 +52,7 @@ public class NotificationOfLossInsExportPDFService extends ExportService<Notific
 		String cid = AppContexts.user().companyId();
         GeneralDate start = exportServiceContext.getQuery().getStartDate();
         GeneralDate end = exportServiceContext.getQuery().getEndDate();
-		List<EmployeeInfoEx>  employee = employeeInfoAdapter.findBySIds(exportServiceContext.getQuery().getEmpIds());
+		//List<EmployeeInfoEx>  employee = employeeInfoAdapter.findBySIds(exportServiceContext.getQuery().getEmpIds());
 		NotificationOfLossInsExport socialInsurNotiCreateSet = exportServiceContext.getQuery().getSocialInsurNotiCreateSet();
 		SocialInsurNotiCreateSet domain = new SocialInsurNotiCreateSet(userId, cid,
 				socialInsurNotiCreateSet.getOfficeInformation(),
@@ -83,6 +84,25 @@ public class NotificationOfLossInsExportPDFService extends ExportService<Notific
 				item.setOther2(null);
 			}
 		});
+		if(domain.getOutputOrder() == SocialInsurOutOrder.EMPLOYEE_KANA_ORDER) {
+			healthInsLoss = healthInsLoss.stream().sorted(Comparator.comparing(InsLossDataExport::getOfficeCd).thenComparing(InsLossDataExport::getPersonNameKana)).collect(Collectors.toList());
+		}
+		if(domain.getOutputOrder() == SocialInsurOutOrder.HEAL_INSUR_NUMBER_ORDER) {
+			healthInsLoss = healthInsLoss.stream().sorted(Comparator.comparing(InsLossDataExport::getOfficeCd).thenComparing(InsLossDataExport::getHealInsNumber)).collect(Collectors.toList());
+		}
+		if(domain.getOutputOrder() == SocialInsurOutOrder.WELF_AREPEN_NUMBER_ORDER) {
+			healthInsLoss = healthInsLoss.stream().sorted(Comparator.comparing(InsLossDataExport::getOfficeCd).thenComparing(InsLossDataExport::getWelfPenNumber)).collect(Collectors.toList());
+		}
+		if(domain.getOutputOrder() == SocialInsurOutOrder.HEAL_INSUR_NUMBER_UNION_ORDER) {
+			healthInsLoss = healthInsLoss.stream().sorted(Comparator.comparing(InsLossDataExport::getOfficeCd).thenComparing(InsLossDataExport::getHealInsUnionNumber)).collect(Collectors.toList());
+		}
+		if(domain.getOutputOrder() == SocialInsurOutOrder.ORDER_BY_FUND) {
+			healthInsLoss = healthInsLoss.stream().sorted(Comparator.comparing(InsLossDataExport::getOfficeCd).thenComparing(InsLossDataExport::getMemberNumber)).collect(Collectors.toList());
+		}
+		if(domain.getOutputOrder() == SocialInsurOutOrder.INSURED_PER_NUMBER_ORDER) {
+			healthInsLoss = healthInsLoss.stream().sorted(Comparator.comparing(InsLossDataExport::getOfficeCd).thenComparing(InsLossDataExport::getInsPerCls)).collect(Collectors.toList());
+		}
+
 		List<InsLossDataExport> overSeventy = healthInsLoss.stream().filter(item -> (item.getCause2() != null && item.getCause2() == ReasonsForLossPensionIns.ONLY_PENSION_INSURANCE.value) ).collect(Collectors.toList());
 		List<InsLossDataExport> underSeventy = healthInsLoss.stream().filter(item -> (item.getCause2() != null && item.getCause2() != ReasonsForLossPensionIns.ONLY_PENSION_INSURANCE.value) || item.getCause2() == null).collect(Collectors.toList());
 		CompanyInfor company = socialInsurNotiCreateSetEx.getCompanyInfor(cid);
