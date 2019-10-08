@@ -292,12 +292,14 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
         cells.get(startRow, 3).setValue(data.getHealOfficeNumber2().length() > 4 ? data.getHealOfficeNumber2().substring(0, 4) : data.getHealOfficeNumber2());
         cells.get(startRow, 4).setValue(data.getHealOfficeNumber());
         if(ins.getSubmittedName() == SubNameClass.PERSONAL_NAME){
-            cells.get(startRow, 6).setValue(data.getPersonName().length() > 25 ? data.getPersonName().substring(0, 25) : data.getPersonName() );
-            cells.get(startRow, 7).setValue(data.getPersonNameKana().length() > 12 ? data.getPersonNameKana().substring(0, 12) : data.getPersonNameKana());
+
+            cells.get(startRow, 6).setValue(data.getPersonNameKana().length() > 12 ? data.getPersonNameKana().substring(0, 12) : data.getPersonNameKana());
+            cells.get(startRow, 7).setValue(data.getPersonName().length() > 25 ? data.getPersonName().substring(0, 25) : data.getPersonName() );
         }
         else{
-            cells.get(startRow, 6).setValue(data.getOldName().length() > 25 ? data.getOldName().substring(0, 25) : data.getOldName() );
-            cells.get(startRow, 7).setValue(data.getOldNameKana().length() > 12 ? data.getOldNameKana().substring(0, 12) : data.getOldNameKana());
+
+            cells.get(startRow, 6).setValue(data.getOldNameKana().length() > 12 ? data.getOldNameKana().substring(0, 12) : data.getOldNameKana());
+            cells.get(startRow, 7).setValue(data.getOldName().length() > 25 ? data.getOldName().substring(0, 25) : data.getOldName() );
 
         }
          cells.get(startRow, 8).setValue(dateJp.era().equals(HEISEI) ? 7 : dateJp.era().equals(SHOWA) ? 5 : 9);
