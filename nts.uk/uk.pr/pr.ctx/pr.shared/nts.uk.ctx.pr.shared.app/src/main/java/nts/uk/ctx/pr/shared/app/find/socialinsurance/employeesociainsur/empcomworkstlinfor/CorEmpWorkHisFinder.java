@@ -34,7 +34,7 @@ public class CorEmpWorkHisFinder {
         Optional<CorEmpWorkHis> domain  = repository.getAllCorEmpWorkHisByEmpId(empId);
 
         if(domain.isPresent()){
-            Optional<YearMonthHistoryItem> historyItem = domain.get().getHistory().stream().filter(x -> startDate.lessThanOrEqualTo(x.start()) && endDate.greaterThanOrEqualTo(x.start())).findFirst();
+            Optional<YearMonthHistoryItem> historyItem = domain.get().getHistory().stream().filter(x -> x.start().lessThanOrEqualTo(startDate) && x.end().greaterThanOrEqualTo(startDate)).findFirst();
             if(historyItem.isPresent()){
                 return historyItem.get().identifier();
             }
