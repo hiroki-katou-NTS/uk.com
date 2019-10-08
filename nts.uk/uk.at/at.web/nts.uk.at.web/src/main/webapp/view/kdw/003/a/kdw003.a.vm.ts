@@ -4615,30 +4615,29 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             //
             let self = this;
             // パラメータ「日別実績の修正の起動．表示期間」の有無をチェックする(check có hay không parameter)
-            let startDateKDW004, endDateKDW004 : any = null;
-            if (_.isNil(self.shareObject().startDateKDW004)) {
+            let yearMonth : any = null,
+                closureId: any = null;
+            if (_.isNil(self.shareObject().targetClosure)) {
                 // パラメータ「日別実績の修正の状態．対象期間」 -> パラメータ「日別実績の修正の状態．表示形式」
-                startDateKDW004 = self.dateRanger().startDate;
-                endDateKDW004 = self.dateRanger().endDate;
+                yearMonth = self.yearMonth();
+                closureId = self. closureId
             } else {
                 // パラメータ「日別実績の修正の起動．表示期間」 -> パラメータ「日別実績の修正の状態．表示期間」
-                startDateKDW004 = self.shareObject().startDateKDW004,
-                endDateKDW004 = self.shareObject().endDateKDW004
+                yearMonth = self.shareObject().yearMonth
+                closureId = self. shareObject().targetClosure
             }
             
             let dataTransfer = {
                 isKmwCall: false,
-                closureId: self.closureId,
-                startDateKDW004: startDateKDW004,
-                endDateKDW004: endDateKDW004
+                closureId: closureId,
+                yearMonth: yearMonth
             };
             
             if (self.shareObject().transitionDesScreen.indexOf("kmw") > 0) {
                 dataTransfer = {
                     isKmwCall: true,
                     closureId: self.closureId,
-                    startDateKDW004: startDateKDW004,
-                    endDateKDW004: endDateKDW004
+                    yearMonth: self.yearMonth()
                 };
                 localStorage.setItem('isKmw', true);
             }
@@ -5365,7 +5364,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 self.startDateKDW004 =  dataExtract.startDateKDW004;
                 self.endDateKDW004 =  dataExtract.endDateKDW004;
                 checkDataShare = true;
-                self.yearMonth = dataInit.yearMonth;
+                self.yearMonth = dataExtract.yearMonth;
             }
 
             if (dataSPR != undefined) {

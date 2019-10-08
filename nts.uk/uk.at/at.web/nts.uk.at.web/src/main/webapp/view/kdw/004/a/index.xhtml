@@ -18,8 +18,16 @@
 				<div id="functions-area">
 				</div>
 				<div id="contents-area" class="content-wrap">
+					<div id="row1" tabindex="1" data-bind="ntsDatePicker: { 
+																	value: yearMonth,
+																	name: '#[KDW004_17]',
+																	required: true, 
+																	dateFormat: 'yearmonth',
+																	showJumpButtons: true,
+																	valueFormat: 'YYYYMM'}" />
+					<div id ="row2">
 					<div class="form-label" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW004_2')}</div>
-					<div id="combo-box" data-bind="ntsComboBox: {
+					<div id="combo-box"  tabindex="2" data-bind="ntsComboBox: {
 						options: lstClosure,
 						optionsValue: 'closureId',
 						visibleItemsCount: 5,
@@ -31,7 +39,8 @@
 							{ prop: 'closureId', length: 1 },
 							{ prop: 'closureName', length: 10 },
 						]}"></div>
-					<div id="daterangepicker" data-bind="ntsDateRangePicker: { 
+					<div style="margin-left: 20px" class="form-label" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW003_128')}</div>
+					<!-- <div id="daterangepicker" data-bind="ntsDateRangePicker: { 
 						required: true, 						
 						startName:'#{i18n.getText('KDW004_4')}',
 				        endName:'#{i18n.getText('KDW004_5')}',
@@ -39,9 +48,11 @@
 						showNextPrevious: true, 
 						maxRange: 'oneMonth',
 						value: datePeriod
-						}"/>
-					<button id="extractBtn" data-bind="click: extract, enable: $root.errors.isEmpty">#{i18n.getText('KDW004_6')}</button><br/>
-					<button id="colorBtn" data-bind="ntsLegendButton: legendOptions"></button><br/>
+						}"/> -->
+					<div id ="period-rep" data-bind ="text: periodRepresent"></div>
+					<button style="margin-left: 20px" tabindex="4" id="extractBtn" data-bind="click: extract, enable: $root.errors.isEmpty">#{i18n.getText('KDW004_6')}</button>
+					<button  tabindex="6" id="colorBtn" data-bind="ntsLegendButton: legendOptions"></button><br/>
+					</div>
 					<table id="approvalSttGrid"></table>
 				</div>
 			</ui:define>

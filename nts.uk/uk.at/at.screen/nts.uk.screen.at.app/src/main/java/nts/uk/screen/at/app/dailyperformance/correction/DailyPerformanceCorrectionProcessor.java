@@ -1756,7 +1756,7 @@ public class DailyPerformanceCorrectionProcessor {
 			return updatePeriod(
 					objectShare.getYearMonth() == null ? Optional.empty()
 							: Optional.ofNullable(YearMonth.of(objectShare.getYearMonth())),
-					Optional.empty(), Optional.empty(), displayFormat, sId,
+					Optional.empty(), Optional.ofNullable(objectShare.getEndDate()), displayFormat, sId,
 					new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate()));
 		} else {
 			GeneralDate dateRefer = GeneralDate.today();

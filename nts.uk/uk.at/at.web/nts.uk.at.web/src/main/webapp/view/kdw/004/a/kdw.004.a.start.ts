@@ -6,14 +6,12 @@ module nts.uk.at.view.kdw004.a {
         if (_.isNil(value) || _.isNil(value.closureId) || typeof(value) != 'object') {
             param = {
                 closureIdParam: null,
-                startDateParam: null,
-                endDateParam: null
+                yearMonth: null
             };
         } else {
             param = {
                 closureIdParam: value.closureId,
-                startDateParam: moment(value.startDateKDW004).utc().toISOString(),
-                endDateParam: moment(value.endDateKDW004).utc().toISOString(),
+                yearMonth: value.yearMonth
             };
         }
         
@@ -29,8 +27,8 @@ module nts.uk.at.view.kdw004.a {
             txt.innerHTML = nts.uk.resource.getText("KDW004_7");
             colorBtn.appendChild(txt);
             //disable tabIndex button date range
-            document.getElementsByClassName("ntsDateRangeButton")[0].tabIndex = -1;
-            document.getElementsByClassName("ntsDateRangeButton")[1].tabIndex = -1;
+//            document.getElementsByClassName("ntsDateRangeButton")[0].tabIndex = -1;
+//            document.getElementsByClassName("ntsDateRangeButton")[1].tabIndex = -1;
         }).fail((messageId) => {
             nts.uk.ui.dialog.alert({ messageId: messageId }).then(() => {
                  nts.uk.request.jump("com", "view/ccg/008/a/index.xhtml");
