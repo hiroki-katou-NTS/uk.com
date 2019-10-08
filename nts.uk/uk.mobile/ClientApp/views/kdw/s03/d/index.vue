@@ -22,9 +22,9 @@
     <thead>
       <tr class="uk-bg-green">
         <!-- D3_2: 日付（ヘッダ）-->
-        <th>{{'KDWS03_41' | i18n}}</th>
+        <th class="pl-0 pr-0 text-center">{{'KDWS03_41' | i18n}}</th>
         <!-- D3_2: 日付（ヘッダ）-->
-        <th>{{'KDWS03_42' | i18n}}</th>
+        <th class="pl-0 pr-0 text-center">{{'KDWS03_42' | i18n}}</th>
         <!-- D3_2: 日付（ヘッダ）-->
         <th>{{'KDWS03_43' | i18n}}</th>
       </tr>
