@@ -14,7 +14,7 @@ module cps003 {
     let ITEM_STRING_DTYPE = (cps003.a || cps003.c).vm.ITEM_STRING_DTYPE;
     
     export module control {
-        const selectGroups: Array<IGroupControl> = [
+        export const selectGroups: Array<IGroupControl> = [
             {  
                 ctgCode: 'CS00017',
                 workplace: 'IS00084',
@@ -1987,7 +1987,9 @@ module cps003 {
     
                                         let output = getShared('outputCDL008');
                                         if (!_.isNil(output)) {
-                                            $("#grid").mGrid("updateCell", data.rowId, g.workplace, output);
+                                            let $grid = $("#grid");
+                                            $grid.mGrid("updateCell", data.rowId, g.workplace, output);
+                                            $grid.mGrid("clearErrors", [{ id: data.rowId, columnKey: g.workplace }]);
                                         }
                                     });
                                 });
@@ -2011,7 +2013,9 @@ module cps003 {
                             let childData: Array<any> = getShared('KDL002_SelectedNewItem');
     
                             if (childData[0]) {
-                                $("#grid").mGrid("updateCell", data.rowId, g.workType, childData[0].code);
+                                let $grid = $("#grid"); 
+                                $grid.mGrid("updateCell", data.rowId, g.workType, childData[0].code);
+                                $grid.mGrid("clearErrors", [{ id: data.rowId, columnKey: g.workType }]);
                             }
                         });
                     }
@@ -2033,6 +2037,8 @@ module cps003 {
                                 if (childData) {
                                     $grid.mGrid("updateCell", data.rowId, g.workType, childData.selectedWorkTypeCode);
                                     $grid.mGrid("updateCell", data.rowId, g.workTime, childData.selectedWorkTimeCode);
+                                    $grid.mGrid("clearErrors", [{ id: data.rowId, columnKey: g.workType }]);
+                                    $grid.mGrid("clearErrors", [{ id: data.rowId, columnKey: g.workTime }]);
                                     
                                     if (g.firstTimes) {
                                         updateTime($grid, data.rowId, g.firstTimes.start, childData.first && childData.first.start);
@@ -2058,7 +2064,9 @@ module cps003 {
                                 let childData: Array<any> = getShared('KDL002_SelectedNewItem');
         
                                 if (childData.length > 0) {
-                                    $("#grid").mGrid("updateCell", data.rowId, g.workType, childData[0].code); 
+                                    let $grid = $("#grid"); 
+                                    $grid.mGrid("updateCell", data.rowId, g.workType, childData[0].code);
+                                    $grid.mGrid("clearErrors", [{ id: data.rowId, columnKey: g.workType }]); 
                                 }
                             });
                         }
@@ -2080,6 +2088,8 @@ module cps003 {
                                 if (childData) {
                                     $grid.mGrid("updateCell", data.rowId, g.workType, childData.selectedWorkTypeCode);
                                     $grid.mGrid("updateCell", data.rowId, g.workTime, childData.selectedWorkTimeCode);
+                                    $grid.mGrid("clearErrors", [{ id: data.rowId, columnKey: g.workType }]);
+                                    $grid.mGrid("clearErrors", [{ id: data.rowId, columnKey: g.workTime }]);
                                     
                                     if (g.firstTimes) {
                                         updateTime($grid, data.rowId, g.firstTimes.start, childData.first && childData.first.start);
@@ -2106,6 +2116,7 @@ module cps003 {
                                     if (childData.length > 0) {
                                         let oData: IChildData = childData[0];
                                         $grid.mGrid("updateCell", data.rowId, g.workTime, oData.selectedWorkTimeCode);
+                                        $grid.mGrid("clearErrors", [{ id: data.rowId, columnKey: g.workTime }]);
                                         
                                         if (g.firstTimes) {
                                             updateTime($grid, data.rowId, g.firstTimes.start, oData.first && oData.first.start);

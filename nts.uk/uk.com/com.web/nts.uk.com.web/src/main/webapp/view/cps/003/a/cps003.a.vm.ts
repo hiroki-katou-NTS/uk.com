@@ -461,10 +461,6 @@ module cps003.a.vm {
 //                    return;
 //                }
                 
-                employees = _.filter(employees, e => {
-                    return _.find(regChecked, r => r === e.rowId);
-                });
-                
                 self.validateSpecial(regChecked, dataSource);
                 itemErrors = _.filter($grid.mGrid("errors"), e => {
                     let d = dataSource[e.index];
@@ -485,6 +481,10 @@ module cps003.a.vm {
                     });
                 }
                 
+                employees = _.filter(employees, e => {
+                    return _.find(regChecked, r => r === e.rowId) && !_.find(itemErrors, ie => ie.rowId === e.rowId);
+                });
+                
                 dataToG = _.filter(dataToG, d => {
                     return _.find(regChecked, r => r === d.rowId);
                 });
@@ -495,6 +495,23 @@ module cps003.a.vm {
                 
                 command = { baseDate: moment.utc(self.baseDate(), "YYYY/MM/DD").toISOString(), editMode: self.updateMode(), employees: employees };
                 if (command.employees && command.employees.length == 0) {
+                    if (dataToG && dataToG.length > 0) {
+                        setShared("CPS003G_ERROR_LIST", dataToG);
+                        let msgId = _.keys(errObj).length === regCount ? "Msg_1462" : "Msg_1461";
+                        alertError({ messageId: msgId }).then(() => {
+                            forEach(updateDone, d => {
+                                if (!_.has(errObj, d.rowId)) {
+                                    $grid.mGrid("updateCell", d.rowId, d.columnKey, d.value, true);
+                                    $grid.mGrid("updateCell", d.rowId, "register", false, true);
+                                } 
+                            });
+                            
+                            modeless("/view/cps/003/g/index.xhtml").onClosed(() => {
+                            
+                            });
+                        });
+                    }
+                    
                     unblock();
                     return;
                 }
@@ -505,8 +522,8 @@ module cps003.a.vm {
                         let msgId = _.keys(errObj).length === regCount ? "Msg_1462" : "Msg_1461";
                         alertError({ messageId: msgId }).then(() => {
                             forEach(updateDone, d => {
-                                $grid.mGrid("updateCell", d.rowId, d.columnKey, d.value, true);
                                 if (!_.has(errObj, d.rowId)) {
+                                    $grid.mGrid("updateCell", d.rowId, d.columnKey, d.value, true);
                                     $grid.mGrid("updateCell", d.rowId, "register", false, true);
                                 } 
                             });
@@ -548,11 +565,12 @@ module cps003.a.vm {
         }
         
         validateSpecial(regChecked: any, dataSource: any) {
-            let self = this, dateRanges, timeRanges;
+            let self = this, dateRanges, timeRanges, selectButtons, $grid = $("#grid");
             forEach(dataSource, (data, i) => {
                 if (i == 0) {
                     dateRanges = findAll(cps003.control.dateRange, range => self.category.catCode() === range.ctgCode);
                     timeRanges = findAll(cps003.control.timeRange, range => self.category.catCode() === range.ctgCode);
+                    selectButtons = findAll(cps003.control.selectGroups, select => self.category.catCode() === select.ctgCode);
                 }
                 
                 if (_.isNil(find(regChecked, r => r === data.id))) return;
@@ -582,6 +600,23 @@ module cps003.a.vm {
                             });
                         }
                     }
+                });
+                
+                forEach(selectButtons, select => {
+                    forEach([ "workplace", "workType", "workTime" ], sType => {
+                        let wpColumn = find(self.gridOptions.columns, c => c.key === select[sType]);
+                        if (wpColumn) {
+                            let workplaceVal = data[select[sType]];
+                            let optionsList = $grid.mGrid("optionsList", data.id, select[sType]);
+                            if (wpColumn.required && _.isNil(find(optionsList, itm => itm.optionValue === workplaceVal))) {
+                                let index = _.findIndex(dataSource, d => d.id === data.id),
+                                    message = nts.uk.resource.getMessage("FND_E_REQ_SELECT", [wpColumn.headerText]);
+                                $grid.mGrid("setErrors", [{ id: data.id, index: index, columnKey: select[sType], message: message }]);
+                            } else {
+                                $grid.mGrid("clearErrors", [{ id: data.id, columnKey: select[sType] }]);
+                            }
+                        }
+                    });
                 });
                 
                 if (self.category.catCode() === "CS00002") {
