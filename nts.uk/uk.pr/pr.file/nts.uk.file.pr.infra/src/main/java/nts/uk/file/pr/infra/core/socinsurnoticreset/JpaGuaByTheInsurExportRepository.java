@@ -74,9 +74,9 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("         WHERE END_DATE <= ?endDate AND END_DATE >= ?startDate AND CID = ?cid ");
         exportSQL.append("         AND SID IN ('%s') )qi");
         exportSQL.append("  LEFT JOIN ");
-        exportSQL.append("       (SELECT TOP 1 * ");
+        exportSQL.append("       (SELECT DISTINCT CID, SID, SYAHO_OFFICE_CD  ");
         exportSQL.append("       FROM QQSDT_SYAHO_OFFICE_INFO ");
-        exportSQL.append("       WHERE END_DATE <= ?endDate AND END_DATE >= ?startDate AND CID = ?cid AND SID IN ('%s') ) his");
+        exportSQL.append("       WHERE END_DATE <= ?endDate AND END_DATE >= ?startDate AND CID = ?cid ) his");
         exportSQL.append("       ON qi.SID = his.SID");
         exportSQL.append("  LEFT JOIN (SELECT * ");
         exportSQL.append("          FROM QQSDT_KNKUM_INFO ");
@@ -204,7 +204,7 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("  BP.BIRTHDAY,");
         exportSQL.append("  BP.BIRTHDAY,");
         exportSQL.append("  BP.GENDER,");
-        exportSQL.append("  QTPPI.HIST_ID,");
+        exportSQL.append("  QEPI.HIST_ID,");
         exportSQL.append("  QEPI.COAL_MINER_ATR,");
         exportSQL.append("  QSII.SYAHO_GET_ATR,");
         exportSQL.append("  QEBPN.KISONEN_NUM,");
@@ -230,11 +230,11 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("  QSIO.WELFARE_PENSION_OFFICE_NUMBER, ");
         exportSQL.append("  SYAHO_OFFICE_CD");
         exportSQL.append(" FROM ");
-        exportSQL.append("   (SELECT TOP 1 * ");
+        exportSQL.append("   (SELECT DISTINCT CID, SID, SYAHO_OFFICE_CD  ");
         exportSQL.append("    FROM QQSDT_SYAHO_OFFICE_INFO QECOH ");
         exportSQL.append("    WHERE SID IN ('%s') ");
         exportSQL.append("      AND QECOH.START_DATE <= ?endDate ");
-        exportSQL.append("      AND QECOH.START_DATE >= ?startDate AND SID IN ('%s') ) AS ROOT ");
+        exportSQL.append("      AND QECOH.START_DATE >= ?startDate ) AS ROOT ");
         exportSQL.append(" INNER JOIN QRSMT_SYAHO_RPT_SETTING QSINS ON QSINS.CID = ?cid  ");
         exportSQL.append(" AND QSINS.USER_ID = ?userId ");
         exportSQL.append(" LEFT JOIN QPBMT_SOCIAL_INS_OFFICE QSIO ");
@@ -342,7 +342,9 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("      QSINS.OUTPUT_OFFICE_SRNUM, ");
         exportSQL.append("      oi.NAME, ");
         exportSQL.append("      oi.REPRESENTATIVE_NAME, ");
-        exportSQL.append("      oi.POSTAL_CODE ");
+        exportSQL.append("      oi.POSTAL_CODE, ");
+        exportSQL.append("      oi.ADDRESS_1,");
+        exportSQL.append("      oi.ADDRESS_2");
         exportSQL.append("   FROM    ");
         exportSQL.append("       (SELECT *");
         exportSQL.append("         FROM QQSDT_KENHO_INFO ");
@@ -354,9 +356,9 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("       WHERE START_DATE <= ?endDate AND START_DATE >= ?startDate) pri");
         exportSQL.append("       ON pri.SID = qi.SID");
         exportSQL.append("    LEFT JOIN ");
-        exportSQL.append("       (SELECT TOP 1 * ");
+        exportSQL.append("       (SELECT DISTINCT CID, SID, SYAHO_OFFICE_CD  ");
         exportSQL.append("       FROM QQSDT_SYAHO_OFFICE_INFO ");
-        exportSQL.append("       WHERE END_DATE <= ?endDate AND END_DATE >= ?startDate AND SID IN ('%s')) his");
+        exportSQL.append("       WHERE END_DATE <= ?endDate AND END_DATE >= ?startDate ) his");
         exportSQL.append("       ON qi.SID = his.SID");
         exportSQL.append("    LEFT JOIN ");
         exportSQL.append("       (SELECT * ");
@@ -443,6 +445,7 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
                 .companyName(i[38] == null ? "" : i[38].toString())
                 .repName(i[39] == null ? "" : i[39].toString())
                 .portCd(i[40] == null ? "" : i[40].toString())
+                .add(i[41] == null && i[42] == null ? "" : i[41].toString()+" "+i[42].toString())
                 .build()
         ).collect(Collectors.toList());
     }
@@ -522,9 +525,9 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("         WHERE START_DATE <= ?endDate AND START_DATE >= ?startDate");
         exportSQL.append("         AND SID IN ('%s') )qi");
         exportSQL.append("  INNER JOIN ");
-        exportSQL.append("       (SELECT TOP 1 * ");
+        exportSQL.append("       (SELECT DISTINCT CID, SID, SYAHO_OFFICE_CD  ");
         exportSQL.append("       FROM QQSDT_SYAHO_OFFICE_INFO ");
-        exportSQL.append("       WHERE START_DATE <= ?endDate AND START_DATE >= ?startDate AND SID IN ('%s')) his");
+        exportSQL.append("       WHERE START_DATE <= ?endDate AND START_DATE >= ?startDate ) his");
         exportSQL.append("       ON qi.SID = his.SID");
         exportSQL.append("  INNER JOIN QQSDT_KOUHO_LOSS_INFO loss on loss.SID = qi.SID");
         exportSQL.append("  INNER JOIN (SELECT *  ");
