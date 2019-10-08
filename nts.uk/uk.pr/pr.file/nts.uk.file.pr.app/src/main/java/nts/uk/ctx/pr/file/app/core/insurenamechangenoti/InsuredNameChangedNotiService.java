@@ -17,7 +17,6 @@ import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empfunmeminfo
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurassocinfor.HealInsurPortPerIntellRepository;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurassocinfor.HealthCarePortInfor;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmpBasicPenNumInforRepository;
-import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmplHealInsurQualifiInfor;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmplHealInsurQualifiInforRepository;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.HealInsurNumberInfor;
 import nts.uk.shr.com.context.AppContexts;
@@ -26,8 +25,10 @@ import nts.uk.shr.com.history.DateHistoryItem;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Stateless
@@ -108,18 +109,33 @@ public class InsuredNameChangedNotiService extends ExportService<InsuredNameChan
         List<EmpWelfarePenInsQualiInfor> empWelfarePenInsQualiInfors = empWelfarePenInsQualiInforRepository.getEmpWelfarePenInsQualiInfor(cid, query.getDate(),query.getListEmpId());
         empWelfarePenInsQualiInfors.forEach(x ->{
             InsuredNameChangedNotiExportData insuredNameChangedNotiExportData =  this.get(cid,listSocialInsuranceOffice,socialInsurNotiCreateSet,query.getDate(),x);
+            insuredNameChangedNotiExportData.setSocialInsurOutOrder(query.getSocialInsurOutOrder());
             if(insuredNameChangedNotiExportData.isProcessSate()){
                 listData.add(insuredNameChangedNotiExportData);
             }
         });
 
-
         if(listData.size() > 0){
-            fileGenerator.generate(exportServiceContext.getGeneratorContext(),listData,socialInsurNotiCreateSet);
+            fileGenerator.generate(exportServiceContext.getGeneratorContext(),this.order(query.getSocialInsurOutOrder(),listData),socialInsurNotiCreateSet);
         }else{
             throw new BusinessException("Msg_37");
         }
 
+    }
+
+    private List<InsuredNameChangedNotiExportData> order(int order, List<InsuredNameChangedNotiExportData> listData){
+
+        if(order == SocialInsurOutOrder.HEAL_INSUR_NUMBER_UNION_ORDER.value) {
+            return listData.stream().sorted(((o1, o2) -> o1.getHealthCarePortInfor() != null && o2.getHealthCarePortInfor() != null ? o1.getHealthCarePortInfor().getHealInsurUnionNumber().v().compareTo(o2.getHealthCarePortInfor().getHealInsurUnionNumber().v()): 0)).collect(Collectors.toList());
+        }else if(order == SocialInsurOutOrder.ORDER_BY_FUND.value) {
+            return listData.stream().sorted(((o1, o2) -> o1.getFundMembership() != null && o2.getFundMembership() != null ? o1.getFundMembership().getMembersNumber().v().compareTo(o2.getFundMembership().getMembersNumber().v()): 0)).collect(Collectors.toList());
+        }else if(order == SocialInsurOutOrder.HEAL_INSUR_NUMBER_ORDER.value) {
+            return listData.stream().sorted(((o1, o2) -> o1.getHealInsurNumberInfor() != null && o2.getHealInsurNumberInfor() != null ? o1.getHealInsurNumberInfor().getHealInsNumber().get().v().compareTo(o2.getHealInsurNumberInfor().getHealInsNumber().get().v()) : 0 )).collect(Collectors.toList());
+        }else if(order == SocialInsurOutOrder.WELF_AREPEN_NUMBER_ORDER.value) {
+            return listData.stream().sorted(((o1, o2) -> o1.getWelfPenNumInformation() != null && o2.getWelfPenNumInformation() != null ? o1.getWelfPenNumInformation().getWelPenNumber().get().v().compareTo(o2.getWelfPenNumInformation().getWelPenNumber().get().v()) : 0 )).collect(Collectors.toList());
+        }
+
+        return listData;
     }
 
     private InsuredNameChangedNotiExportData get(String cid, List<SocialInsuranceOffice> listSocialInsuranceOffice, SocialInsurNotiCreateSet socialInsurNotiCreateSetDomain, GeneralDate date, EmpWelfarePenInsQualiInfor empWelfarePenInsQualiInfor){

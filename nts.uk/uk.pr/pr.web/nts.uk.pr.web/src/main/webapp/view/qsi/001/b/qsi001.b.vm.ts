@@ -132,94 +132,7 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
                 //起動する
                 //load page
                 self.loadPage(params.listEmpId[0].employeeId);
-                /*service.getSocialInsurAcquisiInforById(params.listEmpId[0].employeeId).done(e => {
-                    if (e) {
-                        self.tempApplyToEmployeeOver70(e.percentOrMore);
-                        self.otherNotes(e.remarksOther == 1 ? true : false);
-                        self.textOtherNotes(e.remarksAndOtherContents);
-                        self.salaryMonthlyActual(e.remunMonthlyAmountKind);
-                        self.salaryMonthly(e.remunMonthlyAmount);
-                        self.totalCompensation(e.totalMonthlyRemun);
-                        self.livingAbroad(e.livingAbroad == 1 ? true : false);
-                        self.otherNotes1(e.reasonOther == 1 ? true : false);
-                        self.textOtherNotes1(e.reasonAndOtherContents);
-                        self.tempTextOtherNotes1(e.reasonAndOtherContents);
-                        self.shortTermResidence(e.shortStay == 1 ? true : false);
-                        self.selectedDepNotiAttach((e.depenAppoint == null || e.depenAppoint == 0) ? false : true);
-                        self.shortWorkHours(e.shortTimeWorkers == 1 ? true : false);
-                        self.continuousEmpAfterRetire(e.continReemAfterRetirement == 1 ? true : false);
 
-
-                        //living abroad
-                        if(e.livingAbroad){
-                            self.selectedCode(PersonalNumber.Living_Abroad + '');
-                        }else if(e.shortStay){
-                            self.selectedCode(PersonalNumber.Short_Stay + '');
-                        }else if(e.reasonOther){
-                            self.selectedCode(PersonalNumber.Other + '');
-                        }else{
-                            self.selectedCode(PersonalNumber.Not_Applicable + '');
-                        }
-
-                    } else {
-                        self.applyToEmployeeOver70(false);
-                        self.otherNotes(false);
-                        self.textOtherNotes(null);
-                        self.salaryMonthlyActual(null);
-                        self.salaryMonthly(null);
-                        self.totalCompensation(null);
-                        self.livingAbroad(false);
-                        self.otherNotes1(false);
-                        self.textOtherNotes1(null);
-                        self.tempTextOtherNotes1(null);
-                        self.shortTermResidence(false);
-                        self.selectedDepNotiAttach(0);
-                        self.shortWorkHours(false);
-                        self.continuousEmpAfterRetire(false);
-                        self.selectedCode('0');
-                    }
-                }).fail(e => {
-
-                });
-
-
-
-                service.getMultiEmpWorkInfoById(params.listEmpId[0].employeeId).done(e =>{
-                    if(e){
-                        self.twoOrMoreEmployee(true);
-                    }else{
-                        self.twoOrMoreEmployee(false);
-                    }
-                }).fail(e =>{
-
-                });
-
-                service.getEmpBasicPenNumInforById(params.listEmpId[0].employeeId).done(e =>{
-                    if(e){
-                        self.basicPension(e.basicPenNumber);
-                    }else{
-                        self.basicPension(null);
-                    }
-                }).fail(e =>{
-
-                });
-
-
-
-
-                service.getCorWorkFormInfo(periodCommand).done(e =>{
-                    if(e){
-                        if(e.insPerCls == InsPerCls.SHORT_TIME_WORKERS){
-                            self.shortWorkHours(true);
-                        }else{
-                            self.shortWorkHours(false);
-                        }
-                    }
-
-                }).fail(e =>{
-
-                });
-                */
 
                 //社員を切り替える
                 //select employee
@@ -233,76 +146,6 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
 
                     self.loadPage(self.selectedItem());
 
-                    /*service.getPersonInfo(self.selectedItem()).done(e =>{
-                        self.dummyBirthDay(e);
-
-                        if (self.getAge(self.dummyBirthDay(), params.date) >= 70) {
-                            self.applyToEmployeeOver70(true);
-
-                        }else{
-                            self.applyToEmployeeOver70(false);
-                        }
-                    }).fail(e=>{
-
-                    });
-                    service.getSocialInsurAcquisiInforById(self.selectedItem()).done(e => {
-                        if (e) {
-                            self.tempApplyToEmployeeOver70(e.percentOrMore);
-                            self.otherNotes(e.remarksOther == 1 ? true : false);
-                            self.textOtherNotes(e.remarksAndOtherContents);
-                            self.salaryMonthlyActual(e.remunMonthlyAmountKind);
-                            self.salaryMonthly  (e.remunMonthlyAmount);
-                            self.totalCompensation(e.totalMonthlyRemun);
-                            self.livingAbroad(e.livingAbroad == 1 ? true : false);
-                            self.otherNotes1(e.reasonOther == 1 ? true : false);
-                            self.textOtherNotes1(e.reasonAndOtherContents);
-                            self.shortTermResidence(e.shortStay == 1 ? true : false);
-                            self.selectedDepNotiAttach(e.depenAppoint == null ? 0 : e.depenAppoint);
-                            self.shortWorkHours(e.shortTimeWorkers == 1 ? true : false);
-                            self.continuousEmpAfterRetire(e.continReemAfterRetirement == 1 ? true : false);
-                        } else {
-                            self.applyToEmployeeOver70(false);
-                            self.otherNotes(false);
-                            self.textOtherNotes(null);
-                            self.salaryMonthlyActual(null);
-                            self.salaryMonthly(null);
-                            self.totalCompensation(null);
-                            self.livingAbroad(false);
-                            self.otherNotes1(false);
-                            self.textOtherNotes1(null);
-                            self.shortTermResidence(false);
-                            self.selectedDepNotiAttach(0);
-                            self.shortWorkHours(false);
-                            self.continuousEmpAfterRetire(false);
-                        }
-
-                    }).fail(e => {
-
-                    });
-
-
-
-
-
-                    service.getMultiEmpWorkInfoById(self.selectedItem()).done(e =>{
-                        if(e){
-                            self.twoOrMoreEmployee(true);
-                        }else{
-                            self.twoOrMoreEmployee(false);
-                        }
-                    }).fail(e =>{
-
-                    });
-
-                    service.getEmpBasicPenNumInforById(self.selectedItem()).done(e =>{
-                        if(e){
-                            self.basicPension(e.basicPenNumber);
-                        }else{
-                            self.basicPension(null);
-                        }
-                    }).fail(e =>{
-
-                    });*/
                 });
 
 
@@ -376,9 +219,9 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
             });
 
 
-
+            //二以上事業所勤務者
             service.getMultiEmpWorkInfoById(empId).done(e =>{
-                if(e == 1){
+                if(e.isMoreEmp === 1){
                     self.twoOrMoreEmployee(true);
                 }else{
                     self.twoOrMoreEmployee(false);
@@ -400,7 +243,8 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
 
 
 
-            /*service.getCorWorkFormInfo(periodCommand).done(e =>{
+            //被保険者区分
+            service.getCorWorkFormInfo(periodCommand).done(e =>{
                 if(e){
                     if(e.insPerCls == InsPerCls.SHORT_TIME_WORKERS){
                         self.shortWorkHours(true);
@@ -411,7 +255,7 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
 
             }).fail(e =>{
 
-            });*/
+            });
         }
 
         getAge(DOB, date) {
@@ -488,8 +332,8 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
                     });
                 }
 
-                //self.loadPage(self.selectedItem())
-                service.getSocialInsurAcquisiInforById(self.selectedItem()).done(e => {
+                self.loadPage(self.selectedItem())
+                /*service.getSocialInsurAcquisiInforById(self.selectedItem()).done(e => {
                     if (e) {
                         self.tempApplyToEmployeeOver70(e.percentOrMore);
                         self.otherNotes(e.remarksOther == 1 ? true : false);
@@ -537,7 +381,7 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
                     }
                 }).fail(e => {
 
-                });
+                });*/
                 block.clear();
             }).fail(e => {
                 block.clear();
