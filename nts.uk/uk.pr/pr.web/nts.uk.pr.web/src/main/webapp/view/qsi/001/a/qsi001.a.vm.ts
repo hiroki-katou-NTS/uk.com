@@ -112,24 +112,24 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
             self.startDate = ko.observable(yyyyS + "/" +  mmStart + "/" + dStart);
             self.startDate.subscribe(e => {
                 //self.japanStartDate = ko.observable(nts.uk.time.dateInJapanEmpire(moment.utc(self.startDate()).format("YYYYMMDD")).toString());
-                self.japanStartDate(nts.uk.time.dateInJapanEmpire(moment.utc(self.startDate()).format("YYYYMMDD")).toString());
+                self.japanStartDate("("+nts.uk.time.dateInJapanEmpire(moment.utc(self.startDate()).format("YYYYMMDD")).toString()+")");
             });
 
 
-            self.japanStartDate = ko.observable(nts.uk.time.dateInJapanEmpire(moment.utc(self.startDate()).format("YYYYMMDD")).toString());
+            self.japanStartDate = ko.observable("("+nts.uk.time.dateInJapanEmpire(moment.utc(self.startDate()).format("YYYYMMDD")).toString()+")");
             self.endDate = ko.observable(yyyyE + "/" +  mmEnd + "/" + dEnd);
             self.endDate.subscribe(e => {
-                self.japanEndDate(nts.uk.time.dateInJapanEmpire(moment.utc(self.endDate()).format("YYYYMMDD")).toString());
+                self.japanEndDate("("+ nts.uk.time.dateInJapanEmpire(moment.utc(self.endDate()).format("YYYYMMDD")).toString()+")");
             });
-            self.japanEndDate = ko.observable(nts.uk.time.dateInJapanEmpire(moment.utc(self.endDate()).format("YYYYMMDD")).toString());
+            self.japanEndDate = ko.observable("("+nts.uk.time.dateInJapanEmpire(moment.utc(self.endDate()).format("YYYYMMDD")).toString()+")");
 
 
             self.baseDate1 = ko.observable(yyyyE + "/" +  mmEnd + "/" + dEnd);
 
             self.baseDate1.subscribe(e => {
-                self.japanBaseDate(nts.uk.time.dateInJapanEmpire(moment.utc(self.baseDate1()).format("YYYYMMDD")).toString());
+                self.japanBaseDate("("+nts.uk.time.dateInJapanEmpire(moment.utc(self.baseDate1()).format("YYYYMMDD")).toString()+")");
             });
-            self.japanBaseDate = ko.observable(nts.uk.time.dateInJapanEmpire(moment.utc(self.baseDate1()).format("YYYYMMDD")).toString());
+            self.japanBaseDate = ko.observable("("+nts.uk.time.dateInJapanEmpire(moment.utc(self.baseDate1()).format("YYYYMMDD")).toString()+")");
 
 
 
