@@ -16,10 +16,8 @@ import nts.uk.shr.com.context.AppContexts;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.swing.text.html.Option;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Stateless
 public class NotificationOfLossInsExportCSVService extends ExportService<NotificationOfLossInsExportQuery> {
@@ -41,9 +39,6 @@ public class NotificationOfLossInsExportCSVService extends ExportService<Notific
 
 	@Inject
 	private SocialInsurancePrefectureInformationRepository socialInsuranceInfor;
-
-    @Inject
-    private CorWorkFormInfoRepository corWorkFormInfoRepository;
 
 
 	@Override
@@ -103,6 +98,7 @@ public class NotificationOfLossInsExportCSVService extends ExportService<Notific
 						}
 			});
 			CompanyInfor company = socialInsurNotiCreateSetEx.getCompanyInfor(cid);
+			healthInsLoss = this.order(domain.getOutputOrder(), healthInsLoss);
 			notificationOfLossInsCSVFileGenerator.generate(exportServiceContext.getGeneratorContext(),
 					new LossNotificationInformation(healthInsLoss, null,null, domain, exportServiceContext.getQuery().getReference(), company, infor));
         }
@@ -111,6 +107,7 @@ public class NotificationOfLossInsExportCSVService extends ExportService<Notific
 			List<SocialInsurancePrefectureInformation> infor  = socialInsuranceInfor.findByHistory();
 			CompanyInfor company = socialInsurNotiCreateSetEx.getCompanyInfor(cid);
 			List<InsLossDataExport> healthInsAssociationData = socialInsurNotiCreateSetEx.getHealthInsLoss(empIds, cid, start, end);
+			healthInsAssociationData = this.order(domain.getOutputOrder(), healthInsAssociationData);
 			notificationOfLossInsCSVFileGenerator.generate(exportServiceContext.getGeneratorContext(),
 					new LossNotificationInformation(healthInsAssociationData, null, null, domain, exportServiceContext.getQuery().getReference(), company, infor));
 		}
@@ -119,6 +116,21 @@ public class NotificationOfLossInsExportCSVService extends ExportService<Notific
 			List<SocialInsurancePrefectureInformation> infor  = socialInsuranceInfor.findByHistory();
 			CompanyInfor company = socialInsurNotiCreateSetEx.getCompanyInfor(cid);
 			List<PensFundSubmissData> healthInsAssociationData = socialInsurNotiCreateSetEx.getHealthInsAssociation(empIds, cid, start, end);
+            if(domain.getOutputOrder() == SocialInsurOutOrder.EMPLOYEE_KANA_ORDER) {
+                healthInsAssociationData = healthInsAssociationData.stream().sorted(Comparator.comparing(PensFundSubmissData::getPersonNameKana)).collect(Collectors.toList());
+            }
+            if(domain.getOutputOrder() == SocialInsurOutOrder.HEAL_INSUR_NUMBER_ORDER) {
+                healthInsAssociationData = healthInsAssociationData.stream().sorted(Comparator.comparing(PensFundSubmissData::getHealInsNumber)).collect(Collectors.toList());
+            }
+            if(domain.getOutputOrder() == SocialInsurOutOrder.WELF_AREPEN_NUMBER_ORDER) {
+                healthInsAssociationData = healthInsAssociationData.stream().sorted(Comparator.comparing(PensFundSubmissData::getWelNumber)).collect(Collectors.toList());
+            }
+            if(domain.getOutputOrder() == SocialInsurOutOrder.HEAL_INSUR_NUMBER_UNION_ORDER) {
+                healthInsAssociationData = healthInsAssociationData.stream().sorted(Comparator.comparing(PensFundSubmissData::getHealInsUnionNumber)).collect(Collectors.toList());
+            }
+            if(domain.getOutputOrder() == SocialInsurOutOrder.ORDER_BY_FUND) {
+                healthInsAssociationData = healthInsAssociationData.stream().sorted(Comparator.comparing(PensFundSubmissData::getMemberNumber)).collect(Collectors.toList());
+            }
 			notificationOfLossInsCSVFileGenerator.generate(exportServiceContext.getGeneratorContext(),
 					new LossNotificationInformation(null, null, healthInsAssociationData,domain, exportServiceContext.getQuery().getReference(), company, infor));
 		}
@@ -128,6 +140,28 @@ public class NotificationOfLossInsExportCSVService extends ExportService<Notific
 	//社会保険届作成設定登録処理
 	private void socialInsNotifiCreateSetRegis(SocialInsurNotiCreateSet domain){
 		socialInsurNotiCrSetRepository.update(domain);
+	}
+
+	private List<InsLossDataExport> order(SocialInsurOutOrder order, List<InsLossDataExport> healthInsLoss){
+		if(order == SocialInsurOutOrder.EMPLOYEE_KANA_ORDER) {
+			return healthInsLoss.stream().sorted(Comparator.comparing(InsLossDataExport::getOfficeCd).thenComparing(InsLossDataExport::getPersonNameKana).thenComparing(InsLossDataExport::getEmpCd)).collect(Collectors.toList());
+		}
+		if(order == SocialInsurOutOrder.HEAL_INSUR_NUMBER_ORDER) {
+			return healthInsLoss.stream().sorted(Comparator.comparing(InsLossDataExport::getOfficeCd).thenComparing(InsLossDataExport::getHealInsNumber)).collect(Collectors.toList());
+		}
+		if(order == SocialInsurOutOrder.WELF_AREPEN_NUMBER_ORDER) {
+			return healthInsLoss.stream().sorted(Comparator.comparing(InsLossDataExport::getOfficeCd).thenComparing(InsLossDataExport::getWelfPenNumber)).collect(Collectors.toList());
+		}
+		if(order == SocialInsurOutOrder.HEAL_INSUR_NUMBER_UNION_ORDER) {
+			return healthInsLoss.stream().sorted(Comparator.comparing(InsLossDataExport::getOfficeCd).thenComparing(InsLossDataExport::getHealInsUnionNumber)).collect(Collectors.toList());
+		}
+		if(order == SocialInsurOutOrder.ORDER_BY_FUND) {
+			return healthInsLoss.stream().sorted(Comparator.comparing(InsLossDataExport::getOfficeCd).thenComparing(InsLossDataExport::getMemberNumber)).collect(Collectors.toList());
+		}
+		if(order == SocialInsurOutOrder.INSURED_PER_NUMBER_ORDER) {
+			return healthInsLoss.stream().sorted(Comparator.comparing(InsLossDataExport::getOfficeCd).thenComparing(InsLossDataExport::getInsPerCls)).collect(Collectors.toList());
+		}
+		return Collections.emptyList();
 	}
 
 }

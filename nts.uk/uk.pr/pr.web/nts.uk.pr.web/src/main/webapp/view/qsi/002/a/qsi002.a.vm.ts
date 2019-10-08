@@ -80,9 +80,9 @@ module nts.uk.pr.view.qsi002.a.viewmodel {
             //init datepicker
             self.baseDate1 = ko.observable(moment());
 
-            self.japanBaseDate = ko.observable(nts.uk.time.dateInJapanEmpire(moment.utc(self.baseDate1()).format("YYYYMMDD")).toString());
+            self.japanBaseDate = ko.observable("("+nts.uk.time.dateInJapanEmpire(moment.utc(self.baseDate1()).format("YYYYMMDD")).toString()+")");
             self.baseDate1.subscribe(e => {
-                self.japanBaseDate(nts.uk.time.dateInJapanEmpire(moment.utc(self.baseDate1()).format("YYYYMMDD")).toString());
+                self.japanBaseDate("("+nts.uk.time.dateInJapanEmpire(moment.utc(self.baseDate1()).format("YYYYMMDD")).toString()+")");
             });
             //init combobox
             self.itemList = ko.observableArray([
