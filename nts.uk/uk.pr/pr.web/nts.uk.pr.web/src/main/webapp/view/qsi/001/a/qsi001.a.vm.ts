@@ -181,8 +181,8 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
             setShared('QSI001_PARAMS_TO_SCREEN_B', {
                 listEmpId: self.getListEmployee(self.selectedCodeKCP005(),self.employees),
                 date: self.baseDate1(),
-                startDate: self.endDate(),
-                endDate: self.startDate()
+                startDate: self.startDate(),
+                endDate: self.endDate()
             });
 
             nts.uk.ui.windows.sub.modal("/view/qsi/001/b/index.xhtml").onClosed(() => {

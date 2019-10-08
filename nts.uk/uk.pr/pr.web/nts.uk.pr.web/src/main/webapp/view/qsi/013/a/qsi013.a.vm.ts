@@ -95,8 +95,6 @@ module nts.uk.pr.view.qsi013.a.viewmodel {
             self.initScreen();
         }
 
-
-
         initScreen(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
