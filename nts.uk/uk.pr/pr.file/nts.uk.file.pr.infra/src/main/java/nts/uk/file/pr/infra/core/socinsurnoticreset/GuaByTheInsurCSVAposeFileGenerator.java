@@ -253,7 +253,7 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
                 cells.get(startRow, 0).setValue(data.getUnionOfficeNumber());
                 cells.get(startRow, 1).setValue(Objects.toString(ins.getFdNumber().orElse(null), "001"));
                 cells.get(startRow, 2).setValue(baseDate.toString("yyyyMMdd"));
-                cells.get(startRow, 3).setValue(data.getHealInsInherenPr().length() > 10 ? data.getHealInsInherenPr().substring(0, 10) : data.getHealInsInherenPr());
+                cells.get(startRow, 3).setValue(data.getHealInsInherenPr().length() > 4 ? data.getHealInsInherenPr().substring(0, 5) : data.getHealInsInherenPr());
                 startRow = startRow + 1;
                 cells.get(startRow, 0).setValue("[kanri]");
                 startRow = startRow + 1;
@@ -349,7 +349,7 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
         cells.get(startRow, 29).setValue("郵便番号 4 = dummy data");
         cells.get(startRow, 30).setValue("住所カナ = dummy data");
         cells.get(startRow, 31).setValue("住所 = dummy data");
-        cells.get(startRow, 33).setValue(data.getPercentOrMore() == 1 ? 1 : "");
+        cells.get(startRow, 33).setValue(data.getUnionOfficeNumber());
         cells.get(startRow, 34).setValue(data.getHealUnionNumber());
         cells.get(startRow, 35).setValue(data.getHealInsInherenPr());
     }
