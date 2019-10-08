@@ -62,8 +62,8 @@
                 <tr>
                     <td>合計</td>
                     <td v-for="header in displayHeaderLst" class="row-style" :class="Array.isArray(displaySumLst[header.key]) ? displaySumLst[header.key][1] : ''">
-                        <span v-if="Array.isArray(displaySumLst[header.key])">{{displaySumLst[header.key][0]}}</span>
-                        <span v-if="!Array.isArray(displaySumLst[header.key])">{{displaySumLst[header.key]}}</span>
+                        <span class="crop-text" v-if="Array.isArray(displaySumLst[header.key])">{{displaySumLst[header.key][0]}}</span>
+                        <span class="crop-text" v-if="!Array.isArray(displaySumLst[header.key])">{{displaySumLst[header.key]}}</span>
                     </td>
                     <td></td>
                 </tr>
