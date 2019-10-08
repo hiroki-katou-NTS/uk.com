@@ -1,7 +1,6 @@
 package nts.uk.file.pr.infra.core.socinsurnoticreset;
 
-import com.aspose.cells.Cells;
-import com.aspose.cells.Worksheet;
+import com.aspose.cells.*;
 import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDate;
@@ -11,10 +10,13 @@ import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.*;
 import nts.uk.shr.com.time.japanese.JapaneseDate;
 import nts.uk.shr.com.time.japanese.JapaneseEraName;
 import nts.uk.shr.com.time.japanese.JapaneseErasAdapter;
+import nts.uk.shr.infra.file.csv.CSVFileData;
+import nts.uk.shr.infra.file.csv.CSVReportGenerator;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -48,8 +50,21 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
         if(data.getSocialInsurNotiCreateSet().getOutputFormat().get() == OutputFormatClass.THE_WELF_PEN) {
             fillEmpPensionFundOffice(data.getHealthInsAssociationData(), sheet, data.getInfor(), company, data.getSocialInsurNotiCreateSet(), data.getBaseDate());
         }
+        String fileName = getFileName(data.getSocialInsurNotiCreateSet().getOutputFormat().get() ) + ".csv";
         reportContext.processDesigner();
-        reportContext.saveAsCSV(this.createNewFile(generatorContext, getFileName(data.getSocialInsurNotiCreateSet().getOutputFormat().get() ) + ".csv"));
+        this.saveAsCSV(this.createNewFile(generatorContext,fileName), workbook);
+    }
+
+    private void saveAsCSV(OutputStream outputStream, Workbook workbook) {
+        try {
+            TxtSaveOptions opts = new TxtSaveOptions(SaveFormat.CSV);
+            opts.setSeparator(',');
+            opts.setQuoteType(TxtValueQuoteType.NEVER);
+            opts.setEncoding(Encoding.getUTF8());
+            workbook.save(outputStream, opts);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private String getFileName(OutputFormatClass output){
