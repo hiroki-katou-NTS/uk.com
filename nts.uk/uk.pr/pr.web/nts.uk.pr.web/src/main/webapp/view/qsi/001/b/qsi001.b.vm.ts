@@ -378,7 +378,7 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
 
 
             service.getMultiEmpWorkInfoById(empId).done(e =>{
-                if(e){
+                if(e == 1){
                     self.twoOrMoreEmployee(true);
                 }else{
                     self.twoOrMoreEmployee(false);
@@ -400,7 +400,7 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
 
 
 
-            service.getCorWorkFormInfo(periodCommand).done(e =>{
+            /*service.getCorWorkFormInfo(periodCommand).done(e =>{
                 if(e){
                     if(e.insPerCls == InsPerCls.SHORT_TIME_WORKERS){
                         self.shortWorkHours(true);
@@ -411,7 +411,7 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
 
             }).fail(e =>{
 
-            });
+            });*/
         }
 
         getAge(DOB, date) {
@@ -488,7 +488,56 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
                     });
                 }
 
-                self.loadPage(self.selectedItem())
+                //self.loadPage(self.selectedItem())
+                service.getSocialInsurAcquisiInforById(self.selectedItem()).done(e => {
+                    if (e) {
+                        self.tempApplyToEmployeeOver70(e.percentOrMore);
+                        self.otherNotes(e.remarksOther == 1 ? true : false);
+                        self.textOtherNotes(e.remarksAndOtherContents);
+                        self.salaryMonthlyActual(e.remunMonthlyAmountKind);
+                        self.salaryMonthly(e.remunMonthlyAmount);
+                        self.totalCompensation(e.totalMonthlyRemun);
+                        self.livingAbroad(e.livingAbroad == 1 ? true : false);
+                        self.otherNotes1(e.reasonOther == 1 ? true : false);
+                        self.textOtherNotes1(e.reasonAndOtherContents);
+                        self.tempTextOtherNotes1(e.reasonAndOtherContents);
+                        self.shortTermResidence(e.shortStay == 1 ? true : false);
+                        self.selectedDepNotiAttach((e.depenAppoint == null || e.depenAppoint == 0) ? false : true);
+                        self.shortWorkHours(e.shortTimeWorkers == 1 ? true : false);
+                        self.continuousEmpAfterRetire(e.continReemAfterRetirement == 1 ? true : false);
+
+
+                        //living abroad
+                        if(e.livingAbroad){
+                            self.selectedCode(PersonalNumber.Living_Abroad + '');
+                        }else if(e.shortStay){
+                            self.selectedCode(PersonalNumber.Short_Stay + '');
+                        }else if(e.reasonOther){
+                            self.selectedCode(PersonalNumber.Other + '');
+                        }else{
+                            self.selectedCode(PersonalNumber.Not_Applicable + '');
+                        }
+
+                    } else {
+                        self.applyToEmployeeOver70(false);
+                        self.otherNotes(false);
+                        self.textOtherNotes(null);
+                        self.salaryMonthlyActual(null);
+                        self.salaryMonthly(null);
+                        self.totalCompensation(null);
+                        self.livingAbroad(false);
+                        self.otherNotes1(false);
+                        self.textOtherNotes1(null);
+                        self.tempTextOtherNotes1(null);
+                        self.shortTermResidence(false);
+                        self.selectedDepNotiAttach(0);
+                        self.shortWorkHours(false);
+                        self.continuousEmpAfterRetire(false);
+                        self.selectedCode('0');
+                    }
+                }).fail(e => {
+
+                });
                 block.clear();
             }).fail(e => {
                 block.clear();
@@ -534,10 +583,12 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
 
     export function getPersonalNumber(): Array<ItemModel> {
         return [
-            new ItemModel('0', getText('Enum_PersonalNumber_SHORT_STAY')),
-            new ItemModel('1', getText('Enum_PersonalNumber_SHORT_TIME')),
-            new ItemModel('2', getText('Enum_PersonalNumber_RESON_OTHER')),
-            new ItemModel('3', getText('Enum_PersonalNumber_LIVING_ABROAD')),
+
+            new ItemModel('1', getText('Enum_PersonalNumber_LIVING_ABROAD')),
+            new ItemModel('2', getText('Enum_PersonalNumber_SHORT_STAY')),
+            new ItemModel('3', getText('Enum_PersonalNumber_RESON_OTHER')),
+            new ItemModel('0', getText('Enum_PersonalNumber_SHORT_TIME')),
+
         ];
     }
 
@@ -589,8 +640,8 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
     export class PersonalNumber {
         static Not_Applicable = 0;
         static Living_Abroad = 1;
-        static Short_Stay = 3;
-        static Other = 2;
+        static Short_Stay = 2;
+        static Other = 3;
     }
 
     export  class SocialInsurAcquisiInforDTO{
