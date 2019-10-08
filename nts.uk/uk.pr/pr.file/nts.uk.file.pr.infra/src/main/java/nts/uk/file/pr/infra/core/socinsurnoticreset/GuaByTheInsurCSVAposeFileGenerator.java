@@ -291,11 +291,16 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
         cells.get(startRow, 2).setValue(data.getHealOfficeNumber1().length() > 2 ? data.getHealOfficeNumber1().substring(0, 2) : data.getHealOfficeNumber1());
         cells.get(startRow, 3).setValue(data.getHealOfficeNumber2().length() > 4 ? data.getHealOfficeNumber2().substring(0, 4) : data.getHealOfficeNumber2());
         cells.get(startRow, 4).setValue(data.getHealOfficeNumber());
-        cells.get(startRow, 6).setValue(ins.getSubmittedName() == SubNameClass.PERSONAL_NAME ? data.getPersonName().length() > 25 ? data.getPersonName().substring(0, 25) : data.getPersonName() :
-                data.getPersonNameKana().length() > 25 ? data.getPersonNameKana().substring(0, 25) : data.getPersonNameKana());
-        cells.get(startRow, 7).setValue(ins.getSubmittedName() == SubNameClass.PERSONAL_NAME ? data.getOldName().length() > 12 ? data.getOldName().substring(0, 12) : data.getOldName() :
-                data.getOldNameKana().length() > 12 ? data.getOldName().substring(0, 12) : data.getOldName());
-        cells.get(startRow, 8).setValue(dateJp.era().equals(HEISEI) ? 7 : dateJp.era().equals(SHOWA) ? 5 : 9);
+        if(ins.getSubmittedName() == SubNameClass.PERSONAL_NAME){
+            cells.get(startRow, 6).setValue(data.getPersonName().length() > 25 ? data.getPersonName().substring(0, 25) : data.getPersonName() );
+            cells.get(startRow, 7).setValue(data.getPersonNameKana().length() > 12 ? data.getPersonNameKana().substring(0, 12) : data.getPersonNameKana());
+        }
+        else{
+            cells.get(startRow, 6).setValue(data.getOldName().length() > 25 ? data.getOldName().substring(0, 25) : data.getOldName() );
+            cells.get(startRow, 7).setValue(data.getOldNameKana().length() > 12 ? data.getOldNameKana().substring(0, 12) : data.getOldNameKana());
+
+        }
+         cells.get(startRow, 8).setValue(dateJp.era().equals(HEISEI) ? 7 : dateJp.era().equals(SHOWA) ? 5 : 9);
         cells.get(startRow, 9).setValue(convertJpDate(dateJp));
         // gender
         //Male(1), Female(2)
@@ -338,13 +343,19 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
         cells.get(startRow, 17).setValue(startDateJp.era().equals(HEISEI) ? 7 : dateJp.era().equals(SHOWA) ? 5 : 9);
         cells.get(startRow, 18).setValue(data.getStartDate1().substring(0, 4) + data.getStartDate1().substring(5, 7) + data.getStartDate1().substring(8, 10));
         cells.get(startRow, 19).setValue(data.getDepenAppoint());
-        cells.get(startRow, 20).setValue(data.getRemunMonthlyAmount());
-        cells.get(startRow, 21).setValue(data.getRemunMonthlyAmountKind());
-        cells.get(startRow, 22).setValue(data.getTotalMonthyRemun());
 
-        cells.get(startRow, 25).setValue(data.getPercentOrMore());
-        cells.get(startRow, 26).setValue(data.getIsMoreEmp() == 1 ? 1 : "");
-        cells.get(startRow, 27).setValue(data.getShortTimeWorkes() == 1 ? 1 : "");
+
+        cells.get(startRow, 20).setValue(data.getRemunMonthlyAmount() >= 10000000 ? "9999999" : data.getRemunMonthlyAmount());
+        cells.get(startRow, 21).setValue(data.getRemunMonthlyAmountKind()>= 10000000 ? "9999999" : data.getRemunMonthlyAmountKind());
+        int total = data.getRemunMonthlyAmount()+data.getRemunMonthlyAmountKind();
+        cells.get(startRow, 22).setValue(total>= 10000000 ? "9999999" : total);
+
+        cells.get(startRow, 23).setValue(data.getPercentOrMore() == 1 ? 1 : "");
+        cells.get(startRow, 24).setValue(data.getIsMoreEmp() == 1 ? 1 : "");
+        cells.get(startRow, 25).setValue(data.getShortTimeWorkes() == 1 ? 1 : "");
+        cells.get(startRow, 26).setValue(data.getContinReemAfterRetirement() == 1 ? 1 : "");
+        cells.get(startRow, 27).setValue(checkLength(data.getRemarksAndOtherContent(), 37));
+
         cells.get(startRow, 28).setValue("郵便番号 3 = dummy data");
         cells.get(startRow, 29).setValue("郵便番号 4 = dummy data");
         cells.get(startRow, 30).setValue("住所カナ = dummy data");
