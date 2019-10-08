@@ -440,7 +440,7 @@ export class Kdws03AComponent extends Vue {
                 for (let i = 1; i <= (this.rownum - self.lstDataSourceLoad.length); i++) {
                     let rowData = [];
                     headers.forEach((header: any) => {
-                        rowData.push({ key: header.key, value: '' });
+                        rowData.push({ key: header.key, value: '', class: '' });
                     });
                     self.displayDataLstEx.push({ rowData, date: '', id: '' });
                 }
@@ -462,7 +462,7 @@ export class Kdws03AComponent extends Vue {
                 for (let i = 1; i <= (this.rownum - self.displayDataLst.length); i++) {
                     let rowData = [];
                     headers.forEach((header: any) => {
-                        rowData.push({ key: header.key, value: '' });
+                        rowData.push({ key: header.key, value: '', class: '' });
                     });
                     self.displayDataLstEx.push({ rowData, employeeName: '', id: '' });
                 }
