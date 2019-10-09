@@ -177,7 +177,7 @@ module nts.uk.pr.view.qsi013.b.viewmodel {
                 employeeInputList: self.employeeInputList,
                 targetBtnText: self.targetBtnText,
                 selectedItem: self.selectedItem,
-                tabIndex: 0
+                tabIndex: 4
             };
             $('#emp-component').ntsLoadListComponent(self.listComponentOption);
         }
@@ -214,7 +214,7 @@ module nts.uk.pr.view.qsi013.b.viewmodel {
             let healthInsLossInfo: any = {
                 empId: self.selectedItem(),
                 other : self.hOther() == true ? 1 : 0,
-                otherReason : self.hOther() == true ? self.hOtherReason() : null,
+                otherReason : self.hOther() && self.hOtherReason() ? self.hOtherReason() : null,
                 caInsurance: self.hCaInsurance(),
                 numRecoved: self.hNumRecoved(),
                 cause: self.hCause(),
@@ -222,15 +222,15 @@ module nts.uk.pr.view.qsi013.b.viewmodel {
 
             let welfPenInsLossIf: any = {
                 empId: self.selectedItem(),
-                other : self.pOther() == true ? 1 : 0,
-                otherReason : self.pOther() == true ? self.pOtherReason() : null,
+                other : self.pOther() ? 1 : 0,
+                otherReason : self.pOther() && self.pOtherReason() ? self.pOtherReason() : null,
                 caInsuarace: self.pCaInsurance(),
                 numRecoved: self.pNumRecoved(),
                 cause: self.pCause(),
             };
             let multiEmpWorkInfo: any = {
                 empId: self.selectedItem(),
-                isMoreEmp: self.isMoreEmp() == true ?  1 : 0
+                isMoreEmp: self.isMoreEmp() ?  1 : 0
             };
 
             let empBasicPenNumInfor: any = {
@@ -240,7 +240,7 @@ module nts.uk.pr.view.qsi013.b.viewmodel {
 
             let socialInsurAcquisiInfo: any = {
                 employeeId: self.selectedItem(),
-                continReemAfterRetirement: self.continReemAfterRetirement() == true ?  1 : 0
+                continReemAfterRetirement: self.continReemAfterRetirement() ?  1 : 0
             };
 
 

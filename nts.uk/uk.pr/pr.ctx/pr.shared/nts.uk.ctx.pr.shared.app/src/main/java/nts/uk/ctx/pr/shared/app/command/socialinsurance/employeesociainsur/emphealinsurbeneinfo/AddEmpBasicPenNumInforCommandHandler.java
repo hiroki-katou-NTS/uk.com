@@ -45,7 +45,7 @@ public class AddEmpBasicPenNumInforCommandHandler extends CommandHandler<Credent
                     socialInsurAcquisiInforCommand.getTotalMonthlyRemun(),
                     socialInsurAcquisiInforCommand.getLivingAbroad(),
                     socialInsurAcquisiInforCommand.getReasonOther(),
-                    socialInsurAcquisiInforCommand.getReasonAndOtherContents(),
+                    socialInsurAcquisiInforCommand.getReasonAndOtherContents().isEmpty() ? null : socialInsurAcquisiInforCommand.getReasonAndOtherContents(),
                     socialInsurAcquisiInforCommand.getShortTimeWorkers(),
                     socialInsurAcquisiInforCommand.getShortStay(),
                     socialInsurAcquisiInforCommand.getDepenAppoint(),
