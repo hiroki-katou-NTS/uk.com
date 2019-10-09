@@ -32,8 +32,8 @@
                     data-bind="click:cancel">#{i18n.getText('QSI013_B1_2')}</button>
         </div>
        <div id="contents-area">
-           <div id="B222_2" tabindex="4" style="width: 700px;">
-               <div id="emp-component"></div>
+           <div id="B222_2"  style="width: 700px;">
+               <div id="emp-component" tabindex="4"></div>
            </div>
            <div style="margin-left : 30px;">
                <div class="valign-center control-group">
@@ -86,7 +86,7 @@
                <div class=" control-group_">
                    <div id="B222_16" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('QSI013_B222_16')}</div>
                    <div id="B222_17" style="margin-left: 152px;" tabindex="10" data-bind="ntsCheckBox: {checked: hOther}">#{i18n.getText('QSI013_B222_17')}</div>
-                   <input id="B222_18" style="width: 227px; margin-left: 20px;" tabindex="11" data-bind="ntsTextEditor: {
+                   <input id="B222_18" style="width: 227px; margin-left: 48px;" tabindex="11" data-bind="ntsTextEditor: {
                                                                             name: '#{i18n.getText('QSI013_B222_18')}',
                                                                             value: hOtherReason,
                                                                             enable: hOther,

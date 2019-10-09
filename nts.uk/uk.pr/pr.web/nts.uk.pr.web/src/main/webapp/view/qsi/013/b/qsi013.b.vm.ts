@@ -177,7 +177,7 @@ module nts.uk.pr.view.qsi013.b.viewmodel {
                 employeeInputList: self.employeeInputList,
                 targetBtnText: self.targetBtnText,
                 selectedItem: self.selectedItem,
-                tabIndex: 0
+                tabIndex: 4
             };
             $('#emp-component').ntsLoadListComponent(self.listComponentOption);
         }
