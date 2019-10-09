@@ -2517,7 +2517,6 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 				}
 			}
 		}
-		
 		log.info("更新処理自動実行_承認結果の反映_END_" + processExecution.getExecItemCd() + "_" + GeneralDateTime.now());
 		updateLogAfterProcess.updateLogAfterProcess(ProcessExecutionTask.RFL_APR_RESULT, companyId, execItemCd, processExecution,ProcessExecutionLog, isHasException, checkStopExec, errorMessage);
 		
