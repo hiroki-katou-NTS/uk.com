@@ -179,21 +179,21 @@ module nts.uk.pr.view.qsi003.b.viewmodel {
                 return;
             }
             let spouse : any = {
-                other :  self.others() == true ? 1 : 0,
-                listed :  self.listeds() == true ? 1 : 0,
+                other :  self.others() ? 1 : 0,
+                listed :  self.listeds() ? 1 : 0,
                 residentCard : self.residentCards(),
-                addressOverseas : self.addressOverseas() == true ? 1 : 0,
-                otherReason : self.others() == true ? self.otherReasons() : null,
-                shortResident : self.shortResidents() == true ? 1 : 0
+                addressOverseas : self.addressOverseas() ? 1 : 0,
+                otherReason : self.others() && self.otherReasons() ? self.otherReasons() : null,
+                shortResident : self.shortResidents() ? 1 : 0
             }
 
             let personalSet : any = {
-                other :  self.otherp() == true ? 1 : 0,
-                listed :  self.listedp() == true ? 1 : 0,
+                other :  self.otherp() ? 1 : 0,
+                listed :  self.listedp() ? 1 : 0,
                 residentCard : self.residentCardp(),
-                addressOverseas : self.addressOverseap() == true ? 1 : 0,
-                otherReason : self.otherp() == true ? self.otherReasonp() : null,
-                shortResident : self.shortResidentp() == true ? 1 : 0
+                addressOverseas : self.addressOverseap() ? 1 : 0,
+                otherReason : self.otherp() && self.otherReasonp() ? self.otherReasonp() : null,
+                shortResident : self.shortResidentp() ? 1 : 0
             }
 
             let empNameReportCommand: any = {
