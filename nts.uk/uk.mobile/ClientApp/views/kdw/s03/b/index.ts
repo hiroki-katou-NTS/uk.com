@@ -810,7 +810,6 @@ export class KdwS03BComponent extends Vue {
                 }
                 if (dataAfter.errorMap[1] != undefined) {
                     _.forEach(dataAfter.errorMap[1], (value) => {
-                        errorOutput.push(self.$i18n('Msg_996'));
                         let item = _.find(self.contentType, (data) => {
                             return String(data.key) === 'A' + value.itemId;
                         });
