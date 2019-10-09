@@ -192,6 +192,14 @@ var nts;
         })(util = uk.util || (uk.util = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+var b = nts.uk.util.browser;
+b.private(function (v) {
+    if (v) {
+        if (b.ios && b.version === 'Safari 10') {
+            document.body.innerHTML = '<div style="text-align: center; font-size: 5em; padding: 2em 1em;">現在ご利用の端末は、プライベートモードでは正常に動作しない可能性があります。\n通常モードで起動してください。</div>';
+        }
+    }
+});
 var nts;
 (function (nts) {
     var uk;
@@ -39102,9 +39110,9 @@ var nts;
                                 var index = _.findIndex(flatCols, function (o) {
                                     return o.key === column.key;
                                 });
-                                var b = void 0;
-                                if (index + 1 < flatCols.length && (b = flatCols[index + 1]) !== undefined) {
-                                    bounceCombos[b.key] = column.key;
+                                var b_1;
+                                if (index + 1 < flatCols.length && (b_1 = flatCols[index + 1]) !== undefined) {
+                                    bounceCombos[b_1.key] = column.key;
                                 }
                             }
                         }
