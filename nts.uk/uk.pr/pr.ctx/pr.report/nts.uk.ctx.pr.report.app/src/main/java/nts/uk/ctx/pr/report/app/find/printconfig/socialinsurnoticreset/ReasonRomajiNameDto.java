@@ -12,7 +12,6 @@ import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurb
 @Data
 @AllArgsConstructor
 public class ReasonRomajiNameDto {
-    private String empId;
     private String basicPenNumber;
     private EmpNameReportDto empNameReport;
 }
