@@ -48,6 +48,7 @@ public class JpaApprovalProcessingUseSettingRepository extends JpaRepository
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	@SneakyThrows
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public Optional<ApprovalProcessingUseSetting> findByCompanyId(String companyId) {
 		
 		Optional<KrcmtApprovalProcess> krcstAppProUseSet;

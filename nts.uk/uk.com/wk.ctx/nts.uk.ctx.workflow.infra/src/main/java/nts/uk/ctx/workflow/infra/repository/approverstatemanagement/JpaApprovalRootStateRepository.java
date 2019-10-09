@@ -1306,6 +1306,7 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 	}
 	
 	@Override
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public boolean resultKTG002(GeneralDate startDate, GeneralDate endDate, String approverID, Integer rootType,
 			String companyID) {
 		String loginSID = AppContexts.user().employeeId();

@@ -94,6 +94,7 @@ public class JpaClosureRepository extends JpaRepository implements ClosureReposi
 	 * lang.String)
 	 */
 	@Override
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<Closure> findAll(String companyId) {
 		// get entity manager
 		EntityManager em = this.getEntityManager();

@@ -49,6 +49,7 @@ public class FindDataDCRecord implements IFindDataDCRecord{
 	}
 
 	@Override
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public Optional<ApprovalProcessingUseSetting> findApprovalByCompanyId(String companyId) {
 		if(approvalUseSettingMap.containsKey(companyId)){
 			return approvalUseSettingMap.get(companyId);
