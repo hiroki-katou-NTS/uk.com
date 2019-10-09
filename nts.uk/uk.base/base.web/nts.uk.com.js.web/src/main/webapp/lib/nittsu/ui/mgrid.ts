@@ -10765,8 +10765,8 @@ module nts.uk.ui.mgrid {
          * Remove.
          */
         export function remove(node) {
-            if (isIE() && node && node.parentNode) {
-                node.parentNode.removeChild(node);
+            if (isIE()) {
+                if (node && node.parentNode) node.parentNode.removeChild(node);
                 return;
             }
             

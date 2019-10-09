@@ -85,7 +85,7 @@ implements PeregUpdateListCommandHandler<UpdateShortWorkTimeCommand>{
 				histItems.add(sWorkTime);
 				
 			}catch(BusinessException e) {
-				MyCustomizeException ex = new MyCustomizeException(e.getMessageId(), Arrays.asList(c.getEmployeeId()));
+				MyCustomizeException ex = new MyCustomizeException(e.getMessageId(), Arrays.asList(c.getEmployeeId()), "期間");
 				errorExceptionLst.add(ex);
 			}
 
@@ -97,9 +97,6 @@ implements PeregUpdateListCommandHandler<UpdateShortWorkTimeCommand>{
 		
 		if(!histItems.isEmpty()) {
 			sWorkTimeHistItemRepository.updateAll(histItems);
-		}
-		if (errorLst.size() > 0) {
-			errorExceptionLst.add(new MyCustomizeException("Msg_345", errorLst));
 		}
 		return errorExceptionLst;
 	}
