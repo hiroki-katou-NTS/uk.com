@@ -7,7 +7,7 @@ export const maxLength = function (value: string, length: number, rule: IRule) {
 
         switch (rule.charType) {
             case 'Any':
-                return ['MsgB_33', cl];
+                return ['MsgB_32', cl];
             case 'Kana':
                 return ['MsgB_36', cl];
             case 'Numeric':
