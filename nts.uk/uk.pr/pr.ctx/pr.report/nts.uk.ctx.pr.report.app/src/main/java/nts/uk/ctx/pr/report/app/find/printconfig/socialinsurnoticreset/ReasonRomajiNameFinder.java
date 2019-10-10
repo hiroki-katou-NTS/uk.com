@@ -21,16 +21,11 @@ public class ReasonRomajiNameFinder {
         Optional<EmpBasicPenNumInfor> empBasicPenNumInfor = empBasicPenNumInforRepository.getEmpBasicPenNumInforById(empId);
         Optional<EmpNameReport> empNameReport = empNameReportRepository.getEmpNameReportById(empId);
 
-        if (empBasicPenNumInfor.isPresent() && empNameReport.isPresent()){
-            return new ReasonRomajiNameDto(
-                    empId,
-                    empBasicPenNumInfor.get().getBasicPenNumber().isPresent() ? empBasicPenNumInfor.get().getBasicPenNumber().get().toString() : null,
-                    new EmpNameReportDto(
-                            NameNotificationSetDto.fromDomain(empNameReport.get().getPersonalSet()),
-                            NameNotificationSetDto.fromDomain(empNameReport.get().getSpouse()))
-                    );
-        } else {
-            return null;
-        }
+        return new ReasonRomajiNameDto(
+                empBasicPenNumInfor.isPresent() && empBasicPenNumInfor.get().getBasicPenNumber().isPresent() ? empBasicPenNumInfor.get().getBasicPenNumber().get().toString() : null,
+                empNameReport.isPresent() ? new EmpNameReportDto(
+                        NameNotificationSetDto.fromDomain(empNameReport.get().getPersonalSet()),
+                        NameNotificationSetDto.fromDomain(empNameReport.get().getSpouse())) : null
+        );
     }
 }

@@ -34,7 +34,7 @@
 
     <ui:define name="content">
         <div id="functions-area" >
-            <button id="B1_1" data-bind="click: add" tabindex="1" class="proceed">#{i18n.getText('QSI001_B1_1')}</button>
+            <button id="B1_1" data-bind="click: add,  enable: $root.errors.isEmpty()" tabindex="1" class="proceed">#{i18n.getText('QSI001_B1_1')}</button>
 
             <button id="B1_2" data-bind="click: cancel" tabindex="2">#{i18n.getText('QSI001_B1_2')}</button>
 
