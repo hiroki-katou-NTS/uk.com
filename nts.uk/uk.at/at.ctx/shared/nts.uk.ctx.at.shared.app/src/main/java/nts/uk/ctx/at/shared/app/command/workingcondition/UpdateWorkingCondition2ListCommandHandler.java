@@ -81,10 +81,16 @@ implements PeregUpdateListCommandHandler<UpdateWorkingCondition2Command>{
 					workingCond.changeSpan(itemToBeUpdated.get(), new DatePeriod(c.getStartDate(), endDate));
 					workingCondInserts.add(workingCond);
 				}
-				WorkingConditionItem workingCondItem = updateWorkingConditionCommandAssembler.fromDTO2(c);
-				workingCondItems.add(workingCondItem);
+				
+				WokingConditionCommandCustom workingCondItem = updateWorkingConditionCommandAssembler.fromDTO2Custom(c);
+				if (CollectionUtil.isEmpty(workingCondItem.getEx())) {
+					workingCondItems.add(workingCondItem.getWorkingConditionItem());
+				} else {
+					errorExceptionLst.addAll(workingCondItem.getEx());
+				}
+				
 			} catch (BusinessException e) {
-				MyCustomizeException ex = new MyCustomizeException(e.getMessageId(), Arrays.asList(c.getEmployeeId()));
+				MyCustomizeException ex = new MyCustomizeException(e.getMessageId(), Arrays.asList(c.getEmployeeId()), "期間");
 				errorExceptionLst.add(ex);
 			}
 

@@ -286,7 +286,9 @@ public class NotDepentSpecialLeaveOfEmployeeImpl implements NotDepentSpecialLeav
 	@Override
 	public Map<String, GrantDaysInforByDates> getGrantDays(List<NotDepentSpecialLeaveOfEmployeeInputExtend> param,
 			SpecialHoliday speHoliday) {
-		List<RequestGrantDataExtend> requestData = new ArrayList<>();
+		Map<String, GrantDaysInforByDates>  result = new HashMap<>();
+		List<RequestGrantDataExtend> requestDataFix = new ArrayList<>();
+		List<RequestGrantDataExtend> requestDataTable = new ArrayList<>();
 		//取得しているドメインモデル「特別休暇．付与情報．付与基準日」をチェックする
 		GrantDate grantDateInfor = speHoliday.getGrantRegular().getGrantDate();
 		
@@ -317,7 +319,7 @@ public class NotDepentSpecialLeaveOfEmployeeImpl implements NotDepentSpecialLeav
 						c.getGrantDays(),
 						c.getCid(),
 						Optional.empty(), 0);
-				requestData.add(paraFixed);
+				requestDataFix.add(paraFixed);
 			}else {
 				//テーブルに基づいた付与日数一覧を求める
 				RequestGrantDataExtend paraTbl = new RequestGrantDataExtend(c.getSid(), c.getDatePeriod(),
@@ -328,10 +330,24 @@ public class NotDepentSpecialLeaveOfEmployeeImpl implements NotDepentSpecialLeav
 						c.getCid(),
 						c.getGrantTableCd(),
 						c.getSpecialLeaveCode());
-				requestData.add(paraTbl);
+				requestDataTable.add(paraTbl);
 			}
 		});
-		return this.getGrantDaysOfTable(requestData, speHoliday);
+		if(!requestDataTable.isEmpty()) {
+			Map<String, GrantDaysInforByDates>  resultTable = this.getGrantDaysOfTable(requestDataTable, speHoliday);
+			if(!resultTable.isEmpty()) {
+				result.putAll(resultTable);
+			}
+		}
+		
+		if(!requestDataFix.isEmpty()) {
+			Map<String, GrantDaysInforByDates>  resultFixed = this.getGrantDaysOfFixed(requestDataFix, speHoliday);
+			if(!resultFixed.isEmpty()) {
+				result.putAll(resultFixed);
+			}
+		}
+		
+		return result;
 	}
 	@Override
 	public Map<String, GrantDaysInforByDates> getGrantDaysOfFixed(List<RequestGrantDataExtend> param,

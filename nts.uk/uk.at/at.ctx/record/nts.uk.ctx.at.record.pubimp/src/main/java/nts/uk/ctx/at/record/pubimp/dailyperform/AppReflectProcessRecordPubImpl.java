@@ -11,6 +11,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
+import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalProcessingUseSettingRepository;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonCheckParameter;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonProcessCheckService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonReflectParameter;
@@ -30,7 +32,6 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.holidaywor
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.holidayworktime.HolidayWorktimeAppPara;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.holidayworktime.HolidayWorktimePara;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.holidayworktime.PreHolidayWorktimeReflectService;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.AfterOvertimeReflectService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.OverTimeRecordAtr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.OvertimeAppParameter;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.OvertimeParameter;
@@ -44,12 +45,18 @@ import nts.uk.ctx.at.record.dom.workrecord.actuallock.DetermineActualResultLock;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.LockStatus;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.PerformanceType;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.Identification;
+import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.IdentityProcessUseSet;
+import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.enums.SelfConfirmError;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.IdentificationRepository;
+import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.IdentityProcessUseSetRepository;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.AppCommonPara;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.AppReflectProcessRecordPub;
+import nts.uk.ctx.at.record.pub.dailyperform.appreflect.ApprovalProcessingUseSettingPub;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.CommonReflectPubParameter;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.ConfirmStatusCheck;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.HolidayWorkReflectPubPara;
+import nts.uk.ctx.at.record.pub.dailyperform.appreflect.HolidayWorktimeAppPubPara;
+import nts.uk.ctx.at.record.pub.dailyperform.appreflect.IdentityProcessUseSetPub;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.ObjectCheck;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.PrePostRecordAtr;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.ScheAndRecordIsReflectPub;
@@ -57,20 +64,18 @@ import nts.uk.ctx.at.record.pub.dailyperform.appreflect.WorkChangeCommonReflectP
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.goback.GobackReflectPubParameter;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.overtime.OvertimeAppPubParameter;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.overtime.PreOvertimePubParameter;
+import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ApplicationType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ScheRemainCreateInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RemainCreateInforByScheData;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPub{
 	@Inject
 	private PreGoBackReflectService preGobackReflect;
 	@Inject
 	private PreOvertimeReflectService preOvertimeReflect;
-	@Inject
-	private AfterOvertimeReflectService afterOvertimeReflect;
 	@Inject
 	private AbsenceReflectService absenceReflect;
 	@Inject
@@ -93,6 +98,10 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 	private RemainCreateInforByScheData scheData;
 	@Inject
 	private IdentificationRepository identificationRepository;
+	@Inject
+	private IdentityProcessUseSetRepository indentityProcessRespo;
+	@Inject
+	private ApprovalProcessingUseSettingRepository approvalProcessRespo;
 	
 	@Override
 	public ScheAndRecordIsReflectPub appReflectProcess(AppCommonPara para, ExecutionType executionType) {
@@ -199,7 +208,9 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 				EnumAdaptor.valueOf(para.getScheTimeReflectAtr().value, ScheTimeReflectAtr.class),
 				para.isScheReflectAtr(),
 				appPara, 
-				para.getExcLogId());
+				para.getExcLogId(),
+				this.iPUSOpt(para.getIdentityProcessUseSetPub()),
+				this.approvalSet(para.getApprovalProcessingUseSettingPub()));
 		return gobackPara;
 		
 	}
@@ -207,11 +218,6 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 	@Override
 	public void preOvertimeReflect(PreOvertimePubParameter param) {
 		preOvertimeReflect.overtimeReflect(this.toDomainOvertimeReflect(param));		
-	}
-
-	@Override
-	public void afterOvertimeReflect(PreOvertimePubParameter param) {
-		afterOvertimeReflect.reflectAfterOvertime(this.toDomainOvertimeReflect(param));		
 	}
 
 	private OvertimeParameter toDomainOvertimeReflect(PreOvertimePubParameter param) {
@@ -237,7 +243,9 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 				EnumAdaptor.valueOf(param.getScheAndRecordSameChangeFlg().value, ScheAndRecordSameChangeFlg.class),
 				param.isScheTimeOutFlg(),
 				appOver,
-				param.getExcLogId());
+				param.getExcLogId(),
+				this.iPUSOpt(param.getIdentityProcessUseSetPub()),
+				this.approvalSet(param.getApprovalProcessingUseSettingPub()));
 		return overtimePara;
 	}
 
@@ -253,12 +261,13 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 			BreakTimeParam breakTime = new BreakTimeParam(b.getStartTime(), b.getEndTime());
 			mapBreakTimeFrame.put(a, breakTime);
 		});
-		HolidayWorktimeAppPara appPara = new HolidayWorktimeAppPara(param.getHolidayWorkPara().getWorkTypeCode(),
-				param.getHolidayWorkPara().getWorkTimeCode(),
-				param.getHolidayWorkPara().getMapWorkTimeFrame(),
-				param.getHolidayWorkPara().getNightTime(),
-				param.getHolidayWorkPara().getStartTime(),
-				param.getHolidayWorkPara().getEndTime(),
+		HolidayWorktimeAppPubPara holidayWorkPara = param.getHolidayWorkPara();
+		HolidayWorktimeAppPara appPara = new HolidayWorktimeAppPara(holidayWorkPara.getWorkTypeCode(),
+				holidayWorkPara.getWorkTimeCode(),
+				holidayWorkPara.getMapWorkTimeFrame(),
+				holidayWorkPara.getNightTime(),
+				holidayWorkPara.getStartTime(),
+				holidayWorkPara.getEndTime(),
 				mapBreakTimeFrame);
 		HolidayWorktimePara para = new HolidayWorktimePara(param.getEmployeeId(),
 				param.getBaseDate(),
@@ -268,7 +277,9 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 				param.isRecordReflectTimeFlg(),
 				param.isRecordReflectBreakFlg(),
 				appPara,
-				param.getExcLogId());
+				param.getExcLogId(),
+				this.iPUSOpt(param.getIdentityProcessUseSetPub()),
+				this.approvalSet(param.getApprovalProcessingUseSettingPub()));
 		holidayworkService.preHolidayWorktimeReflect(para, isPre);
 	}
 
@@ -288,7 +299,9 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 			 	param.getWorkTimeCode(),
 			 	param.getStartTime(),
 			 	param.getEndTime(),
-			 	param.getExcLogId());
+			 	param.getExcLogId(),
+			 	this.iPUSOpt(param.getIdentityProcessUseSetPub()),
+			 	this.approvalSet(param.getApprovalProcessingUseSettingPub()));
 		return outputData;
 	}
 
@@ -335,5 +348,59 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 	@Override
 	public void createLogError(String sid, GeneralDate ymd, String excLogId) {
 		processCheckService.createLogError(sid, ymd, excLogId);
+	}
+
+	@Override
+	public Optional<IdentityProcessUseSetPub> getIdentityProcessUseSet(String cid) {
+		Optional<IdentityProcessUseSet> findByKey = indentityProcessRespo.findByKey(cid);
+		if(findByKey.isPresent()) {
+			IdentityProcessUseSet x = findByKey.get();
+			IdentityProcessUseSetPub output =  new IdentityProcessUseSetPub(x.getCompanyId().v(),
+					x.isUseConfirmByYourself(),
+					x.isUseIdentityOfMonth(),
+					x.getYourSelfConfirmError().isPresent() ? Optional.ofNullable(x.getYourSelfConfirmError().get().value) : Optional.empty());
+			return Optional.of(output);
+		}
+		return Optional.empty();
+	}
+
+	@Override
+	public Optional<ApprovalProcessingUseSettingPub> getApprovalProcessingUseSetting(String cid) {
+		Optional<ApprovalProcessingUseSetting> findByCompanyId = approvalProcessRespo.findByCompanyId(cid);
+		if(findByCompanyId.isPresent()) {
+			ApprovalProcessingUseSetting x = findByCompanyId.get();
+			ApprovalProcessingUseSettingPub output = new ApprovalProcessingUseSettingPub(x.getCompanyId(),
+					x.getUseDayApproverConfirm(),
+					x.getUseMonthApproverConfirm(),
+					x.getLstJobTitleNotUse(),
+					x.getSupervisorConfirmErrorAtr().value);
+			return Optional.of(output);
+		}
+		return Optional.empty();
+	}
+	
+	private Optional<IdentityProcessUseSet> iPUSOpt(Optional<IdentityProcessUseSetPub> identityProcessUseSetPub){
+		if(identityProcessUseSetPub.isPresent()) {
+			IdentityProcessUseSetPub indentitySet = identityProcessUseSetPub.get();
+			IdentityProcessUseSet output = new IdentityProcessUseSet(new CompanyId(indentitySet.getCid()),
+					indentitySet.isUseConfirmByYourself(),
+					indentitySet.isUseIdentityOfMonth(),
+					indentitySet.getYourSelfConfirmError().isPresent() ? 
+							Optional.of(EnumAdaptor.valueOf(indentitySet.getYourSelfConfirmError().get(), SelfConfirmError.class)) : Optional.empty());
+			return Optional.of(output);
+		}
+		return Optional.empty();
+	}
+	
+	private Optional<ApprovalProcessingUseSetting> approvalSet(Optional<ApprovalProcessingUseSettingPub> data){
+		if(data.isPresent()) {
+			ApprovalProcessingUseSettingPub setting = data.get();
+			ApprovalProcessingUseSetting output = new ApprovalProcessingUseSetting(setting.getCid(),
+					setting.isUseDayApproverConfirm(),
+					setting.isUseMonthApproverConfirm(),
+					setting.getLstJobTitleNotUse());
+			return Optional.of(output);
+		}
+		return Optional.empty();
 	}
 }

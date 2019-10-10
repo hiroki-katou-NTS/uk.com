@@ -7,6 +7,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
@@ -23,6 +26,7 @@ public class JpaAnnLeaEmpBasicInfoRepo extends JpaRepository implements AnnLeaEm
 	
 //	private static final String SELECT_ALL = "SELECT si FROM KrcmtAnnLeaBasicInfo si WHERE si.sid IN :listEmployeeId ";
 	@Override
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public Optional<AnnualLeaveEmpBasicInfo> get(String employeeId) {
 		Optional<KrcmtAnnLeaBasicInfo> entityOpt = this.queryProxy().find(employeeId, KrcmtAnnLeaBasicInfo.class);
 		if (entityOpt.isPresent()) {

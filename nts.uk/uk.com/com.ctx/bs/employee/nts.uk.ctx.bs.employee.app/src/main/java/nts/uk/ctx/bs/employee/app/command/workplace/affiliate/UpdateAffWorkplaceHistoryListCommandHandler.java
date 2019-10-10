@@ -93,7 +93,7 @@ implements PeregUpdateListCommandHandler<UpdateAffWorkplaceHistoryCommand> {
 						c.getEmployeeId(), c.getWorkplaceId(), c.getNormalWorkplaceId());
 				histItems.add(histItem);
 			} catch (BusinessException e) {
-				MyCustomizeException ex = new MyCustomizeException(e.getMessageId(), Arrays.asList(c.getEmployeeId()));
+				MyCustomizeException ex = new MyCustomizeException(e.getMessageId(), Arrays.asList(c.getEmployeeId()), "期間");
 				errorExceptionLst.add(ex);
 			}
 

@@ -70,7 +70,7 @@ public class UpdateEmployeeDataMngInfoListCommandHandler extends CommandHandlerW
 		}
 		
 		if (sidErrorLst.size() > 0) {
-			errorExceptionLst.add(new MyCustomizeException("Msg_345", sidErrorLst,""));
+			errorExceptionLst.add(new MyCustomizeException("Msg_345", sidErrorLst,"社員CD"));
 		}
 		return errorExceptionLst;
 	}

@@ -269,6 +269,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         clickChangeMonth: boolean = true;
         
         dateReferCCg: KnockoutObservable<any> = ko.observable(0);
+        changeConditionExtract:  KnockoutObservable<boolean> = ko.observable(false);
         
         constructor(dataShare: any) {
             var self = this;
@@ -343,12 +344,24 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                self.yearMonth(self.timePeriodAllInfo.yearMonth);
                                self.clickChangeMonth = true;
                           }
+                          self.changeConditionExtract(true);
                       });
                   }
             });
             
             self.selectedDate.subscribe(value =>{
                 self.dateReferCCg(value);
+                if (!self.loadFirst) {
+                    self.changeConditionExtract(true);
+                }
+            });
+            
+            self.actualTimeSelectedCode.subscribe(value =>{
+                self.changeConditionExtract(true);
+            });
+            
+            self.displayFormat.subscribe(value =>{
+                self.changeConditionExtract(true);
             });
             
             self.selectedEmployee.subscribe(value =>{
@@ -372,6 +385,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                self.yearMonth(self.timePeriodAllInfo.yearMonth);
                                self.clickChangeMonth = true;
                           }
+                          self.changeConditionExtract(true);
                       });
                 }
             });
@@ -480,6 +494,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         self.datePicker().endDate = dateRange.endDate;
                         self.datePicker.valueHasMutated();
                     }
+                     self.changeConditionExtract(true);
                 }
             });
             self.datePicker.subscribe((dateRange) => {
@@ -654,6 +669,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     } else {
                         setShared("selectedPerfFmtCodeList", "");
                         modal("/view/kdw/003/c/index.xhtml").onClosed(() => {
+                            let res = nts.uk.ui.windows.getShared('KDW003C_Err');
+                            if(!_.isEmpty(res) && res.jumpToppage){
+                                nts.uk.request.jumpToTopPage();
+                            }
                             var dataTemp = nts.uk.ui.windows.getShared('KDW003C_Output');
                             if (dataTemp != undefined) {
                                 let data = [dataTemp];
@@ -2339,9 +2358,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             // if (!nts.uk.ui.errors.hasError()) {
             nts.uk.ui.errors.clearAll();
             self.removeErrorRefer();
-            $.when(self.findEmployee()).done(data => {
+            let hasChangeFormat: boolean = (self.displayFormatOld == self.displayFormat()) ? false : true;
+            $.when(self.findEmployee(hasChangeFormat)).done(data => {
                 let lstEmployee = data;
-                let hasChangeFormat: boolean = (self.displayFormatOld == self.displayFormat()) ? false : true;
 //                if (self.displayFormat() === 1) {
 //                    if (self.datePicker().startDate !== self.dateRanger().startDate &&
 //                        self.datePicker().endDate !== self.dateRanger().endDate) {
@@ -2520,6 +2539,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             } else {
                                 self.showDialogError = false;
                             }
+                            setTimeout(() => {
+                                 self.changeConditionExtract(false);
+                            }, 500);
                             nts.uk.ui.block.clear();
                         });
                     }
@@ -2557,14 +2579,30 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             }
         }
         
-        findEmployee(): JQueryPromise<any> {
+        findEmployee(hasChangeFormat: boolean): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred()
             let lstEmployee = [];
             if (self.displayFormat() === 0) {
-                let lst = _.find(self.lstEmployee(), (employee) => {
-                    return employee.id === self.selectedEmployee();
-                });
+                __viewContext.user.employeeId
+                let lst: any;
+                if(hasChangeFormat){
+                    lst = _.find(self.lstEmployee(), (employee) => {
+                        return employee.id === __viewContext.user.employeeId;
+                    }); 
+                    if(lst == undefined){
+                        lst = self.lstEmployee()[0]; 
+                    }
+                    self.selectedEmployee(lst.id);
+                }else{
+                    lst = _.find(self.lstEmployee(), (employee) => {
+                        return employee.id === self.selectedEmployee();
+                    }); 
+                }
+                
+//                let lst = _.find(self.lstEmployee(), (employee) => {
+//                    return employee.id === self.selectedEmployee();
+//                });
 
                 if (lst != undefined) {
                     lstEmployee.push(lst);
@@ -2892,6 +2930,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 self.flagCalculation = false;
                 setShared("selectedPerfFmtCodeList", self.formatCodes());
                 modal("/view/kdw/003/c/index.xhtml").onClosed(() => {
+                    let res = nts.uk.ui.windows.getShared('KDW003C_Err');
+                    if(!_.isEmpty(res) && res.jumpToppage){
+                        nts.uk.request.jumpToTopPage();
+                    }
                     var dataTemp = nts.uk.ui.windows.getShared('KDW003C_Output');
                     if (dataTemp != undefined) {
                         let data = [dataTemp];

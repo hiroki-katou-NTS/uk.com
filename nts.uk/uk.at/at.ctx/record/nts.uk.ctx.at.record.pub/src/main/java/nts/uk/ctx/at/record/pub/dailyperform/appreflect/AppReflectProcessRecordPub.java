@@ -1,4 +1,6 @@
 package nts.uk.ctx.at.record.pub.dailyperform.appreflect;
+import java.util.Optional;
+
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ExecutionType;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.goback.GobackReflectPubParameter;
@@ -30,12 +32,6 @@ public interface AppReflectProcessRecordPub {
 	 * @return
 	 */
 	public void preOvertimeReflect(PreOvertimePubParameter param);
-	/**
-	 * 勤務実績に反映: 事後残業申請処理
-	 * @param param
-	 * @return
-	 */
-	public void afterOvertimeReflect(PreOvertimePubParameter param);
 	/**
 	 * (休暇申請)
 	 * @param param
@@ -81,4 +77,8 @@ public interface AppReflectProcessRecordPub {
 	public boolean checkConfirmStatus(ConfirmStatusCheck chkParam);
 	
 	public void createLogError(String sid, GeneralDate ymd, String excLogId);
+	
+	public Optional<IdentityProcessUseSetPub> getIdentityProcessUseSet(String cid);
+	
+	public Optional<ApprovalProcessingUseSettingPub> getApprovalProcessingUseSetting(String cid);
 }

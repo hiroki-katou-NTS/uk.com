@@ -11,6 +11,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 
 import lombok.SneakyThrows;
 import lombok.val;
@@ -85,6 +87,7 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 	}
 
 	@Override
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public Optional<DateHistoryItem> getByEmployeeIdAndStandardDate(String employeeId, GeneralDate standardDate) {
 		try (val statement = this.connection().prepareStatement("select * FROM BSYMT_EMPLOYMENT_HIST where SID = ? and START_DATE <= ? and END_DATE >= ?")) {
 			statement.setString(1, employeeId);
@@ -225,6 +228,7 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 	}
 
 	@Override
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<EmploymentHistory> getByListSid(List<String> employeeIds, DatePeriod datePeriod) {
 
 		// Split query.

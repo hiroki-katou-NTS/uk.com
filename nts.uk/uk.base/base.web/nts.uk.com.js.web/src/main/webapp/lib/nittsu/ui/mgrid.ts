@@ -4420,6 +4420,11 @@ module nts.uk.ui.mgrid {
                     _.forEach(_.keys(_vessel().desc.fixedColIdxes), k => {
                         let i = parseFloat(_vessel().desc.fixedColIdxes[k]);
                         if (i === tidx) {
+                            if (_.find(_fixedHiddenColumns, c => c === k)) {
+                                tidx++;
+                                return;
+                            }
+                            
                             leftCol = k;
                             if (self.actionDetails.breakArea || leftCol) return false;
                             return;
@@ -4438,6 +4443,11 @@ module nts.uk.ui.mgrid {
                     _.forEach(_.keys(_vessel().desc.colIdxes), k => {
                         let i = parseFloat(_vessel().desc.colIdxes[k]);
                         if (i === tidx) {
+                            if (_.find(_hiddenColumns, c => c === k)) {
+                                tidx++;
+                                return;
+                            }
+                            
                             leftCol = k;
                             return false;
                         }
@@ -5007,12 +5017,13 @@ module nts.uk.ui.mgrid {
                         if (!$c.classList.contains(s))
                             $c.classList.add(s);
                     });
-                    
-                    if (disabled) _.remove(states, s => s === color.Disable);  
+       
+                    if (disabled) _.remove(states, s => s === color.Disable);
                     if (!ftPrint) {
                         color.pushState(id, key, states);
                         ftPrint = true;   
-                    }
+                    }   
+
                 };
                 
                 if ($cell) {
@@ -5458,6 +5469,7 @@ module nts.uk.ui.mgrid {
                             let panelz, listType, maxHeight = 0, itemList = [], $itemHolder = document.createElement("ul"), controlDef, controlMap = _mafollicle[SheetDef][_currentSheet].controlMap;
                             $itemHolder.classList.add("mcombo-listitemholder");
                             if (!controlMap || !(controlDef = controlMap[key])) return;
+//                            dkn.closeDD(cbx.dropdown);
                             if (cbx.optionsMap && !_.isNil(listType = cbx.optionsMap[id])) {
                                 panelz = listType + 1;
                                 cbx.optionsList[listType] = _.cloneDeep(val);
@@ -5523,8 +5535,45 @@ module nts.uk.ui.mgrid {
                                 maxHeight += 26;
                             }
                             
+                            let panel = cbx.panel[panelz];
                             cbx.panel[panelz] = $itemHolder;
                             cbx.maxHeight[panelz] = Math.min(104, maxHeight);
+                            
+                            // Reload combo list
+                            if (_mEditor && _mEditor.type === dkn.COMBOBOX && _mEditor.columnKey === key && _mEditor.rowIdx === idx) {
+                                let comboList = cbx.dropdown.querySelector(".mcombo-list");
+                                comboList.replaceChild($itemHolder, panel);
+                                cbx.dropdown.style.maxHeight = cbx.maxHeight[panelz] + "px";
+                                let items = cbx.dropdown.querySelectorAll(".mcombo-listitem");
+                                let $comboValue = cbx.my.querySelector(".mcombo-value");
+                                let selected, code = $.data($cell, lo.CBX_SELECTED_TD);
+                                _.forEach(items, i => {
+                                    let value = $.data(i, lo.CBX_ITEM_VALUE);
+                                    
+                                    if (i.classList.contains("selecteditem")) {
+                                        i.classList.remove("selecteditem");
+                                    }
+                                    
+                                    if (code === value) {
+                                        let $item = i.querySelector(".mcombo-item");
+                                        if ($item) {
+                                            $comboValue.innerHTML = "";
+                                            $comboValue.appendChild($item.cloneNode(true));
+                                            i.classList.add("selecteditem");
+                                            selected = true;
+                                        }
+                                    }
+                                });
+                                
+                                if (!selected) {
+                                    $comboValue.innerHTML = "";
+                                    let empty = _prtDiv.cloneNode(true);
+                                    empty.style.display = "inline-block";
+                                    $comboValue.appendChild(empty);
+                                }
+                                
+                                dkn.openDD(cbx.dropdown, cbx.my);
+                            }
                         } else {
                             let y, options;
                             if (cbx.optionsMap && !_.isNil(y = cbx.optionsMap[id])) {
@@ -6243,7 +6292,7 @@ module nts.uk.ui.mgrid {
                 if (_.keys(ssk.KeyPressed).length > 0) {
                     evt.preventDefault();
                     return;
-                }   
+                }
                 
                 let coord = ti.getCellCoord($tCell);
                 let control = dkn.controlType[coord.columnKey];
@@ -6292,7 +6341,7 @@ module nts.uk.ui.mgrid {
                         }
                     }
                 } else if (control.type === dkn.COMBOBOX && !$tCell.querySelector(".mcombo-wrapper")) {
-                    endEdit($grid);
+                    endEdit($grid, true);
                     $tCell.textContent = "";
                     $tCell.classList.add(dkn.CONTROL_CLS);
                     let stt, panel, comboList, itemHolder, height;
@@ -6348,7 +6397,7 @@ module nts.uk.ui.mgrid {
                     $combo.classList.add(dkn.CBX_ACTIVE_CLS);
                     cType.type = dkn.COMBOBOX;
                 } else if (control.type === dkn.DATE_PICKER && !$tCell.querySelector("input")) {
-                    endEdit($grid);
+                    endEdit($grid, true);
                     $tCell.textContent = "";
                     $tCell.classList.add(dkn.CONTROL_CLS);
                     if ($tCell.classList.contains(v.ALIGN_RIGHT)) {
@@ -10716,8 +10765,8 @@ module nts.uk.ui.mgrid {
          * Remove.
          */
         export function remove(node) {
-            if (isIE() && node && node.parentNode) {
-                node.parentNode.removeChild(node);
+            if (isIE()) {
+                if (node && node.parentNode) node.parentNode.removeChild(node);
                 return;
             }
             

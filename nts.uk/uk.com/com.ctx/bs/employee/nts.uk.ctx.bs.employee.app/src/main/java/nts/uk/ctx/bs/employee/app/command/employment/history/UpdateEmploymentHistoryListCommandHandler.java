@@ -86,7 +86,7 @@ implements PeregUpdateListCommandHandler<UpdateEmploymentHistoryCommand>{
 						c.getSalarySegment() != null ? c.getSalarySegment().intValue() : null);
 				employmentHistoryItems.add(histItem);
 			} catch (BusinessException e) {
-				MyCustomizeException ex = new MyCustomizeException(e.getMessageId(), Arrays.asList(c.getEmployeeId()));
+				MyCustomizeException ex = new MyCustomizeException(e.getMessageId(), Arrays.asList(c.getEmployeeId()), "期間");
 				errorExceptionLst.add(ex);
 			}
 

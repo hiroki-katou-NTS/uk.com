@@ -71,7 +71,7 @@ public class AddBusinessWokrTypeOfHistoryListCommandHandler
 				// update in case of startDate is null set to minDate
 				GeneralDate startDate = c.getStartDate() != null ? c.getStartDate() : GeneralDate.min();
 				// update in case of endDate is null set to maxDate
-				GeneralDate endDate = c.getEndDate() != null ? c.getEndDate() : GeneralDate.max();
+				GeneralDate endDate = GeneralDate.max();
 				List<BusinessTypeOfEmployeeHistory> bTypeOfEmployeeHist = bTypeOfEmployeeHistLst.get(c.getEmployeeId());
 				List<DateHistoryItem> history = new ArrayList<DateHistoryItem>();
 				BusinessTypeOfEmployeeHistory bEmployeeHistory = new BusinessTypeOfEmployeeHistory(cid, history, c.getEmployeeId());
@@ -90,7 +90,7 @@ public class AddBusinessWokrTypeOfHistoryListCommandHandler
 				recordIds.put(c.getEmployeeId(), historyId);
 				
 			}catch(BusinessException e) {
-				MyCustomizeException ex = new MyCustomizeException(e.getMessageId(), Arrays.asList(c.getEmployeeId()));
+				MyCustomizeException ex = new MyCustomizeException(e.getMessageId(), Arrays.asList(c.getEmployeeId()), "期間");
 				result.add(ex);
 			}
 

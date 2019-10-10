@@ -109,7 +109,7 @@ implements PeregUpdateListCommandHandler<UpdateTemporaryAbsenceCommand>{
 						c.getFamilyMemberId(), sameFamily, childType, c.getCreateDate(), spouseIsLeave, sameFamilyDays);
 				histItems.add(temporaryAbsence);
 			} catch (BusinessException e) {
-				MyCustomizeException ex = new MyCustomizeException(e.getMessageId(), Arrays.asList(c.getEmployeeId()));
+				MyCustomizeException ex = new MyCustomizeException(e.getMessageId(), Arrays.asList(c.getEmployeeId()), "休職休業期間");
 				errorExceptionLst.add(ex);
 			}
 

@@ -106,7 +106,7 @@ public class UpdateAffListClassCommandHandler extends CommandHandlerWithResult<L
 				items.add(historyItem);
 
 			} catch (BusinessException e) {
-				MyCustomizeException ex = new MyCustomizeException(e.getMessageId(), Arrays.asList(c.getEmployeeId()));
+				MyCustomizeException ex = new MyCustomizeException(e.getMessageId(), Arrays.asList(c.getEmployeeId()), "期間");
 				errorExceptionLst.add(ex);
 			}
 		});

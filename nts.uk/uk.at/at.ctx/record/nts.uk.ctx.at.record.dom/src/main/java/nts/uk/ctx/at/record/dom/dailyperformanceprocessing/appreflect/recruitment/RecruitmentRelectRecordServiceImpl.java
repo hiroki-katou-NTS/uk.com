@@ -52,9 +52,12 @@ public class RecruitmentRelectRecordServiceImpl implements RecruitmentRelectReco
 				param.getEmployeeId(), appDate,
 				ApplicationType.COMPLEMENT_LEAVE_APPLICATION,
 				param.getWorkTypeCode(),
-				param.getWorkTimeCode() == null ? Optional.empty() : Optional.of(param.getWorkTimeCode()),
-				param.getStartTime() == null ? Optional.empty() : Optional.of(param.getStartTime()),
-				param.getEndTime() == null ? Optional.empty() : Optional.of(param.getEndTime()));
+				Optional.ofNullable(param.getWorkTimeCode()),
+				Optional.ofNullable(param.getStartTime()),
+				Optional.ofNullable(param.getEndTime()),
+				isPre,
+				param.getIPUSOpt(),
+				param.getApprovalSet());
 		commonService.calculateOfAppReflect(calcParam);
 	}
 

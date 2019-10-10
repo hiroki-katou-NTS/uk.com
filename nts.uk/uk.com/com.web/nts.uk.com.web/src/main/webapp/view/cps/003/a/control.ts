@@ -6,13 +6,15 @@ module cps003 {
     import writeConstraint = nts.uk.ui.validation.writeConstraint;
     import parseTime = nts.uk.time.parseTime;
     import parseTimeWithDay = nts.uk.time.minutesBased.clock.dayattr.create;
+    import block = nts.uk.ui.block.grayout;
+    import unblock = nts.uk.ui.block.clear;
     let ITEM_SINGLE_TYPE = (cps003.a || cps003.c).vm.ITEM_SINGLE_TYPE;
     let ITEM_STRING_TYPE = (cps003.a || cps003.c).vm.ITEM_STRING_TYPE;
     let ITEM_SELECT_TYPE = (cps003.a || cps003.c).vm.ITEM_SELECT_TYPE;
     let ITEM_STRING_DTYPE = (cps003.a || cps003.c).vm.ITEM_STRING_DTYPE;
     
     export module control {
-        const selectGroups: Array<IGroupControl> = [
+        export const selectGroups: Array<IGroupControl> = [
             {  
                 ctgCode: 'CS00017',
                 workplace: 'IS00084',
@@ -336,7 +338,7 @@ module cps003 {
             check_remain_left: (sid: string) => ajax('com', `ctx/pereg/person/common/checkEnableRemainLeft/${sid}`)
         };
         
-        export let SELECT_BUTTON = {}, RELATE_BUTTON = {}, WORK_TIME = {}, DATE_RANGE = {}, TIME_RANGE = {},
+        export let SELECT_BUTTON = {}, RELATE_BUTTON = {}, WORK_TIME = {}, DATE_RANGE = {}, TIME_RANGE = {}, TIME_RANGE_GROUP = {},
         HALF_INT = { 
             CS00035_IS00366: true,
             CS00035_IS00368: true,
@@ -1731,8 +1733,8 @@ module cps003 {
                 appSet: cbx,
                 grantDays: grantDay,
                 grantTable: grantTbl,
-                entryDate: moment.utc(hireDate).toDate(),
-                yearRefDate: moment.utc(yearRefDate).toDate()
+                entryDate: null, //moment.utc(hireDate).toDate(),
+                yearRefDate: null //moment.utc(yearRefDate).toDate()
             }).done(res => {
                 if (!resultCode) return;
                 let x;
@@ -1777,8 +1779,8 @@ module cps003 {
                 appSet: cbx,
                 grantDays: grantDay,
                 grantTable: grantTbl,
-                entryDate: moment.utc(hireDate).toDate(),
-                yearRefDate: moment.utc(yearRefDate).toDate()
+                entryDate: null, //moment.utc(hireDate).toDate(),
+                yearRefDate: null //moment.utc(yearRefDate).toDate()
             }).done(res => {
                 if (!resultCode) return;
                 let x;
@@ -1824,8 +1826,8 @@ module cps003 {
                 appSet: cbx,
                 grantDays: grantDay,
                 grantTable: grantTbl,
-                entryDate: moment.utc(hireDate).toDate(),
-                yearRefDate: moment.utc(yearRefDate).toDate()
+                entryDate: null, //moment.utc(hireDate).toDate(),
+                yearRefDate: null //moment.utc(yearRefDate).toDate()
             }).done(res => {
                 if (!resultCode) return;
                 let x;
@@ -1871,8 +1873,8 @@ module cps003 {
                 appSet: cbx,
                 grantDays: grantDay,
                 grantTable: grantTbl,
-                entryDate: moment.utc(hireDate).toDate(),
-                yearRefDate: moment.utc(yearRefDate).toDate()
+                entryDate: null, //moment.utc(hireDate).toDate(),
+                yearRefDate: null //moment.utc(yearRefDate).toDate()
             }).done(res => {
                 if (!resultCode) return;
                 let x;
@@ -1893,6 +1895,7 @@ module cps003 {
                 return;
             }
             
+//            block();
             fetch.get_cb_data({
                 comboBoxType: comboData.cls.referenceType,
                 categoryId: catId(),
@@ -1908,11 +1911,59 @@ module cps003 {
 //                if (code === "IS00079") {
                     $("#grid").mGrid("updateCell", o.id, code, cbx, null, null, true);
 //                }
+//                unblock();
+            }).fail(() => {
+//                unblock();
             });
         }
         
         export function selectButton() {
             _.forEach(selectGroups, (g: IGroupControl) => {
+                if (g.firstTimes && g.secondTimes) {
+                    TIME_RANGE_GROUP[g.ctgCode + "_" + g.firstTimes.end] = (id, key, val, data) => {
+                        let scs = data[g.secondTimes.start];
+                        if (_.isNil(scs) || scs === "") return;
+                        let firstEnd = nts.uk.time.minutesBased.clock.dayattr.parseString(val || ""),
+                            secondStart = nts.uk.time.minutesBased.clock.dayattr.parseString(data[g.secondTimes.start] || "");
+                        
+                        if (firstEnd.success && secondStart.success) {
+                            let $grid = $("#grid");
+                            if (firstEnd.asMinutes > secondStart.asMinutes) {
+                                let index = _.findIndex($grid.mGrid("dataSource", true), d => d.id === data.id),
+                                    message = nts.uk.resource.getMessage("Msg_859");
+                                $grid.mGrid("setErrors", [{ id: id, index: index, columnKey: g.firstTimes.end, message: message }]);
+                            } else {
+                                $grid.mGrid("clearErrors", [{ id: id, columnKey: g.firstTimes.end }]);
+                                let secondEnd = nts.uk.time.minutesBased.clock.dayattr.parseString(data[g.secondTimes.end] || "");
+                                if (secondEnd.success && secondStart.asMinutes < secondEnd.asMinutes) {
+                                    $grid.mGrid("clearErrors", [{ id: id, columnKey: g.secondTimes.start }]);
+                                }
+                            }
+                        }
+                    };
+                    
+                    TIME_RANGE_GROUP[g.ctgCode + "_" + g.secondTimes.start] = (id, key, val, data) => {
+                        if (_.isNil(val) || val === "") return;
+                        let firstEnd = nts.uk.time.minutesBased.clock.dayattr.parseString(data[g.firstTimes.end] || ""),
+                            secondStart = nts.uk.time.minutesBased.clock.dayattr.parseString(val || "");
+                        
+                        if (firstEnd.success && secondStart.success) {
+                            let $grid = $("#grid");
+                            if (firstEnd.asMinutes > secondStart.asMinutes) {
+                                let index = _.findIndex($grid.mGrid("dataSource", true), d => d.id === data.id),
+                                    message = nts.uk.resource.getMessage("Msg_859");
+                                $grid.mGrid("setErrors", [{ id: id, index: index, columnKey: g.secondTimes.start, message: message }]);
+                            } else {
+                                $grid.mGrid("clearErrors", [{ id: id, columnKey: g.secondTimes.start }]);
+                                let firstStart = nts.uk.time.minutesBased.clock.dayattr.parseString(data[g.firstTimes.start] || "");
+                                if (firstStart.success && firstStart.asMinutes < firstEnd.asMinutes) {
+                                    $grid.mGrid("clearErrors", [{ id: id, columnKey: g.firstTimes.end }]);
+                                }
+                            }
+                        }
+                    };
+                }
+                
                 if (!g.workType) {
                     if (g.workplace) {
                         SELECT_BUTTON[g.ctgCode + "_" + g.workplace] = (required, data) => {
@@ -1936,7 +1987,9 @@ module cps003 {
     
                                         let output = getShared('outputCDL008');
                                         if (!_.isNil(output)) {
-                                            $("#grid").mGrid("updateCell", data.rowId, g.workplace, output);
+                                            let $grid = $("#grid");
+                                            $grid.mGrid("updateCell", data.rowId, g.workplace, output);
+                                            $grid.mGrid("clearErrors", [{ id: data.rowId, columnKey: g.workplace }]);
                                         }
                                     });
                                 });
@@ -1960,7 +2013,9 @@ module cps003 {
                             let childData: Array<any> = getShared('KDL002_SelectedNewItem');
     
                             if (childData[0]) {
-                                $("#grid").mGrid("updateCell", data.rowId, g.workType, childData[0].code);
+                                let $grid = $("#grid"); 
+                                $grid.mGrid("updateCell", data.rowId, g.workType, childData[0].code);
+                                $grid.mGrid("clearErrors", [{ id: data.rowId, columnKey: g.workType }]);
                             }
                         });
                     }
@@ -1982,6 +2037,8 @@ module cps003 {
                                 if (childData) {
                                     $grid.mGrid("updateCell", data.rowId, g.workType, childData.selectedWorkTypeCode);
                                     $grid.mGrid("updateCell", data.rowId, g.workTime, childData.selectedWorkTimeCode);
+                                    $grid.mGrid("clearErrors", [{ id: data.rowId, columnKey: g.workType }]);
+                                    $grid.mGrid("clearErrors", [{ id: data.rowId, columnKey: g.workTime }]);
                                     
                                     if (g.firstTimes) {
                                         updateTime($grid, data.rowId, g.firstTimes.start, childData.first && childData.first.start);
@@ -2007,7 +2064,9 @@ module cps003 {
                                 let childData: Array<any> = getShared('KDL002_SelectedNewItem');
         
                                 if (childData.length > 0) {
-                                    $("#grid").mGrid("updateCell", data.rowId, g.workType, childData[0].code); 
+                                    let $grid = $("#grid"); 
+                                    $grid.mGrid("updateCell", data.rowId, g.workType, childData[0].code);
+                                    $grid.mGrid("clearErrors", [{ id: data.rowId, columnKey: g.workType }]); 
                                 }
                             });
                         }
@@ -2029,6 +2088,8 @@ module cps003 {
                                 if (childData) {
                                     $grid.mGrid("updateCell", data.rowId, g.workType, childData.selectedWorkTypeCode);
                                     $grid.mGrid("updateCell", data.rowId, g.workTime, childData.selectedWorkTimeCode);
+                                    $grid.mGrid("clearErrors", [{ id: data.rowId, columnKey: g.workType }]);
+                                    $grid.mGrid("clearErrors", [{ id: data.rowId, columnKey: g.workTime }]);
                                     
                                     if (g.firstTimes) {
                                         updateTime($grid, data.rowId, g.firstTimes.start, childData.first && childData.first.start);
@@ -2055,6 +2116,7 @@ module cps003 {
                                     if (childData.length > 0) {
                                         let oData: IChildData = childData[0];
                                         $grid.mGrid("updateCell", data.rowId, g.workTime, oData.selectedWorkTimeCode);
+                                        $grid.mGrid("clearErrors", [{ id: data.rowId, columnKey: g.workTime }]);
                                         
                                         if (g.firstTimes) {
                                             updateTime($grid, data.rowId, g.firstTimes.start, oData.first && oData.first.start);
@@ -2237,7 +2299,7 @@ module cps003 {
         export function extendTimeRange() {
             _.forEach(timeRange, range => {
                 TIME_RANGE[range.ctgCode + "_" + range.start] = (required, itemId, name, id, key, val, data) => {
-                    let dfd = $.Deferred();
+                    let dfd = $.Deferred(), hasError;
                     if (_.isNil(itemId)) {
                         dfd.reject();
                         return dfd.promise();
@@ -2256,26 +2318,30 @@ module cps003 {
                         value = nts.uk.time.minutesBased.clock.dayattr.parseString(val || ""),
                         $grid = $("#grid");
                     if (max.success && value.success) {
-                        if (max.asMinutes < value.asMinutes) {
+                        let endDate = data[range.end];
+                        if (max.asMinutes < value.asMinutes && (!_.isNil(endDate) && endDate !== "") && (!_.isNil(val) && val !== "")) {
                             let index = _.findIndex($grid.mGrid("dataSource", true), d => d.id === data.id),
                                 maxVal = nts.uk.time.minutesBased.clock.dayattr.create(max.asMinutes - 1),
                                 minVal = nts.uk.time.minutesBased.clock.dayattr.create(nts.uk.time.minutesBased.clock.dayattr.parseString(pv.min).asMinutes),
                                 message = nts.uk.resource.getMessage("MsgB_16", [ name, minVal.fullText, maxVal.fullText ]);
                             $grid.mGrid("setErrors", [{ id: id, index: index, columnKey: range.start, message: message }]);
+                            hasError = true;
                         } else {
                             $grid.mGrid("clearErrors", [{ id: id, columnKey: range.start }]);
                             if (!_.isNil(data[range.end]) && data[range.end] !== "") {
                                 $grid.mGrid("clearErrors", [{ id: id, columnKey: range.end }]);
                             }
+                            
+                            hasError = false;
                         }
                     }
                     
-                    dfd.reject();
+                    dfd.reject(hasError);
                     return dfd.promise();
                 };
             
                 TIME_RANGE[range.ctgCode + "_" + range.end] = (required, itemId, name, id, key, val, data) => {
-                    let dfd = $.Deferred();
+                    let dfd = $.Deferred(), hasError;
                     if (_.isNil(itemId)) {
                         dfd.reject();
                         return dfd.promise();
@@ -2294,21 +2360,25 @@ module cps003 {
                         value = nts.uk.time.minutesBased.clock.dayattr.parseString(val || ""),
                         $grid = $("#grid");
                     if (min.success) {
-                        if (min.asMinutes > value.asMinutes) {
+                        let startDate = data[range.start];
+                        if (min.asMinutes > value.asMinutes && (!_.isNil(startDate) && startDate !== "") && (!_.isNil(val) && val !== "")) {
                             let index = _.findIndex($grid.mGrid("dataSource", true), d => d.id === data.id),
                                 minVal = nts.uk.time.minutesBased.clock.dayattr.create(min.asMinutes + 1),
                                 maxVal = nts.uk.time.minutesBased.clock.dayattr.create(nts.uk.time.minutesBased.clock.dayattr.parseString(pv.max).asMinutes),
                                 message = nts.uk.resource.getMessage("MsgB_16", [ name, minVal.fullText, maxVal.fullText ]);
                             $grid.mGrid("setErrors", [{ id: id, index: index, columnKey: range.end, message: message }]);
+                            hasError = true;
                         } else {
                             $grid.mGrid("clearErrors", [{ id: id, columnKey: range.end }]);
                             if (!_.isNil(data[range.start]) && data[range.start] !== "") { 
                                 $grid.mGrid("clearErrors", [{ id: id, columnKey: range.start }]);
                             }
+                            
+                            hasError = false;
                         }
                     }
                     
-                    dfd.reject();
+                    dfd.reject(hasError);
                     return dfd.promise();
                 };
             });

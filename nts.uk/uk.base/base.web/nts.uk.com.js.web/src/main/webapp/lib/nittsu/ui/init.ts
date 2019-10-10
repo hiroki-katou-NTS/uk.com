@@ -201,39 +201,32 @@ module nts.uk.ui {
         };
         
         $(function () {
-            browser.private.then(priv => {
-                if (priv && browser.version === 'Safari 10' && browser.mobile) {
-                    nts.uk.ui.dialog.alert({ messageId: 'Msg_1533' });
-                } else {
-                    __viewContext.noHeader = (__viewContext.noHeader === true) || $("body").hasClass("no-header");
+            __viewContext.noHeader = (__viewContext.noHeader === true) || $("body").hasClass("no-header");
 
-                    console.log("call");
-                    documentReady.fire();
+            documentReady.fire();
 
-                    __viewContext.transferred = uk.sessionStorage.getItem(uk.request.STORAGE_KEY_TRANSFER_DATA)
-                        .map(v => JSON.parse(v));
+            __viewContext.transferred = uk.sessionStorage.getItem(uk.request.STORAGE_KEY_TRANSFER_DATA)
+                .map(v => JSON.parse(v));
 
-                    if ($(".html-loading").length <= 0) {
-                        startP();
-                        return;
-                    }
-                    let dfd = [];
-                    
-                    _.forEach($(".html-loading"), function(e) {
-                        let $container = $(e);
-                        let dX = $.Deferred();
-                        $container.load($container.attr("link"), function() {
-                            dX.resolve();
-                        });
-                        dfd.push(dX);
-                        dX.promise();
-                    });
-                    
-                    $.when(...dfd).then(function(data, textStatus, jqXHR) {
-                        $('.html-loading').contents().unwrap();
-                        startP();
-                    });
-                }
+            if ($(".html-loading").length <= 0) {
+                startP();
+                return;
+            }
+            let dfd = [];
+            
+            _.forEach($(".html-loading"), function(e) {
+                let $container = $(e);
+                let dX = $.Deferred();
+                $container.load($container.attr("link"), function() {
+                    dX.resolve();
+                });
+                dfd.push(dX);
+                dX.promise();
+            });
+            
+            $.when(...dfd).then(function(data, textStatus, jqXHR) {
+                $('.html-loading').contents().unwrap();
+                startP();
             });
         });
 

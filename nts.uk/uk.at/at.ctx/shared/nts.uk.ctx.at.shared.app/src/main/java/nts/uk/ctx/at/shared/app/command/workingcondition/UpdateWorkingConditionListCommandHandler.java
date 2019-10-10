@@ -81,8 +81,13 @@ implements PeregUpdateListCommandHandler<UpdateWorkingConditionCommand>{
 					workingCond.changeSpan(itemToBeUpdated.get(), new DatePeriod(c.getStartDate(), endDate));
 					workingCondInserts.add(workingCond);
 				}
-				WorkingConditionItem workingCondItem = updateWorkingConditionCommandAssembler.fromDTO(c);
-				workingCondItems.add(workingCondItem);
+				WokingConditionCommandCustom workingCondItem = updateWorkingConditionCommandAssembler.fromDTOCustom(c);
+				if(CollectionUtil.isEmpty(workingCondItem.getEx())) {
+					workingCondItems.add(workingCondItem.getWorkingConditionItem());
+				}else {
+					errorExceptionLst.addAll(workingCondItem.getEx());
+				}
+				
 			} catch (BusinessException e) {
 				MyCustomizeException ex = new MyCustomizeException(e.getMessageId(), Arrays.asList(c.getEmployeeId()));
 				errorExceptionLst.add(ex);
@@ -96,10 +101,6 @@ implements PeregUpdateListCommandHandler<UpdateWorkingConditionCommand>{
 		
 		if(!workingCondItems.isEmpty()) {
 			workingConditionItemRepository.updateAll(workingCondItems);
-		}
-		
-		if (errorLst.size() > 0) {
-			errorExceptionLst.add(new MyCustomizeException("Msg_345", errorLst));
 		}
 		return errorExceptionLst;
 		

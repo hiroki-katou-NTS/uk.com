@@ -37,7 +37,7 @@ public class ConfirmStatusMonthly {
 	@Inject
 	private ConfirmInfoAcqProcess confirmInfoAcqProcess;
 
-	public Optional<StatusConfirmMonthDto> getConfirmStatusMonthly(String companyId, List<String> listEmployeeId, YearMonth yearmonthInput) {
+	public Optional<StatusConfirmMonthDto> getConfirmStatusMonthly(String companyId, List<String> listEmployeeId, YearMonth yearmonthInput, Integer clsId) {
 		iFindDataDCRecord.clearAllStateless();
 		// ドメインモデル「本人確認処理の利用設定」を取得する
 		Optional<IdentityProcessUseSet> identityProcessUseSet = identityProcessUseSetRepo.findByKey(companyId);
@@ -57,7 +57,7 @@ public class ConfirmStatusMonthly {
 		}
 		// チェック処理（月の確認）
 		Optional<StatusConfirmMonthDto> result = this.checkProcessMonthConfirm(listEmployeeId, confirmInfoResults,
-				optApprovalUse, identityProcessUseSet.get());
+				optApprovalUse, identityProcessUseSet.get(), clsId);
 
 		return result;
 	}
@@ -73,16 +73,20 @@ public class ConfirmStatusMonthly {
 	 */
 	private Optional<StatusConfirmMonthDto> checkProcessMonthConfirm(List<String> listEmployeeId,
 			List<ConfirmInfoResult> confirmInfoResults, Optional<ApprovalProcessingUseSetting> optApprovalUse,
-			IdentityProcessUseSet identityProcessUseSet) {
+			IdentityProcessUseSet identityProcessUseSet, Integer clsId) {
 		List<ConfirmStatusResult> confirmStatusResults = new ArrayList<>();
 		// 取得している「承認処理の利用設定．月の承認者確認を利用する」をチェックする- k can cho vao vong loop
 		boolean useMonthApproverConfirm = (optApprovalUse.isPresent()
 				&& optApprovalUse.get().getUseMonthApproverConfirm()) ? true : false;
 		// Input「社員一覧」でループ
+		confirmInfoResults.forEach(x -> {
+			x.getInformationMonths().removeIf(y -> y.getActualClosure().getClosureId().value != clsId);
+		});
 		for (String employeeId : listEmployeeId) {
 			Optional<ConfirmInfoResult> optConfirmInfoResult = confirmInfoResults.stream()
 					.filter(x -> x.getEmployeeId().equals(employeeId)).findFirst();
-			if(!optConfirmInfoResult.isPresent()) continue;
+			if (!optConfirmInfoResult.isPresent())
+				continue;
 			ConfirmInfoResult confirmInfoResult = optConfirmInfoResult.get();
 			for (InformationMonth infoMonth : confirmInfoResult.getInformationMonths()) {
 				// 対象締め
@@ -96,13 +100,18 @@ public class ConfirmStatusMonthly {
 						confirmStatus, AvailabilityAtr.CAN_RELEASE, ReleasedAtr.CAN_RELEASE);
 
 				// Input「社員の実績の確認状況情報．月の情報．締め期間」の件数ループ
-				// trong EA ghi la loop theo 締め期間 nhung hien tai chi loop dc theo 月の情報
+				// trong EA ghi la loop theo 締め期間 nhung hien tai chi loop dc
+				// theo 月の情報
 				// Input「社員の実績の確認状況情報．月の情報．月の承認」をチェックする
-				int approvalStatus = infoMonth.getLstApprovalMonthStatus().get(0).getApprovalStatus().value;
-				if (useMonthApproverConfirm && (approvalStatus == ApprovalStatusForEmployee.APPROVED.value
-						|| approvalStatus == ApprovalStatusForEmployee.DURING_APPROVAL.value)) {
-					// パラメータ「月の実績の確認状況」をセットする
-					confirmStatusResult.setWhetherToRelease(ReleasedAtr.CAN_NOT_RELEASE);
+				if (infoMonth.getLstApprovalMonthStatus().isEmpty()) {
+					confirmStatusResult.setWhetherToRelease(ReleasedAtr.CAN_RELEASE);
+				} else {
+					int approvalStatus = infoMonth.getLstApprovalMonthStatus().get(0).getApprovalStatus().value;
+					if (useMonthApproverConfirm && (approvalStatus == ApprovalStatusForEmployee.APPROVED.value
+							|| approvalStatus == ApprovalStatusForEmployee.DURING_APPROVAL.value)) {
+						// パラメータ「月の実績の確認状況」をセットする
+						confirmStatusResult.setWhetherToRelease(ReleasedAtr.CAN_NOT_RELEASE);
+					}
 				}
 				// 取得している「本人確認処理の利用設定．日の本人確認を利用する」をチェックする
 				if (identityProcessUseSet.isUseConfirmByYourself()) {

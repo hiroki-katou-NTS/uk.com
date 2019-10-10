@@ -4,14 +4,21 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
+import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
+import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
+import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
+import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.ItemValue;
 import nts.uk.shr.pereg.app.command.MyCustomizeException;
@@ -19,8 +26,8 @@ import nts.uk.shr.pereg.app.command.PeregInputContainerCps003;
 
 @Stateless
 public class CategoryValidate {
-//	@Inject
-//	private AffCompanyHistRepository affCompanyHistRepository;
+	@Inject
+	private AffCompanyHistRepository affCompanyHistRepository;
 //	
 //	@Inject
 //	private AffClassHistoryRepository affClassHistRepo;
@@ -49,19 +56,16 @@ public class CategoryValidate {
 	
 	
 	
-	public void validateAdd(List<MyCustomizeException> result, List<PeregInputContainerCps003> containerAdds, GeneralDate baseDate, int modeUpdate) {
-		
-		if(modeUpdate == 2) {
-			
-			List<String> indexs = new ArrayList<>();
-			
-			validateSpaceCS0002(indexs, result, containerAdds);
-			
-			if(containerAdds.size()> 0) {
-				
-				historyValidate(result, containerAdds, baseDate, modeUpdate);
-			}
-			
+	public void validateAdd(List<MyCustomizeException> result, List<PeregInputContainerCps003> containerAdds,
+			GeneralDate baseDate, int modeUpdate) {
+
+		List<String> indexs = new ArrayList<>();
+
+		validateSpaceCS0002(indexs, result, containerAdds);
+
+		if (containerAdds.size() > 0) {
+
+			historyValidate(result, containerAdds, baseDate, modeUpdate);
 		}
 	}
 	
@@ -73,45 +77,47 @@ public class CategoryValidate {
 	}
 	
 	public void historyValidate(List<MyCustomizeException> result, List<PeregInputContainerCps003> containerAdds, GeneralDate baseDate, int modeUpdate) {
-//		String cid = AppContexts.user().companyId();
-//		if (modeUpdate == 2) {
-//			if (containerAdds.get(0).getInputs().getCategoryCd().equals("CS00003")) {
-//				Map<String, String> pidSids = containerAdds.stream()
-//						.collect(Collectors.toMap(c -> c.getPersonId(), c -> c.getEmployeeId()));
-//				List<AffCompanyHist> affCompanyHistLst = this.affCompanyHistRepository
-//						.getAffComHistOfEmployeeListAndBaseDateV2(new ArrayList<>(pidSids.values()), baseDate);
-//				List<String> sidError = new ArrayList<>();
-//				for (AffCompanyHist affCompanyHist : affCompanyHistLst) {
-//					PeregInputContainerCps003 container = containerAdds.stream()
-//							.filter(c -> c.getPersonId().equals(affCompanyHist.getPId())).findFirst().get();
-//					ItemValue start = container.getInputs().getItems().stream().filter(c -> c.itemCode().equals("IS00020")).findFirst().get();
-//					ItemValue end = container.getInputs().getItems().stream().filter(c -> c.itemCode().equals("IS00021")).findFirst().get();
-//					AffCompanyHistByEmployee employee = affCompanyHist.getAffCompanyHistByEmployee(container.getEmployeeId());
-//					Optional<AffCompanyHistItem> historyOpt = employee.getHistory();
-//					if(historyOpt.isPresent()) {
-//						if(end.valueAfter() != null) {
-//							sidError.add(container.getEmployeeId());
-//							int index = containerAdds.indexOf(container);
-//							containerAdds.remove(index);
-//							continue;
-//						}
-//						
-//						if(modeUpdate == 2) {
-//							if(GeneralDate.fromString(start.valueAfter(), "yyyy/MM/dd").before(historyOpt.get().start())) {
-//								sidError.add(container.getEmployeeId());
-//								int index = containerAdds.indexOf(container);
-//								containerAdds.remove(index);
-//								continue;
-//							}
-//						}
-//					}
-//				}
-//				if (!sidError.isEmpty()) {
-//					MyCustomizeException exeption = new MyCustomizeException("Msg_852", sidError, "");
-//					result.add(exeption);
-//				}
-//			}
-//		}
+
+		
+		if (containerAdds.get(0).getInputs().getCategoryCd().equals("CS00003")) {
+			
+			Map<String, String> pidSids = containerAdds.stream()
+					.collect(Collectors.toMap(c -> c.getPersonId(), c -> c.getEmployeeId()));
+			
+			List<AffCompanyHist> affCompanyHistLst = this.affCompanyHistRepository
+					.getAffComHistOfEmployeeListAndBaseDateV2(new ArrayList<>(pidSids.values()), baseDate);
+			
+			List<PeregInputContainerCps003> containerErrors = new ArrayList<>();
+			
+			containerAdds.stream().forEach(c -> {
+				
+				Optional<AffCompanyHist> affCompanyHistOpt = affCompanyHistLst.stream()
+						.filter(h -> h.getPId().equals(c.getPersonId())).findFirst();
+				
+				if (!affCompanyHistOpt.isPresent() || modeUpdate == 2) {
+					
+					containerErrors.add(c);
+					
+				}
+				
+			});
+			
+			if(!containerErrors.isEmpty()) {
+				result.add(new MyCustomizeException("Msg_1577",
+						containerErrors.stream().map(c -> c.getEmployeeId()).collect(Collectors.toList()), "入社年月日"));
+			}
+			
+			Iterator<PeregInputContainerCps003> itr = containerAdds.iterator();
+			while (itr.hasNext()) {
+				PeregInputContainerCps003 emp = itr.next();
+				Optional<PeregInputContainerCps003> empOpt = containerErrors.stream()
+						.filter(c -> c.getEmployeeId().equals(emp.getEmployeeId())).findFirst();
+				if (empOpt.isPresent()) {
+					itr.remove();
+				}
+
+			}		
+		}
 //
 //		if(CollectionUtil.isEmpty(containerAdds)) return;
 //		if(containerAdds.get(0).getInputs().getCategoryCd().equals("CS00004")) {
