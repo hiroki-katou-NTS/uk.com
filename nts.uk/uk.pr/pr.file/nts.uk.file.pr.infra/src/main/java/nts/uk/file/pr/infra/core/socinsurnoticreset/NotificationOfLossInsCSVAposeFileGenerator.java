@@ -201,10 +201,10 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
                 cells.get(startRow, 0).setValue(data.getUnionOfficeNumber());
                 cells.get(startRow, 1).setValue(Objects.toString(ins.getFdNumber().orElse(null), "001"));
                 cells.get(startRow, 2).setValue(baseDate.toString("yyyyMMdd"));
-                cells.get(startRow, 3).setValue(checkLength(data.getHealInsInherenPr(),10));
-                cells.get(startRow, 4).setValue(data.getHealInsInherenPr().length() > 20 ? data.getHealInsInherenPr().substring(10, 20) : "");
-                cells.get(startRow, 5).setValue(data.getHealInsInherenPr().length() > 30 ? data.getHealInsInherenPr().substring(20, 30) : "");
-                cells.get(startRow, 6).setValue(data.getHealInsInherenPr().length() > 40 ? data.getHealInsInherenPr().substring(30, 40) : "" + "\n" + "[kanri]\n");
+                cells.get(startRow, 3).setValue("");
+                cells.get(startRow, 4).setValue(checkLength(data.getHealInsInherenPr(),10));
+                cells.get(startRow, 5).setValue("");
+                cells.get(startRow, 6).setValue(",\n" + "[kanri]\n");
                 cells.get(startRow, 7).setValue("001\n" + data.getUnionOfficeNumber());
                 cells.get(startRow, 8).setValue(checkLength(company.getPostCd(), 3));
                 cells.get(startRow, 9).setValue(company.getPostCd().length() == 8 ? company.getPostCd().substring(4, 8) : company.getPostCd().length() > 4 ? company.getPostCd().substring(4, company.getPostCd().length()) : "");
