@@ -88,6 +88,9 @@ public class NotificationOfLossInsExportCSVService extends ExportService<Notific
         if(domain.getOutputFormat().get() == OutputFormatClass.PEN_OFFICE){
 			List<SocialInsurancePrefectureInformation> infor  = socialInsuranceInfor.findByHistory();
 			List<InsLossDataExport> healthInsLoss = socialInsurNotiCreateSetEx.getHealthInsLoss(empIds, cid, start, end);
+			if(healthInsLoss.isEmpty()) {
+				throw new BusinessException("Msg_37");
+			}
 			healthInsLoss.forEach( item -> {
 						if (!item.getEndDate().isEmpty() && item.getEndDate().equals(item.getEndDate2())) {
 							item.setCaInsurance2(null);
@@ -107,6 +110,9 @@ public class NotificationOfLossInsExportCSVService extends ExportService<Notific
 			List<SocialInsurancePrefectureInformation> infor  = socialInsuranceInfor.findByHistory();
 			CompanyInfor company = socialInsurNotiCreateSetEx.getCompanyInfor(cid);
 			List<InsLossDataExport> healthInsAssociationData = socialInsurNotiCreateSetEx.getHealthInsLoss(empIds, cid, start, end);
+			if(healthInsAssociationData.isEmpty()) {
+				throw new BusinessException("Msg_37");
+			}
 			healthInsAssociationData = this.order(domain.getOutputOrder(), healthInsAssociationData);
 			notificationOfLossInsCSVFileGenerator.generate(exportServiceContext.getGeneratorContext(),
 					new LossNotificationInformation(healthInsAssociationData, null, null, domain, exportServiceContext.getQuery().getReference(), company, infor));
@@ -116,6 +122,9 @@ public class NotificationOfLossInsExportCSVService extends ExportService<Notific
 			List<SocialInsurancePrefectureInformation> infor  = socialInsuranceInfor.findByHistory();
 			CompanyInfor company = socialInsurNotiCreateSetEx.getCompanyInfor(cid);
 			List<PensFundSubmissData> healthInsAssociationData = socialInsurNotiCreateSetEx.getHealthInsAssociation(empIds, cid, start, end);
+			if(healthInsAssociationData.isEmpty()) {
+				throw new BusinessException("Msg_37");
+			}
             if(domain.getOutputOrder() == SocialInsurOutOrder.EMPLOYEE_KANA_ORDER) {
                 healthInsAssociationData = healthInsAssociationData.stream().sorted(Comparator.comparing(PensFundSubmissData::getPersonNameKana)).collect(Collectors.toList());
             }
