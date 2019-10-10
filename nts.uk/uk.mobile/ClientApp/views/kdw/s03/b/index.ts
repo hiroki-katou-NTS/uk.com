@@ -983,6 +983,8 @@ export class KdwS03BComponent extends Vue {
                         .then((data: any) => {
                             if (data.data.errorFindMaster28 || data.data.errorFindMaster29) {
                                 self.workTypeNotFound = true;
+                            } else {
+                                self.workTypeNotFound = false;    
                             }
                             self.$mask('hide');
                             _.forEach(data.data.cellEdits, (item: any) => {
