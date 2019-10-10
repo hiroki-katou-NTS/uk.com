@@ -187,6 +187,23 @@ module nts.uk.pr.view.qsi013.b.viewmodel {
                 errors.clearAll();
                 self.getDataLossInfo(data);
             });
+
+            self.pOther.subscribe(e =>{
+                if (!self.pOther() && $("#B222_31").ntsError("hasError")){
+                    $("#B222_31").ntsError('clear');
+                }else{
+                    $("#B222_31").trigger("validate");
+                }
+            });
+
+            self.hOther.subscribe(e =>{
+                if (!self.hOther() && $("#B222_18").ntsError("hasError")){
+                    $("#B222_18").ntsError('clear');
+                }else{
+                    $("#B222_18").trigger("validate");
+                }
+            });
+
             let list = getShared("QSI013_PARAMS_B");
             if(nts.uk.util.isNullOrEmpty(list) || nts.uk.util.isNullOrEmpty(list.employeeList)) {
                 close();
@@ -206,10 +223,6 @@ module nts.uk.pr.view.qsi013.b.viewmodel {
 
         registerLossInfo() {
             var self = this;
-            $('.nts-input').trigger("validate");
-            if (nts.uk.ui.errors.hasError()) {
-                return;
-            }
             //for register info
             let healthInsLossInfo: any = {
                 empId: self.selectedItem(),
