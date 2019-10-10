@@ -1,6 +1,7 @@
 package nts.uk.ctx.pereg.dom.filemanagement.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,9 +12,9 @@ public class PersonFileManagementDto {
 	
 	private String pId;
 
-	private FacePhotoFile avatarFile;
+	private Optional<FacePhotoFile>avatarFile;
 	
-	private String mapFileID;
+	private Optional<String> mapFileID;
 	
 	private List<DocumentFile> listDocumentFile;
 	

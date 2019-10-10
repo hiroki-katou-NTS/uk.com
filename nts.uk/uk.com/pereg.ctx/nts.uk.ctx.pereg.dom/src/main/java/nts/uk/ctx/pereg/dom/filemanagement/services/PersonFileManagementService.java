@@ -37,10 +37,11 @@ public class PersonFileManagementService {
 		Map<String, List<PersonFileManagement>> mapPidAndListFile = listPersonFile.stream().collect(Collectors.groupingBy(x -> x.getPId()));
 		
 		mapPidAndListFile.forEach((pid,listFile)->{
-			String mapFileID = null, thumbnailFileId = null, facePhotoFileID = null;
+			String thumbnailFileId = null, facePhotoFileID = null;
+			Optional<String>  mapFileID = Optional.empty();
 			Optional<PersonFileManagement> mapFile = listFile.stream().filter(x -> x.getTypeFile() == TypeFile.MAP_FILE).findFirst();
 			if (mapFile.isPresent()) {
-				mapFileID = mapFile.get().getFileID();
+				mapFileID = Optional.of(mapFile.get().getFileID());
 			}
 			
 			Optional<PersonFileManagement> thumbnailFile = listFile.stream().filter(x -> x.getTypeFile() == TypeFile.AVATAR_FILE).findFirst();
@@ -62,8 +63,10 @@ public class PersonFileManagementService {
 					return new DocumentFile(x.getFileID(), x.getUploadOrder().intValue());
 				}).collect(Collectors.toList());
 			}
-			
-			FacePhotoFile faceObj =  new FacePhotoFile(thumbnailFileId, facePhotoFileID);
+			Optional<FacePhotoFile> faceObj = Optional.empty();
+			if (thumbnailFileId != null || facePhotoFileID != null) {
+				faceObj = Optional.of(new FacePhotoFile(thumbnailFileId, facePhotoFileID));
+			}
 			
 			PersonFileManagementDto obj = new PersonFileManagementDto(pid, faceObj, mapFileID, listDocumentFile);
 			
