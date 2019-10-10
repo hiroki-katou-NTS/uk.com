@@ -113,6 +113,7 @@ export class KdwS03BComponent extends Vue {
     private oldCheckBox: Array<number> = [];
     private listAutoCalc: any = [];
     private isReady = false;
+    private workTypeNotFound = false;
 
     get lstAttendanceItem() {
         let self = this;
@@ -779,6 +780,11 @@ export class KdwS03BComponent extends Vue {
 
     public register() {
         let self = this;
+        if (self.workTypeNotFound) {
+            self.$modal.error('Msg_1293');
+            
+            return;
+        }
         let registerParam = self.createRegisterParam();
         if (!self.isChangeDataRegister()) {
             return;
@@ -810,7 +816,6 @@ export class KdwS03BComponent extends Vue {
                 }
                 if (dataAfter.errorMap[1] != undefined) {
                     _.forEach(dataAfter.errorMap[1], (value) => {
-                        errorOutput.push(self.$i18n('Msg_996'));
                         let item = _.find(self.contentType, (data) => {
                             return String(data.key) === 'A' + value.itemId;
                         });
@@ -971,6 +976,9 @@ export class KdwS03BComponent extends Vue {
                     self.$mask('show');
                     self.$http.post('at', API.linkItemCalc, param)
                         .then((data: any) => {
+                            if (data.data.errorFindMaster28 || data.data.errorFindMaster29) {
+                                self.workTypeNotFound = true;
+                            }
                             self.$mask('hide');
                             _.forEach(data.data.cellEdits, (item: any) => {
                                 if (!_.includes(self.listAutoCalc, item.item)) {
