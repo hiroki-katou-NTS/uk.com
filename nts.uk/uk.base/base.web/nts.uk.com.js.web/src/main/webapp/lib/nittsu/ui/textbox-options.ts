@@ -80,6 +80,7 @@ module nts.uk.ui.option {
         decimallength?: number,
         currencyformat?: Currency,
         currencyposition?: string,
+        numberGroup?: boolean,
         placeholder?: string;
         width?: string;
         textalign?: string;
@@ -92,6 +93,7 @@ module nts.uk.ui.option {
     export class NumberEditorOption extends EditorOptionBase {
         groupseperator: string;
         grouplength: number;
+        numberGroup: boolean;
         decimalseperator: string;
         decimallength: number;
         symbolChar: string;
@@ -113,6 +115,12 @@ module nts.uk.ui.option {
             this.symbolPosition = (option !== undefined && option.symbolPosition !== undefined) ? option.symbolPosition : "right";
             this.unitID = (option !== undefined && option.unitID !== undefined) ? option.unitID : "";
             this.defaultValue = (option !== undefined && !nts.uk.util.isNullOrEmpty(option.defaultValue)) ? option.defaultValue : "";
+            this.numberGroup = (option !== undefined && option.numberGroup !== undefined) ? option.numberGroup : null;
+            if (this.numberGroup == true) {
+                this.grouplength = 3;    
+            } else if (this.numberGroup == false) {
+                this.grouplength = 0;
+            }
         }
     }
 
@@ -135,6 +143,12 @@ module nts.uk.ui.option {
             this.textalign = (option !== undefined && option.textalign !== undefined) ? option.textalign : "right";
             this.defaultValue = (option !== undefined && !nts.uk.util.isNullOrEmpty(option.defaultValue)) ? option.defaultValue : "";
             this.unitID = (option !== undefined && option.unitID !== undefined) ? option.unitID : "";
+            this.numberGroup = (option !== undefined && option.numberGroup !== undefined) ? option.numberGroup : null;
+            if (this.numberGroup == true) {
+                this.grouplength = 3;    
+            } else if (this.numberGroup == false) {
+                this.grouplength = 0;
+            }
         }
     }
     

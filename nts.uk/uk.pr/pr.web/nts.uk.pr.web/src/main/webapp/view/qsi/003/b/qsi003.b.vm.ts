@@ -66,17 +66,24 @@ module nts.uk.pr.view.qsi003.b.viewmodel {
                 tabIndex: self.tabindex
             };
             $('#emp-component').ntsLoadListComponent(self.listComponentOption);
-
         }
-
 
         cancel(){
             nts.uk.ui.windows.close();
         }
 
-        getDefault(){
+        clearError(){
+            var self = this;
+            if (!self.otherp()&& $("#B3_14").ntsError("hasError")){
+                $("#B3_14").ntsError('clear');
+            }
+            if (!self.others()&& $("#B4_12").ntsError("hasError")){
+                $("#B4_12").ntsError('clear');
+            }
+        }
+
+        getDefaultNameReport(){
             let self = this;
-            self.basicPenNumber('');
             self.others(false);
             self.listeds(false);
             self.residentCards(1);
@@ -90,6 +97,17 @@ module nts.uk.pr.view.qsi003.b.viewmodel {
             self.addressOverseap(false);
             self.otherReasonp('');
             self.shortResidentp(false);
+        }
+
+        getDefaultBasicPen(){
+            let self = this;
+            self.basicPenNumber('');
+        }
+
+        getDefault(){
+            let self = this;
+            self.getDefaultNameReport();
+            self.getDefaultBasicPen();
             self.screenMode(model.SCREEN_MODE.NEW);
         }
 
@@ -99,20 +117,28 @@ module nts.uk.pr.view.qsi003.b.viewmodel {
             let dfd = $.Deferred();
             nts.uk.pr.view.qsi003.b.service.getReasonRomajiName(empId).done(function (data: any) {
                 if(data){
-                    self.basicPenNumber(data.basicPenNumber);
-                    self.others(data.empNameReport.spouse.other != 0);
-                    self.listeds(data.empNameReport.spouse.listed != 0);
-                    self.residentCards(data.empNameReport.spouse.residentCard);
-                    self.addressOverseas(data.empNameReport.spouse.addressOverseas != 0);
-                    self.otherReasons(data.empNameReport.spouse.otherReason);
-                    self.shortResidents(data.empNameReport.spouse.shortResident != 0);
+                    if (data.basicPenNumber) {
+                        self.basicPenNumber(data.basicPenNumber);
+                    } else {
+                        self.getDefaultBasicPen();
+                    }
+                    if(data.empNameReport) {
+                        self.others(data.empNameReport.spouse.other != 0);
+                        self.listeds(data.empNameReport.spouse.listed != 0);
+                        self.residentCards(data.empNameReport.spouse.residentCard);
+                        self.addressOverseas(data.empNameReport.spouse.addressOverseas != 0);
+                        self.otherReasons(data.empNameReport.spouse.otherReason);
+                        self.shortResidents(data.empNameReport.spouse.shortResident != 0);
 
-                    self.otherp(data.empNameReport.personalSet.other != 0);
-                    self.listedp(data.empNameReport.personalSet.listed != 0);
-                    self.residentCardp(data.empNameReport.personalSet.residentCard);
-                    self.addressOverseap(data.empNameReport.personalSet.addressOverseas != 0);
-                    self.otherReasonp(data.empNameReport.personalSet.otherReason);
-                    self.shortResidentp(data.empNameReport.personalSet.shortResident != 0);
+                        self.otherp(data.empNameReport.personalSet.other != 0);
+                        self.listedp(data.empNameReport.personalSet.listed != 0);
+                        self.residentCardp(data.empNameReport.personalSet.residentCard);
+                        self.addressOverseap(data.empNameReport.personalSet.addressOverseas != 0);
+                        self.otherReasonp(data.empNameReport.personalSet.otherReason);
+                        self.shortResidentp(data.empNameReport.personalSet.shortResident != 0);
+                    } else {
+                        self.getDefaultNameReport();
+                    }
                     self.screenMode(model.SCREEN_MODE.UPDATE);
                 } else {
                     self.getDefault();
@@ -127,6 +153,22 @@ module nts.uk.pr.view.qsi003.b.viewmodel {
 
         constructor() {
             let self = this;
+            $("#emp-component").focus();
+            self.otherp.subscribe(e =>{
+                if (!self.otherp()&& $("#B3_14").ntsError("hasError")){
+                    $("#B3_14").ntsError('clear');
+                }else{
+                    $("#B3_14").trigger("validate");
+                }
+            });
+
+            self.others.subscribe(e =>{
+                if (!self.others()&& $("#B4_12").ntsError("hasError")){
+                    $("#B4_12").ntsError('clear');
+                }else{
+                    $("#B4_12").trigger("validate");
+                }
+            });
             self.selectedItem.subscribe((data) => {
                 errors.clearAll();
                 self.getDataRomaji(data);
@@ -154,29 +196,24 @@ module nts.uk.pr.view.qsi003.b.viewmodel {
             return listEmployee;
         }
 
-
         updateReasonRomajiName(){
             var self = this;
-            $('.nts-input').trigger("validate");
-            if (nts.uk.ui.errors.hasError()) {
-                return;
-            }
             let spouse : any = {
-                other :  self.others() == true ? 1 : 0,
-                listed :  self.listeds() == true ? 1 : 0,
+                other :  self.others() ? 1 : 0,
+                listed :  self.listeds() ? 1 : 0,
                 residentCard : self.residentCards(),
-                addressOverseas : self.addressOverseas() == true ? 1 : 0,
-                otherReason : self.others() == true ? self.otherReasons() : null,
-                shortResident : self.shortResidents() == true ? 1 : 0
+                addressOverseas : self.addressOverseas() ? 1 : 0,
+                otherReason : self.others() && self.otherReasons() ? self.otherReasons() : null,
+                shortResident : self.shortResidents() ? 1 : 0
             }
 
             let personalSet : any = {
-                other :  self.otherp() == true ? 1 : 0,
-                listed :  self.listedp() == true ? 1 : 0,
+                other :  self.otherp() ? 1 : 0,
+                listed :  self.listedp() ? 1 : 0,
                 residentCard : self.residentCardp(),
-                addressOverseas : self.addressOverseap() == true ? 1 : 0,
-                otherReason : self.otherp() == true ? self.otherReasonp() : null,
-                shortResident : self.shortResidentp() == true ? 1 : 0
+                addressOverseas : self.addressOverseap() ? 1 : 0,
+                otherReason : self.otherp() && self.otherReasonp() ? self.otherReasonp() : null,
+                shortResident : self.shortResidentp() ? 1 : 0
             }
 
             let empNameReportCommand: any = {
@@ -201,7 +238,7 @@ module nts.uk.pr.view.qsi003.b.viewmodel {
             }).fail(error => {
                 dialog.alertError(error);
             });
-            $("#B2_2").focus();
+            $("#emp-component").focus();
         }
     }
 

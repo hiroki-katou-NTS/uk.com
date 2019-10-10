@@ -1240,9 +1240,39 @@ interface JQuery {
 
 (function($: any) {
     $.fn.ntsListComponent = function(option: kcp.share.list.ComponentOption): JQueryPromise<void> {
-
+        let $list = $(this);
         // Return.
-        return new kcp.share.list.ListComponentScreenModel().init(this, option);
+        let dfd = $.Deferred<any>();
+        new kcp.share.list.ListComponentScreenModel().init(this, option).done(list => {
+            $list.data("ntsListComponent", list);
+            dfd.resolve(list);
+        }).fail((er) => {
+            dfd.reject(er);
+        });
+        
+        return dfd.promise();
+    }
+    
+    $.fn.ntsListComponentApi = function(action: string, param?: any): any {
+        let $list = $(this);
+        switch (action) {
+            case 'getSelectedRecords': {
+                let list: kcp.share.list.ListComponentScreenModel = $list.data("ntsListComponent");
+                
+                if(_.isEmpty(list.selectedCodes())){
+                    return [];
+                }
+                
+                let isId = list.listType === kcp.share.list.ListType.JOB_TITLE;
+                
+                return _.filter(list.itemList(), (item: kcp.share.list.UnitModel)=> {
+                    if (list.isMultipleSelect) {
+                        return list.selectedCodes().includes(isId ? item.id : item.code);
+                    }
+                    return list.selectedCodes() === (isId ? item.id : item.code);
+                });
+            }
+        }
     }
     
 } (jQuery));

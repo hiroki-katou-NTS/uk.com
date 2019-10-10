@@ -30,6 +30,7 @@ module kcp005.a.viewmodel {
         selectionOption: KnockoutObservableArray<any>;
         selectedOption: KnockoutObservable<number>;
         jsonData: KnockoutObservable<string>;
+        selectedInfo: KnockoutComputed<string>;
 
         constructor() {
             var self = this;
@@ -85,10 +86,10 @@ module kcp005.a.viewmodel {
 
             self.alreadySettingList = ko.observableArray([{ code: '1', isAlreadySetting: true }, { code: '2', isAlreadySetting: true }]);
             self.employeeList = ko.observableArray<UnitModel>([
-                { code: '1', name: 'Angela Babykasjgdkajsghdkahskdhaksdhasd', workplaceName: 'HN' },
-                { code: '2', name: 'Xuan Toc Doaslkdhasklhdlashdhlashdl', workplaceName: 'HN' },
-                { code: '3', name: 'Park Shin Hye', workplaceName: 'HCM' },
-                { code: '4', name: 'Vladimir Nabokov', workplaceName: 'HN' }
+                { id: '1a', code: '1', name: 'Angela Babykasjgdkajsghdkahskdhaksdhasd', workplaceName: 'HN' },
+                { id: '2b', code: '2', name: 'Xuan Toc Doaslkdhasklhdlashdhlashdl', workplaceName: 'HN' },
+                { id: '3c', code: '3', name: 'Park Shin Hye', workplaceName: 'HCM' },
+                { id: '3d', code: '4', name: 'Vladimir Nabokov', workplaceName: 'HN' }
             ]);
             self.hasSelectedEmp = ko.computed(function() {
                 return (self.selectedCode != undefined);
@@ -193,6 +194,18 @@ module kcp005.a.viewmodel {
                 }
             });
             self.jsonData = ko.observable('');
+            
+            self.selectedInfo = ko.observable("");
+        }
+        
+        getSelectedInfo () {
+            let self = this;
+            let selectedInfos = $("#component-items-list").ntsListComponentApi("getSelectedRecords");
+            let text = "";
+            _.forEach(selectedInfos, (s) => {
+                text = text.concat(JSON.stringify(s)).concat("/n");
+            });
+            self.selectedInfo(text);
         }
         
         // Setting Item(s) which Registed/Saved from main screen
