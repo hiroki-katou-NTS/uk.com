@@ -45,6 +45,7 @@ public class CreateperApprovalDailyDefault implements CreateperApprovalDailyServ
 			GeneralDate endDateClosure) {
 		AtomicBoolean checkStop = new AtomicBoolean(false);
 		/** パラメータ.実行種別をチェック */
+<<<<<<< HEAD
 		// 通常実行の場合 : processExecType = 0(通常実行) - 再作成の場合 : processExecType = 1(再作成)
 		// RequestList211
 		List<AffCompanyHistImport> listAffCompanyHistImport = syCompanyRecordAdapter
@@ -63,6 +64,31 @@ public class CreateperApprovalDailyDefault implements CreateperApprovalDailyServ
 						affComHist = affCompanyHistImport;
 						checkAffComHist = true;
 						break;
+=======
+		// 通常実行の場合 : processExecType = 0(通常実行) - // 再作成の場合 : processExecType = 1(再作成)
+//		if (processExecType == 0) {
+			// RequestList211
+			List<AffCompanyHistImport> listAffCompanyHistImport = syCompanyRecordAdapter
+					.getAffCompanyHistByEmployee(employeeIDs,
+							new DatePeriod(startDateClosure, GeneralDate.today()));
+			
+			this.parallel.forEach(employeeIDs, employeeID -> {
+				if(employeeID ==null) {
+					return;
+				}
+				// 年月日　←「システム日付の前日」
+				GeneralDate ymd = GeneralDate.today().addDays(-1);
+				if (createNewEmp == 1) {	
+					/** Imported「所属会社履歴（社員別）」を取得する(lấy thông tin Imported「所属会社履歴（社員別）」) */
+					AffCompanyHistImport affComHist = new AffCompanyHistImport();
+					boolean checkAffComHist = false;
+					for (AffCompanyHistImport affCompanyHistImport : listAffCompanyHistImport) {
+						if (affCompanyHistImport.getEmployeeId().equals(employeeID)) {
+							affComHist = affCompanyHistImport;
+							checkAffComHist = true;
+							break;
+						}
+>>>>>>> cab2d51... fixbug kbt002 :#109103
 					}
 				}
 				// 年月日 ← 取得した「所属会社履歴（社員別）.所属期間.開始日」
