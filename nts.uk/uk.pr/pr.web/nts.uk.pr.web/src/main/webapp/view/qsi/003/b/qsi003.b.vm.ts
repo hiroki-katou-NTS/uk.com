@@ -196,15 +196,8 @@ module nts.uk.pr.view.qsi003.b.viewmodel {
             return listEmployee;
         }
 
-
         updateReasonRomajiName(){
             var self = this;
-
-
-            /*$('.nts-input').trigger("validate");
-            if (nts.uk.ui.errors.hasError()) {
-                return;
-            }*/
             let spouse : any = {
                 other :  self.others() ? 1 : 0,
                 listed :  self.listeds() ? 1 : 0,
