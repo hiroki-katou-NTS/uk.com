@@ -8,6 +8,7 @@ import lombok.Getter;
 public class FacePhotoFile {
 
 	private String thumbnailFileID;
+	
 	private String facePhotoFileID;
 
 }
