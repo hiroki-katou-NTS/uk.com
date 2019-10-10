@@ -5,15 +5,17 @@ package nts.uk.ctx.pereg.dom.filemanagement.services;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.pereg.dom.filemanagement.EmpFileManagementRepository;
+import nts.uk.ctx.pereg.dom.filemanagement.PersonFileManagement;
+import nts.uk.ctx.pereg.dom.filemanagement.TypeFile;
 
-/**
- *
- */
 @Stateless
 public class PersonFileManagementService {
 
@@ -25,7 +27,50 @@ public class PersonFileManagementService {
 	 */
 	public List<PersonFileManagementDto> getPersonalFileManagementFromPID(List<String> lstpid) {
 
-		return new ArrayList<PersonFileManagementDto>();
+		List<PersonFileManagement> listPersonFile = empFileManagementRepo.getPersonalFileManagementFromPID(lstpid);
+		
+		if (listPersonFile.isEmpty()) 
+			return new ArrayList<PersonFileManagementDto>();
+		
+		List<PersonFileManagementDto> result = new ArrayList<>();
+		
+		Map<String, List<PersonFileManagement>> mapPidAndListFile = listPersonFile.stream().collect(Collectors.groupingBy(x -> x.getPId()));
+		
+		mapPidAndListFile.forEach((pid,listFile)->{
+			String mapFileID = null, thumbnailFileId = null, facePhotoFileID = null;
+			Optional<PersonFileManagement> mapFile = listFile.stream().filter(x -> x.getTypeFile() == TypeFile.MAP_FILE).findFirst();
+			if (mapFile.isPresent()) {
+				mapFileID = mapFile.get().getFileID();
+			}
+			
+			Optional<PersonFileManagement> thumbnailFile = listFile.stream().filter(x -> x.getTypeFile() == TypeFile.AVATAR_FILE).findFirst();
+			if (thumbnailFile.isPresent()) {
+				thumbnailFileId = thumbnailFile.get().getFileID();
+			}	
+			
+			Optional<PersonFileManagement> facePhotoFile = listFile.stream().filter(x -> x.getTypeFile() == TypeFile.AVATAR_FILE_NOTCROP).findFirst();
+			if (facePhotoFile.isPresent()) {
+				facePhotoFileID = facePhotoFile.get().getFileID();
+			}
+			
+			List<PersonFileManagement> _listDocumentFile = listFile.stream().filter(x -> x.getTypeFile() == TypeFile.DOCUMENT_FILE).collect(Collectors.toList());
+			
+			List<DocumentFile> listDocumentFile = new ArrayList<>();
+			
+			if (!_listDocumentFile.isEmpty()) {
+				listDocumentFile = _listDocumentFile.stream().map(x -> {
+					return new DocumentFile(x.getFileID(), x.getUploadOrder().intValue());
+				}).collect(Collectors.toList());
+			}
+			
+			FacePhotoFile faceObj =  new FacePhotoFile(thumbnailFileId, facePhotoFileID);
+			
+			PersonFileManagementDto obj = new PersonFileManagementDto(pid, faceObj, mapFileID, listDocumentFile);
+			
+			result.add(obj);
+		});
+		
+		return result;
 
 	}
 }
