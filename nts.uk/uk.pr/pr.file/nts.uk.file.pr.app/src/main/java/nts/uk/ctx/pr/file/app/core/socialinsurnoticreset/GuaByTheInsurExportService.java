@@ -85,14 +85,23 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
             if(ins.getOutputFormat().get() == OutputFormatClass.PEN_OFFICE) {
                 pension = guaByTheInsurExportRepository.getDataExportCSV(exportServiceContext.getQuery().getEmpIds(), cid,
                         exportServiceContext.getQuery().getStartDate(), exportServiceContext.getQuery().getEndDate());
+                if(pension.isEmpty()){
+                    throw new BusinessException("Msg_37");
+                }
             }
             if(ins.getOutputFormat().get() == OutputFormatClass.HEAL_INSUR_ASSO) {
                 healthInsAss = guaByTheInsurExportRepository.getDataHealthInsAss(exportServiceContext.getQuery().getEmpIds(), cid, userId,
                         exportServiceContext.getQuery().getStartDate(), exportServiceContext.getQuery().getEndDate());
+                if(healthInsAss.isEmpty()){
+                    throw new BusinessException("Msg_37");
+                }
             }
             if(ins.getOutputFormat().get() == OutputFormatClass.THE_WELF_PEN) {
                 empPensionFund = guaByTheInsurExportRepository.getDataEmpPensionFund(exportServiceContext.getQuery().getEmpIds(), cid,
                         exportServiceContext.getQuery().getStartDate(), exportServiceContext.getQuery().getEndDate());
+                if(empPensionFund.isEmpty()){
+                    throw new BusinessException("Msg_37");
+                }
             }
         }
         ExportDataCsv exportData = ExportDataCsv.builder()
