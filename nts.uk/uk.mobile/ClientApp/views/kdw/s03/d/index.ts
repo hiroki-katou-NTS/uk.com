@@ -15,7 +15,7 @@ import { KdwS03EComponent } from 'views/kdw/s03/e';
 })
 export class KdwS03DComponent extends Vue {
     @Prop({ default: () => ({ employeeID: '', employeeName: '', startDate: new Date(), endDate: new Date() }) })
-    public readonly params!: { employeeID: string, employeeName: string, startDate: Date, endDate: Date };
+    public readonly params!: { employeeID: string, employeeName: string, startDate: Date, endDate: Date, attendanceItemID?: string };
     public rowDatas: Array<RowData> = [];//エラー一覧
 
     public created() {
@@ -28,7 +28,7 @@ export class KdwS03DComponent extends Vue {
             startDate: self.params.startDate, 
             endDate: self.params.endDate,
             employeeIDLst: [ self.params.employeeID ],
-            attendanceItemID: null
+            attendanceItemID: self.params.attendanceItemID
         }).then((data: any) => {
             self.rowDatas = data.data;
             self.$mask('hide');

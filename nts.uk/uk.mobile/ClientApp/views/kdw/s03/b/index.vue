@@ -26,7 +26,7 @@
     </div>
   </div>
   <div class="row" v-if="isDisplayError">
-    <div class="accordion w-100" v-on:click="openDScreen">
+    <div class="accordion w-100" v-on:click="openDScreen()">
       <div class="card border-0 pl-0 custom-show">
         <div class="card-header pl-0 pr-0 uk-bg-light-coral db-caret-right">
           <button class="btn btn-link" type="button">{{'KDWS03_36' | i18n}}</button>
@@ -40,7 +40,7 @@
         <div class="row pl-2 mb-1">{{ getItemText(key) }}</div>
         <div class="row mb-1">
           <div class="col-2 p-1 text-right">
-            <button class="border-0 bg-transparent" v-on:click="openDScreen()"><i :class="`${getIcon(key) }`"></i></button>
+            <button class="border-0 bg-transparent" v-on:click="openDScreen(key)"><i :class="`${getIcon(key) }`"></i></button>
           </div>
           <!-- InputStringCode && ButtonDialog -->
           <div class="col-9 pl-0 pr-0" v-if="getItemType(key)==itemType.InputStringCode || getItemType(key)==itemType.ButtonDialog">
