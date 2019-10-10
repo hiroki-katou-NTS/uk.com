@@ -1114,7 +1114,7 @@ public class DPCorrectionProcessorMob {
 		} else {
 			long startTime = System.currentTimeMillis();
 			List<ApproveRootStatusForEmpImport> approvals = approvalStatusAdapter
-					.getApprovalByListEmplAndListApprovalRecordDate(dateRange.toListDate(), employeeIds, 1);
+					.getApprovalByListEmplAndListApprovalRecordDateNew(dateRange.toListDate(), employeeIds, 1);
 			System.out.println("thoi gian getApp: " + (System.currentTimeMillis() - startTime));
 			Map<String, ApproveRootStatusForEmpDto> approvalRootMap = approvals.stream().collect(
 					Collectors.toMap(x -> mergeString(x.getEmployeeID(), "|", x.getAppDate().toString()), x -> {

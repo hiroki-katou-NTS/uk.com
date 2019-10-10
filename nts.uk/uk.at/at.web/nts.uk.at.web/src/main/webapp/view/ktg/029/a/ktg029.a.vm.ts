@@ -212,21 +212,22 @@ module nts.uk.at.view.ktg029.a.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             var code = $(location).attr('search').split('=')[1];
-            self.switchDate(nts.uk.ui.windows.getShared('currentOrNextMonth'));
+            let getShare = nts.uk.ui.windows.getShared('cache')
+            self.switchDate(getShare.currentOrNextMonth);
             if(!self.switchDate()){
                 nts.uk.ui.block.grayout();
                 let serviceParam = new service.Service();
                 serviceParam.getRequestList609().done(function(data: any){
                     if(data.currentOrNextMonth == 1){
-                        self.switchDate(0);
-                    }else{
                         self.switchDate(1);
+                    }else{
+                        self.switchDate(2);
                     }
                     
                     if(isNaN(self.currentMonth().strMonth)){
                         return;    
                     }
-                    if(self.switchDate()==0){
+                    if(self.switchDate()==1){
                         var strMonth = self.currentMonth().strMonth.getMonth()+1;
                         if(strMonth<10){
                              strMonth='0'+strMonth; 
@@ -275,7 +276,7 @@ module nts.uk.at.view.ktg029.a.viewmodel {
                 if(isNaN(self.currentMonth().strMonth)){
                         return;    
                     }
-                    if(self.switchDate()==0){
+                    if(self.switchDate()==1){
                         var strMonth = self.currentMonth().strMonth.getMonth()+1;
                         if(strMonth<10){
                              strMonth='0'+strMonth; 
