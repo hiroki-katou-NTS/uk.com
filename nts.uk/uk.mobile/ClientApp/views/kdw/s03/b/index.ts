@@ -651,13 +651,18 @@ export class KdwS03BComponent extends Vue {
         }
     }
 
-    public openDScreen() {
+    public openDScreen(key?: string) {
         let self = this;
+        let idKey: any;
+        if (!_.isEmpty(key)) {
+            idKey = key.replace('A', '');
+        } 
         self.$modal('kdws03d', {
             employeeID: self.params.employeeID,
             employeeName: self.params.employeeName,
             startDate: self.params.date,
-            endDate: self.params.date
+            endDate: self.params.date,
+            attendanceItemID: idKey
         });
     }
 
