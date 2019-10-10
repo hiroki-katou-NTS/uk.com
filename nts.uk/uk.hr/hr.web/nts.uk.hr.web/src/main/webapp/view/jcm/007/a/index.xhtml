@@ -1,0 +1,425 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+					nts.uk.ctx.bs.company.dom.company.CompanyCode
+					nts.uk.ctx.bs.company.dom.company.Name
+					nts.uk.ctx.bs.company.dom.company.primitive.KNName
+					nts.uk.ctx.bs.company.dom.company.primitive.ABName
+					nts.uk.ctx.bs.company.dom.company.primitive.TaxNo
+					nts.uk.ctx.bs.company.dom.company.primitive.RepName
+					nts.uk.ctx.bs.company.dom.company.primitive.RepJob
+					nts.uk.shr.com.primitive.PostCode
+					nts.uk.ctx.bs.company.dom.company.primitive.Add_1
+					nts.uk.ctx.bs.company.dom.company.primitive.Add_2
+					nts.uk.ctx.bs.company.dom.company.primitive.Add_Kana_1
+					nts.uk.ctx.bs.company.dom.company.primitive.Add_Kana_2
+					nts.uk.ctx.bs.company.dom.company.primitive.PhoneNum 
+					nts.uk.ctx.bs.company.dom.company.primitive.FaxNum
+				</com:ValidatorScript>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="jcm007.a.style.css" />
+			<com:scriptfile path="jcm007.a.start.js" />
+			<com:scriptfile path="jcm007.a.vm.js" />
+			<com:scriptfile path="jcm007.a.service.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<!-- A1_1 -->
+				<button id="reset" tabindex="1" class="group-button-1"
+					data-bind="click: newMode"> 新規 </button>
+				<!-- A1_2 -->
+				<button id="register" tabindex="2" class="proceed group-button-1"
+					data-bind="click: register, enable:  true"> 登録 </button>
+				<!-- A1_3 -->
+				<button id="setting" tabindex="3" class="danger group-button-1" 
+					data-bind="click: remove , enable: enable_btnRemove">削除</button>
+					
+				<span class = "guideDisplay"> 操作ガイド　表示 </span>
+				
+			</div>
+			<div id="contents-area" class="fixed-flex-layout" style="overflow-y: hidden">
+				<div class="fixed-flex-layout-left">
+					<!-- <Tabpanel> -->
+					<div class="cf flex">
+						<div style="margin-top: -10px">
+
+							<div class="cf"
+								data-bind="ntsTabPanel: { dataSource: tabs,
+										   active: selectedTab, 
+										   direction: 'horizontal' }">
+								<!-- Màn hình B -->
+								<div class="tab-content-1">
+									<div style="text-align:  center;">tab-content-1</div>
+								</div>
+								<!-- Màn hình C -->
+								<div class="tab-content-2">
+									
+									<div style="text-align:  center;">
+										<div id="gridListEmployeesContent">
+										<table id="gridListEmployees"></table>
+									</div>
+									
+									</div>
+								</div>								
+							</div>
+						</div>
+					</div>	
+				</div>
+
+				<!-- ======================= Chi tiet man hinh ben phai của màn hình A ========================== -->
+				<div class="fixed-flex-layout-right" style="margin-top: 5px;"
+					data-bind="with: currentEmployee">
+					<!-- header -->
+					<div class="line-height flex header">
+						<div class = "header-left">
+							<div class = "employee">
+								<div class = "line1 employee_lab">社員　：</div>
+								<div class = "line1 employee_info" data-bind="text: codeNameEmp " ></div>
+							</div>
+							<div class = "department">
+								<div class = "line3 department_lab">部門 ：</div>
+								<div class = "line2 department_info" data-bind="text: department"></div>
+							</div>
+							<div class = "position">
+								<div class = "line3 position_lab">職位 :</div>
+								<div class = "line3 position_info" data-bind="text: position"></div>
+							</div>
+							<div class = "employment">
+								<div class = "line4 employment_lab">雇用区分：</div>
+								<div class = "line4 employment_info" data-bind="text: employmentCls"></div>
+							</div>
+							
+						</div>
+						<div class = "header-right avatar-group">
+						</div>						
+					</div>
+					
+					<!-- info -->
+					<div class = "infoDetail">
+						<div class="line-height flex">  <!-- row 5 -->
+							<div>
+								<!-- A222_11 -->
+								<div data-bind="ntsFormLabel: { required: true, constraint: ''}">退職日（必須） </div>
+							</div>
+							<!-- A222_12 -->					
+							<div style="margin-left: 51px" data-bind="ntsDatePicker: {value: retirementDate , dateFormat: 'YYYY/MM/DD'}"></div>					
+						</div>
+					
+						<div class="line-height flex">  <!-- row 6 -->
+							<div>
+								<!-- A222_13 -->
+								<div  data-bind="ntsFormLabel: { required: true, constraint: ''}">公開日（必須） </div>
+							</div>
+							<!-- A222_14 -->					
+							<div style="margin-left: 51px" data-bind="ntsDatePicker: {value: releaseDate , dateFormat: 'YYYY/MM/DD'}"></div>					
+						</div>
+					
+						<div class="line-height flex">  <!-- row 7 -->
+							<div>
+								<!-- A222_15 -->
+								<div data-bind="ntsFormLabel: { required: true, constraint: ''}">退職区分（必須） </div>
+							</div>
+							<!-- A222_16 -->					
+							<div  style="width: 108px; margin-left: 37px" id="combo-box-rom"
+									 data-bind="ntsComboBox: {
+												options: listRetirementCtg ,
+												optionsValue: 'value',
+												value: selectedCode_Retiment ,
+												optionsText: 'text',
+												enable: true,
+												editable: false,
+												columns: [
+													{ prop: 'text', length: 10 }
+												]}"></div>					
+						</div>
+					
+						<div class="line-height flex">  <!-- row 8 -->
+							<div>
+								<!-- A222_18 -->
+								<div data-bind="ntsFormLabel: { required: true, constraint: ''}">退職理由区分1（必須） </div>
+							</div>
+							<!-- A222_20 -->					
+							<div  style="width: 170px" id="combo-box-rom"
+									 data-bind="ntsComboBox: {
+												options: listRetirementReason1 ,
+												optionsValue: 'value',
+												value: selectedCode_Reason1 ,
+												optionsText: 'text',
+												enable: true,
+												editable: false,
+												columns: [
+													{ prop: 'text', length: 15 }
+												]}"></div>					
+						</div>
+					
+						<div class="line-height flex">  <!-- row 9 -->
+							<div>
+								<!-- A222_22 -->
+								<div data-bind="ntsFormLabel: { required: true, constraint: ''}">退職理由区分2（必須）</div>
+							</div>
+							<!-- A222_23 -->					
+							<div  style="width: 170px" id="combo-box-rom"
+									 data-bind="ntsComboBox: {
+												options: listRetirementReason2 ,
+												optionsValue: 'value',
+												value: selectedCode_Reason2 ,
+												optionsText: 'text',
+												enable: true,
+												editable: false,
+												columns: [
+													{ prop: 'text', length: 15 }
+												]}"></div>
+							<button style="margin-left: 30px" data-bind="ntsHelpButton: {textId: 'KTG027_11', textParams:['{#KTG027_7}', '{#KTG027_8}', '{#KTG027_1}', '{#KTG027_9}'], position: 'right center' }">？</button>										
+						</div>
+					
+						<div class="line-height flex">  <!-- row 10 -->
+							<div>
+								<!-- A222_25 -->
+								<div data-bind="ntsFormLabel: { required: false , constraint: ''}"> 退職の備考  </div>
+								<div class = "subText"> 面談記録 </div>
+							</div>
+							<!-- A222_26 -->					
+							<div style="margin-left: 81px">
+								<textarea data-bind="ntsMultilineEditor: {
+									value: retirementRemarks ,
+									constraint: '',
+									option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
+										resizeable: true,
+										width: '350px',
+									})),
+									enable: true,
+									readonly: false,
+									immediate: false}" />
+							</div>					
+						</div>
+
+						<div data-bind="visible: visible_NotDismissal ">
+							<div class="line-height flex">   <!-- row 11 -->
+								<div><span> 自己都合退職 </span></div> <!-- A222_28 -->
+							</div>
+	
+							<div class="line-height" style="margin-bottom: 16px;">  <!-- row 12 -->
+								<div style="width: 100%"><hr></hr></div>
+							</div>
+	
+							<div class="line-height flex"> <!-- row 13 -->
+								<div>
+									<!-- A222_30 -->
+									<div data-bind="ntsFormLabel: { required: false , constraint: ''}">自己都合退職の手続き</div>
+								</div>
+								<!-- A222_31 -->
+								<div style="margin-left: 14px">
+									<textarea data-bind="ntsMultilineEditor: {
+														value: retirementReasonVal ,
+														constraint: '',
+														option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
+											                resizeable: true,
+											                width: '350px',
+											            })),
+														enable: true,
+														readonly: false,
+														immediate: false}" />
+								</div>
+							</div>
+	
+						</div>
+					
+						<div data-bind="visible: visible_Dismissal " style="margin-top: 10px; margin-bottom: 10px">
+							<div class="line-height flex">   <!-- row 14 -->
+								<div><span> 解雇情報 </span></div> <!-- A222_32 -->
+							</div>
+	
+							<div class="line-height" style="margin-bottom: 16px;">  <!-- row 15 -->
+								<div style="width: 100%"><hr></hr></div> <!-- A222_33 -->
+							</div>
+							
+							<div class="line-height flex">  <!-- row 16 -->
+								<div>
+									<!-- A222_34 -->
+									<div data-bind="ntsFormLabel: { required: true, constraint: ''}"> 解雇予告日（必須） </div>
+								</div>
+								<!-- A222_35 -->					
+								<div style="margin-left: 22px;" data-bind="ntsDatePicker: {value: dismissalNoticeDate , dateFormat: 'YYYY/MM/DD'}"></div>					
+							</div>
+							
+							<div class="line-height flex">  <!-- row 16 -->
+								<div>
+									<!-- A222_36 -->
+									<div data-bind="ntsFormLabel: { required: false , constraint: ''}"> 解雇予告日（必須） </div>
+								</div>
+								<!-- A222_37 -->					
+								<div style="margin-left: 22px;" data-bind="ntsDatePicker: {value: dismissalNoticeDateAllow , dateFormat: 'YYYY/MM/DD'}"></div>					
+								<button style="margin-left: 30px" data-bind="ntsHelpButton: {textId: 'KTG027_11', textParams:['{#KTG027_7}', '{#KTG027_8}', '{#KTG027_1}', '{#KTG027_9}'], position: 'right center' }">？</button>										
+							</div>
+							
+							<div class="line-height flex"> <!-- row 17 -->
+								<div>
+									<!-- A222_38 -->
+									<div data-bind="ntsFormLabel: { required: false , constraint: ''}"> 解雇の事由・手続き </div>
+								</div>
+								<!-- A222_39 -->
+								<div style="margin-left: 35px;">
+									<textarea data-bind="ntsMultilineEditor: {
+														value: reaAndProForDis ,
+														constraint: '',
+														option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
+											                resizeable: true,
+											                width: '350px',
+											            })),
+														enable: true,
+														readonly: false,
+														immediate: false}" />
+								</div>
+							</div>
+							
+							<div class="line-height flex"> <!-- row 18 -->
+								<div>
+									<!-- A222_40 -->
+									<div data-bind="ntsFormLabel: { required: false , constraint: ''}"> 解雇の理由 </div>
+								</div>
+							</div>
+							
+							<div class="line-height flex"> <!-- row 19 -->
+								<div class = "checkbox" >
+									<!-- A222_41 -->
+									<div data-bind="ntsCheckBox: { checked: naturalUnaReasons_1 }">1.天災その他やむをえない理由</div>
+								</div>
+								<!-- A222_42 -->
+								<div>
+									<textarea id = 'naturalUnaReasons_1Val' 
+										data-bind="ntsMultilineEditor: {
+														value: naturalUnaReasons_1Val ,
+														constraint: '',
+														option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
+											                resizeable: true,
+											                width: '350px',
+											            })),
+														enable: naturalUnaReasons_enable,
+														readonly: false,
+														immediate: false}" />
+								</div>
+							</div>
+							
+							<div class="line-height flex"> <!-- row 20 -->
+								<div class = "checkbox" >
+									<!-- A222_41 -->
+									<div data-bind="ntsCheckBox: { checked: businessReduction_2 }">2.事業縮小等当社の都合</div>
+								</div>
+								<!-- A222_42 -->
+								<div>
+									<textarea id = 'businessReduction_2Val' 
+										data-bind="ntsMultilineEditor: {
+														value: businessReduction_2Val ,
+														constraint: '',
+														option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
+											                resizeable: true,
+											                width: '350px',
+											            })),
+														enable: businessReduction_enable,
+														readonly: false,
+														immediate: false}" />
+								</div>
+							</div>
+							
+							<div class="line-height flex"> <!-- row 21 -->
+								<div class = "checkbox" >
+									<!-- A222_41 -->
+									<div data-bind="ntsCheckBox: { checked: seriousViolationsOrder_3 }">3.職務命令に対する重大な違反行為</div>
+								</div>
+								<!-- A222_42 -->
+								<div>
+									<textarea id = 'seriousViolationsOrder_3Val' 
+										data-bind="ntsMultilineEditor: {
+														value: seriousViolationsOrder_3Val ,
+														constraint: '',
+														option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
+											                resizeable: true,
+											                width: '350px',
+											            })),
+														enable: seriousViolationsOrder_enable ,
+														readonly: false,
+														immediate: false}" />
+								</div>
+							</div>
+							
+							<div class="line-height flex"> <!-- row 22 -->
+								<div class = "checkbox" >
+									<!-- A222_41 -->
+									<div data-bind="ntsCheckBox: { checked: unauthorizedConduct_4 }">4.行身について不正な行為</div>
+								</div>
+								<!-- A222_42 -->
+								<div>
+									<textarea id = 'unauthorizedConduct_4Val' 
+										data-bind="ntsMultilineEditor: {
+														value: unauthorizedConduct_4Val ,
+														constraint: '',
+														option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
+											                resizeable: true,
+											                width: '350px',
+											            })),
+														enable: unauthorizedConduct_enable ,
+														readonly: false,
+														immediate: false}" />
+								</div>
+							</div>
+							
+							<div class="line-height flex"> <!-- row 23 -->
+								<div class = "checkbox" >
+									<!-- A222_41 -->
+									<div data-bind="ntsCheckBox: { checked: leaveConsiderableTime_5 }">5.相当期間に渡る無断欠勤をしたこと等勤務不良であること</div>
+								</div>
+								<!-- A222_42 -->
+								<div>
+									<textarea id = 'leaveConsiderableTime_5Val' 
+										data-bind="ntsMultilineEditor: {
+														value: leaveConsiderableTime_5Val ,
+														constraint: '',
+														option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
+											                resizeable: true,
+											                width: '350px',
+											            })),
+														enable: leaveConsiderableTime_enable ,
+														readonly: false,
+														immediate: false}" />
+								</div>
+							</div>
+							
+							<div class="line-height flex"> <!-- row 24 -->
+								<div class = "checkbox" >
+									<!-- A222_41 -->
+									<div data-bind="ntsCheckBox: { checked: other_6 }">6.その他</div>
+								</div>
+								<!-- A222_42 -->
+								<div>
+									<textarea id = 'other_6Val'
+										data-bind="ntsMultilineEditor: {
+														value: other_6Val ,
+														constraint: '',
+														option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
+											                resizeable: true,
+											                width: '350px',
+											            })),
+														enable: other_enable ,
+														readonly: false,
+														immediate: false}" />
+								</div>
+							</div>
+							
+										
+						</div>
+					</div>
+	
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

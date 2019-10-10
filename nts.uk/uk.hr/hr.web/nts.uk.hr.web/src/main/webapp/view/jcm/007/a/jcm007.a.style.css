@@ -1,0 +1,125 @@
+#functions-area {
+	height: 50px !important;
+	overflow-y: hidden;
+}
+
+.infoDetail {
+	overflow-y: scroll;
+	height: 600px !important;
+    margin-top: 10px;
+}
+
+#tab-1, #tab-2{
+    width: 718px;
+	height: 450px;
+	overflow: visible !important;
+}
+
+#gridListEmployeesContent {
+	height: 450px;
+	width: 716px;
+	position: relative;
+	z-index: 99;
+}
+
+.flex {
+    display: flex;
+    margin-top: 10px;
+}
+
+.header {
+	border: 1px solid black;
+	height: 170px;
+	border-radius: 15px;
+	margin-top: 0px;
+}
+
+.header-left{
+	float: left;
+	width: 86%;
+	margin: 10px;
+}
+
+.header-right{
+	float: right;
+	margin: 10px;
+	border: 1px solid black;
+}
+.avatar-group{
+	width: 110px;
+    height: 147px;
+    cursor: pointer;
+    background-color: green;
+}
+
+.employee {
+	height: 25%;
+}
+
+.department {
+	height: 25%;
+}
+
+.position {
+	height: 25%;
+}
+
+.employment {
+	height: 25%;
+}
+
+.line1{
+	display: inline-block;
+}
+
+.line2{
+	display: inline-block;
+}
+
+.line3{
+	display: inline-block;
+}
+
+.line4{
+	display: inline-block;
+}
+
+.line5{
+	display: inline-block;
+}
+
+
+
+#retirementDate {
+	width: 50px;
+	margin-left: 7px !important; 
+	margin-bottom: 0px !important;
+}
+
+.checkbox {
+	padding-top: 11px;
+}
+
+.ntsCheckBox span.label {
+    display: inline-block;
+    padding-left: 10px;
+    width: 200px;
+}
+
+.subText  {
+	left: 34px;
+	position: relative;
+	bottom: 8px;
+	color: #0070C0;
+	text-decoration: underline;
+}
+
+.guideDisplay {
+	margin-right: 20px;
+    margin-top: 15px;
+	float:right;
+	color: #0070C0;
+	text-decoration: underline;
+}
+	
+	
