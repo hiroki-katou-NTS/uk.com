@@ -27,7 +27,7 @@
     <ui:define name="content">
         <div id="functions-area">
             <button id="B1_1" tabindex="1" class="proceed"
-                    data-bind="click:registerLossInfo">#{i18n.getText('QSI013_B1_1')}</button>
+                    data-bind="click:registerLossInfo,enable: $root.errors.isEmpty()">#{i18n.getText('QSI013_B1_1')}</button>
             <button id="B1_2" tabindex="2"
                     data-bind="click:cancel">#{i18n.getText('QSI013_B1_2')}</button>
         </div>

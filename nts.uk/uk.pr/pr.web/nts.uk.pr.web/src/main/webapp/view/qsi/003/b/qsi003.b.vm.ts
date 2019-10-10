@@ -72,6 +72,16 @@ module nts.uk.pr.view.qsi003.b.viewmodel {
             nts.uk.ui.windows.close();
         }
 
+        clearError(){
+            var self = this;
+            if (!self.otherp()&& $("#B3_14").ntsError("hasError")){
+                $("#B3_14").ntsError('clear');
+            }
+            if (!self.others()&& $("#B4_12").ntsError("hasError")){
+                $("#B4_12").ntsError('clear');
+            }
+        }
+
         getDefaultNameReport(){
             let self = this;
             self.others(false);
@@ -144,6 +154,21 @@ module nts.uk.pr.view.qsi003.b.viewmodel {
         constructor() {
             let self = this;
             $("#emp-component").focus();
+            self.otherp.subscribe(e =>{
+                if (!self.otherp()&& $("#B3_14").ntsError("hasError")){
+                    $("#B3_14").ntsError('clear');
+                }else{
+                    $("#B3_14").trigger("validate");
+                }
+            });
+
+            self.others.subscribe(e =>{
+                if (!self.others()&& $("#B4_12").ntsError("hasError")){
+                    $("#B4_12").ntsError('clear');
+                }else{
+                    $("#B4_12").trigger("validate");
+                }
+            });
             self.selectedItem.subscribe((data) => {
                 errors.clearAll();
                 self.getDataRomaji(data);
@@ -171,13 +196,8 @@ module nts.uk.pr.view.qsi003.b.viewmodel {
             return listEmployee;
         }
 
-
         updateReasonRomajiName(){
             var self = this;
-            $('.nts-input').trigger("validate");
-            if (nts.uk.ui.errors.hasError()) {
-                return;
-            }
             let spouse : any = {
                 other :  self.others() ? 1 : 0,
                 listed :  self.listeds() ? 1 : 0,

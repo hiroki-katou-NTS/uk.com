@@ -148,6 +148,14 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
 
                 });
 
+                self.otherNotes.subscribe(e =>{
+                    if(!self.otherNotes() && $("#B222_21").ntsError("hasError") ){
+                        $("#B222_21").ntsError('clear');
+                    }else{
+                        $("#B222_21").trigger("validate");
+                    }
+                });
+
 
             }
 
@@ -280,10 +288,6 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
             nts.uk.ui.errors.clearAll();
             let params = getShared('QSI001_PARAMS_TO_SCREEN_B');
             let baseDate = moment.utc(params.date, "YYYY/MM/DD");
-            $("input").trigger("validate");
-            if (nts.uk.ui.errors.hasError()) {
-                return;
-            }
             block.invisible();
             let data = {
 
@@ -333,55 +337,7 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
                 }
 
                 self.loadPage(self.selectedItem())
-                /*service.getSocialInsurAcquisiInforById(self.selectedItem()).done(e => {
-                    if (e) {
-                        self.tempApplyToEmployeeOver70(e.percentOrMore);
-                        self.otherNotes(e.remarksOther == 1 ? true : false);
-                        self.textOtherNotes(e.remarksAndOtherContents);
-                        self.salaryMonthlyActual(e.remunMonthlyAmountKind);
-                        self.salaryMonthly(e.remunMonthlyAmount);
-                        self.totalCompensation(e.totalMonthlyRemun);
-                        self.livingAbroad(e.livingAbroad == 1 ? true : false);
-                        self.otherNotes1(e.reasonOther == 1 ? true : false);
-                        self.textOtherNotes1(e.reasonAndOtherContents);
-                        self.tempTextOtherNotes1(e.reasonAndOtherContents);
-                        self.shortTermResidence(e.shortStay == 1 ? true : false);
-                        self.selectedDepNotiAttach((e.depenAppoint == null || e.depenAppoint == 0) ? false : true);
-                        self.shortWorkHours(e.shortTimeWorkers == 1 ? true : false);
-                        self.continuousEmpAfterRetire(e.continReemAfterRetirement == 1 ? true : false);
 
-
-                        //living abroad
-                        if(e.livingAbroad){
-                            self.selectedCode(PersonalNumber.Living_Abroad + '');
-                        }else if(e.shortStay){
-                            self.selectedCode(PersonalNumber.Short_Stay + '');
-                        }else if(e.reasonOther){
-                            self.selectedCode(PersonalNumber.Other + '');
-                        }else{
-                            self.selectedCode(PersonalNumber.Not_Applicable + '');
-                        }
-
-                    } else {
-                        self.applyToEmployeeOver70(false);
-                        self.otherNotes(false);
-                        self.textOtherNotes(null);
-                        self.salaryMonthlyActual(null);
-                        self.salaryMonthly(null);
-                        self.totalCompensation(null);
-                        self.livingAbroad(false);
-                        self.otherNotes1(false);
-                        self.textOtherNotes1(null);
-                        self.tempTextOtherNotes1(null);
-                        self.shortTermResidence(false);
-                        self.selectedDepNotiAttach(0);
-                        self.shortWorkHours(false);
-                        self.continuousEmpAfterRetire(false);
-                        self.selectedCode('0');
-                    }
-                }).fail(e => {
-
-                });*/
                 block.clear();
             }).fail(e => {
                 block.clear();

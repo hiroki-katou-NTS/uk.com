@@ -119,7 +119,7 @@ public class JpaRomajiNameNotiCreSetExReposity extends JpaRepository implements 
             exportSQL.append("	AND SID IN ( '%s' ) ");
             exportSQL.append("	AND CID = ?cid");
             exportSQL.append("	AND START_DATE <= ?baseDate");
-            exportSQL.append("	AND END_DATE >  ?baseDate");
+            exportSQL.append("	AND END_DATE >=  ?baseDate");
             String emp = empList.stream()
                     .map(String::valueOf)
                     .collect(Collectors.joining("','"));
