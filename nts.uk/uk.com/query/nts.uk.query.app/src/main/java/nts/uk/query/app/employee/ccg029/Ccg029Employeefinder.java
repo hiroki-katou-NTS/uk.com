@@ -3,7 +3,7 @@ package nts.uk.query.app.employee.ccg029;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -72,14 +72,6 @@ public class Ccg029Employeefinder {
 			return new ArrayList<>();
 		}
 		
-//		2019年9月17日
-//		vi lich su department chua thiet lap nen phan order thang 9 nam 2019 se code nhu duoi day.
-//		[Input]
-//		・List<employeeID>
-//		・BaseDate
-//		・Get workplace = true
-//		・Get department =  false
-		
 		boolean getWorkplace = true;
 		boolean getDepartment = false;
 		EmployeeInformationQuery employeeInformationQuery = EmployeeInformationQuery.builder()
@@ -101,7 +93,7 @@ public class Ccg029Employeefinder {
 			List<String> pIDs = listEmpAfterFillter.stream().map(c->c.getPersonalId()).collect(Collectors.toList());
 			//[RQ624]個人IDから個人ファイル管理を取得する
 			List<PersonFileManagementDto> personFileManagements = personFileManagementService.getPersonalFileManagementFromPID(pIDs);
-			
+			Map<String, PersonFileManagementDto> personFileManagementsMap = personFileManagements.stream().collect(Collectors.toMap(PersonFileManagementDto::getPId, c->c));
 			for (EmpInfo614 empFillter : listEmpAfterFillter) {
 				EmployeeInformation infor = employeeInformationMap.get(empFillter.getEmployeeId());
 				Ccg029EmployeeInforDto emp = new Ccg029EmployeeInforDto(
@@ -120,6 +112,7 @@ public class Ccg029Employeefinder {
 				if(input.getGetPosition() && infor.getPosition().isPresent()) {
 					emp.setPosition(infor.getPosition().get());
 				}
+				emp.setPersonalFileManagement(personFileManagementsMap.getOrDefault(empFillter.getPersonalId(), new PersonFileManagementDto(null, Optional.empty(), Optional.empty(), new ArrayList<>())));
 				result.add(emp);
 			}
 		}else {
