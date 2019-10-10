@@ -13,17 +13,44 @@ module nts.uk.ui.koExtentions {
          * Init.
          */
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+            var container = $(element);
             var data = valueAccessor();
             var value = data.value;
             var name = data.name !== undefined ? ko.unwrap(data.name) : "";
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
-            let pickOnly = !util.isNullOrUndefined(data.pickOnly) ? ko.unwrap(data.pickOnly) : false;
+            var pickOnly = !util.isNullOrUndefined(data.pickOnly) ? ko.unwrap(data.pickOnly) : false;
             var dateFormat: string = (data.dateFormat !== undefined) ? ko.unwrap(data.dateFormat) : "YYYY/MM/DD";
+            var valueFormat: string = (data.valueFormat !== undefined) ? ko.unwrap(data.valueFormat) : "";
+            var jumpButtonsDisplay = data.showJumpButtons !== undefined ? ko.unwrap(data.showJumpButtons) : false; 
+            var tabIndex = nts.uk.util.isNullOrEmpty(container.attr("tabindex")) ? "0" : container.attr("tabindex");
+            var fiscalYear = data.fiscalYear !== undefined ? ko.unwrap(data.fiscalYear) : false;
+            var dateType: string = (data.type !== undefined) ? ko.unwrap(data.type) : "";
+            
+            if (dateType === "yearmonth") {
+                dateFormat = 'yearmonth';
+                valueFormat = 'YYYYMM';
+            } else if (dateType === "year") {
+                dateFormat = 'YYYY';
+                valueFormat = 'YYYY';
+            } else if (dateType === "fiscalYear") {
+                dateFormat = 'YYYY';
+                valueFormat = 'YYYY';
+                fiscalYear = true;  
+            } else if (dateType === "dateWeek") {
+                dateFormat = 'YYYY/MM/DD ddd';
+                valueFormat = 'YYYY/MM/DD';
+            } else if (dateType === "dateWeekFull") {
+                dateFormat = 'YYYY/MM/DD dddd';
+                valueFormat = 'YYYY/MM/DD';
+            } else {
+                dateFormat = 'YYYY/MM/DD'; 
+                valueFormat = 'YYYY/MM/DD';   
+            }
+            
             var ISOFormat = text.getISOFormat(dateFormat);
             var hasDayofWeek: boolean = (ISOFormat.indexOf("ddd") !== -1);
             var dayofWeekFormat: string = ISOFormat.replace(/[^d]/g, "");
             ISOFormat = ISOFormat.replace(/d/g,"").trim();
-            var valueFormat: string = (data.valueFormat !== undefined) ? ko.unwrap(data.valueFormat) : "";
             var required: boolean = (data.required !== undefined) ? ko.unwrap(data.required) : false;
             var button: boolean = (data.button !== undefined) ? ko.unwrap(data.button) : false;
             var startDate: any = (data.startDate !== undefined) ? ko.unwrap(data.startDate) : null;
@@ -50,7 +77,6 @@ module nts.uk.ui.koExtentions {
                 }
             }
 
-            var container = $(element);
             let idString;
             if (!container.attr("id")) {
                 idString = nts.uk.util.randomId();
@@ -59,7 +85,6 @@ module nts.uk.ui.koExtentions {
                 container.removeAttr("id");    
             }
             
-            let tabIndex = nts.uk.util.isNullOrEmpty(container.attr("tabindex")) ? "0" : container.attr("tabindex");
             container.removeAttr("tabindex");
             
             let containerClass = container.attr('class');
@@ -70,8 +95,7 @@ module nts.uk.ui.koExtentions {
             $input.addClass(containerClass).attr("id", idString).attr("data-name", container.data("name"));
             container.append($input);
             $input.data("required", required);
-            let jumpButtonsDisplay = data.showJumpButtons !== undefined ? ko.unwrap(data.showJumpButtons) : false; 
-            let fiscalYear = data.fiscalYear !== undefined ? ko.unwrap(data.fiscalYear) : false;
+            
             let $prevButton, $nextButton;
             if (jumpButtonsDisplay) {
                 $prevButton = $("<button/>").addClass("ntsDateNextButton ntsButton ntsDatePickerButton ntsDatePicker_Component auto-height")
@@ -276,11 +300,35 @@ module nts.uk.ui.koExtentions {
             var data = valueAccessor();
             var value = data.value;
             var dateFormat: string = (data.dateFormat !== undefined) ? ko.unwrap(data.dateFormat) : "YYYY/MM/DD";
+            var valueFormat: string = (data.valueFormat !== undefined) ? ko.unwrap(data.valueFormat) : ISOFormat;
+            var fiscalYear = data.fiscalYear !== undefined ? ko.unwrap(data.fiscalYear) : false;
+            var dateType: string = (data.type !== undefined) ? ko.unwrap(data.type) : "";
+            
+            if (dateType === "yearmonth") {
+                dateFormat = 'yearmonth';
+                valueFormat = 'YYYYMM';
+            } else if (dateType === "year") {
+                dateFormat = 'YYYY';
+                valueFormat = 'YYYY';
+            } else if (dateType === "fiscalYear") {
+                dateFormat = 'YYYY';
+                valueFormat = 'YYYY';
+                fiscalYear = true;  
+            } else if (dateType === "dateWeek") {
+                dateFormat = 'YYYY/MM/DD ddd';
+                valueFormat = 'YYYY/MM/DD';
+            } else if (dateType === "dateWeekFull") {
+                dateFormat = 'YYYY/MM/DD dddd';
+                valueFormat = 'YYYY/MM/DD';
+            } else {
+                dateFormat = 'YYYY/MM/DD'; 
+                valueFormat = 'YYYY/MM/DD';   
+            }
+            
             var ISOFormat = text.getISOFormat(dateFormat);
             var hasDayofWeek: boolean = (ISOFormat.indexOf("ddd") !== -1);
             var dayofWeekFormat: string = ISOFormat.replace(/[^d]/g, "");
             ISOFormat = ISOFormat.replace(/d/g,"").trim();
-            var valueFormat: string = (data.valueFormat !== undefined) ? ko.unwrap(data.valueFormat) : ISOFormat;
             var disabled: boolean = (data.disabled !== undefined) ? ko.unwrap(data.disabled) : false;
             var enable: boolean = (data.enable !== undefined) ? ko.unwrap(data.enable) : undefined;
             var startDate: any = (data.startDate !== undefined) ? ko.unwrap(data.startDate) : null;
