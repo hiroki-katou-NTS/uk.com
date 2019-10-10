@@ -160,7 +160,6 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         constructor(transferData :any) {
             let self = this;
             if(transferData != null){
-                self.isSpr = true;
                 self.timeStart1(transferData.startTime);
                 self.timeEnd1(transferData.endTime);
                 self.appDate(transferData.appDate);
@@ -169,6 +168,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 self.employeeID(transferData.employeeID); 
                 self.uiType(transferData.uiType); 
                 if(!nts.uk.util.isNullOrUndefined(transferData.appDate)){
+                    self.isSpr = true;
                     self.targetDate = transferData.appDate;        
                 }
             }
