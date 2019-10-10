@@ -5,14 +5,15 @@ package nts.uk.ctx.hr.develop.dom.databeforereflecting;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 
 /**
- * @author laitv
  * 個人情報反映前データ
  */
+@NoArgsConstructor
 @AllArgsConstructor
 @Getter
 public class DataBeforeReflectingPerInfo extends AggregateRoot{
@@ -32,7 +33,7 @@ public class DataBeforeReflectingPerInfo extends AggregateRoot{
 	private GeneralDateTime releaseDate;
 	private OnHoldFlag onHoldFlag;
 	private Status stattus;
-	private String dstHistId;
+	private String histId_Refer;
 	
 	private GeneralDateTime date_01;
 	private GeneralDateTime date_02;
