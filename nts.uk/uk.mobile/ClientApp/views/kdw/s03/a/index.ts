@@ -114,7 +114,9 @@ export class Kdws03AComponent extends Vue {
 
     @Watch('dateRanger', { deep: true })
     public changeDateRange(value: any, valueOld: any) {
-        if (_.isNil(value) || _.isNil(valueOld) || this.displayFormat == '1') {
+        if (_.isNil(value) || _.isNil(valueOld) || this.displayFormat == '1' || this.isFirstLoad) {
+            this.isFirstLoad = false;
+            
             return;
         } else {
             this.startPage();
@@ -368,7 +370,7 @@ export class Kdws03AComponent extends Vue {
                     rowData.push({
                         key: header.key,
                         value: rowDataSrc[header.key],
-                        class: setting.typeFormat == 3 ? 'currency-symbol row-style' : (_.includes([2, 5], setting.typeFormat) ? 'row-style' : ''),
+                        class: setting.typeFormat == 3 ? 'currency-symbol row-style text-truncate' : (_.includes([2, 5], setting.typeFormat) ? 'row-style' : ''),
                         displayvalue: this.formatDisplay(rowDataSrc[header.key], setting.typeFormat),
                     });
                 } else {
@@ -438,7 +440,7 @@ export class Kdws03AComponent extends Vue {
                 for (let i = 1; i <= (this.rownum - self.lstDataSourceLoad.length); i++) {
                     let rowData = [];
                     headers.forEach((header: any) => {
-                        rowData.push({ key: header.key, value: '' });
+                        rowData.push({ key: header.key, value: '', class: '' });
                     });
                     self.displayDataLstEx.push({ rowData, date: '', id: '' });
                 }
@@ -460,7 +462,7 @@ export class Kdws03AComponent extends Vue {
                 for (let i = 1; i <= (this.rownum - self.displayDataLst.length); i++) {
                     let rowData = [];
                     headers.forEach((header: any) => {
-                        rowData.push({ key: header.key, value: '' });
+                        rowData.push({ key: header.key, value: '', class: '' });
                     });
                     self.displayDataLstEx.push({ rowData, employeeName: '', id: '' });
                 }
@@ -516,7 +518,6 @@ export class Kdws03AComponent extends Vue {
         });
 
         self.resetTable++;
-        self.isFirstLoad = false;
     }
 
     //各項目のデータを取得する

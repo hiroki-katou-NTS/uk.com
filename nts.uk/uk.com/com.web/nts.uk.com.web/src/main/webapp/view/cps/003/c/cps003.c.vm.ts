@@ -302,9 +302,19 @@ module cps003.c.vm {
                                 }
                                 
                                 if (_.has(codes, item.value)) {
-                                    codes[item.value].push(item.recordId);
+                                    let codeArr = codes[item.value], found;
+                                    for (let k = 0; k < codeArr.length; k++) {
+                                        if (codeArr[k] && codeArr[k].id === record.id && codeArr[k].column === item.itemCode) {
+                                            found = true;
+                                            break;
+                                        }
+                                    }
+                                    
+                                    if (!found) {
+                                        codes[item.value].push({ id: record.id, column: item.itemCode });
+                                    }
                                 } else {
-                                    codes[item.value] = [ item.recordId ];
+                                    codes[item.value] = [{ id: record.id, column: item.itemCode }];
                                 }
                             }
                         }
@@ -329,29 +339,49 @@ module cps003.c.vm {
                             if (head) {
                                 if (workTime.firstTimes && !head.startEnd) {
                                     _.forEach(codes[c], r => {
-                                        states.push(new State(r, workTime.firstTimes.start, ["mgrid-disable"]));
-                                        states.push(new State(r, workTime.firstTimes.end, ["mgrid-disable"]));
+                                        if (r.column === itemCode) {
+                                            states.push(new State(r.id, workTime.firstTimes.start, ["mgrid-disable"]));
+                                        }
+                                        
+                                        if (r.column === itemCode) {
+                                            states.push(new State(r.id, workTime.firstTimes.end, ["mgrid-disable"]));
+                                        }
                                     });
                                 }
                                 
                                 if (workTime.secondTimes && (!head.startEnd || !head.multiTime)) {
                                     _.forEach(codes[c], r => {
-                                        states.push(new State(r, workTime.secondTimes.start, ["mgrid-disable"]));
-                                        states.push(new State(r, workTime.secondTimes.end, ["mgrid-disable"]));
+                                        if (r.column === itemCode) {
+                                            states.push(new State(r.id, workTime.secondTimes.start, ["mgrid-disable"]));
+                                        }
+                                        
+                                        if (r.column === itemCode) {
+                                            states.push(new State(r.id, workTime.secondTimes.end, ["mgrid-disable"]));
+                                        }
                                     });
                                 }
                             } else {
                                 if (workTime.firstTimes) {
                                     _.forEach(codes[c], r => {
-                                        states.push(new State(r, workTime.firstTimes.start, ["mgrid-disable"]));
-                                        states.push(new State(r, workTime.firstTimes.end, ["mgrid-disable"]));
+                                        if (r.column === itemCode) {
+                                            states.push(new State(r.id, workTime.firstTimes.start, ["mgrid-disable"]));
+                                        }   
+                                        
+                                        if (r.column === itemCode) {
+                                            states.push(new State(r.id, workTime.firstTimes.end, ["mgrid-disable"]));
+                                        }
                                     });
                                 }
                                 
                                 if (workTime.secondTimes) {
                                     _.forEach(codes[c], r => {
-                                        states.push(new State(r, workTime.secondTimes.start, ["mgrid-disable"]));
-                                        states.push(new State(r, workTime.secondTimes.end, ["mgrid-disable"]));
+                                        if (r.column === itemCode) {
+                                            states.push(new State(r.id, workTime.secondTimes.start, ["mgrid-disable"]));
+                                        }
+                                        
+                                        if (r.column === itemCode) {
+                                            states.push(new State(r.id, workTime.secondTimes.end, ["mgrid-disable"]));
+                                        }
                                     });
                                 }
                             }
@@ -366,15 +396,25 @@ module cps003.c.vm {
                         workTime = cps003.control.WORK_TIME[itemCode];    
                     if (workTime.firstTimes) {
                         _.forEach(codes[c], r => {
-                            states.push(new State(r, workTime.firstTimes.start, ["mgrid-disable"]));
-                            states.push(new State(r, workTime.firstTimes.end, ["mgrid-disable"]));
+                            if (r.column === itemCode) {
+                                states.push(new State(r.id, workTime.firstTimes.start, ["mgrid-disable"]));
+                            }
+                            
+                            if (r.column === itemCode) {
+                                states.push(new State(r.id, workTime.firstTimes.end, ["mgrid-disable"]));
+                            }
                         });
                     }
                     
                     if (workTime.secondTimes) {
                         _.forEach(codes[c], r => {
-                            states.push(new State(r, workTime.secondTimes.start, ["mgrid-disable"]));
-                            states.push(new State(r, workTime.secondTimes.end, ["mgrid-disable"]));
+                            if (r.column === itemCode) {
+                                states.push(new State(r.id, workTime.secondTimes.start, ["mgrid-disable"]));
+                            }
+                            
+                            if (r.column === itemCode) {
+                                states.push(new State(r.id, workTime.secondTimes.end, ["mgrid-disable"]));
+                            }
                         });
                     }
                 });
@@ -754,7 +794,20 @@ module cps003.c.vm {
                     timeNumber = cps003.control.NUMBER[self.category.catCode() + "_" + item.key];
                     if (timeNumber) item.inputProcess = timeNumber;
                     let timeRange = cps003.control.TIME_RANGE[self.category.catCode() + "_" + item.key];
-                    if (timeRange) item.inputProcess = timeRange.bind(null, item.required, item.constraint.primitiveValue, item.headerText);
+                    let timeRangeGroup = cps003.control.TIME_RANGE_GROUP[self.category.catCode() + "_" + item.key];
+                    if (timeRange && timeRangeGroup) {
+                        item.inputProcess = () => {
+                            let dfd = $.Deferred(), args = arguments;
+                            timeRange.apply(void 0, [item.required, item.constraint.primitiveValue, item.headerText].concat(...arguments)).fail(hasError => {
+                                if (hasError) return;
+                                timeRangeGroup(...args);
+                            });
+                            
+                            dfd.reject();
+                            return dfd.promise();
+                        };
+                    } else if (timeRange) item.inputProcess = timeRange.bind(null, item.required, item.constraint.primitiveValue, item.headerText);
+                    else if (timeRangeGroup) item.inputProcess = timeRangeGroup;
                     break;
                 case ITEM_SINGLE_TYPE.SELECTION:
                 case ITEM_SINGLE_TYPE.SEL_RADIO:
@@ -939,10 +992,6 @@ module cps003.c.vm {
                     });
                 });
                 
-                employees = _.filter(employees, e => {
-                    return _.find(regChecked, r => r === e.rowId);
-                });
-                
                 self.validateSpecial(regChecked, dataSource);
                 $grid.mGrid("validate", false, data => data.register);
                 itemErrors = _.filter($grid.mGrid("errors"), e => {
@@ -964,12 +1013,41 @@ module cps003.c.vm {
                     });
                 }
                 
+                employees = _.filter(employees, e => {
+                    return _.find(regChecked, r => r === e.rowId) && !_.find(itemErrors, ie => ie.rowId === e.rowId);
+                });
+                
                 dataToG = _.filter(dataToG, d => {
                     return _.find(regChecked, r => r === d.rowId);
                 });
                 
                 command = { baseDate:  moment.utc(self.baseDate(), "YYYY/MM/DD").toISOString(), editMode: self.updateMode(), employees: employees };
-                if (command.employees && command.employees.length === 0 && dataToG.length === 0) {
+                if (command.employees && command.employees.length === 0) {
+                    if (dataToG && dataToG.length > 0) {
+                        let regEmployeeIds = [];
+                        setShared("CPS003G_ERROR_LIST", dataToG);
+                        let msgId = _.keys(errObj).length === regCount ? "Msg_1462" : "Msg_1461";
+                        alertError({ messageId: msgId }).then(() => {
+                            forEach(updateDone, d => {
+                                if (!_.has(errObj, d.rowId)) {
+                                    $grid.mGrid("updateCell", d.rowId, d.columnKey, d.value, true);
+                                    $grid.mGrid("updateCell", d.rowId, "register", false, true);
+                                    let recData: Record = recId[d.rowId];
+                                    regEmployeeIds.push(recData.employeeId);
+                                }
+                            });
+                            
+                            modeless("/view/cps/003/g/index.xhtml").onClosed(() => {
+                                setTimeout(() => {
+                                    if (regEmployeeIds.length > 0) {
+                                        setShared("CPS003C_REG_DONE", true);
+                                        setShared("CPS003C_REG_EMPID", regEmployeeIds);
+                                    }
+                                }, 1);
+                            });
+                        });
+                    }
+                    
                     unblock();
                     return;
                 }
@@ -981,13 +1059,12 @@ module cps003.c.vm {
                         let msgId = _.keys(errObj).length === regCount ? "Msg_1462" : "Msg_1461";
                         alertError({ messageId: msgId }).then(() => {
                             forEach(updateDone, d => {
-                                $grid.mGrid("updateCell", d.rowId, d.columnKey, d.value, true);
                                 if (!_.has(errObj, d.rowId)) {
+                                    $grid.mGrid("updateCell", d.rowId, d.columnKey, d.value, true);
                                     $grid.mGrid("updateCell", d.rowId, "register", false, true);
+                                    let recData: Record = recId[d.rowId];
+                                    regEmployeeIds.push(recData.employeeId);
                                 }
-                                
-                                let recData: Record = recId[d.rowId];
-                                regEmployeeIds.push(recData.employeeId);
                             });
                             
                             modeless("/view/cps/003/g/index.xhtml").onClosed(() => {
@@ -1062,11 +1139,12 @@ module cps003.c.vm {
         }
         
         validateSpecial(regChecked: any, dataSource: any) {
-            let self = this, dateRanges, timeRanges;
+            let self = this, dateRanges, timeRanges, selectButtons, $grid = $("#grid");
             forEach(dataSource, (data, i) => {
                 if (i == 0) {
                     dateRanges = findAll(cps003.control.dateRange, range => self.category.catCode() === range.ctgCode);
                     timeRanges = findAll(cps003.control.timeRange, range => self.category.catCode() === range.ctgCode);
+                    selectButtons = findAll(cps003.control.selectGroups, select => self.category.catCode() === select.ctgCode);
                 }
                 
                 if (regChecked && _.isNil(find(regChecked, r => r === data.id))) return;
@@ -1086,8 +1164,33 @@ module cps003.c.vm {
                     let column = find(self.gridOptions.columns, c => c.key === range.start);
                     if (column) {
                         let vd = cps003.control.TIME_RANGE[range.ctgCode + "_" + range.start];
-                        if (_.isFunction(vd)) vd(column.required, column.constraint.primitiveValue, column.headerText, data.id, range.start, data[range.start], data);
+                        if (_.isFunction(vd)) {
+                            let timeRangeGroup = cps003.control.TIME_RANGE_GROUP[range.ctgCode + "_" + range.start];
+                            vd(column.required, column.constraint.primitiveValue, column.headerText, data.id, range.start, data[range.start], data).fail(hasError => {
+                                if (hasError) return;
+                                if (timeRangeGroup) {
+                                    timeRangeGroup(data.id, range.start, data[range.start], data);
+                                }   
+                            });
+                        }
                     }
+                });
+                
+                forEach(selectButtons, select => {
+                    forEach([ "workplace", "workType", "workTime" ], sType => {
+                        let wpColumn = find(self.gridOptions.columns, c => c.key === select[sType]);
+                        if (wpColumn) {
+                            let workplaceVal = data[select[sType]];
+                            let optionsList = $grid.mGrid("optionsList", data.id, select[sType]);
+                            if (wpColumn.required && _.isNil(find(optionsList, itm => itm.optionValue === workplaceVal))) {
+                                let index = _.findIndex(dataSource, d => d.id === data.id),
+                                    message = nts.uk.resource.getMessage("FND_E_REQ_SELECT", [wpColumn.headerText]);
+                                $grid.mGrid("setErrors", [{ id: data.id, index: index, columnKey: select[sType], message: message }]);
+                            } else {
+                                $grid.mGrid("clearErrors", [{ id: data.id, columnKey: select[sType] }]);
+                            }
+                        }
+                    });
                 });
                 
                 if (self.category.catCode() === "CS00002") {

@@ -4,9 +4,9 @@ module nts.uk.at.view.ktg030.a.service {
     
     var paths: any = {
         // checkDisplay/{ym}/{closureId}
-        getData: "screen/at/ktg030/checkDisplay/{0}/{1}"
+        getData: "screen/at/ktg030/checkDisplay"
     }
-    export function getData(currentOrNextMonth: any, closureId: any): JQueryPromise<any> {
-        return ajax("at", format(paths.getData, currentOrNextMonth, closureId));
+    export function getData(param: any): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getData, param);
     }
 }  

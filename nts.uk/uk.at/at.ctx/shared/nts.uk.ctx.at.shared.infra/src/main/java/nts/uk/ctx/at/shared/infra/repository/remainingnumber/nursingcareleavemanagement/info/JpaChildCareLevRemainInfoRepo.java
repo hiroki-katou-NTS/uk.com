@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -23,6 +25,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class JpaChildCareLevRemainInfoRepo extends JpaRepository implements ChildCareLeaveRemInfoRepository {
 
 	@Override
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public Optional<ChildCareLeaveRemainingInfo> getChildCareByEmpId(String empId) {
 		Optional<KrcmtChildCareHDInfo> entityOpt = this.queryProxy().find(empId, KrcmtChildCareHDInfo.class);
 		if (entityOpt.isPresent()) {

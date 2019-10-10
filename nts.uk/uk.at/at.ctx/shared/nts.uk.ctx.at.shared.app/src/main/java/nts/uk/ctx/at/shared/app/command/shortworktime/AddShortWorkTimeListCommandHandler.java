@@ -74,7 +74,7 @@ implements PeregAddListCommandHandler<AddShortWorkTimeCommand>{
 				histItems.add(sWorkTime);
 				recordIds.put(c.getEmployeeId(), newHist);
 			} catch (BusinessException e) {
-				MyCustomizeException ex = new MyCustomizeException(e.getMessageId(), Arrays.asList(c.getEmployeeId()));
+				MyCustomizeException ex = new MyCustomizeException(e.getMessageId(), Arrays.asList(c.getEmployeeId()), "期間");
 				result.add(ex);
 			}
 			

@@ -29,7 +29,11 @@ module nts.uk.at.view.ktg001.a.viewmodel {
                 self.selectedSwitch(cacheCcg008.currentOrNextMonth);
                 closureId = cacheCcg008.closureId;
             }
-            service.getData(self.selectedSwitch(), closureId).done((data: any) => {
+            let param = {
+                ym: self.selectedSwitch(),
+                closureId: closureId
+            };
+            service.getData(param).done((data: any) => {
                 if (data.approve) {
                     self.text = ko.observable(getText('KTG001_4'));
                     self.visible = ko.observable(true);

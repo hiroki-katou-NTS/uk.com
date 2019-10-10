@@ -40,7 +40,7 @@ public class RegulationInfoEmployee { // 社員のソート用の規定情報
 	// private Integer oderOfJobTitle; //職位の序列の並び順
 
 	/** The workplace id. */
-	private Optional<String> workplaceId; // 職場の階層コード
+	private Optional<String> workplaceId; // 職場ID
 
 	/** The workplace code. */
 	private Optional<String> workplaceCode; // 職場コード
@@ -48,13 +48,28 @@ public class RegulationInfoEmployee { // 社員のソート用の規定情報
 	/** The workplace hierarchy code. */
 	private Optional<String> workplaceHierarchyCode; // 職場の階層コード
 
+	/** The department hierarchy code. */
+	private Optional<String> departmentHierarchyCode; // 部門の階層コード
+
 	/** The department code. */
-	private Optional<String> departmentCode; // 部門の階層コード
+	private Optional<String> departmentCode; // 部門コード
+
+	/** The department id. */
+	private Optional<String> departmentId; // 部門ID
+
+	/** The department name. */
+	private Optional<String> departmentName; // 部門氏名
 
 	/** The employment code. */
 	private Optional<String> employmentCode; // 雇用コード
 
-	/** The workplacename. */
-	private Optional<String> workplaceName;
+	/** The workplace name. */
+	private Optional<String> workplaceName; // 職場氏名
+
+	/** The department delete flag. */
+	private Optional<Boolean> departmentDeleteFlag; // 部門削除フラグ
+
+	/** The workplace delete flag. */
+	private Optional<Boolean> workplaceDeleteFlag; // 職場削除フラグ
 
 }

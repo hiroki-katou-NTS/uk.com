@@ -13,6 +13,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 
 import org.apache.commons.lang3.BooleanUtils;
 
@@ -143,6 +145,7 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 	}
 
 	@Override
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public AffCompanyHist getAffCompanyHistoryOfEmployee(String employeeId) {
 		List<BsymtAffCompanyHist> lstBsymtAffCompanyHist = this.queryProxy()
 				.query(SELECT_BY_EMPLOYEE_ID, BsymtAffCompanyHist.class).setParameter("sId", employeeId).getList();

@@ -156,3 +156,13 @@ module nts.uk.util {
         }
     }
 }
+
+const b = nts.uk.util.browser;
+
+b.private.then(v => {
+    if (v) {
+        if (b.ios && b.version === 'Safari 10') {
+            document.body.innerHTML = '<div style="text-align: center; font-size: 5em; padding: 2em 1em;">現在ご利用の端末は、プライベートモードでは正常に動作しない可能性があります。\n通常モードで起動してください。</div>';
+        }
+    }
+});

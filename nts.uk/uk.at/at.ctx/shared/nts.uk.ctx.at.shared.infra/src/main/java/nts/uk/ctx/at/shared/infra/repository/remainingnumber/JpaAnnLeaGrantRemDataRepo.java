@@ -12,6 +12,8 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import lombok.SneakyThrows;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -75,6 +77,7 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 	}
 
 	@Override
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<AnnualLeaveGrantRemainingData> findNotExp(String employeeId) {
 		List<KRcmtAnnLeaRemain> entities = this.queryProxy().query(QUERY_WITH_EMP_ID_NOT_EXP, KRcmtAnnLeaRemain.class)
 				.setParameter("employeeId", employeeId).getList();
@@ -332,7 +335,7 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 					entity.usedDays = r.getDouble("USED_DAYS");
 					entity.usedMinutes = r.getInt("USED_MINUTES");
 					entity.stowageDays = r.getDouble("STOWAGE_DAYS");
-					entity.remainingDays = r.getInt("REMAINING_DAYS");
+					entity.remainingDays = r.getDouble("REMAINING_DAYS");
 					entity.remaningMinutes = r.getInt("REMAINING_MINUTES");
 					entity.usedPercent = r.getDouble("USED_PERCENT");
 					

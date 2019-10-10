@@ -85,7 +85,7 @@ implements PeregAddListCommandHandler<AddAffClassificationCommand>{
 			recordIds.put(c.getEmployeeId(), newHistoryId);
 			
 			}catch(BusinessException e) {
-				MyCustomizeException ex = new MyCustomizeException(e.getMessageId(), Arrays.asList(c.getEmployeeId()));
+				MyCustomizeException ex = new MyCustomizeException(e.getMessageId(), Arrays.asList(c.getEmployeeId()), "期間");
 				result.add(ex);
 			}
 		});

@@ -6,6 +6,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
@@ -27,6 +29,7 @@ public class InitDisplayPeriodSwitchSetFinder {
 	@Inject
 	private ClosureService closureService;
 
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public InitDisplayPeriodSwitchSetDto targetDateFromLogin() {
 		//RQ609 Đang viết ở App chứ không phải là ở Pub
 		String companyID = AppContexts.user().companyId();

@@ -172,6 +172,7 @@ public class JpaEditStateOfDailyPerformanceRepository extends JpaRepository
 				this.commandProxy().insert(entity);
 			}
 		});
+		this.getEntityManager().flush();
 	}
 
 	@Override

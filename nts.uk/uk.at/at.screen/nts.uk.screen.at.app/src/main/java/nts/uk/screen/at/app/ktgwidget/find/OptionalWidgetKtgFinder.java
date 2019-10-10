@@ -6,10 +6,13 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.auth.app.find.employmentrole.InitDisplayPeriodSwitchSetFinder;
 import nts.uk.ctx.at.function.dom.adapter.application.ApplicationAdapter;
 import nts.uk.ctx.at.function.dom.adapter.application.importclass.ApplicationDeadlineImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.AnnualLeaveRemainingNumberImport;
@@ -107,7 +110,10 @@ public class OptionalWidgetKtgFinder {
 	@Inject
 	private SpecialHolidayRepository specialHolidayRepository;
 	
-
+	@Inject
+	private InitDisplayPeriodSwitchSetFinder initDisplayPeriodSwitchSetFinder;
+	
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public DatePeriodDto getCurrentMonth() {
 		String companyId = AppContexts.user().companyId();
 		Integer closureId = this.getClosureId();
@@ -151,22 +157,22 @@ public class OptionalWidgetKtgFinder {
 			return null;
 		return closureEmployment.get().getClosureId();
 	}
-	
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public OptionalWidgetImport findOptionalWidgetByCode(String topPagePartCode) {
 		String companyId = AppContexts.user().companyId(); 
 		Optional<OptionalWidgetImport> dto = optionalWidgetAdapter.getSelectedWidget(companyId, topPagePartCode);
 		if(!dto.isPresent())
 			return null;
-		return optionalWidgetAdapter.getSelectedWidget(companyId, topPagePartCode).get();
+		return dto.get();
 	}
-	
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public OptionalWidgetDisplay getOptionalWidgetDisplay(String topPagePartCode) {
 		DatePeriodDto datePeriodDto = getCurrentMonth();
 		OptionalWidgetImport optionalWidgetImport = findOptionalWidgetByCode(topPagePartCode);
 		return new OptionalWidgetDisplay(datePeriodDto, optionalWidgetImport);
 	}
 	
-	
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public OptionalWidgetInfoDto getDataRecord(String code, GeneralDate startDate, GeneralDate endDate) {
 		String companyId = AppContexts.user().companyId();
 		String employeeId = AppContexts.user().employeeId();
@@ -467,6 +473,8 @@ public class OptionalWidgetKtgFinder {
 		}
 		return dto;
 	}
+	
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	private YearlyHoliday setYearlyHoliday(String cID, String employeeId, GeneralDate date, DatePeriod datePeriod) {
 		YearlyHoliday yearlyHoliday = new YearlyHoliday();
 		//lấy request list 210		

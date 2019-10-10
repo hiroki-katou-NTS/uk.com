@@ -85,7 +85,8 @@ public class ConfirmStatusMonthly {
 		for (String employeeId : listEmployeeId) {
 			Optional<ConfirmInfoResult> optConfirmInfoResult = confirmInfoResults.stream()
 					.filter(x -> x.getEmployeeId().equals(employeeId)).findFirst();
-			if(!optConfirmInfoResult.isPresent()) continue;
+			if (!optConfirmInfoResult.isPresent())
+				continue;
 			ConfirmInfoResult confirmInfoResult = optConfirmInfoResult.get();
 			for (InformationMonth infoMonth : confirmInfoResult.getInformationMonths()) {
 				// 対象締め
@@ -99,13 +100,18 @@ public class ConfirmStatusMonthly {
 						confirmStatus, AvailabilityAtr.CAN_RELEASE, ReleasedAtr.CAN_RELEASE);
 
 				// Input「社員の実績の確認状況情報．月の情報．締め期間」の件数ループ
-				// trong EA ghi la loop theo 締め期間 nhung hien tai chi loop dc theo 月の情報
+				// trong EA ghi la loop theo 締め期間 nhung hien tai chi loop dc
+				// theo 月の情報
 				// Input「社員の実績の確認状況情報．月の情報．月の承認」をチェックする
-				int approvalStatus = infoMonth.getLstApprovalMonthStatus().get(0).getApprovalStatus().value;
-				if (useMonthApproverConfirm && (approvalStatus == ApprovalStatusForEmployee.APPROVED.value
-						|| approvalStatus == ApprovalStatusForEmployee.DURING_APPROVAL.value)) {
-					// パラメータ「月の実績の確認状況」をセットする
-					confirmStatusResult.setWhetherToRelease(ReleasedAtr.CAN_NOT_RELEASE);
+				if (infoMonth.getLstApprovalMonthStatus().isEmpty()) {
+					confirmStatusResult.setWhetherToRelease(ReleasedAtr.CAN_RELEASE);
+				} else {
+					int approvalStatus = infoMonth.getLstApprovalMonthStatus().get(0).getApprovalStatus().value;
+					if (useMonthApproverConfirm && (approvalStatus == ApprovalStatusForEmployee.APPROVED.value
+							|| approvalStatus == ApprovalStatusForEmployee.DURING_APPROVAL.value)) {
+						// パラメータ「月の実績の確認状況」をセットする
+						confirmStatusResult.setWhetherToRelease(ReleasedAtr.CAN_NOT_RELEASE);
+					}
 				}
 				// 取得している「本人確認処理の利用設定．日の本人確認を利用する」をチェックする
 				if (identityProcessUseSet.isUseConfirmByYourself()) {

@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 500, height: 630 };</script>
+			<script>var dialogSize = { width: 500, height: 650 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="cdl008.a.main.css" />
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
@@ -19,9 +19,11 @@
 			<div id="contents-area">
 				<div class="workplaceContent" tabindex="-1">
 					<div class="lableCDL" tabindex="-1">
-						<label>#{i18n.getText('CDL008_2')}</label>
+						<label data-bind="if: startMode == 0">#{i18n.getText('CDL008_2')}</label>
+						<label data-bind="if: startMode == 1">#{i18n.getText('CDL008_6')}</label>
 					</div>
 					<div id="workplaceList" tabindex="-1"></div>
+					<div id="departmentList" tabindex="-1"></div>
 				</div>
 			</div>
 			<div id="functions-area-bottom">

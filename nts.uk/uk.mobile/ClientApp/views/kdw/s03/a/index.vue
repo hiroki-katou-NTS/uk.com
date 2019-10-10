@@ -48,7 +48,7 @@
             <tbody>
                 <tr v-for="(row, i) of displayDataLstEx">
                     <td v-bind:class="row.dateColor">{{row.date}}</td>
-                    <td v-for="(cell, j) of row.rowData" v-bind:class="cell.class"><span class="crop-text">{{cell.displayvalue}}</span></td>
+                    <td v-for="(cell, j) of row.rowData" v-bind:class="cell.class"><span :class="cell.class.includes('text-truncate') ? '' : 'crop-text'">{{cell.displayvalue}}</span></td>
                     <td>
                         <div style="text-align: right" v-click:500="() => openEdit(row.id)">
                             <span style="color: red" class="fa fa-exclamation-circle fa-lg uk-text-crimson" v-if="null != row.ERAL && row.ERAL.includes('ER')"></span>
@@ -61,9 +61,9 @@
             <tfoot>
                 <tr>
                     <td>合計</td>
-                    <td v-for="header in displayHeaderLst" class="row-style" :class="Array.isArray(displaySumLst[header.key]) ? displaySumLst[header.key][1] : ''">
-                        <span v-if="Array.isArray(displaySumLst[header.key])">{{displaySumLst[header.key][0]}}</span>
-                        <span v-if="!Array.isArray(displaySumLst[header.key])">{{displaySumLst[header.key]}}</span>
+                    <td v-for="header in displayHeaderLst" class="row-style text-truncate" :class="Array.isArray(displaySumLst[header.key]) ? displaySumLst[header.key][1] : ''">
+                        <span class="text-truncate" v-if="Array.isArray(displaySumLst[header.key])">{{displaySumLst[header.key][0]}}</span>
+                        <span class="text-truncate" v-if="!Array.isArray(displaySumLst[header.key])">{{displaySumLst[header.key]}}</span>
                     </td>
                     <td></td>
                 </tr>
@@ -80,7 +80,7 @@
             <tbody>
                 <tr v-for="(row, i) of displayDataLstEx">
                     <td><span class="crop-text">{{row.employeeName}}</span></td>
-                    <td v-for="(cell, j) of row.rowData" v-bind:class="cell.class"><span class="crop-text">{{cell.displayvalue}}</span></td>
+                    <td v-for="(cell, j) of row.rowData" v-bind:class="cell.class"><span :class="cell.class.includes('text-truncate') ? '' : 'crop-text'">{{cell.displayvalue}}</span></td>
                     <td>
                         <div style="text-align: right" v-click:500="() => openEdit(row.id)">
                             <span style="color: red" class="fa fa-exclamation-circle fa-lg uk-text-crimson" v-if="null != row.ERAL && row.ERAL.includes('ER')"></span>

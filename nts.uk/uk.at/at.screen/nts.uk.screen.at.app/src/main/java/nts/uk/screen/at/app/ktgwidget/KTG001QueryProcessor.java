@@ -59,11 +59,11 @@ public class KTG001QueryProcessor {
 		//[RQ609]ログイン社員のシステム日時点の処理対象年月を取得する
 		if(currentOrNextMonth == null){
 			InitDisplayPeriodSwitchSetDto rq609 = displayPeriodfinder.targetDateFromLogin();
-			listCheckTargetItem = rq609.getListDateProcessed().stream().map(x -> new CheckTarget(closureId, x.getTargetDate())).collect(Collectors.toList());
+			listCheckTargetItem = rq609.getListDateProcessed().stream().map(x -> new CheckTarget(x.getClosureID(), x.getTargetDate())).collect(Collectors.toList());
 		}else{
 			// 日別実績確認すべきデータ有無取得
 			// Lấy có không có tất cả data xác nhận kết quả các ngày
-			listCheckTargetItem = dataDailyResults(employeeID, currentOrNextMonth, closureId);
+			listCheckTargetItem = dataDailyResults(employeeID, currentOrNextMonth);
 		}
 		List<CheckTarget> temp = listCheckTargetItem.stream().filter(x -> x.getClosureId() == closureId).collect(Collectors.toList());
 		// request list 593
@@ -72,17 +72,17 @@ public class KTG001QueryProcessor {
 																.map(x -> new TargetDto(x.getClosureId(), x.getYearMonth().toString())).collect(Collectors.toList()));
 	}
 
-	public List<CheckTarget> dataDailyResults(String employeeID, int yearmonth, int closureId) {
+	public List<CheckTarget> dataDailyResults(String employeeID, int yearmonth) {
 		// 全締めの当月と期間を取得する
 		// Get thời gian và all closure tháng đó
 		List<ClosureInfo> listClosure = closureService.getAllClosureInfo();
 		// 取得した「締め」からチェック対象を作成する
 		List<CheckTarget> listCheckTarget = new ArrayList<>();
 		for (ClosureInfo closure : listClosure) {
-			if (yearmonth == 0) {
-				listCheckTarget.add(new CheckTarget(closureId, closure.getCurrentMonth()));
+			if (yearmonth == 1) {
+				listCheckTarget.add(new CheckTarget(closure.getClosureId().value, closure.getCurrentMonth()));
 			} else {
-				listCheckTarget.add(new CheckTarget(closureId, closure.getCurrentMonth().addMonths(1)));
+				listCheckTarget.add(new CheckTarget(closure.getClosureId().value, closure.getCurrentMonth().addMonths(1)));
 			}
 		}
 		return listCheckTarget;
