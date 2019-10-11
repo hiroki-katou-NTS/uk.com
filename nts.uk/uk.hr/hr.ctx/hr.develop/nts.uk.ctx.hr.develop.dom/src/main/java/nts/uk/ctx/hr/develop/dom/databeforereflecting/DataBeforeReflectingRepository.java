@@ -14,5 +14,6 @@ public interface DataBeforeReflectingRepository {
 	void addData(List<DataBeforeReflectingPerInfo> listDomain);
 	void updateData(List<DataBeforeReflectingPerInfo> listDomain);
 	void deleteData(List<DataBeforeReflectingPerInfo> listDomain);
+	void deleteDataByHistId(String histId );
 	List<DataBeforeReflectingPerInfo> getData(int workId , List<String> listSid);
 }
