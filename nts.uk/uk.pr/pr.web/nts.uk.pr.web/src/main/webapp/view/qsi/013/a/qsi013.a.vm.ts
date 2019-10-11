@@ -97,10 +97,6 @@ module nts.uk.pr.view.qsi013.a.viewmodel {
             self.initScreen();
         }
 
-        converToJPDate(japanDate :JapanDateMoment) {
-        return japanDate.empire + japanDate.year + japanDate.month + japanDate.day;
-    }
-
         initScreen(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
