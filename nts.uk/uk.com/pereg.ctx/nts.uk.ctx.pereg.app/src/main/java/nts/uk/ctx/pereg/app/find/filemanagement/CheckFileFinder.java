@@ -1252,8 +1252,10 @@ public class CheckFileFinder {
 	 */
 	private String convertTimepoint(String value) {
 		List<String> day = Arrays.asList("当日","前日","翌日");
+		boolean checkEquals = false;
 		for(int i = 0; i< day.size(); i++) {
 			if(value.matches((day.get(i)+"(.*)"))) {
+				checkEquals = true;
 				String[] e = value.split("日");
 				try {
 				int minute= MinutesBasedTimeParser.parse(e[1]).asDuration();
@@ -1269,6 +1271,16 @@ public class CheckFileFinder {
 				}catch(RuntimeException re){
 					 return value;
 				}
+			}
+		}
+		
+		if(checkEquals == false) {
+			String[] split  = value.split(":");
+			if(split.length == 2) {
+				if(isNumeric(split[0]) && isNumeric(split[1])) {
+					return  String.valueOf(Integer.valueOf(split[0]).intValue() * 60 + Integer.valueOf(split[1]).intValue());
+				}
+				
 			}
 		}
 		return value;
