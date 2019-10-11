@@ -57,6 +57,7 @@ module nts.uk.pr.view.qsi013.a.viewmodel {
                 lineFeedCode: 0
                 }));
         constructor() {
+            let self = this;
             self.startDate.subscribe((data) =>{
                 if(nts.uk.util.isNullOrEmpty(data)){
                     return;
@@ -77,7 +78,6 @@ module nts.uk.pr.view.qsi013.a.viewmodel {
                 }
                 self.filingDateJp(" (" + self.converToJPDate(nts.uk.time.dateInJapanEmpire(data)) + ")");
             });
-            let self = this;
             let today  = new Date();
             let start = new Date();
             start.setMonth(start.getMonth() - 1);
