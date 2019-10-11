@@ -6,6 +6,7 @@ module nts.uk.pr.view.qsi013.a.viewmodel {
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+    import JapanDateMoment = nts.uk.time.JapanDateMoment;
 
 
     export class ScreenModel {
@@ -57,21 +58,6 @@ module nts.uk.pr.view.qsi013.a.viewmodel {
                 }));
         constructor() {
             let self = this;
-            let today  = new Date();
-            let start = new Date();
-            start.setMonth(start.getMonth() - 1);
-            start.setDate(start.getDate() + 1);
-            let mmStart = start.getMonth() + 1;
-            let dStart = start.getDate();
-            let mmEnd = today.getMonth() + 1;
-            let dEnd = today.getDate();
-            let yyyyS = start.getFullYear();
-            let yyyyE = today.getFullYear();
-            self.startDate(yyyyS + "/" +  mmStart + "/" + dStart);
-            self.endDate(yyyyE + "/" + mmEnd  + "/" + dEnd);
-            self.filingDate(yyyyE + "/" + mmEnd  + "/" + dEnd);
-            self.loadKCP005();
-            self.loadCCG001();
             self.startDate.subscribe((data) =>{
                 if(nts.uk.util.isNullOrEmpty(data)){
                     return;
@@ -92,8 +78,28 @@ module nts.uk.pr.view.qsi013.a.viewmodel {
                 }
                 self.filingDateJp(" (" + nts.uk.time.dateInJapanEmpire(data) + ")");
             });
+            let today  = new Date();
+            let start = new Date();
+            start.setMonth(start.getMonth() - 1);
+            start.setDate(start.getDate() + 1);
+            let mmStart = start.getMonth() + 1;
+            let dStart = start.getDate();
+            let mmEnd = today.getMonth() + 1;
+            let dEnd = today.getDate();
+            let yyyyS = start.getFullYear();
+            let yyyyE = today.getFullYear();
+            self.startDate(yyyyS + "/" +  mmStart + "/" + dStart);
+            self.endDate(yyyyE + "/" + mmEnd  + "/" + dEnd);
+            self.filingDate(yyyyE + "/" + mmEnd  + "/" + dEnd);
+            self.loadKCP005();
+            self.loadCCG001();
+
             self.initScreen();
         }
+
+        converToJPDate(japanDate :JapanDateMoment) {
+        return japanDate.empire + japanDate.year + japanDate.month + japanDate.day;
+    }
 
         initScreen(): JQueryPromise<any> {
             let self = this;
