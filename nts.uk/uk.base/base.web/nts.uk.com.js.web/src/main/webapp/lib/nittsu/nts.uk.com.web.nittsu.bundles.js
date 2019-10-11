@@ -148,6 +148,7 @@ var nts;
                         // Chrome & Opera
                         if ($wd.webkitRequestFileSystem) {
                             $wd.webkitRequestFileSystem(1, 0, not, yes);
+                            return d.promise();
                         }
                         // Firefox
                         if ('MozAppearance' in document.documentElement.style) {
@@ -159,6 +160,7 @@ var nts;
                                 db.onerror = yes;
                                 db.onsuccess = not;
                             }
+                            return d.promise();
                         }
                         // Safari
                         var isSafari = navigator.userAgent.match(/Version\/([0-9\._]+).*Safari/);
@@ -174,10 +176,12 @@ var nts;
                             catch (_) {
                                 yes();
                             }
+                            return d.promise();
                         }
                         // IE10+ & Edge InPrivate
                         if (!$wd.indexedDB && ($wd.PointerEvent || $wd.MSPointerEvent)) {
                             yes();
+                            return d.promise();
                         }
                         // default navigation mode
                         not();
