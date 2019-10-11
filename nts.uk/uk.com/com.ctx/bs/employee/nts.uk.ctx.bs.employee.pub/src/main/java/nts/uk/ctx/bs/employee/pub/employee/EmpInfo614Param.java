@@ -27,6 +27,6 @@ public class EmpInfo614Param {
 	public Boolean includeAcceptanceTransferEmployee; //受入出向社員を含める
 	
 	public GeneralDate getBaseDate() {
-		return GeneralDate.fromString(this.baseDate, "yyyy-MM-dd");
+		return GeneralDate.fromString(this.baseDate, "yyyy/MM/dd");
 	}
 }

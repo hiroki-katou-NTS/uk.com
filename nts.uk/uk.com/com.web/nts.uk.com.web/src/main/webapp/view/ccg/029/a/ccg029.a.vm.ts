@@ -19,7 +19,7 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
             self.callback = callback;
             
             //control 
-            self.processingDate = ko.observable(moment(new Date()).format("YYYY/MM/DD"));
+            self.processingDate = ko.observable('');
             self.keySearch = ko.observable("");
             self.employeeList = [];
             self.isShowfull = ko.observable(false);
@@ -41,8 +41,9 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             block.grayout();
+            self.processingDate(moment(new Date()).format("YYYY/MM/DD"));
             for (var i = 0; i < 20; i++) {
-              self.employeeList.push({id: i, employeeCode: 'employeeCode', employeeName: 'employeeName', katakanaName: 'katakana', departmentCode: 'departmentCode', department: 'department'});
+              self.employeeList.push({personalId: i, employeeCode: 'employeeCode', businessName: 'businessName', businessNameKana: 'businessNameKana', workplaceCode: 'workplaceCode', workplaceName: 'workplaceName'});
             }
             self.bindData();
             dfd.resolve();
@@ -50,16 +51,44 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
             return dfd.promise();
         }
         
+        public search(): void{
+            var self = this;
+            let param = self.input;
+            param.keyword = self.keySearch();
+            param.baseDate = moment(self.processingDate()).format("YYYY/MM/DD");
+            self.findEmployee(param);
+        }
+        
+        public findEmployee(param: any): void {
+            var self = this;
+            if(self.keySearch() == ''){
+                nts.uk.ui.dialog.info({ messageId: "Msg_1571" });
+                return;
+            }
+            block.grayout();
+            nts.uk.request.ajax("com", "query/ccg029employee/find", param).done(function(data){
+                if(data.length == 0){
+                    nts.uk.ui.dialog.info({ messageId: "Msg_1572" });
+                }
+                self.employeeList = data;
+                self.bindData();
+            }).fail((error) => {
+                nts.uk.ui.dialog.info(error);
+            }).always(() => {
+                block.clear();
+            });
+        }
+        
         public expandDipslay(): void {
             var self = this;
             if(self.isShowfull()){
-                $("#gridListEmployees").igGridHiding("hideColumn", "katakanaName");
-                $("#gridListEmployees").igGridHiding("hideColumn", "departmentCode");
+                $("#gridListEmployees").igGridHiding("hideColumn", "businessNameKana");
+                $("#gridListEmployees").igGridHiding("hideColumn", "workplaceCode");
                 $( "#gridListEmployeesContent" ).removeClass( "showFullColumn" );
                 self.isShowfull(false);
             }else{
-                $("#gridListEmployees").igGridHiding("showColumn", "katakanaName");
-                $("#gridListEmployees").igGridHiding("showColumn", "departmentCode");
+                $("#gridListEmployees").igGridHiding("showColumn", "businessNameKana");
+                $("#gridListEmployees").igGridHiding("showColumn", "workplaceCode");
                 $( "#gridListEmployeesContent" ).addClass( "showFullColumn" );
                 self.isShowfull(true);
             }
@@ -72,22 +101,22 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
                 primaryKey: 'id',
                 columns: [
                     {   
-                        headerText: 'id', key: 'id', hidden: true
+                        headerText: 'id', key: 'personalId', hidden: true
                     },
                     {
                         headerText: getText('CCG029_A1_24'), key: 'employeeCode', dataType: 'string', width: '100px'
                     },
                     {
-                        headerText: getText('CCG029_A1_25'), key: 'employeeName', dataType: 'string', width: '100px'
+                        headerText: getText('CCG029_A1_25'), key: 'businessName', dataType: 'string', width: '100px'
                     },
                     {
-                        headerText: getText('CCG029_A1_26'), key: 'katakanaName', dataType: 'string',  width: '100px'
+                        headerText: getText('CCG029_A1_26'), key: 'businessNameKana', dataType: 'string',  width: '100px'
                     },
                     {
-                        headerText: self.input.systemType == 1 ? getText('CCG029_1') : getText('CCG029_2'), key: 'departmentCode', dataType: 'string',  width: '100px'
+                        headerText: self.input.systemType == 1 ? getText('CCG029_1') : getText('CCG029_2'), key: 'workplaceCode', dataType: 'string',  width: '100px'
                     },
                     {
-                        headerText: self.input.systemType == 1 ? getText('Com_Workplace') : getText('Com_Department'), key: 'department', dataType: 'string', width: '100px'
+                        headerText: self.input.systemType == 1 ? getText('Com_Workplace') : getText('Com_Department'), key: 'workplaceName', dataType: 'string', width: '100px'
                     }
                 ],
                 dataSource: self.employeeList,
@@ -118,10 +147,10 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
                         name: "Hiding",
                         columnSettings: [
                             { columnKey: "employeeCode", allowHiding: false},
-                            { columnKey: "employeeName", allowHiding: false},
-                            { columnKey: "katakanaName", allowHiding: false, hidden: true },
-                            { columnKey: "departmentCode", allowHiding: false, hidden: true },
-                            { columnKey: "department", allowHiding: false}
+                            { columnKey: "businessName", allowHiding: false},
+                            { columnKey: "businessNameKana", allowHiding: false, hidden: true },
+                            { columnKey: "workplaceCode", allowHiding: false, hidden: true },
+                            { columnKey: "workplaceName", allowHiding: false}
                         ]
                     }
                 ]

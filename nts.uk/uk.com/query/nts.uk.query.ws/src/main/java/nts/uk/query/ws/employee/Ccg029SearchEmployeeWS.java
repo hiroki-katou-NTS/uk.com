@@ -12,7 +12,7 @@ import nts.uk.query.app.employee.ccg029.Ccg029EmployeeInforDto;
 import nts.uk.query.app.employee.ccg029.Ccg029Employeefinder;
 import nts.uk.query.app.employee.ccg029.Ccg029QueryParam;
 
-@Path("query/employee")
+@Path("query/ccg029employee")
 @Produces(MediaType.APPLICATION_JSON)
 public class Ccg029SearchEmployeeWS {
 
