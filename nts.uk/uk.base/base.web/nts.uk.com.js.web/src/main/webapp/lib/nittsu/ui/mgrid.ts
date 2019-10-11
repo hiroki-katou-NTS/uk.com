@@ -5475,12 +5475,15 @@ module nts.uk.ui.mgrid {
                                 panelz = 0;
                                 cbx.options = _.cloneDeep(val);
                             }
+                            
+                            let found, currentVal = (_dataSource[idx] || {})[key];
                             _.forEach(val, i => {
                                 let $item = document.createElement("li");
                                 $item.classList.add("mcombo-listitem");
                                 $item.classList.add("ui-state-default");
                                 let vali = i[controlDef.optionsValue];
                                 $.data($item, "value", vali);
+                                if (currentVal === vali) found = i;
                                 let $comboItem = dkn.createItem(vali, i[controlDef.optionsText], $item, controlDef.displayMode),
                                     $comboValue = cbx.my.querySelector(".mcombo-value");
                                 
@@ -5509,6 +5512,7 @@ module nts.uk.ui.mgrid {
                                     $combo.classList.remove(dkn.CBX_ACTIVE_CLS);
                                     let coord = ti.getCellCoord($cbxCell);
                                     su.wedgeCell(_$grid[0], { rowIdx: coord.rowIdx, columnKey: key }, value);
+                                    khl.clear({ id: _dataSource[coord.rowIdx][_pk], columnKey: coord.columnKey, element: $cbxCell });
                                     let sCol = _specialColumn[key];
                                     if (sCol) {
                                         let $cCell = lch.cellAt(_$grid[0], coord.rowIdx, sCol);
@@ -5536,6 +5540,11 @@ module nts.uk.ui.mgrid {
                             let panel = cbx.panel[panelz];
                             cbx.panel[panelz] = $itemHolder;
                             cbx.maxHeight[panelz] = Math.min(104, maxHeight);
+                            if (!found) {
+                                $cell.textContent = "";
+                            } else if ($cell.textContent === "") {
+                                $cell.textContent = found[controlDef.optionsText];
+                            }
                             
                             // Reload combo list
                             if (_mEditor && _mEditor.type === dkn.COMBOBOX && _mEditor.columnKey === key && _mEditor.rowIdx === idx) {
