@@ -57,6 +57,7 @@ module nts.uk.pr.view.qsi013.a.viewmodel {
                 lineFeedCode: 0
                 }));
         constructor() {
+            let self = this;
             self.startDate.subscribe((data) =>{
                 if(nts.uk.util.isNullOrEmpty(data)){
                     return;
@@ -68,16 +69,15 @@ module nts.uk.pr.view.qsi013.a.viewmodel {
                 if(nts.uk.util.isNullOrEmpty(data)){
                     return;
                 }
-                self.endDateJp(" (" + self.converToJPDate(nts.uk.time.dateInJapanEmpire(data)) + ")");
+                self.endDateJp(" (" + nts.uk.time.dateInJapanEmpire(data) + ")");
             });
 
             self.filingDate.subscribe((data)=>{
                 if(nts.uk.util.isNullOrEmpty(data)){
                     return;
                 }
-                self.filingDateJp(" (" + self.converToJPDate(nts.uk.time.dateInJapanEmpire(data)) + ")");
+                self.filingDateJp(" (" + nts.uk.time.dateInJapanEmpire(data) + ")");
             });
-            let self = this;
             let today  = new Date();
             let start = new Date();
             start.setMonth(start.getMonth() - 1);
