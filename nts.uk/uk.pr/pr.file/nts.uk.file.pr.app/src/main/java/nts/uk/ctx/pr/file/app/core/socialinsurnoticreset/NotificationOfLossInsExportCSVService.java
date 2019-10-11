@@ -170,7 +170,7 @@ public class NotificationOfLossInsExportCSVService extends ExportService<Notific
 		if(order == SocialInsurOutOrder.INSURED_PER_NUMBER_ORDER) {
 			return healthInsLoss.stream().sorted(Comparator.comparing(InsLossDataExport::getOfficeCd).thenComparing(InsLossDataExport::getInsPerCls)).collect(Collectors.toList());
 		}
-		return Collections.emptyList();
+		return healthInsLoss;
 	}
 
 }
