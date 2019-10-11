@@ -230,7 +230,7 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
         cells.get(startRow, 1).setValue(getPreferCode(data.getPrefectureNo(), data.getEndDate(), infor));
         cells.get(startRow, 2).setValue(checkLength(data.getOfficeNumber1(),2));
         cells.get(startRow, 3).setValue(checkLength(data.getOfficeNumber2(),4));
-        cells.get(startRow, 4).setValue(data.getOfficeNumber() + "," + data.getHealInsNumber() + ",");
+        cells.get(startRow, 4).setValue(data.getOfficeNumber() + "," + data.getHealInsNumber());
         cells.get(startRow, 5).setValue(ins.getSubmittedName() == SubNameClass.PERSONAL_NAME ? checkLength(data.getPersonNameKana(),25) : checkLength(data.getOldNameKana(),25));
         cells.get(startRow, 6).setValue(ins.getSubmittedName() == SubNameClass.PERSONAL_NAME ? checkLength(data.getPersonName(),12) : checkLength(data.getOldName(),12));
         cells.get(startRow, 7).setValue(dateJp.era().equals(HEISEI) ? 7 : dateJp.era().equals(SHOWA) ? 5 : 9);
