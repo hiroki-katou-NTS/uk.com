@@ -50,6 +50,11 @@ module nts.uk.pr.view.qsi003.a.viewmodel {
 
         constructor() {
             let self = this;
+            self.date.subscribe((data)=>{
+                if(data) {
+                    self.datePicker(" (" + nts.uk.time.dateInJapanEmpire(data) + ")");
+                }
+            });
             self.getProgramName();
             this.getRomajiNameNoti();
             let today = new Date();
@@ -59,15 +64,8 @@ module nts.uk.pr.view.qsi003.a.viewmodel {
             self.date(yyyy + "/" + ms + "/" + dd);
             this.loadCCG001();
             this.loadKCP005();
-
             //init switch
             self.personTarget = ko.observable(0);
-            self.date.subscribe((data)=>{
-                if(data) {
-                    self.datePicker(" (" + nts.uk.time.dateInJapanEmpire(data) + ")");
-                }
-            });
-
             self.isEnable = ko.observable(true);
             self.isEditable = ko.observable(true);
         }

@@ -201,10 +201,10 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
                 cells.get(startRow, 0).setValue(data.getUnionOfficeNumber());
                 cells.get(startRow, 1).setValue(Objects.toString(ins.getFdNumber().orElse(null), "001"));
                 cells.get(startRow, 2).setValue(baseDate.toString("yyyyMMdd"));
-                cells.get(startRow, 3).setValue(checkLength(data.getHealInsInherenPr(),10));
-                cells.get(startRow, 4).setValue(data.getHealInsInherenPr().length() > 20 ? data.getHealInsInherenPr().substring(10, 20) : "");
-                cells.get(startRow, 5).setValue(data.getHealInsInherenPr().length() > 30 ? data.getHealInsInherenPr().substring(20, 30) : "");
-                cells.get(startRow, 6).setValue(data.getHealInsInherenPr().length() > 40 ? data.getHealInsInherenPr().substring(30, 40) : "" + "\n" + "[kanri]\n");
+                cells.get(startRow, 3).setValue("");
+                cells.get(startRow, 4).setValue(checkLength(data.getHealInsInherenPr(),10));
+                cells.get(startRow, 5).setValue("");
+                cells.get(startRow, 6).setValue(",\n" + "[kanri]\n");
                 cells.get(startRow, 7).setValue("001\n" + data.getUnionOfficeNumber());
                 cells.get(startRow, 8).setValue(checkLength(company.getPostCd(), 3));
                 cells.get(startRow, 9).setValue(company.getPostCd().length() == 8 ? company.getPostCd().substring(4, 8) : company.getPostCd().length() > 4 ? company.getPostCd().substring(4, company.getPostCd().length()) : "");
@@ -239,7 +239,7 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
         cells.get(startRow, 13).setValue(Objects.toString(data.getCause(), ""));
         cells.get(startRow, 13).setValue(cells.get(startRow, 13).getValue() + ",9");
         cells.get(startRow, 14).setValue(data.getCause()!= null && (data.getCause() == 4 || data.getCause() == 5) ? data.getEndDate().substring(0,4) + data.getEndDate().substring(5,7) + data.getEndDate().substring(8,10) : "");
-        cells.get(startRow, 15).setValue(data.getIsMoreEmp() + "," + data.getContinReemAfterRetirement() + "," + data.getOtherReason() + "," + data.getCaInsurance() + "," + data.getCaInsurance() + ",,,,"
+        cells.get(startRow, 15).setValue(data.getIsMoreEmp() + "," + data.getContinReemAfterRetirement() + "," + data.getOtherReason() + "," + data.getCaInsurance() + "," + data.getCaInsurance() + ",,,,,"
                 + data.getUnionOfficeNumber() + "," + data.getHealInsUnionNumber() + "," + data.getHealInsInherenPr());
     }
 
@@ -290,7 +290,7 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
         if (stt == 0 && sub.length > 1) {
             return sub[0];
         }
-        if (stt == 1 && sub.length >= 2) {
+        if (stt == 1 && sub.length > 2) {
             return sub[1];
         }
         if (sub.length == 1 && stt == 0 && phone.length() >= 3) {
@@ -311,6 +311,7 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
     private void fillEmpPensionFund(PensFundSubmissData data, Cells cells,
                        List<SocialInsurancePrefectureInformation> infor, SocialInsurNotiCreateSet ins, int startRow){
         JapaneseDate dateJp = toJapaneseDate( GeneralDate.fromString(data.getBirthDay().substring(0,10), "yyyy-MM-dd"));
+        JapaneseDate endDateJp = toJapaneseDate( GeneralDate.fromString(data.getEndDate().substring(0,10), "yyyy-MM-dd"));
         cells.get(startRow, 0).setValue("2201700");
         cells.get(startRow, 1).setValue(getPreferCode(data.getPrefectureNo(), data.getEndDate(), infor));
         cells.get(startRow, 2).setValue(checkLength(data.getOfficeNumber1(),2));
@@ -325,7 +326,7 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
         cells.get(startRow, 12).setValue(ins.getTextPersonNumber().get() != TextPerNumberClass.OUTPUT_NUMBER ? data.getBasicPenNumber().length() > 10 ? data.getBasicPenNumber().substring(4,10) :
                 data.getBasicPenNumber().length() > 4 ? data.getBasicPenNumber().substring(4,data.getBasicPenNumber().length()) : "" : "");
         cells.get(startRow, 13).setValue(9);
-        cells.get(startRow, 14).setValue(data.getEndDate().substring(0,4) + data.getEndDate().substring(5,7) + data.getEndDate().substring(8,10));
+        cells.get(startRow, 14).setValue(convertJpDate(endDateJp));
         cells.get(startRow, 15).setValue(data.getCause());
         cells.get(startRow, 16).setValue(9);
         cells.get(startRow, 17).setValue(data.getCause() == 4 || data.getCause() == 5 ? convertDate(data.getEndDate()) : "");
