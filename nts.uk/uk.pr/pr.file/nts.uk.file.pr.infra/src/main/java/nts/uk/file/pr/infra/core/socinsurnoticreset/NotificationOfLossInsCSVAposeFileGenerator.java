@@ -96,7 +96,7 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
                         checkLength(data.getWelfOfficeNumber1(),2));
                 cells.get(startRow, 8).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? checkLength(data.getOfficeNumber2(),4):
                         checkLength(data.getWelfOfficeNumber2(),4));
-                cells.get(startRow, 9).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? data.getOfficeNumber() : data.getWelfOfficeNumber());
+                cells.get(startRow, 9).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? checkLength(data.getOfficeNumber(),5) : checkLength(data.getWelfOfficeNumber(),5));
                 cells.get(startRow, 10).setValue(checkLength(company.getPostCd(),3));
                 cells.get(startRow, 11).setValue(company.getPostCd().length() == 8 ? company.getPostCd().substring(4, 8) : company.getPostCd().length() > 4 ? company.getPostCd().substring(4, company.getPostCd().length()) : "");
                 cells.get(startRow, 12).setValue(checkLength(company.getAdd_1() + company.getAdd_2(),75));
@@ -218,7 +218,7 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
                 cells.get(startRow, 15).setValue(formatPhoneNumber(company.getPhoneNum(),2) + "\n" + "[data]");
             }
             startRow++;
-            fillHealthInsAssociation( data, cells, infor, ins, startRow++);
+            fillHealthInsAssociation( data, cells, infor, ins, startRow);
 
         }
     }
