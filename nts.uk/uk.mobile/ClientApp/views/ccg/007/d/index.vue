@@ -24,33 +24,14 @@
                 </option>
             </nts-dropdown>
             
-<<<<<<< HEAD:nts.uk/uk.mobile/ClientApp/views/ccg/007/d/index.vue
             <form v-submit="sendMail">
                 <nts-text-editor
                     name='CCGS07_2'
                     tabindex='2'
                     v-model="employeeCode"
-                    v-bind:inline-title="true"
-                    v-bind:show-constraint="false"
-                    v-bind:disabled="disabled"
-                    v-bind:show-title="true"
-                    v-bind:constraint="validations.employeeCode"
-                    v-bind:columns="{ title: 'col-md-2', input: 'col-md-4' }" />
+                    v-bind:columns="{ title: 'col-md-2', input: 'col-md-4' }"
+                    @keyup.enter="sendMail" />
             </form>
-=======
-            <nts-text-editor
-                name='CCGS07_2'
-                tabindex='2'
-                v-model="employeeCode"
-                v-bind:inline-title="true"
-                v-bind:show-constraint="false"
-                v-bind:disabled="disabled"
-                v-bind:show-title="true"
-                v-bind:constraint="validations.employeeCode"
-                v-bind:errors-always="$errors.employeeCode"
-                v-bind:columns="{ title: 'col-md-2', input: 'col-md-4' }"
-                @keyup.enter="sendMail" />
->>>>>>> origin/kiban/develop:nts.uk/uk.mobile/ClientApp/views/ccg/007/d/index.html
 
             <div class="mb-2">
                 <button class="btn btn-primary btn-lg btn-block" v-click:500="sendMail">{{ 'CCGS07_40' | i18n }}</button>
