@@ -147,7 +147,7 @@ var nts;
                         };
                         // Chrome & Opera
                         if ($wd.webkitRequestFileSystem) {
-                            $wd.webkitRequestFileSystem(0, 0, yes, not);
+                            $wd.webkitRequestFileSystem(1, 0, not, yes);
                         }
                         // Firefox
                         if ('MozAppearance' in document.documentElement.style) {
