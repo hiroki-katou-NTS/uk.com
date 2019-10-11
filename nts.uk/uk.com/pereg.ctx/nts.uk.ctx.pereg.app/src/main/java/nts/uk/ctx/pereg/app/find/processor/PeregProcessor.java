@@ -46,6 +46,7 @@ import nts.uk.ctx.pereg.dom.person.personinfoctgdata.categor.PerInfoCtgData;
 import nts.uk.ctx.pereg.dom.person.personinfoctgdata.categor.PerInfoCtgDataRepository;
 import nts.uk.ctx.pereg.dom.person.personinfoctgdata.item.PerInfoItemDataRepository;
 import nts.uk.ctx.pereg.dom.person.personinfoctgdata.item.PersonInfoItemData;
+import nts.uk.ctx.pereg.dom.roles.auth.PersonInfoPermissionType;
 import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoAuthType;
 import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoCategoryAuth;
 import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoCategoryAuthRepository;
@@ -103,6 +104,9 @@ public class PeregProcessor {
 
 	@Inject
 	private LayoutControlComBoBox layoutControlComboBox;
+	
+	@Inject
+	private PersonInfoCategoryAuthRepository categoryAuthRepo;
 	/**
 	 * get person information category and it's children (Hiển thị category và
 	 * danh sách tab category con của nó)
@@ -649,7 +653,10 @@ public class PeregProcessor {
 				.filter(item -> item.haveNotParentCode()).collect(Collectors.toList());
 
 		List<PerInfoItemDefForLayoutDto> lstSelf = new ArrayList<>(), lstOther = new ArrayList<>();
-
+		 
+		PersonInfoCategoryAuth categoryAuthOpt = this.categoryAuthRepo
+				.getDetailPersonCategoryAuthByPId(roleId, category.getPersonInfoCategoryId()).orElse(null);
+		
 		Map<String, PersonInfoItemAuth> mapItemAuth = itemAuthRepo
 				.getAllItemAuth(roleId, category.getPersonInfoCategoryId()).stream()
 				.collect(Collectors.toMap(e -> e.getPersonItemDefId(), e -> e));
@@ -669,7 +676,7 @@ public class PeregProcessor {
 
 			if (selfRole != PersonInfoAuthType.HIDE) {
 				// convert item-definition to layoutDto
-				ActionRole role = selfRole == PersonInfoAuthType.REFERENCE ? ActionRole.VIEW_ONLY : ActionRole.EDIT;
+				ActionRole role = categoryAuthOpt == null? ActionRole.VIEW_ONLY :  (categoryAuthOpt.getAllowPersonRef() == PersonInfoPermissionType.NO? ActionRole.VIEW_ONLY:  ((selfRole == PersonInfoAuthType.REFERENCE) ? ActionRole.VIEW_ONLY : ActionRole.EDIT));
 
 				PerInfoItemDefForLayoutDto itemDto = itemForLayoutFinder.createItemLayoutDto(category, itemDefinition,
 						i, role);
@@ -685,7 +692,8 @@ public class PeregProcessor {
 
 			if (otherRole != PersonInfoAuthType.HIDE) {
 				// convert item-definition to layoutDto
-				ActionRole role = otherRole == PersonInfoAuthType.REFERENCE ? ActionRole.VIEW_ONLY : ActionRole.EDIT;
+				//ActionRole role = otherRole == PersonInfoAuthType.REFERENCE ? ActionRole.VIEW_ONLY : ActionRole.EDIT;
+				ActionRole role = categoryAuthOpt == null? ActionRole.VIEW_ONLY :  (categoryAuthOpt.getAllowOtherRef() == PersonInfoPermissionType.NO? ActionRole.VIEW_ONLY:  ((otherRole == PersonInfoAuthType.REFERENCE) ? ActionRole.VIEW_ONLY : ActionRole.EDIT));
 
 				PerInfoItemDefForLayoutDto itemDto = itemForLayoutFinder.createItemLayoutDto(category, itemDefinition,
 						i, role);
