@@ -150,7 +150,7 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
 
     private String getBasicPenNumber(String number){
         if(number.isEmpty()) {
-            return ",,,";
+            return ",,";
         }
         if(number.length() >= 10) {
             return number + "," + number.substring(0,4) + "," + number.substring(4,10);
@@ -311,6 +311,7 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
     private void fillEmpPensionFund(PensFundSubmissData data, Cells cells,
                        List<SocialInsurancePrefectureInformation> infor, SocialInsurNotiCreateSet ins, int startRow){
         JapaneseDate dateJp = toJapaneseDate( GeneralDate.fromString(data.getBirthDay().substring(0,10), "yyyy-MM-dd"));
+        JapaneseDate endDateJp = toJapaneseDate( GeneralDate.fromString(data.getEndDate().substring(0,10), "yyyy-MM-dd"));
         cells.get(startRow, 0).setValue("2201700");
         cells.get(startRow, 1).setValue(getPreferCode(data.getPrefectureNo(), data.getEndDate(), infor));
         cells.get(startRow, 2).setValue(checkLength(data.getOfficeNumber1(),2));
@@ -325,7 +326,7 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
         cells.get(startRow, 12).setValue(ins.getTextPersonNumber().get() != TextPerNumberClass.OUTPUT_NUMBER ? data.getBasicPenNumber().length() > 10 ? data.getBasicPenNumber().substring(4,10) :
                 data.getBasicPenNumber().length() > 4 ? data.getBasicPenNumber().substring(4,data.getBasicPenNumber().length()) : "" : "");
         cells.get(startRow, 13).setValue(9);
-        cells.get(startRow, 14).setValue(data.getEndDate().substring(0,4) + data.getEndDate().substring(5,7) + data.getEndDate().substring(8,10));
+        cells.get(startRow, 14).setValue(convertJpDate(endDateJp));
         cells.get(startRow, 15).setValue(data.getCause());
         cells.get(startRow, 16).setValue(9);
         cells.get(startRow, 17).setValue(data.getCause() == 4 || data.getCause() == 5 ? convertDate(data.getEndDate()) : "");

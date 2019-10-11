@@ -180,9 +180,9 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
 
             setShared('QSI001_PARAMS_TO_SCREEN_B', {
                 listEmpId: self.getListEmployee(self.selectedCodeKCP005(),self.employees),
-                date: self.baseDate1(),
-                startDate: self.startDate(),
-                endDate: self.endDate()
+                date: moment.utc(self.baseDate1(), "YYYY/MM/DD"),
+                startDate: moment.utc(self.startDate(), "YYYY/MM/DD"),
+                endDate: moment.utc(self.endDate(), "YYYY/MM/DD")
             });
 
             nts.uk.ui.windows.sub.modal("/view/qsi/001/b/index.xhtml").onClosed(() => {
