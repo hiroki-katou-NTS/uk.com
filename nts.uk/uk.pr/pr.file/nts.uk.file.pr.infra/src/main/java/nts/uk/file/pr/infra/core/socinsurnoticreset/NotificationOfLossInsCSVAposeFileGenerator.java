@@ -137,8 +137,8 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
         cells.get(startRow, 9).setValue(cells.get(startRow, 9).getStringValue() + "," + (endJp != null ? convertJpDate(endJp) : ""));
         cells.get(startRow, 10).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? data.getCause() == null ? "" : data.getCause() : data.getCause2() == null ? "": data.getCause2());
         cells.get(startRow, 10).setValue(cells.get(startRow, 10).getStringValue() + ",9");
-        cells.get(startRow, 11).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? data.getCause() == null ? ""  : data.getCause() == 4 || data.getCause() == 5 ? toJapaneseDate(GeneralDate.fromString(convertDate(data.getEndDate()),"yyyy-MM-dd" ))
-                : ""  : data.getCause2() == null ? "" : data.getCause2() == 4 || data.getCause2() == 5 ? toJapaneseDate(GeneralDate.fromString(convertDate(data.getEndDate2()),"yyyyMMdd" )) :  "");
+        cells.get(startRow, 11).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? data.getCause() == null ? ""  : data.getCause() == 4 || data.getCause() == 5 ? convertJpDate(toJapaneseDate(GeneralDate.fromString(convertDate(data.getEndDate()),"yyyy-MM-dd" )))
+                : ""  : data.getCause2() == null ? "" : data.getCause2() == 4 || data.getCause2() == 5 ? convertJpDate(toJapaneseDate(GeneralDate.fromString(convertDate(data.getEndDate2()),"yyyyMMdd" ))) :  "");
         cells.get(startRow, 11).setValue(cells.get(startRow, 11).getStringValue() + "," + data.getIsMoreEmp());
         cells.get(startRow, 11).setValue(cells.get(startRow, 11).getStringValue() + "," + data.getContinReemAfterRetirement());
         cells.get(startRow, 12).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? data.getOtherReason() : data.getOtherReason2());
