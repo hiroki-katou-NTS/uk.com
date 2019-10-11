@@ -241,7 +241,7 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
         cells.get(startRow, 12).setValue(convertJpDate(enDateJp));
         cells.get(startRow, 13).setValue(Objects.toString(data.getCause(), ""));
         cells.get(startRow, 13).setValue(cells.get(startRow, 13).getValue() + ",9");
-        cells.get(startRow, 14).setValue(data.getCause()!= null && (data.getCause() == 4 || data.getCause() == 5) ? convertJpDate(enDateJp) : "");
+        cells.get(startRow, 14).setValue(data.getCause()!= null && (data.getCause() == 4 || data.getCause() == 5) ? convertJpDate(toJapaneseDate(GeneralDate.fromString(convertDate(data.getEndDate()), "yyyy-MM-dd"))) : "");
         cells.get(startRow, 15).setValue(data.getIsMoreEmp() + "," + data.getContinReemAfterRetirement() + "," + data.getOtherReason() + "," + data.getCaInsurance() + "," + data.getCaInsurance() + ",,,,,"
                 + data.getUnionOfficeNumber() + "," + data.getHealInsUnionNumber() + "," + data.getHealInsInherenPr());
     }
