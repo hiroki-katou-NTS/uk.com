@@ -6,6 +6,7 @@ module nts.uk.pr.view.qsi013.a.viewmodel {
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+    import JapanDateMoment = nts.uk.time.JapanDateMoment;
 
 
     export class ScreenModel {
@@ -56,6 +57,26 @@ module nts.uk.pr.view.qsi013.a.viewmodel {
                 lineFeedCode: 0
                 }));
         constructor() {
+            self.startDate.subscribe((data) =>{
+                if(nts.uk.util.isNullOrEmpty(data)){
+                    return;
+                }
+                self.startDateJp(" (" + nts.uk.time.dateInJapanEmpire(data) + ")");
+            });
+
+            self.endDate.subscribe((data) =>{
+                if(nts.uk.util.isNullOrEmpty(data)){
+                    return;
+                }
+                self.endDateJp(" (" + self.converToJPDate(nts.uk.time.dateInJapanEmpire(data)) + ")");
+            });
+
+            self.filingDate.subscribe((data)=>{
+                if(nts.uk.util.isNullOrEmpty(data)){
+                    return;
+                }
+                self.filingDateJp(" (" + self.converToJPDate(nts.uk.time.dateInJapanEmpire(data)) + ")");
+            });
             let self = this;
             let today  = new Date();
             let start = new Date();
@@ -72,28 +93,13 @@ module nts.uk.pr.view.qsi013.a.viewmodel {
             self.filingDate(yyyyE + "/" + mmEnd  + "/" + dEnd);
             self.loadKCP005();
             self.loadCCG001();
-            self.startDate.subscribe((data) =>{
-                if(nts.uk.util.isNullOrEmpty(data)){
-                    return;
-                }
-                self.startDateJp(" (" + nts.uk.time.dateInJapanEmpire(data) + ")");
-            });
 
-            self.endDate.subscribe((data) =>{
-                if(nts.uk.util.isNullOrEmpty(data)){
-                    return;
-                }
-                self.endDateJp(" (" + nts.uk.time.dateInJapanEmpire(data) + ")");
-            });
-
-            self.filingDate.subscribe((data)=>{
-                if(nts.uk.util.isNullOrEmpty(data)){
-                    return;
-                }
-                self.filingDateJp(" (" + nts.uk.time.dateInJapanEmpire(data) + ")");
-            });
             self.initScreen();
         }
+
+        converToJPDate(japanDate :JapanDateMoment) {
+        return japanDate.empire + japanDate.year + japanDate.month + japanDate.day;
+    }
 
         initScreen(): JQueryPromise<any> {
             let self = this;
