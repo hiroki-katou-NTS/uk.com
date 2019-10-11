@@ -145,7 +145,7 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
         cells.get(startRow, 13).setValue(Objects.toString(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? data.getCaInsurance() : data.getNumRecoved2(), ""));
         cells.get(startRow, 14).setValue(Objects.toString(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? data.getCaInsurance() : data.getNumRecoved2(), ""));
         cells.get(startRow, 15).setValue(data.getPercentOrMore().equals("1") ? "1,9" : ",");
-        cells.get(startRow, 16).setValue(data.getPercentOrMore() == null ? "" : data.getPercentOrMore().equals("1")  ? convertDate(data.getEndDate()) : "");
+        cells.get(startRow, 16).setValue(data.getPercentOrMore() == null ? "" : data.getPercentOrMore().equals("1")  ? endJp == null ? "" : convertJpDate(endJp) : "");
         cells.get(startRow, 17).setValue(data.getCause2() == null ? "" : data.getCause2() == 6 ? "" : 1);
     }
 
@@ -239,7 +239,7 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
         cells.get(startRow, 12).setValue(convertJpDate(enDateJp));
         cells.get(startRow, 13).setValue(Objects.toString(data.getCause(), ""));
         cells.get(startRow, 13).setValue(cells.get(startRow, 13).getValue() + ",9");
-        cells.get(startRow, 14).setValue(data.getCause()!= null && (data.getCause() == 4 || data.getCause() == 5) ? data.getEndDate().substring(0,4) + data.getEndDate().substring(5,7) + data.getEndDate().substring(8,10) : "");
+        cells.get(startRow, 14).setValue(data.getCause()!= null && (data.getCause() == 4 || data.getCause() == 5) ? convertJpDate(enDateJp) : "");
         cells.get(startRow, 15).setValue(data.getIsMoreEmp() + "," + data.getContinReemAfterRetirement() + "," + data.getOtherReason() + "," + data.getCaInsurance() + "," + data.getCaInsurance() + ",,,,,"
                 + data.getUnionOfficeNumber() + "," + data.getHealInsUnionNumber() + "," + data.getHealInsInherenPr());
     }
