@@ -61,7 +61,9 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
                         unSelectAll(ws, sheetName + page, stt);
                     }
                     page++;
+
                     ws.get(ws.addCopy(0)).setName(sheetName + page);
+
                     companyCd = element.getOfficeCd();
                     fillDataOffice(ws, element, sheetName + page,baseDate);
                     stt = 0;
@@ -268,7 +270,7 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
         switch (element.getAcquiCtgHealthInsurWelfare()){
             case 1 :{
                 worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_17" : "A2_17_" + stt));
-                worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_18" : "A2_18" + stt));
+                worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_18" : "A2_18_" + stt));
                 break;
             }
             case 2 :{
