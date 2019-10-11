@@ -150,7 +150,7 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
 
     private String getBasicPenNumber(String number){
         if(number.isEmpty()) {
-            return ",,,";
+            return ",,";
         }
         if(number.length() >= 10) {
             return number + "," + number.substring(0,4) + "," + number.substring(4,10);
