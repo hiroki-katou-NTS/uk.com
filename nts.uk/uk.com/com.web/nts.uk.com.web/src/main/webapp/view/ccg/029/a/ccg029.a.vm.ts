@@ -1,4 +1,4 @@
-module nts.uk.hr.view.jhc002.a.viewmodel {
+module nts.uk.hr.view.ccg029.a.viewmodel {
     import block = nts.uk.ui.block;
     import getText = nts.uk.resource.getText;
     export class ScreenModel {
@@ -9,15 +9,14 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
         
         btnSelectionText : KnockoutObservable<string>;
         isShowfull : KnockoutObservable<boolean>;
-        callback: () => any;
         input: Input;
+        callback: any;
         
-        constructor(param: Input, callback: () => any) {
+        constructor(param: Input, callback) {
             var self = this;
             //param
             self.input = new Input(param);
-            self.callback = callback;
-            
+            self.callback = callback
             //control 
             self.processingDate = ko.observable('');
             self.keySearch = ko.observable("");
@@ -36,15 +35,24 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
             $("#searchTipsBtn").click(function() {
                 $(".searchTips-area").ntsPopup("toggle");
             });
+            
+            $('#form').on('submit', function (e) {
+                e.preventDefault();
+                self.search();
+            });
+            
+            //Delegate
+            $(document).delegate("#gridListEmployees", "iggridcellclick", function (evt, ui) {
+                var value = _.find(self.employeeList, ['personalId', ui.rowKey]);
+                console.log(value);
+                self.callback(value);
+            });
         }
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
             block.grayout();
             self.processingDate(moment(new Date()).format("YYYY/MM/DD"));
-            for (var i = 0; i < 20; i++) {
-              self.employeeList.push({personalId: i, employeeCode: 'employeeCode', businessName: 'businessName', businessNameKana: 'businessNameKana', workplaceCode: 'workplaceCode', workplaceName: 'workplaceName'});
-            }
             self.bindData();
             dfd.resolve();
             block.clear();
@@ -67,6 +75,8 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
             }
             block.grayout();
             nts.uk.request.ajax("com", "query/ccg029employee/find", param).done(function(data){
+                self.employeeList = [];
+                self.bindData();
                 if(data.length == 0){
                     nts.uk.ui.dialog.info({ messageId: "Msg_1572" });
                 }
@@ -94,14 +104,15 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
             }
         }
         
+        
         public bindData(): void {
             var self = this;
             $("#gridListEmployees").igGrid({
                 autoGenerateColumns: false,
-                primaryKey: 'id',
+                primaryKey: 'personalId',
                 columns: [
                     {   
-                        headerText: 'id', key: 'personalId', hidden: true
+                        headerText: 'personalId', key: 'personalId', hidden: true
                     },
                     {
                         headerText: getText('CCG029_A1_24'), key: 'employeeCode', dataType: 'string', width: '100px'
@@ -113,7 +124,7 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
                         headerText: getText('CCG029_A1_26'), key: 'businessNameKana', dataType: 'string',  width: '100px'
                     },
                     {
-                        headerText: self.input.systemType == 1 ? getText('CCG029_1') : getText('CCG029_2'), key: 'workplaceCode', dataType: 'string',  width: '100px'
+                        headerText: self.input.systemType == 1 ? getText('CCG029_1') : getText('CCG029_2'), key: 'workplaceCode', dataType: 'string',  width: '100px' 
                     },
                     {
                         headerText: self.input.systemType == 1 ? getText('Com_Workplace') : getText('Com_Department'), key: 'workplaceName', dataType: 'string', width: '100px'
@@ -129,7 +140,7 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
                     {
                         name: "Selection",
                         mode: "row",
-                        multipleSelection: false
+                        multipleSelection: false,
                     },
                     {
                         name: 'Filtering', 
@@ -148,10 +159,13 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
                         columnSettings: [
                             { columnKey: "employeeCode", allowHiding: false},
                             { columnKey: "businessName", allowHiding: false},
-                            { columnKey: "businessNameKana", allowHiding: false, hidden: true },
-                            { columnKey: "workplaceCode", allowHiding: false, hidden: true },
+                            { columnKey: "businessNameKana", allowHiding: false, hidden: self.isShowfull()? '' : true },
+                            { columnKey: "workplaceCode", allowHiding: false, hidden: self.isShowfull()? '' : true },
                             { columnKey: "workplaceName", allowHiding: false}
                         ]
+                    },
+                    {
+                        name: "Tooltips"
                     }
                 ]
             });
@@ -179,20 +193,9 @@ module nts.uk.hr.view.jhc002.a.viewmodel {
             this.includeClosed = input ? input.includeClosed || true: true;
             this.includeTransferEmployee = input ? input.includeTransferEmployee || true: true;
             this.includeAcceptanceTransferEmployee = input ? input.includeAcceptanceTransferEmployee || true: true;
-            this.getPosition = input ? input.getPosition || false: false;
-            this.getEmployment = input ? input.getEmployment || false: false;
-            this.getPersonalFileManagert = input ? input.getPersonalFileManagert || false: false;
-        }
-    }
-    
-    class CareerType {
-        id: string;
-        code: string;
-        name: string;
-        constructor(obj: any) {
-            this.id = obj.id
-            this.code = obj.code;
-            this.name = obj.name;
+            this.getPosition = input ? input.getPosition || true: true;
+            this.getEmployment = input ? input.getEmployment || true: true;
+            this.getPersonalFileManagert = input ? input.getPersonalFileManagert || true: true;
         }
     }
 }

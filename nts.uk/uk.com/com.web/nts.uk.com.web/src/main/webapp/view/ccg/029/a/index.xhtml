@@ -10,11 +10,7 @@
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="ccg029.a.style.css" />
 			<com:scriptfile path="ccg029.a.vm.js" />
-			<com:scriptfile path="ccg029.a.service.js" />
 			<com:scriptfile path="ccg029.a.start.js" />
-<!-- 			<com:ValidatorScript> -->
-<!-- 					nts.uk.ctx.hr.shared.dom.primitiveValue.String_Any_20 -->
-<!-- 			</com:ValidatorScript> -->
 		</ui:define>
 		<ui:define name="content">
 
@@ -25,10 +21,12 @@
 								</div>
 								<div class="row">
 									<div class ="inline mr10">
-										<input  tabindex="2" data-bind="ntsTextEditor: {
-											name: 'ssss', 
-											value: keySearch,
-											option: {width: '240px', placeholder: 'コード・氏名・カナ氏名で検索･･･'}}" />
+										<form id="form" action="#" autocomplete="off">
+											<input  tabindex="2" data-bind="ntsTextEditor: {
+												name: 'ssss', 
+												value: keySearch,
+												option: {width: '240px', placeholder: 'コード・氏名・カナ氏名で検索･･･'}}" />
+										</form>
 									</div>
 									<button tabindex="3" id="findBtn" class="inline" data-bind="click: search ">#{i18n.getText('CCG029_A1_4')}</button>
 								</div>
@@ -104,7 +102,6 @@
 									<div class ="inline lable mr5"><span>#{i18n.getText('CCG029_A1_1')}</span></div>
 									<div class ="inline" data-bind="ntsDatePicker: {value: processingDate, name: '#{i18n.getText('CCG029_A1_2')}', dateFormat: 'YYYY/MM/DD'}"></div>
 								</div>
-								
 							</div>
 		</ui:define>
 	</ui:composition>

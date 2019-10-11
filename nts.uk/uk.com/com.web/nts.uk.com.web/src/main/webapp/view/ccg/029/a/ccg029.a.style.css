@@ -35,3 +35,12 @@
 .component-search-employee #gridListEmployeesContent.showFullColumn {
 	width: 680px;
 }
+
+.component-search-employee .tooltip-grid-notes {
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+.component-search-employee .ui-iggrid tbody td {
+	white-space: nowrap;
+}
