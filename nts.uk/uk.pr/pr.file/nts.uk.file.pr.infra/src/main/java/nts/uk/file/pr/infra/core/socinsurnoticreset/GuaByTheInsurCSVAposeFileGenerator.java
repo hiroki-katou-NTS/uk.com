@@ -347,7 +347,7 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
         //
         cells.get(startRow, 10).setValue(data.getResonAndOtherContent()+","+",");
         cells.get(startRow, 11).setValue(startDateJp.era().equals(HEISEI) ? 7 : dateJp.era().equals(SHOWA) ? 5 : 9);
-        cells.get(startRow, 11).setValue( cells.get(startRow, 11).getIntValue()+","+data.getStartDate1().substring(0, 4) + data.getStartDate1().substring(5, 7) + data.getStartDate1().substring(8, 10));
+        cells.get(startRow, 11).setValue( cells.get(startRow, 11).getIntValue()+","+convertJpDate(toJapaneseDate(GeneralDate.fromString(data.getStartDate1().substring(0, 4) + data.getStartDate1().substring(5, 7) + data.getStartDate1().substring(8, 10), "yyyy-MM-dd"))));
         cells.get(startRow, 11).setValue( cells.get(startRow, 11).getValue()+","+data.getDepenAppoint());
 
 
@@ -499,7 +499,7 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
         cells.get(startRow, 16).setValue(cells.get(startRow, 16).getValue()+","+(data.getSecAddSalary().isEmpty() ? "" : Double.parseDouble(data.getSecAddSalary().trim()) > 10000000 ? "9999999" : data.getSecAddSalary()));
         cells.get(startRow, 16).setValue(cells.get(startRow, 16).getValue()+","+(data.getSecStandSal().isEmpty() ? "" : Double.parseDouble(data.getSecStandSal().trim()) > 10000000 ? "9999" : data.getSecStandSal().length() > 4 ? data.getSecStandSal().substring(0,4) : data.getSecStandSal()));
         cells.get(startRow, 17).setValue(checkLengtFunSpecific(data.getFunSpecific1()));
-        cells.get(startRow, 17).setValue( cells.get(startRow, 17).getValue()+","+(checkLengtFunSpecific(data.getFunSpecific2())));
+        cells.get(startRow, 17).setValue(cells.get(startRow, 17).getValue()+","+(checkLengtFunSpecific(data.getFunSpecific2())));
         cells.get(startRow, 17).setValue(cells.get(startRow, 17).getValue()+","+checkLengtFunSpecific(data.getFunSpecific3()));
         cells.get(startRow, 17).setValue(cells.get(startRow, 17).getValue()+","+checkLengtFunSpecific(data.getFunSpecific4()));
         cells.get(startRow, 17).setValue(cells.get(startRow, 17).getValue()+","+checkLengtFunSpecific(data.getFunSpecific5()));
