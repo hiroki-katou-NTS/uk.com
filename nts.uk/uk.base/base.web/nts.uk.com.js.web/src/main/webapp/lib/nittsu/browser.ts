@@ -111,7 +111,7 @@ module nts.uk.util {
 
             // Chrome & Opera
             if ($wd.webkitRequestFileSystem) {
-                $wd.webkitRequestFileSystem(0, 0, not, yes);
+                $wd.webkitRequestFileSystem(0, 0, yes, not);
             }
 
             // Firefox
