@@ -1742,7 +1742,7 @@ var nts;
                     return this.date;
                 };
                 JapanDate.prototype.toString = function () {
-                    return "" + this.empire + this.year + "\u5E74" + this.month + this.date + "\u65E5";
+                    return "" + this.empire + this.year + "\u5E74" + this.month + "\u6708" + this.date + "\u65E5";
                 };
                 return JapanDate;
             }(JapanYearMonth));
