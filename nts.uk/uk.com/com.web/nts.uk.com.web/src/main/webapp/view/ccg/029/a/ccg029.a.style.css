@@ -23,7 +23,6 @@
 }
 
 .component-search-employee #gridListEmployeesContent {
-	height: 392px;
 	width: 340px;
 	position: relative;
 	z-index: 99;
