@@ -8,8 +8,7 @@ module nts.uk.hr.view.ccg029.a.viewmodel {
         constructor() {
             var self = this;
             //param
-            self.input = new Input();
-
+            self.input = new Input(undefined);
         }
         startPage(): JQueryPromise<any> {
             var self = this;
@@ -42,9 +41,9 @@ module nts.uk.hr.view.ccg029.a.viewmodel {
             this.includeClosed = input ? input.includeClosed || true: true;
             this.includeTransferEmployee = input ? input.includeTransferEmployee || true: true;
             this.includeAcceptanceTransferEmployee = input ? input.includeAcceptanceTransferEmployee || true: true;
-            this.getPosition = input ? input.getPosition || true: true;
-            this.getEmployment = input ? input.getEmployment || true: true;
-            this.getPersonalFileManagert = input ? input.getPersonalFileManagert || true: true;
+            this.getPosition = input ? input.getPosition || false: false;
+            this.getEmployment = input ? input.getEmployment || false: false;
+            this.getPersonalFileManagert = input ? input.getPersonalFileManagert || false: false;
         }
     }
 }

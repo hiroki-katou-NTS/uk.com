@@ -212,7 +212,7 @@ module ccg029.component {
         includeAcceptanceTransferEmployee: boolean; //受入出向社員を含める
         getPosition: boolean; //職位を取得する
         getEmployment: boolean; //雇用を取得する
-        getPersonalFileManagert: boolean; //個人ファイル管理を取得する
+        getPersonalFileManagement: boolean; //個人ファイル管理を取得する
         
         constructor(input: any) {
             this.systemType = input ? input.systemType || 1 : 1;
@@ -224,7 +224,7 @@ module ccg029.component {
             this.includeAcceptanceTransferEmployee = input ? input.includeAcceptanceTransferEmployee || true: true;
             this.getPosition = input ? input.getPosition || false: false;
             this.getEmployment = input ? input.getEmployment || false: false;
-            this.getPersonalFileManagert = input ? input.getPersonalFileManagert || false: false;
+            this.getPersonalFileManagement = input ? input.getPersonalFileManagement || false: false;
         }
     }
 

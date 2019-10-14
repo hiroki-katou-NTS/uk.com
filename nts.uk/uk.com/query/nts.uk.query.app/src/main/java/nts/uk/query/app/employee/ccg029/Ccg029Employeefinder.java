@@ -88,7 +88,7 @@ public class Ccg029Employeefinder {
 		List<EmpInfo614> listEmpAfterFillter = listEmpBeforeFillter.stream().filter(c -> employeeID.contains(c.getEmployeeId())).collect(Collectors.toList());
 		
 		List<Ccg029EmployeeInforDto> result = new ArrayList<>(); 
-		if(input.getPersonalFileManagert) {
+		if(input.getPersonalFileManagement) {
 			List<String> pIDs = listEmpAfterFillter.stream().map(c->c.getPersonalId()).collect(Collectors.toList());
 			//[RQ624]個人IDから個人ファイル管理を取得する
 			List<PersonFileManagementDto> personFileManagements = personFileManagementService.getPersonalFileManagementFromPID(pIDs);

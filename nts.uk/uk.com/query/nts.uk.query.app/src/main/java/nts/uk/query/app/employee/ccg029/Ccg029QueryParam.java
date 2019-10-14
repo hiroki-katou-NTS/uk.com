@@ -30,7 +30,7 @@ public class Ccg029QueryParam {
 	
 	public Boolean getEmployment; //雇用を取得する
 	
-	public Boolean getPersonalFileManagert; //個人ファイル管理を取得する
+	public Boolean getPersonalFileManagement; //個人ファイル管理を取得する
 	
 	public String baseDate; // 基準日
 	
