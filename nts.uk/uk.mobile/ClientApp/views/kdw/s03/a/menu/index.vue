@@ -9,11 +9,11 @@
             </div>
         </div>
         <ul class="list-group border-0">
-            <li class="list-group-item border-0" v-if="params.allConfirmButtonDis">
+            <li class="list-group-item border-0" v-if="params.allConfirmButtonDis && params.selfConfirm">
                 <button type="button" class="btn btn-primary w-100 btn-lg btn-success" v-click:500="() => processConfirmAll('confirm')">{{'KDWS03_24' | i18n}}</button></li>
-            <li class="list-group-item border-0" v-if="params.allConfirmButtonDis">
+            <li class="list-group-item border-0" v-if="params.allConfirmButtonDis && params.selfConfirm">
                 <button type="button" class="btn btn-primary w-100 btn-lg btn-warning" v-click:500="() => processConfirmAll('remove')">{{'KDWS03_25' | i18n}}</button></li>
-            <div v-if="(params.displayFormat == 0) && params.allConfirmButtonDis" class="w-2 mx-2" style="border: 1px solid #9ea5b0 !important"></div>
+            <div v-if="(params.displayFormat == 0) && params.allConfirmButtonDis && params.selfConfirm" class="w-2 mx-2" style="border: 1px solid #9ea5b0 !important"></div>
             <li class="list-group-item border-0" v-if="params.errorReferButtonDis">
                 <button type="button" class="btn btn-primary w-100 btn-lg btn-secondary" v-click:500="openErrorList">{{'KDWS03_30' | i18n}}</button></li>
             <li class="list-group-item border-0" v-if="params.restReferButtonDis">
