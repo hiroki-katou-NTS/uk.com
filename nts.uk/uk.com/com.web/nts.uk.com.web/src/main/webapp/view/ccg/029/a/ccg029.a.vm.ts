@@ -164,7 +164,7 @@ module ccg029.component {
                 dataSource: self.employeeList,
                 dataSourceType: 'json',
                 responseDataKey: 'results',
-                height: window.innerHeight - 277,
+                height: window.innerHeight - 267,
                 width: '100%',
                 tabIndex: 7,
                 features: [
