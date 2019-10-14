@@ -66,7 +66,6 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.EmpProvisionalInput;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.RegisterProvisionalData;
-import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
@@ -95,6 +94,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.ResultReturnDCUpdate
 import nts.uk.screen.at.app.dailyperformance.correction.dto.TypeError;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.month.DPMonthValue;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.month.LeaveDayErrorDto;
+import nts.uk.screen.at.app.dailyperformance.correction.finddata.IGetDataClosureStart;
 import nts.uk.screen.at.app.dailyperformance.correction.text.DPText;
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyQuery;
 import nts.uk.shr.com.context.AppContexts;
@@ -137,7 +137,7 @@ public class DailyModifyRCommandFacade {
 	private DailyPerformanceScreenRepo repo;
 
 	@Inject
-	private GetClosureStartForEmployee getClosureStartForEmployee;
+	private IGetDataClosureStart getClosureStartForEmployee;
 
 	@Inject
 	private TimeOffRemainErrorInfor timeOffRemainErrorInfor;
@@ -719,7 +719,7 @@ public class DailyModifyRCommandFacade {
 					.collect(Collectors.toList()).stream().sorted((x, y) -> x.getYmd().compareTo(y.getYmd()))
 					.collect(Collectors.toList());
 
-			Optional<GeneralDate> date = getClosureStartForEmployee.algorithm(emp);
+			Optional<GeneralDate> date = getClosureStartForEmployee.getDataClosureStart(emp);
 			List<EmployeeMonthlyPerError> lstEmpMonthError = new ArrayList<>();
 			if (domainMonthNew != null && !domainMonthNew.isEmpty()) {
 				for (IntegrationOfMonthly month : domainMonthNew) {
@@ -828,14 +828,23 @@ public class DailyModifyRCommandFacade {
 		switch (displayFormat) {
 		case 0: // person
 			List<Pair<String, GeneralDate>> listEmpDate = checkEditedItems(resultOlds, resultNews);
-			if (!listEmpDate.isEmpty()) {
+			Optional<GeneralDate> closureStartOpt = getClosureStartForEmployee.getDataClosureStart(listEmpDate.get(0).getLeft());
+			if(!closureStartOpt.isPresent()) break;
+			List<GeneralDate> listDate = listEmpDate.stream().map(x -> x.getRight()).filter(x -> closureStartOpt.get().beforeOrEquals(x)).collect(Collectors.toList());
+			if (!listDate.isEmpty()) {
 				interimRemainDataMngRegisterDateChange.registerDateChange(AppContexts.user().companyId(),
-						listEmpDate.get(0).getLeft(),
-						listEmpDate.stream().map(i -> i.getRight()).collect(Collectors.toList()));
+						listEmpDate.get(0).getLeft(), listDate);
 			}
 			break;
 		case 1: // date
 			listEmpDate = checkEditedItems(resultOlds, resultNews);
+			listEmpDate = listEmpDate.stream().filter(x -> {
+				Optional<GeneralDate> closureStartOptDate = getClosureStartForEmployee.getDataClosureStart(x.getLeft());
+				if (!closureStartOptDate.isPresent() || closureStartOptDate.get().after(x.getRight()))
+					return false;
+				return true;
+			}).collect(Collectors.toList());
+			
 			if (!listEmpDate.isEmpty()) {
 				registerProvisionalData.registerProvisionalData(AppContexts.user().companyId(),
 						listEmpDate.stream().map(i -> new EmpProvisionalInput(i.getLeft(), Arrays.asList(i.getRight())))
@@ -844,6 +853,13 @@ public class DailyModifyRCommandFacade {
 			break;
 		default: // error
 			listEmpDate = checkEditedItems(resultOlds, resultNews);
+			listEmpDate = listEmpDate.stream().filter(x -> {
+				Optional<GeneralDate> closureStartOptDate = getClosureStartForEmployee.getDataClosureStart(x.getLeft());
+				if (!closureStartOptDate.isPresent() || closureStartOptDate.get().after(x.getRight()))
+					return false;
+				return true;
+			}).collect(Collectors.toList());
+			
 			Map<String, List<Pair<String, GeneralDate>>> mapEmpDate = listEmpDate.stream()
 					.collect(Collectors.groupingBy(x -> x.getLeft()));
 			mapEmpDate.entrySet().forEach(x -> {
