@@ -482,7 +482,8 @@ module cps003.a.vm {
                 }
                 
                 employees = _.filter(employees, e => {
-                    return _.find(regChecked, r => r === e.rowId) && !_.find(itemErrors, ie => ie.rowId === e.rowId);
+                    return _.find(regChecked, r => r === e.rowId) && !_.find(itemErrors, ie => ie.rowId === e.rowId)
+                        && ((e.input || {}).items || []).length > 0;
                 });
                 
                 dataToG = _.filter(dataToG, d => {
