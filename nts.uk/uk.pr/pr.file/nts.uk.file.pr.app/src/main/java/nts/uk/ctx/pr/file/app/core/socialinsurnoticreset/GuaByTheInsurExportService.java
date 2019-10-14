@@ -145,7 +145,6 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
     private List<GuaByTheInsurExportDto> insurQualiNotiProcess(List<String> employeeIds, GeneralDate startDate, GeneralDate endDate) {
         final int Enum_SubNameClass_PERSONAL_NAME = 0;
         final int Enum_BusinessDivision_OUTPUT_COMPANY_NAME = 0;
-        final int Enum_BusinessDivision_OUTPUT_SIC_INSURES = 1;
         final int Enum_BussEsimateClass_HEAL_INSUR_OFF_ARR_SYMBOL = 0;
         String cid = AppContexts.user().companyId();
         String uid = AppContexts.user().userId();
@@ -160,8 +159,8 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
 
             //C1_10
             temp.setFilingDate(startDate);
-            switch (Integer.valueOf(element[0].toString())){
-                case Enum_BusinessDivision_OUTPUT_COMPANY_NAME :{
+
+            if(Integer.valueOf(element[0].toString()) == Enum_BusinessDivision_OUTPUT_COMPANY_NAME){
                     //C1_4
                     temp.setOfficePostalCode(element[9] != null ? element[9].toString() : "");
                     //C1_5
@@ -178,10 +177,9 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
                     temp.setStreetAddress(element[3] != null ? element[3].toString() : "");
                     //C2_29
                     temp.setAddressKana(element[5] != null ? element[5].toString() : "");
-                    break;
-                }
-                case Enum_BusinessDivision_OUTPUT_SIC_INSURES:{
-                    //set data to file output
+            }
+            else{
+                //set data to file output
                     //C1_4
                     temp.setOfficePostalCode(element[10] != null ? element[10].toString() : "");
                     //C1_5
@@ -198,11 +196,7 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
                     temp.setStreetAddress(element[4] != null ? element[4].toString() : "");
                     //C2_29
                     temp.setAddressKana(element[6] != null ? element[6].toString() : "");
-                    break;
-                }
-
             }
-
             if(Integer.valueOf(element[14].toString()) == Enum_BussEsimateClass_HEAL_INSUR_OFF_ARR_SYMBOL){
                 //C1_1
                 temp.setBusinessstablishmentbCode1(element[15] != null ? element[15].toString() : "");
@@ -312,7 +306,12 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
 
             //C2_36
             temp.setReasonResidentAbroad(element[48] != null ? Integer.valueOf(element[48].toString()) : 0 );
-
+//            //C2_37
+//            temp.setReasonShortTermResidence(element[49] != null ? Integer.valueOf(element[49].toString())  == 2 ? 0 : 1 : 1);
+//            //C2_38
+//            temp.setReasonOther(element[50] != null ? Integer.valueOf(element[50].toString())  == 3 ? 0 : 1 : 1);
+//
+//            temp.setShortStay(element[50] != null ? Integer.valueOf(element[50].toString())  == 0 ? 0 : 1 : 1);
 
 
             //C2_39
@@ -339,7 +338,9 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
         /**
          * //画面上存在していない処理 2019/8/21　河村
          */
-
+//        if (socialInsurNotiCreateSet.get().getInsuredNumber().value == DO_NOT_OUPUT) {
+//            throw new BusinessException("Msg_812",TextResource.localize("QSI001_27"));
+//        }
         if (socialInsurNotiCreateSet.get().getOfficeInformation().value == DO_NOT_OUPUT) {
             throw new BusinessException("MsgQ_174", "QSI001_A222_27");
         }
