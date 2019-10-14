@@ -1,24 +1,71 @@
-module nts.uk.hr.view.ccg029.a.viewmodel {
-    import block = nts.uk.ui.block;
-    import getText = nts.uk.resource.getText;
-    export class ScreenModel {
-
+module ccg029.component {
+    var block = nts.uk.ui.block;
+    var getText = nts.uk.resource.getText;
+    ko.components.register('search-employee-modal', {
+         viewModel: {
+                createViewModel: function(param, componentInfo) {
+                    var cvm = new Model(param.input, param.callback);
+                    return cvm;
+                }
+            },
+            template: '<div class="component-search-employee">'
+                         +'   <div class="row">'
+                         +'       <div class ="inline lable mr5"><span data-bind="text: nts.uk.resource.getText(\'CCG029_A1_1\')"></span></div>'
+                         +'       <div tabindex="1" class ="inline" data-bind="ntsDatePicker: {value: processingDate, name: nts.uk.resource.getText(\'CCG029_A1_2\'), dateFormat: \'YYYY/MM/DD\'}"></div>'
+                         +'   </div>'
+                         +'   <div class="row">'
+                         +'       <div class ="inline mr10">'
+                         +'           <form id="form" action="#" autocomplete="off">'
+                         +'               <input tabindex="2" data-bind="ntsTextEditor: {'
+                         +'                   name: nts.uk.resource.getText(\'CCG029_A1_2\'),' 
+                         +'                   value: keySearch,'
+                         +'                   option: {width: \'240px\', placeholder: \'コード・氏名・カナ氏名で検索･･･\'}}" />'
+                         +'           </form>'
+                         +'       </div>'
+                         +'       <button tabindex="3" id="findBtn" class="inline" data-bind="click: search, text:nts.uk.resource.getText(\'CCG029_A1_4\')"></button>'
+                         +'   </div>'
+                         +'   <div class="row">'
+                         +'       <button tabindex="5" id="searchTipsBtn" class="inline mr10" data-bind="text: nts.uk.resource.getText(\'CCG029_A1_5\')"></button>'
+                         +'       <button tabindex="6" id="" class="inline" data-bind="click: expandDipslay, text:nts.uk.resource.getText(\'CCG029_A1_21\')"></button>'
+                         +'   </div>'
+                         +'   <div class="searchTips-area" style="visibility: hidden;">'
+                         +'       <h2 data-bind="text:nts.uk.resource.getText(\'CCG029_A1_7\')"></h2>'
+                         +'       <br />'
+                         +'       <h2 data-bind="text:nts.uk.resource.getText(\'CCG029_A1_8\')"></h2>'
+                         + '       <h2 data-bind="visible:input.includePreEmployee, text: nts.uk.resource.getText(\'CCG029_A1_9\')"></h2>'
+                         + '       <h2 data-bind="visible:!input.includePreEmployee, text: nts.uk.resource.getText(\'CCG029_A1_10\')"></h2>'
+                         + '       <h2 data-bind="visible:input.includeRetirement, text: nts.uk.resource.getText(\'CCG029_A1_11\')"></h2>'
+                         + '       <h2 data-bind="visible:!input.includeRetirement, text: nts.uk.resource.getText(\'CCG029_A1_12\')"></h2>'
+                         + '       <h2 data-bind="visible:input.includeAbsence, text: nts.uk.resource.getText(\'CCG029_A1_13\')"></h2>'
+                         + '       <h2 data-bind="visible:!input.includeAbsence, text: nts.uk.resource.getText(\'CCG029_A1_14\')"></h2>'
+                         + '       <h2 data-bind="visible:input.includeClosed, text: nts.uk.resource.getText(\'CCG029_A1_15\')"></h2>'
+                         + '       <h2 data-bind="visible:!input.includeClosed, text: nts.uk.resource.getText(\'CCG029_A1_16\')"></h2>'
+                         + '       <h2 data-bind="visible:input.includeTransferEmployee, text: nts.uk.resource.getText(\'CCG029_A1_17\')"></h2>'
+                         + '       <h2 data-bind="visible:!input.includeTransferEmployee, text: nts.uk.resource.getText(\'CCG029_A1_18\')"></h2>'
+                         + '       <h2 data-bind="visible:input.includeAcceptanceTransferEmployee, text: nts.uk.resource.getText(\'CCG029_A1_19\')"></h2>'
+                         + '       <h2 data-bind="visible:!input.includeAcceptanceTransferEmployee, text: nts.uk.resource.getText(\'CCG029_A1_21\')"></h2>'
+                         +'   </div>'
+                         +'   <div class="row">'
+                         +'       <div id="gridListEmployeesContent">'
+                         +'           <table id="gridListEmployees" tabindex="7"></table>'
+                         +'       </div>'
+                         +'   </div>'
+                         +'</div>'
+    });
+    
+    class Model {
         processingDate: KnockoutObservable<string>;
         keySearch: KnockoutObservable<string>;
         employeeList: [];
-        
         btnSelectionText : KnockoutObservable<string>;
         isShowfull : KnockoutObservable<boolean>;
         input: Input;
-        callback: any;
-        
-        constructor(param: Input, callback) {
+        constructor(param, callback) {
             var self = this;
             //param
             self.input = new Input(param);
-            self.callback = callback
             //control 
-            self.processingDate = ko.observable('');
+            self.processingDate = ko.observable(moment(new Date()).format("YYYY/MM/DD"));
             self.keySearch = ko.observable("");
             self.employeeList = [];
             self.isShowfull = ko.observable(false);
@@ -35,30 +82,20 @@ module nts.uk.hr.view.ccg029.a.viewmodel {
             $("#searchTipsBtn").click(function() {
                 $(".searchTips-area").ntsPopup("toggle");
             });
-            
             $('#form').on('submit', function (e) {
                 e.preventDefault();
                 self.search();
             });
-            
-            //Delegate
+            //row click
             $(document).delegate("#gridListEmployees", "iggridcellclick", function (evt, ui) {
                 var value = _.find(self.employeeList, ['personalId', ui.rowKey]);
-                console.log(value);
-                self.callback(value);
+//                console.log(value);
+                if(callback){
+                    callback(value);
+                }
             });
-        }
-        startPage(): JQueryPromise<any> {
-            var self = this;
-            var dfd = $.Deferred();
-            block.grayout();
-            self.processingDate(moment(new Date()).format("YYYY/MM/DD"));
             self.bindData();
-            dfd.resolve();
-            block.clear();
-            return dfd.promise();
         }
-        
         public search(): void{
             var self = this;
             let param = self.input;
@@ -66,7 +103,6 @@ module nts.uk.hr.view.ccg029.a.viewmodel {
             param.baseDate = moment(self.processingDate()).format("YYYY/MM/DD");
             self.findEmployee(param);
         }
-        
         public findEmployee(param: any): void {
             var self = this;
             if(self.keySearch() == ''){
@@ -88,7 +124,6 @@ module nts.uk.hr.view.ccg029.a.viewmodel {
                 block.clear();
             });
         }
-        
         public expandDipslay(): void {
             var self = this;
             if(self.isShowfull()){
@@ -103,8 +138,6 @@ module nts.uk.hr.view.ccg029.a.viewmodel {
                 self.isShowfull(true);
             }
         }
-        
-        
         public bindData(): void {
             var self = this;
             $("#gridListEmployees").igGrid({
@@ -170,9 +203,7 @@ module nts.uk.hr.view.ccg029.a.viewmodel {
                 ]
             });
         }
-        
     }
-    
     class Input {
         systemType: number; //システム区分（0：共通、1：就業、2：給与、3：人事）
         includePreEmployee: boolean; //入社前社員を含める
@@ -198,4 +229,5 @@ module nts.uk.hr.view.ccg029.a.viewmodel {
             this.getPersonalFileManagert = input ? input.getPersonalFileManagert || true: true;
         }
     }
+
 }

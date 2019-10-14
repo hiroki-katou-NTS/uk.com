@@ -8,101 +8,19 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
+			<!-- library for ccg029 -->
 			<com:stylefile path="ccg029.a.style.css" />
 			<com:scriptfile path="ccg029.a.vm.js" />
+			
+			<!-- library for test screen -->
+			<com:scriptfile path="test.ccg029.a.vm.js" />
 			<com:scriptfile path="ccg029.a.start.js" />
 		</ui:define>
 		<ui:define name="content">
-
-							<div class="component-search-employee">
-								<div class="row">
-									<div class ="inline lable mr5"><span>#{i18n.getText('CCG029_A1_1')}</span></div>
-									<div tabindex="1" class ="inline" data-bind="ntsDatePicker: {value: processingDate, name: '#{i18n.getText('CCG029_A1_2')}', dateFormat: 'YYYY/MM/DD'}"></div>
-								</div>
-								<div class="row">
-									<div class ="inline mr10">
-										<form id="form" action="#" autocomplete="off">
-											<input  tabindex="2" data-bind="ntsTextEditor: {
-												name: 'ssss', 
-												value: keySearch,
-												option: {width: '240px', placeholder: 'コード・氏名・カナ氏名で検索･･･'}}" />
-										</form>
-									</div>
-									<button tabindex="3" id="findBtn" class="inline" data-bind="click: search ">#{i18n.getText('CCG029_A1_4')}</button>
-								</div>
-								<div class="row">
-									<button tabindex="5" id="searchTipsBtn" class="inline mr10">#{i18n.getText('CCG029_A1_5')}</button>
-									<button tabindex="6" id="" class="inline" data-bind="click: expandDipslay ">#{i18n.getText('CCG029_A1_21')}</button>
-								</div>
-								<div class="searchTips-area" style="visibility: hidden;">
-									<h2>#{i18n.getText('CCG029_A1_7')}</h2>
-									<br />
-									<h2>#{i18n.getText('CCG029_A1_8')}</h2>
-									<h2 data-bind="visible:input.includePreEmployee">#{i18n.getText('CCG029_A1_9')}</h2>
-									<h2 data-bind="visible:!input.includePreEmployee">#{i18n.getText('CCG029_A1_10')}</h2>
-									<h2 data-bind="visible:input.includeRetirement">#{i18n.getText('CCG029_A1_11')}</h2>
-									<h2 data-bind="visible:!input.includeRetirement">#{i18n.getText('CCG029_A1_12')}</h2>
-									<h2 data-bind="visible:input.includeAbsence">#{i18n.getText('CCG029_A1_13')}</h2>
-									<h2 data-bind="visible:!input.includeAbsence">#{i18n.getText('CCG029_A1_14')}</h2>
-									<h2 data-bind="visible:input.includeClosed">#{i18n.getText('CCG029_A1_15')}</h2>
-									<h2 data-bind="visible:!input.includeClosed">#{i18n.getText('CCG029_A1_16')}</h2>
-									<h2 data-bind="visible:input.includeTransferEmployee">#{i18n.getText('CCG029_A1_17')}</h2>
-									<h2 data-bind="visible:!input.includeTransferEmployee">#{i18n.getText('CCG029_A1_18')}</h2>
-									<h2 data-bind="visible:input.includeAcceptanceTransferEmployee">#{i18n.getText('CCG029_A1_19')}</h2>
-									<h2 data-bind="visible:!input.includeAcceptanceTransferEmployee">#{i18n.getText('CCG029_A1_20')}</h2>
-								</div>
-								<div class="row">
-									<div id="gridListEmployeesContent">
-										<table id="gridListEmployees" tabindex="7"></table>
-									</div>
-								</div>
-							</div>
-							<div class="test">
-								<div class="row">
-									<div class ="inline lable mr5"><span>#{i18n.getText('CCG029_A1_1')}</span></div>
-									<div class ="inline" data-bind="ntsDatePicker: {value: processingDate, name: '#{i18n.getText('CCG029_A1_2')}', dateFormat: 'YYYY/MM/DD'}"></div>
-								</div>
-								<div class="row">
-									<div class ="inline lable mr5"><span>#{i18n.getText('CCG029_A1_1')}</span></div>
-									<div class ="inline" data-bind="ntsDatePicker: {value: processingDate, name: '#{i18n.getText('CCG029_A1_2')}', dateFormat: 'YYYY/MM/DD'}"></div>
-								</div>
-								<div class="row">
-									<div class ="inline lable mr5"><span>#{i18n.getText('CCG029_A1_1')}</span></div>
-									<div class ="inline" data-bind="ntsDatePicker: {value: processingDate, name: '#{i18n.getText('CCG029_A1_2')}', dateFormat: 'YYYY/MM/DD'}"></div>
-								</div>
-								<div class="row">
-									<div class ="inline lable mr5"><span>#{i18n.getText('CCG029_A1_1')}</span></div>
-									<div class ="inline" data-bind="ntsDatePicker: {value: processingDate, name: '#{i18n.getText('CCG029_A1_2')}', dateFormat: 'YYYY/MM/DD'}"></div>
-								</div>
-								<div class="row">
-									<div class ="inline lable mr5"><span>#{i18n.getText('CCG029_A1_1')}</span></div>
-									<div class ="inline" data-bind="ntsDatePicker: {value: processingDate, name: '#{i18n.getText('CCG029_A1_2')}', dateFormat: 'YYYY/MM/DD'}"></div>
-								</div>
-								<div class="row">
-									<div class ="inline lable mr5"><span>#{i18n.getText('CCG029_A1_1')}</span></div>
-									<div class ="inline" data-bind="ntsDatePicker: {value: processingDate, name: '#{i18n.getText('CCG029_A1_2')}', dateFormat: 'YYYY/MM/DD'}"></div>
-								</div>
-								<div class="row">
-									<div class ="inline lable mr5"><span>#{i18n.getText('CCG029_A1_1')}</span></div>
-									<div class ="inline" data-bind="ntsDatePicker: {value: processingDate, name: '#{i18n.getText('CCG029_A1_2')}', dateFormat: 'YYYY/MM/DD'}"></div>
-								</div>
-								<div class="row">
-									<div class ="inline lable mr5"><span>#{i18n.getText('CCG029_A1_1')}</span></div>
-									<div class ="inline" data-bind="ntsDatePicker: {value: processingDate, name: '#{i18n.getText('CCG029_A1_2')}', dateFormat: 'YYYY/MM/DD'}"></div>
-								</div>
-								<div class="row">
-									<div class ="inline lable mr5"><span>#{i18n.getText('CCG029_A1_1')}</span></div>
-									<div class ="inline" data-bind="ntsDatePicker: {value: processingDate, name: '#{i18n.getText('CCG029_A1_2')}', dateFormat: 'YYYY/MM/DD'}"></div>
-								</div>
-								<div class="row">
-									<div class ="inline lable mr5"><span>#{i18n.getText('CCG029_A1_1')}</span></div>
-									<div class ="inline" data-bind="ntsDatePicker: {value: processingDate, name: '#{i18n.getText('CCG029_A1_2')}', dateFormat: 'YYYY/MM/DD'}"></div>
-								</div>
-								<div class="row">
-									<div class ="inline lable mr5"><span>#{i18n.getText('CCG029_A1_1')}</span></div>
-									<div class ="inline" data-bind="ntsDatePicker: {value: processingDate, name: '#{i18n.getText('CCG029_A1_2')}', dateFormat: 'YYYY/MM/DD'}"></div>
-								</div>
-							</div>
+			<search-employee-modal params="input: input, callback: seletedEmployee"></search-employee-modal>
+			<div class="test">
+				
+			</div>
 		</ui:define>
 	</ui:composition>
 </body>
