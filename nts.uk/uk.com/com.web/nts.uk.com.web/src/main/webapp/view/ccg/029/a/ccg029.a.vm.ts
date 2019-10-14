@@ -9,55 +9,54 @@ module ccg029.component {
                 }
             },
             template: '<div class="component-search-employee">'
-                         +'   <div class="row">'
-                         +'       <div class ="inline lable mr5"><span data-bind="text: nts.uk.resource.getText(\'CCG029_A1_1\')"></span></div>'
-                         +'       <div tabindex="1" class ="inline" data-bind="ntsDatePicker: {value: processingDate, name: nts.uk.resource.getText(\'CCG029_A1_2\'), dateFormat: \'YYYY/MM/DD\'}"></div>'
-                         +'   </div>'
-                         +'   <div class="row">'
-                         +'       <div class ="inline mr10">'
-                         +'           <form id="form" action="#" autocomplete="off">'
-                         +'               <input tabindex="2" data-bind="ntsTextEditor: {'
-                         +'                   name: nts.uk.resource.getText(\'CCG029_A1_2\'),' 
-                         +'                   value: keySearch,'
-                         +'                   option: {width: \'240px\', placeholder: \'コード・氏名・カナ氏名で検索･･･\'}}" />'
-                         +'           </form>'
-                         +'       </div>'
-                         +'       <button tabindex="3" id="findBtn" class="inline" data-bind="click: search, text:nts.uk.resource.getText(\'CCG029_A1_4\')"></button>'
-                         +'   </div>'
-                         +'   <div class="row">'
-                         +'       <button tabindex="5" id="searchTipsBtn" class="inline mr10" data-bind="text: nts.uk.resource.getText(\'CCG029_A1_5\')"></button>'
-                         +'       <button tabindex="6" id="" class="inline" data-bind="click: expandDipslay, text:nts.uk.resource.getText(\'CCG029_A1_21\')"></button>'
-                         +'   </div>'
-                         +'   <div class="searchTips-area" style="visibility: hidden;">'
-                         +'       <h2 data-bind="text:nts.uk.resource.getText(\'CCG029_A1_7\')"></h2>'
-                         +'       <br />'
-                         +'       <h2 data-bind="text:nts.uk.resource.getText(\'CCG029_A1_8\')"></h2>'
-                         + '       <h2 data-bind="visible:input.includePreEmployee, text: nts.uk.resource.getText(\'CCG029_A1_9\')"></h2>'
-                         + '       <h2 data-bind="visible:!input.includePreEmployee, text: nts.uk.resource.getText(\'CCG029_A1_10\')"></h2>'
-                         + '       <h2 data-bind="visible:input.includeRetirement, text: nts.uk.resource.getText(\'CCG029_A1_11\')"></h2>'
-                         + '       <h2 data-bind="visible:!input.includeRetirement, text: nts.uk.resource.getText(\'CCG029_A1_12\')"></h2>'
-                         + '       <h2 data-bind="visible:input.includeAbsence, text: nts.uk.resource.getText(\'CCG029_A1_13\')"></h2>'
-                         + '       <h2 data-bind="visible:!input.includeAbsence, text: nts.uk.resource.getText(\'CCG029_A1_14\')"></h2>'
-                         + '       <h2 data-bind="visible:input.includeClosed, text: nts.uk.resource.getText(\'CCG029_A1_15\')"></h2>'
-                         + '       <h2 data-bind="visible:!input.includeClosed, text: nts.uk.resource.getText(\'CCG029_A1_16\')"></h2>'
-                         + '       <h2 data-bind="visible:input.includeTransferEmployee, text: nts.uk.resource.getText(\'CCG029_A1_17\')"></h2>'
-                         + '       <h2 data-bind="visible:!input.includeTransferEmployee, text: nts.uk.resource.getText(\'CCG029_A1_18\')"></h2>'
-                         + '       <h2 data-bind="visible:input.includeAcceptanceTransferEmployee, text: nts.uk.resource.getText(\'CCG029_A1_19\')"></h2>'
-                         + '       <h2 data-bind="visible:!input.includeAcceptanceTransferEmployee, text: nts.uk.resource.getText(\'CCG029_A1_21\')"></h2>'
-                         +'   </div>'
-                         +'   <div class="row">'
-                         +'       <div id="gridListEmployeesContent">'
-                         +'           <table id="gridListEmployees" tabindex="7"></table>'
-                         +'       </div>'
-                         +'   </div>'
-                         +'</div>'
+                + '   <div class="row">'
+                + '       <div class ="inline lable mr5"><span data-bind="text: nts.uk.resource.getText(\'CCG029_A1_1\')"></span></div>'
+                + '       <div tabindex="1" class ="inline" data-bind="ntsDatePicker: {value: processingDate, name: nts.uk.resource.getText(\'CCG029_A1_2\'), dateFormat: \'YYYY/MM/DD\'}"></div>'
+                + '   </div>'
+                + '   <div class="row">'
+                + '       <div class ="inline mr10">'
+                + '           <form id="form" action="#" autocomplete="off">'
+                + '               <input tabindex="2" data-bind="ntsTextEditor: {'
+                + '                   name: nts.uk.resource.getText(\'CCG029_A1_2\'),'
+                + '                   value: keySearch,'
+                + '                   option: {width: \'240px\', placeholder: nts.uk.resource.getText(\'Com_Person\') + \'コード・氏名・カナ氏名で検索･･･\'}}" />'
+                + '           </form>'
+                + '       </div>'
+                + '       <button tabindex="3" id="findBtn" class="inline" data-bind="click: search, text:nts.uk.resource.getText(\'CCG029_A1_4\')"></button>'
+                + '   </div>'
+                + '   <div class="row">'
+                + '       <button tabindex="5" id="searchTipsBtn" class="inline mr10" data-bind="text: nts.uk.resource.getText(\'CCG029_A1_5\')"></button>'
+                + '       <button tabindex="6" id="" class="inline" data-bind="click: expandDipslay, text:nts.uk.resource.getText(\'CCG029_A1_21\')"></button>'
+                + '   </div>'
+                + '   <div class="searchTips-area" style="visibility: hidden;">'
+                + '       <h2 data-bind="text:nts.uk.resource.getText(\'CCG029_A1_7\')"></h2>'
+                + '       <br />'
+                + '       <h2 data-bind="text:nts.uk.resource.getText(\'CCG029_A1_8\')"></h2>'
+                + '       <h2 data-bind="visible:input.includePreEmployee, text: nts.uk.resource.getText(\'CCG029_A1_9\')"></h2>'
+                + '       <h2 data-bind="visible:!input.includePreEmployee, text: nts.uk.resource.getText(\'CCG029_A1_10\')"></h2>'
+                + '       <h2 data-bind="visible:input.includeRetirement, text: nts.uk.resource.getText(\'CCG029_A1_11\')"></h2>'
+                + '       <h2 data-bind="visible:!input.includeRetirement, text: nts.uk.resource.getText(\'CCG029_A1_12\')"></h2>'
+                + '       <h2 data-bind="visible:input.includeAbsence, text: nts.uk.resource.getText(\'CCG029_A1_13\')"></h2>'
+                + '       <h2 data-bind="visible:!input.includeAbsence, text: nts.uk.resource.getText(\'CCG029_A1_14\')"></h2>'
+                + '       <h2 data-bind="visible:input.includeClosed, text: nts.uk.resource.getText(\'CCG029_A1_15\')"></h2>'
+                + '       <h2 data-bind="visible:!input.includeClosed, text: nts.uk.resource.getText(\'CCG029_A1_16\')"></h2>'
+                + '       <h2 data-bind="visible:input.includeTransferEmployee, text: nts.uk.resource.getText(\'CCG029_A1_17\')"></h2>'
+                + '       <h2 data-bind="visible:!input.includeTransferEmployee, text: nts.uk.resource.getText(\'CCG029_A1_18\')"></h2>'
+                + '       <h2 data-bind="visible:input.includeAcceptanceTransferEmployee, text: nts.uk.resource.getText(\'CCG029_A1_19\')"></h2>'
+                + '       <h2 data-bind="visible:!input.includeAcceptanceTransferEmployee, text: nts.uk.resource.getText(\'CCG029_A1_21\')"></h2>'
+                + '   </div>'
+                + '   <div class="row">'
+                + '       <div id="gridListEmployeesContent">'
+                + '           <table id="gridListEmployees" tabindex="7"></table>'
+                + '       </div>'
+                + '   </div>'
+                + '</div>'
     });
     
     class Model {
         processingDate: KnockoutObservable<string>;
         keySearch: KnockoutObservable<string>;
         employeeList: [];
-        btnSelectionText : KnockoutObservable<string>;
         isShowfull : KnockoutObservable<boolean>;
         input: Input;
         constructor(param, callback) {
@@ -69,7 +68,6 @@ module ccg029.component {
             self.keySearch = ko.observable("");
             self.employeeList = [];
             self.isShowfull = ko.observable(false);
-            self.btnSelectionText = getText('CCG029_A1_5','部門');
             $(".searchTips-area").ntsPopup({
                 position: {
                     my: "left top",
