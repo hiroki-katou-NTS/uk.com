@@ -224,9 +224,9 @@ module ccg029.component {
             this.includeClosed = input ? input.includeClosed || true: true;
             this.includeTransferEmployee = input ? input.includeTransferEmployee || true: true;
             this.includeAcceptanceTransferEmployee = input ? input.includeAcceptanceTransferEmployee || true: true;
-            this.getPosition = input ? input.getPosition || true: true;
-            this.getEmployment = input ? input.getEmployment || true: true;
-            this.getPersonalFileManagert = input ? input.getPersonalFileManagert || true: true;
+            this.getPosition = input ? input.getPosition || false: false;
+            this.getEmployment = input ? input.getEmployment || false: false;
+            this.getPersonalFileManagert = input ? input.getPersonalFileManagert || false: false;
         }
     }
 
