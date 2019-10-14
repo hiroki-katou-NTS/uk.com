@@ -115,24 +115,10 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_21_4"  , stt)).setValue(convertJpDate(startDate).charAt(3));
         worksheets.getRangeByName(this.getRangeName(sheetName,  "A2_21_5" , stt)).setValue(convertJpDate(startDate).charAt(4));
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_21_6" , stt)).setValue(convertJpDate(startDate).charAt(5));
-//        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_19_1", stt)).setValue(data.getPersonalNumber().length() > 0 ? data.getPersonalNumber().substring(0,1) : data.getPersonalNumber());
-//        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_19_2", stt)).setValue(data.getPersonalNumber().length() > 1 ? data.getPersonalNumber().substring(1,2) : "");
-//        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_19_3", stt)).setValue(data.getPersonalNumber().length() > 2 ? data.getPersonalNumber().substring(2,3) : "");
-//        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_19_4", stt)).setValue(data.getPersonalNumber().length() > 3 ? data.getPersonalNumber().substring(3,4) : "");
-//        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_19_5", stt)).setValue(data.getPersonalNumber().length() > 4 ? data.getPersonalNumber().substring(4,5) : "");
-//        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_19_6", stt)).setValue(data.getPersonalNumber().length() > 5 ? data.getPersonalNumber().substring(5,6) : "");
-//        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_19_7", stt)).setValue(data.getPersonalNumber().length() > 6 ? data.getPersonalNumber().substring(6,7) : "");
-//        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_19_8", stt)).setValue(data.getPersonalNumber().length() > 7 ? data.getPersonalNumber().substring(7,8) : "");
-//        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_19_9", stt)).setValue(data.getPersonalNumber().length() > 7 ? data.getPersonalNumber().substring(8,9) : "");
-//        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_19_10", stt)).setValue(data.getPersonalNumber().length() > 7 ? data.getPersonalNumber().substring(9,10) : "");
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_24", stt)).setValue(data.getMonRemunerationAmountInCurrency()+"");
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_25", stt)).setValue(data.getMonRemunerationAmountOfActualItem()+"");
         int total = data.getMonRemunerationAmountInCurrency() + data.getMonRemunerationAmountOfActualItem();
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_26", stt)).setValue(total+""/*data.getCompenMonthlyAamountTotal()*/);
-//        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_27_1", stt)).setValue(formatPortCd(data.getPostalCode(),1));
-//        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_27_2", stt)).setValue(formatPortCd(data.getPostalCode(),2));
-//        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_28", stt)).setValue(data.getStreetAddress());
-//        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_29", stt)).setValue(data.getAddressKana());
         worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_39" : "A2_39_" + stt).setText(data.getReasonOtherContent());
         worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_35" : "A2_35_" + stt).setText(data.getRemarksOtherContent());
     }
@@ -142,8 +128,14 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
         if (stt == 1 && sub.length > 1) {
             return sub[0];
         }
-        if (stt == 2 && sub.length >= 2) {
+        if (stt == 2 && sub.length > 2) {
             return sub[1];
+        }
+        if (stt == 2 && sub.length == 2) {
+            return sub[1].length() > 3 ? sub[1].substring(0,3) : sub[1];
+        }
+        if (stt == 3 && sub.length == 2) {
+            return sub[1].length() > 6 ? sub[1].substring(3,6) : sub[1].length() > 3 ? sub[1].substring(3, sub[1].length()) : "";
         }
         if (stt == 3 && sub.length >= 3) {
             return sub[2];
@@ -151,18 +143,17 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
         if (sub.length == 1 && stt == 1 && phone.length() < 3) {
             return phone;
         }
+        if (sub.length == 1 && stt == 1) {
+            return phone.substring(0, 3);
+        }
         if (sub.length == 1 && stt == 3 && phone.length() > 6) {
             return phone.substring(6, phone.length());
         }
         if (sub.length == 1 && stt == 2 && phone.length() >= 6) {
             return phone.substring(3, 6);
         }
-        if (sub.length == 1 && stt == 1) {
-            return phone.substring(0, 3);
-        }
         return "";
     }
-
     private String formatPortCd(String portCd, int stt){
         String result = portCd.replace("-", "");
         if (result.length() >= 3 && stt == 1) {

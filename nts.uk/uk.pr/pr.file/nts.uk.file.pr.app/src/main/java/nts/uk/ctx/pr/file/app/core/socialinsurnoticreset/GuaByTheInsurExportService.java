@@ -145,6 +145,7 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
     private List<GuaByTheInsurExportDto> insurQualiNotiProcess(List<String> employeeIds, GeneralDate startDate, GeneralDate endDate) {
         final int Enum_SubNameClass_PERSONAL_NAME = 0;
         final int Enum_BusinessDivision_OUTPUT_COMPANY_NAME = 0;
+        final int Enum_BusinessDivision_OUTPUT_SIC_INSURES = 1;
         final int Enum_BussEsimateClass_HEAL_INSUR_OFF_ARR_SYMBOL = 0;
         String cid = AppContexts.user().companyId();
         String uid = AppContexts.user().userId();
@@ -159,8 +160,8 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
 
             //C1_10
             temp.setFilingDate(startDate);
-
-            if(Integer.valueOf(element[0].toString()) == Enum_BusinessDivision_OUTPUT_COMPANY_NAME){
+            switch (Integer.valueOf(element[0].toString())){
+                case Enum_BusinessDivision_OUTPUT_COMPANY_NAME :{
                     //C1_4
                     temp.setOfficePostalCode(element[9] != null ? element[9].toString() : "");
                     //C1_5
@@ -177,9 +178,10 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
                     temp.setStreetAddress(element[3] != null ? element[3].toString() : "");
                     //C2_29
                     temp.setAddressKana(element[5] != null ? element[5].toString() : "");
-            }
-            else{
-                //set data to file output
+                    break;
+                }
+                case Enum_BusinessDivision_OUTPUT_SIC_INSURES:{
+                    //set data to file output
                     //C1_4
                     temp.setOfficePostalCode(element[10] != null ? element[10].toString() : "");
                     //C1_5
@@ -196,6 +198,28 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
                     temp.setStreetAddress(element[4] != null ? element[4].toString() : "");
                     //C2_29
                     temp.setAddressKana(element[6] != null ? element[6].toString() : "");
+                    break;
+                }
+                default:{
+                    //set data to file output
+                    //C1_4
+                    temp.setOfficePostalCode("");
+                    //C1_5
+                    temp.setOfficeAddress1("");
+                    //C1_6
+                    temp.setOfficeAddress2("");
+                    //C1_7
+                    temp.setBusinessName("");
+                    //C1_8
+                    temp.setBusinessName1("");
+                    //C1_9
+                    temp.setPhoneNumber("");
+                    //C2_28
+                    temp.setStreetAddress("");
+                    //C2_29
+                    temp.setAddressKana("");
+                }
+
             }
             if(Integer.valueOf(element[14].toString()) == Enum_BussEsimateClass_HEAL_INSUR_OFF_ARR_SYMBOL){
                 //C1_1
