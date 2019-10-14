@@ -53,14 +53,14 @@
             <!-- div left -->
             <div class="fixed-flex-layout-left" style="margin-left: 70px; margin-right: 10px">
 
-                <div class="panel panel-frame " style="margin-bottom: 15px; width: 660px;" >
+                <div class="panel panel-frame " style="margin-bottom: 15px; width: 645px;" >
                     <div class="valign-center control-group">
                         <span class="label with-image">
                         <i class="image image-calendar"/>
                         <span>#{i18n.getText('QSI001_A222_3')}</span>
                     </span>
                         <div id = "A2_4" tabindex="7" data-bind="ntsDatePicker: { value: startDate, required: true, dateFormat: 'YYYY/MM/DD', name: '#{i18n.getText('QSI001_A222_4')}'}"></div>
-                        <span data-bind="text: japanStartDate"></span>
+                        <span data-bind="text: japanStartDate" class="limited-label" style="width: 125px;"  ></span>
                         <span class="label" >#{i18n.getText('QSI001_A222_6')}</span>
                         <div id = "A2_7" tabindex="8" data-bind="ntsDatePicker: { value: endDate, dateFormat: 'YYYY/MM/DD',required: true, name: '#{i18n.getText('QSI001_A222_7')}'}"></div>
                         <span class="limited-label" style="width: 125px;"  data-bind="text: japanEndDate"></span>
