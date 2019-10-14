@@ -80,7 +80,7 @@ public class ApplicationListFinder {
 		
 		List<ApplicationDto_New> lstAppDto = new ArrayList<>();
 		for (Application_New app : lstAppData.getLstApp()) {
-			lstAppDto.add(ApplicationDto_New.fromDomain(app));
+            lstAppDto.add(ApplicationDto_New.fromDomainCMM045(app));
 		}
 		List<AppStatusApproval> lstStatusApproval = new ArrayList<>();
 		List<ApproveAgent> lstAgent = new ArrayList<>();
@@ -103,8 +103,10 @@ public class ApplicationListFinder {
 		List<ApplicationDto_New> lstAppSort = appListExCon.equals(ApplicationListAtr.APPROVER) ?
 				this.sortByIdModeApproval(lstAppDto, lstAppData.getDataMaster().getLstAppMasterInfo()) : 
 				this.sortByIdModeApp(lstAppDto, lstAppData.getDataMaster().getMapAppBySCD(), lstAppData.getDataMaster().getLstSCD());
+        List<ApplicationDto_New> lstAppSortConvert = lstAppSort.stream().map(c -> c.convertInputDate(c)).collect(Collectors.toList());
+
 		List<ApplicationDataOutput> lstAppCommon= new ArrayList<>();
-		for(ApplicationDto_New app : lstAppSort){
+		for(ApplicationDto_New app : lstAppSortConvert){
 			lstAppCommon.add(ApplicationDataOutput.convert(app, appListExCon.getAppListAtr().equals(ApplicationListAtr.APPROVER) ? 
 					this.convertStatusAppv(app.getReflectPerState(), device) : this.convertStatus(app.getReflectPerState(), device)));
 		}
@@ -205,7 +207,7 @@ public class ApplicationListFinder {
 		return false;
 	}
 	/**
-	 * 申請日付 + 申請種類 + 事前事後区分
+     * 申請日付 + 申請種類 + 事前事後区分 + 入力日付（時分秒）
 	 * @param lstApp
 	 * @return
 	 */
@@ -215,7 +217,12 @@ public class ApplicationListFinder {
 			if (rs == 0) {
 				Integer rs2 = a.getApplicationType().compareTo(b.getApplicationType());
 				if (rs2 == 0) {
-					return a.getPrePostAtr().compareTo(b.getPrePostAtr());
+                    Integer rs3 = a.getPrePostAtr().compareTo(b.getPrePostAtr());
+                    if(rs3 == 0){
+                        return a.getInputDate().compareTo(b.getInputDate());
+                    }else{
+                        return rs3;
+                    }
 				} else {
 					return rs2;
 				}
