@@ -126,12 +126,12 @@ module ccg029.component {
             var self = this;
             if(self.isShowfull()){
                 $("#gridListEmployees").igGridHiding("hideColumn", "businessNameKana");
-                $("#gridListEmployees").igGridHiding("hideColumn", "workplaceCode");
+                $("#gridListEmployees").igGridHiding("hideColumn", self.input.systemType == 1 ? "workplaceCode": "departmentCode");
                 $( "#gridListEmployeesContent" ).removeClass( "showFullColumn" );
                 self.isShowfull(false);
             }else{
                 $("#gridListEmployees").igGridHiding("showColumn", "businessNameKana");
-                $("#gridListEmployees").igGridHiding("showColumn", "workplaceCode");
+                $("#gridListEmployees").igGridHiding("showColumn", self.input.systemType == 1 ? "workplaceCode": "departmentCode");
                 $( "#gridListEmployeesContent" ).addClass( "showFullColumn" );
                 self.isShowfull(true);
             }
@@ -155,10 +155,10 @@ module ccg029.component {
                         headerText: getText('CCG029_A1_26'), key: 'businessNameKana', dataType: 'string',  width: '100px'
                     },
                     {
-                        headerText: self.input.systemType == 1 ? getText('CCG029_1') : getText('CCG029_2'), key: 'workplaceCode', dataType: 'string',  width: '100px' 
+                        headerText: self.input.systemType == 1 ? getText('CCG029_1') : getText('CCG029_2'), key: self.input.systemType == 1 ? 'workplaceCode': 'departmentCode', dataType: 'string',  width: '100px' 
                     },
                     {
-                        headerText: self.input.systemType == 1 ? getText('Com_Workplace') : getText('Com_Department'), key: 'workplaceName', dataType: 'string', width: '100px'
+                        headerText: self.input.systemType == 1 ? getText('Com_Workplace') : getText('Com_Department'), key: self.input.systemType == 1 ? 'workplaceName': 'departmentName', dataType: 'string', width: '100px'
                     }
                 ],
                 dataSource: self.employeeList,
@@ -191,8 +191,8 @@ module ccg029.component {
                             { columnKey: "employeeCode", allowHiding: false},
                             { columnKey: "businessName", allowHiding: false},
                             { columnKey: "businessNameKana", allowHiding: false, hidden: self.isShowfull()? '' : true },
-                            { columnKey: "workplaceCode", allowHiding: false, hidden: self.isShowfull()? '' : true },
-                            { columnKey: "workplaceName", allowHiding: false}
+                            { columnKey: self.input.systemType == 1 ? "workplaceCode": "departmentCode", allowHiding: false, hidden: self.isShowfull()? '' : true },
+                            { columnKey: self.input.systemType == 1 ? "workplaceName": "departmentName", allowHiding: false}
                         ]
                     },
                     {
@@ -215,7 +215,7 @@ module ccg029.component {
         getPersonalFileManagert: boolean; //個人ファイル管理を取得する
         
         constructor(input: any) {
-            this.systemType = input ? input.systemType || 3 : 3;
+            this.systemType = input ? input.systemType || 1 : 1;
             this.includePreEmployee = input ? input.includePreEmployee || true: true;
             this.includeRetirement = input ? input.includeRetirement || true: true;
             this.includeAbsence = input ? input.includeAbsence || true: true;

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.arc.time.GeneralDate;
 
 @Data
 @AllArgsConstructor
@@ -34,4 +35,8 @@ public class Ccg029QueryParam {
 	public String baseDate; // 基準日
 	
 	public String keyword; //キーワード
+	
+	public GeneralDate getBaseDate() {
+		return GeneralDate.fromString(this.baseDate, "yyyy/MM/dd");
+	}
 }

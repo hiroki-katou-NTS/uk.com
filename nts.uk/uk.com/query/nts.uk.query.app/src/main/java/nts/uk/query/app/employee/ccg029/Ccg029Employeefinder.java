@@ -72,14 +72,13 @@ public class Ccg029Employeefinder {
 			return new ArrayList<>();
 		}
 		
-		boolean getWorkplace = true;
-		boolean getDepartment = false;
 		EmployeeInformationQuery employeeInformationQuery = EmployeeInformationQuery.builder()
 				.employeeIds(employeeID)
-				.toGetWorkplace(getWorkplace)
-				.toGetDepartment(getDepartment)
-				.toGetPosition(false)
-				.toGetEmployment(false)
+				.referenceDate(input.getBaseDate())
+				.toGetWorkplace(true)
+				.toGetDepartment(false)
+				.toGetPosition(input.getPosition)
+				.toGetEmployment(input.getEmployment)
 				.toGetClassification(false)
 				.toGetEmploymentCls(false).build();
 		//<<Public>> 社員の情報を取得する
@@ -105,6 +104,9 @@ public class Ccg029Employeefinder {
 				
 				if(infor.getWorkplace().isPresent()) {
 					emp.setWorkplace(infor.getWorkplace().get());
+				}
+				if(infor.getDepartment().isPresent()) {
+					emp.setDepartment(infor.getDepartment().get());
 				}
 				if(input.getGetEmployment() && infor.getEmployment().isPresent()) {
 					emp.setEmployment(infor.getEmployment().get());

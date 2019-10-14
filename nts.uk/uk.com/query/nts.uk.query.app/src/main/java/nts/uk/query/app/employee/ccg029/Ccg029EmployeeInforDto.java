@@ -2,6 +2,7 @@ package nts.uk.query.app.employee.ccg029;
 
 import lombok.Data;
 import nts.uk.ctx.pereg.dom.filemanagement.services.PersonFileManagementDto;
+import nts.uk.query.model.department.DepartmentModel;
 import nts.uk.query.model.employement.EmploymentModel;
 import nts.uk.query.model.position.PositionModel;
 import nts.uk.query.model.workplace.WorkplaceModel;
@@ -24,6 +25,10 @@ public class Ccg029EmployeeInforDto {
 	private String workplaceCode;
 	
 	private String workplaceName;
+	
+	private String departmentCode;
+	
+	private String departmentName;
 	
 	private String positionId;
 	
@@ -52,6 +57,11 @@ public class Ccg029EmployeeInforDto {
 		this.workplaceId = workplace.getWorkplaceId();
 		this.workplaceCode = workplace.getWorkplaceCode();
 		this.workplaceName = workplace.getWorkplaceName();
+	}
+	
+	public void setDepartment(DepartmentModel department) {
+		this.departmentCode = department.getDepartmentCode();
+		this.departmentName = department.getDepartmentName();
 	}
 	
 	public void setPosition(PositionModel position) {

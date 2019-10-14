@@ -35,7 +35,7 @@ module nts.uk.hr.view.ccg029.a.viewmodel {
         getPersonalFileManagert: boolean; //個人ファイル管理を取得する
         
         constructor(input: any) {
-            this.systemType = input ? input.systemType || 3 : 3;
+            this.systemType = input ? input.systemType || 1 : 1;
             this.includePreEmployee = input ? input.includePreEmployee || true: true;
             this.includeRetirement = input ? input.includeRetirement || true: true;
             this.includeAbsence = input ? input.includeAbsence || true: true;
