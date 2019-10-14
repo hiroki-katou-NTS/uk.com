@@ -28,6 +28,10 @@
 	z-index: 99;
 }
 
+.component-search-employee #gridListEmployees_container{
+	min-height: 200px;
+}
+
 .component-search-employee #gridListEmployeesContent.showFullColumn {
 	width: 680px;
 }
