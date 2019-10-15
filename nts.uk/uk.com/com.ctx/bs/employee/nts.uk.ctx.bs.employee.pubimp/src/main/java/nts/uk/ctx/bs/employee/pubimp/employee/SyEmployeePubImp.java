@@ -8,11 +8,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -30,6 +28,7 @@ import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDeletionAttr;
+import nts.uk.ctx.bs.employee.dom.employee.service.dto.EmployeeIdPersonalIdDto;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItem;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItemRepository;
 //import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistory;
@@ -44,6 +43,8 @@ import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
 import nts.uk.ctx.bs.employee.pub.employee.ConcurrentEmployeeExport;
+import nts.uk.ctx.bs.employee.pub.employee.EmpInfo614;
+import nts.uk.ctx.bs.employee.pub.employee.EmpInfo614Param;
 import nts.uk.ctx.bs.employee.pub.employee.EmpInfoExport;
 import nts.uk.ctx.bs.employee.pub.employee.EmpInfoRegistered;
 import nts.uk.ctx.bs.employee.pub.employee.EmpOfLoginCompanyExport;
@@ -58,9 +59,14 @@ import nts.uk.ctx.bs.employee.pub.employee.MailAddress;
 import nts.uk.ctx.bs.employee.pub.employee.StatusOfEmployeeExport;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 import nts.uk.ctx.bs.employee.pub.employee.TempAbsenceFrameExport;
+import nts.uk.ctx.bs.employee.pub.employmentstatus.EmploymentState;
+import nts.uk.ctx.bs.employee.pub.employmentstatus.EmploymentStatus;
+import nts.uk.ctx.bs.employee.pub.employmentstatus.EmploymentStatusPub;
 import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
+import nts.uk.ctx.bs.person.dom.person.info.service.DtoForRQ617;
+import nts.uk.ctx.bs.person.dom.person.info.service.PersonService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -114,6 +120,11 @@ public class SyEmployeePubImp implements SyEmployeePub {
 //	@Inject
 //	private AffJobTitleHistoryRepository affJobRep;
 
+	@Inject
+	private PersonService personService;
+	
+	@Inject
+	private EmploymentStatusPub employmentStatusPub;
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -837,5 +848,72 @@ public class SyEmployeePubImp implements SyEmployeePub {
 			return new TempAbsenceFrameExport(i.getCompanyId(), i.getTempAbsenceFrNo().v().intValue(),
 					i.getUseClassification().value, i.getTempAbsenceFrName().toString());
 		}).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<EmpInfo614> findEmpByKeyWordsListSid(EmpInfo614Param param) {
+		List<DtoForRQ617> empList = personService.getFromKeywords(param.getKeyword());
+		List<String> pids = empList.stream().map(c->c.getPersonId()).collect(Collectors.toList());
+		List<EmpInfo614> allEmployee = new ArrayList<>();
+		List<String> employeeIds = new ArrayList<>();
+		if(!empList.isEmpty()) {
+			List<EmployeeDataMngInfo> ListEmpMatchingName = empDataMngRepo.findEmployeesMatchingName(pids, param.cId);
+			employeeIds.addAll(ListEmpMatchingName.stream().map(c->c.getEmployeeId()).collect(Collectors.toList()));
+			allEmployee.addAll(ListEmpMatchingName.stream().map(c->new EmpInfo614(c.getEmployeeId(), c.getPersonId(), c.getEmployeeCode().v())).collect(Collectors.toList()));
+		}
+		String validcode = "^[A-Za-z0-9 ]+$";
+		if(param.getKeyword().matches(validcode)) {
+			List<EmployeeIdPersonalIdDto> ListEmpMatchingCode = empDataMngRepo.findEmployeePartialMatchCode(param.cId, param.getKeyword());
+			ListEmpMatchingCode.removeIf(c -> pids.contains(c.getPersonId()));
+			employeeIds.addAll(ListEmpMatchingCode.stream().map(c->c.getEmployeeId()).collect(Collectors.toList()));
+			allEmployee.addAll(ListEmpMatchingCode.stream().map(c->new EmpInfo614(c.getEmployeeId(), c.getPersonId(), c.getEmployeeCode())).collect(Collectors.toList()));
+		}
+		if(employeeIds.isEmpty()) {
+			return new ArrayList<>();
+		}else {
+			List<EmploymentStatus> findListOfEmployee = employmentStatusPub.findListOfEmployee(employeeIds, new DatePeriod(param.getBaseDate(), param.getBaseDate()));
+			if(!param.includePreEmployee) {
+				findListOfEmployee.removeIf(c->{
+					if(c.getEmploymentInfo().isEmpty()) {
+						return c.getEmploymentInfo().get(0).getEmploymentState() == EmploymentState.BEFORE_JOINING;
+					}else {
+						return false;
+					}
+				});
+			}
+			
+			if(!param.includeRetirement) {
+				findListOfEmployee.removeIf(c->{
+					if(c.getEmploymentInfo().isEmpty()) {
+						return c.getEmploymentInfo().get(0).getEmploymentState() == EmploymentState.RETIREMENT;
+					}else {
+						return false;
+					}
+				});
+			}
+			
+			if(!param.includeAbsence) {
+				findListOfEmployee.removeIf(c->{
+					if(c.getEmploymentInfo().isEmpty()) {
+						return c.getEmploymentInfo().get(0).getEmploymentState() == EmploymentState.LEAVE_OF_ABSENCE;
+					}else {
+						return false;
+					}
+				});
+			}
+			
+			if(!param.includeClosed) {
+				findListOfEmployee.removeIf(c->{
+					if(c.getEmploymentInfo().isEmpty()) {
+						return c.getEmploymentInfo().get(0).getEmploymentState() == EmploymentState.CLOSURE;
+					}else {
+						return false;
+					}
+				});
+			} 
+			List<String> employeeIdResult = findListOfEmployee.stream().map(c->c.getEmployeeId()).collect(Collectors.toList());
+			allEmployee.removeIf( c-> !employeeIdResult.contains(c.getEmployeeId()));
+			return allEmployee;
+		}
 	}
 }

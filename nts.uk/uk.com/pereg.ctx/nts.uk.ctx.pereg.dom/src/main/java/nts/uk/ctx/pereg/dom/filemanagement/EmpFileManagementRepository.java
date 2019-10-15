@@ -21,4 +21,7 @@ public interface EmpFileManagementRepository {
 
 	List<Object[]> getListDocumentFile(String employeeId, int fileType);
 	
+	List<PersonFileManagement> getPersonalFileManagementFromPID(List<String> pId);
+
+	
 }
