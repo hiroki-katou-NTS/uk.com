@@ -138,7 +138,7 @@ public class CheckBeforeRegisterOvertime {
 		String companyID =  app.getCompanyID();
 		// 2-1.新規画面登録前の処理を実行する
 		if (null == appID) {
-			newBeforeRegister.processBeforeRegister(app,overtime.getOverTimeAtr().value, checkOver1Year);
+			newBeforeRegister.processBeforeRegister(app,overtime.getOverTimeAtr().value, checkOver1Year, Collections.emptyList());
 		}
 		// 登録前エラーチェック
 		// 計算ボタン未クリックチェック
