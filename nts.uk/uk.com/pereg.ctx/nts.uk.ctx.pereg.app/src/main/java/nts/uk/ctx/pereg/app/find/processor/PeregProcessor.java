@@ -673,14 +673,18 @@ public class PeregProcessor {
 
 			PersonInfoAuthType selfRole = personInfoItemAuth.getSelfAuth(),
 					otherRole = personInfoItemAuth.getOtherAuth();
+			if(categoryAuthOpt == null) {
+				return new HashMap<>();
+			}
 
-			if (selfRole != PersonInfoAuthType.HIDE) {
+			if (selfRole != PersonInfoAuthType.HIDE && categoryAuthOpt.getAllowPersonRef() != PersonInfoPermissionType.NO) {
 				// convert item-definition to layoutDto
-				ActionRole role = categoryAuthOpt == null? ActionRole.VIEW_ONLY :  (categoryAuthOpt.getAllowPersonRef() == PersonInfoPermissionType.NO? ActionRole.VIEW_ONLY:  ((selfRole == PersonInfoAuthType.REFERENCE) ? ActionRole.VIEW_ONLY : ActionRole.EDIT));
+				ActionRole role = selfRole == PersonInfoAuthType.REFERENCE ? ActionRole.VIEW_ONLY : ActionRole.EDIT;
 
 				PerInfoItemDefForLayoutDto itemDto = itemForLayoutFinder.createItemLayoutDto(category, itemDefinition,
 						i, role);
 
+				
 				// get and convert childrenItems
 				List<PerInfoItemDefForLayoutDto> childrenItems = itemForLayoutFinder
 						.getChildrenItems(fullItemDefinitionList, category, itemDefinition, i, role);
@@ -690,10 +694,10 @@ public class PeregProcessor {
 				lstSelf.add(itemDto);
 			}
 
-			if (otherRole != PersonInfoAuthType.HIDE) {
+			if (otherRole != PersonInfoAuthType.HIDE && categoryAuthOpt.getAllowOtherRef() != PersonInfoPermissionType.NO) {
 				// convert item-definition to layoutDto
 				//ActionRole role = otherRole == PersonInfoAuthType.REFERENCE ? ActionRole.VIEW_ONLY : ActionRole.EDIT;
-				ActionRole role = categoryAuthOpt == null? ActionRole.VIEW_ONLY :  (categoryAuthOpt.getAllowOtherRef() == PersonInfoPermissionType.NO? ActionRole.VIEW_ONLY:  ((otherRole == PersonInfoAuthType.REFERENCE) ? ActionRole.VIEW_ONLY : ActionRole.EDIT));
+				ActionRole role = otherRole == PersonInfoAuthType.REFERENCE ? ActionRole.VIEW_ONLY : ActionRole.EDIT;
 
 				PerInfoItemDefForLayoutDto itemDto = itemForLayoutFinder.createItemLayoutDto(category, itemDefinition,
 						i, role);
