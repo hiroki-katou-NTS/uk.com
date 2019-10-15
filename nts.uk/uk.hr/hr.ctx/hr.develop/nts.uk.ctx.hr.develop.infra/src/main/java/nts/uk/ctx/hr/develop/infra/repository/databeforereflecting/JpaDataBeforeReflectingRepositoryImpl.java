@@ -6,9 +6,12 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.hr.develop.dom.databeforereflecting.DataBeforeReflectingPerInfo;
 import nts.uk.ctx.hr.develop.dom.databeforereflecting.DataBeforeReflectingRepository;
 import nts.uk.ctx.hr.develop.dom.databeforereflecting.OnHoldFlag;
@@ -18,28 +21,32 @@ import nts.uk.ctx.hr.develop.infra.entity.databeforereflecting.PreReflecData;
 import nts.uk.ctx.hr.develop.infra.entity.databeforereflecting.PreReflecDataPk;
 
 @Stateless
-public class JpaDataBeforeReflectingRepositoryImpl extends JpaRepository implements DataBeforeReflectingRepository{
-	
+public class JpaDataBeforeReflectingRepositoryImpl extends JpaRepository implements DataBeforeReflectingRepository {
+
 	public static final String SELECT_BY_HIST_ID = "SELECT c FROM PreReflecData c WHERE c.historyId = :histId";
-	
+
 	public static final String SELECT_BY_WORKID_SIDS = "SELECT c FROM PreReflecData c WHERE c.workId = :workId and c.sId IN :listSid";
 
+	public static final String SELECT_BY_WORKID_CID = "SELECT c FROM PreReflecData c "
+			+ " WHERE 1=1 and c.workId = :workId " + " and c.companyId = :cid "
+			+ " and c.stattus != 3 ORDER BY date_01 ASC;";
 
 	public static final String DELETE_BY_HIST_ID = "DELETE FROM PreReflecData c WHERE c.historyId = :histId";
+
 	@Override
 	public void addData(List<DataBeforeReflectingPerInfo> listDomain) {
 		if (listDomain.isEmpty()) {
 			return;
 		}
-		
+
 		List<PreReflecData> listEntity = listDomain.stream().map(i -> {
 			PreReflecData entity = new PreReflecData();
 			return toEntity(i, entity);
 		}).collect(Collectors.toList());
-		
+
 		this.commandProxy().insertAll(listEntity);
 		this.getEntityManager().flush();
-		
+
 	}
 
 	@Override
@@ -47,19 +54,19 @@ public class JpaDataBeforeReflectingRepositoryImpl extends JpaRepository impleme
 		if (listDomain.isEmpty()) {
 			return;
 		}
-		
+
 		listDomain.forEach(dm -> {
 			String histId = dm.getHistoryId();
 			Optional<PreReflecData> entityOpt = this.queryProxy().query(SELECT_BY_HIST_ID, PreReflecData.class)
 					.setParameter("histId", histId).getSingle();
 			if (entityOpt.isPresent()) {
 				// Update entity
-				PreReflecData entity =  entityOpt.get(); 
+				PreReflecData entity = entityOpt.get();
 				toEntity(dm, entity);
 				this.commandProxy().update(entity);
 				System.out.println("Update entity Success - " + listDomain.indexOf(dm));
-				
-			}else{
+
+			} else {
 				System.out.println("entity does not exist");
 			}
 		});
@@ -70,51 +77,91 @@ public class JpaDataBeforeReflectingRepositoryImpl extends JpaRepository impleme
 		if (listDomain.isEmpty()) {
 			return;
 		}
-		
+
 		listDomain.forEach(dm -> {
 			String histId = dm.getHistoryId();
 			Optional<PreReflecData> entityOpt = this.queryProxy().query(SELECT_BY_HIST_ID, PreReflecData.class)
 					.setParameter("histId", histId).getSingle();
 			if (entityOpt.isPresent()) {
 				PreReflecDataPk pk = new PreReflecDataPk(dm.getHistoryId());
-				this.commandProxy().remove(PreReflecData.class , pk);
+				this.commandProxy().remove(PreReflecData.class, pk);
 				System.out.println("Delete entity Success - " + listDomain.indexOf(dm));
-				
-			}else{
+
+			} else {
 				System.out.println("entity does not exist");
 			}
 		});
 	}
-	
+
 	@Override
 	public void deleteDataByHistId(String histId) {
 		Optional<PreReflecData> entityOpt = this.queryProxy().query(SELECT_BY_HIST_ID, PreReflecData.class)
 				.setParameter("histId", histId).getSingle();
 		if (entityOpt.isPresent()) {
 			PreReflecDataPk pk = new PreReflecDataPk(histId);
-			this.commandProxy().remove(PreReflecData.class , pk);
+			this.commandProxy().remove(PreReflecData.class, pk);
 			System.out.println("Delete entity Success ");
-			
-		}else{
+
+		} else {
 			System.out.println("entity does not exist");
 		}
 	}
 
-	
 	@Override
 	public List<DataBeforeReflectingPerInfo> getData(int workId, List<String> listSid) {
 		if (listSid.isEmpty()) {
 			return new ArrayList<>();
 		}
-		
-		List<DataBeforeReflectingPerInfo> listDomain = this.queryProxy().query(SELECT_BY_WORKID_SIDS, PreReflecData.class)
-				.setParameter("workId", workId)
+
+		List<DataBeforeReflectingPerInfo> listDomain = this.queryProxy()
+				.query(SELECT_BY_WORKID_SIDS, PreReflecData.class).setParameter("workId", workId)
 				.setParameter("listSid", listSid).getList(dm -> toDomain(dm));
 		return listDomain;
 	}
-	
-	private PreReflecData toEntity(DataBeforeReflectingPerInfo domain, PreReflecData entity ) {
-		entity.preReflecDataPk.setHistoryId(domain.historyId); 
+
+	@Override
+	public List<DataBeforeReflectingPerInfo> getData(String cid, Integer workId, List<String> listSid,
+			Optional<Boolean> includReflected, Optional<String> sortByColumnName, Optional<String> orderType) {
+
+		String sql = "SELECT c FROM PreReflecData c WHERE 1=1 ";
+
+		if (!StringUtil.isNullOrEmpty(cid, true)) {
+			sql = sql + " and c.companyId  = '" + cid + "'";
+		}
+
+		if (workId != null) {
+			sql = sql + " and c.workId  = '" + workId + "'";
+		}
+
+		if (!listSid.isEmpty()) {
+			sql = sql + " and c.sId IN '" + listSid + "'";
+		}
+
+		if ((!includReflected.isPresent()) || (includReflected.isPresent() && includReflected.get() == false)) {
+			sql = sql + " and c.stattus != 3 ";
+		}
+
+		if (sortByColumnName.isPresent()) {
+			sql = sql + " ORDER BY '" + sortByColumnName.get() + "'";
+		}
+
+		if (sortByColumnName.isPresent() && orderType.isPresent()) {
+			sql = sql + " '" + orderType + "' ";
+		}
+
+		EntityManager em = this.getEntityManager();
+		TypedQuery<PreReflecData> query = em.createQuery(sql, PreReflecData.class);
+
+		List<PreReflecData> listEntity = query.getResultList();
+
+		List<DataBeforeReflectingPerInfo> listDomain = listEntity.stream().map(dm -> toDomain(dm))
+				.collect(Collectors.toList());
+
+		return listDomain;
+	}
+
+	private PreReflecData toEntity(DataBeforeReflectingPerInfo domain, PreReflecData entity) {
+		entity.preReflecDataPk.setHistoryId(domain.historyId);
 		entity.contractCode = domain.contractCode;
 		entity.companyId = domain.companyId;
 		entity.companyCode = domain.companyCode;
@@ -160,7 +207,7 @@ public class JpaDataBeforeReflectingRepositoryImpl extends JpaRepository impleme
 		entity.int_18 = domain.int_18;
 		entity.int_19 = domain.int_19;
 		entity.int_20 = domain.int_20;
-		
+
 		entity.num_01 = domain.num_01;
 		entity.num_02 = domain.num_02;
 		entity.num_03 = domain.num_03;
@@ -181,7 +228,7 @@ public class JpaDataBeforeReflectingRepositoryImpl extends JpaRepository impleme
 		entity.num_18 = domain.num_18;
 		entity.num_19 = domain.num_19;
 		entity.num_20 = domain.num_20;
-		
+
 		entity.select_code_01 = domain.select_code_01;
 		entity.select_code_02 = domain.select_code_02;
 		entity.select_code_03 = domain.select_code_03;
@@ -224,33 +271,31 @@ public class JpaDataBeforeReflectingRepositoryImpl extends JpaRepository impleme
 		entity.str_10 = domain.str_10;
 		return entity;
 	}
-	
-	private DataBeforeReflectingPerInfo toDomain(PreReflecData entity){
+
+	private DataBeforeReflectingPerInfo toDomain(PreReflecData entity) {
 		return DataBeforeReflectingPerInfo.createFromJavaType(entity.preReflecDataPk.getHistoryId(),
-				entity.contractCode, entity.companyId, entity.companyCode, entity.pId, entity.sId, 
-				entity.scd, entity.workId, entity.personName, entity.workName, EnumAdaptor.valueOf(entity.requestFlag, RequestFlag.class), 
-				entity.registerDate, entity.releaseDate, EnumAdaptor.valueOf(entity.onHoldFlag,OnHoldFlag.class), 
-				EnumAdaptor.valueOf(entity.stattus,Status.class),entity.histId_Refer, 
-				entity.date_01, entity.date_02, entity.date_03, entity.date_04, entity.date_05, 
-				entity.date_06, entity.date_07, entity.date_08, entity.date_09, entity.date_10, 
-				entity.int_01, entity.int_02, entity.int_03, entity.int_04, entity.int_05, 
-				entity.int_06, entity.int_07, entity.int_08, entity.int_09, entity.int_10, 
-				entity.int_11, entity.int_12, entity.int_13, entity.int_14, entity.int_15, 
-				entity.int_16, entity.int_17, entity.int_18, entity.int_19, entity.int_20, 
-				entity.num_01, entity.num_02, entity.num_03, entity.num_04, entity.num_05, 
-				entity.num_06, entity.num_07, entity.num_08, entity.num_09, entity.num_10, 
-				entity.num_11, entity.num_12, entity.num_13, entity.num_14, entity.num_15, 
-				entity.num_16, entity.num_17, entity.num_18, entity.num_19, entity.num_20, 
-				entity.select_code_01, entity.select_code_02, entity.select_code_03, entity.select_code_04, 
-				entity.select_code_05, entity.select_code_06, entity.select_code_07, entity.select_code_08, 
-				entity.select_code_09, entity.select_code_10, 
-				entity.select_id_01, entity.select_id_02, entity.select_id_03, entity.select_id_04, 
-				entity.select_id_05, entity.select_id_06, entity.select_id_07, entity.select_id_08, 
-				entity.select_id_09, entity.select_id_10, 
-				entity.select_name_01, entity.select_name_02, entity.select_name_03, entity.select_name_04, 
-				entity.select_name_05, entity.select_name_06, entity.select_name_07, entity.select_name_08, 
-				entity.select_name_09, entity.select_name_10, 
-				entity.str_01, entity.str_02, entity.str_03, entity.str_04, entity.str_05, 
-				entity.str_06, entity.str_07, entity.str_08, entity.str_09, entity.str_10);
+				entity.contractCode, entity.companyId, entity.companyCode, entity.pId, entity.sId, entity.scd,
+				entity.workId, entity.personName, entity.workName,
+				EnumAdaptor.valueOf(entity.requestFlag, RequestFlag.class), entity.registerDate, entity.releaseDate,
+				EnumAdaptor.valueOf(entity.onHoldFlag, OnHoldFlag.class),
+				EnumAdaptor.valueOf(entity.stattus, Status.class), entity.histId_Refer, entity.date_01, entity.date_02,
+				entity.date_03, entity.date_04, entity.date_05, entity.date_06, entity.date_07, entity.date_08,
+				entity.date_09, entity.date_10, entity.int_01, entity.int_02, entity.int_03, entity.int_04,
+				entity.int_05, entity.int_06, entity.int_07, entity.int_08, entity.int_09, entity.int_10, entity.int_11,
+				entity.int_12, entity.int_13, entity.int_14, entity.int_15, entity.int_16, entity.int_17, entity.int_18,
+				entity.int_19, entity.int_20, entity.num_01, entity.num_02, entity.num_03, entity.num_04, entity.num_05,
+				entity.num_06, entity.num_07, entity.num_08, entity.num_09, entity.num_10, entity.num_11, entity.num_12,
+				entity.num_13, entity.num_14, entity.num_15, entity.num_16, entity.num_17, entity.num_18, entity.num_19,
+				entity.num_20, entity.select_code_01, entity.select_code_02, entity.select_code_03,
+				entity.select_code_04, entity.select_code_05, entity.select_code_06, entity.select_code_07,
+				entity.select_code_08, entity.select_code_09, entity.select_code_10, entity.select_id_01,
+				entity.select_id_02, entity.select_id_03, entity.select_id_04, entity.select_id_05, entity.select_id_06,
+				entity.select_id_07, entity.select_id_08, entity.select_id_09, entity.select_id_10,
+				entity.select_name_01, entity.select_name_02, entity.select_name_03, entity.select_name_04,
+				entity.select_name_05, entity.select_name_06, entity.select_name_07, entity.select_name_08,
+				entity.select_name_09, entity.select_name_10, entity.str_01, entity.str_02, entity.str_03,
+				entity.str_04, entity.str_05, entity.str_06, entity.str_07, entity.str_08, entity.str_09,
+				entity.str_10);
 	}
+
 }
