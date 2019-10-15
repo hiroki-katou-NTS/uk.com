@@ -116,6 +116,10 @@ export class TimeWithDay {
     }
 
     public toString(): string {
+        if (this.day === 0) {
+            return `${_.padStart(this.hour.toString(), 2, '0')}:${_.padStart(this.minute.toString(), 2, '0')}`;
+        }
+        
         return `${this.dayName} ${_.padStart(this.hour.toString(), 2, '0')}:${_.padStart(this.minute.toString(), 2, '0')}`;
     }
 
