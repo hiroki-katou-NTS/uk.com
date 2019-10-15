@@ -1,9 +1,15 @@
 package nts.uk.ctx.pereg.infra.repository.person.info.ctg;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.ejb.Stateless;
 
@@ -666,5 +672,59 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 				.setParameter("forPersonnel", forPersonnel).getList(c -> {
 					return createDomainVer3FromEntity(c);
 				});
+	}
+
+	@Override
+	public List<PersonInfoCategory> getAllCtgWithAuthCPS003(String companyId, String roleId, boolean isOtherCompany,
+			int forAttendance, int forPayroll, int forPersonnel) {
+		String fullQuery = "";
+		if (isOtherCompany) {
+			fullQuery = SELECT_CTG_WITH_AUTH
+					+ " AND ((au.allowOtherRef = :otherAuth AND au.allowOtherCompanyRef = 1) OR 0 = :otherAuth) "
+					+ " AND ((co.salaryUseAtr = 1 AND :forPayroll = 1) OR (co.personnelUseAtr = 1 AND :forPersonnel = 1) OR (co.employmentUseAtr = 1 AND :forAttendance = 1))"
+					+ " OR (:forPayroll =  0 AND :forPersonnel = 0 AND :forAttendance = 0)" 
+					+ " ORDER BY po.disporder";
+		} else {
+			fullQuery = SELECT_CTG_WITH_AUTH
+					+ " AND (au.allowOtherRef = :otherAuth  OR 0 = :otherAuth) "
+					+ " AND ((co.salaryUseAtr = 1 AND :forPayroll = 1) OR (co.personnelUseAtr = 1 AND :forPersonnel = 1) OR (co.employmentUseAtr = 1 AND :forAttendance = 1))"
+					+ " OR (:forPayroll =  0 AND :forPersonnel = 0 AND :forAttendance = 0)"
+					+ " ORDER BY po.disporder";
+		}
+		
+		List<Object[]>  categoryOthers = this.queryProxy().query(fullQuery, Object[].class).setParameter("cid", companyId)
+				.setParameter("roleId", roleId).setParameter("selfAuth", 0).setParameter("otherAuth", 1)
+				.setParameter("forAttendance", forAttendance)
+				.setParameter("forPayroll", forPayroll)
+				.setParameter("forPersonnel", forPersonnel).getList();
+		
+		List<Object[]>  categorySelfs = this.queryProxy().query(fullQuery, Object[].class).setParameter("cid", companyId)
+				.setParameter("roleId", roleId).setParameter("selfAuth", 1).setParameter("otherAuth", 0)
+				.setParameter("forAttendance", forAttendance)
+				.setParameter("forPayroll", forPayroll)
+				.setParameter("forPersonnel", forPersonnel).getList();
+		
+		
+		List<Object[]> result = Stream.concat(categorySelfs.stream(), categoryOthers.stream()).collect(Collectors.toList());
+		
+		result.sort(SORT_BY_DISPORDER);
+		
+		return result.stream().map(c ->{
+					return createDomainPerInfoCtgFromEntity(c);
+				}).filter(distinctByKey(PersonInfoCategory::getPersonInfoCategoryId)).collect(Collectors.toList());
+	};
+	
+	/**
+	 * 
+	 * @param keyExtractor
+	 * @return
+	 */
+	public static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
+		Map<Object, Boolean> map = new ConcurrentHashMap<>();
+		return t -> map.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
+	}
+	
+	private static Comparator<Object[]> SORT_BY_DISPORDER = (o1, o2) -> {
+		return ((int) o1[8]) - ((int) o2[8]); // index 8 for [disporder] 
 	};
 }

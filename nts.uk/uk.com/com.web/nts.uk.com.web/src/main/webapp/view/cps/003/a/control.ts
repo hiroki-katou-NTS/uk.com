@@ -1909,7 +1909,9 @@ module cps003 {
                 baseDate: undefined
             }).done((cbx: Array<IComboboxItem>) => {
 //                if (code === "IS00079") {
-                    $("#grid").mGrid("updateCell", o.id, code, cbx, null, null, true);
+                    let $grid = $("#grid"); 
+                    $grid.mGrid("updateCell", o.id, code, cbx, null, null, true);
+                    $grid.mGrid("clearErrors", [{ id: o.id, columnKey: code }]);
 //                }
 //                unblock();
             }).fail(() => {

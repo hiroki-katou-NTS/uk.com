@@ -28620,12 +28620,15 @@ var nts;
                                             panelz = 0;
                                             cbx_1.options = _.cloneDeep(val);
                                         }
+                                        var found_1, currentVal_1 = (_dataSource[idx] || {})[key];
                                         _.forEach(val, function (i) {
                                             var $item = document.createElement("li");
                                             $item.classList.add("mcombo-listitem");
                                             $item.classList.add("ui-state-default");
                                             var vali = i[controlDef_2.optionsValue];
                                             $.data($item, "value", vali);
+                                            if (currentVal_1 === vali)
+                                                found_1 = i;
                                             var $comboItem = dkn.createItem(vali, i[controlDef_2.optionsText], $item, controlDef_2.displayMode), $comboValue = cbx_1.my.querySelector(".mcombo-value");
                                             $item.addXEventListener(ssk.CLICK_EVT, function (evt) {
                                                 var $combo = cbx_1.my.querySelector("." + dkn.CBX_CLS);
@@ -28651,6 +28654,7 @@ var nts;
                                                 $combo.classList.remove(dkn.CBX_ACTIVE_CLS);
                                                 var coord = ti.getCellCoord($cbxCell);
                                                 su.wedgeCell(_$grid[0], { rowIdx: coord.rowIdx, columnKey: key }, value);
+                                                khl.clear({ id: _dataSource[coord.rowIdx][_pk], columnKey: coord.columnKey, element: $cbxCell });
                                                 var sCol = _specialColumn[key];
                                                 if (sCol) {
                                                     var $cCell = lch.cellAt(_$grid[0], coord.rowIdx, sCol);
@@ -28675,6 +28679,12 @@ var nts;
                                         var panel = cbx_1.panel[panelz];
                                         cbx_1.panel[panelz] = $itemHolder_1;
                                         cbx_1.maxHeight[panelz] = Math.min(104, maxHeight_1);
+                                        if (!found_1) {
+                                            $cell.textContent = "";
+                                        }
+                                        else if ($cell.textContent === "") {
+                                            $cell.textContent = found_1[controlDef_2.optionsText];
+                                        }
                                         // Reload combo list
                                         if (_mEditor && _mEditor.type === dkn.COMBOBOX && _mEditor.columnKey === key && _mEditor.rowIdx === idx) {
                                             var comboList = cbx_1.dropdown.querySelector(".mcombo-list");
