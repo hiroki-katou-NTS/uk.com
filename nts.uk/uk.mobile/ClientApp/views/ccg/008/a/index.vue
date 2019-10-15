@@ -30,22 +30,23 @@
     <!-- End top alert -->
 
     <!-- Notice -->
-    <div class="section notice-wrapper" v-show="displayNotifis && displayNotifis.length > 0 && displayNotifisVissible">
+    <div class="section notice-wrapper" v-show="displayNotifis && displayNotifis.length > 0">
       <nts-label v-bind:constraint="labelConstraint">{{ 'CCGS08_3' | i18n}}</nts-label>
-      <div class="content">
+      <div class="content" v-show="displayNotifisVissible">
         <template v-for="notice in displayNotifis" >
           <button
             type="button"
             class="btn btn-secondary btn-selection mb-2"
             v-on:click="openModal"
-             :key="notice.title"
-             v-if="notice.visible"
+            :key="notice.title"
+            v-if="notice.visible"
           >
             <i class="fa fa-info-circle color-attendance uk-text-medium-blue" aria-hidden="true"></i>
             {{notice.title | i18n}} 
           </button>
         </template>
       </div>
+      <div class="pl-3 pt-2" v-show="!displayNotifisVissible">{{ 'CCGS08_35' | i18n }}</div>
     </div>
     <!-- End notice -->
 
