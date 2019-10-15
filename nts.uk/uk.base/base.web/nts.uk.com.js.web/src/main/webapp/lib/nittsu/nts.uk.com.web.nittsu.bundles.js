@@ -23724,6 +23724,8 @@ var nts;
                     v_1.VFACON_ASC = "view-facon-asc";
                     v_1.FACON_ASC = "facon-asc";
                     v_1.FACON_DESC = "facon-desc";
+                    v_1.ALIGN_LEFT = "halign-left";
+                    v_1.ALIGN_RIGHT = "halign-right";
                     v_1.DefaultRowConfig = { css: { height: BODY_ROW_HEIGHT } };
                     v_1._voilerRows = {};
                     v_1._encarRows = [];
@@ -25503,8 +25505,12 @@ var nts;
                             var col = visibleColumnsMap[key];
                             if (!col)
                                 tdStyle += "; display: none;";
-                            else if (col[0].columnCssClass === hpl.CURRENCY_CLS || col[0].columnCssClass === "halign-right") {
-                                td.classList.add(col[0].columnCssClass);
+                            else if (!_.isNil(col[0].columnCssClass)) {
+                                col[0].columnCssClass.split(' ').forEach(function (clz) {
+                                    if (clz === hpl.CURRENCY_CLS || clz === "halign-right") {
+                                        td.classList.add(clz);
+                                    }
+                                });
                             }
                             if (key === "rowNumber") {
                                 td.innerHTML = cData; //!_.isNil(numText) ? numText : rowIdx + 1;
@@ -25730,6 +25736,11 @@ var nts;
                             tr.addXEventListener(ssk.MOUSE_OUT, function (evt) {
                                 self.hoover(evt, true);
                             });
+                            if (_.keys(v_1._voilerRows).length > 0
+                                && _.includes(v_1._voilerRows[Math.floor(rowIdx / (aho._bloc * 2 - 1))], rowIdx)) {
+                                fixedTr.style.display = "none";
+                                tr.style.display = "none";
+                            }
                             var ret = { fixedRow: fixedTr, row: tr, fixedElements: fixedElements, elements: elements };
                             if (rowIdx === 0) {
                                 ret.fixedColIdxes = fixedColIdxes;
@@ -25832,8 +25843,12 @@ var nts;
                             var col = self.visibleColumnsMap[key];
                             if (!col)
                                 tdStyle += "; display: none;";
-                            else if (col[0].columnCssClass === hpl.CURRENCY_CLS || col[0].columnCssClass === "halign-right") {
-                                td.classList.add(col[0].columnCssClass);
+                            else if (!_.isNil(col[0].columnCssClass)) {
+                                col[0].columnCssClass.split(' ').forEach(function (clz) {
+                                    if (clz === hpl.CURRENCY_CLS || clz === "halign-right") {
+                                        td.classList.add(clz);
+                                    }
+                                });
                             }
                             var controlDef = self.controlMap[key];
                             var id = rData[self.primaryKey];
@@ -26170,28 +26185,43 @@ var nts;
                     }
                     v_1.createWrapper = createWrapper;
                     function voilerRow(idx) {
-                        if (_.isNil(idx) || idx > _end || idx < _start)
+                        if (_.isNil(idx))
                             return;
                         var nama = Math.floor(idx / (aho._bloc * 2 - 1));
                         if (!v_1._voilerRows[nama])
                             v_1._voilerRows[nama] = [];
                         v_1._voilerRows[nama].push(idx);
-                        idx -= _start;
-                        _.forEach(_bodyWrappers, function (b) {
-                            var r = b.querySelector("tr:nth-of-type(" + (idx + 2) + ")");
-                            if (r)
-                                r.style.display = "none";
-                            //                let last = b.querySelector("tr:last-child");
-                            //                if (last) last.style.height = parseFloat(last.style.height) - BODY_ROW_HEIGHT + "px";
-                        });
-                        _.forEach(_.keys(_mafollicle[SheetDef]), function (k) {
-                            var maf = _mafollicle[_currentPage][k];
-                            if (k === _currentSheet || !maf || !maf.$bBody)
-                                return;
-                            var r = maf.$bBody.querySelector("tr:nth-of-type(" + (idx + 2) + ")");
-                            if (r)
-                                r.style.display = "none";
-                        });
+                        if (idx <= _end && idx >= _start) {
+                            idx -= _start;
+                            _.forEach(_bodyWrappers, function (b) {
+                                var r = b.querySelector("tr:nth-of-type(" + (idx + 2) + ")");
+                                if (r)
+                                    r.style.display = "none";
+                                //                let last = b.querySelector("tr:last-child");
+                                //                if (last) last.style.height = parseFloat(last.style.height) - BODY_ROW_HEIGHT + "px";
+                            });
+                            _.forEach(_.keys(_mafollicle[SheetDef]), function (k) {
+                                var maf = _mafollicle[_currentPage][k];
+                                if (k === _currentSheet || !maf || !maf.$bBody)
+                                    return;
+                                var r = maf.$bBody.querySelector("tr:nth-of-type(" + (idx + 2) + ")");
+                                if (r)
+                                    r.style.display = "none";
+                            });
+                        }
+                        else {
+                            _.forEach(_.keys(_mafollicle[SheetDef]), function (k) {
+                                var maf = _mafollicle[_currentPage][k];
+                                if (!maf || !maf.desc)
+                                    return;
+                                var r = maf.desc.rowElements[idx];
+                                if (r)
+                                    r.style.display = "none";
+                                var fr = maf.desc.fixedRowElements[idx];
+                                if (fr)
+                                    fr.style.display = "none";
+                            });
+                        }
                     }
                     v_1.voilerRow = voilerRow;
                     function encarterRow(idx, copy, cssClass, numText) {
@@ -27173,8 +27203,7 @@ var nts;
                                 $headerTable.insertAdjacentElement("beforebegin", self.$agency);
                                 hiddenCount_1 = 0;
                                 _.forEach(self.headerColGroup[1], function ($targetCol, i) {
-                                    if (i === self.headerColGroup[1].length - 1)
-                                        return;
+                                    //                        if (i === self.headerColGroup[1].length - 1) return;
                                     if ($targetCol.style.display === "none") {
                                         hiddenCount_1++;
                                         return;
@@ -27433,6 +27462,10 @@ var nts;
                                 _.forEach(_.keys(_vessel().desc.fixedColIdxes), function (k) {
                                     var i = parseFloat(_vessel().desc.fixedColIdxes[k]);
                                     if (i === tidx) {
+                                        if (_.find(_fixedHiddenColumns, function (c) { return c === k; })) {
+                                            tidx++;
+                                            return;
+                                        }
                                         leftCol = k;
                                         if (self.actionDetails.breakArea || leftCol)
                                             return false;
@@ -27451,6 +27484,10 @@ var nts;
                                 _.forEach(_.keys(_vessel().desc.colIdxes), function (k) {
                                     var i = parseFloat(_vessel().desc.colIdxes[k]);
                                     if (i === tidx) {
+                                        if (_.find(_hiddenColumns, function (c) { return c === k; })) {
+                                            tidx++;
+                                            return;
+                                        }
                                         leftCol = k;
                                         return false;
                                     }
@@ -27618,7 +27655,7 @@ var nts;
                             self.$agency.style.width = self.headerWrappers[i].style.width;
                             var left = 0, group = self.headerColGroup[i];
                             _.forEach(group, function ($td, index) {
-                                if ($td.style.display === "none" || (!self.actionDetails.isFixed && index === group.length - 1))
+                                if ($td.style.display === "none" /*|| (!self.actionDetails.isFixed && index === group.length - 1)*/)
                                     return;
                                 left += parseFloat($td.style.width);
                                 if (index < self.actionDetails.gripIndex)
@@ -27912,6 +27949,7 @@ var nts;
                                             btn.disabled = true;
                                         break;
                                     case dkn.FLEX_IMAGE:
+                                    case dkn.IMAGE:
                                         var img = $cell.querySelector("span");
                                         if (img) {
                                             img.removeXEventListener(ssk.CLICK_EVT);
@@ -27988,6 +28026,7 @@ var nts;
                                         }
                                         break;
                                     case dkn.FLEX_IMAGE:
+                                    case dkn.IMAGE:
                                         var img = $cell.querySelector("span");
                                         if (img) {
                                             img.addXEventListener(ssk.CLICK_EVT, $.data(img, ssk.CLICK_EVT));
@@ -28010,8 +28049,11 @@ var nts;
                             if (_.isNil(idx))
                                 return;
                             var $cell = lch.cellAt(_$grid[0], idx, key);
-                            var ftPrint = false, setShtCellState = function ($c) {
+                            var ftPrint = false, cloneStates = _.cloneDeep(states), setShtCellState = function ($c) {
                                 var disabled;
+                                if (states && states.length !== cloneStates.length) {
+                                    states = _.cloneDeep(cloneStates);
+                                }
                                 _.forEach(states, function (s) {
                                     if (s === color.Disable) {
                                         self.disableNtsControlAt(id, key, $c);
@@ -28026,9 +28068,10 @@ var nts;
                                 });
                                 if (disabled)
                                     _.remove(states, function (s) { return s === color.Disable; });
-                                color.pushState(id, key, states);
-                                if (!ftPrint)
+                                if (!ftPrint) {
+                                    color.pushState(id, key, states);
                                     ftPrint = true;
+                                }
                             };
                             if ($cell) {
                                 setShtCellState($cell);
@@ -28373,6 +28416,9 @@ var nts;
                                 _cloud.painter.painters[!_hasFixed || !ufx ? 0 : 1].unbubColumn(col, i);
                             }
                         },
+                        hideRow: function (idx) {
+                            v.voilerRow(idx);
+                        },
                         updateCell: function (id, key, val, reset, ackDis, ls) {
                             var idx = _.findIndex(_dataSource, function (r) { return r[_pk] === id; });
                             if (idx === -1 || _.isNil(idx))
@@ -28498,15 +28544,18 @@ var nts;
                                             panelz = 0;
                                             cbx_1.options = _.cloneDeep(val);
                                         }
+                                        var found_1, currentVal_1 = (_dataSource[idx] || {})[key];
                                         _.forEach(val, function (i) {
                                             var $item = document.createElement("li");
                                             $item.classList.add("mcombo-listitem");
                                             $item.classList.add("ui-state-default");
                                             var vali = i[controlDef_2.optionsValue];
                                             $.data($item, "value", vali);
+                                            if (currentVal_1 === vali)
+                                                found_1 = i;
                                             var $comboItem = dkn.createItem(vali, i[controlDef_2.optionsText], $item, controlDef_2.displayMode), $comboValue = cbx_1.my.querySelector(".mcombo-value");
                                             $item.addXEventListener(ssk.CLICK_EVT, function (evt) {
-                                                var $combo = cbx_1.my.querySelector("." + CBX_CLS);
+                                                var $combo = cbx_1.my.querySelector("." + dkn.CBX_CLS);
                                                 $comboValue.innerHTML = "";
                                                 $comboValue.appendChild($comboItem.cloneNode(true));
                                                 _.forEach(itemList_1, function (i) {
@@ -28525,10 +28574,11 @@ var nts;
                                                     }
                                                     $.data($cbxCell, lo.CBX_SELECTED_TD, value);
                                                 }
-                                                closeDD(cbx_1.dropdown);
-                                                $combo.classList.remove(CBX_ACTIVE_CLS);
+                                                dkn.closeDD(cbx_1.dropdown);
+                                                $combo.classList.remove(dkn.CBX_ACTIVE_CLS);
                                                 var coord = ti.getCellCoord($cbxCell);
                                                 su.wedgeCell(_$grid[0], { rowIdx: coord.rowIdx, columnKey: key }, value);
+                                                khl.clear({ id: _dataSource[coord.rowIdx][_pk], columnKey: coord.columnKey, element: $cbxCell });
                                                 var sCol = _specialColumn[key];
                                                 if (sCol) {
                                                     var $cCell = lch.cellAt(_$grid[0], coord.rowIdx, sCol);
@@ -28550,8 +28600,46 @@ var nts;
                                             $itemHolder_1.innerHTML = nts.uk.resource.getMessage("Msg_37");
                                             maxHeight_1 += 26;
                                         }
+                                        var panel = cbx_1.panel[panelz];
                                         cbx_1.panel[panelz] = $itemHolder_1;
                                         cbx_1.maxHeight[panelz] = Math.min(104, maxHeight_1);
+                                        if (!found_1) {
+                                            $cell.textContent = "";
+                                        }
+                                        else if ($cell.textContent === "") {
+                                            $cell.textContent = found_1[controlDef_2.optionsText];
+                                        }
+                                        // Reload combo list
+                                        if (_mEditor && _mEditor.type === dkn.COMBOBOX && _mEditor.columnKey === key && _mEditor.rowIdx === idx) {
+                                            var comboList = cbx_1.dropdown.querySelector(".mcombo-list");
+                                            comboList.replaceChild($itemHolder_1, panel);
+                                            cbx_1.dropdown.style.maxHeight = cbx_1.maxHeight[panelz] + "px";
+                                            var items = cbx_1.dropdown.querySelectorAll(".mcombo-listitem");
+                                            var $comboValue_1 = cbx_1.my.querySelector(".mcombo-value");
+                                            var selected_2, code_1 = $.data($cell, lo.CBX_SELECTED_TD);
+                                            _.forEach(items, function (i) {
+                                                var value = $.data(i, lo.CBX_ITEM_VALUE);
+                                                if (i.classList.contains("selecteditem")) {
+                                                    i.classList.remove("selecteditem");
+                                                }
+                                                if (code_1 === value) {
+                                                    var $item = i.querySelector(".mcombo-item");
+                                                    if ($item) {
+                                                        $comboValue_1.innerHTML = "";
+                                                        $comboValue_1.appendChild($item.cloneNode(true));
+                                                        i.classList.add("selecteditem");
+                                                        selected_2 = true;
+                                                    }
+                                                }
+                                            });
+                                            if (!selected_2) {
+                                                $comboValue_1.innerHTML = "";
+                                                var empty = _prtDiv.cloneNode(true);
+                                                empty.style.display = "inline-block";
+                                                $comboValue_1.appendChild(empty);
+                                            }
+                                            dkn.openDD(cbx_1.dropdown, cbx_1.my);
+                                        }
                                     }
                                     else {
                                         var y = void 0, options = void 0;
@@ -29341,6 +29429,10 @@ var nts;
                                 || $tCell.classList.contains(color.Lock)
                                 || $tCell.classList.contains(dkn.LABEL_CLS))
                                 return;
+                            if (_.keys(ssk.KeyPressed).length > 0) {
+                                evt.preventDefault();
+                                return;
+                            }
                             var coord = ti.getCellCoord($tCell);
                             var control = dkn.controlType[coord.columnKey];
                             var cEditor = _mEditor;
@@ -29370,6 +29462,12 @@ var nts;
                                 setTimeout(function () {
                                     $input.select();
                                 }, 0);
+                                if ($tCell.classList.contains(v.ALIGN_RIGHT)) {
+                                    $input.classList.remove(v.ALIGN_LEFT);
+                                }
+                                else {
+                                    $input.classList.add(v.ALIGN_LEFT);
+                                }
                                 var coord_3 = ti.getCellCoord($tCell);
                                 $input.style.imeMode = "inactive";
                                 if (coord_3) {
@@ -29380,7 +29478,7 @@ var nts;
                                 }
                             }
                             else if (control.type === dkn.COMBOBOX && !$tCell.querySelector(".mcombo-wrapper")) {
-                                endEdit($grid);
+                                endEdit($grid, true);
                                 $tCell.textContent = "";
                                 $tCell.classList.add(dkn.CONTROL_CLS);
                                 var stt = void 0, panel = void 0, comboList = void 0, itemHolder = void 0, height = void 0;
@@ -29401,40 +29499,46 @@ var nts;
                                     }
                                 }
                                 var $combo = control.my.querySelector("." + dkn.CBX_CLS);
-                                var $comboValue_1 = control.my.querySelector(".mcombo-value");
+                                var $comboValue_2 = control.my.querySelector(".mcombo-value");
                                 var items = control.dropdown.querySelectorAll(".mcombo-listitem");
-                                var selected_2, code_1 = $.data($tCell, lo.CBX_SELECTED_TD);
+                                var selected_3, code_2 = $.data($tCell, lo.CBX_SELECTED_TD);
                                 _.forEach(items, function (i) {
                                     var value = $.data(i, lo.CBX_ITEM_VALUE);
                                     if (i.classList.contains("selecteditem")) {
                                         i.classList.remove("selecteditem");
                                     }
-                                    if (code_1 === value) {
+                                    if (code_2 === value) {
                                         var $item = i.querySelector(".mcombo-item");
                                         if ($item) {
-                                            $comboValue_1.innerHTML = "";
-                                            $comboValue_1.appendChild($item.cloneNode(true));
+                                            $comboValue_2.innerHTML = "";
+                                            $comboValue_2.appendChild($item.cloneNode(true));
                                             i.classList.add("selecteditem");
-                                            selected_2 = true;
+                                            selected_3 = true;
                                         }
                                     }
                                 });
-                                if (!selected_2) {
-                                    $comboValue_1.innerHTML = "";
+                                if (!selected_3) {
+                                    $comboValue_2.innerHTML = "";
                                     var empty = _prtDiv.cloneNode(true);
                                     empty.style.display = "inline-block";
-                                    $comboValue_1.appendChild(empty);
+                                    $comboValue_2.appendChild(empty);
                                 }
                                 $tCell.appendChild(control.my);
-                                $.data(control.my, lo.CBX_SELECTED, code_1);
+                                $.data(control.my, lo.CBX_SELECTED, code_2);
                                 dkn.openDD(control.dropdown, control.my);
                                 $combo.classList.add(dkn.CBX_ACTIVE_CLS);
                                 cType.type = dkn.COMBOBOX;
                             }
                             else if (control.type === dkn.DATE_PICKER && !$tCell.querySelector("input")) {
-                                endEdit($grid);
+                                endEdit($grid, true);
                                 $tCell.textContent = "";
                                 $tCell.classList.add(dkn.CONTROL_CLS);
+                                if ($tCell.classList.contains(v.ALIGN_RIGHT)) {
+                                    $input.classList.remove(v.ALIGN_LEFT);
+                                }
+                                else {
+                                    $input.classList.add(v.ALIGN_LEFT);
+                                }
                                 $tCell.appendChild($editor);
                                 var data = $.data($tCell, v.DATA), mDate = moment(data, control.format, true), mDisplayDate = mDate.isValid() ? mDate : moment();
                                 $input.value = !_.isNil(data) && data !== "" ? (mDate.isValid() ? mDate.format(control.format[0]) : mDate._i) : "";
@@ -29469,6 +29573,10 @@ var nts;
                         document.addXEventListener(ssk.MOUSE_DOWN, function (evt) {
                             if (!evt.target)
                                 return;
+                            if (_.keys(ssk.KeyPressed).length > 0) {
+                                evt.preventDefault();
+                                return;
+                            }
                             if (!selector.is(evt.target, "input.medit")
                                 && !selector.is(evt.target, "div[class*='mcombo']")) {
                                 endEdit($grid, true);
@@ -29478,7 +29586,7 @@ var nts;
                             var $grid = evt.currentTarget, $tCell = evt.target;
                             if (!$grid)
                                 return;
-                            if (!ti.isEnterKey(evt) && !ti.isTabKey(evt)
+                            if (!ti.isEnterKey(evt) && !ti.isTabKey(evt) && !evt.ctrlKey
                                 && ((evt.keyCode >= 46 && evt.keyCode <= 111) || (evt.keyCode >= 160 && evt.keyCode <= 223))) {
                                 ssk.KeyPressed[evt.keyCode] = true;
                             }
@@ -29573,6 +29681,12 @@ var nts;
                                         $input.value = !_.isNil(data) ? data : "";
                                         $input.select();
                                     }
+                                    if ($tCell.classList.contains(v.ALIGN_RIGHT)) {
+                                        $input.classList.remove(v.ALIGN_LEFT);
+                                    }
+                                    else {
+                                        $input.classList.add(v.ALIGN_LEFT);
+                                    }
                                     cType.type = dkn.TEXTBOX;
                                     var coord_4 = ti.getCellCoord($tCell);
                                     $input.style.imeMode = "inactive";
@@ -29606,7 +29720,7 @@ var nts;
                             delete ssk.KeyPressed[evt.keyCode];
                         });
                         document.addXEventListener(ssk.KEY_DOWN, function (evt) {
-                            if (!ti.isEnterKey(evt) && !ti.isTabKey(evt)
+                            if (!ti.isEnterKey(evt) && !ti.isTabKey(evt) && !evt.ctrlKey
                                 && ((evt.keyCode >= 46 && evt.keyCode <= 111) || (evt.keyCode >= 160 && evt.keyCode <= 223))) {
                                 ssk.KeyPressed[evt.keyCode] = true;
                             }
@@ -29856,7 +29970,7 @@ var nts;
                             }
                             else {
                                 if (cellValue === origVal || ((_.isNil(cellValue) || cellValue === "" || (cellValue instanceof moment && cellValue._i === "")) && ((origVal instanceof moment && origVal._i === "") || _.isNil(origVal) || origVal === ""))
-                                    || (cellValue instanceof Date && !_.isNil(cellValue) && !_.isNil(origVal) && cellValue.getTime() === origVal.getTime())) {
+                                    || (cellValue instanceof Date && origVal instanceof Date && !_.isNil(cellValue) && !_.isNil(origVal) && cellValue.getTime() === origVal.getTime())) {
                                     $cell = lch.cellAt($grid, coord.rowIdx, coord.columnKey, desc);
                                     if (!$cell) {
                                         if (!_.isNil(dirties[id]) && !_.isNil(dirties[id][coord.columnKey])) {
@@ -30003,6 +30117,9 @@ var nts;
                                         if (!maf) {
                                             _mafollicle[currentPage][s] = { errors: [] };
                                             maf = _mafollicle[currentPage][s];
+                                        }
+                                        else if (_.isNil(maf.errors)) {
+                                            maf.errors = [];
                                         }
                                         khl.addCellError(errDetail, maf);
                                     }
@@ -30232,7 +30349,7 @@ var nts;
                                     currencyOpts.decimallength = _.isNil(constraint.decimalLength) ? 0 : constraint.decimalLength;
                                     currencyOpts.currencyformat = constraint.currencyFormat ? constraint.currencyFormat : "JPY";
                                     var groupSeparator = constraint.groupSeparator || ",";
-                                    var rawValue = uk.text.replaceAll(value, groupSeparator, "");
+                                    var rawValue = uk.text.replaceAll(String(value), groupSeparator, "");
                                     var formatter = new uk.text.NumberFormatter({ option: currencyOpts });
                                     var numVal = Number(rawValue);
                                     if (!isNaN(numVal))
@@ -30317,8 +30434,10 @@ var nts;
                         }
                         if (_mEditor && _mEditor.type === dkn.TEXTBOX) {
                             var $editor = dkn.controlType[dkn.TEXTBOX].my;
-                            var $input = $editor.querySelector("input.medit");
-                            $input.value = data;
+                            var $input_1 = $editor.querySelector("input.medit");
+                            $input_1.value = data;
+                            evt.preventDefault();
+                            setTimeout(function () { return $input_1.focus(); });
                             return;
                         }
                         if (su.afterCollertar)
@@ -30988,12 +31107,12 @@ var nts;
                                 rows: [],
                                 rowElements: []
                             };
-                            var dirties_1 = {}, selected_3 = {};
+                            var dirties_1 = {}, selected_4 = {};
                             if (_selected) {
                                 _.forEach(_.keys(_selected), function (r) {
                                     var selectArr = _.filter(_selected[r], function (c) { return _.some(_fixedColumns, function (fc) { return fc.key === c; }); });
                                     if (selectArr.length > 0) {
-                                        selected_3[r] = selectArr;
+                                        selected_4[r] = selectArr;
                                     }
                                 });
                             }
@@ -31010,7 +31129,7 @@ var nts;
                                     }
                                 });
                             }
-                            _mafollicle[_currentPage][_currentSheet] = { desc: desc, errors: [], dirties: dirties_1, zeroHidden: _zeroHidden, selected: selected_3, histoire: [] };
+                            _mafollicle[_currentPage][_currentSheet] = { desc: desc, errors: [], dirties: dirties_1, zeroHidden: _zeroHidden, selected: selected_4, histoire: [] };
                         }
                         else if (!_vessel().desc) {
                             var desc = {
@@ -31021,12 +31140,12 @@ var nts;
                                 rows: [],
                                 rowElements: []
                             };
-                            var selected_4 = {};
+                            var selected_5 = {};
                             if (_selected) {
                                 _.forEach(_.keys(_selected), function (r) {
                                     var selectArr = _.filter(_selected[r], function (c) { return _.some(_fixedColumns, function (fc) { return fc.key === c; }); });
                                     if (selectArr.length > 0) {
-                                        selected_4[r] = selectArr;
+                                        selected_5[r] = selectArr;
                                     }
                                 });
                             }
@@ -31044,7 +31163,7 @@ var nts;
                                 });
                             }
                             _vessel().desc = desc;
-                            _vessel().selected = selected_4;
+                            _vessel().selected = selected_5;
                             _vessel().zeroHidden = _zeroHidden;
                             if (!_vessel().errors)
                                 _vessel().errors = [];
@@ -31321,14 +31440,14 @@ var nts;
                                     if (data instanceof Date) {
                                         data = data.toLocaleDateString("ja-JP", { year: "numeric", month: "2-digit", day: "2-digit" });
                                     }
-                                    var tDate = moment.utc($editor.value, ctrl.format).format(ctrl.format[0]);
-                                    if ( /*data !== tDate &&*/!d.classList.contains(khl.ERROR_CLS) && _.isFunction(ctrl.inputProcess)) {
-                                        ctrl.inputProcess(tDate, _dataSource[coord.rowIdx]);
+                                    var tDate = moment.utc($editor.value, ctrl.format, true);
+                                    if ( /*data !== tDate && !d.classList.contains(khl.ERROR_CLS) &&*/_.isFunction(ctrl.inputProcess)) {
+                                        ctrl.inputProcess(tDate.isValid() ? tDate.format(ctrl.format[0]) : $editor.value, _dataSource[coord.rowIdx]);
                                     }
                                     su.endEdit(_$grid[0]);
                                 }
                             }
-                            else if ((evt.keyCode >= 46 && evt.keyCode <= 111) || (evt.keyCode >= 160 && evt.keyCode <= 223)) {
+                            else if (!evt.ctrlKey && ((evt.keyCode >= 46 && evt.keyCode <= 111) || (evt.keyCode >= 160 && evt.keyCode <= 223))) {
                                 ssk.KeyPressed[evt.keyCode] = true;
                             }
                             if (ti.isArrowLeft(evt) || ti.isArrowRight(evt) || ti.isArrowUp(evt) || ti.isArrowDown(evt)) {
@@ -31634,14 +31753,18 @@ var nts;
                             var list = $dd.querySelector(".mcombo-list");
                             var items = list.querySelectorAll("li");
                             if (items) {
-                                var top_1 = 0;
+                                var top_1 = 0, selected_6;
                                 _.forEach(items, function (li) {
-                                    if (li.classList.contains("selecteditem"))
+                                    if (li.classList.contains("selecteditem")) {
+                                        selected_6 = true;
                                         return false;
+                                    }
                                     top_1 += 26;
                                 });
-                                if (top_1 >= 0)
+                                if (top_1 >= 0 && selected_6)
                                     list.scrollTop = top_1;
+                                else
+                                    list.scrollTop = 0;
                             }
                         }
                         if (!f) {
@@ -31698,7 +31821,8 @@ var nts;
                         if (dkn._ramass[format]) {
                             if (!data.initValue || data.initValue === "")
                                 return "";
-                            return moment(data.initValue, formats, true).format(formats[0]);
+                            var momentObj = moment(data.initValue, formats, true);
+                            return momentObj.isValid() ? momentObj.format(formats[0]) : data.initValue;
                         }
                         dkn._ramass[format] = _prtDiv.cloneNode();
                         dkn._ramass[format].classList.add("mdatepicker-container");
@@ -31994,7 +32118,8 @@ var nts;
                             $.data(dkn._ramass[format], "date", mDisplayDate);
                         });
                         if (data.initValue && data.initValue !== "") {
-                            return moment(data.initValue, formats, true).format(formats[0]);
+                            var momentObj = moment(data.initValue, formats, true);
+                            return momentObj.isValid() ? momentObj.format(formats[0]) : data.initValue;
                         }
                         return "";
                     }
@@ -32080,7 +32205,7 @@ var nts;
                         var selected = _prtDiv.cloneNode(true);
                         selected.classList.add("mgrid-refer-text");
                         if (_.isNil(text) && !_.isNil(data.initValue)) {
-                            text = data.initValue + " " + (data.controlDef.notFound || "");
+                            text = _.isNil(data.controlDef.notFound) ? data.initValue : data.controlDef.notFound;
                         }
                         selected.textContent = text || "";
                         if (data.controlDef.labelPosition === "before") {
@@ -32148,22 +32273,33 @@ var nts;
                         var $span = document.createElement("span");
                         $span.className = data.controlDef.source;
                         $container.appendChild($span);
+                        var clickHandle;
                         if (data.controlDef.source === "hidden-button") {
-                            $span.addXEventListener(ssk.CLICK_EVT, function (evt) {
+                            clickHandle = function (evt) {
                                 var r = ti.closest($span, "tr");
-                                if (r)
-                                    v.voilerRow(parseFloat($.data(r, lo.VIEW)));
-                            });
-                            $span.style.cursor = "pointer";
+                                if (r) {
+                                    var view = parseFloat($.data(r, lo.VIEW));
+                                    v.voilerRow(view);
+                                    if (_.isFunction(data.controlDef.click)) {
+                                        data.controlDef.click(view);
+                                    }
+                                }
+                            };
                         }
                         else if (_.includes(data.controlDef.source, "plus-button")) {
-                            $span.addXEventListener(ssk.CLICK_EVT, function (evt) {
+                            clickHandle = function (evt) {
                                 var r = ti.closest($span, "tr");
                                 var noTd = r.querySelector("td." + v.STT_CLS);
                                 if (r)
                                     v.encarterRow(parseFloat($.data(r, lo.VIEW)), data.controlDef.copy, data.controlDef.cssClass, noTd && noTd.innerHTML && parseInt(noTd.innerHTML) + 1);
-                            });
-                            $span.style.cursor = "pointer";
+                            };
+                        }
+                        if (clickHandle) {
+                            if (data.enable) {
+                                $span.addXEventListener(ssk.CLICK_EVT, clickHandle);
+                                $span.style.cursor = "pointer";
+                            }
+                            $.data($span, ssk.CLICK_EVT, clickHandle);
                         }
                         if (!dkn.controlType[data.columnKey]) {
                             dkn.controlType[data.columnKey] = dkn.IMAGE;
@@ -32190,7 +32326,8 @@ var nts;
                         var isSelecting;
                         $grid.addXEventListener(ssk.MOUSE_DOWN, function (evt) {
                             var $target = evt.target;
-                            if (!selector.is($target, ".mcell"))
+                            if (!selector.is($target, ".mcell")
+                                || _.chain(ssk.KeyPressed).keys().filter(function (k) { return k !== "16" && k !== "17"; }).value().length > 0)
                                 return;
                             isSelecting = true;
                             window.addXEventListener(ssk.MOUSE_UP + ".block", function (evt) {
@@ -33705,8 +33842,9 @@ var nts;
                      * Remove.
                      */
                     function remove(node) {
-                        if (isIE() && node && node.parentNode) {
-                            node.parentNode.removeChild(node);
+                        if (isIE()) {
+                            if (node && node.parentNode)
+                                node.parentNode.removeChild(node);
                             return;
                         }
                         node.remove();
@@ -35776,11 +35914,11 @@ var nts;
                         };
                         $grid.bind('selectionchanged', function () {
                             if (options.multiple) {
-                                var selected_5 = $grid.ntsGridList('getSelected');
+                                var selected_7 = $grid.ntsGridList('getSelected');
                                 var disables_2 = $grid.data("selectionDisables");
                                 var disableIds_2 = [];
                                 if (disables_2) {
-                                    _.forEach(selected_5, function (s, i) {
+                                    _.forEach(selected_7, function (s, i) {
                                         _.forEach(disables_2, function (d) {
                                             if (d === s.id && uk.util.isNullOrUndefined(_.find(value, function (iv) { return iv === d; }))) {
                                                 $grid.igGridSelection("deselectRowById", d);
@@ -35790,16 +35928,16 @@ var nts;
                                         });
                                     });
                                     disableIds_2.sort(function (i1, i2) { return i2 - i1; }).forEach(function (d) {
-                                        selected_5.splice(d, 1);
+                                        selected_7.splice(d, 1);
                                     });
                                     var valueCount = _.intersection(disables_2, value).length;
                                     var ds = $grid.igGrid("option", "dataSource");
-                                    if (selected_5.length === ds.length - disables_2.length + valueCount) {
+                                    if (selected_7.length === ds.length - disables_2.length + valueCount) {
                                         checkAll();
                                     }
                                 }
-                                if (!nts.uk.util.isNullOrEmpty(selected_5)) {
-                                    var newValue = _.map(selected_5, function (s) { return s.id; });
+                                if (!nts.uk.util.isNullOrEmpty(selected_7)) {
+                                    var newValue = _.map(selected_7, function (s) { return s.id; });
                                     newValue = _.union(_.intersection(disables_2, value), newValue);
                                     setValue($grid, newValue);
                                 }
