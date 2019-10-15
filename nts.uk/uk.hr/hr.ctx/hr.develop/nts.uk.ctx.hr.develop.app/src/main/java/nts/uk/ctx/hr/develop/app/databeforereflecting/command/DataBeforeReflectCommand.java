@@ -57,8 +57,8 @@ public class DataBeforeReflectCommand {
 		// 公開日
 		public GeneralDateTime releaseDate;
 
-		// 退職区分（必須） RetirementCategory
-		public int retirementType;
+		// 退職区分（必須） RetirementCategory A222_16
+		public int retirementType; 
 
 		// 届出区分
 		public int selectedCode_Retiment;

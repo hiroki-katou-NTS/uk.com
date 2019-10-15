@@ -213,13 +213,36 @@ module jcm007.a {
         clearSelection() {
             $("#gridListEmployees").igGridSelection("clearSelection");
         }
+        
+        
 
         /** event when click register */
         register() {
             let self = this;
             if (self.selectedTab == 'tab-1') {
                 // 2.退職者を新規登録する(Đăng ký mới người nghỉ hưu)
-
+                let command = self.currentEmployee();
+                // gọi sercice check PreCheck
+                nts.uk.request.ajax("databeforereflecting/precheck").done(() => {
+                    console.log('PRECHECK DONE!!');
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.bundledErrors(res);
+                    return;
+                });
+                
+                if(command.selectedCode_Retiment == 3){
+                  // アルゴリズム[警告チェック]を実行する(Thực hiện thuật toán [Warning check] )
+                    
+                    
+                
+                
+                }
+                
+                
+                
+                
+                
+                
             } else if (self.selectedTab == 'tab-2') {
                 // 3.届出承認済みの退職者を新規登録する 
                 //(Đăng ký mới người nghỉ hưu đã phê duyệt đơn/notification)
@@ -474,5 +497,9 @@ module jcm007.a {
         other_6: boolean;  // A222_51
         other_6Val: string;  // A222_52
     }
+    
+    export class DateFormat {
+            static DEFAULT_FORMAT = 'YYYY-MM-DD';
+        }
 
 }
