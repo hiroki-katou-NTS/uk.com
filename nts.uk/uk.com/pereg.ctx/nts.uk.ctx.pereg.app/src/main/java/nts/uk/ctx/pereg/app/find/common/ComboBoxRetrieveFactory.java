@@ -170,7 +170,7 @@ public class ComboBoxRetrieveFactory {
 
 	private static final String JP_SPACE = "　";
 
-	public <E extends Enum<?>> List<ComboBoxObject> getComboBox(SelectionItemDto selectionItemDto, String employeeId,
+	public List<ComboBoxObject> getComboBox(SelectionItemDto selectionItemDto, String employeeId,
 			GeneralDate standardDate, boolean isRequired, PersonEmployeeType perEmplType, boolean isDataType6, String categoryCode, String workplaceId, boolean isCps009) {
 
 		if (standardDate == null) {
@@ -393,9 +393,8 @@ public class ComboBoxRetrieveFactory {
 				perEmplType);
 		List<ComboBoxObject> lstComboBoxValue = new ArrayList<>();
 		for (SelectionInitDto selection : selectionList) {
-			lstComboBoxValue.add(new ComboBoxObject(selection.getSelectionId(), String.join(" ", selection.getSelectionCode(), selection.getSelectionName())));
+			lstComboBoxValue.add(new ComboBoxObject(selection.getSelectionId(), String.join(JP_SPACE, selection.getSelectionCode(), selection.getSelectionName())));
 		}
-
 		return lstComboBoxValue;
 	}
 
@@ -460,7 +459,7 @@ public class ComboBoxRetrieveFactory {
 	}
 
 
-	public <E extends Enum<?>> List<ComboBoxObject> getComboBox(ReferenceTypes referenceType, String referenceCode,
+	public List<ComboBoxObject> getComboBox(ReferenceTypes referenceType, String referenceCode,
 			GeneralDate standardDate, String employeeId, String workplaceId, boolean isRequired,
 			PersonEmployeeType perEmplType, boolean isDataType6, String categoryCode, GeneralDate realBaseDate,  boolean isCps009) {
 

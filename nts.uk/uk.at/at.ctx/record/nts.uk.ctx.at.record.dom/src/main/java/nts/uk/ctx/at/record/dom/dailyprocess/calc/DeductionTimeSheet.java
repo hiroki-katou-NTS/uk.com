@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
 import java.util.ArrayList;
-//import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -37,7 +36,6 @@ import nts.uk.ctx.at.shared.dom.worktime.common.RestTimeOfficeWorkCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 import nts.uk.ctx.at.shared.dom.worktime.common.TotalRoundingSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
-//import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneGoOutSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneShortTimeWorkSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSettingDetail;
@@ -45,7 +43,6 @@ import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
-//import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -61,7 +58,6 @@ public class DeductionTimeSheet {
 	private final List<TimeSheetOfDeductionItem> forDeductionTimeZoneList;
 	// 計上用
 	private final List<TimeSheetOfDeductionItem> forRecordTimeZoneList;
-
 	//休憩
 	private final List<BreakTimeOfDailyPerformance> breakTimeOfDailyList;
 	//外出
@@ -241,8 +237,8 @@ public class DeductionTimeSheet {
 
 				}
 				break;
+				
 			case BREAK:
-
 				List<TimeSpanForCalc> duplicateBreakSheet = timeSheet.getBreakCalcRange(
 						attendanceLeaveWork.getTimeLeavingWorks(), calcMethod,
 						oneDayRange.getDuplicatedWith(timeSheet.calcrange));
@@ -257,7 +253,6 @@ public class DeductionTimeSheet {
 								timeSheet.midNightTimeSheet, timeSheet.getWorkingBreakAtr(),timeSheet.getGoOutReason(), timeSheet.getBreakAtr(),
 								timeSheet.getShortTimeSheetAtr(),timeSheet.getDeductionAtr(),timeSheet.getChildCareAtr()));
 					});
-				
 				}
 				break;
 			default:

@@ -27,6 +27,7 @@ import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationSettingD
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.HolidayShipmentDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.TimeZoneUseDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.WorkTimeInfoDto;
+import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.WorkTypeKAF011;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.absenceleaveapp.AbsenceLeaveAppDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.recruitmentapp.RecruitmentAppDto;
 import nts.uk.ctx.at.request.app.find.setting.applicationreason.ApplicationReasonDto;
@@ -46,6 +47,8 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlg
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.ApplicationCombination;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.BreakOutType;
+import nts.uk.ctx.at.request.dom.application.overtime.service.CheckWorkingInfoResult;
+import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeService;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSetRepository;
@@ -131,6 +134,8 @@ public class HolidayShipmentScreenAFinder {
 	private AtEmployeeAdapter atEmpAdaptor;
 	@Inject
 	private AbsenceReruitmentMngInPeriodQuery absRertMngInPeriod;
+	@Inject
+	private OvertimeService overtimeService;
 	
 	private static final ApplicationType APP_TYPE = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
 
@@ -159,14 +164,27 @@ public class HolidayShipmentScreenAFinder {
 		// アルゴリズム「事前事後区分の判断」を実行する
 		result.setPreOrPostType(
 				otherCommonAlgorithm.judgmentPrePostAtr(APP_TYPE, refDate, uiType == 0 ? true : false).value);
+		
+        // 1.職場別就業時間帯を取得
+        List<String> listWorkTimeCodes = otherCommonAlgorithm.getWorkingHoursByWorkplace(companyID, employeeID,
+                appCommonSettingOutput.generalDate);
+        result.setWorkTimeCDs(listWorkTimeCodes);
+
 
 		// アルゴリズム「社員の労働条件を取得する」を実行する
 		Optional<WorkingConditionItem> wkingItem = getWorkingCondition(companyID, employeeID, refDate);
 
 		String wkTimeCD = getWkTimeCD(wkingItem);
-
+		
+        //12.マスタ勤務種類、就業時間帯データをチェック
+        CheckWorkingInfoResult checkResult = this.overtimeService.checkWorkingInfo(companyID, null,wkTimeCD);
+        //「職場別就業時間帯」を取得した先頭値を表示
+        if(checkResult.isWkTimeError() && !listWorkTimeCodes.isEmpty()){
+            wkTimeCD = listWorkTimeCodes.get(0);
+        }
 		setWkTimeInfo(result, wkTimeCD);
-
+		
+        // アルゴリズム「振休振出申請起動時の共通処理」を実行する
 		GeneralDate appDate, deadDate;
 
 		String takingOutWkTypeCD, takingOutWkTimeCD, holiDayWkTypeCD, holidayWkTimeCD;
@@ -174,8 +192,7 @@ public class HolidayShipmentScreenAFinder {
 		appDate = deadDate = null;
 
 		takingOutWkTypeCD = takingOutWkTimeCD = holiDayWkTypeCD = holidayWkTimeCD = null;
-
-		// アルゴリズム「振休振出申請起動時の共通処理」を実行する
+		
 		commonProcessAtStartup(companyID, employeeID, refDate, appDate, takingOutWkTypeCD, takingOutWkTimeCD, deadDate,
 				holiDayWkTypeCD, holidayWkTimeCD, result, appCommonSettingOutput);
 		// アルゴリズム「勤務時間初期値の取得」を実行する
@@ -247,10 +264,14 @@ public class HolidayShipmentScreenAFinder {
 	}
 
 	public HolidayShipmentDto changeAppDate(GeneralDate recDate, GeneralDate absDate, int comType, int uiType) {
+		
 		String companyID = AppContexts.user().companyId();
 		String employeeID = AppContexts.user().employeeId();
-		GeneralDate baseDate = comType == ApplicationCombination.Abs.value ? absDate : recDate;
+		
+		GeneralDate baseDate = getBaseDate(comType, absDate, recDate);
+		
 		AppCommonSettingOutput appCommonSettingOutput = getAppCommonSet(companyID, employeeID, baseDate);
+		
 		HolidayShipmentDto output = commonProcessBeforeStart(APP_TYPE, companyID, employeeID, baseDate,
 				appCommonSettingOutput);
 		// アルゴリズム「実績の取得」を実行する
@@ -260,6 +281,16 @@ public class HolidayShipmentScreenAFinder {
 		setChangeAppDateData(recDate, absDate, companyID, employeeID, uiType, output, appCommonSettingOutput, baseDate);
 
 		return output;
+	}
+
+	private GeneralDate getBaseDate(int comType, GeneralDate absDate, GeneralDate recDate) {
+		if (comType == ApplicationCombination.Abs.value) {
+			return absDate;
+		}
+		if(comType == ApplicationCombination.RecAndAbs.value && recDate == null){
+			return GeneralDate.today();
+		}
+		return recDate;
 	}
 
 	public WorkTimeInfoDto getSelectedWorkingHours(String wkTypeCD, String wkTimeCD) {
@@ -482,18 +513,17 @@ public class HolidayShipmentScreenAFinder {
 
 			}
 			// アルゴリズム「振出用勤務種類の取得」を実行する
-			output.setRecWkTypes(
-					getWorkTypeFor(companyID, employmentCD, recWkTypeCD, appCommonSet, BreakOutType.WORKING_DAY)
-							.stream().map(x -> WorkTypeDto.fromDomain(x)).collect(Collectors.toList()));
+			WorkTypeKAF011 wkTypeRec = this.getWorkTypeFor(companyID, employmentCD, recWkTypeCD, appCommonSet, BreakOutType.WORKING_DAY);
+			output.setMasterUnregRec(wkTypeRec.isMasterUnreg());
+			output.setRecWkTypes(wkTypeRec.getLstWorkType().stream().map(x -> WorkTypeDto.fromDomain(x)).collect(Collectors.toList()));
 
 			// アルゴリズム「選択済の就業時間帯の取得」を実行する rec
 			setWkTimeInfoForRecApp(companyID, recWkTimeCD, output);
 
 			// アルゴリズム「選択済の就業時間帯の取得」を実行する abs
-			output.setAbsWkTypes(
-					getWorkTypeFor(companyID, employmentCD, absWkTimeCD, appCommonSet, BreakOutType.HOLIDAY).stream()
-							.map(x -> WorkTypeDto.fromDomain(x)).collect(Collectors.toList()));
-
+			WorkTypeKAF011 wkTypeAbs = this.getWorkTypeFor(companyID, employmentCD, absWkTimeCD, appCommonSet, BreakOutType.HOLIDAY);
+			output.setMasterUnregAbs(wkTypeAbs.isMasterUnreg());
+			output.setAbsWkTypes(wkTypeAbs.getLstWorkType().stream().map(x -> WorkTypeDto.fromDomain(x)).collect(Collectors.toList()));
 			// アルゴリズム「振休用勤務種類の取得」を実行する
 			setWkTimeInfoForAbsApp(companyID, absWkTimeCD, output);
 
@@ -606,10 +636,18 @@ public class HolidayShipmentScreenAFinder {
 		return result;
 
 	}
-
-	private List<WorkType> getWorkTypeFor(String companyID, String employmentCode, String wkTypeCD,
+	/**
+	 * 振出用勤務種類の取得
+	 * @param companyID
+	 * @param employmentCode
+	 * @param wkTypeCD
+	 * @param appCommonSet
+	 * @param workType
+	 * @return
+	 */
+	private WorkTypeKAF011 getWorkTypeFor(String companyID, String employmentCode, String wkTypeCD,
 			AppCommonSettingOutput appCommonSet, BreakOutType workType) {
-
+		WorkTypeKAF011 result = new WorkTypeKAF011();
 		List<WorkType> unfilteredWkTypes;
 		boolean isWorkTypeIsHoliday = workType.equals(BreakOutType.HOLIDAY);
 		if (isWorkTypeIsHoliday) {
@@ -624,11 +662,12 @@ public class HolidayShipmentScreenAFinder {
 				unfilteredWkTypes, appCommonSet);
 
 		boolean isWkTypeCDNotNullOrEmpty = !StringUtils.isEmpty(wkTypeCD);
-
 		if (isWkTypeCDNotNullOrEmpty) {
 			// アルゴリズム「申請済み勤務種類の存在判定と取得」を実行する
-			appliedWorkType(companyID, outputWkTypes, wkTypeCD);
-
+			boolean masterUnreg = appliedWorkType(companyID, outputWkTypes, wkTypeCD);
+			if(masterUnreg){
+				result.setMasterUnreg(masterUnreg);
+			}
 		}
 		// sort by CD
 		List<WorkType> disOrderList = outputWkTypes.stream().filter(w -> w.getDispOrder() != null)
@@ -638,8 +677,8 @@ public class HolidayShipmentScreenAFinder {
 				.sorted(Comparator.comparing(WorkType::getWorkTypeCode)).collect(Collectors.toList());
 
 		disOrderList.addAll(wkTypeCDList);
-
-		return disOrderList;
+		result.setLstWorkType(disOrderList);
+		return result;
 
 	}
 
@@ -647,9 +686,14 @@ public class HolidayShipmentScreenAFinder {
 		boolean masterUnregistered = true;
 
 		Optional<WorkType> WkTypeOpt = wkTypeRepo.findByPK(companyID, wkTypeCD);
-		boolean isWkTypeNotExistedInList = WkTypeOpt.isPresent() && !wkTypes.contains((WkTypeOpt.get()));
+		boolean isInList = false;
+		if(WkTypeOpt.isPresent()){
+			  isInList = wkTypes.stream()
+					.filter(wk -> wk.getWorkTypeCode().equals(WkTypeOpt.get().getWorkTypeCode()))
+					.collect(Collectors.toList()).isEmpty();
+		}
 
-		if (isWkTypeNotExistedInList) {
+		if (isInList) {
 			wkTypes.add(WkTypeOpt.get());
 
 			masterUnregistered = false;

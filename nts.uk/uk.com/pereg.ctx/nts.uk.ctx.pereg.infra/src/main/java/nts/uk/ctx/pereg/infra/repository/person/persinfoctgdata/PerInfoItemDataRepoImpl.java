@@ -4,6 +4,8 @@
 package nts.uk.ctx.pereg.infra.repository.person.persinfoctgdata;
 
 import java.math.BigDecimal;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -14,14 +16,19 @@ import javax.ejb.Stateless;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.pereg.dom.person.personinfoctgdata.item.DataStateType;
 import nts.uk.ctx.pereg.dom.person.personinfoctgdata.item.PerInfoItemDataRepository;
 import nts.uk.ctx.pereg.dom.person.personinfoctgdata.item.PersonInfoItemData;
 import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtPerInfoCtg;
 import nts.uk.ctx.pereg.infra.entity.person.info.item.PpemtPerInfoItem;
 import nts.uk.ctx.pereg.infra.entity.person.personinfoctgdata.PpemtPerInfoItemData;
 import nts.uk.ctx.pereg.infra.entity.person.personinfoctgdata.PpemtPerInfoItemDataPK;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.ItemValueType;
 
 /**
@@ -41,6 +48,11 @@ public class PerInfoItemDataRepoImpl extends JpaRepository implements PerInfoIte
 			+ " INNER JOIN PpemtPerInfoItem itemInfo ON itemData.primaryKey.perInfoDefId = itemInfo.ppemtPerInfoItemPK.perInfoItemDefId"
 			+ " INNER JOIN PpemtPerInfoCtg infoCtg ON itemInfo.perInfoCtgId = infoCtg.ppemtPerInfoCtgPK.perInfoCtgId"
 			+ " where itemData.primaryKey.recordId = :recordId";
+	
+	private static final String GET_BY_RIDS = "SELECT itemData, itemInfo, infoCtg FROM PpemtPerInfoItemData itemData"
+			+ " INNER JOIN PpemtPerInfoItem itemInfo ON itemData.primaryKey.perInfoDefId = itemInfo.ppemtPerInfoItemPK.perInfoItemDefId"
+			+ " INNER JOIN PpemtPerInfoCtg infoCtg ON itemInfo.perInfoCtgId = infoCtg.ppemtPerInfoCtgPK.perInfoCtgId"
+			+ " where itemData.primaryKey.recordId IN :recordId";
 	
 	private static final String GET_BY_ITEM_DEF_ID_AND_RECORD_ID = "SELECT itemData, itemInfo, infoCtg FROM PpemtPerInfoItemData itemData"
 			+ " INNER JOIN PpemtPerInfoItem itemInfo ON itemData.primaryKey.perInfoDefId = itemInfo.ppemtPerInfoItemPK.perInfoItemDefId"
@@ -254,4 +266,154 @@ public class PerInfoItemDataRepoImpl extends JpaRepository implements PerInfoIte
 		return itemLst.size() > 0;
 	}
 
+	@Override
+	public List<PersonInfoItemData> getAllInfoItemByRecordId(List<String> recordIds) {
+		if (recordIds.isEmpty()) {
+			return new ArrayList<>();
+		}
+
+		List<Object[]> entities = new ArrayList<>();
+		CollectionUtil.split(recordIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			entities.addAll(this.queryProxy().query(GET_BY_RIDS, Object[].class)
+					.setParameter("recordId", subList).getList());
+		});
+		
+		return entities.stream()
+				.map(ent -> toDomainNew(ent))
+				.collect(Collectors.toList());
+	}
+	
+	@Override
+	public List<PersonInfoItemData> getAllInfoItemByRecordIdsAndItemIds(List<String> itemIds, List<String> recordIds) {
+		List<PersonInfoItemData> result = new ArrayList<>();
+		CollectionUtil.split(recordIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			String sql = "SELECT RECORD_ID, PER_INFO_DEF_ID FROM PPEMT_PER_INFO_ITEM_DATA WHERE PER_INFO_DEF_ID IN ("
+					+ NtsStatement.In.createParamsString(itemIds) + ")" + " AND RECORD_ID IN ( "
+					+ NtsStatement.In.createParamsString(subList) + ")";
+			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+				for (int i = 0 ; i < itemIds.size(); i++) {
+					stmt.setString( 1 + i, itemIds.get(i));
+				}
+				for (int i = 0 ; i < subList.size(); i++) {
+					stmt.setString( subList.size() + 1 + i, subList.get(i));
+				}
+
+				new NtsResultSet(stmt.executeQuery()).forEach(rec -> {
+					PersonInfoItemData perItemData = new PersonInfoItemData();
+					perItemData.setRecordId(rec.getString("RECORD_ID"));
+					perItemData.setPerInfoItemDefId(rec.getString("PER_INFO_DEF_ID"));
+					result.add(perItemData);
+				});
+				
+			}catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+			
+		});
+		return result;
+	}
+
+	@Override
+	public void addAll(List<PersonInfoItemData> domains) {
+		String INS_SQL = "INSERT INTO PPEMT_PER_INFO_ITEM_DATA ( INS_DATE , INS_CCD , INS_SCD , INS_PG , "
+				+ "  UPD_DATE ,  UPD_CCD,  UPD_SCD , UPD_PG ,"
+				+ "  RECORD_ID, PER_INFO_DEF_ID, SAVE_DATA_ATR, STRING_VAL , INT_VAL , DATE_VAL) VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
+				+ "  UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL, RECORD_ID_VAL, PER_INFO_DEF_ID_VAL, SAVE_DATA_ATR_VAL, STRING_VAL_VAL, INT_VAL_VAL, DATE_VAL_VAL)";
+    	GeneralDateTime insertTime = GeneralDateTime.now();
+    	String insCcd = AppContexts.user().companyCode();
+    	String insScd = AppContexts.user().employeeCode();
+    	String insPg = AppContexts.programId();
+		String updCcd = insCcd;
+		String updScd = insScd;
+		String updPg =  insPg;
+		StringBuilder sb = new StringBuilder();
+		domains.stream().forEach(c ->{
+			String sql = INS_SQL;
+			sql = sql.replace("INS_DATE_VAL", "'" + insertTime +"'");
+			sql = sql.replace("INS_CCD_VAL", "'" + insCcd +"'");
+			sql = sql.replace("INS_SCD_VAL", "'" + insScd +"'");
+			sql = sql.replace("INS_PG_VAL", "'" + insPg +"'");
+			
+			sql = sql.replace("UPD_DATE_VAL", "'" + insertTime +"'");
+			sql = sql.replace("UPD_CCD_VAL", "'" + updCcd +"'");
+			sql = sql.replace("UPD_SCD_VAL", "'" + updScd +"'");
+			sql = sql.replace("UPD_PG_VAL", "'" + updPg +"'");
+			
+			sql = sql.replace("RECORD_ID_VAL", "'" + c.getRecordId() +"'");
+			sql = sql.replace("PER_INFO_DEF_ID_VAL", "'" + c.getPerInfoItemDefId() +"'");
+			
+			sql = sql.replace("SAVE_DATA_ATR_VAL", ""+c.getDataState().getDataStateType().value +"");
+			
+			if(c.getDataState().getDataStateType() == DataStateType.String) {
+				sql = sql.replace("STRING_VAL_VAL", c.getDataState().getStringValue() == null ? "null": "'" + c.getDataState().getStringValue() +"'");
+			}else {
+				sql = sql.replace("STRING_VAL_VAL", "null");
+			}
+			
+			if(c.getDataState().getDataStateType() == DataStateType.Numeric) {
+				sql = sql.replace("INT_VAL_VAL",  c.getDataState().getNumberValue() == null? "null": "" + c.getDataState().getNumberValue() +"");
+			}else {
+				sql = sql.replace("INT_VAL_VAL",  "null");
+			}
+			
+			if(c.getDataState().getDataStateType() == DataStateType.Date) {
+				sql = sql.replace("DATE_VAL_VAL", c.getDataState().getDateValue() == null? "null": "'" + c.getDataState().getDateValue() +"'");
+			}else {
+				sql = sql.replace("DATE_VAL_VAL", "null");
+			}
+			
+			sb.append(sql);
+		});
+		int  records = this.getEntityManager().createNativeQuery(sb.toString()).executeUpdate();
+		System.out.println(records);
+	}
+
+	@Override
+	public void updateAll(List<PersonInfoItemData> domains) {
+		String UP_SQL = "UPDATE PPEMT_PER_INFO_ITEM_DATA"
+				+ " SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL, UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
+				+ " RECORD_ID = RECORD_ID_VAL, PER_INFO_DEF_ID = PER_INFO_DEF_ID_VAL, SAVE_DATA_ATR = SAVE_DATA_ATR_VAL,"
+				+ " STRING_VAL = STRING_VAL_VAL, INT_VAL = INT_VAL_VAL, DATE_VAL = DATE_VAL_VAL "
+				+ " WHERE  RECORD_ID = RECORD_ID_VAL AND  PER_INFO_DEF_ID = PER_INFO_DEF_ID_VAL; ";
+    	GeneralDateTime insertTime = GeneralDateTime.now();
+		String updCcd = AppContexts.user().companyCode();
+		String updScd = AppContexts.user().employeeCode();
+		String updPg =  AppContexts.programId();
+		StringBuilder sb = new StringBuilder();
+		domains.stream().forEach(c ->{
+			String sql = UP_SQL;
+			
+			sql = sql.replace("UPD_DATE_VAL", "'" + insertTime +"'");
+			sql = sql.replace("UPD_CCD_VAL", "'" + updCcd +"'");
+			sql = sql.replace("UPD_SCD_VAL", "'" + updScd +"'");
+			sql = sql.replace("UPD_PG_VAL", "'" + updPg +"'");
+			
+			sql = sql.replace("RECORD_ID_VAL", "'" + c.getRecordId() +"'");
+			sql = sql.replace("PER_INFO_DEF_ID_VAL", "'" + c.getPerInfoItemDefId()+"'");
+			sql = sql.replace("SAVE_DATA_ATR_VAL", "" + c.getDataState().getDataStateType().value +"");
+			
+			if(c.getDataState().getDataStateType() == DataStateType.String) {
+				sql = sql.replace("STRING_VAL_VAL", c.getDataState().getStringValue() == null ? "null": "'" + c.getDataState().getStringValue() +"'");
+			}else {
+				sql = sql.replace("STRING_VAL_VAL", "null");
+			}
+			
+			if(c.getDataState().getDataStateType() == DataStateType.Numeric) {
+				sql = sql.replace("INT_VAL_VAL",  c.getDataState().getNumberValue() == null? "null": "" + c.getDataState().getNumberValue() +"");
+			}else {
+				sql = sql.replace("INT_VAL_VAL",  "null");
+			}
+			
+			if(c.getDataState().getDataStateType() == DataStateType.Date) {
+				sql = sql.replace("DATE_VAL_VAL", c.getDataState().getDateValue() == null? "null": "'" + c.getDataState().getDateValue() +"'");
+			}else {
+				sql = sql.replace("DATE_VAL_VAL", "null");
+			}
+			
+			sb.append(sql);
+		});
+		int  records = this.getEntityManager().createNativeQuery(sb.toString()).executeUpdate();
+		System.out.println(records);
+		
+	}
 }

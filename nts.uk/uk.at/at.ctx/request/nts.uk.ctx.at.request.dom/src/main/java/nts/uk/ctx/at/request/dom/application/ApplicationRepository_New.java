@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface ApplicationRepository_New {
@@ -35,7 +34,7 @@ public interface ApplicationRepository_New {
 	 * @param prePostAtr: 事前事後区分
 	 * @return
 	 */
-	public List<Application_New>  getBeforeApplication(String companyId, String employeeID, GeneralDate appDate, GeneralDateTime inputDate, int appType, int prePostAtr);
+	public List<Application_New>  getBeforeApplication(String companyId, String employeeID, GeneralDate appDate, int appType, int prePostAtr);
 	
 	public void insert(Application_New application);
 	
@@ -54,13 +53,18 @@ public interface ApplicationRepository_New {
 	 */
 	public List<Application_New> getListAppBySID(String companyId, String sID, GeneralDate startDate, GeneralDate endDate);
 	/**
-	 * get List Application By Reflect
+	 * @author hoatt
+	 * get List Application
+	 * Phuc vu CMM045
 	 * @param companyId
 	 * @param startDate
 	 * @param endDate
 	 * @return
 	 */
-	public List<Application_New> getListAppByReflect(String companyId, GeneralDate startDate, GeneralDate endDate);
+	public List<Application_New> getListAppModeApprCMM045(String companyId, DatePeriod period, List<String> lstAppId,
+			boolean unapprovalStatus, boolean approvalStatus, boolean denialStatus, 
+			boolean agentApprovalStatus, boolean remandStatus, boolean cancelStatus, List<Integer> lstType);
+
 	/**
 	 * get List Application Pre
 	 * @param companyId
@@ -113,7 +117,7 @@ public interface ApplicationRepository_New {
 	 * @param eDate
 	 * @return
 	 */
-	public List<Application_New> getByListApplicant(String companyId, List<String> lstSID, GeneralDate sDate, GeneralDate eDate);
+	public List<Application_New> getByListApplicant(String companyId, List<String> lstSID, GeneralDate sDate, GeneralDate eDate, List<Integer> lstType);
 	/**
 	 * getListAppByType
 	 * sort：申請日（ASC）、入力日（DESC）

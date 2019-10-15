@@ -5,6 +5,7 @@
 package nts.uk.ctx.sys.auth.pubimp.role;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.stream.Collectors;
@@ -27,6 +28,7 @@ import nts.uk.ctx.sys.auth.pub.role.RoleExportRepo;
 import nts.uk.ctx.sys.auth.pub.role.RoleWhetherLoginPubExport;
 import nts.uk.ctx.sys.auth.pub.role.WorkplaceIdExport;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.context.loginuser.role.LoginUserRoles;
 
 /**
  * The Class RoleExportRepoImpl.
@@ -158,6 +160,18 @@ public class RoleExportRepoImpl implements RoleExportRepo {
 				data.isPersonalInformation());
 		return exData;
 	}
+	
+	@Override
+	public RoleWhetherLoginPubExport getWhetherLoginerCharge(LoginUserRoles roles) {
+		RoleWhetherLoginDto data = app.getWhetherLoginerCharge(roles);
+		RoleWhetherLoginPubExport exData = new RoleWhetherLoginPubExport(
+				data.isEmployeeCharge(),
+				data.isSalaryProfessional(),
+				data.isHumanResOfficer(),
+				data.isOfficeHelperPersonne(),
+				data.isPersonalInformation());
+		return exData;
+	}
 
 	@Override
 	public OperableSystemExport getOperableSystem() {
@@ -242,6 +256,12 @@ public class RoleExportRepoImpl implements RoleExportRepo {
 				data.isOfficeHelperPersonne(),
 				data.isPersonalInformation());
 		return exData;
+	}
+	
+	@Override
+	public Map<String, String> getNameLstByRoleIds(String cid, List<String> roleIds) {
+		Map<String, String> result = this.roleRepo.findRoleIdAndNameByListRoleId(cid, roleIds.stream().distinct().collect(Collectors.toList()));
+		return result;
 	}
 
 }

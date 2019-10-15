@@ -1,6 +1,9 @@
 package nts.uk.ctx.at.shared.infra.repository.remainingnumber;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -8,10 +11,16 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import lombok.SneakyThrows;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnLeaGrantRemDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveConditionInfo;
@@ -19,7 +28,10 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremaini
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveNumberInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.annlea.KRcmtAnnLeaRemain;
+
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
+
 
 @Stateless
 public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGrantRemDataRepository {
@@ -65,6 +77,7 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 	}
 
 	@Override
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<AnnualLeaveGrantRemainingData> findNotExp(String employeeId) {
 		List<KRcmtAnnLeaRemain> entities = this.queryProxy().query(QUERY_WITH_EMP_ID_NOT_EXP, KRcmtAnnLeaRemain.class)
 				.setParameter("employeeId", employeeId).getList();
@@ -192,6 +205,64 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 				.setParameter("grantDate", grantDate).getList(e -> toDomain(e));
 	}
 
+	@Override
+	public Map<String, List<AnnualLeaveGrantRemainingData>> checkConditionUniqueForAdd(String cid, Map<String, GeneralDate> emp) {
+		List<AnnualLeaveGrantRemainingData> remainDataLst = new ArrayList<>();
+		List<String> sids = new ArrayList<>(emp.keySet());
+		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			String sql = "SELECT * FROM KRCMT_ANNLEA_REMAIN WHERE CID = ? AND SID IN (" + NtsStatement.In.createParamsString(subList) + ")";
+			
+			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+				stmt.setString( 1, cid);
+				for (int i = 0; i < subList.size(); i++) {
+					stmt.setString( i + 1, subList.get(i));
+				}
+				
+				List<AnnualLeaveGrantRemainingData> annualLeavelst = new NtsResultSet(stmt.executeQuery()).getList(r -> {
+					KRcmtAnnLeaRemain entity= new KRcmtAnnLeaRemain();
+					entity.annLeavID = r.getString("ANNLEAV_ID");
+					entity.cid = r.getString("CID");
+					entity.sid = r.getString("SID");
+					entity.grantDate = r.getGeneralDate("GRANT_DATE");
+					entity.deadline = r.getGeneralDate("DEADLINE");
+					entity.expStatus = r.getInt("EXP_STATUS");
+					entity.registerType = r.getInt("REGISTER_TYPE");
+					entity.grantDays = r.getDouble("GRANT_DAYS");
+					entity.grantMinutes = r.getInt("GRANT_MINUTES");
+					
+					entity.usedDays = r.getDouble("USED_DAYS");
+					entity.usedMinutes = r.getInt("USED_MINUTES");
+					entity.stowageDays = r.getDouble("STOWAGE_DAYS");
+					entity.remainingDays = r.getInt("REMAINING_DAYS");
+					entity.remaningMinutes = r.getInt("REMAINING_MINUTES");
+					entity.usedPercent = r.getDouble("USED_PERCENT");
+					
+					entity.perscribedDays = r.getDouble("PRESCRIBED_DAYS");
+					entity.deductedDays = r.getDouble("DEDUCTED_DAYS");
+					entity.workingDays = r.getDouble("WORKING_DAYS");
+					return toDomain(entity);
+				});
+				remainDataLst.addAll(annualLeavelst);
+				
+			}catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+		});
+		
+		Map<String, List<AnnualLeaveGrantRemainingData>> remainDataMap = remainDataLst.stream().collect(Collectors.groupingBy(c -> c.getEmployeeId()));
+		Map<String, List<AnnualLeaveGrantRemainingData>> result = new HashMap<>();
+		
+		emp.entrySet().stream().forEach(c ->{
+			List<AnnualLeaveGrantRemainingData> remainDataBySids = remainDataMap.get(c.getKey());
+			List<AnnualLeaveGrantRemainingData> remainDataByGrantDate = remainDataBySids.stream().filter(item -> item.getGrantDate().equals(c.getValue())).collect(Collectors.toList());
+			if(!remainDataByGrantDate.isEmpty()) {
+				result.put(c.getKey(), remainDataByGrantDate);
+			}
+		});
+		
+		return result;
+	}
+	
 
 	@Override
 	public List<AnnualLeaveGrantRemainingData> checkConditionUniqueForUpdate(String employeeId, String annLeavID,
@@ -232,6 +303,129 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 				.setParameter("endDate", endDate)
 				.getList();
 		return entities.stream().map(ent -> toDomain(ent)).collect(Collectors.toList());
+	}
+
+	@Override
+	@SneakyThrows
+	public List<AnnualLeaveGrantRemainingData> findByCidAndSids(String cid, List<String> sids) {
+		List<AnnualLeaveGrantRemainingData> result = new ArrayList<>();
+		
+		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			String sql = "SELECT * FROM KRCMT_ANNLEA_REMAIN WHERE CID = ? AND SID IN (" + NtsStatement.In.createParamsString(subList) + ")"
+					+ " AND EXP_STATUS = 1  ORDER BY GRANT_DATE  DESC";
+			
+			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+				stmt.setString( 1, cid);
+				for (int i = 0; i < subList.size(); i++) {
+					stmt.setString( i + 2, subList.get(i));
+				}
+				
+				List<AnnualLeaveGrantRemainingData> annualLeavelst = new NtsResultSet(stmt.executeQuery()).getList(r -> {
+					KRcmtAnnLeaRemain entity= new KRcmtAnnLeaRemain();
+					entity.annLeavID = r.getString("ANNLEAV_ID");
+					entity.cid = r.getString("CID");
+					entity.sid = r.getString("SID");
+					entity.grantDate = r.getGeneralDate("GRANT_DATE");
+					entity.deadline = r.getGeneralDate("DEADLINE");
+					entity.expStatus = r.getInt("EXP_STATUS");
+					entity.registerType = r.getInt("REGISTER_TYPE");
+					entity.grantDays = r.getDouble("GRANT_DAYS");
+					entity.grantMinutes = r.getInt("GRANT_MINUTES");
+					
+					entity.usedDays = r.getDouble("USED_DAYS");
+					entity.usedMinutes = r.getInt("USED_MINUTES");
+					entity.stowageDays = r.getDouble("STOWAGE_DAYS");
+					entity.remainingDays = r.getDouble("REMAINING_DAYS");
+					entity.remaningMinutes = r.getInt("REMAINING_MINUTES");
+					entity.usedPercent = r.getDouble("USED_PERCENT");
+					
+					entity.perscribedDays = r.getDouble("PRESCRIBED_DAYS");
+					entity.deductedDays = r.getDouble("DEDUCTED_DAYS");
+					entity.workingDays = r.getDouble("WORKING_DAYS");
+					return toDomain(entity);
+				});
+				result.addAll(annualLeavelst);
+				
+			}catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+		});
+		
+		return result;
+	}
+
+	@Override
+	public void addAll(List<AnnualLeaveGrantRemainingData> domains) {
+		String INS_SQL = "INSERT INTO KRCMT_CHILD_CARE_HD_DATA (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
+				+ " UPD_DATE , UPD_CCD , UPD_SCD , UPD_PG,"
+				+ " ANNLEAV_ID, CID, SID, GRANT_DATE, DEADLINE, EXP_STATUS, REGISTER_TYPE, GRANT_DAYS, GRANT_MINUTES, USED_DAYS, USED_MINUTES, STOWAGE_DAYS, REMAINING_DAYS, REMAINING_MINUTES, USED_PERCENT, PRESCRIBED_DAYS, DEDUCTED_DAYS, WORKING_DAYS)"
+				+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
+				+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL,"
+				+ " ANNLEAV_ID_VAL, CID_VAL, SID_VAL, GRANT_DATE_VAL, DEADLINE_VAL, EXP_STATUS_VAL, REGISTER_TYPE_VAL, GRANT_DAYS_VAL, GRANT_MINUTES_VAL, USED_DAYS_VAL, USED_MINUTES_VAL, STOWAGE_DAYS_VAL, REMAINING_DAYS_VAL, REMAINING_MINUTES_VAL, USED_PERCENT_VAL, PRESCRIBED_DAYS_VAL, DEDUCTED_DAYS_VAL, WORKING_DAYS_VAL);";
+		String insCcd = AppContexts.user().companyCode();
+		String insScd = AppContexts.user().employeeCode();
+		String insPg = AppContexts.programId();
+		
+		String updCcd = insCcd;
+		String updScd = insScd;
+		String updPg = insPg;
+		StringBuilder sb = new StringBuilder();
+		domains.stream().forEach(c -> {
+			String sql = INS_SQL;
+			sql = sql.replace("INS_DATE_VAL", "'" + GeneralDateTime.now() + "'");
+			sql = sql.replace("INS_CCD_VAL", "'" + insCcd + "'");
+			sql = sql.replace("INS_SCD_VAL", "'" + insScd + "'");
+			sql = sql.replace("INS_PG_VAL", "'" + insPg + "'");
+
+			sql = sql.replace("UPD_DATE_VAL", "'" + GeneralDateTime.now() + "'");
+			sql = sql.replace("UPD_CCD_VAL", "'" + updCcd + "'");
+			sql = sql.replace("UPD_SCD_VAL", "'" + updScd + "'");
+			sql = sql.replace("UPD_PG_VAL", "'" + updPg + "'");
+
+			sql = sql.replace("ANNLEAV_ID", "'" +  c.getAnnLeavID() + "'");
+			sql = sql.replace("CID_VAL", "'" + c.getCid() + "'");
+			sql = sql.replace("SID_VAL", "'" + c.getEmployeeId()+ "'");
+			
+			sql = sql.replace("GRANT_DATE_VAL", "'" +  c.getGrantDate() + "'");
+			sql = sql.replace("DEADLINE_VAL", "'" + c.getDeadline() + "'");
+			sql = sql.replace("EXP_STATUS_VAL", "" + c.getExpirationStatus().value+ "");
+
+			sql = sql.replace("REGISTER_TYPE_VAL", "" +  c.getRegisterType().value + "");
+			sql = sql.replace("GRANT_DAYS_VAL", "'" + c.getDeadline() + "'");
+			
+			AnnualLeaveNumberInfo details = c.getDetails();
+			// grant data
+			sql = sql.replace("GRANT_MINUTES_VAL", "" + details.getGrantNumber().getDays().v()+"");
+			sql = sql.replace("GRANT_MINUTES_VAL", "" + details.getGrantNumber().getDays().v()+"");
+			// used data
+			sql = sql.replace("USED_DAYS", "" + details.getUsedNumber().getDays().v()+"");
+			sql = sql.replace("USED_MINUTES", details.getUsedNumber().getMinutes().isPresent()
+					? ""+ details.getUsedNumber().getMinutes().get().v() + "" : "null");
+			sql = sql.replace("STOWAGE_DAYS", details.getUsedNumber().getStowageDays().isPresent()
+					? "" + details.getUsedNumber().getStowageDays().get().v() + "" : "null");
+			// remain data
+			sql = sql.replace("REMAINING_DAYS", "" + details.getRemainingNumber().getDays().v()+"");
+			sql = sql.replace("REMAINING_MINUTES", details.getRemainingNumber().getMinutes().isPresent()
+					? ""+ details.getRemainingNumber().getMinutes().get().v() + "" : "null");
+			sql = sql.replace("USED_PERCENT", "" + details.getUsedPercent().v().doubleValue() + "" );
+			
+			if (c.getAnnualLeaveConditionInfo().isPresent()) {
+				AnnualLeaveConditionInfo conditionInfo = c.getAnnualLeaveConditionInfo().get();
+				sql = sql.replace("PRESCRIBED_DAYS", "" + conditionInfo.getPrescribedDays().v()+ "");
+				sql = sql.replace("DEDUCTED_DAYS", "" + conditionInfo.getDeductedDays().v() + "");
+				sql = sql.replace("WORKING_DAYS", "" + conditionInfo.getWorkingDays().v()+ "");
+			} else {
+				sql = sql.replace("PRESCRIBED_DAYS", "null");
+				sql = sql.replace("DEDUCTED_DAYS", "null");
+				sql = sql.replace("WORKING_DAYS", "null");
+			}
+			
+			sb.append(sql);
+		});
+
+		int records = this.getEntityManager().createNativeQuery(sb.toString()).executeUpdate();
+		System.out.println(records);
+		
 	}
 
 	@Override

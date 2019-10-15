@@ -32,10 +32,10 @@ import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeGoOutTimes;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.calcset.CalcMethodOfNoWorkingDay;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayMidnightWork;
+import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTime;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.latetime.IntervalExemptionTime;
 import nts.uk.ctx.at.record.dom.daily.midnight.WithinStatutoryMidNightTime;
-import nts.uk.ctx.at.record.dom.daily.overtimework.FlexTime;
 import nts.uk.ctx.at.record.dom.daily.overtimework.OverTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.vacationusetime.AbsenceOfDaily;
 import nts.uk.ctx.at.record.dom.daily.vacationusetime.AnnualOfDaily;
@@ -49,7 +49,6 @@ import nts.uk.ctx.at.record.dom.daily.withinworktime.WithinStatutoryTimeOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.AttendanceItemDictionaryForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CheckExcessAtr;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.ConditionAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.FlexWithinWorkTimeSheet;
 //import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
@@ -77,17 +76,12 @@ import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.shared.dom.PremiumAtr;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkFlexAdditionSet;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkRegularAdditionSet;
 //import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionSet;
 //import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkDeformedLaborAdditionSet;
 //import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkFlexAdditionSet;
 //import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkRegularAdditionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.DeductLeaveEarly;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.HolidayCalcMethodSet;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.PremiumHolidayCalcMethod;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.WorkTimeHolidayCalcMethod;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.ENUM.CalcurationByActualTimeAtr;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
@@ -101,12 +95,15 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.HolidayAdd
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.StatutoryDivision;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
+import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 //import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 //import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 //import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 //import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.DailyCalculationPersonalInformation;
 //import nts.uk.ctx.at.shared.dom.workrule.waytowork.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.FixedRestCalculateMethod;
 //import nts.uk.ctx.at.shared.dom.worktime.common.HolidayCalculation;
 //import nts.uk.ctx.at.shared.dom.worktime.common.LateEarlyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
@@ -118,7 +115,9 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 //import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
 //import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexCalcSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
+import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -217,6 +216,13 @@ public class TotalWorkingTime {
 	
 	
 	public static TotalWorkingTime createAllZEROInstance() {
+		List<HolidayWorkFrameTime> lstHolidayWorkFrameTime = new ArrayList<>();
+		for(int i = 1; i<=10; i++) {
+			TimeDivergenceWithCalculation holidayWorkTime = TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(0), new AttendanceTime(0));			
+			HolidayWorkFrameTime frameTime = new HolidayWorkFrameTime(new HolidayWorkFrameNo(i),
+					Finally.of(holidayWorkTime), Finally.of(holidayWorkTime), Finally.of(new AttendanceTime(0)));
+			lstHolidayWorkFrameTime.add(frameTime);
+		}
 		return new TotalWorkingTime(new AttendanceTime(0),
 									new AttendanceTime(0),
 									new AttendanceTime(0),
@@ -233,7 +239,7 @@ public class TotalWorkingTime {
 																			 						 new nts.uk.ctx.at.record.dom.daily.overtimework.FlexTime(TimeDivergenceWithCalculationMinusExist.createTimeWithCalculation(new AttendanceTimeOfExistMinus(0), new AttendanceTimeOfExistMinus(0)),new AttendanceTime(0)), 
 																			 						 new AttendanceTime(0))),
 																	 Optional.of(new HolidayWorkTimeOfDaily(Collections.emptyList(), 
-																			 								Collections.emptyList(), 
+																			 								lstHolidayWorkFrameTime, 
 																			 								Finally.of(new HolidayMidnightWork(Collections.emptyList())), 
 																			 								new AttendanceTime(0)))),
 									Arrays.asList(new LateTimeOfDaily(TimeWithCalculation.sameTime(new AttendanceTime(0)), 
@@ -252,7 +258,7 @@ public class TotalWorkingTime {
 																  new AttendanceTime(0),
 																  Collections.emptyList()),
 									Collections.emptyList(),
-									new RaiseSalaryTimeOfDailyPerfor(Collections.emptyList(),Collections.emptyList()),
+									new RaiseSalaryTimeOfDailyPerfor(new ArrayList<>(),new ArrayList<>()),
 									new WorkTimes(0),
 									new TemporaryTimeOfDaily(Collections.emptyList()),
 									new ShortWorkTimeOfDaily(new WorkTimes(0),
@@ -270,6 +276,7 @@ public class TotalWorkingTime {
 	
 	/**
 	 * 日別実績の総労働時間の計算
+	 * @param recordWorkTimeCode 
 	 * @param breakTimeCount 
 	 * @param integrationOfDaily 
 	 * @param flexSetting 
@@ -284,19 +291,8 @@ public class TotalWorkingTime {
 			   List<CompensatoryOccurrenceSetting> eachCompanyTimeSet,
 			   WorkingConditionItem conditionItem,
 			   Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,
-			   DeductLeaveEarly leaveLateSet
+			   DeductLeaveEarly leaveLateSet, Optional<WorkTimeCode> recordWorkTimeCode
 			   ) {
-		
-
-		Optional<WorkTimeCode> workTimeCode = Optional.empty();
-//		Optional<FlexCalcSetting> flexCalcSet = Optional.empty();
-		//日別実績の所定外時間
-		if(recordClass.getCalculatable() && recordClass.getCalculationRangeOfOneDay().getWorkInformationOfDaily().getRecordInfo().getWorkTimeCode() != null) {
-			workTimeCode = recordClass.getCalculationRangeOfOneDay().getWorkInformationOfDaily().getRecordInfo().getWorkTimeCode().v() == null
-																		?Optional.empty()
-																		:Optional.of(new WorkTimeCode(recordClass.getCalculationRangeOfOneDay().getWorkInformationOfDaily().getRecordInfo().getWorkTimeCode().v().toString()));
-		}
-		
 		//staticを外すまでのフレ事前・事前所定外深夜取り出し処理
 		AttendanceTime flexPreAppTime = new AttendanceTime(0);
 		AttendanceTime beforeApplicationTime = new AttendanceTime(0);
@@ -339,7 +335,7 @@ public class TotalWorkingTime {
 				   																      CalcMethodOfNoWorkingDay.isCalculateFlexTime, 
 				   																      flexCalcMethod, 
 				   																      workTimeDailyAtr, 
-				   																      workTimeCode,
+				   																      recordWorkTimeCode,
 				   																      flexPreAppTime, 
 				   																      conditionItem,
 				   																      predetermineTimeSetByPersonInfo);
@@ -350,7 +346,7 @@ public class TotalWorkingTime {
 																									workType,flexCalcMethod,
 																									vacationClass,
 																									StatutoryDivision.Nomal,
-																									workTimeCode,
+																									recordWorkTimeCode,
 																									workTimeDailyAtr,
 																									eachCompanyTimeSet,
 																									flexPreAppTime,
@@ -405,7 +401,7 @@ public class TotalWorkingTime {
 																							 recordClass.getCalculationRangeOfOneDay().getTimeVacationAdditionRemainingTime().get(),
 																							 StatutoryDivision.Nomal,workType,
 																							 recordClass.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc(),
-																							 workTimeCode,
+																							 recordWorkTimeCode,
 																							 recordClass.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLate(),  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 																							 recordClass.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLeaveEarly(),  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 																							 recordClass.getPersonalInfo().getWorkingSystem(),
@@ -421,7 +417,8 @@ public class TotalWorkingTime {
 																							 predetermineTimeSetByPersonInfo,
 																							 Collections.emptyList(),
 																							 Collections.emptyList(),
-																							 Optional.of(leaveLateSet)
+																							 Optional.of(leaveLateSet),
+																							 NotUseAtr.USE
 																							 );
 			
 			//控除用コアタイム無しの遅刻時間計算
@@ -432,7 +429,7 @@ public class TotalWorkingTime {
 					 																				  recordClass.getCalculationRangeOfOneDay().getTimeVacationAdditionRemainingTime().get(),
 					 																				  StatutoryDivision.Nomal,workType,
 					 																				  recordClass.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc(),
-					 																				  workTimeCode,
+					 																				  recordWorkTimeCode,
 					 																				  recordClass.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLate(),  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 					 																				  recordClass.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLeaveEarly(),  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 					 																				  recordClass.getPersonalInfo().getWorkingSystem(),
@@ -448,7 +445,8 @@ public class TotalWorkingTime {
 					 																				  predetermineTimeSetByPersonInfo,
 					 																				  Collections.emptyList(),
 					 																				  Collections.emptyList(),
-					 																				  Optional.of(leaveLateSet)
+					 																				  Optional.of(leaveLateSet),
+					 																				  NotUseAtr.USE
 					 																				  );					
 			lateTime.add(new LateTimeOfDaily(calcedLateTime,
 											 calcedLateDeductionTime,
@@ -472,7 +470,7 @@ public class TotalWorkingTime {
 		
 		//日別実績の休暇
 		val vacationOfDaily = VacationClass.calcUseRestTime(workType,
-															workTimeCode,
+															recordWorkTimeCode,
 															conditionItem,
 															outingList,
 															lateTime,
@@ -507,7 +505,15 @@ public class TotalWorkingTime {
 				   			+ tempTime.totalTemporaryFrameTime()
 				   			+ flexTime
 				   			/*変形基準内残業の時間もここにタス*/);
-		
+		//実働時間の計算
+		boolean isOOtsukaIWMode = decisionIWOOtsukaMode(workType,recordWorkTimeCode,recordClass);
+		//大塚専用IW専用処理
+		if(isOOtsukaIWMode) {
+			if(recordClass.getPredSetForOOtsuka().isPresent()) {
+				withinStatutoryTimeOfDaily.setActualWorkTime(recordClass.getPredSetForOOtsuka().get().getAdditionSet().getPredTime().getOneDay());
+			}
+			 
+		}
 		TotalWorkingTime returnTotalWorkingTimereturn = new TotalWorkingTime(totalWorkTime,
 																				totalCalcTime,
 																				actualTime,
@@ -529,7 +535,7 @@ public class TotalWorkingTime {
 																				workType,
 																				conditionItem,
 																				predetermineTimeSetByPersonInfo,
-																				workTimeCode,
+																				recordWorkTimeCode,
 																				lateTime,
 																				leaveEarlyTime,
 																				outingList));
@@ -815,14 +821,28 @@ public class TotalWorkingTime {
 	 * @param fixRestTimeZoneSet 
 	 * @param fixWoSetting 
 	 * @param attendanceLeave 
+	 * @param workType 
+	 * @param attendanceTime 
 	 * @return
 	 */
-	public TotalWorkingTime reCalcLateLeave(Optional<WorkTimezoneCommonSet> workTimeZone, Optional<FixRestTimezoneSet> fixRestTimeZoneSet, List<EmTimeZoneSet> fixWoSetting, Optional<TimeLeavingOfDailyPerformance> attendanceLeave) {
-		TotalWorkingTime result = this;
+	public TotalWorkingTime reCalcLateLeave(Optional<WorkTimezoneCommonSet> workTimeZone, Optional<FixRestTimezoneSet> fixRestTimeZoneSet, List<EmTimeZoneSet> fixWoSetting, Optional<TimeLeavingOfDailyPerformance> attendanceLeave, AttendanceTime actualPredTime, WorkType workType) {
+		if(workType.getDailyWork().decisionNeedPredTime() != AttendanceHolidayAttr.FULL_TIME) {
+			offSetRestTime(workTimeZone,fixRestTimeZoneSet,fixWoSetting,attendanceLeave);	
+		}
+		else {
+			offSetUnUseBreakTime(workTimeZone, fixRestTimeZoneSet, fixWoSetting, attendanceLeave, actualPredTime);	
+		}
+		return this;
+	}
+	
+	/**
+	 * 大塚モード(欠勤控除)時の休暇加算時間との相殺処理
+	 */
+	private void offSetRestTime(Optional<WorkTimezoneCommonSet> workTimeZone, Optional<FixRestTimezoneSet> fixRestTimeZoneSet, List<EmTimeZoneSet> fixWoSetting, Optional<TimeLeavingOfDailyPerformance> attendanceLeave) {		
 		//休暇時に計算する設定かどうか判断
 		if(!workTimeZone.isPresent()
 		|| workTimeZone.get().getHolidayCalculation().getIsCalculate().isNotUse()) {
-			return result;
+			return ;
 		}
 
 		AttendanceTime unBreakTime = new AttendanceTime(0);
@@ -854,10 +874,100 @@ public class TotalWorkingTime {
 			//早退時間をクリア
 			this.leaveEarlyTimeOfDaily.get(0).rePlaceLeaveEarlyTime(TimeWithCalculation.sameTime(new AttendanceTime(0)));
 		}
-		
-		return result;
 	}
 	
+	/**
+	 * 大塚モード(欠勤控除)時の休憩未取得時間との相殺処理
+	 */
+	private void offSetUnUseBreakTime(Optional<WorkTimezoneCommonSet> workTimeZone, Optional<FixRestTimezoneSet> fixRestTimeZoneSet, List<EmTimeZoneSet> fixWoSetting, Optional<TimeLeavingOfDailyPerformance> attendanceLeave,
+									AttendanceTime actualPredTime) {
+		AttendanceTime unBreakTime = new AttendanceTime(0);
+		//休憩未取得を計算するためのチェック
+		if(fixRestTimeZoneSet.isPresent()
+		&& attendanceLeave != null
+		&& attendanceLeave.isPresent()) {
+			//休憩未取得時間の計算
+			unBreakTime = this.getBreakTimeOfDaily().calcUnUseBrekeTime(fixRestTimeZoneSet.get(), fixWoSetting, attendanceLeave.get());
+		}
+		
+		int withinBreakTime = 0;
+		//就業時間帯に設定されている休憩のループ
+		if(fixRestTimeZoneSet.isPresent()) {
+			for(DeductionTime breakTImeSheet : fixRestTimeZoneSet.get().getLstTimezone()) {
+				//就業時間帯に設定されている勤務時間帯のstream
+				withinBreakTime += fixWoSetting.stream().filter(tc -> tc.getTimezone().isOverlap(breakTImeSheet))
+													  .map(tt -> tt.getTimezone().getDuplicatedWith(breakTImeSheet.timeSpan()).get().lengthAsMinutes())
+													  .collect(Collectors.summingInt(ts -> ts));	
+			}			
+		}
+		//所定内休憩未取得時間
+		final val withinUnUseBreakTime = this.getWithinStatutoryTimeOfDaily().calcUnUseWithinBreakTime(unBreakTime, actualPredTime, new AttendanceTime(withinBreakTime));
+		if(withinUnUseBreakTime.greaterThan(0)) {
+			final AttendanceTime restWithinUnUseBreakTime = minusLateTime(withinUnUseBreakTime);
+			if(restWithinUnUseBreakTime.greaterThan(0)) {
+				minusEarlyLeaveTime(restWithinUnUseBreakTime);
+			}
+		}
+		
+	}
+	
+
+	/**
+	 * 大塚モード(欠勤控除)時の休憩未取得時間との相殺処理(遅刻時間Ver)
+	 * @return 残遅早相殺可能時間
+	 */
+	private AttendanceTime minusLateTime(AttendanceTime withinUnUseBreakTime) {
+		AttendanceTime restOffSetTime = withinUnUseBreakTime;
+		if(!this.lateTimeOfDaily.isEmpty()) {
+			//勤務NOの昇順でソート
+			this.lateTimeOfDaily.sort((c1, c2) -> c1.getWorkNo().compareTo(c2.getWorkNo()));
+			for(LateTimeOfDaily ltOfDaily:this.lateTimeOfDaily) {
+				val lateTime = ltOfDaily.getLateTime();
+				//残相殺可能時間が０になるパターン
+				if(lateTime.getTime().greaterThan(restOffSetTime.valueAsMinutes())) {
+					ltOfDaily.rePlaceLateTime(TimeWithCalculation.createTimeWithCalculation(lateTime.getTime().minusMinutes(restOffSetTime.valueAsMinutes()),
+																							lateTime.getCalcTime()));
+					restOffSetTime = new AttendanceTime(0);
+					break;
+				}
+				//残相殺可能時間が０より大きいパターン
+				else {
+					restOffSetTime = restOffSetTime.minusMinutes(lateTime.getTime().valueAsMinutes());
+					ltOfDaily.rePlaceLateTime(TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(0),
+																							lateTime.getCalcTime()));
+				}
+			}
+		}
+		return restOffSetTime;
+	}
+
+	/**
+	 * 大塚モード(欠勤控除)時の休憩未取得時間との相殺処理(早退時間Ver)
+	 */
+	private void minusEarlyLeaveTime(AttendanceTime restWithinUnUseBreakTime) {
+		AttendanceTime restOffSetTime = restWithinUnUseBreakTime;
+		if(!this.leaveEarlyTimeOfDaily.isEmpty()) {
+			//勤務NOの昇順でソート
+			this.leaveEarlyTimeOfDaily.sort((c1, c2) -> c1.getWorkNo().compareTo(c2.getWorkNo()));
+			for(LeaveEarlyTimeOfDaily leOfDaily:this.leaveEarlyTimeOfDaily) {
+				val leaveEarlyTime = leOfDaily.getLeaveEarlyTime();
+				//残相殺可能時間が０になるパターン
+				if(leaveEarlyTime.getTime().greaterThan(restOffSetTime.valueAsMinutes())) {
+					leOfDaily.rePlaceLeaveEarlyTime(TimeWithCalculation.createTimeWithCalculation(leaveEarlyTime.getTime().minusMinutes(restOffSetTime.valueAsMinutes()),
+																								  leaveEarlyTime.getCalcTime()));
+					restOffSetTime = new AttendanceTime(0);
+					break;
+				}
+				//残相殺可能時間が０より大きいパターン
+				else {
+					restOffSetTime = restOffSetTime.minusMinutes(leaveEarlyTime.getTime().valueAsMinutes());
+					leOfDaily.rePlaceLeaveEarlyTime(TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(0),
+																								  leaveEarlyTime.getCalcTime()));
+				}
+			}
+		}
+	}
+
 	/**
 	 * 遅刻早退の合計時間を取得
 	 * 大塚専用処理なので遅刻早退クラスに実装しない
@@ -988,7 +1098,8 @@ public class TotalWorkingTime {
 																														 predetermineTimeSetByPersonInfo,
 																														 recordClass.getCoreTimeSetting()
 																														 ,HolidayAdditionAtr.HolidayAddition.convertFromCalcByActualTimeToHolidayAdditionAtr(recordClass.getWorkRegularAdditionSet().getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation()),
-																														  new DeductLeaveEarly(1, 1)
+																														  new DeductLeaveEarly(1, 1),
+																														  NotUseAtr.USE
 																														 );
 			dailyvacationAddTime = workHour.getVacationAddTime().valueAsMinutes();
 		}
@@ -1027,28 +1138,28 @@ public class TotalWorkingTime {
 					calcFlexTime = AttendanceTimeOfExistMinus.ZERO;
 				//set flexTime And calcFlexTime
 
-				AttendanceTime flexPreAppTime = new AttendanceTime(0);
-				ChildCareAttribute careAtr = ChildCareAttribute.CHILD_CARE;
-				if(recordClass.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().isPresent()
-					&& recordClass.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily() != null
-					&& recordClass.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime() != null){
-						if(recordClass.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily() != null) {
-							if(recordClass.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().isPresent()
-								&& recordClass.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getFlexTime() != null) {
-									//事前フレックス
-									flexPreAppTime = recordClass.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getFlexTime().getBeforeApplicationTime();
-							}
-						}
-				}
-				
-				Optional<WorkTimeCode> workTimeCode = Optional.empty();
-				//日別実績の所定外時間
-				if(recordClass.getCalculatable() && recordClass.getCalculationRangeOfOneDay().getWorkInformationOfDaily().getRecordInfo().getWorkTimeCode() != null) {
-					workTimeCode = recordClass.getCalculationRangeOfOneDay().getWorkInformationOfDaily().getRecordInfo().getWorkTimeCode().v() == null
-																				?Optional.empty()
-																				:Optional.of(new WorkTimeCode(recordClass.getCalculationRangeOfOneDay().getWorkInformationOfDaily().getRecordInfo().getWorkTimeCode().v().toString()));
-				}
-				
+//				AttendanceTime flexPreAppTime = new AttendanceTime(0);
+////				ChildCareAttribute careAtr = ChildCareAttribute.CHILD_CARE;
+//				if(recordClass.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().isPresent()
+//					&& recordClass.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily() != null
+//					&& recordClass.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime() != null){
+//						if(recordClass.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily() != null) {
+//							if(recordClass.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().isPresent()
+//								&& recordClass.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getFlexTime() != null) {
+//									//事前フレックス
+//									flexPreAppTime = recordClass.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getFlexTime().getBeforeApplicationTime();
+//							}
+//						}
+//				}
+//				
+//				Optional<WorkTimeCode> workTimeCode = Optional.empty();
+//				//日別実績の所定外時間
+//				if(recordClass.getCalculatable() && recordClass.getCalculationRangeOfOneDay().getWorkInformationOfDaily().getRecordInfo().getWorkTimeCode() != null) {
+//					workTimeCode = recordClass.getCalculationRangeOfOneDay().getWorkInformationOfDaily().getRecordInfo().getWorkTimeCode().v() == null
+//																				?Optional.empty()
+//																				:Optional.of(new WorkTimeCode(recordClass.getCalculationRangeOfOneDay().getWorkInformationOfDaily().getRecordInfo().getWorkTimeCode().v().toString()));
+//				}
+//				
 //				WorkingConditionItem regularWorkCondition = conditionItem;//.changeWorkingSystemToRegular();
 //
 			
@@ -1148,6 +1259,47 @@ public class TotalWorkingTime {
 				break;
 		}
 		return this;
+	}
+	
+	//大塚専用IW判定処理
+	private static boolean decisionIWOOtsukaMode(WorkType workType, Optional<WorkTimeCode> workTimeCode,
+			ManageReGetClass recordReget) {
+		if(!workTimeCode.isPresent()) return false;
+		if(!(workTimeCode.get().v().equals("100") || workTimeCode.get().v().equals("101")))
+			return false;
+		if(workType.getWorkTypeCode().v().equals("100")) 
+			return false;
+		
+		switch(workType.getDailyWork().decisionNeedPredTime()) {
+		case AFTERNOON:
+			if(workType.getDailyWork().getAfternoon().isHolidayWork()) {
+				return false;
+			}
+			//出勤or振出であろうという推測
+			else {
+				return true;
+			}
+		case FULL_TIME:
+			if(workType.getDailyWork().getOneDay().isHolidayWork()) {
+				return false;
+			}
+			//出勤or振出であろうという推測
+			else {
+				return true;
+			}
+		case MORNING:
+			if(workType.getDailyWork().getMorning().isHolidayWork()) {
+				return false;
+			}
+			//出勤or振出であろうという推測
+			else {
+				return true;
+			}
+		case HOLIDAY:
+			return false;
+		default:
+			throw new RuntimeException("unkwon pred need workType in IW Decision");
+		}
 	}
 	
 }

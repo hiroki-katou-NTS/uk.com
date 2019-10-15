@@ -1,0 +1,46 @@
+table, td {
+	border: 1px solid #CCC;
+	border-collapse: collapse;
+}
+
+tbody td {
+	padding: 5px;
+	text-align: left;
+}
+
+thead td {
+	color: #000;
+	background-color: #CFF1A5;
+	padding: 15px 0px 15px 5px;
+	text-align: left;
+}
+
+#header-td-1 {
+	width: 188px;
+	font-weight: bold;
+}
+
+#header-td-2 {
+	width: 310px;
+	font-weight: bold;
+}
+
+#header-td-3 {
+	width: 10px;
+	background-color: #e9e9e9 !important;
+}
+
+#table {
+	padding: 20px 0 0 20px;
+	width: 525px
+}
+
+#table thead tr, #table tbody {
+	display: block;
+}
+
+#table tbody {
+	height: 295px;
+	overflow-y: scroll;
+	overflow-x: hidden;
+}

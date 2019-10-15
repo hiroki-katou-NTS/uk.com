@@ -3,7 +3,6 @@ package nts.uk.ctx.at.record.infra.repository.workrecord.identificationstatus;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -14,6 +13,7 @@ import javax.ejb.Stateless;
 
 import org.apache.logging.log4j.util.Strings;
 
+import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
@@ -98,6 +98,35 @@ public class JpaIdentificationRepository extends JpaRepository implements Identi
 		
 		return data;
 	}
+	
+	@Override
+	public List<Identification> findByListEmpDate(List<String> employeeIDs,GeneralDate dateRefer) {
+		List<Identification> data = new ArrayList<>();
+		CollectionUtil.split(employeeIDs, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			try (PreparedStatement statement = this.connection().prepareStatement(
+						"SELECT * from KRCDT_CONFIRMATION_DAY h"
+						+ " WHERE h.PROCESSING_YMD = ?"
+						+ " AND h.CID = ?"
+						+ " AND h.SID IN (" + subList.stream().map(s -> "?").collect(Collectors.joining(",")) + ")")) {
+				statement.setDate(1, Date.valueOf(dateRefer.localDate()));
+				statement.setString(2, AppContexts.user().companyId());
+				for (int i = 0; i < subList.size(); i++) {
+					statement.setString(i + 3, subList.get(i));
+				}
+				data.addAll(new NtsResultSet(statement.executeQuery()).getList(rec -> {
+					return new Identification(
+							rec.getString("CID"),
+							rec.getString("SID"),
+							rec.getGeneralDate("PROCESSING_YMD"),
+							rec.getGeneralDate("INDENTIFICATION_YMD"));
+				}));
+			}catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		});
+		
+		return data;
+	}
 
 	@Override
 	public Optional<Identification> findByCode(String employeeID, GeneralDate processingYmd) {
@@ -123,17 +152,15 @@ public class JpaIdentificationRepository extends JpaRepository implements Identi
 	}
 
 	@Override
+	@SneakyThrows
 	public void removeByEmployeeIdAndDate(String employeeId, GeneralDate processingYmd) {
 
 		Connection con = this.getEntityManager().unwrap(Connection.class);
 		String sqlQuery = "Delete From KRCDT_CONFIRMATION_DAY Where SID = " + "'" + employeeId + "'"
 				+ " and PROCESSING_YMD = " + "'" + processingYmd + "'";
-		try {
-			con.createStatement().executeUpdate(sqlQuery);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
 
+		con.createStatement().executeUpdate(sqlQuery);
+		
 		// this.getEntityManager().createQuery(REMOVE_BY_EMPLOYEEID_AND_DATE,
 		// KrcdtIdentificationStatus.class)
 		// .setParameter("employeeId", employeeId).setParameter("processingYmd",
@@ -167,4 +194,17 @@ public class JpaIdentificationRepository extends JpaRepository implements Identi
 		return entities.stream().map(c -> c.toDomain()).collect(Collectors.toList());
 	}
 
+	@Override
+	@SneakyThrows
+	public void removeByEmpListDate(String employeeId, List<GeneralDate> lstProcessingYmd) {
+		
+		PreparedStatement statement = this.connection().prepareStatement(
+				"Delete From KRCDT_CONFIRMATION_DAY" + " Where SID = ?" + " AND PROCESSING_YMD IN ("
+						+ lstProcessingYmd.stream().map(s -> "?").collect(Collectors.joining(",")) + ")");
+		statement.setString(1, employeeId);
+		for (int i = 0; i < lstProcessingYmd.size(); i++) {
+			statement.setDate(i + 2, Date.valueOf(lstProcessingYmd.get(i).localDate()));
+		}
+		statement.executeUpdate();
+	}
 }

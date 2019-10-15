@@ -30,6 +30,7 @@ import nts.uk.ctx.sys.portal.app.find.company.CompanyFinder;
 import nts.uk.ctx.sys.portal.app.find.company.ShortCompanyDto;
 import nts.uk.ctx.sys.portal.app.find.user.UserPortalFinder;
 import nts.uk.ctx.sys.portal.app.find.webmenu.EditMenuBarDto;
+import nts.uk.ctx.sys.portal.app.find.webmenu.MobileMenuDto;
 import nts.uk.ctx.sys.portal.app.find.webmenu.PersonTypeDto;
 import nts.uk.ctx.sys.portal.app.find.webmenu.ProgramNameDto;
 import nts.uk.ctx.sys.portal.app.find.webmenu.WebMenuDto;
@@ -197,6 +198,12 @@ public class WebMenuWebService extends WebService {
 	@Path("logout")
 	public void logout() {
 		sessionLowLayer.loggedOut();
+	}
+	
+	@POST
+	@Path("mobile/findByEmp")
+	public List<MobileMenuDto> mobileFindByEmp() {
+		return this.webMenuFinder.getMenuToDisplay();
 	}
 	
 }

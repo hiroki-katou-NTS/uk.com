@@ -1,15 +1,13 @@
 import { Vue } from '@app/provider';
-import { dom, browser } from '@app/utils';
-import { LanguageBar } from '@app/plugins';
+import { dom, browser, $ } from '@app/utils';
+import { LanguageBar } from '@app/plugins/i18n';
 import { component, Watch } from '@app/core/component';
 
 // tslint:disable-next-line: variable-name
-const _NavMenu = new Vue({
-    data: {
-        show: false,
-        items: [],
-        visible: true
-    }
+const _NavMenu = Vue.observable({
+    show: false,
+    items: [],
+    visible: true
 }), NavMenu = {
     get show() {
         return _NavMenu.show;
@@ -30,7 +28,7 @@ const _NavMenu = new Vue({
 };
 
 @component({
-    template: `<nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top" v-if="visible && items && items.length">
+    template: `<nav class="navbar navbar-expand-lg fixed-top" v-if="visible">
         <a v-on:click="" class="navbar-brand">{{pgName |i18n}}</a>
         <button class="navbar-toggler dropdown-toggle" v-on:click="show = !show"></button>
         <transition name="collapse-long" v-on:before-enter="beforeEnter" v-on:after-leave="afterLeave">
@@ -82,13 +80,31 @@ export class NavMenuBar extends Vue {
 
         if (!show) {
             self.$mask('hide');
+            let top = 0,
+                container = document.body.querySelector('.container-fluid') as HTMLElement;
 
-            dom.removeClass(document.body, 'show-menu-top');
+            if (container) {
+                top = Number((container.style.marginTop || '').replace('px', ''));
+                container.style.marginTop = '';
+            }
+
+            document.body.classList.remove('show-menu-top');
+
+            setTimeout(() => {
+                document.scrollingElement.scrollTop = Math.abs(top);
+            }, 0);
         } else {
             self.$mask('show')
                 .on(() => NavMenu.show = false);
 
+            let top = document.scrollingElement.scrollTop,
+                container = document.body.querySelector('.container-fluid') as HTMLElement;
+
             dom.addClass(document.body, 'show-menu-top');
+
+            if (!container.style.marginTop) {
+                container.style.marginTop = `-${top}px`;
+            }
         }
     }
 
@@ -114,11 +130,3 @@ export class NavMenuBar extends Vue {
 }
 
 export { NavMenu };
-
-NavMenu.items = [{
-    url: '/',
-    title: 'home'
-}, {
-    url: '/documents',
-    title: 'documents'
-}];

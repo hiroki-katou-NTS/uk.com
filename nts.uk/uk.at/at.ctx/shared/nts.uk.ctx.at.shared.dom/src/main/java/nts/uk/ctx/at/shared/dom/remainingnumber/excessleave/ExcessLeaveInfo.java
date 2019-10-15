@@ -62,4 +62,36 @@ public class ExcessLeaveInfo extends AggregateRoot {
 	private static Integer toInteger(BigDecimal bigNumber) {
 		return bigNumber != null ? bigNumber.intValue() : null;
 	}
+
+	public static ExcessLeaveInfo createDomainforcps013(String cid, String sid, BigDecimal useCls, BigDecimal occ,
+			BigDecimal paymentMethod) {
+		
+		ExcessLeaveInfo domain = new ExcessLeaveInfo();
+		Integer useCls1 = toInteger(useCls);
+		Integer occ1 = toInteger(occ);
+		Integer paymentMethod1 = toInteger(paymentMethod);
+		
+		domain.cid = cid;
+		domain.sID = sid;
+		
+		try {
+			domain.useAtr = EnumAdaptor.valueOf(useCls1, UseAtr.class);
+		} catch (Exception e) {
+			domain.useAtr = UseAtr.USE;
+		}
+		
+		if (occ == null) {
+			domain.occurrenceUnit = new OccurrenceUnit(0);
+		} else {
+			domain.occurrenceUnit = new OccurrenceUnit(occ1);
+		}
+		
+		try {
+			domain.paymentMethod = EnumAdaptor.valueOf(paymentMethod1, PaymentMethod.class);
+		} catch (Exception e) {
+			domain.paymentMethod = PaymentMethod.VACATION_OCCURRED;
+		}
+		
+		return domain;
+	}
 }

@@ -44,7 +44,7 @@ public class WorkChangeUpdateServiceImpl implements IWorkChangeUpdateService {
 				app.getAppDate(), 
 				ApplicationType.WORK_CHANGE_APPLICATION.value, 
 				app.getAppID(), 
-				app.getPrePostAtr(), app.getVersion());
+				app.getPrePostAtr(), app.getVersion(),workChange.getWorkTypeCd(),workChange.getWorkTimeCd());
 		
 		//ドメインモデル「勤務変更申請」の更新をする
 		appRepository.updateWithVersion(app);
@@ -54,7 +54,7 @@ public class WorkChangeUpdateServiceImpl implements IWorkChangeUpdateService {
 		GeneralDate startDateParam = app.getStartDate().orElse(app.getAppDate());
 		GeneralDate endDateParam = app.getEndDate().orElse(app.getAppDate());
 		List<GeneralDate> listDate = new ArrayList<>();
-		List<GeneralDate> lstHoliday = otherCommonAlg.lstDateNotHoliday(app.getCompanyID(), app.getEmployeeID(), new DatePeriod(startDateParam, endDateParam));
+		List<GeneralDate> lstHoliday = otherCommonAlg.lstDateIsHoliday(app.getCompanyID(), app.getEmployeeID(), new DatePeriod(startDateParam, endDateParam));
 		
 		for(GeneralDate loopDate = startDateParam; loopDate.beforeOrEquals(endDateParam); loopDate = loopDate.addDays(1)){
 			if(workChange.getExcludeHolidayAtr() == 0

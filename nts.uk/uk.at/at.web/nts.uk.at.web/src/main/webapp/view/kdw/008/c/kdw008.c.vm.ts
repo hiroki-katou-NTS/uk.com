@@ -7,14 +7,17 @@ module nts.uk.at.view.kdw008.c {
             columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
             testSingle: KnockoutObservableArray<any>;
             isDaily: KnockoutObservable<boolean>;
+            isMobile: boolean;
 
-            constructor() {
+            constructor(dataShare: any) {
                 var self = this;
                 self.idList = ko.observable('');
                 self.businessTypeSortedList = ko.observableArray([]);
                 let param  = nts.uk.ui.windows.getShared("openC");
+                let dataC  = nts.uk.ui.windows.getShared("isMob");
                 self.isDaily = ko.observable(param);
                 self.columns = ko.observableArray([]);
+                self.isMobile = dataC;
                 if (self.isDaily()) {
                     self.columns([
                         { headerText: getText('KDW008_7'), key: 'dislayNumber', width: 60 },
@@ -34,6 +37,22 @@ module nts.uk.at.view.kdw008.c {
             update(): void {
                 let self = this;
                 //                let dfd = $.Deferred();
+                // Mobile mode
+                if(self.isMobile){
+                     var businessTypeSortedUpdateList = _.map(self.businessTypeSortedList(), item => {
+                        var indexOfDaily = _.findIndex(self.businessTypeSortedList(), { attendanceItemId: item.attendanceItemId });
+                        return new BusinessTypeSortedModel(item.attendanceItemId,item.dislayNumber,item.attendanceItemName,indexOfDaily);
+                    });
+                    nts.uk.ui.block.grayout();
+                    new service.Service().updateBusinessTypeMBSorted(businessTypeSortedUpdateList).done(function(data) {
+                        //self.findAll();
+                        nts.uk.ui.block.clear();
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                            //nts.uk.ui.windows.close();
+                        });
+                        //                                    
+                    });
+                }else {
                 if (self.isDaily()) {
                     var businessTypeSortedUpdateList = _.map(self.businessTypeSortedList(), item => {
                         var indexOfDaily = _.findIndex(self.businessTypeSortedList(), { attendanceItemId: item.attendanceItemId });
@@ -74,31 +93,50 @@ module nts.uk.at.view.kdw008.c {
                     });
                     //                return dfd.promise();
                 }
+                    }
             }
 
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
                 self.businessTypeSortedList([]);
-                if (self.isDaily()) {
-                    new service.Service().findAll().done(function(data) {
+                
+                if(self.isMobile){
+                    // Mobile mode
+                    new service.Service().findAllMobile().done(function(data) {
                         data = _.sortBy(data, ["order"]);
                         self.businessTypeSortedList(data);
                         dfd.resolve();
+                        block.clear();
                     }).fail(error => {
+                        block.clear();
+                        nts.uk.ui.dialog.alert({ messageId: "Msg_242" });
+                        self.hasdata = false;
                         dfd.resolve();
                     });
                     return dfd.promise();
-                } else {
-                    new service.Service().findAllMonth().done(function(data) {
-                        
-                        self.businessTypeSortedList(data);
-                        self.getAllBusiness();
-                        dfd.resolve();
-                    }).fail(error => {
-                        dfd.resolve();
-                    });
-                    return dfd.promise();
+                }else {
+                    // PC Mode
+                    if (self.isDaily()) {
+                        new service.Service().findAll().done(function(data) {
+                            data = _.sortBy(data, ["order"]);
+                            self.businessTypeSortedList(data);
+                            dfd.resolve();
+                        }).fail(error => {
+                            dfd.resolve();
+                        });
+                        return dfd.promise();
+                    } else {
+                        new service.Service().findAllMonth().done(function(data) {
+
+                            self.businessTypeSortedList(data);
+                            self.getAllBusiness();
+                            dfd.resolve();
+                        }).fail(error => {
+                            dfd.resolve();
+                        });
+                        return dfd.promise();
+                    }
                 }
             }
             

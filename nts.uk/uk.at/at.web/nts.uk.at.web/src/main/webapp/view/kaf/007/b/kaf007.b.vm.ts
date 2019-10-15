@@ -4,6 +4,7 @@ module nts.uk.at.view.kaf007.b {
     import dialog = nts.uk.ui.dialog;
     import model = nts.uk.at.view.kaf000.b.viewmodel.model;
     import appcommon = nts.uk.at.view.kaf000.shr.model;
+    import text = nts.uk.resource.getText;
     export module viewmodel {
         export class ScreenModel extends kaf000.b.viewmodel.ScreenModel {
             screenModeNew: KnockoutObservable<boolean> = ko.observable(false);
@@ -57,6 +58,14 @@ module nts.uk.at.view.kaf007.b {
                 self.appCur = currentApp;
                 self.targetDate = currentApp.appDate;
                 self.startPage( self.appID() );               
+            }
+            
+            getName(code, name) {
+                let result = "";
+                if (code) {
+                    result = name || text("KAL003_120");
+                }
+                return result;
             }
             /**
              * 起動する
@@ -120,9 +129,9 @@ module nts.uk.at.view.kaf007.b {
                             let timeCd = self.appWorkChange().workChange().workTimeCd;
                             let timeName = self.appWorkChange().workChange().workTimeName;
                             typeCd(typeCd() === null ? '' : typeCd());
-                            typeName(typeName() === null ? '' : typeName());
+                            typeName(self.getName(typeCd(), typeName()));
                             timeCd(timeCd() === null ? '' : timeCd());
-                            timeName(timeName() === null ? '' : timeName());
+                            timeName(self.getName(timeCd(), timeName()));
                             //application data
                             ko.mapping.fromJS( detailData.applicationDto, {}, self.appWorkChange().application );
                             //setting reason content
@@ -140,6 +149,8 @@ module nts.uk.at.view.kaf007.b {
                                 employeeID : self.appWorkChange().application().applicantSID()
                             }).done((recordWorkInfo) => {
                                 //Binding data
+                                recordWorkInfo.workTypeName = self.getName(recordWorkInfo.workTypeCode, recordWorkInfo.workTypeName);
+                                recordWorkInfo.workTimeName = self.getName(recordWorkInfo.workTimeCode, recordWorkInfo.workTimeName);
                                 ko.mapping.fromJS( recordWorkInfo, {}, self.recordWorkInfo );
                                  //Focus process
                                 self.selectedReason.subscribe(value => {  $("#inpReasonTextarea").focus(); });
@@ -212,26 +223,20 @@ module nts.uk.at.view.kaf007.b {
                 if(!self.validateInputTime()){
                     nts.uk.ui.block.clear();
                     return;
-                }                
-                appReason = self.getReason(
-                    self.typicalReasonDisplayFlg(),
-                    self.selectedReason(),
-                    self.reasonCombo(),
-                    self.displayAppReasonContentFlg(),
-                    self.multilContent().trim()
-                );
-                if(!appcommon.CommonProcess.checklenghtReason(appReason,"#inpReasonTextarea")){
-                        return;
+                }  
+                
+                let comboBoxReason: string = appcommon.CommonProcess.getComboBoxReason(self.selectedReason(), self.reasonCombo(), self.typicalReasonDisplayFlg());
+                let textAreaReason: string = appcommon.CommonProcess.getTextAreaReason(self.multilContent(), self.displayAppReasonContentFlg(), true);
+                
+                if(!appcommon.CommonProcess.checklenghtReason(comboBoxReason+":"+textAreaReason,"#inpReasonTextarea")){
+                    return;
                 }
-                let appReasonError = !appcommon.CommonProcess.checkAppReason(self.requiredReason(), self.typicalReasonDisplayFlg(), self.displayAppReasonContentFlg(), appReason);
-                if(appReasonError){
-                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_115' }).then(function(){nts.uk.ui.block.clear();});    
-                    return;    
-                }
+                
                 //Approval phase
                 self.appWorkChange().appApprovalPhases = self.approvalList;                
                 //申請理由
-                self.appWorkChange().application().applicationReason(appReason);                
+                self.appWorkChange().application().appReasonID = comboBoxReason;
+                self.appWorkChange().application().applicationReason(textAreaReason);              
                 //勤務を変更する
                 self.appWorkChange().workChange().workChangeAtr(self.workChangeAtr() == true ? 1 : 0);
                 // 休日に関して
@@ -242,6 +247,8 @@ module nts.uk.at.view.kaf007.b {
                 let workChange = ko.toJS(self.appWorkChange());
                 //application change date format
                 self.changeDateFormat(workChange);
+                workChange.user = self.user;
+                workChange.reflectPerState = self.reflectPerState;
                 service.updateWorkChange(workChange).done((data) => {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                         if(data.autoSendMail){
@@ -400,9 +407,9 @@ module nts.uk.at.view.kaf007.b {
              * 「勤務就業選択」ボタンをクリックする
              * KDL003_勤務就業ダイアログを起動する
              */
-            openKDL003Click()  {
-                let self = nts.uk.ui._viewModel.content,
-                    workChange = self.appWorkChange().workChange();
+            openKDL003Click(vm: any)  {
+                let self = vm,
+                    workChange = vm.appWorkChange().workChange();
                 $("#inpStartTime1").ntsError('clear');
                 $("#inpEndTime1").ntsError('clear');                
                 nts.uk.ui.windows.setShared('parentCodes', {

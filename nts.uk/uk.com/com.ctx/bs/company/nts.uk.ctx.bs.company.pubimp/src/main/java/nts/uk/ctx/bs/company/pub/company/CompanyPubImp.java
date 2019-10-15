@@ -119,4 +119,12 @@ public class CompanyPubImp implements ICompanyPub {
 		}
 		return result;
 	}
+
+	@Override
+	public List<CompanyExport> getLstComByContractAbo(String contractCd, int isAbolition) {
+		List<Company> listCompany = repo.getAllCompanyByContractCdandAboAtr(contractCd, isAbolition);
+			return listCompany.stream().map(item -> new CompanyExport(item.getCompanyCode().v(),
+					item.getCompanyName().v(), item.getCompanyId(), item.getIsAbolition().value))
+					.collect(Collectors.toList());
+	}
 }

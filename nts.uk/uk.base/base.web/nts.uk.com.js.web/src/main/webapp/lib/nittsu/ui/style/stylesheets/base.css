@@ -3144,7 +3144,7 @@ button.nts-switch-button[disabled].selected {
   display: inline-block;
   margin-right: 5px;
   margin: .1em 0;
-  /* アイコンが決まるまで非表示にしておく */
+  /* πéóπéñπé│πâ│πüîµ▒║πü╛πéïπü╛πüºΘ¥₧Φí¿τñ║πü½πüùπüªπüèπüÅ */
   display: none;
 }
 /* line 36, ../sass/components/_dialog.scss */
@@ -5291,26 +5291,31 @@ div .ex-area-line.x-stay {
 }
 
 /* line 257, ../sass/components/_mgrid.scss */
+.medit-container .medit.halign-left {
+  text-align: left;
+}
+
+/* line 261, ../sass/components/_mgrid.scss */
 .medit-container .medit {
   font-family: "Meiryo UI";
 }
 
-/* line 261, ../sass/components/_mgrid.scss */
+/* line 265, ../sass/components/_mgrid.scss */
 .medit-container .medit::-ms-clear {
   display: none;
 }
 
-/* line 265, ../sass/components/_mgrid.scss */
+/* line 269, ../sass/components/_mgrid.scss */
 .mgrid table tr td.nts-control {
   padding: 0px !important;
 }
 
-/* line 269, ../sass/components/_mgrid.scss */
+/* line 273, ../sass/components/_mgrid.scss */
 .mgrid table tr td.merror {
   border: 1px double #ff6666;
 }
 
-/* line 273, ../sass/components/_mgrid.scss */
+/* line 277, ../sass/components/_mgrid.scss */
 .mgrid table tr td span.hidden-button {
   background-image: url(images/icons/minus.png);
   display: inline-block;
@@ -5320,7 +5325,7 @@ div .ex-area-line.x-stay {
   background-repeat: no-repeat;
 }
 
-/* line 282, ../sass/components/_mgrid.scss */
+/* line 286, ../sass/components/_mgrid.scss */
 .mgrid table tr td span.plus-button {
   background-image: url(images/icons/plus.png);
   display: inline-block;
@@ -5330,7 +5335,7 @@ div .ex-area-line.x-stay {
   background-repeat: no-repeat;
 }
 
-/* line 291, ../sass/components/_mgrid.scss */
+/* line 295, ../sass/components/_mgrid.scss */
 .mgrid table tr td span.mg-icon {
   display: inline-block;
   width: 19px;
@@ -5341,22 +5346,22 @@ div .ex-area-line.x-stay {
   background-position: center center;
 }
 
-/* line 301, ../sass/components/_mgrid.scss */
+/* line 305, ../sass/components/_mgrid.scss */
 .mgrid table tr td span.view-facon-asc {
   background-image: url(images/icons/sort_down.png);
 }
 
-/* line 305, ../sass/components/_mgrid.scss */
+/* line 309, ../sass/components/_mgrid.scss */
 .mgrid table tr td span.facon-asc {
   background-image: url(images/icons/sort_down_green.png);
 }
 
-/* line 309, ../sass/components/_mgrid.scss */
+/* line 313, ../sass/components/_mgrid.scss */
 .mgrid table tr td span.facon-desc {
   background-image: url(images/icons/sort_up_green.png);
 }
 
-/* line 313, ../sass/components/_mgrid.scss */
+/* line 317, ../sass/components/_mgrid.scss */
 .mgrid .mgrid-fixed-summaries tr td,
 .mgrid .mgrid-free-summaries tr td {
   border-width: 0px 0px 0px 1px;
@@ -5370,7 +5375,7 @@ div .ex-area-line.x-stay {
   text-align: center;
 }
 
-/* line 326, ../sass/components/_mgrid.scss */
+/* line 330, ../sass/components/_mgrid.scss */
 .mgrid .mgrid-fixed-summaries tr td:hover,
 .mgrid .mgrid-free-summaries tr td:hover {
   background-color: #C5F1F7;
@@ -5378,7 +5383,7 @@ div .ex-area-line.x-stay {
   color: #000;
 }
 
-/* line 333, ../sass/components/_mgrid.scss */
+/* line 337, ../sass/components/_mgrid.scss */
 .mgrid-pagerecordlabel {
   float: left;
   line-height: 1.9em;
@@ -5386,7 +5391,7 @@ div .ex-area-line.x-stay {
   margin-left: 5px;
 }
 
-/* line 340, ../sass/components/_mgrid.scss */
+/* line 344, ../sass/components/_mgrid.scss */
 .mgrid-paging-nav {
   float: right;
   position: relative;
@@ -5394,7 +5399,7 @@ div .ex-area-line.x-stay {
   padding-right: 5px;
 }
 
-/* line 347, ../sass/components/_mgrid.scss */
+/* line 351, ../sass/components/_mgrid.scss */
 .mgrid-firstpage {
   width: 26px;
   padding-left: 5px;
@@ -5406,7 +5411,7 @@ div .ex-area-line.x-stay {
   cursor: pointer;
 }
 
-/* line 358, ../sass/components/_mgrid.scss */
+/* line 362, ../sass/components/_mgrid.scss */
 .mgrid-lastpage {
   width: 26px;
   padding-right: 5px;
@@ -5418,20 +5423,20 @@ div .ex-area-line.x-stay {
   cursor: pointer;
 }
 
-/* line 369, ../sass/components/_mgrid.scss */
+/* line 373, ../sass/components/_mgrid.scss */
 .mgrid-firstpage:hover, .mgrid-lastpage:hover {
   border-color: #ccc;
   background-color: #ededed;
 }
 
-/* line 374, ../sass/components/_mgrid.scss */
+/* line 378, ../sass/components/_mgrid.scss */
 .mgrid-page-buttonlist {
   text-decoration: none;
   line-height: 1.4em;
   display: inline-block;
 }
 
-/* line 380, ../sass/components/_mgrid.scss */
+/* line 384, ../sass/components/_mgrid.scss */
 .mgrid-page-button {
   text-decoration: none;
   line-height: 1.4em;
@@ -5443,18 +5448,18 @@ div .ex-area-line.x-stay {
   border-radius: 3px;
 }
 
-/* line 391, ../sass/components/_mgrid.scss */
+/* line 395, ../sass/components/_mgrid.scss */
 .mgrid-page-button:not(.ui-state-active):hover {
   border-color: #ccc;
   background-color: #ededed;
 }
 
-/* line 396, ../sass/components/_mgrid.scss */
+/* line 400, ../sass/components/_mgrid.scss */
 .mgrid-pageimg.ui-icon-arrowstop-1-e {
   margin-left: 10px;
 }
 
-/* line 400, ../sass/components/_mgrid.scss */
+/* line 404, ../sass/components/_mgrid.scss */
 .mgrid-sheet-nav {
   float: left;
   position: relative;
@@ -5466,7 +5471,7 @@ div .ex-area-line.x-stay {
   left: 20px;
 }
 
-/* line 411, ../sass/components/_mgrid.scss */
+/* line 415, ../sass/components/_mgrid.scss */
 .mgrid-sheet-buttonlist {
   text-decoration: none;
   line-height: 1.8em;
@@ -5474,7 +5479,7 @@ div .ex-area-line.x-stay {
   float: left;
 }
 
-/* line 418, ../sass/components/_mgrid.scss */
+/* line 422, ../sass/components/_mgrid.scss */
 .mgrid-sheet-button {
   text-decoration: none;
   line-height: 1.8em;
@@ -5487,19 +5492,19 @@ div .ex-area-line.x-stay {
   border-radius: 3px;
 }
 
-/* line 430, ../sass/components/_mgrid.scss */
+/* line 434, ../sass/components/_mgrid.scss */
 .mgrid-sheet-button:not(.ui-state-active):hover {
   border-color: #ccc;
   background-color: #ededed;
 }
 
-/* line 435, ../sass/components/_mgrid.scss */
+/* line 439, ../sass/components/_mgrid.scss */
 .mgrid-sheet-scrollbar {
   width: 20px;
   height: 30px;
 }
 
-/* line 440, ../sass/components/_mgrid.scss */
+/* line 444, ../sass/components/_mgrid.scss */
 .mgrid-sheet-scrollbar li {
   line-height: 15px;
   font-size: 0.5rem;
@@ -5511,23 +5516,23 @@ div .ex-area-line.x-stay {
   -webkit-user-select: none;
 }
 
-/* line 451, ../sass/components/_mgrid.scss */
+/* line 455, ../sass/components/_mgrid.scss */
 .mgrid-sheet-scrollbar:not(.ui-state-disabled) li:hover {
   background-color: #ccc;
 }
 
-/* line 455, ../sass/components/_mgrid.scss */
+/* line 459, ../sass/components/_mgrid.scss */
 .mgrid-sheet-scrollbar:not(.disable) li:active {
   color: white;
   background-color: gray;
 }
 
-/* line 460, ../sass/components/_mgrid.scss */
+/* line 464, ../sass/components/_mgrid.scss */
 .mgrid-sheet-scrollbar.disable li {
   color: #aaa;
 }
 
-/* line 464, ../sass/components/_mgrid.scss */
+/* line 468, ../sass/components/_mgrid.scss */
 .mgrid-facon-button {
   display: none;
   position: absolute;
@@ -5535,7 +5540,7 @@ div .ex-area-line.x-stay {
   cursor: pointer;
 }
 
-/* line 471, ../sass/components/_mgrid.scss */
+/* line 475, ../sass/components/_mgrid.scss */
 .mgrid-freinholder {
   position: absolute;
   opacity: 0.5;
@@ -5546,7 +5551,7 @@ div .ex-area-line.x-stay {
   border: 1px solid #CCC;
 }
 
-/* line 481, ../sass/components/_mgrid.scss */
+/* line 485, ../sass/components/_mgrid.scss */
 .mgrid-placeholder {
   position: absolute;
   -moz-box-shadow: 4px 5px 4px #C6C6C6 inset;
@@ -5556,7 +5561,7 @@ div .ex-area-line.x-stay {
   background: #EFEFEF;
 }
 
-/* line 490, ../sass/components/_mgrid.scss */
+/* line 494, ../sass/components/_mgrid.scss */
 .mgrid-error-message {
   position: absolute;
   border: 1px solid #F00;
@@ -5565,19 +5570,19 @@ div .ex-area-line.x-stay {
   padding: 3px;
 }
 
-/* line 498, ../sass/components/_mgrid.scss */
+/* line 502, ../sass/components/_mgrid.scss */
 .mgrid-refer-text {
   display: inline-block;
   margin-left: 10px;
 }
 
-/* line 503, ../sass/components/_mgrid.scss */
+/* line 507, ../sass/components/_mgrid.scss */
 .mg-right-margin {
   margin-left: 0px;
   margin-right: 10px;
 }
 
-/* line 508, ../sass/components/_mgrid.scss */
+/* line 512, ../sass/components/_mgrid.scss */
 .mdatepicker-container {
   font-size: 12px;
   line-height: 30px;
@@ -5594,7 +5599,7 @@ div .ex-area-line.x-stay {
   -webkit-touch-callout: none;
 }
 
-/* line 524, ../sass/components/_mgrid.scss */
+/* line 528, ../sass/components/_mgrid.scss */
 .mdatepicker-dropdown {
   position: absolute;
   z-index: 1;

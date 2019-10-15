@@ -24,7 +24,7 @@ class SwitchButtonGroup extends SelectBoxComponent {
                 self.selected.push(self.value);
             }
         } else {
-            if (( this.$refs.input as HTMLInputElement).checked) {
+            if ((this.$refs.input as HTMLInputElement).checked) {
                 this.$emit('input', this.value);
             } else {
                 this.$emit('input', undefined);
@@ -37,6 +37,18 @@ class SwitchButtonGroup extends SelectBoxComponent {
 
         if (el.nodeType !== 8) {
             dom.addClass(el.parentElement, 'btn-group btn-group-toggle mb-3');
+        }
+
+        if (obj.isArray(this.selected)) {
+            if ((this.selected as any).includes(this.value) || (this.$refs.input as HTMLInputElement).checked) {
+                dom.addClass(el, 'btn-primary');
+                dom.removeClass(el, 'btn-secondary');
+            }
+        } else {
+            if (this.selected == this.value || (this.$refs.input as HTMLInputElement).checked) {
+                dom.addClass(el, 'btn-primary');
+                dom.removeClass(el, 'btn-secondary');
+            }
         }
     }
 }

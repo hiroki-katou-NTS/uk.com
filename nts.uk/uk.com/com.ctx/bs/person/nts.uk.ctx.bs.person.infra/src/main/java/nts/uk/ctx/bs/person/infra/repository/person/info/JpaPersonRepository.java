@@ -5,21 +5,28 @@
 package nts.uk.ctx.bs.person.infra.repository.person.info;
 
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 
 import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
+import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
+import nts.uk.ctx.bs.person.dom.person.info.personnamegroup.PersonNameGroup;
 import nts.uk.ctx.bs.person.infra.entity.person.info.BpsmtPerson;
 import nts.uk.ctx.bs.person.infra.entity.person.info.BpsmtPersonPk;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class JpaPersonRepository.
@@ -188,6 +195,7 @@ public class JpaPersonRepository extends JpaRepository implements PersonReposito
 	 */
 	@Override
 	@SneakyThrows
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public Optional<Person> getByPersonId(String personId) {
 		String sql = "select * from BPSMT_PERSON"
 				+ " where PID = ?";
@@ -258,5 +266,153 @@ public class JpaPersonRepository extends JpaRepository implements PersonReposito
 
 	}
 	// sonnlb code end
+
+	@Override
+	@SneakyThrows
+	public List<Person> getFullPersonByPersonIds(List<String> personIds) {
+		// check exist input
+		if (CollectionUtil.isEmpty(personIds)) {
+			return new ArrayList<>();
+		}
+
+		List<Person> lstPerson = new ArrayList<>();
+		CollectionUtil.split(personIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			String sql = "SELECT * from BPSMT_PERSON"
+					+ " WHERE PID IN (" + NtsStatement.In.createParamsString(subList) + ")";
+			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+				for (int i = 0; i < subList.size(); i++) {
+					stmt.setString(i + 1, subList.get(i));
+				}
+				List<Person> subResults = new NtsResultSet(stmt.executeQuery()).getList(r -> {
+					BpsmtPerson e = new BpsmtPerson();
+					e.bpsmtPersonPk = new BpsmtPersonPk(r.getString("PID"));
+					e.birthday = r.getGeneralDate("BIRTHDAY");
+					e.bloodType = r.getInt("BLOOD_TYPE");
+					e.gender = r.getInt("GENDER");
+					e.personName = r.getString("PERSON_NAME");
+					e.personNameKana = r.getString("PERSON_NAME_KANA");
+					e.businessName = r.getString("BUSINESS_NAME");
+					e.businessNameKana = r.getString("BUSINESS_NAME_KANA");
+					e.businessEnglishName = r.getString("BUSINESS_ENGLISH_NAME");
+					e.businessOtherName = r.getString("BUSINESS_OTHER_NAME");
+					e.personRomanji = r.getString("P_ROMANJI_FNAME");
+					e.personRomanjiKana = r.getString("P_ROMANJI_FNAME_KANA");
+					e.todokedeFullName = r.getString("TODOKEDE_FNAME");
+					e.todokedeFullNameKana = r.getString("TODOKEDE_FNAME_KANA");
+					e.oldName = r.getString("OLDNAME_FNAME");
+					e.oldNameKana = r.getString("OLDNAME_FNAME_KANA");
+					e.perNameMultilLang = r.getString("PERSON_NAME_MULTIL_LANG");
+					e.perNameMultilLangKana = r.getString("PERSON_NAME_MULTIL_LANG_KANA");
+					return toFullPersonDomain(e);
+				});
+				
+				lstPerson.addAll(subResults);
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+		});
+		return lstPerson;
+	}
+
+	@Override
+	public void updateAll(List<Person> domains) {
+		String UP_SQL = "UPDATE BPSMT_PERSON SET UPD_DATE = UPD_DATE_VAL,  UPD_CCD = UPD_CCD_VAL,  UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
+				+ "  BIRTHDAY = BIRTHDAY_VAL, BLOOD_TYPE = BLOOD_TYPE_VAL, GENDER = GENDER_VAL,  PERSON_NAME = PERSON_NAME_VAL, PERSON_NAME_KANA = PERSON_NAME_KANA_VAL, BUSINESS_NAME = BUSINESS_NAME_VAL, BUSINESS_NAME_KANA = BUSINESS_NAME_KANA_VAL, "
+				+ "  BUSINESS_ENGLISH_NAME = BUSINESS_ENGLISH_NAME_VAL, BUSINESS_OTHER_NAME = BUSINESS_OTHER_NAME_VAL, "
+				+ "  P_ROMANJI_FNAME = P_ROMANJI_FNAME_VAL, P_ROMANJI_FNAME_KANA = P_ROMANJI_FNAME_KANA_VAL, OLDNAME_FNAME = OLDNAME_FNAME_VAL, OLDNAME_FNAME_KANA = OLDNAME_FNAME_KANA_VAL,"
+				+ "  TODOKEDE_FNAME = TODOKEDE_FNAME_VAL, TODOKEDE_FNAME_KANA = TODOKEDE_FNAME_KANA_VAL, PERSON_NAME_MULTIL_LANG = PERSON_NAME_MULTIL_LANG_VAL,  PERSON_NAME_MULTIL_LANG_KANA = PERSON_NAME_MULTIL_LANG_KANA_VAL"
+				+ "  WHERE PID = PID_VAL ;";
+		String updCcd = AppContexts.user().companyCode();
+		String updScd = AppContexts.user().employeeCode();
+		String updPg = AppContexts.programId();
+		StringBuilder sb = new StringBuilder();
+		domains.stream().forEach(c ->{
+			String sql = UP_SQL;
+			sql = UP_SQL.replace("UPD_DATE_VAL", "'" + GeneralDateTime.now() +"'");
+			sql = sql.replace("UPD_CCD_VAL", "'" + updCcd +"'");
+			sql = sql.replace("UPD_SCD_VAL", "'" + updScd +"'");
+			sql = sql.replace("UPD_PG_VAL", "'" + updPg +"'");
+			
+			sql = sql.replace("BIRTHDAY_VAL", "'" + c.getBirthDate() +"'");
+			sql = sql.replace("BLOOD_TYPE_VAL", c.getBloodType() == null? "null": "" + c.getBloodType().value +"");
+			System.out.println(c.getGender());
+			sql = sql.replace("GENDER_VAL",  c.getGender() == null? "": "" + c.getGender().value +"");
+			
+			if(c.getPersonNameGroup() == null) {
+				sql = sql.replace("PERSON_NAME_VAL", "null");
+				sql = sql.replace("PERSON_NAME_KANA_VAL", "null");
+				sql = sql.replace("BUSINESS_NAME_VAL", "null");
+				sql = sql.replace("BUSINESS_NAME_KANA_VAL", "null");
+				sql = sql.replace("BUSINESS_ENGLISH_NAME_VAL", "null");
+				sql = sql.replace("BUSINESS_OTHER_NAME_VAL", "null");
+				sql = sql.replace("P_ROMANJI_FNAME_VAL", "null");
+				sql = sql.replace("P_ROMANJI_FNAME_KANA_VAL",  "null");
+				sql = sql.replace("OLDNAME_FNAME_VAL", "null");
+				sql = sql.replace("OLDNAME_FNAME_KANA_VAL", "null");
+				
+				sql = sql.replace("TODOKEDE_FNAME_VAL", "null");
+				sql = sql.replace("TODOKEDE_FNAME_KANA_VAL", "null");
+				sql = sql.replace("PERSON_NAME_MULTIL_LANG_VAL", "null");
+				sql = sql.replace("PERSON_NAME_MULTIL_LANG_KANA_VAL", "null");
+			}else {
+				PersonNameGroup personName = c.getPersonNameGroup();
+				sql = sql.replace("PERSON_NAME_VAL",  personName.getPersonName().getFullName() == null? "null": "'" + personName.getPersonName().getFullName().v() +"'");
+				sql = sql.replace("PERSON_NAME_KANA_VAL", personName.getPersonName().getFullNameKana() == null? "null" : "'" + personName.getPersonName().getFullNameKana().v() +"'");
+				sql = sql.replace("BUSINESS_NAME_VAL", personName.getBusinessName() == null? "null": "'" + personName.getBusinessName().v() +"'");
+				sql = sql.replace("BUSINESS_NAME_KANA_VAL", personName.getBusinessNameKana() == null? "null": "'" + personName.getBusinessNameKana().v() +"'");
+				sql = sql.replace("BUSINESS_ENGLISH_NAME_VAL", personName.getBusinessEnglishName() == null? "null": "'" + personName.getBusinessEnglishName().v() +"'");
+				sql = sql.replace("BUSINESS_OTHER_NAME_VAL", personName.getBusinessOtherName() == null? "null": "'" + personName.getBusinessOtherName().v() +"'");
+				sql = sql.replace("P_ROMANJI_FNAME_VAL", personName.getPersonRomanji().getFullName() == null? "null": "'" + personName.getPersonRomanji().getFullName().v() +"'");
+				sql = sql.replace("P_ROMANJI_FNAME_KANA_VAL",  personName.getPersonRomanji().getFullNameKana() == null? "null": "'" + personName.getPersonRomanji().getFullNameKana().v()+"'");
+				sql = sql.replace("OLDNAME_FNAME_VAL", personName.getOldName().getFullName() == null? "null": "'" + personName.getOldName().getFullName().v() +"'");
+				sql = sql.replace("OLDNAME_FNAME_KANA_VAL", personName.getOldName().getFullNameKana() == null? "null": "'" + personName.getOldName().getFullNameKana().v() +"'");
+				
+				sql = sql.replace("TODOKEDE_FNAME_VAL", personName.getTodokedeFullName().getFullName() == null? "null": "'" + personName.getTodokedeFullName().getFullName().v() +"'");
+				sql = sql.replace("TODOKEDE_FNAME_KANA_VAL", personName.getTodokedeFullName().getFullNameKana() == null? "null": "'" + personName.getTodokedeFullName().getFullNameKana().v()+"'");
+				sql = sql.replace("PERSON_NAME_MULTIL_LANG_VAL", personName.getOldName().getFullName() == null? "null": "'" + personName.getPersonalNameMultilingual().getFullName().v() +"'");
+				sql = sql.replace("PERSON_NAME_MULTIL_LANG_KANA_VAL", personName.getPersonalNameMultilingual() == null? "null": "'" + personName.getPersonalNameMultilingual().getFullNameKana().v() +"'");
+			}
+			sql = sql.replace("PID_VAL", "'" + c.getPersonId() +"'");
+			sb.append(sql);
+		});
+		int  records = this.getEntityManager().createNativeQuery(sb.toString()).executeUpdate();
+		System.out.println(records);
+		
+	}
+
+	@Override
+	public List<Object[]> getPersonsByPersonIds(List<String> personIds) {
+		// check exist input
+				if (CollectionUtil.isEmpty(personIds)) {
+					return new ArrayList<>();
+				}
+
+				List<Object[]> lstPerson = new ArrayList<>();
+				CollectionUtil.split(personIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+					String sql = "SELECT * from BPSMT_PERSON"
+							+ " WHERE PID IN (" + NtsStatement.In.createParamsString(subList) + ")";
+					try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+						for (int i = 0; i < subList.size(); i++) {
+							stmt.setString(i + 1, subList.get(i));
+						}
+						List<Object[]> subResults = new NtsResultSet(stmt.executeQuery()).getList(r -> {
+							Object[] object = new Object[] {r.getString("PID"), r.getGeneralDate("BIRTHDAY"),  r.getInt("BLOOD_TYPE"), r.getInt("GENDER"), r.getString("PERSON_NAME"), 
+									r.getString("PERSON_NAME_KANA"), r.getString("BUSINESS_NAME"), r.getString("BUSINESS_NAME_KANA"),
+									r.getString("BUSINESS_ENGLISH_NAME"), r.getString("BUSINESS_OTHER_NAME"), r.getString("P_ROMANJI_FNAME"),
+									r.getString("P_ROMANJI_FNAME_KANA"), r.getString("TODOKEDE_FNAME"), r.getString("TODOKEDE_FNAME_KANA"),
+									r.getString("OLDNAME_FNAME"), r.getString("OLDNAME_FNAME_KANA"), r.getString("PERSON_NAME_MULTIL_LANG"),
+									r.getString("PERSON_NAME_MULTIL_LANG_KANA")
+									};
+							return object;
+						});
+						
+						lstPerson.addAll(subResults);
+					} catch (SQLException e) {
+						throw new RuntimeException(e);
+					}
+				});
+				return lstPerson;
+
+	}
 
 }
