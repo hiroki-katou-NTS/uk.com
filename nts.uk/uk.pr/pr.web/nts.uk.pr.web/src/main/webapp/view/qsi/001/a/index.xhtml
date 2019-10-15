@@ -51,19 +51,19 @@
             <div id="com-ccg001"></div>
 
             <!-- div left -->
-            <div class="fixed-flex-layout-left" style="margin-left: 70px; margin-right: 10px">
+            <div class="fixed-flex-layout-left" style="margin-left: 65px; margin-right: 10px">
 
-                <div class="panel panel-frame " style="margin-bottom: 15px; width: 645px;" >
+                <div class="panel panel-frame " style="margin-bottom: 15px; width: 675px;" >
                     <div class="valign-center control-group">
                         <span class="label with-image">
                         <i class="image image-calendar"/>
                         <span>#{i18n.getText('QSI001_A222_3')}</span>
                     </span>
                         <div id = "A2_4" tabindex="7" data-bind="ntsDatePicker: { value: startDate, required: true, dateFormat: 'YYYY/MM/DD', name: '#{i18n.getText('QSI001_A222_4')}'}"></div>
-                        <span data-bind="text: japanStartDate" class="limited-label" style="width: 125px;"  ></span>
+                        <span data-bind="text: japanStartDate" class="limited-label" style="width: 140px;"  ></span>
                         <span class="label" >#{i18n.getText('QSI001_A222_6')}</span>
                         <div id = "A2_7" tabindex="8" data-bind="ntsDatePicker: { value: endDate, dateFormat: 'YYYY/MM/DD',required: true, name: '#{i18n.getText('QSI001_A222_7')}'}"></div>
-                        <span class="limited-label" style="width: 125px;"  data-bind="text: japanEndDate"></span>
+                        <span class="limited-label" style="width: 140px;"  data-bind="text: japanEndDate"></span>
                     </div>
 
                 </div>
@@ -72,7 +72,7 @@
             </div>
             <!-- div right -->
             <div class="fixed-flex-layout-right">
-                <div style="width: 480px; height: 592px;" class="panel panel-frame " data-bind="with: socialInsurNotiCrSet">
+                <div style="width: 450px; height: 592px;" class="panel panel-frame " data-bind="with: socialInsurNotiCrSet">
                     <span class="label" style="margin-bottom: 15px;">#{i18n.getText('QSI001_A222_12')}</span>
                     <div class="control-group">
                         <div class="column-1" id="A4_3"
