@@ -352,7 +352,7 @@ public class DailyModifyRCommandFacade {
 			// dailyItems, monthParam);
 
 			List<EmployeeMonthlyPerError> errorMonthHoliday = new ArrayList<>();
-			if (dataParent.isCheckDailyChange()) {
+			if (dataParent.isCheckDailyChange() || flagTempCalc) {
 				//
 				DailyCalcResult daiCalcResult = processDailyCalc.processDailyCalc(
 						new DailyCalcParam(mapSidDate, dataParent.getLstNotFoundWorkType(), resultOlds,

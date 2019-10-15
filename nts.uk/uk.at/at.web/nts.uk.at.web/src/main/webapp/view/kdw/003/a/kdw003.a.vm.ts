@@ -1648,7 +1648,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 if(data.dailyCorrectDto){
                       self.processFlex(data.dailyCorrectDto, true);
                 }
-                self.flagCalculation = false;
+                self.flagCalculation = data.flagCalculation;
                 if (data.resultError != null && !_.isEmpty(data.resultError.flexShortage)) {
                     if (data.resultError.flexShortage.error && data.resultError.flexShortage.messageError.length != 0) {
                         $("#next-month").ntsError("clear");
@@ -2038,6 +2038,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     paramVer.displayFormat = self.displayFormat();
                     service.loadVerRow(paramVer).done((data) => {
                         self.indentityMonth(data.indentityMonthResult);
+                        self.flagCalculation = false;
                         dfd.resolve();
                     });
                     return dfd.promise();
@@ -2077,7 +2078,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             }
 
             service.loadRow(param).done((data) => {
-                
+                self.flagCalculation = false;
                 if (onlyLoadMonth && errorFlex == false) {
                     self.processFlex(data, true);
                     nts.uk.ui.block.clear();
