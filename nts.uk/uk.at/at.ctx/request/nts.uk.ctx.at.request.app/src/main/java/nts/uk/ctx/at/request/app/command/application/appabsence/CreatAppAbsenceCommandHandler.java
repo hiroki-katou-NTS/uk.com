@@ -166,10 +166,12 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 				command.getStartTime2(),
 				command.getEndTime2(),
 				specHd);
-		// 2-1.新規画面登録前の処理を実行する
-		newBeforeRegister.processBeforeRegister(appRoot, 0, command.isCheckOver1Year());
+		
 		//休日申請日
 		List<GeneralDate> lstDateIsHoliday = otherCommonAlg.lstDateIsHoliday(companyID, command.getEmployeeID(), new DatePeriod(startDate, endDate));
+		// 2-1.新規画面登録前の処理を実行する
+		newBeforeRegister.processBeforeRegister(appRoot, 0, command.isCheckOver1Year(), lstDateIsHoliday);
+		
 		// 7.登録時のエラーチェック
 		this.checkBeforeRegister(command, startDate, endDate, true, lstDateIsHoliday);
 		//計画年休上限チェック(check giới han trên plan annual holiday)

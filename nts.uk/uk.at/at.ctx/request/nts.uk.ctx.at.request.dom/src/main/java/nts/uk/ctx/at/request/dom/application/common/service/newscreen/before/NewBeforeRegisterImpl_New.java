@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
@@ -23,8 +22,6 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImpor
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.actuallock.ActualLockAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.actuallock.ActualLockImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.shift.businesscalendar.daycalendar.ObtainDeadlineDateAdapter;
-//import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
@@ -68,14 +65,8 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 	@Inject
 	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;
 	
-//	@Inject
-//	private ApprovalRootAdapter approvalRootService;
-	
 	@Inject
 	private ClosureEmploymentRepository closureEmploymentRepository;
-	
-	@Inject
-	private ApprovalRootStateAdapter approvalRootStateAdapter;
 	
 	@Inject
 	private WorkplaceAdapter workplaceAdapter;
@@ -108,7 +99,7 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 	@Inject
 	private StartupErrorCheckService startupErrorCheckService;
 	
-	public void processBeforeRegister(Application_New application, int overTimeAtr, boolean checkOver1Year){
+    public void processBeforeRegister(Application_New application, int overTimeAtr, boolean checkOver1Year, List<GeneralDate> lstDateHd){
 		// アルゴリズム「未入社前チェック」を実施する
 		retirementCheckBeforeJoinCompany(application.getCompanyID(), application.getEmployeeID(), application.getAppDate());
 		
@@ -179,6 +170,10 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 		applicationAcceptanceRestrictionsCheck(application.getCompanyID(), application.getAppType(), application.getPrePostAtr(), startDate, endDate,overTimeAtr);
 		// 申請する開始日～申請する終了日までループする
 		for(GeneralDate loopDate = startDate; loopDate.beforeOrEquals(endDate); loopDate = loopDate.addDays(1)){
+            //hoatt 2019/10/14 #109087を対応
+            if(lstDateHd != null && lstDateHd.contains(loopDate)){
+                continue;
+            }
 			if(loopDate.equals(GeneralDate.today()) && application.getPrePostAtr().equals(PrePostAtr.PREDICT) && application.isAppOverTime()){
 				confirmCheckOvertime(application.getCompanyID(), application.getEmployeeID(), loopDate);
 			}else{
