@@ -57,12 +57,7 @@
 																valueFormat: 'YYYYMMDD',
 																required: true
 																}" tabindex="7"></div>
-							<div data-bind="if: startDateJp().length > 12">
-								<span data-bind = "text: startDateJp" class="limited-label" style="width: 140px; " ></span>
-							</div>
-							<div data-bind="if: startDateJp().length <= 12">
-								<span data-bind = "text: startDateJp" ></span>
-							</div>
+							<span data-bind = "attr: {style: getStyle() }, text: startDateJp" class="limited-label"></span>
 							<span>#{i18n.getText('QSI013_A222_6')}</span>
 							<div id = "A2_7" data-bind="ntsDatePicker: {
 																name: '#{i18n.getText('QSI013_A222_7')}',

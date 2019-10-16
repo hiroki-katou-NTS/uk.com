@@ -175,6 +175,11 @@ module nts.uk.pr.view.qsi001.a.viewmodel {
             return listEmployee;
         }
 
+        getStyle(){
+            let self = this;
+            return self.japanStartDate().length > 13 ?  "width:140px; display: inline-block;" : "width:140px; display:inline";
+        }
+
         openScreenB() {
             let self = this;
 
