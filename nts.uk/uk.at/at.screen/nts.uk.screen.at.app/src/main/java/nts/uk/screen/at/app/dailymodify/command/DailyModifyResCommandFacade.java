@@ -362,7 +362,10 @@ public class DailyModifyResCommandFacade {
 						.filter(ProcessCommonCalc.distinctByKey(p -> p.getItemId())).collect(Collectors.toList());
 				List<DailyModifyResult> itemValues = itemCovert.isEmpty() ? Collections.emptyList()
 						: mapSidDateData.get(Pair.of(itemCovert.get(0).getEmployeeId(), itemCovert.get(0).getDate()));
-				List<DPItemValue> items = validatorDataDaily.checkCareItemDuplicate(itemCovert);
+				List<DailyModifyResult> itemOlds = resultOlds.stream()
+						.filter(y -> x.getKey().equals(Pair.of(y.getEmployeeId(), y.getDate())))
+						.collect(Collectors.toList());
+				List<DPItemValue> items = validatorDataDaily.checkCareItemDuplicate(itemCovert, itemOlds);
 				// if (!items.isEmpty()) {
 				itemErrors.addAll(items);
 				// } else {

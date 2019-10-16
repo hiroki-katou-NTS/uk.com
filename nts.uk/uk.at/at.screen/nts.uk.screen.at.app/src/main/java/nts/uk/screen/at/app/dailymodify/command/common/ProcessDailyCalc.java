@@ -78,7 +78,10 @@ public class ProcessDailyCalc {
 					.filter(ProcessCommonCalc.distinctByKey(p -> p.getItemId())).collect(Collectors.toList());
 			List<DailyModifyResult> itemValues = itemCovert.isEmpty() ? Collections.emptyList()
 					: mapSidDateData.get(Pair.of(itemCovert.get(0).getEmployeeId(), itemCovert.get(0).getDate()));
-			List<DPItemValue> items = validatorDataDaily.checkCareItemDuplicate(itemCovert);
+			List<DailyModifyResult> itemOlds = param.getResultOlds().stream()
+					.filter(y -> x.getKey().equals(Pair.of(y.getEmployeeId(), y.getDate())))
+					.collect(Collectors.toList());
+			List<DPItemValue> items = validatorDataDaily.checkCareItemDuplicate(itemCovert, itemOlds);
 			itemErrors.addAll(items);
 			List<DPItemValue> itemInputs = validatorDataDaily.checkInputData(itemCovert, itemValues);
 			itemInputErors.addAll(itemInputs);

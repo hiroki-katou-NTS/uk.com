@@ -257,7 +257,7 @@ public class DailyCalculationCommandFacade {
 					.collect(Collectors.toList());
 			List<DailyModifyResult> itemValues = itemCovert.isEmpty() ? Collections.emptyList()
 					: mapSidDateOrigin.get(Pair.of(itemCovert.get(0).getEmployeeId(), itemCovert.get(0).getDate()));
-			List<DPItemValue> items = validatorDataDaily.checkCareItemDuplicate(itemCovert);
+			List<DPItemValue> items = validatorDataDaily.checkCareItemDuplicate(itemCovert, itemValues);
 			itemErrors.addAll(items);
 			List<DPItemValue> itemInputs = validatorDataDaily.checkInputData(itemCovert, itemValues);
 			itemInputErors.addAll(itemInputs);
