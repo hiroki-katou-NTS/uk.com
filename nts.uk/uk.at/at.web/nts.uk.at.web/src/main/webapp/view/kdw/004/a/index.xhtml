@@ -34,9 +34,8 @@
 						value: selectedClosure,
 						optionsText: 'closureName',
 						editable: false,
-						enable: true,
+						enable: $root.errors.isEmpty,
 						columns: [
-							{ prop: 'closureId', length: 1 },
 							{ prop: 'closureName', length: 10 },
 						]}"></div>
 					<div style="margin-left: 20px" class="form-label" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW003_128')}</div>
