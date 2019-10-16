@@ -160,5 +160,5 @@ public interface ApplicationRepository_New {
 	 * @param subName
 	 * @return
 	 */
-	public Map<String, Integer> getParamCMMS45(String companyId, String configName, List<String> subName);
+//	public Map<String, Integer> getParamCMMS45(String companyId, String configName, List<String> subName);
 }

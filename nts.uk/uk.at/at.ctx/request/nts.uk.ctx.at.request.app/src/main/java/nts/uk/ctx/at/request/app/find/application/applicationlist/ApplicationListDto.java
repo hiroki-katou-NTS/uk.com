@@ -23,6 +23,6 @@ public class ApplicationListDto {
 	private List<ContentApp> lstContentApp;
 	private List<AppAbsRecSyncData> lstSyncData;
 	private List<String> lstSCD;
-	private Integer appAllNumber;
-	private Integer appPerNumber;
+//	private Integer appAllNumber;
+//	private Integer appPerNumber;
 }
