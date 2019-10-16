@@ -105,16 +105,31 @@ public class ValidatorDataDailyRes {
 	// Arrays.stream(INPUT_CHECK).
 
 	// 育児と介護の時刻が両方入力されていないかチェックする
-	public List<DPItemValue> checkCareItemDuplicate(List<DPItemValue> items) {
+	public List<DPItemValue> checkCareItemDuplicate(List<DPItemValue> items, List<DailyModifyResult> itemValueMapOlds) {
 		List<DPItemValue> childCares = hasChildCare(items);
 		List<DPItemValue> cares = hasCare(items);
-		if (!childCares.isEmpty() && !cares.isEmpty()) {
-			// throw new BusinessException("Msg_996");
+		if(!childCares.isEmpty() && !cares.isEmpty()) {
 			childCares.addAll(cares);
 			return childCares;
-		} else
+		}
+		
+		if((!childCares.isEmpty() || !cares.isEmpty()) && !itemValueMapOlds.isEmpty()) {
+			DPItemValue dpItem = childCares.isEmpty() ? cares.get(0) : childCares.get(0);
+			List<DPItemValue> itemRowMapDB = itemValueMapOlds.get(0).getItems().stream()
+					.map(x -> new DPItemValue(dpItem.getRowId(), dpItem.getEmployeeId(), dpItem.getDate(), x.getItemId(), x.getValue(), ""))
+					.collect(Collectors.toList());
+			List<DPItemValue> childCareDBs = hasChildCare(itemRowMapDB);
+			List<DPItemValue> careDBs = hasCare(itemRowMapDB);
+			
+			if((!childCares.isEmpty() && !careDBs.isEmpty()) || (!childCareDBs.isEmpty() && !cares.isEmpty())) {
+				childCares.addAll(cares);
+				return childCares;
+			}else {
+				return Collections.emptyList();
+			}
+		}else {
 			return Collections.emptyList();
-
+		}
 	}
 
 	private List<DPItemValue> hasChildCare(List<DPItemValue> items) {
@@ -122,14 +137,14 @@ public class ValidatorDataDailyRes {
 				.filter(x -> x.getValue() != null && (x.getItemId() == CHILD_CARE[0] || x.getItemId() == CHILD_CARE[1]
 						|| x.getItemId() == CHILD_CARE[2] || x.getItemId() == CHILD_CARE[3]))
 				.collect(Collectors.toList());
-		return itemChild.isEmpty() ? Collections.emptyList() : itemChild;
+		return itemChild.isEmpty() ? new ArrayList<>() : itemChild;
 	}
 
 	private List<DPItemValue> hasCare(List<DPItemValue> items) {
 		List<DPItemValue> itemCare = items.stream().filter(x -> x.getValue() != null && (x.getItemId() == CARE[0]
 				|| x.getItemId() == CARE[1] || x.getItemId() == CARE[2] || x.getItemId() == CARE[3]))
 				.collect(Collectors.toList());
-		return itemCare.isEmpty() ? Collections.emptyList() : itemCare;
+		return itemCare.isEmpty() ? new ArrayList<>() : itemCare;
 	}
 
 	public List<DPItemValue> checkCareInputData(List<DPItemValue> items) {

@@ -240,7 +240,7 @@ public class OneMonthApprovalSttDomainServiceImpl implements OneMonthApprovalStt
 			for (int h = 0; h < lstClosureHst.size(); h++) {
 				if (lstClosure.get(c).getClosureId().value == lstClosureHst.get(h).getClosureId().value) {
 					lstClosureDto.add(new ClosureDto(lstClosureHst.get(h).getClosureId().value,
-							lstClosureHst.get(h).getClosureName().v(),
+							lstClosureHst.get(h).getClosureId().value + " : " + lstClosureHst.get(h).getClosureName().v(),
 							lstClosure.get(c).getClosureMonth().getProcessingYm().v().intValue()));
 					lstYearMonth.add(lstClosure.get(c).getClosureMonth().getProcessingYm());
 				}

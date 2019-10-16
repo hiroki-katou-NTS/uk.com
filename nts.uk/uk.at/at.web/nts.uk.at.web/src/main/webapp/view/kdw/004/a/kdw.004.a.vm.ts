@@ -90,6 +90,10 @@ module nts.uk.at.view.kdw004.a.viewmodel {
                     return;
                 } 
                 
+                if (nts.uk.ui.errors.getErrorByElement($("#row1")).length != 0) {
+                    return;
+                }
+               
                 if (valYearMonth) {
                     let param = {
                         closureIdParam: self.selectedClosure(),
