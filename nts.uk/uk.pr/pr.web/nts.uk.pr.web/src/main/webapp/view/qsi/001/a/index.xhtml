@@ -60,7 +60,12 @@
                         <span>#{i18n.getText('QSI001_A222_3')}</span>
                     </span>
                         <div id = "A2_4" tabindex="7" data-bind="ntsDatePicker: { value: startDate, required: true, dateFormat: 'YYYY/MM/DD', name: '#{i18n.getText('QSI001_A222_4')}'}"></div>
-                        <span data-bind="text: japanStartDate" class="limited-label" style="width: 140px;"  ></span>
+                        <div data-bind="if: japanStartDate.length > 12">
+                            <span data-bind="text: japanStartDate" class="limited-label" style="width: 140px;"  ></span>
+                        </div>
+                        <div data-bind="if: japanStartDate.length <= 12">
+                            <span data-bind="text: japanStartDate"></span>
+                        </div>
                         <span class="label" >#{i18n.getText('QSI001_A222_6')}</span>
                         <div id = "A2_7" tabindex="8" data-bind="ntsDatePicker: { value: endDate, dateFormat: 'YYYY/MM/DD',required: true, name: '#{i18n.getText('QSI001_A222_7')}'}"></div>
                         <span class="limited-label" style="width: 140px;"  data-bind="text: japanEndDate"></span>
