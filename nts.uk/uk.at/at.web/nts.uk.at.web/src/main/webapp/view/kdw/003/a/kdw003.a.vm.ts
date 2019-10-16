@@ -1648,7 +1648,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 if(data.dailyCorrectDto){
                       self.processFlex(data.dailyCorrectDto, true);
                 }
-                self.flagCalculation = false;
+                self.flagCalculation = data.flagCalculation;
                 if (data.resultError != null && !_.isEmpty(data.resultError.flexShortage)) {
                     if (data.resultError.flexShortage.error && data.resultError.flexShortage.messageError.length != 0) {
                         $("#next-month").ntsError("clear");
@@ -2038,6 +2038,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     paramVer.displayFormat = self.displayFormat();
                     service.loadVerRow(paramVer).done((data) => {
                         self.indentityMonth(data.indentityMonthResult);
+                        self.flagCalculation = false;
                         dfd.resolve();
                     });
                     return dfd.promise();
@@ -2077,7 +2078,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             }
 
             service.loadRow(param).done((data) => {
-                
+                self.flagCalculation = false;
                 if (onlyLoadMonth && errorFlex == false) {
                     self.processFlex(data, true);
                     nts.uk.ui.block.clear();
@@ -4623,7 +4624,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 closureId = self. closureId
             } else {
                 // パラメータ「日別実績の修正の起動．表示期間」 -> パラメータ「日別実績の修正の状態．表示期間」
-                yearMonth = self.shareObject().yearMonth
+                yearMonth = self.shareObject().yearMonthKDW004
                 closureId = self. shareObject().targetClosure
             }
             
@@ -5334,6 +5335,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         startDateKDW004: any;//期間 khoảng thời gian KDW004
         endDateKDW004: any;//期間 khoảng thời gian KDW004
         yearMonth: any;
+        yearMonthKDW004: any;
         constructor() {
         }
         mapDataShare(dataInit: any, dataExtract: any, dataSPR: any) : boolean {
@@ -5365,6 +5367,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 self.endDateKDW004 =  dataExtract.endDateKDW004;
                 checkDataShare = true;
                 self.yearMonth = dataExtract.yearMonth;
+                self.yearMonthKDW004 = dataExtract.yearMonthKDW004;
             }
 
             if (dataSPR != undefined) {

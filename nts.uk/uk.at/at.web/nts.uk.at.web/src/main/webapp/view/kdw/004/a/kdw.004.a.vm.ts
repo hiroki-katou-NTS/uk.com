@@ -111,9 +111,9 @@ module nts.uk.at.view.kdw004.a.viewmodel {
                 }
             });
            $(window).resize(function() {
-               $("#approvalSttGrid").igGrid("option", "height", (window.innerHeight - 400) + "px");
+               $("#approvalSttGrid").igGrid("option", "height", (window.innerHeight - 280) + "px");
                $("#approvalSttGrid").igGrid("option", "width", (window.innerWidth - (window.innerWidth - 1247)) + "px");
-               console.log("Width: " + window.innerWidth + " | Height:  " + window.innerHeight);
+               //console.log("Width: " + window.innerWidth + " | Height:  " + window.innerHeight);
 
            });
         }
@@ -268,7 +268,8 @@ module nts.uk.at.view.kdw004.a.viewmodel {
                     dateTarget: date,
                     individualTarget: undefined,
                     startDateKDW004: self.startDateExtract,
-                    endDateKDW004: self.endDateExtract
+                    endDateKDW004: self.endDateExtract,
+                    yearMonthKDW004: self.yearMonth()
                 };
 
             nts.uk.request.jump("at", "/view/kdw/003/a/index.xhtml", {
@@ -298,7 +299,8 @@ module nts.uk.at.view.kdw004.a.viewmodel {
                     dateTarget: startDate,
                     individualTarget: employeeId,
                     startDateKDW004: self.startDateExtract,
-                    endDateKDW004: self.endDateExtract
+                    endDateKDW004: self.endDateExtract,
+                    yearMonthKDW004: self.yearMonth()
                 };
 
             nts.uk.request.jump("at", "/view/kdw/003/a/index.xhtml", {
@@ -340,9 +342,10 @@ module nts.uk.at.view.kdw004.a.viewmodel {
                     //初期表示年月日
                     dateTarget: self.datePeriod().endDate,
                     //初期表示社員
-                    individualTarget: employeeId
+                    individualTarget: employeeId,
 //                    startDateKDW004: self.startDateExtract,
 //                    endDateKDW004: self.endDateExtract
+                    yearMonthKDW004: self.yearMonth()
                 };
 
             nts.uk.request.jump("at", "/view/kdw/003/a/index.xhtml", {
@@ -368,7 +371,7 @@ module nts.uk.at.view.kdw004.a.viewmodel {
                 primaryKey: "employeeCode",
                 dataSource: self.lstData,
                 width: window.innerWidth - (window.innerWidth - 1247),
-                height: window.innerHeight - 400,
+                height: window.innerHeight - 280,
                 autofitLastColumn: false,
                 autoGenerateColumns: false,
                 alternateRowStyles: false,

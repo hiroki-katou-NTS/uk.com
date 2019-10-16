@@ -187,7 +187,7 @@ public class DailyCalculationRCommandFacade {
 				return new DailyPerformanceCalculationDto(editedKeep, new ArrayList<>(),
 						new DataResultAfterIU(dailyCalcResult.getDataResultAfterIU().getErrorMap(), flexShortage, false,
 								"Msg_1492"),
-						Collections.emptyList(), Collections.emptyList(), true, dailyCorrectDto);
+						Collections.emptyList(), Collections.emptyList(), true, dailyCorrectDto, false);
 			}
 
 			resultUI = dailyCalcResult.getResultUI();
@@ -227,7 +227,7 @@ public class DailyCalculationRCommandFacade {
 				return new DailyPerformanceCalculationDto(editedKeep, new ArrayList<>(),
 						new DataResultAfterIU(ProcessCommonCalc.convertErrorToType(resultError, resultErrorMonth),
 								flexShortage, false, "Msg_1492"),
-						Collections.emptyList(), Collections.emptyList(), true, null);
+						Collections.emptyList(), Collections.emptyList(), true, null, false);
 			}
 
 		}
@@ -311,7 +311,7 @@ public class DailyCalculationRCommandFacade {
 		DailyPerformanceCalculationDto returnData = new DailyPerformanceCalculationDto(calculatedDtos, resultValues,
 				new DataResultAfterIU(ProcessCommonCalc.convertErrorToType(resultError, resultErrorMonth), flexShortage,
 						false, messageAlert),
-				resultCompare.getLeft(), empSidUpdate, false, dailyCorrectDto);
+				resultCompare.getLeft(), empSidUpdate, false, dailyCorrectDto, true);
 		return returnData;
 
 	}
