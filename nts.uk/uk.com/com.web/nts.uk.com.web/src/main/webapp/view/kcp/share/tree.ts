@@ -294,8 +294,17 @@ module kcp.share.tree {
             param.baseDate = self.baseDate();
             param.systemType = self.systemType;
             param.restrictionOfReferenceRange = self.restrictionOfReferenceRange;
-            service.findDepWkpTree(param).done(function(res: Array<UnitModel>) {
-                if (res && res.length > 0) {
+            service.findDepWkpTree(param).done(function(res1: Array<any>) {
+                //hoatt 2019.10.15 CDL008,KCP004 tham chieu table cu
+                if (res1 && res1.length > 0) {
+                    _.each(res1, function(item){
+                        item['id'] = item.workplaceId;
+                        _.each(item.childs, function(child){
+                            child['id'] = child.workplaceId;
+                        });
+                        item['children'] = item.childs;
+                    });
+                    let res: Array<UnitModel> = res1;
                     // Map already setting attr to data list.
                     self.addAlreadySettingAttr(res, self.alreadySettingList());
 
@@ -954,7 +963,9 @@ module kcp.share.tree {
 
         // Service paths.
         var servicePath = {
-            findDepWkpTree: "bs/employee/wkpdep/get-wkpdepinfo-kcp004",
+            //hoatt 2019.10.15 CDL008,KCP004 tham chieu table cu
+            findDepWkpTree: "bs/employee/workplace/config/info/findAll",
+//            findDepWkpTree: "bs/employee/wkpdep/get-wkpdepinfo-kcp004",
         };
 
         /**
