@@ -29,7 +29,7 @@ const _NavMenu = Vue.observable({
 
 @component({
     template: `<nav class="navbar navbar-expand-lg fixed-top" v-if="visible">
-        <a v-on:click="" class="navbar-brand">{{pgName |i18n}}</a>
+        <a v-on:click="" class="navbar-brand mr-n2">{{pgName |i18n}}</a>
         <button class="navbar-toggler dropdown-toggle" v-on:click="show = !show"></button>
         <transition name="collapse-long" v-on:before-enter="beforeEnter" v-on:after-leave="afterLeave">
             <div ref="nav" class="collapse navbar-collapse" v-show="show">
