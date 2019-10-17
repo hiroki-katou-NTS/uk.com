@@ -31,7 +31,7 @@
                 <div class="col-8 pr-1">
                     <nts-date-input v-model="selectedDate" />
                 </div>
-                <div class="col-4">
+                <div class="col-4 pl-1">
                     <button type="button" class="btn btn-primary btn-block" v-click:500="openMenu" v-if="dPCorrectionMenuDto.errorReferButtonDis">{{'KDWS03_76' | i18n}}</button>
                 </div>
             </div>
@@ -47,7 +47,7 @@
             </thead>
             <tbody>
                 <tr v-for="(row, i) of displayDataLstEx">
-                    <td v-bind:class="row.dateColor">{{row.date}}</td>
+                    <td v-bind:style="{ height: rowHeight + 'px' }" v-bind:class="row.dateColor">{{row.date}}</td>
                     <td v-for="(cell, j) of row.rowData" v-bind:class="cell.class"><span :class="cell.class.includes('text-truncate') ? '' : 'crop-text'">{{cell.displayvalue}}</span></td>
                     <td>
                         <div style="text-align: right" v-click:500="() => openEdit(row.id)">
@@ -60,7 +60,7 @@
             </tbody>
             <tfoot>
                 <tr>
-                    <td>合計</td>
+                    <td v-bind:style="{ height: rowHeight - 4 + 'px' }">合計</td>
                     <td v-for="header in displayHeaderLst" class="row-style text-truncate" :class="Array.isArray(displaySumLst[header.key]) ? displaySumLst[header.key][1] : ''">
                         <span class="text-truncate" v-if="Array.isArray(displaySumLst[header.key])">{{displaySumLst[header.key][0]}}</span>
                         <span class="text-truncate" v-if="!Array.isArray(displaySumLst[header.key])">{{displaySumLst[header.key]}}</span>
@@ -79,7 +79,7 @@
             </thead>
             <tbody>
                 <tr v-for="(row, i) of displayDataLstEx">
-                    <td><span class="crop-text">{{row.employeeName}}</span></td>
+                    <td v-bind:style="{ height: rowHeight + 'px' }"><span class="crop-text">{{row.employeeName}}</span></td>
                     <td v-for="(cell, j) of row.rowData" v-bind:class="cell.class"><span :class="cell.class.includes('text-truncate') ? '' : 'crop-text'">{{cell.displayvalue}}</span></td>
                     <td>
                         <div style="text-align: right" v-click:500="() => openEdit(row.id)">
@@ -92,7 +92,7 @@
             </tbody>
             <tfoot>
                 <tr class="d-none">
-                    <td>合計</td>
+                    <td v-bind:style="{ height: rowHeight + 'px' }">合計</td>
                     <td v-for="value in displayHeaderLst"></td>
                     <td></td>
                 </tr>
