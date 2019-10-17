@@ -31,19 +31,19 @@ module nts.uk.hr.view.ccg029.a.viewmodel {
         includeAcceptanceTransferEmployee: boolean; //受入出向社員を含める
         getPosition: boolean; //職位を取得する
         getEmployment: boolean; //雇用を取得する
-        getPersonalFileManagert: boolean; //個人ファイル管理を取得する
+        getPersonalFileManagement: boolean; //個人ファイル管理を取得する
         
         constructor(input: any) {
             this.systemType = input ? input.systemType || 1 : 1;
-            this.includePreEmployee = input ? input.includePreEmployee || true: true;
-            this.includeRetirement = input ? input.includeRetirement || true: true;
-            this.includeAbsence = input ? input.includeAbsence || true: true;
-            this.includeClosed = input ? input.includeClosed || true: true;
-            this.includeTransferEmployee = input ? input.includeTransferEmployee || true: true;
-            this.includeAcceptanceTransferEmployee = input ? input.includeAcceptanceTransferEmployee || true: true;
+            this.includePreEmployee = input ? input.includePreEmployee ? input.includePreEmployee: true : true;
+            this.includeRetirement = input ? input.includeRetirement ? input.includeRetirement : true: true;
+            this.includeAbsence = input ? input.includeAbsence ? input.includeAbsence: true: true;
+            this.includeClosed = input ? input.includeClosed ? input.includeClosed: true: true;
+            this.includeTransferEmployee = input ? input.includeTransferEmployee? input.includeTransferEmployee: true: true;
+            this.includeAcceptanceTransferEmployee = input ? input.includeAcceptanceTransferEmployee? input.includeAcceptanceTransferEmployee: true: true;
             this.getPosition = input ? input.getPosition || false: false;
             this.getEmployment = input ? input.getEmployment || false: false;
-            this.getPersonalFileManagert = input ? input.getPersonalFileManagert || false: false;
+            this.getPersonalFileManagement = input ? input.getPersonalFileManagement || false: false;
         }
     }
 }
