@@ -92,14 +92,14 @@
             </tbody>
             <tfoot>
                 <tr class="d-none">
-                    <td v-bind:style="{ height: rowHeight + 'px' }">合計</td>
+                    <td>合計</td>
                     <td v-for="value in displayHeaderLst"></td>
                     <td></td>
                 </tr>
             </tfoot>
         </fix-table>
         <div class="border-top mx-n3" style="font-size: 10px" v-if="displayFormat == '1'">
-            <div class="row m-2 mt-3">
+            <div class="row m-2 mt-2">
                 <div class="col-3 pl-1" v-bind:class="previousState">
                     <span class="mr-n1" v-click:500="previousPage">⇦前の20件</span>
                 </div>
