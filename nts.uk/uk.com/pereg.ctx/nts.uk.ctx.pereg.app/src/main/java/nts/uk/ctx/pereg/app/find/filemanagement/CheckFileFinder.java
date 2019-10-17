@@ -310,7 +310,7 @@ public class CheckFileFinder {
 				category.getCategoryCode().v(), baseDate,
 				employees.stream().map(m -> new PeregEmpInfoQuery(m.getPersonId(), m.getEmployeeId())).collect(Collectors.toList()));
 		
-		List<EmpMainCategoryDto> layouts = layoutProcessor.getCategoryDetailByListEmp(lquery);
+		List<EmpMainCategoryDto> layouts = layoutProcessor.getCategoryDetailByListEmp(lquery, true);
 		
 		Iterator<EmployeeRowDto> itr = employeeDtos.iterator();
 		while (itr.hasNext()) {

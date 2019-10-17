@@ -195,15 +195,14 @@ public class PeregProcessor {
 		return classItemList;
 	}
 	
-	@Inject
-	private PersonInfoCategoryAuthRepository personInfoCategoryAuthRepository;
+
 	
 	/**
 	 * Processor for layout in cps003
 	 * @param query
 	 * @return
 	 */
-	public List<EmpMainCategoryDto> getCategoryDetailByListEmp(PeregQueryByListEmp query) {
+	public List<EmpMainCategoryDto> getCategoryDetailByListEmp(PeregQueryByListEmp query, boolean isFinder) {
 		// app context
 		LoginUserContext loginUser = AppContexts.user();
 		
@@ -225,7 +224,7 @@ public class PeregProcessor {
 		}
 		
 		// get perInfoCtgAuth
-		Optional<PersonInfoCategoryAuth> ctgAuthOpt = personInfoCategoryAuthRepository
+		Optional<PersonInfoCategoryAuth> ctgAuthOpt = categoryAuthRepo
 				.getDetailPersonCategoryAuthByPId(roleId, perInfoCtg.getPersonInfoCategoryId());
 		
 		
@@ -261,7 +260,7 @@ public class PeregProcessor {
 		}
 		
 		// get item for self and other (self map key is true)
-		HashMap<Boolean, List<PerInfoItemDefForLayoutDto>> perItems = getPerItemDefForLayout(perInfoCtg, contractCode, roleId);
+		HashMap<Boolean, List<PerInfoItemDefForLayoutDto>> perItems = getPerItemDefForLayout(perInfoCtg, contractCode, isFinder, roleId);
 		
 		List<GridLayoutPersonInfoClsDto> classItemList = getDataClassItemListForGrid(query, perInfoCtg, perItems);
 
@@ -643,7 +642,7 @@ public class PeregProcessor {
 		return ỉtemLst;
 	}
 
-	private HashMap<Boolean, List<PerInfoItemDefForLayoutDto>> getPerItemDefForLayout(PersonInfoCategory category, String contractCode,
+	private HashMap<Boolean, List<PerInfoItemDefForLayoutDto>> getPerItemDefForLayout(PersonInfoCategory category, String contractCode, boolean isFinder,
 			String roleId) {
 		// get per info item def with order
 		List<PersonInfoItemDefinition> fullItemDefinitionList = perItemRepo
@@ -676,40 +675,70 @@ public class PeregProcessor {
 			if(categoryAuthOpt == null) {
 				return new HashMap<>();
 			}
+			if(isFinder == true) {
+				if (selfRole != PersonInfoAuthType.HIDE && categoryAuthOpt.getAllowPersonRef() != PersonInfoPermissionType.NO) {
+					// convert item-definition to layoutDto
+					ActionRole role = selfRole == PersonInfoAuthType.REFERENCE ? ActionRole.VIEW_ONLY : ActionRole.EDIT;
 
-			if (selfRole != PersonInfoAuthType.HIDE && categoryAuthOpt.getAllowPersonRef() != PersonInfoPermissionType.NO) {
-				// convert item-definition to layoutDto
-				ActionRole role = selfRole == PersonInfoAuthType.REFERENCE ? ActionRole.VIEW_ONLY : ActionRole.EDIT;
+					PerInfoItemDefForLayoutDto itemDto = itemForLayoutFinder.createItemLayoutDto(category, itemDefinition,
+							i, role);
 
-				PerInfoItemDefForLayoutDto itemDto = itemForLayoutFinder.createItemLayoutDto(category, itemDefinition,
+					
+					// get and convert childrenItems
+					List<PerInfoItemDefForLayoutDto> childrenItems = itemForLayoutFinder
+							.getChildrenItems(fullItemDefinitionList, category, itemDefinition, i, role);
+
+					itemDto.setLstChildItemDef(childrenItems);
+
+					lstSelf.add(itemDto);
+				}
+
+				if (otherRole != PersonInfoAuthType.HIDE && categoryAuthOpt.getAllowOtherRef() != PersonInfoPermissionType.NO) {
+					// convert item-definition to layoutDto
+					//ActionRole role = otherRole == PersonInfoAuthType.REFERENCE ? ActionRole.VIEW_ONLY : ActionRole.EDIT;
+					ActionRole role = otherRole == PersonInfoAuthType.REFERENCE ? ActionRole.VIEW_ONLY : ActionRole.EDIT;
+
+					PerInfoItemDefForLayoutDto itemDto = itemForLayoutFinder.createItemLayoutDto(category, itemDefinition,
+							i, role);
+
+					// get and convert childrenItems
+					List<PerInfoItemDefForLayoutDto> childrenItems = itemForLayoutFinder
+							.getChildrenItems(fullItemDefinitionList, category, itemDefinition, i, role);
+
+					itemDto.setLstChildItemDef(childrenItems);
+
+					lstOther.add(itemDto);
+				}				
+			}else {
+				ActionRole role = ActionRole.EDIT;
+				
+				
+				PerInfoItemDefForLayoutDto itemDtoSelf = itemForLayoutFinder.createItemLayoutDto(category, itemDefinition,
 						i, role);
 
 				
 				// get and convert childrenItems
-				List<PerInfoItemDefForLayoutDto> childrenItems = itemForLayoutFinder
+				List<PerInfoItemDefForLayoutDto> childrenItemsSelf = itemForLayoutFinder
 						.getChildrenItems(fullItemDefinitionList, category, itemDefinition, i, role);
 
-				itemDto.setLstChildItemDef(childrenItems);
+				itemDtoSelf.setLstChildItemDef(childrenItemsSelf);
 
-				lstSelf.add(itemDto);
-			}
-
-			if (otherRole != PersonInfoAuthType.HIDE && categoryAuthOpt.getAllowOtherRef() != PersonInfoPermissionType.NO) {
-				// convert item-definition to layoutDto
-				//ActionRole role = otherRole == PersonInfoAuthType.REFERENCE ? ActionRole.VIEW_ONLY : ActionRole.EDIT;
-				ActionRole role = otherRole == PersonInfoAuthType.REFERENCE ? ActionRole.VIEW_ONLY : ActionRole.EDIT;
-
-				PerInfoItemDefForLayoutDto itemDto = itemForLayoutFinder.createItemLayoutDto(category, itemDefinition,
+				lstSelf.add(itemDtoSelf);
+				
+				PerInfoItemDefForLayoutDto itemDtoOther = itemForLayoutFinder.createItemLayoutDto(category, itemDefinition,
 						i, role);
-
+				
 				// get and convert childrenItems
-				List<PerInfoItemDefForLayoutDto> childrenItems = itemForLayoutFinder
+				List<PerInfoItemDefForLayoutDto> childrenItemsOther = itemForLayoutFinder
 						.getChildrenItems(fullItemDefinitionList, category, itemDefinition, i, role);
 
-				itemDto.setLstChildItemDef(childrenItems);
+				itemDtoOther.setLstChildItemDef(childrenItemsOther);
 
-				lstOther.add(itemDto);
+				lstOther.add(itemDtoOther);
+				
+				
 			}
+
 		}
 
 		return new HashMap<Boolean, List<PerInfoItemDefForLayoutDto>>() {

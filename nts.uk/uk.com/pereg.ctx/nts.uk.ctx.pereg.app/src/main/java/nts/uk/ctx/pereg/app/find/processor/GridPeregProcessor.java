@@ -157,7 +157,7 @@ public class GridPeregProcessor {
 					perInfoCtg.getCategoryCode().v(), query.getStandardDate(),
 					personDatas.stream().map(m -> new PeregEmpInfoQuery(m.getPersonId(), m.getEmployeeId())).collect(Collectors.toList()));
 			
-			List<EmpMainCategoryDto> layouts = layoutProcessor.getCategoryDetailByListEmp(lquery);
+			List<EmpMainCategoryDto> layouts = layoutProcessor.getCategoryDetailByListEmp(lquery, true);
 			
 			if(specialCode.contains(query.getCategoryCode())) {
 				if(query.getCategoryCode().equals("CS00024")) {
@@ -480,7 +480,7 @@ public class GridPeregProcessor {
 					perInfoCtg.getCategoryCode().v(), query.getStandardDate(),
 					personDatas.stream().map(m -> new PeregEmpInfoQuery(m.getPersonId(), m.getEmployeeId())).collect(Collectors.toList()));
 			
-			List<EmpMainCategoryDto> layouts = layoutProcessor.getCategoryDetailByListEmp(lquery);
+			List<EmpMainCategoryDto> layouts = layoutProcessor.getCategoryDetailByListEmp(lquery, false);
 			
 			if(specialCode.contains(query.getCategoryCode())) {
 				if(query.getCategoryCode().equals("CS00024")) {
@@ -557,6 +557,9 @@ public class GridPeregProcessor {
 						}
 						if(grantTableOpt.isPresent()) {
 							grantTable = (String) grantTableOpt.get().getValue();
+							if(StringUtil.isNullOrEmpty(grantTable, true)) {
+								grantTable = null;
+							}
 						}
 						return new SpecialleaveInformation(c.getEmployeeId(), getSpecialCode(query.getCategoryCode()), grantDate, appSet, grantTable, grantDays, null, null);
 					}).collect(Collectors.toList());
@@ -603,5 +606,6 @@ public class GridPeregProcessor {
 		}
 
 		return geDto;
+		
 	}
 }
