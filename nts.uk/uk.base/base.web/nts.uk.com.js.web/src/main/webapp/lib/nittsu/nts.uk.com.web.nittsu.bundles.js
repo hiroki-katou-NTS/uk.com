@@ -16410,10 +16410,10 @@ var nts;
                             dateFormat = 'YYYY/MM/DD dddd';
                             valueFormat = 'YYYY/MM/DD';
                         }
-                        else {
-                            dateFormat = 'YYYY/MM/DD';
-                            valueFormat = 'YYYY/MM/DD';
-                        }
+                        // else {
+                        //    dateFormat = 'YYYY/MM/DD'; 
+                        //    valueFormat = 'YYYY/MM/DD';   
+                        //}
                         var ISOFormat = uk.text.getISOFormat(dateFormat);
                         var hasDayofWeek = (ISOFormat.indexOf("ddd") !== -1);
                         var dayofWeekFormat = ISOFormat.replace(/[^d]/g, "");
