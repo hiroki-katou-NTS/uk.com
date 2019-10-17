@@ -26,7 +26,7 @@ public class DataBeforeReflectCommand {
 		public String companyCode;
 
 		// 業務ID
-		public Integer workId;
+		public int workId;
 
 		// 業務名称
 		public String workName;
@@ -41,11 +41,14 @@ public class DataBeforeReflectCommand {
 
 		// 社員名 ********** can hoi lai truong nay
 		public String employeeName;
+		
+		// 届出区分
+		public int notificationCategory;
 
-		// 保留フラグ
+		// 保留フラグ 
 		public int pendingFlag;
 
-		// 入力日
+		// 入力日  // == systemDate
 		public GeneralDate inputDate;
 
 		// ステータス
@@ -59,9 +62,6 @@ public class DataBeforeReflectCommand {
 
 		// 退職区分（必須） RetirementCategory A222_16
 		public int retirementType; 
-
-		// 届出区分
-		public int selectedCode_Retiment;
 
 		// 退職理由区分1
 		public int selectedCode_Reason1;

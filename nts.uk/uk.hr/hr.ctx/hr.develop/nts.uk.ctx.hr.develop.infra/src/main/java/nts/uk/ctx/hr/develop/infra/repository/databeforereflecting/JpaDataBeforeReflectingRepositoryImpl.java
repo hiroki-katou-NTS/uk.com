@@ -134,7 +134,22 @@ public class JpaDataBeforeReflectingRepositoryImpl extends JpaRepository impleme
 		}
 
 		if (!listSid.isEmpty()) {
-			sql = sql + " and c.sId IN '" + listSid + "'";
+			String inClause = "";
+			if (listSid.size() ==  1) {
+				inClause = inClause + "('" + listSid.get(0) + "')"  ;
+			}else{
+				for (int i = 0; i < listSid.size(); i++) {
+					if (i == 0) {
+						inClause = inClause + "('" + listSid.get(0) + "'"  ;
+					} else if (i == listSid.size() - 1) {
+						inClause = inClause + ",'" + listSid.get(i) + "')"  ;
+					} else {
+						inClause = inClause + ",'" + listSid.get(i) + "'"  ;
+					}
+				}
+			}
+			
+			sql = sql + " and c.sId IN " + inClause ;
 		}
 
 		if ((!includReflected.isPresent()) || (includReflected.isPresent() && includReflected.get() == false)) {
@@ -142,11 +157,11 @@ public class JpaDataBeforeReflectingRepositoryImpl extends JpaRepository impleme
 		}
 
 		if (sortByColumnName.isPresent()) {
-			sql = sql + " ORDER BY '" + sortByColumnName.get() + "'";
+			sql = sql + " ORDER BY c." + sortByColumnName.get() ;
 		}
 
 		if (sortByColumnName.isPresent() && orderType.isPresent()) {
-			sql = sql + " '" + orderType + "' ";
+			sql = sql + " " + orderType.get() ;
 		}
 
 		EntityManager em = this.getEntityManager();

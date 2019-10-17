@@ -43,13 +43,15 @@
 .header-right{
 	float: right;
 	margin: 10px;
-	border: 1px solid black;
+	
 }
-.avatar-group{
-	width: 110px;
-    height: 147px;
+.avatar{
+	width: 130px;
+    height: 144px;
     cursor: pointer;
-    background-color: green;
+    border: 1px solid DarkGray;
+    padding-top: 3px;
+    padding-bottom: 3px;
 }
 
 .employee {
@@ -120,6 +122,20 @@
 	float:right;
 	color: #0070C0;
 	text-decoration: underline;
+}
+
+#gridListEmployees_scroll {
+	height: 257px !important;
+	overflow-y: scroll !important;	
+	overflow-x: hidden;
+}
+
+#gridListEmployees_container {
+	height: 258px !important;
+}
+
+#gridListEmployeesContent {
+    height: 300px !important;
 }
 	
 	

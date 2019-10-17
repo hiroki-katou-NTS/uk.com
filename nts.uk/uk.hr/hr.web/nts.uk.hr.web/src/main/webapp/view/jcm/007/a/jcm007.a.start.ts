@@ -1,13 +1,7 @@
 __viewContext.ready(function() {
     var screenModel = new jcm007.a.ViewModel();
-    screenModel.start(undefined).done(function(){
-        nts.uk.ui.confirmSave(screenModel.dirtyObject);
+    screenModel.start().done(function(){
         __viewContext.bind(screenModel);
-        if(screenModel.sel001Data().length > 0){
-                $("#companyName").focus();
-            }else{
-                $("#companyCode").focus(); 
-            }
     });
    
 });

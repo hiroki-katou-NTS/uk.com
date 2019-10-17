@@ -28,16 +28,19 @@
 			<com:scriptfile path="jcm007.a.start.js" />
 			<com:scriptfile path="jcm007.a.vm.js" />
 			<com:scriptfile path="jcm007.a.service.js" />
+			<!-- library for ccg029 -->
+			<com:scriptfile path="/view/ccg/029/a/ccg029.a.vm.js" of="/nts.uk.com.web" />
+			<com:stylefile path="/view/ccg/029/a/ccg029.a.style.css" of="/nts.uk.com.web" />
 		</ui:define>
 
 		<ui:define name="content">
 			<div id="functions-area">
 				<!-- A1_1 -->
 				<button id="reset" tabindex="1" class="group-button-1"
-					data-bind="click: newMode"> 新規 </button>
+					data-bind="click: newMode "> 新規 </button>
 				<!-- A1_2 -->
 				<button id="register" tabindex="2" class="proceed group-button-1"
-					data-bind="click: register, enable:  true"> 登録 </button>
+					data-bind="click: register , enable:  true"> 登録 </button>
 				<!-- A1_3 -->
 				<button id="setting" tabindex="3" class="danger group-button-1" 
 					data-bind="click: remove , enable: enable_btnRemove">削除</button>
@@ -57,7 +60,8 @@
 										   direction: 'horizontal' }">
 								<!-- Màn hình B -->
 								<div class="tab-content-1">
-									<div style="text-align:  center;">tab-content-1</div>
+									<div style="text-align:  center;"></div>
+									<search-employee-modal params="input: input, callback: seletedEmployee.bind($vm)"></search-employee-modal>
 								</div>
 								<!-- Màn hình C -->
 								<div class="tab-content-2">
@@ -99,6 +103,7 @@
 							
 						</div>
 						<div class = "header-right avatar-group">
+							<img data-bind="attr: { src: avatarPerson }" class="avatar" />
 						</div>						
 					</div>
 					

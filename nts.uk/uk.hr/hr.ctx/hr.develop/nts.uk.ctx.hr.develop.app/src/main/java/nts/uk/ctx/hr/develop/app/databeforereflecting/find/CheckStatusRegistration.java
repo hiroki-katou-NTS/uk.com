@@ -19,16 +19,21 @@ public class CheckStatusRegistration {
 	private RetirementInformationService retirementInfoService;
 	
 
+	// アルゴリズム[登録状況チェック]を実行する(Thực hiện thuật toán "CHeck tình trạng đăng ký ")
 	public Boolean CheckStatusRegistration(String sid){
 		
 		String cid = AppContexts.user().companyId();
 		Integer workId = 1;
-		List<String> listPid =  Arrays.asList(sid);
+		List<String> listSid =  Arrays.asList(sid);
 		Optional<Boolean> includReflected = Optional.of(true);
 		Optional<String> sortByColumnName = Optional.empty();
 		Optional<String> orderType = Optional.empty();
 
-		List<RetirementInformation> listRetirementInfo = retirementInfoService.getRetirementInfo(cid, workId, listPid,
+		// [個人情報の取得]("Get personal information")
+		// todo 
+		
+		// アルゴリズム[退職者情報の取得]を実行する (Thực hiện thuật toán "Get Retired information")
+		List<RetirementInformation> listRetirementInfo = retirementInfoService.getRetirementInfo(cid, workId, listSid,
 				includReflected, sortByColumnName, orderType);
 		
 		if (!listRetirementInfo.isEmpty()) {

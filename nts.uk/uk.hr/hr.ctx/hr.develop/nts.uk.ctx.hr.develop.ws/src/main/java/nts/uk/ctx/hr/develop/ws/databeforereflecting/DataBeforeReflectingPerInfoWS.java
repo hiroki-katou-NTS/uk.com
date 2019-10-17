@@ -8,10 +8,12 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import nts.uk.ctx.hr.develop.app.databeforereflecting.command.DataBeforeReflectCommand;
+import nts.uk.ctx.hr.develop.app.databeforereflecting.command.PreCheckCommandHandler;
 import nts.uk.ctx.hr.develop.app.databeforereflecting.command.RegisterNewEmpCommandHandler;
 import nts.uk.ctx.hr.develop.app.databeforereflecting.find.CheckStatusRegistration;
 import nts.uk.ctx.hr.develop.app.databeforereflecting.find.DataBeforeReflectDto;
@@ -25,24 +27,33 @@ public class DataBeforeReflectingPerInfoWS {
 	private DatabeforereflectingFinder finder;
 	
 	@Inject
-	private CheckStatusRegistration checkStatusRegistration;
+	private CheckStatusRegistration checkStatusRegis;
 	
 	@Inject
 	private RegisterNewEmpCommandHandler addCommand;
+	
+	@Inject
+	private PreCheckCommandHandler preCheck;
 
 	@POST
 	@Path("/getData")
-	public List<DataBeforeReflectDto> getGuideDispSetting() {
+	public List<DataBeforeReflectDto> getData() {
 		List<DataBeforeReflectDto> result = finder.getDataBeforeReflect();
 		return result;
 	}
 	
 	@POST
-	@Path("/checkStatus")
-	public Boolean checkStatusRegistration(String sid) {
-		return this.checkStatusRegistration(sid);
+	@Path("/checkStatusRegistration/{sid}")
+	public void checkStatusRegistration(@PathParam("sid") String sid) {
+		 this.checkStatusRegis.CheckStatusRegistration(sid);
 	}
-
+	
+	@POST
+	@Path("/checkStatusRegistration/preCheck")
+	public void preCheck(DataBeforeReflectCommand command) {
+		 this.preCheck.handle(command);
+	}
+	
 	@POST
 	@Path("/add")
 	public void add(DataBeforeReflectCommand command) {
