@@ -42,7 +42,7 @@ public interface PersonRepository {
 	
 	/**
 	 * @author lanlt
-	 * get full domain
+	 * get full domain cps003
 	 * getFullPersonByPersonIds
 	 * @param personIds
 	 * @return
@@ -65,5 +65,13 @@ public interface PersonRepository {
 	 * @param person
 	 */
 	void updateAll(List<Person> domains);
+	
+	/**
+	 *  個人を取得する
+	 * @author lanlt
+	 * @param personIds
+	 * @return
+	 */
+	List<Person> getAllPersonByPids(List<String> pids);
 	
 }
