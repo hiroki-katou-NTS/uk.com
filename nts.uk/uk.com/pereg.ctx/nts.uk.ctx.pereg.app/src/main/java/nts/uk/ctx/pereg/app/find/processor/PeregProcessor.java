@@ -539,7 +539,7 @@ public class PeregProcessor {
 	}	
 
 
-	private List<LayoutPersonInfoClsDto> creatClassItemList(List<PerInfoItemDefForLayoutDto> lstClsItem, PersonInfoCategory perInfoCtg) {
+	public List<LayoutPersonInfoClsDto> creatClassItemList(List<PerInfoItemDefForLayoutDto> lstClsItem, PersonInfoCategory perInfoCtg) {
 		return lstClsItem.stream().map(item -> {
 			LayoutPersonInfoClsDto layoutPerInfoClsDto = new LayoutPersonInfoClsDto();
 			
@@ -642,7 +642,7 @@ public class PeregProcessor {
 		return ỉtemLst;
 	}
 
-	private HashMap<Boolean, List<PerInfoItemDefForLayoutDto>> getPerItemDefForLayout(PersonInfoCategory category,
+	public HashMap<Boolean, List<PerInfoItemDefForLayoutDto>> getPerItemDefForLayout(PersonInfoCategory category,
 			String contractCode, boolean isFinder, String roleId) {
 		// get per info item def with order
 		List<PersonInfoItemDefinition> fullItemDefinitionList = perItemRepo
