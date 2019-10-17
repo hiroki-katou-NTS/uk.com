@@ -642,8 +642,8 @@ public class PeregProcessor {
 		return ỉtemLst;
 	}
 
-	private HashMap<Boolean, List<PerInfoItemDefForLayoutDto>> getPerItemDefForLayout(PersonInfoCategory category, String contractCode, boolean isFinder,
-			String roleId) {
+	private HashMap<Boolean, List<PerInfoItemDefForLayoutDto>> getPerItemDefForLayout(PersonInfoCategory category,
+			String contractCode, boolean isFinder, String roleId) {
 		// get per info item def with order
 		List<PersonInfoItemDefinition> fullItemDefinitionList = perItemRepo
 				.getAllItemDefByCategoryId(category.getPersonInfoCategoryId(), contractCode);
@@ -652,38 +652,37 @@ public class PeregProcessor {
 				.filter(item -> item.haveNotParentCode()).collect(Collectors.toList());
 
 		List<PerInfoItemDefForLayoutDto> lstSelf = new ArrayList<>(), lstOther = new ArrayList<>();
-		 
+
 		PersonInfoCategoryAuth categoryAuthOpt = this.categoryAuthRepo
 				.getDetailPersonCategoryAuthByPId(roleId, category.getPersonInfoCategoryId()).orElse(null);
-		
+
 		Map<String, PersonInfoItemAuth> mapItemAuth = itemAuthRepo
 				.getAllItemAuth(roleId, category.getPersonInfoCategoryId()).stream()
 				.collect(Collectors.toMap(e -> e.getPersonItemDefId(), e -> e));
+		if (isFinder == true) {
+			for (int i = 0; i < parentItemDefinitionList.size(); i++) {
+				PersonInfoItemDefinition itemDefinition = parentItemDefinitionList.get(i);
 
-		for (int i = 0; i < parentItemDefinitionList.size(); i++) {
-			PersonInfoItemDefinition itemDefinition = parentItemDefinitionList.get(i);
+				// check authority
+				PersonInfoItemAuth personInfoItemAuth = mapItemAuth.get(itemDefinition.getPerInfoItemDefId());
 
-			// check authority
-			PersonInfoItemAuth personInfoItemAuth = mapItemAuth.get(itemDefinition.getPerInfoItemDefId());
-			
-			if (personInfoItemAuth == null) {
-				continue;
-			}
+				if (personInfoItemAuth == null) {
+					continue;
+				}
 
-			PersonInfoAuthType selfRole = personInfoItemAuth.getSelfAuth(),
-					otherRole = personInfoItemAuth.getOtherAuth();
-			if(categoryAuthOpt == null) {
-				return new HashMap<>();
-			}
-			if(isFinder == true) {
-				if (selfRole != PersonInfoAuthType.HIDE && categoryAuthOpt.getAllowPersonRef() != PersonInfoPermissionType.NO) {
+				PersonInfoAuthType selfRole = personInfoItemAuth.getSelfAuth(),
+						otherRole = personInfoItemAuth.getOtherAuth();
+				if (categoryAuthOpt == null) {
+					return new HashMap<>();
+				}
+				if (selfRole != PersonInfoAuthType.HIDE
+						&& categoryAuthOpt.getAllowPersonRef() != PersonInfoPermissionType.NO) {
 					// convert item-definition to layoutDto
 					ActionRole role = selfRole == PersonInfoAuthType.REFERENCE ? ActionRole.VIEW_ONLY : ActionRole.EDIT;
 
-					PerInfoItemDefForLayoutDto itemDto = itemForLayoutFinder.createItemLayoutDto(category, itemDefinition,
-							i, role);
+					PerInfoItemDefForLayoutDto itemDto = itemForLayoutFinder.createItemLayoutDto(category,
+							itemDefinition, i, role);
 
-					
 					// get and convert childrenItems
 					List<PerInfoItemDefForLayoutDto> childrenItems = itemForLayoutFinder
 							.getChildrenItems(fullItemDefinitionList, category, itemDefinition, i, role);
@@ -693,13 +692,16 @@ public class PeregProcessor {
 					lstSelf.add(itemDto);
 				}
 
-				if (otherRole != PersonInfoAuthType.HIDE && categoryAuthOpt.getAllowOtherRef() != PersonInfoPermissionType.NO) {
+				if (otherRole != PersonInfoAuthType.HIDE
+						&& categoryAuthOpt.getAllowOtherRef() != PersonInfoPermissionType.NO) {
 					// convert item-definition to layoutDto
-					//ActionRole role = otherRole == PersonInfoAuthType.REFERENCE ? ActionRole.VIEW_ONLY : ActionRole.EDIT;
-					ActionRole role = otherRole == PersonInfoAuthType.REFERENCE ? ActionRole.VIEW_ONLY : ActionRole.EDIT;
+					// ActionRole role = otherRole == PersonInfoAuthType.REFERENCE ?
+					// ActionRole.VIEW_ONLY : ActionRole.EDIT;
+					ActionRole role = otherRole == PersonInfoAuthType.REFERENCE ? ActionRole.VIEW_ONLY
+							: ActionRole.EDIT;
 
-					PerInfoItemDefForLayoutDto itemDto = itemForLayoutFinder.createItemLayoutDto(category, itemDefinition,
-							i, role);
+					PerInfoItemDefForLayoutDto itemDto = itemForLayoutFinder.createItemLayoutDto(category,
+							itemDefinition, i, role);
 
 					// get and convert childrenItems
 					List<PerInfoItemDefForLayoutDto> childrenItems = itemForLayoutFinder
@@ -708,15 +710,29 @@ public class PeregProcessor {
 					itemDto.setLstChildItemDef(childrenItems);
 
 					lstOther.add(itemDto);
-				}				
-			}else {
-				ActionRole role = ActionRole.EDIT;
-				
-				
-				PerInfoItemDefForLayoutDto itemDtoSelf = itemForLayoutFinder.createItemLayoutDto(category, itemDefinition,
-						i, role);
+				}
 
-				
+			}
+
+		} else {
+			for (int i = 0; i < parentItemDefinitionList.size(); i++) {
+				PersonInfoItemDefinition itemDefinition = parentItemDefinitionList.get(i);
+
+				// check authority
+				PersonInfoItemAuth personInfoItemAuth = mapItemAuth.get(itemDefinition.getPerInfoItemDefId());
+
+				if (personInfoItemAuth == null) {
+					continue;
+				}
+
+				if (categoryAuthOpt == null) {
+					return new HashMap<>();
+				}
+				ActionRole role = ActionRole.EDIT;
+
+				PerInfoItemDefForLayoutDto itemDtoSelf = itemForLayoutFinder.createItemLayoutDto(category,
+						itemDefinition, i, role);
+
 				// get and convert childrenItems
 				List<PerInfoItemDefForLayoutDto> childrenItemsSelf = itemForLayoutFinder
 						.getChildrenItems(fullItemDefinitionList, category, itemDefinition, i, role);
@@ -724,10 +740,10 @@ public class PeregProcessor {
 				itemDtoSelf.setLstChildItemDef(childrenItemsSelf);
 
 				lstSelf.add(itemDtoSelf);
-				
-				PerInfoItemDefForLayoutDto itemDtoOther = itemForLayoutFinder.createItemLayoutDto(category, itemDefinition,
-						i, role);
-				
+
+				PerInfoItemDefForLayoutDto itemDtoOther = itemForLayoutFinder.createItemLayoutDto(category,
+						itemDefinition, i, role);
+
 				// get and convert childrenItems
 				List<PerInfoItemDefForLayoutDto> childrenItemsOther = itemForLayoutFinder
 						.getChildrenItems(fullItemDefinitionList, category, itemDefinition, i, role);
@@ -735,10 +751,7 @@ public class PeregProcessor {
 				itemDtoOther.setLstChildItemDef(childrenItemsOther);
 
 				lstOther.add(itemDtoOther);
-				
-				
 			}
-
 		}
 
 		return new HashMap<Boolean, List<PerInfoItemDefForLayoutDto>>() {
@@ -746,7 +759,7 @@ public class PeregProcessor {
 			{
 				put(true, lstSelf);
 				put(false, lstOther);
-			}			
+			}
 		};
 	}
 
