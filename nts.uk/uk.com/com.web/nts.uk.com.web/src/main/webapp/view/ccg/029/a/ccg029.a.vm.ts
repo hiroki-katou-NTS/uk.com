@@ -8,7 +8,7 @@ module ccg029.component {
                     return cvm;
                 }
             },
-            template: '<div class="component-search-employee">'
+            template: '<div id="component-search-employee">'
                 + '   <div class="row">'
                 + '       <div class ="inline lable mr5"><span data-bind="text: nts.uk.resource.getText(\'CCG029_A1_1\')"></span></div>'
                 + '       <div tabindex="1" class ="inline" data-bind="ntsDatePicker: {value: processingDate, name: nts.uk.resource.getText(\'CCG029_A1_2\'), dateFormat: \'YYYY/MM/DD\'}"></div>'
@@ -17,9 +17,9 @@ module ccg029.component {
                 + '       <div class ="inline mr10">'
                 + '           <form id="form" action="#" autocomplete="off">'
                 + '               <input tabindex="2" data-bind="ntsTextEditor: {'
-                + '                   name: nts.uk.resource.getText(\'CCG029_A1_2\'),'
+                + '                   name: nts.uk.resource.getText(\'CCG029_A1_3\'),'
                 + '                   value: keySearch,'
-                + '                   option: {width: \'240px\', placeholder: nts.uk.resource.getText(\'Com_Person\') + \'コード・氏名・カナ氏名で検索･･･\'}}" />'
+                + '                   option: {width: \'240px\', placeholder: nts.uk.resource.getText(\'CCG029_A1_3\')}}" />'
                 + '           </form>'
                 + '       </div>'
                 + '       <button tabindex="3" id="findBtn" class="inline" data-bind="click: search, text:nts.uk.resource.getText(\'CCG029_A1_4\')"></button>'
@@ -164,7 +164,7 @@ module ccg029.component {
                 dataSource: self.employeeList,
                 dataSourceType: 'json',
                 responseDataKey: 'results',
-                height: window.innerHeight - 267,
+                height: document.getElementById("component-search-employee").clientHeight - 160,
                 width: '100%',
                 tabIndex: 7,
                 features: [
