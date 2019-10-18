@@ -155,6 +155,11 @@ public interface EmployeeDataMngInfoRepository {
 	List<EmployeeDataMngInfo> findEmployeesMatchingName(List<String> pid, String companyId);
 	
 	/**
+	 * method Fix performance for 個人ID(List)から会社IDに一致する社員に絞り込む 
+	 */
+	List<EmployeeDataMngInfo> findEmployeesMatchingName(String keyWord, String companyId);
+	
+	/**
 	 * 会社IDと社員コード(部分一致)から社員IDListを取得する
 	 */
 	List<EmployeeIdPersonalIdDto> findEmployeePartialMatchCode(String cId, String sCd);
