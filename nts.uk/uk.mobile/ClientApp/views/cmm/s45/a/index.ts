@@ -37,6 +37,8 @@ export class CmmS45AComponent extends Vue {
     public lstAppType: Array<{ code: string, appType: number; appName: string; }> = [];//申請種類リスト
     public lstApp: Array<AppInfo> = [];//申請一覧
     public isDisPreP: number = 0;//申請表示設定.事前事後区分
+    public displayA512: number = 0;
+    public appAllNumber: number = 0;
 
     public mounted() {
         this.pgName = 'cmm045a';
@@ -54,15 +56,16 @@ export class CmmS45AComponent extends Vue {
 
     // 申請を絞り込む
     get filterByAppType() {
+        let self = this;
         //抽出条件を変更する
-        this.prFilter.appType = Number(this.selectedValue);
+        self.prFilter.appType = Number(this.selectedValue);
         storage.local.setItem('CMMS45_AppListExtractCondition', this.prFilter);
         //データをフィルタする
-        switch (this.selectedValue) {
+        switch (self.selectedValue) {
             case '-1':
-                return this.lstApp;
+                return self.displayA512 == 2 ? self.lstApp.slice(0, self.appAllNumber) : self.lstApp;
             case '0':
-                return this.lstApp;
+                return self.displayA512 == 2 ? self.lstApp.slice(0, self.appAllNumber) : self.lstApp;
             default:
                 return [];
         }
@@ -128,6 +131,15 @@ export class CmmS45AComponent extends Vue {
     private convertAppInfo(data: any) {
         let self = this;
         self.lstApp = [];
+        if (data.lstApp.length == 0) {
+            self.displayA512 = 1;
+        } else if (data.lstApp.length > data.appAllNumber) {
+            self.displayA512 = 2;
+            self.appAllNumber = data.appAllNumber;
+        } else {
+            self.displayA512 = 0;
+        }
+        
         data.lstApp.forEach((app: any) => {
             self.lstApp.push(new AppInfo({
                 id: app.applicationID,

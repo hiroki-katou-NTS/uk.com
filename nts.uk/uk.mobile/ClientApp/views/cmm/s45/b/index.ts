@@ -54,6 +54,9 @@ export class CmmS45BComponent extends Vue {
     public lstMasterInfo: Array<any> = [];
     public isDisPreP: number = 0;//申請表示設定.事前事後区分
     public disableB24: boolean = false;
+    public displayB513: number = 0;
+    public appAllNumber: number = 0;
+    public appPerNumber: number = 0;
 
     @Watch('modeAppr')
     public checkChangeMode(mode: boolean) {
@@ -174,12 +177,23 @@ export class CmmS45BComponent extends Vue {
     private convertAppInfo(data: any) {
         let self = this;
         self.lstAppByEmp = [];
+        if (data.lstApp.length == 0) {
+            self.displayB513 = 1;
+        } else if (data.lstApp.length > data.appAllNumber) {
+            self.displayB513 = 2;
+            self.appAllNumber = data.appAllNumber;
+        } else {
+            self.displayB513 = 0;
+        }
+        self.appPerNumber = data.appPerNumber;
         data.lstSCD.forEach((sCD) => {
             let appInfor = self.getLstApp(data, sCD);
             self.lstAppByEmp.push(new AppByEmp({
                 empCD: sCD,
                 empName: appInfor.sName,
-                lstApp: self.convertLstApp(appInfor.lstApp)
+                lstApp: self.convertLstApp(appInfor.lstApp),
+                displayB52: appInfor.lstApp.length > data.appPerNumber,
+                appPerNumber: data.appPerNumber
             }));
         });
     }
@@ -319,15 +333,55 @@ export class CmmS45BComponent extends Vue {
     }
     // 申請を絞り込む
     get filterByAppType() {
+        let self = this;
         //抽出条件を変更する
-        this.prFilter.appType = Number(this.selectedValue);
-        storage.local.setItem('CMMS45_AppListExtractCondition', this.prFilter);
+        self.prFilter.appType = Number(self.selectedValue);
+        storage.local.setItem('CMMS45_AppListExtractCondition', self.prFilter);
+        let lstDisplay = [];
+        let count = 0;
+        if (self.displayB513 == 2) {//TH tổng vượt quá
+            self.lstAppByEmp.forEach((emp) => {
+                let lstAppCheck = emp.displayB52 ? emp.lstAppDisplay : emp.lstApp;
+                if (count >= self.appAllNumber) {
+                    return;
+                } 
+                if (count + lstAppCheck.length < self.appAllNumber) {
+                    lstDisplay.push(new AppByEmp({
+                        empCD: emp.empCD,
+                        empName: emp.empName,
+                        lstApp: lstAppCheck,
+                        displayB52: emp.displayB52,
+                        appPerNumber: emp.appPerNumber
+                    }));
+                } else {
+                    lstDisplay.push(new AppByEmp({
+                        empCD: emp.empCD,
+                        empName: emp.empName,
+                        lstApp: lstAppCheck.slice(0, self.appAllNumber - count),
+                        displayB52: emp.displayB52,
+                        appPerNumber: emp.appPerNumber
+                    }));
+                }
+                count = count + lstAppCheck.length;
+                
+            });
+        } else {//TH tổng không vượt quá
+            self.lstAppByEmp.forEach((emp) => {
+                lstDisplay.push(new AppByEmp({
+                    empCD: emp.empCD,
+                    empName: emp.empName,
+                    lstApp: emp.displayB52 ? emp.lstAppDisplay : emp.lstApp,
+                    displayB52: emp.displayB52,
+                    appPerNumber: emp.appPerNumber
+                }));
+            });
+        }
         //データをフィルタする
-        switch (this.selectedValue) {
+        switch (self.selectedValue) {
             case '-1':
-                return this.lstAppByEmp;
+                return lstDisplay;
             case '0':
-                return this.lstAppByEmp;
+                return lstDisplay;
             default:
                 return [];
         }
@@ -355,17 +409,26 @@ interface IAppByEmp {
     empCD: string;
     empName: string;
     lstApp: Array<AppInfo>;
+    displayB52: boolean;
+    appPerNumber: number;
 }
 
 class AppByEmp {
     public empCD: string;
     public empName: string;
     public lstApp: Array<AppInfo>;
+    public displayB52: boolean;
+    public appPerNumber: number;
 
     constructor(param: IAppByEmp) {
         this.empCD = param.empCD;
         this.empName = param.empName;
         this.lstApp = param.lstApp;
+        this.displayB52 = param.displayB52;
+        this.appPerNumber = param.appPerNumber;
     }
 
+    get lstAppDisplay() {
+        return this.displayB52 ? this.lstApp.slice(0, this.appPerNumber) : this.lstApp;
+    }
 }

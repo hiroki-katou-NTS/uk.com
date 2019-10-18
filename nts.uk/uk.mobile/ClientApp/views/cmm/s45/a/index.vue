@@ -42,6 +42,13 @@
           </div>
       </li>
     </ul>
+    <div v-if="displayA512 == 1" class="py-3">
+      {{'CMMS45_89' | i18n}}
+    </div>
+    <div v-if="displayA512 == 2" class="uk-text-red py-3" >
+      {{'CMMS45_90' | i18n(appAllNumber)}}
+      <div style="height: 50px"></div>
+    </div>
     <!-- A4_1: To Top -->
     <to-top />
   </div>

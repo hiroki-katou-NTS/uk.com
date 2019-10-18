@@ -92,12 +92,21 @@
             </ul>
           </div>
         </div>
+        <div v-if="emp.displayB52" class="uk-text-red p-3" >
+          {{'CMMS45_91' | i18n(appPerNumber)}}
+        </div>
       </div>
     </div>
     <!-- Button Approve B2_4 -->
     <div class="fixed-bottom px-2 py-1" v-if="modeAppr" v-bind:class="{'bg-white': disableB24}">
       <button v-bind:disabled = "disableB24" class = 'btn btn-primary btn-block' 
         v-on:click="processAppr" >{{lstAppr.length == 0 ? 'CMMS45_56' : 'CMMS45_57' | i18n(`${lstAppr.length}`)}}</button>
+    </div>
+    <div v-if="displayB513 == 1" class="py-3">
+      {{'CMMS45_89' | i18n}}
+    </div>
+    <div v-if="displayB513 == 2" class="uk-text-red py-3" >
+      {{'CMMS45_90' | i18n(appAllNumber)}}
     </div>
     <to-top class="to-top"/>
   </div>
