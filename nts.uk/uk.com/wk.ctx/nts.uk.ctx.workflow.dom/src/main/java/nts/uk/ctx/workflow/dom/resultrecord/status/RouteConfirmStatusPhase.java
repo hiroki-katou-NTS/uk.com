@@ -94,7 +94,7 @@ public class RouteConfirmStatusPhase {
 	 * @return
 	 */
 	public boolean hasApprovedBy(String approverId) {
-		return (hasApproved() && frames.isApprover(approverId))
+		return (frames.hasApprovedBy(approverId))
 				|| frames.hasApprovedByRepresenter(approverId);
 	}
 	
