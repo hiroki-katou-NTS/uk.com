@@ -29,7 +29,7 @@ export class KafS05aStep3Component extends Vue {
             if (overtimeHour.preAppExceedState) {
                 this.hasPreAppError = true;
             }
-            if (overtimeHour.actualExceedState) {
+            if (overtimeHour.actualExceedState != 0) {
                 this.hasActualError = true;
             }
         });

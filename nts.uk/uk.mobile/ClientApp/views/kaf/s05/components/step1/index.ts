@@ -596,7 +596,7 @@ export class KafS05aStep1Component extends Vue {
                                 itemName: 'KAF005_85',
                                 color: '',
                                 preAppExceedState: false,
-                                actualExceedState: false,
+                                actualExceedState: 0,
                             });
                         }
                         if (data.overTimeInputs[i].attendanceID == 2) {
@@ -615,7 +615,7 @@ export class KafS05aStep1Component extends Vue {
                                 itemName: '',
                                 color: '',
                                 preAppExceedState: false,
-                                actualExceedState: false,
+                                actualExceedState: 0,
                             });
                         }
                         if (data.overTimeInputs[i].attendanceID == 3) {
@@ -634,7 +634,7 @@ export class KafS05aStep1Component extends Vue {
                                 itemName: '',
                                 color: '',
                                 preAppExceedState: false,
-                                actualExceedState: false,
+                                actualExceedState: 0,
                             });
                         }
                     }
@@ -656,7 +656,7 @@ export class KafS05aStep1Component extends Vue {
                         itemName: 'KAF005_85',
                         color: '',
                         preAppExceedState: false,
-                        actualExceedState: false,
+                        actualExceedState: 0,
                     });
                 }
 
@@ -676,7 +676,7 @@ export class KafS05aStep1Component extends Vue {
                         itemName: 'KAF005_85',
                         color: '',
                         preAppExceedState: false,
-                        actualExceedState: false,
+                        actualExceedState: 0,
                     });
                 }
             } else {
@@ -710,7 +710,7 @@ export class KafS05aStep1Component extends Vue {
                                 itemName: 'KAF005_85',
                                 color,
                                 preAppExceedState: false,
-                                actualExceedState: false,
+                                actualExceedState: 0,
                             });
                         }
                     } else if (item.frameNo == 12) {
@@ -730,7 +730,7 @@ export class KafS05aStep1Component extends Vue {
                                 itemName: 'KAF005_85',
                                 color,
                                 preAppExceedState: false,
-                                actualExceedState: false,
+                                actualExceedState: 0,
                             });
                         }
                     } else {
@@ -749,7 +749,7 @@ export class KafS05aStep1Component extends Vue {
                             itemName: 'KAF005_85',
                             color,
                             preAppExceedState: false,
-                            actualExceedState: false,
+                            actualExceedState: 0,
                         });
                     }
 
@@ -770,7 +770,7 @@ export class KafS05aStep1Component extends Vue {
                         itemName: '',
                         color: '',
                         preAppExceedState: false,
-                        actualExceedState: false,
+                        actualExceedState: 0,
                     });
                 });
             }
@@ -1000,7 +1000,7 @@ export class KafS05aStep1Component extends Vue {
                         itemName: '',
                         color: '',
                         preAppExceedState: false,
-                        actualExceedState: false,
+                        actualExceedState: 0,
                     });
                 }
                 if (data.overTimeInputs[i].attendanceID == 2) {
@@ -1019,7 +1019,7 @@ export class KafS05aStep1Component extends Vue {
                         itemName: '',
                         color: '',
                         preAppExceedState: false,
-                        actualExceedState: false,
+                        actualExceedState: 0,
                     });
                 }
                 if (data.overTimeInputs[i].attendanceID == 3) {
@@ -1038,7 +1038,7 @@ export class KafS05aStep1Component extends Vue {
                         itemName: '',
                         color: '',
                         preAppExceedState: false,
-                        actualExceedState: false,
+                        actualExceedState: 0,
                     });
                 }
             }
