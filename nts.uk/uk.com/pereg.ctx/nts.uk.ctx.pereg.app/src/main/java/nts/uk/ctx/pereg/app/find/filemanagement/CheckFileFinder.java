@@ -531,7 +531,8 @@ public class CheckFileFinder {
 		int index = 0;
 		String sid = AppContexts.user().employeeId();
 		// get item for self and other (self map key is true)
-		HashMap<Boolean, List<PerInfoItemDefForLayoutDto>> perItems = this.layoutProcessor.getPerItemDefForLayout(category, AppContexts.user().contractCode(), true, AppContexts.user().roles().forPersonalInfo());
+		HashMap<Boolean, List<PerInfoItemDefForLayoutDto>> perItems = this.layoutProcessor.getPerItemDefForLayout(
+				category, AppContexts.user().contractCode(), true, AppContexts.user().roles().forPersonalInfo());
 		for(NtsExcelRow row: rows) {
 			List<NtsExcelCell> cells = row.cells();		
 			EmployeeRowDto employeeDto = new EmployeeRowDto();
@@ -659,6 +660,8 @@ public class CheckFileFinder {
 			}).findFirst();
 
 			if (headerGridOpt.isPresent()) {
+				
+				// check quyền cho từng row để xem item nào được hiển thị giá trị
 				boolean isHidden = false;
 				GridEmpHead headerGrid = headerGridOpt.get();
 				Optional<PerInfoItemDefForLayoutDto> itemAuthOpt = itemAuths.stream().filter(i -> i.getItemCode().equals(headerGrid.getItemCode())).findFirst();
