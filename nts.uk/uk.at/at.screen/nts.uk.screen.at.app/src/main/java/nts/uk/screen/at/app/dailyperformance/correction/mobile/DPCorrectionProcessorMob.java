@@ -1208,7 +1208,7 @@ public class DPCorrectionProcessorMob {
 
 			DateRange rangeTemp = new DateRange(GeneralDate.legacyDate(new Date()).addMonths(-1).addDays(+1),
 					GeneralDate.legacyDate(new Date()));
-			return new DatePeriodInfo(Arrays.asList(rangeTemp), rangeTemp, 0, null, new ArrayList<>());
+			return new DatePeriodInfo(Arrays.asList(rangeTemp), rangeTemp, 0, null, new ArrayList<>(), new ArrayList<>());
 		}
 	}
 
@@ -1305,7 +1305,7 @@ public class DPCorrectionProcessorMob {
 			result = DateRange.convertPeriod(closurePeriodOpt.get().getPeriod());
 		}
 
-		return new DatePeriodInfo(lstPeriod, result, yearMonth == null ? 0 : yearMonth.v(), closureId, lstClosureCache);
+		return new DatePeriodInfo(lstPeriod, result, yearMonth == null ? 0 : yearMonth.v(), closureId, lstClosureCache, new ArrayList<>());
 	}
 
 	public void requestForFlush() {

@@ -501,7 +501,13 @@ public class DailyPerformanceCorrectionWebService {
 	@POST
 	@Path("gendate")
 	public DatePeriodInfo genDateFromYM(GenDateDto param) {
-		return genDateProcessor.genDateFromYearMonth(param);
+		DPCorrectionStateParam stateParam = (DPCorrectionStateParam)session.getAttribute("dpStateParam");
+		DatePeriodInfo dateInfo = genDateProcessor.genDateFromYearMonth(param);
+		if (stateParam != null && dateInfo != null) {
+			stateParam.setDateInfo(dateInfo);
+			session.setAttribute("dpStateParam", stateParam);
+		}
+		return dateInfo;
 	}
 	
 	private List<DailyRecordDto> cloneListDto(List<DailyRecordDto> dtos){
