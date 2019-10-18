@@ -662,22 +662,32 @@ public class CheckFileFinder {
 			if (headerGridOpt.isPresent()) {
 				
 				// check quyền cho từng row để xem item nào được hiển thị giá trị
-				boolean isHidden = false;
+				boolean isAuth = false;
+				
 				GridEmpHead headerGrid = headerGridOpt.get();
-				Optional<PerInfoItemDefForLayoutDto> itemAuthOpt = itemAuths.stream().filter(i -> i.getItemCode().equals(headerGrid.getItemCode())).findFirst();
+				
+				for(PerInfoItemDefForLayoutDto ia: itemAuths) {
 					
-				if (!itemAuthOpt.isPresent()) {
-					isHidden = true;
-				} else {
-					if (!CollectionUtil.isEmpty(itemAuthOpt.get().getLstChildItemDef())) {
-						Optional<PerInfoItemDefForLayoutDto> itemAuthChildOpt = itemAuthOpt.get().getLstChildItemDef()
-								.stream().filter(i -> i.getItemCode().equals(headerGrid.getItemCode())).findFirst();
-						if (!itemAuthChildOpt.isPresent())
-							isHidden = true;
+					if(!ia.getItemCode().equals(headerGrid.getItemCode())) {
+						
+						for(PerInfoItemDefForLayoutDto iaChild: ia.getLstChildItemDef()) {
+							
+							if(iaChild.getItemCode().equals(headerGrid.getItemCode())) {
+								
+								isAuth = true;
+								
+								break;
+							}
+						}
+						
+						if(isAuth) break;
+					}else {
+						
+						isAuth = true;
 					}
 				}
-				
-				if(!isHidden) {
+
+				if(isAuth) {
 					
 					Object contraint = contraintList.get(headerGrid.getItemCode());
 					// trường hợp lấy ra baseDate theo file import, lấy startDate

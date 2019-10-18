@@ -1,7 +1,10 @@
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -29023,13 +29026,18 @@ var nts;
                         showHiddenRows: function () {
                             v.demoRows();
                         },
-                        setErrors: function (errs, s) {
+                        setErrors: function (errs, s, lockNotSet) {
                             if (!errs)
                                 return;
                             var z = errs.length - 1;
                             s = !_.isNil(s) ? s : _currentSheet;
                             while (z >= 0) {
-                                var e = _.cloneDeep(errs[z]), i = void 0, pi = Math.floor(e.index / _pageSize), y = e.index - (_.isString(_currentPage) ? 0 : pi * _pageSize), maf = _mafollicle[_.isString(_currentPage) ? _currentPage : pi][s];
+                                var e = _.cloneDeep(errs[z]), i = void 0, pi = Math.floor(e.index / _pageSize), y = e.index - (_.isString(_currentPage) ? 0 : pi * _pageSize), pmaf = _mafollicle[_.isString(_currentPage) ? _currentPage : pi], maf = pmaf[s], data = (pmaf.dataSource || [])[y];
+                                if (data && lockNotSet
+                                    && _.find(((_cellStates[data[_pk]] || {})[e.columnKey] || [{ state: [] }])[0].state, function (st) { return st === color.Lock || st === color.Disable; })) {
+                                    z--;
+                                    continue;
+                                }
                                 if (maf && maf.desc) {
                                     i = maf.desc.fixedColIdxes[e.columnKey];
                                     if (_.isNil(i)) {
