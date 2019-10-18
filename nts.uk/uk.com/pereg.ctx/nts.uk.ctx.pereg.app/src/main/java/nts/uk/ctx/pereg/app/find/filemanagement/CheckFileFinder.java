@@ -310,7 +310,7 @@ public class CheckFileFinder {
 				category.getCategoryCode().v(), baseDate,
 				employees.stream().map(m -> new PeregEmpInfoQuery(m.getPersonId(), m.getEmployeeId())).collect(Collectors.toList()));
 		
-		List<EmpMainCategoryDto> layouts = layoutProcessor.getCategoryDetailByListEmp(lquery);
+		List<EmpMainCategoryDto> layouts = layoutProcessor.getCategoryDetailByListEmp(lquery, true);
 		
 		Iterator<EmployeeRowDto> itr = employeeDtos.iterator();
 		while (itr.hasNext()) {
@@ -356,19 +356,27 @@ public class CheckFileFinder {
 				}
 
 				items.stream().forEach(item -> {
+					
 					pdt.getItems().stream().forEach(itemDto -> {
+						
 						if (itemDto.getItemCode().equals(item.getItemCode())) {
+							
 							errors.stream().forEach(error ->{
+								
 								if(error.getColumnKey().equals(itemDto.getItemCode())) {
 									error.setRecordId(item.getRecordId());
 								}
+								
 							});
 
+							
 							itemDto.setRecordId(item.getRecordId());
+							
 							// trường hợp ghi đè, item ko có trong file import thì sẽ chỉ được view thôi, ko được update giá trị
 							if(itemDto.getActionRole() == null) {
-								itemDto.setActionRole(item.getActionRole());
+								itemDto.setActionRole(item.getActionRole() == null? ActionRole.VIEW_ONLY: item.getActionRole());
 							}
+							
 							// trường hợp tạo mới lịch sử, item có trong file import nhưng không có quyền update thì sẽ lấy giá trị từ database
 							if(endDateLst.contains(itemDto.getItemCode())&& (item.getActionRole() == ActionRole.VIEW_ONLY || item.getActionRole() == ActionRole.HIDDEN)) {
 								itemDto.setValue(item.getValue());
@@ -387,6 +395,7 @@ public class CheckFileFinder {
 							if(itemDto.getDataType() == 0) return; 
 							Object valueDb = item.getValue() == null? null: this.convertValue(itemDto.getDataType(), item.getValue().toString());
 							Object valueExcel = itemDto.getValue() == null? null: this.convertValue(itemDto.getDataType(), itemDto.getValue().toString());
+							
 							if(isEqual(valueExcel, valueDb, itemDto.getDataType()) == true) {
 								itemDto.setUpdate(false);
 								itemDto.setDefValue(itemDto.getValue());
@@ -433,7 +442,7 @@ public class CheckFileFinder {
 				
 			});
 			
-			if(category.isHistoryCategory()) {
+			if(category.isHistoryCategory()) {	
 				pdt.getItems().stream().forEach(itemDto ->{
 					if(itemDto.getItemCode().equals(period.getPeriods().get(0).getItem())) {
 						if(period.getPeriods().get(0).getValue() != null && period.getPeriods().get(1).getValue() != null) {
@@ -452,6 +461,7 @@ public class CheckFileFinder {
 					}
 				});
 			}
+			
 			// đếm số item bị lỗi của một employee
 			List<ItemRowDto>  itemErrorLst = pdt.getItems().stream().filter(x -> x.isError() == true).collect(Collectors.toList());
 			pdt.setNumberOfError(itemErrorLst.size());
@@ -519,6 +529,10 @@ public class CheckFileFinder {
 			List<EmployeeDataMngInfo> employees, List<GridEmpHead> headerReal, HashMap<String, Object> contraintList,
 			List<GridEmpHead> headerRemain, List<EmployeeRowDto> employeeDtos, Periods period, List<ItemError> itemErrors) {
 		int index = 0;
+		String sid = AppContexts.user().employeeId();
+		// get item for self and other (self map key is true)
+		HashMap<Boolean, List<PerInfoItemDefForLayoutDto>> perItems = this.layoutProcessor.getPerItemDefForLayout(
+				category, AppContexts.user().contractCode(), true, AppContexts.user().roles().forPersonalInfo());
 		for(NtsExcelRow row: rows) {
 			List<NtsExcelCell> cells = row.cells();		
 			EmployeeRowDto employeeDto = new EmployeeRowDto();
@@ -527,8 +541,7 @@ public class CheckFileFinder {
 				String[] itemChilds = cell.getHeader().getMain().getValue().getText().split("＿");
 				String header = cell.getHeader().getMain().getValue().getText();
 				String headerTemp = itemChilds.length > 0? itemChilds[itemChilds.length - 1]: header;
-				//setValueItemDto(category, employees, cell, employeeDto, header, headerTemp,  headerReal, contraintList, items,  headerRemain, period, itemErrors, index);
-				setValueItemDto(category, employees, cell, employeeDto, header, headerTemp,  headerReal, contraintList, items,  headerRemain, period, itemErrors, index);
+				setValueItemDto(category, employees, cell, employeeDto, header, headerTemp,  headerReal, contraintList, items,  headerRemain, period, itemErrors, index, perItems, sid);
 			}
 			
 			employeeDto.setItems(items);
@@ -540,8 +553,12 @@ public class CheckFileFinder {
 
 	}
 	
-	private void setValueItemDto(PersonInfoCategory category, List<EmployeeDataMngInfo> employees, NtsExcelCell cell, EmployeeRowDto employeeDto,String header, String headerTemp,  List<GridEmpHead> headerReal,
-			 HashMap<String, Object> contraintList, List<ItemRowDto> items, List<GridEmpHead> headerRemain, Periods period, List<ItemError> itemErrors, int index) {
+	private void setValueItemDto(PersonInfoCategory category, List<EmployeeDataMngInfo> employees, NtsExcelCell cell, 
+			EmployeeRowDto employeeDto,String header, String headerTemp,  List<GridEmpHead> headerReal,
+			 HashMap<String, Object> contraintList, List<ItemRowDto> items, List<GridEmpHead> headerRemain, 
+			 Periods period, List<ItemError> itemErrors, int index,
+			 HashMap<Boolean, List<PerInfoItemDefForLayoutDto>> perItems,
+			 String sid) {
 		// lấy emloyeeCode, employeeName
 		if (header.equals(TextResource.localize("CPS003_28"))) {
 			// employeeId
@@ -563,6 +580,8 @@ public class CheckFileFinder {
 		} else if (header.equals(TextResource.localize("CPS003_29"))) {
 			employeeDto.setEmployeeName(cell.getValue() == null ? "" : cell.getValue().getText());
 		} else {
+			boolean isSelf = sid.equals(employeeDto.getEmployeeId());
+			List<PerInfoItemDefForLayoutDto> itemAuths = perItems.get(isSelf);
 			String value = null;
 			if(cell.getValue() != null) {
 				switch(cell.getValue().getType()) {
@@ -641,68 +660,91 @@ public class CheckFileFinder {
 			}).findFirst();
 
 			if (headerGridOpt.isPresent()) {
+				
+				// check quyền cho từng row để xem item nào được hiển thị giá trị
+				boolean isHidden = false;
 				GridEmpHead headerGrid = headerGridOpt.get();
-				Object contraint = contraintList.get(headerGrid.getItemCode());
-				// trường hợp lấy ra baseDate theo file import, lấy startDate
-				if (category.isHistoryCategory()) {
-					if (headerGrid.getItemCode().equals(period.getPeriods().get(0).getItem())) {
-						DateConstraint dateContraint = (DateConstraint) contraint;
-						Optional<String> error = dateContraint.validateString(value == null ? "" : value);
-
-						if (error.isPresent()) {
-							valueStartCode = GeneralDate.today();
-						} else {
-							valueStartCode = value == null ? GeneralDate.today()
-									: GeneralDate.fromString(value, "yyyy/MM/dd");
-						}
+				Optional<PerInfoItemDefForLayoutDto> itemAuthOpt = itemAuths.stream().filter(i -> i.getItemCode().equals(headerGrid.getItemCode())).findFirst();
+					
+				if (!itemAuthOpt.isPresent()) {
+					isHidden = true;
+				} else {
+					if (!CollectionUtil.isEmpty(itemAuthOpt.get().getLstChildItemDef())) {
+						Optional<PerInfoItemDefForLayoutDto> itemAuthChildOpt = itemAuthOpt.get().getLstChildItemDef()
+								.stream().filter(i -> i.getItemCode().equals(headerGrid.getItemCode())).findFirst();
+						if (!itemAuthChildOpt.isPresent())
+							isHidden = true;
 					}
 				}
-				ItemRowDto empBody = new ItemRowDto();
-				if (isSelectionCode) {
-					String selectionCode = value == null ? "" : value;
-					empBody.setItemCode(headerGrid.getItemCode());
-					empBody.setItemName(headerGrid.getItemName());
-					empBody.setItemOrder(headerGrid.getItemOrder());
-					empBody.setValue(selectionCode);
-					SingleItemDto singleDto = (SingleItemDto) headerGrid.getItemTypeState();
-					empBody.setDataType(singleDto.getDataTypeState().getDataTypeValue());
-					List<ComboBoxObject> comboxLst = this.getComboBox(headerGrid, category, employeeDto.getEmployeeId(), empBody, items);
-					// thuật toán lấy selectionId, workplaceId, codeName,...
-					Optional<ComboBoxObject> combo = comboxLst.stream().filter(c -> {
-						if (c.getOptionText().contains(JP_SPACE)) {
-							String[] stringSplit = c.getOptionText().split(JP_SPACE);
-							if (stringSplit[0].equals(selectionCode)) {
-								return true;
-							}
-							return false;
-						} else {
-							if (c.getOptionValue().equals(selectionCode)) {
-								return true;
-							}
-							return false;
-						}
+				
+				if(!isHidden) {
+					
+					Object contraint = contraintList.get(headerGrid.getItemCode());
+					// trường hợp lấy ra baseDate theo file import, lấy startDate
+					if (category.isHistoryCategory()) {
+						if (headerGrid.getItemCode().equals(period.getPeriods().get(0).getItem())) {
+							DateConstraint dateContraint = (DateConstraint) contraint;
+							Optional<String> error = dateContraint.validateString(value == null ? "" : value);
 
-					}).findFirst();
-					empBody.setValue(combo.isPresent() == true ? combo.get().getOptionValue() : "");
-					empBody.setLstComboBoxValue(comboxLst);
-					validateCombox(employeeDto.getEmployeeId(), headerGrid, empBody, itemErrors, index, comboxLst);
-					items.add(empBody);
-				} else {
-					if (!headerGrid.getItemName().equals(CheckFileFinder.header)) {
+							if (error.isPresent()) {
+								valueStartCode = GeneralDate.today();
+							} else {
+								valueStartCode = value == null ? GeneralDate.today()
+										: GeneralDate.fromString(value, "yyyy/MM/dd");
+							}
+						}
+					}
+					ItemRowDto empBody = new ItemRowDto();
+					if (isSelectionCode) {
+						String selectionCode = value == null ? "" : value;
 						empBody.setItemCode(headerGrid.getItemCode());
 						empBody.setItemName(headerGrid.getItemName());
 						empBody.setItemOrder(headerGrid.getItemOrder());
-						convertValue(employeeDto.getEmployeeId(), empBody, headerGrid,
-								cell.getValue() == null ? null : value, contraint, itemErrors, index);
-						empBody.setTextValue(empBody.getValue() == null ? "" : empBody.getValue().toString());
+						empBody.setValue(selectionCode);
+						SingleItemDto singleDto = (SingleItemDto) headerGrid.getItemTypeState();
+						empBody.setDataType(singleDto.getDataTypeState().getDataTypeValue());
+						List<ComboBoxObject> comboxLst = this.getComboBox(headerGrid, category, employeeDto.getEmployeeId(), empBody, items);
+						// thuật toán lấy selectionId, workplaceId, codeName,...
+						Optional<ComboBoxObject> combo = comboxLst.stream().filter(c -> {
+							if (c.getOptionText().contains(JP_SPACE)) {
+								String[] stringSplit = c.getOptionText().split(JP_SPACE);
+								if (stringSplit[0].equals(selectionCode)) {
+									return true;
+								}
+								return false;
+							} else {
+								if (c.getOptionValue().equals(selectionCode)) {
+									return true;
+								}
+								return false;
+							}
+
+						}).findFirst();
+						empBody.setValue(combo.isPresent() == true ? combo.get().getOptionValue() : "");
+						empBody.setLstComboBoxValue(comboxLst);
+						validateCombox(employeeDto.getEmployeeId(), headerGrid, empBody, itemErrors, index, comboxLst);
 						items.add(empBody);
+					} else {
+						if (!headerGrid.getItemName().equals(CheckFileFinder.header)) {
+							empBody.setItemCode(headerGrid.getItemCode());
+							empBody.setItemName(headerGrid.getItemName());
+							empBody.setItemOrder(headerGrid.getItemOrder());
+							convertValue(employeeDto.getEmployeeId(), empBody, headerGrid,
+									cell.getValue() == null ? null : value, contraint, itemErrors, index);
+							empBody.setTextValue(empBody.getValue() == null ? "" : empBody.getValue().toString());
+							items.add(empBody);
+						}
 					}
+									
 				}
-				headerRemain.add(headerGrid);
+				
+				headerRemain.add(headerGrid);	
 			}
 		}
 		
 	}
+	
+	
 
 	private void validateCombox(String sid, GridEmpHead headerGrid, ItemRowDto empBody, List<ItemError> itemErrors,
 			int index, List<ComboBoxObject> combox) {

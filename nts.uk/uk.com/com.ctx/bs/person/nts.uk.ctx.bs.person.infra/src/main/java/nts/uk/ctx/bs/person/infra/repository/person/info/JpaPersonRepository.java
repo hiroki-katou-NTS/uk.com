@@ -335,7 +335,6 @@ public class JpaPersonRepository extends JpaRepository implements PersonReposito
 			
 			sql = sql.replace("BIRTHDAY_VAL", "'" + c.getBirthDate() +"'");
 			sql = sql.replace("BLOOD_TYPE_VAL", c.getBloodType() == null? "null": "" + c.getBloodType().value +"");
-			System.out.println(c.getGender());
 			sql = sql.replace("GENDER_VAL",  c.getGender() == null? "": "" + c.getGender().value +"");
 			
 			if(c.getPersonNameGroup() == null) {
