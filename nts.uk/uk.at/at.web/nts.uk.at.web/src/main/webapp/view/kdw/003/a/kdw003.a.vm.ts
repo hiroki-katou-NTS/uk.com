@@ -2573,9 +2573,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             let self = this;
             if(self.displayFormat() == 0 && !hasChangeFormat){
                   self.actualTimeSelectedCode();
-                  for(i = 0 ; i< self.timePeriodAllInfo.lstRange.length; i++){
-                      if(self.actualTimeSelectedCode() == i){
-                          self.dateRanger({ startDate: self.timePeriodAllInfo.lstRange[i].startDate, endDate: self.timePeriodAllInfo.lstRange[i].endDate });
+                  for(i = 0 ; i< self.timePeriodAllInfo.lstRangeCls.length; i++){
+                      if(self.actualTimeSelectedCode() == self.timePeriodAllInfo.lstRangeCls[i].closureId){
+                          self.dateRanger({ startDate: self.timePeriodAllInfo.lstRangeCls[i].startDate, endDate: self.timePeriodAllInfo.lstRangeCls[i].endDate });
                           break;
                       }
                   }
