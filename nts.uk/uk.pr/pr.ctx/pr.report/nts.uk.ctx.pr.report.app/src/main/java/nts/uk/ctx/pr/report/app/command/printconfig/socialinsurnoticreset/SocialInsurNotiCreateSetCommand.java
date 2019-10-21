@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.report.app.command.socinsurnoticreset;
+package nts.uk.ctx.pr.report.app.command.printconfig.socialinsurnoticreset;
 
 import lombok.Value;
 @Value

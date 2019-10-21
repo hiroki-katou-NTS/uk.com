@@ -13,8 +13,7 @@ import java.util.stream.Collectors;
 /**
 * 社員基礎年金番号情報: Finder
 */
-public class EmpBasicPenNumInforFinder
-{
+public class EmpBasicPenNumInforFinder {
 
     @Inject
     private EmpBasicPenNumInforRepository finder;
