@@ -5,9 +5,11 @@ module ccg029.component {
         valueType: 'String',
         maxLength: 40,
     };
-    setTimeout(function(){
-        $('#key-word').focus();      
-    }, 10);
+    window.onload = function() {
+        setTimeout(function(){
+            $('#key-word').focus();      
+        }, 10);
+    };
     ko.components.register('search-employee-modal', {
          viewModel: {
                 createViewModel: function(param, componentInfo) {
