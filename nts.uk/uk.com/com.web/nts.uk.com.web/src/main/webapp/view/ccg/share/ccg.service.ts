@@ -142,12 +142,14 @@ module nts.uk.com.view.ccg.share.ccg {
         /**
          * call service get employee by login
          */
-        
-        export function searchEmployeeByLogin(query): JQueryPromise<model.EmployeeSearchDto> {
-            return nts.uk.request.ajax('com', servicePath.searchEmployeeByLogin, query);
+        //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
+        export function searchEmployeeByLogin(baseDate: Date): JQueryPromise<model.EmployeeSearchDto> {
+            return nts.uk.request.ajax('com', servicePath.searchEmployeeByLogin, baseDate);
         }
-
-
+//        export function searchEmployeeByLogin(query): JQueryPromise<model.EmployeeSearchDto> {
+//            return nts.uk.request.ajax('com', servicePath.searchEmployeeByLogin, query);
+//        }
+        //end
 
         /**
          * search WorkPlace of Employee
@@ -186,9 +188,14 @@ module nts.uk.com.view.ccg.share.ccg {
                 employeeId: string;
                 employeeCode: string;
                 employeeName: string;
-                affiliationCode: string;
-                affiliationId: string;
-                affiliationName: string;
+                //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
+                workplaceCode: string;
+                workplaceId: string;
+                workplaceName: string;
+//                affiliationCode: string;
+//                affiliationId: string;
+//                affiliationName: string;
+                //end
             }
 
             export interface GroupOption {
@@ -220,8 +227,10 @@ module nts.uk.com.view.ccg.share.ccg {
                 /** Quick search tab options */
                 showAllReferableEmployee?: boolean; // 参照可能な社員すべて
                 showOnlyMe?: boolean; // 自分だけ
-                showSameDepartment?: boolean; //同じ部門の社員
-                showSameDepartmentAndChild?: boolean; // 同じ部門とその配下の社員
+                //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
+//                showSameDepartment?: boolean; //同じ部門の社員
+//                showSameDepartmentAndChild?: boolean; // 同じ部門とその配下の社員
+                //end
                 showSameWorkplace?: boolean; // 同じ職場の社員
                 showSameWorkplaceAndChild?: boolean; // 同じ職場とその配下の社員
 
@@ -232,7 +241,9 @@ module nts.uk.com.view.ccg.share.ccg {
                 showJobTitle?: boolean; // 職位条件
                 showWorktype?: boolean; // 勤種条件
                 isMutipleCheck?: boolean; // 選択モード
-                showDepartment: boolean; // 部門条件
+                //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
+//                showDepartment: boolean; // 部門条件
+                //end
                 // showDelivery: boolean; not covered
 
                 /** Optional properties */
