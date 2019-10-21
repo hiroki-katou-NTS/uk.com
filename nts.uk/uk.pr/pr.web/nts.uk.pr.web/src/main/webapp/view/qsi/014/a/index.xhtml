@@ -22,7 +22,7 @@
     <ui:define name="content">
         <div id="functions-area">
             <button id="A1_1" tabindex="1" class="proceed" style="margin-left: 77px;"
-                    data-bind="enable: selectedCode().length > 0 &amp;&amp; $root.errors.isEmpty, click:  function(){ exportFile(0); }">#{i18n.getText('QSI014_4')}</button>
+                    data-bind="enable: selectedCode().length > 0 &amp;&amp; $root.errors.isEmpty, click: exportFile">#{i18n.getText('QSI014_4')}</button>
             <button id="A1_2" tabindex="3"
                     data-bind="enable: selectedCode().length > 0 &amp;&amp; $root.errors.isEmpty, click: openBScreen">#{i18n.getText('QSI014_7')}</button>
             <button id="A1_3" tabindex="2"
