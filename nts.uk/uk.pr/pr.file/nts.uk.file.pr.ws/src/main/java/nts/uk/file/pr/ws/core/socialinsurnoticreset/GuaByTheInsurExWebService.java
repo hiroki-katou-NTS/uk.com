@@ -9,7 +9,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-@Path("ctx/pr/report/printdata/socialinsurnoticreset")
+@Path("ctx/pr/report/printconfig/socialinsurnoticreset")
 @Produces("application/json")
 public class GuaByTheInsurExWebService {
 
