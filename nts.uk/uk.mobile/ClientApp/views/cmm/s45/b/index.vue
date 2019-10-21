@@ -89,11 +89,11 @@
                   </div>
                 </div>
               </li>
+                <div v-if="emp.displayB52" class="uk-text-red p-3" >
+                  {{'CMMS45_91' | i18n(appPerNumber)}}
+                </div>
             </ul>
           </div>
-        </div>
-        <div v-if="emp.displayB52" class="uk-text-red p-3" >
-          {{'CMMS45_91' | i18n(appPerNumber)}}
         </div>
       </div>
     </div>
