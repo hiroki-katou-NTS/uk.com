@@ -1,9 +1,9 @@
 module ccg029.component {
     var block = nts.uk.ui.block;
     var getText = nts.uk.resource.getText;
-    __viewContext.primitiveValueConstraints.String_Any_20 = {
+    __viewContext.primitiveValueConstraints.String_Any_40 = {
         valueType: 'String',
-        maxLength: 20,
+        maxLength: 40,
     };
     //!$(".nts-validate").ntsError("hasError")
     ko.components.register('search-employee-modal', {
@@ -23,12 +23,12 @@ module ccg029.component {
                 + '           <form id="form" action="#" autocomplete="off">'
                 + '               <input tabindex="2" data-bind="ntsTextEditor: {'
                 + '                   name: nts.uk.resource.getText(\'CCG029_A1_3\'),'
-                + '                   constraint: \'String_Any_20\','
+                + '                   constraint: \'String_Any_40\','
                 + '                   value: keySearch,'
                 + '                   option: {width: \'258px\', placeholder: nts.uk.resource.getText(\'CCG029_A1_3\')}}" />'
                 + '           </form>'
                 + '       </div>'
-                + '       <button tabindex="3" id="findBtn" class="inline" data-bind="click: search, text:nts.uk.resource.getText(\'CCG029_A1_4\')"></button>'
+                + '       <button tabindex="3" id="findBtn" class="inline" data-bind="click: search, text:nts.uk.resource.getText(\'CCG029_A1_4\'), enable: $root.errors.isEmpty"></button>'
                 + '   </div>'
                 + '   <div class="row">'
                 + '       <button tabindex="5" id="searchTipsBtn" class="inline mr10" data-bind="text: nts.uk.resource.getText(\'CCG029_A1_5\')"></button>'
@@ -81,7 +81,7 @@ module ccg029.component {
                     of: "#searchTipsBtn"
                 },
                 showOnStart: false,
-                dismissible: false
+                dismissible: true
             });
             $("#searchTipsBtn").click(function() {
                 $(".searchTips-area").ntsPopup("toggle");
