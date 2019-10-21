@@ -5,7 +5,9 @@ module ccg029.component {
         valueType: 'String',
         maxLength: 40,
     };
-    //!$(".nts-validate").ntsError("hasError")
+    window.onload = function() {
+      document.getElementById("base-date-search").focus();
+    };
     ko.components.register('search-employee-modal', {
          viewModel: {
                 createViewModel: function(param, componentInfo) {
@@ -16,7 +18,7 @@ module ccg029.component {
             template: '<div id="component-search-employee">'
                 + '   <div class="row">'
                 + '       <div class ="inline lable mr5"><span data-bind="text: nts.uk.resource.getText(\'CCG029_A1_1\')"></span></div>'
-                + '       <div tabindex="1" class ="inline" data-bind="ntsDatePicker: {value: processingDate, name: nts.uk.resource.getText(\'CCG029_A1_2\'), dateFormat: \'YYYY/MM/DD\', required: true }"></div>'
+                + '       <div tabindex="1" id="base-date-search" class ="inline" data-bind="ntsDatePicker: {value: processingDate, name: nts.uk.resource.getText(\'CCG029_A1_2\'), dateFormat: \'YYYY/MM/DD\', required: true }"></div>'
                 + '   </div>'
                 + '   <div class="row">'
                 + '       <div class ="inline mr10">'
