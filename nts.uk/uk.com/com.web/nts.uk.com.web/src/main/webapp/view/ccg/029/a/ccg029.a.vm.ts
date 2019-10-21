@@ -6,7 +6,9 @@ module ccg029.component {
         maxLength: 40,
     };
     window.onload = function() {
-      document.getElementById("base-date-search").focus();
+        setTimeout(function(){
+            $('#key-word').focus();      
+        }, 10);
     };
     ko.components.register('search-employee-modal', {
          viewModel: {
@@ -23,7 +25,7 @@ module ccg029.component {
                 + '   <div class="row">'
                 + '       <div class ="inline mr10">'
                 + '           <form id="form" action="#" autocomplete="off">'
-                + '               <input tabindex="2" data-bind="ntsTextEditor: {'
+                + '               <input tabindex="2" id="key-word" data-bind="ntsTextEditor: {'
                 + '                   name: nts.uk.resource.getText(\'CCG029_A1_3\'),'
                 + '                   constraint: \'String_Any_40\','
                 + '                   value: keySearch,'
