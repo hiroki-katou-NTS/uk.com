@@ -3,7 +3,7 @@ module nts.uk.pr.view.qsi013.a {
 
     export module service {
         let paths: any = {
-            getSocialInsurNotiCreateSet: "ctx/pr/report/printdata/socinsurnoticreset/getSocialInsurNotiCreateSet",
+            getSocialInsurNotiCreateSet: "ctx/pr/report/printconfig/socinsurnoticreset/getSocialInsurNotiCreateSet",
             exportFilePDF: "ctx/pr/file/printdata/notice/exportFilePDF",
             exportFileCSV: "ctx/pr/file/printdata/notice/exportFileCSV"
         };
