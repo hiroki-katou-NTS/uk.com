@@ -29,7 +29,11 @@
         </div>
     </div>
     <div>
-        <div class="border border-warning rounded p-1 mt-2 alarm-message" role="alert">
+        <div class="border border-warning rounded p-1 mt-2 alarm-message" role="alert" 
+            v-if="(kafs05ModelStep3.beforeAppStatus && kafs05ModelStep3.preExcessDisplaySetting == 1) ||
+                hasPreAppError ||
+                (kafs05ModelStep3.actualStatus == 3 && kafs05ModelStep3.performanceExcessAtr == 1) ||
+                (hasActualError && kafs05ModelStep3.performanceExcessAtr == 1)">
             <div v-if="kafs05ModelStep3.beforeAppStatus && kafs05ModelStep3.preExcessDisplaySetting == 1">
                 <fa-font icon="exclamation-triangle" class="text-danger m-2" />
                 <div>{{ 'Msg_1557' | i18n($dt(kafs05ModelStep3.appDate)) }}</div>
@@ -221,7 +225,7 @@
             </div>
         </div>
         <div class="card card-label"
-            v-show="kafs05ModelStep3.typicalReasonDisplayFlg || kafs05ModelStep3.displayAppReasonContentFlg">
+            v-show="(kafs05ModelStep3.typicalReasonDisplayFlg || kafs05ModelStep3.displayAppReasonContentFlg) && appReason != null && appReason != ''">
             <div class="card-header">
                 <span>{{'KAFS05_75' | i18n}}</span>
                 <span class="badge badge-warning" v-if="kafs05ModelStep3.requiredReason">必須</span>
@@ -232,7 +236,7 @@
             </div>
         </div>
         <div class="card card-label"
-            v-show="(kafs05ModelStep3.displayDivergenceReasonForm || kafs05ModelStep3.displayDivergenceReasonInput) && kafs05ModelStep3.prePostSelected == 1">
+            v-show="(kafs05ModelStep3.displayDivergenceReasonForm || kafs05ModelStep3.displayDivergenceReasonInput) && kafs05ModelStep3.prePostSelected == 1 && divergenceReason != null && divergenceReason != ''">
             <div class="card-header">
                 <span>{{'KAFS05_78' | i18n}}</span>
                 <span class="badge badge-info">任意</span>

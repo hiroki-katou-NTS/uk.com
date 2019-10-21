@@ -116,7 +116,7 @@ import { Kafs05Model } from '../common/CommonClass';
         },
         hasInputOverTime: {
             test(value: boolean) {
-                return value ? '' : 'MsgB_30';
+                return value ? '' : 'Msg_1562';
             },
         }
 
