@@ -26,6 +26,8 @@ export class CdlS24AComponent extends Vue {
                 self.allData = _.orderBy(result.data, ['code'], ['asc']);
                 self.data = self.allData;
             }
+        }).catch((res: any) => {
+            this.$modal.error(res.messageId).then(() => self.$close());
         });
     }
 

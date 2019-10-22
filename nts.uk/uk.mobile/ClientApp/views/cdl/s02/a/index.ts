@@ -43,6 +43,8 @@ export class CdlS02AComponent extends Vue {
 
                 self.selectedClosure = self.closureList[0].id;
                 this.findEmployments(self.selectedClosure);
+            }).catch((res: any) => {
+                this.$modal.error(res.messageId).then(() => self.$close());
             });
         } else {
             self.$http.post('com', servicePath.findAllEmployments).then((result: any) => {
@@ -64,6 +66,8 @@ export class CdlS02AComponent extends Vue {
                         self.activeNoSelect = true;
                     }
                 }              
+            }).catch((res: any) => {
+                this.$modal.error(res.messageId).then(() => self.$close());
             });
         }
         
@@ -90,10 +94,14 @@ export class CdlS02AComponent extends Vue {
                     } else {
                         self.activeNoSelect = true;
                     }
+                }).catch((res: any) => {
+                    this.$modal.error(res.messageId).then(() => self.$close());
                 });
             } else {
                 this.$modal.error({ messageId: 'Msg_1566', messageParams: ['Com_Employment'] }).then(() => self.$close());
             }
+        }).catch((res: any) => {
+            this.$modal.error(res.messageId).then(() => self.$close());
         });
     }
 
