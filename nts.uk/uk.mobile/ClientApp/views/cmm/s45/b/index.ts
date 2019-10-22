@@ -345,36 +345,42 @@ export class CmmS45BComponent extends Vue {
                 if (count >= self.appAllNumber) {
                     return;
                 } 
-                if (count + lstAppCheck.length < self.appAllNumber) {
+                if (count + lstAppCheck.length < self.appAllNumber) {//TH công thêm không vượt quá tổng
                     lstDisplay.push(new AppByEmp({
                         empCD: emp.empCD,
                         empName: emp.empName,
                         lstApp: lstAppCheck,
-                        displayB52: emp.displayB52,
+                        displayB52: (lstAppCheck.length == emp.appPerNumber) && emp.displayB52,
                         appPerNumber: emp.appPerNumber
                     }));
-                } else {
+                    count = count + lstAppCheck.length;
+                } else {//TH cộng thêm sẽ bị vượt quá tổng
                     lstDisplay.push(new AppByEmp({
                         empCD: emp.empCD,
                         empName: emp.empName,
                         lstApp: lstAppCheck.slice(0, self.appAllNumber - count),
-                        displayB52: emp.displayB52,
+                        displayB52: (lstAppCheck.slice(0, self.appAllNumber - count).length == emp.appPerNumber) && emp.displayB52,
                         appPerNumber: emp.appPerNumber
                     }));
+                    count = count + lstAppCheck.slice(0, self.appAllNumber - count).length;
                 }
-                count = count + lstAppCheck.length;
-                
             });
         } else {//TH tổng không vượt quá
             self.lstAppByEmp.forEach((emp) => {
+                let lstAppD = emp.displayB52 ? emp.lstAppDisplay : emp.lstApp;
                 lstDisplay.push(new AppByEmp({
                     empCD: emp.empCD,
                     empName: emp.empName,
-                    lstApp: emp.displayB52 ? emp.lstAppDisplay : emp.lstApp,
-                    displayB52: emp.displayB52,
+                    lstApp: lstAppD,
+                    displayB52: (lstAppD.length == emp.appPerNumber) && emp.displayB52,
                     appPerNumber: emp.appPerNumber
                 }));
             });
+        }
+        if (count >= self.appAllNumber && self.displayB513 == 2) {//TH hiển thị vượt quá tổng + DB vượt quá tổng
+            self.displayB513 = 2;
+        } else {//TH hiển thị không vượt quá tổng
+            self.displayB513 = self.displayB513 == 1 ? self.displayB513 : 0;
         }
         //データをフィルタする
         switch (self.selectedValue) {
