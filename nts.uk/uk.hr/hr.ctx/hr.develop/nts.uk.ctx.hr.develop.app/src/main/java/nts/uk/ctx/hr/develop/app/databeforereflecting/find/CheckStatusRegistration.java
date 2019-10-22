@@ -37,7 +37,7 @@ public class CheckStatusRegistration {
 				includReflected, sortByColumnName, orderType);
 		
 		if (!listRetirementInfo.isEmpty()) {
-			throw new BusinessException("MsgJ_JCM007_5");
+			throw new BusinessException("MsgJ_JCM007_5"); // MsgJ_JCM007_5
 		}
 		
 		return true;

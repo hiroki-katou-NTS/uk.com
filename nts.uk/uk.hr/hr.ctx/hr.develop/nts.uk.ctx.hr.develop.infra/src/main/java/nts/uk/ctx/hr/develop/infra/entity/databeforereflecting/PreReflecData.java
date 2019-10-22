@@ -360,12 +360,12 @@ public class PreReflecData extends UkJpaEntity implements Serializable {
 	
 	@Override
 	protected Object getKey() {
-		return this.preReflecDataPk.getHistoryId();
+		return this.preReflecDataPk;
 	}
 
 	
 	public DataBeforeReflectingPerInfo toDomain() {
-		return DataBeforeReflectingPerInfo.createFromJavaType(this.preReflecDataPk.getHistoryId(), this.contractCode, this.companyId, this.companyCode,
+		return DataBeforeReflectingPerInfo.createFromJavaType(this.preReflecDataPk.historyId, this.contractCode, this.companyId, this.companyCode,
 				this.pId, this.sId, this.scd, this.workId, this.personName, this.workName, EnumAdaptor.valueOf(this.requestFlag, RequestFlag.class), 
 				this.registerDate, this.releaseDate,EnumAdaptor.valueOf(this.onHoldFlag, OnHoldFlag.class), 
 				EnumAdaptor.valueOf(this.stattus, Status.class), this.histId_Refer, 

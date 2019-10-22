@@ -49,7 +49,7 @@ public class DataBeforeReflectingPerInfoWS {
 	}
 	
 	@POST
-	@Path("/checkStatusRegistration/preCheck")
+	@Path("/register/preCheck")
 	public void preCheck(DataBeforeReflectCommand command) {
 		 this.preCheck.handle(command);
 	}

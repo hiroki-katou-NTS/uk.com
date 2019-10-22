@@ -17,7 +17,7 @@ public class DatabeforereflectingFinder {
 
 	@Inject
 	private RetirementInformationService retirementInfoService;
-
+	
 	public List<DataBeforeReflectDto> getDataBeforeReflect() {
 
 		// アルゴリズム[退職者登録一覧の取得]を実行する
@@ -37,10 +37,10 @@ public class DatabeforereflectingFinder {
 				includReflected, sortByColumnName, orderType);
 
 		if (listRetirementInfo.size() > 0) {
-			return new ArrayList<>();
+			return convertToDto(listRetirementInfo);
 		}
 
-		return convertToDto(listRetirementInfo);
+		return new ArrayList<>();
 	}
 
 	private List<DataBeforeReflectDto> convertToDto(List<RetirementInformation> listRetirementInfo) {
@@ -64,9 +64,9 @@ public class DatabeforereflectingFinder {
 			obj.scd = i.scd;
 			obj.employeeName = i.personName;
 			obj.retirementDate = i.retirementDate;
-			obj.retirementCategory.value = i.retirementCategory.value;
-			obj.retirementReasonCtg1 = i.retirementReasonCtg1;
-			obj.retirementReasonCtg2 = i.retirementReasonCtg2;
+			obj.retirementCategory = i.retirementCategory.value;
+			obj.retirementReasonCtg1 = Integer.valueOf(i.retirementReasonCtgCode1);
+			obj.retirementReasonCtg2 = Integer.valueOf(i.retirementReasonCtgCode2);
 			obj.retirementRemarks = i.retirementRemarks;
 			obj.retirementReasonVal = i.retirementReasonVal;
 			obj.dismissalNoticeDate = i.dismissalNoticeDate;

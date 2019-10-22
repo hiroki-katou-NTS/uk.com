@@ -1,5 +1,7 @@
 package nts.uk.ctx.hr.develop.app.databeforereflecting.command;
 
+import java.text.SimpleDateFormat;
+
 import javax.ejb.Stateless;
 
 import nts.arc.error.BundledBusinessException;
@@ -19,16 +21,16 @@ public class PreCheckCommandHandler extends CommandHandler<DataBeforeReflectComm
 
 		DataBeforeReflectCommand command = context.getCommand();
 		
-		GeneralDate retirementDate = GeneralDate.legacyDate(command.retirementDate.date()); // A222_12
-		GeneralDate releaseDate = GeneralDate.legacyDate(command.releaseDate.date()); // A222_14
-		GeneralDate dismissalNoticeDate = GeneralDate.legacyDate(command.dismissalNoticeDate.date()); // A222_35
+		GeneralDate retirementDate = GeneralDate.fromString(command.retirementDate, "yyyy/MM/dd"); // A222_12
+		GeneralDate releaseDate = GeneralDate.fromString(command.releaseDate, "yyyy/MM/dd"); // A222_14
+		
 
 		BundledBusinessException bundleExeption = BundledBusinessException.newInstance();
 		int index = 0;
 
 		if (retirementDate.beforeOrEquals(releaseDate)) {
 			index++;
-			bundleExeption.addMessage(new BusinessException("MsgJ_JCM007_2"));
+			bundleExeption.addMessage(new BusinessException("MsgJ_JCM007_2")); //  // 
 		}
 		/**
 		 * { value: 1, text: '退職' }, { value: 2, text: '転籍' }, { value: 3, text:
@@ -36,6 +38,7 @@ public class PreCheckCommandHandler extends CommandHandler<DataBeforeReflectComm
 		 */
 		int retirementType = command.retirementType;
 		if (retirementType == 3) {
+			GeneralDate dismissalNoticeDate = GeneralDate.fromString(command.dismissalNoticeDate, "yyyy/MM/dd"); // A222_35
 			if (retirementDate.beforeOrEquals(dismissalNoticeDate)) {
 				index++;
 				bundleExeption.addMessage(new BusinessException("MsgJ_JCM007_3"));

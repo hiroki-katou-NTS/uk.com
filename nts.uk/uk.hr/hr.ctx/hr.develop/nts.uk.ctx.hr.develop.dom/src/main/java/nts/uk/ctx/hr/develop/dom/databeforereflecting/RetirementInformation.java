@@ -3,6 +3,7 @@
  */
 package nts.uk.ctx.hr.develop.dom.databeforereflecting;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.DomainObject;
@@ -13,6 +14,7 @@ import nts.arc.time.GeneralDateTime;
  *  退職者情報
  */
 @NoArgsConstructor
+@AllArgsConstructor
 @Data
 public class RetirementInformation extends DomainObject{
 
@@ -64,11 +66,23 @@ public class RetirementInformation extends DomainObject{
 	//  届出区分
 	public int notificationCategory;
 	
-	//  退職理由区分1
-	public int retirementReasonCtg1;
+	//  退職理由区分1_ID
+	public int retirementReasonCtgID1;
 	
-//  退職理由区分2
-	public int retirementReasonCtg2;
+	//  退職理由区分1_コード
+	public String retirementReasonCtgCode1;
+	
+	//  退職理由区分1_名称
+	public String retirementReasonCtgName1;
+	
+	//  退職理由区分2_ID
+	public int retirementReasonCtgID2;
+	
+	//  退職理由区分2_コード
+	public String retirementReasonCtgCode2;
+	
+	//  退職理由区分2_名称
+	public String retirementReasonCtgName2;
 	
 	// 退職の備考
 	public String retirementRemarks;

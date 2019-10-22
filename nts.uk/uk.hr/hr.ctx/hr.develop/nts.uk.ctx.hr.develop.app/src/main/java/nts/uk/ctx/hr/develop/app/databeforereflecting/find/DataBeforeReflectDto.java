@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.hr.develop.dom.databeforereflecting.RetirementCategory;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -43,7 +42,7 @@ public class DataBeforeReflectDto {
 	// 社員コード
 	public String scd;
 
-	// 社員名 ********** can hoi lai truong nay
+	// 社員名 
 	public String employeeName;
 
 	// 保留フラグ
@@ -54,6 +53,9 @@ public class DataBeforeReflectDto {
 
 	// ステータス
 	public int status;
+	
+	// 届出区分
+	public int notificationCategory;
 
 	// 退職日
 	public GeneralDateTime retirementDate;
@@ -62,10 +64,7 @@ public class DataBeforeReflectDto {
 	public GeneralDateTime releaseDate;
 
 	// 退職区分
-	public RetirementCategory retirementCategory;
-
-	// 届出区分
-	public int notificationCategory;
+	public int retirementCategory;
 
 	// 退職理由区分1
 	public int retirementReasonCtg1;

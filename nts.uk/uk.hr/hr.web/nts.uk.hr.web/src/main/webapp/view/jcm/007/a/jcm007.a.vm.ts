@@ -1,52 +1,50 @@
 module jcm007.a {
-    import getText = nts.uk.resource.getText;
     import ajax = nts.uk.request.ajax;
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import liveView = nts.uk.request.liveView;
+    import getText = nts.uk.resource.getText;
+    var block = nts.uk.ui.block;
+    
     
     export class ViewModel {
 
         currentEmployee: KnockoutObservable<EmployeeModel>;
-        // list company A2_4
-        sel001Data: KnockoutObservableArray<IEmployee>;
-        // list company copy
-        listCom: KnockoutObservableArray<IEmployee>;
+        
         tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
         selectedTab: KnockoutObservable<string>;
         enable_btnRemove: KnockoutObservable<boolean>;
 
         // tab 2
-        employeeList: [];
-        itemSelected: KnockoutObservable<any>;
+        employeeListTab2 : [];
+        itemSelected : KnockoutObservable<any>;
+        empInfoHeaderList : KnockoutObservableArray<IEmpInfoHeader>;
         
         // ccg029
         input: Input;
         
-        //
         isNewMode : boolean;
         
         constructor() {
             let self = this;
             self.avatarPerson = ko.observable('images/avatar.svg');
             
-            console.log('constructor');
-            
             self.tabs = ko.observableArray([
-                { id: 'tab-1', title: '社員検索', content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
-                { id: 'tab-2', title: '退職者登録一覧', content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(false) }
+                { id: 'tab-1', title: getText('JCM007_A221_1_1') , content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
+                { id: 'tab-2', title: getText('JCM007_A221_1_3') , content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) }
             ]);
 
+            self.employeeListTab2 = [];
+            this.bindData();
+            
             self.selectedTab = ko.observable('tab-1');
 
-            self.sel001Data = ko.observableArray([]);
-            self.listCom = ko.observableArray([]);
             self.currentEmployee = ko.observable(new EmployeeModel(''));
             self.enable_btnRemove = ko.observable(false);
 
-            self.employeeList = [];
             self.itemSelected = ko.observable(null);
+            self.empInfoHeaderList = ko.observableArray([]);
 
             self.input = new Input(undefined);
             self.isNewMode = false;
@@ -54,68 +52,188 @@ module jcm007.a {
             self.selectedTab.subscribe((value) => {
                 let self = this;
                 if (value == 'tab-2') {
-                    self.selectedTab('tab-2');
                     self.enable_btnRemove(true);
+                    this.getListData();
                     
                 }else{
-                    self.selectedTab('tab-1');
                     self.enable_btnRemove(false);    
                 }
             });
 
             self.itemSelected.subscribe((value) => {
                 let self = this;
+                console.log(value);
+                if (value.notificationCategory == 1 && value.status == 0) {
+                    // アルゴリズム[退職者情報の表示」を実行する] (Thực hiện thuật toán [Hiển thị thông tin người nghỉ hưu」)
+
+                } else if (value.status != 0) {
+
+                }
             });
         }
         
-        public seletedEmployee(data): void{
+        // select emp ben tab-1
+        public seletedEmployee(data): void {
             console.log(data);
-            let self = this; 
+            let self = this;
             if (self.isNewMode) {
-                
+
                 // アルゴリズム[登録状況チェック]を実行する(Thực hiện thuật toán "Check tình trạng đăng ký ")
+                block.grayout();
                 service.CheckStatusRegistration(data.employeeId).done(() => {
                     console.log('CheckStatusRegistration DONE');
-                }).fail((mes) => {
+                }).fail((error) => {
                     console.log('CheckStatusRegistration FAIL');
+                    block.clear();
+                    nts.uk.ui.dialog.info(error);
                     return;
+                }).always(() => {
+                    block.clear();
                 });
-                
-                // アルゴリズム[社員情報の表示]を実行する (Thực hiện thuật toán "Hiển thị thông tin employee")
-                self.currentEmployee().avatarPerson(data.avartaFileId ? liveView(data.avartaFileId) : liveView('5af04a80-2c77-4945-bf87-fc0ca4bbf930'));
-                self.currentEmployee().codeNameEmp(data.employeeCode + ' ' + data.businessName);
-                self.currentEmployee().department(data.departmentCode + ' ' + data.departmentName);
-                self.currentEmployee().position(data.positionCode + ' ' + data.positionName);
-                self.currentEmployee().employmentCls(data.workplaceCode + ' ' + data.workplaceName);
-                self.currentEmployee().hisId = '';
-                self.currentEmployee().sid = data.employeeId;
-                self.currentEmployee().scd = data.employeeCode;
-                self.currentEmployee().bussinessName = data.businessName;
-                
-            } else { 
-                self.currentEmployee().avatarPerson(data.avartaFileId ? liveView(data.avartaFileId) : liveView('5af04a80-2c77-4945-bf87-fc0ca4bbf930'));
-                self.currentEmployee().codeNameEmp(data.employeeCode + ' ' + data.businessName);
-                self.currentEmployee().department(data.departmentCode + ' ' + data.departmentName);
-                self.currentEmployee().position(data.positionCode + ' ' + data.positionName);
-                self.currentEmployee().employmentCls(data.workplaceCode + ' ' + data.workplaceName);
-                self.currentEmployee().hisId = '';
-                self.currentEmployee().sid = data.employeeId;
-                self.currentEmployee().scd = data.employeeCode;
-                self.currentEmployee().bussinessName = data.businessName;
-            }            
+
+                this.initRetirementInfo();
+
+            }
+
+            // アルゴリズム[社員情報の表示]を実行する (Thực hiện thuật toán "Hiển thị thông tin employee")
+            this.setDataHeader(data);
+            self.currentEmployee().sid = data.employeeId;
+            self.currentEmployee().scd = data.employeeCode;
+            self.currentEmployee().pid = data.personalId;
+            self.currentEmployee().bussinessName = data.businessName;
         }
-        
-        
 
         /** start page */
         start() {
             let self = this;
             let dfd = $.Deferred<any>();
-            console.log('start');
+            
             self.getListData();
 
             dfd.resolve();
             return dfd.promise();
+        }
+        
+        getListData() {
+            let self = this;
+            
+            block.grayout();
+            
+            service.getData().done((data1) => {
+                
+                // goi service アルゴリズム[社員情報リストを取得]を実行する
+                // (Thực hiện thuật toán [Get list thông tin nhân viên]) CCG029
+                if(data1.length != 0){
+                    let listParam = [];
+                    _.forEach(data1, function(value) {
+                        listParam.push({
+                            sid: value.sId,
+                            pid: value.pId
+                        });
+                    });
+
+                    let paramCcg029 = {
+                        listParam: listParam
+                    };
+                    
+                    nts.uk.request.ajax("com", "query/ccg029employee/getEmpInfo", paramCcg029).done(function(data2) {
+                       
+                        self.empInfoHeaderList = data2;
+                        
+                        self.enable_btnRemove(true);
+                        
+                        self.employeeListTab2 = data1;
+                        
+                        $("#gridListEmployeesJcm007").igGrid('option','dataSource',self.employeeListTab2);
+                        
+                        $("#gridListEmployeesJcm007").igGridSelection("selectRow", 0);
+                        
+                        self.itemSelected(self.employeeListTab2[0]);
+                        block.clear();
+
+                    }).fail((error) => {
+                        nts.uk.ui.dialog.info(error);
+                    }).always(() => {
+                        block.clear();
+                    });
+                } else {
+                    self.initHeaderInfo();
+                    self.initRetirementInfo();
+                }
+                
+            }).fail((error) => {
+                console.log('Get Data Tab-2 Fail');
+                nts.uk.ui.dialog.info(error);
+            }).always(() => {
+                block.clear();
+            }); 
+        }
+        
+        public bindData(): void {
+            var self = this;
+            $("#gridListEmployeesJcm007").igGrid({
+                autoGenerateColumns: false,
+                primaryKey: 'historyId',
+                columns: [
+                    {
+                        headerText: 'historyId', key: 'historyId', hidden: true
+                    },
+                    {
+                        headerText: getText('JCM007_A221_5') , key: 'status', dataType: 'string', width: '100px'
+                    },
+                    {
+                        headerText: getText('JCM007_A221_6') , key: 'scd', dataType: 'string', width: '100px'
+                    },
+                    {
+                        headerText: getText('JCM007_A221_7') , key: 'employeeName', dataType: 'string', width: '100px'
+                    },
+                    {
+                        headerText: getText('JCM007_A221_8') , key: 'retirementDate', dataType: 'date', width: '100px'
+                    },
+                    {
+                        headerText: getText('JCM007_A221_9') , key: 'releaseDate', dataType: 'date', width: '100px'
+                    },
+                    {
+                        headerText: getText('JCM007_A221_10') , key: 'companyCode', dataType: 'string', width: '100px'
+                    },
+                    {
+                        headerText: getText('JCM007_A221_11') , key: 'inputDate', dataType: 'date', width: '100px'
+                    }
+                ],
+                dataSource: self.employeeListTab2,
+                dataSourceType: 'json',
+                responseDataKey: 'results',
+                height: '390px',
+                width: '700px',
+                tabIndex: 17,
+                features: [
+                    {
+                        name: "Selection",
+                        mode: "row",
+                        multipleSelection: false,
+                        rowSelectionChanged: function(evt, ui) {
+                            debugger;
+                            let itemSelected = _.find(self.employeeListTab2, function(o) { return o.historyId == ui.row.id; });
+                            self.itemSelected(itemSelected);
+                            if (!itemSelected) {
+                                 self.itemSelected(self.employeeListTab2[0]);
+                            }
+                        }
+                    },
+                    {
+                        name: 'Filtering',
+                        type: 'local',
+                        mode: 'simple'
+                    },
+                    {
+                        name: 'Sorting',
+                        type: 'local'
+                    },
+                    {
+                        name: 'Resizing'
+                    }
+                ]
+            });
         }
         
         /** event when click register */
@@ -133,19 +251,18 @@ module jcm007.a {
                         companyCode : '',  
                         workId : '',  
                         workName : '',  
-                        sId : data.employeeId , 
-                        pId : data.personalId ,
-                        scd : data.employeeCode ,
-                        employeeName : data.businessName ,
+                        sId : emp.sid , 
+                        pId : emp.pid ,
+                        scd : emp.scd ,
+                        employeeName : emp.bussinessName ,
                         
                         notificationCategory: 0,
                         pendingFlag:  0 ,
-                        inputDate : '' ,
                         status: 1 ,
                         
                         retirementDate : emp.retirementDate ,
                         releaseDate : emp.releaseDate ,
-                        retirementType : emp.retirementType , 
+                        retirementType : emp.selectedCode_Retiment , 
                         selectedCode_Reason1 : emp.selectedCode_Reason1 ,
                         selectedCode_Reason2 : emp.selectedCode_Reason2 ,
                         retirementRemarks : emp.retirementRemarks ,
@@ -155,22 +272,19 @@ module jcm007.a {
                         dismissalNoticeDate : emp.dismissalNoticeDate ,
                         dismissalNoticeDateAllow : emp.dismissalNoticeDateAllow ,
                         reaAndProForDis : emp.reaAndProForDis ,
-                        naturalUnaReasons_1 : emp.naturalUnaReasons_1 ,
+                        naturalUnaReasons_1 : emp.naturalUnaReasons_1 == false ? 0 : 1 ,
                         naturalUnaReasons_1Val : emp.naturalUnaReasons_1Val ,
-                        businessReduction_2 : emp.businessReduction_2 ,
+                        businessReduction_2 : emp.businessReduction_2 == false ? 0 : 1,
                         businessReduction_2Val : emp.businessReduction_2Val ,
-                        seriousViolationsOrder_3 : emp.seriousViolationsOrder_3 ,
+                        seriousViolationsOrder_3 : emp.seriousViolationsOrder_3 == false ? 0 : 1,
                         seriousViolationsOrder_3Val : emp.seriousViolationsOrder_3Val ,
-                        unauthorizedConduct_4 : emp.unauthorizedConduct_4 ,
+                        unauthorizedConduct_4 : emp.unauthorizedConduct_4 == false ? 0 : 1,
                         unauthorizedConduct_4Val : emp.unauthorizedConduct_4Val ,
-                        leaveConsiderableTime_5 : emp.leaveConsiderableTime_5 ,
+                        leaveConsiderableTime_5 : emp.leaveConsiderableTime_5 == false ? 0 : 1,
                         leaveConsiderableTime_5Val : emp.leaveConsiderableTime_5Val ,
-                        other_6 : emp.other_6 ,
-                        other_6Val : emp.other_6Val 
-                        
-                    }
+                        other_6 : emp.other_6 == false ? 0 : 1,
+                        other_6Val : emp.other_6Val }
 
-                debugger;
                 // アルゴリズム[事前チェック]を実行する (THực hiện thuật toán [Check trước ] )
                 service.preCheck(command).done(() => {
                     console.log('PRECHECK DONE!!');
@@ -202,8 +316,7 @@ module jcm007.a {
                         this.addRetireeInformation(command);
                     }
                 }).fail((mes) => {
-                    nts.uk.ui.dialog.bundledErrors(res);
-                    return;
+                    nts.uk.ui.dialog.bundledErrors(mes);
                 });
                 
             } else if (self.selectedTab() == 'tab-2') {
@@ -218,7 +331,7 @@ module jcm007.a {
             let self = this;
             let dfd = $.Deferred<any>();
             service.addRetireeInformation(command).done(() => {
-                
+                self.start();
                 dfd.resolve();
             }).fail((mes) => {
                 dfd.reject();
@@ -232,135 +345,25 @@ module jcm007.a {
 
         }
 
-        getListData() {
-            let self = this;
-
-            service.getData().done((data) => {
-
-                self.employeeList = data;
-
-                if (self.employeeList.length != 0) {
-                    self.enable_btnRemove(true);
-                    self.tabs = ko.observableArray([
-                        { id: 'tab-1', title: '社員検索', content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
-                        { id: 'tab-2', title: '退職者登録一覧', content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) }
-                    ]);
-                    
-                    self.bindData();
-                    
-                } else {
-                    self.tabs = ko.observableArray([
-                        { id: 'tab-1', title: '社員検索', content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
-                        { id: 'tab-2', title: '退職者登録一覧', content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(false) }
-                    ]);
-                    self.init();
-                }
-            }).fail((mes) => {
-                console.log('Get Data Tab-2 Fail');
-            });
-
-
-            /*for (var i = 0; i < 20; i++) {
-                self.employeeList.push({
-                    id: i, employeeCode: 'employeeCode', employeeName: 'employeeName', katakanaName: 'katakana',
-                    departmentCode: 'departmentCode', department: 'department', position: 'position', workplace: 'workplace'
-                });
-            }*/
-        }
-
-        public bindData(): void {
-            var self = this;
-            $("#gridListEmployees").igGrid({
-                autoGenerateColumns: false,
-                primaryKey: 'id',
-                columns: [
-                    {
-                        headerText: 'id', key: 'id', hidden: true
-                    },
-                    {
-                        headerText: 'A1', key: 'employeeCode', dataType: 'string', width: '100px'
-                    },
-                    {
-                        headerText: 'A2', key: 'employeeName', dataType: 'string', width: '100px'
-                    },
-                    {
-                        headerText: 'A3', key: 'katakanaName', dataType: 'string', width: '100px'
-                    },
-                    {
-                        headerText: 'A4', key: 'departmentCode', dataType: 'string', width: '100px'
-                    },
-                    {
-                        headerText: 'A5', key: 'department', dataType: 'string', width: '100px'
-                    },
-                    {
-                        headerText: 'A6', key: 'position', dataType: 'string', width: '100px'
-                    },
-                    {
-                        headerText: 'A7', key: 'workplace', dataType: 'string', width: '100px'
-                    }
-                ],
-                dataSource: self.employeeList,
-                dataSourceType: 'json',
-                responseDataKey: 'results',
-                height: '100%',
-                width: '100%',
-                tabIndex: 7,
-                features: [
-                    {
-                        name: "Selection",
-                        mode: "row",
-                        multipleSelection: false,
-                        rowSelectionChanged: function(evt, ui) {
-                            let itemSelected = _.find(self.employeeList, function(o) { return o.id == ui.row.id; });
-                            self.itemSelected(itemSelected);
-                            console.log();
-                            if (!itemSelected) {
-                                self.itemSelected(self.employeeList[0]);
-                            }
-                        }
-                    },
-                    {
-                        name: 'Filtering',
-                        type: 'local',
-                        mode: 'simple'
-                    },
-                    {
-                        name: 'Sorting',
-                        type: 'local'
-                    },
-                    {
-                        name: 'Resizing'
-                    },
-                    {
-                        name: "Hiding",
-                        columnSettings: [
-                            { columnKey: "employeeCode", allowHiding: false },
-                            { columnKey: "employeeName", allowHiding: false },
-                            { columnKey: "katakanaName", allowHiding: false },
-                            { columnKey: "departmentCode", allowHiding: false },
-                            { columnKey: "department", allowHiding: false },
-                            { columnKey: "position", allowHiding: false },
-                            { columnKey: "workplace", allowHiding: false }
-                        ]
-                    }
-                ]
-            });
-
-            $("#gridListEmployees").igGridSelection("selectRow", 0);
-            self.itemSelected(self.employeeList[0]);
-            //console.log(self.currentEmployee());
-
-        }
-
         /** new mode */
         newMode() {
             let self = this;
             self.isNewMode = true;
-            self.init();
+            self.initHeaderInfo();
+            self.initRetirementInfo();
             self.clearSelection();
         }
+        
+        setDataHeader(data){
+            let self = this;
+            self.currentEmployee().avatarPerson(data.avartaFileId ? liveView(data.avartaFileId) : liveView('5af04a80-2c77-4945-bf87-fc0ca4bbf930'));
+            self.currentEmployee().codeNameEmp(data.employeeCode + ' ' + data.businessName);
+            self.currentEmployee().department(data.departmentCode + ' ' + data.departmentName);
+            self.currentEmployee().position(data.positionCode + ' ' + data.positionName);
+            self.currentEmployee().employmentCls(data.workplaceCode + ' ' + data.workplaceName);
+        }
 
-        init() {
+        initHeaderInfo() {
             let self = this;
             self.enable_btnRemove(false);
             self.currentEmployee().avatarPerson('images/avatar.svg');
@@ -369,6 +372,11 @@ module jcm007.a {
             self.currentEmployee().position('');
             self.currentEmployee().employmentCls('');
             // set avatar blank
+            
+        }
+        
+        initRetirementInfo() {
+            let self = this;
             self.currentEmployee().retirementDate('');
             self.currentEmployee().releaseDate('');
             self.currentEmployee().selectedCode_Retiment(1);
@@ -412,7 +420,13 @@ module jcm007.a {
         cid: string;
         sid: string;
         scd: string;
+        pid:string;
         bussinessName: string;
+        
+        pendingFlag: number;
+        status: number;
+        notificationCategory: number;
+        inputDate: string;
 
         retirementDate: KnockoutObservable<string> = ko.observable('');   // A222_12
         releaseDate: KnockoutObservable<string> = ko.observable(''); // A222_14
@@ -465,11 +479,17 @@ module jcm007.a {
         constructor(param: IEmployee) {
             let self = this;
             
-            self.hisId = '';
-            self.cid = '';
-            self.sid = '';
-            self.scd = '';
-            self.bussinessName = '';
+            self.hisId = param.hisId;
+            self.cid = param.cid;
+            self.sid = param.sid;
+            self.scd = param.scd;
+            self.pid = param.pid;
+            self.bussinessName = param.bussinessName;
+            
+            self.pendingFlag = param.pendingFlag;
+            self.status = param.status;
+            self.notificationCategory = param.notificationCategory;
+            self.inputDate = param.inputDate;
             
             self.retirementDate(param.retirementDate || '');
             self.releaseDate(param.releaseDate || '');
@@ -610,17 +630,83 @@ module jcm007.a {
             });
         }
     }
+    
+    interface IEmpInfoHeader {
+        avartaFileId:  string;
+        businessName:  string;
+        businessNameKana:  string;
+        departmentCode:  string;
+        departmentName:  string;
+        employeeCode:  string;
+        employeeId:  string;
+        employmentCode:  string;
+        employmentName:  string;
+        mapFileId:  string;
+        personalId:  string;
+        positionCode:  string;
+        positionId:  string;
+        positionName:  string;
+        workplaceCode:  string;
+        workplaceId:  string;
+        workplaceName:  string;   
+    }
+    
+    class EmpInfoHerder {
+        avartaFileId: string;
+        businessName: string;
+        businessNameKana: string;
+        departmentCode: string;
+        departmentName: string;
+        employeeCode: string;
+        employeeId: string;
+        employmentCode: string;
+        employmentName: string;
+        mapFileId: string;
+        personalId: string;
+        positionCode: string;
+        positionId: string;
+        positionName: string;
+        workplaceCode: string;
+        workplaceId: string;
+        workplaceName: string;
+
+        constructor(input: IEmpInfoHeader) {
+            this.avartaFileId =
+                this.businessName = input.businessName;
+                this.businessNameKana = input.businessNameKana;
+                this.departmentCode = input.departmentCode; 
+                this.departmentName = input.departmentName
+                this.employeeCode = input.employeeCode;
+                this.employeeId = input.employeeId;
+                this.employmentCode = input.employmentCode;
+                this.employmentName = input.employmentName;
+                this.mapFileId = input.mapFileId;
+                this.personalId = input.personalId;
+                this.positionCode = input.positionCode;
+                this.positionId = input.positionId;
+                this.positionName = input.positionName;
+                this.workplaceCode = input.workplaceCode;
+                this.workplaceId = input.workplaceId;
+                this.workplaceName = input.workplaceName;
+        }
+    }
 
     interface IEmployee {
         hisId: string;
         cid: string;
         sid: string;
         scd: string;
+        pid: string;
         bussinessName: string;
         department: string;
         position: string;
         employment: string;
         fileId: string;
+        
+        pendingFlag: number;
+        status: number;
+        notificationCategory: number;
+        inputDate: string;
 
         retirementDate: string; // A222_12
         releaseDate: string;  // A222_14

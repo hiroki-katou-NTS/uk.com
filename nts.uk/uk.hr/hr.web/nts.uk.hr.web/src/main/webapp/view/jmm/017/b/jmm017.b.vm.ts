@@ -31,7 +31,7 @@ module nts.uk.hr.view.jmm017.b.viewmodel {
             self.screenName = ko.observable("");
             self.useSet = ko.observable('1');
             self.useList = ko.observableArray([]);
-            self.editTem = "<a href='#' onclick=\"editMsg({ id: '${guideMsgId}' })\">"+getText('JMM017_B422_23')+"</a>";
+            self.editTem = "<a href='#' onclick=\"editMsg({ id: '${guideMsgId}' })\">"+ getText('JMM017_B422_23') + "</a>";
         }
         startPage(): JQueryPromise<any> {
             var self = this;

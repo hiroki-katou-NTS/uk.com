@@ -176,7 +176,7 @@ public class JpaDataBeforeReflectingRepositoryImpl extends JpaRepository impleme
 	}
 
 	private PreReflecData toEntity(DataBeforeReflectingPerInfo domain, PreReflecData entity) {
-		entity.preReflecDataPk.setHistoryId(domain.historyId);
+		entity.preReflecDataPk = new PreReflecDataPk(domain.historyId);
 		entity.contractCode = domain.contractCode;
 		entity.companyId = domain.companyId;
 		entity.companyCode = domain.companyCode;

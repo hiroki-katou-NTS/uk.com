@@ -7,12 +7,12 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
 @Embeddable
 public class PreReflecDataPk implements Serializable{
 
@@ -22,7 +22,7 @@ private static final long serialVersionUID = 1L;
 	/** The historyId. */
 	@Basic(optional = false)
 	@Column(name="HIST_ID")
-	private String historyId;
+	public String historyId;
 	
 	
 }

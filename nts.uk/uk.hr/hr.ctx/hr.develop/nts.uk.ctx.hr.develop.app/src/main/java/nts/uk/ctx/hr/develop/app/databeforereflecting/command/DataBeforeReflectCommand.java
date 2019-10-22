@@ -2,11 +2,9 @@ package nts.uk.ctx.hr.develop.app.databeforereflecting.command;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 
-@NoArgsConstructor
 @AllArgsConstructor
 @Data
 public class DataBeforeReflectCommand {
@@ -49,16 +47,16 @@ public class DataBeforeReflectCommand {
 		public int pendingFlag;
 
 		// 入力日  // == systemDate
-		public GeneralDate inputDate;
+		public GeneralDate inputDate = GeneralDate.today();
 
 		// ステータス
 		public int status;
 
 		// 退職日
-		public GeneralDateTime retirementDate;
+		public String retirementDate;
 
 		// 公開日
-		public GeneralDateTime releaseDate;
+		public String releaseDate;
 
 		// 退職区分（必須） RetirementCategory A222_16
 		public int retirementType; 
@@ -76,10 +74,10 @@ public class DataBeforeReflectCommand {
 		public String retirementReasonVal;
 
 		// 解雇予告日
-		public GeneralDate dismissalNoticeDate;
+		public String dismissalNoticeDate;
 
 		// 解雇予告手当支給日
-		public GeneralDate dismissalNoticeDateAllow;
+		public String dismissalNoticeDateAllow;
 
 		// 解雇の事由・手続き
 		public String reaAndProForDis;

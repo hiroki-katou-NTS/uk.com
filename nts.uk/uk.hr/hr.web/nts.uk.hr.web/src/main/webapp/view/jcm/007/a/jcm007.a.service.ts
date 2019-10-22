@@ -4,25 +4,30 @@ module jcm007.a.service {
     
     var paths = {
         'getData': 'databeforereflecting/getData',
+        'getEmployeeInfo' : 'query/ccg029employee/getEmpInfo',
         'checkStatusRegistration': 'databeforereflecting/checkStatusRegistration/{0}',
-        'preCheck': 'databeforereflecting/preCheck',
-        'addRetireeInformation': 'databeforereflecting/addRetireeInformation',  
+        'preCheck': 'databeforereflecting/register/preCheck',
+        'add': 'databeforereflecting/add',  
     }
        
-    export function getData() {
+    export function getData() : JQueryPromise<any>{
         return ajax(paths.getData);
     }
     
-    export function CheckStatusRegistration(sid: any) {
+    export function getEmployeeInfo(query : any) : JQueryPromise<any>{
+        return ajax(paths.getEmployeeInfo , query);
+    }
+    
+    export function CheckStatusRegistration(sid: any) : JQueryPromise<any> {
         return ajax('hr', format(paths.checkStatusRegistration, sid ));
     }
 
-    export function preCheck(command: any) {
-        return ajax(format(paths.preCheck, command));
+    export function preCheck(command: any) : JQueryPromise<any> {
+        return ajax(paths.preCheck, command);
     }
 
-    export function addRetireeInformation(command: any) {
-        return ajax(format(paths.addRetireeInformation, command));
+    export function addRetireeInformation(command: any) : JQueryPromise<any>{
+        return ajax(paths.add, command);
     }
 
    
