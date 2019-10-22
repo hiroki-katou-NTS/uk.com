@@ -645,6 +645,20 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 		return emps;
 	}
 	
+	private static final String FIND_EMPLOYEES_MATCHING_COMPANYID_FIX = "SELECT e FROM BsymtEmployeeDataMngInfo e, BpsmtPerson c "
+			+ "WHERE (c.businessName LIKE CONCAT(:keyWord, '%') " 
+			+ "OR c.businessNameKana LIKE CONCAT(:keyWord, '%')) "
+			+ "AND e.bsymtEmployeeDataMngInfoPk.pId = c.bpsmtPersonPk.pId "
+			+ "AND e.companyId = :companyId ";
+	
+	@Override
+	public List<EmployeeDataMngInfo> findEmployeesMatchingName(String keyWord, String companyId) {
+		return queryProxy().query(FIND_EMPLOYEES_MATCHING_COMPANYID_FIX, BsymtEmployeeDataMngInfo.class)
+				.setParameter("keyWord", keyWord)
+				.setParameter("companyId", companyId)
+				.getList(m -> toDomain(m));
+	}
+	
 	private static final String FIND_EMPLOYEE_PARTIAL_MATCH = "SELECT e FROM BsymtEmployeeDataMngInfo e "
 			+ "WHERE e.companyId = :cId "
 			+ "AND e.employeeCode LIKE CONCAT('%', :sCd, '%') "

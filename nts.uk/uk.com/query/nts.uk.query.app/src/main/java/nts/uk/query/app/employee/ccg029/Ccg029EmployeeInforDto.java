@@ -25,6 +25,8 @@ public class Ccg029EmployeeInforDto {
 	private String workplaceCode;
 	
 	private String workplaceName;
+
+	private String departmentId;
 	
 	private String departmentCode;
 	

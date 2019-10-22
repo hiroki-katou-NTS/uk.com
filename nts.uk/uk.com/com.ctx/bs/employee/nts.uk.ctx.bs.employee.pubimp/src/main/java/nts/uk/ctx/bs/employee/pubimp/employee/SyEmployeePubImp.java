@@ -857,7 +857,8 @@ public class SyEmployeePubImp implements SyEmployeePub {
 		List<EmpInfo614> allEmployee = new ArrayList<>();
 		List<String> employeeIds = new ArrayList<>();
 		if(!empList.isEmpty()) {
-			List<EmployeeDataMngInfo> ListEmpMatchingName = empDataMngRepo.findEmployeesMatchingName(pids, param.cId);
+			//method Fix performance for 個人ID(List)から会社IDに一致する社員に絞り込む
+			List<EmployeeDataMngInfo> ListEmpMatchingName = empDataMngRepo.findEmployeesMatchingName(param.getKeyword(), param.cId);
 			employeeIds.addAll(ListEmpMatchingName.stream().map(c->c.getEmployeeId()).collect(Collectors.toList()));
 			allEmployee.addAll(ListEmpMatchingName.stream().map(c->new EmpInfo614(c.getEmployeeId(), c.getPersonId(), c.getEmployeeCode().v())).collect(Collectors.toList()));
 		}

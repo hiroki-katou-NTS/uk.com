@@ -1,6 +1,15 @@
 module ccg029.component {
     var block = nts.uk.ui.block;
     var getText = nts.uk.resource.getText;
+    __viewContext.primitiveValueConstraints.String_Any_40 = {
+        valueType: 'String',
+        maxLength: 40,
+    };
+    window.onload = function() {
+        setTimeout(function(){
+            $('#key-word').focus();      
+        }, 10);
+    };
     ko.components.register('search-employee-modal', {
          viewModel: {
                 createViewModel: function(param, componentInfo) {
@@ -11,18 +20,19 @@ module ccg029.component {
             template: '<div id="component-search-employee">'
                 + '   <div class="row">'
                 + '       <div class ="inline lable mr5"><span data-bind="text: nts.uk.resource.getText(\'CCG029_A1_1\')"></span></div>'
-                + '       <div tabindex="1" class ="inline" data-bind="ntsDatePicker: {value: processingDate, name: nts.uk.resource.getText(\'CCG029_A1_2\'), dateFormat: \'YYYY/MM/DD\'}"></div>'
+                + '       <div tabindex="1" id="base-date-search" class ="inline" data-bind="ntsDatePicker: {value: processingDate, name: nts.uk.resource.getText(\'CCG029_A1_2\'), dateFormat: \'YYYY/MM/DD\', required: true }"></div>'
                 + '   </div>'
                 + '   <div class="row">'
                 + '       <div class ="inline mr10">'
                 + '           <form id="form" action="#" autocomplete="off">'
-                + '               <input tabindex="2" data-bind="ntsTextEditor: {'
+                + '               <input tabindex="2" id="key-word" data-bind="ntsTextEditor: {'
                 + '                   name: nts.uk.resource.getText(\'CCG029_A1_3\'),'
+                + '                   constraint: \'String_Any_40\','
                 + '                   value: keySearch,'
-                + '                   option: {width: \'240px\', placeholder: nts.uk.resource.getText(\'CCG029_A1_3\')}}" />'
+                + '                   option: {width: \'258px\', placeholder: nts.uk.resource.getText(\'CCG029_A1_3\')}}" />'
                 + '           </form>'
                 + '       </div>'
-                + '       <button tabindex="3" id="findBtn" class="inline" data-bind="click: search, text:nts.uk.resource.getText(\'CCG029_A1_4\')"></button>'
+                + '       <button tabindex="3" id="findBtn" class="inline" data-bind="click: search, text:nts.uk.resource.getText(\'CCG029_A1_4\'), enable: $root.errors.isEmpty"></button>'
                 + '   </div>'
                 + '   <div class="row">'
                 + '       <button tabindex="5" id="searchTipsBtn" class="inline mr10" data-bind="text: nts.uk.resource.getText(\'CCG029_A1_5\')"></button>'
@@ -75,7 +85,7 @@ module ccg029.component {
                     of: "#searchTipsBtn"
                 },
                 showOnStart: false,
-                dismissible: false
+                dismissible: true
             });
             $("#searchTipsBtn").click(function() {
                 $(".searchTips-area").ntsPopup("toggle");
@@ -86,7 +96,7 @@ module ccg029.component {
             });
             //row click
             $(document).delegate("#gridListEmployees", "iggridcellclick", function (evt, ui) {
-                var value = _.find(self.employeeList, ['personalId', ui.rowKey]);
+                var value = _.find(self.employeeList, ['employeeCode', ui.rowKey]);
 //                console.log(value);
                 if(callback){
                     callback(value);
@@ -140,10 +150,10 @@ module ccg029.component {
             var self = this;
             $("#gridListEmployees").igGrid({
                 autoGenerateColumns: false,
-                primaryKey: 'personalId',
+                primaryKey: 'employeeCode',
                 columns: [
                     {   
-                        headerText: 'personalId', key: 'personalId', hidden: true
+                        headerText: 'employeeCode', key: 'employeeCode', hidden: true
                     },
                     {
                         headerText: getText('CCG029_A1_24'), key: 'employeeCode', dataType: 'string', width: '100px'
@@ -158,7 +168,7 @@ module ccg029.component {
                         headerText: self.input.systemType == 1 ? getText('CCG029_1') : getText('CCG029_2'), key: self.input.systemType == 1 ? 'workplaceCode': 'departmentCode', dataType: 'string',  width: '100px' 
                     },
                     {
-                        headerText: self.input.systemType == 1 ? getText('Com_Workplace') : getText('Com_Department'), key: self.input.systemType == 1 ? 'workplaceName': 'departmentName', dataType: 'string', width: '100px'
+                        headerText: self.input.systemType == 1 ? getText('Com_Workplace') : getText('Com_Department'), key: self.input.systemType == 1 ? 'workplaceName': 'departmentName', dataType: 'string', width: '140px'
                     }
                 ],
                 dataSource: self.employeeList,
