@@ -1,8 +1,12 @@
-package nts.uk.ctx.bs.person.dom.person.family;
+package nts.uk.ctx.bs.person.dom.person.family.fullnameset;
 
 import nts.arc.primitive.StringPrimitiveValue;
+import nts.arc.primitive.constraint.CharType;
+import nts.arc.primitive.constraint.StringCharType;
+import nts.arc.primitive.constraint.StringMaxLength;
 
-//@StringMaxLength(240)
+@StringCharType(CharType.KANA)
+@StringMaxLength(41)
 public class FullNameKana extends StringPrimitiveValue<FullNameKana>{
 
 	/** The Constant serialVersionUID. */
