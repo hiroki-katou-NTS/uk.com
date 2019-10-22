@@ -1,7 +1,7 @@
 import { Vue, VueConstructor, ComponentOptions } from '@app/provider';
 import { obj, dom, browser } from '@app/utils';
 import { IModalOptions } from 'declarations';
-import { ErrorHandler } from 'vue-router/types/router';
+import { RootApp } from '@app/core';
 
 const modal = {
     install(vue: VueConstructor<Vue>) {
@@ -9,42 +9,12 @@ const modal = {
         vue.mixin({
             methods: {
                 $close() { }
-            },
-            beforeMount() {
-                let self = this;
-
-                if (self && self.$router) {
-                    obj.extend(self.$router, {
-                        goto(location: { name: string; params: { [key: string]: any } }, onComplete?: Function, onAbort?: ErrorHandler) {
-                            ( self.$router as any).push({
-                                name: location.name,
-                                params: {
-                                    params: location.params
-                                }
-                            }, onComplete, onAbort);
-                        }
-                    });
-                }
             }
         });
 
-        vue.prototype.$goto = function (nameOrLocation: { name: string; params: { [key: string]: any; }; }, paramsOronComplete?: { [key: string]: any; } | Function, onCompleteOronAbort?: Function | ErrorHandler, onAbort?: ErrorHandler) {
-            let self = this;
-
-            if (typeof nameOrLocation !== 'string') {
-                self.$router.push({
-                    name: nameOrLocation.name,
-                    params: {
-                        params: nameOrLocation.params
-                    }
-                }, paramsOronComplete, onCompleteOronAbort);
-            } else {
-                self.$router.push({
-                    name: nameOrLocation,
-                    params: {
-                        params: paramsOronComplete
-                    }
-                }, onCompleteOronAbort, onAbort);
+        window.onpopstate = function (event: Event) {
+            if (document.querySelector('.modal.show')) {
+                // window.history.forward();
             }
         };
 
@@ -56,7 +26,7 @@ const modal = {
 
             params = obj.toJS(params || {});
 
-            options = options ||  {
+            options = options || {
                 title: name,
                 size: 'md',
                 type: 'modal',
@@ -87,7 +57,7 @@ const modal = {
                         // add new mixin methods
                         component.mixins.push({
                             methods: {
-                                $close (data?: any) {
+                                $close(data?: any) {
                                     this.$emit('callback', data);
 
                                     this.$destroy(true);
@@ -97,6 +67,26 @@ const modal = {
                                 let el = this.$el as HTMLElement;
 
                                 if (el.nodeType !== 8) {
+                                    let header = el.querySelector('.modal-header') as HTMLElement;
+
+                                    if (!header) {
+                                        this.$emit('toggle-title', true);
+                                    } else {
+                                        this.$emit('toggle-title', false);
+
+                                        let mcontent = el.closest('.modal-content');
+
+                                        if (mcontent) {
+                                            let body = mcontent.querySelector('.modal-body') as HTMLElement;
+
+                                            if (body) {
+                                                mcontent.insertBefore(header, body);
+                                            } else {
+                                                mcontent.append(header);
+                                            }
+                                        }
+                                    }
+
                                     let footer = el.querySelector('.modal-footer') as HTMLElement;
 
                                     // move footer element from body to modal content
@@ -122,11 +112,11 @@ const modal = {
                         });
 
                         let dlg = dom.create('div'),
-                            vm = Vue.extend({
+                            vm = RootApp.extend({
                                 components: {
                                     'nts-dialog': component
                                 },
-                                data: () => ({ name: 'nts-dialog', params, show: false }),
+                                data: () => ({ name: 'nts-dialog', params, show: false, hasTitle: true, brsize: true }),
                                 computed: {
                                     title() {
                                         return options.title || (typeof name === 'string' ? name : 'nts-dialog');
@@ -140,7 +130,11 @@ const modal = {
                                             classNames.push(`modal-${options.size}`);
                                         }
 
-                                        if (options.type === 'modal' || options.type === undefined) {
+                                        if (options.type === 'modal' || options.type === 'dropback' || options.type === undefined) {
+                                            if (options.type === 'dropback') {
+                                                classNames.push(options.type);
+                                            }
+
                                             classNames.push('modal-dialog-scrollable');
                                         } else if (options.type === 'popup') {
                                             classNames.push('modal-popup modal-dialog-centered');
@@ -164,30 +158,27 @@ const modal = {
 
                                         this.show = false;
                                     },
-                                    leave() {
-                                        // remove modal-open class
-                                        if (document.querySelectorAll('.modal').length == 1) {
-                                            dom.removeClass(document.body, 'modal-open');
-                                        }
-                                    },
                                     afterLeave() {
                                         // destroy modal app
                                         this.$destroy(true);
                                     },
-                                    preventScroll(evt: TouchEvent) {
-                                        // evt.preventDefault();
-                                        evt.stopPropagation();
-                                        evt.stopImmediatePropagation();
+                                    toggleTitle(hasTitle: boolean) {
+                                        this.hasTitle = hasTitle;
+                                    },
+                                    clickDropback(evt: MouseEvent) {
+                                        if ((evt.target as HTMLElement).querySelector('.modal-dialog.dropback')) {
+                                            this.callback('dropback');
+                                        }
                                     }
                                 },
-                                mounted() {
-                                    this.show = true;
-
-                                    this.$mask('show', options.opacity);
-
-                                    dom.addClass(document.body, 'modal-open');
-                                },
                                 beforeMount() {
+                                    // show modal backdrop
+                                    if (document.querySelector('.modal-backdrop.show')) {
+                                        this.$mask('show', 0.01);
+                                    } else {
+                                        this.$mask('show', options.opacity);
+                                    }
+
                                     // remove all tabindex of item below modal-backdrop
                                     let inputs = document.querySelectorAll('a, input, select, button, textarea');
 
@@ -203,9 +194,25 @@ const modal = {
                                         }
                                     });
                                 },
-                                destroyed() {
-                                    this.$mask('hide');
+                                mounted() {
+                                    let self = this,
+                                        resize = () => {
+                                            self.brsize = browser.mobile;
+                                        };
 
+                                    resize();
+                                    self.show = true;
+
+                                    dom.data.set(self.$el, '__wzeri', resize);
+
+                                    window.addEventListener('resize', resize);
+                                },
+                                beforeDestroy() {
+                                    let self = this;
+
+                                    window.removeEventListener('resize', dom.data.get(self.$el, '__wzeri'));
+                                },
+                                destroyed() {
                                     // remove own element on body
                                     document.body.removeChild(this.$el);
 
@@ -228,22 +235,33 @@ const modal = {
                                     if (focused) {
                                         focused.focus();
                                     }
+
+                                    // hide own mask layer
+                                    this.$mask('hide');
                                 },
-                                template: `<transition apear v-bind:name="animate" v-on:leave="leave" v-on:after-leave="afterLeave">
-                                    <div class="modal show" v-if="show" v-on:touchmove="preventScroll">
-                                            <div class="modal-dialog" v-bind:class="$class" v-on:touchmove="preventScroll">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h4 class="modal-title">
+                                template: `<transition apear v-bind:name="animate" v-on:after-leave="afterLeave">
+                                    <div class="modal show" v-show="show" v-on:click="clickDropback">
+                                        <div class="modal-dialog" v-bind:class="$class">
+                                            <div class="modal-content uk-bg-silver">
+                                                <template v-if="hasTitle">
+                                                    <div class="modal-header uk-bg-teal rounded-0" v-bind:key="hasTitle">
+                                                        <h4 class="modal-title text-white">
+                                                            <template v-if="brsize">
+                                                                <i class="fas fa-angle-left mr-1" v-on:click="show = false" v-bind:key="'mobilesize'"></i>
+                                                            </template>
+                                                            <template v-else></template>
                                                             <span>{{title | i18n}}</span>
                                                         </h4>
-                                                        <button tabindex="-1" type="button" v-on:click="show = false" class="close">&times;</button>
+                                                        <template v-if="!brsize">
+                                                            <button tabindex="-1" v-bind:key="'desktopsize'" type="button" v-on:click="show = false" class="close btn-close">&times;</button>
+                                                        </template>
+                                                        <template v-else></template>
                                                     </div>
-                                                    <div class="modal-body">
-                                                        <component v-bind:is="name" v-bind:params="params" v-on:callback="callback" />
-                                                    </div>
-                                                </div>
+                                                </template>
+                                                <template v-else></template>
+                                                <component v-bind:is="name" v-bind:params="params" v-on:callback="callback" v-on:toggle-title="toggleTitle" class="modal-body" />
                                             </div>
+                                        </div>
                                     </div>
                                 </transition>`
                             });
@@ -267,4 +285,4 @@ const modal = {
     }
 };
 
-export { modal };
+Vue.use(modal);

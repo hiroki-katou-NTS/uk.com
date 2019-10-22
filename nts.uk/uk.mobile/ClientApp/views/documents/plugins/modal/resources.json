@@ -1,10 +1,14 @@
 {
     "jp": {
-        "sample" : "Sample (jp)",
-        "documentspluginsmodal": "Modal"
+        "documentspluginsmodal": "Modal",
+        "modal": "モダール",
+        "notification": "通知ダイアログ",
+        "message": "スマホで見る"
     },
     "vi": {
-        "sample" : "Ví dụ",
-        "documentspluginsmodal": "Hộp hội thoại"
+        "documentspluginsmodal": "Hộp hội thoại",
+        "modal": "Hộp hôi thoại",
+        "notification": "Hộp thông báo",
+        "message": "Xem bằng smartphone"
     }
 }

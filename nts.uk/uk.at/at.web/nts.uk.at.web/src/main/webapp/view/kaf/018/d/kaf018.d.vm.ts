@@ -74,11 +74,13 @@ module nts.uk.at.view.kaf018.d.viewmodel {
                      self.listDataDisp.push(contentDisp);
                 } else {
                     if (data.appType == shared.ApplicationType.ABSENCE_APPLICATION || data.appType == shared.ApplicationType.WORK_CHANGE_APPLICATION || data.appType == shared.ApplicationType.BUSINESS_TRIP_APPLICATION) {
-                        appEndDate = data.appEndDate;
+                        if (data.appEndDate != appStartDate) {
+                            appEndDate = data.appEndDate;
+                        }
                     } else {
                         appEndDate == "";
                     }
-                    let dateRange = self.appDateRangeColor(self.convertDateMDW(data.appStartDate), self.convertDateMDW(appEndDate));
+                    let dateRange = self.appDateRangeColor(self.convertDateMDW(appStartDate), self.convertDateMDW(appEndDate));
                     let reflectStateContent = self.disReflectionStatus(data.reflectState);
                     self.listDataDisp.push(new ContentDisp(data.applicationID, data.appName, data.prePostAtr == 1 ? "事後" : "事前", dateRange, data.appContent, data.reflectState, reflectStateContent, self.disApprovalStatus(data.approvalStatus), data.phase1, data.phase2, data.phase3, data.phase4, data.phase5));
                 }
@@ -267,17 +269,19 @@ module nts.uk.at.view.kaf018.d.viewmodel {
         //申請日付(A6_C2_6)、入力日(A6_C2_8)、承認状況(A6_C2_9)の表示はない（１段）
         convertA(compltLeave: AppCompltLeaveFull, date: string) {
             let self = this;
-            let time = compltLeave.startTime + text('KAF018_220') + compltLeave.endTime;
-            return text('KAF018_262') + self.convertDateShort_MD(date) + text('KAF018_230', [compltLeave.workTypeName]) + time;
+            let time = compltLeave.startTime + text('CMM045_100') + compltLeave.endTime;
+            let cont1 = compltLeave.workTypeName == '' ? time : compltLeave.workTypeName + '　' + time;
+            return text('CMM045_262') + cont1;
         }
         //※振休申請のみ同期なし・紐付けなし
         //申請/承認モード
         //申請日付(A6_C2_6)、入力日(A6_C2_8)、承認状況(A6_C2_9)の表示はない（１段）
         convertB(compltLeave: AppCompltLeaveFull, date: string) {
             let self = this;
-            let eTime = compltLeave.endTime == '' ? '' : text('KAF018_220') + compltLeave.endTime;
+            let eTime = compltLeave.endTime == '' ? '' : text('CMM045_100') + compltLeave.endTime;
             let time = compltLeave.startTime + eTime;
-            return text('KAF018_263') + self.convertDateShort_MD(date) + text('KAF018_230', [compltLeave.workTypeName]) + time;
+            let cont1 = compltLeave.workTypeName == '' ? time : time == '' ? compltLeave.workTypeName : compltLeave.workTypeName + '　' + time;
+            return text('CMM045_263') + cont1;
         }
         //※振休振出申請　同期（あり/なし）・紐付けあり
         //申請モード/承認モード merge convert C + D

@@ -1,31 +1,20 @@
-##### 2. Explaint
-> Sample quote
+##### 2. ビュー
 
-- First item list
-- Second item list
+連続クリック防止のために`v-on:click`に変わって`v-click:500`を使ってください。   
+`500`は時間だから機能によって変わられる。  
+`500`ならクリックしたらあと`500ミリ秒`クリックできる。
 
-**HTML Code:**
 ```html
-<div class="sample">
-    <span>Sample html code</span>
-</div>
+<button v-click:500="multiClick">{{ 'prevent_multi_click' | i18n }}</button>
 ```
+`multiClick`はビューモデルにある関数の名前である。
 
-**Typescript code:**
+##### 3. ビューモデル
+
 ```typescript
-class ClassName {
-    constructor() {
-        // sample contructor
-    }
-
-    choose() {
-        // sample method
+class PreventMultiClick {
+    multiClick() {
+        this.results.push('Click time: ' + new Date().toISOString());
     }
 }
 ```
-
-##### 3. API
-
-id | name | content
-----|----|------
-id | name | content

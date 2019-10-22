@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.paymana;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
@@ -12,8 +13,13 @@ public interface SubstitutionOfHDManaDataRepository {
 	// ドメインモデル「振休管理データ」を取得
 	List<SubstitutionOfHDManagementData> getBysiDRemCod(String cid, String sid);
 	
+	Map<String ,Double> getAllBysiDRemCod(String cid, List<String> sids);
 	// ドメインモデル「振休管理データ」を作成する
 	void create(SubstitutionOfHDManagementData domain);
+	
+	// ドメインモデル「振休管理データ」を作成する
+	void addAll(List<SubstitutionOfHDManagementData> domains);
+	
 	/**
 	 * 
 	 * @param cid
@@ -24,6 +30,8 @@ public interface SubstitutionOfHDManaDataRepository {
 	List<SubstitutionOfHDManagementData> getBySidDate(String cid, String sid, GeneralDate ymd);
 	
 	List<SubstitutionOfHDManagementData> getBysiD(String cid, String sid);
+	
+	List<SubstitutionOfHDManagementData> getBySidsAndCid(String cid, List<String> sids);
 	
 	void deletePayoutSubOfHDMana(String subOfHDID);
 	

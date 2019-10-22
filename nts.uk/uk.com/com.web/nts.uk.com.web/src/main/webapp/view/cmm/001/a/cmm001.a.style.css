@@ -54,9 +54,10 @@
 }
 
 .bg-yellow {
-	width: 200px;
+	width: 230px;
 	height: 28px;
 	margin-top: 4px;
+	margin-left: 250px
 }
 
 .form-label {
@@ -98,10 +99,6 @@
 
 .th-col-sub {
 	width: 150px;
-}
-
-.bg-yellow {
-	margin-left: 250px
 }
 
 ui-widget-header {
@@ -278,6 +275,11 @@ body>div:nth-child(4) {
 
 .ntsCheckBox-label {
 	width: 142px;
+}
+
+#checked2 .ntsCheckBox-label {
+	width: 175px;
+	vertical-align: middle;
 }
 
 #faxNo {

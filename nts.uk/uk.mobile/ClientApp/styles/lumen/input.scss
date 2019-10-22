@@ -4,22 +4,22 @@
       background-color: #fff;
     }
     &.input-group-search {
-      .fa {
-        color: #fff;
-      }
       .input-group-append {
         z-index: 99;
       }
-      .form-control {
-        color: #fff;
+      &.text-white {
+        .fa,
+        .form-control {
+          color: #fff;
+        }
       }
     }
-
     .input-group-prepend,
     .input-group-append {
       position: absolute;
       border-color: transparent;
       background-color: transparent;
+      z-index: 3;
 
       .input-group-text {
         border-color: transparent;
@@ -56,6 +56,47 @@
     }
   }
 
+  &.input-group-time {
+    .input-group-prepend {
+      &+.form-control {
+        border-left-color: transparent;
+      }
+      .input-group-text {
+        border-right: 0;
+      }
+    }
+    .input-group-append {
+      .input-group-text {
+        border-left: 0;
+      }
+    }
+    .form-control {
+      padding: 0;
+      &:not(:last-child) {
+        border-right-color: transparent;
+      }
+      .row {
+        line-height: 33px;
+        [class^=col-] {
+          font-size: 0.8rem;
+        }
+      }
+      &.is-invalid {
+        background-image: none;
+      }
+    }
+    .input-group-text {
+      background-color: transparent;
+      box-shadow: inset 0 2px 0 rgba(0, 0, 0, 0.075);
+      &.fa {
+        font-weight: 600;
+      }
+      &.is-invalid {
+        border-color: $form-feedback-invalid-color;
+      }
+    }  
+  }
+
   &.input-group-transparent {
     .form-control {
       border-radius: 0.25rem;
@@ -90,10 +131,40 @@
   }
 }
 
+.form-group {
+  &.is-invalid {
+    +.invalid-feedback {
+      display: block;
+    }
+  }
+  &-range {
+    >.col-6:last-child {
+      .form-group {
+        &:first-child {
+          &:before {
+            content: '～';
+            display: block;
+            position: absolute;
+            top: 7px;
+            left: -7px;
+          }
+        }
+      }
+    }
+  }
+}
+
 .time-picker {
   .form-control {
     text-align: center;
     padding-left: 3px;
     padding-right: 3px;
   }
+}
+
+
+.was-validated 
+.form-control:invalid, 
+.form-control.is-invalid {
+  background-image: none;
 }

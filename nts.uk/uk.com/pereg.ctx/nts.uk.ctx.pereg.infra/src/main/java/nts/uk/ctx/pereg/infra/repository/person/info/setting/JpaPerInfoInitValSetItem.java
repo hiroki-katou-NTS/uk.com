@@ -46,8 +46,9 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 			// 18, 19
 			+ " CM.stringItemType, CM.stringItemLength, CM.stringItemDataType,"
 			// 20,21,22
-			+ " CM.numericItemAmountAtr, CM.numericItemMinusAtr"
+			+ " CM.numericItemAmountAtr, CM.numericItemMinusAtr,"
 			// 23, 24
+			+ " ITEM.initValue"
 			+ " FROM  PpemtPerInfoCtg CTG INNER JOIN PpemtPerInfoItemCm CM"
 			+ " ON  CTG.categoryCd = CM.ppemtPerInfoItemCmPK.categoryCd" + " INNER JOIN  PpemtPerInfoItem ITEM"
 			+ " ON CM.ppemtPerInfoItemCmPK.itemCd = ITEM.itemCd"
@@ -131,36 +132,16 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 		domain.setPerInfoCtgId(entity[1].toString());// 1
 		domain.setItemName(entity[2] == null ? "" : entity[2].toString());// 2
 		domain.setIsRequired(entity[3] == null ? 0 : Integer.valueOf(entity[3].toString())); // 3
-
-		if (entity[4] == null) {
-			domain.setDataType(0);
-		} else {
-			domain.setDataType(Integer.valueOf(entity[4].toString()));
-		}
-
-		if (entity[5] == null) {
-			domain.setItemType(0);
-		} else {
-			domain.setItemType(Integer.valueOf(entity[5].toString()));
-		}
-
+		domain.setDataType(entity[4] == null? 0: Integer.valueOf(entity[4].toString())); //4
+		domain.setItemType(entity[5] == null? 0: Integer.valueOf(entity[5].toString())); //5
 		if (entity[7] != null) {
 			domain.setItemCode(entity[7].toString());
-			if (entity[7].toString().contains("IS")) {
-				domain.setFixedItem(true);
-			} else {
-				domain.setFixedItem(false);
-			}
+			domain.setFixedItem(entity[7].toString().contains("IS") ? true : false);
 		}
-
-		if (entity[8] != null) {
-			// domain.setCtgCode(entity[14].toString());
-			domain.setCtgCode(entity[8].toString());
-		}
+		domain.setCtgCode(entity[8] != null? entity[8].toString():"");
 		if (entity[7] != null && entity[8] != null) {
 			domain.setConstraint(PerInfoInitValueSetItem.processs(entity[8].toString(), entity[7].toString()));
 		}
-
 		if (entity[4] != null) {
 			if (entity[4].toString().equals("2")) {
 				if (entity[9] != null) {
@@ -228,6 +209,10 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 		
 		if (entity[24] != null) {
 			domain.setNumberItemMinus(Integer.valueOf(entity[24].toString()));
+		}
+		
+		if (entity[25] != null) {
+			domain.setInitValue(entity[25].toString());
 		}
 		return domain;
 

@@ -35,4 +35,13 @@ public interface ApprovalRootStateStatusService {
 	 * @return
 	 */
 	public DailyConfirmAtr determineDailyConfirm(ApprovalRootState approvalRootState);
+	
+	/**
+	 * 承認フェーズインスタンスの承認状態が未承認か判断
+	 * @param rootStateID 申請ID
+	 * @return 　・未承認以外フラグ：
+　　			False：全て承認枠の承認状態が未承認　　　　　（誰も承認していない）
+　　			True:　全て承認枠の承認状態が未承認ではない　（１人でも承認処理していた）
+	 */
+	public boolean determinePhaseApproval(String rootStateID);
 }

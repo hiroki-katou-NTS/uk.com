@@ -2,16 +2,19 @@ package nts.uk.ctx.bs.employee.infra.repository.employee.history;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.sql.SQLException;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 
 import org.apache.commons.lang3.BooleanUtils;
 
@@ -21,9 +24,11 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
+import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistCustom;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
 import nts.uk.ctx.bs.employee.infra.entity.employee.history.BsymtAffCompanyHist;
@@ -31,6 +36,7 @@ import nts.uk.ctx.bs.employee.infra.entity.employee.history.BsymtAffCompanyHistP
 import nts.uk.ctx.bs.employee.infra.entity.employee.history.BsymtAffCompanyInfo;
 import nts.uk.ctx.bs.employee.infra.entity.employee.history.BsymtAffCompanyInfoPk;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -139,6 +145,7 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 	}
 
 	@Override
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public AffCompanyHist getAffCompanyHistoryOfEmployee(String employeeId) {
 		List<BsymtAffCompanyHist> lstBsymtAffCompanyHist = this.queryProxy()
 				.query(SELECT_BY_EMPLOYEE_ID, BsymtAffCompanyHist.class).setParameter("sId", employeeId).getList();
@@ -475,13 +482,26 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 		List<BsymtAffCompanyHist> entities = new ArrayList<>();
 		// Split employeeId List if size of employeeId List is greater than 1000
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
-			List<BsymtAffCompanyHist> lstBsymtAffCompanyHist = this.queryProxy()
-					.query(SELECT_BY_EMPLOYEE_ID_LIST_FOR_REQ588, BsymtAffCompanyHist.class)
-					.setParameter("sIdList", subList)
-					.setParameter("startDate", datePeriod.start())
-					.setParameter("endDate", datePeriod.end())
-					.getList();
-			entities.addAll(lstBsymtAffCompanyHist);
+			String sql = "select * from BSYMT_AFF_COM_HIST"
+					+ " where SID in (" + NtsStatement.In.createParamsString(subList) + ")"
+					+ " and START_DATE <= ?"
+					+ " and END_DATE >= ?";
+			
+			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+				
+				for (int i = 0; i < subList.size(); i++) {
+					stmt.setString(1 + i, subList.get(i));
+				}
+				stmt.setDate(1 + subList.size(), Date.valueOf(datePeriod.end().localDate()));
+				stmt.setDate(2 + subList.size(), Date.valueOf(datePeriod.start().localDate()));
+				
+				List<BsymtAffCompanyHist> lstBsymtAffCompanyHist = new NtsResultSet(stmt.executeQuery())
+						.getList(rec -> BsymtAffCompanyHist.MAPPER.toEntity(rec));
+				entities.addAll(lstBsymtAffCompanyHist);
+				
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
 		});
 
 		// Convert Result List to Map
@@ -556,4 +576,206 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 		return listSid;
 	}
 
+	@Override
+	public List<AffCompanyHist> getAffComHistOfEmployeeListAndBaseDateV2(List<String> employeeIds,
+			GeneralDate baseDate) {
+		List<AffCompanyHist> resultList = new ArrayList<>();
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			String sql = "select h.PID, h.SID, h.HIST_ID, h.DESTINATION_DATA, h.START_DATE, h.END_DATE "
+						+ " from BSYMT_AFF_COM_HIST h"
+						+ " where h.START_DATE <= ?"
+						+ " and h.END_DATE >= ?"
+						+ " and h.SID in (" + NtsStatement.In.createParamsString(subList) + ")";
+			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+				stmt.setDate(1, Date.valueOf(baseDate.toLocalDate()));
+				stmt.setDate(2, Date.valueOf(baseDate.toLocalDate()));
+				for (int i = 0; i < subList.size(); i++) {
+					stmt.setString(3 + i, subList.get(i));
+				}
+				
+				Set<AffCompanyHist> lstObj = new NtsResultSet(stmt.executeQuery()).getList(r -> {
+					List<AffCompanyHistByEmployee> list = new ArrayList<>();
+					List<AffCompanyHistItem> histItem = new ArrayList<>();
+					histItem.add(new AffCompanyHistItem(
+							r.getString("HIST_ID"),
+							r.getBoolean("DESTINATION_DATA"),
+							new DatePeriod(
+								r.getGeneralDate("START_DATE"),
+								r.getGeneralDate("END_DATE"))));
+					list.add(new AffCompanyHistByEmployee(
+							r.getString("SID"),
+							 histItem));
+					return new AffCompanyHist(r.getString("PID"), list);
+				}).stream().collect(Collectors.toSet());
+				resultList.addAll(lstObj);
+			}
+			catch(SQLException e) {
+				throw new RuntimeException(e);
+			}
+		});
+		return resultList;
+	}
+	
+	@Override
+	public List<AffCompanyHist> getAffComHistOfEmployeeListAndNoBaseDateV3(List<String> sids) {
+
+		List<AffCompanyHist> resultList = new ArrayList<>();
+		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			String sql = "select h.PID, h.SID, h.HIST_ID, h.DESTINATION_DATA, h.START_DATE, h.END_DATE "
+						+ " from BSYMT_AFF_COM_HIST h"
+						+ " where h.SID in (" + NtsStatement.In.createParamsString(subList) + ")";
+			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+				for (int i = 0; i < subList.size(); i++) {
+					stmt.setString(1 + i, subList.get(i));
+				}
+				
+				Set<AffCompanyHist> lstObj = new NtsResultSet(stmt.executeQuery()).getList(r -> {
+					List<AffCompanyHistByEmployee> list = new ArrayList<>();
+					List<AffCompanyHistItem> histItem = new ArrayList<>();
+					histItem.add(new AffCompanyHistItem(
+							r.getString("HIST_ID"),
+							r.getBoolean("DESTINATION_DATA"),
+							new DatePeriod(
+								r.getGeneralDate("START_DATE"),
+								r.getGeneralDate("END_DATE"))));
+					list.add(new AffCompanyHistByEmployee(r.getString("SID"), histItem));
+					return new AffCompanyHist(r.getString("PID"), list);
+				}).stream().collect(Collectors.toSet());
+				resultList.addAll(lstObj);
+			}
+			catch(SQLException e) {
+				throw new RuntimeException(e);
+			}
+		});
+		return resultList;
+	}
+	
+	@Override
+	public void addAll(List<AffCompanyHistCustom> domains) {
+		String INS_SQL = "INSERT INTO BSYMT_AFF_COM_HIST (INS_DATE, INS_CCD, INS_SCD, INS_PG, "
+				+ " UPD_DATE, UPD_CCD, UPD_SCD, UPD_PG,"
+				+ " PID, SID, HIST_ID, CID, "
+				+ " DESTINATION_DATA, START_DATE , END_DATE) "
+				+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
+				+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL, PID_VAL, SID_VAL,"
+				+ " HIST_ID_VAL, CID_VAL, DESTINATION_DATA_VAL, START_DATE_VAL, END_DATE_VAL); ";
+
+		String cid = AppContexts.user().companyId();
+		GeneralDateTime insertTime = GeneralDateTime.now();
+		String insCcd = AppContexts.user().companyCode();
+		String insScd = AppContexts.user().employeeCode();
+		String insPg = AppContexts.programId();
+		String updCcd = insCcd;
+		String updScd = insScd;
+		String updPg = insPg;
+		StringBuilder sb = new StringBuilder();
+		domains.stream().forEach(c -> {
+			String sql = INS_SQL;
+			sql = sql.replace("INS_DATE_VAL", "'" + insertTime + "'");
+			sql = sql.replace("INS_CCD_VAL", "'" + insCcd + "'");
+			sql = sql.replace("INS_SCD_VAL", "'" + insScd + "'");
+			sql = sql.replace("INS_PG_VAL", "'" + insPg + "'");
+
+			sql = sql.replace("UPD_DATE_VAL", "'" + insertTime + "'");
+			sql = sql.replace("UPD_CCD_VAL", "'" + updCcd + "'");
+			sql = sql.replace("UPD_SCD_VAL", "'" + updScd + "'");
+			sql = sql.replace("UPD_PG_VAL", "'" + updPg + "'");
+
+			sql = sql.replace("PID_VAL", "'" + c.getPid() + "'");
+			sql = sql.replace("SID_VAL", "'" + c.getSid() + "'");
+			sql = sql.replace("HIST_ID_VAL", "'" + c.getHistItem().getHistoryId() + "'");
+			sql = sql.replace("CID_VAL", "'" + cid + "'");
+			sql = sql.replace("DESTINATION_DATA_VAL",
+					"" + BooleanUtils.toInteger(c.getHistItem().isDestinationData()) + "");
+			sql = sql.replace("START_DATE_VAL", "'" + c.getHistItem().start() + "'");
+			sql = sql.replace("END_DATE_VAL", "'" + c.getHistItem().end() + "'");
+
+			sb.append(sql);
+		});
+		int records = this.getEntityManager().createNativeQuery(sb.toString()).executeUpdate();
+		System.out.println(records);
+		
+	}
+
+	@Override
+	public void updateAll(List<AffCompanyHistItem> domains) {
+		String UP_SQL = "UPDATE BSYMT_AFF_COM_HIST SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL,"
+				+ " UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL, DESTINATION_DATA = DESTINATION_DATA_VAL,"
+				+ " START_DATE = START_DATE_VAL, END_DATE = END_DATE_VAL "
+				+ " WHERE HIST_ID = HIST_ID_VAL AND CID = CID_VAL;";
+		String cid = AppContexts.user().companyId();
+		String updCcd = AppContexts.user().companyCode();
+		String updScd = AppContexts.user().employeeCode();
+		String updPg = AppContexts.programId();
+		
+		StringBuilder sb = new StringBuilder();
+		domains.stream().forEach(c ->{
+			String sql = UP_SQL;
+			sql = UP_SQL.replace("UPD_DATE_VAL", "'" + GeneralDateTime.now() +"'");
+			sql = sql.replace("UPD_CCD_VAL", "'" + updCcd +"'");
+			sql = sql.replace("UPD_SCD_VAL", "'" + updScd +"'");
+			sql = sql.replace("UPD_PG_VAL", "'" + updPg +"'");
+			
+			sql = sql.replace("DESTINATION_DATA_VAL", "" + BooleanUtils.toInteger(c.isDestinationData())+"");
+			sql = sql.replace("START_DATE_VAL", "'" + c.getDatePeriod().start() +"'");
+			sql = sql.replace("END_DATE_VAL", "'" + c.getDatePeriod().end() +"'");
+			
+			sql = sql.replace("HIST_ID_VAL", "'" + c.getHistoryId() +"'");
+			sql = sql.replace("CID_VAL", "'" + cid +"'");
+			sb.append(sql);
+		});
+		int  records = this.getEntityManager().createNativeQuery(sb.toString()).executeUpdate();
+		System.out.println(records);
+		
+	}
+
+	@Override
+	public Map<String, AffCompanyHist> getAffCompanyHistoryOfEmployee(String cid, List<String> sids) {
+		Map<String, AffCompanyHist> result = new HashMap<>();
+		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			String sql = "select h.PID, h.SID, h.HIST_ID, h.CID, h.DESTINATION_DATA, h.START_DATE, h.END_DATE, "
+					+ " i.RECRUIMENT_CATEGORY_CD, i.ADOPTION_DATE, i.RETIREMENT_CALC_STR_D"
+					+ " from BSYMT_AFF_COM_HIST h"
+					+ " inner join BSYMT_AFF_COM_INFO i"
+					+ " on h.HIST_ID = i.HIST_ID"
+					+ " where h.CID = ?"
+					+ " and h.SID  IN (" + NtsStatement.In.createParamsString(subList) + ")";
+			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+				stmt.setString(1, cid);
+				for (int i = 0; i < subList.size(); i++) {
+					stmt.setString(2 + i, subList.get(i));
+				}
+				List<BsymtAffCompanyHist> lstBsymtAffCompanyHist = new NtsResultSet(stmt.executeQuery()).getList(r -> {
+					BsymtAffCompanyHist hist = new BsymtAffCompanyHist();
+					hist.bsymtAffCompanyHistPk = new BsymtAffCompanyHistPk();
+					hist.bsymtAffCompanyHistPk.pId = r.getString("PID");
+					hist.bsymtAffCompanyHistPk.sId = r.getString("SID");
+					hist.bsymtAffCompanyHistPk.historyId = r.getString("HIST_ID");
+					hist.companyId = cid;
+					hist.destinationData = r.getInt("DESTINATION_DATA");
+					hist.startDate = r.getGeneralDate("START_DATE");
+					hist.endDate = r.getGeneralDate("END_DATE");
+					
+					BsymtAffCompanyInfo info = new BsymtAffCompanyInfo();
+					info.bsymtAffCompanyInfoPk = new BsymtAffCompanyInfoPk();
+					info.bsymtAffCompanyInfoPk.historyId = hist.bsymtAffCompanyHistPk.historyId;
+					info.recruitmentCategoryCode = r.getString("RECRUIMENT_CATEGORY_CD");
+					info.adoptionDate = r.getGeneralDate("ADOPTION_DATE");
+					info.retirementAllowanceCalcStartDate = r.getGeneralDate("RETIREMENT_CALC_STR_D");
+					
+					hist.bsymtAffCompanyInfo = info;
+					info.bpsdtAffCompanyHist = hist;
+					return hist;
+				});
+				
+				Map<String, List<BsymtAffCompanyHist>> affHistMap = lstBsymtAffCompanyHist.stream().collect(Collectors.groupingBy(c->c.bsymtAffCompanyHistPk.sId));
+				 affHistMap.entrySet().forEach(c ->{
+					 result.put(c.getKey(), toDomain(c.getValue()));
+				 });
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		});
+		return result;
+	}
 }

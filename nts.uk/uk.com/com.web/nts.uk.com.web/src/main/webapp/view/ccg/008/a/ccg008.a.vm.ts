@@ -1,6 +1,7 @@
 module nts.uk.com.view.ccg008.a.viewmodel {
     import commonModel = ccg.model;
     import ntsFile = nts.uk.request.file; 
+    import character = nts.uk.characteristics;
     
     export class ScreenModel {
         tabs: KnockoutObservableArray<any>;
@@ -13,6 +14,11 @@ module nts.uk.com.view.ccg008.a.viewmodel {
         displayButton: boolean;
         topPageCode: KnockoutObservable<string>;
         isStart: boolean;
+        dateSwitch: KnockoutObservableArray<any>;
+        selectedSwitch: KnockoutObservable<any>;
+        switchVisible: KnockoutObservable<boolean>;
+        closureSelected: KnockoutObservable<number> = ko.observable(1);
+        lstClosure: KnockoutObservableArray<model.ItemCbbModel> = ko.observableArray([]);
         constructor() {
             var self = this;
             self.isStart = true;
@@ -28,6 +34,12 @@ module nts.uk.com.view.ccg008.a.viewmodel {
                 { id: 'tab-2', title: nts.uk.resource.getText("CCG008_4"), content: '.tab-content-2', enable: ko.observable(true), visible: self.visibleMyPage }
             ]);
             self.selectedTab = ko.observable(null);
+            self.dateSwitch = ko.observableArray([
+                                                    { code: '1', name: nts.uk.resource.getText('CCG008_14')},
+                                                    { code: '2', name: nts.uk.resource.getText('CCG008_15')}
+                                                ]);
+            self.selectedSwitch = ko.observable(null);
+            self.switchVisible = ko.observable(true);
             self.selectedTab.subscribe(function(codeChange) {
                 let time = 0;
                 if (self.isStart) {
@@ -45,7 +57,27 @@ module nts.uk.com.view.ccg008.a.viewmodel {
                     }
                 }, time);
             });
+            // ver4 current month or next month
+            self.selectedSwitch.subscribe(function(value){
+                character.save('cache', new model.Cache(self.closureSelected(), value));
+                nts.uk.ui.windows.setShared('cache', new model.Cache(self.closureSelected(), value));
+                var transferData = __viewContext.transferred.value;
+                var fromScreen = transferData && transferData.screen ? transferData.screen : "other";
+                service.getTopPageByCode(fromScreen, self.topPageCode()).done((data: model.LayoutAllDto) => {
+                    self.dataSource(data);
+                    if(self.selectedTab() == 'tab-1'){
+                        self.showToppage(self.dataSource().topPage);                        
+                    }else{
+                        self.showMypage(self.dataSource().myPage);
+                    }
+                });
+            });
+            
+            self.closureSelected.subscribe(function(value){
+                self.selectedSwitch.valueHasMutated();
+            });
         }
+        
         start(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
@@ -53,33 +85,78 @@ module nts.uk.com.view.ccg008.a.viewmodel {
             var code = transferData && transferData.topPageCode ? transferData.topPageCode : "";
             var fromScreen = transferData && transferData.screen ? transferData.screen : "other";
             //var fromScreen = "login"; 
-            self.topPageCode(code);
-            service.getTopPageByCode(fromScreen, self.topPageCode()).done((data: model.LayoutAllDto) => {
-                //console.log(data);
-                self.dataSource(data);
-                var topPageUrl = "/view/ccg/008/a/index.xhtml";
-                if (data.topPage != null && data.topPage.standardMenuUrl != null) {//hien thi standardmenu
-                    var res = "/" + data.topPage.standardMenuUrl.split("web/")[1];
-                    if (res && topPageUrl != res.trim()) { 
-                        if (_.includes(data.topPage.standardMenuUrl, ".at.")) { 
-                            nts.uk.request.jump("at", res);
-                        } else {
-                            nts.uk.request.jump(res);
+            if(fromScreen == "login"){
+                service.getCache().done((data: any) => {
+                    character.save('cache', data).done(() => {
+                        self.topPageCode(code);
+                        character.restore('cache').done((obj)=>{
+                            if(obj){
+                                setTimeout(function() { 
+                                    if(obj.currentOrNextMonth){
+                                        self.selectedSwitch(obj.currentOrNextMonth);
+                                    }else{
+                                        self.selectedSwitch(null);    
+                                    }
+                                    self.closureSelected(obj.closureId)
+                                    nts.uk.ui.windows.setShared('cache', obj);
+                                }, 2000);
+                            }else{
+                                self.closureSelected(1);
+                                self.selectedSwitch(null);
+                            }
+                        }); 
+                    });
+                });  
+            }else{
+                 // get combobox and switch button
+                character.restore('cache').done((obj)=>{
+                    if(obj){
+                        setTimeout(function() { 
+                            if(obj.currentOrNextMonth){
+                                self.selectedSwitch(obj.currentOrNextMonth);
+                            }else{
+                                self.selectedSwitch(null);    
+                            }
+                            self.closureSelected(obj.closureId)
+                            nts.uk.ui.windows.setShared('cache', obj);
+                        }, 2000);
+                    }else{
+                        self.closureSelected(1);
+                        self.selectedSwitch(null);
+                    }
+                });    
+            }
+            
+            // 会社の締めを取得する - Lấy closure company
+            service.getClosure().done((data: any) => {
+                console.log(data);
+                self.lstClosure(data);   
+                service.getTopPageByCode(fromScreen, self.topPageCode()).done((data: model.LayoutAllDto) => {
+                    self.dataSource(data);
+                    var topPageUrl = "/view/ccg/008/a/index.xhtml";
+                    if (data.topPage != null && data.topPage.standardMenuUrl != null) {//hien thi standardmenu
+                        var res = "/" + data.topPage.standardMenuUrl.split("web/")[1];
+                        if (res && topPageUrl != res.trim()) { 
+                            if (_.includes(data.topPage.standardMenuUrl, ".at.")) { 
+                                nts.uk.request.jump("at", res);
+                            } else {
+                                nts.uk.request.jump(res);
+                            }
                         }
                     }
-                }
-                if (data.checkMyPage == false) {//k hien thi my page
-                    self.visibleMyPage(false);
-                }
-                if (data.check == true) {//hien thi top page truoc
-                    self.selectedTab('tab-1');
-                } else {
-                    self.selectedTab('tab-2');
-                }
-                if (data.checkMyPage == false && data.checkTopPage == false) {
-                    self.displayButton = false;
-                }
-                dfd.resolve();
+                    if (data.checkMyPage == false) {//k hien thi my page
+                        self.visibleMyPage(false);
+                    }
+                    if (data.check == true) {//hien thi top page truoc
+                        self.selectedTab('tab-1');
+                    } else {
+                        self.selectedTab('tab-2');
+                    }
+                    if (data.checkMyPage == false && data.checkTopPage == false) {
+                        self.displayButton = false;
+                    }
+                    dfd.resolve();
+                });
             });
             return dfd.promise();
         }
@@ -88,11 +165,39 @@ module nts.uk.com.view.ccg008.a.viewmodel {
         showToppage(data: model.LayoutForTopPageDto) {
             var self = this;
             self.buildLayout(data, model.TOPPAGE);
+            // ẩn hiện switch button
+            if(data){
+                let switchButton = _.filter(data.placements, function(o) { return ((o.placementPartDto.topPageCode == "0001" 
+                                                                    || o.placementPartDto.topPageCode == "0004")
+                                                                    && o.placementPartDto.type === 0) 
+                                                                    || o.placementPartDto.type === 1});
+                if(switchButton.length == 0){
+                    self.switchVisible(false);
+                }else{
+                    self.switchVisible(true);
+                }
+            }else{
+                self.switchVisible(false);
+            }
         }
         //display my page
         showMypage(data: model.LayoutForMyPageDto) {
             var self = this;
             self.buildLayout(data, model.MYPAGE);
+            // ẩn hiện switch button
+            if(data){
+                let switchButton = _.filter(data.placements, function(o) { return ((o.placementPartDto.topPageCode == "0001" 
+                                                                    || o.placementPartDto.topPageCode == "0004")
+                                                                    && o.placementPartDto.type === 0) 
+                                                                    || o.placementPartDto.type === 1});
+                if(switchButton.length == 0){
+                    self.switchVisible(false);
+                }else{
+                    self.switchVisible(true);
+                }
+            }else{
+                self.switchVisible(false);
+            }
         }
 
         /** Build layout for top page or my page **/
@@ -101,13 +206,14 @@ module nts.uk.com.view.ccg008.a.viewmodel {
             if (!data) {
                 return;
             }
-
+            
             let listPlacement: Array<model.Placement> = _.map(data.placements, (item) => {
                 return new model.Placement(item.placementID, item.placementPartDto.topPageName,
                     item.row, item.column,
                     item.placementPartDto.width, item.placementPartDto.height, item.placementPartDto.url,
                     item.placementPartDto.topPagePartID, item.placementPartDto.topPageCode ,item.placementPartDto.type, null);
             });
+            
 
             if (data.flowMenu != null) {
                 _.map(data.flowMenu, (items) => {
@@ -148,8 +254,13 @@ module nts.uk.com.view.ccg008.a.viewmodel {
                 var fromScreen = transferData && transferData.screen ? transferData.screen : "other";
                 service.getTopPageByCode(fromScreen, self.topPageCode()).done((data: model.LayoutAllDto) => {
                     self.dataSource(data);
-                    self.showMypage(self.dataSource().myPage);
-                    self.showToppage(self.dataSource().topPage);
+//                    self.showMypage(self.dataSource().myPage);
+//                    self.showToppage(self.dataSource().topPage);
+                    if(self.selectedTab() == 'tab-1'){
+                        self.showToppage(self.dataSource().topPage);                        
+                    }else{
+                        self.showMypage(self.dataSource().myPage);
+                    }
                 });
             });
         }
@@ -234,6 +345,24 @@ module nts.uk.com.view.ccg008.a.viewmodel {
                 this.topPagePartID = topPagePartID;
                 this.partType = partType;
                 
+            }
+        }
+        
+        export class ItemCbbModel {
+            closureId: number;
+            closureName: string;
+            constructor(closureId: number, closureName: string) {
+                this.closureId = closureId;
+                this.closureName = closureName;
+            }
+        }
+        
+        export class Cache {
+            closureId: number;
+            currentOrNextMonth: number;
+            constructor(closureId: number, currentOrNextMonth: number) {
+                this.closureId = closureId;
+                this.currentOrNextMonth = currentOrNextMonth;
             }
         }
         /** Server LayoutDto */

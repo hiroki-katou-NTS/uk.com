@@ -15,10 +15,12 @@ public class NumberOfRemainOutput {
 	//ストック休暇残数
 	private Double stockRemain;
 	
-	public static NumberOfRemainOutput init(Double yearRemain, Double subHdRemain, Double subVacaRemain, Double stockRemain){
-		return new NumberOfRemainOutput(yearRemain == null ? new Double(0L) : yearRemain,
-						subHdRemain == null ? new Double(0L) : subHdRemain,
-						subVacaRemain == null ? new Double(0L) : subVacaRemain,
-						stockRemain == null ? new Double(0L) : stockRemain);
+    public static NumberOfRemainOutput init(Double yearRemain, Double subHdRemain, Double subVacaRemain, Double stockRemain,
+            boolean yearFlg, boolean subHdFlg, boolean subVacaFlg, boolean  retentionFlg){
+        return new NumberOfRemainOutput(yearRemain == null && yearFlg ? new Double(0L) : yearRemain,
+                        subHdRemain == null && subHdFlg? new Double(0L) : subHdRemain,
+                        subVacaRemain == null && subVacaFlg? new Double(0L) : subVacaRemain,
+                        stockRemain == null && retentionFlg? new Double(0L) : stockRemain);
+
 	}
 }

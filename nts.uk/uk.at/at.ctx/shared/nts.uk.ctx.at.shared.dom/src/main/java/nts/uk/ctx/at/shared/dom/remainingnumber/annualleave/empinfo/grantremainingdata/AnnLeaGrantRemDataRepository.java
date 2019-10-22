@@ -38,11 +38,34 @@ public interface AnnLeaGrantRemDataRepository {
 	
 	List<AnnualLeaveGrantRemainingData> checkConditionUniqueForAdd(String employeeId, GeneralDate grantDate);
 	
+	/**
+	 * @author lanlt
+	 * dùng check điều kiện cho nhiều nhân viên
+	 * @param emp
+	 * @return
+	 */
+	Map<String, List<AnnualLeaveGrantRemainingData>> checkConditionUniqueForAdd(String cid, Map<String, GeneralDate> emp);
+	
 	List<AnnualLeaveGrantRemainingData> checkConditionUniqueForUpdate(String employeeId, String annLeavID, GeneralDate grantDate);
 	// get list annual leave grant remaining data by startDate <= grantDate <= endDate
 	List<AnnualLeaveGrantRemainingData> findInDate(String employeeId, GeneralDate startDate, GeneralDate endDate);
 	
+	/**
+	 * @author lanlt
+	 * @param cid
+	 * @param employeeId
+	 * @return
+	 */
+	List<AnnualLeaveGrantRemainingData> findByCidAndSids(String cid, List<String> sids);
+	
+	/**
+	 * @author lanlt
+	 * @param domains
+	 */
+	void addAll(List<AnnualLeaveGrantRemainingData> domains);
+
 	Map<String, List<AnnualLeaveGrantRemainingData>> findInDate(List<String> employeeId, GeneralDate startDate, GeneralDate endDate);
+
 
 	List<AnnualLeaveGrantRemainingData> findBySidAndDate(String employeeId, GeneralDate grantDate);
 	/**

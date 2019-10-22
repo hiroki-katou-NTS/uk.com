@@ -20,10 +20,10 @@ import { ModalComponent } from './modal-component';
 export class DocumentsPluginsModalComponent extends Vue {
     public name: string = 'Nittsu System Viet Nam';
 
-    public showModal() {
+    public showModal(type) {
         let name = this.name;
 
-        this.$modal('sample', { name })
+        this.$modal('sample', { name }, {type} )
             .then((v) => {
                 alert(`You are choose: ${v}`);
             });

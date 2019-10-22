@@ -2,11 +2,11 @@ module nts.uk.at.view.kdw004.a.viewmodel {
     import text = nts.uk.resource.getText;
 
     enum ApprovalStatus {
-        Approved = 0,
-        UnApproved = 1,
-        CannotApproved = 2,
-        Disable = 3,
-        Notthing = 4
+        Approved = 0, //済
+        UnApproved = 1, //未
+        CannotApproved = 2, //他
+        Disable = 3, //disable
+        Notthing = 4 //本
     }
 
     let SATURDAY_BACKGROUND_COLOR = "#8BD8FF",
@@ -44,61 +44,132 @@ module nts.uk.at.view.kdw004.a.viewmodel {
         lstHeaderColor: Array<any> = [];
 
         datePeriod: KnockoutObservable<any> = ko.observable(null);
-        currentPageSize: KnockoutObservable<any> = ko.observable(12);
+        currentPageSize: KnockoutObservable<any> = ko.observable(50);
         selectedClosure: KnockoutObservable<any> = ko.observable(null);
         lstClosure: KnockoutObservableArray<any> = ko.observableArray([]);
-
+        isStartInProcess: boolean = true;
+        closureIdExtract: number = 0;
+        startDateExtract: any = null;
+        endDateExtract: any = null;
+        yearMonth: KnockoutObservable<number> = ko.observable(0);
+        periodRepresent:  KnockoutObservable<string> = ko.observable("");
+        
         constructor() {
             let self = this;
 
-            self.selectedClosure.subscribe(val => {
-                if (val) {
-                    let currentYearMonth,
-                        closures = self.lstClosure();
-
-                    _.each(closures, x => {
-                        if (x.closureId == val) {
-                            currentYearMonth = x.currentYearMonth;
-                        }
-                    });
-
-                    service.getDateRange(val, currentYearMonth).done((dateRange) => {
+            self.selectedClosure.subscribe(valClosureId => {
+                 if (self.isStartInProcess) {
+                    //self.isStartInProcess = false;
+                    return;
+                } 
+                
+                if (valClosureId) {
+                    let param = {
+                        closureIdParam: valClosureId,
+                        startDateParam: moment(self.startDateExtract).utc().toISOString(),
+                        endDateParam: moment(self.endDateExtract).utc().toISOString(),
+                        yearMonth: self.yearMonth()
+                    };
+                    nts.uk.ui.block.grayout();
+                    service.changeCondition(param).done((result: OneMonthApprovalStatus) => {
                         self.datePeriod({
-                            startDate: moment(dateRange.startDate).format("YYYY/MM/DD"),
-                            endDate: moment(dateRange.endDate).format("YYYY/MM/DD")
+                            startDate: moment(result.startDate).format("YYYY/MM/DD"),
+                            endDate: moment(result.endDate).format("YYYY/MM/DD")
                         });
 
-                        //disable tabIndex button date range
-                        $(".ntsDateRangeButton").prop('tabindex', -1);
+                        self.periodRepresent(moment(result.startDate).format("YYYY/MM/DD") + " ～ " + moment(result.endDate).format("YYYY/MM/DD"));
+                        self.genDataChange(result);
+                        nts.uk.ui.block.clear();
                     });
                 }
             });
+                
+           self.yearMonth.subscribe(valYearMonth => {
+                if (self.isStartInProcess) {
+                    //self.isStartInProcess = false;
+                    return;
+                } 
+                
+                if (nts.uk.ui.errors.getErrorByElement($("#row1")).length != 0) {
+                    return;
+                }
+               
+                if (valYearMonth) {
+                    let param = {
+                        closureIdParam: self.selectedClosure(),
+                        startDateParam: moment(self.startDateExtract).utc().toISOString(),
+                        endDateParam: moment(self.endDateExtract).utc().toISOString(),
+                        yearMonth: valYearMonth
+                    };
+                    nts.uk.ui.block.grayout();
+                    service.changeCondition(param).done((result: OneMonthApprovalStatus) => {
+                        self.datePeriod({
+                            startDate: moment(result.startDate).format("YYYY/MM/DD"),
+                            endDate: moment(result.endDate).format("YYYY/MM/DD")
+                        });
+
+                        self.periodRepresent(moment(result.startDate).format("YYYY/MM/DD") + " ～ " + moment(result.endDate).format("YYYY/MM/DD"));
+                            self.genDataChange(result);
+                            nts.uk.ui.block.clear();
+                    });
+                }
+            });
+           $(window).resize(function() {
+               $("#approvalSttGrid").igGrid("option", "height", (window.innerHeight - 280) + "px");
+               $("#approvalSttGrid").igGrid("option", "width", (window.innerWidth - (window.innerWidth - 1247)) + "px");
+               //console.log("Width: " + window.innerWidth + " | Height:  " + window.innerHeight);
+
+           });
         }
 
-        startPage = (): JQueryPromise<any> => {
+        startPage = (param): JQueryPromise<any> => {
             let self = this,
-                dfd = $.Deferred();
+                dfd = $.Deferred(),
+                data: any = param;
 
             nts.uk.ui.block.grayout();
 
-            service.startscreen().done((result: OneMonthApprovalStatus) => {
+            service.startscreen(data).done((result: OneMonthApprovalStatus) => {
+                self.isStartInProcess = true;
                 self.lstClosure(result.lstClosure);
-
-                self.selectedClosure(result.lstClosure[0].closureId);
-
+                self.yearMonth(result.yearMonth);
+                self.selectedClosure(_.isNil(data.closureIdParam) ? result.lstClosure[0].closureId : data.closureIdParam);
+                 
                 self.datePeriod({
                     startDate: moment(result.startDate).format("YYYY/MM/DD"),
                     endDate: moment(result.endDate).format("YYYY/MM/DD")
                 });
+                self.periodRepresent(moment(result.startDate).format("YYYY/MM/DD") + " ～ " + moment(result.endDate).format("YYYY/MM/DD"));
+                // set gia trị ban đầu cho closureIdExtract startDateExtract endDateExtract khi khởi động
+                self.closureIdExtract = self.selectedClosure();
+                self.startDateExtract = moment(result.startDate).format("YYYY/MM/DD");
+                self.endDateExtract = moment(result.endDate).format("YYYY/MM/DD");
+                
                 if(result.lstEmployee != null){
                     self.lstData = self.convertToGridData(result.lstEmployee);
                 } else {
                     nts.uk.ui.dialog.alert({ messageId: result.messageID  });
                 }
                 self.generateColumns();
-                self.loadGrid();
+                let userid = __viewContext.user.employeeId;
+                let comid = __viewContext.user.companyId;
+                let dataLocal = nts.uk.localStorage.getItem('approvalSize' + userid);
+                let employeeIdLogin = nts.uk.localStorage.getItem(userid);
+                let companyIdLogin = nts.uk.localStorage.getItem(comid);
+                
+                if(dataLocal.isPresent() && (employeeIdLogin.isPresent() && employeeIdLogin.get() == __viewContext.user.employeeId) 
+                && (companyIdLogin.isPresent() && companyIdLogin.get() == __viewContext.user.companyId)){
+                        self.currentPageSize(dataLocal.get());
+                        self.loadGrid(dataLocal.get());
+                    } else {
+                        nts.uk.localStorage.setItem(userid, __viewContext.user.employeeId);
+                        nts.uk.localStorage.setItem(comid, __viewContext.user.companyId);
+                        self.loadGrid();
+                    }
                 self.addClickEventDateHeader();
-
+                setTimeout(() => {
+                    self.isStartInProcess = false;
+                }, 200);
                 dfd.resolve();
 
                 nts.uk.ui.block.clear();
@@ -110,41 +181,62 @@ module nts.uk.at.view.kdw004.a.viewmodel {
         }
 
         extract = () => {
-            let self = this,
-                param = {
-                    closureIdParam: self.selectedClosure(),
-                    startDateParam: moment(self.datePeriod().startDate).utc().toISOString(),
-                    endDateParam: moment(self.datePeriod().endDate).utc().toISOString(),
-                };
+            let self = this;
+            self.closureIdExtract = self.selectedClosure();
+            self.startDateExtract = self.datePeriod().startDate;
+            self.endDateExtract = self.datePeriod().endDate;
+            let param = {
+                closureIdParam: self.selectedClosure(),
+                startDateParam: moment(self.startDateExtract).utc().toISOString(),
+                endDateParam: moment(self.endDateExtract).utc().toISOString(),
+                yearMonth: self.yearMonth()
+            };
 
             nts.uk.ui.block.grayout();
 
             service.extractApprovalStatusData(param).done((result: OneMonthApprovalStatus) => {
-                let approvalSttGrid = document.getElementById('approvalSttGrid');
-
-                ko.cleanNode(approvalSttGrid_headers);
-                ko.cleanNode(approvalSttGrid);
-    
-                //self.lstData = self.convertToGridData(result.lstEmployee);
-                if(result.lstEmployee != null){
-                    self.lstData = self.convertToGridData(result.lstEmployee);
-                } else {
-                    self.lstData = [];
-                    nts.uk.ui.dialog.alert({ messageId: result.messageID  });
-                }
-                self.generateColumns();
-                self.loadGrid();
-                self.setHeadersColor();
-                self.addClickEventDateHeader();
-
-                ko.applyBindings(self, approvalSttGrid);
-                ko.applyBindings(self, approvalSttGrid_headers);
-
+                self.genDataChange(result);
                 nts.uk.ui.block.clear();
             }).fail((error) => {
                 nts.uk.ui.block.clear();
                 nts.uk.ui.dialog.alert({ messageId: error.messageId });
             });
+        }
+
+        genDataChange(result: OneMonthApprovalStatus){
+            let self = this;
+            let approvalSttGrid = document.getElementById('approvalSttGrid');
+
+            ko.cleanNode(approvalSttGrid_headers);
+            ko.cleanNode(approvalSttGrid);
+
+            //self.lstData = self.convertToGridData(result.lstEmployee);
+            if (result.lstEmployee != null) {
+                self.lstData = self.convertToGridData(result.lstEmployee);
+            } else {
+                self.lstData = [];
+                nts.uk.ui.dialog.alert({ messageId: result.messageID });
+            }
+            self.generateColumns();
+            let userid = __viewContext.user.employeeId;
+            let comid = __viewContext.user.companyId;
+            let dataLocal = nts.uk.localStorage.getItem('approvalSize' + userid);
+            let employeeIdLogin = nts.uk.localStorage.getItem(userid);
+            let companyIdLogin = nts.uk.localStorage.getItem(comid);
+
+            if (dataLocal.isPresent() && (employeeIdLogin.isPresent() && employeeIdLogin.get() == __viewContext.user.employeeId)
+                && (companyIdLogin.isPresent() && companyIdLogin.get() == __viewContext.user.companyId)) {
+                self.currentPageSize(dataLocal.get());
+                self.loadGrid(dataLocal.get());
+            } else {
+                self.loadGrid();
+            }
+
+            self.setHeadersColor();
+            self.addClickEventDateHeader();
+
+            ko.applyBindings(self, approvalSttGrid);
+            ko.applyBindings(self, approvalSttGrid_headers);
         }
 
         clickDateJumpToKdw003 = (date) => {
@@ -178,7 +270,10 @@ module nts.uk.at.view.kdw004.a.viewmodel {
                     //Optional
                     //日付別で起動
                     dateTarget: date,
-                    individualTarget: undefined
+                    individualTarget: undefined,
+                    startDateKDW004: self.startDateExtract,
+                    endDateKDW004: self.endDateExtract,
+                    yearMonthKDW004: self.yearMonth()
                 };
 
             nts.uk.request.jump("at", "/view/kdw/003/a/index.xhtml", {
@@ -201,12 +296,15 @@ module nts.uk.at.view.kdw004.a.viewmodel {
                     transitionDesScreen: '/view/kdw/004/a/index.xhtml'
                 },
                 extractionParam: DPCorrectionExtractionParam = {
-                    displayFormat: DPCorrectionDisplayFormat.INDIVIDUAl,
+                    displayFormat: DPCorrectionDisplayFormat.DATE,
                     startDate: startDate,
                     endDate: startDate,
                     lstExtractedEmployee: [employeeId],
                     dateTarget: startDate,
-                    individualTarget: employeeId
+                    individualTarget: employeeId,
+                    startDateKDW004: self.startDateExtract,
+                    endDateKDW004: self.endDateExtract,
+                    yearMonthKDW004: self.yearMonth()
                 };
 
             nts.uk.request.jump("at", "/view/kdw/003/a/index.xhtml", {
@@ -240,14 +338,18 @@ module nts.uk.at.view.kdw004.a.viewmodel {
                     //表示形式
                     displayFormat: DPCorrectionDisplayFormat.INDIVIDUAl,
                     //期間
-                    startDate: self.datePeriod().startDate,
-                    endDate: self.datePeriod().endDate,
+//                    startDate: self.startDateExtract,
+//                    endDate: self.endDateExtract,
                     //抽出した社員一覧
+                    yearMonth: self.yearMonth(),
                     lstExtractedEmployee: employeeId,
                     //初期表示年月日
-                    dateTarget: null,
+                    dateTarget: self.datePeriod().endDate,
                     //初期表示社員
-                    individualTarget: employeeId
+                    individualTarget: employeeId,
+//                    startDateKDW004: self.startDateExtract,
+//                    endDateKDW004: self.endDateExtract
+                    yearMonthKDW004: self.yearMonth()
                 };
 
             nts.uk.request.jump("at", "/view/kdw/003/a/index.xhtml", {
@@ -272,8 +374,8 @@ module nts.uk.at.view.kdw004.a.viewmodel {
             $("#approvalSttGrid").igGrid({
                 primaryKey: "employeeCode",
                 dataSource: self.lstData,
-                width: 1245,
-                height: 426,
+                width: window.innerWidth - (window.innerWidth - 1247),
+                height: window.innerHeight - 280,
                 autofitLastColumn: false,
                 autoGenerateColumns: false,
                 alternateRowStyles: false,
@@ -288,39 +390,58 @@ module nts.uk.at.view.kdw004.a.viewmodel {
                         name: 'Paging',
                         'type': "local",
                         currentPageIndex: pageIndex || 0,
-                        pageSize: index || 12,
+                        pageSize: index || 50,
+                        pageSizeList : [20, 50, 100],
                         pageSizeChanging: (ui, args) => {
-                            let approvalSttGrid = document.getElementById('approvalSttGrid'),
-                                approvalSttGrid_headers = document.getElementById('approvalSttGrid_headers');
-
-                            ko.cleanNode(approvalSttGrid);
-
-                            self.currentPageSize(args.newPageSize);
-                            self.loadGrid(args.newPageSize);
-
-                            self.setHeadersColor();
-                            self.addClickEventDateHeader();
-
-                            ko.applyBindings(self, approvalSttGrid);
-                            ko.applyBindings(self, approvalSttGrid_headers);
+                           setTimeout(() => {self.loadSize(args.newPageSize) 
+                                }, 300);
                         },
                         pageIndexChanging: (ui, args) => {
-                            let approvalSttGrid = document.getElementById('approvalSttGrid'),
-                                approvalSttGrid_headers = document.getElementById('approvalSttGrid_headers');
-
-                            ko.cleanNode(approvalSttGrid);
-
-                            self.loadGrid(self.currentPageSize(), args.newPageIndex);
-                            self.setHeadersColor();
-                            self.addClickEventDateHeader();
-
-                            ko.applyBindings(self, approvalSttGrid);
-                            ko.applyBindings(self, approvalSttGrid_headers);
+                            setTimeout(() => {self.loadIndex(args.newPageIndex) 
+                                }, 300);
                         }
                     }
                 ]
             });
         }
+        
+        loadSize=(newPageSize)=>{
+            let self = this;
+             let approvalSttGrid = document.getElementById('approvalSttGrid');
+                                //approvalSttGrid_headers = document.getElementById('approvalSttGrid_headers');
+                            let userid = __viewContext.user.employeeId;
+                            nts.uk.localStorage.setItem('approvalSize' + userid, newPageSize);
+                            ko.cleanNode(approvalSttGrid_headers);
+                            ko.cleanNode(approvalSttGrid);
+                    
+                            self.currentPageSize(newPageSize);
+                            self.loadGrid(newPageSize);
+                              
+                            self.setHeadersColor();
+                            self.addClickEventDateHeader();
+
+                            ko.applyBindings(self, approvalSttGrid);
+                            ko.applyBindings(self, approvalSttGrid_headers);
+                       
+        }
+        
+        loadIndex=(newPageIndex)=>{
+            let self = this;
+             let approvalSttGrid = document.getElementById('approvalSttGrid');
+                               // approvalSttGrid_headers = document.getElementById('approvalSttGrid_headers');
+
+                            ko.cleanNode(approvalSttGrid_headers);
+                            ko.cleanNode(approvalSttGrid);
+
+                            self.loadGrid(self.currentPageSize(), newPageIndex);
+                            self.setHeadersColor();
+                            self.addClickEventDateHeader();
+
+                            ko.applyBindings(self, approvalSttGrid);
+                            ko.applyBindings(self, approvalSttGrid_headers);
+                       
+        }
+        
 
         generateColumns = () => {
             let self = this,
@@ -329,14 +450,14 @@ module nts.uk.at.view.kdw004.a.viewmodel {
 
             self.lstColumns = [{
                 key: "employeeId",
-                width: "115px",
+                width: "100px",
                 headerText: text('KDW004_7'),
                 dataType: "string",
                 hidden: true
             },
                 {
                     key: "employeeCode",
-                    width: "115px",
+                    width: "100px",
                     headerText: text('KDW004_13'),
                     dataType: "string"
                 },
@@ -428,7 +549,7 @@ module nts.uk.at.view.kdw004.a.viewmodel {
                     .css('cursor', 'pointer')
                     .css('text-decoration', 'underline')
                     .attr('data-bind', `click: clickDateJumpToKdw003.bind($data, '${moment(index).format("YYYY/MM/DD")}')`);
-
+                 $(`#approvalSttGrid_${moment(index).format("YYYYMMDD")}i`).children().removeClass("ui-iggrid-headertext");
                 index = index.add(1, "d");
             }
         }
@@ -439,6 +560,7 @@ module nts.uk.at.view.kdw004.a.viewmodel {
         startDate: string;
         endDate: string;
         lstEmployee: Array<ApprovalEmployee>;
+        yearMonth: number;
     }
 
     export class Closure {
@@ -489,6 +611,8 @@ module nts.uk.at.view.kdw004.a.viewmodel {
         //日付別で起動
         dateTarget: any;
         individualTarget: any;
+        startDateKDW004: string;
+        endDateKDW004: string
     }
 
     export enum DPCorrectionScreenMode {
