@@ -10,9 +10,11 @@ import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.SocialInsurNotiCr
 import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.SocialInsurNotiCreateSet;
 import nts.uk.shr.com.context.AppContexts;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.List;
 
+@Stateless
 public class EmpAddChangeInfoExportPDFService extends ExportService<EmpAddChangeInfoExportQuery> {
 
     @Inject
