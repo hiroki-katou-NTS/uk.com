@@ -8,7 +8,7 @@ module ccg029.component {
     window.onload = function() {
         setTimeout(function(){
             $('#key-word').focus();      
-        }, 10);
+        }, 100);
     };
     ko.components.register('search-employee-modal', {
          viewModel: {
