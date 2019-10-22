@@ -33,6 +33,7 @@ import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.DayMonthDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.DayMonthInDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.DayMonthOutDto;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureGetMonthDay;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.DayMonthChange;
@@ -272,6 +273,21 @@ public class ClosureWs {
 		List<Integer> ids = this.findClosureListByCurrentMonth()
 				.stream().map(dto -> dto.id).collect(Collectors.toList());
 		return this.finder.findEmpByClosureIds(ids);
+	}
+	
+	/**
+	 * Find emp by closure id.
+	 *
+	 * @param closureId the closure id
+	 * @return the list
+	 */
+	@POST
+	@Path("findEmpByClosureIdMob")
+	public List<ClosureEmployment> findEmpByClosureIdMob() {
+		// Find by All closure.
+		List<Integer> ids = this.findClosureListByCurrentMonth()
+				.stream().map(dto -> dto.id).collect(Collectors.toList());
+		return this.finder.findEmpByClosureIdsMob(ids);
 	}
 	
 	/**
