@@ -1,15 +1,19 @@
-module nts.uk.pr.view.qsi014.a.service {
+module nts.uk.pr.view.qsi014.a {
     import ajax = nts.uk.request.ajax;
-    let paths : any = {
-        initScreen: "ctx/pr/report/printdata/socinsurnoticreset/loadingscreen001",
-        exportExcel: "ctx/pr/report/printdata/socialinsurnoticreset/export"
 
-    };
+    export module service {
+        let paths: any = {
+            getSocialInsurNotiCreateSet: "ctx/pr/report/printdata/socinsurnoticreset/getSocialInsurNotiCreateSet",
+            exportFilePDF: "ctx/pr/report/printconfig/changeAdd/exportData"
+        };
 
-    export function getDataInitScreen(): JQueryPromise<any> {
-        return ajax(paths.initScreen);
+        export function getSocialInsurNotiCreateSet(): JQueryPromise<any> {
+            return ajax("pr", paths.getSocialInsurNotiCreateSet);
+        }
+
+        export function exportFilePDF(data: any): JQueryPromise<any> {
+            return nts.uk.request.exportFile(paths.exportFilePDF, data);
+        }
     }
-    export function exportFile(data: any): JQueryPromise<any>{
-        return nts.uk.request.exportFile(paths.exportExcel, data);
-    }
+
 }

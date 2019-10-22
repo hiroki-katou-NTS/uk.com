@@ -103,18 +103,25 @@ public class QrsmtEmpAddCgeSetting extends UkJpaEntity implements Serializable {
         return empAddCgeSettingPk;
     }
 
-    public EmpAddChangeInfo toDomain() {
-        return new EmpAddChangeInfo(this.empAddCgeSettingPk.sid,
-                new AddChangeSetting(this.shortResidentAtr,this.livingAbroadAtr,this.residenceOtherResidentAtr,this.otherAtr,this.otherReason),
-                new AddChangeSetting(this.spouseShortResidentAtr,this.spouseLivingAbroadAtr,this.spouseResidenceOtherResidentAtr,this.spouseOtherAtr,this.spouseOtherReason)
-        );
-    }
-    public static QrsmtEmpAddCgeSetting toEntity(EmpAddChangeInfo e) {
+    public static QrsmtEmpAddCgeSetting toEntity(EmpAddChangeInfo empAddChangeInfo){
         return new QrsmtEmpAddCgeSetting(
-                new QrsmtEmpAddCgeSettingPk(AppContexts.user().companyId(),e.getSid()),
-                e.getPersonalSet().getShortResident(),e.getPersonalSet().getLivingAbroadAtr(),e.getPersonalSet().getResidenceOtherResidentAtr(),e.getPersonalSet().getOtherAtr(),e.getPersonalSet().getOtherReason().get().toString(),
-                e.getSpouse().getShortResident(),e.getSpouse().getLivingAbroadAtr(),e.getSpouse().getResidenceOtherResidentAtr(),e.getSpouse().getOtherAtr(),e.getSpouse().getOtherReason().get().toString()
-            );
+                new QrsmtEmpAddCgeSettingPk(empAddChangeInfo.getSid(), AppContexts.user().companyId()),
+                empAddChangeInfo.getPersonalSet().getShortResident(),
+                empAddChangeInfo.getPersonalSet().getLivingAbroadAtr(),
+                empAddChangeInfo.getPersonalSet().getResidenceOtherResidentAtr(),
+                empAddChangeInfo.getPersonalSet().getOtherAtr(),
+                empAddChangeInfo.getPersonalSet().getOtherReason().map(i -> i.v()).orElse(null),
+                empAddChangeInfo.getSpouse().getShortResident(),
+                empAddChangeInfo.getSpouse().getLivingAbroadAtr(),
+                empAddChangeInfo.getSpouse().getResidenceOtherResidentAtr(),
+                empAddChangeInfo.getSpouse().getOtherAtr(),
+                empAddChangeInfo.getSpouse().getOtherReason().map(i -> i.v()).orElse(null));
+    }
+
+    public EmpAddChangeInfo toDomain(){
+        return new EmpAddChangeInfo(this.empAddCgeSettingPk.sid,
+                new AddChangeSetting(this.shortResidentAtr, this.livingAbroadAtr, this.residenceOtherResidentAtr, this.otherAtr,this.otherReason),
+                new AddChangeSetting(this.spouseShortResidentAtr, this.spouseLivingAbroadAtr,this.spouseResidenceOtherResidentAtr, this.spouseOtherAtr, this.spouseOtherReason));
     }
 
 }

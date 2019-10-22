@@ -11,8 +11,7 @@ import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurb
 @AllArgsConstructor
 @Value
 @Data
-public class MultiEmpWorkInfoDto
-{
+public class MultiEmpWorkInfoDto {
     
     /**
     * 社員ID
