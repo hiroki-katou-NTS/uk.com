@@ -6,8 +6,10 @@ import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.EmpAddChangeInfoR
 import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.SocialInsurNotiCreateSet;
 import nts.uk.ctx.pr.report.infra.entity.printconfig.socialinsurnoticreset.QqsmtSocInsuNotiSet;
 import nts.uk.ctx.pr.report.infra.entity.printconfig.socialinsurnoticreset.QrsmtEmpAddCgeSetting;
+import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
+import java.util.List;
 import java.util.Optional;
 
 @Stateless
@@ -15,6 +17,8 @@ public class JpaEmpAddCgeSettingRepository extends JpaRepository implements EmpA
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QrsmtEmpAddCgeSetting f";
     private static final String SELECT_BY_KEY = "SELECT f FROM QrsmtEmpAddCgeSetting f where f.empAddCgeSettingPk.cid =:cid and f.empAddCgeSettingPk.sid =:sid";
+    private static String EMP_ADD_CHANGE = "SELECT f FROM QrsmtEmpAddCgeSetting f WHERE f.empAddCgeSettingPk.cid = :cid AND f.empAddCgeSettingPk.sid IN :empIds";
+
 
     @Override
     public Optional<EmpAddChangeInfo> getEmpAddChangeInfoById(String sid, String cid) {
@@ -31,5 +35,13 @@ public class JpaEmpAddCgeSettingRepository extends JpaRepository implements EmpA
     @Override
     public void update(EmpAddChangeInfo domain) {
         this.commandProxy().update(QrsmtEmpAddCgeSetting.toEntity(domain));
+    }
+
+    @Override
+    public List<EmpAddChangeInfo> getListEmpAddChange(List<String> empIds) {
+        return this.queryProxy().query(EMP_ADD_CHANGE, QrsmtEmpAddCgeSetting.class)
+                .setParameter("empIds", empIds)
+                .setParameter("cid", AppContexts.user().companyId())
+                .getList(x -> x.toDomain());
     }
 }
