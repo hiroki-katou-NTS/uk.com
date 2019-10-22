@@ -8,8 +8,8 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.bs.person.dom.person.family.FamilyMember;
+import nts.uk.ctx.bs.person.dom.person.family.fullnameset.*;
 import nts.uk.ctx.bs.person.dom.person.family.FamilyMemberRepository;
-import nts.uk.ctx.bs.person.dom.person.info.fullnameset.FullNameSet;
 import nts.uk.ctx.bs.person.infra.entity.person.family.BpsmtFamily;
 import nts.uk.ctx.bs.person.infra.entity.person.family.BpsmtFamilyPk;
 
