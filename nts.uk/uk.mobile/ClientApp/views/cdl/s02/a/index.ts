@@ -68,6 +68,12 @@ export class CdlS02AComponent extends Vue {
                     }
                     self.allData = _.sortBy(result.data, ['code']);
                     self.data = self.allData;
+                    let findData = _.find(self.allData, (data) => data.code == self.params.selectedCode);
+                    if (findData == undefined) {
+                        self.activeNoSelect = true;
+                    } else {
+                        self.activeNoSelect = false;
+                    }
 
                 }
             }).catch((res: any) => {
@@ -118,6 +124,7 @@ export class CdlS02AComponent extends Vue {
     }
 
     public searchList() {
+        this.data = _.filter(this.allData, (data) => data.closureId == this.selectedClosure || data.closureId == 'No');
         let dataSearch = _.filter(this.data, (item) => item.code.indexOf(this.searchText) != -1 || item.name.indexOf(this.searchText) != -1);
         if (dataSearch.length == 0) {
             this.$modal.error('Msg_1313');
