@@ -4,6 +4,7 @@ import { component, Prop, Watch } from '@app/core/component';
 @component({
     name: 'cdls02a',
     template: require('./index.vue'),
+    style: require('./style.scss'),
     resource: require('./resources.json'),
     validations: {
         selectedClosure: {
