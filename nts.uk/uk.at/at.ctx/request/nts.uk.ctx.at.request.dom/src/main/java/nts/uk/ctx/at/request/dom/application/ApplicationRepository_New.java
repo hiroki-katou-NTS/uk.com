@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.application;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
@@ -152,4 +153,12 @@ public interface ApplicationRepository_New {
 	 * @return
 	 */
 	public List<Application_New> getByListDateReflectType(String sid, List<GeneralDate> dateData, List<Integer> reflect, List<Integer> appType);
+	/**
+	 * 
+	 * @param companyId
+	 * @param configName
+	 * @param subName
+	 * @return
+	 */
+//	public Map<String, Integer> getParamCMMS45(String companyId, String configName, List<String> subName);
 }

@@ -18,7 +18,7 @@ public interface SyRoleAdapter {
 	 * @param baseDate the base date
 	 * @return the list
 	 */
-	WorkplaceIDImport findListWkpIdByRoleId(Integer systemType, GeneralDate baseDate);
+	WorkplaceIDImport findListWkpIdByRoleId(Integer systemType, GeneralDate baseDate, boolean oldFlag);
 	
 
 	/**

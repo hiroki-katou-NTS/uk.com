@@ -26,4 +26,6 @@ public class DatePeriodInfo implements Serializable {
 	
 	List<AggrPeriodClosure> lstClosureCache;
 	
+	List<DateRangeClosureId> lstRangeCls;
+	
 }

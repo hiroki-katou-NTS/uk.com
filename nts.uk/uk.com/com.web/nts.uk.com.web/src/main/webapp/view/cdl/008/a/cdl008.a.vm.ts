@@ -4,8 +4,11 @@ module nts.uk.com.view.cdl008.a {
     import SelectType = kcp.share.list.SelectType;
     import ComponentOption = kcp.share.list.ComponentOption;
     import TreeComponentOption = kcp.share.tree.TreeComponentOption;
-    import StartMode = kcp.share.tree.StartMode;
-    import getText = nts.uk.resource.getText;
+    //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
+    import TreeType = kcp.share.tree.TreeType;
+//    import StartMode = kcp.share.tree.StartMode;
+//    import getText = nts.uk.resource.getText;
+    //end
 
     export module viewmodel {
         /**
@@ -22,9 +25,10 @@ module nts.uk.com.view.cdl008.a {
             restrictionOfReferenceRange: boolean;
             isDisplayUnselect: KnockoutObservable<boolean>;
 
-            // 部門対応 #106784
-            startMode: StartMode;
-
+            //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
+//            // 部門対応 #106784
+//            startMode: StartMode;
+            //end
             constructor() {
                 var self = this;
                 self.baseDate = ko.observable(new Date());
@@ -57,36 +61,52 @@ module nts.uk.com.view.cdl008.a {
                     // If Selection Mode is Multiple Then not show Unselected Row
                     self.isDisplayUnselect = ko.observable(self.isMultipleSelect ? false : inputCDL008.showNoSelection);
 
-                    // 部門対応 #106784
-                    self.startMode = _.isNil(inputCDL008.startMode) ? StartMode.WORKPLACE : inputCDL008.startMode; // default workplace
+                    //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
+//                    // 部門対応 #106784
+//                    self.startMode = _.isNil(inputCDL008.startMode) ? StartMode.WORKPLACE : inputCDL008.startMode; // default workplace
+                    //end
                 }
 
                 self.workplaces = {
                     isShowAlreadySet: false,
                     isMultiSelect: self.isMultipleSelect,
                     isMultipleUse: self.isMultipleUse,
-                    startMode: self.startMode,
+                    //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
+                    treeType: TreeType.WORK_PLACE,
+//                    startMode: self.startMode,
+                    //end
                     selectType: SelectType.SELECT_BY_SELECTED_CODE,
                     isShowSelectButton: true,
                     baseDate: self.baseDate,
                     isDialog: true,
-                    selectedId: null,
+                    //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
+                    selectedWorkplaceId: null,
+//                    selectedId: null,
+                    //end
                     maxRows: 12,
                     tabindex: 1,
                     systemType: self.selectedSystemType,
                     restrictionOfReferenceRange: self.restrictionOfReferenceRange,
                     isShowNoSelectRow: self.isDisplayUnselect()
                 };
+                //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
                 if (self.isMultipleSelect) {
-                    self.workplaces.selectedId = self.selectedMulWorkplace;
+                    self.workplaces.selectedWorkplaceId = self.selectedMulWorkplace;
                 }
                 else {
-                    self.workplaces.selectedId = self.selectedSelWorkplace;
+                    self.workplaces.selectedWorkplaceId = self.selectedSelWorkplace;
                 }
 
-                if (self.startMode == StartMode.DEPARTMENT) {
-                    nts.uk.ui.windows.getSelf().setTitle(getText("CDL008_5"));
-                }
+//               if (self.isMultipleSelect) {
+//                    self.workplaces.selectedId = self.selectedMulWorkplace;
+//                }
+//                else {
+//                    self.workplaces.selectedId = self.selectedSelWorkplace;
+//                }
+//                if (self.startMode == StartMode.DEPARTMENT) {
+//                    nts.uk.ui.windows.getSelf().setTitle(getText("CDL008_5"));
+//                }
+                //end
             }
 
             /**
@@ -94,25 +114,38 @@ module nts.uk.com.view.cdl008.a {
              */
             private selectedWorkplace(): void {
                 var self = this;
+                //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
                 if (self.isMultipleSelect) {
                     if (!self.selectedMulWorkplace() || self.selectedMulWorkplace().length == 0) {
-                        if(self.startMode == StartMode.WORKPLACE) {
-                            nts.uk.ui.dialog.alertError({ messageId: "Msg_643" });
-                        } else {
-                            nts.uk.ui.dialog.alertError({ messageId: "Msg_1532" });
-                        }
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_643" });
                         return;
                     }
                 } else {
                     if (!self.isDisplayUnselect() && (!self.selectedSelWorkplace || !self.selectedSelWorkplace())) {
-                        if(self.startMode == StartMode.WORKPLACE) {
-                            nts.uk.ui.dialog.alertError({ messageId: "Msg_643" });
-                        } else {
-                            nts.uk.ui.dialog.alertError({ messageId: "Msg_1532" });
-                        }
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_643" });
                         return;
                     }
                 }
+//                if (self.isMultipleSelect) {
+//                    if (!self.selectedMulWorkplace() || self.selectedMulWorkplace().length == 0) {
+//                        if(self.startMode == StartMode.WORKPLACE) {
+//                            nts.uk.ui.dialog.alertError({ messageId: "Msg_643" });
+//                        } else {
+//                            nts.uk.ui.dialog.alertError({ messageId: "Msg_1532" });
+//                        }
+//                        return;
+//                    }
+//                } else {
+//                    if (!self.isDisplayUnselect() && (!self.selectedSelWorkplace || !self.selectedSelWorkplace())) {
+//                        if(self.startMode == StartMode.WORKPLACE) {
+//                            nts.uk.ui.dialog.alertError({ messageId: "Msg_643" });
+//                        } else {
+//                            nts.uk.ui.dialog.alertError({ messageId: "Msg_1532" });
+//                        }
+//                        return;
+//                    }
+//                }
+                //end
 
                 var selectedCode: any = self.selectedMulWorkplace();
                 if (!self.isMultipleSelect) {

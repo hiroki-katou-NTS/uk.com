@@ -71,6 +71,16 @@ public class RouteConfirmStatusFrames {
 	}
 	
 	/**
+	 * 指定した社員はいずれかの承認枠で承認したか
+	 * @param approverId
+	 * @return
+	 */
+	public boolean hasApprovedBy(String approverId) {
+		return frames.stream()
+				.anyMatch(f -> f.isApprover(approverId) && f.hasApproved());
+	}
+	
+	/**
 	 * 指定した社員はこの承認枠の承認者か
 	 * @param approverId
 	 * @return

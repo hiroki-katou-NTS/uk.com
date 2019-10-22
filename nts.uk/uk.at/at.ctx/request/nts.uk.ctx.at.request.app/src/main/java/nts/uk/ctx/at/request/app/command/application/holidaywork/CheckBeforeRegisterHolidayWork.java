@@ -149,7 +149,7 @@ public class CheckBeforeRegisterHolidayWork {
 		// 社員ID
 		String employeeId = AppContexts.user().employeeId();
 		// 2-1.新規画面登録前の処理を実行する
-		newBeforeRegister.processBeforeRegister(app, 0, checkOver1Year);
+		newBeforeRegister.processBeforeRegister(app, 0, checkOver1Year, Collections.emptyList());
 		// 登録前エラーチェック
 		// 計算ボタン未クリックチェック
 		//03-06_計算ボタンチェック

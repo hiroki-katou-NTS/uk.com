@@ -295,7 +295,7 @@ public class PerInfoItemDataRepoImpl extends JpaRepository implements PerInfoIte
 					stmt.setString( 1 + i, itemIds.get(i));
 				}
 				for (int i = 0 ; i < subList.size(); i++) {
-					stmt.setString( subList.size() + 1 + i, subList.get(i));
+					stmt.setString( itemIds.size() + 1 + i, subList.get(i));
 				}
 
 				new NtsResultSet(stmt.executeQuery()).forEach(rec -> {

@@ -37,6 +37,7 @@ export class Kdws03AComponent extends Vue {
     public title: string = 'Kdws03A';
     public isFirstLoad: boolean = true;
     public rownum: number = 0;
+    public rowHeight: number = 0;
     public displayFormat: any = '0';
     public lstDataSourceLoad: Array<any> = [];
     public lstDataHeader: Array<any> = [];
@@ -156,7 +157,14 @@ export class Kdws03AComponent extends Vue {
             this.displayFormat = this.$route.query.displayformat;
         }
 
-        this.rownum = this.displayFormat == '0' ? Math.floor((window.outerHeight - 242) / 42) : Math.floor((window.outerHeight - 190) / 42);
+        if (this.displayFormat == '0') {
+            this.rownum = Math.floor((window.innerHeight - 183) / 42) - 1;
+            this.rowHeight = 42 + (window.innerHeight - 183 -  (this.rownum + 1) * 42) / (this.rownum + 1);
+        } else {
+            this.rownum = Math.floor((window.innerHeight - 140) / 42);
+            this.rowHeight = 42 + (window.innerHeight - 140 -  (this.rownum + 1) * 42) / (this.rownum + 1);
+        }
+        
         if (this.screenMode == 0) {
             this.pgName = this.displayFormat == '0' ? 'name1' : 'name2';
         } else {
@@ -189,7 +197,11 @@ export class Kdws03AComponent extends Vue {
         let styleTableBody: any = [];
         styleTableBody = document.querySelectorAll('.table-body');
         if (!_.isEmpty(styleTableBody)) {
-            styleTableBody[0].style.height = this.rownum * 42 + 1 + 'px';
+            if (this.displayFormat == '0') {
+                styleTableBody[0].style.height = this.rownum * this.rowHeight + 'px';
+            } else {
+                styleTableBody[0].style.height = this.rownum * this.rowHeight + 6 + 'px';
+            }           
         }
     }
 

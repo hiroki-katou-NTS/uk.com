@@ -5017,13 +5017,12 @@ module nts.uk.ui.mgrid {
                         if (!$c.classList.contains(s))
                             $c.classList.add(s);
                     });
-       
+                    
                     if (disabled) _.remove(states, s => s === color.Disable);
                     if (!ftPrint) {
                         color.pushState(id, key, states);
                         ftPrint = true;   
                     }   
-
                 };
                 
                 if ($cell) {
@@ -5469,7 +5468,6 @@ module nts.uk.ui.mgrid {
                             let panelz, listType, maxHeight = 0, itemList = [], $itemHolder = document.createElement("ul"), controlDef, controlMap = _mafollicle[SheetDef][_currentSheet].controlMap;
                             $itemHolder.classList.add("mcombo-listitemholder");
                             if (!controlMap || !(controlDef = controlMap[key])) return;
-//                            dkn.closeDD(cbx.dropdown);
                             if (cbx.optionsMap && !_.isNil(listType = cbx.optionsMap[id])) {
                                 panelz = listType + 1;
                                 cbx.optionsList[listType] = _.cloneDeep(val);
@@ -5783,13 +5781,20 @@ module nts.uk.ui.mgrid {
             showHiddenRows: function() {
                 v.demoRows();
             },
-            setErrors: function(errs: any, s: any) {
+            setErrors: function(errs: any, s: any, lockNotSet?: any) {
                 if (!errs) return;
                 let z = errs.length - 1;
                 s = !_.isNil(s) ? s : _currentSheet;
                 while (z >= 0) {
                     let e = _.cloneDeep(errs[z]), i, pi = Math.floor(e.index / _pageSize), y = e.index - (_.isString(_currentPage) ? 0 : pi * _pageSize),
-                        maf = _mafollicle[_.isString(_currentPage) ? _currentPage : pi][s];
+                        pmaf = _mafollicle[_.isString(_currentPage) ? _currentPage : pi], maf = pmaf[s], data = (pmaf.dataSource || [])[y];
+                    
+                    if (data && lockNotSet 
+                        && _.find(((_cellStates[data[_pk]] || {})[e.columnKey] || [{ state: [] }])[0].state, st => st === color.Lock || st === color.Disable)) {
+                        z--;
+                        continue;
+                    }
+                    
                     if (maf && maf.desc) {
                         i = maf.desc.fixedColIdxes[e.columnKey];
                         if (_.isNil(i)) {
@@ -7286,7 +7291,7 @@ module nts.uk.ui.mgrid {
                 let $input = $editor.querySelector("input.medit");
                 $input.value = data;
                 evt.preventDefault();
-                $input.focus();
+                setTimeout(() => $input.focus());
                 return;
             }
             

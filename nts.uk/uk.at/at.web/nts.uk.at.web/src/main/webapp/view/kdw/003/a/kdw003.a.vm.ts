@@ -358,6 +358,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             
             self.actualTimeSelectedCode.subscribe(value =>{
                 self.changeConditionExtract(true);
+                self.closureId = value;
             });
             
             self.displayFormat.subscribe(value =>{
@@ -881,18 +882,19 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         initActualTime(data) {
             let self = this,
                 selectItem = 0;
-            if (data.lstRange && data.lstRange.length > 0) {
+            if (data.lstRangeCls && data.lstRangeCls.length > 0) {
                 self.actualTimeOptionDisp([]);
-                for (let i = 0; i < data.lstRange.length; i++) {
-                    let startDate = data.lstRange[i].startDate,
-                        endDate =  data.lstRange[i].endDate;
+                for (let i = 0; i < data.lstRangeCls.length; i++) {
+                    let startDate = data.lstRangeCls[i].startDate,
+                        endDate =  data.lstRangeCls[i].endDate;
                     if(data.targetRange.startDate == startDate){
-                       selectItem = i; 
+                       selectItem = data.lstRangeCls[i].closureId; 
                     }
-                    self.actualTimeOptionDisp.push({ code: i, name: (i+1) + ": " + moment(startDate).format("M/D") + "～" + moment(endDate).format("M/D")});
+                    self.actualTimeOptionDisp.push({ code: data.lstRangeCls[i].closureId, name: (data.lstRangeCls[i].closureId) + ": " + moment(startDate).format("M/D") + "～" + moment(endDate).format("M/D")});
                 }
             }
             self.actualTimeSelectedCode(selectItem);
+            self.closureId = selectItem;
         };
         
         loadRemainNumberTable() {
@@ -1648,7 +1650,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 if(data.dailyCorrectDto){
                       self.processFlex(data.dailyCorrectDto, true);
                 }
-                self.flagCalculation = false;
+                self.flagCalculation = data.flagCalculation;
                 if (data.resultError != null && !_.isEmpty(data.resultError.flexShortage)) {
                     if (data.resultError.flexShortage.error && data.resultError.flexShortage.messageError.length != 0) {
                         $("#next-month").ntsError("clear");
@@ -2038,6 +2040,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     paramVer.displayFormat = self.displayFormat();
                     service.loadVerRow(paramVer).done((data) => {
                         self.indentityMonth(data.indentityMonthResult);
+                        self.flagCalculation = false;
                         dfd.resolve();
                     });
                     return dfd.promise();
@@ -2077,7 +2080,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             }
 
             service.loadRow(param).done((data) => {
-                
+                self.flagCalculation = false;
                 if (onlyLoadMonth && errorFlex == false) {
                     self.processFlex(data, true);
                     nts.uk.ui.block.clear();
@@ -2570,9 +2573,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             let self = this;
             if(self.displayFormat() == 0 && !hasChangeFormat){
                   self.actualTimeSelectedCode();
-                  for(i = 0 ; i< self.timePeriodAllInfo.lstRange.length; i++){
-                      if(self.actualTimeSelectedCode() == i){
-                          self.dateRanger({ startDate: self.timePeriodAllInfo.lstRange[i].startDate, endDate: self.timePeriodAllInfo.lstRange[i].endDate });
+                  for(i = 0 ; i< self.timePeriodAllInfo.lstRangeCls.length; i++){
+                      if(self.actualTimeSelectedCode() == self.timePeriodAllInfo.lstRangeCls[i].closureId){
+                          self.dateRanger({ startDate: self.timePeriodAllInfo.lstRangeCls[i].startDate, endDate: self.timePeriodAllInfo.lstRangeCls[i].endDate });
                           break;
                       }
                   }
@@ -3162,6 +3165,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     });
                 }
                 nts.uk.ui.block.clear();
+            }).fail((data) => {
+                nts.uk.ui.dialog.info({ messageId: "Msg_1501" }).then(() => {
+                    self.reloadScreen();
+                });
             });
             nts.uk.ui.block.clear();
         }
@@ -4623,7 +4630,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 closureId = self. closureId
             } else {
                 // パラメータ「日別実績の修正の起動．表示期間」 -> パラメータ「日別実績の修正の状態．表示期間」
-                yearMonth = self.shareObject().yearMonth
+                yearMonth = self.shareObject().yearMonthKDW004
                 closureId = self. shareObject().targetClosure
             }
             
@@ -5334,6 +5341,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         startDateKDW004: any;//期間 khoảng thời gian KDW004
         endDateKDW004: any;//期間 khoảng thời gian KDW004
         yearMonth: any;
+        yearMonthKDW004: any;
         constructor() {
         }
         mapDataShare(dataInit: any, dataExtract: any, dataSPR: any) : boolean {
@@ -5365,6 +5373,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 self.endDateKDW004 =  dataExtract.endDateKDW004;
                 checkDataShare = true;
                 self.yearMonth = dataExtract.yearMonth;
+                self.yearMonthKDW004 = dataExtract.yearMonthKDW004;
             }
 
             if (dataSPR != undefined) {

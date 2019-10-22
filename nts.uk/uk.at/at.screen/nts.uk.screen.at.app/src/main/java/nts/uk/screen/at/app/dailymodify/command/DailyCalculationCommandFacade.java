@@ -186,7 +186,7 @@ public class DailyCalculationCommandFacade {
 						new DataResultAfterIU(
 								ProcessCommonCalc.convertErrorToType(resultError, resultErrorMonth),
 								flexShortage, false, "Msg_1492"),
-						Collections.emptyList(), Collections.emptyList(), true, null);
+						Collections.emptyList(), Collections.emptyList(), true, null, false);
 			}
 			//if (!editedDomains.isEmpty()) {
 			// update lai daily results gui ve client
@@ -222,12 +222,12 @@ public class DailyCalculationCommandFacade {
 			val dtoEditError = editedKeep.stream().filter(x -> !empSidUpdate.contains(Pair.of(x.getEmployeeId(), x.getDate()))).collect(Collectors.toList());
 			calculatedDtos.addAll(dtoEditError);
 			DailyPerformanceCalculationDto returnData = new DailyPerformanceCalculationDto(calculatedDtos, resultValues,
-					new DataResultAfterIU(ProcessCommonCalc.convertErrorToType(resultError, resultErrorMonth), flexShortage, false, messageAlert), resultCompare.getLeft(), empSidUpdate, false, null);
+					new DataResultAfterIU(ProcessCommonCalc.convertErrorToType(resultError, resultErrorMonth), flexShortage, false, messageAlert), resultCompare.getLeft(), empSidUpdate, false, null, true);
 			return returnData;
 			//}
 		}
 		return new DailyPerformanceCalculationDto(editedKeep, new ArrayList<>(), 
-				new DataResultAfterIU(ProcessCommonCalc.convertErrorToType(resultError, new HashMap<>()), flexShortage, false, "Msg_1492"), Collections.emptyList(), Collections.emptyList(), true, null);
+				new DataResultAfterIU(ProcessCommonCalc.convertErrorToType(resultError, new HashMap<>()), flexShortage, false, "Msg_1492"), Collections.emptyList(), Collections.emptyList(), true, null, true);
 	}
 
 	/**
@@ -257,7 +257,7 @@ public class DailyCalculationCommandFacade {
 					.collect(Collectors.toList());
 			List<DailyModifyResult> itemValues = itemCovert.isEmpty() ? Collections.emptyList()
 					: mapSidDateOrigin.get(Pair.of(itemCovert.get(0).getEmployeeId(), itemCovert.get(0).getDate()));
-			List<DPItemValue> items = validatorDataDaily.checkCareItemDuplicate(itemCovert);
+			List<DPItemValue> items = validatorDataDaily.checkCareItemDuplicate(itemCovert, itemValues);
 			itemErrors.addAll(items);
 			List<DPItemValue> itemInputs = validatorDataDaily.checkInputData(itemCovert, itemValues);
 			itemInputErors.addAll(itemInputs);

@@ -34,4 +34,6 @@ public class DailyPerformanceCalculationDto {
 	
 	private DailyPerformanceCorrectionDto dailyCorrectDto;
 	
+	private boolean flagCalculation = true;
+	
 }
