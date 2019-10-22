@@ -47,7 +47,24 @@
       width: auto;
     }
     .overtime-working-hours {
+      table-layout: fixed;
       text-align: center;
+      thead {
+        tr {
+          th {
+            text-align: center;
+            &:nth-child(1) {
+              width: 30%;
+            }
+            &:nth-child(2) {
+              width: 30%;
+            }
+            &:nth-child(3) {
+              width: 30%;
+            }
+          }
+        }
+      }
       .normal{
         background: #ffffff;
       }
@@ -73,5 +90,17 @@
         background-color: #E0F59E;
       }
     }
+  }
+
+  // overtime
+  .overtime-working-hours {
+    border-bottom: 1px solid #dee2e6;   
+  }
+  
+  .btn-outline-info {
+    color: #33b5e5 !important;
+    border-color: #33b5e5 !important;
+    background-color: transparent !important;
+    margin-top: 0px !important;
   }
 }

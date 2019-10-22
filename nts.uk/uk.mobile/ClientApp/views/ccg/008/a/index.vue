@@ -37,7 +37,7 @@
           <button
             type="button"
             class="btn btn-secondary btn-selection mb-2"
-            v-on:click="openModal"
+            v-on:click="openModal(notice.title)"
             :key="notice.title"
             v-if="notice.visible"
           >
@@ -51,9 +51,9 @@
     <!-- End notice -->
 
     <!-- Overtime -->
-    <div class="section overtime-wrapper" v-if="overtime.visible">
+    <div id="test" class="section overtime-wrapper" v-if="overtime.visible">
       <nts-label v-bind:constraint="labelConstraint">{{ 'CCGS08_5' | i18n}}</nts-label>
-      <div class="row content">
+      <div class="row content" v-show="false">
         <div class="date-label">
           <label for>{{'CCGS08_6' | i18n}}</label>
         </div>
@@ -67,7 +67,20 @@
       </div>
       <div class="overtime-info">
         <div class="error-message color-danger" v-if="false">{{overtime.errorMessage}}</div>
-         <nts-ccgs008-table :configs="overtime.tableConfigs" @search-handle="overtimeSearchHandle" />
+        <nts-ccgs008-table :configs="overtime.tableConfigs" />
+        <div class="text-center mt-n2">
+          <button type="button" v-bind:class="{'btn-outline-info': showFull, 'btn-info': !showFull}" 
+            style="width: 150px" v-on:click="reverseShowAgreement" class="shadow-none btn rounded-pill">
+            <i v-if="!showFull">
+              <i class="fas fa-angle-double-down"></i> 
+              {{ 'CCGS08_33' | i18n }}
+            </i>
+            <i v-if="showFull">
+              <i class="fas fa-angle-double-up"></i> 
+              {{ 'CCGS08_34' | i18n }}
+            </i>
+          </button>
+        </div>
       </div>
     </div>
     <!-- End overtime -->
