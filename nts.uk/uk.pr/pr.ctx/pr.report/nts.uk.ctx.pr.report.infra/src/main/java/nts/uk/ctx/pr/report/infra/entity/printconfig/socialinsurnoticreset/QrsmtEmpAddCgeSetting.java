@@ -2,6 +2,10 @@ package nts.uk.ctx.pr.report.infra.entity.printconfig.socialinsurnoticreset;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.AddChangeSetting;
+import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.EmpAddChangeInfo;
+import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.EmpNameChangeNotiInfor;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
@@ -97,6 +101,20 @@ public class QrsmtEmpAddCgeSetting extends UkJpaEntity implements Serializable {
     protected Object getKey()
     {
         return empAddCgeSettingPk;
+    }
+
+    public EmpAddChangeInfo toDomain() {
+        return new EmpAddChangeInfo(this.empAddCgeSettingPk.sid,
+                new AddChangeSetting(this.shortResidentAtr,this.livingAbroadAtr,this.residenceOtherResidentAtr,this.otherAtr,this.otherReason),
+                new AddChangeSetting(this.spouseShortResidentAtr,this.spouseLivingAbroadAtr,this.spouseResidenceOtherResidentAtr,this.spouseOtherAtr,this.spouseOtherReason)
+        );
+    }
+    public static QrsmtEmpAddCgeSetting toEntity(EmpAddChangeInfo e) {
+        return new QrsmtEmpAddCgeSetting(
+                new QrsmtEmpAddCgeSettingPk(AppContexts.user().companyId(),e.getSid()),
+                e.getPersonalSet().getShortResident(),e.getPersonalSet().getLivingAbroadAtr(),e.getPersonalSet().getResidenceOtherResidentAtr(),e.getPersonalSet().getOtherAtr(),e.getPersonalSet().getOtherReason().get().toString(),
+                e.getSpouse().getShortResident(),e.getSpouse().getLivingAbroadAtr(),e.getSpouse().getResidenceOtherResidentAtr(),e.getSpouse().getOtherAtr(),e.getSpouse().getOtherReason().get().toString()
+            );
     }
 
 }

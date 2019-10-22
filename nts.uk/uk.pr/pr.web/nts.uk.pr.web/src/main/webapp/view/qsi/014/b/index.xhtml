@@ -1,0 +1,131 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="../../../../master/dialog.xhtml">
+    <ui:define name="htmlHead">
+        <com:ValidatorScript>
+            nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.BasicPenNumber
+            nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.AddressChangeNotify
+        </com:ValidatorScript>
+        <script>var dialogSize = {width: 1000, height: 600};</script>
+        <com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web"/>
+        <com:scriptfile set="IGNITE"/>
+
+        <com:scriptfile path="/view/kcp/009/kcp009.js" of="/nts.uk.com.web"/>
+        <com:stylefile path="/view/kcp/009/style.css" of="/nts.uk.com.web"/>
+
+        <com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web"/>
+
+
+        <com:scriptfile path="qsi014.b.vm.js"/>
+        <com:scriptfile path="qsi014.b.start.js"/>
+        <com:scriptfile path="qsi014.b.service.js"/>
+        <com:stylefile path="qsi014.b.style.css"/>
+    </ui:define>
+
+    <ui:define name="content">
+        <div id="functions-area" >
+            <button id="B1_1" data-bind="click: add,  enable: $root.errors.isEmpty()" tabindex="1" class="proceed">#{i18n.getText('QSI001_B1_1')}</button>
+
+            <button id="B1_2" data-bind="click: cancel" tabindex="2">#{i18n.getText('QSI001_B1_2')}</button>
+
+        </div>
+        <div id="contents-area">
+            <!-- kcp009-->
+            <div id="emp-component" style="margin-left: 20px"></div>
+
+
+            <!-- div left -->
+            <div class="pull-left" style="margin-left: 30px" data-bind="with: empAddChangeInfoDto">
+                <div class="control-group">
+                    <!-- B3_1 罫線-->
+                    <div style = "min-width: 700px; " id="B3_1">#{i18n.getText('QSI014_33')}</div>
+                    <!-- B3_2 罫線-->
+                    <hr />
+                    <div id="B3_3" class="column-1" data-bind="ntsFormLabel: {}">#{i18n.getText('QSI014_34')}</div>
+                    <input  id="B222_4" data-bind="ntsTextEditor: {
+                                    value: $parent.basicPenNumber,
+                                    name: '#{i18n.getText('#QSI014_34')}',
+                                    constraint: 'BasicPenNumber',
+                                    required: false,
+                                    enable: true,
+                                    readonly: false}"/>
+                </div>
+
+                <div class="control-group">
+                    <div class="column-1" data-bind="ntsFormLabel: {}">#{i18n.getText('QSI014_35')}</div>
+                    <div style="display: inline-table;">
+                        <div id="B3_6"
+                             data-bind="ntsCheckBox: { checked: $parent.shortResidentAtr }">#{i18n.getText('QSI014_36')}</div>
+                        <br></br>
+                        <div id="B3_7"
+                             data-bind="ntsCheckBox: { checked: $parent.livingAbroadAtr }">#{i18n.getText('QSI014_37')}</div>
+                        <br></br>
+                        <div id="B3_8"
+                             data-bind="ntsCheckBox: { checked: $parent.residenceOtherResidentAtr }">#{i18n.getText('QSI014_38')}</div>
+                        <br></br>
+                        <div>
+                            <div id="B3_9"
+                                 data-bind="ntsCheckBox: { checked: $parent.otherAtr }">#{i18n.getText('QSI014_39')}</div>
+
+                            <input  id="B3_10" data-bind="ntsTextEditor: {
+                                    value: $parent.otherReason,
+                                    name: '#{i18n.getText('#QSI014_40')}',
+                                    constraint: 'AddressChangeNotify',
+                                    required: false,
+                                    enable: true,
+                                    readonly: false}"/>
+
+                        </div>
+
+                        <br></br>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <!-- B3_1 罫線-->
+                    <div style = "min-width: 700px; " id="B4_1">#{i18n.getText('QSI014_41')}</div>
+                    <!-- B3_2 罫線-->
+                    <hr />
+                    <div  id="B4_3" class="column-1" data-bind="ntsFormLabel: {}">#{i18n.getText('QSI014_35')}</div>
+                    <div style="display: inline-table;">
+                        <div id="B4_4"
+                             data-bind="ntsCheckBox: { checked: $parent.spouseShortResidentAtr }">#{i18n.getText('QSI014_36')}</div>
+                        <br></br>
+                        <div id="B4_5"
+                             data-bind="ntsCheckBox: { checked: $parent.spouseLivingAbroadAtr }">#{i18n.getText('QSI014_37')}</div>
+                        <br></br>
+                        <div id="B4_6"
+                             data-bind="ntsCheckBox: { checked: $parent.spouseResidenceOtherResidentAtr }">#{i18n.getText('QSI014_38')}</div>
+                        <br></br>
+                        <div>
+                            <div id="B4_7"
+                                 data-bind="ntsCheckBox: { checked: $parent.spouseOtherAtr }">#{i18n.getText('QSI014_39')}</div>
+
+                            <input  id="B4_8" data-bind="ntsTextEditor: {
+                                    value: $parent.spouseOtherReason,
+                                    name: '#{i18n.getText('#QSI014_40')}',
+                                    constraint: 'AddressChangeNotify',
+                                    required: false,
+                                    enable: true,
+                                    readonly: false}"/>
+
+                        </div>
+
+                        <br></br>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>
