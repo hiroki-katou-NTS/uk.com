@@ -85,7 +85,7 @@ module ccg029.component {
                     of: "#searchTipsBtn"
                 },
                 showOnStart: false,
-                dismissible: true
+                dismissible: false
             });
             $("#searchTipsBtn").click(function() {
                 $(".searchTips-area").ntsPopup("toggle");
