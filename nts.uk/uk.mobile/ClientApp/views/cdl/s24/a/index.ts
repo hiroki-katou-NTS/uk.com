@@ -4,6 +4,7 @@ import { component, Prop, Watch } from '@app/core/component';
 @component({
     name: 'cdls24a',
     template: require('./index.vue'),
+    style: require('./style.scss'),
     resource: require('./resources.json'),
 })
 export class CdlS24AComponent extends Vue {
