@@ -15,11 +15,16 @@ export class CdlS24TestComponent extends Vue {
     public data = {
         selectedCode: ''
     };
+    public selectedName: '';
 
     public openCdls24() {
         let self = this;
-        self.$modal(CdlS24AComponent, self.data).then((returnCode: any) => {
-            self.data.selectedCode = returnCode;       
+        self.$modal(CdlS24AComponent, self.data).then((result: any) => {
+            if (result == 'back') {
+                return;
+            }
+            self.data.selectedCode = result.code;
+            self.selectedName = result.name; 
         });
     }
 }

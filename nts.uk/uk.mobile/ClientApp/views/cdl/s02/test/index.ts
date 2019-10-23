@@ -15,9 +15,9 @@ export class CdlS02TestComponent extends Vue {
     public data = {
         isDisplayClosureSelection: false,
         isShowNoSelectRow: false,
-        selectedCode: '01',
-        selectedName: ''
+        selectedCode: '01',        
     };
+    public selectedName: '';
 
     public openCdls02() {
         let self = this;
@@ -26,7 +26,7 @@ export class CdlS02TestComponent extends Vue {
                 return;
             }
             self.data.selectedCode = result.code;
-            self.data.selectedName = result.name;
+            self.selectedName = result.name;
         });
     }
 }
