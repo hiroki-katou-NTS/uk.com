@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.file.app.core.socialinsurnoticreset;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.pr.core.dom.adapter.company.CompanyInfor;
 
 import java.util.List;
 

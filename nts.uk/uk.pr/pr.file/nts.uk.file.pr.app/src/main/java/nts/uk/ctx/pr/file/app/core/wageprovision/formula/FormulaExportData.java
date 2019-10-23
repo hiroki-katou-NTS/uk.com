@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.pr.core.dom.wageprovision.formula.MasterUseDto;
 
 import java.util.List;
 
@@ -18,4 +19,9 @@ public class FormulaExportData {
     private List<Object[]> targetItems;
     private String companyName;
     private int startDate;
+    private List<MasterUseDto> employments;
+    private List<MasterUseDto> departments;
+    private List<MasterUseDto> cls;
+    private List<MasterUseDto> jobs;
+
 }

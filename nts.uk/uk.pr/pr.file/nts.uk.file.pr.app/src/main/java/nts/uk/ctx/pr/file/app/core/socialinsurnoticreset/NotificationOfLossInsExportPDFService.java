@@ -4,24 +4,19 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.pr.core.dom.adapter.company.CompanyInfor;
 import nts.uk.ctx.pr.core.dom.adapter.employee.employee.EmployeeInfoAdapter;
 import nts.uk.ctx.pr.core.dom.adapter.employee.employee.EmployeeInfoEx;
-import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsuranceOffice;
-import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsuranceOfficeRepository;
-import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.PersonalNumClass;
 import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.SocialInsurNotiCrSetRepository;
 import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.SocialInsurNotiCreateSet;
 import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.SocialInsurOutOrder;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.ReasonsForLossPensionIns;
-import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empcomworkstlinfor.CorEmpWorkHis;
-import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empcomworkstlinfor.CorEmpWorkHisRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Stateless
@@ -37,13 +32,7 @@ public class NotificationOfLossInsExportPDFService extends ExportService<Notific
 	private NotificationOfLossInsExRepository socialInsurNotiCreateSetEx;
 
 	@Inject
-	private SocialInsuranceOfficeRepository socialInsuranceOfficeRepository;
-
-	@Inject
 	private EmployeeInfoAdapter employeeInfoAdapter;
-
-	@Inject
-	private CorEmpWorkHisRepository corEmpWorkHisRepository;
 
 
 	@Override
@@ -52,7 +41,7 @@ public class NotificationOfLossInsExportPDFService extends ExportService<Notific
 		String cid = AppContexts.user().companyId();
         GeneralDate start = exportServiceContext.getQuery().getStartDate();
         GeneralDate end = exportServiceContext.getQuery().getEndDate();
-		//List<EmployeeInfoEx>  employee = employeeInfoAdapter.findBySIds(exportServiceContext.getQuery().getEmpIds());
+		List<EmployeeInfoEx>  employee = employeeInfoAdapter.findBySIds(exportServiceContext.getQuery().getEmpIds());
 		NotificationOfLossInsExport socialInsurNotiCreateSet = exportServiceContext.getQuery().getSocialInsurNotiCreateSet();
 		SocialInsurNotiCreateSet domain = new SocialInsurNotiCreateSet(userId, cid,
 				socialInsurNotiCreateSet.getOfficeInformation(),
