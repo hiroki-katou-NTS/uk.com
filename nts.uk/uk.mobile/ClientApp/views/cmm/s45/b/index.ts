@@ -78,6 +78,7 @@ export class CmmS45BComponent extends Vue {
     }
 
     public created() {
+       
         this.getData(!this.params.CMMS45_FromMenu, false);
     }
     // 未承認のチェック：する　or　しない
@@ -173,6 +174,17 @@ export class CmmS45BComponent extends Vue {
             self.$mask('hide');
         });
     }
+
+    public getHtmlPer() {
+        return `<div>` + this.$i18n('CMMS45_91', this.appPerNumber.toString()).replace(/\n/g, '<br />') + `</div>`;
+    }
+    public getHtmlAll() {
+        return `<div>` + this.$i18n('CMMS45_90', this.appAllNumber.toString()).replace(/\n/g, '<br />') + `</div>`;
+    }
+    public getHtmlNone() {
+        return `<div>` + this.$i18n('CMMS45_89').replace(/\n/g, '<br />') + `</div>`;
+    }
+
     // convert Application info
     private convertAppInfo(data: any) {
         let self = this;
@@ -181,11 +193,11 @@ export class CmmS45BComponent extends Vue {
             self.displayB513 = 1;
         } else if (data.lstApp.length > data.appAllNumber) {
             self.displayB513 = 2;
-            self.appAllNumber = data.appAllNumber;
         } else {
             self.displayB513 = 0;
         }
         self.appPerNumber = data.appPerNumber;
+        self.appAllNumber = data.appAllNumber;
         data.lstSCD.forEach((sCD) => {
             let appInfor = self.getLstApp(data, sCD);
             self.lstAppByEmp.push(new AppByEmp({
@@ -341,28 +353,27 @@ export class CmmS45BComponent extends Vue {
         let count = 0;
         if (self.displayB513 == 2) {//TH tổng vượt quá
             self.lstAppByEmp.forEach((emp) => {
-                let lstAppCheck = emp.displayB52 ? emp.lstAppDisplay : emp.lstApp;
                 if (count >= self.appAllNumber) {
                     return;
                 } 
-                if (count + lstAppCheck.length < self.appAllNumber) {//TH công thêm không vượt quá tổng
+                if (count + emp.lstAppDisplay.length < self.appAllNumber) {//TH công thêm không vượt quá tổng
                     lstDisplay.push(new AppByEmp({
                         empCD: emp.empCD,
                         empName: emp.empName,
-                        lstApp: lstAppCheck,
-                        displayB52: (lstAppCheck.length == emp.appPerNumber) && emp.displayB52,
+                        lstApp: emp.lstAppDisplay,
+                        displayB52: emp.displayB52,
                         appPerNumber: emp.appPerNumber
                     }));
-                    count = count + lstAppCheck.length;
+                    count = count + emp.lstAppDisplay.length;
                 } else {//TH cộng thêm sẽ bị vượt quá tổng
                     lstDisplay.push(new AppByEmp({
                         empCD: emp.empCD,
                         empName: emp.empName,
-                        lstApp: lstAppCheck.slice(0, self.appAllNumber - count),
-                        displayB52: (lstAppCheck.slice(0, self.appAllNumber - count).length == emp.appPerNumber) && emp.displayB52,
+                        lstApp: emp.lstAppDisplay.slice(0, self.appAllNumber - count),
+                        displayB52: emp.displayB52,
                         appPerNumber: emp.appPerNumber
                     }));
-                    count = count + lstAppCheck.slice(0, self.appAllNumber - count).length;
+                    count = count + emp.lstAppDisplay.slice(0, self.appAllNumber - count).length;
                 }
             });
         } else {//TH tổng không vượt quá
@@ -372,12 +383,16 @@ export class CmmS45BComponent extends Vue {
                     empCD: emp.empCD,
                     empName: emp.empName,
                     lstApp: lstAppD,
-                    displayB52: (lstAppD.length == emp.appPerNumber) && emp.displayB52,
+                    displayB52: emp.displayB52,
                     appPerNumber: emp.appPerNumber
                 }));
             });
         }
-        if (count >= self.appAllNumber && self.displayB513 == 2) {//TH hiển thị vượt quá tổng + DB vượt quá tổng
+        let checkCountAll = 0;
+        _.each(self.lstAppByEmp, (emp) => {
+            checkCountAll = checkCountAll + emp.lstAppDisplay.length;
+        });
+        if (checkCountAll > self.appAllNumber) {//TH hiển thị vượt quá tổng
             self.displayB513 = 2;
         } else {//TH hiển thị không vượt quá tổng
             self.displayB513 = self.displayB513 == 1 ? self.displayB513 : 0;

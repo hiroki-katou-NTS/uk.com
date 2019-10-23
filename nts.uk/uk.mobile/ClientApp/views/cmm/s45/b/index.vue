@@ -89,8 +89,7 @@
                   </div>
                 </div>
               </li>
-                <div v-if="emp.displayB52" class="uk-text-red p-3" >
-                  {{'CMMS45_91' | i18n(appPerNumber)}}
+                <div v-if="emp.displayB52" v-html="getHtmlPer()" class="uk-text-red p-3" >
                 </div>
             </ul>
           </div>
@@ -102,11 +101,9 @@
       <button v-bind:disabled = "disableB24" class = 'btn btn-primary btn-block' 
         v-on:click="processAppr" >{{lstAppr.length == 0 ? 'CMMS45_56' : 'CMMS45_57' | i18n(`${lstAppr.length}`)}}</button>
     </div>
-    <div v-if="displayB513 == 1" class="py-3">
-      {{'CMMS45_89' | i18n}}
+    <div v-if="displayB513 == 1" class="py-3" v-html="getHtmlNone()">
     </div>
-    <div v-if="displayB513 == 2" class="uk-text-red py-3" >
-      {{'CMMS45_90' | i18n(appAllNumber)}}
+    <div v-if="displayB513 == 2" class="uk-text-red py-3" v-html="getHtmlAll()">
     </div>
     <to-top class="to-top"/>
   </div>
