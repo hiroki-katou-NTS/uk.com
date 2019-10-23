@@ -31,6 +31,7 @@ export class CdlS02AComponent extends Vue {
 
     @Watch('selectedClosure')
     public changeClosure(closureId) {
+        this.$mask('show', { message: true });
         this.data = _.filter(this.allData, (data) => data.closureId == closureId || data.closureId == 'No');
         this.searchText = '';
     }
@@ -86,6 +87,10 @@ export class CdlS02AComponent extends Vue {
 
     public mounted() {
         this.$mask('show', { message: true });
+    }
+
+    public updated() {
+        this.$mask('hide');
     }
 
     public findEmployments() {
