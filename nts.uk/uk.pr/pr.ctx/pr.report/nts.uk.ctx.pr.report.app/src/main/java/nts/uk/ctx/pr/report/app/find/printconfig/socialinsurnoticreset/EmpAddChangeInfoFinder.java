@@ -1,6 +1,5 @@
 package nts.uk.ctx.pr.report.app.find.printconfig.socialinsurnoticreset;
 
-import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.AddChangeSetting;
 import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.EmpAddChangeInfo;
 import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.EmpAddChangeInfoRepository;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmpBasicPenNumInfor;
