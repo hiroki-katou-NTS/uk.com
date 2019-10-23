@@ -22,7 +22,7 @@ export class CdlS02TestComponent extends Vue {
     public openCdls02() {
         let self = this;
         self.$modal(CdlS02AComponent, self.data).then((returnCode: any) => {
-            self.returnCode = returnCode;       
+            self.data.selectedCode = returnCode;       
         });
     }
 }

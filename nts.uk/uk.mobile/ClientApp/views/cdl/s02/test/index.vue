@@ -5,6 +5,5 @@
     <nts-checkbox v-model="data.isShowNoSelectRow" v-bind:value="1">Show Unselect Row</nts-checkbox>
     <nts-text-editor v-model="data.selectedCode" name='selected code'/>
     <button v-click:500="openCdls02" class="btn btn-secondary btn-block">open cdls02</button>
-    <nts-text-editor v-model="returnCode" name='Return Code'/>
 </div>
 </template>
