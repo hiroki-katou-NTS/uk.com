@@ -1,8 +1,10 @@
 {
     "jp": {
+        "sample" : "Sample (jp)",
         "documentspluginsmask": "Mask"
     },
     "vi": {
+        "sample" : "Ví dụ",
         "documentspluginsmask": "Lớp mặt nạ"
     }
 }

@@ -61,14 +61,14 @@ public interface BreakDayOffMngInPeriodQuery {
 	 * @param lstDetailData
 	 * @return
 	 */
-	CarryForwardDayTimes calcCarryForwardDays(GeneralDate baseDate, List<BreakDayOffDetail> lstDetailData, String sid, boolean isMode);
+	CarryForwardDayTimes calcCarryForwardDays(GeneralDate baseDate, List<BreakDayOffDetail> lstDetailData, String sid);
 	/**
 	 * 6.残数と未消化数を集計する
 	 * @param baseDate
 	 * @param lstDetailData
 	 * @return
 	 */
-	RemainUnDigestedDayTimes getRemainUnDigestedDayTimes(GeneralDate baseDate, List<BreakDayOffDetail> lstDetailData, String sid, boolean isMode);
+	RemainUnDigestedDayTimes getRemainUnDigestedDayTimes(GeneralDate baseDate, List<BreakDayOffDetail> lstDetailData, String sid);
 	/**
 	 * 3.未相殺の代休(暫定)を取得する
 	 * @param inputParam

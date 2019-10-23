@@ -444,7 +444,6 @@ public class ExcessOutsideWorkMng {
 	 * @param flexTime フレックス時間
 	 * @param prescribedWorkingTimeMonth 月間所定労働時間
 	 * @param statutoryWorkingTimeMonth 月間法定労働時間
-	 * @param addSet 加算設定
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
 	public void assignFlexExcessTime(
@@ -456,7 +455,6 @@ public class ExcessOutsideWorkMng {
 			FlexTime flexTime,
 			AttendanceTimeMonth prescribedWorkingTimeMonth,
 			AttendanceTimeMonth statutoryWorkingTimeMonth,
-			AddSet addSet,
 			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		// 「フレックス集計方法」を確認する
@@ -464,7 +462,7 @@ public class ExcessOutsideWorkMng {
 		
 		// フレックス超過対象時間を求める
 		val targetFlexExcessTime = this.askTargetFlexExcessTime(
-				datePeriod, procDate, aggregateTotalWorkingTime, flexTime, addSet);
+				datePeriod, procDate, aggregateTotalWorkingTime, flexTime);
 		
 		// 法定内フレックス時間を含めるか判断する
 		AttendanceTimeMonthWithMinus excessTimeUntilDay = new AttendanceTimeMonthWithMinus(0);
@@ -527,15 +525,13 @@ public class ExcessOutsideWorkMng {
 	 * @param procDate 処理日
 	 * @param aggregateTotalWorkingTime 集計総労働時間
 	 * @param flexTime フレックス時間
-	 * @param addSet 加算設定
 	 * @return フレックス超過対象時間
 	 */
 	private AttendanceTimeMonthWithMinus askTargetFlexExcessTime(
 			DatePeriod datePeriod,
 			GeneralDate procDate,
 			AggregateTotalWorkingTime aggregateTotalWorkingTime,
-			FlexTime flexTime,
-			AddSet addSet){
+			FlexTime flexTime){
 		
 		AttendanceTimeMonthWithMinus targetFlexExcessTime = new AttendanceTimeMonthWithMinus(0);
 
@@ -546,7 +542,7 @@ public class ExcessOutsideWorkMng {
 		
 		// 集計対象時間を集計する
 		AttendanceTimeMonthWithMinus totalWorkTime =
-				new AttendanceTimeMonthWithMinus(workTime.getAggregateTargetTime(targetPeriod, addSet).v());
+				new AttendanceTimeMonthWithMinus(workTime.getAggregateTargetTime(targetPeriod).v());
 		
 		// 累計フレックス時間を集計する
 		AttendanceTimeMonthWithMinus totalFlexTime =

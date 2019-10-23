@@ -5,7 +5,6 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
@@ -13,8 +12,7 @@ import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
  */
 // 臨時勤務時の残業枠設定
 @Getter
-@NoArgsConstructor
-public class ExtraordWorkOTFrameSet extends WorkTimeDomainObject implements Cloneable{
+public class ExtraordWorkOTFrameSet extends WorkTimeDomainObject {
 
 	/** The ot frame no. */
 	// 残業枠NO
@@ -63,19 +61,5 @@ public class ExtraordWorkOTFrameSet extends WorkTimeDomainObject implements Clon
 		this.otFrameNo = oTFrameNo;
 		this.inLegalWorkFrameNo = inLegalWorkFrameNo;
 		this.settlementOrder = settlementOrder;
-	}
-	
-	@Override
-	public ExtraordWorkOTFrameSet clone() {
-		ExtraordWorkOTFrameSet cloned = new ExtraordWorkOTFrameSet();
-		try {
-			cloned.otFrameNo = new OTFrameNo(this.otFrameNo.v());
-			cloned.inLegalWorkFrameNo = new OTFrameNo(this.inLegalWorkFrameNo.v());
-			cloned.settlementOrder = new SettlementOrder(this.settlementOrder.v());
-		}
-		catch (Exception e){
-			throw new RuntimeException("ExtraordWorkOTFrameSet clone error.");
-		}
-		return cloned;
 	}
 }

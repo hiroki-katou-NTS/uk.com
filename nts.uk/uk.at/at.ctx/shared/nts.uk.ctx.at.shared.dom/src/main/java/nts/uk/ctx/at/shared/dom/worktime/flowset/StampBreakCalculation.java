@@ -5,7 +5,6 @@
 package nts.uk.ctx.at.shared.dom.worktime.flowset;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
@@ -13,8 +12,7 @@ import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
  */
 // 打刻から休憩を計算
 @Getter
-@NoArgsConstructor
-public class StampBreakCalculation extends WorkTimeDomainObject implements Cloneable{
+public class StampBreakCalculation extends WorkTimeDomainObject {
 
 	/** The use private go out rest. */
 	// 私用外出を休憩として扱う
@@ -63,18 +61,5 @@ public class StampBreakCalculation extends WorkTimeDomainObject implements Clone
 	public void setDefaultValue() {
 		this.useAssoGoOutRest = false;
 		this.usePrivateGoOutRest = false;
-	}
-	
-	@Override
-	public StampBreakCalculation clone() {
-		StampBreakCalculation cloned = new StampBreakCalculation();
-		try {
-			cloned.usePrivateGoOutRest = this.usePrivateGoOutRest ? true : false ;
-			cloned.useAssoGoOutRest = this.useAssoGoOutRest ? true : false ;
-		}
-		catch (Exception e){
-			throw new RuntimeException("StampBreakCalculation clone error.");
-		}
-		return cloned;
 	}
 }

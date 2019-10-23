@@ -111,28 +111,6 @@ public class PersonDto extends PeregDomainDto{
 		return personDto;
 	}
 	
-	public static PersonDto createFromDomain(Object[] person){
-		PersonDto personDto =  new PersonDto(person[1] == null? null: (GeneralDate) person[1], 
-				person[2] != null ? (Integer) person[2] : null, 
-				person[3] != null? (Integer) person[3] : null, 
-				person[4] != null?  person[4].toString().trim() : "",
-				person[5] != null?  person[5].toString().trim() : "", 
-				person[6] != null?  person[6].toString().trim() : "", 
-				person[7] != null?  person[7].toString().trim() : "",
-				person[8] != null?  person[8].toString().trim() : "", 
-				person[9] != null?  person[9].toString().trim() : "", 
-				person[10] != null?  person[10].toString().trim() : "", 
-				person[11] != null?  person[11].toString().trim() : "", 
-				person[14] != null?  person[14].toString().trim() : "", 
-				person[15] != null?  person[15].toString().trim() : "", 
-				person[12] != null?  person[12].toString().trim() : "", 
-				person[13] != null?  person[13].toString().trim() : "", 
-				person[16] != null?  person[12].toString().trim() : "", 
-				person[17] != null?  person[13].toString().trim() : "");
-		personDto.setRecordId(person[0].toString());
-		return personDto;
-	}
-	
 	private static boolean checkExist(Object parent, Object obj){
 		return parent != null ? (obj != null ? true : false) : false;
 	}

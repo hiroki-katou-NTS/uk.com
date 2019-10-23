@@ -20,8 +20,6 @@ public interface PersonInfoItemAuthRepository {
 
 	Optional<PersonInfoItemAuth> getItemDetai(String roleId, String categoryId, String perInfoItemDefId);
 
-	List<PersonInfoItemAuth> getAllItemAuth(String roleId, String categoryId, List<String> itemIds);
-	
 	void add(PersonInfoItemAuth domain);
 
 	void update(PersonInfoItemAuth domain);

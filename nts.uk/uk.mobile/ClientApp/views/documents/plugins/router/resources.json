@@ -1,8 +1,10 @@
 {
     "jp": {
+        "sample" : "Sample (jp)",
         "documentspluginsrouter": "Router"
     },
     "vi": {
+        "sample" : "Ví dụ",
         "documentspluginsrouter": "Điều hướng"
     }
 }

@@ -1,7 +1,6 @@
 import '@views/ccg';
-import '@views/cdl';
-import '@views/cmm';
+import '@views/components';
 import '@views/documents';
-import '@views/kaf';
+import '@views/home';
 import '@views/kdl';
-import '@views/kdw';
+// import '@views/documents';

@@ -23,7 +23,6 @@ import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootStateReposito
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRepresenterOutput;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalStatusOutput;
 import nts.uk.ctx.workflow.dom.service.output.ApproverPersonOutput;
-import nts.uk.ctx.workflow.dom.service.output.ApproverPersonOutputNew;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -114,15 +113,13 @@ public class JudgmentApprovalStatusImpl implements JudgmentApprovalStatusService
 	}
 
 	@Override
-	public ApproverPersonOutputNew judgmentTargetPersonCanApprove(String companyID, String rootStateID, String employeeID, Integer rootType) {
+	public ApproverPersonOutput judgmentTargetPersonCanApprove(String companyID, String rootStateID, String employeeID, Integer rootType) {
 		// 承認できるフラグ
 		Boolean authorFlag = false;
 		// 指定する社員の承認区分
 		ApprovalBehaviorAtr approvalAtr = ApprovalBehaviorAtr.UNAPPROVED;
 		// 代行期限切れフラグ
 		Boolean expirationAgentFlag = false; 
-		// 承認中フェーズの承認区分
-		ApprovalBehaviorAtr approvalPhaseAtr = ApprovalBehaviorAtr.UNAPPROVED;
 		// ドメインモデル「承認ルートインスタンス」を取得する
 		Optional<ApprovalRootState> opApprovalRootState = approvalRootStateRepository.findByID(rootStateID, rootType);
 		if(!opApprovalRootState.isPresent()){
@@ -139,7 +136,7 @@ public class JudgmentApprovalStatusImpl implements JudgmentApprovalStatusService
 		if((!flg.isPresent() || flg.get().equals(PrincipalApprovalFlg.NOT_PRINCIPAL)) &&
 				approvalRootState.getEmployeeID().equals(AppContexts.user().employeeId())){
 			//本人による承認＝false　＆　申請者＝ログイン社員IDの場合
-			return new ApproverPersonOutputNew(authorFlag, approvalAtr, expirationAgentFlag, approvalPhaseAtr);
+			return new ApproverPersonOutput(authorFlag, approvalAtr, expirationAgentFlag);
 		}
 		// ドメインモデル「承認フェーズインスタンス」．順序5～1の順でループする
 		for(ApprovalPhaseState approvalPhaseState : approvalRootState.getListApprovalPhaseState()){
@@ -151,7 +148,6 @@ public class JudgmentApprovalStatusImpl implements JudgmentApprovalStatusService
 			// ループ中の承認フェーズが承認中のフェーズかチェックする
 			Boolean judgmentResult = this.judgmentLoopApprovalPhase(approvalRootState, approvalPhaseState, pastPhaseFlag);
 			if(judgmentResult){
-				approvalPhaseAtr = approvalPhaseState.getApprovalAtr();
 				// アルゴリズム「承認状況の判断」を実行する
 				ApprovalStatusOutput approvalStatusOutput = this.judmentApprovalStatus(companyID, approvalPhaseState, employeeID);
 				authorFlag = approvalStatusOutput.getApprovableFlag();
@@ -176,7 +172,7 @@ public class JudgmentApprovalStatusImpl implements JudgmentApprovalStatusService
 				break;
 			}
 		}
-		return new ApproverPersonOutputNew(authorFlag, approvalAtr, expirationAgentFlag, approvalPhaseAtr);
+		return new ApproverPersonOutput(authorFlag, approvalAtr, expirationAgentFlag);
 	}
 
 	@Override
@@ -199,7 +195,7 @@ public class JudgmentApprovalStatusImpl implements JudgmentApprovalStatusService
 		// 代行期限切れフラグ
 		Boolean subExpFlag = false;
 		for(ApprovalFrame approvalFrame : approvalPhaseState.getListApprovalFrame()){
-			if(Strings.isNotBlank(approvalFrame.getApproverID()) && approvalFrame.getApproverID().equals(employeeID) && approvalFrame.getApprovalAtr()==ApprovalBehaviorAtr.APPROVED){
+			if(Strings.isNotBlank(approvalFrame.getApproverID()) && approvalFrame.getApproverID().equals(employeeID)){
 				approvalFlag = true;
 				approvalAtr = approvalFrame.getApprovalAtr();
 				approvableFlag = true;
@@ -304,7 +300,7 @@ public class JudgmentApprovalStatusImpl implements JudgmentApprovalStatusService
 		Boolean approvableFlag = false;
 		Boolean subExpFlag = false;
 		for(ApprovalFrame approvalFrame : approvalPhaseState.getListApprovalFrame()){
-			if(Strings.isNotBlank(approvalFrame.getApproverID()) && approvalFrame.getApproverID().equals(employeeID) && approvalFrame.getApprovalAtr()==ApprovalBehaviorAtr.APPROVED){
+			if(Strings.isNotBlank(approvalFrame.getApproverID()) && approvalFrame.getApproverID().equals(employeeID)){
 				approvalFlag = true;
 				approvalAtr = approvalFrame.getApprovalAtr();
 				approvableFlag = true;

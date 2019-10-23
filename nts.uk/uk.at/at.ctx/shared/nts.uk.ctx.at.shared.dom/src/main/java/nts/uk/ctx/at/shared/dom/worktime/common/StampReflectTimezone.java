@@ -6,7 +6,6 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -16,9 +15,8 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 //打刻反映時間帯
 @Getter
-@NoArgsConstructor
 @Builder
-public class StampReflectTimezone extends WorkTimeDomainObject implements Cloneable{
+public class StampReflectTimezone extends WorkTimeDomainObject {
 
 	/** The work no. */
 	// 勤務NO
@@ -171,21 +169,6 @@ public class StampReflectTimezone extends WorkTimeDomainObject implements Clonea
 			//this.startTime = new TimeWithDayAttr(0);
 			//this.endTime = new TimeWithDayAttr(0);
 		}
-	}
-	
-	@Override
-	public StampReflectTimezone clone() {
-		StampReflectTimezone cloned = new StampReflectTimezone();
-		try {
-			cloned.workNo = new WorkNo(this.workNo.v());
-			cloned.classification = GoLeavingWorkAtr.valueOf(this.classification.value);
-			cloned.startTime = new TimeWithDayAttr(this.startTime.valueAsMinutes());
-			cloned.endTime = new TimeWithDayAttr(this.endTime.valueAsMinutes());
-		}
-		catch (Exception e){
-			throw new RuntimeException("StampReflectTimezone clone error.");
-		}
-		return cloned;
 	}
 
 }

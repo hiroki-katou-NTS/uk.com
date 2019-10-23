@@ -9,26 +9,21 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
-import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
-
-import nts.arc.time.GeneralDateTime;
-
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.person.dom.person.contact.EmergencyContact;
 import nts.uk.ctx.bs.person.dom.person.contact.PersonContact;
 import nts.uk.ctx.bs.person.dom.person.contact.PersonContactRepository;
 import nts.uk.ctx.bs.person.infra.entity.person.contact.BpsmtPersonContact;
 import nts.uk.ctx.bs.person.infra.entity.person.contact.BpsmtPersonContactPK;
-import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class JpaPersonContactRepository extends JpaRepository implements PersonContactRepository {
 
-//	private static final String GET_BY_LIST = "SELECT pc FROM BpsmtPersonContact pc WHERE pc.bpsmtPersonContactPK.pid IN :personIdList";
+	private static final String GET_BY_LIST = "SELECT pc FROM BpsmtPersonContact pc WHERE pc.bpsmtPersonContactPK.pid IN :personIdList";
 
 	@Override
 	public void add(PersonContact domain) {
@@ -140,13 +135,11 @@ public class JpaPersonContactRepository extends JpaRepository implements PersonC
 			return Optional.empty();
 	}
 
-	// sửa thành jdbc, tăng tốc độ truy vấn 
 	@Override
-	@SneakyThrows
 	public List<PersonContact> getByPersonIdList(List<String> personIds) {
 		List<BpsmtPersonContact> entities = new ArrayList<>();
-		
 		CollectionUtil.split(personIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			
 			String sql = "select * from BPSMT_PERSON_CONTACT"
 					+ " where PID in (" + NtsStatement.In.createParamsString(subList) + ")";
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
@@ -174,131 +167,7 @@ public class JpaPersonContactRepository extends JpaRepository implements PersonC
 				throw new RuntimeException(e);
 			}
 		});
-		
 		return entities.stream().map(ent -> toDomain(ent)).collect(Collectors.toList());
-	}
-
-	@Override
-	public void addAll(List<PersonContact> domains) {
-		String INS_SQL = "INSERT INTO BPSMT_PERSON_CONTACT (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
-				+ " UPD_DATE , UPD_CCD , UPD_SCD , UPD_PG," 
-				+ " PID, CELL_PHONE_NO, MAIL_ADDRESS, MOBILE_MAIL_ADDRESS,"
-				+ " MEMO1, CONTACT_NAME_1, PHONE_NO_1,"
-				+ " MEMO2, CONTACT_NAME_2, PHONE_NO_2)"
-				+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
-				+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL,"
-				+ " PID_VAL, CELL_VAL, MAIL_VAL, MOBILE_VAL, "
-				+ " M1_VAL, CONTACT_1_VAL, PHONE_1_VAL,"
-				+ " M2_VAL, CONTACT_2_VAL, PHONE_2_VAL); ";
-		String insCcd = AppContexts.user().companyCode();
-		String insScd = AppContexts.user().employeeCode();
-		String insPg = AppContexts.programId();
-		
-		String updCcd = insCcd;
-		String updScd = insScd;
-		String updPg = insPg;
-		StringBuilder sb = new StringBuilder();
-		domains.stream().forEach(c ->{
-			String sql = INS_SQL;
-			sql = sql.replace("INS_DATE_VAL", "'" + GeneralDateTime.now() + "'");
-			sql = sql.replace("INS_CCD_VAL", "'" + insCcd + "'");
-			sql = sql.replace("INS_SCD_VAL", "'" + insScd + "'");
-			sql = sql.replace("INS_PG_VAL", "'" + insPg + "'");
-
-			sql = sql.replace("UPD_DATE_VAL", "'" + GeneralDateTime.now() + "'");
-			sql = sql.replace("UPD_CCD_VAL", "'" + updCcd + "'");
-			sql = sql.replace("UPD_SCD_VAL", "'" + updScd + "'");
-			sql = sql.replace("UPD_PG_VAL", "'" + updPg + "'");
-			
-			sql = sql.replace("PID_VAL", "'" + c.getPersonId() + "'");
-			sql = sql.replace("CELL_VAL", c.getCellPhoneNumber().isPresent() == true? "'"+c.getCellPhoneNumber().get().v()+"'" :"null");
-			sql = sql.replace("MAIL_VAL", c.getMailAdress().isPresent() == true? "'" + c.getMailAdress().get().v()+ "'": "null");
-			sql = sql.replace("MOBILE_VAL", c.getMobileMailAdress().isPresent() == true? "'" + c.getMobileMailAdress().get().v() + "'": "null");
-			
-			Optional<EmergencyContact> emergencyContact1 = c.getEmergencyContact1();
-			
-			if(emergencyContact1.isPresent()) {
-				sql = sql.replace("M1_VAL", emergencyContact1.get().getMemo().isPresent() == true? "'" +  emergencyContact1.get().getMemo().get().v() + "'": "null");
-				sql = sql.replace("CONTACT_1_VAL", emergencyContact1.get().getContactName().isPresent() == true? "'" +  emergencyContact1.get().getContactName().get().v() + "'": "null");
-				sql = sql.replace("PHONE_1_VAL", emergencyContact1.get().getPhoneNumber().isPresent() == true? "'" +  emergencyContact1.get().getPhoneNumber().get().v() + "'": "null");
-			}else {
-				sql = sql.replace("M1_VAL", "null");
-				sql = sql.replace("CONTACT_1_VAL", "null");
-				sql = sql.replace("PHONE_1_VAL", "null");
-			}
-			
-			Optional<EmergencyContact> emergencyContact2 = c.getEmergencyContact2();
-			
-			if(emergencyContact2.isPresent()) {
-				sql = sql.replace("M2_VAL", emergencyContact2.get().getMemo().isPresent() == true? "'" +  emergencyContact2.get().getMemo().get().v() + "'": "null");
-				sql = sql.replace("CONTACT_2_VAL", emergencyContact2.get().getContactName().isPresent() == true? "'" +  emergencyContact2.get().getContactName().get().v() + "'": "null");
-				sql = sql.replace("PHONE_2_VAL", emergencyContact2.get().getPhoneNumber().isPresent() == true? "'" +  emergencyContact2.get().getPhoneNumber().get().v() + "'": "null");
-			}else {
-				sql = sql.replace("M2_VAL", "null");
-				sql = sql.replace("CONTACT_2_VAL", "null");
-				sql = sql.replace("PHONE_2_VAL", "null");
-			}
-			
-			sb.append(sql);
-		});
-		
-		int records = this.getEntityManager().createNativeQuery(sb.toString()).executeUpdate();
-		System.out.println(records);
-		
-	}
-
-	@Override
-	public void updateAll(List<PersonContact> domains) {
-		String UP_SQL = "UPDATE BPSMT_PERSON_CONTACT SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL, UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
-				+ " CELL_PHONE_NO = CELL_VAL , MAIL_ADDRESS = MAIL_VAL, MOBILE_MAIL_ADDRESS = MOBILE_VAL, "
-				+ " MEMO1 = M1_VAL, CONTACT_NAME_1 = CONTACT_1_VAL, PHONE_NO_1 = PHONE_1_VAL,"
-				+ " MEMO2 = M2_VAL, CONTACT_NAME_2 = CONTACT_2_VAL, PHONE_NO_2 = PHONE_2_VAL"
-				+ " WHERE PID = PID_VAL;";
-		String updCcd = AppContexts.user().companyCode();
-		String updScd = AppContexts.user().employeeCode();
-		String updPg = AppContexts.programId();
-		
-		StringBuilder sb = new StringBuilder();
-		domains.stream().forEach(c ->{
-			String sql = UP_SQL;
-			sql = UP_SQL.replace("UPD_DATE_VAL", "'" + GeneralDateTime.now() +"'");
-			sql = sql.replace("UPD_CCD_VAL", "'" + updCcd +"'");
-			sql = sql.replace("UPD_SCD_VAL", "'" + updScd +"'");
-			sql = sql.replace("UPD_PG_VAL", "'" + updPg +"'");
-			
-			sql = sql.replace("PID_VAL", "'" + c.getPersonId() + "'");
-			sql = sql.replace("CELL_VAL", c.getCellPhoneNumber().isPresent() == true? "'"+c.getCellPhoneNumber().get().v()+"'" :"null");
-			sql = sql.replace("MAIL_VAL", c.getMailAdress().isPresent() == true? "'" + c.getMailAdress().get().v()+ "'": "null");
-			sql = sql.replace("MOBILE_VAL", c.getMobileMailAdress().isPresent() == true? "'" + c.getMobileMailAdress().get().v() + "'": "null");
-			
-			Optional<EmergencyContact> emergencyContact1 = c.getEmergencyContact1();
-			
-			if(emergencyContact1.isPresent()) {
-				sql = sql.replace("M1_VAL", emergencyContact1.get().getMemo().isPresent() == true? "'" +  emergencyContact1.get().getMemo().get().v() + "'": "null");
-				sql = sql.replace("CONTACT_1_VAL", emergencyContact1.get().getContactName().isPresent() == true? "'" +  emergencyContact1.get().getContactName().get().v() + "'": "null");
-				sql = sql.replace("PHONE_1_VAL", emergencyContact1.get().getPhoneNumber().isPresent() == true? "'" +  emergencyContact1.get().getPhoneNumber().get().v() + "'": "null");
-			}else {
-				sql = sql.replace("M1_VAL", "null");
-				sql = sql.replace("CONTACT_1_VAL", "null");
-				sql = sql.replace("PHONE_1_VAL", "null");
-			}
-			
-			Optional<EmergencyContact> emergencyContact2 = c.getEmergencyContact2();
-			
-			if(emergencyContact2.isPresent()) {
-				sql = sql.replace("M2_VAL", emergencyContact2.get().getMemo().isPresent() == true? "'" +  emergencyContact2.get().getMemo().get().v() + "'": "null");
-				sql = sql.replace("CONTACT_2_VAL", emergencyContact2.get().getContactName().isPresent() == true? "'" +  emergencyContact2.get().getContactName().get().v() + "'": "null");
-				sql = sql.replace("PHONE_2_VAL", emergencyContact2.get().getPhoneNumber().isPresent() == true? "'" +  emergencyContact2.get().getPhoneNumber().get().v() + "'": "null");
-			}else {
-				sql = sql.replace("M2_VAL", "null");
-				sql = sql.replace("CONTACT_2_VAL", "null");
-				sql = sql.replace("PHONE_2_VAL", "null");
-			}
-			sb.append(sql);
-		});
-		int  records = this.getEntityManager().createNativeQuery(sb.toString()).executeUpdate();
-		System.out.println(records);
-		
 	}
 
 }

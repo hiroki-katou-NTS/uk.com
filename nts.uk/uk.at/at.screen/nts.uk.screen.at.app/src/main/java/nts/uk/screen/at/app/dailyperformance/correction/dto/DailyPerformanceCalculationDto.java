@@ -32,6 +32,4 @@ public class DailyPerformanceCalculationDto {
 	
 	private boolean errorAllSidDate;
 	
-	private DailyPerformanceCorrectionDto dailyCorrectDto;
-	
 }

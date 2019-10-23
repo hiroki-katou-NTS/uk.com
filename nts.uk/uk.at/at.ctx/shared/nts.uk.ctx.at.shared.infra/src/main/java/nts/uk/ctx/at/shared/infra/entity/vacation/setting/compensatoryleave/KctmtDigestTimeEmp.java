@@ -14,7 +14,6 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -43,9 +42,6 @@ public class KctmtDigestTimeEmp extends UkJpaEntity implements Serializable {
     @Column(name = "DIGESTIVE_UNIT")
     private Integer digestiveUnit;
 
-    public static final JpaEntityMapper<KctmtDigestTimeEmp> MAPPER =
-    		new JpaEntityMapper<>(KctmtDigestTimeEmp.class);
-    
     /**
      * Instantiates a new kctmt digest time emp.
      */

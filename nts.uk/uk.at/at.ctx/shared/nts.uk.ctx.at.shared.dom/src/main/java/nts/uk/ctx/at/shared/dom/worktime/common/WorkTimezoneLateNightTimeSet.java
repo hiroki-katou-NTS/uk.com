@@ -4,12 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
@@ -18,8 +13,7 @@ import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
  */
 // 就業時間帯の深夜時間設定
 @Getter
-@NoArgsConstructor
-public class WorkTimezoneLateNightTimeSet extends WorkTimeDomainObject implements Cloneable{
+public class WorkTimezoneLateNightTimeSet extends WorkTimeDomainObject {
 
 	/** The rounding setting. */
 	// 丸め設定
@@ -53,15 +47,5 @@ public class WorkTimezoneLateNightTimeSet extends WorkTimeDomainObject implement
 		memento.setRoundingSetting(this.roundingSetting);
 	}
 
-	@Override
-	public WorkTimezoneLateNightTimeSet clone() {
-		WorkTimezoneLateNightTimeSet cloned = new WorkTimezoneLateNightTimeSet();
-		try {
-			cloned.roundingSetting = this.roundingSetting.clone();
-		}
-		catch (Exception e){
-			throw new RuntimeException("WorkTimezoneLateNightTimeSet clone error.");
-		}
-		return cloned;
-	}
+	
 }

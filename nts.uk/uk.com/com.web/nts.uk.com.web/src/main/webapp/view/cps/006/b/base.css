@@ -45,7 +45,7 @@ hr {
 }
 
 .contents-header {
-	margin-left: 149px !important;
+	margin-left: 200px !important;
 }
 
 .contents-header td {
@@ -70,12 +70,10 @@ thead {
 
 #code {
 	width: 100px !important;
-	border-left: none;
 }
 
 #name {
 	width: 200px !important;
-	border-right: none;
 }
 
 .contents-data  td {
@@ -98,9 +96,8 @@ table.contents-data thead, table.contents-data tbody {
 	color: #000;
 	position: relative;
 	border: 1px solid #ccc;
-	width: 301px !important;
-	margin-left: 149px !important;
-	border-top: none;
+	width: 300px !important;
+	margin-left: 200px !important;
 }
 
 .table-container>div {
@@ -110,7 +107,7 @@ table.contents-data thead, table.contents-data tbody {
 }
 
 .table-container>div table {
-	width: 301px !important;
+	width: 300px !important;
 	border-collapse: collapse;
 }
 

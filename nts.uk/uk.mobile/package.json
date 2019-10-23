@@ -60,8 +60,7 @@
     "zipzip": "0.0.2"
   },
   "scripts": {
-    "lint:fix": "./node_modules/.bin/tslint --project tsconfig.json --config tslint.json --fix",
-    "lint:test": "./node_modules/.bin/tslint --project tsconfig.json --config tslint.json --test",
+    "lint": "./node_modules/.bin/tslint --project tsconfig.json --config tslint.json --fix",
     "start:dev": "./node_modules/.bin/webpack-dev-server --config webpack.config.js --open --mode development",
     "webpack": "./node_modules/.bin/webpack --config webpack.config.js",
     "webpack:vendor": "./node_modules/.bin/webpack --config webpack.config.vendor.js",

@@ -15,7 +15,6 @@ import nts.uk.ctx.sys.auth.pub.role.RoleExportRepo;
 import nts.uk.ctx.sys.auth.pub.role.RoleWhetherLoginPubExport;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.RoleAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.dto.RoleImport;
-import nts.uk.shr.com.context.loginuser.role.LoginUserRoles;
 
 @Stateless
 public class RoleAdapterImpl implements RoleAdapter {
@@ -41,13 +40,4 @@ public class RoleAdapterImpl implements RoleAdapter {
 				result.isSalaryProfessional();
 	}
 
-	@Override
-	public boolean isEmpWhetherLoginerCharge(LoginUserRoles roles) {
-		RoleWhetherLoginPubExport result = roleExportRepo.getWhetherLoginerCharge(roles);
-		return result.isEmployeeCharge() ||
-				result.isHumanResOfficer() ||
-				result.isOfficeHelperPersonne() ||
-				result.isPersonalInformation() ||
-				result.isSalaryProfessional();
-	}
 }

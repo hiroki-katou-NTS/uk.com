@@ -33,12 +33,6 @@ public class PeregEmpCtgWebService {
 	public List<PerInfoCtgFullDto> getAllPerInfoCtg(@PathParam("employeeId") String employeeIdSelected) {
 		return empCtgFinder.getAllPerInfoCtg(employeeIdSelected);
 	}
-	
-	@POST
-	@Path("get-all-cps003/{employeeId}")
-	public List<PerInfoCtgFullDto> getAllPerInfoCtgCps003(@PathParam("employeeId") String employeeIdSelected) {
-		return empCtgFinder.getAllPerInfoCtgByCps003(employeeIdSelected);
-	}
 
 	//
 	@POST

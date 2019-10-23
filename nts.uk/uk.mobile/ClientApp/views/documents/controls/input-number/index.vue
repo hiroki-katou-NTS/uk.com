@@ -6,5 +6,11 @@
 
     <markdown/>
 
+    <br>
+    <label>
+      Tạo bởi:
+      <b>Phạm Văn Dân</b>
+    </label>
+    <br>
   </div>
 </template>

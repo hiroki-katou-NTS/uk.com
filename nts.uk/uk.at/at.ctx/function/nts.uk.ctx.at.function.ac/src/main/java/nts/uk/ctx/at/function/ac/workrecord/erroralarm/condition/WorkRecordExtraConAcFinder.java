@@ -59,7 +59,7 @@ public class WorkRecordExtraConAcFinder implements WorkRecordExtraConAdapter {
 				export.getSortOrderBy(),
 				export.isUseAtr(),
 				export.getNameWKRecord(),
-				export.getErrorAlarmCondition() == null ? null : convertToErrorAlarmCon(export.getErrorAlarmCondition())
+				convertToErrorAlarmCon(export.getErrorAlarmCondition())
 				);
 	}
 	private ErrorAlarmConAdapterDto convertToErrorAlarmCon(ErrorAlarmConditionPubExport export) {

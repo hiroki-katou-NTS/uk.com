@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.val;
 import nts.arc.layer.dom.DomainObject;
 import nts.gul.util.value.Finally;
@@ -41,11 +40,9 @@ public class BreakTimeSheet extends DomainObject {
 	private BreakFrameNo breakFrameNo;
 	
 	//開始 - 勤怠打刻(実打刻付き)
-	@Setter
 	private TimeWithDayAttr startTime;
 	
 	//終了 - 勤怠打刻(実打刻付き)
-	@Setter
 	private TimeWithDayAttr endTime;
 	
 	/** 休憩時間: 勤怠時間 */

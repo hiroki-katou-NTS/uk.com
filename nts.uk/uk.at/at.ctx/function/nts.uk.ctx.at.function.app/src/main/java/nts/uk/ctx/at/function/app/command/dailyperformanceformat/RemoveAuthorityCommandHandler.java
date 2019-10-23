@@ -5,7 +5,6 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.function.dom.dailyperformanceformat.enums.PCSmartPhoneAtt;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.primitivevalue.DailyPerformanceFormatCode;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.repository.AuthorityDailyPerformanceFormatRepository;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.repository.AuthorityFormatDailyRepository;
@@ -50,12 +49,9 @@ public class RemoveAuthorityCommandHandler extends CommandHandler<RemoveAuthorit
 		this.authorityFormatMonthlyRepository.remove(companyId,
 				new DailyPerformanceFormatCode(command.getDailyPerformanceFormatCode()));
 		
-		if(this.authorityFormatInitialDisplayRepository.checkExistDataByCompanyId(companyId, PCSmartPhoneAtt.PC)) {
-			this.authorityFormatInitialDisplayRepository.remove(
-					companyId,
-					new DailyPerformanceFormatCode(command.getDailyPerformanceFormatCode()),
-					PCSmartPhoneAtt.PC
-					);
+		if(this.authorityFormatInitialDisplayRepository.checkExistDataByCompanyId(companyId)) {
+			this.authorityFormatInitialDisplayRepository.remove(companyId,
+					new DailyPerformanceFormatCode(command.getDailyPerformanceFormatCode()));
 		}
 		this.authorityDailyPerformanceFormatRepository.remove(companyId,
 				new DailyPerformanceFormatCode(command.getDailyPerformanceFormatCode()));

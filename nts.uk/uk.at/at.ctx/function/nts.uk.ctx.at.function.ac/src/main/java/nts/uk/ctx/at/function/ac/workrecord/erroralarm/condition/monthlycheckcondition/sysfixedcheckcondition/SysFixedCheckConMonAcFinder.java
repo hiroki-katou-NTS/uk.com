@@ -100,8 +100,7 @@ public class SysFixedCheckConMonAcFinder implements SysFixedCheckConMonAdapter {
 				export.getClassification(),
 				export.getAlarmItem(),
 				export.getAlarmValueMessage(),
-				export.getComment().orElse(null),
-				export.getCheckedValue().orElse(null)
+				export.getComment().orElse(null)
 				);
 	}
 	
@@ -157,13 +156,13 @@ public class SysFixedCheckConMonAcFinder implements SysFixedCheckConMonAdapter {
 			if (CollectionUtil.isEmpty(appRootStateStatusSprExports)) {
 				// Create Alarm message
 				valueExtractAlarms.add(new ValueExtractAlarm(null, employeeId.toString(), date.toString(ErAlConstant.DATE_FORMAT),
-						classification, alarmItem, alarmValueMessage, null,null));
+						classification, alarmItem, alarmValueMessage, null));
 			} else {
 				
 				// 承認ルート状況.承認状況!＝承認済 
 				if (appRootStateStatusSprExports.get(0).getDailyConfirmAtr() != approved) {
 					valueExtractAlarms.add(new ValueExtractAlarm(null, employeeId.toString(), date.toString(ErAlConstant.DATE_FORMAT),
-							classification, alarmItem, alarmValueMessage, null,null));
+							classification, alarmItem, alarmValueMessage, null));
 				}
 
 			}
@@ -203,7 +202,7 @@ public class SysFixedCheckConMonAcFinder implements SysFixedCheckConMonAdapter {
 						GeneralDate current = GeneralDate.ymd(c.getYearMonth().year(), c.getYearMonth().month(), 1);
 						// 2:承認済 ; 1:承認中 ; 0:未承認
 						valueExtractAlarms.add(new ValueExtractAlarm(null, c.getEmployeeId(), current.toString(ErAlConstant.YM_FORMAT),
-								classification, alarmItem, alarmValueMessage, null,null));
+								classification, alarmItem, alarmValueMessage, null));
 					} 
 				});
 			}

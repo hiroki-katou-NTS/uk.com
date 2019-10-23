@@ -118,13 +118,10 @@ public class CreateDailyApproverImpl implements CreateDailyApprover {
 				AppRootInstance appRootInstNewest = appRootInstanceRepository.findByEmpDateNewestBelow(companyID, employeeID, startHistDate, rootType).get();
 				// 履歴期間．開始日が一番新しいドメインモデル「承認ルート中間データ」をUPDATEする
 				DatePeriod oldPeriod = appRootInstNewest.getDatePeriod();
-				if(oldPeriod.end().afterOrEquals(startHistDate)){
-					// 履歴期間．終了日＞＝取得した履歴開始日
-					appRootInstNewest.setDatePeriod(new DatePeriod(oldPeriod.start(), startHistDate.addDays(-1)));
-					appRootInstanceRepository.update(appRootInstNewest);
-				}
+				appRootInstNewest.setDatePeriod(new DatePeriod(oldPeriod.start(), startHistDate.addDays(-1)));
+				appRootInstanceRepository.update(appRootInstNewest);
 				//承認状態をクリアする
-				// appRootConfirmRepository.clearStatusFromDate(companyID, employeeID, recordDate, rootType);
+				appRootConfirmRepository.clearStatusFromDate(companyID, employeeID, recordDate, rootType);
 			}
 		}
 		// 取得した承認ルートをドメインモデル「承認ルート中間データ」にINSERTする

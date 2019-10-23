@@ -18,7 +18,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 // 時間帯
 @Getter
 @Setter
-public class TimeZone extends WorkTimeDomainObject implements Cloneable{
+public class TimeZone extends WorkTimeDomainObject {
 
 	/** The start. */
 	// 開始
@@ -180,18 +180,5 @@ public class TimeZone extends WorkTimeDomainObject implements Cloneable{
 	 */
 	public void updateEnd(TimeWithDayAttr end) {
 		this.end = end;
-	}
-	
-	@Override
-	public TimeZone clone() {
-		TimeZone cloned = new TimeZone();
-		try {
-			cloned.start = new TimeWithDayAttr(this.start.valueAsMinutes());
-			cloned.end = new TimeWithDayAttr(this.end.valueAsMinutes());
-		}
-		catch (Exception e){
-			throw new RuntimeException("TimeZone clone error.");
-		}
-		return cloned;
 	}
 }

@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.infra.entity.workinformation;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,7 +12,6 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Version;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -37,7 +35,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 public class KrcdtDaiPerWorkInfo extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	@EmbeddedId
 	public KrcdtDaiPerWorkInfoPK krcdtDaiPerWorkInfoPK;
 
@@ -72,15 +70,10 @@ public class KrcdtDaiPerWorkInfo extends UkJpaEntity implements Serializable {
 	@OneToMany(mappedBy = "daiPerWorkInfo", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(nullable = true)
 	public List<KrcdtWorkScheduleTime> scheduleTimes;
-	
-	@Version
-	@Column(name = "EXCLUS_VER")
-	public long version;
 
 	public KrcdtDaiPerWorkInfo(KrcdtDaiPerWorkInfoPK krcdtDaiPerWorkInfoPK) {
 		super();
 		this.krcdtDaiPerWorkInfoPK = krcdtDaiPerWorkInfoPK;
-		this.scheduleTimes = new ArrayList<>();
 	}
 	
 	@Override
@@ -102,8 +95,6 @@ public class KrcdtDaiPerWorkInfo extends UkJpaEntity implements Serializable {
 												entity.krcdtDaiPerWorkInfoPK.ymd,
 												EnumAdaptor.valueOf(entity.dayOfWeek, DayOfWeek.class),
 												KrcdtWorkScheduleTime.toDomain(scheduleTimes));
-		
-		domain.setVersion(entity.version);
 		return domain;
 	}
 
@@ -122,8 +113,7 @@ public class KrcdtDaiPerWorkInfo extends UkJpaEntity implements Serializable {
 				workInfoOfDailyPerformance.getScheduleTimeSheets() != null ? 
 				workInfoOfDailyPerformance.getScheduleTimeSheets().stream().map(f -> KrcdtWorkScheduleTime
 						.toEntity(workInfoOfDailyPerformance.getEmployeeId(), workInfoOfDailyPerformance.getYmd(), f))
-						.collect(Collectors.toList()) : null,
-						workInfoOfDailyPerformance.getVersion());
+						.collect(Collectors.toList()) : null);
 	}
 
 }

@@ -17,7 +17,7 @@ import nts.arc.layer.dom.DomainObject;
 @AllArgsConstructor
 @Getter
 @Setter
-public class DailyWork extends DomainObject implements Cloneable{ // 1日の勤務
+public class DailyWork extends DomainObject { // 1日の勤務
 
 	/** The work type unit. */
 	// 勤務区分
@@ -383,48 +383,5 @@ public class DailyWork extends DomainObject implements Cloneable{ // 1日の勤�
 			return true;
 		}
 		return false;
-	}
-	
-	@Override
-	public DailyWork clone() {
-		DailyWork cloned = new DailyWork();
-		try {
-			cloned.workTypeUnit = WorkTypeUnit.valueOf(this.workTypeUnit.value);
-			cloned.oneDay = WorkTypeClassification.valueOf(this.oneDay.value);
-			cloned.morning = WorkTypeClassification.valueOf(this.morning.value);
-			cloned.afternoon = WorkTypeClassification.valueOf(this.afternoon.value);
-		}
-		catch (Exception e){
-			throw new RuntimeException("DailyWork clone error.");
-		}
-		return cloned;
-	}
-	
-	/**
-	 * 1日半日出勤・1日休日系の判定（休出判定あり）
-	 * @return 出勤日区分
-	 */
-	public AttendanceDayAttr chechAttendanceDay() {
-		if (this.workTypeUnit == WorkTypeUnit.OneDay) {
-			if (this.oneDay.isHolidayType()) {
-				return AttendanceDayAttr.HOLIDAY;
-			}
-			else {
-				if (this.oneDay.isHolidayWork()) {
-					return AttendanceDayAttr.HOLIDAY_WORK;
-				}
-				return AttendanceDayAttr.FULL_TIME;
-			}
-		} else {
-			if (!this.morning.isHolidayType() && !this.afternoon.isHolidayType()) {
-				return AttendanceDayAttr.FULL_TIME;
-			}
-			else if (this.morning.isHolidayType() && this.afternoon.isHolidayType()) {
-				return AttendanceDayAttr.HOLIDAY;
-			}
-			else {
-				return AttendanceDayAttr.HALF_TIME;
-			}
-		}
 	}
 }

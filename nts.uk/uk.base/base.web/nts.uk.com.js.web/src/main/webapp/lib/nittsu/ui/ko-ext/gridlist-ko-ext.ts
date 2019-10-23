@@ -237,7 +237,7 @@ module nts.uk.ui.koExtentions {
                             $grid.igGridSelection("selectRowById", iv);
                         });
                         
-                        $grid.trigger("selectionchanged", [true]);
+                        $grid.trigger("selectionchanged");
                     }, 0);
                 }
                 return true;
@@ -252,10 +252,7 @@ module nts.uk.ui.koExtentions {
                 }
             };
             
-            $grid.bind('selectionchanged', (event, isUserAction) => {
-                if (isUserAction) {
-                    $grid.data('user-action', true);
-                }
+            $grid.bind('selectionchanged', () => {
                 $grid.data("ui-changed", true);
                 if (data.multiple) {
                     let selected: Array<any> = $grid.ntsGridList('getSelected');
@@ -483,13 +480,7 @@ module nts.uk.ui.koExtentions {
                 }
             }
             
-            _.defer( () => {
-                if ( $grid.data('user-action')) {
-                    $grid.data('user-action', false);
-                } else {
-                    $grid.ntsGridList("scrollToSelected");
-                }
-            });
+            _.defer(() => {$grid.ntsGridList("scrollToSelected");});
             
 
             $grid.data("ui-changed", false);

@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.app.find.monthly.root;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -24,7 +23,6 @@ import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.MonthlyD
 import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.RsvLeaRemNumEachMonth;
 import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.SpecialHolidayRemainData;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
@@ -36,9 +34,6 @@ import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 @AttendanceItemRoot(isContainer = true, itemType = AttendanceItemType.MONTHLY_ITEM)
 public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 
-	/***/
-	private static final long serialVersionUID = 1L;
-	
 	/** 年月: 年月 */
 	private YearMonth yearMonth;
 
@@ -267,43 +262,9 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 			dto.setAttendanceTime(AttendanceTimeOfMonthlyDto.from(domain.getAttendanceTime().orElse(null)));
 			dto.setAffiliation(AffiliationInfoOfMonthlyDto.from(domain.getAffiliationInfo().orElse(null)));
 			dto.setAbsenceLeave(AbsenceLeaveRemainDataDto.from(domain.getAbsenceLeaveRemain().orElse(null)));
-			if (domain.getAgreementTimeList().size() > 0) {
-				dto.setAgreementTime(AgreementTimeOfManagePeriodDto.from(domain.getAgreementTimeList().get(0)));
-			}
-			else {
-				dto.setAgreementTime(AgreementTimeOfManagePeriodDto.from(null));
-			}
+			dto.setAgreementTime(AgreementTimeOfManagePeriodDto.from(domain.getAgreementTime().orElse(null)));
 			dto.setAnnLeave(AnnLeaRemNumEachMonthDto.from(domain.getAnnualLeaveRemain().orElse(null)));
 			dto.setAnyItem(AnyItemOfMonthlyDto.from(domain.getAnyItemList()));
-			dto.setCare(MonthlyCareHdRemainDto.from(domain.getCare().orElse(null)));
-			dto.setChildCare(MonthlyChildCareHdRemainDto.from(domain.getChildCare().orElse(null)));
-			dto.setDayOff(MonthlyDayoffRemainDataDto.from(domain.getMonthlyDayoffRemain().orElse(null)));
-			dto.setRemarks(ConvertHelper.mapTo(domain.getRemarks(), c -> MonthlyRemarksDto.from(c)));
-			dto.setRsvLeave(RsvLeaRemNumEachMonthDto.from(domain.getReserveLeaveRemain().orElse(null)));
-			dto.setSpecialHoliday(ConvertHelper.mapTo(domain.getSpecialLeaveRemainList(), c -> SpecialHolidayRemainDataDto.from(c)));
-			dto.setYearMonth(domain.getAffiliationInfo().get().getYearMonth());
-			dto.setEmployeeId(domain.getAffiliationInfo().get().getEmployeeId());
-			dto.setClosureDate(ClosureDateDto.from(domain.getAffiliationInfo().get().getClosureDate()));
-			dto.setClosureID(domain.getAffiliationInfo().get().getClosureId().value);
-			dto.exsistData();
-		}
-		return dto;
-	}
-	
-	public static MonthlyRecordWorkDto fromDtoWithOptional(IntegrationOfMonthly domain, Map<Integer, OptionalItem> optionalMaster){
-		MonthlyRecordWorkDto dto = new MonthlyRecordWorkDto();
-		if(domain != null) {
-			dto.setAttendanceTime(AttendanceTimeOfMonthlyDto.from(domain.getAttendanceTime().orElse(null)));
-			dto.setAffiliation(AffiliationInfoOfMonthlyDto.from(domain.getAffiliationInfo().orElse(null)));
-			dto.setAbsenceLeave(AbsenceLeaveRemainDataDto.from(domain.getAbsenceLeaveRemain().orElse(null)));
-			if (domain.getAgreementTimeList().size() > 0) {
-				dto.setAgreementTime(AgreementTimeOfManagePeriodDto.from(domain.getAgreementTimeList().get(0)));
-			}
-			else {
-				dto.setAgreementTime(AgreementTimeOfManagePeriodDto.from(null));
-			}
-			dto.setAnnLeave(AnnLeaRemNumEachMonthDto.from(domain.getAnnualLeaveRemain().orElse(null)));
-			dto.setAnyItem(AnyItemOfMonthlyDto.from(domain.getAnyItemList(), optionalMaster));
 			dto.setCare(MonthlyCareHdRemainDto.from(domain.getCare().orElse(null)));
 			dto.setChildCare(MonthlyChildCareHdRemainDto.from(domain.getChildCare().orElse(null)));
 			dto.setDayOff(MonthlyDayoffRemainDataDto.from(domain.getMonthlyDayoffRemain().orElse(null)));

@@ -5,10 +5,6 @@ module nts.uk.at.view.kdw008.a {
         import block = nts.uk.ui.block;
         export class ScreenModel {
             checkInitSheetNo: boolean;
-
-            // isMobile
-            isMobile: boolean;
-
             //isDaily
             isUpdate: KnockoutObservable<boolean>;
             isRemove: KnockoutObservable<boolean>;
@@ -16,17 +12,14 @@ module nts.uk.at.view.kdw008.a {
             checked: KnockoutObservable<boolean>;
 
             currentDailyFormatCode: KnockoutObservable<string>;
-            currentDailyFormatName: KnockoutObservable<string>;
-
+            currentDailyFormatName: KnockoutObservable<string>;
             //combobox select sheetNo
             sheetNoList: KnockoutObservableArray<SheetNoModel>;
             selectedSheetNo: KnockoutObservable<number>;
             selectedSheetName: KnockoutObservable<string>;
 
             tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
-            mobileTabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
             selectedTab: KnockoutObservable<string>;
-            selectedMobileTab: KnockoutObservable<string>;
 
             //is daily
             isDaily: KnockoutObservable<boolean>;
@@ -60,10 +53,6 @@ module nts.uk.at.view.kdw008.a {
             constructor(dataShare: any) {
                 let self = this;
                 self.checkInitSheetNo = false;
-
-                self.isMobile = dataShare.mobile;
-                console.log(self.isMobile);
-                
 
                 self.formatCodeItems = ko.observableArray([]);
                 self.columnsFormatCodde = ko.observableArray([
@@ -116,7 +105,7 @@ module nts.uk.at.view.kdw008.a {
                 self.columns3 = ko.observableArray([
                     { headerText: getText('KDW008_7'), key: 'attendanceItemDisplayNumber', width: 70 },
                     { headerText: 'number', key: 'attendanceItemId', hidden: true, width: 100 },
-                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 100, formatter: _.escape }
+                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 140, formatter: _.escape }
                 ]);
 
                 //swap list 2
@@ -128,15 +117,7 @@ module nts.uk.at.view.kdw008.a {
                     { id: 'tab-2', title: getText('KDW008_13'), content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(self.isDaily()) },
                     { id: 'tab-3', title: getText('KDW008_13'), content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(!self.isDaily()) }
                 ]);
-
-                self.mobileTabs = ko.observableArray([
-                    { id: 'tab-1', title: getText('KDW008_14'), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(self.isDaily()) },
-                    { id: 'tab-2', title: getText('KDW008_13'), content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(self.isDaily()) },
-                    { id: 'tab-3', title: getText('KDW008_13'), content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(!self.isDaily()) }
-                ]);
-                
                 self.selectedTab = ko.observable('tab-1');
-                self.selectedMobileTab = ko.observable('tab-1');
 
                 //combobox select sheetNo tab2
                 self.sheetNoList = ko.observableArray([
@@ -204,11 +185,7 @@ module nts.uk.at.view.kdw008.a {
 
             jumpTo(sidebar) {
                 let self = this;
-                if(!self.isMobile) {
-                    nts.uk.request.jump("/view/kdw/006/a/index.xhtml", { ShareObject: sidebar() });  
-                } else {
-                    nts.uk.request.jump("com","/view/ksp/001/a/index.xhtml", { ShareObject: sidebar() });
-                }
+                nts.uk.request.jump("/view/kdw/006/a/index.xhtml", { ShareObject: sidebar() });
             }
 
             initSelectedSheetNoHasMutated() {
@@ -242,48 +219,47 @@ module nts.uk.at.view.kdw008.a {
 
             loadData(): JQueryPromise<any> {
                 let self = this;
-                    let dfd = $.Deferred();
-                    block.invisible();
-                    let oldIndex = this.getOldIndex();
-                    if (self.isDaily()) {
-                        service.getListAuthorityDailyFormatCode(self.isMobile).done((data) => {
-                            let dtdGetDailyAttItem = self.getDailyAttItem();
-                            let dtdGetMonthlyAttItem = self.getMonthlyAttItem();
-                            $.when(dtdGetDailyAttItem, dtdGetMonthlyAttItem).done(() => {
-                                if (data && data.length > 0) {
-                                    self.formatCodeItems(FormatCode.fromDaily(data));
-                                    let formatCodeItem: FormatCode = self.formatCodeItems()[this.getIndex(oldIndex)];
-                                    self.initSelectedCodeHasMutated(formatCodeItem.formatCode);
-                                } else {
-                                    self.formatCodeItems([]);
-                                    self.setNewMode();
-                                }
-                            }).always(() => {
-                                block.clear();
-                            })
-                            dfd.resolve();
+                let dfd = $.Deferred();
+                block.invisible();
+                let oldIndex = this.getOldIndex();
+                if (self.isDaily()) {
+                    service.getListAuthorityDailyFormatCode().done((data) => {
+                        let dtdGetDailyAttItem = self.getDailyAttItem();
+                        let dtdGetMonthlyAttItem = self.getMonthlyAttItem();
+                        $.when(dtdGetDailyAttItem, dtdGetMonthlyAttItem).done(() => {
+                            if (data && data.length > 0) {
+                                self.formatCodeItems(FormatCode.fromDaily(data));
+                                let formatCodeItem: FormatCode = self.formatCodeItems()[this.getIndex(oldIndex)];
+                                self.initSelectedCodeHasMutated(formatCodeItem.formatCode);
+                            } else {
+                                self.setNewMode();
+                            }
+                        }).always(() => {
+                            block.clear();
                         })
-                    } else {
-                        service.getListMonPfmCorrectionFormat().done((data) => {
-                            let dtdGetMonthlyAttItem = self.getMonthlyAttItem();
-                            $.when(dtdGetMonthlyAttItem).done(() => {
-                                if (data && data.length > 0) {
-                                    self.formatCodeItems(FormatCode.fromMonthly(data));
-                                    self.monthCorrectionFormatList(MonPfmCorrectionFormatDto.fromApp(data));
-                                    let formatCodeItem: FormatCode = self.formatCodeItems()[this.getIndex(oldIndex)];
-                                    self.initSelectedCodeHasMutated(formatCodeItem.formatCode);
-                                } else {
-                                    self.setNewMode();
-                                }
-                            }).always(() => {
-                                block.clear();
-                            })
-                            dfd.resolve();
+                        dfd.resolve();
+                    })
+                } else {
+                    service.getListMonPfmCorrectionFormat().done((data) => {
+                        let dtdGetMonthlyAttItem = self.getMonthlyAttItem();
+                        $.when(dtdGetMonthlyAttItem).done(() => {
+                            if (data && data.length > 0) {
+                                self.formatCodeItems(FormatCode.fromMonthly(data));
+                                self.monthCorrectionFormatList(MonPfmCorrectionFormatDto.fromApp(data));
+                                let formatCodeItem: FormatCode = self.formatCodeItems()[this.getIndex(oldIndex)];
+                                self.initSelectedCodeHasMutated(formatCodeItem.formatCode);
+                            } else {
+                                self.setNewMode();
+                            }
+                        }).always(() => {
+                            block.clear();
                         })
-                    }
-                    return dfd.promise();
+                        dfd.resolve();
+                    })
+                }
+                return dfd.promise();
             }
-            
+
             getIndex(oldIndex: number) {
                 let self = this;
                 let index = _.findIndex(self.formatCodeItems(), item => {
@@ -329,9 +305,8 @@ module nts.uk.at.view.kdw008.a {
             getDailyDetail(code: string, sheetNo: string): JQueryPromise<any> {
                 let self = this,
                     dfd = $.Deferred();
-                service.getDailyDetail(code, self.selectedSheetNo(), self.isMobile).done(data => {
-                    $("#swap-list2-grid2").igGridSelection("clearSelection");
-                    $("#swap-list2-grid1").igGridSelection("clearSelection");
+                service.getDailyDetail(code, self.selectedSheetNo()).done(data => {
+                    $("#swap-list2-grid2").igGridSelection("clearSelection") ;
                     self.authorityFormatDailyValue.removeAll();
                     self.dailyDataSource.removeAll();
                     self.dailyDataSource(_.cloneDeep(self.dailyAttItems()));
@@ -364,9 +339,8 @@ module nts.uk.at.view.kdw008.a {
             getMonthlyDetail(code: string): JQueryPromise<any> {
                 let self = this,
                     dfd = $.Deferred();
-                service.getMonthlyDetail(code, self.isMobile).done(data => {
-                    $("#swap-list-grid2").igGridSelection("clearSelection");
-                    $("#swap-list-grid1").igGridSelection("clearSelection");
+                service.getMonthlyDetail(code).done(data => {
+                    $("#swap-list3-grid2").igGridSelection("clearSelection") ;
                     self.authorityFormatMonthlyValue.removeAll();
                     self.monthlyDataSource.removeAll();
                     self.monthlyDataSource(_.cloneDeep(self.monthlyAttItems()));
@@ -469,7 +443,7 @@ module nts.uk.at.view.kdw008.a {
                     self.authorityFormatDailyValue.removeAll();
                     self.dailyDataSource.removeAll();
                     self.dailyDataSource(_.cloneDeep(self.dailyAttItems()));
-                    self.isSetFormatToDefault(true);
+
                     self.authorityFormatMonthlyValue.removeAll();
                     self.monthlyDataSource.removeAll();
                     self.monthlyDataSource(_.cloneDeep(self.monthlyAttItems()));
@@ -554,7 +528,7 @@ module nts.uk.at.view.kdw008.a {
                     }
                     nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage("Msg_18", []))
                         .ifYes(() => {
-                            service.removeAuthorityDailyFormat(removeAuthorityDto, self.isMobile).done(function() {
+                            service.removeAuthorityDailyFormat(removeAuthorityDto).done(function() {
                                 nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
                                     self.loadData();
                                 });
@@ -645,7 +619,7 @@ module nts.uk.at.view.kdw008.a {
                         let addOrUpdateDailyFormat = new AddOrUpdateDailyFormat(addOrUpdateBusinessFormatMonthly, addOrUpdateBusinessFormatDaily);
                         block.invisible();
                         if (self.isUpdate() == true) {
-                            service.updateDailyDetail(addOrUpdateDailyFormat, self.isMobile).done(function() {
+                            service.updateDailyDetail(addOrUpdateDailyFormat).done(function() {
                                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
                                     self.loadData();
                                 });
@@ -656,7 +630,7 @@ module nts.uk.at.view.kdw008.a {
                                 block.clear();
                             });
                         } else {
-                            service.addDailyDetail(addOrUpdateDailyFormat, self.isMobile).done(function() {
+                            service.addDailyDetail(addOrUpdateDailyFormat).done(function() {
                                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
                                     self.loadData();
                                 });
@@ -719,36 +693,6 @@ module nts.uk.at.view.kdw008.a {
                         });
                     }
                 }
-            }
-
-            // mobile
-            startMobilePage(): JQueryPromise<any> {
-                let self = this;
-                return self.loadData();
-            }
-
-            loadMobileData() {
-                // let self = this;
-                // let dfd = $.Deferred();
-                // let oldIndex = this.getOldIndex();
-                // service.getListAuthorityDailyFormatCode(self.isMobile).done((data) => {
-                //     let dtdGetDailyAttItem = self.getDailyAttItem();
-                //     $.when(dtdGetDailyAttItem).done(() => {
-                //         if (data && data.length > 0) {
-                //             self.formatCodeItems(FormatCode.fromDaily(data));
-                //             let formatCodeItem: FormatCode = self.formatCodeItems()[this.getIndex(oldIndex)];
-                //             self.initSelectedCodeHasMutated(formatCodeItem.formatCode);
-                //         } else {
-                //             self.formatCodeItems([]);
-                //             self.setNewMode();
-                //         }
-                //     }).always(() => {
-                //         block.clear();
-                //     })
-                //     dfd.resolve();
-                // })
-                
-                // return dfd.promise();
             }
         }
 

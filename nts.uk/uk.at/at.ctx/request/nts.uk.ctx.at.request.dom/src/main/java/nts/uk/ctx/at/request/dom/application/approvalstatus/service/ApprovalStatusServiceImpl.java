@@ -964,10 +964,10 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			AppCompltLeaveSyncOutput sync = otherCommonAlgorithm.getAppComplementLeaveSync(companyId, app.getAppID());
 			if (!sync.isSync()) {// TH k co don lien ket
 				// lay thong tin chi tiet
-				appMain = repoAppDetail.getAppCompltLeaveInfo(companyId, app.getAppID(), sync.getType(), Collections.emptyList());
+				appMain = repoAppDetail.getAppCompltLeaveInfo(companyId, app.getAppID(), sync.getType());
 			} else {// TH co don lien ket
 					// lay thong tin chi tiet A
-				appMain = repoAppDetail.getAppCompltLeaveInfo(companyId, app.getAppID(), sync.getType(), Collections.emptyList());
+				appMain = repoAppDetail.getAppCompltLeaveInfo(companyId, app.getAppID(), sync.getType());
 				// check B co trong list don xin k?
 				String appIdSync = sync.getType() == 0 ? sync.getRecId() : sync.getAbsId();
 				CheckExitSync checkExit = this.checkExitSync(lstCompltLeave, appIdSync);
@@ -981,7 +981,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 					appDateSub = sub.getAppDate().toString("yyyy/MM/dd");
 					appInputSub = sub.getInputDate().toString("yyyy/MM/dd HH:mm");
 				}
-				appSub = repoAppDetail.getAppCompltLeaveInfo(companyId, appIdSync, sync.getType() == 0 ? 1 : 0, Collections.emptyList());
+				appSub = repoAppDetail.getAppCompltLeaveInfo(companyId, appIdSync, sync.getType() == 0 ? 1 : 0);
 			}
 
 			lstAppCompltLeaveSync.add(

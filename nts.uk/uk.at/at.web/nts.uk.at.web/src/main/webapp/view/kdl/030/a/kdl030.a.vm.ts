@@ -12,12 +12,11 @@ module nts.uk.at.view.kdl030.a.viewmodel {
         approvalRootState: KnockoutObservableArray<ApprovalPhaseState> = ko.observableArray([]);
         appID: string = "";
         optionList: KnockoutObservableArray<any> = ko.observableArray([]);
-        isSendToApplicant: KnockoutObservable<number> = ko.observable(0);
+        isSendToApplicant: KnockoutObservable<boolean> = ko.observable(true);
         appType: number = 1;
         prePostAtr: number = 0;
         sendValue: KnockoutObservable<number> = ko.observable(1);
         approvalPhaseState1: KnockoutObservableArray<ApprovalPhaseState> = ko.observableArray([]);
-        applicantObj: KnockoutObservable<any> = ko.observable(null);
         constructor() {
             var self = this;
             self.optionList = ko.observableArray([
@@ -34,16 +33,6 @@ module nts.uk.at.view.kdl030.a.viewmodel {
             if (!_.isEmpty(self.appID)){
                 service.getApplicationForSendByAppID(self.appID).done(function(result) {
                     if (result) {//check data
-                        let sidLogin = result.sidLogin;
-                        let applicantID = result.application.applicantSID;
-                        let empName = result.empName;
-                        let isMail = false;
-                        if(!nts.uk.util.isNullOrEmpty(result.applicantMail)){//TH co mail
-                            empName = result.empName + '(@)';
-                            isMail = true;
-                        }
-                        self.applicantObj({empName: empName, isMail: isMail});
-                        self.isSendToApplicant(sidLogin != applicantID && self.applicantObj().isMail ? 1 : 0);
                         let listApprovalPhase = result.listApprovalPhaseStateDto
                         self.mailContent(result.mailTemplate);
                         self.applicant(ko.toJS({employeeID: result.application.applicantSID, smail: result.applicantMail}));
@@ -58,17 +47,17 @@ module nts.uk.at.view.kdl030.a.viewmodel {
                                 let listApproverDto: Array<Approver> = [];
                                 _.each(frame.listApprover, function(approver){//for by approver
                                 //fill approver
-                                    let showButton = approver.approverMail.length >0 ? 1 : 0;
+                                    let showButton = approver.approverMail.length >0 && approver.approverID != result.sidLogin ? 1 : 0;
                                     listApproverDto.push(new Approver(approver.approverID, 
                                             approver.approverMail.length >0 ? approver.approverName + '(@)' : approver.approverName, 
-                                            approver.approverMail, showButton, sidLogin));
+                                            approver.approverMail, showButton));
                                     //check agent
                                     if(approver.representerID != '' && approver.representerName != ''){
                                         //fill agent
                                         let showButton1 = approver.agentMail.length >0 && approver.representerID != result.sIdLogin ? 1 : 0
                                         listApproverDto.push(new Approver(approver.representerID, 
                                             approver.agentMail.length >0 ? approver.representerName + '(@)' : approver.representerName, 
-                                            approver.agentMail, showButton1, sidLogin));
+                                            approver.agentMail, showButton1));
                                     }
                                 });
                                 listFrameDto.push(new ApprovalFrame(frame.phaseOrder, frame.frameOrder, frame.approvalAtrName,listApproverDto));
@@ -110,7 +99,7 @@ module nts.uk.at.view.kdl030.a.viewmodel {
 //            EA修正履歴 No.2819
 //            #101767
                 //申請者にメール送信かチェックする
-                if(self.isSendToApplicant() == 0){
+                if(!self.isSendToApplicant()){
                     //エラーメッセージ（Msg_14）
                     dialog.alertError({ messageId: "Msg_14" });
                     return;
@@ -118,7 +107,7 @@ module nts.uk.at.view.kdl030.a.viewmodel {
             }
             //申請者にメール送信かチェックする
             let applicantID = '';
-            if (self.isSendToApplicant() == 1) {//チェックあり
+            if (self.isSendToApplicant()) {//チェックあり
                 //申請者をループ対象に追加する
 //                listSendMail.push(self.applicant().employeeID);
                 applicantID = self.applicant().employeeID;
@@ -128,7 +117,7 @@ module nts.uk.at.view.kdl030.a.viewmodel {
                 'application': ko.toJS(self.application),
                 'sendMailOption': listSendMail,
                 'applicantID' : applicantID,
-                'sendMailApplicaint': self.isSendToApplicant() == 1 ? true : false
+                'sendMailApplicaint': self.isSendToApplicant()
             };
             nts.uk.ui.block.invisible();
             service.sendMail(command).done(function(result) {
@@ -155,14 +144,10 @@ module nts.uk.at.view.kdl030.a.viewmodel {
                 }
             }).fail(function(res: any) {
                 nts.uk.ui.block.clear();
-                if (res.messageId == 'Msg_1309') {//エラーメッセージを表示する（Msg_1309）
-                    dialog.alertError({ messageId: res.messageId });
-                } else {
-                    //Msg1057
-                    dialog.alertError({ messageId: res.messageId }).then(() => {
-                        nts.uk.ui.windows.close();
-                    });;
-                }
+                //Msg1057
+                dialog.alertError({ messageId: res.messageId}).then(() =>{
+                    nts.uk.ui.windows.close();
+                });;
             });
 
         }
@@ -219,11 +204,11 @@ module nts.uk.at.view.kdl030.a.viewmodel {
         mail: string;
         isSend: KnockoutObservable<number>;;
         showButton: boolean;
-        constructor(id: string, name: string, mail: string, isSend: number, sidLogin: string) {
+        constructor(id: string, name: string, mail: string, isSend: number) {
             this.id = id;
             this.dispApproverName = name;
             this.mail = mail;
-            this.isSend = sidLogin == id ? ko.observable(0) : ko.observable(isSend);
+            this.isSend = ko.observable(isSend);
             this.showButton = isSend == 0 ? false : true;
         }
     }

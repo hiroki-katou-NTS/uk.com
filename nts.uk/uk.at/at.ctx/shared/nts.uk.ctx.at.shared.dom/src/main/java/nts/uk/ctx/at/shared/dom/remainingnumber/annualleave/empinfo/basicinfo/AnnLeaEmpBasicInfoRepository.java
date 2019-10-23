@@ -11,13 +11,8 @@ public interface AnnLeaEmpBasicInfoRepository {
 	
 	void add(AnnualLeaveEmpBasicInfo baicInfo);
 	
-	void addAll(List<AnnualLeaveEmpBasicInfo> domains);
-	
 	void update(AnnualLeaveEmpBasicInfo basicInfo);
 	
-	void updateAll(List<AnnualLeaveEmpBasicInfo> domains);
-	
 	void delete(String employeeId);
-	List<AnnualLeaveEmpBasicInfo> getAll(String cid, List<String> listEmployeeId);
 
 }

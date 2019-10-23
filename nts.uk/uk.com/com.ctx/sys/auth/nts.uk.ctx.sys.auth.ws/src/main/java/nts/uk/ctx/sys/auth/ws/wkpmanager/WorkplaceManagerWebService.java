@@ -39,12 +39,6 @@ public class WorkplaceManagerWebService extends WebService {
         return this.wkpManagerFinder.findAll(workplaceId);
     }
 	
-	@Path("find/loginnedUser")
-    @POST
-    public List<WorkplaceManagerDto> getCanManageWpkForLoginUser() {
-        return this.wkpManagerFinder.getCanManageWpkForLoginUser();
-    }
-	
 	@Path("save")
     @POST
     public JavaTypeResult<String> saveWorkplaceManager(SaveWorkplaceManagerCommand command) {

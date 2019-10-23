@@ -192,11 +192,9 @@ public class CheckResultMonthlyPubImpl implements CheckResultMonthlyPub {
 	
 	//Hoidd No.257
 	@Override
-	public Map<String, Map<YearMonth,Map<String,Integer>>> checkPerTimeMonActualResult(YearMonthPeriod yearMonth, List<String> employeeID, Map<String, AttendanceItemConditionPubExport> attendanceItemCondition,
-			Map<String, Map<YearMonth, Map<String,String>>> resultsData) {
+	public Map<String, Map<YearMonth,Map<String,Integer>>> checkPerTimeMonActualResult(YearMonthPeriod yearMonth, List<String> employeeID, Map<String, AttendanceItemConditionPubExport> attendanceItemCondition) {
 		Map<String,Map<YearMonth,Map<String,Integer>>> result = perTimeMonActualResult.checkPerTimeMonActualResult(yearMonth,  employeeID, 
-				attendanceItemCondition.entrySet().stream().collect(Collectors.toMap(c -> c.getKey(), c -> convertToExport(c.getValue()))),
-				resultsData);
+				attendanceItemCondition.entrySet().stream().collect(Collectors.toMap(c -> c.getKey(), c -> convertToExport(c.getValue()))));
 		return result;
 	}
 }

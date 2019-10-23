@@ -1,5 +1,20 @@
 div#login {
-    .page-title{
-        font-size: 25px;
+    fieldset.login-form {
+        padding: 1rem;
+        margin: 0.5rem 1rem 0 1rem;
+        border: 1px solid #ccc;
+        border-radius: 15px;
+        legend {
+            width: auto;
+            padding: 0px 15px;
+            border-radius: 999px;
+            border: 1px solid #ccc;
+        }
+        .btn {
+            min-width: 120px;
+        }
     }
+}
+.page-title{
+    font-size: 25px;
 }

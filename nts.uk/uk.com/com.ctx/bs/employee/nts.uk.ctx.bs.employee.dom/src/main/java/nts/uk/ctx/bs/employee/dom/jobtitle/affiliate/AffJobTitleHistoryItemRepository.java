@@ -57,19 +57,4 @@ public interface AffJobTitleHistoryItemRepository {
 	
 	// request list 551
 	List<AffJobTitleHistoryItem> findHistJob(String companyId, GeneralDate baseDate, List<String> jobIds);
-	
-	/**
-	 * ドメインモデル「職務職位」を新規登録する
-	 * 
-	 * @param domain
-	 */
-	void addAll(List<AffJobTitleHistoryItem> domains);
-	
-	/**
-	 * 取得した「職務職位」を更新する
-	 * 
-	 * @param domain
-	 */
-	void updateAll(List<AffJobTitleHistoryItem> domains);
-
 }

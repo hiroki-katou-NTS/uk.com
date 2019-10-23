@@ -45,14 +45,12 @@ Vue.directive('number', {
                         // accept negative key only first press
                         if (evt.key == '-' && (ss || el.value.indexOf('-') > -1)) {
                             evt.preventDefault();
-
                             return;
                         }
 
                         // accept only one pointer
                         if (evt.key == '.' && el.value.indexOf('.') > -1) {
                             evt.preventDefault();
-
                             return;
                         }
 
@@ -61,7 +59,6 @@ Vue.directive('number', {
 
                             if (val.length > maxL || ['.', '-'].indexOf(evt.key) > -1) {
                                 evt.preventDefault();
-
                                 return;
                             }
                         } else {
@@ -76,7 +73,6 @@ Vue.directive('number', {
                             // accept negative key if min < 0
                             if (evt.key == '-' && min >= 0) {
                                 evt.preventDefault();
-
                                 return;
                             }
 
@@ -84,14 +80,12 @@ Vue.directive('number', {
                                 // accept once 0 char
                                 if (val.match(/(^0{2,})|(^-?0{2,})/)) {
                                     evt.preventDefault();
-
                                     return;
                                 }
                             } else {
                                 // not accept char 0 offset = 0
                                 if (val.match(/^0/)) {
                                     evt.preventDefault();
-
                                     return;
                                 }
                             }
@@ -163,13 +157,11 @@ Vue.directive('number', {
                                 case 'Integer':
                                     if (evt.key == '.') {
                                         evt.preventDefault();
-
                                         return;
                                     }
 
                                     if (nmax < min || nmin > max) {
                                         evt.preventDefault();
-
                                         return;
                                     }
                                     break;
@@ -178,13 +170,11 @@ Vue.directive('number', {
 
                                     if (milen > 1 || (se == val.length - 1 && milen == 1 && ['0', '5'].indexOf(evt.key) == -1)) {
                                         evt.preventDefault();
-
                                         return;
                                     }
 
                                     if (nmax < min || nmin > max) {
                                         evt.preventDefault();
-
                                         return;
                                     }
                                     break;
@@ -193,17 +183,13 @@ Vue.directive('number', {
 
                                     if (mdlen > rule.mantissaMaxLength) {
                                         evt.preventDefault();
-
                                         return;
                                     }
 
                                     if (nmax < min || nmin > max) {
                                         evt.preventDefault();
-
                                         return;
                                     }
-                                    break;
-                                default:
                                     break;
                             }
                         }
@@ -285,7 +271,6 @@ Vue.directive('number', {
 
                             if (nmax < min || nmin > max) {
                                 evt.preventDefault();
-
                                 return;
                             }
                         } else {
@@ -357,7 +342,6 @@ Vue.directive('number', {
 
                             if (nmax < min || nmin > max) {
                                 evt.preventDefault();
-
                                 return;
                             }
                         }
@@ -420,7 +404,6 @@ Vue.directive('number', {
 
                         if (nmax < min || nmin > max) {
                             evt.preventDefault();
-
                             return;
                         }
                     }

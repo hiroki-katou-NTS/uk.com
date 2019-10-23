@@ -6,5 +6,4 @@ import lombok.Value;
 public class AlarmContentMessage {
 	private String alarmItem;
 	private String alarmContent;
-	private String alarmItemNew;
 }

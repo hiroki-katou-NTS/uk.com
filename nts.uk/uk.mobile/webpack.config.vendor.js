@@ -18,17 +18,7 @@ module.exports = (env) => {
         },
         module: {
             rules: [
-                { test: /\.(png|jpg|bmp|gif)(\?|$)/, use: 'url-loader?limit=100000' },
-                {
-                    test: /\.(woff|woff2|eot|ttf|svg)(\?|$)/, use: [{
-                        loader: 'file-loader',
-                        options: {
-                            name: '[name].[ext]',
-                            outputPath: 'fonts/',
-                            publicPath: './fonts'
-                        }
-                    }]
-                },
+                { test: /\.(png|woff|woff2|eot|ttf|svg)(\?|$)/, use: 'url-loader?limit=100000' },
                 { test: /\.(sa|sc|c)ss$/, use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'] }
             ]
         },

@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.record.pub.dailyperform.appreflect;
 
-import java.util.Optional;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -32,19 +30,12 @@ public class HolidayWorkReflectPubPara {
 	 * False: しない
 	 */
 	private boolean scheReflectFlg;
-	/**
-	 * 休出事後の 勤務時間（出勤、退勤時刻）を反映
-	 */
-	private boolean recordReflectTimeFlg;
-	/**
-	 * 休出事後反映の休憩時間を反映
-	 */
-	private boolean recordReflectBreakFlg;
+    /**    休出事後反映設定: 勤務時間（出勤、退勤時刻） */
+    private boolean hwRecordReflectTime;
+    /**休出事後反映設定: 休憩時間     */
+    private boolean hwRecordReflectBreak;
 	/**
 	 * 休日出勤申請
 	 */
 	private HolidayWorktimeAppPubPara holidayWorkPara;
-	private String excLogId;
-	private Optional<IdentityProcessUseSetPub> identityProcessUseSetPub;
-	private Optional<ApprovalProcessingUseSettingPub> approvalProcessingUseSettingPub;
 }

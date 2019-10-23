@@ -9,5 +9,5 @@ import nts.arc.time.GeneralDate;
  *
  */
 public interface CreateperApprovalMonthlyService {
-	public OutputCreatePerApprovalMon createperApprovalMonthly(String companyId,String executionId,List<String> employeeIDs,int processExecType,GeneralDate startDateClosure);
+	public boolean createperApprovalMonthly(String companyId,String executionId,List<String> employeeIDs,int processExecType,GeneralDate startDateClosure);
 }

@@ -62,10 +62,7 @@ public class HolidayRemainingInfor {
 	private ChildNursingLeaveCurrentSituationImported childNursingLeave;
 	// RequestList207
 	private NursingLeaveCurrentSituationImported nursingLeave;
-	//
-	private CurrentHolidayImported currentHolidayLeft;
-	
-	private CurrentHolidayRemainImported currentHolidayRemainLeft ; 
+
 	public HolidayRemainingInfor(Optional<GeneralDate> grantDate, List<AnnLeaGrantNumberImported> listAnnLeaGrantNumber,
 			AnnLeaveOfThisMonthImported annLeaveOfThisMonth, List<AnnualLeaveUsageImported> listAnnualLeaveUsage,
 			List<AnnLeaveUsageStatusOfThisMonthImported> listAnnLeaveUsageStatusOfThisMonth,
@@ -77,10 +74,7 @@ public class HolidayRemainingInfor {
 			Map<YearMonth, Map<Integer, SpecialVacationImported>> mapSPVaCrurrentMonth,
 			Map<Integer, List<SpecialHolidayImported>> mapListSpecialHoliday,
 			ChildNursingLeaveCurrentSituationImported childNursingLeave,
-			NursingLeaveCurrentSituationImported nursingLeave,
-			CurrentHolidayImported currentHolidayLeft,
-			CurrentHolidayRemainImported currentHolidayRemainLeft
-			) {
+			NursingLeaveCurrentSituationImported nursingLeave) {
 		super();
 		this.grantDate = grantDate;
 		this.listAnnLeaGrantNumber = listAnnLeaGrantNumber;
@@ -99,8 +93,6 @@ public class HolidayRemainingInfor {
 		this.mapListSpecialHoliday = mapListSpecialHoliday;
 		this.childNursingLeave = childNursingLeave;
 		this.nursingLeave = nursingLeave;
-		this.currentHolidayLeft = currentHolidayLeft;
-		this.currentHolidayRemainLeft = currentHolidayRemainLeft;
 	}
 	
 	

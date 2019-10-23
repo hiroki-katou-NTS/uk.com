@@ -37,11 +37,8 @@ public class ExtractEmployeeErAlData {
 	/** コメント */
 	private String comment;	
 	
-	/** チェック対象値 */
-	private String checkedValue;
-	
 	public List<Object> toList(){
 		return Arrays.asList(employeeId, recordId, alarmTime, categoryName, 
-								alarmItem, alarmMes, comment,checkedValue);
+								alarmItem, alarmMes, comment);
 	}
 }

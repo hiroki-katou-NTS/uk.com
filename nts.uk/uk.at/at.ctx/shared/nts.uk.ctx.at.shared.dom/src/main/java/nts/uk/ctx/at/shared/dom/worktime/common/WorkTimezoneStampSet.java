@@ -5,10 +5,8 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
@@ -17,8 +15,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
  */
 //就業時間帯の打刻設定
 @Getter
-@NoArgsConstructor
-public class WorkTimezoneStampSet extends WorkTimeDomainObject implements Cloneable{
+public class WorkTimezoneStampSet extends WorkTimeDomainObject {
 
 	/** The rounding sets. */
 	// 丸め設定
@@ -71,18 +68,5 @@ public class WorkTimezoneStampSet extends WorkTimeDomainObject implements Clonea
 	 */
 	public void correctDefaultData(ScreenMode screenMode) {
 		this.prioritySets.forEach(item -> item.correctDefaultData(screenMode));
-	}
-	
-	@Override
-	public WorkTimezoneStampSet clone() {
-		WorkTimezoneStampSet cloned = new WorkTimezoneStampSet();
-		try {
-			cloned.roundingSets = this.roundingSets.stream().map(c -> c.clone()).collect(Collectors.toList());
-			cloned.prioritySets = this.prioritySets.stream().map(c -> c.clone()).collect(Collectors.toList());
-		}
-		catch (Exception e){
-			throw new RuntimeException("WorkTimezoneStampSet clone error.");
-		}
-		return cloned;
 	}
 }

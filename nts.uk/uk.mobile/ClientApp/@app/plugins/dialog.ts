@@ -7,7 +7,6 @@ const $dialog = () => ({
     template: `<div>
         <div class="text-justify">{{ $i18n(params.message || params.messageId, params.messageParams) }}</div>
         <div class="text-right mt-2" v-if="params.messageId">{{ params.messageId }}</div>
-        <div class="text-right mt-2" v-else-if="params.message && params.message.match(/^(Msg.*_\\d+)$/)">{{ params.message }}</div>
         <div data-msg="No messageId" v-else></div>
         <div class="modal-footer text-right">
             <template v-if="['info', 'error', 'warn'].indexOf(params.type) > -1">
@@ -58,7 +57,7 @@ const $dialog = () => ({
 
                                 obj.extend(params, { type: $type, style });
 
-                                return (this as Vue).$modal($dialog(), params, option);
+                                return ( this as Vue).$modal($dialog(), params, option);
                             }.bind(self);
                         });
 
@@ -68,6 +67,4 @@ const $dialog = () => ({
         }
     };
 
-Vue.use(dialog);
-
-export { $dialog };
+export { dialog, $dialog };

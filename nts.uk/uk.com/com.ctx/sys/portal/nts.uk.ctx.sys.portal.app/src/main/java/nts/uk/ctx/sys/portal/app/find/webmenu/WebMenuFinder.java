@@ -2,7 +2,6 @@ package nts.uk.ctx.sys.portal.app.find.webmenu;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -11,13 +10,10 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.apache.logging.log4j.util.Strings;
-
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.arc.i18n.I18NResources;
 import nts.arc.scoped.request.RequestContextProvider;
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.portal.app.find.roleset.RoleSetPortalFinder;
 import nts.uk.ctx.sys.portal.app.find.standardmenu.StandardMenuDto;
 import nts.uk.ctx.sys.portal.app.find.webmenu.detail.MenuBarDetailDto;
@@ -27,7 +23,6 @@ import nts.uk.ctx.sys.portal.app.find.webmenu.detail.WebMenuDetailDto;
 import nts.uk.ctx.sys.portal.dom.adapter.role.RoleGrantAdapter;
 import nts.uk.ctx.sys.portal.dom.enums.MenuClassification;
 import nts.uk.ctx.sys.portal.dom.enums.System;
-import nts.uk.ctx.sys.portal.dom.standardmenu.MenuCode;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenu;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenuKey;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenuRepository;
@@ -38,10 +33,6 @@ import nts.uk.ctx.sys.portal.dom.webmenu.WebMenu;
 import nts.uk.ctx.sys.portal.dom.webmenu.WebMenuRepository;
 import nts.uk.ctx.sys.portal.dom.webmenu.personaltying.PersonalTying;
 import nts.uk.ctx.sys.portal.dom.webmenu.personaltying.PersonalTyingRepository;
-import nts.uk.ctx.sys.portal.dom.webmenu.smartphonemenu.SPMenuEmployment;
-import nts.uk.ctx.sys.portal.dom.webmenu.smartphonemenu.SPMenuGroup;
-import nts.uk.ctx.sys.portal.dom.webmenu.smartphonemenu.SPMenuOrder;
-import nts.uk.ctx.sys.portal.dom.webmenu.smartphonemenu.SPMenuRepository;
 import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleByRoleTiesRepository;
 import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleSetLinkWebMenu;
 import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleSetLinkWebMenuRepository;
@@ -78,9 +69,6 @@ public class WebMenuFinder {
 	
 	@Inject
 	private RoleSetPortalFinder roleSetFinder;
-	
-	@Inject
-	private SPMenuRepository sPMenuRepository;
 
 	/**
 	 * Find a web menu by code
@@ -433,89 +421,5 @@ public class WebMenuFinder {
 		
 		return personTypeDto;
 	}
-	
-	public List<MobileMenuDto> getMenuToDisplay(){
-		List<MobileMenuDto> mobileMenuDtoLst = new ArrayList<>();
-		String companyID = AppContexts.user().companyId();
-		String roleID = AppContexts.user().roles().forAttendance();
-		// ドメインモデル「スマホメニュー（就業）」を取得する
-		List<SPMenuEmployment> sPMenuEmploymentLst = sPMenuRepository.findSPMenuEmploymentUse(companyID, roleID);
-		if(CollectionUtil.isEmpty(sPMenuEmploymentLst)){
-			return mobileMenuDtoLst;
-		}
-		// ドメインモデル「スマホメニュー並び順」を取得する
-		List<SPMenuOrder> sPMenuOrderASCLst = sPMenuRepository.findSPMenuOrderASC(companyID);
-		// 取得した「スマホメニュー（就業）」を「スマホメニュー並び順」．並び順昇順で並び替える
-		List<MenuCode> menuCDLst = sPMenuEmploymentLst.stream().map(x -> x.getMenuCode()).collect(Collectors.toList());
-		// ドメインモデル「スマホメニューグループ」を取得する
-		List<SPMenuGroup> sPMenuGroupLst = sPMenuRepository.findSPMenuGroupSubList(companyID, menuCDLst);
-		List<String> removeLst = new ArrayList<>();
-		// ドメインモデル「標準メニュー」を取得する
-		List<String> totalMenuCDLst = menuCDLst.stream().map(x -> x.v()).collect(Collectors.toList());
-		for(SPMenuGroup sPMenuGroup : sPMenuGroupLst){
-			removeLst.addAll(sPMenuGroup.getChildMenuCode().stream().map(x -> x.v()).collect(Collectors.toList()));
-			removeLst.add(sPMenuGroup.getCode().v());
-			if(!totalMenuCDLst.contains(sPMenuGroup.getCode().v())){
-				totalMenuCDLst.add(sPMenuGroup.getCode().v());
-			}
-		}
-		List<StandardMenu> standardMenuLst = standardMenuRepository.findByCIDMobileCode(companyID, totalMenuCDLst);
-		List<String> noChildLst = totalMenuCDLst;
-		noChildLst.removeAll(removeLst);
-		// 表示するメニューを整理して返す
-		for(String code : noChildLst){
-			Optional<StandardMenu> opStandardMenu = standardMenuLst.stream().filter(y -> y.getCode().equals(code)).findAny();
-			if(!opStandardMenu.isPresent()){
-				continue;
-			}
-			StandardMenu standardMenu = opStandardMenu.get();
-			List<MobileMenuChildDto> mobileMenuChildDtoLst = new ArrayList<>();
-			String url = "/" + standardMenu.getProgramId().substring(0, 3) + 
-					"/" + standardMenu.getProgramId().substring(3) + "/" + standardMenu.getScreenId();
-			if(Strings.isNotBlank(standardMenu.getQueryString())) {
-				url = url + "?" + standardMenu.getQueryString();
-			}
-			mobileMenuDtoLst.add(new MobileMenuDto(
-					code, 
-					standardMenu.getDisplayName().v(), 
-					this.getSPMenuOrder(sPMenuOrderASCLst, code), 
-					url.toLowerCase(), 
-					mobileMenuChildDtoLst));
-		}
-		for(SPMenuGroup sPMenuGroup : sPMenuGroupLst){
-			Optional<StandardMenu> opStandardMenu = standardMenuLst.stream().filter(y -> y.getCode().equals(sPMenuGroup.getCode())).findAny();
-			if(!opStandardMenu.isPresent()){
-				continue;
-			}
-			StandardMenu standardMenu = opStandardMenu.get();
-			List<MobileMenuChildDto> mobileMenuChildDtoLst = new ArrayList<>();
-			for(MenuCode childMenu : sPMenuGroup.getChildMenuCode()){
-				Optional<StandardMenu> opStandardMenuChild = standardMenuLst.stream().filter(y -> y.getCode().equals(childMenu.v())).findAny();
-				if(!opStandardMenuChild.isPresent()){
-					continue;
-				}
-				StandardMenu standardMenuChild = opStandardMenuChild.get();
-				String childUrl = "/" + standardMenuChild.getProgramId().substring(0, 3) + 
-						"/" + standardMenuChild.getProgramId().substring(3) + "/" + standardMenuChild.getScreenId();
-				if(Strings.isNotBlank(standardMenuChild.getQueryString())) {
-					childUrl = childUrl + "?" + standardMenuChild.getQueryString();
-				}
-				mobileMenuChildDtoLst.add(new MobileMenuChildDto(
-						childMenu.v(), 
-						standardMenuChild.getDisplayName().v(), 
-						childUrl.toLowerCase()));
-			}
-			mobileMenuDtoLst.add(new MobileMenuDto(
-					sPMenuGroup.getCode().v(), 
-					standardMenu.getDisplayName().v(), 
-					this.getSPMenuOrder(sPMenuOrderASCLst, sPMenuGroup.getCode().v()), 
-					"", 
-					mobileMenuChildDtoLst));
-		}
-		return mobileMenuDtoLst.stream().sorted(Comparator.comparing(MobileMenuDto::getDisplayOrder)).collect(Collectors.toList());
-	}
-	
-	private int getSPMenuOrder(List<SPMenuOrder> sPMenuOrderASCLst, String code){
-		return sPMenuOrderASCLst.stream().filter(x -> x.getCode().toString().equals(code)).findAny().map(x -> x.getSortOrder()).orElse(1000);
-	}
+
 }

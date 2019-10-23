@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.function.infra.repository.processexecution;
 
-import java.sql.PreparedStatement;
 //import java.sql.Connection;
 //import java.sql.SQLException;
 import java.util.ArrayList;
@@ -8,7 +7,6 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
 import javax.persistence.Query;
@@ -20,12 +18,9 @@ import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecution
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogManageRepository;
 import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtProcessExecutionLogManage;
 import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtProcessExecutionLogManagePK;
-import nts.uk.shr.infra.data.jdbc.JDBCUtil;
 @Stateless
 public class JpaProcessExecutionLogManageRepository extends JpaRepository
 implements ProcessExecutionLogManageRepository{
-	@Inject
-	private UpdateJDBCProcessExecutionLogManager updateJDBCProcessExecLogManager;
 	
 	private static final String SELECT_ALL = "SELECT pel FROM KfnmtProcessExecutionLogManage pel ";
 	private static final String SELECT_All_BY_CID = SELECT_ALL
@@ -83,12 +78,11 @@ implements ProcessExecutionLogManageRepository{
 
 	@Override
 	public Optional<ProcessExecutionLogManage> getLogByCIdAndExecCd(String companyId, String execItemCd) {
-//		 Optional<ProcessExecutionLogManage> processExecutionLogManageOpt = this.queryProxy().query(SELECT_BY_PK, KfnmtProcessExecutionLogManage.class)
-//				.setParameter("companyId", companyId)
-//				.setParameter("execItemCd", execItemCd)
-//				.getSingle(c -> c.toDomain());
-//		return processExecutionLogManageOpt;
-		return updateJDBCProcessExecLogManager.getLogByCIdAndExecCd(companyId, execItemCd);
+		 Optional<ProcessExecutionLogManage> processExecutionLogManageOpt = this.queryProxy().query(SELECT_BY_PK, KfnmtProcessExecutionLogManage.class)
+				.setParameter("companyId", companyId)
+				.setParameter("execItemCd", execItemCd)
+				.getSingle(c -> c.toDomain());
+		return processExecutionLogManageOpt;
 	}
 
 	@Override
@@ -105,21 +99,21 @@ implements ProcessExecutionLogManageRepository{
 
 	@Override
 	public void update(ProcessExecutionLogManage domain) {
-//			KfnmtProcessExecutionLogManage updateData = KfnmtProcessExecutionLogManage.toEntity(domain);
+			KfnmtProcessExecutionLogManage updateData = KfnmtProcessExecutionLogManage.toEntity(domain);
 			//KfnmtProcessExecutionLogManage oldData = this.queryProxy().find(updateData.kfnmtProcExecLogPK, KfnmtProcessExecutionLogManage.class).get();
-//			KfnmtProcessExecutionLogManage oldData = this.getEntityManager().find(KfnmtProcessExecutionLogManage.class,updateData.kfnmtProcExecLogPK,LockModeType.NONE );
-//			oldData.currentStatus = updateData.currentStatus;
-//			oldData.overallStatus = updateData.overallStatus;
-//			oldData.errorDetail = updateData.errorDetail;
-//			oldData.lastExecDateTime = updateData.lastExecDateTime;
-//			oldData.prevExecDateTimeEx = updateData.prevExecDateTimeEx;
+			KfnmtProcessExecutionLogManage oldData = this.getEntityManager().find(KfnmtProcessExecutionLogManage.class,updateData.kfnmtProcExecLogPK,LockModeType.NONE );
+			oldData.currentStatus = updateData.currentStatus;
+			oldData.overallStatus = updateData.overallStatus;
+			oldData.errorDetail = updateData.errorDetail;
+			oldData.lastExecDateTime = updateData.lastExecDateTime;
+			oldData.prevExecDateTimeEx = updateData.prevExecDateTimeEx;
 			//this.commandProxy().update(oldData);
-//			this.getEntityManager().merge(oldData);
+			this.getEntityManager().merge(oldData);
 			//KfnmtProcessExecutionLogManagePK kfnmtProcExecPK = new KfnmtProcessExecutionLogManagePK(domain.getCompanyId(), domain.getExecItemCd().v());
 			//KfnmtProcessExecutionLogManage find = this.getEntityManager().find(KfnmtProcessExecutionLogManage.class, kfnmtProcExecPK);
 			//LockModeType lockMode = this.getEntityManager().getLockMode(find);
 		//	this.getEntityManager().lock(find, LockModeType.PESSIMISTIC_WRITE);
-		updateJDBCProcessExecLogManager.updateProcessExecutionLogManager(domain);
+			this.getEntityManager().flush();
 	}
 
 	@Override

@@ -12,5 +12,88 @@ $warning: #fb3 !default;
 
 $default: #2bbbad !default;
 
-$bg-menu-color: map-get($map: $uk-colors, $key: teal);
-$color-required: #FFD966;
+$bg-green: #E0F59E;
+$bg-yellow: #F7EFD4;
+
+$bg-active: #00B050;
+
+$color-proceed: #00B050;
+
+$color-info: #BFEA60;
+$color-danger: #C12017;
+$color-active: #97D155;
+$color-required: #FAC002;
+$color-disabled: #AAAAAA;
+
+$bg-link-button: #E0F59E;
+$fg-link-button: #0D86D1;
+
+$bg-checkbox: #2FCC71;
+$bg-radio: #97D155;
+
+$bg-hover: #F2F2F2;
+
+$bg-danger: #FED3C6;
+$bg-danger-hover: #FEC0AD;
+
+$bg-process: #A4EEB0;
+$bg-process-hover: #79E68B;
+
+$bg-disable: #D9D9D9;
+
+//$border-color: #999999;
+//$border-color-focus: #0096F2;
+
+
+$color-working-day: #31859C;
+$color-non-working-day: #FF3B3B;
+$color-attendance: #0000FF;
+$color-holiday: #FF0000;
+$color-daily-holiday: #FF2D2D;
+$color-daily-extra-holiday: #0086EA;
+
+$bg-daily-alter-self: #94B7FE;
+$bg-daily-alter-other: #CEE6FF;
+$bg-daily-reflect-application: #92F29B;
+$bg-daily-error: #FEC6C6;
+$bg-daily-alarm: #E3F385;
+$bg-daily-calculated:#E4C9FF;
+$color-schedule-performance: #92D050;
+$color-schedule-error: #FF0000;
+$color-schedule-saturday: #0000FF;
+$color-schedule-sunday: #FF0000;
+$bg-schedule-saturday: #8BD8FF;
+$bg-schedule-sunday: #FABF8F;
+$bg-schedule-support: #FEDFE6;
+$bg-schedule-no-empl-insurance: #EF7F7F;
+$bg-schedule-no-health-insurance: #ACFE2F;
+$bg-schedule-no-empl-health-insurance: #FEA400;
+$bg-schedule-fixed: #ECCEFB;
+$bg-schedule-uncorrectable: #DDDDD2;
+$bg-schedule-work-by-dow: #FFFF69;
+$bg-schedule-specific-date: #FFC0CB;
+$bg-schedule-that-day: #FFFF00;
+$bg-schedule-focus: #FFFFCC;
+$color-half-day-work: #FF7F27;
+
+$bg-choice-row: #CEE6FF;
+$bg-calendar-ym-set: #BFEA60;
+$bg-workinh-result-excess: #FFFF00;
+$bg-pre-application-excess: #FFC0CB;
+$bg-application-approved:#BFEA60;
+$bg-application-reflected: #CEE6FF;
+$bg-unapproved-application: #FFFFFF;
+$bg-remanded-application: #FD4D4D;
+$bg-canceled-application: #F6F636;
+$color-operation-case-character:#FF0000;
+$color-working-schedule: #00CC00;
+$color-sunday: #FF2D2D;
+$color-saturday: #0086EA;
+$bg-weekdays: #D9D9D9;
+$color-weekdays: #404040;
+$bg-pasted: #F8CBAD;
+$bg-updating-cell: #FFD966;
+$bg-selecting: #BDD7EE;
+$bg-added-row:#AFEEEE;
+$bg-actual-superior-unverified: #FF7F27;
+$bg-error-actual: #FF7F27;

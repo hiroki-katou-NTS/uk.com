@@ -12,7 +12,6 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 
 /**
  * The Class KclstEmpSubstVacation.
@@ -30,9 +29,6 @@ public class KsvstEmpSubstVacation extends KsvstSubstVacationSetting implements 
 	@EmbeddedId
 	protected KsvstEmpSubstVacationPK kclstEmpSubstVacationPK;
 
-	public static final JpaEntityMapper<KsvstEmpSubstVacation> MAPPER =
-			new JpaEntityMapper<>(KsvstEmpSubstVacation.class);
-	
 	/**
 	 * Instantiates a new kclst emp compens leave.
 	 */

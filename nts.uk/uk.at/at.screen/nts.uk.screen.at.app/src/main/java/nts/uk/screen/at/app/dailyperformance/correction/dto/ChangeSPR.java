@@ -17,8 +17,6 @@ public class ChangeSPR {
 
 	private boolean showSupervisor;
 	
-	private String messageIdError;
-	
 	public ChangeSPR(boolean change31, boolean change34) {
 		super();
 		this.change31 = change31;

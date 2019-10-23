@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.algorithm;
 import java.util.List;
-import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
@@ -53,7 +52,7 @@ public interface InterimRemainOffDateCreateData {
 	 * @param dataOutput
 	 * @return
 	 */
-	public void createWithOneDayWorkType(String cid, WorkType workType, WorkTypeRemainInfor dataOutput);
+	public WorkTypeRemainInfor createWithOneDayWorkType(String cid, WorkType workType, WorkTypeRemainInfor dataOutput);
 	/**
 	 * 午前と午後勤務時の残数発生使用明細を作成する
 	 * @param workType
@@ -101,7 +100,7 @@ public interface InterimRemainOffDateCreateData {
 	 * @param dayoffChange
 	 * @return
 	 */
-	Optional<TranferTimeInfor> calDayoffTranferTime(String cid, CreateAtr createAtr,String workTimeCode, Integer timeSetting, DayoffChangeAtr dayoffChange);
+	TranferTimeInfor calDayoffTranferTime(String cid, TranferTimeInfor timeInfor, String workTimeCode, DayoffChangeAtr dayoffChange);
 	/**
 	 * 最新の勤務種類変更を伴う申請から残数作成元情報を設定する
 	 * @param appInfor

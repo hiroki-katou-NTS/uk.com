@@ -15,8 +15,7 @@ module nts.uk.at.view.kbt002.f {
         }
         
         export function terminate(command: any) {
-            //return nts.uk.request.ajax("at", paths.terminate, command);
-            nts.uk.request.ajax("at", paths.terminate, command);
+            return nts.uk.request.ajax("at", paths.terminate, command);
         }
     }
 }

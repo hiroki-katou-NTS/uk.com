@@ -2,7 +2,6 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service;
 
 
 import java.util.List;
-import java.util.Map;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfo;
@@ -57,10 +56,4 @@ public interface InforSpecialLeaveOfEmployeeSevice {
 	 * 期限を取得する
 	 */
 	List<SpecialHolidayInfor> getDeadlineInfo(GrantDaysInforByDates grantDaysInfor, SpecialHoliday timeSpecifyMethod);
-	
-	/**
-	 * đối ứng cho cps003
-	 * 期限を取得する
-	 */
-	Map<String, List<SpecialHolidayInfor>> getDeadlineInfo(List<GrantDaysInforByDatesInfo> grantDaysInfors, SpecialHoliday timeSpecifyMethod);
 }

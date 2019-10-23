@@ -29,6 +29,4 @@ public class OneMonthApprovalStatusDto {
 	
 	String messageID;
 	
-	Integer yearMonth;
-	
 }

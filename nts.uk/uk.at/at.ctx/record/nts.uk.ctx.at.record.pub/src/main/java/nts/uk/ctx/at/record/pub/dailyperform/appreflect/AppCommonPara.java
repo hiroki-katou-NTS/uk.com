@@ -38,4 +38,8 @@ public class AppCommonPara {
 	 * ドメインモデル「反映情報」．予定強制反映をチェックする
 	 */
 	private boolean scheReflect;
+	/**
+	 * True: 実績の反映、False:　予定の反映
+	 */
+	private boolean chkRecord;
 }

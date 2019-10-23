@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Data;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculationImport;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
 @Data
 public class ParamCalculationHolidayWork {
@@ -61,8 +60,6 @@ public class ParamCalculationHolidayWork {
 	 * endTimeRest
 	 */
 	private List<Integer> endTimeRests;
-	
-	DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport;
 	
 	public List<Integer> getStartTimeRests() {
 		List<Integer> result=  new ArrayList<Integer>();

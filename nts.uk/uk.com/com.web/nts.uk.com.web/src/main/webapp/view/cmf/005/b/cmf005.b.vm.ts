@@ -21,7 +21,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
     import UnitAlreadySettingModel = kcp.share.list.UnitAlreadySettingModel;
 
     export class ScreenModel {
-
+    
         //wizard
         stepList: Array<NtsWizardStep> = [];
         stepSelected: KnockoutObservable<NtsWizardStep>;
@@ -64,7 +64,6 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         //B7_1
         saveBeforDeleteOption: KnockoutObservableArray<model.ItemModel>;
         isSaveBeforeDeleteFlg: number;
-        isDelete: KnockoutObservableArray<boolean>;
 
         //B8_1
         isExistCompressPasswordFlg: KnockoutObservable<boolean>;
@@ -97,11 +96,10 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         currentCode: KnockoutObservable<any>;
         currentCodeList: KnockoutObservableArray<any>;
         categoryDeletionList: KnockoutObservableArray<CategoryDeletion>;
-        delId: KnockoutObservable<string>;
-        
+        delId : KnockoutObservable<string>;
+
         constructor() {
             var self = this;
-            console.log("constructor");
             self.initComponents();
             self.setDefault();
         }
@@ -116,7 +114,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             ];
             self.activeStep = ko.observable(0);
             self.stepSelected = ko.observable({ id: 'step-1', content: '.step-1' });
-            console.log("initComponents");
+
             //Radio button
             self.optionCategory = ko.observable({ value: 1, text: getText("CMF005_15") });
             self.optionDeleteSet = ko.observable({ value: 2, text: getText("CMF005_16") });
@@ -151,18 +149,35 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             self.startDateYearlyString = ko.observable("");
             self.endDateYearlyString = ko.observable("");
 
-            self.dateValue = ko.observable({
-                startDate: moment.utc().subtract(1, "M").add(1, "d").format("YYYY/MM/DD"),
-                endDate: moment.utc().format("YYYY/MM/DD")
+            self.dateValue = ko.observable({});
+            self.monthValue = ko.observable({});
+            self.yearValue = ko.observable({});
+
+            self.startDateDailyString.subscribe(function(value) {
+                self.dateValue().startDate = value;
+                self.dateValue.valueHasMutated();
             });
-            
-            self.monthValue = ko.observable({
-                startDate: moment.utc().subtract(1, "M").add(1, "d").format("YYYY/MM"), 
-                endDate: moment.utc().subtract(1, "M").add(1, "d").format("YYYY/MM") 
+            self.endDateDailyString.subscribe(function(value) {
+                self.dateValue().endDate = value;
+                self.dateValue.valueHasMutated();
             });
-            self.yearValue = ko.observable({
-                startDate: moment.utc().subtract(1, "M").add(1, "d").format("YYYY"), 
-                endDate: moment.utc().subtract(1, "M").add(1, "d").format("YYYY")
+
+            self.startDateMothlyString.subscribe(function(value) {
+                self.monthValue().startDate = value;
+                self.monthValue.valueHasMutated();
+            });
+            self.endDateMothlyString.subscribe(function(value) {
+                self.monthValue().endDate = value;
+                self.monthValue.valueHasMutated();
+            });
+
+            self.startDateYearlyString.subscribe(function(value) {
+                self.yearValue().startDate = value;
+                self.yearValue.valueHasMutated();
+            });
+            self.endDateYearlyString.subscribe(function(value) {
+                self.yearValue().endDate = value;
+                self.yearValue.valueHasMutated();
             });
 
             //B7_1
@@ -219,6 +234,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         public startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
+
             dfd.resolve(self);
             return dfd.promise();
         }
@@ -226,90 +242,53 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         /**
          * Setting value default  screen B
          */
-        setDefault(dateToday) {
+        setDefault() {
             var self = this;
             //set B3_1 "ON"
             self.rdSelected = ko.observable(1);
-            console.log("setDefault");
-            
-            service.getSystemDate().done(function(dateToday: any) {
-                let date = dateToday.referenceDate;
-                //B6_2_2
-                self.dateValue({
-                    startDate: moment.utc(date).subtract(1, "M").add(1, "d").format("YYYY/MM/DD"),
-                    endDate: moment.utc(date).format("YYYY/MM/DD")
-                });
-                self.monthValue({ 
-                    startDate: moment.utc(date).subtract(1, "M").add(1, "d").format("YYYY/MM"), 
-                    endDate: moment.utc(date).subtract(1, "M").add(1, "d").format("YYYY/MM") 
-                });
-                self.yearValue({ 
-                    startDate: moment.utc(date).subtract(1, "M").add(1, "d").format("YYYY"), 
-                    endDate: moment.utc(date).subtract(1, "M").add(1, "d").format("YYYY") 
-                });
-
-            });
             
             //B6_2_2
-//            self.dateValue({
-//                startDate: moment.utc().subtract(1, "M").add(1, "d").format("YYYY/MM/DD"),
-//                endDate: moment.utc().format("YYYY/MM/DD")
-//            });
-            
-//            self.monthValue = ko.observable({ startDate: moment.utc().subtract(1, "M").add(1, "d").format("YYYY/MM"), endDate: moment.utc().subtract(1, "M").add(1, "d").format("YYYY/MM") });
-//            self.yearValue = ko.observable({ startDate: moment.utc().subtract(1, "M").add(1, "d").format("YYYY"), endDate: moment.utc().subtract(1, "M").add(1, "d").format("YYYY") });
-            
+            self.dateValue = ko.observable({
+                startDate: moment.utc().subtract(1, "M").add(1, "d").format("YYYY/MM/DD"),
+                endDate: moment.utc().format("YYYY/MM/DD")
+            });
+            self.monthValue = ko.observable({ startDate: moment.utc().subtract(1, "M").format("YYYY/MM"), endDate: moment.utc().format("YYYY/MM") });
+            self.yearValue = ko.observable({ startDate: moment.utc().format("YYYY"), endDate: moment.utc().format("YYYY") });
+
             //B7_2_1
             self.isSaveBeforeDeleteFlg = ko.observable(model.SAVE_BEFOR_DELETE_ATR.YES);
             //B8_2_1
             self.isExistCompressPasswordFlg = ko.observable(true);
             self.passwordConstraint = ko.observable("");
-            self.isDelete = ko.observable(self.isSaveBeforeDeleteFlg() && self.isExistCompressPasswordFlg());
             /**
             * Clear validate
              */
-            self.isExistCompressPasswordFlg.subscribe(function(value) {
-                if (value) {
-                    self.passwordConstraint("PasswordCompressFile");
-                    $(".passwordInput").trigger("validate");
-                } else {
-                    nts.uk.util.value.reset($("#B8_2_2"), $("#B8_2_2").val());
-                    nts.uk.util.value.reset($("#B8_3_2"), $("#B8_3_2").val());
-                    self.passwordConstraint("");
-                    $('.passwordInput').ntsError('clear');
-                }
+             self.isExistCompressPasswordFlg.subscribe(function(value) {
+                 if (value) {
+                     self.passwordConstraint("PasswordCompressFile");
+                     $(".passwordInput").trigger("validate");
+                 } else {
+                     nts.uk.util.value.reset($("#B8_2_2"), $("#B8_2_2").val());
+                     nts.uk.util.value.reset($("#B8_3_2"), $("#B8_3_2").val());
+                     self.passwordConstraint("");
+                     $('.passwordInput').ntsError('clear');
+                 }
             });
+            
+             self.dateValue.subscribe(function(value) {
+                 nts.uk.ui.errors.clearAll();
+                 $(".validate_form .ntsDatepicker").trigger("validate");
+             });
 
-            self.dateValue.subscribe(function(value) {
-                nts.uk.ui.errors.clearAll();
-                $(".validate_form .ntsDatepicker").trigger("validate");
-            });
+             self.monthValue.subscribe(function(value) {
+                 nts.uk.ui.errors.clearAll();
+                 $(".validate_form .ntsDatepicker").trigger("validate");
+             });
 
-            self.monthValue.subscribe(function(value) {
-                nts.uk.ui.errors.clearAll();
-                $(".validate_form .ntsDatepicker").trigger("validate");
-            });
-
-            self.yearValue.subscribe(function(value) {
-                nts.uk.ui.errors.clearAll();
-                $(".validate_form .ntsDatepicker").trigger("validate");
-            });
-
-            self.isSaveBeforeDeleteFlg.subscribe(function(value) {
-                if (value == 0) {
-                    $("#B8_3_2").ntsError('clear');
-                    $('#B8_2_2').ntsError('clear');
-                }
-                self.isDelete((value == 1 ? true : false) && self.isExistCompressPasswordFlg());
-
-            });
-            self.isExistCompressPasswordFlg.subscribe(function(value) {
-                if (value == false) {
-                    $("#B8_3_2").ntsError('clear');
-                    $('#B8_2_2').ntsError('clear');
-                }
-                self.isDelete(value && self.isSaveBeforeDeleteFlg());
-            });
+             self.yearValue.subscribe(function(value) {
+                 nts.uk.ui.errors.clearAll();
+                 $(".validate_form .ntsDatepicker").trigger("validate");
+             }); 
         }
 
         /**
@@ -380,7 +359,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
                         if (self.listDataCategory().length > 0) {
                             self.nextFromBToD();
                         } else {
-                            alertError({ messageId: 'Msg_471' });
+                            alertError({ messageId: 'Msg_463' });
                         }
                     } else {
                         alertError({ messageId: 'Msg_566' });
@@ -389,7 +368,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
                     if (self.listDataCategory().length > 0) {
                         self.nextFromBToD();
                     } else {
-                        alertError({ messageId: 'Msg_471' });
+                        alertError({ messageId: 'Msg_463' });
                     }
                 }
             }
@@ -398,7 +377,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         /**
          *Check validate client
          */
-        private validateForm(): boolean {
+        private validateForm() : boolean {
             $(".validate_form").trigger("validate");
             $(".validate_form .ntsDatepicker").trigger("validate");
             if (nts.uk.ui.errors.hasError()) {
@@ -439,7 +418,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             if (self.requiredDate()) {
                 if (self.dateValue().startDate && self.dateValue().endDate) {
                     if (self.dateValue().startDate > self.dateValue().endDate) {
-                        alertError({ messageId: 'Msg_465' });
+                       alertError({ messageId: 'Msg_465' });
                         return false;
                     }
                 } else {
@@ -600,7 +579,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
                 $("#B3_5").focus();
             }
         }
-
+        
         /**
          * back to D
          */
@@ -616,7 +595,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         private validateD(): boolean {
             var self = this;
             if ((self.selectedTitleAtr() == 1 && self.selectedEmployeeCode() && self.selectedEmployeeCode().length > 0)
-                || (self.selectedTitleAtr() == 0)) {
+                || (self.selectedTitleAtr() == 0 )) {
                 return true;
             } else {
                 nts.uk.ui.dialog.error({ messageId: "Msg_498", messageParams: ["X", "Y"] });
@@ -686,12 +665,12 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         private gotoscreenF(): void {
             let self = this;
             let params = {};
-            params.delId = self.delId();
-            params.deleteSetName = self.deleteSetName();
-            params.dateValue = self.dateValue();
-            params.monthValue = self.monthValue();
-            params.yearValue = self.yearValue();
-            params.saveBeforDelete = self.isSaveBeforeDeleteFlg();
+                params.delId = self.delId();
+                params.deleteSetName = self.deleteSetName();
+                params.dateValue = self.dateValue();
+                params.monthValue = self.monthValue();
+                params.yearValue = self.yearValue();
+                params.saveBeforDelete = self.isSaveBeforeDeleteFlg();
 
             setShared("CMF005_E_PARAMS", params);
             modal("/view/cmf/005/f/index.xhtml").onClosed(() => {
@@ -708,7 +687,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
                 self.yearValue().startDate, self.yearValue().endDate,
                 Number(self.isSaveBeforeDeleteFlg()), Number(self.isExistCompressPasswordFlg()), self.passwordForCompressFile(),
                 Number(self.selectedTitleAtr()), self.employeeDeletionList(), self.categoryDeletionList());
-
+            
             service.addManualSetDel(manualSetting).done(function(data: any) {
                 self.delId(data);
                 self.gotoscreenF();
@@ -718,11 +697,11 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             }).always(() => {
             });
         }
-
+        
         /**
          * 
          */
-        private scrollBottomToLeft(): void {
+        private scrollBottomToLeft() : void {
             $("#contents-area").scrollLeft(0);
         }
     }
@@ -784,10 +763,10 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         code: string;
         name: string;
         employeeId: string;
-        employeeCode: string;
+        employeeCode:string;
         businessName: string;
 
-        constructor(code: string, name: string, employeeId: string, employeeCode: string, businessName: string) {
+        constructor(code: string, name: string, employeeId: string, employeeCode:string, businessName: string) {
             this.code = code;
             this.name = name;
             this.employeeId = employeeId;
@@ -849,10 +828,12 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             this.categoryId = categoryId;
             this.periodDeletion = null;
         }
-
-        constructor(categoryId: string, periodDeletion: string) {
+        
+        constructor(categoryId: string,periodDeletion:string) {
             this.categoryId = categoryId;
             this.periodDeletion = periodDeletion;
         }
     }
 }
+
+

@@ -109,7 +109,7 @@ module nts.uk.at.view.kdw006.g.viewmodel {
                 self.groups1.removeAll();
                 self.groups2.removeAll();
                 _.forEach(res, function(item) {
-                    let names = _(item.workTypeList.sort()).map(x => (_.find(ko.toJS(self.fullWorkTypeList), z => z.workTypeCode == x) || {}).name).value();
+                    let names = _(item.workTypeList).map(x => (_.find(ko.toJS(self.fullWorkTypeList), z => z.workTypeCode == x) || {}).name).value();
                     let comment = '';
                     if (item.no == 2) {
                         comment = nts.uk.resource.getText("KDW006_59", ['法定内休日']);
@@ -120,8 +120,7 @@ module nts.uk.at.view.kdw006.g.viewmodel {
                     if (item.no == 4) {
                         comment = nts.uk.resource.getText("KDW006_59", ['法定外休日(祝)']);
                     }
-                    let nameEnd = _.filter(names, undefined);
-                    let group = new WorkTypeGroup(item.no, item.name === " " ? '' : item.name, item.workTypeList, nameEnd.join("、　"),
+                    let group = new WorkTypeGroup(item.no, item.name === " " ? '' : item.name, item.workTypeList, names.join("、　"),
                         fullWorkTypeCodes, comment);
                     array.push(group);
                     if (group.no < 5) {
@@ -171,7 +170,7 @@ module nts.uk.at.view.kdw006.g.viewmodel {
                         self.listSetting.remove(self.selectedCode());
                     }
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                        //self.selectedCode.valueHasMutated();
+                        self.selectedCode.valueHasMutated();
                         nts.uk.ui.block.clear();
                     });
                 }).fail(() => {
@@ -273,10 +272,10 @@ module nts.uk.at.view.kdw006.g.viewmodel {
             let viewG = __viewContext.viewModel;
             service.defaultValue(listWorkType).done(function(res) {
                 let workTypeCodess = _.map(res, 'workTypeCode');
-                self.workTypeCodes = _.uniq(workTypeCodess);
+                self.workTypeCodes = workTypeCodess;
                 let fullCodeNameList = ko.toJS(viewG.fullWorkTypeList);
                 let names = [];
-                _.forEach(self.workTypeCodes, (code) => {
+                _.forEach(workTypeCodess, (code) => {
                     let foundWT = _.find(fullCodeNameList, (codeName) => {
                         return codeName.workTypeCode === code;
                     });
@@ -300,9 +299,6 @@ module nts.uk.at.view.kdw006.g.viewmodel {
             nts.uk.ui.windows.sub.modal('/view/kdl/002/a/index.xhtml', { title: '' }).onClosed(function(): any {
                 nts.uk.ui.block.clear();
                 var data = nts.uk.ui.windows.getShared('KDL002_SelectedNewItem');
-                var isCancel = nts.uk.ui.windows.getShared('KDL002_IsCancel');
-                if(isCancel != null && isCancel == true)
-                return;
                 var name = [];
                 _.forEach(data, function(item: any) {
                     name.push(item.name);
@@ -316,9 +312,6 @@ module nts.uk.at.view.kdw006.g.viewmodel {
             let self = this;
             self.workTypeCodes = [];
             self.workTypeName("");
-        }
-        close(): void {
-            nts.uk.ui.windows.close();
         }
     }
 

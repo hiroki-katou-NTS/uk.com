@@ -5,7 +5,6 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
@@ -14,8 +13,7 @@ import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
  */
 //休暇時の計算
 @Getter
-@NoArgsConstructor
-public class HolidayCalculation extends WorkTimeDomainObject implements Cloneable{
+public class HolidayCalculation extends WorkTimeDomainObject {
 
 	/** The is calculate. */
 	//計算する
@@ -48,15 +46,4 @@ public class HolidayCalculation extends WorkTimeDomainObject implements Cloneabl
 		this.isCalculate = isCalculate;
 	}
 
-	@Override
-	public HolidayCalculation clone() {
-		HolidayCalculation cloned = new HolidayCalculation();
-		try {
-			cloned.isCalculate = NotUseAtr.valueOf(this.isCalculate.value);
-		}
-		catch (Exception e){
-			throw new RuntimeException("HolidayCalculation clone error.");
-		}
-		return cloned;
-	}
 }

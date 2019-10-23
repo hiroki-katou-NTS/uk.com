@@ -163,7 +163,7 @@ public class WorkMonthlySettingFinder {
 						dto.setWorkTypeName(mapWorkType.get(dto.getWorkTypeCode()).getName().v());
 					} else {
 						// set work type name NONE_SETTING
-						dto.setWorkTypeName(dto.getWorkTypeCode() + TextResource.localize(NONE_SETTING));
+						dto.setWorkTypeName(TextResource.localize(NONE_SETTING));
 					}
 
 					// set work time name ""

@@ -1,17 +1,11 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.valueobject.AnnLeaRemNumValueObject;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnLeaGrantRemDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
@@ -61,36 +55,6 @@ public class AnnLeaEmpBasicInfoDomService{
 		}
 		return new AnnLeaRemNumValueObject(remainingDays, remainingMinutes);
 	}
-	
-	public Map<String, AnnLeaRemNumValueObject> getAnnualLeaveNumber(String companyId,
-			Map<String,List<AnnualLeaveGrantRemainingData>> annualLeaveGrantDataLst) {
-		Map<String, AnnLeaRemNumValueObject> result = new HashMap<>();
-		AnnualPaidLeaveSetting setting = annPaidLeaSettingRepo.findByCompanyId(companyId);
-		boolean useTimeAnnualLeave = setting.getYearManageType() == ManageDistinct.YES
-				&& setting.getTimeSetting().getTimeManageType() == ManageDistinct.YES;
-		
-		for(Map.Entry<String, List<AnnualLeaveGrantRemainingData>> entry : annualLeaveGrantDataLst.entrySet()) {
-		    String key = entry.getKey();
-		    Double remainingDays = 0d;
-		    int remainingMinutes = 0;
-			
-		    List<AnnualLeaveGrantRemainingData> listData = entry.getValue();
-		    
-		    for (AnnualLeaveGrantRemainingData data : listData) {
-				remainingDays += data.getDetails().getRemainingNumber().getDays().v();
-			}
-		   
-			if (useTimeAnnualLeave) {
-				for (AnnualLeaveGrantRemainingData data : listData) {
-					Optional<AnnualLeaveRemainingTime> minutes = data.getDetails().getRemainingNumber().getMinutes();
-					remainingMinutes += minutes.isPresent() ? minutes.get().v() : 0;
-				}
-			}
-			result.put(key, new AnnLeaRemNumValueObject(remainingDays, remainingMinutes));
-		}
-		
-		return result;
-	}
 
 	public String calculateAnnLeaNumWithFormat(String companyId, List<AnnualLeaveGrantRemainingData> listData) {
 
@@ -113,30 +77,6 @@ public class AnnLeaEmpBasicInfoDomService{
 		return annLeaveRemainNumber.getDays() + "日と　" + remainingHours + ":" + convertWithMinutes(remainingMinutes);
 	}
 	
-	public Map<String, String> calculateAnnLeaNumWithFormat(String cid, Map<String, List<AnnualLeaveGrantRemainingData>> annualLeaveGrantDataLst) {
-		Map<String, String> result = new HashMap<>();
-		// Total time
-		// No268特別休暇の利用制御
-		AnnualPaidLeaveSetting annualPaidLeaveSet = annualPaidLeaveSettingRepository.findByCompanyId(AppContexts.user().companyId());	
-		
-		Map<String, AnnLeaRemNumValueObject> annLeaveRemainNumber = getAnnualLeaveNumber(cid,  annualLeaveGrantDataLst);
-		boolean isNo = annualPaidLeaveSet.getTimeSetting().getTimeManageType() == ManageDistinct.NO
-				|| annualPaidLeaveSet.getTimeSetting().getMaxYearDayLeave().manageType == ManageDistinct.NO;
-		for (Map.Entry<String, AnnLeaRemNumValueObject> entry : annLeaveRemainNumber.entrySet()) {
-			String key = entry.getKey();
-			if (isNo) {
-				result.put(key, entry.getValue().getDays() + "日");
-			} else {
-				int remainingMinutes = entry.getValue().getMinutes();
-				int remainingHours = remainingMinutes / 60;
-				remainingMinutes -= remainingHours * 60;
-				result.put(key, entry.getValue().getDays() + "日と　" + remainingHours + ":"
-						+ convertWithMinutes(remainingMinutes));
-			}
-		}
-		return result;
-	}
-	
 	public String calculateLastGrantDate(String employeeId) {
 		Optional<AnnualLeaveGrantRemainingData> lastDataOpt = annLeaDataRepo.getLast(employeeId);
 		if (!lastDataOpt.isPresent()) {
@@ -146,32 +86,6 @@ public class AnnLeaEmpBasicInfoDomService{
 		}
 	}
 	
-	// truyền list nhân viên đã được trả về trong list 年休残数
-	public Map<String, String> calculateLastGrantDate(String cid, List<String> sids) {
-		Map<String, String> result = new HashMap<>();
-		Map<String, List<AnnualLeaveGrantRemainingData>> annLeaveRemainDataMap = annLeaDataRepo.findByCidAndSids(cid, sids)
-				.stream().collect(Collectors.groupingBy(c -> c.getEmployeeId()));
-		if(annLeaveRemainDataMap.size() < sids.size()) {
-			for(String sid: sids) {
-				List<AnnualLeaveGrantRemainingData> annLeaveRemainData = annLeaveRemainDataMap.get(sid);
-				if(CollectionUtil.isEmpty(annLeaveRemainData)) {
-					annLeaveRemainDataMap.put(sid, new ArrayList<AnnualLeaveGrantRemainingData>());
-				}
-			}
-		}
-		for (Map.Entry<String, List<AnnualLeaveGrantRemainingData>> entry : annLeaveRemainDataMap.entrySet()) {
-			String key = entry.getKey();
-			entry.getValue().stream().sorted(Comparator.comparing(AnnualLeaveGrantRemainingData::getGrantDate).reversed()).collect(Collectors.toList());
-			if(entry.getValue().size() == 0) {
-				result.put(key, not_grant);
-			}else {
-				result.put(key, entry.getValue().get(0).getGrantDate().toString());
-			}
-		}
-		
-		return result;
-	}
-	
 	public String calculateRervLeaveNumber(List<ReserveLeaveGrantRemainingData> listData) {
 		Double remainingDays = 0d;
 		for (ReserveLeaveGrantRemainingData data : listData) {
@@ -179,7 +93,6 @@ public class AnnLeaEmpBasicInfoDomService{
 		}
 		return remainingDays + "日";
 	}
-	
 	
 	private String convertWithMinutes(int minutes) {
 		if ( Math.abs(minutes) < 10) {

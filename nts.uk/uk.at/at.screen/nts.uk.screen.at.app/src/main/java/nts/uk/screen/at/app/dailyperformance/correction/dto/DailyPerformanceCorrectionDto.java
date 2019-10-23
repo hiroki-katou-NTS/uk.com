@@ -3,7 +3,6 @@
  */
 package nts.uk.screen.at.app.dailyperformance.correction.dto;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,19 +13,16 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.cache.DPCorrectionStateParam;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkshowbutton.DailyPerformanceAuthorityDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.style.TextStyle;
 import nts.uk.screen.at.app.dailyperformance.correction.error.DCErrorInfomation;
 import nts.uk.screen.at.app.dailyperformance.correction.identitymonth.IndentityMonthResult;
 import nts.uk.screen.at.app.dailyperformance.correction.monthflex.DPMonthResult;
-import nts.uk.screen.at.app.dailyperformance.correction.text.DPText;
 
 /**
  * @author hungnm
@@ -34,9 +30,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.text.DPText;
  */
 @Getter
 @Setter
-@AllArgsConstructor
-public class DailyPerformanceCorrectionDto implements Serializable{
-	private static final long serialVersionUID = 1L;
+public class DailyPerformanceCorrectionDto {
 
 	private YearHolidaySettingDto yearHolidaySettingDto;
 
@@ -47,8 +41,6 @@ public class DailyPerformanceCorrectionDto implements Serializable{
 	private Com60HVacationDto com60HVacationDto;
 
 	private DateRange dateRange;
-	
-	private DatePeriodInfo periodInfo;
 
 	private List<DailyPerformanceEmployeeDto> lstEmployee;
 
@@ -97,8 +89,6 @@ public class DailyPerformanceCorrectionDto implements Serializable{
 	
 	private List<DailyRecordDto> domainOld;
 	
-	private List<DailyRecordDto> domainOldForLog;
-	
 	private boolean showTighProcess;
 	
 	private IndentityMonthResult indentityMonthResult;
@@ -110,32 +100,6 @@ public class DailyPerformanceCorrectionDto implements Serializable{
 	private int errorInfomation;
 	
 	private List<DPHideControlCell> lstHideControl = new ArrayList<>();
-	
-	private List<DPHideControlCell> lstCellDisByLock = new ArrayList<>();
-	
-	private boolean lockDisableFlex;
-	
-	private DateRange rangeLock;
-	
-	private List<String> employeeIds;
-	
-	private List<String> changeEmployeeIds;
-	
-	private Optional<IdentityProcessUseSetDto> identityProcessDtoOpt;
-	
-	private Optional<ApprovalUseSettingDto> approvalUseSettingDtoOpt;
-	
-	private DateRange datePeriodResult;
-	
-//	private List<DPErrorDto> lstError;
-	
-	private DisplayItem disItem;
-	
-	private ApprovalConfirmCache approvalConfirmCache;
-
-	private DPCorrectionStateParam stateParam;
-	
-	private DPCorrectionMenuDto dPCorrectionMenuDto;
 	
 	public DailyPerformanceCorrectionDto() {
 		super();
@@ -153,13 +117,6 @@ public class DailyPerformanceCorrectionDto implements Serializable{
 		this.indentityMonthResult = new IndentityMonthResult(false, false, true);
 		this.errors = new ArrayList<>();
 		this.errorInfomation = DCErrorInfomation.NORMAL.value;
-		this.lockDisableFlex = false;
-		this.employeeIds = new ArrayList<>();
-		this.changeEmployeeIds = new ArrayList<>();
-		this.identityProcessDtoOpt = Optional.empty();
-		this.approvalUseSettingDtoOpt = Optional.empty();
-//		this.lstError = new ArrayList<>();
-		this.disItem = new DisplayItem();
 	}
 
 	/** Check if employeeId is login user */
@@ -197,16 +154,12 @@ public class DailyPerformanceCorrectionDto implements Serializable{
 			if (attendanceAtr == DailyAttendanceAtr.Code.value || attendanceAtr == DailyAttendanceAtr.Classification.value) {
 				if (attendanceAtr == DailyAttendanceAtr.Classification.value) {
 					this.lstCellState.add(new DPCellStateDto("_" + data.getId(), "NO" + getID(header.getKey()), toList("mgrid-disable")));
-				    lstCellDisByLock.add(new DPHideControlCell("_" + data.getId(), "NO" + getID(header.getKey())));
 				} else {
 					this.lstCellState.add(new DPCellStateDto("_" + data.getId(), "Code" + getID(header.getKey()), toList("mgrid-disable")));
-					 lstCellDisByLock.add(new DPHideControlCell("_" + data.getId(), "Code" + getID(header.getKey())));
 				}
 				this.lstCellState.add(new DPCellStateDto("_" + data.getId(), "Name" + getID(header.getKey()), toList("mgrid-disable")));
-				 lstCellDisByLock.add(new DPHideControlCell("_" + data.getId(), "Name" + getID(header.getKey())));
 			} else {
 				this.lstCellState.add(new DPCellStateDto("_" + data.getId(), header.getKey(), toList("mgrid-disable")));
-				 lstCellDisByLock.add(new DPHideControlCell("_" + data.getId(), header.getKey()));
 			}
 		   }
 //		}
@@ -369,28 +322,6 @@ public class DailyPerformanceCorrectionDto implements Serializable{
 		Optional<DPCellStateDto> existedCellState = findExistCellState(rowId, columnKey);
 		if (existedCellState.isPresent()) {
 			existedCellState.get().addState(state);
-			List<String> stateCell = existedCellState.get().getState();
-			if(stateCell.contains(DPText.STATE_DISABLE)) {
-				lstCellDisByLock.add(new DPHideControlCell(rowId, columnKey));
-			}
-		} else {
-			List<String> states = new ArrayList<>();
-			states.add(state);
-			DPCellStateDto dto = new DPCellStateDto("_" + rowId, columnKey, states);
-			this.lstCellState.add(dto);
-			if(states.contains(DPText.STATE_DISABLE)) {
-				lstCellDisByLock.add(new DPHideControlCell("_" + rowId, columnKey));
-			}
-		}
-		
-
-	}
-	
-	/** Set AlarmCell state for Fixed cell */
-	public void setCellSate(String rowId, String columnKey, String state, boolean lock) {
-		Optional<DPCellStateDto> existedCellState = findExistCellState(rowId, columnKey);
-		if (existedCellState.isPresent()) {
-			existedCellState.get().addState(state);
 		} else {
 			List<String> states = new ArrayList<>();
 			states.add(state);
@@ -404,15 +335,5 @@ public class DailyPerformanceCorrectionDto implements Serializable{
 		this.showTighProcess = identityProcessDto.isUseIdentityOfMonth() && displayMode == 0 && userLogin && indentityMonthResult.getEnableButton();
 		indentityMonthResult.setShow26(indentityMonthResult.getShow26() && identityProcessDto.isUseIdentityOfMonth() && displayMode == 0 && userLogin);
 		indentityMonthResult.setHideAll(displayMode != 0 || !identityProcessDto.isUseIdentityOfMonth());
-	}
-	
-	public void resetDailyInit() {
-		this.employeeIds = null;
-		this.changeEmployeeIds = null;
-		this.identityProcessDtoOpt = null;
-		this.approvalUseSettingDtoOpt = null;
-		this.datePeriodResult = null;
-//		this.lstError = null;
-		this.disItem = null;
 	}
 }

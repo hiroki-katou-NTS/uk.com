@@ -80,12 +80,5 @@ public enum ClosingDateType {
 		this.value = type;
 	}
 
-	/**
-	 * 末日であるか判定する
-	 * @return　末日である
-	 */
-	public boolean isLastDay() {
-		return this.equals(LASTDAY);
-	}
 
 }

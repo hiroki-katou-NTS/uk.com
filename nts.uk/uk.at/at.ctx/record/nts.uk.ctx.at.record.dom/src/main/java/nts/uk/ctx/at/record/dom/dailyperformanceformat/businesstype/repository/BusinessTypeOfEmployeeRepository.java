@@ -21,14 +21,6 @@ public interface BusinessTypeOfEmployeeRepository {
 	 * @param businessTypeOfEmployee
 	 */
 	void insert(BusinessTypeOfEmployee businessTypeOfEmployee);
-	
-	/**
-	 * @author lanlt
-	 * add all BusinessTypeOfEmployee
-	 * 
-	 * @param businessTypeOfEmployee
-	 */
-	void addAll(List<BusinessTypeOfEmployee> domains);
 
 	/**
 	 * update BusinessTypeOfEmployee
@@ -36,15 +28,6 @@ public interface BusinessTypeOfEmployeeRepository {
 	 * @param businessTypeOfEmployee
 	 */
 	void update(BusinessTypeOfEmployee businessTypeOfEmployee);
-	
-
-	/**
-	 * @author lanlt
-	 * update BusinessTypeOfEmployee
-	 * 
-	 * @param businessTypeOfEmployee
-	 */
-	void updateAll(List<BusinessTypeOfEmployee> domains);
 
 	/**
 	 * delete BusinessTypeOfEmployee
@@ -66,11 +49,4 @@ public interface BusinessTypeOfEmployeeRepository {
 	 * @return List BusinessTypeOfEmployee
 	 */
 	List<BusinessTypeOfEmployee> findAllByEmpAndDate(List<String> employeeIds, DatePeriod date);
-	
-	/**
-	 * find all by histIds
-	 * @param histIds
-	 * @return
-	 */
-	List<BusinessTypeOfEmployee> findAllByHistIds(List<String> histIds);
 }

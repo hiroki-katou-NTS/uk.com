@@ -17,9 +17,7 @@ public enum CorrectionProcessorId {
 
 	PEREG_REGISTER(3),
 	
-	MONTHLY(4),
-	
-	MATRIX_REGISTER(5)
+	MONTHLY(4)
 	;
 	public final int value;
 	

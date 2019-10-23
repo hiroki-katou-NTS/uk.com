@@ -109,12 +109,6 @@ public class SspdtResultDeletion extends UkJpaEntity implements Serializable {
 	@Column(name = "FILE_SIZE")
 	public Integer fileSize;
 	
-	/** The password encrypt for compress file. */
-	/** 手動保存の圧縮パスワード */
-	@Basic(optional = true)
-	@Column(name = "PASSWORD_FOR_COMPRESS_FILE")
-	public String passwordCompressFileEncrypt;
-	
 	@Override
 	protected Object getKey() {
 		return sspdtResultDeletionPK;
@@ -125,7 +119,7 @@ public class SspdtResultDeletion extends UkJpaEntity implements Serializable {
 		return ResultDeletion.createFromJavatype(this.sspdtResultDeletionPK.delId, this.companyID, this.delName, 
 				this.delType, isDeletedFilesFlg,
 				this.delCode, this.numberEmployees, this.systemType, this.sId, this.status,
-				this.startDateTimeDel, this.endDateTimeDel, this.fileId, this.fileName, this.fileSize, this.passwordCompressFileEncrypt);
+				this.startDateTimeDel, this.endDateTimeDel, this.fileId, this.fileName, this.fileSize);
 	}
 
 	public static SspdtResultDeletion toEntity(ResultDeletion result) {
@@ -135,7 +129,6 @@ public class SspdtResultDeletion extends UkJpaEntity implements Serializable {
 				result.getCompanyId(), result.getDelName().v(), result.getDelType().value, isDeletedFilesFlg,
 				result.getDelCode().v(), result.getNumberEmployees(), result.getSystemType().value, 
 				result.getSId(), result.getStatus().value, result.getStartDateTimeDel(), 
-				result.getEndDateTimeDel(), result.getFileId(), result.getFileName().v(), result.getFileSize(), 
-				result.getPasswordCompressFileEncrypt().isPresent() ? result.getPasswordCompressFileEncrypt().get().toString() : null );
+				result.getEndDateTimeDel(), result.getFileId(), result.getFileName().v(), result.getFileSize());
 	}
 }

@@ -53,8 +53,6 @@ public class PerInfoItemDefDto {
 	
 	private boolean canAbolition;
 	
-	private String initValue;
-	
 	/**
 	 * @param itemDefinition
 	 * This constructor initial value from domain
@@ -90,7 +88,6 @@ public class PerInfoItemDefDto {
 		// will remove
 		this.selectionItemRefType = itemDefinition.getSelectionItemRefType();
 		this.canAbolition = itemDefinition.isCanAbolition();
-		this.initValue = itemDefinition.getInitValue().isPresent()? itemDefinition.getInitValue().get().toString(): null;
 
 	}
 	

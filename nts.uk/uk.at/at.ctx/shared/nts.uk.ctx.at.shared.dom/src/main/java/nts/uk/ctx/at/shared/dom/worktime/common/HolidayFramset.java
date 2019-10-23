@@ -5,7 +5,6 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
@@ -13,8 +12,7 @@ import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
  */
 // 臨時勤務時の休出枠設定
 @Getter
-@NoArgsConstructor
-public class HolidayFramset extends WorkTimeDomainObject implements Cloneable{
+public class HolidayFramset extends WorkTimeDomainObject {
 
 	/** The in legal breakout frame no. */
 	// 法定内休出枠NO
@@ -70,17 +68,4 @@ public class HolidayFramset extends WorkTimeDomainObject implements Cloneable{
 		memento.setOutLegalPubHolFrameNo(this.outLegalPubHolFrameNo);
 	}
 
-	@Override
-	public HolidayFramset clone() {
-		HolidayFramset cloned = new HolidayFramset();
-		try {
-			cloned.inLegalBreakoutFrameNo = new BreakoutFrameNo(this.inLegalBreakoutFrameNo.v());
-			cloned.outLegalBreakoutFrameNo = new BreakoutFrameNo(this.outLegalBreakoutFrameNo.v());
-			cloned.outLegalPubHolFrameNo = new BreakoutFrameNo(this.outLegalPubHolFrameNo.v());
-		}
-		catch (Exception e){
-			throw new RuntimeException("HolidayFramset clone error.");
-		}
-		return cloned;
-	}
 }

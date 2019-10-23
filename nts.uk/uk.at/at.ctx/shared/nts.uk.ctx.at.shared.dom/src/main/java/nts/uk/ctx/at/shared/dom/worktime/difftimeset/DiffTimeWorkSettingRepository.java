@@ -27,14 +27,6 @@ public interface DiffTimeWorkSettingRepository {
 	 * @return the optional
 	 */
 	Optional<DiffTimeWorkSetting> find(String companyId, String workTimeCode);
-	
-	/**
-	 * @author lanlt
-	 * @param cid
-	 * @param workTimeCodes
-	 * @return
-	 */
-	List<DiffTimeWorkSetting> findByCidAndWorkCodes(String cid, List<String> workTimeCodes);
 
 	/**
 	 * Adds the.

@@ -23,6 +23,4 @@ public class CheckedOvertimeImport {
 	private Number excessNum;
 	/** 表示するメッセージ */
 	private MessageDisp messageDisp;
-	
-	private int countAgreementOneEmp ; 
 }

@@ -67,7 +67,7 @@ public interface ApprovalRootStateAdapter {
 	public ApprovalRootContentImport_New getApprovalRootContent(String companyID, String employeeID, Integer appTypeValue, GeneralDate appDate, String appID, Boolean isCreate,
 			MailDestinationCache mailDestinationCache);
 	
-	public void insertByAppType(String companyID, String employeeID, Integer appTypeValue, GeneralDate appDate, String appID, GeneralDate baseDate);
+	public void insertByAppType(String companyID, String employeeID, Integer appTypeValue, GeneralDate date, String appID);
 	
 	public List<String> getNextApprovalPhaseStateMailList(String companyID, String rootStateID,
 			Integer approvalPhaseStateNumber, Boolean isCreate, String employeeID, Integer appTypeValue, GeneralDate appDate);
@@ -140,17 +140,4 @@ public interface ApprovalRootStateAdapter {
 	 * @return
 	 */
 	public List<ApproveRootStatusForEmpImPort> getAppRootStatusByEmpPeriodMonth(String employeeID, DatePeriod period);
-
-	/**
-	 * get data Appr RQ309 -> CMM045
-	 * @param appIDs
-	 * @param companyID
-	 * @return
-	 */
-	public Map<String,List<ApprovalPhaseStateImport_New>> getApprovalRootContentCMM045(String companyID, 
-			List<String> lstAgent, DatePeriod period, boolean unapprovalStatus, boolean approvalStatus, boolean denialStatus, 
-			boolean agentApprovalStatus, boolean remandStatus, boolean cancelStatus);
-    
-    public List<ApprovalPhaseStateImport_New> getApprovalDetail(String appID);
-    
 }

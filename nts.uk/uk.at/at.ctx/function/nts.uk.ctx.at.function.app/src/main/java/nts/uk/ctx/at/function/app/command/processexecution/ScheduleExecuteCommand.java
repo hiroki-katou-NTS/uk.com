@@ -17,10 +17,4 @@ public class ScheduleExecuteCommand {
 	private String scheduleId;
 	
 	private GeneralDateTime nextDate;
-	
-	@Data
-	public static class ForBatchServer {
-		private ScheduleExecuteCommand command;
-		private String contexts;
-	}
 }

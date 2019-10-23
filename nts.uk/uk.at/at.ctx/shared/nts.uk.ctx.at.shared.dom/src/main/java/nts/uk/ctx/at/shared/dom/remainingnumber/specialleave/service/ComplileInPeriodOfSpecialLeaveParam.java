@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -44,8 +43,4 @@ public class ComplileInPeriodOfSpecialLeaveParam {
 	 * 特別休暇暫定データ
 	 */
 	List<InterimSpecialHolidayMng> interimSpecialData;
-	/**
-	 * 前回の特別休暇の集計結果情報
-	 */
-	Optional<InPeriodOfSpecialLeaveResultInfor> optBeforeResult;
 }

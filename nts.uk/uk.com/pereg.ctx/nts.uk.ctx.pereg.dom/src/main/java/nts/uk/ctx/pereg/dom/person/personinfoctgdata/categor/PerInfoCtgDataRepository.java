@@ -32,28 +32,5 @@ public interface PerInfoCtgDataRepository {
 	 * @param data
 	 */
 	void deleteCategoryData(PerInfoCtgData data);
-	
-	/**
-	 * @author lanlt
-	 * get thông tin person data theo sids, ctgId
-	 * @param pids
-	 * @param ctgId
-	 * @return
-	 */
-	public List<PerInfoCtgData> getAllByPidsAndCtgId(List<String> pids, String ctgId);
-	
-	/**
-	 * @author lanlt
-	 * Add persons info category data ドメインモデル「個人情報カテゴリデータ」を新規登録する
-	 * @param domains
-	 */
-	void addAll(List<PerInfoCtgData> domains);
-	
-	/**
-	 * @author lanlt
-	 * Update persons info category data ドメインモデル「個人情報カテゴリデータ」を更新する
-	 * @param domains
-	 */
-	void updateAll(List<PerInfoCtgData> domains);
 
 }

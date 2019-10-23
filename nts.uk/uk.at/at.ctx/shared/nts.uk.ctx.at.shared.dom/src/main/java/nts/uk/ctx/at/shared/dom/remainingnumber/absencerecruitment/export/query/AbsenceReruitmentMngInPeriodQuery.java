@@ -46,14 +46,14 @@ public interface AbsenceReruitmentMngInPeriodQuery {
 	 * @param lstDataDetail 振出振休明細
 	 * @return
 	 */
-	ResultAndError calcCarryForwardDays(GeneralDate startDate, List<AbsRecDetailPara> lstDataDetail, boolean mode);
+	ResultAndError calcCarryForwardDays(GeneralDate startDate, List<AbsRecDetailPara> lstDataDetail);
 	/**
 	 * 6.残数と未消化を集計する
 	 * @param lstDataDetail 「振出振休明細」
 	 * @param baseDate 基準日
 	 * @return
 	 */
-	AbsDaysRemain getRemainUnDigestedDays(List<AbsRecDetailPara> lstDataDetail, GeneralDate baseDate, boolean mode);
+	AbsDaysRemain getRemainUnDigestedDays(List<AbsRecDetailPara> lstDataDetail, GeneralDate baseDate);
 	/**
 	 * 3.未相殺の振休(暫定)を取得する
 	 * @return

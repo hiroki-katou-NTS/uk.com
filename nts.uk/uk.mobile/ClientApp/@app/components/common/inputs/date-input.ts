@@ -1,123 +1,68 @@
-import { _, Vue, moment } from '@app/provider';
+import { $ } from '@app/utils';
+import { Vue } from '@app/provider';
 import { input, InputComponent } from './input';
 
 @input()
 class DateComponent extends InputComponent {
-    public type: string = 'string';
+    public type: string = 'date';
 
-    public editable: boolean = false;
+    public editable: boolean = true;
 
     public mounted() {
         this.icons.after = 'far fa-calendar-alt';
-
-        Object.assign(window, { moment });
-    }
-
-    get date() {
-        return moment(this.value || new Date()).date();
-    }
-
-    get month() {
-        return moment(this.value || new Date()).month() + 1;
-    }
-
-    get year() {
-        return moment(this.value || new Date()).year();
     }
 
     get rawValue() {
-        if (_.isNil(this.value)) {
-            return '';
+       if ($.isNil(this.value)) {
+           return '';
+       }
+       return this.computeRawValue(this.value);
+    }
+
+    private computeRawValue(value: Date): string {
+        let year: number = value.getFullYear();
+        let month: number = value.getMonth() + 1;
+        let date: number = value.getDate();
+        let monthText = month < 10 ? '0' + month : month;
+        let dateText = date < 10 ? '0' + date : date;
+        return year + '-' + monthText + '-' + dateText;
+    }
+
+    public input() {
+        let value = ( this.$refs.input as HTMLInputElement).value;
+
+        if (value) {
+            let numb = new Date(value);
+
+            if (numb.getFullYear() < 1000) {
+                return;
+            }
+
+            if (isNaN(numb.getTime())) {
+                return;
+            }
+
+            this.$emit('input', numb);
         }
 
-        return moment(this.value).format('YYYY-MM-DD');
     }
 
-    get $placeholder() {
-        return this.placeholder || 'yyyy-mm-dd';
-    }
-
-    private titlePicker(selecteds: { year: number; month: number; date: number; }) {
-
-        let $utc = Date.UTC(selecteds.year, selecteds.month - 1, selecteds.date);
-        let weekday = moment.utc($utc).day();
-        let weekdayString = ((weekday) => {
-            switch (weekday) {
-                case 0: return '日';
-                case 1: return '月';
-                case 2: return '火';
-                case 3: return '水';
-                case 4: return '木';
-                case 5: return '金';
-                case 6: return '土';
-                default: return '日';
-            }
-        })(weekday);
-
-        return this.$i18n('nts_date_format', [selecteds.year.toString(), selecteds.month.toString(), selecteds.date.toString(), weekdayString]);
-    }
-
-    public click() {
-        let self = this,
-            { year, month, date } = self,
-            daysInMonth = moment.utc(Date.UTC(year, month - 1)).daysInMonth();
-
-        self.$picker({
-            year,
-            month,
-            date
-        }, {
-                year: _.range(1900, 2101, 1).map((value: number) => ({ text: value.toString(), value })),
-                month: _.range(1, 13, 1).map((value: number) => ({ text: _.padStart(`${value}`, 2, '0'), value })),
-                date: _.range(1, daysInMonth + 1, 1).map((value) => ({ text: _.padStart(`${value}`, 2, '0'), value }))
-            }, (select: ISelected, pkr: IPicker) => {
-                if (_.isEmpty(pkr.selects)) {
-                    return;
-                }
-
-                let daysInMonth = moment.utc(Date.UTC(select.year, select.month - 1)).daysInMonth();
-
-                if (pkr.dataSources.date.length !== daysInMonth) {
-                    pkr.dataSources.date = _.range(1, daysInMonth + 1, 1).map((value) => ({ text: _.padStart(`${value}`, 2, '0'), value }));
-                }
-
-                if (pkr.selects.date > daysInMonth) {
-                    pkr.selects.date = daysInMonth;
-                }
-
-                let { year, month, date } = pkr.selects;
-
-                pkr.title = self.titlePicker({ year, month, date });
-            }, {
-                title: self.titlePicker({ year, month, date }),
-                required: self.constraints && self.constraints.required
-            }).then((select: ISelected) => {
-                if (select === undefined) {
-
-                } else if (select === null) {
-                    self.$emit('input', null);
-                } else {
-                    let $utc = Date.UTC(select.year, select.month - 1, select.date);
-
-                    self.$emit('input', moment.utc($utc).toDate());
-                }
-            });
-
-    }
+    // click() {
+    //     this.$modal('datepicker', {
+    //         value: this.value
+    //     }, {
+    //             type: "popup",
+    //             title: this.name,
+    //             animate: {
+    //                 show: 'zoomIn',
+    //                 hide: 'zoomOut'
+    //             }
+    //         }).onClose(v => {
+    //             if (v !== undefined) {
+    //                 this.$emit('input', v);
+    //             }
+    //         });
+    // }
 }
 
 Vue.component('nts-date-input', DateComponent);
-
-interface ISelected {
-    [key: string]: number;
-}
-
-interface IDataSource {
-    [key: string]: any[];
-}
-
-interface IPicker {
-    title: string;
-    dataSources: IDataSource;
-    selects: ISelected;
-}

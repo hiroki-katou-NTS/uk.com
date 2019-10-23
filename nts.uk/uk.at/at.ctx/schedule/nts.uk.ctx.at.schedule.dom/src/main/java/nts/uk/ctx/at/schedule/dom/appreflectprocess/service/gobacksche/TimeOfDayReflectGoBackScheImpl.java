@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.schedule.dom.appreflectprocess.service.gobacksche;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -8,10 +7,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.ApplyTimeAtr;
-import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.UpdateScheCommonAppRelect;
-import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
+import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.service.StartEndTimeReflectScheService;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.service.servicedto.TimeReflectScheDto;
-import nts.uk.ctx.at.schedule.dom.schedule.workschedulestate.WorkScheduleState;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
@@ -22,9 +19,9 @@ public class TimeOfDayReflectGoBackScheImpl implements TimeOfDayReflectGoBackSch
 	@Inject
 	private PredetemineTimeSettingRepository predetemineTimeRepo;
 	@Inject
-	private UpdateScheCommonAppRelect updateSche;
+	private StartEndTimeReflectScheService startTimeService;	
 	@Override
-	public void stampReflectGobackSche(GobackReflectParam reflectPara, BasicSchedule scheData, List<WorkScheduleState> lstState) {
+	public void stampReflectGobackSche(GobackReflectParam reflectPara) {
 		//(開始時刻)反映する時刻を求める
 		reflectPara.setApplyTimeAtr(ApplyTimeAtr.START);
 		TimeOfDayReflectFindDto startTimeReflectFind = this.timeReflectFind(reflectPara);
@@ -38,7 +35,7 @@ public class TimeOfDayReflectGoBackScheImpl implements TimeOfDayReflectGoBackSch
 				1,
 				startTimeReflectFind.isReflectFlg(),
 				endTimeReflectFind.isReflectFlg());
-		updateSche.updateStartTimeRflect(timeData, scheData, lstState);		
+		startTimeService.updateStartTimeRflect(timeData);		
 		//TODO (開始時刻2, 終了時刻2)反映する時刻を求める
 	}
 

@@ -1,4 +1,3 @@
-import './go';
 import './init';
 import './out';
 import './click';
@@ -7,6 +6,5 @@ import './touch';
 import './ripple';
 import './float';
 import './toolbar';
+import './accordion';
 import './number';
-import './tree';
-import './fxtable';

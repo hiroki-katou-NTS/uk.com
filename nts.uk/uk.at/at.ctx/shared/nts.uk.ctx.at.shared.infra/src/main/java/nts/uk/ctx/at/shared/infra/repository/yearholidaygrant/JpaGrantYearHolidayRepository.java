@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -49,7 +47,6 @@ public class JpaGrantYearHolidayRepository extends JpaRepository implements Gran
 			+ "AND a.kshstGrantHdTblPK.yearHolidayCode = :yearHolidayCode ";
 	
 	@Override
-	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public Optional<GrantHdTbl> find(String companyId, int conditionNo, 
 			String yearHolidayCode, int grantNum) {
 		return this.queryProxy().find(new KshstGrantHdTblPK(companyId, grantNum, conditionNo, yearHolidayCode), KshstGrantHdTbl.class)

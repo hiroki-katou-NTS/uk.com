@@ -1,13 +1,15 @@
 package nts.uk.ctx.at.schedule.dom.appreflectprocess.service.gobacksche;
 
-import java.util.List;
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.UpdateScheCommonAppRelect;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedulestate.ScheduleEditState;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedulestate.WorkScheduleState;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedulestate.WorkScheduleStateRepository;
 import nts.uk.ctx.at.shared.dom.worktype.service.WorkTypeIsClosedService;
 
 @Stateless
@@ -15,22 +17,33 @@ public class WorkTypeHoursReflectScheImpl implements WorkTypeHoursReflectSche{
 	@Inject
 	private BasicScheduleRepository basicSche;
 	@Inject
-	private WorkTypeIsClosedService workTypeService;
+	private WorkScheduleStateRepository workScheReposi;
 	@Inject
-	private UpdateScheCommonAppRelect commonReflect;
+	private WorkTypeIsClosedService workTypeService;
 	@Override
-	public boolean isReflectFlag(GobackReflectParam gobackPara, BasicSchedule scheData, List<WorkScheduleState> lstState) {
+	public boolean isReflectFlag(GobackReflectParam gobackPara) {
 		//ドメインモデル「勤務予定基本情報」を取得する
-		//ドメインモデル「勤務予定基本情報」を取得する		
-		if(this.isCheckReflect(gobackPara, scheData)) {
+		//ドメインモデル「勤務予定基本情報」を取得する
+		Optional<BasicSchedule> optBasicScheOpt = basicSche.find(gobackPara.getEmployeeId(), gobackPara.getDatePara());		
+		if(!optBasicScheOpt.isPresent()) {
+			return false;
+		}
+		BasicSchedule basicScheOpt = optBasicScheOpt.get();
+		if(this.isCheckReflect(gobackPara, basicScheOpt)) {
 			//ドメインモデル「勤務予定基本情報」を編集する			
-			//basicSche.changeWorkTypeTime(gobackPara.getEmployeeId(), gobackPara.getDatePara(), gobackPara.getAppInfor().getWorkType(), gobackPara.getAppInfor().getWorkTime());
-			scheData.setWorkTimeCode(gobackPara.getAppInfor().getWorkTime());
-			scheData.setWorkTypeCode(gobackPara.getAppInfor().getWorkType());
+			basicSche.changeWorkTypeTime(gobackPara.getEmployeeId(), gobackPara.getDatePara(), gobackPara.getAppInfor().getWorkType(), gobackPara.getAppInfor().getWorkTime());
 			//ドメインモデル「勤務予定項目状態」を編集する id = 1
-			commonReflect.setStateData(scheData, lstState, 1);
+			WorkScheduleState scheData = new WorkScheduleState(ScheduleEditState.REFLECT_APPLICATION,
+					1,
+					gobackPara.getDatePara(),
+					gobackPara.getEmployeeId());
+			workScheReposi.updateOrInsert(scheData);
 			//就業時間帯の編集状態を更新する
-			commonReflect.setStateData(scheData, lstState, 2);
+			WorkScheduleState scheDataTime = new WorkScheduleState(ScheduleEditState.REFLECT_APPLICATION,
+					2,
+					gobackPara.getDatePara(),
+					gobackPara.getEmployeeId());
+			workScheReposi.updateOrInsert(scheDataTime);
 			return true;
 		}
 		return false;

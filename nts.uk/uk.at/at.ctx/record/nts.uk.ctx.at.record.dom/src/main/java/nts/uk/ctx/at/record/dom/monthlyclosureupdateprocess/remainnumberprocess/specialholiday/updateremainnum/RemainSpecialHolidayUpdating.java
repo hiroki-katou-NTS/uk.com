@@ -36,14 +36,12 @@ public class RemainSpecialHolidayUpdating {
 	 * @param empId 社員ID
 	 * @param period 期間
 	 * @param specialLeaveCode 特別休暇コード
-	 * @param autoGrant 自動付与区分
 	 */
 	public void updateRemainSpecialHoliday(
 			InPeriodOfSpecialLeave output,
 			String empId,
 			DatePeriod period,
-			int specialLeaveCode,
-			int autoGrant){
+			int specialLeaveCode){
 
 		String companyId = AppContexts.user().companyId();
 	
@@ -52,7 +50,7 @@ public class RemainSpecialHolidayUpdating {
 		// 当月以降の特別休暇付与残数データを削除
 		List<SpecialLeaveGrantRemainingData> datas = this.specialLeaveGrantRepo.getAll(empId, specialLeaveCode);
 		for (SpecialLeaveGrantRemainingData data : datas){
-			if (data.getGrantDate().after(period.start()) && autoGrant == 1) {
+			if (data.getGrantDate().after(period.start())) {
 				this.specialLeaveGrantRepo.delete(data.getSpecialId());
 			}
 			else {

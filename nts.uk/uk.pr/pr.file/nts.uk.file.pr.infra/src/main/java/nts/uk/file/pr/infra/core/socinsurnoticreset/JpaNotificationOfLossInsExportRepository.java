@@ -2,7 +2,7 @@ package nts.uk.file.pr.infra.core.socinsurnoticreset;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.pr.file.app.core.socialinsurnoticreset.CompanyInfor;
+import nts.uk.ctx.pr.core.dom.adapter.company.CompanyInfor;
 import nts.uk.ctx.pr.file.app.core.socialinsurnoticreset.InsLossDataExport;
 import nts.uk.ctx.pr.file.app.core.socialinsurnoticreset.NotificationOfLossInsExRepository;
 import nts.uk.ctx.pr.file.app.core.socialinsurnoticreset.PensFundSubmissData;

@@ -13,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
  */
 //流動休憩設定
 @Getter
-public class FlowRestSetting extends WorkTimeDomainObject implements Cloneable{
+public class FlowRestSetting extends WorkTimeDomainObject {
 
 	/** The flow rest time. */
 	// 流動休憩時間
@@ -76,16 +76,5 @@ public class FlowRestSetting extends WorkTimeDomainObject implements Cloneable{
 		memento.setFlowPassageTime(this.flowPassageTime);
 	}
 
-	@Override
-	public FlowRestSetting clone() {
-		FlowRestSetting cloned = new FlowRestSetting();
-		try {
-			cloned.flowRestTime = new AttendanceTime(this.flowRestTime.v());
-			cloned.flowPassageTime = new AttendanceTime(this.flowPassageTime.v());
-		}
-		catch (Exception e){
-			throw new RuntimeException("FlowRestSetting clone error.");
-		}
-		return cloned;
-	}
+
 }

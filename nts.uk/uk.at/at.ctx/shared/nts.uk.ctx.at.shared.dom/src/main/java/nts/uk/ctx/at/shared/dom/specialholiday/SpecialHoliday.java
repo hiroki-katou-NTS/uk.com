@@ -2,18 +2,15 @@ package nts.uk.ctx.at.shared.dom.specialholiday;
 
 import java.util.Collections;
 
-
 import lombok.AllArgsConstructor;
 //import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.SpecialLeaveRestriction;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantRegular;
 import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.GrantPeriodic;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.primitive.Memo;
 
 /**
@@ -49,9 +46,6 @@ public class SpecialHoliday extends AggregateRoot {
 	/** 対象項目 */
 	private TargetItem targetItem;
 	
-	/**自動付与区分 */
-	public NotUseAtr autoGrant;
-	
 	/** メモ */
 	private Memo memo;
 
@@ -61,12 +55,11 @@ public class SpecialHoliday extends AggregateRoot {
 	}
 
 	public SpecialHoliday(String companyId, SpecialHolidayCode specialHolidayCode,
-			SpecialHolidayName specialHolidayName,NotUseAtr autoGrant, Memo memo) {
+			SpecialHolidayName specialHolidayName, Memo memo) {
 		super();
 		this.companyId = companyId;
 		this.specialHolidayCode = specialHolidayCode;
 		this.specialHolidayName = specialHolidayName;
-		this.autoGrant = autoGrant;
 		this.memo = memo;
 	}
 
@@ -83,9 +76,8 @@ public class SpecialHoliday extends AggregateRoot {
 		this.memo = memo;
 	}
 	
-	public static SpecialHoliday createFromJavaType(String companyId, int specialHolidayCode, String specialHolidayName,
-			GrantRegular grantRegular, GrantPeriodic grantPeriodic, SpecialLeaveRestriction specialLeaveRestriction,
-			TargetItem targetItem, int autoGrant, String memo) {
+	public static SpecialHoliday createFromJavaType(String companyId, int specialHolidayCode, String specialHolidayName, GrantRegular grantRegular, 
+			GrantPeriodic grantPeriodic, SpecialLeaveRestriction specialLeaveRestriction, TargetItem targetItem, String memo) {
 		return new SpecialHoliday(companyId, 
 				new SpecialHolidayCode(specialHolidayCode),
 				new SpecialHolidayName(specialHolidayName),
@@ -93,21 +85,18 @@ public class SpecialHoliday extends AggregateRoot {
 				grantPeriodic,
 				specialLeaveRestriction,
 				targetItem,
-				EnumAdaptor.valueOf(autoGrant, NotUseAtr.class),
 				new Memo(memo));
 	}
 
-	public static SpecialHoliday createFromJavaType(String companyId, int specialHolidayCode, String specialHolidayName,
-			int autoGrant, String memo) {
+	public static SpecialHoliday createFromJavaType(String companyId, int specialHolidayCode, String specialHolidayName, String memo) {
 		return new SpecialHoliday(companyId, 
 				new SpecialHolidayCode(specialHolidayCode),
 				new SpecialHolidayName(specialHolidayName),
-				EnumAdaptor.valueOf(autoGrant, NotUseAtr.class),
 				new Memo(memo));
 	}
 	
 	public static SpecialHoliday createFromJavaType(String companyId, int specialHolidayCode, String specialHolidayName, GrantRegular grantRegular, 
-			GrantPeriodic grantPeriodic, SpecialLeaveRestriction specialLeaveRestriction,int autoGrant, String memo) {
+			GrantPeriodic grantPeriodic, SpecialLeaveRestriction specialLeaveRestriction, String memo) {
 		return new SpecialHoliday(companyId, 
 				new SpecialHolidayCode(specialHolidayCode),
 				new SpecialHolidayName(specialHolidayName),
@@ -115,7 +104,6 @@ public class SpecialHoliday extends AggregateRoot {
 				grantPeriodic,
 				specialLeaveRestriction,
 				new TargetItem(),
-				EnumAdaptor.valueOf(autoGrant, NotUseAtr.class),
 				new Memo(memo));
 	}
 	

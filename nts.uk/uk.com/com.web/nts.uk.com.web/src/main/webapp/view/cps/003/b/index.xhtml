@@ -9,8 +9,8 @@
 		<ui:define name="htmlHead">
 			<script type='text/javascript'>
 				var dialogSize = {
-					width : 480,
-					height : 500
+					width : 580,
+					height : 540
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
@@ -21,66 +21,14 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div id="contents-area">
-			<div id="display" data-bind="with: currentMode">
-				<div class="valign-center distance">
-					<div id="B1_001" data-bind="ntsFormLabel: { required: true }" class="margin-right-FormLabel">
-						<span data-bind="text: '#{i18n.getText('CPS003_36')}' "></span>
-					</div>
-					<span id="B1_002" data-bind="text: systemDate">2016/04/20</span>
-				</div>
-				
-				<div class="valign-center distance">
-					<div id="B1_003" data-bind="ntsFormLabel: { required: true }" class="margin-right-FormLabel">
-						<span data-bind="text: '#{i18n.getText('CPS003_37')}' "></span>
-					</div>
-					<span id="B1_004" data-bind="text: categoryName">2016/04/20</span>
-				</div>	
-
-				<div class="valign-center distance">
-					<div id="B1_005" data-bind="ntsFormLabel: { required: true }" class="margin-right-FormLabel">
-						<span data-bind="text: '#{i18n.getText('CPS003_38')}' "></span>
-						
-					</div>
-					<button  align="center" style="margin-left:-60px;width:25px;" data-bind="ntsHelpButton: {textId: 'CPS003_18', position: 'right top'}">?</button>
-					
-					<div style="margin-left:-5px;" class="cf" data-bind="ntsSwitchButton: {
-						name: '#CPS003_17',
-						options: roundingRules,
-						optionsValue: 'id',
-						optionsText: 'name',
-						value: mode,
-						required: true,
-						enable: updateModeEnable }"></div>
-				</div>
-											
+			<div id="contents-area"
+				data-bind="let: { 
+						text: nts.uk.resource.getText
+					}>
 			</div>
-			
-			<div id="reference-area" data-bind="with: currentFile">
-			<div id="B1">
-			<span id="B1_011">#{i18n.getText('CPS003_39')}</span>
-			</div>
-			
-			<div id="reference">
-					<div id="file-upload"
-						data-bind="ntsFileUpload:{
-							filename: filename,
-							accept: accept,
-							text: textId,
-							aslink: asLink,
-							onchange: upload.bind($data)
-					}"></div>
-					<span id="diplay-size" data-bind="text: imageSize"></span>
-			</div>
-			</div>
-			
-			</div>
-			<div id="functions-area-bottom" style="height: 100px !important;">
-				<div><span id="B2_001">#{i18n.getText('CPS003_43')}</span></div>
-				<div id="register">
-					<button id="B2_002" class="proceed x-large" data-bind="click: decide, enable: $root.errors.isEmpty()">#{i18n.getText('CPS003_44')}</button>
-					<button id="B2_003" data-bind="click: close">#{i18n.getText('CPS003_45')}</button>
-				</div>
+			<div id="functions-area-bottom">
+				<button class="proceed x-large" data-bind="">#{i18n.getText('CPS007_16')}</button>
+				<button data-bind="click: close">#{i18n.getText('CPS007_17')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

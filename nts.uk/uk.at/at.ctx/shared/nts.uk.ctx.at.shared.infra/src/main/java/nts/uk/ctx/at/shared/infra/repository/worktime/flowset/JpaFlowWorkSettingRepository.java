@@ -212,30 +212,4 @@ public class JpaFlowWorkSettingRepository extends JpaRepository
 		
 		return map;
 	}
-
-	@Override
-	public List<FlowWorkSetting> findByCidAndWorkCodes(String cid, List<String> workTimeCodes) {
-		EntityManager em = this.getEntityManager();
-
-		CriteriaBuilder builder = em.getCriteriaBuilder();
-		CriteriaQuery<KshmtFlowWorkSet> query = builder.createQuery(KshmtFlowWorkSet.class);
-		Root<KshmtFlowWorkSet> root = query.from(KshmtFlowWorkSet.class);
-
-		List<Predicate> predicateList = new ArrayList<>();
-
-		predicateList.add(builder.equal(
-				root.get(KshmtFlowWorkSet_.kshmtFlowWorkSetPK).get(KshmtFlowWorkSetPK_.cid),
-				cid));
-		
-		predicateList.add(root.get(KshmtFlowWorkSet_.kshmtFlowWorkSetPK).get(KshmtFlowWorkSetPK_.worktimeCd)
-				.in(workTimeCodes));
-
-		query.where(predicateList.toArray(new Predicate[] {}));
-
-		List<KshmtFlowWorkSet> result = em.createQuery(query).getResultList();
-
-		return result.stream()
-				.map(entity -> new FlowWorkSetting(new JpaFlowWorkSettingGetMemento(entity)))
-				.collect(Collectors.toList());
-	}
 }

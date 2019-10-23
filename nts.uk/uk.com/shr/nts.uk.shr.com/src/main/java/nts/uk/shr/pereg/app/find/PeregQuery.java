@@ -41,7 +41,7 @@ public class PeregQuery {
 	}
 	
 	// category case
-	public PeregQuery(String infoId, String categoryCode, String employeeId, String personId) {
+	private PeregQuery(String infoId, String categoryCode, String employeeId, String personId) {
 		this.infoId = infoId;
 		this.categoryCode = categoryCode;
 		this.employeeId = employeeId;

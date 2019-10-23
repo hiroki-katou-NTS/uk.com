@@ -6,7 +6,6 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.midnight.WithinStatutoryMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.withinworktime.WithinStatutoryTimeOfDaily;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacationaddtime.AddSet;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
@@ -85,10 +84,9 @@ public class WorkTimeOfTimeSeries {
 	
 	/**
 	 * 集計対象時間を取得
-	 * @param addSet 加算設定
 	 * @return 集計対象時間
 	 */
-	public AttendanceTime getAggregateTargetTime(AddSet addSet){
+	public AttendanceTime getAggregateTargetTime(){
 		
 		boolean isReturnWorkTime = false;		// 就業時間を返すかどうか
 		
@@ -100,11 +98,7 @@ public class WorkTimeOfTimeSeries {
 				if (this.workType.isOneDay()) {
 					val workTypeClass = this.workType.getDailyWork().getOneDay();
 					if (workTypeClass == WorkTypeClassification.SpecialHoliday) {
-						
-						// 特別休暇を加算する時、就業時間を返す
-						if (addSet.isSpecialHoliday() == true) {
-							isReturnWorkTime = true;
-						}
+						isReturnWorkTime = true;
 					}
 				}
 			}

@@ -5,7 +5,6 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
@@ -15,8 +14,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
  */
 //外出時間の丸め設定
 @Getter
-@NoArgsConstructor
-public class GoOutTimeRoundingSetting extends WorkTimeDomainObject implements Cloneable{
+public class GoOutTimeRoundingSetting extends WorkTimeDomainObject {
 
 	/** The rounding method. */
 	// 丸め方法
@@ -120,18 +118,5 @@ public class GoOutTimeRoundingSetting extends WorkTimeDomainObject implements Cl
 		default:
 			throw new RuntimeException("GoOutTimeRoundingMethod not found.");
 		}
-	}
-	
-	@Override
-	public GoOutTimeRoundingSetting clone() {
-		GoOutTimeRoundingSetting cloned = new GoOutTimeRoundingSetting();
-		try {
-			cloned.roundingMethod = RoundingGoOutTimeSheet.valueOf(this.roundingMethod.value);
-			cloned.roundingSetting = this.roundingSetting.clone();
-		}
-		catch (Exception e){
-			throw new RuntimeException("GoOutTimeRoundingSetting clone error.");
-		}
-		return cloned;
 	}
 }

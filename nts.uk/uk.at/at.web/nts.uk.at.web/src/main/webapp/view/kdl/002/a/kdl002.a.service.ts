@@ -1,6 +1,6 @@
 module kdl002.a.service {
     var paths = {
-        getPossibleWorkType: "at/share/worktype/getpossiblewktypeKDL002"
+        getPossibleWorkType: "at/share/worktype/getpossibleworktype"
     }
     /**
     * get all item (item co the duoc chon)

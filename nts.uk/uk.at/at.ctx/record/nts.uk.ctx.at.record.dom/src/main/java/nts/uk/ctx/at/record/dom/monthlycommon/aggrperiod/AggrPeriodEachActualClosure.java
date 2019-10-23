@@ -10,7 +10,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 実締め毎集計期間
- * @author shuichi_ishida
+ * @author shuichu_ishida
  */
 @Getter
 public class AggrPeriodEachActualClosure {
@@ -27,10 +27,6 @@ public class AggrPeriodEachActualClosure {
 	/** 本来の締め期間 */
 	private DatePeriod originalClosurePeriod;
 	
-	/** 排他エラー */
-	@Setter
-	private Boolean happendOptimistLockError;
-	
 	/**
 	 * コンストラクタ
 	 */
@@ -41,8 +37,6 @@ public class AggrPeriodEachActualClosure {
 		this.yearMonth = YearMonth.of(GeneralDate.today().year(), GeneralDate.today().month());
 		this.period = new DatePeriod(GeneralDate.today(), GeneralDate.today());
 		this.originalClosurePeriod = new DatePeriod(GeneralDate.today(), GeneralDate.today());
-		
-		this.happendOptimistLockError = false;
 	}
 	
 	/**

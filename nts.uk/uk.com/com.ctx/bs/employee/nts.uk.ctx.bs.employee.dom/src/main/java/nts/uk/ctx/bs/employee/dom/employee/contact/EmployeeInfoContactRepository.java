@@ -7,11 +7,7 @@ public interface EmployeeInfoContactRepository {
 	
 	void add(EmployeeInfoContact domain);
 	
-	void addAll(List<EmployeeInfoContact> domains);
-	
 	void update(EmployeeInfoContact domain);
-	
-	void updateAll(List<EmployeeInfoContact> domains);
 	
 	void delete(String sid);
 	

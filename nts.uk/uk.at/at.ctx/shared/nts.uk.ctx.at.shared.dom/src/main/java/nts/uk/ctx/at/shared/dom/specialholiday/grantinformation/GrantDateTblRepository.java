@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.shared.dom.specialholiday.grantinformation;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -26,15 +25,6 @@ public interface GrantDateTblRepository {
 	 * @return
 	 */
 	Optional<GrantDateTbl> findByCode(String companyId, int specialHolidayCode, String grantDateCode);
-	
-	/**
-	 * đối ứng cho màn cps003
-	 * Find Grant Date by Code
-	 * @param companyId
-	 * @param list grantDateCode
-	 * @return
-	 */
-	Map<String, List<ElapseYear>> findElapseByGrantDateCdLst(String companyId, int specialHolidayCode, List<String> grantDateCode);
 	
 	/**
 	 * Find Elapse by Grant Date Code

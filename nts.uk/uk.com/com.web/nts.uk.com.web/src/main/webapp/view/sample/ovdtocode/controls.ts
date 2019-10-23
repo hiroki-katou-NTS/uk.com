@@ -33,9 +33,9 @@ module nts.uk.ui.sample.controls {
         caret: { name: "Caret", path: "commoncss/caret.xhtml" },
         fileupload: { name: "ntsFileUpload", path: "utilities/fileupload/index.xhtml" },
         swaplist: { name: "ntsSwapList", path: "component/swaplist/swaplist.xhtml" },
-        userguide: { name: "UserGuide", path: "functionwrap/userguide/user-guide.xhtml" },
-        popup: { name: "ntsPopup", path: "functionwrap/popup/popup.xhtml" },
-        panel: { name: "Panel", path: "component/panel/panel.xhtml" },
+        userguide: { name: "UserGuide", path: "component/functionwrap/userguide/user-guide.xhtml" },
+        popup: { name: "ntsPopup", path: "component/functionwrap/popup/popup.xhtml" },
+        panel: { name: "Panel", path: "component/component/panel/panel.xhtml" },
         none: { name: "-", path: "-" }
     };
     
@@ -49,14 +49,14 @@ module nts.uk.ui.sample.controls {
         "テキストボックス（整数）": { doc: docs.numbereditor, props: {
             "PrimitiveValue": { api: "constraint" },
             "項目名": { api: "name" },
-            "カンマ編集": { value: "○", api: "option.numberGroup: true" },
+            "カンマ編集": { value: "○", api: "option.grouplength: 3" },
             "単位": { api: "option.unitID" },
             "透かし文字": { api: "option.placeholder" }
         }},
         "テキストボックス（実数）": { doc: docs.numbereditor, props: {
             "PrimitiveValue": { api: "constraint" },
             "項目名": { api: "name" },
-            "カンマ編集": { value: "○", api: "option.numberGroup: true" },
+            "カンマ編集": { value: "○", api: "option.grouplength: 3" },
             "単位": { api: "option.unitID" },
             "透かし文字": { api: "option.placeholder" }
         }},
@@ -71,7 +71,7 @@ module nts.uk.ui.sample.controls {
             "透かし文字": { api: "option.placeholder" }
         }},
         "テキストボックス（社員コード）": { doc: docs.texteditor, props: {
-            "Enterマーク": { api: "enterkey: (Function)" },
+            "Enterマーク": { api: "enterkey" },
             "項目名": { api: "name" },
             "透かし文字": { api: "option.placeholder" }
         }, remarks: "constraint: 'EmployeeCode'" },
@@ -87,34 +87,32 @@ module nts.uk.ui.sample.controls {
         }},
         "テキストボックス（日付）": { doc: docs.datepicker, props: {
             "精度": [
-                { value: "年月日", api: "type: 'date' (default)" },
-                { value: "年月", api: "type: 'yearmonth'" },
-                { value: "年", api: "type: 'year'" },
-                { value: "年度", api: "type: 'fiscalYear" },
+                { value: "年月日", api: "(default)" },
+                { value: "年月", api: "dateFormat: 'yearmonth'\nvalueFormat: 'YYYYMM'" },
+                { value: "年", api: "dateFormat: 'YYYY'\nvalueFormat: 'YYYY'" },
+                { value: "年度", api: "dateFormat: 'YYYY'\nvalueFormat: 'YYYY'\nfiscalYear: true" },
             ],
-            "キー入力": { api : "pickOnly: false" },
             "項目名": { api: "name" },
-            "曜日表示": { api: "type: 'dateWeek' or 'dateWeekFull' " },
+            "曜日表示": { api: "dateFormat: 'YYYY/MM/DD ddd'" },
             "日付送り": { value: "○", api: "showJumpButtons: true" }
         }},
         "テキストボックス（検索）": { doc: docs.texteditor, props: {
-            "Enterマーク": { api: "enterkey: (Function)" },
+            "Enterマーク": { api: "enterkey" },
             "項目名": { api: "name" },
             "透かし文字": { api: "option.placeholder" }
         }},
         "日区分時刻入力フォーム": { doc: docs.timedayeditor, props: {
             "日区分表示": [
-                { value: "自動", api: "option.timeWithDay: true (default)" },
-                { value: "非表示", api: "option.timeWithDay: false" },
+                { value: "自動", api: "(default)" },
+                { value: "非表示", api: "option.timeWithDay: true" },
             ],
             "項目名": { api: "name" },
         }},
         "期間入力フォーム": { doc: docs.daterange, props: {
             "精度": [
-                { value: "年月日", api: "type: 'date' (default)" },
+                { value: "年月日", api: "(default)" },
                 { value: "年月", api: "type: 'yearmonth'" },
             ],
-            "キー入力": { api : "pickOnly: false" },
             "項目名": { api: "name" },
             "最長期間": { api: "maxRange" },
             "期間送り": { value: "○", api: "showNextPrevious: true" }
@@ -132,12 +130,12 @@ module nts.uk.ui.sample.controls {
             "項目名": { api: "name" },
             "ボタンのラベル": { api: "text" },
             "スタイル": [
-                { value: "テキストボックス", api: "asLink: false (default)" },
+                { value: "テキストボックス", api: "(default)" },
                 { value: "リンクラベル", api: "asLink: true" },
             ],
             "ファイル種別": { api: "stereoType" },
             "アップロード": [
-                { value: "任意", api: "immediateUpload: false (default)" },
+                { value: "任意", api: "(default)" },
                 { value: "即時", api: "immediateUpload: true" },
             ]
         }},
@@ -157,18 +155,18 @@ module nts.uk.ui.sample.controls {
                 { value: "複数選択", api: "multiple: true" },
                 { value: "単一選択", api: "multiple: false" },
             ],
-            "項目名": { api: "name" },
+            "項目名": { api: "" },
             "ソート": { api: "(bind sorted datasource)" },
-            "任意列ソート": { api: "(not available in common)" },
-            "列幅可変": { api: "columnResize: true" },
-            "ページング": { api: "(not available in common)" }
+            "任意列ソート": { api: "" },
+            "列幅可変": { api: "" },
+            "ページング": { api: "" }
         }},
         "シンプルリスト": { doc: docs.listbox, props: {
             "選択モード": [
                 { value: "複数選択", api: "multiple: true" },
                 { value: "単一選択", api: "multiple: false" },
             ],
-            "項目名": { api: "name" },
+            "項目名": { api: "" },
             "ソート": { api: "(bind sorted datasource)" }
         }},
         "ツリーリスト": { doc: docs.treegrid, props: {
@@ -176,62 +174,62 @@ module nts.uk.ui.sample.controls {
                 { value: "複数選択", api: "multiple: true" },
                 { value: "単一選択", api: "multiple: false" },
             ],
-            "項目名": { api: "name" },
+            "項目名": { api: "" },
             "ソート": { api: "(bind sorted datasource)" }
         }},
         "親子リスト": { doc: docs.treegrid, props: {
-            "選択モード": { api: "multiple: true or false" },
-            "項目名": { api: "name" }
+            "選択モード": { api: "" },
+            "項目名": { api: "" }
         }},
         "親子リスト親ノード": { doc: docs.treegrid, props: {
             "ソート": { api: "(bind sorted datasource)" }
         }},
         "親子リスト子ノード": { doc: docs.treegrid, props: {
             "ソート": { api: "(bind sorted datasource)" },
-            "選択可能": { api: "multiple: true or false" }
+            "選択可能": { api: "" }
         }},
         "ツリーリスト階層列項目": { doc: docs.treegrid, props: {
             "-": { api: "" }
         }},
         "リスト列項目": { doc: docs.none, props: {
-            "Enum": { api: "(bind datasource)" }
+            "Enum": { api: "" }
         }},
         "ツリー": { doc: docs.tree, props: {
             "選択モード": [
                 { value: "複数選択", api: "multiple: true" },
                 { value: "単一選択", api: "multiple: false" },
             ],
-            "項目名": { api: "name" },
+            "項目名": { api: "" },
             "深さ上限": { api: "maxDeepLeaf" },
             "兄弟数上限": { api: "maxChildInNode" }
         }}, 
         "カラーピッカー": { doc: docs.colorpicker, props: {
-            "項目名": { api: "name" }
+            "項目名": { api: "" }
         }},
         "ラジオボタングループ": { doc: docs.radio, props: {
-            "項目名": { api: "name" },
-            "Enum": { api: "(bind datasource)" }
+            "項目名": { api: "" },
+            "Enum": { api: "" }
         }},
         "ラジオボタン": { doc: docs.radio, props: {
-            "テキスト": { api: "optionText" },
+            "テキスト": { api: "" },
         }},
         "チェックボックス": { doc: docs.checkbox, props: {
-            "テキスト": { api: "text or (text content in tag)" },
+            "テキスト": { api: "(text content in tag)" },
             "スタイル": [
-                { value: "一般", api: "style: normal (default)" },
-                { value: "ボタン", api: "style: button" },
-                { value: "警告パネル", api: "style: warnpanel" },
+                { value: "一般", api: "(default)" },
+                { value: "ボタン", api: "button" },
+                { value: "警告パネル", api: "warnpanel" },
             ]
         }},
         "スイッチボタングループ": { doc: docs.switchbutton, props: {
-            "項目名": { api: "name" },
-            "Enum": { api: "(bind datasource)" }
+            "項目名": { api: "" },
+            "Enum": { api: "" }
         }},
         "スイッチボタン": { doc: docs.switchbutton, props: {
-            "テキスト": { api: "optionText" },
+            "テキスト": { api: "" },
         }},
         "スワップリスト": { doc: docs.swaplist, props: {
-            "項目名": { api: "name" },
+            "項目名": { api: "" },
             "移動上限": { api: "itemsLimit.right" },
             "並べ替えボタン": { value: "○", api: "showSort" },
             "検索フォーム": { value: "○", api: "showSearchBox" }
@@ -249,8 +247,8 @@ module nts.uk.ui.sample.controls {
                 { value: "中", api: "(default)" },
                 { value: "小", api: "class=\"small\"" },
             ],
-            "アイコン": { api: "(not common)" },
-            "キャレット": { api: "class='caret-xxx'" }
+            "アイコン": { api: "" },
+            "キャレット": { api: "" }
         }},
         "ファンクションボタン": { doc: docs.button, props: {
             "テキスト": { api: "(text content in tag)" },
@@ -259,11 +257,11 @@ module nts.uk.ui.sample.controls {
                 { value: "実行", api: "class=\"proceed\"" },
                 { value: "危険", api: "class=\"danger\"" },
             ],
-            "アイコン": { api: "(not common)" }
+            "アイコン": { api: "" }
         }},
         "画像ボタン": { doc: docs.button, props: {
-            "画像ファイル": { api: "use button icon" },
-            "影": { api: "(not common)" },
+            "画像ファイル": { api: "" },
+            "影": { api: "" },
         }},
         "タブグループ": { doc: docs.tabpanel, props: {
             "配置方向": [
@@ -272,56 +270,56 @@ module nts.uk.ui.sample.controls {
             ]
         }},
         "タブ": { doc: docs.tabpanel, props: {
-            "テキスト": { api: "title" },
+            "テキスト": { api: "" },
         }},
         "サイドバー": { doc: docs.sidebar, props: {
             "-": { api: "" }
         }},
         "サイドバーリンクラベル": { doc: docs.sidebar, props: {
-            "テキスト": { api: "(text content in tag)" },
+            "テキスト": { api: "" },
         }},
         "リンクラベル": { doc: docs.linkbutton, props: {
-            "テキスト": { api: "text or (text content in tag)" },
-            "スタイル": { api: "class" },
+            "テキスト": { api: "" },
+            "スタイル": { api: "" },
         }},
         "アコーディオン": { doc: docs.accordion, props: {
-            "ヘッダテキスト": { api: "(text content in tag)" },
+            "ヘッダテキスト": { api: "" },
         }},
         "はてなアイコン": { doc: docs.helpbutton, props: {
             "画像ファイル": { api: "image" },
             "テキスト": { api: "textId" },
         }},
         "凡例ボタン": { doc: docs.legendbutton, props: {
-            "内容": { api: "template or labelText" },
-            "テキスト": { api: "(default)" },
+            "内容": { api: "" },
+            "テキスト": { api: "" },
         }},
         "ウィザード": { doc: docs.wizard, props: {
             "-": { api: "" },
         }},
         "ウィザードタイトル": { doc: docs.wizard, props: {
-            "アイコン": { api: "data-icon" },
-            "テキスト": { api: "(content in tag with class='content'')" },
+            "アイコン": { api: "" },
+            "テキスト": { api: "" },
         }},
         "ウィザードステップ": { doc: docs.wizard, props: {
-            "テキスト": { api: "(content in tag li)" },
+            "テキスト": { api: "" },
         }},
         "ウィザード終端": { doc: docs.wizard, props: {
-            "テキスト": { api: "(content in last tag li)" },
+            "テキスト": { api: "" },
         }},
         "マスタ言語切替ボタン": { doc: docs.none, props: {
             "-": { api: "" }
         }},
         "ラベル": { doc: docs.label, props: {
-            "テキスト": { api: "(text content in tag)" },
+            "テキスト": { api: "" },
         }},
         "警告ラベル": { doc: docs.label, props: {
-            "テキスト": { api: "(text content in tag)" },
+            "テキスト": { api: "" },
         }},
         "フォームラベル": { doc: docs.formlabel, props: {
-            "テキスト": { api: "(text content in tag)" },
-            "ラインの色": { api: "required: true" },
-            "スタイル": { api: "inline: true" },
-            "制約表示": { api: "constraint" }
+            "テキスト": { api: "" },
+            "項目": { api: "" },
+            "スタイル": { api: "" },
+            "制約表示": { api: "" }
         }},
         "グリッドヘッダラベル": { doc: docs.none, props: {
             "テキスト": { api: "" },
@@ -331,11 +329,11 @@ module nts.uk.ui.sample.controls {
             "項目名": { api: "" },
         }},
         "ガイドメッセージ": { doc: docs.userguide, props: {
-            "テキスト": { api: "(text content in tag)" },
-            "対象項目": { api: "data-target" },
+            "テキスト": { api: "" },
+            "対象項目": { api: "" },
         }},
         "キャレット": { doc: docs.caret, props: {
-            "スタイル": { api: "class='caret-xxx'" },
+            "スタイル": { api: "" },
         }},
         "画像": { doc: docs.none, props: {
             "画像ファイル": { api: "" },
@@ -344,22 +342,22 @@ module nts.uk.ui.sample.controls {
             "-": { api: "" },
         }},
         "パネル": { doc: docs.panel, props: {
-            "スタイル": { api: "class" },
-            "スクロールバー": { api: "(use css class)" },
+            "スタイル": { api: "" },
+            "スクロールバー": { api: "" },
         }},
         "ポップアップパネル": { doc: docs.popup, props: {
-            "トリガー": { api: "trigger" },
+            "トリガー": { api: "" },
         }},
         "マスタリスト選択パネル": { doc: docs.panel, props: {
             "スタイル": { api: "" },
         }},
         "ファンクションパネル": { doc: docs.functionpanel, props: {
-            "ボタンテキスト": { api: "headerText" },
+            "ボタンテキスト": { api: "" },
         }},
         "リスト検索フォーム": { doc: docs.searchbox, props: {
-            "対象リスト": { api: "comId" },
-            "対象列": { api: "fields" },
-            "検索モード": { api: "searchMode" }
+            "対象リスト": { api: "" },
+            "対象列": { api: "" },
+            "検索モード": { api: "" }
         }},
         "受入ファイル形式指定フォーム": { doc: docs.none, props: {
             "-": { api: "" },

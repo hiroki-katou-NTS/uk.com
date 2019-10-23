@@ -191,7 +191,7 @@ module nts.uk.at.view.kwr001.a {
                         self.datepickerValue().endDate = moment(data.periodEnd).format("YYYY/MM/DD");
                         self.datepickerValue.valueHasMutated();
                         
-                        //self.employeeList.removeAll();
+                        self.employeeList.removeAll();
                         var employeeSearchs: UnitModel[] = [];
                         _.forEach(data.listEmployee, function(value) {
                             var employee: UnitModel = {
@@ -499,7 +499,7 @@ module nts.uk.at.view.kwr001.a {
                                 endDate: self.toDate(self.datepickerValue().endDate),
                                 fileType: 0,
                                 condition: data,
-                                baseDate: self.toDate(self.datepickerValue().endDate)
+                                baseDate: self.ccg001ComponentOption.baseDate
                             };
                             nts.uk.ui.block.grayout();
                             service.exportExcel(dto).done(function(response){
@@ -563,7 +563,7 @@ module nts.uk.at.view.kwr001.a {
                                 endDate: self.toDate(self.datepickerValue().endDate),
                                 fileType: 1,
                                 condition: data,
-                                baseDate: self.toDate(self.datepickerValue().endDate)
+                                baseDate: self.ccg001ComponentOption.baseDate
                             };
                             nts.uk.ui.block.grayout();
                             service.exportExcel(dto).done(function(response){

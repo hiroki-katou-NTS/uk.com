@@ -19,7 +19,6 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.time.GeneralDate;
-import nts.gul.error.ThrowableAnalyzer;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordAdapter;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordImport;
 import nts.uk.ctx.at.record.dom.adapter.generalinfo.dtoimport.EmployeeGeneralInfoImport;
@@ -59,7 +58,6 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
-import org.eclipse.persistence.exceptions.OptimisticLockException;
 
 @Stateless
 public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyResultEmployeeDomainService {
@@ -99,7 +97,7 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 	
 	@Inject
 	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
-	
+
 	// =============== HACK ON (this) ================= //
 	/* The sc context. */
 	@Resource
@@ -309,7 +307,7 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 			return status;
 		}
 
-		GeneralDate processingDate = newPeriod.start();
+		GeneralDate processingDate = periodTime.start();
 
 		// lits day between startDate and endDate
 		List<GeneralDate> listDayBetween = this.getDaysBetween(newPeriod.start(), newPeriod.end());
@@ -376,76 +374,59 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 		List<ProcessState> process = new ArrayList<>();
 		
 		for(GeneralDate day: executeDate) {
-			try {
-				// 締めIDを取得する
-				Optional<ClosureEmployment> closureEmploymentOptional = this.closureEmploymentRepository
-						.findByEmploymentCD(companyId, employmentCode);
-				// Optional<ClosureEmployment> closureEmploymentOptional =
-				// this.provider().findClousureEmployementByEmpCd(companyId,
-				// employmentCode);
-	
-				if (day.afterOrEquals(employmentHisOptional.get().getPeriod().end())
-						&& day.beforeOrEquals(employmentHisOptional.get().getPeriod().start())) {
-					process.add(ProcessState.SUCCESS);
-					break;
-				} else {
-					EmployeeAndClosureOutput employeeAndClosureDto = new EmployeeAndClosureOutput();
-					if (employmentHisOptional.get().getEmploymentCode()
-							.equals(closureEmploymentOptional.get().getEmploymentCD())) {
-						employeeAndClosureDto.setClosureId(closureEmploymentOptional.get().getClosureId());
-						employeeAndClosureDto.setEmployeeId(employeeId);
-						employeeAndClosureDto.setPeriod(employmentHisOptional.get().getPeriod());
-					}
-	
-					// アルゴリズム「実績ロックされているか判定する」を実行する
-					EmployeeAndClosureOutput employeeAndClosure = this.determineActualLocked(companyId,
-							employeeAndClosureDto, day);
-	
-					if (employeeAndClosure.getLock() == 0) {
-						ExecutionType reCreateAttr = executionLog.get().getDailyCreationSetInfo().get().getExecutionType();
-	
-						if (reCreateAttr == ExecutionType.RERUN) {
-							DailyRecreateClassification creationType = executionLog.get().getDailyCreationSetInfo().get()
-									.getCreationType();
-							if (creationType == DailyRecreateClassification.PARTLY_MODIFIED) {
-								// 再設定
-								this.resetDailyPerforDomainService.resetDailyPerformance(companyId, employeeId, day,
-										empCalAndSumExecLogID, reCreateAttr, null, null);
-							} else {
-								this.reflectWorkInforDomainService.reflectWorkInformationWithNoInfoImport(companyId,
-										employeeId, day, empCalAndSumExecLogID, reCreateAttr, reCreateWorkType, reCreateWorkPlace,
-										stampReflectionManagement);
-							}
+
+			// 締めIDを取得する
+			Optional<ClosureEmployment> closureEmploymentOptional = this.closureEmploymentRepository
+					.findByEmploymentCD(companyId, employmentCode);
+			// Optional<ClosureEmployment> closureEmploymentOptional =
+			// this.provider().findClousureEmployementByEmpCd(companyId,
+			// employmentCode);
+
+			if (day.afterOrEquals(employmentHisOptional.get().getPeriod().end())
+					&& day.beforeOrEquals(employmentHisOptional.get().getPeriod().start())) {
+				process.add(ProcessState.SUCCESS);
+				break;
+			} else {
+				EmployeeAndClosureOutput employeeAndClosureDto = new EmployeeAndClosureOutput();
+				if (employmentHisOptional.get().getEmploymentCode()
+						.equals(closureEmploymentOptional.get().getEmploymentCD())) {
+					employeeAndClosureDto.setClosureId(closureEmploymentOptional.get().getClosureId());
+					employeeAndClosureDto.setEmployeeId(employeeId);
+					employeeAndClosureDto.setPeriod(employmentHisOptional.get().getPeriod());
+				}
+
+				// アルゴリズム「実績ロックされているか判定する」を実行する
+				EmployeeAndClosureOutput employeeAndClosure = this.determineActualLocked(companyId,
+						employeeAndClosureDto, day);
+
+				if (employeeAndClosure.getLock() == 0) {
+					ExecutionType reCreateAttr = executionLog.get().getDailyCreationSetInfo().get().getExecutionType();
+
+					if (reCreateAttr == ExecutionType.RERUN) {
+						DailyRecreateClassification creationType = executionLog.get().getDailyCreationSetInfo().get()
+								.getCreationType();
+						if (creationType == DailyRecreateClassification.PARTLY_MODIFIED) {
+							// 再設定
+							this.resetDailyPerforDomainService.resetDailyPerformance(companyId, employeeId, day,
+									empCalAndSumExecLogID, reCreateAttr, null, null);
 						} else {
-							this.reflectWorkInforDomainService.reflectWorkInformationWithNoInfoImport(companyId, employeeId,
-									day, empCalAndSumExecLogID, reCreateAttr, reCreateWorkType, reCreateWorkPlace, stampReflectionManagement);
+							this.reflectWorkInforDomainService.reflectWorkInformationWithNoInfoImport(companyId,
+									employeeId, day, empCalAndSumExecLogID, reCreateAttr, reCreateWorkType, reCreateWorkPlace,
+									stampReflectionManagement);
 						}
-					}
-					
-					Optional<EmpCalAndSumExeLog> logOptional = this.empCalAndSumExeLogRepository.getByEmpCalAndSumExecLogID(empCalAndSumExecLogID);
-					if (logOptional.isPresent() && logOptional.get().getExecutionStatus().isPresent()
-							&& logOptional.get().getExecutionStatus().get() == ExeStateOfCalAndSum.START_INTERRUPTION) {
-	//					asyncContext.finishedAsCancelled();
-						process.add(ProcessState.INTERRUPTION);
-						break;
+					} else {
+						this.reflectWorkInforDomainService.reflectWorkInformationWithNoInfoImport(companyId, employeeId,
+								day, empCalAndSumExecLogID, reCreateAttr, reCreateWorkType, reCreateWorkPlace, stampReflectionManagement);
 					}
 				}
-			
-			} catch (Exception ex) {
-				boolean isOptimisticLock = new ThrowableAnalyzer(ex).findByClass(OptimisticLockException.class).isPresent();
-				if (!isOptimisticLock) {
-					throw ex;
+				
+				Optional<EmpCalAndSumExeLog> logOptional = this.empCalAndSumExeLogRepository.getByEmpCalAndSumExecLogID(empCalAndSumExecLogID);
+				if (logOptional.isPresent() && logOptional.get().getExecutionStatus().isPresent()
+						&& logOptional.get().getExecutionStatus().get() == ExeStateOfCalAndSum.START_INTERRUPTION) {
+//					asyncContext.finishedAsCancelled();
+					process.add(ProcessState.INTERRUPTION);
+					break;
 				}
-				//create error message
-				ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeId, empCalAndSumExecLogID,
-						new ErrMessageResource("024"), EnumAdaptor.valueOf(0, ExecutionContent.class), 
-						day,
-						new ErrMessageContent(TextResource.localize("Msg_1541")));
-				
-				
-				//regist error message 
-				this.errMessageInfoRepository.add(employmentErrMes);
-				
 			}
 		}
 		if(process.stream().filter(c -> c == ProcessState.INTERRUPTION).count() > 0){

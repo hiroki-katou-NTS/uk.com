@@ -1,18 +1,20 @@
 __viewContext.ready(function() {
-    //debugger;
+    debugger;
     var url_string = window.location.href;
     var urlID = _.split(url_string, '=')[1];
     var server_path = nts.uk.text.format("/ctx/sys/gateway/url/execution/{0}", urlID); 
-    nts.uk.request.ajax("com", server_path).done((success) => {
-        //Doi ung password policy
-        if(!nts.uk.util.isNullOrUndefined(success.changePw.successMsg)&&!nts.uk.util.isNullOrEmpty(success.changePw.successMsg)){
+    nts.uk.ui.block.invisible();
+    nts.uk.request.ajax("com", server_path)
+    .done((success) => {   
+        if(!nts.uk.util.isNullOrUndefined(success.successMsg)&&!nts.uk.util.isNullOrEmpty(success.successMsg)){
             nts.uk.ui.dialog.info({ messageId: success.successMsg }).then(()=>{
-                loginDone(success, urlID);     
+                routeData(success, urlID);     
             });
         } else {
-            loginDone(success, urlID);    
+            routeData(success, urlID);    
         }  
-    }).fail((failure) => {
+    })
+    .fail((failure) => {
         if(!nts.uk.util.isNullOrEmpty(failure.messageId)){
             nts.uk.ui.dialog.alertError({ messageId: failure.messageId, messageParams: failure.parameterIds }).then(function() {
                 nts.uk.request.jump("com", "/view/ccg/007/d/index.xhtml"); 
@@ -29,68 +31,9 @@ __viewContext.ready(function() {
     });
 });
 
-function loginDone(success, urlID) {
-    let changePw = success.changePw;
-    if (!nts.uk.util.isNullOrEmpty(changePw.msgErrorId) && changePw.msgErrorId == 'Msg_1517') {
-        //確認メッセージ（Msg_1517）を表示する{0}【残り何日】
-        nts.uk.ui.dialog.confirm({ messageId: changePw.msgErrorId, messageParams: [changePw.spanDays]})
-            .ifYes(() => {
-                success.changePw.changePassReason = 'Msg_1523';
-                openDialogCCG007E(success, urlID);
-            }).ifNo(() => {
-                routeData(success, urlID);
-            });
-    } else if (changePw.showChangePass) {
-        openDialogCCG007E(success, urlID);
-    }else{
-        routeData(success, urlID);
-    }
-}
-//open dialog CCG007E - change pass 
-function openDialogCCG007E(success, urlID) {
-    let changePw = success.changePw;
-    //set LoginId to dialog
-    nts.uk.ui.windows.setShared('parentCodes', {
-        form1: false,
-        contractCode: __viewContext.user.contractCode,
-        employeeCode: __viewContext.user.employeeCode,
-        companyCode: __viewContext.user.companyCode
-    }, true);
-    nts.uk.ui.windows.setShared("changePw", {
-        reasonUpdatePw: changePw.changePassReason,
-        spanDays: changePw.spanDays
-    });
-    nts.uk.ui.windows.sub.modal('/view/ccg/007/e/index.xhtml', {
-        width: 520,
-        height: 450
-    }).onClosed(function(): any {
-        var changePwDone = nts.uk.ui.windows.getShared('changePwDone');
-        if(changePwDone){
-           routeData(success, urlID); 
-        }else{
-            window.close();
-        }
-        
-    })
-}
 function routeData(success, urlID){
-    if(success.smpDevice && (success.programID == 'kaf005' || success.programID == 'cmm045')){//Mobile
-        let path = "/view/kaf/000/b/index.xhtml" + '?programID=' + success.programID+'&appId='+ _.first(_.map(success.urlTaskValueList));
-        if(success.programID == 'kaf005'){
-            nts.uk.request.ajax("at", 'at/request/application/approval/judgmentuser', _.first(_.map(success.urlTaskValueList)))
-            .done((result) => {
-                path = path + '&userAtr=' + result;
-                nts.uk.request.jump("at",path);
-            });
-        }else{
-            nts.uk.request.jump("at",path);
-        }
-        return;
-    }
     switch(success.programID){
         case "ccg007": {
-            let path = window.location.href;
-            let urlID = _.split(path, '=')[1];
             // forgot password screen
             nts.uk.request.jump("com", "/view/ccg/007/"+success.screenID+"/index.xhtml?id="+urlID);
             break;
@@ -189,3 +132,4 @@ function routeData(success, urlID){
         default: nts.uk.request.jump("com", "/view/ccg/007/d/index.xhtml");
     }        
 }
+

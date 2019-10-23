@@ -25,21 +25,18 @@ public class RoleFromUserIdPubImpl implements RoleFromUserIdPub{
 	
 	@Override
 	public String getRoleFromUserId(String userId, int roleType, GeneralDate baseDate) {
-		return getRoleFromUserId(userId, roleType, baseDate, AppContexts.user().companyId());
-	}
-
-	@Override
-	public String getRoleFromUserId(String userId, int roleType, GeneralDate baseDate, String companyId) {
+		String companyId = AppContexts.user().companyId();
 		if (roleType == RoleType.SYSTEM_MANAGER.value || roleType == RoleType.GROUP_COMAPNY_MANAGER.value)
 			companyId = "000000000000-0000";
 		
 		Optional<RoleIndividualGrant> roleIndOpt = roleIndRepo.findByUserCompanyRoleTypeDate(userId, companyId, roleType, baseDate);
 		if(!roleIndOpt.isPresent()) {
-			Optional<RoleSet> roleset = rolesetService.getRoleSetFromUserId(userId, baseDate, companyId);
+			Optional<RoleSet> roleset = rolesetService.getRoleSetFromUserId(userId, baseDate);
 			String roleID = roleset.isPresent() ? roleset.get().getRoleIDByRoleType(RoleType.valueOf(roleType)) : "";
 			return roleID;
 		}
 		
 		return roleIndOpt.get().getRoleId();
 	}
+
 }

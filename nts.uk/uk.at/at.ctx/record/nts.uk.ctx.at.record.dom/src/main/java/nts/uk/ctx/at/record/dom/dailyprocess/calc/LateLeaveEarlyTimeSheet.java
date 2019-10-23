@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+//import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -33,9 +34,6 @@ public class LateLeaveEarlyTimeSheet extends CalculationTimeSheet{
 		for(TimeSheetOfDeductionItem deduTimeSheet:deductionTimeSheetList) {
 			//int deductTime = lateTimeSheet.getDuplicatedWith(deductionTimeSheet.getTimeSheet().getTimeSpan()).isPresent()?lateTimeSheet.getDuplicatedWith(deductionTimeSheet.getTimeSheet().getTimeSpan()).get().lengthAsMinutes():0;
 			int deductTime = lateTimeSheet.getDuplicatedWith(deduTimeSheet.getTimeSheet().getTimeSpan()).isPresent()?deduTimeSheet.calcTotalTime(DeductionAtr.Deduction).valueAsMinutes():0;
-			if(lateTimeSheet.getSpan().isContinus(deduTimeSheet.getTimeSheet().getTimeSpan())) {
-				deductTime = deduTimeSheet.calcTotalTime(DeductionAtr.Deduction).valueAsMinutes();
-			}
 			//控除時間分、終了時刻を後ろにズラす
 			lateTimeSheet = new TimeSpanForCalc(lateTimeSheet.getStart(), lateTimeSheet.getEnd().forwardByMinutes(deductTime));
 			
@@ -72,10 +70,15 @@ public class LateLeaveEarlyTimeSheet extends CalculationTimeSheet{
 		}
 		LateLeaveEarlyTimeSheet result = new LateLeaveEarlyTimeSheet(new TimeZoneRounding(EarlyTimeSheet.getStart(), EarlyTimeSheet.getEnd(), this.getTimeSheet().getRounding()),
 																	 EarlyTimeSheet);
+		
 		//控除時間帯を保持
 		result.addDuplicatedDeductionTimeSheet(this.getDeductionTimeSheet(),DeductionAtr.Deduction,Optional.empty());
 		result.addDuplicatedDeductionTimeSheet(this.getDeductionTimeSheet(),DeductionAtr.Appropriate,Optional.empty());
 
 		return result;
 	}
+	
+	
+	
+	
 }

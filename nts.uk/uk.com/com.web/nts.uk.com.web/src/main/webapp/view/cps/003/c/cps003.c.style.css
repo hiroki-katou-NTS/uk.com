@@ -2,20 +2,67 @@
 	vertical-align: middle !important;
 }
 
-#close {
-	float: right;
-	margin-right: 30px;
+.divHeader {
+	margin: 5px;
 }
 
-#grid {
-	margin-top: 30px;
-	margin-left: 20px;
+#left-content {
+	margin-left: 10px;
+	margin-top: 12px;
+	padding: 20px;
+	float: left;
+	min-height: 540px;
+	min-width: 285px !important;
+	/* 	width: 15%; */
 }
 
-td.required {
-	background-color: #FAC002 !important;
+#right-content {
+	margin-left: 30px;
+	margin-top: 14px;
+	float: left;
+	min-height: 600px;
+	width: 700px;
 }
 
-tr.blue-color {
-	color: blue;
+i.icon.icon-searchbox {
+	top: 8px;
+}
+
+#contents-area-left {
+	width: 350px;
+	height: 520px;
+	float: left;
+	clear: right;
+	margin-left: 10px;
+	margin-top: 10px;
+}
+
+#contents-area-right {
+	width: 900px;
+	height: 520px;
+	float: left;
+	clear: right;
+	padding-left: 100px;
+	margin-top: 10px;
+}
+
+#contents-area .form-group {
+	margin-bottom: 20px;
+}
+
+#contents-area .form-group .row {
+	padding-bottom: 15px;
+}
+
+#contents-area .form-group .coll {
+	width: 180px;
+	vertical-align: top; /*can cho len thang hang nhau:*/
+}
+
+#coll {
+	width: 150px;
+}
+
+.nts-searchbbox-wrapper input.ntsSearchBox {
+	width: 168px;
 }

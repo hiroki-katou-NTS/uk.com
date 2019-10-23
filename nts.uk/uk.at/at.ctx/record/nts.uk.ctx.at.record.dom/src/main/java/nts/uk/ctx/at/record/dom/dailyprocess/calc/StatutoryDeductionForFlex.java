@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
 import lombok.Getter;
+//import lombok.Value;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /**

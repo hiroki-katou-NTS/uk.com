@@ -5,7 +5,6 @@
 package nts.uk.ctx.at.shared.dom.worktime.flowset;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
@@ -14,8 +13,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
  */
 //流動固定休憩設定
 @Getter
-@NoArgsConstructor
-public class FlowFixedRestSet extends WorkTimeDomainObject implements Cloneable{
+public class FlowFixedRestSet extends WorkTimeDomainObject {
 
 	/** The calculate method. */
 	// 計算方法
@@ -146,19 +144,5 @@ public class FlowFixedRestSet extends WorkTimeDomainObject implements Cloneable{
 				break;
 			}
 		}
-	}
-	
-	@Override
-	public FlowFixedRestSet clone() {
-		FlowFixedRestSet cloned = new FlowFixedRestSet();
-		try {
-			cloned.calculateMethod = FlowFixedRestCalcMethod.valueOf(this.calculateMethod.value);
-			cloned.calculateFromSchedule = this.calculateFromSchedule.clone();
-			cloned.calculateFromStamp = this.calculateFromStamp.clone();
-		}
-		catch (Exception e){
-			throw new RuntimeException("FlowFixedRestSet clone error.");
-		}
-		return cloned;
 	}
 }

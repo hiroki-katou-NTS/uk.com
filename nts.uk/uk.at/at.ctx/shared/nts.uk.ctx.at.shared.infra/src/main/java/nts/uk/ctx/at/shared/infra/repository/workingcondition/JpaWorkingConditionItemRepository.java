@@ -38,7 +38,6 @@ import nts.uk.ctx.at.shared.dom.workingcondition.MonthlyPatternCode;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemCustom;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemWithEnumList;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionWithDataPeriod;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtDayofweekTimeZone;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtDayofweekTimeZonePK;
@@ -390,7 +389,7 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 								return entity;
 							}));
 				} catch (SQLException e1) {
-					throw new RuntimeException(e1);
+					e1.printStackTrace();
 				}
 			});
 
@@ -959,124 +958,6 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 		return result.stream().map(
 				entity -> new WorkingConditionItem(new JpaWorkingConditionItemGetMemento(entity)))
 				.collect(Collectors.toList());
-	}
-
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository#getByListHistoryID(java.util.List)
-	 */
-	@Override
-	public List<WorkingConditionItem> getByListHistoryID(List<String> listHistoryID) {
-		List<KshmtWorkingCondItem> result = this.getByHistIds(listHistoryID);
-		// exclude select
-		return result.stream().map(entity -> new WorkingConditionItem(new JpaWorkingConditionItemGetMemento(entity)))
-				.collect(Collectors.toList());
-	}
-
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository#getByListHistoryID(java.util.List)
-	 */
-	private List<KshmtWorkingCondItem> getByHistIds(List<String> histIds) {
-		// get entity manager
-				EntityManager em = this.getEntityManager();
-				CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-
-				CriteriaQuery<KshmtWorkingCondItem> cq = criteriaBuilder
-						.createQuery(KshmtWorkingCondItem.class);
-
-				// root data
-				Root<KshmtWorkingCondItem> root = cq.from(KshmtWorkingCondItem.class);
-
-				// select root
-				cq.select(root);
-
-				List<KshmtWorkingCondItem> result = new ArrayList<>();
-
-				CollectionUtil.split(histIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-					// add where
-					List<Predicate> lstpredicateWhere = new ArrayList<>();
-
-					// equal
-					lstpredicateWhere.add(root.get(KshmtWorkingCondItem_.historyId).in(subList));
-					
-					cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
-
-					// creat query
-					TypedQuery<KshmtWorkingCondItem> query = em.createQuery(cq);
-
-					result.addAll(query.getResultList());
-				});
-
-				// Check empty
-				if (CollectionUtil.isEmpty(result)) {
-					return Collections.emptyList();
-				}
-
-				// exclude select
-				return result;
-	}
-	@Override
-	public void addAll(List<WorkingConditionItem> items) {
-		List<KshmtWorkingCondItem> entities = new ArrayList<>();
-		items.stream().forEach(c ->{
-			KshmtWorkingCondItem entity = new KshmtWorkingCondItem();
-			c.saveToMemento(new JpaWorkingConditionItemSetMemento(entity));
-			entities.add(entity);
-		});
-		
-		if(!entities.isEmpty()) {
-			this.commandProxy().insertAll(entities);
-		}
-	}
-
-	@Override
-	public void updateAll(List<WorkingConditionItem> items) {
-		List<String> histIds = items.stream().map(c -> c.getHistoryId()).collect(Collectors.toList());
-		List<KshmtWorkingCondItem> updateLst = new ArrayList<>();
-		if(!histIds.isEmpty()) {
-			List<KshmtWorkingCondItem> entities = this.getByHistIds(histIds);
-			items.stream().forEach(c ->{
-				KshmtWorkingCondItem entity = entities.stream().filter(item -> item.getHistoryId().equals(c.getHistoryId())).findFirst().get();
-				c.saveToMemento(new JpaWorkingConditionItem2SetMemento(entity));
-				updateLst.add(entity);
-				
-			});
-			
-			if(!updateLst.isEmpty()) {
-				this.commandProxy().updateAll(updateLst);
-			}
-		}
-	}
-
-	@Override
-	public void updateAllWorkCond2(List<WorkingConditionItem> items) {
-		List<String> histIds = items.stream().map(c -> c.getHistoryId()).collect(Collectors.toList());
-		List<KshmtWorkingCondItem> updateLst = new ArrayList<>();
-		if(!histIds.isEmpty()) {
-			List<KshmtWorkingCondItem> entities = this.getByHistIds(histIds);
-			items.stream().forEach(c ->{
-				KshmtWorkingCondItem entity = entities.stream().filter(item -> item.getHistoryId().equals(c.getHistoryId())).findFirst().get();
-				c.saveToMemento(new JpaWorkingConditionItemSetMemento(entity));
-				updateLst.add(entity);
-				
-			});
-			
-			if(!updateLst.isEmpty()) {
-				this.commandProxy().updateAll(updateLst);
-			}
-		}
-		
-	}
-
-	@Override
-	public List<WorkingConditionItemWithEnumList> getAllAndEnumByHistIds(List<String> listHistoryID) {
-		List<KshmtWorkingCondItem> entities = this.getByHistIds(listHistoryID);
-		List<WorkingConditionItemWithEnumList> result = new ArrayList<>();
-		entities.stream().forEach(entity -> {
-			Map<String, Object> enums = new HashMap<>();
-			WorkingConditionItem item  = new WorkingConditionItem(new JpaWorkingConditionItemGetMemento(entity, enums));
-			result.add(new WorkingConditionItemWithEnumList(item, enums));
-		});
-		return result;
 	}
 
 }

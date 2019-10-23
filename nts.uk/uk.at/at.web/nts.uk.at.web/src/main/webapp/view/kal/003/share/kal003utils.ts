@@ -6,26 +6,6 @@ module nts.uk.at.view.kal003.share {
     
     
     export module kal003utils {
-        
-        export enum ConditionAtr {
-            TIMES = 0, /* 回数 */
-            TIME_DURATION = 1,/* 時間 */
-            TIME_WITH_DAY = 2,/* 時刻 */
-            AMOUNT_VALUE = 3,/* 金額 */
-            DAYS = 4/* 日数*/
-        }
-        
-        export enum EnumRoleType {
-            NUM_OF_HOLIDAY = 0, /* 所定公休日数 */
-            REMAIN_NUM_CHEK = 3,/* 残数チェック */
-            TIME = 4,/* 時間 */
-            DAYS = 5,/* 日数 */
-            NUM_OF_TIME = 6,/* 回数*/
-            AMOUNT_VALUE = 7,/* 金額*/
-            COMPOUND_CONDITION = 8/* 複合条件 */
-        }
-        
-        
         /**
          * initial default value for Condition Object
          * @param itemcheck
@@ -139,7 +119,6 @@ module nts.uk.at.view.kal003.share {
                 
                 
             });
-            extraResultMonthly.useCheckSwitch(data.useAtr == undefined ? '1':(data.useAtr?'1':'0'));
             return extraResultMonthly;
         }
         
@@ -210,7 +189,6 @@ module nts.uk.at.view.kal003.share {
                 compareOperator: 0, 
                 rowId : 0
             });
-            mulMonCheckCondSet.useCheckSwitch('1');
             return mulMonCheckCondSet;
         }
         
@@ -248,7 +226,6 @@ module nts.uk.at.view.kal003.share {
                 errorAlarmCondition: getDefaultErrorAlarmCondition(),
                 rowId: 0
             });
-            workRecordExtractingCondition.useCheckSwitch('1'); 
             return workRecordExtractingCondition;
         }
         //monthly
@@ -257,7 +234,7 @@ module nts.uk.at.view.kal003.share {
             convertExtraResultMonthly["errorAlarmCheckID"] = vmodel.errorAlarmCheckID();
             convertExtraResultMonthly["sortBy"] = sortBy;
             convertExtraResultMonthly["nameAlarmExtraCon"] = vmodel.nameAlarmExtraCon();
-            convertExtraResultMonthly["useAtr"] = vmodel.useCheckSwitch() == '1'?true:false; 
+            convertExtraResultMonthly["useAtr"] = vmodel.useAtr();
             convertExtraResultMonthly["typeCheckItem"] = vmodel.typeCheckItem();
             convertExtraResultMonthly["messageBold"] = vmodel.messageBold();
             convertExtraResultMonthly["messageColor"] = vmodel.messageColor();
@@ -330,6 +307,7 @@ module nts.uk.at.view.kal003.share {
                             );
                         con.group1.lstErAlAtdItemCon()[0].compareOperator(con.extractType());
                        }
+                      
                     }
                     
                     checkConMonthly["group1"] = mapGroup(ko.toJS(con.group1));
@@ -350,9 +328,6 @@ module nts.uk.at.view.kal003.share {
                 }
             });
             
-            if(convertExtraResultMonthly.typeCheckItem === EnumRoleType.DAYS){
-               convertExtraResultMonthly.checkConMonthly.group1.lstErAlAtdItemCon[0].conditionAtr =  ConditionAtr.DAYS;
-            }
             return convertExtraResultMonthly;
         }
         

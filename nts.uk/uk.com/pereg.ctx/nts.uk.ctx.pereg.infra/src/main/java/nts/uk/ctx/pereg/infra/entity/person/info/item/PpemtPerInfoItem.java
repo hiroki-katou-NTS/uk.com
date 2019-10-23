@@ -43,9 +43,6 @@ public class PpemtPerInfoItem extends UkJpaEntity implements Serializable {
 	@Column(name = "REQUIRED_ATR")
 	public int requiredAtr;
 	
-	@Column(name = "INIT_VALUE")
-	public String initValue;
-	
 	@Override
 	protected Object getKey() {
 		return ppemtPerInfoItemPK;

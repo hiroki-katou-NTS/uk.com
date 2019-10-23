@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import lombok.val;
@@ -77,7 +75,6 @@ public class CalcAnnLeaAttendanceRateImpl implements CalcAnnLeaAttendanceRate {
 	
 	/** 年休出勤率を計算する */
 	@Override
-	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public Optional<CalYearOffWorkAttendRate> algorithm(
 			String companyId, String employeeId, GeneralDate grantDate, Optional<Integer> grantNum,
 			Optional<AnnualPaidLeaveSetting> annualLeaveSetOpt,

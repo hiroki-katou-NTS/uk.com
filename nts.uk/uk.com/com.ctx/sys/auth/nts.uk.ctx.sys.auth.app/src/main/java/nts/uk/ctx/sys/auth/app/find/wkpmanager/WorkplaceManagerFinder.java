@@ -46,12 +46,6 @@ public class WorkplaceManagerFinder {
 		return wkpManagerList;
 	}
 	
-	public List<WorkplaceManagerDto> getCanManageWpkForLoginUser() {
-		
-		return this.wkpManagerRepo.findListWkpManagerByEmpIdAndBaseDate(AppContexts.user().employeeId(), GeneralDate.today())
-				.stream().map(WorkplaceManagerDto::fromDomain).collect(Collectors.toList());
-	}
-	
 	private List<WorkplaceManagerDto> getWorkplaceManagerList(String workplaceId) {
 		
 		return this.wkpManagerRepo.getWkpManagerListByWkpId(workplaceId)

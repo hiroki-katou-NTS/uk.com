@@ -25,19 +25,19 @@
 						<h3>See also: <a href="../customdatepicker/customdatepicker.xhtml">Colored DatePicker, Fiscal months, Jump buttons</a></h3>
 						<h2>Overview</h2>
 						<h3>Datepicker</h3>
-						<div data-bind="ntsDatePicker: { name: '#[FND_L_SEARCH_RELEASE]', value: dateString, required: true, acceptJapaneseCalendar: true}"></div>
+						<div data-bind="ntsDatePicker: { name: '#[FND_L_SEARCH_RELEASE]', value: dateString, dateFormat: 'YYYY/MM/DD', required: true, acceptJapaneseCalendar: true}"></div>
 						<input data-bind="ntsTimeEditor: {value: dateString}"/>
 						<br/>
 						<b>Return ISO String:</b> <span data-bind="text: dateString"/>
 						<hr/>
 						<h3>Datepicker with Day of Week</h3>
-						<div data-bind="ntsDatePicker: {value: date, dateType: 'dateWeek'}"></div>
-						<div data-bind="ntsDatePicker: {value: date, dateType: 'dateWeekFull'}"></div>
+						<div data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD ddd'}"></div>
+						<div data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD dddd'}"></div>
 						<br/>
 						<b>Return Date:</b> <span data-bind="text: date"/>						
 						<hr/>
 						<h3>YearMonth picker</h3>
-						<div id="test" data-bind="ntsDatePicker: {value: yearMonth, dateType: 'yearmonth', valueFormat: 'YYYYMM', enable: enable}"></div>
+						<div id="test" data-bind="ntsDatePicker: {value: yearMonth, dateFormat: 'yearmonth', valueFormat: 'YYYYMM', enable: enable}"></div>
 						<span data-bind="ntsCheckBox: {checked: enable}">Enable</span>
 						<br/>
 						<b>Return Number:</b> <span data-bind="text: yearMonth"/>
@@ -52,9 +52,9 @@
 								<div id="tabs-usage" class="cf">
 									<h2>HTML</h2>
 <pre><![CDATA[<!-- Datepicker -->
-<div data-bind="ntsDatePicker: { value: date }"></div>
+<div data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD'}"></div>
 <!-- YearMonth Picker -->
-<div data-bind="ntsDatePicker: {value: yearMonth, dateType: 'yearmonth'}"></div>]]></pre>
+<div data-bind="ntsDatePicker: {value: yearMonth, dateFormat: 'yearmonth'}"></div>]]></pre>
 									<h2>ViewModel</h2>
 <pre><![CDATA[<!-- Recommend use 'string' and momentjs for date type -->
 class ScreenModel {
@@ -88,21 +88,7 @@ class ScreenModel {
 												</td>
 											</tr>
 											<tr>
-												<td>dateType<br/><i>(Optional)</i></td>
-												<td>
-													<b>Type:</b> string<br/>
-													<b>Default:</b> 'date'<br/>
-													<b>Members:</b><br/>
-													<i>date:</i> the date pattern (YYYY/MM/DD) member of regional option is used<br/>
-													<i>yearmonth:</i> the time pattern (YYYY/MM) member of regional option is used<br/>
-													<i>year:</i> the time pattern (YYYY) member of regional option is used<br/>
-													<i>fiscalYear:</i> the time pattern (YYYY - 年度) member of regional option is used<br/>
-													<i>dateWeek:</i> the time pattern (YYYY/MM/DD ddd) member of regional option is used<br/>
-													<i>dateWeekFull:</i> the time pattern (YYYY/MM/DD dddd) member of regional option is used<br/>
-												</td>
-											</tr>
-											<tr>
-												<td>dateFormat<br/><i>(Optional, Deprecated)</i></td>
+												<td>dateFormat<br/><i>(Optional)</i></td>
 												<td>
 													<b>Type:</b> string<br/>
 													<b>Default:</b> 'YYYY/MM/DD'<br/>
@@ -122,7 +108,7 @@ class ScreenModel {
 												</td>
 											</tr>
 											<tr>
-												<td>valueFormat<br/><i>(Optional, Deprecated)</i></td>
+												<td>valueFormat<br/><i>(Optional)</i></td>
 												<td>
 													<b>Type:</b> string<br/>
 													<b>Default:</b> <i>Empty</i><br/>

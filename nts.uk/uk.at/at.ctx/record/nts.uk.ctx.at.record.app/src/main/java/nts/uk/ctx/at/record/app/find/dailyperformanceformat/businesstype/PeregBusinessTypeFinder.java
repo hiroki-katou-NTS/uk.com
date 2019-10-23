@@ -18,10 +18,7 @@ import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
-import nts.uk.shr.pereg.app.find.PeregQueryByListEmp;
 import nts.uk.shr.pereg.app.find.dto.DataClassification;
-import nts.uk.shr.pereg.app.find.dto.GridPeregDomainBySidDto;
-import nts.uk.shr.pereg.app.find.dto.GridPeregDomainDto;
 import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 
 @Stateless
@@ -100,79 +97,6 @@ public class PeregBusinessTypeFinder implements PeregFinder<BusinessTypeDto> {
 	public List<PeregDomainDto> getListData(PeregQuery query) {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	@Override
-	public List<GridPeregDomainDto> getAllData(PeregQueryByListEmp query) {
-		String cid = AppContexts.user().companyId();
-
-		List<GridPeregDomainDto> result = new ArrayList<>();
-
-		List<String> sids = query.getEmpInfos().stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
-
-		query.getEmpInfos().forEach(c -> {
-			result.add(new GridPeregDomainDto(c.getEmployeeId(), c.getPersonId(), null));
-		});
-
-		List<DateHistoryItem> dateHistItems = typeEmployeeOfHistoryRepos.getDateHistItemByCidAndSidsAndBaseDate(cid,
-				sids, query.getStandardDate());
-		
-		List<BusinessTypeOfEmployee> hisItemLst = typeOfEmployeeRepos
-				.findAllByHistIds(dateHistItems.stream().map(c -> c.identifier()).collect(Collectors.toList()));
-
-		result.stream().forEach(c -> {
-			Optional<BusinessTypeOfEmployee> histItemOpt = hisItemLst.stream()
-					.filter(emp -> emp.getSId().equals(c.getEmployeeId())).findFirst();
-			if (histItemOpt.isPresent()) {
-				Optional<DateHistoryItem> dateHistItemOpt = dateHistItems.stream()
-						.filter(date -> date.identifier().equals(histItemOpt.get().getHistoryId())).findFirst();
-				c.setPeregDomainDto(
-						dateHistItemOpt.isPresent() == true
-								? new BusinessTypeDto(dateHistItemOpt.get().identifier(), dateHistItemOpt.get().start(),
-										dateHistItemOpt.get().end(), histItemOpt.get().getBusinessTypeCode().v())
-								: null);
-			}
-		});
-		return result;
-	}
-
-	@Override
-	public List<GridPeregDomainBySidDto> getListData(PeregQueryByListEmp query) {
-		
-		String cid = AppContexts.user().companyId();
-
-		List<GridPeregDomainBySidDto> result = new ArrayList<>();
-
-		List<String> sids = query.getEmpInfos().stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
-
-		query.getEmpInfos().forEach(c -> {
-			result.add(new GridPeregDomainBySidDto(c.getEmployeeId(), c.getPersonId(), new ArrayList<>()));
-		});
-		
-		List<DateHistoryItem> histories = typeEmployeeOfHistoryRepos.getListByListSidsNoWithPeriod(cid, sids);
-		
-		List<String> histIds = histories.stream().map(c -> c.identifier()).collect(Collectors.toList());
-		
-		List<BusinessTypeOfEmployee> histItems = typeOfEmployeeRepos.findAllByHistIds(histIds);
-		
-		result.stream().forEach(c -> {
-			List<BusinessTypeOfEmployee> listHistItem = histItems.stream()
-					.filter(emp -> emp.getSId().equals(c.getEmployeeId())).collect(Collectors.toList());
-			
-			if (!listHistItem.isEmpty()) {
-				List<PeregDomainDto> listPeregDomainDto = new ArrayList<>();
-				listHistItem.forEach(h -> {
-					Optional<DateHistoryItem> dateHistoryItem = histories.stream().filter(i -> i.identifier().equals(h.getHistoryId())).findFirst();
-					if (dateHistoryItem.isPresent()) {
-						listPeregDomainDto.add(BusinessTypeDto.createFromDomain(h, dateHistoryItem.get()));
-					}
-				});
-				if (!listPeregDomainDto.isEmpty()) {
-					c.setPeregDomainDto(listPeregDomainDto);
-				}
-			}
-		});
-		return result.stream().distinct().collect(Collectors.toList());
 	}
 
 }

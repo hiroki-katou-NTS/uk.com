@@ -10,8 +10,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -139,7 +137,6 @@ public class JpaClosureRepository extends JpaRepository implements ClosureReposi
 	 * java.lang.String)
 	 */
 	@Override
-	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<Closure> findAllUse(String companyId) {
 		// get entity manager
 		EntityManager em = this.getEntityManager();
@@ -189,7 +186,6 @@ public class JpaClosureRepository extends JpaRepository implements ClosureReposi
 	 * .lang.String, int)
 	 */
 	@Override
-	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public Optional<Closure> findById(String companyId, int closureId) {
 		return this.queryProxy().find(new KclmtClosurePK(companyId, closureId), KclmtClosure.class)
 				.map(c -> this.toDomain(c, this.findHistoryByClosureId(companyId, closureId)));
@@ -256,7 +252,6 @@ public class JpaClosureRepository extends JpaRepository implements ClosureReposi
 	 *            the entity
 	 * @return the closure
 	 */
-	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	private Closure toDomain(KclmtClosure entity, List<KclmtClosureHist> entityHistorys) {
 		return new Closure(new JpaClosureGetMemento(entity, entityHistorys));
 	}
@@ -374,7 +369,6 @@ public class JpaClosureRepository extends JpaRepository implements ClosureReposi
 	 * @return the list
 	 */
 	@SneakyThrows
-	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	private List<KclmtClosureHist> findHistoryByClosureId(String companyId, int closureId) {
 		
 		try (val statement = this.connection().prepareStatement(

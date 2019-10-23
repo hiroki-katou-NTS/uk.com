@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime;
 
+import java.util.List;
+
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 
@@ -14,7 +16,7 @@ public interface PreOvertimeReflectService {
 	 * @param param
 	 * @return
 	 */
-	public void overtimeReflect(OvertimeParameter param);
+	public boolean overtimeReflect(OvertimeParameter param);
 	/**
 	 * 日別実績の修正からの計算
 	 * @param dailyData
@@ -23,4 +25,6 @@ public interface PreOvertimeReflectService {
 	 * @return
 	 */
 	public IntegrationOfDaily calculateForAppReflect(String employeeId, GeneralDate dataData);
+	
+	public List<IntegrationOfDaily> getByOvertime(OvertimeParameter param, boolean isPre);
 }

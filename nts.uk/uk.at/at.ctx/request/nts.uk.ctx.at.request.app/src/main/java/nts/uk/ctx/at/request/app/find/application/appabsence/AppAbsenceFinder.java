@@ -306,7 +306,6 @@ public class AppAbsenceFinder {
 				appAbsence.getHolidayAppType().value, appAbsence.getAllDayHalfDayLeaveAtr().value,
 				appAbsence.isHalfDayFlg());
 		//取得した勤務種類リストに「ドメインモデル「休暇申請」．勤務種類コード」が存在するかチェックする-(Check WorkTypeCode có tồn tại k?)
-		boolean masterUnreg = false;
 		if (!CollectionUtil.isEmpty(workTypes)) {
 			if (appAbsence.getWorkTypeCode() != null) {
 				List<WorkType> workTypeCodeInWorkTypes = workTypes.stream()
@@ -316,10 +315,8 @@ public class AppAbsenceFinder {
 					result.setWorkTypeCode(appAbsence.getWorkTypeCode().toString());
 				} else {
 					// アルゴリズム「申請済み勤務種類の存在判定と取得」を実行する - [Kiểm tra sự tồn tại  và lấy WorkType đã xin ]
-					masterUnreg = hdShipmentScreenAFinder.appliedWorkType(companyID, workTypes,
+					hdShipmentScreenAFinder.appliedWorkType(companyID, workTypes,
 							appAbsence.getWorkTypeCode().toString());
-					result.setMasterUnreg(masterUnreg);
-					result.setWorkTypeCode(appAbsence.getWorkTypeCode().toString());
 				}
 			}
 		}
@@ -407,10 +404,12 @@ public class AppAbsenceFinder {
 		}
 		//No.376
 		//残数取得する
+		List<AppEmploymentSetting> appEmpSetAs = appCommonSet.getAppEmploymentWorkType().stream()
+				.filter(c -> c.getAppType().equals(ApplicationType.ABSENCE_APPLICATION)).collect(Collectors.toList());
 		//Bug#101904
 		//・基準日＝システム日付
 		NumberOfRemainOutput numberRemain = absenseProcess.getNumberOfRemaining(companyID, appAbsence.getApplication().getEmployeeID(),
-				GeneralDate.today());
+				GeneralDate.today(), appEmpSetAs);
 		result.setNumberRemain(numberRemain);
 		return result;
 	}
@@ -875,7 +874,9 @@ public class AppAbsenceFinder {
 		getAppReason(result, companyID);
 		//No.376
 		//残数取得する
-		NumberOfRemainOutput numberRemain = absenseProcess.getNumberOfRemaining(companyID, employeeID, baseDate);
+		List<AppEmploymentSetting> appEmpSetAs = appCommonSet.getAppEmploymentWorkType().stream()
+				.filter(c -> c.getAppType().equals(ApplicationType.ABSENCE_APPLICATION)).collect(Collectors.toList());
+		NumberOfRemainOutput numberRemain = absenseProcess.getNumberOfRemaining(companyID, employeeID, baseDate, appEmpSetAs);
 		result.setNumberRemain(numberRemain);
 	}
 

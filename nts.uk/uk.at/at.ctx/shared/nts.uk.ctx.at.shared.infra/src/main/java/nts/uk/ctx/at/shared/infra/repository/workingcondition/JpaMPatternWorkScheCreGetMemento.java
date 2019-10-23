@@ -32,10 +32,6 @@ public class JpaMPatternWorkScheCreGetMemento implements MonthlyPatternWorkSched
 //	列名：REF_WORKING_HOURS
 	@Override
 	public TimeZoneScheduledMasterAtr getReferenceType() {
-		try {
-			return TimeZoneScheduledMasterAtr.valueOf(this.kshmtScheduleMethod.getRefWorkingHours());
-		} catch (Exception e) {
-			return TimeZoneScheduledMasterAtr.FOLLOW_MASTER_REFERENCE;
-		}
+		return TimeZoneScheduledMasterAtr.valueOf(this.kshmtScheduleMethod.getRefWorkingHours());
 	}
 }

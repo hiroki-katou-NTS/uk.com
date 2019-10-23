@@ -7,7 +7,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.RequestScoped;
@@ -21,13 +20,11 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
-import nts.gul.collection.ListHashMap;
 import nts.uk.ctx.workflow.dom.adapter.bs.EmployeeAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.PersonImport;
-import nts.uk.ctx.workflow.dom.adapter.bs.dto.ResultRequest596Import;
-import nts.uk.ctx.workflow.dom.adapter.bs.dto.StatusOfEmpImport;
 import nts.uk.ctx.workflow.dom.agent.AgentRepository;
 import nts.uk.ctx.workflow.dom.agent.output.AgentInfoOutput;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalForm;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmPerson;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
@@ -48,7 +45,7 @@ import nts.uk.ctx.workflow.dom.service.output.ApprovalRepresenterOutput;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRootStateStatus;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalStatusOutput;
 import nts.uk.ctx.workflow.dom.service.output.ApproverPersonOutput;
-import nts.uk.ctx.workflow.dom.service.output.Request113Output;
+import nts.uk.ctx.workflow.dom.service.output.Request133Output;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -80,8 +77,7 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 	@Inject
 	private AppRootConfirmQueryRepository confirmQueryRepository;
 
-	@Override
-	public Request113Output getAppRootStatusByEmpsPeriod(List<String> employeeIDLst, DatePeriod period, RecordRootType rootType) {
+	public Request133Output getAppRootStatusByEmpsPeriod(List<String> employeeIDLst, DatePeriod period, RecordRootType rootType) {
 		// Đối ứng SPR
 		String companyID = "000000000000-0001";
 		String loginCompanyID = AppContexts.user().companyId();
@@ -90,7 +86,7 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 		}
 		
 		// レスポンス改善版
-		val interms = this.confirmQueryRepository.queryInterm(companyID, employeeIDLst, period, rootType);
+		val interms = this.confirmQueryRepository.queryInterm(companyID, employeeIDLst, period, RecordRootType.CONFIRM_WORK_BY_DAY);
 		val confirms = this.confirmQueryRepository.queryConfirm(companyID, employeeIDLst, period, rootType);
 		
 		List<ApprovalRootStateStatus> appRootStatusLst = new ArrayList<ApprovalRootStateStatus>();
@@ -106,7 +102,7 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 			appRootStatusLst.addAll(result.getResults());
 		};
 		
-		return new Request113Output(
+		return new Request133Output(
 				appRootStatusLst,
 				!errorEmployeeIds.isEmpty(),
 				!errorEmployeeIds.isEmpty() ? "Msg_1430" : "",
@@ -221,6 +217,7 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 			approvalPhaseState.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
 			approvalPhaseState.setApprovalForm(appPhaseInstance.getApprovalForm());
 			approvalPhaseState.setPhaseOrder(appPhaseInstance.getPhaseOrder());
+			approvalPhaseState.setApprovalForm(ApprovalForm.EVERYONE_APPROVED);
 			approvalPhaseState.setListApprovalFrame(new ArrayList<>());
 			appPhaseInstance.getListAppFrame().forEach(appFrameInstance -> {
 				ApprovalFrame approvalFrame = new ApprovalFrame();
@@ -348,20 +345,13 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 		ApprovalPersonInstance approvalPersonInstance = new ApprovalPersonInstance(new ArrayList<>(), new ArrayList<>());
 		// 承認者と期間から承認ルート中間データを取得する
 		List<AppRootInstance> appRootInstanceLst = appRootInstanceRepository.findByApproverPeriod(approverID, period, rootType);
-		// [No.596]削除された社員を取り除く
-		List<String> empInsLst = appRootInstanceLst.stream().map(x -> x.getEmployeeID()).collect(Collectors.toList());
-		List<ResultRequest596Import> importResult = employeeAdapter.getEmpDeletedLstBySids(empInsLst);
-		List<String> empDelLst = importResult.stream().map(x -> x.getSid()).collect(Collectors.toList());
-		List<AppRootInstance> appRootInsNotDelLst = appRootInstanceLst.stream().filter(x -> !empDelLst.contains(x.getEmployeeID())).collect(Collectors.toList());
-		
 		// 取得した「承認ルート中間データ」をOUTPUTに追加する
-		appRootInsNotDelLst.forEach(appRootInstance -> {
+		appRootInstanceLst.forEach(appRootInstance -> {
 			ApprovalRouteDetails approvalRouteDetails = new ApprovalRouteDetails(appRootInstance, approverID, Optional.empty(), Optional.empty(), Optional.empty());
 			approvalPersonInstance.getApproverRoute().add(approvalRouteDetails);
 		});
 		// ドメインモデル「代行承認」を取得する
-		GeneralDate systemDate = GeneralDate.today();
-		List<AgentInfoOutput> agentInfoOutputLst = agentRepository.findAgentByPeriod(companyID, Arrays.asList(approverID), systemDate, systemDate, 1);
+		List<AgentInfoOutput> agentInfoOutputLst = agentRepository.findAgentByPeriod(companyID, Arrays.asList(approverID), period.start(), period.end(), 1);
 		// 取得した「代行承認」先頭から最後へループ
 		agentInfoOutputLst.forEach(agentInfor -> {
 			// 承認者と期間から承認ルート中間データを取得する
@@ -369,14 +359,8 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 					agentInfor.getAgentID(), 
 					new DatePeriod(agentInfor.getStartDate(), agentInfor.getEndDate()), 
 					rootType);
-			// [No.596]削除された社員を取り除く
-			List<String> empInsAgentLst = appRootInstanceAgentLst.stream().map(x -> x.getEmployeeID()).collect(Collectors.toList());
-			List<ResultRequest596Import> importAgentResult = employeeAdapter.getEmpDeletedLstBySids(empInsAgentLst);
-			List<String> empAgentDelLst = importAgentResult.stream().map(x -> x.getSid()).collect(Collectors.toList());
-			List<AppRootInstance> appRootInsAgentNotDelLst = appRootInstanceAgentLst.stream().filter(x -> !empAgentDelLst.contains(x.getEmployeeID())).collect(Collectors.toList());
-			
 			// 取得した「承認ルート中間データ」をOUTPUTに追加する
-			appRootInsAgentNotDelLst.forEach(appRootInstanceAgent -> {
+			appRootInstanceAgentLst.forEach(appRootInstanceAgent -> {
 				ApprovalRouteDetails approvalRouteDetailAgent = new ApprovalRouteDetails(
 						appRootInstanceAgent, 
 						approverID, 
@@ -600,15 +584,13 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 		List<RouteSituation> approverRouteLst = new ArrayList<>();
 		if(!CollectionUtil.isEmpty(approvalPersonInstance.getApproverRoute())){
 			// 承認者としてのルート状況を取得する
-			approverRouteLst = this.getApproverRouteSituation(period, approvalPersonInstance.getApproverRoute(), agentLst, rootType, 
-					false, null, null, null, null);
+			approverRouteLst = this.getApproverRouteSituation(period, approvalPersonInstance.getApproverRoute(), agentLst, rootType);
 		}
 		// 取得した「代行者としての承認ルート」．承認ルートの詳細の件数をチェックする
 		List<RouteSituation> agentRouteLst = new ArrayList<>();
 		if(!CollectionUtil.isEmpty(approvalPersonInstance.getAgentRoute())){
 			// 代行者としてのルート状況を取得する
-			agentRouteLst = this.getAgentRouteSituation(period, approvalPersonInstance.getAgentRoute(), agentLst, rootType,
-					false, null, null, null, null);
+			agentRouteLst = this.getAgentRouteSituation(period, approvalPersonInstance.getAgentRoute(), agentLst, rootType);
 		}
 		// outputの整合
 		List<RouteSituation> mergeLst = this.mergeRouteSituationLst(approverRouteLst, agentRouteLst);
@@ -616,128 +598,15 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 		approvalEmpStatus.getRouteSituationLst().addAll(mergeLst);
 		return approvalEmpStatus;
 	}
-	
+
 	@Override
-	public ApprovalEmpStatus getDailyApprovalStatus(String companyId, String approverId, List<String> targetEmployeeIds, DatePeriod period) {
-		
-		val confirms = this.appRootConfirmRepository.findByEmpDate(
-				companyId, targetEmployeeIds, period, RecordRootType.CONFIRM_WORK_BY_DAY);
-		
-		// システム日付時点で代行依頼があれば、承認できる
-		val representRequests = this.agentRepository.findAgentByPeriod(
-				companyId, Arrays.asList(approverId), GeneralDate.today(), GeneralDate.today(), 1);
-		val representRequesterIds = representRequests.stream().map(a -> a.getAgentID()).collect(Collectors.toList());
-		
-		val instancesMap = appRootInstancesMap(companyId, approverId, representRequests, targetEmployeeIds, period);
-		
-		List<RouteSituation> routeSituations = new ArrayList<>();
-		
-		// 実績確認状態(confirms)は承認者関係なく取得するので、実際にはapproverIdが承認者ではないものも含まれている。
-		// その場合、instancesMapには当該データが存在しないことになる。
-		// そういったデータはルート状況リストに含めずに返す仕様。
-		for (val confirm : confirms) {
-			val instance = instancesMap.apply(confirm.getEmployeeID(), confirm.getRecordDate());
-			if (!instance.isPresent()) {
-				continue;
-			}
-			
-			routeSituations.add(RouteSituation.create(confirm, instance.get(), approverId, representRequesterIds));
-		}
-		
-		return new ApprovalEmpStatus(approverId, routeSituations);
-	}
-	
-	/**
-	 * getting AppRootInstance for getDailyApprovalStatus
-	 */
-	private BiFunction<String, GeneralDate, Optional<AppRootInstance>> appRootInstancesMap(
-			String companyId,
-			String approverId,
-			List<AgentInfoOutput> representRequests,
-			List<String> targetEmployeeIds,
-			DatePeriod period) {
-		
-		val instancesApprover = this.appRootInstanceRepository.findByApproverEmployeePeriod(
-				companyId, approverId, targetEmployeeIds, period, RecordRootType.CONFIRM_WORK_BY_DAY);
-		val mapApprover = ListHashMap.create(instancesApprover, i -> i.getEmployeeID());
-		
-		// 代行依頼している承認者達の中間データ
-		val instancesRepresent = representRequests.stream()
-				.flatMap(request -> this.appRootInstanceRepository.findByApproverEmployeePeriod(
-							companyId, request.getAgentID(), targetEmployeeIds, period, RecordRootType.CONFIRM_WORK_BY_DAY).stream())
-				.collect(Collectors.toList());
-		val mapRepresent = ListHashMap.create(instancesRepresent, i -> i.getEmployeeID());
-		
-		return (employeeId, date) -> {
-			Optional<AppRootInstance> result = mapApprover.getOrDefault(employeeId, Collections.emptyList()).stream()
-					.filter(i -> i.getDatePeriod().contains(date))
-					.findFirst();
-			
-			// 承認者自身のものがあればそれを返す
-			if (result.isPresent()) {
-				return result;
-			}
-			
-			// 無ければ代行依頼者のものを探す
-			return mapRepresent.getOrDefault(employeeId, Collections.emptyList()).stream()
-					.filter(i -> i.getDatePeriod().contains(date))
-					.findFirst();
-		};
-	}
-	
-	@Override
-	public List<RouteSituation> getApproverRouteSituation(DatePeriod period, List<ApprovalRouteDetails> approverRouteLst, List<String> agentLst, RecordRootType rootType,
-			boolean useDayApproverConfirm, DatePeriod closurePeriod, YearMonth yearMonth, Integer closureID, ClosureDate closureDate) {
+	public List<RouteSituation> getApproverRouteSituation(DatePeriod period, List<ApprovalRouteDetails> approverRouteLst, List<String> agentLst, RecordRootType rootType) {
 		String companyID = AppContexts.user().companyId();
 		List<RouteSituation> routeSituationLst = new ArrayList<>();
-		List<StatusOfEmpImport> statusOfEmpImportLst = new ArrayList<>();
-		Request113Output request113Output = null;
 		List<String> empLst = approverRouteLst.stream().map(x -> x.getAppRootInstance().getEmployeeID()).distinct().collect(Collectors.toList());
-		if(useDayApproverConfirm == true && rootType == RecordRootType.CONFIRM_WORK_BY_MONTH){
-			/*
-			// 社員の指定期間中の所属期間を取得する
-			statusOfEmpImportLst = employeeAdapter.getListAffComHistByListSidAndPeriod(empLst, closurePeriod);
-			// [No.113](中間データ版)承認対象者と期間から承認状況を取得する
-			request113Output = this.getAppRootStatusByEmpsPeriod(empLst, closurePeriod, rootType);
-			*/
-		}
-		List<AppRootConfirm> appRootConfirmLst = new ArrayList<>();
-		if(rootType==RecordRootType.CONFIRM_WORK_BY_DAY){
-			// 対象日の就業実績確認状態を取得する
-			appRootConfirmLst = appRootConfirmRepository.findByEmpDate(companyID, empLst, period, rootType);
-		} else {
-			// ドメインモデル「就業実績確認状態」を取得する
-			appRootConfirmLst = appRootConfirmRepository.findByEmpLstMonth(companyID, empLst, yearMonth, closureID, closureDate, rootType);
-		}
+		List<AppRootConfirm> appRootConfirmLst = appRootConfirmRepository.findByEmpDate(companyID, empLst, period, rootType);
 		// 取得した対象者(List)の先頭から最後へループ
 		for(String empLoop : empLst){
-			/*
-			if(useDayApproverConfirm == true && rootType == RecordRootType.CONFIRM_WORK_BY_MONTH){
-				// 「社員の会社所属状況」からループ中の社員の対象期間を取得する
-				Optional<StatusOfEmpImport> opStatusOfEmpImport = statusOfEmpImportLst.stream().filter(x -> x.getEmployeeId().equals(empLoop)).findAny();
-				if(opStatusOfEmpImport.isPresent()){
-					opStatusOfEmpImport.get().getListPeriod().sort(Comparator.comparing(DatePeriod::start).reversed());
-					DatePeriod currentPeriod = opStatusOfEmpImport.get().getListPeriod().get(0);
-					// 対象者の承認ルート状況をチェックする
-					Optional<ApprovalRootStateStatus> opApprovalRootStateStatus = request113Output.getAppRootStatusLst().stream().filter(x -> {
-						return x.getEmployeeID().equals(empLoop) &&
-								x.getDailyConfirmAtr()!=DailyConfirmAtr.ALREADY_APPROVED &&
-								x.getDate().afterOrEquals(currentPeriod.start()) &&
-								x.getDate().beforeOrEquals(currentPeriod.end());
-					}).findAny();
-					if(opApprovalRootStateStatus.isPresent()){
-						// OUTPUT．ルート状況を追加する
-						routeSituationLst.add(
-								new RouteSituation(
-										closurePeriod.end(), 
-										empLoop, 
-										ApproverEmpState.PHASE_LESS, 
-										Optional.of(new ApprovalStatus(ReleaseDivision.NOT_RELEASE, ApprovalActionByEmp.NOT_APPROVAL))));
-						continue;
-					}
-				}
-			}
-			*/
 			List<AppRootInstance> appRootInstanceLst = approverRouteLst.stream().map(x -> x.getAppRootInstance())
 					.filter(x -> x.getEmployeeID().equals(empLoop)).collect(Collectors.toList());
 			DatePeriod loopPeriod = period;
@@ -751,26 +620,17 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 				// 対象日の就業実績確認状態を取得する
 				List<AppRootConfirm> appRootConfirmPeriod = appRootConfirmLst.stream()
 						.filter(x -> x.getEmployeeID().equals(empLoop)).collect(Collectors.toList());
-				AppRootConfirm appRootConfirm = null;
-				if(rootType==RecordRootType.CONFIRM_WORK_BY_DAY){
-					Optional<AppRootConfirm> opAppRootConfirm = Optional.empty();
-					for(AppRootConfirm appRootConfirmParam : appRootConfirmPeriod){
-						if(appRootConfirmParam.getRecordDate().compareTo(loopDate)==0){
-							opAppRootConfirm = Optional.of(appRootConfirmParam);
-							break;
-						}
-					}
-					if(!opAppRootConfirm.isPresent()){
-						continue;
-					}
-					appRootConfirm = opAppRootConfirm.get();
-				} else {
-					if(!CollectionUtil.isEmpty(appRootConfirmPeriod)){
-						appRootConfirm = appRootConfirmPeriod.get(0);
-					} else {
-						continue;
+				Optional<AppRootConfirm> opAppRootConfirm = Optional.empty();
+				for(AppRootConfirm appRootConfirmParam : appRootConfirmPeriod){
+					if(appRootConfirmParam.getRecordDate().compareTo(loopDate)==0){
+						opAppRootConfirm = Optional.of(appRootConfirmParam);
+						break;
 					}
 				}
+				if(!opAppRootConfirm.isPresent()){
+					continue;
+				}
+				AppRootConfirm appRootConfirm = opAppRootConfirm.get();
 				// 中間データから承認ルートインスタンスに変換する
 				ApprovalRootState approvalRootState = this.convertFromAppRootInstance(appRootInstance, appRootConfirm);
 				// 基準社員を元にルート状況を取得する
@@ -783,58 +643,13 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 	}
 
 	@Override
-	public List<RouteSituation> getAgentRouteSituation(DatePeriod period, List<ApprovalRouteDetails> agentRouteLst, List<String> agentLst, RecordRootType rootType,
-			boolean useDayApproverConfirm, DatePeriod closurePeriod, YearMonth yearMonth, Integer closureID, ClosureDate closureDate) {
+	public List<RouteSituation> getAgentRouteSituation(DatePeriod period, List<ApprovalRouteDetails> agentRouteLst, List<String> agentLst, RecordRootType rootType) {
 		String companyID = AppContexts.user().companyId();
 		List<RouteSituation> routeSituationLst = new ArrayList<>();
-		List<StatusOfEmpImport> statusOfEmpImportLst = new ArrayList<>();
-		Request113Output request113Output = null;
 		List<String> empLst = agentRouteLst.stream().map(x -> x.getAppRootInstance().getEmployeeID()).distinct().collect(Collectors.toList());
-		if(useDayApproverConfirm == true && rootType == RecordRootType.CONFIRM_WORK_BY_MONTH){
-			/*
-			// 社員の指定期間中の所属期間を取得する
-			statusOfEmpImportLst = employeeAdapter.getListAffComHistByListSidAndPeriod(empLst, closurePeriod);
-			// [No.113](中間データ版)承認対象者と期間から承認状況を取得する
-			request113Output = this.getAppRootStatusByEmpsPeriod(empLst, closurePeriod, rootType);
-			*/
-		}
-		List<AppRootConfirm> appRootConfirmLst = new ArrayList<>();
-		if(rootType==RecordRootType.CONFIRM_WORK_BY_DAY){
-			// 対象日の就業実績確認状態を取得する
-			appRootConfirmLst = appRootConfirmRepository.findByEmpDate(companyID, empLst, period, rootType);
-		} else {
-			// ドメインモデル「就業実績確認状態」を取得する
-			appRootConfirmLst = appRootConfirmRepository.findByEmpLstMonth(companyID, empLst, yearMonth, closureID, closureDate, rootType);
-		}
+		List<AppRootConfirm> appRootConfirmLst = appRootConfirmRepository.findByEmpDate(companyID, empLst, period, rootType);
 		// 取得した対象者(List)の先頭から最後へループ
 		for(String empLoop : empLst){
-			/*
-			if(useDayApproverConfirm == true && rootType == RecordRootType.CONFIRM_WORK_BY_MONTH){
-				// 「社員の会社所属状況」からループ中の社員の対象期間を取得する
-				Optional<StatusOfEmpImport> opStatusOfEmpImport = statusOfEmpImportLst.stream().filter(x -> x.getEmployeeId().equals(empLoop)).findAny();
-				if(opStatusOfEmpImport.isPresent()){
-					opStatusOfEmpImport.get().getListPeriod().sort(Comparator.comparing(DatePeriod::start).reversed());
-					DatePeriod currentPeriod = opStatusOfEmpImport.get().getListPeriod().get(0);
-					// 対象者の承認ルート状況をチェックする
-					Optional<ApprovalRootStateStatus> opApprovalRootStateStatus = request113Output.getAppRootStatusLst().stream().filter(x -> {
-						return x.getEmployeeID().equals(empLoop) &&
-								x.getDailyConfirmAtr()!=DailyConfirmAtr.ALREADY_APPROVED &&
-								x.getDate().afterOrEquals(currentPeriod.start()) &&
-								x.getDate().beforeOrEquals(currentPeriod.end());
-					}).findAny();
-					if(opApprovalRootStateStatus.isPresent()){
-						// OUTPUT．ルート状況を追加する
-						routeSituationLst.add(
-								new RouteSituation(
-										closurePeriod.end(), 
-										empLoop, 
-										ApproverEmpState.PHASE_LESS, 
-										Optional.of(new ApprovalStatus(ReleaseDivision.NOT_RELEASE, ApprovalActionByEmp.NOT_APPROVAL))));
-						continue;
-					}
-				}
-			}
-			*/
 			List<AppRootInstance> appRootInstanceLst = agentRouteLst.stream().map(x -> x.getAppRootInstance())
 					.filter(x -> x.getEmployeeID().equals(empLoop)).collect(Collectors.toList());
 			DatePeriod loopPeriod = period;
@@ -843,7 +658,7 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 				// 対象日の承認ルート中間データを取得する
 				AppRootInstance appRootInstance = this.getAppRootInstanceByDate(loopDate, appRootInstanceLst);
 				if(appRootInstance==null){
-					continue;
+					throw new BusinessException("Msg_1430", "承認者");
 				}
 				ApprovalRouteDetails approvalRouteDetails = agentRouteLst.stream().filter(x -> x.getAppRootInstance().getRootID().equals(appRootInstance.getRootID())).findAny().get();
 				// ループする日は代行期間内かチェックする
@@ -852,30 +667,21 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 					// 対象日の就業実績確認状態を取得する
 					List<AppRootConfirm> appRootConfirmPeriod = appRootConfirmLst.stream()
 							.filter(x -> x.getEmployeeID().equals(empLoop)).collect(Collectors.toList());
-					AppRootConfirm appRootConfirm = null;
-					if(rootType==RecordRootType.CONFIRM_WORK_BY_DAY){
-						Optional<AppRootConfirm> opAppRootConfirm = Optional.empty();
-						for(AppRootConfirm appRootConfirmParam : appRootConfirmPeriod){
-							if(appRootConfirmParam.getRecordDate().compareTo(loopDate)==0){
-								opAppRootConfirm = Optional.of(appRootConfirmParam);
-								break;
-							}
-						}
-						if(!opAppRootConfirm.isPresent()){
-							continue;
-						}
-						appRootConfirm = opAppRootConfirm.get();
-					} else {
-						if(!CollectionUtil.isEmpty(appRootConfirmPeriod)){
-							appRootConfirm = appRootConfirmPeriod.get(0);
-						} else {
-							continue;
+					Optional<AppRootConfirm> opAppRootConfirm = Optional.empty();
+					for(AppRootConfirm appRootConfirmParam : appRootConfirmPeriod){
+						if(appRootConfirmParam.getRecordDate().compareTo(loopDate)==0){
+							opAppRootConfirm = Optional.of(appRootConfirmParam);
+							break;
 						}
 					}
+					if(!opAppRootConfirm.isPresent()){
+						continue;
+					}
+					AppRootConfirm appRootConfirm = opAppRootConfirm.get();
 					// 中間データから承認ルートインスタンスに変換する
 					ApprovalRootState approvalRootState = this.convertFromAppRootInstance(appRootInstance, appRootConfirm);
 					// 基準社員を元にルート状況を取得する
-					RouteSituation routeSituation = this.getRouteSituationByEmp(approvalRootState, approvalRouteDetails.getAgentID().get(), agentLst);
+					RouteSituation routeSituation = this.getRouteSituationByEmp(approvalRootState, approvalRouteDetails.getEmployeeID(), agentLst);
 					// 実行結果をoutput「ルート状況」に追加する
 					routeSituationLst.add(routeSituation);
 				}
@@ -894,7 +700,7 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 		agentRouteLst.forEach(route -> {
 			// output「ルート状況」に同じ日、同じ対象者は存在するかチェックする
 			Optional<RouteSituation> opRouteSituation = routeSituationLst.stream().filter(x -> 
-				(x.getEmployeeID().equals(route.getEmployeeID()))&&(x.getDate().equals(route.getDate()))).findAny();
+				(x.getEmployeeID()==route.getEmployeeID())&&(x.getDate().equals(route.getDate()))).findAny();
 			if(opRouteSituation.isPresent()){
 				RouteSituation routeSituation = opRouteSituation.get();
 				// ループ中の「ルート状況」．基準社員の承認アクションをチェックする

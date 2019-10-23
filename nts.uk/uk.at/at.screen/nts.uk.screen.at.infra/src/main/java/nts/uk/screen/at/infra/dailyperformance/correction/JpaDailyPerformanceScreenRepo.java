@@ -108,7 +108,6 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceEmpl
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyRecEditSetDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DivergenceTimeDto;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.EmpErrorCode;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.EmploymentDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.FormatDPCorrectionDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.IdentityProcessUseSetDto;
@@ -473,7 +472,6 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		builderString.append("WHERE a.kfnmtAuthorityDailyItemPK.companyId = :companyId ");
 		builderString
 				.append("AND a.kfnmtAuthorityDailyItemPK.dailyPerformanceFormatCode IN :dailyPerformanceFormatCodes ");
-		builderString.append("ORDER BY a.displayOrder  ASC ");
 		SEL_AUTHOR_DAILY_ITEM = builderString.toString();
 
 		builderString = new StringBuilder();
@@ -643,7 +641,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 				DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
 					try (PreparedStatement statement = this.connection()
 							.prepareStatement("select * from KCLMT_CLOSURE c" + " inner join KCLMT_CLOSURE_EMPLOYMENT e"
-									+ " on c.CLOSURE_ID = e.CLOSURE_ID and c.CID = e.CID" + " where e.CID = ?" + " and EMPLOYMENT_CD in ("
+									+ " on c.CLOSURE_ID = e.CLOSURE_ID" + " where e.CID = ?" + " and EMPLOYMENT_CD in ("
 									+ subList.stream().map(s -> "?").collect(Collectors.joining(",")) + ")")) {
 
 						statement.setString(1, AppContexts.user().companyId());
@@ -812,8 +810,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 						return new WorkInfoOfDailyPerformanceDto(e.krcdtDaiPerWorkInfoPK.employeeId, e.calculationState,
 								e.krcdtDaiPerWorkInfoPK.ymd, e.recordWorkWorktypeCode, e.recordWorkWorktimeCode,
 								e.scheduleWorkWorktypeCode, e.scheduleWorkWorktimeCode,
-								e.scheduleTimes == null ? false : true,
-								e.version);
+								e.scheduleTimes == null ? false : true);
 					}));
 		});
 		return results;
@@ -1003,35 +1000,6 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		});
 		return dpErrors;
 	}
-	
-	@Override
-	public List<EmpErrorCode> getListErAlItem28(String companyId, int errorType, DateRange range, String empId) {
-		Connection con = this.getEntityManager().unwrap(Connection.class);
-		List<EmpErrorCode> lstResult = new ArrayList<>();
-		String query = "select e.SID, e.PROCESSING_DATE, e.ERROR_CODE, i.ATTENDANCE_ITEM_ID from KRCDT_SYAIN_DP_ER_LIST e "
-				+ "join KRCDT_ER_ATTENDANCE_ITEM i on e.ID = i.ID "
-				+ "left join KRCMT_ERAL_SET s on e.ERROR_CODE = s.ERROR_ALARM_CD and s.CID = e.CID "
-				+ "where s.ERAL_ATR = ? " + " and e.CID =  ? "
-				+ "and e.PROCESSING_DATE BETWEEN ? AND ? " + " and e.SID = ? ";
-
-		try (PreparedStatement pstatement = con.prepareStatement(query)) {
-			pstatement.setInt(1, errorType);
-			pstatement.setString(2, companyId);
-			pstatement.setDate(3, Date.valueOf(range.getStartDate().localDate()));
-			pstatement.setDate(4, Date.valueOf(range.getEndDate().localDate()));
-			pstatement.setString(5, empId);
-			ResultSet rs = pstatement.executeQuery();
-
-			while (rs.next()) {
-				lstResult.add(new EmpErrorCode(rs.getString(1), GeneralDate.localDate(rs.getDate(2).toLocalDate()), rs.getString(3), rs.getString(4) == null ? null : Integer.parseInt(rs.getString(4))));
-			}
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-			throw new RuntimeException(e);
-		}
-		return lstResult;
-	}
 
 	@Override
 	public List<DPErrorSettingDto> getErrorSetting(String companyId, List<String> listErrorCode, boolean showError,
@@ -1060,7 +1028,6 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	private List<DPErrorSettingDto> getErrorSettingN(String companyId, List<String> listErrorCode, boolean showError,
 			boolean showAlarm, boolean showOther) {
-		if(listErrorCode.size() == 0) return Collections.emptyList();
 		List<DPErrorSettingDto> dtos = new ArrayList<>();
 		String textIn = "";
 		for (int i = 0; i < listErrorCode.size(); i++) {
@@ -1128,30 +1095,10 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 			return dtos;
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new RuntimeException(e);
-		}		
-	}
-	
-	@Override
-	public int getTypeAtrErrorSet(String companyId, String errorCode) {
-		Connection con = this.getEntityManager().unwrap(Connection.class);
-		String query = "SELECT s.ERAL_ATR FROM KRCMT_ERAL_SET as s WHERE s.CID = ? AND s.ERROR_ALARM_CD = ? ";
-		int errorType = 0;
-		try (PreparedStatement pstatement = con.prepareStatement(query)) {
-			pstatement.setString(1, companyId);
-			pstatement.setString(2, errorCode);
-			ResultSet rs = pstatement.executeQuery();
-
-			while (rs.next()) {
-				errorType = rs.getInt(1);
-			}
-
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
 		}
-		return errorType;
+		return dtos;
 	}
-	
+
 	@Override
 	public List<DPSheetDto> getFormatSheets(List<String> lstBusinessType) {
 		return this.queryProxy().query(SEL_FORMAT_SHEET, KrcmtBusinessFormatSheet.class)
@@ -1303,8 +1250,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 											.map(s -> new ScheduleTimeSheetDto(s.krcdtWorkScheduleTimePK.workNo,
 													new TimeWithDayAttr(s.attendance),
 													new TimeWithDayAttr(s.leaveWork)))
-											.collect(Collectors.toList()),
-							c.version)));
+											.collect(Collectors.toList()))));
 		});
 		return datas;
 	}
@@ -1518,8 +1464,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	@Override
 	public void updateColumnsWidth(Map<Integer, Integer> lstHeader, List<String> formatCodes) {
-		List<AuthorityFomatDailyDto> items = this.findAuthorityFomatDaily(AppContexts.user().companyId(), formatCodes)
-				.stream().filter(x -> lstHeader.containsKey(x.getAttendanceItemId())).collect(Collectors.toList());
+		List<AuthorityFomatDailyDto> items = this.findAuthorityFomatDaily(AppContexts.user().companyId(), formatCodes);
 		List<KfnmtAuthorityDailyItem> entitys = items.stream()
 				.map(x -> new KfnmtAuthorityDailyItem(
 						new KfnmtAuthorityDailyItemPK(x.getCompanyId(), x.getDailyPerformanceFormatCode(),
@@ -1801,8 +1746,8 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 			return dtos;
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new RuntimeException(e);
 		}
+		return dtos;
 	}
 
 	@Override
@@ -1845,7 +1790,6 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 				});
 			} catch (SQLException e) {
 				exception.set(e);
-				throw new RuntimeException(e);
 			}
 		});
 		if (exception.optional().isPresent()) {
@@ -1880,7 +1824,6 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 						});
 					} catch (SQLException e) {
 						exception.set(e);
-						throw new RuntimeException(e);
 					}
 				});
 		List<ClosureDto> result = new ArrayList<>();
@@ -1937,12 +1880,11 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 						processYM);
 				resultFind.add(month);
 			}
-			return resultFind;
+
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new RuntimeException(e);
 		}
-		
+		return resultFind;
 	}
 
 	@Override

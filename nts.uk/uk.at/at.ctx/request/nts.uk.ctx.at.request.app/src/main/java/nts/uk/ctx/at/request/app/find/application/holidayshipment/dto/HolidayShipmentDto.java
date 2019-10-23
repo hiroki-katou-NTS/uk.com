@@ -104,8 +104,6 @@ public class HolidayShipmentDto {
 	 * 申請種類別設定
 	 */
 	private AppTypeSetDto appTypeSet;
-	
-    private List<String> workTimeCDs;
 
 	/**
 	 * 就業時間帯コード
@@ -129,6 +127,4 @@ public class HolidayShipmentDto {
 	List<EmployeeInfoImport> employees;
 	
 	public double absRecMng;
-	private boolean masterUnregRec;
-	private boolean masterUnregAbs;
 }

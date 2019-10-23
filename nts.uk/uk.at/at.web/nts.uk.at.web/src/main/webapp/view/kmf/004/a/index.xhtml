@@ -87,37 +87,21 @@
 						
 						<tr>
 							<td>
-								<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMF004_164')}</div>
-							</td>
-							<td colspan="2">
-								<div tabindex="8" id="auto_grant" data-bind="ntsSwitchButton: {
-													name: '#[KMF004_164]',
-													options: autoGrants ,
-													optionsValue: 'code',
-													optionsText: 'name',
-													value: autoGrant ,
-													required: true ,
-													enable: true }"></div>
-							</td>
-						</tr>
-						
-						<tr>
-							<td>
 								<div data-bind="ntsFormLabel: {constraint: 'Memo'}">#{i18n.getText('KMF004_10')}</div>
 							</td>
 							<td colspan="2">
-								<textarea tabindex="9" class="memo" data-bind="ntsMultilineEditor: {value: memo, name: '#[KMF004_10]', constraint: 'Memo'}" />
+								<textarea tabindex="8" class="memo" data-bind="ntsMultilineEditor: {value: memo, name: '#[KMF004_10]', constraint: 'Memo'}" />
 							</td>
 						</tr>
 					</table>
 					
-					<div id="tab-panel" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab},visible:autoGrant()==1" tabindex="10">
+					<div id="tab-panel" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}" tabindex="9">
 						<div class="tab-content-1">
 							<table class="grant-date-tbl">
 								<tr>
 									<td width="220"><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KMF004_14')}</div></td>
 									<td>
-										<div tabindex="11" class="cf grant-date" data-bind="ntsSwitchButton: {
+										<div tabindex="10" class="cf grant-date" data-bind="ntsSwitchButton: {
 											name: 'grantDate',
 											options: grantDateOptions,
 											optionsValue: 'code',
@@ -135,7 +119,7 @@
 								</tr>
 								<tr>
 									<td>
-										<div tabindex="12" class="methodsCls" data-bind="ntsRadioBoxGroup: {
+										<div tabindex="11" class="methodsCls" data-bind="ntsRadioBoxGroup: {
 											options: methods,
 											optionsValue: 'id',
 											optionsText: 'name',
@@ -146,7 +130,7 @@
 											<div class="years">
 												<div class="year-lbl">#{i18n.getText('KMF004_21')}</div>
 												<div class="year-inp">
-													<input tabindex="13" id="years" data-bind="ntsNumberEditor: {
+													<input tabindex="12" id="years" data-bind="ntsNumberEditor: {
 														value: years, 
 														constraint: 'GrantedYears',
 														name: '#[KMF004_21]',
@@ -161,7 +145,7 @@
 											<div class="days">
 												<div class="day-lbl">#{i18n.getText('KMF004_22')}</div>
 												<div class="day-inp">
-													<input tabindex="14" id="days" data-bind="ntsNumberEditor: {
+													<input tabindex="13" id="days" data-bind="ntsNumberEditor: {
 														value: days, 
 														constraint: 'GrantedDays',
 														name: '#[KMF004_22]',
@@ -176,7 +160,7 @@
 										</div>
 										
 										<div class="timing">
-											<button tabindex="15" class="btn-d-dialog" data-bind="click : openDialogD, enable: dialogDEnable">#{i18n.getText('KMF004_23')}</button>
+											<button tabindex="14" class="btn-d-dialog" data-bind="click : openDialogD, enable: dialogDEnable">#{i18n.getText('KMF004_23')}</button>
 											<div class="timing-hint">#{i18n.getText('KMF004_24')}</div>
 										</div>
 									</td>

@@ -7,7 +7,6 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.adapter.createdailyapprover.CreateDailyApproverAdapter;
-import nts.uk.ctx.at.record.dom.daily.DailyRecordAdUpService;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 
@@ -22,9 +21,6 @@ public class InsertWorkInfoOfDailyPerforServiceImpl implements InsertWorkInfoOfD
 	
 	@Inject
 	private CreateDailyApproverAdapter createDailyApproverAdapter;
-	
-	@Inject
-	private DailyRecordAdUpService dailyRecordAdUpService;
 
 	@Override
 	public void updateWorkInfoOfDailyPerforService(String companyId, String employeeID, GeneralDate processingDate,
@@ -35,14 +31,12 @@ public class InsertWorkInfoOfDailyPerforServiceImpl implements InsertWorkInfoOfD
 
 		if (workInfoOfDailyPerformance.isPresent()) {
 			// 日別実績の勤務情報を更新する - update
-			workInfoOfDailyPerformanceUpdate.setVersion(workInfoOfDailyPerformance.get().getVersion());
 			this.updateWorkInfoOfDailyPerforService.updateWorkInfoOfDailyPerforService(companyId, employeeID,
 					processingDate, workInfoOfDailyPerformanceUpdate);
 
 		} else {
 			// ドメインモデル「日別実績の勤務情報」を登録 - insert
-			//this.workInformationRepository.insert(workInfoOfDailyPerformanceUpdate);
-			dailyRecordAdUpService.adUpWorkInfo(workInfoOfDailyPerformanceUpdate);
+			this.workInformationRepository.insert(workInfoOfDailyPerformanceUpdate);
 			// 日別実績の就業実績確認状態を作成する
 			// RequestList 523
 			this.createDailyApproverAdapter.createApprovalStatus(employeeID, processingDate, 1);

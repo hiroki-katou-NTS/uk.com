@@ -16,5 +16,4 @@ public class InputApproveData {
     Integer holidayAppType;
     Integer user;
     Integer reflectPerState;
-    Boolean mobileCall;
 }

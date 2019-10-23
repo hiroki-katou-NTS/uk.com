@@ -77,11 +77,7 @@ public class UpdateHolidayWorkCommandHandler extends CommandHandlerWithResult<Up
 				displayReason += System.lineSeparator();
 			}
 			displayReason += updateHolidayWorkCommand.getApplicationReason();
-		} else {
-			if(Strings.isBlank(typicalReason)){
-				displayReason = applicationRepository.findByID(companyID, updateHolidayWorkCommand.getAppID()).get().getAppReason().v();
-			}
-		} 
+		}
 		Optional<ApplicationSetting> applicationSettingOp = applicationSettingRepository
 				.getApplicationSettingByComID(companyID);
 		ApplicationSetting applicationSetting = applicationSettingOp.get();
@@ -121,9 +117,7 @@ public class UpdateHolidayWorkCommandHandler extends CommandHandlerWithResult<Up
 				appHolidayWork.getApplication().getAppDate(), 
 				1, 
 				appHolidayWork.getAppID(), 
-				appHolidayWork.getApplication().getPrePostAtr(), updateHolidayWorkCommand.getVersion(),
-				appHolidayWork.getWorkTypeCode() == null ? null : appHolidayWork.getWorkTypeCode().v(),
-				appHolidayWork.getWorkTimeCode() == null ? null : appHolidayWork.getWorkTimeCode().v());
+				appHolidayWork.getApplication().getPrePostAtr(), updateHolidayWorkCommand.getVersion());
 		appHolidayWorkRepository.update(appHolidayWork);
 		applicationRepository.updateWithVersion(appHolidayWork.getApplication());
 		

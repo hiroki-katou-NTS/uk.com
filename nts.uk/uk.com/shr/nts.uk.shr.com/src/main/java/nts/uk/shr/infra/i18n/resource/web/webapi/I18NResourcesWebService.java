@@ -19,8 +19,6 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
-import com.google.common.collect.Streams;
-
 import lombok.val;
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.time.GeneralDateTime;
@@ -67,64 +65,6 @@ public class I18NResourcesWebService {
 
 		resources.putAll(this.i18n.loadForUserByResourceType(languageId, companyId, I18NResourceType.MESSAGE));
 		resources.putAll(this.i18n.loadForUserByResourceType(languageId, companyId, I18NResourceType.ITEM_NAME));
-		
-		return resources;
-	}
-	
-	@GET
-	@Path("mobile/get/{part}")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Map<String, String> getMobileResouceByPart(@PathParam("part") int part) {
-		Map<String, String> resources = new HashMap<String, String>();
-		String companyId = DefaultSettingKeys.COMPANY_ID;
-		String languageId = LanguageConsts.DEFAULT_LANGUAGE_ID;
-		
-		if (AppContexts.user().hasLoggedIn()) {
-			companyId = AppContexts.user().companyId();
-			languageId = AppContexts.user().language().basicLanguageId();
-		}
-
-		if (part == 0) {
-			resources.putAll(this.i18n.loadForUserByResourceType(languageId, companyId, I18NResourceType.MESSAGE));
-		} else {
-			Map<String, String> _resources = this.i18n.loadForUserByResourceType(languageId, companyId,
-					I18NResourceType.ITEM_NAME);
-
-			int size = _resources.size(), sub = size / 3, min = sub * (part - 1), max = sub * (part + 0);
-
-			_resources = Streams.mapWithIndex(_resources.entrySet().stream(), (str, index) -> (index < min || index > max) ? null : str)
-					.filter(f -> f != null).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-
-			resources.putAll(_resources);
-		}
-		
-		return resources;
-	}
-	
-	
-	@GET
-	@Path("mobile/get-item-name/{screen-id}")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Map<String, String> getMobileResouce1(@PathParam("screen-id") String screenId) {
-		Map<String, String> resources = new HashMap<String, String>();
-		String companyId = DefaultSettingKeys.COMPANY_ID;
-		String languageId = LanguageConsts.DEFAULT_LANGUAGE_ID;
-		
-		if (AppContexts.user().hasLoggedIn()) {
-			companyId = AppContexts.user().companyId();
-			languageId = AppContexts.user().language().basicLanguageId();
-		}
-
-		Map<String, String> itemNameMap = this.i18n.loadForUserByResourceType(languageId, companyId, I18NResourceType.ITEM_NAME); 
-		
-		if( !screenId.isEmpty()) {
-			String upScreenId = screenId.toUpperCase();
-			itemNameMap = itemNameMap.entrySet().stream()
-					.filter(entry -> entry.getKey().contains(upScreenId))
-					.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-		}
-		
-		resources.putAll(itemNameMap);
 		
 		return resources;
 	}

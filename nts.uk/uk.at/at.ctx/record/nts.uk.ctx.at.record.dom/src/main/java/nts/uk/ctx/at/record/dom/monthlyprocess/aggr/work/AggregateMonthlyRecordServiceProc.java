@@ -61,8 +61,6 @@ import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.InterimRemain
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.CalYearOffWorkAttendRate;
 import nts.uk.ctx.at.record.dom.service.RemainNumberCreateInformation;
-import nts.uk.ctx.at.record.dom.standardtime.AgreementOperationSetting;
-import nts.uk.ctx.at.record.dom.standardtime.enums.ClosingDateType;
 import nts.uk.ctx.at.record.dom.weekly.AttendanceTimeOfWeekly;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
@@ -71,7 +69,6 @@ import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimesMonth;
 import nts.uk.ctx.at.shared.dom.common.days.MonthlyDays;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.JobTitleId;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecMngInPeriodParamInput;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
@@ -83,7 +80,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.RecordRemainCreateInfo
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingMinutes;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualLeaveMngWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngOfInPeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngParam;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
@@ -92,14 +88,12 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpReserveL
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.ComplileInPeriodOfSpecialLeaveParam;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.InPeriodOfSpecialLeave;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.InPeriodOfSpecialLeaveResultInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.RemainDaysOfSpecialHoliday;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveManagementService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveRemainNoMinus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.CompanyHolidayMngSetting;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
-import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
@@ -176,12 +170,6 @@ public class AggregateMonthlyRecordServiceProc {
 	private Map<String, DatePeriod> workingConditions;
 	/** 前回集計結果　（年休積立年休の集計結果） */
 	private AggrResultOfAnnAndRsvLeave prevAggrResult;
-	/** 前回集計結果　（振休振出の集計結果） */
-	private Optional<AbsRecRemainMngOfInPeriod> prevAbsRecResultOpt;
-	/** 前回集計結果　（代休の集計結果） */
-	private Optional<BreakDayOffRemainMngOfInPeriod> prevBreakDayOffResultOpt;
-	/** 前回集計結果　（特別休暇の集計結果） */
-	private Map<Integer, InPeriodOfSpecialLeaveResultInfor> prevSpecialLeaveResultMap;
 	/** 週NO管理 */
 	private Map<YearMonth, Integer> weekNoMap;
 	/** 手修正あり */
@@ -234,9 +222,6 @@ public class AggregateMonthlyRecordServiceProc {
 	 * @param closureDate 締め日付
 	 * @param datePeriod 期間
 	 * @param prevAggrResult 前回集計結果　（年休積立年休の集計結果）
-	 * @param prevAbsRecResultOpt 前回集計結果　（振休振出の集計結果）
-	 * @param prevBreakDayOffResultOpt 前回集計結果　（代休の集計結果）
-	 * @param prevSpecialLeaveResultMap 前回集計結果　（特別休暇の集計結果）
 	 * @param companySets 月別集計で必要な会社別設定
 	 * @param employeeSets 月別集計で必要な社員別設定
 	 * @param dailyWorksOpt 日別実績(WORK)List
@@ -247,50 +232,10 @@ public class AggregateMonthlyRecordServiceProc {
 			String companyId, String employeeId, YearMonth yearMonth,
 			ClosureId closureId, ClosureDate closureDate, DatePeriod datePeriod,
 			AggrResultOfAnnAndRsvLeave prevAggrResult,
-			Optional<AbsRecRemainMngOfInPeriod> prevAbsRecResultOpt,
-			Optional<BreakDayOffRemainMngOfInPeriod> prevBreakDayOffResultOpt,
-			Map<Integer, InPeriodOfSpecialLeaveResultInfor> prevSpecialLeaveResultMap,
 			MonAggrCompanySettings companySets,
 			MonAggrEmployeeSettings employeeSets,
 			Optional<List<IntegrationOfDaily>> dailyWorksOpt,
 			Optional<IntegrationOfMonthly> monthlyWorkOpt) {
-		
-		return this.aggregate(companyId, employeeId, yearMonth, closureId, closureDate, datePeriod,
-				prevAggrResult, prevAbsRecResultOpt, prevBreakDayOffResultOpt, prevSpecialLeaveResultMap,
-				companySets, employeeSets, dailyWorksOpt, monthlyWorkOpt, false);
-	}
-	
-	/**
-	 * 集計処理
-	 * @param companyId 会社ID
-	 * @param employeeId 社員ID
-	 * @param yearMonth 年月
-	 * @param closureId 締めID
-	 * @param closureDate 締め日付
-	 * @param datePeriod 期間
-	 * @param prevAggrResult 前回集計結果　（年休積立年休の集計結果）
-	 * @param prevAbsRecResultOpt 前回集計結果　（振休振出の集計結果）
-	 * @param prevBreakDayOffResultOpt 前回集計結果　（代休の集計結果）
-	 * @param prevSpecialLeaveResultMap 前回集計結果　（特別休暇の集計結果）
-	 * @param companySets 月別集計で必要な会社別設定
-	 * @param employeeSets 月別集計で必要な社員別設定
-	 * @param dailyWorksOpt 日別実績(WORK)List
-	 * @param monthlyWorkOpt 月別実績(WORK)
-	 * @param remainingProcAtr 残数処理フラグ
-	 * @return 集計結果
-	 */
-	public AggregateMonthlyRecordValue aggregate(
-			String companyId, String employeeId, YearMonth yearMonth,
-			ClosureId closureId, ClosureDate closureDate, DatePeriod datePeriod,
-			AggrResultOfAnnAndRsvLeave prevAggrResult,
-			Optional<AbsRecRemainMngOfInPeriod> prevAbsRecResultOpt,
-			Optional<BreakDayOffRemainMngOfInPeriod> prevBreakDayOffResultOpt,
-			Map<Integer, InPeriodOfSpecialLeaveResultInfor> prevSpecialLeaveResultMap,
-			MonAggrCompanySettings companySets,
-			MonAggrEmployeeSettings employeeSets,
-			Optional<List<IntegrationOfDaily>> dailyWorksOpt,
-			Optional<IntegrationOfMonthly> monthlyWorkOpt,
-			Boolean remainingProcAtr) {
 		
 		this.aggregateResult = new AggregateMonthlyRecordValue();
 		this.errorInfos = new HashMap<>();
@@ -302,9 +247,6 @@ public class AggregateMonthlyRecordServiceProc {
 		this.closureId = closureId;
 		this.closureDate = closureDate;
 		this.prevAggrResult = prevAggrResult;
-		this.prevAbsRecResultOpt = prevAbsRecResultOpt;
-		this.prevBreakDayOffResultOpt = prevBreakDayOffResultOpt;
-		this.prevSpecialLeaveResultMap = prevSpecialLeaveResultMap;
 		this.weekNoMap = new HashMap<>();
 		this.isRetouch = false;
 		this.dailyInterimRemainMngs = new HashMap<>();
@@ -326,15 +268,9 @@ public class AggregateMonthlyRecordServiceProc {
 			return this.aggregateResult;
 		}
 		
-		// 前月の36協定の集計がありえるため、前月分のデータも読み込んでおく　（Redmine#107701）
-		DatePeriod loadPeriod = new DatePeriod(monthPeriod.start(), monthPeriod.end());
-		if (monthPeriod.start().after(employee.getEntryDate())) {	// 開始日が入社日より後の時のみ、前月を読み込む
-			loadPeriod = new DatePeriod(monthPeriod.start().addMonths(-1), monthPeriod.end());
-		}
-		
 		// 計算に必要なデータを準備する
 		this.monthlyCalculatingDailys = MonthlyCalculatingDailys.loadData(
-				employeeId, loadPeriod, dailyWorksOpt, this.repositories);
+				employeeId, monthPeriod, dailyWorksOpt, this.repositories);
 		
 		// 集計前の月別実績データを確認する
 		this.monthlyOldDatas = MonthlyOldDatas.loadData(
@@ -389,7 +325,7 @@ public class AggregateMonthlyRecordServiceProc {
 			
 			// 残数処理
 			// こちらはDB書き込みをしているので非同期化できない
-			this.remainingProcess(monthPeriod, datePeriod, remainingProcAtr);
+			this.remainingProcess(monthPeriod);
 	
 			// 非同期実行中の集計処理と待ち合わせ
 			try {
@@ -429,61 +365,21 @@ public class AggregateMonthlyRecordServiceProc {
 		}
 		
 		// 36協定時間の集計
-		{
-			// 36協定時間の集計
-			MonthlyCalculation monthlyCalculationForAgreement = new MonthlyCalculation();
-			val agreementTimeOpt = monthlyCalculationForAgreement.aggregateAgreementTime(
-					this.companyId, this.employeeId, this.yearMonth, this.closureId, this.closureDate,
-					monthPeriod, Optional.empty(), Optional.empty(), this.companySets, this.employeeSets,
-					this.monthlyCalculatingDailys, this.monthlyOldDatas, basicCalced, this.repositories);
-			if (agreementTimeOpt.isPresent()){
-				val agreementTime = agreementTimeOpt.get();
-				this.aggregateResult.getAgreementTimeList().add(agreementTime);
-			}
-			
-			// 36協定運用設定を取得
-			if (this.companySets.getAgreementOperationSet().isPresent()) {
-				AgreementOperationSetting agreementOpeSet = this.companySets.getAgreementOperationSet().get();
-				
-				// 締めと36協定期間の締め日が同じかどうか判断
-				int monthClosureDay = ClosingDateType.LASTDAY.value;	// 締めを36協定期間の締め日の値に揃える
-				if (this.closureDate.getLastDayOfMonth() == false) {
-					monthClosureDay = this.closureDate.getClosureDay().v() - 1;
-				}
-				if (monthClosureDay != agreementOpeSet.getClosingDateType().value &&	// 締めが異なる　かつ
-					monthPeriod.start().after(employee.getEntryDate())) {				// 開始日が入社日より後の時
-					
-					// 集計期間を一ヶ月手前にずらす
-					YearMonth prevYM = this.yearMonth.addMonths(-1);
-					GeneralDate prevEnd = monthPeriod.start().addDays(-1);
-					GeneralDate prevStart = prevEnd.addMonths(-1).addDays(1);
-					DatePeriod prevPeriod = new DatePeriod(prevStart, prevEnd);
-					
-					// 36協定時間の集計
-					MonthlyOldDatas prevOldDatas = MonthlyOldDatas.loadData(
-							employeeId, prevYM, closureId, closureDate, Optional.empty(), this.repositories);
-					MonthlyCalculation prevCalculationForAgreement = new MonthlyCalculation();
-					val prevAgreTimeOpt = prevCalculationForAgreement.aggregateAgreementTime(
-							this.companyId, this.employeeId, prevYM, this.closureId, this.closureDate,
-							prevPeriod, Optional.empty(), Optional.empty(), this.companySets, this.employeeSets,
-							this.monthlyCalculatingDailys, prevOldDatas, Optional.empty(), this.repositories);
-					if (prevAgreTimeOpt.isPresent()){
-						val prevAgreTime = prevAgreTimeOpt.get();
-						this.aggregateResult.getAgreementTimeList().add(prevAgreTime);
-					}
-				}
-			}
+		MonthlyCalculation monthlyCalculationForAgreement = new MonthlyCalculation();
+		val agreementTimeOpt = monthlyCalculationForAgreement.aggregateAgreementTime(
+				this.companyId, this.employeeId, this.yearMonth, this.closureId, this.closureDate,
+				monthPeriod, Optional.empty(), Optional.empty(), this.companySets, this.employeeSets,
+				this.monthlyCalculatingDailys, this.monthlyOldDatas, basicCalced, this.repositories);
+		if (agreementTimeOpt.isPresent()){
+			val agreementTime = agreementTimeOpt.get();
+			this.aggregateResult.setAgreementTime(Optional.of(agreementTime));
 		}
 
 		ConcurrentStopwatches.stop("12300:36協定時間：");
 		ConcurrentStopwatches.start("12500:任意項目：");
 		
-		// 大塚カスタマイズの集計
-		Map<Integer, Map<Integer, AnyItemAggrResult>> anyItemCustomizeValue =
-				this.aggregateCustomizeForOtsuka(this.yearMonth, this.closureId, this.companySets);
-		
 		// 月別実績の任意項目を集計
-		this.aggregateAnyItem(monthPeriod, anyItemCustomizeValue);
+		this.aggregateAnyItem(monthPeriod);
 		
 		// 手修正された項目を元に戻す　（任意項目用）
 		this.undoRetouchValuesForAnyItems(this.monthlyOldDatas);
@@ -578,30 +474,14 @@ public class AggregateMonthlyRecordServiceProc {
 
 	/**
 	 * 残数処理
-	 * @param monthPeriod 1か月の集計期間
-	 * @param datePeriod 期間（実行期間）
-	 * @param remainingProcAtr 残数処理フラグ
+	 * @param monthPeriod
 	 */
-	private void remainingProcess(DatePeriod monthPeriod, DatePeriod datePeriod, Boolean remainingProcAtr) {
+	private void remainingProcess(DatePeriod monthPeriod) {
 		
 		ConcurrentStopwatches.start("12400:残数処理：");
 		
-		// 当月の判断
-		boolean isCurrentMonth = false;
-		if (this.companySets.getCurrentMonthPeriodMap().containsKey(this.closureId.value)) {
-			DatePeriod currentPeriod = this.companySets.getCurrentMonthPeriodMap().get(this.closureId.value);
-			// 当月の締め期間と実行期間を比較し、重複した期間を取り出す
-			DatePeriod confPeriod = this.confirmProcPeriod(currentPeriod, datePeriod);
-			// 重複期間があれば、当月
-			if (confPeriod != null) isCurrentMonth = true;
-		}
-		if (remainingProcAtr == true) isCurrentMonth = true;
-		
-		// 2019.4.25 UPD shuichi_ishida Redmine#107271(1)(EA.3359) 残数処理を実行する当月判断方法を変更
 		// 集計開始日を締め開始日をする時だけ、残数処理を実行する　（集計期間の初月（＝締めの当月）だけ実行する）
-		//if (this.employeeSets.isNoCheckStartDate()){
-		// 実行期間が当月の締め期間に含まれる時だけ、残数処理を実行する
-		if (isCurrentMonth){
+		if (this.employeeSets.isNoCheckStartDate()){
 			
 			// 残数処理
 			this.remainingProcess(monthPeriod, InterimRemainMngMode.MONTHLY, true);
@@ -788,11 +668,8 @@ public class AggregateMonthlyRecordServiceProc {
 	/**
 	 * 月別実績の任意項目を集計
 	 * @param monthPeriod 月の期間
-	 * @param anyItemCustomizeValue 任意項目カスタマイズ値
 	 */
-	private void aggregateAnyItem(
-			DatePeriod monthPeriod,
-			Map<Integer, Map<Integer, AnyItemAggrResult>> anyItemCustomizeValue){
+	private void aggregateAnyItem(DatePeriod monthPeriod){
 
 		// 週単位の期間を取得
 		ListIterator<AttendanceTimeOfWeekly> itrWeeks =
@@ -801,8 +678,7 @@ public class AggregateMonthlyRecordServiceProc {
 			AttendanceTimeOfWeekly attendanceTimeWeek = itrWeeks.next();
 			
 			// 週ごとの集計
-			val weekResults = this.aggregateAnyItemPeriod(attendanceTimeWeek.getPeriod(), true,
-					anyItemCustomizeValue.get(attendanceTimeWeek.getWeekNo()));
+			val weekResults = this.aggregateAnyItemPeriod(attendanceTimeWeek.getPeriod(), true);
 			for (val weekResult : weekResults.values()){
 				attendanceTimeWeek.getAnyItem().getAnyItemValues().put(
 						weekResult.getOptionalItemNo(),
@@ -816,7 +692,7 @@ public class AggregateMonthlyRecordServiceProc {
 		}
 		
 		// 月ごとの集計
-		val monthResults = this.aggregateAnyItemPeriod(monthPeriod, false, anyItemCustomizeValue.get(0));
+		val monthResults = this.aggregateAnyItemPeriod(monthPeriod, false);
 		for (val monthResult : monthResults.values()){
 			this.aggregateResult.putAnyItemOrUpdate(AnyItemOfMonthly.of(
 					this.employeeId, this.yearMonth, this.closureId, this.closureDate, monthResult));
@@ -824,40 +700,12 @@ public class AggregateMonthlyRecordServiceProc {
 	}
 	
 	/**
-	 * 大塚カスタマイズ　（任意項目集計）
-	 * @param yearMonth 年月
-	 * @param closureId 締めID
-	 * @param companySets 月別集計で必要な会社別設定
-	 * @return　任意項目カスタマイズ値
-	 */
-	private Map<Integer, Map<Integer, AnyItemAggrResult>> aggregateCustomizeForOtsuka(
-			YearMonth yearMonth,
-			ClosureId closureId,
-			MonAggrCompanySettings companySets){
-
-		// 任意項目カスタマイズ値　※　最初のInteger=0（月結果）、1～（各週結果（週No））
-		Map<Integer, Map<Integer, AnyItemAggrResult>> results = new HashMap<>();
-		results.put(0, new HashMap<>());	// 月結果
-
-		// 月ごとの集計
-		AnyItemAggrResult monthResult = this.getPredWorkingDays(yearMonth, closureId, companySets);
-		results.get(0).putIfAbsent(monthResult.getOptionalItemNo(), monthResult);
-		
-		// 任意項目カスタマイズ値を返す
-		return results;
-	}
-	
-	/**
 	 * 任意項目期間集計
 	 * @param period 期間
 	 * @param isWeek 週間集計
-	 * @param anyItemCustomizeValue 任意項目カスタマイズ値
 	 * @return 任意項目集計結果
 	 */
-	private Map<Integer, AnyItemAggrResult> aggregateAnyItemPeriod(
-			DatePeriod period,
-			boolean isWeek,
-			Map<Integer, AnyItemAggrResult> anyItemCustomizeValue){
+	private Map<Integer, AnyItemAggrResult> aggregateAnyItemPeriod(DatePeriod period, boolean isWeek){
 		
 		Map<Integer, AnyItemAggrResult> results = new HashMap<>();
 		List<AnyItemOfMonthly> anyItems = new ArrayList<>();
@@ -882,16 +730,6 @@ public class AggregateMonthlyRecordServiceProc {
 		// 任意項目を取得
 		for (val optionalItem : this.companySets.getOptionalItemMap().values()){
 			Integer optionalItemNo = optionalItem.getOptionalItemNo().v();
-
-			// 大塚カスタマイズ　（月別実績の任意項目←任意項目カスタマイズ値）
-			if (anyItemCustomizeValue != null) {
-				if (anyItemCustomizeValue.containsKey(optionalItemNo)) {
-					results.put(optionalItemNo, anyItemCustomizeValue.get(optionalItemNo));
-					anyItems.add(AnyItemOfMonthly.of(this.employeeId, this.yearMonth,
-							this.closureId, this.closureDate, anyItemCustomizeValue.get(optionalItemNo)));
-					continue;
-				}
-			}
 
 			// 利用条件の判定
 			Optional<EmpCondition> empCondition = Optional.empty();
@@ -935,49 +773,6 @@ public class AggregateMonthlyRecordServiceProc {
 		}
 		
 		return results;
-	}
-	
-	/**
-	 * 計画所定労働日数
-	 * @param yearMonth 年月
-	 * @param closureId 締めID
-	 * @param companySets 月別集計で必要な会社別設定
-	 * @return 任意項目集計結果
-	 */
-	private AnyItemAggrResult getPredWorkingDays(
-			YearMonth yearMonth,
-			ClosureId closureId,
-			MonAggrCompanySettings companySets){
-
-		AnyItemAggrResult emptyResult = AnyItemAggrResult.of(69, null, new AnyTimesMonth(0.0), null);
-		
-		// 指定した年月の締め期間を取得する
-		DatePeriod period = null;
-		{
-			// 対象の締めを取得する
-			if (!companySets.getClosureMap().containsKey(closureId.value)) return emptyResult;
-			Closure closure = companySets.getClosureMap().get(closureId.value);
-			
-			// 指定した年月の期間をすべて取得する
-			List<DatePeriod> periods = closure.getPeriodByYearMonth(yearMonth);
-			if (periods.size() == 0) return emptyResult;
-			
-			// 期間を合算する
-			GeneralDate startDate = periods.get(0).start();
-			GeneralDate endDate = periods.get(0).end();
-			if (periods.size() == 2) {
-				if (startDate.after(periods.get(1).start())) startDate = periods.get(1).start();
-				if (endDate.before(periods.get(1).end())) endDate = periods.get(1).end();
-			}
-			period = new DatePeriod(startDate, endDate);
-		}
-		
-		// RQ608：指定期間の所定労働日数を取得する(大塚用)
-		double predWorkingDays = this.repositories.getPredWorkingDaysAdaptor().byPeriod(
-				period, this.companySets.getAllWorkTypeMap()).v();
-		
-		// 任意項目69へ格納
-		return AnyItemAggrResult.of(69, null, new AnyTimesMonth(predWorkingDays), null);
 	}
 	
 	/**
@@ -1033,39 +828,11 @@ public class AggregateMonthlyRecordServiceProc {
 		val oldDataOpt = monthlyOldDatas.getAttendanceTime();
 		if (!oldDataOpt.isPresent()) return attendanceTime;
 		val oldConverter = this.repositories.getAttendanceItemConverter().createMonthlyConverter();
-		MonthlyRecordToAttendanceItemConverter oldItemConvert = oldConverter.withAttendanceTime(oldDataOpt.get());
-		if (monthlyOldDatas.getAnnualLeaveRemain().isPresent()) {
-			oldItemConvert = oldItemConvert.withAnnLeave(monthlyOldDatas.getAnnualLeaveRemain().get());
-		}
-		if (monthlyOldDatas.getReserveLeaveRemain().isPresent()) {
-			oldItemConvert = oldItemConvert.withRsvLeave(monthlyOldDatas.getReserveLeaveRemain().get());
-		}
-		if (monthlyOldDatas.getAbsenceLeaveRemain().isPresent()) {
-			oldItemConvert = oldItemConvert.withAbsenceLeave(monthlyOldDatas.getAbsenceLeaveRemain().get());
-		}
-		if (monthlyOldDatas.getMonthlyDayoffRemain().isPresent()) {
-			oldItemConvert = oldItemConvert.withDayOff(monthlyOldDatas.getMonthlyDayoffRemain().get());
-		}
-		oldItemConvert = oldItemConvert.withSpecialLeave(monthlyOldDatas.getSpecialLeaveRemainList());
+		val oldItemConvert = oldConverter.withAttendanceTime(oldDataOpt.get());
 
 		// 計算後データを確認
 		val monthlyConverter = this.repositories.getAttendanceItemConverter().createMonthlyConverter();
-		MonthlyRecordToAttendanceItemConverter convert = monthlyConverter.withAttendanceTime(attendanceTime);
-		if (this.aggregateResult.getAnnLeaRemNumEachMonthList().size() > 0) {
-			convert = convert.withAnnLeave(this.aggregateResult.getAnnLeaRemNumEachMonthList().get(0));
-		}
-		if (this.aggregateResult.getRsvLeaRemNumEachMonthList().size() > 0) {
-			convert = convert.withRsvLeave(this.aggregateResult.getRsvLeaRemNumEachMonthList().get(0));
-		}
-		if (this.aggregateResult.getAbsenceLeaveRemainList().size() > 0) {
-			convert = convert.withAbsenceLeave(this.aggregateResult.getAbsenceLeaveRemainList().get(0));
-		}
-		if (this.aggregateResult.getMonthlyDayoffRemainList().size() > 0) {
-			convert = convert.withDayOff(this.aggregateResult.getMonthlyDayoffRemainList().get(0));
-		}
-		if (this.aggregateResult.getSpecialLeaveRemainList().size() > 0) {
-			convert = convert.withSpecialLeave(this.aggregateResult.getSpecialLeaveRemainList());
-		}
+		val convert = monthlyConverter.withAttendanceTime(attendanceTime);
 		
 		// 月別実績の編集状態を取得
 		for (val editState : this.editStates){
@@ -1087,32 +854,6 @@ public class AggregateMonthlyRecordServiceProc {
 			if (convertedOpt.isPresent()) {
 				val retouchedTime = convertedOpt.get();
 				retouchedTime.getMonthlyCalculation().copySettings(attendanceTime.getMonthlyCalculation());
-				
-				val convertedAnnLeaveOpt = convert.toAnnLeave();
-				if (convertedAnnLeaveOpt.isPresent()) {
-					this.aggregateResult.getAnnLeaRemNumEachMonthList().clear();
-					this.aggregateResult.getAnnLeaRemNumEachMonthList().add(convertedAnnLeaveOpt.get());
-				}
-				val convertedRsvLeaveOpt = convert.toRsvLeave();
-				if (convertedRsvLeaveOpt.isPresent()) {
-					this.aggregateResult.getRsvLeaRemNumEachMonthList().clear();
-					this.aggregateResult.getRsvLeaRemNumEachMonthList().add(convertedRsvLeaveOpt.get());
-				}
-				val convertedAbsLeaveOpt = convert.toAbsenceLeave();
-				if (convertedAbsLeaveOpt.isPresent()) {
-					this.aggregateResult.getAbsenceLeaveRemainList().clear();
-					this.aggregateResult.getAbsenceLeaveRemainList().add(convertedAbsLeaveOpt.get());
-				}
-				val convertedDayOffOpt = convert.toDayOff();
-				if (convertedDayOffOpt.isPresent()) {
-					this.aggregateResult.getMonthlyDayoffRemainList().clear();
-					this.aggregateResult.getMonthlyDayoffRemainList().add(convertedDayOffOpt.get());
-				}
-				val convertedSpcLeaveList = convert.toSpecialHoliday();
-				if (convertedSpcLeaveList.size() > 0) {
-					this.aggregateResult.getSpecialLeaveRemainList().clear();
-					this.aggregateResult.getSpecialLeaveRemainList().addAll(convertedSpcLeaveList);
-				}
 				return retouchedTime;
 			}
 		}
@@ -1309,8 +1050,7 @@ public class AggregateMonthlyRecordServiceProc {
 		// 期間中の年休積休残数を取得
 		val aggrResult = this.getAnnAndRsvRemNumWithinPeriod.algorithm(
 				this.companyId, this.employeeId, period, interimRemainMngMode,
-				//period.end(), true, isCalcAttendanceRate,
-				period.end(), false, isCalcAttendanceRate,
+				period.end(), true, isCalcAttendanceRate,
 				Optional.of(isOverWriteAnnual), Optional.of(tmpAnnualLeaveMngs), Optional.of(tmpReserveLeaveMngs),
 				Optional.of(false),
 				Optional.of(this.employeeSets.isNoCheckStartDate()),
@@ -1417,8 +1157,7 @@ public class AggregateMonthlyRecordServiceProc {
 		AbsRecMngInPeriodParamInput paramInput = new AbsRecMngInPeriodParamInput(
 				this.companyId, this.employeeId, period, period.end(),
 				(interimRemainMngMode == InterimRemainMngMode.MONTHLY),
-				this.isOverWriteRemain, useAbsMng, interimMng, useRecMng,
-				this.prevAbsRecResultOpt);
+				this.isOverWriteRemain, useAbsMng, interimMng, useRecMng);
 		val aggrResult = this.absenceRecruitMng.getAbsRecMngInPeriod(paramInput);
 		if (aggrResult != null){
 			
@@ -1442,9 +1181,6 @@ public class AggregateMonthlyRecordServiceProc {
 			// 振休エラーから月別残数エラー一覧を作成する
 			this.aggregateResult.getPerErrors().addAll(this.createPerErrorFromLeaveErrors.fromPause(
 					this.employeeId, this.yearMonth, this.closureId, this.closureDate, aggrResult.getPError()));
-			
-			// 集計結果を前回集計結果に引き継ぐ
-			this.aggregateResult.setAbsRecRemainMngOfInPeriodOpt(Optional.of(aggrResult));
 		}
 	}
 	
@@ -1480,8 +1216,7 @@ public class AggregateMonthlyRecordServiceProc {
 		BreakDayOffRemainMngParam inputParam = new BreakDayOffRemainMngParam(
 				this.companyId, this.employeeId, period,
 				(interimRemainMngMode == InterimRemainMngMode.MONTHLY), period.end(),
-				this.isOverWriteRemain, interimMng, breakMng, dayOffMng,
-				this.prevBreakDayOffResultOpt);
+				this.isOverWriteRemain, interimMng, breakMng, dayOffMng);
 		val aggrResult = this.breakDayoffMng.getBreakDayOffMngInPeriod(inputParam);
 		if (aggrResult != null){
 			
@@ -1515,9 +1250,6 @@ public class AggregateMonthlyRecordServiceProc {
 			// 代休エラーから月別残数エラー一覧を作成する
 			this.aggregateResult.getPerErrors().addAll(this.createPerErrorFromLeaveErrors.fromDayOff(
 					this.employeeId, this.yearMonth, this.closureId, this.closureDate, aggrResult.getLstError()));
-			
-			// 集計結果を前回集計結果に引き継ぐ
-			this.aggregateResult.setBreakDayOffRemainMngOfInPeriodOpt(Optional.of(aggrResult));
 		}
 	}
 	
@@ -1543,24 +1275,15 @@ public class AggregateMonthlyRecordServiceProc {
 		// 「特別休暇」を取得する
 		val specialHolidays = this.specialHolidayRepo.findByCompanyId(this.companyId);
 		for (val specialHoliday : specialHolidays){
-			Integer specialLeaveCode = specialHoliday.getSpecialHolidayCode().v();
-
-			// 前回集計結果を確認する
-			Optional<InPeriodOfSpecialLeaveResultInfor> prevSpecialLeaveResult = Optional.empty();
-			if (this.prevSpecialLeaveResultMap.containsKey(specialLeaveCode)) {
-				prevSpecialLeaveResult = Optional.of(this.prevSpecialLeaveResultMap.get(specialLeaveCode));
-			}
+			int specialLeaveCode = specialHoliday.getSpecialHolidayCode().v();
 
 			// マイナスなしを含めた期間内の特別休暇残を集計する
 			// 期間内の特別休暇残を集計する
 			ComplileInPeriodOfSpecialLeaveParam param = new ComplileInPeriodOfSpecialLeaveParam(
 					this.companyId, this.employeeId, period,
-					//(interimRemainMngMode == InterimRemainMngMode.MONTHLY), period.end(), specialLeaveCode, true,
-					(interimRemainMngMode == InterimRemainMngMode.MONTHLY), period.end(), specialLeaveCode, false,
-					this.isOverWriteRemain, interimMng, interimSpecialData,
-					prevSpecialLeaveResult);
-			InPeriodOfSpecialLeaveResultInfor aggrResult = this.specialLeaveMng.complileInPeriodOfSpecialLeave(param);
-			InPeriodOfSpecialLeave inPeriod = aggrResult.getAggSpecialLeaveResult();
+					(interimRemainMngMode == InterimRemainMngMode.MONTHLY), period.end(), specialLeaveCode, true,
+					this.isOverWriteRemain, interimMng, interimSpecialData);
+			InPeriodOfSpecialLeave inPeriod = this.specialLeaveMng.complileInPeriodOfSpecialLeave(param);
 			
 			// マイナスなしの残数・使用数を計算
 			RemainDaysOfSpecialHoliday remainDays = inPeriod.getRemainDays();
@@ -1582,9 +1305,6 @@ public class AggregateMonthlyRecordServiceProc {
 			this.aggregateResult.getPerErrors().addAll(this.createPerErrorFromLeaveErrors.fromSpecialLeave(
 					this.employeeId, this.yearMonth, this.closureId, this.closureDate, specialLeaveCode,
 					inPeriod.getLstError()));
-			
-			// 集計結果を前回集計結果に引き継ぐ
-			this.aggregateResult.getInPeriodOfSpecialLeaveResultInforMap().put(specialLeaveCode, aggrResult);
 		}
 	}
 	
@@ -1637,17 +1357,14 @@ public class AggregateMonthlyRecordServiceProc {
 	 */
 	private AffiliationInfoOfMonthly createAffiliationInfo(DatePeriod datePeriod){
 		
-		List<String> employeeIds = new ArrayList<>();
-		employeeIds.add(this.employeeId);
-		
 		// 月初の所属情報を取得
 		boolean isExistStartWorkInfo = false;
 		if (this.monthlyCalculatingDailys.getWorkInfoOfDailyMap().containsKey(datePeriod.start())){
 			isExistStartWorkInfo = true;
 		}
-		val firstInfoOfDailyList = this.repositories.getAffiliationInfoOfDaily().finds(employeeIds, datePeriod);
-		firstInfoOfDailyList.sort((a, b) -> a.getYmd().compareTo(b.getYmd()));
-		if (firstInfoOfDailyList.size() <= 0){
+		val firstInfoOfDailyOpt = this.repositories.getAffiliationInfoOfDaily().findByKey(
+				this.employeeId, datePeriod.start());
+		if (!firstInfoOfDailyOpt.isPresent()){
 			if (isExistStartWorkInfo){
 				val errorInfo = new MonthlyAggregationErrorInfo(
 						"003", new ErrMessageContent(TextResource.localize("Msg_1157")));
@@ -1655,10 +1372,10 @@ public class AggregateMonthlyRecordServiceProc {
 			}
 			return null;
 		}
-		val firstInfoOfDaily = firstInfoOfDailyList.get(0);
-		val firstWorkTypeOfDailyList = this.repositories.getWorkTypeOfDaily().finds(employeeIds, datePeriod);
-		firstWorkTypeOfDailyList.sort((a, b) -> a.getDate().compareTo(b.getDate()));
-		if (firstWorkTypeOfDailyList.size() <= 0){
+		val firstInfoOfDaily = firstInfoOfDailyOpt.get();
+		val firstWorkTypeOfDailyOpt = this.repositories.getWorkTypeOfDaily().findByKey(
+				this.employeeId, datePeriod.start());
+		if (!firstWorkTypeOfDailyOpt.isPresent()){
 			if (isExistStartWorkInfo){
 				val errorInfo = new MonthlyAggregationErrorInfo(
 						"003", new ErrMessageContent(TextResource.localize("Msg_1157")));
@@ -1666,7 +1383,7 @@ public class AggregateMonthlyRecordServiceProc {
 			}
 			return null;
 		}
-		val firstWorkTypeOfDaily = firstWorkTypeOfDailyList.get(0);
+		val firstWorkTypeOfDaily = firstWorkTypeOfDailyOpt.get();
 		
 		// 月初の情報を作成
 		val firstInfo = AggregateAffiliationInfo.of(

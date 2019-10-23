@@ -29,12 +29,8 @@ import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
 import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.AppForSpecLeave;
 import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.AppForSpecLeaveRepository;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.AbsenceServiceProcess;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InitMode;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailScreenInitModeOutput;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.OutputMode;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.User;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.DisplayReasonRepository;
@@ -75,8 +71,6 @@ public class UpdateAppAbsenceCommandHandler extends CommandHandlerWithResult<Upd
 //	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlg;	
-	@Inject
-	private InitMode initMode;
 	@Override
 	protected ProcessResult handle(CommandHandlerContext<UpdateAppAbsenceCommand> context) {
 		String companyID = AppContexts.user().companyId();
@@ -92,46 +86,39 @@ public class UpdateAppAbsenceCommandHandler extends CommandHandlerWithResult<Upd
 				displayRep.findDisplayReason(companyID).stream().map(x -> DisplayReasonDto.fromDomain(x)).collect(Collectors.toList());
 		DisplayReasonDto displayReasonSet = displayReasonDtoLst.stream().filter(x -> x.getTypeOfLeaveApp() == command.getHolidayAppType())
 				.findAny().orElse(null);
-		DetailScreenInitModeOutput output = initMode.getDetailScreenInitMode(EnumAdaptor.valueOf(context.getCommand().getUser(), User.class), context.getCommand().getReflectPerState());
-		String appReason = opAppAbsence.get().getApplication().getAppReason().v();
-		if(output.getOutputMode()==OutputMode.EDITMODE){
-			if(displayReasonSet!=null){
-				boolean displayFixedReason = displayReasonSet.getDisplayFixedReason() == 1 ? true : false;
-				boolean displayAppReason = displayReasonSet.getDisplayAppReason() == 1 ? true : false;
-				String typicalReason = Strings.EMPTY;
-				String displayReason = Strings.EMPTY;
-				if(displayFixedReason){
-					if(Strings.isBlank(command.getAppReasonID())){
-						typicalReason += "";
-					} else {
-						typicalReason += command.getAppReasonID();
-					}
-				}
-				if(displayAppReason){
-					if(Strings.isNotBlank(typicalReason)){
-						displayReason += System.lineSeparator();
-					}
-					if(Strings.isBlank(command.getApplicationReason())){
-						displayReason += "";
-					} else {
-						displayReason += command.getApplicationReason();
-					}
-				}else{
-					if (Strings.isBlank(typicalReason)) {
-						displayReason = opAppAbsence.get().getApplication().getAppReason().v();
-					}
-				}
-				Optional<ApplicationSetting> applicationSettingOp = applicationSettingRepository
-						.getApplicationSettingByComID(companyID);
-				ApplicationSetting applicationSetting = applicationSettingOp.get();
-				if(displayFixedReason||displayAppReason){
-					if (applicationSetting.getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED)
-							&& Strings.isBlank(typicalReason+displayReason)) {
-						throw new BusinessException("Msg_115");
-					}
-					appReason = typicalReason + displayReason;
+		String appReason = "";
+		if(displayReasonSet!=null){
+			boolean displayFixedReason = displayReasonSet.getDisplayFixedReason() == 1 ? true : false;
+			boolean displayAppReason = displayReasonSet.getDisplayAppReason() == 1 ? true : false;
+			String typicalReason = Strings.EMPTY;
+			String displayReason = Strings.EMPTY;
+			if(displayFixedReason){
+				if(Strings.isBlank(command.getAppReasonID())){
+					typicalReason += "";
+				} else {
+					typicalReason += command.getAppReasonID();
 				}
 			}
+			if(displayAppReason){
+				if(Strings.isNotBlank(typicalReason)){
+					displayReason += System.lineSeparator();
+				}
+				if(Strings.isBlank(command.getApplicationReason())){
+					displayReason += "";
+				} else {
+					displayReason += command.getApplicationReason();
+				}
+			}
+			Optional<ApplicationSetting> applicationSettingOp = applicationSettingRepository
+					.getApplicationSettingByComID(companyID);
+			ApplicationSetting applicationSetting = applicationSettingOp.get();
+			if(displayFixedReason||displayAppReason){
+				if (applicationSetting.getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED)
+						&& Strings.isBlank(typicalReason+displayReason)) {
+					throw new BusinessException("Msg_115");
+				}
+			}
+			appReason = typicalReason + displayReason;
 		}
 		AppAbsence appAbsence = opAppAbsence.get();
 		appAbsence.setAllDayHalfDayLeaveAtr(EnumAdaptor.valueOf(command.getAllDayHalfDayLeaveAtr(), AllDayHalfDayLeaveAtr.class));
@@ -154,28 +141,15 @@ public class UpdateAppAbsenceCommandHandler extends CommandHandlerWithResult<Upd
 				appAbsence.getApplication().getAppDate(), 
 				1, 
 				appAbsence.getAppID(), 
-				appAbsence.getApplication().getPrePostAtr(), 
-				command.getVersion(),
-				appAbsence.getWorkTypeCode() == null ? null : appAbsence.getWorkTypeCode().v(),
-				appAbsence.getWorkTimeCode() == null ? null : appAbsence.getWorkTimeCode().v());
-		GeneralDate startDate = opAppAbsence.get().getApplication().getAppDate();
-		GeneralDate endDate = opAppAbsence.get().getApplication().getEndDate().isPresent() ? opAppAbsence.get().getApplication().getEndDate().get() : opAppAbsence.get().getApplication().getAppDate();
-		
-		//休日申請日
-		List<GeneralDate> lstDateIsHoliday = otherCommonAlg.lstDateIsHoliday(companyID, command.getEmployeeID(), new DatePeriod(startDate, endDate));
+				appAbsence.getApplication().getPrePostAtr(), command.getVersion());
 		//check update 7.登録時のエラーチェック
 		insertAppAbsence.checkBeforeRegister(convert(command),
-				startDate,
-				endDate,
-				false,
-				lstDateIsHoliday);
+				opAppAbsence.get().getApplication().getAppDate(),
+				opAppAbsence.get().getApplication().getEndDate().isPresent() ?opAppAbsence.get().getApplication().getEndDate().get() : opAppAbsence.get().getApplication().getAppDate(),false);
 		//計画年休上限チェック(check giới han trên plan annual holiday)
 		//hoatt-2018-07-05
 		absenceServiceProcess.checkLimitAbsencePlan(companyID, command.getEmployeeID(), command.getWorkTypeCode(),
-				GeneralDate.fromString(command.getStartDate(),"yyyy/MM/dd"),
-				GeneralDate.fromString(command.getEndDate(),"yyyy/MM/dd"),
-				EnumAdaptor.valueOf(command.getHolidayAppType(),HolidayAppType.class),
-				lstDateIsHoliday);
+				GeneralDate.fromString(command.getStartDate(),"yyyy/MM/dd"), GeneralDate.fromString(command.getEndDate(),"yyyy/MM/dd"), EnumAdaptor.valueOf(command.getHolidayAppType(), HolidayAppType.class));
 		//update appAbsence
 		repoAppAbsence.updateAbsence(appAbsence);
 		SpecHolidayCommand specHdCm = command.getSpecHd();
@@ -197,12 +171,15 @@ public class UpdateAppAbsenceCommandHandler extends CommandHandlerWithResult<Upd
 		GeneralDate cmdStartDate = GeneralDate.fromString(command.getStartDate(), DATE_FORMAT);
 		GeneralDate cmdEndDate = GeneralDate.fromString(command.getEndDate(), DATE_FORMAT);
 		List<GeneralDate> listDate = new ArrayList<>();
-		List<GeneralDate> lstHoliday = otherCommonAlg.lstDateIsHoliday(companyID, command.getEmployeeID(), new DatePeriod(cmdStartDate, cmdEndDate));
+		for(GeneralDate loopDate = cmdStartDate; loopDate.beforeOrEquals(cmdEndDate); loopDate = loopDate.addDays(1)){
+			listDate.add(loopDate);
+		}
+		List<GeneralDate> lstHoliday = otherCommonAlg.lstDateNotHoliday(companyID, command.getEmployeeID(), new DatePeriod(cmdStartDate, cmdEndDate));
 		for(GeneralDate loopDate = cmdStartDate; loopDate.beforeOrEquals(cmdEndDate); loopDate = loopDate.addDays(1)){
 			if(!lstHoliday.contains(loopDate)) {
 				listDate.add(loopDate);	
 			}			
-		}		
+		}
 		if (!listDate.isEmpty()) {
 			interimRemainDataMngRegisterDateChange.registerDateChange(
 					companyID, 

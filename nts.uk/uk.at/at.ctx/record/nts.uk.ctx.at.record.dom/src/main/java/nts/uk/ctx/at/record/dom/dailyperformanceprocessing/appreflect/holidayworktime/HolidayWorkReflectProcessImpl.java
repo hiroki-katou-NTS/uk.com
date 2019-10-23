@@ -19,25 +19,26 @@ public class HolidayWorkReflectProcessImpl implements HolidayWorkReflectProcess{
 	@Inject
 	private WorkUpdateService workUpdate;
 	@Override
-	public IntegrationOfDaily updateScheWorkTimeType(String employeeId, GeneralDate baseDate, String workTypeCode,
+	public boolean updateScheWorkTimeType(String employeeId, GeneralDate baseDate, String workTypeCode,
 			String workTimeCode, boolean scheReflectFlg, boolean isPre,
 			ScheAndRecordSameChangeFlg scheAndRecordSameChangeFlg,
 			IntegrationOfDaily dailyData) {
 		//ＩNPUT．勤務種類コードとＩNPUT．就業時間帯コードをチェックする
 		if(workTimeCode.isEmpty()
 				|| workTypeCode.isEmpty()) {
-			return dailyData;
+			return false;
 		}
 		//予定勤種・就時を反映できるかチェックする
 		if(!this.checkScheWorkTimeReflect(employeeId, baseDate, workTimeCode, scheReflectFlg, isPre, scheAndRecordSameChangeFlg)) {
-			return dailyData;
+			return false;
 		}
 		//予定勤種・就時の反映
 		ReflectParameter reflectInfo = new ReflectParameter(employeeId, 
 				baseDate, 
 				workTimeCode, 
 				workTypeCode, false); 
-		return workUpdate.updateWorkTimeTypeHoliwork(reflectInfo, true, dailyData);
+		workUpdate.updateWorkTimeTypeHoliwork(reflectInfo, true, dailyData);
+		return true;		
 	}
 
 	@Override
@@ -60,7 +61,8 @@ public class HolidayWorkReflectProcessImpl implements HolidayWorkReflectProcess{
 	}
 
 	@Override
-	public IntegrationOfDaily reflectWorkTimeFrame(HolidayWorktimePara holidayWorkPara, boolean isPre, IntegrationOfDaily daily) {
+	public void reflectWorkTimeFrame(HolidayWorktimePara holidayWorkPara, 
+			IntegrationOfDaily dailyData, boolean isPre) {
 		Map<Integer, Integer> tmp = new HashMap<>();
 		for(Map.Entry<Integer,Integer> entry : holidayWorkPara.getHolidayWorkPara().getMapWorkTimeFrame().entrySet()){
 			//INPUT．休出時間のループ中の番をチェックする
@@ -70,15 +72,7 @@ public class HolidayWorkReflectProcessImpl implements HolidayWorkReflectProcess{
 			}
 		}
 		//事前休出時間の反映
-		return workUpdate.updateWorkTimeFrame(holidayWorkPara.getEmployeeId(), holidayWorkPara.getBaseDate(), tmp, isPre, daily, false);
-	}
-
-	@Override
-	public void reflectBreakTimeFrame(HolidayWorktimePara holidayWorkPara, boolean isPre, IntegrationOfDaily daily) {
-		workUpdate.updateBreakTime(holidayWorkPara.getHolidayWorkPara().getMapBreakTimeFrame(), 
-				holidayWorkPara.isRecordReflectBreakFlg(), 
-				isPre, 
-				daily);
+		workUpdate.updateWorkTimeFrame(holidayWorkPara.getEmployeeId(), holidayWorkPara.getBaseDate(), tmp, isPre, dailyData, false);
 		
 	}
 

@@ -5,7 +5,6 @@ module nts.uk.at.view.kaf010.a.viewmodel {
     import appcommon = nts.uk.at.view.kaf000.shr.model;
     import setShared = nts.uk.ui.windows.setShared;
     import util = nts.uk.util;
-    import text = nts.uk.resource.getText;
     
     export class ScreenModel {
         
@@ -76,8 +75,6 @@ module nts.uk.at.view.kaf010.a.viewmodel {
         overtimeHours: KnockoutObservableArray<common.OvertimeCaculation> = ko.observableArray([]);
         //休憩時間
         breakTimes: KnockoutObservableArray<common.OvertimeCaculation> = ko.observableArray([]);
-        
-        breakTimesOld: Array<common.OvertimeCaculation> = [];
         //加給時間
         bonusTimes: KnockoutObservableArray<common.OvertimeCaculation> = ko.observableArray([]);
         //menu-bar 
@@ -152,8 +149,6 @@ module nts.uk.at.view.kaf010.a.viewmodel {
         //画面モード(表示/編集)
         editable: KnockoutObservable<boolean> = ko.observable(true);
         enableOvertimeInput: KnockoutObservable<boolean> = ko.observable(false);
-        performanceExcessAtr: KnockoutObservable<number> = ko.observable(0);
-        preExcessDisplaySetting: KnockoutObservable<number> = ko.observable(0);
         constructor(transferData :any) {
             let self = this;  
             if(transferData != null){
@@ -213,8 +208,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                             appDate: moment(value).format(self.DATE_FORMAT),
                             prePostAtr: self.prePostSelected(),
                             siftCD: self.siftCD(),
-                            overtimeHours: ko.toJS(self.overtimeHours),
-                            changeEmployee: nts.uk.util.isNullOrEmpty(self.employeeList()) ? null : self.employeeList()[0].id
+                            overtimeHours: ko.toJS(self.overtimeHours)    
                         }).done((data) =>{
                             self.findBychangeAppDateData(data);
                             self.kaf000_a.getAppDataDate(6, moment(value).format(self.DATE_FORMAT), false,self.employeeID());
@@ -277,19 +271,9 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                     return self.typicalReasonDisplayFlg() || self.displayAppReasonContentFlg();
             }
         }
-        
-        getName(code, name) {
-            let result = "";
-            if (code) {
-                result = name || text("KAL003_120");
-            }
-            return result;
-        }
 
         initData(data: any) {
             var self = this;
-            self.preExcessDisplaySetting(data.preExcessDisplaySetting);
-            self.performanceExcessAtr(data.performanceExcessAtr);
             self.requiredReason(data.requireAppReasonFlg);
             self.enableOvertimeInput(data.enableOvertimeInput);
             self.checkBoxValue(data.manualSendMailAtr);
@@ -307,11 +291,11 @@ module nts.uk.at.view.kaf010.a.viewmodel {
             self.employeeID(data.employeeID);
             if (data.workTime != null) {
                 self.siftCD(data.workTime.siftCode);
-                self.siftName(self.getName(data.workTime.siftCode, data.workTime.siftName));
+                self.siftName(data.workTime.siftName);
             }
             if (data.workType != null) {
                 self.workTypeCd(data.workType.workTypeCode);
-                self.workTypeName(self.getName(data.workType.workTypeCode, data.workType.workTypeName));
+                self.workTypeName(data.workType.workTypeName);
             }
             self.workTypecodes(data.workTypes);
             self.workTimecodes(data.workTimes);
@@ -374,6 +358,11 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                     }
                 }
             }
+//            //
+//            if (data.appOvertimeNightFlg == 1) {
+//                self.overtimeHours.push(new common.OvertimeCaculation("", "", 1, "", 11,0, nts.uk.resource.getText("KAF005_63"), null, null, null,"#[KAF005_64]","",""));
+//            }
+//            self.overtimeHours.push(new common.OvertimeCaculation("", "", 1, "", 12,0, nts.uk.resource.getText("KAF005_65"), null, null, null,"#[KAF005_66]","",""));
             if(data.overtimeAtr == 0){
                 self.heightOvertimeHours(180);   
             }else if(data.overtimeAtr == 1){
@@ -430,7 +419,6 @@ module nts.uk.at.view.kaf010.a.viewmodel {
         //登録処理
         registerClick() {
             let self = this;
-            $("#inputdate").trigger("validate");
             if(self.displayCaculationTime()){
                 if(!appcommon.CommonProcess.checkWorkTypeWorkTime(self.workTypeCd(), self.siftCD(), "kaf010-workType-workTime-div")){
                     return;    
@@ -453,6 +441,25 @@ module nts.uk.at.view.kaf010.a.viewmodel {
             
             //block screen
             nts.uk.ui.block.invisible();
+            /*
+            let appReason: string,
+                divergenceReason: string;
+                appReason = self.getReason(
+                self.typicalReasonDisplayFlg(),
+                self.selectedReason(),
+                self.reasonCombo(),
+                self.displayAppReasonContentFlg(),
+                self.multilContent()
+            );
+            let appReasonError = !appcommon.CommonProcess.checkAppReason(true, self.typicalReasonDisplayFlg(), self.displayAppReasonContentFlg(), appReason);
+            if(appReasonError){
+                nts.uk.ui.dialog.alertError({ messageId: 'Msg_115' }).then(function(){nts.uk.ui.block.clear();});    
+                return;    
+            }
+            if(!appcommon.CommonProcess.checklenghtReason(appReason,"#appReason")){
+                return;
+            }
+            */
             let comboBoxReason: string = appcommon.CommonProcess.getComboBoxReason(self.selectedReason(), self.reasonCombo(), self.typicalReasonDisplayFlg());
             let textAreaReason: string = appcommon.CommonProcess.getTextAreaReason(self.multilContent(), self.displayAppReasonContentFlg(), true);
             
@@ -498,19 +505,70 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 overtimeHours: ko.toJS(self.overtimeHours()),
                 breakTimes: ko.toJS(self.breakTimes()),
                 restTime: ko.toJS(self.restTime()),
-                overTimeShiftNight: ko.toJS(overTimeShiftNightTmp == null ? null : overTimeShiftNightTmp),
-                flexExessTime: ko.toJS(flexExessTimeTmp == null ? null : flexExessTimeTmp),
+                overTimeShiftNight: ko.toJS(overTimeShiftNightTmp == null ? 0 : overTimeShiftNightTmp),
+                flexExessTime: ko.toJS(flexExessTimeTmp == null ? -1 : flexExessTimeTmp),
                 divergenceReasonContent: divergenceReason,
                 sendMail: self.checkBoxValue(),
                 leaveAppID: self.leaverAppID(),
                 uiType: self.uiType(),
                 calculateFlag: self.calculateFlag(),
-                appReasonID: comboBoxReason,
-                checkOver1Year: true,
-                actualExceedConfirm: false
+                appReasonID: comboBoxReason
             };
             //登録前エラーチェック
-            self.beforeRegisterColorConfirm(overtime);
+            service.checkBeforeRegister(overtime).done((data) => {                
+                if (data.errorCode == 0) {
+                    overtime.appOvertimeDetail = data.appOvertimeDetail;
+                    self.confirmInconsistency(data, overtime);
+                    /*
+                    if (data.confirm) {
+                        //メッセージNO：829
+                        dialog.confirm({ messageId: "Msg_829" }).ifYes(() => {
+                            //登録処理を実行
+                            self.registerData(overtime);
+                        }).ifNo(() => {
+                            //終了状態：処理をキャンセル
+                            nts.uk.ui.block.clear();
+                            return;
+                        });
+                    } else {
+                        //登録処理を実行
+                        self.registerData(overtime);
+                    }
+                    */
+                } else if (data.errorCode == 1){
+                    self.calculateFlag(1);
+                    if(data.frameNo == -1){
+                        let frameName = "";
+                        //Setting color for item error
+                        for (let i = 0; i < self.breakTimes().length; i++) {
+                            self.changeColor( self.breakTimes()[i].attendanceID(), self.breakTimes()[i].frameNo(),data.errorCode);
+                            if(self.breakTimes().length == 1){
+                                frameName = self.breakTimes()[i].frameName();
+                            }else{
+                                if(i == 0){
+                                    frameName =  self.breakTimes()[0].frameName();
+                                }else{
+                                    frameName += "、"+ self.breakTimes()[i].frameName();
+                                }
+                            }
+                        }
+                        
+                        dialog.alertError({messageId:"Msg_424", messageParams: [self.employeeName(),frameName]}) .then(function() { nts.uk.ui.block.clear(); }); 
+                    }else{
+                      //Change background color
+                        self.changeColor( data.attendanceId, data.frameNo,data.errorCode);
+                        dialog.alertError({messageId:"Msg_424", messageParams: [self.employeeName(),$('#overtimeHoursHeader_'+data.attendanceId+'_'+data.frameNo).text()]}) .then(function() { nts.uk.ui.block.clear(); }); 
+                    }                    
+                }
+            }).fail((res) => {
+                if(nts.uk.util.isNullOrEmpty(res.errors)){
+                    dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
+                    .then(function() { nts.uk.ui.block.clear(); });       
+                } else {
+                    nts.uk.ui.dialog.bundledErrors({ errors: res.errors })    
+                    .then(function() { nts.uk.ui.block.clear(); });      
+                }           
+            });
         }
         //登録処理を実行
         registerData(overtime) {
@@ -532,60 +590,22 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 .then(function() { nts.uk.ui.block.clear(); });
             });
         }
-
-        getErrorCode(calcError, preAppError, actualError){
-            if(actualError > preAppError) {
-                if(actualError > calcError) {
-                    return actualError;
-                } else {
-                    return calcError;
-                }
-            } else {
-                if(preAppError > calcError) {
-                    return preAppError;
-                } else {
-                    return calcError;
-                }
-            }
-        }
         
-        changeColor(attendanceId, frameNo,errorCode, beforeAppStatus, actualStatus, calcChange){
-            let self = this;
-            if((self.prePostSelected() == 1) && (self.performanceExcessAtr() == 2) &&(errorCode == 4||actualStatus==3)){
-                $('td#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', '#FD4D4D');
-                $('input#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', '#FD4D4D');
-                return '#FD4D4D';
+        changeColor(attendanceId, frameNo,errorCode){
+            if(errorCode == 1){
+                $('td#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', '#FD4D4D')
+                $('input#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', '#FD4D4D')
             }
-            if((self.prePostSelected() == 1) && (self.performanceExcessAtr() == 1) &&(errorCode == 3||actualStatus==3)){
-                $('td#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', '#F6F636');
-                $('input#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', '#F6F636');
-                return '#F6F636';
+            if(errorCode == 2){
+                $('td#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', '#F6F636')
+                $('input#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', '#F6F636')
             }
-            if((self.prePostSelected() == 1) && (self.preExcessDisplaySetting()==1) &&(errorCode == 2||beforeAppStatus==true)){
-                $('td#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', '#FFC0CB');
-                $('input#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', '#FFC0CB');
-                return '#FFC0CB';
+             if(errorCode == 3){
+                $('td#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', '#F69164')
+                $('input#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', '#F69164')
             }
-            if(errorCode == 1 && calcChange){
-                $('td#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', '#F69164');
-                $('input#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', '#F69164');
-                return '#F69164';
-            }
-            if(self.editable()&& self.enableOvertimeInput()){
-                if(calcChange){
-                    $('td#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', 'none');
-                    $('input#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', 'none');
-                    return 'none'; 
-                }
-            } else {
-                if(calcChange){
-                    $('td#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', '#ebebe4');
-                    $('input#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', '#ebebe4');
-                    return '#ebebe4';
-                }
-            }
+           
         }
-
         validate(): boolean{
             let self = this;            
             //勤務時間
@@ -608,11 +628,6 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                     let endTimeAdd = self.restTime()[i+1].endTime();
                     let attendanceIdAdd = self.restTime()[i+1].attendanceID();
                     let frameNoAdd = self.restTime()[i+1].frameNo();
-                } else {
-                    let startTimeAdd = null;
-                    let endTimeAdd = null;
-                    let attendanceIdAdd = null;
-                    let frameNoAdd = null;    
                 }
                 if(nts.uk.util.isNullOrEmpty(startTime) && !nts.uk.util.isNullOrEmpty(endTime)){
                     dialog.alertError({messageId:"Msg_307"})
@@ -666,80 +681,87 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 if ( !self.validateTime( self.timeStart2(), self.timeEnd2(), '#inpStartTime2' ) ) {
                     return;
                 };
-            }  
-            let breakTimeInputLst = [];
-            _.forEach(ko.toJS(self.breakTimes()), (item) => {
-                breakTimeInputLst.push(self.initCalculateData(item));        
-            });
-            let param1 = {
-                employeeID: self.employeeID(),
-                appDate: moment(self.appDate()).format("YYYY/MM/DD"),
-                prePostAtr: self.prePostSelected(),
-                workTypeCD: self.workTypeCd(),
-                workTimeCD: self.siftCD(),
-                overtimeInputLst: breakTimeInputLst,
+            }         
+            let param : any ={
+                breakTimes: _.map(ko.toJS(self.breakTimes()), item => {return self.initCalculateData(item);}),
+                //bonusTimes: _.map(ko.toJS(self.bonusTimes()), item => {return self.initCalculateData(item);}),
+                prePostAtr : self.prePostSelected(),
+                appDate : nts.uk.util.isNullOrEmpty(self.appDate()) ? null : moment(self.appDate()).format(self.DATE_FORMAT),
+                siftCD: self.siftCD(),
+                workTypeCode: self.workTypeCd(),
+                inputDate: null,
+                startTimeRests: nts.uk.util.isNullOrEmpty(self.restTime()) ? [] : _.map(self.restTime(), function (x) { return x.startTime(); }),
+                endTimeRests: nts.uk.util.isNullOrEmpty(self.restTime()) ? [] : _.map(self.restTime(), function (x) { return x.endTime(); }), 
                 startTime: nts.uk.util.isNullOrEmpty(self.timeStart1()) ? null : self.timeStart1(),
                 endTime: nts.uk.util.isNullOrEmpty(self.timeEnd1()) ? null : self.timeEnd1(),
-                startTimeRests: nts.uk.util.isNullOrEmpty(self.restTime()) ? [] : _.map(self.restTime(),x=>{return x.startTime()}),
-                endTimeRests: nts.uk.util.isNullOrEmpty(self.restTime()) ? [] : _.map(self.restTime(),x=>{return x.endTime()})     
+                employeeID: self.employeeID()
             }
             //setting work content
             self.preWorkContent = {
-                applicationDate: self.appDate(),
-                workType: self.workTypeCd(),
-                siftType: self.siftCD(),
-                workClockFrom1: self.timeStart1(),
-                workClockTo1: self.timeEnd1(),
-                workClockFrom2: self.timeStart2(),
-                workClockTo2: self.timeEnd2(),
-                breakTimes:  ko.toJS(self.breakTimes()),
-                restTime:  ko.toJS(self.restTime()),
-            }
+                    applicationDate: self.appDate(),
+                    workType: self.workTypeCd(),
+                    siftType: self.siftCD(),
+                    workClockFrom1: self.timeStart1(),
+                    workClockTo1: self.timeEnd1(),
+                    workClockFrom2: self.timeStart2(),
+                    workClockTo2: self.timeEnd2(),
+                    breakTimes:  ko.toJS(self.breakTimes())
+                }
             //block screen
             nts.uk.ui.block.invisible();
             //計算をクリック
-            service.getCalculateValue(param1).done((data: any) => {
-                self.breakTimesOld = ko.toJS(self.breakTimes());
-                self.fillColor(data);
-                nts.uk.ui.block.clear();
+            service.getCaculationResult(param).done(function(data){
+               self.breakTimes.removeAll();
+               self.bonusTimes.removeAll();
+                if(data != null){
+                    for(let i =0; i < data.length; i++){
+                        //残業時間
+                        if(data[i].attendanceID == 2){
+                               self.breakTimes.push(new common.OvertimeCaculation("", "",
+                                    data[i].attendanceID,
+                                    "", 
+                                    data[i].frameNo,
+                                    0, 
+                                    data[i].frameName,
+                                    data[i].applicationTime,
+                                    self.convertIntToTime(data[i].preAppTime),
+                                    self.convertIntToTime(data[i].caculationTime),"#[KAF005_55]","",""));
+                               self.changeColor(2,data[i].frameNo,data[i].errorCode);//
+                           }
+                        //加給時間
+                        else if(data[i].attendanceID == 3){
+                           self.bonusTimes.push(new common.OvertimeCaculation("", "", data[i].attendanceID,
+                            "", data[i].frameNo,
+                            data[i].timeItemTypeAtr ,
+                            data[i].frameName, data[i].applicationTime,
+                           self.convertIntToTime(data[i].preAppTime), null,"","",""));
+                        }
+                    }   
+                }
+                //勤務内容を変更後に計算ボタン押下。計算フラグ=0にする。 
                 if(!self.isEmptyOverTimeInput(ko.toJS(self.breakTimes()))){
                     self.calculateFlag(0);
                 }
+                //Check work content Changed
                 self.checkWorkContentChanged();
-            });
-        }
-
-        fillColor(calcData){
-            let self = this;
-            let beforeAppStatus = calcData.beforeAppStatus;
-            let actualStatus = calcData.actualStatus;
-            let resultLst = calcData.resultLst;
-            _.forEach(self.breakTimes(), breakTime => {
-                let calcOT = _.find(resultLst, item => {
-                    return item.attendanceID == 2 &&
-                        item.frameNo == breakTime.frameNo();    
-                });          
-                if(!nts.uk.util.isNullOrUndefined(calcOT)){
-                    breakTime.applicationTime(calcOT.appTime);
-                    breakTime.preAppTime(nts.uk.util.isNullOrUndefined(calcOT.preAppTime) ? null : nts.uk.time.format.byId("Clock_Short_HM", calcOT.preAppTime));
-                    breakTime.caculationTime(nts.uk.util.isNullOrUndefined(calcOT.actualTime) ? null : nts.uk.time.format.byId("Clock_Short_HM", calcOT.actualTime));
-                    let oldValue = _.find(self.breakTimesOld, item => {
-                        return item.attendanceID == 2 &&
-                            item.frameNo == breakTime.frameNo();    
-                    });  
-                    let calcChange = false;
-                    if((nts.uk.util.isNullOrUndefined(oldValue)) || 
-                        (nts.uk.util.isNullOrUndefined(oldValue.applicationTime)) || 
-                        (ko.toJSON(oldValue).localeCompare(ko.toJSON(breakTime))!=0)){
-                        calcChange = true;
-                    }
-                    let newColor = self.changeColor(2, breakTime.frameNo(), self.getErrorCode(calcOT.calcError, calcOT.preAppError, calcOT.actualError), beforeAppStatus, actualStatus, calcChange);
-                    if(!nts.uk.util.isNullOrUndefined(newColor)){
-                        breakTime.color(newColor);
-                    }
-                    
+                nts.uk.ui.block.clear();
+                dfd.resolve(data);
+            }).fail(function(res){
+                if(res.messageId=="Msg_424"){
+                    self.changeColor(2,res.parameterIds[3],res.parameterIds[4]);
+                    dialog.alertError({messageId:"Msg_424", messageParams: [res.parameterIds[0],res.parameterIds[1],res.parameterIds[2]]}).then(function() { 
+                        nts.uk.ui.block.clear(); 
+                    });    
+                } else if(res.messageId=="Msg_1508"){ 
+                    dialog.alertError({messageId:"Msg_1508", messageParams: [res.parameterIds[0]]}).then(function() { 
+                        nts.uk.ui.block.clear(); 
+                    });   
+                } else {
+                    nts.uk.ui.block.clear();    
                 }
-            });   
+                dfd.reject(res);
+            });
+            return dfd.promise();
         }
         
         getReasonName(reasonCombo: common.ComboReason, reasonId: string): string{  
@@ -775,6 +797,10 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                     self.workTypeName(childData.selectedWorkTypeName);
                     self.siftCD(childData.selectedWorkTimeCode);
                     self.siftName(childData.selectedWorkTimeName);
+//                    self.timeStart1(childData.first.start);
+//                    self.timeEnd1(childData.first.end);
+//                    self.timeStart2(childData.second.start);
+//                    self.timeEnd2(childData.second.end);
                     let param = { workTypeCD: childData.selectedWorkTypeCode, workTimeCD: childData.selectedWorkTimeCode }
                     service.getBreakTimes(param).done((data) => {
                         self.setTimeZones(data);
@@ -850,10 +876,37 @@ module nts.uk.at.view.kaf010.a.viewmodel {
             
             self.instructInforFlag(data.displayHolidayInstructInforFlg);
             self.instructInfor(data.holidayInstructInformation);
+            // preAppOvertime
+            //self.convertpreAppOvertimeDto(overtimeDto);
             self.referencePanelFlg(data.referencePanelFlg);
             self.preAppPanelFlg(data.preAppPanelFlg);
             self.allPreAppPanelFlg(data.allPreAppPanelFlg);
             self.isRightContent(data.allPreAppPanelFlg || data.referencePanelFlg);
+           
+             // 残業時間
+//            if (overtimeDto.overTimeInputs != null) {
+//                for (let i = 0; i < overtimeDto.overTimeInputs.length; i++) {
+//                    //1: 残業時間
+//                    if (overtimeDto.overTimeInputs[i].attendanceID == 1) {
+//                        self.overtimeHours.push(new common.OvertimeCaculation("", "", overtimeDto.overTimeInputs[i].attendanceID, "", overtimeDto.overTimeInputs[i].frameNo,0, overtimeDto.overTimeInputs[i].frameName, null, null, null,"#[KAF005_55]","",""));
+//                    }
+//                    //2: 休憩時間
+//                    if (overtimeDto.overTimeInputs[i].attendanceID == 2) {
+//                        self.breakTimes.push(new common.OvertimeCaculation("", "", overtimeDto.overTimeInputs[i].attendanceID, "", overtimeDto.overTimeInputs[i].frameNo,0,overtimeDto.overTimeInputs[i].frameName, null, null, null,"","",""));
+//                    }
+//                    //3: 加給時間
+//                    if (overtimeDto.overTimeInputs[i].attendanceID == 3 || overtimeDto.overTimeInputs[i].attendanceID == 4) {
+//                        self.bonusTimes.push(new common.OvertimeCaculation("", "", overtimeDto.overTimeInputs[i].attendanceID, "", overtimeDto.overTimeInputs[i].frameNo,overtimeDto.overTimeInputs[i].timeItemTypeAtr ,overtimeDto.overTimeInputs[i].frameName, null, null, null,"","",""));
+//                    }
+//                }
+//            }
+//            if(overtimeDto.overtimeAtr == 0){
+//                self.heightOvertimeHours(58);   
+//            }else if(overtimeDto.overtimeAtr == 1){
+//                self.heightOvertimeHours(180);
+//            }else{
+//                self.heightOvertimeHours(216);
+//            }
         }
         
         convertpreAppOvertimeDto(data: any) {
@@ -880,7 +933,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 self.overtimeHoursPre.removeAll();
                 if (data.preAppHolidayWorkDto.holidayWorkInputs != null) {
                     for (let i = 0; i < data.preAppHolidayWorkDto.holidayWorkInputs.length; i++) {
-                        if (data.preAppHolidayWorkDto.holidayWorkInputs[i].applicationTime != null) {
+                        if (data.preAppHolidayWorkDto.holidayWorkInputs[i].applicationTime != -1) {
                             self.overtimeHoursPre.push(new common.AppOvertimePre("", "",
                                 data.preAppHolidayWorkDto.holidayWorkInputs[i].attendanceID,
                                 "", data.preAppHolidayWorkDto.holidayWorkInputs[i].frameNo,
@@ -903,11 +956,11 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 self.appDateReference(data.appOvertimeReference.appDateRefer);
                 if(data.appOvertimeReference.workTypeRefer != null){
                     self.workTypeCodeReference(data.appOvertimeReference.workTypeRefer.workTypeCode);
-                    self.workTypeNameReference(self.getName(data.appOvertimeReference.workTypeRefer.workTypeCode, data.appOvertimeReference.workTypeRefer.workTypeName));
+                    self.workTypeNameReference(data.appOvertimeReference.workTypeRefer.workTypeName);
                 }
                 if(data.appOvertimeReference.siftTypeRefer != null){
                     self.siftCodeReference(data.appOvertimeReference.siftTypeRefer.siftCode);
-                    self.siftNameReference(self.getName(data.appOvertimeReference.siftTypeRefer.siftCode, data.appOvertimeReference.siftTypeRefer.siftName));
+                    self.siftNameReference(data.appOvertimeReference.siftTypeRefer.siftName);
                 }
                 if(data.appOvertimeReference.workClockFrom1Refer != null || data.appOvertimeReference.workClockTo1Refer!= null){
                      self.workClockFrom1To1Reference(self.convertIntToTime(data.appOvertimeReference.workClockFrom1Refer) + " "+ nts.uk.resource.getText("KAF005_126") +" "+self.convertIntToTime(data.appOvertimeReference.workClockTo1Refer));
@@ -1047,205 +1100,16 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 }
             });
             //休憩時間
-            for (let i = 0; i < self.restTime().length; i++) {
-                self.restTime()[i].startTime.subscribe(value => {
-                    if (!nts.uk.util.isNullOrEmpty(self.preWorkContent)) {
-                        if (self.preWorkContent.restTime[i].startTime != value) {
-                            //→エラーＭＳＧ
-                            self.calculateFlag(1);
-                        }
-                    }
-                });
-                self.restTime()[i].endTime.subscribe(value => {
-                    if (!nts.uk.util.isNullOrEmpty(self.preWorkContent)) {
-                        if (self.preWorkContent.restTime[i].endTime != value) {
-                            //→エラーＭＳＧ
-                            self.calculateFlag(1);
-                        }
-                    }
-                });
-            }
-        }
-        
-        beforeRegisterColorConfirm(overtime: any){
-            let self = this;
-            service.beforeRegisterColorConfirm(overtime).done((data2) => {
-                overtime.checkOver1Year = false;
-                self.contentBefRegColorConfirmDone(overtime, data2);
-            }).fail((res) => {
-                if (res.messageId == "Msg_1518") {//confirm
-                    dialog.confirm({ messageId: res.messageId }).ifYes(() => {
-                        overtime.checkOver1Year = false;
-                        service.beforeRegisterColorConfirm(overtime).done((data3) => {
-                            self.contentBefRegColorConfirmDone(overtime, data3);
-                        }).fail((res) => {
-                            dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
-                                .then(function() { nts.uk.ui.block.clear(); });
-                        });
-                    }).ifNo(() => {
-                        nts.uk.ui.block.clear();
-                    });
-
-                } else {
-                    dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
-                        .then(function() { nts.uk.ui.block.clear(); });
-                }
-            });
-        }
-
-        contentBefRegColorConfirmDone(overtime, data2) {
-            let self = this;
-            if(nts.uk.util.isNullOrUndefined(data2.preActualColorResult)){
-                self.beforeRegisterProcess(overtime);    
-            } else {
-                self.breakTimesOld = ko.toJS(self.breakTimes());
-                self.fillColor(data2.preActualColorResult);
-                self.checkPreApp(overtime, data2);        
-            }
-        }
-        
-        checkPreApp(overtime, data) {
-            let self = this;
-            let beforeAppStatus = data.preActualColorResult.beforeAppStatus;
-            let actualStatus = data.preActualColorResult.actualStatus;
-            let resultLst = data.preActualColorResult.resultLst;
-            if(self.preExcessDisplaySetting()==0){
-                self.checkActual(overtime, data);
-                return;    
-            }
-            if(beforeAppStatus){
-                dialog.confirm({ messageId: "Msg_1508" }).ifYes(() => {
-                    self.checkActual(overtime, data);   
-                }).ifNo(() => {
-                    nts.uk.ui.block.clear();
-                });       
-                return; 
-            }
-            let preAppErrorFrames = resultLst.filter(f => 
-                f.attendanceID == 2 && 
-                self.getErrorCode(f.calcError, f.preAppError, f.actualError, beforeAppStatus, actualStatus) == 2);
-            if(nts.uk.util.isNullOrEmpty(preAppErrorFrames)){
-                self.checkActual(overtime, data);         
-            } else {
-                let framesError = '';
-                preAppErrorFrames.forEach((v, k)=>{
-                    let currentFrame = _.find(self.breakTimes(), ot => ot.attendanceID()==v.attendanceID && ot.frameNo()==v.frameNo);
-                    if(!nts.uk.util.isNullOrUndefined(currentFrame)){
-                        framesError+=currentFrame.frameName();
-                        if(k<(preAppErrorFrames.length-1)){
-                            framesError+=",";    
-                        }    
-                    }    
-                }); 
-                dialog.confirm({ messageId: "Msg_424", messageParams: [ self.employeeName(), framesError ] }).ifYes(() => {
-                    self.checkActual(overtime, data);
-                }).ifNo(() => {
-                    nts.uk.ui.block.clear();
-                }); 
-            }
-        }
-        
-        checkActual(overtime, data) {
-            let self = this;
-            let beforeAppStatus = data.preActualColorResult.beforeAppStatus;
-            let actualStatus = data.preActualColorResult.actualStatus;
-            let resultLst = data.preActualColorResult.resultLst;
-            if(self.performanceExcessAtr()==0){
-                self.beforeRegisterProcess(overtime);
-                return;        
-            } 
-            if(actualStatus==3){
-                if(self.performanceExcessAtr() == 2){
-                    dialog.alertError({ messageId: "Msg_1565", messageParams: [ self.employeeName(), moment(self.appDate()).format(self.DATE_FORMAT), "登録できません。" ] })
-                    .then(function() { 
-                        nts.uk.ui.block.clear();
-                    });    
-                    return;
-                } else {
-                    dialog.confirm({ messageId: "Msg_1565", messageParams: [ self.employeeName(), moment(self.appDate()).format(self.DATE_FORMAT), "登録してもよろしいですか？" ] }).ifYes(() => {
-                        self.beforeRegisterProcess(overtime);  
-                    }).ifNo(() => {
-                        nts.uk.ui.block.clear();
-                    }); 
-                    return;        
-                }   
-            }
-            let actualErrorFrames = resultLst.filter(f => 
-                f.attendanceID == 2 && 
-                self.getErrorCode(f.calcError, f.preAppError, f.actualError, beforeAppStatus, actualStatus) == 4);
-            let actualAlarmFrames = resultLst.filter(f => 
-                f.attendanceID == 2 && 
-                self.getErrorCode(f.calcError, f.preAppError, f.actualError, beforeAppStatus, actualStatus) == 3);
-            if(!nts.uk.util.isNullOrEmpty(actualErrorFrames)){
-                let framesError = '';
-                actualErrorFrames.forEach((v, k)=>{
-                    let currentError = _.find(self.breakTimes(), ot => ot.attendanceID()==v.attendanceID&&ot.frameNo()==v.frameNo);
-                    if(!nts.uk.util.isNullOrUndefined(currentError)){
-                        framesError+=currentError.frameName();
-                        if(k<(actualErrorFrames.length-1)){
-                            framesError+=",";    
-                        }    
-                    }    
-                });  
-                dialog.alertError({ messageId: "Msg_423", messageParams: [ self.employeeName(), framesError, "登録できません。" ] })
-                .then(function() { 
-                    nts.uk.ui.block.clear();
-                }); 
-                return;
-            } else if(!nts.uk.util.isNullOrEmpty(actualAlarmFrames)){
-                let framesAlarm = '';
-                actualAlarmFrames.forEach((v, k)=>{
-                    let currentAlarm = _.find(self.breakTimes(), ot => ot.attendanceID()==v.attendanceID&&ot.frameNo()==v.frameNo);
-                    if(!nts.uk.util.isNullOrUndefined(currentAlarm)){
-                        framesAlarm+=currentAlarm.frameName();
-                        if(k<(actualAlarmFrames.length-1)){
-                            framesAlarm+=",";    
-                        }    
-                    }    
-                }); 
-                dialog.confirm({ messageId: "Msg_423", messageParams: [ self.employeeName(), framesAlarm, "登録してもよろしいですか？" ] }).ifYes(() => {
-                    self.beforeRegisterProcess(overtime);
-                }).ifNo(() => {
-                    nts.uk.ui.block.clear();
-                }); 
-                return;
-            } else {
-                self.beforeRegisterProcess(overtime);    
-            }
-        } 
-
-        beforeRegisterProcess(overtime: any) {
-            let self = this;
-            service.checkBeforeRegister(overtime).done((data) => {
-                overtime.appOvertimeDetail = data.appOvertimeDetail;
-                self.confirmInconsistency(data, overtime);
-            }).fail((res) => {
-                if (nts.uk.util.isNullOrEmpty(res.errors)) {
-                    dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
-                    .then(function() { nts.uk.ui.block.clear(); });     
-                } else {
-                    let errors = res.errors;
-                    for (let i = 0; i < errors.length; i++) {
-                        let error = errors[i];
-                        if (error.messageId == "Msg_1538") {
-                            error.parameterIds = [
-                                nts.uk.time.formatYearMonth(parseInt(error.parameterIds[4])),
-                                nts.uk.time.formatYearMonth(parseInt(error.parameterIds[5])),
-                                nts.uk.time.format.byId("Clock_Short_HM", parseInt(error.parameterIds[6])),
-                                nts.uk.time.format.byId("Clock_Short_HM", parseInt(error.parameterIds[7]))
-                            ];
-                        } else {
-                            error.parameterIds = [
-                                nts.uk.time.format.byId("Clock_Short_HM", parseInt(error.parameterIds[4])),
-                                nts.uk.time.format.byId("Clock_Short_HM", parseInt(error.parameterIds[5]))
-                            ];
-                        }
-                        error.message = nts.uk.resource.getMessage(error.messageId, error.parameterIds);
-                    }
-                    nts.uk.ui.dialog.bundledErrors({ errors: errors })
-                        .then(function() { nts.uk.ui.block.clear(); });
-                }
-            });
+//            for (let i = 0; i < self.breakTimes().length; i++) {
+//                self.breakTimes()[i].applicationTime.subscribe(value => {
+//                    if (!nts.uk.util.isNullOrEmpty(self.preWorkContent)) {
+//                        if (self.preWorkContent.breakTimes[i].applicationTime != value) {
+//                            //→エラーＭＳＧ
+//                            self.calculateFlag(1);
+//                        }
+//                    }
+//                });
+//            }
         }
         
         confirmInconsistency(data: any, overtime: any){
@@ -1253,6 +1117,29 @@ module nts.uk.at.view.kaf010.a.viewmodel {
             service.confirmInconsistency(overtime).done((data1) => { 
                 if (!nts.uk.util.isNullOrEmpty(data1)) {
                     dialog.confirm({ messageId: data1[0], messageParams: [data1[1],data1[2]] }).ifYes(() => {
+                        //登録処理を実行
+                        self.confirmPrerepudiation(data, overtime);
+                    }).ifNo(() => {
+                        //終了状態：処理をキャンセル
+                        nts.uk.ui.block.clear();
+                        return;
+                    });
+                } else {
+                    //登録処理を実行
+                    self.confirmPrerepudiation(data, overtime);
+                }   
+            }).fail((res) => {
+                dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
+                .then(function() { nts.uk.ui.block.clear(); });           
+            });    
+        }
+        
+        confirmPrerepudiation(data: any, overtime: any){
+            let self = this;
+            service.confirmPrerepudiation(overtime).done((data2) => { 
+                if (data2) {
+                    //メッセージNO：829
+                    dialog.confirm({ messageId: "Msg_829" }).ifYes(() => {
                         //登録処理を実行
                         self.registerData(overtime);
                     }).ifNo(() => {
@@ -1267,8 +1154,9 @@ module nts.uk.at.view.kaf010.a.viewmodel {
             }).fail((res) => {
                 dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
                 .then(function() { nts.uk.ui.block.clear(); });           
-            });    
+            });      
         }
+        
     }
 
 }

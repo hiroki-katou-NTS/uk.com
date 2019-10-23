@@ -5,7 +5,6 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
@@ -14,8 +13,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
  */
 //時間帯別外出丸め設定
 @Getter
-@NoArgsConstructor
-public class GoOutTimezoneRoundingSet extends WorkTimeDomainObject implements Cloneable{
+public class GoOutTimezoneRoundingSet extends WorkTimeDomainObject {
 
 	/** The pub hol work timezone. */
 	// 休日出勤時間帯
@@ -77,19 +75,5 @@ public class GoOutTimezoneRoundingSet extends WorkTimeDomainObject implements Cl
 		this.pubHolWorkTimezone.correctDefaultData(screenMode);
 		this.workTimezone.correctDefaultData(screenMode);
 		this.ottimezone.correctDefaultData(screenMode);
-	}
-	
-	@Override
-	public GoOutTimezoneRoundingSet clone() {
-		GoOutTimezoneRoundingSet cloned = new GoOutTimezoneRoundingSet();
-		try {
-			cloned.pubHolWorkTimezone = this.pubHolWorkTimezone.clone();
-			cloned.workTimezone = this.workTimezone.clone();
-			cloned.ottimezone = this.ottimezone.clone();
-		}
-		catch (Exception e){
-			throw new RuntimeException("GoOutTimezoneRoundingSet clone error.");
-		}
-		return cloned;
 	}
 }

@@ -11,11 +11,7 @@ public interface PersonContactRepository {
 	
 	void add(PersonContact domain);
 	
-	void addAll(List<PersonContact> domains);
-	
 	void update(PersonContact domain);
-	
-	void updateAll(List<PersonContact> domains);
 	
 	void delete(String pID);
 }

@@ -104,8 +104,7 @@ public class SysFixedCheckConMonPubImpl implements SysFixedCheckConMonPub {
 				valueExtractAlarmWR.getClassification(),
 				valueExtractAlarmWR.getAlarmItem(),
 				valueExtractAlarmWR.getAlarmValueMessage(),
-				valueExtractAlarmWR.getComment().orElse(null),
-				valueExtractAlarmWR.getCheckedValue().orElse(null)
+				valueExtractAlarmWR.getComment().orElse(null)
 				);
 	}
 	@Override
@@ -123,7 +122,7 @@ public class SysFixedCheckConMonPubImpl implements SysFixedCheckConMonPub {
 					TextResource.localize("KAL010_100"),
 					TextResource.localize("KAL010_278"),
 					TextResource.localize("KAL010_279",String.valueOf(deadlCheckMonth)),	
-					null,null));
+					null));
 		}
 		return Optional.empty();
 	}

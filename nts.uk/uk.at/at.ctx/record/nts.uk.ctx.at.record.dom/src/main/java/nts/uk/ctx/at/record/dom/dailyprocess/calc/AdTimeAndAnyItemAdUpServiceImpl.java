@@ -2,7 +2,9 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -11,6 +13,7 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
+import nts.uk.ctx.at.record.dom.attendanceitem.StoredProcdureProcess;
 import nts.uk.ctx.at.record.dom.attendanceitem.StoredProcedureFactory;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGateOfDaily;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
@@ -22,6 +25,8 @@ import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -40,6 +45,9 @@ public class AdTimeAndAnyItemAdUpServiceImpl implements AdTimeAndAnyItemAdUpServ
 	@Inject
 	private AnyItemValueOfDailyRepo anyItemValueOfDailyRepo;
 	
+	/*ストアド実行*/
+	@Inject
+	private StoredProcdureProcess storedProcedureProcess;
 	/*日別実績の勤務情報*/
 	@Inject
 	private WorkInformationRepository workInfo;
@@ -53,7 +61,6 @@ public class AdTimeAndAnyItemAdUpServiceImpl implements AdTimeAndAnyItemAdUpServ
 	@Inject
 	private TimeLeavingOfDailyPerformanceRepository timeLeave;
 	
-	/*任意項目ストアド*/
 	@Inject
 	private StoredProcedureFactory dbStoredProcess;
 	
@@ -75,12 +82,23 @@ public class AdTimeAndAnyItemAdUpServiceImpl implements AdTimeAndAnyItemAdUpServ
 	
 	@Override
 	public List<IntegrationOfDaily> addAndUpdate(List<IntegrationOfDaily> daily) {
-		return saveOnly(daily);
+		return addAndUpdate(daily, null);
+	}
+	
+	@Override
+	public List<IntegrationOfDaily> addAndUpdate(List<IntegrationOfDaily> daily, Map<WorkTypeCode, WorkType> workTypes) {
+		
+		return saveOnly(runStoredProcess(daily, workTypes));
 	}
 	
 	@Override
 	public IntegrationOfDaily addAndUpdate(IntegrationOfDaily daily) {
 		return addAndUpdate(Arrays.asList(daily)).get(0);
+	}
+
+	@Override
+	public List<IntegrationOfDaily> runStoredProcess(List<IntegrationOfDaily> daily) {
+		return runStoredProcess(daily, new HashMap<>());
 	}
 
 	@Override
@@ -100,6 +118,12 @@ public class AdTimeAndAnyItemAdUpServiceImpl implements AdTimeAndAnyItemAdUpServ
 			dbStoredProcess.runStoredProcedure(comId, d.getAttendanceTimeOfDailyPerformance(), d.getWorkInformation());
 		});
 		return daily;
+	}
+
+	@Override
+	public List<IntegrationOfDaily> runStoredProcess(List<IntegrationOfDaily> daily,
+			Map<WorkTypeCode, WorkType> workTypes) {
+		return storedProcedureProcess.dailyProcessing(daily, workTypes);
 	}
 
 }

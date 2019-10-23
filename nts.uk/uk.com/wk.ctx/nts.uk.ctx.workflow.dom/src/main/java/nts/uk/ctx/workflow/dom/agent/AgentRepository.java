@@ -109,7 +109,7 @@ public interface AgentRepository {
 	public List<Agent> findByApproverAndDate(String companyId, String approverID, GeneralDate startDate, GeneralDate endDate);
 	
 	public List<AgentInfoOutput> findAgentByPeriod(String companyID, List<String> listApprover, 
-			GeneralDate startDate, GeneralDate endDate, int agentType);
+			GeneralDate startDate, GeneralDate endDate, Integer agentType);
 	
 	/**
 	 * get agent by agentSid
@@ -121,8 +121,4 @@ public interface AgentRepository {
 	
 	// only for SPR
 	List<Agent> findAgentForSpr(String companyId, String approverID, GeneralDate startDate, GeneralDate endDate);
-	//hoatt
-	List<Agent> getListByAgentType1(String companyId, String agentId);
-	//hoatt
-	List<Agent> getListAgentBySidReqId(String companyId, String employeeId, String requestId);
 }

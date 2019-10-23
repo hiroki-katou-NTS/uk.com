@@ -12,6 +12,8 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.ConditionAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.SpecBonusPayTimeSheetForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetOfDeductionItem;
+//import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPayTimesheet;
+//import nts.uk.ctx.at.shared.dom.bonuspay.setting.SpecBonusPayTimesheet;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
@@ -55,14 +57,11 @@ public class MidNightTimeSheetForCalc extends CalculationTimeSheet{
 	 */
 	public TimeSpanForCalc decisionNewSpan(TimeSpanForCalc timeSpan,TimeWithDayAttr baseTime,boolean isDateBefore) {
 		if(isDateBefore) {
-			val endOclock = timeSpan.getEnd().lessThan(baseTime) ? timeSpan.getEnd() : baseTime; 
-			return new TimeSpanForCalc(timeSpan.getStart(),endOclock);
+			return new TimeSpanForCalc(timeSpan.getStart(),baseTime);
 		}
 		else {
-			val startOclock = baseTime.lessThan(timeSpan.getStart()) ? timeSpan.getStart() : baseTime ;
-			return new TimeSpanForCalc(startOclock,timeSpan.getEnd());
+			return new TimeSpanForCalc(baseTime,timeSpan.getEnd());
 		}
-		
 	}
 	/**
 	 * 再帰中に自分自身を作り直す処理

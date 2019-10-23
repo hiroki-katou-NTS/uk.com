@@ -18,6 +18,4 @@ public interface ResultDeletionRepository
 	 * @param data
 	 */
 	void update(ResultDeletion data);
-	
-	void update(ResultDeletion resultDel, ManualSetDeletion manualSetDel);
 }

@@ -10,7 +10,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.StringUtil;
@@ -44,8 +43,8 @@ public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<Su
 	@Inject
 	private SystemSuspendService systemSuspendService;
 	
-	/* 
-	 * ログイン（形式１）
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
 	 */
 	@Override
 	protected CheckChangePassDto internalHanler(CommandHandlerContext<SubmitLoginFormOneCommand> context) {
@@ -84,11 +83,7 @@ public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<Su
 				
 				throw new BusinessException("Msg_301");
 			}
-			//hoatt 2019.05.07 #107445
-			//EA修正履歴No.3367
-			user = userOp.get();
-			//アルゴリズム「アカウントロックチェック」を実行する (check account lock)
-			this.checkAccoutLock(loginId, command.getContractCode(), user.getUserId(), "", command.isSignOn());
+			
 			// check password
 			String msgErrorId = this.compareHashPassword(userOp.get(), oldPassword);
 			if (!StringUtil.isNullOrEmpty(msgErrorId, true)){
@@ -124,22 +119,28 @@ public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<Su
 				programID,
 				screenID);
 		if(systemSuspendOutput.isError()){
-			throw new BusinessException(new RawErrorMessage(systemSuspendOutput.getMsgContent()));
+			throw new BusinessException(systemSuspendOutput.getMsgContent());
 		}
 		
-		//EA修正履歴3230
-		//hoatt 2019.03.27
-		Integer loginMethod = command.isSignOn() ? LoginMethod.SINGLE_SIGN_ON.value : LoginMethod.NORMAL_LOGIN.value;
+		//アルゴリズム「ログイン記録」を実行する
+		CheckChangePassDto passChecked = this.checkAfterLogin(user, oldPassword);
+		if (passChecked.showChangePass){
+			return passChecked;
+		}
+		
+		Integer loginMethod = LoginMethod.NORMAL_LOGIN.value;
+		
+		if (command.isSignOn()) {
+			loginMethod = LoginMethod.SINGLE_SIGN_ON.value;
+		}
+		
 		// アルゴリズム「ログイン記録」を実行する１
 		ParamLoginRecord param = new ParamLoginRecord(" ", loginMethod, LoginStatus.Success.value, null, null);
 		this.service.callLoginRecord(param);
-		//hoatt 2019.05.06
-		//EA修正履歴No.3371
-		//アルゴリズム「ログイン後チェック」を実行する
-		this.deleteLoginLog(user.getUserId());
-		CheckChangePassDto checkChangePass = this.checkAfterLogin(user, oldPassword, command.isSignOn());
-		checkChangePass.successMsg = systemSuspendOutput.getMsgID();
-		return checkChangePass;
+					
+		CheckChangePassDto checkChangePassDto = new CheckChangePassDto(false, null,false);
+		checkChangePassDto.successMsg = systemSuspendOutput.getMsgID();
+		return checkChangePassDto;
 	}
 
 	/**

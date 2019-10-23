@@ -23,15 +23,22 @@ public class CompanyInformationFinder {
 	private CompanyInformationAdapter companyInformationAdapter;
 
 	/**
-	 * 会社選択表示
-	 * CCG007_D：ログイン_形式３
-	 * @param 契約CD
+	 * Find all.
+	 *
+	 * @return the list
+	 */
+	public List<CompanyInformationImport> findAll() {
+		return companyInformationAdapter.findAll();
+	}
+
+	/**
+	 * Find all.
+	 *
 	 * @return the list
 	 */
 	public List<CompanyInformationImport> findAll(String contractCode) {
-		return companyInformationAdapter.findLstCompany(contractCode);
+		return companyInformationAdapter.findByContract(contractCode);
 	}
-	
 	/**
 	 * Gets the company infor by code.
 	 *

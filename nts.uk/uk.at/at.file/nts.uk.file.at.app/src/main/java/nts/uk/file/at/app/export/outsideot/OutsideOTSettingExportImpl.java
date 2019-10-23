@@ -562,7 +562,7 @@ public class OutsideOTSettingExportImpl implements MasterListData {
 	 */
 	private String toUse(Boolean use) {
 		if (use) {
-			return "○";
+			return "o";
 		}
 		return "-";
 	}

@@ -255,7 +255,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
         showSubstiteDataGrid() {
             let self = this;
             $("#substituteDataGrid").ntsGrid({
-                height: '550px',
+                height: '520px',
                 name: 'Grid name',
                 dataSource: self.subData,
                 primaryKey: 'id',
@@ -282,8 +282,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                     {
                         name: 'Paging',
                         type: "local",
-                        pageSize: 15,
-                        pageSizeList : [15, 50, 100]
+                        pageSize: 14
                     },
                     {
                         name : 'Resizing',

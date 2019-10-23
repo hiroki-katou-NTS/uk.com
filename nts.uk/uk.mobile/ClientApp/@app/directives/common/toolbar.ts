@@ -17,7 +17,7 @@ Vue.directive('toolbar', {
     },
     inserted(el: HTMLElement) {
         NavMenu.visible = false;
-        dom.addClass(el, 'navbar fixed-top');
+        dom.addClass(el, 'navbar bg-primary fixed-top');
 
         let resize = (evt?: Event) => {
             let $cont = document.querySelector('.container-fluid') as HTMLElement;

@@ -7,8 +7,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import org.apache.logging.log4j.util.Strings;
@@ -105,8 +103,7 @@ public class ApplicationPubImpl implements ApplicationPub {
 				basicSchedules.addAll(scBasicScheduleAdapter.findByID(applicationExcessHoliday.stream().map(c -> c.getEmployeeID()).distinct().collect(Collectors.toList()), new DatePeriod(minD, maxD)));
 			}
 			for(Application_New app : applicationExcessHoliday){
-				if((!(app.getStartDate().isPresent()&&app.getEndDate().isPresent())) || 
-						app.getStartDate().get().equals(app.getEndDate().get())){
+				if(!(app.getStartDate().isPresent()&&app.getEndDate().isPresent())){
 					ApplicationExport applicationExport = new ApplicationExport();
 					applicationExport.setAppDate(app.getAppDate());
 					applicationExport.setAppType(app.getAppType().value);
@@ -154,8 +151,7 @@ public class ApplicationPubImpl implements ApplicationPub {
 				basicSchedules.addAll(scBasicScheduleAdapter.findByID(applicationHoliday.stream().map(c -> c.getEmployeeID()).distinct().collect(Collectors.toList()), new DatePeriod(minD, maxD)));
 			}
 			for(Application_New app : applicationHoliday){
-				if((!(app.getStartDate().isPresent()&&app.getEndDate().isPresent())) || 
-						app.getStartDate().get().equals(app.getEndDate().get())){
+				if(!(app.getStartDate().isPresent()&&app.getEndDate().isPresent())){
 					Optional<AppAbsence> optAppAbsence = apps.stream().filter(c -> c.getAppID().equals(app.getAppID())).findFirst();
 					ApplicationExport applicationExport = new ApplicationExport();
 					applicationExport.setAppDate(app.getAppDate());
@@ -210,8 +206,7 @@ public class ApplicationPubImpl implements ApplicationPub {
 				workTypes.addAll(workTypeRepo.getPossibleWorkTypeV2(companyID, basicSchedules.stream().map(c -> c.getWorkTypeCode()).distinct().collect(Collectors.toList())));
 			}
 			for(Application_New app : appWorkChangeLst){
-				if((!(app.getStartDate().isPresent()&&app.getEndDate().isPresent())) || 
-						app.getStartDate().get().equals(app.getEndDate().get())){
+				if(!(app.getStartDate().isPresent()&&app.getEndDate().isPresent())){
 					ApplicationExport applicationExport = new ApplicationExport();
 					applicationExport.setAppDate(app.getAppDate());
 					applicationExport.setAppType(app.getAppType().value);
@@ -274,7 +269,6 @@ public class ApplicationPubImpl implements ApplicationPub {
 														.getDispName().toString();
 	}
 	@Override
-	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public ApplicationDeadlineExport getApplicationDeadline(String companyID, Integer closureID) {
 		String employeeId = AppContexts.user().employeeId();
 		ApplicationDeadlineExport result = new ApplicationDeadlineExport();
@@ -366,14 +360,7 @@ public class ApplicationPubImpl implements ApplicationPub {
 		mapDate.entrySet().stream().forEach(x -> {
 			Map<Object, List<AppGroupExport>> mapDateType = x.getValue().stream().collect(Collectors.groupingBy(y -> y.getAppType()));
 			mapDateType.entrySet().stream().forEach(y -> {
-				if(Integer.valueOf(y.getKey().toString())==ApplicationType.ABSENCE_APPLICATION.value){
-					Map<Object, List<AppGroupExport>> mapDateTypeAbsence = y.getValue().stream().collect(Collectors.groupingBy(z -> z.getAppTypeName()));
-					mapDateTypeAbsence.entrySet().stream().forEach(z -> {
-						result.add(z.getValue().get(0));
-					});
-				} else {
-					result.add(y.getValue().get(0));
-				}
+				result.add(y.getValue().get(0));
 			});
 		});
 		return result;

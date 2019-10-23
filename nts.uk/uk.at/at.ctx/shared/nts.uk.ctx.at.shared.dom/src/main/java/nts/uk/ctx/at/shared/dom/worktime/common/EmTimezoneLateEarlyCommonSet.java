@@ -5,7 +5,6 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
@@ -19,8 +18,7 @@ import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
  * @return true, if is del from em time
  */
 @Getter
-@NoArgsConstructor
-public class EmTimezoneLateEarlyCommonSet extends WorkTimeDomainObject implements Cloneable{
+public class EmTimezoneLateEarlyCommonSet extends WorkTimeDomainObject {
 
 	/** The del from em time. */
 	// 就業時間から控除する
@@ -55,17 +53,5 @@ public class EmTimezoneLateEarlyCommonSet extends WorkTimeDomainObject implement
 	 */
 	public void saveToMemento(EmTimezoneLateEarlyCommonSetSetMemento memento) {
 		memento.setDelFromEmTime(this.delFromEmTime);
-	}
-	
-	@Override
-	public EmTimezoneLateEarlyCommonSet clone() {
-		EmTimezoneLateEarlyCommonSet cloned = new EmTimezoneLateEarlyCommonSet();
-		try {
-			cloned.delFromEmTime = this.delFromEmTime ? true : false ;
-		}
-		catch (Exception e){
-			throw new RuntimeException("EmTimezoneLateEarlyCommonSet clone error.");
-		}
-		return cloned;
 	}
 }

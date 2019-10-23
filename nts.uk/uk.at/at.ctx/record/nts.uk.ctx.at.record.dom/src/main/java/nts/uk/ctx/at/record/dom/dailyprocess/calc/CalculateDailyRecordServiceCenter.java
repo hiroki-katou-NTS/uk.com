@@ -2,9 +2,13 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
 import java.util.List;
 import java.util.Optional;
+//import java.util.function.Consumer;
 
+import nts.arc.layer.app.command.AsyncCommandHandlerContext;
+//import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
 import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
+//import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 実績計算を呼び出す用のサービス
@@ -27,13 +31,13 @@ public interface CalculateDailyRecordServiceCenter{//
 	
 	//計算(就業計算と集計用)
 	@SuppressWarnings("rawtypes")
-	public ManageProcessAndCalcStateResult calculateForManageState(List<IntegrationOfDaily> integrationOfDaily,List<ClosureStatusManagement> closureList,ExecutionType reCalcAtr, String empCalAndSumExecLogID);
+	public ManageProcessAndCalcStateResult calculateForManageState(List<IntegrationOfDaily> integrationOfDaily,Optional<AsyncCommandHandlerContext> asyncContext, List<ClosureStatusManagement> closureList,ExecutionType reCalcAtr);
 	
 	//エラーチェック
 	public List<IntegrationOfDaily> errorCheck(List<IntegrationOfDaily> integrationList);
 
 	//計算(更新処理自動実行用)
-	public ManageProcessAndCalcStateResult calculateForclosure(List<IntegrationOfDaily> integrationOfDaily,ManagePerCompanySet companySet, List<ClosureStatusManagement> closureList,String executeLogId);
+	public ManageProcessAndCalcStateResult calculateForclosure(List<IntegrationOfDaily> integrationOfDaily,ManagePerCompanySet companySet, List<ClosureStatusManagement> closureList);
 
 	//計算(スケジュールからの窓口)
 	List<IntegrationOfDaily> calculateForSchedule(CalculateOption calcOption,List<IntegrationOfDaily> integrationOfDaily, Optional<ManagePerCompanySet> companySet);

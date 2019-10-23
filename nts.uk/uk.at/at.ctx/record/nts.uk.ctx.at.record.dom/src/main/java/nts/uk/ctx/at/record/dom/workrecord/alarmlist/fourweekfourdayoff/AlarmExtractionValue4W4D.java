@@ -12,5 +12,4 @@ public class AlarmExtractionValue4W4D {
 	private String alarmItem;
 	private String alarmValueMessage;
 	private String comment;
-	private String checkedValue;
 }

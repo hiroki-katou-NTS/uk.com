@@ -1,10 +1,5 @@
 package nts.uk.ctx.at.schedule.dom.appreflectprocess.service.gobacksche;
 
-import java.util.List;
-
-import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
-import nts.uk.ctx.at.schedule.dom.schedule.workschedulestate.WorkScheduleState;
-
 /**
  * 時刻の反映
  * @author dudt
@@ -16,7 +11,7 @@ public interface TimeOfDayReflectGoBackSche {
 	 * @param reflectPara
 	 * @return
 	 */
-	public void stampReflectGobackSche(GobackReflectParam reflectPara, BasicSchedule scheData, List<WorkScheduleState> lstState);
+	public void stampReflectGobackSche(GobackReflectParam reflectPara);
 	/**
 	 * 反映する時刻を求める
 	 * @param reflectPara

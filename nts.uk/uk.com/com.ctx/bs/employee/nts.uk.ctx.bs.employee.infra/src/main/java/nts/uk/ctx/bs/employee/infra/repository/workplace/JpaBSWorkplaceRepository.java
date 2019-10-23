@@ -110,7 +110,7 @@ public class JpaBSWorkplaceRepository extends JpaRepository implements Workplace
 	@Override
 	public List<Workplace> findByWkpIds(List<String> workplaceIds) {
 		if (CollectionUtil.isEmpty(workplaceIds)) {
-			return Collections.emptyList();
+			return null;
 		}
 		// get entity manager
 		EntityManager em = this.getEntityManager();

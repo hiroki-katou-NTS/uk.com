@@ -29,18 +29,7 @@ module cps001.c.vm {
                 emp = self.currentEmployee();
 
             emp.id.subscribe(x => {
-                
-                let listEmp = $("#list_employees").igGrid("option",'dataSource');
-                console.log("LIST DATASOURCE " + listEmp.length );
-                if(listEmp.length  == 0 ){
-                    self.newMode();
-                    nts.uk.ui.errors.clearAll();
-                    return; 
-                }
-                
-                let obj = _.filter(listEmp, function(o) { return o.id == x; });
-                
-                if (obj.length > 0) {
+                if (x) {
                     self.enableControl();
                     nts.uk.ui.errors.clearAll();
                     nts.uk.ui.errors.clearAll();
@@ -50,23 +39,16 @@ module cps001.c.vm {
                     block();
                     service.getDetail(x).done((data: IEmployee) => {
                         if (data) {
-                            if(iem){
-                                 emp.id(iem.id);
-                            }
+                            emp.id(iem.id);
                             emp.code(data.code);
                             emp.name(data.name);
-                            if(data.reason){
-                                emp.reason(data.reason || '');}
-                            if(data.dateDelete){
-                                emp.dateDelete(data.dateDelete || undefined);
-                            }
-                            
+
+                            emp.reason(data.reason || '');
+                            emp.dateDelete(data.dateDelete || undefined);
                             $('#code').focus();
                             unblock();
                             nts.uk.ui.errors.clearAll();
-                        }else{
-                            unblock();
-                            nts.uk.ui.errors.clearAll();}
+                        }
                     });
                 } else {
                     self.newMode();
@@ -83,6 +65,7 @@ module cps001.c.vm {
                 emps = self.listEmployee,
                 emp = self.currentEmployee();
 
+            emps.removeAll();
 
             block();
             service.getData().done((data: Array<IEmployee>) => {
@@ -110,7 +93,7 @@ module cps001.c.vm {
                 }
                 dfd.resolve();
             }).fail(() => {
-                //emps.removeAll();
+
                 unblock();
 
             });

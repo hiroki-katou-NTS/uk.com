@@ -10,7 +10,7 @@ import nts.uk.ctx.workflow.pub.resultrecord.export.AppEmpStatusExport;
 import nts.uk.ctx.workflow.pub.resultrecord.export.AppEmpSttMonthExport;
 import nts.uk.ctx.workflow.pub.resultrecord.export.AppRootInsContentExport;
 import nts.uk.ctx.workflow.pub.resultrecord.export.AppRootSttMonthExport;
-import nts.uk.ctx.workflow.pub.resultrecord.export.Request113Export;
+import nts.uk.ctx.workflow.pub.resultrecord.export.Request133Export;
 import nts.uk.ctx.workflow.pub.resultrecord.export.Request533Export;
 import nts.uk.ctx.workflow.pub.spr.export.AppRootStateStatusSprExport;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
@@ -26,7 +26,7 @@ public interface IntermediateDataPub {
 	 * @param rootType ルート種類（日別確認／月別確認）
 	 * @return 承認ルートの状況
 	 */
-	public default Request113Export getAppRootStatusByEmpPeriod(String employeeID, DatePeriod period, Integer rootType) throws BusinessException {
+	public default Request133Export getAppRootStatusByEmpPeriod(String employeeID, DatePeriod period, Integer rootType) throws BusinessException {
 		return this.getAppRootStatusByEmpPeriod(Arrays.asList(employeeID), period, rootType);
 	}
 
@@ -39,7 +39,7 @@ public interface IntermediateDataPub {
 	 * @param rootType ルート種類（日別確認／月別確認）
 	 * @return 承認ルートの状況
 	 */
-	public Request113Export getAppRootStatusByEmpPeriod(List<String> employeeIDs, DatePeriod period, Integer rootType) throws BusinessException;
+	public Request133Export getAppRootStatusByEmpPeriod(List<String> employeeIDs, DatePeriod period, Integer rootType) throws BusinessException;
 	
 	/**
 	 * RequestList 155
@@ -142,15 +142,6 @@ public interface IntermediateDataPub {
 	public AppEmpStatusExport getApprovalEmpStatus(String employeeID, DatePeriod period, Integer rootType);
 	
 	/**
-	 * RequestList RQ595
-	 * @param approverId 承認者の社員ID
-	 * @param targetEmployeeIds 承認対象者の社員ID
-	 * @param period 期間
-	 * @return　指定した条件のルート状況
-	 */
-	public AppEmpStatusExport getDailyApprovalStatus(String approverId, List<String> targetEmployeeIds, DatePeriod period);
-	
-	/**
 	 * RequestList 403
 	 * [No.403](中間データ版)承認状態をクリアする
 	 * @param employeeID
@@ -233,7 +224,7 @@ public interface IntermediateDataPub {
 	 * @return
 	 */
 	public AppEmpSttMonthExport getApprovalEmpStatusMonth(String approverID, YearMonth yearMonth, Integer closureID,
-			ClosureDate closureDate, GeneralDate baseDate, boolean useDayApproverConfirm, DatePeriod closurePeriod);
+			ClosureDate closureDate, GeneralDate baseDate);
 	
 	/**
 	 * RequestList 535
@@ -265,30 +256,4 @@ public interface IntermediateDataPub {
 	 * @return
 	 */
 	public ApproverApproveExport getApproverByPeriodMonth(String employeeID, Integer closureID, YearMonth yearMonth, ClosureDate closureDate, GeneralDate date); 
-	
-	/**
-	 * RequestList 601
-	 * [No.601]日別の承認をクリアする
-	 * @param employeeID
-	 * @param date
-	 */
-	public void deleteRootConfirmDay(String employeeID, GeneralDate date);
-	
-	/**
-	 * RequestList 602
-	 * [No.602]月別の承認をクリアする
-	 * @param employeeID
-	 * @param confirmDeleteParamLst
-	 */
-	public void deleteRootConfirmMonth(String employeeID, List<ConfirmDeleteParam> confirmDeleteParamLst);
-	
-	/**
-	 * RequestList 610
-	 * [No.610]基準社員から指定期間の対象者を取得する
-	 * @param approverID
-	 * @param period
-	 * @param rootType
-	 * @return
-	 */
-	public List<String> findEmpRequest610(String approverID, DatePeriod period, Integer rootType);
 }

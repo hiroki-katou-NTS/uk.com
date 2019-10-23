@@ -16,9 +16,6 @@ public enum WorkAtr {
 	/** The value. */
 	public final int value;
 
-	/** The Constant values. */
-	private final static WorkAtr[] values = WorkAtr.values();
-	
 	/**
 	 * 1日であるか判定する
 	 * @return　1日である
@@ -41,28 +38,5 @@ public enum WorkAtr {
 	 */
 	public boolean isMorning() {
 		return this.equals(Monring);
-	}
-	
-	/**
-	 * Value of.
-	 *
-	 * @param value the value
-	 * @return the workAtr
-	 */
-	public static WorkAtr valueOf(Integer value) {
-		// Invalid object.
-		if (value == null) {
-			return null;
-		}
-
-		// Find value.
-		for (WorkAtr val : WorkAtr.values) {
-			if (val.value == value) {
-				return val;
-			}
-		}
-
-		// Not found.
-		return null;
 	}
 }

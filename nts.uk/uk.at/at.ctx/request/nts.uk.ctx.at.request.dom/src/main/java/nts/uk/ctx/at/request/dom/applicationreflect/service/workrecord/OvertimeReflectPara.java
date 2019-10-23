@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord;
 
-import java.util.Optional;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -53,7 +51,4 @@ public class OvertimeReflectPara {
 	 * 残業申請
 	 */
 	private OvertimeAppParameter overtimePara;
-	private String excLogId;
-	Optional<IdentityProcessUseSetAc> getIdentityProcessUseSet;
-	Optional<ApprovalProcessingUseSettingAc> getApprovalProcessingUseSetting;
 }

@@ -19,7 +19,6 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.auth.dom.password.changelog.PasswordChangeLog;
 import nts.uk.ctx.sys.auth.dom.password.changelog.PasswordChangeLogRepository;
-import nts.uk.ctx.sys.auth.dom.user.HashPassword;
 import nts.uk.ctx.sys.auth.infra.entity.password.changelog.SacdtPasswordChangeLog;
 import nts.uk.ctx.sys.auth.infra.entity.password.changelog.SacdtPasswordChangeLogPK;
 import nts.uk.ctx.sys.auth.infra.entity.password.changelog.SacdtPasswordChangeLogPK_;
@@ -31,9 +30,6 @@ import nts.uk.ctx.sys.auth.infra.entity.password.changelog.SacdtPasswordChangeLo
 @Stateless
 public class JpaPasswordChangeLogRepository extends JpaRepository implements PasswordChangeLogRepository {
 
-	private static final String FIND_BY_USERID = "SELECT c FROM SacdtPasswordChangeLog c"
-			+ " WHERE c.sacdtPasswordChangeLogPK.userId = :userId"
-			+ " ORDER By c.sacdtPasswordChangeLogPK.modifiedDatetime DESC";
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -87,19 +83,4 @@ public class JpaPasswordChangeLogRepository extends JpaRepository implements Pas
 		return listResult;
 	}
 
-	/**
-	 * get list パスワード変更ログ
-	 * @param ユーザID userId
-	 * @return
-	 * @author hoatt
-	 */
-	@Override
-	public List<PasswordChangeLog> getListPwChangeLog(String userId) {
-		return this.queryProxy().query(FIND_BY_USERID, SacdtPasswordChangeLog.class)
-				.setParameter("userId", userId)
-				.getList(c -> new PasswordChangeLog(c.getSacdtPasswordChangeLogPK().getLogId(), 
-						c.getSacdtPasswordChangeLogPK().getUserId(),
-						c.getSacdtPasswordChangeLogPK().getModifiedDatetime(),
-						new HashPassword(c.getPassword())));
-	}
 }

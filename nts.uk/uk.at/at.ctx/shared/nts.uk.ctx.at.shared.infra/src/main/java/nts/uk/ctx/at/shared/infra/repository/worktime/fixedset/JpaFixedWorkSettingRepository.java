@@ -226,24 +226,4 @@ public class JpaFixedWorkSettingRepository extends JpaRepository implements Fixe
 						.collect(Collectors.toList())));
 		return map;
 	}
-
-	@Override
-	public List<FixedWorkSetting> findByCidAndWorkTimeCodes(String companyId, List<String> workTimeCodes) {
-		EntityManager em = this.getEntityManager();
-		
-		CriteriaBuilder builder = em.getCriteriaBuilder();
-		CriteriaQuery<KshmtFixedWorkSet> query = builder.createQuery(KshmtFixedWorkSet.class);
-		Root<KshmtFixedWorkSet> root = query.from(KshmtFixedWorkSet.class);
-
-		List<Predicate> predicateList = new ArrayList<>();
-
-		predicateList.add(builder.equal(
-				root.get(KshmtFixedWorkSet_.kshmtFixedWorkSetPK).get(KshmtFixedWorkSetPK_.cid), companyId));
-		predicateList.add(root.get(KshmtFixedWorkSet_.kshmtFixedWorkSetPK).get(KshmtFixedWorkSetPK_.worktimeCd).in(workTimeCodes));
-		query.where(predicateList.toArray(new Predicate[] {}));
-		List<KshmtFixedWorkSet> result = em.createQuery(query).getResultList();
-		return result.stream()
-				.map(entity -> new FixedWorkSetting(new JpaFixedWorkSettingGetMemento(entity)))
-				.collect(Collectors.toList());
-	}
 }

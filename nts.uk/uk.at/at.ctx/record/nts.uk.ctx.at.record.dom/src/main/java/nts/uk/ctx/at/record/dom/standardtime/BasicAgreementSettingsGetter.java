@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
@@ -43,10 +42,10 @@ public class BasicAgreementSettingsGetter {
 	private List<AgreementTimeOfClassification> agreeTimeClassifi = new ArrayList<>();
 	
 	private Map<GeneralDate, Map<String, List<String>>> empToWorkplaceId = new HashMap<>();
-	private Map<String, List<AgreementTimeOfWorkPlace>> agreeTimeWP = new HashMap<>();
+	private Map<String, AgreementTimeOfWorkPlace> agreeTimeWP = new HashMap<>();
 	
 	private Map<String, List<SyEmploymentImport>> employments = new HashMap<>();
-	private Map<String, List<AgreementTimeOfEmployment>> agreeTimeEmployment = new HashMap<>();
+	private Map<String, AgreementTimeOfEmployment> agreeTimeEmployment = new HashMap<>();
 	
 	private List<AgreementTimeOfCompany> agreeTimeCompany = new ArrayList<>();
 	
@@ -55,8 +54,8 @@ public class BasicAgreementSettingsGetter {
 	public BasicAgreementSettingsGetter(AgreementUnitSetting unitSetting,
 			List<AffClassificationSidImport> affClassifications, List<AgreementTimeOfClassification> agreeTimeClassifi,
 			Map<GeneralDate, Map<String, List<String>>> empToWorkplaceId,
-			Map<String, List<AgreementTimeOfWorkPlace>> agreeTimeWP, Map<String, List<SyEmploymentImport>> employments,
-			Map<String, List<AgreementTimeOfEmployment>> agreeTimeEmployment, List<AgreementTimeOfCompany> agreeTimeCompany,
+			Map<String, AgreementTimeOfWorkPlace> agreeTimeWP, Map<String, List<SyEmploymentImport>> employments,
+			Map<String, AgreementTimeOfEmployment> agreeTimeEmployment, List<AgreementTimeOfCompany> agreeTimeCompany,
 			Map<String, BasicAgreementSetting> basicAgreeSettings) {
 		super();
 		this.unitSetting = unitSetting;
@@ -93,7 +92,7 @@ public class BasicAgreementSettingsGetter {
 			Map<String, List<String>> empWp = this.empToWorkplaceId.get(criteriaDate);
 			if(empWp != null && empWp.containsKey(employeeId)) {
 				for(String workplaceId : empWp.get(employeeId)) {
-					AgreementTimeOfWorkPlace atwp = this.agreeTimeWP.get(workplaceId).stream().filter(x ->x.getLaborSystemAtr()== laborSystemAtr).findFirst().orElse(null);
+					AgreementTimeOfWorkPlace atwp = this.agreeTimeWP.get(workplaceId);
 					if(atwp != null){
 						if(this.basicAgreeSettings.containsKey(atwp.getBasicSettingId())){
 							return this.basicAgreeSettings.get(atwp.getBasicSettingId());
@@ -106,7 +105,7 @@ public class BasicAgreementSettingsGetter {
 			if(this.employments.containsKey(employeeId)) {
 				val employment = this.employments.get(employeeId).stream().filter(e -> e.getPeriod().contains(criteriaDate)).findFirst();
 				if(employment.isPresent() && this.agreeTimeEmployment.containsKey(employment.get().getEmploymentCode())){
-					val atwp = this.agreeTimeEmployment.get(employment.get().getEmploymentCode()).stream().filter(x ->x.getLaborSystemAtr()== laborSystemAtr).findFirst().orElse(null);
+					val atwp = this.agreeTimeEmployment.get(employment.get().getEmploymentCode());
 					
 					if(atwp != null && this.basicAgreeSettings.containsKey(atwp.getBasicSettingId())){
 						return this.basicAgreeSettings.get(atwp.getBasicSettingId());

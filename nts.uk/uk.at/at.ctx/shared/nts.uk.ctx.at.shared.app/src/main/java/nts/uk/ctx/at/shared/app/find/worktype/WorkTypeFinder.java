@@ -47,32 +47,6 @@ public class WorkTypeFinder {
 		List<WorkTypeInfor> lst = this.workTypeRepo.getPossibleWorkTypeAndOrder(companyId, lstPossible);
 		return lst;
 	}
-	
-	/**
-	 * Gets the possible work type. with No Master
-	 *
-	 * @param lstPossible the lst possible
-	 * @return the possible work type
-	 */
-	public List<WorkTypeInfor> getPossibleWorkTypeWithNoMaster(List<String> lstPossible) {
-		// company id
-		String companyId = AppContexts.user().companyId();
-		List<WorkTypeInfor> lst = this.workTypeRepo.getPossibleWorkTypeWithNoMasterAndOrder(companyId, lstPossible);
-		return lst;
-	}
-	
-	/**
-	 * Gets the not remove work type. with No Master
-	 *
-	 * @param lstPossible the lst possible
-	 * @return the possible work type
-	 */
-	public List<WorkTypeInfor> getNotRemoveWorkType(List<String> lstPossible) {
-		// company id
-		String companyId = AppContexts.user().companyId();
-		List<WorkTypeInfor> lst = this.workTypeRepo.getNotRemoveWorkType(companyId, lstPossible);
-		return lst;
-	}
 
 	/**
 	 * Find not deprecated by list code.
@@ -194,21 +168,5 @@ public class WorkTypeFinder {
 		String companyId = AppContexts.user().companyId();
 		return this.workTypeRepo.findWorkTypeByCondition(companyId).stream().map(dom -> WorkTypeDto.fromDomain(dom))
 				.collect(Collectors.toList());
-	}
-	/**
-	 * UKDesign.UniversalK.就業.KDL_ダイアログ.KDL002_勤務種類選択.A：勤務種類選択.アルゴリズム.勤務種類の表示
-	 * @param lstPossible
-	 * @return
-	 */
-	public List<WorkTypeInfor> getPossibleWorkTypeKDL002(List<String> lstPossible) {
-		// company id
-		String companyId = AppContexts.user().companyId();
-		//<<Public>> 指定した勤務種類をすべて取得する
-		List<WorkTypeInfor> lst = this.workTypeRepo.getPossibleWorkTypeAndOrder(companyId, lstPossible);
-		//取得されている勤務種類一覧から廃止されている勤務種類を取り除く
-//		"廃止区分
-//		0: 廃止しない
-//		1: 廃止する"
-		return lst.stream().filter(c -> c.getAbolishAtr() == 0).collect(Collectors.toList());
 	}
 }

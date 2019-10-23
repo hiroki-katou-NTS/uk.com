@@ -52,12 +52,4 @@ public interface EmpEmployeeAdapter {
 	AffCompanyHistSharedImport GetAffComHisBySidAndBaseDate(String sid, GeneralDate baseDate);
 	
 	AffCompanyHistSharedImport GetAffComHisBySid(String cid, String sid);
-	
-	/**
-	 * đối ứng cho cps003
-	 * @param cid
-	 * @param sid
-	 * @return
-	 */
-	List<AffCompanyHistSharedImport> getAffComHisBySids(String cid, List<String> sid);
 }

@@ -43,14 +43,14 @@ public class TargetPremiumTimeWeekOfRegular {
 		
 		// 集計対象時間を取得する
 		val workTimeOfMonthly = aggregateTotalWorkingTime.getWorkTime();
-		val workTime = workTimeOfMonthly.getAggregateTargetTime(weekPeriod, addSet);
+		val workTime = workTimeOfMonthly.getAggregateTargetTime(weekPeriod);
 
 		// 週割増時間に集計対象時間を加算する
 		domain.premiumTimeWeek = domain.premiumTimeWeek.addMinutes(workTime.v());
 		
 		// 法定内残業時間を取得する
 		val overTime = aggregateTotalWorkingTime.getOverTime();
-		val legalOverTime = overTime.calcOverTimeForPremium(weekPeriod, aggregateTotalWorkingTime);
+		val legalOverTime = overTime.getLegalOverTime(weekPeriod);
 		
 		// 週割増時間に残業時間を加算する
 		domain.premiumTimeWeek = domain.premiumTimeWeek.addMinutes(legalOverTime.v());

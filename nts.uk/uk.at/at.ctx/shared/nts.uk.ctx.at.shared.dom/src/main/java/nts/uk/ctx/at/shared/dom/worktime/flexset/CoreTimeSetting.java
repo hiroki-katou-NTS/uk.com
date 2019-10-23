@@ -8,7 +8,6 @@ package nts.uk.ctx.at.shared.dom.worktime.flexset;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.usecls.ApplyAtr;
 //import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
@@ -22,9 +21,8 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
 // コアタイム時間帯設定
-public class CoreTimeSetting extends WorkTimeDomainObject implements Cloneable{
+public class CoreTimeSetting extends WorkTimeDomainObject {
 
 	/** The core time sheet. */
 	// コアタイム時間帯
@@ -149,17 +147,4 @@ public class CoreTimeSetting extends WorkTimeDomainObject implements Cloneable{
 		return new CoreTimeSetting(this.coreTimeSheet,this.timesheet,new AttendanceTime(0));
 	}
 	
-	@Override
-	public CoreTimeSetting clone() {
-		CoreTimeSetting cloned = new CoreTimeSetting();
-		try {
-			cloned.coreTimeSheet = this.coreTimeSheet.clone();
-			cloned.timesheet = ApplyAtr.valueOf(this.timesheet.value);
-			cloned.minWorkTime = new AttendanceTime(this.minWorkTime.v());
-		}
-		catch (Exception e){
-			throw new RuntimeException("CoreTimeSetting clone error.");
-		}
-		return cloned;
-	}
 }

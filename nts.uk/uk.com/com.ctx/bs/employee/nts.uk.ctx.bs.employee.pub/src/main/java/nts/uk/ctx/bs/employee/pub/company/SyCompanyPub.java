@@ -42,11 +42,5 @@ public interface SyCompanyPub {
 	 */
 	List<StatusOfEmployee> GetListAffComHistByListSidAndPeriod(List<String> sid, DatePeriod datePeriod);
 	
-	/**
-	 * đối ứng cho cps003
-	 * @param cid
-	 * @param sid
-	 * @return
-	 */
-	List<AffCompanyHistExport> getAffComHisBySids(String cid, List<String> sids);
+
 }

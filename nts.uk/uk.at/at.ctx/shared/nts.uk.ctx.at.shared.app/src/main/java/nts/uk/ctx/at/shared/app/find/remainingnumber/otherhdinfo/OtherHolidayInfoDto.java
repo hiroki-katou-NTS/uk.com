@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.shared.app.find.remainingnumber.otherhdinfo;
 
 import java.math.BigDecimal;
-import java.util.Map;
 import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
@@ -59,27 +58,6 @@ public class OtherHolidayInfoDto extends PeregDomainDto{
 			dto.useAtr = exLeavInfo.get().getUseAtr().value;
 			dto.occurrenceUnit = exLeavInfo.get().getOccurrenceUnit().v();
 			dto.paymentMethod = exLeavInfo.get().getPaymentMethod().value;
-			if (StringUtils.isEmpty(dto.getRecordId())){
-				dto.setRecordId(exLeavInfo.get().getSID());
-			}
-		}
-		return dto;
-	}
-	
-	public static OtherHolidayInfoDto createFromDomainCPS013(Optional<PublicHolidayRemain> pubHDRemain, Optional<ExcessLeaveInfo> exLeavInfo, Map<String, Object> enums){
-		OtherHolidayInfoDto dto = new OtherHolidayInfoDto();
-		if (pubHDRemain.isPresent()){
-			dto.pubHdremainNumber = pubHDRemain.get().getRemainNumber().v();
-			dto.setRecordId(pubHDRemain.get().getSID());
-		}
-		if (exLeavInfo.isPresent()){
-			
-			Integer useAtr = (Integer)enums.get("IS00370");
-			Integer paymentMethod = (Integer)enums.get("IS00372");
-			
-			dto.useAtr = useAtr;
-			dto.occurrenceUnit = exLeavInfo.get().getOccurrenceUnit().v();
-			dto.paymentMethod = paymentMethod;
 			if (StringUtils.isEmpty(dto.getRecordId())){
 				dto.setRecordId(exLeavInfo.get().getSID());
 			}

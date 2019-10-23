@@ -19,8 +19,7 @@
 		</ui:define>
 		<ui:define name="content">
 			<div style="background-color: lightblue;" id="contents-area">
-				<div style="position: relative; top: 30%; margin: 0 auto auto 40%; display: none"
-						data-bind = "visible: displayLogin">
+				<div style="position: relative; top: 30%; margin: 0 auto auto 40%;">
 					<table>
 						<tr>
 							<td colspan="2" style="padding-bottom: 30px;"><img
@@ -75,6 +74,14 @@
 										data-bind="click: submitLogin"
 										class="full_width proceed large">
 										<span data-bind="text: '#{i18n.getText('CCG007_3')}'"></span>
+									</button>
+								</div></td>
+						</tr>
+						<tr>
+							<td colspan="2" class="align_center"><div class="pad_5">
+									<button tabindex="4" id="login-btn" data-bind="click: account"
+										class="full_width proceed large">
+										<span>Get Windows Account</span>
 									</button>
 								</div></td>
 						</tr>

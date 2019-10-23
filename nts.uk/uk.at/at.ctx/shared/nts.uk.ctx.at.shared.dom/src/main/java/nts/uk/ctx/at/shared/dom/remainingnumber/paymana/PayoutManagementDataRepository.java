@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.paymana;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
@@ -12,8 +11,6 @@ public interface PayoutManagementDataRepository {
 	
 	// ドメインモデル「振出管理データ」を取得
 	List<PayoutManagementData> getSidWithCod(String cid, String sid, int state);
-	
-	Map<String ,Double> getAllSidWithCod(String cid, List<String> sid, int state);
 	/**
 	 *  ドメインモデル「振出管理データ」を取得
 	 * @param cid
@@ -27,13 +24,8 @@ public interface PayoutManagementDataRepository {
 	// ドメインモデル「振出管理データ」を作成する
 	void create(PayoutManagementData domain);
 	
-	// ドメインモデル「振出管理データ」を作成する
-	void addAll(List<PayoutManagementData> domains);
-	
 	
 	List<PayoutManagementData> getSid(String cid, String sid);
-	
-	List<PayoutManagementData> getBySidsAndCid(String cid, List<String> sid);
 	
 	void deletePayoutSubOfHDMana(String payoutId);
 	

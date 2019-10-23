@@ -15,8 +15,4 @@ public class DCCalcTime {
 	private List<DCCellEdit> cellEdits;
 	
 	private List<DailyRecordDto> dailyEdits;
-	
-	private boolean errorFindMaster28;
-	
-	private boolean errorFindMaster29;
 }

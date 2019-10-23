@@ -27,28 +27,28 @@ public interface PerformDataRecoveryRepository {
 	Optional<TableList> getByInternal(String internalFileName, String dataRecoveryProcessId);
 
 	Integer countDataExitTableByVKeyUp(Map<String, String> filedWhere, String tableName, String namePhysicalCid,
-			String cidCurrent, String dataRecoveryProcessId,String employeeCode);
+			String cidCurrent);
 	
 	Integer countDataTransactionExitTableByVKeyUp(Map<String, String> filedWhere, String tableName, String namePhysicalCid,
-			String cidCurrent, String dataRecoveryProcessId,String employeeCode);
+			String cidCurrent);
 
 	void deleteDataExitTableByVkey(List<Map<String, String>> lsiFiledWhere2, String tableName, String namePhysicalCid,
-			String cidCurrent,String employeeCode, String dataRecoveryProcessId,TableList tableList);
+			String cidCurrent);
 	
 	void deleteTransactionDataExitTableByVkey(List<Map<String, String>> lsiFiledWhere2, String tableName, String namePhysicalCid,
-			String cidCurrent,String employeeCode, String dataRecoveryProcessId, TableList tableList);
+			String cidCurrent);
 	
-	void insertDataTable( StringBuilder insertToTable , String employeeCode, String dataRecoveryProcessId, TableList tableList);
+	void insertDataTable( StringBuilder insertToTable);
 	
-	void insertTransactionDataTable(StringBuilder insertToTable, String employeeCode, String dataRecoveryProcessId, TableList tableList);
+	void insertTransactionDataTable(StringBuilder insertToTable);
 
 	List<TableList> getByRecoveryProcessingId(String dataRecoveryProcessId);
 
 	List<TableList> getAllTableList();
 
-	void deleteEmployeeHis(TableList tableList, String whereCid, String whereSid, String cid, String employeeId,String employeeCode,String dataRecoveryProcessId );
+	void deleteEmployeeHis(String tableName, String whereCid, String whereSid, String cid, String employeeId);
 	
-	void deleteTransactionEmployeeHis(TableList tableList, String whereCid, String whereSid, String cid, String employeeId,String employeeCode, String dataRecoveryProcessId );
+	void deleteTransactionEmployeeHis(String tableName, String whereCid, String whereSid, String cid, String employeeId);
 
 	void addTargetEmployee(Target domain);
 

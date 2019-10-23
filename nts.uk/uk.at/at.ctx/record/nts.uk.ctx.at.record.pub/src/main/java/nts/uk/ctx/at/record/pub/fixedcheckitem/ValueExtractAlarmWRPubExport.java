@@ -24,13 +24,9 @@ public class ValueExtractAlarmWRPubExport {
 	private String alarmValueMessage;
 	
 	private Optional<String> comment;
-	
-	private Optional<String> checkedValue;
-	
-    private int consecutiveDays;
 
 	public ValueExtractAlarmWRPubExport(String workplaceID, String employeeID, GeneralDate alarmValueDate,
-			String classification, String alarmItem, String alarmValueMessage, String comment, String checkedValue) {
+			String classification, String alarmItem, String alarmValueMessage, String comment) {
 		super();
 		this.workplaceID = Optional.ofNullable(workplaceID);
 		this.employeeID = employeeID;
@@ -39,21 +35,6 @@ public class ValueExtractAlarmWRPubExport {
 		this.alarmItem = alarmItem;
 		this.alarmValueMessage = alarmValueMessage;
 		this.comment = Optional.ofNullable(comment);
-		this.checkedValue = Optional.ofNullable(checkedValue);
-	}
-	
-	public ValueExtractAlarmWRPubExport(String workplaceID, String employeeID, GeneralDate alarmValueDate,
-			String classification, String alarmItem, String alarmValueMessage, String comment, String checkedValue, int consecutiveDays) {
-		super();
-		this.workplaceID = Optional.ofNullable(workplaceID);
-		this.employeeID = employeeID;
-		this.alarmValueDate = alarmValueDate;
-		this.classification = classification;
-		this.alarmItem = alarmItem;
-		this.alarmValueMessage = alarmValueMessage;
-		this.comment = Optional.ofNullable(comment);
-		this.checkedValue = Optional.ofNullable(checkedValue);
-		this.consecutiveDays = consecutiveDays;
 	}
 	
 }

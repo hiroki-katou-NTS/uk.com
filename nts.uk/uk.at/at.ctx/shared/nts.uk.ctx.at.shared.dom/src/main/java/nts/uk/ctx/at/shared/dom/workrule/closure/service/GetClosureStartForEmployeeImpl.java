@@ -1,10 +1,10 @@
 package nts.uk.ctx.at.shared.dom.workrule.closure.service;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
@@ -14,7 +14,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 
 /**
  * 実装：社員に対応する締め開始日を取得する
- * @author shuichi_ishida
+ * @author shuichu_ishida
  */
 @Stateless
 public class GetClosureStartForEmployeeImpl implements GetClosureStartForEmployee {
@@ -34,7 +34,6 @@ public class GetClosureStartForEmployeeImpl implements GetClosureStartForEmploye
 
 	/** 社員に対応する締め開始日を取得する */
 	@Override
-	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public Optional<GeneralDate> algorithm(String employeeId) {
 		
 		GetClosureStartForEmployeeProc proc = new GetClosureStartForEmployeeProc(

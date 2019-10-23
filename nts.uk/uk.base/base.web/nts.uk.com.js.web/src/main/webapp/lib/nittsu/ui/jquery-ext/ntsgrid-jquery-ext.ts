@@ -1992,7 +1992,7 @@ module nts.uk.ui.jqueryExtentions {
             }
         }
         
-        export module ntsControls {
+        module ntsControls {
             export let LABEL: string = 'Label';
             export let LINK_LABEL: string = 'LinkLabel';
             export let CHECKBOX: string = 'CheckBox';

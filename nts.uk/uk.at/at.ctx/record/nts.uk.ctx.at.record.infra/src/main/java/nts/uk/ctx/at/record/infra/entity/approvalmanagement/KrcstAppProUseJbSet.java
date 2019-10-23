@@ -10,7 +10,6 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -24,8 +23,6 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 public class KrcstAppProUseJbSet extends UkJpaEntity implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
-	
-	public static final JpaEntityMapper<KrcstAppProUseJbSet> MAPPER = new JpaEntityMapper<>(KrcstAppProUseJbSet.class);
 
 	@EmbeddedId
 	public KrcstAppProUseJbSetPK krcstAppProUseJbSetPK;

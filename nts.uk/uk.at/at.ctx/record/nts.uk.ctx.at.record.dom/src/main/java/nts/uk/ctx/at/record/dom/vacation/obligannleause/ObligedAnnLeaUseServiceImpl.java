@@ -16,7 +16,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremaini
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
 import nts.uk.ctx.at.shared.dom.vacation.obligannleause.AnnLeaGrantInfoOutput;
-import nts.uk.ctx.at.shared.dom.vacation.obligannleause.AnnLeaUsedDaysOutput;
 import nts.uk.ctx.at.shared.dom.vacation.obligannleause.ObligedAnnLeaUseService;
 import nts.uk.ctx.at.shared.dom.vacation.obligannleause.ObligedAnnualLeaveUse;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
@@ -69,11 +68,11 @@ public class ObligedAnnLeaUseServiceImpl implements ObligedAnnLeaUseService {
 	
 	/** 義務日数計算期間内の年休使用数を取得 */
 	@Override
-	public AnnLeaUsedDaysOutput getAnnualLeaveUsedDays(String companyId, String employeeId,
+	public Optional<AnnualLeaveUsedDayNumber> getAnnualLeaveUsedDays(String companyId, String employeeId,
 			GeneralDate criteria, ReferenceAtr referenceAtr, boolean distributeAtr,
 			ObligedAnnualLeaveUse obligedAnnualLeaveUse) {
 		
-		AnnLeaUsedDaysOutput result = new AnnLeaUsedDaysOutput();
+		Optional<AnnualLeaveUsedDayNumber> result = Optional.empty();
 		
 		// 按分が必要かどうか判断
 		DatePeriod period = null;
@@ -92,15 +91,9 @@ public class ObligedAnnLeaUseServiceImpl implements ObligedAnnLeaUseService {
 		if (period == null) return result;
 		
 		// 指定した期間の年休使用数を取得する
-		Optional<AnnualLeaveUsedDayNumber> AnnLeaUsedDaysOpt =
-				this.getAnnLeaUsedDays.ofPeriod(employeeId, period, referenceAtr);
+		result = this.getAnnLeaUsedDays.ofPeriod(employeeId, period, referenceAtr);
 		
 		// 年休使用数を返す
-		result.setDays(AnnLeaUsedDaysOpt);
-		
-		// 期間を返す
-		result.setPeriod(Optional.ofNullable(period));
-		
 		return result;
 	}
 	
@@ -108,9 +101,6 @@ public class ObligedAnnLeaUseServiceImpl implements ObligedAnnLeaUseService {
 	@Override
 	public boolean checkNeedForProportion(boolean distributeAtr, GeneralDate criteria,
 			ObligedAnnualLeaveUse obligedAnnualLeaveUse) {
-		
-		// 期間按分使用区分を確認
-		if (distributeAtr == false) return false;
 		
 		// 付与期間と重複する付与期間を持つ残数履歴データを取得
 		val annLeaGrantInfoOutput = this.getRemainDatasAtDupGrantPeriod(criteria, obligedAnnualLeaveUse);
@@ -132,7 +122,7 @@ public class ObligedAnnLeaUseServiceImpl implements ObligedAnnLeaUseService {
 		
 		// 期間を作成
 		GeneralDate startDate = remainData.getGrantDate();
-		return Optional.of(new DatePeriod(startDate, startDate.addYears(1).addDays(-1)));
+		return Optional.of(new DatePeriod(startDate, startDate.addYears(1)));
 	}
 	
 	/** 年休使用義務日数の按分しない期間の付与日数を取得 */
@@ -167,18 +157,8 @@ public class ObligedAnnLeaUseServiceImpl implements ObligedAnnLeaUseService {
 		val period = periodOpt.get();
 		
 		// 前回付与日から次回付与日までの期間をチェックする　（１年以上なら、空の結果を返す）
-		GeneralDate checkYmd = period.start().addYears(1).addDays(-1);	// ちょうど1年経つ日
-		if (period.end().afterOrEquals(checkYmd)) {
-			
-			// 1年以上の時、前回付与した「年休付与残数データ」を返す
-			for (val grantRemain : obligedAnnualLeaveUse.getGrantRemainList()) {
-				GeneralDate grantDate = grantRemain.getGrantDate();
-				if (grantDate.compareTo(period.start()) == 0) {
-					result.getGrantRemainList().add(grantRemain);
-				}
-			}
-			return result;
-		}
+		GeneralDate checkYmd = period.start().addYears(1);
+		if (checkYmd.beforeOrEquals(period.end())) return result;
 		
 		// 付与残数を取得
 		for (val grantRemain : obligedAnnualLeaveUse.getGrantRemainList()) {
@@ -216,26 +196,25 @@ public class ObligedAnnLeaUseServiceImpl implements ObligedAnnLeaUseService {
 		// 月数を計算
 		double numMonth = 0.0;
 		{
-			// 期間を月数に変換する　（期間は、期間開始日～期間終了日翌日にして算出）
-			DatePeriod checkPeriod = new DatePeriod(period.start(), period.end().addDays(1));
-			Integer calcNumMon = checkPeriod.yearMonthsBetween().size() - 1;	// 月数
-			Integer calcFracDays = 0;											// 端数日数
-			GeneralDate checkEnd = checkPeriod.start().addMonths(calcNumMon);	// 計算基準日
-			if (checkPeriod.end().after(checkEnd)) {
-				// 期間終了日翌日が計算基準日より後なら、端数日数あり
-				DatePeriod fracPeriod = new DatePeriod(checkEnd, checkPeriod.end());
-				calcFracDays = fracPeriod.datesBetween().size() - 1;
+			// 期間を月数に変換する
+			Integer calcNumMon = period.yearMonthsBetween().size();	// 月数
+			Integer calcFracDays = 0;								// 端数日数
+			GeneralDate checkEnd = period.start().addMonths(calcNumMon-1);		// 計算基準日
+			if (period.end().afterOrEquals(checkEnd)) {
+				// 期間終了日が計算基準日以降なら、端数日数あり
+				DatePeriod fracPeriod = new DatePeriod(checkEnd, period.end());
+				calcFracDays = fracPeriod.datesBetween().size();
 			}
-			else if (checkPeriod.end().equals(checkEnd)) {
-				// 期間終了日翌日が計算基準日と同じなら、端数日数なし
+			else if (period.end().addDays(-1).equals(checkEnd)) {
+				// 期間終了日が計算基準日前日なら、端数日数なし
 				calcFracDays = 0;
 			}
 			else {
-				// 期間終了日翌日が計算基準日より前なら、１か月減らした月数で端数計算
+				// 期間終了日が計算基準日前日以前なら、１か月減らした月数で端数計算
 				calcNumMon--;
-				checkEnd = checkPeriod.start().addMonths(calcNumMon);
-				DatePeriod fracPeriod = new DatePeriod(checkEnd, checkPeriod.end());
-				calcFracDays = fracPeriod.datesBetween().size() - 1;
+				checkEnd = period.start().addMonths(calcNumMon-1);
+				DatePeriod fracPeriod = new DatePeriod(checkEnd, period.end());
+				calcFracDays = fracPeriod.datesBetween().size();
 			}
 			
 			// 端数分を月数に変換する　（最終月の暦日数を計算）

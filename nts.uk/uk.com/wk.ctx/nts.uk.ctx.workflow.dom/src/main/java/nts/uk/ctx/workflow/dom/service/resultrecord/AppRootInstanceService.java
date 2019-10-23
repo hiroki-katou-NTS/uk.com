@@ -9,7 +9,7 @@ import nts.uk.ctx.workflow.dom.resultrecord.AppRootConfirm;
 import nts.uk.ctx.workflow.dom.resultrecord.AppRootInstance;
 import nts.uk.ctx.workflow.dom.resultrecord.RecordRootType;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRootStateStatus;
-import nts.uk.ctx.workflow.dom.service.output.Request113Output;
+import nts.uk.ctx.workflow.dom.service.output.Request133Output;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 /**
@@ -26,7 +26,7 @@ public interface AppRootInstanceService {
 	 * @param rootType ルート種類（日別確認／月別確認）
 	 * @return 承認ルートの状況
 	 */
-	public Request113Output getAppRootStatusByEmpsPeriod(List<String> employeeIDLst, DatePeriod period, RecordRootType rootType);
+	public Request133Output getAppRootStatusByEmpsPeriod(List<String> employeeIDLst, DatePeriod period, RecordRootType rootType);
 	
 	public List<ApprovalRootStateStatus> getAppRootStatusByEmpsPeriod(String compID, List<String> employeeIDLst, DatePeriod period, RecordRootType rootType);
 	
@@ -136,23 +136,13 @@ public interface AppRootInstanceService {
 	public ApprovalEmpStatus getApprovalEmpStatus(String employeeID, DatePeriod period, RecordRootType rootType);
 	
 	/**
-	 * [No.595]
-	 * @param approverId
-	 * @param targetEmployeeIds
-	 * @param period
-	 * @return
-	 */
-	public ApprovalEmpStatus getDailyApprovalStatus(String companyId, String approverId, List<String> targetEmployeeIds, DatePeriod period);
-	
-	/**
 	 * 承認者としてのルート状況を取得する
 	 * @param period
 	 * @param appRootInstanceLst
 	 * @param agentLst
 	 * @return
 	 */
-	public List<RouteSituation> getApproverRouteSituation(DatePeriod period, List<ApprovalRouteDetails> approverRouteLst, List<String> agentLst, RecordRootType rootType,
-			boolean useDayApproverConfirm, DatePeriod closurePeriod, YearMonth yearMonth, Integer closureID, ClosureDate closureDate);
+	public List<RouteSituation> getApproverRouteSituation(DatePeriod period, List<ApprovalRouteDetails> approverRouteLst, List<String> agentLst, RecordRootType rootType);
 	
 	/**
 	 * 代行者としてのルート状況を取得する
@@ -161,8 +151,7 @@ public interface AppRootInstanceService {
 	 * @param agentLst
 	 * @return
 	 */
-	public List<RouteSituation> getAgentRouteSituation(DatePeriod period, List<ApprovalRouteDetails> agentRouteLst, List<String> agentLst, RecordRootType rootType,
-			boolean useDayApproverConfirm, DatePeriod closurePeriod, YearMonth yearMonth, Integer closureID, ClosureDate closureDate);
+	public List<RouteSituation> getAgentRouteSituation(DatePeriod period, List<ApprovalRouteDetails> agentRouteLst, List<String> agentLst, RecordRootType rootType);
 	
 	/**
 	 * outputの整合

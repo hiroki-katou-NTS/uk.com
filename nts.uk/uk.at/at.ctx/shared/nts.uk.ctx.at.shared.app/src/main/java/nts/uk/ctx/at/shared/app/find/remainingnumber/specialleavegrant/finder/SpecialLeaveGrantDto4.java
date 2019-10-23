@@ -106,27 +106,5 @@ public class SpecialLeaveGrantDto4 extends PeregDomainDto {
 		return dto;
 
 	}
-	
-	public static SpecialLeaveGrantDto4 createFromDomain(Object[] domain) {
-		SpecialLeaveGrantDto4 dto = new SpecialLeaveGrantDto4();
-		dto.specialid = domain[0].toString();
-		dto.cid = domain[1].toString();
-		dto.sid = domain[2].toString();
-		dto.specialLeaCode = (Integer)domain[3];
-		dto.grantDate = (GeneralDate) domain[4];
-		dto.deadlineDate = (GeneralDate) domain[5];
-		dto.expStatus = (Integer) domain[6];
-		dto.registerType = (Integer) domain[7];
-		dto.numberDayGrant = (Double) domain[8];
-		dto.timeGrant = domain[9] == null? 0: (Integer) domain[9];
-		dto.numberDayRemain = (Double) domain[10];
-		dto.timeRemain = domain[11] == null? 0: (Integer) domain[11];
-		dto.numberDayUse = (Double) domain[12];
-		dto.timeUse = domain[13] == null? 0: (Integer) domain[13];
-		dto.useSavingDays = domain[14] == null? 0d : (Double) domain[14];
-		dto.numberDaysOver =  domain[15] == null? 0d : (Double) domain[15];
-		dto.timeOver = domain[16] == null? 0: (Integer) domain[16];;
-		return dto;
-	}
 
 }

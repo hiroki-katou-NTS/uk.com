@@ -5,13 +5,12 @@ import java.util.List;
 import lombok.Data;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Data
 public class MonthlyModifyResult {
-	/** Attendance items */
+	/** Attendance items*/
 	private List<ItemValue> items;
-
+	
 	/** 年月: 年月 */
 	private Integer yearMonth;
 
@@ -24,49 +23,34 @@ public class MonthlyModifyResult {
 	/** 締め日: 日付 */
 	private ClosureDateDto closureDate;
 	
-		/** 月別実績の勤怠時間 期間: 期間  */
-	private DatePeriod workDatePeriod;
-
-	private long version;
-
 	public static MonthlyModifyResult builder(){
 		return new MonthlyModifyResult();
 	}
-
-	public MonthlyModifyResult employeeId(String employeeId) {
+	
+	public MonthlyModifyResult employeeId(String employeeId){
 		this.employeeId = employeeId;
 		return this;
 	}
-
-	public MonthlyModifyResult items(List<ItemValue> items) {
+	
+	public MonthlyModifyResult items(List<ItemValue> items){
 		this.items = items;
 		return this;
 	}
-
-	public MonthlyModifyResult closureDate(ClosureDateDto closureDate) {
+	
+	public MonthlyModifyResult closureDate(ClosureDateDto closureDate){
 		this.closureDate = closureDate;
 		return this;
 	}
-
-	public MonthlyModifyResult yearMonth(Integer yearMonth) {
+	public MonthlyModifyResult yearMonth(Integer yearMonth){
 		this.yearMonth = yearMonth;
 		return this;
 	}
-
-	public MonthlyModifyResult closureId(Integer closureId) {
+	
+	public MonthlyModifyResult closureId(Integer closureId){
 		this.closureId = closureId;
 		return this;
 	}
-
-	public MonthlyModifyResult workDatePeriod(DatePeriod period) {
-		this.workDatePeriod = period;
-		return this;
-	}
 	
-	public MonthlyModifyResult version(long version){
-		this.version = version;
-		return this;
-	}	
 	public MonthlyModifyResult completed(){
 		return this;
 	}

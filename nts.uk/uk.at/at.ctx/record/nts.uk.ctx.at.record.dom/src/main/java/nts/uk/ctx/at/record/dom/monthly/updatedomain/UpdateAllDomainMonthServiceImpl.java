@@ -12,7 +12,6 @@ import nts.uk.ctx.at.record.dom.attendanceitem.StoredProcdureProcess;
 import nts.uk.ctx.at.record.dom.monthly.TimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.TimeOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthly.affiliation.AffiliationInfoOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriodRepository;
 import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthly.erroralarm.EmployeeMonthlyPerErrorRepository;
@@ -93,15 +92,7 @@ public class UpdateAllDomainMonthServiceImpl implements UpdateAllDomainMonthServ
 					if (oldClosureId.value != closureId.value) isTarget = true;
 					if (oldClosureDate.getClosureDay().v() != closureDate.getClosureDay().v()) isTarget = true;
 					if (oldClosureDate.getLastDayOfMonth() != closureDate.getLastDayOfMonth()) isTarget = true;
-					if (!isTarget) {
-						d.getAffiliationInfo().ifPresent(aff -> {
-							aff.setVersion(oldData.getAttendanceTime().get().getVersion());
-						});
-						d.getAttendanceTime().ifPresent(att -> {
-							att.setVersion(oldData.getAttendanceTime().get().getVersion());
-						});
-						continue;
-					}
+					if (!isTarget) continue;
 					
 					this.timeRepo.remove(employeeId, yearMonth, oldClosureId, oldClosureDate);
 					this.empErrorRepo.removeAll(employeeId, yearMonth, oldClosureId, oldClosureDate);
@@ -136,9 +127,7 @@ public class UpdateAllDomainMonthServiceImpl implements UpdateAllDomainMonthServ
 				
 //				anyItemRepo.persistAndUpdate(d.getAnyItemList());
 				
-				for (AgreementTimeOfManagePeriod agreementTime : d.getAgreementTimeList()) {
-					this.agreementRepo.persistAndUpdate(agreementTime);
-				}
+				d.getAgreementTime().ifPresent(at -> agreementRepo.persistAndUpdate(at));
 				
 				MonthMergeKey key = createKey(d.getAffiliationInfo().get());
 				remainRepo.persistAndUpdate(key, getRemains(d, key));

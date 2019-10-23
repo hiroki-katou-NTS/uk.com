@@ -94,11 +94,6 @@ module nts.uk.ui.jqueryExtentions {
         
         function scrollToSelect($grid: JQuery) {
             var row = null;
-			
-			if ($grid.data('igGrid') === undefined ) {
-                return;
-            }
-			
             var selectedRows = $grid.igGrid("selectedRows");
             if (selectedRows) {
                 row = selectedRows[0];
@@ -118,15 +113,9 @@ module nts.uk.ui.jqueryExtentions {
         function setupScrollWhenBinding($grid: JQuery): any {
             let gridId = "#" + $grid.attr("id");
             $(document).delegate(gridId, "iggriddatarendered", function (evt, ui) {
-                if (isCheckedAll($grid)) {
-                    return;
-                }
                 let oldSelected = getSelectRow($grid);
                 if(!nts.uk.util.isNullOrEmpty(oldSelected)){
                     _.defer(() => { 
-                        if (isCheckedAll($grid)) {
-                            return;
-                        }
                         let selected = getSelectRow($grid);
                         if(!nts.uk.util.isNullOrEmpty(selected)){
                             selected = oldSelected;    
@@ -198,26 +187,7 @@ module nts.uk.ui.jqueryExtentions {
         }
 
         function setSelected($grid: JQuery, selectedId: any) {
-            let baseID = _.map($grid.igGrid("option").dataSource, $grid.igGrid("option", "primaryKey"));
-            if(_.isEmpty(baseID)){
-                return;
-            }
-            
-            if(baseID.length >= 500){
-                let oldSelectedID = _.map(getSelected($grid), "id"), 
-                    shouldRemove: Array<string> = _.difference(oldSelectedID, selectedId), 
-                    shouldSelect: Array<string> = _.difference(selectedId, oldSelectedID);
-                /** When data source large (data source > 500 (?)):
-                        if new value for select = half of data source
-                            or removed selected value = 1/3 of data source, 
-                            should deselect all and loop for select,
-                        else if deselect old values that not selected and select new selected only*/
-                if(shouldSelect.length < baseID.length / 2 || shouldRemove.length < baseID.length / 3) {
-                    shouldRemove.forEach(id => $grid.igGridSelection("deselectRowById", id));
-                    shouldSelect.forEach(id => $grid.igGridSelection('selectRowById', id));
-                    return;
-                }    
-            }
+            deselectAll($grid);
 
             if ($grid.igGridSelection('option', 'multipleSelection')) {
                 // for performance when select all
@@ -235,7 +205,6 @@ module nts.uk.ui.jqueryExtentions {
                     });
                 }
             } else {
-                deselectAll($grid);
                 $grid.igGridSelection('selectRowById', selectedId);
             }
         }
@@ -370,7 +339,7 @@ module nts.uk.ui.jqueryExtentions {
                     dragSelectRange = [];
                     $(window).unbind('pointermove.NtsGridListDragging');
                     if ($grid.data("selectUpdated") === true) {
-                        $grid.triggerHandler('selectionchanged', [true]);
+                        $grid.triggerHandler('selectionchanged');
                     }
                     //$grid.triggerHandler('selectionchanged');  
                     clearInterval(timerAutoScroll);
@@ -417,7 +386,7 @@ module nts.uk.ui.jqueryExtentions {
             $grid.bind('iggridselectioncellselectionchanging', () => {
             });
             $grid.bind('iggridselectionrowselectionchanged', () => {
-                $grid.triggerHandler('selectionchanged', [true]);
+                $grid.triggerHandler('selectionchanged');
             });
 
             //            $grid.on('mouseup', () => {
@@ -654,7 +623,7 @@ module nts.uk.ui.jqueryExtentions {
                             $grid.igGridSelection("selectRowById", iv);
                         });
                         
-                        $grid.trigger("selectionchanged", [true]);
+                        $grid.trigger("selectionchanged");
                     }, 0);
                 }
                 return true;

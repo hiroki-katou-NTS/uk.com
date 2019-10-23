@@ -7,7 +7,6 @@ import { component } from '@app/core/component';
         url: '/htmls/float',
         parent: '/documents'
     },
-    style: require('./style.scss'),
     template: require('./index.vue'),
     resource: require('./resources.json'),
     markdown: {

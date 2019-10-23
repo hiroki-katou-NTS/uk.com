@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
@@ -16,8 +15,7 @@ import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
  */
 //就業時間帯の遅刻・早退設定
 @Getter
-@NoArgsConstructor
-public class WorkTimezoneLateEarlySet extends WorkTimeDomainObject implements Cloneable{
+public class WorkTimezoneLateEarlySet extends WorkTimeDomainObject {
 
 	/** The common set. */
 	//共通設定
@@ -72,16 +70,4 @@ public class WorkTimezoneLateEarlySet extends WorkTimeDomainObject implements Cl
 		return new WorkTimezoneLateEarlySet(new EmTimezoneLateEarlyCommonSet(flag),this.otherClassSets);
 	}
 	
-	@Override
-	public WorkTimezoneLateEarlySet clone() {
-		WorkTimezoneLateEarlySet cloned = new WorkTimezoneLateEarlySet();
-		try {
-			cloned.commonSet = this.commonSet.clone();
-			cloned.otherClassSets = this.otherClassSets.stream().map(c -> c.clone()).collect(Collectors.toList());
-		}
-		catch (Exception e){
-			throw new RuntimeException("WorkTimezoneLateEarlySet clone error.");
-		}
-		return cloned;
-	}
 }

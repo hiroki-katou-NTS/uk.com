@@ -23,9 +23,6 @@ public class TableListRestorationService {
 
 	@Inject
 	private TableListRepository tableListRepository;
-	
-	@Inject
-	private TableListCrudService tableListCrudService;
 
 	// アルゴリズム「テーブル一覧の復元」を実行する
 	public List<Object> restoreTableList(ServerPrepareMng serverPrepareMng) {
@@ -45,7 +42,7 @@ public class TableListRestorationService {
 				tableListData
 						.setDataRecoveryProcessId(Optional.ofNullable(serverPrepareMng.getDataRecoveryProcessId()));
 				tableList.add(tableListData);
-				tableListCrudService.crudTableList(tableListData);
+				tableListRepository.update(tableListData);
 			}
 
 		} catch (Exception e) {

@@ -4,8 +4,7 @@ module nts.uk.pr.view.qsi014.a {
     export module service {
         let paths: any = {
             getSocialInsurNotiCreateSet: "ctx/pr/report/printdata/socinsurnoticreset/getSocialInsurNotiCreateSet",
-            exportFilePDF: "ctx/pr/file/printdata/notice/exportFilePDF",
-            exportFileCSV: "ctx/pr/file/printdata/notice/exportFileCSV"
+            exportFilePDF: "ctx/pr/report/printconfig/changeAdd/exportData"
         };
 
         export function getSocialInsurNotiCreateSet(): JQueryPromise<any> {

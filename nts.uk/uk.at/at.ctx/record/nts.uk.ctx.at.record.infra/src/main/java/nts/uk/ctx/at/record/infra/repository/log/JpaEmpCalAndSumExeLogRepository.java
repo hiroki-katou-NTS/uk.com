@@ -1,13 +1,9 @@
 package nts.uk.ctx.at.record.infra.repository.log;
 
-import java.sql.Connection;
-import java.sql.Statement;
 import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 
 //import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -18,7 +14,6 @@ import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.Emp
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
 import nts.uk.ctx.at.record.infra.entity.log.KrcdtEmpExecutionLog;
 import nts.uk.ctx.at.record.infra.entity.log.KrcdtExecutionLog;
-import nts.uk.shr.infra.data.jdbc.JDBCUtil;
 
 @Stateless
 public class JpaEmpCalAndSumExeLogRepository extends JpaRepository implements EmpCalAndSumExeLogRepository {
@@ -86,7 +81,6 @@ public class JpaEmpCalAndSumExeLogRepository extends JpaRepository implements Em
 	}
 
 	@Override
-	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public Optional<EmpCalAndSumExeLog> getByEmpCalAndSumExecLogID(String empCalAndSumExecLogID) {
 		Optional<EmpCalAndSumExeLog> data = this.queryProxy().query(SELECT_BY_LOG_ID, KrcdtEmpExecutionLog.class)
 				.setParameter("empCalAndSumExecLogID", empCalAndSumExecLogID).getSingle(c -> c.toDomain());
@@ -112,21 +106,10 @@ public class JpaEmpCalAndSumExeLogRepository extends JpaRepository implements Em
 	
 	@Override
 	public void updateStatus(String empCalAndSumExecLogID, int executionStatus) {
-		try {
-			Connection con = this.getEntityManager().unwrap(Connection.class);
-
-			String updateTableSQL = " UPDATE KRCDT_EMP_EXECUTION_LOG SET EXECUTED_STATUS = "
-					+ executionStatus + " WHERE EMP_EXECUTION_LOG_ID = '" +empCalAndSumExecLogID+"'";
-			Statement statementU = con.createStatement();
-			statementU.executeUpdate(JDBCUtil.toUpdateWithCommonField(updateTableSQL));
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-		
-//		KrcdtEmpExecutionLog krcdtEmpExecutionLog = this.queryProxy()
-//				.query(SELECT_BY_LOG_ID, KrcdtEmpExecutionLog.class)
-//				.setParameter("empCalAndSumExecLogID", empCalAndSumExecLogID).getSingle().get();
-//		krcdtEmpExecutionLog.executedStatus = executionStatus;
-//		this.commandProxy().update(krcdtEmpExecutionLog);
+		KrcdtEmpExecutionLog krcdtEmpExecutionLog = this.queryProxy()
+				.query(SELECT_BY_LOG_ID, KrcdtEmpExecutionLog.class)
+				.setParameter("empCalAndSumExecLogID", empCalAndSumExecLogID).getSingle().get();
+		krcdtEmpExecutionLog.executedStatus = executionStatus;
+		this.commandProxy().update(krcdtEmpExecutionLog);
 	}
 }

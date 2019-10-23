@@ -12,21 +12,15 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.app.find.classification.affiliate.AffClassificationDto;
-import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistItem;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistory;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItem;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryRepository;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
-import nts.uk.shr.pereg.app.find.PeregQueryByListEmp;
 import nts.uk.shr.pereg.app.find.dto.DataClassification;
-import nts.uk.shr.pereg.app.find.dto.GridPeregDomainBySidDto;
-import nts.uk.shr.pereg.app.find.dto.GridPeregDomainDto;
 import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 
 /**
@@ -107,74 +101,4 @@ public class AffJobTitleFinder implements PeregFinder<AffJobTitleDto> {
 		return new ArrayList<>();
 	}
 
-	@Override
-	public List<GridPeregDomainDto> getAllData(PeregQueryByListEmp query) {
-		List<GridPeregDomainDto> result = new ArrayList<>();
-		// key - sid , value - pid getEmployeeId getPersonId
-		List<String> sids = query.getEmpInfos().stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
-
-		query.getEmpInfos().forEach(c -> {
-			result.add(new GridPeregDomainDto(c.getEmployeeId(), c.getPersonId(), null));
-		});
-
-		List<AffJobTitleHistory> affJobLst = affJobTitleRepo.getListByListHidSid(sids, query.getStandardDate());
-
-		List<String> histIds = affJobLst.stream().map(c -> c.getHistoryIds().get(0)).collect(Collectors.toList());
-
-		List<AffJobTitleHistoryItem> histItems = affJobTitleItemRepo.findByHitoryIds(histIds);
-
-		result.stream().forEach(c -> {
-			Optional<AffJobTitleHistoryItem> histItemOpt = histItems.stream()
-					.filter(emp -> emp.getEmployeeId().equals(c.getEmployeeId())).findFirst();
-			if (histItemOpt.isPresent()) {
-				Optional<AffJobTitleHistory> affJobTittleOpt = affJobLst.stream()
-						.filter(his -> his.getHistoryIds().get(0).equals(histItemOpt.get().getHistoryId())).findFirst();
-				if (affJobTittleOpt.isPresent()) {
-					c.setPeregDomainDto(AffJobTitleDto.createFromDomain(histItemOpt.get(), affJobTittleOpt.get()));
-				}
-			}
-
-		});
-
-		return result;
-	}
-
-	@Override
-	public List<GridPeregDomainBySidDto> getListData(PeregQueryByListEmp query) {
-		
-		String cid = AppContexts.user().companyId();
-
-		List<GridPeregDomainBySidDto> result = new ArrayList<>();
-
-		List<String> sids = query.getEmpInfos().stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
-
-		query.getEmpInfos().forEach(c -> {
-			result.add(new GridPeregDomainBySidDto(c.getEmployeeId(), c.getPersonId(), new ArrayList<>()));
-		});
-		
-		List<DateHistoryItem> histories = affJobTitleRepo.getListByListSidsNoWithPeriod(cid, sids);
-		
-		List<String> histIds = histories.stream().map(c -> c.identifier()).collect(Collectors.toList());
-		
-		List<AffJobTitleHistoryItem> histItems = affJobTitleItemRepo.findByHitoryIds(histIds);
-		
-		result.stream().forEach(c -> {
-			List<AffJobTitleHistoryItem> listHistItem = histItems.stream()
-					.filter(emp -> emp.getEmployeeId().equals(c.getEmployeeId())).collect(Collectors.toList());
-			
-			if (!listHistItem.isEmpty()) {
-				List<PeregDomainDto> listPeregDomainDto = new ArrayList<>();
-				listHistItem.forEach(h -> {
-					Optional<DateHistoryItem> dateHistoryItem = histories.stream().filter(i -> i.identifier().equals(h.getHistoryId())).findFirst();
-					if (dateHistoryItem.isPresent()) {
-						listPeregDomainDto.add(AffJobTitleDto.createFromDomain(h, dateHistoryItem.get()));
-					}
-				});
-				if (!listPeregDomainDto.isEmpty()) {
-					c.setPeregDomainDto(listPeregDomainDto);
-				}
-			}
-		});
-		return result.stream().distinct().collect(Collectors.toList());
-	}
 }

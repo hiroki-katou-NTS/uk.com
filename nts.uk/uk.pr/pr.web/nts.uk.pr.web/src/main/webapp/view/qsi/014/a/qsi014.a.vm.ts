@@ -10,6 +10,7 @@ module nts.uk.pr.view.qsi014.a.viewmodel {
 
 
     export class ScreenModel {
+        screenMode: KnockoutObservable<model.SCREEN_MODE> = ko.observable(null);
         ccg001ComponentOption: GroupOption;
         startDate: KnockoutObservable<string> = ko.observable('');
         startDateJp: KnockoutObservable<string> = ko.observable('');
@@ -106,6 +107,13 @@ module nts.uk.pr.view.qsi014.a.viewmodel {
                     self.socInsurNotiCreSet().outputOrder(data.outputOrder);
                     self.socInsurNotiCreSet().submittedName(data.submittedName);
                     self.socInsurNotiCreSet().insuredNumber(data.insuredNumber);
+                    self.socInsurNotiCreSet().fdNumber(data.fdNumber == null ? "0" : data.fdNumber);
+                    self.socInsurNotiCreSet().textPersonNumber(data.textPersonNumber == null ? 0 : data.textPersonNumber);
+                    self.socInsurNotiCreSet().outputFormat(data.outputFormat == null ? 0 : data.outputFormat);
+                    self.socInsurNotiCreSet().lineFeedCode(data.lineFeedCode == null ? 0 : data.lineFeedCode);
+                    self.screenMode(model.SCREEN_MODE.UPDATE);
+                } else {
+                    self.screenMode(model.SCREEN_MODE.NEW);
                 }
             }).fail(function(result) {
                 dialog.alertError(result.errorMessage);
@@ -184,7 +192,7 @@ module nts.uk.pr.view.qsi014.a.viewmodel {
             return listEmployee;
         }
 
-        exportFile(exportPDF: any): void {
+        exportFile(): void {
             let self = this;
             if(self.validate()){
                 return;
@@ -206,18 +214,17 @@ module nts.uk.pr.view.qsi014.a.viewmodel {
                 empIds: employList,
                 startDate: moment.utc(self.startDate(), "YYYY/MM/DD"),
                 endDate: moment.utc(self.endDate(), "YYYY/MM/DD"),
-                reference: moment.utc(self.filingDate(), "YYYY/MM/DD")
+                reference: moment.utc(self.filingDate(), "YYYY/MM/DD"),
+                screenMode : self.screenMode()
             };
 
-            if(exportPDF == 0) {
-                nts.uk.ui.block.grayout();
-                service.exportFilePDF(data).done(function() {
-                }).fail(function(error) {
-                    nts.uk.ui.dialog.alertError(error);
-                }).always(function() {
-                    nts.uk.ui.block.clear();
-                });
-            }
+            nts.uk.ui.block.grayout();
+            service.exportFilePDF(data).done(function() {
+            }).fail(function(error) {
+                nts.uk.ui.dialog.alertError(error);
+            }).always(function() {
+                nts.uk.ui.block.clear();
+            });
 
         }
 

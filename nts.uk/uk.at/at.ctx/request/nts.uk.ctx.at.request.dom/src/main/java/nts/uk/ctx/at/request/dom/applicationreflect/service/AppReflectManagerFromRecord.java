@@ -28,7 +28,7 @@ public interface AppReflectManagerFromRecord {
 	 * @param datePeriod
 	 * @return
 	 */
-	void reflectAppOfEmployee(String workId, String sid, DatePeriod datePeriod, RequestSetting requesSetting,
+	boolean reflectAppOfEmployee(String workId, String sid, DatePeriod datePeriod, RequestSetting requesSetting,
 			ExecutionTypeExImport refAppResult, InformationSettingOfEachApp reflectSetting );
 	/**
 	 * 申請の取得
@@ -46,8 +46,4 @@ public interface AppReflectManagerFromRecord {
 	 * @return
 	 */
 	ProcessStateReflect reflectAppOfEmployeeTotal(String workId, String sid, DatePeriod datePeriod);
-	void reflectAppOfAppDate(String workId, String sid, ExecutionTypeExImport refAppResult,
-			InformationSettingOfEachApp reflectSetting, DatePeriod appDatePeriod);
-	
-	void reflectApplication(List<String> lstID);
 }

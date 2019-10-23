@@ -27,9 +27,8 @@ import nts.uk.ctx.at.shared.dom.outsideot.UseClassification;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
-import nts.uk.ctx.at.shared.pub.workrule.closure.PresentClosingPeriodExport;
-import nts.uk.ctx.at.shared.pub.workrule.closure.ShClosurePub;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
+import nts.uk.screen.at.app.dailyperformance.correction.closure.FindClosureDateService;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ActualLockDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ApprovalUseSettingDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ClosureDto;
@@ -51,14 +50,14 @@ public class DPLock {
 	@Inject
 	private DailyPerformanceScreenRepo repo;
 
-	@Inject
-	private ShClosurePub shClosurePub;
+//	@Inject
+//	private ShClosurePub shClosurePub;
 	
 	@Inject
 	private ClosureService closureService;
-//	
-//	@Inject
-//	private FindClosureDateService findClosureDateService;
+	
+	@Inject
+	private FindClosureDateService findClosureDateService;
 	
 	@Inject
 	private ClosureRepository closureRepository;
@@ -120,18 +119,9 @@ public class DPLock {
 		return lock;
 	}
 
-	public Map<Integer, DatePeriod> lockHistMap(String companyId, List<String> lstEmployeeId, List<ClosureDto> closureDtos) {
-		//Map<String, String> employmentWithSidMap = repo.getAllEmployment(companyId, lstEmployeeId, new DateRange(GeneralDate.today(), GeneralDate.today()));
-		//return findClosureDateService.findClosureDate(companyId, employmentWithSidMap, GeneralDate.today());
-		List<Integer> lstClosureIds = closureDtos.stream().map(x -> x.getClosureId()).distinct().collect(Collectors.toList());
-		Map<Integer, DatePeriod> mapClsPeriod = new HashMap<>();
-		lstClosureIds.stream().forEach(x -> {
-			Optional<PresentClosingPeriodExport> closingPeriod = shClosurePub.find(companyId, x);
-			if (closingPeriod.isPresent())
-				mapClsPeriod.put(x, new DatePeriod(closingPeriod.get().getClosureStartDate(),
-						closingPeriod.get().getClosureEndDate()));
-		});
-		return mapClsPeriod;
+	public Map<String, DatePeriod> lockHistMap(String companyId, List<String> lstEmployeeId) {
+		Map<String, String> employmentWithSidMap = repo.getAllEmployment(companyId, lstEmployeeId, new DateRange(GeneralDate.today(), GeneralDate.today()));
+		return findClosureDateService.findClosureDate(companyId, employmentWithSidMap, GeneralDate.today());
 	}
 			
 	public boolean islockHist(DPDataDto data, Map<String, DatePeriod> empHist) {
@@ -183,7 +173,7 @@ public class DPLock {
 			return approvalRootMap;
 		} else {
 			long startTime = System.currentTimeMillis();
-			List<ApproveRootStatusForEmpImport> approvals = approvalStatusAdapter.getApprovalByListEmplAndListApprovalRecordDateNew(dateRange.toListDate(), employeeIds, 1);
+			List<ApproveRootStatusForEmpImport> approvals = approvalStatusAdapter.getApprovalByListEmplAndListApprovalRecordDate(dateRange.toListDate(), employeeIds, 1);
 			System.out.println("thoi gian getApp: "+ (System.currentTimeMillis() - startTime));
 			Map<String, ApproveRootStatusForEmpDto> approvalRootMap = approvals.stream().collect(Collectors.toMap(x -> mergeString(x.getEmployeeID(), "|", x.getAppDate().toString()), x -> {
 				return new ApproveRootStatusForEmpDto(null, x.getApprovalStatus() != ApprovalStatusForEmployee.UNAPPROVED);
@@ -198,7 +188,7 @@ public class DPLock {
 
 	public Map<String, ApproveRootStatusForEmpDto> lockCheckMonth(DateRange dateRange, List<String> employeeIds) {
 		List<ApproveRootStatusForEmpImport> approvals = approvalStatusAdapter
-				.getApprovalByListEmplAndListApprovalRecordDateNew(dateRange.toListDate(), employeeIds, 2);
+				.getApprovalByListEmplAndListApprovalRecordDate(dateRange.toListDate(), employeeIds, 2);
 		Map<String, ApproveRootStatusForEmpDto> approvalRootMap = approvals.stream().collect(
 				Collectors.toMap(x -> mergeString(x.getEmployeeID(), "|", x.getAppDate().toString()), x -> {
 					return new ApproveRootStatusForEmpDto(null,
@@ -245,7 +235,7 @@ public class DPLock {
 //			}
 //			if(approvalUseSettingDto.get().getUseDayApproverConfirm()) dto.setLockCheckApprovalDay(getCheckApproval(employeeIds, dateRange, employeeIdApproval, mode));
 //		}
-		dto.setLockHist(Pair.of(closureDtos, lockHistMap(companyId, employeeIds, closureDtos)));
+		dto.setLockHist(lockHistMap(companyId, employeeIds));
 		return dto;
 	}
 	

@@ -81,8 +81,5 @@ public interface JobTitleRepository {
      * @return the list
      */
     List<JobTitle> findAll(String companyId, GeneralDate baseDate);
-
-    // fix bug 
-	List<JobTitle> findAllById(String companyId, List<String> positionIds, GeneralDate baseDate);
     
 }

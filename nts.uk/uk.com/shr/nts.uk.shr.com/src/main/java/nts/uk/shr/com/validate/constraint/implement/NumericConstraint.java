@@ -7,6 +7,7 @@ import lombok.Getter;
 import nts.gul.util.value.ValueWithType;
 import nts.uk.shr.com.validate.constraint.DataConstraint;
 import nts.uk.shr.com.validate.constraint.ValidatorType;
+import nts.uk.shr.com.validate.validator.ErrorIdFactory;
 
 @Getter
 public class NumericConstraint extends DataConstraint {
@@ -51,14 +52,14 @@ public class NumericConstraint extends DataConstraint {
 		case TEXT:
 			return validateString(value.getText());
 		default:
-			return Optional.of(getDefaultMessage()); 
+			return	Optional.of(ErrorIdFactory.NumericType); 
 		}
 	}
 
 	public Optional<String> validateString(String stringValue) {
 
 		if (!isNumeric(stringValue)) {
-			return Optional.of(getDefaultMessage());
+			return Optional.of(ErrorIdFactory.NumericType);
 		}
 
 		BigDecimal value = new BigDecimal(stringValue);
@@ -69,23 +70,23 @@ public class NumericConstraint extends DataConstraint {
 	private Optional<String> validateNumber(BigDecimal value) {
 
 		if (!this.minusAvailable && !validateMinus(value)) {
-			return Optional.of(getMessageNoMinus());
+			return Optional.of(ErrorIdFactory.MinusErrorId);
 		}
 
 		if (!validateMin(this.min, value)) {
-			return Optional.of(getDefaultMessage());
+			return Optional.of(ErrorIdFactory.NumericMinErrorId);
 		}
 
 		if (!validateMax(this.max, value)) {
-			return Optional.of(getDefaultMessage());
+			return Optional.of(ErrorIdFactory.NumericMaxErrorId);
 		}
 
 		if (!validateIntegerPart(this.integerPart, value)) {
-			return Optional.of(minusAvailable ? getMessageWithMinus() : getMessageNoMinus());
+			return Optional.of(ErrorIdFactory.IntegerPartErrorId);
 		}
 
 		if (!validateDecimalPart(this.decimalPart, value)) {
-			return Optional.of(minusAvailable ? getMessageWithMinus() : getMessageNoMinus());
+			return Optional.of(ErrorIdFactory.DecimalPartErrorId);
 		}
 
 		return Optional.empty();
@@ -118,25 +119,4 @@ public class NumericConstraint extends DataConstraint {
 		return strNum.matches("-?\\d+(\\.\\d+)?");
 	}
 
-	@Override
-	protected String getDefaultMessage() {
-		if (decimalPart > 0) {
-			return "MsgB_11";
-		}
-		return "MsgB_8";
-	}
-	
-	protected String getMessageWithMinus() {
-		if (decimalPart > 0) {
-			return "MsgB_12";
-		}
-		return "MsgB_9";
-	}
-
-	protected String getMessageNoMinus() {
-		if (decimalPart > 0) {
-			return "MsgB_13";
-		}
-		return "MsgB_10";
-	}
 }

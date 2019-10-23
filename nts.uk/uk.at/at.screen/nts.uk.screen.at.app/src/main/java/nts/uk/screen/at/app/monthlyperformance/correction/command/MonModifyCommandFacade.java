@@ -21,24 +21,14 @@ import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyRecordWorkDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.EmpPerformMonthParamImport;
 import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.RegisterDayApproval;
-import nts.uk.ctx.at.record.dom.monthly.MonthlyRecordTransactionService;
-import nts.uk.ctx.at.record.dom.monthly.TimeOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
-import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.IdentityProcessUseSet;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.month.algorithm.ParamRegisterConfirmMonth;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.month.algorithm.RegisterConfirmationMonth;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.month.algorithm.SelfConfirm;
-import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.IdentityProcessUseSetRepository;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
-import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeName;
-import nts.uk.screen.at.app.dailyperformance.correction.datadialog.DataDialogWithTypeProcessor;
-import nts.uk.screen.at.app.dailyperformance.correction.datadialog.ParamDialog;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.type.TypeLink;
 import nts.uk.screen.at.app.monthlyperformance.audittrail.MonthlyCorrectionLogCommand;
 import nts.uk.screen.at.app.monthlyperformance.audittrail.MonthlyCorrectionLogCommandHandler;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.EditStateOfMonthlyPerformanceDto;
@@ -75,63 +65,21 @@ public class MonModifyCommandFacade {
 	@Inject
 	private RegisterDayApproval registerDayApproval;
 	
-	@Inject
-	private TimeOfMonthlyRepository timeOfMonth;
-
-	@Inject
-	private IdentityProcessUseSetRepository identityProcessUseSetRepository;
-	
-	@Inject
-	private MonthlyRecordTransactionService monthRecordTransaction;
-	
-	@Inject
-	private DataDialogWithTypeProcessor dataDialogWithTypeProcessor;
-	
-	@Inject
-	private OptionalItemRepository optionalMasterRepo;
-	
 	public Map<Integer, List<MPItemParent>> insertItemDomain(MPItemParent dataParent) {
-		YearMonth ym = new YearMonth(dataParent.getYearMonth());
-		
-//		dataParent.getMPItemDetails().stream().forEach(d -> {
-//			long dbVer = timeOfMonth.getVer(d.getEmployeeId(), ym, dataParent.getClosureId(), 
-//					dataParent.getClosureDate().getClosureDay(), dataParent.getClosureDate().getLastDayOfMonth());
-//			if(dbVer != d.getVersion()){
-//				throw new OptimisticLockException(I18NText.getText("Msg_1528"));
-//			}
-//		});
-		getWplPosId(dataParent);
 		Map<String, List<MPItemDetail>> mapItemDetail = dataParent.getMPItemDetails().stream()
 				.collect(Collectors.groupingBy(x -> x.getEmployeeId()));
 		List<MonthlyModifyQuery> listQuery = new ArrayList<>();
 		// insert value
 		mapItemDetail.entrySet().forEach(item -> {
 			List<MPItemDetail> rowDatas = item.getValue();
-			MonthlyModifyQuery query = new MonthlyModifyQuery(rowDatas.stream().map(x -> {
+			listQuery.add(new MonthlyModifyQuery(rowDatas.stream().map(x -> {
 				return ItemValue.builder().itemId(x.getItemId()).layout(x.getLayoutCode()).value(x.getValue())
 						.valueType(ValueType.valueOf(x.getValueType())).withPath("");
 			}).collect(Collectors.toList()), dataParent.getYearMonth(), item.getKey(), dataParent.getClosureId(),
-					dataParent.getClosureDate());
-			
-			query.setVersion(dataParent.getDataLock().stream().filter(l -> l.getEmployeeId().equals(item.getKey())).findFirst().get().getVersion());
-			
-			listQuery.add(query);
+					dataParent.getClosureDate()));
 		});
-		// lay data truoc khi update de so sanh voi data sau khi update
-		List<MonthlyRecordWorkDto> oldDtos = getDtoFromQuery(listQuery); 
-		
-		// clone array do khi chay qua monthModifyCommandFacade.handleUpdate() thi data bi thay doi gia tri
-		Map<Integer, OptionalItem> optionalMaster = optionalMasterRepo
-				.findAll(AppContexts.user().companyId()).stream()
-				.collect(Collectors.toMap(c -> c.getOptionalItemNo().v(), c -> c));
-		List<MonthlyRecordWorkDto> oldDtosClone = new ArrayList<>();
-		oldDtos.stream().forEach(x -> {
-			IntegrationOfMonthly integrationOfMonthly = x.toDomain(x.getEmployeeId(), x.getYearMonth(), x.getClosureID(), x.getClosureDate());
-			MonthlyRecordWorkDto dto = MonthlyRecordWorkDto.fromDtoWithOptional(integrationOfMonthly, optionalMaster);
-			oldDtosClone.add(dto);
-		});
-		
-		monthModifyCommandFacade.handleUpdate(listQuery, oldDtosClone);
+		List<MonthlyRecordWorkDto> oldDtos = getDtoFromQuery(listQuery); // lay data truoc khi update de so sanh voi data sau khi update
+		monthModifyCommandFacade.handleUpdate(listQuery,oldDtos);
 
 		// insert edit state
 		dataParent.getMPItemDetails().forEach(item -> {
@@ -148,61 +96,43 @@ public class MonModifyCommandFacade {
 		});
 		
 		// dang ki xac nhan ban than
-		this.insertSign(dataParent, ym);
-		
-		approval(dataParent, ym);
-		
-		dataParent.getDataLock().stream().forEach(lock -> {
-			if(!listQuery.stream().filter(c -> lock.getEmployeeId().equals(c.getEmployeeId())).findFirst().isPresent()) {
-				monthRecordTransaction.updated(lock.getEmployeeId(), ym, dataParent.getClosureId(), 
-						dataParent.getClosureDate().getClosureDay(), dataParent.getClosureDate().getLastDayOfMonth(), lock.getVersion());
-			}
-		});
-		
-		// add correction log
-		ExecutorService executorService = Executors.newFixedThreadPool(1);
-		AsyncTask task = AsyncTask.builder().withContexts().keepsTrack(false).threadName(this.getClass().getName())
-				.build(() -> {
-					List<MonthlyRecordWorkDto> newDtos = createDtoNews(listQuery, oldDtos);
-					//List<MonthlyRecordWorkDto> newDtos = getDtoFromQuery(listQuery); 
-					// lay lai data sau khi update de so sanh voi data truoc khi update
-					handlerLog.handle(new MonthlyCorrectionLogCommand(oldDtos, newDtos, listQuery, dataParent.getEndDate()));
-				});
-		executorService.submit(task);
-		return Collections.emptyMap();
-	}
-
-	private void approval(MPItemParent dataParent, YearMonth ym) {
+		this.insertSign(dataParent);
 		
 		List<EmpPerformMonthParamImport> listRegister = new ArrayList<>();
 		List<EmpPerformMonthParamImport> listRemove = new ArrayList<>();
 		for(MPItemCheckBox mpi :dataParent.getDataCheckApproval()) { //loc trang thai approve de dang ki
-			EmpPerformMonthParamImport p = new EmpPerformMonthParamImport(ym, dataParent.getClosureId(),
+			EmpPerformMonthParamImport p = new EmpPerformMonthParamImport(new YearMonth(dataParent.getYearMonth()), dataParent.getClosureId(),
 					dataParent.getClosureDate().toDomain(), dataParent.getEndDate(), mpi.getEmployeeId());
 			if(mpi.isValue()) {
 				listRegister.add(p);
 			}else {
 				listRemove.add(p);
 			}
-			timeOfMonth.verShouldUp(mpi.getEmployeeId(), ym, dataParent.getClosureId(), 
-									dataParent.getClosureDate().getClosureDay(),
-									dataParent.getClosureDate().getLastDayOfMonth());
 		}
+		
 		// remove approval	- no. 529	
 		this.removeMonApproval(listRemove);
 		// insert approval - no. 528
 		this.insertApproval(listRegister);
+		
+		// add correction log
+		ExecutorService executorService = Executors.newFixedThreadPool(1);
+		AsyncTask task = AsyncTask.builder().withContexts().keepsTrack(false).threadName(this.getClass().getName())
+				.build(() -> {
+					List<MonthlyRecordWorkDto> newDtos = createDtoNews(listQuery, oldDtos);
+					//List<MonthlyRecordWorkDto> newDtos = getDtoFromQuery(listQuery); // lay lai data sau khi update de so sanh voi data truoc khi update
+					handlerLog.handle(new MonthlyCorrectionLogCommand(oldDtos, newDtos, listQuery, dataParent.getEndDate()));
+				});
+		executorService.submit(task);
+		return Collections.emptyMap();
 	}
 	
-	private void insertSign(MPItemParent mPItemParent, YearMonth ym) {
+	private void insertSign(MPItemParent mPItemParent) {
 		List<MPItemCheckBox> dataCheckSign = mPItemParent.getDataCheckSign();
 		if(dataCheckSign.isEmpty()) return;
-		IdentityProcessUseSet identity = identityProcessUseSetRepository.findByKey(AppContexts.user().companyId()).orElse(null);
-		if(!identity.isUseIdentityOfMonth()){
-			return;
-		}
 		List<SelfConfirm> selfConfirm = new ArrayList<>();
 		ClosureDateDto closureDate = mPItemParent.getClosureDate();
+		YearMonth ym = new YearMonth(mPItemParent.getYearMonth());
 		dataCheckSign.stream().forEach(x -> {
 			selfConfirm.add(new SelfConfirm(x.getEmployeeId(), x.isValue()));
 		});
@@ -211,12 +141,6 @@ public class MonModifyCommandFacade {
 						closureDate.getLastDayOfMonth()), GeneralDate.today());
 		
 		registerConfirmationMonth.registerConfirmationMonth(param);
-		dataCheckSign.stream().forEach(x -> {
-			timeOfMonth.verShouldUp(x.getEmployeeId(), param.getYearMonth(), param.getClosureId(), 
-					param.getClosureDate().getClosureDay().v(),
-					param.getClosureDate().getLastDayOfMonth());
-		});
-		
 	}
 
 //	private void insertApproval(List<MPItemCheckBox> dataCheckApproval) {
@@ -280,34 +204,6 @@ public class MonModifyCommandFacade {
 			MonthlyRecordWorkDto dto = AttendanceItemUtil.fromItemValues(dtoNew, q.getItems(), AttendanceItemType.MONTHLY_ITEM);
 			return dto;
 		}).filter(v -> v != null).collect(Collectors.toList());
-	}
-	
-	private void getWplPosId(MPItemParent mPItemParent) {
-		// map id -> code possition and workplace
-		mPItemParent.getMPItemDetails().stream().map(itemEdit -> {
-			if (itemEdit.getItemId() == 193) {
-				CodeName codeName = dataDialogWithTypeProcessor.getTypeDialog(TypeLink.POSSITION.value,
-						new ParamDialog(mPItemParent.getStartDate(), itemEdit.getValue()));
-				itemEdit.setValue(codeName == null ? null : codeName.getId());
-				return itemEdit;
-			} else if (itemEdit.getItemId() == 198) {
-				CodeName codeName = dataDialogWithTypeProcessor.getTypeDialog(TypeLink.POSSITION.value,
-						new ParamDialog(mPItemParent.getEndDate(), itemEdit.getValue()));
-				itemEdit.setValue(codeName == null ? null : codeName.getId());
-				return itemEdit;
-			} else if (itemEdit.getItemId() == 194) {
-				CodeName codeName = dataDialogWithTypeProcessor.getTypeDialog(TypeLink.WORKPLACE.value,
-						new ParamDialog(mPItemParent.getStartDate(), itemEdit.getValue()));
-				itemEdit.setValue(codeName == null ? null : codeName.getId());
-				return itemEdit;
-			} else if (itemEdit.getItemId() == 199) {
-				CodeName codeName = dataDialogWithTypeProcessor.getTypeDialog(TypeLink.WORKPLACE.value,
-						new ParamDialog(mPItemParent.getEndDate(), itemEdit.getValue()));
-				itemEdit.setValue(codeName == null ? null : codeName.getId());
-				return itemEdit;
-			}
-			return itemEdit;
-		}).collect(Collectors.toList());
 	}
 	
 }

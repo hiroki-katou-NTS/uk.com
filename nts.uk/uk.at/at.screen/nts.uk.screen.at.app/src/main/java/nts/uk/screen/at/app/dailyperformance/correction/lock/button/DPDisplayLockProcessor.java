@@ -14,10 +14,11 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.tuple.Pair;
 
 import nts.arc.time.GeneralDate;
+import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.ApprovalStatusActualDay;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.ApprovalStatusActualResult;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.ConfirmStatusActualDay;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.ConfirmStatusActualResult;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.approval.ApprovalStatusActualDayChange;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.confirm.ConfirmStatusActualDayChange;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.finddata.IFindDataDCRecord;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
@@ -40,7 +41,6 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkInfoOfDailyPerfo
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkapproval.ApproveRootStatusForEmpDto;
 import nts.uk.screen.at.app.dailyperformance.correction.identitymonth.CheckIndentityMonth;
 import nts.uk.screen.at.app.dailyperformance.correction.identitymonth.IndentityMonthParam;
-import nts.uk.screen.at.app.dailyperformance.correction.lock.CheckLockDataDaily;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.DPLock;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.DPLockDto;
 import nts.uk.screen.at.app.dailyperformance.correction.text.DPText;
@@ -63,16 +63,13 @@ public class DPDisplayLockProcessor {
 	private CheckIndentityMonth checkIndentityMonth;
 	
 	@Inject
+	private ConfirmStatusActualDay confirmApprovalStatusActualDay;
+	
+	@Inject
+	private ApprovalStatusActualDay approvalStatusActualDay;
+	
+	@Inject
 	private IFindDataDCRecord iFindDataDCRecord;
-	
-	@Inject
-	private CheckLockDataDaily checkLockDataDaily;
-	
-	@Inject
-	private ApprovalStatusActualDayChange approvalStatusActualDayChange;
-	
-	@Inject
-	private ConfirmStatusActualDayChange confirmStatusActualDayChange;
 
 	public DailyPerformanceCorrectionDto processDisplayLock(DPDisplayLockParam param) {
 		DailyPerformanceCorrectionDto result = new DailyPerformanceCorrectionDto();
@@ -97,7 +94,7 @@ public class DPDisplayLockProcessor {
 								x -> x.getEditState()));
 
 		List<DPErrorDto> lstError = listEmployeeId.isEmpty() ? new ArrayList<>()
-				: repo.getListDPError(dateRange, listEmployeeId).stream().distinct().collect(Collectors.toList());
+				: repo.getListDPError(dateRange, listEmployeeId);
 
 		Map<Integer, DPAttendanceItem> mapDP = param.getLstAttendanceItem().stream()
 				.collect(Collectors.toMap(DPAttendanceItem::getId, x -> x));
@@ -127,10 +124,13 @@ public class DPDisplayLockProcessor {
 		// get status check box
 		DPLockDto dpLock = findLock.checkLockAll(companyId, listEmployeeId, dateRange, sId, mode, identityProcessDtoOpt,
 				approvalUseSettingDtoOpt);
-		List<ConfirmStatusActualResult> confirmResults = confirmStatusActualDayChange.processConfirmStatus(companyId, sId, listEmployeeId, Optional.of( new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate())), Optional.empty());
-
-		List<ApprovalStatusActualResult> approvalResults = approvalStatusActualDayChange.processApprovalStatus(companyId, sId, listEmployeeId, Optional.of(new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate())), Optional.empty(), mode);
-
+		String keyFind = IdentifierUtil.randomUniqueId();
+		List<ConfirmStatusActualResult> confirmResults = confirmApprovalStatusActualDay.processConfirmStatus(companyId,
+				listEmployeeId, new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate()), result.getClosureId(),
+				Optional.of(keyFind));
+		List<ApprovalStatusActualResult> approvalResults = approvalStatusActualDay.processApprovalStatus(companyId,
+				listEmployeeId, new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate()), result.getClosureId(),
+				Optional.of(keyFind));
 		Map<Pair<String, GeneralDate>, ConfirmStatusActualResult> mapConfirmResult = confirmResults.stream().collect(Collectors.toMap(x -> Pair.of(x.getEmployeeId(), x.getDate()), x -> x));
 		Map<Pair<String, GeneralDate>, ApprovalStatusActualResult> mapApprovalResults = approvalResults.stream().collect(Collectors.toMap(x -> Pair.of(x.getEmployeeId(), x.getDate()), x -> x));
 		
@@ -143,8 +143,7 @@ public class DPDisplayLockProcessor {
 			// フレックス情報を表示する
 			if (listEmployeeId.get(0).equals(sId)) {
 				//checkIndenityMonth
-				result.setIndentityMonthResult(checkIndentityMonth.checkIndenityMonth(new IndentityMonthParam(companyId,
-						sId, GeneralDate.today(), displayFormat, identityProcessDtoOpt), param.getStateParam()));
+				result.setIndentityMonthResult(checkIndentityMonth.checkIndenityMonth(new IndentityMonthParam(companyId, sId, GeneralDate.today())));
 				//対象日の本人確認が済んでいるかチェックする
 				result.checkShowTighProcess(displayFormat, true);
 			}else {
@@ -166,22 +165,30 @@ public class DPDisplayLockProcessor {
 			// state check box sign
 			boolean disableSignApp = disableSignMap.containsKey(data.getEmployeeId() + "|" + data.getDate()) && disableSignMap.get(data.getEmployeeId() + "|" + data.getDate());
 			
+			if(dataSign == null || (!dataSign.isStatus() ? (!dataSign.notDisableForConfirm() ? true : disableSignApp) : !dataSign.notDisableForConfirm())){
+				result.setCellSate(data.getId(), DPText.LOCK_SIGN, DPText.STATE_DISABLE);
+			}
 			ApprovalStatusActualResult dataApproval = mapApprovalResults.get(Pair.of(data.getEmployeeId(), data.getDate()));
 			//set checkbox approval
 			data.setApproval(dataApproval == null ? false : mode == ScreenMode.NORMAL.value ? dataApproval.isStatusNormal() : dataApproval.isStatus());
+			if(dataApproval == null || (mode == ScreenMode.NORMAL.value ? !dataApproval.notDisableNormal() : !dataApproval.notDisableApproval())) {
+				result.setCellSate(data.getId(), DPText.LOCK_APPROVAL, DPText.STATE_DISABLE);
+			}
+			if(dataApproval == null) {
+				result.setCellSate(data.getId(), DPText.LOCK_APPROVAL, DPText.STATE_ERROR);
+				lstCellHideControl.add(new DPHideControlCell(data.getId(), DPText.LOCK_APPROVAL));
+			}
 			
 			ApproveRootStatusForEmpDto approvalCheckMonth = dpLock.getLockCheckMonth()
 					.get(data.getEmployeeId() + "|" + data.getDate());
 
 			process.lockDataCheckbox(sId, result, data, identityProcessDtoOpt, approvalUseSettingDtoOpt, mode, data.isApproval(), data.isSign());
-			boolean lockDaykWpl = false, lockDay = false, lockWork = false, lockHist = false, lockApprovalMonth = false, lockConfirmMonth = false;
+			boolean lockDaykWpl = false, lockHist = false, lockApprovalMonth = false, lockConfirmMonth = false;
 			if (param.isShowLock()) {
-				lockDay = process.checkLockDay(dpLock.getLockDayAndWpl(), data);
-				lockWork = process.checkLockWork(dpLock.getLockDayAndWpl(), data);
+				lockDaykWpl = process.checkLockAndSetState(dpLock.getLockDayAndWpl(), data);
 				lockHist = process.lockHist(dpLock.getLockHist(), data);
 				lockApprovalMonth = approvalCheckMonth == null ? false : approvalCheckMonth.isCheckApproval();
 				lockConfirmMonth = process.checkLockConfirmMonth(dpLock.getLockConfirmMonth(), data);
-				lockDaykWpl = lockDay || lockWork;
 				lockDaykWpl = process.lockAndDisable(result, data, mode, lockDaykWpl, dataApproval == null ? false : dataApproval.isStatusNormal(), lockHist,
 						data.isSign(), lockApprovalMonth, lockConfirmMonth);
 			} else {
@@ -199,31 +206,10 @@ public class DPDisplayLockProcessor {
 			if (optWorkInfoOfDailyPerformanceDto.isPresent()
 					&& optWorkInfoOfDailyPerformanceDto.get().getState() == CalculationState.No_Calculated)
 				result.setAlarmCellForFixedColumn(data.getId(), displayFormat);
-			
-			if(lockDay || lockWork || dataSign == null || (!dataSign.isStatus() ? (!dataSign.notDisableForConfirm() ? true : disableSignApp) : !dataSign.notDisableForConfirm())){
-				result.setCellSate(data.getId(), DPText.LOCK_SIGN, DPText.STATE_DISABLE);
-			}
-			
-			if(lockDay || lockWork || dataApproval == null || (mode == ScreenMode.NORMAL.value ? !dataApproval.notDisableNormal() : !dataApproval.notDisableApproval())) {
-				result.setCellSate(data.getId(), DPText.LOCK_APPROVAL, DPText.STATE_DISABLE);
-			}
-			if(dataApproval == null) {
-				result.setCellSate(data.getId(), DPText.LOCK_APPROVAL, DPText.STATE_ERROR);
-				lstCellHideControl.add(new DPHideControlCell(data.getId(), DPText.LOCK_APPROVAL));
-			}
+
 		}
 		result.setLstHideControl(lstCellHideControl);
 		result.setLstData(lstData);
-		// bug 107966 disable edit flex in case lock
-		if (displayFormat == 0) {
-			if (param.isShowLock()) {
-				boolean disableFlex = checkLockDataDaily.checkLockInPeriod(result.getLstData(),
-						param.getPeriodLock() == null ? null : new DatePeriod(param.getPeriodLock().getStartDate(), param.getPeriodLock().getEndDate()));
-				result.setLockDisableFlex(disableFlex);
-			} else {
-				result.setLockDisableFlex(false);
-			}
-		}
 		return result;
 	}
 	

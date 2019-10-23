@@ -5,7 +5,6 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
@@ -14,8 +13,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
  */
 // 就業時間帯の短時間勤務設定
 @Getter
-@NoArgsConstructor
-public class WorkTimezoneShortTimeWorkSet extends WorkTimeDomainObject implements Cloneable{
+public class WorkTimezoneShortTimeWorkSet extends WorkTimeDomainObject {
 
 	/** The nurs timezone work use. */
 	// 介護時間帯に勤務した場合に勤務として扱う
@@ -82,19 +80,5 @@ public class WorkTimezoneShortTimeWorkSet extends WorkTimeDomainObject implement
 			this.nursTimezoneWorkUse = false;
 			this.childCareWorkUse = false;
 		}
-	}
-	
-	@Override
-	public WorkTimezoneShortTimeWorkSet clone() {
-		WorkTimezoneShortTimeWorkSet cloned = new WorkTimezoneShortTimeWorkSet();
-		try {
-			cloned.nursTimezoneWorkUse = this.nursTimezoneWorkUse ? true : false ;
-			cloned.employmentTimeDeduct = this.employmentTimeDeduct ? true : false ;
-			cloned.childCareWorkUse = this.childCareWorkUse ? true : false ;
-		}
-		catch (Exception e){
-			throw new RuntimeException("WorkTimezoneShortTimeWorkSet clone error.");
-		}
-		return cloned;
 	}
 }

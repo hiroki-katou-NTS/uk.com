@@ -14,20 +14,6 @@
 		  	background-color: #FFFFFF;
 		} 
 	}
-	
-	.ui-iggrid-table {
-		.ui-iggrid-tablebody {
-			tr {
-				td:last-child {
-				  	padding-right: 2px !important;
-				}
-			}
-			tr.row-disabled {
-				background-color: #CCC;
-  				color: #333;
-			}
-		}
-	}
 }
 
 .nts-treegridview {
@@ -39,19 +25,6 @@
 		margin-top: -10px !important;
 	}
 	
-	.ui-iggrid-headertable {
-		th {
-			position: relative;
-			
-			span.ui-iggrid-headertext {
-				width: 100%;
-				display: inline-block;
-				text-overflow: ellipsis;
-				white-space: nowrap;
-				overflow: hidden;
-			}
-		}
-	}
 }
 
 .no-selector {
@@ -64,8 +37,4 @@
 			visibility: hidden;
 		}
 	}
-}
-
-.no-width{
-	width: 0% !important;
 }

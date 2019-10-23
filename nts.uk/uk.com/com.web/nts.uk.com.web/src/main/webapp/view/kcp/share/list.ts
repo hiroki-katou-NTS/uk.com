@@ -396,28 +396,23 @@ module kcp.share.list {
                     // update datasource
                     gridList.ntsGridList("setDataSource", self.itemList());
                     
-                    _.defer(() => {
-                        if (self.listType !== ListType.EMPLOYEE) {
-                            searchBox.ntsSearchBox("setDataSource", self.itemList());        
-                        }
-    
-                        // select all items in multi mode
-                        if (self.isSelectAllAfterReload && !_.isEmpty(self.itemList()) && self.isMultipleSelect) {
-                            let selectedValues = _.map(self.itemList(), item => self.listType == ListType.JOB_TITLE ? item.id : item.code);
-                            if (_.isEmpty(selectedValues)){
-                                self.selectedCodes([]);
-                            } else {
-                                gridList.ntsGridList("setSelectedValue", selectedValues);
+                    if (self.listType !== ListType.EMPLOYEE) {
+                        searchBox.ntsSearchBox("setDataSource", self.itemList());        
+                    }
+
+                    // select all items in multi mode
+                    if (self.isSelectAllAfterReload && !_.isEmpty(self.itemList()) && self.isMultipleSelect) {
+                        let selectedValues = _.map(self.itemList(), item => self.listType == ListType.JOB_TITLE ? item.id : item.code);
+                        self.selectedCodes(selectedValues);
+                        gridList.ntsGridList("setSelectedValue", []);
+                        gridList.ntsGridList("setSelectedValue", selectedValues);
+                        setTimeout(function() {
+                            let chk = gridList.closest('.ui-iggrid').find(".ui-iggrid-rowselector-header").find("span[data-role='checkbox']");
+                            if (chk[0].getAttribute("data-chk") == "off") {
+                                chk.click();
                             }
-                            
-                            /*setTimeout(function() {
-                                let chk = gridList.closest('.ui-iggrid').find(".ui-iggrid-rowselector-header").find("span[data-role='checkbox']");
-                                if (chk[0].getAttribute("data-chk") == "off") { 
-                                    chk.click();
-                                }
-                            }, 1);*/
-                        }    
-                    });
+                        }, 1);
+                    }
                 });
             }
         }
@@ -493,10 +488,7 @@ module kcp.share.list {
             gridList.on('selectionchanged', evt => {
                 const selectedValues = gridList.ntsGridList("getSelectedValue");
                 const selectedIds = self.isMultipleSelect ? _.map(selectedValues, o => o.id) : selectedValues.id;
-                if(!_.isEqual(self.selectedCodes(), selectedIds)){
-                    self.selectedCodes(selectedIds);        
-                }
-                
+                self.selectedCodes(selectedIds);
             });
             gridList.on('selectChange', evt => {
                 // scroll to top if select all
@@ -506,14 +498,8 @@ module kcp.share.list {
             });
 
             self.selectedCodes.subscribe(() => {
-                // can not use OUTSIDE "gridList" variable here. must to use $('#' + self.componentGridId)
-                let gridList = $('#' + self.componentGridId);
-                if (gridList.length > 0) {
-                    var selectedValues = gridList.ntsGridList("getSelectedValue");
-                    var selectedIds = self.isMultipleSelect ? _.map(selectedValues, o => o.id) : selectedValues.id;
-                    if(!_.isEqual(self.selectedCodes(), selectedIds)){
-                        gridList.ntsGridList('setSelected', self.selectedCodes());    
-                    }
+                if ($('#' + self.componentGridId).length > 0) {
+                    $('#' + self.componentGridId).ntsGridList('setSelected', self.selectedCodes());
                 }
             });
 
@@ -1254,39 +1240,9 @@ interface JQuery {
 
 (function($: any) {
     $.fn.ntsListComponent = function(option: kcp.share.list.ComponentOption): JQueryPromise<void> {
-        let $list = $(this);
+
         // Return.
-        let dfd = $.Deferred<any>();
-        new kcp.share.list.ListComponentScreenModel().init(this, option).done(list => {
-            $list.data("ntsListComponent", list);
-            dfd.resolve(list);
-        }).fail((er) => {
-            dfd.reject(er);
-        });
-        
-        return dfd.promise();
-    }
-    
-    $.fn.ntsListComponentApi = function(action: string, param?: any): any {
-        let $list = $(this);
-        switch (action) {
-            case 'getSelectedRecords': {
-                let list: kcp.share.list.ListComponentScreenModel = $list.data("ntsListComponent");
-                
-                if(_.isEmpty(list.selectedCodes())){
-                    return [];
-                }
-                
-                let isId = list.listType === kcp.share.list.ListType.JOB_TITLE;
-                
-                return _.filter(list.itemList(), (item: kcp.share.list.UnitModel)=> {
-                    if (list.isMultipleSelect) {
-                        return list.selectedCodes().includes(isId ? item.id : item.code);
-                    }
-                    return list.selectedCodes() === (isId ? item.id : item.code);
-                });
-            }
-        }
+        return new kcp.share.list.ListComponentScreenModel().init(this, option);
     }
     
 } (jQuery));

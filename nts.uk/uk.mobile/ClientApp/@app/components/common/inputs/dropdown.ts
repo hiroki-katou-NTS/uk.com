@@ -14,7 +14,7 @@ class DropdownComponent extends InputComponent {
 
     @Emit()
     public input() {
-        return (this.$refs.input as HTMLSelectElement).value;
+        return ( this.$refs.input as HTMLSelectElement).value;
     }
 }
 

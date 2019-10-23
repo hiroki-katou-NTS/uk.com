@@ -29,15 +29,15 @@ public class ApprovalRootStateImpl implements ApprovalRootStateService {
 
 	@Override
 	public void insertAppRootType(String companyID, String employeeID, ApplicationType appType, 
-			GeneralDate appDate, String appID, Integer rootType, GeneralDate baseDate) {
-		ApprovalRootContentOutput approvalRootContentOutput = collectApprovalRootService.getApprovalRootOfSubjectRequest(companyID, employeeID, EmploymentRootAtr.APPLICATION, appType, baseDate);
+			GeneralDate date, String appID, Integer rootType) {
+		ApprovalRootContentOutput approvalRootContentOutput = collectApprovalRootService.getApprovalRootOfSubjectRequest(companyID, employeeID, EmploymentRootAtr.APPLICATION, appType, date);
 		ApprovalRootState approvalRootState = approvalRootContentOutput.getApprovalRootState();
 		approvalRootStateRepository.insert(companyID, ApprovalRootState.createFromFirst(
 				companyID,
 				appID,  
 				RootType.EMPLOYMENT_APPLICATION, 
 				approvalRootState.getHistoryID(), 
-				appDate, 
+				date, 
 				employeeID, 
 				approvalRootState),
 				rootType);

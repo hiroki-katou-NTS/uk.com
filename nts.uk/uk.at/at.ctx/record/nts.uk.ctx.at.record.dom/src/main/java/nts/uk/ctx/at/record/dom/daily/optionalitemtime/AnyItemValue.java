@@ -51,25 +51,5 @@ public class AnyItemValue {
 	public void updateTime(AnyItemTime time){
 		this.time = Optional.ofNullable(time);
 	}
-	
-	public BigDecimal getRowTimes() {
-		if(this.times.isPresent()) {
-			return this.times.get().v();
-		}
-		return BigDecimal.ZERO;
-	}
 
-	public int getRowAmount() {
-		if(this.amount.isPresent()) {
-			return this.amount.get().v();
-		}
-		return 0;
-	}
-	
-	public int getRowTime() {
-		if(this.time.isPresent()) {
-			return this.time.get().v();
-		}
-		return 0;
-	}
 }

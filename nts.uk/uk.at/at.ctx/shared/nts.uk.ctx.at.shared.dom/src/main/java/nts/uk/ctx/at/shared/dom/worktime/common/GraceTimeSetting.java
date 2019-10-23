@@ -5,7 +5,6 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
@@ -16,8 +15,7 @@ import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
  */
 // 猶予時間設定
 @Getter
-@NoArgsConstructor
-public class GraceTimeSetting extends WorkTimeDomainObject implements Cloneable{
+public class GraceTimeSetting extends WorkTimeDomainObject {
 
 	/** The include working hour. */
 	// 就業時間に含める
@@ -93,19 +91,6 @@ public class GraceTimeSetting extends WorkTimeDomainObject implements Cloneable{
 		val correctedStartTime = baseTimeSheet.getEnd().backByMinutes(this.graceTime.minute());
 		//猶予時間帯の作成
 		return new TimeSpanForCalc(correctedStartTime, baseTimeSheet.getEnd());
-	}
-	
-	@Override
-	public GraceTimeSetting clone() {
-		GraceTimeSetting cloned = new GraceTimeSetting();
-		try {
-			cloned.includeWorkingHour = this.includeWorkingHour ? true : false ;
-			cloned.graceTime = new LateEarlyGraceTime(this.graceTime.valueAsMinutes());
-		}
-		catch (Exception e){
-			throw new RuntimeException("GraceTimeSetting clone error.");
-		}
-		return cloned;
 	}
 
 }

@@ -137,17 +137,16 @@ public class UpdateHolidayShipmentCommandHandler extends CommandHandler<SaveHoli
 	}
 
 	private void preRegisComonProcessing(String companyID, String employeeID, GeneralDate appDate, int rootAtr,
-			ApplicationType appType, int prePostAtr, String appID, Long appVer, String wkTypeCD, String wkTimeCD) {
-		processBeforeRegOfDetailedScreen(companyID, employeeID, appDate, rootAtr, appType, prePostAtr, appID, appVer,
-				wkTypeCD, wkTimeCD);
+			ApplicationType appType, int prePostAtr, String appID, Long appVer) {
+		processBeforeRegOfDetailedScreen(companyID, employeeID, appDate, rootAtr, appType, prePostAtr, appID, appVer);
 
 	}
 
 	private void processBeforeRegOfDetailedScreen(String companyID, String employeeID, GeneralDate appDate, int rootAtr,
-			ApplicationType appType, int prePostAtr, String appID, Long appVer, String wkTypeCD, String wkTimeCD) {
+			ApplicationType appType, int prePostAtr, String appID, Long appVer) {
 		beforeRegisterRepo.processBeforeDetailScreenRegistration(companyID, employeeID, appDate,
 				EmploymentRootAtr.APPLICATION.value, appID, EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class),
-				Long.valueOf(appVer), wkTypeCD, wkTimeCD);
+				Long.valueOf(appVer));
 
 	}
 
@@ -176,7 +175,7 @@ public class UpdateHolidayShipmentCommandHandler extends CommandHandler<SaveHoli
 			// アルゴリズム「登録前共通処理（更新）」を実行する
 			preRegisComonProcessing(companyID, employeeID, recCmd.getAppDate(), EmploymentRootAtr.APPLICATION.value,
 					appType, command.getAppCmd().getPrePostAtr(), recCmd.getAppID(),
-					command.getAppCmd().getAppVersion(),recCmd.getWkTypeCD(),recCmd.getWkTimeCD());
+					command.getAppCmd().getAppVersion());
 
 			// ドメイン「振出申請」を1件更新する
 			Application_New recApp = updateRecDomain(command, companyID, appReason);
@@ -194,7 +193,7 @@ public class UpdateHolidayShipmentCommandHandler extends CommandHandler<SaveHoli
 			// アルゴリズム「登録前共通処理（更新）」を実行する
 			preRegisComonProcessing(companyID, employeeID, absCmd.getAppDate(), EmploymentRootAtr.APPLICATION.value,
 					appType, command.getAppCmd().getPrePostAtr(), absCmd.getAppID(),
-					command.getAppCmd().getAppVersion(), absCmd.getWkTypeCD(), absCmd.getWkTimeCD());
+					command.getAppCmd().getAppVersion());
 			// ドメイン「振休申請」を1件更新する
 			Application_New absApp = updateAbsDomain(command, companyID, appReason);
 			// 暫定データの登録

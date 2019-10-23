@@ -2,11 +2,6 @@ __viewContext.ready(function() {
     nts.uk.request.login.keepUsedLoginPage("com", "/view/ccg/007/d/index.xhtml");
 	var paramSPR = JSON.parse(window.sessionStorage.getItem("paramSPR"));
 	window.sessionStorage.removeItem("paramSPR");
-    if(!nts.uk.util.isNullOrUndefined(paramSPR.errMsg)&&!nts.uk.util.isNullOrEmpty(paramSPR.errMsg)){
-        nts.uk.ui.dialog.alertError({message: _.escape(paramSPR.errMsg)}).then(()=>{
-            nts.uk.request.jump("com", "/view/ccg/007/d/index.xhtml");     
-        });
-    }else 
     if(!nts.uk.util.isNullOrUndefined(paramSPR.successMsg)&&!nts.uk.util.isNullOrEmpty(paramSPR.successMsg)){
         nts.uk.ui.dialog.info({ messageId: paramSPR.successMsg }).then(()=>{
             routeData(paramSPR);     

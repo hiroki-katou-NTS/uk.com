@@ -7,7 +7,6 @@ import java.util.UUID;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
@@ -48,7 +47,6 @@ public class AppRootConfirm {
 	/**
 	 * 承認済フェーズ
 	 */
-	@Setter
 	private List<AppPhaseConfirm> listAppPhase;
 	
 	/**

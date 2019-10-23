@@ -11,8 +11,10 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InitMode;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterApproval_New;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
@@ -77,17 +79,6 @@ public class ApproveHolidayShipmentCommandHandler
 					displayReason += System.lineSeparator();
 				}
 				displayReason += context.getCommand().getTextAreaReason();
-			} else {
-				if(Strings.isBlank(typicalReason)){
-					boolean isApprovalRec = command.getRecAppID() != null;
-					boolean isApprovalAbs = command.getAbsAppID() != null;
-					if (isApprovalRec) {
-						displayReason = applicationRepository.findByID(companyID, command.getRecAppID()).get().getAppReason().v();
-					}
-					if (isApprovalAbs) {
-						displayReason = applicationRepository.findByID(companyID, command.getAbsAppID()).get().getAppReason().v();
-					}
-				}
 			}
 			Optional<ApplicationSetting> applicationSettingOp = applicationSettingRepository.getApplicationSettingByComID(companyID);
 			ApplicationSetting applicationSetting = applicationSettingOp.get();
@@ -135,14 +126,12 @@ public class ApproveHolidayShipmentCommandHandler
 
 		return result;
 	}
-	
-    //KAF011 承認処理
+
 	private ProcessResult approvalProcessing(String companyID, String appID, String employeeID, Long version,
 			String memo, String appReason, boolean isUpdateReason) {
-        //EA修正履歴 No.3258
-        //hoatt 2019.04.25
-        // アルゴリズム「排他チェック」を実行する (thực hiện xử lý 「check version」)
-        detailBefUpdate.exclusiveCheck(companyID, appID, version);
+		// アルゴリズム「詳細画面登録前の処理」を実行する
+		detailBefUpdate.processBeforeDetailScreenRegistration(companyID, employeeID, GeneralDate.today(), 1, appID,
+				PrePostAtr.PREDICT, version);
 		// アルゴリズム「申請個別のエラーチェック」を実行する không xử lý
 
 		// xử lý đồng thời
