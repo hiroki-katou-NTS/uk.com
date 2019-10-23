@@ -38,7 +38,6 @@ public class OneMonthApprovalStatusWebService extends WebService {
 
 	@POST
 	@Path("extractApprovalStatusData")
-	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public OneMonthApprovalStatusDto extractApprovalStatusData(OneMonthApprovalStatusRequest request) {
 		return oneMonthApprovalStatusFinder.getOneMonthApprovalStatus(request.getClosureIdParam(),
 				request.getYearMonth());
@@ -46,7 +45,6 @@ public class OneMonthApprovalStatusWebService extends WebService {
 	
 	@POST
 	@Path("getdaterange/{closureId}/{currentYearMonth}")
-	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public OneMonthApprovalStatusDto getDateRange(@PathParam("closureId") int closureId,@PathParam("currentYearMonth") int currentYearMonth) {
 		return oneMonthApprovalStatusFinder.getDatePeriod(closureId,currentYearMonth);
 	}
