@@ -7,8 +7,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistItem;
@@ -67,7 +65,6 @@ public class EmployeeGeneralInfoPubImpl implements EmployeeGeneralInfoPub {
 	private AffWorkplaceHistoryItemRepository workplaceHistItemRepo;
 
 	@Override
-	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public EmployeeGeneralInfoDto getPerEmpInfo(List<String> employeeIds, DatePeriod period, boolean checkEmployment,
 			boolean checkClassification, boolean checkJobTitle, boolean checkWorkplace, boolean checkDepartment) {
 
@@ -86,8 +83,7 @@ public class EmployeeGeneralInfoPubImpl implements EmployeeGeneralInfoPub {
 
 		return new EmployeeGeneralInfoDto(employmentDto, classificationDto, jobTitleDto, workplaceDtoList);
 	}
-	
-	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
+
 	private List<ExEmploymentHistoryDto> getEmploymentDto(boolean checkEmployment, List<String> employeeIds,
 			DatePeriod period) {
 		if (!checkEmployment) {
@@ -113,7 +109,6 @@ public class EmployeeGeneralInfoPubImpl implements EmployeeGeneralInfoPub {
 		return resultList;
 	}
 
-	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	private List<ExClassificationHistoryDto> getClassificationDto(boolean checkClassification, List<String> employeeIds,
 			DatePeriod period) {
 		if (!checkClassification) {
@@ -138,8 +133,7 @@ public class EmployeeGeneralInfoPubImpl implements EmployeeGeneralInfoPub {
 		}
 		return resultList;
 	}
-	
-	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
+
 	private List<ExJobTitleHistoryDto> getJobTitleDto(boolean checkJobTitle, List<String> employeeIds,
 			DatePeriod period) {
 		if (!checkJobTitle) {
@@ -165,7 +159,6 @@ public class EmployeeGeneralInfoPubImpl implements EmployeeGeneralInfoPub {
 		return resultList;
 	}
 
-	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	private List<ExWorkPlaceHistoryDto> getWorkplaceDto(boolean checkWorkplace, List<String> employeeIds,
 			DatePeriod period) {
 		if (!checkWorkplace) {

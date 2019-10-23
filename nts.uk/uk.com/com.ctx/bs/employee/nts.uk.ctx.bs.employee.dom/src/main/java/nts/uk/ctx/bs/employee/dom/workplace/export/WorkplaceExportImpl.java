@@ -8,8 +8,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
@@ -34,7 +32,6 @@ public class WorkplaceExportImpl implements WorkplaceExport {
 	private WorkplaceConfigInfoRepository workplaceConfigInfoRepository;
 
 	@Override
-	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<WkpInfoDto> getAllWkpConfig(String companyId, List<String> listWkpId, GeneralDate baseDate) {
 		List<WkpInfoDto> results = new ArrayList<>();
 		// ドメインモデル「職場構成」を取得する
@@ -78,7 +75,6 @@ public class WorkplaceExportImpl implements WorkplaceExport {
 	}
 
 	@Override
-	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<WkpInfoDto> getPastWkpInfo(String companyId, List<String> listWkpId, String histId) {
 		List<WkpInfoDto> results = new ArrayList<>();
 		List<WorkplaceHierarchy> lstWorkplaceHierarchyAll = new ArrayList<>();

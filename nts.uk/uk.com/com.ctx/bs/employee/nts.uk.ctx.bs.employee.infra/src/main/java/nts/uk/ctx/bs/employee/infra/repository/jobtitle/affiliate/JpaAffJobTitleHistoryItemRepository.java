@@ -9,8 +9,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 
 import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.DbConsts;
@@ -203,7 +201,6 @@ public class JpaAffJobTitleHistoryItemRepository extends JpaRepository
 	}
 
 	@Override
-	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<AffJobTitleHistoryItem> findByHitoryIds(List<String> historyIds) {
 		if (historyIds.isEmpty()) {
 			return new ArrayList<>();

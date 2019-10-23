@@ -11,8 +11,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -271,7 +269,6 @@ public class JpaJobTitleRepository extends JpaRepository implements JobTitleRepo
 	}
 	//ドメインモデル「職位」を取得する
 	@Override
-	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<JobTitle> findAllById(String companyId,List<String> positionIds ,GeneralDate baseDate) {
 		// Get entity manager
 		EntityManager em = this.getEntityManager();

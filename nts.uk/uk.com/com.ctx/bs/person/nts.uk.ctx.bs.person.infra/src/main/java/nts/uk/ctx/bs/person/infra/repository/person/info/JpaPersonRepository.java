@@ -171,7 +171,6 @@ public class JpaPersonRepository extends JpaRepository implements PersonReposito
 	 * util.List)
 	 */
 	@Override
-	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<Person> getPersonByPersonIds(List<String> personIds) {
 
 		// check exist input

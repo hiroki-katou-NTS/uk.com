@@ -13,8 +13,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 
 import org.apache.logging.log4j.util.Strings;
 
@@ -382,7 +380,6 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 	}
 
 	@Override
-	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<AppRootConfirm> findByEmpDate(String companyID, List<String> employeeIDLst, DatePeriod date,
 			RecordRootType rootType) {
 		
@@ -402,7 +399,6 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 	}
 
 	@SneakyThrows
-	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	private void internalQuery(String companyID, DatePeriod date, RecordRootType rootType, List<AppRootConfirm> results,
 			List<String> employeeIDs) {
 		StringBuilder sql = new StringBuilder();
@@ -432,7 +428,6 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 	}
 	
 	@SneakyThrows
-	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	private void internalQueryWithIndex(String companyID, DatePeriod date, RecordRootType rootType, List<AppRootConfirm> results,
 			List<String> employeeIDs) {
 		StringBuilder sql = new StringBuilder();
@@ -572,7 +567,6 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 	}
 
 	@Override
-	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<AppRootConfirm> findByEmpLstMonth(String companyID, List<String> employeeIDLst, YearMonth yearMonth,
 			Integer closureID, ClosureDate closureDate, RecordRootType rootType) {
 		List<AppRootConfirm> results = new ArrayList<AppRootConfirm>();

@@ -76,7 +76,6 @@ public class ApprovalStatusAdapterImpl implements ApprovalStatusAdapter {
 	}
 
 	@Override
-	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public ApprovalRootOfEmployeeImport getApprovalRootOfEmloyee(GeneralDate startDate, GeneralDate endDate,
 			String approverID, String companyID, Integer rootType) {
 		//ApprovalRootOfEmployeeExport 
