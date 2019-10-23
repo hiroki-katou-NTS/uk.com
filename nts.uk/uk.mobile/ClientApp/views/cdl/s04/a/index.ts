@@ -14,7 +14,8 @@ export class CdlS04AComponent extends Vue {
     @Prop({
         default: () => ({
             isShowNoSelectRow: false,
-            selectedCode: null
+            selectedCode: null,
+            date: null
         })
     })
     public readonly params!: IParameter;
@@ -25,10 +26,9 @@ export class CdlS04AComponent extends Vue {
 
     public created() {
         let self = this;
-        let param = { baseDate: new Date() };
         self.$mask('show');
         //起動時処理
-        self.$http.post('com', servicePath.findJobTitle, param).then((result: any) => {
+        self.$http.post('com', servicePath.findJobTitle, {baseDate: self.params.date}).then((result: any) => {
             self.$mask('hide');
             if (_.isEmpty(result.data)) {//TH không có data
                 //エラーメッセージ（#Msg_1566）を表示する
@@ -65,6 +65,7 @@ export class CdlS04AComponent extends Vue {
 interface IParameter {
     isShowNoSelectRow: boolean;
     selectedCode: string;
+    date: Date;
 }
 const servicePath = {
     findJobTitle: 'bs/employee/jobtitle/findAll'

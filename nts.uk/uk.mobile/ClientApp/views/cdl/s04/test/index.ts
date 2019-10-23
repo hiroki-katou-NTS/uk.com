@@ -15,7 +15,8 @@ export class CdlS04TestComponent extends Vue {
     public returnCode: string = null;
     public data = {
         isShowNoSelectRow: false,
-        selectedCode: '0000000001'
+        selectedCode: '0000000001',
+        date: new Date()
     };
 
     public openCdlS04A() {
