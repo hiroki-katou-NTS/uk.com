@@ -22,7 +22,7 @@
       <ul class="list-group list-group-single-select">
         <li class="list-group-item " v-for="(item, k) of data" :class="(item.code == params.selectedCode || (item.code == '' && activeNoSelect)) ? 'active' : ''" v-on:click="$close(item.code)">
             <span v-if="item.code != ''">{{item.code}} &nbsp;&nbsp;&nbsp; {{item.name}}</span>
-            <span v-if="item.code == ''">{{item.name}}</span>
+            <span v-if="item.code == ''">{{item.name | i18n}}</span>
         </li>
       </ul>
     </div>
