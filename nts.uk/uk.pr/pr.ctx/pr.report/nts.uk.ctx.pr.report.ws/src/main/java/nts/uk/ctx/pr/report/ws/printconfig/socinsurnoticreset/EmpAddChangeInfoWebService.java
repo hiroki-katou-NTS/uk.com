@@ -16,7 +16,7 @@ public class EmpAddChangeInfoWebService {
 
     @POST
     @Path("/exportData")
-    public ExportServiceResult exportData(EmpAddChangeInfoExportQuery query){
+    public ExportServiceResult exportData(NotificationOfLossInsExportQuery query){
         return service.start(query);
     }
 }

@@ -18,9 +18,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EmpAddChangeInforData {
-    SocialInsurNotiCreateSet socialInsurNotiCreateSet;
+    /*SocialInsurNotiCreateSet socialInsurNotiCreateSet;
     CompanyInformation companyInformation;
-    SocialInsuranceOffice socialInsuranceOffice;
+    SocialInsuranceOffice socialInsuranceOffice;*/
     /*List<PersonInformation> personInformationList;
     List<PersonCurrentAddress> personCurrentAddressList;
     List<EmpFamilySocialIns> empFamilySocialInsList;

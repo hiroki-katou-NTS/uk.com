@@ -62,8 +62,52 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
             }
         }
 
-        List<EmpAddChangeInfoExport> empAddChangeInfoExportList = new ArrayList<>();
+        /*List<EmpAddChangeInfoExport> empAddChangeInfoExportList = new ArrayList<>();*/
         EmpAddChangeInforData empAddChangeInforData = new EmpAddChangeInforData();
+        EmpAddChangeInfoExport empAddChangeInfoExport = new EmpAddChangeInfoExport(
+                "1233",
+                "1233",
+                "1233",
+                "1233",
+                "1234567",
+                "nameKana",
+                "fullNamePs",
+                start,
+                "1233121",
+                "add1KanaPs",
+                "add2KanaPs",
+                "add1Ps",
+                "add2Ps",
+                start,
+                "7654321",
+                1,
+                1,
+                1,
+                1,
+                "otherReason",
+                1,
+                1,
+                1,
+                1,
+                "spouseOtherReason",
+                start,
+                "nameKanaF",
+                "fullNameF",
+                "1233234",
+                "add1KanaF",
+                "add2KanaF",
+                "add1F",
+                "add2F",
+                start,
+                "add1BeforeChange",
+                "add2BeforeChange",
+                "address1",
+                "address2",
+                "bussinessName",
+                "referenceName",
+                "phoneNumber"
+        );
+
         empAddChangeInfoFileGenerator.generate(exportServiceContext.getGeneratorContext(), empAddChangeInforData);
 
     }
