@@ -30,9 +30,9 @@ public class AddChangeSettingWebService {
     }
 
     @POST
-    @Path("/register/{empId}")
+    @Path("/register")
     public void registerEmpAddChangeInfo(EmpAddChangeInfoCommand empAddChangeInfoCommand) {
-        empAddChangeInfoCommandHandle.registerEmpAddChangeInfo(empAddChangeInfoCommand);
+        empAddChangeInfoCommandHandle.handle(empAddChangeInfoCommand);
     }
 
 

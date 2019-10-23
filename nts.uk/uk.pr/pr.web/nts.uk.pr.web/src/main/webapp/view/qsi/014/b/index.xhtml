@@ -32,7 +32,7 @@
 
     <ui:define name="content">
         <div id="functions-area" >
-            <button id="B1_1" data-bind="click: add,  enable: $root.errors.isEmpty()" tabindex="1" class="proceed">#{i18n.getText('QSI001_B1_1')}</button>
+            <button id="B1_1" data-bind="click: register,  enable: $root.errors.isEmpty()" tabindex="1" class="proceed">#{i18n.getText('QSI001_B1_1')}</button>
 
             <button id="B1_2" data-bind="click: cancel" tabindex="2">#{i18n.getText('QSI001_B1_2')}</button>
 
@@ -51,7 +51,7 @@
                     <hr />
                     <div id="B3_3" class="column-1" data-bind="ntsFormLabel: {}">#{i18n.getText('QSI014_34')}</div>
                     <input  id="B222_4" data-bind="ntsTextEditor: {
-                                    value: $parent.basicPenNumber,
+                                    value: basicPenNumber,
                                     name: '#{i18n.getText('#QSI014_34')}',
                                     constraint: 'BasicPenNumber',
                                     required: false,
@@ -63,24 +63,24 @@
                     <div class="column-1" data-bind="ntsFormLabel: {}">#{i18n.getText('QSI014_35')}</div>
                     <div style="display: inline-table;">
                         <div id="B3_6"
-                             data-bind="ntsCheckBox: { checked: $parent.shortResidentAtr }">#{i18n.getText('QSI014_36')}</div>
+                             data-bind="ntsCheckBox: { checked: shortResidentAtr }">#{i18n.getText('QSI014_36')}</div>
                         <br></br>
                         <div id="B3_7"
-                             data-bind="ntsCheckBox: { checked: $parent.livingAbroadAtr }">#{i18n.getText('QSI014_37')}</div>
+                             data-bind="ntsCheckBox: { checked: livingAbroadAtr }">#{i18n.getText('QSI014_37')}</div>
                         <br></br>
                         <div id="B3_8"
-                             data-bind="ntsCheckBox: { checked: $parent.residenceOtherResidentAtr }">#{i18n.getText('QSI014_38')}</div>
+                             data-bind="ntsCheckBox: { checked: residenceOtherResidentAtr }">#{i18n.getText('QSI014_38')}</div>
                         <br></br>
                         <div>
                             <div id="B3_9"
-                                 data-bind="ntsCheckBox: { checked: $parent.otherAtr }">#{i18n.getText('QSI014_39')}</div>
+                                 data-bind="ntsCheckBox: { checked: otherAtr }">#{i18n.getText('QSI014_39')}</div>
 
                             <input  id="B3_10" data-bind="ntsTextEditor: {
-                                    value: $parent.otherReason,
+                                    value: otherReason,
                                     name: '#{i18n.getText('#QSI014_40')}',
                                     constraint: 'AddressChangeNotify',
                                     required: false,
-                                    enable: true,
+                                    enable: otherAtr,
                                     readonly: false}"/>
 
                         </div>
@@ -97,24 +97,24 @@
                     <div  id="B4_3" class="column-1" data-bind="ntsFormLabel: {}">#{i18n.getText('QSI014_35')}</div>
                     <div style="display: inline-table;">
                         <div id="B4_4"
-                             data-bind="ntsCheckBox: { checked: $parent.spouseShortResidentAtr }">#{i18n.getText('QSI014_36')}</div>
+                             data-bind="ntsCheckBox: { checked: spouseShortResidentAtr }">#{i18n.getText('QSI014_36')}</div>
                         <br></br>
                         <div id="B4_5"
-                             data-bind="ntsCheckBox: { checked: $parent.spouseLivingAbroadAtr }">#{i18n.getText('QSI014_37')}</div>
+                             data-bind="ntsCheckBox: { checked: spouseLivingAbroadAtr }">#{i18n.getText('QSI014_37')}</div>
                         <br></br>
                         <div id="B4_6"
-                             data-bind="ntsCheckBox: { checked: $parent.spouseResidenceOtherResidentAtr }">#{i18n.getText('QSI014_38')}</div>
+                             data-bind="ntsCheckBox: { checked: spouseResidenceOtherResidentAtr }">#{i18n.getText('QSI014_38')}</div>
                         <br></br>
                         <div>
                             <div id="B4_7"
-                                 data-bind="ntsCheckBox: { checked: $parent.spouseOtherAtr }">#{i18n.getText('QSI014_39')}</div>
+                                 data-bind="ntsCheckBox: { checked: spouseOtherAtr }">#{i18n.getText('QSI014_39')}</div>
 
                             <input  id="B4_8" data-bind="ntsTextEditor: {
-                                    value: $parent.spouseOtherReason,
+                                    value: spouseOtherReason,
                                     name: '#{i18n.getText('#QSI014_40')}',
                                     constraint: 'AddressChangeNotify',
                                     required: false,
-                                    enable: true,
+                                    enable: spouseOtherAtr,
                                     readonly: false}"/>
 
                         </div>

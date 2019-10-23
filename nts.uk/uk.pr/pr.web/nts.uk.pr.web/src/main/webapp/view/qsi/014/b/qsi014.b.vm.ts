@@ -14,23 +14,20 @@ module nts.uk.pr.view.qsi014.b.viewmodel {
         listComponentOption: ComponentOption;
         selectedItem: KnockoutObservable<string>;
         tabindex: number;
-
-
         //
         empAddChangeInfoDto: KnockoutObservable<EmpAddChangeInfoDto> = ko.observable(new EmpAddChangeInfoDto({
-
             sid: "",
             shortResidentAtr: 0,
             livingAbroadAtr: 0,
             residenceOtherResidentAtr: 0,
             otherAtr: 0,
-            otherReason: 0,
+            otherReason: null,
             spouseShortResidentAtr: 0,
             spouseLivingAbroadAtr: 0,
             spouseResidenceOtherResidentAtr: 0,
             spouseOtherAtr: 0,
-            spouseOtherReason: "",
-            basicPenNumber: "",
+            spouseOtherReason: null,
+            basicPenNumber: null,
             isUpdateEmpAddChangeInfo: false,
             isUpdateEmpBasicPenNumInfor: false
         }));
@@ -38,10 +35,16 @@ module nts.uk.pr.view.qsi014.b.viewmodel {
 
         constructor() {
             let self = this;
-            let periodCommand: any;
-            let params = getShared('QSI001_PARAMS_TO_SCREEN_B');
-            self.loadKCP009(self.createEmployeeModel(params.listEmpId));
-            self.initScreen(params.listEmpId[0].employeeId);
+            let params = getShared('QSI014_PARAMS_B');
+            self.loadKCP009(self.createEmployeeModel(params.employeeList));
+            self.initScreen(params.employeeList[0].id);
+
+            //select employee
+            self.selectedItem.subscribe(e => {
+                self.initScreen(self.selectedItem());
+
+            });
+
         }
 
         initScreen(empId: string): JQueryPromise<any> {
@@ -50,25 +53,25 @@ module nts.uk.pr.view.qsi014.b.viewmodel {
             let self = this;
             //load start screen
             service.start(empId).done(function(data: IEmpAddChangeInfoDto) {
-                    self.empAddChangeInfoDto(data);
-                    // self.empAddChangeInfoDto().shortResidentAtr =  data.shortResidentAtr;
-                    // self.empAddChangeInfoDto().livingAbroadAtr = data.livingAbroadAtr;
-                    // self.empAddChangeInfoDto().residenceOtherResidentAtr= data.residenceOtherResidentAtr;
-                    // self.empAddChangeInfoDto().otherAtr = data.otherAtr;
-                    // self.empAddChangeInfoDto().otherReason = data.otherReason;
-                    // self.empAddChangeInfoDto().spouseShortResidentAtr = data.spouseShortResidentAtr;
-                    // self.empAddChangeInfoDto().spouseLivingAbroadAtr = data.spouseLivingAbroadAtr;
-                    // self.empAddChangeInfoDto().spouseResidenceOtherResidentAtr = data.spouseResidenceOtherResidentAtr;
-                    // self.empAddChangeInfoDto().spouseOtherAtr = data.spouseOtherAtr;
-                    // self.empAddChangeInfoDto().spouseOtherReason = data.spouseOtherReason;
-                    // self.empAddChangeInfoDto().basicPenNumber = data.basicPenNumber;
-                    // self.empAddChangeInfoDto().isUpdateEmpAddChangeInfo = data.isUpdateEmpAddChangeInfo;
-                    // self.empAddChangeInfoDto(). isUpdateEmpBasicPenNumInfor = data.isUpdateEmpBasicPenNumInfor;
+                    block.clear();
+                    self.empAddChangeInfoDto().sid(empId);
+                    self.empAddChangeInfoDto().shortResidentAtr(data.shortResidentAtr);
+                    self.empAddChangeInfoDto().livingAbroadAtr(data.livingAbroadAtr);
+                    self.empAddChangeInfoDto().residenceOtherResidentAtr(data.residenceOtherResidentAtr);
+                    self.empAddChangeInfoDto().otherAtr(data.otherAtr == 0 ?  false : true);
+                    self.empAddChangeInfoDto().otherReason(data.otherReason);
+                    self.empAddChangeInfoDto().spouseShortResidentAtr(data.spouseShortResidentAtr);
+                    self.empAddChangeInfoDto().spouseLivingAbroadAtr(data.spouseLivingAbroadAtr);
+                    self.empAddChangeInfoDto().spouseResidenceOtherResidentAtr(data.spouseResidenceOtherResidentAtr);
+                    self.empAddChangeInfoDto().spouseOtherAtr(data.spouseOtherAtr == 0 ?  false : true) ;
+                    self.empAddChangeInfoDto().spouseOtherReason(data.spouseOtherReason);
+                    self.empAddChangeInfoDto().basicPenNumber(data.basicPenNumber);
+                    self.empAddChangeInfoDto().isUpdateEmpAddChangeInfo(data.isUpdateEmpAddChangeInfo) ;
+                    self.empAddChangeInfoDto(). isUpdateEmpBasicPenNumInfor(data.isUpdateEmpBasicPenNumInfor);
             }).fail(function (result) {
                 dialog.alertError(result.errorMessage);
                 dfd.reject();
             });
-            block.clear();
             return dfd.promise();
         }
 
@@ -78,28 +81,28 @@ module nts.uk.pr.view.qsi014.b.viewmodel {
             let self = this;
             //load start screen
             let data = {
-                sid: self.empAddChangeInfoDto().sid,
-                shortResidentAtr: self.empAddChangeInfoDto().shortResidentAtr,
-                livingAbroadAtr: self.empAddChangeInfoDto().livingAbroadAtr,
-                residenceOtherResidentAtr: self.empAddChangeInfoDto().residenceOtherResidentAtr,
-                otherAtr: self.empAddChangeInfoDto().otherAtr,
-                otherReason: self.empAddChangeInfoDto().otherReason,
-                spouseShortResidentAtr: self.empAddChangeInfoDto().spouseShortResidentAtr,
-                spouseLivingAbroadAtr: self.empAddChangeInfoDto().spouseLivingAbroadAtr,
-                spouseResidenceOtherResidentAtr: self.empAddChangeInfoDto().spouseResidenceOtherResidentAtr,
-                spouseOtherAtr: self.empAddChangeInfoDto().spouseOtherAtr,
-                spouseOtherReason: self.empAddChangeInfoDto().spouseOtherReason,
-                basicPenNumber: self.empAddChangeInfoDto().basicPenNumber,
-                isUpdateEmpAddChangeInfo: self.empAddChangeInfoDto().isUpdateEmpAddChangeInfo,
-                isUpdateEmpBasicPenNumInfor: self.empAddChangeInfoDto().isUpdateEmpBasicPenNumInfor
+                sid: self.empAddChangeInfoDto().sid(),
+                shortResidentAtr: self.empAddChangeInfoDto().shortResidentAtr()== false ? 0 : 1,
+                livingAbroadAtr: self.empAddChangeInfoDto().livingAbroadAtr()== false ? 0 : 1,
+                residenceOtherResidentAtr: self.empAddChangeInfoDto().residenceOtherResidentAtr()== false ? 0 : 1,
+                otherAtr: self.empAddChangeInfoDto().otherAtr()== false ? 0 : 1,
+                otherReason: self.empAddChangeInfoDto().otherAtr() == false || self.empAddChangeInfoDto().otherReason() == "" ? null : self.empAddChangeInfoDto().otherReason(),
+                spouseShortResidentAtr: self.empAddChangeInfoDto().spouseShortResidentAtr()== false ? 0 : 1,
+                spouseLivingAbroadAtr: self.empAddChangeInfoDto().spouseLivingAbroadAtr()== false ? 0 : 1,
+                spouseResidenceOtherResidentAtr: self.empAddChangeInfoDto().spouseResidenceOtherResidentAtr()== false ? 0 : 1,
+                spouseOtherAtr: self.empAddChangeInfoDto().spouseOtherAtr()== false ? 0 : 1,
+                spouseOtherReason:  self.empAddChangeInfoDto().spouseOtherAtr()== false || self.empAddChangeInfoDto().spouseOtherReason() == "" ? null : self.empAddChangeInfoDto().spouseOtherReason(),
+                basicPenNumber: self.empAddChangeInfoDto().basicPenNumber() == "" ? null :self.empAddChangeInfoDto().basicPenNumber(),
+                isUpdateEmpAddChangeInfo: self.empAddChangeInfoDto().isUpdateEmpAddChangeInfo(),
+                isUpdateEmpBasicPenNumInfor: self.empAddChangeInfoDto().isUpdateEmpBasicPenNumInfor()
             };
-            service.registerLossInfo(data).done(e => {
-
+            service.register(data).done(e => {
+                block.clear();
+                dialog.info({ messageId: "Msg_15" })
             }).fail(function (result) {
                 dialog.alertError(result.errorMessage);
                 dfd.reject();
             });
-            block.clear();
             return dfd.promise();
         }
 
@@ -134,9 +137,9 @@ module nts.uk.pr.view.qsi014.b.viewmodel {
             let listEmployee = [];
             _.each(data, data => {
                 listEmployee.push({
-                    id: data.employeeId,
-                    code: data.employeeCode,
-                    businessName: data.employeeName,
+                    id: data.id,
+                    code: data.code,
+                    businessName: data.name,
                     workplaceName: data.workplaceName
                 });
             });
@@ -186,12 +189,12 @@ module nts.uk.pr.view.qsi014.b.viewmodel {
         /**
          * その他
          */
-        otherAtr: KnockoutObservable<number>;
+        otherAtr: KnockoutObservable<boolean>;
 
         /**
          * その他理由
          */
-        otherReason: KnockoutObservable<number>;
+        otherReason: KnockoutObservable<string>;
 
         /**
          * 短期在留者
@@ -211,7 +214,7 @@ module nts.uk.pr.view.qsi014.b.viewmodel {
         /**
          * その他
          */
-        spouseOtherAtr: KnockoutObservable<number>;
+        spouseOtherAtr: KnockoutObservable<boolean>;
 
         /**
          * その他理由
@@ -225,19 +228,19 @@ module nts.uk.pr.view.qsi014.b.viewmodel {
         isUpdateEmpBasicPenNumInfor: KnockoutObservable<boolean>;
 
         constructor(params: IEmpAddChangeInfoDto) {
-
+            this.sid = ko.observable(params.sid)
             this.basicPenNumber = ko.observable(params.basicPenNumber);
             this.isUpdateEmpAddChangeInfo = ko.observable(params.isUpdateEmpAddChangeInfo);
             this.isUpdateEmpBasicPenNumInfor = ko.observable(params.isUpdateEmpBasicPenNumInfor);
             this.livingAbroadAtr = ko.observable(params.livingAbroadAtr);
             this.shortResidentAtr = ko.observable(params.shortResidentAtr);
             this.residenceOtherResidentAtr = ko.observable(params.residenceOtherResidentAtr);
-            this.otherAtr = ko.observable(params.otherAtr);
+            this.otherAtr = ko.observable(params.otherAtr == 0 ?  false : true);
             this.otherReason = ko.observable(params.otherReason);
             this.spouseShortResidentAtr = ko.observable(params.spouseShortResidentAtr);
             this.spouseLivingAbroadAtr = ko.observable(params.spouseLivingAbroadAtr);
             this.spouseResidenceOtherResidentAtr = ko.observable(params.spouseResidenceOtherResidentAtr);
-            this.spouseOtherAtr = ko.observable(params.spouseOtherAtr);
+            this.spouseOtherAtr = ko.observable(params.spouseOtherAtr == 0 ?  false : true);
             this.spouseOtherReason = ko.observable(params.spouseOtherReason);
 
         }
@@ -272,7 +275,7 @@ module nts.uk.pr.view.qsi014.b.viewmodel {
         /**
          * その他理由
          */
-        otherReason: number;
+        otherReason: string;
 
         /**
          * 短期在留者

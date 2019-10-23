@@ -3,8 +3,6 @@ package nts.uk.ctx.pr.report.infra.repository.printconfig.socialinsurnoticreset;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.EmpAddChangeInfo;
 import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.EmpAddChangeInfoRepository;
-import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.SocialInsurNotiCreateSet;
-import nts.uk.ctx.pr.report.infra.entity.printconfig.socialinsurnoticreset.QqsmtSocInsuNotiSet;
 import nts.uk.ctx.pr.report.infra.entity.printconfig.socialinsurnoticreset.QrsmtEmpAddCgeSetting;
 import nts.uk.shr.com.context.AppContexts;
 

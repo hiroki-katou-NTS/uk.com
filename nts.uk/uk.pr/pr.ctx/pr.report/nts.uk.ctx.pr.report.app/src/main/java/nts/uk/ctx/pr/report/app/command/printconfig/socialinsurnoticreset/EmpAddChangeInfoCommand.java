@@ -15,55 +15,56 @@ public class EmpAddChangeInfoCommand {
     /**
      * 短期在留者
      */
-    public int shortResidentAtr;
+    private int shortResidentAtr;
 
     /**
      * 海外居住者
      */
-    public int livingAbroadAtr;
+    private int livingAbroadAtr;
 
     /**
      * 住民票住所以外居所
      */
-    public int residenceOtherResidentAtr;
+    private int residenceOtherResidentAtr;
 
     /**
      * その他
      */
-    public int otherAtr;
+    private int otherAtr;
 
     /**
      * その他理由
      */
-    public String otherReason;
+    private String otherReason;
 
     /**
      * 短期在留者
      */
-    public int spouseShortResidentAtr;
+    private int spouseShortResidentAtr;
 
     /**
      * 海外居住者
      */
-    public int spouseLivingAbroadAtr;
+    private int spouseLivingAbroadAtr;
 
     /**
      * 住民票住所以外居所
      */
-    public int spouseResidenceOtherResidentAtr;
+    private int spouseResidenceOtherResidentAtr;
 
     /**
      * その他
      */
-    public int spouseOtherAtr;
+    private int spouseOtherAtr;
 
     /**
      * その他理由
      */
-    public String spouseOtherReason;
+    private String spouseOtherReason;
 
-    public String  basicPenNumber;
+    private String  basicPenNumber;
 
-    public boolean isUpdateEmpAddChangeInfo;
-    public boolean isUpdateEmpBasicPenNumInfor;
+    private boolean isUpdateEmpAddChangeInfo;
+    
+    private boolean isUpdateEmpBasicPenNumInfor;
 }
