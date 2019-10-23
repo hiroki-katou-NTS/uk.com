@@ -3,16 +3,12 @@ package nts.uk.ctx.pr.report.ws.printconfig.socinsurnoticreset;
 import nts.uk.ctx.pr.report.app.command.printconfig.socialinsurnoticreset.EmpAddChangeInfoCommand;
 import nts.uk.ctx.pr.report.app.command.printconfig.socialinsurnoticreset.EmpAddChangeInfoCommandHandle;
 import nts.uk.ctx.pr.report.app.find.printconfig.socialinsurnoticreset.EmpAddChangeInfoDto;
-import nts.uk.ctx.pr.report.app.find.printconfig.socialinsurnoticreset.EmpAddChangeInfoFinder;
-import nts.uk.ctx.pr.report.app.find.printdata.comlegalrecord.CompanyStatutoryWriteDto;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Path("ctx/pr/report/printconfig/socinsurnoticreset")
 @Produces("application/json")
