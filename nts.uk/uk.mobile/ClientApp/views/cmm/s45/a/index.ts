@@ -131,11 +131,11 @@ export class CmmS45AComponent extends Vue {
     private convertAppInfo(data: any) {
         let self = this;
         self.lstApp = [];
+        self.appAllNumber = data.appAllNumber;
         if (data.lstApp.length == 0) {
             self.displayA512 = 1;
         } else if (data.lstApp.length > data.appAllNumber) {
             self.displayA512 = 2;
-            self.appAllNumber = data.appAllNumber;
         } else {
             self.displayA512 = 0;
         }
@@ -191,6 +191,12 @@ export class CmmS45AComponent extends Vue {
     // create appContent
     private appContent(appName: string, prePostName: string) {
         return this.isDisPreP == 1 ? appName + ' ' + this.$i18n('CMMS45_24', prePostName) : appName;
+    }
+    public getHtmlAll() {
+        return `<div>` + this.$i18n('CMMS45_90', this.appAllNumber.toString()).replace(/\n/g, '<br />') + `</div>`;
+    }
+    public getHtmlNone() {
+        return `<div>` + this.$i18n('CMMS45_89').replace(/\n/g, '<br />') + `</div>`;
     }
 }
 const servicePath = {
