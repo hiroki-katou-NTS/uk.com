@@ -89,8 +89,10 @@ export class CdlS02AComponent extends Vue {
             if (!_.isEmpty(result1.data)) {
                 // Find by employment codes.
                 let codes = [];
+                let closureIds = [];
                 _.forEach(result1.data, (item) => {
                     codes.push(item.employmentCD);
+                    closureIds.push(item.closureId);
                 });
                 self.$http.post('com', servicePath.findEmploymentByCodes, codes).then((result2: any) => {
                     result2.data = _.sortBy(result2.data, ['code']);
@@ -101,6 +103,8 @@ export class CdlS02AComponent extends Vue {
                             closureId: _.find(result1.data, (item1) => item1.employmentCD == item2.code).closureId
                         });
                     });
+
+                    self.closureList = _.filter(self.closureList, (item) => _.includes(closureIds, item.id));
 
                     let findData = _.find(self.allData, (data) => data.code == self.params.selectedCode);
                     if (findData == undefined) {
