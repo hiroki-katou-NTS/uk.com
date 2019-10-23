@@ -38,6 +38,7 @@ export class CdlS04AComponent extends Vue {
                 if (self.params.isShowNoSelectRow) {//true
                     //画面項目「職位一覧」の先頭に「選択なし」を追加する
                     result.data.push({
+                        id: null,
                         code: '',
                         name: this.$i18n('CDLS04_5')
                     });
@@ -60,6 +61,13 @@ export class CdlS04AComponent extends Vue {
 
     public searchList() {
         this.data = _.filter(this.allData, (item) => item.code.indexOf(this.searchText) != -1 || item.name.indexOf(this.searchText) != -1);
+    }
+
+    public select(item: any) {
+        if (_.isEmpty(item.code)) {
+            this.$close({id: null, code: null, name: ''});
+        }
+        this.$close(item);
     }
 }
 interface IParameter {
