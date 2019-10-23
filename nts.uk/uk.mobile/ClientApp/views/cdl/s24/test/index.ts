@@ -12,7 +12,6 @@ import { CdlS24AComponent } from '../a';
 })
 export class CdlS24TestComponent extends Vue {
     public title: string = 'CdlS24Test';
-    public returnCode: string = null;
     public data = {
         selectedCode: ''
     };
@@ -20,7 +19,7 @@ export class CdlS24TestComponent extends Vue {
     public openCdls24() {
         let self = this;
         self.$modal(CdlS24AComponent, self.data).then((returnCode: any) => {
-            self.returnCode = returnCode;       
+            self.data.selectedCode = returnCode;       
         });
     }
 }

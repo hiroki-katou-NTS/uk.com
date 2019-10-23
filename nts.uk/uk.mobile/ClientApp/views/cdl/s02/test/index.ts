@@ -12,7 +12,6 @@ import { CdlS02AComponent } from '../a';
 })
 export class CdlS02TestComponent extends Vue {
     public title: string = 'CdlS02Test';
-    public returnCode: string = null;
     public data = {
         isDisplayClosureSelection: false,
         isShowNoSelectRow: false,
