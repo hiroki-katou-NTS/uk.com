@@ -76,11 +76,16 @@ export class CdlS02AComponent extends Vue {
                     }
 
                 }
+                this.$mask('hide');
             }).catch((res: any) => {
                 this.$modal.error(res.messageId).then(() => self.$close());
             });
         }
 
+    }
+
+    public mounted() {
+        this.$mask('show', { message: true });
     }
 
     public findEmployments() {
@@ -122,6 +127,7 @@ export class CdlS02AComponent extends Vue {
             } else {
                 this.$modal.error({ messageId: 'Msg_1566', messageParams: ['Com_Employment'] }).then(() => self.$close());
             }
+            this.$mask('hide');
         }).catch((res: any) => {
             this.$modal.error(res.messageId).then(() => self.$close());
         });

@@ -27,9 +27,14 @@ export class CdlS24AComponent extends Vue {
                 self.allData = _.orderBy(result.data, ['code'], ['asc']);
                 self.data = self.allData;
             }
+            this.$mask('hide');
         }).catch((res: any) => {
             this.$modal.error(res.messageId).then(() => self.$close());
         });
+    }
+
+    public mounted() {
+        this.$mask('show', { message: true });
     }
 
     public searchList() {
