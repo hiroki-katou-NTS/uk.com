@@ -111,7 +111,7 @@ export class CdlS02AComponent extends Vue {
 
                     self.closureList = _.filter(self.closureList, (item) => _.includes(closureIds, item.id));
 
-                    let findData = _.find(self.allData, (data) => data.code == self.params.selectedCode);
+                    let findData = _.find(self.allData, (data) => data.code != '' && data.code == self.params.selectedCode);
                     if (findData == undefined) {
                         self.activeNoSelect = true;
                         self.data = _.filter(self.allData, (data) => data.closureId == self.closureList[0].id || data.closureId == 'No');
