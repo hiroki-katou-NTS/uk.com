@@ -1,15 +1,15 @@
 @CHARSET "UTF-8";
 
 .opt-item-grid-list {
-	max-width: 300px;
-	margin-top: 15px;
-	margin-left: 15px;
+	max-width: 380px;
+	margin-top: 20px;
+	margin-left: 20px;
 	margin-right: 30px;
 	padding: 20px;
 	height: 420px;
 }
 .opt-item-detail {
-	margin-top: 15px;
+	margin-top: 20px;
 }
 .control-group td {
 	padding-bottom: 10px;
@@ -40,4 +40,12 @@
 }
 .inp-formula-required {
 	width: 130px;
+}
+#inp-upper-number, 
+#inp-lower-number,
+#inp-upper-amount,
+#inp-upper-time,
+#inp-lower-time,
+#inp-lower-amount{
+	width: 110px !important;
 }
