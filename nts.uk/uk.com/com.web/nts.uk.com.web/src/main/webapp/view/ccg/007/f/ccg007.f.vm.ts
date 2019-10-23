@@ -50,12 +50,9 @@ module nts.uk.pr.view.ccg007.f {
                 
                 service.submitSendMail(self.callerParameter).done(function (data: SendMailReturnDto) {
                     if (!nts.uk.util.isNullOrEmpty(data.url)){
-                        nts.uk.ui.dialog.info({ messageId: "Msg_207" }).then(() =>{
-                            nts.uk.ui.windows.close();
-                        });
-                    }else{
-                        nts.uk.ui.windows.close();
+                        nts.uk.ui.dialog.info({ messageId: "Msg_207" });
                     }
+                    self.closeDialog();
                     blockUI.clear();
                 }).fail(function(res) {
                     //Return Dialog Error

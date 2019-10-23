@@ -164,7 +164,7 @@ public class RegulationInfoEmployeeFinder {
         List<String> depList = new ArrayList<>(); // Processing is not prepared yet
 
         // Check param filterByDepartment
-        if (queryParam.getFilterByDepartment() != null && queryParam.getFilterByDepartment()) {
+        if (queryParam.getFilterByDepartment()) {
             // Merge list department
             queryParam.setDepartmentCodes(queryParam.getDepartmentCodes().stream().filter(depList::contains).collect(Collectors.toList()));
         } else {

@@ -1,9 +1,6 @@
 package nts.uk.ctx.at.schedule.dom.appreflectprocess.service.gobacksche;
 
-import java.util.List;
-
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
-import nts.uk.ctx.at.schedule.dom.schedule.workschedulestate.WorkScheduleState;
 
 public interface WorkTypeHoursReflectSche {
 	/**
@@ -11,7 +8,7 @@ public interface WorkTypeHoursReflectSche {
 	 * @param gobackPara
 	 * @return
 	 */
-	public boolean isReflectFlag(GobackReflectParam gobackPara, BasicSchedule scheData, List<WorkScheduleState> lstState);
+	public boolean isReflectFlag(GobackReflectParam gobackPara);
 	/**
 	 * 勤種・就時を反映できるかチェックする
 	 * @param gobackPara

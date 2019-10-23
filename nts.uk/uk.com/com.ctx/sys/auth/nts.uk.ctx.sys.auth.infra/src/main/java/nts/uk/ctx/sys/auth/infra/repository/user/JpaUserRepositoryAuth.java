@@ -77,14 +77,12 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 
 	private static final String SELECT_BY_ID_OR_NAME = "SELECT c.sacmtUserPK.userID, c.loginID, c.userName, p.businessName FROM SacmtUser c"
 			+ " LEFT JOIN BpsmtPerson p ON c.associatedPersonID = p.bpsmtPersonPk.pId"
-			+ " WHERE (LOWER(c.loginID) LIKE LOWER(CONCAT('%', :userIDName, '%')) ESCAPE '/'"
-			+ " OR LOWER(c.userName) LIKE LOWER(CONCAT('%', :userIDName, '%')) ESCAPE '/'"
-			+ " OR LOWER(p.personName) LIKE LOWER(CONCAT('%', :userIDName, '%')) ESCAPE '/')" 
-			+ " AND c.expirationDate >= :date ";
+			+ " WHERE (LOWER(c.loginID) LIKE LOWER(CONCAT('%', :userIDName, '%'))"
+			+ " OR LOWER(c.userName) LIKE LOWER(CONCAT('%', :userIDName, '%'))"
+			+ " OR LOWER(p.personName) LIKE LOWER(CONCAT('%', :userIDName, '%')))" + " AND c.expirationDate >= :date";
 
 	@Override
 	public List<SearchUser> searchUser(String userIDName, GeneralDate date) {
-		userIDName = userIDName.replaceAll("_", "/_");
 		List<Object[]> data = this.queryProxy().query(SELECT_BY_ID_OR_NAME, Object[].class)
 				.setParameter("userIDName", userIDName).setParameter("date", date).getList();
 

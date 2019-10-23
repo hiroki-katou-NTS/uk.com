@@ -1,11 +1,6 @@
 package nts.uk.ctx.bs.employee.dom.jobtitle.affiliate;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -31,31 +26,6 @@ public class AffJobTitleHistoryService {
 		// Update item before
 		updateItemBefore(domain, itemToBeAdded);
 	}
-	
-	/**
-	 * ドメインモデル「職務職位」を新規登録する
-	 * 
-	 * @param domain
-	 */
-	public void addAll(List<AffJobTitleHistory> domains){
-		Map<String, DateHistoryItem> itemsMap = new HashMap<>();
-		List<AffJobTitleHistoryImmediately> immedidately = new ArrayList<>();
-		domains.stream().forEach(c ->{
-			if (c.getHistoryItems().isEmpty()) {
-				return;
-			}	
-			DateHistoryItem itemToBeAdded = c.getHistoryItems().get(c.getHistoryItems().size() - 1);
-			itemsMap.put(c.getEmployeeId(), itemToBeAdded);
-			immedidately.add(new AffJobTitleHistoryImmediately( c, itemToBeAdded));
-			
-		});
-		
-		if(itemsMap.size() > 0) {
-			affJobTitleHistoryRepository.addAll(itemsMap);
-		}
-		// Update item before
-		updateAllItemBefore(immedidately);
-	}
 
 	/**
 	 * 取得した「職務職位」を更新する
@@ -66,17 +36,6 @@ public class AffJobTitleHistoryService {
 		affJobTitleHistoryRepository.update(item);
 		// Update item before
 		updateItemBefore(domain, item);
-	}
-	
-	/**
-	 * 取得した「職務職位」を更新する
-	 * 
-	 * @param domain
-	 */
-	public void updateAll(List<AffJobTitleHistoryImmediately> immedidately){
-		affJobTitleHistoryRepository.updateAll(immedidately.stream().map(c -> c.getItem()).collect(Collectors.toList()));
-		// Update item before
-		updateAllItemBefore(immedidately);
 	}
 
 	/**
@@ -103,25 +62,6 @@ public class AffJobTitleHistoryService {
 			return;
 		}
 		affJobTitleHistoryRepository.update(itemToBeUpdated.get());
-	}
-	
-	/**
-	 * Update item before
-	 * @param domain
-	 * @param item
-	 */
-	private void updateAllItemBefore(List<AffJobTitleHistoryImmediately> immedidately){
-		List<DateHistoryItem> items = new ArrayList<>();
-		immedidately.stream().forEach(c ->{
-			Optional<DateHistoryItem> itemToBeUpdated = c.getDomain().immediatelyBefore(c.getItem());
-			if (itemToBeUpdated.isPresent()){
-				items.add(itemToBeUpdated.get());
-			}
-		});
-		if(!items.isEmpty()) {
-			affJobTitleHistoryRepository.updateAll(items);
-		}
-		
 	}
 
 }

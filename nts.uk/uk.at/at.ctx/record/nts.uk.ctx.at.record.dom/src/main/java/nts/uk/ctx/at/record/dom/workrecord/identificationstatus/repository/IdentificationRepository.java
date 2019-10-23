@@ -12,8 +12,6 @@ public interface IdentificationRepository {
 	
 	List<Identification> findByListEmployeeID(List<String> employeeIDs,GeneralDate startDate,GeneralDate endDate);
 	
-	List<Identification> findByListEmpDate(List<String> employeeIDs,GeneralDate dateRefer);
-	
 	List<Identification> findByEmployeeID(String employeeID, List<GeneralDate> dates);
 	
 	Optional<Identification> findByCode(String employeeID,GeneralDate processingYmd);
@@ -25,8 +23,6 @@ public interface IdentificationRepository {
 	List<Identification> findByEmployeeIDSortDate(String employeeID,GeneralDate startDate,GeneralDate endDate);
 
 	void removeByEmployeeIdAndDate(String employeeId, GeneralDate processingYmd);
-	
-	void removeByEmpListDate(String employeeId, List<GeneralDate> lstProcessingYmd);
 
 
 }

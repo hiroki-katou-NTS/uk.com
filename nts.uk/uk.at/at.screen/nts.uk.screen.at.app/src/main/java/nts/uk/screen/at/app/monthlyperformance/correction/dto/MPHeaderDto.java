@@ -46,12 +46,8 @@ public class MPHeaderDto {
 	private List<MPHeaderDto> group;
 
 	private Constraint constraint;
-	
-	private String headerCssClass;
 
 	private Boolean grant;
-	
-	private String columnCssClass;
 
 	private static final String ADD_CHARACTER = "A";
 	private static final String PX = "px";
@@ -71,41 +67,6 @@ public class MPHeaderDto {
 		this.group = new ArrayList<>();
 		this.grant = false;
 	}
-	
-	public MPHeaderDto(String headerText, String key, String dataType, String width, String color, boolean hidden,
-			String ntsControl, Boolean changedByOther, Boolean changedByYou, String headerCssClass) {
-		super();
-		this.headerText = headerText;
-		this.key = key;
-		this.dataType = dataType;
-		this.width = width;
-		this.color = color;
-		this.hidden = hidden;
-		this.ntsControl = ntsControl;
-		this.changedByOther = changedByOther;
-		this.changedByYou = changedByYou;
-		this.group = new ArrayList<>();
-		this.headerCssClass = headerCssClass;
-		this.grant = false;
-	}
-	
-	public MPHeaderDto(String headerText, String key, String dataType, String width, String color, boolean hidden,
-			String ntsControl, String ntsType, String onChange, Boolean changedByOther, Boolean changedByYou) {
-		super();
-		this.headerText = headerText;
-		this.key = key;
-		this.dataType = dataType;
-		this.width = width;
-		this.color = color;
-		this.hidden = hidden;
-		this.ntsControl = ntsControl;
-		this.ntsType = ntsType;
-		this.onChange = onChange;
-		this.changedByOther = changedByOther;
-		this.changedByYou = changedByYou;
-		this.group = new ArrayList<>();
-	}
-
 
 	public static List<MPHeaderDto> GenerateFixedHeader() {
 		List<MPHeaderDto> lstHeader = new ArrayList<>();
@@ -159,7 +120,7 @@ public class MPHeaderDto {
 			MonthlyAttendanceItemDto maiDto) {
 		String key = mergeString(ADD_CHARACTER, String.valueOf(item.getId()));
 		String width = String.valueOf(item.getColumnWidth() == null ? 100 : item.getColumnWidth()) + PX;
-		MPHeaderDto dto = new MPHeaderDto("", key, "String", width, "#CFF1A5", false, "", false, false);
+		MPHeaderDto dto = new MPHeaderDto("", key, "String", width, "", false, "", false, false);
 		// set constraint
 		// if (maiDto != null && maiDto.getPrimitive() != null) {
 		// dto.setConstraint(new Constraint("Primitive", false,
@@ -177,18 +138,6 @@ public class MPHeaderDto {
 			} else {
 				dto.setConstraint(new Constraint("Currency", false, "").createMinMax("-999999999", "999999999"));
 			}
-		} else if(attendanceAtr == MonthlyAttendanceItemAtr.CODE.value){
-			List<MPHeaderDto> groups = new ArrayList<>();
-			int withChild = Integer.parseInt(width.substring(0, width.length() - 2)) / 2;
-			MPHeaderDto dtoG = new MPHeaderDto("コード", "Code" + item.getId(), "String", String.valueOf(withChild) + "px",
-					"", false, "", "code_"+"Name"+ item.getId(), "search", false, false);
-			dtoG.setConstraint(new Constraint("Primitive", isRequired(item), getPrimitiveAllName(maiDto.getPrimitive())));
-			dtoG.setColor(dto.getColor());
-			groups.add(dtoG);
-			groups.add(new MPHeaderDto("名称", "Name" + item.getId(), "String", String.valueOf(withChild) + "px", dto.getColor(),
-					false, "Link2", false, false, "center-align"));
-			dto.setGroup(groups);
-			dto.setConstraint(new Constraint("Primitive", false, ""));
 		} else {
 			dto.setConstraint(new Constraint("Primitive", false, getPrimitiveAllName(maiDto.getPrimitive())));
 		}
@@ -219,8 +168,6 @@ public class MPHeaderDto {
 		if (null != ctrOfMonthlyDto) {
 			dto.setColor(ctrOfMonthlyDto.getHeaderBgColorOfMonthlyPer());
 		}
-		
-		setAlignData(dto, attendanceAtr);
 		return dto;
 	}
 
@@ -244,26 +191,6 @@ public class MPHeaderDto {
 			dto.setGrant(true);
 		} else if (attendanceAtr == MonthlyAttendanceItemAtr.DAYS.value) {
 			dto.setGrant(true);
-		}
-	}
-	
-	private static boolean isRequired(PAttendanceItem item){
-		if(MPText.ITEM_CODE_LINK.contains(item.getId())) return true;
-		return false;
-	}
-	
-	private static void setAlignData(MPHeaderDto dto, int attendanceAtr) {
-		switch (MonthlyAttendanceItemAtr.valueOf(attendanceAtr)) {
-		case TIME:
-		case NUMBER:
-		case DAYS:
-		case AMOUNT:
-			dto.setColumnCssClass("halign-right");
-			break;
-
-		default:
-			dto.setColumnCssClass("halign-left");
-			break;
 		}
 	}
 }

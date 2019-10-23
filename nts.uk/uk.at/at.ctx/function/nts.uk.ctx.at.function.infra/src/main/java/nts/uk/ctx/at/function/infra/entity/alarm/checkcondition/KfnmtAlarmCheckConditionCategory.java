@@ -171,7 +171,7 @@ public class KfnmtAlarmCheckConditionCategory extends UkJpaEntity implements Ser
 			break;
 		case MULTIPLE_MONTH:
 			extractionCondition = entity.mulMonAlarmCond == null ? null : entity.mulMonAlarmCond.toDomain();
-			break;
+			
 		case ATTENDANCE_RATE_FOR_HOLIDAY:
 			extractionCondition = entity.alCheckConAg == null && entity.alCheckSubConAg == null ? null
 					: new AnnualHolidayAlarmCondition(

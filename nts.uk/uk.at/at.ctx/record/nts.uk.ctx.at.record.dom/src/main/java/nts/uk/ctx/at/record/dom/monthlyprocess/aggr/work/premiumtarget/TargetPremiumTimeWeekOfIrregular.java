@@ -43,14 +43,13 @@ public class TargetPremiumTimeWeekOfIrregular {
 		domain.premiumTimeOfPrevMonth = new AttendanceTimeMonth(premiumTimeOfPrevMonLast.v());
 		
 		// 集計対象時間を取得する
-		val legalTime = aggregateTotalWorkingTime.getWorkTime().getAggregateTargetTime(weekPeriod, addSet);
+		val legalTime = aggregateTotalWorkingTime.getWorkTime().getAggregateTargetTime(weekPeriod);
 
 		// 週割増時間に集計対象時間を加算する
 		domain.premiumTimeWeek = domain.premiumTimeWeek.addMinutes(legalTime.v());
 		
 		// 法定内残業時間を取得する
-		val legalOverTime = aggregateTotalWorkingTime.getOverTime().calcOverTimeForPremium(
-				weekPeriod, aggregateTotalWorkingTime);
+		val legalOverTime = aggregateTotalWorkingTime.getOverTime().getLegalOverTime(weekPeriod);
 		
 		// 週割増時間に残業時間を加算する
 		domain.premiumTimeWeek = domain.premiumTimeWeek.addMinutes(legalOverTime.v());

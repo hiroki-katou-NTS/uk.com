@@ -96,7 +96,7 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 	}
 	private List<AppRemainCreateInfor> lstResult(String cid, String sid, List<Application_New> lstAppData){
 		List<AppRemainCreateInfor> lstOutputData = new ArrayList<>();
-		lstAppData.stream().forEach(appData -> {
+		for (Application_New appData : lstAppData) {
 			AppRemainCreateInfor outData = new AppRemainCreateInfor();
 			outData.setSid(sid);
 			outData.setAppDate(appData.getAppDate());
@@ -203,7 +203,7 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 				break;
 			}
 			lstOutputData.add(outData);
-		});
+		}
 		return lstOutputData;
 	}
 }

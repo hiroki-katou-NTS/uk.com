@@ -48,7 +48,5 @@ public abstract class DataConstraint {
 	public static TimePointConstraint createTimePointConstraint(int column, int min, int max) {
 		return new TimePointConstraint(column, min, max);
 	}
-	
-	protected abstract String getDefaultMessage();
 
 }

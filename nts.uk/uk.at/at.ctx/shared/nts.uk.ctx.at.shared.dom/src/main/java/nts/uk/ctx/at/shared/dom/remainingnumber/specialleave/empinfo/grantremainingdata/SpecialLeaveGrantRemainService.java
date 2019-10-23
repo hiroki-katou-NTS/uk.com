@@ -1,15 +1,11 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.remainingnumber.TimeOfRemain;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
@@ -39,41 +35,6 @@ public class SpecialLeaveGrantRemainService {
 		return result.toString() + "日と　"+ calTime(grantRemains);
 	}
 	
-	/**
-	 * viết hàm tính toán cho một list sid , cid, specialCD
-	 * @param cid
-	 * @param sid
-	 * @param specialCD
-	 * @return
-	 * @author lanlt
-	 */
-	public Map<String, String> calDayTime(String cid, List<String> sids, int specialCD) {
-		Map<String, String> result = new HashMap<>();
-		 Map<String, List<SpecialLeaveGrantRemainingData>> grantRemains = specialLeaveGrantRepo.getAllByExpStatus(cid, sids, specialCD,
-				LeaveExpirationStatus.AVAILABLE.value).stream().collect(Collectors.groupingBy( c  -> c.getEmployeeId()));
-		 if(grantRemains.size() < sids.size()) {
-			 for(String sid: sids) {
-				 List<SpecialLeaveGrantRemainingData> grantRemain = grantRemains.get(sid);
-				 if(CollectionUtil.isEmpty(grantRemain)) {
-					 grantRemains.put(sid, new ArrayList<>());
-				 }
-			 }
-		 }
-			// Total time
-			// TODO No268特別休暇の利用制御
-			ManageDistinct specialTimeManager = ManageDistinct.NO;
-			boolean isNo = specialTimeManager == ManageDistinct.NO;
-		for (Map.Entry<String, List<SpecialLeaveGrantRemainingData>> entry : grantRemains.entrySet()) {
-			String key = entry.getKey();
-			// Total day
-			Double totalDay = entry.getValue().stream()
-					.mapToDouble(item -> item.getDetails().getRemainingNumber().getDayNumberOfRemain().v()).sum();
-			result.put(key,
-					isNo == true ? (totalDay.toString() + "日") : (totalDay.toString() + "日と　" + calTime(entry.getValue())));
-
-		}
-		 return result;
-	}
 	/**
 	 *  No268特別休暇の利用制御
 	 * @param grantRemains

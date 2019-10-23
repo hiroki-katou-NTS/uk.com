@@ -35,11 +35,4 @@ public class PublicHolidayRemain extends AggregateRoot {
 		}
 
 	}
-	public static PublicHolidayRemain creatFromJavaType(String cID, String sID, RemainNumber remainNumber){
-		PublicHolidayRemain domain = new PublicHolidayRemain();
-		domain.cID = cID;
-		domain.sID = sID;
-		domain.remainNumber = remainNumber;
-		return domain;
-	}
 }

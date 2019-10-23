@@ -1,6 +1,5 @@
 module nts.uk.at.view.kaf000.shr{
     import setShared = nts.uk.ui.windows.setShared;
-    import dialog = nts.uk.ui.dialog;
     export module model {
         // loại người đăng nhập
         // người đại diện tương đương người approver, người confirm có ưu tiên cao hơn
@@ -424,15 +423,6 @@ module nts.uk.at.view.kaf000.shr{
                     nts.uk.localStorage.setItem('UKProgramParam', 'a=' + paramUrl);
                     nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
                 });
-            }
-            
-            public static showError(res) {
-                if (Array.isArray(res.errors)) {
-                    dialog.bundledErrors(res).then(function() { nts.uk.ui.block.clear(); });
-                } else {
-                    dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
-                        .then(function() { nts.uk.ui.block.clear(); });
-                }
             }
         }
         

@@ -1,43 +1,23 @@
 #contents-area {
-	height: initial !important;
-}
-#display{
-	height: 115px;
+	height: auto !important;
 }
 
-.distance{
-	margin-bottom: 5px;
-	margin-left: 5px;
+#contents-area .swap-list-updown-contaier>div {
+	display: inline-block;
 }
 
-.margin-right-FormLabel{
-	margin-right: 10px;
-	width: 120px;
+.form-group {
+	margin-bottom: 15px;
 }
 
-#reference-area{
-	border-top: solid 1px #B1B1B1;
-	margin-top: 30px;
-	height: 150px;
-	margin-left: 10px;
+.form-group.two-cols>div:nth-child(2) {
+	margin-left: 140px;
 }
 
-#B1{
-	margin-top: 20px;
+.nts-searchbbox-wrapper {
+	margin-bottom: 0;
 }
 
-#reference{
-	margin-top: 20px;
-	margin-left: 30px;
-}
-
-#diplay-size{
-	margin-left: 52px;
-	font-size: 10px;
-}
-#register{
-	margin-top: 15px;
-}
-.nts-help-button-image{
-	width: 303px !important;
+#swap-list-search-area-input {
+	width: 150px !important;
 }

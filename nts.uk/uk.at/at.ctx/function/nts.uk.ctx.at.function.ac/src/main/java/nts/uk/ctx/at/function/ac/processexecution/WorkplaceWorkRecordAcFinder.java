@@ -56,32 +56,17 @@ public class WorkplaceWorkRecordAcFinder implements WorkplaceWorkRecordAdapter {
 	@Override
 	public List<AffWorkplaceHistoryImport> getWorkplaceBySidsAndBaseDate(List<String> sids, GeneralDate baseDate) {
 		List<AffWorkplaceHistoryExport> listAffWorkplaceHistoryExport  = syWorkplacePub.getWorkplaceBySidsAndBaseDate(sids,baseDate);
-		try {
-			return listAffWorkplaceHistoryExport
-			.stream().filter(x->x!=null)
-			.map(x -> 
-				new AffWorkplaceHistoryImport(
-						x.getSid(), 
-						x.getHistoryItems(), 
-						x.getWorkplaceHistItems()
-							.entrySet()
-							.stream()
-							.collect(Collectors.toMap(Map.Entry::getKey, y -> convertToAffWorkplaceHistoryItemExport(y.getValue())))))
-			.collect(Collectors.toList());
-		}catch (Exception e) {
-			return Collections.emptyList();
-		}
-//		return listAffWorkplaceHistoryExport
-//		.stream()
-//		.map(x -> 
-//			new AffWorkplaceHistoryImport(
-//					x.getSid(), 
-//					x.getHistoryItems(), 
-//					x.getWorkplaceHistItems()
-//						.entrySet()
-//						.stream()
-//						.collect(Collectors.toMap(Map.Entry::getKey, y -> convertToAffWorkplaceHistoryItemExport(y.getValue())))))
-//		.collect(Collectors.toList());
+		return listAffWorkplaceHistoryExport
+		.stream()
+		.map(x -> 
+			new AffWorkplaceHistoryImport(
+					x.getSid(), 
+					x.getHistoryItems(), 
+					x.getWorkplaceHistItems()
+						.entrySet()
+						.stream()
+						.collect(Collectors.toMap(Map.Entry::getKey, y -> convertToAffWorkplaceHistoryItemExport(y.getValue())))))
+		.collect(Collectors.toList());
 	}
 //	private AffWorkplaceHistoryImport convertToExport(AffWorkplaceHistoryExport export) {
 //		return new AffWorkplaceHistoryImport(export.getSid(),export.getHistoryItems(),);

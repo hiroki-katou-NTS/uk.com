@@ -25,9 +25,6 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 @AttendanceItemRoot(rootName = ItemConst.DAILY_ATTENDANCE_LEAVE_GATE_NAME)
 public class AttendanceLeavingGateOfDailyDto extends AttendanceItemCommon {
 
-	/***/
-	private static final long serialVersionUID = 1L;
-	
 	private String employeeId;
 	
 	@JsonDeserialize(using = CustomGeneralDateSerializer.class)

@@ -1,10 +1,9 @@
 package nts.uk.ctx.bs.employee.dom.employee.history;
 
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface AffCompanyHistRepository {
@@ -31,14 +30,6 @@ public interface AffCompanyHistRepository {
 	AffCompanyHist getAffCompanyHistoryOfEmployee(String employeeId);
 	
 	AffCompanyHist getAffCompanyHistoryOfEmployeeDesc(String cid, String employeeId);
-	
-	/**
-	 * đối ứng cho thuật toán [次回特休情報を取得する]
-	 * @param cid
-	 * @param sids
-	 * @return
-	 */
-	Map<String, AffCompanyHist> getAffCompanyHistoryOfEmployee(String cid, List<String> sids);
 	
 	List<AffCompanyHist> getAffCompanyHistoryOfEmployees(List<String> employeeIds);
 	
@@ -70,27 +61,4 @@ public interface AffCompanyHistRepository {
 	List<AffCompanyHist> getAffComHisEmpByLstSidAndPeriod(List<String> employeeIds, DatePeriod datePeriod);
 	
 	List<String> getLstSidByLstSidAndPeriod(List<String> employeeIds, DatePeriod datePeriod);
-	
-	/**
-	 * @author lanlt
-	 * @param employeeIds
-	 * @param baseDate
-	 * @return
-	 */
-	List<AffCompanyHist> getAffComHistOfEmployeeListAndBaseDateV2(List<String> employeeIds, GeneralDate baseDate);
-	/**
-	 * @author lanlt
-	 * add new affiliation histories  
-	 * @param domains
-	 */
-	void addAll(List<AffCompanyHistCustom> domains);
-	/**
-	 * @author lanlt
-	 * update all AffCompanyHistItems
-	 * @param items
-	 */
-	void updateAll(List<AffCompanyHistItem> items);
-
-	// get data cps013
-	List<AffCompanyHist> getAffComHistOfEmployeeListAndNoBaseDateV3(List<String> sids);
 }

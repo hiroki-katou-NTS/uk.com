@@ -62,6 +62,4 @@ public interface SequenceMasterRepository {
 	 * Update order.
 	 */
 	void updateOrder(List<SequenceMaster> listSequenceMaster);
-
-	List<SequenceMaster> findAll(String companyId, String sequenceCode);
 }

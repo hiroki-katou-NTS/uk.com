@@ -17,7 +17,6 @@ import java.util.function.Function;
 import org.apache.commons.csv.CSVFormat;
 
 import nts.arc.system.ServerSystemProperties;
-import nts.gul.csv.CSVBufferReader;
 import nts.gul.csv.CSVParsedResult;
 import nts.gul.csv.CustomCsvReader;
 import nts.gul.csv.NtsCsvReader;
@@ -31,7 +30,7 @@ public class CsvFileUtil {
 	static List<List<String>> getAllRecord(InputStream inputStream) {
 		// get csv reader
 		NtsCsvReader csvReader = NtsCsvReader.newReader().withNoHeader().skipEmptyLines(true)
-				.withChartSet(Charset.forName("UTF-8"))
+				.withChartSet(Charset.forName("Shift_JIS"))
 				.withFormat(CSVFormat.EXCEL.withRecordSeparator(NEW_LINE_CHAR));
 		List<List<String>> result = new ArrayList<>();
 		try {
@@ -58,7 +57,7 @@ public class CsvFileUtil {
 	public static List<List<String>> getAllRecord(String fileId, String fileName) {
 		// get csv reader
 		NtsCsvReader csvReader = NtsCsvReader.newReader().withNoHeader().skipEmptyLines(true)
-				.withChartSet(Charset.forName("UTF-8"))
+				.withChartSet(Charset.forName("Shift_JIS"))
 				.withFormat(CSVFormat.EXCEL.withRecordSeparator(NEW_LINE_CHAR));
 		List<List<String>> result = new ArrayList<>();
 		try {
@@ -77,7 +76,7 @@ public class CsvFileUtil {
 	public static List<String> getCsvHeader(String fileName, String fileId) {
 		// get csv reader
 		NtsCsvReader csvReader = NtsCsvReader.newReader().skipEmptyLines(true)
-				.withChartSet(Charset.forName("UTF-8"));
+				.withChartSet(Charset.forName("Shift_JIS"));
 		try {
 			InputStream inputStream = createInputStreamFromFile(fileId, fileName);
 			if (!Objects.isNull(inputStream)) {
@@ -103,55 +102,37 @@ public class CsvFileUtil {
 	}
 
 	public static Set<String> getListSid(String fileId, String fileName) {
-		CSVBufferReader reader = new CSVBufferReader(new File(getExtractDataStoragePath(fileId) + "//" + fileName + ".csv"));
-		reader.setCharset("UTF-8");
-		Set<String> listSid = new HashSet<>();
-		Consumer<CSVParsedResult> csvResult = (dataRow) -> {
-			List<NtsCsvRecord> records = dataRow.getRecords();
-			for (int i = 0; i < records.size(); i++) {
-				NtsCsvRecord record = records.get(i);
-				if (record.getRowNumber() != 0
-						&& !(record.getColumn(1) == null || record.getColumn(1) == "" || record.getColumn(1) == " ")) {
-					listSid.add(record.getColumn(1).toString().trim());
-				}
-			}
-		};
-		reader.readChunk(csvResult, null, null);
-		return listSid;
-	}
-	
-	
-	public static boolean checkHasSidInCsv(String fileId, String fileName) {
 		NtsCsvReader csvReader = NtsCsvReader.newReader().skipEmptyLines(true)
-				.withChartSet(Charset.forName("UTF-8"));
-		Set<String> listSid = new HashSet<>();
+				.withChartSet(Charset.forName("Shift_JIS"));
 		try {
 			InputStream inputStream = createInputStreamFromFile(fileId, fileName);
 			CustomCsvReader csvCustomReader = csvReader.createCustomCsvReader(inputStream);
 			csvCustomReader.setNoHeader(true);
-			Consumer<CSVParsedResult> csvResult = (c) -> {
-				if (!c.getRecords().isEmpty()) {
-					if (c.getRecords().get(0).getColumn(0) != null) {
-						listSid.add(c.getRecords().get(0).getColumn(1).toString().trim());
+			if (!Objects.isNull(inputStream)) {
+				Set<String> listSid = new HashSet<>();
+				Consumer<CSVParsedResult> csvResult = (c) -> {
+					for (int i = 0; i < c.getRecords().size(); i++) {
+						if (c.getRecords().get(i).getColumn(1) != null) {
+							listSid.add(c.getRecords().get(i).getColumn(1).toString().trim());
+						}
 					}
-				}
-			};
+				};
+				
+				Function<NtsCsvRecord, Boolean> customCheckRow = (row) -> {
+					if (row.getColumn(1).equals("CMF003_H_SID") || row.getColumn(1).equals("") || row.getColumn(1).equals(" "))
+						return false;
+					return true;
+				};
 
-			Function<NtsCsvRecord, Boolean> customCheckRow = (row) -> {
-				if (row.getColumn(1).equals("CMF003_H_SID") || row.getColumn(1).equals("")
-						|| row.getColumn(1).equals(" "))
-					return false;
-				return true;
-			};
-
-			csvCustomReader.readByStep(1, 1, csvResult, customCheckRow);
-			csvCustomReader.close();
-			return listSid.isEmpty()? false : true;
+				csvCustomReader.readByStep(3000, csvResult,customCheckRow);
+				csvCustomReader.close();
+				return listSid;
+			}
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+		return new HashSet<>();
 	}
-
 
 	static InputStream createInputStreamFromFile(String fileId, String fileName) {
 		String filePath = getExtractDataStoragePath(fileId) + "//" + fileName + ".csv";

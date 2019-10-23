@@ -6,9 +6,7 @@ package nts.uk.ctx.at.shared.infra.repository.shortworktime;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -23,15 +21,12 @@ import javax.transaction.Transactional;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
-import nts.uk.ctx.at.shared.dom.shortworktime.SChildCareFrame;
 import nts.uk.ctx.at.shared.dom.shortworktime.SWorkTimeHistItemRepository;
 import nts.uk.ctx.at.shared.dom.shortworktime.ShortWorkTimeHistoryItem;
 import nts.uk.ctx.at.shared.infra.entity.shortworktime.BshmtWorktimeHistItem;
 import nts.uk.ctx.at.shared.infra.entity.shortworktime.BshmtWorktimeHistItemPK;
 import nts.uk.ctx.at.shared.infra.entity.shortworktime.BshmtWorktimeHistItemPK_;
 import nts.uk.ctx.at.shared.infra.entity.shortworktime.BshmtWorktimeHistItem_;
-import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * The Class JpaSWorkTimeHistItemRepository.
@@ -153,63 +148,6 @@ public class JpaSWorkTimeHistItemRepository extends JpaRepository implements SWo
 		return result.stream().map(
 				entity -> new ShortWorkTimeHistoryItem(new JpaSWorkTimeHistItemGetMemento(entity)))
 				.collect(Collectors.toList());
-	}
-	
-	@Override
-	public List<Object[]> findByHistIdsCPS013(List<String> histIds) {
-		// Check
-		if(CollectionUtil.isEmpty(histIds)) {
-			return Collections.emptyList();
-		}
-		
-		EntityManager em = this.getEntityManager();
-		CriteriaBuilder builder = em.getCriteriaBuilder();
-		CriteriaQuery<BshmtWorktimeHistItem> query = builder
-				.createQuery(BshmtWorktimeHistItem.class);
-		Root<BshmtWorktimeHistItem> root = query.from(BshmtWorktimeHistItem.class);
-		
-		List<BshmtWorktimeHistItem> ListWorktimeHistItem = new ArrayList<>();
-		List<Object[]> results = new ArrayList<>();
-		
-		CollectionUtil.split(histIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
-			// Predicate where clause
-			List<Predicate> predicateList = new ArrayList<>();
-			predicateList.add(root.get(BshmtWorktimeHistItem_.bshmtWorktimeHistItemPK)
-					.get(BshmtWorktimeHistItemPK_.histId).in(splitData));
-			query.where(predicateList.toArray(new Predicate[] {}));
-			
-			ListWorktimeHistItem.addAll(em.createQuery(query).getResultList());
-		});
-		
-		ListWorktimeHistItem.forEach(entity -> {
-			String historyId = entity.getBshmtWorktimeHistItemPK().getHistId();
-			String sid       = entity.getBshmtWorktimeHistItemPK().getSid();
-			List<SChildCareFrame>  lstTimeSlot = entity.getLstBshmtSchildCareFrame().stream().map(e -> {
-				return SChildCareFrame.builder()
-						.timeSlot(e.getBshmtSchildCareFramePK().getTimeNo())
-						.startTime(new TimeWithDayAttr(e.getStrClock()))
-						.endTime(new TimeWithDayAttr(e.getEndClock()))
-						.build();
-			}).collect(Collectors.toList());
-			ShortWorkTimeHistoryItem domain = new ShortWorkTimeHistoryItem(sid, historyId, ChildCareAtr.CARE, lstTimeSlot);
-			Map<String, Integer> mapListEnum = new HashMap<>();
-			mapListEnum.put("IS00104", entity.getChildCareAtr());
-			results.add(new Object[]{domain, mapListEnum});
-		});
-		
-		return results;
-	}
-
-	@Override
-	public void addAll(List<ShortWorkTimeHistoryItem> domains) {
-		List<BshmtWorktimeHistItem> entities = domains.stream().map(c ->{ return this.toEntity(c);}).collect(Collectors.toList());
-		this.commandProxy().insertAll(entities);
-	}
-
-	@Override
-	public void updateAll(List<ShortWorkTimeHistoryItem> domains) {
-		List<BshmtWorktimeHistItem> entities = domains.stream().map(c ->{ return this.toEntity(c);}).collect(Collectors.toList());
-		this.commandProxy().updateAll(entities);
 	}
 
 }

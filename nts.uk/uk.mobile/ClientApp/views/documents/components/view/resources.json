@@ -1,8 +1,10 @@
 {
     "jp": {
+        "sample" : "Sample (jp)",
         "documentscomponentsview": "documentscomponentsview (jp)"
     },
     "vi": {
+        "sample" : "Ví dụ",
         "documentscomponentsview": "documentscomponentsview (vi)"
     }
 }

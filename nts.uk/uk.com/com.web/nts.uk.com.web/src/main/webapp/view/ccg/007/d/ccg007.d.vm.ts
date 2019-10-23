@@ -4,7 +4,6 @@ module nts.uk.pr.view.ccg007.d {
         import ContractDto = service.ContractDto;
         import blockUI = nts.uk.ui.block;
         import CheckChangePassDto = service.CheckChangePassDto;
-        import character = nts.uk.characteristics;
         export class ScreenModel {
             employeeCode: KnockoutObservable<string>;
             password: KnockoutObservable<string>;
@@ -14,8 +13,6 @@ module nts.uk.pr.view.ccg007.d {
             isSaveLoginInfo: KnockoutObservable<boolean>;
             contractCode: KnockoutObservable<string>;
             contractPassword: KnockoutObservable<string>;
-            isSignOn: KnockoutObservable<boolean> = ko.observable(false);
-            displayLogin: KnockoutObservable<boolean> = ko.observable(false);
             constructor() {
                 var self = this;
                 self.employeeCode = ko.observable('');
@@ -37,14 +34,6 @@ module nts.uk.pr.view.ccg007.d {
             }
             start(): JQueryPromise<void> {
                 var self = this;
-                //get url
-                let url = _.toLower(_.trim(_.trim($(location).attr('href')), '%20'));
-                let isSignOn = url.indexOf('signon=on') >= 0 || url.indexOf('signon=oN') >= 0 || url.indexOf('signon=On') >= 0
-                || url.indexOf('signon=ON') >= 0;
-                self.isSignOn(isSignOn);
-                if(!isSignOn){
-                    self.displayLogin(true);
-                }
                 var dfd = $.Deferred<void>();
                 let defaultContractCode:string = "000000000000";
                 //get system config
@@ -112,8 +101,8 @@ module nts.uk.pr.view.ccg007.d {
                         if (isSubmit) {
                             self.getEmployeeLoginSetting(self.contractCode());
                         }
-                        service.getAllCompany(self.contractCode()).done(function(data: Array<CompanyItemModel>) {
-                            //get list company from server
+                        service.getAllCompany().done(function(data: Array<CompanyItemModel>) {
+                            //get list company from server 
                             self.companyList(data);
                             if (data.length > 0) {
                                 self.selectedCompanyCode(self.companyList()[0].companyCode);
@@ -125,6 +114,7 @@ module nts.uk.pr.view.ccg007.d {
 
             private getEmployeeLoginSetting(contractCode: string): JQueryPromise<void> {
                 var self = this;
+                var dfd = $.Deferred<void>();
                 //get check signon
                 let url = _.toLower(_.trim(_.trim($(location).attr('href')), '%20'));
                 let isSignOn = url.indexOf('signon=on') >= 0;
@@ -138,7 +128,7 @@ module nts.uk.pr.view.ccg007.d {
                             self.submitLogin(isSignOn);
                         }
                         else {
-                            service.getAllCompany(contractCode).done(function(data: Array<CompanyItemModel>) {
+                            service.getAllCompany().done(function(data: Array<CompanyItemModel>) {
                                 //get list company from server 
                                 self.companyList(data);
                                 if (data.length > 0) {
@@ -151,11 +141,13 @@ module nts.uk.pr.view.ccg007.d {
                                         self.selectedCompanyCode(loginInfo.companyCode);
                                         self.employeeCode(loginInfo.employeeCode);
                                     }
+                                    dfd.resolve();
                                 });
                             });
                         }
                     }
                 });
+                return dfd.promise();
             }
 
             private submitLogin(isSignOn: boolean) {
@@ -177,70 +169,32 @@ module nts.uk.pr.view.ccg007.d {
                     }
                     blockUI.clear();
                 }).fail(function(res:any) {
-                     blockUI.clear();
-                    if (self.isSignOn()) {//SIGNON
-                        if (!nts.uk.util.isNullOrEmpty(res.messageId)) {
-                            if (res.messageId == 'Msg_876') {//ActiveDirectory変換マスタが見つかりません
-                                nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(() => {
-                                    nts.uk.request.jump("/view/ccg/007/sso/adsso.xhtml", { 'errAcc': true, 'errMsg': res.message });
-                                });
-                            }else{
-                                nts.uk.request.jump("/view/ccg/007/sso/adsso.xhtml", { 'errAcc': false, 'errMsg': res.message });
-                            }
-                        } else {
-                            nts.uk.request.jump("/view/ccg/007/sso/adsso.xhtml", { 'errAcc': false, 'errMsg': res.message });
-                        }
-                    } else {//NORMAL
-                        if (nts.uk.util.isNullOrEmpty(res.messageId)) {
-                            nts.uk.ui.dialog.alertError(res.message);
-                        } else {
-                            nts.uk.ui.dialog.alertError({ messageId: res.messageId });
-                        }
+                    //Return Dialog Error
+                    if (!_.isEqual(res.message, "can not found message id")){
+                        nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
+                    } else {
+                       nts.uk.ui.dialog.alertError(res.messageId);
                     }
+                    blockUI.clear();
                 });
             }
             
-            private doSuccessLogin(messError){
+            private doSuccessLogin(messError: CheckChangePassDto){
                 var self = this;
                 if (messError.showContract) {
                     self.openContractAuthDialog();
                 }
                 else {
-                    if(!nts.uk.util.isNullOrEmpty(messError.msgErrorId) && messError.msgErrorId == 'Msg_1517'){
-                        //確認メッセージ（Msg_1517）を表示する{0}【残り何日】
-                        nts.uk.ui.dialog.confirm({ messageId: messError.msgErrorId, messageParams: [messError.spanDays]})
-                        .ifYes(()=>{
-                            messError.changePassReason = 'Msg_1523';
-                            self.OpenDialogE(messError);
-                        })
-                        .ifNo(()=>{
-                            nts.uk.request.login.keepUsedLoginPage("/nts.uk.com.web/view/ccg/007/d/index.xhtml");
-                            //Save LoginInfo
-                            nts.uk.characteristics.save("form3LoginInfo", {companyCode: _.escape(self.selectedCompanyCode()), employeeCode: _.escape(self.employeeCode())}).done(function() {
-                                nts.uk.request.jump("/view/ccg/008/a/index.xhtml", { screen: 'login' });
-                            });
-                        });
-                    }else
                     //check MsgError
                     if (!nts.uk.util.isNullOrEmpty(messError.msgErrorId) || messError.showChangePass) {
                         if (messError.showChangePass) {
-                            self.OpenDialogE(messError);
+                            self.OpenDialogE();
                         } else {
                             nts.uk.ui.dialog.alertError({ messageId: messError.msgErrorId });
                             self.password("");
                         }
                     } else {
-                        if (self.isSignOn()) {
-                            nts.uk.request.login.keepUsedLoginPage("/nts.uk.com.web/view/ccg/007/d/index.xhtml?signon=on");
-                        } else {
-                            nts.uk.request.login.keepUsedLoginPage("/nts.uk.com.web/view/ccg/007/d/index.xhtml");
-                        }
-                        //set mode login
-                        character.remove("loginMode").done(function() {
-//                                loginMode: true - sign on
-//                                loginMode: false - normal
-                            character.save("loginMode", self.isSignOn());
-                        })
+                        nts.uk.request.login.keepUsedLoginPage("/nts.uk.com.web/view/ccg/007/d/index.xhtml");
                         //Remove LoginInfo
                         nts.uk.characteristics.remove("form3LoginInfo").done(function() {
                             //check SaveLoginInfo
@@ -259,7 +213,7 @@ module nts.uk.pr.view.ccg007.d {
             }
             
             //open dialog E 
-            private OpenDialogE(messError) {
+            private OpenDialogE() {
                 let self = this;
                 
                 //set LoginId to dialog
@@ -269,20 +223,14 @@ module nts.uk.pr.view.ccg007.d {
                     employeeCode: self.employeeCode(),
                     companyCode: self.selectedCompanyCode()
                 }, true);
-                nts.uk.ui.windows.setShared("changePw", {
-                    reasonUpdatePw: messError.changePassReason,
-                    spanDays: messError.spanDays});
+
                 nts.uk.ui.windows.sub.modal('/view/ccg/007/e/index.xhtml',{
                     width : 520,
                     height : 450
                 }).onClosed(function(): any {
-                    var changePwDone = nts.uk.ui.windows.getShared('changePwDone');
-                    if (changePwDone) {
-                        nts.uk.request.login.keepUsedLoginPage("/nts.uk.com.web/view/ccg/007/d/index.xhtml");
-                        //Save LoginInfo
-                        nts.uk.characteristics.save("form3LoginInfo", {companyCode: _.escape(self.selectedCompanyCode()), employeeCode: _.escape(self.employeeCode())}).done(function() {
-                            nts.uk.request.jump("/view/ccg/008/a/index.xhtml", { screen: 'login' });
-                        });
+                    var childData = nts.uk.ui.windows.getShared('childData');
+                    if (childData.submit) {
+                        nts.uk.request.jump("/view/ccg/008/a/index.xhtml", { screen: 'login' });
                     }
                 })
             }

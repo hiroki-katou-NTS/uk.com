@@ -3,49 +3,65 @@ package nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord;
 /*import nts.arc.time.GeneralDate;*/
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.applicationreflect.service.ReflectInformationResult;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.WorkChangeCommonReflectPara;
 
 @Stateless
 public class WorkRecordReflectServiceImpl implements WorkRecordReflectService{
 	@Inject
 	private AppReflectProcessRecord reflectRecord;
+
 	@Override
-	public void workRecordreflect(AppReflectRecordPara appRecordInfor) {
-		boolean isPre = appRecordInfor.getPrePosAtr() == PrePostAtr.PREDICT ? true : false;
+	public ReflectInformationResult workRecordreflect(AppReflectRecordPara appRecordInfor) {
+		ReflectRecordInfor recordInfor = appRecordInfor.getRecordInfor();
+		//事前チェック処理
+		boolean checkReflect = reflectRecord.appReflectProcessRecord(appRecordInfor.getRecordInfor().getAppInfor(), true);
+		if (!checkReflect) {
+			return ReflectInformationResult.CHECKFALSE;
+		}
+		boolean isPre = recordInfor.getAppInfor().getPrePostAtr() == PrePostAtr.PREDICT ? true : false;
 		//申請種類
-		switch (appRecordInfor.getAppType()) {
-		case OVER_TIME_APPLICATION:
-			reflectRecord.overtimeReflectRecord(appRecordInfor.getOvertimeInfor(), true); 
-			break;
-		case GO_RETURN_DIRECTLY_APPLICATION:
+		if(recordInfor.getAppInfor().getAppType() == ApplicationType.OVER_TIME_APPLICATION
+				&& recordInfor.getAppInfor().getPrePostAtr() == PrePostAtr.PREDICT) {
+			return reflectRecord.overtimeReflectRecord(appRecordInfor.getOvertimeInfor(), isPre) 						
+					? ReflectInformationResult.DONE : ReflectInformationResult.NOTDONE;
+		} 
+		if (recordInfor.getAppInfor().getAppType() == ApplicationType.GO_RETURN_DIRECTLY_APPLICATION) {
 			GobackReflectPara gobackpara = appRecordInfor.getGobackInfor();
-			reflectRecord.gobackReflectRecord(gobackpara, isPre);
-			break;
-		case ABSENCE_APPLICATION:
+			return reflectRecord.gobackReflectRecord(gobackpara, isPre) 
+					? ReflectInformationResult.DONE : ReflectInformationResult.NOTDONE;
+		}
+		if (recordInfor.getAppInfor().getAppType() == ApplicationType.ABSENCE_APPLICATION) {
 			WorkChangeCommonReflectPara absenceInfor = appRecordInfor.getAbsenceInfor();
-			reflectRecord.absenceReflectRecor(absenceInfor, isPre);
-			break;
-		case BREAK_TIME_APPLICATION:
+			return reflectRecord.absenceReflectRecor(absenceInfor, isPre)
+					? ReflectInformationResult.DONE : ReflectInformationResult.NOTDONE;
+		}
+		if (recordInfor.getAppInfor().getAppType() == ApplicationType.BREAK_TIME_APPLICATION) {
 			HolidayWorkReflectPara holidayworkData = appRecordInfor.getHolidayworkInfor();
-			reflectRecord.holidayWorkReflectRecord(holidayworkData, isPre);
-			break;
-		case WORK_CHANGE_APPLICATION:
+			return reflectRecord.holidayWorkReflectRecord(holidayworkData, isPre)
+					? ReflectInformationResult.DONE : ReflectInformationResult.NOTDONE;
+		}
+		if (recordInfor.getAppInfor().getAppType() == ApplicationType.WORK_CHANGE_APPLICATION) {
 			WorkChangeCommonReflectPara workChangeData = appRecordInfor.getWorkchangeInfor();
-			reflectRecord.workChangeReflectRecord(workChangeData, isPre);
-			break;
-		case COMPLEMENT_LEAVE_APPLICATION:
+			return reflectRecord.workChangeReflectRecord(workChangeData, isPre)
+					? ReflectInformationResult.DONE : ReflectInformationResult.NOTDONE;
+		}
+		if (recordInfor.getAppInfor().getAppType() == ApplicationType.COMPLEMENT_LEAVE_APPLICATION) {
 			CommonReflectPara absenceLeaveData = appRecordInfor.getAbsenceLeaveAppInfor();
 			CommonReflectPara recruitmentData = appRecordInfor.getRecruitmentInfor();
+			boolean kaf011 = true;
 			if(absenceLeaveData != null) {
-				reflectRecord.absenceLeaveReflectRecord(absenceLeaveData, isPre);
+				kaf011 = reflectRecord.absenceLeaveReflectRecord(absenceLeaveData, isPre);
 			}
 			if(recruitmentData != null) {
-				reflectRecord.recruitmentReflectRecord(recruitmentData, isPre);
+				kaf011 = reflectRecord.recruitmentReflectRecord(recruitmentData, isPre);
 			}
-			break;
-		default:
-			break;
+			return kaf011 ?  ReflectInformationResult.DONE : ReflectInformationResult.NOTDONE;
 		}
+		return ReflectInformationResult.CHECKFALSE;
 	}
+
 }

@@ -254,7 +254,6 @@ module nts.uk.at.view.ksc001.b {
                                                 workplaceName: employeeSearch.workplaceName}});
                         self.employeeList(mappedEmployeeList);
                         self.selectedEmployee(data.listEmployee);
-                        self.applyKCP005ContentSearch(data.listEmployee);
                     }
                 }
             }

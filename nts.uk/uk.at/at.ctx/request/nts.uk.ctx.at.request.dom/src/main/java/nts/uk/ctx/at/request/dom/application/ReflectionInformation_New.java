@@ -42,11 +42,9 @@ public class ReflectionInformation_New extends DomainObject {
 	private Optional<ReasonNotReflectDaily_New> notReasonReal;
 	
 	// 予定反映日時
-	@Setter
 	private Optional<GeneralDateTime> dateTimeReflection;
 	
 	// 実績反映日時
-	@Setter
 	private Optional<GeneralDateTime> dateTimeReflectionReal;
 	
 	public static ReflectionInformation_New firstCreate(){

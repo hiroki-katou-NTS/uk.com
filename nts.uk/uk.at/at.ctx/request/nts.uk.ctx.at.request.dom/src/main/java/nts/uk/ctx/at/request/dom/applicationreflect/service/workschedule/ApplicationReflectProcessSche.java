@@ -1,9 +1,6 @@
 package nts.uk.ctx.at.request.dom.applicationreflect.service.workschedule;
 
-import nts.uk.ctx.at.request.dom.applicationreflect.service.WorkChangeCommonReflectPara;
-import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.CommonReflectPara;
-import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.GobackReflectPara;
-import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.HolidayWorkReflectPara;
+import nts.arc.time.GeneralDate;
 
 public interface ApplicationReflectProcessSche {
 	/**
@@ -11,34 +8,37 @@ public interface ApplicationReflectProcessSche {
 	 * @param reflectSche
 	 * @return
 	 */
-	public void goBackDirectlyReflect(GobackReflectPara gobackInfor);
+	public boolean goBackDirectlyReflect(ReflectScheDto reflectSche);
 	/**
 	 * 休暇申請
 	 * @param reflectSche
 	 */
-	public void forleaveReflect(WorkChangeCommonReflectPara absenceInfor);
+	public boolean forleaveReflect(ReflectScheDto reflectSche);
 	/**
 	 * 勤務変更申請
 	 * @param reflectSche
 	 * @return
 	 */
-	public void workChangeReflect(WorkChangeCommonReflectPara workchangeInfor);
+	public boolean workChangeReflect(ReflectScheDto reflectSche);
 	/**
 	 * 休日出勤申請
 	 * @param relectSche
 	 * @return
 	 */
-	public void holidayWorkReflect(HolidayWorkReflectPara holidayworkInfor);
+	public boolean holidayWorkReflect(ReflectScheDto relectSche);
 	/**
 	 * 振休申請の反映
 	 * @param relectSche
 	 * @return
 	 */
-	public void ebsenceLeaveReflect(CommonReflectPara absenceLeaveAppInfor);
+	public boolean ebsenceLeaveReflect(ReflectScheDto relectSche);
 	/**
 	 * 振出申請の反映
 	 * @param relectSche
 	 * @return
 	 */
-	public void recruitmentReflect(CommonReflectPara recruitmentInfor);	
+	public boolean recruitmentReflect(ReflectScheDto relectSche);
+	
+	public boolean isSche(String employeeId, GeneralDate baseDate);
+
 }

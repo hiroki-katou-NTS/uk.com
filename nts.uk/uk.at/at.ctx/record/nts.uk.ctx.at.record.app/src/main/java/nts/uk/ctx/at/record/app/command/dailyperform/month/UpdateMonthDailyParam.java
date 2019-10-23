@@ -26,7 +26,7 @@ public class UpdateMonthDailyParam {
 	/** 締め日: 日付 */
 	private ClosureDateDto closureDate;
 	
-	private Optional<IntegrationOfMonthly> domainMonth = Optional.empty();
+	private Optional<IntegrationOfMonthly> domainMonth;
 	
 	private DatePeriod datePeriod;
 	
@@ -36,5 +36,4 @@ public class UpdateMonthDailyParam {
 	
 	private Boolean needCallCalc;
 
-	private long version;
 }

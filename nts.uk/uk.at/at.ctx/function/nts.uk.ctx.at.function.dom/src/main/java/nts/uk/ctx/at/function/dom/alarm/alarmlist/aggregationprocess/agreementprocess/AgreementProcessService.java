@@ -146,11 +146,10 @@ public class AgreementProcessService {
 				for (PeriodByAlarmCategory periodAlarm : periodAlarms) {
 					if(periodAlarm.getPeriod36Agreement() == periodCheck.value){
 						DatePeriod period = new DatePeriod(periodAlarm.getStartDate(), periodAlarm.getEndDate());
-						Object objCheckAgreement = checkAgreementAdapter.getCommonSetting(comId, employeeIds,period);
 						//アルゴリズム「エラーアラームチェック」を実行する
 						// アルゴリズム「36協定実績をチェックする」を実行する
 						List<CheckedAgreementResult> checkAgreementsResult = checkAgreementAdapter.checkArgreementResult(employeeIds,
-								period, agreeConditionError, agreementSetObj,closureList,mapEmpIdClosureID,objCheckAgreement);
+								period, agreeConditionError, agreementSetObj,closureList,mapEmpIdClosureID);
 						if(!CollectionUtil.isEmpty(checkAgreementsResult)){
 							result.addAll(generationValueExtractAlarm(mapEmployee,checkAgreementsResult,agreeConditionError,optAgreeName,periodCheck,
 									period.start()));	
@@ -183,7 +182,7 @@ public class AgreementProcessService {
 								check.getEmployeeId(), datePeriod, TextResource.localize("KAL010_208"),
 								TextResource.localize("KAL010_201"), TextResource.localize("KAL010_202",
 										check.getNo() + "", ot36, check.getExcessNum().v() + ""),
-								check.getMessageDisp().v(),null));
+								check.getMessageDisp().v()));
 					}
 				}
 			}
@@ -211,7 +210,7 @@ public class AgreementProcessService {
 		/** TODO: parallel from here */
 		parallelManager.forEach(CollectionUtil.partitionBySize(empIds, 50), employeeIds -> {
 //		CollectionUtil.split(empIds, 25, employeeIds -> {
-			checkService.check(agreementErAl, periodAlarms, agreementSetObj, counter, shouldStop, result, empIdToClosureId,
+			checkService.check(agreementErAl, periodAlarms, agreementSetObj, counter, shouldStop, result, empIds, empIdToClosureId,
 					closureList, mapEmployee, employeeIds);
 		});
 //		Logger.getLogger(getClass()).info("Transaction Status 10: " + tsr.getTransactionStatus());
@@ -288,7 +287,7 @@ public class AgreementProcessService {
 				}
 				//カテゴリ
 				lstReturn.add(new ValueExtractAlarm(workPlaceId,checkedAgreementResult.getEmpId(),alarmValueDate,
-						TextResource.localize("KAL010_208"),alarmItem,alarmContent,agreeConditionError.getMessageDisp().v(),null));
+						TextResource.localize("KAL010_208"),alarmItem,alarmContent,agreeConditionError.getMessageDisp().v()));
 			}
 		}
 		return lstReturn;

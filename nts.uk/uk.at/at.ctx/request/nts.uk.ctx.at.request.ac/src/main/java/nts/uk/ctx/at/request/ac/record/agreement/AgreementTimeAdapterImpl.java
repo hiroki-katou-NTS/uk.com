@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.pub.monthly.agreement.CheckAgreementTimeStatusPub;
+import nts.uk.ctx.at.record.pub.monthly.agreement.GetAgreementPeriodPub;
 import nts.uk.ctx.at.record.pub.monthlyprocess.agreement.GetAgreementTimePub;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreMaxTimeOfMonthExport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreeTimeOfMonthExport;
@@ -22,9 +23,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeYear;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxAverageTimeMulti;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreTimeYearStatusOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOutput;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeYear;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.ScheRecAtr;
 import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
@@ -38,8 +37,8 @@ public class AgreementTimeAdapterImpl implements AgreementTimeAdapter {
 	@Inject
 	private CheckAgreementTimeStatusPub checkAgreementTimeStatusPub;
 	
-//	@Inject
-//	private GetAgreementPeriodPub getAgreementPeriodPub;
+	@Inject
+	private GetAgreementPeriodPub getAgreementPeriodPub;
 	
 	@Override
 	public List<AgreementTimeImport> getAgreementTime(String companyId, List<String> employeeIds, YearMonth yearMonth,
@@ -103,15 +102,9 @@ public class AgreementTimeAdapterImpl implements AgreementTimeAdapter {
 		return getAgreementTimePub.getMaxAverageMulti(companyId, employeeId, yearMonth, criteria);
 	}
 
-//	@Override
-//	public Optional<YearMonthPeriod> containsDate(String companyID, GeneralDate criteria) {
-//		return getAgreementPeriodPub.containsDate(companyID, criteria, Optional.empty());
-//	}
-
 	@Override
-	public AgreementTimeOutput getAverageAndYear(String companyId, String employeeId, YearMonth averageMonth,
-			GeneralDate criteria, ScheRecAtr scheRecAtr) {
-		return getAgreementTimePub.getAverageAndYear(companyId, employeeId, averageMonth, criteria, scheRecAtr);
+	public Optional<YearMonthPeriod> containsDate(String companyID, GeneralDate criteria) {
+		return getAgreementPeriodPub.containsDate(companyID, criteria, Optional.empty());
 	}
 
 }

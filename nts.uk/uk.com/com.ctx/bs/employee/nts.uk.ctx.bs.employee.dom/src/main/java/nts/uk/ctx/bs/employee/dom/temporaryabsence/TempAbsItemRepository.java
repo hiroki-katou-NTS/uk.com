@@ -52,14 +52,6 @@ public interface TempAbsItemRepository {
 	 * @param domain
 	 */
 	void add(TempAbsenceHisItem domain);
-	
-	/**
-	 * @author lanlt
-	 * ドメインモデル「休職休業」を新規登録する
-	 * 
-	 * @param domain
-	 */
-	void addAll(List<TempAbsenceHisItem> domains);
 
 	/**
 	 * 取得した「休職休業」を更新する
@@ -68,13 +60,6 @@ public interface TempAbsItemRepository {
 	 */
 	void update(TempAbsenceHisItem domain);
 
-	/**
-	 * @author lanlt
-	 * 取得した「休職休業」を更新する
-	 * 
-	 * @param domain
-	 */
-	void updateAll(List<TempAbsenceHisItem> domains);
 	/**
 	 * ドメインモデル「休職休業」を削除する
 	 * 

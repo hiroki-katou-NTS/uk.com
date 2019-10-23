@@ -24,5 +24,7 @@ public interface PCLogOnInfoOfDailyRepo {
 
 	public void add(PCLogOnInfoOfDaily domain);
 	
+	public void remove(PCLogOnInfoOfDaily domain);
+	
 	public void removeByKey(String employeeId, GeneralDate baseDate);
 }

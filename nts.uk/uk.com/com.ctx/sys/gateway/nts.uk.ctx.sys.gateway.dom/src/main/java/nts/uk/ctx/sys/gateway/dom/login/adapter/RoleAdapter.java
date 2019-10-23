@@ -7,7 +7,6 @@ package nts.uk.ctx.sys.gateway.dom.login.adapter;
 import java.util.List;
 
 import nts.uk.ctx.sys.gateway.dom.login.dto.RoleImport;
-import nts.uk.shr.com.context.loginuser.role.LoginUserRoles;
 
 public interface RoleAdapter {
 	
@@ -20,6 +19,4 @@ public interface RoleAdapter {
 	List<RoleImport> getAllById(String roleId);
 	
 	public boolean isEmpWhetherLoginerCharge();
-	
-	public boolean isEmpWhetherLoginerCharge(LoginUserRoles roles);
 }

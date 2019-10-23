@@ -5,7 +5,6 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
@@ -14,8 +13,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
  */
 // 外出種類別丸め設定
 @Getter
-@NoArgsConstructor
-public class GoOutTypeRoundingSet extends WorkTimeDomainObject implements Cloneable{
+public class GoOutTypeRoundingSet extends WorkTimeDomainObject {
 
 	/** The offical use compen go out. */
 	// 公用、有償外出
@@ -86,16 +84,4 @@ public class GoOutTypeRoundingSet extends WorkTimeDomainObject implements Clonea
 		this.privateUnionGoOut.correctDefaultData(screenMode);
 	}
 
-	@Override
-	public GoOutTypeRoundingSet clone() {
-		GoOutTypeRoundingSet cloned = new GoOutTypeRoundingSet();
-		try {
-			cloned.officalUseCompenGoOut = this.officalUseCompenGoOut.clone();
-			cloned.privateUnionGoOut = this.privateUnionGoOut.clone();
-		}
-		catch (Exception e){
-			throw new RuntimeException("AggregateTotalTimeSpentAtWork clone error.");
-		}
-		return cloned;
-	}
 }

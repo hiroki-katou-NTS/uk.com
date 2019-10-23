@@ -62,6 +62,12 @@ public class ActualLockWebService extends WebService {
 		return this.lockFinder.findHistByTargetYM(closureId, targetYM);
 	}
 	
+	@POST
+	@Path("findHistByClosure/{closureId}")
+	public List<ActualLockHistFindDto> findHistByClosure(@PathParam("closureId") int closureId) {
+		return this.lockFinder.findHistByClosure(closureId);
+	}
+
 	/**
 	 * Find lock by closure id.
 	 *

@@ -3,9 +3,7 @@
  */
 package nts.uk.shr.pereg.app.find.dto;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import lombok.Data;
 
@@ -33,7 +31,7 @@ public class PeregDto {
 		super();
 		this.domainDto = domainDto;
 		this.dtoClass = dtoClass;
-		this.optionalItemData = Optional.ofNullable(optionalItemData).orElse(new ArrayList<>());
+		this.optionalItemData = optionalItemData;
 	}
 
 }

@@ -3,7 +3,6 @@ package nts.uk.pub.spr.approvalroot;
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.pub.spr.export.PersonInfoSprExport;
 import nts.uk.pub.spr.approvalroot.output.ApprovalRootSpr;
 
 /**
@@ -43,6 +42,6 @@ public interface SprApprovalRootService {
 	 * @param rootType
 	 * @return
 	 */
-	public List<PersonInfoSprExport> getAppRootStateIDByType(String companyID, String employeeID, GeneralDate date, Integer rootType);
+	public List<String> getAppRootStateIDByType(String companyID, String employeeID, GeneralDate date, Integer rootType);
 	
 }

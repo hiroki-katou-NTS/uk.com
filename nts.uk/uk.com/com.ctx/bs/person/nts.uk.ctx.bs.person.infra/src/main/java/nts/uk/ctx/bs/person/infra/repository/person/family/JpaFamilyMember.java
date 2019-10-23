@@ -6,9 +6,9 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.bs.person.dom.person.family.FamilyMember;
-import nts.uk.ctx.bs.person.dom.person.family.fullnameset.*;
 import nts.uk.ctx.bs.person.dom.person.family.FamilyMemberRepository;
 import nts.uk.ctx.bs.person.infra.entity.person.family.BpsmtFamily;
 import nts.uk.ctx.bs.person.infra.entity.person.family.BpsmtFamilyPk;
@@ -19,8 +19,6 @@ public class JpaFamilyMember extends JpaRepository implements FamilyMemberReposi
 	public static final String GET_ALL_BY_PID = "SELECT c FROM BpsmtFamily c WHERE c.pid = :pid";
 	
 	private static final String SELECT_FAMILY_BY_ID = "SELECT c FROM BpsmtFamily c WHERE c.ppsmtFamilyPk.familyId = :familyId";
-	
-	public static final String SELECT_ALL_BY_PID_AND_RELATION_CD = "SELECT c FROM BpsmtFamily c WHERE c.pid = :pid AND c.relationCode IN :relationCode";
 
 	private List<FamilyMember> toListFamily(List<BpsmtFamily> listEntity) {
 		List<FamilyMember> lstFamily = new ArrayList<>();
@@ -35,22 +33,26 @@ public class JpaFamilyMember extends JpaRepository implements FamilyMemberReposi
 	}
 
 	private FamilyMember toDomainFamily(BpsmtFamily entity) {
-		FamilyMember domain = FamilyMember.createFromJavaType(
-				entity.ppsmtFamilyPk.familyId, 
-				entity.pid,
-				entity.fName,
-				entity.fNameKana,
-				entity.fNameRomaji,
-				entity.fNameRomajiKana,
-				entity.fNameMultiLang, 
-				entity.fNameMultiLangKana,
-				entity.todukedeName, 
-				entity.todukedeNameKana, 
+		val domain = FamilyMember.createFromJavaType(
 				entity.birthday,
 				entity.deathDate, 
 				entity.entryDate, 
-				entity.expDate,
-				entity.relationCode);
+				entity.expDate, 
+				entity.ppsmtFamilyPk.familyId, 
+				entity.name,
+				entity.NameKana,
+				entity.nameMultiLang,
+				entity.nameMultiLangKana,
+				entity.nameRomaji,
+				entity.nameRomajiKana, 
+				entity.nationality,
+				entity.occupationName, 
+				entity.pid, 
+				entity.relationShip, 
+				entity.SupportCareType,
+				entity.todukedeName,
+				entity.TogSepDivType, 
+				entity.workStudentType);
 		return domain;
 	}
 	
@@ -74,34 +76,12 @@ public class JpaFamilyMember extends JpaRepository implements FamilyMemberReposi
 	 */
 	private BpsmtFamily toEntity(FamilyMember domain){
 		BpsmtFamilyPk key = new BpsmtFamilyPk(domain.getFamilyMemberId());
-		List<String> fName = getStringFromOptional(Optional.of(domain.getFullName()));
-		List<String> fullNameRomaji = getStringFromOptional(domain.getFullNameRomaji());
-		List<String> fullNameMultiLang = getStringFromOptional(domain.getFullNameMultiLang());
-		List<String> fullNametokodeke = getStringFromOptional(domain.getFullNametokodeke());
-		return new BpsmtFamily(key, domain.getPersonId(), domain.getBirthday(),
-				domain.getRelationshipCode().v(),
-				fName.size() == 0? null: fName.get(0),
-			    fName.size() == 0? null: fName.get(1),
-			    fullNameRomaji.size() == 0? null: fullNameRomaji.get(0),
-			    fullNameRomaji.size() == 0? null: fullNameRomaji.get(1),	
-			    fullNameMultiLang.size() == 0? null: fullNameMultiLang.get(0),
-			    fullNameMultiLang.size() == 0? null: fullNameMultiLang.get(1),	
-			    fullNametokodeke.size() == 0? null: fullNametokodeke.get(0),
-			    fullNametokodeke.size() == 0? null: fullNametokodeke.get(1),
-			    domain.getDeadDay().isPresent()? domain.getDeadDay().get(): null,
-			    domain.getEntryDate().isPresent()? domain.getEntryDate().get(): null,
-			    domain.getExpelledDate().isPresent()? domain.getExpelledDate().get(): null
-			   );
-	}
-	
-	private List<String> getStringFromOptional(Optional<FullNameSet> fullNameSetOpt) {
-		List<String> result = new ArrayList<>();
-		if(fullNameSetOpt.isPresent()) {
-			FullNameSet fullNameSet = fullNameSetOpt.get();
-			result.add(fullNameSet.getFullName() == null? "": fullNameSet.getFullName().v());
-			result.add(fullNameSet.getFullNameKana() == null? "": fullNameSet.getFullNameKana().v());
-		}
-		return result;
+		return new BpsmtFamily(key, domain.getWorkStudentType().value, domain.getTogSepDivisionType().value,
+				domain.getTokodekeName().v(), domain.getSupportCareType().value, domain.getRelationship().v(), 
+				domain.getPersonId(), domain.getOccupationName().v(), domain.getNationalityId().v(), domain.getNameRomajiFull().v(), 
+				domain.getNameRomajiFullKana().v(), domain.getNameMultiLangFull().v(), domain.getNameMultiLangFullKana().v(),
+				domain.getFullName().v(), domain.getFullNameKana().v(), domain.getExpelledDate(), domain.getEntryDate(), 
+				domain.getDeadDay(), domain.getBirthday());
 	}
 	/**
 	 * updateEntity
@@ -109,25 +89,24 @@ public class JpaFamilyMember extends JpaRepository implements FamilyMemberReposi
 	 * @param entity
 	 */
 	private void updateEntity(FamilyMember domain, BpsmtFamily entity){
-		List<String> fName = getStringFromOptional(Optional.of(domain.getFullName()));
-		List<String> fullNameRomaji = getStringFromOptional(domain.getFullNameRomaji());
-		List<String> fullNameMultiLang = getStringFromOptional(domain.getFullNameMultiLang());
-		List<String> fullNametokodeke = getStringFromOptional(domain.getFullNametokodeke());
+		entity.workStudentType = domain.getWorkStudentType().value;
+		entity.TogSepDivType = domain.getTogSepDivisionType().value;
+		entity.todukedeName = domain.getTokodekeName().v();
+		entity.SupportCareType = domain.getSupportCareType().value;
+		entity.relationShip = domain.getRelationship().v();
 		entity.pid = domain.getPersonId();
+		entity.occupationName = domain.getOccupationName().v();
+		entity.nationality = domain.getNationalityId().v();
+		entity.nameRomaji = domain.getNameRomajiFull().v();
+		entity.nameRomajiKana =	domain.getNameRomajiFullKana().v();
+		entity.nameMultiLang = domain.getNameMultiLangFull().v();
+	 	entity.nameMultiLangKana = domain.getNameMultiLangFullKana().v();
+		entity.name	= domain.getFullName().v();
+		entity.NameKana = domain.getFullNameKana().v();
+		entity.expDate = domain.getExpelledDate();
+		entity.entryDate = domain.getEntryDate(); 
+		entity.deathDate = domain.getDeadDay();
 		entity.birthday = domain.getBirthday();
-		entity.relationCode = domain.getRelationshipCode().v();
-		entity.fName	= fName.size() == 0? null: fName.get(0);
-		entity.fNameKana = fName.size() == 0? null: fName.get(1);
-		entity.fNameRomaji = fullNameRomaji.size() == 0? null: fullNameRomaji.get(0);
-		entity.fNameRomajiKana = fullNameRomaji.size() == 0? null: fullNameRomaji.get(1);
-		entity.fNameMultiLang = fullNameMultiLang.size() == 0? null: fullNameMultiLang.get(0);
-	 	entity.fNameMultiLangKana = fullNameMultiLang.size() == 0? null: fullNameMultiLang.get(1);
-	 	entity.todukedeName = fullNametokodeke.size() == 0? null: fullNametokodeke.get(0);
-		entity.todukedeNameKana = fullNametokodeke.size() == 0? null: fullNametokodeke.get(1);
-		entity.expDate = domain.getExpelledDate().isPresent()? domain.getExpelledDate().get(): null;
-		entity.entryDate = domain.getEntryDate().isPresent()? domain.getEntryDate().get(): null;
-		entity.deathDate =  domain.getDeadDay().isPresent()? domain.getDeadDay().get(): null;
-		
 	}
 	/**
 	 * Add family ドメインモデル「家族」を新規登録する
@@ -155,15 +134,6 @@ public class JpaFamilyMember extends JpaRepository implements FamilyMemberReposi
 		this.commandProxy().update(existItem.get());
 	
 		
-	}
-
-	@Override
-	public List<FamilyMember> getListByPidAndRelationCode(String pid, List<String> relationShipCodes) {
-		List<BpsmtFamily> listEntity = this.queryProxy().query(SELECT_ALL_BY_PID_AND_RELATION_CD, BpsmtFamily.class)
-				.setParameter("pid", pid)
-				.setParameter("relationCode", relationShipCodes)
-				.getList();
-		return toListFamily(listEntity);
 	}
 
 }

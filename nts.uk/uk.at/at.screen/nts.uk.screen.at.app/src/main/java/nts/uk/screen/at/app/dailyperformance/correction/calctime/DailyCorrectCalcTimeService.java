@@ -1,15 +1,11 @@
 package nts.uk.screen.at.app.dailyperformance.correction.calctime;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
-import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.val;
 import nts.arc.error.BusinessException;
@@ -24,8 +20,6 @@ import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
-import nts.uk.screen.at.app.dailymodify.command.DailyModifyResCommandFacade;
-import nts.uk.screen.at.app.dailymodify.query.DailyModifyQuery;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyResult;
 import nts.uk.screen.at.app.dailyperformance.correction.checkdata.ValidatorDataDailyRes;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeName;
@@ -52,14 +46,10 @@ public class DailyCorrectCalcTimeService {
 
 	@Inject
 	private ValidatorDataDailyRes validatorDataDaily;
-	
-	@Inject
-	private DailyModifyResCommandFacade dailyModifyResFacade;
 
 	public DCCalcTime calcTime(List<DailyRecordDto> dailyEdits, List<DPItemValue> itemEdits, Boolean changeSpr31,
-			Boolean changeSpr34,  boolean notChangeCell) {
+			Boolean changeSpr34) {
 
-		String companyId = AppContexts.user().companyId();
 		DCCalcTime calcTime = new DCCalcTime();
 
 		DPItemValue itemEditCalc = itemEdits.stream().filter(x -> !x.getColumnKey().equals("USE")).findFirst().get();
@@ -67,24 +57,6 @@ public class DailyCorrectCalcTimeService {
 
 		DailyRecordDto dtoEdit = dailyEdits.stream()
 				.filter(x -> equalEmpAndDate(x.getEmployeeId(), x.getDate(), itemEditCalc)).findFirst().orElse(null);
-		
-		//セットされている勤務種類、就業時間帯が「マスタ未登録」でないかチェックする
-		val checkMaster = checkHasMasterWorkTypeTime(companyId, dtoEdit, itemEdits);
-		if(!checkMaster.getLeft() || !checkMaster.getRight()) {
-			calcTime.setCellEdits(new ArrayList<>());
-			calcTime.setDailyEdits(dailyEdits);
-			calcTime.setErrorFindMaster28(!checkMaster.getLeft());
-			calcTime.setErrorFindMaster29(!checkMaster.getRight());
-			return calcTime;
-		};
-		
-		val itemValues = itemEdits.stream()
-				.map(x -> new ItemValue(x.getValue(),
-						x.getValueType() == null ? ValueType.UNKNOWN : ValueType.valueOf(x.getValueType()),
-						x.getLayoutCode(), x.getItemId()))
-				.collect(Collectors.toList());
-		
-		AttendanceItemUtil.fromItemValues(dtoEdit, itemValues);
 		if ((changeSpr31 != null || changeSpr34 != null) && dtoEdit.getTimeLeaving().isPresent()
 				&& !dtoEdit.getTimeLeaving().get().getWorkAndLeave().isEmpty()) {
 			dtoEdit.getTimeLeaving().get().getWorkAndLeave().stream().filter(x -> x.getNo() == 1).forEach(x -> {
@@ -107,21 +79,26 @@ public class DailyCorrectCalcTimeService {
 			if(item34 != null) addEditState(dtoEdit, Arrays.asList(val689));
 		}
 		
+		val itemValues = itemEdits.stream()
+				.map(x -> new ItemValue(x.getValue(),
+						x.getValueType() == null ? ValueType.UNKNOWN : ValueType.valueOf(x.getValueType()),
+						x.getLayoutCode(), x.getItemId()))
+				.collect(Collectors.toList());
 		// val itemBase = new ItemValue(itemEditCalc.getValue(),
 		// ValueType.valueOf(itemEditCalc.getValueType()),
 		// itemEditCalc.getLayoutCode(), itemEditCalc.getItemId());
 
-		if(!notChangeCell) addEditState(dtoEdit, itemEdits);
-		
+		addEditState(dtoEdit, itemEdits);
+
 		DailyModifyRCResult updated = DailyModifyRCResult.builder().employeeId(itemEditCalc.getEmployeeId())
 				.workingDate(itemEditCalc.getDate()).items(itemValues).completed();
 
 		checkInput28And1(dtoEdit, itemEdits);
 
+		String companyId = AppContexts.user().companyId();
+
 		// AttendanceItemUtil.fromItemValues(dtoEdit, Arrays.asList(itemBase));
-		//AttendanceItemUtil.fromItemValues(dtoEdit, itemValues);
-		
-		dailyModifyResFacade.createStampSourceInfo(dtoEdit, Arrays.asList(new DailyModifyQuery(dtoEdit.getEmployeeId(), dtoEdit.getDate(), itemValues)));
+		AttendanceItemUtil.fromItemValues(dtoEdit, itemValues);
 
 		EventCorrectResult result = dailyCorrectEventServiceCenter.correctRunTime(dtoEdit, updated, companyId);
 		List<ItemValue> items = result.getCorrectedItemsWithStrict();
@@ -131,7 +108,6 @@ public class DailyCorrectCalcTimeService {
 
 		val dailyEditsResult = dailyEdits.stream().map(x -> {
 			if (equalEmpAndDate(x.getEmployeeId(), x.getDate(), itemEditCalc)) {
-				resultBaseDto.getWorkInfo().setVersion(x.getWorkInfo().getVersion());
 				return resultBaseDto;
 			} else {
 				return x;
@@ -140,8 +116,6 @@ public class DailyCorrectCalcTimeService {
 		calcTime.setCellEdits(items.stream().map(x -> new DCCellEdit(itemEditCalc.getRowId(), "A" + x.getItemId(),
 				convertData(x.getValueType().value, x.getValue()))).collect(Collectors.toList()));
 		calcTime.setDailyEdits(dailyEditsResult);
-		calcTime.setErrorFindMaster28(false);
-		calcTime.setErrorFindMaster29(false);
 		return calcTime;
 	}
 
@@ -191,7 +165,7 @@ public class DailyCorrectCalcTimeService {
 		return employee.equals(itemEdit.getEmployeeId()) && date.equals(itemEdit.getDate());
 	}
 
-	public void getWplPosId(List<DPItemValue> itemEdits) {
+	private void getWplPosId(List<DPItemValue> itemEdits) {
 		// map id -> code possition and workplace
 		itemEdits.stream().map(itemEdit -> {
 			if (itemEdit.getTypeGroup() == null)
@@ -231,55 +205,5 @@ public class DailyCorrectCalcTimeService {
 		ItemValue itemValue688 = new ItemValue(item31.getValue(), ValueType.TIME, "M_A48_A", 688);
 		AttendanceItemUtil.fromItemValues(dailyEdit, Arrays.asList(itemValue688));
 		return new DPItemValue("", dailyEdit.getEmployeeId(), dailyEdit.getDate(), 688);
-	}
-	
-	//セットされている勤務種類、就業時間帯が「マスタ未登録」でないかチェックする
-	private Pair<Boolean, Boolean> checkHasMasterWorkTypeTime(String companyId, DailyRecordDto dailyEdit,  List<DPItemValue> itemEdits) {
-		boolean hasMaster28 = true, hasMaster29 = true;
-		boolean contentItem28 = itemEdits.stream().filter(x -> x.getItemId() == 28).findFirst().isPresent() ? true
-				: false;
-		boolean contentItem29 = itemEdits.stream().filter(x -> x.getItemId() == 29).findFirst().isPresent() ? true
-				: false;
-
-		List<DailyModifyResult> resultValues = AttendanceItemUtil.toItemValues(Arrays.asList(dailyEdit)).entrySet()
-				.stream().map(c -> DailyModifyResult.builder().items(c.getValue()).workingDate(c.getKey().workingDate())
-						.employeeId(c.getKey().employeeId()).completed())
-				.collect(Collectors.toList());
-		if (resultValues.isEmpty())
-			return Pair.of(false, false);
-		DailyModifyResult resultValue = resultValues.get(0);
-		if (!contentItem28) {
-			String value28 = resultValue.getItems().stream().filter(x -> x.getItemId() == 28).findFirst().orElse(null)
-					.getValue();
-			if (value28 == null || value28.isEmpty()) {
-				hasMaster28 = true;
-			}else {
-				Optional<CodeName> codeName28opt = dataDialogWithTypeProcessor.getDutyTypeAll(companyId).getCodeNames()
-						.stream().filter(x -> x.getCode().equals(value28)).findFirst();
-
-				if (!codeName28opt.isPresent())
-					hasMaster28 = false;
-			}
-			
-		}
-
-		if (!contentItem29) {
-			String value29 = resultValue.getItems().stream().filter(x -> x.getItemId() == 29).findFirst().orElse(null)
-					.getValue();
-
-			if (value29 == null || value29.isEmpty()) {
-				hasMaster29 = true;
-
-			}else {
-				Optional<CodeName> codeName29opt = dataDialogWithTypeProcessor.getWorkHoursAll(companyId).getCodeNames()
-						.stream().filter(x -> x.getCode().equals(value29)).findFirst();
-
-				if (!codeName29opt.isPresent())
-					hasMaster29 = false;
-			}
-
-		}
-		
-		return  Pair.of(hasMaster28, hasMaster29);
 	}
 }

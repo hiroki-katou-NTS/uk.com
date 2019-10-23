@@ -360,7 +360,6 @@ module nts.uk.at.view.kaf010.share {
              workClockTo2: number;
              //休憩時間
              breakTimes: Array<any>;
-             restTime: Array<any>;
             constructor(
                 applicationDate: string,
                 workType: string,
@@ -369,8 +368,7 @@ module nts.uk.at.view.kaf010.share {
                 workClockTo1: number,
                 workClockFrom2: number,
                 workClockTo2: number,
-                breakTimes: Array<any>,
-                restTime: Array<any>) {
+                breakTimes: Array<any>) {
                 this.applicationDate = applicationDate;
                 this.workType = workType;
                 this.breakTimes = breakTimes;
@@ -378,7 +376,6 @@ module nts.uk.at.view.kaf010.share {
                 this.workClockTo1 = workClockTo1;
                 this.workClockFrom2 = workClockFrom2;
                 this.workClockTo2 = workClockTo2;
-                this.restTime = restTime;
             }
         }
         

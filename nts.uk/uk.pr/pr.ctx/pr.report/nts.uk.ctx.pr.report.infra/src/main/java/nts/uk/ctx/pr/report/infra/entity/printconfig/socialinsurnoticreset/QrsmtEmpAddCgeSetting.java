@@ -105,7 +105,7 @@ public class QrsmtEmpAddCgeSetting extends UkJpaEntity implements Serializable {
 
     public static QrsmtEmpAddCgeSetting toEntity(EmpAddChangeInfo empAddChangeInfo){
         return new QrsmtEmpAddCgeSetting(
-                new QrsmtEmpAddCgeSettingPk(empAddChangeInfo.getSid(), AppContexts.user().companyId()),
+                new QrsmtEmpAddCgeSettingPk(AppContexts.user().companyId(),empAddChangeInfo.getSid()),
                 empAddChangeInfo.getPersonalSet().getShortResident(),
                 empAddChangeInfo.getPersonalSet().getLivingAbroadAtr(),
                 empAddChangeInfo.getPersonalSet().getResidenceOtherResidentAtr(),

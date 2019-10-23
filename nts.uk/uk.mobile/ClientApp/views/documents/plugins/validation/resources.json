@@ -1,8 +1,10 @@
 {
     "jp": {
+        "sample" : "Sample (jp)",
         "documentspluginsvalidation": "Validations"
     },
     "vi": {
+        "sample" : "Ví dụ",
         "documentspluginsvalidation": "Validations"
     }
 }

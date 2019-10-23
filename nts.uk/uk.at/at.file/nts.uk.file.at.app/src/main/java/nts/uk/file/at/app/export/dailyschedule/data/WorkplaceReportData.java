@@ -48,7 +48,7 @@ public class WorkplaceReportData {
 	public DatePeriod period;
 
 	// Employee data & child workplaces' employee data presentation
-	public boolean hasData = false;
+	boolean hasData = false;
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)

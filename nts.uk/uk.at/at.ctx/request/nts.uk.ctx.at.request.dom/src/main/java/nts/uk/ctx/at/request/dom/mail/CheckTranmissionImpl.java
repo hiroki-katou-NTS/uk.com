@@ -96,7 +96,7 @@ public class CheckTranmissionImpl implements CheckTransmission {
 		//2018/06/12　追加
 		//QA#96551
 		//申請者にメール送信かチェックする
-		if(sendMailApplicaint && !Strings.isBlank(applicantID)){//送信する
+		if(sendMailApplicaint && !Strings.isBlank(applicantID)){//チェックする
 			//imported（申請承認）「社員メールアドレス」を取得する  - Rq225 (419)
 			List<MailDestinationImport> lstApplicantMail = envAdapter.getEmpEmailAddress(cid, Arrays.asList(applicantID), 6);
 			List<OutGoingMailImport> mailApplicant = lstApplicantMail.get(0).getOutGoingMails();

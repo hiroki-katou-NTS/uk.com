@@ -35,7 +35,7 @@ public class RangeOfDayTimeZoneServiceImpl implements RangeOfDayTimeZoneService 
 		PredetemineTimeSetting prSetting = optional.get();
 		TimeWithDayAttr startTime = prSetting.getStartDateClock();
 		AttendanceTime rangeTimeDay = prSetting.getRangeTimeDay();
-		TimeWithDayAttr endTime = startTime.forwardByMinutes(rangeTimeDay.valueAsMinutes());
+		TimeWithDayAttr endTime = startTime.forwardByHours(rangeTimeDay.valueAsMinutes());
 		timeSpanForCalc.setEnd(endTime);
 		timeSpanForCalc.setStart(startTime);
 		return timeSpanForCalc;

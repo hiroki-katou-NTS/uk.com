@@ -3,7 +3,6 @@ module nts.custom.component {
     import info = nts.uk.ui.dialog.info;
     import alert = nts.uk.ui.dialog.alert;
     import confirm = nts.uk.ui.dialog.confirm;
-    import getShared = nts.uk.ui.windows.getShared;
 
     let $: any = window['$'],
         _: any = window['_'],
@@ -182,11 +181,6 @@ module nts.custom.component {
             </div>
         <!-- /ko -->`,
         viewModel: function(params: any) {
-            let select: { categoryId: string; } = getShared("CPS001A_PARAMS") || { categoryId: undefined };
-            
-            // remove shared item from another module after get (sit)
-            nts.uk.sessionStorage.removeItem(nts.uk.request.STORAGE_KEY_TRANSFER_DATA);
-
             ko.utils.extend(params, {
                 tab: ko.observable(TABS.LAYOUT),
                 hasLayout: ko.observable(false),
@@ -364,10 +358,6 @@ module nts.custom.component {
                 }
             });
 
-            if (!!select.categoryId) {
-                params.tab(TABS.CATEGORY);
-            }
-
             params.hasLayout.subscribe(h => {
                 if (!h) {
                     params.tab(TABS.CATEGORY);
@@ -427,9 +417,7 @@ module nts.custom.component {
                                 let id = ko.toJS(params.combobox.value),
                                     ids = _.map(data, d => d.id);
 
-                                if (select.categoryId) {
-                                    params.combobox.value(select.categoryId);
-                                } else if (otab == t) {
+                                if (otab == t) {
                                     if (ids.indexOf(id) == -1) {
                                         params.combobox.value(ids[0]);
                                     } else {

@@ -8,7 +8,7 @@ import nts.uk.ctx.workflow.pub.spr.export.ApprovalPersonSprExport;
 import nts.uk.ctx.workflow.pub.spr.export.ApprovalPhaseSprExport;
 import nts.uk.ctx.workflow.pub.spr.export.ApprovalRootStateSprExport;
 import nts.uk.ctx.workflow.pub.spr.export.ApprovalWorkplaceSprExport;
-import nts.uk.ctx.workflow.pub.spr.export.JudgmentSprExportNew;
+import nts.uk.ctx.workflow.pub.spr.export.JudgmentSprExport;
 
 /**
  * 
@@ -37,5 +37,5 @@ public interface SprApprovalSearchPub {
 	 * @param employeeID 社員ID
 	 * @return
 	 */
-	public JudgmentSprExportNew judgmentTargetPersonCanApprove(String companyID, String rootStateID, String employeeID, Integer rootType);
+	public JudgmentSprExport judgmentTargetPersonCanApprove(String companyID, String rootStateID, String employeeID, Integer rootType);
 }

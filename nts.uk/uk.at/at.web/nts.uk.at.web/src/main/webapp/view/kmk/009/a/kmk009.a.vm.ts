@@ -9,7 +9,6 @@ module nts.uk.at.view.kmk009.a.viewmodel {
     import TotalSubjectsDto = service.model.TotalSubjectsDto;
     import TotalTimesDetailDto = service.model.TotalTimesDetailDto;
     import DailyAttendanceItemDto = service.model.DailyAttendanceItemDto;
-    import text = nts.uk.resource.getText;
 
 
     export class ScreenModel {
@@ -337,14 +336,11 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                 nts.uk.ui.block.clear();
 
                 if (res && res.length > 0) {
-                    self.itemTotalTimesDetail.workTypeInfo(res.map(item => item.workTypeCode + ' ' + item.name || text("KAL003_120")).join(" ＋ "));
-                    self.stash.workTypeInfo(res.map(item => item.workTypeCode + ' ' + item.name || text("KAL003_120")).join(" ＋ "));
+                    self.itemTotalTimesDetail.workTypeInfo(res.map(item => item.workTypeCode + ' ' + item.name).join(" ＋ "));
+                    self.stash.workTypeInfo(res.map(item => item.workTypeCode + ' ' + item.name).join(" ＋ "));
                 } else {
-                    
-                    lstWorkTypeCd = _.filter(lstWorkTypeCd, cd => { return cd; });
-                    let cdLst = _.map(lstWorkTypeCd, cd => { return cd + " " + text("KAL003_120") });
-                    self.itemTotalTimesDetail.workTypeInfo(cdLst.join(" ＋ "));
-                    self.stash.workTypeInfo(cdLst.join(" ＋ "));
+                    self.itemTotalTimesDetail.workTypeInfo(lstWorkTypeCd.join(" ＋ "));
+                    self.stash.workTypeInfo(lstWorkTypeCd.join(" ＋ "));
                 }
                 dfd.resolve();
             });
@@ -367,12 +363,11 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                 nts.uk.ui.block.clear();
 
                 if (res && res.length > 0) {
-                    self.itemTotalTimesDetail.workingInfo(res.map(item => item.code + ' ' + item.name||text("KAL003_120")).join(" ＋ "));
-                    self.stash.workingInfo(res.map(item => item.code + ' ' + item.name||text("KAL003_120")).join(" ＋ "));
+                    self.itemTotalTimesDetail.workingInfo(res.map(item => item.code + ' ' + item.name).join(" ＋ "));
+                    self.stash.workingInfo(res.map(item => item.code + ' ' + item.name).join(" ＋ "));
                 } else {
-                    let cdLst = _.map(lstWorkTypeCd, cd => { return cd + " " + text("KAL003_120") });
-                    self.itemTotalTimesDetail.workingInfo(cdLst.join(" ＋ "));
-                    self.stash.workingInfo(cdLst.join(" ＋ "));
+                    self.itemTotalTimesDetail.workingInfo(lstWorkTypeCd.join(" ＋ "));
+                    self.stash.workingInfo(lstWorkTypeCd.join(" ＋ "));
                 }
                 dfd.resolve();
             });
@@ -488,22 +483,17 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                 nts.uk.ui.windows.setShared('kml001selectedCodeList', listWorkCode, true);
                 nts.uk.ui.windows.sub.modal('/view/kdl/001/a/index.xhtml', { title: nts.uk.resource.getText('KDL001') }).onClosed(function(): any {
                     nts.uk.ui.block.clear();
-                    
-                    let isCancel = nts.uk.ui.windows.getShared('KDL001_IsCancel');
-                    if (!isCancel) {
-                        var shareWorkCocde: Array<string> = nts.uk.ui.windows.getShared('kml001selectedCodeList');
-
-                        // deleted data worktype
-                        self.itemTotalTimesDetail.listTotalSubjects(_.filter(self.itemTotalTimesDetail.listTotalSubjects(), (item) => item.workTypeAtr() == 0));
-                        // insert data worktype
-                        for (var item of shareWorkCocde) {
-                            if (!_.isNull(item) && !_.isEmpty(item) && !_.isUndefined(item) && item != 'null') {
-                                self.itemTotalTimesDetail.listTotalSubjects().push(self.toSubjectModel(item, 1));
-                            }
+                    var shareWorkCocde: Array<string> = nts.uk.ui.windows.getShared('kml001selectedCodeList');
+                    // deleted data worktype
+                    self.itemTotalTimesDetail.listTotalSubjects(_.filter(self.itemTotalTimesDetail.listTotalSubjects(), (item) => item.workTypeAtr() == 0));
+                    // insert data worktype
+                    for (var item of shareWorkCocde) {
+                        if (!_.isNull(item) && !_.isEmpty(item) && !_.isUndefined(item) && item != 'null' ) {
+                            self.itemTotalTimesDetail.listTotalSubjects().push(self.toSubjectModel(item, 1));    
                         }
-                        self.loadListWorkType();
-                        self.loadListWorkTimes();
                     }
+                    self.loadListWorkType();
+                    self.loadListWorkTimes();
                     if ($('#inpDialog').ntsError("hasError") == true) {
                         $('#inpDialog').ntsError('clear');
                     }
@@ -534,22 +524,18 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                 nts.uk.ui.windows.setShared('KDL002_SelectedItemId', listWorkType, true);
                 nts.uk.ui.windows.sub.modal('/view/kdl/002/a/index.xhtml', { title: nts.uk.resource.getText('KDL002') }).onClosed(function(): any {
                     nts.uk.ui.block.clear();
-                    let isCancel = nts.uk.ui.windows.getShared('KDL002_IsCancel');
-                    if (!isCancel) {
-                        var shareWorkType: Array<any> = nts.uk.ui.windows.getShared('KDL002_SelectedNewItem');
-                        // deleted data worktype
-                        self.itemTotalTimesDetail.listTotalSubjects(_.filter(self.itemTotalTimesDetail.listTotalSubjects(), (item) => item.workTypeAtr() == 1));
-                        // insert data worktype
-                        for (let i = 0; i < shareWorkType.length; i++) {
-                            self.itemTotalTimesDetail.listTotalSubjects().push(self.toSubjectModel(shareWorkType[i].code, 0));
-                        }
-                        self.loadListWorkType();
-                        self.loadListWorkTimes();
+                    var shareWorkType: Array<any> = nts.uk.ui.windows.getShared('KDL002_SelectedNewItem');
+                    // deleted data worktype
+                    self.itemTotalTimesDetail.listTotalSubjects(_.filter(self.itemTotalTimesDetail.listTotalSubjects(), (item) => item.workTypeAtr() == 1));
+                    // insert data worktype
+                    for (let i = 0; i < shareWorkType.length; i++) {
+                        self.itemTotalTimesDetail.listTotalSubjects().push(self.toSubjectModel(shareWorkType[i].code, 0));
                     }
+                    self.loadListWorkType();
+                    self.loadListWorkTimes();
                     if ($('#inpDialog').ntsError("hasError") == true) {
                         $('#inpDialog').ntsError('clear');
                     }
-
                     $("#itemname").focus();
                 });
             });

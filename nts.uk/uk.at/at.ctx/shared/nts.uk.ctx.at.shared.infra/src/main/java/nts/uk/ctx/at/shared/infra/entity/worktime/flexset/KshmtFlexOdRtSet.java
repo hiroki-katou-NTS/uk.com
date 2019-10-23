@@ -61,21 +61,21 @@ public class KshmtFlexOdRtSet extends UkJpaEntity implements Serializable {
 	@JoinColumns({
 			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
 			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true) })
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	private List<KshmtFlexOdFixRest> kshmtFlexOdFixRests;
 
 	/** The kshmt flex hol sets. */
 	@JoinColumns({
 			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
 			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true) })
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	private List<KshmtFlexHolSet> kshmtFlexHolSets;
 
 	/** The kshmt flex od rest sets. */
 	@JoinColumns({
 			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
 			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true) })
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	private List<KshmtFlexOdRestSet> kshmtFlexOdRestSets;
 
 	/**

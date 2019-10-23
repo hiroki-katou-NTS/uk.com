@@ -5,16 +5,12 @@
 package nts.uk.ctx.sys.gateway.dom.singlesignon;
 
 import nts.arc.primitive.StringPrimitiveValue;
-import nts.arc.primitive.constraint.CharType;
-import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
  * The Class CompanyCode.
- * 他システム会社コード
  */
 @StringMaxLength(256)
-@StringCharType(CharType.ANY_HALF_WIDTH)
 public class CompanyCode extends StringPrimitiveValue<CompanyCode> {
 	
 	/** The Constant serialVersionUID. */

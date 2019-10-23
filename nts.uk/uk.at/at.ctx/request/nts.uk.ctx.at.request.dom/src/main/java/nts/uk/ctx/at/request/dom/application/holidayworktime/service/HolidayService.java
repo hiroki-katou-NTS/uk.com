@@ -32,7 +32,7 @@ public interface HolidayService {
 	 * @param appDate
 	 * @return
 	 */
-	public WorkTypeHolidayWork getWorkTypes(String companyID, String employeeID,List<AppEmploymentSetting> appEmploymentSettings,GeneralDate appDate,Optional<WorkingConditionItem> personalLablorCodition,boolean isChangeDate);
+	public WorkTypeHolidayWork getWorkTypes(String companyID, String employeeID,List<AppEmploymentSetting> appEmploymentSettings,GeneralDate appDate,Optional<WorkingConditionItem> personalLablorCodition);
 	/**
 	 * 4_b.勤務種類を取得する（詳細）
 	 * @param companyID
@@ -49,17 +49,16 @@ public interface HolidayService {
 	 * @param workType
 	 * @param appDate
 	 */
-	public void getWorkType(String companyID,WorkTypeHolidayWork workType,GeneralDate appDate, String employeeID,Optional<WorkingConditionItem> personalLablorCodition,boolean isChangeDate);
+	public void getWorkType(String companyID,WorkTypeHolidayWork workType,GeneralDate appDate, String employeeID,Optional<WorkingConditionItem> personalLablorCodition);
 	/**
 	 * 5.就業時間帯を取得する
 	 * @param companyID
 	 * @param employeeID
 	 * @param appEmploymentSettings
 	 * @param baseDate
-	 * @param isChangeDate 
 	 * @return
 	 */
-	public WorkTimeHolidayWork getWorkTimeHolidayWork(String companyID, String employeeID,GeneralDate baseDate,Optional<WorkingConditionItem> personalLablorCodition,boolean isChangeDate);
+	public WorkTimeHolidayWork getWorkTimeHolidayWork(String companyID, String employeeID,GeneralDate baseDate,Optional<WorkingConditionItem> personalLablorCodition);
 	
 	/**
 	 * insert HolidayWork

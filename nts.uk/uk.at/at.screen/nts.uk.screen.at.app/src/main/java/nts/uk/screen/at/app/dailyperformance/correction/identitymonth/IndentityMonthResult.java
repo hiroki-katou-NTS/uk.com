@@ -13,6 +13,6 @@ public class IndentityMonthResult {
 	
 	Boolean enableButton;
 	
-	Boolean hideAll = false;
+	Boolean hideAll;
 
 }

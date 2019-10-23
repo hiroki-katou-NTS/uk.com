@@ -6,6 +6,7 @@ export * from '@app/utils/browser';
 export * from '@app/utils/uuid';
 export * from '@app/utils/util';
 export * from '@app/utils/storage';
-export * from '@app/utils/auth';
+export * from '@app/utils/request';
+export * from '@app/utils/viewcontext';
 export * from '@app/utils/text';
 export * from '@app/utils/constraint';

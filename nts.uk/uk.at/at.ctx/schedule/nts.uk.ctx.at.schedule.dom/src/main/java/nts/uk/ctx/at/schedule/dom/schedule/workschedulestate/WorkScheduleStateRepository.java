@@ -39,6 +39,4 @@ public interface WorkScheduleStateRepository {
 	 * @param domain
 	 */
 	void updateOrInsert(WorkScheduleState domain);
-	
-	void updateOrInsert(List<WorkScheduleState> lstState);
 }

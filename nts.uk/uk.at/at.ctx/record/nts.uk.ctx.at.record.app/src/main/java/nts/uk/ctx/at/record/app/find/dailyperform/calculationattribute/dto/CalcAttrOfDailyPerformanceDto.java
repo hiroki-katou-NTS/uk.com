@@ -29,9 +29,6 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySet
 @AttendanceItemRoot(rootName = ItemConst.DAILY_CALCULATION_ATTR_NAME)
 public class CalcAttrOfDailyPerformanceDto extends AttendanceItemCommon {
 
-	/***/
-	private static final long serialVersionUID = 1L;
-	
 	/** 社員ID: 社員ID */
 	private String employeeId;
 

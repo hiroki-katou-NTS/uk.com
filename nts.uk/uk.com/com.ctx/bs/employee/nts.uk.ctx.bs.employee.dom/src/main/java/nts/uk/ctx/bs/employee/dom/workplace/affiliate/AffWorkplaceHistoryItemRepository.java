@@ -41,22 +41,4 @@ public interface AffWorkplaceHistoryItemRepository {
 	List<AffWorkplaceHistoryItem> getAffWkpHistItemByListWkpIdAndDatePeriod(DatePeriod basedate, List<String> workplaceId);
 	
 	List<String> getSidByListWkpIdAndDatePeriod(DatePeriod basedate, List<String> workplaceId);
-
-	/**
-	 * @author lanlt
-	 * ドメインモッ�「所属�場」を新規登録する
-	 * @param domain
-	 */
-	void addAll(List<AffWorkplaceHistoryItem> domain);
-	
-	/**
-	 * @author lanlt
-	 * ドメインモッ�「所属�場」を取得す�
-	 * @param domain
-	 */
-	void updateAll(List<AffWorkplaceHistoryItem> domain);
-	
-	List<String> getHistIdLstBySidAndPeriod(String sid, DatePeriod period);
-	
-	List<String> getHistIdLstByWorkplaceIdsAndPeriod(List<String> workplaceIds, DatePeriod period);
 }

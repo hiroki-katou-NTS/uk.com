@@ -10,14 +10,15 @@ export const valueType = function (value: string | number | Date, type: 'Decimal
                     let min = `${rule.min}`,
                         max = `${rule.max}`;
 
+
                     if (rule.mantissaMaxLength) {
                         if (!min.match(/\./) && !max.match(/\./)) {
-                            return ['MsgB_40', min, max, `${rule.mantissaMaxLength}`];
+                            return ['MsgB_11', min, max, `${rule.mantissaMaxLength}`];
                         } else {
-                            return ['MsgB_41', `${max.split('.')[0].length}`, `${rule.mantissaMaxLength}`];
+                            return ['MsgB_12', `${max.split('.')[0].length}`, `${rule.mantissaMaxLength}`];
                         }
                     } else {
-                        return ['MsgB_39', `${rule.min}`, `${rule.mantissaMaxLength}`];
+                        return ['MsgB_10', `${rule.min}`, `${rule.mantissaMaxLength}`];
                     }
                 }
                 break;
@@ -25,13 +26,11 @@ export const valueType = function (value: string | number | Date, type: 'Decimal
             case 'Integer':
                 if (!/^\d+$/.test($value)) {
                     if (rule.min >= 0) {
-                        return ['MsgB_39', `${rule.max}`];
+                        return ['MsgB_10', `${rule.max}`];
                     } else {
-                        return ['MsgB_37', `${rule.min}`, `${rule.max}`];
+                        return ['MsgB_8', `${rule.min}`, `${rule.max}`];
                     }
                 }
-                break;
-            default:
                 break;
         }
     }

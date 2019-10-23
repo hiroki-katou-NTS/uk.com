@@ -162,11 +162,7 @@ public class RoleSetServiceImp implements RoleSetService{
 	 */
 	@Override
 	public Optional<RoleSet> getRoleSetFromUserId(String userId, GeneralDate baseDate) {
-    	return getRoleSetFromUserId(userId, baseDate, AppContexts.user().companyId());
-	}
-	
-	@Override
-	public Optional<RoleSet> getRoleSetFromUserId(String userId, GeneralDate baseDate, String companyId) {
+		String companyId = AppContexts.user().companyId();
 		User user = userRepo.getByUserID(userId).get();
 		
 		if (user.getAssociatedPersonID() == null || !user.getAssociatedPersonID().isPresent())

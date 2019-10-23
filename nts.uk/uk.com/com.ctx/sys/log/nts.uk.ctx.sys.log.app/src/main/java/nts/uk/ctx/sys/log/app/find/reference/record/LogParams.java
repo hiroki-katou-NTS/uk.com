@@ -3,20 +3,14 @@ package nts.uk.ctx.sys.log.app.find.reference.record;
 import java.util.List;
 import java.util.Map;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Value;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.log.app.find.reference.LogOutputItemDto;
 import nts.uk.ctx.sys.log.app.find.reference.LogSetItemDetailDto;
 
 
-@Setter
-@Getter
-@AllArgsConstructor
-@NoArgsConstructor
+@Value
 public class LogParams {
 
 	private List<String> listTagetEmployeeId;

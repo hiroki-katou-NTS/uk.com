@@ -15,12 +15,10 @@ import javax.ejb.Stateless;
 
 import org.apache.logging.log4j.util.Strings;
 
-import lombok.SneakyThrows;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
-import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
@@ -128,30 +126,13 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 			" AND appRoot.ROOT_TYPE = rootType" +
 			" AND appRoot.START_DATE <= 'recordDate'" +
 			" AND appRoot.END_DATE >= 'recordDate'";
-	
-	private final String FIND_EMP_RQ610 = 
-			BASIC_SELECT+
-			" WHERE appApprover.APPROVER_CHILD_ID = 'approverID'"+
-			" AND appRoot.CID = 'companyID'"+
-			" AND appRoot.ROOT_TYPE = rootType"+
-			" AND appRoot.END_DATE >= 'startDate'"+
-			" AND appRoot.START_DATE <= 'endDate'"+
-			" UNION "+
-			BASIC_SELECT+
-			" WHERE appApprover.APPROVER_CHILD_ID IN"+
-			" (SELECT c.SID FROM CMMMT_AGENT c where c.AGENT_SID1 = 'approverID' and c.START_DATE <= 'sysDate' and c.END_DATE >= 'sysDate')"+
-			" AND appRoot.CID = 'companyID'"+
-			" AND appRoot.ROOT_TYPE = rootType"+
-			" AND appRoot.END_DATE >= 'startDate'"+
-			" AND appRoot.START_DATE <= 'endDate'";
-			
 
 	@Override
-	@SneakyThrows
 	public Optional<AppRootInstance> findByID(String rootID) {
+		Connection con = this.getEntityManager().unwrap(Connection.class);
 		String query = FIND_BY_ID;
 		query = query.replaceAll("rootID", rootID);
-		try (PreparedStatement pstatement = this.connection().prepareStatement(query)) {
+		try (PreparedStatement pstatement = con.prepareStatement(query)) {
 			ResultSet rs = pstatement.executeQuery();
 			List<AppRootInstance> listResult = toDomain(createFullJoinAppRootInstance(rs));
 			if(CollectionUtil.isEmpty(listResult)){
@@ -159,8 +140,10 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 			} else {
 				return Optional.of(listResult.get(0));
 			}
-		} 
-
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return Optional.empty();
+		}
 	}
 
 	@Override
@@ -246,10 +229,9 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 				}).collect(Collectors.toList());
 	}
 	
-	@SneakyThrows
 	private List<FullJoinAppRootInstance> createFullJoinAppRootInstance(ResultSet rs){
 		List<FullJoinAppRootInstance> listFullData = new ArrayList<>();
-
+		try {
 			while (rs.next()) {
 				listFullData.add(new FullJoinAppRootInstance(
 						rs.getString("ROOT_ID"), 
@@ -264,18 +246,23 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 						Integer.valueOf(rs.getString("CONFIRM_ATR")), 
 						rs.getString("APPROVER_CHILD_ID")));
 			}
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return listFullData;
 	}
 
 	@Override
-	@SneakyThrows
 	public Optional<AppRootInstance> findByEmpDate(String companyID, String employeeID, GeneralDate recordDate, RecordRootType rootType) {
+		Connection con = this.getEntityManager().unwrap(Connection.class);
 		String query = FIND_BY_EMP_DATE;
 		query = query.replaceAll("companyID", companyID);
 		query = query.replaceAll("employeeID", employeeID);
 		query = query.replaceAll("rootType", String.valueOf(rootType.value));
 		query = query.replaceAll("recordDate", recordDate.toString("yyyy-MM-dd"));
-		try (PreparedStatement pstatement = this.connection().prepareStatement(query)) {
+		try (PreparedStatement pstatement = con.prepareStatement(query)) {
 			ResultSet rs = pstatement.executeQuery();
 			List<AppRootInstance> listResult = toDomain(createFullJoinAppRootInstance(rs));
 			if(CollectionUtil.isEmpty(listResult)){
@@ -283,11 +270,13 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 			} else {
 				return Optional.of(listResult.get(0));
 			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return Optional.empty();
 		}
 	}
 	
 	@Override
-	@SneakyThrows
 	public Optional<AppRootInstance> findByEmpDateNewest(String companyID, String employeeID, RecordRootType rootType) {
 		Connection con = this.getEntityManager().unwrap(Connection.class);
 		String query = FIND_BY_EMP_DATE_NEWEST;
@@ -302,11 +291,13 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 			} else {
 				return Optional.of(listResult.get(0));
 			}
-		} 
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return Optional.empty();
+		}
 	}
 
 	@Override
-	@SneakyThrows
 	public List<AppRootInstance> findByEmpLstPeriod(List<String> employeeIDLst, DatePeriod period,
 			RecordRootType rootType) {
 		// Đối ứng SPR
@@ -315,7 +306,7 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 		if(Strings.isNotBlank(loginCompanyID)){
 			companyID = loginCompanyID;
 		}
-
+		Connection con = this.getEntityManager().unwrap(Connection.class);
 		String query = FIND_BY_EMPS_PERIOD;
 		
 		String employeeIDLstParam = "";
@@ -334,7 +325,7 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 		query = query.replaceAll("startDate", period.start().toString("yyyy-MM-dd"));
 		query = query.replaceAll("endDate", period.end().toString("yyyy-MM-dd"));
 		query = query.replaceAll("rootType", String.valueOf(rootType.value));
-		try (PreparedStatement pstatement = this.connection().prepareStatement(query)) {
+		try (PreparedStatement pstatement = con.prepareStatement(query)) {
 			ResultSet rs = pstatement.executeQuery();
 			List<AppRootInstance> listResult = toDomain(createFullJoinAppRootInstance(rs));
 			if(!CollectionUtil.isEmpty(listResult)){
@@ -342,6 +333,9 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 			} else {
 				return Collections.emptyList();
 			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return Collections.emptyList();
 		}
 	}
 	
@@ -382,7 +376,6 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 				}
 			} catch (SQLException e) {
 				exception.set(e);
-				throw new RuntimeException(e);
 			}
 		});
 		
@@ -413,17 +406,17 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 	}
 	
 	@Override
-	@SneakyThrows
 	public List<AppRootInstance> findByApproverPeriod(String approverID, DatePeriod period,
 			RecordRootType rootType) {
 		String companyID =  AppContexts.user().companyId();
+		Connection con = this.getEntityManager().unwrap(Connection.class);
 		String query = FIND_BY_APPROVER_PERIOD;
 		query = query.replaceAll("companyID", companyID);
 		query = query.replaceAll("approverID", approverID);
 		query = query.replaceAll("startDate", period.start().toString("yyyy-MM-dd"));
 		query = query.replaceAll("endDate", period.end().toString("yyyy-MM-dd"));
 		query = query.replaceAll("rootType", String.valueOf(rootType.value));
-		try (PreparedStatement pstatement = this.connection().prepareStatement(query)) {
+		try (PreparedStatement pstatement = con.prepareStatement(query)) {
 			ResultSet rs = pstatement.executeQuery();
 			List<AppRootInstance> listResult = toDomain(createFullJoinAppRootInstance(rs));
 			if(!CollectionUtil.isEmpty(listResult)){
@@ -431,68 +424,22 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 			} else {
 				return Collections.emptyList();
 			}
-		} 
-	}
-	
-	public List<AppRootInstance> findByApproverEmployeePeriod(
-			String companyId, String approverID, List<String> employeeIDs, DatePeriod period, RecordRootType rootType) {
-	
-		List<String> rootIds = NtsStatement.In.split(employeeIDs, subEmpIds -> {
-			
-			String sql = BASIC_SELECT
-					+ " where appRoot.CID = ?" 
-					+ " and appRoot.ROOT_TYPE = ?"
-					+ " and appRoot.EMPLOYEE_ID in (" + NtsStatement.In.createParamsString(subEmpIds) + ")"
-					+ " and appRoot.START_DATE <= ?"
-					+ " and appRoot.END_DATE >= ?"
-					+ " and appApprover.APPROVER_CHILD_ID = ?";
-			
-			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
-				stmt.setString(1, companyId);
-				stmt.setInt(2, rootType.value);
-				for (int i = 0; i < subEmpIds.size(); i++) {
-					stmt.setString(3 + i, subEmpIds.get(i));
-				}
-				stmt.setDate(3 + subEmpIds.size(), Date.valueOf(period.end().localDate()));
-				stmt.setDate(4 + subEmpIds.size(), Date.valueOf(period.start().localDate()));
-				stmt.setString(5 + subEmpIds.size(), approverID);
-				
-				return new NtsResultSet(stmt.executeQuery()).getList(rs -> rs.getString("ROOT_ID"));
-				
-			} catch (SQLException ex) {
-				throw new RuntimeException(ex);
-			}
-		});
-		
-		return NtsStatement.In.split(rootIds, subRootIds -> {
-			
-			String sql = BASIC_SELECT
-					+ " where appRoot.ROOT_ID in (" + NtsStatement.In.createParamsString(subRootIds) + ")";
-			
-			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
-				for (int i = 0; i < subRootIds.size(); i++) {
-					stmt.setString(1 + i, subRootIds.get(i));
-				}
-
-				ResultSet rs = stmt.executeQuery();
-				return toDomain(createFullJoinAppRootInstance(rs));
-				
-			} catch (SQLException ex) {
-				throw new RuntimeException(ex);
-			}
-		});
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return Collections.emptyList();
+		}
 	}
 
 	@Override
-	@SneakyThrows
 	public List<AppRootInstance> findByEmpFromDate(String companyID, String employeeID, GeneralDate recordDate,
 			RecordRootType rootType) {
+		Connection con = this.getEntityManager().unwrap(Connection.class);
 		String query = FIND_BY_EMP_FROM_DATE;
 		query = query.replaceAll("companyID", companyID);
 		query = query.replaceAll("employeeID", employeeID);
 		query = query.replaceAll("rootType", String.valueOf(rootType.value));
 		query = query.replaceAll("recordDate", recordDate.toString("yyyy-MM-dd"));
-		try (PreparedStatement pstatement = this.connection().prepareStatement(query)) {
+		try (PreparedStatement pstatement = con.prepareStatement(query)) {
 			ResultSet rs = pstatement.executeQuery();
 			List<AppRootInstance> listResult = toDomain(createFullJoinAppRootInstance(rs));
 			if(CollectionUtil.isEmpty(listResult)){
@@ -500,19 +447,22 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 			} else {
 				return listResult;
 			}
-		} 
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return Collections.emptyList();
+		}
 	}
 
 	@Override
-	@SneakyThrows
 	public Optional<AppRootInstance> findByEmpDateNewestBelow(String companyID, String employeeID,
 			GeneralDate recordDate, RecordRootType rootType) {
+		Connection con = this.getEntityManager().unwrap(Connection.class);
 		String query = FIND_BY_EMP_DATE_NEWEST_BELOW;
 		query = query.replaceAll("companyID", companyID);
 		query = query.replaceAll("employeeID", employeeID);
 		query = query.replaceAll("rootType", String.valueOf(rootType.value));
 		query = query.replaceAll("recordDate", recordDate.toString("yyyy-MM-dd"));
-		try (PreparedStatement pstatement = this.connection().prepareStatement(query)) {
+		try (PreparedStatement pstatement = con.prepareStatement(query)) {
 			ResultSet rs = pstatement.executeQuery();
 			List<AppRootInstance> listResult = toDomain(createFullJoinAppRootInstance(rs));
 			if(CollectionUtil.isEmpty(listResult)){
@@ -520,19 +470,22 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 			} else {
 				return Optional.of(listResult.get(0));
 			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return Optional.empty();
 		}
 	}
 
 	@Override
-	@SneakyThrows
 	public Optional<AppRootInstance> findByContainDate(String companyID, String employeeID, GeneralDate recordDate,
 			RecordRootType rootType) {
+		Connection con = this.getEntityManager().unwrap(Connection.class);
 		String query = FIND_BY_CONTAIN_DATE;
 		query = query.replaceAll("companyID", companyID);
 		query = query.replaceAll("employeeID", employeeID);
 		query = query.replaceAll("rootType", String.valueOf(rootType.value));
 		query = query.replaceAll("recordDate", recordDate.toString("yyyy-MM-dd"));
-		try (PreparedStatement pstatement = this.connection().prepareStatement(query)) {
+		try (PreparedStatement pstatement = con.prepareStatement(query)) {
 			ResultSet rs = pstatement.executeQuery();
 			List<AppRootInstance> listResult = toDomain(createFullJoinAppRootInstance(rs));
 			if(CollectionUtil.isEmpty(listResult)){
@@ -540,19 +493,22 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 			} else {
 				return Optional.of(listResult.get(0));
 			}
-		} 
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return Optional.empty();
+		}
 	}
 
 	@Override
-	@SneakyThrows
 	public List<AppRootInstance> findByApproverDateCID(String companyID, String approverID, GeneralDate date, RecordRootType rootType) {
+		Connection con = this.getEntityManager().unwrap(Connection.class);
 		String query = FIND_BY_APPROVER_PERIOD;
 		query = query.replaceAll("companyID", companyID);
 		query = query.replaceAll("approverID", approverID);
 		query = query.replaceAll("startDate", date.toString("yyyy-MM-dd"));
 		query = query.replaceAll("endDate", date.toString("yyyy-MM-dd"));
 		query = query.replaceAll("rootType", String.valueOf(rootType.value));
-		try (PreparedStatement pstatement = this.connection().prepareStatement(query)) {
+		try (PreparedStatement pstatement = con.prepareStatement(query)) {
 			ResultSet rs = pstatement.executeQuery();
 			List<AppRootInstance> listResult = toDomain(createFullJoinAppRootInstance(rs));
 			if(!CollectionUtil.isEmpty(listResult)){
@@ -560,29 +516,10 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 			} else {
 				return Collections.emptyList();
 			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return Collections.emptyList();
 		}
-	}
-
-	@Override
-	@SneakyThrows
-	public List<String> findEmpLstByRq610(String approverID, DatePeriod period, RecordRootType rootType) {
-		String companyID =  AppContexts.user().companyId();
-		String query = FIND_EMP_RQ610;
-		query = query.replaceAll("companyID", companyID);
-		query = query.replaceAll("approverID", approverID);
-		query = query.replaceAll("startDate", period.start().toString("yyyy-MM-dd"));
-		query = query.replaceAll("endDate", period.end().toString("yyyy-MM-dd"));
-		query = query.replaceAll("sysDate", GeneralDate.today().toString("yyyy-MM-dd"));
-		query = query.replaceAll("rootType", String.valueOf(rootType.value));
-		try (PreparedStatement pstatement = this.connection().prepareStatement(query)) {
-			ResultSet rs = pstatement.executeQuery();
-			List<AppRootInstance> listResult = toDomain(createFullJoinAppRootInstance(rs));
-			if(!CollectionUtil.isEmpty(listResult)){
-				return listResult.stream().map(x -> x.getEmployeeID()).distinct().collect(Collectors.toList());
-			} else {
-				return Collections.emptyList();
-			}
-		} 
 	}
 
 }

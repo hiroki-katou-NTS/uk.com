@@ -3,7 +3,6 @@ package nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.remainnumberprocess
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -64,7 +63,7 @@ public class RemainSubstitutionHolidayCalculation {
 		
 		// 「期間内の振出振休残数を取得する」を実行する
 		AbsRecMngInPeriodParamInput param = new AbsRecMngInPeriodParamInput(companyId, empId, period.getPeriod(),
-				period.getPeriod().end(), true, true, useAbsMng, interimMng, useRecMng, Optional.empty());
+				period.getPeriod().end(), true, true, useAbsMng, interimMng, useRecMng);
 		return query.getAbsRecMngInPeriod(param);
 	}
 }

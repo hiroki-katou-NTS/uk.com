@@ -26,6 +26,4 @@ public interface FixedCheckItemPub {
 	
 	// 大塚用連続休暇チェック
 	public List<ValueExtractAlarmWRPubExport> checkContinuousVacation(String employeeID,DatePeriod datePeriod);
-	
-	public int getContinuousHolCheckSet(String companyId);
 }

@@ -31,10 +31,10 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmConditionReposit
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.AlCheckTargetCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmCondition;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ResultCheckWith;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.WorkRecordExtraConRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktype.PlanActualWorkType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktype.SingleWorkType;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.FilterByCompare;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.otkcustomize.ContinuousHolCheckSet;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.otkcustomize.repo.ContinuousHolCheckSetRepo;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
@@ -227,17 +227,15 @@ public class ErAlWorkRecordCheckService {
 	private List<ErrorRecord> checkWithPeriod(DatePeriod workingDate, Collection<String> employeeIds,
 			List<DailyRecordDto> record, List<ErrorAlarmCondition> checkConditions, 
 			BiFunction<List<DailyRecordDto>, ErrorAlarmCondition, ErrorAlarmCondition> beforeCheck) {
-		return checkConditions.stream().map(c -> {
-			List<DailyRecordDto> cdRecords = new ArrayList<>(record);
-			ErrorAlarmCondition checkCondition = beforeCheck.apply(cdRecords, c);
-			List<ErrorRecord> errors = new ArrayList<>();
-			workingDate.datesBetween().stream().forEach(current -> {
-				List<DailyRecordDto> currentRecords = cdRecords.stream().filter(r -> r.workingDate().equals(current)).collect(Collectors.toList());
-				if (!currentRecords.isEmpty()) {
-					errors.addAll(finalCheck(current, checkCondition, currentRecords, employeeIds));
-				}
-			});
-			return errors;
+		return workingDate.datesBetween().stream().map(current -> {
+			List<DailyRecordDto> cdRecors = record.stream().filter(r -> r.workingDate().equals(current)).collect(Collectors.toList());
+			if (!cdRecors.isEmpty()) {
+				return checkConditions.stream().map(c -> {
+					ErrorAlarmCondition checkCondition = beforeCheck.apply(cdRecors, c);
+					return finalCheck(current, checkCondition, cdRecors, employeeIds);
+				}).flatMap(List::stream).collect(Collectors.toList());
+			}
+			return new ArrayList<ErrorRecord>();
 		}).flatMap(List::stream).collect(Collectors.toList());
 	}
 	
@@ -300,11 +298,9 @@ public class ErAlWorkRecordCheckService {
 					checkCondition.getCheckTargetCondtion())){
 				return null;
 			}
-			ResultCheckWith result = checkErrorAlarmConditionAndResult(c, checkCondition);
-			if(result.isCheck()){
-				ErrorRecord errorRecord = new ErrorRecord(workingDate, c.employeeId(), checkCondition.getErrorAlarmCheckID()); 
-				errorRecord.setCheckedValue(result.getResult());
-				return errorRecord;
+			boolean result = checkErrorAlarmCondition(c, checkCondition);
+			if(result){
+				return new ErrorRecord(workingDate, c.employeeId(), checkCondition.getErrorAlarmCheckID());
 			}
 			return null;
 		}).filter(c -> c != null).collect(Collectors.toList());
@@ -338,7 +334,7 @@ public class ErAlWorkRecordCheckService {
 	private void processCheckContinuous(GeneralDate endMark, DatePeriod range, Map<GeneralDate, Integer> result,
 			ContinuousHolCheckSet setting, String employeeId, GeneralDate markDate, int count,
 			boolean markPreviousDate, Set<WorkInfoOfDailyPerformance> workInfos) {
-		boolean finishing = false, nextCount = false;
+		boolean finishing = false;
 		List<WorkInfoOfDailyPerformance> subWorkInfos = getWorkInfoInRange(range, employeeId, workInfos);
 
 		if (subWorkInfos.isEmpty()) {
@@ -348,90 +344,38 @@ public class ErAlWorkRecordCheckService {
 			return;	
 		}
 		
-		for (int i = 0; i < subWorkInfos.size(); i++){
-			WorkInfoOfDailyPerformance info = subWorkInfos.get(i);
+		for (WorkInfoOfDailyPerformance info : subWorkInfos) {
 			WorkTypeCode currentWTC = info.getRecordInfo().getWorkTypeCode();
-			
-			if(setting.getTargetWorkType().contains(currentWTC) || !markPreviousDate) {
-				
+			if (setting.getTargetWorkType().contains(currentWTC)) {
 				if (markPreviousDate) {
 					markDate = info.getYmd();
 					markPreviousDate = false;
 				}
-				
-				if(setting.getTargetWorkType().contains(currentWTC)){
-					count++;	
+				count++;
+			} else if (setting.getIgnoreWorkType().contains(currentWTC)) {
+				if (endMark.afterOrEquals(info.getYmd())) {
+					if (count >= setting.getMaxContinuousDays().v()) {
+						result.put(markDate, count);
+					}
+					finishing = true;
+					break;
 				}
-				
-				for(int j = i + 1; j < subWorkInfos.size(); j++){
-					WorkInfoOfDailyPerformance info2 = subWorkInfos.get(j);
-					WorkTypeCode currentWTC2 = info2.getRecordInfo().getWorkTypeCode();
-
-					if(!setting.getTargetWorkType().contains(currentWTC2) && !setting.getIgnoreWorkType().contains(currentWTC2)){
-						nextCount = true;
-						break;
-					}
-					
-					if(setting.getTargetWorkType().contains(currentWTC2)){
-						count++;
-					}
-					
-					i++;
-					
-					if(info2.getYmd().before(endMark.addDays(-7))){
-						finishing = true;
-						break;
-					}
+			} else {
+				if (count >= setting.getMaxContinuousDays().v()) {
+					result.put(markDate, count);
 				}
-			}
-
-			if(count >= setting.getMaxContinuousDays().v()){
-				result.put(markDate, count);
-			}
-			
-			if (finishing || (count <= 0 && info.getYmd().beforeOrEquals(endMark))) {
-				return;
-			}
-			
-			if(nextCount) {
 				markPreviousDate = true;
 				count = 0;
-				nextCount = false;
+				
+				if (count <= 0 && endMark.afterOrEquals(info.getYmd())) {
+					finishing = true;
+					break;
+				}
 			}
-			
 		}
-		
-//		for (WorkInfoOfDailyPerformance info : subWorkInfos) {
-//			WorkTypeCode currentWTC = info.getRecordInfo().getWorkTypeCode();
-//			if (setting.getTargetWorkType().contains(currentWTC)) {
-//				if (markPreviousDate) {
-//					markDate = info.getYmd();
-//					markPreviousDate = false;
-//				}
-//				count++;
-//			} else if (setting.getIgnoreWorkType().contains(currentWTC)) {
-//				if (endMark.afterOrEquals(info.getYmd())) {
-//					if (count >= setting.getMaxContinuousDays().v()) {
-//						result.put(markDate, count);
-//					}
-//					finishing = true;
-//					break;
-//				}
-//			} else {
-//				if (count >= setting.getMaxContinuousDays().v()) {
-//					result.put(markDate, count);
-//				}
-//				markPreviousDate = true;
-//				count = 0;
-//				
-//				if (count <= 0 && endMark.afterOrEquals(info.getYmd())) {
-//					finishing = true;
-//					break;
-//				}
-//			}
-//		}
+		if(finishing) { return; }
 
-		DatePeriod perviousRange = new DatePeriod(range.start().addDays(-7), range.start().addDays(-1));
+		DatePeriod perviousRange = new DatePeriod(range.start().addDays(-4), range.start().addDays(-1));
 		
 		workInfos.removeAll(subWorkInfos);
 		
@@ -462,14 +406,6 @@ public class ErAlWorkRecordCheckService {
 			return false;
 		}
 		WorkInfoOfDailyPerformance workInfo = record.getWorkInfo().toDomain(record.employeeId(), record.getDate());
-		List<Double> listData = condition.getAtdItemCondition().getGroup1().getLstErAlAtdItemCon().stream().map(c->c.sumCheckTarget(item ->{
-			if (item.isEmpty()) {
-				return new ArrayList<>();
-			}
-			return AttendanceItemUtil.toItemValues(record, item).stream().map(iv -> getValue(iv))
-					.collect(Collectors.toList());
-		})).collect(Collectors.toList());
-		
 		return condition.checkWith(workInfo, item -> {
 			if (item.isEmpty()) {
 				return new ArrayList<>();
@@ -479,33 +415,6 @@ public class ErAlWorkRecordCheckService {
 					.collect(Collectors.toList());
 		});
 	}
-	private ResultCheckWith checkErrorAlarmConditionAndResult(DailyRecordDto record, ErrorAlarmCondition condition) {
-		if(condition.getCheckTargetCondtion() == null){
-			return new ResultCheckWith(false,null);
-		}
-		if(!canCheck(record.getBusinessType().orElse(new BusinessTypeOfDailyPerforDto()), record.getAffiliationInfo(), 
-				condition.getCheckTargetCondtion())){
-			return new ResultCheckWith(false,null);
-		}
-		WorkInfoOfDailyPerformance workInfo = record.getWorkInfo().toDomain(record.employeeId(), record.getDate());
-		List<Double> listData = condition.getAtdItemCondition().getGroup1().getLstErAlAtdItemCon().stream().map(c->c.sumCheckTarget(item ->{
-			if (item.isEmpty()) {
-				return new ArrayList<>();
-			}
-			return AttendanceItemUtil.toItemValues(record, item).stream().map(iv -> getValue(iv))
-					.collect(Collectors.toList());
-		})).filter(v -> v != null).collect(Collectors.toList());
-		
-		return new ResultCheckWith(condition.checkWith(workInfo, item -> {
-			if (item.isEmpty()) {
-				return new ArrayList<>();
-			}
-			
-			return AttendanceItemUtil.toItemValues(record, item).stream().map(iv -> getValue(iv))
-					.collect(Collectors.toList());
-		}),listData.isEmpty()?null:listData.get(0).toString());
-	}
-	
 
 	private Double getValue(ItemValue value) {
 		if (value.value() == null) {
@@ -562,7 +471,6 @@ public class ErAlWorkRecordCheckService {
 		private String employeeId;
 		private String erAlId;
 		private final boolean error = true;
-		private String checkedValue;
 		
 		public ErrorRecord(GeneralDate date, String employeeId, String erAlId) {
 			super();
@@ -585,14 +493,6 @@ public class ErAlWorkRecordCheckService {
 
 		public boolean isError() {
 			return error;
-		}
-		
-		public String getCheckedValue() {
-			return checkedValue;
-		}
-
-		public void setCheckedValue(String checkedValue) {
-			this.checkedValue = checkedValue;
 		}
 	}
 }

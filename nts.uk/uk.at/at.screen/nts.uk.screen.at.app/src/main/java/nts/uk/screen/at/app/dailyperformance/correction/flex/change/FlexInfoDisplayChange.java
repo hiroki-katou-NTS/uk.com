@@ -20,7 +20,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosurePeriod;
+import nts.uk.ctx.at.shared.pub.workrule.closure.PresentClosingPeriodExport;
 import nts.uk.screen.at.app.dailyperformance.correction.finddata.IFindData;
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyResult;
 import nts.uk.shr.com.context.AppContexts;
@@ -61,15 +61,15 @@ public class FlexInfoDisplayChange {
 
 	// <<Public>> フレックス情報を表示する
 	public FlexShortageDto flexInfo(String companyId, String employeeId, GeneralDate baseDate, String roleId,
-			Optional<ClosurePeriod> closingPeriod, List<MonthlyModifyResult> results) {
+			Optional<PresentClosingPeriodExport> closingPeriod, List<MonthlyModifyResult> results) {
 		return flexInfo(companyId, employeeId, baseDate, roleId, closingPeriod, results, Optional.empty());
 	}
 	
 	// <<Public>> フレックス情報を表示する
 	public FlexShortageDto flexInfo(String companyId, String employeeId, GeneralDate baseDate, String roleId,
-			Optional<ClosurePeriod> closingPeriod, List<MonthlyModifyResult> results, 
+			Optional<PresentClosingPeriodExport> closingPeriod, List<MonthlyModifyResult> results, 
 			Optional<ClosureEmployment> closureEmployment) {
-		CalcFlexChangeDto calcFlex = CalcFlexChangeDto.createCalcFlexDto(employeeId, closingPeriod.get().getPeriod().end());
+		CalcFlexChangeDto calcFlex = CalcFlexChangeDto.createCalcFlexDto(employeeId, closingPeriod.get().getClosureEndDate());
 		// 取得しているドメインモデル「日別実績の修正の機能．フレックス勤務者のフレックス不足情報を表示する」をチェックする
 		Optional<DaiPerformanceFun> daiFunOpt = findData.getDailyPerformFun(companyId);
 		if (!daiFunOpt.isPresent() || daiFunOpt.get().getFlexDispAtr() == 0) {
@@ -79,7 +79,7 @@ public class FlexInfoDisplayChange {
 		FlexShortageDto dataMonth = new FlexShortageDto();
 
 		List<WorkingConditionItem> workingConditionItems = workingConditionItemRepository.getBySidAndPeriodOrderByStrD(
-				employeeId, new DatePeriod(closingPeriod.get().getPeriod().start(), closingPeriod.get().getPeriod().end()));
+				employeeId, new DatePeriod(closingPeriod.get().getClosureStartDate(), closingPeriod.get().getClosureEndDate()));
 		List<WorkingConditionItem> workConditions = workingConditionItems.stream()
 				.filter(x -> x.getLaborSystem().equals(WorkingSystem.FLEX_TIME_WORK)).collect(Collectors.toList());
 		if (workConditions.isEmpty())
@@ -87,7 +87,6 @@ public class FlexInfoDisplayChange {
 
 		if (!results.isEmpty()) {
 			mapValue(results.get(0).getItems(), dataMonth);
-			//dataMonth.getMonthParent().setVersion(results.get(0).getVersion());
 		} else {
 			return new FlexShortageDto().createShowFlex(false);
 		}
@@ -108,8 +107,6 @@ public class FlexInfoDisplayChange {
 		//checkShortage.createRetiredFlag(checkShortage.isRetiredFlag());
 		//if (condition.equals("0:00") && !checkFlex) {
 		dataMonth.createNotForward(messageE22(conditionResult.getMessage()));
-		dataMonth.createPeriodCheck(
-				checkShortage.getPeriodCheckLock().isPresent() ? checkShortage.getPeriodCheckLock().get() : null);
 		//}
 		return dataMonth.createCanFlex(checkFlex).createShowFlex(showFlex()).createCalcFlex(calcFlex);
 	}

@@ -1,7 +1,6 @@
 package nts.uk.ctx.bs.company.pub.company;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface ICompanyPub {
 
@@ -54,19 +53,4 @@ public interface ICompanyPub {
 	 * @return
 	 */
 	CompanyExport getCompany(String cid);
-	/**
-	 * get list company
-	 * @param 廃止区分 isAbolition
-	 * @param 契約CD contractCd
-	 * @return
-	 */
-	List<CompanyExport> getLstComByContractAbo(String contractCd, int isAbolition);
-	
-	
-	/**
-	 * [RQ622]会社IDから会社情報を取得する
-	 * @param cid
-	 * @return
-	 */
-	Optional<CompanyExport622> getCompanyNotAbolitionByCid(String cid);
 }

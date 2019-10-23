@@ -7,8 +7,6 @@ module common.error.system {
         if (!nts.uk.util.isNullOrUndefined(errorInfo)) {
             screenModel.details(errorInfo.errorMessage + "\r\n" + errorInfo.stackTrace);
             screenModel.errorAtTime(moment.utc(errorInfo.atTime).format("YYYY/MM/DD HH:mm:ss"));
-        } else {
-            screenModel.errorAtTime(moment().format("YYYY/MM/DD HH:mm:ss"));
         }
     });
     

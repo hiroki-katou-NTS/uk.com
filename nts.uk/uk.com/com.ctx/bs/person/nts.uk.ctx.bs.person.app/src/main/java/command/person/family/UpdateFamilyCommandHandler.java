@@ -31,16 +31,11 @@ implements PeregUpdateCommandHandler<UpdateFamilyCommand>{
 		
 		val command = context.getCommand();
 		
-		FamilyMember family= FamilyMember.createFromJavaType(command.getFamilyId(), command.getPersonId(),
-				command.getFullName(), command.getFullNameKana(), 
-				command.getNameRomajiFull(), command.getNameRomajiFullKana(),
-				command.getNameMultiLangFull(), command.getNameMultiLangFullKana(), 
-				command.getTokodekeName(),"",
-				command.getBirthday(), 
-				command.getDeadDay(), 
-				command.getEntryDate(),
-				command.getExpelledDate(),
-				command.getRelationship());
+		FamilyMember family = FamilyMember.createFromJavaType(command.getBirthday(), command.getDeadDay(), command.getEntryDate(),
+				command.getExpelledDate(), command.getFamilyId(), command.getFullName(), command.getFullNameKana(), command.getNameMultiLangFull(),
+				command.getNameMultiLangFullKana(), command.getNameRomajiFull(), command.getNameRomajiFullKana(), 
+				command.getNationalityId(), command.getOccupationName(), command.getPersonId(), command.getRelationship(), 
+				command.getSupportCareType(), command.getTokodekeName(), command.getTogSepDivisionType(), command.getWorkStudentType());
 		
 		// Update family
 		familyRepository.updateFamily(family);

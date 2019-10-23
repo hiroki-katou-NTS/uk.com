@@ -26,11 +26,4 @@ public interface PasswordChangeLogRepository {
 	 * @param passwordChangeLog the password change log
 	 */
 	void add(PasswordChangeLog passwordChangeLog);
-	/**
-	 * get list パスワード変更ログ
-	 * @param ユーザID userId
-	 * @return
-	 * @author hoatt
-	 */
-	List<PasswordChangeLog> getListPwChangeLog(String userId);
 }

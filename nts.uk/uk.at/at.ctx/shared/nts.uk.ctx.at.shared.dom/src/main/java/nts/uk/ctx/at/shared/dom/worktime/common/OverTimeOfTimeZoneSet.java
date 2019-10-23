@@ -5,7 +5,6 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
@@ -15,8 +14,7 @@ import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 // 残業時間の時間帯設定
 @Getter
 @Setter
-@NoArgsConstructor
-public class OverTimeOfTimeZoneSet extends WorkTimeDomainObject implements Cloneable{
+public class OverTimeOfTimeZoneSet extends WorkTimeDomainObject {
 
 	/** The work timezone no. */
 	// 就業時間帯NO
@@ -106,23 +104,5 @@ public class OverTimeOfTimeZoneSet extends WorkTimeDomainObject implements Clone
 	public void correctDefaultData() {
 		this.settlementOrder = null;
 		this.legalOTframeNo = null;
-	}
-	
-	@Override
-	public OverTimeOfTimeZoneSet clone() {
-		OverTimeOfTimeZoneSet cloned = new OverTimeOfTimeZoneSet();
-		try {
-			cloned.workTimezoneNo = new EmTimezoneNo(this.workTimezoneNo.v());
-			cloned.restraintTimeUse = this.restraintTimeUse ? true : false;
-			cloned.earlyOTUse = this.earlyOTUse ? true : false ;
-			cloned.otFrameNo = new OTFrameNo(this.otFrameNo.v());
-			cloned.timezone = this.timezone.clone();
-			cloned.legalOTframeNo = new OTFrameNo(this.legalOTframeNo.v());
-			cloned.settlementOrder = new SettlementOrder(this.settlementOrder.v());
-		}
-		catch (Exception e){
-			throw new RuntimeException("OverTimeOfTimeZoneSet clone error.");
-		}
-		return cloned;
 	}
 }

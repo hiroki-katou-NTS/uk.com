@@ -57,29 +57,4 @@ public enum CloseAtr {
 	
     public final int value;
     public final String nameId;
-	/** The Constant values. */
-	private final static CloseAtr[] values = CloseAtr.values();
-	
-	/**
-	 * Value of.
-	 *
-	 * @param value the value
-	 * @return the workAtr
-	 */
-	public static CloseAtr valueOf(Integer value) {
-		// Invalid object.
-		if (value == null) {
-			return null;
-		}
-
-		// Find value.
-		for (CloseAtr val : CloseAtr.values) {
-			if (val.value == value) {
-				return val;
-			}
-		}
-
-		// Not found.
-		return null;
-	}
 }

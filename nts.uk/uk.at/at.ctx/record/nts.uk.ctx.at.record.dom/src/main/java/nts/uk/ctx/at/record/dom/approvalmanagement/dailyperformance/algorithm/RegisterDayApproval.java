@@ -1,11 +1,9 @@
 package nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -48,24 +46,23 @@ public class RegisterDayApproval {
 	
 	@Inject
 	private ApprovalStatusOfDailyPerforRepository approvalStatusOfDailyPerforRepository;
-	
+
 	@Inject
 	private ApprovalStatusAdapter approvalStatusAdapter;
 
-	public Set<Pair<String, GeneralDate>> registerDayApproval(ParamDayApproval param, Set<Pair<String, GeneralDate>> updated) {
-		if(param.getContentApproval().isEmpty()) return new HashSet<>();
+	public void registerDayApproval(ParamDayApproval param) {
+		if(param.getContentApproval().isEmpty()) return;
 		String companyId = AppContexts.user().companyId();
 		Map<Pair<String, GeneralDate>, GeneralDate> employeeIdInsert = new HashMap<>();
 		Map<Pair<String, GeneralDate>, GeneralDate> employeeIdRealse = new HashMap<>();
 		Map<Pair<String, GeneralDate>, GeneralDate> employeeIdRealseAll = new HashMap<>();
-		Set<Pair<String, GeneralDate>> insertApproval = new HashSet<>();
 		Optional<ApprovalProcessingUseSetting> approvalSetting = approvalProcessingRepository
 				.findByCompanyId(companyId);
 		if (!approvalSetting.isPresent())
-			return new HashSet<>();
+			return;
 		Optional<ConfirmationOfManagerOrYouself> checkOpt = checkApprovalOperation.checkApproval(approvalSetting.get());
 		if (!checkOpt.isPresent())
-			return new HashSet<>();
+			return;
 		if (checkOpt.get().value == ConfirmationOfManagerOrYouself.CAN_CHECK.value) {
 			param.getContentApproval().forEach(x -> {
 				if(x.isFlagRemmoveAll()){
@@ -78,14 +75,9 @@ public class RegisterDayApproval {
 				}
 			});
 		} else {
-			Map<String, List<GeneralDate>> mapEmpErrorDate = param.getContentApproval()
-					.stream().collect(Collectors.groupingBy(ContentApproval::getEmployeeId, 
-							Collectors.collectingAndThen(Collectors.toList(), list -> list.stream().map(x -> x.getDate()).collect(Collectors.toList()))));
-			List<EmployeeDailyPerError> lstEmpError = employeeDailyPerErrorRepository.finds(mapEmpErrorDate);
 			for (ContentApproval data : param.getContentApproval()) {
-				List<EmployeeDailyPerError> employeeDailyPerErrors = lstEmpError.stream().filter(
-						x -> x.getEmployeeID().equals(data.getEmployeeId()) && x.getDate().equals(data.getDate()))
-						.collect(Collectors.toList());
+				List<EmployeeDailyPerError> employeeDailyPerErrors = employeeDailyPerErrorRepository
+						.find(param.getEmployeeId(), data.getDate());
 				boolean isNotError = true;
 				if (!employeeDailyPerErrors.isEmpty()) {
 					List<ErrorAlarmWorkRecord> errorAlarmWorkRecords = errorAlarmWorkRecordRepository
@@ -107,38 +99,23 @@ public class RegisterDayApproval {
 				}
 			}
 		}
-		
-		Set<Pair<String, GeneralDate>> shoudUpVer = new HashSet<>();
 		// release status == false
-		if (!employeeIdRealse.isEmpty()) {
+		if (!employeeIdRealse.isEmpty())
 			approvalStatusAdapter.releaseApproval(param.getEmployeeId(),
 					employeeIdRealse.keySet().stream().collect(Collectors.toList()), 1, companyId);
-			updated.addAll(employeeIdRealse.keySet());
-		}
 		// register status == true
-		if (!employeeIdInsert.isEmpty()) {
+		if (!employeeIdInsert.isEmpty())
 			approvalStatusAdapter.registerApproval(param.getEmployeeId(),
 					employeeIdInsert.keySet().stream().collect(Collectors.toList()), 1, companyId);
-			updated.addAll(employeeIdInsert.keySet());
-			insertApproval.addAll(employeeIdInsert.keySet());
-		}
 		
 		if(!employeeIdRealseAll.isEmpty()){
 			employeeIdRealseAll.entrySet().forEach(x ->{
 				Optional<ApprovalStatusOfDailyPerfor> dailyPerforOpt= approvalStatusOfDailyPerforRepository.find(x.getKey().getLeft(), x.getKey().getRight());
 				if(dailyPerforOpt.isPresent()){
 					approvalStatusAdapter.cleanApprovalRootState(dailyPerforOpt.get().getEmployeeId(), x.getValue(), 1);
-					shoudUpVer.add(x.getKey());
 				}
 			});
 		}
-		
-//		if(!shoudUpVer.isEmpty()){
-//			shoudUpVer.stream().forEach(pair -> {
-//				workInfo.updated(pair.getKey(), pair.getValue());
-//			});
-//		}
-		return insertApproval;
 	}
 	
 	public void registerMonApproval(String approverID, List<EmpPerformMonthParamImport> listParamApproval) {

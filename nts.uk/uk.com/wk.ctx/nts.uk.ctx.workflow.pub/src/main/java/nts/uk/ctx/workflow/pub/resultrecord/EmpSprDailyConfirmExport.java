@@ -13,14 +13,9 @@ import lombok.Getter;
 public class EmpSprDailyConfirmExport {
 	
 	/**
-	 * 社員ID
-	 */
-	private String empID;
-	
-	/**
 	 * 社員コード
 	 */
-	private String empCD;
+	private String emp;
 	
 	/**
 	 * ステータス（0:未処理、1:処理済）

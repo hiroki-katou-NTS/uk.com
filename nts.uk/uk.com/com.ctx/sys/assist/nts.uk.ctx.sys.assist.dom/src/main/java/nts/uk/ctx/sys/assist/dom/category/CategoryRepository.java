@@ -1,7 +1,6 @@
 package nts.uk.ctx.sys.assist.dom.category;
 
 import java.util.Optional;
-import java.util.Set;
 import java.util.List;
 
 /**
@@ -35,6 +34,4 @@ public interface CategoryRepository
 	List<Category> findByPossibilitySystemAndCodeName(String keySearch,List<String> categoriesIgnore);
 	List<Category> findBySchelperSystemAndCodeName(String keySearch,List<String> categoriesIgnore);
 	List<Category> findById(String storeProcessingId, int selectionTargetForRes);
-
-	Set<String> getListCategoryId(String dataRecoveryProcessId, int selectionTargetForRes);
 }

@@ -24,5 +24,7 @@ public interface AttendanceLeavingGateOfDailyRepo {
 
 	public void add(AttendanceLeavingGateOfDaily domain);
 	
+	public void remove(AttendanceLeavingGateOfDaily domain);
+	
 	public void removeByKey(String employeeId, GeneralDate baseDate);
 }

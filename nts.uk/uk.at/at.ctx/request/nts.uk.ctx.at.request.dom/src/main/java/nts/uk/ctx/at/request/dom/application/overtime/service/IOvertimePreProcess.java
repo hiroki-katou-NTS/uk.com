@@ -3,11 +3,18 @@ package nts.uk.ctx.at.request.dom.application.overtime.service;
 import java.util.List;
 import java.util.Optional;
 
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SWkpHistImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputCaculation;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.service.output.RecordWorkOutput;
+import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
+import nts.uk.ctx.at.request.dom.setting.company.divergencereason.DivergenceReason;
+import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
+import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
+import nts.uk.ctx.at.shared.dom.bonuspay.timeitem.BonusPayTimeItem;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
@@ -38,37 +45,88 @@ public interface IOvertimePreProcess {
 	public List<WorkdayoffFrame> getBreaktimeFrame(String companyID);
 	
 	/**
+	 * 01-04_加給時間を取得
+	 * @param employeeID
+	 * @param overtimeRestAppCommonSet
+	 * @param appDate
+	 */
+	public List<BonusPayTimeItem> getBonusTime(String employeeID,Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet, String appDate, String companyID, SiftType siftType);
+	/**
+	 * 01-05_申請定型理由を取得
+	 * @param companyID
+	 * @param appType
+	 * @return
+	 */
+	public List<ApplicationReason> getApplicationReasonType(String companyID,int appType, Optional<AppTypeDiscreteSetting> appTypeDiscreteSetting);
+	
+	/**
+	 * 01-06_申請理由を取得
+	 * @param appTypeDiscreteSetting
+	 * @return
+	 */
+	public boolean displayAppReasonContentFlg(Optional<AppTypeDiscreteSetting> appTypeDiscreteSetting);
+	
+	/**
+	 * 01-07_乖離理由を取得
+	 * @param overtimeRestAppCommonSet
+	 * @return
+	 */
+	public boolean displayDivergenceReasonInput(Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet);
+	
+	/**
+	 * 01-08_乖離定型理由を取得
+	 * @param companyID
+	 * @param appType
+	 * @param overtimeRestAppCommonSet
+	 * @return
+	 */
+	public List<DivergenceReason> getDivergenceReasonForm(String companyID,int appType, Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet);
+	/**
+	 * 01-09_事前申請を取得
+	 * @param employeeId
+	 * @param overtimeRestAppCommonSet
+	 * @param appDate
+	 * @return
+	 */
+	
+	public AppOverTime getPreApplication(String companyID, String employeeId, Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet,String appDate, int prePostAtr);
+	
+	/**
 	 * 01-10_0時跨ぎチェック
 	 * @return
 	 */
 	public boolean displayBreaktime();
 	
 	/**
+	 * 01-13_事前事後区分を取得
+	 * @param companyID
+	 * @param applicationDto
+	 * @param result
+	 * @param uiType
+	 */
+	public DisplayPrePost getDisplayPrePost(String companyID,int uiType,String appDate,int appType,int overtimeAtr);
+	
+	/**
+	 * 01-14_勤務時間取得
+	 * @param companyID
+	 * @param employeeID
+	 * @param appDate
+	 * @param requestAppDetailSetting
+	 */
+	public RecordWorkOutput getWorkingHours(String companyID,String employeeID,String appDate,ApprovalFunctionSetting approvalFunctionSetting, String siftCD, boolean isOverTime);
+	/**
+	 *  01-17_休憩時間取得
+	 * @param requestAppDetailSetting
+	 * @return
+	 */
+	public boolean getRestTime(ApprovalFunctionSetting approvalFunctionSetting);
+	
+	/**
 	 * 01-18_実績の内容を表示し直す
 	 * @param prePostAtr
 	 * @return
 	 */
-	public AppOvertimeReference getResultContentActual(int prePostAtr, String workType, String siftCode,String companyID,String employeeID,String appDate);
-	
-	/**
-	 * 01-18-1_当日の実績の場合
-	 * @param employeeID 社員ID
-	 * @param date 申請日
-	 * @param workTime 就業時間帯コード
-	 * @param recordWorkInfoImport 実績内容
-	 * @return
-	 */
-	public AppOvertimeReference getResultCurrentDay(String employeeID, GeneralDate date, String workType, String workTime, RecordWorkInfoImport recordWorkInfoImport);
-	
-	/**
-	 * 01-18-2_当日以外の実績場合
-	 * @param employeeID 社員ID
-	 * @param date 申請日
-	 * @param workTime 就業時間帯コード
-	 * @param recordWorkInfoImport 実績内容
-	 * @return
-	 */
-	public AppOvertimeReference getResultOtherDay(String employeeID, GeneralDate date, String workType, String workTime, RecordWorkInfoImport recordWorkInfoImport);
+	public AppOvertimeReference getResultContentActual(int prePostAtr,String siftCode,String companyID,String employeeID,String appDate,ApprovalFunctionSetting approvalFunctionSetting,List<CaculationTime> overtimeHours,List<OvertimeInputCaculation> overtimeInputCaculations);
 	
 	/**
 	 * @param employeeID

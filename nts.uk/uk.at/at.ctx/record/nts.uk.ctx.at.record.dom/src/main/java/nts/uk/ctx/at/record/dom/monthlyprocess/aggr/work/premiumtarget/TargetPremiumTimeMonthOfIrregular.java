@@ -43,14 +43,13 @@ public class TargetPremiumTimeMonthOfIrregular {
 			AddSet addSet, AggregateTotalWorkingTime aggregateTotalWorkingTime, boolean isAddVacation){
 
 		// 集計対象時間を取得する
-		val legalTime = aggregateTotalWorkingTime.getWorkTime().getAggregateTargetTime(datePeriod, addSet);
+		val legalTime = aggregateTotalWorkingTime.getWorkTime().getAggregateTargetTime(datePeriod);
 
 		// 変形労働勤務の月割増対象時間に集計対象時間を加算する
 		this.targetPremiumTimeMonth = this.targetPremiumTimeMonth.addMinutes(legalTime.v());
 		
 		// 法定内残業時間を取得する
-		val legalOverTime = aggregateTotalWorkingTime.getOverTime().calcOverTimeForPremium(
-				datePeriod, aggregateTotalWorkingTime);
+		val legalOverTime = aggregateTotalWorkingTime.getOverTime().getLegalOverTime(datePeriod);
 		
 		// 変形労働勤務の月割増対象時間に残業時間を加算する
 		this.targetPremiumTimeMonth = this.targetPremiumTimeMonth.addMinutes(legalOverTime.v());

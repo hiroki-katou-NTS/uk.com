@@ -17,12 +17,4 @@ public interface FamilyMemberRepository {
 	 * @param family
 	 */
 	void updateFamily(FamilyMember family);
-	
-	/**
-	 * ドメインモデル「家族」を取得する
-	 * @param pid
-	 * @param relationShipCodes
-	 * @return
-	 */
-	List<FamilyMember> getListByPidAndRelationCode(String pid, List<String> relationShipCodes);
 }

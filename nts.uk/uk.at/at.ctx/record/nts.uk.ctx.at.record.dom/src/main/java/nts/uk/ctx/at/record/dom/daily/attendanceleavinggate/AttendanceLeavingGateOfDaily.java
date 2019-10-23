@@ -13,7 +13,6 @@ import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -36,20 +35,14 @@ public class AttendanceLeavingGateOfDaily {
 	
 	/**
 	 * 出退勤前時間の計算
-	 * 出勤前時間の計算　と　退勤後時間の計算
 	 * @return
 	 */
-	public AttendanceTimeOfExistMinus calcBeforeAttendanceTime(Optional<TimeLeavingOfDailyPerformance> attendanceLeave,GoLeavingWorkAtr goLeavingWorkAtr) {
-		if(!attendanceLeave.isPresent()) return new AttendanceTimeOfExistMinus(0);
-		List<AttendanceTimeOfExistMinus> resultList = new ArrayList<>();
+	public AttendanceTime calcBeforeAttendanceTime(Optional<TimeLeavingOfDailyPerformance> attendanceLeave,GoLeavingWorkAtr goLeavingWorkAtr) {
+		if(!attendanceLeave.isPresent()) return new AttendanceTime(0);
+		List<AttendanceTime> resultList = new ArrayList<>();
 		for(AttendanceLeavingGate attendanceLeavingGate : this.attendanceLeavingGates) {
-			if(goLeavingWorkAtr.isGO_WORK()) {
-				if(!attendanceLeavingGate.getAttendance().isPresent())
-					continue;
-			}
-			else {
-				if(!attendanceLeavingGate.getLeaving().isPresent())
-					continue;
+			if(!attendanceLeavingGate.getAttendance().isPresent()){
+				continue;
 			}
 			
 			Optional<WorkStamp> attendanceLeaveWorkStamp = goLeavingWorkAtr.isGO_WORK()?attendanceLeavingGate.getAttendance():
@@ -79,10 +72,10 @@ public class AttendanceLeavingGateOfDaily {
 			
 			//出勤なら「出勤-ログオン」、退勤なら「ログオフ-退勤」
 			int calcResult = goLeavingWorkAtr.isGO_WORK()?stamp-attendanceLeavingGateTime:attendanceLeavingGateTime-stamp;
-			resultList.add(new AttendanceTimeOfExistMinus(calcResult));
+			resultList.add(new AttendanceTime(calcResult));
 		}
-		AttendanceTimeOfExistMinus result = new AttendanceTimeOfExistMinus(resultList.stream().filter(t -> t!=null).mapToInt(t->t.valueAsMinutes()).sum());
-		return result!=null?result:new AttendanceTimeOfExistMinus(0);
+		AttendanceTime result = new AttendanceTime(resultList.stream().filter(t -> t!=null).mapToInt(t->t.valueAsMinutes()).sum());
+		return result!=null?result:new AttendanceTime(0);
 	}
 	
 	/**

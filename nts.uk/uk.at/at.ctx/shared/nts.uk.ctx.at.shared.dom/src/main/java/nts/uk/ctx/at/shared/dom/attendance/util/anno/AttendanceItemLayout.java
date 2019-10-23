@@ -4,8 +4,6 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.util.ArrayList;
-import java.util.List;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE, ElementType.FIELD })
@@ -30,8 +28,6 @@ public @interface AttendanceItemLayout {
 	String enumField() default "";
 	
 	boolean removeConflictEnum() default false;
-	
-	String defaultIdx() default "";
 	
 //	String needCheckIDWithField() default "";
 	

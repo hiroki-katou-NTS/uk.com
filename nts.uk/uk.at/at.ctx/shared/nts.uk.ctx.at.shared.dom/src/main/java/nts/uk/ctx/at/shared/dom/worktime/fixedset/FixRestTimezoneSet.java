@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
@@ -29,8 +28,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 // 固定勤務の休憩時間帯
 @Getter
-@NoArgsConstructor
-public class FixRestTimezoneSet extends WorkTimeDomainObject implements Cloneable{
+public class FixRestTimezoneSet extends WorkTimeDomainObject {
 
 	/** The lst timezone. */
 	// 時間帯
@@ -141,15 +139,4 @@ public class FixRestTimezoneSet extends WorkTimeDomainObject implements Cloneabl
 		return new AttendanceTime(returnValue);
 	}
 	
-	@Override
-	public FixRestTimezoneSet clone() {
-		FixRestTimezoneSet cloned = new FixRestTimezoneSet();
-		try {
-			cloned.lstTimezone = this.lstTimezone.stream().map(c -> c.clone()).collect(Collectors.toList());
-		}
-		catch (Exception e){
-			throw new RuntimeException("FixRestTimezoneSet clone error.");
-		}
-		return cloned;
-	}
 }

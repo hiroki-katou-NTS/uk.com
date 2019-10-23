@@ -3,8 +3,6 @@ package nts.uk.ctx.at.record.app.find.dailyperformanceformat.businesstype;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmployee;
-import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.pereg.app.PeregItem;
 import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 
@@ -44,14 +42,6 @@ public class BusinessTypeDto extends PeregDomainDto {
 		this.endDate = endDate;
 		this.businessTypeCode = businessTypeCode;
 		this.latestHistory = isLatestHistory;
-	}
-	
-	public static BusinessTypeDto createFromDomain(BusinessTypeOfEmployee histItem, DateHistoryItem history) {
-		BusinessTypeDto dto = new BusinessTypeDto(histItem.getHistoryId());
-		dto.setStartDate(history.start());
-		dto.setEndDate(history.end());
-		dto.setBusinessTypeCode(histItem.getBusinessTypeCode().toString());
-		return dto;
 	}
 
 }

@@ -1,11 +1,7 @@
 package nts.uk.ctx.at.shared.infra.repository.remainingnumber;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -15,17 +11,13 @@ import javax.ejb.Stateless;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.layer.infra.data.jdbc.NtsResultSet;
-import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.DaysOffMana;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.subhdmana.KrcmtLeaveManaData;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -320,6 +312,7 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 	}
 
 
+
 	@Override
 	public List<LeaveManagementData> getBySidYmd(String cid, String sid, GeneralDate ymd, DigestionAtr state) {
 		List<KrcmtLeaveManaData> listListMana = this.queryProxy().query(QUERY_BYSIDYMD, KrcmtLeaveManaData.class)
@@ -329,144 +322,6 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 				.setParameter("subHDAtr", state.value)
 				.getList();
 		return listListMana.stream().map(i -> toDomain(i)).collect(Collectors.toList());
-	}
-
-	@Override
-	public Map <String ,Double> getAllBySidWithsubHDAtr(String cid, List<String> sids, int state) {
-		Map <String ,Double> result = new HashMap<>();
-		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String sql = "SELECT * FROM KRCMT_LEAVE_MANA_DATA WHERE  CID = ? AND SUB_HD_ATR = ? AND SID IN ("
-					+ NtsStatement.In.createParamsString(subList) + ")";
-			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
-				stmt.setString(1, cid);
-				stmt.setInt(2, state);
-				for (int i = 0; i < subList.size(); i++) {
-					stmt.setString(3 + i, subList.get(i));
-				}
-				List<KrcmtLeaveManaData> data = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
-					KrcmtLeaveManaData entity = new KrcmtLeaveManaData();
-					entity.leaveID = rec.getString("LEAVE_MANA_ID");
-					entity.cID = rec.getString("CID");
-					entity.sID = rec.getString("SID");
-					entity.unUsedDays = rec.getDouble("UNUSED_DAYS");
-					return entity;
-			
-				});
-				Map<String, List<KrcmtLeaveManaData>> dataMap = data.parallelStream().collect(Collectors.groupingBy(c -> c.sID));
-				dataMap.entrySet().parallelStream().forEach(c ->{
-					result.put(c.getKey(), c.getValue().parallelStream().mapToDouble(i -> i.unUsedDays).sum());
-				} );
-			
-			}
-			catch (SQLException e) {
-				throw new RuntimeException(e);
-			}
-		});
-		return result;
-		
-	}
-
-
-
-	@Override
-	public List<LeaveManagementData> getBySidsAndCid(String cid, List<String> sids) {
-		List<LeaveManagementData> result = new ArrayList<>();
-		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String sql = "SELECT * FROM KRCMT_LEAVE_MANA_DATA WHERE  CID = ? AND SID IN ("
-					+ NtsStatement.In.createParamsString(subList) + ")";
-			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
-				stmt.setString(1, cid);
-				for (int i = 0; i < subList.size(); i++) {
-					stmt.setString(2 + i, subList.get(i));
-				}
-				List<LeaveManagementData> data = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
-					KrcmtLeaveManaData entity = new KrcmtLeaveManaData();
-					entity.leaveID = rec.getString("LEAVE_MANA_ID");
-					entity.cID = rec.getString("CID");
-					entity.sID = rec.getString("SID");
-					entity.unknownDate = rec.getBoolean("UNKNOWN_DATE");
-					
-					entity.dayOff = rec.getGeneralDate("DAYOFF_DATE");
-					entity.expiredDate = rec.getGeneralDate("EXPIRED_DATE");
-					entity.occurredDays = rec.getDouble("OCCURRED_DAYS");
-					entity.occurredTimes = rec.getInt("OCCURRED_TIMES");
-					
-					entity.unUsedDays = rec.getDouble("UNUSED_DAYS");
-					entity.unUsedTimes = rec.getInt("UNUSED_TIMES");
-					entity.subHDAtr = rec.getInt("SUB_HD_ATR");
-					entity.fullDayTime = rec.getInt("FULL_DAY_TIME");
-					entity.halfDayTime = rec.getInt("HALF_DAY_TIME");
-					entity.disapearDate = rec.getGeneralDate("DISAPEAR_DATE");
-					
-					return toDomain(entity);
-				});
-				result.addAll(data);
-			
-			}
-			catch (SQLException e) {
-				throw new RuntimeException(e);
-			}
-		});
-		return result;
-	}
-
-
-
-	@Override
-	public void addAll(List<LeaveManagementData> domains) {
-		String INS_SQL = "INSERT INTO KRCMT_LEAVE_MANA_DATA (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
-				+ " UPD_DATE , UPD_CCD , UPD_SCD , UPD_PG," 
-				+ " LEAVE_MANA_ID, CID, SID, UNKNOWN_DATE, DAYOFF_DATE, EXPIRED_DATE, OCCURRED_DAYS, OCCURRED_TIMES,"
-				+ " UNUSED_DAYS, UNUSED_TIMES, SUB_HD_ATR, FULL_DAY_TIME, HALF_DAY_TIME, DISAPEAR_DATE )"
-				+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
-				+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL,"
-				+ " LEAVE_MANA_ID_VAL, CID_VAL, SID_VAL, UNKNOWN_DATE_VAL, DAYOFF_DATE_VAL, EXPIRED_DATE_VAL, OCCURRED_DAYS_VAL, OCCURRED_TIMES_VAL,"
-				+ " UNUSED_DAYS_VAL, UNUSED_TIMES_VAL, SUB_HD_ATR_VAL, FULL_DAY_TIME_VAL, HALF_DAY_TIME_VAL, DATE_VAL); ";
-		String insCcd = AppContexts.user().companyCode();
-		String insScd = AppContexts.user().employeeCode();
-		String insPg = AppContexts.programId();
-		
-		String updCcd = insCcd;
-		String updScd = insScd;
-		String updPg = insPg;
-		StringBuilder sb = new StringBuilder();
-		domains.stream().forEach(c -> {
-			String sql = INS_SQL;
-			sql = sql.replace("INS_DATE_VAL", "'" + GeneralDateTime.now() + "'");
-			sql = sql.replace("INS_CCD_VAL", "'" + insCcd + "'");
-			sql = sql.replace("INS_SCD_VAL", "'" + insScd + "'");
-			sql = sql.replace("INS_PG_VAL", "'" + insPg + "'");
-
-			sql = sql.replace("UPD_DATE_VAL", "'" + GeneralDateTime.now() + "'");
-			sql = sql.replace("UPD_CCD_VAL", "'" + updCcd + "'");
-			sql = sql.replace("UPD_SCD_VAL", "'" + updScd + "'");
-			sql = sql.replace("UPD_PG_VAL", "'" + updPg + "'");
-
-			sql = sql.replace("LEAVE_MANA_ID_VAL", "'" + c.getID() + "'");
-			sql = sql.replace("CID_VAL", "'" + c.getCID()+ "'");
-			sql = sql.replace("SID_VAL", "'" + c.getSID()+ "'");
-			
-			sql = sql.replace("UNKNOWN_DATE_VAL", c.getComDayOffDate().isUnknownDate() == true? "1":"0");
-			sql = sql.replace("DAYOFF_DATE_VAL", c.getComDayOffDate().getDayoffDate().isPresent()
-					? "'" + c.getComDayOffDate().getDayoffDate().get() +"'" : "null");
-			sql = sql.replace("EXPIRED_DATE_VAL", c.getExpiredDate() == null? "null" : "'" + c.getExpiredDate() + "'");
-			
-			sql = sql.replace("OCCURRED_DAYS_VAL", c.getOccurredDays() == null?  "null": "" + c.getOccurredDays().v() + "");
-			sql = sql.replace("OCCURRED_TIMES_VAL", ""+ c.getOccurredTimes().v() + "");
-			
-			
-			sql = sql.replace("UNUSED_DAYS_VAL", "" + c.getUnUsedDays().v() +"");
-			sql = sql.replace("UNUSED_TIMES_VAL", "" + c.getUnUsedTimes().v() +"");
-			sql = sql.replace("SUB_HD_ATR_VAL", "" + c.getSubHDAtr().value +"");
-			sql = sql.replace("FULL_DAY_TIME_VAL", "" + c.getFullDayTime().v() +"");
-			sql = sql.replace("HALF_DAY_TIME_VAL", "" + c.getHalfDayTime().v() +"");
-			sql = sql.replace("DATE_VAL",  c.getDisapearDate() == null? "null": (c.getDisapearDate().isPresent()? "'" + c.getDisapearDate().get() +"'": "null"));
-			sb.append(sql);
-		});
-
-		int records = this.getEntityManager().createNativeQuery(sb.toString()).executeUpdate();
-		System.out.println(records);
-		
 	}
 	
 }

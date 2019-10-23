@@ -18,7 +18,6 @@ import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.hdwkandcompleave.H
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.overtime.OverTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacationaddtime.AddSet;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.timeseries.WorkTimeOfTimeSeries;
 import nts.uk.ctx.at.record.dom.weekly.RegAndIrgTimeOfWeekly;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
@@ -203,15 +202,14 @@ public class WorkTimeOfMonthly implements Cloneable {
 	/**
 	 * 集計対象時間を取得
 	 * @param datePeriod 期間
-	 * @param addSet 加算設定
 	 * @return 集計対象時間
 	 */
-	public AttendanceTimeMonth getAggregateTargetTime(DatePeriod datePeriod, AddSet addSet){
+	public AttendanceTimeMonth getAggregateTargetTime(DatePeriod datePeriod){
 		
 		AttendanceTimeMonth result = new AttendanceTimeMonth(0);
 		for (val timeSeriesWork : this.timeSeriesWorks.values()){
 			if (!datePeriod.contains(timeSeriesWork.getYmd())) continue;
-			result = result.addMinutes(timeSeriesWork.getAggregateTargetTime(addSet).v());
+			result = result.addMinutes(timeSeriesWork.getAggregateTargetTime().v());
 		}
 		return result;
 	}

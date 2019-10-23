@@ -19,25 +19,10 @@ public interface RervLeaGrantRemDataRepository {
 	
 	void add(ReserveLeaveGrantRemainingData data, String cId);
 	
-	/**
-	 * @author lanlt
-	 * add all 
-	 * @param cid
-	 * @param domains
-	 */
-	void addAll(String cid, List<ReserveLeaveGrantRemainingData> domains);
-	
 	void update(ReserveLeaveGrantRemainingData data);
 	
 	void delete(String rsvLeaId);
 	
 	void deleteAfterDate(String employeeId, GeneralDate date);
-	/**
-	 * getAll
-	 * @param employeeId
-	 * @param cId
-	 * @return
-	 */
-	List<ReserveLeaveGrantRemainingData> getAll(String cid, List<String> sids);
 	
 }

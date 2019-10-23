@@ -1,8 +1,9 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect;
 
+import java.util.List;
+
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ApplicationType;
 
 /**
  * 反映状況によるチェック
@@ -22,8 +23,7 @@ public interface CommonProcessCheckService {
 	 * 予定勤種の反映
 	 * @param absencePara
 	 */
-	public void reflectScheWorkTimeWorkType(CommonReflectParameter commonPara, boolean isPre,
-			IntegrationOfDaily dailyInfo);
+	public boolean reflectScheWorkTimeWorkType(CommonReflectParameter commonPara, boolean isPre, IntegrationOfDaily dailyInfor);
 	/**
 	 * 予定勤種を反映できるかチェックする
 	 * @param absencePara
@@ -33,16 +33,26 @@ public interface CommonProcessCheckService {
 	/**
 	 * 
 	 * @param integrationOfDaily
-	 * @param isOT: True 残業申請, False：　残業申請じゃない
 	 */
-	public void calculateOfAppReflect(CommonCalculateOfAppReflectParam commonPara);
+	public void updateDailyAfterReflect(List<IntegrationOfDaily> integrationOfDaily);
 	/**
 	 * 就業時間帯の休憩時間帯を日別実績に反映する
 	 * @param sid
 	 * @param ymd
 	 * @param optTimeLeaving
 	 */
-	public IntegrationOfDaily updateBreakTimeInfor(String sid, GeneralDate ymd, IntegrationOfDaily integrationOfDaily, String companyId,
-			ApplicationType appType);
-	public void createLogError(String sid, GeneralDate ymd, String excLogId);
+	public IntegrationOfDaily updateBreakTimeInfor(String sid, GeneralDate ymd, IntegrationOfDaily integrationOfDaily, String companyId);
+	/**
+	 * 
+	 * @param integrationOfDaily
+	 * @param sid
+	 * @param ymd
+	 * @param isOt True: 事前残業申請、False：事前残業申請じゃない
+	 * @return
+	 */
+	public List<IntegrationOfDaily> lstIntegrationOfDaily(IntegrationOfDaily integrationOfDaily, String sid,
+			GeneralDate ymd, boolean isOt);
+	
+	public void calculateOfAppReflect(IntegrationOfDaily integrationOfDaily, String sid, GeneralDate ymd);
+	
 }

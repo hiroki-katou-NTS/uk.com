@@ -1,8 +1,10 @@
 {
     "jp": {
+        "sample" : "Sample (jp)",
         "documentscomponentshook-events": "documentscomponentshook-events (jp)"
     },
     "vi": {
+        "sample" : "Ví dụ",
         "documentscomponentshook-events": "documentscomponentshook-events (vi)"
     }
 }

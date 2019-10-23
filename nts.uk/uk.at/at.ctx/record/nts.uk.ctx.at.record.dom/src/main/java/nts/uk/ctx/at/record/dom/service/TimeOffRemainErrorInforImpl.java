@@ -42,7 +42,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpReserveL
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.ComplileInPeriodOfSpecialLeaveParam;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.InPeriodOfSpecialLeave;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.InPeriodOfSpecialLeaveResultInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveManagementService;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
@@ -202,11 +201,9 @@ public class TimeOffRemainErrorInforImpl implements TimeOffRemainErrorInfor{
 					false,
 					true,
 					interimSpecial,
-					specialHolidayData,
-					Optional.empty());
+					specialHolidayData);
 			//マイナスなしを含めた期間内の特別休暇残を集計する
-			InPeriodOfSpecialLeaveResultInfor speLeaveInfor = speMngDataService.complileInPeriodOfSpecialLeave(speParam);
-			InPeriodOfSpecialLeave speLeave = speLeaveInfor.getAggSpecialLeaveResult();
+			InPeriodOfSpecialLeave speLeave = speMngDataService.complileInPeriodOfSpecialLeave(speParam);
 			//特別休暇エラーから月別実績エラー一覧を作成する
 			List<EmployeeMonthlyPerError> lstSpeError = annualErrorsService.fromSpecialLeave(param.getSid(),
 					YearMonth.of(999912),
@@ -231,8 +228,7 @@ public class TimeOffRemainErrorInforImpl implements TimeOffRemainErrorInfor{
 				true,
 				useAbsMng,
 				interimMngAbsRec,
-				useRecMng,
-				Optional.empty());
+				useRecMng);
 		AbsRecRemainMngOfInPeriod absRecCheck = absRecDataService.getAbsRecMngInPeriod(checkParam);
 		List<EmployeeMonthlyPerError> lstAbsRec = annualErrorsService.fromPause(param.getSid(),
 					YearMonth.of(999912),
@@ -255,8 +251,7 @@ public class TimeOffRemainErrorInforImpl implements TimeOffRemainErrorInfor{
 				true,
 				interimMngBreakDayOff,
 				breakMng,
-				dayOffMng,
-				Optional.empty());
+				dayOffMng);
 		BreakDayOffRemainMngOfInPeriod dataCheck = breakDayoffService.getBreakDayOffMngInPeriod(remainParam);
 		List<EmployeeMonthlyPerError> lstDayoff = annualErrorsService.fromDayOff(param.getSid(),
 					YearMonth.of(999912),

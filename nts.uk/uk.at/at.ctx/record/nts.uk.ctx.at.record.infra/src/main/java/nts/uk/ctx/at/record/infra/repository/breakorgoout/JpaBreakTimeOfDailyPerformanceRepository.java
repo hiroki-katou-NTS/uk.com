@@ -43,7 +43,9 @@ import nts.uk.shr.infra.data.jdbc.JDBCUtil;
 @Stateless
 public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 		implements BreakTimeOfDailyPerformanceRepository {
-	
+
+//	private static final String REMOVE_BY_EMPLOYEE;
+
 	private static final String DEL_BY_LIST_KEY;
 
 	private static final String SELECT_BY_EMPLOYEE_AND_DATE;
@@ -248,7 +250,6 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 	}
 
 	@Override
-	@SneakyThrows
 	public void update(List<BreakTimeOfDailyPerformance> breakTimes) {
 		List<KrcdtDaiBreakTime> all = breakTimes.stream().map(c -> KrcdtDaiBreakTime.toEntity(c)).flatMap(List::stream)
 				.collect(Collectors.toList());
@@ -272,17 +273,16 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 			toRemove.stream().forEach(c -> {
 				commandProxy().remove(c);
 			});
-			// commandProxy().updateAll(toRemove);
-			// commandProxy().removeAll(toRemove);
+//			commandProxy().updateAll(toRemove);
+//			commandProxy().removeAll(toRemove);
 			// commandProxy().removeAll(toRemove);
 		} else {
-			if(breakTimes.isEmpty()) return;
 			this.delete(breakTimes.get(0).getEmployeeId(), breakTimes.get(0).getYmd());
 		}
 		// commandProxy().updateAll(breakTimes.stream().map(c ->
 		// KrcdtDaiBreakTime.toEntity(c)).flatMap(List::stream)
 		// .collect(Collectors.toList()));
-		// this.getEntityManager().flush();
+//		this.getEntityManager().flush();
 	}
 
 	@Override
@@ -389,11 +389,11 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 			for(BreakTimeSheet breakTimeSheet : breakTime.getBreakTimeSheets()){
 			
 				String updateTableSQL = " UPDATE KRCDT_DAI_BREAK_TIME_TS SET STR_STAMP_TIME = "
-						+ breakTimeSheet.getStartTime().valueAsMinutes() + " , END_STAMP_TIME = "
-						+ breakTimeSheet.getEndTime().valueAsMinutes() + " WHERE SID = '" + breakTime.getEmployeeId()
-						+ "' AND YMD = '" + breakTime.getYmd() + "'" + " AND BREAK_TYPE = "
-						+ breakTime.getBreakType().value + " AND BREAK_FRAME_NO = "
-						+ breakTimeSheet.getBreakFrameNo().v();
+						+ breakTimeSheet.getStartTime().valueAsMinutes() + " AND END_STAMP_TIME = " + breakTimeSheet.getEndTime().valueAsMinutes()
+						+ " WHERE SID = '"
+						+ breakTime.getEmployeeId() + "' AND YMD = '" + breakTime.getYmd() + "'" + " AND BREAK_TYPE = " 
+						+ breakTime.getBreakType().value 
+						+ " AND BREAK_FRAME_NO = " + breakTimeSheet.getBreakFrameNo().v();
 				Statement statementU = con.createStatement();
 				statementU.executeUpdate(updateTableSQL);
 			}
@@ -402,12 +402,4 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 		}
 	}
 
-	@Override
-	public void updateNotDelete(List<BreakTimeOfDailyPerformance> breakTimes) {
-		List<KrcdtDaiBreakTime> all = breakTimes.stream().map(c -> KrcdtDaiBreakTime.toEntity(c)).flatMap(List::stream)
-				.collect(Collectors.toList());
-		if(!all.isEmpty()) {
-			commandProxy().updateAll(all);
-		}
-	}
 }

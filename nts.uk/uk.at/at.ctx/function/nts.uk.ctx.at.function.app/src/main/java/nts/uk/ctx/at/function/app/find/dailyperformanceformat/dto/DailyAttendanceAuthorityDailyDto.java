@@ -13,5 +13,5 @@ public class DailyAttendanceAuthorityDailyDto {
 	private String sheetName;
 	
 	private List<DailyAttendanceAuthorityDetailDto> dailyAttendanceAuthorityDetailDtos;
-	
+
 }

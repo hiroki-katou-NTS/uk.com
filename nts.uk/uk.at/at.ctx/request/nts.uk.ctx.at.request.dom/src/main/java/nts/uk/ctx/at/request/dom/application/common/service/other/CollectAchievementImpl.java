@@ -83,13 +83,11 @@ public class CollectAchievementImpl implements CollectAchievement {
 		//ドメインモデル「勤務種類」を1件取得する - (lấy 1 dữ liệu của domain 「WorkType」)
 		workTypeOutput = workTypeRepository.findByPK(companyID, workTypeOutput.getWorkTypeCode())
 			.map(x -> new WorkTypeOutput(x.getWorkTypeCode().v(), x.getName().v()))
-            .orElse(new WorkTypeOutput(
-                    workTypeOutput.getWorkTypeCode() != "" ? workTypeOutput.getWorkTypeCode() : "", ""));
+			.orElse(new WorkTypeOutput("", ""));
 		//ドメインモデル「就業時間帯」を1件取得する - (lấy 1 dữ liệu của domain 「WorkTime」)
 		workTimeOutput = WorkTimeRepository.findByCode(companyID, workTimeOutput.getWorkTimeCD())
 				.map(x -> new WorkTimeOutput(x.getWorktimeCode().v(), x.getWorkTimeDisplayName().getWorkTimeName().v()))
-                .orElse(new WorkTimeOutput(workTimeOutput.getWorkTimeCD() != null ? workTimeOutput.getWorkTimeCD() : "",
-                        ""));
+				.orElse(new WorkTimeOutput("", ""));
 		return new AchievementOutput(appDate, workTypeOutput, workTimeOutput, startTime1, endTime1, startTime2, endTime2);
 	}
 

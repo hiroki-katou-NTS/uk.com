@@ -52,18 +52,12 @@ public class RoleWorkplaceIDFinder {
 	 * @param systemType the system type
 	 * @return the list
 	 */
-	public WorkplaceIdDto findListWokplaceId(Integer systemType, GeneralDate referenceDate, boolean oldFlag) {
+	public WorkplaceIdDto findListWokplaceId(Integer systemType, GeneralDate referenceDate) {
 		String companyId = AppContexts.user().companyId();
 		if (systemType == SystemType.ADMINISTRATOR.value) {
 			WorkplaceIdDto workplaceIdDto = new WorkplaceIdDto();
-			List<String> listWkpId = new ArrayList<>();
-			if(oldFlag){
-				listWkpId = workplaceAdapter.findListWkpIdByBaseDate(referenceDate);
-			}else{
-				listWkpId = sysAuthWorkplaceAdapter.getAllActiveWorkplaceInfo(companyId, referenceDate)
-						.stream().map(WorkplaceInfoImport::getWorkplaceId).collect(Collectors.toList());
-			}
-			
+			List<String> listWkpId = sysAuthWorkplaceAdapter.getAllActiveWorkplaceInfo(companyId, referenceDate)
+					.stream().map(WorkplaceInfoImport::getWorkplaceId).collect(Collectors.toList());
 			workplaceIdDto.setListWorkplaceIds(listWkpId);
 			workplaceIdDto.setIsAllEmp(true);
 			return workplaceIdDto;
@@ -78,12 +72,8 @@ public class RoleWorkplaceIDFinder {
 		// if role is present
 		if (opRole.isPresent()) {
 			if (opRole.get().getEmployeeReferenceRange() == EmployeeReferenceRange.ALL_EMPLOYEE) {
-				if(oldFlag){
-					listWkpId = workplaceAdapter.findListWkpIdByBaseDate(referenceDate);
-				}else{
-					listWkpId = sysAuthWorkplaceAdapter.getAllActiveWorkplaceInfo(companyId, referenceDate)
-							.stream().map(WorkplaceInfoImport::getWorkplaceId).collect(Collectors.toList());
-				}
+				listWkpId = sysAuthWorkplaceAdapter.getAllActiveWorkplaceInfo(companyId, referenceDate)
+						.stream().map(WorkplaceInfoImport::getWorkplaceId).collect(Collectors.toList());
 				workplaceIdDto.setListWorkplaceIds(listWkpId);
 				workplaceIdDto.setIsAllEmp(true);
 			} else {

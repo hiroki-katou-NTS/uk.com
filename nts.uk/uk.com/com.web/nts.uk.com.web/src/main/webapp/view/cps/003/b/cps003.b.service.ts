@@ -1,11 +1,12 @@
 module cps003.b.service {
-    import ajax = nts.uk.request.ajax; 
-    import format = nts.uk.text.format;
-    let paths = {
-        checkColum: "basic/organization/empfilemanagement/find/checkFile"  
+    import ajax = nts.uk.request.ajax;
+
+    export const push = {
+        data: (command: any) => ajax('', command)
     }
 
-    export function checkColums(params: any) {
-         return ajax(paths.checkColum, params);
+    export const fetch = {
+        person: (id: string) => ajax(`/ctx/person/${id}`),
+
     }
 }

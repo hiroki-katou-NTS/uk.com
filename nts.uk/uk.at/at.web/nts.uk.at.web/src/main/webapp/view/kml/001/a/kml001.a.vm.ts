@@ -192,10 +192,8 @@ module nts.uk.at.view.kml001.a {
                     self.currentPersonCost().premiumSets()[index].attendanceItems.removeAll();
                     servicebase.getAttendanceItems(iDList)
                         .done(function(res: Array<any>) {
-                            let newList = [], arrSort = [];
-                            // fixbug 105897: sort base displayNumber
-                            arrSort = _.orderBy(res, ['attendanceItemDisplayNumber'], ['asc']);
-                            arrSort.forEach(function(item) {
+                            let newList = [];
+                            res.forEach(function(item) {
                                 newList.push(new vmbase.AttendanceItem(item.attendanceItemId, item.attendanceItemName));
                             });
                             self.currentPersonCost().premiumSets()[index].attendanceItems(newList);

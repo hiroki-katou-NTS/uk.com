@@ -51,6 +51,8 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 	//育児介護区分
 	private Optional<ChildCareAtr> childCareAtr;
 	
+	
+	
 	/**
 	 * 控除項目の時間帯作成(育児介護区分対応版)
 	 * @param timeSpan
@@ -174,6 +176,7 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 		return Optional.empty();
 	}
 	
+
 	/**
 	 * 控除項目の時間帯の法定内区分を法定外へ置き換える
 	 * @return 法定内区分を法定外に変更した控除項目の時間帯
@@ -491,26 +494,26 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 	public List<TimeSheetOfDeductionItem> collectionBreakTime(TimeSheetOfDeductionItem frontBreakTimeSheet, TimeSheetOfDeductionItem backGoOutTimeSheet){
 		List<TimeSheetOfDeductionItem> returnList = new ArrayList<>();
 		switch(frontBreakTimeSheet.calcrange.checkDuplication(backGoOutTimeSheet.calcrange)) {
-		case CONNOTATE_ENDTIME://終了時間含む
-		case SAME_SPAN://同じ期間
+		case CONNOTATE_ENDTIME:
+		case SAME_SPAN:
 			returnList.add(frontBreakTimeSheet.replaceTimeSpan(Optional.of(frontBreakTimeSheet.calcrange.shiftAhead(frontBreakTimeSheet.calcrange.getDuplicatedWith(backGoOutTimeSheet.calcrange).get().lengthAsMinutes()))));
 			returnList.add(backGoOutTimeSheet);
 			return returnList;
-		case CONTAINED://含まれている(べース側が短い)
+		case CONTAINED:
 			/*休憩を外出の後ろにずらす*/
 			returnList.add(frontBreakTimeSheet.replaceTimeSpan(Optional.of(frontBreakTimeSheet.calcrange.shiftAhead(backGoOutTimeSheet.calcrange.getEnd().valueAsMinutes() - frontBreakTimeSheet.calcrange.getStart().valueAsMinutes()))));
 			returnList.add(backGoOutTimeSheet);
-		case CONTAINS://比較相手を含んでいる
-		case CONNOTATE_BEGINTIME://開始時間を含む
+		case CONTAINS:
+		case CONNOTATE_BEGINTIME:
 			returnList.add(frontBreakTimeSheet.replaceTimeSpan(Optional.of(new TimeSpanForCalc(frontBreakTimeSheet.start(),backGoOutTimeSheet.start()))));
 			returnList.add(backGoOutTimeSheet);
 			returnList.add(frontBreakTimeSheet.replaceTimeSpan(Optional.of(new TimeSpanForCalc(backGoOutTimeSheet.end(),frontBreakTimeSheet.calcrange.getEnd().backByMinutes(backGoOutTimeSheet.calcrange.lengthAsMinutes())))));
 			return returnList;
-		case NOT_DUPLICATE://重複していない
+		case NOT_DUPLICATE:
 			returnList.add(frontBreakTimeSheet);
 			returnList.add(backGoOutTimeSheet);
 			return returnList;
-		default://例外
+		default:
 			throw new RuntimeException("unknown duplicate Atr" + frontBreakTimeSheet.calcrange.checkDuplication(backGoOutTimeSheet.calcrange));
 		}
 	}
@@ -536,12 +539,10 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 	 */
 	public TimeSpanForCalc decisionNewSpan(TimeSpanForCalc timeSpan,TimeWithDayAttr baseTime,boolean isDateBefore) {
 		if(isDateBefore) {
-			val endOclock = timeSpan.getEnd().lessThan(baseTime) ? timeSpan.getEnd() : baseTime; 
-			return new TimeSpanForCalc(timeSpan.getStart(),endOclock);
+			return new TimeSpanForCalc(timeSpan.getStart(),baseTime);
 		}
 		else {
-			val startOclock = baseTime.lessThan(timeSpan.getStart()) ? timeSpan.getStart() : baseTime;
-			return new TimeSpanForCalc(startOclock,timeSpan.getEnd());
+			return new TimeSpanForCalc(baseTime,timeSpan.getEnd());
 		}
 	}
 	
@@ -625,7 +626,6 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 				//退勤時間まで計上
 				case OFFICE_WORK_APPROP_ALL:
 					return Optional.of(new TimeSpanForCalc(newStart,time.getTimespan().getEnd()));
-				//例外
 				default:
 					throw new RuntimeException("unknown CalcMethodIfLeaveWorkDuringBreakTime:" + calcMethod);
 			}
@@ -691,7 +691,6 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 				return goOutingRoundingActual(commonSet.getGoOutSet(), actualAtr, dedAtr,rounding);
 			}
 			return Optional.of(new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN));
-		//計上無し
 		case NON_RECORD:
 			return Optional.of(rounding);
 		default:
@@ -704,7 +703,7 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 		switch(dedAtr) {
 			//計上
 			case Appropriate:
-			//控除
+				//控除
 			case Deduction:
 				if(this.getShortTimeSheetAtr().isPresent()) {
 					switch(this.getShortTimeSheetAtr().get()) {
@@ -748,9 +747,9 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 				returnValue = goOutingRounding(dedAtr,goOutSet.getDiffTimezoneSetting().getWorkTimezone(),rounding);
 				break;
 			//残業
-			case EarlyWork://早出
-			case OverTimeWork://普通
-			case StatutoryOverTimeWork://法内
+			case EarlyWork:
+			case OverTimeWork:
+			case StatutoryOverTimeWork:
 				returnValue = goOutingRounding(dedAtr,goOutSet.getDiffTimezoneSetting().getOttimezone(),rounding);
 				break;
 			//休出
@@ -774,13 +773,15 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 		if(this.getGoOutReason() != null
 		 &&this.getGoOutReason().isPresent()) {
 			switch(this.getGoOutReason().get()) {
-			case PRIVATE://私用
-			case UNION://組合
+			//私用。組合
+			case PRIVATE:
+			case UNION:
 				return Optional.of(goOutingRond(dedAtr,set.getPrivateUnionGoOut(), rounding));
-			case COMPENSATION://公用
-			case PUBLIC://有償
+			//公用、有償
+			case COMPENSATION:
+			case PUBLIC:
 				return Optional.of(goOutingRond(dedAtr,set.getOfficalUseCompenGoOut(), rounding));
-			default://例外
+			default:
 				throw new RuntimeException("Unknown GoOutReason:"+this.getGoOutReason().get());
 			}
 		}
@@ -836,23 +837,5 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 		}
 		returnList.addAll(this.collectShortTimeSheet());
 		return returnList;
-	}
-	
-	public static TimeSheetOfDeductionItem createFromDeductionTimeSheet(nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime dTimeSheet) {
-		return TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(new TimeZoneRounding(dTimeSheet.getStart(),dTimeSheet.getEnd(), new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN)),
-				  new TimeSpanForCalc(dTimeSheet.getStart(), dTimeSheet.getEnd()),
-				  Collections.emptyList(),
-				  Collections.emptyList(),
-				  Collections.emptyList(),
-				  Collections.emptyList(),
-				  Optional.empty(),
-				  WorkingBreakTimeAtr.NOTWORKING,
-				  Finally.empty(),
-				  Finally.of(BreakClassification.BREAK),
-				  Optional.empty(),
-				  DeductionClassification.BREAK,
-				  Optional.empty()
-				  );
-				
 	}
 }

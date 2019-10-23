@@ -40,9 +40,6 @@ public class SpecialHolidayCommand {
 	/** 対象項目 */
 	private TargetItemCommand targetItemCommand;
 	
-	/**自動付与区分 */
-	private int autoGrant;
-	
 	/** メモ */
 	private String memo;
 
@@ -54,7 +51,6 @@ public class SpecialHolidayCommand {
 				this.toDomainGrantPeriodic(companyId),
 				this.toDomainSpecLeaveRest(companyId),
 				this.toDomainTargetItem(companyId),
-				this.autoGrant,
 				this.memo);
 	}
 

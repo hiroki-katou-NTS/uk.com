@@ -25,26 +25,12 @@ public class LeaveForCareInfo extends NursingCareLeaveRemainingInfo {
 
 	public static LeaveForCareInfo createCareLeaveInfo(String sId, int useClassification, int upperlimitSetting,
 			Double maxDayForThisFiscalYear, Double maxDayForNextFiscalYear) {
-		return new LeaveForCareInfo(sId, 
-				EnumAdaptor.valueOf(1, LeaveType.class),
-				useClassification == 1,
+		return new LeaveForCareInfo(sId, EnumAdaptor.valueOf(1, LeaveType.class), useClassification == 1,
 				EnumAdaptor.valueOf(upperlimitSetting, UpperLimitSetting.class),
 				maxDayForThisFiscalYear != null ? Optional.of(new MaxDayForFiscalYear(maxDayForThisFiscalYear))
 						: Optional.empty(),
 				maxDayForNextFiscalYear != null ? Optional.of(new MaxDayForFiscalYear(maxDayForNextFiscalYear))
 						: Optional.empty());
-	}
-	
-	public static LeaveForCareInfo createCareLeaveInfoCps013(String sId, int useClassification, int upperlimitSetting,
-			Double maxDayForThisFiscalYear, Double maxDayForNextFiscalYear) {
-		return new LeaveForCareInfo(sId, 
-				LeaveType.LEAVE_FOR_CARE,
-				useClassification == 1,
-				UpperLimitSetting.FAMILY_INFO,
-				maxDayForThisFiscalYear != null ? Optional.of(new MaxDayForFiscalYear(maxDayForThisFiscalYear))
-				: Optional.empty(),
-				maxDayForNextFiscalYear != null ? Optional.of(new MaxDayForFiscalYear(maxDayForNextFiscalYear))
-				: Optional.empty());
 	}
 
 }

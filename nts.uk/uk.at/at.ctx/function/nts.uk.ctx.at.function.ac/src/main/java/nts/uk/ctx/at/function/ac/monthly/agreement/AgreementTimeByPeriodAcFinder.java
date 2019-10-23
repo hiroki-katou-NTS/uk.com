@@ -2,7 +2,6 @@ package nts.uk.ctx.at.function.ac.monthly.agreement;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -69,8 +68,8 @@ public class AgreementTimeByPeriodAcFinder implements AgreementTimeByPeriodAdapt
 	
 	@Override	
 	public List<AgreementTimeByEmpImport> algorithmImprove(String companyId, List<String> employeeIds, GeneralDate criteria,
-														   Month startMonth, Year year, List<PeriodAtrOfAgreement> periodAtrs, Map<String, YearMonthPeriod> periodWorking) {
-		return agreementTimeByPeriodPub.algorithmImprove(companyId, employeeIds, criteria, startMonth, year, periodAtrs, periodWorking).stream()
+														   Month startMonth, Year year, List<PeriodAtrOfAgreement> periodAtrs) {
+		return agreementTimeByPeriodPub.algorithmImprove(companyId, employeeIds, criteria, startMonth, year, periodAtrs).stream()
 				.map(x -> new AgreementTimeByEmpImport(x.getEmployeeId(), x.getPeriodAtr(),
 						new AgreementTimeByPeriodImport(x.getAgreementTime().getStartMonth(), x.getAgreementTime().getEndMonth(),
 								x.getAgreementTime().getAgreementTime(),

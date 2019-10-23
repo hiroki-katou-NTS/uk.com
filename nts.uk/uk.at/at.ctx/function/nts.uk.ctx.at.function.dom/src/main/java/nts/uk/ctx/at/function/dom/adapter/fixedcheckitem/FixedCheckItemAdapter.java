@@ -23,6 +23,4 @@ public interface FixedCheckItemAdapter {
 		public Map<String, List<GeneralDate>> checkAdminUnverified(List<String> employeeID,DatePeriod datePeriod);
 		
 		public List<ValueExtractAlarm> checkContinuousVacation(String employeeID,DatePeriod datePeriod);
-		
-		public int getContinuousHolCheckSet(String companyId);
 }

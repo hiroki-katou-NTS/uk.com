@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -28,7 +26,6 @@ public class JpaApplicationDeadlineRepository extends JpaRepository implements A
 	 * get deadline setting by closureId
 	 */
 	@Override
-	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public Optional<ApplicationDeadline> getDeadlineByClosureId(String companyId, int closureId) {
 		Optional<ApplicationDeadline> data = this.queryProxy()
 				.query(FINDBYCLOSURE, KrqstAppDeadline.class)

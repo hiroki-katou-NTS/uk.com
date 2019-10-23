@@ -44,21 +44,14 @@ public class CellValidateServiceTest {
 	public void testTime() {
 		DataConstraint constraint = new TimeConstraint(1, 0, 60);
 		Optional<String> result = CellValidateService.validateValue(constraint, new ValueWithType("20:62"));
-		Assert.assertEquals(result.get(), "MsgB_55");
+		Assert.assertEquals(result.get(), ErrorIdFactory.TimeStyleErrorId);
 	}
 
 	@Test
 	public void testTimePoint() {
 		DataConstraint constraint = new TimePointConstraint(1, 0, 60);
 		Optional<String> result = CellValidateService.validateValue(constraint, new ValueWithType("30:00"));
-		Assert.assertEquals(result.get(), "MsgB_56");
-	}
-
-	@Test
-	public void testDayAttr1() {
-		DataConstraint constraint = new TimePointConstraint(1, 0, 60);
-		Optional<String> result = CellValidateService.validateValue(constraint, new ValueWithType("前日23:00"));
-		Assert.assertEquals(result.get(), "MsgB_56");
+		Assert.assertEquals(result.get(), ErrorIdFactory.TimeStyleErrorId);
 	}
 
 }

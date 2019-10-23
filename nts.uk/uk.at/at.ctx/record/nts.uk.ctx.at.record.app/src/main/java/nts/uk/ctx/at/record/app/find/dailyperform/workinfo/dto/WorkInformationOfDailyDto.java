@@ -26,9 +26,6 @@ import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.Da
 @AttendanceItemRoot(rootName = ItemConst.DAILY_WORK_INFO_NAME)
 public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 
-	/***/
-	private static final long serialVersionUID = 1L;
-	
 	/** 勤務実績の勤務情報: 勤務情報 */
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = ACTUAL)
 	private WorkInfoDto actualWorkInfo;
@@ -56,8 +53,6 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 	private int backStraightAtr;
 
 	private int dayOfWeek;
-	
-	private long version;
 
 	public static WorkInformationOfDailyDto getDto(WorkInfoOfDailyPerformance workInfo) {
 		WorkInformationOfDailyDto result = new WorkInformationOfDailyDto();
@@ -72,7 +67,6 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 			
 			result.setScheduleTimeZone(getScheduleTimeZone(workInfo.getScheduleTimeSheets()));
 			result.setDayOfWeek(workInfo.getDayOfWeek().value);
-			result.setVersion(workInfo.getVersion());
 			result.exsistData();
 		}
 		return result;
@@ -112,7 +106,7 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 		if (date == null) {
 			date = this.workingDate();
 		}
-		WorkInfoOfDailyPerformance domain = new WorkInfoOfDailyPerformance(employeeId, getWorkInfo(actualWorkInfo), getWorkInfo(planWorkInfo),
+		return new WorkInfoOfDailyPerformance(employeeId, getWorkInfo(actualWorkInfo), getWorkInfo(planWorkInfo),
 				calculationState == CalculationState.No_Calculated.value ? CalculationState.No_Calculated : CalculationState.Calculated, 
 				goStraightAtr == NotUseAttribute.Not_use.value ? NotUseAttribute.Not_use : NotUseAttribute.Use,
 				backStraightAtr == NotUseAttribute.Not_use.value ? NotUseAttribute.Not_use : NotUseAttribute.Use, date, 
@@ -120,9 +114,6 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 				ConvertHelper.mapTo(this.getScheduleTimeZone(), 
 						(c) -> new ScheduleTimeSheet(c.getNo(), c.getWorking(), c.getLeave()),
 						(c) -> c.getLeave() != null && c.getWorking() != null));
-		domain.setVersion(this.version);
-		
-		return domain;
 	}
 	
 	
@@ -144,7 +135,6 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 		
 		result.setScheduleTimeZone(ConvertHelper.mapTo(scheduleTimeZone, c -> c.clone()));
 		result.setDayOfWeek(dayOfWeek);
-		result.version = this.version;
 		if(this.isHaveData()){
 			result.exsistData();
 		}

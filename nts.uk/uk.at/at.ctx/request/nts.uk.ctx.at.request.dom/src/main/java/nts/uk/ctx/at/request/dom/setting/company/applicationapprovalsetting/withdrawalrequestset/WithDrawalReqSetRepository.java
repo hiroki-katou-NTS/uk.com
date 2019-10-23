@@ -25,6 +25,4 @@ public interface WithDrawalReqSetRepository {
 	 * @param withDrawalReqSet
 	 */
 	void updateWithDrawalReqSet(WithDrawalReqSet withDrawalReqSet);
-	
-	Optional<WorkUse> getDeferredWorkTimeSelect(String Cid);
 }

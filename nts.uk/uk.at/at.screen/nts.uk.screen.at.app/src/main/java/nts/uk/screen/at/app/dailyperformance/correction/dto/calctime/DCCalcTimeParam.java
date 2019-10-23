@@ -20,6 +20,4 @@ public class DCCalcTimeParam {
      private Boolean changeSpr31;
      
      private Boolean changeSpr34;
-     
-     private boolean notChangeCell;
 }

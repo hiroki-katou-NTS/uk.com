@@ -6,5 +6,5 @@ public interface GoBackDirectlyReflectSche {
 	 * @param reflectPara
 	 * @return
 	 */
-	public void goBackDirectlyReflectSch(GobackReflectParam reflectPara);
+	public boolean goBackDirectlyReflectSch(GobackReflectParam reflectPara);
 }

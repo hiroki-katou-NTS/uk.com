@@ -5,7 +5,6 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
@@ -17,8 +16,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 // 時間帯(丸め付き)
 @Getter
-@NoArgsConstructor
-public class TimeZoneRounding extends TimeZone implements Cloneable{
+public class TimeZoneRounding extends TimeZone {
 
 	/** The rounding. */
 	// 丸め
@@ -82,19 +80,5 @@ public class TimeZoneRounding extends TimeZone implements Cloneable{
 	 */
 	public void roudingReset() {
 		this.rounding = new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN);
-	}
-	
-	@Override
-	public TimeZoneRounding clone() {
-		TimeZoneRounding cloned = new TimeZoneRounding();
-		try {
-			cloned.start = new TimeWithDayAttr(this.start.valueAsMinutes());
-			cloned.end = new TimeWithDayAttr(this.end.valueAsMinutes());
-			cloned.rounding = this.rounding.clone();
-		}
-		catch (Exception e){
-			throw new RuntimeException("AggregateTotalTimeSpentAtWork clone error.");
-		}
-		return cloned;
 	}
 }

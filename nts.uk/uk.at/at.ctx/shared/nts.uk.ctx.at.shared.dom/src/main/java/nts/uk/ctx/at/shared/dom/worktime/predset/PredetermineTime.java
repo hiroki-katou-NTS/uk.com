@@ -5,7 +5,6 @@
 package nts.uk.ctx.at.shared.dom.worktime.predset;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
@@ -14,9 +13,8 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
  * The Class PredetermineTime.
  */
 @Getter
-@NoArgsConstructor
 // 所定時間
-public class PredetermineTime extends WorkTimeDomainObject implements Cloneable{
+public class PredetermineTime extends WorkTimeDomainObject {
 
 	/** The add time. */
 	// 就業加算時間
@@ -88,19 +86,6 @@ public class PredetermineTime extends WorkTimeDomainObject implements Cloneable{
 		if (screenMode == ScreenMode.SIMPLE) {
 			// Simple mode
 		} 		
-	}
-	
-	@Override
-	public PredetermineTime clone() {
-		PredetermineTime cloned = new PredetermineTime();
-		try {
-			cloned.addTime = this.addTime.clone();
-			cloned.predTime = this.predTime.clone();
-		}
-		catch (Exception e){
-			throw new RuntimeException("PredetemineTimeSetting clone error.");
-		}
-		return cloned;
 	}
 
 }

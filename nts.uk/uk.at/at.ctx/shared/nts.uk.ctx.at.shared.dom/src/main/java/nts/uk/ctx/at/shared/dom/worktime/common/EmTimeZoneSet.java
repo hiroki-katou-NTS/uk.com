@@ -5,7 +5,6 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeDeductTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
@@ -17,8 +16,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 // 就業時間の時間帯設定
 @Getter
 @Setter
-@NoArgsConstructor
-public class EmTimeZoneSet extends WorkTimeDomainObject implements Cloneable{
+public class EmTimeZoneSet extends WorkTimeDomainObject {
 
 	/** The Employment time frame no. */
 	//就業時間枠NO
@@ -82,19 +80,6 @@ public class EmTimeZoneSet extends WorkTimeDomainObject implements Cloneable{
 
 	public boolean checkRestTime(DiffTimeDeductTimezone item) {
 		return this.timezone.getStart().v() <= item.getStart().v() && this.timezone.getEnd().v() >= item.getEnd().v();
-	}
-	
-	@Override
-	public EmTimeZoneSet clone() {
-		EmTimeZoneSet cloned = new EmTimeZoneSet();
-		try {
-			cloned.employmentTimeFrameNo = new EmTimeFrameNo(this.employmentTimeFrameNo.v());
-			cloned.timezone = this.getTimezone().clone();
-		}
-		catch (Exception e){
-			throw new RuntimeException("EmTimeZoneSet clone error.");
-		}
-		return cloned;
 	}
 	
 }

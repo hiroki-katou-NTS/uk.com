@@ -1,12 +1,8 @@
 package nts.uk.ctx.at.function.infra.repository.processexecution;
 
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -14,18 +10,14 @@ import javax.ejb.TransactionAttributeType;
 import javax.persistence.Query;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLog;
 //import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLogManage;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogRepository;
 import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtExecutionTaskLog;
-import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtExecutionTaskLogPK;
 import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtProcessExecutionLog;
-import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtProcessExecutionLogPK;
 //import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtProcessExecutionLogManage;
 //import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtProcessExecutionLogPK;
-import nts.uk.shr.infra.data.jdbc.JDBCUtil;
 
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
@@ -61,9 +53,6 @@ public class JpaProcessExecutionLogRepository extends JpaRepository
 	private static final String DELETE_BY_EXEC_CD = " DELETE FROM KfnmtProcessExecutionLog c "
 			+ "WHERE c.kfnmtProcExecLogPK.companyId = :companyId "
 			+ "AND c.kfnmtProcExecLogPK.execItemCd = :execItemCd ";
-	private static final String SELECT_TASK_LOG_BY_JDBC = "SELECT * FROM KFNMT_EXEC_TASK_LOG "
-			+ "WHERE CID = ? "
-			+ "AND EXEC_ITEM_CD = ? ";
 	@Override
 	public List<ProcessExecutionLog> getProcessExecutionLogByCompanyId(String companyId) {
 		return this.queryProxy().query(SELECT_All_BY_CID, KfnmtProcessExecutionLog.class)
@@ -86,66 +75,16 @@ public class JpaProcessExecutionLogRepository extends JpaRepository
 	@Override
 	public void update(ProcessExecutionLog domain) {
 		KfnmtProcessExecutionLog updateData = KfnmtProcessExecutionLog.toEntity(domain);
-//		Optional<KfnmtProcessExecutionLog> oldDataOtp = this.queryProxy().find(updateData.kfnmtProcExecLogPK, KfnmtProcessExecutionLog.class);
-//		if(!oldDataOtp.isPresent())
-//			return;
-//		KfnmtProcessExecutionLog oldData = oldDataOtp.get();
-//		oldData.schCreateStart = updateData.schCreateStart;
-//		oldData.schCreateEnd = updateData.schCreateEnd;
-//		oldData.dailyCreateStart = updateData.dailyCreateStart;
-//		oldData.dailyCreateEnd = updateData.dailyCreateEnd;
-//		oldData.dailyCalcStart = updateData.dailyCalcStart;
-//		oldData.dailyCalcEnd = updateData.dailyCalcEnd;
-//		oldData.reflectApprovalResultStart = updateData.reflectApprovalResultStart;
-//		oldData.reflectApprovalResultEnd = updateData.reflectApprovalResultEnd;
-//		oldData.taskLogList = updateData.taskLogList;
-//		this.commandProxy().update(oldData);
-		try {
-			String updateTableSQL = " UPDATE KFNMT_PROC_EXEC_LOG SET"
-					+ " SCH_CREATE_START = ?" 
-					+ " ,SCH_CREATE_END = ? "
-					+ " ,DAILY_CREATE_START = ? " 
-					+ " ,DAILY_CREATE_END = ?" 
-					+ " ,DAILY_CALC_START = ?"
-					+ " ,DAILY_CALC_END = ?"
-					+ " ,RFL_APPR_START = ?"
-					+ " ,RFL_APPR_END = ?"
-					+ " WHERE CID = ? AND EXEC_ITEM_CD = ? AND EXEC_ID = ? ";
-			try (PreparedStatement ps = this.connection().prepareStatement(JDBCUtil.toUpdateWithCommonField(updateTableSQL))) {
-				ps.setDate(1, updateData.schCreateStart ==null?null: Date.valueOf(updateData.schCreateStart.localDate()));
-				ps.setDate(2, updateData.schCreateEnd ==null?null: Date.valueOf(updateData.schCreateEnd.localDate()));
-				ps.setDate(3, updateData.dailyCreateStart ==null?null: Date.valueOf(updateData.dailyCreateStart.localDate()));
-				ps.setDate(4, updateData.dailyCreateEnd ==null?null: Date.valueOf(updateData.dailyCreateEnd.localDate()));
-				ps.setDate(5, updateData.dailyCalcStart ==null?null: Date.valueOf(updateData.dailyCalcStart.localDate()));
-				ps.setDate(6, updateData.dailyCalcEnd ==null?null: Date.valueOf(updateData.dailyCalcEnd.localDate()));
-				ps.setDate(7, updateData.reflectApprovalResultStart ==null?null: Date.valueOf(updateData.reflectApprovalResultStart.localDate()));
-				ps.setDate(8, updateData.reflectApprovalResultEnd ==null?null: Date.valueOf(updateData.reflectApprovalResultEnd.localDate()));
-				ps.setString(9, domain.getCompanyId());
-				ps.setString(10, domain.getExecItemCd().v());
-				ps.setString(11, domain.getExecId());
-				ps.executeUpdate();
-			}
-		}catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-		try {
-			for(KfnmtExecutionTaskLog kfnmtExecutionTaskLog : updateData.taskLogList) {
-				String updateTableSQL = " UPDATE KFNMT_EXEC_TASK_LOG SET"
-						+ " STATUS = ?"
-						+ " WHERE CID = ? AND EXEC_ITEM_CD = ? AND EXEC_ID = ? AND TASK_ID = ? ";
-				try (PreparedStatement ps = this.connection().prepareStatement(JDBCUtil.toUpdateWithCommonField(updateTableSQL))) {
-					ps.setString(1, kfnmtExecutionTaskLog.status ==null?null:kfnmtExecutionTaskLog.status.toString());
-					ps.setString(2, kfnmtExecutionTaskLog.kfnmtExecTaskLogPK.companyId);
-					ps.setString(3, kfnmtExecutionTaskLog.kfnmtExecTaskLogPK.execItemCd);
-					ps.setString(4, kfnmtExecutionTaskLog.kfnmtExecTaskLogPK.execId);
-					ps.setInt(5, kfnmtExecutionTaskLog.kfnmtExecTaskLogPK.taskId);
-					ps.executeUpdate();
-				}
-			}
-			
-		}catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+		KfnmtProcessExecutionLog oldData = this.queryProxy().find(updateData.kfnmtProcExecLogPK, KfnmtProcessExecutionLog.class).get();
+		oldData.schCreateStart = updateData.schCreateStart;
+		oldData.schCreateEnd = updateData.schCreateEnd;
+		oldData.dailyCreateStart = updateData.dailyCreateStart;
+		oldData.dailyCreateEnd = updateData.dailyCreateEnd;
+		oldData.dailyCalcStart = updateData.dailyCalcStart;
+		oldData.dailyCalcEnd = updateData.dailyCalcEnd;
+		oldData.reflectApprovalResultStart = updateData.reflectApprovalResultStart;
+		oldData.reflectApprovalResultEnd = updateData.reflectApprovalResultEnd;
+		this.commandProxy().update(oldData);
 	}
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
@@ -169,29 +108,11 @@ public class JpaProcessExecutionLogRepository extends JpaRepository
 
 	@Override
 	public Optional<ProcessExecutionLog> getLog(String companyId, String execItemCd) {
-//		 List<KfnmtExecutionTaskLog> list = this.queryProxy().query(SELECT_TASK_LOG, KfnmtExecutionTaskLog.class)
-//				.setParameter("companyId", companyId).setParameter("execItemCd", execItemCd).getList();
-		List<KfnmtExecutionTaskLog> list = new ArrayList<>();
-		try (PreparedStatement statement1 = this.connection().prepareStatement(SELECT_TASK_LOG_BY_JDBC)) {
-			statement1.setString(1, companyId);
-			statement1.setString(2, execItemCd);
-			list.addAll(new NtsResultSet(statement1.executeQuery()).getList(rec -> {
-				KfnmtExecutionTaskLogPK pk = new KfnmtExecutionTaskLogPK();
-						pk.setCompanyId(rec.getString("CID"));
-						pk.setExecItemCd(rec.getString("EXEC_ITEM_CD"));
-						pk.setExecId(rec.getString("EXEC_ID"));
-						pk.setTaskId(rec.getInt("TASK_ID"));
-						KfnmtExecutionTaskLog entity = new KfnmtExecutionTaskLog();
-						entity.setKfnmtExecTaskLogPK(pk);
-						entity.setStatus(rec.getInt("STATUS"));
-						entity.setUpdDate(rec.getGeneralDateTime("UPD_DATE"));
-						return entity;
-					}));
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
+		 List<KfnmtExecutionTaskLog> list = this.queryProxy().query(SELECT_TASK_LOG, KfnmtExecutionTaskLog.class)
+				.setParameter("companyId", companyId).setParameter("execItemCd", execItemCd).getList();
 		if(!list.isEmpty()){
-			 List<KfnmtProcessExecutionLog> listKfnmtProcessExecutionLog= getProcessExecutionLog(companyId, execItemCd);
+			 List<KfnmtProcessExecutionLog> listKfnmtProcessExecutionLog= this.queryProxy().query(SELECT_BY_KEY, KfnmtProcessExecutionLog.class)
+						.setParameter("companyId", companyId).setParameter("execItemCd", execItemCd).getList();
 			 if(!listKfnmtProcessExecutionLog.isEmpty()){
 				 KfnmtProcessExecutionLog kfnmtProcessExecutionLog = listKfnmtProcessExecutionLog.get(0);
 				 return Optional.ofNullable(kfnmtProcessExecutionLog.toDomainMaxDate(list));
@@ -199,7 +120,8 @@ public class JpaProcessExecutionLogRepository extends JpaRepository
 				 return Optional.empty();
 			 }
 		}else{
-			 List<ProcessExecutionLog> lstProcessExecutionLog = getProcessExecutionLog(companyId, execItemCd).stream().map(c -> c.toDomainMaxDate()).collect(Collectors.toList());
+			 List<ProcessExecutionLog> lstProcessExecutionLog = this.queryProxy().query(SELECT_BY_KEY, KfnmtProcessExecutionLog.class)
+						.setParameter("companyId", companyId).setParameter("execItemCd", execItemCd).getList(c -> c.toDomainMaxDate());
 				 if(lstProcessExecutionLog!=null && !lstProcessExecutionLog.isEmpty()){
 					return Optional.ofNullable(lstProcessExecutionLog.get(0));
 				 }
@@ -223,32 +145,4 @@ public class JpaProcessExecutionLogRepository extends JpaRepository
 		 return Optional.empty();
 	}
 	
-	private List<KfnmtProcessExecutionLog> getProcessExecutionLog(String companyId,String execItemCd){
-		List<KfnmtProcessExecutionLog> data = new ArrayList<>();
-		String selectData = " SELECT * FROM KFNMT_PROC_EXEC_LOG "
-				+ " WHERE CID = ? AND EXEC_ITEM_CD = ? ";
-		try (PreparedStatement statement = this.connection().prepareStatement(selectData)) {
-			statement.setString(1, companyId);
-			statement.setString(2, execItemCd);
-			data =  new NtsResultSet(statement.executeQuery()).getList(rec -> {
-				KfnmtProcessExecutionLog entity = new KfnmtProcessExecutionLog();
-				entity.kfnmtProcExecLogPK = new KfnmtProcessExecutionLogPK(rec.getString("CID"), 
-						rec.getString("EXEC_ITEM_CD"), rec.getString("EXEC_ID"));
-				entity.schCreateStart = rec.getGeneralDate("SCH_CREATE_START");
-				entity.schCreateEnd = rec.getGeneralDate("SCH_CREATE_END");
-				entity.dailyCreateStart = rec.getGeneralDate("DAILY_CREATE_START");
-				entity.dailyCreateEnd = rec.getGeneralDate("DAILY_CREATE_END");
-				entity.dailyCalcStart = rec.getGeneralDate("DAILY_CALC_START");
-				entity.dailyCalcEnd = rec.getGeneralDate("DAILY_CALC_END");
-				entity.reflectApprovalResultStart = rec.getGeneralDate("RFL_APPR_START");
-				entity.reflectApprovalResultEnd = rec.getGeneralDate("RFL_APPR_END");
-				return entity;
-			});
-		}catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-		return data;
-	}
-	
 }
-

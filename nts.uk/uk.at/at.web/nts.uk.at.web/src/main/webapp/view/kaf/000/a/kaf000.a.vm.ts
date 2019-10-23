@@ -96,23 +96,20 @@ module nts.uk.at.view.kaf000.a.viewmodel{
                         switch(data.errorFlag){
                             case 1:
                                 $('#listApproverRootState').ntsError('set', {messageId:"Msg_324"});
-                                $("#inputdate").ntsError('set', {messageId:"Msg_324"});
                                 nts.uk.ui.dialog.alertError({ messageId: "Msg_324" }).then(function(){
-                                    nts.uk.ui.block.clear();
+                                    nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
                                 });
                                 break;
                             case 2: 
                                 $('#listApproverRootState').ntsError('set', {messageId:"Msg_238"});
-                                $("#inputdate").ntsError('set', {messageId:"Msg_238"});
                                 nts.uk.ui.dialog.alertError({ messageId: "Msg_238" }).then(function(){
-                                    nts.uk.ui.block.clear();
+                                    nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
                                 });
                                 break;
                             case 3:
                                 $('#listApproverRootState').ntsError('set', {messageId:"Msg_237"});
-                                $("#inputdate").ntsError('set', {messageId:"Msg_237"});
                                 nts.uk.ui.dialog.alertError({ messageId: "Msg_237" }).then(function(){
-                                    nts.uk.ui.block.clear();
+                                    nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
                                 });
                                 break;
                             default: 

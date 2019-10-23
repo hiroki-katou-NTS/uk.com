@@ -48,10 +48,10 @@ public class WorkChangeRegisterServiceImpl implements IWorkChangeRegisterService
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlg;	
 	@Override
-    public ProcessResult registerData(AppWorkChange workChange, Application_New app, boolean checkOver1Year, List<GeneralDate> lstDateHd) {
+	public ProcessResult registerData(AppWorkChange workChange, Application_New app) {
 
 		// アルゴリズム「2-1.新規画面登録前の処理」を実行する
-        newBeforeRegister.processBeforeRegister(app, 0, checkOver1Year, lstDateHd);
+		newBeforeRegister.processBeforeRegister(app,0);
 		
 		// ドメインモデル「勤務変更申請設定」の新規登録をする
 		appRepository.insert(app);
@@ -64,7 +64,7 @@ public class WorkChangeRegisterServiceImpl implements IWorkChangeRegisterService
 		GeneralDate startDateParam = app.getStartDate().orElse(app.getAppDate());
 		GeneralDate endDateParam = app.getEndDate().orElse(app.getAppDate());
 		List<GeneralDate> listDate = new ArrayList<>();
-		List<GeneralDate> lstHoliday = otherCommonAlg.lstDateIsHoliday(app.getCompanyID(), app.getEmployeeID(), new DatePeriod(startDateParam, endDateParam));
+		List<GeneralDate> lstHoliday = otherCommonAlg.lstDateNotHoliday(app.getCompanyID(), app.getEmployeeID(), new DatePeriod(startDateParam, endDateParam));
 		
 		for(GeneralDate loopDate = startDateParam; loopDate.beforeOrEquals(endDateParam); loopDate = loopDate.addDays(1)){
 			if(workChange.getExcludeHolidayAtr() == 0

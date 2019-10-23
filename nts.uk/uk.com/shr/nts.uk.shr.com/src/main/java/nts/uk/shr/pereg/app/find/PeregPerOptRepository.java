@@ -1,7 +1,6 @@
 package nts.uk.shr.pereg.app.find;
 
 import java.util.List;
-import java.util.Map;
 
 import nts.uk.shr.pereg.app.find.dto.OptionalItemDataDto;
 
@@ -13,6 +12,4 @@ public interface PeregPerOptRepository {
 	 * @return
 	 */
 	List<OptionalItemDataDto> getData(String recordId);
-	
-	Map<String, List<OptionalItemDataDto>> getDatas(List<String> recordIds);
 }

@@ -1,14 +1,12 @@
 package nts.uk.ctx.at.request.dom.application.overtime.service;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 public class CaculationTime {
 	/**
 	 * 会社ID
@@ -59,10 +57,4 @@ public class CaculationTime {
 	 * displayOvertimeHour
 	 */
 	private boolean displayOvertimeHour;
-	
-	/** 事前申請超過 */
-	private boolean preAppExceedState;
-	
-	/** 実績超過 */
-	private boolean actualExceedState;
 }

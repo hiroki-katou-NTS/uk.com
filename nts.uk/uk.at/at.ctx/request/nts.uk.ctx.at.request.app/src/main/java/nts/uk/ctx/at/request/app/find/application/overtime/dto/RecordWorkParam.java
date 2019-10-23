@@ -16,7 +16,6 @@ public class RecordWorkParam {
 	private String workTypeCode;
 	private List<Integer> startTimeRests;
 	private List<Integer> endTimeRests;
-	private boolean restTimeDisFlg;
 	
 	public List<Integer> getStartTimeRests() {
 		List<Integer> result=  new ArrayList<Integer>();

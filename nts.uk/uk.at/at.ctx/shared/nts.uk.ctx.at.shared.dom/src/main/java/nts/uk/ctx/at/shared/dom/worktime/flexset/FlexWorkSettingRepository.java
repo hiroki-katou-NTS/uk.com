@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.flexset;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -20,14 +19,6 @@ public interface FlexWorkSettingRepository {
 	 * @return the optional
 	 */
 	public Optional<FlexWorkSetting> find(String companyId,String workTimeCode);
-	
-	/**
-	 * @author lanlt
-	 * @param cid
-	 * @param workTimeCodes
-	 * @return
-	 */
-	public List<FlexWorkSetting> getAllByCidAndWorkCodes(String cid, List<String> workTimeCodes);
 
 	/**
 	 * Adds the.

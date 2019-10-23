@@ -21,7 +21,7 @@ public interface PreOvertimeReflectProcess {
 	 * @return True: 反映前後勤就の変更する
 	 * False: 反映前後勤就の変更したい
 	 */
-	public AppReflectRecordWork changeFlg(OvertimeParameter para, WorkInfoOfDailyPerformance dailyInfo);
+	public boolean changeFlg(OvertimeParameter para, IntegrationOfDaily dailyInfo);
 	/**
 	 * 予定勤種・就時反映後の予定勤種・就時を取得する
 	 * @param employeeId
@@ -60,7 +60,7 @@ public interface PreOvertimeReflectProcess {
 	 * @param para
 	 * @return
 	 */
-	public void getReflectOfOvertime(OvertimeParameter para, IntegrationOfDaily dailyData);
+	public void getReflectOfOvertime(OvertimeParameter para, IntegrationOfDaily dailyInfor);
 	/**
 	 * 所定外深夜時間の反映
 	 * @param employeeId
@@ -69,7 +69,7 @@ public interface PreOvertimeReflectProcess {
 	 * @param overShiftNight: 外深夜時間
 	 */
 	public void overTimeShiftNight(String employeeId, GeneralDate dateData, boolean timeReflectFlg, 
-			Integer overShiftNight,	IntegrationOfDaily attendanceTimeData);
+			Integer overShiftNight,	IntegrationOfDaily dailyInfor);
 	/**
 	 * フレックス時間の反映
 	 * @param employeeId

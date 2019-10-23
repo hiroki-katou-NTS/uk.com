@@ -2,7 +2,6 @@ package nts.uk.ctx.at.function.ac.periodofspecialleave;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -34,8 +33,8 @@ public class ComplileInPeriodOfSpecialLeaveFinder implements ComplileInPeriodOfS
 		// requestList273
 		ComplileInPeriodOfSpecialLeaveParam param = new ComplileInPeriodOfSpecialLeaveParam(cid, sid,
 				complileDate, mode, baseDate, specialLeaveCode, mngAtr,
-				false, new ArrayList<>(), new ArrayList<>(), Optional.empty());//TODO can them thong tin cho 3 bien nay
-		InPeriodOfSpecialLeave specialLeave = specialLeaveManagementService.complileInPeriodOfSpecialLeave(param).getAggSpecialLeaveResult();
+				false, new ArrayList<>(), new ArrayList<>());//TODO can them thong tin cho 3 bien nay
+		InPeriodOfSpecialLeave specialLeave = specialLeaveManagementService.complileInPeriodOfSpecialLeave(param);
 		if (specialLeave == null)
 			return null;
 		return new SpecialVacationImported(

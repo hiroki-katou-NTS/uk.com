@@ -5,5 +5,5 @@ import java.util.List;
 import nts.arc.time.GeneralDate;
 
 public interface CreateperApprovalDailyAdapter {
-	public OutputCreatePerAppDailyImport createperApprovalDaily(String companyId,String executionId,List<String> employeeIDs,int processExecType,Integer createNewEmp,GeneralDate startDateClosure,GeneralDate endDateClosure);
+	public boolean createperApprovalDaily(String companyId,String executionId,List<String> employeeIDs,int processExecType,Integer createNewEmp,GeneralDate startDateClosure,GeneralDate endDateClosure);
 }

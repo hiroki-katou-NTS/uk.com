@@ -38,12 +38,7 @@ public class JpaScheduleMethodGetMemento implements ScheduleMethodGetMemento {
 	 */
 	@Override
 	public WorkScheduleBasicCreMethod getBasicCreateMethod() {
-		try {
-			return WorkScheduleBasicCreMethod.valueOf(this.kshmtScheduleMethod.getBasicCreateMethod());
-		} catch (Exception e) {
-			return WorkScheduleBasicCreMethod.BUSINESS_DAY_CALENDAR;
-		}
-		
+		return WorkScheduleBasicCreMethod.valueOf(this.kshmtScheduleMethod.getBasicCreateMethod());
 	}
 
 	/*

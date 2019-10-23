@@ -8,7 +8,6 @@ import nts.uk.ctx.at.function.dom.adapter.standardtime.AgreementOperationSetting
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.AgreeCondOt;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.AgreeConditionError;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface CheckRecordAgreementAdapter {
@@ -20,7 +19,5 @@ public interface CheckRecordAgreementAdapter {
 	List<CheckedOvertimeImport> checkNumberOvertime(List<String> employeeIds, List<DatePeriod> periods, List<AgreeCondOt> listCondOt);
 	
 	// check for 36協定実績をチェックする domain
-	List<CheckedAgreementResult> checkArgreementResult(List<String> employeeIds, DatePeriod period, AgreeConditionError agreeConditionError,Optional<AgreementOperationSettingImport> agreementSetObj, List<Closure> closureList, Map<String,Integer> mapEmpIdClosureID,Object objCheckAgreement );
-	
-	Object getCommonSetting(String companyId,List<String> employeeIds,DatePeriod period);
+	List<CheckedAgreementResult> checkArgreementResult(List<String> employeeIds, DatePeriod period, AgreeConditionError agreeConditionError,Optional<AgreementOperationSettingImport> agreementSetObj, List<Closure> closureList, Map<String,Integer> mapEmpIdClosureID);
 }

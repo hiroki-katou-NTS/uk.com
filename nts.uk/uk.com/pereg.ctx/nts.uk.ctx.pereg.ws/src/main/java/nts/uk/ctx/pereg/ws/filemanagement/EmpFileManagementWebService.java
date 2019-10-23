@@ -20,10 +20,7 @@ import nts.uk.ctx.pereg.app.command.filemanagement.RemoveEmpAvaOrMapCommandHandl
 import nts.uk.ctx.pereg.app.command.filemanagement.UpdateCtgDocFileCommandHandler;
 import nts.uk.ctx.pereg.app.command.filemanagement.UpdateCtgDocFileDocumentFileCommand;
 import nts.uk.ctx.pereg.app.command.filemanagement.UpdateEmpAvaOrMapCommandHandler;
-import nts.uk.ctx.pereg.app.find.filemanagement.CheckFileFinder;
-import nts.uk.ctx.pereg.app.find.filemanagement.CheckFileParams;
 import nts.uk.ctx.pereg.app.find.filemanagement.EmployeeFileManagementFinder;
-import nts.uk.ctx.pereg.app.find.filemanagement.GridDto;
 
 @Path("basic/organization/empfilemanagement")
 @Produces({ "application/json", "text/plain" })
@@ -48,10 +45,7 @@ public class EmpFileManagementWebService extends WebService {
 	RemoveDocumentFileEmpCommandHandler removeDocFileCommandHandler;
 	
 	@Inject
-	UpdateCtgDocFileCommandHandler updateCtgDocumentFile;
-	
-	@Inject
-	CheckFileFinder checkFileFinder;
+	UpdateCtgDocFileCommandHandler updateCtgDocumentFile;;
 	/**
 	 * Gets employee file management by employeeId.
 	 *
@@ -117,16 +111,5 @@ public class EmpFileManagementWebService extends WebService {
 	@Path("updatectgdocfile")
 	public void updateCtgForDocFile(UpdateCtgDocFileDocumentFileCommand command) {
 		this.updateCtgDocumentFile.handle(command);
-	}
-	
-	@POST
-	@Path("find/checkFile")
-	public GridDto checkFile(CheckFileParams params) throws Exception {
-		try {
-			return this.checkFileFinder.processingFile(params);
-		}catch(Exception e){
-			throw e;
-		}
-		
 	}
 }

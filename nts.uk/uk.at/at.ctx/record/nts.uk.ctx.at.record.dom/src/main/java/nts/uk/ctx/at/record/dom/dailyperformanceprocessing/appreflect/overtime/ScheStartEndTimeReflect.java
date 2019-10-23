@@ -16,7 +16,7 @@ public interface ScheStartEndTimeReflect {
 	 * @return
 	 */
 	public void reflectScheStartEndTime(OvertimeParameter para, WorkTimeTypeOutput timeTypeData
-			, IntegrationOfDaily dailyPerfor);
+			, IntegrationOfDaily dailyInfor);
 	/**
 	 * 反映する開始終了時刻を求める
 	 * @param para

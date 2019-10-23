@@ -1,13 +1,31 @@
-##### 2. 説明
+##### 2. Explaint
+> Sample quote
 
-`v-focus` は `directive`である。`v-focus`をつける`input`はフォーカスされる。  
-テンプレートに`v-focus`が２つ以上ある場合は最後指定された`v-focus`がフォーカスされる。
+- First item list
+- Second item list
 
-| 注意：テンプレートには`v-focus`を１つだけ使った方がいい。 |
-| --- |
-
-
-##### 3. コード
+**HTML Code:**
 ```html
-<input v-focus type="text" class="form-control" />
+<div class="sample">
+    <span>Sample html code</span>
+</div>
 ```
+
+**Typescript code:**
+```typescript
+class ClassName {
+    constructor() {
+        // sample contructor
+    }
+
+    choose() {
+        // sample method
+    }
+}
+```
+
+##### 3. API
+
+id | name | content
+----|----|------
+id | name | content

@@ -10,7 +10,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
@@ -20,8 +19,7 @@ import nts.arc.layer.dom.AggregateRoot;
  */
 // 勤務種類
 @Getter
-@NoArgsConstructor
-public class WorkType extends AggregateRoot implements Cloneable{
+public class WorkType extends AggregateRoot {
 
 	/** The company id. */
 	/* 会社ID */
@@ -422,49 +420,5 @@ public class WorkType extends AggregateRoot implements Cloneable{
 		default:
 			return new ArrayList<>();
 		}
-	}
-	
-	/**
-	 * create this Instance
-	 * @return new Instance
-	 */
-	public WorkType clone() {
-		WorkType cloned = new WorkType();
-		try {
-			cloned.companyId = this.companyId;
-			cloned.workTypeCode = new WorkTypeCode(this.workTypeCode.v());
-			cloned.symbolicName = new WorkTypeSymbolicName(this.symbolicName.v());
-			cloned.name = new WorkTypeName(this.name.v());
-			cloned.abbreviationName = new WorkTypeAbbreviationName(this.abbreviationName.v());
-			cloned.memo = new WorkTypeMemo(this.memo.v());
-			cloned.dailyWork = this.dailyWork.clone();
-			cloned.deprecate = DeprecateClassification.valueOf(this.deprecate.value);
-			cloned.calculateMethod = CalculateMethod.valueOf(this.calculateMethod.value);
-			cloned.workTypeSetList = this.workTypeSetList.stream().map(c -> c.clone()).collect(Collectors.toList());
-			if(this.dispOrder != null)
-				cloned.dispOrder = new Integer(this.dispOrder);
-		}
-		catch (Exception e){
-			throw new RuntimeException("WorkType clone error.");
-		}
-		return cloned;
-	}
-	
-	/**
-	 * Web終業時刻計算対象の判断
-	 * @return true:対象,false:対象外
-	 */
-	public boolean isCalcTargetForEndClock() {
-		if (this.workTypeCode.v().compareTo("002") == 0) return false;	// 半出＋プレミアム
-		if (this.workTypeCode.v().compareTo("105") == 0) return false;	// プレミアムデー
-		return true;
-	}
-	
-	/**
-	 * 1日半日出勤・1日休日系の判定（休出判定あり）
-	 * @return 出勤日区分
-	 */
-	public AttendanceDayAttr chechAttendanceDay() {
-		return this.dailyWork.chechAttendanceDay();
 	}
 }

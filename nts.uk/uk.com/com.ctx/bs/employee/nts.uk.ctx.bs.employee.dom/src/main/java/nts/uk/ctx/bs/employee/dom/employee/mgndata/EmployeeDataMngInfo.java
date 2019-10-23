@@ -12,22 +12,10 @@ import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeCode;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 /** 社員データ管理情報 */
 public class EmployeeDataMngInfo extends AggregateRoot {
 
-	public EmployeeDataMngInfo(String companyId, String personId, String employeeId, EmployeeCode employeeCode,
-			EmployeeDeletionAttr deletedStatus, GeneralDateTime deleteDateTemporary, RemoveReason removeReason,
-			ExternalCode externalCode) {
-		super();
-		this.companyId = companyId;
-		this.personId = personId;
-		this.employeeId = employeeId;
-		this.employeeCode = employeeCode;
-		this.deletedStatus = deletedStatus;
-		this.deleteDateTemporary = deleteDateTemporary;
-		this.removeReason = removeReason;
-		this.externalCode = externalCode;
-	}
 	/** 会社ID */
 	private String companyId;
 
@@ -57,12 +45,12 @@ public class EmployeeDataMngInfo extends AggregateRoot {
 		this.personId = pId;
 		this.employeeId = sId;
 		this.employeeCode = new EmployeeCode(employeeCode);
-		this.externalCode = externalCode == null? null: new ExternalCode(externalCode);
+		this.externalCode = new ExternalCode(externalCode);
 	}
 	public static EmployeeDataMngInfo createFromJavaType(String cId, String pId, String sId, String sCd, int delStatus,
 			GeneralDateTime delTemp, String removeReason, String extCode) {
 		return new EmployeeDataMngInfo(cId, pId, sId, new EmployeeCode(sCd),
 				EnumAdaptor.valueOf(delStatus, EmployeeDeletionAttr.class), delTemp, new RemoveReason(removeReason),
-				extCode == null? null: new ExternalCode(extCode));
+				new ExternalCode(extCode));
 	}
 }

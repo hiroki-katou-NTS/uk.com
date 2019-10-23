@@ -44,9 +44,10 @@ public class ScheStartEndTimeReflectImpl implements ScheStartEndTimeReflect {
 	private WorkInformationRepository workInforRepository;
 	@Override
 	public void reflectScheStartEndTime(OvertimeParameter para,
-			WorkTimeTypeOutput timeTypeData, IntegrationOfDaily dailyPerfor) {
+			WorkTimeTypeOutput timeTypeData, IntegrationOfDaily dailyInfor) {
 		//反映する開始終了時刻を求める
-		StartEndTimeRelectCheck startEndTimeData = new StartEndTimeRelectCheck(para.getEmployeeId(), para.getDateInfo(), para.getOvertimePara().getStartTime1(), 
+		StartEndTimeRelectCheck startEndTimeData = new StartEndTimeRelectCheck(para.getEmployeeId(), para.getDateInfo(), 
+				para.getOvertimePara().getStartTime1(), 
 				para.getOvertimePara().getEndTime1(), para.getOvertimePara().getStartTime2(), 
 				para.getOvertimePara().getEndTime2(), 
 				para.getOvertimePara().getWorkTimeCode(), para.getOvertimePara().getWorkTypeCode(), para.getOvertimePara().getOvertimeAtr());
@@ -77,7 +78,7 @@ public class ScheStartEndTimeReflectImpl implements ScheStartEndTimeReflect {
 						findStartEndTime.getEndTime1(), 
 						1, isStartTime, isEndTime);
 				if(isStartTime || isEndTime) {
-					scheWork.updateScheStartEndTime(timeData1, dailyPerfor);	
+					 scheWork.updateScheStartEndTime(timeData1, dailyInfor);	
 				}				
 			}
 			//２回勤務反映区分(output)をチェックする
@@ -100,7 +101,7 @@ public class ScheStartEndTimeReflectImpl implements ScheStartEndTimeReflect {
 						isStartTime, 
 						isEndTime);
 				if(isStartTime || isEndTime) {
-					scheWork.updateScheStartEndTime(timeData2, dailyPerfor);	
+					scheWork.updateScheStartEndTime(timeData2, dailyInfor);	
 				}				
 			}
 		} else {
@@ -115,7 +116,7 @@ public class ScheStartEndTimeReflectImpl implements ScheStartEndTimeReflect {
 					TimeReflectPara timeData1 = new TimeReflectPara(para.getEmployeeId(), para.getDateInfo(), 
 							findStartEndTime.getStartTime1(), findStartEndTime.getEndTime1(), 
 							1, isCheckStart, isCheckEnd);
-					scheWork.updateScheStartEndTime(timeData1, dailyPerfor);	
+					scheWork.updateScheStartEndTime(timeData1, dailyInfor);	
 				}
 			}
 			//２回勤務反映区分(output)をチェックする
@@ -131,7 +132,7 @@ public class ScheStartEndTimeReflectImpl implements ScheStartEndTimeReflect {
 							findStartEndTime.getStartTime2(),
 							findStartEndTime.getEndTime2(),
 							2, isCheckStart, isCheckEnd);
-					scheWork.updateScheStartEndTime(timeData1, dailyPerfor);	
+					scheWork.updateScheStartEndTime(timeData1, dailyInfor);	
 				}
 				
 			}

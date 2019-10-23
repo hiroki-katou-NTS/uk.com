@@ -51,6 +51,10 @@ public class AddManualSetDelHandler extends CommandHandlerWithResult<ManualSetDe
 	protected String handle(CommandHandlerContext<ManualSetDelCommand> context) {
 		ManualSetDelCommand manualSetCmd = context.getCommand();
 		String delId = IdentifierUtil.randomUniqueId();
+		// encrypt password
+		if(manualSetCmd.getPasswordForCompressFile()!=null){
+			manualSetCmd.setPasswordForCompressFile(Base64.getEncoder().encodeToString(manualSetCmd.getPasswordForCompressFile().getBytes()));
+		}
 		
 		 // get login info
         LoginUserContext loginUserContext = AppContexts.user();
@@ -60,7 +64,7 @@ public class AddManualSetDelHandler extends CommandHandlerWithResult<ManualSetDe
         manualSetCmd.setExecutionDateAndTime(GeneralDateTime.now());
         
 		ManualSetDeletion domain = manualSetCmd.toDomain(delId, cid, sid);
-		
+		System.out.println("delId: " + delId);
 		// 画面の保存対象社員から「社員指定の有無」を判定する ( check radio button )presenceOfEmployee
 		if (manualSetCmd.getHaveEmployeeSpecifiedFlg() == 1) {
 			// 指定社員の有無＝「する」

@@ -3,7 +3,6 @@ package nts.uk.screen.at.app.monthlyperformance.correction.query;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -18,41 +17,36 @@ import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 @Stateless
 public class MonthlyModifyQueryProcessor {
-
+	
 	@Inject
 	MonthlyRecordWorkFinder monthlyRecordWorkFinder;
 
-	public List<MonthlyModifyResult> initScreen(MonthlyMultiQuery query, List<Integer> itemIds, YearMonth yearMonth,
-			ClosureId closureId, ClosureDate closureDate) {
-		if (query.getEmployeeIds() == null || query.getEmployeeIds().isEmpty()) {
+	public List<MonthlyModifyResult> initScreen(MonthlyMultiQuery query, List<Integer> itemIds, 
+												YearMonth yearMonth, ClosureId closureId, 
+												ClosureDate closureDate) {
+		if(query.getEmployeeIds() == null || query.getEmployeeIds().isEmpty()){
 			return new ArrayList<>();
 		}
-		List<MonthlyRecordWorkDto> lstData = this.monthlyRecordWorkFinder.find(query.getEmployeeIds(),
-				Arrays.asList(yearMonth));
+		List<MonthlyRecordWorkDto> lstData = this.monthlyRecordWorkFinder.find(query.getEmployeeIds(), Arrays.asList(yearMonth));
 		lstData = lstData.stream().filter(x -> x.getClosureID() == closureId.value).collect(Collectors.toList());
-		if (lstData.isEmpty())
-			return new ArrayList<>();
-		return AttendanceItemUtil.toItemValues(lstData, itemIds, AttendanceItemUtil.AttendanceItemType.MONTHLY_ITEM)
-				.entrySet().stream().map(record -> {
-					return MonthlyModifyResult.builder().items(record.getValue())
-							.employeeId(record.getKey().getEmployeeId()).yearMonth(record.getKey().getYearMonth().v())
-							.closureId(record.getKey().getClosureID()).closureDate(record.getKey().getClosureDate())
-							.workDatePeriod(record.getKey().getAttendanceTime().getDatePeriod().toDomain())
-							.version(record.getKey().getAffiliation().getVersion()).completed();
-				}).collect(Collectors.toList());
-	}
-
-	public Optional<MonthlyRecordWorkDto> getDataMonthAll(MonthlyMultiQuery query, List<Integer> itemIds, YearMonth yearMonth,
-			ClosureId closureId, ClosureDate closureDate) {
-		if (query.getEmployeeIds() == null || query.getEmployeeIds().isEmpty()) {
-			return Optional.empty();
-		}
-		List<MonthlyRecordWorkDto> lstData = this.monthlyRecordWorkFinder.find(query.getEmployeeIds(),
-				Arrays.asList(yearMonth));
-		return lstData.stream()
-				.filter(x -> x.getClosureID() == closureId.value
-						&& x.getClosureDate().getClosureDay() == x.getClosureDate().getClosureDay()
-						&& x.getClosureDate().getLastDayOfMonth() == x.getClosureDate().getLastDayOfMonth())
-				.findFirst();
+		if(lstData.isEmpty()) return new ArrayList<>();
+		return AttendanceItemUtil.toItemValues(lstData, itemIds, AttendanceItemUtil.AttendanceItemType.MONTHLY_ITEM).entrySet().stream().map(record -> {
+			return MonthlyModifyResult.builder()
+					.items(record.getValue())
+					.employeeId(record.getKey().getEmployeeId())
+					.yearMonth(record.getKey().getYearMonth().v())
+					.closureId(record.getKey().getClosureID())
+					.closureDate(record.getKey().getClosureDate())
+					.completed();
+		}).collect(Collectors.toList());
+//		return lstData.stream().map(recordData -> {
+//			return MonthlyModifyResult.builder()
+//					.items(AttendanceItemUtil.toItemValues(recordData, itemIds, AttendanceItemUtil.AttendanceItemType.MONTHLY_ITEM))
+//					.employeeId(recordData.getEmployeeId())
+//					.yearMonth(recordData.getYearMonth().v())
+//					.closureId(recordData.getClosureID())
+//					.closureDate(recordData.getClosureDate())
+//					.completed();
+//		}).collect(Collectors.toList());
 	}
 }

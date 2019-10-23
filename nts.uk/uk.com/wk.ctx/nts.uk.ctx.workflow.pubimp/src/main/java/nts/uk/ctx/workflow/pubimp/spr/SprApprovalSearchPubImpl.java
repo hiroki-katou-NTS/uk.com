@@ -17,7 +17,7 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRoot
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootStateRepository;
 import nts.uk.ctx.workflow.dom.service.JudgmentApprovalStatusService;
-import nts.uk.ctx.workflow.dom.service.output.ApproverPersonOutputNew;
+import nts.uk.ctx.workflow.dom.service.output.ApproverPersonOutput;
 import nts.uk.ctx.workflow.pub.spr.SprApprovalSearchPub;
 import nts.uk.ctx.workflow.pub.spr.export.ApprovalComSprExport;
 import nts.uk.ctx.workflow.pub.spr.export.ApprovalPersonSprExport;
@@ -25,7 +25,7 @@ import nts.uk.ctx.workflow.pub.spr.export.ApprovalPhaseSprExport;
 import nts.uk.ctx.workflow.pub.spr.export.ApprovalRootStateSprExport;
 import nts.uk.ctx.workflow.pub.spr.export.ApprovalWorkplaceSprExport;
 import nts.uk.ctx.workflow.pub.spr.export.ApproverSprExport;
-import nts.uk.ctx.workflow.pub.spr.export.JudgmentSprExportNew;
+import nts.uk.ctx.workflow.pub.spr.export.JudgmentSprExport;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 /**
  * 
@@ -131,11 +131,11 @@ public class SprApprovalSearchPubImpl implements SprApprovalSearchPub {
 		List<ApprovalRootState> result =  new ArrayList<>();
 		List<ApprovalRootState> approverLst = approvalRootStateRepository.getByApproverPeriod(companyID, approverID, new DatePeriod(date, date));
 		result.addAll(approverLst);
-		GeneralDate systemDate = GeneralDate.today();
-		List<Agent> agentInfoOutputs = agentRepository.findAgentForSpr(companyID, approverID, systemDate, systemDate);
+		List<Agent> agentInfoOutputs = agentRepository.findAgentForSpr(companyID, approverID, date, date);
 		agentInfoOutputs.forEach(agent -> {
-			List<ApprovalRootState> approverAgentLst = approvalRootStateRepository.getByApproverPeriod(companyID, agent.getEmployeeId(), 
-					new DatePeriod(date, date));
+			List<ApprovalRootState> approverAgentLst = approvalRootStateRepository.getByApproverAgentPeriod(companyID, approverID, 
+					new DatePeriod(date, date), 
+					new DatePeriod(agent.getStartDate(), agent.getEndDate()));
 			result.addAll(approverAgentLst);
 		});
 		return result.stream().map(x -> new ApprovalRootStateSprExport(
@@ -148,14 +148,13 @@ public class SprApprovalSearchPubImpl implements SprApprovalSearchPub {
 	}
 
 	@Override
-	public JudgmentSprExportNew judgmentTargetPersonCanApprove(String companyID, String rootStateID, String employeeID, Integer rootType) {
-		ApproverPersonOutputNew approverPersonOutput = judgmentApprovalStatusService
+	public JudgmentSprExport judgmentTargetPersonCanApprove(String companyID, String rootStateID, String employeeID, Integer rootType) {
+		ApproverPersonOutput approverPersonOutput = judgmentApprovalStatusService
 				.judgmentTargetPersonCanApprove(companyID, rootStateID, employeeID, rootType);
-		return new JudgmentSprExportNew(
+		return new JudgmentSprExport(
 				approverPersonOutput.getAuthorFlag(), 
 				approverPersonOutput.getApprovalAtr().value, 
-				approverPersonOutput.getExpirationAgentFlag(),
-				approverPersonOutput.getApprovalPhaseAtr().value);
+				approverPersonOutput.getExpirationAgentFlag());
 	}
 	
 }

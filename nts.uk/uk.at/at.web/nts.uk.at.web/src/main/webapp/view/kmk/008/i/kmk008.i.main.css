@@ -65,10 +65,6 @@
 	margin-bottom: 20px;
 }
 
-.control-group-padding {
-	padding-left: 15px;
-}
-
 .target-classification {
 	margin: 4px;
 }
@@ -83,8 +79,4 @@
 
 #table-target-data-td-label {
 	background-color: #F7EFD4l;
-}
-
-.ntsHelpButton .nts-help-button-image{
-	padding: 0px !important;
 }

@@ -10,7 +10,6 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpHistImp
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfo;
 import nts.uk.file.at.app.export.monthlyschedule.MonthlyRecordValuesExport;
 import nts.uk.file.at.app.export.monthlyschedule.MonthlyWorkScheduleQuery;
-import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeName;
 
 /**
  * @author HoangNDH
@@ -36,15 +35,4 @@ public class WorkScheduleMonthlyQueryData {
 	
 	/** The query data. */
 	MonthlyWorkScheduleQuery query;
-	
-	List<CodeName> lstWorkPlace; 
-	
-	List<CodeName> lstClassification;
-	
-	List<CodeName> lstPossition;
-	
-	List<CodeName> lstEmployment;
-	
-	List<CodeName> lstBussinessType;
-	
 }

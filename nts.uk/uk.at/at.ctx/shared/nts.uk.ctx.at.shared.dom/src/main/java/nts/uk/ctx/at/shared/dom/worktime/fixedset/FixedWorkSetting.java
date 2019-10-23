@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkRestSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
@@ -30,9 +29,8 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
  * The Class FixedWorkSetting.
  */
 @Getter
-@NoArgsConstructor
 // 固定勤務設定
-public class FixedWorkSetting extends WorkTimeAggregateRoot implements Cloneable{
+public class FixedWorkSetting extends WorkTimeAggregateRoot {
 
 	/** The company id. */
 	// 会社ID
@@ -213,36 +211,5 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot implements Cloneable
 		if (screenMode == ScreenMode.SIMPLE || this.legalOTSetting == LegalOTSetting.OUTSIDE_LEGAL_TIME) {
 			this.lstHalfDayWorkTimezone.forEach(item -> item.correctDefaultData());
 		}
-	}
-
-	/**
- 	 * create this Instance
- 	 * TODO 必要に応じてcloneする変数を増やす。
-	 * @return new Instance
-	 */
-	@Override
-	public FixedWorkSetting clone() {
-		FixedWorkSetting cloned = new FixedWorkSetting();
-		try {
-			cloned.companyId = this.companyId;
-			cloned.workTimeCode = new WorkTimeCode(this.workTimeCode.v());
-			cloned.offdayWorkTimezone = this.offdayWorkTimezone.clone();
-			cloned.commonSetting = this.commonSetting.clone();
-			cloned.useHalfDayShift = this.useHalfDayShift ? true : false;
-			cloned.fixedWorkRestSetting = this.fixedWorkRestSetting.clone();
-			cloned.lstHalfDayWorkTimezone = this.lstHalfDayWorkTimezone.stream().map(c -> c.clone()).collect(Collectors.toList());
-			cloned.lstStampReflectTimezone = this.lstStampReflectTimezone.stream().map(c -> c.clone()).collect(Collectors.toList());
-			cloned.legalOTSetting = LegalOTSetting.valueOf(this.legalOTSetting.value);
-			if(this.calculationSetting.isPresent()) {
-				cloned.calculationSetting = this.calculationSetting.map(c -> c.clone());
-			}
-			else {
-				cloned.calculationSetting = Optional.empty();
-			}
-		}
-		catch (Exception e){
-			throw new RuntimeException("FixedWorkSetting clone error.");
-		}
-		return cloned;
 	}
 }

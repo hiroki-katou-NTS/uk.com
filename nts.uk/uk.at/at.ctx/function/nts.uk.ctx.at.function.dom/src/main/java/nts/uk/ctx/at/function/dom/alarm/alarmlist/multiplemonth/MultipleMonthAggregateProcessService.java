@@ -122,7 +122,7 @@ public class MultipleMonthAggregateProcessService {
 		parallelManager.forEach(CollectionUtil.partitionBySize(employees, 100), emps -> {
 			List<String> employeeIds = emps.stream().map(e -> e.getId()).collect(Collectors.toList());
 
-			Map<String, List<RegulationInfoEmployeeResult>> listTargetMap = erAlWorkRecordCheckAdapter.filterEmployees(period, 
+			Map<String, List<RegulationInfoEmployeeResult>> listTargetMap = erAlWorkRecordCheckAdapter.filterEmployees(new DatePeriod(period.end(),period.end()), 
 																														employeeIds, 
 																														multiMonthErAl.stream().map(c -> c.getExtractTargetCondition()).collect(Collectors.toList()));
 			
@@ -132,16 +132,15 @@ public class MultipleMonthAggregateProcessService {
 						return;
 					}
 				}
-				List<RegulationInfoEmployeeResult> targetEmps = listTargetMap.get(eral.getExtractTargetCondition().getId()).stream().distinct().collect(Collectors.toList());
+				List<RegulationInfoEmployeeResult> targetEmps = listTargetMap.get(eral.getExtractTargetCondition().getId());
 
 				// 対象者の件数をチェック : 対象者 ≦ 0
 				if (!targetEmps.isEmpty()) {
 					// list alarmPartem
 					MulMonAlarmCond mulMonAlarmCond = (MulMonAlarmCond) eral.getExtractionCondition();
-					List<MulMonCheckCondDomainEventDto> listExtra = new ArrayList<>();
-					if(mulMonAlarmCond !=null) {
-						listExtra = multiMonthFucAdapter.getListMultiMonCondByListEralID(mulMonAlarmCond.getErrorAlarmCondIds());
-					}
+					List<MulMonCheckCondDomainEventDto> listExtra = multiMonthFucAdapter
+							.getListMultiMonCondByListEralID(mulMonAlarmCond.getErrorAlarmCondIds());
+					
 					YearMonthPeriod yearMonthPeriod = new YearMonthPeriod(period.start().yearMonth(), period.end().yearMonth());
 
 					// tab1
@@ -174,7 +173,6 @@ public class MultipleMonthAggregateProcessService {
 			ErAlAtdItemConAdapterDto erAlAtdItemConAdapterDto = extra.getErAlAtdItem();
 			if(erAlAtdItemConAdapterDto == null) continue;
 			int typeCheckItem = extra.getTypeCheckItem();
-			String checkItemName = extra.getNameAlarmMulMon();
 			TypeCheckWorkRecordMultipleMonthImport checkItem = EnumAdaptor.valueOf(typeCheckItem,
 					TypeCheckWorkRecordMultipleMonthImport.class);
 			List<Integer> tmp = extra.getErAlAtdItem().getCountableAddAtdItems();
@@ -212,10 +210,10 @@ public class MultipleMonthAggregateProcessService {
 			String alarmDescription = "";
 			for (RegulationInfoEmployeeResult employee : employees) {
 				boolean checkAddAlarm = false;
-				String checkedValue = null;
 				List<MonthlyRecordValueImport> result = resultActuals.get(employee.getEmployeeId());
 				if (CollectionUtil.isEmpty(result)) continue;
 				switch (checkItem) {
+				
 				case TIME:
 					if (checkActualResultMulMonth.checkMulMonthCheckCond(period,companyId,employee.getEmployeeId(),result,extra)) {
 
@@ -237,9 +235,6 @@ public class MultipleMonthAggregateProcessService {
 										compareOperatorText.getCompareright(), endValueTime);
 							}
 						}
-						checkedValue = TextResource.localize("KDW006_89") + ":"
-								+ timeToString(checkActualResultMulMonth.sumMulMonthCheckCond(period, companyId,
-										employee.getEmployeeId(), result, extra).intValue());
 					}
 					break;
 					
@@ -266,14 +261,11 @@ public class MultipleMonthAggregateProcessService {
 										compareOperatorText.getCompareright(), endValueTime);
 							}
 						}
-						checkedValue = TextResource.localize("KDW006_89") + ":"
-								+ checkActualResultMulMonth.sumMulMonthCheckCond(period, companyId,
-										employee.getEmployeeId(), result, extra);
 					}
 					break;
 					
 				case AVERAGE_TIME:
-					if (checkActualResultMulMonth.checkMulMonthCheckCondAverage(period,companyId,employee.getEmployeeId(),result,extra).isCheck()) {
+					if (checkActualResultMulMonth.checkMulMonthCheckCondAverage(period,companyId,employee.getEmployeeId(),result,extra)) {
 						checkAddAlarm = true;
 						String startValueTime = timeToString(startValue.intValue());
 						String endValueTime = "";
@@ -292,19 +284,13 @@ public class MultipleMonthAggregateProcessService {
 										compareOperatorText.getCompareright(), endValueTime);
 							}
 						}
-						checkedValue = TextResource.localize("KDW006_89") + ":"
-								+ timeToString(
-										checkActualResultMulMonth
-												.checkMulMonthCheckCondAverage(period, companyId,
-														employee.getEmployeeId(), result, extra)
-												.getAvgValue().intValue());
 					}
 					break;
 					
 				case AVERAGE_TIMES:
 				case AVERAGE_AMOUNT:
 				case AVERAGE_DAYS:
-					if (checkActualResultMulMonth.checkMulMonthCheckCondAverage(period,companyId,employee.getEmployeeId(),result,extra).isCheck()) {
+					if (checkActualResultMulMonth.checkMulMonthCheckCondAverage(period,companyId,employee.getEmployeeId(),result,extra)) {
 						checkAddAlarm = true;
 						String startValueTime = String.valueOf(startValue.intValue());
 						String endValueTime = "";
@@ -323,12 +309,6 @@ public class MultipleMonthAggregateProcessService {
 										compareOperatorText.getCompareright(), endValueTime);
 							}
 						}
-						checkedValue = TextResource.localize("KDW006_89") + ":"
-								+ timeToString(
-										checkActualResultMulMonth
-												.checkMulMonthCheckCondAverage(period, companyId,
-														employee.getEmployeeId(), result, extra)
-												.getAvgValue().intValue());
 					}
 					break;
 					
@@ -339,9 +319,6 @@ public class MultipleMonthAggregateProcessService {
 						alarmDescription = TextResource.localize("KAL010_260", periodYearMonth, nameErrorAlarm,
 								compareOperatorText.getCompareLeft(), startValueTime,
 								String.valueOf(extra.getContinuousMonths()));
-						checkedValue = TextResource.localize("KDW006_89") + ":"
-								+ timeToString(checkActualResultMulMonth.sumMulMonthCheckCond(period, companyId,
-										employee.getEmployeeId(), result, extra).intValue());
 					}
 					break;
 					
@@ -354,9 +331,6 @@ public class MultipleMonthAggregateProcessService {
 						alarmDescription = TextResource.localize("KAL010_260", periodYearMonth, nameErrorAlarm,
 								compareOperatorText.getCompareLeft(), startValueTime,
 								String.valueOf(extra.getContinuousMonths()));
-						checkedValue = TextResource.localize("KDW006_89") + ":"
-								+ checkActualResultMulMonth.sumMulMonthCheckCond(period, companyId,
-										employee.getEmployeeId(), result, extra);
 					}
 					break;
 				
@@ -368,9 +342,6 @@ public class MultipleMonthAggregateProcessService {
 						alarmDescription = TextResource.localize("KAL010_270", periodYearMonth, nameErrorAlarm,
 								convertCompareType(extra.getCompareOperator()).getCompareLeft(), startValueTime,
 								listMonthNumberTime.toString(), String.valueOf(extra.getTimes()));
-						checkedValue = TextResource.localize("KDW006_89") + ":"
-								+ timeToString(checkActualResultMulMonth.sumMulMonthCheckCond(period, companyId,
-										employee.getEmployeeId(), result, extra).intValue());
 
 					}
 					break;
@@ -385,9 +356,7 @@ public class MultipleMonthAggregateProcessService {
 						alarmDescription = TextResource.localize("KAL010_270", periodYearMonth, nameErrorAlarm,
 								convertCompareType(extra.getCompareOperator()).getCompareLeft(), startValueTime,
 								listMonthNumber.toString(), String.valueOf(extra.getTimes()));
-						checkedValue = TextResource.localize("KDW006_89") + ":"
-								+ checkActualResultMulMonth.sumMulMonthCheckCond(period, companyId,
-										employee.getEmployeeId(), result, extra);
+
 					}
 					break;
 				default:
@@ -396,7 +365,7 @@ public class MultipleMonthAggregateProcessService {
 				if (checkAddAlarm) {
 					ValueExtractAlarm resultMonthlyValue = new ValueExtractAlarm(employee.getWorkplaceId(),
 							employee.getEmployeeId(), tempStart.toString(ErAlConstant.YM_FORMAT), TextResource.localize("KAL010_250"),
-							checkItemName, alarmDescription, extra.getDisplayMessage(),checkedValue);
+							checkItem.nameId, alarmDescription, extra.getDisplayMessage());
 					listValueExtractAlarm.add(resultMonthlyValue);
 				}
 			}
@@ -513,7 +482,7 @@ public class MultipleMonthAggregateProcessService {
 						break;
 						
 					case AVERAGE_TIME:
-						if (checkActualResultMulMonth.checkMulMonthCheckCondAverage(period,companyId,employee.getId(),result,extra).isCheck()) {
+						if (checkActualResultMulMonth.checkMulMonthCheckCondAverage(period,companyId,employee.getId(),result,extra)) {
 							checkAddAlarm = true;
 							String startValueTime = timeToString(startValue.intValue());
 							String endValueTime = "";
@@ -538,7 +507,7 @@ public class MultipleMonthAggregateProcessService {
 					case AVERAGE_TIMES:
 					case AVERAGE_AMOUNT:
 					case AVERAGE_DAYS:
-						if (checkActualResultMulMonth.checkMulMonthCheckCondAverage(period,companyId,employee.getId(),result,extra).isCheck()) {
+						if (checkActualResultMulMonth.checkMulMonthCheckCondAverage(period,companyId,employee.getId(),result,extra)) {
 							checkAddAlarm = true;
 							String startValueTime = String.valueOf(startValue.intValue());
 							String endValueTime = "";
@@ -613,7 +582,7 @@ public class MultipleMonthAggregateProcessService {
 					if (checkAddAlarm) {
 						ValueExtractAlarm resultMonthlyValue = new ValueExtractAlarm(employee.getWorkplaceId(),
 								employee.getId(), tempStart.toString("yyyy/MM"), TextResource.localize("KAL010_250"),
-								checkItem.nameId, alarmDescription, extra.getDisplayMessage(),null);
+								checkItem.nameId, alarmDescription, extra.getDisplayMessage());
 						listValueExtractAlarm.add(resultMonthlyValue);
 					}
 				}

@@ -5,7 +5,6 @@
 package nts.uk.ctx.at.shared.dom.worktime.flowset;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.worktime.common.RestClockManageAtr;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
@@ -14,8 +13,7 @@ import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
  */
 //流動休憩設定
 @Getter
-@NoArgsConstructor
-public class FlowRestSet extends WorkTimeDomainObject implements Cloneable{
+public class FlowRestSet extends WorkTimeDomainObject {
 
 	/** The use stamp. */
 	//打刻を併用する
@@ -55,20 +53,5 @@ public class FlowRestSet extends WorkTimeDomainObject implements Cloneable{
 		memento.setUseStampCalcMethod(this.useStampCalcMethod);
 		memento.setTimeManagerSetAtr(this.timeManagerSetAtr);
 		memento.setCalculateMethod(this.calculateMethod);
-	}
-	
-	@Override
-	public FlowRestSet clone() {
-		FlowRestSet cloned = new FlowRestSet();
-		try {
-			cloned.useStamp = this.useStamp ? true : false;
-			cloned.useStampCalcMethod = FlowRestClockCalcMethod.valueOf(this.useStampCalcMethod.value);
-			cloned.timeManagerSetAtr = RestClockManageAtr.valueOf(this.timeManagerSetAtr.value);
-			cloned.calculateMethod = FlowRestCalcMethod.valueOf(this.calculateMethod.value);
-		}
-		catch (Exception e){
-			throw new RuntimeException("FlowRestSet clone error.");
-		}
-		return cloned;
 	}
 }

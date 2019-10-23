@@ -1,14 +1,12 @@
 package nts.uk.ctx.at.record.dom.monthly.verticaltotal;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
 import lombok.Getter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.record.dom.monthly.WorkTypeDaysCountTable;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workclock.WorkClockOfMonthly;
@@ -106,12 +104,6 @@ public class VerticalTotalOfMonthly {
 		// 乖離フラグの集計
 		this.workTime.aggregateDivergenceAtr(monthlyCalcDailys.getEmployeeDailyPerErrorList());
 		
-		// 任意項目を取得する
-		Map<GeneralDate, AnyItemValueOfDaily> anyItemValueOfDailyMap = new HashMap<>();
-		for (AnyItemValueOfDaily anyItem : monthlyCalcDailys.getAnyItemValueOfDailyList()) {
-			anyItemValueOfDailyMap.putIfAbsent(anyItem.getYmd(), anyItem);
-		}
-		
 		// 日ごとのループ
 		GeneralDate procYmd = datePeriod.start();
 		while (procYmd.beforeOrEquals(datePeriod.end())){
@@ -194,9 +186,6 @@ public class VerticalTotalOfMonthly {
 			
 			// PCログオン情報　取得
 			val pcLogonInfoOpt = Optional.ofNullable(monthlyCalcDailys.getPcLogonInfoMap().get(procYmd));
-			
-			// 任意項目を確認する
-			Optional<AnyItemValueOfDaily> anyItemValueOpt = Optional.ofNullable(anyItemValueOfDailyMap.get(procYmd));
 		
 			// 勤務日数集計
 			this.workDays.aggregate(workingSystem, workType, attendanceTimeOfDaily, temporaryTimeOfDaily,
@@ -208,8 +197,7 @@ public class VerticalTotalOfMonthly {
 			this.workTime.aggregate(workType, attendanceTimeOfDaily);
 			
 			// 勤務時刻集計
-			this.workClock.aggregate(workType, pcLogonInfoOpt, attendanceTimeOfDaily, timeLeavingOfDaily,
-					predTimeSetForCalc, anyItemValueOpt);
+			this.workClock.aggregate(workType, pcLogonInfoOpt, attendanceTimeOfDaily, timeLeavingOfDaily, predTimeSetForCalc);
 			
 			procYmd = procYmd.addDays(1);
 		}

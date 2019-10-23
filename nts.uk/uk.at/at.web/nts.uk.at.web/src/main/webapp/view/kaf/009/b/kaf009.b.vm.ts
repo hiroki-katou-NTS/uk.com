@@ -2,7 +2,6 @@ module nts.uk.at.view.kaf009.b {
     import common = nts.uk.at.view.kaf009.share.common;
     import model = nts.uk.at.view.kaf000.b.viewmodel.model;
     import appcommon = nts.uk.at.view.kaf000.shr.model;
-    import text = nts.uk.resource.getText;
     export module viewmodel{
         export class ScreenModel extends kaf000.b.viewmodel.ScreenModel {
             isNewScreen: KnockoutObservable<boolean> = ko.observable(false);
@@ -212,8 +211,8 @@ module nts.uk.at.view.kaf009.b {
                         self.version = detailData.goBackDirectlyDto.version;
                         //get all Location 
                         self.getAllWorkLocation();
-                        self.workTypeName(self.getName(detailData.goBackDirectlyDto.workTypeCD, detailData.workTypeName));
-                        self.siftName(self.getName(detailData.goBackDirectlyDto.siftCD, detailData.workTimeName));
+                        self.workTypeName(detailData.workTypeName);
+                        self.siftName(detailData.workTimeName);
                         self.workLocationName(detailData.workLocationName1 == null ? '' : detailData.workLocationName1);
                         self.workLocationName2(detailData.workLocationName2 == null ? '' : detailData.workLocationName2);
                         self.prePostSelected(detailData.prePostAtr);
@@ -661,18 +660,11 @@ module nts.uk.at.view.kaf009.b {
                 })
             }
             
-            getName(code, name) {
-                let result = "";
-                if (code) {
-                    result = name || text("KAL003_120");
-                }
-                return result;
-            }
             setRealData(data: any){
                 let self = this;
                 self.realTimeDate(data.date);
-                self.realTimeWorkType(data.workType.workTypeCode + "   " + self.getName(data.workType.workTypeCode, data.workType.name));
-                self.realTimeWorkTime(data.workTime.workTimeCD + "   " + self.getName(data.workTime.workTimeCD, data.workTime.workTimeName));
+                self.realTimeWorkType(data.workType.workTypeCode+"   "+data.workType.name);
+                self.realTimeWorkTime(data.workTime.workTimeCD+"   "+data.workTime.workTimeName);
                 let startTime1 = data.startTime1;
                 let endTime1 = data.endTime1;
                 let startTime2 = data.startTime2;

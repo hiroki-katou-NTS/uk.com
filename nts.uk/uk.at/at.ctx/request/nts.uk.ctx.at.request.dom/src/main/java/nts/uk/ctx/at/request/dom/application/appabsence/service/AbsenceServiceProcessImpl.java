@@ -21,6 +21,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumb
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.rsvleamanager.rsvimport.RsvLeaGrantRemainingImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.rsvleamanager.rsvimport.RsvLeaManagerImport;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.AppliedDate;
+import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.request.dom.vacation.history.service.PlanVacationRuleError;
 import nts.uk.ctx.at.request.dom.vacation.history.service.PlanVacationRuleExport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecMngInPeriodParamInput;
@@ -97,11 +98,11 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	 */
 	@Override
 	public void checkLimitAbsencePlan(String cID, String sID, String workTypeCD, GeneralDate sDate, GeneralDate eDate,
-			HolidayAppType hdAppType, List<GeneralDate> lstDateIsHoliday) {
+			HolidayAppType hdAppType) {
 		//INPUT．休暇種類をチェックする(check INPUT. phân loại holidays)
 		if(hdAppType.equals(HolidayAppType.ANNUAL_PAID_LEAVE)){//INPUT．休暇種類が年休
 			//計画年休の上限チェック(check giới hạn trên của plan annual holidays)
-			List<PlanVacationRuleError> check = planVacationRuleExport.checkMaximumOfPlan(cID, sID, workTypeCD, new DatePeriod(sDate, eDate), lstDateIsHoliday);
+			List<PlanVacationRuleError> check = planVacationRuleExport.checkMaximumOfPlan(cID, sID, workTypeCD, new DatePeriod(sDate, eDate));
 			if(!check.isEmpty()){
 				if(check.contains(PlanVacationRuleError.OUTSIDEPERIOD)) {
 					//Msg_1345を表示
@@ -236,13 +237,28 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	 * @return 年休残数-代休残数-振休残数-ストック休暇残数
 	 */
 	@Override
-	public NumberOfRemainOutput getNumberOfRemaining(String companyID, String employeeID, GeneralDate baseDate) {
+	public NumberOfRemainOutput getNumberOfRemaining(String companyID, String employeeID, GeneralDate baseDate, 
+			List<AppEmploymentSetting> appEmpSetAs) {
 		//14.休暇種類表示チェック
 		CheckDispHolidayType checkDis = absenseProcess.checkDisplayAppHdType(companyID, employeeID, baseDate);
-        boolean yearFlg = false;
-        boolean subHdFlg = false;
-        boolean subVacaFlg = false;
-        boolean retentionFlg = false;
+		boolean yearTypeUseFlg = false;
+		boolean subHdTypeUseFlg = false;
+		boolean subVacaTypeUseFlg = false;
+		boolean  retentionTypeUseFlg = false;
+		for (AppEmploymentSetting appEmpSet : appEmpSetAs) {
+			if(appEmpSet.getHolidayOrPauseType() == 7){//振休
+				subVacaTypeUseFlg = appEmpSet.getHolidayTypeUseFlg();
+			}
+			if(appEmpSet.getHolidayOrPauseType() == 1){//代休
+				subHdTypeUseFlg = appEmpSet.getHolidayTypeUseFlg();
+			}
+			if(appEmpSet.getHolidayOrPauseType() == 0){//年次有休
+				yearTypeUseFlg = appEmpSet.getHolidayTypeUseFlg();
+			}
+			if(appEmpSet.getHolidayOrPauseType() == 4){//積立年休
+				retentionTypeUseFlg = appEmpSet.getHolidayTypeUseFlg();
+			}
+		}
 		//アルゴリズム「社員に対応する締め開始日を取得する」を実行する
 		Optional<GeneralDate> closure = getClosureStartForEmp.algorithm(employeeID);
 		if(!closure.isPresent()){
@@ -259,8 +275,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 		GeneralDate closureDate = closure.get();
 		
 		//1
-		if(checkDis.isSubVacaManage()){//output．振休管理区分が管理する
-            subVacaFlg = true;
+		if(!subVacaTypeUseFlg && checkDis.isSubVacaManage()){//ドメインモデル「休暇申請対象勤務種類」．休暇種類を利用しないがfalse && output．振休管理区分が管理する
 			//アルゴリズム「期間内の振出振休残数を取得する」を実行する - RQ204
 			//・会社ID＝ログイン会社ID
 //			・社員ID＝申請者社員ID
@@ -270,15 +285,14 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 //			・基準日＝申請開始日
 //			・上書きフラグ＝false
 			AbsRecMngInPeriodParamInput paramInput = new AbsRecMngInPeriodParamInput(companyID, employeeID, new DatePeriod(closureDate, closureDate.addYears(1).addDays(-1)), 
-					baseDate, false, false, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), Optional.empty());
+					baseDate, false, false, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 			AbsRecRemainMngOfInPeriod subVaca = absRertMngInPeriod.getAbsRecMngInPeriod(paramInput);
 			//振休残数 ← 残日数　（アルゴリズム「期間内の振出振休残数を取得する」のoutput）
 			subVacaRemain = subVaca.getRemainDays();//残日数
 		}
 		
 		//2
-		if(checkDis.isSubHdManage()){//output．代休管理区分が管理する
-            subHdFlg = true;
+		if(!subHdTypeUseFlg && checkDis.isSubHdManage()){//ドメインモデル「休暇申請対象勤務種類」．休暇種類を利用しないがfalse && output．代休管理区分が管理する
 			//アルゴリズム「期間内の休出代休残数を取得する」を実行する - RQ203
 			//・会社ID＝ログイン会社ID
 //			・社員ID＝申請者社員ID
@@ -288,15 +302,14 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 //			・基準日＝申請開始日
 //			・上書きフラグ＝false
 			BreakDayOffRemainMngParam inputParam = new BreakDayOffRemainMngParam(companyID, employeeID, new DatePeriod(closureDate, closureDate.addYears(1).addDays(-1)), 
-					false, baseDate, false, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), Optional.empty());
+					false, baseDate, false, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 			BreakDayOffRemainMngOfInPeriod subHd = breakDayOffMngInPeriod.getBreakDayOffMngInPeriod(inputParam);
 			//代休残数 ← 残日数　（アルゴリズム「期間内の代休残数を取得する」のoutput）
 			subHdRemain = subHd.getRemainDays();
 		}
 		
 		//3
-		if(checkDis.isRetentionManage()){//output．積休管理区分が管理する
-            retentionFlg = true;
+		if(!retentionTypeUseFlg && checkDis.isRetentionManage()){//ドメインモデル「休暇申請対象勤務種類」．休暇種類を利用しないがfalse && output．積休管理区分が管理する
 			//基準日時点の積立年休残数を取得する - RQ201
 			Optional<RsvLeaManagerImport> stock = rsvLeaMngApdater.getRsvLeaveManager(employeeID, baseDate);
 			if(stock.isPresent()){
@@ -312,15 +325,15 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 		}
 		
 		//4
-		if(checkDis.isYearManage()){//output．年休管理区分が管理する
-            yearFlg = true;
+		if(!yearTypeUseFlg && checkDis.isYearManage()){//ドメインモデル「休暇申請対象勤務種類」．休暇種類を利用しないがfalse && output．年休管理区分が管理する
+
 			//基準日時点の年休残数を取得する - RQ198
 			ReNumAnnLeaReferenceDateImport year = annLeaRemNumberAdapter.getReferDateAnnualLeaveRemainNumber(employeeID, baseDate);
 			//年休残数 ← 年休残数.年休残数（付与前）日数 annualLeaveRemainNumberExport.annualLeaveGrantPreDay
 			yearRemain = year.getAnnualLeaveRemainNumberExport() == null ? null : 
 				year.getAnnualLeaveRemainNumberExport().getAnnualLeaveGrantDay();
 		}
-        return NumberOfRemainOutput.init(yearRemain, subHdRemain, subVacaRemain, stockRemain, yearFlg, subHdFlg, subVacaFlg, retentionFlg);
+		return NumberOfRemainOutput.init(yearRemain, subHdRemain, subVacaRemain, stockRemain);
 	}
 	
 }

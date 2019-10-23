@@ -2,44 +2,50 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+//import java.util.Collections;
+//import java.util.HashMap;
 import java.util.List;
+//import java.util.Map;
 import java.util.Optional;
+//import java.util.Map.Entry;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-import javax.persistence.OptimisticLockException;
-
-import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.val;
-import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.app.command.AsyncCommandHandlerContext;
+//import nts.arc.task.data.TaskDataSetter;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
-import nts.gul.error.ThrowableAnalyzer;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workrecord.repo.AttendanceTimeByWorkOfDailyRepository;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.WorkTypeOfDailyPerforRepository;
-import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
-import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalProcessingUseSettingRepository;
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.BreakTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.OutingTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.calculationattribute.repo.CalAttrOfDailyPerformanceRepository;
-import nts.uk.ctx.at.record.dom.daily.DailyRecordAdUpService;
-import nts.uk.ctx.at.record.dom.daily.DailyRecordTransactionService;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.AttendanceLeavingGateOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.PCLogOnInfoOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerformRepo;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
+//import nts.uk.ctx.at.record.dom.dailyprocess.calc.DailyCalculationServiceImpl.StateHolder;
 import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
+//import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
+//import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
+//import nts.uk.ctx.at.record.dom.optitem.applicable.EmpCondition;
+//import nts.uk.ctx.at.record.dom.optitem.applicable.EmpConditionRepository;
+//import nts.uk.ctx.at.record.dom.optitem.calculation.Formula;
+//import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaRepository;
 import nts.uk.ctx.at.record.dom.raisesalarytime.repo.SpecificDateAttrOfDailyPerforRepo;
 import nts.uk.ctx.at.record.dom.shorttimework.repo.ShortTimeOfDailyPerformanceRepository;
+//import nts.uk.ctx.at.record.dom.statutoryworkinghours.DailyStatutoryWorkingHours;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
@@ -47,22 +53,19 @@ import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagement
 import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagementRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.service.ErAlCheckService;
-import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.IdentityProcessUseSet;
-import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.IdentityProcessUseSetRepository;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLogRepository;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfo;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfoRepository;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageResource;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.TargetPersonRepository;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.ctx.at.record.dom.worktime.repository.TemporaryTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.i18n.TextResource;
+//import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
+//import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
+//import nts.uk.shr.com.context.AppContexts;
+//import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+//import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
+//import nts.uk.shr.com.context.AppContexts;
+//import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -149,8 +152,6 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	@Inject 
 	private ErAlCheckService determineErrorAlarmWorkRecordService;
 	
-//	@Inject
-//	private DailyRecordTransactionService dailyTransaction;
 	
 	//ドメインサービス：計算用ストアド実行用
 	@Inject
@@ -170,31 +171,11 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	@Inject
 	private TargetPersonRepository targetPersonRepository;
 	
-	/** リポジトリ：就業計算と集計実行ログ */
 	@Inject
-	private EmpCalAndSumExeLogRepository empCalAndSumExeLogRepository;
-	
-	@Inject
-	/*並列処理*/
 	private ManagedParallelWithContext parallel;
 	
 	@Inject
-	/*暫定データ登録*/
 	private InterimRemainDataMngRegisterDateChange interimData;
-	
-	@Inject
-	/*エラメッセージ情報登録*/
-	private ErrMessageInfoRepository errMessageInfoRepository;
-	
-	@Inject
-	//日別実績(WORK)更新処理まとめ
-	private DailyRecordAdUpService dailyRecordAdUpService;
-	
-	@Inject
-	private ApprovalProcessingUseSettingRepository approvalSettingRepo;
-	
-	@Inject
-	private IdentityProcessUseSetRepository identityProcessUseRepository;
 	
 	/**
 	 * 社員の日別実績を計算
@@ -208,32 +189,18 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	@SuppressWarnings("rawtypes")
 	@Override
 	//@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public List<Boolean> calculate(List<String> employeeIds,DatePeriod datePeriod, Consumer<ProcessState> counter,ExecutionType reCalcAtr, String empCalAndSumExecLogID) {
+	public void calculate(AsyncCommandHandlerContext asyncContext, List<String> employeeIds,DatePeriod datePeriod, Consumer<ProcessState> counter,ExecutionType reCalcAtr, String empCalAndSumExecLogID) {
 		
 		String cid = AppContexts.user().companyId();
-		List<Boolean> isHappendOptimistLockError = new ArrayList<>();
 		
-		Optional<IdentityProcessUseSet> iPUSOptTemp = identityProcessUseRepository.findByKey(cid);
-		Optional<ApprovalProcessingUseSetting> approvalSetTemp = approvalSettingRepo.findByCompanyId(cid);
 		this.parallel.forEach(employeeIds, employeeId -> {
 			
-//			// 中断処理　（中断依頼が出されているかチェックする）
-//			if (asyncContext.hasBeenRequestedToCancel()) {
-//				counter.accept(ProcessState.INTERRUPTION);
-//				return;
-//			}
-			Optional<EmpCalAndSumExeLog> log = empCalAndSumExeLogRepository.getByEmpCalAndSumExecLogID(empCalAndSumExecLogID);
-			if(!log.isPresent()) {
+			// 中断処理　（中断依頼が出されているかチェックする）
+			if (asyncContext.hasBeenRequestedToCancel()) {
 				counter.accept(ProcessState.INTERRUPTION);
 				return;
 			}
-			else {
-				val executionStatus = log.get().getExecutionStatus();
-				if(executionStatus.isPresent() && executionStatus.get().isStartInterruption()) {
-					counter.accept(ProcessState.INTERRUPTION);
-					return;
-				}
-			}
+			
 			//日別実績(WORK取得)
 			List<IntegrationOfDaily> createList = createIntegrationOfDaily(employeeId,datePeriod);
 			
@@ -249,35 +216,19 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 				targetPersonRepository.updateWithContent(employeeId, empCalAndSumExecLogID, 1, 0);
 			} else {
 				//計算処理を呼ぶ
-				afterCalcRecord = calculateDailyRecordServiceCenter.calculateForManageState(createList,closureList,reCalcAtr,empCalAndSumExecLogID);
+				afterCalcRecord = calculateDailyRecordServiceCenter.calculateForManageState(createList, Optional.of(asyncContext),closureList,reCalcAtr);
 				//１：日別計算(ENUM)
 				//0:計算完了
 				targetPersonRepository.updateWithContent(employeeId, empCalAndSumExecLogID, 1, 0);
-
+				
+				List<IntegrationOfDaily> result = afterCalcRecord.getLst().stream().map(tc -> tc.getIntegrationOfDaily()).collect(Collectors.toList());
 				//データ更新
+				for(IntegrationOfDaily value:result) {
+					updateRecord(value);
+				}
+				//計算状態更新
 				for(ManageCalcStateAndResult stateInfo : afterCalcRecord.getLst()) {
-					
-					try {
-						//update record
-						updateRecord(stateInfo.integrationOfDaily);
-						clearConfirmApproval(stateInfo.integrationOfDaily,iPUSOptTemp,approvalSetTemp);
-						upDateCalcState(stateInfo);
-					} catch (Exception ex) {
-						boolean isOptimisticLock = new ThrowableAnalyzer(ex).findByClass(OptimisticLockException.class).isPresent();
-						if (!isOptimisticLock) {
-							throw ex;
-						}
-						//create error message
-						ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeId, empCalAndSumExecLogID,
-								new ErrMessageResource("024"), EnumAdaptor.valueOf(1, ExecutionContent.class), 
-								stateInfo.getIntegrationOfDaily().getAffiliationInfor().getYmd(),
-								new ErrMessageContent(TextResource.localize("Msg_1541")));
-						//regist error message 
-						this.errMessageInfoRepository.add(employmentErrMes);
-						
-						
-						isHappendOptimistLockError.add(true);
-					}
+					upDateCalcState(stateInfo);
 				}
 				
 				//暫定データ
@@ -286,37 +237,18 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 				counter.accept(afterCalcRecord.getPs() == ProcessState.SUCCESS?ProcessState.SUCCESS:ProcessState.INTERRUPTION);
 			}
 		});
-		return isHappendOptimistLockError;
 	}
 	
-	/**
-	 * #108941 
-	 * 特定のエラーが発生している社員の確認、承認をクリアする
-	 * @param integrationOfDaily
-	 * @param iPUSOptTemp
-	 * @param approvalSetTemp
-	 */
-	private void clearConfirmApproval(IntegrationOfDaily integrationOfDaily,
-			Optional<IdentityProcessUseSet> iPUSOptTemp, Optional<ApprovalProcessingUseSetting> approvalSetTemp) {
-		dailyRecordAdUpService.removeConfirmApproval(Arrays.asList(integrationOfDaily), iPUSOptTemp, approvalSetTemp);
-	}
-
-
+	
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	private void updateRecord(IntegrationOfDaily value) {
- 		// データ更新
+		// データ更新
 		if(value.getAttendanceTimeOfDailyPerformance().isPresent()) {
-//			employeeDailyPerErrorRepository.removeParam(value.getAttendanceTimeOfDailyPerformance().get().getEmployeeId(), 
-//					value.getAttendanceTimeOfDailyPerformance().get().getYmd());
-//			determineErrorAlarmWorkRecordService.createEmployeeDailyPerError(value.getEmployeeError());
+			employeeDailyPerErrorRepository.removeParam(value.getAttendanceTimeOfDailyPerformance().get().getEmployeeId(), 
+					value.getAttendanceTimeOfDailyPerformance().get().getYmd());
 			this.registAttendanceTime(value.getAffiliationInfor().getEmployeeId(),value.getAffiliationInfor().getYmd(),
 									  value.getAttendanceTimeOfDailyPerformance().get(),value.getAnyItemValue());
-		}
-		
-		if(value.getAffiliationInfor() != null) {
-			Pair<String,GeneralDate> pair = Pair.of(value.getAffiliationInfor().getEmployeeId(),
-					value.getAffiliationInfor().getYmd());
-			//計算から呼ぶ場合はtrueでいいらしい。保科⇒thanh
-			this.dailyRecordAdUpService.adUpEmpError(value.getEmployeeError(), Arrays.asList(pair), true);			
+			determineErrorAlarmWorkRecordService.createEmployeeDailyPerError(value.getEmployeeError());
 		}
 	}
 	
@@ -324,9 +256,7 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void upDateCalcState(ManageCalcStateAndResult stateInfo) {
 		stateInfo.getIntegrationOfDaily().getWorkInformation().changeCalcState(stateInfo.isCalc?CalculationState.Calculated:CalculationState.No_Calculated);
-//		workInformationRepository.updateByKeyFlush(stateInfo.getIntegrationOfDaily().getWorkInformation());
-		dailyRecordAdUpService.adUpWorkInfo(stateInfo.getIntegrationOfDaily().getWorkInformation());
-		
+		workInformationRepository.updateByKeyFlush(stateInfo.getIntegrationOfDaily().getWorkInformation());
 	}
 	
 	/**
@@ -340,47 +270,36 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	}
 
 	@SuppressWarnings("rawtypes")
-	public ProcessState calculateForOnePerson(String employeeId,DatePeriod datePeriod,Optional<Consumer<ProcessState>> counter,String executeLogId) {
+	public ProcessState calculateForOnePerson(AsyncCommandHandlerContext asyncContext, String employeeId,DatePeriod datePeriod,Optional<Consumer<ProcessState>> counter) {
 		//実績取得
 		List<IntegrationOfDaily> createList = createIntegrationList(Arrays.asList(employeeId),datePeriod);
 		//実績が無かった時用のカウントアップ
 		if(createList.isEmpty()) 
 			return ProcessState.SUCCESS; 
-		String cid = AppContexts.user().companyId();
-		Optional<IdentityProcessUseSet> iPUSOptTemp = identityProcessUseRepository.findByKey(cid);
-		Optional<ApprovalProcessingUseSetting> approvalSetTemp = approvalSettingRepo.findByCompanyId(cid);
 		
 		//締め一覧取得
 		List<ClosureStatusManagement> closureList = getClosureList(Arrays.asList(employeeId),datePeriod);
 		
 		ManagePerCompanySet companySet =  commonCompanySettingForCalc.getCompanySetting(); 
 		//計算処理
-		val afterCalcRecord = calculateDailyRecordServiceCenter.calculateForclosure(createList,companySet ,closureList,executeLogId);
+		val afterCalcRecord = calculateDailyRecordServiceCenter.calculateForclosure(createList,companySet ,closureList);
 		
-		//データ更新
-		for(ManageCalcStateAndResult stateInfo : afterCalcRecord.getLst()) {
-			try {
-				//実績登録
-				updateRecord(stateInfo.integrationOfDaily); 
-				clearConfirmApproval(stateInfo.getIntegrationOfDaily(),iPUSOptTemp,approvalSetTemp);
-				upDateCalcState(stateInfo);
-			} catch (Exception ex) {
-				boolean isOptimisticLock = new ThrowableAnalyzer(ex).findByClass(OptimisticLockException.class).isPresent();
-				if (!isOptimisticLock) {
-					throw ex;
-				}
-				ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeId, executeLogId,
-						new ErrMessageResource("024"), EnumAdaptor.valueOf(1, ExecutionContent.class), 
-						stateInfo.getIntegrationOfDaily().getAffiliationInfor().getYmd(),
-						new ErrMessageContent(TextResource.localize("Msg_1541")));
-				this.errMessageInfoRepository.add(employmentErrMes);
-				
+		
+		for(ManageCalcStateAndResult value:afterCalcRecord.getLst()) {
+			// データ更新
+			//*****（未）　日別実績の勤怠情報だけを更新する場合。まとめて更新するなら、integrationOfDailyを入出できるよう調整する。
+			if(value.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().isPresent()) {
+				employeeDailyPerErrorRepository.removeParam(value.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().get().getEmployeeId(), 
+						value.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().get().getYmd());
+				this.registAttendanceTime(employeeId.toString(),value.getIntegrationOfDaily().getAffiliationInfor().getYmd(),
+										  value.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().get(),value.getIntegrationOfDaily().getAnyItemValue());
+				determineErrorAlarmWorkRecordService.createEmployeeDailyPerError(value.getIntegrationOfDaily().getEmployeeError());
 			}
 		}
-//		//計算状態更新
-//		for(ManageCalcStateAndResult stateInfo : afterCalcRecord.getLst()) {
-//			upDateCalcState(stateInfo);
-//		}
+		//計算状態更新
+		for(ManageCalcStateAndResult stateInfo : afterCalcRecord.getLst()) {
+			upDateCalcState(stateInfo);
+		}
 		return afterCalcRecord.getPs();
 	}
 
@@ -402,6 +321,7 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	 * データ更新
 	 * @param attendanceTime 日別実績の勤怠時間
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	private void registAttendanceTime(String empId,GeneralDate ymd,AttendanceTimeOfDailyPerformance attendanceTime, Optional<AnyItemValueOfDaily> anyItem){
 		adTimeAndAnyItemAdUpService.addAndUpdate(empId,ymd,Optional.of(attendanceTime), anyItem);	
 	}
@@ -438,7 +358,7 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 					affiInfo.get(),
 					businessType,
 					pcLogOnInfoOfDailyRepo.find(employeeId, attendanceTime.getYmd()),/** リポジトリ：日別実績のPCログオン情報 */
-					employeeDailyPerErrorRepository.find(employeeId, attendanceTime.getYmd()),/** リポジトリ:社員の日別実績エラー一覧 */
+					employeeDailyPerErrorRepository.findByPeriodOrderByYmd(employeeId, datePeriod),/** リポジトリ:社員の日別実績エラー一覧 */
 					outingTimeOfDailyPerformanceRepository.findByEmployeeIdAndDate(employeeId, attendanceTime.getYmd()),/** リポジトリ：日別実績の外出時間帯 */
 					breakTimeOfDailyPerformanceRepository.findByKey(employeeId, attendanceTime.getYmd()),/** リポジトリ：日別実績の休憩時間帯 */
 					attendanceTimeRepository.find(employeeId, attendanceTime.getYmd()),

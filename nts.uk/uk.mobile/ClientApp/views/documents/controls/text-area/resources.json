@@ -1,8 +1,10 @@
 {
     "jp": {
-        "documentscontrolstext-area": "Text Area Input"
+        "sample" : "Sample (jp)",
+        "documentscontrolstext-area": "Text area"
     },
     "vi": {
-        "documentscontrolstext-area": "Text Area Input"
+        "sample" : "Ví dụ",
+        "documentscontrolstext-area": "Text area"
     }
 }

@@ -8,6 +8,7 @@ import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
+import nts.uk.ctx.at.shared.dom.employmentrules.employmenttimezone.BreakTimeZoneSharedOutPut;
 
 public interface OvertimeService {
 	/**
@@ -59,11 +60,11 @@ public interface OvertimeService {
 	public Integer getTime36Detail(AppOvertimeDetail appOvertimeDetail);
 	
 	/**
-	 * 12.マスタ勤務種類、就業時間帯データをチェック
+	 * 休憩時間帯を取得する
 	 * @param companyID
-	 * @param wkTypeCode
-	 * @param wkTimeCode
+	 * @param workTypeCode
+	 * @param workTimeCode
 	 * @return
 	 */
-	public CheckWorkingInfoResult checkWorkingInfo(String companyID, String wkTypeCode, String wkTimeCode);
+	public BreakTimeZoneSharedOutPut getBreakTimes(String companyID, String workTypeCode, String workTimeCode);
 }

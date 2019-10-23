@@ -9,12 +9,11 @@
 		<ui:define name="htmlHead">
 			<script type='text/javascript'>
 				var dialogSize = {
-					width: 500,
-					height: 580
+					width : 580,
+					height : 540
 				};
 			</script>
-			
-			<com:scriptfile path="cm/grid.js" />
+			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="cps003.d.style.css" />
 			<com:scriptfile path="cps003.d.service.js" />
 			<com:scriptfile path="cps003.d.vm.js" />
@@ -25,25 +24,11 @@
 			<div id="contents-area"
 				data-bind="let: { 
 						text: nts.uk.resource.getText
-					}">
-				<div class="valign-center control-group">
-					<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CPS003_54')}</div>
-					<label class="ntsControl limited-label" data-bind="text: $vm.ctgName"></label>
-				</div>
-				<div class="main form-group">
-					<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CPS003_55')}</div>
-					<div data-bind="grid4d: {
-							key: 'id',
-							selecteds: $vm.selecteds,
-							dataSources: $vm.dataSources
-						}">
-					</div>
-					<div style="clear:both"></div>
-				</div>
+					}>
 			</div>
 			<div id="functions-area-bottom">
-				<button data-bind="click: $vm.pushData.bind($vm)" class="proceed x-large">#{i18n.getText('CPS003_60')}</button>
-				<button data-bind="click: $vm.close.bind($vm)">#{i18n.getText('CPS003_61')}</button>
+				<button class="proceed x-large" data-bind="">#{i18n.getText('CPS007_16')}</button>
+				<button data-bind="click: close">#{i18n.getText('CPS007_17')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

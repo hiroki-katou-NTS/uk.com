@@ -9,10 +9,6 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 public interface CheckActualResultMulMonth {
 	boolean checkMulMonthCheckCond(DatePeriod period, String companyId, String string,
 			List<MonthlyRecordValueImport> result, MulMonCheckCondDomainEventDto erAlAtdItemConAdapterDto);
-	
-	// fix tạm lấy số lần 
-	Double sumMulMonthCheckCond(DatePeriod period, String companyId, String string,
-			List<MonthlyRecordValueImport> result, MulMonCheckCondDomainEventDto erAlAtdItemConAdapterDto);
 
 	boolean checkMulMonthCheckCondContinue(DatePeriod period, String companyId, String string,
 			List<MonthlyRecordValueImport> result, MulMonCheckCondDomainEventDto erAlAtdItemConAdapterDto);
@@ -20,6 +16,6 @@ public interface CheckActualResultMulMonth {
 	ArrayList<Integer> checkMulMonthCheckCondCosp(DatePeriod period, String companyId, String string,
 			List<MonthlyRecordValueImport> result, MulMonCheckCondDomainEventDto erAlAtdItemConAdapterDto);
 
-	ResultCheckMulMonthCheckCondAverage checkMulMonthCheckCondAverage(DatePeriod period, String companyId, String string,
+	boolean checkMulMonthCheckCondAverage(DatePeriod period, String companyId, String string,
 			List<MonthlyRecordValueImport> result, MulMonCheckCondDomainEventDto erAlAtdItemConAdapterDto);
 }

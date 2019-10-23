@@ -284,8 +284,4 @@ public class DPHeaderDto {
 		if(DPText.ITEM_REQUIRED.contains(item.getId())) return true;
 		return false;
 	}
-	
-	public static Map<Integer, String> getPrimitiveAll() {
-		return PrimitiveValueDaily.mapValuePrimitive;
-	}
 }

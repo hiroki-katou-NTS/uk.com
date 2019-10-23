@@ -2438,7 +2438,7 @@ public class AlarmCheckCondQuery {
 			+ " 			, 1, 1, '') AS HDPAID,"
 			+ " "
 			+ " STUFF((SELECT ('|' + CONVERT(varchar(20), obl.DIVIDE_ATR) + ',' "
-			+ "					   + CONVERT(varchar(200), obl.MESSAGE_DISP) + ',' "
+			+ "					   + CONVERT(varchar(20), obl.MESSAGE_DISP) + ',' "
 			+ "					   + CONVERT(varchar(20), obl.UNDER_LIMIT_DAY))"
 			+ " 				FROM KFNMT_ALST_CHK_HDPAID_OBL obl "
 			+ " 				WHERE obl.CATEGORY = a.CATEGORY AND obl.CD = a.CD AND obl.CID = a.CID  FOR XML PATH(''))"

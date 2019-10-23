@@ -43,27 +43,5 @@ public interface PerInfoItemDataRepository {
 	void deleteItemData(PersonInfoItemData domain);
 	
 	boolean hasItemData(List<String> ctgId, String itemCd);
-	/**
-	 * getAllInfoItemByRecordId
-	 * @param recordId
-	 * @return
-	 */
-	List<PersonInfoItemData> getAllInfoItemByRecordId(List<String> recordId);
-	
-	List<PersonInfoItemData> getAllInfoItemByRecordIdsAndItemIds(List<String> itemIds, List<String> recordId);
-	
-	/**
-	 * @author lanlt
-	 * Add items data
-	 * @param domains
-	 */
-	void addAll(List<PersonInfoItemData> domains);
-	
-	/**
-	 * @author lanlt
-	 * Update items data
-	 * @param domains
-	 */
-	void updateAll(List<PersonInfoItemData> domains);
 
 }

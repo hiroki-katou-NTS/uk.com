@@ -3,8 +3,6 @@ module cps003.g {
 
     __viewContext.ready(() => {
         __viewContext['viewModel'] = new vm.ViewModel();
-        __viewContext.viewModel.start();
         __viewContext.bind(__viewContext['viewModel']);
-        $("#G1_001").focus();
     });
 }

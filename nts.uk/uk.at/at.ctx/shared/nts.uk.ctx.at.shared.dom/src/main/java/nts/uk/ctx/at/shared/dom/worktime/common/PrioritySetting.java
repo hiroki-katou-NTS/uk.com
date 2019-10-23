@@ -5,7 +5,6 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
@@ -14,8 +13,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
  */
 // 優先設定
 @Getter
-@NoArgsConstructor
-public class PrioritySetting extends WorkTimeDomainObject implements Cloneable{
+public class PrioritySetting extends WorkTimeDomainObject {
 
 	/** The priority atr. */
 	// 優先区分
@@ -79,18 +77,5 @@ public class PrioritySetting extends WorkTimeDomainObject implements Cloneable{
 				this.priorityAtr = MultiStampTimePiorityAtr.AFTER_PIORITY;
 			}
 		}
-	}
-	
-	@Override
-	public PrioritySetting clone() {
-		PrioritySetting cloned = new PrioritySetting();
-		try {
-			cloned.priorityAtr = MultiStampTimePiorityAtr.valueOf(this.priorityAtr.value);
-			cloned.stampAtr = StampPiorityAtr.valueOf(this.stampAtr.value);
-		}
-		catch (Exception e){
-			throw new RuntimeException("AggregateTotalTimeSpentAtWork clone error.");
-		}
-		return cloned;
 	}
 }

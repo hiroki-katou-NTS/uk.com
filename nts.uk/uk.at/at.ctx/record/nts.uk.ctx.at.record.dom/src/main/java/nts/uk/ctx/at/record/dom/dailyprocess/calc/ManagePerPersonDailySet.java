@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 import java.util.Optional;
 
 import lombok.Getter;
+//import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 

@@ -68,8 +68,7 @@ public class UpdateLateOrLeaveEarlyCommandHandler
 				domainLateOrLeaveEarly.getApplication().getAppDate(),
 				domainLateOrLeaveEarly.getApplication().getAppType().value,
 				domainLateOrLeaveEarly.getApplication().getAppID(),
-				domainLateOrLeaveEarly.getApplication().getPrePostAtr(), domainLateOrLeaveEarly.getVersion(), null,
-				null);
+				domainLateOrLeaveEarly.getApplication().getPrePostAtr(), domainLateOrLeaveEarly.getVersion());
 
 		// ドメインモデル「遅刻早退取消申請」の更新する
 		// Update the domain model 'Cancellation for late arrival cancellation'

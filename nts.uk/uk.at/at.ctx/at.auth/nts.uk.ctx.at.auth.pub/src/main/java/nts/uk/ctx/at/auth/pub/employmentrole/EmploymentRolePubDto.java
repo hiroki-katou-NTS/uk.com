@@ -8,6 +8,7 @@ import lombok.Value;
 @Value
 @AllArgsConstructor
 public class EmploymentRolePubDto {
+
 	/**
 	 * 会社ID
 	 */

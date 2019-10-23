@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.excessleave;
 
 import java.util.List;
-import java.util.Map;
 
 public interface ExcessHolidayManaDataRepository {
 	
@@ -10,6 +9,4 @@ public interface ExcessHolidayManaDataRepository {
 	// 期限切れ状態=使用可能
 
 	List<ExcessHolidayManagementData> getBySidWithExpCond(String cid, String sid, int state);
-	
-	Map<String ,Double>getAllBySidWithExpCond(String cid, List<String> sids, int state);
 }

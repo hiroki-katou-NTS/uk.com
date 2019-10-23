@@ -6,24 +6,19 @@ package nts.uk.ctx.at.shared.dom.worktime.fixedset;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
-import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
  * The Class FixOffdayWorkTimezone.
  */
 @Getter
-@NoArgsConstructor
 // 固定勤務の休日出勤用勤務時間帯
-public class FixOffdayWorkTimezone extends WorkTimeDomainObject implements Cloneable{
+public class FixOffdayWorkTimezone extends WorkTimeDomainObject {
 
 	/** The rest timezone. */
 	// 休憩時間帯
@@ -123,17 +118,4 @@ public class FixOffdayWorkTimezone extends WorkTimeDomainObject implements Clone
 		});
 	}
 
-	@Override
-	public FixOffdayWorkTimezone clone() {
-		FixOffdayWorkTimezone cloned = new FixOffdayWorkTimezone();
-		try {
-			cloned.restTimezone = this.restTimezone.clone();
-			cloned.lstWorkTimezone = this.lstWorkTimezone.stream().map(c -> c.clone()).collect(Collectors.toList());
-		}
-		catch (Exception e){
-			throw new RuntimeException("FixOffdayWorkTimezone clone error.");
-		}
-		return cloned;
-	}
-	
 }

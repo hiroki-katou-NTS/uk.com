@@ -4,15 +4,12 @@ import nts.uk.ctx.pr.report.app.command.printconfig.socialinsurnoticreset.EmpAdd
 import nts.uk.ctx.pr.report.app.command.printconfig.socialinsurnoticreset.EmpAddChangeInfoCommandHandle;
 import nts.uk.ctx.pr.report.app.find.printconfig.socialinsurnoticreset.EmpAddChangeInfoDto;
 import nts.uk.ctx.pr.report.app.find.printconfig.socialinsurnoticreset.EmpAddChangeInfoFinder;
-import nts.uk.ctx.pr.report.app.find.printdata.comlegalrecord.CompanyStatutoryWriteDto;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Path("ctx/pr/report/printconfig/socinsurnoticreset")
 @Produces("application/json")
@@ -30,9 +27,9 @@ public class AddChangeSettingWebService {
     }
 
     @POST
-    @Path("/register/{empId}")
+    @Path("/register")
     public void registerEmpAddChangeInfo(EmpAddChangeInfoCommand empAddChangeInfoCommand) {
-        empAddChangeInfoCommandHandle.registerEmpAddChangeInfo(empAddChangeInfoCommand);
+        empAddChangeInfoCommandHandle.handle(empAddChangeInfoCommand);
     }
 
 

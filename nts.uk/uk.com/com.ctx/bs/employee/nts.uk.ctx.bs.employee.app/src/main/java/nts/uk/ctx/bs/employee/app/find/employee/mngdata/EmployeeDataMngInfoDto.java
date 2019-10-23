@@ -26,6 +26,6 @@ public class EmployeeDataMngInfoDto extends PeregDomainDto {
 
 	public static EmployeeDataMngInfoDto fromDomain(EmployeeDataMngInfo domain) {
 		return new EmployeeDataMngInfoDto(domain.getEmployeeId(), domain.getEmployeeCode().v(),
-				domain.getExternalCode() == null? null: domain.getExternalCode().v());
+				domain.getExternalCode().v());
 	}
 }

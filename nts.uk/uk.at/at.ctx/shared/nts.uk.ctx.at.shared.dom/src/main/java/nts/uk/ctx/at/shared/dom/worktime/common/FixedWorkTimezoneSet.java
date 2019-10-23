@@ -11,7 +11,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.val;
 import nts.gul.collection.CollectionUtil;
@@ -23,8 +22,7 @@ import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 // 固定勤務時間帯設定
 @Getter
 @Setter
-@NoArgsConstructor
-public class FixedWorkTimezoneSet extends WorkTimeDomainObject implements Cloneable{
+public class FixedWorkTimezoneSet extends WorkTimeDomainObject {
 
 	/** The lst working timezone. */
 	// 就業時間帯
@@ -195,18 +193,5 @@ public class FixedWorkTimezoneSet extends WorkTimeDomainObject implements Clonea
 	 */
 	public void correctDefaultData() {
 		this.lstOTTimezone.forEach(item -> item.correctDefaultData());
-	}
-	
-	@Override
-	public FixedWorkTimezoneSet clone() {
-		FixedWorkTimezoneSet cloned = new FixedWorkTimezoneSet();
-		try {
-			cloned.lstWorkingTimezone = this.lstWorkingTimezone.stream().map(c -> c.clone()).collect(Collectors.toList());
-			cloned.lstOTTimezone = this.lstOTTimezone.stream().map(c -> c.clone()).collect(Collectors.toList());
-		}
-		catch (Exception e){
-			throw new RuntimeException("FixedWorkTimezoneSet clone error.");
-		}
-		return cloned;
 	}
 }

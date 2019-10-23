@@ -1,14 +1,9 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository;
 
-import java.util.Arrays;
-import java.util.Collections;
-
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-
-import org.apache.commons.lang3.tuple.Pair;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
@@ -19,11 +14,9 @@ import nts.uk.ctx.at.record.dom.approvalmanagement.domainservice.DeleteApprovalS
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.BreakTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.OutingTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.calculationattribute.repo.CalAttrOfDailyPerformanceRepository;
-import nts.uk.ctx.at.record.dom.daily.DailyRecordAdUpService;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.AttendanceLeavingGateOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.PCLogOnInfoOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
-import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerformRepo;
 import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.raisesalarytime.repo.SpecificDateAttrOfDailyPerforRepo;
 import nts.uk.ctx.at.record.dom.shorttimework.repo.ShortTimeOfDailyPerformanceRepository;
@@ -103,12 +96,6 @@ public class DeleteWorkInfoOfDaiPerService {
 	
 //	@Inject
 //	private AppRootStateConfirmAdapter appRootStateConfirmAdapter;
-	
-	@Inject 
-	private RemarksOfDailyPerformRepo remarksOfDailyPerformRepo;
-	
-	@Inject
-	private DailyRecordAdUpService dailyRecordAdUpService;
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void deleteWorkInfoOfDaiPerService(String employeeId, GeneralDate day) {
@@ -131,13 +118,12 @@ public class DeleteWorkInfoOfDaiPerService {
 		this.shortTimeOfDailyPerformanceRepository.deleteByEmployeeIdAndDate(employeeId, day);
 		// AttendanceTimeByWorkOfDailyRepository
 		this.specificDateAttrOfDailyPerforRepo.deleteByEmployeeIdAndDate(employeeId, day);
-//		this.employeeDailyPerErrorRepository.removeParam(employeeId, day);
-		this.dailyRecordAdUpService.adUpEmpError(Collections.emptyList(), Arrays.asList(Pair.of(employeeId, day)), true);
+		this.employeeDailyPerErrorRepository.removeParam(employeeId, day);
 		// remove approval State from workflow
 //		this.appRootStateConfirmAdapter.deleteApprovalByEmployeeIdAndDate(employeeId, day);
 		this.anyItemValueOfDailyRepo.deleteAnyItemValueOfDaily(employeeId, day);
 		
-		this.remarksOfDailyPerformRepo.removeWithJdbc(employeeId, day);
+		
 	}
 
 }

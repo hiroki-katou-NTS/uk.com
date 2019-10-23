@@ -19,7 +19,6 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -59,9 +58,7 @@ public class KclmtCompensLeaveEmp extends UkJpaEntity implements Serializable {
         @JoinColumn(name = "EMPCD", referencedColumnName = "EMPCD", insertable = false, updatable = false)})
     @OneToOne(cascade = CascadeType.ALL, fetch=FetchType.LAZY)
     private KctmtDigestTimeEmp kctmtDigestTimeEmp;
-    
-    public static final JpaEntityMapper<KclmtCompensLeaveEmp> MAPPER =
-    		new JpaEntityMapper<>(KclmtCompensLeaveEmp.class);
+
     /**
      * Instantiates a new kclmt compens leave emp.
      */

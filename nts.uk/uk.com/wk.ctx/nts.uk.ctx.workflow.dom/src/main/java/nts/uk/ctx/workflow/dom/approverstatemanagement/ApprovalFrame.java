@@ -80,12 +80,4 @@ public class ApprovalFrame extends DomainObject {
 		return approvalFrame;
 	}
 	
-	public boolean isApprover(String employeeId) {
-		return listApproverState.stream()
-				.anyMatch(a -> a.getApproverID().equals(employeeId));
-	}
-	
-	public boolean isRepresenter(String employeeId) {
-		return representerID != null && representerID.equals(employeeId);
-	}
 }

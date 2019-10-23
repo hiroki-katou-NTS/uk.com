@@ -8,6 +8,6 @@ import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecution
  *
  */
 public interface AppRouteUpdateDailyService {
-	public OutputAppRouteDaily checkAppRouteUpdateDaily( String execId, ProcessExecution procExec,
+	public void checkAppRouteUpdateDaily( String execId, ProcessExecution procExec,
 			ProcessExecutionLog procExecLog);
 }

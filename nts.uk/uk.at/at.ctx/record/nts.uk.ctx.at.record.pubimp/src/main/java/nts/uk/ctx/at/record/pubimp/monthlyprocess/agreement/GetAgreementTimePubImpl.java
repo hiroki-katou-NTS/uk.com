@@ -15,11 +15,8 @@ import nts.uk.ctx.at.record.pub.monthly.agreement.AgreMaxTimeOfMonthly;
 import nts.uk.ctx.at.record.pub.monthly.agreement.AgreementTimeOfMonthly;
 import nts.uk.ctx.at.record.pub.monthlyprocess.agreement.AgreementTimeExport;
 import nts.uk.ctx.at.record.pub.monthlyprocess.agreement.GetAgreementTimePub;
-import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxAverageTimeMulti;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOutput;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeYear;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.ScheRecAtr;
 import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
@@ -133,19 +130,5 @@ public class GetAgreementTimePubImpl implements GetAgreementTimePub {
 	public Optional<AgreMaxAverageTimeMulti> getMaxAverageMulti(String companyId, String employeeId,
 			YearMonth yearMonth, GeneralDate criteria) {
 		return this.getAgreementTime.getMaxAverageMulti(companyId, employeeId, yearMonth, criteria);
-	}
-	
-	/** 36協定上限複数月平均時間と年間時間の取得（日指定） */
-	@Override
-	public AgreementTimeOutput getAverageAndYear(String companyId, String employeeId, YearMonth averageMonth,
-			GeneralDate criteria, ScheRecAtr scheRecAtr) {
-		return this.getAgreementTime.getAverageAndYear(companyId, employeeId, averageMonth, criteria, scheRecAtr);
-	}
-	
-	/** 36協定上限複数月平均時間と年間時間の取得（年度指定） */
-	@Override
-	public AgreementTimeOutput getAverageAndYear(String companyId, String employeeId, GeneralDate criteria,
-			Year year, YearMonth averageMonth, ScheRecAtr scheRecAtr) {
-		return this.getAgreementTime.getAverageAndYear(companyId, employeeId, criteria, year, averageMonth, scheRecAtr);
 	}
 }

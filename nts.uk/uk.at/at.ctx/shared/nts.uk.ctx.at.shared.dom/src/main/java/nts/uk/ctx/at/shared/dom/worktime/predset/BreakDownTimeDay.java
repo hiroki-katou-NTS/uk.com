@@ -6,7 +6,6 @@ package nts.uk.ctx.at.shared.dom.worktime.predset;
 
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 //import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
@@ -15,10 +14,9 @@ import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
  * The Class BreakDownTimeDay.
  */
 @Getter
-@NoArgsConstructor
 @Builder
 // １日の時間内訳
-public class BreakDownTimeDay extends WorkTimeDomainObject implements Cloneable{
+public class BreakDownTimeDay extends WorkTimeDomainObject {
 
 	/** The one day. */
 	// 1日
@@ -111,18 +109,4 @@ public class BreakDownTimeDay extends WorkTimeDomainObject implements Cloneable{
 		return this.morning.valueAsMinutes() + this.afternoon.valueAsMinutes();
 	}
 
-	@Override
-	public BreakDownTimeDay clone() {
-		BreakDownTimeDay cloned = new BreakDownTimeDay();
-		try {
-			cloned.oneDay = new AttendanceTime(this.oneDay.valueAsMinutes());
-			cloned.morning = new AttendanceTime(this.morning.valueAsMinutes());
-			cloned.afternoon = new AttendanceTime(this.afternoon.valueAsMinutes());
-			
-		}
-		catch (Exception e){
-			throw new RuntimeException("BreakDownTimeDay clone error.");
-		}
-		return cloned;
-	}
 }

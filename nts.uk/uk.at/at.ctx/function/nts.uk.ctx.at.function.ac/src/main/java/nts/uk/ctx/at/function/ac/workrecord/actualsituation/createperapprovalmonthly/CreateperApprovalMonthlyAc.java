@@ -7,9 +7,7 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.adapter.workrecord.actualsituation.createperapprovalmonthly.CreateperApprovalMonthlyAdapter;
-import nts.uk.ctx.at.function.dom.adapter.workrecord.actualsituation.createperapprovalmonthly.OutputCreatePerAppMonImport;
 import nts.uk.ctx.at.record.pub.workrecord.actualsituation.createapproval.dailyperformance.createperapprovalmonthly.CreateperApprovalMonthlyPub;
-import nts.uk.ctx.at.record.pub.workrecord.actualsituation.createapproval.dailyperformance.createperapprovalmonthly.OutputCreatePerAppMonExport;
 
 @Stateless
 public class CreateperApprovalMonthlyAc implements CreateperApprovalMonthlyAdapter {
@@ -18,10 +16,10 @@ public class CreateperApprovalMonthlyAc implements CreateperApprovalMonthlyAdapt
 	private CreateperApprovalMonthlyPub createperApprovalMonthlyPub;
 	
 	@Override
-	public OutputCreatePerAppMonImport createperApprovalMonthly(String companyId, String executionId, List<String> employeeIDs,
+	public boolean createperApprovalMonthly(String companyId, String executionId, List<String> employeeIDs,
 			int processExecType, GeneralDate startDateClosure) {
-		OutputCreatePerAppMonExport check = createperApprovalMonthlyPub.createperApprovalMonthly(companyId, executionId, employeeIDs, processExecType, startDateClosure);
-		return new OutputCreatePerAppMonImport(check.isCreateperApprovalMon(), check.isCheckStop());
+		boolean check = createperApprovalMonthlyPub.createperApprovalMonthly(companyId, executionId, employeeIDs, processExecType, startDateClosure);
+		return check;
 	}
 
 }

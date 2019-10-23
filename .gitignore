@@ -11,9 +11,6 @@
 **/.settings*
 **/.ide*
 
-#ignore spotlight cache
-**/.DS_Store
-
 #ignore sass-cache folder
 **/.sass-cache*
 

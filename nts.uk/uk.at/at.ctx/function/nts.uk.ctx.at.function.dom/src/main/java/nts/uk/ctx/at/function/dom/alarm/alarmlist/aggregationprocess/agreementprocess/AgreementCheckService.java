@@ -17,7 +17,7 @@ public interface AgreementCheckService {
 
 	void check(List<AlarmCheckConditionByCategory> agreementErAl, List<PeriodByAlarmCategory> periodAlarms,
 			Optional<AgreementOperationSettingImport> agreementSetObj, Consumer<Integer> counter,
-			Supplier<Boolean> shouldStop, List<ValueExtractAlarm> result,
+			Supplier<Boolean> shouldStop, List<ValueExtractAlarm> result, List<String> empIds,
 			Map<String, Integer> empIdToClosureId, List<Closure> closureList,
 			Map<String, EmployeeSearchDto> mapEmployee, List<String> employeeIds);
 	

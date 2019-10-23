@@ -5,7 +5,6 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
@@ -13,8 +12,7 @@ import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
  */
 // 時刻丸め
 @Getter
-@NoArgsConstructor
-public class InstantRounding extends WorkTimeDomainObject implements Cloneable{
+public class InstantRounding extends WorkTimeDomainObject {
 
 	/** The font rear section. */
 	// 前後区分
@@ -58,19 +56,6 @@ public class InstantRounding extends WorkTimeDomainObject implements Cloneable{
 	public void saveToMememto(InstantRoundingSetMemento memento) {
 		memento.setFontRearSection(this.fontRearSection);
 		memento.setRoundingTimeUnit(this.roundingTimeUnit);
-	}
-	
-	@Override
-	public InstantRounding clone() {
-		InstantRounding cloned = new InstantRounding();
-		try {
-			cloned.fontRearSection =FontRearSection.valueOf(this.fontRearSection.value);
-			cloned.roundingTimeUnit = RoundingTimeUnit.valueOf(this.roundingTimeUnit.value);
-		}
-		catch (Exception e){
-			throw new RuntimeException("InstantRounding clone error.");
-		}
-		return cloned;
 	}
 
 }

@@ -10,8 +10,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.apache.commons.lang3.tuple.Pair;
-
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
@@ -88,8 +86,7 @@ public class ApplicationListForScreen {
 				basicSchedules.addAll(scBasicScheduleAdapter.findByID(applicationExcessHoliday.stream().map(c -> c.getEmployeeID()).distinct().collect(Collectors.toList()), new DatePeriod(minD, maxD)));
 			}
 			for(Application_New app : applicationExcessHoliday){
-				if((!(app.getStartDate().isPresent()&&app.getEndDate().isPresent())) || 
-					app.getStartDate().get().equals(app.getEndDate().get())){
+				if(!(app.getStartDate().isPresent()&&app.getEndDate().isPresent())){
 					ApplicationExportDto applicationExport = new ApplicationExportDto();
 					applicationExport.setAppDate(app.getAppDate());
 					applicationExport.setAppType(app.getAppType().value);
@@ -137,8 +134,7 @@ public class ApplicationListForScreen {
 				basicSchedules.addAll(scBasicScheduleAdapter.findByID(applicationHoliday.stream().map(c -> c.getEmployeeID()).distinct().collect(Collectors.toList()), new DatePeriod(minD, maxD)));
 			}
 			for(Application_New app : applicationHoliday){
-				if((!(app.getStartDate().isPresent()&&app.getEndDate().isPresent())) || 
-						app.getStartDate().get().equals(app.getEndDate().get())){
+				if(!(app.getStartDate().isPresent()&&app.getEndDate().isPresent())){
 					Optional<AppAbsence> optAppAbsence = apps.stream().filter(c -> c.getAppID().equals(app.getAppID())).findFirst();
 					ApplicationExportDto applicationExport = new ApplicationExportDto();
 					applicationExport.setAppDate(app.getAppDate());
@@ -193,8 +189,7 @@ public class ApplicationListForScreen {
 				workTypes.addAll(workTypeRepo.getPossibleWorkTypeV2(companyID, basicSchedules.stream().map(c -> c.getWorkTypeCode()).distinct().collect(Collectors.toList())));
 			}
 			for(Application_New app : appWorkChangeLst){
-				if((!(app.getStartDate().isPresent()&&app.getEndDate().isPresent())) || 
-						app.getStartDate().get().equals(app.getEndDate().get())){
+				if(!(app.getStartDate().isPresent()&&app.getEndDate().isPresent())){
 					ApplicationExportDto applicationExport = new ApplicationExportDto();
 					applicationExport.setAppDate(app.getAppDate());
 					applicationExport.setAppType(app.getAppType().value);
@@ -305,21 +300,13 @@ public class ApplicationListForScreen {
 			GeneralDate endDate) {
 		List<ApplicationExportDto> appExportLst = this.getApplicationBySID(employeeID, startDate, endDate);
 		List<AppGroupExportDto> result = new ArrayList<>();
-		
 		Map<Object, List<AppGroupExportDto>> mapDate =  appExportLst.stream()
 				.map(x -> new AppGroupExportDto(x.getAppDate(),x.getAppType(),x.getEmployeeID(),x.getAppTypeName()))
-				.collect(Collectors.groupingBy(x -> Pair.of(x.getAppDate(), x.getEmployeeID())));
+				.collect(Collectors.groupingBy(x -> x.getAppDate()));
 		mapDate.entrySet().stream().forEach(x -> {
 			Map<Object, List<AppGroupExportDto>> mapDateType = x.getValue().stream().collect(Collectors.groupingBy(y -> y.getAppType()));
 			mapDateType.entrySet().stream().forEach(y -> {
-				if(Integer.valueOf(y.getKey().toString())==ApplicationType.ABSENCE_APPLICATION.value){
-					Map<Object, List<AppGroupExportDto>> mapDateTypeAbsence = y.getValue().stream().collect(Collectors.groupingBy(z -> z.getAppTypeName()));
-					mapDateTypeAbsence.entrySet().stream().forEach(z -> {
-						result.add(z.getValue().get(0));
-					});
-				} else {
-					result.add(y.getValue().get(0));
-				}
+				result.add(y.getValue().get(0));
 			});
 		});
 		return result;

@@ -24,11 +24,9 @@ public class ValueExtractAlarmWR {
 	private String alarmValueMessage;
 	
 	private Optional<String> comment;
-	
-	private Optional<String> checkedValue;
 
 	public ValueExtractAlarmWR(String workplaceID, String employeeID, GeneralDate alarmValueDate, String classification,
-			String alarmItem, String alarmValueMessage, String comment, String checkedValue) {
+			String alarmItem, String alarmValueMessage, String comment) {
 		super();
 		this.workplaceID = Optional.ofNullable(workplaceID);
 		this.employeeID = employeeID;
@@ -37,9 +35,7 @@ public class ValueExtractAlarmWR {
 		this.alarmItem = alarmItem;
 		this.alarmValueMessage = alarmValueMessage;
 		this.comment = Optional.ofNullable(comment);
-		this.checkedValue = Optional.ofNullable(checkedValue);
 	}
 	
 	
 }
-

@@ -1,8 +1,6 @@
 package nts.uk.ctx.at.shared.infra.repository.specialholiday;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -38,11 +36,6 @@ public class JpaGrantDateTblRepository extends JpaRepository implements GrantDat
 	private final static String SELECT_ELAPSE_BY_GDCD_QUERY = "SELECT e.pk.specialHolidayCode, e.pk.grantDateCd, e.pk.elapseNo, e.grantedDays, e.months, e.years "
 			+ "FROM KshstElapseYears e "
 			+ "WHERE e.pk.companyId = :companyId AND e.pk.specialHolidayCode = :specialHolidayCode AND e.pk.grantDateCd = :grantDateCd "
-			+ "ORDER BY e.pk.elapseNo ASC";
-	
-	private final static String SELECT_ELAPSE_BY_GDCD_LST_QUERY = "SELECT e.pk.specialHolidayCode, e.pk.grantDateCd, e.pk.elapseNo, e.grantedDays, e.months, e.years "
-			+ "FROM KshstElapseYears e "
-			+ "WHERE e.pk.companyId = :companyId AND e.pk.specialHolidayCode = :specialHolidayCode AND e.pk.grantDateCd IN :grantDateCd "
 			+ "ORDER BY e.pk.elapseNo ASC";
 	
 	private final static String DELETE_All_ELAPSE = "DELETE FROM KshstElapseYears e "
@@ -211,18 +204,5 @@ public class JpaGrantDateTblRepository extends JpaRepository implements GrantDat
 					
 					return GrantDateTbl.createFromJavaType(grantDateCd, grantName, isSpecified, fixedAssign, numberOfDays);
 				});
-	}
-
-	@Override
-	public Map<String, List<ElapseYear>> findElapseByGrantDateCdLst(String companyId, int specialHolidayCode, List<String> grantDateCode) {
-		if(grantDateCode.isEmpty()) return new HashMap<>();
-		List<ElapseYear> result = this.queryProxy().query(SELECT_ELAPSE_BY_GDCD_LST_QUERY, Object[].class)
-					.setParameter("companyId", companyId)
-					.setParameter("specialHolidayCode", specialHolidayCode)
-					.setParameter("grantDateCd", grantDateCode)
-				.getList(c -> {
-					return createDomainFromEntity(c);
-				});
-		 return result.stream().collect(Collectors.groupingBy(c -> c.getGrantDateCode()));
 	}
 }

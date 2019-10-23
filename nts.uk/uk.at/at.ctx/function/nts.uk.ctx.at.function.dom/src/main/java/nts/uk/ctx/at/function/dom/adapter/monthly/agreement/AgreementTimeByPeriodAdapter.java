@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.function.dom.adapter.monthly.agreement;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
@@ -50,5 +49,5 @@ public interface AgreementTimeByPeriodAdapter {
 
 
 	List<AgreementTimeByEmpImport> algorithmImprove(String companyId, List<String> employeeIds, GeneralDate criteria,
-													Month startMonth, Year year, List<PeriodAtrOfAgreement> periodAtrs, Map<String, YearMonthPeriod> periodWorking);
+													Month startMonth, Year year, List<PeriodAtrOfAgreement> periodAtrs);
 }

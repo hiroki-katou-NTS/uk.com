@@ -1,5 +1,5 @@
 module nts.uk.at.view.kdw008.b.service {
-    let BASE_MOBILE_PATH = 'at/function/businesstype/mobile/';
+
     var paths = {
         addDailyDetail: "at/record/businesstype/addBusTypeFormat",
         updateDailyDetail: "at/record/businesstype/updateBusTypeFormat",
@@ -25,22 +25,14 @@ module nts.uk.at.view.kdw008.b.service {
 
         //MonthlyAttendanceItem
         getMonthlyAttItem: "at/shared/scherec/attitem/getMonthlyAttItem",
-
-        // mobile 
-        addMobileDailyDetail: BASE_MOBILE_PATH + "addBusinessTypeDailyDetail",
-        updateMobileDailyDetail: BASE_MOBILE_PATH + "updateBusTypeFormat",
-        getMobileDailyDetail: BASE_MOBILE_PATH + "findBusinessTypeDailyDetail/{0}",
-        getMobileMonthlyDetail: BASE_MOBILE_PATH + "findBusinessTypeMonthlyDetail/{0}",
     }
 
-    export function addDailyDetail(AddBusTypeCommand: any, isMobile: boolean): JQueryPromise < any > {
-        let _path = !isMobile ? paths.addDailyDetail : paths.addMobileDailyDetail;
-        return nts.uk.request.ajax("at", _path, AddBusTypeCommand);
+    export function addDailyDetail(AddBusTypeCommand: any): JQueryPromise < any > {
+        return nts.uk.request.ajax("at", paths.addDailyDetail, AddBusTypeCommand);
     };
 
-    export function updateDailyDetail(UpdateBusTypeCommand: any, isMobile: boolean): JQueryPromise < any > {
-        let _path = !isMobile ? paths.updateDailyDetail : paths.updateMobileDailyDetail;
-        return nts.uk.request.ajax("at", _path, UpdateBusTypeCommand);
+    export function updateDailyDetail(UpdateBusTypeCommand: any): JQueryPromise < any > {
+        return nts.uk.request.ajax("at", paths.updateDailyDetail, UpdateBusTypeCommand);
     };
     //monthly
     export function updateMonthly(command: any): JQueryPromise < any > {
@@ -64,21 +56,14 @@ module nts.uk.at.view.kdw008.b.service {
         return nts.uk.request.ajax("at", _path);
     };
 
-    export function getDailyDetail(businessTypeCode: string, sheetNo: number, isMobile: boolean): JQueryPromise < any > {
-        let _path = '';
-        if(!isMobile) {
-            _path = nts.uk.text.format(paths.getDailyDetail, businessTypeCode, sheetNo);
-        } else {
-            _path = nts.uk.text.format(paths.getMobileDailyDetail, businessTypeCode);
-        }
+    export function getDailyDetail(businessTypeCode: string, sheetNo: number): JQueryPromise < any > {
+        let _path = nts.uk.text.format(paths.getDailyDetail, businessTypeCode, sheetNo);
         return nts.uk.request.ajax("at", _path);
     };
 
-    export function getMonthlyDetail(businessTypeCode: string, isMobile: boolean): JQueryPromise < any > {
-        let url = !isMobile ? paths.getMonthlyDetail : paths.getMobileMonthlyDetail;
-        let _path = nts.uk.text.format(url, businessTypeCode);
+    export function getMonthlyDetail(businessTypeCode: string): JQueryPromise < any > {
+        let _path = nts.uk.text.format(paths.getMonthlyDetail, businessTypeCode);
         return nts.uk.request.ajax("at", _path);
-        
     };
 
     export function getListMonthRight(businessTypeCode: string): JQueryPromise < any > {

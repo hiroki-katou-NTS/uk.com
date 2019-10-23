@@ -50,7 +50,7 @@ public class StringConstraint extends DataConstraint {
 		if (value.getType() == Type.TEXT) {
 			return validateString(value.getText());
 		} 
-		return Optional.of(getDefaultMessage());
+		return Optional.of(ErrorIdFactory.CharTypeErrorId);
 	}
 
 	public Optional<String> validateString(String value) {
@@ -60,15 +60,15 @@ public class StringConstraint extends DataConstraint {
 		}
 
 		if (!validateCharType(this.charType, value)) {
-			return Optional.of(getDefaultMessage());
+			return Optional.of(ErrorIdFactory.CharTypeErrorId);
 		}
 
 		if (!validateMaxLength(this.maxLenght, value)) {
-			return Optional.of(getDefaultMessage());
+			return Optional.of(ErrorIdFactory.MaxLengthErrorId);
 		}
 
 		return Optional.empty();
-	}
+	};
 
 	private boolean validateCharType(StringCharType type, String value) {
 
@@ -121,20 +121,4 @@ public class StringConstraint extends DataConstraint {
 		return matcher.matches();
 	}
 
-	@Override
-	protected String getDefaultMessage () {
-		switch (this.charType) {
-		case NUMERIC:
-			return "MsgB_5";
-		case ALPHA_NUMERIC:
-			return "MsgB_6";
-		case KATAKANA:
-		case KANA:
-			return "MsgB_7";
-		case ANY_HALF_WIDTH:
-			return "MsgB_4";
-		default:
-			return "MsgB_3";
-		}
-	}
 }

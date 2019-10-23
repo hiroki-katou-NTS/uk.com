@@ -2,7 +2,6 @@ package nts.uk.ctx.at.request.dom.application.overtime.time36;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeYear;
 import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneYear;
@@ -13,7 +12,6 @@ import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneYear;
  */
 @AllArgsConstructor
 @Getter
-@Setter
 public class Time36AgreeAnnual extends DomainObject {
 	
 	/*
@@ -29,6 +27,14 @@ public class Time36AgreeAnnual extends DomainObject {
 	public Time36AgreeAnnual(){
 		this.actualTime = new AttendanceTimeYear(0);
 		this.limitTime = new LimitOneYear(0);
+	}
+	
+	public void setActualTime(Integer actualTime){
+		this.actualTime = new AttendanceTimeYear(actualTime);
+	}
+	
+	public void setLimitTime(Integer limitTime){
+		this.limitTime = new LimitOneYear(limitTime);
 	}
 	
 }

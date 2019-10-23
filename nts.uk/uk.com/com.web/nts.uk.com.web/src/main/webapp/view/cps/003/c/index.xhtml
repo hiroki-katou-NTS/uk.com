@@ -9,8 +9,8 @@
 		<ui:define name="htmlHead">
 			<script type='text/javascript'>
 				var dialogSize = {
-					width : 1000,
-					height : 740
+					width : 580,
+					height : 540
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
@@ -18,19 +18,81 @@
 			<com:scriptfile path="cps003.c.service.js" />
 			<com:scriptfile path="cps003.c.vm.js" />
 			<com:scriptfile path="cps003.c.start.js" />
-			<com:scriptfile path="../a/control.js" />
 		</ui:define>
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button class="proceed" data-bind="click: register">#{i18n.getText('CPS003_46')}</button>
-				<button data-bind="click: checkError">#{i18n.getText('CPS003_47')}</button>
-				<button id="close" data-bind="click: close">#{i18n.getText('CPS003_48')}</button>
+				<button id="" class="proceed">#{i18n.getText('CPS003_45')}</button>
+				<button tabindex="" id="">#{i18n.getText('CPS003_46')}</button>
+				<button tabindex="" id="">#{i18n.getText('CPS003_47')}</button>
+				<button id="" class="danger" tabindex="">#{i18n.getText('CPS003_48')}</button>
+				<button tabindex="" id="">#{i18n.getText('CPS003_49')}</button>
 			</div>
 
 			<div id="contents-area">
-				<div id="grid"></div>
+				<div id="left-content"
+					class="relative bg-green caret-right caret-background">
+					<i class="icon icon-searchbox"></i>
+					<div class="cf">
+						<div style="float: left">
+							<div style="width: 308px"
+								data-bind="ntsSearchBox: {
+									searchMode: 'filter',
+									targetKey: 'name', 
+									comId: 'single-list',
+									items: listItems, 
+									selectedKey: item.name, 
+									fields: ['name'], 
+									mode: 'igGrid'
+									}" />
+
+							<table id="single-list"
+								data-bind="ntsGridList: {
+									height: 535,
+									options: listItems,
+									optionsValue: 'id',
+									columns: [
+						                { headerText: '', key: 'id', width: 0, hidden: true },
+						                { headerText: '#{i18n.getText('CPS003_51')}', key: 'name', width: 290, hidden: false }
+						            ],
+									multiple: false,
+									value: item().id}">
+							</table>
+						</div>
+					</div>
+				</div>
+
+				<div id="right-content" data-bind="with: item">
+					<div id="right-content" class="form-group">
+						<div class="row">
+							<div class="coll" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS003_52')}</div>
+							<input style="width: 320px;"
+								data-bind="ntsTextEditor: {value: name}" />
+						</div>
+
+						<div class="row">
+							<div class='coll' data-bind="ntsFormLabel: {required: true}">
+								<label>#{i18n.getText('CPS003_54')}</label>
+							</div>
+							<span class="coll" data-bind="text: columnSetting"></span>
+							<button tabindex="" id="">#{i18n.getText('CPS003_56')}</button>
+						</div>
+
+						<!-- 						<div class="row"> -->
+						<!-- 							<div class="coll"><P>対象外</P></div> -->
+						<!-- 						</div> -->
+
+						<div class="row">
+							<div class="coll" data-bind="ntsFormLabel: { required: false }">
+								<label>#{i18n.getText('CPS003_62')}</label>
+							</div>
+							<textarea style="width: 450px; height: 120px;"
+								data-bind="ntsMultilineEditor: { value: notes }" />
+						</div>
+					</div>
+				</div>
 			</div>
+
 		</ui:define>
 	</ui:composition>
 </body>

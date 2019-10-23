@@ -164,7 +164,7 @@ module nts.uk.at.view.kaf004.b.viewmodel {
                         return false;
                     }
 
-                    let lateOrLeaveEarly = {
+                    let lateOrLeaveEarly: LateOrLeaveEarly = {
                         prePostAtr: prePostAtr,
                         applicationDate: self.appCommonSetting().generalDate(),
                         sendMail: self.checkBoxValue(),
@@ -178,48 +178,29 @@ module nts.uk.at.view.kaf004.b.viewmodel {
                         earlyTime2: self.earlyTime2(),
                         reasonTemp: txtReasonTmp,
                         appReason: self.appreason(),
-                        actualCancel: self.showScreen == 'C' ? 1 : 0,
-                        checkOver1Year: true
+                        actualCancel: self.showScreen == 'C' ? 1 : 0
                     };
                     nts.uk.ui.block.invisible();
                     service.createLateOrLeaveEarly(lateOrLeaveEarly).done((data) => {
-                        self.createDone(data);
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                            if (data.autoSendMail) {
+                                appcommon.CommonProcess.displayMailResult(data);
+                            } else {
+                                if (self.checkBoxValue()) {
+                                    appcommon.CommonProcess.openDialogKDL030(data.appID);
+                                } else {
+                                    location.reload();
+                                }
+                            }
+                        });
                     }).fail((res) => {
-                        if (res.messageId == "Msg_1518") {//confirm
-                            nts.uk.ui.dialog.confirm({ messageId: res.messageId }).ifYes(() => {
-                                lateOrLeaveEarly.checkOver1Year = false;
-                                service.createLateOrLeaveEarly(lateOrLeaveEarly).done((data) => {
-                                    self.createDone(data);
-                                }).fail((res) => {
-                                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
-                                        .then(function() { nts.uk.ui.block.clear(); });
-                                });
-                            }).ifNo(() => {
-                                nts.uk.ui.block.clear();
-                            });
-                        } else {
-                            nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() { nts.uk.ui.block.clear(); });
-                        }
+                        nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() { nts.uk.ui.block.clear(); });
                     });
+
                 }
             }
         }
 
-        createDone(data) {
-            let self = this;
-            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                nts.uk.ui.block.clear();
-                if (data.autoSendMail) {
-                    appcommon.CommonProcess.displayMailResult(data);
-                } else {
-                    if (self.checkBoxValue()) {
-                        appcommon.CommonProcess.openDialogKDL030(data.appID);
-                    } else {
-                        location.reload();
-                    }
-                }
-            });
-        }
         getReason(): string {
             let appReason = '',
                 self = this,

@@ -25,10 +25,4 @@ public class RoleFromUserIdAdapterImpl implements RoleFromUserIdAdapter {
 		String roleId = roleFromUserIdPub.getRoleFromUserId(userId, roleType, baseDate);
 		return roleId;
 	}
-	
-	@Override
-	public String getRoleFromUser(String userId, Integer roleType, GeneralDate baseDate, String comId) {
-		String roleId = roleFromUserIdPub.getRoleFromUserId(userId, roleType, baseDate, comId);
-		return roleId;
-	}
 }

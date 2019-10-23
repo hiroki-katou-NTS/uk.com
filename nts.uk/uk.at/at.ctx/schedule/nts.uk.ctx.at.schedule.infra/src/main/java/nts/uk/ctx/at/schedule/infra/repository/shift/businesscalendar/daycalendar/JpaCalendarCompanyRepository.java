@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -112,7 +110,6 @@ public class JpaCalendarCompanyRepository  extends JpaRepository implements Cale
 	 * find clendar company by dateId
 	 */
 	@Override
-	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public Optional<CalendarCompany> findCalendarCompanyByDate(String companyId, GeneralDate date) {
 		return this.queryProxy().query(SELECT_COMPANY_BY_DATE,KsmmtCalendarCompany.class)
 				.setParameter("companyId", companyId)

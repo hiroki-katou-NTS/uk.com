@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 
 import lombok.SneakyThrows;
 import lombok.val;
@@ -45,7 +43,6 @@ public class JpaInterimRemainRepository extends JpaRepository  implements Interi
 
 	@SneakyThrows
 	@Override
-	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<InterimRemain> getRemainBySidPriod(String employeeId, DatePeriod dateData, RemainType remainType) {
 		try(PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KRCMT_INTERIM_REMAIN_MNG"
 						+ " WHERE SID = ?"
@@ -165,7 +162,6 @@ public class JpaInterimRemainRepository extends JpaRepository  implements Interi
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-				throw new RuntimeException(e);
 			}
 		});
 		return resultList;

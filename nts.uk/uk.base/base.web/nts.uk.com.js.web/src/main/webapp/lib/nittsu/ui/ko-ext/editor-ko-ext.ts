@@ -521,379 +521,424 @@ module nts.uk.ui.koExtentions {
                 }
             });
 
-            let _rg = '__rg__',
-                _kc = '__kcode_',
-                _val = '__value_';
-
-            $input.attr('type', 'text');
-            $input.attr('autocomplete', 'off');
-
             $input.on('keydown', (evt: KeyboardEvent) => {
-                let target = evt.target as HTMLInputElement,
-                    start = target.selectionStart,
-                    end = target.selectionEnd;
-
-                $input.data(_kc, evt);
-                $input.data(_rg, { start, end });
-                $input.data(_val, target.value);
-            });
-
-            $input.on('paste', (evt: any) => {
                 let rd = ko.toJS(data),
-                    constraint = rd.constraint,
-                    str = evt.originalEvent.clipboardData.getData('text');
-                $input.select();
-                setTimeout(() => {
-                    if (str.match(/^(-?)(\d+\.\d+|\d+)$/)) {
-                        if (constraint) {
-                            let numb = Number(str),
-                                primitive = window['__viewContext'].primitiveValueConstraints[constraint];
+                    target = evt.target as HTMLInputElement,
+                    val = target.value,
+                    ss = target.selectionStart,
+                    se = target.selectionEnd,
+                    constraint = rd.constraint;
 
+                // filter specs key
+                if ([8, 9, 13, 16, 17, 20, 27, 33, 34, 35, 36, 37, 38, 39, 40, 45, 46].indexOf(evt.keyCode) == -1) {
+
+                    // fix bug cannot press [.] on numpad
+                    if (!evt.key.match(/[\-\.0-9]|(Decimal)/g)) {
+                        evt.preventDefault();
+                    } else {
+                        // calc new value after keypress
+                        if (ss == se) {
+                            if (se == 0) {
+                                val = evt.key + val;
+                            } else if (se == val.length) {
+                                val += evt.key;
+                            } else {
+                                val = val.substring(0, ss) + evt.key + val.substring(se, val.length);
+                            }
+                        } else {
+                            val = val.replace(val.substring(ss, se), evt.key);
+                        }
+
+                        // fix bug cannot press [.] on numpad
+                        val = val.replace(/Decimal/, '.');
+
+                        // accept negative key only first press
+                        if (evt.key == '-' && (ss || target.value.indexOf('-') > -1)) {
+                            evt.preventDefault();
+                            return;
+                        }
+
+                        // accept only one pointer
+                        if (evt.key == '.' && target.value.indexOf('.') > -1) {
+                            evt.preventDefault();
+                            return;
+                        }
+
+                        // case has constraint check value by type
+                        if (constraint) {
+                            let primitive = window['__viewContext'].primitiveValueConstraints[constraint];
                             if (primitive) {
                                 let min = primitive.min,
                                     max = primitive.max,
-                                    dlen = primitive.mantissaMaxLength || 0;
+                                    stma = String(Math.abs(max)),
+                                    stmi = String(Math.abs(min)),
+                                    mival = val,
+                                    maval = val,
+                                    dlen = primitive.mantissaMaxLength;
 
-                                if (numb >= min && numb <= max) {
-                                    let m = str.match(/\.\d*$/);
+                                // accept negative key if min < 0
+                                if (evt.key == '-' && min >= 0) {
+                                    evt.preventDefault();
+                                    return;
+                                }
+                                
+                                if (min < 1) {
+                                    // accept once 0 char
+                                    if (val.match(/(^0{2,})|(^-?0{2,})/)) {
+                                        evt.preventDefault();
+                                        return;
+                                    }
+                                } else {
+                                    // not accept char 0 offset = 0
+                                    if (val.match(/^0/)) {
+                                        evt.preventDefault();
+                                        return;
+                                    }
+                                }
 
-                                    if (!m) {
-                                        $input.val(str);
+                                // calculate min & max value
+                                if (max < 0) {
+                                    for (let i = mival.length - 1; i < stmi.length; i++) {
+                                        if (stmi[i] != undefined) {
+                                            if (stmi[i].match(/\d/)) {
+                                                mival += '9';
+                                            } else {
+                                                mival += stmi[i];
+                                            }
+                                        }
+                                    }
+
+                                    for (let i = maval.length - 1; i < stma.length; i++) {
+                                        if (stma[i] != undefined) {
+                                            if (stma[i].match(/\d/)) {
+                                                maval += '0';
+                                            } else {
+                                                maval += stma[i];
+                                            }
+                                        }
+                                    }
+                                } else if (min < 0) {
+                                    if (val.indexOf('-') > -1) {
+                                        for (let i = mival.length - 1; i < stmi.length; i++) {
+                                            if (stmi[i] != undefined) {
+                                                if (stmi[i].match(/\d/)) {
+                                                    mival += '9';
+                                                } else {
+                                                    mival += stmi[i];
+                                                }
+                                            }
+                                        }
                                     } else {
-                                        if (m[0] === '.5' && primitive.valueType === 'HalfInt') {
-                                            $input.val(str);
-                                        } else if (m[0].length <= dlen + 1) {
-                                            $input.val(str);
+                                        for (let i = maval.length; i < stma.length; i++) {
+                                            if (stma[i] != undefined) {
+                                                if (stma[i].match(/\d/)) {
+                                                    maval += '9';
+                                                } else {
+                                                    maval += stma[i];
+                                                }
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    for (let i = maval.length; i < stma.length; i++) {
+                                        if (stma[i] != undefined) {
+                                            if (stma[i].match(/\d/)) {
+                                                maval += '9';
+                                            } else {
+                                                maval += stma[i];
+                                            }
                                         }
                                     }
                                 }
+
+                                // fix halfint max value
+                                if (primitive.valueType == 'HalfInt') {
+                                    maval = maval.replace(/\.\d$/, '.5');
+                                }
+
+                                let nmin = Number(mival),
+                                    nmax = Number(maval);
+
+                                // clear decimal in constraint (sync) if option not has decimallength
+                                if (rd.option && rd.option.decimallength < 1) {
+                                    primitive.valueType = 'Integer';
+                                }
+
+                                switch (primitive.valueType) {
+                                    case "String":
+                                        let maxL = primitive.maxLength;
+
+                                        if (val.length > maxL || ['.', '-'].indexOf(evt.key) > -1) {
+                                            evt.preventDefault();
+                                            return;
+                                        }
+                                        break;
+                                    case "Integer":
+                                        if (evt.key == '.') {
+                                            evt.preventDefault();
+                                            return;
+                                        }
+
+                                        if (nmax < min || nmin > max) {
+                                            evt.preventDefault();
+                                            return;
+                                        }
+                                        break;
+                                    case "HalfInt":
+                                        let milen = val.replace('-', '').replace(/\d+/, '').replace('.', '').length;
+
+                                        if (milen > 1 || (se == val.length - 1 && milen == 1 && ['0', '5'].indexOf(evt.key) == -1)) {
+                                            evt.preventDefault();
+                                            return;
+                                        }
+
+                                        if (nmax < min || nmin > max) {
+                                            evt.preventDefault();
+                                            return;
+                                        }
+                                        break;
+                                    case "Decimal":
+                                        let mdlen = val.replace('-', '').replace(/\d+/, '').replace('.', '').length;
+
+                                        if (mdlen > primitive.mantissaMaxLength) {
+                                            evt.preventDefault();
+                                            return;
+                                        }
+
+                                        if (nmax < min || nmin > max) {
+                                            evt.preventDefault();
+                                            return;
+                                        }
+                                        break;
+                                }
                             }
-                        } else {
-                            let dl = (rd.option || {}).decimallength;
+                        } else { // or else, check only decimal length
+                            let dlen = rd.option.decimallength,
+                                mdlen = val.replace('-', '').replace(/\d+/, '').replace('.', '').length;
 
-                            if (dl) {
-                                let m = str.match(/\.\d*$/);
+                            if (dlen < mdlen) {
+                                evt.preventDefault();
+                                return;
+                            }
+                        }
+                    }
+                } else if ([8, 46].indexOf(evt.keyCode) > -1 && constraint) { // key backspace || delete
+                    let primitive = window['__viewContext'].primitiveValueConstraints[constraint];
 
-                                if (m && m[0].length <= dl + 1) {
-                                    $input.val(str);
+                    // if value after delete out of range, preventDefault
+                    if (primitive) {
+                        let min = primitive.min,
+                            max = primitive.max,
+                            stma = String(Math.abs(max)),
+                            stmi = String(Math.abs(min));
+
+                        if (ss == se) {
+                            if (evt.keyCode == 8) {
+                                let mival = val.substring(0, ss - 1) + val.substring(se, val.length),
+                                    maval = mival;
+
+                                // calculate min & max value
+                                if (max < 0) {
+                                    for (let i = mival.length - 1; i < stmi.length; i++) {
+                                        if (stmi[i] != undefined) {
+                                            if (stmi[i].match(/\d/)) {
+                                                mival += '9';
+                                            } else {
+                                                mival += stmi[i];
+                                            }
+                                        }
+                                    }
+
+                                    for (let i = maval.length - 1; i < stma.length; i++) {
+                                        if (stma[i] != undefined) {
+                                            if (stma[i].match(/\d/)) {
+                                                maval += '0';
+                                            } else {
+                                                maval += stma[i];
+                                            }
+                                        }
+                                    }
+                                } else if (min < 0) {
+                                    if (val.indexOf('-') > -1) {
+                                        for (let i = mival.length - 1; i < stmi.length; i++) {
+                                            if (stmi[i] != undefined) {
+                                                if (stmi[i].match(/\d/)) {
+                                                    mival += '9';
+                                                } else {
+                                                    mival += stmi[i];
+                                                }
+                                            }
+                                        }
+                                    } else {
+                                        for (let i = maval.length; i < stma.length; i++) {
+                                            if (stma[i] != undefined) {
+                                                if (stma[i].match(/\d/)) {
+                                                    maval += '9';
+                                                } else {
+                                                    maval += stma[i];
+                                                }
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    for (let i = maval.length; i < stma.length; i++) {
+                                        if (stma[i] != undefined) {
+                                            if (stma[i].match(/\d/)) {
+                                                maval += '9';
+                                            } else {
+                                                maval += stma[i];
+                                            }
+                                        }
+                                    }
+                                }
+
+                                // fix halfint max value
+                                if (primitive.valueType == 'HalfInt') {
+                                    maval = maval.replace(/\.\d$/, '.5');
+                                }
+
+                                let nmin = Number(mival),
+                                    nmax = Number(maval);
+
+                                if (nmax < min || nmin > max) {
+                                    evt.preventDefault();
+                                    return;
                                 }
                             } else {
-                                if (!str.match(/\.\d*$/)) {
-                                    $input.val(str);
+                                let mival = val.substring(0, ss) + val.substring(se + 1, val.length),
+                                    maval = mival;
+
+                                // calculate min & max value
+                                if (max < 0) {
+                                    for (let i = mival.length - 1; i < stmi.length; i++) {
+                                        if (stmi[i] != undefined) {
+                                            if (stmi[i].match(/\d/)) {
+                                                mival += '9';
+                                            } else {
+                                                mival += stmi[i];
+                                            }
+                                        }
+                                    }
+
+                                    for (let i = maval.length - 1; i < stma.length; i++) {
+                                        if (stma[i] != undefined) {
+                                            if (stma[i].match(/\d/)) {
+                                                maval += '0';
+                                            } else {
+                                                maval += stma[i];
+                                            }
+                                        }
+                                    }
+                                } else if (min < 0) {
+                                    if (val.indexOf('-') > -1) {
+                                        for (let i = mival.length - 1; i < stmi.length; i++) {
+                                            if (stmi[i] != undefined) {
+                                                if (stmi[i].match(/\d/)) {
+                                                    mival += '9';
+                                                } else {
+                                                    mival += stmi[i];
+                                                }
+                                            }
+                                        }
+                                    } else {
+                                        for (let i = maval.length; i < stma.length; i++) {
+                                            if (stma[i] != undefined) {
+                                                if (stma[i].match(/\d/)) {
+                                                    maval += '9';
+                                                } else {
+                                                    maval += stma[i];
+                                                }
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    for (let i = maval.length; i < stma.length; i++) {
+                                        if (stma[i] != undefined) {
+                                            if (stma[i].match(/\d/)) {
+                                                maval += '9';
+                                            } else {
+                                                maval += stma[i];
+                                            }
+                                        }
+                                    }
+                                }
+
+                                // fix halfint max value
+                                if (primitive.valueType == 'HalfInt') {
+                                    maval = maval.replace(/\.\d$/, '.5');
+                                }
+
+                                let nmin = Number(mival),
+                                    nmax = Number(maval);
+
+                                if (nmax < min || nmin > max) {
+                                    evt.preventDefault();
+                                    return;
                                 }
                             }
-                        }
-                    }
-                }, 100);
-
-                evt.preventDefault();
-            });
-
-            $input.on('input', (evt: any) => {
-                let rd = ko.toJS(data),
-                    constraint = rd.constraint,
-                    orgi: any = evt.originalEvent,
-                    targ: HTMLInputElement = evt.target,
-                    srg: { start: number; end: number; } = $input.data(_rg),
-                    devt: any = $input.data(_kc),
-                    dorgi: any = devt.originalEvent,
-                    ival: string = evt.target.value,
-                    dval: string = $input.data(_val);
-
-                ival = ival
-                    .replace(/。/, '.')
-                    .replace(/ー/, '-')
-                    .replace(/０/, '0')
-                    .replace(/１/, '1')
-                    .replace(/２/, '2')
-                    .replace(/３/, '3')
-                    .replace(/４/, '4')
-                    .replace(/５/, '5')
-                    .replace(/６/, '6')
-                    .replace(/７/, '7')
-                    .replace(/８/, '8')
-                    .replace(/９/, '9')
-                    .replace(/./g, k => {
-                        if (['.', '-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].indexOf(k) == -1) {
-                            return '';
-                        }
-
-                        return k;
-                    });
-
-                if (ival.match(/^0+$/)) {
-                    ival = '0';
-                }
-
-                // prevent multi . character
-                if (ival.indexOf('.') != ival.lastIndexOf('.')) {
-                    let first = true;
-                    ival = ival.replace(/\./g, k => {
-                        if (!first) {
-                            return '';
-                        }
-
-                        first = false;
-
-                        return k;
-                    });
-                }
-
-                // prevent multi - character
-                if (ival.indexOf('-') != ival.lastIndexOf('-') || ival.indexOf('-') > 0) {
-                    ival = ival.replace(/\-/g, (k, i) => {
-                        if (!!i) {
-                            return '';
-                        }
-
-                        return k;
-                    });
-                }
-
-                // clear value of input
-                $input.val('');
-
-                if (ival) {
-                    if (ival.match(/^\.+$/)) {
-                        ival = '0.';
-                    }
-
-                    if (dval) {
-                        if (ival.match(/^(-?)(\d+\.\d+|\d+)$/)) {
-                            ival = ival;
-                        } else if (ival.match(/^\-+$/)) {
-                            ival = '-';
-                        } else if (ival.match(/^\.+$/)) {
-                            ival = '0.';
-                        } else if (ival.match(/^\-+(0*)\.+$/)) {
-                            ival = '-0.';
                         } else {
-                            ival = ival;
-                        }
-                    } else if (ival.match(/(-?)(\d*)(\.*)(\d*)/)) {
-                        ival = ival;
-                    }
+                            let mival = val.substring(0, ss) + val.substring(se, val.length),
+                                maval = mival;
 
-                    if (constraint) {
-                        let primitive = window['__viewContext'].primitiveValueConstraints[constraint];
-
-                        if (primitive) { // if primitive is avaiable
-                            let min = primitive.min,
-                                max = primitive.max,
-                                maxL = primitive.maxLength,
-                                dlen = primitive.mantissaMaxLength || 0;
-
-                            switch (primitive.valueType) {
-                                case 'String': // check length
-                                    if (maxL && ival.length > maxL) {
-                                        ival = dval;
-                                    }
-
-                                    if (ival.match(/^0\d+$/)) {
-                                        ival = ival.replace(/^0+/, '0');
-                                        ival = Number(ival).toString();
-                                    }
-
-                                    ival = ival.replace(/./g, k => {
-                                        if (k == '.' || k == '-') {
-                                            return '';
-                                        }
-
-                                        return k;
-                                    });
-
-                                    $input.val(ival);
-                                    break;
-                                default:
-                                case 'Decimal':
-                                    let dcval = Number(ival),
-                                        dmatch = ival.match(/\.+\d*$/);
-
-                                    if ((min >= 0 ? true : min <= dcval) && dcval <= max && (dmatch ? dmatch[0].length <= dlen + 1 : true)) {
-                                        if (ival.match(/\.$/)) {
-                                            if (dcval == max || dlen == 0) {
-                                                ival = ival.replace(/\./g, '');
-                                            }
-                                        }
-
-                                        if (ival.match(/^0\d+$/)) {
-                                            ival = ival.replace(/^0+/, '0');
-                                            ival = Number(ival).toString();
-                                        }
-
-                                        if (min >= 0) {
-                                            ival = ival.replace(/\-/g, '');
-
-                                            if (min >= 1) {
-                                                ival = ival
-                                                    .replace(/^0+/, '')
-                                                    .replace(/^\.+/, '');
-                                            }
-                                        } else if (min == dval) {
-                                            ival = ival.replace(/\.+$/, '');
-                                        }
-
-                                        $input.val(ival);
-                                    } else if (min < 0 && ival == '-') {
-                                        $input.val(ival);
+                            // calculate min & max value
+                            if (max < 0) {
+                                for (let i = mival.length - 1; i < stmi.length; i++) {
+                                    if (stmi[i].match(/\d/)) {
+                                        mival += '9';
                                     } else {
-                                        if ([8, 46].indexOf(dorgi.keyCode) == -1) {
-                                            ival = dval;
-
-                                            $input.val(dval);
-                                        } else { // delete event
-                                            if (ival.match(/^0\d+$/)) {
-                                                ival = ival.replace(/^0+/, '0');
-                                                ival = Number(ival).toString();
-                                            }
-                                            $input.val(ival);
-                                        }
+                                        mival += stmi[i];
                                     }
-                                    break;
-                                case 'HalfInt':
-                                    let hival = Number(ival),
-                                        himatch = ival.match(/\.+\d*$/);
+                                }
 
-                                    if ((min >= 0 ? true : min <= hival) && hival <= max && (himatch ? (himatch[0] === '.5' || himatch[0] === '.') : true)) {
-                                        if (himatch && himatch[0] == '.') {
-                                            if (hival == max) {
-                                                ival = ival.replace(/\./g, '');
-                                            }
-                                        }
-
-                                        if (ival.match(/^0\d+$/)) {
-                                            ival = ival.replace(/^0+/, '0');
-                                            ival = Number(ival).toString();
-                                        }
-
-                                        if (min >= 0) {
-                                            ival = ival.replace(/\-/g, '');
-
-                                            if (min >= 1) {
-                                                ival = ival
-                                                    .replace(/^0+/, '')
-                                                    .replace(/^\.+/, '');
-                                            }
-                                        } else if (min == hival) {
-                                            ival = ival.replace(/\.+$/, '');
-                                        }
-
-                                        $input.val(ival);
-                                    } else if (min < 0 && ival == '-') {
-                                        $input.val(ival);
+                                for (let i = maval.length - 1; i < stma.length; i++) {
+                                    if (stma[i].match(/\d/)) {
+                                        maval += '0';
                                     } else {
-                                        if ([8, 46].indexOf(dorgi.keyCode) == -1) {
-                                            ival = dval;
-
-                                            $input.val(dval);
-                                        } else { // delete event
-                                            if (ival.match(/^0\d+$/)) {
-                                                ival = ival.replace(/^0+/, '0');
-                                                ival = Number(ival).toString();
-                                            }
-                                            $input.val(ival);
+                                        maval += stma[i];
+                                    }
+                                }
+                            } else if (min < 0) {
+                                if (val.indexOf('-') > -1) {
+                                    for (let i = mival.length - 1; i < stmi.length; i++) {
+                                        if (stmi[i].match(/\d/)) {
+                                            mival += '9';
+                                        } else {
+                                            mival += stmi[i];
                                         }
                                     }
-                                    break;
-                                case 'Integer':
-                                    let value = Number(ival);
-
-                                    if ((min >= 0 ? true : min <= value) && value <= max && !ival.match(/\.+\d*$/)) {
-                                        if (ival.match(/^0\d+$/)) {
-                                            ival = ival.replace(/^0+/, '0');
-                                            ival = Number(ival).toString();
-                                        }
-
-                                        if (min >= 0) {
-                                            ival = ival.replace(/\-/g, '');
-
-                                            if (min > 0) {
-                                                ival = ival.replace(/^0+/, '');
-                                            }
-                                        }
-
-                                        $input.val(ival);
-                                    } else if (min < 0 && ival == '-') {
-                                        $input.val(ival);
-                                    } else {
-                                        if ([8, 46].indexOf(dorgi.keyCode) == -1) {
-                                            ival = dval;
-
-                                            $input.val(dval);
-                                        } else { // delete event
-                                            if (ival.match(/^0\d+$/)) {
-                                                ival = ival.replace(/^0+/, '0');
-                                                ival = Number(ival).toString();
-                                            }
-                                            $input.val(ival);
+                                } else {
+                                    for (let i = maval.length; i < stma.length; i++) {
+                                        if (stma[i].match(/\d/)) {
+                                            maval += '9';
+                                        } else {
+                                            maval += stma[i];
                                         }
                                     }
-                                    break;
-                            }
-                        } else {
-                            if (ival.match(/^0\d+$/)) {
-                                ival = ival.replace(/^0+/, '0');
-                                ival = Number(ival).toString();
-                            }
-
-                            $input.val(ival);
-                        }
-                    } else {
-                        // check length & decimal length
-                        let dlen = rd.option.decimallength;
-
-                        if (dlen) {
-                            let match = ival.match(/\.\d+$/);
-
-                            if (match && match[0].length > dlen + 1) {
-                                ival = dval;
-                            }
-                        }
-
-                        if (ival.match(/^0\d+$/)) {
-                            ival = ival.replace(/^0+/, '0');
-                            ival = Number(ival).toString();
-                        }
-
-                        $input.val(ival);
-                    }
-
-                    // set carret position
-                    setTimeout(() => {
-                        if (dval === ival) {
-                            if (ival.length == 1) {
-                                targ.selectionStart = 1;
-                                targ.selectionEnd = 1;
+                                }
                             } else {
-                                targ.selectionStart = srg.start;
-                                targ.selectionEnd = srg.end;
+                                for (let i = maval.length; i < stma.length; i++) {
+                                    if (stma[i].match(/\d/)) {
+                                        maval += '9';
+                                    } else {
+                                        maval += stma[i];
+                                    }
+                                }
                             }
-                        } else if (ival.length - dval.length === 1) {
-                            targ.selectionStart = srg.start + 1;
-                            targ.selectionEnd = srg.end + 1;
-                        } else if (dval.length - ival.length === 1) {
-                            if (dorgi.keyCode === 46) {
-                                targ.selectionStart = srg.start;
-                                targ.selectionEnd = srg.end;
-                            } else if (dorgi.keyCode == 8) {
-                                targ.selectionStart = srg.start - 1;
-                                targ.selectionEnd = srg.end - 1;
+
+                            // fix halfint max value
+                            if (primitive.valueType == 'HalfInt') {
+                                maval = maval.replace(/\.\d$/, '.5');
+                            }
+
+                            let nmin = Number(mival),
+                                nmax = Number(maval);
+
+                            if (nmax < min || nmin > max) {
+                                evt.preventDefault();
+                                return;
                             }
                         }
-                    }, 0);
-                }
-            });
-
-            $input.on('blur', (evt) => {
-                let value = $input.val();
-
-                if (value.match(/\.$/)) {
-                    value = value.replace(/\.$/, '');
-
-                    // fix value if input en with [.]
-                    $input
-                        .val(value)
-                        .trigger('blur');
+                    }
                 }
             });
         }
@@ -954,12 +999,6 @@ module nts.uk.ui.koExtentions {
         }
 
         getFormatter(data: any): format.IFormatter {
-            let option: any = !nts.uk.util.isNullOrUndefined(data.option) ? ko.toJS(data.option) : {};
-            if (option.numberGroup == true) {
-                this.editorOption.grouplength = 3;    
-            } else if (option.numberGroup == false) {
-                this.editorOption.grouplength = 0;
-            }
             return new text.NumberFormatter({ option: this.editorOption });
         }
 
@@ -969,11 +1008,7 @@ module nts.uk.ui.koExtentions {
                 required = (data.required !== undefined) ? ko.unwrap(data.required) : false,
                 constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "",
                 name = nts.uk.resource.getControlName(data.name !== undefined ? ko.unwrap(data.name) : "");
-            if (option.numberGroup == true) {
-                option.grouplength = 3;    
-            } else if (option.numberGroup == false) {
-                option.grouplength = 0;
-            }   
+
             // update editor option
             $.extend(this.editorOption, {
                 required: required,

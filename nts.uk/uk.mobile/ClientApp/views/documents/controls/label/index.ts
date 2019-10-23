@@ -8,7 +8,6 @@ import { component } from '@app/core/component';
         parent: '/documents'
     },
     template: require('./index.vue'),
-    style: require('./style.scss'),
     resource: require('./resources.json'),
     markdown: {
         vi: require('./content/vi.md'),

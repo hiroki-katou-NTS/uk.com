@@ -1,209 +1,16 @@
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    }
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var nts;
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var util;
-        (function (util) {
-            var browser = /** @class */ (function () {
-                function browser() {
-                }
-                Object.defineProperty(browser, "portrait", {
-                    get: function () {
-                        return !this.landscapse;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                Object.defineProperty(browser, "landscapse", {
-                    get: function () {
-                        return window.innerWidth > window.innerHeight;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                Object.defineProperty(browser, "mobile", {
-                    get: function () {
-                        var check = false;
-                        (function (a) {
-                            if (/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a) || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0, 4))) {
-                                check = true;
-                            }
-                        })(navigator.userAgent || navigator.vendor || window.opera);
-                        return check;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                Object.defineProperty(browser, "tablet", {
-                    get: function () {
-                        var check = false;
-                        (function (a) {
-                            if (/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino|android|ipad|playbook|silk/i.test(a) || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0, 4))) {
-                                check = true;
-                            }
-                        })(navigator.userAgent || navigator.vendor || window.opera);
-                        return check;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                Object.defineProperty(browser, "mp", {
-                    /**
-                     * Mobile and portrait
-                     */
-                    get: function () {
-                        return this.mobile && this.portrait;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                Object.defineProperty(browser, "ml", {
-                    /**
-                     * Mobile and landscapse
-                     */
-                    get: function () {
-                        return this.mobile && this.landscapse;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                Object.defineProperty(browser, "ios", {
-                    get: function () {
-                        return /iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                Object.defineProperty(browser, "width", {
-                    get: function () {
-                        return window.innerWidth;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                Object.defineProperty(browser, "height", {
-                    get: function () {
-                        return window.innerHeight;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                Object.defineProperty(browser, "version", {
-                    get: function () {
-                        var ua = navigator.userAgent, tem, M = ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
-                        if (/trident/i.test(M[1])) {
-                            tem = /\brv[ :]+(\d+)/g.exec(ua) || [];
-                            return 'IE ' + (tem[1] || '');
-                        }
-                        if (M[1] === 'Chrome') {
-                            tem = ua.match(/\b(OPR|Edge)\/(\d+)/);
-                            if (tem != null) {
-                                return tem.slice(1).join(' ').replace('OPR', 'Opera');
-                            }
-                        }
-                        M = M[2] ? [M[1], M[2]] : [navigator.appName, navigator.appVersion, '-?'];
-                        // tslint:disable-next-line: no-conditional-assignment
-                        if ((tem = ua.match(/version\/(\d+)/i)) != null) {
-                            M.splice(1, 1, tem[1]);
-                        }
-                        return M.join(' ');
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                Object.defineProperty(browser, "private", {
-                    get: function () {
-                        var d = $.Deferred();
-                        var $wd = window, yes = function () { return d.resolve(true); }, // is in private mode
-                        not = function () { return d.resolve(false); }, // not in private mode
-                        testLocalStorage = function () {
-                            try {
-                                if (uk.localStorage.length) {
-                                    not();
-                                }
-                                else {
-                                    uk.localStorage.x = 1;
-                                    uk.localStorage.removeItem('x');
-                                    not();
-                                }
-                            }
-                            catch (e) {
-                                // Safari only enables cookie in private mode
-                                // if cookie is disabled, then all client side storage is disabled
-                                // if all client side storage is disabled, then there is no point
-                                // in using private mode
-                                navigator.cookieEnabled ? yes() : not();
-                            }
-                        };
-                        // Chrome & Opera
-                        if ($wd.webkitRequestFileSystem) {
-                            $wd.webkitRequestFileSystem(1, 0, not, yes);
-                            return d.promise();
-                        }
-                        // Firefox
-                        if ('MozAppearance' in document.documentElement.style) {
-                            if (indexedDB === null) {
-                                yes();
-                            }
-                            else {
-                                var db = indexedDB.open('test');
-                                db.onerror = yes;
-                                db.onsuccess = not;
-                            }
-                            return d.promise();
-                        }
-                        // Safari
-                        var isSafari = navigator.userAgent.match(/Version\/([0-9\._]+).*Safari/);
-                        if (isSafari) {
-                            var version = parseInt(isSafari[1], 10);
-                            if (version < 11) {
-                                testLocalStorage();
-                            }
-                            try {
-                                $wd.openDatabase(null, null, null, null);
-                                not();
-                            }
-                            catch (_) {
-                                yes();
-                            }
-                            return d.promise();
-                        }
-                        // IE10+ & Edge InPrivate
-                        if (!$wd.indexedDB && ($wd.PointerEvent || $wd.MSPointerEvent)) {
-                            yes();
-                            return d.promise();
-                        }
-                        // default navigation mode
-                        not();
-                        return d.promise();
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                return browser;
-            }());
-            util.browser = browser;
-        })(util = uk.util || (uk.util = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
-var b = nts.uk.util.browser;
-b.private.then(function (v) {
-    if (v) {
-        if (b.ios && b.version === 'Safari 10') {
-            document.body.innerHTML = '<div style="text-align: center; font-size: 2em; padding: 2em 1em;">現在ご利用の端末は、プライベートモードでは正常に動作しない可能性があります。\n通常モードで起動してください。</div>';
-        }
-    }
-});
 var nts;
 (function (nts) {
     var uk;
@@ -520,7 +327,7 @@ var nts;
                         case 'Time':
                         case 'Clock':
                         case 'Duration': // ValidatorScriptではない。DynamicConstraintで使う？
-                        case 'TimePoint':// ValidatorScriptではない。DynamicConstraintで使う？
+                        case 'TimePoint': // ValidatorScriptではない。DynamicConstraintで使う？
                             constraintText += (constraintText.length > 0) ? "/" : "";
                             constraintText += constraint.min + "～" + constraint.max;
                             break;
@@ -858,24 +665,21 @@ var nts;
             function WebStorageWrapper(nativeStorage) {
                 this.nativeStorage = nativeStorage;
             }
-            WebStorageWrapper.prototype.key = function (index) {
-                return this.nativeStorage && this.nativeStorage.key(index);
-            };
             WebStorageWrapper.prototype.setItem = function (key, value) {
                 if (value === undefined) {
                     return;
                 }
-                this.nativeStorage && this.nativeStorage.setItem(key, value);
+                this.nativeStorage.setItem(key, value);
             };
             WebStorageWrapper.prototype.setItemAsJson = function (key, value) {
                 this.setItem(key, JSON.stringify(value));
             };
             WebStorageWrapper.prototype.containsKey = function (key) {
-                return this.getItem(key).isPresent();
+                return this.getItem(key) !== null;
             };
             ;
             WebStorageWrapper.prototype.getItem = function (key) {
-                var value = this.nativeStorage && this.nativeStorage.getItem(key) || null;
+                var value = this.nativeStorage.getItem(key);
                 if (value === null || value === undefined || value === 'undefined') {
                     return util.optional.empty();
                 }
@@ -887,10 +691,10 @@ var nts;
                 return item;
             };
             WebStorageWrapper.prototype.removeItem = function (key) {
-                this.nativeStorage && this.nativeStorage.removeItem(key);
+                this.nativeStorage.removeItem(key);
             };
             WebStorageWrapper.prototype.clear = function () {
-                this.nativeStorage && this.nativeStorage.clear();
+                this.nativeStorage.clear();
             };
             return WebStorageWrapper;
         }());
@@ -1894,151 +1698,89 @@ var nts;
                 return moment.utc(nowDateTime);
             }
             time_1.now = now;
-            var JapanYear = /** @class */ (function () {
-                function JapanYear(empire, year) {
+            var JapanYearMonth = /** @class */ (function () {
+                function JapanYearMonth(empire, year, month) {
                     this.empire = empire;
                     this.year = year;
+                    this.month = month;
                 }
-                JapanYear.prototype.getEmpire = function () {
+                JapanYearMonth.prototype.getEmpire = function () {
                     return this.empire;
                 };
-                JapanYear.prototype.getYear = function () {
+                JapanYearMonth.prototype.getYear = function () {
                     return this.year;
                 };
-                JapanYear.prototype.toString = function () {
-                    return "" + this.empire + this.year + "\u5E74";
-                };
-                return JapanYear;
-            }());
-            time_1.JapanYear = JapanYear;
-            var JapanYearMonth = /** @class */ (function (_super) {
-                __extends(JapanYearMonth, _super);
-                function JapanYearMonth(empire, year, month) {
-                    var _this = _super.call(this, empire, year) || this;
-                    _this.month = month;
-                    return _this;
-                }
                 JapanYearMonth.prototype.getMonth = function () {
                     return this.month;
                 };
+                JapanYearMonth.prototype.removeMonth = function () {
+                    this.month = null;
+                    return this;
+                };
                 JapanYearMonth.prototype.toString = function () {
-                    return "" + this.empire + this.year + "\u5E74" + this.month;
+                    return (_.isEmpty(this.getEmpire()) ? "" : this.getEmpire())
+                        + (_.isNil(this.getYear()) ? "" : this.getYear() + "年")
+                        + (_.isNil(this.getMonth()) ? "" : this.getMonth() + "月");
                 };
                 return JapanYearMonth;
-            }(JapanYear));
+            }());
             time_1.JapanYearMonth = JapanYearMonth;
-            var JapanDate = /** @class */ (function (_super) {
-                __extends(JapanDate, _super);
-                function JapanDate(empire, year, month, date) {
+            var JapanDateMoment = /** @class */ (function (_super) {
+                __extends(JapanDateMoment, _super);
+                function JapanDateMoment(empire, year, month, date) {
                     var _this = _super.call(this, empire, year, month) || this;
-                    _this.date = date;
+                    _this.day = date;
                     return _this;
                 }
-                JapanDate.prototype.getDate = function () {
-                    return this.date;
+                JapanDateMoment.prototype.getDate = function () {
+                    return this.day;
                 };
-                JapanDate.prototype.toString = function () {
-                    return "" + this.empire + this.year + "\u5E74" + this.month + "\u6708" + this.date + "\u65E5";
+                JapanDateMoment.prototype.removeDate = function () {
+                    this.day = null;
+                    return this;
                 };
-                return JapanDate;
+                JapanDateMoment.prototype.toString = function () {
+                    return _super.prototype.toString.call(this) + (_.isNil(this.getDate()) ? "" : this.getDate() + " 日");
+                };
+                return JapanDateMoment;
             }(JapanYearMonth));
-            time_1.JapanDate = JapanDate;
-            /**
-             *
-             * @param value ["YYYY/M/D", "YYYY-M-D", "YYYYMMDD"]
-             */
-            function dateInJapanEmpire(value) {
-                if (!nts.uk.ntsNumber.isNumber(value) && _.isEmpty(value)) {
-                    return undefined;
+            time_1.JapanDateMoment = JapanDateMoment;
+            function dateInJapanEmpire(date) {
+                if (!nts.uk.ntsNumber.isNumber(date) && _.isEmpty(date)) {
+                    return null;
                 }
-                if (value.toString().length <= 7) {
-                    return undefined;
+                var dateString = date.toString(), seperator = (dateString.match(/\//g) || []).length;
+                if (seperator > 2) {
+                    return null;
                 }
-                var correspondingMoment = getCorrespondingMoment(value);
-                var empire = getEmpire(correspondingMoment);
-                if (empire === null) {
-                    return undefined;
+                var format = _.filter(defaultInputFormat, function (f) { return (f.match(/\//g) || []).length === seperator; }), formatted = moment.utc(dateString, defaultInputFormat, true);
+                for (var _i = 0, _a = __viewContext.env.japaneseEras; _i < _a.length; _i++) {
+                    var i = _a[_i];
+                    var startEra = moment(i.start), endEraYear = moment(i.end);
+                    if (startEra.isSameOrBefore(formatted) && formatted.isSameOrBefore(endEraYear)) {
+                        var diff = formatted.year() - startEra.year() + 1;
+                        return new JapanDateMoment(i.name, diff, formatted.month() + 1, formatted.date());
+                    }
                 }
-                var japanYearNumber = correspondingMoment.year() - moment.utc(empire.start).year() + 1;
-                return new JapanDate(empire.name, japanYearNumber, correspondingMoment.month() + 1, correspondingMoment.date());
+                return null;
             }
             time_1.dateInJapanEmpire = dateInJapanEmpire;
-            /**
-             *
-             * @param value ["YYYY", "YYYY/M", "YYYY-M", "YYYYMM", "YYYY/M/D", "YYYY-M-D", "YYYYMMDD"]
-             */
-            function yearInJapanEmpire(value) {
-                if (!nts.uk.ntsNumber.isNumber(value) && _.isEmpty(value)) {
-                    return undefined;
+            function yearInJapanEmpire(date) {
+                var formatted = yearmonthInJapanEmpire(date);
+                if (formatted !== null) {
+                    formatted.month = null;
                 }
-                var correspondingMoment = getCorrespondingMoment(value);
-                var empire = getEmpire(correspondingMoment);
-                if (empire === null) {
-                    return undefined;
-                }
-                var japanYearNumber = correspondingMoment.year() - moment.utc(empire.start).year() + 1;
-                return new JapanYear(empire.name, japanYearNumber);
+                return formatted;
             }
             time_1.yearInJapanEmpire = yearInJapanEmpire;
-            /**
-             *
-             * @param date ["YYYY/M", "YYYY-M", "YYYYMM", "YYYY/M/D", "YYYY-M-D", "YYYYMMDD"]
-             */
-            function yearmonthInJapanEmpire(value) {
-                if (!nts.uk.ntsNumber.isNumber(value) && _.isEmpty(value)) {
-                    return undefined;
+            function yearmonthInJapanEmpire(yearmonth) {
+                var formatted = dateInJapanEmpire(yearmonth);
+                if (formatted !== null) {
+                    formatted.day = null;
                 }
-                if (value.toString().length <= 4) {
-                    // YYYY
-                    return undefined;
-                }
-                var correspondingMoment = getCorrespondingMoment(value);
-                var empire = getEmpire(correspondingMoment);
-                if (empire === null) {
-                    return undefined;
-                }
-                var japanYearNumber = correspondingMoment.year() - moment.utc(empire.start).year() + 1;
-                return new JapanYearMonth(empire.name, japanYearNumber, correspondingMoment.month() + 1);
+                return formatted;
             }
             time_1.yearmonthInJapanEmpire = yearmonthInJapanEmpire;
-            /**
-             */
-            function getCorrespondingMoment(value) {
-                // toString all type
-                value = value.toString();
-                var dateString = null;
-                if (value.length <= 4) {
-                    // "YYYY"
-                    dateString = value + "1231";
-                }
-                else if (value.length <= 7) {
-                    // ["YYYY/M", "YYYY-M", "YYYYMM"]
-                    var momentValue = moment.utc(value, ["YYYY/M", "YYYY-M", "YYYYMM"]);
-                    var month = momentValue.month() + 1;
-                    dateString = "" + momentValue.year() + (month >= 10 ? month : '0' + month) + momentValue.daysInMonth();
-                }
-                else {
-                    // ["YYYY/M/D", "YYYY-M-D", "YYYYMMDD"]
-                    dateString = value;
-                }
-                return moment.utc(dateString, ["YYYY/M/D", "YYYY-M-D", "YYYYMMDD"]);
-            }
-            /**
-             *
-             * @param momentObject Moment
-             *
-             * Returns the matched Empire, else null.
-             */
-            function getEmpire(momentObject) {
-                var corresEmpire = _.find(__viewContext.env.japaneseEras, function (empire) {
-                    var startEra = moment.utc(empire.start);
-                    var endEraYear = moment.utc(empire.end);
-                    if (startEra.isSameOrBefore(momentObject) && momentObject.isSameOrBefore(endEraYear)) {
-                        return true;
-                    }
-                });
-                return corresEmpire === undefined ? null : corresEmpire;
-            }
             /**
             * Format by pattern
             * @param  {number} [seconds]	  Input seconds
@@ -2638,6 +2380,7 @@ var nts;
                     milliseconds = (uk.util.isNullOrUndefined(milliseconds)) ? currentDate.getUTCMilliseconds() : milliseconds;
                     return new Date(Date.UTC(year, month, date, hours, minutes, seconds, milliseconds));
                 }
+                // Return input time in UTC
                 else {
                     month = (uk.util.isNullOrUndefined(month)) ? 0 : month;
                     date = (uk.util.isNullOrUndefined(date)) ? 1 : date;
@@ -3728,50 +3471,6 @@ var nts;
                 return dfd.promise();
             }
             request.writeDynamicConstraint = writeDynamicConstraint;
-            var subSession;
-            (function (subSession) {
-                var SubSessionIdKey = "nts.uk.request.subSessionId.";
-                var SecondsToKeepSubSession = 30;
-                var SecondsIntervalToReportAlive = 3;
-                if (uk.util.isInFrame()) {
-                    subSession.currentId = parent.window.nts.uk.request.subSession.currentId;
-                }
-                else {
-                    subSession.currentId = uk.util.randomId();
-                }
-                // keep alive sub sessions
-                function keepAliveSubSessionId() {
-                    window.localStorage.setItem(SubSessionIdKey + subSession.currentId, +new Date());
-                }
-                keepAliveSubSessionId();
-                setInterval(keepAliveSubSessionId, SecondsIntervalToReportAlive * 1000);
-                function getAliveIds() {
-                    var aliveIds = [];
-                    var deadIds = [];
-                    for (var i = 0;; i++) {
-                        var key = window.localStorage.key(i);
-                        if (key == null)
-                            break;
-                        if (key.indexOf(SubSessionIdKey) !== 0)
-                            continue;
-                        var id = key.slice(SubSessionIdKey.length);
-                        var lastReportTime = window.localStorage.getItem(SubSessionIdKey + id);
-                        var duration = +new Date() - lastReportTime;
-                        if (duration <= SecondsToKeepSubSession * 1000) {
-                            aliveIds.push(id);
-                        }
-                        else {
-                            deadIds.push(id);
-                        }
-                    }
-                    // prune dead IDs
-                    deadIds.forEach(function (deadId) {
-                        window.localStorage.removeItem(SubSessionIdKey + deadId);
-                    });
-                    return aliveIds;
-                }
-                subSession.getAliveIds = getAliveIds;
-            })(subSession = request.subSession || (request.subSession = {}));
             function ajax(webAppId, path, data, options, restoresSession) {
                 if (typeof arguments[1] !== 'string') {
                     return ajax.apply(null, _.concat(location.currentAppId, arguments));
@@ -3796,9 +3495,7 @@ var nts;
                         data: data,
                         headers: {
                             'PG-Path': location.current.serialize(),
-                            "X-CSRF-TOKEN": csrf.getToken(),
-                            "X-SubSessionId": subSession.currentId,
-                            "X-AliveSubSessionIds": subSession.getAliveIds()
+                            "X-CSRF-TOKEN": csrf.getToken()
                         }
                     }).done(function (res) {
                         if (nts.uk.util.exception.isErrorToReject(res)) {
@@ -3852,9 +3549,7 @@ var nts;
                         async: false,
                         headers: {
                             'PG-Path': location.current.serialize(),
-                            "X-CSRF-TOKEN": csrf.getToken(),
-                            "X-SubSessionId": subSession.currentId,
-                            "X-AliveSubSessionIds": subSession.getAliveIds()
+                            "X-CSRF-TOKEN": csrf.getToken()
                         },
                         success: function (res) {
                             if (nts.uk.util.exception.isErrorToReject(res)) {
@@ -3950,12 +3645,6 @@ var nts;
                     }
                 })
                     .fail(function (res) {
-                    if (res && (res.failed || res.status == "ABORTED")) {
-                        if (res.error && res.error.businessException === false) {
-                            specials.errorPages.systemError();
-                            return;
-                        }
-                    }
                     dfd.reject(res);
                 });
                 return dfd.promise();
@@ -4112,50 +3801,18 @@ var nts;
                     errorPages.stopUse = stopUse;
                 })(errorPages = specials.errorPages || (specials.errorPages = {}));
             })(specials = request.specials || (request.specials = {}));
-            function jumpToNewWindow(webAppId, path, data) {
-                // handle overload
-                if (typeof arguments[1] !== 'string') {
-                    jumpToNewWindow.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
-                    return;
-                }
-                if (data === undefined) {
-                    uk.sessionStorage.removeItem(uk.request.STORAGE_KEY_TRANSFER_DATA);
-                }
-                else {
-                    uk.sessionStorage.setItemAsJson(uk.request.STORAGE_KEY_TRANSFER_DATA, data);
-                }
-                var resolvedPath = nts.uk.request.location.siteRoot
-                    .mergeRelativePath(nts.uk.request.WEB_APP_NAME[webAppId] + '/')
-                    .mergeRelativePath(path).serialize();
-                if (webAppId !== nts.uk.request.location.currentAppId) {
-                    login.keepSerializedSession()
-                        .then(function () {
-                        return login.restoreSessionTo(webAppId);
-                    })
-                        .then(function () {
-                        // open new tab (like current tab)
-                        var wd = window.open(resolvedPath, '_blank');
-                        wd.focus();
-                        // remove storage on current tab
-                        nts.uk.sessionStorage.removeItem(uk.request.STORAGE_KEY_TRANSFER_DATA);
-                    });
-                }
-                else {
-                    // open new tab (like current tab)
-                    var wd = window.open(resolvedPath, '_blank');
-                    wd.focus();
-                    // remove storage on current tab
-                    nts.uk.sessionStorage.removeItem(uk.request.STORAGE_KEY_TRANSFER_DATA);
-                }
-            }
-            request.jumpToNewWindow = jumpToNewWindow;
             function jumpFromDialogOrFrame(webAppId, path, data) {
-                // handle overload
-                if (typeof arguments[1] !== 'string') {
-                    jumpFromDialogOrFrame.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
-                    return;
+                var self;
+                if (nts.uk.util.isInFrame()) {
+                    self = nts.uk.ui.windows.getSelf();
                 }
-                window.top.nts.uk.request.jump(webAppId, path, data);
+                else {
+                    self = window.parent.nts.uk.ui.windows.getSelf();
+                }
+                while (!self.isRoot) {
+                    self = self.parent;
+                }
+                self.globalContext.nts.uk.request.jump(webAppId, path, data);
             }
             request.jumpFromDialogOrFrame = jumpFromDialogOrFrame;
             function jump(webAppId, path, data) {
@@ -4263,7 +3920,7 @@ var nts;
                     //                uk.sessionStorage.setItem(STORAGE_KEY_SERIALIZED_SESSION, res);
                     //                dfd.resolve();
                     //            });
-                    //
+                    //            
                     return dfd.promise();
                 }
                 login.keepSerializedSession = keepSerializedSession;
@@ -4485,6 +4142,7 @@ var nts;
                 };
                 $(function () {
                     __viewContext.noHeader = (__viewContext.noHeader === true) || $("body").hasClass("no-header");
+                    console.log("call");
                     ui.documentReady.fire();
                     __viewContext.transferred = uk.sessionStorage.getItem(uk.request.STORAGE_KEY_TRANSFER_DATA)
                         .map(function (v) { return JSON.parse(v); });
@@ -5729,7 +5387,6 @@ var nts;
                         this.option().show(false);
                     };
                     ErrorsViewModel.prototype.addError = function (error) {
-                        var _this = this;
                         var duplicate = _.filter(this.errors(), function (e) { return e.$control.is(error.$control)
                             && (typeof error.message === "string" ? e.messageText === error.message : e.messageText === error.messageText); });
                         if (duplicate.length == 0) {
@@ -5759,15 +5416,8 @@ var nts;
                                     error.errorCode = error.message.messageId;
                                 }
                             }
-                            // if exist, push error to list
-                            if (document.body.contains(error.$control[0])) {
-                                this.errors.push(error);
-                            }
+                            this.errors.push(error);
                         }
-                        // remove all error not match with any control
-                        setTimeout(function () {
-                            _this.errors.remove(function (e) { return !document.body.contains(e.$control[0]); });
-                        }, 100);
                     };
                     ErrorsViewModel.prototype.hasError = function () {
                         return this.errors().length > 0;
@@ -6247,7 +5897,7 @@ var nts;
                         var $button = $(e.target);
                         var $dammy = $("<div>")
                             .css({
-                            background: "transparent",
+                            background: "white",
                             position: "absolute",
                             width: $button.outerWidth(),
                             height: parseInt($button.css("top"), 10),
@@ -6396,7 +6046,7 @@ var nts;
                                     $dialogDocument.on("keydown", ":tabbable", function (evt) {
                                         var code = evt.which || evt.keyCode;
                                         if (code.toString() === "9") {
-                                            var focusableElements = _.sortBy($dialogContentDoc.find(":tabbable"), function (o) { return parseInt($(o).attr("tabindex")); });
+                                            var focusableElements = $dialogContentDoc.find(":tabbable");
                                             if ($(evt.target).hasClass("ui-dialog-titlebar-close") && evt.shiftKey === false) {
                                                 focusableElements.first().focus();
                                                 evt.preventDefault();
@@ -6411,7 +6061,7 @@ var nts;
                                     $dialogContentDoc.on("keydown", ":tabbable", function (evt) {
                                         var code = evt.which || evt.keyCode;
                                         if (code.toString() === "9") {
-                                            var focusableElements = _.sortBy($dialogContentDoc.find(":tabbable"), function (o) { return parseInt($(o).attr("tabindex")); });
+                                            var focusableElements = $dialogContentDoc.find(":tabbable");
                                             if ($(evt.target).is(focusableElements.last()) && evt.shiftKey === false) {
                                                 focusableElements.first().focus();
                                                 evt.preventDefault();
@@ -6588,9 +6238,11 @@ var nts;
                         if (uk.util.isNullOrUndefined(data)) {
                             transferData = data;
                         }
+                        // Data or KO data
                         else if (!_.isFunction(data) || ko.isObservable(data)) {
                             transferData = JSON.parse(JSON.stringify(ko.unwrap(data))); // Complete remove reference by object
                         }
+                        // Callback function
                         else {
                             transferData = data;
                         }
@@ -7444,13 +7096,6 @@ var nts;
                         _this.symbolPosition = (option !== undefined && option.symbolPosition !== undefined) ? option.symbolPosition : "right";
                         _this.unitID = (option !== undefined && option.unitID !== undefined) ? option.unitID : "";
                         _this.defaultValue = (option !== undefined && !nts.uk.util.isNullOrEmpty(option.defaultValue)) ? option.defaultValue : "";
-                        _this.numberGroup = (option !== undefined && option.numberGroup !== undefined) ? option.numberGroup : null;
-                        if (_this.numberGroup == true) {
-                            _this.grouplength = 3;
-                        }
-                        else if (_this.numberGroup == false) {
-                            _this.grouplength = 0;
-                        }
                         return _this;
                     }
                     return NumberEditorOption;
@@ -7473,13 +7118,6 @@ var nts;
                         _this.textalign = (option !== undefined && option.textalign !== undefined) ? option.textalign : "right";
                         _this.defaultValue = (option !== undefined && !nts.uk.util.isNullOrEmpty(option.defaultValue)) ? option.defaultValue : "";
                         _this.unitID = (option !== undefined && option.unitID !== undefined) ? option.unitID : "";
-                        _this.numberGroup = (option !== undefined && option.numberGroup !== undefined) ? option.numberGroup : null;
-                        if (_this.numberGroup == true) {
-                            _this.grouplength = 3;
-                        }
-                        else if (_this.numberGroup == false) {
-                            _this.grouplength = 0;
-                        }
                         return _this;
                     }
                     return CurrencyEditorOption;
@@ -9360,7 +8998,7 @@ var nts;
                                         else
                                             helper.addClass($childCells, makeup.class);
                                     }
-                                    else if (makeup.textColor) {
+                                    else if (makeup.textColor) { // Don't set textColor
                                         $cell.style.color = makeup.textColor;
                                     }
                                     else {
@@ -16181,6 +15819,7 @@ var nts;
                                 $element.attr('tabindex', 0);
                             }
                             $element
+                                // delegate event for change template (on old filter box)
                                 .on(SHOWVALUE, function (evt) {
                                 var data = $element.data(DATA), cws = data[CWIDTH], ks = _.keys(cws);
                                 var option = _.find(data[DATA], function (t) { return t[optionsValue] == data[VALUE]; }), _template = template;
@@ -16211,6 +15850,7 @@ var nts;
                                     }
                                 }
                             })
+                                // define event changed for save default data
                                 .on(CHANGED, function (evt, key, value) {
                                 if (value === void 0) { value = undefined; }
                                 var data = $element.data(DATA) || {};
@@ -16219,6 +15859,7 @@ var nts;
                                     $element.data(DATA, data);
                                 }
                             })
+                                // define event validate for check require
                                 .on(VALIDATE, function (evt, ui) {
                                 var data = $element.data(DATA), value = data[VALUE];
                                 if ((ui ? data[CHANGED] : true) && data[ENABLE] && data[REQUIRED] && (_.isEmpty(String(value).trim()) || _.isNil(value))) {
@@ -16238,6 +15879,7 @@ var nts;
                                     }
                                 }
                             })
+                                // delegate open or close event on enter key
                                 .on(KEYDOWN, function (evt, ui) {
                                 if ($element.data(IGCOMB)) {
                                     if ([13].indexOf(evt.which || evt.keyCode) > -1) {
@@ -16536,6 +16178,7 @@ var nts;
                             var sto = setTimeout(function () {
                                 if ($element.data("igCombo")) {
                                     $element
+                                        // enable or disable 
                                         .igCombo(OPTION, "disabled", !enable);
                                     clearTimeout(sto);
                                 }
@@ -16548,6 +16191,7 @@ var nts;
                                     $element.igCombo(OPTION, "dataSource", options);
                                 }
                                 $element
+                                    // set new value
                                     .igCombo("value", value);
                                 if (!enable) {
                                     $element.removeAttr(TAB_INDEX);
@@ -16567,7 +16211,7 @@ var nts;
                                     if (width != MINWIDTH) {
                                         $element.igCombo("option", "width", width);
                                     }
-                                    else {
+                                    else { // auto width
                                         $element
                                             .igCombo("option", "width", (_.sum(_.map(cws, function (c) { return c; })) * WoC + 60) + 'px');
                                     }
@@ -16606,47 +16250,17 @@ var nts;
                      * Init.
                      */
                     DatePickerBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var container = $(element);
                         var data = valueAccessor();
                         var value = data.value;
                         var name = data.name !== undefined ? ko.unwrap(data.name) : "";
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
                         var pickOnly = !uk.util.isNullOrUndefined(data.pickOnly) ? ko.unwrap(data.pickOnly) : false;
                         var dateFormat = (data.dateFormat !== undefined) ? ko.unwrap(data.dateFormat) : "YYYY/MM/DD";
-                        var valueFormat = (data.valueFormat !== undefined) ? ko.unwrap(data.valueFormat) : "";
-                        var jumpButtonsDisplay = data.showJumpButtons !== undefined ? ko.unwrap(data.showJumpButtons) : false;
-                        var tabIndex = nts.uk.util.isNullOrEmpty(container.attr("tabindex")) ? "0" : container.attr("tabindex");
-                        var fiscalYear = data.fiscalYear !== undefined ? ko.unwrap(data.fiscalYear) : false;
-                        var dateType = (data.type !== undefined) ? ko.unwrap(data.type) : "";
-                        if (dateType === "yearmonth") {
-                            dateFormat = 'yearmonth';
-                            valueFormat = 'YYYYMM';
-                        }
-                        else if (dateType === "year") {
-                            dateFormat = 'YYYY';
-                            valueFormat = 'YYYY';
-                        }
-                        else if (dateType === "fiscalYear") {
-                            dateFormat = 'YYYY';
-                            valueFormat = 'YYYY';
-                            fiscalYear = true;
-                        }
-                        else if (dateType === "dateWeek") {
-                            dateFormat = 'YYYY/MM/DD ddd';
-                            valueFormat = 'YYYY/MM/DD';
-                        }
-                        else if (dateType === "dateWeekFull") {
-                            dateFormat = 'YYYY/MM/DD dddd';
-                            valueFormat = 'YYYY/MM/DD';
-                        }
-                        // else {
-                        //    dateFormat = 'YYYY/MM/DD'; 
-                        //    valueFormat = 'YYYY/MM/DD';   
-                        //}
                         var ISOFormat = uk.text.getISOFormat(dateFormat);
                         var hasDayofWeek = (ISOFormat.indexOf("ddd") !== -1);
                         var dayofWeekFormat = ISOFormat.replace(/[^d]/g, "");
                         ISOFormat = ISOFormat.replace(/d/g, "").trim();
+                        var valueFormat = (data.valueFormat !== undefined) ? ko.unwrap(data.valueFormat) : "";
                         var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
                         var button = (data.button !== undefined) ? ko.unwrap(data.button) : false;
                         var startDate = (data.startDate !== undefined) ? ko.unwrap(data.startDate) : null;
@@ -16670,6 +16284,7 @@ var nts;
                                 valueType = "moment";
                             }
                         }
+                        var container = $(element);
                         var idString;
                         if (!container.attr("id")) {
                             idString = nts.uk.util.randomId();
@@ -16678,6 +16293,7 @@ var nts;
                             idString = container.attr("id");
                             container.removeAttr("id");
                         }
+                        var tabIndex = nts.uk.util.isNullOrEmpty(container.attr("tabindex")) ? "0" : container.attr("tabindex");
                         container.removeAttr("tabindex");
                         var containerClass = container.attr('class');
                         container.removeClass(containerClass);
@@ -16687,6 +16303,8 @@ var nts;
                         $input.addClass(containerClass).attr("id", idString).attr("data-name", container.data("name"));
                         container.append($input);
                         $input.data("required", required);
+                        var jumpButtonsDisplay = data.showJumpButtons !== undefined ? ko.unwrap(data.showJumpButtons) : false;
+                        var fiscalYear = data.fiscalYear !== undefined ? ko.unwrap(data.fiscalYear) : false;
                         var $prevButton, $nextButton;
                         if (jumpButtonsDisplay) {
                             $prevButton = $("<button/>").addClass("ntsDateNextButton ntsButton ntsDatePickerButton ntsDatePicker_Component auto-height")
@@ -16881,38 +16499,11 @@ var nts;
                         var data = valueAccessor();
                         var value = data.value;
                         var dateFormat = (data.dateFormat !== undefined) ? ko.unwrap(data.dateFormat) : "YYYY/MM/DD";
-                        var valueFormat = (data.valueFormat !== undefined) ? ko.unwrap(data.valueFormat) : ISOFormat;
-                        var fiscalYear = data.fiscalYear !== undefined ? ko.unwrap(data.fiscalYear) : false;
-                        var dateType = (data.type !== undefined) ? ko.unwrap(data.type) : "";
-                        if (dateType === "yearmonth") {
-                            dateFormat = 'yearmonth';
-                            valueFormat = 'YYYYMM';
-                        }
-                        else if (dateType === "year") {
-                            dateFormat = 'YYYY';
-                            valueFormat = 'YYYY';
-                        }
-                        else if (dateType === "fiscalYear") {
-                            dateFormat = 'YYYY';
-                            valueFormat = 'YYYY';
-                            fiscalYear = true;
-                        }
-                        else if (dateType === "dateWeek") {
-                            dateFormat = 'YYYY/MM/DD ddd';
-                            valueFormat = 'YYYY/MM/DD';
-                        }
-                        else if (dateType === "dateWeekFull") {
-                            dateFormat = 'YYYY/MM/DD dddd';
-                            valueFormat = 'YYYY/MM/DD';
-                        }
-                        // else {
-                        //    dateFormat = 'YYYY/MM/DD'; 
-                        //   valueFormat = 'YYYY/MM/DD';   
-                        //}
                         var ISOFormat = uk.text.getISOFormat(dateFormat);
                         var hasDayofWeek = (ISOFormat.indexOf("ddd") !== -1);
                         var dayofWeekFormat = ISOFormat.replace(/[^d]/g, "");
                         ISOFormat = ISOFormat.replace(/d/g, "").trim();
+                        var valueFormat = (data.valueFormat !== undefined) ? ko.unwrap(data.valueFormat) : ISOFormat;
                         var disabled = (data.disabled !== undefined) ? ko.unwrap(data.disabled) : false;
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : undefined;
                         var startDate = (data.startDate !== undefined) ? ko.unwrap(data.startDate) : null;
@@ -18432,328 +18023,405 @@ var nts;
                                 }
                             }
                         });
-                        var _rg = '__rg__', _kc = '__kcode_', _val = '__value_';
-                        $input.attr('type', 'text');
-                        $input.attr('autocomplete', 'off');
                         $input.on('keydown', function (evt) {
-                            var target = evt.target, start = target.selectionStart, end = target.selectionEnd;
-                            $input.data(_kc, evt);
-                            $input.data(_rg, { start: start, end: end });
-                            $input.data(_val, target.value);
-                        });
-                        $input.on('paste', function (evt) {
-                            var rd = ko.toJS(data), constraint = rd.constraint, str = evt.originalEvent.clipboardData.getData('text');
-                            $input.select();
-                            setTimeout(function () {
-                                if (str.match(/^(-?)(\d+\.\d+|\d+)$/)) {
-                                    if (constraint) {
-                                        var numb = Number(str), primitive = window['__viewContext'].primitiveValueConstraints[constraint];
-                                        if (primitive) {
-                                            var min = primitive.min, max = primitive.max, dlen = primitive.mantissaMaxLength || 0;
-                                            if (numb >= min && numb <= max) {
-                                                var m = str.match(/\.\d*$/);
-                                                if (!m) {
-                                                    $input.val(str);
-                                                }
-                                                else {
-                                                    if (m[0] === '.5' && primitive.valueType === 'HalfInt') {
-                                                        $input.val(str);
-                                                    }
-                                                    else if (m[0].length <= dlen + 1) {
-                                                        $input.val(str);
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                    else {
-                                        var dl = (rd.option || {}).decimallength;
-                                        if (dl) {
-                                            var m = str.match(/\.\d*$/);
-                                            if (m && m[0].length <= dl + 1) {
-                                                $input.val(str);
-                                            }
-                                        }
-                                        else {
-                                            if (!str.match(/\.\d*$/)) {
-                                                $input.val(str);
-                                            }
-                                        }
-                                    }
-                                }
-                            }, 100);
-                            evt.preventDefault();
-                        });
-                        $input.on('input', function (evt) {
-                            var rd = ko.toJS(data), constraint = rd.constraint, orgi = evt.originalEvent, targ = evt.target, srg = $input.data(_rg), devt = $input.data(_kc), dorgi = devt.originalEvent, ival = evt.target.value, dval = $input.data(_val);
-                            ival = ival
-                                .replace(/。/, '.')
-                                .replace(/ー/, '-')
-                                .replace(/０/, '0')
-                                .replace(/１/, '1')
-                                .replace(/２/, '2')
-                                .replace(/３/, '3')
-                                .replace(/４/, '4')
-                                .replace(/５/, '5')
-                                .replace(/６/, '6')
-                                .replace(/７/, '7')
-                                .replace(/８/, '8')
-                                .replace(/９/, '9')
-                                .replace(/./g, function (k) {
-                                if (['.', '-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].indexOf(k) == -1) {
-                                    return '';
-                                }
-                                return k;
-                            });
-                            if (ival.match(/^0+$/)) {
-                                ival = '0';
-                            }
-                            // prevent multi . character
-                            if (ival.indexOf('.') != ival.lastIndexOf('.')) {
-                                var first_1 = true;
-                                ival = ival.replace(/\./g, function (k) {
-                                    if (!first_1) {
-                                        return '';
-                                    }
-                                    first_1 = false;
-                                    return k;
-                                });
-                            }
-                            // prevent multi - character
-                            if (ival.indexOf('-') != ival.lastIndexOf('-') || ival.indexOf('-') > 0) {
-                                ival = ival.replace(/\-/g, function (k, i) {
-                                    if (!!i) {
-                                        return '';
-                                    }
-                                    return k;
-                                });
-                            }
-                            // clear value of input
-                            $input.val('');
-                            if (ival) {
-                                if (ival.match(/^\.+$/)) {
-                                    ival = '0.';
-                                }
-                                if (dval) {
-                                    if (ival.match(/^(-?)(\d+\.\d+|\d+)$/)) {
-                                        ival = ival;
-                                    }
-                                    else if (ival.match(/^\-+$/)) {
-                                        ival = '-';
-                                    }
-                                    else if (ival.match(/^\.+$/)) {
-                                        ival = '0.';
-                                    }
-                                    else if (ival.match(/^\-+(0*)\.+$/)) {
-                                        ival = '-0.';
-                                    }
-                                    else {
-                                        ival = ival;
-                                    }
-                                }
-                                else if (ival.match(/(-?)(\d*)(\.*)(\d*)/)) {
-                                    ival = ival;
-                                }
-                                if (constraint) {
-                                    var primitive = window['__viewContext'].primitiveValueConstraints[constraint];
-                                    if (primitive) {
-                                        var min = primitive.min, max = primitive.max, maxL = primitive.maxLength, dlen = primitive.mantissaMaxLength || 0;
-                                        switch (primitive.valueType) {
-                                            case 'String':// check length
-                                                if (maxL && ival.length > maxL) {
-                                                    ival = dval;
-                                                }
-                                                if (ival.match(/^0\d+$/)) {
-                                                    ival = ival.replace(/^0+/, '0');
-                                                    ival = Number(ival).toString();
-                                                }
-                                                ival = ival.replace(/./g, function (k) {
-                                                    if (k == '.' || k == '-') {
-                                                        return '';
-                                                    }
-                                                    return k;
-                                                });
-                                                $input.val(ival);
-                                                break;
-                                            default:
-                                            case 'Decimal':
-                                                var dcval = Number(ival), dmatch = ival.match(/\.+\d*$/);
-                                                if ((min >= 0 ? true : min <= dcval) && dcval <= max && (dmatch ? dmatch[0].length <= dlen + 1 : true)) {
-                                                    if (ival.match(/\.$/)) {
-                                                        if (dcval == max || dlen == 0) {
-                                                            ival = ival.replace(/\./g, '');
-                                                        }
-                                                    }
-                                                    if (ival.match(/^0\d+$/)) {
-                                                        ival = ival.replace(/^0+/, '0');
-                                                        ival = Number(ival).toString();
-                                                    }
-                                                    if (min >= 0) {
-                                                        ival = ival.replace(/\-/g, '');
-                                                        if (min >= 1) {
-                                                            ival = ival
-                                                                .replace(/^0+/, '')
-                                                                .replace(/^\.+/, '');
-                                                        }
-                                                    }
-                                                    else if (min == dval) {
-                                                        ival = ival.replace(/\.+$/, '');
-                                                    }
-                                                    $input.val(ival);
-                                                }
-                                                else if (min < 0 && ival == '-') {
-                                                    $input.val(ival);
-                                                }
-                                                else {
-                                                    if ([8, 46].indexOf(dorgi.keyCode) == -1) {
-                                                        ival = dval;
-                                                        $input.val(dval);
-                                                    }
-                                                    else {
-                                                        if (ival.match(/^0\d+$/)) {
-                                                            ival = ival.replace(/^0+/, '0');
-                                                            ival = Number(ival).toString();
-                                                        }
-                                                        $input.val(ival);
-                                                    }
-                                                }
-                                                break;
-                                            case 'HalfInt':
-                                                var hival = Number(ival), himatch = ival.match(/\.+\d*$/);
-                                                if ((min >= 0 ? true : min <= hival) && hival <= max && (himatch ? (himatch[0] === '.5' || himatch[0] === '.') : true)) {
-                                                    if (himatch && himatch[0] == '.') {
-                                                        if (hival == max) {
-                                                            ival = ival.replace(/\./g, '');
-                                                        }
-                                                    }
-                                                    if (ival.match(/^0\d+$/)) {
-                                                        ival = ival.replace(/^0+/, '0');
-                                                        ival = Number(ival).toString();
-                                                    }
-                                                    if (min >= 0) {
-                                                        ival = ival.replace(/\-/g, '');
-                                                        if (min >= 1) {
-                                                            ival = ival
-                                                                .replace(/^0+/, '')
-                                                                .replace(/^\.+/, '');
-                                                        }
-                                                    }
-                                                    else if (min == hival) {
-                                                        ival = ival.replace(/\.+$/, '');
-                                                    }
-                                                    $input.val(ival);
-                                                }
-                                                else if (min < 0 && ival == '-') {
-                                                    $input.val(ival);
-                                                }
-                                                else {
-                                                    if ([8, 46].indexOf(dorgi.keyCode) == -1) {
-                                                        ival = dval;
-                                                        $input.val(dval);
-                                                    }
-                                                    else {
-                                                        if (ival.match(/^0\d+$/)) {
-                                                            ival = ival.replace(/^0+/, '0');
-                                                            ival = Number(ival).toString();
-                                                        }
-                                                        $input.val(ival);
-                                                    }
-                                                }
-                                                break;
-                                            case 'Integer':
-                                                var value = Number(ival);
-                                                if ((min >= 0 ? true : min <= value) && value <= max && !ival.match(/\.+\d*$/)) {
-                                                    if (ival.match(/^0\d+$/)) {
-                                                        ival = ival.replace(/^0+/, '0');
-                                                        ival = Number(ival).toString();
-                                                    }
-                                                    if (min >= 0) {
-                                                        ival = ival.replace(/\-/g, '');
-                                                        if (min > 0) {
-                                                            ival = ival.replace(/^0+/, '');
-                                                        }
-                                                    }
-                                                    $input.val(ival);
-                                                }
-                                                else if (min < 0 && ival == '-') {
-                                                    $input.val(ival);
-                                                }
-                                                else {
-                                                    if ([8, 46].indexOf(dorgi.keyCode) == -1) {
-                                                        ival = dval;
-                                                        $input.val(dval);
-                                                    }
-                                                    else {
-                                                        if (ival.match(/^0\d+$/)) {
-                                                            ival = ival.replace(/^0+/, '0');
-                                                            ival = Number(ival).toString();
-                                                        }
-                                                        $input.val(ival);
-                                                    }
-                                                }
-                                                break;
-                                        }
-                                    }
-                                    else {
-                                        if (ival.match(/^0\d+$/)) {
-                                            ival = ival.replace(/^0+/, '0');
-                                            ival = Number(ival).toString();
-                                        }
-                                        $input.val(ival);
-                                    }
+                            var rd = ko.toJS(data), target = evt.target, val = target.value, ss = target.selectionStart, se = target.selectionEnd, constraint = rd.constraint;
+                            // filter specs key
+                            if ([8, 9, 13, 16, 17, 20, 27, 33, 34, 35, 36, 37, 38, 39, 40, 45, 46].indexOf(evt.keyCode) == -1) {
+                                // fix bug cannot press [.] on numpad
+                                if (!evt.key.match(/[\-\.0-9]|(Decimal)/g)) {
+                                    evt.preventDefault();
                                 }
                                 else {
-                                    // check length & decimal length
-                                    var dlen = rd.option.decimallength;
-                                    if (dlen) {
-                                        var match = ival.match(/\.\d+$/);
-                                        if (match && match[0].length > dlen + 1) {
-                                            ival = dval;
+                                    // calc new value after keypress
+                                    if (ss == se) {
+                                        if (se == 0) {
+                                            val = evt.key + val;
                                         }
-                                    }
-                                    if (ival.match(/^0\d+$/)) {
-                                        ival = ival.replace(/^0+/, '0');
-                                        ival = Number(ival).toString();
-                                    }
-                                    $input.val(ival);
-                                }
-                                // set carret position
-                                setTimeout(function () {
-                                    if (dval === ival) {
-                                        if (ival.length == 1) {
-                                            targ.selectionStart = 1;
-                                            targ.selectionEnd = 1;
+                                        else if (se == val.length) {
+                                            val += evt.key;
                                         }
                                         else {
-                                            targ.selectionStart = srg.start;
-                                            targ.selectionEnd = srg.end;
+                                            val = val.substring(0, ss) + evt.key + val.substring(se, val.length);
                                         }
                                     }
-                                    else if (ival.length - dval.length === 1) {
-                                        targ.selectionStart = srg.start + 1;
-                                        targ.selectionEnd = srg.end + 1;
+                                    else {
+                                        val = val.replace(val.substring(ss, se), evt.key);
                                     }
-                                    else if (dval.length - ival.length === 1) {
-                                        if (dorgi.keyCode === 46) {
-                                            targ.selectionStart = srg.start;
-                                            targ.selectionEnd = srg.end;
-                                        }
-                                        else if (dorgi.keyCode == 8) {
-                                            targ.selectionStart = srg.start - 1;
-                                            targ.selectionEnd = srg.end - 1;
+                                    // fix bug cannot press [.] on numpad
+                                    val = val.replace(/Decimal/, '.');
+                                    // accept negative key only first press
+                                    if (evt.key == '-' && (ss || target.value.indexOf('-') > -1)) {
+                                        evt.preventDefault();
+                                        return;
+                                    }
+                                    // accept only one pointer
+                                    if (evt.key == '.' && target.value.indexOf('.') > -1) {
+                                        evt.preventDefault();
+                                        return;
+                                    }
+                                    // case has constraint check value by type
+                                    if (constraint) {
+                                        var primitive = window['__viewContext'].primitiveValueConstraints[constraint];
+                                        if (primitive) {
+                                            var min = primitive.min, max = primitive.max, stma = String(Math.abs(max)), stmi = String(Math.abs(min)), mival = val, maval = val, dlen = primitive.mantissaMaxLength;
+                                            // accept negative key if min < 0
+                                            if (evt.key == '-' && min >= 0) {
+                                                evt.preventDefault();
+                                                return;
+                                            }
+                                            if (min < 1) {
+                                                // accept once 0 char
+                                                if (val.match(/(^0{2,})|(^-?0{2,})/)) {
+                                                    evt.preventDefault();
+                                                    return;
+                                                }
+                                            }
+                                            else {
+                                                // not accept char 0 offset = 0
+                                                if (val.match(/^0/)) {
+                                                    evt.preventDefault();
+                                                    return;
+                                                }
+                                            }
+                                            // calculate min & max value
+                                            if (max < 0) {
+                                                for (var i = mival.length - 1; i < stmi.length; i++) {
+                                                    if (stmi[i] != undefined) {
+                                                        if (stmi[i].match(/\d/)) {
+                                                            mival += '9';
+                                                        }
+                                                        else {
+                                                            mival += stmi[i];
+                                                        }
+                                                    }
+                                                }
+                                                for (var i = maval.length - 1; i < stma.length; i++) {
+                                                    if (stma[i] != undefined) {
+                                                        if (stma[i].match(/\d/)) {
+                                                            maval += '0';
+                                                        }
+                                                        else {
+                                                            maval += stma[i];
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else if (min < 0) {
+                                                if (val.indexOf('-') > -1) {
+                                                    for (var i = mival.length - 1; i < stmi.length; i++) {
+                                                        if (stmi[i] != undefined) {
+                                                            if (stmi[i].match(/\d/)) {
+                                                                mival += '9';
+                                                            }
+                                                            else {
+                                                                mival += stmi[i];
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                else {
+                                                    for (var i = maval.length; i < stma.length; i++) {
+                                                        if (stma[i] != undefined) {
+                                                            if (stma[i].match(/\d/)) {
+                                                                maval += '9';
+                                                            }
+                                                            else {
+                                                                maval += stma[i];
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else {
+                                                for (var i = maval.length; i < stma.length; i++) {
+                                                    if (stma[i] != undefined) {
+                                                        if (stma[i].match(/\d/)) {
+                                                            maval += '9';
+                                                        }
+                                                        else {
+                                                            maval += stma[i];
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            // fix halfint max value
+                                            if (primitive.valueType == 'HalfInt') {
+                                                maval = maval.replace(/\.\d$/, '.5');
+                                            }
+                                            var nmin = Number(mival), nmax = Number(maval);
+                                            // clear decimal in constraint (sync) if option not has decimallength
+                                            if (rd.option && rd.option.decimallength < 1) {
+                                                primitive.valueType = 'Integer';
+                                            }
+                                            switch (primitive.valueType) {
+                                                case "String":
+                                                    var maxL = primitive.maxLength;
+                                                    if (val.length > maxL || ['.', '-'].indexOf(evt.key) > -1) {
+                                                        evt.preventDefault();
+                                                        return;
+                                                    }
+                                                    break;
+                                                case "Integer":
+                                                    if (evt.key == '.') {
+                                                        evt.preventDefault();
+                                                        return;
+                                                    }
+                                                    if (nmax < min || nmin > max) {
+                                                        evt.preventDefault();
+                                                        return;
+                                                    }
+                                                    break;
+                                                case "HalfInt":
+                                                    var milen = val.replace('-', '').replace(/\d+/, '').replace('.', '').length;
+                                                    if (milen > 1 || (se == val.length - 1 && milen == 1 && ['0', '5'].indexOf(evt.key) == -1)) {
+                                                        evt.preventDefault();
+                                                        return;
+                                                    }
+                                                    if (nmax < min || nmin > max) {
+                                                        evt.preventDefault();
+                                                        return;
+                                                    }
+                                                    break;
+                                                case "Decimal":
+                                                    var mdlen = val.replace('-', '').replace(/\d+/, '').replace('.', '').length;
+                                                    if (mdlen > primitive.mantissaMaxLength) {
+                                                        evt.preventDefault();
+                                                        return;
+                                                    }
+                                                    if (nmax < min || nmin > max) {
+                                                        evt.preventDefault();
+                                                        return;
+                                                    }
+                                                    break;
+                                            }
                                         }
                                     }
-                                }, 0);
+                                    else { // or else, check only decimal length
+                                        var dlen = rd.option.decimallength, mdlen = val.replace('-', '').replace(/\d+/, '').replace('.', '').length;
+                                        if (dlen < mdlen) {
+                                            evt.preventDefault();
+                                            return;
+                                        }
+                                    }
+                                }
                             }
-                        });
-                        $input.on('blur', function (evt) {
-                            var value = $input.val();
-                            if (value.match(/\.$/)) {
-                                value = value.replace(/\.$/, '');
-                                // fix value if input en with [.]
-                                $input
-                                    .val(value)
-                                    .trigger('blur');
+                            else if ([8, 46].indexOf(evt.keyCode) > -1 && constraint) { // key backspace || delete
+                                var primitive = window['__viewContext'].primitiveValueConstraints[constraint];
+                                // if value after delete out of range, preventDefault
+                                if (primitive) {
+                                    var min = primitive.min, max = primitive.max, stma = String(Math.abs(max)), stmi = String(Math.abs(min));
+                                    if (ss == se) {
+                                        if (evt.keyCode == 8) {
+                                            var mival = val.substring(0, ss - 1) + val.substring(se, val.length), maval = mival;
+                                            // calculate min & max value
+                                            if (max < 0) {
+                                                for (var i = mival.length - 1; i < stmi.length; i++) {
+                                                    if (stmi[i] != undefined) {
+                                                        if (stmi[i].match(/\d/)) {
+                                                            mival += '9';
+                                                        }
+                                                        else {
+                                                            mival += stmi[i];
+                                                        }
+                                                    }
+                                                }
+                                                for (var i = maval.length - 1; i < stma.length; i++) {
+                                                    if (stma[i] != undefined) {
+                                                        if (stma[i].match(/\d/)) {
+                                                            maval += '0';
+                                                        }
+                                                        else {
+                                                            maval += stma[i];
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else if (min < 0) {
+                                                if (val.indexOf('-') > -1) {
+                                                    for (var i = mival.length - 1; i < stmi.length; i++) {
+                                                        if (stmi[i] != undefined) {
+                                                            if (stmi[i].match(/\d/)) {
+                                                                mival += '9';
+                                                            }
+                                                            else {
+                                                                mival += stmi[i];
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                else {
+                                                    for (var i = maval.length; i < stma.length; i++) {
+                                                        if (stma[i] != undefined) {
+                                                            if (stma[i].match(/\d/)) {
+                                                                maval += '9';
+                                                            }
+                                                            else {
+                                                                maval += stma[i];
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else {
+                                                for (var i = maval.length; i < stma.length; i++) {
+                                                    if (stma[i] != undefined) {
+                                                        if (stma[i].match(/\d/)) {
+                                                            maval += '9';
+                                                        }
+                                                        else {
+                                                            maval += stma[i];
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            // fix halfint max value
+                                            if (primitive.valueType == 'HalfInt') {
+                                                maval = maval.replace(/\.\d$/, '.5');
+                                            }
+                                            var nmin = Number(mival), nmax = Number(maval);
+                                            if (nmax < min || nmin > max) {
+                                                evt.preventDefault();
+                                                return;
+                                            }
+                                        }
+                                        else {
+                                            var mival = val.substring(0, ss) + val.substring(se + 1, val.length), maval = mival;
+                                            // calculate min & max value
+                                            if (max < 0) {
+                                                for (var i = mival.length - 1; i < stmi.length; i++) {
+                                                    if (stmi[i] != undefined) {
+                                                        if (stmi[i].match(/\d/)) {
+                                                            mival += '9';
+                                                        }
+                                                        else {
+                                                            mival += stmi[i];
+                                                        }
+                                                    }
+                                                }
+                                                for (var i = maval.length - 1; i < stma.length; i++) {
+                                                    if (stma[i] != undefined) {
+                                                        if (stma[i].match(/\d/)) {
+                                                            maval += '0';
+                                                        }
+                                                        else {
+                                                            maval += stma[i];
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else if (min < 0) {
+                                                if (val.indexOf('-') > -1) {
+                                                    for (var i = mival.length - 1; i < stmi.length; i++) {
+                                                        if (stmi[i] != undefined) {
+                                                            if (stmi[i].match(/\d/)) {
+                                                                mival += '9';
+                                                            }
+                                                            else {
+                                                                mival += stmi[i];
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                else {
+                                                    for (var i = maval.length; i < stma.length; i++) {
+                                                        if (stma[i] != undefined) {
+                                                            if (stma[i].match(/\d/)) {
+                                                                maval += '9';
+                                                            }
+                                                            else {
+                                                                maval += stma[i];
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else {
+                                                for (var i = maval.length; i < stma.length; i++) {
+                                                    if (stma[i] != undefined) {
+                                                        if (stma[i].match(/\d/)) {
+                                                            maval += '9';
+                                                        }
+                                                        else {
+                                                            maval += stma[i];
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            // fix halfint max value
+                                            if (primitive.valueType == 'HalfInt') {
+                                                maval = maval.replace(/\.\d$/, '.5');
+                                            }
+                                            var nmin = Number(mival), nmax = Number(maval);
+                                            if (nmax < min || nmin > max) {
+                                                evt.preventDefault();
+                                                return;
+                                            }
+                                        }
+                                    }
+                                    else {
+                                        var mival = val.substring(0, ss) + val.substring(se, val.length), maval = mival;
+                                        // calculate min & max value
+                                        if (max < 0) {
+                                            for (var i = mival.length - 1; i < stmi.length; i++) {
+                                                if (stmi[i].match(/\d/)) {
+                                                    mival += '9';
+                                                }
+                                                else {
+                                                    mival += stmi[i];
+                                                }
+                                            }
+                                            for (var i = maval.length - 1; i < stma.length; i++) {
+                                                if (stma[i].match(/\d/)) {
+                                                    maval += '0';
+                                                }
+                                                else {
+                                                    maval += stma[i];
+                                                }
+                                            }
+                                        }
+                                        else if (min < 0) {
+                                            if (val.indexOf('-') > -1) {
+                                                for (var i = mival.length - 1; i < stmi.length; i++) {
+                                                    if (stmi[i].match(/\d/)) {
+                                                        mival += '9';
+                                                    }
+                                                    else {
+                                                        mival += stmi[i];
+                                                    }
+                                                }
+                                            }
+                                            else {
+                                                for (var i = maval.length; i < stma.length; i++) {
+                                                    if (stma[i].match(/\d/)) {
+                                                        maval += '9';
+                                                    }
+                                                    else {
+                                                        maval += stma[i];
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else {
+                                            for (var i = maval.length; i < stma.length; i++) {
+                                                if (stma[i].match(/\d/)) {
+                                                    maval += '9';
+                                                }
+                                                else {
+                                                    maval += stma[i];
+                                                }
+                                            }
+                                        }
+                                        // fix halfint max value
+                                        if (primitive.valueType == 'HalfInt') {
+                                            maval = maval.replace(/\.\d$/, '.5');
+                                        }
+                                        var nmin = Number(mival), nmax = Number(maval);
+                                        if (nmax < min || nmin > max) {
+                                            evt.preventDefault();
+                                            return;
+                                        }
+                                    }
+                                }
                             }
                         });
                     };
@@ -18806,23 +18474,10 @@ var nts;
                         return new nts.uk.ui.option.NumberEditorOption();
                     };
                     NumberEditorProcessor.prototype.getFormatter = function (data) {
-                        var option = !nts.uk.util.isNullOrUndefined(data.option) ? ko.toJS(data.option) : {};
-                        if (option.numberGroup == true) {
-                            this.editorOption.grouplength = 3;
-                        }
-                        else if (option.numberGroup == false) {
-                            this.editorOption.grouplength = 0;
-                        }
                         return new uk.text.NumberFormatter({ option: this.editorOption });
                     };
                     NumberEditorProcessor.prototype.getValidator = function (data) {
                         var option = !nts.uk.util.isNullOrUndefined(data.option) ? ko.toJS(data.option) : {}, eOption = $.extend(this.getDefaultOption(), option), required = (data.required !== undefined) ? ko.unwrap(data.required) : false, constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "", name = nts.uk.resource.getControlName(data.name !== undefined ? ko.unwrap(data.name) : "");
-                        if (option.numberGroup == true) {
-                            option.grouplength = 3;
-                        }
-                        else if (option.numberGroup == false) {
-                            option.grouplength = 0;
-                        }
                         // update editor option
                         $.extend(this.editorOption, {
                             required: required,
@@ -19236,7 +18891,7 @@ var nts;
                             ROW_HEIGHT = 24;
                             // Internet Explorer 6-11
                             var _document = document;
-                            var isIE = false || !!_document.documentMode;
+                            var isIE = /*@cc_on!@*/ false || !!_document.documentMode;
                             // Edge 20+
                             var _window = window;
                             var isEdge = !isIE && !!_window.StyleMedia;
@@ -19422,7 +19077,7 @@ var nts;
                                     _.forEach(_.intersection(disables, value), function (iv) {
                                         $grid.igGridSelection("selectRowById", iv);
                                     });
-                                    $grid.trigger("selectionchanged", [true]);
+                                    $grid.trigger("selectionchanged");
                                 }, 0);
                             }
                             return true;
@@ -19435,10 +19090,7 @@ var nts;
                                 $iselect.addClass("ui-igcheckbox-normal-on");
                             }
                         };
-                        $grid.bind('selectionchanged', function (event, isUserAction) {
-                            if (isUserAction) {
-                                $grid.data('user-action', true);
-                            }
+                        $grid.bind('selectionchanged', function () {
                             $grid.data("ui-changed", true);
                             if (data.multiple) {
                                 var selected_1 = $grid.ntsGridList('getSelected');
@@ -19651,14 +19303,7 @@ var nts;
                                 _.defer(function () { $grid.trigger("selectChange"); });
                             }
                         }
-                        _.defer(function () {
-                            if ($grid.data('user-action')) {
-                                $grid.data('user-action', false);
-                            }
-                            else {
-                                $grid.ntsGridList("scrollToSelected");
-                            }
-                        });
+                        _.defer(function () { $grid.ntsGridList("scrollToSelected"); });
                         $grid.data("ui-changed", false);
                         $grid.closest('.ui-iggrid').addClass('nts-gridlist').height($grid.data("height")).attr("tabindex", $grid.data("tabindex"));
                     };
@@ -22165,7 +21810,6 @@ var nts;
                         var rows = ko.unwrap(data.rows);
                         var virtualization = ko.unwrap(!uk.util.isNullOrUndefined(data.virtualization) ? data.virtualization : false);
                         var virtualizationMode = ko.unwrap(!uk.util.isNullOrUndefined(data.virtualizationMode) ? data.virtualizationMode : "");
-                        var isFilter = ko.unwrap(!uk.util.isNullOrUndefined(data.filter) ? data.filter : false);
                         // Default.
                         var showCheckBox = data.showCheckBox !== undefined ? ko.unwrap(data.showCheckBox) : true;
                         var enable = data.enable !== undefined ? ko.unwrap(data.enable) : true;
@@ -22208,13 +21852,6 @@ var nts;
                                         }
                                     }
                                 }
-                            }, rowSelectionChanging: function (evt, ui) {
-                                var disabledRows = $treegrid.data("rowDisabled");
-                                if (!_.isEmpty(disabledRows)) {
-                                    _.remove(ui.selectedRows, function (r) {
-                                        return disabledRows.includes(r.id);
-                                    });
-                                }
                             }
                         });
                         features.push({
@@ -22252,62 +21889,8 @@ var nts;
                             });
                             $treegrid.addClass("row-limited");
                         }
-                        if (isFilter) {
-                            features.push({ name: "Filtering", filterDelay: 100, filterDropDownAnimationDuration: 100,
-                                dataFiltered: function (evt, ui) {
-                                    var disabled = $treegrid.data("rowDisabled");
-                                    if (!_.isEmpty(disabled)) {
-                                        $treegrid.ntsTreeView("disableRows", disabled);
-                                    }
-                                }, dataFiltering: function (evt, ui) {
-                                    var disabled = $treegrid.data("rowDisabled"), currentCol = _.find(ui.owner.grid.options.columns, function (c) { return c.key === ui.columnKey; }), shouldRemove = $treegrid.data("customExpression");
-                                    _.remove(ui.newExpressions, function (ex) { return _.isNil(ex.expr); });
-                                    if (!_.isEmpty(shouldRemove)) {
-                                        _.remove(ui.newExpressions, function (ex) { return !_.isNil(_.find(shouldRemove, function (sr) { return _.isEqual(sr, ex); })); });
-                                        $treegrid.data("customExpression", []);
-                                    }
-                                    if (!_.isNil(currentCol) && currentCol.formatType === "checkbox" && !_.isNil(currentCol.filterOpts)) {
-                                        var currentExp = _.find(ui.newExpressions, function (exp) { return exp.fieldName === ui.columnKey; });
-                                        if (!_.isNil(currentExp)) {
-                                            var isFilterTrue = currentExp.expr.toLowerCase() === "check";
-                                            ui.owner._currentTarget.closest(".ui-iggrid-filtercell").find(".ui-iggrid-filtereditor")
-                                                .val(isFilterTrue ? currentCol.filterOpts.trueOpt : currentCol.filterOpts.falseOpt);
-                                        }
-                                    }
-                                    if (!_.isEmpty(disabled) && !_.isEmpty(ui.newExpressions)) {
-                                        var shouldRemove_1 = [];
-                                        _.forEach(disabled, function (rId) {
-                                            var newExp = { fieldName: optionsValue, cond: "doesNotEqual", expr: rId };
-                                            ui.newExpressions.push(newExp);
-                                            shouldRemove_1.push(newExp);
-                                        });
-                                        $treegrid.data("customExpression", shouldRemove_1);
-                                    }
-                                    $treegrid.data("filterIdx", 0);
-                                    $treegrid.data("previousCol", null);
-                                }, dropDownOpening: function (evt, ui) {
-                                    var colName = ui.dropDown.attr("aria-describedby"), currentCol = _.find(ui.owner.grid.options.columns, function (c) { return c.key === colName; });
-                                    if (!_.isNil(currentCol) && currentCol.formatType === "checkbox") {
-                                        var filterOpts = ui.dropDown.find(".ui-iggrid-filterddlistitemicons"), trueOpt = _.find(filterOpts, function (f) { return !_.isNil($(f).data("cond")) && $(f).data("cond").toString().toLowerCase().contains("check"); }), falseOpt = _.find(filterOpts, function (f) { return !_.isNil($(f).data("cond")) && $(f).data("cond").toString().toLowerCase().contains("noncheck"); }), norTrueOpt = _.find(filterOpts, function (f) { return !_.isNil($(f).data("cond")) && $(f).data("cond").toString().toLowerCase() === "true"; }), norFalseOpt = _.find(filterOpts, function (f) { return !_.isNil($(f).data("cond")) && $(f).data("cond").toString().toLowerCase() === "false"; });
-                                        $(norTrueOpt).remove();
-                                        $(norFalseOpt).remove();
-                                        if (!_.isNil(currentCol.filterOpts)) {
-                                            $(trueOpt).find(".ui-iggrid-filterddlistitemcontainer").html(currentCol.filterOpts.trueOpt); //nts.uk.resource.getText("Enum_UseAtr_Use"));
-                                            $(falseOpt).find(".ui-iggrid-filterddlistitemcontainer").html(currentCol.filterOpts.falseOpt); //nts.uk.resource.getText("Enum_UseAtr_NotUse"));
-                                        }
-                                    }
-                                }, dropDownClosed: function (evt, ui) {
-                                    ui.owner._currentTarget.closest(".ui-iggrid-filtercell").find(".ui-iggrid-filterbutton").removeClass("ui-state-active ui-iggrid-filterbuttonactive");
-                                }, filterSummaryAlwaysVisible: false });
-                        }
                         $treegrid.data("expand", new ExpandNodeHolder());
                         $treegrid.data("autoExpanding", false);
-                        var colSet = _.map(displayColumns, function (col) {
-                            return { columnKey: col.key, readOnly: true };
-                        });
-                        features.push({ name: "Updating", editMode: "cell", enableAddChild: false,
-                            enableAddRow: false, enableDeleteRow: false, columnSettings: colSet });
-                        var cols = $treegrid.ntsTreeView("formatColumns", displayColumns, features);
                         // Init ig grid.
                         $treegrid.igTreeGrid({
                             width: width,
@@ -22315,8 +21898,7 @@ var nts;
                             indentation: "12px",
                             dataSource: _.cloneDeep(options),
                             primaryKey: optionsValue,
-                            columns: cols,
-                            autoCommit: true,
+                            columns: displayColumns,
                             childDataKey: optionsChild,
                             initialExpandDepth: nts.uk.util.isNullOrUndefined(initialExpandDepth) ? 10 : initialExpandDepth,
                             tabIndex: -1,
@@ -22328,10 +21910,6 @@ var nts;
                                     var holder = $treegrid.data("expand");
                                     holder.addNode(ui["dataRecord"][optionsValue]);
                                     $treegrid.data("expand", holder);
-                                }
-                                var disabledRows = $treegrid.data("rowDisabled");
-                                if (!_.isEmpty(disabledRows)) {
-                                    $treegrid.ntsTreeView("disableRows", disabledRows);
                                 }
                             }, rowCollapsed: function (evt, ui) {
                                 if (!$treegrid.data("autoExpanding")) {
@@ -22347,12 +21925,6 @@ var nts;
                                 //                        $treegrid.igTreeGrid("expandRow", node); 
                                 //                    });
                                 //                    }
-                                if (virtualization) {
-                                    var disabledRows = $treegrid.data("rowDisabled");
-                                    if (!_.isEmpty(disabledRows)) {
-                                        $treegrid.ntsTreeView("disableRows", disabledRows);
-                                    }
-                                }
                                 $treegrid.data("autoExpanding", false);
                             }
                         });
@@ -22378,15 +21950,9 @@ var nts;
                                 }
                             }
                         });
-                        $treegrid.bind('cellChanging', function () {
-                            $treegrid.data("notUpdate", true);
-                            var optionX = data.dataSource !== undefined ? data.dataSource : data.options;
-                            optionX($treegrid.igTreeGrid("option", "dataSource"));
-                        });
                         $treegrid.setupSearchScroll("igTreeGrid");
                         if (showCheckBox != true) {
                             $treegrid.closest(".nts-treegridview").addClass("no-selector");
-                            $treegrid.closest(".nts-treegridview").find("col[data-skip='true']").addClass("no-width");
                         }
                     };
                     /**
@@ -22398,37 +21964,15 @@ var nts;
                         var options = ko.unwrap(data.dataSource !== undefined ? data.dataSource : data.options);
                         var selectedValues = ko.unwrap(data.selectedValues);
                         var singleValue = ko.unwrap(data.value);
-                        var multiple = data.multiple != undefined ? ko.unwrap(data.multiple) : true;
                         var $treegrid = $(element);
-                        if ($treegrid.data("notUpdate") === true) {
-                            $treegrid.data("notUpdate", false);
-                            return;
-                        }
-                        var disabledRows = $treegrid.data("rowDisabled");
-                        if (!_.isEmpty(disabledRows)) {
-                            if (multiple) {
-                                _.remove(selectedValues, function (r) {
-                                    return disabledRows.includes(r);
-                                });
-                                if (!_.isEqual(selectedValues, data.selectedValues())) {
-                                    data.selectedValues(selectedValues);
-                                    return;
-                                }
-                            }
-                            else {
-                                if (!_.isNil(singleValue) && disabledRows.includes(singleValue)) {
-                                    data.value(null);
-                                    return;
-                                }
-                            }
-                            $treegrid.ntsTreeView("disableRows", disabledRows);
-                        }
                         // Update datasource.
                         var originalSource = $(element).igTreeGrid('option', 'dataSource');
                         if (!_.isEqual(originalSource, options)) {
                             $treegrid.igTreeGrid("option", "dataSource", _.cloneDeep(options));
                             $treegrid.igTreeGrid("dataBind");
                         }
+                        // Set multiple data source.
+                        var multiple = data.multiple != undefined ? ko.unwrap(data.multiple) : true;
                         if ($treegrid.igTreeGridSelection("option", "multipleSelection") !== multiple) {
                             $treegrid.igTreeGridSelection("option", "multipleSelection", multiple);
                         }
@@ -22501,7 +22045,7 @@ var nts;
                         while (!isEmpty(children)) {
                             var currentNode = children.shift();
                             ids.push(currentNode[nodeKey]);
-                            if (!isEmpty(currentNode) && !isEmpty(currentNode[childKey])) {
+                            if (!isEmpty(currentNode)) {
                                 children = children.concat(currentNode[childKey]);
                             }
                         }
@@ -23627,7 +23171,6 @@ var nts;
                                 _copie = true;
                             _$grid.mGrid("option", "errOccurred", self.errorOccurred);
                             _$grid.mGrid("option", "errResolved", self.errorResolved);
-                            _$grid.mGrid("option", "errDismissed", self.errorDismissed);
                         }
                     };
                     /**
@@ -23886,8 +23429,6 @@ var nts;
                     v_1.VFACON_ASC = "view-facon-asc";
                     v_1.FACON_ASC = "facon-asc";
                     v_1.FACON_DESC = "facon-desc";
-                    v_1.ALIGN_LEFT = "halign-left";
-                    v_1.ALIGN_RIGHT = "halign-right";
                     v_1.DefaultRowConfig = { css: { height: BODY_ROW_HEIGHT } };
                     v_1._voilerRows = {};
                     v_1._encarRows = [];
@@ -25667,12 +25208,8 @@ var nts;
                             var col = visibleColumnsMap[key];
                             if (!col)
                                 tdStyle += "; display: none;";
-                            else if (!_.isNil(col[0].columnCssClass)) {
-                                col[0].columnCssClass.split(' ').forEach(function (clz) {
-                                    if (clz === hpl.CURRENCY_CLS || clz === "halign-right") {
-                                        td.classList.add(clz);
-                                    }
-                                });
+                            else if (col[0].columnCssClass === hpl.CURRENCY_CLS || col[0].columnCssClass === "halign-right") {
+                                td.classList.add(col[0].columnCssClass);
                             }
                             if (key === "rowNumber") {
                                 td.innerHTML = cData; //!_.isNil(numText) ? numText : rowIdx + 1;
@@ -25711,7 +25248,7 @@ var nts;
                                     var info = _vessel().checkedErrors[ei];
                                     if (rData[_pk] === info.id && key === info.columnKey) {
                                         info.element = td;
-                                        khl.set(info, info.message, 1, true);
+                                        khl.set(info, info.message, 1);
                                         _vessel().checkedErrors.splice(ei, 1);
                                         break;
                                     }
@@ -25898,11 +25435,6 @@ var nts;
                             tr.addXEventListener(ssk.MOUSE_OUT, function (evt) {
                                 self.hoover(evt, true);
                             });
-                            if (_.keys(v_1._voilerRows).length > 0
-                                && _.includes(v_1._voilerRows[Math.floor(rowIdx / (aho._bloc * 2 - 1))], rowIdx)) {
-                                fixedTr.style.display = "none";
-                                tr.style.display = "none";
-                            }
                             var ret = { fixedRow: fixedTr, row: tr, fixedElements: fixedElements, elements: elements };
                             if (rowIdx === 0) {
                                 ret.fixedColIdxes = fixedColIdxes;
@@ -26005,12 +25537,8 @@ var nts;
                             var col = self.visibleColumnsMap[key];
                             if (!col)
                                 tdStyle += "; display: none;";
-                            else if (!_.isNil(col[0].columnCssClass)) {
-                                col[0].columnCssClass.split(' ').forEach(function (clz) {
-                                    if (clz === hpl.CURRENCY_CLS || clz === "halign-right") {
-                                        td.classList.add(clz);
-                                    }
-                                });
+                            else if (col[0].columnCssClass === hpl.CURRENCY_CLS || col[0].columnCssClass === "halign-right") {
+                                td.classList.add(col[0].columnCssClass);
                             }
                             var controlDef = self.controlMap[key];
                             var id = rData[self.primaryKey];
@@ -26042,7 +25570,7 @@ var nts;
                                     var info = _vessel().checkedErrors[ei];
                                     if (rData[_pk] === info.id && key === info.columnKey) {
                                         info.element = td;
-                                        khl.set(info, info.message, null, true);
+                                        khl.set(info, info.message);
                                         _vessel().checkedErrors.splice(ei, 1);
                                         break;
                                     }
@@ -26347,43 +25875,28 @@ var nts;
                     }
                     v_1.createWrapper = createWrapper;
                     function voilerRow(idx) {
-                        if (_.isNil(idx))
+                        if (_.isNil(idx) || idx > _end || idx < _start)
                             return;
                         var nama = Math.floor(idx / (aho._bloc * 2 - 1));
                         if (!v_1._voilerRows[nama])
                             v_1._voilerRows[nama] = [];
                         v_1._voilerRows[nama].push(idx);
-                        if (idx <= _end && idx >= _start) {
-                            idx -= _start;
-                            _.forEach(_bodyWrappers, function (b) {
-                                var r = b.querySelector("tr:nth-of-type(" + (idx + 2) + ")");
-                                if (r)
-                                    r.style.display = "none";
-                                //                let last = b.querySelector("tr:last-child");
-                                //                if (last) last.style.height = parseFloat(last.style.height) - BODY_ROW_HEIGHT + "px";
-                            });
-                            _.forEach(_.keys(_mafollicle[SheetDef]), function (k) {
-                                var maf = _mafollicle[_currentPage][k];
-                                if (k === _currentSheet || !maf || !maf.$bBody)
-                                    return;
-                                var r = maf.$bBody.querySelector("tr:nth-of-type(" + (idx + 2) + ")");
-                                if (r)
-                                    r.style.display = "none";
-                            });
-                        }
-                        else {
-                            _.forEach(_.keys(_mafollicle[SheetDef]), function (k) {
-                                var maf = _mafollicle[_currentPage][k];
-                                if (!maf || !maf.desc)
-                                    return;
-                                var r = maf.desc.rowElements[idx];
-                                if (r)
-                                    r.style.display = "none";
-                                var fr = maf.desc.fixedRowElements[idx];
-                                if (fr)
-                                    fr.style.display = "none";
-                            });
-                        }
+                        idx -= _start;
+                        _.forEach(_bodyWrappers, function (b) {
+                            var r = b.querySelector("tr:nth-of-type(" + (idx + 2) + ")");
+                            if (r)
+                                r.style.display = "none";
+                            //                let last = b.querySelector("tr:last-child");
+                            //                if (last) last.style.height = parseFloat(last.style.height) - BODY_ROW_HEIGHT + "px";
+                        });
+                        _.forEach(_.keys(_mafollicle[SheetDef]), function (k) {
+                            var maf = _mafollicle[_currentPage][k];
+                            if (k === _currentSheet || !maf || !maf.$bBody)
+                                return;
+                            var r = maf.$bBody.querySelector("tr:nth-of-type(" + (idx + 2) + ")");
+                            if (r)
+                                r.style.display = "none";
+                        });
                     }
                     v_1.voilerRow = voilerRow;
                     function encarterRow(idx, copy, cssClass, numText) {
@@ -26426,7 +25939,7 @@ var nts;
                             if (_.has(_mDesc.fixedColIdxes, "rowNumber")) {
                                 no = _mDesc.fixedColIdxes.rowNumber;
                                 var tRow = _mDesc.fixedRows[idx][no];
-                                for (var i = 0; i < _mDesc.fixedRows.length; i++) {
+                                for (var i = /*idx + 2*/ 0; i < _mDesc.fixedRows.length; i++) {
                                     noc = _mDesc.fixedRows[i];
                                     if (noc && (noc = noc[no]) && parseInt(noc.innerHTML) > parseInt(tRow.innerHTML)) {
                                         noc.innerHTML = parseInt(noc.innerHTML) + 1;
@@ -26459,7 +25972,7 @@ var nts;
                             if (_.has(_mDesc.colIdxes, "rowNumber")) {
                                 no = _mDesc.colIdxes.rowNumber;
                                 var tRow = _mDesc.rows[idx][no];
-                                for (var i = 0; i < _mDesc.rows.length; i++) {
+                                for (var i = /*idx + 2*/ 0; i < _mDesc.rows.length; i++) {
                                     noc = _mDesc.rows[i];
                                     if (noc && (noc = noc[no]) && parseInt(noc.innerHTML) > parseInt(tRow.innerHTML)) {
                                         noc.innerHTML = parseInt(noc.innerHTML) + 1;
@@ -27365,7 +26878,8 @@ var nts;
                                 $headerTable.insertAdjacentElement("beforebegin", self.$agency);
                                 hiddenCount_1 = 0;
                                 _.forEach(self.headerColGroup[1], function ($targetCol, i) {
-                                    //                        if (i === self.headerColGroup[1].length - 1) return;
+                                    if (i === self.headerColGroup[1].length - 1)
+                                        return;
                                     if ($targetCol.style.display === "none") {
                                         hiddenCount_1++;
                                         return;
@@ -27624,10 +27138,6 @@ var nts;
                                 _.forEach(_.keys(_vessel().desc.fixedColIdxes), function (k) {
                                     var i = parseFloat(_vessel().desc.fixedColIdxes[k]);
                                     if (i === tidx) {
-                                        if (_.find(_fixedHiddenColumns, function (c) { return c === k; })) {
-                                            tidx++;
-                                            return;
-                                        }
                                         leftCol = k;
                                         if (self.actionDetails.breakArea || leftCol)
                                             return false;
@@ -27646,10 +27156,6 @@ var nts;
                                 _.forEach(_.keys(_vessel().desc.colIdxes), function (k) {
                                     var i = parseFloat(_vessel().desc.colIdxes[k]);
                                     if (i === tidx) {
-                                        if (_.find(_hiddenColumns, function (c) { return c === k; })) {
-                                            tidx++;
-                                            return;
-                                        }
                                         leftCol = k;
                                         return false;
                                     }
@@ -27817,7 +27323,7 @@ var nts;
                             self.$agency.style.width = self.headerWrappers[i].style.width;
                             var left = 0, group = self.headerColGroup[i];
                             _.forEach(group, function ($td, index) {
-                                if ($td.style.display === "none" /*|| (!self.actionDetails.isFixed && index === group.length - 1)*/)
+                                if ($td.style.display === "none" || (!self.actionDetails.isFixed && index === group.length - 1))
                                     return;
                                 left += parseFloat($td.style.width);
                                 if (index < self.actionDetails.gripIndex)
@@ -28111,7 +27617,6 @@ var nts;
                                             btn.disabled = true;
                                         break;
                                     case dkn.FLEX_IMAGE:
-                                    case dkn.IMAGE:
                                         var img = $cell.querySelector("span");
                                         if (img) {
                                             img.removeXEventListener(ssk.CLICK_EVT);
@@ -28188,7 +27693,6 @@ var nts;
                                         }
                                         break;
                                     case dkn.FLEX_IMAGE:
-                                    case dkn.IMAGE:
                                         var img = $cell.querySelector("span");
                                         if (img) {
                                             img.addXEventListener(ssk.CLICK_EVT, $.data(img, ssk.CLICK_EVT));
@@ -28211,11 +27715,8 @@ var nts;
                             if (_.isNil(idx))
                                 return;
                             var $cell = lch.cellAt(_$grid[0], idx, key);
-                            var ftPrint = false, cloneStates = _.cloneDeep(states), setShtCellState = function ($c) {
+                            var ftPrint = false, setShtCellState = function ($c) {
                                 var disabled;
-                                if (states && states.length !== cloneStates.length) {
-                                    states = _.cloneDeep(cloneStates);
-                                }
                                 _.forEach(states, function (s) {
                                     if (s === color.Disable) {
                                         self.disableNtsControlAt(id, key, $c);
@@ -28230,10 +27731,9 @@ var nts;
                                 });
                                 if (disabled)
                                     _.remove(states, function (s) { return s === color.Disable; });
-                                if (!ftPrint) {
-                                    color.pushState(id, key, states);
+                                color.pushState(id, key, states);
+                                if (!ftPrint)
                                     ftPrint = true;
-                                }
                             };
                             if ($cell) {
                                 setShtCellState($cell);
@@ -28578,9 +28078,6 @@ var nts;
                                 _cloud.painter.painters[!_hasFixed || !ufx ? 0 : 1].unbubColumn(col, i);
                             }
                         },
-                        hideRow: function (idx) {
-                            v.voilerRow(idx);
-                        },
                         updateCell: function (id, key, val, reset, ackDis, ls) {
                             var idx = _.findIndex(_dataSource, function (r) { return r[_pk] === id; });
                             if (idx === -1 || _.isNil(idx))
@@ -28616,7 +28113,7 @@ var nts;
                                 var check = $cell.querySelector("input[type='checkbox']");
                                 if (!check)
                                     return;
-                                if (val) {
+                                if (val) { //&& check.getAttribute("checked") !== "checked") {
                                     check.setAttribute("checked", "checked");
                                     check.checked = true;
                                     var evt = document.createEvent("HTMLEvents");
@@ -28625,7 +28122,7 @@ var nts;
                                     evt.checked = val;
                                     check.dispatchEvent(evt);
                                 }
-                                else if (!val) {
+                                else if (!val) { // && check.getAttribute("checked") === "checked") {
                                     check.removeAttribute("checked");
                                     check.checked = false;
                                     var evt = document.createEvent("HTMLEvents");
@@ -28678,7 +28175,7 @@ var nts;
                                         if (item)
                                             content = item[controlDef_1.optionsText || "name"];
                                     }
-                                    txt.innerHTML = _.isNil(content) ? "" : content;
+                                    txt.innerHTML = content;
                                     su.wedgeCell(_$grid[0], { rowIdx: idx, columnKey: key }, val, reset);
                                     $.data($cell, v.DATA, val);
                                 }
@@ -28706,18 +28203,15 @@ var nts;
                                             panelz = 0;
                                             cbx_1.options = _.cloneDeep(val);
                                         }
-                                        var found_1, currentVal_1 = (_dataSource[idx] || {})[key];
                                         _.forEach(val, function (i) {
                                             var $item = document.createElement("li");
                                             $item.classList.add("mcombo-listitem");
                                             $item.classList.add("ui-state-default");
                                             var vali = i[controlDef_2.optionsValue];
                                             $.data($item, "value", vali);
-                                            if (currentVal_1 === vali)
-                                                found_1 = i;
                                             var $comboItem = dkn.createItem(vali, i[controlDef_2.optionsText], $item, controlDef_2.displayMode), $comboValue = cbx_1.my.querySelector(".mcombo-value");
                                             $item.addXEventListener(ssk.CLICK_EVT, function (evt) {
-                                                var $combo = cbx_1.my.querySelector("." + dkn.CBX_CLS);
+                                                var $combo = cbx_1.my.querySelector("." + CBX_CLS);
                                                 $comboValue.innerHTML = "";
                                                 $comboValue.appendChild($comboItem.cloneNode(true));
                                                 _.forEach(itemList_1, function (i) {
@@ -28736,11 +28230,10 @@ var nts;
                                                     }
                                                     $.data($cbxCell, lo.CBX_SELECTED_TD, value);
                                                 }
-                                                dkn.closeDD(cbx_1.dropdown);
-                                                $combo.classList.remove(dkn.CBX_ACTIVE_CLS);
+                                                closeDD(cbx_1.dropdown);
+                                                $combo.classList.remove(CBX_ACTIVE_CLS);
                                                 var coord = ti.getCellCoord($cbxCell);
                                                 su.wedgeCell(_$grid[0], { rowIdx: coord.rowIdx, columnKey: key }, value);
-                                                khl.clear({ id: _dataSource[coord.rowIdx][_pk], columnKey: coord.columnKey, element: $cbxCell });
                                                 var sCol = _specialColumn[key];
                                                 if (sCol) {
                                                     var $cCell = lch.cellAt(_$grid[0], coord.rowIdx, sCol);
@@ -28762,46 +28255,8 @@ var nts;
                                             $itemHolder_1.innerHTML = nts.uk.resource.getMessage("Msg_37");
                                             maxHeight_1 += 26;
                                         }
-                                        var panel = cbx_1.panel[panelz];
                                         cbx_1.panel[panelz] = $itemHolder_1;
                                         cbx_1.maxHeight[panelz] = Math.min(104, maxHeight_1);
-                                        if (!found_1) {
-                                            $cell.textContent = "";
-                                        }
-                                        else if ($cell.textContent === "") {
-                                            $cell.textContent = found_1[controlDef_2.optionsText];
-                                        }
-                                        // Reload combo list
-                                        if (_mEditor && _mEditor.type === dkn.COMBOBOX && _mEditor.columnKey === key && _mEditor.rowIdx === idx) {
-                                            var comboList = cbx_1.dropdown.querySelector(".mcombo-list");
-                                            comboList.replaceChild($itemHolder_1, panel);
-                                            cbx_1.dropdown.style.maxHeight = cbx_1.maxHeight[panelz] + "px";
-                                            var items = cbx_1.dropdown.querySelectorAll(".mcombo-listitem");
-                                            var $comboValue_1 = cbx_1.my.querySelector(".mcombo-value");
-                                            var selected_2, code_1 = $.data($cell, lo.CBX_SELECTED_TD);
-                                            _.forEach(items, function (i) {
-                                                var value = $.data(i, lo.CBX_ITEM_VALUE);
-                                                if (i.classList.contains("selecteditem")) {
-                                                    i.classList.remove("selecteditem");
-                                                }
-                                                if (code_1 === value) {
-                                                    var $item = i.querySelector(".mcombo-item");
-                                                    if ($item) {
-                                                        $comboValue_1.innerHTML = "";
-                                                        $comboValue_1.appendChild($item.cloneNode(true));
-                                                        i.classList.add("selecteditem");
-                                                        selected_2 = true;
-                                                    }
-                                                }
-                                            });
-                                            if (!selected_2) {
-                                                $comboValue_1.innerHTML = "";
-                                                var empty = _prtDiv.cloneNode(true);
-                                                empty.style.display = "inline-block";
-                                                $comboValue_1.appendChild(empty);
-                                            }
-                                            dkn.openDD(cbx_1.dropdown, cbx_1.my);
-                                        }
                                     }
                                     else {
                                         var y = void 0, options = void 0;
@@ -28827,7 +28282,7 @@ var nts;
                                         date = null;
                                     su.wedgeCell(_$grid[0], { rowIdx: idx, columnKey: key }, date, reset);
                                     $.data($cell, v.DATA, date);
-                                    $cell.innerHTML = _.isNil(txt) ? (mDate.isValid() ? mDate.format(cbx_1.format[0]) : (_.isNil(mDate._i) ? "" : mDate._i)) : txt;
+                                    $cell.innerHTML = _.isNil(txt) ? (mDate.isValid() ? mDate.format(cbx_1.format[0]) : (_.isNil(mDate._i) ? null : mDate._i)) : txt;
                                 }
                             }
                             return idx;
@@ -29014,18 +28469,13 @@ var nts;
                         showHiddenRows: function () {
                             v.demoRows();
                         },
-                        setErrors: function (errs, s, lockNotSet) {
+                        setErrors: function (errs, s) {
                             if (!errs)
                                 return;
                             var z = errs.length - 1;
                             s = !_.isNil(s) ? s : _currentSheet;
                             while (z >= 0) {
-                                var e = _.cloneDeep(errs[z]), i = void 0, pi = Math.floor(e.index / _pageSize), y = e.index - (_.isString(_currentPage) ? 0 : pi * _pageSize), pmaf = _mafollicle[_.isString(_currentPage) ? _currentPage : pi], maf = pmaf[s], data = (pmaf.dataSource || [])[y];
-                                if (data && lockNotSet
-                                    && _.find(((_cellStates[data[_pk]] || {})[e.columnKey] || [{ state: [] }])[0].state, function (st) { return st === color.Lock || st === color.Disable; })) {
-                                    z--;
-                                    continue;
-                                }
+                                var e = _.cloneDeep(errs[z]), i = void 0, pi = Math.floor(e.index / _pageSize), y = e.index - (_.isString(_currentPage) ? 0 : pi * _pageSize), maf = _mafollicle[_.isString(_currentPage) ? _currentPage : pi][s];
                                 if (maf && maf.desc) {
                                     i = maf.desc.fixedColIdxes[e.columnKey];
                                     if (_.isNil(i)) {
@@ -29094,7 +28544,7 @@ var nts;
                         removeInsertions: function () {
                             v.eliminRows(_.cloneDeep(v._encarRows).sort(function (a, b) { return b - a; }));
                         },
-                        validate: function (lock, check) {
+                        validate: function (lock) {
                             var errors = [];
                             _.forEach(_.keys(_mafollicle), function (k) {
                                 if (k === SheetDef)
@@ -29102,8 +28552,8 @@ var nts;
                                 _.forEach(_mafollicle[k].dataSource, function (data, i) {
                                     _.forEach(_cstifle(), function (c) {
                                         var validator = _validators[c.key];
-                                        if (!validator || _.find(_hiddenColumns, function (hidden) { return hidden === c.key; }) || (_.isFunction(check) && !check(data))
-                                            || (!lock && _.find(((_cellStates[data[_pk]] || {})[c.key] || [{ state: [] }])[0].state, function (st) { return st === color.Lock || st === color.Disable; })))
+                                        if (!validator || _.find(_hiddenColumns, function (hidden) { return hidden === c.key; })
+                                            || (!lock && _.find(((_cellStates[data[_pk]] || {})[c.key] || [{ state: [] }])[0].state, function (st) { return st === color.Lock; })))
                                             return;
                                         var res = validator.probe(data[c.key], data[_pk]);
                                         if (res && !res.isValid) {
@@ -29596,10 +29046,6 @@ var nts;
                                 || $tCell.classList.contains(color.Lock)
                                 || $tCell.classList.contains(dkn.LABEL_CLS))
                                 return;
-                            if (_.keys(ssk.KeyPressed).length > 0) {
-                                evt.preventDefault();
-                                return;
-                            }
                             var coord = ti.getCellCoord($tCell);
                             var control = dkn.controlType[coord.columnKey];
                             var cEditor = _mEditor;
@@ -29629,12 +29075,6 @@ var nts;
                                 setTimeout(function () {
                                     $input.select();
                                 }, 0);
-                                if ($tCell.classList.contains(v.ALIGN_RIGHT)) {
-                                    $input.classList.remove(v.ALIGN_LEFT);
-                                }
-                                else {
-                                    $input.classList.add(v.ALIGN_LEFT);
-                                }
                                 var coord_3 = ti.getCellCoord($tCell);
                                 $input.style.imeMode = "inactive";
                                 if (coord_3) {
@@ -29645,7 +29085,7 @@ var nts;
                                 }
                             }
                             else if (control.type === dkn.COMBOBOX && !$tCell.querySelector(".mcombo-wrapper")) {
-                                endEdit($grid, true);
+                                endEdit($grid);
                                 $tCell.textContent = "";
                                 $tCell.classList.add(dkn.CONTROL_CLS);
                                 var stt = void 0, panel = void 0, comboList = void 0, itemHolder = void 0, height = void 0;
@@ -29666,46 +29106,40 @@ var nts;
                                     }
                                 }
                                 var $combo = control.my.querySelector("." + dkn.CBX_CLS);
-                                var $comboValue_2 = control.my.querySelector(".mcombo-value");
+                                var $comboValue_1 = control.my.querySelector(".mcombo-value");
                                 var items = control.dropdown.querySelectorAll(".mcombo-listitem");
-                                var selected_3, code_2 = $.data($tCell, lo.CBX_SELECTED_TD);
+                                var selected_2, code_1 = $.data($tCell, lo.CBX_SELECTED_TD);
                                 _.forEach(items, function (i) {
                                     var value = $.data(i, lo.CBX_ITEM_VALUE);
                                     if (i.classList.contains("selecteditem")) {
                                         i.classList.remove("selecteditem");
                                     }
-                                    if (code_2 === value) {
+                                    if (code_1 === value) {
                                         var $item = i.querySelector(".mcombo-item");
                                         if ($item) {
-                                            $comboValue_2.innerHTML = "";
-                                            $comboValue_2.appendChild($item.cloneNode(true));
+                                            $comboValue_1.innerHTML = "";
+                                            $comboValue_1.appendChild($item.cloneNode(true));
                                             i.classList.add("selecteditem");
-                                            selected_3 = true;
+                                            selected_2 = true;
                                         }
                                     }
                                 });
-                                if (!selected_3) {
-                                    $comboValue_2.innerHTML = "";
+                                if (!selected_2) {
+                                    $comboValue_1.innerHTML = "";
                                     var empty = _prtDiv.cloneNode(true);
                                     empty.style.display = "inline-block";
-                                    $comboValue_2.appendChild(empty);
+                                    $comboValue_1.appendChild(empty);
                                 }
                                 $tCell.appendChild(control.my);
-                                $.data(control.my, lo.CBX_SELECTED, code_2);
+                                $.data(control.my, lo.CBX_SELECTED, code_1);
                                 dkn.openDD(control.dropdown, control.my);
                                 $combo.classList.add(dkn.CBX_ACTIVE_CLS);
                                 cType.type = dkn.COMBOBOX;
                             }
                             else if (control.type === dkn.DATE_PICKER && !$tCell.querySelector("input")) {
-                                endEdit($grid, true);
+                                endEdit($grid);
                                 $tCell.textContent = "";
                                 $tCell.classList.add(dkn.CONTROL_CLS);
-                                if ($tCell.classList.contains(v.ALIGN_RIGHT)) {
-                                    $input.classList.remove(v.ALIGN_LEFT);
-                                }
-                                else {
-                                    $input.classList.add(v.ALIGN_LEFT);
-                                }
                                 $tCell.appendChild($editor);
                                 var data = $.data($tCell, v.DATA), mDate = moment(data, control.format, true), mDisplayDate = mDate.isValid() ? mDate : moment();
                                 $input.value = !_.isNil(data) && data !== "" ? (mDate.isValid() ? mDate.format(control.format[0]) : mDate._i) : "";
@@ -29740,10 +29174,6 @@ var nts;
                         document.addXEventListener(ssk.MOUSE_DOWN, function (evt) {
                             if (!evt.target)
                                 return;
-                            if (_.keys(ssk.KeyPressed).length > 0) {
-                                evt.preventDefault();
-                                return;
-                            }
                             if (!selector.is(evt.target, "input.medit")
                                 && !selector.is(evt.target, "div[class*='mcombo']")) {
                                 endEdit($grid, true);
@@ -29753,7 +29183,7 @@ var nts;
                             var $grid = evt.currentTarget, $tCell = evt.target;
                             if (!$grid)
                                 return;
-                            if (!ti.isEnterKey(evt) && !ti.isTabKey(evt) && !evt.ctrlKey
+                            if (!ti.isEnterKey(evt) && !ti.isTabKey(evt)
                                 && ((evt.keyCode >= 46 && evt.keyCode <= 111) || (evt.keyCode >= 160 && evt.keyCode <= 223))) {
                                 ssk.KeyPressed[evt.keyCode] = true;
                             }
@@ -29848,12 +29278,6 @@ var nts;
                                         $input.value = !_.isNil(data) ? data : "";
                                         $input.select();
                                     }
-                                    if ($tCell.classList.contains(v.ALIGN_RIGHT)) {
-                                        $input.classList.remove(v.ALIGN_LEFT);
-                                    }
-                                    else {
-                                        $input.classList.add(v.ALIGN_LEFT);
-                                    }
                                     cType.type = dkn.TEXTBOX;
                                     var coord_4 = ti.getCellCoord($tCell);
                                     $input.style.imeMode = "inactive";
@@ -29887,7 +29311,7 @@ var nts;
                             delete ssk.KeyPressed[evt.keyCode];
                         });
                         document.addXEventListener(ssk.KEY_DOWN, function (evt) {
-                            if (!ti.isEnterKey(evt) && !ti.isTabKey(evt) && !evt.ctrlKey
+                            if (!ti.isEnterKey(evt) && !ti.isTabKey(evt)
                                 && ((evt.keyCode >= 46 && evt.keyCode <= 111) || (evt.keyCode >= 160 && evt.keyCode <= 223))) {
                                 ssk.KeyPressed[evt.keyCode] = true;
                             }
@@ -30079,7 +29503,7 @@ var nts;
                             return;
                         var column = _columnsMap[coord.columnKey];
                         if (column && _.toLower(column[0].dataType) === "number") {
-                            cellValue = (_.isNil(cellValue) || cellValue === "") ? null : parseFloat(cellValue);
+                            cellValue = cellValue === "" ? null : parseFloat(cellValue);
                         }
                         if (reset) {
                             origDs[coord.rowIdx][coord.columnKey] = cellValue;
@@ -30137,7 +29561,7 @@ var nts;
                             }
                             else {
                                 if (cellValue === origVal || ((_.isNil(cellValue) || cellValue === "" || (cellValue instanceof moment && cellValue._i === "")) && ((origVal instanceof moment && origVal._i === "") || _.isNil(origVal) || origVal === ""))
-                                    || (cellValue instanceof Date && origVal instanceof Date && !_.isNil(cellValue) && !_.isNil(origVal) && cellValue.getTime() === origVal.getTime())) {
+                                    || (cellValue instanceof Date && !_.isNil(cellValue) && !_.isNil(origVal) && cellValue.getTime() === origVal.getTime())) {
                                     $cell = lch.cellAt($grid, coord.rowIdx, coord.columnKey, desc);
                                     if (!$cell) {
                                         if (!_.isNil(dirties[id]) && !_.isNil(dirties[id][coord.columnKey])) {
@@ -30284,9 +29708,6 @@ var nts;
                                         if (!maf) {
                                             _mafollicle[currentPage][s] = { errors: [] };
                                             maf = _mafollicle[currentPage][s];
-                                        }
-                                        else if (_.isNil(maf.errors)) {
-                                            maf.errors = [];
                                         }
                                         khl.addCellError(errDetail, maf);
                                     }
@@ -30516,7 +29937,7 @@ var nts;
                                     currencyOpts.decimallength = _.isNil(constraint.decimalLength) ? 0 : constraint.decimalLength;
                                     currencyOpts.currencyformat = constraint.currencyFormat ? constraint.currencyFormat : "JPY";
                                     var groupSeparator = constraint.groupSeparator || ",";
-                                    var rawValue = uk.text.replaceAll(String(value), groupSeparator, "");
+                                    var rawValue = uk.text.replaceAll(value, groupSeparator, "");
                                     var formatter = new uk.text.NumberFormatter({ option: currencyOpts });
                                     var numVal = Number(rawValue);
                                     if (!isNaN(numVal))
@@ -30601,10 +30022,8 @@ var nts;
                         }
                         if (_mEditor && _mEditor.type === dkn.TEXTBOX) {
                             var $editor = dkn.controlType[dkn.TEXTBOX].my;
-                            var $input_1 = $editor.querySelector("input.medit");
-                            $input_1.value = data;
-                            evt.preventDefault();
-                            setTimeout(function () { return $input_1.focus(); });
+                            var $input = $editor.querySelector("input.medit");
+                            $input.value = data;
                             return;
                         }
                         if (su.afterCollertar)
@@ -30679,10 +30098,6 @@ var nts;
                                 if (!result.isValid) {
                                     khl.set(cell, result.errorMessage);
                                 }
-                                if (khl._infobulle) {
-                                    ti.remove(khl._infobulle);
-                                    dkn.closeDD(khl._infobulle, true);
-                                }
                             }
                             formatted = su.format(col[0], data);
                             target.innerHTML = formatted;
@@ -30740,10 +30155,6 @@ var nts;
                                     if (!result.isValid) {
                                         khl.set(cell, result.errorMessage);
                                     }
-                                    if (khl._infobulle) {
-                                        ti.remove(khl._infobulle);
-                                        dkn.closeDD(khl._infobulle, true);
-                                    }
                                 }
                                 formatted = su.format(pointCol[0], c);
                                 e.innerHTML = formatted;
@@ -30779,7 +30190,7 @@ var nts;
                                 struct_1 = ds[parseFloat(keys[0])][key];
                             }
                             if (coupe) {
-                                if (cell && !cell.classList.contains(color.Disable) && !cell.classList.contains(color.Lock)) {
+                                if (cell) {
                                     coord = ti.getCellCoord(cell);
                                     cell.innerHTML = "";
                                     sess.o.push({ coord: coord, value: _dataSource[coord.rowIdx][coord.columnKey] });
@@ -31274,12 +30685,12 @@ var nts;
                                 rows: [],
                                 rowElements: []
                             };
-                            var dirties_1 = {}, selected_4 = {};
+                            var dirties_1 = {}, selected_3 = {};
                             if (_selected) {
                                 _.forEach(_.keys(_selected), function (r) {
                                     var selectArr = _.filter(_selected[r], function (c) { return _.some(_fixedColumns, function (fc) { return fc.key === c; }); });
                                     if (selectArr.length > 0) {
-                                        selected_4[r] = selectArr;
+                                        selected_3[r] = selectArr;
                                     }
                                 });
                             }
@@ -31296,7 +30707,7 @@ var nts;
                                     }
                                 });
                             }
-                            _mafollicle[_currentPage][_currentSheet] = { desc: desc, errors: [], dirties: dirties_1, zeroHidden: _zeroHidden, selected: selected_4, histoire: [] };
+                            _mafollicle[_currentPage][_currentSheet] = { desc: desc, errors: [], dirties: dirties_1, zeroHidden: _zeroHidden, selected: selected_3, histoire: [] };
                         }
                         else if (!_vessel().desc) {
                             var desc = {
@@ -31307,12 +30718,12 @@ var nts;
                                 rows: [],
                                 rowElements: []
                             };
-                            var selected_5 = {};
+                            var selected_4 = {};
                             if (_selected) {
                                 _.forEach(_.keys(_selected), function (r) {
                                     var selectArr = _.filter(_selected[r], function (c) { return _.some(_fixedColumns, function (fc) { return fc.key === c; }); });
                                     if (selectArr.length > 0) {
-                                        selected_5[r] = selectArr;
+                                        selected_4[r] = selectArr;
                                     }
                                 });
                             }
@@ -31330,7 +30741,7 @@ var nts;
                                 });
                             }
                             _vessel().desc = desc;
-                            _vessel().selected = selected_5;
+                            _vessel().selected = selected_4;
                             _vessel().zeroHidden = _zeroHidden;
                             if (!_vessel().errors)
                                 _vessel().errors = [];
@@ -31607,14 +31018,14 @@ var nts;
                                     if (data instanceof Date) {
                                         data = data.toLocaleDateString("ja-JP", { year: "numeric", month: "2-digit", day: "2-digit" });
                                     }
-                                    var tDate = moment.utc($editor.value, ctrl.format, true);
-                                    if (_.isFunction(ctrl.inputProcess)) {
-                                        ctrl.inputProcess(tDate.isValid() ? tDate.format(ctrl.format[0]) : $editor.value, _dataSource[coord.rowIdx]);
+                                    var tDate = moment.utc($editor.value, ctrl.format).format(ctrl.format[0]);
+                                    if ( /*data !== tDate &&*/!d.classList.contains(khl.ERROR_CLS) && _.isFunction(ctrl.inputProcess)) {
+                                        ctrl.inputProcess(tDate, _dataSource[coord.rowIdx]);
                                     }
                                     su.endEdit(_$grid[0]);
                                 }
                             }
-                            else if (!evt.ctrlKey && ((evt.keyCode >= 46 && evt.keyCode <= 111) || (evt.keyCode >= 160 && evt.keyCode <= 223))) {
+                            else if ((evt.keyCode >= 46 && evt.keyCode <= 111) || (evt.keyCode >= 160 && evt.keyCode <= 223)) {
                                 ssk.KeyPressed[evt.keyCode] = true;
                             }
                             if (ti.isArrowLeft(evt) || ti.isArrowRight(evt) || ti.isArrowUp(evt) || ti.isArrowDown(evt)) {
@@ -31634,10 +31045,6 @@ var nts;
                                 if (result && !result.isValid) {
                                     khl.set(cell, result.errorMessage);
                                     return;
-                                }
-                                if (khl._infobulle) {
-                                    ti.remove(khl._infobulle);
-                                    dkn.closeDD(khl._infobulle, true);
                                 }
                                 return $td;
                             }
@@ -31920,18 +31327,14 @@ var nts;
                             var list = $dd.querySelector(".mcombo-list");
                             var items = list.querySelectorAll("li");
                             if (items) {
-                                var top_1 = 0, selected_6;
+                                var top_1 = 0;
                                 _.forEach(items, function (li) {
-                                    if (li.classList.contains("selecteditem")) {
-                                        selected_6 = true;
+                                    if (li.classList.contains("selecteditem"))
                                         return false;
-                                    }
                                     top_1 += 26;
                                 });
-                                if (top_1 >= 0 && selected_6)
+                                if (top_1 >= 0)
                                     list.scrollTop = top_1;
-                                else
-                                    list.scrollTop = 0;
                             }
                         }
                         if (!f) {
@@ -31988,8 +31391,7 @@ var nts;
                         if (dkn._ramass[format]) {
                             if (!data.initValue || data.initValue === "")
                                 return "";
-                            var momentObj = moment(data.initValue, formats, true);
-                            return momentObj.isValid() ? momentObj.format(formats[0]) : data.initValue;
+                            return moment(data.initValue, formats, true).format(formats[0]);
                         }
                         dkn._ramass[format] = _prtDiv.cloneNode();
                         dkn._ramass[format].classList.add("mdatepicker-container");
@@ -32285,8 +31687,7 @@ var nts;
                             $.data(dkn._ramass[format], "date", mDisplayDate);
                         });
                         if (data.initValue && data.initValue !== "") {
-                            var momentObj = moment(data.initValue, formats, true);
-                            return momentObj.isValid() ? momentObj.format(formats[0]) : data.initValue;
+                            return moment(data.initValue, formats, true).format(formats[0]);
                         }
                         return "";
                     }
@@ -32372,7 +31773,7 @@ var nts;
                         var selected = _prtDiv.cloneNode(true);
                         selected.classList.add("mgrid-refer-text");
                         if (_.isNil(text) && !_.isNil(data.initValue)) {
-                            text = _.isNil(data.controlDef.notFound) ? data.initValue : data.controlDef.notFound;
+                            text = data.initValue + " " + (data.controlDef.notFound || "");
                         }
                         selected.textContent = text || "";
                         if (data.controlDef.labelPosition === "before") {
@@ -32440,33 +31841,22 @@ var nts;
                         var $span = document.createElement("span");
                         $span.className = data.controlDef.source;
                         $container.appendChild($span);
-                        var clickHandle;
                         if (data.controlDef.source === "hidden-button") {
-                            clickHandle = function (evt) {
+                            $span.addXEventListener(ssk.CLICK_EVT, function (evt) {
                                 var r = ti.closest($span, "tr");
-                                if (r) {
-                                    var view = parseFloat($.data(r, lo.VIEW));
-                                    v.voilerRow(view);
-                                    if (_.isFunction(data.controlDef.click)) {
-                                        data.controlDef.click(view);
-                                    }
-                                }
-                            };
+                                if (r)
+                                    v.voilerRow(parseFloat($.data(r, lo.VIEW)));
+                            });
+                            $span.style.cursor = "pointer";
                         }
                         else if (_.includes(data.controlDef.source, "plus-button")) {
-                            clickHandle = function (evt) {
+                            $span.addXEventListener(ssk.CLICK_EVT, function (evt) {
                                 var r = ti.closest($span, "tr");
                                 var noTd = r.querySelector("td." + v.STT_CLS);
                                 if (r)
                                     v.encarterRow(parseFloat($.data(r, lo.VIEW)), data.controlDef.copy, data.controlDef.cssClass, noTd && noTd.innerHTML && parseInt(noTd.innerHTML) + 1);
-                            };
-                        }
-                        if (clickHandle) {
-                            if (data.enable) {
-                                $span.addXEventListener(ssk.CLICK_EVT, clickHandle);
-                                $span.style.cursor = "pointer";
-                            }
-                            $.data($span, ssk.CLICK_EVT, clickHandle);
+                            });
+                            $span.style.cursor = "pointer";
                         }
                         if (!dkn.controlType[data.columnKey]) {
                             dkn.controlType[data.columnKey] = dkn.IMAGE;
@@ -32493,8 +31883,7 @@ var nts;
                         var isSelecting;
                         $grid.addXEventListener(ssk.MOUSE_DOWN, function (evt) {
                             var $target = evt.target;
-                            if (!selector.is($target, ".mcell")
-                                || _.chain(ssk.KeyPressed).keys().filter(function (k) { return k !== "16" && k !== "17"; }).value().length > 0)
+                            if (!selector.is($target, ".mcell"))
                                 return;
                             isSelecting = true;
                             window.addXEventListener(ssk.MOUSE_UP + ".block", function (evt) {
@@ -33319,18 +32708,10 @@ var nts;
                         var removed = _.remove(errors, function (e) {
                             return rowId === e.rowId && key === e.columnKey;
                         });
-                        if (removed.length > 0) {
-                            if (errors.length === 0) {
-                                var resolved = _$grid.mGrid("option", "errResolved");
-                                if (_.isFunction(resolved)) {
-                                    resolved();
-                                }
-                            }
-                            else {
-                                var dismiss = _$grid.mGrid("option", "errDismissed");
-                                if (_.isFunction(dismiss)) {
-                                    dismiss();
-                                }
+                        if (removed.length > 0 && errors.length === 0) {
+                            var resolved = _$grid.mGrid("option", "errResolved");
+                            if (_.isFunction(resolved)) {
+                                resolved();
                             }
                         }
                     }
@@ -33338,7 +32719,7 @@ var nts;
                     /**
                      * Set.
                      */
-                    function set(cell, message, setType, rendered) {
+                    function set(cell, message, setType) {
                         if (!cell || ((!setType || setType === 1) && (!cell.element || any(cell))))
                             return;
                         if (!setType || setType === 1) {
@@ -33360,10 +32741,10 @@ var nts;
                             if (_.isNil(cell.index)) {
                                 var index = _.findIndex(_dataSource, function (d) { return d[_pk] === cell.id; });
                                 if (index !== -1)
-                                    notice(cell.id, cell.columnKey, _dataSource[index], rendered);
+                                    notice(cell.id, cell.columnKey, _dataSource[index]);
                             }
                             else {
-                                notice(cell.id, cell.columnKey, _dataSource[cell.index], rendered);
+                                notice(cell.id, cell.columnKey, _dataSource[cell.index]);
                             }
                         }
                     }
@@ -33802,23 +33183,6 @@ var nts;
                         return cloneArr;
                     }
                     ti.cloneArray = cloneArray;
-                    function forEach(arr, loop) {
-                        if (_.isNil(arr))
-                            return;
-                        if (_.isObject(arr) && !_.isArray(arr)) {
-                            var keys = _.keys(arr);
-                            for (var i = 0; i < keys.length; i++) {
-                                if (loop(arr[keys[i]], keys[i]) === false)
-                                    break;
-                            }
-                            return;
-                        }
-                        for (var i = 0; i < arr.length; i++) {
-                            if (loop(arr[i], i) === false)
-                                break;
-                        }
-                    }
-                    ti.forEach = forEach;
                     function isZero(value, name) {
                         var col = _secColumn[name];
                         if (col && ((col.constraint && col.constraint.cDisplayType === "TimeWithDay")
@@ -34009,9 +33373,8 @@ var nts;
                      * Remove.
                      */
                     function remove(node) {
-                        if (isIE()) {
-                            if (node && node.parentNode)
-                                node.parentNode.removeChild(node);
+                        if (isIE() && node && node.parentNode) {
+                            node.parentNode.removeChild(node);
                             return;
                         }
                         node.remove();
@@ -34439,7 +33802,7 @@ var nts;
                             });
                         }.bind(self);
                     },
-                    template: "<div class=\"assy-hist\" data-bind=\"let: { text: nts.uk.resource.getText }, style: { height: height(), width: width() }\">\n            <div class=\"as-area hist-label\" data-bind=\"ntsFormLabel: {}, text: text('JAP0020_A1_1'), style: { paddingRight: labelDistance() }\"></div>\n            <div class=\"as-area hist-list\" id=\"" + nts.uk.util.randomId() + "\" tabindex=\"3\" \n                data-bind=\"ntsListBox: {\n                options: histList,\n                optionsValue: 'histId',\n                optionsText: 'displayText',\n                multiple: false,\n                value: selectedHistId,\n                enable: true,\n                rows: 5,\n                columns: [\n                    { key: 'displayText', length: 15 }\n                ]}\">\n            </div>\n            <div class=\"as-area\">\n                <div class=\"del-chk\" tabindex=\"6\" data-bind=\"ntsCheckBox: { checked: delChecked, enable: delEnable() },\n                    style: { visibility: delVisible() ? 'visible' : 'hidden' }\">\n                </div>\n            </div>\n            <div class=\"as-area hist-btn\" data-bind=\"template: { afterRender: afterRender }\">\n                <button class=\"add\" tabindex=\"4\"\n                    data-bind=\"click: openAddHistDialog,\n                    enable: histList().length == 0 || (screenMode() == 1 &amp;&amp; isLatestHistSelected), text: text('JAP0020_A1_3')\"></button>\n                <br/>\n                <button class=\"update\" tabindex=\"5\"\n                    data-bind=\"click: openUpdHistDialog,\n                    enable: histList().length > 0 &amp;&amp; screenMode() == 1 &amp;&amp; isLatestHistSelected, text: text('JAP0020_A1_4')\"></button>\n                <br/>\n                <button tabindex=\"7\" class=\"danger delete\"\n                    data-bind=\"click: deleteHist,\n                    enable: !delVisible() || (histList().length > 0 &amp;&amp; delEnable() &amp;&amp; delChecked()), text: text('JAP0020_A1_6')\"></button>\n            </div>\n        </div>"
+                    template: "<div class=\"assy-hist\" data-bind=\"let: { text: nts.uk.resource.getText }, style: { height: height(), width: width() }\">\n            <div class=\"as-area hist-label\" data-bind=\"ntsFormLabel: {}, text: text('JAP0020_A1_1'), style: { paddingRight: labelDistance() }\"></div>\n            <div class=\"as-area hist-list\" id=\"" + nts.uk.util.randomId() + "\" tabindex=\"3\" \n                data-bind=\"ntsListBox: {\n                options: histList,\n                optionsValue: 'histId',\n                optionsText: 'displayText',\n                multiple: false,\n                value: selectedHistId,\n                enable: true,\n                rows: 5,\n                columns: [\n                    { key: 'displayText', length: 15 }\n                ]}\">\n            </div>\n            <div class=\"as-area\">\n                <div class=\"del-chk\" tabindex=\"6\" data-bind=\"ntsCheckBox: { checked: delChecked, enable: delEnable() },\n                    style: { visibility: delVisible() ? 'visible' : 'hidden' }\">\n                </div>\n            </div>\n            <div class=\"as-area hist-btn\" data-bind=\"template: { afterRender: afterRender }\">\n                <button class=\"add\" tabindex=\"4\"\n                    data-bind=\"click: openAddHistDialog,\n                    enable: screenMode() == 1 &amp;&amp; isLatestHistSelected, text: text('JAP0020_A1_3')\"></button>\n                <br/>\n                <button class=\"update\" tabindex=\"5\"\n                    data-bind=\"click: openUpdHistDialog,\n                    enable: histList().length > 0 &amp;&amp; screenMode() == 1 &amp;&amp; isLatestHistSelected, text: text('JAP0020_A1_4')\"></button>\n                <br/>\n                <button tabindex=\"7\" class=\"danger delete\"\n                    data-bind=\"click: deleteHist,\n                    enable: !delVisible() || (histList().length > 0 &amp;&amp; delEnable() &amp;&amp; delChecked()), text: text('JAP0020_A1_6')\"></button>\n            </div>\n        </div>"
                 });
                 function observableOrDefault(val, def) {
                     return ko.isObservable(val) ? val : ko.observable(_.isNil(val) ? def : val);
@@ -35601,9 +34964,6 @@ var nts;
                     }
                     function scrollToSelect($grid) {
                         var row = null;
-                        if ($grid.data('igGrid') === undefined) {
-                            return;
-                        }
                         var selectedRows = $grid.igGrid("selectedRows");
                         if (selectedRows) {
                             row = selectedRows[0];
@@ -35623,15 +34983,9 @@ var nts;
                     function setupScrollWhenBinding($grid) {
                         var gridId = "#" + $grid.attr("id");
                         $(document).delegate(gridId, "iggriddatarendered", function (evt, ui) {
-                            if (isCheckedAll($grid)) {
-                                return;
-                            }
                             var oldSelected = getSelectRow($grid);
                             if (!nts.uk.util.isNullOrEmpty(oldSelected)) {
                                 _.defer(function () {
-                                    if (isCheckedAll($grid)) {
-                                        return;
-                                    }
                                     var selected = getSelectRow($grid);
                                     if (!nts.uk.util.isNullOrEmpty(selected)) {
                                         selected = oldSelected;
@@ -35697,23 +35051,7 @@ var nts;
                         };
                     }
                     function setSelected($grid, selectedId) {
-                        var baseID = _.map($grid.igGrid("option").dataSource, $grid.igGrid("option", "primaryKey"));
-                        if (_.isEmpty(baseID)) {
-                            return;
-                        }
-                        if (baseID.length >= 500) {
-                            var oldSelectedID = _.map(getSelected($grid), "id"), shouldRemove = _.difference(oldSelectedID, selectedId), shouldSelect = _.difference(selectedId, oldSelectedID);
-                            /** When data source large (data source > 500 (?)):
-                                    if new value for select = half of data source
-                                        or removed selected value = 1/3 of data source,
-                                        should deselect all and loop for select,
-                                    else if deselect old values that not selected and select new selected only*/
-                            if (shouldSelect.length < baseID.length / 2 || shouldRemove.length < baseID.length / 3) {
-                                shouldRemove.forEach(function (id) { return $grid.igGridSelection("deselectRowById", id); });
-                                shouldSelect.forEach(function (id) { return $grid.igGridSelection('selectRowById', id); });
-                                return;
-                            }
-                        }
+                        deselectAll($grid);
                         if ($grid.igGridSelection('option', 'multipleSelection')) {
                             // for performance when select all
                             var baseID_1 = _.map($grid.igGrid("option").dataSource, $grid.igGrid("option", "primaryKey"));
@@ -35732,7 +35070,6 @@ var nts;
                             }
                         }
                         else {
-                            deselectAll($grid);
                             $grid.igGridSelection('selectRowById', selectedId);
                         }
                     }
@@ -35840,7 +35177,7 @@ var nts;
                                 dragSelectRange = [];
                                 $(window).unbind('pointermove.NtsGridListDragging');
                                 if ($grid.data("selectUpdated") === true) {
-                                    $grid.triggerHandler('selectionchanged', [true]);
+                                    $grid.triggerHandler('selectionchanged');
                                 }
                                 //$grid.triggerHandler('selectionchanged');  
                                 clearInterval(timerAutoScroll);
@@ -35881,7 +35218,7 @@ var nts;
                         $grid.bind('iggridselectioncellselectionchanging', function () {
                         });
                         $grid.bind('iggridselectionrowselectionchanged', function () {
-                            $grid.triggerHandler('selectionchanged', [true]);
+                            $grid.triggerHandler('selectionchanged');
                         });
                         //            $grid.on('mouseup', () => {
                         //                $grid.triggerHandler('selectionchanged');
@@ -35925,7 +35262,7 @@ var nts;
                             ROW_HEIGHT = 24;
                             // Internet Explorer 6-11
                             var _document = document;
-                            var isIE = false || !!_document.documentMode;
+                            var isIE = /*@cc_on!@*/ false || !!_document.documentMode;
                             // Edge 20+
                             var _window = window;
                             var isEdge = !isIE && !!_window.StyleMedia;
@@ -36092,7 +35429,7 @@ var nts;
                                     _.forEach(_.intersection(disables, value), function (iv) {
                                         $grid.igGridSelection("selectRowById", iv);
                                     });
-                                    $grid.trigger("selectionchanged", [true]);
+                                    $grid.trigger("selectionchanged");
                                 }, 0);
                             }
                             return true;
@@ -36107,11 +35444,11 @@ var nts;
                         };
                         $grid.bind('selectionchanged', function () {
                             if (options.multiple) {
-                                var selected_7 = $grid.ntsGridList('getSelected');
+                                var selected_5 = $grid.ntsGridList('getSelected');
                                 var disables_2 = $grid.data("selectionDisables");
                                 var disableIds_2 = [];
                                 if (disables_2) {
-                                    _.forEach(selected_7, function (s, i) {
+                                    _.forEach(selected_5, function (s, i) {
                                         _.forEach(disables_2, function (d) {
                                             if (d === s.id && uk.util.isNullOrUndefined(_.find(value, function (iv) { return iv === d; }))) {
                                                 $grid.igGridSelection("deselectRowById", d);
@@ -36121,16 +35458,16 @@ var nts;
                                         });
                                     });
                                     disableIds_2.sort(function (i1, i2) { return i2 - i1; }).forEach(function (d) {
-                                        selected_7.splice(d, 1);
+                                        selected_5.splice(d, 1);
                                     });
                                     var valueCount = _.intersection(disables_2, value).length;
                                     var ds = $grid.igGrid("option", "dataSource");
-                                    if (selected_7.length === ds.length - disables_2.length + valueCount) {
+                                    if (selected_5.length === ds.length - disables_2.length + valueCount) {
                                         checkAll();
                                     }
                                 }
-                                if (!nts.uk.util.isNullOrEmpty(selected_7)) {
-                                    var newValue = _.map(selected_7, function (s) { return s.id; });
+                                if (!nts.uk.util.isNullOrEmpty(selected_5)) {
+                                    var newValue = _.map(selected_5, function (s) { return s.id; });
                                     newValue = _.union(_.intersection(disables_2, value), newValue);
                                     setValue($grid, newValue);
                                 }
@@ -39197,7 +38534,7 @@ var nts;
                             }
                             comboBox.getCopiedValue = getCopiedValue;
                         })(comboBox = ntsControls.comboBox || (ntsControls.comboBox = {}));
-                    })(ntsControls = ntsGrid.ntsControls || (ntsGrid.ntsControls = {}));
+                    })(ntsControls || (ntsControls = {}));
                     var specialColumn;
                     (function (specialColumn_1) {
                         specialColumn_1.CODE = "code";
@@ -39215,9 +38552,9 @@ var nts;
                                 var index = _.findIndex(flatCols, function (o) {
                                     return o.key === column.key;
                                 });
-                                var b_1;
-                                if (index + 1 < flatCols.length && (b_1 = flatCols[index + 1]) !== undefined) {
-                                    bounceCombos[b_1.key] = column.key;
+                                var b = void 0;
+                                if (index + 1 < flatCols.length && (b = flatCols[index + 1]) !== undefined) {
+                                    bounceCombos[b.key] = column.key;
                                 }
                             }
                         }
@@ -40000,8 +39337,8 @@ var nts;
                                             .validate(value);
                                     case "Currency":
                                         var opts = new ui.option.CurrencyEditorOption();
-                                        opts.grouplength = !_.isNil(this.options.groupLength) ? this.options.groupLength : 3;
-                                        opts.decimallength = !_.isNil(this.options.decimalLength) ? this.options.decimalLength : 2;
+                                        opts.grouplength = this.options.groupLength | 3;
+                                        opts.decimallength = this.options.decimalLength | 2;
                                         opts.currencyformat = this.options.currencyFormat ? this.options.currencyFormat : "JPY";
                                         opts.required = this.options.required;
                                         opts.min = this.options.min;
@@ -40590,8 +39927,8 @@ var nts;
                                             }
                                             else if (valueType === "Currency") {
                                                 var currencyOpts = new ui.option.CurrencyEditorOption();
-                                                currencyOpts.grouplength = !_.isNil(constraint.groupLength) ? constraint.groupLength : 3;
-                                                currencyOpts.decimallength = !_.isNil(constraint.decimalLength) ? constraint.decimalLength : 2;
+                                                currencyOpts.grouplength = constraint.groupLength | 3;
+                                                currencyOpts.decimallength = constraint.decimalLength | 2;
                                                 currencyOpts.currencyformat = constraint.currencyFormat ? constraint.currencyFormat : "JPY";
                                                 var groupSeparator = constraint.groupSeparator || ",";
                                                 var rawValue = uk.text.replaceAll(value, groupSeparator, "");
@@ -41340,7 +40677,7 @@ var nts;
                             if (!loader) {
                                 $grid.data(internal.LOADER, new Loader(demandLoadFt.allKeysPath, demandLoadFt.pageRecordsPath));
                             }
-                            else if (loader.keys) {
+                            else if (loader.keys) { // Switch sheet
                                 pageSize = setting.pageSize;
                                 return false;
                             }
@@ -42103,7 +41440,7 @@ var nts;
                             $(window).on("mousedown.popup", function (e) {
                                 if (!$(e.target).is(control) // Target isn't Popup
                                     && control.has(e.target).length === 0 // Target isn't Popup's children
-                                    && !$(e.target).is(setting.trigger)) {
+                                    && !$(e.target).is(setting.trigger)) { // Target isn't Trigger element
                                     hide(control);
                                 }
                             });
@@ -42188,19 +41525,7 @@ var nts;
                         if (virtualization) {
                             $grid.on("selectChange", function () {
                                 var row = null;
-                                if ($grid.igGridSelection('option', 'multipleSelection')) {
-                                    var chk = $grid.closest('.ui-iggrid').find(".ui-iggrid-rowselector-header").find("span[data-role='checkbox']");
-                                    if (chk[0].getAttribute("data-chk") == "on") {
-                                        return;
-                                    }
-                                }
                                 var selectedRows = $grid.igGrid("selectedRows");
-                                var keyProperty = $grid.igGrid("option", "primaryKey");
-                                var sourceKeys = _.map($grid.igGrid("option", "dataSource"), function (o) { return o[keyProperty]; });
-                                var selectedKeys = _.map(selectedRows, function (o) { return o["id"]; });
-                                if (_.isEqual(_.sortBy(_.uniq(sourceKeys)), _.sortBy(_.uniq(selectedKeys)))) {
-                                    return;
-                                }
                                 if (selectedRows) {
                                     row = selectedRows[0];
                                 }
@@ -42215,19 +41540,7 @@ var nts;
                         else {
                             $grid.on("selectChange", function () {
                                 var row = null;
-                                if ($grid.igGridSelection('option', 'multipleSelection')) {
-                                    var chk = $grid.closest('.ui-iggrid').find(".ui-iggrid-rowselector-header").find("span[data-role='checkbox']");
-                                    if (chk[0].getAttribute("data-chk") == "on") {
-                                        return;
-                                    }
-                                }
                                 var selectedRows = $grid.igGrid("selectedRows");
-                                var keyProperty = $grid.igGrid("option", "primaryKey");
-                                var sourceKeys = _.map($grid.igGrid("option", "dataSource"), function (o) { return o[keyProperty]; });
-                                var selectedKeys = _.map(selectedRows, function (o) { return o["id"]; });
-                                if (_.isEqual(_.sortBy(_.uniq(sourceKeys)), _.sortBy(_.uniq(selectedKeys)))) {
-                                    return;
-                                }
                                 if (selectedRows) {
                                     row = selectedRows[0];
                                 }
@@ -42679,7 +41992,6 @@ var nts;
                         var virtualization = !uk.util.isNullOrUndefined(options.virtualization) ? options.virtualization : false;
                         var virtualizationMode = !uk.util.isNullOrUndefined(options.virtualizationMode) ? options.virtualizationMode : "";
                         var multiple = !_.isNil(options.multiple) ? options.multiple : false;
-                        var isFilter = ko.unwrap(!uk.util.isNullOrUndefined(options.filter) ? options.filter : false);
                         // Default.
                         var showCheckBox = options.showCheckBox !== undefined ? options.showCheckBox : true;
                         var enable = options.enable !== undefined ? options.enable : true;
@@ -42711,13 +42023,6 @@ var nts;
                                 //                    } else {
                                 //                        selectRows($treegrid, selectedRows.length <= 0 ? undefined : ui.row.id);
                                 //                    }
-                            }, rowSelectionChanging: function (evt, ui) {
-                                var disabledRows = $treegrid.data("rowDisabled");
-                                if (!_.isEmpty(disabledRows)) {
-                                    _.remove(ui.selectedRows, function (r) {
-                                        return disabledRows.includes(r.id);
-                                    });
-                                }
                             }
                         });
                         features.push({
@@ -42755,63 +42060,8 @@ var nts;
                             });
                             $treegrid.addClass("row-limited");
                         }
-                        if (isFilter) {
-                            features.push({ name: "Filtering", filterDelay: 100, filterDropDownAnimationDuration: 100,
-                                dataFiltered: function (evt, ui) {
-                                    var disabled = $treegrid.data("rowDisabled");
-                                    if (!_.isEmpty(disabled)) {
-                                        $treegrid.ntsTreeView("disableRows", disabled);
-                                    }
-                                }, dataFiltering: function (evt, ui) {
-                                    var disabled = $treegrid.data("rowDisabled"), treeId = $treegrid.attr("id"), currentCol = _.find(ui.owner.grid.options.columns, function (c) { return c.key === ui.columnKey; }), shouldRemove = $treegrid.data("customExpression");
-                                    _.remove(ui.newExpressions, function (ex) { return _.isNil(ex.expr); });
-                                    if (!_.isEmpty(shouldRemove)) {
-                                        _.remove(ui.newExpressions, function (ex) { return !_.isNil(_.find(shouldRemove, function (sr) { return _.isEqual(sr, ex); })); });
-                                        $treegrid.data("customExpression", []);
-                                    }
-                                    if (!_.isNil(currentCol) && currentCol.formatType === "checkbox" && !_.isNil(currentCol.filterOpts)) {
-                                        var currentExp = _.find(ui.newExpressions, function (exp) { return exp.fieldName === ui.columnKey; });
-                                        if (!_.isNil(currentExp)) {
-                                            var isFilterTrue = currentExp.expr.toLowerCase() === "check";
-                                            ui.owner._currentTarget.closest(".ui-iggrid-filtercell").find(".ui-iggrid-filtereditor")
-                                                .val(isFilterTrue ? currentCol.filterOpts.trueOpt : currentCol.filterOpts.falseOpt);
-                                        }
-                                    }
-                                    if (!_.isEmpty(disabled) && !_.isEmpty(ui.newExpressions)) {
-                                        var shouldRemove_2 = [];
-                                        _.forEach(disabled, function (rId) {
-                                            var newExp = { fieldName: optionsValue, cond: "doesNotEqual", expr: rId };
-                                            ui.newExpressions.push(newExp);
-                                            shouldRemove_2.push(newExp);
-                                        });
-                                        $treegrid.data("customExpression", shouldRemove_2);
-                                    }
-                                    _.forEach(ui.newExpressions, function (ex) {
-                                        $treegrid.data("filterIdx_" + ex.fieldName, 0);
-                                    });
-                                }, dropDownOpening: function (evt, ui) {
-                                    var colName = ui.dropDown.attr("aria-describedby"), currentCol = _.find(ui.owner.grid.options.columns, function (c) { return c.key === colName; });
-                                    if (!_.isNil(currentCol) && currentCol.formatType === "checkbox") {
-                                        var filterOpts = ui.dropDown.find(".ui-iggrid-filterddlistitemicons"), trueOpt = _.find(filterOpts, function (f) { return !_.isNil($(f).data("cond")) && $(f).data("cond").toString().toLowerCase().contains("check"); }), falseOpt = _.find(filterOpts, function (f) { return !_.isNil($(f).data("cond")) && $(f).data("cond").toString().toLowerCase().contains("noncheck"); }), norTrueOpt = _.find(filterOpts, function (f) { return !_.isNil($(f).data("cond")) && $(f).data("cond").toString().toLowerCase() === "true"; }), norFalseOpt = _.find(filterOpts, function (f) { return !_.isNil($(f).data("cond")) && $(f).data("cond").toString().toLowerCase() === ("false"); });
-                                        $(norTrueOpt).remove();
-                                        $(norFalseOpt).remove();
-                                        if (!_.isNil(currentCol.filterOpts)) {
-                                            $(trueOpt).find(".ui-iggrid-filterddlistitemcontainer").html(currentCol.filterOpts.trueOpt); //nts.uk.resource.getText("Enum_UseAtr_Use"));
-                                            $(falseOpt).find(".ui-iggrid-filterddlistitemcontainer").html(currentCol.filterOpts.falseOpt); //nts.uk.resource.getText("Enum_UseAtr_NotUse"));
-                                        }
-                                    }
-                                }, dropDownClosed: function (evt, ui) {
-                                    ui.owner._currentTarget.closest(".ui-iggrid-filtercell").find(".ui-iggrid-filterbutton").removeClass("ui-state-active ui-iggrid-filterbuttonactive");
-                                }, filterSummaryAlwaysVisible: false });
-                        }
                         $treegrid.data("expand", new ui_26.koExtentions.ExpandNodeHolder());
                         $treegrid.data("autoExpanding", false);
-                        var colSet = _.map(displayColumns, function (col) {
-                            return { columnKey: col.key, readOnly: true };
-                        });
-                        features.push({ name: "Updating", editMode: "cell", enableAddChild: false,
-                            enableAddRow: false, enableDeleteRow: false, columnSettings: colSet });
-                        var cols = $treegrid.ntsTreeView("formatColumns", displayColumns, features);
                         // Init ig grid.
                         $treegrid.igTreeGrid({
                             width: width,
@@ -42819,7 +42069,7 @@ var nts;
                             indentation: "12px",
                             dataSource: _.cloneDeep(dataSource),
                             primaryKey: optionsValue,
-                            columns: cols,
+                            columns: displayColumns,
                             childDataKey: optionsChild,
                             initialExpandDepth: nts.uk.util.isNullOrUndefined(initialExpandDepth) ? 10 : initialExpandDepth,
                             tabIndex: -1,
@@ -42831,10 +42081,6 @@ var nts;
                                     var holder = $treegrid.data("expand");
                                     holder.addNode(ui["dataRecord"][optionsValue]);
                                     $treegrid.data("expand", holder);
-                                }
-                                var disabledRows = $treegrid.data("rowDisabled");
-                                if (!_.isEmpty(disabledRows)) {
-                                    $treegrid.ntsTreeView("disableRows", disabledRows);
                                 }
                             }, rowCollapsed: function (evt, ui) {
                                 if (!$treegrid.data("autoExpanding")) {
@@ -42848,12 +42094,6 @@ var nts;
                                 //                    _.forEach(holder.nodes, function(node: any){
                                 //                        $treegrid.igTreeGrid("expandRow", node); 
                                 //                    });
-                                if (virtualization) {
-                                    var disabledRows = $treegrid.data("rowDisabled");
-                                    if (!_.isEmpty(disabledRows)) {
-                                        $treegrid.ntsTreeView("disableRows", disabledRows);
-                                    }
-                                }
                                 $treegrid.data("autoExpanding", false);
                             }
                         });
@@ -42876,35 +42116,14 @@ var nts;
                             //                    }
                             //                }
                         });
-                        $treegrid.bind('cellChanging', function () {
-                            $treegrid.data("notUpdate", true);
-                            var optionX = data.dataSource !== undefined ? data.dataSource : data.options;
-                            if (_.isFunction(optionX)) {
-                                optionX($treegrid.igTreeGrid("option", "dataSource"));
-                            }
-                        });
                         $treegrid.setupSearchScroll("igTreeGrid");
                         if (showCheckBox != true) {
                             $treegrid.closest(".nts-treegridview").addClass("no-selector");
-                            $treegrid.closest(".nts-treegridview").find("col[data-skip='true']").addClass("no-width");
                         }
                     };
                     function selectRows($treegrid, selectedValue) {
                         var dataSource = $treegrid.igTreeGrid('option', 'dataSource');
                         var multiple = !_.isNil(selectedValue) && selectedValue.constructor === Array;
-                        var disabledRows = $treegrid.data("rowDisabled");
-                        if (!_.isEmpty(disabledRows)) {
-                            if (multiple) {
-                                _.remove(selectedValue, function (r) {
-                                    return disabledRows.includes(r);
-                                });
-                            }
-                            else {
-                                if (!_.isNil(selectedValue) && disabledRows.includes(selectedValue)) {
-                                    selectedValue = null;
-                                }
-                            }
-                        }
                         if (nts.uk.util.isNullOrUndefined(selectedValue)) {
                             $treegrid.igTreeGridSelection("clearSelection");
                         }
@@ -42969,7 +42188,7 @@ var nts;
                         RATIO: 0.2,
                         MAX: 30
                     };
-                    $.fn.ntsTreeView = function (action, param, param2) {
+                    $.fn.ntsTreeView = function (action, param) {
                         var $tree = $(this);
                         switch (action) {
                             case 'getSelected':
@@ -42980,258 +42199,8 @@ var nts;
                                 return deselectAll($tree);
                             case 'virtualScrollTo':
                                 return virtualScroll($tree, param);
-                            case 'formatColumns':
-                                return formatColumns($tree, param, param2);
-                            case 'disableRows':
-                                return disableRows($tree, param);
-                            case 'enableRows':
-                                return enableRows($tree, param);
                         }
                     };
-                    function disableRows($tree, rowIds) {
-                        if (_.isNil(rowIds)) {
-                            return;
-                        }
-                        var disabled = $tree.data("rowDisabled"), columnSets = $tree.igTreeGrid("option", "columns");
-                        if (_.isNil(disabled)) {
-                            disabled = [];
-                        }
-                        if (!_.isArray(rowIds)) {
-                            rowIds = [rowIds];
-                        }
-                        columnSets = _.filter(columnSets, function (col) { return !_.isNil(col.formatType); });
-                        _.forEach(rowIds, function (r) {
-                            _.forEach(columnSets, function (col) {
-                                if (_.lowerCase(col.formatType) === "checkbox") {
-                                    var cellContainer = $tree.igTreeGrid("cellById", r, col.key);
-                                    if (_.isEmpty(cellContainer))
-                                        return;
-                                    var control = jqueryExtentions.ntsGrid.ntsControls.getControl(jqueryExtentions.ntsGrid.ntsControls.CHECKBOX);
-                                    var $cellContainer = $(cellContainer);
-                                    control.disable($cellContainer);
-                                }
-                            });
-                            var row = $tree.igTreeGrid("rowById", r);
-                            if (_.isEmpty(row) || row.hasClass("row-disabled"))
-                                return;
-                            row.addClass("row-disabled");
-                        });
-                        $tree.data("rowDisabled", _.union(disabled, rowIds));
-                    }
-                    function enableRows($tree, rowIds) {
-                        if (_.isNil(rowIds)) {
-                            return;
-                        }
-                        var disabled = $tree.data("rowDisabled"), columnSets = $tree.igTreeGrid("option", "columns");
-                        if (_.isNil(disabled)) {
-                            return;
-                        }
-                        if (!_.isArray(rowIds)) {
-                            rowIds = [rowIds];
-                        }
-                        columnSets = _.filter(columnSets, function (col) { return !_.isNil(col.formatType); });
-                        _.forEach(rowIds, function (r) {
-                            _.forEach(columnSets, function (col) {
-                                if (_.lowerCase(col.formatType) === "checkbox") {
-                                    var cellContainer = $tree.igTreeGrid("cellById", r, col.key);
-                                    if (_.isEmpty(cellContainer))
-                                        return;
-                                    var control = jqueryExtentions.ntsGrid.ntsControls.getControl(jqueryExtentions.ntsGrid.ntsControls.CHECKBOX);
-                                    var $cellContainer = $(cellContainer);
-                                    control.enable($cellContainer);
-                                }
-                            });
-                            var row = $tree.igTreeGrid("rowById", r);
-                            if (_.isEmpty(row))
-                                return;
-                            row.removeClass("row-disabled");
-                        });
-                        $tree.data("rowDisabled", _.difference(disabled, rowIds));
-                    }
-                    function formatColumns($tree, columns, features) {
-                        $tree.data("CB_SELECTED", {});
-                        $tree.data("UNIQ", _.isNil($tree.attr("id")) ? nts.uk.util.randomId() : $tree.attr("id"));
-                        var helper = {
-                            updateX: function (data, val, key, childKey, primaryKey) {
-                                if (!_.isEmpty(data)) {
-                                    _.forEach(data, function (child) {
-                                        var rId = child[primaryKey], controlCls = "nts-grid-control-" + $tree.data("UNIQ") + "-" + key + "-" + rId, $wrapper = $tree.find("." + controlCls), checkbox = $wrapper.find("input[type='checkbox']");
-                                        if (checkbox.length > 0) {
-                                            if (checkbox.is(":checked") !== val) {
-                                                $wrapper.data("changeByParent", true);
-                                                checkbox.click();
-                                            }
-                                        }
-                                        else {
-                                            $tree.data("igTreeGrid").dataSource.setCellValue(rId, key, val, true);
-                                            $tree.data("igTreeGridUpdating")._notifyCellUpdated(rId);
-                                            helper.updateX(child[childKey], val, key, childKey, primaryKey);
-                                        }
-                                    });
-                                }
-                            }, checkChildSiblings: function (source, key, childKey, primaryKey) {
-                                var isAllCheck = _.isNil(_.find(source[childKey], function (c) {
-                                    var controlCls = "nts-grid-control-" + $tree.data("UNIQ") + "-" + key + "-" + c[primaryKey], checkbox = $tree.find("." + controlCls).find("input[type='checkbox']");
-                                    return !checkbox.is(":checked");
-                                }));
-                                var controlCls = "nts-grid-control-" + $tree.data("UNIQ") + "-" + key + "-" + source[primaryKey], $wrapper = $tree.find("." + controlCls), $checkbox = $wrapper.find("input[type='checkbox']");
-                                if (isAllCheck !== $checkbox.is(":checked")) {
-                                    $wrapper.data("changeByChild", true);
-                                    $checkbox.click();
-                                }
-                                return isAllCheck;
-                            }, checkSiblings: function (rowId, source, key, childKey, primaryKey) {
-                                //let source = $tree.igTreeGrid("option", "dataSource");
-                                for (var i = 0; i < source.length; i++) {
-                                    if (!_.isEmpty(source[i][childKey])) {
-                                        var isParentOf = _.find(source[i][childKey], function (c) { return c[primaryKey] === rowId; });
-                                        if (isParentOf) {
-                                            var isAllCheck = helper.checkChildSiblings(source[i], key, childKey, primaryKey);
-                                            return { process: true, value: isAllCheck };
-                                        }
-                                        else {
-                                            var checkRel = helper.checkSiblings(rowId, source[i][childKey], key, childKey, primaryKey);
-                                            if (checkRel.process) {
-                                                var isAllCheck = helper.checkChildSiblings(source[i], key, childKey, primaryKey);
-                                                return { process: true, value: isAllCheck };
-                                            }
-                                        }
-                                    }
-                                }
-                                return { process: false, value: false };
-                            }, getTrueRowData: function (rowId, primaryKey, childKey) {
-                                var dataSource = $tree.data("igTreeGrid").dataSource._origDs, flatSource = helper.flatChild(dataSource, childKey);
-                                return _.find(flatSource, function (s) { return s[primaryKey] === rowId; });
-                            }, flatChild: function (dataSource, childKey) {
-                                var result = [];
-                                if (_.isEmpty(dataSource)) {
-                                    return result;
-                                }
-                                _.forEach(dataSource, function (s) {
-                                    result = _.concat(result, s, helper.flatChild(s[childKey], childKey));
-                                });
-                                return result;
-                            }
-                        };
-                        var newColumns = _.map(columns, function (colO) {
-                            var col = _.cloneDeep(colO);
-                            if (_.lowerCase(col.formatType) === "checkbox") {
-                                var oldFormatter = col.formatte, isParentCompute_1 = _.isNil(col.parentCompute) || !col.parentCompute ? false : true;
-                                col.formatter = function (value, rowObj) {
-                                    if (_.isNil(rowObj))
-                                        return "";
-                                    var primaryKey = $tree.data("igTreeGrid").options.primaryKey, childKey = $tree.data("igTreeGrid").options.childDataKey, rowId = rowObj[primaryKey], trueRowValue = helper.getTrueRowData(rowId, primaryKey, childKey);
-                                    if (_.isNil(trueRowValue) || _.isNil(trueRowValue[col.key]))
-                                        return "";
-                                    var rowsDisables = $tree.data("rowDisabled"), isRowEnable = _.isNil(rowsDisables) ? true : _.isNil(_.find(rowsDisables, function (r) { return r === rowId; })), controlCls = "nts-grid-control-" + $tree.data("UNIQ") + "-" + col.key + "-" + rowId, $wrapper = $("<div/>").addClass(controlCls).css({ "text-align": 'center', "height": "30px" }), $container = $("<div/>").append($wrapper), $_self = $tree, data = {
-                                        rowId: rowId,
-                                        columnKey: col.key,
-                                        update: function (val) {
-                                            if (!_.isNil($tree.data("igTreeGrid"))) {
-                                                var $wrapper_1 = $tree.find("." + controlCls);
-                                                if ($wrapper_1.data("changeByChild")) {
-                                                    $wrapper_1.data("changeByChild", false);
-                                                    return;
-                                                }
-                                                $tree.data("igTreeGrid").dataSource.setCellValue(rowId, col.key, val, true);
-                                                $tree.data("igTreeGridUpdating")._notifyCellUpdated(rowId);
-                                                if (isParentCompute_1) {
-                                                    helper.updateX(rowObj[childKey], val, col.key, childKey, primaryKey);
-                                                    if ($wrapper_1.data("changeByParent")) {
-                                                        $wrapper_1.data("changeByParent", false);
-                                                        return;
-                                                    }
-                                                    helper.checkSiblings(rowId, $tree.igTreeGrid("option", "dataSource"), col.key, childKey, primaryKey);
-                                                }
-                                                $tree.trigger("cellChanging");
-                                                $tree.trigger("checkboxChanging", { value: val, rowId: rowId, column: col.key, rowData: rowObj, element: $wrapper_1 });
-                                            }
-                                        }, deleteRow: function () {
-                                            if ($tree.data("igTreeGrid") !== null) {
-                                                $tree.data("igTreeGridUpdating").deleteRow(rowId);
-                                            }
-                                        }, initValue: value,
-                                        rowObj: rowObj,
-                                        showHeaderCheckbox: col.showHeaderCheckbox,
-                                        enable: isRowEnable,
-                                        controlDef: { controlType: "CheckBox", enable: isRowEnable,
-                                            name: "Checkbox", options: { value: 1, text: "" },
-                                            optionsText: "text", optionsValue: "value" }
-                                    };
-                                    var ntsControl = jqueryExtentions.ntsGrid.ntsControls.getControl(jqueryExtentions.ntsGrid.ntsControls.CHECKBOX);
-                                    setTimeout(function () {
-                                        var $self = $_self;
-                                        var $treeCell = $self.igTreeGrid("cellById", data.rowId, data.columnKey);
-                                        var gridCellChild;
-                                        if (!$treeCell || (gridCellChild = $treeCell.children()).length === 0)
-                                            return;
-                                        if (gridCellChild[0].children.length === 0) {
-                                            var $control = ntsControl.draw(data);
-                                            var gridControl = $treeCell[0].querySelector("." + controlCls);
-                                            if (!gridControl)
-                                                return;
-                                            gridControl.appendChild($control[0]);
-                                            /**$control.on("change", function() {
-                                            });*/
-                                            ntsControl.$containedGrid = $self;
-                                        }
-                                    }, 0);
-                                    return $container.html();
-                                };
-                            }
-                            return col;
-                        });
-                        var filterFeature = _.find(features, function (f) { return f.name === "Filtering"; });
-                        if (!_.isNil(filterFeature)) {
-                            var filterFunc_1 = function (value, expression, dataType, ignoreCase, preciseDateFormat, colKey) {
-                                var flatData = $tree.data("igTreeGrid").dataSource._flatData, currentIdx = $tree.data("filterIdx"), prevCol = $tree.data("previousCol"), primaryKey = $tree.data("igTreeGrid").options.primaryKey, childKey = $tree.data("igTreeGrid").options.childDataKey;
-                                if (currentIdx === 0) {
-                                    $tree.data("previousCol", colKey);
-                                }
-                                if (!_.isNil(prevCol) && prevCol !== colKey) {
-                                    currentIdx--;
-                                }
-                                var trueRowValue = helper.getTrueRowData(flatData[currentIdx][primaryKey], primaryKey, childKey);
-                                currentIdx++;
-                                $tree.data("filterIdx", currentIdx);
-                                if (!_.isNil(trueRowValue)) {
-                                    if (expression === "check") {
-                                        return trueRowValue[colKey] == true;
-                                    }
-                                    else {
-                                        return trueRowValue[colKey] == false;
-                                    }
-                                }
-                                return false;
-                            };
-                            var customFilter = _.map(_.filter(newColumns, function (c) { return c.formatType === "checkbox"; }), function (c) {
-                                return {
-                                    columnKey: c.key,
-                                    customConditions: {
-                                        check: {
-                                            labelText: "true",
-                                            expressionText: "check",
-                                            requireExpr: false,
-                                            filterFunc: function (value, expression, dataType, ignoreCase, preciseDateFormat, colKey) {
-                                                return filterFunc_1(value, expression, dataType, ignoreCase, preciseDateFormat, colKey);
-                                            }
-                                        },
-                                        nonCheck: {
-                                            labelText: "false",
-                                            expressionText: "non_check",
-                                            requireExpr: false,
-                                            filterFunc: function (value, expression, dataType, ignoreCase, preciseDateFormat, colKey) {
-                                                return filterFunc_1(value, expression, dataType, ignoreCase, preciseDateFormat, colKey);
-                                            }
-                                        }
-                                    },
-                                    conditionList: []
-                                };
-                            });
-                            filterFeature.columnSettings = customFilter;
-                        }
-                        return newColumns;
-                    }
                     function getSelected($tree) {
                         if ($tree.igTreeGridSelection('option', 'multipleSelection')) {
                             var selectedRows = $tree.igTreeGridSelection('selectedRows');
@@ -43254,13 +42223,7 @@ var nts;
                     }
                     function setSelected($tree, selectedId) {
                         deselectAll($tree);
-                        var disabledRows = $tree.data("rowDisabled");
                         if ($tree.igTreeGridSelection('option', 'multipleSelection')) {
-                            if (!_.isEmpty(disabledRows)) {
-                                _.remove(selectedId, function (r) {
-                                    return disabledRows.includes(r);
-                                });
-                            }
                             selectedId.forEach(function (id) {
                                 $tree.igTreeGridSelection('selectRowById', id);
                                 virtualScroll($tree, id);
@@ -43270,13 +42233,8 @@ var nts;
                             if (selectedId.constructor === Array) {
                                 selectedId = selectedId[0];
                             }
-                            if (!(!_.isEmpty(disabledRows) && !_.isNil(selectedId) && disabledRows.includes(selectedId))) {
-                                $tree.igTreeGridSelection('selectRowById', selectedId);
-                                virtualScroll($tree, selectedId);
-                            }
-                            else {
-                                selectedId = null;
-                            }
+                            $tree.igTreeGridSelection('selectRowById', selectedId);
+                            virtualScroll($tree, selectedId);
                         }
                         $tree.trigger("ntstreeselectionchanged", [selectedId]);
                     }
@@ -44314,8 +43272,8 @@ var nts;
                         //                weekStart: 0
                         //            });
                         self.rangeName = nts.uk.util.isNullOrUndefined(rangeName) ? "期間入力フォーム" : nts.uk.resource.getControlName(rangeName);
-                        self.startName = nts.uk.util.isNullOrUndefined(startName) ? self.rangeName + "開始" : nts.uk.resource.getControlName(startName);
-                        self.endName = nts.uk.util.isNullOrUndefined(endName) ? self.rangeName + "終了" : nts.uk.resource.getControlName(endName);
+                        self.startName = nts.uk.util.isNullOrUndefined(startName) ? "期間入力フォーム開始" : nts.uk.resource.getControlName(startName);
+                        self.endName = nts.uk.util.isNullOrUndefined(endName) ? "期間入力フォーム終了" : nts.uk.resource.getControlName(endName);
                         self.getMessage = nts.uk.resource.getMessage;
                         ko.bindingHandlers["ntsDatePicker"].init(self.$start[0], function () {
                             return self.createStartBinding(data);
@@ -44399,7 +43357,7 @@ var nts;
                         if (endDate.isBefore(startDate)) {
                             self.$ntsDateRange.ntsError('set', self.getMessage("MsgB_21", [self.rangeName]), "MsgB_21");
                         }
-                        else if (self.isFullDateFormat() && self.maxRange === "oneMonth") {
+                        else if (self.dateFormat === "YYYY/MM/DD" && self.maxRange === "oneMonth") {
                             var maxDate = startDate.add(31, "days");
                             if (endDate.isSameOrAfter(maxDate)) {
                                 self.$ntsDateRange.ntsError('set', self.getMessage("MsgB_22", [self.rangeName]), "MsgB_22");
@@ -44407,7 +43365,7 @@ var nts;
                         }
                         else if (self.maxRange === "oneYear") {
                             var maxDate = _.cloneDeep(startDate);
-                            if (self.isFullDateFormat()) {
+                            if (self.dateFormat === "YYYY/MM/DD") {
                                 var currentDate = startDate.date();
                                 var isEndMonth = currentDate === startDate.endOf("months").date();
                                 var isStartMonth = currentDate === 1;
@@ -44422,7 +43380,7 @@ var nts;
                                     maxDate = maxDate.date(currentDate - 1);
                                 }
                             }
-                            else if (self.isYearMonthFormat()) {
+                            else if (self.dateFormat === "YYYY/MM") {
                                 maxDate = maxDate.add(1, 'year').add(-1, "months");
                             }
                             else {
@@ -44433,36 +43391,28 @@ var nts;
                             }
                         }
                     };
-                    DateRangeHelper.prototype.isFullDateFormat = function () {
-                        return this.dateFormat === 'YYYY/MM/DD';
-                    };
-                    DateRangeHelper.prototype.isYearMonthFormat = function () {
-                        return this.dateFormat === 'YYYY/MM';
-                    };
                     DateRangeHelper.prototype.createStartBinding = function (parentBinding, name, format) {
                         var self = this;
                         return { required: parentBinding.required,
-                            name: self.startName,
+                            name: parentBinding.startName ? self.startName : parentBinding.name,
                             value: self.startValue,
                             dateFormat: self.dateFormat,
                             valueFormat: self.dateFormat,
-                            'type': parentBinding.type,
                             enable: parentBinding.enable,
-                            disabled: parentBinding.disabled,
-                            pickOnly: parentBinding.pickOnly
+                            disabled: parentBinding.disabled
+                            //,endDate: self.endValue 
                         };
                     };
                     DateRangeHelper.prototype.createEndBinding = function (parentBinding, name) {
                         var self = this;
                         return { required: parentBinding.required,
-                            name: self.endName,
+                            name: parentBinding.endName ? self.endName : parentBinding.name,
                             value: self.endValue,
                             dateFormat: self.dateFormat,
                             valueFormat: self.dateFormat,
-                            'type': parentBinding.type,
                             enable: parentBinding.enable,
-                            disabled: parentBinding.disabled,
-                            pickOnly: parentBinding.pickOnly
+                            disabled: parentBinding.disabled
+                            //,startDate: self.startValue 
                         };
                     };
                     return DateRangeHelper;
@@ -45147,10 +44097,6 @@ var nts;
                                 })
                                     .css(marginDirection, CARET_WIDTH * operator);
                                 $caret.css(caretPosition, parseFloat($popup.css(caretPosition)) * -1);
-                            }
-                        }).on("mouseleave", function () {
-                            if ($popup.is(":visible")) {
-                                $popup.hide();
                             }
                         }).wrap($("<div class='ntsControl ntsHelpButton'></div>"));
                         var $container = $(element).closest(".ntsHelpButton");
@@ -46089,6 +45035,7 @@ var NtsSortableBindingHandler = /** @class */ (function () {
                             if (sourceParent) {
                                 $(sourceParent === targetParent ? this : ui.sender || this).sortable("cancel");
                             }
+                            //for a draggable item just remove the element
                             else {
                                 $(el).remove();
                             }
@@ -46116,7 +45063,7 @@ var NtsSortableBindingHandler = /** @class */ (function () {
                                 //rendering is handled by manipulating the observableArray; ignore dropped element
                                 self.dataSet(el, self.ITEMKEY, null);
                             }
-                            else {
+                            else { //employ the strategy of moving items
                                 if (targetIndex >= 0) {
                                     if (sourceParent) {
                                         if (sourceParent !== targetParent) {

@@ -28,12 +28,7 @@ public class JpaWorkScheduleBusCalGetMemento implements WorkScheduleBusCalGetMem
 	 */
 	@Override
 	public WorkScheduleMasterReferenceAtr getReferenceBusinessDayCalendar() {
-		try {
-			return WorkScheduleMasterReferenceAtr.valueOf(this.kshmtScheduleMethod.getRefBusinessDayCalendar());
-		} catch (Exception e) {
-			return WorkScheduleMasterReferenceAtr.WORK_PLACE;
-		}
-		
+		return WorkScheduleMasterReferenceAtr.valueOf(this.kshmtScheduleMethod.getRefBusinessDayCalendar());
 	}
 
 	/* (non-Javadoc)
@@ -41,11 +36,7 @@ public class JpaWorkScheduleBusCalGetMemento implements WorkScheduleBusCalGetMem
 	 */
 	@Override
 	public WorkScheduleMasterReferenceAtr getReferenceBasicWork() {
-		try {
-			return WorkScheduleMasterReferenceAtr.valueOf(this.kshmtScheduleMethod.getRefBasicWork());
-		} catch (Exception e) {
-			return WorkScheduleMasterReferenceAtr.WORK_PLACE;
-		}
+		return WorkScheduleMasterReferenceAtr.valueOf(this.kshmtScheduleMethod.getRefBasicWork());
 	}
 
 	/* (non-Javadoc)
@@ -53,11 +44,7 @@ public class JpaWorkScheduleBusCalGetMemento implements WorkScheduleBusCalGetMem
 	 */
 	@Override
 	public TimeZoneScheduledMasterAtr getReferenceWorkingHours() {
-		try {
-			return TimeZoneScheduledMasterAtr.valueOf(this.kshmtScheduleMethod.getRefWorkingHours());
-		} catch (Exception e) {
-			return TimeZoneScheduledMasterAtr.FOLLOW_MASTER_REFERENCE;
-		}
+		return TimeZoneScheduledMasterAtr.valueOf(this.kshmtScheduleMethod.getRefWorkingHours());
 	}
 	
 }

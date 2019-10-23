@@ -33,15 +33,14 @@ public class CompanyInformationAdapterImpl implements CompanyInformationAdapter 
 	 * findByContractCode(java.lang.String)
 	 */
 	@Override
-	public List<CompanyInformationImport> findLstCompany(String contractCode) {
-//		【条件】
-//		　「会社情報.廃止区分」＝廃止しない
-//		　　契約CD　＝　LocalStorage.契約CD
-		List<CompanyExport> lstReciveCompany = iCompanyPub.getLstComByContractAbo(contractCode, 0);
-		return lstReciveCompany.stream().map(c -> new CompanyInformationImport(
-				c.getCompanyId(), 
-				c.getCompanyCode(), 
-				c.getCompanyName())).collect(Collectors.toList());
+	public List<CompanyInformationImport> findAll() {
+		List<CompanyExport> lstReciveCompany = iCompanyPub.getAllCompany();
+
+		List<CompanyInformationImport> lstCompany = new ArrayList<>();
+		lstReciveCompany.stream().map(c -> {
+			return lstCompany.add(new CompanyInformationImport(c.getCompanyId(), c.getCompanyCode(), c.getCompanyName()));
+		}).collect(Collectors.toList());
+		return lstCompany;
 	}
 	
 	@Override

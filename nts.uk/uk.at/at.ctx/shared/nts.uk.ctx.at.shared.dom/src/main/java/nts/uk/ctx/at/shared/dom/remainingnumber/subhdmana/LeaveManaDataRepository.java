@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
@@ -15,8 +14,6 @@ public interface LeaveManaDataRepository {
 	// 代休消化区分=未消化
 
 	List<LeaveManagementData> getBySidWithsubHDAtr(String cid, String sid, int state);
-	
-	Map <String ,Double> getAllBySidWithsubHDAtr(String cid, List<String> sid, int state);
 	
 	List<LeaveManagementData> getByComDayOffId(String cid, String sid, String comDayOffID);
 	
@@ -33,15 +30,12 @@ public interface LeaveManaDataRepository {
 	
 	List<LeaveManagementData> getBySid(String cid, String sid);
 
-	List<LeaveManagementData> getBySidsAndCid(String cid, List<String> sids);
 	
 	List<LeaveManagementData> getByDateCondition (String cid, String sid, GeneralDate startDate, GeneralDate endDate);
 	
 	List<LeaveManagementData> getBySidWithHolidayDate(String cid, String sid, GeneralDate dateHoliday);
 	
 	void create(LeaveManagementData domain);
-	
-	void addAll(List<LeaveManagementData> domains);
 	
 	void update(LeaveManagementData domain);
 	

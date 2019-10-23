@@ -185,7 +185,6 @@ public class JpaBasicScheduleScreenRepository extends JpaRepository implements B
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
-				throw new RuntimeException(e);
 			}
 		});
 		return listBasicScheduleScreenDto;
@@ -238,7 +237,6 @@ public class JpaBasicScheduleScreenRepository extends JpaRepository implements B
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new RuntimeException(e);
 		}
 		return listWorkTypeScreenDto;
 	}

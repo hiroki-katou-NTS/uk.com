@@ -19,7 +19,7 @@ public interface CompanyInformationAdapter {
 	 *
 	 * @return the list
 	 */
-	List<CompanyInformationImport> findLstCompany(String contractCode);
+	List<CompanyInformationImport> findAll();
 	
 	/**
 	 * Find all.

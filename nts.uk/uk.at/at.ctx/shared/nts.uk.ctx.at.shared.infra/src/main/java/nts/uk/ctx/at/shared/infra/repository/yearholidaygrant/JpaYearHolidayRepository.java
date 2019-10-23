@@ -5,8 +5,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -48,7 +46,6 @@ public class JpaYearHolidayRepository extends JpaRepository implements YearHolid
 	}	
 
 	@Override
-	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public Optional<GrantHdTblSet> findByCode(String companyId, String yearHolidayCode) {
 		return this.queryProxy().find(new KshstGrantHdTblSetPK(companyId, yearHolidayCode), KshstGrantHdTblSet.class)
 				.map(x -> convertToDomainYearHoliday(x));

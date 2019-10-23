@@ -96,9 +96,6 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 	 */
 	@Override
 	public List<RegulationInfoEmployee> find(String comId, EmployeeSearchQuery paramQuery) {
-		if(paramQuery.getFilterByDepartment() == null){
-			paramQuery.setFilterByDepartment(false);
-		}
 		// max paramenter count = 800
 		int countParameter = 0;
 		

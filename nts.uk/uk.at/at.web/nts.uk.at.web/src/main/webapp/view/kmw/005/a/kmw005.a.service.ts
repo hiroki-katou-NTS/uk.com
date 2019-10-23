@@ -41,7 +41,6 @@ module nts.uk.at.view.kmw005.a {
                 closureName: string;
                 startDate: string;
                 endDate: string;
-                yearMonth: number;
             }
             
             /**

@@ -5,7 +5,6 @@
 package nts.uk.ctx.at.shared.dom.worktime.flowset;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
@@ -15,8 +14,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
  */
 // 流動勤務の休憩設定詳細
 @Getter
-@NoArgsConstructor
-public class FlowWorkRestSettingDetail extends WorkTimeDomainObject implements Cloneable{
+public class FlowWorkRestSettingDetail extends WorkTimeDomainObject {
 
 	/** The flow rest setting. */
 	// 流動休憩設定
@@ -66,19 +64,5 @@ public class FlowWorkRestSettingDetail extends WorkTimeDomainObject implements C
 
 	public void correctDefaultData(ScreenMode screenMode,boolean fixRestTime) {
 		this.flowFixedRestSetting.correctDefaultData(screenMode,fixRestTime);
-	}
-	
-	public FlowWorkRestSettingDetail clone() {
-		FlowWorkRestSettingDetail cloned = new FlowWorkRestSettingDetail();
-		try {
-			cloned.flowRestSetting = this.flowRestSetting.clone();
-			cloned.flowFixedRestSetting = this.flowFixedRestSetting.clone();
-			cloned.usePluralWorkRestTime = this.usePluralWorkRestTime ? true : false;
-			cloned.roundingBreakMultipleWork = this.roundingBreakMultipleWork.clone();
-		}
-		catch (Exception e){
-			throw new RuntimeException("FlowWorkRestSettingDetail clone error.");
-		}
-		return cloned;
 	}
 }

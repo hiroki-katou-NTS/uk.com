@@ -157,7 +157,7 @@ public class JpaOtherSysAccountRepository extends JpaRepository implements Other
 			// exclude select
 			return Optional.of(this.toDomain(query.getSingleResult()));
 		} catch (NoResultException e) {
-			throw new RuntimeException(e);
+			return Optional.empty();
 		}
 
 	}

@@ -170,66 +170,66 @@ module nts.uk.at.view.kmf003.a.viewmodel {
         
         
         
-        conditionValue01(data?) {
-            let self = this,
-                isDayMode = self.A7_4SelectedRuleCode() == 1;
-            if (data!= undefined) {
-                if (isDayMode) {
-                    self.conditionValue01Day(data);
+            conditionValue01(data ?){
+                let self = this,
+                    isDayMode = self.A7_4SelectedRuleCode() == 1;
+                if (data) {
+                    if (isDayMode) {
+                        self.conditionValue01Day(data);
+                    } else {
+                        self.conditionValue01Percent(data);
+                    }
                 } else {
-                    self.conditionValue01Percent(data);
+                    return isDayMode ? self.conditionValue01Day() : self.conditionValue01Percent();
                 }
-            } else {
-                return isDayMode ? self.conditionValue01Day() : self.conditionValue01Percent();
             }
-        }
-
-        conditionValue02(data?) {
-            let self = this,
-                isDayMode = self.A7_4SelectedRuleCode() == 1;
-            if (data!= undefined) {
-                if (isDayMode) {
-                    self.conditionValue02Day(data);
+            
+            conditionValue02(data ?){
+                let self = this,
+                    isDayMode = self.A7_4SelectedRuleCode() == 1;
+                if (data) {
+                    if (isDayMode) {
+                        self.conditionValue02Day(data);
+                    } else {
+                        self.conditionValue02Percent(data);
+                    }
                 } else {
-                    self.conditionValue02Percent(data);
+                    return isDayMode ? self.conditionValue02Day() : self.conditionValue02Percent();
                 }
-            } else {
-                return isDayMode ? self.conditionValue02Day() : self.conditionValue02Percent();
             }
-        }
-
-        conditionValue03(data?) {
-            let self = this,
-                isDayMode = self.A7_4SelectedRuleCode() == 1;
-            if (data!= undefined) {
-                if (isDayMode) {
-                    self.conditionValue03Day(data);
+            
+            conditionValue03(data ?){
+                let self = this,
+                    isDayMode = self.A7_4SelectedRuleCode() == 1;
+                if (data) {
+                    if (isDayMode) {
+                        self.conditionValue03Day(data);
+                    } else {
+                        self.conditionValue03Percent(data);
+                    }
                 } else {
-                    self.conditionValue03Percent(data);
+                    return isDayMode ? self.conditionValue03Day() : self.conditionValue03Percent();
                 }
-            } else {
-                return isDayMode ? self.conditionValue03Day() : self.conditionValue03Percent();
             }
-        }
-
-        conditionValue04(data?) {
-            let self = this,
-                isDayMode = self.A7_4SelectedRuleCode() == 1;
-            if (data!= undefined) {
-                if (isDayMode) {
-                    self.conditionValue04Day(data);
+            
+            conditionValue04(data ?){
+                let self = this,
+                    isDayMode = self.A7_4SelectedRuleCode() == 1;
+                if (data) {
+                    if (isDayMode) {
+                        self.conditionValue04Day(data);
+                    } else {
+                        self.conditionValue04Percent(data);
+                    }
                 } else {
-                    self.conditionValue04Percent(data);
+                    return isDayMode ? self.conditionValue04Day() : self.conditionValue04Percent();
                 }
-            } else {
-                return isDayMode ? self.conditionValue04Day() : self.conditionValue04Percent();
             }
-        }
             
             conditionValue05(data ?){
                 let self = this,
                     isDayMode = self.A7_4SelectedRuleCode() == 1;
-                if (data!= undefined) {
+                if (data) {
                     if (isDayMode) {
                         self.conditionValue05Day(data);
                     } else {

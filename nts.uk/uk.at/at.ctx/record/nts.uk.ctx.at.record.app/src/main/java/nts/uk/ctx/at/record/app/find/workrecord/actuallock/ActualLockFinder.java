@@ -13,6 +13,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
+import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLock;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLockHistory;
@@ -101,7 +102,6 @@ public class ActualLockFinder {
 				// Set ActualLockFinderDto
 				dto.setClosureId(c.getClosureId());
 				dto.setClosureName(closureHistOpt.get().getClosureName().v());
-				dto.setYearMonth(c.getClosureMonth().getProcessingYm().v());
 				// Set Period: StartDate, EndDate
 				dto.setStartDate(datePeriod.start().toString());
 				dto.setEndDate(datePeriod.end().toString());
@@ -165,10 +165,53 @@ public class ActualLockFinder {
 		// FindAll ActualLock By ClosureId
 		List<ActualLockHistory> actualLockHistList = this.actualLockHistRepo.findByTargetMonth(companyId, closureId,
 				targetMonth);
+		// Filter
+		List<ActualLockHistory> filtedList = actualLockHistList.stream().filter(hist -> {
+			// Filter ActualLockHistory: YearMonth of LockDateTime equal to selected targetMonth
+			return hist.getLockDateTime().yearMonth().v() == targetMonth;
+		}).collect(Collectors.toList());
 		// Check Empty
+		if (CollectionUtil.isEmpty(filtedList)) {
+			return new ArrayList<>();
+		}
+		// Convert to Dto
+		return filtedList.stream().map(actualLockHist -> {
+			ActualLockHistFindDto dto = new ActualLockHistFindDto();
+			// Save To Memento
+			actualLockHist.saveToMemento(dto);
+			// Get Updater Name
+			EmployeeImport empImport = this.employeeAdapter.findByEmpId(actualLockHist.getUpdater());
+			// Set Updater Name to Dto
+			dto.setUpdater(empImport.getEmployeeName());
+			return dto;
+		}).collect(Collectors.toList());
+
+	}
+
+	/**
+	 * Find hist by closure.
+	 *
+	 * @param closureId the closure id
+	 * @return the list
+	 */
+	public List<ActualLockHistFindDto> findHistByClosure(int closureId) {
+		// Get LoginUserContext
+		LoginUserContext loginUserContext = AppContexts.user();
+
+		// CompanyId
+		String companyId = loginUserContext.companyId();
+
+		int targetMonth = GeneralDateTime.now().yearMonth().v();
+
+		// FindAll ActualLock By ClosureId
+		List<ActualLockHistory> actualLockHistList = this.actualLockHistRepo.findByTargetMonth(companyId, closureId,
+				targetMonth);
+
+		// Check empty for ActualLock History list
 		if (CollectionUtil.isEmpty(actualLockHistList)) {
 			return new ArrayList<>();
 		}
+
 		// Convert to Dto
 		return actualLockHistList.stream().map(actualLockHist -> {
 			ActualLockHistFindDto dto = new ActualLockHistFindDto();
@@ -182,4 +225,5 @@ public class ActualLockFinder {
 		}).collect(Collectors.toList());
 
 	}
+
 }

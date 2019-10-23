@@ -40,6 +40,7 @@ public class LogDisplaySettingFinder {
        String cid = loginUserContext .companyId();
        Optional<LogDisplaySetting> optLogDisplaySetting = this.logDisplaySettingRepository.getLogDisplaySettingByCodeAndCidAndIsUseFlg(code, cid);
 		if (optLogDisplaySetting.isPresent()) {
+	
 			return LogDisplaySettingDto.fromDomain(optLogDisplaySetting.get());
 		}
 		 

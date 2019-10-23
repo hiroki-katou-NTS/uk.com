@@ -70,10 +70,10 @@ public class AddOptionalCommandHandler extends CommandHandler<PeregUserDefAddCom
 		}
 		// In case of person
 		if (perInfoCategory.get().getPersonEmployeeType() == PersonEmployeeType.PERSON) {
-			if(!perInfoCategory.get().isFixed()) {
-				// Insert category data
-				perInfoCtgDataRepository.addCategoryData(new PerInfoCtgData(recordId,perInfoCategory.get().getPersonInfoCategoryId(),command.getPersonId()));
-			}
+			
+			// Insert category data
+			perInfoCtgDataRepository.addCategoryData(new PerInfoCtgData(recordId,perInfoCategory.get().getPersonInfoCategoryId(),command.getPersonId()));
+			
 			// Insert item data
 			PersonInfoItemData itemData = null;
 			DataState state = null;
@@ -88,11 +88,9 @@ public class AddOptionalCommandHandler extends CommandHandler<PeregUserDefAddCom
 			}
 			
 		} else if (perInfoCategory.get().getPersonEmployeeType() == PersonEmployeeType.EMPLOYEE){
-			if(!perInfoCategory.get().isFixed()) {
-				// Add emp category data
-				emInfoCtgDataRepository.addCategoryData(new EmpInfoCtgData(recordId, perInfoCategory.get().getPersonInfoCategoryId(),command.getEmployeeId()));
-			}
-
+			// Add emp category data
+			emInfoCtgDataRepository.addCategoryData(new EmpInfoCtgData(recordId, perInfoCategory.get().getPersonInfoCategoryId(),command.getEmployeeId()));
+			
 			// Add item data
 			EmpInfoItemData itemData = null;
 			DataState state = null;

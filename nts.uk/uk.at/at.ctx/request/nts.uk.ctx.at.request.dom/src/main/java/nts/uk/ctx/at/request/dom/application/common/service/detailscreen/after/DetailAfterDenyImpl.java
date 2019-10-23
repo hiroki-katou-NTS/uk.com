@@ -6,7 +6,6 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
@@ -17,7 +16,6 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.Process
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 
 /**
  * 
@@ -38,9 +36,6 @@ public class DetailAfterDenyImpl implements DetailAfterDeny {
 	
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithm;
-	
-	@Inject
-	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
 
 	@Override
 	public ProcessResult doDeny(String companyID, String appID, String employeeID, String memo) {
@@ -54,16 +49,6 @@ public class DetailAfterDenyImpl implements DetailAfterDeny {
 			isProcessDone = true;
 			application.getReflectionInformation().setStateReflectionReal(ReflectedState_New.DENIAL);
 			applicationRepository.updateWithVersion(application);
-			
-			// 暫定データの登録
-			List<GeneralDate> dateLst = new ArrayList<>();
-			GeneralDate startDate = application.getStartDate().orElse(application.getAppDate());
-			GeneralDate endDate = application.getEndDate().orElse(application.getAppDate());
-			for(GeneralDate loopDate = startDate; loopDate.beforeOrEquals(endDate); loopDate = loopDate.addDays(1)){
-				dateLst.add(loopDate);
-			}
-			interimRemainDataMngRegisterDateChange.registerDateChange(companyID, application.getEmployeeID(), dateLst);
-			
 			AppTypeDiscreteSetting discreteSetting = discreteRepo.getAppTypeDiscreteSettingByAppType(companyID, application.getAppType().value).get();
 			if (discreteSetting.getSendMailWhenApprovalFlg().equals(AppCanAtr.CAN)) {
 				isAutoSendMail = true;

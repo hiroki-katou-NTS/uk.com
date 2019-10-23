@@ -851,8 +851,6 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 							TmpAnnualLeaveMngWork target = itrResult.next();
 							if (target.equals(overWrite)) itrResult.remove();
 						}
-					}
-					for (val overWrite : overWrites){
 						// 上書き用データを追加
 						results.add(overWrite);
 					}

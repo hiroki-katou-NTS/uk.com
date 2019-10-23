@@ -20,25 +20,11 @@ public interface SWorkTimeHistItemRepository {
 	void add(ShortWorkTimeHistoryItem domain);
 	
 	/**
-	 * Adds all
-	 *
-	 * @param domain the domain
-	 */
-	void addAll(List<ShortWorkTimeHistoryItem> domains);
-	
-	/**
 	 * Update.
 	 *
 	 * @param domain the domain
 	 */
 	void update(ShortWorkTimeHistoryItem domain);
-	
-	/**
-	 * Update all
-	 * @author lanlt
-	 * @param domain the domain
-	 */
-	void updateAll(List<ShortWorkTimeHistoryItem> domains);
 	
 	/**
 	 * Find by key.
@@ -59,6 +45,4 @@ public interface SWorkTimeHistItemRepository {
 	 * @return the map
 	 */
 	List<ShortWorkTimeHistoryItem> findByHistIds(List<String> histIds);
-
-	List<Object[]> findByHistIdsCPS013(List<String> histIds);
 }

@@ -24,8 +24,6 @@ module nts.uk.com.view.cmf004.i.viewmodel {
         supplementaryExplanation: KnockoutObservable<string> = ko.observable('');
         recoveryMethodOptions: KnockoutObservable<string> = ko.observable('');
         saveForm: KnockoutObservable<string> = ko.observable('');
-        
-        store_del_ProcessingId: KnockoutObservable<string> = ko.observable('');
 
         //status follow
         isEnding: KnockoutObservable<boolean> = ko.observable(false);
@@ -50,7 +48,6 @@ module nts.uk.com.view.cmf004.i.viewmodel {
                     self.recoverySourceName(recoveryInfo.recoverySourceName);
                     self.supplementaryExplanation(recoveryInfo.supplementaryExplanation);
                     self.recoveryMethodOptions(recoveryInfo.recoveryMethodOptions);
-                    self.store_del_ProcessingId(recoveryInfo.store_del_ProcessingId);
                 }
             }
         }
@@ -68,8 +65,7 @@ module nts.uk.com.view.cmf004.i.viewmodel {
                 recoveryCategoryList: self.recoveryCategoryList(),
                 recoveryFile: self.recoveryFile(),
                 supplementaryExplanation: self.supplementaryExplanation(),
-                recoveryMethodOptions: self.recoveryMethodOptions(),
-                store_del_ProcessingId: self.store_del_ProcessingId()
+                recoveryMethodOptions: self.recoveryMethodOptions()
             };
             console.log(command);
             service.performDataRecover(command).done(() => {

@@ -4,12 +4,13 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:ValidatorScript>
-          nts.uk.ctx.at.function.dom.dailyperformanceformat.primitivevalue.DailyPerFormatSheetName
-        </com:ValidatorScript>
+				nts.uk.ctx.at.function.dom.dailyperformanceformat.primitivevalue.DailyPerFormatSheetName
+			</com:ValidatorScript>
 
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kdw008.b.main.css" />
@@ -24,8 +25,7 @@
 					data-bind="ntsLinkButton: { action: jumpTo.bind($data, sideBar)}">#{i18n.getText('KDW008_30')}</a>
 
 				<span id="button2">
-					<button class="proceed"
-						data-bind="click : addOrUpdateClick , enable: $root.errors.isEmpty || hasdata">#{i18n.getText('KDW008_3')}</button>
+					<button class="proceed" data-bind="click : addOrUpdateClick , enable: $root.errors.isEmpty || hasdata">#{i18n.getText('KDW008_3')}</button>
 				</span> <span id="button3">
 					<button class="proceed" data-bind="click : dialog">並び順の設定</button>
 				</span>
@@ -50,40 +50,38 @@
 						<td>
 							<div>
 								<span id="label2" class="label">#{i18n.getText('KDW008_7')}</span>
-								<span id="label3" class="label" data-bind="text: selectedCode"></span>
-								<span id="label4" class="label">#{i18n.getText('KDW008_8')}</span>
-								<span id="label5" class="label"
+								<span id="label3" class="label"
+									data-bind="text: selectedCode"></span> <span
+									id="label4" class="label">#{i18n.getText('KDW008_8')}</span> <span
+									id="label5" class="label"
 									data-bind="text: currentBusinessTypeName"></span>
-							</div> <!-- pc tab -->
-							<div data-bind="if: !isMobile">
-								<div id="tab-panel"
-									data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
-									<div class="tab-content-1" style="height: 470px; width: 900px">
-										<div>
-											<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDW008_23')}</div>
-											<div id="A_SEL_002"
-												data-bind="ntsComboBox: {
+							</div>
+							<div id="tab-panel"
+								data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
+								
+								<div class="tab-content-1" style="height: 500px; width: 900px">
+									<div>
+										<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDW008_23')}</div>
+										<div id="A_SEL_002"
+											data-bind="ntsComboBox: {
 											options: sheetNoList,
 											optionsValue: 'sheetNoId',
 											optionsText: 'sheetNoName',
 											value: selectedSheetNo,
 											enable: true}">
-											</div>
-											<div id="label2"
-												data-bind="ntsFormLabel: { constraint: 'DailyPerFormatSheetName', inline: true, required: true, enable: true}">#{i18n.getText('KDW008_8')}</div>
-											<input id="checkSheetNameIsDaily" class="need-check"
-												data-bind="ntsTextEditor: {value: selectedSheetName, immediate: true,
+										</div>
+										<div id="label2" data-bind="ntsFormLabel: { constraint: 'DailyPerFormatSheetName', inline: true, required: true, enable: true}">#{i18n.getText('KDW008_8')}</div>
+										<input id = "checkSheetNameIsDaily" class="need-check" data-bind="ntsTextEditor: {value: selectedSheetName, immediate: true,
 																	   	  constraint: 'DailyPerFormatSheetName',
 																	   	  name: '#[KDW008_8]',
 																	   	  required: true}"></input>
-											<button class="danger"
-												data-bind="click : btnSheetNo ,enable : enableSheetNo">#{i18n.getText('KDW008_34')}</button>
-										</div>
-										<!-- <div id="label2" style="margin-bottom: 10px" class="label">#{i18n.getText('KDW008_24')}</div> -->
-										<BR />
-										<div id="messageSwaplist">#{i18n.getText('KDW008_29')}</div>
-										<div style="margin-top: 10px" id="swap-list2"
-											data-bind="ntsSwapList: {
+										<button class="danger" data-bind="click : btnSheetNo ,enable : enableSheetNo">#{i18n.getText('KDW008_34')}</button>																	   	  
+									</div>
+									<!-- <div id="label2" style="margin-bottom: 10px" class="label">#{i18n.getText('KDW008_24')}</div> -->
+									<BR />
+									<div id="messageSwaplist">#{i18n.getText('KDW008_29')}</div>
+									<div style="margin-top: 10px" id="swap-list2"
+										data-bind="ntsSwapList: {
 											showSearchBox: { showLeft : true, showRight: true},
 											height: 371,
 											dataSource: dailyDataSource,
@@ -99,19 +97,19 @@
 											outerDrag: { left: true, right: true },
 											itemsLimit: { right: 100}										
 										}"></div>
-										<div id="up-down"
-											data-bind="ntsUpDown: {
+									<div id="up-down"
+										data-bind="ntsUpDown: {
 													targetSource: businessTypeFormatDailyValue,
 													primaryKey: 'attendanceItemId',
 													comId: '#swap-list2',
 													type: 'swap',
 													swapTarget: 'right'}">
-										</div>
 									</div>
-									<div class="tab-content-2" style="height: 470px; width: 900px">
-										<div id="messageSwaplist">#{i18n.getText('KDW008_28')}</div>
-										<div style="margin-top: 10px" id="swap-list"
-											data-bind="ntsSwapList: {
+								</div>
+								<div class="tab-content-2" style="height: 500px; width: 900px">
+									<div id="messageSwaplist">#{i18n.getText('KDW008_28')}</div>
+									<div style="margin-top: 10px" id="swap-list"
+										data-bind="ntsSwapList: {
 											showSearchBox: { showLeft : true, showRight: true},
 											height: 456,
 											dataSource: monthlyDataSource,
@@ -127,41 +125,38 @@
 											outerDrag: { left: true, right: true },
 											itemsLimit: { right: 20} 
 										}"></div>
-										<div id="up-down"
-											data-bind="ntsUpDown: {
+									<div id="up-down"
+										data-bind="ntsUpDown: {
 													targetSource: businessTypeFormatMonthlyValue,
 													primaryKey: 'attendanceItemId',
 													comId: '#swap-list',
 													type: 'swap',
 													swapTarget: 'right'}">
-										</div>
 									</div>
-									<!-- tab3 -->
-									<div class="tab-content-3" style="height: 500px; width: 900px">
-										<div>
-											<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDW008_23')}</div>
-											<div id="A_SEL_002"
-												data-bind="ntsComboBox: {
+								</div>
+								<!-- tab3 -->
+								<div class="tab-content-3" style="height: 500px; width: 900px">
+									<div>
+										<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDW008_23')}</div>
+										<div id="A_SEL_002"
+											data-bind="ntsComboBox: {
 											options: sheetNoList,
 											optionsValue: 'sheetNoId',
 											optionsText: 'sheetNoName',
 											value: selectedSheetNo,
 											enable: true}">
-											</div>
-											<div id="label2"
-												data-bind="ntsFormLabel: { constraint: 'DailyPerFormatSheetName', inline: true, required: true, enable: true}">#{i18n.getText('KDW008_8')}</div>
-											<input id="selectedSheetName"
-												data-bind="ntsTextEditor: {value: selectedSheetName,
+										</div>
+										<div id="label2" data-bind="ntsFormLabel: { constraint: 'DailyPerFormatSheetName', inline: true, required: true, enable: true}">#{i18n.getText('KDW008_8')}</div>
+										<input  id="selectedSheetName"  data-bind="ntsTextEditor: {value: selectedSheetName,
 																	   	  constraint: 'DailyPerFormatSheetName',
 																	   	  name: '#[KDW008_8]',
 																	   	  required: true}"></input>
-											<button class="danger"
-												data-bind="click : btnSheetNo ,enable : enableSheetNo">#{i18n.getText('KDW008_34')}</button>
-										</div>
-										<!-- <div style="margin-top: 10px">#{i18n.getText('KDW008_24')}</div> -->
-										<div style="margin-top: 10px; margin-left: 465px">#{i18n.getText('KDW008_29')}</div>
-										<div style="margin-top: 10px" id="swap-list3"
-											data-bind="ntsSwapList: {
+										<button class="danger" data-bind="click : btnSheetNo ,enable : enableSheetNo">#{i18n.getText('KDW008_34')}</button>
+									</div>
+									<!-- <div style="margin-top: 10px">#{i18n.getText('KDW008_24')}</div> -->
+									<div style="margin-top: 10px; margin-left: 465px" >#{i18n.getText('KDW008_29')}</div>
+									<div style="margin-top: 10px" id="swap-list3"
+										data-bind="ntsSwapList: {
 											showSearchBox: { showLeft : true, showRight: true},
 											height: 406,
 											dataSource: monthlyCorrectedDataSource,
@@ -177,125 +172,13 @@
 											outerDrag: { left: true, right: true },
 											itemsLimit: { right: 100} 
 										}"></div>
-										<div id="up-down"
-											data-bind="ntsUpDown: {
+									<div id="up-down"
+										data-bind="ntsUpDown: {
 													targetSource: monthlyCorrected,
 													primaryKey: 'attendanceItemId',
 													comId: '#swap-list3',
 													type: 'swap',
 													swapTarget: 'right'}">
-										</div>
-									</div>
-								</div>
-							</div> <!-- mobile tab -->
-							<div data-bind="if: isMobile">
-								<div id="tab-panel"
-									data-bind="ntsTabPanel: { dataSource: mobileTabs, active: selectedMobileTab}">
-									<div class="tab-content-1" style="height: 470px; width: 900px">
-										
-										<div style="margin-top: 10px" id="swap-list2"
-											data-bind="ntsSwapList: {
-											showSearchBox: { showLeft : true, showRight: true},
-											height: 456,
-											dataSource: dailyDataSource,
-											primaryKey: 'attendanceItemId',
-											columns: columns1,
-											value: businessTypeFormatDailyValue,
-											searchMode: 'filter',
-											searchCriterion: ['attendanceItemName','attendanceItemDisplayNumber'],
-											draggable: true,
-											enableRowNumbering: false,
-											multipleDrag: { left: true, right: false },
-											innerDrag: { left: false, right: true },
-											outerDrag: { left: true, right: true },
-											itemsLimit: { right: 100}										
-										}"></div>
-										<div id="up-down"
-											data-bind="ntsUpDown: {
-													targetSource: businessTypeFormatDailyValue,
-													primaryKey: 'attendanceItemId',
-													comId: '#swap-list2',
-													type: 'swap',
-													swapTarget: 'right'}">
-										</div>
-									</div>
-									<div class="tab-content-2" style="height: 470px; width: 900px">
-										
-										<div style="margin-top: 10px" id="swap-list"
-											data-bind="ntsSwapList: {
-                    showSearchBox: { showLeft : true, showRight: true},
-                    height: 456,
-                    dataSource: monthlyDataSource,
-                    primaryKey: 'attendanceItemId',
-                    columns: columns2,
-                    value: businessTypeFormatMonthlyValue,
-                    searchMode: 'filter',
-                    searchCriterion: ['attendanceItemName','attendanceItemDisplayNumber'],
-                    draggable: true,
-                    enableRowNumbering: false,
-                    multipleDrag: { left: true, right: false },
-                    innerDrag: { left: false, right: true },
-                    outerDrag: { left: true, right: true },
-                    itemsLimit: { right: 20} 
-                  }"></div>
-										<div id="up-down"
-											data-bind="ntsUpDown: {
-                        targetSource: businessTypeFormatMonthlyValue,
-                        primaryKey: 'attendanceItemId',
-                        comId: '#swap-list',
-                        type: 'swap',
-                        swapTarget: 'right'}">
-										</div>
-									</div>
-									<!-- tab3 -->
-									<div class="tab-content-3" style="height: 500px; width: 900px">
-										<div>
-											<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDW008_23')}</div>
-											<div id="A_SEL_002"
-												data-bind="ntsComboBox: {
-                    options: sheetNoList,
-                    optionsValue: 'sheetNoId',
-                    optionsText: 'sheetNoName',
-                    value: selectedSheetNo,
-                    enable: true}">
-											</div>
-											<div id="label2"
-												data-bind="ntsFormLabel: { constraint: 'DailyPerFormatSheetName', inline: true, required: true, enable: true}">#{i18n.getText('KDW008_8')}</div>
-											<input id="selectedSheetName"
-												data-bind="ntsTextEditor: {value: selectedSheetName,
-                                       constraint: 'DailyPerFormatSheetName',
-                                       name: '#[KDW008_8]',
-                                       required: true}"></input>
-											<button class="danger"
-												data-bind="click : btnSheetNo ,enable : enableSheetNo">#{i18n.getText('KDW008_34')}</button>
-										</div>
-										<!-- <div style="margin-top: 10px">#{i18n.getText('KDW008_24')}</div> -->
-										<div style="margin-top: 10px; margin-left: 465px">#{i18n.getText('KDW008_29')}</div>
-										<div style="margin-top: 10px" id="swap-list3"
-											data-bind="ntsSwapList: {
-                    showSearchBox: { showLeft : true, showRight: true},
-                    height: 406,
-                    dataSource: monthlyCorrectedDataSource,
-                    primaryKey: 'attendanceItemId',
-                    columns: columns3,
-                    value: monthlyCorrected,
-                    searchMode: 'filter',
-                    searchCriterion: ['attendanceItemName','attendanceItemDisplayNumber'],
-                    draggable: true,
-                    enableRowNumbering: false,
-                    multipleDrag: { left: true, right: false },
-                    innerDrag: { left: false, right: true },
-                    outerDrag: { left: true, right: true },
-                    itemsLimit: { right: 100} 
-                  }"></div>
-										<div id="up-down"
-											data-bind="ntsUpDown: {
-                        targetSource: monthlyCorrected,
-                        primaryKey: 'attendanceItemId',
-                        comId: '#swap-list3',
-                        type: 'swap',
-                        swapTarget: 'right'}">
-										</div>
 									</div>
 								</div>
 							</div>
@@ -304,6 +187,7 @@
 				</table>
 			</div>
 		</ui:define>
+
 	</ui:composition>
 </body>
 </html>

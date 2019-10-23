@@ -6,8 +6,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import lombok.val;
@@ -34,7 +32,6 @@ public class DailyLateAndLeaveEarlyTimePubImpl implements DailyLateAndLeaveEarly
 	private AttendanceTimeRepository attendanceTimeRepository; 
 	
 	@Override
-	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public DailyLateAndLeaveEarlyTimePubExport getLateLeaveEarly(DailyLateAndLeaveEarlyTimePubImport imp) {
 		val domains = attendanceTimeRepository.findByPeriodOrderByYmd(imp.getEmployeeId(), imp.getDaterange());
 		List<LateLeaveEarlyManage> lateLeaveEarlyManages = new ArrayList<>();

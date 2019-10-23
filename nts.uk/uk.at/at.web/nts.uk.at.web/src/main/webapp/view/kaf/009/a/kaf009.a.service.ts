@@ -8,8 +8,7 @@ module nts.uk.at.view.kaf009.a.service {
         getGoBackDirectlySetting: "/at/request/application/gobackdirectly/getGoBackCommonSetting",
         insertGoBackDirectly: "/at/request/application/gobackdirectly/insertGoBackDirectly",
         checkInsertGoBackDirectly: "/at/request/application/gobackdirectly/checkBeforeChangeGoBackDirectly",
-        updateGoBackDirectly: "/at/request/application/gobackdirectly/updateGoBackDirectly",
-        confirmInconsistency: "/at/request/application/gobackdirectly/confirmInconsistency"
+        updateGoBackDirectly: "/at/request/application/gobackdirectly/updateGoBackDirectly"
     }
     /**
      * get all Work Location  
@@ -50,9 +49,5 @@ module nts.uk.at.view.kaf009.a.service {
      */
     export function updateGoBackDirect(currentGoBack: common.GoBackCommand): JQueryPromise<Array<any>> {
         return ajax("at", paths.updateGoBackDirectly, currentGoBack);
-    }
-    
-    export function confirmInconsistency(currentGoBack: common.GoBackCommand): JQueryPromise<Array<any>> {
-        return ajax("at", paths.confirmInconsistency, currentGoBack);
     }
 }

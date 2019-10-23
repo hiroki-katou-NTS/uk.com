@@ -4,10 +4,8 @@ import { obj, constraint } from '@app/utils';
 import { component, Prop } from '@app/core/component';
 
 @component({
-    template: `<div class="control-label control-label-block"
-            v-bind:class="[classMarginBottom, { 
-                'control-label-required': constraint.required
-            }]">
+    template: `<div class="control-label control-label-block mb-1"
+    v-bind:class="{ 'control-label-danger': constraint.required }">
         <span><slot /></span>
         <template v-if="primitive"><span>{{primitive}}</span></template>
         <template v-else />
@@ -19,9 +17,6 @@ class LabelComponent extends Vue {
 
     @Prop({ default: () => true })
     public readonly showConstraint!: 'true' | 'fasle' | boolean;
-
-    @Prop({ default: () => 1 })
-    public readonly marginBottom!: number;
 
     get primitive(): string {
         let self = this;
@@ -35,10 +30,6 @@ class LabelComponent extends Vue {
         }
 
         return '';
-    }
-
-    get classMarginBottom() {
-        return `mb-${this.marginBottom}`;
     }
 }
 

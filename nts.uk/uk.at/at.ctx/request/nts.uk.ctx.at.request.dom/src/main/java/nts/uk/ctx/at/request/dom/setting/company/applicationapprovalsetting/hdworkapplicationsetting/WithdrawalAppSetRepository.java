@@ -21,6 +21,4 @@ public interface WithdrawalAppSetRepository {
 	 * @author yennth
 	 */
 	void insert(WithdrawalAppSet with);
-	
-	Optional<WithdrawalAppSet> getByCid(String cid);
 }

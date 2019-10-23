@@ -1,12 +1,9 @@
 package nts.uk.screen.at.app.dailyperformance.correction.identitymonth;
 
-import java.util.Optional;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.IdentityProcessUseSetDto;
 
 @Data
 @NoArgsConstructor
@@ -18,9 +15,4 @@ public class IndentityMonthParam {
 	public String employeeId;
 	
 	public GeneralDate dateRefer;
-	
-	public Integer displayFormat;
-	
-	public Optional<IdentityProcessUseSetDto> identityUseSetDto;
-
 }

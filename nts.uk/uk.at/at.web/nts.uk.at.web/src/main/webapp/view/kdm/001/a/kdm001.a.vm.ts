@@ -114,7 +114,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             });
 
             $("#compositePayOutSubMngDataGrid").ntsGrid({
-                height: '550px',
+                height: '520px',
                 name: 'Grid name',
                 dataSource: self.compositePayOutSubMngData(),
                 primaryKey: 'id',
@@ -152,8 +152,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                     {
                         name: 'Paging',
                         type: "local",
-                        pageSize: 15,
-                        pageSizeList : [15, 50, 100]
+                        pageSize: 14
                     },
                     {
                         name: "Resizing",

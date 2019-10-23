@@ -32,39 +32,18 @@ public class SspmtDataRecoverLog extends UkJpaEntity implements Serializable {
 	public SspmtDataRecoverLogPk dataRecoverLogPk;
 
 	/**
-	 * 処理内容
-	 */
-	@Basic(optional = true)
-	@Column(name = "PROCESSING_CONTENT")
-	public String processingContent;
-
-	/**
-	 * 対象者
-	 */
-	@Basic(optional = true)
-	@Column(name = "TARGET")
-	public String target;
-
-	/**
-	 * 対象日
-	 */
-	@Basic(optional = true)
-	@Column(name = "TARGET_DATE")
-	public GeneralDate targetDate;
-
-	/**
 	 * エラー内容
 	 */
-	@Basic(optional = true)
+	@Basic(optional = false)
 	@Column(name = "ERROR_CONTENT")
 	public String errorContent;
 
 	/**
-	 * 実行SQL
+	 * 対象日
 	 */
-	@Basic(optional = true)
-	@Column(name = "CONTENT_SQL")
-	public String contentSql;
+	@Basic(optional = false)
+	@Column(name = "TARGET_DATE")
+	public GeneralDate targetDate;
 
 	@Override
 	protected Object getKey() {
@@ -72,8 +51,12 @@ public class SspmtDataRecoverLog extends UkJpaEntity implements Serializable {
 	}
 
 	public DataRecoveryLog toDomain() {
-		return new DataRecoveryLog(this.dataRecoverLogPk.recoveryProcessId, this.target, 
-				this.errorContent, this.targetDate, this.dataRecoverLogPk.logSequenceNumber, 
-				this.processingContent, this.contentSql);
+		return new DataRecoveryLog(this.dataRecoverLogPk.recoveryProcessId, this.dataRecoverLogPk.target, errorContent,
+				this.targetDate);
+	}
+
+	public static SspmtDataRecoverLog toEntity(DataRecoveryLog domain) {
+		return new SspmtDataRecoverLog(new SspmtDataRecoverLogPk(domain.getRecoveryProcessId(), domain.getTarget()),
+				domain.getErrorContent().v(), domain.getTargetDate());
 	}
 }

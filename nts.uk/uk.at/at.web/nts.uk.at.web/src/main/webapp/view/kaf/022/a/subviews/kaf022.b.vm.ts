@@ -34,8 +34,8 @@ ko.components.register('kaf022-b', {
                     { code: 2, name: text('KAF022_175') },
                 ]),
                 itemListB28: ko.observableArray([
-                    { code: 0, name: text('KAF022_139') },
-                    { code: 1, name: text('KAF022_140') },
+                    { code: 1, name: text('KAF022_139') },
+                    { code: 0, name: text('KAF022_140') },
                 ]),
             };
 
@@ -259,7 +259,7 @@ ko.components.register('kaf022-b', {
                             optionsValue: 'code',
                             optionsText: 'name',
                             value: $bv.selectedIdB32,
-                            enable: true}">
+                            enable: false}">
                         </div>
                     </td>
                 </tr>

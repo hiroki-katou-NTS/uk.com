@@ -9,7 +9,6 @@ import nts.uk.ctx.at.request.dom.application.BreakReflect;
 import nts.uk.ctx.at.request.dom.application.Changeable;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.OverrideSet;
 /**
  * 残業申請設定
  * @author loivt
@@ -67,7 +66,7 @@ public class AppOvertimeSetting extends AggregateRoot{
 	/**
 	 * 実績超過打刻優先設定  
 	 */
-	private OverrideSet priorityStampSetAtr;
+	private PriorityStampSetAtr priorityStampSetAtr;
 	/**
 	 * 残業時間指定単位
 	 */
@@ -104,7 +103,7 @@ public class AppOvertimeSetting extends AggregateRoot{
 				EnumAdaptor.valueOf(calendarDispAtr, UseAtr.class), 
 				EnumAdaptor.valueOf(earlyOvertimeUseAtr, UseAtr.class), 
 				EnumAdaptor.valueOf(instructExcessOTAtr, UseAtr.class), 
-				EnumAdaptor.valueOf(priorityStampSetAtr, OverrideSet.class), 
+				EnumAdaptor.valueOf(priorityStampSetAtr, PriorityStampSetAtr.class), 
 				EnumAdaptor.valueOf(unitAssignmentOvertime, UnitAssignmentOvertime.class), 
 				EnumAdaptor.valueOf(normalOvertimeUseAtr, UseAtr.class), 
 				new OtHourUnitControl(EnumAdaptor.valueOf(attendanceId, AttendanceType.class), 

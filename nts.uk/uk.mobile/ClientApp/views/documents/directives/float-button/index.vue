@@ -1,6 +1,6 @@
 <template>
   <div class="documentsdirectivesfloat-button">
-    <div class="fixed-action-btn" v-float-action="{ icon: 'fas fa-pen', background: 'bg-brown-500', forceground: '' }">
+    <div class="fixed-action-btn" v-float-action>
       <ul>
         <li class="btn-info">
           <span>{{'vote_app' | i18n}}</span>

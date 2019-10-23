@@ -16,7 +16,3 @@ UK Mobile (using bootstrap).
   - ```npm run webpack:vendor:prod```
   - ```npm run webpack:prod```
 2. Copy war file in wwwroot folder to webservice.
-
-
-Run Uk Mobile with other server  
-```npm run start:dev -- --env.api=http://192.168.50.14:8480```

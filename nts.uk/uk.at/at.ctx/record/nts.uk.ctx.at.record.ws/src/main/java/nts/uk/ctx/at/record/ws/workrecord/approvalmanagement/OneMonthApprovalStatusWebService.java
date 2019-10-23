@@ -28,28 +28,21 @@ public class OneMonthApprovalStatusWebService extends WebService {
 
 	@POST
 	@Path("startscreen")
-	public OneMonthApprovalStatusDto startScreen(OneMonthApprovalStatusRequest param) {
-		return oneMonthApprovalStatusFinder.getOneMonthApprovalStatus(param.getClosureIdParam(),
-				param.getYearMonth());
+	public OneMonthApprovalStatusDto startScreen() {
+		return oneMonthApprovalStatusFinder.getOneMonthApprovalStatus(null, null, null);
 	}
 
 	@POST
 	@Path("extractApprovalStatusData")
 	public OneMonthApprovalStatusDto extractApprovalStatusData(OneMonthApprovalStatusRequest request) {
 		return oneMonthApprovalStatusFinder.getOneMonthApprovalStatus(request.getClosureIdParam(),
-				request.getYearMonth());
+				request.getStartDateParam(), request.getEndDateParam());
 	}
 	
 	@POST
 	@Path("getdaterange/{closureId}/{currentYearMonth}")
 	public OneMonthApprovalStatusDto getDateRange(@PathParam("closureId") int closureId,@PathParam("currentYearMonth") int currentYearMonth) {
 		return oneMonthApprovalStatusFinder.getDatePeriod(closureId,currentYearMonth);
-	}
-	
-	@POST
-	@Path("changeCondition")
-	public OneMonthApprovalStatusDto changeCondition(OneMonthApprovalStatusRequest request) {
-		return oneMonthApprovalStatusFinder.changeConditionExtract(request.getClosureIdParam(), request.getYearMonth());
 	}
 
 }

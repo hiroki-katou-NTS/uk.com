@@ -6,9 +6,8 @@ module nts.uk.at.view.kdw008.c {
                 findAllMonth: "at/record/attendanceitem/monthly/findall",             
                 updateBusinessTypeSorted: "at/record/businesstype/updateBusinessTypeSorted",
                 updateMonth: "at/function/monthlycorrection/updatebusinessMonth",
-                getAllBusiness: "at/function/monthlycorrection/getallbusiness",
-                findAllMobile: "at/record/businesstype/mobile/findBusinessTypeSorted",
-                updateBusinessTypeMBSorted: "at/record/businesstype/mobile/updateBusinessTypeSorted"
+                
+                getAllBusiness: "at/function/monthlycorrection/getallbusiness"
             };
 
             constructor() {
@@ -36,16 +35,6 @@ module nts.uk.at.view.kdw008.c {
             getAllBusiness(): JQueryPromise<any> {
                 let _path = nts.uk.text.format(this.paths.getAllBusiness);
                 return nts.uk.request.ajax("at", _path);
-            };
-            
-            // Mobile Mode
-            findAllMobile(): JQueryPromise<any> {
-                let _path = nts.uk.text.format(this.paths.findAllMobile);
-                return nts.uk.request.ajax("at", _path);
-            };
-            
-            updateBusinessTypeMBSorted(UpdateBusTypeSortedMBCommand: any): JQueryPromise<any> {
-                return nts.uk.request.ajax("at", this.paths.updateBusinessTypeMBSorted, {businessTypeSortedDtos: UpdateBusTypeSortedMBCommand});
             };
         }
     }

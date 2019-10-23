@@ -10,7 +10,6 @@ import nts.uk.ctx.sys.auth.dom.role.RoleAtr;
 import nts.uk.ctx.sys.auth.dom.role.RoleRepository;
 
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.context.loginuser.role.LoginUserRoles;
 @Stateless
 public class GetWhetherLoginerCharge {
 	
@@ -19,16 +18,11 @@ public class GetWhetherLoginerCharge {
 	
 	//Logic request list 50
 	public RoleWhetherLoginDto getWhetherLoginerCharge(){
-
-		return getWhetherLoginerCharge(AppContexts.user().roles());
-	}
-	
-	public RoleWhetherLoginDto getWhetherLoginerCharge(LoginUserRoles roles){
-		String employmentRoleID = roles.forAttendance();
-		String salaryRoleID = roles.forPayroll();
-		String humanResourceRoleID = roles.forPersonnel();
-		String officeHelperRoleID = roles.forOfficeHelper();
-		String personalInforRoleID = roles.forPersonalInfo();
+		String employmentRoleID = AppContexts.user().roles().forAttendance();
+		String salaryRoleID = AppContexts.user().roles().forPayroll();
+		String humanResourceRoleID = AppContexts.user().roles().forPersonnel();
+		String officeHelperRoleID = AppContexts.user().roles().forOfficeHelper();
+		String personalInforRoleID = AppContexts.user().roles().forPersonalInfo();
 
 		RoleWhetherLoginDto outputRole = new RoleWhetherLoginDto();
 		Optional<Role> roleEmployment = roleRepo.findByRoleId(employmentRoleID);

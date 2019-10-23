@@ -18,6 +18,8 @@ public class CommonReflectSchePubParam {
 	 */
 	private String worktypeCode;
 	private String workTimeCode;
+	private GeneralDate startDate;
+	private GeneralDate endDate;
 	private Integer startTime;
 	private Integer endTime;
 }

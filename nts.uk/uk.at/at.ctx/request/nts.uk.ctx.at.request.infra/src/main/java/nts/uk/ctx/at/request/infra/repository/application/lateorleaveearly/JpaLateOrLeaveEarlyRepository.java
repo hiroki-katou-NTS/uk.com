@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -73,7 +71,6 @@ public class JpaLateOrLeaveEarlyRepository extends JpaRepository implements Late
 	}
 
 	@Override
-	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<LateOrLeaveEarly> findByActualCancelAtr(List<String> listAppID, Integer actualCancelAtr) {
 		List<LateOrLeaveEarly> resultList = new ArrayList<>();
 		CollectionUtil.split(listAppID, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {

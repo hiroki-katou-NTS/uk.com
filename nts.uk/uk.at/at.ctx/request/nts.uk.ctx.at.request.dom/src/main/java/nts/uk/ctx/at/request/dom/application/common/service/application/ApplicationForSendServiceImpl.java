@@ -23,8 +23,6 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRoo
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
 import nts.uk.ctx.at.request.dom.application.common.service.application.output.ApplicationForSendOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.application.output.ApprovalRootOutput;
-import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispName;
-import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
 import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailapplicationapproval.ApprovalTemp;
 import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailapplicationapproval.ApprovalTempRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -49,9 +47,6 @@ public class ApplicationForSendServiceImpl implements IApplicationForSendService
 	
 	@Inject
 	private EnvAdapter envAdapter;
-	
-	@Inject
-	private AppDispNameRepository appDispNameRepo;
 	/**
 	 * ダイアログを開く kdl030
 	 */
@@ -92,33 +87,23 @@ public class ApplicationForSendServiceImpl implements IApplicationForSendService
 			List<MailDestinationImport> lstMailLogin = envAdapter.getEmpEmailAddress(companyID, Arrays.asList(AppContexts.user().employeeId()), 6);
 			List<OutGoingMailImport> outMails = lstMailLogin.get(0).getOutGoingMails();
 			String loginMail = outMails.isEmpty() || outMails.get(0).getEmailAddress() == null ? "" : outMails.get(0).getEmailAddress();
-			//アルゴリズム「申請理由出力_共通」を実行する -> xu ly trong ham get content
 			String appContent = appContentService.getApplicationContent(application_New.get());
 			//ver7
 			String date = app.getStartDate().get().equals(app.getEndDate().get()) ? app.getStartDate().get().toString() : 
 				app.getStartDate().get().toString() + "～" + app.getEndDate().get().toString();
-			//hoatt 2019.05.02 bug #107518
-			//EA修正履歴No.3381
-			//ドメインモデル「申請表示名」を取得する
-			List<AppDispName> appDispNameLst = appDispNameRepo.getAll();
-			Optional<AppDispName> appNameOp = appDispNameLst.stream().filter(c -> c.getAppType().equals(application_New.get().getAppType())).findAny();
-			String appName = appNameOp.isPresent() && appNameOp.get().getDispName() != null ? appNameOp.get().getDispName().v() : "";
 			//メール本文を編集する
 			String mailContentToSend = I18NText.getText("Msg_703",
 					loginName,//{0}　←　ログイン者の氏名
 					appTempAsStr,//{1}　←　申請承認メールテンプレート．本文
 					app.getStartDate().get().toString(),//{2}　←　申請．申請日付
-					appName,//{3}　←　申請表示名 ver9
+					app.getAppType().nameId,//{3}　←　申請．申請種類（名称）
 					empName,//{4}　←　申請．申請者の氏名
 					date,//{5}　←　申請．申請日付
 					appContent,//{6}　←　申請．申請内容()
 					loginName,//{7}　←　ログイン者．氏名
 					loginMail//{8}　←　ログイン者．メールアドレス
 			);
-			//EA3315
-			//hoatt 2019.04.19
-			//imported（申請承認）「社員名（ビジネスネーム）」を取得する  ※RequestList 228
-			return new ApplicationForSendOutput(app, mailContentToSend, approvalRoot, applicantMail, empName);
+			return new ApplicationForSendOutput(app, mailContentToSend, approvalRoot, applicantMail);
 		}
 		return null;
 	}

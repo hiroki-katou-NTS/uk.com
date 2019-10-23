@@ -10,7 +10,6 @@ import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetAgreementPeriod;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementOperationSetting;
 import nts.uk.ctx.at.record.pub.monthly.agreement.GetAgreementPeriodPub;
 import nts.uk.ctx.at.shared.dom.common.Year;
-import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
@@ -34,7 +33,7 @@ public class GetAgreementPeriodPubImpl implements GetAgreementPeriodPub {
 	/** 指定日を含む年期間を取得 */
 	@Override
 	public Optional<YearMonthPeriod> containsDate(String companyId, GeneralDate criteria,
-			Optional<AgreementOperationSetting> agreementOperationSet, Closure closure) {
-		return this.getAgreementPeriod.containsDate(companyId, criteria, agreementOperationSet, closure);
+			Optional<AgreementOperationSetting> agreementOperationSet) {
+		return this.getAgreementPeriod.containsDate(companyId, criteria, agreementOperationSet);
 	}
 }

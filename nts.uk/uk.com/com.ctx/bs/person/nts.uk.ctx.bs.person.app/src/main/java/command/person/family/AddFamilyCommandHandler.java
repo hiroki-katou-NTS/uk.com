@@ -35,16 +35,11 @@ implements PeregAddCommandHandler<AddFamilyCommand>{
 		// Create new Id
 		String newId = IdentifierUtil.randomUniqueId();
 		
-		FamilyMember family = FamilyMember.createFromJavaType(newId, command.getPersonId(),
-				command.getFullName(), command.getFullNameKana(), 
-				command.getNameRomajiFull(), command.getNameRomajiFullKana(),
-				command.getNameMultiLangFull(), command.getNameMultiLangFullKana(), 
-				command.getTokodekeName(),"",
-				command.getBirthday(), 
-				command.getDeadDay(), 
-				command.getEntryDate(),
-				command.getExpelledDate(),
-				command.getRelationship());
+		FamilyMember family = FamilyMember.createFromJavaType(command.getBirthday(), command.getDeadDay(), command.getEntryDate(),
+				command.getExpelledDate(), newId, command.getFullName(), command.getFullNameKana(), command.getNameMultiLangFull(),
+				command.getNameMultiLangFullKana(), command.getNameRomajiFull(), command.getNameRomajiFullKana(), 
+				command.getNationalityId(), command.getOccupationName(), command.getPersonId(), command.getRelationship(), 
+				command.getSupportCareType(), command.getTokodekeName(), command.getTogSepDivisionType(), command.getWorkStudentType());
 		
 		// Add family
 		familyRepository.addFamily(family);

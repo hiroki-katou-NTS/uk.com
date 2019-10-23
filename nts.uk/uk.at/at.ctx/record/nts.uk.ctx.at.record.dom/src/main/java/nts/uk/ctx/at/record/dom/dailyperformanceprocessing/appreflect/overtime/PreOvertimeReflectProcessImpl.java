@@ -14,6 +14,7 @@ import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ReflectParameter;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeIsFluidWork;
 @Stateless
 public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
@@ -45,24 +46,24 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 	}
 	
 	@Override
-	public AppReflectRecordWork changeFlg(OvertimeParameter para, WorkInfoOfDailyPerformance dailyInfo) {
+	public boolean changeFlg(OvertimeParameter para, IntegrationOfDaily dailyInfo) {
 		boolean ischeck = false;
 		//ＩNPUT．勤務種類コードとＩNPUT．就業時間帯コードをチェックする
 		//INPUT．勤種反映フラグ(実績)をチェックする
 		if(para.getOvertimePara().getWorkTimeCode() == null || para.getOvertimePara().getWorkTimeCode().isEmpty()
 				|| para.getOvertimePara().getWorkTypeCode() == null || para.getOvertimePara().getWorkTypeCode().isEmpty()
 				|| !para.isActualReflectFlg()) {
-			return new AppReflectRecordWork(ischeck, dailyInfo);
+			return ischeck;
 		}
 		
 		//反映前後勤就に変更があるかチェックする
 		//取得した勤務種類コード ≠ INPUT．勤務種類コード OR
 		//取得した就業時間帯コード ≠ INPUT．就業時間帯コード
-		
-		if(dailyInfo.getRecordInfo().getSiftCode() == null
-				|| dailyInfo.getRecordInfo().getWorkTypeCode() == null
-				|| !dailyInfo.getRecordInfo().getWorkTimeCode().v().equals(para.getOvertimePara().getWorkTimeCode())
-				||!dailyInfo.getRecordInfo().getWorkTypeCode().v().equals(para.getOvertimePara().getWorkTypeCode())){
+		WorkInformation workInformation = dailyInfo.getWorkInformation().getRecordInfo();
+		if(workInformation.getSiftCode() == null
+				|| workInformation.getWorkTypeCode() == null
+				|| !workInformation.getWorkTimeCode().v().equals(para.getOvertimePara().getWorkTimeCode())
+				||!workInformation.getWorkTypeCode().v().equals(para.getOvertimePara().getWorkTypeCode())){
 			ischeck = true;
 		} 
 		//勤種・就時の反映
@@ -71,8 +72,8 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 				para.getOvertimePara().getWorkTimeCode(), 
 				para.getOvertimePara().getWorkTypeCode(),
 				false); 
-		dailyInfo = workUpdate.updateWorkTimeType(reflectInfo, false, dailyInfo);*/
-		return new AppReflectRecordWork(ischeck, dailyInfo);
+		workUpdate.updateWorkTimeType(reflectInfo, false, dailyInfo);*/
+		return ischeck;
 		
 	}
 	@Override
@@ -84,10 +85,9 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 		}
 		//予定開始終了時刻の反映(事前事後共通部分)
 		//WorkTimeTypeOutput timeTypeData = this.getScheWorkTimeType(para.getEmployeeId(), para.getDateInfo());
-		
-		WorkTimeTypeOutput dataOut = new WorkTimeTypeOutput(dailyData.getWorkInformation().getScheduleInfo().getWorkTimeCode() == null 
-				? null : dailyData.getWorkInformation().getScheduleInfo().getWorkTimeCode().v(),
-				dailyData.getWorkInformation().getScheduleInfo().getWorkTypeCode() == null ? null : dailyData.getWorkInformation().getScheduleInfo().getWorkTypeCode().v());
+		WorkInformation scheInfor = dailyData.getWorkInformation().getScheduleInfo();
+		WorkTimeTypeOutput dataOut = new WorkTimeTypeOutput(scheInfor.getWorkTimeCode() == null ? null : scheInfor.getWorkTimeCode().v(),
+				scheInfor.getWorkTypeCode() == null ? null : scheInfor.getWorkTypeCode().v());
 		scheStartEndTimeReflect.reflectScheStartEndTime(para, dataOut, dailyData);
 	}
 	@Override
@@ -140,7 +140,7 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 	}
 
 	@Override
-	public void getReflectOfOvertime(OvertimeParameter para, IntegrationOfDaily dailyData) {
+	public void getReflectOfOvertime(OvertimeParameter para, IntegrationOfDaily dailyInfor) {
 		Map<Integer, Integer> tmp = new HashMap<>();
 		for(Map.Entry<Integer,Integer> entry : para.getOvertimePara().getMapOvertimeFrame().entrySet()){
 			//INPUT．残業時間のループ中の番をチェックする
@@ -151,7 +151,7 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 		}
 		
 		//残業時間の反映
-		workUpdate.reflectOffOvertime(para.getEmployeeId(), para.getDateInfo(), tmp, true, dailyData);
+		workUpdate.reflectOffOvertime(para.getEmployeeId(), para.getDateInfo(), tmp, true, dailyInfor);
 	}
 
 	@Override

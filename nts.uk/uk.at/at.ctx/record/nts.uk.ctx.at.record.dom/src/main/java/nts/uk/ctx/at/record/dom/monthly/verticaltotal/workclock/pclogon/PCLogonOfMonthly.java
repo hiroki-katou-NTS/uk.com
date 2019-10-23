@@ -5,13 +5,10 @@ import java.util.Optional;
 import lombok.Getter;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.PredetermineTimeSetForCalc;
-import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
-import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 /**
  * 月別実績のPCログオン情報
- * @author shuichi_ishida
+ * @author shuichu_ishida
  */
 @Getter
 public class PCLogonOfMonthly {
@@ -50,26 +47,16 @@ public class PCLogonOfMonthly {
 	 * 集計
 	 * @param pcLogonInfoOpt 日別実績のPCログオン情報 
 	 * @param attendanceTimeOfDaily 日別実績の勤怠時間
-	 * @param timeLeavingOfDaily 日別実績の出退勤
-	 * @param isWeekday 平日かどうか
-	 * @param workType 勤務種類
-	 * @param predTimeSetForCalc 計算用所定時間設定
 	 */
 	public void aggregate(
 			Optional<PCLogOnInfoOfDaily> pcLogonInfoOpt,
-			AttendanceTimeOfDailyPerformance attendanceTimeOfDaily,
-			TimeLeavingOfDailyPerformance timeLeavingOfDaily,
-			boolean isWeekday,
-			WorkType workType,
-			PredetermineTimeSetForCalc predTimeSetForCalc){
+			AttendanceTimeOfDailyPerformance attendanceTimeOfDaily){
 		
 		// PCログオン時刻
-		this.logonClock.aggregate(pcLogonInfoOpt, timeLeavingOfDaily, isWeekday,
-				workType, predTimeSetForCalc);
+		this.logonClock.aggregate(pcLogonInfoOpt);
 		
 		// PCログオン乖離
-		this.logonDivergence.aggregate(pcLogonInfoOpt, attendanceTimeOfDaily, timeLeavingOfDaily, isWeekday,
-				workType, predTimeSetForCalc);
+		this.logonDivergence.aggregate(attendanceTimeOfDaily);
 	}
 	
 	/**

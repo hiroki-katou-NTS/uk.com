@@ -88,7 +88,7 @@ module nts.uk.com.view.cas005.a {
                 self.roleName = ko.observable('');
                 self.roleCode = ko.observable('');
                 self.assignAtr = ko.observable(0);
-                let allEmployee = [];
+                 let allEmployee = [];
                 allEmployee.push(self.listEmployeeReferenceRange()[0]);
                 let other = [];
                 other.push(self.listEmployeeReferenceRange()[1]);
@@ -110,13 +110,13 @@ module nts.uk.com.view.cas005.a {
                     self.specifyingAgent(0);
 
                 });
-
+                
                 self.employeeReferenceRange = ko.observable(0);
                 self.employeeReferenceRange.subscribe(function(value) {
-                    if (value == 3) {
+                    if(value == 3){
                         self.componentCcg026.enable(false);
-                    } else {
-                        self.componentCcg026.enable(true);
+                    }else{
+                        self.componentCcg026.enable(true);    
                     }
                 });
 
@@ -131,7 +131,7 @@ module nts.uk.com.view.cas005.a {
                 ]);
                 self.selectCategoryAssign = ko.observable(1);
                 self.selectReferenceAuthority = ko.observable("1");
-
+                
                 //combobox
                 self.selectedCode = ko.observable('1');
                 self.isEnable = ko.observable(true);
@@ -172,15 +172,15 @@ module nts.uk.com.view.cas005.a {
                 });
                 self.componentCcg026.listPermissions.subscribe((value) => {
                     self.listWorkPlaceAuthorityCommand([]);
-                    for (let i = 0; i < value.length; i++) { //sucribe
-                        let tempCommand = new model.WorkPlaceAuthorityCommand(
-                            value[i].functionNo, value[i].availability());
-                        self.listWorkPlaceAuthorityCommand().push(tempCommand);
-                    }
-                    if (self.objCommandScreenB()) {
+                        for (let i = 0; i < value.length; i++) { //sucribe
+                            let tempCommand = new model.WorkPlaceAuthorityCommand(
+                                value[i].functionNo, value[i].availability());
+                            self.listWorkPlaceAuthorityCommand().push(tempCommand);
+                        }
+                    if(self.objCommandScreenB()){
                         self.objCommandScreenB().listWorkPlaceAuthority = self.listWorkPlaceAuthorityCommand();
-                    }
-                    self.listWorkPlaceAuthorityParam(self.listWorkPlaceAuthorityCommand());
+                     }
+                     self.listWorkPlaceAuthorityParam(self.listWorkPlaceAuthorityCommand());
                 });
                 //obj roleCas005Command
                 self.roleCas005Command = ko.observable(null);
@@ -207,12 +207,12 @@ module nts.uk.com.view.cas005.a {
                     self.isCategoryAssign(false);
                 }
                 self.enableRoleCode(false);
-                if (self.assignAtr() == 0) {
-                    self.visibleWebmenu(true);
-                } else {
-                    self.visibleWebmenu(false);
+                if(self.assignAtr() ==0){
+                    self.visibleWebmenu(true);    
+                }else{
+                    self.visibleWebmenu(false);    
                 }
-
+                
                 self.isDelete(true);
                 self.isCopy(true);
                 let item = _.find(self.listRole(), ['roleId', value]);
@@ -248,8 +248,8 @@ module nts.uk.com.view.cas005.a {
                         parseInt(self.selectReferenceAuthority()),
                         self.listWorkPlaceAuthorityCommand()
                     ));
-                    $("#roleNameFocus").focus();
-                    _.defer(() => { errors.clearAll(); });
+                    $("#roleNameFocus").focus(); 
+                    _.defer(() => {errors.clearAll();});
                 } else {
                     self.roleName('');
                     self.assignAtr(0);
@@ -271,7 +271,7 @@ module nts.uk.com.view.cas005.a {
                 if (selectRoleCodeByIndex !== undefined) {
                     self.component.currentCode(selectRoleCodeByIndex.roleId);
                 }
-
+                
 
             }
             /**
@@ -316,31 +316,28 @@ module nts.uk.com.view.cas005.a {
                 self.getAllWorkPlaceFunction();
                 self.getListWebMenu();
                 self.getData().done(function() {
-
                     self.getListWorkplace().done(() => {
                         block.clear();
-                        self.component.listRole(_.orderBy(self.component.listRole(), ['roleCode'], ['asc']));
                         if (self.component.listRole().length != 0)
                             self.selectRoleCodeByIndex(0);
-                        else {
+                        else
                             self.createButton();
-                        }
                         dfd.resolve();
                     });
                 });
-
+                
                 return dfd.promise();
             }//end start page
 
             /**
              * export excel
              */
-            exportExcel() {
+            exportExcel(){
                 nts.uk.com.view.cas005.a.service.exportExcel().done(function(data) {
 
                 }).fail(function(res: any) {
                     nts.uk.ui.dialog.alertError(res).then(function() { nts.uk.ui.block.clear(); });
-                }).always(() => {
+                }).always(()=>{
                     block.clear();
                 });
             }
@@ -351,11 +348,9 @@ module nts.uk.com.view.cas005.a {
             private getData() {
                 let self = this;
                 let dfd = $.Deferred();
-                let thanh = [];
                 block.invisible();
                 self.component.startPage().done(function() {
-                    let roles = _.orderBy(self.component.listRole(), ['roleCode'], ['asc']);
-                    self.listRole(roles);
+                    self.listRole(self.component.listRole());
                     self.component.currentCode.valueHasMutated();
                     self.assignAtr.valueHasMutated();
                     dfd.resolve();
@@ -392,8 +387,8 @@ module nts.uk.com.view.cas005.a {
                 }).fail(function(res: any) {
                     dfd.reject();
                     nts.uk.ui.dialog.alertError(res).then(function() { nts.uk.ui.block.clear(); });
-                }).always(() => {
-                    block.clear();
+                }).always(()=>{
+                    block.clear();    
                 });
                 return dfd.promise();
             }
@@ -403,7 +398,7 @@ module nts.uk.com.view.cas005.a {
             getRoleByRoleTiesById(roleId: string) {
                 let self = this;
                 let dfd = $.Deferred();
-                if (self.assignAtr() == 0) {
+                if(self.assignAtr() == 0){
                     block.invisible();
                     service.getRoleByRoleTiesById(roleId).done(function(data) {
                         self.selectWebMenu(data.webMenuCd);
@@ -411,10 +406,10 @@ module nts.uk.com.view.cas005.a {
                     }).fail(function(res: any) {
                         dfd.reject();
                         nts.uk.ui.dialog.alertError(res).then(function() { nts.uk.ui.block.clear(); });
-                    }).always(() => {
-                        block.clear();
+                    }).always(()=>{
+                        block.clear();    
                     });
-                } else {
+                }else{
                     dfd.resolve();
                 }
                 return dfd.promise();
@@ -432,8 +427,8 @@ module nts.uk.com.view.cas005.a {
                 }).fail(function(res: any) {
                     dfd.reject();
                     nts.uk.ui.dialog.alertError(res).then(function() { nts.uk.ui.block.clear(); });
-                }).always(() => {
-                    block.clear();
+                }).always(()=>{
+                    block.clear();    
                 });
                 return dfd.promise();
             }
@@ -467,8 +462,8 @@ module nts.uk.com.view.cas005.a {
                 }).fail(function(res: any) {
                     dfd.reject();
                     nts.uk.ui.dialog.alertError(res).then(function() { nts.uk.ui.block.clear(); });
-                }).always(() => {
-                    block.clear();
+                }).always(()=>{
+                    block.clear();    
                 });
                 return dfd.promise();
             }
@@ -478,20 +473,20 @@ module nts.uk.com.view.cas005.a {
             getEmploymentRoleById(roleId: string) {
                 let self = this;
                 let dfd = $.Deferred();
-                block.invisible();
-                service.getEmploymentRoleById(roleId).done(function(data) {
-                    self.scheduleScreen(data.scheduleEmployeeRef);
-                    self.bookingScreen(data.bookEmployeeRef);
-                    self.specifyingAgent(data.employeeRefSpecAgent);
-                    self.registeredInquiries(data.presentInqEmployeeRef);
-                    self.selectReferenceAuthority(data.futureDateRefPermit.toString());
-                    dfd.resolve(data);
-                }).fail(function(res: any) {
-                    dfd.reject();
-                    nts.uk.ui.dialog.alertError(res).then(function() { nts.uk.ui.block.clear(); });
-                }).always(() => {
-                    block.clear();
-                });
+                    block.invisible();
+                    service.getEmploymentRoleById(roleId).done(function(data) {
+                        self.scheduleScreen(data.scheduleEmployeeRef);
+                        self.bookingScreen(data.bookEmployeeRef);
+                        self.specifyingAgent(data.employeeRefSpecAgent);
+                        self.registeredInquiries(data.presentInqEmployeeRef);
+                        self.selectReferenceAuthority(data.futureDateRefPermit.toString());
+                        dfd.resolve(data);
+                    }).fail(function(res: any) {
+                        dfd.reject();
+                        nts.uk.ui.dialog.alertError(res).then(function() { nts.uk.ui.block.clear(); });
+                    }).always(()=>{
+                        block.clear();    
+                    });
                 return dfd.promise();
             }
             //20Oct1993778343
@@ -528,7 +523,7 @@ module nts.uk.com.view.cas005.a {
                 }
                 $("#roleTypeCd").focus();
                 var abc = 1;
-                _.defer(() => { errors.clearAll(); });
+                _.defer(() => {errors.clearAll();}); 
             }
 
             /**
@@ -543,7 +538,7 @@ module nts.uk.com.view.cas005.a {
                     let tempCommand = new model.WorkPlaceAuthorityCommand(self.componentCcg026.listPermissions()[i].functionNo, self.employeeReferenceRange() == 3 ? false : self.componentCcg026.listPermissions()[i].availability());
                     self.listWorkPlaceAuthorityCommand().push(tempCommand);
                 }
-
+                
                 if (!$(".nts-input").ntsError("hasError")) {
                     self.roleCas005Command(new model.RoleCas005Command(
                         "",
@@ -565,7 +560,6 @@ module nts.uk.com.view.cas005.a {
                         self.addRoleCas005(self.roleCas005Command()).done(function() {
                             self.getData().done(function() {
                                 let roleId = "";
-                                self.component.listRole(_.orderBy(self.component.listRole(), ['roleCode'], ['asc']));
                                 for (let i = 0; i < self.component.listRole().length; i++) {
                                     if (self.component.listRole()[i].roleCode == self.roleCas005Command().roleCode) {
                                         roleId = self.component.listRole()[i].roleId;
@@ -586,13 +580,12 @@ module nts.uk.com.view.cas005.a {
                                 }
                             };
                             self.getData().done(function() {
-                                self.component.listRole(_.orderBy(self.component.listRole(), ['roleCode'], ['asc']));
                                 self.selectRoleByRoleId(self.roleCas005Command().roleId);
                                 block.clear();
                             });
                             self.isDelete(true);
                         });
-
+                
                     }
                 }
 
@@ -616,7 +609,6 @@ module nts.uk.com.view.cas005.a {
                     block.invisible();
                     self.deleteRoleCas005(temp).done(function() {
                         self.getData().done(function() {
-                            self.component.listRole(_.orderBy(self.component.listRole(), ['roleCode'], ['asc']));
                             if (index != -1) {
                                 self.selectRoleCodeByIndex(index);
                             } else {
@@ -640,8 +632,8 @@ module nts.uk.com.view.cas005.a {
                 }).fail(function(res: any) {
                     dfd.reject();
                     nts.uk.ui.dialog.alertError(res).then(function() { nts.uk.ui.block.clear(); });
-                }).always(() => {
-                    block.clear();
+                }).always(()=>{
+                    block.clear();    
                 });
                 return dfd.promise();
             }
@@ -653,15 +645,14 @@ module nts.uk.com.view.cas005.a {
                 let dfd = $.Deferred<any>();
                 block.invisible();
                 service.addRoleCas005(command).done(function() {
-                    self.component.listRole(_.orderBy(self.component.listRole(), ['roleCode'], ['asc']));
                     self.enableRoleCode(false);
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     dfd.resolve();
                 }).fail(function(res: any) {
                     dfd.reject();
                     nts.uk.ui.dialog.alertError(res).then(function() { nts.uk.ui.block.clear(); });
-                }).always(() => {
-                    block.clear();
+                }).always(()=>{
+                    block.clear();    
                 });
                 return dfd.promise();
             }
@@ -675,14 +666,13 @@ Role screen Cas005
                 let dfd = $.Deferred<any>();
                 block.invisible();
                 service.updateRoleCas005(command).done(function() {
-                    self.component.listRole(_.orderBy(self.component.listRole(), ['roleCode'], ['asc']));
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     dfd.resolve();
                 }).fail(function(res: any) {
                     dfd.reject();
                     nts.uk.ui.dialog.alertError(res).then(function() { nts.uk.ui.block.clear(); });
-                }).always(() => {
-                    block.clear();
+                }).always(()=>{
+                    block.clear();    
                 });
                 return dfd.promise();
             }
@@ -695,14 +685,13 @@ Role screen Cas005
                 let dfd = $.Deferred<any>();
                 block.invisible();
                 service.deleteRoleCas005(command).done(function() {
-                    self.component.listRole(_.orderBy(self.component.listRole(), ['roleCode'], ['asc']));
                     nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                     dfd.resolve();
                 }).fail(function(res: any) {
                     dfd.reject();
                     nts.uk.ui.dialog.alertError(res).then(function() { nts.uk.ui.block.clear(); });
-                }).always(() => {
-                    block.clear();
+                }).always(()=>{
+                    block.clear();    
                 });
                 return dfd.promise();
             }

@@ -1,7 +1,5 @@
 import './label';
 import './search';
-import './fa-font';
-import './search-box';
 
 import './selects/radio';
 import './selects/checkbox';
@@ -16,6 +14,3 @@ import './inputs/number-editor';
 
 import './inputs/date-input';
 import './inputs/time-editor';
-import './inputs/year-month';
-
-import './inputs/range-editor';

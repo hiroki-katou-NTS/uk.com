@@ -1,8 +1,10 @@
 {
     "jp": {
+        "sample" : "Sample (jp)",
         "documentsdirectivestoolbar": "Toolbar"
     },
     "vi": {
+        "sample" : "Ví dụ",
         "documentsdirectivestoolbar": "Thanh công cụ"
     }
 }

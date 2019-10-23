@@ -26,13 +26,12 @@ module nts.uk.at.view.kdl020.a.screenModel {
         isMultiSelect: KnockoutObservable<boolean>;
         isShowWorkPlaceName: KnockoutObservable<boolean>;
         isShowSelectAllButton: KnockoutObservable<boolean>;
-        employeeList: KnockoutObservableArray<UnitModel> = ko.observableArray<any>([]);
+        employeeList: KnockoutObservableArray<UnitModel>;
         baseDate = ko.observable(new Date());
         reNumAnnLeave: KnockoutObservable<ReNumAnnLeaReferenceDate> = ko.observable(new ReNumAnnLeaReferenceDate());
         displayAnnualLeaveGrant: KnockoutObservable<DisplayAnnualLeaveGrant> = ko.observable(new DisplayAnnualLeaveGrant());
         attendNextHoliday: KnockoutObservable<AttendRateAtNextHoliday> = ko.observable(new AttendRateAtNextHoliday());
         annualSet: KnockoutObservable<any> = ko.observable(null);
-        isShowEmployeeList: KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
             let self = this;
             self.selectedCode = ko.observable('');
@@ -47,6 +46,8 @@ module nts.uk.at.view.kdl020.a.screenModel {
             self.isMultiSelect = ko.observable(false);
             self.isShowWorkPlaceName = ko.observable(false);
             self.isShowSelectAllButton = ko.observable(false);
+            this.employeeList = ko.observableArray<any>([
+            ]);
             self.listComponentOption = {
                 isShowAlreadySet: self.isShowAlreadySet(),
                 isMultiSelect: self.isMultiSelect(),
@@ -106,10 +107,6 @@ module nts.uk.at.view.kdl020.a.screenModel {
                     self.selectedCode(mappedList[0].code);
                     self.changeData(data);
                     self.annualSet(data.annualSet);
-                    if (self.employeeList().length > 1) {
-                        self.isShowEmployeeList(true);
-                        nts.uk.ui.windows.getSelf().$dialog.closest(".ui-dialog").width(1080);
-                    }
                 }
             }).fail((error) => {
                 dialog({ messageId: error.messageId });
@@ -123,6 +120,15 @@ module nts.uk.at.view.kdl020.a.screenModel {
 
             return dfd.promise();
 
+        }
+        isShowEmployeeList() {
+            let self = this;
+            if (self.employeeList().length > 1) {
+                return true;
+            } else {
+                nts.uk.ui.windows.getSelf().$dialog.closest(".ui-dialog").width(700);
+                return false;
+            }
         }
         genDateText(data) {
             if (data == null) {

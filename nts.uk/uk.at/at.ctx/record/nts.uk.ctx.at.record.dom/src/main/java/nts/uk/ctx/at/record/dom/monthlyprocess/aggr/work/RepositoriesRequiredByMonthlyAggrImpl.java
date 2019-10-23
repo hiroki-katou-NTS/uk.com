@@ -6,7 +6,6 @@ import javax.inject.Inject;
 import lombok.Getter;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
-import nts.uk.ctx.at.record.dom.adapter.shift.pattern.GetPredWorkingDaysAdaptor;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.WorkTypeOfDailyPerforRepository;
@@ -17,11 +16,6 @@ import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthly.flex.CheckBeforeCalcFlexChangeService;
 import nts.uk.ctx.at.record.dom.monthly.roundingset.RoundingSetOfMonthlyRepository;
-import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata.AbsenceLeaveRemainDataRepository;
-import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnLeaRemNumEachMonthRepository;
-import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.MonthlyDayoffRemainDataRepository;
-import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.RsvLeaRemNumEachMonthRepository;
-import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.SpecialHolidayRemainDataRepository;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.GetVacationAddSet;
 import nts.uk.ctx.at.record.dom.monthly.vtotalmethod.PayItemCountOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthly.workform.flex.MonthlyAggrSetOfFlexRepository;
@@ -30,7 +24,6 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.period.GetWeekPeriod;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.record.dom.optitem.applicable.EmpConditionRepository;
 import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaRepository;
-import nts.uk.ctx.at.record.dom.optitem.calculation.disporder.FormulaDispOrderRepository;
 import nts.uk.ctx.at.record.dom.raisesalarytime.repo.SpecificDateAttrOfDailyPerforRepo;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementDomainService;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementMonthSettingRepository;
@@ -243,21 +236,6 @@ public class RepositoriesRequiredByMonthlyAggrImpl implements RepositoriesRequir
 	/** 月別実績の任意項目 */
 	@Inject
 	private AnyItemOfMonthlyRepository anyItemOfMonthly;
-	/** 年休月別残数データ */
-	@Inject
-	private AnnLeaRemNumEachMonthRepository annLeaRemNumEachMonth;
-	/** 積立年休残数月別データ */
-	@Inject
-	private RsvLeaRemNumEachMonthRepository rsvLeaRemNumEachMonth;
-	/** 振休月別残数データ */
-	@Inject
-	private AbsenceLeaveRemainDataRepository absenceLeaveRemainData;
-	/** 代休残数月別データ */
-	@Inject
-	private MonthlyDayoffRemainDataRepository monthlyDayoffRemainData;
-	/** 特別休暇残数月別データ */
-	@Inject
-	private SpecialHolidayRemainDataRepository specialHolidayRemainData;
 	
 	/** 集計設定の取得（通常勤務） */
 	@Inject
@@ -336,9 +314,6 @@ public class RepositoriesRequiredByMonthlyAggrImpl implements RepositoriesRequir
 	/** 計算式 */
 	@Inject
 	private FormulaRepository formula;
-	/** 計算式の並び順 */
-	@Inject
-	private FormulaDispOrderRepository formulaOrder;
 	/** 年休設定 */
 	@Inject
 	private AnnualPaidLeaveSettingRepository annualPaidLeaveSet;
@@ -389,8 +364,4 @@ public class RepositoriesRequiredByMonthlyAggrImpl implements RepositoriesRequir
 	/** 日別実績から回数集計結果を取得する */
 	@Inject
 	private GetTotalTimesFromDailyRecord timeAndCountFromDailyRecord;
-
-	/** 所定労働日数を取得する */
-	@Inject
-	private GetPredWorkingDaysAdaptor predWorkingDaysAdaptor;
 }

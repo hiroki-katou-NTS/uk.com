@@ -67,7 +67,6 @@ public interface CheckResultMonthlyPub {
 	 * @param ListAttendanceIds
 	 * @return
 	 */
-	Map<String,Map<YearMonth,Map<String,Integer>>> checkPerTimeMonActualResult(YearMonthPeriod yearMonth, List<String> employeeID, Map<String, AttendanceItemConditionPubExport> attendanceItemCondition,
-			Map<String, Map<YearMonth, Map<String,String>>> resultsData);
+	Map<String,Map<YearMonth,Map<String,Integer>>> checkPerTimeMonActualResult(YearMonthPeriod yearMonth, List<String> employeeID, Map<String, AttendanceItemConditionPubExport> attendanceItemCondition);
 
 }
