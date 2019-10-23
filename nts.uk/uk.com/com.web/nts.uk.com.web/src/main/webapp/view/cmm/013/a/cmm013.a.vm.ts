@@ -80,7 +80,7 @@ module nts.uk.com.view.cmm013.a {
                     selectedCode: _self.selectedJobTitleId,
                     isDialog: false,
                     isShowNoSelectRow: _self.isShowNoSelectRow(),
-                    maxRows: 16,
+                    maxRows: 13,
                     tabindex: 6
                 };
 
