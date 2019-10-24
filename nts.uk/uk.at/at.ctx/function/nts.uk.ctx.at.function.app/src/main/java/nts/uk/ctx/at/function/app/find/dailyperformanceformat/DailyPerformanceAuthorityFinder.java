@@ -35,13 +35,16 @@ public class DailyPerformanceAuthorityFinder {
 		// find daily detail
 		List<AuthorityFomatDaily> authorityFormatDailies = this.authorityFormatDailyRepository
 				.getAuthorityFormatDailyDetail(companyId, new DailyPerformanceFormatCode(formatCode), sheetNo);
-		List<DailyAttendanceAuthorityDetailDto> dailyAttendanceAuthorityDetailDtos = authorityFormatDailies.stream()
+		List<DailyAttendanceAuthorityDetailDto> dailyAttendanceAuthorityDetailDtos = authorityFormatDailies
+				.stream()
 				.map(f -> {
-					return new DailyAttendanceAuthorityDetailDto(f.getAttendanceItemId(), f.getDisplayOrder(),
-							f.getColumnWidth());
+					return new DailyAttendanceAuthorityDetailDto(f.getAttendanceItemId(), 
+																 f.getDisplayOrder(),
+																 f.getColumnWidth());
 				}).collect(Collectors.toList());
 		String sheetName = this.authorityFormatSheetRepository
-				.find(companyId, new DailyPerformanceFormatCode(formatCode), sheetNo).map(f -> f.getSheetName())
+				.find(companyId, new DailyPerformanceFormatCode(formatCode), sheetNo)
+				.map(f -> f.getSheetName())
 				.orElse(null);
 		DailyAttendanceAuthorityDailyDto dailyAttendanceAuthorityDailyDto = new DailyAttendanceAuthorityDailyDto(
 				sheetNo, sheetName, dailyAttendanceAuthorityDetailDtos);

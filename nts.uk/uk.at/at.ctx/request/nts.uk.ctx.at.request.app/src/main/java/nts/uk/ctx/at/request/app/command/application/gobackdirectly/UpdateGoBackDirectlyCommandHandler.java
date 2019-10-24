@@ -65,12 +65,16 @@ public class UpdateGoBackDirectlyCommandHandler extends CommandHandlerWithResult
 				displayReason += System.lineSeparator();
 			}
 			displayReason += command.appCommand.getApplicationReason();
+		} else {
+			if(Strings.isBlank(typicalReason)){
+				displayReason += command.appCommand.getApplicationReason();
+			}
 		}
 		Optional<ApplicationSetting> applicationSettingOp = applicationSettingRepository
 				.getApplicationSettingByComID(companyId);
 		ApplicationSetting applicationSetting = applicationSettingOp.get();
 		if(appTypeDiscreteSetting.getTypicalReasonDisplayFlg().equals(AppDisplayAtr.DISPLAY)
-				&&appTypeDiscreteSetting.getDisplayReasonFlg().equals(AppDisplayAtr.DISPLAY)){
+				||appTypeDiscreteSetting.getDisplayReasonFlg().equals(AppDisplayAtr.DISPLAY)){
 				if (applicationSetting.getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED)
 						&& Strings.isBlank(typicalReason+displayReason)) {
 					throw new BusinessException("Msg_115");

@@ -16,4 +16,5 @@ public class ApplicationForSendOutput {
 	private String mailTemplate;
 	private ApprovalRootOutput approvalRoot;
 	private String applicantMail;
+	private String empName;
 }

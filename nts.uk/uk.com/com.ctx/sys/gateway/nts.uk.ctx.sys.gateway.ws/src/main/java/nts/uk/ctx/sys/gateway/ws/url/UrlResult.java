@@ -4,6 +4,7 @@ import java.util.Map;
 
 import lombok.AllArgsConstructor;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.sys.gateway.app.command.login.dto.CheckChangePassDto;
 
 /**
  * 
@@ -35,7 +36,10 @@ public class UrlResult {
 	
 	public Map<String, String> urlTaskValueList;
 	
-	public String successMsg;
+//	public String successMsg; da day vao trong obj changePw
 	public String webAppID;
+	public CheckChangePassDto changePw;
+	
+	public boolean smpDevice;
 	
 }

@@ -1,195 +1,38 @@
 package nts.uk.ctx.at.request.dom.application.common.service.newscreen.before;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.apache.logging.log4j.util.Strings;
-
-import nts.arc.enums.EnumAdaptor;
-import nts.arc.error.BundledBusinessException;
-import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleImport;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
-import nts.uk.ctx.at.request.dom.application.common.service.other.Time36UpperLimitCheck;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppTimeItem;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.Time36UpperLimitCheckResult;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
-import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
-import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetailRepository;
-import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
-import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeCheckResult;
-import nts.uk.ctx.at.request.dom.application.overtime.OvertimeInputRepository;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.AppDateContradictionAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
-//import nts.uk.shr.com.context.AppContexts;
-import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
-import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
-import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository;
-import nts.uk.ctx.at.shared.dom.worktype.WorkType;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 
 @Stateless
 public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 
-	/** アルゴリズム「1-1.新規画面起動前申請共通設定を取得する」を実行する */
-	@Inject
-	private BeforePrelaunchAppCommonSet beforePrelaunchAppCommonSet;
-
 	@Inject
 	private OvertimeRestAppCommonSetRepository overtimeRestAppCommonSetRepository;
-
+	
 	@Inject
 	private ApplicationRepository_New appRepository;
-	@Inject
-	private OvertimeInputRepository overtimeInputRepository;
-
-	@Inject
-	private Time36UpperLimitCheck time36UpperLimitCheck;
 	
-	@Inject 
-	private AppOvertimeDetailRepository appOvertimeDetailRepository;
-	
-	@Inject
-	private EmployeeRequestAdapter employeeAdapter;
-	
-	@Inject
-	private OvertimeWorkFrameRepository overtimeFrameRepository;
-	
-	@Inject
-	private RecordWorkInfoAdapter recordWorkInfoAdapter;
-	
-	@Inject
-	private ScBasicScheduleAdapter scBasicScheduleAdapter;
-	
-	@Inject
-	private WorkTypeRepository workTypeRepository;
-
 	// @Inject
 	// private PersonalLaborConditionRepository
 	// personalLaborConditionRepository;
 	/**
 	 * 申請詳細設定
 	 */
-
-	// @Inject
-	// private RequestOfEachCompanyRepository requestRepo;
-	/**
-	 * 03-06_計算ボタンチェック
-	 */
-	@Override
-	public void calculateButtonCheck(int CalculateFlg, String companyID, String employeeID, int rootAtr,
-			ApplicationType targetApp, GeneralDate appDate) {
-		// Get setting info
-		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet
-				.prelaunchAppCommonSetService(companyID, employeeID, rootAtr, targetApp, appDate);
-		// 時刻計算利用する場合にチェックしたい
-		ApprovalFunctionSetting requestSetting = appCommonSettingOutput.approvalFunctionSetting;
-		if (null == requestSetting) {
-			// 終了
-			return;
-		}
-		// 申請詳細設定.時刻計算利用区分=利用する
-		if (requestSetting.getApplicationDetailSetting().get().getTimeCalUse().equals(UseAtr.USE)) {
-			// 計算フラグのチェック
-			if (CalculateFlg == 1) {
-				// 計算フラグ=1の場合:メッセージを表示する(Msg_750)
-				throw new BusinessException("Msg_750");
-			}
-		}
-	}
-
-	/**
-	 * 03-01_事前申請超過チェック
-	 */
-	@Override
-	public OvertimeCheckResult preApplicationExceededCheck(String companyId, GeneralDate appDate, GeneralDateTime inputDate,
-			PrePostAtr prePostAtr, int attendanceId, List<OverTimeInput> overtimeInputs, String employeeID) {
-		String employeeName = employeeAdapter.getEmployeeName(employeeID);
-		OvertimeCheckResult result = new OvertimeCheckResult();
-		result.setFrameNo(-1);
-		// 社員ID
-		// String EmployeeId = AppContexts.user().employeeId();
-		// チェック条件を確認
-		if (!this.confirmCheck(companyId, prePostAtr)) {
-			result.setErrorCode(0);
-			return result;
-		}
-		// ドメインモデル「申請」を取得
-		// 事前申請漏れチェック
-		List<Application_New> beforeApplication = appRepository.getBeforeApplication(companyId, employeeID, appDate, inputDate,
-				ApplicationType.OVER_TIME_APPLICATION.value, PrePostAtr.PREDICT.value);
-		if (beforeApplication.isEmpty()) {
-			// TODO: QA Pending
-			throw new BusinessException("Msg_1508",employeeName);
-		}
-		// 事前申請否認チェック
-		// 否認以外：
-		// 反映情報.実績反映状態＝ 否認、差し戻し
-		ReflectedState_New refPlan = beforeApplication.get(0).getReflectionInformation().getStateReflectionReal();
-		if (refPlan.equals(ReflectedState_New.DENIAL) || refPlan.equals(ReflectedState_New.REMAND)) {
-			// 背景色を設定する
-			throw new BusinessException("Msg_1508",employeeName);
-		}
-		String beforeCid = beforeApplication.get(0).getCompanyID();
-		String beforeAppId = beforeApplication.get(0).getAppID();
-
-		// 事前申請の申請時間
-		List<OverTimeInput> beforeOvertimeInputs = overtimeInputRepository.getOvertimeInput(beforeCid, beforeAppId)
-				.stream()
-				.filter(item -> item.getAttendanceType() == EnumAdaptor.valueOf(attendanceId, AttendanceType.class))
-				.collect(Collectors.toList());
-		if (beforeOvertimeInputs.isEmpty()) {
-			result.setErrorCode(0);
-			return result;
-		}
-		// 残業時間１～１０、加給時間
-		// すべての残業枠をチェック
-		for (int i = 0; i < overtimeInputs.size(); i++) {
-			OverTimeInput afterTime = overtimeInputs.get(i);
-			int frameNo = afterTime.getFrameNo();
-			Optional<OverTimeInput> beforeTimeOpt = beforeOvertimeInputs.stream()
-					.filter(item -> item.getFrameNo() == frameNo).findFirst();
-			if (!beforeTimeOpt.isPresent()) {
-				continue;
-			}
-			OverTimeInput beforeTime = beforeTimeOpt.get();
-			if (null == beforeTime) {
-				continue;
-			}
-			// 事前申請の申請時間＞事後申請の申請時間
-			if (beforeTime.getApplicationTime() != null && afterTime.getApplicationTime() != null && beforeTime.getApplicationTime().v() < afterTime.getApplicationTime().v()) {
-				// 背景色を設定する
-				Optional<OvertimeWorkFrame> overtimeWorkFrame = this.overtimeFrameRepository.findOvertimeWorkFrame(new CompanyId(companyId), frameNo);
-				throw new BusinessException("Msg_424",employeeName, overtimeWorkFrame.isPresent() ? overtimeWorkFrame.get().getOvertimeWorkFrName().toString() : "",
-						"", String.valueOf(frameNo), String.valueOf(1));
-			}
-		}
-		result.setErrorCode(0);
-		return result;
-	}
 
 	/**
 	 * 03-02_実績超過チェック
@@ -219,145 +62,6 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 		}
 	}
 
-	/**
-	 * ドメインモデル「残業休出申請共通設定」.時間外表示区分をチェックする
-	 */
-	private boolean isUseExtratimeDisplayAndExcess(OvertimeRestAppCommonSetting overtimeSeting) {
-		return UseAtr.USE.equals(overtimeSeting.getExtratimeDisplayAtr());
-	}
-
-	@Override
-	public Optional<AppOvertimeDetail> registerOvertimeCheck36TimeLimit(String companyId, String employeeId,
-			GeneralDate appDate, List<OverTimeInput> overTimeInput) {
-		// ドメインモデル「残業休出申請共通設定」を取得
-		Optional<OvertimeRestAppCommonSetting> overtimeSetingOtp = overtimeRestAppCommonSetRepository
-				.getOvertimeRestAppCommonSetting(companyId, ApplicationType.OVER_TIME_APPLICATION.value);
-		if (!overtimeSetingOtp.isPresent()) {
-			return Optional.empty();
-		}
-		OvertimeRestAppCommonSetting overtimeSeting = overtimeSetingOtp.get();
-		// ドメインモデル「残業休出申請共通設定」.時間外表示区分をチェックする
-		if (!this.isUseExtratimeDisplayAndExcess(overtimeSeting)) {
-			return Optional.empty();
-		}
-		// 代行申請かをチェックする
-		// TODO
-		// ３６時間の上限チェック(新規登録)
-		List<AppTimeItem> appTimeItems = overTimeInput.stream().filter(x -> x != null && x.getApplicationTimeValue()!=null).collect(Collectors.toList()).stream().map(x -> {
-			return new AppTimeItem(x.getApplicationTimeValue(), x.getFrameNo());
-		}).collect(Collectors.toList());
-		Time36UpperLimitCheckResult result = time36UpperLimitCheck.checkRegister(companyId, employeeId, appDate,
-				ApplicationType.OVER_TIME_APPLICATION, appTimeItems);
-		// 上限エラーフラグがtrue AND ドメインモデル「残業休出申請共通設定」.時間外超過区分がチェックする（登録不可）
-		if (result.getErrorFlg().size() > 0) {
-			BundledBusinessException bundledBusinessExceptions = BundledBusinessException.newInstance();
-			for(String error : result.getErrorFlg()){
-				bundledBusinessExceptions.addMessage("Msg_329", error);
-			}
-			throw bundledBusinessExceptions;
-		}
-		return result.getAppOvertimeDetail();
-	}
-
-	@Override
-	public Optional<AppOvertimeDetail> updateOvertimeCheck36TimeLimit(String companyId, String appId,
-			String enteredPersonId, String employeeId, GeneralDate appDate, List<OverTimeInput> overTimeInput) {
-		// ドメインモデル「残業休出申請共通設定」を取得
-		Optional<OvertimeRestAppCommonSetting> overtimeSetingOtp = overtimeRestAppCommonSetRepository
-				.getOvertimeRestAppCommonSetting(companyId, ApplicationType.OVER_TIME_APPLICATION.value);
-		if (!overtimeSetingOtp.isPresent()) {
-			return Optional.empty();
-		}
-		OvertimeRestAppCommonSetting overtimeSeting = overtimeSetingOtp.get();
-		// ドメインモデル「残業休出申請共通設定」.時間外表示区分をチェックする
-		if (!this.isUseExtratimeDisplayAndExcess(overtimeSeting)) {
-			return Optional.empty();
-		}
-		Optional<AppOvertimeDetail> appOvertimeDetailOpt = appOvertimeDetailRepository
-				.getAppOvertimeDetailById(companyId, appId);
-		// ３６時間の上限チェック(照会)
-		List<AppTimeItem> appTimeItems = CollectionUtil.isEmpty(overTimeInput) ? Collections.emptyList() : overTimeInput.stream().map(x -> {
-			return new AppTimeItem(x.getApplicationTimeValue(), x.getFrameNo());
-		}).collect(Collectors.toList());
-		Time36UpperLimitCheckResult result = time36UpperLimitCheck.checkUpdate(companyId, appOvertimeDetailOpt,
-				employeeId, appDate, ApplicationType.OVER_TIME_APPLICATION, appTimeItems);
-		// 上限エラーフラグがtrue AND ドメインモデル「残業休出申請共通設定」.時間外超過区分がチェックする（登録不可）
-		if (result.getErrorFlg().size() > 0) {
-			BundledBusinessException bundledBusinessExceptions = BundledBusinessException.newInstance();
-			for(String error : result.getErrorFlg()){
-				bundledBusinessExceptions.addMessage("Msg_329", error);
-			}
-			throw bundledBusinessExceptions;
-		}
-		return result.getAppOvertimeDetail();
-	}
-
-	@Override
-	public Optional<AppOvertimeDetail> registerHdWorkCheck36TimeLimit(String companyId, String employeeId,
-			GeneralDate appDate, List<HolidayWorkInput> holidayWorkInputs) {
-		// ドメインモデル「残業休出申請共通設定」を取得
-		Optional<OvertimeRestAppCommonSetting> overtimeSetingOtp = overtimeRestAppCommonSetRepository
-				.getOvertimeRestAppCommonSetting(companyId, ApplicationType.BREAK_TIME_APPLICATION.value);
-		if (!overtimeSetingOtp.isPresent()) {
-			return Optional.empty();
-		}
-		OvertimeRestAppCommonSetting overtimeSeting = overtimeSetingOtp.get();
-		// ドメインモデル「残業休出申請共通設定」.時間外表示区分をチェックする
-		if (!this.isUseExtratimeDisplayAndExcess(overtimeSeting)) {
-			return Optional.empty();
-		}
-		// 代行申請かをチェックする
-		// TODO
-		// ３６時間の上限チェック(新規登録)
-		List<AppTimeItem> appTimeItems = holidayWorkInputs.stream().filter(x -> x != null && x.getApptime()!=null).collect(Collectors.toList()).stream().map(x -> {
-			return new AppTimeItem(x.getApptime(), x.getFrameNo());
-		}).collect(Collectors.toList());
-		Time36UpperLimitCheckResult result = time36UpperLimitCheck.checkRegister(companyId, employeeId, appDate,
-				ApplicationType.BREAK_TIME_APPLICATION, appTimeItems);
-		// 上限エラーフラグがtrue AND ドメインモデル「残業休出申請共通設定」.時間外超過区分がチェックする（登録不可）
-		if (result.getErrorFlg().size() > 0) {
-			BundledBusinessException bundledBusinessExceptions = BundledBusinessException.newInstance();
-			for(String error : result.getErrorFlg()){
-				bundledBusinessExceptions.addMessage("Msg_329", error);
-			}
-			throw bundledBusinessExceptions;
-		}
-		return result.getAppOvertimeDetail();
-	}
-
-	@Override
-	public Optional<AppOvertimeDetail> updateHdWorkCheck36TimeLimit(String companyId, String appId,
-			String enteredPersonId, String employeeId, GeneralDate appDate, List<HolidayWorkInput> holidayWorkInputs) {
-		// ドメインモデル「残業休出申請共通設定」を取得
-		Optional<OvertimeRestAppCommonSetting> overtimeSetingOtp = overtimeRestAppCommonSetRepository
-				.getOvertimeRestAppCommonSetting(companyId, ApplicationType.BREAK_TIME_APPLICATION.value);
-		if (!overtimeSetingOtp.isPresent()) {
-			return Optional.empty();
-		}
-		OvertimeRestAppCommonSetting overtimeSeting = overtimeSetingOtp.get();
-		// ドメインモデル「残業休出申請共通設定」.時間外表示区分をチェックする
-		if (!this.isUseExtratimeDisplayAndExcess(overtimeSeting)) {
-			return Optional.empty();
-		}
-		Optional<AppOvertimeDetail> appOvertimeDetailOpt = appOvertimeDetailRepository
-				.getAppOvertimeDetailById(companyId, appId);
-		// ３６時間の上限チェック(照会)
-		List<AppTimeItem> appTimeItems = CollectionUtil.isEmpty(holidayWorkInputs) ? Collections.emptyList() : holidayWorkInputs.stream().map(x -> {
-			return new AppTimeItem(x.getApptime(), x.getFrameNo());
-		}).collect(Collectors.toList());
-		Time36UpperLimitCheckResult result = time36UpperLimitCheck.checkUpdate(companyId, appOvertimeDetailOpt, employeeId,
-				appDate, ApplicationType.BREAK_TIME_APPLICATION, appTimeItems);
-		// 上限エラーフラグがtrue AND ドメインモデル「残業休出申請共通設定」.時間外超過区分がチェックする（登録不可）
-		if (result.getErrorFlg().size() > 0) {
-			BundledBusinessException bundledBusinessExceptions = BundledBusinessException.newInstance();
-			for(String error : result.getErrorFlg()){
-				bundledBusinessExceptions.addMessage("Msg_329", error);
-			}
-			throw bundledBusinessExceptions;
-		}
-		return result.getAppOvertimeDetail();
-	}
-
 	@Override
 	public void TimeUpperLimitYearCheck() {
 		// TODO Auto-generated method stub
@@ -373,7 +77,7 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 		OvertimeCheckResult result = new OvertimeCheckResult();
 		result.setErrorCode(0);
 		// ドメインモデル「申請」
-		List<Application_New> beforeApplication = appRepository.getBeforeApplication(companyId, employeeID, appDate, inputDate,
+		List<Application_New> beforeApplication = appRepository.getBeforeApplication(companyId, employeeID, appDate,
 				appType, PrePostAtr.PREDICT.value);
 		if (beforeApplication.isEmpty()) {
 			return result;
@@ -423,64 +127,5 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 			}
 		}
 		return false;
-	}
-
-	@Override
-	public List<String> inconsistencyCheck(String companyID, String employeeID, GeneralDate appDate) {
-		// ドメインモデル「残業休出申請共通設定」を取得
-		Optional<OvertimeRestAppCommonSetting> opOvertimeRestAppCommonSet = this.overtimeRestAppCommonSetRepository
-				.getOvertimeRestAppCommonSetting(companyID, ApplicationType.BREAK_TIME_APPLICATION.value);
-		if(!opOvertimeRestAppCommonSet.isPresent()){
-			return Collections.emptyList();
-		}
-		OvertimeRestAppCommonSetting overtimeRestAppCommonSet = opOvertimeRestAppCommonSet.get();
-		AppDateContradictionAtr appDateContradictionAtr = overtimeRestAppCommonSet.getAppDateContradictionAtr();
-		if(appDateContradictionAtr==AppDateContradictionAtr.NOTCHECK){
-			return Collections.emptyList();
-		}
-		// アルゴリズム「03-08-1_勤務種類矛盾チェック」を実行する
-		String workTypeCD = this.workTypeInconsistencyCheck(companyID, employeeID, appDate);
-		// ドメインモデル「勤務種類」を1件取得する
-		Optional<WorkType> opWorkType = workTypeRepository.findByPK(companyID, workTypeCD);
-		if(Strings.isBlank(workTypeCD)||!opWorkType.isPresent()){
-			if(appDateContradictionAtr==AppDateContradictionAtr.CHECKNOTREGISTER){
-				throw new BusinessException("Msg_1519", appDate.toString("yyyy/MM/dd"));
-			}
-			return Arrays.asList("Msg_1520", appDate.toString("yyyy/MM/dd")); 
-		}
-		WorkType workType = opWorkType.get();
-		WorkTypeClassification workTypeClassification = workType.getDailyWork().getOneDay();
-		if(workTypeClassification==WorkTypeClassification.Holiday||
-			workTypeClassification==WorkTypeClassification.Pause||
-			workTypeClassification==WorkTypeClassification.HolidayWork){
-			return Collections.emptyList();
-		}
-		String name = workType.getName().v();
-		if(appDateContradictionAtr==AppDateContradictionAtr.CHECKNOTREGISTER){
-			throw new BusinessException("Msg_1521", appDate.toString("yyyy/MM/dd"), Strings.isNotBlank(name) ? name : "未登録のマスタ");
-		}
-		return Arrays.asList("Msg_1522", appDate.toString("yyyy/MM/dd"), Strings.isNotBlank(name) ? name : "未登録のマスタ"); 
-		
-	}
-	
-	/**
-	 * 
-	 * @param companyID
-	 * @param employeeID
-	 * @param appDate
-	 * @return
-	 */
-	private String workTypeInconsistencyCheck(String companyID, String employeeID, GeneralDate appDate){
-		// Imported(申請承認)「勤務実績」を取得する
-		RecordWorkInfoImport recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID, appDate);
-		if(Strings.isNotBlank(recordWorkInfoImport.getWorkTypeCode())){
-			return recordWorkInfoImport.getWorkTypeCode();
-		}
-		// Imported(申請承認)「勤務予定」を取得する
-		Optional<ScBasicScheduleImport> opScBasicScheduleImport = scBasicScheduleAdapter.findByID(employeeID, appDate);
-		if(!opScBasicScheduleImport.isPresent()){
-			return null;
-		}
-		return opScBasicScheduleImport.get().getWorkTypeCode();
 	}
 }

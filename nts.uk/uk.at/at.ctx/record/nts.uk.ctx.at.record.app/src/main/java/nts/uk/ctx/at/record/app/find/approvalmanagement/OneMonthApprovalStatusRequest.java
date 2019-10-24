@@ -17,6 +17,7 @@ import nts.arc.time.GeneralDate;
 @NoArgsConstructor
 public class OneMonthApprovalStatusRequest {
 	private Integer closureIdParam;
+	private Integer yearMonth;
 	private GeneralDate startDateParam;
 	private GeneralDate endDateParam;
 }

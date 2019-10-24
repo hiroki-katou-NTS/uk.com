@@ -5,6 +5,7 @@
 package nts.uk.ctx.bs.employee.pub.employee;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
@@ -188,5 +189,39 @@ public interface SyEmployeePub {
 	 */
 	List<TempAbsenceFrameExport> getTempAbsenceFrameByCid(String cid);
 	
+	/**
+	 * RequestList596 削除された社員を取り除く
+	 * @param sids
+	 * @return
+	 */
+	List<ResultRequest596Export> getEmpDeletedLstBySids(List<String> sids);
 	
+	/**
+	 * RequestList600 社員ID（List）から社員コードと表示名を取得（削除社員考慮）
+	 * @param sids - 社員一覧　：　List＜社員ID＞
+	 * @param isDelete - 削除社員を取り除く：boolean
+	 * @param period -  期間：期間 
+	 * @param isGetAffCompany - 会社に所属していない社員を取り除く：boolean
+	 * @return
+	 */
+	List<ResultRequest600Export> getEmpInfoLstBySids(List<String> sids, DatePeriod period, boolean isDelete, boolean isGetAffCompany);
+	
+	/**
+	 * RequestList493
+	 * 社員（List）と期間から１日でも在職している社員を取得する
+	 * @param sids
+	 * @param period
+	 * @return
+	 */
+	List<String> filterSidLstByDatePeriodAndSids(List<String> sids, DatePeriod period);
+	
+	/**
+	 * 期間内に特定の会社に所属している社員一覧を取得する
+	 * @param cid
+	 * @param period
+	 * @return
+	 */
+	List<String> filterSidByCidAndPeriod(String cid, DatePeriod period);
+	
+	Map<String, String> getAllSidAndScdBySids(List<String> sid);
 }

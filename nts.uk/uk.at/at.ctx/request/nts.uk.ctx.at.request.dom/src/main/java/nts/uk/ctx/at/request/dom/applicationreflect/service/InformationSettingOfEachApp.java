@@ -1,10 +1,14 @@
 package nts.uk.ctx.at.request.dom.applicationreflect.service;
 
+import java.util.Optional;
+
 /*import nts.uk.ctx.at.request.dom.application.UseAtr;*/
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.ApprovalProcessingUseSettingAc;
+import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.IdentityProcessUseSetAc;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset.WorkUse;
 import nts.uk.ctx.at.request.dom.setting.company.request.appreflect.ApplyTimeSchedulePriority;
 import nts.uk.ctx.at.request.dom.setting.company.request.appreflect.ClassifyScheAchieveAtr;
@@ -54,11 +58,11 @@ public class InformationSettingOfEachApp {
 	/**
 	 * 休出申請設定．事前反映設定．休出時間
 	 */
-    private boolean hwScheReflectHwTime;
-    /**    休出事後反映設定: 勤務時間（出勤、退勤時刻） */
-    private boolean hwRecordReflectTime;
-    /**休出事後反映設定: 休憩時間     */
-    private boolean hwRecordReflectBreak;
-
-	
+	private boolean hwScheReflectHwTime;
+	/**	休出事後反映設定: 勤務時間（出勤、退勤時刻） */
+	private boolean hwRecordReflectTime;
+	/**休出事後反映設定: 休憩時間	 */
+	private boolean hwRecordReflectBreak;
+	Optional<IdentityProcessUseSetAc> identityProcessUseSet;
+	Optional<ApprovalProcessingUseSettingAc> approvalProcessingUseSetting;
 }

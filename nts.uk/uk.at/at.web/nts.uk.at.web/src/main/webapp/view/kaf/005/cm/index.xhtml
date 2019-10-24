@@ -1,3 +1,11 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition>
 <div data-bind="let: { $vm: $data }">
 	<div data-bind="if: screenModeNew()&amp;&amp;indicationOvertimeFlg()" >
 		<div class="cf valign-center control-group"
@@ -320,8 +328,9 @@
 							<!--A6_7 残業時間名称--> 						
 							<td class="header" data-bind="attr: { id: 'overtimeHoursHeader_'+attendanceID()+'_'+frameNo()}, text: frameName"></td>
 							<!--A6_8 残業申請時間入力--> 						
-							<td data-bind="attr: { id: 'overtimeHoursCheck_'+attendanceID()+'_'+frameNo()}, style: { 'background-color' : color }"><input tabindex="15" class="right-content overtimeHoursCheck"
-								data-bind="attr: { id: 'overtimeHoursCheck_'+attendanceID()+'_'+frameNo()}, style: { 'background-color' : color }, 
+							<td data-bind="attr: { id: 'overtimeHoursCheck_'+attendanceID()+'_'+frameNo()}">
+							<input tabindex="15" class="right-content overtimeHoursCheck"
+								data-bind="attr: { id: 'overtimeHoursCheck_'+attendanceID()+'_'+frameNo()}, 
 								ntsTimeEditor: {
 									name: nameID, 
 									value: applicationTime, 
@@ -364,7 +373,8 @@
 							<!--A6_7 残業時間名称--> 						
 							<td class="header" data-bind="attr: { id: 'overtimeHoursHeader_'+attendanceID()+'_'+frameNo()}, text: frameName"></td>
 							<!--A6_8 残業申請時間入力--> 						
-							<td data-bind="attr: { id: 'overtimeHoursCheck_'+attendanceID()+'_'+frameNo()}, style: { 'background-color' : color }"><input tabindex="15" class="right-content overtimeHoursCheck"
+							<td data-bind="attr: { id: 'overtimeHoursCheck_'+attendanceID()+'_'+frameNo()}, style: { 'background-color' : color }">
+							<input tabindex="15" class="right-content overtimeHoursCheck"
 								data-bind="attr: { id: 'overtimeHoursCheck_'+attendanceID()+'_'+frameNo()}, style: { 'background-color' : color }, 
 								ntsTimeEditor: {
 									name: nameID, 
@@ -590,6 +600,17 @@
 							}" />
 			</div>
 		</div>
+		<!-- Footer -->
+		<div data-bind="if: screenModeNew()">
+			<div class="lstApprover" data-bind="with: kaf000_a">
+				<ui:include src="../../000/a/index2_New.xhtml" />
+				<BR />
+			</div>
+		</div>
+		<div id = "appr" data-bind="if: !screenModeNew()">
+			<ui:include src="../../000/b/index1.xhtml" />
+		</div>
+		<!-- end footer -->
 	</div>
 	<!--RIGHT CONTENT -->
 	<div class="right-contents panel" style ="background-color: #E7E6E6;" data-bind ="visible: isRightContent">
@@ -630,19 +651,20 @@
 			<label style ="margin-left: 72px" data-bind="text : workClockFrom2To2Reference"></label>
 			</div>
 			<div class="control-group" data-bind ="foreach: overtimeHoursReference">
+				<div class="control-group">
 					<!--A11_16-->
 					<label  data-bind="text : frameName"></label>
 					<!--A11_17-->
 					<label data-bind="text : applicationTime"></label>
-					<BR />
+				</div>
 			</div>
-			<div class="control-group">
+			<div class="control-group" data-bind="if: appOvertimeNightFlg">
 			<!--A11_24申請者-->
 			<label>#{i18n.getText('KAF005_109')} :</label>
 			<!--A11_25 申請者表示氏名-->
 			<label data-bind="text : overTimeShiftNightRefer"></label>
 			</div>
-			<div class="control-group">
+			<div class="control-group" data-bind="if: flexFLag">
 			<!--A11_26 申請者-->
 			<label>#{i18n.getText('KAF005_110')} :</label>
 			<!--A11_27 申請者表示氏名-->
@@ -689,7 +711,7 @@
 		<!-- 				A12_15 -->
 		<!-- 				<label data-bind="text : workClockTo1Pre"></label> -->
 						</div>
-						<div class="control-group" data-bind ="visible: displayWorkClockFrom2To2Pre">
+						<div class="control-group" data-bind ="if:false">
 						<!--A12_28 -->
 						<label style ="margin-left: 72px" data-bind="text : workClockFrom2To2Pre"></label>
 		<!-- 				A12_29 -->
@@ -705,13 +727,13 @@
 						<label data-bind="text : applicationTime"></label>
 						<BR />
 						</div>
-						<div class="control-group">
+						<div class="control-group" data-bind="if: appOvertimeNightFlg">
 						<!--A12_24-->
 						<label>#{i18n.getText('KAF005_131')} :</label>
 						<!--A12_25-->
 						<label data-bind="text : overTimeShiftNightPre"></label>
 						</div>
-						<div class="control-group">
+						<div class="control-group" data-bind="if: flexFLag">
 						<!--A12_26-->
 						<label>#{i18n.getText('KAF005_132')} :</label>
 						<!--A12_27-->
@@ -722,3 +744,6 @@
 		</div>
 	</div>
 </div>
+</ui:composition>
+</body>
+</html>

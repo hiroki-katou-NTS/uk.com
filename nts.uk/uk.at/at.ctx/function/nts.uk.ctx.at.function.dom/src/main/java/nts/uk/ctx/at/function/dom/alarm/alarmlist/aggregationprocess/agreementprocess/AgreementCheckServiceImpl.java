@@ -14,9 +14,6 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-import javax.transaction.TransactionSynchronizationRegistry;
-
-import org.apache.log4j.Logger;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
@@ -37,6 +34,7 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.IAgreeNameErrorRe
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.Period;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.UseClassification;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -64,9 +62,10 @@ public class AgreementCheckServiceImpl implements AgreementCheckService{
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public void check(List<AlarmCheckConditionByCategory> agreementErAl, List<PeriodByAlarmCategory> periodAlarms,
 			Optional<AgreementOperationSettingImport> agreementSetObj, Consumer<Integer> counter,
-			Supplier<Boolean> shouldStop, List<ValueExtractAlarm> result, List<String> empIds,
+			Supplier<Boolean> shouldStop, List<ValueExtractAlarm> result,
 			Map<String, Integer> empIdToClosureId, List<Closure> closureList,
 			Map<String, EmployeeSearchDto> mapEmployee, List<String> employeeIds) {
+		String companyId = AppContexts.user().companyId();
 		for (AlarmCheckConditionByCategory alarmCheck : agreementErAl) {
 			// 36協定のアラームチェック条件
 			AlarmChkCondAgree36 alarmChkCon36 = alarmCheck.getAlarmChkCondAgree36();
@@ -80,6 +79,7 @@ public class AgreementCheckServiceImpl implements AgreementCheckService{
 						return;
 					}
 				}
+				Object objCheckAgreement = checkAgreementAdapter.getCommonSetting(companyId, employeeIds, new DatePeriod(periodAlarm.getStartDate(), periodAlarm.getEndDate()));
 
 				// 抽出条件に対応する期間を取得する
 				// List<36協定エラーアラームのチェック条件>
@@ -97,7 +97,7 @@ public class AgreementCheckServiceImpl implements AgreementCheckService{
 								List<CheckedAgreementResult> checkAgreementsResult = checkAgreementAdapter
 										.checkArgreementResult(employeeIds,
 												new DatePeriod(periodAlarm.getStartDate(), periodAlarm.getEndDate()),
-												agreeConditionError, agreementSetObj, closureList, empIdToClosureId);
+												agreeConditionError, agreementSetObj, closureList, empIdToClosureId,objCheckAgreement);
 								if (!CollectionUtil.isEmpty(checkAgreementsResult)) {
 									result.addAll(generationValueExtractAlarm(mapEmployee, checkAgreementsResult,
 											agreeConditionError, optAgreeName));
@@ -108,10 +108,12 @@ public class AgreementCheckServiceImpl implements AgreementCheckService{
 				if (Period.Yearly.value == periodAlarm.getPeriod36Agreement()) {
 					List<DatePeriod> periodsYear = new ArrayList<>();
 					periodsYear.add(new DatePeriod(periodAlarm.getStartDate(), periodAlarm.getEndDate()));
-					List<CheckedOvertimeImport> checkOvertimes = checkAgreementAdapter.checkNumberOvertime(empIds,
+					List<CheckedOvertimeImport> checkOvertimes = checkAgreementAdapter.checkNumberOvertime(employeeIds,
 							periodsYear, alarmChkCon36.getListCondOt());
 					for (CheckedOvertimeImport check : checkOvertimes) {
 
+						String checkedValue = String.valueOf(check.getCountAgreementOneEmp());
+						
 						String hour = check.getOt36().hour() + "";
 						if (hour.length() < 2)
 							hour = "0" + hour;
@@ -119,15 +121,15 @@ public class AgreementCheckServiceImpl implements AgreementCheckService{
 						if (minute.length() < 2)
 							minute = "0" + minute;
 						String ot36 = hour + ":" + minute;
-
-						String datePeriod = check.getDatePeriod().start().toString(ErAlConstant.DATE_FORMAT) + ErAlConstant.PERIOD_SEPERATOR
-								+ check.getDatePeriod().end().toString(ErAlConstant.DATE_FORMAT);
-
+						
+						String datePeriod = TextResource.localize("KAL010_906",check.getDatePeriod().start().toString(ErAlConstant.YM_FORMAT),check.getDatePeriod().end().toString(ErAlConstant.YM_FORMAT));
 						result.add(new ValueExtractAlarm(mapEmployee.get(check.getEmployeeId()).getWorkplaceId(),
 								check.getEmployeeId(), datePeriod, TextResource.localize("KAL010_208"),
-								TextResource.localize("KAL010_201"), TextResource.localize("KAL010_202",
+								//TextResource.localize("KAL010_201")
+								TextResource.localize("KAL010_120",check.getNo()+"")
+								, TextResource.localize("KAL010_202",
 										check.getNo() + "", ot36, check.getExcessNum().v() + ""),
-								check.getMessageDisp().v()));
+								check.getMessageDisp().v(),checkedValue));
 					}
 				}
 			}
@@ -157,25 +159,49 @@ public class AgreementCheckServiceImpl implements AgreementCheckService{
 		List<ValueExtractAlarm> lstReturn = new ArrayList<>();
 		for (CheckedAgreementResult checkedAgreementResult : checkAgreementsResult) {
 			if (checkedAgreementResult.isCheckResult()) {
+				String checkedValue = formatHourData(checkedAgreementResult.getAgreementTimeByPeriod().getAgreementTime().toString());
 				// workplaceID
 				String workPlaceId = mapEmployee.get(checkedAgreementResult.getEmpId()).getWorkplaceId();
 
 				// 年月日
-				String alarmValueDate = yearmonthToString(
-						checkedAgreementResult.getAgreementTimeByPeriod().getStartMonth()) + ErAlConstant.PERIOD_SEPERATOR
-						+ yearmonthToString(checkedAgreementResult.getAgreementTimeByPeriod().getEndMonth());
+				String alarmValueDate =TextResource.localize("KAL010_906", 
+						yearmonthToString(checkedAgreementResult.getAgreementTimeByPeriod().getStartMonth())+"" 
+						,
+						yearmonthToString(checkedAgreementResult.getAgreementTimeByPeriod().getEndMonth())+"");
 				// alarm name
 				String alarmItem = optAgreeName.isPresent() ? optAgreeName.get().getName().v() : "";
+				//
+				String nameByMonthDistance = alarmItemByMonth(checkedAgreementResult.getAgreementTimeByPeriod().getStartMonth(),checkedAgreementResult.getAgreementTimeByPeriod().getEndMonth());
 				// カテゴリ
-				String alarmContent = TextResource.localize("KAL010_203", alarmItem,
+				String alarmContent = TextResource.localize("KAL010_203", nameByMonthDistance,
 						formatHourData(checkedAgreementResult.getUpperLimit()), formatHourData(
 								checkedAgreementResult.getAgreementTimeByPeriod().getAgreementTime().toString()));
 				lstReturn.add(new ValueExtractAlarm(workPlaceId, checkedAgreementResult.getEmpId(), alarmValueDate,
 						TextResource.localize("KAL010_208"), alarmItem, alarmContent,
-						agreeConditionError.getMessageDisp().v()));
+						agreeConditionError.getMessageDisp().v(),checkedValue));
 			}
 		}
 		return lstReturn;
+	}
+	
+	private String alarmItemByMonth(YearMonth yearMonthStart,YearMonth yearMonthEnd) {
+		String alarmItem = "";
+		int yearStart = yearMonthStart.year();
+		int yearEnd = yearMonthEnd.year();
+		int monthDistance = (yearEnd - yearStart)*12 +yearMonthEnd.month() -  yearMonthStart.month();
+		if(monthDistance == 1) {
+			alarmItem = TextResource.localize("KAL010_212");
+		}else if(monthDistance == 2) {
+			alarmItem = TextResource.localize("KAL010_213");
+		}else if(monthDistance == 3) {
+			alarmItem = TextResource.localize("KAL010_214");
+		}else if(monthDistance == 4) {
+			alarmItem = TextResource.localize("KAL010_215");
+		}else if(monthDistance == 5) {
+			alarmItem = TextResource.localize("KAL010_216");
+		}
+		return alarmItem ;
+		
 	}
 
 	private String yearmonthToString(YearMonth yearMonth) {

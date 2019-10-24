@@ -1,41 +1,40 @@
 import { IRule } from 'declarations';
 import { constraint } from '@app/utils';
+import { TimeWithDay, TimeDuration, TimePoint } from '@app/utils/time';
 
-const min = function (value: number | Date, min: number | Date, rule: IRule) {
+export const min = function (value: number | Date, min: number | Date, rule: IRule) {
     let lgt: boolean = value < min,
         constr: string = constraint.getMinMax(rule);
 
     if (lgt) {
         switch (rule.valueType) {
             case 'Integer':
-                return ['MsgB_8', `${rule.min}`, `${rule.max}`];
+                return ['MsgB_37', `${rule.min}`, `${rule.max}`];
             case 'Decimal':
                 let min = `${rule.min}`,
                     max = `${rule.max}`;
 
                 if (rule.mantissaMaxLength) {
                     if (!min.match(/\./) && !max.match(/\./)) {
-                        return ['MsgB_11', min, max, `${rule.mantissaMaxLength}`];
+                        return ['MsgB_40', min, max, `${rule.mantissaMaxLength}`];
                     } else {
-                        return ['MsgB_12', `${max.split('.')[0].length}`, `${rule.mantissaMaxLength}`];
+                        return ['MsgB_41', `${max.split('.')[0].length}`, `${rule.mantissaMaxLength}`];
                     }
                 } else {
-                    return ['MsgB_10', `${rule.min}`, `${rule.mantissaMaxLength}`];
+                    return ['MsgB_39', `${rule.min}`, `${rule.mantissaMaxLength}`];
                 }
             case 'Date':
                 return ['FND_E_INTEGER_MIN', constr];
-            case 'Time':
-                return ['FND_E_INTEGER_MIN', constr];
             case 'Clock':
-                return ['FND_E_INTEGER_MIN', constr];
+                return ['MsgB_45', TimeWithDay.toString(rule.min as number), TimeWithDay.toString(rule.max as number)];
             case 'TimePoint':
-                return ['FND_E_INTEGER_MIN', constr];
+                return ['MsgB_45', TimePoint.toString(rule.min as number), TimePoint.toString(rule.max as number)];
             case 'Duration':
-                return ['FND_E_INTEGER_MIN', constr];
+                return ['MsgB_44', TimeDuration.toString(rule.min as number), TimeDuration.toString(rule.max as number)];
+            default:
+                break;
         }
     }
 
     return null;
 };
-
-export { min };

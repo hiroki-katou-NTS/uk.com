@@ -20,4 +20,8 @@ public class KfnmtDailyPerformanceDisplayPK implements Serializable {
 	
 	@Column(name = "DAILY_PERFORMANCE_FORMAT_CD")
 	public String dailyPerformanceFormatCode;
+	
+	@Column(name = "PC_SP_ATR")
+	public Integer pcSpAtr;
+	
 }

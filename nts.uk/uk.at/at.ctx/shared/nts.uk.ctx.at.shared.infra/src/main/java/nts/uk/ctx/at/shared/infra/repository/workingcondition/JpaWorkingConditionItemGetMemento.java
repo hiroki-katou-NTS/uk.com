@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.infra.repository.workingcondition;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -48,6 +49,42 @@ public class JpaWorkingConditionItemGetMemento implements WorkingConditionItemGe
 	public JpaWorkingConditionItemGetMemento(KshmtWorkingCondItem entity) {
 		super();
 		this.entity = entity;
+		this.perDayWeek = entity.getKshmtPersonalDayOfWeeks();
+		this.perWorkCat = entity.getKshmtPerWorkCats();
+		this.method = entity.getKshmtScheduleMethod();
+	}
+	
+
+	/**
+	 * Instantiates a new jpa working condition item get memento.
+	 *
+	 * @param entity
+	 *            the entity
+	 */
+	public JpaWorkingConditionItemGetMemento(KshmtWorkingCondItem entity, Map<String, Object> enums) {
+		super();
+		this.entity = entity;
+		//就業区分 - 労働制
+		enums.put("IS00252", this.entity.getLaborSys());
+		//休暇時の加算時間 - 休暇加算時間利用区分
+		enums.put("IS00248", this.entity.getVacationAddTimeAtr());
+		//休暇時の就業時間帯の自動設定 - 就業時間帯の自動設定区分
+		enums.put("IS00247", this.entity.getAutoIntervalSetAtr());
+		//勤務時間の自動設定 - 自動打刻セット区分
+		enums.put("IS00258", this.entity.getAutoStampSetAtr());		
+		//時給者区分 - 時給者区分
+		enums.put("IS00259", this.entity.getHourlyPayAtr());
+		//スケジュール管理 - 予定管理区分
+		enums.put("IS00121", this.entity.getScheManagementAtr());
+		
+		//スケジュール作成方法 - 予定作成方法.基本作成方法
+		enums.put("IS00123", this.entity.getKshmtScheduleMethod().getBasicCreateMethod());
+		//カレンダーの参照先 - 予定作成方法.営業日カレンダーによる勤務予定作成.営業日カレンダーの参照先
+		enums.put("IS00124", this.entity.getKshmtScheduleMethod().getRefBusinessDayCalendar());	
+		//基本勤務の参照先 - 予定作成方法.営業日カレンダーによる勤務予定作成.基本勤務の参照先
+		enums.put("IS00125", this.entity.getKshmtScheduleMethod().getRefBasicWork());
+		//就業時間帯の参照先 - 予定作成方法.月間パターンによる勤務予定作成.勤務種類と就業時間帯の参照先（基本作成方法＝月間パターンの場合）
+		enums.put("IS00126", this.entity.getKshmtScheduleMethod().getRefWorkingHours());
 	}
 	
 	public JpaWorkingConditionItemGetMemento(KshmtWorkingCondItem entity, List<KshmtPerWorkCat> perWorkCat, 
@@ -68,7 +105,13 @@ public class JpaWorkingConditionItemGetMemento implements WorkingConditionItemGe
 	 */
 	@Override
 	public ManageAtr getScheduleManagementAtr() {
-		return ManageAtr.valueOf(this.entity.getScheManagementAtr());
+		try {
+			return ManageAtr.valueOf(this.entity.getScheManagementAtr());
+		}catch(Exception e) {
+			return ManageAtr.NOTUSE;
+		}
+
+		
 	}
 
 	/*
@@ -80,7 +123,11 @@ public class JpaWorkingConditionItemGetMemento implements WorkingConditionItemGe
 	 */
 	@Override
 	public NotUseAtr getVacationAddedTimeAtr() {
-		return NotUseAtr.valueOf(this.entity.getVacationAddTimeAtr());
+		try {
+			return NotUseAtr.valueOf(this.entity.getVacationAddTimeAtr());
+		} catch (Exception e) {
+			return NotUseAtr.NOTUSE;
+		}
 	}
 
 	/*
@@ -92,7 +139,11 @@ public class JpaWorkingConditionItemGetMemento implements WorkingConditionItemGe
 	 */
 	@Override
 	public WorkingSystem getLaborSystem() {
-		return WorkingSystem.valueOf(this.entity.getLaborSys());
+		try {
+			return WorkingSystem.valueOf(this.entity.getLaborSys());
+		} catch (Exception e) {
+			return WorkingSystem.REGULAR_WORK;
+		}
 	}
 
 	/*
@@ -132,7 +183,11 @@ public class JpaWorkingConditionItemGetMemento implements WorkingConditionItemGe
 	 */
 	@Override
 	public NotUseAtr getAutoIntervalSetAtr() {
-		return NotUseAtr.valueOf(this.entity.getAutoIntervalSetAtr());
+		try {
+			return NotUseAtr.valueOf(this.entity.getAutoIntervalSetAtr());
+		}catch(Exception e) {
+			return NotUseAtr.NOTUSE;
+		}
 	}
 
 	/*
@@ -227,7 +282,11 @@ public class JpaWorkingConditionItemGetMemento implements WorkingConditionItemGe
 	 */
 	@Override
 	public HourlyPaymentAtr getHourlyPaymentAtr() {
-		return HourlyPaymentAtr.valueOf(this.entity.getHourlyPayAtr());
+		try {
+			return HourlyPaymentAtr.valueOf(this.entity.getHourlyPayAtr());
+		} catch (Exception e) {
+			return HourlyPaymentAtr.OOUTSIDE_TIME_PAY;
+		}
 	}
 
 	/* (non-Javadoc)

@@ -12,8 +12,9 @@ import nts.uk.ctx.workflow.pub.service.export.ApprovalRootContentExport;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalRootOfEmployeeExport;
 import nts.uk.ctx.workflow.pub.service.export.ApproveRootStatusForEmpExport;
 import nts.uk.ctx.workflow.pub.service.export.ApproverApprovedExport;
-import nts.uk.ctx.workflow.pub.service.export.ApproverPersonExport;
+import nts.uk.ctx.workflow.pub.service.export.ApproverPersonExportNew;
 import nts.uk.ctx.workflow.pub.service.export.ApproverRemandExport;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 /**
  * 
  * @author Doan Duy Hung
@@ -106,7 +107,7 @@ public interface ApprovalRootStatePub {
 	
 	public ApprovalRootContentExport getApprovalRoot(String companyID, String employeeID, Integer appTypeValue, GeneralDate date, String appID, Boolean isCreate);
 	
-	public void insertAppRootType(String companyID, String employeeID, Integer appTypeValue, GeneralDate date, String appID, Integer rootType);
+	public void insertAppRootType(String companyID, String employeeID, Integer appTypeValue, GeneralDate appDate, String appID, Integer rootType, GeneralDate baseDate);
 	
 	/**
 	 * 4.次の承認の番の承認者を取得する(メール通知用)
@@ -207,7 +208,7 @@ public interface ApprovalRootStatePub {
 	 * @param employeeID 社員ID
 	 * @return
 	 */
-	public ApproverPersonExport judgmentTargetPersonCanApprove(String companyID, String rootStateID, String employeeID, Integer rootType);
+	public ApproverPersonExportNew judgmentTargetPersonCanApprove(String companyID, String rootStateID, String employeeID, Integer rootType);
 	
 	/**
 	 * RequestList No.482
@@ -270,4 +271,17 @@ public interface ApprovalRootStatePub {
 　				false：指定する承認フェーズの承認がまだ未完了
 	 */
 	public Boolean isApproveApprovalPhaseStateComplete(String companyID, String rootStateID, Integer phaseNumber);
+	/**
+	 * 承認ルートを取得する
+	 * CMM045 response
+	 * @param appID
+	 * @param companyID
+	 * @return
+	 */
+	public Map<String,List<ApprovalPhaseStateExport>> getApprovalRootCMM045(String companyID, List<String> lstAgent,
+			DatePeriod period, boolean unapprovalStatus, boolean approvalStatus, boolean denialStatus, 
+			boolean agentApprovalStatus, boolean remandStatus, boolean cancelStatus);
+    
+    public List<ApprovalPhaseStateExport> getApprovalDetail(String appID);
+
 }

@@ -17,6 +17,8 @@ public interface PerInfoItemDefRepositoty {
 	 */
 	List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryId(String perInfoCategoryId, String contractCd);
 
+	List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryIdCPS013(String perInfoCategoryId, String contractCd);
+	
 	Map<String, List<Object[]>> getAllPerInfoItemDefByListCategoryId(List<String> lstPerInfoCategoryId,
 			String contractCd);
 
@@ -156,4 +158,19 @@ public interface PerInfoItemDefRepositoty {
 	Map<String, List<ItemBasicInfo>> getItemCDByListCategoryIdWithAbolition(List<String> lstPerInfoCategoryId,
 			String contractCd);
 
+	List<PersonInfoItemDefinition> findByIDandIsAbolition(String perInfoCtgId , int abolitionAtr );
+	
+	Map<String, String> getNamesByCodes(List<String> itemCodes);
+	
+	/**
+	 * cps003, cps002, cps001
+	 * @param categoryCode
+	 * @param itemCds
+	 * @param cid
+	 * @param contractCd
+	 * @return
+	 */
+	List<PersonInfoItemDefinition> getItemsByCtgCdItemCdsCid(String categoryCode, List<String> itemCds, String cid , String contractCd);
+	
+	
 }

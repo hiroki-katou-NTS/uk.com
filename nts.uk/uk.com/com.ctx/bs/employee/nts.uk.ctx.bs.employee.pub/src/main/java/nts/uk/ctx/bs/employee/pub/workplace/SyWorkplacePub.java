@@ -241,4 +241,22 @@ public interface SyWorkplacePub {
 	//指定した基準日以降の所属職場履歴を取得する
 	// AffWorkplaceHistoryExport
 	List<AffWorkplaceHistoryExport> getWorkplaceBySidsAndBaseDate(List<String> sids, GeneralDate baseDate);
+	
+	/**
+	 * Request 597 職場の所属社員を取得する
+	 * @param sid
+	 * @param period
+	 * @return
+	 */
+	List<ResultRequest597Export> getLstEmpByWorkplaceIdsAndPeriod(List<String> workplaceIds, DatePeriod period);
+	
+	/**
+	 * Request 598  社員が所属している職場を取得する
+	 * @param sid
+	 * @param period
+	 * @return
+	 */
+	List<String> getLstWorkplaceIdBySidAndPeriod(String sid, DatePeriod period);
+	// RequestList324 ver2 CCG007を対応する為
+	List<WorkPlaceInfoExport> findWkpByWkpIdRQ324Ver2(String companyId, GeneralDate baseDate, List<String> wkpIds);
 }

@@ -12,6 +12,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.layer.infra.data.DbConsts;
@@ -24,6 +27,7 @@ import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepo
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.LateTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.LeaveEarlyTimeOfDaily;
+import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.infra.entity.breakorgoout.KrcdtDayOutingTime;
 import nts.uk.ctx.at.record.infra.entity.breakorgoout.KrcdtDayOutingTimePK;
 import nts.uk.ctx.at.record.infra.entity.daily.latetime.KrcdtDayLateTime;
@@ -84,8 +88,6 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 //		this.commandProxy().insert(
 //				KrcdtDayAttendanceTime.create(attendanceTime.getEmployeeId(), attendanceTime.getYmd(), attendanceTime));
 		this.commandProxy().insert(KrcdtDayTime.toEntity(attendanceTime));
-
-
 
 		if (attendanceTime.getActualWorkingTimeOfDaily() != null) {
 			if(attendanceTime.getActualWorkingTimeOfDaily().getPremiumTimeOfDailyPerformance() != null) {
@@ -291,6 +293,7 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 	}
 
 	@Override
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<AttendanceTimeOfDailyPerformance> findByPeriodOrderByYmd(String employeeId, DatePeriod datePeriod) {
 //		StringBuilder query = new StringBuilder();
 //		query.append("SELECT a FROM KrcdtDayAttendanceTime a ");

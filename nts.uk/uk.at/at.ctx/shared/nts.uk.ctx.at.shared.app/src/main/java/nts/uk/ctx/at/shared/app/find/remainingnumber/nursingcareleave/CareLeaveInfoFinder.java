@@ -1,23 +1,26 @@
 package nts.uk.ctx.at.shared.app.find.remainingnumber.nursingcareleave;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.ChildCareLeaveRemaiDataRepo;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.ChildCareLeaveRemainingData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.LeaveForCareData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.LeaveForCareDataRepo;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.ChildCareLeaveRemInfoRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.ChildCareLeaveRemainingInfo;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.LeaveForCareInfo;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.CareLeaveDataInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.LeaveForCareInfoRepository;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
+import nts.uk.shr.pereg.app.find.PeregQueryByListEmp;
 import nts.uk.shr.pereg.app.find.dto.DataClassification;
+import nts.uk.shr.pereg.app.find.dto.GridPeregDomainBySidDto;
+import nts.uk.shr.pereg.app.find.dto.GridPeregDomainDto;
 import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 
 @Stateless
@@ -25,16 +28,6 @@ public class CareLeaveInfoFinder implements PeregFinder<CareLeaveInfoDto> {
 
 	@Inject
 	private LeaveForCareInfoRepository careInfoRepo;
-
-	@Inject
-	private ChildCareLeaveRemInfoRepository childCareInfoRepo;
-
-	@Inject
-	private ChildCareLeaveRemaiDataRepo childCareDataRepo;
-	
-	@Inject
-	private LeaveForCareDataRepo careDataRepo;
-
 	@Override
 	public String targetCategoryCode() {
 		return "CS00036";
@@ -47,31 +40,20 @@ public class CareLeaveInfoFinder implements PeregFinder<CareLeaveInfoDto> {
 
 	@Override
 	public DataClassification dataType() {
-		// TODO Auto-generated method stub
-		return null;
+		return DataClassification.EMPLOYEE;
 	}
 
 	@Override
 	public PeregDomainDto getSingleData(PeregQuery query) {
-
-		// child-care
-		Optional<ChildCareLeaveRemainingInfo> childCareInfoDomainOpt = childCareInfoRepo
-				.getChildCareByEmpId(query.getEmployeeId());
-		Optional<ChildCareLeaveRemainingData> childCareDataDomainOpt = childCareDataRepo
-				.getChildCareByEmpId(query.getEmployeeId());
-
-		// care
-		Optional<LeaveForCareInfo> careInfoDomainOpt = careInfoRepo.getCareByEmpId(query.getEmployeeId());
-		Optional<LeaveForCareData> careDataDomainOpt = careDataRepo.getCareByEmpId(query.getEmployeeId());
+		Optional<CareLeaveDataInfo> data = careInfoRepo.getCareInfoDataBysId(query.getEmployeeId());
 		
-
-		if (!careInfoDomainOpt.isPresent() && !childCareInfoDomainOpt.isPresent() && !careDataDomainOpt.isPresent()
-				&& !childCareDataDomainOpt.isPresent()) {
-			return null;
-		}
-
-		return CareLeaveInfoDto.createFromDomain(query.getEmployeeId(), childCareInfoDomainOpt, childCareDataDomainOpt,
-				careInfoDomainOpt, careDataDomainOpt);
+		return data.map(m -> CareLeaveInfoDto.createFromDomain(
+				query.getEmployeeId(),
+				Optional.ofNullable(m.getChildCareLeaveRemainingInfo()),
+				Optional.ofNullable(m.getChildCareLeaveRemainingData()),
+				Optional.ofNullable(m.getCareInfo()),
+				Optional.ofNullable(m.getCareData())))
+			.orElse(null);
 
 	}
 
@@ -85,5 +67,73 @@ public class CareLeaveInfoFinder implements PeregFinder<CareLeaveInfoDto> {
 	public List<ComboBoxObject> getListFirstItems(PeregQuery query) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public List<GridPeregDomainDto> getAllData(PeregQueryByListEmp query) {
+		String cid = AppContexts.user().companyId();
+		
+		List<GridPeregDomainDto> result = new ArrayList<>();
+		
+		List<String> sids = query.getEmpInfos().stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
+		
+		query.getEmpInfos().forEach(c -> {
+			result.add(new GridPeregDomainDto(c.getEmployeeId(), c.getPersonId(), null));
+		});
+		
+		if(sids.isEmpty()) {
+			return new ArrayList<>();
+		}
+		List<CareLeaveDataInfo> data = careInfoRepo.getAllCareInfoDataBysId(cid, sids);
+		
+		result.parallelStream().forEach(c ->{
+			Optional<CareLeaveDataInfo> careInfoOpt = data.parallelStream().filter(item -> item.getCareInfo().getSId().equals(c.getEmployeeId())).findFirst();
+			if(careInfoOpt.isPresent()) {
+				CareLeaveDataInfo careInfo = careInfoOpt.get();
+				c.setPeregDomainDto(CareLeaveInfoDto.createFromDomain(
+						c.getEmployeeId(),
+						Optional.ofNullable(careInfo.getChildCareLeaveRemainingInfo()),
+						Optional.ofNullable(careInfo.getChildCareLeaveRemainingData()),
+						Optional.ofNullable(careInfo.getCareInfo()),
+						Optional.ofNullable(careInfo.getCareData())));
+			}
+		});
+		
+		return result;
+	}
+
+	@Override
+	public List<GridPeregDomainBySidDto> getListData(PeregQueryByListEmp query) {
+		String cid = AppContexts.user().companyId();
+		
+		List<GridPeregDomainBySidDto> result = new ArrayList<>();
+		
+		Map<String, Object> enums = new HashMap<String, Object>();
+		
+		List<String> sids = query.getEmpInfos().stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
+		
+		query.getEmpInfos().forEach(c -> {
+			result.add(new GridPeregDomainBySidDto(c.getEmployeeId(), c.getPersonId(), new ArrayList<>()));
+		});
+		
+		if(sids.isEmpty()) {
+			return new ArrayList<>();
+		}
+		
+		List<CareLeaveDataInfo> data = careInfoRepo.getAllCareInfoDataBysIdCps013(cid, sids, enums);
+		
+		result.stream().forEach(c ->{
+			Optional<CareLeaveDataInfo> careInfoOpt = data.parallelStream().filter(item -> item.getCareInfo().getSId().equals(c.getEmployeeId())).findFirst();
+			if(careInfoOpt.isPresent()) {
+				CareLeaveDataInfo careInfo = careInfoOpt.get();
+				c.setPeregDomainDto(Arrays.asList(CareLeaveInfoDto.createFromDomainCps013(
+						c.getEmployeeId(),
+						Optional.ofNullable(careInfo.getChildCareLeaveRemainingInfo()),
+						Optional.ofNullable(careInfo.getChildCareLeaveRemainingData()),
+						Optional.ofNullable(careInfo.getCareInfo()),
+						Optional.ofNullable(careInfo.getCareData()), enums)));
+			}
+		});
+		return result;
 	}
 }
