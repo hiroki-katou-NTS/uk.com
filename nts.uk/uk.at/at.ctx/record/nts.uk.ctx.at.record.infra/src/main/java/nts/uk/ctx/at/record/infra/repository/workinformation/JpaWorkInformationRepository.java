@@ -59,6 +59,7 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 	private String FIND_BY_LIST_DATE = "SELECT c " + " FROM KrcdtDaiPerWorkInfo c"
 			+ " WHERE c.krcdtDaiPerWorkInfoPK.ymd IN :dates" + " AND c.krcdtDaiPerWorkInfoPK.employeeId = :employeeId";
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	@SneakyThrows
 	public Optional<WorkInfoOfDailyPerformance> find(String employeeId, GeneralDate ymd) {
@@ -109,6 +110,7 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 		return workInfo.map(c -> c.toDomain());
 	}
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<WorkInfoOfDailyPerformance> findByEmployeeId(String employeeId) {
 		return this.queryProxy().query(FIND_BY_EMPLOYEE_ID, KrcdtDaiPerWorkInfo.class)
@@ -199,6 +201,7 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 		// f.toDomain());
 	}
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	@SneakyThrows
 	public List<WorkInfoOfDailyPerformance> findByPeriodOrderByYmdDesc(String employeeId, DatePeriod datePeriod) {
@@ -372,6 +375,7 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 
 	}
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<WorkInfoOfDailyPerformance> finds(Map<String, List<GeneralDate>> param) {
 		List<Object[]> result = new ArrayList<>();
@@ -402,6 +406,7 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 				.collect(Collectors.toList());
 	}
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<WorkInfoOfDailyPerformance> findByPeriodOrderByYmdAndEmps(List<String> employeeIds,
 			DatePeriod datePeriod) {
@@ -476,6 +481,7 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 		return new ArrayList<>();
 	}
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<GeneralDate> getByWorkTypeAndDatePeriod(String employeeId, String workTypeCode, DatePeriod period) {
 		List<GeneralDate> lstOutput = this.queryProxy()
@@ -488,6 +494,7 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 		return lstOutput;
 	}
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	@SneakyThrows
 	public List<WorkInfoOfDailyPerformance> findByListDate(String employeeId, List<GeneralDate> dates) {
@@ -552,6 +559,7 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 		return lstOutput;
 	}
 	
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	@SneakyThrows
 	public long getVer(String employeeId, GeneralDate date) {

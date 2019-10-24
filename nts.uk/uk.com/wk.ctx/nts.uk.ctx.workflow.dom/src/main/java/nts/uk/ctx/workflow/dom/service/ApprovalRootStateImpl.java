@@ -3,6 +3,8 @@ package nts.uk.ctx.workflow.dom.service;
 import java.util.List;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
@@ -19,6 +21,7 @@ import nts.uk.ctx.workflow.dom.service.output.ApprovalRootContentOutput;
  *
  */
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class ApprovalRootStateImpl implements ApprovalRootStateService {
 	
 	@Inject
