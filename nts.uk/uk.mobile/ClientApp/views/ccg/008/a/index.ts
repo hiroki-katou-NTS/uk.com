@@ -49,6 +49,7 @@ export class Ccg008AComponent extends Vue {
     public showFull: boolean = false;
     public normalAgreementLst: Array<any> = [];
     public fullAgreementLst: Array<any> = [];
+    public agreementButton: boolean = false;
     
     public model = {
         date: moment(new Date()).format('YYYYMM')
@@ -131,15 +132,24 @@ export class Ccg008AComponent extends Vue {
             self.overtime.tableConfigs.loading = true;
             self.$http.post('at', servicePath.getOvertimeToppage).then((res: any) => {
                 let data = res.data;
-                if (data && data.visible && data.dataStatus == 0) {
+                if (data && data.visible) {
                     self.normalAgreementLst = self.createNormalList(data.agreementTimeToppageLst, data.yearMonth);
                     self.fullAgreementLst = self.createFullList(data.agreementTimeToppageLst);
                     self.overtime.tableConfigs.items = self.normalAgreementLst;
+                    if (data.dataStatus == 0) {
+                        self.agreementButton = true;
+                    }
                 }
                 self.overtime.tableConfigs.loading = false;
             }).catch((err: any) => {
                 self.overtime.tableConfigs.loading = false;
                 self.overtime.tableConfigs.noDataMessage = err.errorMessage;
+                let table: any = document.getElementsByClassName('overtime-working-hours')[0];
+                table.style.border = 'none';
+                let tbody: any = table.getElementsByTagName('tbody')[1];
+                tbody.style.border = 'none';
+                let td: any =tbody.getElementsByTagName('tr')[0].getElementsByTagName('td')[0];
+                td.style.border = 'none';
             });
         }
     }

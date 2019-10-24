@@ -305,20 +305,21 @@ public class ToppageStartupProcessMobFinder {
 			Optional<AgreementTimeDetail> agreementTimeDetailError = listAgreementTimePast.stream().filter(x -> x.getErrorMessage().isPresent()).findAny();
 			if(agreementTimeDetailError.isPresent()) {
 				dataStatus = AgreementPastStatus.ERROR.value;
-			} 
-			if(yearMonthPeriod.start().lessThan(targetMonth)) {
-				// // [NO.612]年月期間を指定して管理期間の36協定時間を取得する
-				List<AgreementTimeToppage> agreementTimeToppageLst = 
-						getAgreementTimeOfMngPeriod.getAgreementTimeByMonths(Arrays.asList(employeeID), ymPeriodPast).stream()
-						.map(x -> {
-							AgreementTimeOfMonthlyDto agreementTimeOfMonthlyDto = AgreementTimeOfMonthlyDto
-									.fromAgreementTimeOfMonthly(x.getAgreementTime().getAgreementTime());
-							return new AgreementTimeToppage(x.getYearMonth().toString(), agreementTimeOfMonthlyDto);
-						}).collect(Collectors.toList());
-				agreementTimeLst.addAll(agreementTimeToppageLst);
-				dataStatus = AgreementPastStatus.NORMAL.value;
 			} else {
-				dataStatus = AgreementPastStatus.NORMAL.value;
+				if(yearMonthPeriod.start().lessThan(targetMonth)) {
+					// // [NO.612]年月期間を指定して管理期間の36協定時間を取得する
+					List<AgreementTimeToppage> agreementTimeToppageLst = 
+							getAgreementTimeOfMngPeriod.getAgreementTimeByMonths(Arrays.asList(employeeID), ymPeriodPast).stream()
+							.map(x -> {
+								AgreementTimeOfMonthlyDto agreementTimeOfMonthlyDto = AgreementTimeOfMonthlyDto
+										.fromAgreementTimeOfMonthly(x.getAgreementTime().getAgreementTime());
+								return new AgreementTimeToppage(x.getYearMonth().toString(), agreementTimeOfMonthlyDto);
+							}).collect(Collectors.toList());
+					agreementTimeLst.addAll(agreementTimeToppageLst);
+					dataStatus = AgreementPastStatus.NORMAL.value;
+				} else {
+					dataStatus = AgreementPastStatus.NORMAL.value;
+				}
 			}
 		}
 		

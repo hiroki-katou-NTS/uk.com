@@ -69,7 +69,7 @@
         <div class="error-message color-danger" v-if="false">{{overtime.errorMessage}}</div>
         <nts-ccgs008-table :configs="overtime.tableConfigs" />
         <div class="text-center mt-n2">
-          <button type="button" v-bind:class="{'btn-outline-info': showFull, 'btn-info': !showFull}" 
+          <button type="button" v-bind:class="{'btn-outline-info': showFull, 'btn-info': !showFull}"  v-show="agreementButton"
             style="width: 150px" v-on:click="reverseShowAgreement" class="shadow-none btn rounded-pill">
             <i v-if="!showFull">
               <i class="fas fa-angle-double-down"></i> 
