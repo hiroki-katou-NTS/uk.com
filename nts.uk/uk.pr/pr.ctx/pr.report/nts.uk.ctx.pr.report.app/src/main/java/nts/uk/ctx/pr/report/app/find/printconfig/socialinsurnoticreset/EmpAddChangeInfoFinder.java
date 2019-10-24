@@ -40,12 +40,12 @@ public class EmpAddChangeInfoFinder {
                 .livingAbroadAtr(0)
                 .residenceOtherResidentAtr(0)
                 .otherAtr(0)
-                .otherReason("")
+                .otherReason(null)
                 .spouseShortResidentAtr(0)
                 .spouseLivingAbroadAtr(0)
                 .spouseResidenceOtherResidentAtr(0)
                 .spouseOtherAtr(0)
-                .spouseOtherReason("")
+                .spouseOtherReason(null)
                 .isUpdateEmpBasicPenNumInfor(empBasicPenNumInfor.isPresent())
                 .build();
 
