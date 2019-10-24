@@ -119,13 +119,11 @@ module ccg029.component {
             }
             block.grayout();
             nts.uk.request.ajax("com", "query/ccg029employee/find", param).done(function(data){
-                self.employeeList = [];
-                self.bindData();
                 if(data.length == 0){
                     nts.uk.ui.dialog.info({ messageId: "Msg_1572" });
                 }
                 self.employeeList = data;
-                self.bindData();
+                $("#gridListEmployees").igGrid("dataSourceObject", self.employeeList).igGrid("dataBind");
             }).fail((error) => {
                 nts.uk.ui.dialog.info(error);
             }).always(() => {
