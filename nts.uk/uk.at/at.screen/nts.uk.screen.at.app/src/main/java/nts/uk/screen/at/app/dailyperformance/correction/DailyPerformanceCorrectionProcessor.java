@@ -21,6 +21,8 @@ import java.util.stream.IntStream;
 
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.inject.Inject;
 
@@ -159,6 +161,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  *
  */
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class DailyPerformanceCorrectionProcessor {
 
 	@Inject

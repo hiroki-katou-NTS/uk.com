@@ -3,7 +3,10 @@ module kcp.share.list {
         id?: string;
         code: string;
         name?: string;
-        affiliationName?: string;
+        //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
+        workplaceName?: string;
+//        affiliationName?: string;
+        //end
         isAlreadySetting?: boolean;
         optionalColumn?: any;
     }
@@ -562,7 +565,10 @@ module kcp.share.list {
             // workplace name column
             if (self.listType == ListType.EMPLOYEE && self.isShowWorkPlaceName) {
                 self.listComponentColumn.push({
-                    headerText: nts.uk.resource.getText('KCP005_4'), prop: 'affiliationName', width: self.gridStyle.workplaceColumnSize,
+                    //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
+                    headerText: nts.uk.resource.getText('KCP005_4'), prop: 'workplaceName', width: self.gridStyle.workplaceColumnSize,
+//                    headerText: nts.uk.resource.getText('KCP005_4'), prop: 'affiliationName', width: self.gridStyle.workplaceColumnSize,
+                    //end
                     template: "<td class='list-component-name-col'>${workplaceName}</td>"
                 });
             }

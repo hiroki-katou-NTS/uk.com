@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.adapter.company.StatusOfEmployeeExport;
@@ -17,6 +19,7 @@ import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.Ident
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class FindDataDCRecord implements IFindDataDCRecord{
 
 	private static Map<String, Optional<IdentityProcessUseSet>> identityProcessUseSetMap = new HashMap<>();
