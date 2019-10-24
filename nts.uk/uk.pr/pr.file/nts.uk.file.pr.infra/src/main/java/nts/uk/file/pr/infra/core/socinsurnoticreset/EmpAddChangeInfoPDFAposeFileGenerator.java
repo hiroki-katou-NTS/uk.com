@@ -5,14 +5,9 @@ import com.aspose.cells.WorksheetCollection;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsuranceOffice;
-import nts.uk.ctx.pr.file.app.core.socialinsurnoticreset.CompanyInformation;
 import nts.uk.ctx.pr.file.app.core.socialinsurnoticreset.EmpAddChangeInfoExport;
 import nts.uk.ctx.pr.file.app.core.socialinsurnoticreset.EmpAddChangeInfoFileGenerator;
 import nts.uk.ctx.pr.file.app.core.socialinsurnoticreset.EmpAddChangeInforData;
-import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.PersonalNumClass;
-import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.SocialInsurNotiCreateSet;
-import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.SubNameClass;
 import nts.uk.shr.com.time.japanese.JapaneseDate;
 import nts.uk.shr.com.time.japanese.JapaneseEraName;
 import nts.uk.shr.com.time.japanese.JapaneseErasAdapter;
@@ -221,3 +216,4 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
             throw new RuntimeException(e);
         }
     }
+}
