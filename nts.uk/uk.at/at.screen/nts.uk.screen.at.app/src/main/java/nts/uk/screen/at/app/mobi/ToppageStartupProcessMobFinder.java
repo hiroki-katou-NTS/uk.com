@@ -235,9 +235,9 @@ public class ToppageStartupProcessMobFinder {
 		List<AgreementTimeToppage> agreementTimeLst = new ArrayList<>();
 		Integer dataStatus = 0;
 		boolean visible = false;
-		SPTopPageSet setting = sPTopPageSetRepository.getTopPageSetByCompanyAndType(companyID, Type.TIME_STATUS.value);
+		SPTopPageSet setting = sPTopPageSetRepository.getTopPageSetByCompanyAndType(companyID, Type.OVERTIME_WORK.value);
 
-		if (setting != null && setting.getSmartPhoneTopPageType().getType() == Type.TIME_STATUS) {
+		if (setting != null) {
 			visible = setting.getDisplayAtr() == NotUseAtr.USE;
 		}
 		
