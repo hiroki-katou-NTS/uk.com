@@ -22,14 +22,15 @@ export class CdlS24AComponent extends Vue {
         let self = this;
         self.$http.post('at', servicePath.getAll).then((result: any) => {
             if (_.isEmpty(result.data)) {
-                this.$modal.error({ messageId: 'Msg_1566', messageParams: ['CDLS24_5'] }).then(() => self.$close());
+                self.$modal.error({ messageId: 'Msg_1566', messageParams: ['CDLS24_5'] }).then(() => self.$close());
             } else {
                 self.allData = _.orderBy(result.data, ['code'], ['asc']);
                 self.data = self.allData;
             }
-            this.$mask('hide');
+            self.$mask('hide');
         }).catch((res: any) => {
-            this.$modal.error(res.messageId).then(() => self.$close());
+            self.$mask('hide');
+            self.$modal.error(res.messageId).then(() => self.$close());
         });
     }
 

@@ -51,15 +51,16 @@ export class CdlS02AComponent extends Vue {
                     });
                 }
 
-                this.findEmployments();
+                self.findEmployments();
 
             }).catch((res: any) => {
-                this.$modal.error(res.messageId).then(() => self.$close());
+                self.$mask('hide');
+                self.$modal.error(res.messageId).then(() => self.$close());
             });
         } else {
             self.$http.post('com', servicePath.findAllEmployments).then((result: any) => {
                 if (_.isEmpty(result.data)) {
-                    this.$modal.error({ messageId: 'Msg_1566', messageParams: ['Com_Employment'] }).then(() => self.$close());
+                    self.$modal.error({ messageId: 'Msg_1566', messageParams: ['Com_Employment'] }).then(() => self.$close());
                 } else {
                     if (self.params.isShowNoSelectRow) {
                         result.data.push({
@@ -77,9 +78,10 @@ export class CdlS02AComponent extends Vue {
                     }
 
                 }
-                this.$mask('hide');
+                self.$mask('hide');
             }).catch((res: any) => {
-                this.$modal.error(res.messageId).then(() => self.$close());
+                self.$mask('hide');
+                self.$modal.error(res.messageId).then(() => self.$close());
             });
         }
 
@@ -127,14 +129,16 @@ export class CdlS02AComponent extends Vue {
                         self.selectedClosure = findData.closureId;
                     }
                 }).catch((res: any) => {
-                    this.$modal.error(res.messageId).then(() => self.$close());
+                    self.$mask('hide');
+                    self.$modal.error(res.messageId).then(() => self.$close());
                 });
             } else {
-                this.$modal.error({ messageId: 'Msg_1566', messageParams: ['Com_Employment'] }).then(() => self.$close());
+                self.$modal.error({ messageId: 'Msg_1566', messageParams: ['Com_Employment'] }).then(() => self.$close());
             }
-            this.$mask('hide');
+            self.$mask('hide');
         }).catch((res: any) => {
-            this.$modal.error(res.messageId).then(() => self.$close());
+            self.$mask('hide');
+            self.$modal.error(res.messageId).then(() => self.$close());
         });
     }
 
