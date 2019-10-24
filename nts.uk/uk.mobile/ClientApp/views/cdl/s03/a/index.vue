@@ -18,7 +18,7 @@
         <li class="list-group-item " v-for="(item, k) of data" v-bind:key="k" 
         :class="(item.code == params.selectedCode || (item.code == '' && activeNoSelect)) ? 'active' : ''" v-on:click="$close(item)">
           <div class="text-truncate mr-3" v-if="item.code != ''"><span>{{item.code}} &nbsp;&nbsp;&nbsp; {{item.name}}</span></div>
-          <div class="text-truncate mr-3" v-if="item.code == ''"><span >{{item.name}}</span></div> 
+          <div class="text-truncate mr-3" v-if="item.code == ''"><span >{{ 'CDLS03_5' | i18n }}</span></div> 
         </li>
       </ul>
     </div>

@@ -33,7 +33,7 @@ export class CdlS03AComponent extends Vue {
                 if (self.params.isShowNoSelectRow) {
                     result.data.push({
                         code: '',
-                        name: this.$i18n('CDLS03_5')
+                        name: ''
                     });
                 }               
                 self.allData = _.sortBy(result.data,['code']);
