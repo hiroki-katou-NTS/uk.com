@@ -13,16 +13,16 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.repository.AuthorityFormatMonthlyRepository;
+import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyRecordWorkDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypeFormatMonthlyRepository;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnitType;
 import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.MonthlyItemControlByAuthDto;
 import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.MonthlyItemControlByAuthFinder;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
-import nts.uk.ctx.at.shared.pub.workrule.closure.PresentClosingPeriodExport;
-import nts.uk.ctx.at.shared.pub.workrule.closure.ShClosurePub;
+import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosurePeriod;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
 import nts.uk.screen.at.app.dailyperformance.correction.agreement.AgreementInfomationDto;
 import nts.uk.screen.at.app.dailyperformance.correction.agreement.DisplayAgreementInfo;
@@ -35,17 +35,16 @@ import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyQue
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyResult;
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyMultiQuery;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 @Stateless
 @Transactional
 public class DPMonthFlexProcessor {
 
-	@Inject
-	private ClosureEmploymentRepository closureEmploymentRepository;
-
-	@Inject
-	private ShClosurePub shClosurePub;
+//	@Inject
+//	private ClosureEmploymentRepository closureEmploymentRepository;
+//
+//	@Inject
+//	private ShClosurePub shClosurePub;
 
 	@Inject
 	private MonthlyModifyQueryProcessor monthlyModifyQueryProcessor;
@@ -70,24 +69,32 @@ public class DPMonthFlexProcessor {
     
     @Inject
     private MonthlyItemControlByAuthFinder monthlyItemControlByAuthFinder;
+    
+    @Inject
+    private ClosureService closureService;
+    
 
 	private static final List<Integer> DAFAULT_ITEM = Arrays.asList(18, 19, 21, 189, 190, 191, 202, 204);
 	
-//	private static final String FORMAT_HH_MM = "%d:%02d";
 
 	public DPMonthResult getDPMonthFlex(DPMonthFlexParam param) {
 		String companyId = param.getCompanyId();
 		List<MonthlyModifyResult> itemMonthResults = new ArrayList<>();
 		List<MonthlyModifyResult> itemMonthFlexResults = new ArrayList<>();
+		//nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService.getClosureDataByEmployee
 		// 社員に対応する処理締めを取得する
-		Optional<ClosureEmployment> closureEmploymentOptional = this.closureEmploymentRepository
-				.findByEmploymentCD(companyId, param.getEmploymentCode());
-		if (!closureEmploymentOptional.isPresent())
-			return null;
+		Closure closure = closureService.getClosureDataByEmployee(param.getEmployeeId(), param.getDate());
+		if(closure == null) return null;
+		Optional<ClosurePeriod> closurePeriodOpt = closure.getClosurePeriodByYmd(param.getDate());
+		
+//		Optional<ClosureEmployment> closureEmploymentOptional = this.closureEmploymentRepository
+//				.findByEmploymentCD(companyId, param.getEmploymentCode());
+//		if (!closureEmploymentOptional.isPresent())
+//			return null;
 		// 指定した年月日時点の締め期間を取得する
-		Optional<PresentClosingPeriodExport> closingPeriod = shClosurePub.find(companyId,
-				closureEmploymentOptional.get().getClosureId(), param.getDate());
-		if (!closingPeriod.isPresent())
+//		Optional<PresentClosingPeriodExport> closingPeriod = shClosurePub.find(companyId,
+//				closureEmploymentOptional.get().getClosureId(), param.getDate());
+		if (!closurePeriodOpt.isPresent())
 			return null;
 
 		List<FormatDailyDto> formatDaily = getFormatCode(param, companyId);
@@ -100,17 +107,26 @@ public class DPMonthFlexProcessor {
 //				param.getEmployeeId(), ClosureId.valueOf(closureEmploymentOptional.get().getClosureId()),
 //				new Day(closingPeriod.get().getClosureDate().getClosureDay()), closingPeriod.get().getProcessingYm());
 		// TODO ドメインモデル「社員の月別実績エラー一覧」を取得する
-		List<ErrorFlexMonthDto> errorMonth = repo.getErrorFlexMonth(0, closingPeriod.get().getProcessingYm().v(), param.getEmployeeId(),
-				closureEmploymentOptional.get().getClosureId(), closingPeriod.get().getClosureDate().getClosureDay().intValue(),
-				closingPeriod.get().getClosureDate().getLastDayOfMonth().booleanValue() ? 1 : 0);
+		List<ErrorFlexMonthDto> errorMonth = repo.getErrorFlexMonth(0, closurePeriodOpt.get().getYearMonth().v(), param.getEmployeeId(),
+				closurePeriodOpt.get().getClosureId().value, closurePeriodOpt.get().getClosureDate().getClosureDay().v(),
+				closurePeriodOpt.get().getClosureDate().getLastDayOfMonth().booleanValue() ? 1 : 0);
 		
-		List<MonthlyModifyResult> mResult = monthlyModifyQueryProcessor.initScreen(
-				new MonthlyMultiQuery(Arrays.asList(param.getEmployeeId())), 
+		Optional<MonthlyRecordWorkDto> monthOpt =  !param.getMonthOpt().isPresent() ? monthlyModifyQueryProcessor.getDataMonthAll(new MonthlyMultiQuery(Arrays.asList(param.getEmployeeId())), 
 				Stream.concat(itemIds.stream(), DAFAULT_ITEM.stream()).collect(Collectors.toList()),
-				closingPeriod.get().getProcessingYm(),
-				ClosureId.valueOf(closureEmploymentOptional.get().getClosureId()),
-				new ClosureDate(closingPeriod.get().getClosureDate().getClosureDay(),
-						closingPeriod.get().getClosureDate().getLastDayOfMonth()));
+				closurePeriodOpt.get().getYearMonth(),
+				closurePeriodOpt.get().getClosureId(),
+				closurePeriodOpt.get().getClosureDate()) : param.getMonthOpt();
+		
+		List<MonthlyModifyResult> mResult = monthOpt.isPresent() ? AttendanceItemUtil.toItemValues(Arrays.asList(monthOpt.get()),
+				Stream.concat(itemIds.stream(), DAFAULT_ITEM.stream()).collect(Collectors.toList()),
+				AttendanceItemUtil.AttendanceItemType.MONTHLY_ITEM).entrySet().stream().map(record -> {
+					return MonthlyModifyResult.builder().items(record.getValue())
+							.employeeId(record.getKey().getEmployeeId()).yearMonth(record.getKey().getYearMonth().v())
+							.closureId(record.getKey().getClosureID()).closureDate(record.getKey().getClosureDate())
+							.workDatePeriod(record.getKey().getAttendanceTime().getDatePeriod().toDomain())
+							.version(record.getKey().getAffiliation().getVersion()).completed();
+				}).collect(Collectors.toList()) : new ArrayList<>();
+		
 		
 		if(!mResult.isEmpty()){
 			MonthlyModifyResult firstDT = mResult.get(0);
@@ -121,6 +137,7 @@ public class DPMonthFlexProcessor {
 						.yearMonth(firstDT.getYearMonth())
 						.employeeId(firstDT.getEmployeeId())
 						.items(new ArrayList<>(firstDT.getItems().stream().filter(c -> itemIds.contains(c.itemId())).collect(Collectors.toSet())))
+						.version(firstDT.getVersion())
 						.completed());
 			}
 
@@ -131,24 +148,28 @@ public class DPMonthFlexProcessor {
 					.yearMonth(firstDT.getYearMonth())
 					.employeeId(firstDT.getEmployeeId())
 					.items(firstDT.getItems().stream().filter(c -> DAFAULT_ITEM.contains(c.itemId())).collect(Collectors.toList()))
+					.version(firstDT.getVersion())
 					.completed());
 		}
 		
 		FlexShortageDto flexShortageDto = flexInfoDisplayChange.flexInfo(companyId, 
 				param.getEmployeeId(), param.getDate(), null, 
-				closingPeriod, itemMonthFlexResults, closureEmploymentOptional);
+				closurePeriodOpt, itemMonthFlexResults, null);
 		flexShortageDto.createError(errorMonth);
-		flexShortageDto.createMonthParent(new DPMonthParent(param.getEmployeeId(), closingPeriod.get().getProcessingYm().v(),
-				closureEmploymentOptional.get().getClosureId(),
-				new ClosureDateDto(closingPeriod.get().getClosureDate().getClosureDay(),
-						closingPeriod.get().getClosureDate().getLastDayOfMonth())));
-		
+		flexShortageDto.createMonthParent(new DPMonthParent(param.getEmployeeId(), closurePeriodOpt.get().getYearMonth().v(),
+				closurePeriodOpt.get().getClosureId().value,
+				new ClosureDateDto(closurePeriodOpt.get().getClosureDate().getClosureDay().v(),
+						closurePeriodOpt.get().getClosureDate().getLastDayOfMonth())));
+		if(!mResult.isEmpty()){
+			flexShortageDto.getMonthParent().setVersion(mResult.get(0).getVersion());
+			flexShortageDto.setVersion(mResult.get(0).getVersion());
+		}
 		AgreementInfomationDto agreeDto = displayAgreementInfo.displayAgreementInfo(companyId, param.getEmployeeId(),
-				closingPeriod.get().getClosureEndDate().year(), closingPeriod.get().getClosureEndDate().month());
+				closurePeriodOpt.get().getPeriod().end().year(), closurePeriodOpt.get().getPeriod().end().month());
 		//setAgreeItem(itemMonthFlexResults, agreeDto);
 		
 		return new DPMonthResult(flexShortageDto, itemMonthResults, !itemIds.isEmpty() && !itemMonthResults.isEmpty(),
-				closingPeriod.get().getProcessingYm().v(), formatDaily, agreeDto);
+				closurePeriodOpt.get().getYearMonth().v(), formatDaily, agreeDto, monthOpt);
 	}
 
 	private List<FormatDailyDto> getFormatCode(DPMonthFlexParam param, String companyId) {
@@ -157,7 +178,7 @@ public class DPMonthFlexProcessor {
 			return new ArrayList<>();
 		}
 		
-		if (param.dailyPerformanceDto.getSettingUnit() == SettingUnitType.AUTHORITY) {
+		if (param.getDailyPerformanceDto().getSettingUnit() == SettingUnitType.AUTHORITY) {
 			return authorityFormatMonthlyRepository
 					.getListAuthorityFormatDaily(companyId, param.getFormatCode()).stream()
 					.map(x -> new FormatDailyDto(x.getDailyPerformanceFormatCode().v(), new Integer(x.getAttendanceItemId()),

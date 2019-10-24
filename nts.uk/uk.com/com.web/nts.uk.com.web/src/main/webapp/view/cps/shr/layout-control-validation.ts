@@ -229,6 +229,8 @@ module nts.layout {
                 self.radio();
                 self.button();
                 self.combobox();
+               
+                self.grand_combobox();
                 self.grand_radio();
                 //self.relate_radio();
                 self.relate_button();
@@ -456,20 +458,36 @@ module nts.layout {
                         ctgCode: 'CS00058',
                         radioCode: 'IS00623',
                         relateCode: ['IS00624', 'IS00625', 'IS00626', 'IS00627', 'IS00628']
-                    }, {
-                        ctgCode: '',
-                        radioCode: '',
-                        relateCode: []
                     }],
+                comboboxs = ["IS00297", "IS00304", "IS00311", "IS00318", "IS00325", "IS00332", "IS00339", "IS00346", "IS00353", "IS00360",
+                    "IS00561", "IS00568", "IS00575", "IS00582", "IS00589", "IS00596", "IS00603", "IS00610", "IS00617", "IS00624"],
                 validation = (radio: IGrandRadio) => {
                     let rd: IFindData = finder.find(radio.rdctCode || radio.ctgCode, radio.radioCode),
                         ctrls: Array<IFindData> = _.map(radio.relateCode, x => finder.find(radio.ctgCode, x));
-
                     if (rd) {
                         rd.data.value.subscribe(v => {
                             _.each(ctrls, c => {
                                 if (c && c.data) {
-                                    c.data.editable(v == 1);
+                                    var cb = _.find(comboboxs, function(o) { return c.data.itemCode == o; });
+                                    if (v == 0) {
+                                        c.data.editable(false);
+                                    } else {
+                                        if (cb) {
+                                            c.data.editable(true);
+                                        } else {
+                                            if (ctrls[0] && ctrls[0].data.value() == 1) {
+                                                c.data.editable(true);
+                                            } else {
+                                                //itemCode: "IS00376"
+                                                if( ctrls[0] && (ctrls[0].data.itemCode == "IS00376" || ctrls[0].data.itemCode == "IS00381")){
+                                                    c.data.editable(true);
+                                                }else{
+                                                    c.data.editable(false);
+                                                }
+                                                
+                                            }
+                                        }
+                                    }
                                 }
                             });
                         });
@@ -479,6 +497,112 @@ module nts.layout {
 
             _(radios).each(radio => validation(radio));
         }
+        
+        
+        grand_combobox = () => {
+            let self = this,
+                finder = self.finder,
+                comboboxs: Array<IGrandCombobox> = [{
+                    ctgCode: 'CS00025',
+                    comboboxCode: 'IS00297',
+                    relateCode: ['IS00296','IS00298', 'IS00299', 'IS00300', 'IS00301']
+                }, {
+                        ctgCode: 'CS00026',
+                        comboboxCode: 'IS00304',
+                        relateCode: ['IS00303','IS00305', 'IS00306', 'IS00307', 'IS00308']
+                    }, {
+                        ctgCode: 'CS00027',
+                        comboboxCode: 'IS00311',
+                        relateCode: ['IS00310','IS00312', 'IS00313', 'IS00314', 'IS00315']
+                    }, {
+                        ctgCode: 'CS00028',
+                        comboboxCode: 'IS00318',
+                        relateCode: ['IS00317','IS00319', 'IS00320', 'IS00321', 'IS00322']
+                    }, {
+                        ctgCode: 'CS00029',
+                        comboboxCode: 'IS00325',
+                        relateCode: ['IS00324','IS00326', 'IS00327', 'IS00328', 'IS00329']
+                    }, {
+                        ctgCode: 'CS00030',
+                        comboboxCode: 'IS00332',
+                        relateCode: ['IS00331','IS00333', 'IS00334', 'IS00335', 'IS00336']
+                    }, {
+                        ctgCode: 'CS00031',
+                        comboboxCode: 'IS00339',
+                        relateCode: ['IS00338','IS00340', 'IS00341', 'IS00342', 'IS00343']
+                    }, {
+                        ctgCode: 'CS00032',
+                        comboboxCode: 'IS00346',
+                        relateCode: ['IS00345','IS00347', 'IS00348', 'IS00349', 'IS00350']
+                    }, {
+                        ctgCode: 'CS00033',
+                        comboboxCode: 'IS00353',
+                        relateCode: ['IS00352','IS00354', 'IS00355', 'IS00356', 'IS00357']
+                    }, {
+                        ctgCode: 'CS00034',
+                        comboboxCode: 'IS00360',
+                        relateCode: ['IS00359','IS00361', 'IS00362', 'IS00363', 'IS00364']
+                    }, {
+                        ctgCode: 'CS00049',
+                        comboboxCode: 'IS00561',
+                        relateCode: ['IS00560','IS00562', 'IS00563', 'IS00564', 'IS00565']
+                    }, {
+                        ctgCode: 'CS00050',
+                        comboboxCode: 'IS00568',
+                        relateCode: ['IS00567', 'IS00569', 'IS00570', 'IS00571', 'IS00572']
+                    }, {
+                        ctgCode: 'CS00051',
+                        comboboxCode: 'IS00575',
+                        relateCode: ['IS00574','IS00576', 'IS00577', 'IS00578', 'IS00579']
+                    }, {
+                        ctgCode: 'CS00052',
+                        comboboxCode: 'IS00582',
+                        relateCode: ['IS00581','IS00583', 'IS00584', 'IS00585', 'IS00586']
+                    }, {
+                        ctgCode: 'CS00053',
+                        comboboxCode: 'IS00589',
+                        relateCode: ['IS00588','IS00590', 'IS00591', 'IS00592', 'IS00593']
+                    }, {
+                        ctgCode: 'CS00054',
+                        comboboxCode: 'IS00596',
+                        relateCode: ['IS00595','IS00597', 'IS00598', 'IS00599', 'IS00600']
+                    }, {
+                        ctgCode: 'CS00055',
+                        comboboxCode: 'IS00603',
+                        relateCode: ['IS00602', 'IS00604', 'IS00605', 'IS00606', 'IS00607']
+                    }, {
+                        ctgCode: 'CS00056',
+                        comboboxCode: 'IS00610',
+                        relateCode: ['IS00609','IS00611', 'IS00612', 'IS00613', 'IS00614']
+                    }, {
+                        ctgCode: 'CS00057',
+                        comboboxCode: 'IS00617',
+                        relateCode: ['IS00616','IS00618', 'IS00619', 'IS00620', 'IS00621']
+                    }, {
+                        ctgCode: 'CS00058',
+                        comboboxCode: 'IS00624',
+                        relateCode: ['IS00623','IS00625', 'IS00626', 'IS00627', 'IS00628']
+                    }],
+              
+                validation = (combobox: IGrandCombobox) => {
+                    let cb: IFindData = finder.find(combobox.rdctCode || combobox.ctgCode, combobox.comboboxCode),
+                        ctrls: Array<IFindData> = _.map(combobox.relateCode, x => finder.find(combobox.ctgCode, x));
+                    if (cb) {
+                        cb.data.value.subscribe(v => {
+                            if (ctrls[0].data.value() == 1){
+                                for (i = 1; i < ctrls.length; i++) {
+                                    if (ctrls[i] && ctrls[i].data) {
+                                        ctrls[i].data.editable(v == 1);
+                                    }
+                                }
+                            }
+                        });
+                        cb.data.value.valueHasMutated();
+                    }
+                };
+            _(comboboxs).each(cbx => validation(cbx));
+        }
+        
 
         relate_radio = () => {
             let self = this,
@@ -1350,6 +1474,7 @@ module nts.layout {
         // validate datetime control
         dateTime = () => {
             let self = this,
+                dfd = $.Deferred(),
                 finder: IFinder = self.finder,
                 CS00016_IS00077: IFindData = finder.find('CS00016', 'IS00077'),
                 CS00016_IS00079: IFindData = finder.find('CS00016', 'IS00079'),
@@ -1414,8 +1539,7 @@ module nts.layout {
                         workTypeTime: 'IS00185'
                     }
                 ],
-                initCDL008Data = (data: IItemData): JQueryPromise<any>   => {
-                    let dfd = $.Deferred();
+                initCDL008Data = (data: IItemData) => {
                     if (location.href.indexOf('/view/cps/002') > -1) {
                         let baseDateParam = ko.toJS((__viewContext || {
                                 viewModel: {
@@ -1435,14 +1559,15 @@ module nts.layout {
                         }
                         if (_.isNil(baseDateParam) || !moment.utc(baseDateParam, "YYYYMMDD").isValid()) {
                             setShared('inputCDL008', null);
+                            dfd.resolve();
                         } else {
-                            fetch.checkFunctionNo().done(role => {
+                            fetch.checkFunctionNo().done(functionNo => {
                                 setShared('inputCDL008', {
                                     selectedCodes: [ko.toJS(data.value)],
                                     baseDate: ko.toJS(moment.utc(baseDateParam, "YYYYMMDD").toDate()),
                                     isMultiple: false,
                                     selectedSystemType: 1, // 1 : 個人情報 , 2 : 就業 , 3 :給与 , 4 :人事 ,  5 : 管理者
-                                    isrestrictionOfReferenceRange: role.available,
+                                    isrestrictionOfReferenceRange: functionNo.available,
                                     showNoSelection: !data.required,
                                     isShowBaseDate: false
                                 }, true);
@@ -1454,13 +1579,13 @@ module nts.layout {
                             let v = CS00017_IS00082.data.value();
 
                             if (!_.isNil(v) && moment.utc(v, "YYYYMMDD").isValid()) {
-                                fetch.checkFunctionNo().done(role => {
+                                fetch.checkFunctionNo().done(functionNo => {
                                     setShared('inputCDL008', {
                                         selectedCodes: [data.value],
                                         baseDate: ko.toJS(moment.utc(v, "YYYYMMDD").toDate()),
                                         isMultiple: false,
                                         selectedSystemType: 1, // 1 : 個人情報 , 2 : 就業 , 3 :給与 , 4 :人事 ,  5 : 管理者
-                                        isrestrictionOfReferenceRange: role.available,
+                                        isrestrictionOfReferenceRange: functionNo.available,
                                         showNoSelection: !data.required,
                                         isShowBaseDate: false
                                     }, true);
@@ -1468,29 +1593,30 @@ module nts.layout {
                                 });
                             } else {
                                 setShared('inputCDL008', null);
+                                dfd.resolve();
                             }
                         } else {
                             if (__viewContext.viewModel.layout.mode() == 'layout') {
-                                fetch.checkFunctionNo().done(role => {
+                                fetch.checkFunctionNo().done(functionNo => {
                                     setShared('inputCDL008', {
                                         selectedCodes: [data.value],
                                         baseDate: ko.toJS(moment.utc(__viewContext.viewModel.layout.standardDate(), 'YYYYMMDD').toDate()),
                                         isMultiple: false,
                                         selectedSystemType: 1, // 1 : 個人情報 , 2 : 就業 , 3 :給与 , 4 :人事 ,  5 : 管理者
-                                        isrestrictionOfReferenceRange: role.available,
+                                        isrestrictionOfReferenceRange: functionNo.available,
                                         showNoSelection: !data.required,
                                         isShowBaseDate: false
                                     }, true);
                                     dfd.resolve();
                                 });
                             } else {
-                                fetch.checkFunctionNo().done(role => {
+                                fetch.checkFunctionNo().done(functionNo => {
                                     setShared('inputCDL008', {
                                         selectedCodes: [data.value],
                                         baseDate: ko.toJS(moment.utc(__viewContext.viewModel.employee.hireDate(), 'YYYYMMDD').toDate()),
                                         isMultiple: false,
                                         selectedSystemType: 1, // 1 : 個人情報 , 2 : 就業 , 3 :給与 , 4 :人事 ,  5 : 管理者
-                                        isrestrictionOfReferenceRange: role.available,
+                                        isrestrictionOfReferenceRange: functionNo.available,
                                         showNoSelection: !data.required,
                                         isShowBaseDate: false
                                     }, true);
@@ -1499,7 +1625,6 @@ module nts.layout {
                             }
                         }
                     }
-                    return dfd.promise();
                 };
 
             if (CS00016_IS00077 && CS00016_IS00079) {
@@ -1613,14 +1738,16 @@ module nts.layout {
                             return;
                         }
 
-                        initCDL008Data(ko.toJS(CS00017_IS00084.data)).done(() => {
+                        initCDL008Data(ko.toJS(CS00017_IS00084.data));
+
+                        dfd.promise().done(() => {
                             if (!!getShared('inputCDL008')) {
                                 modal('com', '/view/cdl/008/a/index.xhtml').onClosed(() => {
                                     // Check is cancel.
                                     if (getShared('CDL008Cancel')) {
                                         return;
                                     }
-
+    
                                     //view all code of selected item
                                     let output = getShared('outputCDL008');
                                     if (!_.isNil(output)) {
@@ -1645,14 +1772,16 @@ module nts.layout {
                             return;
                         }
 
-                        initCDL008Data(ko.toJS(CS00017_IS00085.data)).done(() => {
+                        initCDL008Data(ko.toJS(CS00017_IS00085.data));
+
+                        dfd.promise().done(() => {
                             if (!!getShared('inputCDL008')) {
                                 modal('com', '/view/cdl/008/a/index.xhtml').onClosed(() => {
                                     // Check is cancel.
                                     if (getShared('CDL008Cancel')) {
                                         return;
                                     }
-
+    
                                     //view all code of selected item
                                     let output = getShared('outputCDL008');
                                     if (!_.isNil(output)) {
@@ -2147,7 +2276,7 @@ module nts.layout {
 
                             if (!x || !appSet || !management || management == '0') {
                                 if (result) {
-                                    result.data.value('');
+                                    //result.data.value('');
                                 }
                                 return;
                             }
@@ -2620,6 +2749,13 @@ module nts.layout {
         ctgCode: string;
         rdctCode?: string;
         radioCode: string;
+        relateCode: Array<string>
+    }
+    
+    interface IGrandCombobox {
+        ctgCode: string;
+        rdctCode?: string;
+        comboboxCode: string;
         relateCode: Array<string>
     }
 

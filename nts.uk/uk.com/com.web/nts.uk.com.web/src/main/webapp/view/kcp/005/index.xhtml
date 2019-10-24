@@ -91,31 +91,39 @@
 								data-bind="click: settingDeletedItem, enable: hasSelectedEmp()"
 								style="margin-right: 10px">Delete</BUTTON>
 						</div>
+									<hr></hr>
+						<br></br>
+						<table style="margin: 30px; width: 100%;">
+							<tr>
+								<td style="width: 640px; border: none">
+									<div style="margin-bottom: 30px; padding-left: 20px">
+										<p style="font-size: 30px">社員リスト</p>
+									</div>
+									<div id="component-items-list"></div>
+								</td>
+								<td style="border: none; padding-top: 100px">
+									<table style="width: 100%;">
+										<tr>
+											<td style="font-size: 20px; font-weight: bold; color: gray;">Selected
+												Codes:</td>
+										</tr>
+										<tr>
+											<td style="margin-right: 30px; width: 500px; color: gray;"><div
+													data-bind="text: getSelectedItemCode()"></div></td>
+										</tr>
+										<tr>
+											<td style="font-size: 20px; font-weight: bold; color: gray;"><button data-bind="click: getSelectedInfo">Get All Selected Record Info</button></td>
+										</tr>
+										<tr>
+											<td style="margin-right: 30px; width: 500px; color: gray;"><div
+													data-bind="text: selectedInfo"></div></td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+						</table>
+							
 					</div>
-					<hr></hr>
-					<br></br>
-					<table style="margin: 30px;">
-						<tr>
-							<td style="width: 640px; border: none">
-								<div style="margin-bottom: 30px; padding-left: 20px">
-									<p style="font-size: 30px">社員リスト</p>
-								</div>
-								<div id="component-items-list"></div>
-							</td>
-							<td style="border: none; padding-top: 100px">
-								<table>
-									<tr>
-										<td style="font-size: 20px; font-weight: bold; color: gray;">Selected
-											Codes:</td>
-									</tr>
-									<tr>
-										<td style="margin-right: 30px; width: 500px; color: gray;"><div
-												data-bind="text: getSelectedItemCode()"></div></td>
-									</tr>
-								</table>
-							</td>
-						</tr>
-					</table>
 
 					<!-- BEGIN DESCRIPTION -->
 					<article class="cf" style="margin-top: 40px;">
@@ -198,10 +206,10 @@
 													self.disableSelection = ko.observable(false);
 													
 													this.employeeList = ko.observableArray<UnitModel>([
-														{ code: '1', name: 'Angela Baby', workplaceName: 'HN' },
-														{ code: '2', name: 'Xuan Toc Do', workplaceName: 'HN' },
-														{ code: '3', name: 'Park Shin Hye', workplaceName: 'HCM' },
-														{ code: '4', name: 'Vladimir Nabokov', workplaceName: 'HN' }
+														{ id: '1a', code: '1', name: 'Angela Babykasjgdkajsghdkahskdhaksdhasd', workplaceName: 'HN' },
+										                { id: '2b', code: '2', name: 'Xuan Toc Doaslkdhasklhdlashdhlashdl', workplaceName: 'HN' },
+										                { id: '3c', code: '3', name: 'Park Shin Hye', workplaceName: 'HCM' },
+										                { id: '3d', code: '4', name: 'Vladimir Nabokov', workplaceName: 'HN' }
 														]);
 													self.listComponentOption = {
 														isShowAlreadySet: self.isShowAlreadySet(),
@@ -227,10 +235,12 @@
 										}
 								
 										export interface UnitModel {
-											code: string;
-											name?: string;
-											workplaceName?: string;
-											isAlreadySetting?: boolean;
+											id?: string;
+									        code: string;
+									        name?: string;
+									        workplaceName?: string;
+									        isAlreadySetting?: boolean;
+									        optionalColumn?: any;
 										}
 										
 										export class SelectType {
@@ -377,6 +387,10 @@
 												<i>Description:</i> listComponentOption is initialized.
 											</div>
 										</td>
+									</tr>
+									<tr>
+										<td>$('#sample-component').ntsListComponentApi("getSelectedRecords");</td>
+										<td><i>Description:</i> Get full information in data source of selected rows</td>
 									</tr>
 									<tr>
 										<td>$('#sample-component').getDataList(); <br></br> <br></br>

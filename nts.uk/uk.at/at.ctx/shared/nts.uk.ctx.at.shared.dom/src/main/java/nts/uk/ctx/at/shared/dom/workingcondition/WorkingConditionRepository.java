@@ -67,12 +67,20 @@ public interface WorkingConditionRepository {
 	 */
 	List<WorkingCondition> getBySidsAndDatePeriod(List<String> sIds, DatePeriod datePeriod);
 	
+	List<WorkingCondition> getBySids(List<String> employeeIds,GeneralDate baseDate);
 	/**
 	 * Save.
 	 *
 	 * @param workingCondition the working condition
 	 */
 	void save(WorkingCondition workingCondition);
+	
+	/**
+	 * Save.
+	 *
+	 * @param workingCondition the working condition
+	 */
+	void saveAll(List<WorkingCondition> workingConditions);
 
 	/**
 	 * Delete.
@@ -80,5 +88,21 @@ public interface WorkingConditionRepository {
 	 * @param employeeId the employee id
 	 */
 	void delete(String employeeId);
+	/**
+	 * fixed r
+	 * get WorkingCondtion by sids, cid, baseDate
+	 * @param employeeIds
+	 * @param baseDate
+	 * @param cid
+	 * @return
+	 */
+	List<WorkingCondition> getBySidsAndCid(List<String> employeeIds,GeneralDate baseDate, String cid);
 
+	/**
+	 * @author lanlt
+	 * Get all the by sids and cid.
+	 * @param cid the company id
+	 * @return the by sid
+	 */
+	List<WorkingCondition> getBySidsAndCid(String companyId, List<String> sIds);
 }

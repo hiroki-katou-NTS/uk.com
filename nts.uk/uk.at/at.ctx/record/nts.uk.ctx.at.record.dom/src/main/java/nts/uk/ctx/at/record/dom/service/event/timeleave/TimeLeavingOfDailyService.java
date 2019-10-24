@@ -23,7 +23,6 @@ import nts.uk.ctx.at.record.dom.service.event.common.CorrectEventConts;
 import nts.uk.ctx.at.record.dom.service.event.common.EventHandleResult;
 import nts.uk.ctx.at.record.dom.service.event.common.EventHandleResult.EventHandleAction;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.workinformation.enums.NotUseAttribute;
 import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
@@ -33,7 +32,6 @@ import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanc
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemIdContainer;
 import nts.uk.ctx.at.shared.dom.attendance.util.enu.DailyDomainGroup;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
-import nts.uk.ctx.at.shared.dom.workingcondition.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkAtr;
@@ -41,7 +39,6 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSetCheck;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
 
 @Stateless
@@ -110,23 +107,23 @@ public class TimeLeavingOfDailyService {
 		if (dayAtr != null) {
 			val wts = wt.getWorkTypeSetByAtr(dayAtr).get();
 			Optional<WorkingConditionItem>  workCondition = getWorkConditionOrDefault(cachedWorkCondition, wi.getEmployeeId(), wi.getYmd());
-			if ((workCondition.isPresent() && workCondition.get().getAutoStampSetAtr() == NotUseAtr.USE) 
-					|| wts.getAttendanceTime() == WorkTypeSetCheck.CHECK 
-					|| wts.getTimeLeaveWork() == WorkTypeSetCheck.CHECK) {
+//			if ((workCondition.isPresent() && workCondition.get().getAutoStampSetAtr() == NotUseAtr.USE) 
+//					|| wts.getAttendanceTime() == WorkTypeSetCheck.CHECK 
+//					|| wts.getTimeLeaveWork() == WorkTypeSetCheck.CHECK) {
 				TimeLeavingOfDailyPerformance tl = null;
 				if (tlo != null) {
 					tl = mergeWithEditStates(working.getEditState(), tlo, wts);
 				}
-				WorkInfoOfDailyPerformance clonedWI = new WorkInfoOfDailyPerformance(wi.getEmployeeId(), wi.getRecordInfo(), 
-						wi.getScheduleInfo(), wi.getCalculationState(), 
-						wts.getAttendanceTime() == WorkTypeSetCheck.CHECK ? NotUseAttribute.Use : NotUseAttribute.Not_use, 
-						wts.getTimeLeaveWork() == WorkTypeSetCheck.CHECK ? NotUseAttribute.Use : NotUseAttribute.Not_use, 
-						wi.getYmd(), wi.getDayOfWeek(), wi.getScheduleTimeSheets()) ;
-				
-				correctedTlo = updateTimeLeave(companyId, clonedWI, tl, workCondition, wi.getEmployeeId(), wi.getYmd());
-			} else {
-				return EventHandleResult.withResult(EventHandleAction.ABORT, working);
-			}
+//				WorkInfoOfDailyPerformance clonedWI = new WorkInfoOfDailyPerformance(wi.getEmployeeId(), wi.getRecordInfo(), 
+//						wi.getScheduleInfo(), wi.getCalculationState(), 
+//						wts.getAttendanceTime() == WorkTypeSetCheck.CHECK ? NotUseAttribute.Use : NotUseAttribute.Not_use, 
+//						wts.getTimeLeaveWork() == WorkTypeSetCheck.CHECK ? NotUseAttribute.Use : NotUseAttribute.Not_use, 
+//						wi.getYmd(), wi.getDayOfWeek(), wi.getScheduleTimeSheets()) ;
+//				clonedWI.setVersion(wi.getVersion());
+				correctedTlo = updateTimeLeave(companyId, wi, tl, workCondition, wi.getEmployeeId(), wi.getYmd());
+//			} else {
+//				return EventHandleResult.withResult(EventHandleAction.ABORT, working);
+//			}
 		} else {
 			/** どちらか一方が 年休 or 特別休暇 の場合 */
 			if (wt.getDailyWork().isAnnualOrSpecialHoliday()) {
@@ -159,13 +156,11 @@ public class TimeLeavingOfDailyService {
 	}
 
 	private boolean isItemUpdatedByHand(List<EditStateOfDailyPerformance> editStates, int itemId) {
-		Optional<EditStateOfDailyPerformance> itemState = editStates.stream().filter(es -> es.getAttendanceItemId() == itemId).findFirst();
+		Optional<EditStateOfDailyPerformance> itemState = editStates.stream()
+				.filter(es -> es.getAttendanceItemId() == itemId && es.getEditStateSetting() != EditStateSetting.REFLECT_APPLICATION)
+				.findFirst();
 		
-		if(!itemState.isPresent()){
-			return false;
-		}
-		
-		return itemState.get().getEditStateSetting() != EditStateSetting.REFLECT_APPLICATION;
+		return itemState.isPresent();
 	}
 
 	private EventHandleResult<IntegrationOfDaily> updated(IntegrationOfDaily working, 
@@ -221,14 +216,14 @@ public class TimeLeavingOfDailyService {
 		List<Integer> inputByReflect = editStates.stream()
 				.filter(es -> isInputByReflect(es.getEditStateSetting())).map(c -> c.getAttendanceItemId())
 				.collect(Collectors.toList());
-		if (wts.getAttendanceTime() == WorkTypeSetCheck.CHECK) {
-			/** 「所定勤務の設定．打刻の扱い方．出勤時刻を直行とする」＝ TRUE */
-			inputByReflect.removeIf(id -> CorrectEventConts.ATTENDANCE_ITEMS.contains(id));
-		}
-		if (wts.getTimeLeaveWork() == WorkTypeSetCheck.CHECK) {
-			/** 「所定勤務の設定．打刻の扱い方．退勤時刻を直行とする」＝ TRUE */
-			inputByReflect.removeIf(id -> CorrectEventConts.LEAVE_ITEMS.contains(id));
-		}
+//		if (wts.getAttendanceTime() == WorkTypeSetCheck.CHECK) {
+//			/** 「所定勤務の設定．打刻の扱い方．出勤時刻を直行とする」＝ TRUE */
+//			inputByReflect.removeIf(id -> CorrectEventConts.ATTENDANCE_ITEMS.contains(id));
+//		}
+//		if (wts.getTimeLeaveWork() == WorkTypeSetCheck.CHECK) {
+//			/** 「所定勤務の設定．打刻の扱い方．退勤時刻を直行とする」＝ TRUE */
+//			inputByReflect.removeIf(id -> CorrectEventConts.LEAVE_ITEMS.contains(id));
+//		}
 		if (!inputByReflect.isEmpty()) {
 			removeAttendanceLeave(timeLeave, inputByReflect, 0);
 			removeAttendanceLeave(timeLeave, inputByReflect, 1);

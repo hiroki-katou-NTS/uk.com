@@ -1,0 +1,104 @@
+package nts.uk.ctx.pr.report.app.find.printconfig.socialinsurnoticreset;
+
+import nts.arc.error.BusinessException;
+import nts.arc.layer.app.file.export.ExportService;
+import nts.arc.layer.app.file.export.ExportServiceContext;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.EmpAddChangeInfo;
+import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.EmpAddChangeInfoRepository;
+import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.SocialInsurNotiCrSetRepository;
+import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.SocialInsurNotiCreateSet;
+import nts.uk.shr.com.context.AppContexts;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import java.util.List;
+
+@Stateless
+public class EmpAddChangeInfoExportPDFService extends ExportService<EmpAddChangeInfoExportQuery> {
+
+    @Inject
+    private SocialInsurNotiCrSetRepository socialInsurNotiCrSetRepository;
+
+    @Inject
+    private EmpAddChangeInfoRepository empAddChangeInfoRepository;
+
+    @Override
+    protected void handle(ExportServiceContext<EmpAddChangeInfoExportQuery> exportServiceContext) {
+        String userId = AppContexts.user().userId();
+        String cid = AppContexts.user().companyId();
+        GeneralDate start = exportServiceContext.getQuery().getStartDate();
+        GeneralDate end = exportServiceContext.getQuery().getEndDate();
+        int printPersonNumber = exportServiceContext.getQuery().getSocialInsurNotiCreateSet().getPrintPersonNumber();
+        EmpAddChangeInfoExport socialInsurNotiCreateSet = exportServiceContext.getQuery().getSocialInsurNotiCreateSet();
+        SocialInsurNotiCreateSet domain = new SocialInsurNotiCreateSet(userId, cid,
+                socialInsurNotiCreateSet.getOfficeInformation(),
+                socialInsurNotiCreateSet.getBusinessArrSymbol(),
+                socialInsurNotiCreateSet.getOutputOrder(),
+                socialInsurNotiCreateSet.getPrintPersonNumber(),
+                socialInsurNotiCreateSet.getSubmittedName(),
+                socialInsurNotiCreateSet.getInsuredNumber(),
+                socialInsurNotiCreateSet.getFdNumber(),
+                socialInsurNotiCreateSet.getTextPersonNumber(),
+                socialInsurNotiCreateSet.getOutputFormat(),
+                socialInsurNotiCreateSet.getLineFeedCode()
+        );
+        socialInsurNotiCrSetRepository.update(domain);
+        List<String> empIds = exportServiceContext.getQuery().getEmpIds();
+        if(end.before(start)) {
+            throw new BusinessException("Msg_812");
+        }
+
+        if ( printPersonNumber == 1 || printPersonNumber == 3){
+            List<EmpAddChangeInfo> empAddChangeInfoList = empAddChangeInfoRepository.getListEmpAddChange(empIds);
+   
+
+        /*List<EmpAddChangeInfoExport> empAddChangeInfoExportList = new ArrayList<>();*/
+        EmpAddChangeInforData empAddChangeInforData = new EmpAddChangeInforData();
+        EmpAddChangeInfoExport empAddChangeInfoExport = new EmpAddChangeInfoExport(
+                "1233",
+                "1233",
+                "1233",
+                "1233",
+                "1234567",
+                "nameKana",
+                "fullNamePs",
+                start,
+                "1233121",
+                "add1KanaPs",
+                "add2KanaPs",
+                "add1Ps",
+                "add2Ps",
+                start,
+                "7654321",
+                1,
+                1,
+                1,
+                1,
+                "otherReason",
+                1,
+                1,
+                1,
+                1,
+                "spouseOtherReason",
+                start,
+                "nameKanaF",
+                "fullNameF",
+                "1233234",
+                "add1KanaF",
+                "add2KanaF",
+                "add1F",
+                "add2F",
+                start,
+                "add1BeforeChange",
+                "add2BeforeChange",
+                "address1",
+                "address2",
+                "bussinessName",
+                "referenceName",
+                "phoneNumber"
+        );
+
+        empAddChangeInfoFileGenerator.generate(exportServiceContext.getGeneratorContext(), empAddChangeInforData);
+    }
+}

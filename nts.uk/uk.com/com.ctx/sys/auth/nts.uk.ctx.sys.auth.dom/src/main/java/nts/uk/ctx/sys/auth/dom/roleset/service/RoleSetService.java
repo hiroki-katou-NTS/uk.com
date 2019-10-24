@@ -49,4 +49,6 @@ public interface RoleSetService {
      */
     Optional<RoleSet> getRoleSetFromUserId(String userId, GeneralDate baseDate);
     
+    Optional<RoleSet> getRoleSetFromUserId(String userId, GeneralDate baseDate, String comId);
+    
 }

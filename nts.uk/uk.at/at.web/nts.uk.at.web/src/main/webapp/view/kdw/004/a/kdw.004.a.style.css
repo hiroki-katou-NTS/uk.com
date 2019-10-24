@@ -57,7 +57,9 @@ div[class='ui-widget-header ui-helper-reset'] {
 }
 
 #colorBtn {
-	margin: 10px 0 10px 1111px;
+	/* margin: 10px 0 10px 1111px; */
+	top: -36px;
+    margin-left: 1111px;
 }
 
 .nts-legendbutton-panel {
@@ -129,4 +131,16 @@ div[class='ui-widget-header ui-helper-reset'] {
     border: 1px solid gray;
     background: #ffffff;
     text-align: center;
+}
+
+#row2{
+	margin-top: 15px;
+	height: 55px;
+}
+
+#period-rep {
+    display: inline-block;
+    vertical-align: middle;
+    margin-top: -27px;
+
 }

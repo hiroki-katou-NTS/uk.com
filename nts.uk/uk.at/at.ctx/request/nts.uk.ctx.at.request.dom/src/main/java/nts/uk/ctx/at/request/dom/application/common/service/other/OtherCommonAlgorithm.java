@@ -7,15 +7,21 @@ package nts.uk.ctx.at.request.dom.application.common.service.other;
 
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppCompltLeaveSyncOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.MailResult;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
+import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.InitValueAtr;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface OtherCommonAlgorithm {
@@ -112,5 +118,49 @@ public interface OtherCommonAlgorithm {
 	 * @param dates
 	 * @return
 	 */
-	public List<GeneralDate> lstDateNotHoliday(String cid, String sid, DatePeriod dates);
+	public List<GeneralDate> lstDateIsHoliday(String cid, String sid, DatePeriod dates);
+	
+	/**
+	 * 11.指定日の勤務実績（予定）の勤務種類を取得
+	 * @param companyID
+	 * @param employeeID
+	 * @param appDate
+	 * @return
+	 */
+	public WorkType getWorkTypeScheduleSpec(String companyID, String employeeID, GeneralDate appDate);
+	/**
+	 * 申請理由出力_共通
+	 * @author hoatt
+	 * @param 申請 application
+	 * @param 休暇種類(Optional) holidayType
+	 * @return 結果(使用/未使用)
+	 */
+	public boolean appReasonOutFlg(Application_New application, Optional<Integer> holidayType);
+	
+	/**
+	 * 01-05_申請定型理由を取得
+	 * @param companyID 会社ID
+	 * @param typicalReasonDisplayFlg 定型理由の表示区分
+	 * @param appType 申請種類
+	 * @return
+	 */
+	public List<ApplicationReason> getApplicationReasonType(String companyID, AppDisplayAtr typicalReasonDisplayFlg, ApplicationType appType);
+	
+	/**
+	 * 01-06_申請理由を取得
+	 * @param displayReasonFlg 申請理由の表示区分
+	 * @return
+	 */
+	public boolean displayAppReasonContentFlg(AppDisplayAtr displayReasonFlg);
+	
+	/**
+	 * 01-09_事前申請を取得
+	 * @param employeeID 申請者
+	 * @param prePostAtr 事前事後区分
+	 * @param preDisplayAtr 事前表示区分
+	 * @param appDate 申請日
+	 * @param appType 申請種類
+	 * @return
+	 */
+	public AppOverTime getPreApplication(String employeeID, PrePostAtr prePostAtr, UseAtr preDisplayAtr, GeneralDate appDate, ApplicationType appType);
 }

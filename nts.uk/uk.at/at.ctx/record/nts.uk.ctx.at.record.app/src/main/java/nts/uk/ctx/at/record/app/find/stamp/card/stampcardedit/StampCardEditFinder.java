@@ -11,16 +11,18 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class StampCardEditFinder {
-
 	
 	@Inject
 	private StampCardEditingRepo stampCardEditRepo;
 	
 	public StampCardEditDto findDto() {
-		Optional<StampCardEditing> stampCardEditingOpt = stampCardEditRepo.get(AppContexts.user().companyId());
+		String cId = AppContexts.user().companyId();
+		Optional<StampCardEditing> stampCardEditingOpt = stampCardEditRepo.get(cId);
+		
 		if (!stampCardEditingOpt.isPresent()) {
 			throw new RuntimeException("No data StampCardEditing");
 		}
+		
 		return StampCardEditDto.createFromDomain(stampCardEditingOpt.get());
 	}
 

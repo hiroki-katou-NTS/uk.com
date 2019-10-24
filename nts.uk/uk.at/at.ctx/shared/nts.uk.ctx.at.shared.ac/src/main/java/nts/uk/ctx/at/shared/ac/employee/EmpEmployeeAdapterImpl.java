@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
@@ -55,6 +57,7 @@ public class EmpEmployeeAdapterImpl implements EmpEmployeeAdapter {
 	 * @see nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter#findByEmpId(java.lang.String)
 	 */
 	@Override
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public EmployeeImport findByEmpId(String empId) {
 		// Get Employee Basic Info
 		EmployeeBasicInfoExport empExport = employeePub.findBySId(empId);
@@ -171,5 +174,11 @@ public class EmpEmployeeAdapterImpl implements EmpEmployeeAdapter {
 	public AffCompanyHistSharedImport GetAffComHisBySid(String cid, String sid){
 		AffCompanyHistSharedImport importList = convert(this.syCompanyPub.GetAffComHisBySid(cid,sid));
 		return importList;
+	}
+
+	@Override
+	public List<AffCompanyHistSharedImport> getAffComHisBySids(String cid, List<String> sids) {
+		List<AffCompanyHistSharedImport> result =  this.syCompanyPub.getAffComHisBySids(cid, sids).stream().map(c -> convert(c)).collect(Collectors.toList());
+		return result;
 	}
 }

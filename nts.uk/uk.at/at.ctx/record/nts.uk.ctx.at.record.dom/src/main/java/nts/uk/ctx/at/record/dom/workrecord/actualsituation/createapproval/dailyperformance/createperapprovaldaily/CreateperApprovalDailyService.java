@@ -11,5 +11,5 @@ import nts.arc.time.GeneralDate;
  *
  */
 public interface CreateperApprovalDailyService {
-	public boolean createperApprovalDaily(String companyId,String executionId,List<String> employeeIDs,int processExecType,Integer createNewEmp,GeneralDate startDateClosure,GeneralDate endDateClosure);
+	public OutputCreatePerApprovalDaily createperApprovalDaily(String companyId,String executionId,List<String> employeeIDs,int processExecType,Integer createNewEmp,GeneralDate startDateClosure,GeneralDate endDateClosure);
 }

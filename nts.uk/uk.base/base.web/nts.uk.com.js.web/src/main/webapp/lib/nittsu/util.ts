@@ -548,33 +548,35 @@
     }
 
     export class WebStorageWrapper {
+        constructor(private nativeStorage: Storage) { }
 
-        nativeStorage: Storage;
-
-        constructor(nativeStorage: Storage) {
-            this.nativeStorage = nativeStorage;
+        key(index: number) {
+            return this.nativeStorage && this.nativeStorage.key(index);
         }
 
         setItem(key: string, value: string) {
             if (value === undefined) {
                 return;
             }
-            this.nativeStorage.setItem(key, value);
+
+            this.nativeStorage && this.nativeStorage.setItem(key, value);
         }
 
         setItemAsJson(key: string, value: any) {
             this.setItem(key, JSON.stringify(value));
         }
-        
+
         containsKey(key: string) {
-            return this.getItem(key) !== null;
+            return this.getItem(key).isPresent();
         };
 
         getItem(key: string): util.optional.Optional<string> {
-            var value: string = this.nativeStorage.getItem(key);
+            var value: string = this.nativeStorage && this.nativeStorage.getItem(key) || null;
+
             if (value === null || value === undefined || value === 'undefined') {
                 return util.optional.empty();
             }
+
             return util.optional.of(value);
         }
 
@@ -585,11 +587,11 @@
         }
 
         removeItem(key: string) {
-            this.nativeStorage.removeItem(key);
+            this.nativeStorage && this.nativeStorage.removeItem(key);
         }
 
         clear() {
-            this.nativeStorage.clear();
+            this.nativeStorage && this.nativeStorage.clear();
         }
     }
 
