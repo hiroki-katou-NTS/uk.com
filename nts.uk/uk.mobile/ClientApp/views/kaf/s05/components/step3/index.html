@@ -247,7 +247,7 @@
             <div class="card-body">
                 <div class="confirm-item reason-confirm">
                     <span v-if="divergenceReason != null && divergenceReason != ''" v-html='divergenceReason'></span>
-                    <span v-if="divergenceReason == null && divergenceReason == ''">{{'KAFS05_54' | i18n}}</span>
+                    <span v-if="divergenceReason == null || divergenceReason == ''">{{'KAFS05_54' | i18n}}</span>
                 </div>
             </div>
         </div>
