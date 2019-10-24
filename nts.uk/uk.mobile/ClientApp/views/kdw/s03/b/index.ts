@@ -818,6 +818,8 @@ export class KdwS03BComponent extends Vue {
         }
         let registerParam = self.createRegisterParam();
         if (!self.isChangeDataRegister()) {
+            self.$modal.error('Msg_1569');
+            
             return;
         }
         self.$mask('show');
