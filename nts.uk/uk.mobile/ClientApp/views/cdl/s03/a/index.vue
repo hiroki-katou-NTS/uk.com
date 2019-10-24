@@ -2,7 +2,7 @@
   <div class="modal-body p-0">
     <div class="modal-header rounded-0 d-block p-0">
       <div class="uk-bg-teal p-2">
-        <h4 class="modal-title text-white" v-on:click="$close('')">       
+        <h4 class="modal-title text-white" v-on:click="$close()">       
             <i class="fas fa-angle-double-left mr-1" ></i>
             <span>{{ 'CDLS03_2' | i18n }}</span>        
         </h4>
@@ -16,7 +16,7 @@
     <div>
       <ul class="list-group list-group-single-select">
         <li class="list-group-item " v-for="(item, k) of data" v-bind:key="k" 
-        :class="(item.code == params.selectedCode || (item.code == '' && activeNoSelect)) ? 'active' : ''" v-on:click="$close(item.code)">
+        :class="(item.code == params.selectedCode || (item.code == '' && activeNoSelect)) ? 'active' : ''" v-on:click="$close(item)">
             <span v-if="item.code != ''">{{item.code}} &nbsp;&nbsp;&nbsp; {{item.name}}</span>
             <span v-if="item.code == ''">{{item.name}}</span>
         </li>
