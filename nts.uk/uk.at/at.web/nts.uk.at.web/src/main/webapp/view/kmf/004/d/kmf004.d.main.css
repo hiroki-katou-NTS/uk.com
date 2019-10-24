@@ -67,7 +67,7 @@ table.data-items thead, table.data-items tbody {
 }
 
 table.data-items tbody {
-    height: 280px;
+    height: 280px !important;
     overflow-y: auto;
     overflow-x: hidden;
     border: 1px solid #CCC;
