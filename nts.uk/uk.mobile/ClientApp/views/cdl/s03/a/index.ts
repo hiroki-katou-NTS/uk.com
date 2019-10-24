@@ -4,7 +4,6 @@ import * as _ from 'lodash';
 
 @component({
     name: 'cdls03a',
-    route: '/cdl/s03/a',
     style: require('./style.scss'),
     template: require('./index.vue'),
     resource: require('./resources.json'),
@@ -45,11 +44,16 @@ export class CdlS03AComponent extends Vue {
                 } else {
                     self.activeNoSelect = true;
                 }
-            }              
+            }     
+            self.$mask('hide');         
         }).catch((res: any) => {
             this.$modal.error(res.messageId).then(() => self.$close());
         });
         
+    }
+
+    public mounted() {
+        this.$mask('show', { message: true });
     }
 
     public searchList() {
