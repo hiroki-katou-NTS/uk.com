@@ -40,7 +40,7 @@ export class CdlS04AComponent extends Vue {
                     result.data.push({
                         id: null,
                         code: '',
-                        name: this.$i18n('CDLS04_5')
+                        name: ''
                     });
                 }
                 self.allData = _.sortBy(result.data, ['code']);
@@ -63,12 +63,6 @@ export class CdlS04AComponent extends Vue {
         this.data = _.filter(this.allData, (item) => item.code.indexOf(this.searchText) != -1 || item.name.indexOf(this.searchText) != -1);
     }
 
-    public select(item: any) {
-        if (_.isEmpty(item.code)) {
-            this.$close({id: null, code: null, name: ''});
-        }
-        this.$close(item);
-    }
 }
 interface IParameter {
     isShowNoSelectRow: boolean;
