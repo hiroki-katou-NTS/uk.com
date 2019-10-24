@@ -10,6 +10,7 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoAuthType;
 import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuth;
 import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuthRepository;
 import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemDetail;
@@ -18,6 +19,16 @@ import nts.uk.ctx.pereg.infra.entity.roles.auth.item.PpemtPersonItemAuthPk;
 
 @Stateless
 public class JpaPersonInfoItemAuthRepository extends JpaRepository implements PersonInfoItemAuthRepository {
+	
+	private static final String IS_SELF_AUTH =
+			"SELECT au  FROM  PpemtPerInfoCtg ca INNER JOIN  PpemtPerInfoCtgCm co ON ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd AND co.ppemtPerInfoCtgCmPK.categoryCd =:categoryCd AND ca.cid =:cid  AND co.ppemtPerInfoCtgCmPK.contractCd =:contractCd"
+			+ " INNER JOIN PpemtPerInfoItem i ON  ca.ppemtPerInfoCtgPK.perInfoCtgId = i.perInfoCtgId"
+			+ " INNER JOIN PpemtPerInfoItemCm ic "
+			+ " ON i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd AND co.ppemtPerInfoCtgCmPK.contractCd = ic.ppemtPerInfoItemCmPK.contractCd"
+			+ " AND co.ppemtPerInfoCtgCmPK.categoryCd = ic.ppemtPerInfoItemCmPK.categoryCd AND ic.ppemtPerInfoItemCmPK.itemCd =:itemCd"
+			+ " INNER JOIN PpemtPersonItemAuth au ON i.ppemtPerInfoItemPK.perInfoItemDefId = au.ppemtPersonItemAuthPk.personItemDefId"
+			+ " AND ca.ppemtPerInfoCtgPK.perInfoCtgId = au.ppemtPersonItemAuthPk.personInfoCategoryAuthId AND au.ppemtPersonItemAuthPk.roleId =:roleId";
+
 
 	private static final String SELECT_ITEM_INFO_AUTH_BY_CATEGORY_ID_QUERY = "SELECT DISTINCT p.ppemtPersonItemAuthPk.roleId,"
 			+ " p.ppemtPersonItemAuthPk.personInfoCategoryAuthId, i.ppemtPerInfoItemPK.perInfoItemDefId, p.selfAuthType,"
@@ -47,25 +58,20 @@ public class JpaPersonInfoItemAuthRepository extends JpaRepository implements Pe
 	private static final String DELETE_BY_ROLE_ID = "DELETE FROM PpemtPersonItemAuth c"
 			+ " WHERE c.ppemtPersonItemAuthPk.roleId =:roleId";
 
-	private static final String SEL_ALL_ITEM_DATA = String.join(" ", "SELECT id.ppemtPersonItemAuthPk.personItemDefId",
-			" FROM PpemtPersonItemAuth id",
-			" INNER JOIN PpemtPerInfoItem pi ON id.ppemtPersonItemAuthPk.personItemDefId = pi.ppemtPerInfoItemPK.perInfoItemDefId",
-			" INNER JOIN PpemtPerInfoCtg pc ON pi.perInfoCtgId = pc.ppemtPerInfoCtgPK.perInfoCtgId",
-			" INNER JOIN PpemtPerInfoItemCm pm ON pi.itemCd = pm.ppemtPerInfoItemCmPK.itemCd AND pc.categoryCd = pm.ppemtPerInfoItemCmPK.categoryCd",
-			" WHERE pm.ppemtPerInfoItemCmPK.itemCd =:itemCd", " AND pi.perInfoCtgId IN :perInfoCtgId");
+	private static final String SEL_ALL_ITEM_DATA = "SELECT id.ppemtPersonItemAuthPk.personItemDefId"
+			+ " FROM PpemtPersonItemAuth id"
+			+ " INNER JOIN PpemtPerInfoItem pi ON id.ppemtPersonItemAuthPk.personItemDefId = pi.ppemtPerInfoItemPK.perInfoItemDefId"
+			+ " INNER JOIN PpemtPerInfoCtg pc ON pi.perInfoCtgId = pc.ppemtPerInfoCtgPK.perInfoCtgId"
+			+ " INNER JOIN PpemtPerInfoItemCm pm ON pi.itemCd = pm.ppemtPerInfoItemCmPK.itemCd AND pc.categoryCd = pm.ppemtPerInfoItemCmPK.categoryCd"
+			+ " WHERE pm.ppemtPerInfoItemCmPK.itemCd =:itemCd"
+			+ " AND pi.perInfoCtgId IN :perInfoCtgId";
 	
-	private static final String IS_SELF_AUTH = String.join(" ",
-			" SELECT au  FROM  PpemtPerInfoCtg ca, PpemtPerInfoCtgCm co, PpemtPerInfoItem i, PpemtPerInfoItemCm ic, PpemtPersonItemAuth au",
-			" WHERE ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd", 
-			" AND ca.ppemtPerInfoCtgPK.perInfoCtgId = i.perInfoCtgId  AND co.ppemtPerInfoCtgCmPK.categoryCd  = ic.ppemtPerInfoItemCmPK.categoryCd ",
-			" AND i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd",
-			" AND co.ppemtPerInfoCtgCmPK.contractCd = ic.ppemtPerInfoItemCmPK.contractCd ",
-			" AND i.ppemtPerInfoItemPK.perInfoItemDefId = au.ppemtPersonItemAuthPk.personItemDefId ",
-			" AND ca.ppemtPerInfoCtgPK.perInfoCtgId = au.ppemtPersonItemAuthPk.personInfoCategoryAuthId ",
-			" AND i.itemCd =:itemCd",
-			" AND ca.categoryCd =:categoryCd",	
-			" AND ca.cid =:cid  AND  co.ppemtPerInfoCtgCmPK.contractCd =:contractCd",
-			" AND au.ppemtPersonItemAuthPk.roleId =:roleId");
+	private static final String SEL_ALL_ITEM_AUTH_BY_ROLE_ID_CTG_ID_ITEM_ID = " SELECT c FROM PpemtPersonItemAuth c"
+			+ " WHERE c.ppemtPersonItemAuthPk.roleId =:roleId"
+			+ " AND c.ppemtPersonItemAuthPk.personInfoCategoryAuthId =:categoryId"
+			+ " AND c.ppemtPersonItemAuthPk.personItemDefId IN :itemIds"
+			+ " AND (c.otherPersonAuthType =:otherType OR c.selfAuthType =:selfType)";
+	
 
 
 	private static PpemtPersonItemAuth toEntity(PersonInfoItemAuth domain) {
@@ -225,6 +231,17 @@ public class JpaPersonInfoItemAuthRepository extends JpaRepository implements Pe
 		.setParameter("cid", cid)
 		.setParameter("contractCd", contractCd)
 		.getSingle(c -> toDomain(c));
+	}
+
+	@Override
+	public List<PersonInfoItemAuth> getAllItemAuth(String roleId, String categoryId, List<String> itemIds) {
+		return this.queryProxy().query(SEL_ALL_ITEM_AUTH_BY_ROLE_ID_CTG_ID_ITEM_ID, PpemtPersonItemAuth.class)
+				.setParameter("roleId", roleId)
+				.setParameter("categoryId", categoryId)
+				.setParameter("itemIds", itemIds)
+				.setParameter("otherType", PersonInfoAuthType.UPDATE.value)
+				.setParameter("selfType", PersonInfoAuthType.UPDATE.value)
+				.getList(c -> toDomain(c));
 	}
 
 }

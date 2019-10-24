@@ -51,45 +51,15 @@ import nts.uk.shr.infra.data.jdbc.JDBCUtil;
 public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 		implements TimeLeavingOfDailyPerformanceRepository {
 
-//	private static final String REMOVE_BY_EMPLOYEE;
-//
-//	private static final String REMOVE_TIME_LEAVING_WORK;
-
 	private static final String FIND_BY_KEY;
-
-//	private static final String FIND_BY_PERIOD_ORDER_BY_YMD;
-
+	
 	static {
 		StringBuilder builderString = new StringBuilder();
-//		builderString.append("DELETE ");
-//		builderString.append("FROM KrcdtDaiLeavingWork a ");
-//		builderString.append("WHERE a.krcdtDaiLeavingWorkPK.employeeId = :employeeId ");
-//		builderString.append("AND a.krcdtDaiLeavingWorkPK.ymd = :ymd ");
-//		REMOVE_BY_EMPLOYEE = builderString.toString();
-//
-//		builderString = new StringBuilder();
-//		builderString.append("DELETE ");
-//		builderString.append("FROM KrcdtTimeLeavingWork a ");
-//		builderString.append("WHERE a.krcdtTimeLeavingWorkPK.employeeId = :employeeId ");
-//		builderString.append("AND a.krcdtTimeLeavingWorkPK.ymd = :ymd ");
-//		builderString.append("AND a.krcdtTimeLeavingWorkPK.timeLeavingType = :timeLeavingType ");
-//		REMOVE_TIME_LEAVING_WORK = builderString.toString();
-
-		builderString = new StringBuilder();
 		builderString.append("SELECT a ");
 		builderString.append("FROM KrcdtDaiLeavingWork a ");
 		builderString.append("WHERE a.krcdtDaiLeavingWorkPK.employeeId = :employeeId ");
 		builderString.append("AND a.krcdtDaiLeavingWorkPK.ymd = :ymd ");
 		FIND_BY_KEY = builderString.toString();
-
-//		builderString = new StringBuilder();
-//		builderString.append("SELECT a ");
-//		builderString.append("FROM KrcdtDaiLeavingWork a ");
-//		builderString.append("WHERE a.krcdtDaiLeavingWorkPK.employeeId = :employeeId ");
-//		builderString.append("AND a.krcdtDaiLeavingWorkPK.ymd >= :start ");
-//		builderString.append("AND a.krcdtDaiLeavingWorkPK.ymd <= :end ");
-//		builderString.append("ORDER BY a.krcdtDaiLeavingWorkPK.ymd ");
-//		FIND_BY_PERIOD_ORDER_BY_YMD = builderString.toString();
 	}
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
@@ -192,7 +162,12 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 		if (domain == null) {
 			return;
 		}
-		KrcdtDaiLeavingWork entity = getDailyLeaving(domain.getEmployeeId(), domain.getYmd());
+		
+		internalUpdate(domain, getDailyLeaving(domain.getEmployeeId(), domain.getYmd()));
+		// this.getEntityManager().flush();
+	}
+
+	private void internalUpdate(TimeLeavingOfDailyPerformance domain, KrcdtDaiLeavingWork entity) {
 		List<KrcdtTimeLeavingWork> timeWorks = entity.timeLeavingWorks;
 		entity.workTimes = domain.getWorkTimes() == null ? null : domain.getWorkTimes().v();
 		domain.getTimeLeavingWorks().stream().forEach(c -> {
@@ -494,7 +469,7 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 				statementI.executeUpdate(JDBCUtil.toInsertWithCommonField(insertTimeLeaving));
 			}
 		} catch (Exception e) {
-
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -642,5 +617,4 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 				.map(e -> KrcdtDaiLeavingWork.toDomain((KrcdtDaiLeavingWork) e.getKey(), e.getValue()))
 				.collect(Collectors.toList());
 	}
-
 }

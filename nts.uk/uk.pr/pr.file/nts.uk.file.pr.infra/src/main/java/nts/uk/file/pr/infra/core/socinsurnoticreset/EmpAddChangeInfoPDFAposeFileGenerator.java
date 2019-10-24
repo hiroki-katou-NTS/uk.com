@@ -2,6 +2,7 @@ package nts.uk.file.pr.infra.core.socinsurnoticreset;
 
 import com.aspose.cells.Workbook;
 import com.aspose.cells.WorksheetCollection;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsuranceOffice;
@@ -45,6 +46,11 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
            WorksheetCollection worksheets = workbook.getWorksheets();
            reportContext.processDesigner();
            String sheetName = "INS";
+
+           if (data.getEmpAddChangeInfoExportList().isEmpty()) {
+               throw new BusinessException("Msg_37");
+           }
+
            for (int i  = 0; i < data.getEmpAddChangeInfoExportList().size() ; i ++){
                worksheets.get(worksheets.addCopy(0)).setName(sheetName + i);
                EmpAddChangeInfoExport empAddChangeInfoExport = data.getEmpAddChangeInfoExportList().get(i);
@@ -215,4 +221,3 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
             throw new RuntimeException(e);
         }
     }
-}

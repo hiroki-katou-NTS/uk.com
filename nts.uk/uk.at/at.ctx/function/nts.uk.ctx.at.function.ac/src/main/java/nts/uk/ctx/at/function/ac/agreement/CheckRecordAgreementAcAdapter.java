@@ -161,7 +161,7 @@ public class CheckRecordAgreementAcAdapter implements CheckRecordAgreementAdapte
 						result.add(CheckedOvertimeImport.builder().employeeId(employeeId).datePeriod(period)
 								.alarmCheckId(agreeCond.getId()).error(true).no(agreeCond.getNo())
 								.ot36(agreeCond.getOt36()).excessNum(agreeCond.getExcessNum())
-								.messageDisp(agreeCond.getMessageDisp()).build());
+								.messageDisp(agreeCond.getMessageDisp()).countAgreementOneEmp(count).build());
 					}
 
 				}
@@ -182,7 +182,7 @@ public class CheckRecordAgreementAcAdapter implements CheckRecordAgreementAdapte
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<CheckedAgreementResult> checkArgreementResult(List<String> employeeIds, DatePeriod period,
 			AgreeConditionError agreeConditionError, Optional<AgreementOperationSettingImport> agreementSetObj,
-			List<Closure> closureList,Map<String,Integer> mapEmpIdClosureID) {
+			List<Closure> closureList,Map<String,Integer> mapEmpIdClosureID,Object objCheckAgreement ) {
 
 		String companyId = AppContexts.user().companyId();
 		List<CheckedAgreementResult> checkedAgreementResults = new ArrayList<CheckedAgreementResult>();
@@ -230,7 +230,7 @@ public class CheckRecordAgreementAcAdapter implements CheckRecordAgreementAdapte
 			}
 			
 			/** TODO: need check period */
-			Object basicSetGetter = agreementTimeByPeriodPub.getCommonSetting(AppContexts.user().companyId(), employeeIds, period);
+//			Object basicSetGetter = agreementTimeByPeriodPub.getCommonSetting(AppContexts.user().companyId(), employeeIds, period);
 
 			/** TODO: 並列処理にしてみる　*/
 			// 社員IDの件数分ループ
@@ -303,13 +303,14 @@ public class CheckRecordAgreementAcAdapter implements CheckRecordAgreementAdapte
 				Integer closureIdCheck = mapEmpIdClosureID.get(empId);
 				//Get base date 
 				DatePeriod baseDate = mapClosureIDDatePeriod.get(closureIdCheck);
+				if(baseDate ==null) continue;
 				for (Integer fiscalYear : fiscalYears) {
 					PeriodAtrOfAgreement periodAtr = mapPeriodWithPeriodAtrOfAgreement(agreeConditionError.getPeriod());
 					if (periodAtr != null) {
 						//RequestList No.453 指定期間36協定時間の取得
 						List<AgreementTimeByPeriod> agreementTimeByPeriods = agreementTimeByPeriodPub.algorithm(
 								agreeConditionError.getCompanyId(), empId, baseDate.end(),
-								new Month(startingMonth), new Year(fiscalYear), periodAtr, basicSetGetter);
+								new Month(startingMonth), new Year(fiscalYear), periodAtr, objCheckAgreement);
 						if(!CollectionUtil.isEmpty(agreementTimeByPeriods)){
 							for (AgreementTimeByPeriod agreementTimeByPeriod : agreementTimeByPeriods) {
 								int checkEnd = agreementTimeByPeriod.getEndMonth().compareTo(yearMonthPeriod.start());
@@ -429,6 +430,11 @@ public class CheckRecordAgreementAcAdapter implements CheckRecordAgreementAdapte
 			break;
 		}
 		return enumReturn;
+	}
+
+	@Override
+	public Object getCommonSetting(String companyId, List<String> employeeIds, DatePeriod period) {
+		return agreementTimeByPeriodPub.getCommonSetting(AppContexts.user().companyId(), employeeIds, period);
 	}
 
 }

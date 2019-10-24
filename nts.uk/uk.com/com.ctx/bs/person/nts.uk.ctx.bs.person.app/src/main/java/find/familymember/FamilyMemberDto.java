@@ -95,11 +95,12 @@ public class FamilyMemberDto extends PeregDomainDto{
 	private int workStudentType;
 	
 	public static FamilyMemberDto createFromDomain(FamilyMember domain){
-		return new FamilyMemberDto(domain.getBirthday(), domain.getDeadDay(), domain.getEntryDate(), domain.getExpelledDate(), domain.getFamilyMemberId(), 
-				domain.getFullName().v(), domain.getFullNameKana().v(), domain.getNameMultiLangFull().v(), 
-				domain.getNameMultiLangFullKana().v(), domain.getNameRomajiFull().v(), 
-				domain.getNameRomajiFullKana().v(), domain.getNationalityId().v(), domain.getOccupationName().v(),
-				domain.getPersonId(), domain.getRelationship().v(), domain.getSupportCareType().value, domain.getTokodekeName().v(),
-				domain.getTogSepDivisionType().value, domain.getWorkStudentType().value);
+		return null;
+//		return new FamilyMemberDto(domain.getBirthday(), domain.getDeadDay(), domain.getEntryDate(), domain.getExpelledDate(), domain.getFamilyMemberId(), 
+//				domain.getFullName().v(), domain.getFullNameKana().v(), domain.getNameMultiLangFull().v(), 
+//				domain.getNameMultiLangFullKana().v(), domain.getNameRomajiFull().v(), 
+//				domain.getNameRomajiFullKana().v(), domain.getNationalityId().v(), domain.getOccupationName().v(),
+//				domain.getPersonId(), domain.getRelationship().v(), domain.getSupportCareType().value, domain.getTokodekeName().v(),
+//				domain.getTogSepDivisionType().value, domain.getWorkStudentType().value);
 	}
 }

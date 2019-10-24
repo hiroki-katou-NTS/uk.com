@@ -1,11 +1,17 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -66,4 +72,57 @@ public class SpecialLeaveGrantNextDateServiceImpl implements SpecialLeaveGrantNe
 		return Optional.of(speInfor.getSpeHolidayInfor().get(0).getGrantDaysInfor());
 	}
 
+	@Override
+	public Map<String, GrantDaysInfor> getNumberOfGrantDays(List<SpecialLeaveGrantNextDateInputExtend> params) {
+		//次回特休付与計算開始日を計算する
+		List<SpeGrantNextDateByGetInputExtend>  inputParams = new ArrayList<>();
+		params.stream().forEach(c ->{
+			//次回特休付与計算開始日を計算する
+			GeneralDate startDate = this.getStartDateOfSpecialNextDay(c.getClosureDate(), c.getInputDate());
+			//アルゴリズム「次回特別休暇付与日を取得」を実行
+			SpeGrantNextDateByGetInputExtend inputParam = new SpeGrantNextDateByGetInputExtend(
+					c.getSid(),
+					c.getCid(),
+					c.getSpecialCode(),
+					new DatePeriod(startDate, GeneralDate.max()),
+					c.getSpecialDate(),
+					c.getSpecialSetting(),
+					c.getSpeGrantDataCode(),
+					c.getGranDays(),
+					c.getInputDate(),
+					c.getAnnualHolidayDate());
+			inputParams.add(inputParam);
+		});
+		if(inputParams.isEmpty()) return new HashMap<>();
+		return this.getGrantDataOfNextDay(inputParams);
+	}
+
+	@Override
+	public Map<String, GrantDaysInfor> getGrantDataOfNextDay(List<SpeGrantNextDateByGetInputExtend> params) {
+		Map<String, GrantDaysInfor> result = new HashMap<>();
+		//社員に依存しない特別休暇情報を取得する
+		List<NotDepentSpecialLeaveOfEmployeeInputExtend> inputDatas = params.stream().map(param -> new NotDepentSpecialLeaveOfEmployeeInputExtend(
+				param.getSid(),
+				param.getCid(), 
+				param.getDatePeriod(), 
+				param.getSpecialCode(), 
+				param.getSpecialDate(),
+				param.getAnnualHolidayDate(),
+				param.getInputDate(), 
+				true, 
+				param.getSpecialSetting(), 
+				param.getGranDays(),
+				param.getSpeGrantDataCode())).collect(Collectors.toList());
+		Map<String, InforSpecialLeaveOfEmployee> speInforMap = notDepentSpeService.getNotDepentInfoSpecialLeave(inputDatas);
+		if(speInforMap.isEmpty()) return new HashMap<>();
+		speInforMap.entrySet().stream().filter(c -> c.getValue()!= null).forEach(c ->{
+			//Output「付与日数一覧」をチェックする
+			if(CollectionUtil.isEmpty(c.getValue().getSpeHolidayInfor())) {
+				return;
+			}
+			result.put(c.getKey(), c.getValue().getSpeHolidayInfor().get(0).getGrantDaysInfor());
+		});
+		
+		return result;
+	}
 }

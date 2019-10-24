@@ -50,6 +50,31 @@
     }
 }
 
+.v-collapse {
+    &-enter-active,
+    &-leave-active {
+        overflow: hidden;
+    }
+
+    &-enter-active {
+        transition: 1s ease all;
+    }
+
+    &-leave-active {
+        transition: 0.3s ease all;
+    }
+
+    &-enter,
+    &-leave-to {
+        max-width: 0;
+    }
+
+    &-enter-to,
+    &-leave {
+        max-width: 60em;
+    }    
+}
+
 .fade {
 
     &-up,

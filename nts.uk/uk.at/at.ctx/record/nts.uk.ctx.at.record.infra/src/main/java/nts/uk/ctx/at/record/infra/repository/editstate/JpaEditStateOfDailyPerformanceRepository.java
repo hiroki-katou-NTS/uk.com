@@ -33,35 +33,15 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class JpaEditStateOfDailyPerformanceRepository extends JpaRepository
 		implements EditStateOfDailyPerformanceRepository {
-
-//	private static final String REMOVE_BY_EMPLOYEE;
-
 	private static final String DEL_BY_LIST_KEY;
 	
-//	private static final String DEL_BY_LIST_ITEM_ID;
-
 	static {
 		StringBuilder builderString = new StringBuilder();
-//		builderString.append("DELETE ");
-//		builderString.append("FROM KrcdtDailyRecEditSet a ");
-//		builderString.append("WHERE a.krcdtDailyRecEditSetPK.employeeId = :employeeId ");
-//		builderString.append("AND a.krcdtDailyRecEditSetPK.processingYmd = :ymd ");
-//		REMOVE_BY_EMPLOYEE = builderString.toString();
-
-		builderString = new StringBuilder();
 		builderString.append("DELETE ");
 		builderString.append("FROM KrcdtDailyRecEditSet a ");
 		builderString.append("WHERE a.krcdtDailyRecEditSetPK.employeeId IN :employeeIds ");
 		builderString.append("AND a.krcdtDailyRecEditSetPK.processingYmd IN :processingYmds ");
 		DEL_BY_LIST_KEY = builderString.toString();
-		
-//		builderString = new StringBuilder();
-//		builderString.append("DELETE ");
-//		builderString.append("FROM KrcdtDailyRecEditSet a ");
-//		builderString.append("WHERE a.krcdtDailyRecEditSetPK.employeeId = :employeeId ");
-//		builderString.append("AND a.krcdtDailyRecEditSetPK.processingYmd = :ymd ");
-//		builderString.append("AND a.krcdtDailyRecEditSetPK.attendanceItemId IN :itemIdList ");
-//		DEL_BY_LIST_ITEM_ID = builderString.toString();
 	}
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
@@ -100,6 +80,7 @@ public class JpaEditStateOfDailyPerformanceRepository extends JpaRepository
 								.map(c -> new KrcdtDailyRecEditSet(new KrcdtDailyRecEditSetPK(c.getEmployeeId(),
 										c.getYmd(), c.getAttendanceItemId()), c.getEditStateSetting().value))
 								.collect(Collectors.toList()));
+		
 	}
 
 	@Override
@@ -127,6 +108,7 @@ public class JpaEditStateOfDailyPerformanceRepository extends JpaRepository
 						.map(c -> new KrcdtDailyRecEditSet(new KrcdtDailyRecEditSetPK(c.getEmployeeId(),
 								c.getYmd(), c.getAttendanceItemId()), c.getEditStateSetting().value))
 						.collect(Collectors.toList()));
+	
 	}
 
 	@Override
@@ -190,6 +172,7 @@ public class JpaEditStateOfDailyPerformanceRepository extends JpaRepository
 				this.commandProxy().insert(entity);
 			}
 		});
+		this.getEntityManager().flush();
 	}
 
 	@Override

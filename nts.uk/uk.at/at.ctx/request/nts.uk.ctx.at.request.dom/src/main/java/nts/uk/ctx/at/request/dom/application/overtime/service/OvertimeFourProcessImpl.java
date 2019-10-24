@@ -11,19 +11,18 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputCaculation;
-//import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
-//import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.IErrorCheckBeforeRegister;
+import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.CommonOvertimeHoliday;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.ColorConfirmResult;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
-import nts.uk.ctx.at.request.dom.application.overtime.OvertimeCheckResult;
 @Stateless
 public class OvertimeFourProcessImpl implements OvertimeFourProcess{
-	@Inject
-	private IErrorCheckBeforeRegister IErrorCheckBeforeRegister;
 	@Inject
 	private OvertimeSixProcess overtimeSixProcess;
 //	@Inject
 //	private RecordWorkInfoAdapter recordWorkInfoAdapter;
+	
+	@Inject
+	private CommonOvertimeHoliday commonOvertimeHoliday;
 	
 	@Override
 	public List<CaculationTime> checkDisplayColor(List<CaculationTime> overTimeInputs,
@@ -39,7 +38,7 @@ public class OvertimeFourProcessImpl implements OvertimeFourProcess{
 							continue;
 						}else if(overtimeInputCaculation.getResultCaculation() != null && overtimeInputCaculation.getResultCaculation() > 0){
 							// 03-01_事前申請超過チェック
-							OvertimeCheckResult overtimeCheckResult = this.IErrorCheckBeforeRegister.preApplicationExceededCheck(
+							ColorConfirmResult colorConfirmResult = this.commonOvertimeHoliday.preApplicationExceededCheck(
 									companyID,
 									appDate, 
 									inputDate, 
@@ -47,8 +46,8 @@ public class OvertimeFourProcessImpl implements OvertimeFourProcess{
 									overtimeInputCaculation.getAttendanceID(), 
 									convert(overtimeInput),
 									employeeID);
-							if(overtimeCheckResult.getErrorCode() != 0){
-								overtimeInput.setErrorCode(overtimeCheckResult.getErrorCode());
+							if(colorConfirmResult.getErrorCD() != 0){
+								overtimeInput.setErrorCode(colorConfirmResult.getErrorCD());
 							}
 							//04-01_計算実績超過チェック(一覧)
 							List<OvertimeInputCaculation> cal= new ArrayList<>();

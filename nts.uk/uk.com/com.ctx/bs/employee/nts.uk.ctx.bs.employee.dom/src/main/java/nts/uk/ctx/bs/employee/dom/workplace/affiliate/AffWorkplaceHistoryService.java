@@ -1,6 +1,11 @@
 package nts.uk.ctx.bs.employee.dom.workplace.affiliate;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -28,6 +33,33 @@ public class AffWorkplaceHistoryService {
 		// Update item before
 		updateItemBefore(domain,lastItem);
 	}
+	
+	/**
+	 * ドメインモデル「所属職場」を新規登録する - cps003
+	 * @param domain
+	 */
+	public void addAll(List<AffWorkplaceHistory> domains){
+		Map<String, DateHistoryItem> historyItemsMap = new HashMap<>();
+		List<AffWorkplaceHistoryIntermediate> intermediates = new ArrayList<>();
+		domains.stream().forEach(c ->{
+			if (c.getHistoryItems().isEmpty()){
+				return;
+			}
+			// Insert last element
+			DateHistoryItem lastItem = c.getHistoryItems().get(c.getHistoryItems().size()-1);
+			historyItemsMap.put(c.getEmployeeId(), lastItem);
+			intermediates.add(new AffWorkplaceHistoryIntermediate(c, lastItem));
+		});
+
+		if(!historyItemsMap.isEmpty()) {
+			affWorkplaceHistoryRepository.addAll(historyItemsMap);
+		}
+		
+		// Update item before
+		if(!intermediates.isEmpty()) {
+			updateAllItemBefore(intermediates);
+		}
+	}
 	/**
 	 * ドメインモデル「所属職場」を削除する
 	 * @param domain
@@ -52,6 +84,19 @@ public class AffWorkplaceHistoryService {
 	}
 	
 	/**
+	 * ドメインモデル「所属職場」を取得する - cps003
+	 * @param domain
+	 */
+	public void updateAll(List<AffWorkplaceHistoryIntermediate> domains){
+		List<DateHistoryItem> dateHistItems = domains.stream().map(c -> c.getItem()).collect(Collectors.toList());
+		if(!dateHistItems.isEmpty()) {
+			affWorkplaceHistoryRepository.updateAll(dateHistItems);
+		}
+		// Update item before
+		updateAllItemBefore(domains);
+	}
+	
+	/**
 	 * Update item before
 	 * @param domain
 	 * @param item
@@ -62,6 +107,26 @@ public class AffWorkplaceHistoryService {
 			return;
 		}
 		affWorkplaceHistoryRepository.update(itemToBeUpdated.get());
+	}
+	
+	
+	/**
+	 * Update all item before
+	 * @param domain
+	 * @param item
+	 */
+	private void updateAllItemBefore(List<AffWorkplaceHistoryIntermediate> domains){
+		List<DateHistoryItem> dateHistItem = new ArrayList<>();
+		domains.stream().forEach(c ->{
+			Optional<DateHistoryItem> itemToBeUpdated = c.getDomain().immediatelyBefore(c.getItem());
+			if (!itemToBeUpdated.isPresent()){
+				return;
+			}
+			dateHistItem.add(itemToBeUpdated.get());
+		});
+		if(!dateHistItem.isEmpty()) {
+			affWorkplaceHistoryRepository.updateAll(dateHistItem);
+		}
 	}
 
 }

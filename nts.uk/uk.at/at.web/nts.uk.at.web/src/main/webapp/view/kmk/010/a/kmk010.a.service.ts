@@ -134,7 +134,7 @@ module nts.uk.at.view.kmk010.a {
          */
         
         export function exportOutsideOTSettingExcelMasterList(languageId: string): JQueryPromise<any> {
-            return nts.uk.request.exportFile(paths.exportOutsideOTSettingExcelMasterList, { domainId: "outsideot", domainType: "時間外超過設定", languageId: languageId, reportType: 0, data: [] });
+            return nts.uk.request.exportFile(paths.exportOutsideOTSettingExcelMasterList, { domainId: "outsideot", domainType: "マスタリスト_時間外超過設定", languageId: languageId, reportType: 0, data: [] });
         }
 
 

@@ -206,7 +206,7 @@ module nts.uk.pr.view.qsi014.a.viewmodel {
                     outputOrder: self.socInsurNotiCreSet().outputOrder(),
                     submittedName: self.socInsurNotiCreSet().submittedName(),
                     insuredNumber: self.socInsurNotiCreSet().insuredNumber(),
-                    fdNumber: self.socInsurNotiCreSet().fdNumber().trim() == '' ? null : self.socInsurNotiCreSet().fdNumber(),
+                    fdNumber: self.socInsurNotiCreSet().fdNumber(),
                     textPersonNumber: self.socInsurNotiCreSet().textPersonNumber(),
                     outputFormat: self.socInsurNotiCreSet().outputFormat(),
                     lineFeedCode: self.socInsurNotiCreSet().lineFeedCode()

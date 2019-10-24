@@ -77,4 +77,6 @@ public interface ErrorAlarmWorkRecordRepository {
      */
     List<ErrorAlarmWorkRecord> getListErrorAlarmWorkRecord(String companyId, int fixed);
     
+    List<ErrorAlarmWorkRecord> findMobByCompany(String companyID, List<Integer> typeAtrLst);
+    
 }

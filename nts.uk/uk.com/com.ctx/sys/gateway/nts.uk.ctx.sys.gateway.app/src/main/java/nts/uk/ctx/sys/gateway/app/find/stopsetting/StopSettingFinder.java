@@ -1,6 +1,7 @@
 package nts.uk.ctx.sys.gateway.app.find.stopsetting;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -10,6 +11,7 @@ import nts.uk.ctx.sys.gateway.app.find.stopsetting.stopbysystem.StopBySystemDto;
 import nts.uk.ctx.sys.gateway.dom.stopbycompany.StopByCompany;
 import nts.uk.ctx.sys.gateway.dom.stopbycompany.StopByCompanyRepository;
 import nts.uk.ctx.sys.gateway.dom.stopbycompany.SystemStatusType;
+import nts.uk.ctx.sys.gateway.dom.stopbysystem.StopBySystem;
 import nts.uk.ctx.sys.gateway.dom.stopbysystem.StopBySystemRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -69,6 +71,26 @@ public class StopSettingFinder {
 		this.systemRepo.findByKey(contractCd).ifPresent(system -> {
 			result.setSystem(StopBySystemDto.fromDomain(system));
 		});
+	}
+	
+	/**
+	 * システム利用停止の警告確認
+	 * @return
+	 */
+	public boolean isSystemStop(){
+		String contractCD = AppContexts.user().contractCode();
+		String companyCD = AppContexts.user().companyCode();
+		// ドメインモデル「システム全体の利用停止の設定」を取得する
+		Optional<StopBySystem> opStopBySystem = systemRepo.findByCdStatus(contractCD, 1);
+		if(opStopBySystem.isPresent()){
+			return true;
+		}
+		// ドメインモデル「会社単位の利用停止の設定」を取得する
+		Optional<StopByCompany> opStopByCompany = companyRepo.findByCdStt(contractCD, companyCD, 1);
+		if(opStopByCompany.isPresent()){
+			return true;
+		}
+		return false;
 	}
 
 }

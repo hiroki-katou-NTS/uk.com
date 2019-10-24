@@ -34,6 +34,15 @@ public interface WorkTimeSettingRepository {
 	 * @return the list
 	 */
 	public List<WorkTimeSetting> findByCodes(String companyId, List<String> codes);
+	
+	/**
+	 * Find by codes with No master
+	 *
+	 * @param companyId the company id
+	 * @param codes the codes
+	 * @return the list
+	 */
+	public List<WorkTimeSetting> findByCodesWithNoMaster(String companyID, List<String> codes);
 
 	/**
 	 * Find by code.
@@ -103,5 +112,11 @@ public interface WorkTimeSettingRepository {
 	 * @return the optional
 	 */
 	public Optional<WorkTimeSetting> findByCodeAndAbolishCondition(String companyId, String workTimeCode,AbolishAtr abolishAtr);
+	/**
+	 * get list work time by cid
+	 * @param companyId
+	 * @return
+	 */
+	public List<WorkTimeSetting> findByCId(String companyId);
 	
 }

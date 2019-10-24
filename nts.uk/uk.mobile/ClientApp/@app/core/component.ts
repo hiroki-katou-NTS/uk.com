@@ -1,11 +1,11 @@
 import { routes } from '@app/core/routes';
 import { Vue, ComponentOptions } from '@app/provider';
 
-import { $, dom } from '@app/utils';
-import { resources, Language } from '@app/plugins';
+import { $, browser } from '@app/utils';
+import { resources, Language } from '@app/plugins/i18n';
 import { cssbeautify } from '@app/utils/css';
 import classDecorator from 'vue-class-component';
-import { NavMenu } from '@app/services';
+
 import { Prop, Watch, Model, Provide, Emit, Mixins, Inject } from 'vue-property-decorator';
 
 declare type VueClass<V> = {
@@ -138,6 +138,66 @@ export function component(options: ComponentOptions<Vue>): any {
             }
 
             delete options.route;
+
+            // use next on
+            if (browser.mobile) {
+                if (browser.ios) {
+                    (options.mixins || (options.mixins = [])).push({
+                        mounted() {
+                            let cont = this.$el as HTMLElement,
+                                types: string[] = ['text', 'number', 'tel', 'date', 'password'];
+
+                            if (cont.nodeType !== 8) {
+                                let input = cont.querySelector(`${types.map((m) => 'form[action="#"] input[type=' + m + ']').join(',')}, form[action="#"] textarea`) as HTMLElement;
+
+                                if (input) {
+                                    input.addEventListener('keydown', (evt: KeyboardEvent) => {
+                                        if (evt.keyCode === 13) {
+                                            setTimeout(() => {
+                                                input.blur();
+                                            }, 50);
+                                        }
+                                    });
+                                }
+                            }
+                        }
+                    });
+                } else {
+                    (options.mixins || (options.mixins = [])).push({
+                        mounted() {
+                            let cont = this.$el as HTMLElement,
+                                types: string[] = ['text', 'number', 'tel', 'date', 'password'],
+                                inputs = cont.nodeType !== 8 ? cont.querySelectorAll(`${types.map((m) => 'input[type=' + m + ']').join(',')}, textarea`) : [];
+
+                            [].slice.call(inputs)
+                                .forEach((element: HTMLElement, index: number) => {
+                                    element.addEventListener('keydown', (evt: KeyboardEvent) => {
+                                        if (evt.keyCode === 13) {
+                                            if (!element.closest('form[action="#"]')) {
+                                                let nextItem = inputs[index + 1] as HTMLElement;
+
+                                                if (nextItem) {
+                                                    nextItem.focus();
+
+                                                    if (nextItem.closest('form[action="#"]')) {
+                                                        evt.preventDefault();
+                                                        evt.stopPropagation();
+                                                        evt.stopImmediatePropagation();
+                                                    }
+                                                }
+                                            } else {
+                                                // hide keyboard when click go on lastest input control
+                                                setTimeout(() => {
+                                                    element.blur();
+                                                }, 50);
+                                            }
+                                        }
+                                    });
+                                });
+                        }
+                    });
+                }
+            }
         }
 
         return options;

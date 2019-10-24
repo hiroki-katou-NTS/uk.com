@@ -2,11 +2,10 @@ module cps003.d.service {
     import ajax = nts.uk.request.ajax;
 
     export const push = {
-        data: (command: any) => ajax('', command)
+        setting: (command: any) => ajax('ctx/pereg/grid-layout/save-setting/', command)
     }
 
     export const fetch = {
-        person: (id: string) => ajax(`/ctx/person/${id}`),
-
+        setting: (cid: string) => ajax(`ctx/pereg/grid-layout/get-setting/${cid}`)
     }
 }
