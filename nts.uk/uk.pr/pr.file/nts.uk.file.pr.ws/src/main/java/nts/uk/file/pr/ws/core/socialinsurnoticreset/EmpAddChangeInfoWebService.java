@@ -1,8 +1,8 @@
 package nts.uk.file.pr.ws.core.socialinsurnoticreset;
 
 import nts.arc.layer.app.file.export.ExportServiceResult;
+import nts.uk.ctx.pr.file.app.core.socialinsurnoticreset.EmpAddChangeInfoExportPDFService;
 import nts.uk.ctx.pr.file.app.core.socialinsurnoticreset.NotificationOfLossInsExportQuery;
-import nts.uk.ctx.pr.report.app.find.printconfig.socialinsurnoticreset.EmpAddChangeInfoExportPDFService;
 
 
 import javax.inject.Inject;
