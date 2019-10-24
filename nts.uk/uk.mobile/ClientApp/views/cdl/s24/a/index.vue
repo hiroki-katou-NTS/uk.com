@@ -16,7 +16,7 @@
     <div>
       <ul class="list-group list-group-single-select">
         <li class="list-group-item " v-for="(item, k) of data" :class="item.code == params.selectedCode ? 'active' : ''" v-on:click="$close(item)">
-            <span>{{item.code}} &nbsp;&nbsp;&nbsp; {{item.name}}</span>
+            <div class="mr-3 text-truncate"><span v-if="item.code != ''">{{item.code}} &nbsp;&nbsp;&nbsp; {{item.name}}</span></div>
         </li>
       </ul>
     </div>

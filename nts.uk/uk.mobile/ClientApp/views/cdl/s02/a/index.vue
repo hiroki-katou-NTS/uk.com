@@ -21,7 +21,7 @@
     <div>
       <ul class="list-group list-group-single-select">
         <li class="list-group-item " v-for="(item, k) of data" :class="(item.code == params.selectedCode || (item.code == '' && activeNoSelect)) ? 'active' : ''" v-on:click="$close(item)">
-            <span v-if="item.code != ''">{{item.code}} &nbsp;&nbsp;&nbsp; {{item.name}}</span>
+            <div class="mr-3 text-truncate"><span v-if="item.code != ''">{{item.code}} &nbsp;&nbsp;&nbsp; {{item.name}}</span></div>
             <span v-if="item.code == ''">{{'CDLS02_6' | i18n}}</span>
         </li>
       </ul>

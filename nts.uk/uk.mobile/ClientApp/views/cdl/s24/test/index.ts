@@ -15,7 +15,7 @@ export class CdlS24TestComponent extends Vue {
     public data = {
         selectedCode: ''
     };
-    public selectedName: '';
+    public selectedName: string = '';
 
     public openCdls24() {
         let self = this;
