@@ -119,6 +119,7 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 		return this.getNameOfAttendanceItem(attendanceItems, attendanceItemAndFrameNos);
 	}
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<AttItemName> getNameOfAttendanceItem(TypeOfItem type, List<AttItemName> attendanceItems) {
 		List<Integer> attendanceItemIds = attendanceItems.stream().map(x -> x.getAttendanceItemId())
@@ -130,6 +131,7 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 		return this.getNameOfAttendanceItem(attendanceItems, attendanceItemAndFrameNos);
 	}
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<AttItemName> getNameOfAttendanceItem(List<AttItemName> attendanceItems,
 			List<AttendanceItemLinking> attendanceItemAndFrameNos) {
