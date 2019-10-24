@@ -13,8 +13,8 @@ public class EmpAddChangeInformation {
     private String empId;
     private boolean healthInsurance;
     private boolean empPenInsurance;
-    GeneralDate personAddChangeDate;
-    GeneralDate spouseAddChangeDate;
+    private GeneralDate personAddChangeDate;
+    private GeneralDate spouseAddChangeDate;
 
     public EmpAddChangeInformation(){
         this.healthInsurance = false;
