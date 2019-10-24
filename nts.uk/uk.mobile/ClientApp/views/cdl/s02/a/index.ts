@@ -46,7 +46,7 @@ export class CdlS02AComponent extends Vue {
                 if (self.params.isShowNoSelectRow) {
                     self.allData.push({
                         code: '',
-                        name: 'CDLS02_6',
+                        name: '',
                         closureId: 'No'
                     });
                 }
@@ -65,7 +65,7 @@ export class CdlS02AComponent extends Vue {
                     if (self.params.isShowNoSelectRow) {
                         result.data.push({
                             code: '',
-                            name: 'CDLS02_6'
+                            name: ''
                         });
                     }
                     self.allData = _.sortBy(result.data, ['code']);
