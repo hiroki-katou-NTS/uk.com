@@ -1,92 +1,120 @@
-> **Ghi chú**: Xoá giá trị một trong hai input ở trên để kiểm tra validator `required` có hoạt động không.
+##### 2. Validation là gì?
 
-##### 2. Giải thích
-> Validations là một `plugin` làm nhiệm vụ theo dõi `model` và gọi các `validators` tương ứng với các `validate` được khai báo trong `validations` mỗi khi `model` có sự thay đổi giá trị được `binding` và hiển thị các thông báo lỗi hoặc xoá thông báo lỗi ngay khi nhận được kết quả trả về từ các `validators`.
+`Validation` là một `plugin` do team kiban tạo ra nhằm đảm bảo việc validate dữ liệu nhập vào.  
+Để sử dụng plugins này, tạo thuộc tính `validations` trong `@Component` 
+và khai báo trong đó những thuộc tính có tên trùng với tên của các biến cần được validate.
 
-> Có 2 loại `validator` được sử dụng trong `validations`.
-- `fixed validator`: là các `validators` chung được sử dụng thường xuyên trong hệ thống. Các `validators` này do kiban khai báo và quản lý.
-- `custom validator`: là các `validators` riêng được sử dụng bởi từng model cụ thể do developer tự khai báo và quản lý.
-
-> `custom validator` có cấu trúc là một đối tượng với 2 thuộc tính như sau:
 ```typescript
-custom_validator: {
+@component({
+    validations: {
+        textValue: {
+            required: true,
+        },
+        numberValue: {
+            required: true
+        }
+    }
+})
+export class ViewModel extends Vue {
+    
+    public textValue: string = 'nittsu';
+
+    public numberValue: number = 1;
+
+}
+```
+Ở ví dụ trên, 'textValue' và 'numberValue' được khai báo required là true. Nếu xóa dữ liệu của 2 biến này, plugin Validation sẽ báo lỗi.
+
+
+Có 2 kiểu validate là:
+- `fixed validate`: là kiểu validate phổ biến được định nghĩa sẵn. Ví dụ: required, min, max.
+- `custom validate`: là kiểu validate đặc biệt, do developer tự định nghĩa.
+
+
+##### 3. Fixed validators
+Validator | type | Mặc định |Giải thích
+----|----|---------| ------------
+required | Boolean | false | Có require hay không? 
+min | Number | undefined | Giá trị nhỏ nhất của biến
+max | Number | undefined | Giá trị lớn nhất của biến
+maxLength | Number | undefined | giá trị giới hạn kí tự nhập vào.
+charType | String | undefined |Validate giá trị text nhập vào. CharType là một trong số: Kana, AnyHalfWidth, AlphaNumeric, Numeric, Any
+dateRange | Boolean | false |Dữ liệu có phải kiểu date-range hay không?
+timeRange | Boolean | false |Dữ liệu có phải kiểu time-range hay không?
+
+
+##### 4. Custom validators
+Ví dụ để validate biến `textValue` ở trên ta khai báo trong thuộc tính `validations` như sau:  
+```typescript
+textValue: {
     test: Regex;
     message: string;
 }
 ```
-hoặc
+hoặc 
 ```typescript
-custom_validator: {
+textValue: {
     test: (value) {
         // validate code
     };
     message: string;
 }
 ```
-> Nếu hàm test trả về giá trị `false` tức là không `validate` thành công (có lỗi), lúc này `message` sẽ được sử dụng để bind lỗi vào model.
-> <br />**Chú ý**: Tại một thời điểm, chỉ có một lỗi được bind vào model. Các `validator` sẽ được gọi theo thứ tự khai báo, không phân biệt `fixed validator` hay `custom validator`.
+Hàm test trả về giá trị `false` nghĩa là có lỗi, lúc này message báo lỗi sẽ hiện lên.  
+Tại một thời điểm, chỉ có một lỗi được bind vào model. Việc validate sẽ được thực hiện lần lượt theo thứ tự được khai báo, không phân biệt `fixed validator` hay `custom validator`.
+##### 4. Update validators
+> Trong quá trình runtime, có những model cần cập nhật lại validator hoặc loại bỏ một/một vài validator. Lúc này, dev chỉ cần sử dụng hàm `$updateValidator` để cập nhật lại.
+<br />Sau quá trình cập nhật, cần gọi lại hàm `$validate` để validate lại model (có thể validate chỉ riêng model vừa cập nhật bằng cách truyền path vào hàm $validate).
 
-**HTML Code:**
-```html
-<nts-text-editor
-    name='username'
-    v-model="model.username" />
-<nts-input-password
-    name='password'
-    v-model="model.password" />
-```
-
-**Typescript code:**
+**Sample**:
 ```typescript
 import { Vue } from '@app/provider';
 import { component } from '@app/core/component';
 
 @component({
-    // khai báo cấu trúc validators tương ứng với model
     validations: {
-        model: {
-            username: {
-                // fixed validator
-                required: true,
-                // custom validator
-                custom_validator: {
-                    test: /\d{3,5}/,
-                    message: '{0} is number in range [100, 99999].'
-                }
-            },
-            password: {
-                // fixed validator
-                required: true
-            }
+        checked: {
+            required: true
         }
     }
 })
-export class DocumentsPluginsValidationComponent extends Vue {
-    // khai báo cấu trúc model tương ứng với validators
-    public model: {
-        username: string;
-        password: string;
-    } = {
-        username: 'username',
-        password: 'password'
-    };
+export class ViewModelSample extends Vue {
+    public checked: boolean | null = null;
+
+    public updateValidator() {
+        // cập nhật validator cho model: checked
+        this.$updateValidator('checked', { validate: false });
+
+        // gọi lại hàm validate để validate
+        // model vừa được cập nhật validator
+        this.$validate('checked');
+    }
 }
 ```
-> **Chú ý**: Các `custom validator` có tên được đặt tuỳ ý (*chỉ dùng để phân biệt*).
+> Kết quả của đoạn ví dụ trên là validations sẽ bỏ qua model checked, không gọi các validator đã khai báo để validate model này nữa.
 
-##### 3. API
+##### 5. Bật cảnh báo đỏ ở input control.
+> Với một số control (formcheck: `checkbox`, `radio`, `switch-button`), developer sẽ tự hiển thị thông báo lỗi lỗi và bôi đỏ control thông qua directive `v-validate` và component `v-errors` do các control này là một tập (tổ hợp) các control riêng biệt.
 
-**Fixed validators:**
-Validator | type/params | Giải thích
-----|----|---------------------
-required | `true` \| `false` | `Validator` xử lý `validate` `require` của `model`. Nếu kết quả `validator` trả về là `false` thì sẽ gắn `message`: `MsgB_1` vào `model`.
-min | `number` | `Validator` xử lý `validate` giá trị `min` của một số. Nếu giá trị của model nhỏ hơn giá trị min được khai báo thì sẽ gắn `message`: `Msg_` vào `model`.
-max | `number` | Tương tự `validator` `min`.
-... | ... | ...
+> **v-validate**: đây là directive có tham số là `$errors` model và được gắn trực tiếp vào input control.
 
-**Custom validators:**
-Validator | type/params | Giải thích
-----|----|---------------------
-test | `Regex` \| `Function` | `Custom validator` xử lý `validate` được chỉ định bởi developer của `model`. Nếu kết quả `validator` trả về là `false` thì sẽ gắn `message` vào `model`.
-message | `string` | Message hoặc MessageId được gắn vào model khi có lỗi xảy ra (không thoả mãn yêu cầu `test`).
+> **v-errors**: đây là component có model là `$errors` model và được gắn vào dưới input control.
 
+```html
+<!-- v-validate="$errors.checked" -->
+<!-- directive này sẽ chuyển màu viền control từ màu bình thường sang màu đỏ để kích thích thị giác người dùng -->
+<nts-radio 
+    v-for="(radio, k) in radios"
+    v-model="checked"
+    v-validate="$errors.checked"
+    v-bind:value="radio.id" v-bind:key="k" class="form-check-inline">
+    {{radio.name}}
+</nts-radio>
+<!-- component này sẽ hiển thị lỗi cảnh báo ngay dưới control -->
+<!-- chú ý: để hiển thị được, component này cần 2 class d-block và mt-0 -->
+<v-errors v-model="$errors.checked" v-bind:name="'name_of_control'" class="d-block mt-0" />
+```
+
+> Document writer: **Nguyễn Văn Vương**
+
+<div class="mb-3 mt-3"></div>

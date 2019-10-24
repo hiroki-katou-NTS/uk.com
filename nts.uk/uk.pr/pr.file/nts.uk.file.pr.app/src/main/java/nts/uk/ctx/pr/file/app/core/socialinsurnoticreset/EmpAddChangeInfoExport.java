@@ -107,4 +107,8 @@ public class EmpAddChangeInfoExport {
 
     /**電話番号*/
     private String phoneNumber;
+
+    private boolean empPenInsurance;
+    private GeneralDate personAddChangeDate;
+    private GeneralDate spouseAddChangeDate;
 }

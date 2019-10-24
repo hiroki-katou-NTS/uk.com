@@ -31,7 +31,6 @@ import nts.uk.ctx.at.function.dom.alarm.alarmdata.ValueExtractAlarm;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.EmployeeSearchDto;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.PeriodByAlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.aggregationprocess.ErAlConstant;
-import nts.uk.ctx.at.function.dom.alarm.alarmlist.aggregationprocess.ExtractAlarmForEmployeeService;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.aggregationprocess.daily.dailyaggregationprocess.DailyAggregationProcessService.DataHolder;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.DailyAlarmCondition;
 import nts.uk.ctx.at.function.dom.attendanceitemframelinking.AttendanceItemLinking;
@@ -185,7 +184,7 @@ public class DailyPerformanceService {
 						
 			ValueExtractAlarm data = new ValueExtractAlarm(employee.getWorkplaceId(), employee.getId(), eDaily.getDate().toString(), KAL010_1,
 					alarmContentMessage.getAlarmItem(), alarmContentMessage.getAlarmContent(),
-					errAlarmCheckIDToMessage.get(errorAlarmMap.get(eDaily.getErrorAlarmWorkRecordCode()).getErrorAlarmCheckID()).getDisplayMessage());
+					errAlarmCheckIDToMessage.get(errorAlarmMap.get(eDaily.getErrorAlarmWorkRecordCode()).getErrorAlarmCheckID()).getDisplayMessage(),null);
 
 			valueExtractAlarmList.add(data);
 		}
@@ -249,10 +248,10 @@ public class DailyPerformanceService {
 											.findFirst().ifPresent(attendanceResult -> {
 												AlarmContentMessage alarmContentMessage = this.calculateAlarmContentMessage(error, holder.comId, errorAlarmMap,attendanceResult,currentAttendanceItems,currentNos);
 												EmployeeSearchDto em = employee.stream().filter(e -> e.getId().equals(error.getEmployeeID())).findAny().get();
-												
-												ValueExtractAlarm data = new ValueExtractAlarm(em.getWorkplaceId(), em.getId(), error.getDate().toString(ErAlConstant.DATE_FORMAT), 
-														KAL010_1, alarmContentMessage.getAlarmItem(), alarmContentMessage.getAlarmContent(),
-														errAlarmCheckIDToMessage.get(errorAlarmMap.get(error.getErrorAlarmWorkRecordCode()).getErrorAlarmCheckID()).getDisplayMessage());
+												String checkedValue = null;
+												ValueExtractAlarm data = new ValueExtractAlarm(em.getWorkplaceId(), em.getId(), TextResource.localize("KAL010_907",error.getDate().toString(ErAlConstant.DATE_FORMAT)), 
+														KAL010_1, alarmContentMessage.getAlarmItemNew(), alarmContentMessage.getAlarmItem(),
+														errAlarmCheckIDToMessage.get(errorAlarmMap.get(error.getErrorAlarmWorkRecordCode()).getErrorAlarmCheckID()).getDisplayMessage(),alarmContentMessage.getAlarmContent());
 
 												valueExtractAlarmList.add(data);
 				});
@@ -357,7 +356,7 @@ public class DailyPerformanceService {
 			EmployeeSearchDto em = employee.stream().filter(e -> e.getId().equals(eDaily.getEmployeeID())).findAny().get();
 			ValueExtractAlarm data = new ValueExtractAlarm(em.getWorkplaceId(), em.getId(), eDaily.getDate().toString(), KAL010_1,
 					alarmContentMessage.getAlarmItem(), alarmContentMessage.getAlarmContent(),
-					errAlarmCheckIDToMessage.get(errorAlarmMap.get(eDaily.getErrorAlarmWorkRecordCode()).getErrorAlarmCheckID()).getDisplayMessage());
+					errAlarmCheckIDToMessage.get(errorAlarmMap.get(eDaily.getErrorAlarmWorkRecordCode()).getErrorAlarmCheckID()).getDisplayMessage(),null);
 
 			valueExtractAlarmList.add(data);
 		}	
@@ -463,7 +462,7 @@ public class DailyPerformanceService {
 			alarmItem = errorAlarmMap.get(eDaily.getErrorAlarmWorkRecordCode()).getName();
 		}
 
-		return new AlarmContentMessage(alarmItem, alarmContent);
+		return new AlarmContentMessage(alarmItem, alarmContent,errorAlarmMap.get(eDaily.getErrorAlarmWorkRecordCode()).getName());
 	}
 	
 	private String formatValueAttendance(String attendanceValue) {

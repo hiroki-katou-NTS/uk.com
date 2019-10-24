@@ -69,6 +69,7 @@ public class LayoutPersonInfoValueDto {
 	/**
 	 * combo box value list when item type selection
 	 */
+	
 	private List<ComboBoxObject> lstComboBoxValue;
 
 	/*
@@ -88,6 +89,9 @@ public class LayoutPersonInfoValueDto {
 	
 	// help button Id
 	private String resourceId;
+	
+	// init value
+	private String initValue;
 
 	public LayoutPersonInfoValueDto(String categoryId, String categoryCode, String itemDefId, String itemName,
 			String itemCode, String itemParentCode, Integer row, Object value) {
@@ -132,6 +136,7 @@ public class LayoutPersonInfoValueDto {
 			dataObject.setItem(sigleItem.getDataTypeState());
 		}
 		dataObject.setResourceId(itemDef.getResourceId());
+		dataObject.setInitValue(itemDef.getInitValue());
 		return dataObject;
 	}
 
@@ -151,7 +156,8 @@ public class LayoutPersonInfoValueDto {
 		dataObject.setCtgType(itemDef.getCtgType());
 		dataObject.setRequired(itemDef.getIsRequired() == 1);
 		dataObject.setResourceId(itemDef.getResourceId());
-
+		dataObject.setInitValue(itemDef.getInitValue());
+		dataObject.setValue(itemDef.getInitValue());
 		dataObject.setType(itemDef.getItemTypeState().getItemType());
 
 		if (itemDef.getItemTypeState().getItemType() == 2) {
@@ -180,6 +186,8 @@ public class LayoutPersonInfoValueDto {
 		
 		item.setActionRole(ActionRole.EDIT);
 		item.setResourceId(itemDef.getResourceId());
+		item.setInitValue(itemDef.getInitValue());
+		item.setValue(itemDef.getInitValue());
 		return item;
 	}
 	

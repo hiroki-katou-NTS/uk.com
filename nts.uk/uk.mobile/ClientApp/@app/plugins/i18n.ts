@@ -1,5 +1,14 @@
-import { obj } from '@app/utils';
-import { Vue, VueConstructor } from '@app/provider';
+import { obj, dom, storage } from '@app/utils';
+import { Vue, VueConstructor, moment } from '@app/provider';
+
+import 'moment/locale/ja';
+import 'moment/locale/vi';
+
+const style = dom.create('style', {
+    type: 'text/css',
+    rel: 'stylesheet',
+    text: 'body { font-family: "Meiryo UI"; }'
+});
 
 const resources: {
     [lang: string]: {
@@ -9,20 +18,66 @@ const resources: {
     jp: {
         'jp': '日本',
         'vi': 'Tiếng Việt',
-        'app_name': '勤次郎'
+        'app_name': '勤次郎',
+        'plz_wait': 'お待ちください',
+        'cancel': 'キャンセル',
+        'remove': '削除',
+        'accept': '設定',
+        'yes': 'はい',
+        'no': 'いいえ',
+        'close': '閉じる',
+        'warn': 'エラー',
+        'info': '情報',
+        'error': 'エラー',
+        'confirm': '確認',
+        'filter_menu': 'Enter keyword for filter menu',
+        'year_month': '{0}年{1}月',
+        'nts_date_format': '{0}年{1}月{2}日（{3}）'
     },
     vi: {
         'jp': '日本',
         'vi': 'Tiếng Việt',
-        'app_name': 'UK Mobile'
+        'app_name': 'UK Mobile',
+        'plz_wait': 'Vui lòng chờ trong giây lát...',
+        'cancel': 'Hủy bỏ',
+        'remove': 'Xóa',
+        'accept': 'Chấp nhận',
+        'yes': 'Đồng ý',
+        'no': 'Không',
+        'close': 'Đóng',
+        'warn': 'Cảnh báo',
+        'info': 'Thông báo',
+        'error': 'Cảnh báo lỗi',
+        'confirm': 'Xác nhận',
+        'filter_menu': 'Nhập ký tự bất kỳ để lọc menu',
+        'year_month': 'tháng {1} năm {0}',
+        'nts_date_format': 'ngày {2} tháng {1} năm {0}'
     }
-}, language = new Vue({
+};
+
+const language = new Vue({
     data: {
         current: 'jp',
         watchers: [],
         pgName: ''
     },
     watch: {
+        current: {
+            immediate: true,
+            handler(lg: string) {
+                if (lg === 'jp') {
+                    // update locale of moment
+                    moment.locale('ja');
+
+                    document.head.appendChild(style);
+                } else if (document.head.contains(style)) {
+                    // update locale of moment
+                    moment.locale(lg);
+
+                    document.head.removeChild(style);
+                }
+            }
+        },
         pgName(name: string) {
             let title = document.querySelector('head>title') as HTMLElement;
 
@@ -32,12 +87,12 @@ const resources: {
         }
     },
     methods: {
-        change (lang: string) {
+        change(lang: string) {
             this.current = lang;
 
-            localStorage.setItem('lang', lang);
+            storage.local.setItem('lang', lang);
         },
-        watch (callback: Function) {
+        watch(callback: Function) {
             let self = this;
             self.watchers.push(self.$watch('current', (v: string) => {
                 callback(v);
@@ -47,7 +102,9 @@ const resources: {
     destroyed() {
         [].slice.call(this.watchers).forEach((w: Function) => w());
     }
-}), Language = {
+});
+
+const Language = {
     set pgName(name: string) {
         language.pgName = name;
     },
@@ -57,7 +114,7 @@ const resources: {
     set current(lang: string) {
         language.current = lang;
 
-        localStorage.setItem('lang', lang);
+        storage.local.setItem('lang', lang);
     },
     i18n(resource: string, params?: { [key: string]: string }) {
         return getText(resource, params);
@@ -67,9 +124,11 @@ const resources: {
     },
     refresh() {
         language.current = '';
-        language.current = localStorage.getItem('lang') || 'jp';
+        language.current = (storage.local.getItem('lang') as string) || 'jp';
     }
-}, LanguageBar = {
+};
+
+const LanguageBar = {
     template: `
         <li class="nav-item dropdown">
             <a class="nav-item nav-link dropdown-toggle mr-md-2">{{current | i18n}}</a>
@@ -88,9 +147,11 @@ const resources: {
         current: () => language.current,
         languages: () => Object.keys(resources)
     }
-}, i18n = {
+};
+
+const i18n = {
     install(vue: VueConstructor<Vue>, lang: string) {
-        language.current = lang || localStorage.getItem('lang') || 'jp';
+        language.current = lang || (storage.local.getItem('lang') as string) || 'jp';
 
         vue.filter('i18n', getText);
         vue.prototype.$i18n = getText;
@@ -108,12 +169,19 @@ const resources: {
             }
         });
     }
-}, getText: any = (resource: string, params?: string | string[] | { [key: string]: string }) => {
+};
+
+const getText: any = (resource: string | number, params?: string | string[] | { [key: string]: string }) => {
     let lng = Language.current,
         i18lang = resources[lng],
-        groups: { [key: string]: string } = {};
+        groups: { [key: string]: string } = {},
+        regex: RegExp = /{\d+}|#{[^}]+}|{#[^}]+}/g;
 
-    if (!!params) {
+    if (!obj.isNil(params)) {
+        if (obj.isNumber(params)) {
+            params = params.toString();
+        }
+
         if (!obj.isString(params)) {
             obj.extend(groups, params);
         } else {
@@ -121,24 +189,30 @@ const resources: {
         }
     }
 
-    if (resource) {
-        [].slice.call(resource.match(/(#{.+})|({#.+})|({\d+})/g) || [])
+    if (!obj.isNil(resource)) {
+        // accept numbet raw
+        resource = resource.toString();
+
+        [].slice.call(resource.match(regex) || [])
             .map((match: string) => match.replace(/[\#\{\}]/g, ''))
             .forEach((key: string) => {
                 if (!obj.has(groups, key)) {
                     obj.set(groups, key, key);
                 }
             });
-
-        return ((i18lang[resource] || resource)
-            .replace(/(#{.+})|({#.+})|({\d+})/g, (match: string) => {
+        let result = (i18lang[resource] || resource)
+            .replace(regex, (match: string) => {
                 let key = match.replace(/[\#\{\}]/g, '');
 
                 return getText((groups[key] || key), groups);
-            }) || resource).toString();
+            }) || resource;
+
+        return result.toString();
     }
 
     return '';
 };
 
-export { i18n, Language, resources, LanguageBar };
+Vue.use(i18n);
+
+export { Language, resources, LanguageBar };

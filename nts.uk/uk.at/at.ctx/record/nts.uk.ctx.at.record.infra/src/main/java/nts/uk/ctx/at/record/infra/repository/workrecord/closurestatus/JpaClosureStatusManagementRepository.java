@@ -1,7 +1,9 @@
 package nts.uk.ctx.at.record.infra.repository.workrecord.closurestatus;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -75,6 +77,25 @@ public class JpaClosureStatusManagementRepository extends JpaRepository implemen
 
 	private List<ClosureStatusManagement> toDomainFromJoin(List<KrcdtClosureSttMng> result) {
 		return result.stream().map(tc -> tc.toDomain()).collect(Collectors.toList());		
+	}
+
+	@Override
+	public Map<String, ClosureStatusManagement> getLatestBySids(List<String> sids) {
+		Map<String, ClosureStatusManagement> result = new HashMap<>();
+		StringBuilder query = new StringBuilder("SELECT a FROM KrcdtClosureSttMng a ");
+		query.append("WHERE a.pk.employeeId IN :employeeId ");
+		TypedQueryWrapper<KrcdtClosureSttMng> tQuery=  this.queryProxy().query(query.toString(), KrcdtClosureSttMng.class);
+		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			List<KrcdtClosureSttMng> closureEntityLst = tQuery
+					.setParameter("employeeId", sids)
+					.getList();
+			Map<String,List<ClosureStatusManagement>>  closureStatus = toDomainFromJoin(closureEntityLst).stream().collect(Collectors.groupingBy(c -> c.getEmployeeId()));
+			closureStatus.entrySet().forEach(c ->{
+				ClosureStatusManagement closeStatusLast = c.getValue().stream().sorted((d1, d2) -> d2.getPeriod().end().compareTo(d1.getPeriod().end())).collect(Collectors.toList()).get(0);
+				result.put(c.getKey(), closeStatusLast);
+			});
+		});
+		return result;
 	}
 
 }

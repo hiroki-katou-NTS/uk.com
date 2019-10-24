@@ -31,18 +31,32 @@ module nts.uk.at.view.kdw003.c.viewmodel {
             
             if(self.formatParam.initMode == 0){
                 service.getDailyFormatList().done((lstData) => {
-                    let sortedData = _.orderBy(lstData, ['dailyPerformanceFormatCode'], ['asc']);
-                    self.lstFormatCodes(sortedData);
-                    dfd.resolve();
+                    if (!_.isEmpty(lstData)) {
+                        let sortedData = _.orderBy(lstData, ['dailyPerformanceFormatCode'], ['asc']);
+                        self.lstFormatCodes(sortedData);
+                        dfd.resolve();
+                    } else {
+                         nts.uk.ui.dialog.error({messageId: "Msg_1402"}).then(() => {
+                             setShared('KDW003C_Err', {jumpToppage: true});
+                             windows.close();
+                         });
+                    }
                 }).fail(function(error) {
                     nts.uk.ui.dialog.alert(error.message);
                     dfd.reject();
                 });               
             }else if(self.formatParam.initMode == 1){
                 service.getMonthlyFormatList().done((lstData) => {
-                    let sortedData = _.orderBy(lstData, ['dailyPerformanceFormatCode'], ['asc']);
-                    self.lstFormatCodes(sortedData);
-                    dfd.resolve();
+                    if (!_.isEmpty(lstData)) {
+                        let sortedData = _.orderBy(lstData, ['dailyPerformanceFormatCode'], ['asc']);
+                        self.lstFormatCodes(sortedData);
+                        dfd.resolve();
+                    } else {
+                        nts.uk.ui.dialog.error({messageId: "Msg_1402"}).then(() => {
+                            setShared('KDW003C_Err', {jumpToppage: true});
+                            windows.close();
+                        });
+                    }
                 }).fail(function(error) {
                     nts.uk.ui.dialog.alert(error.message);
                     dfd.reject();

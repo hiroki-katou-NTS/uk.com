@@ -2,16 +2,12 @@ package nts.uk.file.pr.infra.core.socinsurnoticreset;
 
 import com.aspose.cells.Workbook;
 import com.aspose.cells.WorksheetCollection;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsuranceOffice;
-import nts.uk.ctx.pr.file.app.core.socialinsurnoticreset.CompanyInformation;
 import nts.uk.ctx.pr.file.app.core.socialinsurnoticreset.EmpAddChangeInfoExport;
 import nts.uk.ctx.pr.file.app.core.socialinsurnoticreset.EmpAddChangeInfoFileGenerator;
 import nts.uk.ctx.pr.file.app.core.socialinsurnoticreset.EmpAddChangeInforData;
-import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.PersonalNumClass;
-import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.SocialInsurNotiCreateSet;
-import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.SubNameClass;
 import nts.uk.shr.com.time.japanese.JapaneseDate;
 import nts.uk.shr.com.time.japanese.JapaneseEraName;
 import nts.uk.shr.com.time.japanese.JapaneseErasAdapter;
@@ -45,6 +41,11 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
            WorksheetCollection worksheets = workbook.getWorksheets();
            reportContext.processDesigner();
            String sheetName = "INS";
+
+           if (data.getEmpAddChangeInfoExportList().isEmpty()) {
+               throw new BusinessException("Msg_37");
+           }
+
            for (int i  = 0; i < data.getEmpAddChangeInfoExportList().size() ; i ++){
                worksheets.get(worksheets.addCopy(0)).setName(sheetName + i);
                EmpAddChangeInfoExport empAddChangeInfoExport = data.getEmpAddChangeInfoExportList().get(i);

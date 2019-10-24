@@ -1,13 +1,19 @@
 package nts.uk.ctx.at.record.infra.repository.dailyperformanceformat.businesstype;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
+import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmployee;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.repository.BusinessTypeOfEmployeeRepository;
@@ -15,6 +21,7 @@ import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.businesstype.Krc
 import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.businesstype.KrcmtBusinessTypeOfEmployeePK;
 import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmp;
 import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpAdaptor;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -142,6 +149,102 @@ public class JpaBusinessTypeOfEmployee extends JpaRepository
 					.getList(entity -> toDomain(entity)));
 		});
 		return resultList;
+	}
+
+	@Override
+	@SneakyThrows
+	public List <BusinessTypeOfEmployee> findAllByHistIds(List <String> histIds) {
+		 List < BusinessTypeOfEmployee > result = new ArrayList < > ();
+		 
+		 CollectionUtil.split(histIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			 String sql = "SELECT * FROM KRCMT_BUS_TYPE_SYAIN WHERE HIST_ID IN (" + NtsStatement.In.createParamsString(subList) + ")";
+	
+		  try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+			   for (int i = 0; i < subList.size(); i++) {
+			    stmt.setString(i + 1, subList.get(i));
+			   }
+		
+			   List < BusinessTypeOfEmployee > entities = new NtsResultSet(stmt.executeQuery()).getList(rec -> {			    
+			    return BusinessTypeOfEmployee.createFromJavaType(rec.getString("BUSINESS_TYPE_CD"),
+			    		rec.getString("HIST_ID"), rec.getString("SID"));
+			   });
+		
+			   result.addAll(entities);
+		  } catch (SQLException e) {
+		   throw new RuntimeException(e);
+		  }
+		 });
+		 return result;
+	}
+
+	@Override
+	public void addAll(List<BusinessTypeOfEmployee> domains) {
+		String INS_SQL = "INSERT INTO KRCMT_BUS_TYPE_SYAIN (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
+				+ " UPD_DATE , UPD_CCD , UPD_SCD , UPD_PG," 
+				+ " HIST_ID, SID, BUSINESS_TYPE_CD)"
+				+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
+				+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL,"
+				+ " HIST_ID_VAL, SID_VAL, BUSINESS_TYPE_CD_VAL); ";
+		String insCcd = AppContexts.user().companyCode();
+		String insScd = AppContexts.user().employeeCode();
+		String insPg = AppContexts.programId();
+		
+		String updCcd = insCcd;
+		String updScd = insScd;
+		String updPg = insPg;
+		StringBuilder sb = new StringBuilder();
+
+		domains.stream().forEach(c ->{
+			String sql = INS_SQL;
+			sql = sql.replace("INS_DATE_VAL", "'" + GeneralDateTime.now() + "'");
+			sql = sql.replace("INS_CCD_VAL", "'" + insCcd + "'");
+			sql = sql.replace("INS_SCD_VAL", "'" + insScd + "'");
+			sql = sql.replace("INS_PG_VAL", "'" + insPg + "'");
+
+			sql = sql.replace("UPD_DATE_VAL", "'" + GeneralDateTime.now() + "'");
+			sql = sql.replace("UPD_CCD_VAL", "'" + updCcd + "'");
+			sql = sql.replace("UPD_SCD_VAL", "'" + updScd + "'");
+			sql = sql.replace("UPD_PG_VAL", "'" + updPg + "'");
+			
+			sql = sql.replace("HIST_ID_VAL", "'" + c.getHistoryId() + "'");
+			sql = sql.replace("SID_VAL", "'" + c.getSId() + "'");
+			sql = sql.replace("BUSINESS_TYPE_CD_VAL", "'" + c.getBusinessTypeCode().toString() + "'");
+			
+			sb.append(sql);
+		});
+		
+		int records = this.getEntityManager().createNativeQuery(sb.toString()).executeUpdate();
+		System.out.println(records);
+		
+	}
+
+	@Override
+	public void updateAll(List<BusinessTypeOfEmployee> domains) {
+		String UP_SQL = "UPDATE KRCMT_BUS_TYPE_SYAIN SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL, UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
+				+ " BUSINESS_TYPE_CD = BUSINESS_TYPE_CD_VAL"
+				+ " WHERE HIST_ID = HIST_ID_VAL AND SID = SID_VAL;";
+		String updCcd = AppContexts.user().companyCode();
+		String updScd = AppContexts.user().employeeCode();
+		String updPg = AppContexts.programId();
+		
+		StringBuilder sb = new StringBuilder();
+
+		domains.stream().forEach(c ->{
+			String sql = UP_SQL;
+			sql = UP_SQL.replace("UPD_DATE_VAL", "'" + GeneralDateTime.now() +"'");
+			sql = sql.replace("UPD_CCD_VAL", "'" + updCcd +"'");
+			sql = sql.replace("UPD_SCD_VAL", "'" + updScd +"'");
+			sql = sql.replace("UPD_PG_VAL", "'" + updPg +"'");
+			
+			sql = sql.replace("BUSINESS_TYPE_CD_VAL", "'" + c.getBusinessTypeCode().v() + "'");
+			sql = sql.replace("HIST_ID_VAL", "'" + c.getHistoryId() +"'");
+			sql = sql.replace("SID_VAL", "'" + c.getSId() +"'");
+			
+			sb.append(sql);
+		});
+		int  records = this.getEntityManager().createNativeQuery(sb.toString()).executeUpdate();
+		System.out.println(records);
+		
 	}
 
 }

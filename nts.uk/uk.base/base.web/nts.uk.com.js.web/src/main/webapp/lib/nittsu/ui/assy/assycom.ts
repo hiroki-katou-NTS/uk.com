@@ -125,7 +125,7 @@ module nts.uk.ui.koExtentions {
             <div class="as-area hist-btn" data-bind="template: { afterRender: afterRender }">
                 <button class="add" tabindex="4"
                     data-bind="click: openAddHistDialog,
-                    enable: screenMode() == 1 &amp;&amp; isLatestHistSelected, text: text('JAP0020_A1_3')"></button>
+                    enable: histList().length == 0 || (screenMode() == 1 &amp;&amp; isLatestHistSelected), text: text('JAP0020_A1_3')"></button>
                 <br/>
                 <button class="update" tabindex="5"
                     data-bind="click: openUpdHistDialog,

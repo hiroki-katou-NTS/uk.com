@@ -9,6 +9,7 @@ const path = require('path'),
 
 module.exports = (env) => {
     return [{
+        devtool: "source-map",
         mode: env && env.prod ? 'production' : 'development',
         stats: {
             modules: false
@@ -25,6 +26,7 @@ module.exports = (env) => {
             alias: {
                 'vue$': 'vue/dist/vue.common.js',
                 '@app': path.join(__dirname, 'ClientApp', '@app'),
+                'views': path.join(__dirname, 'ClientApp', 'views'),
                 '@views': path.join(__dirname, 'ClientApp', 'views')
             }
         },
@@ -93,8 +95,8 @@ module.exports = (env) => {
                 }
             },
             minimizer: [
-                //new UglifyJsPlugin({
-                /*cache: true,
+                /*new UglifyJsPlugin({
+                cache: true,
                 parallel: true,
                 uglifyOptions: {
                     compress: true,
@@ -104,8 +106,8 @@ module.exports = (env) => {
                         comments: false
                     }
                 },
-                sourceMap: false*/
-                //}),
+                sourceMap: false
+                }),*/
                 new OptimizeCSSAssetsPlugin({
                     cssProcessor: require("cssnano"),
                     cssProcessorOptions: {
@@ -137,30 +139,37 @@ module.exports = (env) => {
                 manifest: require(path.join(__dirname, 'wwwroot', 'nts.uk.mobile.web', 'dist', 'vendor-manifest.json'))
             }),
             // Plugins that apply in development builds only
-            new webpack.SourceMapDevToolPlugin({
+            /*new webpack.SourceMapDevToolPlugin({
                 // Remove this line if you prefer inline source maps
                 filename: '[file].map',
                 // Point sourcemap entries to the original file locations on disk
                 moduleFilenameTemplate: path.relative(path.join(__dirname, 'wwwroot', 'nts.uk.mobile.web', 'dist'), '[resourcePath]')
-            }),
+            }),*/
             new TSLintPlugin({
                 waitForLinting: true,
                 warningsAsError: true,
-                files: ['./ClientApp/**/*.ts']
+                files: ['./ClientApp/*.ts', './ClientApp/**/*.ts']
             }),
-            new PackageWarFile({ prod: env && env.prod })
+            new PackageWarFile({ prod: env && env.prod }),
+            new webpack.DefinePlugin({
+                'process.env': {
+                    'API_URL': JSON.stringify(env && env.api),
+                    'NODE_ENV': JSON.stringify('development')
+                }
+            }),
         ],
         devServer: {
             hot: true,
             contentBase: path.join(__dirname, 'wwwroot'),
             compress: true,
             port: 3000,
-            //host: '0.0.0.0',
+            host: '0.0.0.0',
+            useLocalIp: true,
             watchOptions: {
                 poll: true
             },
             watchContentBase: true,
-            index: './index.htm',
+            index: './index.html',
             historyApiFallback: true,
             openPage: './nts.uk.mobile.web/ccg/007/b'
         },

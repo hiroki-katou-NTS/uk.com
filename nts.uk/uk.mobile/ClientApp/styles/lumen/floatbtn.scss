@@ -1,8 +1,21 @@
+body {
+    &>.fixed-action-btn {
+        z-index: 1050;
+
+        &.active {
+            z-index: 1051;
+        }
+    }
+}
+
 .fixed-action-btn {
     position: fixed;
-    z-index: 1050;
     right: 25px;
     bottom: 25px;
+
+    &.active {
+        z-index: 1050;
+    }
 
     .btn-floating {
         -webkit-box-shadow: 0 5px 11px 0 rgba(0, 0, 0, .18), 0 4px 15px 0 rgba(0, 0, 0, .15);
@@ -23,6 +36,7 @@
         border-width: 0;
         padding: 0;
         cursor: pointer;
+        
 
         i {
             font-size: 1rem;
@@ -76,8 +90,20 @@
             height: 55px;
 
             i {
-                font-size: 2.4rem;
-                line-height: 55px
+                font-size: 1.5rem;
+                line-height: 55px;
+                &+i {
+                    display: none;
+                    font-size: 2.4rem;
+                }
+                &.fas.fa-plus {
+                    &:first-child {
+                        &:last-child {
+                            display: block;
+                            font-size: 2.4rem;
+                        }
+                    }
+                }
             }
         }
 
@@ -151,6 +177,12 @@
     &.active {
         &>a.btn-floating {
             transform: rotate(135deg);
+            i {
+                display: none;
+                &+i {
+                    display: block;
+                }
+            }
         }
 
         ul {

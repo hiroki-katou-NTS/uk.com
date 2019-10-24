@@ -12,17 +12,40 @@ import { component } from '@app/core/component';
     markdown: {
         vi: require('./content/vi.md'),
         jp: require('./content/jp.md')
+    },
+    validations : {
+        timeWithDay : {
+            required: true,
+            min : -60,
+            max : 1380,
+            valueType: 'Clock'
+        },
+        timePoint : {
+            min : -60,
+            max : 1380,
+            valueType: 'TimePoint'
+        },
+        timeDuration : {
+            required: true,
+            min : -60,
+            max : 1380,
+            valueType: 'Duration'
+        }
+
     }
 })
 export class DocumentsControlsInputTimeComponent extends Vue {
-    public time: number = 750;
 
-    public timeWithDay: object = {
-        name: 'Time-With-Day',
-        value: 750,
-        disabled: false,
-        errors: null,
-        errorsAlways: null,
-        showTitle: true
-    };
+    public timeWithDay: number = null;
+
+    public timePoint: number = null;
+
+    public timeDuration: number = null;
+
+    public validate() {
+        this.$validate();
+
+    }
+    
+
 }

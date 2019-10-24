@@ -2,8 +2,9 @@ module nts.uk.com.view.ccg025.a {
     
     __viewContext.ready(function() {
         let component = new nts.uk.com.view.ccg025.a.component.viewmodel.ComponentModel({ 
-            roleType: 1,
-            multiple: false
+            roleType: 3,
+            multiple: false,
+            isAlreadySetting: false
         });
         let vm = {
             componentViewmodel: component    

@@ -13,6 +13,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
 import nts.uk.ctx.at.record.dom.adapter.company.AffComHistItemImport;
 import nts.uk.ctx.at.record.dom.adapter.company.AffCompanyHistImport;
@@ -23,6 +24,7 @@ import nts.uk.ctx.at.record.dom.monthly.flex.ConditionCalcResult;
 import nts.uk.ctx.at.record.dom.monthly.flex.MessageFlex;
 import nts.uk.ctx.at.record.dom.statutoryworkinghours.monthly.MonthlyFlexStatutoryLaborTime;
 import nts.uk.ctx.at.record.dom.statutoryworkinghours.monthly.MonthlyStatutoryWorkingHours;
+import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
@@ -74,6 +76,9 @@ public class CheckBeforeCalcFlexChange implements CheckBeforeCalcFlexChangeServi
 
 	@Inject
 	private AttendanceTimeRepository attendanceTime;
+	
+	@Inject
+	private CompanyAdapter companyAdapter;
 
 	private static final String TIME_DEFAULT = "0:00";
 
@@ -202,12 +207,16 @@ public class CheckBeforeCalcFlexChange implements CheckBeforeCalcFlexChangeServi
 			// 社員と基準日から雇用履歴項目を取得する
 			AffEmploymentHistoryDto afEmpDto = dailyPerformanceScreenRepo.getAffEmploymentHistory(companyId, calc.getEmployeeId(),
 														periodExportOptNext.get().getClosureStartDate());
+			
+			// bug 107743
+			// 暦上の年月を渡して、年度に沿った年月を取得する
+			YearMonth yearMonthCalen = companyAdapter.getYearMonthFromCalenderYM(companyId, periodExportOptNext.get().getProcessingYm());
 //			List<AffWorkplaceHistoryItem> lstAffWorkplace = affWorkplaceHis
 //					.getAffWrkplaHistItemByEmpIdAndDate(datePeriod.start(), calc.getEmployeeId());
 			// 週、月の法定労働時間を取得(フレックス用)
 			MonthlyFlexStatutoryLaborTime monthFlex = monthlyStatutoryWorkingHours.getFlexMonAndWeekStatutoryTime(
 					companyId, afEmpDto.getEmploymentCode(), calc.getEmployeeId(), datePeriod.start(),
-					periodExportOptNext.get().getProcessingYm());
+					yearMonthCalen);
 
 			// 締め期間中に「フレックス勤務」だった期間を取得する
 			// List<WorkingConditionItem> workingConditionItems =

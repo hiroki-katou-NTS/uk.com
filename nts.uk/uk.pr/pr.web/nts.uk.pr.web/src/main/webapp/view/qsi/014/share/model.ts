@@ -77,44 +77,6 @@ module nts.uk.pr.view.qsi014.share.model {
         ];
     }
 
-    export function getTextPerNumberClass(): Array<ItemModel> {
-        return [
-            new ItemModel(0, getText('Enum_TextPerNumberClass_OUTPUT_NUMBER')),
-            new ItemModel(1, getText('Enum_TextPerNumberClass_OUPUT_BASIC_PEN_NUMBER')),
-            new ItemModel(2, getText('Enum_TextPerNumberClass_OUTPUT_BASIC_NO_PERSONAL'))
-        ];
-    }
-
-    export function getOutputFormatClass(): Array<ItemModel> {
-        return [
-            new ItemModel(0, getText('Enum_OutputFormatClass_PEN_OFFICE')),
-            new ItemModel(1, getText('Enum_OutputFormatClass_HEAL_INSUR_ASSO')),
-            new ItemModel(2, getText('Enum_OutputFormatClass_OUTPUT_THE_WELF_PEN'))
-        ];
-    }
-
-    export function getLineFeedCode(): Array<ItemModel> {
-        return [
-            new ItemModel(0, getText('Enum_LineFeedCode_ADD')),
-            new ItemModel(1, getText('Enum_LineFeedCode_DO_NOT_ADD')),
-            new ItemModel(2, getText('Enum_LineFeedCode_E_GOV'))
-            ]
-        }
-    export enum ReasonsForLossHealthyIns {
-        BLANK = 0,
-        RETIREMENT = 4,
-        DEATH = 5,
-        ONLY_HEALTHY_INSURANCE = 7,
-        DISABILITY_AUTHORIZATION = 9
-    }
-
-    export enum ReasonsForLossPensionIns {
-        BLANK = 0,
-        RETIREMENT = 4,
-        DEATH = 5,
-        ONLY_HEALTHY_INSURANCE = 6
-    }
-
     export interface EmployeeModel {
         id: string;
         code: string;
@@ -131,23 +93,4 @@ module nts.uk.pr.view.qsi014.share.model {
         static OH = 6;
     }
 
-    //for combo box
-    export function getCauseTypeHealthLossInfo(): Array<ItemModel> {
-        return [
-            new ItemModel(ReasonsForLossHealthyIns.BLANK, getText('Enum_ReasonsForLossHealthyIns_BLANK')),
-            new ItemModel(ReasonsForLossHealthyIns.RETIREMENT, getText('Enum_ReasonsForLossHealthyIns_RETIREMENT')),
-            new ItemModel(ReasonsForLossHealthyIns.DEATH, getText('Enum_ReasonsForLossHealthyIns_DEATH')),
-            new ItemModel(ReasonsForLossHealthyIns.ONLY_HEALTHY_INSURANCE, getText('Enum_ReasonsForLossHealthyIns_ONLY_HEALTHY_INSURANCE')),
-            new ItemModel(ReasonsForLossHealthyIns.DISABILITY_AUTHORIZATION, getText('Enum_ReasonsForLossHealthyIns_DISABILITY_AUTHORIZATION'))
-        ];
-    }
-
-    export function getCauseTypePensionLossInfo(): Array<ItemModel> {
-        return [
-            new ItemModel(ReasonsForLossPensionIns.BLANK, getText('Enum_ReasonsForLossPensionIns_BLANK')),
-            new ItemModel(ReasonsForLossPensionIns.RETIREMENT, getText('Enum_ReasonsForLossPensionIns_RETIREMENT')),
-            new ItemModel(ReasonsForLossPensionIns.DEATH, getText('Enum_ReasonsForLossPensionIns_DEATH')),
-            new ItemModel(ReasonsForLossPensionIns.ONLY_HEALTHY_INSURANCE, getText('Enum_ReasonsForLossPensionIns_ONLY_PENSION_INSURANCE'))
-        ];
-    }
 }

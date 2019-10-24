@@ -60,7 +60,6 @@ public class EmpAddChangeInfoCommandHandle extends CommandHandler<EmpAddChangeIn
             return;
         }
         mEmpAddChangeInfoRepository.add(empAddChangeInfo);
-        return;
 
     }
 }

@@ -289,7 +289,7 @@ module nts.uk.ui {
                 var $button = $(e.target);
                 var $dammy = $("<div>")
                     .css({
-                        background: "white",
+                        background: "transparent",
                         position: "absolute",
                         width: $button.outerWidth(),
                         height: parseInt($button.css("top"), 10),

@@ -7,7 +7,6 @@ import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.AppliedDate;
-import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 
 public interface AbsenceServiceProcess {
 	/**
@@ -26,9 +25,10 @@ public interface AbsenceServiceProcess {
 	 * @param sDate: 申請開始日
 	 * @param eDate: 申請終了日
 	 * @param hdAppType: 休暇種類
+	 * @param lstDateIsHoliday: 休日の申請日
 	 */
 	void checkLimitAbsencePlan(String cID, String sID, String workTypeCD, 
-			GeneralDate sDate, GeneralDate eDate, HolidayAppType hdAppType);
+			GeneralDate sDate, GeneralDate eDate, HolidayAppType hdAppType, List<GeneralDate> lstDateIsHoliday);
 	/**
 	 * @author hoatt
 	 * 14.休暇種類表示チェック
@@ -75,6 +75,5 @@ public interface AbsenceServiceProcess {
 	 * @param baseDate - 基準日
 	 * @return 年休残数-代休残数-振休残数-ストック休暇残数
 	 */
-	public NumberOfRemainOutput getNumberOfRemaining(String companyID, String employeeID, GeneralDate baseDate, 
-			List<AppEmploymentSetting> appEmpSetAs);
+	public NumberOfRemainOutput getNumberOfRemaining(String companyID, String employeeID, GeneralDate baseDate);
 }

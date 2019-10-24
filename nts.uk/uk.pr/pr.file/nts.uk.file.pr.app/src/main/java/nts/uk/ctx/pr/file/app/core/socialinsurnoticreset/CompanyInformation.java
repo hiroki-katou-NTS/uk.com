@@ -12,18 +12,18 @@ import lombok.NoArgsConstructor;
 
 /**
  会社情報
-*/
+ */
 public class CompanyInformation {
 
-	/** 会社ID*/
-	private String companyId;
+    /** 会社ID*/
+    private String companyId;
 
-	/** 会社名 */
-	private String companyName;
+    /** 会社名 */
+    private String companyName;
 
-	/** 代表者名 */
-	private String companyNameReference;
+    /** 代表者名 */
+    private String companyNameReference;
 
-	/** 電話番号 */
-	private String phoneNumber;
+    /** 電話番号 */
+    private String phoneNumber;
 }

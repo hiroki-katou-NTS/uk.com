@@ -14,8 +14,10 @@ import nts.uk.ctx.pereg.dom.person.info.category.IsAbolition;
 import nts.uk.ctx.pereg.dom.person.info.category.IsFixed;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypeState;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypes;
+import nts.uk.ctx.pereg.dom.person.info.selectionitem.SelectionItem;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeState;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
+import nts.uk.ctx.pereg.dom.person.info.singleitem.SingleItem;
 
 @Getter
 @Setter
@@ -92,6 +94,12 @@ public class PersonInfoItemDefinition extends AggregateRoot {
 	 * 廃止切り替え可能か
 	 */
 	private boolean canAbolition;
+	
+	/**
+	 * 初期値
+	 * InitValue
+	 */
+	private Optional<InitValue> initValue;
 	
 
 	public PersonInfoItemDefinition() {
@@ -273,7 +281,7 @@ public class PersonInfoItemDefinition extends AggregateRoot {
 			BigDecimal stringItemType,BigDecimal numericItemMinus, BigDecimal numericItemAmount, BigDecimal numericItemIntegerPart,
 			BigDecimal numericItemDecimalPart, BigDecimal numericItemMin, BigDecimal numericItemMax, BigDecimal dateItemType, 
 			BigDecimal timeItemMax, BigDecimal timeItemMin, BigDecimal timepointItemMin, BigDecimal timepointItemMax, 
-			BigDecimal selectionItemRefType, String selectionItemRefCode, String relatedCategoryCode, int canAbolition, List<String> items) {
+			BigDecimal selectionItemRefType, String selectionItemRefCode, String relatedCategoryCode, int canAbolition, List<String> items, String initValue) {
 		PersonInfoItemDefinition item = new PersonInfoItemDefinition();
 		item.perInfoItemDefId = perInfoItemDefId;
 		item.perInfoCategoryId = perInfoCategoryId;
@@ -287,7 +295,7 @@ public class PersonInfoItemDefinition extends AggregateRoot {
 		item.requireChangable = EnumAdaptor.valueOf(requireChangable, RequireChangable.class);
 		item.canAbolition = canAbolition == 0? false: true;
 		item.resourceId = resourceId != null ? Optional.of(resourceId) : Optional.empty();
-		
+		item.initValue = initValue != null ? Optional.of(new InitValue(initValue)) : Optional.empty();
 		DataTypeState dataTypeState = null;
 		ItemTypeState itemTypeState = null;
 		if (itemType == ItemType.SINGLE_ITEM.value) {
@@ -395,6 +403,89 @@ public class PersonInfoItemDefinition extends AggregateRoot {
 	
 	public boolean haveNotParentCode() {
 		return this.itemParentCode == null || this.itemParentCode.v().equals("");
+
+	}	
+	
+	public boolean isSingleItem() {
+		return this.itemTypeState.itemType == ItemType.SINGLE_ITEM;
 	}
 	
+	public boolean isSelection() {
+		if (isSingleItem() == false) return false;
+		SingleItem singleItem = (SingleItem) this.itemTypeState;
+		DataTypeState dataTypeState = (DataTypeState) singleItem.getDataTypeState();
+		DataTypeValue dataTypeValue =  dataTypeState.getDataTypeValue();
+		if (dataTypeValue == DataTypeValue.SELECTION || dataTypeValue == DataTypeValue.SELECTION_BUTTON
+				|| dataTypeValue == DataTypeValue.SELECTION_RADIO) {
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean isEnum() {
+		
+		if (isSingleItem() == false) return false;
+		
+		SingleItem singleItem = (SingleItem) this.itemTypeState;
+		
+		DataTypeState dataTypeState = (DataTypeState) singleItem.getDataTypeState();
+		
+		DataTypeValue dataTypeValue = (DataTypeValue) dataTypeState.getDataTypeValue();
+		
+		if (dataTypeValue == DataTypeValue.SELECTION_RADIO) return true;
+		
+		if (dataTypeValue == DataTypeValue.SELECTION){
+			
+			SelectionItem selectionItem = (SelectionItem) dataTypeState;
+			
+			ReferenceTypes referenceType = selectionItem.getReferenceTypes();
+			
+			if(referenceType == ReferenceTypes.ENUM) return true;
+		}
+		return false;
+	}
+	
+	public boolean isCodeName() {
+		
+		if (isSingleItem() == false) return false;
+		
+		SingleItem singleItem = (SingleItem) this.itemTypeState;
+		
+		DataTypeState dataTypeState = (DataTypeState) singleItem.getDataTypeState();
+		
+		DataTypeValue dataTypeValue = (DataTypeValue) dataTypeState.getDataTypeValue();
+		
+		if (dataTypeValue == DataTypeValue.SELECTION) {
+			SelectionItem selectionItem = (SelectionItem) dataTypeState;
+			
+			ReferenceTypes referenceType = selectionItem.getReferenceTypes();
+			
+			if(referenceType == ReferenceTypes.CODE_NAME) return true;
+		}
+		return false;
+	}
+	
+	public boolean isDesignateMaster() {
+		
+		if (isSingleItem() == false) return false;
+		
+		SingleItem singleItem = (SingleItem) this.itemTypeState;
+		
+		DataTypeState dataTypeState = (DataTypeState) singleItem.getDataTypeState();
+		
+		DataTypeValue dataTypeValue = (DataTypeValue) dataTypeState.getDataTypeValue();
+		
+		if (dataTypeValue == DataTypeValue.SELECTION_BUTTON) return true;
+		
+		if (dataTypeValue == DataTypeValue.SELECTION ) {
+			
+			SelectionItem selectionItem = (SelectionItem) dataTypeState;
+			
+			ReferenceTypes referenceType = selectionItem.getReferenceTypes();
+			
+			if(referenceType == ReferenceTypes.DESIGNATED_MASTER) return true;
+			
+		}
+		return false;
+	}
 }
