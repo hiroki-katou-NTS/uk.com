@@ -14,6 +14,7 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
 import nts.uk.query.model.employee.CCG001SystemType;
 import nts.uk.query.model.employee.EmployeeAuthAdapter;
@@ -91,7 +92,7 @@ public class RegulationInfoEmployeeFinder {
 			queryDto.getSystemType() != CCG001SystemType.EMPLOYMENT.value) {
 			return Arrays.asList(this.findCurrentLoginEmployeeInfo(
 					GeneralDateTime.fromString(queryDto.getBaseDate() + RegulationInfoEmpQueryDto.TIME_DAY_START,
-							RegulationInfoEmpQueryDto.DATE_TIME_FORMAT)));
+							RegulationInfoEmpQueryDto.DATE_TIME_FORMAT), queryDto.getSystemType()));
 		}
 
 		// Algorithm: 検索条件の職場一覧を参照範囲に基いて変更する
@@ -211,7 +212,7 @@ public class RegulationInfoEmployeeFinder {
 
 		// An employee's search reference range depends on his reference authority
 		switch (searchReferenceRange) {
-		case ALL_EMPLOYEE:
+		case ALL_REFERENCE_RANGE:
 			if (employeeReferenceRange == EmployeeReferenceRange.ALL_EMPLOYEE) {
 				// not change workplaceCodes
 				break;
@@ -220,11 +221,11 @@ public class RegulationInfoEmployeeFinder {
 				this.changeListWorkplaces(queryDto);
 			}
 			break;
-		case DEPARTMENT_ONLY:
+		case AFFILIATION_ONLY:
 			// Get list String Workplace
 			this.changeListWorkplaces(queryDto);
 			break;
-		case DEPARTMENT_AND_CHILD:
+		case AFFILIATION_AND_ALL_SUBORDINATES:
 			if (employeeReferenceRange == EmployeeReferenceRange.ALL_EMPLOYEE
 					|| employeeReferenceRange == EmployeeReferenceRange.DEPARTMENT_AND_CHILD) {
 				// Get list String Workplace
@@ -353,9 +354,9 @@ public class RegulationInfoEmployeeFinder {
 				.employeeCode(model.getEmployeeCode())
 				.employeeId(model.getEmployeeID())
 				.employeeName(model.getName().orElse(""))
-				.workplaceId(model.getWorkplaceId().orElse(""))
-				.workplaceCode(model.getWorkplaceCode().orElse(""))
-				.workplaceName(model.getWorkplaceName().orElse(""))
+				.affiliationId(model.getWorkplaceId().orElse(""))
+				.affiliationCode(model.getWorkplaceCode().orElse(""))
+				.affiliationName(model.getWorkplaceName().orElse(""))
 				.build();
 	}
 
@@ -364,20 +365,21 @@ public class RegulationInfoEmployeeFinder {
 	 *
 	 * @return the list
 	 */
-	public RegulationInfoEmployeeDto findCurrentLoginEmployeeInfo(GeneralDateTime baseDate) {
+	public RegulationInfoEmployeeDto findCurrentLoginEmployeeInfo(GeneralDateTime baseDate, int systemType) {
 		String loginEmployeeId = AppContexts.user().employeeId();
-		String companyId = AppContexts.user().companyId();
-		RegulationInfoEmployee loginEmployee = this.repo.findBySid(companyId, loginEmployeeId, baseDate);
+
+		RegulationInfoEmployee loginEmployee = this.repo.findBySid(AppContexts.user().companyId(), loginEmployeeId, baseDate, systemType);
 		if (loginEmployee == null) {
 			throw new BusinessException("Msg_317");
 		}
+		
 		return RegulationInfoEmployeeDto.builder()
 				.employeeCode(loginEmployee.getEmployeeCode())
 				.employeeId(loginEmployee.getEmployeeID())
 				.employeeName(loginEmployee.getName().orElse(""))
-				.workplaceId(loginEmployee.getWorkplaceId().orElse(""))
-				.workplaceCode(loginEmployee.getWorkplaceCode().orElse(""))
-				.workplaceName(loginEmployee.getWorkplaceName().orElse("")).build();
+				.affiliationId(loginEmployee.getWorkplaceId().orElse(""))
+				.affiliationCode(loginEmployee.getWorkplaceCode().orElse(""))
+				.affiliationName(loginEmployee.getWorkplaceName().orElse("")).build();
 	}
 
 	/**
