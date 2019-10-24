@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
@@ -24,6 +26,7 @@ public class GetSpecifyPeriod {
 	@Inject
 	private ClosureRepository closureRepository;
 	
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<ClosureHistPeriod> getSpecifyPeriod(YearMonth yearMonth) {
 		String companyId = AppContexts.user().companyId();
 		List<ClosureHistPeriod> lstResult = new ArrayList<>();

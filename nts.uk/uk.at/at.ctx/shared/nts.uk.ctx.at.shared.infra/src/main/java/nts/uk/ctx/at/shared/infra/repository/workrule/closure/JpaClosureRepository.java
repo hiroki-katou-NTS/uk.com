@@ -301,6 +301,7 @@ public class JpaClosureRepository extends JpaRepository implements ClosureReposi
 	 * nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification)
 	 */
 	@Override
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<Closure> findAllActive(String companyId, UseClassification useAtr) {
 		// get entity manager
 		EntityManager em = this.getEntityManager();
@@ -705,6 +706,7 @@ public class JpaClosureRepository extends JpaRepository implements ClosureReposi
 	 * findByCurrentMonth(nts.arc.time.YearMonth)
 	 */
 	@Override
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<ClosureHistory> findByCurrentMonth(String companyId, YearMonth closureYm) {
 
 		// get entity manager
