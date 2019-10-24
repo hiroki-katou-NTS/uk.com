@@ -10,9 +10,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 
 import lombok.SneakyThrows;
-import lombok.val;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
@@ -29,12 +30,14 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class RemarksOfDailyPerformRepoImpl extends JpaRepository implements RemarksOfDailyPerformRepo {
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<RemarksOfDailyPerform> getRemarks(String employeeId, GeneralDate workingDate) {
 		return findEntity(employeeId, workingDate)
 				.getList(c -> c.toDomain());
 	}
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<RemarksOfDailyPerform> getRemarks(List<String> employeeId, DatePeriod baseDate) {
 		List<KrcdtDayRemarksColumn> remarks = new ArrayList<>();
@@ -52,6 +55,7 @@ public class RemarksOfDailyPerformRepoImpl extends JpaRepository implements Rema
 		return remarks.stream().map(c -> c.toDomain()).collect(Collectors.toList());
 	}
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<RemarksOfDailyPerform> getRemarks(Map<String, List<GeneralDate>> param) {
 		List<KrcdtDayRemarksColumn> remarks = new ArrayList<>();
@@ -70,6 +74,7 @@ public class RemarksOfDailyPerformRepoImpl extends JpaRepository implements Rema
 		return remarks.stream().map(c -> c.toDomain()).collect(Collectors.toList());
 	}
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<RemarksOfDailyPerform> getRemarks(String employeeId, List<GeneralDate> baseDate) {
 		List<KrcdtDayRemarksColumn> remarks = new ArrayList<>();
@@ -149,6 +154,7 @@ public class RemarksOfDailyPerformRepoImpl extends JpaRepository implements Rema
 				.setParameter("ymd", workingDate);
 	}
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public Optional<RemarksOfDailyPerform> getByKeys(String sid, GeneralDate ymd, int columnNo) {
 		KrcdtDayRemarksColumnPK key = new KrcdtDayRemarksColumnPK(sid, ymd, columnNo);
@@ -159,6 +165,7 @@ public class RemarksOfDailyPerformRepoImpl extends JpaRepository implements Rema
 		return Optional.empty();
 	}
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
     @SneakyThrows
 	public List<RemarksOfDailyPerform> getRemarksBykey(String sid, GeneralDate ymd) {

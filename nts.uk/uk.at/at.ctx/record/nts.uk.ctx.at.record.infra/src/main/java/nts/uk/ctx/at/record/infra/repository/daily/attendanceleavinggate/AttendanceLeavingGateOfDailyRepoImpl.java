@@ -14,7 +14,6 @@ import java.util.stream.Stream;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.inject.Inject;
 
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -24,7 +23,6 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGate;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGateOfDaily;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.AttendanceLeavingGateOfDailyRepo;
-import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.infra.entity.daily.attendanceleavinggate.KrcdtDayLeaveGate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.data.jdbc.JDBCUtil;
@@ -33,6 +31,7 @@ import nts.uk.shr.infra.data.jdbc.JDBCUtil;
 @Stateless
 public class AttendanceLeavingGateOfDailyRepoImpl extends JpaRepository implements AttendanceLeavingGateOfDailyRepo {
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public Optional<AttendanceLeavingGateOfDaily> find(String employeeId, GeneralDate baseDate) {
 		List<AttendanceLeavingGate> alGate = findQuery(employeeId, baseDate).getList(c -> c.toDomain());
@@ -42,6 +41,7 @@ public class AttendanceLeavingGateOfDailyRepoImpl extends JpaRepository implemen
 		return Optional.empty();
 	}
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<AttendanceLeavingGateOfDaily> find(String employeeId, List<GeneralDate> baseDate) {
 		if (baseDate.isEmpty()) {
@@ -59,6 +59,7 @@ public class AttendanceLeavingGateOfDailyRepoImpl extends JpaRepository implemen
 		return resultList;
 	}
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<AttendanceLeavingGateOfDaily> find(String employeeId) {
 		return toList(this.queryProxy()
@@ -67,6 +68,7 @@ public class AttendanceLeavingGateOfDailyRepoImpl extends JpaRepository implemen
 				.getList().stream());
 	}
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<AttendanceLeavingGateOfDaily> finds(List<String> employeeId, DatePeriod baseDate) {
 		if (employeeId.isEmpty()) {
@@ -84,6 +86,7 @@ public class AttendanceLeavingGateOfDailyRepoImpl extends JpaRepository implemen
 		return result;
 	}
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<AttendanceLeavingGateOfDaily> finds(Map<String, List<GeneralDate>> param) {
 		if (param.isEmpty()) {

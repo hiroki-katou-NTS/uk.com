@@ -96,6 +96,7 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 
 	}
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public Optional<OutingTimeOfDailyPerformance> findByEmployeeIdAndDate(String employeeId, GeneralDate ymd) {
 		List<KrcdtDaiOutingTime> lstKrcdtDaiOutingTime = this.queryProxy()
@@ -238,6 +239,7 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 		}
 	}
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public boolean checkExistData(String employeeId, GeneralDate ymd, OutingFrameNo outingFrameNo) {
 		return this.queryProxy().query(CHECK_EXIST_DATA, long.class).setParameter("employeeId", employeeId)
@@ -403,6 +405,7 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 		krcdtDaiOutingTime.outStampTime = null;
 	}
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<OutingTimeOfDailyPerformance> finds(List<String> employeeId, DatePeriod ymd) {
 		List<OutingTimeOfDailyPerformance> result = new ArrayList<>();
@@ -459,6 +462,7 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 		return outingTimeSheet;
 	}
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<OutingTimeOfDailyPerformance> finds(Map<String, List<GeneralDate>> param) {
 		List<OutingTimeOfDailyPerformance> result = new ArrayList<>();

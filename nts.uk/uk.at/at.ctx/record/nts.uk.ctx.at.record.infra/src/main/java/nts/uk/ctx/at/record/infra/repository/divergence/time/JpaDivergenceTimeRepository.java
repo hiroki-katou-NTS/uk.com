@@ -10,6 +10,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.Tuple;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -47,6 +49,7 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 	 * @see nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository#
 	 * getAllDivTime(java.lang.String)
 	 */
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<DivergenceTime> getAllDivTime(String companyId) {
 		return this.findByCompanyId(companyId);
@@ -104,6 +107,7 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 	 * getDivTimeListByNo(java.lang.String, java.util.List)
 	 */
 	// Pls don't use this method, will be removed
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<DivergenceTime> getDivTimeListByNo(String companyId, List<Integer> divTimeNo) {
 
@@ -132,6 +136,7 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 	 * @see nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository#
 	 * getDivTimeInfo(java.lang.String, int)
 	 */
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public Optional<DivergenceTime> getDivTimeInfo(String companyId, int divTimeNo) {
 
@@ -145,6 +150,7 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 	 * @see nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository#
 	 * findAttendanceId(java.lang.String, int)
 	 */
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<Integer> findAttendanceId(String companyId, int divTimeNo) {
 		EntityManager em = this.getEntityManager();
@@ -222,6 +228,7 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 	 * @see nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository#
 	 * getDivTimeListByUseSet(java.lang.String)
 	 */
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<DivergenceTime> getDivTimeListByUseSet(String companyId) {
 
@@ -411,6 +418,7 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 	 * @see nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository#
 	 * getDivTimeListByNo(java.lang.String, java.util.List)
 	 */
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<DivergenceTime> getUsedDivTimeListByNoV2(String companyId, List<Integer> divTimeNo) {
 
@@ -457,6 +465,7 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 				}).collect(Collectors.toList());
 	}
 	
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<DivergenceTime> getUsedDivTimeListByNoV3(String companyId, List<Integer> divTimeNo) {
 
