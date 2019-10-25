@@ -772,6 +772,9 @@ export class KdwS03BComponent extends Vue {
                 selectedCode: selectedCD
             }
         ).then((data: any) => {
+            if (data == 'back') {
+                return;
+            }
             if (data) {
                 self.screenData[0][key] = data.code;
                 rowData.value0 = data.code;
