@@ -6,6 +6,7 @@ package nts.uk.screen.at.app.mobi;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -19,6 +20,8 @@ import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.auth.app.find.employmentrole.InitDisplayPeriodSwitchSetFinder;
+import nts.uk.ctx.at.auth.app.find.employmentrole.dto.InitDisplayPeriodSwitchSetDto;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.AnnualLeaveRemainingNumberImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.KTGRsvLeaveInfoImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.NextAnnualLeaveGrantImport;
@@ -27,6 +30,10 @@ import nts.uk.ctx.at.function.dom.adapter.widgetKtg.OptionalWidgetAdapter;
 import nts.uk.ctx.at.function.dom.employmentfunction.checksdailyerror.ChecksDailyPerformanceErrorRepository;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.AgreementTimeDetail;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.GetAgreementTime;
+import nts.uk.ctx.at.record.dom.standardtime.AgreementOperationSetting;
+import nts.uk.ctx.at.record.dom.standardtime.export.GetAgreementPeriodFromYear;
+import nts.uk.ctx.at.record.dom.standardtime.export.GetAgreementTimeOfMngPeriod;
+import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettingRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
@@ -38,6 +45,7 @@ import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.PersonEmpBasicInfoImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
+import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.ComplileInPeriodOfSpecialLeaveParam;
@@ -80,6 +88,7 @@ import nts.uk.screen.at.app.ktgwidget.find.dto.YearlyHolidayInfo;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 /**
  * @author hieult
@@ -131,6 +140,14 @@ public class ToppageStartupProcessMobFinder {
 	private ApprovalRootStateRepository approvalRootStateRepository;
 	@Inject
 	private ApplicationRepository_New applicationRepository_New;
+	@Inject
+	private AgreementOperationSettingRepository agreementOperationSettingRepository;
+	@Inject
+	private GetAgreementPeriodFromYear getAgreementPeriodFromYear;
+	@Inject
+	private InitDisplayPeriodSwitchSetFinder displayPeriodfinder;
+	@Inject
+	private GetAgreementTimeOfMngPeriod getAgreementTimeOfMngPeriod;
 
 	public ToppageStartupDto startupProcessMob() {
 		String companyID = AppContexts.user().companyId();
@@ -209,6 +226,127 @@ public class ToppageStartupProcessMobFinder {
 		}
 
 		return new DateRangeDto(startDate, endDate);
+	}
+	
+	public ToppageOvertimeData getOvertimeToppage() {
+		String companyID = AppContexts.user().companyId();
+		String employeeID = AppContexts.user().employeeId();
+		Integer closureId = this.getClosureId();
+		List<AgreementTimeToppage> agreementTimeLst = new ArrayList<>();
+		Integer dataStatus = 0;
+		boolean visible = false;
+		SPTopPageSet setting = sPTopPageSetRepository.getTopPageSetByCompanyAndType(companyID, Type.OVERTIME_WORK.value);
+
+		if (setting != null) {
+			visible = setting.getDisplayAtr() == NotUseAtr.USE;
+		}
+		
+		Closure closure = closureRepository.findById(companyID, closureId).get();
+		YearMonth targetMonth = closure.getClosureMonth().getProcessingYm();
+		
+		// [RQ609]ログイン社員のシステム日時点の処理対象年月を取得する
+		InitDisplayPeriodSwitchSetDto rq609 = displayPeriodfinder.targetDateFromLogin();
+		
+		if (closureId == null) {
+			throw new BusinessException("Msg_1134");
+		}
+		
+		// 【NO.333】36協定時間の取得(【NO.333】lấy thời gian hiệp định 36)
+		List<AgreementTimeDetail> listAgreementTimeDetail = getAgreementTime.get(companyID, Arrays.asList(employeeID), targetMonth, ClosureId.valueOf(closureId));
+
+		if (listAgreementTimeDetail.isEmpty()) {
+			throw new RuntimeException("ListAgreementTimeDetailRQ333 Empty");
+		}
+		for (AgreementTimeDetail agreementTimeDetail : listAgreementTimeDetail) {
+			if (agreementTimeDetail.getErrorMessage().isPresent()) {
+				throw new BusinessException(new RawErrorMessage(agreementTimeDetail.getErrorMessage().get()));
+			}
+		}
+		agreementTimeLst.add(new AgreementTimeToppage(String.valueOf(targetMonth), 
+				AgreementTimeOfMonthlyDto.fromAgreementTimeOfMonthly(listAgreementTimeDetail.get(0).getConfirmed().get())));
+		
+		// 過去の時間外労働時間の取得処理
+		int currentOrNextMonth = rq609.getCurrentOrNextMonth();
+		
+		// アルゴリズム「年月を指定して、36協定期間の年度を取得する」を実行する
+		AgreementOperationSetting agreeOpSet = agreementOperationSettingRepository.find(companyID).get();
+		YearMonth yearMonth = closure.getClosureMonth().getProcessingYm();
+		Year year = new Year(yearMonth.year());
+		if (yearMonth.month() < (agreeOpSet.getStartingMonth().value + 1)) {
+			year = new Year(yearMonth.year() - 1);
+		}
+		
+		// 年度から36協定の年月期間を取得
+		YearMonthPeriod yearMonthPeriod = agreeOpSet.getYearMonthPeriod(year, closure, this.getAgreementPeriodFromYear);
+		YearMonthPeriod ymPeriodPast = new YearMonthPeriod(yearMonthPeriod.start(), yearMonth.previousMonth());
+		
+		// Parameter．当月翌月区分をチェックする
+		if(currentOrNextMonth == 1) {
+			if(yearMonthPeriod.start().lessThan(yearMonth)){
+				// [NO.612]年月期間を指定して管理期間の36協定時間を取得する
+				List<AgreementTimeToppage> agreementTimeToppageLst = 
+						getAgreementTimeOfMngPeriod.getAgreementTimeByMonths(Arrays.asList(employeeID), ymPeriodPast).stream()
+						.map(x -> {
+							AgreementTimeOfMonthlyDto agreementTimeOfMonthlyDto = AgreementTimeOfMonthlyDto
+									.fromAgreementTimeOfMonthly(x.getAgreementTime().getAgreementTime());
+							return new AgreementTimeToppage(x.getYearMonth().toString(), agreementTimeOfMonthlyDto);
+						}).collect(Collectors.toList());
+				agreementTimeLst.addAll(agreementTimeToppageLst);
+				dataStatus = AgreementPastStatus.NORMAL.value;
+			} else {
+				dataStatus = AgreementPastStatus.PRESENT.value;
+			}
+		} else {
+			// 【NO.333】36協定時間の取得
+			List<AgreementTimeDetail> listAgreementTimePast = getAgreementTime.get(companyID, Arrays.asList(employeeID), targetMonth, closure.getClosureId());
+			if (listAgreementTimePast.isEmpty()) {
+				throw new RuntimeException("ListAgreementTimeDetailRQ333 Empty");
+			}
+			Optional<AgreementTimeDetail> agreementTimeDetailError = listAgreementTimePast.stream().filter(x -> x.getErrorMessage().isPresent()).findAny();
+			if(agreementTimeDetailError.isPresent()) {
+				dataStatus = AgreementPastStatus.ERROR.value;
+			} else {
+				if(yearMonthPeriod.start().lessThan(targetMonth)) {
+					// // [NO.612]年月期間を指定して管理期間の36協定時間を取得する
+					List<AgreementTimeToppage> agreementTimeToppageLst = 
+							getAgreementTimeOfMngPeriod.getAgreementTimeByMonths(Arrays.asList(employeeID), ymPeriodPast).stream()
+							.map(x -> {
+								AgreementTimeOfMonthlyDto agreementTimeOfMonthlyDto = AgreementTimeOfMonthlyDto
+										.fromAgreementTimeOfMonthly(x.getAgreementTime().getAgreementTime());
+								return new AgreementTimeToppage(x.getYearMonth().toString(), agreementTimeOfMonthlyDto);
+							}).collect(Collectors.toList());
+					agreementTimeLst.addAll(agreementTimeToppageLst);
+					dataStatus = AgreementPastStatus.NORMAL.value;
+				} else {
+					dataStatus = AgreementPastStatus.NORMAL.value;
+				}
+			}
+		}
+		
+		return new ToppageOvertimeData(convertAgreementTimeLst(agreementTimeLst, new YearMonthPeriod(yearMonthPeriod.start(), yearMonth)), dataStatus, visible, targetMonth.v());
+	}
+	
+	// xử lý output với các tháng không có dữ liệu
+	private List<AgreementTimeToppage> convertAgreementTimeLst(List<AgreementTimeToppage> agreementTimeLst, YearMonthPeriod ymPeriodPast) {
+		List<AgreementTimeToppage> convertLst = new ArrayList<>();
+		YearMonth loopYM = ymPeriodPast.start();
+		while(loopYM.lessThanOrEqualTo(ymPeriodPast.end())) {
+			Optional<AgreementTimeToppage> loopItem = getLoopItem(agreementTimeLst, loopYM);
+			if(loopItem.isPresent()) {
+				convertLst.add(loopItem.get());
+			} else {
+				convertLst.add(new AgreementTimeToppage(
+						loopYM.toString(), 
+						new AgreementTimeOfMonthlyDto(0, 0, 0, 0, 0, 0)));
+			}
+			loopYM = loopYM.nextMonth();
+		}
+		convertLst.sort(Comparator.comparing(AgreementTimeToppage::getYearMonth).reversed());
+		return convertLst;
+	}
+	
+	private Optional<AgreementTimeToppage> getLoopItem(List<AgreementTimeToppage> agreementTimeLst, YearMonth yearMonth){
+		return agreementTimeLst.stream().filter(x -> x.yearMonth.equals(yearMonth.toString())).findAny();
 	}
 
 	public ToppageOvertimeHoursDto getDisplayOvertime(int targetMonth) {

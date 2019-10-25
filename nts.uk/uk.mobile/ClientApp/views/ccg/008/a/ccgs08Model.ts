@@ -41,6 +41,7 @@ export class AgreementTimeDetail extends BaseDto {
     super();
     this.tableConfigs = {
       headers: [
+        { label: 'CCGS08_32', key: 'month', html: true },
         { label: 'CCGS08_7', key: 'time1', filter: 'timept' },
         { label: 'CCGS08_8', key: 'time2', filter: 'timept' },
         { label: '', key: 'time3', html: true }
@@ -65,7 +66,7 @@ export class OvertimeLaborInforDto {
     public errorMessage?: String;
 }
 
-class OverTimeInfo {
+export class OverTimeInfo {
   public agreementTime: number;
   public exceptionLimitAlarmTime: number;
   public exceptionLimitErrorTime: number;

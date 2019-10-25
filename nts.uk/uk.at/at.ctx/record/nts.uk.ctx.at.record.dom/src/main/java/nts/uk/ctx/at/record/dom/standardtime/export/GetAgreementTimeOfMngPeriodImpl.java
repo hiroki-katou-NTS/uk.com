@@ -20,6 +20,7 @@ import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettin
 import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 /**
  * 実装：管理期間の36協定時間を取得
@@ -101,5 +102,17 @@ public class GetAgreementTimeOfMngPeriodImpl implements GetAgreementTimeOfMngPer
 		});
 		
 		return agreementTimeList;
+	}
+
+
+	@Override
+	public List<AgreementTimeOfManagePeriod> getAgreementTimeByMonths(List<String> employeeIDLst, YearMonthPeriod yearMonthPeriod) {
+		List<YearMonth> yearMonthLst = new ArrayList<>();
+		YearMonth loopYearMonth = yearMonthPeriod.start();
+		while(loopYearMonth.lessThanOrEqualTo(yearMonthPeriod.end())) {
+			yearMonthLst.add(loopYearMonth);
+			loopYearMonth = loopYearMonth.addMonths(1);
+		}
+		return agreementTimeOfMngPrdRepo.findBySidsAndYearMonths(employeeIDLst, yearMonthLst);
 	}
 }
