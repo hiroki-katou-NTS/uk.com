@@ -767,7 +767,7 @@ export class KdwS03BComponent extends Vue {
         self.$modal(
             'cdls02a',
             {
-                isDisplayClosureSelection: false,
+                isDisplayClosureSelection: true,
                 isShowNoSelectRow: false,
                 selectedCode: selectedCD
             }
