@@ -114,7 +114,7 @@
 								<div data-bind="ntsFormLabel: { required: true, constraint: ''}">#{i18n.getText('JCM007_A222_11')} </div>
 							</div>
 							<!-- A222_12 -->					
-							<div id = "retirementDateId" style="margin-left: 51px" data-bind="ntsDatePicker: {value: retirementDate , dateFormat: 'YYYY/MM/DD', enable : enable_retirementDate }"></div>					
+							<div id = "retirementDateId" style="margin-left: 51px" data-bind="ntsDatePicker: {value: retirementDate , dateFormat: 'YYYY/MM/DD', required : true , enable : enable_retirementDate }"></div>					
 						</div>
 					
 						<div class="line-height flex">  <!-- row 6 -->
@@ -123,7 +123,7 @@
 								<div  data-bind="ntsFormLabel: { required: true, constraint: ''}">#{i18n.getText('JCM007_A222_13')} </div>
 							</div>
 							<!-- A222_14 -->					
-							<div style="margin-left: 51px" data-bind="ntsDatePicker: {value: releaseDate , dateFormat: 'YYYY/MM/DD', enable : enable_releaseDate }"></div>					
+							<div style="margin-left: 51px" data-bind="ntsDatePicker: {value: releaseDate , dateFormat: 'YYYY/MM/DD', required : true , enable : enable_releaseDate }"></div>					
 						</div>
 					
 						<div class="line-height flex">  <!-- row 7 -->
@@ -197,7 +197,7 @@
 									constraint: '',
 									option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
 										resizeable: true,
-										width: '350px',
+										width: '460px',
 									})),
 									enable : enable_retirementRemarks ,
 									readonly: false,
@@ -211,7 +211,7 @@
 							</div>
 	
 							<div class="line-height" style="margin-bottom: 16px;">  <!-- row 12 -->
-								<div style="width: 100%"><hr></hr></div>
+								<div><hr style =" margin-left: 0px ; width: 650px"></hr></div>
 							</div>
 	
 							<div class="line-height flex"> <!-- row 13 -->
@@ -226,7 +226,7 @@
 														constraint: '',
 														option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
 											                resizeable: true,
-											                width: '350px',
+											                width: '460px',
 											            })),
 														enable : enable_retirementReasonVal ,
 														readonly: false,
@@ -242,7 +242,7 @@
 							</div>
 	
 							<div class="line-height" style="margin-bottom: 16px;">  <!-- row 15 -->
-								<div style="width: 100%"><hr></hr></div> <!-- A222_33 -->
+								<div ><hr style =" margin-left: 0px ; width: 650px" ></hr></div> <!-- A222_33 -->
 							</div>
 							
 							<div class="line-height flex">  <!-- row 16 -->
@@ -251,7 +251,7 @@
 									<div data-bind="ntsFormLabel: { required: true, constraint: ''}"> #{i18n.getText('JCM007_A222_34')} </div>
 								</div>
 								<!-- A222_35 -->					
-								<div style="margin-left: 22px;" data-bind="ntsDatePicker: {value: dismissalNoticeDate , dateFormat: 'YYYY/MM/DD', enable : enable_dismissalNoticeDate }"></div>					
+								<div style="margin-left: 22px;" data-bind="ntsDatePicker: {value: dismissalNoticeDate , dateFormat: 'YYYY/MM/DD', required : true , enable : enable_dismissalNoticeDate }"></div>					
 							</div>
 							
 							<div class="line-height flex">  <!-- row 16 -->
@@ -276,7 +276,7 @@
 														constraint: '',
 														option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
 											                resizeable: true,
-											                width: '350px',
+											                width: '460px',
 											            })),
 														enable : enable_reaAndProForDis ,
 														readonly: false,
@@ -304,7 +304,7 @@
 														constraint: '',
 														option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
 											                resizeable: true,
-											                width: '350px',
+											                width: '460px',
 											            })),
 														enable: naturalUnaReasons_enable ,
 														readonly: false,
@@ -325,7 +325,7 @@
 														constraint: '',
 														option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
 											                resizeable: true,
-											                width: '350px',
+											                width: '460px',
 											            })),
 														enable: businessReduction_enable ,
 														readonly: false,
@@ -346,7 +346,7 @@
 														constraint: '',
 														option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
 											                resizeable: true,
-											                width: '350px',
+											                width: '460px',
 											            })),
 														enable: seriousViolationsOrder_enable ,
 														readonly: false,
@@ -367,7 +367,7 @@
 														constraint: '',
 														option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
 											                resizeable: true,
-											                width: '350px',
+											                width: '460px',
 											            })),
 														enable: unauthorizedConduct_enable ,
 														readonly: false,
@@ -388,7 +388,7 @@
 														constraint: '',
 														option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
 											                resizeable: true,
-											                width: '350px',
+											                width: '460px',
 											            })),
 														enable: leaveConsiderableTime_enable ,
 														readonly: false,
@@ -409,7 +409,7 @@
 														constraint: '',
 														option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
 											                resizeable: true,
-											                width: '350px',
+											                width: '460px',
 											            })),
 														enable: other_enable ,
 														readonly: false,

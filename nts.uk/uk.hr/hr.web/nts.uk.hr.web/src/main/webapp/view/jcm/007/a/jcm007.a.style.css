@@ -4,9 +4,10 @@
 }
 
 .infoDetail {
-	overflow-y: scroll;
+	overflow-y: auto;
 	height: 600px !important;
     margin-top: 10px;
+    width: 748px;
 }
 
 #tab-1, #tab-2{
@@ -32,6 +33,7 @@
 	height: 170px;
 	border-radius: 15px;
 	margin-top: 0px;
+	width: 748px;
 }
 
 .header-left{
