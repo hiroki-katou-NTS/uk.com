@@ -71,14 +71,14 @@
         <div class="text-center mt-n2">
           <button type="button" v-bind:class="{'btn-outline-info': showFull, 'btn-info': !showFull}"  v-show="agreementButton"
             style="width: 150px" v-on:click="reverseShowAgreement" class="shadow-none btn rounded-pill">
-            <i v-if="!showFull">
+            <span v-if="!showFull">
               <i class="fas fa-angle-double-down"></i> 
               {{ 'CCGS08_33' | i18n }}
-            </i>
-            <i v-if="showFull">
+            </span>
+            <span v-if="showFull">
               <i class="fas fa-angle-double-up"></i> 
               {{ 'CCGS08_34' | i18n }}
-            </i>
+            </span>
           </button>
         </div>
       </div>
