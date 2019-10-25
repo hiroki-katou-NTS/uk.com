@@ -40,7 +40,6 @@ import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.shared.app.query.workrule.closure.ClosureResultModel;
 import nts.uk.ctx.at.shared.app.query.workrule.closure.WorkClosureQueryProcessor;
-import nts.uk.ctx.at.shared.dom.adapter.dailyperformance.DailyPerformanceAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.PersonEmpBasicInfoImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
@@ -72,9 +71,6 @@ import nts.uk.ctx.sys.portal.dom.smartphonetoppageset.TimeStatusDisplayItem;
 import nts.uk.ctx.sys.portal.dom.smartphonetoppageset.TimeStatusType;
 import nts.uk.ctx.sys.portal.dom.smartphonetoppageset.Type;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootStateRepository;
-import nts.uk.screen.at.app.ktgwidget.KTG002QueryProcessor;
-import nts.uk.screen.at.app.ktgwidget.KTG027QueryProcessor;
-import nts.uk.screen.at.app.ktgwidget.find.OptionalWidgetKtgFinder;
 import nts.uk.screen.at.app.ktgwidget.find.dto.AgreementTimeList36;
 import nts.uk.screen.at.app.ktgwidget.find.dto.AgreementTimeOfMonthlyDto;
 import nts.uk.screen.at.app.ktgwidget.find.dto.DatePeriodDto;
@@ -100,14 +96,14 @@ public class ToppageStartupProcessMobFinder {
 	private SPTopPageSetRepository sPTopPageSetRepository;
 	@Inject
 	private ShareEmploymentAdapter shareEmploymentAdapter;
-	@Inject
-	private KTG002QueryProcessor kTG002QueryProcessor;
-	@Inject
-	private OptionalWidgetKtgFinder ktg029;
+//	@Inject
+//	private KTG002QueryProcessor kTG002QueryProcessor;
+//	@Inject
+//	private OptionalWidgetKtgFinder ktg029;
 	@Inject
 	private ChecksDailyPerformanceErrorRepository checksDailyPerformanceErrorRepo;
-	@Inject
-	private KTG027QueryProcessor kTG027QueryProcessor;
+//	@Inject
+//	private KTG027QueryProcessor kTG027QueryProcessor;
 	@Inject
 	private OptionalWidgetAdapter optionalWidgetAdapter;
 	@Inject
@@ -134,8 +130,8 @@ public class ToppageStartupProcessMobFinder {
 	private ShClosurePub shClosurePub;
 	@Inject
 	private WorkClosureQueryProcessor workClosureQueryProcessor;
-	@Inject
-	private DailyPerformanceAdapter dailyPerformanceAdapter;
+//	@Inject
+//	private DailyPerformanceAdapter dailyPerformanceAdapter;
 	@Inject
 	private ApprovalRootStateRepository approvalRootStateRepository;
 	@Inject
@@ -250,9 +246,12 @@ public class ToppageStartupProcessMobFinder {
 		if (closureId == null) {
 			throw new BusinessException("Msg_1134");
 		}
-		
+		//取得した「処理対象年月List」．締めIDが、ログイン者の締めIDと一致する「締め情報」を取得する
+		YearMonth targetMonth_A = rq609.getListDateProcessed().stream()
+				.filter(c -> c.getClosureID() == closure.getClosureId().value)
+				.collect(Collectors.toList()).get(0).getTargetDate();
 		// 【NO.333】36協定時間の取得(【NO.333】lấy thời gian hiệp định 36)
-		List<AgreementTimeDetail> listAgreementTimeDetail = getAgreementTime.get(companyID, Arrays.asList(employeeID), targetMonth, ClosureId.valueOf(closureId));
+		List<AgreementTimeDetail> listAgreementTimeDetail = getAgreementTime.get(companyID, Arrays.asList(employeeID), targetMonth_A, ClosureId.valueOf(closureId));
 
 		if (listAgreementTimeDetail.isEmpty()) {
 			throw new RuntimeException("ListAgreementTimeDetailRQ333 Empty");
@@ -262,7 +261,7 @@ public class ToppageStartupProcessMobFinder {
 				throw new BusinessException(new RawErrorMessage(agreementTimeDetail.getErrorMessage().get()));
 			}
 		}
-		agreementTimeLst.add(new AgreementTimeToppage(String.valueOf(targetMonth), 
+		agreementTimeLst.add(new AgreementTimeToppage(String.valueOf(targetMonth_A), 
 				AgreementTimeOfMonthlyDto.fromAgreementTimeOfMonthly(listAgreementTimeDetail.get(0).getConfirmed().get())));
 		
 		// 過去の時間外労働時間の取得処理
@@ -296,18 +295,20 @@ public class ToppageStartupProcessMobFinder {
 			} else {
 				dataStatus = AgreementPastStatus.PRESENT.value;
 			}
-		} else {
-			// 【NO.333】36協定時間の取得
-			List<AgreementTimeDetail> listAgreementTimePast = getAgreementTime.get(companyID, Arrays.asList(employeeID), targetMonth, closure.getClosureId());
-			if (listAgreementTimePast.isEmpty()) {
+		} else {//翌月(NextMonth)
+			// 【NO.333】36協定時間の取得: lay data thang hien tai
+			List<AgreementTimeDetail> listAgreementTimeCur = getAgreementTime.get(companyID, Arrays.asList(employeeID), targetMonth, closure.getClosureId());
+			if (listAgreementTimeCur.isEmpty()) {
 				throw new RuntimeException("ListAgreementTimeDetailRQ333 Empty");
 			}
-			Optional<AgreementTimeDetail> agreementTimeDetailError = listAgreementTimePast.stream().filter(x -> x.getErrorMessage().isPresent()).findAny();
+			Optional<AgreementTimeDetail> agreementTimeDetailError = listAgreementTimeCur.stream().filter(x -> x.getErrorMessage().isPresent()).findAny();
 			if(agreementTimeDetailError.isPresent()) {
 				dataStatus = AgreementPastStatus.ERROR.value;
 			} else {
+				agreementTimeLst.add(new AgreementTimeToppage(String.valueOf(targetMonth), 
+						AgreementTimeOfMonthlyDto.fromAgreementTimeOfMonthly(listAgreementTimeCur.get(0).getConfirmed().get())));
 				if(yearMonthPeriod.start().lessThan(targetMonth)) {
-					// // [NO.612]年月期間を指定して管理期間の36協定時間を取得する
+					// // [NO.612]年月期間を指定して管理期間の36協定時間を取得する: lay data thang qua khu
 					List<AgreementTimeToppage> agreementTimeToppageLst = 
 							getAgreementTimeOfMngPeriod.getAgreementTimeByMonths(Arrays.asList(employeeID), ymPeriodPast).stream()
 							.map(x -> {
@@ -323,7 +324,8 @@ public class ToppageStartupProcessMobFinder {
 			}
 		}
 		
-		return new ToppageOvertimeData(convertAgreementTimeLst(agreementTimeLst, new YearMonthPeriod(yearMonthPeriod.start(), yearMonth)), dataStatus, visible, targetMonth.v());
+		return new ToppageOvertimeData(convertAgreementTimeLst(agreementTimeLst, new YearMonthPeriod(yearMonthPeriod.start(), targetMonth_A)),
+				dataStatus, visible, targetMonth_A.v());
 	}
 	
 	// xử lý output với các tháng không có dữ liệu
