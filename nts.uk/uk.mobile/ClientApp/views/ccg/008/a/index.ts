@@ -144,12 +144,6 @@ export class Ccg008AComponent extends Vue {
             }).catch((err: any) => {
                 self.overtime.tableConfigs.loading = false;
                 self.overtime.tableConfigs.noDataMessage = err.errorMessage;
-                let table: any = document.getElementsByClassName('overtime-working-hours')[0];
-                table.style.border = 'none';
-                let tbody: any = table.getElementsByTagName('tbody')[1];
-                tbody.style.border = 'none';
-                let td: any =tbody.getElementsByTagName('tr')[0].getElementsByTagName('td')[0];
-                td.style.border = 'none';
             });
         }
     }

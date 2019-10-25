@@ -5,6 +5,10 @@ import { KdwS03DComponent } from 'views/kdw/s03/d';
 import { Kdl001Component } from 'views/kdl/001';
 import { KDL002Component } from 'views/kdl/002';
 import { Cdl008AComponent } from 'views/cdl/s08/a';
+import { CdlS03AComponent } from 'views/cdl/s03/a';
+import { CdlS04AComponent } from 'views/cdl/s04/a';
+import { CdlS02AComponent } from 'views/cdl/s02/a';
+import { CdlS24AComponent } from 'views/cdl/s24/a';
 
 @component({
     name: 'kdws03b',
@@ -67,7 +71,11 @@ import { Cdl008AComponent } from 'views/cdl/s08/a';
         'kdws03d': KdwS03DComponent,
         'kdls01': Kdl001Component,
         'kdls02': KDL002Component,
-        'cdls08a': Cdl008AComponent
+        'cdls08a': Cdl008AComponent,
+        'cdls03a': CdlS03AComponent,
+        'cdls04a': CdlS04AComponent,
+        'cdls02a': CdlS02AComponent,
+        'cdls24a': CdlS24AComponent 
     },
 })
 export class KdwS03BComponent extends Vue {
@@ -93,20 +101,14 @@ export class KdwS03BComponent extends Vue {
     public screenData: any = {};
     public screenData1: any = {};
     private masterData: any = {
-        workType: [],
-        workTime: [],
         servicePlace: [],
         reason: [],
         workPlace: [],
-        classification: [],
-        possition: [],
-        employment: [],
         lstDoWork: [],
         lstCalc: [],
         lstCalcCompact: [],
         lstReasonGoOut: [],
-        lstTimeLimit: [],
-        businessType: []
+        lstTimeLimit: []
     };
     private masterDialogParam: Array<number> = [];
     private oldData: any = [];
@@ -278,9 +280,13 @@ export class KdwS03BComponent extends Vue {
 
     private createMasterData(data: any) {
         let self = this;
-        self.masterData.workTime = data[MasterType.KDLS01_WorkTime];
-        self.masterData.workType = data[MasterType.KDLS02_WorkType];
-        self.masterData.workPlace = data[MasterType.CDLS08_WorkPlace];
+        self.masterData[MasterType.KDLS01_WorkTime] = data[MasterType.KDLS01_WorkTime];
+        self.masterData[MasterType.KDLS02_WorkType] = data[MasterType.KDLS02_WorkType];
+        self.masterData[MasterType.CDLS08_WorkPlace] = data[MasterType.CDLS08_WorkPlace];
+        self.masterData[MasterType.CDLS03_Classification] = data[MasterType.CDLS03_Classification];
+        self.masterData[MasterType.CDLS04_Possition] = data[MasterType.CDLS04_Possition];
+        self.masterData[MasterType.CDLS02_Employment] = data[MasterType.CDLS02_Employment];
+        self.masterData[MasterType.CDLS24_BusinessType] = data[MasterType.CDLS24_BusinessType];
         // tạo dữ liệu conbo box tạm thời cho các dialog chưa dc làm
         _.forEach(data[MasterType.KDLS10_ServicePlace], (o) => {
             self.masterData.servicePlace.push({ code: o.code, name: o.name });
@@ -293,30 +299,6 @@ export class KdwS03BComponent extends Vue {
         });
         if (!_.find(self.masterData.reason, (item) => item.code == '')) {
             self.masterData.reason.push({ code: '', name: 'なし' });
-        }
-        _.forEach(data[MasterType.KCPS02_Classification], (o) => {
-            self.masterData.classification.push({ code: o.code, name: o.name });
-        });
-        if (!_.find(self.masterData.classification, (item) => item.code == '')) {
-            self.masterData.classification.push({ code: '', name: 'なし' });
-        }
-        _.forEach(data[MasterType.KCPS03_Possition], (o) => {
-            self.masterData.possition.push({ code: o.code, name: o.name });
-        });
-        if (!_.find(self.masterData.possition, (item) => item.code == '')) {
-            self.masterData.possition.push({ code: '', name: 'なし' });
-        }
-        _.forEach(data[MasterType.KCPS01_Employment], (o) => {
-            self.masterData.employment.push({ code: o.code, name: o.name });
-        });
-        if (!_.find(self.masterData.employment, (item) => item.code == '')) {
-            self.masterData.employment.push({ code: '', name: 'なし' });
-        }
-        _.forEach(data[MasterType.KCP001_BusinessType], (o) => {
-            self.masterData.businessType.push({ code: o.code, name: o.name });
-        });
-        if (!_.find(self.masterData.businessType, (item) => item.code == '')) {
-            self.masterData.businessType.push({ code: '', name: 'なし' });
         }
         _.forEach(self.screenData1, (value, key) => {
             let attendanceItem = self.getAttendanceItem(key);
@@ -337,33 +319,21 @@ export class KdwS03BComponent extends Vue {
                         rowData.comboLst.push({ code: value, name: 'マスタ未登録' });
                     }
                     break;
-                case MasterType.KCPS02_Classification:
-                    rowData.comboLst = self.masterData.classification;
-                    if (!_.find(rowData.comboLst, (item) => item.code == value)) {
-                        rowData.comboLst.push({ code: value, name: 'マスタ未登録' });
-                    }
-                    break;
-                case MasterType.KCPS03_Possition:
-                    rowData.comboLst = self.masterData.possition;
-                    if (!_.find(rowData.comboLst, (item) => item.code == value)) {
-                        rowData.comboLst.push({ code: value, name: 'マスタ未登録' });
-                    }
-                    break;
-                case MasterType.KCPS01_Employment:
-                    rowData.comboLst = self.masterData.employment;
-                    if (!_.find(rowData.comboLst, (item) => item.code == value)) {
-                        rowData.comboLst.push({ code: value, name: 'マスタ未登録' });
-                    }
-                    break;
-                case MasterType.KCP001_BusinessType:
-                    rowData.comboLst = self.masterData.businessType;
-                    if (!_.find(rowData.comboLst, (item) => item.code == value)) {
-                        rowData.comboLst.push({ code: value, name: 'マスタ未登録' });
-                    }
-                    break;
                 default: break;
             }
         });
+    }
+
+    public isAvaiableDialog(key: string) {
+        let self = this;
+
+        return self.getItemMasterType(key) == MasterType.KDLS02_WorkType ||
+                self.getItemMasterType(key) == MasterType.KDLS01_WorkTime || 
+                self.getItemMasterType(key) == MasterType.CDLS08_WorkPlace || 
+                self.getItemMasterType(key) == MasterType.CDLS03_Classification ||
+                self.getItemMasterType(key) == MasterType.CDLS04_Possition ||
+                self.getItemMasterType(key) == MasterType.CDLS02_Employment ||
+                self.getItemMasterType(key) == MasterType.CDLS24_BusinessType;
     }
 
     public getRowComboBox(key: string) {
@@ -461,30 +431,11 @@ export class KdwS03BComponent extends Vue {
         let rowData = _.find(self.params.rowData.rowData, (rowData: RowData) => rowData.key == key);
         let attendanceItem = self.getAttendanceItem(key);
         let item: any = {};
-        switch (attendanceItem.typeGroup) {
-            case MasterType.KDLS02_WorkType:
-                item = _.find(self.masterData.workType, (o) => o.code == rowData.value0);
-                if (item) {
-                    return item.name;
-                } else {
-                    return rowData.value;
-                }
-            case MasterType.KDLS01_WorkTime:
-                item = _.find(self.masterData.workTime, (o) => o.code == rowData.value0);
-                if (item) {
-                    return item.name;
-                } else {
-                    return rowData.value;
-                }
-            case MasterType.CDLS08_WorkPlace:
-                item = _.find(self.masterData.workPlace, (o) => o.code == rowData.value0);
-                if (item) {
-                    return item.name;
-                } else {
-                    return rowData.value;
-                }
-            default:
-                break;
+        item = _.find(self.masterData[attendanceItem.typeGroup], (o) => o.code == rowData.value0);
+        if (item) {
+            return item.name;
+        } else {
+            return rowData.value;
         }
     }
 
@@ -673,6 +624,10 @@ export class KdwS03BComponent extends Vue {
             case MasterType.KDLS02_WorkType: self.openKDLS02(key); break;
             case MasterType.KDLS01_WorkTime: self.openKDLS01(key); break;
             case MasterType.CDLS08_WorkPlace: self.openCDLS08(key); break;
+            case MasterType.CDLS03_Classification: self.openCDLS03(key); break;
+            case MasterType.CDLS04_Possition: self.openCDLS04(key); break;
+            case MasterType.CDLS02_Employment: self.openCDLS02(key); break;
+            case MasterType.CDLS24_BusinessType: self.openCDLS24(key); break;
             default: break;
         }
     }
@@ -681,7 +636,7 @@ export class KdwS03BComponent extends Vue {
         let self = this;
         let rowData = _.find(self.params.rowData.rowData, (o) => o.key == key);
         let selectedCD = self.screenData[0][key];
-        let workTypeCDLst = _.map(self.masterData.workType, (o) => o.code);
+        let workTypeCDLst = _.map(self.masterData[MasterType.KDLS02_WorkType], (o) => o.code);
         self.$modal(
             'kdls02',
             {
@@ -696,7 +651,7 @@ export class KdwS03BComponent extends Vue {
             if (data) {
                 self.screenData[0][key] = data.selectedWorkType.workTypeCode;
                 rowData.value0 = data.selectedWorkType.workTypeCode;
-                let result = _.find(self.masterData.workType, (o) => o.code == rowData.value0);
+                let result = _.find(self.masterData[MasterType.KDLS02_WorkType], (o) => o.code == rowData.value0);
                 if (result) {
                     rowData.value = result.name;
                 } else {
@@ -711,7 +666,7 @@ export class KdwS03BComponent extends Vue {
         let self = this;
         let rowData = _.find(self.params.rowData.rowData, (o) => o.key == key);
         let selectedCD = self.screenData[0][key];
-        let workTimeCDLst = _.map(self.masterData.workTime, (o) => o.code);
+        let workTimeCDLst = _.map(self.masterData[MasterType.KDLS01_WorkTime], (o) => o.code);
         self.$modal(
             'kdls01',
             {
@@ -724,7 +679,7 @@ export class KdwS03BComponent extends Vue {
             if (data) {
                 self.screenData[0][key] = data.selectedWorkTime.code;
                 rowData.value0 = data.selectedWorkTime.code;
-                let result = _.find(self.masterData.workTime, (o) => o.code == rowData.value0);
+                let result = _.find(self.masterData[MasterType.KDLS01_WorkTime], (o) => o.code == rowData.value0);
                 if (result) {
                     rowData.value = result.name;
                 } else {
@@ -739,7 +694,7 @@ export class KdwS03BComponent extends Vue {
         let self = this;
         let id = '';
         let rowData = _.find(self.params.rowData.rowData, (o) => o.key == key);
-        let selectedItem: any = _.find(self.masterData.workPlace, (o) => o.code == self.screenData[0][key]);
+        let selectedItem: any = _.find(self.masterData[MasterType.CDLS08_WorkPlace], (o) => o.code == self.screenData[0][key]);
         if (!_.isUndefined(selectedItem)) {
             id = selectedItem.id;
         }
@@ -759,19 +714,93 @@ export class KdwS03BComponent extends Vue {
             }
         ).then((data: any) => {
             if (data) {
-                let selectedWkp = _.find(self.masterData.workPlace, (o) => o.id == data.workplaceId);
-                if (selectedWkp) {
-                    self.screenData[0][key] = selectedWkp.code;
-                    rowData.value0 = selectedWkp.code;
-                    rowData.value = selectedWkp.name;
-                } else {
-                    self.screenData[0][key] = '';
-                    rowData.value0 = '';
-                    rowData.value = '選択なし';
-                }
+                self.screenData[0][key] = data.code;
+                rowData.value0 = data.code;
+                rowData.value = data.name;
             }
-
-            return 0;
+        });
+    }
+    
+    private openCDLS03(key: string) {
+        let self = this;
+        let rowData = _.find(self.params.rowData.rowData, (o) => o.key == key);
+        let selectedCD = self.screenData[0][key];
+        self.$modal(
+            'cdls03a',
+            {
+                isShowNoSelectRow: false,
+                selectedCode: selectedCD
+            }
+        ).then((data: any) => {
+            if (data) {
+                self.screenData[0][key] = data.code;
+                rowData.value0 = data.code;
+                rowData.value = data.name;
+            }
+        });
+    }
+    
+    private openCDLS04(key: string) {
+        let self = this;
+        let rowData = _.find(self.params.rowData.rowData, (o) => o.key == key);
+        let selectedCD = self.screenData[0][key];
+        self.$modal(
+            'cdls04a',
+            {
+                isShowNoSelectRow: false,
+                selectedCode: selectedCD,
+                date: self.params.date
+            }
+        ).then((data: any) => {
+            if (data) {
+                self.screenData[0][key] = data.code;
+                rowData.value0 = data.code;
+                rowData.value = data.name;
+            }
+        });
+    }
+    
+    private openCDLS02(key: string) {
+        let self = this;
+        let rowData = _.find(self.params.rowData.rowData, (o) => o.key == key);
+        let selectedCD = self.screenData[0][key];
+        self.$modal(
+            'cdls02a',
+            {
+                isDisplayClosureSelection: false,
+                isShowNoSelectRow: false,
+                selectedCode: selectedCD
+            }
+        ).then((data: any) => {
+            if (data == 'back') {
+                return;
+            }
+            if (data) {
+                self.screenData[0][key] = data.code;
+                rowData.value0 = data.code;
+                rowData.value = data.name;
+            }
+        });
+    }
+    
+    private openCDLS24(key: string) {
+        let self = this;
+        let rowData = _.find(self.params.rowData.rowData, (o) => o.key == key);
+        let selectedCD = self.screenData[0][key];
+        self.$modal(
+            'cdls24a',
+            {
+                selectedCode: selectedCD
+            }
+        ).then((data: any) => {
+            if (data == 'back') {
+                return;
+            }
+            if (data) {
+                self.screenData[0][key] = data.code;
+                rowData.value0 = data.code;
+                rowData.value = data.name;
+            }
         });
     }
 
@@ -792,6 +821,8 @@ export class KdwS03BComponent extends Vue {
         }
         let registerParam = self.createRegisterParam();
         if (!self.isChangeDataRegister()) {
+            self.$modal.error('Msg_1569');
+            
             return;
         }
         self.$mask('show');
@@ -1115,15 +1146,15 @@ export enum MasterType {
     KDLS10_ServicePlace = 3,
     KDLS32_Reason = 4,
     CDLS08_WorkPlace = 5,
-    KCPS02_Classification = 6,
-    KCPS03_Possition = 7,
-    KCPS01_Employment = 8,
+    CDLS03_Classification = 6,
+    CDLS04_Possition = 7,
+    CDLS02_Employment = 8,
     DoWork = 9,
     Calc = 10,
     ReasonGoOut = 11,
     Remasks = 12,
     TimeLimit = 13,
-    KCP001_BusinessType = 14
+    CDLS24_BusinessType = 14
 }
 
 interface RowData {
