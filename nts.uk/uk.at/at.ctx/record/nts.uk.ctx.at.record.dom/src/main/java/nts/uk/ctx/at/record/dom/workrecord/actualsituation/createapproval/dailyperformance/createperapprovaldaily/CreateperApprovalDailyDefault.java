@@ -32,102 +32,74 @@ public class CreateperApprovalDailyDefault implements CreateperApprovalDailyServ
 
 	@Inject
 	private CreateDailyApproverAdapter createDailyApproverAdapter;
-	
+
 	@Inject
 	private ManagedParallelWithContext parallel;
-	
+
 	@Inject
 	private AppInterrupDailyRepository appInterrupDailyRepository;
 
 	@Override
-	public OutputCreatePerApprovalDaily createperApprovalDaily(String companyId, String executionId, List<String> employeeIDs,
-			int processExecType, Integer createNewEmp, GeneralDate startDateClosure,GeneralDate endDateClosure) {
+	public OutputCreatePerApprovalDaily createperApprovalDaily(String companyId, String executionId,
+			List<String> employeeIDs, int processExecType, Integer createNewEmp, GeneralDate startDateClosure,
+			GeneralDate endDateClosure) {
 		AtomicBoolean checkStop = new AtomicBoolean(false);
 		/** パラメータ.実行種別をチェック */
-		// 通常実行の場合 : processExecType = 0(通常実行)
-		if (!employeeIDs.isEmpty()) {
-			if (processExecType == 0) {
-				// RequestList211
-				List<AffCompanyHistImport> listAffCompanyHistImport = syCompanyRecordAdapter
-						.getAffCompanyHistByEmployee(employeeIDs,
-								new DatePeriod(startDateClosure, GeneralDate.today()));
-				this.parallel.forEach(employeeIDs, employeeID -> {
-					if(checkStop.get()) return;
-					// 年月日　←「システム日付の前日」
-					GeneralDate ymd = GeneralDate.today().addDays(-1);
-					if (createNewEmp == 1) {	
-						/** Imported「所属会社履歴（社員別）」を取得する(lấy thông tin Imported「所属会社履歴（社員別）」) */
-						AffCompanyHistImport affComHist = new AffCompanyHistImport();
-						boolean checkAffComHist = false;
-						for (AffCompanyHistImport affCompanyHistImport : listAffCompanyHistImport) {
-							if (affCompanyHistImport.getEmployeeId().equals(employeeID)) {
-								affComHist = affCompanyHistImport;
-								checkAffComHist = true;
-								break;
-							}
-						}
-						// 年月日 ← 取得した「所属会社履歴（社員別）.所属期間.開始日」
-						if (checkAffComHist) {
-							if(!affComHist.getLstAffComHistItem().isEmpty()) {
-								ymd = affComHist.getLstAffComHistItem().get(0).getDatePeriod().start();
-							}
-						}
+		// 通常実行の場合 : processExecType = 0(通常実行) - 再作成の場合 : processExecType = 1(再作成)
+		// RequestList211
+		List<AffCompanyHistImport> listAffCompanyHistImport = syCompanyRecordAdapter
+				.getAffCompanyHistByEmployee(employeeIDs, new DatePeriod(startDateClosure, GeneralDate.today()));
+		this.parallel.forEach(employeeIDs, employeeID -> {
+			if (checkStop.get())
+				return;
+			// 年月日 ←「システム日付の前日」
+			GeneralDate ymd = GeneralDate.today().addDays(-1);
+			if (createNewEmp == 1) {
+				/** Imported「所属会社履歴（社員別）」を取得する(lấy thông tin Imported「所属会社履歴（社員別）」) */
+				AffCompanyHistImport affComHist = new AffCompanyHistImport();
+				boolean checkAffComHist = false;
+				for (AffCompanyHistImport affCompanyHistImport : listAffCompanyHistImport) {
+					if (affCompanyHistImport.getEmployeeId().equals(employeeID)) {
+						affComHist = affCompanyHistImport;
+						checkAffComHist = true;
+						break;
 					}
-					if(checkStop.get()) return;
-					/** アルゴリズム「指定社員の中間データを作成する」を実行する */
-					AppRootInsContentFnImport appRootInsContentFnImport = createDailyApproverAdapter
-							.createDailyApprover(employeeID, 1, ymd,startDateClosure);
-
-					boolean flagError = appRootInsContentFnImport.getErrorFlag().intValue() == 0 ? false:true;
-					String errorMessage = appRootInsContentFnImport.getErrorMsgID();
-					// 取得したエラーフラグ != エラーなし
-					if (flagError) {
-						/** ドメインモデル「承認中間データエラーメッセージ情報（日別実績）」を追加する */
-						AppDataInfoDaily appDataInfoDaily = new AppDataInfoDaily(employeeID, executionId,
-								new ErrorMessageRC(TextResource.localize(errorMessage)));
-						appDataInfoDailyRepo.addAppDataInfoDaily(appDataInfoDaily);
-					}
-					if(checkStop.get()) return;
-					//ドメインモデル「承認中間データ中断管理（日別実績）」を取得する
-					Optional<AppInterrupDaily> appInterrupDaily = appInterrupDailyRepository.getAppInterrupDailyByID(executionId);
-					if(appInterrupDaily.isPresent() && appInterrupDaily.get().isSuspendedState()) {
-						checkStop.set(true);
-						return;
-					}
-						
-				}); // end for listEmployee
-				if(checkStop.get()) {
-					return new OutputCreatePerApprovalDaily(false, true);
 				}
-			} else { // 再作成の場合 : processExecType = 1(再作成)
-				this.parallel.forEach(employeeIDs, employeeID -> {
-					/** アルゴリズム「指定社員の中間データを作成する」を実行する */
-					if(checkStop.get()) return;
-					AppRootInsContentFnImport appRootInsContentFnImport = createDailyApproverAdapter
-							.createDailyApprover(employeeID, 1,endDateClosure, startDateClosure);
-
-					boolean flagError = appRootInsContentFnImport.getErrorFlag().intValue() == 0 ? false:true;
-					String errorMessage = appRootInsContentFnImport.getErrorMsgID();
-					if(checkStop.get()) return;
-					if (flagError) {
-						/** ドメインモデル「承認中間データエラーメッセージ情報（日別実績）」を追加する */
-						AppDataInfoDaily appDataInfoDaily = new AppDataInfoDaily(employeeID, executionId,
-								new ErrorMessageRC(TextResource.localize(errorMessage)));
-						appDataInfoDailyRepo.addAppDataInfoDaily(appDataInfoDaily);
+				// 年月日 ← 取得した「所属会社履歴（社員別）.所属期間.開始日」
+				if (checkAffComHist) {
+					if (!affComHist.getLstAffComHistItem().isEmpty()) {
+						ymd = affComHist.getLstAffComHistItem().get(0).getDatePeriod().start();
 					}
-					if(checkStop.get()) return;
-					//ドメインモデル「承認中間データ中断管理（日別実績）」を取得する
-					Optional<AppInterrupDaily> appInterrupDaily = appInterrupDailyRepository.getAppInterrupDailyByID(executionId);
-					if(appInterrupDaily.isPresent() && appInterrupDaily.get().isSuspendedState()) {
-						checkStop.set(true);
-						return;
-					}
-				});
-				
-				if(checkStop.get()) {
-					return new OutputCreatePerApprovalDaily(false, true);
 				}
 			}
+			if (checkStop.get())
+				return;
+			/** アルゴリズム「指定社員の中間データを作成する」を実行する */
+			AppRootInsContentFnImport appRootInsContentFnImport = createDailyApproverAdapter
+					.createDailyApprover(employeeID, 1, ymd, startDateClosure);
+
+			boolean flagError = appRootInsContentFnImport.getErrorFlag().intValue() == 0 ? false : true;
+			String errorMessage = appRootInsContentFnImport.getErrorMsgID();
+			// 取得したエラーフラグ != エラーなし
+			if (flagError) {
+				/** ドメインモデル「承認中間データエラーメッセージ情報（日別実績）」を追加する */
+				AppDataInfoDaily appDataInfoDaily = new AppDataInfoDaily(employeeID, executionId,
+						new ErrorMessageRC(TextResource.localize(errorMessage)));
+				appDataInfoDailyRepo.addAppDataInfoDaily(appDataInfoDaily);
+			}
+			if (checkStop.get())
+				return;
+			// ドメインモデル「承認中間データ中断管理（日別実績）」を取得する
+			Optional<AppInterrupDaily> appInterrupDaily = appInterrupDailyRepository
+					.getAppInterrupDailyByID(executionId);
+			if (appInterrupDaily.isPresent() && appInterrupDaily.get().isSuspendedState()) {
+				checkStop.set(true);
+				return;
+			}
+
+		}); // end for listEmployee
+		if (checkStop.get()) {
+			return new OutputCreatePerApprovalDaily(false, true);
 		}
 
 		/** ドメインモデル「承認中間データエラーメッセージ情報（日別実績）」を取得する */
