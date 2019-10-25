@@ -11,6 +11,7 @@ import javax.inject.Inject;
 import nts.uk.ctx.hr.develop.dom.databeforereflecting.RetirementInformation;
 import nts.uk.ctx.hr.develop.dom.databeforereflecting.service.RetirementInformationService;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.i18n.TextResource;
 
 @Stateless
 public class DatabeforereflectingFinder {
@@ -53,10 +54,8 @@ public class DatabeforereflectingFinder {
 			obj.companyCode = i.companyCode;
 			obj.workId = i.workId;
 			obj.workName = i.workName;
-			obj.notificationCategory = i.notificationCategory;
 			obj.inputDate = i.inputDate;
 			obj.pendingFlag = i.pendingFlag;
-			obj.status = i.status;
 			obj.histId_Refer = i.histId_Refer;
 			obj.releaseDate = i.releaseDate;
 			obj.pId = i.pId;
@@ -84,6 +83,20 @@ public class DatabeforereflectingFinder {
 			obj.naturalUnaReasons_4Val = i.naturalUnaReasons_4Val;
 			obj.naturalUnaReasons_5Val = i.naturalUnaReasons_5Val;
 			obj.naturalUnaReasons_6Val = i.naturalUnaReasons_6Val;
+			if (i.status == 0) {
+				obj.status = "";
+			} else if (i.status == 1) {
+				obj.status = TextResource.localize("JCM007_A3_2");
+			} else if (i.status == 2) {
+				obj.status = TextResource.localize("JCM007_A3_3");
+			}
+			
+			if (i.notificationCategory == 0) {
+				obj.notificationCategory = "";
+			} else if (i.notificationCategory == 1) {
+				obj.notificationCategory = TextResource.localize("JCM007_A3_1");
+			}
+			
 			return obj;
 		}).collect(Collectors.toList());
 

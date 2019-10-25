@@ -1,7 +1,6 @@
 package nts.uk.ctx.hr.develop.dom.databeforereflecting.service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,9 +29,19 @@ public class DataBeforeReflectingPerInfoService {
 	}
 	
 	// 個人情報反映前データの追加
-	public void AddDataBeforeReflectingPerInfo (DataBeforeReflectingPerInfo domain) {
+	public void addDataBeforeReflectingPerInfo (DataBeforeReflectingPerInfo domain) {
 		List<DataBeforeReflectingPerInfo> listDomain = new ArrayList<DataBeforeReflectingPerInfo>();
 		listDomain.add(domain);
 		repo.addData(listDomain);
+	}
+
+	public void updateDataBeforeReflectingPerInfo(DataBeforeReflectingPerInfo domain) {
+		List<DataBeforeReflectingPerInfo> listDomain = new ArrayList<DataBeforeReflectingPerInfo>();
+		listDomain.add(domain);
+		repo.updateData(listDomain);
+	}
+
+	public void removeDataBeforeReflectingPerInfo(String histId) {
+		repo.deleteDataByHistId(histId);
 	}
 }

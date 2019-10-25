@@ -57,12 +57,11 @@ public class JpaDataBeforeReflectingRepositoryImpl extends JpaRepository impleme
 
 		listDomain.forEach(dm -> {
 			String histId = dm.getHistoryId();
-			Optional<PreReflecData> entityOpt = this.queryProxy().query(SELECT_BY_HIST_ID, PreReflecData.class)
-					.setParameter("histId", histId).getSingle();
+			Optional<PreReflecData> entityOpt = this.queryProxy().find(new PreReflecDataPk(histId), PreReflecData.class);
 			if (entityOpt.isPresent()) {
 				// Update entity
 				PreReflecData entity = entityOpt.get();
-				toEntity(dm, entity);
+				updateEntity(dm, entity);
 				this.commandProxy().update(entity);
 				System.out.println("Update entity Success - " + listDomain.indexOf(dm));
 
@@ -80,8 +79,7 @@ public class JpaDataBeforeReflectingRepositoryImpl extends JpaRepository impleme
 
 		listDomain.forEach(dm -> {
 			String histId = dm.getHistoryId();
-			Optional<PreReflecData> entityOpt = this.queryProxy().query(SELECT_BY_HIST_ID, PreReflecData.class)
-					.setParameter("histId", histId).getSingle();
+			Optional<PreReflecData> entityOpt = this.queryProxy().find(new PreReflecDataPk(histId), PreReflecData.class);
 			if (entityOpt.isPresent()) {
 				PreReflecDataPk pk = new PreReflecDataPk(dm.getHistoryId());
 				this.commandProxy().remove(PreReflecData.class, pk);
@@ -95,8 +93,7 @@ public class JpaDataBeforeReflectingRepositoryImpl extends JpaRepository impleme
 
 	@Override
 	public void deleteDataByHistId(String histId) {
-		Optional<PreReflecData> entityOpt = this.queryProxy().query(SELECT_BY_HIST_ID, PreReflecData.class)
-				.setParameter("histId", histId).getSingle();
+		Optional<PreReflecData> entityOpt = this.queryProxy().find(new PreReflecDataPk(histId), PreReflecData.class);
 		if (entityOpt.isPresent()) {
 			PreReflecDataPk pk = new PreReflecDataPk(histId);
 			this.commandProxy().remove(PreReflecData.class, pk);
@@ -173,6 +170,37 @@ public class JpaDataBeforeReflectingRepositoryImpl extends JpaRepository impleme
 				.collect(Collectors.toList());
 
 		return listDomain;
+	}
+	
+	private void updateEntity(DataBeforeReflectingPerInfo domain, PreReflecData entity) {
+		
+		entity.stattus = domain.stattus.value;
+		entity.date_01 = domain.date_01; // retirementDate
+		entity.releaseDate = domain.releaseDate;
+		entity.select_code_01 = domain.select_code_01; // retirementCategory
+		entity.select_code_02 = domain.select_code_02; // retirementCategory
+		entity.select_code_03 = domain.select_code_03; // retirementReasonCtgCode1
+		entity.select_name_01 = domain.select_name_01; // retirementReasonCtgName1
+		entity.select_name_02 = domain.select_name_02; // retirementReasonCtgName2
+		entity.select_name_03 = domain.select_name_03; // retirementReasonCtgName2
+		entity.str_01 = domain.str_01; // retirementRemarks
+		entity.str_02 = domain.str_02; // retirementReasonVal
+		entity.date_02 = domain.date_02; // dismissalNoticeDate
+		entity.date_03 = domain.date_03; // dismissalNoticeDateAllow
+		entity.str_03 = domain.str_03;  // reaAndProForDis
+		
+		entity.int_01 = domain.int_01;
+		entity.int_02 = domain.int_02;
+		entity.int_03 = domain.int_03;
+		entity.int_04 = domain.int_04;
+		entity.int_05 = domain.int_05;
+		entity.int_06 = domain.int_06;
+		entity.str_04 = domain.str_04;
+		entity.str_05 = domain.str_05;
+		entity.str_06 = domain.str_06;
+		entity.str_07 = domain.str_07;
+		entity.str_08 = domain.str_08;
+		entity.str_09 = domain.str_09;
 	}
 
 	private PreReflecData toEntity(DataBeforeReflectingPerInfo domain, PreReflecData entity) {

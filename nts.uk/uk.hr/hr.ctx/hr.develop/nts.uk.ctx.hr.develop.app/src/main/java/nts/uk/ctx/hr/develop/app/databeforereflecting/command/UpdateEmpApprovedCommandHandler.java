@@ -8,14 +8,13 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.hr.develop.dom.databeforereflecting.RetirementCategory;
 import nts.uk.ctx.hr.develop.dom.databeforereflecting.RetirementInformation;
 import nts.uk.ctx.hr.develop.dom.databeforereflecting.service.RetirementInformationService;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class RegisterNewEmpCommandHandler extends CommandHandler<DataBeforeReflectCommand> {
+public class UpdateEmpApprovedCommandHandler extends CommandHandler<DataBeforeReflectCommand> {
 
 	@Inject
 	private RetirementInformationService retirementInformationService;
@@ -26,15 +25,16 @@ public class RegisterNewEmpCommandHandler extends CommandHandler<DataBeforeRefle
 	
 	@Override
 	protected void handle(CommandHandlerContext<DataBeforeReflectCommand> context) {
+		
 		DataBeforeReflectCommand command = context.getCommand();
 		RetirementInformation domainObj = convertDataToDomainObj(command);
-		retirementInformationService.addRetireInformation(domainObj);
+		retirementInformationService.updateRetireInformation(domainObj);
 	}
 	
-	private RetirementInformation convertDataToDomainObj(DataBeforeReflectCommand command){
+private RetirementInformation convertDataToDomainObj(DataBeforeReflectCommand command){
 		
 		RetirementInformation domainObj = new RetirementInformation();
-		domainObj.historyId = IdentifierUtil.randomUniqueId();
+		domainObj.historyId = command.historyId;
 		domainObj.contractCode =  AppContexts.user().contractCode();
 		domainObj.companyId =  AppContexts.user().companyId();
 		domainObj.companyCode =  AppContexts.user().companyCode();

@@ -15,6 +15,8 @@ import javax.ws.rs.core.MediaType;
 import nts.uk.ctx.hr.develop.app.databeforereflecting.command.DataBeforeReflectCommand;
 import nts.uk.ctx.hr.develop.app.databeforereflecting.command.PreCheckCommandHandler;
 import nts.uk.ctx.hr.develop.app.databeforereflecting.command.RegisterNewEmpCommandHandler;
+import nts.uk.ctx.hr.develop.app.databeforereflecting.command.RemoveCommandHandler;
+import nts.uk.ctx.hr.develop.app.databeforereflecting.command.UpdateEmpApprovedCommandHandler;
 import nts.uk.ctx.hr.develop.app.databeforereflecting.find.CheckStatusRegistration;
 import nts.uk.ctx.hr.develop.app.databeforereflecting.find.DataBeforeReflectDto;
 import nts.uk.ctx.hr.develop.app.databeforereflecting.find.DatabeforereflectingFinder;
@@ -31,6 +33,12 @@ public class DataBeforeReflectingPerInfoWS {
 	
 	@Inject
 	private RegisterNewEmpCommandHandler addCommand;
+	
+	@Inject
+	private UpdateEmpApprovedCommandHandler updateCommnad;
+	
+	@Inject
+	private  RemoveCommandHandler removeCommnad;
 	
 	@Inject
 	private PreCheckCommandHandler preCheck;
@@ -62,13 +70,13 @@ public class DataBeforeReflectingPerInfoWS {
 
 	@POST
 	@Path("/update")
-	public void update() {
-		
+	public void update(DataBeforeReflectCommand command) {
+		this.updateCommnad.handle(command);
 	}
 
 	@POST
-	@Path("/remove")
-	public void remove() {
-		
+	@Path("/remove/{hisId}")
+	public void remove(@PathParam("hisId") String hisId) {
+		this.removeCommnad.remove(hisId);
 	}
 }

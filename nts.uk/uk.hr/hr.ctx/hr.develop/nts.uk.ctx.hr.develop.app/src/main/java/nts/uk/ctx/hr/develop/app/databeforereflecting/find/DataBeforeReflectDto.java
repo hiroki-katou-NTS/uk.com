@@ -51,11 +51,11 @@ public class DataBeforeReflectDto {
 	// 入力日
 	public GeneralDate inputDate;
 
-	// ステータス
-	public int status;
+	// ステータス {0 : '', 1 : '承認待ち', 2 : '反映待ち'}
+	public String status;
 	
-	// 届出区分
-	public int notificationCategory;
+	// 届出区分 {0 : '', 1 : '有'}
+	public String notificationCategory;
 
 	// 退職日
 	public GeneralDateTime retirementDate;

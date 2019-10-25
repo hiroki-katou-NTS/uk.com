@@ -40,7 +40,7 @@
 					data-bind="click: newMode "> #{i18n.getText('JCM007_A1_1')} </button>
 				<!-- A1_2 -->
 				<button id="register" tabindex="2" class="proceed group-button-1"
-					data-bind="click: register , enable:  true"> #{i18n.getText('JCM007_A1_2')}  </button>
+					data-bind="click: register , enable:  enable_btnRegister"> #{i18n.getText('JCM007_A1_2')}  </button>
 				<!-- A1_3 -->
 				<button id="setting" tabindex="3" class="danger group-button-1" 
 					data-bind="click: remove , enable: enable_btnRemove">#{i18n.getText('JCM007_A1_3')} </button>
@@ -84,19 +84,19 @@
 					<div class="line-height flex header">
 						<div class = "header-left">
 							<div class = "employee">
-								<div class = "line1 employee_lab">#{i18n.getText('JCM007_A222_2')}　：</div>
+								<div class = "line1 employee_lab">#{i18n.getText('JCM007_A222_2')}　</div>
 								<div class = "line1 employee_info" data-bind="text: codeNameEmp " ></div>
 							</div>
 							<div class = "department">
-								<div class = "line3 department_lab">#{i18n.getText('JCM007_A222_4')} ：</div>
+								<div class = "line3 department_lab">#{i18n.getText('JCM007_A222_4')} </div>
 								<div class = "line2 department_info" data-bind="text: department"></div>
 							</div>
 							<div class = "position">
-								<div class = "line3 position_lab">#{i18n.getText('JCM007_A222_6')} :</div>
+								<div class = "line3 position_lab">#{i18n.getText('JCM007_A222_6')} </div>
 								<div class = "line3 position_info" data-bind="text: position"></div>
 							</div>
 							<div class = "employment">
-								<div class = "line4 employment_lab">#{i18n.getText('JCM007_A222_8')} ：</div>
+								<div class = "line4 employment_lab">#{i18n.getText('JCM007_A222_8')} </div>
 								<div class = "line4 employment_info" data-bind="text: employmentCls"></div>
 							</div>
 							
@@ -114,7 +114,7 @@
 								<div data-bind="ntsFormLabel: { required: true, constraint: ''}">#{i18n.getText('JCM007_A222_11')} </div>
 							</div>
 							<!-- A222_12 -->					
-							<div style="margin-left: 51px" data-bind="ntsDatePicker: {value: retirementDate , dateFormat: 'YYYY/MM/DD'}"></div>					
+							<div id = "retirementDateId" style="margin-left: 51px" data-bind="ntsDatePicker: {value: retirementDate , dateFormat: 'YYYY/MM/DD', enable : enable_retirementDate }"></div>					
 						</div>
 					
 						<div class="line-height flex">  <!-- row 6 -->
@@ -123,7 +123,7 @@
 								<div  data-bind="ntsFormLabel: { required: true, constraint: ''}">#{i18n.getText('JCM007_A222_13')} </div>
 							</div>
 							<!-- A222_14 -->					
-							<div style="margin-left: 51px" data-bind="ntsDatePicker: {value: releaseDate , dateFormat: 'YYYY/MM/DD'}"></div>					
+							<div style="margin-left: 51px" data-bind="ntsDatePicker: {value: releaseDate , dateFormat: 'YYYY/MM/DD', enable : enable_releaseDate }"></div>					
 						</div>
 					
 						<div class="line-height flex">  <!-- row 7 -->
@@ -138,7 +138,7 @@
 												optionsValue: 'value',
 												value: selectedCode_Retiment ,
 												optionsText: 'text',
-												enable: true,
+												enable : enable_listRetirementCtg  ,
 												editable: false,
 												columns: [
 													{ prop: 'text', length: 10 }
@@ -157,7 +157,7 @@
 												optionsValue: 'value',
 												value: selectedCode_Reason1 ,
 												optionsText: 'text',
-												enable: true,
+												enable : enable_listRetirementReason1 ,
 												editable: false,
 												columns: [
 													{ prop: 'text', length: 15 }
@@ -176,12 +176,12 @@
 												optionsValue: 'value',
 												value: selectedCode_Reason2 ,
 												optionsText: 'text',
-												enable: true,
+												enable : enable_listRetirementReason2 ,
 												editable: false,
 												columns: [
 													{ prop: 'text', length: 15 }
 												]}"></div>
-							<button style="margin-left: 30px" data-bind="ntsHelpButton: {textId: 'KTG027_11', textParams:['{#KTG027_7}', '{#KTG027_8}', '{#KTG027_1}', '{#KTG027_9}'], position: 'right center' }">？</button>										
+							<button style="margin-left: 30px" data-bind="ntsHelpButton: {textId: 'JCM007_A222_22_1', textParams:[], position: 'right center' }">？</button>										
 						</div>
 					
 						<div class="line-height flex">  <!-- row 10 -->
@@ -199,7 +199,7 @@
 										resizeable: true,
 										width: '350px',
 									})),
-									enable: true,
+									enable : enable_retirementRemarks ,
 									readonly: false,
 									immediate: false}" />
 							</div>					
@@ -228,7 +228,7 @@
 											                resizeable: true,
 											                width: '350px',
 											            })),
-														enable: true,
+														enable : enable_retirementReasonVal ,
 														readonly: false,
 														immediate: false}" />
 								</div>
@@ -251,7 +251,7 @@
 									<div data-bind="ntsFormLabel: { required: true, constraint: ''}"> #{i18n.getText('JCM007_A222_34')} </div>
 								</div>
 								<!-- A222_35 -->					
-								<div style="margin-left: 22px;" data-bind="ntsDatePicker: {value: dismissalNoticeDate , dateFormat: 'YYYY/MM/DD'}"></div>					
+								<div style="margin-left: 22px;" data-bind="ntsDatePicker: {value: dismissalNoticeDate , dateFormat: 'YYYY/MM/DD', enable : enable_dismissalNoticeDate }"></div>					
 							</div>
 							
 							<div class="line-height flex">  <!-- row 16 -->
@@ -260,8 +260,8 @@
 									<div data-bind="ntsFormLabel: { required: false , constraint: ''}"> #{i18n.getText('JCM007_A222_36')}</div>
 								</div>
 								<!-- A222_37 -->					
-								<div style="margin-left: 22px;" data-bind="ntsDatePicker: {value: dismissalNoticeDateAllow , dateFormat: 'YYYY/MM/DD'}"></div>					
-								<button style="margin-left: 30px" data-bind="ntsHelpButton: {textId: 'KTG027_11', textParams:['{#KTG027_7}', '{#KTG027_8}', '{#KTG027_1}', '{#KTG027_9}'], position: 'right center' }">？</button>										
+								<div style="margin-left: 22px;" data-bind="ntsDatePicker: {value: dismissalNoticeDateAllow , dateFormat: 'YYYY/MM/DD', enable : enable_dismissalNoticeDateAllow }"></div>					
+								<button style="margin-left: 30px" data-bind="ntsHelpButton: {textId: 'JCM007_A222_36_1', textParams:[], position: 'right center' }">？</button>										
 							</div>
 							
 							<div class="line-height flex"> <!-- row 17 -->
@@ -278,7 +278,7 @@
 											                resizeable: true,
 											                width: '350px',
 											            })),
-														enable: true,
+														enable : enable_reaAndProForDis ,
 														readonly: false,
 														immediate: false}" />
 								</div>
@@ -294,7 +294,7 @@
 							<div class="line-height flex"> <!-- row 19 -->
 								<div class = "checkbox" >
 									<!-- A222_41 -->
-									<div data-bind="ntsCheckBox: { checked: naturalUnaReasons_1 }">#{i18n.getText('JCM007_A222_41')}</div>
+									<div data-bind="ntsCheckBox: { checked: naturalUnaReasons_1, enable : enable_naturalUnaReasons1  }">#{i18n.getText('JCM007_A222_41')}</div>
 								</div>
 								<!-- A222_42 -->
 								<div>
@@ -306,7 +306,7 @@
 											                resizeable: true,
 											                width: '350px',
 											            })),
-														enable: naturalUnaReasons_enable,
+														enable: naturalUnaReasons_enable ,
 														readonly: false,
 														immediate: false}" />
 								</div>
@@ -315,7 +315,7 @@
 							<div class="line-height flex"> <!-- row 20 -->
 								<div class = "checkbox" >
 									<!-- A222_41 -->
-									<div data-bind="ntsCheckBox: { checked: businessReduction_2 }">#{i18n.getText('JCM007_A222_43')}</div>
+									<div data-bind="ntsCheckBox: { checked: businessReduction_2 , enable : enable_businessReduction2  }">#{i18n.getText('JCM007_A222_43')}</div>
 								</div>
 								<!-- A222_42 -->
 								<div>
@@ -327,7 +327,7 @@
 											                resizeable: true,
 											                width: '350px',
 											            })),
-														enable: businessReduction_enable,
+														enable: businessReduction_enable ,
 														readonly: false,
 														immediate: false}" />
 								</div>
@@ -336,7 +336,7 @@
 							<div class="line-height flex"> <!-- row 21 -->
 								<div class = "checkbox" >
 									<!-- A222_41 -->
-									<div data-bind="ntsCheckBox: { checked: seriousViolationsOrder_3 }">#{i18n.getText('JCM007_A222_45')}</div>
+									<div data-bind="ntsCheckBox: { checked: seriousViolationsOrder_3 , enable : enable_seriousViolationsOrder3  }">#{i18n.getText('JCM007_A222_45')}</div>
 								</div>
 								<!-- A222_42 -->
 								<div>
@@ -357,7 +357,7 @@
 							<div class="line-height flex"> <!-- row 22 -->
 								<div class = "checkbox" >
 									<!-- A222_41 -->
-									<div data-bind="ntsCheckBox: { checked: unauthorizedConduct_4 }">#{i18n.getText('JCM007_A222_47')}</div>
+									<div data-bind="ntsCheckBox: { checked: unauthorizedConduct_4 , enable : enable_unauthorizedConduct4  }">#{i18n.getText('JCM007_A222_47')}</div>
 								</div>
 								<!-- A222_42 -->
 								<div>
@@ -378,7 +378,7 @@
 							<div class="line-height flex"> <!-- row 23 -->
 								<div class = "checkbox" >
 									<!-- A222_41 -->
-									<div data-bind="ntsCheckBox: { checked: leaveConsiderableTime_5 }">#{i18n.getText('JCM007_A222_49')}</div>
+									<div data-bind="ntsCheckBox: { checked: leaveConsiderableTime_5 , enable : enable_leaveConsiderableTime5  }">#{i18n.getText('JCM007_A222_49')}</div>
 								</div>
 								<!-- A222_42 -->
 								<div>
@@ -399,7 +399,7 @@
 							<div class="line-height flex"> <!-- row 24 -->
 								<div class = "checkbox" >
 									<!-- A222_41 -->
-									<div data-bind="ntsCheckBox: { checked: other_6 }">#{i18n.getText('JCM007_A222_51')}</div>
+									<div data-bind="ntsCheckBox: { checked: other_6 , enable : enable_other6  }">#{i18n.getText('JCM007_A222_51')}</div>
 								</div>
 								<!-- A222_42 -->
 								<div>

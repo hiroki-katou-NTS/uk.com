@@ -1,7 +1,5 @@
 package nts.uk.ctx.hr.develop.app.databeforereflecting.command;
 
-import java.text.SimpleDateFormat;
-
 import javax.ejb.Stateless;
 
 import nts.arc.error.BundledBusinessException;

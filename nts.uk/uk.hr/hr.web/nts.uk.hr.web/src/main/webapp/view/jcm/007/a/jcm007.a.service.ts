@@ -4,10 +4,12 @@ module jcm007.a.service {
     
     var paths = {
         'getData': 'databeforereflecting/getData',
-        'getEmployeeInfo' : 'query/ccg029employee/getEmpInfo',
+        'getEmployeeInfo': 'query/ccg029employee/getEmpInfo',
         'checkStatusRegistration': 'databeforereflecting/checkStatusRegistration/{0}',
         'preCheck': 'databeforereflecting/register/preCheck',
-        'add': 'databeforereflecting/add',  
+        'add': 'databeforereflecting/add',
+        'update': 'databeforereflecting/update',
+        'remove': 'databeforereflecting/remove/{0}' 
     }
        
     export function getData() : JQueryPromise<any>{
@@ -28,6 +30,14 @@ module jcm007.a.service {
 
     export function addRetireeInformation(command: any) : JQueryPromise<any>{
         return ajax(paths.add, command);
+    }
+    
+    export function updateRetireeInformation(command: any) : JQueryPromise<any>{
+        return ajax(paths.update, command);
+    }
+    
+    export function remove(hisId: any) : JQueryPromise<any>{
+        return ajax('hr', format(paths.remove, hisId ));
     }
 
    

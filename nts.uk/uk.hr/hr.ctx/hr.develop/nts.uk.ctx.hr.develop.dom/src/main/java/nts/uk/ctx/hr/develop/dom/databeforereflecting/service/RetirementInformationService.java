@@ -88,13 +88,13 @@ public class RetirementInformationService {
 	}
 
 	// 退職者情報の追加
-	public void AddRetireInformation(RetirementInformation domainObj) {
+	public void addRetireInformation(RetirementInformation domainObj) {
 
 		// 退職者情報リストを個人情報反映前データリストへ変換する (Convert retired employee information
 		// list to list data before reflecting personal information)
 		DataBeforeReflectingPerInfo domain = new DataBeforeReflectingPerInfo();
 		convertRetiredEmpIntoDataBefReflec(domainObj, domain);
-		this.dataBeforeReflectPerInfoService.AddDataBeforeReflectingPerInfo(domain);
+		this.dataBeforeReflectPerInfoService.addDataBeforeReflectingPerInfo(domain);
 	}
 	
 	// 退職者情報リストを個人情報反映前データリストへ変換する
@@ -113,30 +113,62 @@ public class RetirementInformationService {
 		domain.stattus = EnumAdaptor.valueOf(domainObj.status, Status.class);
 		domain.date_01 = domainObj.retirementDate;
 		domain.select_code_01 = domainObj.retirementCategory.value +"";
+		
 		domain.select_code_02 = domainObj.retirementReasonCtgCode1;
+		domain.select_name_02 = domainObj.retirementReasonCtgName1;
+		
 		domain.select_code_03 = domainObj.retirementReasonCtgCode2;
-		domain.str_01 = domainObj.retirementRemarks;
-		domain.str_02 = domainObj.retirementReasonVal;
+		domain.select_name_03 = domainObj.retirementReasonCtgName2;
+		
+		domain.str_01 = domainObj.retirementRemarks != "" ? domainObj.retirementRemarks : null;
+		domain.str_02 = domainObj.retirementReasonVal != "" ? domainObj.retirementReasonVal : null;
 		domain.date_02 = domainObj.dismissalNoticeDate != null ? GeneralDateTime.legacyDateTime(domainObj.dismissalNoticeDate.date()) : null;
 		domain.date_03 = domainObj.dismissalNoticeDateAllow != null ?  GeneralDateTime.legacyDateTime(domainObj.dismissalNoticeDateAllow.date()) : null;
-		domain.str_03  = domainObj.reaAndProForDis;
+		domain.str_03  = domainObj.reaAndProForDis != "" ? domainObj.reaAndProForDis : null;
 		domain.int_01 = domainObj.naturalUnaReasons_1;
-		domain.str_04 = domainObj.naturalUnaReasons_1Val;
+		domain.str_04 = domainObj.naturalUnaReasons_1Val != "" ? domainObj.naturalUnaReasons_1Val : null;
 		domain.int_02 = domainObj.naturalUnaReasons_2;
-		domain.str_05 = domainObj.naturalUnaReasons_2Val;
+		domain.str_05 = domainObj.naturalUnaReasons_2Val != "" ? domainObj.naturalUnaReasons_2Val : null;
 		domain.int_03 = domainObj.naturalUnaReasons_3;
-		domain.str_06 = domainObj.naturalUnaReasons_3Val;
+		domain.str_06 = domainObj.naturalUnaReasons_3Val != "" ? domainObj.naturalUnaReasons_3Val : null;
 		domain.int_04 = domainObj.naturalUnaReasons_4;
-		domain.str_07 = domainObj.naturalUnaReasons_4Val;
+		domain.str_07 = domainObj.naturalUnaReasons_4Val != "" ? domainObj.naturalUnaReasons_4Val : null;
 		domain.int_05 = domainObj.naturalUnaReasons_5;
-		domain.str_08 = domainObj.naturalUnaReasons_5Val;
+		domain.str_08 = domainObj.naturalUnaReasons_5Val != "" ? domainObj.naturalUnaReasons_5Val : null;
 		domain.int_06 = domainObj.naturalUnaReasons_6;
-		domain.str_09 = domainObj.naturalUnaReasons_6Val;
+		domain.str_09 = domainObj.naturalUnaReasons_6Val != "" ? domainObj.naturalUnaReasons_6Val : null;
 		
 		domain.contractCode = AppContexts.user().contractCode();
 		domain.companyCode = AppContexts.user().companyCode();
 		domain.workId = 1;
 		domain.workName = "退職者情報の登録";
+		switch (domainObj.retirementCategory.value) {
+		case 1:
+			domain.select_name_01 = "退職";
+			break;
+		case 2:
+			domain.select_name_01 = "転籍";
+			break;
+
+		case 3:
+			domain.select_name_01 = "解雇";
+			break;
+
+		case 4:
+			domain.select_name_01 = "定年";
+			break;
+		}
+	}
+
+	public void updateRetireInformation(RetirementInformation domainObj) {
+		DataBeforeReflectingPerInfo domain = new DataBeforeReflectingPerInfo();
+		convertRetiredEmpIntoDataBefReflec(domainObj, domain);
+		this.dataBeforeReflectPerInfoService.updateDataBeforeReflectingPerInfo(domain);
+		
+	}
 	
+	public void removeRetireInformation(String histId) {
+		this.dataBeforeReflectPerInfoService.removeDataBeforeReflectingPerInfo(histId);
+		
 	}
 }
