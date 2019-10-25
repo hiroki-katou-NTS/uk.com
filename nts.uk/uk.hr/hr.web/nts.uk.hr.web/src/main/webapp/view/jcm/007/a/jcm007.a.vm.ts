@@ -807,20 +807,20 @@ module jcm007.a {
             self.selectedCode_Retiment(param.selectedCode_Retiment || 1);
 
             self.listRetirementReason1 = ko.observable([
-                { value: 1, text: '' },
-                { value: 2, text: '自己都合による退職' },
-                { value: 3, text: '定年による退職' },
-                { value: 4, text: '会社都合による解雇' }
+                { value: 0, text: '' },
+                { value: 1, text: '自己都合による退職' },
+                { value: 2, text: '定年による退職' },
+                { value: 3, text: '会社都合による解雇' }
             ]);
             self.selectedCode_Reason1(param.selectedCode_Reason1 || 1);
 
             self.listRetirementReason2 = ko.observable([
-                { value: 1, text: '' },
-                { value: 2, text: '結婚' },
-                { value: 3, text: '上司と合わない' },
-                { value: 4, text: 'やる気がなくなった' },
-                { value: 5, text: '会社の業績不振' },
-                { value: 6, text: 'その他' }
+                { value: 0, text: '' },
+                { value: 1, text: '結婚' },
+                { value: 2, text: '上司と合わない' },
+                { value: 3, text: 'やる気がなくなった' },
+                { value: 4, text: '会社の業績不振' },
+                { value: 5, text: 'その他' }
             ]);
             self.selectedCode_Reason2(param.selectedCode_Reason2 || 1);
 
