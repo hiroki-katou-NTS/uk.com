@@ -64,6 +64,4 @@ public class EmpAddChangeInfoDto {
 
     public String  basicPenNumber;
 
-    public boolean isUpdateEmpAddChangeInfo;
-    public boolean isUpdateEmpBasicPenNumInfor;
 }

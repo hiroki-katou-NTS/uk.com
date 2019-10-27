@@ -29,9 +29,7 @@ public class EmpAddChangeInfoFinder {
                     e.getSid(),
                     e.getPersonalSet().getShortResident(),e.getPersonalSet().getLivingAbroadAtr(),e.getPersonalSet().getResidenceOtherResidentAtr(),e.getPersonalSet().getOtherAtr(),e.getPersonalSet().getOtherReason().isPresent() ? e.getPersonalSet().getOtherReason().get().toString() : null,
                     e.getSpouse().getShortResident(),e.getSpouse().getLivingAbroadAtr(),e.getSpouse().getResidenceOtherResidentAtr(),e.getSpouse().getOtherAtr(),e.getSpouse().getOtherReason().isPresent() ?  e.getSpouse().getOtherReason().get().toString(): null,
-                    basicPenNumber,
-                    resulf.isPresent(),
-                    empBasicPenNumInfor.isPresent()
+                    basicPenNumber
             )).get();
         }
         return EmpAddChangeInfoDto.builder()
@@ -46,7 +44,6 @@ public class EmpAddChangeInfoFinder {
                 .spouseResidenceOtherResidentAtr(0)
                 .spouseOtherAtr(0)
                 .spouseOtherReason(null)
-                .isUpdateEmpBasicPenNumInfor(empBasicPenNumInfor.isPresent())
                 .build();
 
     }
