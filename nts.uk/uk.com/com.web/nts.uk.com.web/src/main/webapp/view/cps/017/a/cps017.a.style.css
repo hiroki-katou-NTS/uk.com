@@ -13,10 +13,6 @@ body {
 	margin-right: 30px;
 }
 
-#contents-area {
-	min-width: 1333px;
-}
-
 .pull-left {
 	float: left;
 }
