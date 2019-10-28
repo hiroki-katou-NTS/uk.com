@@ -144,6 +144,7 @@ public class RoleWorkplaceIDFinder {
 	}
 	
 	/**
+	 * 参照可能な職場リストを取得する
 	 * Find list workplace id.
 	 *
 	 * @param param the param
@@ -172,11 +173,13 @@ public class RoleWorkplaceIDFinder {
 	 * @return the list
 	 */
 	public List<String> findListWkpId(WorkplaceParam param) {
-		List<String> listWkpId = new ArrayList<>();
 
 		String workplaceId = "";
 		String employeeId = AppContexts.user().employeeId();
 		String companyId = AppContexts.user().companyId();
+		
+		//[RQ613]指定社員の職場管理者の職場リストを取得する（配下含む）
+		List<String> listWkpId = workplaceAdapter.getWorkplaceId(GeneralDate.today(), employeeId);
 
 		// Including management workplace = false
 

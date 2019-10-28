@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
@@ -38,6 +40,7 @@ public class GetClosureIdHistoryImpl implements GetClosureIdHistory {
 	private ClosureEmploymentRepository closureEmploymentRepo;
 	
 	/** 指定した年月の社員の締め履歴を取得する */
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<ClosureIdHistory> ofEmployeeFromYearMonth(String employeeId, YearMonth yearMonth) {
 
@@ -73,6 +76,7 @@ public class GetClosureIdHistoryImpl implements GetClosureIdHistory {
 	}
 	
 	/** 指定した期間の社員の締め履歴を取得する */
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<ClosureIdHistory> ofEmployeeFromPeriod(String employeeId, DatePeriod period) {
 		

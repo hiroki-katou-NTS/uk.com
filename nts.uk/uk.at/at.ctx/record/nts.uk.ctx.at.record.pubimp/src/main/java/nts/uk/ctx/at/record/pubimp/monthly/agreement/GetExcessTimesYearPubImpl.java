@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.AgreementExcessInfo;
@@ -18,6 +20,7 @@ import nts.uk.ctx.at.shared.dom.common.Year;
  * @author shuichi_ishida
  */
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class GetExcessTimesYearPubImpl implements GetExcessTimesYearPub {
 
 	/** 年間超過回数の取得 */

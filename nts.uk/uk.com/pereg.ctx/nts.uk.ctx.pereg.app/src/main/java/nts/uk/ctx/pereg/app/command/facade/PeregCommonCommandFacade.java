@@ -250,7 +250,7 @@ public class PeregCommonCommandFacade {
 		List<ItemBasicInfo> itemExclude = new ArrayList<>();
 
 		
-		GridEmployeeDto gridEmpDto = this.gridProcessor.getGridLayout(new PeregGridQuery(itemFirstByCtg.getCategoryId(),
+		GridEmployeeDto gridEmpDto = this.gridProcessor.getGridLayoutRegister(new PeregGridQuery(itemFirstByCtg.getCategoryId(),
 				itemFirstByCtg.getCategoryCd(), baseDate,
 				containerAdds.stream().map(c -> c.getEmployeeId()).collect(Collectors.toList())));
 		
@@ -430,7 +430,7 @@ public class PeregCommonCommandFacade {
 			});
 
 			// đoạn nay update những item không xuất hiện trên màn hình, vì của các nhân  viên sẽ khác nhau nên sẽ lấy khác nhau, khả năng mình sẽ trả về một Map<sid, List<ItemValue>
-			GridEmployeeDto gridEmpDto = this.gridProcessor.getGridLayout(new PeregGridQuery(itemFirstByCtg.getCategoryId(),
+			GridEmployeeDto gridEmpDto = this.gridProcessor.getGridLayoutRegister(new PeregGridQuery(itemFirstByCtg.getCategoryId(),
 					itemFirstByCtg.getCategoryCd(), baseDate,
 					containerAdds.stream().map(c -> c.getEmployeeId()).collect(Collectors.toList())));
 			

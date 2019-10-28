@@ -59,7 +59,8 @@ public class Company extends AggregateRoot {
 
 	/** 法人マイナンバー */
 	private TaxNo taxNo;
-
+	
+	/** 住所情報 */
 	private AddInfor addInfor;
 
 	public Company(CompanyCode companyCode, Name companyName, MonthStr startMonth, AbolitionAtr isAbolition,

@@ -15,6 +15,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import lombok.val;
@@ -197,6 +199,7 @@ public class OneMonthApprovalSttDomainServiceImpl implements OneMonthApprovalStt
 	/**
 	 * 期間を変更する
 	 */
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public OneMonthApprovalStatusDto getDatePeriod(int closureId, int currentYearMonth) {
 		OneMonthApprovalStatusDto result = new OneMonthApprovalStatusDto();
 		// [No.609]ログイン社員のシステム日時点の処理対象年月を取得する
@@ -209,6 +212,7 @@ public class OneMonthApprovalSttDomainServiceImpl implements OneMonthApprovalStt
 		return result;
 	}
 
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public OneMonthApprovalStatusDto getOneMonthApprovalStatus(Integer closureIdParam, Integer yearMonth) {
 		String companyId = AppContexts.user().companyId();
 		String employeeId = AppContexts.user().employeeId();
@@ -240,7 +244,7 @@ public class OneMonthApprovalSttDomainServiceImpl implements OneMonthApprovalStt
 			for (int h = 0; h < lstClosureHst.size(); h++) {
 				if (lstClosure.get(c).getClosureId().value == lstClosureHst.get(h).getClosureId().value) {
 					lstClosureDto.add(new ClosureDto(lstClosureHst.get(h).getClosureId().value,
-							lstClosureHst.get(h).getClosureName().v(),
+							lstClosureHst.get(h).getClosureId().value + " : " + lstClosureHst.get(h).getClosureName().v(),
 							lstClosure.get(c).getClosureMonth().getProcessingYm().v().intValue()));
 					lstYearMonth.add(lstClosure.get(c).getClosureMonth().getProcessingYm());
 				}
@@ -311,6 +315,7 @@ public class OneMonthApprovalSttDomainServiceImpl implements OneMonthApprovalStt
 	 */
 
 	@Override
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public OneMonthApprovalStatusDto changeConditionExtract(Integer closureIdParam, Integer year) {
 		Optional<DPCorrectStateParam> dpCorrectOpt = genDPCorrectStateService.genStateParamClosureId(
 				new DPCorrectStateParam(), ClosureId.valueOf(closureIdParam), YearMonth.of(year));

@@ -7,6 +7,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.ApprovalStatusActualResult;
@@ -16,6 +17,11 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.ch
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.month.algorithm.ParamRegisterConfirmMonth;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.month.algorithm.RegisterConfirmationMonth;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.month.algorithm.SelfConfirm;
+import nts.uk.ctx.workflow.dom.approverstatemanagement.DailyConfirmAtr;
+import nts.uk.ctx.workflow.pub.resultrecord.EmpPerformMonthParam;
+import nts.uk.ctx.workflow.pub.resultrecord.IntermediateDataPub;
+import nts.uk.ctx.workflow.pub.resultrecord.export.AppRootSttMonthExport;
+import nts.uk.ctx.workflow.pub.resultrecord.export.Request533Export;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ApprovalConfirmCache;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DatePeriodInfo;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.cache.AggrPeriodClosure;
@@ -34,7 +40,9 @@ public class PersonalTightCommandFacade {
 	
 	@Inject
 	private ConfirmStatusActualDayChange confirmStatusActualDayChange;
-
+	
+	@Inject
+	private IntermediateDataPub intermediateDataPub;
 	
 	//月の本人確認を登録する
 	public ApprovalConfirmCache addRemovePersonalTight(String employeeId, GeneralDate date, ApprovalConfirmCache approvalConfirmCache, DPCorrectionStateParam stateParam, boolean isRegister) {
@@ -44,7 +52,7 @@ public class PersonalTightCommandFacade {
 		}
 		DatePeriodInfo dateInfo = stateParam.getDateInfo();
 		AggrPeriodClosure aggrPeriod = dateInfo.getLstClosureCache().stream()
-				.filter(x -> x.getClosureId() == dateInfo.getClosureId() && x.getYearMonth() == dateInfo.getYearMonth())
+				.filter(x -> x.getClosureId() == dateInfo.getClosureId())
 				.findFirst().orElse(null);
 		
 		if(aggrPeriod == null) return createCache(approvalConfirmCache, companyId);
@@ -56,6 +64,19 @@ public class PersonalTightCommandFacade {
 							aggrPeriod.getClosureDate().getLastDayOfMonth()),
 					GeneralDate.today()));
 		} else {
+			//[No.533](中間データ版)承認対象者リストと日付リストから承認状況を取得する（月別）
+			EmpPerformMonthParam param = new EmpPerformMonthParam(YearMonth.of(aggrPeriod.getYearMonth()),
+					aggrPeriod.getClosureId().value, aggrPeriod.getClosureDate(), aggrPeriod.getPeriod().end(),
+					employeeId);
+			Request533Export export = intermediateDataPub.getAppRootStatusByEmpsMonth(Arrays.asList(param));
+			if (export == null || export.getAppRootSttMonthExportLst().isEmpty())
+				return null;
+			AppRootSttMonthExport appRootExport = export.getAppRootSttMonthExportLst().get(0);
+		
+			if(appRootExport.getDailyConfirmAtr() != DailyConfirmAtr.UNAPPROVED.value) {
+				throw new BusinessException("Msg_1501");
+			}
+			
 			registerConfirmationMonth.registerConfirmationMonth(new ParamRegisterConfirmMonth(
 					YearMonth.of(aggrPeriod.getYearMonth()), Arrays.asList(new SelfConfirm(employeeId, isRegister)),
 					aggrPeriod.getClosureId().value, new ClosureDate(aggrPeriod.getClosureDate().getClosureDay().v(),

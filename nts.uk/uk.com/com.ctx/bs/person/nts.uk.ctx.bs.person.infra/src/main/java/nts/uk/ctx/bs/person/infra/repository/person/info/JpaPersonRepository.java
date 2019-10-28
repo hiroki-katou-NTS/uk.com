@@ -335,7 +335,6 @@ public class JpaPersonRepository extends JpaRepository implements PersonReposito
 			
 			sql = sql.replace("BIRTHDAY_VAL", "'" + c.getBirthDate() +"'");
 			sql = sql.replace("BLOOD_TYPE_VAL", c.getBloodType() == null? "null": "" + c.getBloodType().value +"");
-			System.out.println(c.getGender());
 			sql = sql.replace("GENDER_VAL",  c.getGender() == null? "": "" + c.getGender().value +"");
 			
 			if(c.getPersonNameGroup() == null) {
@@ -413,6 +412,52 @@ public class JpaPersonRepository extends JpaRepository implements PersonReposito
 				});
 				return lstPerson;
 
+	}
+
+	@Override
+	public List<Person> getAllPersonByPids(List<String> pids) {
+		// check exist input
+		if (CollectionUtil.isEmpty(pids)) {
+			return new ArrayList<>();
+		}
+
+		List<Person> lstPerson = new ArrayList<>();
+		CollectionUtil.split(pids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			String sql = "SELECT * from BPSMT_PERSON"
+					+ " WHERE PID IN (" + NtsStatement.In.createParamsString(subList) + ")";
+			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+				for (int i = 0; i < subList.size(); i++) {
+					stmt.setString(i + 1, subList.get(i));
+				}
+				List<Person> subResults = new NtsResultSet(stmt.executeQuery()).getList(r -> {
+					BpsmtPerson e = new BpsmtPerson();
+					e.bpsmtPersonPk = new BpsmtPersonPk(r.getString("PID"));
+					e.birthday = r.getGeneralDate("BIRTHDAY");
+					e.bloodType = r.getInt("BLOOD_TYPE");
+					e.gender = r.getInt("GENDER");
+					e.personName = r.getString("PERSON_NAME");
+					e.personNameKana = r.getString("PERSON_NAME_KANA");
+					e.businessName = r.getString("BUSINESS_NAME");
+					e.businessNameKana = r.getString("BUSINESS_NAME_KANA");
+					e.businessEnglishName = r.getString("BUSINESS_ENGLISH_NAME");
+					e.businessOtherName = r.getString("BUSINESS_OTHER_NAME");
+					e.personRomanji = r.getString("P_ROMANJI_FNAME");
+					e.personRomanjiKana = r.getString("P_ROMANJI_FNAME_KANA");
+					e.todokedeFullName = r.getString("TODOKEDE_FNAME");
+					e.todokedeFullNameKana = r.getString("TODOKEDE_FNAME_KANA");
+					e.oldName = r.getString("OLDNAME_FNAME");
+					e.oldNameKana = r.getString("OLDNAME_FNAME_KANA");
+					e.perNameMultilLang = r.getString("PERSON_NAME_MULTIL_LANG");
+					e.perNameMultilLangKana = r.getString("PERSON_NAME_MULTIL_LANG_KANA");
+					return toFullPersonDomain(e);
+				});
+				
+				lstPerson.addAll(subResults);
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+		});
+		return lstPerson;
 	}
 
 }

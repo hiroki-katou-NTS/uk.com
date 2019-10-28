@@ -669,6 +669,7 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 		System.out.println(records);
 	}
 	
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<EmploymentHistoryOfEmployee> getEmploymentBySID(List<String> sids,
 			List<String> employmentCodes, DatePeriod dateRange) {

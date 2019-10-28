@@ -21,6 +21,8 @@ import java.util.stream.IntStream;
 
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.inject.Inject;
 
@@ -119,6 +121,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceEmpl
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyRecEditSetDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DatePeriodInfo;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRangeClosureId;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DisplayFormat;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DisplayItem;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DivergenceTimeDto;
@@ -158,6 +161,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  *
  */
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class DailyPerformanceCorrectionProcessor {
 
 	@Inject
@@ -1735,6 +1739,7 @@ public class DailyPerformanceCorrectionProcessor {
 			screenDto.setEmploymentCode(getEmploymentCode(companyId, dateRange.getEndDate(), sId));
 			DatePeriodInfo dateInfo = dpStateParam.getDateInfo();
 			dateInfo.setTargetRange(dateRange);
+			dateInfo.setClosureId(ClosureId.valueOf(closureId));
 			return dateInfo;
 		}
 		
@@ -1824,7 +1829,7 @@ public class DailyPerformanceCorrectionProcessor {
 		ClosureId closureId = null;
 		YearMonth yearMonth = null;
 		List<nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.ClosurePeriod> lstClosurePeriod  = new ArrayList<>();
-		List<DateRange> lstPeriod = new ArrayList<>();
+		List<DateRangeClosureId> lstPeriod = new ArrayList<>();
 		List<AggrPeriodClosure> lstClosureCache = new ArrayList<>();
 		String empLogin = AppContexts.user().employeeId();
 		// 個人別
@@ -1852,8 +1857,8 @@ public class DailyPerformanceCorrectionProcessor {
 					    .sorted((x, y) -> x.getPeriod().start().compareTo(y.getPeriod().end()))
 						.collect(Collectors.toList());
 			 
-			List<DateRange> lstAgg = lstClosurePeriod.stream().flatMap(x -> x.getAggrPeriods().stream())
-					.map(x -> new DateRange(x.getPeriod().start(), x.getPeriod().end())).sorted((x, y) -> x.getStartDate().compareTo(y.getStartDate()))
+			List<DateRangeClosureId> lstAgg = lstClosurePeriod.stream().flatMap(x -> x.getAggrPeriods().stream())
+					.map(x -> new DateRangeClosureId(x.getPeriod().start(), x.getPeriod().end(), x.getClosureId().value)).sorted((x, y) -> x.getStartDate().compareTo(y.getStartDate()))
 					.collect(Collectors.toList());
 			lstPeriod.addAll(lstAgg);
 			
@@ -1891,7 +1896,7 @@ public class DailyPerformanceCorrectionProcessor {
 			result = DateRange.convertPeriod(closurePeriodOpt.get().getPeriod());
 		}
 				
-		return new DatePeriodInfo(lstPeriod, result, yearMonth == null ? 0 : yearMonth.v(), closureId, lstClosureCache);
+		return new DatePeriodInfo(new ArrayList<>(), result, yearMonth == null ? 0 : yearMonth.v(), closureId, lstClosureCache, lstPeriod);
 	}
 	
 	public void requestForFlush(){

@@ -1014,7 +1014,8 @@ module cps003.c.vm {
                 }
                 
                 employees = _.filter(employees, e => {
-                    return _.find(regChecked, r => r === e.rowId) && !_.find(itemErrors, ie => ie.rowId === e.rowId);
+                    return _.find(regChecked, r => r === e.rowId) && !_.find(itemErrors, ie => ie.rowId === e.rowId)
+                        && ((e.input || {}).items || []).length > 0;
                 });
                 
                 dataToG = _.filter(dataToG, d => {
@@ -1185,7 +1186,7 @@ module cps003.c.vm {
                             if (wpColumn.required && _.isNil(find(optionsList, itm => itm.optionValue === workplaceVal))) {
                                 let index = _.findIndex(dataSource, d => d.id === data.id),
                                     message = nts.uk.resource.getMessage("FND_E_REQ_SELECT", [wpColumn.headerText]);
-                                $grid.mGrid("setErrors", [{ id: data.id, index: index, columnKey: select[sType], message: message }]);
+                                $grid.mGrid("setErrors", [{ id: data.id, index: index, columnKey: select[sType], message: message }], null, true);
                             } else {
                                 $grid.mGrid("clearErrors", [{ id: data.id, columnKey: select[sType] }]);
                             }
