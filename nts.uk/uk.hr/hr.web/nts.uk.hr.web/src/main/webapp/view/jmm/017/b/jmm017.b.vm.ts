@@ -32,6 +32,28 @@ module nts.uk.hr.view.jmm017.b.viewmodel {
             self.useSet = ko.observable('1');
             self.useList = ko.observableArray([]);
             self.editTem = "<a href='#' onclick=\"editMsg({ id: '${guideMsgId}' })\">"+getText('JMM017_B422_23')+"</a>";
+           
+            $("#grid").bind("iggridpagingpagesizechanging", function(c, v) {
+                let objCalulator = self.caculator();
+                $(".contents-area").css({overflow: 'auto', height: objCalulator.contentAreaHeight +"px"});
+                if (v.newPageSize <  25) {
+                   $("#grid").igGrid("option", "height", objCalulator.contentAreaHeight);
+                } else {
+                   $("#grid").igGrid("option", "height", objCalulator.gridAreaHeight);
+                }
+            });
+            
+            $(window).resize(function() {
+                let objCalulator = self.caculator();
+                $(".contents-area").css({height: objCalulator.contentAreaHeight +"px"});
+                $("#grid").igGrid("option", "height", objCalulator.gridAreaHeight);
+            });
+        }
+        
+        caculator(): any {
+            let contentArea = $(".sidebar-html")[0].getBoundingClientRect().height - ($("#header")[0].getBoundingClientRect().height + $(".sidebar-content-header")[0].getBoundingClientRect().height + $(".nts-guide-area")[0].getBoundingClientRect().height) - 10,
+                groupArea = $("#grid_container > div.ui-widget.ui-helper-clearfix.ui-iggrid-pagesizedropdowncontainerabove.ui-iggrid-toolbar.ui-widget-header.and.ui-corner-top")[0].getBoundingClientRect().height + $("#grid_groupbyarea")[0].getBoundingClientRect().height;
+         return {contentAreaHeight: contentArea, gridAreaHeight: contentArea + groupArea};
         }
         startPage(): JQueryPromise<any> {
             var self = this;
@@ -64,6 +86,14 @@ module nts.uk.hr.view.jmm017.b.viewmodel {
                 useSet: self.useSet()==1?null:self.useSet()==2
             }
             new service.getGuideMessageList(param).done(function(data: any) {
+                let objCalulator = self.caculator();
+                $(".contents-area").css({overflow: "auto", height: objCalulator.contentAreaHeight +"px"});
+                if( $("#grid").igGridPaging("option","pageSize") > 20){
+                     $("#grid").igGrid("option", "height", objCalulator.gridAreaHeight);
+                }else{
+                     $("#grid").igGrid("option", "height", objCalulator.contentAreaHeight);
+                }
+               
                 let groupByColumns = $("#grid").igGridGroupBy("groupByColumns");
                 self.guideMessageList = data;
                 //$('#gridContent').css( "height", "430px");
@@ -204,7 +234,7 @@ module nts.uk.hr.view.jmm017.b.viewmodel {
                 dataSource: self.guideMessageList,
                 dataSourceType: 'json',
                 responseDataKey: 'results',
-                //height: '100%',
+                height: '100%',
                 width: '100%',
                 tabIndex: 14,
                 features: [
@@ -262,6 +292,7 @@ module nts.uk.hr.view.jmm017.b.viewmodel {
             this.name = name;
         }
     }
+    
 }
 
 function editMsg(param) {

@@ -13,7 +13,7 @@ module nts.uk.hr.view.jmm017.a.viewmodel {
 
         constructor() {
             let self = this;
-            self.tab2ViewModel = ko.observable(new viewModelTabB.ScreenModel());
+          
             self.usageFlgCommon = ko.observable(false);
             self.guideMsgAreaRow = ko.observable(0);
             self.guideMsgMaxNum = ko.observable(0);
@@ -24,7 +24,13 @@ module nts.uk.hr.view.jmm017.a.viewmodel {
                     } else if (programId === "JMM017" && screenId === "B") {
                         return "tabpanel-2";
                     }
+                     
+                   let contentArea = $(".sidebar-html")[0].getBoundingClientRect().height - ($("#header")[0].getBoundingClientRect().height + $(".sidebar-content-header")[0].getBoundingClientRect().height + $(".nts-guide-area")[0].getBoundingClientRect().height + 10);
+                   // 10 ở đây là margin của nts-guide-area
+                    console.log(contentArea);
+                   $("#tabpanel-2.contents-area").css({overflow: 'auto', height:contentArea +"px"});
                 }, Page.SIDEBAR);
+              self.tab2ViewModel = ko.observable(new viewModelTabB.ScreenModel());
             //nts.uk.ui.guide.operate("hr", 'guidance/guideOperate', Page.SIDEBAR, { tab1: "", tab2: "" });
         }
 
@@ -91,7 +97,7 @@ module nts.uk.hr.view.jmm017.a.viewmodel {
                     guideMsgMaxNum: self.guideMsgMaxNum()
                 }
                 new service.saveGuideDispSetting(param).done(function() {
-                    
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 }).fail(function(errorInfor) {
                     error({ messageId: errorInfor.messageId });
                 }).always(function() {

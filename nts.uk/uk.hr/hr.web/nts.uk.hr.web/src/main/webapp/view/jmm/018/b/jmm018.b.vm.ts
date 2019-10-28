@@ -307,6 +307,7 @@ module nts.uk.com.view.jmm018.b {
                     listMenuOper: self.listMenuOper()
                 }
                 service.saveEventMenu(params).done(function(){
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 }).always(() => {
                     nts.uk.ui.block.clear();
                 });
