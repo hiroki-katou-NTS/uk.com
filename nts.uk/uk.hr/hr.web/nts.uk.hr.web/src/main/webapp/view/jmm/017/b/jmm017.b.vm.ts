@@ -51,7 +51,7 @@ module nts.uk.hr.view.jmm017.b.viewmodel {
         }
         
         caculator(): any {
-            let contentArea = $(".sidebar-html")[0].getBoundingClientRect().height - ($("#header")[0].getBoundingClientRect().height + $(".sidebar-content-header")[0].getBoundingClientRect().height + $(".nts-guide-area")[0].getBoundingClientRect().height) - 10,
+            let contentArea = $(".sidebar-html")[0].getBoundingClientRect().height - ($("#header")[0].getBoundingClientRect().height + $(".sidebar-content-header")[0].getBoundingClientRect().height + $(".nts-guide-area")[0].getBoundingClientRect().height + 10) ,
                 groupArea = $("#grid_container > div.ui-widget.ui-helper-clearfix.ui-iggrid-pagesizedropdowncontainerabove.ui-iggrid-toolbar.ui-widget-header.and.ui-corner-top")[0].getBoundingClientRect().height + $("#grid_groupbyarea")[0].getBoundingClientRect().height;
          return {contentAreaHeight: contentArea, gridAreaHeight: contentArea + groupArea};
         }
