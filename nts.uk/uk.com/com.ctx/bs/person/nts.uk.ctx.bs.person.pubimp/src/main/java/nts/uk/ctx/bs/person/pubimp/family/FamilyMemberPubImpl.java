@@ -11,7 +11,7 @@ import javax.inject.Inject;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.person.dom.person.family.FamilyMember;
 import nts.uk.ctx.bs.person.dom.person.family.FamilyMemberService;
-import nts.uk.ctx.bs.person.dom.person.info.fullnameset.FullNameSet;
+import nts.uk.ctx.bs.person.dom.person.family.fullnameset.FullNameSet;
 import nts.uk.ctx.bs.person.pub.family.FamilyExport623;
 import nts.uk.ctx.bs.person.pub.family.FamilyPub;
 @Stateless
