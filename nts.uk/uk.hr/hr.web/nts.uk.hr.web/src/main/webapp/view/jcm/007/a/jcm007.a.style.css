@@ -12,7 +12,7 @@
 
 #tab-1, #tab-2{
     width: 718px;
-	height: 450px;
+	height: 516px;
 	overflow: visible !important;
 }
 
@@ -127,13 +127,13 @@
 }
 
 #gridListEmployees_scroll {
-	height: 257px !important;
+	height: 323px !important;
 	overflow-y: scroll !important;	
 	overflow-x: hidden;
 }
 
 #gridListEmployees_container {
-	height: 258px !important;
+	height: 323px !important;
 }
 
 #gridListEmployeesContent {
