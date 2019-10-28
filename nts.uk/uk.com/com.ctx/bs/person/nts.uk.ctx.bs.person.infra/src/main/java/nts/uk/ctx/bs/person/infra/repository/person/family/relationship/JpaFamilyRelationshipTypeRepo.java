@@ -12,7 +12,7 @@ import nts.uk.ctx.bs.person.infra.entity.person.family.relationship.BpsmtFamilyR
 public class JpaFamilyRelationshipTypeRepo extends JpaRepository implements FamilyRelationTypeRepository{
 	public static final String GET_ALL_BY_CONTRACT_CD_AND_ISPOUSE = "SELECT c FROM BpsmtFamilyRelationType c "
 			+ " WHERE c.bpsmtFamilyRelationTypePk.contractCd = :contractCd"
-			+ " AND c.isSpouse =1 ";
+			+ " AND c.isSpouse = 1 ";
 
 	private FamilyRelationType toDomain(BpsmtFamilyRelationType entity) {
 		FamilyRelationType domain = FamilyRelationType.createFromJavaType(
