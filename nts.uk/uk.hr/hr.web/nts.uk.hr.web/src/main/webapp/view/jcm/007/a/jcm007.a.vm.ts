@@ -378,6 +378,8 @@ module jcm007.a {
                 command.scd = itemSelectedTab1.employeeCode;
                 command.employeeName = itemSelectedTab1.businessName;
                 self.preCheckAndRegisterNewEmp(command);
+                self.initHeaderInfo();
+                self.initRetirementInfo();
                 
             } else if (self.selectedTab() == 'tab-2' && itemSelectedTab2 != null 
                        && itemSelectedTab2.notificationCategory == "" 
