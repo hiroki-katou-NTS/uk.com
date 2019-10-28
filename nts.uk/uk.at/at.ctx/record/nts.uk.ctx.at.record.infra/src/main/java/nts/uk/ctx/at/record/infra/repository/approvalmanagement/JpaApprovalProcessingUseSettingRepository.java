@@ -45,7 +45,7 @@ public class JpaApprovalProcessingUseSettingRepository extends JpaRepository
 		}
 	}
 
-	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	
 	@Override
 	@SneakyThrows
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
