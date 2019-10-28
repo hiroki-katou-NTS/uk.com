@@ -74,28 +74,28 @@
                         <div class="row">
                             <div class="col-6 uk-text-dark-gray child-font-size">{{ overTime.frameName | i18n }}</div>
                             <div class="col-6">
-                                <span v-if="overTime.appTime!=null">{{ overTime.appTime | timept }}</span>
-                                <span v-else>{{'CMMS45_15' | i18n}}</span>
+                                <span v-if="overTime.appTime!=null" class="uk-text-excess-time-none">{{ overTime.appTime | timept }}</span>
+                                <span v-else class="uk-text-excess-time-none">{{'CMMS45_15' | i18n}}</span>
                             </div>
                         </div>
                         <div class="row" v-if="isPostApp">
                             <div class="col-6 pl-4">
                                 <span v-if="overTime.preAppTime!=null" class="far fa-clock display-time child-font-size" 
-                                    v-bind:class="{ 'excess-time': overTime.preAppError }">
+                                    v-bind:class="{ 'uk-text-excess-time-alarm': overTime.preAppError==2 }">
                                     {{'KAFS00_1' | i18n}}[{{ overTime.preAppTime | timept }}]
                                 </span>
                                 <span v-else class="far fa-clock display-time child-font-size" 
-                                    v-bind:class="{ 'excess-time': overTime.preAppError }">
+                                    v-bind:class="{ 'uk-text-excess-time-alarm': overTime.preAppError==2 }">
                                     {{'KAFS00_1' | i18n}}[--:--]
                                 </span>
                             </div>
                             <div class="col-6">
                                 <span v-if="overTime.actualTime!=null" class="far fa-clock display-time child-font-size" 
-                                    v-bind:class="{ 'excess-time': overTime.actualError }">
+                                    v-bind:class="{ 'uk-text-excess-time-alarm': overTime.actualError==3, 'uk-text-excess-time-error': overTime.actualError==4 }">
                                     {{'KAFS00_2' | i18n}}[{{ overTime.actualTime | timept }}]
                                 </span>
                                 <span v-else class="far fa-clock display-time child-font-size" 
-                                    v-bind:class="{ 'excess-time': overTime.actualError }">
+                                    v-bind:class="{ 'uk-text-excess-time-alarm': overTime.actualError==3, 'uk-text-excess-time-error': overTime.actualError==4 }">
                                     {{'KAFS00_2' | i18n}}[--:--]
                                 </span>
                             </div>
@@ -105,28 +105,28 @@
                         <div class="row">
                             <div class="col-6 uk-text-dark-gray child-font-size">{{ 'CMMS45_30' | i18n }}</div>
                             <div class="col-6">
-                                <span v-if="overTime.appTime!=null">{{ overTime.appTime | timept }}</span>
-                                <span v-else>{{'CMMS45_15' | i18n}}</span>
+                                <span v-if="overTime.appTime!=null" class="uk-text-excess-time-none">{{ overTime.appTime | timept }}</span>
+                                <span v-else class="uk-text-excess-time-none">{{'CMMS45_15' | i18n}}</span>
                             </div>
                         </div>
                         <div class="row" v-if="isPostApp">
                             <div class="col-6 pl-4">
                                 <span v-if="overTime.preAppTime!=null" class="far fa-clock display-time child-font-size" 
-                                    v-bind:class="{ 'excess-time': overTime.preAppError }">
+                                    v-bind:class="{ 'uk-text-excess-time-alarm': overTime.preAppError==2 }">
                                     {{'KAFS00_1' | i18n}}[{{ overTime.preAppTime | timept }}]
                                 </span>
                                 <span v-else class="far fa-clock display-time child-font-size" 
-                                    v-bind:class="{ 'excess-time': overTime.preAppError }">
+                                    v-bind:class="{ 'uk-text-excess-time-alarm': overTime.preAppError==2 }">
                                     {{'KAFS00_1' | i18n}}[--:--]
                                 </span>
                             </div>
                             <div class="col-6">
                                 <span v-if="overTime.actualTime!=null" class="far fa-clock display-time child-font-size" 
-                                    v-bind:class="{ 'excess-time': overTime.actualError }">
+                                    v-bind:class="{ 'uk-text-excess-time-alarm': overTime.actualError==3, 'uk-text-excess-time-error': overTime.actualError==4 }">
                                     {{'KAFS00_2' | i18n}}[{{ overTime.actualTime | timept }}]
                                 </span>
                                 <span v-else class="far fa-clock display-time child-font-size" 
-                                    v-bind:class="{ 'excess-time': overTime.actualError }">
+                                    v-bind:class="{ 'uk-text-excess-time-alarm': overTime.actualError==3, 'uk-text-excess-time-error': overTime.actualError==4 }">
                                     {{'KAFS00_2' | i18n}}[--:--]
                                 </span>
                             </div>
@@ -136,28 +136,28 @@
                         <div class="row">
                             <div class="col-6 uk-text-dark-gray child-font-size">{{ 'CMMS45_31' | i18n }}</div>
                             <div class="col-6">
-                                <span v-if="overTime.appTime!=null">{{ overTime.appTime | timept }}</span>
-                                <span v-else>{{'CMMS45_15' | i18n}}</span>
+                                <span v-if="overTime.appTime!=null" class="uk-text-excess-time-none">{{ overTime.appTime | timept }}</span>
+                                <span v-else class="uk-text-excess-time-none">{{'CMMS45_15' | i18n}}</span>
                             </div>
                         </div>
                         <div class="row" v-if="isPostApp">
                             <div class="col-6 pl-4">
                                 <span v-if="overTime.preAppTime!=null" class="far fa-clock display-time child-font-size" 
-                                    v-bind:class="{ 'excess-time': overTime.preAppError }">
+                                    v-bind:class="{ 'uk-text-excess-time-alarm': overTime.preAppError==2 }">
                                     {{'KAFS00_1' | i18n}}[{{ overTime.preAppTime | timept }}]
                                 </span>
                                 <span v-else class="far fa-clock display-time child-font-size" 
-                                    v-bind:class="{ 'excess-time': overTime.preAppError }">
+                                    v-bind:class="{ 'uk-text-excess-time-alarm': overTime.preAppError==2 }">
                                     {{'KAFS00_1' | i18n}}[--:--]
                                 </span>
                             </div>
                             <div class="col-6">
                                 <span v-if="overTime.actualTime!=null" class="far fa-clock display-time child-font-size" 
-                                    v-bind:class="{ 'excess-time': overTime.actualError }">
+                                    v-bind:class="{ 'uk-text-excess-time-alarm': overTime.actualError==3, 'uk-text-excess-time-error': overTime.actualError==4 }">
                                     {{'KAFS00_2' | i18n}}[{{ overTime.actualTime | timept }}]
                                 </span>
                                 <span v-else class="far fa-clock display-time child-font-size" 
-                                    v-bind:class="{ 'excess-time': overTime.actualError }">
+                                    v-bind:class="{ 'uk-text-excess-time-alarm': overTime.actualError==3, 'uk-text-excess-time-error': overTime.actualError==4 }">
                                     {{'KAFS00_2' | i18n}}[--:--]
                                 </span>
                             </div>
@@ -174,16 +174,16 @@
                         <div class="row">
                             <div class="col-5 uk-text-dark-gray child-font-size">{{ payTime.frameName | i18n }}</div>
                             <div class="col-3 pl-0">
-                                <span v-if="payTime.appTime!=null">{{ payTime.appTime | timept }}</span>
-                                <span v-else>{{'CMMS45_15' | i18n}}</span>
+                                <span v-if="payTime.appTime!=null" class="uk-text-excess-time-none">{{ payTime.appTime | timept }}</span>
+                                <span v-else class="uk-text-excess-time-none">{{'CMMS45_15' | i18n}}</span>
                             </div>
                             <div class="col-4 pl-1" v-if="isPostApp">
                                 <span v-if="payTime.preAppTime!=null" class="far fa-clock display-time child-font-size" 
-                                    v-bind:class="{ 'excess-time': payTime.preAppError }">
+                                    v-bind:class="{ 'uk-text-excess-time-alarm': overTime.preAppError==2 }">
                                     {{'KAFS00_1' | i18n}}[{{ payTime.preAppTime | timept }}]
                                 </span>
                                 <span v-else class="far fa-clock display-time child-font-size" 
-                                    v-bind:class="{ 'excess-time': payTime.preAppError }">
+                                    v-bind:class="{ 'uk-text-excess-time-alarm': overTime.preAppError==2 }">
                                     {{'KAFS00_1' | i18n}}[--:--]
                                 </span>
                             </div>
