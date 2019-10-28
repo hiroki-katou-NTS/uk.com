@@ -30,29 +30,30 @@
     <!-- End top alert -->
 
     <!-- Notice -->
-    <div class="section notice-wrapper" v-show="displayNotifis && displayNotifis.length > 0 && displayNotifisVissible">
+    <div class="section notice-wrapper" v-show="displayNotifis && displayNotifis.length > 0">
       <nts-label v-bind:constraint="labelConstraint">{{ 'CCGS08_3' | i18n}}</nts-label>
-      <div class="content">
+      <div class="content" v-show="displayNotifisVissible">
         <template v-for="notice in displayNotifis" >
           <button
             type="button"
             class="btn btn-secondary btn-selection mb-2"
-            v-on:click="openModal"
-             :key="notice.title"
-             v-if="notice.visible"
+            v-on:click="openModal(notice.title)"
+            :key="notice.title"
+            v-if="notice.visible"
           >
             <i class="fa fa-info-circle color-attendance uk-text-medium-blue" aria-hidden="true"></i>
             {{notice.title | i18n}} 
           </button>
         </template>
       </div>
+      <div class="pl-3 pt-2" v-show="!displayNotifisVissible">{{ 'CCGS08_35' | i18n }}</div>
     </div>
     <!-- End notice -->
 
     <!-- Overtime -->
-    <div class="section overtime-wrapper" v-if="overtime.visible">
+    <div id="test" class="section overtime-wrapper" v-if="overtime.visible">
       <nts-label v-bind:constraint="labelConstraint">{{ 'CCGS08_5' | i18n}}</nts-label>
-      <div class="row content">
+      <div class="row content" v-show="false">
         <div class="date-label">
           <label for>{{'CCGS08_6' | i18n}}</label>
         </div>
@@ -66,7 +67,20 @@
       </div>
       <div class="overtime-info">
         <div class="error-message color-danger" v-if="false">{{overtime.errorMessage}}</div>
-         <nts-ccgs008-table :configs="overtime.tableConfigs" @search-handle="overtimeSearchHandle" />
+        <nts-ccgs008-table :configs="overtime.tableConfigs" />
+        <div class="text-center mt-n2">
+          <button type="button" v-bind:class="{'btn-outline-info': showFull, 'btn-info': !showFull}"  v-show="agreementButton"
+            style="width: 150px" v-on:click="reverseShowAgreement" class="shadow-none btn rounded-pill">
+            <span v-if="!showFull">
+              <i class="fas fa-angle-double-down"></i> 
+              {{ 'CCGS08_33' | i18n }}
+            </span>
+            <span v-if="showFull">
+              <i class="fas fa-angle-double-up"></i> 
+              {{ 'CCGS08_34' | i18n }}
+            </span>
+          </button>
+        </div>
       </div>
     </div>
     <!-- End overtime -->

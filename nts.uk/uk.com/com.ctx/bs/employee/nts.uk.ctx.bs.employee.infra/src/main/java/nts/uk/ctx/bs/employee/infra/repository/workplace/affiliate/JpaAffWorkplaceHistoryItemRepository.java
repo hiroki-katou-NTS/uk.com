@@ -349,6 +349,8 @@ public class JpaAffWorkplaceHistoryItemRepository extends JpaRepository implemen
 		int  records = this.getEntityManager().createNativeQuery(sb.toString()).executeUpdate();
 		System.out.println(records);
 	}
+	
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@SneakyThrows
 	@Override
 	public List<String> getHistIdLstBySidAndPeriod(String sid, DatePeriod period) {

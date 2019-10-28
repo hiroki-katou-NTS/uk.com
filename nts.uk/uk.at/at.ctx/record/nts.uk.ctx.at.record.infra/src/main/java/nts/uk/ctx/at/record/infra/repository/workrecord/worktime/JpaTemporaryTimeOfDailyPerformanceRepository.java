@@ -11,14 +11,12 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.inject.Inject;
 
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
@@ -75,6 +73,7 @@ public class JpaTemporaryTimeOfDailyPerformanceRepository extends JpaRepository
 //		this.getEntityManager().flush();
 	}
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public Optional<TemporaryTimeOfDailyPerformance> findByKey(String employeeId, GeneralDate ymd) {
 		return this.queryProxy().query(FIND_BY_KEY, KrcdtDaiTemporaryTime.class).setParameter("employeeId", employeeId)
@@ -194,6 +193,7 @@ public class JpaTemporaryTimeOfDailyPerformanceRepository extends JpaRepository
 		commandProxy().insertAll(entity.timeLeavingWorks);
 	}
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<TemporaryTimeOfDailyPerformance> findbyPeriodOrderByYmd(String employeeId, DatePeriod datePeriod) {
 		StringBuilder query = new StringBuilder();
@@ -210,6 +210,7 @@ public class JpaTemporaryTimeOfDailyPerformanceRepository extends JpaRepository
 				.map(f -> f.toDomain()).collect(Collectors.toList());
 	}
 	
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<TemporaryTimeOfDailyPerformance> finds(List<String> employeeId, DatePeriod ymd) {
 		List<Object[]> result = new ArrayList<>();
@@ -226,6 +227,7 @@ public class JpaTemporaryTimeOfDailyPerformanceRepository extends JpaRepository
 		return toDomainFromJoin(result);
 	}
 	
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<TemporaryTimeOfDailyPerformance> finds(Map<String, List<GeneralDate>> param) {
 		List<Object[]> result = new ArrayList<>();
