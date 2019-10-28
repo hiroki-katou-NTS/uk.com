@@ -16,26 +16,27 @@ import nts.arc.time.GeneralDateTime;
 @Getter
 public class DataBeforeReflectingPerInfo extends AggregateRoot {
 
-	public String historyId;
-	public String contractCode;
-	public String companyId;
-	public String companyCode;
-	public String pId;
-	public String sId;
-	public String scd;
-	public Integer workId;
-	public String personName;
-	public String workName;
-	public RequestFlag requestFlag;
-	public GeneralDate registerDate;
-	public GeneralDateTime releaseDate;
-	public OnHoldFlag onHoldFlag;
-	public Status stattus;
-	public String histId_Refer;
+	
+	public String historyId; // 履歴ID
+	public String contractCode; // 契約コード
+	public String companyId; //会社ID
+	public String companyCode;  //会社コード
+	public String pId; // 個人ID
+	public String sId; // 社員ID
+	public String scd; // 社員コード
+	public Integer workId;  // 業務ID
+	public String personName; // 社員名  個人名
+	public String workName;  // 業務名称
+	public RequestFlag requestFlag; //  届出区分
+	public GeneralDate registerDate; // 入力日
+	public GeneralDateTime releaseDate; // 公開日
+	public OnHoldFlag onHoldFlag; // 保留フラグ
+	public Status stattus; // ステータス
+	public String histId_Refer; // 反映先_履歴ID
 
-	public GeneralDateTime date_01;
-	public GeneralDateTime date_02;
-	public GeneralDateTime date_03;
+	public GeneralDateTime date_01; // retirementDate - 退職日
+	public GeneralDateTime date_02; // dismissalNoticeDate - 解雇予告日
+	public GeneralDateTime date_03; // dismissalNoticeDateAllow - 解雇予告手当支給日
 	public GeneralDateTime date_04;
 	public GeneralDateTime date_05;
 	public GeneralDateTime date_06;
@@ -44,12 +45,12 @@ public class DataBeforeReflectingPerInfo extends AggregateRoot {
 	public GeneralDateTime date_09;
 	public GeneralDateTime date_10;
 
-	public Integer int_01;
-	public Integer int_02;
-	public Integer int_03;
-	public Integer int_04;
-	public Integer int_05;
-	public Integer int_06;
+	public Integer int_01; // naturalUnaReasons_1 - 解雇の理由1_チェック
+	public Integer int_02; // naturalUnaReasons_2 - 解雇の理由2_チェック
+	public Integer int_03; // naturalUnaReasons_3 - 解雇の理由3_チェック
+	public Integer int_04; // naturalUnaReasons_4 - 解雇の理由4_チェック
+	public Integer int_05; // naturalUnaReasons_5 - 解雇の理由5_チェック
+	public Integer int_06; // naturalUnaReasons_6 - 解雇の理由6_チェック
 	public Integer int_07;
 	public Integer int_08;
 	public Integer int_09;
@@ -86,9 +87,9 @@ public class DataBeforeReflectingPerInfo extends AggregateRoot {
 	public Float num_19;
 	public Float num_20;
 
-	public String select_code_01;
-	public String select_code_02;
-	public String select_code_03;
+	public String select_code_01; // retirementCategory - 退職区分
+	public String select_code_02; // retirementReasonCtgCode1 - 退職理由区分1_コード
+	public String select_code_03; // retirementReasonCtgCode2 - 退職理由区分2_コード
 	public String select_code_04;
 	public String select_code_05;
 	public String select_code_06;
@@ -108,9 +109,9 @@ public class DataBeforeReflectingPerInfo extends AggregateRoot {
 	public Integer select_id_09;
 	public Integer select_id_10;
 
-	public String select_name_01;
-	public String select_name_02;
-	public String select_name_03;
+	public String select_name_01; // retirementCategory - 退職区分
+	public String select_name_02; // retirementReasonCtgName1 - 退職理由区分1_名称
+	public String select_name_03; // retirementReasonCtgName2 - 退職理由区分2_名称
 	public String select_name_04;
 	public String select_name_05;
 	public String select_name_06;
@@ -119,15 +120,15 @@ public class DataBeforeReflectingPerInfo extends AggregateRoot {
 	public String select_name_09;
 	public String select_name_10;
 
-	public String str_01;
-	public String str_02;
-	public String str_03;
-	public String str_04;
-	public String str_05;
-	public String str_06;
-	public String str_07;
-	public String str_08;
-	public String str_09;
+	public String str_01; // retirementRemarks - 退職の備考
+	public String str_02; // retirementReasonVal - 自己都合退職の手続き
+	public String str_03; // reaAndProForDis - 解雇の事由・手続き
+	public String str_04; // naturalUnaReasons_1Val - 解雇の理由1_文字列
+	public String str_05; // naturalUnaReasons_2Val - 解雇の理由2_文字列
+	public String str_06; // naturalUnaReasons_3Val - 解雇の理由3_文字列
+	public String str_07; // naturalUnaReasons_4Val - 解雇の理由4_文字列
+	public String str_08; // naturalUnaReasons_5Val - 解雇の理由5_文字列
+	public String str_09; // naturalUnaReasons_6Val - 解雇の理由6_文字列
 	public String str_10;
 
 	public DataBeforeReflectingPerInfo(String historyId, String contractCode, String companyId, String companyCode,
