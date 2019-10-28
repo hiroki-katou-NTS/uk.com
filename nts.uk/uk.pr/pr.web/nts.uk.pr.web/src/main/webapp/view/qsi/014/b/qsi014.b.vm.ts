@@ -37,10 +37,9 @@ module nts.uk.pr.view.qsi014.b.viewmodel {
 
         constructor() {
             let self = this;
+            $('#emp-component').focus();
             self.selectedItem.subscribe(e => {
-                errors.clearAll();
                 self.initScreen(e);
-
             });
             self.empAddChangeInfoDto().otherAtr.subscribe(e =>{
                 self.empAddChangeInfoDto().otherReason(null);
@@ -61,6 +60,7 @@ module nts.uk.pr.view.qsi014.b.viewmodel {
             self.loadKCP009(self.employeeInputList());
             self.selectedItem(self.employeeInputList()[0].id);
             //select employee
+            $('#emp-component').focus();
 
 
         }
@@ -72,9 +72,9 @@ module nts.uk.pr.view.qsi014.b.viewmodel {
             return errors.hasError();
         }
         initScreen(empId: string): JQueryPromise<any> {
+            let self = this;
             let dfd = $.Deferred();
             block.invisible();
-            let self = this;
             //load start screen
             service.start(empId).done(function(data: IEmpAddChangeInfoDto) {
                     block.clear();
@@ -93,7 +93,13 @@ module nts.uk.pr.view.qsi014.b.viewmodel {
             }).fail(function (result) {
                 dialog.alertError(result.errorMessage);
                 dfd.reject();
+            }).always(()=>{
+
+                if(!self.validate()){
+                    errors.clearAll();
+                }
             });
+
             return dfd.promise();
         }
 
@@ -139,7 +145,7 @@ module nts.uk.pr.view.qsi014.b.viewmodel {
             self.systemReference = ko.observable(SystemType.EMPLOYMENT);
             self.isDisplayOrganizationName = ko.observable(false);
             self.targetBtnText = nts.uk.resource.getText("KCP009_3");
-            self.tabindex = 3;
+            self.tabindex = 4;
             // Initial listComponentOption
             self.listComponentOption = <ComponentOption>{
                 systemReference: self.systemReference(),
