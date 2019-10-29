@@ -32,12 +32,28 @@ module nts.uk.hr.view.jmm017.b.viewmodel {
             self.useSet = ko.observable('1');
             self.useList = ko.observableArray([]);
             self.editTem = "<a href='#' onclick=\"editMsg({ id: '${guideMsgId}' })\">"+getText('JMM017_B422_23')+"</a>";
-            
-            $("#grid").bind("iggridpagingpagesizechanged", function(c, v) {
+//            
+//            $("#grid").bind("iggridpagingpagesizechanged", function(c, v) {
+//                self.setScroll();
+//            });
+//            
+//            $("#grid").bind("iggridpagingpageindexchanged", function(c, v) {
+//                self.setScroll();
+//            });
+//            
+//            $("#grid").on("iggridfilteringdatafiltered", function(c, v) {
+//                self.setScroll();
+//            });
+//            
+//            $("#grid").on("iggridgroupbygroupedcolumnschanged", function(c, v) {
+//                self.setScroll();
+//            });
+//            
+            $("#grid").on("iggridhidingcolumnhidden", function(c, v) {
                 self.setScroll();
             });
             
-            $("#grid").bind("iggridpagingpageindexchanged", function(c, v) {
+            $("#grid").on("iggridrowsrendered", function(c, v) {
                 self.setScroll();
             });
 
@@ -49,7 +65,8 @@ module nts.uk.hr.view.jmm017.b.viewmodel {
         caculator(): any {
             let sidebarArea = $(".sidebar-html")[0].getBoundingClientRect().height, 
                 contentArea = sidebarArea - ($("#header")[0].getBoundingClientRect().height + $(".sidebar-content-header")[0].getBoundingClientRect().height),
-                groupArea = $("#grid_container > div.ui-widget.ui-helper-clearfix.ui-iggrid-pagesizedropdowncontainerabove.ui-iggrid-toolbar.ui-widget-header.and.ui-corner-top")[0].getBoundingClientRect().height + $("#grid_groupbyarea")[0].getBoundingClientRect().height;
+                //height of combobox of display page size = 44
+                groupArea = 44 + $("#grid_groupbyarea")[0].getBoundingClientRect().height;
          return {contentAreaHeight: contentArea, gridAreaHeight: contentArea + groupArea};
         }
         startPage(): JQueryPromise<any> {
@@ -60,8 +77,8 @@ module nts.uk.hr.view.jmm017.b.viewmodel {
                 //$('#gridContent').css( "height", "200px");
                 self.categoryList(data);
                 self.bindData();
-                $("#grid").igGridGroupBy("groupByColumn", 'categoryName');
-                $("#grid").igGridGroupBy("groupByColumn", 'programName');
+//                $("#grid").igGridGroupBy("groupByColumn", 'categoryName');
+//                $("#grid").igGridGroupBy("groupByColumn", 'programName');
             }).fail(function(error) {
                 $('#gridContent').css( "height", "200px");
                 error({ messageId: error.messageId });
@@ -83,27 +100,29 @@ module nts.uk.hr.view.jmm017.b.viewmodel {
                 useSet: self.useSet()==1?null:self.useSet()==2
             }
             new service.getGuideMessageList(param).done(function(data: any) {
-                let groupByColumns = $("#grid").igGridGroupBy("groupByColumns");
+//                let groupByColumns = $("#grid").igGridGroupBy("groupByColumns");
                 self.guideMessageList = data;
-                self.bindData();
-                $("#grid").igGridGroupBy("ungroupAll");
-                _.forEach(groupByColumns, col => {
-                    $("#grid").igGridGroupBy("groupByColumn", col.key);
-                });
-                $("#grid").igGridPaging("pageIndex", 0);
+//                self.bindData();
+                $("#grid").igGrid("dataSourceObject", self.guideMessageList).igGrid("dataBind");
+//                $("#grid").igGridGroupBy("ungroupAll");
+//                _.forEach(groupByColumns, col => {
+//                    $("#grid").igGridGroupBy("groupByColumn", col.key);
+//                });
+//                $("#grid").igGridPaging("pageIndex", 0);
                 self.setScroll();
 
             }).fail(function(errorInfor) {
                 error({ messageId: errorInfor.messageId });
-                let groupByColumns = $("#grid").igGridGroupBy("groupByColumns");
+//                let groupByColumns = $("#grid").igGridGroupBy("groupByColumns");
                 self.guideMessageList = [];
+                $("#grid").igGrid("dataSourceObject", self.guideMessageList).igGrid("dataBind");
                 //$('#gridContent').css( "height", "200px");
-                self.bindData();
-                $("#grid").igGridGroupBy("ungroupAll");
-                _.forEach(groupByColumns, col => {
-                    $("#grid").igGridGroupBy("groupByColumn", col.key);
-                });
-                $("#grid").igGridPaging("pageIndex", 0);  
+//                self.bindData();
+//                $("#grid").igGridGroupBy("ungroupAll");
+//                _.forEach(groupByColumns, col => {
+//                    $("#grid").igGridGroupBy("groupByColumn", col.key);
+//                });
+//                $("#grid").igGridPaging("pageIndex", 0);  
                 self.setScroll();
 
             }).always(function() {
@@ -123,22 +142,21 @@ module nts.uk.hr.view.jmm017.b.viewmodel {
         }
         
         public reloadGrid(): void {
-            block.grayout();
             let self = this;
-            let pageSizeOld =  $('#grid').igGridPaging("option", "pageSize");
-            let groupByColumns = $("#grid").igGridGroupBy("groupByColumns");
-            let filters = $("#grid").data("igGridFiltering")._filteringExpressions
-            let pageIndex = $('#grid').igGridPaging("option", "currentPageIndex");
-            self.bindData();
-            setTimeout(() => {
-                _.forEach(groupByColumns, col => {
-                    $("#grid").igGridGroupBy("groupByColumn", col.key);
-                });
-                $("#grid").igGridPaging("pageSize", pageSizeOld);
-                $("#grid").igGridFiltering("filter", filters);
-                $("#grid").igGridPaging("pageIndex", pageIndex);
-            }, 1);
-            block.clear();
+            $("#grid").igGrid("dataSourceObject", self.guideMessageList).igGrid("dataBind");
+//            let pageSizeOld =  $('#grid').igGridPaging("option", "pageSize");
+//            let groupByColumns = $("#grid").igGridGroupBy("groupByColumns");
+//            let filters = $("#grid").data("igGridFiltering")._filteringExpressions
+//            let pageIndex = $('#grid').igGridPaging("option", "currentPageIndex");
+//            self.bindData();
+//            setTimeout(() => {
+//                _.forEach(groupByColumns, col => {
+//                    $("#grid").igGridGroupBy("groupByColumn", col.key);
+//                });
+//                $("#grid").igGridPaging("pageSize", pageSizeOld);
+//                $("#grid").igGridFiltering("filter", filters);
+//                $("#grid").igGridPaging("pageIndex", pageIndex);
+//            }, 1);
         }
         
         public editMsg(msgId: string): void {
@@ -180,6 +198,7 @@ module nts.uk.hr.view.jmm017.b.viewmodel {
                     for (var i = 0; i < groupRows.length; i++) {
                         $("#grid").igGridGroupBy("expand", groupRows[i].id);
                     }
+                    self.setScroll();
                 }
             });
             $("#buttonCollapseAll").igButton({
@@ -192,6 +211,7 @@ module nts.uk.hr.view.jmm017.b.viewmodel {
                     for (var i = 0; i < groupRows.length; i++) {
                         $("#grid").igGridGroupBy("collapse", groupRows[i].id);
                     }
+                    self.setScroll();
                 }
             });
             
@@ -255,8 +275,19 @@ module nts.uk.hr.view.jmm017.b.viewmodel {
                     },
                     {
                         name: 'GroupBy', 
-                        groupByDialogContainment: 'window'
-                    },
+                        groupByDialogContainment: 'window',
+                        columnSettings: [
+                            {
+                                columnKey: "categoryName",
+                                isGroupBy: true,
+                            },
+                            {
+                                columnKey: "programName",
+                                isGroupBy: true,
+                                
+                            },
+                        ]
+                    },    
                     {
                         name: "CellMerging"
                     },
