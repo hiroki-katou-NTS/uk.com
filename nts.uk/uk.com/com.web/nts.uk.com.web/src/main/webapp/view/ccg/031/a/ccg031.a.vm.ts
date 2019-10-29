@@ -52,7 +52,11 @@ module nts.uk.com.view.ccg031.a.viewmodel {
                     listPlacement = _.orderBy(listPlacement, ['row', 'column'], ['asc', 'asc']);
                     self.placements(listPlacement);
                 }
-                _.defer(() => { self.initDisplay(); });
+                _.defer(() => { 
+                	self.initDisplay(); 
+                	self.setHeight();
+                });
+                
                 dfd.resolve();
             }).fail((res: any) => {
                 dfd.fail();
@@ -268,6 +272,17 @@ module nts.uk.com.view.ccg031.a.viewmodel {
                 self.layoutGrid().markOccupied(placement);
             });
         }
+        
+        private setHeight(): void {
+            var self = this;
+            $(".placement-container").attr('style', 
+            	'height:' + ($("#contents-area").height() - 57) + 'px; ');
+            $(".btn-addcolumn").attr('style', 
+                'height:' + ($("#contents-area").height() - 57) + 'px; ');
+            if ($(".layout-container").height() > $(".placement-container").height()) {
+            	$(".placement-container").width($(".placement-container").width() + 17);      	
+            }
+        }
 
     }
 
@@ -364,9 +379,15 @@ module nts.uk.com.view.ccg031.a.viewmodel {
 
         /** Add overflow class */
         private addOverflowClass(): void {
-            if (this.rows() > MINROW) $(".placement-container").addClass("overflow-y");
-            if (this.columns() > MINCOLUMN) $(".placement-container").addClass("overflow-x");
+            //if (this.rows() > MINROW) $(".placement-container").addClass("overflow-y");
+            //if (this.columns() > MINCOLUMN) $(".placement-container").addClass("overflow-x");
+        	if ($(".layout-container").height() > $(".placement-container").height()) {
+            	if ($(".placement-container").width() != 977) {
+            		$(".placement-container").width($(".placement-container").width() + 17);
+            	}          	
+            }
         }
+        
     }
 
     class LayoutRow {
