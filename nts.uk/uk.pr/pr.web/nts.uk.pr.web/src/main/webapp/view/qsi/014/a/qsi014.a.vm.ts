@@ -43,9 +43,9 @@ module nts.uk.pr.view.qsi014.a.viewmodel {
 
         socInsurNotiCreSet : KnockoutObservable<SocInsurNotiCreSet> = ko.observable(new SocInsurNotiCreSet({
             officeInformation: 0,
-            printPersonNumber: 0,
+            printPersonNumber: 3,
             businessArrSymbol: 0,
-            outputOrder: 0,
+            outputOrder: 1,
             submittedName: 0,
             insuredNumber: 0,
             fdNumber: null,
@@ -174,8 +174,7 @@ module nts.uk.pr.view.qsi014.a.viewmodel {
                 alreadySettingList: self.alreadySettingList,
                 isShowWorkPlaceName: self.isShowWorkPlaceName(),
                 isShowSelectAllButton: self.isShowSelectAllButton(),
-                disableSelection : self.disableSelection(),
-                maxRows: 18
+                disableSelection : self.disableSelection()
             };
             $('#component-items-list').ntsListComponent(self.listComponentOption);
         }
@@ -252,8 +251,8 @@ module nts.uk.pr.view.qsi014.a.viewmodel {
                 showEmployeeSelection: false,
                 showQuickSearchTab: true,
                 showAdvancedSearchTab: true,
-                showBaseDate: false,
-                showClosure: false,
+                showBaseDate: true,
+                showClosure: true,
                 showAllClosure: true,
                 showPeriod: false,
                 periodFormatYM: false,

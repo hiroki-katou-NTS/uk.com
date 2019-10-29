@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsuranceOffice;
 import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.EmpAddChangeInfo;
 import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.SocialInsurNotiCreateSet;
@@ -31,4 +32,5 @@ public class EmpAddChangeInforData {
     List<FamilyResidence> familyResidenceList;
     List<EmpAddChangeInfo> empAddChangeInfoList;*/
     List<EmpAddChangeInfoExport> empAddChangeInfoExportList;
+    GeneralDate baseDate;
 }

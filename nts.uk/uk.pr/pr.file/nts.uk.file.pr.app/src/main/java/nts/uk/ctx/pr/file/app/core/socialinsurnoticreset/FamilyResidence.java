@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.arc.time.GeneralDate;
 
 /**
  家族現同居住所
@@ -29,4 +30,6 @@ public class FamilyResidence {
 
     /**住所2 */
     private String address2;
+
+    private GeneralDate baseDate;
 }

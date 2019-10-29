@@ -16,7 +16,13 @@ public interface EmplHealInsurQualifiInforRepository {
 
     Optional<HealInsurNumberInfor> getEmplHealInsurQualifiInforByEmpId(String cid, String empId, GeneralDate date );
 
-    List<EmplHealInsurQualifiInfor> getListEmplHealInsurQualifiInfor(String cid, GeneralDate date);
+    Optional<HealInsurNumberInfor> getEmplHealInsurQualifiInforByEmpId(String cid, String empId, GeneralDate date , String historyId);
+
+    Optional<EmplHealInsurQualifiInfor> getEmplHealInsurQualifiInfor(String cid, String empId, GeneralDate date );
+
+    List<EmplHealInsurQualifiInfor> getEmplHealInsurQualifiInfor(String cid, List<String> empIds, GeneralDate date);
+
+    List<EmplHealInsurQualifiInfor> getEmplHealInsurQualifiInfor(String cid, List<String> empIds);
 
     void add(EmplHealInsurQualifiInfor domain);
 

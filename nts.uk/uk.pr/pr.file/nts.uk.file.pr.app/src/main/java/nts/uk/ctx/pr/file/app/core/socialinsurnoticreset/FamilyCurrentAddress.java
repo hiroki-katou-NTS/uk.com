@@ -15,7 +15,7 @@ import nts.arc.time.GeneralDate;
  * */
 public class FamilyCurrentAddress {
 
-    private String familyId;
+    private Integer familyId;
     /** 郵便番号*/
     private String postCode;
 
@@ -33,4 +33,7 @@ public class FamilyCurrentAddress {
 
     /** 開始日 */
     private GeneralDate startDate;
+
+    /**同居別居区分 : false , 同居 の場合  true*/
+    private boolean livingTogether ;
 }
