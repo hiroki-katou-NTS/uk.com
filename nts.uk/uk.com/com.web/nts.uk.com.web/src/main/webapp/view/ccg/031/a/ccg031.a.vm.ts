@@ -275,10 +275,13 @@ module nts.uk.com.view.ccg031.a.viewmodel {
         
         private setHeight(): void {
             var self = this;
-            $(".placement-container").attr('style', 
+            var rowNumDisplay = Math.floor($("#contents-area").height() / 150);
+            /*$(".placement-container").attr('style', 
             	'height:' + ($("#contents-area").height() - 57) + 'px; ');
             $(".btn-addcolumn").attr('style', 
-                'height:' + ($("#contents-area").height() - 57) + 'px; ');
+                'height:' + ($("#contents-area").height() - 57) + 'px; ');*/
+            $(".placement-container").height(160 * rowNumDisplay - 40);
+            $(".btn-addcolumn").height(160 * rowNumDisplay - 40);
             if ($(".layout-container").height() > $(".placement-container").height()) {
             	$(".placement-container").width($(".placement-container").width() + 17);      	
             }
