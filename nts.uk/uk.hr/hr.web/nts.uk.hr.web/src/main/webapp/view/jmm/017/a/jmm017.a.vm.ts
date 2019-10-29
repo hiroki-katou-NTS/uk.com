@@ -25,10 +25,8 @@ module nts.uk.hr.view.jmm017.a.viewmodel {
                         return "tabpanel-2";
                     }
                      
-                   let contentArea = $(".sidebar-html")[0].getBoundingClientRect().height - ($("#header")[0].getBoundingClientRect().height + $(".sidebar-content-header")[0].getBoundingClientRect().height + $(".nts-guide-area")[0].getBoundingClientRect().height + 10);
-                   // 10 ở đây là margin của nts-guide-area
-                    console.log(contentArea);
-                   $("#tabpanel-2.contents-area").css({overflow: 'auto', height:contentArea +"px"});
+                   let contentArea = $(".sidebar-html")[0].getBoundingClientRect().height - ($("#header")[0].getBoundingClientRect().height + $(".sidebar-content-header")[0].getBoundingClientRect().height);
+                    $(".wrapScroll").css({overflow: 'auto', height:contentArea +"px"}) ;
                 }, Page.SIDEBAR);
               self.tab2ViewModel = ko.observable(new viewModelTabB.ScreenModel());
             //nts.uk.ui.guide.operate("hr", 'guidance/guideOperate', Page.SIDEBAR, { tab1: "", tab2: "" });

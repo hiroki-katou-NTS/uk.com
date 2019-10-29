@@ -36,24 +36,20 @@ module nts.uk.hr.view.jmm017.b.viewmodel {
             $("#grid").bind("iggridpagingpagesizechanging", function(c, v) {
                 let sidebarArea = $(".sidebar-html")[0].getBoundingClientRect().height, 
                     objCalulator = self.caculator();
-                $(".contents-area").css({overflow: 'auto', height: objCalulator.contentAreaHeight +"px"});
-                if (v.newPageSize <  25) {
-                   $("#grid").igGrid("option", "height", sidebarArea <969? objCalulator.gridAreaHeight: objCalulator.contentAreaHeight);
-                } else {
-                   $("#grid").igGrid("option", "height", objCalulator.gridAreaHeight);
-                }
+                $(".wrapScroll").css({overflow: 'auto', height: objCalulator.contentAreaHeight +"px"});
+                $("#grid").igGrid("option", "height", objCalulator.gridAreaHeight);
             });
             
             $(window).resize(function() {
                 let objCalulator = self.caculator();
-                $(".contents-area").css({height: objCalulator.contentAreaHeight +"px"});
+                $(".wrapScroll").css({height: objCalulator.contentAreaHeight +"px"});
                 $("#grid").igGrid("option", "height", objCalulator.gridAreaHeight);
             });
         }
         
         caculator(): any {
             let sidebarArea = $(".sidebar-html")[0].getBoundingClientRect().height, 
-                contentArea = $(".sidebar-html")[0].getBoundingClientRect().height - ($("#header")[0].getBoundingClientRect().height + $(".sidebar-content-header")[0].getBoundingClientRect().height + $(".nts-guide-area")[0].getBoundingClientRect().height + 10) ,
+                contentArea = sidebarArea - ($("#header")[0].getBoundingClientRect().height + $(".sidebar-content-header")[0].getBoundingClientRect().height),
                 groupArea = $("#grid_container > div.ui-widget.ui-helper-clearfix.ui-iggrid-pagesizedropdowncontainerabove.ui-iggrid-toolbar.ui-widget-header.and.ui-corner-top")[0].getBoundingClientRect().height + $("#grid_groupbyarea")[0].getBoundingClientRect().height;
          return {contentAreaHeight: contentArea, gridAreaHeight: contentArea + groupArea};
         }
@@ -90,13 +86,8 @@ module nts.uk.hr.view.jmm017.b.viewmodel {
             new service.getGuideMessageList(param).done(function(data: any) {
                 let sidebarArea = $(".sidebar-html")[0].getBoundingClientRect().height, 
                     objCalulator = self.caculator();
-                $(".contents-area").css({overflow: "auto", height: objCalulator.contentAreaHeight +"px"});
-                if( $("#grid").igGridPaging("option","pageSize") > 20){
-                     $("#grid").igGrid("option", "height", objCalulator.contentAreaHeight);
-                }else{
-                     $("#grid").igGrid("option", "height", sidebarArea < 969? objCalulator.gridAreaHeight :objCalulator.contentAreaHeight);
-                }
-               
+                $(".wrapScroll").css({overflow: "auto", height: objCalulator.contentAreaHeight +"px"});
+                $("#grid").igGrid("option", "height", objCalulator.gridAreaHeight);
                 let groupByColumns = $("#grid").igGridGroupBy("groupByColumns");
                 self.guideMessageList = data;
                 //$('#gridContent').css( "height", "430px");
