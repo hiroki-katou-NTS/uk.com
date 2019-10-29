@@ -32,18 +32,17 @@ module nts.uk.hr.view.jmm017.b.viewmodel {
             self.useSet = ko.observable('1');
             self.useList = ko.observableArray([]);
             self.editTem = "<a href='#' onclick=\"editMsg({ id: '${guideMsgId}' })\">"+getText('JMM017_B422_23')+"</a>";
-           
-            $("#grid").bind("iggridpagingpagesizechanging", function(c, v) {
-                let sidebarArea = $(".sidebar-html")[0].getBoundingClientRect().height, 
-                    objCalulator = self.caculator();
-                $(".wrapScroll").css({overflow: 'auto', height: objCalulator.contentAreaHeight +"px"});
-                $("#grid").igGrid("option", "height", objCalulator.gridAreaHeight);
+            
+            $("#grid").bind("iggridpagingpagesizechanged", function(c, v) {
+                self.setScroll();
             });
             
+            $("#grid").bind("iggridpagingpageindexchanged", function(c, v) {
+                self.setScroll();
+            });
+
             $(window).resize(function() {
-                let objCalulator = self.caculator();
-                $(".wrapScroll").css({height: objCalulator.contentAreaHeight +"px"});
-                $("#grid").igGrid("option", "height", objCalulator.gridAreaHeight);
+                self.setScroll();
             });
         }
         
@@ -84,21 +83,16 @@ module nts.uk.hr.view.jmm017.b.viewmodel {
                 useSet: self.useSet()==1?null:self.useSet()==2
             }
             new service.getGuideMessageList(param).done(function(data: any) {
-                let sidebarArea = $(".sidebar-html")[0].getBoundingClientRect().height, 
-                    objCalulator = self.caculator();
-                $(".wrapScroll").css({overflow: "auto", height: objCalulator.contentAreaHeight +"px"});
-                $("#grid").igGrid("option", "height", objCalulator.gridAreaHeight);
                 let groupByColumns = $("#grid").igGridGroupBy("groupByColumns");
                 self.guideMessageList = data;
-                //$('#gridContent').css( "height", "430px");
                 self.bindData();
-//                setTimeout(() => {
-                    $("#grid").igGridGroupBy("ungroupAll");
-                    _.forEach(groupByColumns, col => {
-                        $("#grid").igGridGroupBy("groupByColumn", col.key);
-                    });
-                    $("#grid").igGridPaging("pageIndex", 0);
-//                }, 1);
+                $("#grid").igGridGroupBy("ungroupAll");
+                _.forEach(groupByColumns, col => {
+                    $("#grid").igGridGroupBy("groupByColumn", col.key);
+                });
+                $("#grid").igGridPaging("pageIndex", 0);
+                self.setScroll();
+
             }).fail(function(errorInfor) {
                 error({ messageId: errorInfor.messageId });
                 let groupByColumns = $("#grid").igGridGroupBy("groupByColumns");
@@ -109,10 +103,23 @@ module nts.uk.hr.view.jmm017.b.viewmodel {
                 _.forEach(groupByColumns, col => {
                     $("#grid").igGridGroupBy("groupByColumn", col.key);
                 });
-                $("#grid").igGridPaging("pageIndex", 0);    
+                $("#grid").igGridPaging("pageIndex", 0);  
+                self.setScroll();
+
             }).always(function() {
                 block.clear();
             });
+        }
+        
+        setScroll() {
+            let self = this,
+                objCalulator = self.caculator();
+            // số dòng hiện tại + 2 line header + height group + height của page
+            let heightGrid = ($("#grid").igGrid("rows").length + 2) * 23 + 107 + 46;
+            $("#grid").igGrid("option", "height", heightGrid);
+            $(".wrapScroll").css({ overflow: "auto", height: objCalulator.contentAreaHeight + "px" });
+            $("#grid_container").css("max-height", objCalulator.gridAreaHeight + 'px');
+
         }
         
         public reloadGrid(): void {
