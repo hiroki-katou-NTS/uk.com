@@ -280,8 +280,8 @@ module nts.uk.com.view.ccg031.a.viewmodel {
             	'height:' + ($("#contents-area").height() - 57) + 'px; ');
             $(".btn-addcolumn").attr('style', 
                 'height:' + ($("#contents-area").height() - 57) + 'px; ');*/
-            $(".placement-container").height(160 * rowNumDisplay - 40);
-            $(".btn-addcolumn").height(160 * rowNumDisplay - 40);
+            $(".placement-container").height(160 * rowNumDisplay - 50);
+            $(".btn-addcolumn").height(160 * rowNumDisplay - 50);
             if ($(".layout-container").height() > $(".placement-container").height()) {
             	$(".placement-container").width($(".placement-container").width() + 17);      	
             }
