@@ -213,7 +213,12 @@ module jcm007.a {
                        
                         self.empInfoHeaderList = data2;
                         
-                        self.enable_btnRemove(true);
+                        if(self.selectedTab() == 'tab-1'){
+                            self.enable_btnRemove(false);
+                        }else if(self.selectedTab() == 'tab-2'){
+                            self.enable_btnRemove(true);
+                        }
+                        
                         
                         self.employeeListTab2 = data1;
                         
@@ -391,10 +396,7 @@ module jcm007.a {
                 command.scd = itemSelectedTab1.employeeCode;
                 command.employeeName = itemSelectedTab1.businessName;
                 self.preCheckAndRegisterNewEmp(command);
-                self.initHeaderInfo();
-                self.initRetirementInfo();
-                self.clearSelection();
-                self.itemSelectedTab1(null);
+                self.newMode();
                 
             } else if (self.selectedTab() == 'tab-2' && itemSelectedTab2 != null 
                        && itemSelectedTab2.notificationCategory == "" 
@@ -521,7 +523,6 @@ module jcm007.a {
             let dfd = $.Deferred<any>();
             block.grayout();
             service.addRetireeInformation(command).done(() => {
-                self.isNewMode = false;
                 console.log('REGISTER DONE!!');
                 self.start();
                 block.clear();
@@ -562,9 +563,7 @@ module jcm007.a {
                         } else if (lengthListItemTab2 - 1 > indexItemDelete) {
                             $("#gridListEmployeesJcm007").igGridSelection( "selectRow", indexItemDelete + 1 );
                         }
-                        if(lengthListItemTab2 == 1) {
-                            self.clearSelection();    
-                        }
+                        
                         
                     }).fail((mes) => {
                         console.log('REMOVE FAIL!!');
@@ -639,6 +638,7 @@ module jcm007.a {
         newMode() {
             let self = this;
             self.isNewMode = true;
+            self.enable_btnRemove(false);
             self.initHeaderInfo();
             self.initRetirementInfo();
             self.clearSelection();
