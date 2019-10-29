@@ -32,49 +32,17 @@ module nts.uk.hr.view.jmm017.b.viewmodel {
             self.useSet = ko.observable('1');
             self.useList = ko.observableArray([]);
             self.editTem = "<a href='#' onclick=\"editMsg({ id: '${guideMsgId}' })\">"+getText('JMM017_B422_23')+"</a>";
-           
-//            $("#grid").bind("iggridpagingpagesizechanging", function(c, v) {
-//                let sidebarArea = $(".sidebar-html")[0].getBoundingClientRect().height,
-//                    objCalulator = self.caculator();
-//                $(".wrapScroll").css({ overflow: 'auto', height: objCalulator.contentAreaHeight + "px" });
-//                // số dòng hiện tại + 2 line header + height group + height của page
-//                let heightGrid = ($("#grid").igGrid("rows").length + 2) * 23 + 107 + 46;
-//                $("#grid").igGrid("option", "height", heightGrid);
-//                $("#grid_container").css("max-height", objCalulator.gridAreaHeight + 'px');
-//
-//            });
-//pageSizeChanged
-// $("#grid1").bind("iggridpagingpageindexchanged", handler);
             
             $("#grid").bind("iggridpagingpagesizechanged", function(c, v) {
-                let sidebarArea = $(".sidebar-html")[0].getBoundingClientRect().height,
-                    objCalulator = self.caculator();
-                $(".wrapScroll").css({ overflow: 'auto', height: objCalulator.contentAreaHeight + "px" });
-                // số dòng hiện tại + 2 line header + height group + height của page
-                let heightGrid = ($("#grid").igGrid("rows").length + 2) * 23 + 107 + 46;
-                $("#grid").igGrid("option", "height", heightGrid);
-                $("#grid_container").css("max-height", objCalulator.gridAreaHeight + 'px');
-
+                self.setScroll();
             });
             
             $("#grid").bind("iggridpagingpageindexchanged", function(c, v) {
-                let sidebarArea = $(".sidebar-html")[0].getBoundingClientRect().height,
-                    objCalulator = self.caculator();
-                $(".wrapScroll").css({ overflow: 'auto', height: objCalulator.contentAreaHeight + "px" });
-                // số dòng hiện tại + 2 line header + height group + height của page
-                let heightGrid = ($("#grid").igGrid("rows").length + 2) * 23 + 107 + 46;
-                $("#grid").igGrid("option", "height", heightGrid);
-                $("#grid_container").css("max-height", objCalulator.gridAreaHeight + 'px');
-
+                self.setScroll();
             });
-            
+
             $(window).resize(function() {
-                let objCalulator = self.caculator();
-                $(".wrapScroll").css({height: objCalulator.contentAreaHeight +"px"});
-                 // số dòng hiện tại + 2 line header + height group + height của page
-                let heightGrid = ($("#grid").igGrid("rows").length + 2)*23 + 107 + 46;
-                $("#grid").igGrid("option", "height", heightGrid);
-                $("#grid_container").css("max-height", objCalulator.gridAreaHeight + 'px'); 
+                self.setScroll();
             });
         }
         
@@ -115,29 +83,19 @@ module nts.uk.hr.view.jmm017.b.viewmodel {
                 useSet: self.useSet()==1?null:self.useSet()==2
             }
             new service.getGuideMessageList(param).done(function(data: any) {
-                let sidebarArea = $(".sidebar-html")[0].getBoundingClientRect().height,
-                    objCalulator = self.caculator();
-
-                //$("#grid").igGrid("option", "height", objCalulator.gridAreaHeight);
                 let groupByColumns = $("#grid").igGridGroupBy("groupByColumns");
                 self.guideMessageList = data;
-                //$('#gridContent').css( "height", "430px");
                 self.bindData();
                 $("#grid").igGridGroupBy("ungroupAll");
                 _.forEach(groupByColumns, col => {
                     $("#grid").igGridGroupBy("groupByColumn", col.key);
                 });
                 $("#grid").igGridPaging("pageIndex", 0);
-                // số dòng hiện tại + 2 line header + height group + height của page
-                let heightGrid = ($("#grid").igGrid("rows").length + 2) * 23 + 107 + 46;
-                $("#grid").igGrid("option", "height", heightGrid);
-                $(".wrapScroll").css({ overflow: "auto", height: objCalulator.contentAreaHeight + "px" });
-                $("#grid_container").css("max-height", objCalulator.gridAreaHeight + 'px');
+                self.setScroll();
 
             }).fail(function(errorInfor) {
                 error({ messageId: errorInfor.messageId });
-                let groupByColumns = $("#grid").igGridGroupBy("groupByColumns"),
-                    objCalulator = self.caculator();
+                let groupByColumns = $("#grid").igGridGroupBy("groupByColumns");
                 self.guideMessageList = [];
                 //$('#gridContent').css( "height", "200px");
                 self.bindData();
@@ -146,11 +104,7 @@ module nts.uk.hr.view.jmm017.b.viewmodel {
                     $("#grid").igGridGroupBy("groupByColumn", col.key);
                 });
                 $("#grid").igGridPaging("pageIndex", 0);  
-                // số dòng hiện tại + 2 line header + height group + height của page
-                let heightGrid = ($("#grid").igGrid("rows").length + 2) * 23 + 107 + 46;
-                $("#grid").igGrid("option", "height", heightGrid);
-                $(".wrapScroll").css({ overflow: "auto", height: objCalulator.contentAreaHeight + "px" });
-                $("#grid_container").css("max-height", objCalulator.gridAreaHeight + 'px');
+                self.setScroll();
 
             }).always(function() {
                 block.clear();
@@ -158,6 +112,8 @@ module nts.uk.hr.view.jmm017.b.viewmodel {
         }
         
         setScroll() {
+            let self = this,
+                objCalulator = self.caculator();
             // số dòng hiện tại + 2 line header + height group + height của page
             let heightGrid = ($("#grid").igGrid("rows").length + 2) * 23 + 107 + 46;
             $("#grid").igGrid("option", "height", heightGrid);
