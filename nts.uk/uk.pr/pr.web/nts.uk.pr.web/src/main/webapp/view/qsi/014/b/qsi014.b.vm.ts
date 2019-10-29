@@ -110,16 +110,16 @@ module nts.uk.pr.view.qsi014.b.viewmodel {
             //load start screen
             let data = {
                 sid: self.empAddChangeInfoDto().sid(),
-                shortResidentAtr: self.empAddChangeInfoDto().shortResidentAtr()== false ? 0 : 1,
-                livingAbroadAtr: self.empAddChangeInfoDto().livingAbroadAtr()== false ? 0 : 1,
-                residenceOtherResidentAtr: self.empAddChangeInfoDto().residenceOtherResidentAtr()== false ? 0 : 1,
-                otherAtr: self.empAddChangeInfoDto().otherAtr()== false ? 0 : 1,
-                otherReason: self.empAddChangeInfoDto().otherAtr() == false || self.empAddChangeInfoDto().otherReason() == "" ? null : self.empAddChangeInfoDto().otherReason(),
-                spouseShortResidentAtr: self.empAddChangeInfoDto().spouseShortResidentAtr()== false ? 0 : 1,
-                spouseLivingAbroadAtr: self.empAddChangeInfoDto().spouseLivingAbroadAtr()== false ? 0 : 1,
-                spouseResidenceOtherResidentAtr: self.empAddChangeInfoDto().spouseResidenceOtherResidentAtr()== false ? 0 : 1,
-                spouseOtherAtr: self.empAddChangeInfoDto().spouseOtherAtr()== false ? 0 : 1,
-                spouseOtherReason:  self.empAddChangeInfoDto().spouseOtherAtr()== false || self.empAddChangeInfoDto().spouseOtherReason() == "" ? null : self.empAddChangeInfoDto().spouseOtherReason(),
+                shortResidentAtr: self.empAddChangeInfoDto().shortResidentAtr() ? 1 : 0,
+                livingAbroadAtr: self.empAddChangeInfoDto().livingAbroadAtr()? 1 : 0,
+                residenceOtherResidentAtr: self.empAddChangeInfoDto().residenceOtherResidentAtr()? 1 : 0,
+                otherAtr: self.empAddChangeInfoDto().otherAtr() ? 1 : 0,
+                otherReason: !self.empAddChangeInfoDto().otherAtr() || self.empAddChangeInfoDto().otherReason() == "" ? null : self.empAddChangeInfoDto().otherReason(),
+                spouseShortResidentAtr: self.empAddChangeInfoDto().spouseShortResidentAtr() ? 1 : 0,
+                spouseLivingAbroadAtr: self.empAddChangeInfoDto().spouseLivingAbroadAtr() ? 1 : 0,
+                spouseResidenceOtherResidentAtr: self.empAddChangeInfoDto().spouseResidenceOtherResidentAtr() ? 1 : 0,
+                spouseOtherAtr: self.empAddChangeInfoDto().spouseOtherAtr() ? 1 : 0,
+                spouseOtherReason:  !self.empAddChangeInfoDto().spouseOtherAtr() || self.empAddChangeInfoDto().spouseOtherReason() == "" ? null : self.empAddChangeInfoDto().spouseOtherReason(),
                 basicPenNumber: self.empAddChangeInfoDto().basicPenNumber() == "" ? null :self.empAddChangeInfoDto().basicPenNumber()
             };
             service.register(data).done(e => {
