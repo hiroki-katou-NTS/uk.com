@@ -512,11 +512,17 @@ module kcp.share.list {
                 // can not use OUTSIDE "gridList" variable here. must to use $('#' + self.componentGridId)
                 let gridList = $('#' + self.componentGridId);
                 if (gridList.length > 0) {
-                    var selectedValues = gridList.ntsGridList("getSelectedValue");
-                    var selectedIds = self.isMultipleSelect ? _.map(selectedValues, o => o.id) : selectedValues.id;
-                    if(!_.isEqual(self.selectedCodes(), selectedIds)){
-                        gridList.ntsGridList('setSelected', self.selectedCodes());    
-                    }
+                    _.defer(() => {
+                        var selectedValues = gridList.ntsGridList("getSelectedValue");
+                        if (_.isEmpty(selectedValues)) {
+                            gridList.ntsGridList('setSelected', self.selectedCodes());        
+                        } else {
+                            var selectedIds = self.isMultipleSelect ? _.map(selectedValues, o => o.id) : selectedValues.id;
+                            if(!_.isEqual(self.selectedCodes(), selectedIds)){
+                                gridList.ntsGridList('setSelected', self.selectedCodes());    
+                            }    
+                        }    
+                    });
                 }
             });
 
