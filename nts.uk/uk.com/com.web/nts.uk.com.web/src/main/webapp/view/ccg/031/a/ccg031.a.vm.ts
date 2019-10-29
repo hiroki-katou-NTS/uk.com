@@ -275,15 +275,19 @@ module nts.uk.com.view.ccg031.a.viewmodel {
         
         private setHeight(): void {
             var self = this;
-            var rowNumDisplay = Math.floor($("#contents-area").height() / 150);
             /*$(".placement-container").attr('style', 
             	'height:' + ($("#contents-area").height() - 57) + 'px; ');
             $(".btn-addcolumn").attr('style', 
                 'height:' + ($("#contents-area").height() - 57) + 'px; ');*/
-            $(".placement-container").height(160 * rowNumDisplay - 50);
-            $(".btn-addcolumn").height(160 * rowNumDisplay - 50);
+            if ($("#contents-area").height() < 640) {
+            	$(".placement-container").height($("#contents-area").height() - 70);
+                $(".btn-addcolumn").height($("#contents-area").height() - 80);
+            } else {
+            	$(".placement-container").height(640);
+                $(".btn-addcolumn").height(630);
+            }            
             if ($(".layout-container").height() > $(".placement-container").height()) {
-            	$(".placement-container").width($(".placement-container").width() + 17);      	
+            	$(".placement-container").width($(".placement-container").width() + 17);
             }
         }
 
