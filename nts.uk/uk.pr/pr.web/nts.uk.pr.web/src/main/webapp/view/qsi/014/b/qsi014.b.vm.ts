@@ -82,12 +82,12 @@ module nts.uk.pr.view.qsi014.b.viewmodel {
                     self.empAddChangeInfoDto().shortResidentAtr(data.shortResidentAtr);
                     self.empAddChangeInfoDto().livingAbroadAtr(data.livingAbroadAtr);
                     self.empAddChangeInfoDto().residenceOtherResidentAtr(data.residenceOtherResidentAtr);
-                    self.empAddChangeInfoDto().otherAtr(data.otherAtr == 0 ?  false : true);
+                    self.empAddChangeInfoDto().otherAtr(data.otherAtr == 1);
                     self.empAddChangeInfoDto().otherReason(data.otherReason);
                     self.empAddChangeInfoDto().spouseShortResidentAtr(data.spouseShortResidentAtr);
                     self.empAddChangeInfoDto().spouseLivingAbroadAtr(data.spouseLivingAbroadAtr);
                     self.empAddChangeInfoDto().spouseResidenceOtherResidentAtr(data.spouseResidenceOtherResidentAtr);
-                    self.empAddChangeInfoDto().spouseOtherAtr(data.spouseOtherAtr == 0 ?  false : true) ;
+                    self.empAddChangeInfoDto().spouseOtherAtr(data.spouseOtherAtr == 1) ;
                     self.empAddChangeInfoDto().spouseOtherReason(data.spouseOtherReason);
                     self.empAddChangeInfoDto().basicPenNumber(data.basicPenNumber);
             }).fail(function (result) {
@@ -110,16 +110,16 @@ module nts.uk.pr.view.qsi014.b.viewmodel {
             //load start screen
             let data = {
                 sid: self.empAddChangeInfoDto().sid(),
-                shortResidentAtr: self.empAddChangeInfoDto().shortResidentAtr()== false ? 0 : 1,
-                livingAbroadAtr: self.empAddChangeInfoDto().livingAbroadAtr()== false ? 0 : 1,
-                residenceOtherResidentAtr: self.empAddChangeInfoDto().residenceOtherResidentAtr()== false ? 0 : 1,
-                otherAtr: self.empAddChangeInfoDto().otherAtr()== false ? 0 : 1,
-                otherReason: self.empAddChangeInfoDto().otherAtr() == false || self.empAddChangeInfoDto().otherReason() == "" ? null : self.empAddChangeInfoDto().otherReason(),
-                spouseShortResidentAtr: self.empAddChangeInfoDto().spouseShortResidentAtr()== false ? 0 : 1,
-                spouseLivingAbroadAtr: self.empAddChangeInfoDto().spouseLivingAbroadAtr()== false ? 0 : 1,
-                spouseResidenceOtherResidentAtr: self.empAddChangeInfoDto().spouseResidenceOtherResidentAtr()== false ? 0 : 1,
-                spouseOtherAtr: self.empAddChangeInfoDto().spouseOtherAtr()== false ? 0 : 1,
-                spouseOtherReason:  self.empAddChangeInfoDto().spouseOtherAtr()== false || self.empAddChangeInfoDto().spouseOtherReason() == "" ? null : self.empAddChangeInfoDto().spouseOtherReason(),
+                shortResidentAtr: self.empAddChangeInfoDto().shortResidentAtr() ? 1 : 0,
+                livingAbroadAtr: self.empAddChangeInfoDto().livingAbroadAtr()? 1 : 0,
+                residenceOtherResidentAtr: self.empAddChangeInfoDto().residenceOtherResidentAtr()? 1 : 0,
+                otherAtr: self.empAddChangeInfoDto().otherAtr() ? 1 : 0,
+                otherReason: !self.empAddChangeInfoDto().otherAtr() || self.empAddChangeInfoDto().otherReason() == "" ? null : self.empAddChangeInfoDto().otherReason(),
+                spouseShortResidentAtr: self.empAddChangeInfoDto().spouseShortResidentAtr() ? 1 : 0,
+                spouseLivingAbroadAtr: self.empAddChangeInfoDto().spouseLivingAbroadAtr() ? 1 : 0,
+                spouseResidenceOtherResidentAtr: self.empAddChangeInfoDto().spouseResidenceOtherResidentAtr() ? 1 : 0,
+                spouseOtherAtr: self.empAddChangeInfoDto().spouseOtherAtr() ? 1 : 0,
+                spouseOtherReason:  !self.empAddChangeInfoDto().spouseOtherAtr() || self.empAddChangeInfoDto().spouseOtherReason() == "" ? null : self.empAddChangeInfoDto().spouseOtherReason(),
                 basicPenNumber: self.empAddChangeInfoDto().basicPenNumber() == "" ? null :self.empAddChangeInfoDto().basicPenNumber()
             };
             service.register(data).done(e => {
@@ -130,9 +130,6 @@ module nts.uk.pr.view.qsi014.b.viewmodel {
                 dfd.reject();
             });
             return dfd.promise();
-        }
-
-        add() {
         }
 
         cancel() {
@@ -254,12 +251,12 @@ module nts.uk.pr.view.qsi014.b.viewmodel {
             this.livingAbroadAtr = ko.observable(params.livingAbroadAtr);
             this.shortResidentAtr = ko.observable(params.shortResidentAtr);
             this.residenceOtherResidentAtr = ko.observable(params.residenceOtherResidentAtr);
-            this.otherAtr = ko.observable(params.otherAtr == 0 ?  false : true);
+            this.otherAtr = ko.observable(params.otherAtr == 1);
             this.otherReason = ko.observable(params.otherReason);
             this.spouseShortResidentAtr = ko.observable(params.spouseShortResidentAtr);
             this.spouseLivingAbroadAtr = ko.observable(params.spouseLivingAbroadAtr);
             this.spouseResidenceOtherResidentAtr = ko.observable(params.spouseResidenceOtherResidentAtr);
-            this.spouseOtherAtr = ko.observable(params.spouseOtherAtr == 0 ?  false : true);
+            this.spouseOtherAtr = ko.observable(params.spouseOtherAtr == 1);
             this.spouseOtherReason = ko.observable(params.spouseOtherReason);
 
         }
