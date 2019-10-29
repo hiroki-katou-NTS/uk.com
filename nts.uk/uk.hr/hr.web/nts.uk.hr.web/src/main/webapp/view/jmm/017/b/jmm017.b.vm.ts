@@ -40,6 +40,14 @@ module nts.uk.hr.view.jmm017.b.viewmodel {
             $("#grid").bind("iggridpagingpageindexchanged", function(c, v) {
                 self.setScroll();
             });
+            
+            $("#grid").on("iggridfilteringdatafiltered", function(evt, ui) {
+                self.setScroll();
+            });
+            
+            $("#grid").on("iggridgroupbygroupedcolumnschanged", function(c, v) {
+                self.setScroll();
+            });
 
             $(window).resize(function() {
                 self.setScroll();
