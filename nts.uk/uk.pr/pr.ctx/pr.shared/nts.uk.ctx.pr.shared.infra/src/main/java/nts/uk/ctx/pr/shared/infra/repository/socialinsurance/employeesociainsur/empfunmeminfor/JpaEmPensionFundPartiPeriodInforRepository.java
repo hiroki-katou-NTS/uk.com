@@ -19,7 +19,7 @@ public class JpaEmPensionFundPartiPeriodInforRepository extends JpaRepository im
 {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QqsmtTemPenPartInfo f";
-    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.temPenPartInfoPk.employeeId =:employeeId AND  f.temPenPartInfoPk.historyId =:historyId ";
+    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.temPenPartInfoPk.employeeId =:employeeId AND  f.temPenPartInfoPk.cid =:cid ";
     private static final String SELECT_BY_KEY_STRING_BY_EMPID = SELECT_ALL_QUERY_STRING + " WHERE  f.temPenPartInfoPk.employeeId =:employeeId ";
     private static final String SELECT_BY_ID = SELECT_ALL_QUERY_STRING + " WHERE  f.temPenPartInfoPk.cid = :cid AND f.temPenPartInfoPk.employeeId =:employeeId AND f.startDate <= :baseDate AND f.endDate >= :baseDate";
     private static final String SELECT_BY_KEYID = SELECT_ALL_QUERY_STRING + " WHERE  f.temPenPartInfoPk.cid =:cid AND f.temPenPartInfoPk.employeeId =:employeeId AND  f.temPenPartInfoPk.historyId =:historyId ";
@@ -31,10 +31,10 @@ public class JpaEmPensionFundPartiPeriodInforRepository extends JpaRepository im
     }
 
     @Override
-    public Optional<EmPensionFundPartiPeriodInfor> getEmPensionFundPartiPeriodInforById(String employeeId, String historyId){
+    public Optional<EmPensionFundPartiPeriodInfor> getEmPensionFundPartiPeriodInforById(String employeeId, String cid){
         return this.queryProxy().query(SELECT_BY_KEY_STRING, QqsmtTemPenPartInfo.class)
         .setParameter("employeeId", employeeId)
-        .setParameter("historyId", historyId)
+        .setParameter("cid", cid)
         .getSingle(c->c.toDomain());
     }
 
@@ -43,8 +43,6 @@ public class JpaEmPensionFundPartiPeriodInforRepository extends JpaRepository im
         return this.queryProxy().query(SELECT_BY_KEY_STRING_BY_EMPID, QqsmtTemPenPartInfo.class)
                 .setParameter("employeeId", employeeId)
                 .getList(x -> x.toDomain());
-
-
 
     }
 

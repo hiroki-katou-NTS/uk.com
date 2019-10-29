@@ -26,4 +26,10 @@ public class CompanyInformation {
 
     /** 電話番号 */
     private String phoneNumber;
+
+    private String add1;
+
+    private String add2;
+
+
 }

@@ -21,10 +21,9 @@ import java.util.Optional;
 
 @Stateless
 public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGenerator implements EmpAddChangeInfoFileGenerator {
-    private static final String TEMPLATE_FILE_1 = "report/国民年金第３号被保険者住所変更届.xlsx";
-    private static final String TEMPLATE_FILE_2 = "report/被保険者住所変更届.xlsx";
-    private static final String FILE_NAME_1 = "国民年金第３号被保険者住所変更届";
-    private static final String FILE_NAME_2 = "被保険者住所変更届";
+    private static final String TEMPLATE_FILE_2 = "report/国民年金第３号被保険者住所変更届.xlsx";
+    private static final String TEMPLATE_FILE_1 = "report/被保険者住所変更届.xlsx";
+    private static final String FILE_NAME = "被保険者住所変更届";
     private static final String SHOWA = "昭和";
     private static final String HEISEI = "平成";
     private static final String PEACE = "令和";
@@ -39,7 +38,12 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
            AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE_1);
            Workbook workbook = reportContext.getWorkbook();
            WorksheetCollection worksheets = workbook.getWorksheets();
-           reportContext.processDesigner();
+
+           AsposeCellsReportContext reportContext2 = this.createContext(TEMPLATE_FILE_1);
+           Workbook workbook2 = reportContext2.getWorkbook();
+           WorksheetCollection worksheets2 = workbook2.getWorksheets();
+           reportContext2.processDesigner();
+
            String sheetName = "INS";
 
            if (data.getEmpAddChangeInfoExportList().isEmpty()) {
@@ -49,13 +53,21 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
            for (int i  = 0; i < data.getEmpAddChangeInfoExportList().size() ; i ++){
                worksheets.get(worksheets.addCopy(0)).setName(sheetName + i);
                EmpAddChangeInfoExport empAddChangeInfoExport = data.getEmpAddChangeInfoExportList().get(i);
-               //push data
-               this.pushData(worksheets, empAddChangeInfoExport,sheetName + i);
+               if(empAddChangeInfoExport.getPersonAddChangeDate() != null) {
+                   //条件を満たす対象者のデータをもとに「被保険者住所変更届」を印刷する
+                   this.pushData(worksheets, empAddChangeInfoExport,sheetName + i);
+               }
+
+               if(empAddChangeInfoExport.getSpouseAddChangeDate() != null && empAddChangeInfoExport.isEmpPenInsurance()){
+                   //条件を満たす対象者のデータをもとに「国民年金第３号被保険者住所変更届」を印刷する
+                   worksheets.get(worksheets2.addCopy(0)).setName(sheetName + i+1);
+                   this.pushData(worksheets, empAddChangeInfoExport,sheetName + i+1);
+               }
            }
 
            worksheets.removeAt(0);
            reportContext.saveAsExcel(this.createNewFile(fileContext,
-                   FILE_NAME_1 + ".xlsx"));
+                   FILE_NAME + ".xlsx"));
 
        }catch (Exception e){
            throw new RuntimeException(e);
@@ -207,6 +219,11 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
             worksheet.get(i).getTextBoxes().get("A2_19").setText(Objects.toString(
                     empAddChangeInfoExport.getSpouseOtherAtr() == 1 && empAddChangeInfoExport.getSpouseOtherReason() != null ? empAddChangeInfoExport.getSpouseOtherReason().toString(): ""));
 
+            JapaneseDate japaneseDate = toJapaneseDate(empAddChangeInfoExport.getReferenceDate());
+            int y = japaneseDate.year() + 1;
+            int m = japaneseDate.month();
+            int d = japaneseDate.day();
+            worksheet.getRangeByName(i +"!A3_7" ).setValue(japaneseDate.era() + String.valueOf(y) + "年" + String.valueOf(m) + "月" + String.valueOf(d) + "日提出");
             worksheet.getRangeByName(i + "!A3_2").setValue(this.fillAddress(empAddChangeInfoExport.getAddress1(), empAddChangeInfoExport.getAddress2()));
             worksheet.getRangeByName(i + "!A3_3").setValue(Objects.toString(empAddChangeInfoExport.getBussinessName(), ""));
             worksheet.getRangeByName(i + "!A3_4").setValue(Objects.toString(empAddChangeInfoExport.getReferenceName(), ""));

@@ -20,4 +20,6 @@ public class PreFamilyAddress {
 
     /**住所2 */
     private String address2;
+
+    private boolean livingTogether;
 }
