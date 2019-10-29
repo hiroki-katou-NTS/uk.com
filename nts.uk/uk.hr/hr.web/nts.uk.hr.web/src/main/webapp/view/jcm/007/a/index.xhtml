@@ -123,7 +123,7 @@
 								<div  data-bind="ntsFormLabel: { required: true, constraint: ''}">#{i18n.getText('JCM007_A222_13')} </div>
 							</div>
 							<!-- A222_14 -->					
-							<div style="margin-left: 56px" data-bind="ntsDatePicker: {value: releaseDate , dateFormat: 'YYYY/MM/DD', required : true , enable : enable_releaseDate }"></div>					
+							<div id = "releaseDateId" style="margin-left: 56px" data-bind="ntsDatePicker: {value: releaseDate , dateFormat: 'YYYY/MM/DD', required : true , enable : enable_releaseDate }"></div>					
 						</div>
 					
 						<div class="line-height flex">  <!-- row 7 -->
@@ -151,7 +151,7 @@
 								<div data-bind="ntsFormLabel: { required: true, constraint: ''}">#{i18n.getText('JCM007_A222_18')} </div>
 							</div>
 							<!-- A222_20 -->					
-							<div  style="width: 170px" id="combo-box-rom"
+							<div id = "selectedCode_Reason1Id"  style="width: 170px" 
 									 data-bind="ntsComboBox: {
 												options: listRetirementReason1 ,
 												optionsValue: 'value',
@@ -159,6 +159,8 @@
 												optionsText: 'text',
 												enable : enable_listRetirementReason1 ,
 												editable: false,
+												selectFirstIfNull: false ,
+												required: true ,
 												columns: [
 													{ prop: 'text', length: 15 }
 												]}"></div>					
@@ -170,7 +172,7 @@
 								<div data-bind="ntsFormLabel: { required: true, constraint: ''}">#{i18n.getText('JCM007_A222_22')}</div>
 							</div>
 							<!-- A222_23 -->					
-							<div  style="width: 170px" id="combo-box-rom"
+							<div id = "selectedCode_Reason2Id" style="width: 170px" 
 									 data-bind="ntsComboBox: {
 												options: listRetirementReason2 ,
 												optionsValue: 'value',
@@ -178,6 +180,8 @@
 												optionsText: 'text',
 												enable : enable_listRetirementReason2 ,
 												editable: false,
+												selectFirstIfNull: false ,
+												required: true ,
 												columns: [
 													{ prop: 'text', length: 15 }
 												]}"></div>
@@ -251,7 +255,7 @@
 									<div data-bind="ntsFormLabel: { required: true, constraint: ''}"> #{i18n.getText('JCM007_A222_34')} </div>
 								</div>
 								<!-- A222_35 -->					
-								<div style="margin-left: 27px;" data-bind="ntsDatePicker: {value: dismissalNoticeDate , dateFormat: 'YYYY/MM/DD', required : true , enable : enable_dismissalNoticeDate }"></div>					
+								<div id = "dismissalNoticeDateId" style="margin-left: 27px;" data-bind="ntsDatePicker: {value: dismissalNoticeDate , dateFormat: 'YYYY/MM/DD', required : true , enable : enable_dismissalNoticeDate }"></div>					
 							</div>
 							
 							<div class="line-height flex">  <!-- row 16 -->

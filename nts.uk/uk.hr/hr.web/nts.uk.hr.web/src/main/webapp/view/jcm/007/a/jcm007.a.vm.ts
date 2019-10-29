@@ -81,7 +81,7 @@ module jcm007.a {
                     let itemSelectedTab2  = self.itemSelectedTab2();
                     console.log(itemSelectedTab2);
                     if (itemSelectedTab2 != null) {
-                        if (itemSelectedTab2.status == self.status_Registered || itemSelectedTab2.status == self.status_Unregistered) {
+                        if (itemSelectedTab2.status == self.status_ApprovalPending || itemSelectedTab2.status == self.status_Unregistered) {
                             self.enable_btnRegister(true);
                             self.enable_btnRemove(true);
                             self.enable_disableInput(true);
@@ -316,15 +316,28 @@ module jcm007.a {
         /** event when click register */
         register() {
             let self = this;
+            let emp = ko.toJS(self.currentEmployee());
+            let itemSelectedTab1 = self.itemSelectedTab1();
+            let itemSelectedTab2 = self.itemSelectedTab2();
+            
+            // validate
+            if (((self.selectedTab() == 'tab-1') && (self.isNewMode) && (itemSelectedTab1 != null)) || (self.selectedTab() == 'tab-2')) {
+                $("#retirementDateId").trigger("validate");
+                $("#releaseDateId").trigger("validate");
+                $("#selectedCode_Reason1Id").trigger("validate");
+                $("#selectedCode_Reason2Id").trigger("validate");
+
+                if (emp.selectedCode_Retiment == 3) {
+                    $("#dismissalNoticeDateId").trigger("validate");
+                } 
+                
+                
+            }
             
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
             
-            let emp = ko.toJS(self.currentEmployee());
-            let itemSelectedTab1 = self.itemSelectedTab1();
-            let itemSelectedTab2 = self.itemSelectedTab2();
-
             let command = {
                 historyId: '',
                 histId_Refer: '',
@@ -368,7 +381,7 @@ module jcm007.a {
                 other_6Val: emp.other_6Val
             }
 
-            if ((self.selectedTab() == 'tab-1') && (self.isNewMode)) {
+            if ((self.selectedTab() == 'tab-1') && (self.isNewMode) && (itemSelectedTab1 != null)) {
                 // アルゴリズム[退職者情報の新規登録」を実行する (Thực hiện thuật toán [đăng ký mới thông tin người nghỉ hưu」)
 
                 // アルゴリズム[事前チェック]を実行する (THực hiện thuật toán [Check trước ] )
@@ -380,6 +393,8 @@ module jcm007.a {
                 self.preCheckAndRegisterNewEmp(command);
                 self.initHeaderInfo();
                 self.initRetirementInfo();
+                self.clearSelection();
+                self.itemSelectedTab1(null);
                 
             } else if (self.selectedTab() == 'tab-2' && itemSelectedTab2 != null 
                        && itemSelectedTab2.notificationCategory == "" 
@@ -407,7 +422,7 @@ module jcm007.a {
                 command.employeeName = itemSelectedTab2.employeeName;
                 command.status = 2;
                 self.preCheckAndUpdateEmp(command);
-
+                self.enable_disableInput(false);
             }
         }
         
@@ -558,15 +573,6 @@ module jcm007.a {
             }
         }
 
-        /** new mode */
-        newMode() {
-            let self = this;
-            self.isNewMode = true;
-            self.initHeaderInfo();
-            self.initRetirementInfo();
-            self.clearSelection();
-        }
-        
         setDataHeader(data){
             let self = this;
             let departmentCode = data.departmentCode == null ? '' : data.departmentCode;
@@ -626,13 +632,25 @@ module jcm007.a {
             
         }
         
+        /** new mode */
+        newMode() {
+            let self = this;
+            self.isNewMode = true;
+            self.initHeaderInfo();
+            self.initRetirementInfo();
+            self.clearSelection();
+            self.itemSelectedTab1(null);
+            
+            nts.uk.ui.errors.clearAll();
+        }
+        
         initRetirementInfo() {
             let self = this;
             self.currentEmployee().retirementDate('');
             self.currentEmployee().releaseDate('');
             self.currentEmployee().selectedCode_Retiment(1);
-            self.currentEmployee().selectedCode_Reason1(0);
-            self.currentEmployee().selectedCode_Reason2(0);
+            self.currentEmployee().selectedCode_Reason1(null);
+            self.currentEmployee().selectedCode_Reason2(null);
             self.currentEmployee().retirementRemarks('');
             // ----------------- //
             self.currentEmployee().retirementReasonVal('');
@@ -664,6 +682,8 @@ module jcm007.a {
             self.currentEmployee().other_6(false);
             self.currentEmployee().other_6Val('');
             self.currentEmployee().other_enable(false);
+            
+            nts.uk.ui.errors.clearAll();
         }
         
         enable_disableInput(param : boolean) {
@@ -809,22 +829,20 @@ module jcm007.a {
             self.selectedCode_Retiment(param.selectedCode_Retiment || 1);
 
             self.listRetirementReason1 = ko.observable([
-                { value: 0, text: '' },
                 { value: 1, text: '自己都合による退職' },
                 { value: 2, text: '定年による退職' },
                 { value: 3, text: '会社都合による解雇' }
             ]);
-            self.selectedCode_Reason1(param.selectedCode_Reason1 || 1);
+            self.selectedCode_Reason1(param.selectedCode_Reason1 || null);
 
             self.listRetirementReason2 = ko.observable([
-                { value: 0, text: '' },
                 { value: 1, text: '結婚' },
                 { value: 2, text: '上司と合わない' },
                 { value: 3, text: 'やる気がなくなった' },
                 { value: 4, text: '会社の業績不振' },
                 { value: 5, text: 'その他' }
             ]);
-            self.selectedCode_Reason2(param.selectedCode_Reason2 || 1);
+            self.selectedCode_Reason2(param.selectedCode_Reason2 || null);
 
             // multieditor 1
             self.retirementRemarks(param.retirementRemarks || '');
@@ -857,18 +875,16 @@ module jcm007.a {
             //xử lý subscribe
             self.selectedCode_Retiment.subscribe((value) => {
                 let self = this;
+                $('#dismissalNoticeDateId').ntsError('clear');
                 if (value == 1 || value == 2 || value == 4) {
                     self.visible_NotDismissal(true);
                     self.visible_Dismissal(false);
                 } else if (value == 3) {
                     self.visible_NotDismissal(false);
                     self.visible_Dismissal(true);
-                    
-                    
-                    
                 }
             });
-
+            
             self.naturalUnaReasons_1.subscribe((value) => {
                 let self = this;
                 if (value == true) {
