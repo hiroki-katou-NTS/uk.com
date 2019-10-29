@@ -852,16 +852,20 @@ public class SyEmployeePubImp implements SyEmployeePub {
 
 	@Override
 	public List<EmpInfo614> findEmpByKeyWordsListSid(EmpInfo614Param param) {
-		List<DtoForRQ617> empList = personService.getFromKeywords(param.getKeyword());
-		List<String> pids = empList.stream().map(c->c.getPersonId()).collect(Collectors.toList());
+		//List<DtoForRQ617> empList = personService.getFromKeywords(param.getKeyword());
+		//RQ617 fix performance
+//		List<DtoForRQ617> empList = personService.getFromKeywords(param.getKeyword(), param.cId);
+//		List<String> pids = empList.stream().map(c->c.getPersonId()).collect(Collectors.toList());
 		List<EmpInfo614> allEmployee = new ArrayList<>();
 		List<String> employeeIds = new ArrayList<>();
-		if(!empList.isEmpty()) {
+//		if(!empList.isEmpty()) {
+			//List<EmployeeDataMngInfo> ListEmpMatchingName = empDataMngRepo.findEmployeesMatchingName(pids, param.cId);
 			//method Fix performance for 個人ID(List)から会社IDに一致する社員に絞り込む
 			List<EmployeeDataMngInfo> ListEmpMatchingName = empDataMngRepo.findEmployeesMatchingName(param.getKeyword(), param.cId);
 			employeeIds.addAll(ListEmpMatchingName.stream().map(c->c.getEmployeeId()).collect(Collectors.toList()));
 			allEmployee.addAll(ListEmpMatchingName.stream().map(c->new EmpInfo614(c.getEmployeeId(), c.getPersonId(), c.getEmployeeCode().v())).collect(Collectors.toList()));
-		}
+			List<String> pids = ListEmpMatchingName.stream().map(c->c.getPersonId()).collect(Collectors.toList());
+//		}
 		String validcode = "^[A-Za-z0-9 ]+$";
 		if(param.getKeyword().matches(validcode)) {
 			List<EmployeeIdPersonalIdDto> ListEmpMatchingCode = empDataMngRepo.findEmployeePartialMatchCode(param.cId, param.getKeyword());

@@ -29,4 +29,18 @@ public class JpaPersonServices extends JpaRepository implements PersonService {
 				.setParameter("keyWords", keyWords)
 				.getList(c -> new DtoForRQ617(c.bpsmtPersonPk.pId, c.businessName, c.businessNameKana));
 	}
+	
+	public static final String GET_FROM_KEYWORDS_FIX = "SELECT c FROM BpsmtPerson c, BsymtEmployeeDataMngInfo e "
+			+ "WHERE e.companyId = :companyId "
+			+ "AND (c.businessName LIKE CONCAT(:keyWords, '%') "
+			+ "OR c.businessNameKana LIKE CONCAT(:keyWords, '%')) "
+			+ "AND e.bsymtEmployeeDataMngInfoPk.pId = c.bpsmtPersonPk.pId ";
+	
+	@Override
+	public List<DtoForRQ617> getFromKeywords(String keyWords, String cId) {
+		return this.queryProxy().query(GET_FROM_KEYWORDS_FIX, BpsmtPerson.class)
+				.setParameter("companyId", cId)
+				.setParameter("keyWords", keyWords)
+				.getList(c -> new DtoForRQ617(c.bpsmtPersonPk.pId, c.businessName, c.businessNameKana));
+	}
 }

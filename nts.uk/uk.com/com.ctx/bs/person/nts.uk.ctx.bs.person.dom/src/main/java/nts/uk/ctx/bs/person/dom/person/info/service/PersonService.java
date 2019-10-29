@@ -16,4 +16,11 @@ public interface PersonService {
 	 * [RQ617]キーワードから個人を取得する
 	 */
 	List<DtoForRQ617> getFromKeywords(String keyWords);
+	
+	/**
+	 * sub query for 617
+	 * [RQ617]キーワードから個人を取得する
+	 * fix performance
+	 */
+	List<DtoForRQ617> getFromKeywords(String keyWords, String cId);
 }
