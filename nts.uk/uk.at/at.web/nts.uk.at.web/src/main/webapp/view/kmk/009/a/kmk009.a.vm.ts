@@ -46,10 +46,10 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             self.valueEnum = ko.observable(null);
             self.currentCode = ko.observable(null);
             self.columns = ko.observableArray([
-                { headerText: nts.uk.resource.getText('KMK009_4'), key: 'totalCountNo', formatter: _.escape, width: 50 },
+                { headerText: nts.uk.resource.getText('KMK009_4'), key: 'totalCountNo', formatter: _.escape, width: 40 },
                 { headerText: nts.uk.resource.getText('KMK009_5'), key: 'useAtrName', formatter: _.escape, width: 80 },
-                { headerText: nts.uk.resource.getText('KMK009_6'), key: 'totalTimesName', formatter: _.escape, width: 150 },
-                { headerText: nts.uk.resource.getText('KMK009_14'), key: 'summaryAtrName', formatter: _.escape, width: 100 }
+                { headerText: nts.uk.resource.getText('KMK009_6'), key: 'totalTimesName', formatter: _.escape, width: 110 },
+                { headerText: nts.uk.resource.getText('KMK009_14'), key: 'summaryAtrName', formatter: _.escape, width: 70 }
             ]);
             self.useSet = ko.observableArray([
                 { code: '1', name: nts.uk.resource.getText("KMK009_12") },
