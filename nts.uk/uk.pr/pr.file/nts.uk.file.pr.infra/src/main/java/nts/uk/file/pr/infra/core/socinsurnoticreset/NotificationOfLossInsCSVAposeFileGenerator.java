@@ -115,6 +115,13 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
         return new JapaneseDate(date, era.get());
     }
 
+    private boolean calculateAge(String birthDay){
+        GeneralDate tempBrithday = GeneralDate.fromString(birthDay.substring(0,10), "yyyy-MM-dd");
+        tempBrithday.addYears(70);
+        GeneralDate now = GeneralDate.today();
+        return now.after(tempBrithday);
+    }
+
 
     private void fillPensionEmployee(InsLossDataExport data, Cells cells,
                                      List<SocialInsurancePrefectureInformation> infor, SocialInsurNotiCreateSet ins, int startRow){
@@ -143,8 +150,8 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
         cells.get(startRow, 12).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? data.getOtherReason() : data.getOtherReason2());
         cells.get(startRow, 13).setValue(Objects.toString(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? data.getCaInsurance() : data.getNumRecoved2(), ""));
         cells.get(startRow, 14).setValue(Objects.toString(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? data.getCaInsurance() : data.getNumRecoved2(), ""));
-        cells.get(startRow, 15).setValue(data.getPercentOrMore().equals("1") ? "1,9" : ",");
-        cells.get(startRow, 16).setValue(data.getPercentOrMore() == null ? "" : data.getPercentOrMore().equals("1")  ? endJp == null ? "" : convertJpDate(endJp) : "");
+        cells.get(startRow, 15).setValue(calculateAge(data.getBirthDay()) ? "1,9" : ",");
+        cells.get(startRow, 16).setValue(calculateAge(data.getBirthDay()) ? endJp == null ? "" : convertJpDate(endJp) : "");
         cells.get(startRow, 17).setValue(data.getCause2() == null ? "" : data.getCause2() == 6 ? "" : 1);
     }
 
@@ -335,9 +342,9 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
         cells.get(startRow, 18).setValue(data.getIsMoreEmp());
         cells.get(startRow, 19).setValue(data.getContinReemAfterRetirement());
         cells.get(startRow, 20).setValue(data.getOtherReason());
-        cells.get(startRow, 23).setValue(data.getPercentOrMore().equals("1") ? 1 : "");
-        cells.get(startRow, 24).setValue(data.getPercentOrMore().equals("1") ? 9 : "");
-        cells.get(startRow, 25).setValue(data.getPercentOrMore().equals("1") ? convertJpDate(endDateJp) : "");
+        cells.get(startRow, 23).setValue(calculateAge(data.getBirthDay()) ? 1 : "");
+        cells.get(startRow, 24).setValue(calculateAge(data.getBirthDay()) ? 9 : "");
+        cells.get(startRow, 25).setValue(calculateAge(data.getBirthDay()) ? convertJpDate(toJapaneseDate(GeneralDate.fromString(convertDate(data.getEndDate()), "yyyyMMdd"))) : "");
         cells.get(startRow, 27).setValue(data.getFunMember());
         cells.get(startRow, 28).setValue(data.getWelPenOfficeNumber());
         cells.get(startRow, 29).setValue(data.getMemberNumber());
@@ -363,6 +370,7 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
         cells.get(startRow, 49).setValue(data.getFunSpecific9());
         cells.get(startRow, 50).setValue(data.getFunSpecific10());
     }
+
 
     private String checkLength(String s, int digitsNumber){
         return (s != null && s.length() >= digitsNumber) ? s.substring(0,digitsNumber) : s;
