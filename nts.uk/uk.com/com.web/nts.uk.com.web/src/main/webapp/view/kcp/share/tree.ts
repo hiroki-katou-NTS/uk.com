@@ -751,7 +751,7 @@ module kcp.share.tree {
 //                self.selectedIds(found);
                 //end
                 let options = {
-                    width: self.treeStyle.width,
+                    width: self.isShowSelectButton ? '474px' : self.treeStyle.width,
                     dataSource: self.itemList(),
                     //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
                     selectedValues: self.selectedWorkplaceIds(),
@@ -1268,7 +1268,7 @@ var TREE_COMPONENT_HTML = `<style type="text/css">
                     ]}"></div>
         </div>
         </div>
-        <div style="width: 420px; margin-top:10px ">
+        <div style="margin-top:10px " data-bind="style: { width: isShowSelectButton ? '474px' : '420px' }">
             <div style="display: inline-block; float: left" data-bind="attr: {id: searchBoxId, tabindex: tabindex}, style: { width : !isMultipleUse ? '327px' : '268px'}">
             </div>
             <div style="display: inline-block; margin-left: 2px; float: left">
