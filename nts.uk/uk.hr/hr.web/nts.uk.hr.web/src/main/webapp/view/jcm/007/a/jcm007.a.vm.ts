@@ -562,6 +562,9 @@ module jcm007.a {
                         } else if (lengthListItemTab2 - 1 > indexItemDelete) {
                             $("#gridListEmployeesJcm007").igGridSelection( "selectRow", indexItemDelete + 1 );
                         }
+                        if(lengthListItemTab2 == 1) {
+                            self.clearSelection();    
+                        }
                         
                     }).fail((mes) => {
                         console.log('REMOVE FAIL!!');
