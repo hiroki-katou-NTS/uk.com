@@ -14,7 +14,7 @@ import nts.arc.time.GeneralDate;
 /**家族社会保険情報*/
 public class EmpFamilySocialInsCtgInfo {
     private String empId;
-    private String familyId;
+    private Integer familyId;
     private String cid;
     private GeneralDate startDate;
     private GeneralDate endDate;

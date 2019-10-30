@@ -36,36 +36,6 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
     private EmpAddChangeInfoFileGenerator empAddChangeInfoFileGenerator;
 
     @Inject
-    private EmpFamilyInsHisRepository empFamilyInsHisRepository;
-
-    @Inject
-    private EmpFamilySocialInsCtgRepository empFamilySocialInsCtgRepository;
-
-    @Inject
-    private EmplHealInsurQualifiInforRepository emplHealInsurQualifiInforRepository;
-
-    @Inject
-    private EmpWelfarePenInsQualiInforRepository empWelfarePenInsQualiInforRepository;
-
-    @Inject
-    private EmpCorpHealthOffHisRepository empCorpHealthOffHisRepository;
-
-    @Inject
-    private AffOfficeInformationRepository affOfficeInformationRepository;
-
-    @Inject
-    private WelfPenNumInformationRepository welfPenNumInformationRepository;
-
-    @Inject
-    private HealInsurPortPerIntellRepository healInsurPortPerIntellRepository;
-
-    @Inject
-    private HealthCarePortInforRepository healthCarePortInforRepository;
-
-    @Inject
-    private EmPensionFundPartiPeriodInforRepository emPensionFundPartiPeriodInforRepository;
-
-    @Inject
     private EmpBasicPenNumInforRepository empBasicPenNumInforRepository;
 
     @Inject
@@ -73,6 +43,9 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
 
     @Inject
     private SocialInsuranceOfficeRepository socialInsuranceOfficeRepository;
+
+    @Inject
+    private EmpAddChangeInfoExReposity empAddChangeInfoExReposity;
 
     @Override
     protected void handle(ExportServiceContext<NotificationOfLossInsExportQuery> exportServiceContext) {
@@ -102,15 +75,35 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
         if(end.before(start)) {
             throw new BusinessException("Msg_812");
         }
-
-        if (printPersonNumber == PersonalNumClass.OUTPUT_BASIC_PER_NUMBER.value || printPersonNumber == PersonalNumClass.DO_NOT_OUTPUT.value){
-            List<EmpFamilySocialInsCtgInfo> empFamilySocialInsCtgInfoList = new ArrayList<>();
-            List<EmpAddChangeInfoExport> empAddChangeInfoExportList = new ArrayList<>();
+        List<EmpAddChangeInfoExport> empAddChangeInfoExportList = empAddChangeInfoExReposity.getListPerson(empIds, cid);
+        if (printPersonNumber == PersonalNumClass.OUTPUT_BASIC_PER_NUMBER.value || printPersonNumber == PersonalNumClass.DO_NOT_OUTPUT.value
+                && !empAddChangeInfoExportList.isEmpty()){
+            EmpAddChangeInforData empAddChangeInforData = new EmpAddChangeInforData();
+            empAddChangeInforData.setBaseDate(baseDate);
+            List<EmpFamilySocialInsCtgInfo> empFamilySocialInsCtgInfoList = empAddChangeInfoExReposity.getEmpFamilySocialInsCtgInfoList(empIds, cid);
+            List<EmpHealInsurQInfo> empHealInsurQInfoList = empAddChangeInfoExReposity.getEmpHealInsurQInfoList(empIds, cid);
+            List<EmpWelfarePenInsQualiInfo> empWelfarePenInsQualiInforList = empAddChangeInfoExReposity.getEmpWelfarePenInsQualiInfoList(empIds, cid);
+            List<SocialInsuranceOffice> socialInsuranceOfficeList = socialInsuranceOfficeRepository.findByCid(cid);
+            List<EmpCorpOffHisInfo> empCorpOffHisInfoList = empAddChangeInfoExReposity.getEmpCorpOffHisInfo(empIds, cid);
+            List<HealInsurPortPerIntellInfo> healInsurPortPerIntellInfoList = empAddChangeInfoExReposity.getHealInsurPortPerIntellInfo(empIds, cid);
+            List<EmPensionFundPartiPeriodInfo> emPensionFunList = empAddChangeInfoExReposity.getEmPensionFundPartiPeriodInfo(empIds, cid);
+            List<EmpBasicPenNumInfor> empBasicPenNumInforList = empBasicPenNumInforRepository.getAllEmpBasicPenNumInfor();
+            List<EmpAddChangeInfo> empAddChangeInfoList = empAddChangeInfoRepository.getListEmpAddChange(empIds);
             List<CurrentPersonResidence> currentPersonAddressList = new ArrayList<>();
             List<CurrentFamilyResidence> currentFamilyResidenceList = new ArrayList<>();
+            GeneralDate birthdate = GeneralDate.fromString("1992/10/1","YYYYMMDD" );
+            GeneralDate startDate = GeneralDate.fromString("2018/10/10","YYYYMMDD" );
+            GeneralDate baseDateF = GeneralDate.fromString("2018/10/10","YYYYMMDD" );
+            GeneralDate birthDateF = GeneralDate.fromString("1996/10/10","YYYYMMDD" );
+            GeneralDate startDateF = GeneralDate.fromString("2018/10/10","YYYYMMDD" );
+            empAddChangeInfoExportList.forEach(i->{
+                CurrentPersonResidence c = new  CurrentPersonResidence("1234567", "address1Kana", "address2Kana","address1", "address2", startDate, "personNameKana", "personName", "todokedeNameKana", "todokedeName", birthdate, "beforeAddress1", "beforeAddress2");
+                c.setPersonId(i.getPersonId());
+                currentPersonAddressList.add(c);
 
-            empIds.forEach(j->{
-                empAddChangeInfoExportList.add(new EmpAddChangeInfoExport(j));
+                CurrentFamilyResidence f =  new CurrentFamilyResidence("9876446", "address1Kana", "address2Kana", "address1", "address2", baseDateF, true, "pctogte", "address1KanaTogether", "address2KanaTogether", "address1Together", "address2Together", "add1BeforeChange", "add2BeforeChange", "add1BeforeChangeTogether", "add2BeforeChangeTogether",  birthDateF, "nameKana", "name", "reportNameKana", "reportName", startDateF);
+                f.setFamilyId(i.getFamilyId());
+                currentFamilyResidenceList.add(f);
             });
 
             //Imported（給与）「個人現住所」
@@ -140,7 +133,6 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
                 }
             });
 
-            List<EmpHealInsurQInfo> empHealInsurQInfoList = new ArrayList<>(); //con : empIds, cid
             if (!empHealInsurQInfoList.isEmpty()) {
                 empHealInsurQInfoList.stream().forEach(k -> {
                     Optional<EmpAddChangeInfoExport> em = empAddChangeInfoExportList.stream().filter(item -> item.getEmpId().equals(k.getEmpId())
@@ -154,7 +146,6 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
                 });
             }
 
-            List<EmpWelfarePenInsQualiInfo> empWelfarePenInsQualiInforList = new ArrayList<>(); //con : empIds, cid
             if (!empWelfarePenInsQualiInforList.isEmpty()) {
                 empWelfarePenInsQualiInforList.stream().forEach(k -> {
                     Optional<EmpAddChangeInfoExport> em = empAddChangeInfoExportList.stream().filter(item -> item.getEmpId().equals(k.getEmpId())
@@ -176,8 +167,6 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
             }
             //end of list emp add change information
 
-            List<SocialInsuranceOffice> socialInsuranceOfficeList = socialInsuranceOfficeRepository.findByCid(cid);
-            List<EmpCorpOffHisInfo> empCorpOffHisInfoList = new ArrayList<>(); //con : empIds, cid
             if (!empCorpOffHisInfoList.isEmpty()){
                 empCorpOffHisInfoList.forEach(i-> {
                    Optional<EmpAddChangeInfoExport> em = empAddChangeInfoExportList.stream().filter(item->item.getEmpId().equals(i.getEmpId())
@@ -223,7 +212,6 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
 
             } else if (domain.getInsuredNumber() == InsurPersonNumDivision.OUTPUT_HEAL_INSUR_UNION) {
 
-                List<HealInsurPortPerIntellInfo> healInsurPortPerIntellInfoList = new ArrayList<>(); //con : empIds, cid
                 if (!healInsurPortPerIntellInfoList.isEmpty()) {
                     healInsurPortPerIntellInfoList.stream().forEach(k -> {
                         Optional<EmpAddChangeInfoExport> em = empAddChangeInfoExportList.stream().filter(item -> item.getEmpId().equals(k.getEmpId())
@@ -238,8 +226,6 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
 
 
             } else if (domain.getInsuredNumber() == InsurPersonNumDivision.OUTPUT_THE_FUN_MEMBER) {
-
-                List<EmPensionFundPartiPeriodInfo> emPensionFunList = new ArrayList<>(); //con : empIds, cid
                 if(!emPensionFunList.isEmpty()) {
                     emPensionFunList.stream().forEach(k -> {
                         Optional<EmpAddChangeInfoExport> em = empAddChangeInfoExportList.stream().filter(item -> item.getEmpId().equals(k.getEmpId())
@@ -254,7 +240,6 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
             }
 
             if(domain.getPrintPersonNumber() == PersonalNumClass.OUTPUT_BASIC_PER_NUMBER ) {
-                List<EmpBasicPenNumInfor> empBasicPenNumInforList = empBasicPenNumInforRepository.getAllEmpBasicPenNumInfor();
                 if(!empBasicPenNumInforList.isEmpty()) {
                     empBasicPenNumInforList.stream().forEach(k -> {
                         Optional<EmpAddChangeInfoExport> em = empAddChangeInfoExportList.stream().filter(item -> item.getEmpId().equals(k.getEmployeeId())
@@ -351,7 +336,6 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
                 }
             });
 
-            List<EmpAddChangeInfo> empAddChangeInfoList = empAddChangeInfoRepository.getListEmpAddChange(empIds);
             empAddChangeInfoList.forEach(p->{
                 Optional<EmpAddChangeInfoExport> x = empAddChangeInfoExportList.stream().filter(z->z.getEmpId().equals(p.getSid())).findFirst();
                 if(!x.isPresent()) {
@@ -379,62 +363,6 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
                     k.setBussinessName(c.getCompanyName());
                 });
             }
-            //data hard code
-            EmpAddChangeInfoExport empAddChangeInfoExport = new EmpAddChangeInfoExport(
-                    "1233",
-                    "1233",
-                    "1233",
-                    "1233",
-                    "1234567",
-                    "nameKana",
-                    "fullNamePs",
-                    start,
-                    "1233121",
-                    "add1KanaPs",
-                    "add2KanaPs",
-                    "add1Ps",
-                    "add2Ps",
-                    "add1BeforeChangePs",
-                    "add2BeforeChangePs",
-                    start,
-                    "7654321",
-                    1,
-                    1,
-                    1,
-                    1,
-                    "otherReason",
-                    1,
-                    1,
-                    1,
-                    1,
-                    "spouseOtherReason",
-                    start,
-                    "nameKanaF",
-                    "fullNameF",
-                    "1233234",
-                    "add1KanaF",
-                    "add2KanaF",
-                    "add1F",
-                    "add2F",
-                    start,
-                    "add1BeforeChange",
-                    "add2BeforeChange",
-                    "address1",
-                    "address2",
-                    "businessName",
-                    "referenceName",
-                    "phoneNumber",
-                    true,
-                    true,
-                    start,
-                    start,
-                    start,
-                    "1234567"
-            );
-            EmpAddChangeInforData empAddChangeInforData = new EmpAddChangeInforData();
-            empAddChangeInfoExportList.add(empAddChangeInfoExport);
-            empAddChangeInforData.setBaseDate(baseDate);
-            empAddChangeInforData.setEmpAddChangeInfoExportList(empAddChangeInfoExportList);
             empAddChangeInfoFileGenerator.generate(exportServiceContext.getGeneratorContext(), empAddChangeInforData);
         }
     }

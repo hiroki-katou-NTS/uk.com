@@ -11,12 +11,12 @@ import java.util.List;
 
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class EmpAddChangeInfoExport {
     private String empId;
     private String companyId;
-    private String familyId;
+    private Integer familyId;
     private String personId;
 
     /** 個人番号 - b - A1_1*/
@@ -152,12 +152,4 @@ public class EmpAddChangeInfoExport {
 
     /**被保険者整理番号 - a - A2_3*/
     private String healInsurNumber;
-
-    public EmpAddChangeInfoExport (String empIds) {
-       this.empId = empIds;
-        this.healthInsurance = false;
-        this.empPenInsurance = false;
-        this.personAddChangeDate = null;
-        this.spouseAddChangeDate = null;
-    }
 }

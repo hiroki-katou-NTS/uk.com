@@ -60,4 +60,20 @@ public class CurrentPersonResidence {
 
     /**住所1*/
     private String beforeAddress2;
+
+    public CurrentPersonResidence(String postCode, String address1Kana, String address2Kana, String address1, String address2, GeneralDate startDate, String personNameKana, String personName, String todokedeNameKana, String todokedeName, GeneralDate birthDate, String beforeAddress1, String beforeAddress2) {
+        this.postCode = postCode;
+        this.address1Kana = address1Kana;
+        this.address2Kana = address2Kana;
+        this.address1 = address1;
+        this.address2 = address2;
+        this.startDate = startDate;
+        this.personNameKana = personNameKana;
+        this.personName = personName;
+        this.todokedeNameKana = todokedeNameKana;
+        this.todokedeName = todokedeName;
+        this.birthDate = birthDate;
+        this.beforeAddress1 = beforeAddress1;
+        this.beforeAddress2 = beforeAddress2;
+    }
 }

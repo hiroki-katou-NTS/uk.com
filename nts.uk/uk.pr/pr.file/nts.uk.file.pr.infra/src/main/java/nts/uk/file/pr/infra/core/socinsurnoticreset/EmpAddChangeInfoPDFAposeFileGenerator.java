@@ -152,8 +152,8 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
 
             worksheet.getRangeByName(i + "!A1_6").setValue(Objects.toString(empAddChangeInfoExport.getPostCodePs() != null ?  empAddChangeInfoExport.getPostCodePs(): ""));
             worksheet.getRangeByName(i + "!A1_7").setValue(this.fillAddress(empAddChangeInfoExport.getAdd1KanaF(),empAddChangeInfoExport.getAdd1KanaF() ));
-            //worksheet.getRangeByName(i + "!A1_8").setValue(this.fillAddress(empAddChangeInfoExport.getAdd1Ps(), empAddChangeInfoExport.getAdd2Ps()));
-            //worksheet.getRangeByName(i + "!A1_9").setValue(this.fillAddress(empAddChangeInfoExport.getAdd1BeforeChange(), empAddChangeInfoExport.getAdd2BeforeChange()));
+            worksheet.getRangeByName(i + "!A1_8").setValue(this.fillAddress(empAddChangeInfoExport.getAdd1Ps(), empAddChangeInfoExport.getAdd2Ps()));
+            worksheet.getRangeByName(i + "!A1_9").setValue(this.fillAddress(empAddChangeInfoExport.getAdd1BeforeChange(), empAddChangeInfoExport.getAdd2BeforeChange()));
 
             this.fillByCell(worksheet , i,"A1_10_1", empAddChangeInfoExport.getStartDatePs().toString(TYPE_DATE),0 );
             this.fillByCell(worksheet , i,"A1_10_2", empAddChangeInfoExport.getStartDatePs().toString(TYPE_DATE),1 );
@@ -200,7 +200,7 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
             this.fillByCell(worksheet , i,"A2_10_12", empAddChangeInfoExport.getPostalCodeF(),11 );
 
             worksheet.getRangeByName(i + "!A2_11").setValue(this.fillAddress(empAddChangeInfoExport.getAdd1KanaF(), empAddChangeInfoExport.getAdd2KanaF()));
-            //worksheet.getRangeByName(i + "!A2_12").setValue(this.fillAddress(empAddChangeInfoExport.getAdd1F(), empAddChangeInfoExport.getAdd2F()));
+            worksheet.getRangeByName(i + "!A2_12").setValue(this.fillAddress(empAddChangeInfoExport.getAdd1F(), empAddChangeInfoExport.getAdd2F()));
 
             this.fillByCell(worksheet , i,"A2_13_1", empAddChangeInfoExport.getStartDatePs().toString(TYPE_DATE),0 );
             this.fillByCell(worksheet , i,"A2_13_2", empAddChangeInfoExport.getStartDatePs().toString(TYPE_DATE),1 );
@@ -209,7 +209,7 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
             this.fillByCell(worksheet , i,"A2_13_5", empAddChangeInfoExport.getStartDatePs().toString(TYPE_DATE),4 );
             this.fillByCell(worksheet , i,"A2_13_6", empAddChangeInfoExport.getStartDatePs().toString(TYPE_DATE),5 );
 
-            //worksheet.getRangeByName(i + "!A2_14").setValue(this.fillAddress(empAddChangeInfoExport.getAdd1BeforeChange(), empAddChangeInfoExport.getAdd2BeforeChange()));
+            worksheet.getRangeByName(i + "!A2_14").setValue(this.fillAddress(empAddChangeInfoExport.getAdd1BeforeChange(), empAddChangeInfoExport.getAdd2BeforeChange()));
 
             //A2_15 ~ A2_19
             worksheet.get(i).getCheckBoxes().get(221).setCheckedValue(empAddChangeInfoExport.getSpouseShortResidentAtr());
