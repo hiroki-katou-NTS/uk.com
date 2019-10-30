@@ -18,7 +18,7 @@
 
 #contents-area {
 	overflow-x: auto;
-	overflow-y: auto;
+	overflow-y: hidden !important;
 }
 
 .valign-center {

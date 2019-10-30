@@ -53,6 +53,17 @@ module cps008.a.viewmodel {
                     self.enaBtnDel(false);
                 }
             });
+            let styles = '';
+            let panelHeight = window.screen.height - 418;
+            if(panelHeight >= 500) {
+                styles = '.drag-panel { max-height: 500px; }';   
+            } else {
+                styles = '.drag-panel { max-height: ' + panelHeight + 'px; }';
+            } 
+            let styleSheet = document.createElement("style");
+            styleSheet.type = "text/css";
+            styleSheet.innerText = styles;
+            document.head.appendChild(styleSheet);
         }
 
         start(code?: string): JQueryPromise<any> {
@@ -63,12 +74,6 @@ module cps008.a.viewmodel {
             // get all layout
             layouts.removeAll();
             service.getAll().done((data: Array<any>) => {
-                let panelHeight = window.screen.height - 418;
-                if(panelHeight >= 500) {
-                    $('.drag-panel').css('height', '500px');    
-                } else {
-                    $('.drag-panel').css('height', panelHeight + 'px');
-                } 
                 if (data && data.length) {
                     let _data: Array<ILayout> = _.map(data, x => {
                         return {
