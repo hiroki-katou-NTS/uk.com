@@ -3,5 +3,9 @@
 }
 
 #functions-area .ntsControl {
-	margin-left: 910px;
+	margin-left: 800px;
+}
+#cps007_srt_control {
+	height: 92% !important;
+	margin-bottom: 10px;
 }

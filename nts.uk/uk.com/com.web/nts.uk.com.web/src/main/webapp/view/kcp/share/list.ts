@@ -114,6 +114,11 @@ module kcp.share.list {
         maxRows: number;
         
         /**
+         * Set width for component;
+         */
+        width?: number;
+        
+        /**
          * Set max width for component.Min is 350px;
          */
         maxWidth?: number;
@@ -441,7 +446,7 @@ module kcp.share.list {
                 if (self.disableSelection) {
                     let selectionDisables = _.map(self.itemList(), 'code');
                     options = {
-                        width: self.gridStyle.totalColumnSize,
+                        width: self.componentOption.width ? self.componentOption.width : self.gridStyle.totalColumnSize,
                         dataSource: self.itemList(),
                         primaryKey: self.targetKey,
                         columns: self.listComponentColumn,
@@ -453,7 +458,7 @@ module kcp.share.list {
                     };
                 } else {
                     options = {
-                        width: self.gridStyle.totalColumnSize,
+                        width: self.componentOption.width ? self.componentOption.width : self.gridStyle.totalColumnSize,
                         dataSource: self.itemList(),
                         primaryKey: self.targetKey,
                         columns: self.listComponentColumn,

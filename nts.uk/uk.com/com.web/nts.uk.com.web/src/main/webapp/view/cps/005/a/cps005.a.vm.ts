@@ -187,6 +187,7 @@ module nts.uk.com.view.cps005.a {
         isEnableButtonProceed: KnockoutObservable<boolean> = ko.observable(true);
         isEnableButtonOpenDialog: KnockoutObservable<boolean> = ko.observable(false);
         isHisTypeUpdateModel: KnockoutObservable<boolean> = ko.observable(false);
+        rowCategoryItems: number = Math.round((window.screen.height - 391)/23) >= 20 ? 20 : Math.round((window.screen.height - 391)/23);
         historyClassification: Array<any> = [
             { code: 1, name: getText("CPS005_53") },
             { code: 2, name: getText("CPS005_54") },

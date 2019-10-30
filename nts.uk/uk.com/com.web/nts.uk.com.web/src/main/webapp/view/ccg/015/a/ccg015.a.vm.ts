@@ -13,6 +13,7 @@ module nts.uk.com.view.ccg015.a {
             languageListOption: KnockoutObservableArray<ItemCbbModel>;
             languageSelectedCode: KnockoutObservable<string>;
             listLinkScreen: KnockoutObservableArray<any>;
+            leftHeight: KnockoutObservable<any>;
 
             isProcess: KnockoutObservable<boolean>;
             breakNewMode: boolean;
@@ -64,6 +65,8 @@ module nts.uk.com.view.ccg015.a {
                     else
                         $("#inp_name").focus();
                 });
+                
+                self.leftHeight = ko.observable(0);
 
             }
 
@@ -71,6 +74,7 @@ module nts.uk.com.view.ccg015.a {
                 var self = this;
                 var dfd = $.Deferred<void>();
                 self.loadTopPageList().done(function() {
+                	self.setHeight();
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -247,6 +251,14 @@ module nts.uk.com.view.ccg015.a {
                         ind = index;
                 });
                 return ind;
+            }
+            
+            private setHeight(): void {
+                var self = this;
+                self.leftHeight(window.outerHeight - 405);
+                $("#preview-iframe").attr('style', 
+                	'height:' + (window.outerHeight - 550) + 'px; ' +
+                	'width: 650px'
             }
         }
 
