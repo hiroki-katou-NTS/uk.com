@@ -19,6 +19,23 @@ module cps007.a.vm {
                 layout = self.layout();
 
             self.start();
+            let styles = '';
+            let lstControlHeight = window.screen.height - 483;
+            if(lstControlHeight >= 347) {
+                styles += '#cps007_lst_control { height: 347px; }';  
+            } else {
+                styles += '#cps007_lst_control { height: ' + lstControlHeight + 'px; }';
+            } 
+            let panelHeight = window.screen.height - 275;
+            if(panelHeight >= 615) {
+                styles += '.drag-panel { max-height: 615px; }';    
+            } else {
+                styles += '.drag-panel { max-height: ' + panelHeight + 'px; }';
+            }
+            let styleSheet = document.createElement("style");
+            styleSheet.type = "text/css";
+            styleSheet.innerText = styles;
+            document.head.appendChild(styleSheet);
         }
 
         start() {
@@ -36,20 +53,6 @@ module cps007.a.vm {
                     lv.removeDoubleLine(lt.itemsClassification);
 
                     layout.itemsClassification(lt.itemsClassification);
-                    
-                    let lstControlHeight = window.screen.height - 483;
-                    if(lstControlHeight >= 347) {
-                        $('#cps007_lst_control').css('height', '347px');    
-                    } else {
-                        $('#cps007_lst_control').css('height', lstControlHeight + 'px');
-                    } 
-                    
-                    let panelHeight = window.screen.height - 275;
-                    if(panelHeight >= 615) {
-                        $('.drag-panel').css('height', '615px');    
-                    } else {
-                        $('.drag-panel').css('height', panelHeight + 'px');
-                    } 
                 }
             });
         }
