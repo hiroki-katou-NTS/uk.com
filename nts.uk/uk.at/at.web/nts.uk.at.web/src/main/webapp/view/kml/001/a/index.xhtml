@@ -50,27 +50,6 @@
 						</div>
 						<div class="fixed-flex-layout-right">
 							<div class="table">
-								<div id="formula">
-									<div class="table">
-										<div class="label">#{i18n.getText('KML001_6')}</div>
-									</div>
-									<hr align="left"/>
-									<div class="table">
-										<div class="cell">
-											<div id="formula-child-1" class="label"></div><br/>
-										</div>	
-										<div class="cell">
-											<img class="symbol-img" src="data:image/png;base64,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"/>
-										</div>
-										<div class="cell">
-											<div class="cell"></div>
-											<div class="label">#{i18n.getText('KML001_8')}</div>
-										</div>
-									</div>
-									
-								</div>
-							</div>
-							<div class="table">
 								<div class="cell column1">
 									<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KML001_9')}</div>
 								</div>
@@ -105,6 +84,11 @@
 															dropDownAttachedToBody:true,
 															enable: true }">
 									</div>
+								</div>
+								<div style="margin-left:20px">
+									<button data-bind="ntsHelpButton: {	image: 'IMG_KML001_1.png',
+																	position: 'bottom center',
+																	enable: true }">?</button>
 								</div>
 							</div>
 							<div class="table">

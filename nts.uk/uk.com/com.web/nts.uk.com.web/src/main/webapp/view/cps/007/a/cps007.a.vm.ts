@@ -36,6 +36,20 @@ module cps007.a.vm {
                     lv.removeDoubleLine(lt.itemsClassification);
 
                     layout.itemsClassification(lt.itemsClassification);
+                    
+                    let lstControlHeight = window.screen.height - 483;
+                    if(lstControlHeight >= 347) {
+                        $('#cps007_lst_control').css('height', '347px');    
+                    } else {
+                        $('#cps007_lst_control').css('height', lstControlHeight + 'px');
+                    } 
+                    
+                    let panelHeight = window.screen.height - 275;
+                    if(panelHeight >= 615) {
+                        $('.drag-panel').css('height', '615px');    
+                    } else {
+                        $('.drag-panel').css('height', panelHeight + 'px');
+                    } 
                 }
             });
         }
