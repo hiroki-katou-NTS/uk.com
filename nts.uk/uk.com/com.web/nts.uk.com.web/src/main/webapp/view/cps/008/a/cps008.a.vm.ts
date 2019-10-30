@@ -63,6 +63,12 @@ module cps008.a.viewmodel {
             // get all layout
             layouts.removeAll();
             service.getAll().done((data: Array<any>) => {
+                let panelHeight = window.screen.height - 418;
+                if(panelHeight >= 500) {
+                    $('.drag-panel').css('height', '500px');    
+                } else {
+                    $('.drag-panel').css('height', panelHeight + 'px');
+                } 
                 if (data && data.length) {
                     let _data: Array<ILayout> = _.map(data, x => {
                         return {

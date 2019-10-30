@@ -3,7 +3,7 @@
 }
 
 #functions-area button+.ntsControl {
-	margin-left: 645px;
+	margin-left: 565px;
 }
 
 #functions-area, #contents-area {
@@ -38,7 +38,6 @@
 	margin-top: 12px;
 	padding: 20px;
 	float: left;
-	min-height: 585px;
 	width: 20%;
 }
 
@@ -52,7 +51,6 @@ button.search-btn {
 	margin-left: 30px;
 	margin-top: 14px;
 	float: left;
-	min-height: 600px;
 	width: 65%;
 	position: relative;
 }
@@ -90,7 +88,7 @@ i.icon.icon-searchbox {
 }
 
 .layout-control .drag-panel {
-	height: 500px !important;
+	
 }
 
 .nosetarea {
