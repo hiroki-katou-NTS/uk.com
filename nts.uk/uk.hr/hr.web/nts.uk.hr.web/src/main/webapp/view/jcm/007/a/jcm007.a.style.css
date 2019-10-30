@@ -7,11 +7,11 @@
 	overflow-y: auto;
 	height: 600px !important;
     margin-top: 10px;
-    width: 748px;
+    width: 545px;
 }
 
 #tab-1, #tab-2{
-    width: 718px;
+    width: 637px;
 	height: 516px;
 	overflow: visible !important;
 }
@@ -33,7 +33,7 @@
 	height: 170px;
 	border-radius: 15px;
 	margin-top: 0px;
-	width: 748px;
+	width: 545px;
 }
 
 .header-left{
@@ -119,9 +119,8 @@
 }
 
 .guideDisplay {
-	margin-right: 275px;
+	margin-left: 870px;
     margin-top: 15px;
-	float:right;
 	color: #0070C0;
 	text-decoration: underline;
 }
@@ -138,6 +137,10 @@
 
 #gridListEmployeesContent {
     height: 300px !important;
+}
+
+#gridListEmployeesJcm007_scroll {
+	height: 465px !important;
 }
 	
 	

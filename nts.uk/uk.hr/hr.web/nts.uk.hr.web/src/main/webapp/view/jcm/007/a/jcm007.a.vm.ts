@@ -272,10 +272,10 @@ module jcm007.a {
                         headerText: 'historyId', key: 'historyId', hidden: true
                     },
                     {
-                        headerText: getText('JCM007_A221_5') , key: 'status', dataType: 'string', width: '100px'
+                        headerText: getText('JCM007_A221_5') , key: 'status', dataType: 'string', width: '70px'
                     },
                     {
-                        headerText: getText('JCM007_A221_6') , key: 'scd', dataType: 'string', width: '100px'
+                        headerText: getText('JCM007_A221_6') , key: 'scd', dataType: 'string', width: '70px'
                     },
                     {
                         headerText: getText('JCM007_A221_7') , key: 'employeeName', dataType: 'string', width: '120px'
@@ -296,8 +296,8 @@ module jcm007.a {
                 dataSource: self.employeeListTab2,
                 dataSourceType: 'json',
                 responseDataKey: 'results',
-                height: '390px',
-                width: '700px',
+                height: '465px',
+                width: '640px',
                 tabIndex: 17,
                 features: [
                     {
