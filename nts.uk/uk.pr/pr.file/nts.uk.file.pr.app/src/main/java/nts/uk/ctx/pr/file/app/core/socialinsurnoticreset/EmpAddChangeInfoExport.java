@@ -46,6 +46,12 @@ public class EmpAddChangeInfoExport {
     /** 変更後住所*/
     private String add2Ps;
 
+    /**変更前住所*/
+    private String add1BeforeChangePs;
+
+    /**変更前住所*/
+    private String add2BeforeChangePs;
+
     /** 住所変更年月日*/
     private GeneralDate startDatePs;
 

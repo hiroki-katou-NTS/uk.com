@@ -11,6 +11,7 @@ import nts.arc.time.GeneralDate;
 @AllArgsConstructor
 @Builder
 @NoArgsConstructor
+/**家族社会保険情報*/
 public class EmpFamilySocialInsCtgInfo {
     private String empId;
     private String familyId;

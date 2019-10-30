@@ -27,7 +27,6 @@ public class EmpAddChangeInforData {
     List<EmpFamilySocialIns> empFamilySocialInsList;
     List<EmpBasicPenNumInfor> empBasicPenNumInforList;
     List<FamilyInformation> familyInformationList;
-    List<FamilyBeforeAddress> familyBeforeAddressList;
     List<FamilyCurrentAddress> familyCurrentAddressList;
     List<FamilyResidence> familyResidenceList;
     List<EmpAddChangeInfo> empAddChangeInfoList;*/
