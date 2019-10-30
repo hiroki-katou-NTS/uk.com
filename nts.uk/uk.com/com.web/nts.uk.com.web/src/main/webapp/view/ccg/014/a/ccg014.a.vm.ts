@@ -226,10 +226,10 @@ module ccg014.a.viewmodel {
         
         private setHeight(): void {
             var self = this;
-            self.leftHeight(window.outerHeight - 400);
+            self.leftHeight(window.outerHeight * 7 / 13);
             $("#left-content").height(self.leftHeight());
             $("#preview-iframe").attr('style', 
-            	'height:' + (window.outerHeight - 530) + 'px; ' +
+            	'height:' + (window.outerHeight * 4 / 13) + 'px; ' +
             	'width: 630px; margin-bottom: -20px;');
         }
 
