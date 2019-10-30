@@ -135,7 +135,8 @@ module nts.uk.hr.view.jmm017.b.viewmodel {
                 objCalulator = self.caculator();
             // số dòng hiện tại + 2 line header + height group + height của page
             let heightGrid = ($("#grid").igGrid("rows").length + 2) * 23 + 107 + 46;
-            $("#grid").igGrid("option", "height", heightGrid);
+            //+1 để không xuất hiện scroll bên IE
+            $("#grid").igGrid("option", "height", heightGrid + 1);
             $(".wrapScroll").css({ overflow: "auto", height: objCalulator.contentAreaHeight + "px" });
             $("#grid_container").css("max-height", objCalulator.gridAreaHeight + 'px');
 
