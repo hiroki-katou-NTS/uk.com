@@ -71,7 +71,12 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 self.getItemList(self.initSettingId(), value);
 
             });
-            
+            let subrightTbodyHeight = window.screen.height - 439;
+            if(subrightTbodyHeight >= 495) {
+                $('#sub-right>table>tbody').css('max-height', '495px');    
+            } else {
+                $('#sub-right>table>tbody').css('max-height', subrightTbodyHeight + 'px');
+            } 
         }
         
         getDetail(value: string): any{
