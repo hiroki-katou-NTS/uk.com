@@ -121,7 +121,7 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
             exportSQL.append("  INNER JOIN (SELECT * ");
             exportSQL.append("       FROM BSYMT_EMP_DTA_MNG_INFO ");
             exportSQL.append("       WHERE CID = ?cid) i");
-            exportSQL.append("       ON i.SID = qi.SID");
+            exportSQL.append("       ON i.SID = qi.SID OR i.SID = wi.SID");
             exportSQL.append("  INNER JOIN BPSMT_PERSON p ON p.PID = i.PID");
             exportSQL.append("  ORDER BY SYAHO_OFFICE_CD ,SCD  ");
             String emp = empIds.stream()
@@ -167,7 +167,7 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
                     .personNameKana(i[24] == null ? "" : i[24].toString())
                     .oldName(i[25] == null ? null : i[25].toString())
                     .birthDay(i[26] == null ? "" : i[26].toString())
-                    .endDate(i[27] == null ? null : i[27].toString())
+                    .endDate(i[27] == null ? "" : i[27].toString())
                     .healInsNumber(i[28] == null ? "" : i[28].toString())
                     .prefectureNo(i[29] == null ? 0 : ((BigDecimal) i[29]).intValue())
                     .officeNumber1(i[30] == null ? "" : i[30].toString())

@@ -73,9 +73,12 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
         GeneralDate dummyBirthday = GeneralDate.fromString("1988/12/10", "yyyy/MM/dd");
 
         int dummyGender = 2;
-        String dummyOldName = "健保 陽子";
-        String dummyName = "厚年 陽子";
-        String dummyNameKana = "コウネン ヨウコ";
+        String dummybeforeOldName = "健保";
+        String dummyAfterOldName = "陽子";
+        String dummybeforeName = "厚年";
+        String dummyAfterName = "陽子";
+        String dummybeforeNameKana = "コウネン";
+        String dummyAfterNameKana = "ヨウコ";
         String dummnyPhonenumber = "354-326-789";
         String address = "";
         String address1 = "";
@@ -175,13 +178,13 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
         ws.getCells().get("Y20").putValue(submitDate.month());
         ws.getCells().get("AA20").putValue(submitDate.day());
 
-        ws.getCells().get("J17").putValue(dummyName);
-        ws.getCells().get("M17").putValue(dummyName);
-        ws.getCells().get("J19").putValue(dummyNameKana);
-        ws.getCells().get("M19").putValue(dummyNameKana);
+        ws.getCells().get("J17").putValue(dummybeforeName);
+        ws.getCells().get("M17").putValue(dummyAfterName);
+        ws.getCells().get("J19").putValue(dummybeforeNameKana);
+        ws.getCells().get("M19").putValue(dummyAfterNameKana);
 
-        ws.getCells().get("U17").putValue(dummyOldName);
-        ws.getCells().get("Z17").putValue(dummyOldName);
+        ws.getCells().get("U17").putValue(dummybeforeOldName);
+        ws.getCells().get("Z17").putValue(dummyAfterOldName);
 
 
         //厚生年金種別情報
