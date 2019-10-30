@@ -117,7 +117,7 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
 
     private boolean calculateAge(String birthDay){
         GeneralDate tempBrithday = GeneralDate.fromString(birthDay.substring(0,10), "yyyy-MM-dd");
-        tempBrithday.addYears(70);
+        tempBrithday = tempBrithday.addYears(70);
         GeneralDate now = GeneralDate.today();
         return now.after(tempBrithday);
     }
