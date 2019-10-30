@@ -461,7 +461,7 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
             }
         }
 
-        cells.get(startRow, 6).setValue(data.getQualifiDistin()+","+","+","+","+","+","+"9"+","+convertJpDate(startDateKohoInfo));
+        cells.get(startRow, 6).setValue(data.getQualifiDistin()+","+","+","+","+","+","+findEra(startDateKohoInfo.era())+","+convertJpDate(startDateKohoInfo));
 
 
 
@@ -580,8 +580,8 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
         return refecture.isPresent() ? refecture.get().getPrefectureCode().v() : "";
     }
 
-    private int convertDateToYearMonth(String date) {
-        return Integer.parseInt(date.substring(0, 4) + date.substring(5, 7));
+    private int convertDateToYearMonth(String date){
+        return Integer.parseInt(date.substring(0,4) + date.substring(5,7));
     }
 
 }
