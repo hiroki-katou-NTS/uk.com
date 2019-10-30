@@ -78,8 +78,7 @@ module jcm007.a {
                 if (value == 'tab-2') {
                     self.isNewMode = false;
                     self.getListData();
-                    let itemSelectedTab2  = self.itemSelectedTab2();
-                    console.log(itemSelectedTab2);
+                    let itemSelectedTab2  = self.itemSelectedTab2();                    
                     if (itemSelectedTab2 != null) {
                         if (itemSelectedTab2.status == self.status_ApprovalPending || itemSelectedTab2.status == self.status_Unregistered) {
                             self.enable_btnRegister(true);
@@ -93,10 +92,14 @@ module jcm007.a {
                         }
                         
                         let dataHeader = _.find(self.empInfoHeaderList, function(o) { return o.employeeId == itemSelectedTab2.sid; });
-                        self.setDataHeader(dataHeader);
+                        if(dataHeader){
+                            self.setDataHeader(dataHeader);
+                        }
 
                         let dataDetail = _.find(self.employeeListTab2, function(o) { return o.sid == itemSelectedTab2.sid; });
-                        self.setDataDetail(dataDetail);
+                        if(dataDetail){
+                            self.setDataDetail(dataDetail);
+                        }
                         $('#retirementDateId').focus();
                     } else {
                         self.initHeaderInfo();
@@ -114,11 +117,12 @@ module jcm007.a {
                         self.initHeaderInfo();
                         self.initRetirementInfo(); 
                     }
-                    self.enable_disableInput(true);  
+                    self.enable_disableInput(true);
                 }
             });
 
             self.itemSelectedTab2.subscribe((value) => {
+                if(value == null) return;
                 if (value.status == self.status_ApprovalPending || value.status == self.status_Unregistered) {
                     // アルゴリズム[退職者情報の表示」を実行する] (Thực hiện thuật toán [Hiển thị thông tin người nghỉ hưu」)
                     self.enable_btnRegister(true);
@@ -141,8 +145,7 @@ module jcm007.a {
         }
         
         // select emp ben tab-1
-        public seletedEmployee(data): void {
-            console.log(data);
+        public seletedEmployee(data): void {            
             let self = this;
             self.itemSelectedTab1(data); 
             if (self.isNewMode) {
@@ -151,11 +154,11 @@ module jcm007.a {
                 block.grayout();
                 service.CheckStatusRegistration(data.employeeId).done(() => {
                     
-                    console.log('CheckStatusRegistration DONE');
+                    console.log('CheckStatusRegis DONE');
                     
                 }).fail((error) => {
                     
-                    console.log('CheckStatusRegistration FAIL');
+                    console.log('CheckStatusRegis FAIL');
                    
                     block.clear();
                     nts.uk.ui.dialog.info(error);
@@ -173,17 +176,17 @@ module jcm007.a {
         }
         
         /** start page */
-        start() {
+        start(historyId : any) {
             let self = this;
             let dfd = $.Deferred<any>();
             
-            self.getListData();
+            self.getListData(historyId);
 
             dfd.resolve();
             return dfd.promise();
         }
         
-        getListData() {
+        getListData(historyId : any, isAfterRemove : boolean) {
             let self = this;
             
             block.grayout();
@@ -219,10 +222,22 @@ module jcm007.a {
                             self.enable_btnRemove(true);
                         }
                         
-                        
                         self.employeeListTab2 = data1;
                         
                         $("#gridListEmployeesJcm007").igGrid('option','dataSource',self.employeeListTab2);
+                        
+                        if(historyId){
+                            let dataDetail = _.find(self.employeeListTab2, function(o) { return o.historyId == historyId; });
+                            self.setDataDetail(dataDetail);    
+                        }
+                        
+                        if(historyId && isAfterRemove){
+                            let itemSelected = _.find(self.employeeListTab2, function(o) { return o.historyId == historyId; });
+                            let indexItemSelected = _.findIndex(self.employeeListTab2, function(o) { return o.historyId == historyId; });
+                            self.itemSelectedTab2(itemSelected);
+                            self.setDataDetail(itemSelected);
+                            $("#gridListEmployeesJcm007").igGridSelection("selectRow", indexItemSelected);    
+                        }
                         block.clear();
 
                     }).fail((error) => {
@@ -291,12 +306,6 @@ module jcm007.a {
                         multipleSelection: false,
                         rowSelectionChanged: function(evt, ui) {
                             let itemSelected = _.find(self.employeeListTab2, function(o) { return o.historyId == ui.row.id; });
-                           
-                            let histId = itemSelected.historyId;
-                            let lengthListItemTab2 = self.employeeListTab2.length;
-                            let indexItemDelete = _.findIndex(ko.toJS(self.employeeListTab2), function(item: any) { return item.historyId == histId; });
-               
-                            
                             if (itemSelected) {
                                  self.itemSelectedTab2(itemSelected);
                             }
@@ -384,6 +393,25 @@ module jcm007.a {
                 leaveConsiderableTime_5Val: emp.leaveConsiderableTime_5Val,
                 other_6: emp.other_6 == false ? 0 : 1,
                 other_6Val: emp.other_6Val
+            }
+            
+            if(command.naturalUnaReasons_1 == 1 && command.naturalUnaReasons_1Val == ''){
+                command.naturalUnaReasons_1 = 0;
+            }
+            if(command.businessReduction_2 == 1 && command.businessReduction_2Val == ''){
+                command.businessReduction_2 = 0;
+            }
+            if(command.seriousViolationsOrder_3 == 1 && command.seriousViolationsOrder_3Val == ''){
+                command.seriousViolationsOrder_3 = 0;
+            }
+            if(command.unauthorizedConduct_4 == 1 && command.unauthorizedConduct_4Val == ''){
+                command.unauthorizedConduct_4 = 0;
+            }
+            if(command.leaveConsiderableTime_5 == 1 && command.leaveConsiderableTime_5Val == ''){
+                command.leaveConsiderableTime_5 = 0;
+            }
+            if(command.other_6 == 1 && command.other_6Val == ''){
+                command.other_6 = 0;
             }
 
             if ((self.selectedTab() == 'tab-1') && (self.isNewMode) && (itemSelectedTab1 != null)) {
@@ -495,6 +523,7 @@ module jcm007.a {
                     this.updateRetireeInformation(command);
                 }
             }).fail((mes) => {
+                self.enable_disableInput(true);
                 block.clear();
                 nts.uk.ui.dialog.bundledErrors(mes);
             });
@@ -506,7 +535,9 @@ module jcm007.a {
             block.grayout();
             service.updateRetireeInformation(command).done(() => {
                 console.log('UPDATE DONE!!');
-                self.start();
+                self.enable_btnRegister(false);
+                self.enable_btnRemove(false);   
+                self.start(command.historyId);
                 block.clear();
                 dfd.resolve();
             }).fail((mes) => {
@@ -543,26 +574,32 @@ module jcm007.a {
             }
 
             let itemSelectedTab2 = self.itemSelectedTab2();
+            let dataSource = $('#gridListEmployeesJcm007').igGrid('option','dataSource');
 
             if (self.selectedTab() == 'tab-2' && itemSelectedTab2 != null
                 && itemSelectedTab2.status != self.status_Unregistered) {
                 let histId = itemSelectedTab2.historyId;
                 let lengthListItemTab2 = self.employeeListTab2.length;
-                let indexItemDelete = _.findIndex(ko.toJS(self.employeeListTab2), function(item: any) { return item.historyId == histId; });
-                     
+                let indexItemDelete = _.findIndex(ko.toJS(dataSource), function(item: any) { return item.historyId == histId; });
+                
                 confirm({ messageId: "Msg_18" }).ifYes(() => {
                     block.grayout();
                     service.remove(histId).done(() => {
                         console.log('REMOVE DONE!!');
-                        self.start();
-                        block.clear();
-                        if(indexItemDelete == 0 && lengthListItemTab2 > 1){
-                            $("#gridListEmployeesJcm007").igGridSelection( "selectRow", 1 );
-                        }else if (lengthListItemTab2 - 1 === indexItemDelete) {
-                            $("#gridListEmployeesJcm007").igGridSelection( "selectRow", lengthListItemTab2 -2 );
-                        } else if (lengthListItemTab2 - 1 > indexItemDelete) {
-                            $("#gridListEmployeesJcm007").igGridSelection( "selectRow", indexItemDelete + 1 );
+                        if (lengthListItemTab2 === 1) {
+                            self.isNewMode = true;
+                            self.itemSelectedTab2(null);
+                            self.start(null);
+                        } else if (lengthListItemTab2 - 1 == indexItemDelete) {
+                            let itemSelectedAfterRemove  = dataSource[indexItemDelete - 1];
+                            self.getListData(itemSelectedAfterRemove.historyId, true);
+                        } else {
+                            let itemSelectedAfterRemove = dataSource[indexItemDelete + 1];
+                            self.getListData(itemSelectedAfterRemove.historyId, true);
                         }
+                        
+                        block.clear();
+                        
                         
                         
                     }).fail((mes) => {
@@ -609,16 +646,22 @@ module jcm007.a {
             self.currentEmployee().reaAndProForDis(dataDetail.reaAndProForDis == null ? '' :  dataDetail.reaAndProForDis);
             
             self.currentEmployee().naturalUnaReasons_1(dataDetail.naturalUnaReasons_1 == 0 ? false : true);
+            //self.currentEmployee().naturalUnaReasons_enable(dataDetail.naturalUnaReasons_1 == 0 ? false : true);
             self.currentEmployee().naturalUnaReasons_1Val(dataDetail.naturalUnaReasons_1Val == null ? '' :  dataDetail.naturalUnaReasons_1Val);
             self.currentEmployee().businessReduction_2(dataDetail.naturalUnaReasons_2 == 0 ? false : true);
+            //self.currentEmployee().businessReduction_enable(dataDetail.naturalUnaReasons_2 == 0 ? false : true);
             self.currentEmployee().businessReduction_2Val(dataDetail.naturalUnaReasons_2Val == null ? '' :  dataDetail.naturalUnaReasons_2Val);
             self.currentEmployee().seriousViolationsOrder_3(dataDetail.naturalUnaReasons_3 == 0 ? false : true);
+            //self.currentEmployee().seriousViolationsOrder_enable(dataDetail.naturalUnaReasons_3 == 0 ? false : true);
             self.currentEmployee().seriousViolationsOrder_3Val(dataDetail.naturalUnaReasons_3Val == null ? '' :  dataDetail.naturalUnaReasons_3Val);
             self.currentEmployee().unauthorizedConduct_4(dataDetail.naturalUnaReasons_4 == 0 ? false : true);
+            //self.currentEmployee().unauthorizedConduct_enable(dataDetail.naturalUnaReasons_4 == 0 ? false : true);
             self.currentEmployee().unauthorizedConduct_4Val(dataDetail.naturalUnaReasons_4Val == null ? '' :  dataDetail.naturalUnaReasons_4Val);
             self.currentEmployee().leaveConsiderableTime_5(dataDetail.naturalUnaReasons_5 == 0 ? false : true);
+            //self.currentEmployee().leaveConsiderableTime_enable(dataDetail.naturalUnaReasons_5 == 0 ? false : true);
             self.currentEmployee().leaveConsiderableTime_5Val(dataDetail.naturalUnaReasons_5Val == null ? '' :  dataDetail.naturalUnaReasons_5Val);
             self.currentEmployee().other_6(dataDetail.naturalUnaReasons_6 == 0 ? false : true);
+            //self.currentEmployee().other_enable(dataDetail.naturalUnaReasons_6 == 0 ? false : true);
             self.currentEmployee().other_6Val(dataDetail.naturalUnaReasons_6Val == null ? '' :  dataDetail.naturalUnaReasons_6Val);
         }
 
@@ -641,9 +684,10 @@ module jcm007.a {
             self.enable_btnRemove(false);
             self.initHeaderInfo();
             self.initRetirementInfo();
-            self.clearSelection();
             self.itemSelectedTab1(null);
-            
+            $("#gridListEmployees").igGridSelection("clearSelection");
+            $("#gridListEmployeesJcm007").igGridSelection("clearSelection");
+            self.itemSelectedTab2(null);
             nts.uk.ui.errors.clearAll();
         }
         
@@ -713,12 +757,8 @@ module jcm007.a {
             self.currentEmployee().unauthorizedConduct_enable(param);
             self.currentEmployee().leaveConsiderableTime_enable(param);
             self.currentEmployee().other_enable(param);
+            console.log('enable_disableInput');
         }
-        
-        clearSelection() {
-            $("#gridListEmployees").igGridSelection("clearSelection");
-        }
-
     }
     class EmployeeModel {
         
@@ -885,13 +925,41 @@ module jcm007.a {
                 } else if (value == 3) {
                     self.visible_NotDismissal(false);
                     self.visible_Dismissal(true);
+                    if(self.naturalUnaReasons_1() == false){
+                        self.naturalUnaReasons_1Val('');
+                        self.naturalUnaReasons_enable(false);
+                    }
+                    if(self.businessReduction_2() == false){
+                        self.businessReduction_2Val('');
+                        self.businessReduction_enable(false);
+                    }
+                    if(self.seriousViolationsOrder_3() == false){
+                        self.seriousViolationsOrder_3Val('');
+                        self.seriousViolationsOrder_enable(false);
+                    }
+                    if(self.unauthorizedConduct_4() == false){
+                        self.unauthorizedConduct_4Val('');
+                        self.unauthorizedConduct_enable(false);
+                    }
+                    if(self.leaveConsiderableTime_5() == false){
+                        self.leaveConsiderableTime_5Val('');
+                        self.leaveConsiderableTime_enable(false);
+                    }
+                    if(self.other_6() == false){
+                        self.other_6Val('');
+                        self.other_enable(false);
+                    }
                 }
             });
             
             self.naturalUnaReasons_1.subscribe((value) => {
                 let self = this;
-                if (value == true) {
+                if (value == true && self.enable_naturalUnaReasons1() == false){
+                    self.naturalUnaReasons_enable(false);
+                    console.log('enable_disableInput 1');
+                } else if (value == true) {
                     self.naturalUnaReasons_enable(true);
+                    console.log('enable_disableInput 2');
                     $("#naturalUnaReasons_1Val").focus();
                 } else if (value == false) {
                     self.naturalUnaReasons_1Val('');
@@ -901,7 +969,9 @@ module jcm007.a {
 
             self.businessReduction_2.subscribe((value) => {
                 let self = this;
-                if (value == true) {
+                if (value == true && self.enable_businessReduction2() == false){
+                    self.businessReduction_enable(false);
+                } else if (value == true) {
                     self.businessReduction_enable(true);
                     $("#businessReduction_2Val").focus();
                 } else if (value == false) {
@@ -913,7 +983,9 @@ module jcm007.a {
 
             self.seriousViolationsOrder_3.subscribe((value) => {
                 let self = this;
-                if (value == true) {
+                if (value == true && self.enable_seriousViolationsOrder3() == false){
+                    self.seriousViolationsOrder_enable(false);
+                } else if (value == true) {
                     self.seriousViolationsOrder_enable(true);
                     $("#seriousViolationsOrder_3Val").focus();
                 } else if (value == false) {
@@ -925,7 +997,9 @@ module jcm007.a {
 
             self.unauthorizedConduct_4.subscribe((value) => {
                 let self = this;
-                if (value == true) {
+                if (value == true && self.enable_unauthorizedConduct4() == false){
+                    self.unauthorizedConduct_enable(false);
+                } else if (value == true) {
                     self.unauthorizedConduct_enable(true);
                     $("#unauthorizedConduct_4Val").focus();
                 } else if (value == false) {
@@ -937,7 +1011,9 @@ module jcm007.a {
 
             self.leaveConsiderableTime_5.subscribe((value) => {
                 let self = this;
-                if (value == true) {
+                if (value == true && self.enable_leaveConsiderableTime5() == false){
+                    self.leaveConsiderableTime_enable(false);
+                } else if (value == true) {
                     self.leaveConsiderableTime_enable(true);
                     $("#leaveConsiderableTime_5Val").focus();
                 } else if (value == false) {
@@ -948,7 +1024,9 @@ module jcm007.a {
 
             self.other_6.subscribe((value) => {
                 let self = this;
-                if (value == true) {
+                if (value == true && self.enable_other6() == false){
+                    self.other_enable(false);
+                } else if (value == true) {
                     self.other_enable(true);
                     $("#other_6Val").focus();
                 } else if (value == false) {
