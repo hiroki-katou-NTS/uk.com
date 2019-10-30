@@ -120,7 +120,7 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
         GeneralDate tempBrithday = GeneralDate.fromString(birthDay.substring(0,10), "yyyy-MM-dd");
         tempBrithday = tempBrithday.addYears(70);
         GeneralDate now = GeneralDate.today();
-        return now.after(tempBrithday);
+        return now.afterOrEquals(tempBrithday);
     }
 
 
