@@ -4,11 +4,13 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.file.app.core.socialinsurnoticreset.*;
 
+import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Stateless
 public class JpaEmpAddChangeInfoFileGenerator extends JpaRepository implements EmpAddChangeInfoExReposity {
     @Override
     public List<EmpFamilySocialInsCtgInfo> getEmpFamilySocialInsCtgInfoList(List<String> empIds, String cid) {
