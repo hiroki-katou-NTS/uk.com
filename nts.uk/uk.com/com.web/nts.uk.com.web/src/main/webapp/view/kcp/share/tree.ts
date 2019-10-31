@@ -1253,7 +1253,7 @@ var TREE_COMPONENT_HTML = `<style type="text/css">
                 style="min-width: 65px">`+TreeComponentTextResource.KCP004_3+`</button>
         </div>
         <div style="margin-top: 10px; margin-bottom: 10px;">
-            <div data-bind="ntsFormLabel: {}" style="margin-left: 10px; float: left">`+TreeComponentTextResource.KCP004_4+`</div>
+            <div data-bind="ntsFormLabel: {}" style="margin-left: 10px; float: left; border-color: transparent;">`+TreeComponentTextResource.KCP004_4+`</div>
             <div id="combo-box-tree-component"
                 style="width: 60px; margin-left: 5px; float: left"
                 data-bind="attr: {tabindex: tabindex}, ntsComboBox: {
@@ -1278,7 +1278,7 @@ var TREE_COMPONENT_HTML = `<style type="text/css">
                 <!-- /ko -->
             </div>
             <div style="margin-top: 10px; margin-bottom: 10px;" data-bind="visible: isMultipleUse">
-                        <div data-bind="ntsFormLabel: {}" style="margin-left: 10px; float: left">`+TreeComponentTextResource.KCP004_4+`</div>
+                        <div data-bind="ntsFormLabel: {}" style="margin-left: 10px; float: left; border-color: transparent;">`+TreeComponentTextResource.KCP004_4+`</div>
                         <div id="combo-box-tree-component"
                             style="width: 60px; margin-left: 5px; float: left"
                             data-bind="attr: {tabindex: tabindex}, ntsComboBox: {
