@@ -17,6 +17,7 @@ module ccg014.a.viewmodel {
         isCreate: KnockoutObservable<boolean>;
         // Enable Copy
         enableCopy: KnockoutComputed<boolean>;
+        leftHeight: KnockoutObservable<any>;
 
         constructor() {
             var self = this;
@@ -47,6 +48,7 @@ module ccg014.a.viewmodel {
                     $("#titleMenuName").focus();
                 errors.clearAll();
             });
+            self.leftHeight = ko.observable(0);
 
         }
 
@@ -58,6 +60,7 @@ module ccg014.a.viewmodel {
             dfd.done(() => {
                 block.clear();
                 this.selectTitleMenuByIndex(0);
+                this.setHeight();
             });
             return dfd;
         }
@@ -219,6 +222,15 @@ module ccg014.a.viewmodel {
 
         private changePreviewIframe(layoutID: string): void {
             $("#preview-iframe").attr("src", "/nts.uk.com.web/view/ccg/common/previewWidget/index.xhtml?layoutid=" + layoutID);
+        }
+        
+        private setHeight(): void {
+            var self = this;
+            self.leftHeight(window.outerHeight * 7 / 13);
+            $("#left-content").height(self.leftHeight());
+            $("#preview-iframe").attr('style', 
+            	'height:' + (window.outerHeight * 4 / 13) + 'px; ' +
+            	'width: 630px; margin-bottom: -20px;');
         }
 
     }

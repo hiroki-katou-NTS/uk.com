@@ -22,7 +22,7 @@ body {
 	margin-top: 10px;
 	margin-left: 10px !important;
 	width: 350px;
-	height: 540px;
+	height: 440px;
 }
 
 #caret {
@@ -52,7 +52,7 @@ body {
 #content-center {
 	margin-top: 10px;
 	width: 435px !important;
-	height: 540px;
+	height: 440px;
 }
 
 .col1 {
@@ -82,7 +82,7 @@ body {
 	margin-left: 15px;
 	margin-top: 115px; 
 	width: 425px !important;
-	height: 380px;
+	height: 350px;
 }
 
 .form-input {
@@ -121,4 +121,8 @@ body {
 #item_register_grid_container{
 	position: absolute;
 	z-index: 1;
+}
+
+#contents-area {
+	min-width: 1920px !important;
 }

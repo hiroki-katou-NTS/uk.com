@@ -11,7 +11,7 @@
 }
 .rightExtend {
 	margin-left: 50px;
-	margin-top: 20px;
+	margin-top: 10px;
 	display: inline-block;
     vertical-align: top;
 }
@@ -30,21 +30,21 @@
 	padding: 0px;
 }
 .infoTable > div:FIRST-CHILD {
-	height: 30px;
+	height: 25px;
 	background: #C5E0B4;
 	border-bottom: 2px solid #B1B1B1;
-	padding-top: 10px;
+	padding-top: 5px;
     padding-left: 15px;
 }
 .infoTable > div:LAST-CHILD {
-	padding: 10px 5px;
+	padding: 5px 5px;
 }
 .labelSqr {
-	padding-top: 10px !important;
+	padding-top: 5px !important;
 	display: inline-block;
 	text-align: center;
     width: 76px;
-    height: 50px;
+    height: 40px;
     vertical-align: middle;
     margin-left: 6.5px;
     margin-right: 6.5px;
