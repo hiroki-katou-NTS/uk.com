@@ -255,14 +255,14 @@ module nts.uk.com.view.ccg015.a {
             
             private setHeight(): void {
                 var self = this;
-                /*self.leftHeight(window.outerHeight - 385);
+                self.leftHeight(window.outerHeight - 385);
                 $("#preview-iframe").attr('style', 
                 	'height:' + (window.outerHeight - 530) + 'px; ' +
-                	'width:630px')*/
-                self.leftHeight(window.outerHeight * 7 / 13);
+                	'width:630px')
+                /*self.leftHeight(window.outerHeight * 7 / 13);
                 $("#preview-iframe").attr('style', 
                 	'height:' + (window.outerHeight * 4 / 13) + 'px; ' +
-                	'width:630px')
+                	'width:630px')*/
             }
         }
 
