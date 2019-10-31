@@ -137,7 +137,7 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
                 startRow++;
                 columnStart = 0;
             }
-            if(ins.getLineFeedCode().get() != LineFeedCode.DO_NOT_ADD && i > 0) {
+            if(ins.getLineFeedCode().get() == LineFeedCode.DO_NOT_ADD && i > 0) {
                 columnStart = columnStart + columnStart - 1;
             }
             fillPensionEmployee(data, cells, infor, ins, startRow, startDate, endDate, company, columnStart);
