@@ -1241,7 +1241,7 @@ var TREE_COMPONENT_HTML = `<style type="text/css">
         <!-- ko if: !isDialog -->
             <i class="icon icon-searchbox"></i>
         <!-- /ko -->
-       <div style ="width: 430px; height: 40px" data-bind="visible: !isMultipleUse">
+       <div class="row-search" style ="width: 430px; height: 40px" data-bind="visible: !isMultipleUse">
         <div data-bind="visible: !isMultipleUse" style= "float: left">
             <div data-bind="ntsFormLabel: {}">`+TreeComponentTextResource.KCP004_2+`</div>
             <div class="base-date-editor" id="work-place-base-date"
@@ -1268,7 +1268,7 @@ var TREE_COMPONENT_HTML = `<style type="text/css">
                     ]}"></div>
         </div>
         </div>
-        <div style="margin-top:10px " data-bind="style: { width: isShowSelectButton ? '474px' : '420px' }">
+        <div class = "search-filter" style="margin-top:10px " data-bind="style: { width: isShowSelectButton ? '474px' : '420px' }">
             <div style="display: inline-block; float: left" data-bind="attr: {id: searchBoxId, tabindex: tabindex}, style: { width : !isMultipleUse ? '327px' : '268px'}">
             </div>
             <div style="display: inline-block; margin-left: 2px; float: left">

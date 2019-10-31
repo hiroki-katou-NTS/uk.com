@@ -38,7 +38,7 @@
 
 #tabpanel-m #fixed-table-wkp-setting th.color-header {
 	font-weight: bold;
-	height: 32px;
+	height: 20px;
 }
 
 #tabpanel-m #fixed-table-wkp-setting td:last-child {
@@ -65,4 +65,11 @@
 
 #tabpanel-m {
 	padding: 10px;
+}
+.search-filter {
+	height: 40px !important;
+	width: 400px !important;
+}
+.row-search {
+	width: 400px !important;
 }
