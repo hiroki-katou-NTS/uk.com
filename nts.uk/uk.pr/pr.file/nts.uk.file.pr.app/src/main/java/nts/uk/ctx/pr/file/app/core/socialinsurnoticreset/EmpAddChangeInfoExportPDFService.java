@@ -81,7 +81,7 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
         if (printPersonNumber == PersonalNumClass.OUTPUT_BASIC_PER_NUMBER.value || printPersonNumber == PersonalNumClass.DO_NOT_OUTPUT.value
                 && !empAddChangeInfoExportList.isEmpty()){
            EmpAddChangeInforData empAddChangeInforData = new EmpAddChangeInforData();
-           empAddChangeInforData.setBaseDate(baseDate);
+           empAddChangeInforData.setBaseDate(baseDate)    ;
             /*  List<EmpFamilySocialInsCtgInfo> empFamilySocialInsCtgInfoList = empAddChangeInfoExReposity.getEmpFamilySocialInsCtgInfoList(empIds, cid);
             List<EmpHealInsurQInfo> empHealInsurQInfoList = empAddChangeInfoExReposity.getEmpHealInsurQInfoList(empIds, cid);
             List<EmpWelfarePenInsQualiInfo> empWelfarePenInsQualiInforList = empAddChangeInfoExReposity.getEmpWelfarePenInsQualiInfoList(empIds, cid);
