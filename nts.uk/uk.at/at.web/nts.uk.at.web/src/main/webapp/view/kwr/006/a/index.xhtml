@@ -34,25 +34,6 @@
 				<table class="table1">
 					<tr>
 						<td class="td-left">
-							<!-- A1_4 -->
-							<div class="panel panel-frame row left">
-								<!-- A1_5 -->
-								<span class="label with-image A1_5">
-									<i class="image image-calendar"/>
-									<span>#{i18n.getText('KWR006_7')}</span>
-								</span> 
-								<!--A1_6-->
-								<!--A1_7-->
-								<!--A1_8-->
-								<div tabindex="3" class="A1_6" id="daterangepicker" data-bind="ntsDateRangePicker: {
-										required: requiredDatePicker,
-										type: 'yearmonth',
-										enable: enableDatePicker, 
-										showNextPrevious: true, 
-										value: datepickerValue, 
-										maxRange: 'oneYear'}"/>
-								</div>
-							
 							<!-- A3_1 -->
 							<div class="panel panel-frame row">
 								<div tabindex="5" id="component-items-list"></div>
@@ -63,8 +44,6 @@
 							<div class="right">
 								<!-- A4_1 -->
 								<div class="panel panel-frame" id="output-setting-content">
-									<!-- A5_1 -->
-									<div class="label A5_1">#{i18n.getText('KWR006_8')}</div>
 									<div class="row">
 										<!-- A6_1 -->
 										<div data-bind="ntsFormLabel: {}">#{i18n.getText('KWR006_9')}</div>
@@ -80,13 +59,24 @@
 									</div>
 									
 									<div class="row">
-										<!-- A7_1 -->
-										<div data-bind="ntsFormLabel: {}">#{i18n.getText('KWR006_12')}</div>
+										<!-- A1_5 -->
+										<div data-bind="ntsFormLabel: {}">#{i18n.getText('KWR006_7')}</div>
+										<!--A1_6-->
+										<!--A1_7-->
+										<!--A1_8-->
+										<div tabindex="3" class="A1_6" id="daterangepicker"
+											data-bind="ntsDateRangePicker: {
+												required: requiredDatePicker,
+												type: 'yearmonth',
+												enable: enableDatePicker, 
+												showNextPrevious: true, 
+												value: datepickerValue, 
+												maxRange: 'oneYear'}" />
 									</div>
 									
 									<div class="row">
 										<!-- A7_2 -->
-										<span class="label A7_2">#{i18n.getText('KWR006_13')}</span>
+										<div data-bind="ntsFormLabel: {}">#{i18n.getText('KWR006_13')}</div>
 										<!-- A7_3 -->
 										<div tabindex="7" id="combo-box" data-bind="ntsComboBox: {
 											name: '#[KWR006_13]',
