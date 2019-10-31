@@ -315,17 +315,17 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
         cells.get(startRow, columnStart).setValue("2200700");
         cells.get(startRow, 1 + columnStart).setValue(getPreferCode(data.getHealPrefectureNo(), startDate, endDate, infor));
         cells.get(startRow, 2 + columnStart).setValue(data.getHealOfficeNumber1().length() > 2 ? data.getHealOfficeNumber1().substring(0, 2) : data.getHealOfficeNumber1());
-        cells.get(startRow, 2 + columnStart).setValue(cells.get(startRow, 2).getValue()+","+(data.getHealOfficeNumber2().length() > 4 ? data.getHealOfficeNumber2().substring(0, 4) : data.getHealOfficeNumber2()));
-        cells.get(startRow, 2 + columnStart).setValue((cells.get(startRow, 2).getValue()+","+(data.getHealOfficeNumber())));
+        cells.get(startRow, 2 + columnStart).setValue(cells.get(startRow, 2 + columnStart).getValue()+","+(data.getHealOfficeNumber2().length() > 4 ? data.getHealOfficeNumber2().substring(0, 4) : data.getHealOfficeNumber2()));
+        cells.get(startRow, 2 + columnStart).setValue((cells.get(startRow, 2 + columnStart).getValue()+","+(data.getHealOfficeNumber())));
         if(ins.getSubmittedName() == SubNameClass.PERSONAL_NAME){
 
             cells.get(startRow, 4 + columnStart).setValue(data.getPersonNameKana().length() > 12 ? data.getPersonNameKana().substring(0, 12) : data.getPersonNameKana());
-            cells.get(startRow, 4 + columnStart).setValue(  cells.get(startRow, 4).getValue()+","+(data.getPersonName().length() > 25 ? data.getPersonName().substring(0, 25) : data.getPersonName()) );
+            cells.get(startRow, 4 + columnStart).setValue(  cells.get(startRow, 4 + columnStart).getValue()+","+(data.getPersonName().length() > 25 ? data.getPersonName().substring(0, 25) : data.getPersonName()) );
         }
         else{
 
             cells.get(startRow, 4 + columnStart).setValue(data.getOldNameKana().length() > 12 ? data.getOldNameKana().substring(0, 12) : data.getOldNameKana());
-            cells.get(startRow, 4 + columnStart).setValue( cells.get(startRow, 4).getValue()+","+(data.getOldName().length() > 25 ? data.getOldName().substring(0, 25) : data.getOldName()));
+            cells.get(startRow, 4 + columnStart).setValue( cells.get(startRow, 4 + columnStart).getValue()+","+(data.getOldName().length() > 25 ? data.getOldName().substring(0, 25) : data.getOldName()));
 
         }
         cells.get(startRow, 5 + columnStart).setValue(dateJp.era().equals(HEISEI) ? 7 : dateJp.era().equals(SHOWA) ? 5 : 9);
@@ -447,7 +447,7 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
                 startRow++;
             }
             if(ins.getLineFeedCode().get() == LineFeedCode.DO_NOT_ADD && i > 0) {
-                columnStart = columnStart + 22 ;
+                columnStart = columnStart + 21 ;
             }
             fillEmpPensionFund(data, cells, infor, ins, startRow, startDate, endDate, company, columnStart);
         }
@@ -461,13 +461,13 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
         JapaneseDate startDateKohoInfo = toJapaneseDate(GeneralDate.fromString(data.getStartDate().substring(0, 10), "yyyy-MM-dd"));
         cells.get(startRow, columnStart).setValue("2200700");
         cells.get(startRow, 1 + columnStart).setValue(getPreferCode(data.getPrefectureNo(), startDate, endDate, infor));
-        cells.get(startRow, 2+ columnStart).setValue(data.getWelOfficeNumber1().length() > 2 ? data.getWelOfficeNumber1().substring(0, 2) : data.getWelOfficeNumber1());
-        cells.get(startRow, 2+ columnStart).setValue( cells.get(startRow, 2 + columnStart).getValue()+","+(data.getWelOfficeNumber2().length() > 4 ? data.getWelOfficeNumber2().substring(0, 4) : data.getWelOfficeNumber2()));
-        cells.get(startRow, 2+ columnStart).setValue(cells.get(startRow, 2+ columnStart).getValue()+","+data.getWelPenOfficeNumber()+",");
-        cells.get(startRow, 3+ columnStart).setValue(ins.getSubmittedName() == SubNameClass.PERSONAL_NAME ? data.getPersonNameKana() : data.getOldNameKana());
-        cells.get(startRow, 3+ columnStart).setValue( cells.get(startRow, 3+ columnStart).getValue()+","+(ins.getSubmittedName() == SubNameClass.PERSONAL_NAME ? data.getPersonName() : data.getOldName()));
-        cells.get(startRow, 4+ columnStart).setValue(findEra(dateJp.era()));
-        cells.get(startRow, 4+ columnStart).setValue( cells.get(startRow, 4+ columnStart).getValue()+","+convertJpDate(dateJp));
+        cells.get(startRow, 2 + columnStart).setValue(data.getWelOfficeNumber1().length() > 2 ? data.getWelOfficeNumber1().substring(0, 2) : data.getWelOfficeNumber1());
+        cells.get(startRow, 2 + columnStart).setValue( cells.get(startRow, 2 + columnStart).getValue()+","+(data.getWelOfficeNumber2().length() > 4 ? data.getWelOfficeNumber2().substring(0, 4) : data.getWelOfficeNumber2()));
+        cells.get(startRow, 2 + columnStart).setValue(cells.get(startRow, 2+ columnStart).getValue()+","+data.getWelPenOfficeNumber()+",");
+        cells.get(startRow, 3 + columnStart).setValue(ins.getSubmittedName() == SubNameClass.PERSONAL_NAME ? data.getPersonNameKana() : data.getOldNameKana());
+        cells.get(startRow, 3 + columnStart).setValue( cells.get(startRow, 3+ columnStart).getValue()+","+(ins.getSubmittedName() == SubNameClass.PERSONAL_NAME ? data.getPersonName() : data.getOldName()));
+        cells.get(startRow, 4 + columnStart).setValue(findEra(dateJp.era()));
+        cells.get(startRow, 4 + columnStart).setValue( cells.get(startRow, 4+ columnStart).getValue()+","+convertJpDate(dateJp));
         //Male(1), Female(2)
         String hisId = data.getHisId();
         int undergoundDivision = data.getUnderDivision();
