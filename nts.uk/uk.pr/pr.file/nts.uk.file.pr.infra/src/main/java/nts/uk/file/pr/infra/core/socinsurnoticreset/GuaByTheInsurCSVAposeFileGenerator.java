@@ -268,11 +268,12 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
                 cells.get(startRow, 0).setValue(data.getUnionOfficeNumber());
                 cells.get(startRow, 1).setValue(Objects.toString(ins.getFdNumber().orElse(null), "001"));
                 cells.get(startRow, 2).setValue(baseDate.toString("yyyyMMdd"));
-                cells.get(startRow, 3).setValue((data.getHealInsInherenPr().length() > 4 ? data.getHealInsInherenPr().substring(0, 5) : data.getHealInsInherenPr())+ ",,,,\r\n[kanri]\r\n" );
                 if(ins.getLineFeedCode().get() != LineFeedCode.DO_NOT_ADD) {
+                    cells.get(startRow, 3).setValue((data.getHealInsInherenPr().length() > 4 ? data.getHealInsInherenPr().substring(0, 5) : data.getHealInsInherenPr())+ ",,,,\r\n[kanri]\r\n" );
                     cells.get(startRow, 4).setValue("001\r\n" + data.getUnionOfficeNumber());
                 }
                 if(ins.getLineFeedCode().get() == LineFeedCode.DO_NOT_ADD) {
+                    cells.get(startRow, 3).setValue((data.getHealInsInherenPr().length() > 4 ? data.getHealInsInherenPr().substring(0, 5) : data.getHealInsInherenPr())+ ",,,,,[kanri]," );
                     cells.get(startRow, 4).setValue("001," + data.getUnionOfficeNumber());
                 }
                 String portCd = ins.getOfficeInformation().value == 0 ? company.getPostCd() : data.getPortCd();
