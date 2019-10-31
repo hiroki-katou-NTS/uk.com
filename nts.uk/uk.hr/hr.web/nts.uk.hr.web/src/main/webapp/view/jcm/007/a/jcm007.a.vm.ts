@@ -7,6 +7,7 @@ module jcm007.a {
     import getText = nts.uk.resource.getText;
     import confirm = nts.uk.ui.dialog.confirm;
     import close = nts.uk.ui.windows.close;
+    import dialog = nts.uk.ui.dialog;
     
     var block = nts.uk.ui.block;
     export class ViewModel {
@@ -77,45 +78,45 @@ module jcm007.a {
             self.selectedTab.subscribe((value) => {
                 if (value == 'tab-2') {
                     self.isNewMode = false;
-                    self.getListData();
-                    let itemSelectedTab2  = self.itemSelectedTab2();                    
-                    if (itemSelectedTab2 != null) {
-                        if (itemSelectedTab2.status == self.status_ApprovalPending || itemSelectedTab2.status == self.status_Unregistered) {
-                            self.enable_btnRegister(true);
-                            self.enable_btnRemove(true);
-                            self.enable_disableInput(true);
-                            
-                        } else if (itemSelectedTab2.status == self.status_WaitingReflection) {
-                            self.enable_btnRegister(false);
-                            self.enable_btnRemove(false);
-                            self.enable_disableInput(false);
-                        }
-                        
-                        let dataHeader = _.find(self.empInfoHeaderList, function(o) { return o.employeeId == itemSelectedTab2.sid; });
-                        if(dataHeader){
-                            self.setDataHeader(dataHeader);
-                        }
+                    self.getListData().done(() => {
+                        let itemSelectedTab2 = self.itemSelectedTab2();
+                        if (itemSelectedTab2 != null) {
+                            if (itemSelectedTab2.status == self.status_ApprovalPending || itemSelectedTab2.status == self.status_Unregistered) {
+                                self.enable_btnRegister(true);
+                                self.enable_btnRemove(true);
+                                self.enable_disableInput(true);
 
-                        let dataDetail = _.find(self.employeeListTab2, function(o) { return o.sid == itemSelectedTab2.sid; });
-                        if(dataDetail){
-                            self.setDataDetail(dataDetail);
+                            } else if (itemSelectedTab2.status == self.status_WaitingReflection) {
+                                self.enable_btnRegister(false);
+                                self.enable_btnRemove(false);
+                                self.enable_disableInput(false);
+                            }
+
+                            let dataHeader = _.find(self.empInfoHeaderList, function(o) { return o.employeeId == itemSelectedTab2.sid; });
+                            if (dataHeader) {
+                                self.setDataHeader(dataHeader);
+                            }
+
+                            let dataDetail = _.find(self.employeeListTab2, function(o) { return o.sid == itemSelectedTab2.sid; });
+                            if (dataDetail) {
+                                self.setDataDetail(dataDetail);
+                            }
+                            $('#retirementDateId').focus();
+                        } else {
+                            self.initHeaderInfo();
+                            self.initRetirementInfo();
                         }
-                        $('#retirementDateId').focus();
+                    });
+                } else if (value == 'tab-1') {
+                    self.enable_btnRemove(false);
+                    self.enable_btnRegister(true);
+                    if (self.itemSelectedTab1()) {
+                        let dataHeader = self.itemSelectedTab1();
+                        self.setDataHeader(dataHeader);
+                        self.initRetirementInfo();
                     } else {
                         self.initHeaderInfo();
                         self.initRetirementInfo();
-                    }
-                     
-                } else if(value == 'tab-1'){
-                    self.enable_btnRemove(false);
-                    self.enable_btnRegister(true); 
-                    if(self.itemSelectedTab1()){
-                        let dataHeader = self.itemSelectedTab1();
-                        self.setDataHeader(dataHeader);
-                        self.initRetirementInfo();     
-                    } else {
-                        self.initHeaderInfo();
-                        self.initRetirementInfo(); 
                     }
                     self.enable_disableInput(true);
                 }
@@ -180,14 +181,18 @@ module jcm007.a {
             let self = this;
             let dfd = $.Deferred<any>();
             
-            self.getListData(historyId);
+            self.getListData(historyId).done(() => {
+                dfd.resolve();
+            }).fail(() => {
+                dfd.reject();
+            });
 
-            dfd.resolve();
             return dfd.promise();
         }
         
         getListData(historyId : any, isAfterRemove : boolean) {
             let self = this;
+            let dfd = $.Deferred<any>();
             
             block.grayout();
             
@@ -227,8 +232,9 @@ module jcm007.a {
                         $("#gridListEmployeesJcm007").igGrid('option','dataSource',self.employeeListTab2);
                         
                         if(historyId){
-                            let dataDetail = _.find(self.employeeListTab2, function(o) { return o.historyId == historyId; });
-                            self.setDataDetail(dataDetail);    
+                            let itemSelected = _.find(self.employeeListTab2, function(o) { return o.historyId == historyId; });
+                            self.itemSelectedTab2(itemSelected);
+                            self.setDataDetail(itemSelected);    
                         }
                         
                         if(historyId && isAfterRemove){
@@ -238,9 +244,11 @@ module jcm007.a {
                             self.setDataDetail(itemSelected);
                             $("#gridListEmployeesJcm007").igGridSelection("selectRow", indexItemSelected);    
                         }
+                        dfd.resolve();
                         block.clear();
 
                     }).fail((error) => {
+                        dfd.reject();
                         nts.uk.ui.dialog.info(error);
                     }).always(() => {
                         block.clear();
@@ -252,14 +260,17 @@ module jcm007.a {
                     
                     self.initHeaderInfo();
                     self.initRetirementInfo();
+                    dfd.resolve();
                 }
                 
             }).fail((error) => {
                 console.log('Get Data Tab-2 Fail');
+                dfd.reject();
                 nts.uk.ui.dialog.info(error);
             }).always(() => {
                 block.clear();
             }); 
+            return dfd.promise();
         }
         
         public bindData(): void {
@@ -344,8 +355,6 @@ module jcm007.a {
                 if (emp.selectedCode_Retiment == 3) {
                     $("#dismissalNoticeDateId").trigger("validate");
                 } 
-                
-                
             }
             
             if (nts.uk.ui.errors.hasError()) {
@@ -534,10 +543,13 @@ module jcm007.a {
             block.grayout();
             service.updateRetireeInformation(command).done(() => {
                 console.log('UPDATE DONE!!');
-                self.enable_btnRegister(false);
-                self.enable_btnRemove(false);   
-                self.start(command.historyId);
+                self.start(command.historyId).done(() => {
+                    self.enable_btnRegister(false);
+                    self.enable_btnRemove(false);
+                    
+                });
                 block.clear();
+                dialog.info({ messageId: "Msg_15" });
                 dfd.resolve();
             }).fail((mes) => {
                 console.log('UPDATE FAIL!!');
@@ -555,8 +567,9 @@ module jcm007.a {
             service.addRetireeInformation(command).done(() => {
                 console.log('REGISTER DONE!!');
                 self.newMode();
-                self.start();
+                self.start(null);
                 block.clear();
+                dialog.info({ messageId: "Msg_15" });
                 dfd.resolve();
             }).fail((mes) => {
                 console.log('REGISTER FAIL!!');
@@ -585,6 +598,7 @@ module jcm007.a {
                 confirm({ messageId: "Msg_18" }).ifYes(() => {
                     block.grayout();
                     service.remove(histId).done(() => {
+                        dialog.info({ messageId: "Msg_16" });
                         console.log('REMOVE DONE!!');
                         if (lengthListItemTab2 === 1) {
                             self.isNewMode = true;
