@@ -101,7 +101,7 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
                 c.setPersonId(i.getPersonId());
                 currentPersonAddressList.add(c);
 
-                CurrentFamilyResidence f =  new CurrentFamilyResidence("9876446", "address1Kana", "address2Kana", "address1", "address2", baseDateF, true, "pctogte", "address1KanaTogether", "address2KanaTogether", "address1Together", "address2Together", "add1BeforeChange", "add2BeforeChange", "add1BeforeChangeTogether", "add2BeforeChangeTogether",  birthDateF, "nameKana", "name", "reportNameKana", "reportName", startDateF);
+                CurrentFamilyResidence f =  new CurrentFamilyResidence("9876446", "address1Kana", "address2Kana", "address1", "address2", baseDateF, true, "pctogte", "address1KanaTogether", "address2KanaTogether", "address1Together", "address2Together", "add1BeforeChange", "add2BeforeChange", "add1BeforeChangeTogether", "add2BeforeChangeTogether",  birthDateF, "nameKana", "name", "reportNameKana", "reportName", startDateF, true);
                 f.setFamilyId(i.getFamilyId());
                 currentFamilyResidenceList.add(f);
             });
@@ -181,6 +181,15 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
                        em.get().setAddress2(socialInsuranceOffice.get().getBasicInformation().getAddress().get().getAddress2().map(l -> l.v()).orElse(null));
                        em.get().setReferenceName(socialInsuranceOffice.get().getBasicInformation().getRepresentativeName().map(l -> l.v()).orElse(null));
                    }
+                    if(em.isPresent() && socialInsuranceOffice.isPresent() && domain.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL){
+                        em.get().setBusinessEstCode1(socialInsuranceOffice.get().getInsuranceMasterInformation().getOfficeOrganizeNumber().getHealthInsuranceOfficeNumber1().toString());
+                        em.get().setBusinessEstCode2(socialInsuranceOffice.get().getInsuranceMasterInformation().getOfficeOrganizeNumber().getHealthInsuranceOfficeNumber2().toString());
+
+                    } else  if(em.isPresent() && socialInsuranceOffice.isPresent() && domain.getBusinessArrSymbol() == BussEsimateClass.EMPEN_ESTAB_REARSIGN){
+                        em.get().setBusinessEstCode1(socialInsuranceOffice.get().getInsuranceMasterInformation().getOfficeOrganizeNumber().getWelfarePensionOfficeNumber1().toString());
+                        em.get().setBusinessEstCode2(socialInsuranceOffice.get().getInsuranceMasterInformation().getOfficeOrganizeNumber().getWelfarePensionOfficeNumber2().toString());
+                    }
+
                 });
             } else if (domain.getInsuredNumber() == InsurPersonNumDivision.OUTPUT_HEAL_INSUR_NUM) {
 
@@ -304,7 +313,6 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
                 Optional<EmpAddChangeInfoExport> em = empAddChangeInfoExportList.stream().filter(o->o.getFamilyId().equals(t.getFamilyId())
                         && o.getSpouseAddChangeDate() != null
                         && o.getPersonAddChangeDate()== null).findFirst();
-
                 if(em.isPresent()) {
                     if(t.isLivingTogether()) {
                         em.get().setPostalCodeF(t.getPostCodeTogether());
@@ -312,14 +320,18 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
                         em.get().setAdd2KanaF(t.getAddress2KanaTogether());
                         em.get().setAdd1F(t.getAddress1Together());
                         em.get().setAdd2F(t.getAddress2Together());
-                        em.get().setAdd1BeforeChange(t.getAdd1BeforeChangeTogether());
-                        em.get().setAdd2BeforeChange(t.getAdd2BeforeChangeTogether());
                     } else {
                         em.get().setPostalCodeF(t.getPostCode());
                         em.get().setAdd1KanaF(t.getAddress1Kana());
                         em.get().setAdd2KanaF(t.getAddress2Kana());
                         em.get().setAdd1F(t.getAddress1());
                         em.get().setAdd2F(t.getAddress2());
+                    }
+
+                    if(t.isLivingTogetherBefore()) {
+                        em.get().setAdd1BeforeChange(t.getAdd1BeforeChangeTogether());
+                        em.get().setAdd2BeforeChange(t.getAdd2BeforeChangeTogether());
+                    } else {
                         em.get().setAdd1BeforeChange(t.getAdd1BeforeChange());
                         em.get().setAdd2BeforeChange(t.getAdd2BeforeChange());
                     }
@@ -331,8 +343,14 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
                         em.get().setNameKanaF(t.getReportNameKana());
                         em.get().setFullNameF(t.getReportName());
                     }
+
                     em.get().setStartDateF(em.get().getSpouseAddChangeDate());
                     em.get().setBirthDateF(t.getBirthDate());
+                    em.get().setInsuredLivingTogether(true);
+
+                    if(!t.isLivingTogether() && !t.isLivingTogetherBefore() || em.get().getPersonAddChangeDate() == null) {
+                        em.get().setInsuredLivingTogether(false);
+                    }
                 }
             });
 

@@ -86,7 +86,9 @@ public class CurrentFamilyResidence {
 
     private GeneralDate startDate;
 
-    public CurrentFamilyResidence(String postCode, String address1Kana, String address2Kana, String address1, String address2, GeneralDate baseDate, boolean isLivingTogether, String postCodeTogether, String address1KanaTogether, String address2KanaTogether, String address1Together, String address2Together, String add1BeforeChange, String add2BeforeChange, String add1BeforeChangeTogether, String add2BeforeChangeTogether, GeneralDate birthDate, String nameKana, String name, String reportNameKana, String reportName, GeneralDate startDate) {
+    private boolean isLivingTogetherBefore;
+
+    public CurrentFamilyResidence(String postCode, String address1Kana, String address2Kana, String address1, String address2, GeneralDate baseDate, boolean isLivingTogether, String postCodeTogether, String address1KanaTogether, String address2KanaTogether, String address1Together, String address2Together, String add1BeforeChange, String add2BeforeChange, String add1BeforeChangeTogether, String add2BeforeChangeTogether, GeneralDate birthDate, String nameKana, String name, String reportNameKana, String reportName, GeneralDate startDate, boolean isLivingTogetherBefore) {
         this.postCode = postCode;
         this.address1Kana = address1Kana;
         this.address2Kana = address2Kana;
@@ -109,5 +111,6 @@ public class CurrentFamilyResidence {
         this.reportNameKana = reportNameKana;
         this.reportName = reportName;
         this.startDate = startDate;
+        this.isLivingTogetherBefore = isLivingTogetherBefore;
     }
 }

@@ -152,4 +152,13 @@ public class EmpAddChangeInfoExport {
 
     /**被保険者整理番号 - a - A2_3*/
     private String healInsurNumber;
+
+    /**被保険者同居区分*/
+    private boolean insuredLivingTogether;
+
+    /**事業所整理記号1*/
+    private String businessEstCode1;
+
+    /**事業所整理記号2*/
+    private String businessEstCode2;
 }
