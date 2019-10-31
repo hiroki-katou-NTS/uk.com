@@ -225,7 +225,7 @@ public class JpaEmpAddChangeInfoFileGenerator extends JpaRepository implements E
             exportSQL.append("	SID,");
             exportSQL.append("	CID,");
             exportSQL.append("	PID,");
-            exportSQL.append("	FAMILY_ID");
+            exportSQL.append("	FAMILY_ID ");
             exportSQL.append("FROM");
             exportSQL.append("	BSYMT_EMP_DTA_MNG_INFO B");
             exportSQL.append("	INNER JOIN BPSMT_FAMILY F ON B.PID = F.PERSON_ID  ");

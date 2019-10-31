@@ -19,6 +19,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -76,11 +77,12 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
             throw new BusinessException("Msg_812");
         }
         List<EmpAddChangeInfoExport> empAddChangeInfoExportList = empAddChangeInfoExReposity.getListPerson(empIds, cid);
+
         if (printPersonNumber == PersonalNumClass.OUTPUT_BASIC_PER_NUMBER.value || printPersonNumber == PersonalNumClass.DO_NOT_OUTPUT.value
                 && !empAddChangeInfoExportList.isEmpty()){
-            EmpAddChangeInforData empAddChangeInforData = new EmpAddChangeInforData();
-            empAddChangeInforData.setBaseDate(baseDate);
-            List<EmpFamilySocialInsCtgInfo> empFamilySocialInsCtgInfoList = empAddChangeInfoExReposity.getEmpFamilySocialInsCtgInfoList(empIds, cid);
+           EmpAddChangeInforData empAddChangeInforData = new EmpAddChangeInforData();
+           empAddChangeInforData.setBaseDate(baseDate);
+            /*  List<EmpFamilySocialInsCtgInfo> empFamilySocialInsCtgInfoList = empAddChangeInfoExReposity.getEmpFamilySocialInsCtgInfoList(empIds, cid);
             List<EmpHealInsurQInfo> empHealInsurQInfoList = empAddChangeInfoExReposity.getEmpHealInsurQInfoList(empIds, cid);
             List<EmpWelfarePenInsQualiInfo> empWelfarePenInsQualiInforList = empAddChangeInfoExReposity.getEmpWelfarePenInsQualiInfoList(empIds, cid);
             List<SocialInsuranceOffice> socialInsuranceOfficeList = socialInsuranceOfficeRepository.findByCid(cid);
@@ -91,11 +93,12 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
             List<EmpAddChangeInfo> empAddChangeInfoList = empAddChangeInfoRepository.getListEmpAddChange(empIds);
             List<CurrentPersonResidence> currentPersonAddressList = new ArrayList<>();
             List<CurrentFamilyResidence> currentFamilyResidenceList = new ArrayList<>();
-            GeneralDate birthdate = GeneralDate.fromString("1992/10/1","YYYYMMDD" );
-            GeneralDate startDate = GeneralDate.fromString("2018/10/10","YYYYMMDD" );
-            GeneralDate baseDateF = GeneralDate.fromString("2018/10/10","YYYYMMDD" );
-            GeneralDate birthDateF = GeneralDate.fromString("1996/10/10","YYYYMMDD" );
-            GeneralDate startDateF = GeneralDate.fromString("2018/10/10","YYYYMMDD" );
+
+            GeneralDate birthdate = GeneralDate.fromString("19921001","YYYYMMDD" );
+            GeneralDate startDate = GeneralDate.fromString("20181010","YYYYMMDD" );
+            GeneralDate baseDateF = GeneralDate.fromString("20181010","YYYYMMDD" );
+            GeneralDate birthDateF = GeneralDate.fromString("19961010","YYYYMMDD" );
+            GeneralDate startDateF = GeneralDate.fromString("20181010","YYYYMMDD" );
             empAddChangeInfoExportList.forEach(i->{
                 CurrentPersonResidence c = new  CurrentPersonResidence("1234567", "address1Kana", "address2Kana","address1", "address2", startDate, "personNameKana", "personName", "todokedeNameKana", "todokedeName", birthdate, "beforeAddress1", "beforeAddress2");
                 c.setPersonId(i.getPersonId());
@@ -380,8 +383,68 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
                     k.setAddress2(c.getAdd2());
                     k.setBussinessName(c.getCompanyName());
                 });
-            }
+            }*/
+
+            EmpAddChangeInfoExport empAddChangeInfoExport = new EmpAddChangeInfoExport(
+                    "1233",
+                    "1233",
+                    11,
+                    "1233",
+                    "1234567",
+                    "nameKanaPs",
+                    "fullNamePs",
+                    start,
+                    "1233121",
+                    "add1KanaPs",
+                    "add2KanaPs",
+                    "add1Ps",
+                    "add2Ps",
+                    "add1BeforeChangePs1",
+                    "add2BeforeChangePs2",
+                    start,
+                    "7654321",
+                    1,
+                    1,
+                    1,
+                    1,
+                    "otherReason",
+                    1,
+                    1,
+                    1,
+                    1,
+                    "spouseOtherReason",
+                    start,
+                    "nameKanaF",
+                    "fullNameF",
+                    "1233234",
+                    "add1KanaF",
+                    "add2KanaF",
+                    "add1F",
+                    "add2F",
+                    start,
+                    "add1BeforeChange",
+                    "add2BeforeChange",
+                    "address1",
+                    "address2",
+                    "businessName",
+                    "referenceName",
+                    "phoneNumber",
+                    true,
+                    true,
+                    start,
+                    start,
+                    start,
+                    "1234567",
+                    true,
+                    "1234567",
+                    "1234567"
+
+            );
+            empAddChangeInfoExportList.add(empAddChangeInfoExport);
+            empAddChangeInforData.setEmpAddChangeInfoExportList(empAddChangeInfoExportList);
             empAddChangeInfoFileGenerator.generate(exportServiceContext.getGeneratorContext(), empAddChangeInforData);
+        } else {
+            throw new BusinessException("Msg_37");
         }
     }
 }

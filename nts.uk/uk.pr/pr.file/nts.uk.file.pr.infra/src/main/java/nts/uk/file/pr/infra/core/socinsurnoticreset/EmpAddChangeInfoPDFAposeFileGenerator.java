@@ -177,7 +177,14 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
             worksheet.getRangeByName(i + "!A2_8").setValue(Objects.toString(empAddChangeInfoExport.getFullNameF() != null ?  empAddChangeInfoExport.getFullNameF(): ""));
             worksheet.getRangeByName(i + "!A2_9").setValue(Objects.toString(empAddChangeInfoExport.getFullNameF() != null ?  empAddChangeInfoExport.getFullNameF(): ""));
 
-            worksheet.getRangeByName(i + "!A1_6").setValue(Objects.toString(empAddChangeInfoExport.getPostCodePs() != null ?  empAddChangeInfoExport.getPostCodePs(): ""));
+            this.fillByCell(worksheet , i,"A1_6_1", empAddChangeInfoExport.getPostCodePs(),0 );
+            this.fillByCell(worksheet , i,"A1_6_2", empAddChangeInfoExport.getPostCodePs(),1 );
+            this.fillByCell(worksheet , i,"A1_6_3", empAddChangeInfoExport.getPostCodePs(),2 );
+            this.fillByCell(worksheet , i,"A1_6_4", empAddChangeInfoExport.getPostCodePs(),3 );
+            this.fillByCell(worksheet , i,"A1_6_5", empAddChangeInfoExport.getPostCodePs(),4 );
+            this.fillByCell(worksheet , i,"A1_6_6", empAddChangeInfoExport.getPostCodePs(),5 );
+            this.fillByCell(worksheet , i,"A1_6_7", empAddChangeInfoExport.getPostCodePs(),6 );
+
             worksheet.getRangeByName(i + "!A1_7").setValue(this.fillAddress(empAddChangeInfoExport.getAdd1KanaPs(),empAddChangeInfoExport.getAdd1KanaPs() ));
             worksheet.getRangeByName(i + "!A1_8").setValue(this.fillAddress(empAddChangeInfoExport.getAdd1Ps(), empAddChangeInfoExport.getAdd2Ps()));
             worksheet.getRangeByName(i + "!A1_9").setValue(this.fillAddress(empAddChangeInfoExport.getAdd1BeforeChange(), empAddChangeInfoExport.getAdd2BeforeChange()));
