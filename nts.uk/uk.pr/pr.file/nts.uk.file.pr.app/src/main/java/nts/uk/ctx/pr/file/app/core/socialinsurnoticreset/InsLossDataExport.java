@@ -14,7 +14,7 @@ public class InsLossDataExport {
 
     private String officeCd;
 
-    private int other;
+    private Integer other;
 
     private String otherReason;
 

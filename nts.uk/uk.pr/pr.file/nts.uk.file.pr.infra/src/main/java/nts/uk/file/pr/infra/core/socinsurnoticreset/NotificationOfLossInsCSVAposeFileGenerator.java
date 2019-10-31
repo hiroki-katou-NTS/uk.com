@@ -127,6 +127,7 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
                                      List<SocialInsurancePrefectureInformation> infor, SocialInsurNotiCreateSet ins, int startRow){
         JapaneseDate dateJp = toJapaneseDate( GeneralDate.fromString(data.getBirthDay().substring(0,10), "yyyy-MM-dd"));
         JapaneseDate endJp = data.getEndDate().length() >= 10 ? toJapaneseDate( GeneralDate.fromString(data.getEndDate().substring(0,10), "yyyy-MM-dd")) : null;
+        JapaneseDate endJp2 = data.getEndDate2().length() >= 10 ? toJapaneseDate( GeneralDate.fromString(data.getEndDate2().substring(0,10), "yyyy-MM-dd")) : null;
         cells.get(startRow, 0).setValue("2201700," + getPreferCode(data.getPrefectureNo(), data.getEndDate(), infor));
         cells.get(startRow, 1).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ?
                 checkLength(data.getOfficeNumber1(),2) : checkLength(data.getWelfOfficeNumber1(),2));
@@ -140,7 +141,7 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
         cells.get(startRow, 8).setValue(convertJpDate(dateJp));
         cells.get(startRow, 9).setValue(ins.getPrintPersonNumber() != PersonalNumClass.DO_NOT_OUTPUT && ins.getPrintPersonNumber() != PersonalNumClass.OUTPUT_PER_NUMBER ? getBasicPenNumber(data.getBasicPenNumber()) : "");
         cells.get(startRow, 9).setValue(cells.get(startRow, 9).getStringValue() + ",9");
-        cells.get(startRow, 9).setValue(cells.get(startRow, 9).getStringValue() + "," + (endJp != null ? convertJpDate(endJp) : ""));
+        cells.get(startRow, 9).setValue(cells.get(startRow, 9).getStringValue() + "," + (endJp2 != null ? convertJpDate(endJp2) : (endJp != null ? convertJpDate(endJp) : "")) );
         cells.get(startRow, 10).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? data.getCause() == null ? "" : data.getCause() : data.getCause2() == null ? "": data.getCause2());
         cells.get(startRow, 10).setValue(cells.get(startRow, 10).getStringValue() + ",9");
         cells.get(startRow, 11).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? data.getCause() == null ? ""  : data.getCause() == 4 || data.getCause() == 5 ? convertJpDate(toJapaneseDate(GeneralDate.fromString(convertDate(data.getEndDate()),"yyyyMMdd" )))
