@@ -138,7 +138,7 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
                 startRow++;
                 columnStart = 0;
             }
-            if(ins.getLineFeedCode().get() != LineFeedCode.DO_NOT_ADD) {
+            if(ins.getLineFeedCode().get() == LineFeedCode.DO_NOT_ADD && i > 0) {
                 columnStart = columnStart + columnStart - 1;
             }
             fillPensionEmployee(data, cells, infor, ins, startRow, startDate, endDate, company, columnStart);
@@ -299,7 +299,7 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
                 startRow++;
                 columnStart = 0;
             }
-            if(ins.getLineFeedCode().get() == LineFeedCode.DO_NOT_ADD) {
+            if(ins.getLineFeedCode().get() == LineFeedCode.DO_NOT_ADD && i > 0) {
                 columnStart = columnStart + columnStart - 1;
             }
             fillHealthInsAssociation(data, cells, infor, ins, startRow++, startDate, endDate, columnStart);
@@ -445,7 +445,7 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
                 columnStart = 0;
                 startRow++;
             }
-            if(ins.getLineFeedCode().get() == LineFeedCode.DO_NOT_ADD) {
+            if(ins.getLineFeedCode().get() == LineFeedCode.DO_NOT_ADD && i > 0) {
                 columnStart = columnStart + columnStart - 1;
             }
             fillEmpPensionFund(data, cells, infor, ins, startRow, startDate, endDate, company, columnStart);
