@@ -9,6 +9,7 @@ module nts.uk.at.view.kdr001.a {
                 self.applyKCP005ContentSearch([]);
                 // Load employee list component
                 $('#employeeSearch').ntsListComponent(self.lstPersonComponentOption).done(function() {
+                    $(".caret-right.caret-background.bg-green").removeClass();    
                 });
                 
                 let $startDate = $("#ccg001-search-period .ntsStartDatePicker"),
