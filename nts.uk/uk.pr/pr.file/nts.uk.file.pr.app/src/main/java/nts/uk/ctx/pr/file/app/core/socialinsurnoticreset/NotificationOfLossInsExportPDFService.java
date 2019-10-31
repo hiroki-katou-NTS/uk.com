@@ -7,9 +7,9 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.core.dom.adapter.company.CompanyInfor;
 import nts.uk.ctx.pr.core.dom.adapter.employee.employee.EmployeeInfoAdapter;
 import nts.uk.ctx.pr.core.dom.adapter.employee.employee.EmployeeInfoEx;
-import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.SocialInsurNotiCrSetRepository;
-import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.SocialInsurNotiCreateSet;
-import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.SocialInsurOutOrder;
+import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsuranceOffice;
+import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsuranceOfficeRepository;
+import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.*;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.ReasonsForLossPensionIns;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -89,7 +89,8 @@ public class NotificationOfLossInsExportPDFService extends ExportService<Notific
 			healthInsLoss = healthInsLoss.stream().sorted(Comparator.comparing(InsLossDataExport::getOfficeCd).thenComparing(InsLossDataExport::getMemberNumber)).collect(Collectors.toList());
 		}
 		if(domain.getOutputOrder() == SocialInsurOutOrder.INSURED_PER_NUMBER_ORDER) {
-			healthInsLoss = healthInsLoss.stream().sorted(Comparator.comparing(InsLossDataExport::getOfficeCd).thenComparing(InsLossDataExport::getInsPerCls)).collect(Collectors.toList());
+			healthInsLoss = healthInsLoss.stream().sorted(Comparator.comparing(InsLossDataExport::getOfficeCd).thenComparing(domain.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? InsLossDataExport::getHealInsNumber : InsLossDataExport::getWelfPenNumber)
+			).collect(Collectors.toList());
 		}
 
 		List<InsLossDataExport> overSeventy = healthInsLoss.stream().filter(item -> (item.getCause2() != null && item.getCause2() == ReasonsForLossPensionIns.ONLY_PENSION_INSURANCE.value) ).collect(Collectors.toList());
