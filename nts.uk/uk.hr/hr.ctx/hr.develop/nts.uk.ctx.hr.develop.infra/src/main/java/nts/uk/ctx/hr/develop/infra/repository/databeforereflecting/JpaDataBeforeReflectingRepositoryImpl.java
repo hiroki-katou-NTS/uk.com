@@ -10,6 +10,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.hr.develop.dom.databeforereflecting.DataBeforeReflectingPerInfo;
@@ -23,7 +24,7 @@ import nts.uk.ctx.hr.develop.infra.entity.databeforereflecting.PreReflecDataPk;
 @Stateless
 public class JpaDataBeforeReflectingRepositoryImpl extends JpaRepository implements DataBeforeReflectingRepository {
 
-	public static final String SELECT_BY_HIST_ID = "SELECT c FROM PreReflecData c WHERE c.historyId = :histId";
+	public static final String SELECT_BY_SID = "SELECT c FROM PreReflecData c WHERE c.sId IN :sIds";
 
 	public static final String SELECT_BY_WORKID_SIDS = "SELECT c FROM PreReflecData c WHERE c.workId = :workId and c.sId IN :listSid";
 
@@ -38,7 +39,17 @@ public class JpaDataBeforeReflectingRepositoryImpl extends JpaRepository impleme
 		if (listDomain.isEmpty()) {
 			return;
 		}
-
+		
+		List<String> sIds = listDomain.stream().map(i -> i.sId).collect(Collectors.toList());
+		
+		List<PreReflecData> entitys = this.queryProxy()
+				.query(SELECT_BY_SID, PreReflecData.class)
+				.setParameter("sIds", sIds).getList();
+		
+		if(!entitys.isEmpty()) {
+			throw new BusinessException("Msg_1992");
+		}
+		
 		List<PreReflecData> listEntity = listDomain.stream().map(i -> {
 			PreReflecData entity = new PreReflecData();
 			return toEntity(i, entity);
