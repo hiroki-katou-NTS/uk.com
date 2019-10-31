@@ -103,7 +103,7 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
                 cells.get(startRow, 3).setValue(ins.getFdNumber().isPresent() ? ins.getFdNumber().get() : "001");
                 cells.get(startRow, 4).setValue(baseDate.toString("yyyyMMdd"));
                 if(ins.getLineFeedCode().get() == LineFeedCode.DO_NOT_ADD) {
-                    cells.get(startRow, 5).setValue("22223,[kanri]");
+                    cells.get(startRow, 5).setValue("22223,[kanri],");
                     cells.get(startRow, 6).setValue("001,"+getPreferCode(data.getHealPrefectureNo(), startDate, endDate, infor));
                 }
                 if(ins.getLineFeedCode().get() != LineFeedCode.DO_NOT_ADD) {
@@ -273,7 +273,7 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
                 if(ins.getLineFeedCode().get() != LineFeedCode.DO_NOT_ADD) {
                     cells.get(startRow, 4).setValue("001\r\n" + data.getUnionOfficeNumber());
                 }
-                if(ins.getLineFeedCode().get() != LineFeedCode.DO_NOT_ADD) {
+                if(ins.getLineFeedCode().get() == LineFeedCode.DO_NOT_ADD) {
                     cells.get(startRow, 4).setValue("001," + data.getUnionOfficeNumber());
                 }
                 String portCd = ins.getOfficeInformation().value == 0 ? company.getPostCd() : data.getPortCd();
@@ -393,7 +393,7 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
                                           CompanyInfor company, SocialInsurNotiCreateSet ins, GeneralDate baseDate, int startDate, int endDate) {
         Cells cells = worksheet.getCells();
         int startRow = 0;
-        int columnStart = 23;
+        int columnStart = 22;
         for (int i = 0; i < empPenFundSub.size(); i++) {
             EmpPenFundSubData data = empPenFundSub.get(i);
             if (i == 0) {
@@ -416,7 +416,7 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
                     cells.get(startRow, 14).setValue("001\r\n"+data.getFunMember()+","+data.getWelPenOfficeNumber()+","+formatPortCd(portCd, 1));
                 }
                 if(ins.getLineFeedCode().get() == LineFeedCode.DO_NOT_ADD) {
-                    cells.get(startRow, 13).setValue(",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,[kanri]");
+                    cells.get(startRow, 13).setValue(",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,[kanri],");
                     cells.get(startRow, 14).setValue("001,"+data.getFunMember()+","+data.getWelPenOfficeNumber()+","+formatPortCd(portCd, 1));
                 }
 
