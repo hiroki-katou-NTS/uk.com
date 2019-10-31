@@ -301,7 +301,7 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
             if(ins.getLineFeedCode().get() == LineFeedCode.DO_NOT_ADD && i > 0) {
                 columnStart = columnStart + 13;
             }
-            fillHealthInsAssociation(data, cells, infor, ins, startRow++, startDate, endDate, columnStart);
+            fillHealthInsAssociation(data, cells, infor, ins, startRow, startDate, endDate, columnStart);
 
         }
     }
@@ -460,12 +460,12 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
         cells.get(startRow, columnStart).setValue("2200700");
         cells.get(startRow, 1 + columnStart).setValue(getPreferCode(data.getPrefectureNo(), startDate, endDate, infor));
         cells.get(startRow, 2+ columnStart).setValue(data.getWelOfficeNumber1().length() > 2 ? data.getWelOfficeNumber1().substring(0, 2) : data.getWelOfficeNumber1());
-        cells.get(startRow, 2+ columnStart).setValue( cells.get(startRow, 2).getValue()+","+(data.getWelOfficeNumber2().length() > 4 ? data.getWelOfficeNumber2().substring(0, 4) : data.getWelOfficeNumber2()));
-        cells.get(startRow, 2+ columnStart).setValue(cells.get(startRow, 2).getValue()+","+data.getWelPenOfficeNumber()+",");
+        cells.get(startRow, 2+ columnStart).setValue( cells.get(startRow, 2 + columnStart).getValue()+","+(data.getWelOfficeNumber2().length() > 4 ? data.getWelOfficeNumber2().substring(0, 4) : data.getWelOfficeNumber2()));
+        cells.get(startRow, 2+ columnStart).setValue(cells.get(startRow, 2+ columnStart).getValue()+","+data.getWelPenOfficeNumber()+",");
         cells.get(startRow, 3+ columnStart).setValue(ins.getSubmittedName() == SubNameClass.PERSONAL_NAME ? data.getPersonNameKana() : data.getOldNameKana());
-        cells.get(startRow, 3+ columnStart).setValue( cells.get(startRow, 3).getValue()+","+(ins.getSubmittedName() == SubNameClass.PERSONAL_NAME ? data.getPersonName() : data.getOldName()));
+        cells.get(startRow, 3+ columnStart).setValue( cells.get(startRow, 3+ columnStart).getValue()+","+(ins.getSubmittedName() == SubNameClass.PERSONAL_NAME ? data.getPersonName() : data.getOldName()));
         cells.get(startRow, 4+ columnStart).setValue(findEra(dateJp.era()));
-        cells.get(startRow, 4+ columnStart).setValue( cells.get(startRow, 4).getValue()+","+convertJpDate(dateJp));
+        cells.get(startRow, 4+ columnStart).setValue( cells.get(startRow, 4+ columnStart).getValue()+","+convertJpDate(dateJp));
         //Male(1), Female(2)
         String hisId = data.getHisId();
         int undergoundDivision = data.getUnderDivision();
