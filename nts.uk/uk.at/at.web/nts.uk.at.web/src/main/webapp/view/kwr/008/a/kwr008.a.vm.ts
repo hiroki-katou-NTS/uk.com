@@ -473,13 +473,13 @@ module nts.uk.at.view.kwr008.a {
                     employeeInputList: self.employeeList,
                     selectType: SelectType.SELECT_ALL,
                     selectedCode: self.selectedEmployeeCode,
-                    isDialog: false,
+                    isDialog: true,
                     isShowNoSelectRow: false,
                     alreadySettingList: self.alreadySettingPersonal,
                     isShowWorkPlaceName: true,
                     isShowSelectAllButton: false,
                     maxWidth: 550,
-                    maxRows: 15,
+                    maxRows: 16,
                     isSelectAllAfterReload: true
                 };/*
                 _.defer(() => {
