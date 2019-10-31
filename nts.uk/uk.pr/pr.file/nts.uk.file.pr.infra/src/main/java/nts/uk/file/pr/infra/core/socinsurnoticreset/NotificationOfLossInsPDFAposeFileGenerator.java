@@ -215,7 +215,7 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
         worksheets.getRangeByName(sheetName + "!A1_1_2").setValue(dateJp.month());
         worksheets.getRangeByName(sheetName + "!A1_1_3").setValue(dateJp.day());
         worksheets.getRangeByName(sheetName + "!A1_2").setValue(isHeal ? data.getOfficeNumber1().length() > 1 ? data.getOfficeNumber1().substring(0,2) : data.getOfficeNumber1()  : data.getWelfOfficeNumber1().length() > 1 ? data.getWelfOfficeNumber1().substring(0,2) : data.getWelfOfficeNumber1());
-        worksheets.getRangeByName(sheetName + "!A1_3").setValue(isHeal ? data.getOfficeNumber2().length() > 3 ? data.getOfficeNumber2().substring(0,4) : data.getOfficeNumber2()  : data.getWelfOfficeNumber1().length() > 3 ? data.getWelfOfficeNumber2().substring(0,4) : data.getWelfOfficeNumber2());
+        worksheets.getRangeByName(sheetName + "!A1_3").setValue(isHeal ? data.getOfficeNumber2().length() > 3 ? data.getOfficeNumber2().substring(0,4) : data.getOfficeNumber2()  : data.getWelfOfficeNumber2().length() > 3 ? data.getWelfOfficeNumber2().substring(0,4) : data.getWelfOfficeNumber2());
         worksheets.getRangeByName(sheetName + "!A1_4").setValue(isHeal ? data.getOfficeNumber() : data.getWelfOfficeNumber());
         worksheets.getRangeByName(sheetName + "!A1_5_1").setValue(typeOff == BusinessDivision.OUTPUT_COMPANY_NAME ? formatPortCd(company.getPostCd(),1) :
                 typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? formatPortCd(data.getPortCd(),1) : "");
