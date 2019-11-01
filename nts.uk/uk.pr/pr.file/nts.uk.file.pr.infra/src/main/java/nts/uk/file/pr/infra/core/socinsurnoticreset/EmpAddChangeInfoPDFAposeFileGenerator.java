@@ -27,7 +27,7 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
     private static final String SHOWA = "昭和";
     private static final String HEISEI = "平成";
     private static final String PEACE = "令和";
-    private static final String TYPE_DATE = "YYMMDD";
+    private static final String TYPE_DATE = "yyMMdd";
 
     @Inject
     private JapaneseErasAdapter adapter;
@@ -100,7 +100,6 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
             }
         }
         return "";
-
     }
 
     private JapaneseDate toJapaneseDate (GeneralDate date) {
@@ -211,10 +210,11 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
             this.fillByCell(worksheet , i,"A1_10_6", empAddChangeInfoExport.getStartDatePs().toString(TYPE_DATE),5 );
 
             //A1_11 ~ A1_15
-            worksheet.get(i).getCheckBoxes().get(111).setCheckedValue(empAddChangeInfoExport.getShortResidentAtr());
-            worksheet.get(i).getCheckBoxes().get(112).setCheckedValue(empAddChangeInfoExport.getResidenceOtherResidentAtr());
-            worksheet.get(i).getCheckBoxes().get(113).setCheckedValue(empAddChangeInfoExport.getLivingAbroadAtr());
-            worksheet.get(i).getCheckBoxes().get(114).setCheckedValue(empAddChangeInfoExport.getOtherAtr());
+            RomajiNameNotiCreSetPDFAposeFileGenerator.selectShapes(worksheet, empAddChangeInfoExport.getShortResidentAtr() , i, "A4_111" );
+            RomajiNameNotiCreSetPDFAposeFileGenerator.selectShapes(worksheet, empAddChangeInfoExport.getResidenceOtherResidentAtr() , i, "A4_112" );
+            RomajiNameNotiCreSetPDFAposeFileGenerator.selectShapes(worksheet, empAddChangeInfoExport.getLivingAbroadAtr() , i, "A4_113" );
+            RomajiNameNotiCreSetPDFAposeFileGenerator.selectShapes(worksheet, empAddChangeInfoExport.getOtherAtr() , i, "A4_114" );
+
             worksheet.get(i).getTextBoxes().get("A1_15").setText(Objects.toString(
                     empAddChangeInfoExport.getOtherAtr() == 1 && empAddChangeInfoExport.getOtherReason() != null ? empAddChangeInfoExport.getOtherReason(): ""));
 
@@ -260,14 +260,15 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
             worksheet.getRangeByName(i + "!A2_14").setValue(this.fillAddress(empAddChangeInfoExport.getAdd1BeforeChange(), empAddChangeInfoExport.getAdd2BeforeChange()));
 
             //A2_15 ~ A2_19
-            worksheet.get(i).getCheckBoxes().get(221).setCheckedValue(empAddChangeInfoExport.getSpouseShortResidentAtr());
-            worksheet.get(i).getCheckBoxes().get(222).setCheckedValue(empAddChangeInfoExport.getSpouseResidenceOtherResidentAtr());
-            worksheet.get(i).getCheckBoxes().get(223).setCheckedValue(empAddChangeInfoExport.getSpouseLivingAbroadAtr());
-            worksheet.get(i).getCheckBoxes().get(224).setCheckedValue(empAddChangeInfoExport.getSpouseOtherAtr());
+            RomajiNameNotiCreSetPDFAposeFileGenerator.selectShapes(worksheet, empAddChangeInfoExport.getSpouseShortResidentAtr() , i, "A4_221" );
+            RomajiNameNotiCreSetPDFAposeFileGenerator.selectShapes(worksheet, empAddChangeInfoExport.getSpouseResidenceOtherResidentAtr() , i, "A4_222" );
+            RomajiNameNotiCreSetPDFAposeFileGenerator.selectShapes(worksheet, empAddChangeInfoExport.getSpouseLivingAbroadAtr() , i, "A4_223" );
+            RomajiNameNotiCreSetPDFAposeFileGenerator.selectShapes(worksheet, empAddChangeInfoExport.getSpouseOtherAtr() , i, "A4_224" );
+
             worksheet.get(i).getTextBoxes().get("A2_19").setText(Objects.toString(
                     empAddChangeInfoExport.getSpouseOtherAtr() == 1 && empAddChangeInfoExport.getSpouseOtherReason() != null ? empAddChangeInfoExport.getSpouseOtherReason(): ""));
 
-            worksheet.get(i).getCheckBoxes().get(333).setCheckedValue(empAddChangeInfoExport.isInsuredLivingTogether() ? 1 : 0);
+            RomajiNameNotiCreSetPDFAposeFileGenerator.selectShapes(worksheet, empAddChangeInfoExport.isInsuredLivingTogether() ? 1 : 0, i, "A4_1111" );
 
             JapaneseDate japaneseDate = toJapaneseDate(empAddChangeInfoExport.getReferenceDate());
             int y = japaneseDate.year() + 1;

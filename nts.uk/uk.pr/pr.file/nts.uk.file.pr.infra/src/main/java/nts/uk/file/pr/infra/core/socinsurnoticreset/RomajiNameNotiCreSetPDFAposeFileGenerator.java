@@ -152,7 +152,7 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
         return new JapaneseDate(date, era.get());
     }
 
-    private void selectShapes(WorksheetCollection worksheets, Integer value, String sheetName, String option){
+    public static void selectShapes(WorksheetCollection worksheets, Integer value, String sheetName, String option){
         if( value!= null && value.intValue() != 1){
             worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(option));
         }
