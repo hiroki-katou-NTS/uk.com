@@ -177,15 +177,21 @@ textarea {
 	.tab-content-10, .tab-content-11, .tab-content-12 {
 	height: 530px;
 } */
-.tab-content-1, .tab-content-3, .tab-content-4.tab-content-5,
-	.tab-content-6, .tab-content-7, .tab-content-8, .tab-content-9,
+/* .tab-content-1, .tab-content-3, .tab-content-4.tab-content-5,
+	.tab-content-7, .tab-content-8, .tab-content-9,
 	.tab-content-10, .tab-content-11, .tab-content-12, .tab-content-14 {
-	height: 575px;
+	height: calc(100vh - 200px) !important;
+}
+.tab-content-2 {
+	height: calc(100vh - 430px) !important;
+}
+.tab-content-6 {
+	height: calc(100vh - 520px) !important;
 }
 
 .tab-content-14{
 	width: 951px;
-}
+} */
 
 .tab-content-1, .tab-content-3, .tab-content-7, .tab-content-14 {
 	overflow-y: scroll;
@@ -339,4 +345,15 @@ div#g36 > label:NTH-CHILD(3) {
 
 div#g36 > label:NTH-CHILD(3) > span:NTH-CHILD(3) {
 	width: 82%;	
+}
+#sidebar-area {
+	width: 55px !important;
+}
+#tabpanel-l {
+	overflow-y: auto;
+    height: calc(100vh - 145px) !important;
+}
+#tabpanel-m {
+	overflow-y: auto;
+    height: calc(100vh - 165px) !important;
 }

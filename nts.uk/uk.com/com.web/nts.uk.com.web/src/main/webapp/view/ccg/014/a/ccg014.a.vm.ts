@@ -226,11 +226,16 @@ module ccg014.a.viewmodel {
         
         private setHeight(): void {
             var self = this;
-            self.leftHeight(window.outerHeight * 7 / 13);
+            self.leftHeight(window.outerHeight - 385);
+            $("#left-content").height(self.leftHeight());
+            $("#preview-iframe").attr('style', 
+            	'height:' + (window.outerHeight - 530) + 'px; ' +
+            	'width:630px; margin-bottom: -20px;');
+            /*self.leftHeight(window.outerHeight * 7 / 13);
             $("#left-content").height(self.leftHeight());
             $("#preview-iframe").attr('style', 
             	'height:' + (window.outerHeight * 4 / 13) + 'px; ' +
-            	'width: 630px; margin-bottom: -20px;');
+            	'width: 630px; margin-bottom: -20px;');*/
         }
 
     }

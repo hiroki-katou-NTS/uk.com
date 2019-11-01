@@ -599,7 +599,7 @@ module kcp.share.list {
                     headerText: nts.uk.resource.getText('KCP001_4'), prop: 'isAlreadySetting', width: self.gridStyle.alreadySetColumnSize,
                     formatter: function(isAlreadySet) {
                         if (isAlreadySet == true || isAlreadySet == 'true') {
-                            return '<div style="text-align: center;max-height: 18px;"><i class="icon icon-78"></i></div>';
+                            return '<div class="already-setting" style="text-align: center;max-height: 18px;"><i class="icon icon-78"></i></div>';
                         }
                         return '';
                     }
@@ -922,7 +922,7 @@ module kcp.share.list {
             var multiSelectColSize = data.isMultiSelect ? 55 : 0;
             var totalColumnSize: number = data.maxWidth ? data.maxWidth : codeColumnSize + 170 + companyColumnSize
                 + alreadySettingColSize + multiSelectColSize;
-            var minTotalSize = 350;
+            var minTotalSize = 280;
             var totalRowsHeight = heightOfRow * this.maxRows + 24;
             var totalHeight: number = self.calcTotalHeightRev(data);
             
@@ -932,13 +932,13 @@ module kcp.share.list {
                 codeColumnSize = data.maxWidth ? '15%': codeColumnSize;
                 var nameColumnSize = data.maxWidth ? '30%' : 170;
                 var workplaceColumnSize = data.maxWidth ? '20%' : 150;
-                var alreadySetColumnSize = data.maxWidth ? '15%' : 70;
+                var alreadySetColumnSize = data.maxWidth ? '15%' : 40;
                 optionalColumnSize = data.maxWidth ? '20%' : 150;
             } else {
                 codeColumnSize = data.maxWidth ? '25%' : codeColumnSize;
                 var nameColumnSize = data.maxWidth ? '30%' : 170;
                 var workplaceColumnSize = data.maxWidth ? '30%' : 150;
-                var alreadySetColumnSize = data.maxWidth ? '15%' : 70;
+                var alreadySetColumnSize = data.maxWidth ? '15%' : 40;
             }
             this.gridStyle = {
                 codeColumnSize: codeColumnSize,
@@ -952,8 +952,8 @@ module kcp.share.list {
                 optionalColumnSize: optionalColumnSize
             };
             
-            if (data.maxWidth && data.maxWidth <= 350) {
-                data.maxWidth = 350;
+            if (data.maxWidth && data.maxWidth <= 280) {
+                data.maxWidth = 280;
             }
         }
         

@@ -32,8 +32,11 @@
 }
 
 .right-content {
-    padding-left: 30px;
+    padding-left: 40px;
     padding-top: 15px;
     width: 600px;
     vertical-align: top;
+}
+#nts-component-tree {
+	padding-right: 5px !important;
 }

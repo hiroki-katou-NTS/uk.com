@@ -1,6 +1,7 @@
 #right-content {
-	margin-left: 40px;
+	margin-left: 20px;
 	margin-top: 20px;
+	margin-right: 20px;
 	/* float: left;
 	width: 735px; */
 }
@@ -13,7 +14,8 @@
 	background-color: #CFF1A5;
 }
 .fixed-table.kaf022l{
-	margin-top: 20px;
+	margin-top: 15px;
+	width: 765px;
 }
 .ui-iggrid.kaf022l table tr th{
 	height: 35px;
@@ -22,11 +24,11 @@
 	height: 35px;
 }
 .ntsCheckBox.margin-left-style span.label{
-	margin-left: 10px !important;
-	width: 130px;
+	margin-left: 8px !important;
+	width: 110px;
 }
 .ntsControl .nts-input.lagre-input-code{
-	width: 310px !important;
+	width: 420px !important;
 }
 .block-style{
 	display: flex;
@@ -48,7 +50,7 @@
 	cursor: default;
 	border: 1px solid #ccc;
 	padding: 0 3px; 
-	height: 40px; 
+	height: 28px; 
 } 
 
 td div {
@@ -56,6 +58,9 @@ td div {
 	vertical-align: middle;
 }
 
-.contents-area-kaf022l{
-	height: 800px;
+.already-setting {
+	width: 40px !important;
+}
+.ntsCheckBox span.label {
+	padding-left: 8px !important;
 }

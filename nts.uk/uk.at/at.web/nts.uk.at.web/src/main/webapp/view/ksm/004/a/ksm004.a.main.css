@@ -10,7 +10,7 @@
     display: inline-block;	
 }
 .rightExtend {
-	margin-left: 50px;
+	margin-left: 40px;
 	margin-top: 10px;
 	display: inline-block;
     vertical-align: top;
@@ -66,4 +66,7 @@
 .round-green {
 	background-color: #92F29B !important;
 	border-radius: 20px;
+}
+#nts-component-tree {
+	padding-right: 5px !important;
 }
