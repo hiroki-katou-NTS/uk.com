@@ -25,8 +25,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @Entity
 @Table(name = "QQSDT_KOUHO_INFO")
-public class QqsmtEmpWelfInsQcIf extends UkJpaEntity implements Serializable
-{
+public class QqsmtEmpWelfInsQcIf extends UkJpaEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     
     /**
