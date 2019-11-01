@@ -266,7 +266,7 @@ module cmm045.a.viewmodel {
             let widthAuto = isHidden == false ? '1110px' : '1045px';
             $("#grid2").ntsGrid({
                 width: widthAuto,
-                height: '500px',
+                height: $('#master-wrapper').height()-235,
                 dataSource: self.items(),
                 primaryKey: 'appId',
                 virtualization: true,
@@ -433,7 +433,7 @@ module cmm045.a.viewmodel {
             let widthAuto = isHidden == false ? '1175px' : '1110px';
             $("#grid1").ntsGrid({
                 width: widthAuto,
-                height: '530px',
+                height: $('#master-wrapper').height()-310,
                 dataSource: self.items(),
                 primaryKey: 'appId',
                 rowVirtualization: true,
