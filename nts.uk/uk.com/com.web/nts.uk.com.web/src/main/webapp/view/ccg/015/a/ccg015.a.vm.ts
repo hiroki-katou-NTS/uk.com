@@ -255,9 +255,9 @@ module nts.uk.com.view.ccg015.a {
             
             private setHeight(): void {
                 var self = this;
-                self.leftHeight(window.outerHeight - 385);
+                self.leftHeight(window.outerHeight - 355);
                 $("#preview-iframe").attr('style', 
-                	'height:' + (window.outerHeight - 530) + 'px; ' +
+                	'height:' + (window.outerHeight - 500) + 'px; ' +
                 	'width:630px')
                 /*self.leftHeight(window.outerHeight * 7 / 13);
                 $("#preview-iframe").attr('style', 
