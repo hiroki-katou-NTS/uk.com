@@ -268,7 +268,7 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
             worksheet.get(i).getTextBoxes().get("A2_19").setText(Objects.toString(
                     empAddChangeInfoExport.getSpouseOtherAtr() == 1 && empAddChangeInfoExport.getSpouseOtherReason() != null ? empAddChangeInfoExport.getSpouseOtherReason(): ""));
 
-            worksheet.get(i).getCheckBoxes().get(333).setCheckedValue(empAddChangeInfoExport.isInsuredLivingTogether() ? 1 : 0);
+            RomajiNameNotiCreSetPDFAposeFileGenerator.selectShapes(worksheet, empAddChangeInfoExport.isInsuredLivingTogether() ? 1 : 0, i, "A4_1111" );
 
             JapaneseDate japaneseDate = toJapaneseDate(empAddChangeInfoExport.getReferenceDate());
             int y = japaneseDate.year() + 1;
