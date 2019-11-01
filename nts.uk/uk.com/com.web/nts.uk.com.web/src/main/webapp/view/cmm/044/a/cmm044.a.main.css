@@ -88,10 +88,10 @@
 }
 
 #list {
-	margin-top: 30px;
+	margin-top: 20px;
 	margin-left: 100px;
 	width: 300px;
-	height: 530px;
+	height: 400px;
 	float: left;
 }
 
@@ -130,18 +130,10 @@
 	margin-left: 10px;
 }
 
-#H_LST_001_displayContainer {
-	height: 490px !important;
-}
-
-#H_LST_001_scrollContainer {
-	height: 490px !important;
-}
-
 #H_LST_001_container {
 	margin: 5px !important;
 	border: 0px !important;
-	padding: 3px !important;
+	padding: 10px !important;
 }
 
 #label-a4-001 {
@@ -208,6 +200,7 @@
 
 #contents-area {
 	height: 31px;
+	width: 1080px;
 }
 
 .top-content-data {
