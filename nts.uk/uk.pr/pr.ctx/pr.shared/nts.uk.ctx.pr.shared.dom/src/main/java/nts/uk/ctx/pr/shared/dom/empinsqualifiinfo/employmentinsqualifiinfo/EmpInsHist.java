@@ -6,12 +6,14 @@ import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.history.DateHistoryItem;
+import nts.uk.shr.com.history.strategic.ContinuousResidentHistory;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
 * 社員雇用保険履歴
 */
 @Getter
-public class EmpInsHist extends AggregateRoot {
+public class EmpInsHist extends AggregateRoot implements ContinuousResidentHistory<DateHistoryItem,DatePeriod, GeneralDate> {
     
     /**
     * 社員ID
@@ -27,5 +29,9 @@ public class EmpInsHist extends AggregateRoot {
         this.sid = sid;
         this.historyItem = historyItem;
     }
-    
+
+    @Override
+    public List<DateHistoryItem> items() {
+        return historyItem;
+    }
 }
