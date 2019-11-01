@@ -19,18 +19,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EmpAddChangeInforData {
-    /*SocialInsurNotiCreateSet socialInsurNotiCreateSet;
-    CompanyInformation companyInformation;
-    SocialInsuranceOffice socialInsuranceOffice;*/
-    /*List<PersonInformation> personInformationList;
-    List<PersonCurrentAddress> personCurrentAddressList;
-    List<EmpFamilySocialIns> empFamilySocialInsList;
-    List<EmpBasicPenNumInfor> empBasicPenNumInforList;
-    List<FamilyInformation> familyInformationList;
-    List<FamilyBeforeAddress> familyBeforeAddressList;
-    List<FamilyCurrentAddress> familyCurrentAddressList;
-    List<FamilyResidence> familyResidenceList;
-    List<EmpAddChangeInfo> empAddChangeInfoList;*/
     List<EmpAddChangeInfoExport> empAddChangeInfoExportList;
     GeneralDate baseDate;
 }

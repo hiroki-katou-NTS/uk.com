@@ -174,7 +174,8 @@ module nts.uk.pr.view.qsi014.a.viewmodel {
                 alreadySettingList: self.alreadySettingList,
                 isShowWorkPlaceName: self.isShowWorkPlaceName(),
                 isShowSelectAllButton: self.isShowSelectAllButton(),
-                disableSelection : self.disableSelection()
+                disableSelection : self.disableSelection(),
+                maxRows: 13
             };
             $('#component-items-list').ntsListComponent(self.listComponentOption);
         }
@@ -251,8 +252,8 @@ module nts.uk.pr.view.qsi014.a.viewmodel {
                 showEmployeeSelection: false,
                 showQuickSearchTab: true,
                 showAdvancedSearchTab: true,
-                showBaseDate: true,
-                showClosure: true,
+                showBaseDate: false,
+                showClosure: false,
                 showAllClosure: true,
                 showPeriod: false,
                 periodFormatYM: false,

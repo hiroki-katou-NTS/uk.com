@@ -11,12 +11,12 @@ import java.util.List;
 
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class EmpAddChangeInfoExport {
     private String empId;
     private String companyId;
-    private String familyId;
+    private Integer familyId;
     private String personId;
 
     /** 個人番号 - b - A1_1*/
@@ -45,6 +45,12 @@ public class EmpAddChangeInfoExport {
 
     /** 変更後住所*/
     private String add2Ps;
+
+    /**変更前住所*/
+    private String add1BeforeChangePs;
+
+    /**変更前住所*/
+    private String add2BeforeChangePs;
 
     /** 住所変更年月日*/
     private GeneralDate startDatePs;
@@ -147,11 +153,12 @@ public class EmpAddChangeInfoExport {
     /**被保険者整理番号 - a - A2_3*/
     private String healInsurNumber;
 
-    public EmpAddChangeInfoExport (String empIds) {
-       this.empId = empIds;
-        this.healthInsurance = false;
-        this.empPenInsurance = false;
-        this.personAddChangeDate = null;
-        this.spouseAddChangeDate = null;
-    }
+    /**被保険者同居区分*/
+    private boolean insuredLivingTogether;
+
+    /**事業所整理記号1*/
+    private String businessEstCode1;
+
+    /**事業所整理記号2*/
+    private String businessEstCode2;
 }
