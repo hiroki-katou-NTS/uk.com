@@ -274,7 +274,7 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
             int y = japaneseDate.year() + 1;
             int m = japaneseDate.month();
             int d = japaneseDate.day();
-            worksheet.getRangeByName(i +"!A3_7" ).setValue(japaneseDate.era() + String.valueOf(y) + "年" + String.valueOf(m) + "月" + String.valueOf(d) + "日提出");
+            worksheet.getRangeByName(i +"!A3_1" ).setValue(japaneseDate.era() + String.valueOf(y) + "年" + String.valueOf(m) + "月" + String.valueOf(d) + "日提出");
             worksheet.getRangeByName(i + "!A3_2").setValue(this.fillAddress(empAddChangeInfoExport.getAddress1(), empAddChangeInfoExport.getAddress2()));
             worksheet.getRangeByName(i + "!A3_3").setValue(Objects.toString(empAddChangeInfoExport.getBussinessName(), ""));
             worksheet.getRangeByName(i + "!A3_4").setValue(Objects.toString(empAddChangeInfoExport.getReferenceName(), ""));
