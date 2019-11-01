@@ -207,7 +207,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
                     let initExTable = self.setFormatData(detailHeaderDeco, self.listDailyStatus);
 
                     new nts.uk.ui.exTable.ExTable($("#extable"), {
-                        headerHeight: "46px", bodyRowHeight: "23px", bodyHeight: "322px",
+                        headerHeight: "46px", bodyRowHeight: "23px", bodyHeight: window.outerHeight - 430 + 'px',
                         horizontalSumBodyRowHeight: "0px",
                         areaResize: false,
                         remainSizes: false,
