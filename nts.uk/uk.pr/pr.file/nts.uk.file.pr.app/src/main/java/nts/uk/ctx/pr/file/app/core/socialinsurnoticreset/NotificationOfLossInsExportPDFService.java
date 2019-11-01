@@ -72,15 +72,6 @@ public class NotificationOfLossInsExportPDFService extends ExportService<Notific
 		if(healthInsLoss.isEmpty()) {
 			throw new BusinessException("Msg_37");
 		}
-		healthInsLoss.forEach( item -> {
-			if(!item.getEndDate().isEmpty() && item.getEndDate().equals(item.getEndDate2())) {
-				item.setCaInsurance2(null);
-				item.setCause2(null);
-				item.setNumRecoved2(null);
-				item.setOtherReason2(null);
-				item.setOther2(null);
-			}
-		});
 		if(domain.getOutputOrder() == SocialInsurOutOrder.EMPLOYEE_KANA_ORDER) {
 			healthInsLoss = healthInsLoss.stream().sorted(Comparator.comparing(InsLossDataExport::getOfficeCd).thenComparing(InsLossDataExport::getPersonNameKana)).collect(Collectors.toList());
 		}
