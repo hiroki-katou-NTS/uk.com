@@ -52,17 +52,20 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
 
            for (int i  = 0; i < data.getEmpAddChangeInfoExportList().size() ; i ++)     {
                worksheets.get(worksheets.addCopy(0)).setName(sheetName + i);
+               worksheets2.get(worksheets2.addCopy(0));
                EmpAddChangeInfoExport empAddChangeInfoExport = data.getEmpAddChangeInfoExportList().get(i);
                if(empAddChangeInfoExport.getPersonAddChangeDate() != null) {
                    //条件を満たす対象者のデータをもとに「被保険者住所変更届」を印刷する
                    this.pushDataCommon(worksheets, empAddChangeInfoExport,sheetName + i);
+                   this.pushBusCode(worksheets, empAddChangeInfoExport,sheetName + i+1);
                }
 
                if(empAddChangeInfoExport.getSpouseAddChangeDate() != null && empAddChangeInfoExport.isEmpPenInsurance()){
                    //条件を満たす対象者のデータをもとに「国民年金第３号被保険者住所変更届」を印刷する
-                   worksheets.get(worksheets2.addCopy(0)).setName(sheetName + i+1);
-                   this.pushDataCommon(worksheets, empAddChangeInfoExport,sheetName + i+1);
-                   this.pushBusCode(worksheets, empAddChangeInfoExport,sheetName + i+1);
+                   //worksheets.get(worksheets2.addCopy(0)).setName(sheetName + i+1);
+                   worksheets.add(sheetName+i).copy(worksheets2.get(0));
+                   this.pushDataCommon(worksheets2, empAddChangeInfoExport,sheetName + i+1);
+
                }
            }
 
@@ -241,11 +244,6 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
             this.fillByCell(worksheet , i,"A2_10_5", empAddChangeInfoExport.getPostalCodeF(),4 );
             this.fillByCell(worksheet , i,"A2_10_6", empAddChangeInfoExport.getPostalCodeF(),5 );
             this.fillByCell(worksheet , i,"A2_10_7", empAddChangeInfoExport.getPostalCodeF(),6 );
-            this.fillByCell(worksheet , i,"A2_10_8", empAddChangeInfoExport.getPostalCodeF(),7 );
-            this.fillByCell(worksheet , i,"A2_10_9", empAddChangeInfoExport.getPostalCodeF(),8 );
-            this.fillByCell(worksheet , i,"A2_10_10", empAddChangeInfoExport.getPostalCodeF(),9 );
-            this.fillByCell(worksheet , i,"A2_10_11", empAddChangeInfoExport.getPostalCodeF(),10 );
-            this.fillByCell(worksheet , i,"A2_10_12", empAddChangeInfoExport.getPostalCodeF(),11 );
 
             worksheet.getRangeByName(i + "!A2_11").setValue(this.fillAddress(empAddChangeInfoExport.getAdd1KanaF(), empAddChangeInfoExport.getAdd2KanaF()));
             worksheet.getRangeByName(i + "!A2_12").setValue(this.fillAddress(empAddChangeInfoExport.getAdd1F(), empAddChangeInfoExport.getAdd2F()));
