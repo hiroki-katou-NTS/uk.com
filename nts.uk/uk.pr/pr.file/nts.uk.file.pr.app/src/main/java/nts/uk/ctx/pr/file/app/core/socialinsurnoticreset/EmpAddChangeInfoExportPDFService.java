@@ -48,6 +48,7 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
     @Inject
     private EmpAddChangeInfoExReposity empAddChangeInfoExReposity;
 
+
     @Override
     protected void handle(ExportServiceContext<NotificationOfLossInsExportQuery> exportServiceContext) {
         String userId = AppContexts.user().userId();
@@ -57,7 +58,7 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
         GeneralDate baseDate = exportServiceContext.getQuery().getReference();
         int printPersonNumber = exportServiceContext.getQuery().getSocialInsurNotiCreateSet().getPrintPersonNumber();
         NotificationOfLossInsExport socialInsurNotiCreateSet = exportServiceContext.getQuery().getSocialInsurNotiCreateSet();
-
+        List<String> empIds = exportServiceContext.getQuery().getEmpIds();
         SocialInsurNotiCreateSet domain = new SocialInsurNotiCreateSet(userId, cid,
                 socialInsurNotiCreateSet.getOfficeInformation(),
                 socialInsurNotiCreateSet.getBusinessArrSymbol(),
@@ -71,18 +72,12 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
                 socialInsurNotiCreateSet.getLineFeedCode()
         );
         socialInsurNotiCrSetRepository.update(domain);
-
-        List<String> empIds = exportServiceContext.getQuery().getEmpIds();
         if(end.before(start)) {
             throw new BusinessException("Msg_812");
         }
-        List<EmpAddChangeInfoExport> empAddChangeInfoExportList = empAddChangeInfoExReposity.getListPerson(empIds, cid);
 
-        if (printPersonNumber == PersonalNumClass.OUTPUT_BASIC_PER_NUMBER.value || printPersonNumber == PersonalNumClass.DO_NOT_OUTPUT.value
-                && !empAddChangeInfoExportList.isEmpty()){
-           EmpAddChangeInforData empAddChangeInforData = new EmpAddChangeInforData();
-           empAddChangeInforData.setBaseDate(baseDate)    ;
-            /*  List<EmpFamilySocialInsCtgInfo> empFamilySocialInsCtgInfoList = empAddChangeInfoExReposity.getEmpFamilySocialInsCtgInfoList(empIds, cid);
+        if (printPersonNumber == PersonalNumClass.OUTPUT_BASIC_PER_NUMBER.value || printPersonNumber == PersonalNumClass.DO_NOT_OUTPUT.value ){
+            List<EmpFamilySocialInsCtgInfo> empFamilySocialInsCtgInfoList = empAddChangeInfoExReposity.getEmpFamilySocialInsCtgInfoList(empIds, cid);
             List<EmpHealInsurQInfo> empHealInsurQInfoList = empAddChangeInfoExReposity.getEmpHealInsurQInfoList(empIds, cid);
             List<EmpWelfarePenInsQualiInfo> empWelfarePenInsQualiInforList = empAddChangeInfoExReposity.getEmpWelfarePenInsQualiInfoList(empIds, cid);
             List<SocialInsuranceOffice> socialInsuranceOfficeList = socialInsuranceOfficeRepository.findByCid(cid);
@@ -91,84 +86,73 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
             List<EmPensionFundPartiPeriodInfo> emPensionFunList = empAddChangeInfoExReposity.getEmPensionFundPartiPeriodInfo(empIds, cid);
             List<EmpBasicPenNumInfor> empBasicPenNumInforList = empBasicPenNumInforRepository.getAllEmpBasicPenNumInfor();
             List<EmpAddChangeInfo> empAddChangeInfoList = empAddChangeInfoRepository.getListEmpAddChange(empIds);
-            List<CurrentPersonResidence> currentPersonAddressList = new ArrayList<>();
-            List<CurrentFamilyResidence> currentFamilyResidenceList = new ArrayList<>();
+            List<CurrentPersonResidence> currentPersonAddressList = CurrentPersonResidence.createListPerson(empIds);
+            List<CurrentFamilyResidence> currentFamilyResidenceList = CurrentFamilyResidence.getListFamily();
+            List<EmpAddChangeInfoExport> empAddChangeInfoExportList = EmpAddChangeInfoExport.getListExport(empIds);
 
-            GeneralDate birthdate = GeneralDate.fromString("19921001","YYYYMMDD" );
-            GeneralDate startDate = GeneralDate.fromString("20181010","YYYYMMDD" );
-            GeneralDate baseDateF = GeneralDate.fromString("20181010","YYYYMMDD" );
-            GeneralDate birthDateF = GeneralDate.fromString("19961010","YYYYMMDD" );
-            GeneralDate startDateF = GeneralDate.fromString("20181010","YYYYMMDD" );
-            empAddChangeInfoExportList.forEach(i->{
-                CurrentPersonResidence c = new  CurrentPersonResidence("1234567", "address1Kana", "address2Kana","address1", "address2", startDate, "personNameKana", "personName", "todokedeNameKana", "todokedeName", birthdate, "beforeAddress1", "beforeAddress2");
-                c.setPersonId(i.getPersonId());
-                currentPersonAddressList.add(c);
+            empAddChangeInfoExportList.forEach(e->{
+                //Imported（給与）「個人現住所」
+                if(!currentPersonAddressList.isEmpty()){
+                    Optional<CurrentPersonResidence> cp = currentPersonAddressList.stream().filter(p->p.getEmpId().equals(e.getEmpId())).findFirst();
+                    if(cp.isPresent()) {
+                        e.setPersonAddChangeDate(cp.get().getStartDate());
+                    }
+                }
 
-                CurrentFamilyResidence f =  new CurrentFamilyResidence("9876446", "address1Kana", "address2Kana", "address1", "address2", baseDateF, true, "pctogte", "address1KanaTogether", "address2KanaTogether", "address1Together", "address2Together", "add1BeforeChange", "add2BeforeChange", "add1BeforeChangeTogether", "add2BeforeChangeTogether",  birthDateF, "nameKana", "name", "reportNameKana", "reportName", startDateF, true);
-                f.setFamilyId(i.getFamilyId());
-                currentFamilyResidenceList.add(f);
-            });
+                //Imported（給与）「家族情報」
+                //Imported（給与）「家族現住所」
+                if(!currentFamilyResidenceList.isEmpty()){
+                    Optional<CurrentFamilyResidence> cf = currentFamilyResidenceList.stream().filter(f->f.getFamilyId().equals(e.getFamilyId())).findFirst();
+                    if(cf.isPresent()) {
+                        e.setSpouseAddChangeDate(cf.get().getStartDate());
+                    }
 
-            //Imported（給与）「個人現住所」
-            currentPersonAddressList.forEach(q->{
-            Optional<EmpAddChangeInfoExport> e = empAddChangeInfoExportList.stream().filter(i->i.getPersonId().equals(q.getPersonId())).findFirst();
-            if(e.isPresent()){
-                e.get().setPersonAddChangeDate(q.getStartDate());
-            }});
+                }
 
-            //Imported（給与）「家族情報」
-            //Imported（給与）「家族現住所」
-            currentFamilyResidenceList.forEach(l->{
-                Optional<EmpAddChangeInfoExport> f = empAddChangeInfoExportList.stream().filter(g->g.getFamilyId().equals(l.getFamilyId())).findFirst();
-                if(f.isPresent()){
-                    f.get().setSpouseAddChangeDate(l.getStartDate());
+                if(!empFamilySocialInsCtgInfoList.isEmpty()){
+                    Optional<EmpFamilySocialInsCtgInfo> ef = empFamilySocialInsCtgInfoList.stream().filter(fe->fe.getFamilyId().equals(e.getFamilyId())
+                            && e.getEmpId().equals(fe.getEmpId())
+                            && e.getSpouseAddChangeDate().beforeOrEquals(fe.getEndDate())
+                            && e.getSpouseAddChangeDate().afterOrEquals(fe.getStartDate())
+                            && fe.getDependent() == 1).findFirst();
+                    if(!ef.isPresent()) {
+                        e.setSpouseAddChangeDate(null);
+                    }
+                }
+
+                if(!empHealInsurQInfoList.isEmpty()){
+                    Optional<EmpHealInsurQInfo> eh = empHealInsurQInfoList.stream().filter(item -> item.getEmpId().equals(e.getEmpId())
+                            && e.getPersonAddChangeDate() != null
+                            && e.getPersonAddChangeDate().afterOrEquals(item.getStartDate())
+                            && e.getPersonAddChangeDate().beforeOrEquals(item.getEndDate())).findFirst();
+                    if (eh.isPresent()) {
+                        e.setHealthInsurance(true);
+                    }
+
+                    if(domain.getInsuredNumber() == InsurPersonNumDivision.OUTPUT_HEAL_INSUR_NUM) {
+                        e.setHealInsurNumber(eh.get().getHealInsurNumber());
+                    }
+                }
+
+                if(!empWelfarePenInsQualiInforList.isEmpty()){
+                    Optional<EmpWelfarePenInsQualiInfo> ew = empWelfarePenInsQualiInforList.stream().filter(item -> item.getEmpId().equals(e.getEmpId())
+                            && (e.getPersonAddChangeDate() != null
+                            && e.getPersonAddChangeDate().afterOrEquals(item.getStartDate())
+                            && e.getPersonAddChangeDate().beforeOrEquals(item.getEndDate()))
+                            || (e.getPersonAddChangeDate() == null
+                            && e.getSpouseAddChangeDate().afterOrEquals(item.getStartDate())
+                            && e.getSpouseAddChangeDate().beforeOrEquals(item.getEndDate()))).findFirst();
+
+                    if(ew.isPresent()) {
+                        e.setEmpPenInsurance(true);
+                    }
+                }
+
+                //end of list emp add change information
+                if( e.getSpouseAddChangeDate() == null && e.getPersonAddChangeDate() == null || !e.isEmpPenInsurance() && !e.isHealthInsurance()) {
+                    empAddChangeInfoExportList.remove(e);
                 }
             });
-
-            empFamilySocialInsCtgInfoList.forEach(p->{
-                Optional<CurrentFamilyResidence> y =  currentFamilyResidenceList.stream().filter(item->item.getFamilyId().equals(p.getFamilyId())).findFirst();
-                Optional<EmpAddChangeInfoExport> x = empAddChangeInfoExportList.stream().filter(z->z.getSpouseAddChangeDate().afterOrEquals(p.getStartDate())
-                        && z.getSpouseAddChangeDate().beforeOrEquals(p.getEndDate())
-                        && z.getEmpId().equals(p.getEmpId())
-                        && z.getFamilyId().equals(y.get().getFamilyId())).findFirst();
-                if(!x.isPresent()) {
-                    empAddChangeInfoExportList.remove(x.orElseGet(null));
-                }
-            });
-
-            if (!empHealInsurQInfoList.isEmpty()) {
-                empHealInsurQInfoList.stream().forEach(k -> {
-                    Optional<EmpAddChangeInfoExport> em = empAddChangeInfoExportList.stream().filter(item -> item.getEmpId().equals(k.getEmpId())
-                            && item.getPersonAddChangeDate() != null
-                            && item.getPersonAddChangeDate().afterOrEquals(k.getStartDate())
-                            && item.getPersonAddChangeDate().beforeOrEquals(k.getEndDate())).findFirst();
-                    if (em.isPresent()) {
-                        em.get().setHealthInsurance(true);
-                        em.get().setHealInsurNumber(k.getHealInsurNumber());
-                    }
-                });
-            }
-
-            if (!empWelfarePenInsQualiInforList.isEmpty()) {
-                empWelfarePenInsQualiInforList.stream().forEach(k -> {
-                    Optional<EmpAddChangeInfoExport> em = empAddChangeInfoExportList.stream().filter(item -> item.getEmpId().equals(k.getEmpId())
-                            && item.getPersonAddChangeDate() != null
-                            && item.getPersonAddChangeDate().afterOrEquals(k.getStartDate())
-                            && item.getPersonAddChangeDate().beforeOrEquals(k.getEndDate())).findFirst();
-                    if (em.isPresent()) {
-                        em.get().setEmpPenInsurance(true);
-                    }
-                });
-            }
-
-            if(!empAddChangeInfoExportList.isEmpty()){
-                empAddChangeInfoExportList.forEach(i->{
-                    if(i.getSpouseAddChangeDate() == null && i.getPersonAddChangeDate() == null || !i.isEmpPenInsurance() && !i.isHealthInsurance()){
-                        empAddChangeInfoExportList.remove(i);
-                    }
-                });
-            }
-            //end of list emp add change information
 
             if (!empCorpOffHisInfoList.isEmpty()){
                 empCorpOffHisInfoList.forEach(i-> {
@@ -194,21 +178,9 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
                     }
 
                 });
-            } else if (domain.getInsuredNumber() == InsurPersonNumDivision.OUTPUT_HEAL_INSUR_NUM) {
+            }
 
-                if (!empHealInsurQInfoList.isEmpty()) {
-                    empHealInsurQInfoList.stream().forEach(k -> {
-                        Optional<EmpAddChangeInfoExport> em = empAddChangeInfoExportList.stream().filter(item -> item.getEmpId().equals(k.getEmpId())
-                                && item.getPersonAddChangeDate() != null
-                                && item.getPersonAddChangeDate().afterOrEquals(k.getStartDate())
-                                && item.getPersonAddChangeDate().beforeOrEquals(k.getEndDate())).findFirst();
-                        if (em.isPresent()) {
-                            em.get().setHealInsurNumber(k.getHealInsurNumber());
-                        }
-                    });
-                }
-
-            } else if (domain.getInsuredNumber() == InsurPersonNumDivision.OUTPUT_THE_WELF_PENNUMBER) {
+            if (domain.getInsuredNumber() == InsurPersonNumDivision.OUTPUT_THE_WELF_PENNUMBER) {
 
                 if (!empWelfarePenInsQualiInforList.isEmpty()) {
                     empWelfarePenInsQualiInforList.stream().forEach(k -> {
@@ -269,7 +241,7 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
             //Imported（給与）「個人前住所」
             if(!currentPersonAddressList.isEmpty()) {
                 currentPersonAddressList.forEach(k->{
-                    Optional<EmpAddChangeInfoExport> em =  empAddChangeInfoExportList.stream().filter(i->i.getPersonId().equals(k.getPersonId())).findFirst();
+                    Optional<EmpAddChangeInfoExport> em =  empAddChangeInfoExportList.stream().filter(i->i.getEmpId().equals(k.getEmpId())).findFirst();
                     if(em.isPresent()&& domain.getSubmittedName() == SubNameClass.PERSONAL_NAME) {
                         em.get().setNameKanaPs(k.getPersonNameKana());
                         em.get().setFullNamePs(k.getPersonName());
@@ -383,13 +355,12 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
                     k.setAddress2(c.getAdd2());
                     k.setBussinessName(c.getCompanyName());
                 });
-            }*/
+            }
 
-            EmpAddChangeInfoExport empAddChangeInfoExport = new EmpAddChangeInfoExport(
+            /*EmpAddChangeInfoExport empAddChangeInfoExport = new EmpAddChangeInfoExport(
                     "1233",
                     "1233",
                     11,
-                    "1233",
                     "1234567",
                     "nameKanaPs",
                     "fullNamePs",
@@ -433,15 +404,13 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
                     true,
                     start,
                     start,
-                    start,
                     "1234567",
                     true,
-                    "1234567",
-                    "1234567"
-
+                    "12",
+                    "67"
             );
-            empAddChangeInfoExportList.add(empAddChangeInfoExport);
-            empAddChangeInforData.setEmpAddChangeInfoExportList(empAddChangeInfoExportList);
+            empAddChangeInfoExportList.add(empAddChangeInfoExport);*/
+            EmpAddChangeInforData empAddChangeInforData = new EmpAddChangeInforData( empAddChangeInfoExportList,baseDate );
             empAddChangeInfoFileGenerator.generate(exportServiceContext.getGeneratorContext(), empAddChangeInforData);
         } else {
             throw new BusinessException("Msg_37");

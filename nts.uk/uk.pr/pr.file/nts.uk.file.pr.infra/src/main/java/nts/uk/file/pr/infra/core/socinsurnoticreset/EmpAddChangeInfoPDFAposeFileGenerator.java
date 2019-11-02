@@ -21,8 +21,8 @@ import java.util.Optional;
 
 @Stateless
 public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGenerator implements EmpAddChangeInfoFileGenerator {
-    private static final String TEMPLATE_FILE_2 = "report/国民年金第３号被保険者住所変更届.xlsx";
     private static final String TEMPLATE_FILE_1 = "report/被保険者住所変更届.xlsx";
+    private static final String TEMPLATE_FILE_2 = "report/国民年金第３号被保険者住所変更届.xlsx";
     private static final String FILE_NAME = "被保険者住所変更届";
     private static final String SHOWA = "昭和";
     private static final String HEISEI = "平成";
@@ -43,33 +43,30 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
            Workbook workbook2 = reportContext2.getWorkbook();
            WorksheetCollection worksheets2 = workbook2.getWorksheets();
            reportContext2.processDesigner();
-
+           worksheets2.get(worksheets2.addCopy(0));
            String sheetName = "INS";
-
            if (data.getEmpAddChangeInfoExportList().isEmpty()) {
                throw new BusinessException("Msg_37");
            }
 
-           for (int i  = 0; i < data.getEmpAddChangeInfoExportList().size() ; i ++)     {
+           for (int i  = 0; i < data.getEmpAddChangeInfoExportList().size() ; i ++) {
                worksheets.get(worksheets.addCopy(0)).setName(sheetName + i);
-               worksheets2.get(worksheets2.addCopy(0));
                EmpAddChangeInfoExport empAddChangeInfoExport = data.getEmpAddChangeInfoExportList().get(i);
                if(empAddChangeInfoExport.getPersonAddChangeDate() != null) {
                    //条件を満たす対象者のデータをもとに「被保険者住所変更届」を印刷する
-                   this.pushDataCommon(worksheets, empAddChangeInfoExport,sheetName + i);
-                   this.pushBusCode(worksheets, empAddChangeInfoExport,sheetName + i+1);
+                   this.pushDataCommon(worksheets, empAddChangeInfoExport, data.getBaseDate(), sheetName + i);
+                   this.pushBusCode(worksheets, empAddChangeInfoExport,sheetName + i);
                }
 
                if(empAddChangeInfoExport.getSpouseAddChangeDate() != null && empAddChangeInfoExport.isEmpPenInsurance()){
                    //条件を満たす対象者のデータをもとに「国民年金第３号被保険者住所変更届」を印刷する
-                   //worksheets.get(worksheets2.addCopy(0)).setName(sheetName + i+1);
-                   worksheets.add(sheetName+i).copy(worksheets2.get(0));
-                   this.pushDataCommon(worksheets2, empAddChangeInfoExport,sheetName + i+1);
-
+                   worksheets.add(sheetName+i+1).copy(worksheets2.get(0));
+                   this.pushDataCommon(worksheets2, empAddChangeInfoExport, data.getBaseDate(), sheetName + i+1);
                }
            }
 
            worksheets.removeAt(0);
+           worksheets2.removeAt(0);
            reportContext.saveAsExcel(this.createNewFile(fileContext,
                    FILE_NAME + ".xlsx"));
        }catch (Exception e){
@@ -153,6 +150,7 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
 
     private void pushDataCommon(WorksheetCollection worksheet,
                           EmpAddChangeInfoExport empAddChangeInfoExport,
+                          GeneralDate baseDate,
                           String i){
         try {
             //A1_1
@@ -190,7 +188,7 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
 
             worksheet.getRangeByName(i + "!A2_6").setValue(Objects.toString(empAddChangeInfoExport.getNameKanaF() != null ?  cutSpace(empAddChangeInfoExport.getNameKanaF(), 1): ""));
             worksheet.getRangeByName(i + "!A2_7").setValue(Objects.toString(empAddChangeInfoExport.getNameKanaF() != null ?  cutSpace(empAddChangeInfoExport.getNameKanaF(), 2): ""));
-            worksheet.getRangeByName(i + "!A2_8").setValue(Objects.toString(empAddChangeInfoExport.getFullNameF() != null ?  cutSpace(empAddChangeInfoExport.getFullNameF(),1): ""));
+            worksheet.getRangeByName(i + "!A2_8").setValue(Objects.toString(empAddChangeInfoExport.getFullNameF() != null ?  cutSpace(empAddChangeInfoExport.getFullNameF(), 1): ""));
             worksheet.getRangeByName(i + "!A2_9").setValue(Objects.toString(empAddChangeInfoExport.getFullNameF() != null ?  cutSpace(empAddChangeInfoExport.getFullNameF(), 2): ""));
 
             this.fillByCell(worksheet , i,"A1_6_1", empAddChangeInfoExport.getPostCodePs(),0 );
@@ -248,12 +246,12 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
             worksheet.getRangeByName(i + "!A2_11").setValue(this.fillAddress(empAddChangeInfoExport.getAdd1KanaF(), empAddChangeInfoExport.getAdd2KanaF()));
             worksheet.getRangeByName(i + "!A2_12").setValue(this.fillAddress(empAddChangeInfoExport.getAdd1F(), empAddChangeInfoExport.getAdd2F()));
 
-            this.fillByCell(worksheet , i,"A2_13_1", empAddChangeInfoExport.getStartDatePs().toString(TYPE_DATE),0 );
-            this.fillByCell(worksheet , i,"A2_13_2", empAddChangeInfoExport.getStartDatePs().toString(TYPE_DATE),1 );
-            this.fillByCell(worksheet , i,"A2_13_3", empAddChangeInfoExport.getStartDatePs().toString(TYPE_DATE),2 );
-            this.fillByCell(worksheet , i,"A2_13_4", empAddChangeInfoExport.getStartDatePs().toString(TYPE_DATE),3 );
-            this.fillByCell(worksheet , i,"A2_13_5", empAddChangeInfoExport.getStartDatePs().toString(TYPE_DATE),4 );
-            this.fillByCell(worksheet , i,"A2_13_6", empAddChangeInfoExport.getStartDatePs().toString(TYPE_DATE),5 );
+            this.fillByCell(worksheet , i,"A2_13_1", empAddChangeInfoExport.getStartDateF().toString(TYPE_DATE),0 );
+            this.fillByCell(worksheet , i,"A2_13_2", empAddChangeInfoExport.getStartDateF().toString(TYPE_DATE),1 );
+            this.fillByCell(worksheet , i,"A2_13_3", empAddChangeInfoExport.getStartDateF().toString(TYPE_DATE),2 );
+            this.fillByCell(worksheet , i,"A2_13_4", empAddChangeInfoExport.getStartDateF().toString(TYPE_DATE),3 );
+            this.fillByCell(worksheet , i,"A2_13_5", empAddChangeInfoExport.getStartDateF().toString(TYPE_DATE),4 );
+            this.fillByCell(worksheet , i,"A2_13_6", empAddChangeInfoExport.getStartDateF().toString(TYPE_DATE),5 );
 
             worksheet.getRangeByName(i + "!A2_14").setValue(this.fillAddress(empAddChangeInfoExport.getAdd1BeforeChange(), empAddChangeInfoExport.getAdd2BeforeChange()));
 
@@ -268,11 +266,11 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
 
             RomajiNameNotiCreSetPDFAposeFileGenerator.selectShapes(worksheet, empAddChangeInfoExport.isInsuredLivingTogether() ? 1 : 0, i, "A4_1111" );
 
-            JapaneseDate japaneseDate = toJapaneseDate(empAddChangeInfoExport.getReferenceDate());
+            JapaneseDate japaneseDate = toJapaneseDate(baseDate);
             int y = japaneseDate.year() + 1;
             int m = japaneseDate.month();
             int d = japaneseDate.day();
-            worksheet.getRangeByName(i +"!A3_1" ).setValue(japaneseDate.era() + String.valueOf(y) + "年" + String.valueOf(m) + "月" + String.valueOf(d) + "日提出");
+            worksheet.getRangeByName(i + "!A3_1" ).setValue(japaneseDate.era() + String.valueOf(y) + "年" + String.valueOf(m) + "月" + String.valueOf(d) + "日提出");
             worksheet.getRangeByName(i + "!A3_2").setValue(this.fillAddress(empAddChangeInfoExport.getAddress1(), empAddChangeInfoExport.getAddress2()));
             worksheet.getRangeByName(i + "!A3_3").setValue(Objects.toString(empAddChangeInfoExport.getBussinessName(), ""));
             worksheet.getRangeByName(i + "!A3_4").setValue(Objects.toString(empAddChangeInfoExport.getReferenceName(), ""));

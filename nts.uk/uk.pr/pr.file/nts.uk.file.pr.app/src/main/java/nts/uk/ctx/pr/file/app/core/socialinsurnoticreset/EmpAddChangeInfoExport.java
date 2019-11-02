@@ -17,7 +17,6 @@ public class EmpAddChangeInfoExport {
     private String empId;
     private String companyId;
     private Integer familyId;
-    private String personId;
 
     /** 個人番号 - b - A1_1*/
     private String basicPenNumber;
@@ -148,8 +147,6 @@ public class EmpAddChangeInfoExport {
     /**被扶養配偶者住所変更日*/
     private GeneralDate spouseAddChangeDate;
 
-    private GeneralDate referenceDate;
-
     /**被保険者整理番号 - a - A2_3*/
     private String healInsurNumber;
 
@@ -161,4 +158,22 @@ public class EmpAddChangeInfoExport {
 
     /**事業所整理記号2*/
     private String businessEstCode2;
+
+    public EmpAddChangeInfoExport(String empId) {
+        this.familyId = 11;
+        this.empId = empId;
+        this.healthInsurance = false;
+        this.empPenInsurance = false;
+        this.personAddChangeDate = null;
+        this.spouseAddChangeDate = null;
+    }
+
+    public static List<EmpAddChangeInfoExport> getListExport(List<String> empIds) {
+        List<EmpAddChangeInfoExport> listExport = new ArrayList<>();
+        empIds.forEach(i->{
+            EmpAddChangeInfoExport e = new EmpAddChangeInfoExport(i);
+            listExport.add(e);
+        });
+        return listExport;
+    }
 }
