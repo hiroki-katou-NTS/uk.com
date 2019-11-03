@@ -315,7 +315,7 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
                 cells.get(startRow, 21).setValue(data.getFunSpecific9());
                 cells.get(startRow, 22).setValue(data.getFunSpecific10());
                 cells.get(startRow, 23).setValue(",,,,,,,,,,,,");
-                if(ins.getLineFeedCode().get() == LineFeedCode.DO_NOT_ADD) {
+                if(ins.getLineFeedCode().get() != LineFeedCode.DO_NOT_ADD) {
                     cells.get(startRow, 40).setValue("\r\n[kanri]\r\n");
                     cells.get(startRow, 41).setValue("001\r\n" + data.getFunMember());
                 }
