@@ -43,30 +43,30 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
            Workbook workbook2 = reportContext2.getWorkbook();
            WorksheetCollection worksheets2 = workbook2.getWorksheets();
            reportContext2.processDesigner();
-           worksheets2.get(worksheets2.addCopy(0));
-           String sheetName = "INS";
+           String sheetName1 = "INS";
+           String sheetName2 = "INH";
+
            if (data.getEmpAddChangeInfoExportList().isEmpty()) {
                throw new BusinessException("Msg_37");
            }
-
            for (int i  = 0; i < data.getEmpAddChangeInfoExportList().size() ; i ++) {
-               worksheets.get(worksheets.addCopy(0)).setName(sheetName + i);
+               worksheets.get(worksheets.addCopy(0)).setName(sheetName1 + i);
                EmpAddChangeInfoExport empAddChangeInfoExport = data.getEmpAddChangeInfoExportList().get(i);
                if(empAddChangeInfoExport.getPersonAddChangeDate() != null) {
                    //条件を満たす対象者のデータをもとに「被保険者住所変更届」を印刷する
-                   this.pushDataCommon(worksheets, empAddChangeInfoExport, data.getBaseDate(), sheetName + i);
-                   this.pushBusCode(worksheets, empAddChangeInfoExport,sheetName + i);
+                   this.pushBusCode(worksheets, empAddChangeInfoExport,sheetName1 + i);
+                   this.pushDataCommon(worksheets, empAddChangeInfoExport, data.getBaseDate(), sheetName1 + i);
                }
 
-               if(empAddChangeInfoExport.getSpouseAddChangeDate() != null && empAddChangeInfoExport.isEmpPenInsurance()){
+              /* if(empAddChangeInfoExport.getSpouseAddChangeDate() != null && empAddChangeInfoExport.isEmpPenInsurance()){
                    //条件を満たす対象者のデータをもとに「国民年金第３号被保険者住所変更届」を印刷する
-                   worksheets.add(sheetName+i+1).copy(worksheets2.get(0));
-                   this.pushDataCommon(worksheets2, empAddChangeInfoExport, data.getBaseDate(), sheetName + i+1);
-               }
+                   worksheets.get(worksheets2.addCopy(0)).setName(sheetName2 + i);
+                   this.pushDataCommon(worksheets, empAddChangeInfoExport, data.getBaseDate(), sheetName2 + i);
+               }*/
            }
 
            worksheets.removeAt(0);
-           worksheets2.removeAt(0);
+           //worksheets2.removeAt(0);
            reportContext.saveAsExcel(this.createNewFile(fileContext,
                    FILE_NAME + ".xlsx"));
        }catch (Exception e){

@@ -100,12 +100,12 @@ public class CurrentPersonResidence {
                     "address2Kana",
                     "address1",
                     "address2",
-                     GeneralDate.fromString("1992-10-01","yyMMdd" ),
-                    "personNameKana",
-                    "personName",
-                    "todokedeNameKana",
-                    "todokedeName",
-                     GeneralDate.fromString("2018-10-10","yyMMdd" ),
+                     GeneralDate.fromString("1992/10/01","yyyy/MM/dd" ),
+                    "person NameKana",
+                    "person Name",
+                    "todokede NameKana",
+                    "todokede Name",
+                     GeneralDate.fromString("2018/10/10","yyyy/MM/dd" ),
                     "beforeAddress1",
                     "beforeAddress2");
             currentPersonResidenceList.add(c);
