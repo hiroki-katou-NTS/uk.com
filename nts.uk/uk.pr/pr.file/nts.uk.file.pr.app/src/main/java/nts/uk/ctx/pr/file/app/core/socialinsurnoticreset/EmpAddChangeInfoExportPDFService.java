@@ -77,7 +77,8 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
         }
 
         if (printPersonNumber == PersonalNumClass.OUTPUT_BASIC_PER_NUMBER.value || printPersonNumber == PersonalNumClass.DO_NOT_OUTPUT.value ){
-            List<EmpFamilySocialInsCtgInfo> empFamilySocialInsCtgInfoList = empAddChangeInfoExReposity.getEmpFamilySocialInsCtgInfoList(empIds, cid);
+            List<EmpAddChangeInfoExport> empAddChangeInfoExportList = EmpAddChangeInfoExport.getListExport(empIds);
+            /*List<EmpFamilySocialInsCtgInfo> empFamilySocialInsCtgInfoList = empAddChangeInfoExReposity.getEmpFamilySocialInsCtgInfoList(empIds, cid);
             List<EmpHealInsurQInfo> empHealInsurQInfoList = empAddChangeInfoExReposity.getEmpHealInsurQInfoList(empIds, cid);
             List<EmpWelfarePenInsQualiInfo> empWelfarePenInsQualiInforList = empAddChangeInfoExReposity.getEmpWelfarePenInsQualiInfoList(empIds, cid);
             List<SocialInsuranceOffice> socialInsuranceOfficeList = socialInsuranceOfficeRepository.findByCid(cid);
@@ -356,8 +357,8 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
                     k.setBussinessName(c.getCompanyName());
                 });
             }
-
-            /*EmpAddChangeInfoExport empAddChangeInfoExport = new EmpAddChangeInfoExport(
+*/
+            EmpAddChangeInfoExport empAddChangeInfoExport = new EmpAddChangeInfoExport(
                     "1233",
                     "1233",
                     11,
@@ -383,7 +384,7 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
                     1,
                     1,
                     1,
-                    "spouseOtherReason",
+                    "spousesOtherReason",
                     start,
                     "nameKanaF",
                     "fullNameF",
@@ -409,7 +410,7 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
                     "12",
                     "67"
             );
-            empAddChangeInfoExportList.add(empAddChangeInfoExport);*/
+            empAddChangeInfoExportList.add(empAddChangeInfoExport);
             EmpAddChangeInforData empAddChangeInforData = new EmpAddChangeInforData( empAddChangeInfoExportList,baseDate );
             empAddChangeInfoFileGenerator.generate(exportServiceContext.getGeneratorContext(), empAddChangeInforData);
         } else {

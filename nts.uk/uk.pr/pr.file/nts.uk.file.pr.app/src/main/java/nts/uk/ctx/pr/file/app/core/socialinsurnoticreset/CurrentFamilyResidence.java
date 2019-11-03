@@ -97,7 +97,7 @@ public class CurrentFamilyResidence {
         this.address2Kana = "address2Kana";
         this.address1 = "address1";
         this.address2 = "address2";
-        this.baseDate = GeneralDate.fromString("20181010","YYYYMMDD" );
+        this.baseDate = GeneralDate.fromString("2018-10-10","yyMMdd" );
         this.isLivingTogether = true;
         this.postCodeTogether = "postCodeTogether";
         this.address1KanaTogether = "address1KanaTogether";
@@ -108,12 +108,12 @@ public class CurrentFamilyResidence {
         this.add2BeforeChange = "add2BeforeChange";
         this.add1BeforeChangeTogether = "add1BeforeChangeTogether";
         this.add2BeforeChangeTogether = "add2BeforeChangeTogether";
-        this.birthDate = GeneralDate.fromString("19961010","YYYYMMDD" );
+        this.birthDate = GeneralDate.fromString("1996-10-10","yyMMdd" );
         this.nameKana = "nameKana";
         this.name = "name";
         this.reportNameKana = "reportNameKana";
         this.reportName = "reportName";
-        this.startDate = GeneralDate.fromString("20181010","YYYYMMDD" );
+        this.startDate = GeneralDate.fromString("2018-10-10","yyMMdd" );
         this.isLivingTogetherBefore = true;
     }
 
