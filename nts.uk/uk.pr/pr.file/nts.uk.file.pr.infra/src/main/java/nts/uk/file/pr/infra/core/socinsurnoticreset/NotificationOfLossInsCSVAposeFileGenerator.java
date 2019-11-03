@@ -80,7 +80,7 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
                                    List<SocialInsurancePrefectureInformation> infor, CompanyInfor company, SocialInsurNotiCreateSet ins, GeneralDate baseDate){
         Cells cells = worksheet.getCells();
         int startRow = 0;
-        int columnStart = 17;
+        int columnStart = 18;
         for(int i = 0; i < healthInsLoss.size(); i++){
             InsLossDataExport data = healthInsLoss.get(i);
             if(i == 0) {
@@ -124,7 +124,7 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
                 columnStart = 0;
             }
             if(ins.getLineFeedCode().get() == LineFeedCode.DO_NOT_ADD && i > 0) {
-                columnStart = columnStart + 17;
+                columnStart = columnStart + 18;
             }
             fillPensionEmployee( data, cells, infor, ins, startRow, columnStart);
         }
@@ -346,7 +346,6 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
             if(ins.getLineFeedCode().get() == LineFeedCode.DO_NOT_ADD && i > 0) {
                 columnStart = columnStart + 51;
             }
-            startRow++;
             fillEmpPensionFund(data, cells, infor , ins, startRow, columnStart);
         }
 
