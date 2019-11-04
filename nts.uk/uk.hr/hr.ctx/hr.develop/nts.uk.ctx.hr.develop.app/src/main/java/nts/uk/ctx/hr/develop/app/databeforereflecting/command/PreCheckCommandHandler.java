@@ -37,7 +37,7 @@ public class PreCheckCommandHandler extends CommandHandler<DataBeforeReflectComm
 		int retirementType = command.retirementType;
 		if (retirementType == 3) {
 			GeneralDate dismissalNoticeDate = GeneralDate.fromString(command.dismissalNoticeDate, "yyyy/MM/dd"); // A222_35
-			if (retirementDate.beforeOrEquals(dismissalNoticeDate)) {
+			if (retirementDate.before(dismissalNoticeDate)) {
 				index++;
 				bundleExeption.addMessage(new BusinessException("MsgJ_JCM007_3"));
 			}
