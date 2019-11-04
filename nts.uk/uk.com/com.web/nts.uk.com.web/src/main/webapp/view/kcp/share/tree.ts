@@ -1252,7 +1252,7 @@ var TREE_COMPONENT_HTML = `<style type="text/css">
                 data-bind="click: reload, attr: {tabindex: tabindex}"
                 style="min-width: 65px">`+TreeComponentTextResource.KCP004_3+`</button>
         </div>
-        <div style="margin-top: 10px; margin-bottom: 10px;">
+        <div id="hierarchy" style="margin-top: 10px; margin-bottom: 10px;">
             <div data-bind="ntsFormLabel: {}" style="margin-left: 10px; float: left; border-color: transparent;">`+TreeComponentTextResource.KCP004_4+`</div>
             <div id="combo-box-tree-component"
                 style="width: 60px; margin-left: 5px; float: left"
@@ -1277,7 +1277,7 @@ var TREE_COMPONENT_HTML = `<style type="text/css">
                         data-bind="click: selectSubParent, attr: {tabindex: tabindex}">`+TreeComponentTextResource.KCP004_8+`</button>
                 <!-- /ko -->
             </div>
-            <div style="margin-top: 10px; margin-bottom: 10px;" data-bind="visible: isMultipleUse">
+            <div id="hierarchy" style="margin-top: 10px; margin-bottom: 10px;" data-bind="visible: isMultipleUse">
                         <div data-bind="ntsFormLabel: {}" style="margin-left: 10px; float: left; border-color: transparent;">`+TreeComponentTextResource.KCP004_4+`</div>
                         <div id="combo-box-tree-component"
                             style="width: 60px; margin-left: 5px; float: left"

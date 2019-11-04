@@ -14,17 +14,23 @@
 	display: block !important;
 }
 
-#tabpanel-m #left-content {
+#tabpanel-m .left-content {
 	margin: 20px 30px 0 16px;
 	float: left;
+    padding-left: 30px;
 }
 
 #tabpanel-m #right-content {
-	margin: 0;
+	marginleft: 20px;
 	float: left;
-	width: 990px;
+	width: 1135px;
 }
-
+.switch {
+	display: inline-block;
+    float: left;
+    margin-left: 20px;
+    margin-top: 5px;
+}
 #tabpanel-m #fixed-table-wkp-setting {
 	margin-bottom: 20px;
 }

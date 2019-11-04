@@ -1,5 +1,7 @@
 .contents-area {
-	width: 1150px;
+	width: 1158px;
+	height: calc(100vh - 161px);
+	overflow: auto;
 }
 #sidebar-area {
 	min-width: 60px;

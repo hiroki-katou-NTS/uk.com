@@ -172,28 +172,8 @@ textarea {
 	padding-left: 19px;
 }
 
-/* .tab-content-1, .tab-content-3, .tab-content-4, .tab-content-5,
-	.tab-content-6, .tab-content-7, .tab-content-8, .tab-content-9,
-	.tab-content-10, .tab-content-11, .tab-content-12 {
-	height: 530px;
-} */
-/* .tab-content-1, .tab-content-3, .tab-content-4.tab-content-5,
-	.tab-content-7, .tab-content-8, .tab-content-9,
-	.tab-content-10, .tab-content-11, .tab-content-12, .tab-content-14 {
-	height: calc(100vh - 200px) !important;
-}
-.tab-content-2 {
-	height: calc(100vh - 430px) !important;
-}
-.tab-content-6 {
-	height: calc(100vh - 520px) !important;
-}
-
-.tab-content-14{
-	width: 951px;
-} */
-
-.tab-content-1, .tab-content-3, .tab-content-7, .tab-content-14 {
+.tab-content-1,.tab-content-2, .tab-content-3,.tab-content-4, .tab-content-6,
+.tab-content-7,.tab-content-11, .tab-content-13, .tab-content-14 {
 	overflow-y: scroll;
 }
 
@@ -202,7 +182,7 @@ textarea {
 }
 
 #tab-1, #tab-2, #tab-3, #tab-4, #tab-5, #tab-6, #tab-7, #tab-8, #tab-9,
-	#tab-10, #tab-11, #tab-12 {
+	#tab-10, #tab-11, #tab-13, #tab-14 {
 	width: 970px !important;
 }
 
@@ -350,10 +330,16 @@ div#g36 > label:NTH-CHILD(3) > span:NTH-CHILD(3) {
 	width: 55px !important;
 }
 #tabpanel-l {
-	overflow-y: auto;
+    overflow-y: scroll;
     height: calc(100vh - 145px) !important;
 }
 #tabpanel-m {
-	overflow-y: auto;
+    overflow-y: scroll;
     height: calc(100vh - 165px) !important;
+}
+#hierarchy{
+	display: none !important;
+}
+.ui-widget.ui-tabs.vertical {
+	display: block !important;
 }
