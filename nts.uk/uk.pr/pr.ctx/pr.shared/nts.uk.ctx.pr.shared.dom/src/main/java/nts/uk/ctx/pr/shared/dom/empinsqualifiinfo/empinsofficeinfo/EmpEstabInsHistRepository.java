@@ -1,5 +1,8 @@
 package nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.empinsofficeinfo;
 
+import nts.arc.time.GeneralDate;
+
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -8,5 +11,6 @@ import java.util.Optional;
 public interface EmpEstabInsHistRepository {
 
     Optional<EmpEstabInsHist> getEmpInsHistById(String cid, String sid, String histId);
+    Optional<EmpEstabInsHist> getListEmpInsHistByDate(String cid, String sid, GeneralDate fillingDate);
 
 }

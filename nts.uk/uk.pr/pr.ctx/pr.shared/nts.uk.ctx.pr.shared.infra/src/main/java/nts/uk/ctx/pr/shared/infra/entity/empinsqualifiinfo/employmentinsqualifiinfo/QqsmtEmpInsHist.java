@@ -1,21 +1,12 @@
 package nts.uk.ctx.pr.shared.infra.entity.empinsqualifiinfo.employmentinsqualifiinfo;
 
-import java.io.Serializable;
-
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
-
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.EmpInsHist;
-import nts.uk.shr.com.history.DateHistoryItem;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
+
+import javax.persistence.*;
+import java.io.Serializable;
 
 /**
 * 社員雇用保険履歴
@@ -87,5 +78,7 @@ public class QqsmtEmpInsHist extends UkJpaEntity implements Serializable{
     {
         return empInsHistPk;
     }
+
+
 
 }

@@ -9,6 +9,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.report.dom.printconfig.empinsreportsetting.EmpInsReportSetting;
 import nts.uk.ctx.pr.report.dom.printconfig.empinsreportsetting.EmpInsReportSettingRepository;
 import nts.uk.ctx.pr.report.infra.entity.printconfig.empinsreportsetting.QrsmtEmpInsRptSetting;
+import nts.uk.ctx.pr.report.infra.entity.printconfig.socialinsurnoticreset.QrsmtEmpAddCgeSetting;
 
 @Stateless
 public class JpaEmpInsReportSettingRepository extends JpaRepository implements EmpInsReportSettingRepository {
@@ -22,6 +23,11 @@ public class JpaEmpInsReportSettingRepository extends JpaRepository implements E
         .setParameter("cid", cid)
         .setParameter("userId", userId)
         .getSingle(c->c.toDomain());
+    }
+
+    @Override
+    public void update(EmpInsReportSetting domain) {
+        this.commandProxy().insert(QrsmtEmpInsRptSetting.toEntity(domain));
     }
 
 }
