@@ -23,11 +23,6 @@ public class JpaEmpInsReportSettingRepository extends JpaRepository implements E
     private static final String SELECT_LABORINSUR = SELECT_BY_FILLING_DATE
             + " INNER JOIN QpbmtLaborInsuOffice li ON f.laborInsCd = li.laborOfficeCode ";
 
-
-
-
-
-
     @Override
     public List<LaborInsuranceOffice> getListEmpInsHistByDate(String cid, String sid, GeneralDate fillingDate) {
         List<LaborInsuranceOffice> listHist =  this.queryProxy().query(SELECT_LABORINSUR, QpbmtLaborInsuOffice.class)
