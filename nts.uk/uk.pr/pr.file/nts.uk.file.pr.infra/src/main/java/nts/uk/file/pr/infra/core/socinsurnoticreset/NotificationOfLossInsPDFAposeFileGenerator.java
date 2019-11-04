@@ -122,7 +122,7 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
         }
         GeneralDate endHeal = GeneralDate.fromString(heal.substring(0,10), "yyyy-MM-dd");
         GeneralDate endWel = GeneralDate.fromString(wel.substring(0,10), "yyyy-MM-dd");
-        return endHeal.before(endWel);
+        return endHeal.afterOrEquals(endWel);
     }
 
     private String findEra(String era) {
