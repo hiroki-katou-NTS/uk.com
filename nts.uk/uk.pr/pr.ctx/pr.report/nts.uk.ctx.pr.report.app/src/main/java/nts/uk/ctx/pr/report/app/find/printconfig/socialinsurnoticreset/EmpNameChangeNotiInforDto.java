@@ -4,9 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Value;
 import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.EmpNameChangeNotiInfor;
 
+import javax.ejb.Stateless;
+
 /**
 * 社員氏名変更届情報: DTO
 */
+
 @AllArgsConstructor
 @Value
 public class EmpNameChangeNotiInforDto

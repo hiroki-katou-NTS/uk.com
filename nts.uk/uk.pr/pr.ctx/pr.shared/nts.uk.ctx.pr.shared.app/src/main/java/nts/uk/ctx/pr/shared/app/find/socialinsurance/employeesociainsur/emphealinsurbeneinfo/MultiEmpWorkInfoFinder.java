@@ -12,8 +12,7 @@ import java.util.Optional;
 /**
 * 社員二以上事業所勤務情報: Finder
 */
-public class MultiEmpWorkInfoFinder
-{
+public class MultiEmpWorkInfoFinder {
 
     @Inject
     private MultiEmpWorkInfoRepository finder;

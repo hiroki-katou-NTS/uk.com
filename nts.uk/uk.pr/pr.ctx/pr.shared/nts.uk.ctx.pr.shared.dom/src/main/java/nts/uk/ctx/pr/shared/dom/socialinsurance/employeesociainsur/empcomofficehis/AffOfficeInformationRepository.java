@@ -1,5 +1,7 @@
 package nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empcomofficehis;
 
+import nts.arc.time.GeneralDate;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -10,7 +12,6 @@ public interface AffOfficeInformationRepository
 {
 
     List<AffOfficeInformation> getAllAffOfficeInformation();
-
 
     Optional<AffOfficeInformation> getAffOfficeInformationById(String empID, String hisId);
 

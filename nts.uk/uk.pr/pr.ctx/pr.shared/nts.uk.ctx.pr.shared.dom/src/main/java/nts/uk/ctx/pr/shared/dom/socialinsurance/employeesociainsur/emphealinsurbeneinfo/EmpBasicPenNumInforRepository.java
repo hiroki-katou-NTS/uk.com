@@ -11,6 +11,8 @@ public interface EmpBasicPenNumInforRepository
 
     List<EmpBasicPenNumInfor> getAllEmpBasicPenNumInfor();
 
+    List<EmpBasicPenNumInfor> getAllEmpBasicPenNumInfor(List<String> empIds);
+
     Optional<EmpBasicPenNumInfor> getEmpBasicPenNumInforById(String employeeId);
 
     Optional<EmpBasicPenNumInfor> getEmpBasicPenNumInforById(String cid, String employeeId);

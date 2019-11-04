@@ -11,7 +11,9 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 /**
@@ -58,10 +60,20 @@ public class QqsmtHealInsurPortInt extends UkJpaEntity implements Serializable
         return healInsurPortIntPk;
     }
 
-    public HealInsurPortPerIntell toDomain() {
-        return new HealInsurPortPerIntell(
-                this.healInsurPortIntPk.employeeId,
-                new DateHistoryItem(this.healInsurPortIntPk.hisId, new DatePeriod(this.startDate,this.endDate)));
+    public static HealInsurPortPerIntell toDomain(List<QqsmtHealInsurPortInt> entity) {
+        if(entity.size() <= 0){
+            return null;
+        }
+        String empID = entity.get(0).healInsurPortIntPk.employeeId;
+        String historyID = entity.get(0).healInsurPortIntPk.hisId;
+        List<DateHistoryItem> period = new ArrayList<>();
+        entity.forEach(x -> {
+            DatePeriod datePeriod = new DatePeriod(x.startDate,x.endDate);
+            DateHistoryItem historyItem = new DateHistoryItem(historyID,datePeriod);
+            period.add(historyItem);
+        });
+
+        return new HealInsurPortPerIntell(empID,period);
 
     }
     public static QqsmtHealInsurPortInt toEntity(HealInsurPortPerIntell domain) {

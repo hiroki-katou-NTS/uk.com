@@ -15,6 +15,8 @@ public interface HealInsurPortPerIntellRepository
 
     Optional<HealInsurPortPerIntell> getHealInsurPortPerIntellById(String employeeId, String hisId);
 
+    Optional<HealInsurPortPerIntell> getHealInsurPortPerIntellById(String employeeId);
+
     Optional<HealthCarePortInfor> getHealInsurPortPerIntellById(String cid, String employeeId, GeneralDate baseDate);
 
     void add(HealInsurPortPerIntell domain);

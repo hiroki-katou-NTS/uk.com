@@ -10,7 +10,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-@Path("ctx/pr/file/printdata/notice")
+@Path("ctx/pr/file/printconfig/notice")
 @Produces("application/json")
 public class NoticeOfLossWebService {
 

@@ -64,7 +64,7 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
             WorksheetCollection worksheets = workbook.getWorksheets();
             worksheets.get(0).setName(SHEET_NAME);
             settingPage(worksheets.get(0), exportData.getCompanyName());
-            printData(worksheets, exportData.getFormulas(), exportData.getFormulaDetails(), exportData.getTargetItems());
+            printData(worksheets, exportData.getFormulas(), exportData.getFormulaDetails(), exportData.getTargetItems(), exportData.getEmployments(), exportData.getDepartments(),exportData.getCls(), exportData.getJobs());
             worksheets.setActiveSheetIndex(0);
             reportContext.processDesigner();
             reportContext.saveAsExcel(this.createNewFile(generatorContext,
@@ -83,10 +83,10 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
         pageSetup.setHeader(2, "&\"ＭＳ ゴシック\"&10 " + currentFormattedDate+"\npage&P");
     }
 
-    private void printData(WorksheetCollection worksheets, List<Object[]> data, List<Object[]> fornula, List<Object[]> targetItem) {
+    private void printData(WorksheetCollection worksheets, List<Object[]> data, List<Object[]> fornula, List<Object[]> targetItem, List<MasterUseDto> employments, List<MasterUseDto> departments, List<MasterUseDto> cls, List<MasterUseDto> jobs) {
         int numColumn = 15;
         int columnStart = 1;
-        fillData(worksheets, data, fornula, targetItem, numColumn, columnStart);
+        fillData(worksheets, data, fornula, targetItem, numColumn, columnStart, employments, departments, cls, jobs);
     }
 
     private String convertYearMonth(Object startYearMonth){
@@ -94,7 +94,7 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
     }
 
     private void fillData(WorksheetCollection worksheets, List<Object[]> data, List<Object[]> formula,
-                          List<Object[]> targetItem, int numColumn, int startColumn) {
+                          List<Object[]> targetItem, int numColumn, int startColumn, List<MasterUseDto> employments, List<MasterUseDto> departments, List<MasterUseDto> cls, List<MasterUseDto> jobs) {
         try {
             int rowStart = 3;
             int lineCopy = 3;
@@ -128,7 +128,7 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
                             cells.get(rowStart, j+ startColumn).setValue(getUsageMasterType(dataRow));
                             break;
                         case MASTER_USE_CD:
-                            cells.get(rowStart, j+ startColumn).setValue(getUsageMasterName(dataRow));
+                            cells.get(rowStart, j+ startColumn).setValue(getUsageMasterName(dataRow, employments, departments, cls, jobs));
                             break;
                         case FORMULA:
                             cells.get(rowStart, j+ startColumn).setValue(getValueFomula(dataRow, formula, targetItem, data) );
@@ -421,12 +421,28 @@ public class FormulaAposeFileGenerator extends AsposeCellsReportGenerator implem
         return data[MASTER_USE] != null ? EnumAdaptor.valueOf(((BigDecimal) data[MASTER_USE]).intValue(), MasterUse.class).nameId : "" ;
     }
 
-    private String getUsageMasterName(Object[] data){
+    private String getUsageMasterName(Object[] data, List<MasterUseDto> employments, List<MasterUseDto> departments, List<MasterUseDto> cls, List<MasterUseDto> jobs){
         if(((BigDecimal)data[SETTING]).intValue() == FormulaSettingMethod.DETAIL_SETTING.value || ((BigDecimal)data[6]).intValue() == 0) {
             return "なし";
         }
         if(data[MASTER_USE_CD] != null && CODE_DEFAULT.equals(data[MASTER_USE_CD].toString())) {
             return "既定値";
+        }
+        if(data[MASTER_USE] != null && ((BigDecimal)data[MASTER_USE]).intValue() == MasterUse.EMPLOYMENT.value) {
+            Optional<MasterUseDto> masterUse = employments.stream().filter(item -> item.getCode().equals(data[MASTER_USE_CD])).findFirst();
+            return masterUse.isPresent() ? masterUse.get().getName() : "";
+        }
+        if(data[MASTER_USE] != null && ((BigDecimal)data[MASTER_USE]).intValue() == MasterUse.DEPARTMENT.value) {
+            Optional<MasterUseDto> masterUse = departments.stream().filter(item -> item.getCode().equals(data[MASTER_USE_CD])).findFirst();
+            return masterUse.isPresent() ? masterUse.get().getName() : "";
+        }
+        if(data[MASTER_USE] != null && ((BigDecimal)data[MASTER_USE]).intValue() == MasterUse.CLASSIFICATION.value) {
+            Optional<MasterUseDto> masterUse = cls.stream().filter(item -> item.getCode().equals(data[MASTER_USE_CD])).findFirst();
+            return masterUse.isPresent() ? masterUse.get().getName() : "";
+        }
+        if(data[MASTER_USE] != null && ((BigDecimal)data[MASTER_USE]).intValue() == MasterUse.JOB_TITLE.value) {
+            Optional<MasterUseDto> masterUse = jobs.stream().filter(item -> item.getCode().equals(data[MASTER_USE_CD])).findFirst();
+            return masterUse.isPresent() ? masterUse.get().getName() : "";
         }
         return data[MASTER_NAME] != null ? data[MASTER_NAME].toString() : "";
     }

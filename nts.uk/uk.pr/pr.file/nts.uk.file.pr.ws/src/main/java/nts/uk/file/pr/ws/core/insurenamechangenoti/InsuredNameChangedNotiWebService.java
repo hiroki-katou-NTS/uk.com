@@ -10,7 +10,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-@Path("ctx/pr/report/printdata/insurenamechangenoti")
+@Path("ctx/pr/report/printconfig/insurenamechangenoti")
 @Produces("application/json")
 public class InsuredNameChangedNotiWebService {
 

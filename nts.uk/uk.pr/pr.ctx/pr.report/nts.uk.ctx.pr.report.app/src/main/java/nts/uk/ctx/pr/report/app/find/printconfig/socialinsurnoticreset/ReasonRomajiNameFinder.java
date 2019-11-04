@@ -1,6 +1,5 @@
 package nts.uk.ctx.pr.report.app.find.printconfig.socialinsurnoticreset;
 
-import nts.uk.ctx.pr.report.app.find.socinsurnoticreset.NameNotificationSetDto;
 import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.EmpNameReport;
 import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.EmpNameReportRepository;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmpBasicPenNumInfor;
@@ -24,8 +23,8 @@ public class ReasonRomajiNameFinder {
         return new ReasonRomajiNameDto(
                 empBasicPenNumInfor.isPresent() && empBasicPenNumInfor.get().getBasicPenNumber().isPresent() ? empBasicPenNumInfor.get().getBasicPenNumber().get().toString() : null,
                 empNameReport.isPresent() ? new EmpNameReportDto(
-                        NameNotificationSetDto.fromDomain(empNameReport.get().getPersonalSet()),
-                        NameNotificationSetDto.fromDomain(empNameReport.get().getSpouse())) : null
+                        ReasonRomajiNameDto.NameNotificationSetDto.fromDomain(empNameReport.get().getPersonalSet()),
+                        ReasonRomajiNameDto.NameNotificationSetDto.fromDomain(empNameReport.get().getSpouse())) : null
         );
     }
 }

@@ -11,6 +11,6 @@ public interface HealthCarePortInforRepository
 
     List<HealthCarePortInfor> getAllHealthCarePortInfor();
 
-    Optional<HealthCarePortInfor> getHealthCarePortInforById(String hisId);
+    Optional<HealthCarePortInfor> getHealthCarePortInforById(String hisId, String empid);
 
 }
