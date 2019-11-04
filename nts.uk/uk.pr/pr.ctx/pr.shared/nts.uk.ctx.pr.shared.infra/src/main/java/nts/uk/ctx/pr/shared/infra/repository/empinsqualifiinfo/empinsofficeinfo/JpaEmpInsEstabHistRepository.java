@@ -17,9 +17,6 @@ import java.util.Optional;
 public class JpaEmpInsEstabHistRepository extends JpaRepository implements EmpEstabInsHistRepository {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QqsmtEmpInsEsmHist f";
-  
-
-
 
     @Override
     public Optional<EmpEstabInsHist> getEmpInsHistById(String cid, String sid, String histId) {

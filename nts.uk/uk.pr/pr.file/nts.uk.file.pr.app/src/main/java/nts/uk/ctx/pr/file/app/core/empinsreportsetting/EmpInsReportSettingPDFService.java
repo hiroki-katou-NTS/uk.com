@@ -13,6 +13,7 @@ import nts.uk.ctx.pr.report.dom.printconfig.empinsreportsetting.EmpInsReportSett
 import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.empinsofficeinfo.EmpEstabInsHistRepository;
 import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.EmpInsHist;
 import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.EmpInsHistRepository;
+import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.EmpInsNumInfoRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.inject.Inject;
@@ -43,6 +44,9 @@ public class EmpInsReportSettingPDFService extends ExportService<EmpInsReportSet
 
     @Inject
     private PersonExportAdapter mPersonExportAdapter;
+
+    @Inject
+    private EmpInsNumInfoRepository mEmpInsNumInfoRepository;
 
 
 
@@ -92,11 +96,20 @@ public class EmpInsReportSettingPDFService extends ExportService<EmpInsReportSet
             personExports.stream().filter(dataPerson -> {
                 if(dataPerson.getPersonId().equals(e.getPId())){
                     temp.setBrithDay(dataPerson.getBirthDate().toString());
-                    temp.setFullName(dataPerson.getPersonNameGroup().getPersonName());
-
+                    temp.setName(dataPerson.getPersonNameGroup().getPersonName().getFullName());
+                    temp.setNameKana(dataPerson.getPersonNameGroup().getPersonName().getFullNameKana());
+                    temp.setFullName(dataPerson.getPersonNameGroup().getPersonRomanji().getFullName());
+                    temp.setFullNameKana(dataPerson.getPersonNameGroup().getPersonRomanji().getFullNameKana());
+                    temp.setReportFullName(dataPerson.getPersonNameGroup().getTodokedeFullName().getFullName());
+                    temp.setReportFullNameKana(dataPerson.getPersonNameGroup().getTodokedeFullName().getFullNameKana());
+                    temp.setGender(dataPerson.getGender());
+                    temp.setBrithDay(dataPerson.getBirthDate().toString());
+                    temp.setChangeDate("");
+                    temp.setEmpInsHist(mEmpInsHist.isPresent() ? mEmpInsHist.get() : null);
                 }
+                return true;
             });
-
+            listDataExport.add(temp);
 
 
         });
