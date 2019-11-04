@@ -212,25 +212,40 @@ module nts.uk.pr.view.qsi002.a.viewmodel {
         exportPDF(){
             let self = this;
             block.invisible();
-
+            let data: any;
             service.getSocialInsurNotiCreateSetById().done(e =>{
+                if(e) {
+                    data = {
+                        socialInsurNotiCreateSetDto: new SocialInsurNotiCreateSetDto(
+                            Number(self.selectedBusinessDivision()),
+                            Number(self.selectedBussEsimateClass()),
+                            Number(self.selectedSocialInsurOutOrder()),
+                            Number(self.selectedPersonalNumClass()),
+                            self.selectedRuleCode(),
+                            Number(self.selectedInsurPersonNumDivision()),
+                            e.fdNumber,
+                            e.textPersonNumber,
+                            e.outputFormat,
+                            e.lineFeedCode
+                        ),
+                        listEmpId: self.getListEmployee(self.selectedCodeKCP005(),self.employees),
+                        date: moment.utc(self.baseDate1(), "YYYY/MM/DD")
+                    };
+                } else {
+                    data = {
+                        socialInsurNotiCreateSetDto: new SocialInsurNotiCreateSetDto(
+                            Number(self.selectedBusinessDivision()),
+                            Number(self.selectedBussEsimateClass()),
+                            Number(self.selectedSocialInsurOutOrder()),
+                            Number(self.selectedPersonalNumClass()),
+                            self.selectedRuleCode(),
+                            Number(self.selectedInsurPersonNumDivision())
+                        ),
+                        listEmpId: self.getListEmployee(self.selectedCodeKCP005(),self.employees),
+                        date: moment.utc(self.baseDate1(), "YYYY/MM/DD")
+                    };
+                }
 
-                let data: any = {
-                    socialInsurNotiCreateSetDto: new SocialInsurNotiCreateSetDto(
-                        Number(self.selectedBusinessDivision()),
-                        Number(self.selectedBussEsimateClass()),
-                        Number(self.selectedSocialInsurOutOrder()),
-                        Number(self.selectedPersonalNumClass()),
-                        self.selectedRuleCode(),
-                        Number(self.selectedInsurPersonNumDivision()),
-                        e.fdNumber,
-                        e.textPersonNumber,
-                        e.outputFormat,
-                        e.lineFeedCode
-                    ),
-                    listEmpId: self.getListEmployee(self.selectedCodeKCP005(),self.employees),
-                    date: moment.utc(self.baseDate1(), "YYYY/MM/DD")
-                };
                 service.exportPDF(data).done(e =>{
 
                 }).fail(e =>{
