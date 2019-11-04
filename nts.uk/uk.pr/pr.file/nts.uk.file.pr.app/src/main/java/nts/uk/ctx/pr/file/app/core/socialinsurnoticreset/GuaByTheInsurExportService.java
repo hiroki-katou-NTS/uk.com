@@ -10,6 +10,7 @@ import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsura
 import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.OutputFormatClass;
 import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.SocialInsurNotiCrSetRepository;
 import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.SocialInsurNotiCreateSet;
+import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.SocialInsurOutOrder;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.EmpWelfarePenInsQualiInforRepository;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmplHealInsurQualifiInforRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -18,8 +19,10 @@ import nts.uk.shr.com.time.japanese.JapaneseErasAdapter;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Stateless
 public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExportQuery> {
@@ -105,10 +108,13 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
                 }
             }
         }
+        List<GuaByTheInsurExportDto> dtoList = printInsuredQualifiNoti(exportServiceContext.getQuery().getEmpIds(),
+                exportServiceContext.getQuery().getStartDate(), exportServiceContext.getQuery().getEndDate());
+        if(ins.getOutputOrder() == SocialInsurOutOrder.EMPLOYEE_KANA_ORDER) {
+            dtoList = orderBy(dtoList);
+        }
         ExportDataCsv exportData = ExportDataCsv.builder()
-                .listContent(printInsuredQualifiNoti(exportServiceContext.getQuery().getEmpIds(),
-                        exportServiceContext.getQuery().getStartDate(), exportServiceContext.getQuery().getEndDate())
-                )
+                .listContent(dtoList)
                 .ins(ins)
                 .infor(infor)
                 .company(company)
@@ -125,6 +131,10 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
         if (exportServiceContext.getQuery().getTypeExport() != TYPE_EXPORT_EXCEL_FILE) {
             generatorCsv.generate(exportServiceContext.getGeneratorContext(), exportData);
         }
+    }
+
+    private List<GuaByTheInsurExportDto> orderBy(List<GuaByTheInsurExportDto> dtoList){
+        return dtoList.stream().sorted(Comparator.comparing(GuaByTheInsurExportDto::getOfficeCd).thenComparing(GuaByTheInsurExportDto::getNameOfInsuredPerson1)).collect(Collectors.toList());
     }
 
     private List<GuaByTheInsurExportDto> printInsuredQualifiNoti(List<String> employeeIds, GeneralDate startDate, GeneralDate endDate) {
