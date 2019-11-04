@@ -922,7 +922,7 @@ module kcp.share.list {
             var multiSelectColSize = data.isMultiSelect ? 55 : 0;
             var totalColumnSize: number = data.maxWidth ? data.maxWidth : codeColumnSize + 170 + companyColumnSize
                 + alreadySettingColSize + multiSelectColSize;
-            var minTotalSize = 280;
+            var minTotalSize = 350;
             var totalRowsHeight = heightOfRow * this.maxRows + 24;
             var totalHeight: number = self.calcTotalHeightRev(data);
             
@@ -952,8 +952,8 @@ module kcp.share.list {
                 optionalColumnSize: optionalColumnSize
             };
             
-            if (data.maxWidth && data.maxWidth <= 280) {
-                data.maxWidth = 280;
+            if (data.maxWidth && data.maxWidth <= 350) {
+                data.maxWidth = 350;
             }
         }
         

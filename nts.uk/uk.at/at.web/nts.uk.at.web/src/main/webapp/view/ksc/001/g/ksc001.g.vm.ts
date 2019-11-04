@@ -8,7 +8,6 @@ module nts.uk.at.view.ksc001.g {
             startDateString: KnockoutObservable<string>;
             endDateString: KnockoutObservable<string>;
             items: KnockoutObservableArray<GridItem>;
-            calHeight: KnockoutObservable<any>;
             constructor() {
                 let self = this;
                 self.enable = ko.observable(true);
@@ -32,7 +31,12 @@ module nts.uk.at.view.ksc001.g {
                     self.dateValue.valueHasMutated();
                 });
                 self.items = ko.observableArray([]);
-                self.calHeight = ko.observable(0);
+                
+                window.onresize = function(event) {
+                	$(".ksc001-panel").height(window.innerHeight - 250);
+                	$("#gridTable_displayContainer").height(window.innerHeight - 345);
+                	$("#gridTable_scrollContainer").height(window.innerHeight - 345);
+                };
             }
             
             /**
@@ -100,7 +104,7 @@ module nts.uk.at.view.ksc001.g {
                 var self = this;
                 $("#gridTable").ntsGrid({
                     width: null,
-                    height: self.calHeight() - 70 + 'px',
+                    height: window.innerHeight - 320 + 'px',
                     dataSource: screenModel.items(),
                     primaryKey: 'id',
                     virtualization: true,
@@ -131,8 +135,7 @@ module nts.uk.at.view.ksc001.g {
             }
             
             setHeight(): void {
-                var self = this;
-                self.calHeight(window.outerHeight / 2);
+            	$(".ksc001-panel").width(window.innerHeight - 210);
             }
         }
 

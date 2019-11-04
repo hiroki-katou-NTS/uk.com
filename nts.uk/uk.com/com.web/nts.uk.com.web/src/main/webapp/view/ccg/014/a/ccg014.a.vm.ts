@@ -50,8 +50,8 @@ module ccg014.a.viewmodel {
             
             window.onresize = function(event) {
             	$("#preview-iframe").attr('style', 
-                    	'height:' + (window.innerHeight - 30 - $("#preview-iframe").get(0).getBoundingClientRect().top) + 'px; ' +
-                    	'width:'  + (window.innerWidth - 60 - $("#preview-iframe").get(0).getBoundingClientRect().left) + 'px; ');
+                        'height:' + (window.innerHeight - 350) + 'px; ' +
+                        'width:' + (window.innerWidth - 500) + 'px; ');
             	$(".preview-container").width($("#preview-iframe").width() + 10);
                 
             };

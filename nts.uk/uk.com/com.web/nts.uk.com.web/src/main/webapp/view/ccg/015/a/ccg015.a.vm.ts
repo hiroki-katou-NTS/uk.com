@@ -68,8 +68,8 @@ module nts.uk.com.view.ccg015.a {
                 
                 window.onresize = function(event) {
                 	$("#preview-iframe").attr('style', 
-                        	'height:' + (window.innerHeight - 30 - $("#preview-iframe").get(0).getBoundingClientRect().top) + 'px; ' +
-                        	'width:'  + (window.innerWidth - 40 - $("#preview-iframe").get(0).getBoundingClientRect().left) + 'px; ');
+                        	'height:' + (window.innerHeight - 380) + 'px; ' +
+                        	'width:' + (window.innerWidth - 520) + 'px');
                 	$(".preview-container").width($("#preview-iframe").width() + 10);
                     
                 };
