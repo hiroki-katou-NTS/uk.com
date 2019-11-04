@@ -1785,7 +1785,6 @@ module nts.uk.at.view.kmf022 {
                     self.initDataJ(data);
                     self.initDataK(data);
                     self.initDataR(data);
-                    self.setHeight();
                 }).always(() => {
                     nts.uk.ui.errors.clearAll();
                     nts.uk.ui.block.clear();
@@ -1798,25 +1797,7 @@ module nts.uk.at.view.kmf022 {
                 });
 
             }
-            private setHeight(): void {
-                var self = this;
-                $(".tab-content-1").height($("#master-content").height()-100);
-                $(".tab-content-3").height($("#master-content").height()-100);
-                $(".tab-content-14").height($("#master-content").height()-100);
-                if($("#master-content").height() < 600){
-                    $(".tab-content-2").height($("#master-content").height()-100);
-                    $(".tab-content-5").height($("#master-content").height()-100);
-                    $(".tab-content-7").height($("#master-content").height()-100);
-                    $(".tab-content-8").height($("#master-content").height()-100);
-                    $(".tab-content-9").height($("#master-content").height()-100);
-                    $(".tab-content-12").height($("#master-content").height()-100);
-                    $(".tab-content-13").height($("#master-content").height()-100);
-                } 
-                if($("#master-content").height() > 600 && $("#master-content").height() < 700){
-                    $(".tab-content-2").height($("#master-content").height()-160);
-                    $(".tab-content-7").height($("#master-content").height()-100);
-                }
-            }
+
             initDataA4(allData: any): void {
                 let self = this;
                 // init data A4
