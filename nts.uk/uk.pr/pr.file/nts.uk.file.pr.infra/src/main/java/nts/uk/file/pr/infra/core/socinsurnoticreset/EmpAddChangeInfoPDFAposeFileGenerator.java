@@ -42,6 +42,8 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
            AsposeCellsReportContext reportContext2 = this.createContext(TEMPLATE_FILE_2);
            Workbook workbook2 = reportContext2.getWorkbook();
            WorksheetCollection worksheets2 = workbook2.getWorksheets();
+
+           worksheets.add("INH").copy(worksheets2.get(0));
            reportContext2.processDesigner();
            String sheetName1 = "INS";
            String sheetName2 = "INH";
@@ -58,15 +60,15 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
                    this.pushDataCommon(worksheets, empAddChangeInfoExport, data.getBaseDate(), sheetName1 + i);
                }
 
-              /* if(empAddChangeInfoExport.getSpouseAddChangeDate() != null && empAddChangeInfoExport.isEmpPenInsurance()){
+               if(empAddChangeInfoExport.getSpouseAddChangeDate() != null && empAddChangeInfoExport.isEmpPenInsurance()){
                    //条件を満たす対象者のデータをもとに「国民年金第３号被保険者住所変更届」を印刷する
-                   worksheets.get(worksheets2.addCopy(0)).setName(sheetName2 + i);
+                   worksheets.get(worksheets.addCopy(1)).setName(sheetName2 + i);
                    this.pushDataCommon(worksheets, empAddChangeInfoExport, data.getBaseDate(), sheetName2 + i);
-               }*/
+               }
            }
 
+           worksheets.removeAt(1);
            worksheets.removeAt(0);
-           //worksheets2.removeAt(0);
            reportContext.saveAsExcel(this.createNewFile(fileContext,
                    FILE_NAME + ".xlsx"));
        }catch (Exception e){
@@ -90,15 +92,10 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
     }
 
     public static String cutSpace(String name, int ps) {
-        if(name == null) return "";
-        String[] list = name.split(" ");
-        StringBuffer st = new StringBuffer("");
-        if (list.length == 0) return "";
-        for (int i = 0; i < list.length; i++) {
-            if(ps-1 == i) {
-                return st.append(list[i]).toString();
-            }
-        }
+        if (name == null || name.length() == 0) return "";
+        String[] list = name.split(" ", 2);
+        if(ps == 1) return list[0];
+        if(ps >= 2) return list[1];
         return "";
     }
 
@@ -108,17 +105,23 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
     }
 
     private void fillEraItem(WorksheetCollection worksheets, String sheetName, GeneralDate date, String op1, String op2, String op3){
-        JapaneseDate dateJP = this.toJapaneseDate(date);
-        if (SHOWA.equals(dateJP.era())){
-            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(op2));
-            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(op3));
-        } else if (HEISEI.equals(dateJP.era())){
-            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(op1));
-            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(op3));
-        } else if (PEACE.equals(dateJP.era())){
-            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(op1));
-            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(op2));
-        }
+       if(date!= null) {
+           JapaneseDate dateJP = this.toJapaneseDate(date);
+           if (SHOWA.equals(dateJP.era())){
+               worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(op2));
+               worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(op3));
+           } else if (HEISEI.equals(dateJP.era())){
+               worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(op1));
+               worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(op3));
+           } else if (PEACE.equals(dateJP.era())){
+               worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(op1));
+               worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(op2));
+           }
+       } else {
+           worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(op2));
+           worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(op1));
+           worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(op3));
+       }
     }
 
     private void pushBusCode(WorksheetCollection worksheet,
@@ -216,7 +219,7 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
             RomajiNameNotiCreSetPDFAposeFileGenerator.selectShapes(worksheet, empAddChangeInfoExport.getLivingAbroadAtr() , i, "A4_113" );
             RomajiNameNotiCreSetPDFAposeFileGenerator.selectShapes(worksheet, empAddChangeInfoExport.getOtherAtr() , i, "A4_114" );
 
-            worksheet.get(i).getTextBoxes().get("A1_15").setText(Objects.toString(
+            worksheet.get(i).getTextBoxes().get("A1_15").setText(Objects.toString(empAddChangeInfoExport.getOtherAtr()!= null &&
                     empAddChangeInfoExport.getOtherAtr() == 1 && empAddChangeInfoExport.getOtherReason() != null ? empAddChangeInfoExport.getOtherReason(): ""));
 
             this.fillEraItem(worksheet, i, empAddChangeInfoExport.getBirthDatePs(), "A1_51", "A1_52","A1_53");
@@ -261,7 +264,7 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
             RomajiNameNotiCreSetPDFAposeFileGenerator.selectShapes(worksheet, empAddChangeInfoExport.getSpouseLivingAbroadAtr() , i, "A4_223" );
             RomajiNameNotiCreSetPDFAposeFileGenerator.selectShapes(worksheet, empAddChangeInfoExport.getSpouseOtherAtr() , i, "A4_224" );
 
-            worksheet.get(i).getTextBoxes().get("A2_19").setText(Objects.toString(
+            worksheet.get(i).getTextBoxes().get("A2_19").setText(Objects.toString(empAddChangeInfoExport.getSpouseOtherAtr() != null &&
                     empAddChangeInfoExport.getSpouseOtherAtr() == 1 && empAddChangeInfoExport.getSpouseOtherReason() != null ? empAddChangeInfoExport.getSpouseOtherReason(): ""));
 
             RomajiNameNotiCreSetPDFAposeFileGenerator.selectShapes(worksheet, empAddChangeInfoExport.isInsuredLivingTogether() ? 1 : 0, i, "A4_1111" );

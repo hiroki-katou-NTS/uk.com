@@ -79,35 +79,23 @@ public class CurrentPersonResidence {
      */
     private GeneralDate birthDate;
 
-    /**
-     * 住所1
-     */
-    private String beforeAddress1;
-
-    /**
-     * 住所1
-     */
-    private String beforeAddress2;
-
 
     public static List<CurrentPersonResidence> createListPerson(List<String> empIds) {
         List<CurrentPersonResidence> currentPersonResidenceList = new ArrayList<>();
         empIds.forEach(i->{
             CurrentPersonResidence c = new CurrentPersonResidence(
                      i,
-                    "1234567",
-                    "address1Kana",
-                    "address2Kana",
-                    "address1",
-                    "address2",
+                    "1230012",
+                    "トウキョウト",
+                    "トウキョウクトウキョウ1-1-1",
+                    "東京都",
+                    "東京区東京1-1-1",
                      GeneralDate.fromString("1992/10/01","yyyy/MM/dd" ),
                     "person NameKana",
                     "person Name",
                     "todokede NameKana",
                     "todokede Name",
-                     GeneralDate.fromString("2018/10/10","yyyy/MM/dd" ),
-                    "beforeAddress1",
-                    "beforeAddress2");
+                     GeneralDate.fromString("2019/01/01","yyyy/MM/dd" ));
             currentPersonResidenceList.add(c);
         });
         return currentPersonResidenceList;
