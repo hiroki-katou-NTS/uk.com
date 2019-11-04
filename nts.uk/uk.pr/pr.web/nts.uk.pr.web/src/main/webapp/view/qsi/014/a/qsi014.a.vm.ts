@@ -53,8 +53,20 @@ module nts.uk.pr.view.qsi014.a.viewmodel {
             outputFormat: 0,
             lineFeedCode: 0
         }));
+
+        getProgramName(){
+            var namePath = nts.uk.text.format("sys/portal/standardmenu/findProgramName/{0}/{1}", "QSI014", "A");
+            nts.uk.request.ajax("com", namePath).done((value) => {
+                if(!nts.uk.util.isNullOrEmpty(value)){
+                    $("#pg-name").text(value);
+                }else{
+                    $("#pg-name").text('');
+                }
+            });
+        }
         constructor() {
             let self = this;
+            self.getProgramName();
             self.startDate.subscribe((data) =>{
                 if(nts.uk.util.isNullOrEmpty(data)){
                     return;

@@ -155,7 +155,6 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
                           EmpAddChangeInfoExport empAddChangeInfoExport,
                           GeneralDate baseDate,
                           String i){
-        try {
             //A1_1
             this.fillByCell(worksheet , i,"A1_1_1", empAddChangeInfoExport.getBasicPenNumber(),0 );
             this.fillByCell(worksheet , i,"A1_1_2", empAddChangeInfoExport.getBasicPenNumber(),1 );
@@ -230,7 +229,7 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
             this.fillByCell(worksheet , i,"A1_54_5", empAddChangeInfoExport.getBirthDatePs().toString(TYPE_DATE),4 );
             this.fillByCell(worksheet , i,"A1_54_6", empAddChangeInfoExport.getBirthDatePs().toString(TYPE_DATE),5 );
 
-            this.fillEraItem(worksheet, i, empAddChangeInfoExport.getBirthDatePs(), "A2_3", "A2_4","A2_41");
+            this.fillEraItem(worksheet, i, empAddChangeInfoExport.getBirthDateF(), "A2_3", "A2_4","A2_41");
             this.fillByCell(worksheet , i,"A2_5_1", empAddChangeInfoExport.getBirthDateF().toString(TYPE_DATE),0 );
             this.fillByCell(worksheet , i,"A2_5_2", empAddChangeInfoExport.getBirthDateF().toString(TYPE_DATE),1 );
             this.fillByCell(worksheet , i,"A2_5_3", empAddChangeInfoExport.getBirthDateF().toString(TYPE_DATE),2 );
@@ -279,8 +278,5 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
             worksheet.getRangeByName(i + "!A3_4").setValue(Objects.toString(empAddChangeInfoExport.getReferenceName(), ""));
             worksheet.getRangeByName(i + "!A3_5").setValue(Objects.toString(RomajiNameNotiCreSetPDFAposeFileGenerator.formatPhone( empAddChangeInfoExport.getPhoneNumber(), 1) + "(" + RomajiNameNotiCreSetPDFAposeFileGenerator.formatPhone( empAddChangeInfoExport.getPhoneNumber().toString(), 2) +")" + RomajiNameNotiCreSetPDFAposeFileGenerator.formatPhone( empAddChangeInfoExport.getPhoneNumber().toString(), 3), ""));
 
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
     }
 }
