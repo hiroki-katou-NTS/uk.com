@@ -116,6 +116,7 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 		this.getEntityManager().flush();
 	}
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<BreakTimeOfDailyPerformance> findByKey(String employeeId, GeneralDate ymd) {
 		List<KrcdtDaiBreakTime> krcdtDaiBreakTimes = findEntities(employeeId, ymd);
@@ -285,6 +286,7 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 		// this.getEntityManager().flush();
 	}
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<BreakTimeOfDailyPerformance> finds(List<String> employeeId, DatePeriod ymd) {
 		List<BreakTimeOfDailyPerformance> result = new ArrayList<>();
@@ -364,6 +366,7 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 		this.getEntityManager().flush();
 	}
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<BreakTimeOfDailyPerformance> finds(Map<String, List<GeneralDate>> param) {
 		List<BreakTimeOfDailyPerformance> result = new ArrayList<>();

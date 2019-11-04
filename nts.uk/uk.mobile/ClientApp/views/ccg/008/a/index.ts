@@ -1,6 +1,6 @@
 import { Vue, _, moment } from '@app/provider';
 import { component, Watch } from '@app/core/component';
-import { BaseDto, ServerAlertDto, DisplayNotifiDto, AgreementTimeDetail, TimeStatus, DisplayItemType, WidgetDisplayItemType, TimeDto, DateInfoDto, OvertimeLaborInforDto } from './ccgs08Model';
+import { BaseDto, ServerAlertDto, DisplayNotifiDto, AgreementTimeDetail, TimeStatus, DisplayItemType, WidgetDisplayItemType, OverTimeInfo } from './ccgs08Model';
 import { Ccg008BComponent } from '../b';
 import { TableComponent } from './components/table/';
 
@@ -8,6 +8,7 @@ const servicePath = {
     getAllStartUpData: 'screen/at/mobile/ccgs08/',
     getDisplayNotify: 'screen/at/mobile/ccgs08/displaynotif',
     getOverTimeList: 'screen/at/mobile/ccgs08/overtime/',
+    getOvertimeToppage: 'screen/at/mobile/ccgs08/overtime/toppage',
     getKtg029:'screen/at/mobile/ccgs08/ktg029',
     getTopAlert: 'ctx/sys/gateway/stopsetting/find/',
     getVisibleConfig:'screen/at/mobile/ccgs08/visibleConfig'
@@ -45,6 +46,10 @@ export class Ccg008AComponent extends Vue {
     public displayNotifis: Array<BaseDto> = [];
     public overtime: AgreementTimeDetail = new AgreementTimeDetail();
     public timeStatus: TimeStatus = new TimeStatus();
+    public showFull: boolean = false;
+    public normalAgreementLst: Array<any> = [];
+    public fullAgreementLst: Array<any> = [];
+    public agreementButton: boolean = false;
     
     public model = {
         date: moment(new Date()).format('YYYYMM')
@@ -58,11 +63,20 @@ export class Ccg008AComponent extends Vue {
         self.loadOverTimeInfo();
     }
 
-    public openModal() {
-        this.$modal('ccgs08b', {})
-        .then((v: any) => {
-           // TODO: implement later
-        });
+    public openModal(title: any) {
+        let self = this;
+        switch (title) {
+            case 'CCGS08_11': 
+                self.$goto('cmms45b'); 
+                
+                return;
+            case 'CCGS08_14': 
+                self.$goto('kdws03a'); 
+                
+                return;
+            default: 
+                return;
+        }
     }
 
     public created() {
@@ -101,7 +115,7 @@ export class Ccg008AComponent extends Vue {
             self.$http.post('at', servicePath.getKtg029).then((res: any) => {
                 let data = res.data;
                 if (data && data.data && data.visible) {
-                    let displayItems = convertToDisplayItem(data.data);
+                    let displayItems = self.convertToDisplayItem(data.data);
                     self.timeStatus.visible = displayItems && displayItems.length > 0;
                     self.timeStatus.tableConfigs.items = displayItems;
                 }
@@ -116,12 +130,14 @@ export class Ccg008AComponent extends Vue {
         let self = this;
         if (self.overtime.visible) {
             self.overtime.tableConfigs.loading = true;
-            self.$http.post('at', servicePath.getOverTimeList + self.model.date).then((res: any) => {
+            self.$http.post('at', servicePath.getOvertimeToppage).then((res: any) => {
                 let data = res.data;
-                if (data && data.data && data.visible) {
-                    let ot = data.data;
-                    if (ot.overtimeHours && ot.overtimeHours.overtimeLaborInfor) {
-                        self.overtime.tableConfigs.items = convertToOverTimeItem(ot.overtimeHours.overtimeLaborInfor);
+                if (data && data.visible) {
+                    self.normalAgreementLst = self.createNormalList(data.agreementTimeToppageLst, data.yearMonth);
+                    self.fullAgreementLst = self.createFullList(data.agreementTimeToppageLst);
+                    self.overtime.tableConfigs.items = self.normalAgreementLst;
+                    if (data.dataStatus == 0) {
+                        self.agreementButton = true;
                     }
                 }
                 self.overtime.tableConfigs.loading = false;
@@ -158,61 +174,106 @@ export class Ccg008AComponent extends Vue {
         }
     }
 
-}
-
-function convertToDisplayItem(item: WidgetDisplayItemType): Array<DisplayItemType> {
-    let results = [];
-
-    // yearlyHoliday
-    let yearlyHld = item.yearlyHoliday;
-    if (yearlyHld && !yearlyHld.calculationMethod) {
-        results.push({
-            name:'KTG029_23', 
-            value: yearlyHld.nextTimeInfo.day, 
-            prefix: 'KTG029_60',
-        }); 
-    }
-    if (item.reservedYearsRemainNo) {
-        results.push({name:'積立年休残数', value: item.reservedYearsRemainNo.before, prefix: 'KTG029_60'});
-    }
-    //setRemainAlternationNoDay
-    if (item.remainAlternationNoDay || item.remainAlternationNoDay === 0) {
-        results.push({name:'代休残数', value: item.remainAlternationNoDay, prefix: 'KTG029_60'});
-    }
-  
-    if (item.remainsLeft || item.remainsLeft === 0) {
-        results.push({name:'振休残数', value: item.remainsLeft, prefix: 'KTG029_60'});
-    }
-    
-    // sphdramainNo
-    if (item.sphdramainNo && item.sphdramainNo.length > 0) {
-        results.push({name:'KTG029_31', value:''});
-        _.forEach(item.sphdramainNo, function(sphd) {
-            results.push({name: sphd.name, value: sphd.before, prefix: 'KTG029_60', sub: true});
-        });
-    }
-    
-    return results;
-}
-
-function convertToOverTimeItem(overtimes: Array<OvertimeLaborInforDto>): Array<any> {
-    let otDatas = [];
-    if (overtimes && overtimes.length > 0) {
-        let currentOTInfoCfm = overtimes[0].confirmed;
-        let status = currentOTInfoCfm.status;
-        let icon = '';
-        if (status === 4) {
-            icon = '<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>';
-        } else if (status === 3) {
-            icon = '<i class="fa fa-exclamation-circle" aria-hidden="true"></i>';
+    public reverseShowAgreement() {
+        let self = this;
+        self.showFull = !self.showFull;
+        if (self.showFull) {
+            self.overtime.tableConfigs.items = self.fullAgreementLst;
+        } else {
+            self.overtime.tableConfigs.items = self.normalAgreementLst;
         }
-        otDatas.push({
-            time1: currentOTInfoCfm.exceptionLimitErrorTime,
-            time2: currentOTInfoCfm.agreementTime,
-            time3: icon,
-            _rowClass: 'overtime-status-' + status
-        });
     }
 
-    return otDatas;
+    public convertToDisplayItem(item: WidgetDisplayItemType): Array<DisplayItemType> {
+        let results = [];
+    
+        // yearlyHoliday
+        let yearlyHld = item.yearlyHoliday;
+        if (yearlyHld && !yearlyHld.calculationMethod) {
+            results.push({
+                name:'KTG029_23', 
+                value: yearlyHld.nextTimeInfo.day, 
+                prefix: 'KTG029_60',
+            }); 
+        }
+        if (item.reservedYearsRemainNo) {
+            results.push({name:'積立年休残数', value: item.reservedYearsRemainNo.before, prefix: 'KTG029_60'});
+        }
+        //setRemainAlternationNoDay
+        if (item.remainAlternationNoDay || item.remainAlternationNoDay === 0) {
+            results.push({name:'代休残数', value: item.remainAlternationNoDay, prefix: 'KTG029_60'});
+        }
+      
+        if (item.remainsLeft || item.remainsLeft === 0) {
+            results.push({name:'振休残数', value: item.remainsLeft, prefix: 'KTG029_60'});
+        }
+        
+        // sphdramainNo
+        if (item.sphdramainNo && item.sphdramainNo.length > 0) {
+            results.push({name:'KTG029_31', value:''});
+            _.forEach(item.sphdramainNo, function(sphd) {
+                results.push({name: sphd.name, value: sphd.before, prefix: 'KTG029_60', sub: true});
+            });
+        }
+        
+        return results;
+    }
+
+    public createNormalList(overtimes: Array<any>, currentYearMonth: any): Array<any> {
+        let normalAgreementLst: Array<any> = [];
+        if (overtimes && overtimes.length > 0) {
+            let currentAgreement = _.find(overtimes, (o) => o.yearMonth == currentYearMonth);
+            let status = currentAgreement.agreementTimeOfMonthlyDto.status;
+            let icon = '';
+            if (status === 4) {
+                icon = '<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>';
+            } else if (status === 3) {
+                icon = '<i class="fa fa-exclamation-circle" aria-hidden="true"></i>';
+            } else {
+                icon = '<i class="fa fa-exclamation-circle invisible"></i>';
+            }
+            let timeLimit = _.isNull(currentAgreement.agreementTimeOfMonthlyDto.exceptionLimitErrorTime) 
+                            ? currentAgreement.agreementTimeOfMonthlyDto.limitErrorTime
+                            : currentAgreement.agreementTimeOfMonthlyDto.exceptionLimitErrorTime;
+            normalAgreementLst.push({
+                month: moment(currentAgreement.yearMonth,'YYYYMM').format('YYYY/MM'),
+                time1: timeLimit,
+                time2: currentAgreement.agreementTimeOfMonthlyDto.agreementTime,
+                time3: icon,
+                _rowClass: 'overtime-status-' + status
+            });
+        }
+        
+        return normalAgreementLst;
+    }
+
+    public createFullList(overtimes: Array<any>): Array<any> {
+        let fullAgreementLst: Array<any> = [];
+        if (overtimes && overtimes.length > 0) {
+            _.forEach(overtimes, (overtime: any) => {
+                let statusLoop = overtime.agreementTimeOfMonthlyDto.status;
+                let iconLoop = '';
+                if (statusLoop === 4) {
+                    iconLoop = '<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>';
+                } else if (statusLoop === 3) {
+                    iconLoop = '<i class="fa fa-exclamation-circle" aria-hidden="true"></i>';
+                } else {
+                    iconLoop = '<i class="fa fa-exclamation-circle invisible"></i>';
+                }
+                let timeLimit = _.isNull(overtime.agreementTimeOfMonthlyDto.exceptionLimitErrorTime) 
+                            ? overtime.agreementTimeOfMonthlyDto.limitErrorTime
+                            : overtime.agreementTimeOfMonthlyDto.exceptionLimitErrorTime;
+                fullAgreementLst.push({
+                    month: moment(overtime.yearMonth,'YYYYMM').format('YYYY/MM'),
+                    time1: timeLimit,
+                    time2: overtime.agreementTimeOfMonthlyDto.agreementTime,
+                    time3: iconLoop,
+                    _rowClass: 'overtime-status-' + statusLoop
+                });    
+            });
+        }
+    
+        return fullAgreementLst;
+    }
+
 }

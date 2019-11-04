@@ -44,11 +44,12 @@
           </div>
           <!-- InputStringCode && ButtonDialog -->
           <div class="col-9 pl-0 pr-0" v-if="getItemType(key)==itemType.InputStringCode || getItemType(key)==itemType.ButtonDialog">
-            <template v-if="getItemMasterType(key)==masterType.KDLS02_WorkType ||
-                            getItemMasterType(key)==masterType.KDLS01_WorkTime || getItemMasterType(key)==masterType.CDLS08_WorkPlace">
+            <template v-if="isAvaiableDialog(key)">
               <div class="row">
                 <div class="w-100">
-                  <div class="col-9 d-inline-block align-middle"><h5 class="mb-0"><span class="badge badge-secondary">{{ getItemDialogName(key) }}</span></h5></div>
+                  <div class="col-9 d-inline-block align-middle">
+                    <h5 class="mb-0"><span class="badge w-100 text-truncate text-left">{{ getItemDialogName(key) }}</span></h5>
+                  </div>
                   <div class="d-inline-block">
                     <button type="button" class="btn btn-secondary" v-bind:disabled="getItemLock(key)" v-on:click="openDialog(key)">{{'KDWS03_71' | i18n}}</button>
                   </div>

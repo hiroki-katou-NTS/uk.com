@@ -1,6 +1,7 @@
 package nts.uk.screen.at.app.ktgwidget.find.dto;
 
 import lombok.Value;
+import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfMonthly;
 
 @Value
 
@@ -11,12 +12,12 @@ public class AgreementTimeOfMonthlyDto {
 	/** 限度アラーム時間 */
 	private int limitAlarmTime;
 	/** 特例限度エラー時間 */
-	private int exceptionLimitErrorTime;
+	private Integer exceptionLimitErrorTime;
 	/** 特例限度アラーム時間 */
-	private int exceptionLimitAlarmTime;
+	private Integer exceptionLimitAlarmTime;
 	/** 状態 */
 	private int status;
-	public AgreementTimeOfMonthlyDto(int agreementTime, int limitErrorTime, int limitAlarmTime, int exceptionLimitErrorTime, int exceptionLimitAlarmTime, int status) {
+	public AgreementTimeOfMonthlyDto(int agreementTime, int limitErrorTime, int limitAlarmTime, Integer exceptionLimitErrorTime, Integer exceptionLimitAlarmTime, int status) {
 		super();
 		this.agreementTime = agreementTime;
 		this.limitErrorTime = limitErrorTime;
@@ -25,5 +26,15 @@ public class AgreementTimeOfMonthlyDto {
 		this.exceptionLimitAlarmTime = exceptionLimitAlarmTime;
 		this.status = status;
 	}
+	
+	public static AgreementTimeOfMonthlyDto fromAgreementTimeOfMonthly(AgreementTimeOfMonthly agreementTimeOfMonthly) {
+		return new AgreementTimeOfMonthlyDto(
+				agreementTimeOfMonthly.getAgreementTime().v(), 
+				agreementTimeOfMonthly.getLimitErrorTime().v(), 
+				agreementTimeOfMonthly.getLimitAlarmTime().v(), 
+				agreementTimeOfMonthly.getExceptionLimitErrorTime().map(x -> x.v()).orElse(null), 
+				agreementTimeOfMonthly.getExceptionLimitAlarmTime().map(x -> x.v()).orElse(null), 
+				agreementTimeOfMonthly.getStatus().value);
+	}  
 
 }

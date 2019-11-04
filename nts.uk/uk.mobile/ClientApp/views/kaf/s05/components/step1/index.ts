@@ -95,6 +95,22 @@ export class KafS05aStep1Component extends Vue {
         _.map(restTime, (x) => { x.startTime = x.restTimeInput.start; x.endTime = x.restTimeInput.end; });
     }
 
+    @Watch('kafs05ModelStep1.workTimeInput', { deep: true })
+    public changeTimeInput(workTimeInput: any) {
+        let self = this;
+
+        self.$http.post('at', servicePath.getByChangeTime, {
+            workTypeCD: self.kafs05ModelStep1.workTypeCd,
+            workTimeCD: self.kafs05ModelStep1.siftCD,
+            startTime: workTimeInput.start,
+            endTime: workTimeInput.end
+        }).then((result: { data: any }) => {
+            // 休憩時間
+            self.setTimeZones(result.data);
+            self.kafs05ModelStep1.resetTimeRange++;
+        });
+    }
+
     public mounted() {
         let self = this;
         
@@ -596,7 +612,7 @@ export class KafS05aStep1Component extends Vue {
                                 itemName: 'KAF005_85',
                                 color: '',
                                 preAppExceedState: false,
-                                actualExceedState: false,
+                                actualExceedState: 0,
                             });
                         }
                         if (data.overTimeInputs[i].attendanceID == 2) {
@@ -615,7 +631,7 @@ export class KafS05aStep1Component extends Vue {
                                 itemName: '',
                                 color: '',
                                 preAppExceedState: false,
-                                actualExceedState: false,
+                                actualExceedState: 0,
                             });
                         }
                         if (data.overTimeInputs[i].attendanceID == 3) {
@@ -634,7 +650,7 @@ export class KafS05aStep1Component extends Vue {
                                 itemName: '',
                                 color: '',
                                 preAppExceedState: false,
-                                actualExceedState: false,
+                                actualExceedState: 0,
                             });
                         }
                     }
@@ -656,7 +672,7 @@ export class KafS05aStep1Component extends Vue {
                         itemName: 'KAF005_85',
                         color: '',
                         preAppExceedState: false,
-                        actualExceedState: false,
+                        actualExceedState: 0,
                     });
                 }
 
@@ -676,7 +692,7 @@ export class KafS05aStep1Component extends Vue {
                         itemName: 'KAF005_85',
                         color: '',
                         preAppExceedState: false,
-                        actualExceedState: false,
+                        actualExceedState: 0,
                     });
                 }
             } else {
@@ -710,7 +726,7 @@ export class KafS05aStep1Component extends Vue {
                                 itemName: 'KAF005_85',
                                 color,
                                 preAppExceedState: false,
-                                actualExceedState: false,
+                                actualExceedState: 0,
                             });
                         }
                     } else if (item.frameNo == 12) {
@@ -730,7 +746,7 @@ export class KafS05aStep1Component extends Vue {
                                 itemName: 'KAF005_85',
                                 color,
                                 preAppExceedState: false,
-                                actualExceedState: false,
+                                actualExceedState: 0,
                             });
                         }
                     } else {
@@ -749,7 +765,7 @@ export class KafS05aStep1Component extends Vue {
                             itemName: 'KAF005_85',
                             color,
                             preAppExceedState: false,
-                            actualExceedState: false,
+                            actualExceedState: 0,
                         });
                     }
 
@@ -770,7 +786,7 @@ export class KafS05aStep1Component extends Vue {
                         itemName: '',
                         color: '',
                         preAppExceedState: false,
-                        actualExceedState: false,
+                        actualExceedState: 0,
                     });
                 });
             }
@@ -1000,7 +1016,7 @@ export class KafS05aStep1Component extends Vue {
                         itemName: '',
                         color: '',
                         preAppExceedState: false,
-                        actualExceedState: false,
+                        actualExceedState: 0,
                     });
                 }
                 if (data.overTimeInputs[i].attendanceID == 2) {
@@ -1019,7 +1035,7 @@ export class KafS05aStep1Component extends Vue {
                         itemName: '',
                         color: '',
                         preAppExceedState: false,
-                        actualExceedState: false,
+                        actualExceedState: 0,
                     });
                 }
                 if (data.overTimeInputs[i].attendanceID == 3) {
@@ -1038,7 +1054,7 @@ export class KafS05aStep1Component extends Vue {
                         itemName: '',
                         color: '',
                         preAppExceedState: false,
-                        actualExceedState: false,
+                        actualExceedState: 0,
                     });
                 }
             }
@@ -1262,4 +1278,5 @@ const servicePath = {
     getAppDataDate: 'at/request/application/getAppDataByDate',
     findByAppID: 'at/request/application/overtime/findByAppID',
     getDetailCheck: 'at/request/application/getdetailcheck',
+    getByChangeTime: 'at/request/application/overtime/getByChangeTime'
 };
