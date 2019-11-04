@@ -113,7 +113,7 @@ export interface OvertimeCaculation {
     itemName: string;
     color: string;
     preAppExceedState: boolean;
-    actualExceedState: boolean;
+    actualExceedState: number;
 }
 
 export enum AgreementTimeStatusOfMonthly {

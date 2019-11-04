@@ -42,6 +42,9 @@
           </div>
       </li>
     </ul>
+    <div v-if="displayA512 == 1" class="py-3" v-html="getHtmlNone()"></div>
+    <div v-if="displayA512 == 2" class="uk-text-red py-3" v-html="getHtmlAll()"></div>
+    <div style="height: 50px"></div>
     <!-- A4_1: To Top -->
     <to-top />
   </div>

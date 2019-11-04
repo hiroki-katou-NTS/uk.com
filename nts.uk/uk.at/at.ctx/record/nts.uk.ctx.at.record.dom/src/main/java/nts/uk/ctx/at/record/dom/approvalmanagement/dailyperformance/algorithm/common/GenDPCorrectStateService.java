@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.YearMonth;
@@ -22,6 +24,7 @@ public class GenDPCorrectStateService {
 	@Inject
 	private GetSpecifyPeriod getSpecifyPeriod;
 	
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public Optional<DPCorrectStateParam> genStateParamClosureId(DPCorrectStateParam param, ClosureId closureId, YearMonth yearMonth) {
 		DPCorrectStateParam result = param;
 		// パラメータ「対象締め」をセットする

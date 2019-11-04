@@ -116,7 +116,7 @@ import { Kafs05Model } from '../common/CommonClass';
         },
         hasInputOverTime: {
             test(value: boolean) {
-                return value ? '' : 'MsgB_30';
+                return value ? '' : 'Msg_1562';
             },
         }
 
@@ -169,7 +169,7 @@ export class KafS05aStep2Component extends Vue {
             if (overtimeHour.preAppExceedState) {
                 this.hasPreAppError = true;
             }
-            if (overtimeHour.actualExceedState) {
+            if (overtimeHour.actualExceedState != 0) {
                 this.hasActualError = true;
             }
         });
@@ -322,7 +322,7 @@ export class KafS05aStep2Component extends Vue {
                 if (overtimeHour.preAppExceedState) {
                     self2.hasPreAppError = true;
                 }
-                if (overtimeHour.actualExceedState) {
+                if (overtimeHour.actualExceedState != 0) {
                     self2.hasActualError = true;
                 }
             });

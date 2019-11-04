@@ -443,7 +443,7 @@ module kcp.share.tree {
 //                { headerText: "", key: 'id', dataType: "string", hidden: true },
             //end
                 {
-                    headerText: nts.uk.resource.getText("KCP004_5"), key: 'nodeText', width: 250, dataType: "string",
+                    headerText: nts.uk.resource.getText("KCP004_5"), key: 'nodeText', width: 325, dataType: "string",
                     template: "<td class='tree-component-node-text-col'>${nodeText}</td>"
                 }
             ];
@@ -1241,20 +1241,21 @@ var TREE_COMPONENT_HTML = `<style type="text/css">
         <!-- ko if: !isDialog -->
             <i class="icon icon-searchbox"></i>
         <!-- /ko -->
-        <div data-bind="visible: !isMultipleUse">
+       <div style ="width: 430px; height: 40px" data-bind="visible: !isMultipleUse">
+        <div data-bind="visible: !isMultipleUse" style= "float: left">
             <div data-bind="ntsFormLabel: {}">`+TreeComponentTextResource.KCP004_2+`</div>
             <div class="base-date-editor" id="work-place-base-date"
-                style="margin-left: 17px; margin-right: 5px;"
+                style="margin-left: -9px; margin-right: 5px;"
                 data-bind="attr: {tabindex: tabindex},
                 ntsDatePicker: {dateFormat: 'YYYY/MM/DD', value: baseDate, name:'#[KCP004_2]', required: true}"></div>
             <button
                 data-bind="click: reload, attr: {tabindex: tabindex}"
-                style="width: 100px">`+TreeComponentTextResource.KCP004_3+`</button>
+                style="min-width: 65px">`+TreeComponentTextResource.KCP004_3+`</button>
         </div>
         <div style="margin-top: 10px; margin-bottom: 10px;">
-            <div data-bind="ntsFormLabel: {}" style="float: left;">`+TreeComponentTextResource.KCP004_4+`</div>
+            <div data-bind="ntsFormLabel: {}" style="margin-left: 10px; float: left">`+TreeComponentTextResource.KCP004_4+`</div>
             <div id="combo-box-tree-component"
-                style="width: 107px; margin-left: 35px;"
+                style="width: 60px; margin-left: 5px; float: left"
                 data-bind="attr: {tabindex: tabindex}, ntsComboBox: {
                     options: levelList,
                     optionsValue: 'level',
@@ -1266,16 +1267,31 @@ var TREE_COMPONENT_HTML = `<style type="text/css">
                         { prop: 'name', length: 4 },
                     ]}"></div>
         </div>
-
-        <div style="width: 420px">
-            <div style="width: 327px; display: inline-block;" data-bind="attr: {id: searchBoxId, tabindex: tabindex}">
+        </div>
+        <div style="width: 420px; margin-top:10px ">
+            <div style="display: inline-block; float: left" data-bind="attr: {id: searchBoxId, tabindex: tabindex}, style: { width : !isMultipleUse ? '327px' : '268px'}">
             </div>
-            <div style="display: inline-block; margin-left: 2px;">
+            <div style="display: inline-block; margin-left: 2px; float: left">
                 <!-- ko if: isShowSelectButton -->
                     <button
                         data-bind="click: selectSubParent, attr: {tabindex: tabindex}">`+TreeComponentTextResource.KCP004_8+`</button>
                 <!-- /ko -->
             </div>
+            <div style="margin-top: 10px; margin-bottom: 10px;" data-bind="visible: isMultipleUse">
+                        <div data-bind="ntsFormLabel: {}" style="margin-left: 10px; float: left">`+TreeComponentTextResource.KCP004_4+`</div>
+                        <div id="combo-box-tree-component"
+                            style="width: 60px; margin-left: 5px; float: left"
+                            data-bind="attr: {tabindex: tabindex}, ntsComboBox: {
+                                options: levelList,
+                                optionsValue: 'level',
+                                value: levelSelected,
+                                optionsText: 'name',
+                                editable: false,
+                                enable: true,
+                                columns: [
+                                    { prop: 'name', length: 4 },
+                                ]}"></div>
+             </div>
         </div>
         <div class="cf"></div>
         <!-- ko if: !isMultiSelect -->
