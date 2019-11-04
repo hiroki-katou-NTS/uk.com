@@ -3,7 +3,8 @@
 .contents {
 	margin-top: 20px;
 	margin-left: 20px;
-	margin-bottom: 20px;
+	height: calc(100vh - 161px);
+	overflow: auto;
 }
 
 .monthlyPatternContents {
@@ -13,4 +14,5 @@
 
 .monthlyPatternDetail {
 	margin-left: 50px;
+	margin-bottom: 20px;
 }
