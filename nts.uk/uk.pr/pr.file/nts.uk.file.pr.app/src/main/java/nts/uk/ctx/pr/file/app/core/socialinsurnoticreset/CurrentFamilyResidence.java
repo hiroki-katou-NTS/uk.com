@@ -6,6 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  家族現住所
  家族現同居住所
@@ -18,7 +21,6 @@ import nts.arc.time.GeneralDate;
  */
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
 public class CurrentFamilyResidence {
 
@@ -88,29 +90,37 @@ public class CurrentFamilyResidence {
 
     private boolean isLivingTogetherBefore;
 
-    public CurrentFamilyResidence(String postCode, String address1Kana, String address2Kana, String address1, String address2, GeneralDate baseDate, boolean isLivingTogether, String postCodeTogether, String address1KanaTogether, String address2KanaTogether, String address1Together, String address2Together, String add1BeforeChange, String add2BeforeChange, String add1BeforeChangeTogether, String add2BeforeChangeTogether, GeneralDate birthDate, String nameKana, String name, String reportNameKana, String reportName, GeneralDate startDate, boolean isLivingTogetherBefore) {
-        this.postCode = postCode;
-        this.address1Kana = address1Kana;
-        this.address2Kana = address2Kana;
-        this.address1 = address1;
-        this.address2 = address2;
-        this.baseDate = baseDate;
-        this.isLivingTogether = isLivingTogether;
-        this.postCodeTogether = postCodeTogether;
-        this.address1KanaTogether = address1KanaTogether;
-        this.address2KanaTogether = address2KanaTogether;
-        this.address1Together = address1Together;
-        this.address2Together = address2Together;
-        this.add1BeforeChange = add1BeforeChange;
-        this.add2BeforeChange = add2BeforeChange;
-        this.add1BeforeChangeTogether = add1BeforeChangeTogether;
-        this.add2BeforeChangeTogether = add2BeforeChangeTogether;
-        this.birthDate = birthDate;
-        this.nameKana = nameKana;
-        this.name = name;
-        this.reportNameKana = reportNameKana;
-        this.reportName = reportName;
-        this.startDate = startDate;
-        this.isLivingTogetherBefore = isLivingTogetherBefore;
+    public CurrentFamilyResidence() {
+        this.familyId = 11;
+        this.postCode = "9876446";
+        this.address1Kana = "address1Kana";
+        this.address2Kana = "address2Kana";
+        this.address1 = "address1";
+        this.address2 = "address2";
+        this.baseDate = GeneralDate.fromString("2018/10/10","yyyy/MM/dd" );
+        this.isLivingTogether = true;
+        this.postCodeTogether = "7654323";
+        this.address1KanaTogether = "address1KanaTogether";
+        this.address2KanaTogether = "address2KanaTogether";
+        this.address1Together = "address1Together";
+        this.address2Together = "address2Together";
+        this.add1BeforeChange = "add1BeforeChange";
+        this.add2BeforeChange = "add2BeforeChange";
+        this.add1BeforeChangeTogether = "add1BeforeChangeTogether";
+        this.add2BeforeChangeTogether = "add2BeforeChangeTogether";
+        this.birthDate = GeneralDate.fromString("1996/10/10","yyyy/MM/dd" );
+        this.nameKana = "name Kana";
+        this.name = "name name1";
+        this.reportNameKana = "report NameKana";
+        this.reportName = "report Name";
+        this.startDate = GeneralDate.fromString("2018/10/10","yyyy/MM/dd" );
+        this.isLivingTogetherBefore = true;
     }
+
+    public static List<CurrentFamilyResidence> getListFamily(){
+        List<CurrentFamilyResidence> list = new ArrayList<>();
+        list.add(new CurrentFamilyResidence());
+        return list;
+    }
+
 }

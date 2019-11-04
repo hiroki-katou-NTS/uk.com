@@ -217,49 +217,6 @@ public class JpaEmpAddChangeInfoFileGenerator extends JpaRepository implements E
     }
 
     @Override
-    public List<EmpAddChangeInfoExport> getListPerson(List<String> empIds, String cid) {
-        try {
-            List<Object[]> resultQuery = null;
-            StringBuilder exportSQL = new StringBuilder();
-            exportSQL.append("SELECT");
-            exportSQL.append("	SID,");
-            exportSQL.append("	CID,");
-            exportSQL.append("	PID,");
-            exportSQL.append("	FAMILY_ID ");
-            exportSQL.append("FROM");
-            exportSQL.append("	BSYMT_EMP_DTA_MNG_INFO B");
-            exportSQL.append("	INNER JOIN BPSMT_FAMILY F ON B.PID = F.PERSON_ID  ");
-            exportSQL.append("WHERE");
-            exportSQL.append("	CID = ?cid");
-            exportSQL.append("	AND SID IN ( '%s' )");
-            String emp = empIds.stream()
-                    .map(String::valueOf)
-                    .collect(Collectors.joining("','"));
-            String sql = String.format(exportSQL.toString(), emp);
-            try {
-                resultQuery = this.getEntityManager().createNativeQuery(sql)
-                        .setParameter("cid", cid)
-                        .getResultList();
-            } catch (NoResultException e) {
-                return Collections.emptyList();
-            }
-            return resultQuery.stream().map(i -> EmpAddChangeInfoExport.builder()
-                    .empId(i[0] == null ? "" : i[0].toString())
-                    .companyId(i[1] == null ? "" : i[1].toString())
-                    .personId(i[2] == null ? "" : i[2].toString())
-                    .familyId(i[3] == null ? null : Integer.parseInt(i[3].toString()))
-                    .healthInsurance(false)
-                    .empPenInsurance(false)
-                    .personAddChangeDate(null)
-                    .spouseAddChangeDate(null)
-                    .build()
-            ).collect(Collectors.toList());
-        } catch (Exception e) {
-            return Collections.emptyList();
-        }
-    }
-
-    @Override
     public List<HealInsurPortPerIntellInfo> getHealInsurPortPerIntellInfo(List<String> empIds, String cid) {
         try {
             List<Object[]> resultQuery = null;
