@@ -23,7 +23,7 @@
 
 .contentB {
 	margin-left: 85px;
-	margin-top: 50px;
+	margin-top: 20px;
 }
 
 .contentC {
@@ -160,7 +160,7 @@ button.nts-switch-button {
 }
 
 .nts-wizard{
-	overflow: auto;
+	overflow: hidden;
 }
 
 .nts-wizard.vertical>.steps {
