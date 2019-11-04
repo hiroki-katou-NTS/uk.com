@@ -7,5 +7,5 @@ import java.util.List;
 * 雇用保険番号情報
 */
 public interface EmpInsNumInfoRepository{
-
+    Optional<EmpInsNumInfo> getEmpInsNumInfoById(String cid, String sid,String hisId);
 }
