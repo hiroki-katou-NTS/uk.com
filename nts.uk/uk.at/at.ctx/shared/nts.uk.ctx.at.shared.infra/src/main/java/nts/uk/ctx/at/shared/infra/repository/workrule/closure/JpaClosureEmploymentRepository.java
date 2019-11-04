@@ -90,6 +90,7 @@ public class JpaClosureEmploymentRepository extends JpaRepository implements Clo
 	/**
 	 * get list by list employmentCD for KIF 001
 	 */
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<ClosureEmployment> findListEmployment(String companyId,
 			List<String> employmentCDs) {
@@ -119,6 +120,7 @@ public class JpaClosureEmploymentRepository extends JpaRepository implements Clo
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository#findByClosureId(java.lang.String, int)
 	 */
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<ClosureEmployment> findByClosureId(String companyId, int closureId) {
 		// Get entity manager

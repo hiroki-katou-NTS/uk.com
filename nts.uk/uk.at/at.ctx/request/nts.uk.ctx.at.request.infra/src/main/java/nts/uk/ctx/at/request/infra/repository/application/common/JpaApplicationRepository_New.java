@@ -2,11 +2,14 @@ package nts.uk.ctx.at.request.infra.repository.application.common;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -300,6 +303,8 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<Application_New> getApplicationBySIDs(List<String> employeeID, GeneralDate startDate,
 			GeneralDate endDate) {
@@ -598,4 +603,30 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 		});
 		return resultListTmp;
 	}
+	@Override
+	@SneakyThrows
+	public Map<String, Integer> getParamCMMS45(String companyId, String configName, List<String> subName) {
+		String lstsubName= "";
+		for (int i = 0; i < subName.size(); i++) {
+			lstsubName += "'" + subName.get(i) + "'";
+			if (i != (subName.size() - 1)) {
+				lstsubName += ",";
+			}
+		}
+		String sql = "SELECT * FROM CISCT_SYSTEM_CONFIG_K "
+				+ "WHERE CID = 'companyId' "
+				+ "AND CONFIG_NAME = 'configName' "
+				+ "AND SUB_NAME IN (lstsubName)";
+		sql = sql.replaceAll("companyId", companyId);
+		sql = sql.replaceAll("configName", configName);
+		sql = sql.replaceAll("lstsubName", lstsubName);
+		Map<String, Integer> mapResult = new HashMap<>();
+		try (PreparedStatement pstatement = this.connection().prepareStatement(sql)) {
+			ResultSet rs = pstatement.executeQuery();
+			while (rs.next()) {
+				mapResult.put(rs.getString("SUB_NAME"), Integer.valueOf(rs.getString("CONFIG_VALUE")));
+			}
+		}
+		return mapResult;
+	}	
 }

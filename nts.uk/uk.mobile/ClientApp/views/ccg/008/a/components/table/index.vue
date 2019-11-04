@@ -27,7 +27,7 @@
         </tr>
       </thead>
       <!-- with header -->
-      <tbody v-if="configs.headers">
+      <tbody v-if="configs.headers" class="tbody-border">
         <tr
           v-for="(item, index) in configs.items"
           :class="item._rowClass ? item._rowClass : configs.rowClass"
@@ -60,12 +60,14 @@
           </td>
         </tr>
       </tbody>
-      <tbody v-if="!configs.items || (configs.items && configs.items.length === 0)">
+      <tbody v-if="!configs.items || (configs.items && configs.items.length === 0)" class="border-0">
         <tr>
-          <td :colspan="configs.headers ? configs.headers.length : 1" class="uk-text-danger">
-            <span
-              class="error-message uk-text-danger"
-            >{{configs.noDataMessage ? configs.noDataMessage : '表示するデータがありません'}}</span>
+          <td :colspan="configs.headers ? configs.headers.length : 1" class="uk-text-danger border-0">
+            <div class="text-wrap text-left">
+              <span
+                class="error-message uk-text-danger text-break"
+              >{{configs.noDataMessage ? configs.noDataMessage : '表示するデータがありません'}}</span>
+            </div>
           </td>
         </tr>
       </tbody>

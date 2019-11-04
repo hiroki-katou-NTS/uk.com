@@ -201,7 +201,10 @@ export class Kdws03AComponent extends Vue {
                 styleTableBody[0].style.height = this.rownum * this.rowHeight + 'px';
             } else {
                 styleTableBody[0].style.height = this.rownum * this.rowHeight + 6 + 'px';
-            }           
+            }
+            if (this.displayDataLst.length <= this.rownum) {
+                styleTableBody[0].style.overflow = 'hidden';
+            }    
         }
     }
 

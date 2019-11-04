@@ -6,6 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  個人現住所
  個人前住所
@@ -19,61 +22,82 @@ import nts.arc.time.GeneralDate;
 @AllArgsConstructor
 public class CurrentPersonResidence {
 
+    private String empId;
 
-    private String personId;
-
-    /** 郵便番号*/
+    /**
+     * 郵便番号
+     */
     private String postCode;
 
-    /** 住所1カナ*/
+    /**
+     * 住所1カナ
+     */
     private String address1Kana;
 
-    /**住所2カナ */
+    /**
+     * 住所2カナ
+     */
     private String address2Kana;
 
-    /**住所1 */
+    /**
+     * 住所1
+     */
     private String address1;
 
-    /**住所2 */
+    /**
+     * 住所2
+     */
     private String address2;
 
-    /** 開始日 */
+    /**
+     * 開始日
+     */
     private GeneralDate startDate;
 
-    /**個人名*/
+    /**
+     * 個人名
+     */
     private String personNameKana;
 
-    /**個人名*/
+    /**
+     * 個人名
+     */
     private String personName;
 
-    /**個人届出名称*/
+    /**
+     * 個人届出名称
+     */
     private String todokedeNameKana;
 
-    /**個人届出名称*/
+    /**
+     * 個人届出名称
+     */
     private String todokedeName;
 
-    /**生年月日*/
+    /**
+     * 生年月日
+     */
     private GeneralDate birthDate;
 
-    /**住所1*/
-    private String beforeAddress1;
 
-    /**住所1*/
-    private String beforeAddress2;
-
-    public CurrentPersonResidence(String postCode, String address1Kana, String address2Kana, String address1, String address2, GeneralDate startDate, String personNameKana, String personName, String todokedeNameKana, String todokedeName, GeneralDate birthDate, String beforeAddress1, String beforeAddress2) {
-        this.postCode = postCode;
-        this.address1Kana = address1Kana;
-        this.address2Kana = address2Kana;
-        this.address1 = address1;
-        this.address2 = address2;
-        this.startDate = startDate;
-        this.personNameKana = personNameKana;
-        this.personName = personName;
-        this.todokedeNameKana = todokedeNameKana;
-        this.todokedeName = todokedeName;
-        this.birthDate = birthDate;
-        this.beforeAddress1 = beforeAddress1;
-        this.beforeAddress2 = beforeAddress2;
+    public static List<CurrentPersonResidence> createListPerson(List<String> empIds) {
+        List<CurrentPersonResidence> currentPersonResidenceList = new ArrayList<>();
+        empIds.forEach(i->{
+            CurrentPersonResidence c = new CurrentPersonResidence(
+                     i,
+                    "1230012",
+                    "トウキョウト",
+                    "トウキョウクトウキョウ1-1-1",
+                    "東京都",
+                    "東京区東京1-1-1",
+                     GeneralDate.fromString("1992/10/01","yyyy/MM/dd" ),
+                    "person NameKana",
+                    "person Name",
+                    "todokede NameKana",
+                    "todokede Name",
+                     GeneralDate.fromString("2019/01/01","yyyy/MM/dd" ));
+            currentPersonResidenceList.add(c);
+        });
+        return currentPersonResidenceList;
     }
 }

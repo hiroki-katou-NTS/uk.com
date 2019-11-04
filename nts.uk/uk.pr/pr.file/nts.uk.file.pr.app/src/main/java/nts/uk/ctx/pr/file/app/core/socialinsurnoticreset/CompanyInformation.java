@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @Builder
-@NoArgsConstructor
 
 /**
  会社情報
@@ -31,5 +30,12 @@ public class CompanyInformation {
 
     private String add2;
 
-
+    public CompanyInformation(){
+        this.companyId = "11111";
+        this.companyName = "companyName";
+        this.companyNameReference = "companyNameReference";
+        this.phoneNumber = "09827344";
+        this.add1 = "add1";
+        this.add2 = "add2";
+    }
 }

@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
@@ -30,6 +32,7 @@ public class OptionalItemPubImp implements OptionalItemPub {
 	 * @see optitem.OptionalItemPub#getOptionalItems(java.lang.String,
 	 * java.util.List)
 	 */
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<OptionalItemExport> getOptionalItems(String companyId, List<Integer> optionalItemNos) {
 		return this.optItemRepo.findByListNos(companyId, optionalItemNos).stream()

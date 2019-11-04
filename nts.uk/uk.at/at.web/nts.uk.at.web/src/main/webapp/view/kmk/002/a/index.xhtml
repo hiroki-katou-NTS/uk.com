@@ -34,7 +34,6 @@
                   <div class="opt-item-grid-list pull-left caret-right caret-background bg-green fixed-flex-layout-left">
                      <i class="icon icon-searchbox"></i>
                      <div tabindex="1" data-bind="ntsSearchBox: {
-                        label: nts.uk.resource.getText('KMK002_2'),
                         targetKey: 'itemNo',
                         mode:'igGrid',
                         comId:'tbl-master-list',
@@ -45,7 +44,7 @@
                      <table tabindex="1" id="tbl-master-list"
                         data-bind="ntsGridList: {
                         name: '#[KMK002_6]',
-                        width: 300,
+                        width: 380,
                         dataSource: optionalItemHeaders,
                         optionsValue: 'itemNo',
                         columns: columns,

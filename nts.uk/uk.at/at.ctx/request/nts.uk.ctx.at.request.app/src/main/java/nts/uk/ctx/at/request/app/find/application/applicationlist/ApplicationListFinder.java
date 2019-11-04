@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.app.find.application.applicationlist;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +14,7 @@ import javax.inject.Inject;
 import nts.arc.i18n.I18NText;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.AppListExtractCondition;
@@ -45,14 +47,32 @@ public class ApplicationListFinder {
 	private RequestSettingRepository repoRequestSet;
 	@Inject
 	private AppDispNameRepository repoAppDispName;
+	@Inject
+	private ApplicationRepository_New repoApplication;
 	private static final int MOBILE = 1; 
 	
 	public ApplicationListDto getAppList(AppListParamFilter param){
 		AppListExtractConditionDto condition = param.getCondition();
 		int device = param.getDevice();
+		String companyId = AppContexts.user().companyId();
+		Integer appAllNumber = null;
+		Integer appPerNumber = null;
+		if(device == MOBILE){
+			//・設定の名前：SMART_PHONE
+			//・機能の名前：APP_ALL_NUMBER、APP_PER_NUMBER
+			String[] subName = {"APP_ALL_NUMBER","APP_PER_NUMBER"};
+			Map<String, Integer> mapParam = repoApplication.getParamCMMS45(companyId, "SMART_PHONE", Arrays.asList(subName));
+			if(mapParam.isEmpty()){
+				mapParam = repoApplication.getParamCMMS45(AppContexts.user().contractCode()+ "-0000", "SMART_PHONE", Arrays.asList(subName));
+			}
+			if(!mapParam.isEmpty()){
+				appAllNumber = mapParam.get("APP_ALL_NUMBER");
+				appPerNumber = mapParam.get("APP_PER_NUMBER");
+			}
+		}
+
 		//対象申請種類List
 		List<Integer> lstType = param.getLstAppType();
-		String companyId = AppContexts.user().companyId();
 		//ドメインモデル「承認一覧表示設定」を取得する-(Lấy domain Approval List display Setting)
 		Optional<RequestSetting> requestSet = repoRequestSet.findByCompany(companyId);
 		ApprovalListDisplaySetting appDisplaySet = null;
@@ -117,8 +137,9 @@ public class ApplicationListFinder {
 			}
 		}
 		Collections.sort(lstAppData.getDataMaster().getLstSCD());
-		return new ApplicationListDto(isDisPreP, condition.getStartDate(), condition.getEndDate(), lstAppData.getDataMaster().getLstAppMasterInfo(),
-				lstAppCommon, lstAppData.getAppStatusCount(), lstAgent, lstAppType, lstAppData.getLstContentApp(), lstSyncData, lstAppData.getDataMaster().getLstSCD());
+		return new ApplicationListDto(isDisPreP, condition.getStartDate(), condition.getEndDate(),
+				lstAppData.getDataMaster().getLstAppMasterInfo(), lstAppCommon, lstAppData.getAppStatusCount(), lstAgent, lstAppType,
+				lstAppData.getLstContentApp(), lstSyncData, lstAppData.getDataMaster().getLstSCD(), appAllNumber, appPerNumber);
 	}
 	
 	/**

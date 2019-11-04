@@ -218,7 +218,7 @@ public class CheckFileFinder {
 		
 		if (!employeeIds.isEmpty()) {
 			// 社員リストを参照範囲で絞り込む - RequestList539 (RequestList338)
-			Optional<NarrowEmpByReferenceRange> narrow = this.employeePub.findByEmpId(employeeIds, 8);
+			Optional<NarrowEmpByReferenceRange> narrow = this.employeePub.findByEmpId(employeeIds, 8, GeneralDate.today());
 			// 受入する社員が存在する（ログイン者が操作できる社員として存在する）かチェックする
 			if (narrow.isPresent()) {
 				if (CollectionUtil.isEmpty(narrow.get().getEmployeeID())) {

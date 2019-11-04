@@ -8,6 +8,5 @@ public interface EmpAddChangeInfoExReposity {
     List<EmpWelfarePenInsQualiInfo> getEmpWelfarePenInsQualiInfoList(List<String> empIds, String cid);
     List<EmpCorpOffHisInfo> getEmpCorpOffHisInfo(List<String> empIds, String cid);
     List<EmPensionFundPartiPeriodInfo> getEmPensionFundPartiPeriodInfo(List<String> empIds, String cid);
-    List<EmpAddChangeInfoExport> getListPerson(List<String> empIds, String cid);
     List<HealInsurPortPerIntellInfo> getHealInsurPortPerIntellInfo(List<String> empIds, String cid);
 }

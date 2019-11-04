@@ -1,5 +1,7 @@
 package nts.uk.ctx.pr.report.dom.printconfig.empinsreportsetting;
 
+import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.EmpAddChangeInfo;
+
 import java.util.Optional;
 import java.util.List;
 
@@ -9,5 +11,6 @@ import java.util.List;
 public interface EmpInsReportSettingRepository {
 
     Optional<EmpInsReportSetting> getEmpInsReportSettingById(String cid, String userId);
+    void update(EmpInsReportSetting domain);
 
 }

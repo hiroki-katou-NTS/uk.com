@@ -1,15 +1,15 @@
 #left-content {
 	margin-left: 15px;
-	margin-top: 30px;
+	margin-top: 20px;
 	float: left;
-	min-height: 600px;
+	min-height: 400px;
 }
 
 #right-content {
 	margin-left: 50px;
-	margin-top: 50px;
+	/* margin-top: 50px; */
 	float: left;
-	min-height: 600px;
+	min-height: 400px;
 }
 
 .table_content td {
@@ -22,4 +22,8 @@
 
 .history-button {
 	margin-bottom: 10px;
+}
+
+#list-box {
+    margin-top: -20px;
 }
