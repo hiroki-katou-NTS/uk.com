@@ -120,15 +120,15 @@ public class DataBeforeReflectingPerInfo extends AggregateRoot {
 	public String select_name_09;
 	public String select_name_10;
 
-	public String str_01; // retirementRemarks - 退職の備考
-	public String str_02; // retirementReasonVal - 自己都合退職の手続き
-	public String str_03; // reaAndProForDis - 解雇の事由・手続き
-	public String str_04; // naturalUnaReasons_1Val - 解雇の理由1_文字列
-	public String str_05; // naturalUnaReasons_2Val - 解雇の理由2_文字列
-	public String str_06; // naturalUnaReasons_3Val - 解雇の理由3_文字列
-	public String str_07; // naturalUnaReasons_4Val - 解雇の理由4_文字列
-	public String str_08; // naturalUnaReasons_5Val - 解雇の理由5_文字列
-	public String str_09; // naturalUnaReasons_6Val - 解雇の理由6_文字列
+	public NoteRetiment str_01; // retirementRemarks - 退職の備考
+	public NoteRetiment str_02; // retirementReasonVal - 自己都合退職の手続き
+	public NoteRetiment str_03; // reaAndProForDis - 解雇の事由・手続き
+	public NoteRetiment str_04; // naturalUnaReasons_1Val - 解雇の理由1_文字列
+	public NoteRetiment str_05; // naturalUnaReasons_2Val - 解雇の理由2_文字列
+	public NoteRetiment str_06; // naturalUnaReasons_3Val - 解雇の理由3_文字列
+	public NoteRetiment str_07; // naturalUnaReasons_4Val - 解雇の理由4_文字列
+	public NoteRetiment str_08; // naturalUnaReasons_5Val - 解雇の理由5_文字列
+	public NoteRetiment str_09; // naturalUnaReasons_6Val - 解雇の理由6_文字列
 	public String str_10;
 
 	public DataBeforeReflectingPerInfo(String historyId, String contractCode, String companyId, String companyCode,
@@ -249,15 +249,15 @@ public class DataBeforeReflectingPerInfo extends AggregateRoot {
 		this.select_name_08 = select_name_08;
 		this.select_name_09 = select_name_09;
 		this.select_name_10 = select_name_10;
-		this.str_01 = str_01;
-		this.str_02 = str_02;
-		this.str_03 = str_03;
-		this.str_04 = str_04;
-		this.str_05 = str_05;
-		this.str_06 = str_06;
-		this.str_07 = str_07;
-		this.str_08 = str_08;
-		this.str_09 = str_09;
+		this.str_01 = new NoteRetiment(str_01);
+		this.str_02 = new NoteRetiment(str_02);
+		this.str_03 = new NoteRetiment(str_03);
+		this.str_04 = new NoteRetiment(str_04);
+		this.str_05 = new NoteRetiment(str_05);
+		this.str_06 = new NoteRetiment(str_06);
+		this.str_07 = new NoteRetiment(str_07);
+		this.str_08 = new NoteRetiment(str_08);
+		this.str_09 = new NoteRetiment(str_09);
 		this.str_10 = str_10;
 	}
 

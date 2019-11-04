@@ -435,7 +435,7 @@ module jcm007.a {
                 self.preCheckAndRegisterNewEmp(command);
                 
             } else if (self.selectedTab() == 'tab-2' && itemSelectedTab2 != null 
-                       && itemSelectedTab2.notificationCategory == "" 
+                       && itemSelectedTab2.notificationCategory == "有" 
                        && itemSelectedTab2.status == self.status_Unregistered) {
                         // 3.届出承認済みの退職者を新規登録する 
                         //(Đăng ký mới người nghỉ hưu đã phê duyệt đơn/notification)
@@ -446,7 +446,7 @@ module jcm007.a {
                 command.scd = itemSelectedTab2.scd;
                 command.employeeName = itemSelectedTab2.employeeName;
                 command.status = 1;
-                self.preCheckAndUpdateEmp(command);
+                self.preCheckAndRegisterNewEmpApproved(command);
 
             } else if (self.selectedTab() == 'tab-2' && itemSelectedTab2 != null 
                        && itemSelectedTab2.status != self.status_Unregistered) {
@@ -501,7 +501,65 @@ module jcm007.a {
             });
         }
         
-        //3 届出承認済みの退職者を新規登録する (Đăng ký một nhân viên mới đã được phê duyệt)
+        // 3.届出承認済みの退職者を新規登録する (Đăng ký mới người nghỉ hưu đã phê duyệt đơn/notification)
+        preCheckAndRegisterNewEmpApproved(command : any) {
+            let self = this;
+            block.grayout();
+            service.preCheck(command).done(() => {
+                block.clear();
+                console.log('PRECHECK DONE!!');
+                // アルゴリズム[警告チェック]を実行する(Thực hiện thuật toán [Warning check] )
+                if (command.selectedCode_Retiment == 3) {
+                    // アルゴリズム[警告チェック]を実行する(Thực hiện thuật toán [Warning check] )  
+                    let retirementDate = moment.utc(self.currentEmployee().retirementDate(), DateFormat.DEFAULT_FORMAT);
+                    let dismissalNoticeDate = moment.utc(self.currentEmployee().dismissalNoticeDate(), DateFormat.DEFAULT_FORMAT);
+                    let dayDifference = retirementDate.diff(dismissalNoticeDate, 'days');
+                    if (self.currentEmployee().dismissalNoticeDateAllow()) {
+                        if (dayDifference > 30) {
+                            nts.uk.ui.dialog.confirm({ messageId: "MsgJ_JCM007_9" }).ifYes(() => {
+                                this.registerNewEmpApproved(command);
+                            }).ifNo(() => {});
+                        }
+                    } else {
+                        if (dayDifference < 30) {
+                            nts.uk.ui.dialog.confirm({ messageId: "MsgJ_JCM007_8" }).ifYes(() => {
+                                this.registerNewEmpApproved(command);
+                            }).ifNo(() => {});
+                        }
+                    }
+                } else {
+                    this.registerNewEmpApproved(command);
+                }
+            }).fail((mes) => {
+                self.enable_disableInput(true);
+                block.clear();
+                nts.uk.ui.dialog.bundledErrors(mes);
+            });
+        }
+        
+        registerNewEmpApproved(command : any){
+             let self = this;
+            let dfd = $.Deferred<any>();
+            block.grayout();
+            service.updateRetireeInformation(command).done(() => {
+                console.log('UPDATE DONE!!');
+                self.start(command.historyId).done(() => {
+                    self.enable_btnRegister(true);
+                    self.enable_btnRemove(true);
+                    
+                });
+                block.clear();
+                dialog.info({ messageId: "Msg_15" });
+                dfd.resolve();
+            }).fail((mes) => {
+                console.log('UPDATE FAIL!!');
+                block.clear();
+                dfd.reject();
+            });
+            return dfd.promise();
+        }
+        
+        // 4.退職者情報を修正する(Sửa thông tin người nghỉ hưu)
         preCheckAndUpdateEmp(command : any) {
             let self = this;
             block.grayout();

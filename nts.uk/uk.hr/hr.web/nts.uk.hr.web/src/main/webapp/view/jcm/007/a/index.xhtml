@@ -7,6 +7,9 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+					nts.uk.ctx.hr.develop.dom.databeforereflecting.NoteRetiment
+			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="jcm007.a.style.css" />
 			<com:scriptfile path="jcm007.a.start.js" />
@@ -97,7 +100,7 @@
 								<div data-bind="ntsFormLabel: { required: true, constraint: ''}">#{i18n.getText('JCM007_A222_11')} </div>
 							</div>
 							<!-- A222_12 -->					
-							<div id = "retirementDateId" tabindex="5" style="margin-left: 56px" data-bind="ntsDatePicker: {value: retirementDate , dateFormat: 'YYYY/MM/DD', required : true , enable : enable_retirementDate }"></div>					
+							<div id = "retirementDateId" tabindex="5" style="margin-left: 56px" data-bind="ntsDatePicker: {value: retirementDate , dateFormat: 'YYYY/MM/DD', required : true , enable : enable_retirementDate , name: '#[JCM007_A222_12]' }"></div>					
 						</div>
 					
 						<div class="line-height flex">  <!-- row 6 -->
@@ -106,7 +109,7 @@
 								<div  data-bind="ntsFormLabel: { required: true, constraint: ''}">#{i18n.getText('JCM007_A222_13')} </div>
 							</div>
 							<!-- A222_14 -->					
-							<div id = "releaseDateId" tabindex="6" style="margin-left: 56px" data-bind="ntsDatePicker: {value: releaseDate , dateFormat: 'YYYY/MM/DD', required : true , enable : enable_releaseDate }"></div>					
+							<div id = "releaseDateId" tabindex="6" style="margin-left: 56px" data-bind="ntsDatePicker: {value: releaseDate , dateFormat: 'YYYY/MM/DD', required : true , enable : enable_releaseDate, name: '#[JCM007_A222_14]' }"></div>					
 						</div>
 					
 						<div class="line-height flex">  <!-- row 7 -->
@@ -118,6 +121,7 @@
 							<div tabindex="7"  style="width: 108px; margin-left: 42px" id="combo-box-rom"
 									 data-bind="ntsComboBox: {
 												options: listRetirementCtg ,
+												name: '#[JCM007_A222_16]' ,
 												optionsValue: 'value',
 												value: selectedCode_Retiment ,
 												optionsText: 'text',
@@ -137,13 +141,14 @@
 							<div tabindex="8" id = "selectedCode_Reason1Id"  style="width: 170px" 
 									 data-bind="ntsComboBox: {
 												options: listRetirementReason1 ,
+												name: '#[JCM007_A222_20]' ,
 												optionsValue: 'value',
 												value: selectedCode_Reason1 ,
 												optionsText: 'text',
 												enable : enable_listRetirementReason1 ,
 												editable: false ,
 												selectFirstIfNull: false ,
-												required: false ,
+												required: true ,
 												columns: [
 													{ prop: 'text', length: 15 }
 												]}"></div>					
@@ -158,17 +163,18 @@
 							<div tabindex="9" id = "selectedCode_Reason2Id" style="width: 170px" 
 									 data-bind="ntsComboBox: {
 												options: listRetirementReason2 ,
+												name: '#[JCM007_A222_23]' ,
 												optionsValue: 'value',
 												value: selectedCode_Reason2 ,
 												optionsText: 'text',
 												enable : enable_listRetirementReason2 ,
 												editable: false,
 												selectFirstIfNull: false ,
-												required: false ,
+												required: true ,
 												columns: [
 													{ prop: 'text', length: 15 }
 												]}"></div>
-							<button style="margin-left: 10px" data-bind="ntsHelpButton: {textId: 'JCM007_A222_22_1', textParams:[], position: 'right center' }">？</button>										
+							<button style="margin-left: 10px" data-bind="ntsHelpButton: {textId: 'JCM007_A222_22_1', textParams:[], position: 'bottom center' }">？</button>										
 						</div>
 					
 						<div class="line-height flex">  <!-- row 10 -->
@@ -181,7 +187,8 @@
 							<div style="margin-left: 86px">
 								<textarea tabindex="10" data-bind="ntsMultilineEditor: {
 									value: retirementRemarks ,
-									constraint: '',
+									constraint: 'NoteRetiment',
+									name: '#[JCM007_A222_26]' ,
 									option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
 										resizeable: false,
 										width: '325px',
@@ -210,7 +217,8 @@
 								<div style="margin-left: 19px">
 									<textarea tabindex="11" data-bind="ntsMultilineEditor: {
 														value: retirementReasonVal ,
-														constraint: '',
+														constraint: 'NoteRetiment',
+														name: '#[JCM007_A222_31]' ,
 														option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
 											                resizeable: false,
 											                width: '325px',
@@ -238,7 +246,7 @@
 									<div data-bind="ntsFormLabel: { required: true, constraint: ''}"> #{i18n.getText('JCM007_A222_34')} </div>
 								</div>
 								<!-- A222_35 -->					
-								<div tabindex="12" id = "dismissalNoticeDateId" style="margin-left: 27px;" data-bind="ntsDatePicker: {value: dismissalNoticeDate , dateFormat: 'YYYY/MM/DD', required : true , enable : enable_dismissalNoticeDate }"></div>					
+								<div tabindex="12" id = "dismissalNoticeDateId" style="margin-left: 27px;" data-bind="ntsDatePicker: {value: dismissalNoticeDate , dateFormat: 'YYYY/MM/DD', required : true , enable : enable_dismissalNoticeDate , name: '#[JCM007_A222_35]'  }"></div>					
 							</div>
 							
 							<div class="line-height flex">  <!-- row 16 -->
@@ -247,8 +255,8 @@
 									<div data-bind="ntsFormLabel: { required: false , constraint: ''}"> #{i18n.getText('JCM007_A222_36')}</div>
 								</div>
 								<!-- A222_37 -->					
-								<div tabindex="13" style="margin-left: 27px;" data-bind="ntsDatePicker: {value: dismissalNoticeDateAllow , dateFormat: 'YYYY/MM/DD', enable : enable_dismissalNoticeDateAllow }"></div>					
-								<button style="margin-left: 10px" data-bind="ntsHelpButton: {textId: 'JCM007_A222_36_1', textParams:[], position: 'right center' }">？</button>										
+								<div tabindex="13" style="margin-left: 27px;" data-bind="ntsDatePicker: {value: dismissalNoticeDateAllow , dateFormat: 'YYYY/MM/DD', enable : enable_dismissalNoticeDateAllow , name: '#[JCM007_A222_37]' }"></div>					
+								<button style="margin-left: 10px" data-bind="ntsHelpButton: {textId: 'JCM007_A222_36_1', textParams:[], position: 'bottom center' }">？</button>										
 							</div>
 							
 							<div class="line-height flex"> <!-- row 17 -->
@@ -260,7 +268,8 @@
 								<div style="margin-left: 40px;">
 									<textarea tabindex="14" data-bind="ntsMultilineEditor: {
 														value: reaAndProForDis ,
-														constraint: '',
+														constraint: 'NoteRetiment',
+														name: '#[JCM007_A222_39]' ,
 														option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
 											                resizeable: false,
 											                width: '325px',
@@ -288,7 +297,8 @@
 									<textarea tabindex="16" id = 'naturalUnaReasons_1Val' 
 										data-bind="ntsMultilineEditor: {
 														value: naturalUnaReasons_1Val ,
-														constraint: '',
+														constraint: 'NoteRetiment',
+														name: '#[JCM007_A222_42]' ,
 														option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
 											                resizeable: false,
 											                width: '270px',
@@ -309,7 +319,8 @@
 									<textarea tabindex="18" id = 'businessReduction_2Val' 
 										data-bind="ntsMultilineEditor: {
 														value: businessReduction_2Val ,
-														constraint: '',
+														constraint: 'NoteRetiment',
+														name: '#[JCM007_A222_44]' ,
 														option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
 											                resizeable: false,
 											                width: '270px',
@@ -330,7 +341,8 @@
 									<textarea tabindex="20" id = 'seriousViolationsOrder_3Val' 
 										data-bind="ntsMultilineEditor: {
 														value: seriousViolationsOrder_3Val ,
-														constraint: '',
+														constraint: 'NoteRetiment',
+														name: '#[JCM007_A222_46]' ,
 														option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
 											                resizeable: false,
 											                width: '270px',
@@ -351,7 +363,8 @@
 									<textarea tabindex="22" id = 'unauthorizedConduct_4Val' 
 										data-bind="ntsMultilineEditor: {
 														value: unauthorizedConduct_4Val ,
-														constraint: '',
+														constraint: 'NoteRetiment',
+														name: '#[JCM007_A222_48]' ,
 														option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
 											                resizeable: false,
 											                width: '270px',
@@ -372,7 +385,8 @@
 									<textarea tabindex="24" id = 'leaveConsiderableTime_5Val' 
 										data-bind="ntsMultilineEditor: {
 														value: leaveConsiderableTime_5Val ,
-														constraint: '',
+														constraint: 'NoteRetiment',
+														name: '#[JCM007_A222_50]' ,
 														option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
 											                resizeable: false,
 											                width: '270px',
@@ -393,7 +407,8 @@
 									<textarea tabindex="26"  id = 'other_6Val'
 										data-bind="ntsMultilineEditor: {
 														value: other_6Val ,
-														constraint: '',
+														constraint: 'NoteRetiment',
+														name: '#[JCM007_A222_52]' ,
 														option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
 											                resizeable: false,
 											                width: '270px',

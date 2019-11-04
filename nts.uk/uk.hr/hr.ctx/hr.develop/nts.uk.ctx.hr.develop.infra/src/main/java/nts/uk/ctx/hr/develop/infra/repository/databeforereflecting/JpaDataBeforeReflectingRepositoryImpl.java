@@ -194,11 +194,11 @@ public class JpaDataBeforeReflectingRepositoryImpl extends JpaRepository impleme
 		entity.select_name_01 = domain.select_name_01; // retirementReasonCtgName1
 		entity.select_name_02 = domain.select_name_02; // retirementReasonCtgName2
 		entity.select_name_03 = domain.select_name_03; // retirementReasonCtgName2
-		entity.str_01 = domain.str_01; // retirementRemarks
-		entity.str_02 = domain.str_02; // retirementReasonVal
+		entity.str_01 = domain.str_01 == null ? null : domain.str_01.toString(); // retirementRemarks
+		entity.str_02 = domain.str_02 == null ? null : domain.str_02.toString(); // retirementReasonVal
 		entity.date_02 = domain.date_02; // dismissalNoticeDate
 		entity.date_03 = domain.date_03; // dismissalNoticeDateAllow
-		entity.str_03 = domain.str_03;  // reaAndProForDis
+		entity.str_03 = domain.str_03 == null ? null : domain.str_03.toString();  // reaAndProForDis
 		
 		entity.int_01 = domain.int_01;
 		entity.int_02 = domain.int_02;
@@ -206,12 +206,12 @@ public class JpaDataBeforeReflectingRepositoryImpl extends JpaRepository impleme
 		entity.int_04 = domain.int_04;
 		entity.int_05 = domain.int_05;
 		entity.int_06 = domain.int_06;
-		entity.str_04 = domain.str_04;
-		entity.str_05 = domain.str_05;
-		entity.str_06 = domain.str_06;
-		entity.str_07 = domain.str_07;
-		entity.str_08 = domain.str_08;
-		entity.str_09 = domain.str_09;
+		entity.str_04 = domain.str_04 == null ? null : domain.str_04.toString();
+		entity.str_05 = domain.str_05 == null ? null : domain.str_05.toString();
+		entity.str_06 = domain.str_06 == null ? null : domain.str_06.toString();
+		entity.str_07 = domain.str_07 == null ? null : domain.str_07.toString();
+		entity.str_08 = domain.str_08 == null ? null : domain.str_08.toString();
+		entity.str_09 = domain.str_09 == null ? null : domain.str_09.toString();
 	}
 
 	private PreReflecData toEntity(DataBeforeReflectingPerInfo domain, PreReflecData entity) {
@@ -313,15 +313,15 @@ public class JpaDataBeforeReflectingRepositoryImpl extends JpaRepository impleme
 		entity.select_name_08 = domain.select_name_08;
 		entity.select_name_09 = domain.select_name_09;
 		entity.select_name_10 = domain.select_name_10;
-		entity.str_01 = domain.str_01;
-		entity.str_02 = domain.str_02;
-		entity.str_03 = domain.str_03;
-		entity.str_04 = domain.str_04;
-		entity.str_05 = domain.str_05;
-		entity.str_06 = domain.str_06;
-		entity.str_07 = domain.str_07;
-		entity.str_08 = domain.str_08;
-		entity.str_09 = domain.str_09;
+		entity.str_01 = domain.str_01 == null ? null : domain.str_01.toString();
+		entity.str_02 = domain.str_02 == null ? null : domain.str_02.toString();
+		entity.str_03 = domain.str_03 == null ? null : domain.str_03.toString();
+		entity.str_04 = domain.str_04 == null ? null : domain.str_04.toString();
+		entity.str_05 = domain.str_05 == null ? null : domain.str_05.toString();
+		entity.str_06 = domain.str_06 == null ? null : domain.str_06.toString();
+		entity.str_07 = domain.str_07 == null ? null : domain.str_07.toString();
+		entity.str_08 = domain.str_08 == null ? null : domain.str_08.toString();
+		entity.str_09 = domain.str_09 == null ? null : domain.str_09.toString();
 		entity.str_10 = domain.str_10;
 		return entity;
 	}
