@@ -26,7 +26,7 @@ public class PreCheckCommandHandler extends CommandHandler<DataBeforeReflectComm
 		BundledBusinessException bundleExeption = BundledBusinessException.newInstance();
 		int index = 0;
 
-		if (retirementDate.beforeOrEquals(releaseDate)) {
+		if (retirementDate.before(releaseDate)) {
 			index++;
 			bundleExeption.addMessage(new BusinessException("MsgJ_JCM007_2")); //  // 
 		}
