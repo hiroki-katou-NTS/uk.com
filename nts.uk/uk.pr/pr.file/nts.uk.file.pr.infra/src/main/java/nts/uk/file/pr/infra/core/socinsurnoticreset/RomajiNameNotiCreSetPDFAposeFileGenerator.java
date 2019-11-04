@@ -183,6 +183,7 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
     }
 
     public static String formatPhone(String phone, int stt) {
+        if(phone == null || phone.length() == 0) return "";
         String[] sub = phone.split("-");
         if (stt == 1 && sub.length > 1) {
             return sub[0];
