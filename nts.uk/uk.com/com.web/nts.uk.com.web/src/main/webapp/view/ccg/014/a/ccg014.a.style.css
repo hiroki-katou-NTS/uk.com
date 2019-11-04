@@ -2,7 +2,7 @@
 .link-button {margin-left: 15px;}
 .icon_link {width: 30px; vertical-align: middle; }
 #left-content { margin-left:20px; margin-top: 12px; padding: 20px 5px 20px 20px; float: left; width: 340px}
-#right-content {margin-left:50px; float: left; margin-top: 32px; width: 650px;}
+#right-content {margin-left:50px; float: left; margin-top: 12px; width: 650px;}
 #texteditor1.ntsControl .nts-input{ border: 1px solid #999999;}
 button.search-btn.caret-bottom {padding-left:10px; padding-right:10px ; margin-left : 15px;}
 button.clear-btn {padding-left:10px; padding-right:10px ; margin-left : 10px;}
