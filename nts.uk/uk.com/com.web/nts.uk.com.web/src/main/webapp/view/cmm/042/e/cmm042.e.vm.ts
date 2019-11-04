@@ -65,14 +65,16 @@ module cmm042.e.viewmodel {
                         self.enaBtnshowDialogF(true);
                     }
                 });
-
-                self.start();
+                
+                if(self.dataShare.code == ''){
+                    self.resultFromF('');
+                    self.codeCommand('');
+                }
             }
 
         start(): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
-            
                 dfd.resolve();
             return dfd.promise();
         }

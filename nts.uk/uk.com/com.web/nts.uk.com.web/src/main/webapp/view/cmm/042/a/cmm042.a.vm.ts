@@ -181,7 +181,7 @@ module cmm042.a.viewmodel {
             let self = this,
                 setting = self.setting(),
                 settings = self.settings;
-            setting.id(undefined);
+            setting.id(null);
             setting.code('');
             setting.name('');
             setting.selectedCode_Teminal(0);
@@ -224,8 +224,8 @@ module cmm042.a.viewmodel {
             setShared('CMM042D_PARAM', ko.toJS(self.setting()));
             modal('../d/index.xhtml').onClosed(() => {
                 let dto: any = getShared('CMM042D_VALUE');
-                setting.location_code(dto.code);
-                setting.location_name(dto.name);
+                //setting.location_code(dto.code);
+                //setting.location_name(dto.name);
             });
         }
         
@@ -285,46 +285,10 @@ module cmm042.a.viewmodel {
             }
             _data.push(obj1);
 
-            let obj2 = {
+            let obj3 = {
                 id: nts.uk.util.randomId(),
                 name: '名称 ' + 2,
                 code: '端末 ' + 2,
-                selectedCode_Teminal: 0,
-                selectedCode_rom: 0,
-                checked_CardNo: false,
-                checked_ExtendeRrese: false,
-                checked_Rese40item: false,
-                checked_RemoteAllItem: false,
-                checked_WorkType: false,
-                checked_TCPIP: true,
-                tcpip_phone_value: '192.168.100.100',
-                macAddress_value: '192.168.100.100',
-                terminalAddress_value: '00000002',
-                location_code: '000002',
-                location_name: 'location 2',
-                selectedCode_PortType: 1,
-                selectedCode_AlwaysCollect: 1,
-                selectedCode_InoutType: 1,
-                checked_INOUT: true,
-                checked_EntryExit: true,
-                checked_Unlock: true,
-                selectedCode_Unlock: 1,
-                enableComBoRom : false,
-                enable_CardNo : false,
-                enable_ExtendeRrese : false,
-                enable_Rese40item : false,
-                enable_RemoteAllItem : false,
-                enable_WorkType : false,
-                enable_INOUT: true,
-                listRom : ko.observable([{ value: 0, text: '' }])
-            }
-            _data.push(obj2);
-             
-            
-            let obj3 = {
-                id: nts.uk.util.randomId(),
-                name: '名称 ' + 3,
-                code: '端末 ' + 3,
                 selectedCode_Teminal: 3,
                 selectedCode_rom: 1,
                 checked_CardNo: true,
@@ -335,9 +299,9 @@ module cmm042.a.viewmodel {
                 checked_TCPIP: true,
                 tcpip_phone_value: '192.168.100.156',
                 macAddress_value: '192.168.100.156',
-                terminalAddress_value: '00000003',
-                location_code: '000003',
-                location_name: 'location 3',
+                terminalAddress_value: '00000002',
+                location_code: '000002',
+                location_name: 'location 2',
                 selectedCode_PortType: 1,
                 selectedCode_AlwaysCollect: 0,
                 selectedCode_InoutType: 3,
