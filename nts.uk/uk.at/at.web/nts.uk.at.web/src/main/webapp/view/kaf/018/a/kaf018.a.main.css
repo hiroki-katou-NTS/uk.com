@@ -1,6 +1,6 @@
 .content-area-right {
-	width: 283px;
-	height: 408px;
+	width: 483px;
+	height: 100px;
 	float: left;
 	margin-top:50px;
 }
@@ -33,6 +33,7 @@
 .format-checkbox {
 	float: left;
 	margin-left: 25px;
+	margin-top: 38px;
 }
 
 .bts-sendMail {
@@ -41,12 +42,10 @@
 
 .btn-excute {
 	float: left;
-	margin-left: 20px;
-	margin-top: 230px;	
 }
 
 .content-left-top {
-	height: 135px;
+	height: 100px;
 	width: : auto;
 }
 

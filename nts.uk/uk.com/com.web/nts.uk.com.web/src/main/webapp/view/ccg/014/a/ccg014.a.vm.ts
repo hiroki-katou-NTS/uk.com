@@ -17,7 +17,6 @@ module ccg014.a.viewmodel {
         isCreate: KnockoutObservable<boolean>;
         // Enable Copy
         enableCopy: KnockoutComputed<boolean>;
-        leftHeight: KnockoutObservable<any>;
 
         constructor() {
             var self = this;
@@ -48,7 +47,14 @@ module ccg014.a.viewmodel {
                     $("#titleMenuName").focus();
                 errors.clearAll();
             });
-            self.leftHeight = ko.observable(0);
+            
+            window.onresize = function(event) {
+            	$("#preview-iframe").attr('style', 
+                    	'height:' + (window.innerHeight - 30 - $("#preview-iframe").get(0).getBoundingClientRect().top) + 'px; ' +
+                    	'width:'  + (window.innerWidth - 60 - $("#preview-iframe").get(0).getBoundingClientRect().left) + 'px; ');
+            	$(".preview-container").width($("#preview-iframe").width() + 10);
+                
+            };
 
         }
 
@@ -225,17 +231,10 @@ module ccg014.a.viewmodel {
         }
         
         private setHeight(): void {
-            var self = this;
-            self.leftHeight(window.outerHeight - 385);
-            $("#left-content").height(self.leftHeight());
-            $("#preview-iframe").attr('style', 
-            	'height:' + (window.outerHeight - 530) + 'px; ' +
-            	'width:630px; margin-bottom: -20px;');
-            /*self.leftHeight(window.outerHeight * 7 / 13);
-            $("#left-content").height(self.leftHeight());
-            $("#preview-iframe").attr('style', 
-            	'height:' + (window.outerHeight * 4 / 13) + 'px; ' +
-            	'width: 630px; margin-bottom: -20px;');*/
+        	$("#preview-iframe").attr('style', 
+                'height:' + (window.innerHeight - 350) + 'px; ' +
+                'width:' + (window.innerWidth - 500) + 'px; ');
+        	$(".preview-container").width($("#preview-iframe").width() + 10);
         }
 
     }

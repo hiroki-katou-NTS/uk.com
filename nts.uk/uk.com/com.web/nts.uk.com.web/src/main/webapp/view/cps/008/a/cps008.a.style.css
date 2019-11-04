@@ -18,7 +18,6 @@
 
 #contents-area {
 	overflow-x: auto;
-	overflow-y: hidden !important;
 }
 
 .valign-center {
@@ -101,4 +100,7 @@ i.icon.icon-searchbox {
 	justify-content: center;
 	align-items: center;
 	position: absolute;
+}
+#master-wrapper {
+	min-width: 1280px;	
 }

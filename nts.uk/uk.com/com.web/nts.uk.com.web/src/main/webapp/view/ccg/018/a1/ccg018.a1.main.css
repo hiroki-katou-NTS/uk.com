@@ -93,11 +93,11 @@ supports (-ms-ime-align:auto ) { .table1 tbody {
 
 
 #A2-4 > table > thead > tr > th:nth-child(1){
-	width: 100px
+	width: 50px
 }
 
 #A2-4 > table > tbody > tr > td:nth-child(1){
-	width: 100px
+	width: 150px
 }
 
 #A2-4 > table > thead > tr > th:nth-child(2){

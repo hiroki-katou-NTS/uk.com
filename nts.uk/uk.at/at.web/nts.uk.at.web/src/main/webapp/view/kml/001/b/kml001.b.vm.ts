@@ -7,6 +7,7 @@ module nts.uk.at.view.kml001.b {
             premiumItemList: KnockoutObservableArray<vmbase.PremiumItem>;
             isInsert: Boolean;
             allUse: KnockoutObservable<number>;
+            browser: KnockoutObservable<boolean> = ko.observable(true);
             constructor() {
                 var self = this;
                 self.premiumItemList = ko.observableArray([]);   
@@ -27,6 +28,12 @@ module nts.uk.at.view.kml001.b {
             startPage(): JQueryPromise<any> {
                 nts.uk.ui.block.invisible();
                 var self = this;
+                let version = nts.uk.util.browser.version;
+                if (version.slice(0,2) == 'IE'){
+                    self.browser(true);
+                }else{
+                    self.browser(false);
+                }
                 var dfd = $.Deferred();
                 servicebase.premiumItemSelect()
                     .done(function(data) {

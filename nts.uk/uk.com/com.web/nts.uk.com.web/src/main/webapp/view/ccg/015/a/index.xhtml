@@ -34,13 +34,13 @@
 				<table style="margin: 20px 0px 0px 20px">
 					<tr>
 						<td id="contents-left">
-							<div data-bind="ntsPanel:{width: '327px', height: leftHeight(), direction: 'right', showIcon: true}">
+							<div data-bind="ntsPanel:{width: '327px', height: '390px', direction: 'right', showIcon: true}">
 								<div id="box_search" tabindex="12"
 									data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'code', comId: 'single-list', 
 									items: listTopPage, selected: toppageSelectedCode, selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}" />
 								<table id="single-list"
 									data-bind="ntsGridList: {
-										height: leftHeight() - 50,
+										height: 340,
 										options: listTopPage,
 										optionsValue: 'code',
 										columns: columns,

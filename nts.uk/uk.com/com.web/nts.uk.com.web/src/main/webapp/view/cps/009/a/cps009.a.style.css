@@ -1,9 +1,6 @@
-#contents-area {
-	width: 1250px;
-	height: 100%;
-	overflow-y: inherit !important;
+body {
+	-ms-overflow-y: hidden;
 }
-
 .float-right {
 	float: right !important;
 	margin-right: 55px;
@@ -13,7 +10,6 @@
 	width: 288px !important;
 	height: 407px !important;
 	margin-left: 10px !important;
-	float: left;
 }
 
 .requiredCell {
@@ -25,17 +21,11 @@
 }
 
 #content-right {
-	float: left;
 	width: 900px;
 }
 
 #category_grid_container {
 	margin-left: -3px !important;
-}
-
-#item_grid_container {
-	margin-top: 10px !important;
-	width: 250px;
 }
 
 .distane {
@@ -64,12 +54,9 @@ input.ntsSearchBox {
 
 #sub-left {
 	width: 265px;
-	float: left;
-	margin-top: -10px;
 }
 
 #sub-right {
-	float: left;
 	width: 595px;
 	margin-left: 30px;
 }
@@ -84,7 +71,6 @@ input.ntsSearchBox {
 
 #sub-center {
 	width: 25px !important;
-	float: left;
 }
 
 #sub-center > span.caret-background.caret-right.direction-right {
@@ -94,7 +80,7 @@ input.ntsSearchBox {
 }
 
 #search_his {
-	margin-top: 18px;
+	margin-top: 10px;
 	margin-bottom: 5px;
 }
 
@@ -269,4 +255,7 @@ abbr[title] {
 
 .selectionName {
 	width: 180px;
+}
+#master-wrapper {
+	min-width: 1280px;	
 }
