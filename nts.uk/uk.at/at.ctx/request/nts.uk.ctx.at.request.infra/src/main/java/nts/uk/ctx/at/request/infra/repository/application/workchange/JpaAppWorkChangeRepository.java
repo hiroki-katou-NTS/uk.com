@@ -5,16 +5,18 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 
 import org.apache.logging.log4j.util.Strings;
 
-import nts.uk.ctx.at.request.infra.entity.application.workchange.KrqdtAppWorkChange;
-import nts.uk.ctx.at.request.infra.entity.application.workchange.KrqdtAppWorkChangePk;
-import nts.uk.ctx.at.request.dom.application.workchange.IAppWorkChangeRepository;
-import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
+import nts.uk.ctx.at.request.dom.application.workchange.IAppWorkChangeRepository;
+import nts.uk.ctx.at.request.infra.entity.application.workchange.KrqdtAppWorkChange;
+import nts.uk.ctx.at.request.infra.entity.application.workchange.KrqdtAppWorkChangePk;
 
 @Stateless
 public class JpaAppWorkChangeRepository extends JpaRepository implements IAppWorkChangeRepository
@@ -106,6 +108,7 @@ public class JpaAppWorkChangeRepository extends JpaRepository implements IAppWor
      * @param lstAppId
      * @return
      */
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<AppWorkChange> getListAppWorkChangeByID(String companyID, List<String> lstAppId) {
 		if(lstAppId.isEmpty()){

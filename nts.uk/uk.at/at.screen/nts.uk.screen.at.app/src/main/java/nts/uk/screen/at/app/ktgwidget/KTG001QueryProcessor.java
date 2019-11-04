@@ -3,6 +3,8 @@ package nts.uk.screen.at.app.ktgwidget;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
@@ -17,6 +19,7 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class KTG001QueryProcessor {
 	@Inject
 	private ClosureEmploymentRepository closureEmploymentRepo;

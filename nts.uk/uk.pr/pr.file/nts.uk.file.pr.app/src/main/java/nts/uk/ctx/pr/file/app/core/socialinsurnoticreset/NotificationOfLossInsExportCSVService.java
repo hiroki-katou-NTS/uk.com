@@ -100,7 +100,7 @@ public class NotificationOfLossInsExportCSVService extends ExportService<Notific
 						}
 			});
 			CompanyInfor company = socialInsurNotiCreateSetEx.getCompanyInfor(cid);
-			healthInsLoss = this.order(domain.getOutputOrder(), healthInsLoss);
+			healthInsLoss = this.order(domain, healthInsLoss);
 			notificationOfLossInsCSVFileGenerator.generate(exportServiceContext.getGeneratorContext(),
 					new LossNotificationInformation(healthInsLoss, null,null, domain, exportServiceContext.getQuery().getReference(), company, infor));
         }
@@ -112,7 +112,7 @@ public class NotificationOfLossInsExportCSVService extends ExportService<Notific
 			if(healthInsAssociationData.isEmpty()) {
 				throw new BusinessException("Msg_37");
 			}
-			healthInsAssociationData = this.order(domain.getOutputOrder(), healthInsAssociationData);
+			healthInsAssociationData = this.order(domain, healthInsAssociationData);
 			notificationOfLossInsCSVFileGenerator.generate(exportServiceContext.getGeneratorContext(),
 					new LossNotificationInformation(healthInsAssociationData, null, null, domain, exportServiceContext.getQuery().getReference(), company, infor));
 		}
@@ -150,24 +150,25 @@ public class NotificationOfLossInsExportCSVService extends ExportService<Notific
 		socialInsurNotiCrSetRepository.update(domain);
 	}
 
-	private List<InsLossDataExport> order(SocialInsurOutOrder order, List<InsLossDataExport> healthInsLoss){
-		if(order == SocialInsurOutOrder.EMPLOYEE_KANA_ORDER) {
+	private List<InsLossDataExport> order(SocialInsurNotiCreateSet order, List<InsLossDataExport> healthInsLoss){
+		if(order.getOutputOrder() == SocialInsurOutOrder.EMPLOYEE_KANA_ORDER) {
 			return healthInsLoss.stream().sorted(Comparator.comparing(InsLossDataExport::getOfficeCd).thenComparing(InsLossDataExport::getPersonNameKana).thenComparing(InsLossDataExport::getEmpCd)).collect(Collectors.toList());
 		}
-		if(order == SocialInsurOutOrder.HEAL_INSUR_NUMBER_ORDER) {
+		if(order.getOutputOrder() == SocialInsurOutOrder.HEAL_INSUR_NUMBER_ORDER) {
 			return healthInsLoss.stream().sorted(Comparator.comparing(InsLossDataExport::getOfficeCd).thenComparing(InsLossDataExport::getHealInsNumber)).collect(Collectors.toList());
 		}
-		if(order == SocialInsurOutOrder.WELF_AREPEN_NUMBER_ORDER) {
+		if(order.getOutputOrder() == SocialInsurOutOrder.WELF_AREPEN_NUMBER_ORDER) {
 			return healthInsLoss.stream().sorted(Comparator.comparing(InsLossDataExport::getOfficeCd).thenComparing(InsLossDataExport::getWelfPenNumber)).collect(Collectors.toList());
 		}
-		if(order == SocialInsurOutOrder.HEAL_INSUR_NUMBER_UNION_ORDER) {
+		if(order.getOutputOrder() == SocialInsurOutOrder.HEAL_INSUR_NUMBER_UNION_ORDER) {
 			return healthInsLoss.stream().sorted(Comparator.comparing(InsLossDataExport::getOfficeCd).thenComparing(InsLossDataExport::getHealInsUnionNumber)).collect(Collectors.toList());
 		}
-		if(order == SocialInsurOutOrder.ORDER_BY_FUND) {
+		if(order.getOutputOrder() == SocialInsurOutOrder.ORDER_BY_FUND) {
 			return healthInsLoss.stream().sorted(Comparator.comparing(InsLossDataExport::getOfficeCd).thenComparing(InsLossDataExport::getMemberNumber)).collect(Collectors.toList());
 		}
-		if(order == SocialInsurOutOrder.INSURED_PER_NUMBER_ORDER) {
-			return healthInsLoss.stream().sorted(Comparator.comparing(InsLossDataExport::getOfficeCd).thenComparing(InsLossDataExport::getInsPerCls)).collect(Collectors.toList());
+		if(order.getOutputOrder() == SocialInsurOutOrder.INSURED_PER_NUMBER_ORDER) {
+			healthInsLoss = healthInsLoss.stream().sorted(Comparator.comparing(InsLossDataExport::getOfficeCd).thenComparing(order.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? InsLossDataExport::getHealInsNumber : InsLossDataExport::getWelfPenNumber)
+			).collect(Collectors.toList());
 		}
 		return healthInsLoss;
 	}

@@ -70,6 +70,7 @@ public class ShClosurePubImpl implements ShClosurePub {
 				.build());
 	}
 
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public Optional<PresentClosingPeriodExport> find(String cId, int closureId, GeneralDate date) {
 		Optional<Closure> optClosure = closureRepo.findById(cId, closureId);
@@ -92,6 +93,7 @@ public class ShClosurePubImpl implements ShClosurePub {
 		}
 	}
 
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public Map<Integer, DatePeriod> findAllPeriod(String cId, List<Integer> closureId, GeneralDate date) {
 		Map<Integer, DatePeriod> resultExport = new HashMap<>();

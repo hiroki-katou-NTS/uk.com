@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
@@ -16,6 +18,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
  * @author shuichu_ishida
  */
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class GetClosurePeriodImpl implements GetClosurePeriod {
 
 	/** 集計すべき期間を計算 */

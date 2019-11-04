@@ -89,7 +89,8 @@ public class NotificationOfLossInsExportPDFService extends ExportService<Notific
 			healthInsLoss = healthInsLoss.stream().sorted(Comparator.comparing(InsLossDataExport::getOfficeCd).thenComparing(InsLossDataExport::getMemberNumber)).collect(Collectors.toList());
 		}
 		if(domain.getOutputOrder() == SocialInsurOutOrder.INSURED_PER_NUMBER_ORDER) {
-			healthInsLoss = healthInsLoss.stream().sorted(Comparator.comparing(InsLossDataExport::getOfficeCd).thenComparing(InsLossDataExport::getInsPerCls)).collect(Collectors.toList());
+			healthInsLoss = healthInsLoss.stream().sorted(Comparator.comparing(InsLossDataExport::getOfficeCd).thenComparing(domain.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? InsLossDataExport::getHealInsNumber : InsLossDataExport::getWelfPenNumber)
+			).collect(Collectors.toList());
 		}
 
 		List<InsLossDataExport> overSeventy = healthInsLoss.stream().filter(item -> (item.getCause2() != null && item.getCause2() == ReasonsForLossPensionIns.ONLY_PENSION_INSURANCE.value) ).collect(Collectors.toList());

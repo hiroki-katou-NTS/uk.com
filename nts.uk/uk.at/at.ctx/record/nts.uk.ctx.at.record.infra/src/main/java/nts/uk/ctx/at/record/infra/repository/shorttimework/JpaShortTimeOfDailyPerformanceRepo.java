@@ -110,6 +110,7 @@ public class JpaShortTimeOfDailyPerformanceRepo extends JpaRepository implements
 				.setParameter("ymd", ymd);
 	}
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<ShortTimeOfDailyPerformance> finds(List<String> employeeId, DatePeriod ymd) {
 		List<ShortTimeOfDailyPerformance> result = new ArrayList<>();
@@ -149,6 +150,7 @@ public class JpaShortTimeOfDailyPerformanceRepo extends JpaRepository implements
 //		this.getEntityManager().flush();
 	}
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<ShortTimeOfDailyPerformance> finds(Map<String, List<GeneralDate>> param) {
 		List<ShortTimeOfDailyPerformance> result = new ArrayList<>();

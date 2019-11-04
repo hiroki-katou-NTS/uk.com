@@ -18,6 +18,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -209,6 +211,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	 * nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository
 	 * #find(java.lang.String, nts.arc.time.GeneralDate)
 	 */
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public Optional<BasicSchedule> find(String sId, GeneralDate date) {
 		Optional<KscdtBasicSchedule> optionalEntity = this.findById(sId, date);
@@ -221,6 +224,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		return Optional.empty();
 	}
 	
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<BasicSchedule> findSomePropertyWithJDBC(List<String> listSid, DatePeriod datePeriod) {
 		List<BasicSchedule> listNewBasicSchedule = new ArrayList<>();
@@ -260,6 +264,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		return listNewBasicSchedule;
 	}
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<BasicSchedule> findSomeChildWithJDBC(List<BasicSchedule> listBasicSchedule) {
 		List<BasicScheduleFromSql> listBasicScheduleFromSql = new ArrayList<>();
@@ -409,6 +414,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 //		return personFeeTime;
 //	}
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public boolean isExists(String employeeId, GeneralDate date) {
 		Optional<KscdtBasicSchedule> result = findById(employeeId, date);
@@ -424,6 +430,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	 *            the date
 	 * @return the optional
 	 */
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	private Optional<KscdtBasicSchedule> findById(String employeeId, GeneralDate date) {
 		return this.queryProxy().find(new KscdtBasicSchedulePK(employeeId, date), KscdtBasicSchedule.class);
 	}
@@ -435,6 +442,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	 * nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository
 	 * #findChildCareById(java.lang.String, nts.arc.time.GeneralDate)
 	 */
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<ChildCareSchedule> findChildCareById(String employeeId, GeneralDate baseDate) {
 		// get entity manager
@@ -483,6 +491,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	 * nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository
 	 * #findPersonFeeById(java.lang.String, nts.arc.time.GeneralDate)
 	 */
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<WorkSchedulePersonFee> findPersonFeeById(String employeeId, GeneralDate baseDate) {
 		// get entity manager
@@ -523,6 +532,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 				.collect(Collectors.toList());
 	}
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<WorkScheduleBreak> findWorkBreakTime(String employeeId, GeneralDate baseDate) {
 		// get entity manager
@@ -765,6 +775,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	 *            the base date
 	 * @return the list
 	 */
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	private List<KscdtWorkScheduleTimeZone> findAllWorkScheduleTimeZone(String employeeId, GeneralDate baseDate) {
 		// get entity manager
 		EntityManager em = this.getEntityManager();
@@ -1130,6 +1141,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	 * @param sIds
 	 * @return
 	 */
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public GeneralDate findMaxDateByListSid(List<String> sIds) {
 		List<GeneralDate> listDate = new ArrayList<>(); 
@@ -1143,6 +1155,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		return listDate.get(0);
 	}
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<BasicSchedule> getBasicScheduleBySidPeriodDate(String employeeId, DatePeriod dateData) {
 		List<BasicSchedule> lstData = this.queryProxy().query(QUERY_BY_SID_PERIOD, KscdtBasicSchedule.class)
@@ -1168,6 +1181,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		}
 	}
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<BasicSchedule> getBasicScheduleBySidPeriodDate(String employeeId, List<GeneralDate> dates) {
 		if(dates.isEmpty()) {

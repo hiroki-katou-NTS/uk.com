@@ -326,6 +326,23 @@ public class ClosureFinder {
 		return closureEmpList.stream().map(ClosureEmployment::getEmploymentCD)
 				.collect(Collectors.toList());
 	}
+	
+	/**
+	 * Find emp by closure ids.
+	 *
+	 * @param closureIds the closure ids
+	 * @return the list
+	 */
+	public List<ClosureEmployment> findEmpByClosureIdsMob(List<Integer> closureIds) {
+		// Get companyID.
+		String companyId = AppContexts.user().companyId();
+		
+		// Get ClosureEmployment
+		List<ClosureEmployment> closureEmpList = this.closureEmpRepo.findByClosureIds(companyId, closureIds);
+		
+		// Get Employment Codes from ClosureEmployment acquired above
+		return closureEmpList;
+	}
 
 	/**
 	 * Gets the closure id by employment code.
