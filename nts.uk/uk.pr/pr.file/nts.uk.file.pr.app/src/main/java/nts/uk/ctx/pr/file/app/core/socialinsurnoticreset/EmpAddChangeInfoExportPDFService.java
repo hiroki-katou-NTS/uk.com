@@ -4,8 +4,10 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.pr.core.dom.adapter.employee.employee.EmployeeInfoAdapter;
 import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsuranceOffice;
 import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsuranceOfficeRepository;
+import nts.uk.ctx.pr.core.dom.wageprovision.individualwagecontract.EmployeeInfoImport;
 import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.*;
 import nts.uk.ctx.pr.shared.dom.familyinfo.empfamilysocialins.*;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.*;
@@ -13,9 +15,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Stateless
@@ -42,7 +42,12 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
     @Inject
     private EmpAddChangeInfoExReposity empAddChangeInfoExReposity;
 
+    @Inject
+    private EmployeeInfoAdapter employeeInfoAdapter;
+
     private List<EmpAddChangeInfoExport> empAddChangeInfoExportList;
+
+    private List<EmpAddChangeInfoExport> eList;
 
     @Override
     protected void handle(ExportServiceContext<NotificationOfLossInsExportQuery> exportServiceContext) {
@@ -84,9 +89,9 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
             List<EmpAddChangeInfo> empAddChangeInfoList = empAddChangeInfoRepository.getListEmpAddChange(empIds);
             List<CurrentPersonResidence> currentPersonAddressList = CurrentPersonResidence.createListPerson(empIds);
             List<CurrentFamilyResidence> currentFamilyResidenceList = CurrentFamilyResidence.getListFamily();
-            if(empAddChangeInfoExportList.isEmpty()) {
-                throw new BusinessException("Msg_37");
-            }
+            List<EmployeeInfoImport> employeeInfoImportList = employeeInfoAdapter.getByListSid(empIds);
+            eList = new ArrayList<>();
+
             empAddChangeInfoExportList.forEach(e->{
                 //Imported（給与）「個人現住所」
                 if(!currentPersonAddressList.isEmpty()){
@@ -144,16 +149,15 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
                         e.setEmpPenInsurance(true);
                     }
                 }
-
                 //end of list emp add change information
                 if( e.getSpouseAddChangeDate() == null && e.getPersonAddChangeDate() == null || !e.isEmpPenInsurance() && !e.isHealthInsurance()) {
-                    empAddChangeInfoExportList.remove(e);
+                    eList.add(e);
                 }
             });
 
             if (!empCorpOffHisInfoList.isEmpty()){
                 empCorpOffHisInfoList.forEach(i-> {
-                   Optional<EmpAddChangeInfoExport> em = empAddChangeInfoExportList.stream().filter(item->item.getEmpId().equals(i.getEmpId())
+                   Optional<EmpAddChangeInfoExport> em = eList.stream().filter(item->item.getEmpId().equals(i.getEmpId())
                            && item.getSpouseAddChangeDate().afterOrEquals(i.getStartDate())
                            && item.getSpouseAddChangeDate().beforeOrEquals(i.getEndDate())).findFirst();
                    Optional<SocialInsuranceOffice> socialInsuranceOffice = socialInsuranceOfficeList.stream().filter(s->s.getCompanyID().equals(i.getCid())
@@ -177,7 +181,7 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
             }
 
             if (domain.getInsuredNumber() == InsurPersonNumDivision.OUTPUT_THE_WELF_PENNUMBER) {
-                if (!empWelfarePenInsQualiInforList.isEmpty()) {
+                if (!empWelfarePenInsQualiInforList.isEmpty() ) {
                     empWelfarePenInsQualiInforList.stream().forEach(k -> {
                         Optional<EmpAddChangeInfoExport> em = empAddChangeInfoExportList.stream().filter(item -> item.getEmpId().equals(k.getEmpId())
                                 && item.getPersonAddChangeDate() != null
@@ -193,7 +197,7 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
 
                 if (!healInsurPortPerIntellInfoList.isEmpty()) {
                     healInsurPortPerIntellInfoList.stream().forEach(k -> {
-                        Optional<EmpAddChangeInfoExport> em = empAddChangeInfoExportList.stream().filter(item -> item.getEmpId().equals(k.getEmpId())
+                        Optional<EmpAddChangeInfoExport> em = eList.stream().filter(item -> item.getEmpId().equals(k.getEmpId())
                                 && item.getPersonAddChangeDate() != null
                                 && item.getPersonAddChangeDate().afterOrEquals(k.getStartDate())
                                 && item.getPersonAddChangeDate().beforeOrEquals(k.getEndDate())).findFirst();
@@ -203,11 +207,10 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
                     });
                 }
 
-
             } else if (domain.getInsuredNumber() == InsurPersonNumDivision.OUTPUT_THE_FUN_MEMBER) {
                 if(!emPensionFunList.isEmpty()) {
                     emPensionFunList.stream().forEach(k -> {
-                        Optional<EmpAddChangeInfoExport> em = empAddChangeInfoExportList.stream().filter(item -> item.getEmpId().equals(k.getEmpId())
+                        Optional<EmpAddChangeInfoExport> em = eList.stream().filter(item -> item.getEmpId().equals(k.getEmpId())
                                 && item.getPersonAddChangeDate() != null
                                 && item.getPersonAddChangeDate().afterOrEquals(k.getStartDate())
                                 && item.getPersonAddChangeDate().beforeOrEquals(k.getEndDate())).findFirst();
@@ -221,7 +224,7 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
             if(domain.getPrintPersonNumber() == PersonalNumClass.OUTPUT_BASIC_PER_NUMBER ) {
                 if(!empBasicPenNumInforList.isEmpty()) {
                     empBasicPenNumInforList.stream().forEach(k -> {
-                        Optional<EmpAddChangeInfoExport> em = empAddChangeInfoExportList.stream().filter(item -> item.getEmpId().equals(k.getEmployeeId())
+                        Optional<EmpAddChangeInfoExport> em = eList.stream().filter(item -> item.getEmpId().equals(k.getEmployeeId())
                                 && item.isEmpPenInsurance()
                                 && item.getPersonAddChangeDate() != null).findFirst();
                         if (em.isPresent()) {
@@ -236,7 +239,7 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
             //Imported（給与）「個人前住所」
             if(!currentPersonAddressList.isEmpty()) {
                 currentPersonAddressList.forEach(k->{
-                    Optional<EmpAddChangeInfoExport> em =  empAddChangeInfoExportList.stream().filter(i->i.getEmpId().equals(k.getEmpId())).findFirst();
+                    Optional<EmpAddChangeInfoExport> em =  eList.stream().filter(i->i.getEmpId().equals(k.getEmpId())).findFirst();
                     if(em.isPresent()&& domain.getSubmittedName() == SubNameClass.PERSONAL_NAME) {
                         em.get().setNameKanaPs(k.getPersonNameKana());
                         em.get().setFullNamePs(k.getPersonName());
@@ -252,19 +255,18 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
                         em.get().setAdd2KanaPs(k.getAddress2Kana());
                         em.get().setAdd1Ps(k.getAddress1());
                         em.get().setAdd2Ps(k.getAddress2());
-                        em.get().setAdd1BeforeChange(k.getBeforeAddress1());
-                        em.get().setAdd2BeforeChange(k.getBeforeAddress2());
+                        em.get().setAdd1BeforeChange(k.getAddress1());
+                        em.get().setAdd2BeforeChange(k.getAddress2());
                         em.get().setStartDatePs(k.getStartDate());
                     }
                 });
             }
 
-            //取得した「社会保険届作成設定.出力順」をチェックする--> chưa làm --> ouput order
             if (domain.getPrintPersonNumber() == PersonalNumClass.OUTPUT_BASIC_PER_NUMBER && !empFamilySocialInsCtgInfoList.isEmpty()){
                 empFamilySocialInsCtgInfoList.forEach(p->{
                     //Imported（給与）「家族情報」
                     Optional<CurrentFamilyResidence> y =  currentFamilyResidenceList.stream().filter(item->item.getFamilyId().equals(p.getFamilyId())).findFirst();
-                    Optional<EmpAddChangeInfoExport> x = empAddChangeInfoExportList.stream().filter(z->z.getSpouseAddChangeDate() != null
+                    Optional<EmpAddChangeInfoExport> x = eList.stream().filter(z->z.getSpouseAddChangeDate() != null
                             && z.getSpouseAddChangeDate().afterOrEquals(p.getStartDate())
                             && z.getSpouseAddChangeDate().beforeOrEquals(p.getEndDate())
                             && z.getEmpId().equals(p.getEmpId())
@@ -281,31 +283,18 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
             //Imported（給与）「家族前同居住所」
            if(!currentFamilyResidenceList.isEmpty()){
                currentFamilyResidenceList.forEach(t->{
-                   Optional<EmpAddChangeInfoExport> em = empAddChangeInfoExportList.stream().filter(o->o.getFamilyId().equals(t.getFamilyId())
+                   Optional<EmpAddChangeInfoExport> em = eList.stream().filter(o->o.getFamilyId().equals(t.getFamilyId())
                            && o.getSpouseAddChangeDate() != null
                            && o.getPersonAddChangeDate()== null).findFirst();
                    if(em.isPresent()) {
-                       if(t.isLivingTogether()) {
-                           em.get().setPostalCodeF(t.getPostCodeTogether());
-                           em.get().setAdd1KanaF(t.getAddress1KanaTogether());
-                           em.get().setAdd2KanaF(t.getAddress2KanaTogether());
-                           em.get().setAdd1F(t.getAddress1Together());
-                           em.get().setAdd2F(t.getAddress2Together());
-                       } else {
-                           em.get().setPostalCodeF(t.getPostCode());
-                           em.get().setAdd1KanaF(t.getAddress1Kana());
-                           em.get().setAdd2KanaF(t.getAddress2Kana());
-                           em.get().setAdd1F(t.getAddress1());
-                           em.get().setAdd2F(t.getAddress2());
-                       }
-
-                       if(t.isLivingTogetherBefore()) {
-                           em.get().setAdd1BeforeChange(t.getAdd1BeforeChangeTogether());
-                           em.get().setAdd2BeforeChange(t.getAdd2BeforeChangeTogether());
-                       } else {
-                           em.get().setAdd1BeforeChange(t.getAdd1BeforeChange());
-                           em.get().setAdd2BeforeChange(t.getAdd2BeforeChange());
-                       }
+                       //check is living separation by start end date
+                       em.get().setPostalCodeF(t.getPostCode());
+                       em.get().setAdd1KanaF(t.getAddress1Kana());
+                       em.get().setAdd2KanaF(t.getAddress2Kana());
+                       em.get().setAdd1F(t.getAddress1());
+                       em.get().setAdd2F(t.getAddress2());
+                       em.get().setAdd1BeforeChange(t.getAddress1());
+                       em.get().setAdd2BeforeChange(t.getAddress2());
 
                        if (domain.getSubmittedName() == SubNameClass.PERSONAL_NAME){
                            em.get().setNameKanaF(t.getNameKana());
@@ -319,7 +308,7 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
                        em.get().setBirthDateF(t.getBirthDate());
                        em.get().setInsuredLivingTogether(true);
 
-                       if(!t.isLivingTogether() && !t.isLivingTogetherBefore() || em.get().getPersonAddChangeDate() == null) {
+                       if(t.isLivingSeparate() || em.get().getPersonAddChangeDate() == null) {
                            em.get().setInsuredLivingTogether(false);
                        }
                    }
@@ -328,7 +317,7 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
 
             if(!empAddChangeInfoList.isEmpty()){
                 empAddChangeInfoList.forEach(p->{
-                    Optional<EmpAddChangeInfoExport> x = empAddChangeInfoExportList.stream().filter(z->z.getEmpId().equals(p.getSid())).findFirst();
+                    Optional<EmpAddChangeInfoExport> x = eList.stream().filter(z->z.getEmpId().equals(p.getSid())).findFirst();
                     if(!x.isPresent()) {
                         x.get().setShortResidentAtr(p.getPersonalSet().getShortResident());
                         x.get().setLivingAbroadAtr(p.getPersonalSet().getLivingAbroadAtr());
@@ -345,9 +334,9 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
                 });
             }
 
-            if(domain.getOfficeInformation() == BusinessDivision.OUTPUT_COMPANY_NAME) {
+            if(domain.getOfficeInformation() == BusinessDivision.OUTPUT_COMPANY_NAME ) {
                 CompanyInformation  c = new CompanyInformation();
-                empAddChangeInfoExportList.forEach(k->{
+                eList.forEach(k->{
                     k.setPhoneNumber(c.getPhoneNumber());
                     k.setReferenceName(c.getCompanyNameReference());
                     k.setAddress1(c.getAdd1());
@@ -356,70 +345,17 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
                 });
             }
 
-		    if(!empAddChangeInfoExportList.isEmpty()){
+		    if(!eList.isEmpty()){
                 if(domain.getOutputOrder() == SocialInsurOutOrder.EMPLOYEE_CODE_ORDER) {
-                    empAddChangeInfoExportList = empAddChangeInfoExportList.stream().sorted(Comparator.comparing(EmpAddChangeInfoExport::getCompanyId).thenComparing(EmpAddChangeInfoExport::getEmpId, Comparator.naturalOrder())).collect(Collectors.toList());
+                    eList = eList.stream().sorted(Comparator.comparing(EmpAddChangeInfoExport::getCompanyId).thenComparing(EmpAddChangeInfoExport::getEmpId, Comparator.naturalOrder())).collect(Collectors.toList());
                 }
 
                 if(domain.getOutputOrder() == SocialInsurOutOrder.EMPLOYEE_KANA_ORDER) {
-                    empAddChangeInfoExportList = empAddChangeInfoExportList.stream().sorted(Comparator.comparing(EmpAddChangeInfoExport::getNameKanaPs, Comparator.naturalOrder()).thenComparing(EmpAddChangeInfoExport::getEmpId, Comparator.naturalOrder())).collect(Collectors.toList());
+                    eList = eList.stream().sorted(Comparator.comparing(EmpAddChangeInfoExport::getNameKanaPs, Comparator.naturalOrder()).thenComparing(EmpAddChangeInfoExport::getEmpId, Comparator.naturalOrder())).collect(Collectors.toList());
                 }
             }
 
-           /* EmpAddChangeInfoExport empAddChangeInfoExport = new EmpAddChangeInfoExport(
-                    "1233",
-                    "1233",
-                    11,
-                    "1234567",
-                    "name KanaPs",
-                    "full NamePs",
-                    start,
-                    "1233121",
-                    "add1KanaPs",
-                    "add2KanaPs",
-                    "add1Ps",
-                    "add2Ps",
-                    "add1BeforeChangePs1",
-                    "add2BeforeChangePs2",
-                    start,
-                    "7654321",
-                    0,
-                    0,
-                    0,
-                    0,
-                    "otherReason",
-                    0,
-                    0,
-                    0,
-                    0,
-                    "spousesOtherReason",
-                    start,
-                    "name KanaF",
-                    "full NameF",
-                    "1233234",
-                    "add1KanaF",
-                    "add2KanaF",
-                    "add1F",
-                    "add2F",
-                    start,
-                    "add1BeforeChange",
-                    "add2BeforeChange",
-                    "address1",
-                    "address2",
-                    "businessName",
-                    "referenceName",
-                    "009-001-213",
-                    false,
-                    true,
-                    start,
-                    start,
-                    "1234567",
-                    true,
-                    "12",
-                    "67"
-            );
-            empAddChangeInfoExportList.add(empAddChangeInfoExport);*/
-            EmpAddChangeInforData empAddChangeInforData = new EmpAddChangeInforData( empAddChangeInfoExportList,baseDate );
+            EmpAddChangeInforData empAddChangeInforData = new EmpAddChangeInforData( eList, baseDate );
             empAddChangeInfoFileGenerator.generate(exportServiceContext.getGeneratorContext(), empAddChangeInforData);
         } else {
             throw new BusinessException("Msg_37");
