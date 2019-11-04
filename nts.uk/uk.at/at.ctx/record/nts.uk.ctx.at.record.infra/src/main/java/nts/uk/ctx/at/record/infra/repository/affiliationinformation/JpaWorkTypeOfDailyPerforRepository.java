@@ -35,7 +35,7 @@ public class JpaWorkTypeOfDailyPerforRepository extends JpaRepository implements
 	private static final String FIND_BY_KEY;
 
 //	private static final String REMOVE_BY_KEY;
-
+	
 	static {
 		StringBuilder builderString = new StringBuilder();
 //		builderString.append("DELETE ");
@@ -109,7 +109,7 @@ public class JpaWorkTypeOfDailyPerforRepository extends JpaRepository implements
 					+ workTypeOfDailyPerformance.getWorkTypeCode().v() + "' WHERE SID = '"
 					+ workTypeOfDailyPerformance.getEmployeeId() + "' AND YMD = '" + workTypeOfDailyPerformance.getDate() + "'";
 			Statement statementU = con.createStatement();
-			statementU.executeUpdate(JDBCUtil.toInsertWithCommonField(updateTableSQL));
+			statementU.executeUpdate(JDBCUtil.toUpdateWithCommonField(updateTableSQL));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

@@ -63,8 +63,4 @@ public class EmpAddChangeInfoCommand {
     private String spouseOtherReason;
 
     private String  basicPenNumber;
-
-    private boolean isUpdateEmpAddChangeInfo;
-    
-    private boolean isUpdateEmpBasicPenNumInfor;
 }

@@ -10,11 +10,13 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
+import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootStateRepository;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.DailyConfirmAtr;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRootStateStatus;
 /**
@@ -28,6 +30,9 @@ public class ApprovalRootStateStatusImpl implements ApprovalRootStateStatusServi
 	
 	@Inject
 	private ApprovalRootStateService approvalRootStateService;
+	
+	@Inject
+	private ApprovalRootStateRepository approvalRootStateRepository;
 	
 	@Override
 	public List<ApprovalRootStateStatus> getStatusByEmpAndDate(String employeeID, GeneralDate startDate, GeneralDate endDate,
@@ -80,5 +85,24 @@ public class ApprovalRootStateStatusImpl implements ApprovalRootStateStatusServi
 			break;
 		}
 		return dailyConfirmAtr;
+	}
+
+	@Override
+	public boolean determinePhaseApproval(String rootStateID) {
+		// ドメインモデル「承認ルートインスタンス」を取得する
+		Optional<ApprovalRootState> opApprovalRootState = approvalRootStateRepository.findByID(rootStateID, 0);
+		if(!opApprovalRootState.isPresent()){
+			throw new BusinessException("status: fail");
+		}
+		// ドメインモデル「承認フェーズインスタンス」．順序を5～1の順でループする
+		for(ApprovalPhaseState approvalPhaseState : opApprovalRootState.get().getListApprovalPhaseState()){
+			Optional<ApprovalFrame> opApprovalFrame = approvalPhaseState.getListApprovalFrame().stream()
+				.filter(frame -> !frame.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED)).findAny();
+			// ループ中の承認フェーズには承認を行ったか
+			if(!approvalPhaseState.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED) || opApprovalFrame.isPresent()){
+				return true;
+			}
+		}
+		return false;
 	}
 }

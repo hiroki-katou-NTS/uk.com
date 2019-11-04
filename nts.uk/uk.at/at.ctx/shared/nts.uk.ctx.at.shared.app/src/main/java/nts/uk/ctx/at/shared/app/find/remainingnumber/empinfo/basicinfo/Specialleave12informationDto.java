@@ -56,4 +56,15 @@ public class Specialleave12informationDto  extends PeregDomainDto {
 		dto.setRecordId(domain.getSID());
 		return dto;
 	}
+	
+	public static Specialleave12informationDto createFromDomain(Object[] domain){
+		Specialleave12informationDto dto = new Specialleave12informationDto();
+		dto.setRecordId((String)domain[0]);
+		dto.useAtr = (Integer) domain[3];
+		dto.appSet = (Integer) domain[4];
+		dto.grantDate = domain[5] == null? null: (GeneralDate) domain[5];
+		dto.grantDays = (Integer)domain[6];
+		dto.grantTable = (String)domain[7];
+		return dto;
+	}
 }

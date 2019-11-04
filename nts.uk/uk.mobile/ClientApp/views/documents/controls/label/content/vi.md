@@ -25,3 +25,5 @@
 > **Chú ý**: Nếu binding: `show-constraint` mang giá trị `false`, class: `control-label-inline` là không cần thiết.
 
 ###### 2.5 Tài liệu khác
+
+<b>Tạo bởi: Nguyễn Văn Vương</b>

@@ -43,9 +43,9 @@ module nts.uk.pr.view.qsi014.a.viewmodel {
 
         socInsurNotiCreSet : KnockoutObservable<SocInsurNotiCreSet> = ko.observable(new SocInsurNotiCreSet({
             officeInformation: 0,
-            printPersonNumber: 0,
+            printPersonNumber: 3,
             businessArrSymbol: 0,
-            outputOrder: 0,
+            outputOrder: 1,
             submittedName: 0,
             insuredNumber: 0,
             fdNumber: null,
@@ -175,7 +175,7 @@ module nts.uk.pr.view.qsi014.a.viewmodel {
                 isShowWorkPlaceName: self.isShowWorkPlaceName(),
                 isShowSelectAllButton: self.isShowSelectAllButton(),
                 disableSelection : self.disableSelection(),
-                maxRows: 18
+                maxRows: 14
             };
             $('#component-items-list').ntsListComponent(self.listComponentOption);
         }
@@ -206,11 +206,12 @@ module nts.uk.pr.view.qsi014.a.viewmodel {
                     outputOrder: self.socInsurNotiCreSet().outputOrder(),
                     submittedName: self.socInsurNotiCreSet().submittedName(),
                     insuredNumber: self.socInsurNotiCreSet().insuredNumber(),
-                    fdNumber: self.socInsurNotiCreSet().fdNumber().trim() == '' ? null : self.socInsurNotiCreSet().fdNumber(),
-                    textPersonNumber: self.socInsurNotiCreSet().textPersonNumber(),
-                    outputFormat: self.socInsurNotiCreSet().outputFormat(),
-                    lineFeedCode: self.socInsurNotiCreSet().lineFeedCode()
+                    fdNumber:  self.screenMode() == model.SCREEN_MODE.NEW ? null : self.socInsurNotiCreSet().fdNumber(),
+                    textPersonNumber: self.screenMode() == model.SCREEN_MODE.NEW ? null : self.socInsurNotiCreSet().textPersonNumber(),
+                    outputFormat: self.screenMode() == model.SCREEN_MODE.NEW ? null : self.socInsurNotiCreSet().outputFormat(),
+                    lineFeedCode: self.screenMode() == model.SCREEN_MODE.NEW ? null : self.socInsurNotiCreSet().lineFeedCode()
                 },
+
                 empIds: employList,
                 startDate: moment.utc(self.startDate(), "YYYY/MM/DD"),
                 endDate: moment.utc(self.endDate(), "YYYY/MM/DD"),

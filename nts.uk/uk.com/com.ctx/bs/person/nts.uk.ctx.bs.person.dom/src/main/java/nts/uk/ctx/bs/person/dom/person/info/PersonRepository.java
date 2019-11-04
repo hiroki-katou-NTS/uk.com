@@ -40,4 +40,38 @@ public interface PersonRepository {
 
 	void addNewPerson(Person newPerson);
 	
+	/**
+	 * @author lanlt
+	 * get full domain cps003
+	 * getFullPersonByPersonIds
+	 * @param personIds
+	 * @return
+	 */
+	List<Person> getFullPersonByPersonIds(List<String> personIds);
+	
+	/**
+	 * @author lanlt
+	 * get full domain - for cps013
+	 * getFullPersonByPersonIds
+	 * @param personIds
+	 * @return
+	 */
+	List<Object[]> getPersonsByPersonIds(List<String> personIds);
+	
+	
+	/**
+	 * @author lanlt
+	 * Update all person 取得した「個人」を更新する
+	 * @param person
+	 */
+	void updateAll(List<Person> domains);
+	
+	/**
+	 *  個人を取得する
+	 * @author lanlt
+	 * @param personIds
+	 * @return
+	 */
+	List<Person> getAllPersonByPids(List<String> pids);
+	
 }

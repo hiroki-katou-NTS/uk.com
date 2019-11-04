@@ -15,21 +15,16 @@ import nts.arc.time.GeneralDate;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.ExcessOverTimeWorkMidNightTime;
-//import nts.uk.ctx.at.record.dom.daily.LateTimeOfDaily;
-//import nts.uk.ctx.at.record.dom.daily.LeaveEarlyTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculationMinusExist;
-//import nts.uk.ctx.at.record.dom.daily.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.bonuspaytime.BonusPayTime;
 import nts.uk.ctx.at.record.dom.daily.calcset.CalcMethodOfNoWorkingDay;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.AttendanceItemDictionaryForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.BonusPayAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.FlexWithinWorkTimeSheet;
-//import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ManageReGetClass;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTimeSheet;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTimeSheetForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.VacationClass;
@@ -40,39 +35,26 @@ import nts.uk.ctx.at.record.dom.raborstandardact.FlexCalcMethodOfHalfWork;
 import nts.uk.ctx.at.record.dom.raborstandardact.flex.SettingOfFlexWork;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
-//import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionSet;
-//import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkDeformedLaborAdditionSet;
-//import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkFlexAdditionSet;
-//import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkRegularAdditionSet;
-//import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.HolidayCalcMethodSet;
-//import nts.uk.ctx.at.shared.dom.calculation.holiday.time.OverTimeFrame;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
-//import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
-//import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
-//import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.StatutoryDivision;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
-//import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.StatutoryAtr;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
-//import nts.uk.ctx.at.shared.dom.workrule.waytowork.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
-//import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.ExceededPredAddVacationCalc;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkCalcSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.OverTimeCalcNoBreak;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
-//import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -87,6 +69,7 @@ public class OverTimeOfDaily {
 	//残業枠時間帯
 	private List<OverTimeFrameTimeSheet> overTimeWorkFrameTimeSheet;
 	//残業枠時間
+	@Setter
 	private List<OverTimeFrameTime> overTimeWorkFrameTime;
 	//法定外深夜時間
 	private Finally<ExcessOverTimeWorkMidNightTime> excessOverTimeWorkMidNightTime; 
@@ -751,5 +734,20 @@ public class OverTimeOfDaily {
 				break;
 		}
 		
+	}
+	
+	public void mergeOverTimeList(List<OverTimeFrameTime> frameTimeList) {
+		for(OverTimeFrameTime frameTime : frameTimeList) {
+			if(this.overTimeWorkFrameTime.stream().filter(tc -> tc.getOverWorkFrameNo().equals(frameTime.getOverWorkFrameNo())).findFirst().isPresent()) {
+				this.overTimeWorkFrameTime.stream().filter(tc -> tc.getOverWorkFrameNo().equals(frameTime.getOverWorkFrameNo())).findFirst()
+					.ifPresent(ts -> {
+						ts = ts.addOverTime(frameTime.getOverTimeWork().getTime(), frameTime.getOverTimeWork().getCalcTime());
+						ts = ts.addTransoverTime(frameTime.getTransferTime().getTime(), frameTime.getTransferTime().getCalcTime());
+					});
+			}
+			else {
+				this.overTimeWorkFrameTime.add(frameTime);
+			}
+		}
 	}
 }

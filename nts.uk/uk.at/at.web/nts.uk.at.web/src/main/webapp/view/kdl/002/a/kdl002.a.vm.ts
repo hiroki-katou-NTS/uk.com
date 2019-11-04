@@ -51,6 +51,9 @@ module kdl002.a.viewmodel {
                     self.initNotSelectItem(!self.isMulti, lstItemMapping);
                     self.items(lstItemMapping);
                     self.currentCodeList(selectCode);
+                    //if(!self.isMulti){
+                    $('#multi-list_headers_v').attr('style', 'max-width: 580px !IMPORTANT ;'); 
+                    //}
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alert(res.message);
                 });

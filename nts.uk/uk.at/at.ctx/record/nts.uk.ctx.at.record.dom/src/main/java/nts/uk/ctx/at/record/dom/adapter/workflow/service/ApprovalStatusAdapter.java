@@ -16,6 +16,7 @@ import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApprovalRootOfEmpl
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApprovalRootStateStatusImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproveRootStatusForEmpImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproverApproveImport;
+import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ConfirmDeleteParamImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.EmpPerformMonthParamImport;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -58,6 +59,17 @@ public interface ApprovalStatusAdapter {
 	ApprovalRootOfEmployeeImport getApprovalRootOfEmloyeeNew(GeneralDate startDate, GeneralDate endDate, String approverID,String companyID,Integer rootType);
 	
 	/**
+	 * <=>RequestList595
+	 * @param startDate
+	 * @param endDate
+	 * @param approverID
+	 * @param companyID
+	 * @param rootType
+	 * @return
+	 */
+	ApprovalRootOfEmployeeImport getDailyApprovalStatus(String approverId, List<String> targetEmployeeIds, DatePeriod period);
+	
+	/**
 	 * <=>RequestList229
 	 * @param approvalRecordDates
 	 * @param employeeID
@@ -89,7 +101,7 @@ public interface ApprovalStatusAdapter {
 	public void registerApproval(String approverID, List<Pair<String, GeneralDate>> empAndDate, Integer rootType,String companyID);
 	
 	/**
-	 * RequestList155
+	 * RequestList155 old not use
 	 * [No.155]承認対象者リストと日付リストから承認状況を取得する
 	 * getApprovalByListEmplAndListApprovalRecordDate
 	 * @param approvalRecordDates
@@ -98,7 +110,7 @@ public interface ApprovalStatusAdapter {
 	 * @param rootType
 	 * @return
 	 */
-	public List<ApproveRootStatusForEmpImport> getApprovalByListEmplAndListApprovalRecordDate(List<GeneralDate> approvalRecordDates, List<String> employeeID,Integer rootType);
+	public List<ApproveRootStatusForEmpImport> getApprovalByListEmplAndListApprovalRecordDateOld(List<GeneralDate> approvalRecordDates, List<String> employeeID,Integer rootType);
 	
 	/**
 	 * RequestList 403
@@ -158,7 +170,7 @@ public interface ApprovalStatusAdapter {
 	 * @return
 	 */
 	public AppRootOfEmpMonthImport getApprovalEmpStatusMonth(String approverID, YearMonth yearMonth, Integer closureID,
-			ClosureDate closureDate, GeneralDate baseDate);
+			ClosureDate closureDate, GeneralDate baseDate, boolean useDayApproverConfirm, DatePeriod closurePeriod);
 	
 	/**
 	 * RequestList 528
@@ -186,4 +198,23 @@ public interface ApprovalStatusAdapter {
 	 * RequestList 538
 	 */
 	public ApproverApproveImport getApproverByPeriodMonth(String employeeID, Integer closureID, YearMonth yearMonth, ClosureDate closureDate, GeneralDate date);
+	
+	/**
+	 * RequestList 601
+	 * [No.601]日別の承認をクリアする
+	 * @param employeeID
+	 * @param date
+	 */
+	public void deleteRootConfirmDay(String employeeID, GeneralDate date);
+	
+	public void deleteRootConfirmMonth(String employeeID, List<ConfirmDeleteParamImport> confirmDeleteParamLst);
+	
+	/**
+	 * [No.610]基準社員から指定期間の対象者を取得する
+	 * @param approverID
+	 * @param period
+	 * @param rootType
+	 * @return
+	 */
+	public List<String> findEmpRequest610(String approverID, DatePeriod period, Integer rootType);
 }

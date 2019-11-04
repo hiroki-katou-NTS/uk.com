@@ -21,7 +21,6 @@
 	padding-left: 20px;
 }
 
-
 /* #button3 {
 	margin-left: 256px;
 }
@@ -29,14 +28,12 @@
 #button2 {
 	margin-left: 20px;
 } */
-
-
 #messageSwaplist {
 	margin-left: 52%;
 	width: 48%;
 }
 
-#swap-list2_container, #swap-list_container,#swap-list3_container {
+#swap-list2_container, #swap-list_container, #swap-list3_container {
 	display: inline-block;;
 }
 
@@ -52,28 +49,20 @@
 	margin-top: 1px;
 }
 
- #swap-list2-grid1_horizontalScrollContainer {
-	overflow: hidden !important; 
+#swap-list2-grid1_horizontalScrollContainer {
+	overflow: hidden !important;
 }
 
-#swap-list2-grid1_displayContainer {
-	min-height: 310.6px !important;
-	
-} 
-
-#swap-list2-grid1_scrollContainer {
-	min-height: 310.6px !important;
+#swap-list3-grid1_horizontalScrollContainer {
+	overflow: hidden !important;
 }
 
- #swap-list3-grid1_horizontalScrollContainer {
-	overflow: hidden !important; 
+#swap-list2-grid1_displayContainer, #swap-list2-grid2_displayContainer,
+	#swap-list2-grid1_scrollContainer, #swap-list2-grid2_scrollContainer {
+	height: 293px !important;
 }
 
-#swap-list3-grid1_displayContainer {
-	min-height: 310.6px !important;
-	
-} 
-
-#swap-list3-grid1_scrollContainer {
-	min-height: 310.6px !important;
+#swap-list-grid1_displayContainer, #swap-list-grid2_displayContainer,
+	#swap-list-grid1_scrollContainer, #swap-list-grid2_scrollContainer {
+	height: 293px !important;
 }

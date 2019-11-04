@@ -474,7 +474,8 @@ module nts.uk.at.view.kaf006.b{
             self.displayPrePostFlg(data.prePostFlg);
             self.requiredReason(data.appReasonRequire);
             self.workTimeCode(data.workTimeCode);
-            self.displayWorkTimeName(nts.uk.util.isNullOrEmpty(data.workTimeCode) ? nts.uk.resource.getText('KAF006_21') : data.workTimeCode +"　"+ data.workTimeName);
+            let wktimeName = data.workTimeName || nts.uk.resource.getText('KAL003_120');
+            self.displayWorkTimeName(nts.uk.util.isNullOrEmpty(data.workTimeCode) ? nts.uk.resource.getText('KAF006_21') : data.workTimeCode +"　"+ wktimeName);
             if(data.applicationReasonDtos != null && data.applicationReasonDtos.length > 0){
                 let lstReasonCombo = _.map(data.applicationReasonDtos, o => { return new common.ComboReason(o.reasonID, o.reasonTemp); });
                 self.reasonCombo(lstReasonCombo);
@@ -484,13 +485,16 @@ module nts.uk.at.view.kaf006.b{
                 self.multilContent(data.application.applicationReason);
             }
             self.workTimeCodes(data.workTimeCodes);
+            if(data.masterUnreg){
+                 self.typeOfDutys.push(new common.TypeOfDuty(data.workTypeCode, data.workTypeCode + '　' + 'マスタ未登録'));
+            }
             if (!nts.uk.util.isNullOrEmpty(data.workTypes)) {
                 for (let i = 0; i < data.workTypes.length; i++) {
                     self.typeOfDutys.push(new common.TypeOfDuty(data.workTypes[i].workTypeCode, data.workTypes[i].displayName));
                     self.workTypecodes.push(data.workTypes[i].workTypeCode);
                 }
-                self.selectedTypeOfDuty(data.workTypeCode);
             }
+            self.selectedTypeOfDuty(data.workTypeCode);
             self.changeWorkHourValueFlg(data.displayWorkChangeFlg);
             self.changeWorkHourValue(data.changeWorkHourFlg);
             self.selectedAllDayHalfDayValue(data.allDayHalfDayLeaveAtr);
@@ -589,7 +593,9 @@ module nts.uk.at.view.kaf006.b{
                 endTime1: self.timeEnd1(),
                 startTime2: self.timeStart2(),
                 endTime2: self.timeEnd2(),
-                specHd: specHd
+                specHd: specHd,
+                user: self.user,
+                reflectPerState: self.reflectPerState
              };
              service.updateAbsence(paramInsert).done((data) =>{
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {

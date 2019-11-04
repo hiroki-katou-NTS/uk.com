@@ -7,10 +7,12 @@ import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.EmpAddChangeInfo;
 import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.EmpAddChangeInfoRepository;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmpBasicPenNumInfor;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmpBasicPenNumInforRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 @Stateless
 @Transactional
@@ -28,6 +30,8 @@ public class EmpAddChangeInfoCommandHandle extends CommandHandler<EmpAddChangeIn
     }
 
     public void registerEmpAddChangeInfo(EmpAddChangeInfoCommand empAddChangeInfoDto){
+        boolean isUpdateEmpAddChangeInfo =  mEmpAddChangeInfoRepository.getEmpAddChangeInfoById(empAddChangeInfoDto.getSid(), AppContexts.user().companyId()).isPresent();
+        boolean isUpdateEmpBasicPenNumInfor =  mEmpBasicPenNumInforRepository.getEmpBasicPenNumInforById(empAddChangeInfoDto.getSid()).isPresent();
         EmpAddChangeInfo empAddChangeInfo =  new EmpAddChangeInfo(empAddChangeInfoDto.getSid(),
                 new AddChangeSetting(
                         empAddChangeInfoDto.getShortResidentAtr(),
@@ -49,18 +53,17 @@ public class EmpAddChangeInfoCommandHandle extends CommandHandler<EmpAddChangeIn
                 empAddChangeInfoDto.getBasicPenNumber()
         );
 
-        if(empAddChangeInfoDto.isUpdateEmpBasicPenNumInfor()){
+        if(isUpdateEmpBasicPenNumInfor){
             mEmpBasicPenNumInforRepository.update(empBasicPenNumInfor);
         }
         else {
             mEmpBasicPenNumInforRepository.add(empBasicPenNumInfor);
         }
-        if(empAddChangeInfoDto.isUpdateEmpAddChangeInfo()){
+        if(isUpdateEmpAddChangeInfo){
             mEmpAddChangeInfoRepository.update(empAddChangeInfo);
             return;
         }
         mEmpAddChangeInfoRepository.add(empAddChangeInfo);
-        return;
 
     }
 }

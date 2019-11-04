@@ -1,7 +1,12 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.otherholiday;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -110,6 +115,8 @@ public class OtherHolidayInfoService {
 		excessLeaveInfoRepository.add(exLeav);
 
 		String sid = pubHD.getSID();
+		
+		// Item IS00366
 		if (checkEnableLeaveMan(sid)) {
 			if (remainNumber != null) {
 				setRemainNumber(cid, sid, remainNumber);
@@ -124,6 +131,60 @@ public class OtherHolidayInfoService {
 		}
 
 	}
+	
+	public void addOtherHolidayInfo(String cid, Map<String, OtherHolidayInfoInter> otherHolidayInfos) {
+		List<ExcessLeaveInfo> exLeavLst = new ArrayList<ExcessLeaveInfo>();
+		List<PublicHolidayRemain> pubHDLst  = new ArrayList<PublicHolidayRemain>();
+		Map<String, BigDecimal> remainLeftMap = new HashMap<>();
+		Map<String, BigDecimal> remainNumberMap = new HashMap<>();
+       
+        otherHolidayInfos.entrySet().stream().forEach(c ->{
+        	pubHDLst.add(c.getValue().getPubHD());
+        	exLeavLst.add(c.getValue().getExLeav());
+        	remainNumberMap.put(c.getKey(), c.getValue().getRemainNumber());
+        	remainLeftMap.put(c.getKey(), c.getValue().getRemainLeft());
+        });
+        
+        excessLeaveInfoRepository.addAll(exLeavLst);
+		publicHolidayRemainRepository.addAll(pubHDLst);
+		
+		Map<String, Boolean> checkEnableLeaveMap = checkEnableLeaveMan(new ArrayList<>(otherHolidayInfos.keySet()));
+		Map<String, Boolean> checkEnablePayoutMaP = checkEnablePayout(new ArrayList<>(otherHolidayInfos.keySet()));
+
+		Map<String, BigDecimal> remainLeftFinalMap = new HashMap<>();
+		Map<String, BigDecimal> remainNumberFinalMap = new HashMap<>();
+       
+		checkEnableLeaveMap.entrySet().stream().forEach(c ->{
+			if(c.getValue()!= null) {
+				if(c.getValue().booleanValue()) {
+					BigDecimal remainNumber = remainNumberMap.get(c.getKey());
+					if (remainNumber != null) {
+						remainNumberFinalMap.put(c.getKey(), remainNumber);
+					}
+				}
+			}
+		});
+		
+		// Item IS00368
+		checkEnablePayoutMaP.entrySet().stream().forEach(c ->{
+			if(c.getValue()!= null) {
+				if(c.getValue().booleanValue()) {
+					BigDecimal remainLeft = remainLeftMap.get(c.getKey());
+					if (remainLeft != null) {
+						remainLeftFinalMap.put(c.getKey(), remainLeft);
+					}
+				}
+			}
+		});
+		
+		if(!remainNumberFinalMap.isEmpty()) {
+			setRemainNumber(cid, remainNumberFinalMap);
+		}
+		
+		if(!remainLeftFinalMap.isEmpty()) {
+			setRemainLeftItem(cid, remainLeftFinalMap);
+		}
+	}
 
 	// Item IS00368
 	// 振出振休管理データの初回登録
@@ -134,6 +195,30 @@ public class OtherHolidayInfoService {
 			remainLeftIsBiggerThanZero(cid, sid, remainLeft);
 		} else if (remainLeft.compareTo(ZERO) < 0) {
 			remainLeftIsSmallerThanZero(cid, sid, remainLeft);
+		}
+	}
+	
+	// Item IS00368
+	// 振出振休管理データの初回登録
+	private void setRemainLeftItem(String cid, Map<String, BigDecimal> remainLeftMaps) {
+
+		// IS00368
+		Map<String, BigDecimal> remainNumberBigZero = new HashMap<>();
+		Map<String, BigDecimal> remainNumberSmallZero = new HashMap<>();
+		remainLeftMaps.entrySet().stream().forEach(c ->{
+			// IS00368
+			if (c.getValue().compareTo(ZERO) > 0) {
+				remainNumberBigZero.put(c.getKey(), c.getValue());
+			} else if (c.getValue().compareTo(ZERO) < 0) {
+				remainNumberSmallZero.put(c.getKey(), c.getValue());
+			}
+		});
+		// IS00368
+		if (!remainNumberBigZero.isEmpty()) {
+			remainLeftIsBiggerThanZero(cid, remainNumberBigZero);
+		} 
+		if (!remainNumberSmallZero.isEmpty()) {
+			remainLeftIsSmallerThanZero(cid, remainNumberSmallZero);
 		}
 	}
 
@@ -168,7 +253,44 @@ public class OtherHolidayInfoService {
 			payoutManagementDataRepository.create(payout);
 		}
 	}
+	
+	/**
+	 * In case of remain left is bigger than zero
+	 * 
+	 * @param cid
+	 * @param sid
+	 * @param remainLeft
+	 */
+	private void remainLeftIsBiggerThanZero(String cid, Map<String, BigDecimal> remainLeftMaps) {
+		List<PayoutManagementData> payoutLst = new ArrayList<>();
+		remainLeftMaps.entrySet().stream().forEach(c ->{
+			BigDecimal remainLeftTpm = c.getValue();
+			String newID = null;
+			PayoutManagementData payout = null;
+			while (remainLeftTpm.compareTo(ZERO) > 0) {
+				newID = IdentifierUtil.randomUniqueId();
+				if (remainLeftTpm.compareTo(ONE) >= 0) {
+					/**
+					 * 社員ID←パラメータ「社員ID」 休出日←日付不明=true 使用期限日←9999/12/31 振休消化区分←未消化 未使用日数←1.0日
+					 * 法定内外区分←法定外休日
+					 */
+					payout = new PayoutManagementData(newID, cid, c.getKey(), true, null, GeneralDate.max(),
+							HolidayAtr.NON_STATUTORYHOLIDAY.value, 1d, 1d, DigestionAtr.UNUSED.value);
 
+					remainLeftTpm = remainLeftTpm.subtract(ONE);
+				} else if (remainLeftTpm.compareTo(AHALF) == 0) {
+					payout = new PayoutManagementData(newID, cid, c.getKey(), true, null, GeneralDate.max(),
+							HolidayAtr.NON_STATUTORYHOLIDAY.value, 0.5d, 0.5d, DigestionAtr.UNUSED.value);
+					remainLeftTpm = remainLeftTpm.subtract(AHALF);
+				}
+				payoutLst.add(payout);
+			}
+		});
+		
+		if(!payoutLst.isEmpty()) {
+			payoutManagementDataRepository.addAll(payoutLst);
+		}
+	}
 	/**
 	 * In case of remain left is smaller than zero
 	 * 
@@ -196,6 +318,40 @@ public class OtherHolidayInfoService {
 			substitutionOfHDManaDataRepository.create(subOfHD);
 		}
 	}
+	
+	/**
+	 * In case of remain left is smaller than zero
+	 * 
+	 * @param cid
+	 * @param sid
+	 * @param remainLeft
+	 */
+	private void remainLeftIsSmallerThanZero(String cid, Map<String, BigDecimal> remainLeftMaps) {
+		List<SubstitutionOfHDManagementData> subOfHDLst = new ArrayList<>();
+		remainLeftMaps.entrySet().stream().forEach(c ->{
+			String newID = null;
+			// 振休作成数=-1*パラメータ「振休残数」
+			BigDecimal remainLeftTpm = c.getValue().multiply(new BigDecimal(-1));
+			SubstitutionOfHDManagementData subOfHD = null;
+			while (remainLeftTpm.compareTo(ZERO) > 0) {
+				newID = IdentifierUtil.randomUniqueId();
+				if (remainLeftTpm.compareTo(ONE) >= 0) {
+					/**
+					 * 社員ID←パラメータ「社員ID」 休出日←日付不明=true 使用期限日←9999/12/31 振休消化区分←未消化
+					 */
+					subOfHD = new SubstitutionOfHDManagementData(newID, cid, c.getKey(), true, null, 1d, 1d);
+					remainLeftTpm = remainLeftTpm.subtract(ONE);
+				} else if (remainLeftTpm.compareTo(AHALF) == 0) {
+					subOfHD = new SubstitutionOfHDManagementData(newID, cid, c.getKey(), true, null, 0.5d, 0.5d);
+					remainLeftTpm = remainLeftTpm.subtract(AHALF);
+				}
+				subOfHDLst.add(subOfHD);
+			}
+		});
+		if(!subOfHDLst.isEmpty()) {
+			substitutionOfHDManaDataRepository.addAll(subOfHDLst);
+		}
+	}
 
 	// Item IS00366
 	// 休出代休管理データの初回登録
@@ -205,6 +361,28 @@ public class OtherHolidayInfoService {
 			remainNumberIsMoreThanZero(cid, sid, remainNumber);
 		} else if (remainNumber.compareTo(ZERO) < 0) {
 			remainNumberIsSmallerThanZero(cid, sid, remainNumber);
+		}
+	}
+	
+	// Item IS00366
+	// 休出代休管理データの初回登録
+	private void setRemainNumber(String cid, Map<String, BigDecimal> remainNumberMap) {
+		Map<String, BigDecimal> remainNumberBigZero = new HashMap<>();
+		Map<String, BigDecimal> remainNumberSmallZero = new HashMap<>();
+		remainNumberMap.entrySet().stream().forEach(c ->{
+			// IS00368
+			if (c.getValue().compareTo(ZERO) > 0) {
+				remainNumberBigZero.put(c.getKey(), c.getValue());
+			} else if (c.getValue().compareTo(ZERO) < 0) {
+				remainNumberSmallZero.put(c.getKey(), c.getValue());
+			}
+		});
+		// IS00368
+		if (!remainNumberBigZero.isEmpty()) {
+			remainNumberIsMoreThanZero(cid, remainNumberBigZero);
+		} 
+		if (!remainNumberSmallZero.isEmpty()) {
+			remainNumberIsSmallerThanZero(cid, remainNumberSmallZero);
 		}
 	}
 
@@ -241,6 +419,47 @@ public class OtherHolidayInfoService {
 			leaveManaDataRepository.create(leaveMana);
 		}
 	}
+	
+	/**
+	 * In case of remain number is bigger than zero
+	 * 
+	 * @param cid
+	 * @param sid
+	 * @param remainNumber
+	 */
+	private void remainNumberIsMoreThanZero(String cid, Map<String, BigDecimal> remainNumberMap) {
+		
+		Map<String, DesignatedTime> commonSetMap = getWorkTimeSetting(cid, new ArrayList<>(remainNumberMap.keySet()));
+		List<LeaveManagementData> leaveManaLst = new ArrayList<>();
+		remainNumberMap.entrySet().stream().forEach(c ->{
+			BigDecimal remainNumberTpm = c.getValue();
+			LeaveManagementData leaveMana = null;
+			// 1日相当時間←指定時間．1日の時間
+			// 半日相当時間←指定時間．半日の時間
+			// TODO QA
+			DesignatedTime commonSet = commonSetMap.get(c.getKey());
+			String newID = null;
+			int aDay = commonSet.getOneDayTime().v();
+			int aHalf = commonSet.getHalfDayTime().v();
+			while (remainNumberTpm.compareTo(ZERO) > 0) {
+				newID = IdentifierUtil.randomUniqueId();
+				if (remainNumberTpm.compareTo(ONE) >= 0) {
+					leaveMana = new LeaveManagementData(newID, cid, c.getKey(), true, null, GeneralDate.max(), 1d, 0, 1d, 0,
+							DigestionAtr.UNUSED.value, aDay, aHalf);
+					remainNumberTpm = remainNumberTpm.subtract(ONE);
+				} else if (remainNumberTpm.compareTo(AHALF) == 0) {
+					leaveMana = new LeaveManagementData(newID, cid, c.getKey(), true, null, GeneralDate.max(), 0.5d, 0, 0.5d, 0,
+							DigestionAtr.UNUSED.value, aDay, aHalf);
+					remainNumberTpm = remainNumberTpm.subtract(AHALF);
+				}
+				leaveManaLst.add(leaveMana);
+			}
+		});
+		
+		if(!leaveManaLst.isEmpty()) {
+			leaveManaDataRepository.addAll(leaveManaLst);
+		}
+	}
 
 	/**
 	 * In case of remain number is smaller than zero
@@ -268,6 +487,42 @@ public class OtherHolidayInfoService {
 				remainNumberTpm = remainNumberTpm.subtract(AHALF);
 			}
 			comDayOffManaDataRepository.create(comDayOff);
+		}
+	}
+	
+	/**
+	 * In case of remain number is smaller than zero
+	 * 
+	 * @param cid
+	 * @param sid
+	 * @param remainNumber
+	 */
+	private void remainNumberIsSmallerThanZero(String cid, Map<String, BigDecimal> remainNumber) {
+		List<CompensatoryDayOffManaData> comDayOffLst = new ArrayList<>();
+		remainNumber.entrySet().stream().forEach(c ->{
+			String newID = null;
+			// 振休作成数=-1*パラメータ「振休残数」
+			BigDecimal remainNumberTpm = c.getValue().multiply(new BigDecimal(-1));
+			CompensatoryDayOffManaData comDayOff = null;
+
+			while (remainNumberTpm.compareTo(ZERO) > 0) {
+				newID = IdentifierUtil.randomUniqueId();
+				if (remainNumberTpm.compareTo(ONE) >= 0) {
+					/**
+					 * 社員ID←パラメータ「社員ID」 休出日←日付不明=true 使用期限日←9999/12/31 振休消化区分←未消化
+					 */
+					comDayOff = new CompensatoryDayOffManaData(newID, cid, c.getKey(), true, null, 1d, 0, 1d, 0);
+					remainNumberTpm = remainNumberTpm.subtract(ONE);
+				} else if (remainNumberTpm.compareTo(AHALF) == 0) {
+					comDayOff = new CompensatoryDayOffManaData(newID, cid, c.getKey(), true, null, 0.5d, 0, 0.5d, 0);
+					remainNumberTpm = remainNumberTpm.subtract(AHALF);
+				}
+				comDayOffLst.add(comDayOff);
+			}
+		});
+		
+		if(!comDayOffLst.isEmpty()) {
+			comDayOffManaDataRepository.addAll(comDayOffLst);
 		}
 	}
 
@@ -325,6 +580,129 @@ public class OtherHolidayInfoService {
 		return result;
 	}
 	
+
+	/**
+	 * @author lanlt
+	 * For Item IS00366 LeaveManagementData
+	 * 
+	 * @param sid
+	 * @return 指定時間
+	 */
+	// TODO Pending QA
+	private Map<String, DesignatedTime> getWorkTimeSetting(String cid, List<String> sids) {
+		
+		List<String> histIds = new ArrayList<>();
+		Map<String, String> workTimes = new HashMap<>();
+		Map<String, DesignatedTime> result = new HashMap<>();
+		
+		List<WorkingCondition> workingCondLst = workingConditionRepository.getBySidsAndCid(cid, sids);
+
+		sids.stream().forEach(c ->{
+			Optional<WorkingCondition> workingCondOpt = workingCondLst.stream().filter(item -> item.getEmployeeId().equals(c)).findFirst();
+			if (!workingCondOpt.isPresent() || workingCondOpt.get().getDateHistoryItem().isEmpty()) {
+				result.put(c, new DesignatedTime(new OneDayTime(0), new OneDayTime(0)));
+				return;
+			}
+			
+			DateHistoryItem histItem = workingCondOpt.get().getDateHistoryItem()
+					.get(workingCondOpt.get().getDateHistoryItem().size() - 1);
+			histIds.add(histItem.identifier());
+		});
+		
+		DesignatedTime designatedTimeCid = getCompanySet(cid);
+		List<WorkingConditionItem> workingCondItemLst  = workingConditionItemRepository.getByListHistoryID(histIds);
+		
+		sids.stream().forEach(c ->{
+			Optional<WorkingConditionItem> workingCondItemOpt = workingCondItemLst.stream().filter(item -> item.getEmployeeId().equals(c)).findFirst();
+			if (!workingCondItemOpt.isPresent()) {
+				result.put(c, new DesignatedTime(new OneDayTime(0), new OneDayTime(0)));
+				return;
+			}
+			
+			// 労働条件項目．区分別勤務．休日出勤時．就業時間帯コードの就業時間帯
+			Optional<WorkTimeCode> workTimeCD = workingCondItemOpt.get().getWorkCategory().getHolidayWork().getWorkTimeCode();
+			if (!workTimeCD.isPresent()) {
+				result.put(c, designatedTimeCid);
+				return;
+			}
+			workTimes.put(c, workTimeCD.get().v());
+		});
+		
+		List<WorkTimeSetting> workTimeSettings = workTimeSettingRepository.findByCodes(cid, workTimes.values().stream().collect(Collectors.toList()));
+		List<String> flexTimes = new ArrayList<>();
+		List<String> fixedWorks = new ArrayList<>();
+		List<String> flowWorks = new ArrayList<>();
+		List<String> diffTimeWorks = new ArrayList<>();
+		workTimes.entrySet().stream().forEach(c ->{
+			Optional<WorkTimeSetting>  workTimeSettingOpt = workTimeSettings.stream().filter(item -> item.getWorktimeCode().v().equals(c.getValue())).findFirst();
+			if (!workTimeSettingOpt.isPresent()) {
+				result.put(c.getKey(), designatedTimeCid);
+				return;
+			}
+			
+			// Flexible time
+			if (workTimeSettingOpt.get().getWorkTimeDivision().getWorkTimeDailyAtr().isFlex()) {
+				flexTimes.add(c.getValue());
+			} else {
+				switch (workTimeSettingOpt.get().getWorkTimeDivision().getWorkTimeMethodSet()) {
+				case FIXED_WORK:
+					fixedWorks.add(c.getValue());
+					return;
+				case FLOW_WORK:
+					flowWorks.add(c.getValue());
+					return;
+				case DIFFTIME_WORK:
+					diffTimeWorks.add(c.getValue());
+					return;
+				default:
+					return;
+				}
+
+			}
+		});
+
+		if(!flexTimes.isEmpty()) {
+			List<String> flexFilterTimes = flexTimes.stream().distinct().collect(Collectors.toList());
+			Map<String, DesignatedTime> flexDesignatedTime = getFlexTime(cid, flexFilterTimes);
+			workTimes.entrySet().stream().forEach(c ->{
+				DesignatedTime flexTime = flexDesignatedTime.get(c.getValue());
+				result.put(c.getKey(), flexTime);
+				
+			});
+		}
+		
+		if(!fixedWorks.isEmpty()) {
+			List<String> fixedFilterWorks = fixedWorks.stream().distinct().collect(Collectors.toList());
+			Map<String, DesignatedTime> fixedFilterWork = getFixedWork(cid, fixedFilterWorks);
+			workTimes.entrySet().stream().forEach(c ->{
+				DesignatedTime fixedWork = fixedFilterWork.get(c.getValue());
+				result.put(c.getKey(), fixedWork);
+				
+			});
+		}
+		
+		if(!flowWorks.isEmpty()) {
+			List<String> flowFilterWorks = flowWorks.stream().distinct().collect(Collectors.toList());
+			Map<String, DesignatedTime> flowFilterWork = getFlowWork(cid, flowFilterWorks);
+			workTimes.entrySet().stream().forEach(c ->{
+				DesignatedTime flowWork = flowFilterWork.get(c.getValue());
+				result.put(c.getKey(), flowWork);
+				
+			});
+		}
+		
+		if(!diffTimeWorks.isEmpty()) {
+			List<String> diffTimeFilterWorks = diffTimeWorks.stream().distinct().collect(Collectors.toList());
+			Map<String, DesignatedTime> diffTimeWorksMap = getDiffTimeWork(cid, diffTimeFilterWorks);
+			workTimes.entrySet().stream().forEach(c ->{
+				DesignatedTime flowWork = diffTimeWorksMap.get(c.getValue());
+				result.put(c.getKey(), flowWork);
+			});
+		}
+		
+		return result;
+	}
+	
 	/**
 	 * Get flexible time
 	 * 
@@ -350,6 +728,52 @@ public class OtherHolidayInfoService {
 			}
 		}
 		return getCompanySet(cid);
+	}
+	
+	/**
+	 * Get flexible time
+	 * 
+	 * @param cid
+	 * @param workTimeCD
+	 * @return
+	 */
+	private Map<String, DesignatedTime> getFlexTime(String cid, List<String> workTimeCDs) {
+		//DesignatedTime result = new DesignatedTime(new OneDayTime(0), new OneDayTime(0));
+		DesignatedTime designatedTimeCid = getCompanySet(cid);
+		Map<String, DesignatedTime> result = new HashMap<>();
+		List<FlexWorkSetting> flexWorks = flexWorkSettingRepository.getAllByCidAndWorkCodes(cid, workTimeCDs);
+		workTimeCDs.stream().forEach(c -> {
+			
+			Optional<FlexWorkSetting> flexWorkOpt = flexWorks.stream()
+					.filter(item -> item.getWorkTimeCode().v().equals(c)).findFirst();
+			
+			if (!flexWorkOpt.isPresent()) {
+				result.put(c, new DesignatedTime(new OneDayTime(0), new OneDayTime(0)));
+				return;
+			}
+			
+			Optional<WorkTimezoneOtherSubHolTimeSet> subHolTimeSet = flexWorkOpt.get().getCommonSetting()
+					.getSubHolTimeSet().stream()
+					.filter(i -> i.getOriginAtr().value == CompensatoryOccurrenceDivision.WorkDayOffTime.value
+							&& (i.getSubHolTimeSet().isUseDivision() == true))
+					.findFirst();
+			
+			if (subHolTimeSet.isPresent()) {
+				if (subHolTimeSet.get().getSubHolTimeSet().getSubHolTransferSetAtr().isSpecifiedTimeSubHol()) {
+					result.put(c, subHolTimeSet.get().getSubHolTimeSet().getDesignatedTime());
+					return;
+				} else {
+					result.put(c, new DesignatedTime(subHolTimeSet.get().getSubHolTimeSet().getCertainTime(),
+							new OneDayTime(0)));
+					return;
+				}
+			}
+
+			result.put(c, designatedTimeCid);
+
+		});
+		
+		return result;
 	}
 
 	/**
@@ -408,6 +832,49 @@ public class OtherHolidayInfoService {
 			return new DesignatedTime(workTime.getSubHolTimeSet().getCertainTime(), new OneDayTime(0));
 		}
 	}
+	
+	/**
+	 * ドメインモデル「固定勤務設定」を取得
+	 * 
+	 * @param cid
+	 * @param workTimeCD
+	 * @return
+	 */
+	private Map<String, DesignatedTime> getFixedWork(String cid, List<String> workTimeCDs) {
+		Map<String, DesignatedTime> result = new HashMap<>();
+		List<FixedWorkSetting> fixedWorks = fixedWorkSettingRepository.findByCidAndWorkTimeCodes(cid, workTimeCDs);
+		DesignatedTime designatedTimeCid = getCompanySet(cid);
+		workTimeCDs.stream().forEach(c -> {
+
+			Optional<FixedWorkSetting> fixedWorkOpt = fixedWorks.stream()
+					.filter(item -> item.getWorkTimeCode().v().equals(c)).findFirst();
+			if (!fixedWorkOpt.isPresent()) {
+				result.put(c, new DesignatedTime(new OneDayTime(0), new OneDayTime(0)));
+				return;
+			}
+
+			Optional<WorkTimezoneOtherSubHolTimeSet> workTimeOptional = fixedWorkOpt.get().getCommonSetting()
+					.getSubHolTimeSet().stream()
+					.filter(i -> i.getOriginAtr().value == CompensatoryOccurrenceDivision.WorkDayOffTime.value
+							&& (i.getSubHolTimeSet().isUseDivision() == true))
+					.findFirst();
+
+			if (!workTimeOptional.isPresent()) {
+				result.put(c, designatedTimeCid);
+				return;
+			}
+
+			WorkTimezoneOtherSubHolTimeSet workTime = workTimeOptional.get();
+			if (workTime.getSubHolTimeSet().getSubHolTransferSetAtr().isSpecifiedTimeSubHol()) {
+				result.put(c, workTime.getSubHolTimeSet().getDesignatedTime());
+				return;
+			} else {
+				result.put(c, new DesignatedTime(workTime.getSubHolTimeSet().getCertainTime(), new OneDayTime(0)));
+				return;
+			}
+		});
+		return result;
+	}
 
 	/**
 	 * ドメインモデル「流動勤務設定」を取得
@@ -436,6 +903,49 @@ public class OtherHolidayInfoService {
 		} else {
 			return new DesignatedTime(workTime.getSubHolTimeSet().getCertainTime(), new OneDayTime(0));
 		}
+	}
+	
+	/**
+	 * ドメインモデル「流動勤務設定」を取得
+	 * 
+	 * @param cid
+	 * @param workTimeCD
+	 * @return
+	 */
+	private Map<String, DesignatedTime> getFlowWork(String cid, List<String> workTimeCDs) {
+		Map<String, DesignatedTime> result = new HashMap<>();
+		List<FlowWorkSetting> flowWorks = flowWorkSettingRepository.findByCidAndWorkCodes(cid, workTimeCDs);
+		DesignatedTime designatedTimeCid = getCompanySet(cid);
+		workTimeCDs.stream().forEach(c -> {
+			Optional<FlowWorkSetting> flowWorkOpt = flowWorks.stream()
+					.filter(item -> item.getWorkingCode().v().equals(c)).findFirst();
+			if (!flowWorkOpt.isPresent()) {
+				result.put(c, new DesignatedTime(new OneDayTime(0), new OneDayTime(0)));
+				return;
+			}
+
+			Optional<WorkTimezoneOtherSubHolTimeSet> workTimeOptional = flowWorkOpt.get().getCommonSetting()
+					.getSubHolTimeSet().stream()
+					.filter(i -> i.getOriginAtr().value == CompensatoryOccurrenceDivision.WorkDayOffTime.value
+							&& (i.getSubHolTimeSet().isUseDivision() == true))
+					.findFirst();
+
+			if (!workTimeOptional.isPresent()) {
+				result.put(c, designatedTimeCid);
+				return;
+			}
+
+			WorkTimezoneOtherSubHolTimeSet workTime = workTimeOptional.get();
+			if (workTime.getSubHolTimeSet().getSubHolTransferSetAtr().isSpecifiedTimeSubHol()) {
+				result.put(c, workTime.getSubHolTimeSet().getDesignatedTime());
+				return;
+			} else {
+				result.put(c, new DesignatedTime(workTime.getSubHolTimeSet().getCertainTime(), new OneDayTime(0)));
+				return;
+			}
+		});
+
+		return result;
 	}
 
 	/**
@@ -466,7 +976,107 @@ public class OtherHolidayInfoService {
 			return new DesignatedTime(workTime.getSubHolTimeSet().getCertainTime(), new OneDayTime(0));
 		}
 	}
+	
+	/**
+	 * ドメインモデル「時差勤務設定」を取得
+	 * 
+	 * @param cid
+	 * @param workTimeCD
+	 * @return
+	 */
+	private Map<String, DesignatedTime> getDiffTimeWork(String cid, List<String> workTimeCDs) {
+		Map<String, DesignatedTime> result = new HashMap<>();
+		List<DiffTimeWorkSetting> diffTimes = diffTimeWorkSettingRepository.findByCidAndWorkCodes(cid, workTimeCDs);
+		DesignatedTime designatedTimeCid = getCompanySet(cid);
+		workTimeCDs.stream().forEach(c -> {
+			Optional<DiffTimeWorkSetting> diffTimeOpt = diffTimes.stream()
+					.filter(item -> item.getWorkTimeCode().v().equals(c)).findFirst();
 
+			if (!diffTimeOpt.isPresent()) {
+				result.put(c, new DesignatedTime(new OneDayTime(0), new OneDayTime(0)));
+				return;
+			}
+
+			Optional<WorkTimezoneOtherSubHolTimeSet> workTimeOptional = diffTimeOpt.get().getCommonSet()
+					.getSubHolTimeSet().stream()
+					.filter(i -> i.getOriginAtr().value == CompensatoryOccurrenceDivision.WorkDayOffTime.value
+							&& (i.getSubHolTimeSet().isUseDivision() == true))
+					.findFirst();
+
+			if (!workTimeOptional.isPresent()) {
+				result.put(c, designatedTimeCid);
+				return;
+			}
+
+			WorkTimezoneOtherSubHolTimeSet workTime = workTimeOptional.get();
+			if (workTime.getSubHolTimeSet().getSubHolTransferSetAtr().isSpecifiedTimeSubHol()) {
+				result.put(c, workTime.getSubHolTimeSet().getDesignatedTime());
+				return;
+			} else {
+				result.put(c, new DesignatedTime(workTime.getSubHolTimeSet().getCertainTime(), new OneDayTime(0)));
+				return;
+			}
+		});
+
+		return result;
+	}
+
+	public void updateOtherHolidayInfo(String cid, Map<String, OtherHolidayInfoInter> otherHolidayInfos) {
+
+		List<ExcessLeaveInfo> exLeavLst = new ArrayList<ExcessLeaveInfo>();
+		List<PublicHolidayRemain> pubHDLst  = new ArrayList<PublicHolidayRemain>();
+		Map<String, BigDecimal> remainLeftMap = new HashMap<>();
+		Map<String, BigDecimal> remainNumberMap = new HashMap<>();
+       
+        otherHolidayInfos.entrySet().stream().forEach(c ->{
+        	pubHDLst.add(c.getValue().getPubHD());
+        	exLeavLst.add(c.getValue().getExLeav());
+        	remainNumberMap.put(c.getKey(), c.getValue().getRemainNumber());
+        	remainLeftMap.put(c.getKey(), c.getValue().getRemainLeft());
+        });
+        
+        excessLeaveInfoRepository.updateAll(exLeavLst);
+		publicHolidayRemainRepository.updateAll(pubHDLst);
+		
+		Map<String, Boolean> checkEnableLeaveMap = checkEnableLeaveMan(new ArrayList<>(otherHolidayInfos.keySet()));
+		Map<String, Boolean> checkEnablePayoutMaP = checkEnablePayout(new ArrayList<>(otherHolidayInfos.keySet()));
+
+		Map<String, BigDecimal> remainLeftFinalMap = new HashMap<>();
+		Map<String, BigDecimal> remainNumberFinalMap = new HashMap<>();
+		// Item IS00366
+		checkEnableLeaveMap.entrySet().stream().forEach(c ->{
+			if(c.getValue()!= null) {
+				if(c.getValue().booleanValue()) {
+					BigDecimal remainNumber = remainNumberMap.get(c.getKey());
+					if (remainNumber != null) {
+						remainNumberFinalMap.put(c.getKey(), remainNumber);
+					}
+				}
+			}
+		});
+		
+		// Item IS00368
+		checkEnablePayoutMaP.entrySet().stream().forEach(c ->{
+			if(c.getValue()!= null) {
+				if(c.getValue().booleanValue()) {
+					BigDecimal remainLeft = remainLeftMap.get(c.getKey());
+					if (remainLeft != null) {
+						remainLeftFinalMap.put(c.getKey(), remainLeft);
+					}
+				}
+			}
+		});
+		
+		if(!remainNumberFinalMap.isEmpty()) {
+			setRemainNumber(cid, remainNumberFinalMap);
+		}
+		
+		if(!remainLeftFinalMap.isEmpty()) {
+			setRemainLeftItem(cid, remainLeftFinalMap);
+		}
+
+	}
+	
 	public void updateOtherHolidayInfo(String cid, PublicHolidayRemain pubHD, ExcessLeaveInfo exLeav,
 			BigDecimal remainNumber, BigDecimal remainLeft) {
 
@@ -505,6 +1115,30 @@ public class OtherHolidayInfoService {
 		}
 		return false;
 	}
+	
+	/**
+	 * IS00366 check Enable
+	 * 
+	 * @param cid
+	 * @param sids
+	 * @return
+	 */
+	public Map<String, Boolean> checkEnableLeaveMan(List<String> sids) {
+		Map<String, Boolean> result = new HashMap<>();
+		String cid = AppContexts.user().companyId();
+		Map<String, List<CompensatoryDayOffManaData>> comDayOffMap = comDayOffManaDataRepository.getBySidsAndCid(cid,  sids).stream().collect(Collectors.groupingBy(c -> c.getSID()));
+		Map<String, List<LeaveManagementData>> leaveManaMap = leaveManaDataRepository.getBySidsAndCid(cid,  sids).stream().collect(Collectors.groupingBy(c -> c.getSID()));
+		sids.stream().forEach(c ->{
+			List<CompensatoryDayOffManaData> comDayOff = comDayOffMap.get(c);
+			List<LeaveManagementData> leaveMana = leaveManaMap.get(c);
+			if((comDayOff == null || comDayOff.isEmpty()) && (leaveMana == null || leaveMana.isEmpty())) {
+				result.put(c, new Boolean(true));
+			}else {
+				result.put(c, new Boolean(false));
+			}
+		});
+		return result;
+	}
 
 	/**
 	 * IS00368 check Enable
@@ -519,5 +1153,29 @@ public class OtherHolidayInfoService {
 			return true;
 		}
 		return false;
+	}
+	
+	
+	/**
+	 * IS00368 check Enable
+	 * 
+	 * @param sid
+	 * @return
+	 */
+	public Map<String, Boolean> checkEnablePayout(List<String> sids) {
+		String cid = AppContexts.user().companyId();
+		Map<String, Boolean> result = new HashMap<>();
+		Map<String, List<SubstitutionOfHDManagementData>> substitutionOfHDManaDataMap = substitutionOfHDManaDataRepository.getBySidsAndCid(cid, sids).stream().collect(Collectors.groupingBy(c -> c.getSID()));
+		Map<String, List<PayoutManagementData>> payoutManagementDataMap =  payoutManagementDataRepository.getBySidsAndCid(cid, sids).stream().collect(Collectors.groupingBy(c -> c.getSID()));
+		sids.stream().forEach(c ->{
+			List<SubstitutionOfHDManagementData> substitutionOfHDManaData = substitutionOfHDManaDataMap.get(c);
+			List<PayoutManagementData> payoutManagementData = payoutManagementDataMap.get(c);
+			if((substitutionOfHDManaData == null || substitutionOfHDManaData.isEmpty()) && (payoutManagementData == null || payoutManagementData.isEmpty())) {
+				result.put(c, new Boolean(true));
+			}else {
+				result.put(c, new Boolean(false));
+			}
+		});
+		return result;
 	}
 }

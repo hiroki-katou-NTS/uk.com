@@ -12,6 +12,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import lombok.Value;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.shared.app.command.worktime.common.WorkTimeCommandFinder;
 import nts.uk.ctx.at.shared.app.command.worktime.common.WorkTimeCommonDeleteCommand;
@@ -93,6 +94,32 @@ public class WorkTimeWebServiceNew extends WebService {
 	@Path("findByCodes")
 	public List<WorkTimeDto> findByCodes(List<String> codes) {
 		return this.workTimeSetFinder.findByCodes(codes);
+	}
+	
+	/**
+	 * Find by codes.
+	 *
+	 * @param codes
+	 *            the codes
+	 * @return the list
+	 */
+	@POST
+	@Path("get_worktime_by_codes")
+	public List<WorkTimeDto> getWorkTimeByCodes(getWorkTimeDto param) {
+		return this.workTimeSetFinder.findByCodes(param.getWkTimeCodes());
+	}
+	
+	/**
+	 * Find by codes.
+	 *
+	 * @param codes
+	 *            the codes
+	 * @return the list
+	 */
+	@POST
+	@Path("find_by_code_with_no_master")
+	public List<WorkTimeDto> findByCodesWithNoMaster(List<String> codes) {
+		return this.workTimeSetFinder.findByCodesWithNoMaster(codes);
 	}
 
 	/**
@@ -219,4 +246,11 @@ public class WorkTimeWebServiceNew extends WebService {
 	public BreakTimeDayDto findBreakByCodes(@PathParam("workTimeCode") String workTimeCode) {
 		return this.workTimeSettingInfoFinder.findModeMethod(workTimeCode);
 	}
+	
+	
+}
+
+@Value
+class getWorkTimeDto {
+	List<String> wkTimeCodes;
 }

@@ -13,6 +13,29 @@ public interface EmInfoCtgDataRepository {
 	void updateEmpInfoCtgData(EmpInfoCtgData domain);
 	
 	void deleteEmpInfoCtgData(String recordId);
+	/**
+	 * @author lanlt
+	 * get thông tin data của employee by sids, ctgId
+	 * getBySidsAndCtgId
+	 * @param sids
+	 * @param ctgId
+	 * @return
+	 */
+	public List<EmpInfoCtgData> getBySidsAndCtgId(List<String> sids, String ctgId);
+	
+	/**
+	 * @author lanlt
+	 * addAll EmpInfoCtgData
+	 * @param domains
+	 */
+	public void addAll(List<EmpInfoCtgData> domains);
+	
+	/**
+	 * @author lanlt
+	 * updateAll EmpInfoCtgData
+	 * @param domains
+	 */
+	void updateAll(List<EmpInfoCtgData> domains);
 	
 	
 }

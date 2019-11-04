@@ -13,6 +13,7 @@ import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.record.dom.optitem.applicable.EmpConditionRepository;
 import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaRepository;
+import nts.uk.ctx.at.record.dom.optitem.calculation.disporder.FormulaDispOrderRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.record.dom.workrule.specific.SpecificWorkRuleRepository;
@@ -22,7 +23,6 @@ import nts.uk.ctx.at.shared.dom.ot.zerotime.ZeroTimeRepository;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.UsageUnitSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.UsageUnitSettingRepository;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employee.EmployeeWtSetting;
-//import nts.uk.ctx.at.shared.dom.statutory.worktime.employee.EmployeeWtSettingRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -61,11 +61,15 @@ public class CommonCompanySettingForCalcImpl implements CommonCompanySettingForC
 	//計算式
 	@Inject
 	private FormulaRepository formulaRepository;
+	//計算式の並び順
+	@Inject
+	private FormulaDispOrderRepository formulaOrderRepository;
 	//労働条件
 	@Inject
 	private EmpConditionRepository empConditionRepository;
 	
 	@Inject
+	//労働時間と日数の設定の利用単位の設定
 	private UsageUnitSettingRepository usageUnitSettingRepository;
 	
 //	@Inject
@@ -92,6 +96,7 @@ public class CommonCompanySettingForCalcImpl implements CommonCompanySettingForC
 									  bPUnitUseSettingRepository.getSetting(companyId),
 									  optionalItems,
 									  formulaRepository.find(companyId),
+									  formulaOrderRepository.findAll(companyId),
 									  empConditionRepository.findAll(companyId, optionalItems.stream().map(oi -> oi.getOptionalItemNo().v()).collect(Collectors.toList())),
 									  zeroTimeRepository.findByCId(companyId),
 									  specificWorkRuleRepository.findUpperLimitWkHourByCid(companyId),

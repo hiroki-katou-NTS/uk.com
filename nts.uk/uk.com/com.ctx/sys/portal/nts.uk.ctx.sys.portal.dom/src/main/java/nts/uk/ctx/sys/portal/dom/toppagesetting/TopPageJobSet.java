@@ -8,7 +8,7 @@ import nts.uk.ctx.sys.portal.dom.enums.MenuClassification;
 import nts.uk.ctx.sys.portal.dom.enums.System;
 
 /**
- * 
+ * 職位別トップページ設定
  * @author sonnh1
  *
  */
@@ -29,6 +29,9 @@ public class TopPageJobSet extends AggregateRoot {
 	private String jobId;
 
 	/** The person permission set. */
+	/**
+	 * 本人許可設定
+	 */
 	private PersonPermissionSetting personPermissionSet;
 
 	/** System */

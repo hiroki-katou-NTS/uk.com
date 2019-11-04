@@ -1,9 +1,8 @@
-module nts.uk.at.view.kdw008.b {  
+module nts.uk.at.view.kdw008.b {
     __viewContext.ready(function() {
-        let dataShare:any;
-         this.transferred.ifPresent(data => {
-            console.log(data);
-             dataShare = data;
+        let dataShare: any;
+        this.transferred.ifPresent(data => {
+            dataShare = data;
         });
         
         let screenModel = new viewmodel.ScreenModel(dataShare);

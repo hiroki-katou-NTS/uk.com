@@ -54,7 +54,7 @@ public class JpaFindEmployeeBaseRepo extends JpaRepository implements FindEmploy
 				.setParameter("companyId", companyId)
 				.getSingleResult();
 		} catch (NoResultException e) {
-			return Optional.empty();
+			throw new RuntimeException(e);
 		}
 		
 		// Convert query data.

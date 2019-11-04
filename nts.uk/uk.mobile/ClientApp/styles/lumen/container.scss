@@ -6,7 +6,18 @@ body {
             &+.container-fluid {
                 padding-top: 55px;
                 min-height: 100vh;
-                transition: all 0.6s cubic-bezier(0.810, -0.330, 0.345, 1.375);
+                // transition: all 0.6s cubic-bezier(0.810, -0.330, 0.345, 1.375);
+            }
+        }
+    }
+    &.modal-open,
+    &.show-side-bar {
+        .wrapper {
+            .sidebar {
+                &+.container,
+                &+.container-fluid {
+                    position: fixed;
+                }
             }
         }
     }
@@ -19,7 +30,7 @@ body {
                 .sidebar {
                     &+.container,
                     &+.container-fluid {
-                        padding-left: 270px;
+                        padding-left: 320px;
                     }
                 }
             }

@@ -158,8 +158,8 @@ module nts.uk.ui.koExtentions {
 //            });
             
             self.rangeName = nts.uk.util.isNullOrUndefined(rangeName) ? "期間入力フォーム" : nts.uk.resource.getControlName(rangeName);
-            self.startName = nts.uk.util.isNullOrUndefined(startName) ? "期間入力フォーム開始" : nts.uk.resource.getControlName(startName);
-            self.endName = nts.uk.util.isNullOrUndefined(endName) ? "期間入力フォーム終了" : nts.uk.resource.getControlName(endName);
+            self.startName = nts.uk.util.isNullOrUndefined(startName) ? self.rangeName + "開始" : nts.uk.resource.getControlName(startName);
+            self.endName = nts.uk.util.isNullOrUndefined(endName) ? self.rangeName + "終了" : nts.uk.resource.getControlName(endName);
             self.getMessage = nts.uk.resource.getMessage;
             
             ko.bindingHandlers["ntsDatePicker"].init(self.$start[0], function() {
@@ -257,14 +257,14 @@ module nts.uk.ui.koExtentions {
             let endDate = moment(oldValue.endDate, self.dateFormat);
             if (endDate.isBefore(startDate)) {
                 self.$ntsDateRange.ntsError('set', self.getMessage("MsgB_21", [self.rangeName]), "MsgB_21");    
-            } else if(self.dateFormat === "YYYY/MM/DD" && self.maxRange === "oneMonth"){
+            } else if(self.isFullDateFormat() && self.maxRange === "oneMonth"){
                 let maxDate = startDate.add(31, "days");
                 if(endDate.isSameOrAfter(maxDate)){
                     self.$ntsDateRange.ntsError('set', self.getMessage("MsgB_22", [self.rangeName]), "MsgB_22");         
                 }
             } else if (self.maxRange === "oneYear"){
                 let maxDate = _.cloneDeep(startDate);
-                if(self.dateFormat === "YYYY/MM/DD"){
+                if(self.isFullDateFormat()){
                     let currentDate = startDate.date();
                     let isEndMonth = currentDate === startDate.endOf("months").date();
                     let isStartMonth = currentDate === 1;
@@ -276,7 +276,7 @@ module nts.uk.ui.koExtentions {
                     } else {
                         maxDate = maxDate.date(currentDate - 1);    
                     }    
-                } else if(self.dateFormat === "YYYY/MM"){
+                } else if(self.isYearMonthFormat()){
                     maxDate = maxDate.add(1, 'year').add(-1, "months");   
                 } else {
                     maxDate = maxDate.add(1, 'year');
@@ -287,29 +287,41 @@ module nts.uk.ui.koExtentions {
             }  
         }
         
+        private isFullDateFormat(): boolean {
+            
+            return this.dateFormat === 'YYYY/MM/DD';    
+        }
+        
+        private isYearMonthFormat(): boolean {
+            
+            return this.dateFormat === 'YYYY/MM';    
+        }
+        
         public createStartBinding(parentBinding: any, name, format: string): any {
             let self = this;
             return { required: parentBinding.required, 
-                     name: parentBinding.startName ? self.startName : parentBinding.name, 
+                     name: self.startName, 
                      value: self.startValue, 
                      dateFormat: self.dateFormat, 
                      valueFormat: self.dateFormat, 
+                     'type': parentBinding.type,
                      enable: parentBinding.enable, 
-                     disabled: parentBinding.disabled 
-                     //,endDate: self.endValue 
+                     disabled: parentBinding.disabled,
+                     pickOnly: parentBinding.pickOnly 
                    };
         }
         
         public createEndBinding(parentBinding: any, name: string): any {
             let self = this;
             return { required: parentBinding.required, 
-                     name: parentBinding.endName ? self.endName : parentBinding.name, 
+                     name: self.endName, 
                      value: self.endValue, 
                      dateFormat: self.dateFormat, 
-                     valueFormat: self.dateFormat, 
+                     valueFormat: self.dateFormat,  
+                     'type': parentBinding.type,
                      enable: parentBinding.enable, 
-                     disabled: parentBinding.disabled 
-                     //,startDate: self.startValue 
+                     disabled: parentBinding.disabled,
+                     pickOnly: parentBinding.pickOnly
                    };
         }
     }
