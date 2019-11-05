@@ -81,3 +81,9 @@
 .app-left {
 	margin-left: 150px !important;
 }
+#grid1_virtualContainer {
+	border:1px solid #AAAAAA
+}
+#grid2_virtualContainer {
+	border:1px solid #AAAAAA
+}
