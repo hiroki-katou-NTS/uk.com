@@ -70,23 +70,16 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 $('#date1').trigger('validate');
                 self.getItemList(self.initSettingId(), value);
 
-            });
-            let subrightTbodyHeight = window.innerHeight - 328;
-            if(subrightTbodyHeight <= 329) {
-                $('#sub-right>table>tbody').css('max-height', '329px'); 
-            } else {
-                $('#sub-right>table>tbody').css('max-height', subrightTbodyHeight + 'px');
-            } 
+            })
             $( window ).resize(function() {
-                let subrightTbodyHeightResize = window.innerHeight - 328;
-                if(subrightTbodyHeightResize <= 329) {   
-                    $('#sub-right>table>tbody').css('max-height', '329px');
+                let subrightTbodyHeightResize = window.innerHeight - 320;
+                if(subrightTbodyHeightResize <= 32) {   
+                    $('#sub-right>table>tbody').css('max-height', '32px');
                 } else {
                     $('#sub-right>table>tbody').css('max-height', subrightTbodyHeightResize + 'px');
                 }
-                
                 console.log('resize');
-            });
+            }).trigger('resize');
         }
         
         getDetail(value: string): any{

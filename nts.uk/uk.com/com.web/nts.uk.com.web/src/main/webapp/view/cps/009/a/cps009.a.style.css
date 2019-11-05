@@ -1,4 +1,5 @@
 body {
+	-ms-overflow-x: hidden;
 	-ms-overflow-y: hidden;
 }
 .float-right {
@@ -50,6 +51,7 @@ input.ntsSearchBox {
 
 #sub-content-right {
 	margin-top: 10px;
+	width: 900px;
 }
 
 #sub-left {
@@ -255,7 +257,4 @@ abbr[title] {
 
 .selectionName {
 	width: 180px;
-}
-#master-wrapper {
-	min-width: 1280px;	
 }
