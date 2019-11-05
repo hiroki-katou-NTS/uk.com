@@ -91,7 +91,6 @@ module jcm007.a {
                                 self.enable_btnRemove(false);
                                 self.enable_disableInput(false);
                             }
-
                             let dataHeader = _.find(self.empInfoHeaderList, function(o) { return o.employeeId == itemSelectedTab2.sid; });
                             if (dataHeader) {
                                 self.setDataHeader(dataHeader);
@@ -101,6 +100,7 @@ module jcm007.a {
                             if (dataDetail) {
                                 self.setDataDetail(dataDetail);
                             }
+                            
                             $('#retirementDateId').focus();
                         } else {
                             self.initHeaderInfo();
@@ -134,13 +134,11 @@ module jcm007.a {
                     self.enable_btnRemove(false);
                     self.enable_disableInput(false);
                 }
-                
                 let dataHeader = _.find(self.empInfoHeaderList, function(o) { return o.employeeId == value.sid; });
                 self.setDataHeader(dataHeader);
-                
+
                 let dataDetail = _.find(self.employeeListTab2, function(o) { return o.sid == value.sid; });
                 self.setDataDetail(dataDetail);
-                
                 $('#retirementDateId').focus();
             });
         }
@@ -150,28 +148,20 @@ module jcm007.a {
             let self = this;
             self.itemSelectedTab1(data); 
             if (self.isNewMode) {
-
                 // アルゴリズム[登録状況チェック]を実行する(Thực hiện thuật toán "Check tình trạng đăng ký ")
                 block.grayout();
                 service.CheckStatusRegistration(data.employeeId).done(() => {
-                    
                     console.log('CheckStatusRegis DONE');
-                    
                 }).fail((error) => {
-                    
                     console.log('CheckStatusRegis FAIL');
-                   
                     block.clear();
                     nts.uk.ui.dialog.info(error);
                     return;
                 }).always(() => {
                     block.clear();
                 });
-
                 this.initRetirementInfo();
-
             }
-
             // アルゴリズム[社員情報の表示]を実行する (Thực hiện thuật toán "Hiển thị thông tin employee")
             this.setDataHeader(data);
         }
@@ -180,31 +170,24 @@ module jcm007.a {
         start(historyId : any) {
             let self = this;
             let dfd = $.Deferred<any>();
-            
             self.getListData(historyId).done(() => {
                 dfd.resolve();
             }).fail(() => {
                 dfd.reject();
             });
-
             return dfd.promise();
         }
         
         getListData(historyId : any, isAfterRemove : boolean) {
             let self = this;
             let dfd = $.Deferred<any>();
-            
             block.grayout();
-            
             service.getData().done((data1) => {
-                
                 // goi service アルゴリズム[社員情報リストを取得]を実行する
                 // (Thực hiện thuật toán [Get list thông tin nhân viên]) CCG029
                 if(data1.length != 0){
-                    
                     self.enable_tab2(true);
                     self.visible_tab2(true);
-                    
                     let listParam = [];
                     _.forEach(data1, function(value) {
                         listParam.push({
@@ -446,12 +429,13 @@ module jcm007.a {
                 command.scd = itemSelectedTab2.scd;
                 command.employeeName = itemSelectedTab2.employeeName;
                 command.status = 1;
-                self.preCheckAndRegisterNewEmpApproved(command);
+                self.preCheckAndRegisterNewEmpApproved(command).done(() => {
+                    self.enable_disableInput(true);
+                });
 
             } else if (self.selectedTab() == 'tab-2' && itemSelectedTab2 != null 
                        && itemSelectedTab2.status != self.status_Unregistered) {
-                        // 3.届出承認済みの退職者を新規登録する 
-                        //(Đăng ký mới người nghỉ hưu đã phê duyệt đơn/notification)
+                       // 4.退職者情報を修正する(Sửa thông tin người nghỉ hưu)
                 
                 command.historyId = itemSelectedTab2.historyId;
                 command.sId = itemSelectedTab2.sid;
@@ -459,82 +443,119 @@ module jcm007.a {
                 command.scd = itemSelectedTab2.scd;
                 command.employeeName = itemSelectedTab2.employeeName;
                 command.status = 2;
-                self.preCheckAndUpdateEmp(command);
-                self.enable_disableInput(false);
+                self.preCheckAndUpdateEmp(command).done(() => {
+                    self.enable_disableInput(false);
+                });
             }
         }
         
         //2.退職者を新規登録する(Đăng ký mới người nghỉ hưu)
         preCheckAndRegisterNewEmp(command) {
             let self = this;
+            let dfd = $.Deferred<any>();
+            let empCurrent = ko.toJS(self.currentEmployee());
             block.grayout();
             service.preCheck(command).done(() => {
                 block.clear();
                 console.log('PRECHECK DONE!!');
                 // アルゴリズム[警告チェック]を実行する(Thực hiện thuật toán [Warning check] )
-                if (command.selectedCode_Retiment == 3) {
+                if (empCurrent.selectedCode_Retiment == 3) {
                     // アルゴリズム[警告チェック]を実行する(Thực hiện thuật toán [Warning check] )  
                     let retirementDate = moment.utc(self.currentEmployee().retirementDate(), DateFormat.DEFAULT_FORMAT);
                     let dismissalNoticeDate = moment.utc(self.currentEmployee().dismissalNoticeDate(), DateFormat.DEFAULT_FORMAT);
                     let dayDifference = retirementDate.diff(dismissalNoticeDate, 'days');
-                    if (self.currentEmployee().dismissalNoticeDateAllow()) {
+                    if (empCurrent.dismissalNoticeDateAllow) {
                         if (dayDifference > 30) {
                             nts.uk.ui.dialog.confirm({ messageId: "MsgJ_JCM007_9" }).ifYes(() => {
-                                this.addRetireeInformation(command);
-                            }).ifNo(() => {
+                                this.addRetireeInformation(command).done(() => {
+                                    dfd.resolve();
+                                });
+                            }).ifNo(() => { });
+                        } else {
+                            this.addRetireeInformation(command).done(() => {
+                                dfd.resolve();
                             });
                         }
                     } else {
                         if (dayDifference < 30) {
                             nts.uk.ui.dialog.confirm({ messageId: "MsgJ_JCM007_8" }).ifYes(() => {
-                                this.addRetireeInformation(command);
-                            }).ifNo(() => {
+                                this.addRetireeInformation(command).done(() => {
+                                    dfd.resolve();
+                                });
+                            }).ifNo(() => { });
+                        } else {
+                            this.addRetireeInformation(command).done(() => {
+                                dfd.resolve();
                             });
                         }
                     }
                 } else {
-                    this.addRetireeInformation(command);
-                }
-            }).fail((mes) => {
-                block.clear();
-                nts.uk.ui.dialog.bundledErrors(mes);
-            });
-        }
-        
-        // 3.届出承認済みの退職者を新規登録する (Đăng ký mới người nghỉ hưu đã phê duyệt đơn/notification)
-        preCheckAndRegisterNewEmpApproved(command : any) {
-            let self = this;
-            block.grayout();
-            service.preCheck(command).done(() => {
-                block.clear();
-                console.log('PRECHECK DONE!!');
-                // アルゴリズム[警告チェック]を実行する(Thực hiện thuật toán [Warning check] )
-                if (command.selectedCode_Retiment == 3) {
-                    // アルゴリズム[警告チェック]を実行する(Thực hiện thuật toán [Warning check] )  
-                    let retirementDate = moment.utc(self.currentEmployee().retirementDate(), DateFormat.DEFAULT_FORMAT);
-                    let dismissalNoticeDate = moment.utc(self.currentEmployee().dismissalNoticeDate(), DateFormat.DEFAULT_FORMAT);
-                    let dayDifference = retirementDate.diff(dismissalNoticeDate, 'days');
-                    if (self.currentEmployee().dismissalNoticeDateAllow()) {
-                        if (dayDifference > 30) {
-                            nts.uk.ui.dialog.confirm({ messageId: "MsgJ_JCM007_9" }).ifYes(() => {
-                                this.registerNewEmpApproved(command);
-                            }).ifNo(() => {});
-                        }
-                    } else {
-                        if (dayDifference < 30) {
-                            nts.uk.ui.dialog.confirm({ messageId: "MsgJ_JCM007_8" }).ifYes(() => {
-                                this.registerNewEmpApproved(command);
-                            }).ifNo(() => {});
-                        }
-                    }
-                } else {
-                    this.registerNewEmpApproved(command);
+                    this.addRetireeInformation(command).done(() => {
+                        dfd.resolve();    
+                    });
                 }
             }).fail((mes) => {
                 self.enable_disableInput(true);
                 block.clear();
                 nts.uk.ui.dialog.bundledErrors(mes);
+                dfd.reject();
             });
+            return dfd.promise();
+        }
+        
+        // 3.届出承認済みの退職者を新規登録する (Đăng ký mới người nghỉ hưu đã phê duyệt đơn/notification)
+        preCheckAndRegisterNewEmpApproved(command : any) {
+            let self = this;
+            let dfd = $.Deferred<any>();
+            let empCurrent = ko.toJS(self.currentEmployee());
+            block.grayout();
+            service.preCheck(command).done(() => {
+                block.clear();
+                console.log('PRECHECK DONE!!');
+                // アルゴリズム[警告チェック]を実行する(Thực hiện thuật toán [Warning check] )
+                if (empCurrent.selectedCode_Retiment == 3) {
+                    // アルゴリズム[警告チェック]を実行する(Thực hiện thuật toán [Warning check] )  
+                    let retirementDate = moment.utc(self.currentEmployee().retirementDate(), DateFormat.DEFAULT_FORMAT);
+                    let dismissalNoticeDate = moment.utc(self.currentEmployee().dismissalNoticeDate(), DateFormat.DEFAULT_FORMAT);
+                    let dayDifference = retirementDate.diff(dismissalNoticeDate, 'days');
+                    if (empCurrent.dismissalNoticeDateAllow) {
+                        if (dayDifference > 30) {
+                            nts.uk.ui.dialog.confirm({ messageId: "MsgJ_JCM007_9" }).ifYes(() => {
+                                this.registerNewEmpApproved(command).done(() => {
+                                    dfd.resolve();
+                                });
+                            }).ifNo(() => { });
+                        } else {
+                            this.registerNewEmpApproved(command).done(() => {
+                                dfd.resolve();
+                            });
+                        }
+                    } else {
+                        if (dayDifference < 30) {
+                            nts.uk.ui.dialog.confirm({ messageId: "MsgJ_JCM007_8" }).ifYes(() => {
+                                this.registerNewEmpApproved(command).done(() => {
+                                    dfd.resolve();
+                                });
+                            }).ifNo(() => { });
+                        } else {
+                            this.registerNewEmpApproved(command).done(() => {
+                                dfd.resolve();
+                            });
+                        }
+                    }
+                } else {
+                    this.registerNewEmpApproved(command).done(() => {
+                        dfd.resolve();    
+                    });
+                }
+            }).fail((mes) => {
+                self.enable_disableInput(true);
+                block.clear();
+                nts.uk.ui.dialog.bundledErrors(mes);
+                dfd.reject();
+            });
+            return dfd.promise();
+        
         }
         
         registerNewEmpApproved(command : any){
@@ -560,43 +581,61 @@ module jcm007.a {
         }
         
         // 4.退職者情報を修正する(Sửa thông tin người nghỉ hưu)
-        preCheckAndUpdateEmp(command : any) {
+        preCheckAndUpdateEmp(command : any) : JQueryPromise<any>{
             let self = this;
+            let dfd = $.Deferred<any>();
+            let empCurrent = ko.toJS(self.currentEmployee());
             block.grayout();
             service.preCheck(command).done(() => {
                 block.clear();
                 console.log('PRECHECK DONE!!');
                 // アルゴリズム[警告チェック]を実行する(Thực hiện thuật toán [Warning check] )
-                if (command.selectedCode_Retiment == 3) {
+                if (empCurrent.selectedCode_Retiment == 3) {
                     // アルゴリズム[警告チェック]を実行する(Thực hiện thuật toán [Warning check] )  
                     let retirementDate = moment.utc(self.currentEmployee().retirementDate(), DateFormat.DEFAULT_FORMAT);
                     let dismissalNoticeDate = moment.utc(self.currentEmployee().dismissalNoticeDate(), DateFormat.DEFAULT_FORMAT);
                     let dayDifference = retirementDate.diff(dismissalNoticeDate, 'days');
-                    if (self.currentEmployee().dismissalNoticeDateAllow()) {
+                    if (empCurrent.dismissalNoticeDateAllow) {
                         if (dayDifference > 30) {
                             nts.uk.ui.dialog.confirm({ messageId: "MsgJ_JCM007_9" }).ifYes(() => {
-                                this.updateRetireeInformation(command);
-                            }).ifNo(() => {});
+                                this.updateRetireeInformation(command).done(() => {
+                                    dfd.resolve();
+                                });
+                            }).ifNo(() => { });
+                        } else {
+                            this.updateRetireeInformation(command).done(() => {
+                                dfd.resolve();
+                            });
                         }
                     } else {
                         if (dayDifference < 30) {
                             nts.uk.ui.dialog.confirm({ messageId: "MsgJ_JCM007_8" }).ifYes(() => {
-                                this.updateRetireeInformation(command);
-                            }).ifNo(() => {});
+                                this.updateRetireeInformation(command).done(() => {
+                                    dfd.resolve();
+                                });
+                            }).ifNo(() => { });
+                        } else {
+                            this.updateRetireeInformation(command).done(() => {
+                                dfd.resolve();
+                            });
                         }
                     }
                 } else {
-                    this.updateRetireeInformation(command);
+                    this.updateRetireeInformation(command).done(() => {
+                        dfd.resolve();    
+                    });
                 }
             }).fail((mes) => {
                 self.enable_disableInput(true);
                 block.clear();
                 nts.uk.ui.dialog.bundledErrors(mes);
+                dfd.reject();
             });
+            return dfd.promise();
         }
         
-        updateRetireeInformation(command : any){
-             let self = this;
+        updateRetireeInformation(command : any) : JQueryPromise<any>{
+            let self = this;
             let dfd = $.Deferred<any>();
             block.grayout();
             service.updateRetireeInformation(command).done(() => {
@@ -617,7 +656,7 @@ module jcm007.a {
             return dfd.promise();
         }
         
-        // アルゴリズム[退職者情報の追加]を実行する (Thực hiện thuật toán [Thêm thông tin người nghỉ hưu])
+        // 2.アルゴリズム[退職者情報の追加]を実行する (Thực hiện thuật toán [Thêm thông tin người nghỉ hưu])
         addRetireeInformation(command : any) {
             let self = this;
             let dfd = $.Deferred<any>();
@@ -718,22 +757,16 @@ module jcm007.a {
             self.currentEmployee().reaAndProForDis(dataDetail.reaAndProForDis == null ? '' :  dataDetail.reaAndProForDis);
             
             self.currentEmployee().naturalUnaReasons_1(dataDetail.naturalUnaReasons_1 == 0 ? false : true);
-            //self.currentEmployee().naturalUnaReasons_enable(dataDetail.naturalUnaReasons_1 == 0 ? false : true);
             self.currentEmployee().naturalUnaReasons_1Val(dataDetail.naturalUnaReasons_1Val == null ? '' :  dataDetail.naturalUnaReasons_1Val);
             self.currentEmployee().businessReduction_2(dataDetail.naturalUnaReasons_2 == 0 ? false : true);
-            //self.currentEmployee().businessReduction_enable(dataDetail.naturalUnaReasons_2 == 0 ? false : true);
             self.currentEmployee().businessReduction_2Val(dataDetail.naturalUnaReasons_2Val == null ? '' :  dataDetail.naturalUnaReasons_2Val);
             self.currentEmployee().seriousViolationsOrder_3(dataDetail.naturalUnaReasons_3 == 0 ? false : true);
-            //self.currentEmployee().seriousViolationsOrder_enable(dataDetail.naturalUnaReasons_3 == 0 ? false : true);
             self.currentEmployee().seriousViolationsOrder_3Val(dataDetail.naturalUnaReasons_3Val == null ? '' :  dataDetail.naturalUnaReasons_3Val);
             self.currentEmployee().unauthorizedConduct_4(dataDetail.naturalUnaReasons_4 == 0 ? false : true);
-            //self.currentEmployee().unauthorizedConduct_enable(dataDetail.naturalUnaReasons_4 == 0 ? false : true);
             self.currentEmployee().unauthorizedConduct_4Val(dataDetail.naturalUnaReasons_4Val == null ? '' :  dataDetail.naturalUnaReasons_4Val);
             self.currentEmployee().leaveConsiderableTime_5(dataDetail.naturalUnaReasons_5 == 0 ? false : true);
-            //self.currentEmployee().leaveConsiderableTime_enable(dataDetail.naturalUnaReasons_5 == 0 ? false : true);
             self.currentEmployee().leaveConsiderableTime_5Val(dataDetail.naturalUnaReasons_5Val == null ? '' :  dataDetail.naturalUnaReasons_5Val);
             self.currentEmployee().other_6(dataDetail.naturalUnaReasons_6 == 0 ? false : true);
-            //self.currentEmployee().other_enable(dataDetail.naturalUnaReasons_6 == 0 ? false : true);
             self.currentEmployee().other_6Val(dataDetail.naturalUnaReasons_6Val == null ? '' :  dataDetail.naturalUnaReasons_6Val);
         }
 
@@ -817,19 +850,54 @@ module jcm007.a {
             self.currentEmployee().enable_dismissalNoticeDate(param);
             self.currentEmployee().enable_dismissalNoticeDateAllow(param);
             self.currentEmployee().enable_reaAndProForDis(param);
+            
             self.currentEmployee().enable_naturalUnaReasons1(param);
+            if ((self.currentEmployee().naturalUnaReasons_1() == false) || 
+                (self.currentEmployee().naturalUnaReasons_1() == true && self.currentEmployee().enable_naturalUnaReasons1() == false)) {
+                    self.currentEmployee().naturalUnaReasons_enable(false);
+            }else if (self.currentEmployee().naturalUnaReasons_1() == true){
+                    self.currentEmployee().naturalUnaReasons_enable(true);
+            }
+            
             self.currentEmployee().enable_businessReduction2(param);
+            if ((self.currentEmployee().businessReduction_2() == false) || 
+                (self.currentEmployee().businessReduction_2() == true && self.currentEmployee().enable_businessReduction2() == false)) {
+                    self.currentEmployee().businessReduction_enable(false);
+            }else if (self.currentEmployee().businessReduction_2() == true && self.currentEmployee().enable_businessReduction2() == true){
+                    self.currentEmployee().businessReduction_enable(true);
+            }
+            
             self.currentEmployee().enable_seriousViolationsOrder3(param);
+            if ((self.currentEmployee().seriousViolationsOrder_3() == false) || 
+                (self.currentEmployee().seriousViolationsOrder_3() == true && self.currentEmployee().enable_seriousViolationsOrder3() == false)) {
+                    self.currentEmployee().seriousViolationsOrder_enable(false);
+            }else if (self.currentEmployee().seriousViolationsOrder_3() == true && self.currentEmployee().enable_seriousViolationsOrder3() == true){
+                    self.currentEmployee().seriousViolationsOrder_enable(true);
+            }
+            
             self.currentEmployee().enable_unauthorizedConduct4(param);
+            if ((self.currentEmployee().unauthorizedConduct_4() == false) || 
+                (self.currentEmployee().unauthorizedConduct_4() == true && self.currentEmployee().enable_unauthorizedConduct4() == false)) {
+                    self.currentEmployee().unauthorizedConduct_enable(false);
+            }else if (self.currentEmployee().unauthorizedConduct_4() == true && self.currentEmployee().enable_unauthorizedConduct4() == true){
+                    self.currentEmployee().unauthorizedConduct_enable(true);
+            }
+            
             self.currentEmployee().enable_leaveConsiderableTime5(param);
+            if ((self.currentEmployee().leaveConsiderableTime_5() == false) ||
+                (self.currentEmployee().leaveConsiderableTime_5() == true && self.currentEmployee().enable_leaveConsiderableTime5() == false)) {
+                self.currentEmployee().leaveConsiderableTime_enable(false);
+            } else if (self.currentEmployee().leaveConsiderableTime_5() == true && self.currentEmployee().enable_leaveConsiderableTime5() == true) {
+                self.currentEmployee().leaveConsiderableTime_enable(true);
+            }
+            
             self.currentEmployee().enable_other6(param);
-            self.currentEmployee().naturalUnaReasons_enable(param);
-            self.currentEmployee().businessReduction_enable(param);
-            self.currentEmployee().seriousViolationsOrder_enable(param);
-            self.currentEmployee().unauthorizedConduct_enable(param);
-            self.currentEmployee().leaveConsiderableTime_enable(param);
-            self.currentEmployee().other_enable(param);
-            console.log('enable_disableInput');
+            if ((self.currentEmployee().other_6() == false) ||
+                (self.currentEmployee().other_6() == true && self.currentEmployee().enable_other6() == false)) {
+                self.currentEmployee().other_enable(false);
+            } else if (self.currentEmployee().other_6() == true && self.currentEmployee().enable_other6() == true) {
+                self.currentEmployee().other_enable(true);
+            }
         }
     }
     class EmployeeModel {
