@@ -80,13 +80,13 @@ public class NotificationOfLossInsExportPDFService extends ExportService<Notific
 				healthInsLoss = healthInsLoss.stream().sorted(Comparator.comparing(InsLossDataExport::getOfficeCd).thenComparing(InsLossDataExport::getHealInsNumber)).collect(Collectors.toList());
 			}
 			if(domain.getInsuredNumber() == InsurPersonNumDivision.OUTPUT_THE_WELF_PENNUMBER) {
-				healthInsLoss = healthInsLoss.stream().sorted(Comparator.comparing(InsLossDataExport::getOfficeCd).thenComparing(InsLossDataExport::getHealInsNumber)).collect(Collectors.toList());
+				healthInsLoss = healthInsLoss.stream().sorted(Comparator.comparing(InsLossDataExport::getOfficeCd).thenComparing(InsLossDataExport::getWelfPenNumber)).collect(Collectors.toList());
 			}
 			if(domain.getInsuredNumber() == InsurPersonNumDivision.OUTPUT_HEAL_INSUR_UNION) {
-				healthInsLoss = healthInsLoss.stream().sorted(Comparator.comparing(InsLossDataExport::getOfficeCd).thenComparing(InsLossDataExport::getHealInsNumber)).collect(Collectors.toList());
+				healthInsLoss = healthInsLoss.stream().sorted(Comparator.comparing(InsLossDataExport::getOfficeCd).thenComparing(InsLossDataExport::getHealInsUnionNumber)).collect(Collectors.toList());
 			}
 			if(domain.getInsuredNumber() == InsurPersonNumDivision.OUTPUT_THE_FUN_MEMBER) {
-				healthInsLoss = healthInsLoss.stream().sorted(Comparator.comparing(InsLossDataExport::getOfficeCd).thenComparing(InsLossDataExport::getHealInsNumber)).collect(Collectors.toList());
+				healthInsLoss = healthInsLoss.stream().sorted(Comparator.comparing(InsLossDataExport::getOfficeCd).thenComparing(InsLossDataExport::getMemberNumber)).collect(Collectors.toList());
 			}
 		}
 
