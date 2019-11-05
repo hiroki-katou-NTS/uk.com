@@ -44,7 +44,7 @@ public class DefaultEmploymentFinder implements EmploymentFinder {
 
 		// Get All Employment
 		List<Employment> empList = this.repository.findAll(companyId);
-
+		
 		// Save to Memento
 		return empList.stream().map(employment -> {
 			EmploymentDto dto = new EmploymentDto();
@@ -53,6 +53,7 @@ public class DefaultEmploymentFinder implements EmploymentFinder {
 			return dto;
 		}).collect(Collectors.toList());
 	}
+	
 	
 	/* (non-Javadoc)
 	 * @see nts.uk.shr.find.employment.EmploymentFinder#findByCode(java.lang.String)
