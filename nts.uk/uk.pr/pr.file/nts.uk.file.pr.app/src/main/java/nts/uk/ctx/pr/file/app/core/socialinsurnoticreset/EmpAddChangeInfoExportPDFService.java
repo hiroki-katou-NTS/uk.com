@@ -5,6 +5,9 @@ import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.core.dom.adapter.employee.employee.EmployeeInfoAdapter;
+import nts.uk.ctx.pr.core.dom.adapter.employee.employee.EmployeeInfoEx;
+import nts.uk.ctx.pr.core.dom.adapter.person.PersonExport;
+import nts.uk.ctx.pr.core.dom.adapter.person.PersonExportAdapter;
 import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsuranceOffice;
 import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsuranceOfficeRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.individualwagecontract.EmployeeInfoImport;
@@ -49,6 +52,9 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
 
     private List<EmpAddChangeInfoExport> eList;
 
+    @Inject
+    private PersonExportAdapter personExportAdapter;
+
     @Override
     protected void handle(ExportServiceContext<NotificationOfLossInsExportQuery> exportServiceContext) {
         String userId = AppContexts.user().userId();
@@ -87,15 +93,19 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
             List<EmPensionFundPartiPeriodInfo> emPensionFunList = empAddChangeInfoExReposity.getEmPensionFundPartiPeriodInfo(empIds, cid);
             List<EmpBasicPenNumInfor> empBasicPenNumInforList = empBasicPenNumInforRepository.getAllEmpBasicPenNumInfor();
             List<EmpAddChangeInfo> empAddChangeInfoList = empAddChangeInfoRepository.getListEmpAddChange(empIds);
-            List<CurrentPersonResidence> currentPersonAddressList = CurrentPersonResidence.createListPerson(empIds);
             List<CurrentFamilyResidence> currentFamilyResidenceList = CurrentFamilyResidence.getListFamily();
-            List<EmployeeInfoImport> employeeInfoImportList = employeeInfoAdapter.getByListSid(empIds);
+            List<EmployeeInfoEx> employeeInfoExList = employeeInfoAdapter.findBySIds(empIds);
+            List<String> pIds = new ArrayList<>();
             eList = new ArrayList<>();
+            employeeInfoExList.forEach(i->{
+                pIds.add(i.getPId());
+            });
 
+            List<CurrentPersonResidence> currentPersonAddressList = CurrentPersonResidence.createListPerson(personExportAdapter.findByPids(pIds));
             empAddChangeInfoExportList.forEach(e->{
                 //Imported（給与）「個人現住所」
                 if(!currentPersonAddressList.isEmpty()){
-                    Optional<CurrentPersonResidence> cp = currentPersonAddressList.stream().filter(p->p.getEmpId().equals(e.getEmpId())).findFirst();
+                    Optional<CurrentPersonResidence> cp = currentPersonAddressList.stream().filter(p->p.getPId().equals(e.getPId())).findFirst();
                     if(cp.isPresent()) {
                         e.setPersonAddChangeDate(cp.get().getStartDate());
                     }
@@ -239,7 +249,7 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
             //Imported（給与）「個人前住所」
             if(!currentPersonAddressList.isEmpty()) {
                 currentPersonAddressList.forEach(k->{
-                    Optional<EmpAddChangeInfoExport> em =  eList.stream().filter(i->i.getEmpId().equals(k.getEmpId())).findFirst();
+                    Optional<EmpAddChangeInfoExport> em =  eList.stream().filter(i->i.getPId().equals(k.getPId())).findFirst();
                     if(em.isPresent()&& domain.getSubmittedName() == SubNameClass.PERSONAL_NAME) {
                         em.get().setNameKanaPs(k.getPersonNameKana());
                         em.get().setFullNamePs(k.getPersonName());

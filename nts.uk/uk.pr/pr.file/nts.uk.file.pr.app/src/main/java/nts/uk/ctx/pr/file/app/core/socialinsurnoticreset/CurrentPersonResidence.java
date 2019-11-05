@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.pr.core.dom.adapter.person.PersonExport;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +23,7 @@ import java.util.List;
 @AllArgsConstructor
 public class CurrentPersonResidence {
 
-    private String empId;
+    private String pId;
 
     /**
      * 郵便番号
@@ -80,22 +81,22 @@ public class CurrentPersonResidence {
     private GeneralDate birthDate;
 
 
-    public static List<CurrentPersonResidence> createListPerson(List<String> empIds) {
+    public static List<CurrentPersonResidence> createListPerson(List<PersonExport> personExportList) {
         List<CurrentPersonResidence> currentPersonResidenceList = new ArrayList<>();
-        empIds.forEach(i->{
+        personExportList.forEach(i->{
             CurrentPersonResidence c = new CurrentPersonResidence(
-                     i,
+                     i.getPersonId(),
                     "1230012",
                     "トウキョウト",
                     "トウキョウクトウキョウ1-1-1",
                     "東京都",
                     "東京区東京1-1-1",
-                     GeneralDate.fromString("1992/10/01","yyyy/MM/dd" ),
-                    "person NameKana",
-                    "person Name",
-                    "todokede NameKana",
-                    "todokede Name",
-                     GeneralDate.fromString("2019/01/01","yyyy/MM/dd" ));
+                    i.getBirthDate(),
+                    i.getPersonNameGroup().getPersonName().getFullNameKana(),
+                    i.getPersonNameGroup().getPersonName().getFullName(),
+                    i.getPersonNameGroup().getTodokedeFullName().getFullNameKana(),
+                    i.getPersonNameGroup().getTodokedeFullName().getFullName(),
+                    GeneralDate.fromString("2019/01/01","yyyy/MM/dd" ));
             currentPersonResidenceList.add(c);
         });
         return currentPersonResidenceList;

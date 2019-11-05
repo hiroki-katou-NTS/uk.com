@@ -32,10 +32,10 @@ public class CompanyInformation {
 
     public CompanyInformation(){
         this.companyId = "11111";
-        this.companyName = "companyName";
-        this.companyNameReference = "companyNameReference";
-        this.phoneNumber = "09827344";
-        this.add1 = "add1";
-        this.add2 = "add2";
+        this.companyName = "株式会社 健保産業";
+        this.companyNameReference = "健保 良一";
+        this.phoneNumber = "354326789";
+        this.add1 = "杉並区";
+        this.add2 = "高井戸３－２－１";
     }
 }
