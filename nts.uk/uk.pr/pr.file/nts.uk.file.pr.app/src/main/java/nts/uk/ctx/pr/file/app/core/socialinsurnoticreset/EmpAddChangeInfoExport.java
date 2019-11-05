@@ -14,6 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class EmpAddChangeInfoExport {
+    private String scd;
     private String empId;
     private String pId;
     private String companyId;
