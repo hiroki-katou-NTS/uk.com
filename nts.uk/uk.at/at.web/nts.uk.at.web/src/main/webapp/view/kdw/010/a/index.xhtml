@@ -55,7 +55,7 @@
 
 							<td>
 								<div data-bind="with:maxContinuousDay">
-									<input tabindex="3" class="nts-input"
+									<input tabindex="3"
 										data-bind="ntsNumberEditor:{
 										name: '#[KDW010_4]',
 										constraint:'ContinuousVacationDays',
@@ -79,14 +79,14 @@
 							<td>
 								<button tabindex="4"
 									data-bind="enable:enableState,click:function(data){openKDL002Dialog(targetType),data}">#{i18n.getText('KDW010_6')}</button>
-								<input class="nts-input"
+								<input class="nts-input1"
 								data-bind="ntsTextEditor:{
 										 name: '#[KDW010_5]',
                                          value: joinNameTargetWorkType,
                                          required: true,
                                          enable: enableState,
                                          readonly:true,
-                                         option: {width: '940px'}}" /></td>
+                                         option: {width: window.innerWidth - 360 + 'px'}}" /></td>
 						</tr>
 						<tr class="spacer"></tr>
 						<tr class="row">
@@ -97,12 +97,12 @@
 							<td>
 								<button tabindex="5"
 									data-bind="enable:enableState, click:function(data){openKDL002Dialog(ignoreType),data}">#{i18n.getText('KDW010_6')}</button>
-								<input tabindex="5" class="nts-input"
+								<input tabindex="5" class="nts-input1"
 								data-bind="ntsTextEditor:{
                                          value: joinNameIgnoreWorkType,
                                          enable: enableState,
                                          readonly:true,
-                                         option: {width: '940px'}}" /></td>
+                                         option: {width: window.innerWidth - 360 + 'px'}}" /></td>
 						</tr>
 						<tr class="spacer"></tr>
 						<tr class="row">
