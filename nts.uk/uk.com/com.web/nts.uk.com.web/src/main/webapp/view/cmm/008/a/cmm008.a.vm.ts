@@ -11,7 +11,8 @@ module nts.uk.com.view.cmm008.a {
             empList: KnockoutObservableArray<ItemModel>;
             enableEmpCode: KnockoutObservable<boolean>;
             isUpdateMode: KnockoutObservable<boolean>;
-            
+            itemListMatter: KnockoutObservableArray<ItemModel>;
+            selectedCode1: KnockoutObservable<string>;
             constructor() {
                 var self = this;
 
@@ -19,6 +20,7 @@ module nts.uk.com.view.cmm008.a {
                 self.enableDelete = ko.observable(true);
                 self.employmentModel = ko.observable(new EmploymentModel);
                 self.selectedCode = ko.observable("");
+                
                 self.selectedCode.subscribe(function(empCode) {
                     if (empCode) {
                         self.clearErrors();
@@ -40,6 +42,15 @@ module nts.uk.com.view.cmm008.a {
 
                 self.empList = ko.observableArray<ItemModel>([]);
                 self.enableEmpCode = ko.observable(false);
+                
+                //Item List Master Common
+                 self.itemListMatter = ko.observableArray([
+                        new ItemModel('1', '基本給'),
+                        new ItemModel('2', '役職手当'),
+                        new ItemModel('3', '基本給ながい文字列ながい文字列ながい文字列')
+        ]);
+                self.selectedCode1 = ko.observable('1');
+                
             }
 
             /**
@@ -314,6 +325,15 @@ module nts.uk.com.view.cmm008.a {
          * Class ItemModel
          */
         class ItemModel {
+            code: string;
+            name: string;
+            constructor(code: string, name: string) {
+                this.code = code;
+                this.name = name;
+            }
+        }
+        /** Item MasterCombobox **/
+        class ItemMaster {
             code: string;
             name: string;
             constructor(code: string, name: string) {

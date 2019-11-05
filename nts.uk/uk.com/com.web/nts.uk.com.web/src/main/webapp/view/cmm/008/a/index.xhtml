@@ -20,6 +20,7 @@
 				nts.uk.ctx.bs.employee.dom.employment.EmploymentName
 				nts.uk.ctx.bs.employee.dom.employment.EmpExternalCode
 				nts.uk.shr.com.primitive.Memo
+				
 			</com:ValidatorScript>
 		</ui:define>
 
@@ -94,7 +95,20 @@
 									data-bind="ntsMultilineEditor: { value: memo, name: '#[CMM008_10]', constraint: 'Memo'}" />
 							</div>
 						</div>
-						
+						<div class="fixed-flex-layout">
+							<div data-bind="ntsFormLabel: {required: true}" class="width-label fixed-flex-layout-left">
+								<label>雇用形態</label>
+							</div>
+							<div id="combo-box" data-bind="ntsComboBox: {
+								options: $parent.itemListMatter,
+								optionsValue: 'code',
+								visibleItemsCount: 5,
+								value: $parent.selectedCode1,
+								optionsText: 'name',
+								columns: [
+									{ prop: 'name', length: 10 },
+								]}"></div>
+						</div>
 					</div>
 				</div>
 			</div>
