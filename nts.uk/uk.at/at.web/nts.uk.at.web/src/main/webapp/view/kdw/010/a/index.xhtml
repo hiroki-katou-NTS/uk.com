@@ -76,17 +76,17 @@
 								<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDW010_5')}</div>
 							</td>
 
-							<td><input class="nts-input"
+							<td>
+								<button tabindex="4"
+									data-bind="enable:enableState,click:function(data){openKDL002Dialog(targetType),data}">#{i18n.getText('KDW010_6')}</button>
+								<input class="nts-input"
 								data-bind="ntsTextEditor:{
 										 name: '#[KDW010_5]',
                                          value: joinNameTargetWorkType,
                                          required: true,
                                          enable: enableState,
                                          readonly:true,
-                                         option: {width: '180px'}}" />
-
-								<button tabindex="4"
-									data-bind="enable:enableState,click:function(data){openKDL002Dialog(targetType),data}">#{i18n.getText('KDW010_6')}</button></td>
+                                         option: {width: '940px'}}" /></td>
 						</tr>
 						<tr class="spacer"></tr>
 						<tr class="row">
@@ -94,15 +94,15 @@
 								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDW010_7')}</div>
 							</td>
 
-							<td><input tabindex="5" class="nts-input"
+							<td>
+								<button tabindex="5"
+									data-bind="enable:enableState, click:function(data){openKDL002Dialog(ignoreType),data}">#{i18n.getText('KDW010_6')}</button>
+								<input tabindex="5" class="nts-input"
 								data-bind="ntsTextEditor:{
                                          value: joinNameIgnoreWorkType,
                                          enable: enableState,
                                          readonly:true,
-                                         option: {width: '180px'}}" />
-
-								<button tabindex="5"
-									data-bind="enable:enableState, click:function(data){openKDL002Dialog(ignoreType),data}">#{i18n.getText('KDW010_6')}</button></td>
+                                         option: {width: '940px'}}" /></td>
 						</tr>
 						<tr class="spacer"></tr>
 						<tr class="row">
