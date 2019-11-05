@@ -37,6 +37,11 @@ module nts.uk.at.view.kaf018.e.viewmodel {
             self.person = TransmissionAttr.PERSON;
             self.daily = TransmissionAttr.DAILY;
             self.monthly = TransmissionAttr.MONTHLY;
+            window.onresize = function(event) {
+            	$("#gridE_scrollContainer").height(window.innerHeight - 294);
+            	$("#gridE_displayContainer").height(window.innerHeight - 294);
+            	$("#gridE_container").height(window.innerHeight - 255);
+            };
         }
 
         /**
@@ -119,7 +124,7 @@ module nts.uk.at.view.kaf018.e.viewmodel {
             var self = this;
             $("#gridE").ntsGrid({
                 width: self.ntsGridWidthCal(),
-                height: window.outerHeight - 360 + 'px',
+                height: window.innerHeight - 250 + 'px',
                 dataSource: self.listWkpStatusConfirm,
                 primaryKey: 'code',
                 rowVirtualization: true,

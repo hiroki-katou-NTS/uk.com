@@ -22,7 +22,13 @@ module nts.uk.at.view.kaf018.b.viewmodel {
         listWorkplace: Array<model.WorkplaceInfor>;
         inputContent: any;
         isCheckedAll: KnockoutObservable<boolean> = ko.observable(false);
-        constructor() { }
+        constructor() { 
+        	window.onresize = function(event) {
+            	$("#gridB_scrollContainer").height(window.innerHeight - 269);
+            	$("#gridB_displayContainer").height(window.innerHeight - 269);
+            	$("#gridB_container").height(window.innerHeight - 240);
+            };
+        }
 
         startPage(): JQueryPromise<any> {
             var self = this;
@@ -164,7 +170,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
             var self = this;
             $("#gridB").ntsGrid({
                 width: '850px',
-                height: window.outerHeight - 350 + 'px',
+                height: window.innerHeight - 240 + 'px',
                 dataSource: self.tempData,
                 primaryKey: 'workplaceId',
                 rowVirtualization: true,
