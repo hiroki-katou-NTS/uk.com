@@ -46,8 +46,8 @@ module nts.uk.at.view.kdw002.c {
 
                 this.bussinessColumn = ko.observableArray([
                     { headerText: 'ID', key: 'roleId', width: 100, hidden: true },
-                    { headerText: getText('KDW002_12'), key: 'roleCode', width: 100 },
-                    { headerText: getText('KDW002_4'), key: 'roleName', width: 150, formatter: _.escape },
+                    { headerText: getText('KDW002_12'), key: 'roleCode', width: 40 },
+                    { headerText: getText('KDW002_4'), key: 'roleName', width: 230, formatter: _.escape },
                 ]);
 
                 self.currentRoleId = ko.observable('');
@@ -92,7 +92,7 @@ module nts.uk.at.view.kdw002.c {
                                 self.datasources(self.dailyServiceTypeControl().displayAndInput);
                                 $("#grid").igGrid({
                                     primaryKey: "itemDailyID",
-                                    height: 400,
+                                    height: window.innerHeight - 250,
                                     dataSource: ko.mapping.toJSON(self.datasources()),
                                     autoGenerateColumns: false,
                                     //alternateRowStyles: false,
@@ -190,6 +190,11 @@ module nts.uk.at.view.kdw002.c {
                 });
 
                 self.txtSearch = ko.observable("");
+                window.onresize = function(evt) {
+                    $('#grid_container').height(window.innerHeight - 250); 
+                    $('#grid_scroll').height(window.innerHeight - 250); 
+                    $('#grid_footer_container').height(window.innerHeight - 250); 
+                }
             }
             
             jumpToHome(sidebar): void {

@@ -83,7 +83,7 @@ td:nth-child(3), td:nth-child(4), td:nth-child(5) {
 }
 
 .fixed-flex-layout-left {
-	 width: 305px !important;
+	width: 325px !important;
     height: 260px !important;
 }
 
@@ -97,4 +97,7 @@ td:nth-child(3), td:nth-child(4), td:nth-child(5) {
 */
 table#grid tbody td:nth-child(1) {
     text-align: right;
+}
+#grid_scroll {
+    border-bottom:1px solid #dddddd
 }
