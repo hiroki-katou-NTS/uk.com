@@ -271,6 +271,7 @@ project (':pr.file:nts.uk.file.pr.app') {
  	 	compile project (':pr.ctx:formula:nts.uk.ctx.pr.formula.dom')
  	 	
  	 	compile group: 'aspose', name: 'cells', version: '9.0.0'
+		compile group: 'aspose', name: 'aspose.pdf', version: '19.10'
 	}
 }
 
@@ -285,6 +286,7 @@ project (':pr.file:nts.uk.file.pr.infra') {
 		compile group: 'com', name: 'nts.uk.ctx.basic.infra', version: '0.1'
 		
 		compile group: 'aspose', name: 'cells', version: '9.0.0'
+		compile group: 'aspose', name: 'aspose.pdf', version: '19.10'
 	}
 }
 
@@ -295,6 +297,7 @@ project (':pr.web:nts.uk.pr.web') {
 	}
 	dependencies {
 		compile group: 'com.shr', name: 'nts.uk.shr.com', version: '0.2.3'
+		runtime group: 'aspose', name: 'aspose.pdf', version: '19.10'
 		providedCompile group: 'com.sun.faces', name: 'jsf-api', version: '2.2.13'
 		// Java Mail
 		runtime group: 'javax.mail', name: 'mail', version: '1.4.7'
