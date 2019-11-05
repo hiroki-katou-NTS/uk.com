@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Stateless
-public class JpaEmpInsReportSettingRepository extends JpaRepository implements EmpInsReportSettingExRepository {
+public class JpaEmpInsReportSettingExRepository extends JpaRepository implements EmpInsReportSettingExRepository {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QqsmtEmpInsEsmHist f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.empInsEsmHistPk.cid =:cid AND  f.empInsEsmHistPk.sid =:sid AND  f.empInsEsmHistPk.histId =:histId ";
