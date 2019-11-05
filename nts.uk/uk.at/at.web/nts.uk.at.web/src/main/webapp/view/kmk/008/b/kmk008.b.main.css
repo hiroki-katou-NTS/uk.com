@@ -1,5 +1,6 @@
 .contents-area {
-	/* width: 1200px !important; */
+	overflow-y: scroll; 
+	height: 495px;
 }
 
 .sidebar-content-header > button {
@@ -20,16 +21,16 @@
 }
 
 .tabpanel-1-contents-area-left {
-	width: 440px;
-	margin-left: 40px;
-	margin-top: 17px;
+	width: 400px;
+	margin-left: 25px;
+	margin-top: 25px;
 	float: left;
 	clean: right;
 }
 
 .tabpanel-1-contents-area-right {
 	width: 400px;
-	margin-top: 20px;
+	margin-top: 25px;
 	float: left;
 	clean: right;
 }
@@ -79,4 +80,10 @@
 #func-notifier-errors {
 	top: 140px !important;
 	left: 125px !important;
+}
+#sidebar {
+	height: 99% !important;
+}
+.sidebar-content {
+	width: 1153px;
 }

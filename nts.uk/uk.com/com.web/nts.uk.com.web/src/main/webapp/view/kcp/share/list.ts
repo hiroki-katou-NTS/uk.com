@@ -922,7 +922,7 @@ module kcp.share.list {
             var multiSelectColSize = data.isMultiSelect ? 55 : 0;
             var totalColumnSize: number = data.maxWidth ? data.maxWidth : codeColumnSize + 170 + companyColumnSize
                 + alreadySettingColSize + multiSelectColSize;
-            var minTotalSize = 350;
+            var minTotalSize = 280;
             var totalRowsHeight = heightOfRow * this.maxRows + 20;
             var totalHeight: number = self.calcTotalHeightRev(data);
             
@@ -952,8 +952,8 @@ module kcp.share.list {
                 optionalColumnSize: optionalColumnSize
             };
             
-            if (data.maxWidth && data.maxWidth <= 350) {
-                data.maxWidth = 350;
+            if (data.maxWidth && data.maxWidth <= 280) {
+                data.maxWidth = 280;
             }
         }
         
@@ -1208,7 +1208,7 @@ var LIST_COMPONENT_HTML = `<style type="text/css">
                 data-bind="attr: {tabindex: tabIndex.baseDateInput}, ntsDatePicker: {dateFormat: 'YYYY/MM/DD', value: baseDate, name: getItemNameForBaseDate(), required: true}"></div>
             <button
                 data-bind="attr: {tabindex: tabIndex.decideButton}, click: reload"
-                style="width: 100px">`+ListComponentTextResource.KCP003_3+`</button>
+                style="width: 50px">`+ListComponentTextResource.KCP003_3+`</button>
         <!-- /ko -->
         <!-- Upgrade: Search By closureId-->
         <!-- ko if: isDisplayClosureSelection -->
