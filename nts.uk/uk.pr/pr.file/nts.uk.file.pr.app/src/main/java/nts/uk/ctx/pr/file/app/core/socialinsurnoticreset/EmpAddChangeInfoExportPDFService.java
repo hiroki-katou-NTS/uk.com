@@ -111,6 +111,11 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
                     }
                 }
 
+                Optional<EmployeeInfoEx> el = employeeInfoExList.stream().filter(ee->ee.getEmployeeId().equals(e.getEmpId())).findFirst();
+                if(el.isPresent()){
+                    e.setScd(el.get().getEmployeeCode());
+                }
+
                 //Imported（給与）「家族情報」
                 //Imported（給与）「家族現住所」
                 if(!currentFamilyResidenceList.isEmpty()){
@@ -357,11 +362,11 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
 
 		    if(!eList.isEmpty()){
                 if(domain.getOutputOrder() == SocialInsurOutOrder.EMPLOYEE_CODE_ORDER) {
-                    eList = eList.stream().sorted(Comparator.comparing(EmpAddChangeInfoExport::getCompanyId).thenComparing(EmpAddChangeInfoExport::getEmpId, Comparator.naturalOrder())).collect(Collectors.toList());
+                    eList = eList.stream().sorted(Comparator.comparing(EmpAddChangeInfoExport::getScd, Comparator.naturalOrder())).collect(Collectors.toList());
                 }
 
                 if(domain.getOutputOrder() == SocialInsurOutOrder.EMPLOYEE_KANA_ORDER) {
-                    eList = eList.stream().sorted(Comparator.comparing(EmpAddChangeInfoExport::getNameKanaPs, Comparator.naturalOrder()).thenComparing(EmpAddChangeInfoExport::getEmpId, Comparator.naturalOrder())).collect(Collectors.toList());
+                    eList = eList.stream().sorted(Comparator.comparing(EmpAddChangeInfoExport::getNameKanaPs, Comparator.naturalOrder()).thenComparing(EmpAddChangeInfoExport::getScd, Comparator.naturalOrder())).collect(Collectors.toList());
                 }
             }
 
