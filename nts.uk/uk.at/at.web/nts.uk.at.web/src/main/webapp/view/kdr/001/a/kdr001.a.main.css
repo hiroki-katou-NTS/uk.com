@@ -34,10 +34,10 @@
 	display: flex;
 }
 .panel.panel-frame {
-	height: 430px;
+	height: 417px;
 	width: 525px;
 	min-width: 525px;
-	margin-top: 20px;
+	margin-top: 15px;
 }
 body {
 	-ms-overflow-x: hidden;
