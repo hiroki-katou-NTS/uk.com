@@ -404,7 +404,7 @@ module nts.uk.com.view.cmf003.b {
                 });
                 
                 $(window).resize(() => {
-                    let calcRows = Math.round((window.innerHeight - 548)/24);
+                    let calcRows = Math.round((window.innerHeight - 480)/24);
                     if(calcRows <=3) {
                         self.maxRows(3);    
                     } else {
