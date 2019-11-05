@@ -596,7 +596,7 @@ module jcm007.a {
                     let dismissalNoticeDate = moment.utc(self.currentEmployee().dismissalNoticeDate(), DateFormat.DEFAULT_FORMAT);
                     let dayDifference = retirementDate.diff(dismissalNoticeDate, 'days');
                     if (empCurrent.dismissalNoticeDateAllow) {
-                        if (dayDifference > 30) {
+                        if (dayDifference >= 30) {
                             nts.uk.ui.dialog.confirm({ messageId: "MsgJ_JCM007_9" }).ifYes(() => {
                                 this.updateRetireeInformation(command).done(() => {
                                     dfd.resolve();
@@ -732,7 +732,7 @@ module jcm007.a {
             let workplaceCode  = data.workplaceCode == null ? '' : data.workplaceCode;
             let workplaceName  = data.workplaceName == null ? '' : data.workplaceName;
                 
-            self.currentEmployee().avatarPerson( data.avartaFileId ? liveView(data.avartaFileId) : 'images/avatar.svg');
+            self.currentEmployee().avatarPerson( data.avartaFileId ? liveView(data.avartaFileId) : 'images/avatar.png');
             self.currentEmployee().codeNameEmp( data.employeeCode + ' ' + data.businessName);
             self.currentEmployee().department( departmentCode + ' ' + departmentName );
             self.currentEmployee().position( positionCode + ' ' + positionName );
@@ -773,7 +773,7 @@ module jcm007.a {
         initHeaderInfo() {
             let self = this;
             self.enable_btnRemove(false);
-            self.currentEmployee().avatarPerson('images/avatar.svg');
+            self.currentEmployee().avatarPerson('images/avatar.png');
             self.currentEmployee().codeNameEmp('');
             self.currentEmployee().department('');
             self.currentEmployee().position('');
@@ -902,7 +902,7 @@ module jcm007.a {
     }
     class EmployeeModel {
         
-        avatarPerson : KnockoutObservable<string> = ko.observable('images/avatar.svg');
+        avatarPerson : KnockoutObservable<string> = ko.observable('images/avatar.png');
         codeNameEmp: KnockoutObservable<string> = ko.observable('');   // A222_3
         department: KnockoutObservable<string> = ko.observable('');   // A222_5
         position: KnockoutObservable<string> = ko.observable('');   // A222_7

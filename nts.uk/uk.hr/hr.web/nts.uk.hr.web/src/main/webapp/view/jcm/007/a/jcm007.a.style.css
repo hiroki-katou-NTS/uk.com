@@ -30,7 +30,7 @@
 
 .header {
 	border: 1px solid black;
-	height: 170px;
+	height: 150px;
 	border-radius: 15px;
 	margin-top: 0px;
 	width: 545px;
@@ -44,16 +44,16 @@
 
 .header-right{
 	float: right;
-	margin: 10px;
-	
+	margin-right: 7px;
+    margin-top: 7px;
 }
+
 .avatar{
-	width: 130px;
-    height: 144px;
+	width: 100px;
+    height: 129px;
     cursor: pointer;
     border: 1px solid DarkGray;
-    padding-top: 3px;
-    padding-bottom: 3px;
+    padding: 3px;
 }
 
 .employee {
