@@ -7,6 +7,7 @@ input {
 td {
 	padding-top: 10px;
 	padding-bottom: 10px;
+	min-width: 160px;
 }
 
 #mail_setting_register {

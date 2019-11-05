@@ -114,6 +114,11 @@ module kcp.share.list {
         maxRows: number;
         
         /**
+         * Set width for component;
+         */
+        width?: number;
+        
+        /**
          * Set max width for component.Min is 350px;
          */
         maxWidth?: number;
@@ -441,7 +446,7 @@ module kcp.share.list {
                 if (self.disableSelection) {
                     let selectionDisables = _.map(self.itemList(), 'code');
                     options = {
-                        width: self.gridStyle.totalColumnSize,
+                        width: self.componentOption.width ? self.componentOption.width : self.gridStyle.totalColumnSize,
                         dataSource: self.itemList(),
                         primaryKey: self.targetKey,
                         columns: self.listComponentColumn,
@@ -453,7 +458,7 @@ module kcp.share.list {
                     };
                 } else {
                     options = {
-                        width: self.gridStyle.totalColumnSize,
+                        width: self.componentOption.width ? self.componentOption.width : self.gridStyle.totalColumnSize,
                         dataSource: self.itemList(),
                         primaryKey: self.targetKey,
                         columns: self.listComponentColumn,
@@ -512,11 +517,17 @@ module kcp.share.list {
                 // can not use OUTSIDE "gridList" variable here. must to use $('#' + self.componentGridId)
                 let gridList = $('#' + self.componentGridId);
                 if (gridList.length > 0) {
-                    var selectedValues = gridList.ntsGridList("getSelectedValue");
-                    var selectedIds = self.isMultipleSelect ? _.map(selectedValues, o => o.id) : selectedValues.id;
-                    if(!_.isEqual(self.selectedCodes(), selectedIds)){
-                        gridList.ntsGridList('setSelected', self.selectedCodes());    
-                    }
+                    _.defer(() => {
+                        var selectedValues = gridList.ntsGridList("getSelectedValue");
+                        if (_.isEmpty(selectedValues)) {
+                            gridList.ntsGridList('setSelected', self.selectedCodes());        
+                        } else {
+                            var selectedIds = self.isMultipleSelect ? _.map(selectedValues, o => o.id) : selectedValues.id;
+                            if(!_.isEqual(self.selectedCodes(), selectedIds)){
+                                gridList.ntsGridList('setSelected', self.selectedCodes());    
+                            }    
+                        }    
+                    });
                 }
             });
 
@@ -588,7 +599,7 @@ module kcp.share.list {
                     headerText: nts.uk.resource.getText('KCP001_4'), prop: 'isAlreadySetting', width: self.gridStyle.alreadySetColumnSize,
                     formatter: function(isAlreadySet) {
                         if (isAlreadySet == true || isAlreadySet == 'true') {
-                            return '<div style="text-align: center;max-height: 18px;"><i class="icon icon-78"></i></div>';
+                            return '<div class="already-setting" style="text-align: center;max-height: 18px;"><i class="icon icon-78"></i></div>';
                         }
                         return '';
                     }
@@ -921,13 +932,13 @@ module kcp.share.list {
                 codeColumnSize = data.maxWidth ? '15%': codeColumnSize;
                 var nameColumnSize = data.maxWidth ? '30%' : 170;
                 var workplaceColumnSize = data.maxWidth ? '20%' : 150;
-                var alreadySetColumnSize = data.maxWidth ? '15%' : 70;
+                var alreadySetColumnSize = data.maxWidth ? '15%' : 40;
                 optionalColumnSize = data.maxWidth ? '20%' : 150;
             } else {
                 codeColumnSize = data.maxWidth ? '25%' : codeColumnSize;
                 var nameColumnSize = data.maxWidth ? '30%' : 170;
                 var workplaceColumnSize = data.maxWidth ? '30%' : 150;
-                var alreadySetColumnSize = data.maxWidth ? '15%' : 70;
+                var alreadySetColumnSize = data.maxWidth ? '15%' : 40;
             }
             this.gridStyle = {
                 codeColumnSize: codeColumnSize,

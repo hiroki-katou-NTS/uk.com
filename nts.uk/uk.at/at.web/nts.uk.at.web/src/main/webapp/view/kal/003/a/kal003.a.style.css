@@ -1,5 +1,6 @@
 .contents-area .container {
 	margin: 25px;
+	margin-bottom: 0px;
 }
 
 .ntsControl .nts-input {
@@ -25,7 +26,6 @@
 .right-content {
 	display: inline-block;
 	vertical-align: top;
-	padding-top: 20px;
 }
 /* .container {
     display: inline;
@@ -62,7 +62,7 @@ div[class="tab-content-6"] {
 
 .flabel {
 	display: inline-block;
-	width: 150px;
+	width: 190px;
 }
 
 .ntsRadioBox .label {

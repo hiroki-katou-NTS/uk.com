@@ -7,7 +7,7 @@
 
 .A1_5, .A1_6 {
 	display: inline-block;
-	margin-left: 20px;
+	margin-left: 53px;
 }
 
 .A1_6 {
@@ -54,11 +54,11 @@
 	align-items: center;
 	margin-top:  5px;
 	margin-bottom:  5px;
-	margin-left: 25px;
+	margin-left: 15px;
 }
 
 #combo-box{
-	margin: 10px;
+	margin-left: 55px;
 }
 
 .A7_2 {
@@ -101,6 +101,7 @@ hr {
 
 .type-page-brake {
 	max-width: 100px;
+	margin-left: 22px;
 }
 
 .td-right .right .panel.panel-frame {
@@ -121,7 +122,7 @@ hr {
 }
 
 #output-format {
-	margin-left: 43px;
+	margin-left: 55px;
 }
 
 #nts-component-list {

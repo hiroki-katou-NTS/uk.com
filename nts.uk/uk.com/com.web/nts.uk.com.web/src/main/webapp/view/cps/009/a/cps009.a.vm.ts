@@ -71,7 +71,22 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 self.getItemList(self.initSettingId(), value);
 
             });
-            
+            let subrightTbodyHeight = window.innerHeight - 328;
+            if(subrightTbodyHeight <= 329) {
+                $('#sub-right>table>tbody').css('max-height', '329px'); 
+            } else {
+                $('#sub-right>table>tbody').css('max-height', subrightTbodyHeight + 'px');
+            } 
+            $( window ).resize(function() {
+                let subrightTbodyHeightResize = window.innerHeight - 328;
+                if(subrightTbodyHeightResize <= 329) {   
+                    $('#sub-right>table>tbody').css('max-height', '329px');
+                } else {
+                    $('#sub-right>table>tbody').css('max-height', subrightTbodyHeightResize + 'px');
+                }
+                
+                console.log('resize');
+            });
         }
         
         getDetail(value: string): any{

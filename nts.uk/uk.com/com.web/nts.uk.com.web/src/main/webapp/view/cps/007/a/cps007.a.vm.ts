@@ -19,6 +19,40 @@ module cps007.a.vm {
                 layout = self.layout();
 
             self.start();
+            let styles = '';
+            let lstControlHeight = window.screen.height - 483;
+            if(lstControlHeight >= 347) {
+                styles += '#cps007_lst_control { height: 347px; }';  
+            } else {
+                styles += '#cps007_lst_control { height: ' + lstControlHeight + 'px; }';
+            } 
+            let panelHeight = window.innerHeight - 169;
+            
+            if(panelHeight <= 490) {   
+                styles += '#cps007_srt_control { max-height: 440px !important; }';
+                styles += '.drag-panel { max-height: 490px !important; }';
+                styles += '.drag-panel { height: 490px !important; }';
+            } else {
+                styles += '#cps007_srt_control { max-height: ' + (panelHeight - 50) + 'px !important; }';
+                styles += '.drag-panel { max-height: ' + panelHeight + 'px !important; }';
+                styles += '.drag-panel { height: ' + panelHeight + 'px !important; }';
+            }
+            $( window ).resize(function() {
+                let panelHeightResize = window.innerHeight - 169;
+                if(panelHeightResize <= 490) {   
+                    $( "#cps007_srt_control" ).attr(`style`, `max-height: 440px !important;`);
+                    $( ".drag-panel" ).attr(`style`, `max-height: 490px !important;height: 490px !important;`);
+                } else {
+                    $( "#cps007_srt_control" ).attr(`style`, `max-height: ` + (panelHeightResize - 50) + `px !important;`);
+                    $( ".drag-panel" ).attr(`style`, `max-height: ` + panelHeightResize + `px !important;` + `height: ` + panelHeightResize + `px !important;`);
+                }
+                
+                console.log('resize');
+            });
+            let styleSheet = document.createElement("style");
+            styleSheet.type = "text/css";
+            styleSheet.innerText = styles;
+            document.head.appendChild(styleSheet);
         }
 
         start() {

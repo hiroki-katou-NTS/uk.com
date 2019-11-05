@@ -34,9 +34,10 @@
 			<div id="contents-area" class="fixed-flex-layout">
 				<!--The component container-->
 				<div id="ccgcomponent" ></div>
-
-				<div class="drag-panel" style="margin-left: 85px; margin-top: 30px">
-					<div style="margin-bottom: 10px">
+				
+				<div style="min-width: 1250px">
+				<div class="drag-panel" style="margin-left: 75px; margin-top: 30px">
+					<div style="margin-bottom: 10px; display: none">
 						<label>#{i18n.getText('KWR002_11')}</label>
 					</div>
 
@@ -56,41 +57,50 @@
 
 				</div>
 				<div class="drag-panel" style="margin-left: 30px; margin-top: 30px">
-					<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KWR002_17')}</div>
-					<div style="padding: 40px; margin-bottom: 40px"
-						id="daterangepicker" tabindex="4"
-						data-bind="ntsDateRangePicker: { required: true, enable: enable, showNextPrevious: true, value: dateValue, maxRange: 'oneYear', type: 'yearmonth'}" />
-					<div style="margin: 0px 0px 10px -10px">
+					<div class="table valign-center control-group">
+						<div class="cell cell1">
+							<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KWR002_17')}</div>
+						</div>
+						<div class="cell valign-bottom">
+							<div id="daterangepicker" tabindex="4"
+								data-bind="ntsDateRangePicker: { required: true, enable: enable, showNextPrevious: true, value: dateValue, maxRange: 'oneYear', type: 'yearmonth'}" />
+						</div>
+					</div>
+					<div style="margin: 0px 0px 10px -10px; display: none">
 						<label>#{i18n.getText('KWR002_26')}</label>
 					</div>
 
 
-					<div>
-						<div style="float: left"
-							data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KWR002_18')}</div>
-
-						<div style="float: left" id="combo-box" tabindex="5"
-							data-bind="ntsComboBox: {
-								name: comboboxName,
-								options: attendanceRecordList,
-								optionsValue: 'code',
-								visibleItemsCount: 10,
-								value: selectedCode,
-								optionsText: 'name',
-								editable:  false,
-								enable: true,
-								required: true,
-								columns: [
-									{ prop: 'code', length: 4 },
-									{ prop: 'name', length: 10 }]}">
+					<div class="table valign-center control-group">
+						<div class="cell cell1">
+							<div style="float: left"
+								data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KWR002_18')}</div>
 						</div>
-						<div style="float: left; margin-left: 20px">
+						<div class="cell valign-bottom">
+							<div id="combo-box" tabindex="5"
+								data-bind="ntsComboBox: {
+									name: comboboxName,
+									options: attendanceRecordList,
+									optionsValue: 'code',
+									visibleItemsCount: 10,
+									value: selectedCode,
+									optionsText: 'name',
+									editable:  false,
+									enable: true,
+									required: true,
+									columns: [
+										{ prop: 'code', length: 4 },
+										{ prop: 'name', length: 10 }]}">
+							</div>
+						</div>
+						<div class="cell" style="padding-left: 20px">
 							<button id="openBDialog" tabindex="6" class="group-button-1"
 								data-bind="click: openBDialog, disable: permission">#{i18n.getText('KWR002_20')}</button>
 						</div>
 					</div>
 
 
+				</div>
 				</div>
 			</div>
 			
