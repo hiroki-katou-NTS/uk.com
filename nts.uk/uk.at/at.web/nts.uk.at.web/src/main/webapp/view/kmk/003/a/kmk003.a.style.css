@@ -104,3 +104,12 @@
 #tab-1{
 	padding: 1em 0.5em 1em 0.5em !important;
 }
+#tab-3{
+    width: 739px;
+}
+#tab-3 .fixed-table-button{
+	width: 673px !important;
+}
+.tab-a3 {
+    margin-left: -7px;
+}

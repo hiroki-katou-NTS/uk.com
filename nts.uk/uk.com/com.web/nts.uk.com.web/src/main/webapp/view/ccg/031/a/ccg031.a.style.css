@@ -18,8 +18,10 @@
 }
 
 .placement-wraper {
-	width: 1060px;
-	height: 715px;
+	width: 1050px;
+}
+.placement-container {
+	overflow: auto;
 }
 
 .right-area {
@@ -28,7 +30,7 @@
 
 .right-area .btn-addcolumn {
 	position: relative;
-	height: 630px;
+	/*height: 630px;*/
 	width: 30px;
 	vertical-align: middle;
 	white-space: normal;

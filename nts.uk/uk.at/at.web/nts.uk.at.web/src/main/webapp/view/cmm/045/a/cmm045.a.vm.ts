@@ -109,6 +109,19 @@ module cmm045.a.viewmodel {
                 self.filter();
              }
             }
+
+            window.onresize = function(event) {
+                if($('#grid1').length){//approval
+                    $("#grid1_scrollContainer").height(window.innerHeight - 330);
+                    $("#grid1_displayContainer").height(window.innerHeight - 330);
+                    $("#grid1_container").height(window.innerHeight - 330);
+                }
+                if($('#grid2').length){//application
+                    $("#grid2_scrollContainer").height(window.innerHeight - 250);
+                    $("#grid2_displayContainer").height(window.innerHeight - 250);
+                    $("#grid2_container").height(window.innerHeight - 250);    
+                }
+            }
         }
 
         start(): JQueryPromise<any> {
@@ -266,7 +279,7 @@ module cmm045.a.viewmodel {
             let widthAuto = isHidden == false ? '1110px' : '1045px';
             $("#grid2").ntsGrid({
                 width: widthAuto,
-                height: '500px',
+                height: window.innerHeight -250,
                 dataSource: self.items(),
                 primaryKey: 'appId',
                 virtualization: true,
@@ -433,7 +446,7 @@ module cmm045.a.viewmodel {
             let widthAuto = isHidden == false ? '1175px' : '1110px';
             $("#grid1").ntsGrid({
                 width: widthAuto,
-                height: '530px',
+                height: window.innerHeight - 330,
                 dataSource: self.items(),
                 primaryKey: 'appId',
                 rowVirtualization: true,

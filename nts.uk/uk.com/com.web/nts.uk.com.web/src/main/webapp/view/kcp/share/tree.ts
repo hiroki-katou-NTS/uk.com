@@ -751,7 +751,7 @@ module kcp.share.tree {
 //                self.selectedIds(found);
                 //end
                 let options = {
-                    width: self.treeStyle.width,
+                    width: self.isShowSelectButton ? '474px' : self.treeStyle.width,
                     dataSource: self.itemList(),
                     //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
                     selectedValues: self.selectedWorkplaceIds(),
@@ -1241,7 +1241,7 @@ var TREE_COMPONENT_HTML = `<style type="text/css">
         <!-- ko if: !isDialog -->
             <i class="icon icon-searchbox"></i>
         <!-- /ko -->
-       <div style ="width: 430px; height: 40px" data-bind="visible: !isMultipleUse">
+       <div class="row-search" style ="width: 430px; height: 40px" data-bind="visible: !isMultipleUse">
         <div data-bind="visible: !isMultipleUse" style= "float: left">
             <div data-bind="ntsFormLabel: {}">`+TreeComponentTextResource.KCP004_2+`</div>
             <div class="base-date-editor" id="work-place-base-date"
@@ -1252,8 +1252,8 @@ var TREE_COMPONENT_HTML = `<style type="text/css">
                 data-bind="click: reload, attr: {tabindex: tabindex}"
                 style="min-width: 65px">`+TreeComponentTextResource.KCP004_3+`</button>
         </div>
-        <div style="margin-top: 10px; margin-bottom: 10px;">
-            <div data-bind="ntsFormLabel: {}" style="margin-left: 10px; float: left">`+TreeComponentTextResource.KCP004_4+`</div>
+        <div id="hierarchy" style="margin-top: 10px; margin-bottom: 10px;">
+            <div data-bind="ntsFormLabel: {}" style="margin-left: 10px; float: left; border-color: transparent;">`+TreeComponentTextResource.KCP004_4+`</div>
             <div id="combo-box-tree-component"
                 style="width: 60px; margin-left: 5px; float: left"
                 data-bind="attr: {tabindex: tabindex}, ntsComboBox: {
@@ -1268,7 +1268,7 @@ var TREE_COMPONENT_HTML = `<style type="text/css">
                     ]}"></div>
         </div>
         </div>
-        <div style="width: 420px; margin-top:10px ">
+        <div class = "search-filter" style="margin-top:10px " data-bind="style: { width: isShowSelectButton ? '474px' : '420px' }">
             <div style="display: inline-block; float: left" data-bind="attr: {id: searchBoxId, tabindex: tabindex}, style: { width : !isMultipleUse ? '327px' : '268px'}">
             </div>
             <div style="display: inline-block; margin-left: 2px; float: left">
@@ -1277,8 +1277,8 @@ var TREE_COMPONENT_HTML = `<style type="text/css">
                         data-bind="click: selectSubParent, attr: {tabindex: tabindex}">`+TreeComponentTextResource.KCP004_8+`</button>
                 <!-- /ko -->
             </div>
-            <div style="margin-top: 10px; margin-bottom: 10px;" data-bind="visible: isMultipleUse">
-                        <div data-bind="ntsFormLabel: {}" style="margin-left: 10px; float: left">`+TreeComponentTextResource.KCP004_4+`</div>
+            <div id="hierarchy" style="margin-top: 10px; margin-bottom: 10px;" data-bind="visible: isMultipleUse">
+                        <div data-bind="ntsFormLabel: {}" style="margin-left: 10px; float: left; border-color: transparent;">`+TreeComponentTextResource.KCP004_4+`</div>
                         <div id="combo-box-tree-component"
                             style="width: 60px; margin-left: 5px; float: left"
                             data-bind="attr: {tabindex: tabindex}, ntsComboBox: {

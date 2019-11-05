@@ -1,10 +1,9 @@
 #content {
-	width: 1300px;
+	width: 1260px;
 }
 
 #contents-area-right {
 	width: 360px;
-	height: 555px;
 	float: left;
 	clear: right;
 	margin-left: 10px;
@@ -12,7 +11,6 @@
 
 #contents-area-left {
 	width: 800px;
-	height: 555px;
 	float: left;
 	clear: right;
 	padding-left: 50px;
