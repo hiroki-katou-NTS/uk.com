@@ -56,7 +56,7 @@ private RetirementInformation convertDataToDomainObj(DataBeforeReflectCommand co
 		domainObj.retirementRemarks =  command.retirementRemarks;
 		domainObj.retirementReasonVal =  command.retirementReasonVal;
 		domainObj.dismissalNoticeDate      = command.dismissalNoticeDate != "" ? GeneralDate.fromString(command.dismissalNoticeDate, "yyyy/MM/dd") : null;
-		domainObj.dismissalNoticeDateAllow = command.dismissalNoticeDateAllow != "" ? GeneralDate.fromString(command.dismissalNoticeDateAllow, "yyyy/MM/dd") : null;
+		domainObj.dismissalNoticeDateAllow = (command.dismissalNoticeDateAllow == "" || command.dismissalNoticeDateAllow == null) ? null : GeneralDate.fromString(command.dismissalNoticeDateAllow, "yyyy/MM/dd");
 		domainObj.reaAndProForDis =  command.reaAndProForDis;
 		domainObj.naturalUnaReasons_1 =  command.naturalUnaReasons_1;
 		domainObj.naturalUnaReasons_2 =  command.businessReduction_2;
