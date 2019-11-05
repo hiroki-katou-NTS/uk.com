@@ -7,10 +7,11 @@ import nts.uk.ctx.pr.core.dom.adapter.person.PersonExport;
 import nts.uk.ctx.pr.core.dom.adapter.person.PersonExportAdapter;
 import nts.uk.ctx.pr.core.dom.adapter.person.PersonNameGroupExport;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.List;
 import java.util.stream.Collectors;
-
+@Stateless
 public class PersonExportAdapterImpl implements PersonExportAdapter {
     @Inject
     PersonPub personPub;
