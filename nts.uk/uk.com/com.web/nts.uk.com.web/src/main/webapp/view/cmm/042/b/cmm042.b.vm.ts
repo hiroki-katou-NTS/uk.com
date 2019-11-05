@@ -22,14 +22,14 @@ module cmm042.b.viewmodel {
             let self = this;
             
             let dto: any = getShared('CMM042B_PARAM');
-            self.userCode(dto);
+            self.userCode('');
             self.start();
         }
 
         start(): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
-            
+                $("#A_INP_USER_CODE").focus();
                 dfd.resolve();
             return dfd.promise();
         }

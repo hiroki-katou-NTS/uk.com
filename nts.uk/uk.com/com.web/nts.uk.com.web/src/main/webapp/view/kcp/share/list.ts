@@ -923,7 +923,7 @@ module kcp.share.list {
             var totalColumnSize: number = data.maxWidth ? data.maxWidth : codeColumnSize + 170 + companyColumnSize
                 + alreadySettingColSize + multiSelectColSize;
             var minTotalSize = 350;
-            var totalRowsHeight = heightOfRow * this.maxRows + 24;
+            var totalRowsHeight = heightOfRow * this.maxRows + 20;
             var totalHeight: number = self.calcTotalHeightRev(data);
             
             var optionalColumnSize = 0;
@@ -958,7 +958,7 @@ module kcp.share.list {
         }
         
         private calcTotalHeightRev(data: ComponentOption) {
-            var totalHeightRev = this.hasBaseDate || this.isDisplayClosureSelection ? 101 : 55;
+            var totalHeightRev = this.hasBaseDate || this.isDisplayClosureSelection ? 97 : 55;
             if (data.listType === ListType.EMPLOYEE) {
                 totalHeightRev -= 48;
             }
