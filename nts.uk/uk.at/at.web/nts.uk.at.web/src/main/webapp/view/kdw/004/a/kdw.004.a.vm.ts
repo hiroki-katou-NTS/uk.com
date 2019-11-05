@@ -115,8 +115,7 @@ module nts.uk.at.view.kdw004.a.viewmodel {
                 }
             });
            $(window).resize(function() {
-               $("#approvalSttGrid").igGrid("option", "height", (window.innerHeight - 280) + "px");
-               $("#approvalSttGrid").igGrid("option", "width", (window.innerWidth - (window.innerWidth - 1247)) + "px");
+               $("#approvalSttGrid").igGrid("option", "height", (window.innerHeight - 225) + "px");
                //console.log("Width: " + window.innerWidth + " | Height:  " + window.innerHeight);
 
            });
@@ -374,8 +373,8 @@ module nts.uk.at.view.kdw004.a.viewmodel {
             $("#approvalSttGrid").igGrid({
                 primaryKey: "employeeCode",
                 dataSource: self.lstData,
-                width: window.innerWidth - (window.innerWidth - 1247),
-                height: window.innerHeight - 280,
+                width: 1247,
+                height: window.innerHeight - 225,
                 autofitLastColumn: false,
                 autoGenerateColumns: false,
                 alternateRowStyles: false,
