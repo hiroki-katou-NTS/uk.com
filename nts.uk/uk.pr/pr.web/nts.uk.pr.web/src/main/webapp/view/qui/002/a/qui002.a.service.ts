@@ -3,8 +3,8 @@ module nts.uk.pr.view.qui002.a {
 
     export module service {
         let paths: any = {
-            getSocialInsurNotiCreateSet: "ctx/pr/report/printconfig/socinsurnoticreset/getSocialInsurNotiCreateSet",
-            exportFilePDF: "ctx/pr/file/printconfig/notice/exportFilePDF"
+            getSocialInsurNotiCreateSet: "ctx/pr/report/printconfig/empinsurreportcreset/start",
+            exportFilePDF: "ctx/pr/report/printconfig/empinsreportsetting/exportPDF"
         };
 
         export function start(): JQueryPromise<any> {

@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.file.app.core.empinsreportsetting;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.time.GeneralDate;
@@ -16,12 +17,11 @@ import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.EmpIn
 import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.EmpInsNumInfoRepository;
 import nts.uk.shr.com.context.AppContexts;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
-
+@Stateless
 public class EmpInsReportSettingPDFService extends ExportService<EmpInsReportSettingExportQuery> {
 
     @Inject
@@ -113,5 +113,47 @@ public class EmpInsReportSettingPDFService extends ExportService<EmpInsReportSet
 
 
         });
+        if(listDataExport.isEmpty()){
+            throw new BusinessException("MsgQ_51");
+        }
+        switch (empInsReportSetting.getOutputOrderAtr()){
+            case INSURANCE_NUMBER:{
+                Collections.sort(listDataExport, new Comparator<EmpInsReportSettingExportData>() {
+                    @Override
+                    public int compare(EmpInsReportSettingExportData o1, EmpInsReportSettingExportData o2) {
+                        return 0;
+                    }
+                });
+                break;
+            }
+            case DEPARTMENT_EMPLOYEE:{
+                Collections.sort(listDataExport, new Comparator<EmpInsReportSettingExportData>() {
+                    @Override
+                    public int compare(EmpInsReportSettingExportData o1, EmpInsReportSettingExportData o2) {
+                        return 0;
+                    }
+                });
+                break;
+            }
+            case EMPLOYEE_CODE:{
+                Collections.sort(listDataExport, new Comparator<EmpInsReportSettingExportData>() {
+                    @Override
+                    public int compare(EmpInsReportSettingExportData o1, EmpInsReportSettingExportData o2) {
+                        return 0;
+                    }
+                });
+                break;
+            }
+            case EMPLOYEE:{
+                Collections.sort(listDataExport, new Comparator<EmpInsReportSettingExportData>() {
+                    @Override
+                    public int compare(EmpInsReportSettingExportData o1, EmpInsReportSettingExportData o2) {
+                        return 0;
+                    }
+                });
+                break;
+            }
+
+        }
     }
 }
