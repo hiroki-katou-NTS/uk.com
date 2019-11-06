@@ -19,8 +19,8 @@ public class JpaEmpInsHistRepository extends JpaRepository implements EmpInsHist
 {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QqsmtEmpInsHist f";
-    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.QqsmtEmpInsHistPk.cid =:cid AND  f.QqsmtEmpInsHistPk.sid =:sid AND  f.QqsmtEmpInsHistPk.histId =:histId ";
-    private static final String SELECT_BY_KEY_HIS = SELECT_ALL_QUERY_STRING + " WHERE  f.QqsmtEmpInsHistPk.cid =:cid AND  f.QqsmtEmpInsHistPk.sid =:sid AND  f.QqsmtEmpInsHistPk.histId =:histId ";
+    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.empInsHistPk.cid =:cid AND  f.empInsHistPk.sid =:sid ";
+    private static final String SELECT_BY_KEY_HIS = SELECT_ALL_QUERY_STRING + " WHERE  f.empInsHistPk.cid =:cid AND  f.empInsHistPk.sid =:sid AND  f.empInsHistPk.histId =:histId ";
 
     @Override
     public List<EmpInsHist> getAllEmpInsHist(){
@@ -29,7 +29,7 @@ public class JpaEmpInsHistRepository extends JpaRepository implements EmpInsHist
 
     @Override
     public Optional<EmpInsHist> getEmpInsHistById(String cid, String sid){
-        List<QqsmtEmpInsHist> listHist = this.queryProxy().query(SELECT_ALL_QUERY_STRING, QqsmtEmpInsHist.class)
+        List<QqsmtEmpInsHist> listHist = this.queryProxy().query(SELECT_BY_KEY_STRING, QqsmtEmpInsHist.class)
                 .setParameter("sid", sid)
                 .setParameter("cid", cid)
                 .getList();

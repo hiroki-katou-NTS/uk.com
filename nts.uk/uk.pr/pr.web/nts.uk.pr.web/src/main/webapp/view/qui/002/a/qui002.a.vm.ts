@@ -18,15 +18,9 @@ module nts.uk.pr.view.qui002.a.viewmodel {
         filingDate: KnockoutObservable<string> = ko.observable('');
         filingDateJp: KnockoutObservable<string> = ko.observable('');
 
-        officeInformations: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getBusinessDivision());
-        businessArrSymbols: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getBussEsimateClass());
-        outputOrders: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getSocialInsurOutOrder());
-        printPersonNumbers: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getPersonalNumClass());
-        submittedNames: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getSubNameClass());
-        insuredNumbers: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getInsurPersonNumDivision());
-        textPersonNumbers: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getTextPerNumberClass());
-        outputFormats: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getOutputFormatClass());
-        lineFeedCodes: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getLineFeedCode());
+        outputOrders: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getEmpInsOutOrder());
+        submitNameAtrs: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getSubmitNameAtr());
+        officeClsAtrs: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getOfficeClsAtr());
 
 
         /* kcp005 */
@@ -41,44 +35,40 @@ module nts.uk.pr.view.qui002.a.viewmodel {
         isMultiSelect: KnockoutObservable<boolean>;
         isShowWorkPlaceName: KnockoutObservable<boolean>;
         isShowSelectAllButton: KnockoutObservable<boolean>;
-        disableSelection : KnockoutObservable<boolean>;
+        disableSelection: KnockoutObservable<boolean>;
         employeeList: KnockoutObservableArray<UnitModel> = ko.observableArray<UnitModel>([]);
 
-        socInsurNotiCreSet : KnockoutObservable<SocInsurNotiCreSet> = ko.observable(new SocInsurNotiCreSet({
-                officeInformation: 0,
-                printPersonNumber: 0,
-                businessArrSymbol: 0,
-                outputOrder: 0,
-                submittedName: 0,
-                insuredNumber: 0,
-                fdNumber: null,
-                textPersonNumber: 0,
-                outputFormat: 0,
-                lineFeedCode: 0
-                }));
+        empInsReportSetting: KnockoutObservable<EmpInsReportSetting> = ko.observable(new EmpInsReportSetting({
+            submitNameAtr: 0,
+            outputOrderAtr: 0,
+            officeClsAtr: 0,
+            myNumberClsAtr: 0,
+            nameChangeClsAtr: 0
+        }));
+
         constructor() {
             let self = this;
-            self.startDate.subscribe((data) =>{
-                if(nts.uk.util.isNullOrEmpty(data)){
+            self.startDate.subscribe((data) => {
+                if (nts.uk.util.isNullOrEmpty(data)) {
                     return;
                 }
                 self.startDateJp("(" + nts.uk.time.dateInJapanEmpire(data) + ")");
             });
 
-            self.endDate.subscribe((data) =>{
-                if(nts.uk.util.isNullOrEmpty(data)){
+            self.endDate.subscribe((data) => {
+                if (nts.uk.util.isNullOrEmpty(data)) {
                     return;
                 }
                 self.endDateJp("(" + nts.uk.time.dateInJapanEmpire(data) + ")");
             });
 
-            self.filingDate.subscribe((data)=>{
-                if(nts.uk.util.isNullOrEmpty(data)){
+            self.filingDate.subscribe((data) => {
+                if (nts.uk.util.isNullOrEmpty(data)) {
                     return;
                 }
                 self.filingDateJp(" (" + nts.uk.time.dateInJapanEmpire(data) + ")");
             });
-            let today  = new Date();
+            let today = new Date();
             let start = new Date();
             start.setMonth(start.getMonth() - 1);
             start.setDate(start.getDate() + 1);
@@ -88,9 +78,9 @@ module nts.uk.pr.view.qui002.a.viewmodel {
             let dEnd = today.getDate();
             let yyyyS = start.getFullYear();
             let yyyyE = today.getFullYear();
-            self.startDate(yyyyS + "/" +  mmStart + "/" + dStart);
-            self.endDate(yyyyE + "/" + mmEnd  + "/" + dEnd);
-            self.filingDate(yyyyE + "/" + mmEnd  + "/" + dEnd);
+            self.startDate(yyyyS + "/" + mmStart + "/" + dStart);
+            self.endDate(yyyyE + "/" + mmEnd + "/" + dEnd);
+            self.filingDate(yyyyE + "/" + mmEnd + "/" + dEnd);
             self.loadKCP005();
             self.loadCCG001();
 
@@ -103,20 +93,15 @@ module nts.uk.pr.view.qui002.a.viewmodel {
             let dfd = $.Deferred();
             block.invisible();
 
-            service.start().done(function(data: ISocInsurNotiCreSet) {
-                if(data != null) {
-                    self.socInsurNotiCreSet().officeInformation(data.officeInformation);
-                    self.socInsurNotiCreSet().printPersonNumber(data.printPersonNumber);
-                    self.socInsurNotiCreSet().businessArrSymbol(data.businessArrSymbol);
-                    self.socInsurNotiCreSet().outputOrder(data.outputOrder);
-                    self.socInsurNotiCreSet().submittedName(data.submittedName);
-                    self.socInsurNotiCreSet().insuredNumber(data.insuredNumber);
-                    self.socInsurNotiCreSet().fdNumber(data.fdNumber == null ? "0" : data.fdNumber);
-                    self.socInsurNotiCreSet().textPersonNumber(data.textPersonNumber == null ? 0 : data.textPersonNumber);
-                    self.socInsurNotiCreSet().outputFormat(data.outputFormat == null ? 0 : data.outputFormat);
-                    self.socInsurNotiCreSet().lineFeedCode(data.lineFeedCode == null ? 0 : data.lineFeedCode);
+            service.start().done(function (data: IEmpInsReportSetting) {
+                if (data != null) {
+                    self.empInsReportSetting().submitNameAtr(data.submitNameAtr);
+                    self.empInsReportSetting().outputOrderAtr(data.outputOrderAtr);
+                    self.empInsReportSetting().officeClsAtr(data.officeClsAtr);
+                    self.empInsReportSetting().myNumberClsAtr(data.myNumberClsAtr);
+                    self.empInsReportSetting().nameChangeClsAtr(data.nameChangeClsAtr);
                 }
-            }).fail(function(result) {
+            }).fail(function (result) {
                 dialog.alertError(result.errorMessage);
                 dfd.reject();
             });
@@ -124,30 +109,24 @@ module nts.uk.pr.view.qui002.a.viewmodel {
             return dfd.promise();
         }
 
-        getStyle(){
+        getStyle() {
             let self = this;
-            return self.startDateJp().length > 13 ?  "width:140px; display: inline-block;" : "width:140px; display:inline";
+            return self.startDateJp().length > 13 ? "width:140px; display: inline-block;" : "width:140px; display:inline";
         }
 
-        openBScreen() {
-            let self = this;
-            let params = {
-                employeeList: self.getListEmployee(self.selectedCode(), self.employeeList())
-            };
-            setShared("QSI013_PARAMS_B", params);
-            modal("/view/qsi/013/b/index.xhtml");
-        }
 
-        getListEmployee(empCode: Array, listEmp: Array){
+        getListEmployee(empCode: Array, listEmp: Array) {
             let listEmployee: any = [];
-            _.each(empCode, (item) =>{
-                let emp = _.find(listEmp, function(itemEmp) { return itemEmp.code == item; });
+            _.each(empCode, (item) => {
+                let emp = _.find(listEmp, function (itemEmp) {
+                    return itemEmp.code == item;
+                });
                 listEmployee.push(emp);
             });
             return listEmployee;
         }
 
-        loadKCP005(){
+        loadKCP005() {
             let self = this;
             self.baseDate = ko.observable(new Date());
             self.multiSelectedCode = ko.observableArray(['0', '1', '4']);
@@ -175,13 +154,12 @@ module nts.uk.pr.view.qui002.a.viewmodel {
                 alreadySettingList: self.alreadySettingList,
                 isShowWorkPlaceName: self.isShowWorkPlaceName(),
                 isShowSelectAllButton: self.isShowSelectAllButton(),
-                disableSelection : self.disableSelection(),
-                maxRows: 18
+                disableSelection: self.disableSelection()
             };
             $('#component-items-list').ntsListComponent(self.listComponentOption);
         }
 
-        setEmployee(item){
+        setEmployee(item) {
             let listEmployee = [];
             _.each(item, (item) => {
                 let employee: Employee = new Employee(item.employeeId,
@@ -193,53 +171,36 @@ module nts.uk.pr.view.qui002.a.viewmodel {
             return listEmployee;
         }
 
-        exportFile(exportPDF: any): void {
+        exportFile(): void {
+
             let self = this;
-            if(self.validate()){
+            if (self.validate()) {
                 return;
             }
             let employList = self.getListEmpId(self.selectedCode(), self.employeeList());
             let data: any = {
-                socialInsurNotiCreateSet: {
-                    officeInformation: self.socInsurNotiCreSet().officeInformation(),
-                    printPersonNumber: self.socInsurNotiCreSet().printPersonNumber(),
-                    businessArrSymbol: self.socInsurNotiCreSet().businessArrSymbol(),
-                    outputOrder: self.socInsurNotiCreSet().outputOrder(),
-                    submittedName: self.socInsurNotiCreSet().submittedName(),
-                    insuredNumber: self.socInsurNotiCreSet().insuredNumber(),
-                    fdNumber: self.socInsurNotiCreSet().fdNumber().trim() == '' ? null : self.socInsurNotiCreSet().fdNumber(),
-                    textPersonNumber: self.socInsurNotiCreSet().textPersonNumber(),
-                    outputFormat: self.socInsurNotiCreSet().outputFormat(),
-                    lineFeedCode: self.socInsurNotiCreSet().lineFeedCode()
+                empInsReportSettingExport: {
+                    submitNameAtr: self.empInsReportSetting().submitNameAtr,
+                    outputOrderAtr: self.empInsReportSetting().outputOrderAtr,
+                    officeClsAtr: self.empInsReportSetting().officeClsAtr,
+                    myNumberClsAtr: self.empInsReportSetting().myNumberClsAtr,
+                    nameChangeClsAtr: self.empInsReportSetting().nameChangeClsAtr
                 },
                 empIds: employList,
-                startDate: moment.utc(self.startDate(), "YYYY/MM/DD"),
-                endDate: moment.utc(self.endDate(), "YYYY/MM/DD"),
-                reference: moment.utc(self.filingDate(), "YYYY/MM/DD")
+                fillingDate: moment.utc(self.filingDate(), "YYYY/MM/DD")
             };
-
-            if(exportPDF == 0) {
-                nts.uk.ui.block.grayout();
-                service.exportFilePDF(data).done(function() {
-                }).fail(function(error) {
-                    nts.uk.ui.dialog.alertError(error);
-                }).always(function() {
-                    nts.uk.ui.block.clear();
-                });
-            }
-
-            if(exportPDF == 1) {
-                nts.uk.ui.block.grayout();
-                service.exportFileCSV(data).done(function() {
-                }).fail(function(error) {
+            nts.uk.ui.block.grayout();
+            service.exportFilePDF(data).done(function () {
+            }).fail(function (error) {
                 nts.uk.ui.dialog.alertError(error);
-                }).always(function() {
+            }).always(function () {
                 nts.uk.ui.block.clear();
-                });
-            }
+            });
+
 
         }
-        openScreenB(): void {
+
+        openScreenB() {
             let self = this;
             let params = {
                 employeeList: self.getListEmployee(self.selectedCode(), self.employeeList())
@@ -248,16 +209,18 @@ module nts.uk.pr.view.qui002.a.viewmodel {
             modal("/view/qui/002/b/index.xhtml");
         }
 
-        getListEmpId(empCode: Array, listEmp: Array){
-            let listEmpId =[];
-            _.each(empCode, (item) =>{
-                let emp = _.find(listEmp, function(itemEmp) { return itemEmp.code == item; });
+        getListEmpId(empCode: Array, listEmp: Array) {
+            let listEmpId = [];
+            _.each(empCode, (item) => {
+                let emp = _.find(listEmp, function (itemEmp) {
+                    return itemEmp.code == item;
+                });
                 listEmpId.push(emp.id);
             });
             return listEmpId;
         }
 
-        validate(){
+        validate() {
             errors.clearAll();
             $("#A2_4").trigger("validate");
             $("#A2_7").trigger("validate");
@@ -265,7 +228,7 @@ module nts.uk.pr.view.qui002.a.viewmodel {
             return errors.hasError();
         }
 
-        loadCCG001(){
+        loadCCG001() {
             let self = this;
             self.ccg001ComponentOption = {
                 /** Common properties */
@@ -305,7 +268,7 @@ module nts.uk.pr.view.qui002.a.viewmodel {
                  * Self-defined function: Return data from CCG001
                  * @param: data: the data return from CCG001
                  */
-                returnDataFromCcg001: function(data: Ccg001ReturnedData) {
+                returnDataFromCcg001: function (data: Ccg001ReturnedData) {
                     self.employeeList(self.setEmployee(data.listEmployee));
                     self.loadKCP005();
                 }
@@ -315,6 +278,7 @@ module nts.uk.pr.view.qui002.a.viewmodel {
 
         }
     }
+
     export interface GroupOption {
         /** Common properties */
         showEmployeeSelection?: boolean; // 検索タイプ
@@ -364,6 +328,7 @@ module nts.uk.pr.view.qui002.a.viewmodel {
         workplaceId: string;
         workplaceName: string;
     }
+
     export interface Ccg001ReturnedData {
         baseDate: string; // 基準日
         closureId?: number; // 締めID
@@ -403,41 +368,27 @@ module nts.uk.pr.view.qui002.a.viewmodel {
     //Enum
 
 
-    export interface ISocInsurNotiCreSet {
-        officeInformation: number;
-        printPersonNumber: number;
-        businessArrSymbol: number;
-        outputOrder: number;
-        submittedName: number;
-        insuredNumber: number;
-        fdNumber: string;
-        textPersonNumber:number;
-        outputFormat: number;
-        lineFeedCode: number;
+    export interface IEmpInsReportSetting {
+        submitNameAtr: number;
+        outputOrderAtr: number;
+        officeClsAtr: number;
+        myNumberClsAtr: number;
+        nameChangeClsAtr: number;
     }
 
-    export class SocInsurNotiCreSet {
-        officeInformation: KnockoutObservable<number>;
-        printPersonNumber: KnockoutObservable<number>;
-        businessArrSymbol: KnockoutObservable<number>;
-        outputOrder: KnockoutObservable<number>;
-        submittedName: KnockoutObservable<number>;
-        insuredNumber: KnockoutObservable<number>;
-        fdNumber: KnockoutObservable<string>;
-        textPersonNumber: KnockoutObservable<number>;
-        outputFormat: KnockoutObservable<number>;
-        lineFeedCode: KnockoutObservable<number>;
-        constructor(params: ISocInsurNotiCreSet) {
-            this.officeInformation = ko.observable(params.officeInformation);
-            this.printPersonNumber = ko.observable(params.printPersonNumber);
-            this.businessArrSymbol = ko.observable(params.businessArrSymbol);
-            this.outputOrder = ko.observable(params.outputOrder);
-            this.submittedName = ko.observable(params.submittedName);
-            this.insuredNumber = ko.observable(params.insuredNumber);
-            this.fdNumber = ko.observable(params ? params.fdNumber : null);
-            this.textPersonNumber = ko.observable(params ? params.textPersonNumber : null);
-            this.outputFormat = ko.observable(params ? params.outputFormat : null);
-            this.lineFeedCode = ko.observable(params ? params.lineFeedCode : null);
+    export class EmpInsReportSetting {
+        submitNameAtr: KnockoutObservable<number>;
+        outputOrderAtr: KnockoutObservable<number>;
+        officeClsAtr: KnockoutObservable<number>;
+        myNumberClsAtr: KnockoutObservable<number>;
+        nameChangeClsAtr: KnockoutObservable<number>;
+
+        constructor(params: IEmpInsReportSetting) {
+            this.submitNameAtr = ko.observable(params.submitNameAtr);
+            this.outputOrderAtr = ko.observable(params.outputOrderAtr);
+            this.officeClsAtr = ko.observable(params.officeClsAtr);
+            this.myNumberClsAtr = ko.observable(params.myNumberClsAtr);
+            this.nameChangeClsAtr = ko.observable(params.nameChangeClsAtr);
         }
     }
 
