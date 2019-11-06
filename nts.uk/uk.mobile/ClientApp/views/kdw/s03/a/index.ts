@@ -143,9 +143,9 @@ export class Kdws03AComponent extends Vue {
     get dateRanger() {
         let self = this;
         if (!_.isNil(self.timePeriodAllInfo)) {
-            for (let i = 0; i < self.timePeriodAllInfo.lstRange.length; i++) {
-                if (self.actualTimeSelectedCode == i) {
-                    return ({ startDate: self.timePeriodAllInfo.lstRange[i].startDate, endDate: self.timePeriodAllInfo.lstRange[i].endDate });
+            for (let i = 0; i < self.timePeriodAllInfo.lstRangeCls.length; i++) {
+                if (self.actualTimeSelectedCode == self.timePeriodAllInfo.lstRangeCls[i].closureId) {
+                    return ({ startDate: self.timePeriodAllInfo.lstRangeCls[i].startDate, endDate: self.timePeriodAllInfo.lstRangeCls[i].endDate });
                 }
             }
         }
@@ -778,17 +778,17 @@ export class Kdws03AComponent extends Vue {
             self.timePeriodAllInfo = data;
             _.remove(self.actualTimeOptionDisp);
             let selectItem = 0;
-            if (data.lstRange && data.lstRange.length > 0) {
-                for (let i = 0; i < data.lstRange.length; i++) {
-                    let startDate = data.lstRange[i].startDate,
-                        endDate = data.lstRange[i].endDate;
+            if (data.lstRangeCls && data.lstRangeCls.length > 0) {
+                for (let i = 0; i < data.lstRangeCls.length; i++) {
+                    let startDate = data.lstRangeCls[i].startDate,
+                        endDate = data.lstRangeCls[i].endDate;
                     if (data.targetRange.startDate == startDate) {
-                        selectItem = i;
+                        selectItem = data.lstRangeCls[i].closureId;
                     }
-                    self.actualTimeOptionDisp.push({ code: i, name: (i + 1) + ': ' + this.$dt(startDate, 'M/D') + '～' + this.$dt(endDate, 'M/D') });
+                    self.actualTimeOptionDisp.push({ code: data.lstRangeCls[i].closureId, name: (data.lstRangeCls[i].closureId) + ': ' + this.$dt(startDate, 'M/D') + '～' + this.$dt(endDate, 'M/D') });
                 }
             }
-            this.actualTimeSelectedCode = selectItem;
+            self.actualTimeSelectedCode = selectItem;
         });
     }
 
