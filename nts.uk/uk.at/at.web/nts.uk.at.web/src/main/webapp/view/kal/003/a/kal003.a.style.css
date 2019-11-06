@@ -145,3 +145,6 @@ button.nts-switch-button{
     display:table;
     width:100%;
 }
+html {
+	overflow: hidden;
+}
