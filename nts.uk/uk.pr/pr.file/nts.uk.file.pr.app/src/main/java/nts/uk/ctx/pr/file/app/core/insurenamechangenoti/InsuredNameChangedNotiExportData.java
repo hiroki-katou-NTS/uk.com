@@ -37,7 +37,11 @@ public class InsuredNameChangedNotiExportData {
 
     private WelfPenNumInformation welfPenNumInformation;
 
+    private String welPenNumber;
+
     private HealthCarePortInfor healthCarePortInfor;
+
+    private String healInsurUnionNumber;
 
     private EmpBasicPenNumInfor empBasicPenNumInfor;
 
@@ -45,11 +49,13 @@ public class InsuredNameChangedNotiExportData {
 
     private EmPensionFundPartiPeriodInfor emPensionFundPartiPeriodInfor;
 
-    private EmpNameChangeNotiInfor empNameChangeNotiInfor;
-
     private FundMembership fundMembership;
 
+    private String membersNumber;
+
     private HealInsurNumberInfor healInsurNumberInfor;
+
+    private String healInsNumber;
 
     private EmpHealthInsurBenefits empHealthInsurBenefits;
 
