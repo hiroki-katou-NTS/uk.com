@@ -128,13 +128,13 @@ public class InsuredNameChangedNotiService extends ExportService<InsuredNameChan
 
         List<InsuredNameChangedNotiExportData> data = listData;
         if (order == SocialInsurOutOrder.HEAL_INSUR_NUMBER_UNION_ORDER.value) {
-            data = listData.stream().sorted(Comparator.comparing(InsuredNameChangedNotiExportData::getHealInsurUnionNumber)).collect(Collectors.toList());
+            data = listData.stream().sorted(Comparator.comparing(InsuredNameChangedNotiExportData::getHealInsurUnionNumber, Comparator.nullsLast(String::compareTo))).collect(Collectors.toList());
         } else if (order == SocialInsurOutOrder.ORDER_BY_FUND.value) {
-            data = listData.stream().sorted(Comparator.comparing(InsuredNameChangedNotiExportData::getMembersNumber)).collect(Collectors.toList());
+            data = listData.stream().sorted(Comparator.comparing(InsuredNameChangedNotiExportData::getMembersNumber, Comparator.nullsLast(String::compareTo))).collect(Collectors.toList());
         } else if (order == SocialInsurOutOrder.HEAL_INSUR_NUMBER_ORDER.value) {
-            data = listData.stream().sorted(Comparator.comparing(InsuredNameChangedNotiExportData::getHealInsNumber)).collect(Collectors.toList());
+            data = listData.stream().sorted(Comparator.comparing(InsuredNameChangedNotiExportData::getHealInsNumber, Comparator.nullsLast(String::compareTo))).collect(Collectors.toList());
         } else if (order == SocialInsurOutOrder.WELF_AREPEN_NUMBER_ORDER.value) {
-            data = listData.stream().sorted(Comparator.comparing(InsuredNameChangedNotiExportData::getWelPenNumber)).collect(Collectors.toList());
+            data = listData.stream().sorted(Comparator.comparing(InsuredNameChangedNotiExportData::getWelPenNumber, Comparator.nullsLast(String::compareTo))).collect(Collectors.toList());
         } else if (order == SocialInsurOutOrder.INSURED_PER_NUMBER_ORDER.value) {
             if (insuredNumber == InsurPersonNumDivision.OUTPUT_HEAL_INSUR_NUM.value) {
                 data = listData.stream().sorted(Comparator.comparing(InsuredNameChangedNotiExportData::getHealInsNumber)).collect(Collectors.toList());
