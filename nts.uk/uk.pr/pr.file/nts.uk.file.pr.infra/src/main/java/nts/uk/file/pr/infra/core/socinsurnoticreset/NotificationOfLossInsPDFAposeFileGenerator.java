@@ -336,12 +336,12 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_9_4", stt)).setValue(convertJpDate(birthDay).charAt(3));
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_9_5", stt)).setValue(convertJpDate(birthDay).charAt(4));
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_9_6", stt)).setValue(convertJpDate(birthDay).charAt(5));
-        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_13_1", stt)).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? endDate != null ? beforeDate.year() + 1 : "" :  endDate2 != null ? beforeDate2.year() + 1 : "");
-        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_13_2", stt)).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? !data.getEndDate().isEmpty() ? beforeDate(data.getEndDate()).substring(5,7) : "" : !data.getEndDate2().isEmpty() ? beforeDate(data.getEndDate2()).substring(5,7) : "");
-        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_13_3", stt)).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? !data.getEndDate().isEmpty() ? beforeDate(data.getEndDate()).substring(8,10) : "" : !data.getEndDate2().isEmpty() ? beforeDate(data.getEndDate2()).substring(8,10) : "");
-        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_15_1", stt)).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? endDate!= null ? beforeDate.year() + 1 : "" : endDate2!= null ? beforeDate2.year() + 1 : "");
-        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_15_2", stt)).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? !data.getEndDate().isEmpty() ? beforeDate(data.getEndDate()).substring(5,7) : "" : !data.getEndDate2().isEmpty() ? beforeDate(data.getEndDate2()).substring(5,7) : "");
-        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_15_3", stt)).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? !data.getEndDate().isEmpty() ? beforeDate(data.getEndDate()).substring(8,10) : "" : !data.getEndDate2().isEmpty() ? beforeDate(data.getEndDate2()).substring(8,10) : "");
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_13_1", stt)).setValue(checkEndDate(data.getEndDate(), data.getEndDate2()) ? endDate != null ? beforeDate.year() + 1 : "" :  endDate2 != null ? beforeDate2.year() + 1 : "");
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_13_2", stt)).setValue(checkEndDate(data.getEndDate(), data.getEndDate2()) ? !data.getEndDate().isEmpty() ? beforeDate(data.getEndDate()).substring(5,7) : "" : !data.getEndDate2().isEmpty() ? beforeDate(data.getEndDate2()).substring(5,7) : "");
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_13_3", stt)).setValue(checkEndDate(data.getEndDate(), data.getEndDate2()) ? !data.getEndDate().isEmpty() ? beforeDate(data.getEndDate()).substring(8,10) : "" : !data.getEndDate2().isEmpty() ? beforeDate(data.getEndDate2()).substring(8,10) : "");
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_15_1", stt)).setValue(checkEndDate(data.getEndDate(), data.getEndDate2()) ? endDate!= null ? beforeDate.year() + 1 : "" : endDate2!= null ? beforeDate2.year() + 1 : "");
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_15_2", stt)).setValue(checkEndDate(data.getEndDate(), data.getEndDate2()) ? !data.getEndDate().isEmpty() ? beforeDate(data.getEndDate()).substring(5,7) : "" : !data.getEndDate2().isEmpty() ? beforeDate(data.getEndDate2()).substring(5,7) : "");
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_15_3", stt)).setValue(checkEndDate(data.getEndDate(), data.getEndDate2()) ? !data.getEndDate().isEmpty() ? beforeDate(data.getEndDate()).substring(8,10) : "" : !data.getEndDate2().isEmpty() ? beforeDate(data.getEndDate2()).substring(8,10) : "");
         if(ins.getPrintPersonNumber() != PersonalNumClass.DO_NOT_OUTPUT && ins.getPrintPersonNumber() != PersonalNumClass.OUTPUT_PER_NUMBER) {
             worksheets.getRangeByName(this.getRangeName(sheetName, "A2_10_9", stt)).setValue(data.getBasicPenNumber() != null ? data.getBasicPenNumber().length() > 0 ? data.getBasicPenNumber().charAt(0) : "" : "");
             worksheets.getRangeByName(this.getRangeName(sheetName, "A2_10_10", stt)).setValue(data.getBasicPenNumber() != null ? data.getBasicPenNumber().length() > 1 ? data.getBasicPenNumber().charAt(1) : "" : "");
@@ -363,12 +363,12 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_21", stt)).setValue(Objects.toString(checkEndDate(data.getEndDate(), data.getEndDate2()) ? data.getOtherReason() : data.getOtherReason2(), ""));
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_22", stt)).setValue(Objects.toString(checkEndDate(data.getEndDate(), data.getEndDate2()) ? data.getCaInsurance() : data.getCaInsurance2(), ""));
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_23", stt)).setValue(Objects.toString(checkEndDate(data.getEndDate(), data.getEndDate2()) ? data.getNumRecoved() : data.getNumRecoved2(), ""));
-        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_25_1", stt)).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? formatEndDate(convertJpDate(beforeDate),0) :  formatEndDate(convertJpDate(beforeDate2),0));
-        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_25_2", stt)).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? formatEndDate(convertJpDate(beforeDate),1) :  formatEndDate(convertJpDate(beforeDate2),1));
-        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_25_3", stt)).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? formatEndDate(convertJpDate(beforeDate),2) :  formatEndDate(convertJpDate(beforeDate2),2));
-        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_25_4", stt)).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? formatEndDate(convertJpDate(beforeDate),3) :  formatEndDate(convertJpDate(beforeDate2),3));
-        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_25_5", stt)).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? formatEndDate(convertJpDate(beforeDate),4) :  formatEndDate(convertJpDate(beforeDate2),4));
-        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_25_6", stt)).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? formatEndDate(convertJpDate(beforeDate),5) :  formatEndDate(convertJpDate(beforeDate2),5));
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_25_1", stt)).setValue(checkEndDate(data.getEndDate(), data.getEndDate2()) ? formatEndDate(convertJpDate(beforeDate),0) :  formatEndDate(convertJpDate(beforeDate2),0));
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_25_2", stt)).setValue(checkEndDate(data.getEndDate(), data.getEndDate2()) ? formatEndDate(convertJpDate(beforeDate),1) :  formatEndDate(convertJpDate(beforeDate2),1));
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_25_3", stt)).setValue(checkEndDate(data.getEndDate(), data.getEndDate2()) ? formatEndDate(convertJpDate(beforeDate),2) :  formatEndDate(convertJpDate(beforeDate2),2));
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_25_4", stt)).setValue(checkEndDate(data.getEndDate(), data.getEndDate2()) ? formatEndDate(convertJpDate(beforeDate),3) :  formatEndDate(convertJpDate(beforeDate2),3));
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_25_5", stt)).setValue(checkEndDate(data.getEndDate(), data.getEndDate2()) ? formatEndDate(convertJpDate(beforeDate),4) :  formatEndDate(convertJpDate(beforeDate2),4));
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_25_6", stt)).setValue(checkEndDate(data.getEndDate(), data.getEndDate2()) ? formatEndDate(convertJpDate(beforeDate),5) :  formatEndDate(convertJpDate(beforeDate2),5));
     }
 
     private Object formatEndDate(String endDate, int stt){
@@ -493,7 +493,7 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
         return new JapaneseDate(date, era.get());
     }
 
-    private String convertJpDate(JapaneseDate date){
+    public static String convertJpDate(JapaneseDate date){
         if(date == null) {
             return "";
         }

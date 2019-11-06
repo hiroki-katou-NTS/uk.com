@@ -48,7 +48,7 @@ public class JpaEmpAddChangeInfoFileGenerator extends JpaRepository implements E
                     .endDate(i[3] == null ? null : convertToGDate(i[3].toString()))
                     .dependent(i[4] == null ? null : Integer.parseInt(i[4].toString()))
                     .fmBsPenNum(i[5] == null ? "" : i[5].toString())
-                    .familyId(i[6] == null ? null : Integer.parseInt(i[4].toString()))
+                    .familyId(i[6] == null ? null : Integer.parseInt(i[6].toString()))
                     .build()
             ).collect(Collectors.toList());
         } catch (Exception e) {
@@ -257,6 +257,10 @@ public class JpaEmpAddChangeInfoFileGenerator extends JpaRepository implements E
     }
 
     private GeneralDate convertToGDate(String Date) {
-        return GeneralDate.fromString(Date, "YYYYMMDD");
+        if(Date.length() > 18) {
+            return GeneralDate.fromString(Date.substring(0,19), "yyyy-MM-dd hh:mm:ss");
+        }
+
+        return GeneralDate.fromString(Date, "yyyy-MM-dd");
     }
 }

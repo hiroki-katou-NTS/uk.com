@@ -91,12 +91,12 @@ public class CurrentPersonResidence {
                     "トウキョウクトウキョウ1-1-1",
                     "東京都",
                     "東京区東京1-1-1",
-                    i.getBirthDate(),
+                    GeneralDate.fromString("2019/01/01","yyyy/MM/dd" ),
                     i.getPersonNameGroup().getPersonName().getFullNameKana(),
                     i.getPersonNameGroup().getPersonName().getFullName(),
                     i.getPersonNameGroup().getTodokedeFullName().getFullNameKana(),
                     i.getPersonNameGroup().getTodokedeFullName().getFullName(),
-                    GeneralDate.fromString("2019/01/01","yyyy/MM/dd" ));
+                    i.getBirthDate());
             currentPersonResidenceList.add(c);
         });
         return currentPersonResidenceList;
