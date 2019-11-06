@@ -194,6 +194,9 @@ module nts.uk.pr.view.qsi013.b.viewmodel {
                 }else{
                     $("#B222_31").trigger("validate");
                 }
+                if(!self.pOther()){
+                    self.pOtherReason('');
+                }
             });
 
             self.hOther.subscribe(e =>{
@@ -201,6 +204,9 @@ module nts.uk.pr.view.qsi013.b.viewmodel {
                     $("#B222_18").ntsError('clear');
                 }else{
                     $("#B222_18").trigger("validate");
+                }
+                if(!self.hOther()){
+                    self.hOtherReason('');
                 }
             });
 

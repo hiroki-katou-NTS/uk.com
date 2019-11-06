@@ -613,8 +613,8 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
     private String getPreferCode(int prefectureNo, int startDate, int endDate, List<SocialInsurancePrefectureInformation> infor) {
         Optional<SocialInsurancePrefectureInformation> refecture = infor.stream()
                 .filter( item -> item.getNo() == prefectureNo
-                        && item.getStartYearMonth() >= startDate
-                        && item.getStartYearMonth() <= endDate )
+                        && item.getStartYearMonth() <= startDate
+                        && item.getEndYearMonth() >= startDate )
                 .findFirst();
         return refecture.isPresent() ? refecture.get().getPrefectureCode().v() : "";
     }
