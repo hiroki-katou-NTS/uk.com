@@ -75,7 +75,7 @@ public class CurrentFamilyResidence {
         this.isLivingSeparate = false;
         this.birthDate = GeneralDate.fromString("1980/01/02","yyyy/MM/dd" );
         this.nameKana = "ホン ギルトンノツマ";
-        this.name = "HONG KILDONGS WIFE";
+        this.name = "HONG　KILDONGS　WIFE";
         this.reportNameKana = "トドケデ　ダミー";
         this.reportName = "届出　ダミー";
         this.startDate = GeneralDate.fromString("2019/01/01","yyyy/MM/dd" );
