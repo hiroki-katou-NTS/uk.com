@@ -1062,9 +1062,30 @@ module jcm007.a {
                 if (value == 1 || value == 2 || value == 4) {
                     self.visible_NotDismissal(true);
                     self.visible_Dismissal(false);
+                    // clear input
+                    self.dismissalNoticeDate('');
+                    self.dismissalNoticeDateAllow('');
+                    self.reaAndProForDis('');
+                    $('#reaAndProForDis').ntsError('clear');
+                    self.naturalUnaReasons_1Val('');
+                    self.businessReduction_2Val('');
+                    self.seriousViolationsOrder_3Val('');
+                    self.unauthorizedConduct_4Val('');
+                    self.leaveConsiderableTime_5Val('');
+                    self.other_6Val('');
+                    self.naturalUnaReasons_1(false);
+                    self.businessReduction_2(false);
+                    self.seriousViolationsOrder_3(false);
+                    self.unauthorizedConduct_4(false);
+                    self.leaveConsiderableTime_5(false);
+                    self.other_6(false);
+                    
                 } else if (value == 3) {
                     self.visible_NotDismissal(false);
                     self.visible_Dismissal(true);
+                    self.retirementReasonVal('');
+                    $('#retirementReasonVal').ntsError('clear');
+                    
                     if(self.naturalUnaReasons_1() == false){
                         self.naturalUnaReasons_1Val('');
                         self.naturalUnaReasons_enable(false);
