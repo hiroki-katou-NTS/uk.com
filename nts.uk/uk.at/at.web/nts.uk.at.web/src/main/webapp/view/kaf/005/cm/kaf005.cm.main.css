@@ -78,7 +78,7 @@ div.form-label.broken {
     margin-top: 10px;
 }
 .panel.panel-gray-bg {
-	float: right;
+	margin-left: 12px;
 	min-height: 300px;
 	width: 250px;
 	margin-top: 20px;
