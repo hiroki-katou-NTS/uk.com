@@ -1062,9 +1062,30 @@ module jcm007.a {
                 if (value == 1 || value == 2 || value == 4) {
                     self.visible_NotDismissal(true);
                     self.visible_Dismissal(false);
+                    // clear input
+                    self.dismissalNoticeDate('');
+                    self.dismissalNoticeDateAllow('');
+                    self.reaAndProForDis('');
+                    $('#reaAndProForDis').ntsError('clear');
+                    self.naturalUnaReasons_1Val('');
+                    self.businessReduction_2Val('');
+                    self.seriousViolationsOrder_3Val('');
+                    self.unauthorizedConduct_4Val('');
+                    self.leaveConsiderableTime_5Val('');
+                    self.other_6Val('');
+                    self.naturalUnaReasons_1(false);
+                    self.businessReduction_2(false);
+                    self.seriousViolationsOrder_3(false);
+                    self.unauthorizedConduct_4(false);
+                    self.leaveConsiderableTime_5(false);
+                    self.other_6(false);
+                    
                 } else if (value == 3) {
                     self.visible_NotDismissal(false);
                     self.visible_Dismissal(true);
+                    self.retirementReasonVal('');
+                    $('#retirementReasonVal').ntsError('clear');
+                    
                     if(self.naturalUnaReasons_1() == false){
                         self.naturalUnaReasons_1Val('');
                         self.naturalUnaReasons_enable(false);
@@ -1104,6 +1125,7 @@ module jcm007.a {
                 } else if (value == false) {
                     self.naturalUnaReasons_1Val('');
                     self.naturalUnaReasons_enable(false);
+                    $('#naturalUnaReasons_1Val').ntsError('clear');
                 }
             });
 
@@ -1117,6 +1139,7 @@ module jcm007.a {
                 } else if (value == false) {
                     self.businessReduction_2Val('');
                     self.businessReduction_enable(false);
+                    $('#businessReduction_2Val').ntsError('clear');
                 }
             });
 
@@ -1131,6 +1154,7 @@ module jcm007.a {
                 } else if (value == false) {
                     self.seriousViolationsOrder_3Val('');
                     self.seriousViolationsOrder_enable(false);
+                    $('#seriousViolationsOrder_3Val').ntsError('clear');
                 }
             });
 
@@ -1143,6 +1167,7 @@ module jcm007.a {
                     self.unauthorizedConduct_enable(true);
                     $("#unauthorizedConduct_4Val").focus();
                 } else if (value == false) {
+                    $('#unauthorizedConduct_4Val').ntsError('clear');
                     self.unauthorizedConduct_4Val('');
                     self.unauthorizedConduct_enable(false);
                 }
@@ -1159,6 +1184,7 @@ module jcm007.a {
                 } else if (value == false) {
                     self.leaveConsiderableTime_5Val('');
                     self.leaveConsiderableTime_enable(false);
+                    $('#leaveConsiderableTime_5Val').ntsError('clear');
                 }
             });
 
@@ -1172,6 +1198,7 @@ module jcm007.a {
                 } else if (value == false) {
                     self.other_6Val('');
                     self.other_enable(false);
+                    $('#other_6Val').ntsError('clear');
                 }
             });
         }
