@@ -1104,6 +1104,7 @@ module jcm007.a {
                 } else if (value == false) {
                     self.naturalUnaReasons_1Val('');
                     self.naturalUnaReasons_enable(false);
+                    $('#naturalUnaReasons_1Val').ntsError('clear');
                 }
             });
 
@@ -1117,6 +1118,7 @@ module jcm007.a {
                 } else if (value == false) {
                     self.businessReduction_2Val('');
                     self.businessReduction_enable(false);
+                    $('#businessReduction_2Val').ntsError('clear');
                 }
             });
 
@@ -1131,6 +1133,7 @@ module jcm007.a {
                 } else if (value == false) {
                     self.seriousViolationsOrder_3Val('');
                     self.seriousViolationsOrder_enable(false);
+                    $('#seriousViolationsOrder_3Val').ntsError('clear');
                 }
             });
 
@@ -1143,6 +1146,7 @@ module jcm007.a {
                     self.unauthorizedConduct_enable(true);
                     $("#unauthorizedConduct_4Val").focus();
                 } else if (value == false) {
+                    $('#unauthorizedConduct_4Val').ntsError('clear');
                     self.unauthorizedConduct_4Val('');
                     self.unauthorizedConduct_enable(false);
                 }
@@ -1159,6 +1163,7 @@ module jcm007.a {
                 } else if (value == false) {
                     self.leaveConsiderableTime_5Val('');
                     self.leaveConsiderableTime_enable(false);
+                    $('#leaveConsiderableTime_5Val').ntsError('clear');
                 }
             });
 
@@ -1172,6 +1177,7 @@ module jcm007.a {
                 } else if (value == false) {
                     self.other_6Val('');
                     self.other_enable(false);
+                    $('#other_6Val').ntsError('clear');
                 }
             });
         }
