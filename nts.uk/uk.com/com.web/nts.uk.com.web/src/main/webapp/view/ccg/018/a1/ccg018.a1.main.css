@@ -74,6 +74,10 @@
 	overflow-x: hidden;
 }
 
+.table1 td {
+	overflow-x: hidden;
+}
+
 /* for IE browser */
 *::-ms-backdrop, .table1 tbody {
 	height: 330px;
@@ -97,15 +101,17 @@ supports (-ms-ime-align:auto ) { .table1 tbody {
 }
 
 #A2-4 > table > tbody > tr > td:nth-child(1){
-	width: 80px
+	width: 80px;
+	max-width: 80px;
 }
 
 #A2-4 > table > thead > tr > th:nth-child(2){
-	width: 220px
+	width: 220px;
 }
 
 #A2-4 > table > tbody > tr > td:nth-child(2){
-	width: 220px
+	width: 220px;
+	max-width: 220px;
 }
 
 #A2-4 > table > thead > tr > th:nth-child(3){
@@ -113,7 +119,8 @@ supports (-ms-ime-align:auto ) { .table1 tbody {
 }
 
 #A2-4 > table > tbody > tr > td:nth-child(3){
-	width: 205px
+	width: 205px;
+	max-width: 205px;
 }
 
 #A2-4 > table > thead > tr > th:nth-child(4){
@@ -121,7 +128,8 @@ supports (-ms-ime-align:auto ) { .table1 tbody {
 }
 
 #A2-4 > table > tbody > tr > td:nth-child(4){
-	width: 205px
+	width: 205px;
+	max-width: 205px;
 }
 
 #A2-4 > table > thead > tr > th:nth-child(5){
@@ -129,7 +137,8 @@ supports (-ms-ime-align:auto ) { .table1 tbody {
 }
 
 #A2-4 > table > tbody > tr > td:nth-child(5){
-	width: 205px
+	width: 205px;
+	max-width: 205px;
 }
 /* 
 #A2-4 > table > tbody tr td:nth-child(1){
@@ -158,3 +167,6 @@ supports (-ms-ime-align:auto ) { .table1 tbody {
 /* .width-tbody {
 	width: 638px;
 } */
+html {
+	overflow: hidden;
+}
