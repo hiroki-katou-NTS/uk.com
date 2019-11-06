@@ -115,7 +115,7 @@ export class Kdws03AComponent extends Vue {
 
     @Watch('dateRanger', { deep: true })
     public changeDateRange(value: any, valueOld: any) {
-        if (_.isNil(value) || _.isNil(valueOld) || this.displayFormat == '1' || this.isFirstLoad) {
+        if (_.isNil(value) || this.displayFormat == '1' || this.isFirstLoad) {
             this.isFirstLoad = false;
             
             return;
