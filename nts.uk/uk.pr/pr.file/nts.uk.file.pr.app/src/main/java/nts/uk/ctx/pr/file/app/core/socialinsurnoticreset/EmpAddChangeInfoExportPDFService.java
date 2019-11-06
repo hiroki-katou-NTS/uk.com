@@ -111,6 +111,12 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
                     }
                 }
 
+                Optional<EmployeeInfoEx> el = employeeInfoExList.stream().filter(ee->ee.getEmployeeId().equals(e.getEmpId())).findFirst();
+                if(el.isPresent()){
+                    e.setScd(el.get().getEmployeeCode());
+                    e.setPId(el.get().getPId());
+                }
+
                 //Imported（給与）「家族情報」
                 //Imported（給与）「家族現住所」
                 if(!currentFamilyResidenceList.isEmpty()){
@@ -121,7 +127,7 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
 
                 }
 
-                if(!empFamilySocialInsCtgInfoList.isEmpty()){
+                if(!empFamilySocialInsCtgInfoList.isEmpty() ){
                     Optional<EmpFamilySocialInsCtgInfo> ef = empFamilySocialInsCtgInfoList.stream().filter(fe->fe.getFamilyId().equals(e.getFamilyId())
                             && e.getEmpId().equals(fe.getEmpId())
                             && e.getSpouseAddChangeDate().beforeOrEquals(fe.getEndDate())
@@ -146,7 +152,7 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
                     }
                 }
 
-                if(!empWelfarePenInsQualiInforList.isEmpty()){
+                if(!empWelfarePenInsQualiInforList.isEmpty() ){
                     Optional<EmpWelfarePenInsQualiInfo> ew = empWelfarePenInsQualiInforList.stream().filter(item -> item.getEmpId().equals(e.getEmpId())
                             && (e.getPersonAddChangeDate() != null
                             && e.getPersonAddChangeDate().afterOrEquals(item.getStartDate())
@@ -165,7 +171,7 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
                 }
             });
 
-            if (!empCorpOffHisInfoList.isEmpty()){
+            if (!empCorpOffHisInfoList.isEmpty() && !eList.isEmpty()){
                 empCorpOffHisInfoList.forEach(i-> {
                    Optional<EmpAddChangeInfoExport> em = eList.stream().filter(item->item.getEmpId().equals(i.getEmpId())
                            && item.getSpouseAddChangeDate().afterOrEquals(i.getStartDate())
@@ -190,7 +196,7 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
                 });
             }
 
-            if (domain.getInsuredNumber() == InsurPersonNumDivision.OUTPUT_THE_WELF_PENNUMBER) {
+            if (domain.getInsuredNumber() == InsurPersonNumDivision.OUTPUT_THE_WELF_PENNUMBER && !eList.isEmpty()) {
                 if (!empWelfarePenInsQualiInforList.isEmpty() ) {
                     empWelfarePenInsQualiInforList.stream().forEach(k -> {
                         Optional<EmpAddChangeInfoExport> em = empAddChangeInfoExportList.stream().filter(item -> item.getEmpId().equals(k.getEmpId())
@@ -203,7 +209,7 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
                     });
                 }
 
-            } else if (domain.getInsuredNumber() == InsurPersonNumDivision.OUTPUT_HEAL_INSUR_UNION) {
+            } else if (domain.getInsuredNumber() == InsurPersonNumDivision.OUTPUT_HEAL_INSUR_UNION && !eList.isEmpty()) {
 
                 if (!healInsurPortPerIntellInfoList.isEmpty()) {
                     healInsurPortPerIntellInfoList.stream().forEach(k -> {
@@ -217,7 +223,7 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
                     });
                 }
 
-            } else if (domain.getInsuredNumber() == InsurPersonNumDivision.OUTPUT_THE_FUN_MEMBER) {
+            } else if (domain.getInsuredNumber() == InsurPersonNumDivision.OUTPUT_THE_FUN_MEMBER && !eList.isEmpty()) {
                 if(!emPensionFunList.isEmpty()) {
                     emPensionFunList.stream().forEach(k -> {
                         Optional<EmpAddChangeInfoExport> em = eList.stream().filter(item -> item.getEmpId().equals(k.getEmpId())
@@ -231,7 +237,7 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
                 }
             }
 
-            if(domain.getPrintPersonNumber() == PersonalNumClass.OUTPUT_BASIC_PER_NUMBER ) {
+            if(domain.getPrintPersonNumber() == PersonalNumClass.OUTPUT_BASIC_PER_NUMBER && !eList.isEmpty()) {
                 if(!empBasicPenNumInforList.isEmpty()) {
                     empBasicPenNumInforList.stream().forEach(k -> {
                         Optional<EmpAddChangeInfoExport> em = eList.stream().filter(item -> item.getEmpId().equals(k.getEmployeeId())
@@ -247,7 +253,7 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
             //Imported(給与)「個人情報」 with condition1,2
             //Imported（給与）「個人現住所」
             //Imported（給与）「個人前住所」
-            if(!currentPersonAddressList.isEmpty()) {
+            if(!currentPersonAddressList.isEmpty()&& !eList.isEmpty()) {
                 currentPersonAddressList.forEach(k->{
                     Optional<EmpAddChangeInfoExport> em =  eList.stream().filter(i->i.getPId().equals(k.getPId())).findFirst();
                     if(em.isPresent()&& domain.getSubmittedName() == SubNameClass.PERSONAL_NAME) {
@@ -291,7 +297,7 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
             //Imported（給与）「家族現同居住所」
             //Imported（給与）「家族前住所」
             //Imported（給与）「家族前同居住所」
-           if(!currentFamilyResidenceList.isEmpty()){
+           if(!currentFamilyResidenceList.isEmpty()&& !eList.isEmpty()){
                currentFamilyResidenceList.forEach(t->{
                    Optional<EmpAddChangeInfoExport> em = eList.stream().filter(o->o.getFamilyId().equals(t.getFamilyId())
                            && o.getSpouseAddChangeDate() != null
@@ -325,7 +331,7 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
                });
            }
 
-            if(!empAddChangeInfoList.isEmpty()){
+            if(!empAddChangeInfoList.isEmpty()&& !eList.isEmpty()){
                 empAddChangeInfoList.forEach(p->{
                     Optional<EmpAddChangeInfoExport> x = eList.stream().filter(z->z.getEmpId().equals(p.getSid())).findFirst();
                     if(!x.isPresent()) {
@@ -357,11 +363,11 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
 
 		    if(!eList.isEmpty()){
                 if(domain.getOutputOrder() == SocialInsurOutOrder.EMPLOYEE_CODE_ORDER) {
-                    eList = eList.stream().sorted(Comparator.comparing(EmpAddChangeInfoExport::getCompanyId).thenComparing(EmpAddChangeInfoExport::getEmpId, Comparator.naturalOrder())).collect(Collectors.toList());
+                    eList = eList.stream().sorted(Comparator.comparing(EmpAddChangeInfoExport::getScd, Comparator.naturalOrder())).collect(Collectors.toList());
                 }
 
                 if(domain.getOutputOrder() == SocialInsurOutOrder.EMPLOYEE_KANA_ORDER) {
-                    eList = eList.stream().sorted(Comparator.comparing(EmpAddChangeInfoExport::getNameKanaPs, Comparator.naturalOrder()).thenComparing(EmpAddChangeInfoExport::getEmpId, Comparator.naturalOrder())).collect(Collectors.toList());
+                    eList = eList.stream().sorted(Comparator.comparing(EmpAddChangeInfoExport::getNameKanaPs, Comparator.naturalOrder()).thenComparing(EmpAddChangeInfoExport::getScd, Comparator.naturalOrder())).collect(Collectors.toList());
                 }
             }
 

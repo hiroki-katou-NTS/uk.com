@@ -9,16 +9,19 @@ module cli001.b.viewmodel {
         columns: KnockoutObservableArray<NtsGridListColumn>;
         currentId: KnockoutObservable<any>;
         count: number = 100;
+        rows: KnockoutObservable<number> = ko.observable(20);
 
         constructor() {
             this.items = ko.observableArray([]);
             this.columns = ko.observableArray([
                 { key: 'userID', hidden: true },
-                { headerText: getText('CLI001_21'), key: 'loginID', width: 110 },
-                { headerText: getText('CLI001_22'), key: 'userName', width: 170 },
+                { headerText: getText('CLI001_21'), key: 'loginID', width: 140 },
+                { headerText: getText('CLI001_22'), key: 'userName', width: 220 },
             ]);
             this.searchInput = ko.observable();
             this.currentId = ko.observable();
+            let tableHeight = (window.innerHeight - 150) >= 480 ? 480 : window.innerHeight - 150; 
+            this.rows(Math.round(tableHeight/24));
         }
 
         search(): void {

@@ -10,7 +10,7 @@
 			<script type='text/javascript'>
 				var dialogSize = {
 					width : 600,
-					height : 450
+					height : 410
 				};
 			</script>
 			<com:ValidatorScript>
@@ -30,14 +30,14 @@
 					<div class="row1"> <!-- row 1 -->
 						<div class="input_row1" style="margin-left: 5px"
 							data-bind="ntsFormLabel: { required: false }">  ポート番号 </div>
-						<div class="input_row1 input_code" style="margin-left: 24px;">
+						<div class="input_row1 input_code" style="margin-left: 21px;">
 							<span data-bind="text: portType"></span>
 						</div>
 					</div>
 					
-					<div class="row2" ><!-- row 2 --> 
+					<div class="row2 cell valign-center" ><!-- row 2 --> 
 						<div style="margin-left: 5px" class="component_row2" data-bind="ntsFormLabel: { required: false }"> 使用区分  </div>
-						<div style="width: 100px; margin-left: 26px" class="component_row2 valign-center control-group control-group-margin-custom" id="combo-box-Cab"
+						<div style="width: 100px; margin-left: 26px" class="component_row2 valign-center" id="combo-box-Cab"
 							data-bind="ntsComboBox: {
 										options: listCable,
 										optionsValue: 'value',
@@ -49,7 +49,7 @@
 											{ prop: 'text', length: 10 }
 										]}"></div>
 						<div style="margin-left: 31px" class="component_row2" data-bind="ntsFormLabel: { required: false }"> 常時収集  </div>
-						<div style="width: 100px; margin-left: 26px" class="component_row2 valign-center control-group control-group-margin-custom" id="combo-box-AlwaysCollect"
+						<div style="width: 100px; margin-left: 26px" class="component_row2 valign-center" id="combo-box-AlwaysCollect"
 							data-bind="ntsComboBox: {
 										options: listSpeed,
 										optionsValue: 'value',
@@ -58,7 +58,7 @@
 										enable: true,
 										editable: false,
 										columns: [
-											{ prop: 'text', length: 10 }
+											{ prop: 'text', length: 8 }
 										]}"></div>									
 					</div>
 
@@ -99,8 +99,8 @@
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button style=" margin-top: 10px " class="proceed large" data-bind="click: pushDataToAScreen">了解</button>
-				<button style=" margin-top: 10px " class=" large" data-bind="click: close">取消</button>
+				<button style=" margin-top: 10px " class="proceed x-large" data-bind="click: pushDataToAScreen">了解</button>
+				<button style=" margin-top: 10px " class="x-large" data-bind="click: close">取消</button>
 			</div>
 		</ui:define>
 	</ui:composition>

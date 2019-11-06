@@ -20,5 +20,9 @@ table.fixed-table>tbody>tr>td {
 }
 
 #detailContentMethod {
-	white-space: pre !important;
+	/*white-space: pre !important;*/
+}
+
+#fixed-table {
+	min-height:30px;
 }

@@ -1,10 +1,14 @@
 #contents-area {
 	margin: 20px;
 	height: auto !important;
+	margin-bottom: 0px !important;
+}
+#master-wrapper {
+	height: auto !important;
 }
 
 #tbl-control {
-	width: 750px;
+	width: 850px;
 	margin-bottom: 10px;
 }
 

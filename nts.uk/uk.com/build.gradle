@@ -244,6 +244,7 @@ project (':shr:nts.uk.shr.com') {
 	dependencies {
 		compile group: 'com.sun.faces', name: 'jsf-api', version: '2.2.13'
 		compile group: 'aspose', name: 'cells', version: '9.0.0'
+		compile group: 'aspose', name: 'aspose.pdf', version: '19.10'
 		// Mime Detection Utility
 		compile group: 'eu.medsea.mimeutil', name: 'mime-util', version: '2.1.3'
 		// https://mvnrepository.com/artifact/org.jboss.resteasy/resteasy-multipart-provider
@@ -1009,7 +1010,8 @@ project (':com.web:nts.uk.com.web') {
 		runtime project(':shr:nts.uk.shr.ws')
 		providedCompile group: 'com.sun.faces', name: 'jsf-api', version: '2.2.13'
 		compile group: 'aspose', name: 'cells', version: '9.0.0'
-		
+		compile group: 'aspose', name: 'aspose.pdf', version: '19.10'
+
 		// https://mvnrepository.com/artifact/net.lingala.zip4j/zip4j
 		runtime group: 'net.lingala.zip4j', name: 'zip4j', version: '1.3.2'
 		

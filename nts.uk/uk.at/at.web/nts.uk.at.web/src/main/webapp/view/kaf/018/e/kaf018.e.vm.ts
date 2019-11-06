@@ -119,7 +119,7 @@ module nts.uk.at.view.kaf018.e.viewmodel {
             var self = this;
             $("#gridE").ntsGrid({
                 width: self.ntsGridWidthCal(),
-                height: '629px',
+                height: window.outerHeight - 360 + 'px',
                 dataSource: self.listWkpStatusConfirm,
                 primaryKey: 'code',
                 rowVirtualization: true,
@@ -127,7 +127,7 @@ module nts.uk.at.view.kaf018.e.viewmodel {
                 hidePrimaryKey: true,
                 virtualizationMode: 'continuous',
                 columns: [
-                    { headerText: getText('KAF018_52'), key: 'name', dataType: 'string', width: '210px', ntsControl: 'LinkLabel' },
+                    { headerText: getText('KAF018_52'), key: 'name', dataType: 'string', width: '400px', ntsControl: 'LinkLabel' },
                     { headerText: getText('KAF018_53'), key: 'monthConfirm', dataType: 'string', width: '100px', hidden: !self.useSetting.monthlyConfirm},
                     { headerText: getText('KAF018_54'), 
                         group:[{ headerText: getText('KAF018_99'), key: 'dayBossUnconfirm', dataType: 'string', width: '100px' },
@@ -158,7 +158,7 @@ module nts.uk.at.view.kaf018.e.viewmodel {
         
         ntsGridWidthCal() {
             var self = this;
-            let width = 350;
+            let width = 540;
             if (self.useSetting.monthlyConfirm) {
                 width += 100;
             }

@@ -60,7 +60,7 @@ module nts.uk.at.view.kmf022.m.viewmodel {
         ]);
 
         kcp004WorkplaceListOption: any = {
-            maxRows: 10,
+            maxRows: 7,
             treeType: 1,
             tabindex: 1,
             systemType: 2,

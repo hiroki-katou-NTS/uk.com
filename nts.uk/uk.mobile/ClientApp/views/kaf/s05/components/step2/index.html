@@ -60,31 +60,31 @@
                         <div class="col-4">
                             <span class="small-header-framename">{{item.frameName | i18n}}</span>
                         </div>
-                        <div class="col-4 excess-time-none font-time"
+                        <div class="col-4 uk-text-excess-time-none font-time"
                             v-if="kafs05ModelStep2.prePostSelected == 1 && !item.preAppExceedState">
                             <span class="far fa-clock"
                                 v-if="null != item.preAppTime">事前[{{item.preAppTime | timedr}}]</span>
                             <span class="far fa-clock" v-if="null == item.preAppTime">事前[--:--]</span>
                         </div>
-                        <div class="col-4 excess-time-alarm font-time"
+                        <div class="col-4 uk-text-excess-time-alarm font-time"
                             v-if="kafs05ModelStep2.prePostSelected == 1 && item.preAppExceedState">
                             <span class="far fa-clock"
                                 v-if="null != item.preAppTime">事前[{{item.preAppTime | timedr}}]</span>
                             <span class="far fa-clock" v-if="null == item.preAppTime">事前[--:--]</span>
                         </div>
-                        <div class="col-4 excess-time-none font-time"
+                        <div class="col-4 uk-text-excess-time-none font-time"
                             v-if="kafs05ModelStep2.prePostSelected == 1 && item.actualExceedState == 0">
                             <span class="far fa-clock"
                                 v-if="null != item.caculationTime">実績[{{item.caculationTime | timedr}}]</span>
                             <span class="far fa-clock" v-if="null == item.caculationTime">実績[--:--]</span>
                         </div>
-                        <div class="col-4 excess-time-alarm font-time"
+                        <div class="col-4 uk-text-excess-time-alarm font-time"
                             v-if="kafs05ModelStep2.prePostSelected == 1 && item.actualExceedState == 3">
                             <span class="far fa-clock"
                                 v-if="null != item.caculationTime">実績[{{item.caculationTime | timedr}}]</span>
                             <span class="far fa-clock" v-if="null == item.caculationTime">実績[--:--]</span>
                         </div>
-                        <div class="col-4 excess-time-error font-time"
+                        <div class="col-4 uk-text-excess-time-error font-time"
                             v-if="kafs05ModelStep2.prePostSelected == 1 && item.actualExceedState == 4">
                             <span class="far fa-clock"
                                 v-if="null != item.caculationTime">実績[{{item.caculationTime | timedr}}]</span>
@@ -116,14 +116,14 @@
                         <div class="col-4">
                             <span class="small-header">{{item.frameName | i18n}}</span>
                         </div>
-                        <div class="col-4 excess-time-none font-time"
+                        <div class="col-4 uk-text-excess-time-none font-time"
                             v-if="kafs05ModelStep2.prePostSelected == 1 && !item.preAppExceedState">
                             <span class="far fa-clock"
                                 v-if="null != item.preAppTime">事前[{{item.preAppTime | timedr}}]</span>
                             <span class="far fa-clock" v-if="null == item.preAppTime">事前[--:--]</span>
                         </div>
 
-                        <div class="col-4 excess-time-alarm font-time"
+                        <div class="col-4 uk-text-excess-time-alarm font-time"
                             v-if="kafs05ModelStep2.prePostSelected == 1 && item.preAppExceedState">
                             <span class="far fa-clock"
                                 v-if="null != item.preAppTime">事前[{{item.preAppTime | timedr}}]</span>

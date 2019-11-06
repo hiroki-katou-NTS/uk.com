@@ -1,8 +1,8 @@
 @CHARSET "UTF-8";
 
 .background-for-list {
-	padding: 20px;
-    width: 267px;
+	padding: 15px;
+    width: 300px;
     height: 255px;
 }
 .caret-background.caret-bottom:after {

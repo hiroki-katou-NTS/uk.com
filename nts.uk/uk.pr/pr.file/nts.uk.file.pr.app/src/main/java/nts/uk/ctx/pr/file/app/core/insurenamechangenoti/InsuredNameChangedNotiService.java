@@ -115,25 +115,37 @@ public class InsuredNameChangedNotiService extends ExportService<InsuredNameChan
         });
 
         if(listData.size() > 0){
-            fileGenerator.generate(exportServiceContext.getGeneratorContext(),this.order(query.getSocialInsurOutOrder(),listData),socialInsurNotiCreateSet);
+            fileGenerator.generate(exportServiceContext.getGeneratorContext(),this.order(query.getSocialInsurOutOrder(),listData, query.getSocialInsurNotiCreateSetDto().getInsuredNumber()),socialInsurNotiCreateSet);
         }else{
             throw new BusinessException("Msg_37");
         }
 
     }
 
-    private List<InsuredNameChangedNotiExportData> order(int order, List<InsuredNameChangedNotiExportData> listData){
+    private List<InsuredNameChangedNotiExportData> order(int order, List<InsuredNameChangedNotiExportData> listData, int insuredNumber) {
 
-        if(order == SocialInsurOutOrder.HEAL_INSUR_NUMBER_UNION_ORDER.value) {
-            return listData.stream().sorted(((o1, o2) -> o1.getHealthCarePortInfor() != null && o2.getHealthCarePortInfor() != null ? o1.getHealthCarePortInfor().getHealInsurUnionNumber().v().compareTo(o2.getHealthCarePortInfor().getHealInsurUnionNumber().v()): 0)).collect(Collectors.toList());
-        }else if(order == SocialInsurOutOrder.ORDER_BY_FUND.value) {
-            return listData.stream().sorted(((o1, o2) -> o1.getFundMembership() != null && o2.getFundMembership() != null ? o1.getFundMembership().getMembersNumber().v().compareTo(o2.getFundMembership().getMembersNumber().v()): 0)).collect(Collectors.toList());
-        }else if(order == SocialInsurOutOrder.HEAL_INSUR_NUMBER_ORDER.value) {
-            return listData.stream().sorted(((o1, o2) -> o1.getHealInsurNumberInfor() != null && o2.getHealInsurNumberInfor() != null ? o1.getHealInsurNumberInfor().getHealInsNumber().get().v().compareTo(o2.getHealInsurNumberInfor().getHealInsNumber().get().v()) : 0 )).collect(Collectors.toList());
-        }else if(order == SocialInsurOutOrder.WELF_AREPEN_NUMBER_ORDER.value) {
-            return listData.stream().sorted(((o1, o2) -> o1.getWelfPenNumInformation() != null && o2.getWelfPenNumInformation() != null ? o1.getWelfPenNumInformation().getWelPenNumber().get().v().compareTo(o2.getWelfPenNumInformation().getWelPenNumber().get().v()) : 0 )).collect(Collectors.toList());
+        if (order == SocialInsurOutOrder.HEAL_INSUR_NUMBER_UNION_ORDER.value) {
+            listData.sort(((o1, o2) -> o1.getHealthCarePortInfor() != null && o2.getHealthCarePortInfor() != null ? o1.getHealthCarePortInfor().getHealInsurUnionNumber().v().compareTo(o2.getHealthCarePortInfor().getHealInsurUnionNumber().v()) : 0));
+        } else if (order == SocialInsurOutOrder.ORDER_BY_FUND.value) {
+            listData.sort(((o1, o2) -> o1.getFundMembership() != null && o2.getFundMembership() != null ? o1.getFundMembership().getMembersNumber().v().compareTo(o2.getFundMembership().getMembersNumber().v()) : 0));
+        } else if (order == SocialInsurOutOrder.HEAL_INSUR_NUMBER_ORDER.value) {
+            listData.sort(((o1, o2) -> o1.getHealInsurNumberInfor() != null && o2.getHealInsurNumberInfor() != null ? o1.getHealInsurNumberInfor().getHealInsNumber().get().v().compareTo(o2.getHealInsurNumberInfor().getHealInsNumber().get().v()) : 0));
+        } else if (order == SocialInsurOutOrder.WELF_AREPEN_NUMBER_ORDER.value) {
+            listData.sort(((o1, o2) -> o1.getWelfPenNumInformation() != null && o2.getWelfPenNumInformation() != null ? o1.getWelfPenNumInformation().getWelPenNumber().get().v().compareTo(o2.getWelfPenNumInformation().getWelPenNumber().get().v()) : 0));
+        } else if (order == SocialInsurOutOrder.INSURED_PER_NUMBER_ORDER.value) {
+            if (insuredNumber == InsurPersonNumDivision.OUTPUT_HEAL_INSUR_NUM.value) {
+                listData.sort(((o1, o2) -> o1.getHealthCarePortInfor() != null && o2.getHealthCarePortInfor() != null ? o1.getHealthCarePortInfor().getHealInsurUnionNumber().v().compareTo(o2.getHealthCarePortInfor().getHealInsurUnionNumber().v()) : 0));
+            }
+            if (insuredNumber == InsurPersonNumDivision.OUTPUT_THE_WELF_PENNUMBER.value) {
+                listData.sort(((o1, o2) -> o1.getFundMembership() != null && o2.getFundMembership() != null ? o1.getFundMembership().getMembersNumber().v().compareTo(o2.getFundMembership().getMembersNumber().v()) : 1));
+            }
+            if (insuredNumber == InsurPersonNumDivision.OUTPUT_HEAL_INSUR_UNION.value) {
+                listData.sort(((o1, o2) -> o1.getHealInsurNumberInfor() != null && o2.getHealInsurNumberInfor() != null ? o1.getHealInsurNumberInfor().getHealInsNumber().get().v().compareTo(o2.getHealInsurNumberInfor().getHealInsNumber().get().v()) : 1));
+            }
+            if (insuredNumber == InsurPersonNumDivision.OUTPUT_THE_FUN_MEMBER.value) {
+                listData.sort(((o1, o2) -> o1.getWelfPenNumInformation() != null && o2.getWelfPenNumInformation() != null ? o1.getWelfPenNumInformation().getWelPenNumber().get().v().compareTo(o2.getWelfPenNumInformation().getWelPenNumber().get().v()) : 1));
+            }
         }
-
         return listData;
     }
 

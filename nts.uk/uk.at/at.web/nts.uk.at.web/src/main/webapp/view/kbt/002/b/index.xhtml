@@ -110,7 +110,7 @@
 	                        <tr class="row">
 	                        	<td colspan="2">
 	                        		<div style="border-top : 1px solid black; padding : 10px; margin-top:10px">
-		                        		<div style="border : 1px solid black; padding : 10px; border-radius:10px;height: 760px">
+		                        		<div style="border : 1px solid black; padding : 10px; border-radius:10px;height: 800px">
 			                            	<div class="ntsControl" style="width: 100%; margin-bottom : 5px">
 												<label class="ntsRadioBox">
 													<input tabindex="13" type="radio" name="checkUpDateCreate" data-bind="checkedValue: 0,checked : processExecType" />
@@ -120,8 +120,8 @@
 												<!-- B7-1 Title 実行設定.個人スケジュール作成.個人スケジュール作成区分-->
 			                         			<div tabindex="14" data-bind="ntsCheckBox: { checked: perScheduleClsNomarl ,enable : processExecType() == 0}" >#{i18n.getText('KBT002_19')}</div>
 				                         			<!-- DateTime setting -->
-			                         			<div class="subExecSetting">
-			                         				<div id="line-one">
+			                         			<div class="subExecSetting" style="margin-bottom: 5px;">
+			                         				<div id="line-one" class="execSetting">
 			                         					<div style="float :left;">
 				                         					#{i18n.getText('KBT002_20')}
 				                         					<div tabindex="15" style="width: 173px" class="middle"
@@ -138,8 +138,8 @@
 									                                    ]}">
 							                                 </div>
 						                                 </div>
-						                                 <div style=" margin-left: 232px;">
-						                                 <div class="middle" data-bind="visible : !disableYearMonthDate()" >
+						                                 <div style=" margin-left: 232px;" class="execSetting">
+						                                 <div class="middle execSetting" data-bind="visible : !disableYearMonthDate()" >
 						                                 	<input tabindex="16" style="width: 20px;" class="middle" id="targetDate" data-bind="ntsNumberEditor :{
 																		name: '#[KBT002_22]',
 																		value: targetDate,
@@ -160,9 +160,8 @@
 									 									required: true,
 																		enable: perScheduleClsNomarl()  &amp;&amp; processExecType() == 0,
 																		readonly: false}" />
-															<span data-bind = "text: $parent.targetDateText"></span>
 						                                 </div>
-						                                 <div class="middle" data-bind="visible : disableYearMonthDate()">
+						                                 <div class="middle execSetting" data-bind="visible : disableYearMonthDate()">
 						                                 	<div tabindex="18" style="width: 100px;" 
 									                                    data-bind="ntsComboBox: {
 									                                    name: '#[KBT002_195]',
@@ -190,6 +189,9 @@
 						                                 </div>
 						                                 </div>
 			                         				</div>
+			                         				<div style="padding: 0px 0px 10px 238px;">
+						                                 <span data-bind = "text: $parent.targetDateText"></span>
+						                            </div>
 			                         				<div class="clear:both"></div>
 			                         				<div id="line-two" style="display:  flex;">
 														<div id="targetCheckBoxes">

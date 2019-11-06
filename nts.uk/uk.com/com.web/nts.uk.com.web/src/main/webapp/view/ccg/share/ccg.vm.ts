@@ -652,14 +652,11 @@ module nts.uk.com.view.ccg.share.ccg {
                 $.when(service.getRefRangeBySysType(self.systemType),
                 //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
                     self.loadClosure()).done((refRange, noValue) => {
+                        self.referenceRange = refRange;
+                        
                         self.loadWkpManagedByLoginnedUser().done(() => {
-                        dfd.resolve();
-                    }).fail(err => nts.uk.ui.dialog.alertError(err));
-//                    self.loadClosure()
-//                ).done((refRange, noValue) => {
-//                    self.referenceRange = refRange;
-                //end
-                    dfd.resolve();
+                            dfd.resolve();
+                        }).fail(err => nts.uk.ui.dialog.alertError(err));
                 }).fail(err => nts.uk.ui.dialog.alertError(err));
 
                 return dfd.promise();

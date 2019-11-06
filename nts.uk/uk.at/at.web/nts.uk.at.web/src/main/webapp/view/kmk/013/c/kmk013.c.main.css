@@ -7,8 +7,8 @@
 }
 
 .left-contents {
-	padding-left: 40px;
-	width: 394px;
+	padding-left: 20px;
+	width: 367px !important;
 	height: 100%;
 	vertical-align: top;
 }
@@ -48,11 +48,6 @@
 	/* margin-left: 8px; */
 }
 
-#table-b {
-	width: 680px;
-	height: 420px;
-}
-
 .group-label-switch {
 	margin-left: 12px;
 	margin-top: 7px;
@@ -67,7 +62,7 @@
 	background-color: #CFF1A5;
 }
 #combo-box {
-	width: 175px;
+	width: 155px;
 }
 
 .radio-btn-left-content > label.ntsRadioBox ~ :not(label) {
@@ -79,5 +74,11 @@
 }
 
 .radio-btn-left-content {
-	margin-left: -18px;
+	margin-left: -8px;
+}
+.full {
+	width: 720px !important;
+}
+.ui-tabs-panel {
+	width: 725px !important;
 }

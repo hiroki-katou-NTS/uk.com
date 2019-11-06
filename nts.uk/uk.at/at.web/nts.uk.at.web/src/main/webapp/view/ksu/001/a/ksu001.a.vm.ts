@@ -691,6 +691,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 $("#popup-set").click(function() {
                     $("#extable").exTable("popupValue", self.popupVal());
                 });
+                self.setWidth();
             });
         }
 
@@ -2049,6 +2050,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         
         compareArrByRowIndexAndColumnKey(a: any, b: any): any {
             return a.rowIndex == b.rowIndex && a.comlumnKey == b.comlumnKey;
+        }
+        
+        setWidth(): any {
+        	$(".ex-header-detail").width(window.outerWidth - 287);
+        	$(".ex-body-detail").width(window.outerWidth - 270); 
         }
 
     }
