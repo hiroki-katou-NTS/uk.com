@@ -93,8 +93,8 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
     public static String cutSpace(String name, int ps) {
         if (name == null || name.length() == 0) return "";
         String[] list = name.split(" ", 2);
-        if(ps == 1) return list[0];
-        if(ps >= 2) return list[1];
+        if(ps == 1 && list.length ==1) return list[0];
+        if(ps >= 2 && list.length ==2) return list[1];
         return "";
     }
 

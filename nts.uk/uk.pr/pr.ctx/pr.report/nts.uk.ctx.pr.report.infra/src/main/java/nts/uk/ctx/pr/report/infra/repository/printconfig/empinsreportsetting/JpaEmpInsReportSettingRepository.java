@@ -27,7 +27,7 @@ public class JpaEmpInsReportSettingRepository extends JpaRepository implements E
 
     @Override
     public void update(EmpInsReportSetting domain) {
-        this.commandProxy().insert(QrsmtEmpInsRptSetting.toEntity(domain));
+        this.commandProxy().update(QrsmtEmpInsRptSetting.toEntity(domain));
     }
 
 }

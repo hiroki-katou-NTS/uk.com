@@ -103,18 +103,18 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
 
             List<CurrentPersonResidence> currentPersonAddressList = CurrentPersonResidence.createListPerson(personExportAdapter.findByPids(pIds));
             empAddChangeInfoExportList.forEach(e->{
+                Optional<EmployeeInfoEx> el = employeeInfoExList.stream().filter(ee->ee.getEmployeeId().equals(e.getEmpId())).findFirst();
+                if(el.isPresent()){
+                    e.setScd(el.get().getEmployeeCode());
+                    e.setPId(el.get().getPId());
+                }
+
                 //Imported（給与）「個人現住所」
                 if(!currentPersonAddressList.isEmpty()){
                     Optional<CurrentPersonResidence> cp = currentPersonAddressList.stream().filter(p->p.getPId().equals(e.getPId())).findFirst();
                     if(cp.isPresent()) {
                         e.setPersonAddChangeDate(cp.get().getStartDate());
                     }
-                }
-
-                Optional<EmployeeInfoEx> el = employeeInfoExList.stream().filter(ee->ee.getEmployeeId().equals(e.getEmpId())).findFirst();
-                if(el.isPresent()){
-                    e.setScd(el.get().getEmployeeCode());
-                    e.setPId(el.get().getPId());
                 }
 
                 //Imported（給与）「家族情報」
@@ -157,7 +157,7 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
                             && (e.getPersonAddChangeDate() != null
                             && e.getPersonAddChangeDate().afterOrEquals(item.getStartDate())
                             && e.getPersonAddChangeDate().beforeOrEquals(item.getEndDate()))
-                            || (e.getPersonAddChangeDate() == null
+                            || (e.getPersonAddChangeDate() != null //1
                             && e.getSpouseAddChangeDate().afterOrEquals(item.getStartDate())
                             && e.getSpouseAddChangeDate().beforeOrEquals(item.getEndDate()))).findFirst();
 
@@ -166,7 +166,11 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
                     }
                 }
                 //end of list emp add change information
-                if( e.getSpouseAddChangeDate() == null && e.getPersonAddChangeDate() == null || !e.isEmpPenInsurance() && !e.isHealthInsurance()) {
+               /* if( e.getSpouseAddChangeDate() == null && e.getPersonAddChangeDate() == null || !e.isEmpPenInsurance() && !e.isHealthInsurance()) {
+                    eList.add(e);
+                }*/
+
+                if( e.getSpouseAddChangeDate() != null || e.getPersonAddChangeDate() != null && !e.isEmpPenInsurance() || !e.isHealthInsurance()) {
                     eList.add(e);
                 }
             });
@@ -301,7 +305,7 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
                currentFamilyResidenceList.forEach(t->{
                    Optional<EmpAddChangeInfoExport> em = eList.stream().filter(o->o.getFamilyId().equals(t.getFamilyId())
                            && o.getSpouseAddChangeDate() != null
-                           && o.getPersonAddChangeDate()== null).findFirst();
+                           && o.getPersonAddChangeDate()!= null).findFirst(); //2
                    if(em.isPresent()) {
                        //check is living separation by start end date
                        em.get().setPostalCodeF(t.getPostCode());

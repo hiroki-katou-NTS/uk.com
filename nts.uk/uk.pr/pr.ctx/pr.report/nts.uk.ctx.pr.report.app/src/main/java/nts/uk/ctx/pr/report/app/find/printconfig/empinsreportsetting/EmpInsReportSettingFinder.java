@@ -17,7 +17,7 @@ public class EmpInsReportSettingFinder {
         String cid = AppContexts.user().companyId();
         String userId = AppContexts.user().userId();
         Optional<EmpInsReportSetting> resulf =  mEmpInsReportSettingRepository.getEmpInsReportSettingById(cid,userId);
-        if(!resulf.isPresent()){
+        if(resulf.isPresent()){
             return resulf.map(empInsReportSetting -> {
                 return EmpInsReportSettingDto.builder()
                         .cid(empInsReportSetting.getCid())
