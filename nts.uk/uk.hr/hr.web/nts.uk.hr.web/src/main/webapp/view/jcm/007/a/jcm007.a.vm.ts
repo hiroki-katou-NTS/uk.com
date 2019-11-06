@@ -465,7 +465,7 @@ module jcm007.a {
                     let dismissalNoticeDate = moment.utc(self.currentEmployee().dismissalNoticeDate(), DateFormat.DEFAULT_FORMAT);
                     let dayDifference = retirementDate.diff(dismissalNoticeDate, 'days');
                     if (empCurrent.dismissalNoticeDateAllow) {
-                        if (dayDifference > 30) {
+                        if (dayDifference >= 30) {
                             nts.uk.ui.dialog.confirm({ messageId: "MsgJ_JCM007_9" }).ifYes(() => {
                                 this.addRetireeInformation(command).done(() => {
                                     dfd.resolve();
@@ -519,7 +519,7 @@ module jcm007.a {
                     let dismissalNoticeDate = moment.utc(self.currentEmployee().dismissalNoticeDate(), DateFormat.DEFAULT_FORMAT);
                     let dayDifference = retirementDate.diff(dismissalNoticeDate, 'days');
                     if (empCurrent.dismissalNoticeDateAllow) {
-                        if (dayDifference > 30) {
+                        if (dayDifference >= 30) {
                             nts.uk.ui.dialog.confirm({ messageId: "MsgJ_JCM007_9" }).ifYes(() => {
                                 this.registerNewEmpApproved(command).done(() => {
                                     dfd.resolve();
