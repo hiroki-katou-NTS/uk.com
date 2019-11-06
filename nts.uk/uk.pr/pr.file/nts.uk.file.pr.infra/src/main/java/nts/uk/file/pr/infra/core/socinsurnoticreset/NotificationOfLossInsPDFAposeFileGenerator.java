@@ -493,7 +493,7 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
         return new JapaneseDate(date, era.get());
     }
 
-    private String convertJpDate(JapaneseDate date){
+    public static String convertJpDate(JapaneseDate date){
         if(date == null) {
             return "";
         }
