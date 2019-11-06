@@ -169,8 +169,8 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
         cells.get(startRow, 11 + columnStart).setValue(cells.get(startRow, 11 + columnStart).getStringValue() + "," + data.getIsMoreEmp());
         cells.get(startRow, 11 + columnStart).setValue(cells.get(startRow, 11 + columnStart).getStringValue() + "," + data.getContinReemAfterRetirement());
         cells.get(startRow, 12 + columnStart).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? data.getOtherReason() : data.getOtherReason2());
-        cells.get(startRow, 13 + columnStart).setValue(Objects.toString(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? data.getCaInsurance() : data.getNumRecoved2(), ""));
-        cells.get(startRow, 14 + columnStart).setValue(Objects.toString(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? data.getCaInsurance() : data.getNumRecoved2(), ""));
+        cells.get(startRow, 13 + columnStart).setValue(Objects.toString(endJp2 != null ? data.getCaInsurance2() : data.getCaInsurance(), ""));
+        cells.get(startRow, 14 + columnStart).setValue(Objects.toString(endJp2 != null ? data.getNumRecoved2() : data.getNumRecoved(), ""));
         cells.get(startRow, 15 + columnStart).setValue(calculateAge(data.getBirthDay()) ? "1,9" : ",");
         cells.get(startRow, 16 + columnStart).setValue(calculateAge(data.getBirthDay()) ? (endJp2 != null ? convertJpDate(toJapaneseDate(GeneralDate.fromString(convertDate(data.getEndDate2()),"yyyyMMdd" ))) : (endJp != null ? convertJpDate(toJapaneseDate(GeneralDate.fromString(convertDate(data.getEndDate()),"yyyyMMdd" ))) : "")) : "");
         cells.get(startRow, 17 + columnStart).setValue(data.getCause2() == null ? "" : data.getCause2() == 6 ? "" : 1);
@@ -289,7 +289,7 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
         cells.get(startRow, 13 + columnStart).setValue(Objects.toString(data.getCause(), ""));
         cells.get(startRow, 13 + columnStart).setValue(cells.get(startRow, 13 + columnStart).getValue() + ",9");
         cells.get(startRow, 14 + columnStart).setValue(data.getCause()!= null && (data.getCause() == 4 || data.getCause() == 5) ? convertJpDate(toJapaneseDate(GeneralDate.fromString(convertDate(data.getEndDate()), "yyyyMMdd"))) : "");
-        cells.get(startRow, 15 + columnStart).setValue(data.getIsMoreEmp() + "," + data.getContinReemAfterRetirement() + "," + data.getOtherReason() + "," + data.getCaInsurance() + "," + data.getCaInsurance() + ",,,,,"
+        cells.get(startRow, 15 + columnStart).setValue(data.getIsMoreEmp() + "," + data.getContinReemAfterRetirement() + "," + data.getOtherReason() + "," + data.getCaInsurance() + "," + data.getNumRecoved() + ",,,,,"
                 + data.getUnionOfficeNumber() + "," + data.getHealInsUnionNumber() + "," + data.getHealInsInherenPr());
     }
 
