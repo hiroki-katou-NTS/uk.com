@@ -10,7 +10,6 @@ import java.util.List;
 @Data
 @Getter
 public class InsuredNameChangedNotiQuery {
-    private int socialInsurOutOrder;
     private SocialInsurNotiCreateSetDto socialInsurNotiCreateSetDto;
     private List<String> listEmpId;
     private GeneralDate date;
