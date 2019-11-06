@@ -290,7 +290,7 @@ module jcm007.a {
                 dataSource: self.employeeListTab2,
                 dataSourceType: 'json',
                 responseDataKey: 'results',
-                height: '465px',
+                height: '513px',
                 width: '640px',
                 tabIndex: 17,
                 features: [
@@ -308,7 +308,10 @@ module jcm007.a {
                     {
                         name: 'Filtering',
                         type: 'local',
-                        mode: 'simple'
+                        mode: 'simple',
+                        dataFiltered: function (evt, ui) {
+                           $('#gridListEmployeesJcm007_scroll').css('height', '432px');
+                        }
                     },
                     {
                         name: 'Sorting',
