@@ -110,14 +110,14 @@ public class InsuredNameChangedNotiService extends ExportService<InsuredNameChan
         List<EmpWelfarePenInsQualiInfor> empWelfarePenInsQualiInfors = empWelfarePenInsQualiInforRepository.getEmpWelfarePenInsQualiInfor(cid, query.getDate(),query.getListEmpId());
         empWelfarePenInsQualiInfors.forEach(x ->{
             InsuredNameChangedNotiExportData insuredNameChangedNotiExportData =  this.get(cid,listSocialInsuranceOffice,socialInsurNotiCreateSet,query.getDate(),x);
-            insuredNameChangedNotiExportData.setSocialInsurOutOrder(query.getSocialInsurOutOrder());
+            insuredNameChangedNotiExportData.setSocialInsurOutOrder(query.getSocialInsurNotiCreateSetDto().getOutputOrder());
             if(insuredNameChangedNotiExportData.isProcessSate()){
                 listData.add(insuredNameChangedNotiExportData);
             }
         });
 
         if(listData.size() > 0){
-            fileGenerator.generate(exportServiceContext.getGeneratorContext(),this.order(query.getSocialInsurOutOrder(),listData, query.getSocialInsurNotiCreateSetDto().getInsuredNumber()),socialInsurNotiCreateSet);
+            fileGenerator.generate(exportServiceContext.getGeneratorContext(),this.order(query.getSocialInsurNotiCreateSetDto().getOutputOrder(),listData, query.getSocialInsurNotiCreateSetDto().getInsuredNumber()),socialInsurNotiCreateSet);
         }else{
             throw new BusinessException("Msg_37");
         }
@@ -126,7 +126,7 @@ public class InsuredNameChangedNotiService extends ExportService<InsuredNameChan
 
     private List<InsuredNameChangedNotiExportData> order(int order, List<InsuredNameChangedNotiExportData> listData, int insuredNumber) {
 
-        List<InsuredNameChangedNotiExportData> data = new ArrayList<>();
+        List<InsuredNameChangedNotiExportData> data = listData;
         if (order == SocialInsurOutOrder.HEAL_INSUR_NUMBER_UNION_ORDER.value) {
             data = listData.stream().sorted(Comparator.comparing(InsuredNameChangedNotiExportData::getHealInsurUnionNumber)).collect(Collectors.toList());
         } else if (order == SocialInsurOutOrder.ORDER_BY_FUND.value) {
