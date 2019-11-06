@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 @Stateless
 public class PersonExportAdapterImpl implements PersonExportAdapter {
     @Inject
-    PersonPub personPub;
+    private PersonPub personPub;
 
     @Override
     public List<PersonExport> findByPids(List<String> personIds) {
