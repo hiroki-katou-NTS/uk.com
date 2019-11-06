@@ -126,7 +126,7 @@ public class InsuredNameChangedNotiService extends ExportService<InsuredNameChan
 
     private List<InsuredNameChangedNotiExportData> order(int order, List<InsuredNameChangedNotiExportData> listData, int insuredNumber) {
 
-        List<InsuredNameChangedNotiExportData> data = new ArrayList<>();
+        List<InsuredNameChangedNotiExportData> data = listData;
         if (order == SocialInsurOutOrder.HEAL_INSUR_NUMBER_UNION_ORDER.value) {
             data = listData.stream().sorted(Comparator.comparing(InsuredNameChangedNotiExportData::getHealInsurUnionNumber)).collect(Collectors.toList());
         } else if (order == SocialInsurOutOrder.ORDER_BY_FUND.value) {
