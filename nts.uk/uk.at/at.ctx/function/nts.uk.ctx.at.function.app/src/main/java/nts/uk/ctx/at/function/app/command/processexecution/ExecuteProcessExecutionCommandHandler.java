@@ -598,7 +598,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 //				context.getCommand().getExecItemCd(), execId);
 
 		boolean checkErrAppDaily = false;
-<<<<<<< HEAD
+
 		OutputAppRouteDaily outputAppRouteDaily = new OutputAppRouteDaily(); 
 		String errorMessageDaily = "";
 		// 承認ルート更新（日次）
@@ -608,19 +608,6 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 			errorMessageDaily = "Msg_1552";
 		}
 		}catch (Exception e) {
-=======
-		boolean checkError1552Daily = false;
-		String errorMessageDaily = "";
-		
-		try {
-			// 承認ルート更新（日次）
-			checkError1552Daily = this.appRouteUpdateDailyService.checkAppRouteUpdateDaily(execId, procExec, procExecLog);
-			
-			if(checkError1552Daily) {
-				errorMessageDaily = "Msg_1552";
-			}
-		} catch (Exception e) {
->>>>>>> 19863ca... fixbug kbt002 :# 109141 ,109069, 109064
 			checkErrAppDaily = true;
 			errorMessageDaily = "Msg_1339";
 		}
@@ -1086,18 +1073,13 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 								}
 								runSchedule = true;
 							} catch (Exception e) {
+								// 再実行の場合にExceptionが発生したかどうかを確認する。
+								if (procExec.getProcessExecType() == ProcessExecType.RE_CREATE) {
+									checkStopExec = true;
+								}
+								errorMessage = "Msg_1339";
+								isException = true;
 							}
-<<<<<<< HEAD
-=======
-							runSchedule = true;
-						} catch (Exception e) {
-							// 再実行の場合にExceptionが発生したかどうかを確認する。
-							if (procExec.getProcessExecType() == ProcessExecType.RE_CREATE) {
-								checkStopExec = true;
-							}
-							errorMessage = "Msg_1339";
-							isException = true;
->>>>>>> 19863ca... fixbug kbt002 :# 109141 ,109069, 109064
 						}
 					}
 				}
