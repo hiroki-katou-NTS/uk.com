@@ -3245,31 +3245,20 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 		if ("日別作成".equals(typeExecution)) {
 			try {
 				// ⑤社員の日別実績を作成する
-				System.out.println("create data :  !" + employeeId);
 				processState = this.createDailyService.createDailyResultEmployeeWithNoInfoImport(asyContext, employeeId,
 						period, empCalAndSumExeLog.getCompanyID(), empCalAndSumExeLog.getEmpCalAndSumExecLogID(),
 						Optional.ofNullable(dailyCreateLog), processExecution.getExecSetting().getDailyPerf()
 								.getTargetGroupClassification().isRecreateTypeChangePerson() ? true : false,
 						false, false, null);
-<<<<<<< HEAD
-				//暫定データの登録
-				this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, employeeId, period.datesBetween());
-=======
->>>>>>> 319ab26... fixbug kbt002 :#109071 ver 2
 			} catch (Exception e) {
 				throw new CreateDailyException(e);
 			}
 		} else {
 			try {
-<<<<<<< HEAD
 				processState = this.dailyCalculationEmployeeService.calculateForOnePerson(employeeId, period,
 						Optional.empty(), empCalAndSumExeLog.getEmpCalAndSumExecLogID());
-=======
-				processState = this.dailyCalculationEmployeeService.calculateForOnePerson(employeeId,
-						period, Optional.empty(), empCalAndSumExeLog.getEmpCalAndSumExecLogID());
 				//暫定データの登録
 				this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, employeeId, period.datesBetween());
->>>>>>> 319ab26... fixbug kbt002 :#109071 ver 2
 			} catch (Exception e) {
 				//暫定データの登録
 				this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, employeeId, period.datesBetween());
