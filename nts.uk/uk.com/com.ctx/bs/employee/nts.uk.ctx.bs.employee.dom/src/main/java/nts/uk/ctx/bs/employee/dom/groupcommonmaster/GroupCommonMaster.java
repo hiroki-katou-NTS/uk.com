@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
+
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
@@ -22,6 +25,8 @@ import nts.uk.ctx.bs.employee.dom.employee.employeelicense.ContractCode;
  */
 @Getter
 @Setter
+@AllArgsConstructor
+@Stateless
 public class GroupCommonMaster extends AggregateRoot {
 
 	// 契約コード
@@ -41,7 +46,7 @@ public class GroupCommonMaster extends AggregateRoot {
 
 	// 共通マスタ項目
 
-	private List<CommonMasterItem> commonMasterItem;
+	private List<CommonMasterItem> commonMasterItems;
 
 	private GroupCommonMasterRepository groupMasterRepo;
 
@@ -121,7 +126,7 @@ public class GroupCommonMaster extends AggregateRoot {
 			return Collections.emptyList();
 		}
 
-		return masterOpt.get().getCommonMasterItem();
+		return masterOpt.get().getCommonMasterItems();
 	}
 
 	/**
@@ -144,11 +149,11 @@ public class GroupCommonMaster extends AggregateRoot {
 			return Collections.emptyList();
 		}
 
-		if (CollectionUtil.isEmpty(masterOpt.get().getCommonMasterItem())) {
+		if (CollectionUtil.isEmpty(masterOpt.get().getCommonMasterItems())) {
 			return Collections.emptyList();
 		}
 
-		return masterOpt.get().getCommonMasterItem().stream()
+		return masterOpt.get().getCommonMasterItems().stream()
 				.filter(x -> isMathCompanyId(x.getNotUseCompanyList(), companyId)).collect(Collectors.toList()).stream()
 				.map(x -> x.getCommonMasterItemId()).collect(Collectors.toList());
 	}
@@ -162,17 +167,17 @@ public class GroupCommonMaster extends AggregateRoot {
 	 * @param 更新項目リスト
 	 */
 	public void updateGroupCommonMasterUsage(String contractCode, String commonMasterId, String companyId,
-			List<String> updateList) {
-
+			List<String> masterItemIds) {
+		// アルゴリズム [グループ会社共通マスタ項目の使用設定の取得] を実行する
 		List<String> usageList = this.getGroupCommonMasterUsage(contractCode, commonMasterId, companyId);
 
 		if (!CollectionUtil.isEmpty(usageList)) {
 			// ドメインモデル [グループ会社共通マスタ] を削除する
-			this.groupMasterRepo.removeGroupCommonMasterUsage(contractCode, commonMasterId, companyId, updateList);
+			this.groupMasterRepo.removeGroupCommonMasterUsage(contractCode, commonMasterId, companyId, masterItemIds);
 		}
+		// ドメインモデル [グループ会社共通マスタ] を追加する
+		this.groupMasterRepo.addGroupCommonMasterUsage(contractCode, commonMasterId, companyId, masterItemIds);
 
-		this.groupMasterRepo.addGroupCommonMasterUsage(contractCode, commonMasterId, companyId, updateList);
-		// アルゴリズム [グループ会社共通マスタ項目の使用設定の取得] を実行する
 	}
 
 	private boolean isMathCompanyId(List<NotUseCompany> notUseCompanyList, String companyId) {

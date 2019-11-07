@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -52,19 +53,18 @@ public class BsymtGpMasterItem extends UkJpaEntity implements Serializable {
 
 	// 表示順
 	@Column(name = "DISP_NUM")
-	private String displayNumber;
+	private int displayNumber;
 
 	// 使用開始日
 	@Column(name = "USAGE_START_DATE")
-	private String usageStartDate;
+	private GeneralDate usageStartDate;
 
 	// 使用終了日
 	@Column(name = "USAGE_END_DATE")
-	private String usageEndDate;
+	private GeneralDate usageEndDate;
 
 	@Override
 	protected Object getKey() {
 		return commonMasterItemId;
 	}
-
 }

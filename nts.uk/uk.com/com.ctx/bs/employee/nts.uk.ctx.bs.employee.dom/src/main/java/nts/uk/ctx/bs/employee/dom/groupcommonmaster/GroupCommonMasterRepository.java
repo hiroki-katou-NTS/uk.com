@@ -40,7 +40,7 @@ public interface GroupCommonMasterRepository {
 	 * @param 更新項目リスト
 	 */
 	void removeGroupCommonMasterUsage(String contractCode, String commonMasterId, String companyId,
-			List<String> updateList);
+			List<String> masterItemIds);
 
 	/**
 	 * グループ会社共通マスタ項目の使用設定を追加する
@@ -51,5 +51,5 @@ public interface GroupCommonMasterRepository {
 	 * @param 更新項目リスト
 	 */
 	void addGroupCommonMasterUsage(String contractCode, String commonMasterId, String companyId,
-			List<String> updateList);
+			List<String> masterItemIds);
 }

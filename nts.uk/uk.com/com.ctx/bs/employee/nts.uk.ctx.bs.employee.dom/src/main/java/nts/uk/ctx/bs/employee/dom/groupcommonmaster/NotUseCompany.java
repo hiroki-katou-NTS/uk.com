@@ -1,5 +1,6 @@
 package nts.uk.ctx.bs.employee.dom.groupcommonmaster;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
@@ -9,6 +10,7 @@ import lombok.Data;
  *
  */
 @Data
+@AllArgsConstructor
 public class NotUseCompany {
 
 	// 会社ID
