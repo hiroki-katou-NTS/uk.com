@@ -204,7 +204,7 @@ public class JpaGroupCommonMasterRepository extends JpaRepository implements Gro
 	public void removeGroupCommonMasterUsage(String contractCode, String commonMasterId, String companyId,
 			List<String> masterItemIds) {
 
-		this.commandProxy().removeAll(genNotuseEntity(masterItemIds, companyId));
+		this.commandProxy().removeAll(genNotUseEntity(masterItemIds, companyId));
 
 	}
 
@@ -212,11 +212,11 @@ public class JpaGroupCommonMasterRepository extends JpaRepository implements Gro
 	public void addGroupCommonMasterUsage(String contractCode, String commonMasterId, String companyId,
 			List<String> masterItemIds) {
 
-		this.commandProxy().insertAll(genNotuseEntity(masterItemIds, companyId));
+		this.commandProxy().insertAll(genNotUseEntity(masterItemIds, companyId));
 
 	}
 
-	private List<BsymtGpMasterNotUse> genNotuseEntity(List<String> masterItemIds, String companyId) {
+	private List<BsymtGpMasterNotUse> genNotUseEntity(List<String> masterItemIds, String companyId) {
 		return masterItemIds.stream()
 				.map(masterItemId -> new BsymtGpMasterNotUse(new BsymtGpMasterNotUsePK(masterItemId, companyId)))
 				.collect(Collectors.toList());

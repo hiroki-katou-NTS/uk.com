@@ -62,7 +62,7 @@ public class GroupCommonMaster extends AggregateRoot implements IGroupCommonMast
 	 * 
 	 * @param 契約コード
 	 * 
-	 * @return 共通マスタリスト
+	 * @return 共通マスタリスト(List)
 	 */
 	public List<GroupCommonMaster> getGroupCommonMaster(String contractCode) {
 
@@ -117,7 +117,7 @@ public class GroupCommonMaster extends AggregateRoot implements IGroupCommonMast
 	 * @param 契約コード
 	 * @param 共通マスタID
 	 * 
-	 * @return 共通マスタリスト
+	 * @return 共通マスタリスト (List)
 	 */
 	public List<CommonMasterItem> getGroupCommonMasterItem(String contractCode, String commonMasterId) {
 
