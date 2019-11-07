@@ -4,10 +4,9 @@
 	white-space: nowrap;
 }
 #companyWide-content {
-	height: 450px;
-	width: 85%;
-	overflow: auto;
-	min-width: 700px;
+	height: calc(100vh - 161px);
+    overflow: auto;
+    min-width: 700px;
 }
 
 #companyWide-content-detail {
@@ -45,4 +44,7 @@
 }
 #nts-component-tree {
 	padding-right: 5px !important;
+}
+html {
+	overflow :hidden;
 }
