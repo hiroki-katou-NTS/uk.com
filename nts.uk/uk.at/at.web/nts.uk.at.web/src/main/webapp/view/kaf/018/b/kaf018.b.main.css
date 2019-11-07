@@ -11,6 +11,9 @@
 	width: 850px;
 	margin-bottom: 10px;
 }
+#gridB_container {
+	border: 1px solid #AAB7B8 !important;
+}
 
 .content-question {
 	width: 60px;
@@ -39,4 +42,11 @@
 }
 #gridB tbody tr td:NTH-CHILD(6){
 	text-align: center;
+}
+
+#gridB_headers thead th:NTH-CHILD(7){
+	display: none;
+}
+#gridB tbody tr td:NTH-CHILD(7){
+	display: none;
 }
