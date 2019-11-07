@@ -2354,44 +2354,8 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 		log.info("更新処理自動実行_承認結果の反映_START_" + processExecution.getExecItemCd() + "_" + GeneralDateTime.now());
 		boolean endStatusIsInterrupt = false;
 		boolean isHasException = false;
-<<<<<<< HEAD
-		if (processExecution.getProcessExecType() == ProcessExecType.NORMAL_EXECUTION) {
-			// ドメインモデル「就業締め日」を取得する
-			List<Closure> lstClosure = this.closureRepo.findAllUse(companyId);
-
-			// ドメインモデル「実行ログ」を新規登録する
-			DatePeriod period = this.findClosurePeriodMinDate(companyId, lstClosure);
-			GeneralDateTime now = GeneralDateTime.now();
-			ExecutionLog executionLog = new ExecutionLog(execId, ExecutionContent.REFLRCT_APPROVAL_RESULT,
-					ErrorPresent.NO_ERROR, new ExecutionTime(now, now), ExecutionStatus.INCOMPLETE,
-					new ObjectPeriod(period.start(), period.end()));
-			executionLog.setReflectApprovalSetInfo(new SetInforReflAprResult(ExecutionContent.REFLRCT_APPROVAL_RESULT,
-					processExecution.getProcessExecType() == ProcessExecType.NORMAL_EXECUTION
-							? ExecutionType.NORMAL_EXECUTION
-							: ExecutionType.RERUN,
-					IdentifierUtil.randomUniqueId(), false));
-			this.executionLogRepository.addExecutionLog(executionLog);
-			// ドメインモデル「更新処理自動実行ログ」を更新する
-			if (ProcessExecutionLog.getEachProcPeriod() != null && ProcessExecutionLog.getEachProcPeriod().isPresent()) {
-				EachProcessPeriod eachProcessPeriod = ProcessExecutionLog.getEachProcPeriod().get();
-				DatePeriod scheduleCreationPeriod = (eachProcessPeriod.getScheduleCreationPeriod() != null
-						&& eachProcessPeriod.getScheduleCreationPeriod().isPresent())
-								? eachProcessPeriod.getScheduleCreationPeriod().get()
-								: null;
-				DatePeriod dailyCreationPeriod = (eachProcessPeriod.getDailyCreationPeriod() != null
-						&& eachProcessPeriod.getDailyCreationPeriod().isPresent())
-								? eachProcessPeriod.getDailyCreationPeriod().get()
-								: null;
-				DatePeriod dailyCalcPeriod = (eachProcessPeriod.getDailyCalcPeriod() != null
-						&& eachProcessPeriod.getDailyCalcPeriod().isPresent())
-								? eachProcessPeriod.getDailyCalcPeriod().get()
-								: null;
-				ProcessExecutionLog.setEachProcPeriod(
-						new EachProcessPeriod(scheduleCreationPeriod, dailyCreationPeriod, dailyCalcPeriod, period));
-=======
 		// ドメインモデル「就業締め日」を取得する
 		List<Closure> lstClosure = this.closureRepo.findAllUse(companyId);
->>>>>>> eacc403... fixbug kbt002 :#109063 ver 5
 
 		// ドメインモデル「実行ログ」を新規登録する
 		DatePeriod period = this.findClosurePeriodMinDate(companyId, lstClosure);
@@ -2406,8 +2370,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 				IdentifierUtil.randomUniqueId(), false));
 		this.executionLogRepository.addExecutionLog(executionLog);
 		// ドメインモデル「更新処理自動実行ログ」を更新する
-		if (ProcessExecutionLog.getEachProcPeriod() != null
-				&& ProcessExecutionLog.getEachProcPeriod().isPresent()) {
+		if (ProcessExecutionLog.getEachProcPeriod() != null && ProcessExecutionLog.getEachProcPeriod().isPresent()) {
 			EachProcessPeriod eachProcessPeriod = ProcessExecutionLog.getEachProcPeriod().get();
 			DatePeriod scheduleCreationPeriod = (eachProcessPeriod.getScheduleCreationPeriod() != null
 					&& eachProcessPeriod.getScheduleCreationPeriod().isPresent())
@@ -2455,56 +2418,63 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 					});
 					// 更新処理自動実行の実行対象社員リストを取得する
 					List<String> listEmp = listEmpAutoExec.getListEmpAutoExec(companyId, newDatePeriod,
-								processExecution.getExecScope().getExecScopeCls(), Optional.of(workplaceIds),
-								Optional.of(lstEmploymentCode));
+							processExecution.getExecScope().getExecScopeCls(), Optional.of(workplaceIds),
+							Optional.of(lstEmploymentCode));
 					List<String> leaderEmpIdList = new ArrayList<>();
-//					if (processExecution.getProcessExecType() == ProcessExecType.RE_CREATE) {
-//						// 異動者・勤務種別変更者リスト作成処理
-//						ListLeaderOrNotEmp listLeaderOrNotEmp = changePersionList.createProcessForChangePerOrWorktype(
-//								companyId, new ArrayList<>(listEmp), newDatePeriod.start(), processExecution);
-//						leaderEmpIdList = listLeaderOrNotEmp.getLeaderEmpIdList();
-//					}
+					// if (processExecution.getProcessExecType() == ProcessExecType.RE_CREATE) {
+					// // 異動者・勤務種別変更者リスト作成処理
+					// ListLeaderOrNotEmp listLeaderOrNotEmp =
+					// changePersionList.createProcessForChangePerOrWorktype(
+					// companyId, new ArrayList<>(listEmp), newDatePeriod.start(),
+					// processExecution);
+					// leaderEmpIdList = listLeaderOrNotEmp.getLeaderEmpIdList();
+					// }
 					List<String> lstRegulationInfoEmployeeNew = new ArrayList<>();
-					if(leaderEmpIdList.isEmpty()){
+					if (leaderEmpIdList.isEmpty()) {
 						lstRegulationInfoEmployeeNew = listEmp;
-					}else {
-						for(String emp :listEmp) {
-							for(String empId :leaderEmpIdList) {
-								if(emp.equals(empId)) {
+					} else {
+						for (String emp : listEmp) {
+							for (String empId : leaderEmpIdList) {
+								if (emp.equals(empId)) {
 									lstRegulationInfoEmployeeNew.add(empId);
 									break;
 								}
 							}
 						}
 					}
-//					//異動者を再作成する
-//					boolean isRecreateTransfer = processExecution.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTransfer();
-//					//勤務種別者を再作成
-//					boolean isRecreateTypeChangePerson = processExecution.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTypeChangePerson();
+					// //異動者を再作成する
+					// boolean isRecreateTransfer =
+					// processExecution.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTransfer();
+					// //勤務種別者を再作成
+					// boolean isRecreateTypeChangePerson =
+					// processExecution.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTypeChangePerson();
 					int sizeEmployee = lstRegulationInfoEmployeeNew.size();
 					for (int j = 0; j < sizeEmployee; j++) {
 						try {
 							String regulationInfoEmployeeAdapterDto = lstRegulationInfoEmployeeNew.get(j);
-//							//INPUT．「実行種別」 = 再作成
-//							if (processExecution.getProcessExecType() == ProcessExecType.RE_CREATE) {
-//								//承認結果の再反映期間を計算する
-//								List<DatePeriod> listPeriod =  calPeriodApprovalResult.calPeriodApprovalResult(companyId, regulationInfoEmployeeAdapterDto, newDatePeriod.start(), isRecreateTransfer, isRecreateTypeChangePerson);
-//								for(DatePeriod p :listPeriod) {
-//									ProcessStateReflectImport processStateReflectImport = appReflectManagerAdapter
-//											.reflectAppOfEmployeeTotal(execId, regulationInfoEmployeeAdapterDto,
-//													p);
-//									if (processStateReflectImport == ProcessStateReflectImport.INTERRUPTION) {
-//										endStatusIsInterrupt = true;
-//									}
-//									if (endStatusIsInterrupt) {
-//										checkStopExec = true;
-//										break;
-//									}
-//								}
-//							}
+							// //INPUT．「実行種別」 = 再作成
+							// if (processExecution.getProcessExecType() == ProcessExecType.RE_CREATE) {
+							// //承認結果の再反映期間を計算する
+							// List<DatePeriod> listPeriod =
+							// calPeriodApprovalResult.calPeriodApprovalResult(companyId,
+							// regulationInfoEmployeeAdapterDto, newDatePeriod.start(), isRecreateTransfer,
+							// isRecreateTypeChangePerson);
+							// for(DatePeriod p :listPeriod) {
+							// ProcessStateReflectImport processStateReflectImport =
+							// appReflectManagerAdapter
+							// .reflectAppOfEmployeeTotal(execId, regulationInfoEmployeeAdapterDto,
+							// p);
+							// if (processStateReflectImport == ProcessStateReflectImport.INTERRUPTION) {
+							// endStatusIsInterrupt = true;
+							// }
+							// if (endStatusIsInterrupt) {
+							// checkStopExec = true;
+							// break;
+							// }
+							// }
+							// }
 							ProcessStateReflectImport processStateReflectImport = appReflectManagerAdapter
-									.reflectAppOfEmployeeTotal(execId, regulationInfoEmployeeAdapterDto,
-											newDatePeriod);
+									.reflectAppOfEmployeeTotal(execId, regulationInfoEmployeeAdapterDto, newDatePeriod);
 							if (processStateReflectImport == ProcessStateReflectImport.INTERRUPTION) {
 								endStatusIsInterrupt = true;
 							}
@@ -2525,9 +2495,9 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 				isHasException = true;
 				errorMessage = "Msg_1552";
 			}
-		}else {
-			//INPUT．「承認結果の反映対象期間（List）．社員」をループする
-			//社員の件数分ループ
+		} else {
+			// INPUT．「承認結果の反映対象期間（List）．社員」をループする
+			// 社員の件数分ループ
 			for (ApprovalPeriodByEmp approvalPeriodByEmp : lstApprovalPeriod) {
 				if (checkStopExec) {
 					break;
@@ -2552,96 +2522,105 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 					errorMessage = "Msg_1552";
 				}
 			}
+
 		}
+
 		log.info("更新処理自動実行_承認結果の反映_END_" + processExecution.getExecItemCd() + "_" + GeneralDateTime.now());
-		updateLogAfterProcess.updateLogAfterProcess(ProcessExecutionTask.RFL_APR_RESULT, companyId, execItemCd, processExecution,ProcessExecutionLog, isHasException, checkStopExec, errorMessage);
-		
+
+		updateLogAfterProcess.updateLogAfterProcess(ProcessExecutionTask.RFL_APR_RESULT, companyId, execItemCd,
+				processExecution, ProcessExecutionLog, isHasException, checkStopExec, errorMessage);
+
 		if (endStatusIsInterrupt) {
 			return true;
 			// 終了状態 ＝ 中断
 		}
 		// ドメインモデル「エラーメッセージ情報」を取得する
-//		List<ErrMessageInfo> listErrReflrct = errMessageInfoRepository.getAllErrMessageInfoByID(execId,
-//				ExecutionContent.REFLRCT_APPROVAL_RESULT.value);
-//		if (!listErrReflrct.isEmpty()) {
-//			isHasException = true;
-//		}
-//		if (isHasException) {
-//			// ドメインモデル「更新処理自動実行ログ」を更新する
-//			for (int i = 0; i < size; i++) {
-//				ExecutionTaskLog executionTaskLog = taskLogLists.get(i);
-//				// 承認結果反映
-//				if (executionTaskLog.getProcExecTask().value == 3) {
-//					// 異常終了
-//					executionTaskLog.setStatus(Optional.ofNullable(EndStatus.ABNORMAL_END));
-//				}
-//			}
-//			this.procExecLogRepo.update(ProcessExecutionLog);
-//			ExecutionLogImportFn param = new ExecutionLogImportFn();
-//			List<ExecutionLogErrorDetailFn> listErrorAndEmpId = new ArrayList<>();
-//
-//			// 会社ID ＝ パラメータ.更新処理自動実行.会社ID
-//			param.setCompanyId(companyId);
-//			// 管理社員ID ＝
-//			param.setManagerId(listManagementId);
-//			// 実行完了日時 ＝ システム日時
-//			param.setFinishDateTime(GeneralDateTime.now());
-//			// エラーの有無 ＝ エラーあり
-//			param.setExistenceError(1);
-//			// 実行内容 ＝ 承認結果の反映
-//			param.setExecutionContent(AlarmCategoryFn.REFLECT_APPROVAL_RESULT);
-//			if (listErrReflrct.isEmpty()) {
-//				if(!checkError1552) {
-//					this.errMessageInfoRepository.add(new ErrMessageInfo("System", execId, new ErrMessageResource("18"),
-//							ExecutionContent.REFLRCT_APPROVAL_RESULT, GeneralDate.today(),
-//							new ErrMessageContent(TextResource.localize("Msg_1339"))));
-//					for (String managementId : listManagementId) {
-//						listErrorAndEmpId
-//								.add(new ExecutionLogErrorDetailFn(TextResource.localize("Msg_1339"), managementId));
-//					}
-//				}else {
-//					listErrorAndEmpId.add(new ExecutionLogErrorDetailFn(TextResource.localize("Msg_1552"), "System"));
-//				}
-//			} else {
-//				for (ErrMessageInfo errMessageInfo : listErrReflrct) {
-//					listErrorAndEmpId.add(new ExecutionLogErrorDetailFn(errMessageInfo.getMessageError().v(),
-//							errMessageInfo.getEmployeeID()));
-//				}
-//
-//			}
-//			param.setTargerEmployee(listErrorAndEmpId);
-//			// アルゴリズム「実行ログ登録」を実行する 2290 Done
-//			executionLogAdapterFn.updateExecuteLog(param);
-//
-//		} else {
-//			// ドメインモデル「更新処理自動実行ログ」を更新する
-//			for (int i = 0; i < size; i++) {
-//				ExecutionTaskLog executionTaskLog = taskLogLists.get(i);
-//				// 承認結果反映
-//				if (executionTaskLog.getProcExecTask().value == 3) {
-//					// 正常終了
-//					executionTaskLog.setStatus(Optional.ofNullable(EndStatus.SUCCESS));
-//				}
-//			}
-//			this.procExecLogRepo.update(ProcessExecutionLog);
-//			ExecutionLogImportFn param = new ExecutionLogImportFn();
-//			List<ExecutionLogErrorDetailFn> listErrorAndEmpId = new ArrayList<>();
-//			// 会社ID ＝ パラメータ.更新処理自動実行.会社ID
-//			param.setCompanyId(companyId);
-//			// 管理社員ID ＝
-//			param.setManagerId(listManagementId);
-//			// 実行完了日時 ＝ システム日時
-//			param.setFinishDateTime(GeneralDateTime.now());
-//			// 実行内容 ＝ 承認結果の反映
-//			param.setExecutionContent(AlarmCategoryFn.REFLECT_APPROVAL_RESULT);
-//			// エラーの有無 ＝ エラーなし
-//			param.setExistenceError(0);
-//			// 実行ログエラー詳細 ＝ NULL
-//			param.setTargerEmployee(listErrorAndEmpId);
-//			// アルゴリズム「実行ログ登録」を実行する 2290 Done
-//			executionLogAdapterFn.updateExecuteLog(param);
-//
-//		}
+		// List<ErrMessageInfo> listErrReflrct =
+		// errMessageInfoRepository.getAllErrMessageInfoByID(execId,
+		// ExecutionContent.REFLRCT_APPROVAL_RESULT.value);
+		// if (!listErrReflrct.isEmpty()) {
+		// isHasException = true;
+		// }
+		// if (isHasException) {
+		// // ドメインモデル「更新処理自動実行ログ」を更新する
+		// for (int i = 0; i < size; i++) {
+		// ExecutionTaskLog executionTaskLog = taskLogLists.get(i);
+		// // 承認結果反映
+		// if (executionTaskLog.getProcExecTask().value == 3) {
+		// // 異常終了
+		// executionTaskLog.setStatus(Optional.ofNullable(EndStatus.ABNORMAL_END));
+		// }
+		// }
+		// this.procExecLogRepo.update(ProcessExecutionLog);
+		// ExecutionLogImportFn param = new ExecutionLogImportFn();
+		// List<ExecutionLogErrorDetailFn> listErrorAndEmpId = new ArrayList<>();
+		//
+		// // 会社ID ＝ パラメータ.更新処理自動実行.会社ID
+		// param.setCompanyId(companyId);
+		// // 管理社員ID ＝
+		// param.setManagerId(listManagementId);
+		// // 実行完了日時 ＝ システム日時
+		// param.setFinishDateTime(GeneralDateTime.now());
+		// // エラーの有無 ＝ エラーあり
+		// param.setExistenceError(1);
+		// // 実行内容 ＝ 承認結果の反映
+		// param.setExecutionContent(AlarmCategoryFn.REFLECT_APPROVAL_RESULT);
+		// if (listErrReflrct.isEmpty()) {
+		// if(!checkError1552) {
+		// this.errMessageInfoRepository.add(new ErrMessageInfo("System", execId, new
+		// ErrMessageResource("18"),
+		// ExecutionContent.REFLRCT_APPROVAL_RESULT, GeneralDate.today(),
+		// new ErrMessageContent(TextResource.localize("Msg_1339"))));
+		// for (String managementId : listManagementId) {
+		// listErrorAndEmpId
+		// .add(new ExecutionLogErrorDetailFn(TextResource.localize("Msg_1339"),
+		// managementId));
+		// }
+		// }else {
+		// listErrorAndEmpId.add(new
+		// ExecutionLogErrorDetailFn(TextResource.localize("Msg_1552"), "System"));
+		// }
+		// } else {
+		// for (ErrMessageInfo errMessageInfo : listErrReflrct) {
+		// listErrorAndEmpId.add(new
+		// ExecutionLogErrorDetailFn(errMessageInfo.getMessageError().v(),
+		// errMessageInfo.getEmployeeID()));
+		// }
+		//
+		// }
+		// param.setTargerEmployee(listErrorAndEmpId);
+		// // アルゴリズム「実行ログ登録」を実行する 2290 Done
+		// executionLogAdapterFn.updateExecuteLog(param);
+		//
+		// } else {
+		// // ドメインモデル「更新処理自動実行ログ」を更新する
+		// for (int i = 0; i < size; i++) {
+		// ExecutionTaskLog executionTaskLog = taskLogLists.get(i);
+		// // 承認結果反映
+		// if (executionTaskLog.getProcExecTask().value == 3) {
+		// // 正常終了
+		// executionTaskLog.setStatus(Optional.ofNullable(EndStatus.SUCCESS));
+		// }
+		// }
+		// this.procExecLogRepo.update(ProcessExecutionLog);
+		// ExecutionLogImportFn param = new ExecutionLogImportFn();
+		// List<ExecutionLogErrorDetailFn> listErrorAndEmpId = new ArrayList<>();
+		// // 会社ID ＝ パラメータ.更新処理自動実行.会社ID
+		// param.setCompanyId(companyId);
+		// // 管理社員ID ＝
+		// param.setManagerId(listManagementId);
+		// // 実行完了日時 ＝ システム日時
+		// param.setFinishDateTime(GeneralDateTime.now());
+		// // 実行内容 ＝ 承認結果の反映
+		// param.setExecutionContent(AlarmCategoryFn.REFLECT_APPROVAL_RESULT);
+		// // エラーの有無 ＝ エラーなし
+		// param.setExistenceError(0);
+		// // 実行ログエラー詳細 ＝ NULL
+		// param.setTargerEmployee(listErrorAndEmpId);
+		// // アルゴリズム「実行ログ登録」を実行する 2290 Done
+		// executionLogAdapterFn.updateExecuteLog(param);
+		//
+		// }
 
 		return false; // 終了状態 !＝ 中断
 	}
