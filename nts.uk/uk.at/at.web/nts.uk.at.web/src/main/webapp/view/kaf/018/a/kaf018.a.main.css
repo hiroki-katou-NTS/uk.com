@@ -60,3 +60,14 @@
 .clear {
 	clear:both;
 }
+
+#hierarchy {
+	margin-left: 300px;
+    margin-top: -70px !important;
+    position: absolute; 
+}
+#combo-box-tree-component {
+	margin-left: 5px;
+    margin-top: 4px;
+    position: absolute;
+}

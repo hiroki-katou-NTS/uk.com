@@ -1,6 +1,7 @@
 .contents-area .container {
 	margin: 25px;
 	margin-bottom: 0px;
+	overflow: auto;
 }
 
 .ntsControl .nts-input {
@@ -144,7 +145,4 @@ button.nts-switch-button{
 #fixed-table2 thead, #fixed-table2 tbody tr {
     display:table;
     width:100%;
-}
-html {
-	overflow: hidden;
 }

@@ -377,3 +377,6 @@
 .avatar {
   background-image: url("images/avatar.svg");
 }
+body {
+	-ms-overflow-y: hidden;
+}
