@@ -1,4 +1,8 @@
 @CHARSET "UTF-8";
+#contents-area {
+	height: calc(100vh - 165px);
+	white-space: nowrap;
+}
 
 #link-icon {
 	width: 30px;
@@ -16,6 +20,9 @@
 
 .sidebar-content-header button {
 	width: 90px;
+}
+.sidebar-content-header {
+	white-space: nowrap;
 }
 
 #A1-4 {
