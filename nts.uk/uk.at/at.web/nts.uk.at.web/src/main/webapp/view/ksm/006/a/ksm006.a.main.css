@@ -3,6 +3,17 @@
 .sidebar-content-header {
 	white-space: nowrap;
 }
+.select-table {
+	min-width: 500px;
+}
+#classification-content {
+	height: calc(100vh - 143px);
+    overflow: auto;
+}
+#workplace-content {
+	height: calc(100vh - 143px);
+    overflow: auto;
+}
 #companyWide-content {
 	height: calc(100vh - 161px);
     overflow: auto;
