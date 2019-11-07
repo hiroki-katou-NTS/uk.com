@@ -46,3 +46,12 @@
 #sidebar-area {
 	width: 55px !important;
 }
+body {
+	overflow: hidden;
+}
+.container {
+	width: inherit;
+}
+#master-content {
+	overflow-y: auto;
+}
