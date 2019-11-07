@@ -317,7 +317,7 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
             this.fillByCell(worksheet , i,"A2_13_5", empAddChangeInfoExport.getStartDateF()!= null ? NotificationOfLossInsPDFAposeFileGenerator.convertJpDate(sDayF): "",4 );
             this.fillByCell(worksheet , i,"A2_13_6", empAddChangeInfoExport.getStartDateF()!= null ? NotificationOfLossInsPDFAposeFileGenerator.convertJpDate(sDayF): "",5 );
 
-            worksheet.getRangeByName(i + "!A2_14").setValue(this.fillAddress(empAddChangeInfoExport.getAdd1BeforeChange(), empAddChangeInfoExport.getAdd2BeforeChange()));
+            worksheet.getRangeByName(i + "!A2_14").setValue(this.fillAddress(empAddChangeInfoExport.getAdd1BeforeChangeF(), empAddChangeInfoExport.getAdd2BeforeChangeF()));
 
             //A2_15 ~ A2_19
             RomajiNameNotiCreSetPDFAposeFileGenerator.selectShapes(worksheet, empAddChangeInfoExport.getSpouseShortResidentAtr() , i, "A4_221" );
