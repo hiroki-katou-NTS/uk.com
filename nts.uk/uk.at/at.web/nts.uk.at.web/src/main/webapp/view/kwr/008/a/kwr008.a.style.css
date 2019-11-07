@@ -26,5 +26,8 @@ body .fixed-flex-layout-right {
 }
 
 #contents-area {
-	height: auto !important;
+	height: calc(100vh - 161px) !important;
+}
+html {
+	overflow: hidden;
 }
