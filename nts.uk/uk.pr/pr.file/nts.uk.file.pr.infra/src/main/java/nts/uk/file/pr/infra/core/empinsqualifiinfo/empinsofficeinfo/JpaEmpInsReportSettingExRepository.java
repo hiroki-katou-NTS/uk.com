@@ -20,8 +20,8 @@ public class JpaEmpInsReportSettingExRepository extends JpaRepository implements
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QqsmtEmpInsEsmHist f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.empInsEsmHistPk.cid =:cid AND  f.empInsEsmHistPk.sid =:sid AND  f.empInsEsmHistPk.histId =:histId ";
     private static final String SELECT_BY_FILLING_DATE = SELECT_ALL_QUERY_STRING + " WHERE  f.empInsEsmHistPk.cid =:cid AND  f.empInsEsmHistPk.sid =:sid AND f.startDate <= :fillingDate AND f.endDate <= :fillingDate";
-    private static final String SELECT_LABORINSUR = SELECT_BY_FILLING_DATE
-            + " INNER JOIN QpbmtLaborInsuOffice li ON f.laborInsCd = li.laborOfficeCode ";
+    private static final String SELECT_LABORINSUR =  " INNER JOIN QpbmtLaborInsuOffice li ON f.laborInsCd = li.laborOfficeCode AND li.cid = f.cid " +
+            "WHERE  f.empInsEsmHistPk.cid =:cid AND f.empInsEsmHistPk.sid =:sid AND f.startDate <= :fillingDate AND f.endDate <= :fillingDate" ;
 
     @Override
     public List<LaborInsuranceOffice> getListEmpInsHistByDate(String cid, String sid, GeneralDate fillingDate) {
