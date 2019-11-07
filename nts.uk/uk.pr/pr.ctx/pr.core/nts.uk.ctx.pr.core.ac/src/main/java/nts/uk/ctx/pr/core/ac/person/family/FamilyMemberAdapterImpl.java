@@ -5,10 +5,11 @@ import nts.uk.ctx.bs.person.pub.family.FamilyPub;
 import nts.uk.ctx.pr.core.dom.adapter.person.family.FamilyMemberAdapter;
 import nts.uk.ctx.pr.core.dom.adapter.person.family.FamilyMemberInfoEx;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.List;
 import java.util.stream.Collectors;
-
+@Stateless
 public class FamilyMemberAdapterImpl implements FamilyMemberAdapter {
     @Inject
     private FamilyPub familyPub;
