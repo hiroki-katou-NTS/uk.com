@@ -104,7 +104,9 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
         if(export.getSpouseAddChangeDate() != null && export.isEmpPenInsurance() && export.getPersonAddChangeDate() == null) {
             export.setPostCodePs(null);
             export.setAdd1KanaPs(null);
+            export.setAdd2KanaPs(null);
             export.setAdd1Ps(null);
+            export.setAdd2Ps(null);
             export.setAdd1BeforeChangePs(null);
             export.setAdd2BeforeChangePs(null);
             export.setStartDatePs(null);
@@ -256,7 +258,7 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
             this.fillByCell(worksheet , i,"A1_6_6", empAddChangeInfoExport.getPostCodePs(),5 );
             this.fillByCell(worksheet , i,"A1_6_7", empAddChangeInfoExport.getPostCodePs(),6 );
 
-            worksheet.getRangeByName(i + "!A1_7").setValue(this.fillAddress(empAddChangeInfoExport.getAdd1KanaPs(),empAddChangeInfoExport.getAdd1KanaPs() ));
+            worksheet.getRangeByName(i + "!A1_7").setValue(this.fillAddress(empAddChangeInfoExport.getAdd1KanaPs(), empAddChangeInfoExport.getAdd1KanaPs()));
             worksheet.getRangeByName(i + "!A1_8").setValue(this.fillAddress(empAddChangeInfoExport.getAdd1Ps(), empAddChangeInfoExport.getAdd2Ps()));
             worksheet.getRangeByName(i + "!A1_9").setValue(this.fillAddress(empAddChangeInfoExport.getAdd1BeforeChangePs(), empAddChangeInfoExport.getAdd1BeforeChangePs()));
 
