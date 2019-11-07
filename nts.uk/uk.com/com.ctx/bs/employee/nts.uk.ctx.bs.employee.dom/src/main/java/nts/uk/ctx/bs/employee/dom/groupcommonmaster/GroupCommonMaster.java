@@ -11,8 +11,10 @@ import javax.ejb.Stateless;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.employee.employeelicense.ContractCode;
 
@@ -27,7 +29,8 @@ import nts.uk.ctx.bs.employee.dom.employee.employeelicense.ContractCode;
 @Setter
 @AllArgsConstructor
 @Stateless
-public class GroupCommonMaster extends AggregateRoot {
+@NoArgsConstructor
+public class GroupCommonMaster extends AggregateRoot implements IGroupCommonMaster {
 
 	// 契約コード
 	private ContractCode contractCode;
@@ -190,5 +193,12 @@ public class GroupCommonMaster extends AggregateRoot {
 		}
 
 		return false;
+	}
+
+	@Override
+	public GroupCommonMaster getGroupCommonMasterEnableItem(String contractCode, String commonMasterId,
+			String companyId, GeneralDate baseDate) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
