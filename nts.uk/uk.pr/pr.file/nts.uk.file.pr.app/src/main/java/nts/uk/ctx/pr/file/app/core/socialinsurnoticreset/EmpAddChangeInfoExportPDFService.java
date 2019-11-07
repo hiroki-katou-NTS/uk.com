@@ -193,16 +193,16 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
                            && item.getSpouseAddChangeDate().beforeOrEquals(i.getEndDate())).findFirst();
                    Optional<SocialInsuranceOffice> socialInsuranceOffice = socialInsuranceOfficeList.stream().filter(s->s.getCompanyID().equals(i.getCid())
                            && s.getCode().equals(i.getSocialInsurOfficeCode())).findFirst();
-                   if(em.isPresent() && socialInsuranceOffice.isPresent() && domain.getOfficeInformation() == BusinessDivision.OUTPUT_SIC_INSURES){
+                   if(em.isPresent() && socialInsuranceOffice.isPresent() && domain.getOfficeInformation() == BusinessDivision.OUTPUT_SIC_INSURES ){
                        em.get().setBussinessName(socialInsuranceOffice.get().getName().v());
-                       if(socialInsuranceOffice.get().getBasicInformation() != null
-                               && socialInsuranceOffice.get().getBasicInformation().getAddress().isPresent()
-                               && socialInsuranceOffice.get().getBasicInformation().getAddress().get().getAddress1().isPresent())
-
-                       em.get().setAddress1(socialInsuranceOffice.get().getBasicInformation().getAddress().get().getAddress1().map(l -> l.v()).orElse(null));
-                       em.get().setAddress2(socialInsuranceOffice.get().getBasicInformation().getAddress().get().getAddress2().map(l -> l.v()).orElse(null));
-                       em.get().setPhoneNumber(socialInsuranceOffice.get().getBasicInformation().getAddress().get().getPhoneNumber().map(l -> l.v()).orElse(null));
-                       em.get().setReferenceName(socialInsuranceOffice.get().getBasicInformation().getRepresentativeName().map(l -> l.v()).orElse(null));
+                       if(socialInsuranceOffice.get().getBasicInformation() != null) {
+                           if(socialInsuranceOffice.get().getBasicInformation().getAddress().isPresent()){
+                               em.get().setAddress1(socialInsuranceOffice.get().getBasicInformation().getAddress().get().getAddress1().map(l -> l.v()).orElse(null));
+                               em.get().setAddress2(socialInsuranceOffice.get().getBasicInformation().getAddress().get().getAddress2().map(l -> l.v()).orElse(null));
+                               em.get().setPhoneNumber(socialInsuranceOffice.get().getBasicInformation().getAddress().get().getPhoneNumber().map(l -> l.v()).orElse(null));
+                           }
+                           em.get().setReferenceName(socialInsuranceOffice.get().getBasicInformation().getRepresentativeName().map(l -> l.v()).orElse(null));
+                       }
                    }
 
                     if(em.isPresent() && socialInsuranceOffice.isPresent() && domain.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL){
