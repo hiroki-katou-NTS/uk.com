@@ -308,8 +308,8 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
                         em.get().setAdd2KanaPs(k.getAddress2Kana());
                         em.get().setAdd1Ps(k.getAddress1());
                         em.get().setAdd2Ps(k.getAddress2());
-                        em.get().setAdd1BeforeChange(k.getAddress1());
-                        em.get().setAdd2BeforeChange(k.getAddress2());
+                        em.get().setAdd1BeforeChangePs(k.getAddress1());
+                        em.get().setAdd2BeforeChangePs(k.getAddress2());
                         em.get().setStartDatePs(k.getStartDate());
                     }
                 });
@@ -346,8 +346,8 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
                        em.get().setAdd2KanaF(t.getAddress2Kana());
                        em.get().setAdd1F(t.getAddress1());
                        em.get().setAdd2F(t.getAddress2());
-                       em.get().setAdd1BeforeChange(t.getAddress1());
-                       em.get().setAdd2BeforeChange(t.getAddress2());
+                       em.get().setAdd1BeforeChangeF(t.getAddress1());
+                       em.get().setAdd2BeforeChangeF(t.getAddress2());
 
                        if (domain.getSubmittedName() == SubNameClass.PERSONAL_NAME){
                            em.get().setNameKanaF(t.getNameKana());
