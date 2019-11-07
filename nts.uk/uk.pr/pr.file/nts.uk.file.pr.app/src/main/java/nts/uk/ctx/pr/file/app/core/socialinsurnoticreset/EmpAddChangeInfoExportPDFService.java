@@ -101,7 +101,7 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
             List<EmpCorpOffHisInfo> empCorpOffHisInfoList = empAddChangeInfoExReposity.getEmpCorpOffHisInfo(empIds, cid);
             List<HealInsurPortPerIntellInfo> healInsurPortPerIntellInfoList = empAddChangeInfoExReposity.getHealInsurPortPerIntellInfo(empIds, cid);
             List<EmPensionFundPartiPeriodInfo> emPensionFunList = empAddChangeInfoExReposity.getEmPensionFundPartiPeriodInfo(empIds, cid);
-            List<EmpBasicPenNumInfor> empBasicPenNumInforList = empBasicPenNumInforRepository.getAllEmpBasicPenNumInfor();
+            List<EmpBasicPenNumInfor> empBasicPenNumInforList = empBasicPenNumInforRepository.getAllEmpBasicPenNumInfor(empIds);
             List<EmpAddChangeInfo> empAddChangeInfoList = empAddChangeInfoRepository.getListEmpAddChange(empIds);
             List<EmployeeInfoEx> employeeInfoExList = employeeInfoAdapter.findBySIds(empIds);
             List<String> pIds = new ArrayList<>();

@@ -258,7 +258,7 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
             this.fillByCell(worksheet , i,"A1_6_6", empAddChangeInfoExport.getPostCodePs(),5 );
             this.fillByCell(worksheet , i,"A1_6_7", empAddChangeInfoExport.getPostCodePs(),6 );
 
-            worksheet.getRangeByName(i + "!A1_7").setValue(this.fillAddress(empAddChangeInfoExport.getAdd1KanaPs(), empAddChangeInfoExport.getAdd1KanaPs()));
+            worksheet.getRangeByName(i + "!A1_7").setValue(this.fillAddress(empAddChangeInfoExport.getAdd1KanaPs(), empAddChangeInfoExport.getAdd2KanaPs()));
             worksheet.getRangeByName(i + "!A1_8").setValue(this.fillAddress(empAddChangeInfoExport.getAdd1Ps(), empAddChangeInfoExport.getAdd2Ps()));
             worksheet.getRangeByName(i + "!A1_9").setValue(this.fillAddress(empAddChangeInfoExport.getAdd1BeforeChangePs(), empAddChangeInfoExport.getAdd1BeforeChangePs()));
 
