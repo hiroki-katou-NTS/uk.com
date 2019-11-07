@@ -70,11 +70,7 @@ public class AppRouteUpdateDailyDefault implements AppRouteUpdateDailyService {
 	@Inject
 	private AppDataInfoDailyRepository appDataInfoDailyRepo;
 	
-<<<<<<< HEAD
-=======
-//	@Inject
-//	private EmployeeManageAdapter employeeManageAdapter;
->>>>>>> 2d85ea9... fixbug kbt002 108717
+
 	
 	public static int MAX_DELAY_PARALLEL = 0;
 	
@@ -183,37 +179,6 @@ public class AppRouteUpdateDailyDefault implements AppRouteUpdateDailyService {
 
 		log.info("承認ルート更新(日別) END PARALLEL: " + ((System.currentTimeMillis() - startTime) / 1000) + "秒");
 		log.info("更新処理自動実行_承認ルート更新（日次）_END_"+procExec.getExecItemCd()+"_"+GeneralDateTime.now());
-<<<<<<< HEAD
-
-		boolean checkError = false;
-		/*終了状態で「エラーあり」が返ってきたか確認する*/
-		for(CheckCreateperApprovalClosure checkCreateperApprovalClosure :listCheckCreateApp) {
-			//エラーがあった場合
-			if(checkCreateperApprovalClosure.isCheckCreateperApproval()) {
-				checkError = true;
-				break;
-			}
-		}
-		if(checkError1552) {
-			checkError = true;
-		}
-		for(ExecutionTaskLog executionTaskLog : procExecLog.getTaskLogList()) {
-			//【条件 - dieu kien】 各処理の終了状態.更新処理　＝　承認ルート更新（月次）
-			if(executionTaskLog.getProcExecTask() ==ProcessExecutionTask.APP_ROUTE_U_DAI) {
-				//【更新内容 - noi dung update】
-				if(checkError) {
-					//各処理の終了状態　＝　[承認ルート更新（日次）、異常終了]
-					executionTaskLog.setStatus(Optional.of(EndStatus.ABNORMAL_END));
-				}else {
-					//各処理の終了状態　＝　[承認ルート更新（日次）、正常終了]
-					executionTaskLog.setStatus(Optional.of(EndStatus.SUCCESS));
-				}
-			}	
-		}
-		//ドメインモデル「更新処理自動実行ログ」を更新する( domain 「更新処理自動実行ログ」)
-		processExecutionLogRepo.update(procExecLog);
-		return new OutputAppRouteDaily(false,checkError1552);
-=======
 //		boolean checkError = false;
 //		/*終了状態で「エラーあり」が返ってきたか確認する*/
 //		for(CheckCreateperApprovalClosure checkCreateperApprovalClosure :listCheckCreateApp) {
@@ -238,9 +203,7 @@ public class AppRouteUpdateDailyDefault implements AppRouteUpdateDailyService {
 //		}
 //		//ドメインモデル「更新処理自動実行ログ」を更新する( domain 「更新処理自動実行ログ」)
 //		processExecutionLogRepo.update(procExecLog);
-		return checkError1552;
-		
->>>>>>> 2d85ea9... fixbug kbt002 108717
+		return new OutputAppRouteDaily(false,checkError1552);
 	}
 		
 	

@@ -65,7 +65,6 @@ public class JpaProcessExecutionLogHistRepository extends JpaRepository
 	public void update(ProcessExecutionLogHistory domain) {
 		KfnmtProcessExecutionLogHistory newEntity = KfnmtProcessExecutionLogHistory.toEntity2(domain);
 		
-<<<<<<< HEAD
 //		KfnmtProcessExecutionLogHistory updateEntity = this.queryProxy().query(SELECT_All_BY_CID_EXECCD_EXECID, KfnmtProcessExecutionLogHistory.class)
 //		.setParameter("companyId", domain.getCompanyId())
 //		.setParameter("execItemCd", domain.getExecItemCd())
@@ -81,6 +80,9 @@ public class JpaProcessExecutionLogHistRepository extends JpaRepository
 //		updateEntity.dailyCalcEnd = newEntity.dailyCalcEnd;
 //		updateEntity.reflectApprovalResultStart = newEntity.reflectApprovalResultStart;
 //		updateEntity.reflectApprovalResultEnd = newEntity.reflectApprovalResultEnd;
+//		updateEntity.lastEndExecDateTime = newEntity.lastEndExecDateTime;
+//		updateEntity.errorSystem = newEntity.errorSystem;
+//		updateEntity.errorBusiness = newEntity.errorBusiness;
 //		updateEntity.taskLogList = newEntity.taskLogList;
 //		this.commandProxy().update(updateEntity);	
 		
@@ -97,6 +99,9 @@ public class JpaProcessExecutionLogHistRepository extends JpaRepository
 					+ " ,DAILY_CALC_END = ?"
 					+ " ,RFL_APPR_START = ?"
 					+ " ,RFL_APPR_END = ?"
+					+ " ,LAST_END_EXEC_DATETIME = ?"
+					+ " ,ERROR_SYSTEM = ?"
+					+ " ,ERROR_BUSINESS = ?"
 					+ " WHERE CID = ? AND EXEC_ITEM_CD = ? AND EXEC_ID = ?";
 			try (PreparedStatement ps = this.connection().prepareStatement(JDBCUtil.toUpdateWithCommonField(updateTableSQL))) {
 				ps.setInt(1, newEntity.overallStatus);
@@ -110,9 +115,12 @@ public class JpaProcessExecutionLogHistRepository extends JpaRepository
 				ps.setDate(9, newEntity.dailyCalcEnd ==null?null: Date.valueOf(newEntity.dailyCalcEnd.localDate()));
 				ps.setDate(10, newEntity.reflectApprovalResultStart ==null?null: Date.valueOf(newEntity.reflectApprovalResultStart.localDate()));
 				ps.setDate(11, newEntity.reflectApprovalResultEnd ==null?null: Date.valueOf(newEntity.reflectApprovalResultEnd.localDate()));
-				ps.setString(12, domain.getCompanyId());
-				ps.setString(13, domain.getExecItemCd().v());
-				ps.setString(14, domain.getExecId());
+				ps.setString(12, newEntity.lastEndExecDateTime.toString());
+				ps.setInt(13, newEntity.errorSystem);
+				ps.setInt(14, newEntity.errorBusiness);
+				ps.setString(15, domain.getCompanyId());
+				ps.setString(16, domain.getExecItemCd().v());
+				ps.setString(17, domain.getExecId());
 				ps.executeUpdate();
 			}
 		}catch (Exception e) {
@@ -123,13 +131,19 @@ public class JpaProcessExecutionLogHistRepository extends JpaRepository
 			for(KfnmtExecutionTaskLog kfnmtExecutionTaskLog : newEntity.taskLogList) {
 				String updateTableSQL = " UPDATE KFNMT_EXEC_TASK_LOG SET"
 						+ " STATUS = ?"
+						+ " ,LAST_END_EXEC_DATETIME = ?"
+						+ " ,ERROR_SYSTEM = ?"
+						+ " ,ERROR_BUSINESS = ?"
 						+ " WHERE CID = ? AND EXEC_ITEM_CD = ? AND EXEC_ID = ? AND TASK_ID = ? ";
 				try (PreparedStatement ps = this.connection().prepareStatement(JDBCUtil.toUpdateWithCommonField(updateTableSQL))) {
 					ps.setString(1, kfnmtExecutionTaskLog.status ==null?null:kfnmtExecutionTaskLog.status.toString());
-					ps.setString(2, kfnmtExecutionTaskLog.kfnmtExecTaskLogPK.companyId);
-					ps.setString(3, kfnmtExecutionTaskLog.kfnmtExecTaskLogPK.execItemCd);
-					ps.setString(4, kfnmtExecutionTaskLog.kfnmtExecTaskLogPK.execId);
-					ps.setInt(5, kfnmtExecutionTaskLog.kfnmtExecTaskLogPK.taskId);
+					ps.setString(2, kfnmtExecutionTaskLog.lastEndExecDateTime.toString());
+					ps.setInt(3, kfnmtExecutionTaskLog.errorSystem);
+					ps.setInt(4, kfnmtExecutionTaskLog.errorBusiness);
+					ps.setString(5, kfnmtExecutionTaskLog.kfnmtExecTaskLogPK.companyId);
+					ps.setString(6, kfnmtExecutionTaskLog.kfnmtExecTaskLogPK.execItemCd);
+					ps.setString(7, kfnmtExecutionTaskLog.kfnmtExecTaskLogPK.execId);
+					ps.setInt(8, kfnmtExecutionTaskLog.kfnmtExecTaskLogPK.taskId);
 					ps.executeUpdate();
 				}
 			}
@@ -137,30 +151,6 @@ public class JpaProcessExecutionLogHistRepository extends JpaRepository
 		}catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-=======
-		KfnmtProcessExecutionLogHistory updateEntity = this.queryProxy().query(SELECT_All_BY_CID_EXECCD_EXECID, KfnmtProcessExecutionLogHistory.class)
-		.setParameter("companyId", domain.getCompanyId())
-		.setParameter("execItemCd", domain.getExecItemCd())
-		.setParameter("execId", domain.getExecId()).getSingle().get();
-		updateEntity.overallStatus = newEntity.overallStatus;
-		updateEntity.errorDetail = newEntity.errorDetail;
-		updateEntity.prevExecDateTime = newEntity.prevExecDateTime;
-		updateEntity.schCreateStart = newEntity.schCreateStart;
-		updateEntity.schCreateEnd = newEntity.schCreateEnd;
-		updateEntity.dailyCreateStart = newEntity.dailyCreateStart;
-		updateEntity.dailyCreateEnd = newEntity.dailyCreateEnd;
-		updateEntity.dailyCalcStart = newEntity.dailyCalcStart;
-		updateEntity.dailyCalcEnd = newEntity.dailyCalcEnd;
-		updateEntity.reflectApprovalResultStart = newEntity.reflectApprovalResultStart;
-		updateEntity.reflectApprovalResultEnd = newEntity.reflectApprovalResultEnd;
-		updateEntity.taskLogList = newEntity.taskLogList;
-		updateEntity.lastEndExecDateTime = newEntity.lastEndExecDateTime;
-		updateEntity.errorSystem = newEntity.errorSystem;
-		updateEntity.errorBusiness = newEntity.errorBusiness;
-		updateEntity.taskLogList = newEntity.taskLogList;
-		this.commandProxy().update(updateEntity);		
-		this.getEntityManager().flush();
->>>>>>> 2d85ea9... fixbug kbt002 108717
 	}
 	
 	@Override

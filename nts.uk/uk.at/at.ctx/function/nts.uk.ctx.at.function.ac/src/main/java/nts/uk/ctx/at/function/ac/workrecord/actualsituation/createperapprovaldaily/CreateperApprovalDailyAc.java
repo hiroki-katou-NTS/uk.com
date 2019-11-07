@@ -10,12 +10,9 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.adapter.workrecord.actualsituation.createperapprovaldaily.AppDataInfoDailyImport;
 import nts.uk.ctx.at.function.dom.adapter.workrecord.actualsituation.createperapprovaldaily.CreateperApprovalDailyAdapter;
-<<<<<<< HEAD
 import nts.uk.ctx.at.function.dom.adapter.workrecord.actualsituation.createperapprovaldaily.OutputCreatePerAppDailyImport;
-=======
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.createapproval.dailyperformance.AppDataInfoDaily;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.createapproval.dailyperformance.ErrorMessageRC;
->>>>>>> 2d85ea9... fixbug kbt002 108717
 import nts.uk.ctx.at.record.pub.workrecord.actualsituation.createapproval.dailyperformance.createperapprovaldaily.CreateperApprovalDailyPub;
 import nts.uk.ctx.at.record.pub.workrecord.actualsituation.createapproval.dailyperformance.createperapprovaldaily.OutputCreatePerAppDailyExport;
 
@@ -26,18 +23,11 @@ public class CreateperApprovalDailyAc implements CreateperApprovalDailyAdapter {
 	private CreateperApprovalDailyPub createperApprovalDailyPub;
 
 	@Override
-<<<<<<< HEAD
 	public OutputCreatePerAppDailyImport createperApprovalDaily(String companyId, String executionId, List<String> employeeIDs,
 			int processExecType, Integer createNewEmp, GeneralDate startDateClosure,GeneralDate endDateClosure) {
 		OutputCreatePerAppDailyExport check = createperApprovalDailyPub.createperApprovalDaily(companyId, executionId, employeeIDs, processExecType, createNewEmp, startDateClosure,endDateClosure);
 		return new OutputCreatePerAppDailyImport(check.isCreateperApprovalDaily(),check.isCheckStop());
-=======
-	public boolean createperApprovalDaily(String companyId, String executionId, List<String> employeeIDs,
-			int processExecType, Integer createNewEmp, GeneralDate startDateClosure, GeneralDate endDateClosure) {
-		boolean check = createperApprovalDailyPub.createperApprovalDaily(companyId, executionId, employeeIDs,
-				processExecType, createNewEmp, startDateClosure, endDateClosure);
-		return check;
->>>>>>> 2d85ea9... fixbug kbt002 108717
+
 	}
 
 	@Override

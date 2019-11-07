@@ -25,6 +25,7 @@ public class UpdateJDBCProcessExecutionLogManager extends JpaRepository {
 		try {
 			String updateTableSQL = " UPDATE KFNMT_PRO_EXE_LOG_MANAGE SET"
 					+ " CURRENT_STATUS = ?,OVERALL_STATUS = ?,ERROR_DETAIL = ?, LAST_EXEC_DATETIME = ?, LAST_EXEC_DATETIME_EX = ?"
+					+ ", LAST_EXEC_DATETIME_EX = ?, ERROR_SYSTEM = ?, ERROR_BUSINESS = ?"
 					+ " WHERE CID = ? AND EXEC_ITEM_CD = ? ";
 			try (PreparedStatement ps = this.connection().prepareStatement(JDBCUtil.toUpdateWithCommonField(updateTableSQL))) {
 				ps.setString(1, domain.getCurrentStatus() == null?null:String.valueOf(domain.getCurrentStatus().value));
@@ -32,8 +33,11 @@ public class UpdateJDBCProcessExecutionLogManager extends JpaRepository {
 				ps.setString(3, domain.getOverallError() == null?null:String.valueOf(domain.getOverallError().value));
 				ps.setString(4, domain.getLastExecDateTime() ==null?null:domain.getLastExecDateTime().toString());
 				ps.setString(5, domain.getLastExecDateTimeEx()==null?null:domain.getLastExecDateTimeEx().toString());
-				ps.setString(6, domain.getCompanyId());
-				ps.setString(7, domain.getExecItemCd().v());
+				ps.setString(6, domain.getLastEndExecDateTime() ==null?null:domain.getLastEndExecDateTime().toString());
+				ps.setInt(7, domain.getErrorSystem() ==null?null:(domain.getErrorSystem().booleanValue()?1:0));
+				ps.setInt(8, domain.getErrorBusiness() ==null?null:(domain.getErrorBusiness().booleanValue()?1:0));
+				ps.setString(9, domain.getCompanyId());
+				ps.setString(10, domain.getExecItemCd().v());
 				ps.executeUpdate();
 			}
 			
@@ -57,7 +61,10 @@ public class UpdateJDBCProcessExecutionLogManager extends JpaRepository {
 							rs.getString("OVERALL_STATUS") == null?Optional.empty() : Optional.of(EnumAdaptor.valueOf(rs.getInt("OVERALL_STATUS"),EndStatus.class)),
 							rs.getGeneralDateTime("LAST_EXEC_DATETIME"),
 							rs.getString("CURRENT_STATUS") == null?null: EnumAdaptor.valueOf(rs.getInt("CURRENT_STATUS"),CurrentExecutionStatus.class),
-							rs.getGeneralDateTime("LAST_EXEC_DATETIME_EX")
+							rs.getGeneralDateTime("LAST_EXEC_DATETIME_EX"),
+							rs.getGeneralDateTime("LAST_END_EXEC_DATETIME"),
+							rs.getString("ERROR_SYSTEM") == null?null:(rs.getInt("ERROR_SYSTEM")==1?true:false),
+							rs.getString("ERROR_BUSINESS") == null?null:(rs.getInt("ERROR_BUSINESS")==1?true:false)
 							);
 				});
 			}catch (SQLException e) {

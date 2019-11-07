@@ -45,13 +45,8 @@ public class TerminateProcessExecutionCommandHandler extends CommandHandler<Term
 	@Inject
 	private ProcessExecutionLogHistRepository processExecutionLogHistRepo;
 	
-<<<<<<< HEAD
 	@Inject
 	private AppUpdateSuspension appUpdateSuspension;
-=======
-//	@Inject
-//	private OverallErrorProcess overallErrorProcess;
->>>>>>> 2d85ea9... fixbug kbt002 108717
 
 	//終了ボタン押下時処理
 	@Override

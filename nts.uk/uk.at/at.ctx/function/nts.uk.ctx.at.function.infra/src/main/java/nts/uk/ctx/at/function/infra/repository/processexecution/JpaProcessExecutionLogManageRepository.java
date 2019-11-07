@@ -110,24 +110,15 @@ implements ProcessExecutionLogManageRepository{
 	public void update(ProcessExecutionLogManage domain) {
 //			KfnmtProcessExecutionLogManage updateData = KfnmtProcessExecutionLogManage.toEntity(domain);
 			//KfnmtProcessExecutionLogManage oldData = this.queryProxy().find(updateData.kfnmtProcExecLogPK, KfnmtProcessExecutionLogManage.class).get();
-<<<<<<< HEAD
 //			KfnmtProcessExecutionLogManage oldData = this.getEntityManager().find(KfnmtProcessExecutionLogManage.class,updateData.kfnmtProcExecLogPK,LockModeType.NONE );
 //			oldData.currentStatus = updateData.currentStatus;
 //			oldData.overallStatus = updateData.overallStatus;
 //			oldData.errorDetail = updateData.errorDetail;
 //			oldData.lastExecDateTime = updateData.lastExecDateTime;
 //			oldData.prevExecDateTimeEx = updateData.prevExecDateTimeEx;
-=======
-			KfnmtProcessExecutionLogManage oldData = this.getEntityManager().find(KfnmtProcessExecutionLogManage.class,updateData.kfnmtProcExecLogPK,LockModeType.NONE );
-			oldData.currentStatus = updateData.currentStatus;
-			oldData.overallStatus = updateData.overallStatus;
-			oldData.errorDetail = updateData.errorDetail;
-			oldData.lastExecDateTime = updateData.lastExecDateTime;
-			oldData.prevExecDateTimeEx = updateData.prevExecDateTimeEx;
-			oldData.lastEndExecDateTime = updateData.lastEndExecDateTime;
-			oldData.errorSystem = updateData.errorSystem;
-			oldData.errorBusiness = updateData.errorBusiness;
->>>>>>> 2d85ea9... fixbug kbt002 108717
+//			oldData.lastEndExecDateTime = updateData.lastEndExecDateTime;
+//			oldData.errorSystem = updateData.errorSystem;
+//			oldData.errorBusiness = updateData.errorBusiness;
 			//this.commandProxy().update(oldData);
 //			this.getEntityManager().merge(oldData);
 			//KfnmtProcessExecutionLogManagePK kfnmtProcExecPK = new KfnmtProcessExecutionLogManagePK(domain.getCompanyId(), domain.getExecItemCd().v());
