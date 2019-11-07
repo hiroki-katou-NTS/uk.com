@@ -77,3 +77,6 @@ width: 500px;
 #contents-area {
 	width: 1250px;
 }
+html {
+    overflow: hidden;
+}
