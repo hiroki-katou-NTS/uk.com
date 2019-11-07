@@ -1,6 +1,6 @@
 #contents-area {
 	margin: 20px;
-	height: auto !important;
+	height: calc(100vh - 181px) !important;
 	margin-bottom: 0px !important;
 }
 #master-wrapper {
