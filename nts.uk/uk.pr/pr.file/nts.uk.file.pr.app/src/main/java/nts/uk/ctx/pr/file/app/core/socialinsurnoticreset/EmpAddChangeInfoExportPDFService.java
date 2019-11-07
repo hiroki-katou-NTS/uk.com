@@ -8,6 +8,7 @@ import nts.uk.ctx.pr.core.dom.adapter.employee.employee.EmployeeInfoAdapter;
 import nts.uk.ctx.pr.core.dom.adapter.employee.employee.EmployeeInfoEx;
 import nts.uk.ctx.pr.core.dom.adapter.person.PersonExport;
 import nts.uk.ctx.pr.core.dom.adapter.person.PersonExportAdapter;
+import nts.uk.ctx.pr.core.dom.adapter.person.family.FamilyMemberAdapter;
 import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsuranceOffice;
 import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsuranceOfficeRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.individualwagecontract.EmployeeInfoImport;
@@ -54,6 +55,9 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
 
     @Inject
     private PersonExportAdapter personExportAdapter;
+
+    /*@Inject
+    private FamilyMemberAdapter familyMemberAdapter;*/
 
     @Override
     protected void handle(ExportServiceContext<NotificationOfLossInsExportQuery> exportServiceContext) {
@@ -139,7 +143,7 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
                 }
 
                 if(!empHealInsurQInfoList.isEmpty()){
-                    Optional<EmpHealInsurQInfo> eh = empHealInsurQInfoList.stream().filter(item -> item.getEmpId().equals(e.getEmpId())
+                    Optional<EmpHealInsurQInfo> eh = empHealInsurQInfoList.stream().filter(item -> item.getEmpId() != null ? item.getEmpId().equals(e.getEmpId()) : false
                             && e.getPersonAddChangeDate() != null
                             && e.getPersonAddChangeDate().afterOrEquals(item.getStartDate())
                             && e.getPersonAddChangeDate().beforeOrEquals(item.getEndDate())).findFirst();
@@ -235,6 +239,7 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
                     });
                 }
 
+
             } else if (domain.getInsuredNumber() == InsurPersonNumDivision.OUTPUT_HEAL_INSUR_UNION && !eList.isEmpty()) {
 
                 if (!healInsurPortPerIntellInfoList.isEmpty()) {
@@ -272,6 +277,7 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
                         if (em.isPresent()) {
                             em.get().setBasicPenNumber(k.getBasicPenNumber().map(i -> i.v()).orElse(null));
                         }
+
                     });
                 }
             }
@@ -387,13 +393,14 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
                 });
             }
 
+            //order
 		    if(!eList.isEmpty()){
                 if(domain.getOutputOrder() == SocialInsurOutOrder.EMPLOYEE_CODE_ORDER) {
                     eList = eList.stream().sorted(Comparator.comparing(EmpAddChangeInfoExport::getScd, Comparator.naturalOrder())).collect(Collectors.toList());
-                }
-
-                if(domain.getOutputOrder() == SocialInsurOutOrder.EMPLOYEE_KANA_ORDER) {
+                } else if(domain.getOutputOrder() == SocialInsurOutOrder.EMPLOYEE_KANA_ORDER) {
                     eList = eList.stream().sorted(Comparator.comparing(EmpAddChangeInfoExport::getNameKanaPs, Comparator.naturalOrder()).thenComparing(EmpAddChangeInfoExport::getScd, Comparator.naturalOrder())).collect(Collectors.toList());
+                } else {
+                    eList = eList.stream().sorted(Comparator.comparing(EmpAddChangeInfoExport::getHealInsurNumber, Comparator.naturalOrder())).collect(Collectors.toList());
                 }
             }
 
