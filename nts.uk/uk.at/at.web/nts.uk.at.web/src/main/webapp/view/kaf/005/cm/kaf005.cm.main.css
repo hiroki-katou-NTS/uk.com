@@ -78,7 +78,8 @@ div.form-label.broken {
     margin-top: 10px;
 }
 .panel.panel-gray-bg {
-	margin-left: 12px;
+	margin-left: 3px;
+    margin-bottom: 3px;
 	min-height: 300px;
 	width: 250px;
 	margin-top: 20px;
@@ -92,7 +93,7 @@ div.form-label.broken {
 
 .right-contents {
 	margin-top: 10px;
-	width: 300px;
+	width: 280px;
 	float: left;
 	margin-left: 30px;
 }
