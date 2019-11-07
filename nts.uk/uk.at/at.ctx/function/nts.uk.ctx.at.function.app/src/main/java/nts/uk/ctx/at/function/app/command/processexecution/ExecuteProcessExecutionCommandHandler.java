@@ -983,7 +983,6 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 					if (!CollectionUtil.isEmpty(reEmployeeList) && !checkStopExec) {
 						// 異動者、勤務種別変更者、休職者・休業者の期間の計算
 						GeneralDate endDate = basicScheduleRepository.findMaxDateByListSid(reEmployeeList);
-<<<<<<< HEAD
 						if (endDate != null) {
 							DatePeriod periodDate = this.getMinPeriodFromStartDate(companyId);
 							ScheduleCreatorExecutionCommand scheduleCreatorExecutionOneEmp1 = this
@@ -1005,28 +1004,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 									checkStopExec = true;
 								}
 								errorMessage = "Msg_1339";
-=======
-						DatePeriod periodDate = this.getMinPeriodFromStartDate(companyId);
-						ScheduleCreatorExecutionCommand scheduleCreatorExecutionOneEmp1 = this
-								.getScheduleCreatorExecutionOneEmp(execId, procExec, loginContext,
-										calculateSchedulePeriod, reEmployeeList);
-						scheduleCreatorExecutionOneEmp1.getScheduleExecutionLog()
-								.setPeriod(new DatePeriod(periodDate.start(), endDate));
-						try {
-							AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand> ctx = new AsyncCommandHandlerContext<>(scheduleCreatorExecutionOneEmp1);
-							this.scheduleExecution.handle(ctx);
-//							handle = this.scheduleExecution.handle(scheduleCreatorExecutionOneEmp1);
-							log.info("更新処理自動実行_個人スケジュール作成_END_" + context.getCommand().getExecItemCd() + "_"
-									+ GeneralDateTime.now());
-							if (checkStop(execId)) {
-								checkStopExec = true;
-							}
-							runSchedule = true;
-						} catch (Exception e) {
-							// 再実行の場合にExceptionが発生したかどうかを確認する。
-							if (procExec.getProcessExecType() == ProcessExecType.RE_CREATE) {
-								checkStopExec = true;
->>>>>>> 68293b9... fixbug 109028
+
 							}
 						}
 					}
