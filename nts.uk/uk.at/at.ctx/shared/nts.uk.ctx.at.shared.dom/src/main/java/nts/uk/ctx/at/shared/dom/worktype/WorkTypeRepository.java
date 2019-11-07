@@ -34,6 +34,15 @@ public interface WorkTypeRepository {
 	List<WorkTypeInfor> getPossibleWorkTypeAndOrder(String companyId, List<String> lstPossible);
 	
 	/**
+	 * Gets the possible work type and order.
+	 *
+	 * @param companyId the company id
+	 * @param lstPossible the lst possible
+	 * @return the possible work type and order
+	 */
+	List<WorkTypeInfor> getPossibleWorkTypeWithNoMasterAndOrder(String companyId, List<String> lstPossible);
+	
+	/**
 	 * Find all by order.
 	 *
 	 * @param companyId the company id
@@ -123,6 +132,15 @@ public interface WorkTypeRepository {
 	Optional<WorkType> findByPK(String companyId, String workTypeCd);
 	
 	/**
+	 * Find NoAbolish by PK.
+	 *
+	 * @param companyId the company id
+	 * @param workTypeCd the work type cd
+	 * @return the optional
+	 */
+	Optional<WorkType> findNoAbolishByPK(String companyId, String workTypeCd);
+	
+	/**
 	 * Find work type set.
 	 *
 	 * @param companyId the company id
@@ -139,6 +157,15 @@ public interface WorkTypeRepository {
 	 * @return the list
 	 */
 	List<WorkTypeSet> findWorkTypeSetCloseAtrDeprecateAtr(String companyId, int closeAtr, int deprecateAtr);
+	
+	/**
+	 * 
+	 * @param companyId
+	 * @param closeAtr
+	 * @param deprecateAtr
+	 * @return
+	 */
+	List<WorkTypeSet> findWorkTypeByClosure(String companyId, int closeAtr, int deprecateAtr);
 	
 	/**
 	 * Adds the.
@@ -313,4 +340,8 @@ public interface WorkTypeRepository {
 	List<WorkType> findForAppHdKAF006(String companyId, List<String> lstWorkTypeCD, int deprecateAtr, List<Integer> hdType);
 
 	boolean findWorkTypeRecord(String companyId, String workTypeCode);
+
+	List<WorkTypeInfor> getNotRemoveWorkType(String companyId, List<String> lstPossible);
+	
+	List<WorkType> findListByCid(String companyId);
 }

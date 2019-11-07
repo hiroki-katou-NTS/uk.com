@@ -25,77 +25,61 @@ public class BpsmtFamily extends JpaEntity implements Serializable {
 	public BpsmtFamilyPk ppsmtFamilyPk;
 
 	@Basic(optional = false)
-	@Column(name = "WORK_STUDENT_TYPE")
-	public int workStudentType;
+	@Column(name = "PID")
+	public String pid;
+	
+	@Basic(optional = false)
+	@Column(name = "BIRTHDAY")
+	public GeneralDate birthday;
+	
+	@Basic(optional = false)
+	@Column(name = "RELATION_CD")
+	public String relationCode;
+	
+	@Basic(optional = false)
+	@Column(name = "FNAME")
+	public String fName;
 
 	@Basic(optional = false)
-	@Column(name = "TOG_SEP_DIV_TYPE")
-	public int TogSepDivType;
+	@Column(name = "FNAME_KANA")
+	public String fNameKana;
+
+	@Basic(optional = true)
+	@Column(name = "FNAME_ROMAJI")
+	public String fNameRomaji;
 
 	@Basic(optional = false)
-	@Column(name = "TODUKEDE_NAME")
+	@Column(name = "FNAME_ROMAJI_KANA")
+	public String fNameRomajiKana;
+
+	@Basic(optional = true)
+	@Column(name = "FNAME_MULTI_LANG")
+	public String fNameMultiLang;
+
+	@Basic(optional = false)
+	@Column(name = "FNAME_MULTI_LANG_KANA")
+	public String fNameMultiLangKana;
+	
+	@Basic(optional = true)
+	@Column(name = "TODUKEDE_FNAME")
 	public String todukedeName;
 
 	@Basic(optional = false)
-	@Column(name = "SUP_CARE_ATR")
-	public int SupportCareType;
-
-	@Basic(optional = false)
-	@Column(name = "RELATIONSHIP")
-	public String relationShip;
-
-	@Basic(optional = false)
-	@Column(name = "PERSON_ID")
-	public String pid;
-
-	@Basic(optional = false)
-	@Column(name = "OCCUPATION_NAME")
-	public String occupationName;
-
-	@Basic(optional = false)
-	@Column(name = "NATIONALITY")
-	public String nationality;
-
-	@Basic(optional = true)
-	@Column(name = "NAME_ROMAJI")
-	public String nameRomaji;
-
-	@Basic(optional = false)
-	@Column(name = "KN_NAME_ROMAJI")
-	public String nameRomajiKana;
-
-	@Basic(optional = true)
-	@Column(name = "NAME_MULTI_LANG")
-	public String nameMultiLang;
-
-	@Basic(optional = false)
-	@Column(name = "KN_NAME_MULTI_LANG")
-	public String nameMultiLangKana;
-
-	@Basic(optional = true)
-	@Column(name = "NAME")
-	public String name;
-
-	@Basic(optional = false)
-	@Column(name = "KN_NAME")
-	public String NameKana;
-
-	@Basic(optional = false)
-	@Column(name = "EXP_DATE")
-	public GeneralDate expDate;
-
-	@Basic(optional = false)
-	@Column(name = "ENTRY_DATE")
-	public GeneralDate entryDate;
+	@Column(name = "TODUKEDE_FNAME_KANA")
+	public String todukedeNameKana;
 
 	@Basic(optional = false)
 	@Column(name = "DATE_OF_DEATH")
 	public GeneralDate deathDate;
-
+	
 	@Basic(optional = false)
-	@Column(name = "BIRTHDAY")
-	public GeneralDate birthday;
-
+	@Column(name = "ENTRY_DATE")
+	public GeneralDate entryDate;
+	
+	@Basic(optional = false)
+	@Column(name = "EXP_DATE")
+	public GeneralDate expDate;
+	
 	@Override
 	protected Object getKey() {
 		return ppsmtFamilyPk;

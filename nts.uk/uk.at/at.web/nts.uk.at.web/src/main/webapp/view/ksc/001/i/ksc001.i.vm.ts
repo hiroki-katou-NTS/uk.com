@@ -13,8 +13,8 @@ module nts.uk.at.view.ksc001.i {
                 self.targetRange = ko.observable('');
                 self.executionNumber = ko.observable('');
                 self.columns = ko.observableArray([
-                    { headerText: nts.uk.resource.getText("KSC001_56"), key: 'code', width: 150 },
-                    { headerText: nts.uk.resource.getText("KSC001_57"), key: 'name', width: 150 },
+                    { headerText: nts.uk.resource.getText("KSC001_56"), key: 'code', width: 120 },
+                    { headerText: nts.uk.resource.getText("KSC001_57"), key: 'name', width: 180 },
                     { headerText: nts.uk.resource.getText("KSC001_86"), key: 'status', width: 150 }
                 ]);
                 self.items = ko.observableArray([]);

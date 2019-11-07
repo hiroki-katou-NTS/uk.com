@@ -8,10 +8,13 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyDto;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
@@ -60,12 +63,28 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 	private CompanyAdapter companyAdapter;
 	@Override
 	public AbsRecRemainMngOfInPeriod getAbsRecMngInPeriod(AbsRecMngInPeriodParamInput paramInput) {
-		//アルゴリズム「未相殺の振休(確定)を取得する」を実行する
-		List<AbsRecDetailPara> lstAbsRec = this.getAbsOfUnOffset(paramInput.getCid(), paramInput.getSid(), paramInput.getDateData().start());		
-		//アルゴリズム「未使用の振出(確定)を取得する」を実行する
-		lstAbsRec = this.getUnUseDaysConfirmRec(paramInput.getCid(), paramInput.getSid(), lstAbsRec, paramInput.getDateData().start());
-		//繰越数を計算する
-		ResultAndError carryForwardDays = this.calcCarryForwardDays(paramInput.getDateData().start(), lstAbsRec);		
+		List<AbsRecDetailPara> lstAbsRec = new ArrayList<>();
+		ResultAndError carryForwardDays = new ResultAndError(0.0, false);
+		//パラメータ「前回振休の集計結果」をチェックする
+		//前回振休の集計結果 = NULL || 前回振休の集計結果.前回集計期間の翌日 ≠ 集計開始日
+		if(!paramInput.getOptBeforeResult().isPresent()
+				|| (paramInput.getOptBeforeResult().get().getNextDay().isPresent()
+						&& !paramInput.getOptBeforeResult().get().getNextDay().get().equals(paramInput.getDateData().start()))) {
+			//アルゴリズム「未相殺の振休(確定)を取得する」を実行する
+			lstAbsRec = this.getAbsOfUnOffset(paramInput.getCid(), paramInput.getSid(), paramInput.getDateData().start());		
+			//アルゴリズム「未使用の振出(確定)を取得する」を実行する
+			lstAbsRec = this.getUnUseDaysConfirmRec(paramInput.getCid(), paramInput.getSid(), lstAbsRec, paramInput.getDateData().start());
+			//繰越数を計算する
+			carryForwardDays = this.calcCarryForwardDays(paramInput.getDateData().start(), lstAbsRec, paramInput.isMode());		
+		} else {
+			AbsRecRemainMngOfInPeriod beforeResult = paramInput.getOptBeforeResult().get();
+			if(paramInput.getOptBeforeResult().get().getNextDay().isPresent()
+					&& paramInput.getOptBeforeResult().get().getNextDay().get().equals(paramInput.getDateData().start())) {
+				carryForwardDays.setRerultDays(beforeResult.getCarryForwardDays());
+				lstAbsRec.addAll(beforeResult.getLstAbsRecMng());
+			}
+		}
+		
 		//アルゴリズム「未相殺の振休(暫定)を取得する」を実行する
 		//アルゴリズム「未使用の振出(暫定)を取得する」を実行する
 		lstAbsRec = this.lstInterimInfor(paramInput, lstAbsRec);
@@ -79,7 +98,7 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 		//消化区分と消滅日を計算する
 		lstAbsRec = this.calDigestionAtr(lstAbsRec, paramInput.getBaseDate());
 		//残数と未消化を集計する
-		AbsDaysRemain remainUnDigestedDays = this.getRemainUnDigestedDays(lstAbsRec, paramInput.getBaseDate());
+		AbsDaysRemain remainUnDigestedDays = this.getRemainUnDigestedDays(lstAbsRec, paramInput.getBaseDate(), paramInput.isMode());
 		//発生数・使用数を計算する
 		AbsDaysRemain occurrenceUseDays= this.getOccurrenceUseDays(lstAbsRec, paramInput.getDateData());
 		List<PauseError> lstError = new ArrayList<>();
@@ -95,7 +114,8 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 				occurrenceUseDays.getRemainDays(),
 				occurrenceUseDays.getUnDigestedDays(),
 				carryForwardDays.getRerultDays(),
-				lstError);
+				lstError,
+				Finally.of(paramInput.getDateData().end().addDays(1)));
 		return outputData;
 	}
 
@@ -199,14 +219,14 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 	}
 
 	@Override
-	public ResultAndError calcCarryForwardDays(GeneralDate startDate, List<AbsRecDetailPara> lstDataDetail) {
+	public ResultAndError calcCarryForwardDays(GeneralDate startDate, List<AbsRecDetailPara> lstDataDetail, boolean mode) {
 		// アルゴリズム「6.残数と未消化を集計する」を実行
-		AbsDaysRemain outPut = this.getRemainUnDigestedDays(lstDataDetail, startDate);
+		AbsDaysRemain outPut = this.getRemainUnDigestedDays(lstDataDetail, startDate, mode);
 		return new ResultAndError(outPut.getRemainDays(), outPut.isErrors());
 	}
 
 	@Override
-	public AbsDaysRemain getRemainUnDigestedDays(List<AbsRecDetailPara> lstDataDetail, GeneralDate baseDate) {
+	public AbsDaysRemain getRemainUnDigestedDays(List<AbsRecDetailPara> lstDataDetail, GeneralDate baseDate, boolean mode) {
 		AbsDaysRemain outData = new AbsDaysRemain(0, 0, false);
 		double unOffSetDays = 0;
 		//「振出振休明細」をループする
@@ -223,7 +243,8 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 			} else if (detailData.getOccurrentClass() == OccurrenceDigClass.OCCURRENCE) {
 				UnUseOfRec recData = detailData.getUnUseOfRec().get();
 				//期限切れかをチェックする
-				if(recData.getExpirationDate().beforeOrEquals(baseDate)) {
+				if((mode && recData.getExpirationDate().beforeOrEquals(baseDate))
+						|| (!mode && recData.getExpirationDate().before(baseDate))) {
 					//未消化日数 += ループ中の「振出の未使用」．未使用日数
 					outData.setUnDigestedDays(outData.getUnDigestedDays() + recData.getUnUseDays());
 				} else {
@@ -737,6 +758,7 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 	}
 
 	@Override
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public double getAbsRecMngRemain(String employeeID, GeneralDate date) {
 		String companyID = AppContexts.user().companyId();
 		//社員に対応する締め期間を取得する
@@ -750,7 +772,8 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 				false, //・上書きフラグ=false
 				Collections.emptyList(), //上書き用の暫定管理データ：なし
 				Collections.emptyList(), 
-				Collections.emptyList());
+				Collections.emptyList(),
+				Optional.empty());
 		return this.getAbsRecMngInPeriod(paramInput).getRemainDays();
 	}
 	

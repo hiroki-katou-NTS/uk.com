@@ -72,16 +72,6 @@ module nts.uk.pr.view.qsi003.b.viewmodel {
             nts.uk.ui.windows.close();
         }
 
-        clearError(){
-            var self = this;
-            if (!self.otherp()&& $("#B3_14").ntsError("hasError")){
-                $("#B3_14").ntsError('clear');
-            }
-            if (!self.others()&& $("#B4_12").ntsError("hasError")){
-                $("#B4_12").ntsError('clear');
-            }
-        }
-
         getDefaultNameReport(){
             let self = this;
             self.others(false);
@@ -160,6 +150,10 @@ module nts.uk.pr.view.qsi003.b.viewmodel {
                 }else{
                     $("#B3_14").trigger("validate");
                 }
+
+                if(!self.otherp()){
+                    self.otherReasonp('');
+                }
             });
 
             self.others.subscribe(e =>{
@@ -167,6 +161,10 @@ module nts.uk.pr.view.qsi003.b.viewmodel {
                     $("#B4_12").ntsError('clear');
                 }else{
                     $("#B4_12").trigger("validate");
+                }
+
+                if(!self.others()){
+                    self.otherReasons('');
                 }
             });
             self.selectedItem.subscribe((data) => {

@@ -35,14 +35,14 @@ public class TargetPrmTimeWeekOfPrevMonLast {
 		
 		// 集計対象時間を取得する
 		val workTimeOfMonthly = aggregateTotalWorkingTime.getWorkTime();
-		val workTime = workTimeOfMonthly.getAggregateTargetTime(weekPeriod);
+		val workTime = workTimeOfMonthly.getAggregateTargetTime(weekPeriod, addSet);
 
 		// 対象時間に集計対象時間を加算する
 		domain.targetTime = domain.targetTime.addMinutes(workTime.v());
 		
 		// 法定内残業時間を取得する
 		val overTime = aggregateTotalWorkingTime.getOverTime();
-		val legalOverTime = overTime.getLegalOverTime(weekPeriod);
+		val legalOverTime = overTime.calcOverTimeForPremium(weekPeriod, aggregateTotalWorkingTime);
 		
 		// 対象時間に残業時間を加算する
 		domain.targetTime = domain.targetTime.addMinutes(legalOverTime.v());

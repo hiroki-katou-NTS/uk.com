@@ -35,8 +35,12 @@
 			<div id="contents-area" class="cf">
 			<div id="content">
 				<div id="content-left"
-					data-bind="ntsPanel:{width: '290px', height: '555px',
-					direction: 'right', showIcon: false, visible: true}">
+					data-bind="ntsPanel:{
+					width: '290px', 
+					height: (window.screen.height - 325) >= 555 ? 555 : (window.screen.height - 325),
+					direction: 'right', 
+					showIcon: false, 
+					visible: true}">
 					<div id="isAbolition"
 						data-bind="ntsCheckBox: { checked: isAbolished }" tabindex="5">#{i18n.getText('CPS006_4')}</div>
 					<div id="search" tabindex="6"
@@ -58,7 +62,7 @@
 						multiple: false,
 						value: id ,
 						columnResize: true,
-						rows:20,
+						rows: Math.round((window.screen.height - 414)/23) >= 20 ? 20 : Math.round((window.screen.height - 414)/23),
 						width: '300', }">
 					</table>
 				</div>
@@ -77,7 +81,7 @@
 							</div>
 							<input id="ctgName" tabindex="7"
 								data-bind="ntsTextEditor: {
-								name: '#[CPS006_49]',
+								name: '#[CPS006_10]',
 								value: categoryName ,
 								constraint:'CategoryName',
 								enable: true,
@@ -143,7 +147,7 @@
 							</com:ko-if>
 						</div>
 					</div>
-					<div style="margin-top: 10px;">
+					<div>
 						<com:ko-if
 								bind="currentCategory().isExistedItemLst() === 1">
 						<div id='col1'>

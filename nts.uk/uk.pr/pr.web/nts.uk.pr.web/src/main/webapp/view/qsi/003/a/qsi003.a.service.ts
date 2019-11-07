@@ -3,8 +3,8 @@ module nts.uk.pr.view.qsi003.a.service {
     import exportFile = nts.uk.request.exportFile;
 
     let paths : any = {
-        getRomajiNameNotiCreSettingById : "ctx/pr/file/printdata/romaji/getRomajiNameNoti",
-        exportData: "ctx/pr/file/printdata/romaji/exportData"
+        getRomajiNameNotiCreSettingById : "ctx/pr/file/printconfig/romaji/getRomajiNameNoti",
+        exportData: "ctx/pr/file/printconfig/romaji/exportData"
     };
 
     export function getRomajiNameNotiCreSettingById(): JQueryPromise<any>{

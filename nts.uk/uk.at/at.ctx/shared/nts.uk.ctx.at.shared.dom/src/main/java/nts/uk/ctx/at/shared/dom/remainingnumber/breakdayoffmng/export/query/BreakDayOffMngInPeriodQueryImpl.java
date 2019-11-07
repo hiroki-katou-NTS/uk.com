@@ -8,9 +8,12 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyDto;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.MngDataStatus;
@@ -59,15 +62,33 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 	private CompanyAdapter companyAdapter;
 	@Override
 	public BreakDayOffRemainMngOfInPeriod getBreakDayOffMngInPeriod(BreakDayOffRemainMngParam inputParam) {
-		//アルゴリズム「未相殺の代休(確定)を取得する」を実行する
-		List<BreakDayOffDetail> lstDetailData = this.getConfirmDayOffDetail(inputParam.getCid(), inputParam.getSid(), inputParam.getDateData().start());
-		//アルゴリズム「未使用の休出(確定)を取得する」を実行する
-		List<BreakDayOffDetail> lstBreakData = this.getConfirmBreakDetail(inputParam.getSid(), inputParam.getDateData().start());
-		if(!lstBreakData.isEmpty()) {
-			lstDetailData.addAll(lstBreakData);
+		List<BreakDayOffDetail> lstDetailData = new ArrayList<>();
+		CarryForwardDayTimes calcCarryForwardDays = new CarryForwardDayTimes(0.0, 0);
+		//パラメータ「前回代休の集計結果」をチェックする
+		//前回代休の集計結果 = NULL || 前回代休の集計結果.前回集計期間の翌日 ≠ 集計開始日
+		if(!inputParam.getOptBeforeResult().isPresent()
+				|| (inputParam.getOptBeforeResult().get().getNextDay().isPresent() 
+						&& !inputParam.getOptBeforeResult().get().getNextDay().get().equals(inputParam.getDateData().start()))) {
+			//アルゴリズム「未相殺の代休(確定)を取得する」を実行する
+			lstDetailData = this.getConfirmDayOffDetail(inputParam.getCid(), inputParam.getSid(), inputParam.getDateData().start());
+			//アルゴリズム「未使用の休出(確定)を取得する」を実行する
+			List<BreakDayOffDetail> lstBreakData = this.getConfirmBreakDetail(inputParam.getSid(), inputParam.getDateData().start());
+			if(!lstBreakData.isEmpty()) {
+				lstDetailData.addAll(lstBreakData);
+			}
+			//繰越数を計算する
+			calcCarryForwardDays = this.calcCarryForwardDays(inputParam.getBaseDate(), lstDetailData, inputParam.getSid(), inputParam.isMode());
+			
+		} else {
+			BreakDayOffRemainMngOfInPeriod beforeResult = inputParam.getOptBeforeResult().get();
+			//「繰越日数」と「繰越時間」に前回の修正結果の残数を格納
+			if(beforeResult.getNextDay().isPresent() 
+					&& beforeResult.getNextDay().get().equals(inputParam.getDateData().start())) {
+				calcCarryForwardDays.setCarryForwardDays(beforeResult.getCarryForwardDays());
+				calcCarryForwardDays.setCarryForwardTime(beforeResult.getCarryForwardTimes());
+				lstDetailData.addAll(beforeResult.getLstDetailData());
+			}
 		}
-		//繰越数を計算する
-		CarryForwardDayTimes calcCarryForwardDays = this.calcCarryForwardDays(inputParam.getBaseDate(), lstDetailData, inputParam.getSid());
 		//3.未相殺の代休(暫定)を取得する
 		//アルゴリズム「未使用の休出(暫定)を取得する」を実行する
 		lstDetailData = this.lstInterimData(inputParam, lstDetailData);
@@ -80,7 +101,7 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 		//消化区分と消滅日を計算する
 		lstDetailData = this.calDigestionAtr(lstDetailData, inputParam.getBaseDate());
 		//残数と未消化数を集計する
-		RemainUnDigestedDayTimes remainUnDigestedDayTimes = this.getRemainUnDigestedDayTimes(inputParam.getBaseDate(), lstDetailData, inputParam.getSid());
+		RemainUnDigestedDayTimes remainUnDigestedDayTimes = this.getRemainUnDigestedDayTimes(inputParam.getBaseDate(), lstDetailData, inputParam.getSid(), inputParam.isMode());
 		//発生数・使用数を計算する
 		RemainUnDigestedDayTimes getRemainOccurrenceUseDayTimes = this.getRemainOccurrenceUseDayTimes(lstDetailData, inputParam.getDateData());
 		List<DayOffError> lstError = new ArrayList<>();
@@ -104,7 +125,8 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 				getRemainOccurrenceUseDayTimes.getUnDigestedTimes(),
 				calcCarryForwardDays.getCarryForwardDays(), 
 				calcCarryForwardDays.getCarryForwardTime(),
-				lstError);
+				lstError,
+				Finally.of(inputParam.getDateData().end().addDays(1)));
 		return outputData;
 	}
 
@@ -242,10 +264,10 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 	}
 
 	@Override
-	public CarryForwardDayTimes calcCarryForwardDays(GeneralDate baseDate, List<BreakDayOffDetail> lstDetailData, String sid) {
+	public CarryForwardDayTimes calcCarryForwardDays(GeneralDate baseDate, List<BreakDayOffDetail> lstDetailData, String sid, boolean isMode) {
 		CarryForwardDayTimes outputData = new CarryForwardDayTimes(0, 0);
 		//アルゴリズム「6.残数と未消化数を集計する」を実行
-		RemainUnDigestedDayTimes dayTimes = this.getRemainUnDigestedDayTimes(baseDate, lstDetailData, sid);
+		RemainUnDigestedDayTimes dayTimes = this.getRemainUnDigestedDayTimes(baseDate, lstDetailData, sid, isMode);
 		//取得した「残日数」「残時間数」を返す
 		outputData.setCarryForwardDays(dayTimes.getRemainDays());
 		outputData.setCarryForwardTime(dayTimes.getRemainTimes());
@@ -254,7 +276,7 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 
 	@Override
 	public RemainUnDigestedDayTimes getRemainUnDigestedDayTimes(GeneralDate baseDate,
-			List<BreakDayOffDetail> lstDetailData, String sid) {
+			List<BreakDayOffDetail> lstDetailData, String sid, boolean isMode) {
 		//残日数 = 0、残時間数 = 0、未消化日数 = 0、未消化時間 = 0（初期化）
 		RemainUnDigestedDayTimes outputData = new RemainUnDigestedDayTimes(0, 0, 0, 0, false);
 		//アルゴリズム「代休の設定を取得する」を実行する
@@ -268,7 +290,8 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 			if(detailData.getOccurrentClass() == OccurrenceDigClass.OCCURRENCE) {
 				UnUserOfBreak breakData = detailData.getUnUserOfBreak().get();
 				//期限切れかをチェックする
-				if(breakData.getExpirationDate().beforeOrEquals(baseDate)) {
+				if((isMode && breakData.getExpirationDate().beforeOrEquals(baseDate))
+						|| (!isMode && breakData.getExpirationDate().before(baseDate))) {
 					if(dayOffSetting == null) {
 						continue;
 					}
@@ -894,6 +917,7 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 	}
 
 	@Override
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public double getBreakDayOffMngRemain(String employeeID, GeneralDate date) {
 		String companyID = AppContexts.user().companyId();
 		//社員に対応する締め期間を取得する
@@ -907,7 +931,8 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 				false, //・上書きフラグ=false
 				Collections.emptyList(), //上書き用の暫定管理データ：なし
 				Collections.emptyList(), 
-				Collections.emptyList());
+				Collections.emptyList(),
+				Optional.empty());
 		return this.getBreakDayOffMngInPeriod(inputParam).getRemainDays();
 	}
 }

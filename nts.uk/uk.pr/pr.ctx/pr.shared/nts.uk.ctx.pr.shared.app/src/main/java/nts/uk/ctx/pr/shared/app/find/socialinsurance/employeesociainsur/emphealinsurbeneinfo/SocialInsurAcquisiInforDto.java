@@ -4,16 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Value;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.SocialInsurAcquisiInfor;
 
-import java.util.Optional;
-
 
 /**
 * 社会保険取得時情報: DTO
 */
 @AllArgsConstructor
 @Value
-public class SocialInsurAcquisiInforDto
-{
+public class SocialInsurAcquisiInforDto {
     /**
      * 会社ID
      */

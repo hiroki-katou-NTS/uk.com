@@ -1,7 +1,21 @@
 module nts.uk.at.view.kdw004.a {
     __viewContext.ready(function() {
-        var screenModel = new viewmodel.ScreenModelKDW004A();
-        screenModel.startPage().done(function() {
+        let screenModel = new viewmodel.ScreenModelKDW004A();
+        let value = __viewContext.transferred.value,
+            param = null;
+        if (_.isNil(value) || _.isNil(value.closureId) || typeof(value) != 'object') {
+            param = {
+                closureIdParam: null,
+                yearMonth: null
+            };
+        } else {
+            param = {
+                closureIdParam: value.closureId,
+                yearMonth: value.yearMonth
+            };
+        }
+        
+        screenModel.startPage(param).done(function() {
             __viewContext.bind(screenModel);
             screenModel.setHeadersColor();
             let img = document.createElement("span");
@@ -13,8 +27,8 @@ module nts.uk.at.view.kdw004.a {
             txt.innerHTML = nts.uk.resource.getText("KDW004_7");
             colorBtn.appendChild(txt);
             //disable tabIndex button date range
-            document.getElementsByClassName("ntsDateRangeButton")[0].tabIndex = -1;
-            document.getElementsByClassName("ntsDateRangeButton")[1].tabIndex = -1;
+//            document.getElementsByClassName("ntsDateRangeButton")[0].tabIndex = -1;
+//            document.getElementsByClassName("ntsDateRangeButton")[1].tabIndex = -1;
         }).fail((messageId) => {
             nts.uk.ui.dialog.alert({ messageId: messageId }).then(() => {
                  nts.uk.request.jump("com", "view/ccg/008/a/index.xhtml");

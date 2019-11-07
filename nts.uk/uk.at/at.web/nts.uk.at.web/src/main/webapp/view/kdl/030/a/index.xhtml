@@ -10,7 +10,7 @@
 			<com:ValidatorScript>
 				nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailapplicationapproval.ApplicationEmailBody
 			</com:ValidatorScript>
-			<script>var dialogSize = { width: 850, height: 550 };</script>
+			<script>var dialogSize = { width: 870, height: 620 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="kdl030.a.start.js" />
 			<com:scriptfile path="kdl030.a.vm.js" />
@@ -19,31 +19,26 @@
 		</ui:define>
 		<ui:define name="content">
 			
-			<div id="contents-area" style="width: 800px; height: 350px">
+			<div id="contents-area" style="width: 850px; height: 620px">
+				<!-- A1_1 承認者にメールを送信します。 -->
 				<div class="label-div">
 					<label>#{i18n.getText('KDL030_2')}</label>
 				</div>
 				<div class="table valign-center">
 					<div class="cell">
-						<div id="A1_1" class="column1"
+						<!-- A2_1 送信対象者 -->
+						<div id="A2_1" style="width: 100px;"
 							data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDL030_3')}</div>
 					</div>
 					<div id = "A2_2">
 						<table id="table-phase">
-						<colgroup>
-							<col width="111px"/>
-							<col width="111px"/>
-							<col width="300px"/>
-							<col width="100px"/>
-							<col width="200px"/>
-						</colgroup>
 						<thead>
-							<tr class="bg-green">
+							<tr style = "background-color: #E0F59E !important ">
 								<th class="phase-app">#{i18n.getText('KDL030_10')}</th>
 								<th class="order-app">#{i18n.getText('KDL030_11')}</th>
 								<th class="name-app">#{i18n.getText('KDL030_12')}</th>
 								<th class="status-app">#{i18n.getText('KDL030_13')}</th>
-								<th class="isMail-app">#{i18n.getText('KDL030_14')}</th>
+								<th class="isMail-appr">#{i18n.getText('KDL030_14')}</th>
 							</tr>
 						</thead>
 						<tbody data-bind="foreach: approvalRootState">
@@ -52,23 +47,22 @@
 								<tr>
 									<com:ko bind="$index() === 0" tag="if">
 										<td data-bind="attr: {rowspan: $parent.listApprovalFrame.length}, text: 'フェーズ'+$parent.phaseOrder" 
-											style="width: 111px;"  class="bg-green"></td>
+											class="bg-green phase-app"></td>
 									</com:ko>
 									<!-- 承認者 -->
-									<td data-bind="text: '承認者'+$data.frameOrder" class="bg-green" ></td>
+									<td data-bind="text: '承認者'+$data.frameOrder" class="order-app bg-green" ></td>
 									<!-- 社員名 -->
-									<td data-bind="foreach: $data.listApprover">
+									<td class = "name-app" data-bind="foreach: $data.listApprover">
 										<div class = "rowPerName" data-bind="css: { rowBorder:  ($parent.listApprover.length - $index()) > 1 }">
 											<div data-bind="text: $data.dispApproverName"></div>
 										</div>
 									</td>
 									<!-- 状況 -->
-									<td data-bind="text: approvalAtrName" ></td>
+									<td class = "status-app" data-bind="text: approvalAtrName" ></td>
  									<!-- メール送信 -->
- 									<td data-bind="foreach: $data.listApprover">
- 										<div  class = "rowPer" data-bind = "if: $data.showButton,
- 												css: {rowBorder: ($parent.listApprover.length - $index()) > 1},
- 													attr: { id: 'sendAtr_' + $index()}">
+ 									<td class = "isMail-appr" data-bind="foreach: $data.listApprover">
+ 										<div data-bind = "if: $data.showButton,
+ 												css: {rowBorder: ($parent.listApprover.length - $index()) > 1 &amp; showButton, rowPer: showButton}">
 	 										<div data-bind="ntsSwitchButton: { 
 			   										name: '#{i18n.getText('KAF030_25')}',   
 			   										options: $parents[2].optionList,   
@@ -77,6 +71,9 @@
 			  										value: $data.isSend}">
 	  										</div>
  										</div>
+ 										<div data-bind = "ifnot: $data.showButton, 
+ 											css: {rowBorder: ($parent.listApprover.length - $index()) > 1 &amp; showButton == false, 
+ 													rowPer1: showButton == false }">#{i18n.getText('KDL030_31')}</div>
 									</td>
 								</tr>
 							</com:ko>
@@ -84,11 +81,47 @@
 					</table>
 					</div>
 				</div>
-				<div class="table valign-center">
-					<div class="cell column1"></div>
-					<div class="cell column2">
-						<div id = "A3" data-bind="ntsCheckBox: { checked: isSendToApplicant, enable: applicant().smail.length >= 0, text: '#{i18n.getText('KDL030_4')}' }"></div>
+				<div class="table valign-center" style = "padding-top: 10px">
+					<div class="cell">
+						<!-- A3_1 申請者 -->
+						<div id="A3_1" style="width: 100px;"
+							data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDL030_32')}</div>
 					</div>
+					<div id="A3_2">
+						<table id="table-applicant">
+							<thead>
+								<tr class="bg-green">
+									<th class="applicant">#{i18n.getText('KDL030_33')}</th>
+									<!-- A3_2_2 -->
+									<th class="name-emp">#{i18n.getText('KDL030_35')}</th>
+									<th class="isMail-app">#{i18n.getText('KDL030_14')}</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr data-bind="with: applicantObj">
+									<!-- A3_2_4 申請者（ラベル） -->
+									<td class="applicant bg-green">#{i18n.getText('KDL030_34')}</td>
+									<!-- A3_2_5 社員名 -->
+									<td class = "name-emp" data-bind="text: empName"></td>
+									<!-- メール送信 -->
+									<td class = "isMail-app">
+										<div data-bind = "if: isMail">
+											<div data-bind="ntsSwitchButton: { 
+			   										name: '#{i18n.getText('KAF030_25')}',   
+			   										options: $parent.optionList,   
+			  										optionsValue: 'dispCode',  
+			  										optionsText: 'dispName',  
+			  										value: $parent.isSendToApplicant}">
+											</div>
+										</div>
+										<div data-bind = "ifnot : isMail, css:{rowPer1: isMail == false}">#{i18n.getText('KDL030_31')}</div>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<div class="table valign-center">
 				</div>
 				<div class="table valign-center">
 					<div class="cell">

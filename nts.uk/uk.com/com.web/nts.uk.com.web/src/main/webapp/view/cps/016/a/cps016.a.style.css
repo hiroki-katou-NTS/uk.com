@@ -55,7 +55,7 @@ body {
 	margin-top: 12px;
 	padding: 20px;
 	float: left;
-	min-height: 540px;
+	min-height: 423px;
 	min-width: 200px !important;
 	/* 	width: 15%; */
 }
@@ -70,7 +70,7 @@ button.search-btn {
 	margin-left: 30px;
 	margin-top: 14px;
 	float: left;
-	min-height: 545px;
+	min-height: 428px;
 	width: 560px;
 }
 
@@ -109,9 +109,8 @@ i.icon.icon-searchbox {
 .layout-control .drag-panel {
 	height: 500px !important;
 }
-#header[style]+#master-content>#contents-area {
-	height: calc(100vh - 69px) !important;
-	max-height: calc(100vh - 69px) !important;
+#contents-area {
+	min-width: 1920px !important;
 }
 
 #contents-area-left {

@@ -3,7 +3,10 @@ module kcp.share.list {
         id?: string;
         code: string;
         name?: string;
-        affiliationName?: string;
+        //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
+        workplaceName?: string;
+//        affiliationName?: string;
+        //end
         isAlreadySetting?: boolean;
         optionalColumn?: any;
     }
@@ -109,6 +112,11 @@ module kcp.share.list {
          * Max rows to visible in list component.
          */
         maxRows: number;
+        
+        /**
+         * Set width for component;
+         */
+        width?: number;
         
         /**
          * Set max width for component.Min is 350px;
@@ -396,23 +404,28 @@ module kcp.share.list {
                     // update datasource
                     gridList.ntsGridList("setDataSource", self.itemList());
                     
-                    if (self.listType !== ListType.EMPLOYEE) {
-                        searchBox.ntsSearchBox("setDataSource", self.itemList());        
-                    }
-
-                    // select all items in multi mode
-                    if (self.isSelectAllAfterReload && !_.isEmpty(self.itemList()) && self.isMultipleSelect) {
-                        let selectedValues = _.map(self.itemList(), item => self.listType == ListType.JOB_TITLE ? item.id : item.code);
-                        self.selectedCodes(selectedValues);
-                        gridList.ntsGridList("setSelectedValue", []);
-                        gridList.ntsGridList("setSelectedValue", selectedValues);
-                        setTimeout(function() {
-                            let chk = gridList.closest('.ui-iggrid').find(".ui-iggrid-rowselector-header").find("span[data-role='checkbox']");
-                            if (chk[0].getAttribute("data-chk") == "off") {
-                                chk.click();
+                    _.defer(() => {
+                        if (self.listType !== ListType.EMPLOYEE) {
+                            searchBox.ntsSearchBox("setDataSource", self.itemList());        
+                        }
+    
+                        // select all items in multi mode
+                        if (self.isSelectAllAfterReload && !_.isEmpty(self.itemList()) && self.isMultipleSelect) {
+                            let selectedValues = _.map(self.itemList(), item => self.listType == ListType.JOB_TITLE ? item.id : item.code);
+                            if (_.isEmpty(selectedValues)){
+                                self.selectedCodes([]);
+                            } else {
+                                gridList.ntsGridList("setSelectedValue", selectedValues);
                             }
-                        }, 1);
-                    }
+                            
+                            /*setTimeout(function() {
+                                let chk = gridList.closest('.ui-iggrid').find(".ui-iggrid-rowselector-header").find("span[data-role='checkbox']");
+                                if (chk[0].getAttribute("data-chk") == "off") { 
+                                    chk.click();
+                                }
+                            }, 1);*/
+                        }    
+                    });
                 });
             }
         }
@@ -433,7 +446,7 @@ module kcp.share.list {
                 if (self.disableSelection) {
                     let selectionDisables = _.map(self.itemList(), 'code');
                     options = {
-                        width: self.gridStyle.totalColumnSize,
+                        width: self.componentOption.width ? self.componentOption.width : self.gridStyle.totalColumnSize,
                         dataSource: self.itemList(),
                         primaryKey: self.targetKey,
                         columns: self.listComponentColumn,
@@ -445,7 +458,7 @@ module kcp.share.list {
                     };
                 } else {
                     options = {
-                        width: self.gridStyle.totalColumnSize,
+                        width: self.componentOption.width ? self.componentOption.width : self.gridStyle.totalColumnSize,
                         dataSource: self.itemList(),
                         primaryKey: self.targetKey,
                         columns: self.listComponentColumn,
@@ -488,7 +501,10 @@ module kcp.share.list {
             gridList.on('selectionchanged', evt => {
                 const selectedValues = gridList.ntsGridList("getSelectedValue");
                 const selectedIds = self.isMultipleSelect ? _.map(selectedValues, o => o.id) : selectedValues.id;
-                self.selectedCodes(selectedIds);
+                if(!_.isEqual(self.selectedCodes(), selectedIds)){
+                    self.selectedCodes(selectedIds);        
+                }
+                
             });
             gridList.on('selectChange', evt => {
                 // scroll to top if select all
@@ -498,8 +514,20 @@ module kcp.share.list {
             });
 
             self.selectedCodes.subscribe(() => {
-                if ($('#' + self.componentGridId).length > 0) {
-                    $('#' + self.componentGridId).ntsGridList('setSelected', self.selectedCodes());
+                // can not use OUTSIDE "gridList" variable here. must to use $('#' + self.componentGridId)
+                let gridList = $('#' + self.componentGridId);
+                if (gridList.length > 0) {
+                    _.defer(() => {
+                        var selectedValues = gridList.ntsGridList("getSelectedValue");
+                        if (_.isEmpty(selectedValues)) {
+                            gridList.ntsGridList('setSelected', self.selectedCodes());        
+                        } else {
+                            var selectedIds = self.isMultipleSelect ? _.map(selectedValues, o => o.id) : selectedValues.id;
+                            if(!_.isEqual(self.selectedCodes(), selectedIds)){
+                                gridList.ntsGridList('setSelected', self.selectedCodes());    
+                            }    
+                        }    
+                    });
                 }
             });
 
@@ -548,7 +576,10 @@ module kcp.share.list {
             // workplace name column
             if (self.listType == ListType.EMPLOYEE && self.isShowWorkPlaceName) {
                 self.listComponentColumn.push({
-                    headerText: nts.uk.resource.getText('KCP005_4'), prop: 'affiliationName', width: self.gridStyle.workplaceColumnSize,
+                    //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
+                    headerText: nts.uk.resource.getText('KCP005_4'), prop: 'workplaceName', width: self.gridStyle.workplaceColumnSize,
+//                    headerText: nts.uk.resource.getText('KCP005_4'), prop: 'affiliationName', width: self.gridStyle.workplaceColumnSize,
+                    //end
                     template: "<td class='list-component-name-col'>${workplaceName}</td>"
                 });
             }
@@ -568,7 +599,7 @@ module kcp.share.list {
                     headerText: nts.uk.resource.getText('KCP001_4'), prop: 'isAlreadySetting', width: self.gridStyle.alreadySetColumnSize,
                     formatter: function(isAlreadySet) {
                         if (isAlreadySet == true || isAlreadySet == 'true') {
-                            return '<div style="text-align: center;max-height: 18px;"><i class="icon icon-78"></i></div>';
+                            return '<div class="already-setting" style="text-align: center;max-height: 18px;"><i class="icon icon-78"></i></div>';
                         }
                         return '';
                     }
@@ -901,13 +932,13 @@ module kcp.share.list {
                 codeColumnSize = data.maxWidth ? '15%': codeColumnSize;
                 var nameColumnSize = data.maxWidth ? '30%' : 170;
                 var workplaceColumnSize = data.maxWidth ? '20%' : 150;
-                var alreadySetColumnSize = data.maxWidth ? '15%' : 70;
+                var alreadySetColumnSize = data.maxWidth ? '15%' : 40;
                 optionalColumnSize = data.maxWidth ? '20%' : 150;
             } else {
                 codeColumnSize = data.maxWidth ? '25%' : codeColumnSize;
                 var nameColumnSize = data.maxWidth ? '30%' : 170;
                 var workplaceColumnSize = data.maxWidth ? '30%' : 150;
-                var alreadySetColumnSize = data.maxWidth ? '15%' : 70;
+                var alreadySetColumnSize = data.maxWidth ? '15%' : 40;
             }
             this.gridStyle = {
                 codeColumnSize: codeColumnSize,

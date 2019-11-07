@@ -11,8 +11,7 @@ import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurb
 @AllArgsConstructor
 @Value
 @Data
-public class EmpBasicPenNumInforDto
-{
+public class EmpBasicPenNumInforDto {
     
     /**
     * 社員ID

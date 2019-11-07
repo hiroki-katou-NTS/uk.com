@@ -22,4 +22,5 @@ public class ObjectShare {
 	//private List<String> lstExtractedEmployee;// 抽出した社員一覧
 	private GeneralDate startDate;// 期間 khoảng thời gian
 	private GeneralDate endDate;// 期間 khoảng thời gian
+	private Integer yearMonth;
 }

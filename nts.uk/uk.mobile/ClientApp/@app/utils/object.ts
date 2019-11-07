@@ -13,6 +13,10 @@ const $ = {
             object = object.apply();
         }
 
+        if (object === null || object === undefined) {
+            return 0;
+        }
+
         if (typeof object === 'string') {
             return object.length;
         }
@@ -98,15 +102,29 @@ const $ = {
         return object && typeof object === 'object' && object.constructor === Object;
     },
     cloneObject(obj: any): any {
-        let clone = {};
-
         if (!$.isNull(obj)) {
-            $.objectForEach(obj, (key: string, value: any) => {
-                $.set(clone, key, $.isObject(value) ? $.cloneObject(value) : value);
-            });
+            if ($.isArray(obj)) {
+                let clone = [];
+
+                obj.forEach((value: any, k: number) => {
+                    clone.push($.cloneObject(value));
+                });
+
+                return clone;
+            } else if ($.isObject(obj)) {
+                let clone = {};
+
+                $.objectForEach(obj, (key: string, value: any) => {
+                    $.set(clone, key, $.cloneObject(value));
+                });
+
+                return clone;
+            }
+        } else if ($.isObject(obj)) {
+            return {};
         }
 
-        return clone;
+        return obj;
     },
     isArray(object: any): object is any[] {
         return object && Array.isArray(object) && typeof object === 'object' && object.constructor === Array;
@@ -203,11 +221,11 @@ const $ = {
 
         return object;
     },
-    merge(object: any, source: any): any {
+    merge(object: any, source: any, over: boolean = false): any {
         $.objectForEach(source, (key: string, value: any) => {
             let override = $.get(object, key);
 
-            if (override === null || override == undefined) {
+            if (override === null || override == undefined || (over && !$.isObject(override))) {
                 $.set(object, key, value);
             } else if (override instanceof Object) {
                 $.merge(override, value);
@@ -225,7 +243,11 @@ const $ = {
             return [].slice.call(object).map((v: any, i: number) => Number(i));
         }
 
-        return Object.keys(object);
+        if ($.isObject(object)) {
+            return Object.keys(object);
+        }
+
+        return [];
     },
     values(object: Array<any> | string | any | Function): any[] {
         if (object instanceof Function) {
@@ -286,6 +308,81 @@ const $ = {
     },
     isNullOrEmpty(target: any): target is null {
         return (target === undefined || target === null || target.length == 0);
+    },
+    hierarchy(items: Array<any>, childProp: string, parent?: any) {
+        if (!items || items.length == 0 || !childProp) {
+            return items;
+        } else {
+            let $hier = [];
+
+            items.forEach((item: any) => {
+                $hier.push(item);
+
+                if (!$.has(item, '$h')) {
+                    $.extend(item, {
+                        $h: {
+                            collapse: true,
+                            parent: parent || null,
+                            childs: item[childProp] || []
+                        }
+                    });
+
+                    // get rank of item
+                    Object.defineProperty(item.$h, 'rank', {
+                        get() {
+                            const $rank = (item: any) => {
+                                if (item.$h.parent === null) {
+                                    return 0;
+                                } else {
+                                    return 1 + $rank(item.$h.parent);
+                                }
+                            };
+
+                            return $rank(item);
+                        }
+                    });
+
+                    // get root of item
+                    Object.defineProperty(item.$h, 'root', {
+                        get() {
+                            const $root = (item: any) => {
+                                if (item.$h.parent === null) {
+                                    return item;
+                                } else {
+                                    return $root(item.$h.parent);
+                                }
+                            };
+
+                            return $root(item);
+                        }
+                    });
+
+                    Object.defineProperty(item.$h, 'show', {
+                        get() {
+                            const $collapse = (item: any) => {
+                                if (item.$h.parent === null) {
+                                    return true;
+                                } else {
+                                    if (!item.$h.parent.$h.collapse) {
+                                        return false;
+                                    } else {
+                                        return $collapse(item.$h.parent);
+                                    }
+                                }
+                            };
+
+                            return $collapse(item);
+                        }
+                    });
+                }
+
+                if ($.isArray(item[childProp])) {
+                    $hier = [...$hier, ...$.hierarchy(item[childProp], childProp, item)];
+                }
+            });
+
+            return $hier;
+        }
     }
 };
 

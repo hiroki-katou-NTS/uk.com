@@ -9,6 +9,7 @@ import lombok.Data;
 import nts.uk.file.at.app.export.dailyschedule.totalsum.TotalCountDay;
 import nts.uk.file.at.app.export.dailyschedule.totalsum.TotalValue;
 import nts.uk.file.at.app.export.monthlyschedule.DetailedMonthlyPerformanceReportData;
+import nts.uk.file.at.app.export.monthlyschedule.MonthlyReportConstant;
 
 /**
  * Instantiates a new employee report data.
@@ -44,6 +45,7 @@ public class EmployeeReportData {
 	/** The personal total. */
 	public Map<Integer, TotalValue> mapPersonalTotal = new LinkedHashMap<>();
 	
+	
 	// Copy data
 	public EmployeeReportData copyData() {
 		EmployeeReportData newEmployee = new EmployeeReportData();
@@ -54,5 +56,22 @@ public class EmployeeReportData {
 		newEmployee.position = position;
 		newEmployee.lstDetailedPerformance = new ArrayList<>();
 		return newEmployee;
+	}
+	
+	/**
+	 * count item.
+	 * 
+	 * @return the int
+	 */
+	public int countItem() {
+		int count = 0;
+		for(int i = 0; i < this.lstDetailedMonthlyPerformance.size(); i++){
+			DetailedMonthlyPerformanceReportData item = this.lstDetailedMonthlyPerformance.get(i);
+			int countItem = item.getActualValue().size();
+			count += (countItem % MonthlyReportConstant.CHUNK_SIZE) != 0
+					? countItem / MonthlyReportConstant.CHUNK_SIZE + 1
+					: countItem / MonthlyReportConstant.CHUNK_SIZE;
+		}
+		return count;
 	}
 }

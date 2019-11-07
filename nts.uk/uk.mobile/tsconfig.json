@@ -16,6 +16,9 @@
       "@app": [
         "@app/*"
       ],
+      "views": [
+        "views/*"
+      ],
       "@views": [
         "views/*"
       ]

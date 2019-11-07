@@ -84,6 +84,4 @@ public class SocialInsurNotiCreateSet extends AggregateRoot {
         this.outputFormat = outputFormat == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(outputFormat, OutputFormatClass.class));
         this.lineFeedCode = lineFeedCode == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(lineFeedCode, LineFeedCode.class));
     }
-
-
 }

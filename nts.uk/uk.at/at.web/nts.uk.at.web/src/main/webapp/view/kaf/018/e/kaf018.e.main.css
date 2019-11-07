@@ -1,6 +1,7 @@
 #contents-area{
 	margin: 20px;
 	height: auto !important;
+	margin-bottom: 0px !important;
 }
 #tbl-control{
 	width: 1000px;
@@ -22,7 +23,7 @@
 #gridE tbody tr td:NTH-CHILD(3){
 	text-align: center;
 }
-#gridE tbody tr td:NTH-CHILD(5){
+#gridE tbody tr td:NTH-CHILD(4){
 	text-align: center;
 }
 #gridE tbody tr td:NTH-CHILD(5){

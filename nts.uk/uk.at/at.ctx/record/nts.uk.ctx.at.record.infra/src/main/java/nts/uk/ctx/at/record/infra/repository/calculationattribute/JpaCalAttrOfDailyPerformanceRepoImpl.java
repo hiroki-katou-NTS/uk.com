@@ -1,14 +1,14 @@
 package nts.uk.ctx.at.record.infra.repository.calculationattribute;
 
-import java.sql.Connection;
 import java.sql.Date;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -45,17 +45,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class JpaCalAttrOfDailyPerformanceRepoImpl extends JpaRepository implements CalAttrOfDailyPerformanceRepository {
 
-//	private static final String REMOVE_BY_KEY;
-
-//	static {
-//		StringBuilder builderString = new StringBuilder();
-//		builderString.append("DELETE ");
-//		builderString.append("FROM KrcstDaiCalculationSet a ");
-//		builderString.append("WHERE a.krcstDaiCalculationSetPK.sid = :employeeId ");
-//		builderString.append("AND a.krcstDaiCalculationSetPK.ymd = :ymd ");
-//		REMOVE_BY_KEY = builderString.toString();
-//	}
-
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public CalAttrOfDailyPerformance find(String employeeId, GeneralDate baseDate) {
 		KrcstDaiCalculationSet calc = this.queryProxy()
@@ -105,7 +95,7 @@ public class JpaCalAttrOfDailyPerformanceRepoImpl extends JpaRepository implemen
 			commandProxy().update(holidayCalc);
 			commandProxy().update(overtimeCalc);
 			commandProxy().update(calc);
-			this.getEntityManager().flush();
+//			this.getEntityManager().flush();
 		}
 	}
 
@@ -140,9 +130,10 @@ public class JpaCalAttrOfDailyPerformanceRepoImpl extends JpaRepository implemen
 		commandProxy().insert(holidayCalc);
 		commandProxy().insert(overtimeCalc);
 		commandProxy().insert(calcSet);
-		this.getEntityManager().flush();
+//		this.getEntityManager().flush();
 	}
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<CalAttrOfDailyPerformance> finds(List<String> employeeId, DatePeriod baseDate) {
 		List<CalAttrOfDailyPerformance> result = new ArrayList<>();
@@ -288,19 +279,34 @@ public class JpaCalAttrOfDailyPerformanceRepoImpl extends JpaRepository implemen
 	@Override
 	public void deleteByKey(String employeeId, GeneralDate baseDate) {
 		
-		Connection con = this.getEntityManager().unwrap(Connection.class);
-		String sqlQuery = "Delete From KRCST_DAI_CALCULATION_SET Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + baseDate + "'" ;
-		try {
-			con.createStatement().executeUpdate(sqlQuery);
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
+		this.queryProxy().find(new KrcstDaiCalculationSetPK(employeeId, baseDate), KrcstDaiCalculationSet.class).ifPresent(entity -> {
+			this.commandProxy().remove(entity);
+			this.queryProxy().find(StringUtils.rightPad(entity.flexExcessTimeId, 36), KrcstFlexAutoCalSet.class).ifPresent(e -> {
+						this.commandProxy().remove(e);
+					});
+			this.queryProxy().find(StringUtils.rightPad(entity.holWorkTimeId, 36), KrcstHolAutoCalSet.class).ifPresent(e -> {
+						this.commandProxy().remove(e);
+					});
+			this.queryProxy().find(StringUtils.rightPad(entity.overTimeWorkId, 36), KrcstOtAutoCalSet.class).ifPresent(e -> {
+						this.commandProxy().remove(e);
+					});
+		});
+		
+//		Connection con = this.getEntityManager().unwrap(Connection.class);
+//		String sqlQuery = "Delete From KRCST_DAI_CALCULATION_SET Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + baseDate + "'" ;
+//		try {
+//			con.createStatement().executeUpdate(sqlQuery);
+//			workInfo.dirtying(employeeId, baseDate);
+//		} catch (SQLException e) {
+//			throw new RuntimeException(e);
+//		}
 		
 //		this.getEntityManager().createQuery(REMOVE_BY_KEY).setParameter("employeeId", employeeId)
 //				.setParameter("ymd", baseDate).executeUpdate();
 //		this.getEntityManager().flush();
 	}
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<CalAttrOfDailyPerformance> finds(Map<String, List<GeneralDate>> param) {
 		List<CalAttrOfDailyPerformance> result = new ArrayList<>();

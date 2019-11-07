@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.app.command.application.workchange;
 
+import java.util.ArrayList;
 /*import java.util.ArrayList;
 import nts.uk.ctx.at.shared.dom.worktype.algorithm.SpecHdFrameForWkTypeSetService;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
@@ -7,10 +8,13 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchieve
 import nts.gul.text.StringUtil;
 import nts.gul.collection.CollectionUtil;*/
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+
+import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -25,14 +29,19 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlg
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
 import nts.uk.ctx.at.request.dom.application.workchange.IWorkChangeRegisterService;
+import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
+import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
+import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
+import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
+import nts.uk.ctx.at.request.dom.setting.request.application.common.RequiredFlg;
+import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 @Transactional
 public class AddAppWorkChangeCommandHandler extends CommandHandlerWithResult<AddAppWorkChangeCommand, ProcessResult> {
-
-	private static final String COLON_STRING = ":";
+	
 	@Inject
 	private IWorkChangeRegisterService workChangeRegisterService;
 	@Inject
@@ -43,6 +52,12 @@ public class AddAppWorkChangeCommandHandler extends CommandHandlerWithResult<Add
 //	private SpecHdFrameForWkTypeSetService specHdWkpTypeSv;
 	@Inject 
 	private OtherCommonAlgorithm  otherCommonAlgorithm;
+	
+	@Inject
+	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;
+	
+	@Inject
+	private ApplicationSettingRepository applicationSettingRepository;
 	
 	@Override
 	protected ProcessResult handle(CommandHandlerContext<AddAppWorkChangeCommand> context) {
@@ -59,8 +74,37 @@ public class AddAppWorkChangeCommandHandler extends CommandHandlerWithResult<Add
 		// 入力者 = 申請者
 		// 申請者
 		String applicantSID = addCommand.getEmployeeID()!=null?addCommand.getEmployeeID(): AppContexts.user().employeeId();
+		
+		AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(
+				companyId, 
+				ApplicationType.WORK_CHANGE_APPLICATION.value).get();
+		String appReason = Strings.EMPTY;	
+		String typicalReason = Strings.EMPTY;
+		String displayReason = Strings.EMPTY;
+		if(appTypeDiscreteSetting.getTypicalReasonDisplayFlg().equals(AppDisplayAtr.DISPLAY)){
+			typicalReason += appCommand.getAppReasonID();
+		}
+		if(appTypeDiscreteSetting.getDisplayReasonFlg().equals(AppDisplayAtr.DISPLAY)){
+			if(Strings.isNotBlank(typicalReason)){
+				displayReason += System.lineSeparator();
+			}
+			displayReason += appCommand.getApplicationReason();
+		}
+		Optional<ApplicationSetting> applicationSettingOp = applicationSettingRepository
+				.getApplicationSettingByComID(companyId);
+		ApplicationSetting applicationSetting = applicationSettingOp.get();
+		if(appTypeDiscreteSetting.getTypicalReasonDisplayFlg().equals(AppDisplayAtr.DISPLAY)
+			||appTypeDiscreteSetting.getDisplayReasonFlg().equals(AppDisplayAtr.DISPLAY)){
+			if (applicationSetting.getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED)
+					&& Strings.isBlank(typicalReason+displayReason)) {
+				throw new BusinessException("Msg_115");
+			}
+		}
+		appReason = typicalReason + displayReason;
+		
 		// 申請
-		Application_New app = IfacApp.buildApplication(appID, appCommand.getStartDate(), appCommand.getPrePostAtr(), null, appCommand.getApplicationReason().replaceFirst(COLON_STRING, System.lineSeparator()), ApplicationType.WORK_CHANGE_APPLICATION, appCommand.getStartDate(), appCommand.getEndDate(), applicantSID);
+		Application_New app = IfacApp.buildApplication(appID, appCommand.getStartDate(), appCommand.getPrePostAtr(), appReason, 
+				appReason, ApplicationType.WORK_CHANGE_APPLICATION, appCommand.getStartDate(), appCommand.getEndDate(), applicantSID);
 					
 		// 勤務変更申請
 		AppWorkChange workChangeDomain = AppWorkChange.createFromJavaType(
@@ -82,9 +126,9 @@ public class AddAppWorkChangeCommandHandler extends CommandHandlerWithResult<Add
 				workChangeCommand.getBackHomeAtr2());
 		
 		//1日休日のチェック
-		checkHoliday(companyId,applicantSID,addCommand);
+        List<GeneralDate> lstDateHd = checkHoliday(companyId,applicantSID,addCommand);
 		//ドメインモデル「勤務変更申請設定」の新規登録をする
-		return workChangeRegisterService.registerData(workChangeDomain, app);
+        return workChangeRegisterService.registerData(workChangeDomain, app, addCommand.isCheckOver1Year(), lstDateHd);
 	}
 
 	
@@ -94,33 +138,32 @@ public class AddAppWorkChangeCommandHandler extends CommandHandlerWithResult<Add
 	 * @param SID
 	 * @param AddAppWorkChangeCommand
 	 */
-	private void checkHoliday(String companyId, String applicantSID, AddAppWorkChangeCommand addCommand) {
+	private List<GeneralDate> checkHoliday(String companyId, String applicantSID, AddAppWorkChangeCommand addCommand) {
 		boolean isCheck = addCommand.getWorkChange().getExcludeHolidayAtr() == 1;
 		// INPUT．休日除くチェック区分をチェックする
-		if (isCheck) {
-			//申請期間から休日の申請日を取得する
-			GeneralDate startDate = addCommand.getApplication().getStartDate();
+        if (!isCheck) return new ArrayList<>();
+        //申請期間から休日の申請日を取得する
+        GeneralDate startDate = addCommand.getApplication().getStartDate();
 
-			GeneralDate endDate = addCommand.getApplication().getEndDate();
-			
-			List<GeneralDate> dateClears = otherCommonAlgorithm.lstDateNotHoliday(companyId, applicantSID,
-					new DatePeriod(startDate, endDate));
+		GeneralDate endDate = addCommand.getApplication().getEndDate();
+		
+		List<GeneralDate> dateClears = otherCommonAlgorithm.lstDateIsHoliday(companyId, applicantSID,
+				new DatePeriod(startDate, endDate));
+		
+		int totalDate = startDate.daysTo(endDate) + 1;
 
-			
-			int totalDate = startDate.daysTo(endDate) + 1;
+		if (dateClears.size() == totalDate) {
+			//日付一覧(output)の件数 > 0
+			String dateListString = "";
 
-			if (dateClears.size() == totalDate) {
-				//日付一覧(output)の件数 > 0
-				String dateListString = "";
-
-				for (int i = 0; i < dateClears.size(); i++) {
-					if (dateListString != "") {
-						dateListString += "、";
-					}
-					dateListString += dateClears.get(i).toString("yyyy/MM/dd");
+			for (int i = 0; i < dateClears.size(); i++) {
+				if (dateListString != "") {
+					dateListString += "、";
 				}
-				throw new BusinessException("Msg_1459",dateListString);
+				dateListString += dateClears.get(i).toString("yyyy/MM/dd");
 			}
+			throw new BusinessException("Msg_1459",dateListString);
 		}
+        return dateClears;
 	}
 }

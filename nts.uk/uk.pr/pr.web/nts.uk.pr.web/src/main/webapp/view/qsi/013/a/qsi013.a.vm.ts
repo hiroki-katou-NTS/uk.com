@@ -62,14 +62,14 @@ module nts.uk.pr.view.qsi013.a.viewmodel {
                 if(nts.uk.util.isNullOrEmpty(data)){
                     return;
                 }
-                self.startDateJp(" (" + nts.uk.time.dateInJapanEmpire(data) + ")");
+                self.startDateJp("(" + nts.uk.time.dateInJapanEmpire(data) + ")");
             });
 
             self.endDate.subscribe((data) =>{
                 if(nts.uk.util.isNullOrEmpty(data)){
                     return;
                 }
-                self.endDateJp(" (" + nts.uk.time.dateInJapanEmpire(data) + ")");
+                self.endDateJp("(" + nts.uk.time.dateInJapanEmpire(data) + ")");
             });
 
             self.filingDate.subscribe((data)=>{
@@ -121,6 +121,11 @@ module nts.uk.pr.view.qsi013.a.viewmodel {
             });
             block.clear();
             return dfd.promise();
+        }
+
+        getStyle(){
+            let self = this;
+            return self.startDateJp().length > 13 ?  "width:140px; display: inline-block;" : "width:140px; display:inline";
         }
 
         openBScreen() {
@@ -259,8 +264,8 @@ module nts.uk.pr.view.qsi013.a.viewmodel {
                 showQuickSearchTab: true,
                 showAdvancedSearchTab: true,
                 showBaseDate: true,
-                showClosure: true,
-                showAllClosure: true,
+                showClosure: false,
+                showAllClosure: false,
                 showPeriod: false,
                 periodFormatYM: false,
                 tabindex: 9,

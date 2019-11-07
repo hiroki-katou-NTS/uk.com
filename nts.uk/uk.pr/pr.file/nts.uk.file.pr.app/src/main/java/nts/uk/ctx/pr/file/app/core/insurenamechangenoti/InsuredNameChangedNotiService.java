@@ -6,7 +6,8 @@ import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsuranceOffice;
 import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsuranceOfficeRepository;
-import nts.uk.ctx.pr.file.app.core.socialinsurnoticreset.CompanyInfor;
+import nts.uk.ctx.pr.core.dom.adapter.company.CompanyInfor;
+import nts.uk.ctx.pr.file.app.core.socialinsurnoticreset.InsLossDataExport;
 import nts.uk.ctx.pr.file.app.core.socialinsurnoticreset.NotificationOfLossInsExRepository;
 import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.*;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.*;
@@ -25,7 +26,7 @@ import nts.uk.shr.com.history.DateHistoryItem;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -109,33 +110,46 @@ public class InsuredNameChangedNotiService extends ExportService<InsuredNameChan
         List<EmpWelfarePenInsQualiInfor> empWelfarePenInsQualiInfors = empWelfarePenInsQualiInforRepository.getEmpWelfarePenInsQualiInfor(cid, query.getDate(),query.getListEmpId());
         empWelfarePenInsQualiInfors.forEach(x ->{
             InsuredNameChangedNotiExportData insuredNameChangedNotiExportData =  this.get(cid,listSocialInsuranceOffice,socialInsurNotiCreateSet,query.getDate(),x);
-            insuredNameChangedNotiExportData.setSocialInsurOutOrder(query.getSocialInsurOutOrder());
+            insuredNameChangedNotiExportData.setSocialInsurOutOrder(query.getSocialInsurNotiCreateSetDto().getOutputOrder());
             if(insuredNameChangedNotiExportData.isProcessSate()){
                 listData.add(insuredNameChangedNotiExportData);
             }
         });
 
         if(listData.size() > 0){
-            fileGenerator.generate(exportServiceContext.getGeneratorContext(),this.order(query.getSocialInsurOutOrder(),listData),socialInsurNotiCreateSet);
+            fileGenerator.generate(exportServiceContext.getGeneratorContext(),this.order(query.getSocialInsurNotiCreateSetDto().getOutputOrder(),listData, query.getSocialInsurNotiCreateSetDto().getInsuredNumber()),socialInsurNotiCreateSet);
         }else{
             throw new BusinessException("Msg_37");
         }
 
     }
 
-    private List<InsuredNameChangedNotiExportData> order(int order, List<InsuredNameChangedNotiExportData> listData){
+    private List<InsuredNameChangedNotiExportData> order(int order, List<InsuredNameChangedNotiExportData> listData, int insuredNumber) {
 
-        if(order == SocialInsurOutOrder.HEAL_INSUR_NUMBER_UNION_ORDER.value) {
-            return listData.stream().sorted(((o1, o2) -> o1.getHealthCarePortInfor() != null && o2.getHealthCarePortInfor() != null ? o1.getHealthCarePortInfor().getHealInsurUnionNumber().v().compareTo(o2.getHealthCarePortInfor().getHealInsurUnionNumber().v()): 0)).collect(Collectors.toList());
-        }else if(order == SocialInsurOutOrder.ORDER_BY_FUND.value) {
-            return listData.stream().sorted(((o1, o2) -> o1.getFundMembership() != null && o2.getFundMembership() != null ? o1.getFundMembership().getMembersNumber().v().compareTo(o2.getFundMembership().getMembersNumber().v()): 0)).collect(Collectors.toList());
-        }else if(order == SocialInsurOutOrder.HEAL_INSUR_NUMBER_ORDER.value) {
-            return listData.stream().sorted(((o1, o2) -> o1.getHealInsurNumberInfor() != null && o2.getHealInsurNumberInfor() != null ? o1.getHealInsurNumberInfor().getHealInsNumber().get().v().compareTo(o2.getHealInsurNumberInfor().getHealInsNumber().get().v()) : 0 )).collect(Collectors.toList());
-        }else if(order == SocialInsurOutOrder.WELF_AREPEN_NUMBER_ORDER.value) {
-            return listData.stream().sorted(((o1, o2) -> o1.getWelfPenNumInformation() != null && o2.getWelfPenNumInformation() != null ? o1.getWelfPenNumInformation().getWelPenNumber().get().v().compareTo(o2.getWelfPenNumInformation().getWelPenNumber().get().v()) : 0 )).collect(Collectors.toList());
+        List<InsuredNameChangedNotiExportData> data = listData;
+        if (order == SocialInsurOutOrder.HEAL_INSUR_NUMBER_UNION_ORDER.value) {
+            data = listData.stream().sorted(Comparator.comparing(InsuredNameChangedNotiExportData::getHealInsurUnionNumber, Comparator.nullsLast(String::compareTo))).collect(Collectors.toList());
+        } else if (order == SocialInsurOutOrder.ORDER_BY_FUND.value) {
+            data = listData.stream().sorted(Comparator.comparing(InsuredNameChangedNotiExportData::getMembersNumber, Comparator.nullsLast(String::compareTo))).collect(Collectors.toList());
+        } else if (order == SocialInsurOutOrder.HEAL_INSUR_NUMBER_ORDER.value) {
+            data = listData.stream().sorted(Comparator.comparing(InsuredNameChangedNotiExportData::getHealInsNumber, Comparator.nullsLast(String::compareTo))).collect(Collectors.toList());
+        } else if (order == SocialInsurOutOrder.WELF_AREPEN_NUMBER_ORDER.value) {
+            data = listData.stream().sorted(Comparator.comparing(InsuredNameChangedNotiExportData::getWelPenNumber, Comparator.nullsLast(String::compareTo))).collect(Collectors.toList());
+        } else if (order == SocialInsurOutOrder.INSURED_PER_NUMBER_ORDER.value) {
+            if (insuredNumber == InsurPersonNumDivision.OUTPUT_HEAL_INSUR_NUM.value) {
+                data = listData.stream().sorted(Comparator.comparing(InsuredNameChangedNotiExportData::getHealInsNumber)).collect(Collectors.toList());
+            }
+            if (insuredNumber == InsurPersonNumDivision.OUTPUT_THE_WELF_PENNUMBER.value) {
+                data = listData.stream().sorted(Comparator.comparing(InsuredNameChangedNotiExportData::getWelPenNumber)).collect(Collectors.toList());
+            }
+            if (insuredNumber == InsurPersonNumDivision.OUTPUT_HEAL_INSUR_UNION.value) {
+                data = listData.stream().sorted(Comparator.comparing(InsuredNameChangedNotiExportData::getHealInsurUnionNumber)).collect(Collectors.toList());
+            }
+            if (insuredNumber == InsurPersonNumDivision.OUTPUT_THE_FUN_MEMBER.value) {
+                data = listData.stream().sorted(Comparator.comparing(InsuredNameChangedNotiExportData::getMembersNumber)).collect(Collectors.toList());
+            }
         }
-
-        return listData;
+        return data;
     }
 
     private InsuredNameChangedNotiExportData get(String cid, List<SocialInsuranceOffice> listSocialInsuranceOffice, SocialInsurNotiCreateSet socialInsurNotiCreateSetDomain, GeneralDate date, EmpWelfarePenInsQualiInfor empWelfarePenInsQualiInfor){
@@ -149,6 +163,7 @@ public class InsuredNameChangedNotiService extends ExportService<InsuredNameChan
         //ドメインモデル「厚生年金種別情報」を取得する
         Optional<WelfarePenTypeInfor> welfarePenTypeInfor = welfarePenTypeInforRepository.getWelfarePenTypeInforById(cid, dateHistoryItem.identifier(), empWelfarePenInsQualiInfor.getEmployeeId());
         data.setWelfarePenTypeInfor(welfarePenTypeInfor.orElse(null));
+
         //ドメインモデル「厚生年金基金加入期間情報」を取得する
         Optional<FundMembership> emPensionFundPartiPeriodInfor = emPensionFundPartiPeriodInforRepository.getEmPensionFundPartiPeriodInfor(cid, empWelfarePenInsQualiInfor.getEmployeeId(), date);
         //取得した「厚生年金基金加入期間情報」をチェックする
@@ -172,6 +187,7 @@ public class InsuredNameChangedNotiService extends ExportService<InsuredNameChan
             if(empWelfarePenInsQualiInfor != null){
                 Optional<WelfPenNumInformation> welfPenNumInformation = welfPenNumInformationRepository.getWelfPenNumInformationById(cid,empWelfarePenInsQualiInfor.getMournPeriod().get(0).getHistoryId(),empId);
                 data.setWelfPenNumInformation(welfPenNumInformation.orElse(null));
+                data.setWelPenNumber(welfPenNumInformation.isPresent() ? welfPenNumInformation.get().getWelPenNumber().isPresent() ? welfPenNumInformation.get().getWelPenNumber().get().v() : "" : "");
             }else{
                 data.setProcessSate(false);
             }
@@ -179,6 +195,8 @@ public class InsuredNameChangedNotiService extends ExportService<InsuredNameChan
         }else if(socialInsurNotiCreateSet.getInsuredNumber() == InsurPersonNumDivision.OUTPUT_THE_FUN_MEMBER){
             if(data.getFundMembership() == null){
                 data.setProcessSate(false);
+            } else {
+                data.setMembersNumber(data.getFundMembership().getMembersNumber().v());
             }
 
         }else  if(socialInsurNotiCreateSet.getInsuredNumber() ==  InsurPersonNumDivision.OUTPUT_HEAL_INSUR_NUM || socialInsurNotiCreateSet.getInsuredNumber() == InsurPersonNumDivision.OUTPUT_HEAL_INSUR_UNION){
@@ -187,12 +205,15 @@ public class InsuredNameChangedNotiService extends ExportService<InsuredNameChan
             if(socialInsurNotiCreateSet.getInsuredNumber() == InsurPersonNumDivision.OUTPUT_HEAL_INSUR_NUM){
                 if(data.getHealInsurNumberInfor() == null){
                     data.setProcessSate(false);
+                } else {
+                    data.setHealInsNumber(data.getHealInsurNumberInfor().getHealInsNumber().isPresent() ? data.getHealInsurNumberInfor().getHealInsNumber().get().v() : "");
                 }
             }else if(socialInsurNotiCreateSet.getInsuredNumber() == InsurPersonNumDivision.OUTPUT_HEAL_INSUR_UNION){
                 Optional<HealthCarePortInfor> healthCarePortInfor = healInsurPortPerIntellRepository.getHealInsurPortPerIntellById(cid,empId,date);
 
                 if(healthCarePortInfor.isPresent()){
                     data.setHealthCarePortInfor(healthCarePortInfor.get());
+                    data.setHealInsurUnionNumber(healthCarePortInfor.get().getHealInsurUnionNumber().v());
                 }else{
                     data.setProcessSate(false);
                 }
@@ -213,10 +234,6 @@ public class InsuredNameChangedNotiService extends ExportService<InsuredNameChan
                 data.setSocialInsuranceOffice(socialInsuranceOffice.isPresent() ? socialInsuranceOffice.get() : null);
             }
         }
-        //ドメインモデル「社員氏名変更届情報」を取得する
-        Optional<EmpNameChangeNotiInfor> empNameChangeNotiInfor = empNameChangeNotiInforRepository.getEmpNameChangeNotiInforById(empId,cid);
-        //fill to A1_21, A1_23
-        data.setEmpNameChangeNotiInfor(empNameChangeNotiInfor.isPresent() ? empNameChangeNotiInfor.get() : null);
 
     }
 

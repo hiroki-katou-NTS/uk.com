@@ -3,6 +3,8 @@
  */
 package nts.uk.ctx.at.record.ws.workrecord.approvalmanagement;
 
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -28,21 +30,32 @@ public class OneMonthApprovalStatusWebService extends WebService {
 
 	@POST
 	@Path("startscreen")
-	public OneMonthApprovalStatusDto startScreen() {
-		return oneMonthApprovalStatusFinder.getOneMonthApprovalStatus(null, null, null);
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	public OneMonthApprovalStatusDto startScreen(OneMonthApprovalStatusRequest param) {
+		return oneMonthApprovalStatusFinder.getOneMonthApprovalStatus(param.getClosureIdParam(),
+				param.getYearMonth());
 	}
 
 	@POST
 	@Path("extractApprovalStatusData")
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public OneMonthApprovalStatusDto extractApprovalStatusData(OneMonthApprovalStatusRequest request) {
 		return oneMonthApprovalStatusFinder.getOneMonthApprovalStatus(request.getClosureIdParam(),
-				request.getStartDateParam(), request.getEndDateParam());
+				request.getYearMonth());
 	}
 	
 	@POST
 	@Path("getdaterange/{closureId}/{currentYearMonth}")
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public OneMonthApprovalStatusDto getDateRange(@PathParam("closureId") int closureId,@PathParam("currentYearMonth") int currentYearMonth) {
 		return oneMonthApprovalStatusFinder.getDatePeriod(closureId,currentYearMonth);
+	}
+	
+	@POST
+	@Path("changeCondition")
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	public OneMonthApprovalStatusDto changeCondition(OneMonthApprovalStatusRequest request) {
+		return oneMonthApprovalStatusFinder.changeConditionExtract(request.getClosureIdParam(), request.getYearMonth());
 	}
 
 }

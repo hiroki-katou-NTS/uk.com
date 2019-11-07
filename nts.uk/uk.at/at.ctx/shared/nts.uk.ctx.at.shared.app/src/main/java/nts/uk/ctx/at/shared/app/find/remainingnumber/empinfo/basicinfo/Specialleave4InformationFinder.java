@@ -9,7 +9,10 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremaini
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
+import nts.uk.shr.pereg.app.find.PeregQueryByListEmp;
 import nts.uk.shr.pereg.app.find.dto.DataClassification;
+import nts.uk.shr.pereg.app.find.dto.GridPeregDomainBySidDto;
+import nts.uk.shr.pereg.app.find.dto.GridPeregDomainDto;
 import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 
 @Stateless
@@ -51,4 +54,14 @@ public class Specialleave4InformationFinder implements PeregFinder<Specialleave4
 		return null;
 	}
 
+	@Override
+	public List<GridPeregDomainDto> getAllData(PeregQueryByListEmp query) {
+		// 社員ID　＝　社員ID　 and 特別休暇コード＝4
+		return specialleaveInformationFinder.getAllData(query, SpecialLeaveCode.CS00028.value);
+	}
+
+	@Override
+	public List<GridPeregDomainBySidDto> getListData(PeregQueryByListEmp query) {
+		return specialleaveInformationFinder.getListData(query, SpecialLeaveCode.CS00028.value);
+	}
 }

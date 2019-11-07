@@ -4,6 +4,7 @@ import com.aspose.cells.Workbook;
 import com.aspose.cells.WorksheetCollection;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.pr.core.dom.adapter.company.CompanyInfor;
 import nts.uk.ctx.pr.file.app.core.socialinsurnoticreset.*;
 import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.BusinessDivision;
 import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.RomajiNameNotiCreSetting;
@@ -151,7 +152,7 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
         return new JapaneseDate(date, era.get());
     }
 
-    private void selectShapes(WorksheetCollection worksheets, Integer value, String sheetName, String option){
+    public static void selectShapes(WorksheetCollection worksheets, Integer value, String sheetName, String option){
         if( value!= null && value.intValue() != 1){
             worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(option));
         }
@@ -181,7 +182,8 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
         }
     }
 
-    private String formatPhone(String phone, int stt) {
+    public static String formatPhone(String phone, int stt) {
+        if(phone == null || phone.length() == 0) return "";
         String[] sub = phone.split("-");
         if (stt == 1 && sub.length > 1) {
             return sub[0];

@@ -11,6 +11,8 @@ import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppOverTimeI
 @Getter
 @AllArgsConstructor
 public class AppPrePostGroup {
+	@Setter
+	private boolean displayRes;
 	//事前
 	private String preAppID;
 	//事後
