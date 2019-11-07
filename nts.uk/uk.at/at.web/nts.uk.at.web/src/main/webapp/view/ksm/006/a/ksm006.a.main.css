@@ -1,9 +1,13 @@
 @CHARSET "UTF-8";
 
+.sidebar-content-header {
+	white-space: nowrap;
+}
 #companyWide-content {
 	height: 450px;
 	width: 85%;
 	overflow: auto;
+	min-width: 700px;
 }
 
 #companyWide-content-detail {
@@ -16,6 +20,7 @@
 	height: 1px;
 	background-color: #7f7f7f;
 	width: 50%;
+	min-width: 447px;
 }
 
 .ruledLine2 {
