@@ -71,4 +71,6 @@ public class EmpInsReportSettingExportData {
      * 雇用保険番号情報
      */
     private EmpInsNumInfo empInsNumInfo;
+
+    private String employeeCode;
 }
