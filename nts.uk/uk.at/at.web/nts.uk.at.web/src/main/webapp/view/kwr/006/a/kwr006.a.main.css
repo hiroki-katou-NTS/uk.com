@@ -138,3 +138,9 @@ hr {
 .form-label {
 	width: 150px;
 }
+#contents-area {
+	height: calc(100vh - 161px) !important;
+}
+html {
+	overflow: hidden;
+}
