@@ -91,8 +91,8 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
             export.setAdd1F(null);
             export.setAdd2F(null);
             export.setStartDateF(null);
-            export.setAdd1BeforeChange(null);
-            export.setAdd2BeforeChange(null);
+            export.setAdd1BeforeChangeF(null);
+            export.setAdd2BeforeChangeF(null);
             export.setSpouseLivingAbroadAtr(0);
             export.setSpouseOtherAtr(0);
             export.setSpouseResidenceOtherResidentAtr(0);
