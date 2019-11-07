@@ -14,6 +14,7 @@ import nts.uk.ctx.pr.report.dom.printconfig.empinsreportsetting.EmpInsReportSett
 import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.empinsofficeinfo.EmpEstabInsHistRepository;
 import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.EmpInsHist;
 import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.EmpInsHistRepository;
+import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.EmpInsNumInfo;
 import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.EmpInsNumInfoRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -21,23 +22,26 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static nts.uk.ctx.pr.report.dom.printconfig.empinsreportsetting.EmpInsOutOrder.INSURANCE_NUMBER;
+
 @Stateless
 public class EmpInsReportSettingPDFService extends ExportService<EmpInsReportSettingExportQuery> {
 
     @Inject
-    EmpInsReportSettingRepository mEmpInsReportSettingRepository;
+    private EmpInsReportSettingRepository mEmpInsReportSettingRepository;
 
     @Inject
-    EmpInsHistRepository mEmpInsHistRepository;
+    private EmpInsHistRepository mEmpInsHistRepository;
 
     @Inject
-    CompanyInforAdapter mCompanyInforAdapter;
+    private CompanyInforAdapter mCompanyInforAdapter;
 
     @Inject
-    EmpEstabInsHistRepository mEmpEstabInsHistRepository;
+    private EmpEstabInsHistRepository mEmpEstabInsHistRepository;
 
     @Inject
-    EmpInsReportSettingExRepository empInsReportSettingExRepository;
+    private EmpInsReportSettingExRepository empInsReportSettingExRepository;
 
     @Inject
     private EmployeeInfoAdapter employeeInfoAdapter;
@@ -47,6 +51,9 @@ public class EmpInsReportSettingPDFService extends ExportService<EmpInsReportSet
 
     @Inject
     private EmpInsNumInfoRepository mEmpInsNumInfoRepository;
+
+    @Inject
+    private EmpInsReportSettingExFileGenerator generator;
 
 
 
@@ -91,7 +98,10 @@ public class EmpInsReportSettingPDFService extends ExportService<EmpInsReportSet
                 case DO_NOT_OUTPUT:{
                     break;
                 }
-            }
+            };
+            String hisId = mEmpInsHist.get().getHistoryItem().get(0).identifier();
+            Optional<EmpInsNumInfo> empInsNumInfo = mEmpInsNumInfoRepository.getEmpInsNumInfoById(cid,e.getEmployeeId(),hisId);
+            temp.setEmpInsNumInfo(empInsNumInfo.isPresent() ? empInsNumInfo.get() : new EmpInsNumInfo(hisId,""));
             // dummy data thuật toán ドメインモデル「外国人在留履歴情報」を取得する
             personExports.stream().filter(dataPerson -> {
                 if(dataPerson.getPersonId().equals(e.getPId())){
@@ -109,6 +119,7 @@ public class EmpInsReportSettingPDFService extends ExportService<EmpInsReportSet
                 }
                 return true;
             });
+            temp.setEmployeeCode(e.getEmployeeCode());
             listDataExport.add(temp);
 
 
@@ -116,44 +127,51 @@ public class EmpInsReportSettingPDFService extends ExportService<EmpInsReportSet
         if(listDataExport.isEmpty()){
             throw new BusinessException("MsgQ_51");
         }
-        switch (empInsReportSetting.getOutputOrderAtr()){
-            case INSURANCE_NUMBER:{
-                Collections.sort(listDataExport, new Comparator<EmpInsReportSettingExportData>() {
-                    @Override
-                    public int compare(EmpInsReportSettingExportData o1, EmpInsReportSettingExportData o2) {
-                        return 0;
-                    }
-                });
-                break;
-            }
-            case DEPARTMENT_EMPLOYEE:{
-                Collections.sort(listDataExport, new Comparator<EmpInsReportSettingExportData>() {
-                    @Override
-                    public int compare(EmpInsReportSettingExportData o1, EmpInsReportSettingExportData o2) {
-                        return 0;
-                    }
-                });
-                break;
-            }
-            case EMPLOYEE_CODE:{
-                Collections.sort(listDataExport, new Comparator<EmpInsReportSettingExportData>() {
-                    @Override
-                    public int compare(EmpInsReportSettingExportData o1, EmpInsReportSettingExportData o2) {
-                        return 0;
-                    }
-                });
-                break;
-            }
-            case EMPLOYEE:{
-                Collections.sort(listDataExport, new Comparator<EmpInsReportSettingExportData>() {
-                    @Override
-                    public int compare(EmpInsReportSettingExportData o1, EmpInsReportSettingExportData o2) {
-                        return 0;
-                    }
-                });
-                break;
-            }
-
+        if(empInsReportSetting.getOutputOrderAtr() == INSURANCE_NUMBER){
+            Collections.sort(listDataExport, new Comparator<EmpInsReportSettingExportData>() {
+                @Override
+                public int compare(EmpInsReportSettingExportData o1, EmpInsReportSettingExportData o2) {
+                    return o1.getEmpInsNumInfo().getEmpInsNumber().v().compareTo(o2.getEmpInsNumInfo().getEmpInsNumber().v());
+                }
+            });
         }
+        else{
+            Collections.sort(listDataExport, new Comparator<EmpInsReportSettingExportData>() {
+                @Override
+                public int compare(EmpInsReportSettingExportData o1, EmpInsReportSettingExportData o2) {
+                    return o1.getEmployeeCode().compareTo(o2.getEmployeeCode());
+                }
+            });
+        }
+//        switch (empInsReportSetting.getOutputOrderAtr()){
+//            case INSURANCE_NUMBER:{
+//
+//                break;
+//            }
+//            case DEPARTMENT_EMPLOYEE:{
+//
+//                break;
+//            }
+//            case EMPLOYEE_CODE:{
+//                Collections.sort(listDataExport, new Comparator<EmpInsReportSettingExportData>() {
+//                    @Override
+//                    public int compare(EmpInsReportSettingExportData o1, EmpInsReportSettingExportData o2) {
+//                        return o1.getEmployeeCode().compareTo(o2.getEmployeeCode());
+//                    }
+//                });
+//                break;
+//            }
+//            case EMPLOYEE:{
+//                Collections.sort(listDataExport, new Comparator<EmpInsReportSettingExportData>() {
+//                    @Override
+//                    public int compare(EmpInsReportSettingExportData o1, EmpInsReportSettingExportData o2) {
+//                        return o1.getEmployeeCode().compareTo(o2.getEmployeeCode());
+//                    }
+//                });
+//                break;
+//            }
+//
+//        }
+        generator.generate(exportServiceContext.getGeneratorContext(),listDataExport);
     }
 }
