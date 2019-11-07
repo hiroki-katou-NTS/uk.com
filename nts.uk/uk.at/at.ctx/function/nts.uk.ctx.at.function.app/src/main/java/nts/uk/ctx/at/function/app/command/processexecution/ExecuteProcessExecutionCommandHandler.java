@@ -596,19 +596,9 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		} 
 		if (this.monthlyAggregation(execId, procExec, procExecLog, companyId, context)) {
 			return true;
-<<<<<<< HEAD
-		} else if (this.alarmExtraction(execId, procExec, procExecLog, companyId, context)) {
 
-//			// 各処理の終了状態 ＝ [アラーム抽出、未実施]
-//			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.AL_EXTRACTION, EndStatus.FORCE_END);
-//			// 各処理の終了状態 ＝ [承認ルート更新（日次）、未実施]
-//			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_DAI, EndStatus.NOT_IMPLEMENT);
-//			// 各処理の終了状態 ＝ [承認ルート更新（月次）、未実施]
-//			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_MON, EndStatus.NOT_IMPLEMENT);
-=======
 		} 
 		if (this.alarmExtraction(execId, procExec, procExecLog, companyId, context)) {
->>>>>>> bbeabb6... fixbug kbt002 :#109063 ver 2
 			return true;
 		}
 		// 就業担当者の社員ID（List）を取得する : RQ526
@@ -1040,7 +1030,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 					if (!CollectionUtil.isEmpty(reEmployeeList) && !checkStopExec) {
 						// 異動者、勤務種別変更者、休職者・休業者の期間の計算
 						GeneralDate endDate = basicScheduleRepository.findMaxDateByListSid(reEmployeeList);
-<<<<<<< HEAD
+
 						if (endDate != null) {
 							DatePeriod periodDate = this.getMinPeriodFromStartDate(companyId);
 							ScheduleCreatorExecutionCommand scheduleCreatorExecutionOneEmp1 = this
@@ -1048,42 +1038,29 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 											calculateSchedulePeriod, reEmployeeList);
 							scheduleCreatorExecutionOneEmp1.getScheduleExecutionLog()
 									.setPeriod(new DatePeriod(periodDate.start(), endDate));
-=======
-						DatePeriod periodDate = this.getMinPeriodFromStartDate(companyId);
-						ScheduleCreatorExecutionCommand scheduleCreatorExecutionOneEmp1 = this
-								.getScheduleCreatorExecutionOneEmp(execId, procExec, loginContext,
-										calculateSchedulePeriod, reEmployeeList);
-						scheduleCreatorExecutionOneEmp1.getScheduleExecutionLog()
-								.setPeriod(new DatePeriod(periodDate.start(), endDate));
-						
-						boolean isTransfer = procExec.getExecSetting().getPerSchedule().getTarget().getTargetSetting().isRecreateTransfer();
-						boolean isWorkType = procExec.getExecSetting().getPerSchedule().getTarget().getTargetSetting().isRecreateWorkType();
-						
-						//異動者・勤務種別変更者の作成対象期間の計算（個人別）
-						listApprovalPeriodByEmp = calPeriodTransferAndWorktype
-								.calPeriodTransferAndWorktype(companyId, listEmp, scheduleCreatorExecutionOneEmp1.getScheduleExecutionLog().getPeriod(), isTransfer, isWorkType);
-						try {
-//							AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand> ctx = new AsyncCommandHandlerContext<>(scheduleCreatorExecutionOneEmp1);
-//							this.scheduleExecution.handle(ctx);
-							CountDownLatch countDownLatch = new CountDownLatch(1);
-							AsyncTask task = AsyncTask.builder().withContexts().keepsTrack(false).threadName(this.getClass().getName())
-									.build(() -> {
-										scheduleCreatorExecutionOneEmp1.setCountDownLatch(countDownLatch);
-											AsyncTaskInfo handle1 = this.scheduleExecution.handle(scheduleCreatorExecutionOneEmp1);
-											dataToAsyn.setHandle(handle1);
-										
-									});
->>>>>>> bbeabb6... fixbug kbt002 :#109063 ver 2
+
+							boolean isTransfer = procExec.getExecSetting().getPerSchedule().getTarget()
+									.getTargetSetting().isRecreateTransfer();
+							boolean isWorkType = procExec.getExecSetting().getPerSchedule().getTarget()
+									.getTargetSetting().isRecreateWorkType();
+
+							// 異動者・勤務種別変更者の作成対象期間の計算（個人別）
+							listApprovalPeriodByEmp = calPeriodTransferAndWorktype.calPeriodTransferAndWorktype(
+									companyId, listEmp,
+									scheduleCreatorExecutionOneEmp1.getScheduleExecutionLog().getPeriod(), isTransfer,
+									isWorkType);
 							try {
-	//							AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand> ctx = new AsyncCommandHandlerContext<>(scheduleCreatorExecutionOneEmp1);
-	//							this.scheduleExecution.handle(ctx);
+								// AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand> ctx = new
+								// AsyncCommandHandlerContext<>(scheduleCreatorExecutionOneEmp1);
+								// this.scheduleExecution.handle(ctx);
 								CountDownLatch countDownLatch = new CountDownLatch(1);
-								AsyncTask task = AsyncTask.builder().withContexts().keepsTrack(false).threadName(this.getClass().getName())
-										.build(() -> {
+								AsyncTask task = AsyncTask.builder().withContexts().keepsTrack(false)
+										.threadName(this.getClass().getName()).build(() -> {
 											scheduleCreatorExecutionOneEmp1.setCountDownLatch(countDownLatch);
-												AsyncTaskInfo handle1 = this.scheduleExecution.handle(scheduleCreatorExecutionOneEmp1);
-												dataToAsyn.setHandle(handle1);
-											
+											AsyncTaskInfo handle1 = this.scheduleExecution
+													.handle(scheduleCreatorExecutionOneEmp1);
+											dataToAsyn.setHandle(handle1);
+
 										});
 								try {
 									executorService.submit(task).get();
@@ -1101,7 +1078,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 									if (procExec.getProcessExecType() == ProcessExecType.RE_CREATE) {
 										checkStopExec = true;
 									}
-	
+
 									isException = true;
 									errorMessage = "Msg_1339";
 								}
