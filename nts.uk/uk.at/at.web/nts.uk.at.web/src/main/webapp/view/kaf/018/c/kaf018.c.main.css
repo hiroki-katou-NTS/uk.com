@@ -9,6 +9,7 @@
 .tbl-control {
 	width: auto;
 	margin-bottom: 5px;
+	min-width: 1180px;
 }
 
 .tbl-control td {

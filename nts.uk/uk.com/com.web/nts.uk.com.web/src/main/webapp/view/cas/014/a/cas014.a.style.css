@@ -55,3 +55,7 @@ body {
 #master-content {
 	overflow-y: auto;
 }
+.nts-fixed-body-wrapper {
+	height: inherit !important;
+	max-height: 264px;
+}

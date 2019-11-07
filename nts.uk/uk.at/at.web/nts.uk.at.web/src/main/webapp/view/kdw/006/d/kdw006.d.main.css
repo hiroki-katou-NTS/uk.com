@@ -18,5 +18,10 @@ caption, th, td{
 	vertical-align: top;
 }
 #grid2_virtualContainer {
-	border-bottom: 1px solid #AAB7B8
+	border-bottom: 1px solid #AAB7B8;
+	border-right: 1px solid #AAB7B8;
+	border-top: 1px solid #AAB7B8;
+}
+html {
+    overflow: hidden;
 }
