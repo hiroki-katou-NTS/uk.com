@@ -109,3 +109,6 @@ table#grid tbody td:nth-child(1) {
 .fixed-flex-layout-right{
 	margin-top: 10px;
 }
+html {
+    overflow: hidden;
+}
