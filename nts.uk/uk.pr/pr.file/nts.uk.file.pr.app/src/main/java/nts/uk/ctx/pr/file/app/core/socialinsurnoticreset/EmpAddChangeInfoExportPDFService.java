@@ -4,11 +4,14 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.pr.core.dom.adapter.company.CompanyInfor;
+import nts.uk.ctx.pr.core.dom.adapter.company.CompanyInforAdapter;
 import nts.uk.ctx.pr.core.dom.adapter.employee.employee.EmployeeInfoAdapter;
 import nts.uk.ctx.pr.core.dom.adapter.employee.employee.EmployeeInfoEx;
 import nts.uk.ctx.pr.core.dom.adapter.person.PersonExport;
 import nts.uk.ctx.pr.core.dom.adapter.person.PersonExportAdapter;
 import nts.uk.ctx.pr.core.dom.adapter.person.family.FamilyMemberAdapter;
+import nts.uk.ctx.pr.core.dom.adapter.person.family.FamilyMemberInfoEx;
 import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsuranceOffice;
 import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsuranceOfficeRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.individualwagecontract.EmployeeInfoImport;
@@ -49,15 +52,20 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
     @Inject
     private EmployeeInfoAdapter employeeInfoAdapter;
 
+    @Inject
+    private PersonExportAdapter personExportAdapter;
+
+    @Inject
+    private FamilyMemberAdapter familyMemberAdapter;
+
+    @Inject
+    private CompanyInforAdapter companyInforAdapter;
+
     private List<EmpAddChangeInfoExport> empAddChangeInfoExportList;
 
     private List<EmpAddChangeInfoExport> eList;
 
-    @Inject
-    private PersonExportAdapter personExportAdapter;
-
-    /*@Inject
-    private FamilyMemberAdapter familyMemberAdapter;*/
+    private List<CurrentFamilyResidence> currentFamilyResidenceList = null;
 
     @Override
     protected void handle(ExportServiceContext<NotificationOfLossInsExportQuery> exportServiceContext) {
@@ -69,7 +77,6 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
         int printPersonNumber = exportServiceContext.getQuery().getSocialInsurNotiCreateSet().getPrintPersonNumber();
         NotificationOfLossInsExport socialInsurNotiCreateSet = exportServiceContext.getQuery().getSocialInsurNotiCreateSet();
         List<String> empIds = exportServiceContext.getQuery().getEmpIds();
-        empAddChangeInfoExportList = EmpAddChangeInfoExport.getListExport(empIds);
         SocialInsurNotiCreateSet domain = new SocialInsurNotiCreateSet(userId, cid,
                 socialInsurNotiCreateSet.getOfficeInformation(),
                 socialInsurNotiCreateSet.getBusinessArrSymbol(),
@@ -86,7 +93,6 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
         if(end.before(start)) {
             throw new BusinessException("Msg_812");
         }
-
         if (printPersonNumber == PersonalNumClass.OUTPUT_BASIC_PER_NUMBER.value || printPersonNumber == PersonalNumClass.DO_NOT_OUTPUT.value ){
             List<EmpFamilySocialInsCtgInfo> empFamilySocialInsCtgInfoList = empAddChangeInfoExReposity.getEmpFamilySocialInsCtgInfoList(empIds, cid);
             List<EmpHealInsurQInfo> empHealInsurQInfoList = empAddChangeInfoExReposity.getEmpHealInsurQInfoList(empIds, cid);
@@ -97,12 +103,14 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
             List<EmPensionFundPartiPeriodInfo> emPensionFunList = empAddChangeInfoExReposity.getEmPensionFundPartiPeriodInfo(empIds, cid);
             List<EmpBasicPenNumInfor> empBasicPenNumInforList = empBasicPenNumInforRepository.getAllEmpBasicPenNumInfor();
             List<EmpAddChangeInfo> empAddChangeInfoList = empAddChangeInfoRepository.getListEmpAddChange(empIds);
-            List<CurrentFamilyResidence> currentFamilyResidenceList = CurrentFamilyResidence.getListFamily();
             List<EmployeeInfoEx> employeeInfoExList = employeeInfoAdapter.findBySIds(empIds);
             List<String> pIds = new ArrayList<>();
             eList = new ArrayList<>();
+            currentFamilyResidenceList = new ArrayList<>();
+            empAddChangeInfoExportList = EmpAddChangeInfoExport.getListExport(empIds);
             employeeInfoExList.forEach(i->{
                 pIds.add(i.getPId());
+                currentFamilyResidenceList = CurrentFamilyResidence.getListFamily(familyMemberAdapter.getRomajiOfFamilySpouseByPid(i.getPId()), i.getPId());
             });
 
             List<CurrentPersonResidence> currentPersonAddressList = CurrentPersonResidence.createListPerson(personExportAdapter.findByPids(pIds));
@@ -128,7 +136,6 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
                     if(cf.isPresent()) {
                         e.setSpouseAddChangeDate(cf.get().getStartDate());
                     }
-
                 }
 
                 if(!empFamilySocialInsCtgInfoList.isEmpty() ){
@@ -187,39 +194,38 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
                    Optional<SocialInsuranceOffice> socialInsuranceOffice = socialInsuranceOfficeList.stream().filter(s->s.getCompanyID().equals(i.getCid())
                            && s.getCode().equals(i.getSocialInsurOfficeCode())).findFirst();
                    if(em.isPresent() && socialInsuranceOffice.isPresent() && domain.getOfficeInformation() == BusinessDivision.OUTPUT_SIC_INSURES){
-                       em.get().setPhoneNumber(socialInsuranceOffice.get().getBasicInformation().getAddress().get().getPhoneNumber().map(l -> l.v()).orElse(null));
                        em.get().setBussinessName(socialInsuranceOffice.get().getName().v());
+                       if(socialInsuranceOffice.get().getBasicInformation() != null
+                               && socialInsuranceOffice.get().getBasicInformation().getAddress().isPresent()
+                               && socialInsuranceOffice.get().getBasicInformation().getAddress().get().getAddress1().isPresent())
+
                        em.get().setAddress1(socialInsuranceOffice.get().getBasicInformation().getAddress().get().getAddress1().map(l -> l.v()).orElse(null));
                        em.get().setAddress2(socialInsuranceOffice.get().getBasicInformation().getAddress().get().getAddress2().map(l -> l.v()).orElse(null));
+                       em.get().setPhoneNumber(socialInsuranceOffice.get().getBasicInformation().getAddress().get().getPhoneNumber().map(l -> l.v()).orElse(null));
                        em.get().setReferenceName(socialInsuranceOffice.get().getBasicInformation().getRepresentativeName().map(l -> l.v()).orElse(null));
                    }
+
                     if(em.isPresent() && socialInsuranceOffice.isPresent() && domain.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL){
                        if(socialInsuranceOffice.get().getInsuranceMasterInformation() != null
-                               && socialInsuranceOffice.get().getInsuranceMasterInformation().getOfficeOrganizeNumber() != null
-                               && socialInsuranceOffice.get().getInsuranceMasterInformation().getHealthInsuranceOfficeNumber() != null
-                               && socialInsuranceOffice.get().getInsuranceMasterInformation().getOfficeOrganizeNumber()!= null
-                               && socialInsuranceOffice.get().getInsuranceMasterInformation().getOfficeOrganizeNumber().getHealthInsuranceOfficeNumber1()!= null) {
-                           if(socialInsuranceOffice.get().getInsuranceMasterInformation().getOfficeOrganizeNumber().getHealthInsuranceOfficeNumber1()!= null) {
-                               em.get().setBusinessEstCode1(socialInsuranceOffice.get().getInsuranceMasterInformation().getOfficeOrganizeNumber().getHealthInsuranceOfficeNumber1().toString());
+                               && socialInsuranceOffice.get().getInsuranceMasterInformation().getOfficeOrganizeNumber() != null) {
+                           if(socialInsuranceOffice.get().getInsuranceMasterInformation().getOfficeOrganizeNumber().getHealthInsuranceOfficeNumber1().isPresent()) {
+                               em.get().setBusinessEstCode1(socialInsuranceOffice.get().getInsuranceMasterInformation().getOfficeOrganizeNumber().getHealthInsuranceOfficeNumber1().get().v());
                            }
 
-                           if(socialInsuranceOffice.get().getInsuranceMasterInformation().getOfficeOrganizeNumber().getHealthInsuranceOfficeNumber2()!= null) {
-                               em.get().setBusinessEstCode2(socialInsuranceOffice.get().getInsuranceMasterInformation().getOfficeOrganizeNumber().getHealthInsuranceOfficeNumber2().toString());
+                           if(socialInsuranceOffice.get().getInsuranceMasterInformation().getOfficeOrganizeNumber().getHealthInsuranceOfficeNumber2().isPresent()) {
+                               em.get().setBusinessEstCode2(socialInsuranceOffice.get().getInsuranceMasterInformation().getOfficeOrganizeNumber().getHealthInsuranceOfficeNumber2().get().v());
                            }
                        }
                     } else  if(em.isPresent() && socialInsuranceOffice.isPresent() && domain.getBusinessArrSymbol() == BussEsimateClass.EMPEN_ESTAB_REARSIGN){
 
                         if(socialInsuranceOffice.get().getInsuranceMasterInformation() != null
-                                && socialInsuranceOffice.get().getInsuranceMasterInformation().getOfficeOrganizeNumber() != null
-                                && socialInsuranceOffice.get().getInsuranceMasterInformation().getHealthInsuranceOfficeNumber() != null
-                                && socialInsuranceOffice.get().getInsuranceMasterInformation().getOfficeOrganizeNumber()!= null
-                                && socialInsuranceOffice.get().getInsuranceMasterInformation().getOfficeOrganizeNumber().getHealthInsuranceOfficeNumber1()!= null) {
-                            if(socialInsuranceOffice.get().getInsuranceMasterInformation().getOfficeOrganizeNumber().getWelfarePensionOfficeNumber1()!= null) {
-                                em.get().setBusinessEstCode1(socialInsuranceOffice.get().getInsuranceMasterInformation().getOfficeOrganizeNumber().getWelfarePensionOfficeNumber1().toString());
+                                && socialInsuranceOffice.get().getInsuranceMasterInformation().getOfficeOrganizeNumber() != null) {
+                            if(socialInsuranceOffice.get().getInsuranceMasterInformation().getOfficeOrganizeNumber().getWelfarePensionOfficeNumber1().isPresent()) {
+                                em.get().setBusinessEstCode1(socialInsuranceOffice.get().getInsuranceMasterInformation().getOfficeOrganizeNumber().getWelfarePensionOfficeNumber1().get().v());
                             }
 
-                            if(socialInsuranceOffice.get().getInsuranceMasterInformation().getOfficeOrganizeNumber().getWelfarePensionOfficeNumber2()!= null) {
-                                em.get().setBusinessEstCode2(socialInsuranceOffice.get().getInsuranceMasterInformation().getOfficeOrganizeNumber().getWelfarePensionOfficeNumber2().toString());
+                            if(socialInsuranceOffice.get().getInsuranceMasterInformation().getOfficeOrganizeNumber().getWelfarePensionOfficeNumber2().isPresent()) {
+                                em.get().setBusinessEstCode2(socialInsuranceOffice.get().getInsuranceMasterInformation().getOfficeOrganizeNumber().getWelfarePensionOfficeNumber2().get().v());
                             }
                         }
                     }
@@ -238,7 +244,6 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
                         }
                     });
                 }
-
 
             } else if (domain.getInsuredNumber() == InsurPersonNumDivision.OUTPUT_HEAL_INSUR_UNION && !eList.isEmpty()) {
 
@@ -383,12 +388,12 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
             }
 
             if(domain.getOfficeInformation() == BusinessDivision.OUTPUT_COMPANY_NAME ) {
-                CompanyInformation  c = new CompanyInformation();
+                CompanyInfor c =  companyInforAdapter.getCompanyNotAbolitionByCid(cid);
                 eList.forEach(k->{
-                    k.setPhoneNumber(c.getPhoneNumber());
-                    k.setReferenceName(c.getCompanyNameReference());
-                    k.setAddress1(c.getAdd1());
-                    k.setAddress2(c.getAdd2());
+                    k.setPhoneNumber(c.getPhoneNum());
+                    k.setReferenceName(c.getRepname());
+                    k.setAddress1(c.getAdd_1());
+                    k.setAddress2(c.getAdd_2());
                     k.setBussinessName(c.getCompanyName());
                 });
             }
@@ -396,11 +401,11 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
             //order
 		    if(!eList.isEmpty()){
                 if(domain.getOutputOrder() == SocialInsurOutOrder.EMPLOYEE_CODE_ORDER) {
-                    eList = eList.stream().sorted(Comparator.comparing(EmpAddChangeInfoExport::getScd, Comparator.naturalOrder())).collect(Collectors.toList());
+                    eList = eList.stream().sorted(Comparator.comparing(EmpAddChangeInfoExport::getScd, Comparator.nullsLast(String::compareTo))).collect(Collectors.toList());
                 } else if(domain.getOutputOrder() == SocialInsurOutOrder.EMPLOYEE_KANA_ORDER) {
-                    eList = eList.stream().sorted(Comparator.comparing(EmpAddChangeInfoExport::getNameKanaPs, Comparator.naturalOrder()).thenComparing(EmpAddChangeInfoExport::getScd, Comparator.naturalOrder())).collect(Collectors.toList());
-                } else {
-                    eList = eList.stream().sorted(Comparator.comparing(EmpAddChangeInfoExport::getHealInsurNumber, Comparator.naturalOrder())).collect(Collectors.toList());
+                    eList = eList.stream().sorted(Comparator.comparing(EmpAddChangeInfoExport::getNameKanaPs, Comparator.nullsLast(String::compareTo)).thenComparing(EmpAddChangeInfoExport::getScd, Comparator.nullsLast(String::compareTo))).collect(Collectors.toList());
+                } else if(domain.getOutputOrder() == SocialInsurOutOrder.INSURED_PER_NUMBER_ORDER && domain.getInsuredNumber() != InsurPersonNumDivision.DO_NOT_OUPUT ){
+                    eList = eList.stream().sorted(Comparator.comparing(EmpAddChangeInfoExport::getHealInsurNumber, Comparator.nullsLast(String::compareTo))).collect(Collectors.toList());
                 }
             }
 

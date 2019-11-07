@@ -18,7 +18,7 @@ public class EmpAddChangeInfoExport {
     private String empId;
     private String pId;
     private String companyId;
-    private Integer familyId;
+    private String familyId;
 
     /** 個人番号 - b - A1_1*/
     private String basicPenNumber;
@@ -162,7 +162,6 @@ public class EmpAddChangeInfoExport {
     private String businessEstCode2;
 
     public EmpAddChangeInfoExport(String empId) {
-        this.familyId = 11;
         this.empId = empId;
         this.healthInsurance = false;
         this.empPenInsurance = false;

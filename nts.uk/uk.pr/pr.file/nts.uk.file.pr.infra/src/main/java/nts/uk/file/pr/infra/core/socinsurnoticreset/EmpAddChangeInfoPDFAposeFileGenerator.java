@@ -165,6 +165,10 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
            } else if (PEACE.equals(dateJP.era())){
                worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(op1));
                worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(op2));
+           } else {
+               worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(op2));
+               worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(op1));
+               worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(op3));
            }
        } else {
            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(op2));
