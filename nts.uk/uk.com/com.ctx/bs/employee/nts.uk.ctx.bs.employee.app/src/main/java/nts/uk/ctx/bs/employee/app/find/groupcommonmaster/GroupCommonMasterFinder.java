@@ -18,7 +18,7 @@ public class GroupCommonMasterFinder {
 	 * 
 	 * @return 共通マスタリスト(List)
 	 */
-	public List<GroupCommonMasterDto> getGroupCommonMaster() {
+	public List<GroupCommonMasterDto> getMaster() {
 
 		// アルゴリズム [グループ会社共通マスタの取得] を実行する(Thực hiện thuật toán [Get group company
 		// common master])
@@ -43,7 +43,7 @@ public class GroupCommonMasterFinder {
 	 * @param 共通マスタID
 	 * @return 共通マスタリスト (List)
 	 */
-	public List<GroupCommonItemDto> getGroupCommonMasterItems(String commonMasterId) {
+	public List<GroupCommonItemDto> getItems(String commonMasterId) {
 
 		String contractCode = AppContexts.user().contractCode();
 		GroupCommonMaster master = new GroupCommonMaster();
