@@ -70,14 +70,11 @@ public class AppRouteUpdateDailyDefault implements AppRouteUpdateDailyService {
 	@Inject
 	private AppDataInfoDailyRepository appDataInfoDailyRepo;
 	
-<<<<<<< HEAD
-
-=======
 	@Inject
 	private ChangePersionListForSche changePersionListForSche;
 //	@Inject
 //	private EmployeeManageAdapter employeeManageAdapter;
->>>>>>> 145c063... fixbug 108989
+
 	
 	public static int MAX_DELAY_PARALLEL = 0;
 	
@@ -151,21 +148,11 @@ public class AppRouteUpdateDailyDefault implements AppRouteUpdateDailyService {
 				checkError1552 = true;
 				break;
 			}
-<<<<<<< HEAD
-			
-			if(procExec.getProcessExecType() == ProcessExecType.NORMAL_EXECUTION) {
-				//通常実行の場合
-				/**「対象社員を取得する」で取得した社員IDを社員ID（List）とする*/
-				
-			}else {
-				//再作成の場合
-=======
 			System.out.println("対象者-承認ルート日次: " + listEmp);
 			//通常実行の場合
 			/**「対象社員を取得する」で取得した社員IDを社員ID（List）とする*/
 			//再作成の場合
 			if(procExec.getProcessExecType() == ProcessExecType.RE_CREATE) {
->>>>>>> 145c063... fixbug 108989
 				if(!listEmp.isEmpty()) {
 //					/**異動者、勤務種別変更者、休職者・休業者のみの社員ID（List）を作成する*/	
 //					DatePeriod maxPeriodBetweenCalAndCreate = new DatePeriod(closureData.getClosureStartDate(), GeneralDate.fromString("9999/12/31", "yyyy/MM/dd"));
