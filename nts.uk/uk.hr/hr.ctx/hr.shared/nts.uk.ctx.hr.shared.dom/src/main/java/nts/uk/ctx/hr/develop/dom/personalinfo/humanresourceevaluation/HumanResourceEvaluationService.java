@@ -1,4 +1,4 @@
-package nts.uk.ctx.hr.develop.dom.humanresourceevaluation;
+package nts.uk.ctx.hr.develop.dom.personalinfo.humanresourceevaluation;
 
 import java.util.List;
 
@@ -35,9 +35,4 @@ public class HumanResourceEvaluationService {
 		return result;
 	}
 
-	// 人事評価の取得(lay danh gia nhan su)
-	public List<PersonnelAssessment> loadHRevaluation(String employeeIds, GeneralDate startDate) {
-		
-		return null;
-	}
 }

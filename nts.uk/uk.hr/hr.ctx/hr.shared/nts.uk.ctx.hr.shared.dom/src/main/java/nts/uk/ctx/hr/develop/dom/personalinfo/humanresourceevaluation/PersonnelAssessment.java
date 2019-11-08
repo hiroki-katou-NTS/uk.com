@@ -1,4 +1,4 @@
-package nts.uk.ctx.hr.develop.dom.humanresourceevaluation;
+package nts.uk.ctx.hr.develop.dom.personalinfo.humanresourceevaluation;
 
 import lombok.Builder;
 import lombok.Getter;
