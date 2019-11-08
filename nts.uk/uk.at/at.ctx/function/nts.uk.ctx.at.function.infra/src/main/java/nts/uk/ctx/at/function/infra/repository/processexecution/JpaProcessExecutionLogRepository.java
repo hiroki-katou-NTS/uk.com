@@ -132,13 +132,19 @@ public class JpaProcessExecutionLogRepository extends JpaRepository
 			for(KfnmtExecutionTaskLog kfnmtExecutionTaskLog : updateData.taskLogList) {
 				String updateTableSQL = " UPDATE KFNMT_EXEC_TASK_LOG SET"
 						+ " STATUS = ?"
+						+ " ,LAST_END_EXEC_DATETIME = ?"
+						+ " ,ERROR_SYSTEM = ?"
+						+ " ,ERROR_BUSINESS = ?"
 						+ " WHERE CID = ? AND EXEC_ITEM_CD = ? AND EXEC_ID = ? AND TASK_ID = ? ";
 				try (PreparedStatement ps = this.connection().prepareStatement(JDBCUtil.toUpdateWithCommonField(updateTableSQL))) {
 					ps.setString(1, kfnmtExecutionTaskLog.status ==null?null:kfnmtExecutionTaskLog.status.toString());
-					ps.setString(2, kfnmtExecutionTaskLog.kfnmtExecTaskLogPK.companyId);
-					ps.setString(3, kfnmtExecutionTaskLog.kfnmtExecTaskLogPK.execItemCd);
-					ps.setString(4, kfnmtExecutionTaskLog.kfnmtExecTaskLogPK.execId);
-					ps.setInt(5, kfnmtExecutionTaskLog.kfnmtExecTaskLogPK.taskId);
+					ps.setString(2, kfnmtExecutionTaskLog.lastEndExecDateTime ==null?null:kfnmtExecutionTaskLog.lastEndExecDateTime.toString());
+					ps.setString(3, kfnmtExecutionTaskLog.errorSystem == null?null:(kfnmtExecutionTaskLog.errorSystem ==1?"1":"0"));
+					ps.setString(4, kfnmtExecutionTaskLog.errorBusiness == null?null:(kfnmtExecutionTaskLog.errorBusiness ==1?"1":"0"));
+					ps.setString(5, kfnmtExecutionTaskLog.kfnmtExecTaskLogPK.companyId);
+					ps.setString(6, kfnmtExecutionTaskLog.kfnmtExecTaskLogPK.execItemCd);
+					ps.setString(7, kfnmtExecutionTaskLog.kfnmtExecTaskLogPK.execId);
+					ps.setInt(8, kfnmtExecutionTaskLog.kfnmtExecTaskLogPK.taskId);
 					ps.executeUpdate();
 				}
 			}

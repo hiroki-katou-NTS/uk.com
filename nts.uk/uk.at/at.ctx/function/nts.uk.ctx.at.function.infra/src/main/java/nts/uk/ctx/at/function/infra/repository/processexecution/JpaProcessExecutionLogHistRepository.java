@@ -115,9 +115,9 @@ public class JpaProcessExecutionLogHistRepository extends JpaRepository
 				ps.setDate(9, newEntity.dailyCalcEnd ==null?null: Date.valueOf(newEntity.dailyCalcEnd.localDate()));
 				ps.setDate(10, newEntity.reflectApprovalResultStart ==null?null: Date.valueOf(newEntity.reflectApprovalResultStart.localDate()));
 				ps.setDate(11, newEntity.reflectApprovalResultEnd ==null?null: Date.valueOf(newEntity.reflectApprovalResultEnd.localDate()));
-				ps.setString(12, newEntity.lastEndExecDateTime.toString());
-				ps.setInt(13, newEntity.errorSystem);
-				ps.setInt(14, newEntity.errorBusiness);
+				ps.setString(12, newEntity.lastEndExecDateTime ==null?null:newEntity.lastEndExecDateTime.toString());
+				ps.setString(13, newEntity.errorSystem == null?null:(newEntity.errorSystem ==1?"1":"0"));
+				ps.setString(14, newEntity.errorBusiness == null?null:(newEntity.errorBusiness ==1?"1":"0"));
 				ps.setString(15, domain.getCompanyId());
 				ps.setString(16, domain.getExecItemCd().v());
 				ps.setString(17, domain.getExecId());
@@ -137,9 +137,9 @@ public class JpaProcessExecutionLogHistRepository extends JpaRepository
 						+ " WHERE CID = ? AND EXEC_ITEM_CD = ? AND EXEC_ID = ? AND TASK_ID = ? ";
 				try (PreparedStatement ps = this.connection().prepareStatement(JDBCUtil.toUpdateWithCommonField(updateTableSQL))) {
 					ps.setString(1, kfnmtExecutionTaskLog.status ==null?null:kfnmtExecutionTaskLog.status.toString());
-					ps.setString(2, kfnmtExecutionTaskLog.lastEndExecDateTime.toString());
-					ps.setInt(3, kfnmtExecutionTaskLog.errorSystem);
-					ps.setInt(4, kfnmtExecutionTaskLog.errorBusiness);
+					ps.setString(2, kfnmtExecutionTaskLog.lastEndExecDateTime ==null?null:kfnmtExecutionTaskLog.lastEndExecDateTime.toString());
+					ps.setString(3, kfnmtExecutionTaskLog.errorSystem == null?null:(kfnmtExecutionTaskLog.errorSystem ==1?"1":"0"));
+					ps.setString(4, kfnmtExecutionTaskLog.errorBusiness == null?null:(kfnmtExecutionTaskLog.errorBusiness ==1?"1":"0"));
 					ps.setString(5, kfnmtExecutionTaskLog.kfnmtExecTaskLogPK.companyId);
 					ps.setString(6, kfnmtExecutionTaskLog.kfnmtExecTaskLogPK.execItemCd);
 					ps.setString(7, kfnmtExecutionTaskLog.kfnmtExecTaskLogPK.execId);
