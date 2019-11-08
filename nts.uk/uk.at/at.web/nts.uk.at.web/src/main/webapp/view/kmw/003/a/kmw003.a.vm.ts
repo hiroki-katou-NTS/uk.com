@@ -238,8 +238,8 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             	$('.mgrid-free').width(window.innerWidth - 620);
             	$('.mgrid-free.mgrid-header').width(window.innerWidth - 637);
             	$('.mgrid-free-summaries').width(window.innerWidth - 637);
-            	$('.mgrid-paging').width($('.mgrid-fixed').width() + $('.mgrid-free').width());
-            	$('.mgrid-sheet').width($('.mgrid-fixed').width() + $('.mgrid-free').width());
+            	$('.mgrid-paging').width($('.mgrid-fixed').width() + $('.mgrid-free.mgrid-header').width() + 19);
+            	$('.mgrid-sheet').width($('.mgrid-fixed').width() + $('.mgrid-free.mgrid-header').width() + 19);
             });
 
         }
@@ -382,8 +382,8 @@ module nts.uk.at.view.kmw003.a.viewmodel {
         	$('.mgrid-free').width(window.innerWidth - 620);
         	$('.mgrid-free.mgrid-header').width(window.innerWidth - 637);
         	$('.mgrid-free-summaries').width(window.innerWidth - 637);
-        	$('.mgrid-paging').width($('.mgrid-fixed').width() + $('.mgrid-free.mgrid-header').width());
-        	$('.mgrid-sheet').width($('.mgrid-fixed').width() + $('.mgrid-free.mgrid-header').width());
+        	$('.mgrid-paging').width($('.mgrid-fixed').width() + $('.mgrid-free.mgrid-header').width() + 19);
+        	$('.mgrid-sheet').width($('.mgrid-fixed').width() + $('.mgrid-free.mgrid-header').width() + 19);
         }
         /**********************************
         * Initialize Screen 

@@ -48,3 +48,13 @@ span {
 #single-list_scrollContainer {
 	height: 264px !important;
 }
+#single-list_headers > colgroup > col:NTH-CHILD(3) {
+	width: 120px !important;
+}
+#single-list > colgroup > col:NTH-CHILD(3) {
+	width: 120px !important;
+}
+#single-list_displayContainer {
+	width: 978px !important;
+    max-width: 978px !important;
+}
