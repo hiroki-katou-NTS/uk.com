@@ -3,6 +3,7 @@ package nts.uk.ctx.hr.develop.dom.humanresourceevaluation;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import lombok.Builder;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 
@@ -10,6 +11,7 @@ import nts.arc.layer.dom.AggregateRoot;
  * @author anhdt 人事評価管理
  */
 @Getter
+@Builder
 public class HumanResourceEvaluation extends AggregateRoot {
 	/**
 	 * 人事評価のリスト
@@ -24,7 +26,7 @@ public class HumanResourceEvaluation extends AggregateRoot {
 	 * @return 人事評価のロード
 	 */
 	public List<PersonnelAssessment> loadHumanResourceEvaluation() {
-		return null;
+		return personnelAssessments;
 	}
 
 	/**

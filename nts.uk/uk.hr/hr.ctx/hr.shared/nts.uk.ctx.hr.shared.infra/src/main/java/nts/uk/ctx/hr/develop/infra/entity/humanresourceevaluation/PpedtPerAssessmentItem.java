@@ -26,12 +26,6 @@ public class PpedtPerAssessmentItem extends UkJpaEntity implements Serializable 
 	public PpedtPerAssessmentItemPk ppedtPerAssessmentItemPk;
 
 	/**
-	 * 履歴ID
-	 */
-	@Column(name = "HIST_ID")
-	public String historyID;
-
-	/**
 	 * 会社ID
 	 */
 	@Column(name = "CID")

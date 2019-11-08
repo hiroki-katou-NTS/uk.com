@@ -26,12 +26,6 @@ public class PeedtPerAssessmentHist extends UkJpaEntity implements Serializable 
 	public PeedtPerAssessmentHistPk peedtPerAssessmentHistPk;
 
 	/**
-	 * 履歴ID
-	 */
-	@Column(name = "HIST_ID")
-	public String historyID;
-
-	/**
 	 * 会社ID
 	 */
 	@Column(name = "CID")
