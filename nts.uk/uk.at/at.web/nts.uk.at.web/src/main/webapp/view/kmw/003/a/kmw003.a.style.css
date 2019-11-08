@@ -1,3 +1,9 @@
+.fixed-flex-layout-right {
+	white-space: nowrap;
+}
+html {
+	overflow: hidden;
+}
 "src/main/webapp/view/kmw/003/a/kmw003.a.style.css"#function-content {
 	width: 1200px;
 }

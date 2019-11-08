@@ -227,10 +227,19 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 self.displayNumberZero1();
             });
             
-            $(".grid-container").attr('style', 'height: ' + (window.innerHeight - 230) + 'px !IMPORTANT');
             $(window).on('resize', function() {
-                var win = $(this); //this = window
-                $(".grid-container").attr('style', 'height: ' + (win.height() - 230) + 'px !IMPORTANT');
+            	$('.mgrid-fixed').height(window.innerHeight - 449);
+            	$('.mgrid-free').height(window.innerHeight - 449);
+            	$('.grid-container').height(window.innerHeight - 310);
+            	$('.mgrid-fixed-summaries').css({ top: window.innerHeight - 443 + 'px' });
+            	$('.mgrid-free-summaries').css({ top: window.innerHeight - 443 + 'px' });
+            	$('.mgrid-paging').css({ top: window.innerHeight - 396 + 'px' });
+            	$('.mgrid-sheet').css({ top: window.innerHeight - 350 + 'px' });
+            	$('.mgrid-free').width(window.innerWidth - 620);
+            	$('.mgrid-free.mgrid-header').width(window.innerWidth - 637);
+            	$('.mgrid-free-summaries').width(window.innerWidth - 637);
+            	$('.mgrid-paging').width($('.mgrid-fixed').width() + $('.mgrid-free').width());
+            	$('.mgrid-sheet').width($('.mgrid-fixed').width() + $('.mgrid-free').width());
             });
 
         }
@@ -361,6 +370,21 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             });
             return dfd.promise();
         }
+        
+        setScreenSize() {
+        	$('.mgrid-fixed').height(window.innerHeight - 449);
+        	$('.mgrid-free').height(window.innerHeight - 449);
+        	$('.grid-container').height(window.innerHeight - 310);
+        	$('.mgrid-fixed-summaries').css({ top: window.innerHeight - 443 + 'px' });
+        	$('.mgrid-free-summaries').css({ top: window.innerHeight - 443 + 'px' });
+        	$('.mgrid-paging').css({ top: window.innerHeight - 396 + 'px' });
+        	$('.mgrid-sheet').css({ top: window.innerHeight - 350 + 'px' });
+        	$('.mgrid-free').width(window.innerWidth - 620);
+        	$('.mgrid-free.mgrid-header').width(window.innerWidth - 637);
+        	$('.mgrid-free-summaries').width(window.innerWidth - 637);
+        	$('.mgrid-paging').width($('.mgrid-fixed').width() + $('.mgrid-free.mgrid-header').width());
+        	$('.mgrid-sheet').width($('.mgrid-fixed').width() + $('.mgrid-free.mgrid-header').width());
+        }
         /**********************************
         * Initialize Screen 
         **********************************/
@@ -450,6 +474,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
 //                    self.showButton().enable_A1_2(data.showRegisterButton);
 //                    self.showButton.valueHasMutated();
 //                }
+                self.setScreenSize();
                 nts.uk.ui.block.clear();
                 dfd.resolve(data.processDate, data.selectedClosure);
             }).fail(function(error) {
@@ -1025,7 +1050,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 virtualization: true,
                 virtualizationMode: 'continuous',
                 enter: self.selectedDirection() == 0 ? 'below' : 'right',
-                autoFitWindow: true,
+                autoFitWindow: false,
                 preventEditInError: false,
                 hidePrimaryKey: true,
                 userId: self.employIdLogin,
