@@ -44,3 +44,6 @@
 #gridE_container {
 	border: 1px solid #AAB7B8 !important;
 }
+html {
+	overflow: hidden;
+}

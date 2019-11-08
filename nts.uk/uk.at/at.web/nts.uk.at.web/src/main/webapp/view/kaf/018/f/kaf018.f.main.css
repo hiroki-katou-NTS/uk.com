@@ -55,3 +55,6 @@
 .legend-item .legend-item-symbol{
 	border: solid 1px gray;	
 }
+html {
+	overflow: hidden;
+}

@@ -50,3 +50,6 @@
 #gridB tbody tr td:NTH-CHILD(7){
 	display: none;
 }
+html{
+	overflow: hidden;
+}
