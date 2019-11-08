@@ -242,6 +242,11 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 });
                 self.checkRequiredOvertimeHours();
                 $("#inputdate").focus();
+                if($('#msg-content').length == 0) {  
+                    $('#message_ct').addClass("message_one");
+                } else {
+                    $('#message_ct').addClass("message");
+                }
                  // findByChangeAppDate
                 self.appDate.subscribe(function(value){
                     var dfd = $.Deferred();
