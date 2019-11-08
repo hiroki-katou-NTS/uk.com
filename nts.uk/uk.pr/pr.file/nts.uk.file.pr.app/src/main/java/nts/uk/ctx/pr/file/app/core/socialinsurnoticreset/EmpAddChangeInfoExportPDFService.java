@@ -93,7 +93,12 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
         if(end.before(start)) {
             throw new BusinessException("Msg_812");
         }
-        if (printPersonNumber == PersonalNumClass.OUTPUT_BASIC_PER_NUMBER.value || printPersonNumber == PersonalNumClass.DO_NOT_OUTPUT.value ){
+        empAddChangeInfoExportList = EmpAddChangeInfoExport.getListExport(empIds);
+        List<EmployeeInfoEx> employeeInfoExList = employeeInfoAdapter.findBySIds(empIds);
+        if (printPersonNumber == PersonalNumClass.OUTPUT_BASIC_PER_NUMBER.value
+                || printPersonNumber == PersonalNumClass.DO_NOT_OUTPUT.value
+                && !empAddChangeInfoExportList.isEmpty()
+                && !employeeInfoExList.isEmpty() ){
             List<EmpFamilySocialInsCtgInfo> empFamilySocialInsCtgInfoList = empAddChangeInfoExReposity.getEmpFamilySocialInsCtgInfoList(empIds, cid);
             List<EmpHealInsurQInfo> empHealInsurQInfoList = empAddChangeInfoExReposity.getEmpHealInsurQInfoList(empIds, cid);
             List<EmpWelfarePenInsQualiInfo> empWelfarePenInsQualiInforList = empAddChangeInfoExReposity.getEmpWelfarePenInsQualiInfoList(empIds, cid);
@@ -103,11 +108,9 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
             List<EmPensionFundPartiPeriodInfo> emPensionFunList = empAddChangeInfoExReposity.getEmPensionFundPartiPeriodInfo(empIds, cid);
             List<EmpBasicPenNumInfor> empBasicPenNumInforList = empBasicPenNumInforRepository.getAllEmpBasicPenNumInfor(empIds);
             List<EmpAddChangeInfo> empAddChangeInfoList = empAddChangeInfoRepository.getListEmpAddChange(empIds);
-            List<EmployeeInfoEx> employeeInfoExList = employeeInfoAdapter.findBySIds(empIds);
             List<String> pIds = new ArrayList<>();
             eList = new ArrayList<>();
             currentFamilyResidenceList = new ArrayList<>();
-            empAddChangeInfoExportList = EmpAddChangeInfoExport.getListExport(empIds);
             employeeInfoExList.forEach(i->{
                 pIds.add(i.getPId());
                 currentFamilyResidenceList = CurrentFamilyResidence.getListFamily(familyMemberAdapter.getRomajiOfFamilySpouseByPid(i.getPId()), i.getPId());
@@ -132,9 +135,10 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
                 //Imported（給与）「家族情報」
                 //Imported（給与）「家族現住所」
                 if(!currentFamilyResidenceList.isEmpty()){
-                    Optional<CurrentFamilyResidence> cf = currentFamilyResidenceList.stream().filter(f->f != null ? f.getFamilyId().equals(e.getFamilyId()): false).findFirst();
+                    Optional<CurrentFamilyResidence> cf = currentFamilyResidenceList.stream().filter(f->f != null ? f.getPersonId().equals(e.getPId()): false).findFirst();
                     if(cf.isPresent()) {
                         e.setSpouseAddChangeDate(cf.get().getStartDate());
+                        e.setFamilyId(cf.get().getFamilyId());
                     }
                 }
 
