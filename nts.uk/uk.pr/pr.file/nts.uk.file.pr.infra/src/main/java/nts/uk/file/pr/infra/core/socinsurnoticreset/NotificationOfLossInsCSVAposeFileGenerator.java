@@ -84,7 +84,7 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
         for(int i = 0; i < healthInsLoss.size(); i++){
             InsLossDataExport data = healthInsLoss.get(i);
             if(i == 0) {
-                cells.get(startRow, 0).setValue(getPreferCode(data.getPrefectureNo(), data.getEndDate(), infor));
+                cells.get(startRow, 0).setValue(getPreferCode(data.getPrefectureNo(), ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ?  data.getEndDate() : data.getEndDate2(), infor));
                 cells.get(startRow, 1).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? checkLength(data.getOfficeNumber1(), 2) : checkLength(data.getWelfOfficeNumber1(),2));
                 cells.get(startRow, 2).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ?
                         checkLength(data.getOfficeNumber2(),4) : checkLength(data.getWelfOfficeNumber2(),4));
@@ -210,6 +210,9 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
     }
 
     private String getPreferCode(int prefectureNo, String endDate, List<SocialInsurancePrefectureInformation> infor){
+        if(endDate.isEmpty()) {
+            return "";
+        }
         Optional<SocialInsurancePrefectureInformation> refecture =  infor.stream().filter(item -> item.getNo() == prefectureNo
                 && item.getEndYearMonth() >= convertDateToYearMonth(endDate)
                 && item.getStartYearMonth() <= convertDateToYearMonth(endDate)).findFirst();

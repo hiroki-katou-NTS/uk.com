@@ -81,7 +81,7 @@ public class CurrentFamilyResidence {
         this.endDate = GeneralDate.fromString("2020/01/01","yyyy/MM/dd" );
     }
 
-    public static List<CurrentFamilyResidence> getListFamily(List<FamilyMemberInfoEx> fList, String personId ){
+    public static CurrentFamilyResidence getListFamily(List<FamilyMemberInfoEx> fList, String personId ){
         if(!fList.isEmpty()){
             CurrentFamilyResidence c = new CurrentFamilyResidence();
             c.setPersonId(personId);
@@ -89,9 +89,6 @@ public class CurrentFamilyResidence {
             c.setName(fList.get(0).getRomajiName().isPresent() ? fList.get(0).getRomajiName().get() : "");
             c.setName(fList.get(0).getRomajiNameKana().isPresent() ? fList.get(0).getRomajiNameKana().get() : "");
             c.setName(fList.get(0).getBirthday() != null ? fList.get(0).getBirthday(): "");
-            List<CurrentFamilyResidence> list = new ArrayList<>();
-            list.add(new CurrentFamilyResidence());
-            return list;
         }
         return null;
     }
