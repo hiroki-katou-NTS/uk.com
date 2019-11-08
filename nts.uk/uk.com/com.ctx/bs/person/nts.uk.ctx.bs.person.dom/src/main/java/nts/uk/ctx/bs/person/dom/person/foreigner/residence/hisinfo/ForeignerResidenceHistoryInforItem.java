@@ -12,7 +12,6 @@ import javax.inject.Inject;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDateTime;
 
@@ -20,7 +19,6 @@ import nts.arc.time.GeneralDateTime;
  * domain 外国人在留履歴情報
  */
 @Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class ForeignerResidenceHistoryInforItem extends AggregateRoot {

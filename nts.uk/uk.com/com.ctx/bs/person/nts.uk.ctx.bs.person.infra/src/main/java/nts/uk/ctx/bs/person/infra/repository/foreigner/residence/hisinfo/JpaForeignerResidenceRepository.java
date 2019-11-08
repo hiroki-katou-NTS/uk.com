@@ -9,14 +9,12 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.bs.person.dom.person.foreigner.residence.hisinfo.ForeignerResidenceHistoryInforItem;
 import nts.uk.ctx.bs.person.dom.person.foreigner.residence.hisinfo.ForeignerResidenceRepository;
-import nts.uk.ctx.bs.person.dom.person.foreigner.residence.hisinfo.ListForeignerResidence;
 import nts.uk.ctx.bs.person.dom.person.foreigner.residence.hisinfo.PerUnqualifiedActivity;
 import nts.uk.ctx.bs.person.dom.person.foreigner.residence.hisinfo.ReportWorkOutside;
 import nts.uk.ctx.bs.person.infra.entity.foreigner.residence.hisinfo.PpetdForeignerResidenceHisInfoItem;
