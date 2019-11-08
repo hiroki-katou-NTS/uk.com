@@ -131,7 +131,9 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
 
                 //Imported（給与）「個人現住所」
                 if(currentPersonAddressList != null && !currentPersonAddressList.isEmpty()){
-                    Optional<CurrentPersonResidence> cp = currentPersonAddressList.stream().filter(p->p!= null ? p.getPId().equals(e.getPId()) : false).findFirst();
+                    Optional<CurrentPersonResidence> cp = currentPersonAddressList.stream().filter(p->p!= null ? p.getPId().equals(e.getPId()) : false
+                        && p.getStartDate().afterOrEquals(start)
+                        && p.getStartDate().beforeOrEquals(end)).findFirst();
                     if(cp.isPresent()) {
                         e.setPersonAddChangeDate(cp.get().getStartDate());
                     }
@@ -140,7 +142,9 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
                 //Imported（給与）「家族情報」
                 //Imported（給与）「家族現住所」
                 if(currentFamilyResidenceList != null &&!currentFamilyResidenceList.isEmpty()){
-                    Optional<CurrentFamilyResidence> cf = currentFamilyResidenceList.stream().filter(f->f != null ? f.getPersonId().equals(e.getPId()): false).findFirst();
+                    Optional<CurrentFamilyResidence> cf = currentFamilyResidenceList.stream().filter(f->f != null ? f.getPersonId().equals(e.getPId()): false
+                        && f.getStartDate().afterOrEquals(start)
+                        && f.getStartDate().beforeOrEquals(end)).findFirst();
                     if(cf.isPresent()) {
                         e.setSpouseAddChangeDate(cf.get().getStartDate());
                         e.setFamilyId(cf.get().getFamilyId());
@@ -327,7 +331,8 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
             if ((domain.getPrintPersonNumber() == PersonalNumClass.OUTPUT_BASIC_PER_NUMBER || domain.getPrintPersonNumber() == PersonalNumClass.OUTPUT_BASIC_PEN_NOPER)){
                 if(!empFamilySocialInsCtgInfoList.isEmpty()
                         && !eList.isEmpty()
-                        && currentFamilyResidenceList!= null && !currentFamilyResidenceList.isEmpty()){
+                        && currentFamilyResidenceList!= null
+                        && !currentFamilyResidenceList.isEmpty()){
                     empFamilySocialInsCtgInfoList.forEach(p->{
                         //Imported（給与）「家族情報」
                         Optional<CurrentFamilyResidence> y =  currentFamilyResidenceList.stream().filter(item->item != null ?  item.getFamilyId().equals(p.getFamilyId()):false).findFirst();
