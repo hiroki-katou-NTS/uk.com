@@ -7,7 +7,6 @@ import java.util.List;
 
 public interface NotificationOfLossInsExRepository {
     List<InsLossDataExport> getHealthInsLoss(List<String> empIds, String cid, GeneralDate startDate, GeneralDate endDate);
-    CompanyInfor getCompanyInfor(String cid);
     List<PensFundSubmissData> getHealthInsAssociation(List<String> empIds, String cid, GeneralDate startDate, GeneralDate endDate);
 
 }

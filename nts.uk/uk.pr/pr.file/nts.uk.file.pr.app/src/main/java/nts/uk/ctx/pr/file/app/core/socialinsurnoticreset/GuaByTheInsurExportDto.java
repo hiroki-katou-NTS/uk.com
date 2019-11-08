@@ -220,4 +220,8 @@ public class GuaByTheInsurExportDto {
     private String reasonOtherContent;
 
     private String officeCd;
+
+    private String employeeCd;
+
+    private int Gender;
 }

@@ -179,6 +179,9 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
     }
 
     private String formatPortCd(String portCd, int stt){
+        if(portCd == null) {
+            return "";
+        }
         String result = portCd.replace("-", "");
         if (result.length() >= 3 && stt == 1) {
             return result.substring(0, 3);
@@ -190,6 +193,9 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
     }
 
     private String formatPhoneNumber(String phone, int stt) {
+        if(phone == null) {
+            return "";
+        }
         String[] sub = phone.split("-");
         if (stt == 1 && sub.length > 1) {
             return sub[0];

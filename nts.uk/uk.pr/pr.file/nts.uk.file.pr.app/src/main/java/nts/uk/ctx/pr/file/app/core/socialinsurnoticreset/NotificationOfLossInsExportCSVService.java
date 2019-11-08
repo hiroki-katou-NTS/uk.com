@@ -5,6 +5,11 @@ import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.core.dom.adapter.company.CompanyInfor;
+import nts.uk.ctx.pr.core.dom.adapter.company.CompanyInforAdapter;
+import nts.uk.ctx.pr.core.dom.adapter.employee.employee.EmployeeInfoAdapter;
+import nts.uk.ctx.pr.core.dom.adapter.employee.employee.EmployeeInfoEx;
+import nts.uk.ctx.pr.core.dom.adapter.person.PersonExport;
+import nts.uk.ctx.pr.core.dom.adapter.person.PersonExportAdapter;
 import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsurancePrefectureInformation;
 import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsurancePrefectureInformationRepository;
 import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.*;
@@ -39,11 +44,20 @@ public class NotificationOfLossInsExportCSVService extends ExportService<Notific
 	@Inject
 	private SocialInsurancePrefectureInformationRepository socialInsuranceInfor;
 
+	@Inject
+	private EmployeeInfoAdapter employeeInfoAdapter;
+
+	@Inject
+	private PersonExportAdapter personExportAdapter;
+
+	@Inject
+	private CompanyInforAdapter companyAdapter;
 
 	@Override
 	protected void handle(ExportServiceContext<NotificationOfLossInsExportQuery> exportServiceContext) {
 		String userId = AppContexts.user().userId();
 		String cid = AppContexts.user().companyId();
+		CompanyInfor company = companyAdapter.getCompanyNotAbolitionByCid(cid);
 		NotificationOfLossInsExport socialInsurNotiCreateSet = exportServiceContext.getQuery().getSocialInsurNotiCreateSet();
         List<String> empIds = exportServiceContext.getQuery().getEmpIds();
         GeneralDate start = exportServiceContext.getQuery().getStartDate();
@@ -90,16 +104,24 @@ public class NotificationOfLossInsExportCSVService extends ExportService<Notific
 			if(healthInsLoss.isEmpty()) {
 				throw new BusinessException("Msg_37");
 			}
-			healthInsLoss.forEach( item -> {
-						if (!item.getEndDate().isEmpty() && item.getEndDate().equals(item.getEndDate2())) {
-							item.setCaInsurance2(null);
-							item.setCause2(null);
-							item.setNumRecoved2(null);
-							item.setOther2(null);
-							item.setOtherReason2(null);
-						}
+			List<String> emplds = healthInsLoss.stream().map(InsLossDataExport::getEmpId).collect(Collectors.toList());
+			List<EmployeeInfoEx> employeeInfoList = employeeInfoAdapter.findBySIds(emplds);
+			List<PersonExport> personList = personExportAdapter.findByPids(employeeInfoList.stream().map(EmployeeInfoEx::getPId).collect(Collectors.toList()));
+			healthInsLoss.forEach(item -> {
+				if (!item.getEndDate().isEmpty() && item.getEndDate().equals(item.getEndDate2())) {
+					item.setCaInsurance2(null);
+					item.setCause2(null);
+					item.setNumRecoved2(null);
+					item.setOther2(null);
+					item.setOtherReason2(null);
+				}
+				PersonExport p = InsLossDataExport.getPersonInfor(employeeInfoList, personList, item.getEmpId());
+				item.setPersonName(p.getPersonNameGroup().getPersonName().getFullName());
+				item.setOldName(p.getPersonNameGroup().getTodokedeFullName().getFullName());
+				item.setPersonNameKana(p.getPersonNameGroup().getPersonName().getFullNameKana());
+				item.setOldNameKana(p.getPersonNameGroup().getTodokedeFullName().getFullNameKana());
+				item.setBirthDay(p.getBirthDate().toString("yyyy-MM-dd"));
 			});
-			CompanyInfor company = socialInsurNotiCreateSetEx.getCompanyInfor(cid);
 			healthInsLoss = this.order(domain, healthInsLoss);
 			notificationOfLossInsCSVFileGenerator.generate(exportServiceContext.getGeneratorContext(),
 					new LossNotificationInformation(healthInsLoss, null,null, domain, exportServiceContext.getQuery().getReference(), company, infor));
@@ -107,40 +129,61 @@ public class NotificationOfLossInsExportCSVService extends ExportService<Notific
 
         if(domain.getOutputFormat().get() == OutputFormatClass.HEAL_INSUR_ASSO) {
 			List<SocialInsurancePrefectureInformation> infor  = socialInsuranceInfor.findByHistory();
-			CompanyInfor company = socialInsurNotiCreateSetEx.getCompanyInfor(cid);
 			List<InsLossDataExport> healthInsAssociationData = socialInsurNotiCreateSetEx.getHealthInsLoss(empIds, cid, start, end);
 			if(healthInsAssociationData.isEmpty()) {
 				throw new BusinessException("Msg_37");
 			}
+			List<String> emplds = healthInsAssociationData.stream().map(InsLossDataExport::getEmpId).collect(Collectors.toList());
+			List<EmployeeInfoEx> employeeInfoList = employeeInfoAdapter.findBySIds(emplds);
+			List<PersonExport> personList = personExportAdapter.findByPids(employeeInfoList.stream().map(EmployeeInfoEx::getPId).collect(Collectors.toList()));
+			healthInsAssociationData.forEach(item -> {
+				PersonExport p = InsLossDataExport.getPersonInfor(employeeInfoList, personList, item.getEmpId());
+				item.setPersonName(p.getPersonNameGroup().getPersonName().getFullName());
+				item.setOldName(p.getPersonNameGroup().getTodokedeFullName().getFullName());
+				item.setPersonNameKana(p.getPersonNameGroup().getPersonName().getFullNameKana());
+				item.setOldNameKana(p.getPersonNameGroup().getTodokedeFullName().getFullNameKana());
+				item.setBirthDay(p.getBirthDate().toString("yyyy-MM-dd"));
+			});
 			healthInsAssociationData = this.order(domain, healthInsAssociationData);
 			notificationOfLossInsCSVFileGenerator.generate(exportServiceContext.getGeneratorContext(),
 					new LossNotificationInformation(healthInsAssociationData, null, null, domain, exportServiceContext.getQuery().getReference(), company, infor));
 		}
 
 		if(domain.getOutputFormat().get() == OutputFormatClass.THE_WELF_PEN) {
+
 			List<SocialInsurancePrefectureInformation> infor  = socialInsuranceInfor.findByHistory();
-			CompanyInfor company = socialInsurNotiCreateSetEx.getCompanyInfor(cid);
-			List<PensFundSubmissData> healthInsAssociationData = socialInsurNotiCreateSetEx.getHealthInsAssociation(empIds, cid, start, end);
-			if(healthInsAssociationData.isEmpty()) {
+			List<PensFundSubmissData> pensFundSubmissData = socialInsurNotiCreateSetEx.getHealthInsAssociation(empIds, cid, start, end);
+			if(pensFundSubmissData.isEmpty()) {
 				throw new BusinessException("Msg_37");
 			}
+			List<String> emplds = pensFundSubmissData.stream().map(PensFundSubmissData::getEmpId).collect(Collectors.toList());
+			List<EmployeeInfoEx> employeeInfoList = employeeInfoAdapter.findBySIds(emplds);
+			List<PersonExport> personList = personExportAdapter.findByPids(employeeInfoList.stream().map(EmployeeInfoEx::getPId).collect(Collectors.toList()));
+			pensFundSubmissData.forEach(item -> {
+				PersonExport p = InsLossDataExport.getPersonInfor(employeeInfoList, personList, item.getEmpId());
+				item.setPersonNameKana(p.getPersonNameGroup().getPersonName().getFullNameKana());
+				item.setOldNameKana(p.getPersonNameGroup().getTodokedeFullName().getFullNameKana());
+				item.setPersonName(p.getPersonNameGroup().getPersonName().getFullName());
+				item.setOldName(p.getPersonNameGroup().getTodokedeFullName().getFullName());
+				item.setBirthDay(p.getBirthDate().toString("yyyy-MM-dd"));
+			});
             if(domain.getOutputOrder() == SocialInsurOutOrder.EMPLOYEE_KANA_ORDER) {
-                healthInsAssociationData = healthInsAssociationData.stream().sorted(Comparator.comparing(PensFundSubmissData::getPersonNameKana)).collect(Collectors.toList());
+                pensFundSubmissData = pensFundSubmissData.stream().sorted(Comparator.comparing(PensFundSubmissData::getPersonNameKana)).collect(Collectors.toList());
             }
             if(domain.getOutputOrder() == SocialInsurOutOrder.HEAL_INSUR_NUMBER_ORDER) {
-                healthInsAssociationData = healthInsAssociationData.stream().sorted(Comparator.comparing(PensFundSubmissData::getHealInsNumber)).collect(Collectors.toList());
+                pensFundSubmissData = pensFundSubmissData.stream().sorted(Comparator.comparing(PensFundSubmissData::getHealInsNumber)).collect(Collectors.toList());
             }
             if(domain.getOutputOrder() == SocialInsurOutOrder.WELF_AREPEN_NUMBER_ORDER) {
-                healthInsAssociationData = healthInsAssociationData.stream().sorted(Comparator.comparing(PensFundSubmissData::getWelNumber)).collect(Collectors.toList());
+                pensFundSubmissData = pensFundSubmissData.stream().sorted(Comparator.comparing(PensFundSubmissData::getWelNumber)).collect(Collectors.toList());
             }
             if(domain.getOutputOrder() == SocialInsurOutOrder.HEAL_INSUR_NUMBER_UNION_ORDER) {
-                healthInsAssociationData = healthInsAssociationData.stream().sorted(Comparator.comparing(PensFundSubmissData::getHealInsUnionNumber)).collect(Collectors.toList());
+                pensFundSubmissData = pensFundSubmissData.stream().sorted(Comparator.comparing(PensFundSubmissData::getHealInsUnionNumber)).collect(Collectors.toList());
             }
             if(domain.getOutputOrder() == SocialInsurOutOrder.ORDER_BY_FUND) {
-                healthInsAssociationData = healthInsAssociationData.stream().sorted(Comparator.comparing(PensFundSubmissData::getMemberNumber)).collect(Collectors.toList());
+                pensFundSubmissData = pensFundSubmissData.stream().sorted(Comparator.comparing(PensFundSubmissData::getMemberNumber)).collect(Collectors.toList());
             }
 			notificationOfLossInsCSVFileGenerator.generate(exportServiceContext.getGeneratorContext(),
-					new LossNotificationInformation(null, null, healthInsAssociationData,domain, exportServiceContext.getQuery().getReference(), company, infor));
+					new LossNotificationInformation(null, null, pensFundSubmissData,domain, exportServiceContext.getQuery().getReference(), company, infor));
 		}
 
     }
