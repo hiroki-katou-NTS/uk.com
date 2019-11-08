@@ -12,12 +12,16 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.i18n.I18NText;
+import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.app.find.employment.dto.EmploymentDto;
 import nts.uk.ctx.bs.employee.app.find.employment.dto.EmploymentFindDto;
 import nts.uk.ctx.bs.employee.dom.employment.Employment;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentRepository;
+import nts.uk.ctx.bs.employee.dom.groupcommonmaster.GroupCommonMaster;
+import nts.uk.ctx.bs.employee.dom.groupcommonmaster.IGroupCommonMaster;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -30,6 +34,9 @@ public class DefaultEmploymentFinder implements EmploymentFinder {
 	/** The repository. */
 	@Inject
 	private EmploymentRepository repository;
+	
+	@Inject
+	private IGroupCommonMaster groupCommonMaster;
 	
 	/* (non-Javadoc)
 	 * @see nts.uk.shr.find.employment.EmploymentFinder#findAll()
@@ -61,6 +68,7 @@ public class DefaultEmploymentFinder implements EmploymentFinder {
 	@Override
 	public EmploymentFindDto findByCode(String employmentCode) {
 		String companyId = AppContexts.user().companyId();
+		String contractCd = AppContexts.user().contractCode();
 		EmploymentFindDto dto = new EmploymentFindDto();
 		Optional<Employment> employment = this.repository.findEmployment(companyId, employmentCode);
 		if (!employment.isPresent()) {
@@ -70,7 +78,23 @@ public class DefaultEmploymentFinder implements EmploymentFinder {
 		dto.setName(employment.get().getEmploymentName().v());
 		dto.setEmpExternalCode(employment.get().getEmpExternalCode());
 		dto.setMemo(employment.get().getMemo());
-		return dto;
+		dto.setempCommonMasterId(employment.get().getEmpCommonMasterId().get());
+		dto.setempCommonMasterItemId(employment.get().getEmpCommonMasterItemId().get());
+		int x = 1;
+		if( x == 0){
+			dto.setShowsGroupCompany(false);
+			return dto;	
+		}
+		else {	
+			//アルゴリズム「使用している共通マスタの取得」を実行する  --- (thực hiện thuật toán [lấy CommonMaster đang sử dụng])
+			GroupCommonMaster data =groupCommonMaster.getGroupCommonMasterEnableItem(contractCd, employment.get().getEmpCommonMasterId().get(), companyId, GeneralDate.today());
+			if (data.getCommonMasterItems().isEmpty()){
+				throw new BusinessException("Msg_1580");
+			}
+			dto.setShowsGroupCompany(true);
+			return dto;
+
+		}
 	}
 
 	/* (non-Javadoc)

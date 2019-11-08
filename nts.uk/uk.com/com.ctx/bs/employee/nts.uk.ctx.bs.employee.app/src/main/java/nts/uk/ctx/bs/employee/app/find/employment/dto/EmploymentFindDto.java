@@ -36,6 +36,7 @@ public class EmploymentFindDto extends EmploymentDto implements EmploymentSetMem
 		// グループ会社共通マスタ項目ID
 	private String empCommonMasterItemId;
 
+	private boolean showsGroupCompany;
 	/*
 	 * (non-Javadoc)
 	 * 

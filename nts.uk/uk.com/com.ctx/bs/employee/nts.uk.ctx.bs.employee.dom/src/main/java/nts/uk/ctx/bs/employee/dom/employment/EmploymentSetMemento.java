@@ -51,5 +51,7 @@ public interface EmploymentSetMemento {
 	//グループ会社共通マスタID
 	void setempCommonMasterId(String  empCommonMasterId);
 	// グループ会社共通マスタ項目ID
-	void setempCommonMasterItemId(String  empCommonMasterItemId);  
+	void setempCommonMasterItemId(String  empCommonMasterItemId); 
+	
+	
 }
