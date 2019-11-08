@@ -135,7 +135,7 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
 
                 //Imported（給与）「家族情報」
                 //Imported（給与）「家族現住所」
-                    Optional<CurrentFamilyResidence> cf = currentFamilyResidenceList.stream().filter(f-> f.getPersonId().equals(e.getPId())
+                    Optional<CurrentFamilyResidence> cf = currentFamilyResidenceList.stream().filter(f->f != null ? f.getPersonId().equals(e.getPId()) :false
                         && f.getStartDate().afterOrEquals(start)
                         && f.getStartDate().beforeOrEquals(end)).findFirst();
                     if(cf.isPresent()) {
@@ -184,7 +184,7 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
                     eList.add(e);
                 }*/
 
-                if( (e.getSpouseAddChangeDate() != null || e.getPersonAddChangeDate() != null) &&( !e.isEmpPenInsurance() || !e.isHealthInsurance())) {
+                if( (e.getSpouseAddChangeDate() != null || e.getPersonAddChangeDate() != null) &&( e.isEmpPenInsurance() || e.isHealthInsurance())) {
                     eList.add(e);
                 }
             });
