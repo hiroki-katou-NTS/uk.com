@@ -113,7 +113,10 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
             currentFamilyResidenceList = new ArrayList<>();
             employeeInfoExList.forEach(i->{
                 pIds.add(i.getPId());
-                currentFamilyResidenceList = CurrentFamilyResidence.getListFamily(familyMemberAdapter.getRomajiOfFamilySpouseByPid(i.getPId()), i.getPId());
+                CurrentFamilyResidence cr =  CurrentFamilyResidence.getListFamily(familyMemberAdapter.getRomajiOfFamilySpouseByPid(i.getPId()), i.getPId());
+                if(cr != null) {
+                    currentFamilyResidenceList.add(cr);
+                }
             });
 
             List<CurrentPersonResidence> currentPersonAddressList = CurrentPersonResidence.createListPerson(personExportAdapter.findByPids(pIds));
