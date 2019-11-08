@@ -184,7 +184,7 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
                     eList.add(e);
                 }*/
 
-                if( (e.getSpouseAddChangeDate() != null || e.getPersonAddChangeDate() != null) &&( !e.isEmpPenInsurance() || !e.isHealthInsurance())) {
+                if( (e.getSpouseAddChangeDate() != null || e.getPersonAddChangeDate() != null) &&( e.isEmpPenInsurance() || e.isHealthInsurance())) {
                     eList.add(e);
                 }
             });
