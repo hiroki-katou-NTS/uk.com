@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.pr.core.dom.adapter.person.family.FamilyMemberInfoEx;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +25,9 @@ import java.util.List;
 @AllArgsConstructor
 public class CurrentFamilyResidence {
 
-    private Integer familyId;
+    private String personId;
+
+    private String familyId;
 
     /** 郵便番号*/
     private String postCode;
@@ -66,26 +69,27 @@ public class CurrentFamilyResidence {
     private GeneralDate endDate;
 
     public CurrentFamilyResidence() {
-        this.familyId = 11;
         this.postCode = "5300025";
         this.address1Kana = "オオサカフ";
         this.address2Kana = "オオカサシキタクオウギマチ1-1-21";
         this.address1 = "大阪府";
         this.address2 = "大阪市北区扇町1-1-21";
         this.isLivingSeparate = false;
-        this.birthDate = GeneralDate.fromString("1980/01/02","yyyy/MM/dd" );
-        this.nameKana = "ホン ギルトンノツマ";
-        this.name = "HONG　KILDONGS　WIFE";
         this.reportNameKana = "トドケデ　ダミー";
         this.reportName = "届出　ダミー";
         this.startDate = GeneralDate.fromString("2019/01/01","yyyy/MM/dd" );
         this.endDate = GeneralDate.fromString("2020/01/01","yyyy/MM/dd" );
     }
 
-    public static List<CurrentFamilyResidence> getListFamily(){
-        List<CurrentFamilyResidence> list = new ArrayList<>();
-        list.add(new CurrentFamilyResidence());
-        return list;
+    public static CurrentFamilyResidence getListFamily(List<FamilyMemberInfoEx> fList, String personId ){
+        if(!fList.isEmpty()){
+            CurrentFamilyResidence c = new CurrentFamilyResidence();
+            c.setPersonId(personId);
+            c.setFamilyId(fList.get(0).getFamilyId());
+            c.setName(fList.get(0).getRomajiName().isPresent() ? fList.get(0).getRomajiName().get() : "");
+            c.setName(fList.get(0).getRomajiNameKana().isPresent() ? fList.get(0).getRomajiNameKana().get() : "");
+            c.setName(fList.get(0).getBirthday() != null ? fList.get(0).getBirthday(): "");
+        }
+        return null;
     }
-
 }
