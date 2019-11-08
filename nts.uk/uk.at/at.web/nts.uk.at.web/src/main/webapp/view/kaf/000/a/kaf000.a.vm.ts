@@ -31,7 +31,7 @@ module nts.uk.at.view.kaf000.a.viewmodel{
         reasonOutputMessFull: KnockoutObservable<string> = ko.observable('');
         reasonOutputMessDealine : string = nts.uk.resource.getText('KAF000_2');
         reasonOutputMessDealineFull: KnockoutObservable<string> = ko.observable('');
-        messageArea : KnockoutObservable<boolean> = ko.observable(true);
+        messageArea : KnockoutObservable<boolean> = ko.observable(false);
         
         errorFlag: number = 0;
         errorMsg: string = '';
@@ -127,6 +127,13 @@ module nts.uk.at.view.kaf000.a.viewmodel{
                     self.reasonOutputMessDealineFull(self.reasonOutputMessDealine + deadlineMsg.deadline);
                 }
                 self.messageArea(deadlineMsg.chkShow);
+                if(self.appType() == 0){
+                     if(deadlineMsg.chkShow) {  
+                        $('#message_ct').addClass("message");
+                    } else {
+                        $('#message_ct').addClass("message_none");
+                    }
+                }
                 dfd.resolve(data);
             }).fail((res)=>{
                 dfd.reject(res);    
