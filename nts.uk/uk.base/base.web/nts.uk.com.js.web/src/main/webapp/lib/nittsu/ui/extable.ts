@@ -4649,8 +4649,8 @@ module nts.uk.ui.exTable {
             let $horzSumContent = $container.querySelector("." + BODY_PRF + HORIZONTAL_SUM);
             width = width - parseFloat($.data($container, internal.X_OCCUPY));
             if (!util.isNullOrUndefined($detailHeader.style.maxWidth) 
-                && width >= parseFloat($detailHeader.style.maxWidth)) {
-                width = parseFloat($detailHeader.style.maxWidth);
+                && width >= parseFloat($detailHeader.style.maxWidth) + scrollWidth) {
+                width = parseFloat($detailHeader.style.maxWidth) + scrollWidth;
             }
             $detailHeader.style.width = (width - scrollWidth) + "px";
             $container.style.width = (parseFloat($container.style.width) 
