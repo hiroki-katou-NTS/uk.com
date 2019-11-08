@@ -16317,9 +16317,6 @@ var nts;
                                 else {
                                     $element.attr(TAB_INDEX, data[TAB_INDEX]);
                                 }
-                                // validate if has dataOptions
-                                $element
-                                    .trigger(VALIDATE, [true]);
                                 if (_.isNil(value)) {
                                     $element
                                         .igCombo("deselectAll");
