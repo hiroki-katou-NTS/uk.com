@@ -19,13 +19,13 @@ public class AsposeLicenseLoader {
 	@PostConstruct
 	public void initialize() {
 		loadLicense("Aspose.Cells.lic", is -> new com.aspose.cells.License().setLicense(is));
-//		loadLicense("Aspose.Pdf.lic", is -> {
-//			try {
-//				new com.aspose.pdf.License().setLicense(is);
-//			} catch (Exception e) {
-//				throw new RuntimeException(e);
-//			}
-//		});
+		loadLicense("Aspose.Pdf.lic", is -> {
+			try {
+				new com.aspose.pdf.License().setLicense(is);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		});
 	}
 	
 	private static void loadLicense(String licenseFileName, Consumer<InputStream> loadLicense) {
