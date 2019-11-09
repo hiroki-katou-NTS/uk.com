@@ -23,6 +23,8 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
 
     private static final String TEMPLATE_FILE = "report/ローマ字氏名届_帳票テンプレート.xlsx";
     private static final String FILE_NAME = "ローマ字氏名届";
+    private static int MALE = 1;
+    private static int PERSON = 0;
 
     @Inject
     private JapaneseErasAdapter adapter;
@@ -41,8 +43,6 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
                     this.pushData(worksheets,
                             data.getPersonTarget(),
                             data.getDate(),
-                            data.getFamilyMember(),
-                            data.getPersonInfo(),
                             data.getCompanyInfor(),
                             data.getRomajiNameNotiCreSetting(),
                             romajiNameNotiCreSetExport,
@@ -58,65 +58,62 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
     }
 
     private String pushDataCell(String stringPara, int i){
-        return stringPara.length() > 0 ?  stringPara.split("")[i].toString() : "";
+        return stringPara.length() > 0 ?  stringPara.split("")[i] : "";
     }
 
     private void pushData(WorksheetCollection worksheet,
                           String personTarget,
                           GeneralDate date,
-                          FamilyMember familyMember,
-                          PersonInfo personInfo,
                           CompanyInfor companyInfor,
                           RomajiNameNotiCreSetting romajiNameNotiCreSetting,
                           RomajiNameNotiCreSetExport romajiNameNotiCreSetExport,
                           String i){
         try {
+            this.selectShapesRadio(worksheet, findTypeGender(romajiNameNotiCreSetExport.getPerson().getGender(), PERSON) , i, "A1_3","A1_4");
             if ( personTarget.equals("0")) {
-                this.pushName(romajiNameNotiCreSetExport.getBasicPenNumber() != null ? romajiNameNotiCreSetExport.getBasicPenNumber().toString() : null, worksheet, i, 11, 1);
+                this.pushName(romajiNameNotiCreSetExport.getBasicPenNumber(), worksheet, i, 11, 1);
 
-                if ( personInfo != null) {
-                    this.pushBirthDay(personInfo.getBirthday(), worksheet, i);
-                    this.selectShapesRadio(worksheet, personInfo.getGender() , i, "A1_3","A1_4");
+                if ( romajiNameNotiCreSetExport.getPerson().getPersonId() != null) {
+                    this.pushBirthDay(romajiNameNotiCreSetExport.getPerson().getBirthDate().toString("yyyy-MM-dd"), worksheet, i);
                 }
 
-                this.pushName(personInfo.getPersonNameRomaji(), worksheet, i, 14, 4);
-                this.pushName(personInfo.getPersonNameKana(), worksheet, i, 13, 4);
+                this.pushName(romajiNameNotiCreSetExport.getPerson().getPersonNameGroup().getPersonRomanji().getFullName(), worksheet, i, 14, 4);
+                this.pushName(romajiNameNotiCreSetExport.getPerson().getPersonNameGroup().getPersonRomanji().getFullNameKana(), worksheet, i, 13, 4);
 
                 worksheet.get(i).getTextBoxes().get("A4_5").setText(Objects.toString(
-                        romajiNameNotiCreSetExport.getPersonalSetOther() == 1 && romajiNameNotiCreSetExport.getPersonalOtherReason() != null ? romajiNameNotiCreSetExport.getPersonalOtherReason().toString(): ""));
+                        romajiNameNotiCreSetExport.getPersonalSetOther() == 1 && romajiNameNotiCreSetExport.getPersonalOtherReason() != null ? romajiNameNotiCreSetExport.getPersonalOtherReason() : ""));
 
                 this.selectShapesRadio(worksheet, romajiNameNotiCreSetExport.getPersonalResidentCard() , i, "A1_5","A1_6" );
-                this.selectShapes(worksheet, romajiNameNotiCreSetExport.getPersonalShortResident() , i, "A4_1" );
-                this.selectShapes(worksheet, romajiNameNotiCreSetExport.getPersonalAddressOverseas(), i, "A4_2" );
-                this.selectShapes(worksheet, romajiNameNotiCreSetExport.getPersonalSetListed() , i, "A4_3" );
-                this.selectShapes(worksheet, romajiNameNotiCreSetExport.getPersonalSetOther() , i, "A4_4" );
+                selectShapes(worksheet, romajiNameNotiCreSetExport.getPersonalShortResident() , i, "A4_1" );
+                selectShapes(worksheet, romajiNameNotiCreSetExport.getPersonalAddressOverseas(), i, "A4_2" );
+                selectShapes(worksheet, romajiNameNotiCreSetExport.getPersonalSetListed() , i, "A4_3" );
+                selectShapes(worksheet, romajiNameNotiCreSetExport.getPersonalSetOther() , i, "A4_4" );
 
             } else {
 
-                this.pushName(romajiNameNotiCreSetExport.getFmBsPenNum() != null ? romajiNameNotiCreSetExport.getFmBsPenNum().toString() : null, worksheet, i, 11, 1);
-                if ( familyMember != null ) {
-                    this.pushBirthDay(familyMember.getBirthday(), worksheet, i);
-                    this.selectShapesRadio(worksheet, familyMember.getGender() , i, "A1_3","A1_4");
+                this.pushName(romajiNameNotiCreSetExport.getFmBsPenNum(), worksheet, i, 11, 1);
+                if ( romajiNameNotiCreSetExport.getFamilyMember() != null ) {
+                    this.pushBirthDay(romajiNameNotiCreSetExport.getFamilyMember().getBirthday(), worksheet, i);
                 }
 
-                this.pushName(familyMember.getFullName(), worksheet, i, 14, 4);
-                this.pushName(familyMember.getFullNameKana(), worksheet, i, 13, 4);
+                this.pushName(romajiNameNotiCreSetExport.getFamilyMember().getRomajiName().orElse(""), worksheet, i, 14, 4);
+                this.pushName(romajiNameNotiCreSetExport.getFamilyMember().getRomajiNameKana().orElse(""), worksheet, i, 13, 4);
 
                 worksheet.get(i).getTextBoxes().get("A4_5").setText(Objects.toString(
                         romajiNameNotiCreSetExport.getSpouseSetOther() == 1 && romajiNameNotiCreSetExport.getSpouseOtherReason() != null ? romajiNameNotiCreSetExport.getSpouseOtherReason().toString(): ""));
                 this.selectShapesRadio(worksheet, romajiNameNotiCreSetExport.getSpouseResidentCard() , i, "A1_5","A1_6" );
-                this.selectShapes(worksheet, romajiNameNotiCreSetExport.getSpouseShortResident(), i, "A4_1" );
-                this.selectShapes(worksheet, romajiNameNotiCreSetExport.getSpouseAddressOverseas() , i, "A4_2" );
-                this.selectShapes(worksheet, romajiNameNotiCreSetExport.getSpouseSetListed() , i, "A4_3" );
-                this.selectShapes(worksheet,romajiNameNotiCreSetExport.getSpouseSetOther() , i, "A4_4" );
+                selectShapes(worksheet, romajiNameNotiCreSetExport.getSpouseShortResident(), i, "A4_1" );
+                selectShapes(worksheet, romajiNameNotiCreSetExport.getSpouseAddressOverseas() , i, "A4_2" );
+                selectShapes(worksheet, romajiNameNotiCreSetExport.getSpouseSetListed() , i, "A4_3" );
+                selectShapes(worksheet,romajiNameNotiCreSetExport.getSpouseSetOther() , i, "A4_4" );
             }
 
             if( romajiNameNotiCreSetting.getAddressOutputClass().equals(BusinessDivision.OUTPUT_COMPANY_NAME)){
-                worksheet.getRangeByName(i + "!A3_1").setValue(Objects.toString(companyInfor != null ? formatPostCode(companyInfor.getPostCd().toString()) : " 〒　　　　　－"));
+                worksheet.getRangeByName(i + "!A3_1").setValue(Objects.toString(companyInfor != null ? formatPostCode(companyInfor.getPostCd()) : " 〒　　　　　－"));
                 worksheet.getRangeByName(i + "!A3_3").setValue(Objects.toString(companyInfor != null ? companyInfor.getAdd_1()+companyInfor.getAdd_2(): ""));
                 worksheet.getRangeByName(i + "!A3_4").setValue(Objects.toString(companyInfor != null ?  companyInfor.getCompanyName(): ""));
                 worksheet.getRangeByName(i + "!A3_5").setValue(Objects.toString(companyInfor != null ?  companyInfor.getRepname(): ""));
-                worksheet.getRangeByName(i + "!A3_6").setValue(Objects.toString(companyInfor != null ? formatPhone( companyInfor.getPhoneNum().toString(), 1) + "(" + formatPhone( companyInfor.getPhoneNum().toString(), 2) +")" + formatPhone( companyInfor.getPhoneNum().toString(), 3): "（　　　　　　　　　）　　　　　　　　　－"));
+                worksheet.getRangeByName(i + "!A3_6").setValue(Objects.toString(companyInfor != null ? formatPhone( companyInfor.getPhoneNum(), 1) + "(" + formatPhone( companyInfor.getPhoneNum(), 2) +")" + formatPhone( companyInfor.getPhoneNum().toString(), 3): "（　　　　　　　　　）　　　　　　　　　－"));
 
             } else if (romajiNameNotiCreSetting.getAddressOutputClass().equals(BusinessDivision.OUTPUT_SIC_INSURES)) {
                 worksheet.getRangeByName(i + "!A3_1").setValue(Objects.toString(formatPostCode(romajiNameNotiCreSetExport.getPostalCode()), " 〒　　　　　－"));
@@ -153,14 +150,14 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
     }
 
     public static void selectShapes(WorksheetCollection worksheets, Integer value, String sheetName, String option){
-        if( value!= null && value.intValue() != 1){
+        if( value!= null && value != 1){
             worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(option));
         }
     }
 
     private void selectShapesRadio(WorksheetCollection worksheets, Integer value, String sheetName, String option1, String option2){
         if (value == null )return;
-        worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(value.intValue() != 1 ? option1 : option2));
+        worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(value != 1 ? option1 : option2));
     }
 
     private static String formatPostCode(String pc) {
@@ -180,6 +177,16 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
         } else {
             return  " 〒　　　　　－";
         }
+    }
+
+    private int findTypeGender(int gender, int type){
+        if((gender == MALE) && (type == PERSON )) {
+            return 1;
+        }
+        if((gender != MALE) && (type != PERSON )) {
+            return 1;
+        }
+        return 0;
     }
 
     public static String formatPhone(String phone, int stt) {

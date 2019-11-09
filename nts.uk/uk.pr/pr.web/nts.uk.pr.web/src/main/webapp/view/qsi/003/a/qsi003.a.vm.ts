@@ -79,18 +79,6 @@ module nts.uk.pr.view.qsi003.a.viewmodel {
             modal("/view/qsi/003/b/index.xhtml");
         }
 
-        getProgramName(){
-            var namePath = nts.uk.text.format("sys/portal/standardmenu/findProgramName/{0}/{1}", "QSI003", "A");
-            nts.uk.request.ajax("com", namePath).done((value) => {
-                if(!nts.uk.util.isNullOrEmpty(value)){
-                    $("#pg-name").text(value);
-                }else{
-                    $("#pg-name").text('');
-                }
-            });
-        }
-
-
         getRomajiNameNoti(){
             var self = this;
             nts.uk.pr.view.qsi003.a.service.getRomajiNameNotiCreSettingById().done(function (data: any) {

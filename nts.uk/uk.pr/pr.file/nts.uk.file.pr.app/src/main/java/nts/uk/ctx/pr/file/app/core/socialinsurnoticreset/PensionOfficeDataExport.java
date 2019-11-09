@@ -98,8 +98,13 @@ public class PensionOfficeDataExport {
     private String healInsInherenPr;
 
     private String healUnionNumber;
+
     private String hisId;
+
     private int endDate;
+
     private int bussinesArrSybol;
+
+    private String sid;
 
 }

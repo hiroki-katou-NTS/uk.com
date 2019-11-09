@@ -46,6 +46,7 @@ public class EmpPenFundSubData {
     private int prefectureNo;
 
     private String endDate;
+
     private String startDate;
 
     private String personName;
@@ -127,7 +128,11 @@ public class EmpPenFundSubData {
     private String addKana;
 
     private String phoneNumber;
-     private String companyName ;
-     private String repName;
+
+    private String companyName ;
+
+    private String repName;
+
+    private String sid;
 
 }
