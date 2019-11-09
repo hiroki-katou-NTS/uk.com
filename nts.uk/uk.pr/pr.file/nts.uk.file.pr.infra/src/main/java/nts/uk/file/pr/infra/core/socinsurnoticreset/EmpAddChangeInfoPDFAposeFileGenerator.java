@@ -260,7 +260,7 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
 
             worksheet.getRangeByName(i + "!A1_7").setValue(this.fillAddress(empAddChangeInfoExport.getAdd1KanaPs(), empAddChangeInfoExport.getAdd2KanaPs()));
             worksheet.getRangeByName(i + "!A1_8").setValue(this.fillAddress(empAddChangeInfoExport.getAdd1Ps(), empAddChangeInfoExport.getAdd2Ps()));
-            worksheet.getRangeByName(i + "!A1_9").setValue(this.fillAddress(empAddChangeInfoExport.getAdd1BeforeChangePs(), empAddChangeInfoExport.getAdd1BeforeChangePs()));
+            worksheet.getRangeByName(i + "!A1_9").setValue(this.fillAddress(empAddChangeInfoExport.getAdd1BeforeChangePs(), empAddChangeInfoExport.getAdd2BeforeChangePs()));
 
             JapaneseDate sDayPs = this.toJapaneseDate(empAddChangeInfoExport.getStartDatePs());
             this.fillByCell(worksheet , i,"A1_10_1", empAddChangeInfoExport.getStartDatePs() != null ? NotificationOfLossInsPDFAposeFileGenerator.convertJpDate(sDayPs) : "",0 );
