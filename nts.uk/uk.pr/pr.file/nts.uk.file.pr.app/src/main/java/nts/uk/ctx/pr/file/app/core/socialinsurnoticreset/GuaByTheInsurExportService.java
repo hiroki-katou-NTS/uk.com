@@ -334,7 +334,7 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
                 //C2_21
                 temp.setQualificationDate(element[20] != null ? element[20].toString() : "");
             }
-            this.getPersonInfor(employeeInfoList, personList, temp, element[38].toString(), ((BigDecimal)element[13]).intValue());
+            this.getPersonInfor(employeeInfoList, personList, temp, element[38].toString(), ((BigDecimal)element[7]).intValue());
             temp.setHisId(element[13] != null ? element[13].toString() : "");
             //Male(1), Female(2)
             String hisId = element[13] != null ? element[13].toString() : "";

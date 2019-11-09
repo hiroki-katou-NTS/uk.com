@@ -27,7 +27,7 @@ public class CurrentFamilyResidence {
 
     private String personId;
 
-    private String familyId;
+    private Integer familyId;
 
     /** 郵便番号*/
     private String postCode;
@@ -85,11 +85,14 @@ public class CurrentFamilyResidence {
         if(!fList.isEmpty()){
             CurrentFamilyResidence c = new CurrentFamilyResidence();
             c.setPersonId(personId);
-            c.setFamilyId(fList.get(0).getFamilyId());
+            c.setFamilyId(Integer.parseInt(fList.get(0).getFamilyId()));
             c.setName(fList.get(0).getRomajiName().isPresent() ? fList.get(0).getRomajiName().get() : "");
             c.setName(fList.get(0).getRomajiNameKana().isPresent() ? fList.get(0).getRomajiNameKana().get() : "");
             c.setName(fList.get(0).getBirthday() != null ? fList.get(0).getBirthday(): "");
+            return c;
+        } else {
+            return null;
         }
-        return null;
+
     }
 }

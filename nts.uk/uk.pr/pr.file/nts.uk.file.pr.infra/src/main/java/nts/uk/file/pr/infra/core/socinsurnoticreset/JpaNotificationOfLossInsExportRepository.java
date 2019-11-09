@@ -229,7 +229,7 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
             exportSQL.append("      CONTINUE_REEMPLOYED_ATR,");
             exportSQL.append("      KISONEN_NUM,");
             exportSQL.append("      OVER_70_ATR,");
-            exportSQL.append("      NO_MYNUM_ATR");
+            exportSQL.append("      NO_MYNUM_ATR,");
             exportSQL.append("      qi.SID");
             exportSQL.append("  FROM ");
             exportSQL.append("         (SELECT *");
@@ -299,23 +299,24 @@ public class JpaNotificationOfLossInsExportRepository extends JpaRepository impl
                     .welPenOfficeNumber(i[17] != null ? i[17].toString() : "")
                     .prefectureNo(i[18] != null ? ((BigDecimal) i[18]).intValue() : 0)
                     .endDate(i[19] != null ? i[19].toString() : "")
-                    .portCd(i[25] != null ? i[25].toString() : "")
-                    .retirementAddBefore(i[26] != null ? i[26].toString() : "")
-                    .retirementAdd(i[27] != null ? i[27].toString() : "")
-                    .reasonForLoss(i[28] != null ? i[28].toString() : "")
-                    .addAppCtgSal(i[29] != null ? i[29].toString() : "")
-                    .reason(i[30] != null ? i[30].toString() : "")
-                    .addSal(i[31] != null ? i[31].toString() : "")
-                    .standSal(i[32] != null ? i[32].toString() : "")
-                    .secAddSalary(i[33] != null ? i[33].toString() : "")
-                    .secStandSal(i[34] != null ? i[34].toString() : "")
-                    .cause(i[35] != null ? ((BigDecimal) i[35]).intValue() : 0)
-                    .isMoreEmp(i[36] != null ? i[36].toString() : "")
-                    .otherReason(i[37] != null ? i[37].toString() : "")
-                    .continReemAfterRetirement(i[38] != null ? i[38].toString() : "")
-                    .basicPenNumber(i[39] != null ? i[39].toString() : "")
-                    .percentOrMore(i[40] != null ? i[40].toString() : "")
-                    .livingAbroad(i[41] != null ? i[41].toString() : "")
+                    .portCd(i[20] != null ? i[20].toString() : "")
+                    .retirementAddBefore(i[21] != null ? i[21].toString() : "")
+                    .retirementAdd(i[22] != null ? i[22].toString() : "")
+                    .reasonForLoss(i[23] != null ? i[23].toString() : "")
+                    .addAppCtgSal(i[24] != null ? i[24].toString() : "")
+                    .reason(i[25] != null ? i[25].toString() : "")
+                    .addSal(i[26] != null ? i[26].toString() : "")
+                    .standSal(i[27] != null ? i[27].toString() : "")
+                    .secAddSalary(i[28] != null ? i[28].toString() : "")
+                    .secStandSal(i[29] != null ? i[29].toString() : "")
+                    .cause(i[30] != null ? ((BigDecimal) i[30]).intValue() : 0)
+                    .isMoreEmp(i[31] != null ? i[31].toString() : "")
+                    .otherReason(i[32] != null ? i[32].toString() : "")
+                    .continReemAfterRetirement(i[33] != null ? i[33].toString() : "")
+                    .basicPenNumber(i[34] != null ? i[34].toString() : "")
+                    .percentOrMore(i[35] != null ? i[35].toString() : "")
+                    .livingAbroad(i[36] != null ? i[36].toString() : "")
+                    .empId(i[37].toString())
                     .build()).collect(Collectors.toList());
         }catch (Exception e) {
             return Collections.emptyList();

@@ -18,7 +18,7 @@ public class EmpAddChangeInfoExport {
     private String empId;
     private String pId;
     private String companyId;
-    private String familyId;
+    private Integer familyId;
 
     /** 個人番号 - b - A1_1*/
     private String basicPenNumber;

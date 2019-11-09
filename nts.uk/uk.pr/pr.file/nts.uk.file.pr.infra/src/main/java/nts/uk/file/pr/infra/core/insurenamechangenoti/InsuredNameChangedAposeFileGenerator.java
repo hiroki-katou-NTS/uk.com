@@ -68,12 +68,15 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
     private void writePDF(WorksheetCollection wsc, InsuredNameChangedNotiExportData data, SocialInsurNotiCreateSet socialInsurNotiCreateSet, int index, CompanyInfor company) {
         
         Worksheet ws = wsc.get(index);
-        String beforeOldName = data.getPerson().getPersonNameGroup().getPersonName().getFullName().split("　")[0];
-        String afterOldName = data.getPerson().getPersonNameGroup().getPersonName().getFullName().split("　")[1];
-        String beforeName = data.getPerson().getPersonNameGroup().getPersonName().getFullName().split("　")[0];
-        String afterName = data.getPerson().getPersonNameGroup().getPersonName().getFullName().split("　")[1];
-        String beforeNameKana = data.getPerson().getPersonNameGroup().getPersonName().getFullNameKana().split("　")[0];
-        String afterNameKana = data.getPerson().getPersonNameGroup().getPersonName().getFullNameKana().split("　")[1];
+        String oldName = data.getPerson().getPersonNameGroup().getPersonName().getFullName();
+        String beforeOldName = oldName.split("　")[0];
+        String afterOldName = oldName.split("　").length > 1 ? oldName.split("　")[1] : "";
+        String name = data.getPerson().getPersonNameGroup().getPersonName().getFullName();
+        String beforeName = name.split("　")[0];
+        String afterName =  name.split("　").length > 1 ? name.split("　")[1] : "";
+        String nameKana = data.getPerson().getPersonNameGroup().getPersonName().getFullNameKana();
+        String beforeNameKana = nameKana.split("　")[0];
+        String afterNameKana = nameKana.split("　").length > 1 ? nameKana.split("　")[1] : "";
         String address = "";
         String phoneNumber = "";
         String healthInsuranceOfficeNumber1[];
@@ -327,12 +330,14 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
         String postalCode = "";
         String[] numberSplit = number.split("-");
         String[] temp = new String[2];
-
+        if("".equals(number)) {
+            return number;
+        }
         if(numberSplit.length > 1){
             postalCode = "〒" + numberSplit[0] + "－" + numberSplit[1];
         }else{
-            temp[0] = number.substring(0,3);
-            temp[1] = number.substring(3,number.length());
+            temp[0] = number.length() > 2 ? number.substring(0,3) : number;
+            temp[1] = number.length() > 3 ? number.substring(3,number.length()) : "";
             postalCode = "〒" + temp[0] + "－" + temp[1];
         }
         return postalCode;
