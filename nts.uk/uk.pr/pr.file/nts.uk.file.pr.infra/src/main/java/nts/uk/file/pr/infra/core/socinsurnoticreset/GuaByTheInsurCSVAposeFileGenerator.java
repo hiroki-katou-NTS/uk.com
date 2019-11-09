@@ -521,10 +521,7 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
         cells.get(startRow, 9+ columnStart).setValue("郵便番号 4 -dummy data");
         cells.get(startRow, 10+ columnStart).setValue("住所カナ -dummy data");
         cells.get(startRow, 11+ columnStart).setValue("住所 -dummy data"+",");
-//        cells.get(startRow, 29).setValue(formatPortCd(portCd, 2));
-//        cells.get(startRow, 30).setValue(addKana);
-//        cells.get(startRow, 31).setValue(add);
-//        cells.get(startRow, 32).setValue("");
+//
         cells.get(startRow, 12+ columnStart).setValue(data.getFunMember());
         cells.get(startRow, 12+ columnStart).setValue(cells.get(startRow, 12+ columnStart).getValue()+","+data.getWelPenOfficeNumber());
         cells.get(startRow, 12+ columnStart).setValue(cells.get(startRow, 12+ columnStart).getValue()+","+data.getMemberNumber());

@@ -83,7 +83,8 @@ public class RomajiNameNotiCreSetExportPDFService extends ExportService<RomajiNa
             romajiNameNotiCreSetExport.setPerson(p);
             List<FamilyMemberInfoEx> family = familyMemberAdapter.getRomajiOfFamilySpouseByPid(p.getPersonId());
             romajiNameNotiCreSetExport.setFamilyMember(!family.isEmpty() ? family.get(0) : null);
-            List<RomajiNameNotiCreSetExport> empFamilySocialInsList = romajiNameNotiCreSetExReposity.getEmpFamilySocialInsList(empIds, cid, Integer.valueOf(romajiNameNotiCreSetExport.getFamilyMember().getFamilyId()), exportServiceContext.getQuery().getDate());
+            List<RomajiNameNotiCreSetExport> empFamilySocialInsList = romajiNameNotiCreSetExport.getFamilyMember() != null ?
+                    romajiNameNotiCreSetExReposity.getEmpFamilySocialInsList(empIds, cid, Integer.valueOf(romajiNameNotiCreSetExport.getFamilyMember().getFamilyId()), exportServiceContext.getQuery().getDate()) : new ArrayList<>();
             Optional<RomajiNameNotiCreSetExport> e = empFamilySocialInsList.stream().filter(item -> item.getEmpId().equals(i.getEmpId())).findFirst();
             Optional<RomajiNameNotiCreSetExport> f = empBasicPenNumInforList.stream().filter(item -> item.getEmpId().equals(i.getEmpId())).findFirst();
             Optional<RomajiNameNotiCreSetExport> l = socialInsuranceOfficeList.stream().filter(item -> item.getEmpId().equals(i.getEmpId())).findFirst();
@@ -143,7 +144,5 @@ public class RomajiNameNotiCreSetExportPDFService extends ExportService<RomajiNa
         }
         return person;
     }
-
-
 
 }

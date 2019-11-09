@@ -300,7 +300,8 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("      oi.REPRESENTATIVE_NAME, ");
         exportSQL.append("      oi.POSTAL_CODE, ");
         exportSQL.append("      oi.ADDRESS_1,");
-        exportSQL.append("      oi.ADDRESS_2");
+        exportSQL.append("      oi.ADDRESS_2,");
+        exportSQL.append("      qi.SID");
         exportSQL.append("   FROM    ");
         exportSQL.append("       (SELECT *");
         exportSQL.append("         FROM QQSDT_KENHO_INFO ");
@@ -391,6 +392,7 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
                 .repName(i[33] == null ? "" : i[33].toString())
                 .portCd(i[34] == null ? "" : i[34].toString())
                 .add(i[35] != null ? i[35].toString() : "" + " " + (i[36] != null ? i[36].toString() : ""))
+                .sid(i[37].toString())
                 .build()
         ).collect(Collectors.toList());
     }
@@ -418,7 +420,6 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("      WELFARE_PENSION_OFFICE_NUMBER,");
         exportSQL.append("      WELFARE_PENSION_PREFECTURE_NO,");
         exportSQL.append("      qi.START_DATE,");
-        exportSQL.append("      POSTALCD_AFTER_RETIRE,");
         exportSQL.append("      ADDRESS_KN_AFTER_RETIRE,");
         exportSQL.append("      ADDRESS_AFTER_RETIRE,");
         exportSQL.append("      LOSS_REASON_ATR,");
@@ -429,15 +430,14 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("      S_ADD_MONTHLY_AMOUNT_2,");
         exportSQL.append("      S_SRD_MONTHLY_AMOUNT_2,");
         exportSQL.append("      LOSS_CASE_ATR,");
+        exportSQL.append("      MULTI_OFFICE_ATR,");
         exportSQL.append("      OTHER_REASONS,");
         exportSQL.append("      CONTINUE_REEMPLOYED_ATR,");
         exportSQL.append("      KISONEN_NUM,");
-        exportSQL.append("      GENDER,");
         exportSQL.append("      COAL_MINER_ATR,");
         exportSQL.append("      SYAHO_GET_ATR,");
         exportSQL.append("      OVER_70_ATR,");
         exportSQL.append("      BIKO_SONOTA_ATR,");
-        exportSQL.append("      CONTINUE_REEMPLOYED_ATR,");
         exportSQL.append("      HOSYU_IN_KIND,");
         exportSQL.append("      HOSYU_CURR,");
         exportSQL.append("      HOSYU_MONTHLY,");
@@ -457,7 +457,8 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("      oi.PHONE_NUMBER, ");
         exportSQL.append("      oi.REPRESENTATIVE_NAME, ");
         exportSQL.append("      oi.POSTAL_CODE, ");
-        exportSQL.append("      BIKO_SONOTA_REASON ");
+        exportSQL.append("      BIKO_SONOTA_REASON,");
+        exportSQL.append("      his.SID");
         exportSQL.append("  FROM ");
         exportSQL.append("         (SELECT *");
         exportSQL.append("         FROM QQSDT_KOUHO_INFO ");
@@ -535,29 +536,29 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
                 .otherReason(i[30] == null ? "" : i[30].toString())
                 .continReemAfterRetirement(i[31] == null ? "" : i[31].toString())
                 .basicPenNumber(i[32] == null ? "" : i[32].toString())
-                .gender(Integer.valueOf(i[33].toString()))
-                .underDivision(Integer.valueOf(i[34].toString()))
-                .qualifiDistin(i[35] == null ? "" : i[35].toString())
-                .percentOrMore(i[36] == null ? 0 : ((BigDecimal)i[36]).intValue())
-                .remarksOther(i[37] == null ? 0 : ((BigDecimal)i[37]).intValue())
-                .remunMonthlyAmountKind(i[38] == null ? 0 : ((BigDecimal)i[38]).intValue())
-                .remunMonthlyAmount(i[39] == null ? 0 : ((BigDecimal)i[29]).intValue())
-                .totalMonthlyRemun(i[40] == null ? 0 : ((BigDecimal)i[40]).intValue())
-                .livingAbroad(i[41] == null ? 0 : ((BigDecimal)i[41]).intValue())
-                .reasonOther(i[42] == null ? 0 : ((BigDecimal)i[42]).intValue())
-                .reasonAndOtherContents(i[43] == null ? "" : i[43].toString())
-                .shortStay(i[44] == null ? 0 : ((BigDecimal)i[44]).intValue())
-                .depenAppoint(i[45] == null ? 0 : ((BigDecimal)i[45]).intValue())
-                .subType(i[46] == null ?  0 : ((BigDecimal)i[46]).intValue())
-                .appFormCls(i[47] == null ? 0 : ((BigDecimal)i[47]).intValue())
-                .hisId(i[48] == null ? "" : i[48].toString())
-                .add(i[49] != null ? i[49].toString() : "" + " " + (i[50] != null ? i[50].toString() : ""))
-                .addKana(i[51] != null ? i[51].toString() : "" + " " + (i[52] != null ? i[52].toString() : ""))
-                .companyName(i[53] == null ? "" : i[53].toString())
-                .phoneNumber(i[54] == null ? "" : i[54].toString())
-                .repName(i[55] == null ? "" : i[55].toString())
-                .portCd(i[56] == null ? "" : i[56].toString())
-                .remarksAndOtherContents(i[57] == null ? "" : i[57].toString())
+                .underDivision(Integer.valueOf(i[33].toString()))
+                .qualifiDistin(i[34] == null ? "" : i[34].toString())
+                .percentOrMore(i[35] == null ? 0 : ((BigDecimal)i[35]).intValue())
+                .remarksOther(i[36] == null ? 0 : ((BigDecimal)i[36]).intValue())
+                .remunMonthlyAmountKind(i[37] == null ? 0 : ((BigDecimal)i[37]).intValue())
+                .remunMonthlyAmount(i[38] == null ? 0 : ((BigDecimal)i[38]).intValue())
+                .totalMonthlyRemun(i[39] == null ? 0 : ((BigDecimal)i[39]).intValue())
+                .livingAbroad(i[40] == null ? 0 : ((BigDecimal)i[40]).intValue())
+                .reasonOther(i[41] == null ? 0 : ((BigDecimal)i[41]).intValue())
+                .reasonAndOtherContents(i[42] == null ? "" : i[42].toString())
+                .shortStay(i[43] == null ? 0 : ((BigDecimal)i[43]).intValue())
+                .depenAppoint(i[44] == null ? 0 : ((BigDecimal)i[44]).intValue())
+                .subType(i[45] == null ?  0 : ((BigDecimal)i[45]).intValue())
+                .appFormCls(i[46] == null ? 0 : ((BigDecimal)i[46]).intValue())
+                .hisId(i[47] == null ? "" : i[47].toString())
+                .add(i[48] != null ? i[48].toString() : "" + " " + (i[49] != null ? i[49].toString() : ""))
+                .addKana(i[50] != null ? i[50].toString() : "" + " " + (i[51] != null ? i[51].toString() : ""))
+                .companyName(i[52] == null ? "" : i[52].toString())
+                .phoneNumber(i[53] == null ? "" : i[53].toString())
+                .repName(i[54] == null ? "" : i[54].toString())
+                .portCd(i[55] == null ? "" : i[55].toString())
+                .remarksAndOtherContents(i[56] == null ? "" : i[56].toString())
+                .sid(i[57].toString())
                 .build()
         ).collect(Collectors.toList());
     }
