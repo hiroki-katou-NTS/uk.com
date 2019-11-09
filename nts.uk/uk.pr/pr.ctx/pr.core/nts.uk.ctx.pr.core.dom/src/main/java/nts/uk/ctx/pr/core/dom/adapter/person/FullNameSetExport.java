@@ -8,11 +8,19 @@ import lombok.Setter;
 @Setter
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
 public class FullNameSetExport {
-    /** 氏名 - FullName */
+    /**
+     * 氏名 - FullName
+     */
     private String fullName;
 
-    /** 氏名カナ - FullNameKana */
+    /**
+     * 氏名カナ - FullNameKana
+     */
     private String fullNameKana;
+
+    public FullNameSetExport(FullNameSetExport fullName) {
+        this.fullName = fullName.fullName == null ? "" : fullName.fullName;
+        this.fullNameKana = fullName.fullNameKana == null ? "" : fullName.fullNameKana;
+    }
 }

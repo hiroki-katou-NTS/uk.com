@@ -4,9 +4,17 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.uk.ctx.pr.core.dom.adapter.company.CompanyInfor;
+import nts.uk.ctx.pr.core.dom.adapter.company.CompanyInforAdapter;
+import nts.uk.ctx.pr.core.dom.adapter.employee.employee.EmployeeInfoAdapter;
+import nts.uk.ctx.pr.core.dom.adapter.employee.employee.EmployeeInfoEx;
+import nts.uk.ctx.pr.core.dom.adapter.person.PersonExport;
+import nts.uk.ctx.pr.core.dom.adapter.person.PersonExportAdapter;
+import nts.uk.ctx.pr.core.dom.adapter.person.family.FamilyMemberAdapter;
+import nts.uk.ctx.pr.core.dom.adapter.person.family.FamilyMemberInfoEx;
 import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsuranceOffice;
 import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsuranceOfficeRepository;
 import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.*;
+import nts.uk.shr.com.company.CompanyAdapter;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
@@ -14,6 +22,7 @@ import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Stateless
 public class RomajiNameNotiCreSetExportPDFService extends ExportService<RomajiNameNotiCreSetExportQuery>{
@@ -30,24 +39,31 @@ public class RomajiNameNotiCreSetExportPDFService extends ExportService<RomajiNa
     @Inject
     private RomajiNameNotiCreSetExReposity romajiNameNotiCreSetExReposity;
 
+    @Inject
+    private CompanyInforAdapter companyAdapter;
+
+    @Inject
+    private FamilyMemberAdapter familyMemberAdapter;
+
+    @Inject
+    private EmployeeInfoAdapter employeeInfoAdapter;
+
+    @Inject
+    private PersonExportAdapter personExportAdapter;
+
     @Override
     protected void handle(ExportServiceContext<RomajiNameNotiCreSetExportQuery> exportServiceContext) {
         String cid = AppContexts.user().companyId();
-        romajiNameNotiCreSetRepository.register(new RomajiNameNotiCreSetting(cid,AppContexts.user().userId(),exportServiceContext.getQuery().getAddressOutputClass()));
-        CompanyInfor companyInfor = null;
-        RomajiNameNotiCreSetting romajiNameNotiCreSetting = romajiNameNotiCreSetRepository.getRomajiNameNotiCreSettingById().get();
-        if (romajiNameNotiCreSetting.getAddressOutputClass().value == BusinessDivision.OUTPUT_COMPANY_NAME.value) {
-            companyInfor = new CompanyInfor("1008945", "千代田区", "霞ヶ関１－２－２", "年金サービス 株式会社", "年金 良一", "0312234567");
-        } else if (romajiNameNotiCreSetting.getAddressOutputClass().value == BusinessDivision.OUTPUT_SIC_INSURES.value){
+        RomajiNameNotiCreSetting romajiNameNotiCreSetting = new RomajiNameNotiCreSetting(cid,AppContexts.user().userId(),exportServiceContext.getQuery().getAddressOutputClass());
+        romajiNameNotiCreSetRepository.register(romajiNameNotiCreSetting);
+        CompanyInfor companyInfor = companyAdapter.getCompanyNotAbolitionByCid(cid);
+        if (romajiNameNotiCreSetting.getAddressOutputClass() == BusinessDivision.OUTPUT_SIC_INSURES){
             List<SocialInsuranceOffice> list = socialInsuranceOfficeRepository.findByCid(cid);
             if (list.isEmpty()) {
                 throw new BusinessException("MsgQ_93");
             }
         }
-
         List<String> empIdList = exportServiceContext.getQuery().getEmpIds();
-        FamilyMember familyMember = new FamilyMember("1980-01-02", "HONG KILDONGS WIFE", "11" , 2, "ホン ギルトンノツマ");
-        PersonInfo personInfo = new PersonInfo("1980-01-01", "HONG KILDONG", "ホン ギルトン", "ADB3171F-B5A7-40A7-9B8A-DAE80EECB44B", 1);
         List<RomajiNameNotiCreSetExport> empNameReportList = romajiNameNotiCreSetExReposity.getEmpNameReportList(empIdList, cid);
         if(empNameReportList.isEmpty()){
             throw new BusinessException("MsgQ_37");
@@ -56,33 +72,32 @@ public class RomajiNameNotiCreSetExportPDFService extends ExportService<RomajiNa
         for (RomajiNameNotiCreSetExport list: empNameReportList) {
             empIds.add(list.getEmpId());
         }
-
+        List<EmployeeInfoEx> employeeInfoList = employeeInfoAdapter.findBySIds(empIds);
+        List<PersonExport> personList = personExportAdapter.findByPids(employeeInfoList.stream().map(EmployeeInfoEx::getPId).collect(Collectors.toList()));
         List<RomajiNameNotiCreSetExport> socialInsuranceOfficeList = romajiNameNotiCreSetExReposity.getSocialInsuranceOfficeList(empIds, cid);
-        List<RomajiNameNotiCreSetExport> empFamilySocialInsList = romajiNameNotiCreSetExReposity.getEmpFamilySocialInsList(empIds, cid, Integer.valueOf(familyMember.getFamilyMemberId()), exportServiceContext.getQuery().getDate());
         List<RomajiNameNotiCreSetExport> empBasicPenNumInforList = romajiNameNotiCreSetExReposity.getEmpBasicPenNumInforList(empIds, cid);
         List<RomajiNameNotiCreSetExport> dataList  = new ArrayList<>();
-        empNameReportList.stream().forEach(i -> {
+        empNameReportList.forEach(i -> {
             RomajiNameNotiCreSetExport romajiNameNotiCreSetExport = new RomajiNameNotiCreSetExport();
+            PersonExport p = getPersonInfor(employeeInfoList, personList,  i.getEmpId());
+            romajiNameNotiCreSetExport.setPerson(p);
+            List<FamilyMemberInfoEx> family = familyMemberAdapter.getRomajiOfFamilySpouseByPid(p.getPersonId());
+            romajiNameNotiCreSetExport.setFamilyMember(!family.isEmpty() ? family.get(0) : null);
+            List<RomajiNameNotiCreSetExport> empFamilySocialInsList = romajiNameNotiCreSetExReposity.getEmpFamilySocialInsList(empIds, cid, Integer.valueOf(romajiNameNotiCreSetExport.getFamilyMember().getFamilyId()), exportServiceContext.getQuery().getDate());
             Optional<RomajiNameNotiCreSetExport> e = empFamilySocialInsList.stream().filter(item -> item.getEmpId().equals(i.getEmpId())).findFirst();
             Optional<RomajiNameNotiCreSetExport> f = empBasicPenNumInforList.stream().filter(item -> item.getEmpId().equals(i.getEmpId())).findFirst();
             Optional<RomajiNameNotiCreSetExport> l = socialInsuranceOfficeList.stream().filter(item -> item.getEmpId().equals(i.getEmpId())).findFirst();
             Optional<RomajiNameNotiCreSetExport> k = empNameReportList.stream().filter(item -> item.getEmpId().equals(i.getEmpId())).findFirst();
-            if(e.isPresent()) {
-                romajiNameNotiCreSetExport.setFmBsPenNum(e.get().getFmBsPenNum());
-            }
-
-            if(f.isPresent()) {
-                romajiNameNotiCreSetExport.setBasicPenNumber(f.get().getBasicPenNumber());
-            }
-
-            if(l.isPresent()) {
-                romajiNameNotiCreSetExport.setName(l.get().getName());
-                romajiNameNotiCreSetExport.setRepresentativeName(l.get().getRepresentativeName());
-                romajiNameNotiCreSetExport.setAddress1(l.get().getAddress1());
-                romajiNameNotiCreSetExport.setAddress2(l.get().getAddress2());
-                romajiNameNotiCreSetExport.setPhoneNumber(l.get().getPhoneNumber());
-                romajiNameNotiCreSetExport.setPostalCode(l.get().getPostalCode());
-            }
+            e.ifPresent(romajiNameNotiCreSetExport1 -> romajiNameNotiCreSetExport.setFmBsPenNum(romajiNameNotiCreSetExport1.getFmBsPenNum()));
+            f.ifPresent(romajiNameNotiCreSetExport1 -> romajiNameNotiCreSetExport.setBasicPenNumber(romajiNameNotiCreSetExport1.getBasicPenNumber()));
+            l.ifPresent(romajiNameNotiCreSetExport1 -> {
+                romajiNameNotiCreSetExport.setName(romajiNameNotiCreSetExport1.getName());
+                romajiNameNotiCreSetExport.setRepresentativeName(romajiNameNotiCreSetExport1.getRepresentativeName());
+                romajiNameNotiCreSetExport.setAddress1(romajiNameNotiCreSetExport1.getAddress1());
+                romajiNameNotiCreSetExport.setAddress2(romajiNameNotiCreSetExport1.getAddress2());
+                romajiNameNotiCreSetExport.setPhoneNumber(romajiNameNotiCreSetExport1.getPhoneNumber());
+                romajiNameNotiCreSetExport.setPostalCode(romajiNameNotiCreSetExport1.getPostalCode());
+            });
 
             if(k.isPresent()) {
                 romajiNameNotiCreSetExport.setPersonalSetListed(k.get().getPersonalSetListed());
@@ -106,8 +121,6 @@ public class RomajiNameNotiCreSetExportPDFService extends ExportService<RomajiNa
                 exportServiceContext.getQuery().getDate(),
                 exportServiceContext.getQuery().getPersonTarget(),
                 companyInfor,
-                personInfo,
-                familyMember,
                 romajiNameNotiCreSetting,
                 dataList
         );
@@ -115,4 +128,22 @@ public class RomajiNameNotiCreSetExportPDFService extends ExportService<RomajiNa
         //export PDF
         romajiNameNotiCreSetFileGenerator.generate(exportServiceContext.getGeneratorContext(), romajiNameNotification);
     }
+
+    private PersonExport getPersonInfor(List<EmployeeInfoEx> employeeInfoList, List<PersonExport> personList, String empId){
+        PersonExport person = new PersonExport();
+        Optional<EmployeeInfoEx> employeeInfoEx = employeeInfoList.stream().filter(item -> item.getEmployeeId().equals(empId)).findFirst();
+        if(employeeInfoEx.isPresent()) {
+            Optional<PersonExport> personEx = personList.stream().filter(item -> item.getPersonId().equals(employeeInfoEx.get().getPId())).findFirst();
+            if (personEx.isPresent()){
+                person.setPersonId(personEx.get().getPersonId());
+                person.setGender(personEx.get().getGender());
+                person.setPersonNameGroup(personEx.get().getPersonNameGroup());
+                person.setBirthDate(personEx.get().getBirthDate());
+            }
+        }
+        return person;
+    }
+
+
+
 }

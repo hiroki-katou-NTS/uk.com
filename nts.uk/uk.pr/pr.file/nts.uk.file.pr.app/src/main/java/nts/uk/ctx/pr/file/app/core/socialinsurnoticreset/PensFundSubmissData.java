@@ -94,4 +94,6 @@ public class PensFundSubmissData {
     private String percentOrMore;
 
     private String livingAbroad;
+
+    private String empId;
 }

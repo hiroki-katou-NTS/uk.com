@@ -2,6 +2,11 @@ package nts.uk.ctx.pr.file.app.core.socialinsurnoticreset;
 
 import lombok.*;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
+import nts.uk.ctx.pr.core.dom.adapter.employee.employee.EmployeeInfoEx;
+import nts.uk.ctx.pr.core.dom.adapter.person.PersonExport;
+
+import java.util.List;
+import java.util.Optional;
 
 @Getter
 @Setter
@@ -121,5 +126,22 @@ public class InsLossDataExport {
     private Integer insPerCls;
 
     private int underSeventy;
+
+    private String empId;
+
+    public static PersonExport getPersonInfor(List<EmployeeInfoEx> employeeInfoList, List<PersonExport> personList, String empId){
+        PersonExport person = new PersonExport();
+        Optional<EmployeeInfoEx> employeeInfoEx = employeeInfoList.stream().filter(item -> item.getEmployeeId().equals(empId)).findFirst();
+        if(employeeInfoEx.isPresent()) {
+            Optional<PersonExport> personEx = personList.stream().filter(item -> item.getPersonId().equals(employeeInfoEx.get().getPId())).findFirst();
+            if (personEx.isPresent()){
+                person.setGender(personEx.get().getGender());
+                person.setPersonId(personEx.get().getPersonId());
+                person.setPersonNameGroup(personEx.get().getPersonNameGroup());
+                person.setBirthDate(personEx.get().getBirthDate());
+            }
+        }
+        return person;
+    }
 
 }

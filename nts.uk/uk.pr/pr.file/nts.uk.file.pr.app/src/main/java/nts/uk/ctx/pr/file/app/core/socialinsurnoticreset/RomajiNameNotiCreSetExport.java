@@ -2,6 +2,9 @@ package nts.uk.ctx.pr.file.app.core.socialinsurnoticreset;
 
 import lombok.*;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.pr.core.dom.adapter.person.PersonExport;
+import nts.uk.ctx.pr.core.dom.adapter.person.family.FamilyMemberInfoEx;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -32,4 +35,6 @@ public class RomajiNameNotiCreSetExport {
     private Integer spouseAddressOverseas;
     private Integer spouseShortResident;
     private String spouseOtherReason;
+    private PersonExport person;
+    private FamilyMemberInfoEx familyMember;
 }
