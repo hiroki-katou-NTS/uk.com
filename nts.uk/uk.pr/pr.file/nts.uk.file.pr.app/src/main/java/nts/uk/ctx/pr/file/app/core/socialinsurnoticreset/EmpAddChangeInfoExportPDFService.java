@@ -216,7 +216,6 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
                        }
                    }
                 } else if(em.isPresent() && socialInsuranceOffice.isPresent() && domain.getBusinessArrSymbol() == BussEsimateClass.EMPEN_ESTAB_REARSIGN){
-
                     if(socialInsuranceOffice.get().getInsuranceMasterInformation() != null
                             && socialInsuranceOffice.get().getInsuranceMasterInformation().getOfficeOrganizeNumber() != null) {
                         if(socialInsuranceOffice.get().getInsuranceMasterInformation().getOfficeOrganizeNumber().getWelfarePensionOfficeNumber1().isPresent()) {
