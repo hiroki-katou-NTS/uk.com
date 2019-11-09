@@ -88,7 +88,7 @@ public class CurrentFamilyResidence {
             c.setFamilyId(Integer.parseInt(fList.get(0).getFamilyId()));
             c.setName(fList.get(0).getRomajiName().isPresent() ? fList.get(0).getRomajiName().get() : "");
             c.setName(fList.get(0).getRomajiNameKana().isPresent() ? fList.get(0).getRomajiNameKana().get() : "");
-            c.setName(fList.get(0).getBirthday() != null ? fList.get(0).getBirthday(): "");
+            c.setBirthDate(fList.get(0).getBirthday() != null ? GeneralDate.fromString(fList.get(0).getBirthday(), "yyyy/MM/dd"): null);
             return c;
         } else {
             return null;

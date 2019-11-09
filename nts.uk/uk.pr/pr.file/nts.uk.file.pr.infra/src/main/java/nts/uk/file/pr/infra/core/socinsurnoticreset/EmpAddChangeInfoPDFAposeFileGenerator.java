@@ -340,7 +340,7 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
             worksheet.getRangeByName(i + "!A3_2").setValue(this.fillAddress(empAddChangeInfoExport.getAddress1(), empAddChangeInfoExport.getAddress2()));
             worksheet.getRangeByName(i + "!A3_3").setValue(Objects.toString(empAddChangeInfoExport.getBussinessName(), ""));
             worksheet.getRangeByName(i + "!A3_4").setValue(Objects.toString(empAddChangeInfoExport.getReferenceName(), ""));
-            worksheet.getRangeByName(i + "!A3_5").setValue(Objects.toString(empAddChangeInfoExport.getPhoneNumber()!= null ?  RomajiNameNotiCreSetPDFAposeFileGenerator.formatPhone( empAddChangeInfoExport.getPhoneNumber(), 1) + "(" + RomajiNameNotiCreSetPDFAposeFileGenerator.formatPhone( empAddChangeInfoExport.getPhoneNumber(), 2) +")" + RomajiNameNotiCreSetPDFAposeFileGenerator.formatPhone( empAddChangeInfoExport.getPhoneNumber(), 3): "", ""));
+            worksheet.getRangeByName(i + "!A3_5").setValue(Objects.toString(empAddChangeInfoExport.getPhoneNumber()!= null && empAddChangeInfoExport.getPhoneNumber().length() > 0?  RomajiNameNotiCreSetPDFAposeFileGenerator.formatPhone( empAddChangeInfoExport.getPhoneNumber(), 1) + "(" + RomajiNameNotiCreSetPDFAposeFileGenerator.formatPhone( empAddChangeInfoExport.getPhoneNumber(), 2) +")" + RomajiNameNotiCreSetPDFAposeFileGenerator.formatPhone( empAddChangeInfoExport.getPhoneNumber(), 3): "", ""));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
