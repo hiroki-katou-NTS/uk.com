@@ -408,7 +408,11 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
                     eList = eList.stream().sorted(Comparator.comparing(EmpAddChangeInfoExport::getScd, Comparator.nullsLast(String::compareTo))).collect(Collectors.toList());
                 } else if(domain.getOutputOrder() == SocialInsurOutOrder.EMPLOYEE_KANA_ORDER) {
                     eList = eList.stream().sorted(Comparator.comparing(EmpAddChangeInfoExport::getNameKanaPs, Comparator.nullsLast(String::compareTo)).thenComparing(EmpAddChangeInfoExport::getScd, Comparator.nullsLast(String::compareTo))).collect(Collectors.toList());
-                } else if(domain.getOutputOrder() == SocialInsurOutOrder.INSURED_PER_NUMBER_ORDER && domain.getInsuredNumber() != InsurPersonNumDivision.DO_NOT_OUPUT ){
+                } else if((domain.getOutputOrder() == SocialInsurOutOrder.INSURED_PER_NUMBER_ORDER && domain.getInsuredNumber() != InsurPersonNumDivision.DO_NOT_OUPUT )
+                        || domain.getOutputOrder() != SocialInsurOutOrder.HEAL_INSUR_NUMBER_ORDER
+                        || domain.getOutputOrder() != SocialInsurOutOrder.WELF_AREPEN_NUMBER_ORDER
+                        || domain.getOutputOrder() != SocialInsurOutOrder.HEAL_INSUR_NUMBER_UNION_ORDER
+                        || domain.getOutputOrder() != SocialInsurOutOrder.ORDER_BY_FUND ){
                     eList = eList.stream().sorted(Comparator.comparing(EmpAddChangeInfoExport::getHealInsurNumber, Comparator.nullsLast(String::compareTo))).collect(Collectors.toList());
                 }
             }
