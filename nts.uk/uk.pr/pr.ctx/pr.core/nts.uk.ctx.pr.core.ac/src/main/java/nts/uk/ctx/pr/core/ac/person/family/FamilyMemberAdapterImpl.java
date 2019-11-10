@@ -1,6 +1,5 @@
 package nts.uk.ctx.pr.core.ac.person.family;
 
-import nts.uk.ctx.bs.person.pub.family.FamilyExport623;
 import nts.uk.ctx.bs.person.pub.family.FamilyPub;
 import nts.uk.ctx.pr.core.dom.adapter.person.family.FamilyMemberAdapter;
 import nts.uk.ctx.pr.core.dom.adapter.person.family.FamilyMemberInfoEx;
