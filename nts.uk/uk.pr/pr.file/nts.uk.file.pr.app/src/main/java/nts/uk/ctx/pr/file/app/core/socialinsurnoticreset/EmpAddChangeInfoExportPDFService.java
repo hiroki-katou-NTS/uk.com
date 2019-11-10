@@ -333,7 +333,7 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
                currentFamilyResidenceList.forEach(t->{
                    Optional<EmpAddChangeInfoExport> em = eList.stream().filter(o->o.getFamilyId().equals(t.getFamilyId())
                            && o.getSpouseAddChangeDate() != null
-                           && o.getPersonAddChangeDate()== null //2
+                          // && o.getPersonAddChangeDate()== null //2
                            && o.getSpouseAddChangeDate().afterOrEquals(start)
                            && o.getSpouseAddChangeDate().beforeOrEquals(end)).findFirst();
                    if(em.isPresent()) {
