@@ -137,7 +137,7 @@ module nts.uk.pr.view.qsi014.a.viewmodel {
 
         getStyle(){
             let self = this;
-            return self.startDateJp().length > 13 ?  "width:135px; display: inline-block;" : "width:140px; display:inline";
+            return self.startDateJp().length > 14 ?  "width:138px; display: inline-block;" : "width:138px; display:inline";
         }
 
         openBScreen() {
