@@ -110,7 +110,7 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
             currentFamilyResidenceList = new ArrayList<>();
             employeeInfoExList.forEach(i->{
                 pIds.add(i.getPId());
-                CurrentFamilyResidence cr =  CurrentFamilyResidence.getListFamily(familyMemberAdapter.getRomajiOfFamilySpouseByPid(i.getPId()), i.getPId());
+                CurrentFamilyResidence cr =  CurrentFamilyResidence.getListFamily(i.getPId());
                 if(cr != null) {
                     currentFamilyResidenceList.add(cr);
                 }
@@ -190,7 +190,7 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
                        && item.getSpouseAddChangeDate() != null
                        && item.getSpouseAddChangeDate().afterOrEquals(i.getStartDate())
                        && item.getSpouseAddChangeDate().beforeOrEquals(i.getEndDate()) ).findFirst();
-               Optional<SocialInsuranceOffice> socialInsuranceOffice = socialInsuranceOfficeList.stream().filter(s->s != null ? s.getCompanyID().equals(i.getCid()) :false
+               Optional<SocialInsuranceOffice> socialInsuranceOffice = socialInsuranceOfficeList.stream().filter(s-> s.getCompanyID().equals(i.getCid())
                        && s.getCode().equals(i.getSocialInsurOfficeCode())).findFirst();
                if(em.isPresent() && socialInsuranceOffice.isPresent() && domain.getOfficeInformation() == BusinessDivision.OUTPUT_SIC_INSURES ){
                    em.get().setBussinessName(socialInsuranceOffice.get().getName().v());
@@ -316,19 +316,17 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
 
             if ((domain.getPrintPersonNumber() == PersonalNumClass.OUTPUT_BASIC_PER_NUMBER
                     || domain.getPrintPersonNumber() == PersonalNumClass.OUTPUT_BASIC_PEN_NOPER)){
-                if(!empFamilySocialInsCtgInfoList.isEmpty() && !eList.isEmpty()){
-                    empFamilySocialInsCtgInfoList.forEach(p->{
-                        //Imported（給与）「家族情報」
-                        Optional<EmpAddChangeInfoExport> x = eList.stream().filter(z->z != null ? z.getSpouseAddChangeDate() != null : false
-                                && z.getSpouseAddChangeDate().afterOrEquals(p.getStartDate())
-                                && z.getSpouseAddChangeDate().beforeOrEquals(p.getEndDate())
-                                && z.getEmpId().equals(p.getEmpId())
-                                && z.getFamilyId().equals(p.getFamilyId())).findFirst();
-                        if(x.isPresent()) {
-                            x.get().setFmBsPenNum(p.getFmBsPenNum());
-                        }
-                    });
-                }
+                empFamilySocialInsCtgInfoList.forEach(p->{
+                    //Imported（給与）「家族情報」
+                    Optional<EmpAddChangeInfoExport> x = eList.stream().filter(z-> z.getSpouseAddChangeDate() != null
+                            && z.getSpouseAddChangeDate().afterOrEquals(p.getStartDate())
+                            && z.getSpouseAddChangeDate().beforeOrEquals(p.getEndDate())
+                            && z.getEmpId().equals(p.getEmpId())
+                            && z.getFamilyId().equals(p.getFamilyId())).findFirst();
+                    if(x.isPresent()) {
+                        x.get().setFmBsPenNum(p.getFmBsPenNum());
+                    }
+                });
             }
 
             //Imported（給与）「家族現住所」
@@ -393,11 +391,11 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
             if(domain.getOfficeInformation() == BusinessDivision.OUTPUT_COMPANY_NAME ) {
                 CompanyInfor c =  companyInforAdapter.getCompanyNotAbolitionByCid(cid);
                 eList.forEach(k->{
-                    k.setPhoneNumber(c.getPhoneNum());
-                    k.setReferenceName(c.getRepname());
-                    k.setAddress1(c.getAdd_1());
-                    k.setAddress2(c.getAdd_2());
-                    k.setBussinessName(c.getCompanyName());
+                    k.setPhoneNumber(c.getPhoneNum() != null ? c.getPhoneNum() : "");
+                    k.setReferenceName(c.getRepname() != null ? c.getRepname() : "");
+                    k.setAddress1(c.getAdd_1()!= null ? c.getAdd_1() : "");
+                    k.setAddress2(c.getAdd_2()!= null ? c.getAdd_2() : "");
+                    k.setBussinessName(c.getCompanyName() != null ? c.getCompanyName() :  "");
                 });
             }
 
