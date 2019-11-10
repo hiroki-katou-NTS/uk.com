@@ -80,7 +80,7 @@ public class CurrentFamilyResidence {
         this.reportName = "届出　ダミー";
         this.nameKana = "シメイ　ダミー";
         this.name = "氏名　ダミー";
-        this.birthDate = GeneralDate.fromString("2000/10/25","yyyy/MM/dd" );
+        this.birthDate = GeneralDate.fromString("2000/01/01","yyyy/MM/dd" );
         this.startDate = GeneralDate.fromString("2019/01/01","yyyy/MM/dd" );
         this.endDate = GeneralDate.fromString("2020/01/01","yyyy/MM/dd" );
     }

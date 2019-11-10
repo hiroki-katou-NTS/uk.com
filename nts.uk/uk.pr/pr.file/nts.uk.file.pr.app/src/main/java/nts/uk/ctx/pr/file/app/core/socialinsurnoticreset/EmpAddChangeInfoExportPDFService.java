@@ -338,8 +338,8 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
                    Optional<EmpAddChangeInfoExport> em = eList.stream().filter(o->o!= null ? o.getFamilyId().equals(t.getFamilyId()) :false
                            && o.getSpouseAddChangeDate() != null
                            && o.getPersonAddChangeDate()== null //2
-                           && o.getPersonAddChangeDate().afterOrEquals(start)
-                           && o.getPersonAddChangeDate().beforeOrEquals(end)).findFirst();
+                           && o.getSpouseAddChangeDate().afterOrEquals(start)
+                           && o.getSpouseAddChangeDate().beforeOrEquals(end)).findFirst();
                    if(em.isPresent()) {
                        //check is living separation by start end date
                        em.get().setPostalCodeF(t.getPostCode());
