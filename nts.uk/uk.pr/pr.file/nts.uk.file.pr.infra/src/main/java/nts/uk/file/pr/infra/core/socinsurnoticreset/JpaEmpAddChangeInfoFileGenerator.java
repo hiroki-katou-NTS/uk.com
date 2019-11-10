@@ -168,7 +168,7 @@ public class JpaEmpAddChangeInfoFileGenerator extends JpaRepository implements E
                     .cid(i[1] == null ? "" : i[1].toString())
                     .startDate(i[2] == null ? null : convertToGDate(i[2].toString()))
                     .endDate(i[3] == null ? null : convertToGDate(i[3].toString()))
-                    .socialInsurOfficeCode(i[4] == null ? null : Integer.parseInt(i[4].toString()))
+                    .socialInsurOfficeCode(i[4] == null ? null : i[4].toString())
                     .build()
             ).collect(Collectors.toList());
         } catch (Exception e) {
