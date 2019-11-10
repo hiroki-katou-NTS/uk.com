@@ -9,6 +9,7 @@ import nts.uk.ctx.pr.core.dom.adapter.employee.employee.EmployeeInfoAdapter;
 import nts.uk.ctx.pr.core.dom.adapter.employee.employee.EmployeeInfoEx;
 import nts.uk.ctx.pr.core.dom.adapter.person.PersonExport;
 import nts.uk.ctx.pr.core.dom.adapter.person.PersonExportAdapter;
+import nts.uk.ctx.pr.core.dom.laborinsurance.laborinsuranceoffice.LaborInsuranceOffice;
 import nts.uk.ctx.pr.report.dom.printconfig.empinsreportsetting.EmpInsReportSetting;
 import nts.uk.ctx.pr.report.dom.printconfig.empinsreportsetting.EmpInsReportSettingRepository;
 import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.empinsofficeinfo.EmpEstabInsHistRepository;
@@ -86,13 +87,17 @@ public class EmpInsReportSettingPDFService extends ExportService<EmpInsReportSet
             if(!mEmpInsHist.isPresent()){
                 return;
             }
+            temp.setEmpInsHist(mEmpInsHist.get());
+            temp.setFillingDate(fillingDate.toString());
+            temp.setEmpInsReportSetting(empInsReportSetting);
             switch (empInsReportSetting.getOfficeClsAtr()){
                 case OUTPUT_COMPANY:{
                     temp.setCompanyInfor(mCompanyInforAdapter.getCompanyNotAbolitionByCid(cid));
                     break;
                 }
                 case OUPUT_LABOR_OFFICE:{
-                    temp.setLaborInsuranceOffice(empInsReportSettingExRepository.getListEmpInsHistByDate(cid,e.getEmployeeId(),fillingDate).get(0));
+                    List<LaborInsuranceOffice> lstLaborInsuranceOffice =  empInsReportSettingExRepository.getListEmpInsHistByDate(cid,e.getEmployeeId(),fillingDate);
+                    temp.setLaborInsuranceOffice(lstLaborInsuranceOffice.isEmpty() ? null : lstLaborInsuranceOffice.get(0));
                     break;
                 }
                 case DO_NOT_OUTPUT:{
@@ -103,22 +108,22 @@ public class EmpInsReportSettingPDFService extends ExportService<EmpInsReportSet
             Optional<EmpInsNumInfo> empInsNumInfo = mEmpInsNumInfoRepository.getEmpInsNumInfoById(cid,e.getEmployeeId(),hisId);
             temp.setEmpInsNumInfo(empInsNumInfo.isPresent() ? empInsNumInfo.get() : new EmpInsNumInfo(hisId,""));
             // dummy data thuật toán ドメインモデル「外国人在留履歴情報」を取得する
-            personExports.stream().filter(dataPerson -> {
-                if(dataPerson.getPersonId().equals(e.getPId())){
-                    temp.setBrithDay(dataPerson.getBirthDate().toString());
-                    temp.setName(dataPerson.getPersonNameGroup().getPersonName().getFullName());
-                    temp.setNameKana(dataPerson.getPersonNameGroup().getPersonName().getFullNameKana());
-                    temp.setFullName(dataPerson.getPersonNameGroup().getPersonRomanji().getFullName());
-                    temp.setFullNameKana(dataPerson.getPersonNameGroup().getPersonRomanji().getFullNameKana());
-                    temp.setReportFullName(dataPerson.getPersonNameGroup().getTodokedeFullName().getFullName());
-                    temp.setReportFullNameKana(dataPerson.getPersonNameGroup().getTodokedeFullName().getFullNameKana());
-                    temp.setGender(dataPerson.getGender());
-                    temp.setBrithDay(dataPerson.getBirthDate().toString());
+            Optional<PersonExport> person = personExports.stream().filter(dataPerson -> dataPerson.getPersonId().equals(e.getPId())).findFirst();
+            {
+                if(person.isPresent()){
+                    temp.setBrithDay(person.get().getBirthDate().toString());
+                    temp.setName(person.get().getPersonNameGroup().getPersonName().getFullName());
+                    temp.setNameKana(person.get().getPersonNameGroup().getPersonName().getFullNameKana());
+                    temp.setFullName(person.get().getPersonNameGroup().getPersonRomanji().getFullName());
+                    temp.setFullNameKana(person.get().getPersonNameGroup().getPersonRomanji().getFullNameKana());
+                    temp.setReportFullName(person.get().getPersonNameGroup().getTodokedeFullName().getFullName());
+                    temp.setReportFullNameKana(person.get().getPersonNameGroup().getTodokedeFullName().getFullNameKana());
+                    temp.setGender(person.get().getGender());
                     temp.setChangeDate("");
-                    temp.setEmpInsHist(mEmpInsHist.isPresent() ? mEmpInsHist.get() : null);
+                    temp.setOldName(person.get().getPersonNameGroup().getOldName().getFullName());
+                    temp.setOldNameKana(person.get().getPersonNameGroup().getOldName().getFullNameKana());
                 }
-                return true;
-            });
+            }
             temp.setEmployeeCode(e.getEmployeeCode());
             listDataExport.add(temp);
 
