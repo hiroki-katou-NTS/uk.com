@@ -580,16 +580,6 @@ project (':pr.file:nts.uk.file.pr.app') {
 		compile project(':pr.ctx:pr.retire:nts.uk.ctx.pr.retire.dom')
 		compile project(':pr.ctx:pr.retire:nts.uk.ctx.pr.retire.app')
 		compile(group: 'com.query', name: 'nts.uk.query.pub', version: version)
-		compile project (':pr.screen:nts.uk.screen.pr.app')
-		
-		runtime project (':pr.ctx:core:nts.uk.ctx.pr.core.app')
-		runtime project (':pr.ctx:report:nts.uk.ctx.pr.report.app')
-		runtime project (':pr.ctx:formula:nts.uk.ctx.pr.formula.app')
-		
- 	 	compile project (':pr.ctx:core:nts.uk.ctx.pr.core.dom')
- 	 	compile project (':pr.ctx:report:nts.uk.ctx.pr.report.dom')
- 	 	compile project (':pr.ctx:formula:nts.uk.ctx.pr.formula.dom')
- 	 	
  	 	compile group: 'aspose', name: 'cells', version: '9.0.0'
 		compile group: 'aspose', name: 'aspose.pdf', version: '11.7.0'
 	}
