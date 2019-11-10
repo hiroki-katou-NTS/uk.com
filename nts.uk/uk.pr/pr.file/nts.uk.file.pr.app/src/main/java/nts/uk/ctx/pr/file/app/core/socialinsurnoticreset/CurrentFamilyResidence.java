@@ -77,22 +77,20 @@ public class CurrentFamilyResidence {
         this.isLivingSeparate = false;
         this.reportNameKana = "トドケデ　ダミー";
         this.reportName = "届出　ダミー";
+        this.nameKana = "シメイ　ダミー";
+        this.name = "氏名　ダミー";
         this.startDate = GeneralDate.fromString("2019/01/01","yyyy/MM/dd" );
         this.endDate = GeneralDate.fromString("2020/01/01","yyyy/MM/dd" );
     }
 
-    public static CurrentFamilyResidence getListFamily(List<FamilyMemberInfoEx> fList, String personId ){
-        if(!fList.isEmpty()){
+    public static CurrentFamilyResidence getListFamily(/*List<FamilyMemberInfoEx> fList*/String personId ){
             CurrentFamilyResidence c = new CurrentFamilyResidence();
             c.setPersonId(personId);
-            c.setFamilyId(Integer.parseInt(fList.get(0).getFamilyId()));
+            c.setFamilyId(11);
+            /*c.setFamilyId(Integer.parseInt(fList.get(0).getFamilyId()));
             c.setName(fList.get(0).getRomajiName().isPresent() ? fList.get(0).getRomajiName().get() : "");
-            c.setName(fList.get(0).getRomajiNameKana().isPresent() ? fList.get(0).getRomajiNameKana().get() : "");
-            c.setBirthDate(fList.get(0).getBirthday() != null ? GeneralDate.fromString(fList.get(0).getBirthday(), "yyyy/MM/dd"): null);
+            c.setNameKana(fList.get(0).getRomajiNameKana().isPresent() ? fList.get(0).getRomajiNameKana().get() : "");
+            c.setBirthDate(fList.get(0).getBirthday() != null ? GeneralDate.fromString(fList.get(0).getBirthday(), "yyyy/MM/dd"): null);*/
             return c;
-        } else {
-            return null;
-        }
-
     }
 }
