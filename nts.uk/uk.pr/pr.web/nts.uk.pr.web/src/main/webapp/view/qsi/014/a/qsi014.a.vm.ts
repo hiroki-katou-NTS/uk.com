@@ -186,8 +186,7 @@ module nts.uk.pr.view.qsi014.a.viewmodel {
                 alreadySettingList: self.alreadySettingList,
                 isShowWorkPlaceName: self.isShowWorkPlaceName(),
                 isShowSelectAllButton: self.isShowSelectAllButton(),
-                disableSelection : self.disableSelection(),
-                maxRows: 14
+                disableSelection : self.disableSelection()
             };
             $('#component-items-list').ntsListComponent(self.listComponentOption);
         }
