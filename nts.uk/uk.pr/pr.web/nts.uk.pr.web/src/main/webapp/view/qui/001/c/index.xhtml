@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+>
+<body>
+<ui:composition template="../../../../master/dialog.xhtml">
+    <ui:define name="htmlHead">
+        <com:scriptfile set="IGNITE"/>
+        <com:scriptfile path="../share/model.js"/>
+        <com:stylefile path="qui001.c.style.css"/>
+        <com:scriptfile path="qui001.c.service.js"/>
+        <com:scriptfile path="qui001.c.start.js"/>
+        <com:scriptfile path="qui001.c.vm.js"/>
+        <script>var dialogSize = {width: 1000, height: 600};</script>
+        <com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web"/>
+        <com:scriptfile set="IGNITE"/>
+
+        <com:scriptfile path="/view/kcp/009/kcp009.js" of="/nts.uk.com.web"/>
+        <com:stylefile path="/view/kcp/009/style.css" of="/nts.uk.com.web"/>
+
+        <com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web"/>
+    </ui:define>
+    <ui:define name="content">
+        <div id="functions-area">
+            <button id="C1_1" tabindex="1" class="proceed" style="margin-left:14px;">#{i18n.getText('QUI001_C1_1')}</button>
+            <button id="C1_2" tabindex="2">#{i18n.getText('QUI001_C1_2')}</button>
+        </div>
+        <div id="contents-area" >
+            <div tabindex="3" id="emp-component"></div>
+                <div class="pull-left" style="margin-left: 30px">
+                    <div class="control-group">
+                        <div id="C222_3" class="column-first" data-bind="ntsFormLabel:{ required: false }">#{i18n.getText('QUI001_C222_3')}</div>
+                        <div id="C222_4" tabindex="5" data-bind="ntsSwitchButton: {
+                        name: '#{i18n.getText('QUI001_C222_4')}',
+                        options: submittedNamesA,
+                        optionsValue: 'codeA',
+                        optionsText: 'nameA',
+                        value: submittedNameA
+                        }"></div>
+                    </div>
+                    <div class="control-group">
+                        <div id="C222_7" class="column-first" data-bind="ntsFormLabel:{ required: false }">#{i18n.getText('QUI001_C222_7')}</div>
+                        <div id="C222_8" tabindex="6" data-bind="ntsComboBox: {
+                        name: '#{i18n.getText('QUI001_C222_8')}',
+                        options: itemList,
+                        optionsValue: 'code',
+                        visibleItemsCount: 5,
+                        value: selectedCode,
+                        optionsText: 'name',
+                        editable: isEditable,
+                        enable: isEnable
+                        }"></div>
+                    </div>
+                    <div class="control-group">
+                        <div id="C222_10" class="column-first" data-bind="ntsFormLabel:{ required: false }">#{i18n.getText('QUI001_C222_10')}</div>
+                        <input id="C222_11" tabindex="7" data-bind="ntsTextEditor: {value: simpleValue}"/>
+                    </div>
+                    <div class="control-group">
+                        <div id="C222_12" class="column-first" data-bind="ntsFormLabel:{ required: false }">#{i18n.getText('QUI001_C222_12')}</div>
+                        <div id="C222_13" tabindex="8" data-bind="ntsComboBox: {
+                        name: '#{i18n.getText('QUI001_C222_13')}',
+                        options: itemList,
+                        optionsValue: 'code',
+                        visibleItemsCount: 5,
+                        value: selectedCode,
+                        optionsText: 'name',
+                        editable: isEditable,
+                        enable: isEnable
+                        }"></div>
+                    </div>
+                    <div class="control-group">
+                        <div id="C222_15" class="column-first" data-bind="ntsFormLabel:{ required: false }">#{i18n.getText('QUI001_C222_15')}</div>
+                        <input id="C222_16" tabindex="9" data-bind="ntsTextEditor: {value: simpleValue}"/>
+                    </div>
+                    <div class="control-group">
+                        <div id="C222_17" class="column-first" data-bind="ntsFormLabel:{ required: false }">#{i18n.getText('QUI001_C222_17')}</div>
+                        <div id="C222_18" tabindex="10" data-bind="ntsComboBox: {
+                        name: '#{i18n.getText('QUI001_C222_18')}',
+                        options: itemList,
+                        optionsValue: 'code',
+                        visibleItemsCount: 5,
+                        value: selectedCode,
+                        optionsText: 'name',
+                        editable: isEditable,
+                        enable: isEnable
+                        }"></div>
+                    </div>
+                    <div class="control-group">
+                        <div id="C222_20" class="column-first" data-bind="ntsFormLabel:{ required: false }">#{i18n.getText('QUI001_C222_20')}</div>
+                        <div id="C222_21" tabindex="11" data-bind="ntsComboBox: {
+                        name: '#{i18n.getText('QUI001_C222_21')}',
+                        options: itemList,
+                        optionsValue: 'code',
+                        visibleItemsCount: 5,
+                        value: selectedCode,
+                        optionsText: 'name',
+                        editable: isEditable,
+                        enable: isEnable
+                        }"></div>
+                    </div>
+                    <div class="control-group">
+                        <div id="C222_23" class="column-first" data-bind="ntsFormLabel:{ required: false }">#{i18n.getText('QUI001_C222_23')}</div>
+                        <div id="C222_24" tabindex="12" data-bind="ntsComboBox: {
+                        name: '#{i18n.getText('QUI001_C222_24')}',
+                        options: itemList,
+                        optionsValue: 'code',
+                        visibleItemsCount: 5,
+                        value: selectedCode,
+                        optionsText: 'name',
+                        editable: isEditable,
+                        enable: isEnable
+                        }"></div>
+                    </div>
+                    <div class="control-group">
+                        <div id="C222_26" class="column-first" data-bind="ntsFormLabel:{ required: false }">#{i18n.getText('QUI001_C222_26')}</div>
+                        <div id="C222_27" tabindex="13" data-bind="ntsSwitchButton: {
+                        name: '#{i18n.getText('QUI001_C222_27')}',
+                        options: submittedNamesB,
+                        optionsValue: 'codeB',
+                        optionsText: 'nameB',
+                        value: submittedNameB
+                        }"></div>
+                    </div>
+                </div>
+            </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>
