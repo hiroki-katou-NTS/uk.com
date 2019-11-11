@@ -1,34 +1,24 @@
 package nts.uk.ctx.hr.develop.dom.personalinfo.stresscheck;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
 
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class StressCheck extends AggregateRoot {
-
+@Builder
+public class StressCheckManagement extends AggregateRoot {
 	/**
-	 * 会社ID
+	 *  ストレスチェックのリスト
 	 */
-	private String companyID;
+	private List<StressCheck> stressChecks;
 	/**
-	 * 履歴ID
+	 *  検索済み社員IDリスト
 	 */
-	private String historyID;
-
-	/**
-	 * 社員ID
-	 */
-	private String employeeID;
-
-	/**
-	 * 総合結果
-	 */
-	private String overallResult;
-
+	private List<String> searchedEmployeeIDs;
 }

@@ -2,12 +2,19 @@ package nts.uk.ctx.hr.develop.infra.repository.humanresourceevaluation;
 
 import java.util.List;
 
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.hr.develop.dom.personalinfo.humanresourceevaluation.HumanResourceEvaluationRepository;
 import nts.uk.ctx.hr.develop.dom.personalinfo.humanresourceevaluation.PersonnelAssessment;
 import nts.uk.ctx.hr.develop.infra.entity.humanresourceevaluation.PpedtPerAssessmentItem;
 
+/**
+ * @author anhdt
+ *
+ */
+@Stateless
 public class JpaHREvaluationRepository extends JpaRepository implements HumanResourceEvaluationRepository {
 
 	private static final String SEL_PERSONNEL_ASSESMENT_BY_EMPLOYEES_AND_START_DATE = "SELECT i FROM PpedtPerAssessmentItem i "
