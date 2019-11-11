@@ -36,11 +36,11 @@
 				</span>
 			</div>
 
-			<div id="contents-area">
+			<div id="contents-area" style="margin-top: 10px; margin-left: 10px;">
 				<table>
 					<tr>
 						<td style="vertical-align: top; width: 210px">
-							<div class="label" style="margin-bottom: 15px;">#{i18n.getText('KDW008_6')}</div>
+							<div class="label" style="margin-bottom: 15px; margin-top: 5px;">#{i18n.getText('KDW008_6')}</div>
 							<table tabindex="5" id="single-list"
 								data-bind="ntsGridList: {								
 									height: 255,
@@ -53,35 +53,35 @@
 							</table> 
 						</td>
 						<td>
-							<div>
-								<div style="margin-bottom: 20px">
-									<div id="label3" data-bind="ntsFormLabel: { constraint: 'DailyPerformanceFormatCode', inline: true, required: true, enable: true}">#{i18n.getText('KDW008_7')}
-											</div> <input tabindex="6" id="currentCode"
-											data-bind="ntsTextEditor: {value: currentDailyFormatCode,
-																   enable : showCode,
-																   constraint: 'DailyPerformanceFormatCode',
-																   option: {autofill:true, filldirection:'left'},
-																   name: '#[KDW008_7]',
-																   required: true	}" /><br />
-									
-								</div>
-								<div id="label4" data-bind="ntsFormLabel: { constraint: 'DailyPerformanceFormatName', inline: true, required: true, enable: true}">#{i18n.getText('KDW008_8')}</div> 
-										<input tabindex="7" id="currentName"
-										data-bind="ntsTextEditor: {value: currentDailyFormatName,
-																   constraint: 'DailyPerformanceFormatName',
-																   name: '#[KDW008_8]',
-																   required: true}" />
-																										   
-																   <br />
-								<div id="checkbox1" tabindex="-1"
-									data-bind="ntsCheckBox: { checked: checked , enable : isSetFormatToDefault }">#{i18n.getText('KDW008_32')}</div>
+							<div style="margin-left: 45px" class="table">
+								<div id="label3" data-bind="ntsFormLabel: { 
+												constraint:  ['DailyPerformanceFormatCode', 'DailyPerformanceFormatName'],
+												required: true, 
+												enable: true}"
+												class="cell" style="vertical-align: middle;">#{i18n.getText('CMM008_6')}
+								</div> 
+								<input tabindex="6" id="currentCode" class="cell" style="vertical-align: middle;"
+										data-bind="ntsTextEditor: {value: currentDailyFormatCode,
+															   enable : showCode,
+															   constraint: 'DailyPerformanceFormatCode',
+															   option: {autofill:true, filldirection:'left'},
+															   name: '#[KDW008_7]',
+															   required: true	}" />
+								
+								<input tabindex="7" id="currentName" class="cell" style="vertical-align: middle;"
+								data-bind="ntsTextEditor: {value: currentDailyFormatName,
+														   constraint: 'DailyPerformanceFormatName',
+														   name: '#[KDW008_8]',
+														   required: true}" />
+								<div id="checkbox1" tabindex="-1" class="cell" style="padding-left: 20px;vertical-align: top;"
+									data-bind="ntsCheckBox: { checked: checked ,
+									enable : isSetFormatToDefault }">#{i18n.getText('KDW008_32')}</div>
 							</div>
-
 							<!-- Pc setting -->
 							<div data-bind="if: !isMobile">
 								<div id="tab-panel" tabindex="-1"
 								data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
-									<div tabindex="-1"  class="tab-content-1" style="height: 500px; width: 900px;">
+									<div tabindex="-1"  class="tab-content-1" style="height: 450px; width: 735px;">
 										<div tabindex="-1">
 											<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDW008_23')}</div>
 											<div tabindex="-1" id="A_SEL_002"
@@ -101,12 +101,11 @@
 										   <button class="danger" data-bind="click : btnSheetNo,enable : enableSheetNo">#{i18n.getText('KDW008_34')}</button>
 										</div>
 										<!-- <div id="label2" style="margin-bottom: 10px" class="label">#{i18n.getText('KDW008_24')}</div> -->
-										<BR />
-										<div tabindex="-1" id="messageSwaplist">#{i18n.getText('KDW008_29')}</div>
+										<div tabindex="-1" id="messageSwaplist" style="margin-top: 10px">#{i18n.getText('KDW008_29')}</div>
 										<div tabindex="8" style="margin-top: 10px" id="swap-list2"
 											data-bind="ntsSwapList: {
 												showSearchBox: { showLeft : true, showRight: true},
-												height: 456,
+												height: 425,
 												dataSource: dailyDataSource,
 												primaryKey: 'attendanceItemId',
 												columns: columns1,
@@ -130,12 +129,12 @@
 										</div>
 									</div>
 									
-									<div  class="tab-content-2" style="height: 460px; width: 900px;">
+									<div  class="tab-content-2" style="height: 400px; width: 735px;">
 										<div tabindex="-1" id="messageSwaplist">#{i18n.getText('KDW008_28')}</div>
 										<div tabindex="10" style="margin-top: 10px" id="swap-list"
 											data-bind="ntsSwapList: {
 												showSearchBox: { showLeft : true, showRight: true},
-												height: 456,
+												height: 400,
 												dataSource: monthlyDataSource,
 												primaryKey: 'attendanceItemId',
 												columns: columns2,
@@ -161,7 +160,7 @@
 									</div>
 								
 								<!--  monthly -->
-									<div  class="tab-content-3" style="height: 460px; width: 900px;">
+									<div  class="tab-content-3" style="height: 440px; width: 735px;">
 										<div tabindex="-1">
 											<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDW008_23')}</div>
 											<div tabindex="-1" id="A_SEL_002"
@@ -181,12 +180,12 @@
 										   	<button class="danger" data-bind="click : btnSheetNo ,enable : enableSheetNo">#{i18n.getText('KDW008_34')}</button>
 										</div>
 										<!-- <div style="margin-top: 10px;">#{i18n.getText('KDW008_24')}</div> -->
-										<div  tabindex="-1" style="margin-top: 10px; margin-left: 465px" >#{i18n.getText('KDW008_29')}</div>
+										<div  tabindex="-1" style="margin-top: 10px; margin-left: 385px; margin-bottom: -10px" >#{i18n.getText('KDW008_29')}</div>
 										<div style="margin-top: 10px; display: inline-block;">
 											<div tabindex="12" id="swap-list3"
 												data-bind="ntsSwapList: {
 													showSearchBox: { showLeft : true, showRight: true},
-													height: 396,
+													height: 375,
 													dataSource: monthCorrectionDataSource,
 													primaryKey: 'attendanceItemId',
 													columns: columns3,
@@ -217,7 +216,7 @@
 							<!-- Mobile Setting -->
 							<div data-bind="if: isMobile">
 								<div id="tab-panel" tabindex="-1" data-bind="{if: isMobile, ntsTabPanel: { dataSource: mobileTabs, active: selectedMobileTab}}">
-											<div tabindex="-1"  class="tab-content-1" style="height: 500px; width: 900px;">
+											<div tabindex="-1"  class="tab-content-1" style="height: 385px; width: 735px; margin-top: -15px;">
 												<!-- <div id="label2" style="margin-bottom: 10px" class="label">#{i18n.getText('KDW008_24')}</div> -->
 												<div tabindex="8" style="margin-top: 10px" id="swap-list2"
 													data-bind="ntsSwapList: {
@@ -246,7 +245,7 @@
 												</div>
 											</div>
 
-											<div  class="tab-content-2" style="height: 500px; width: 900px;">
+											<div  class="tab-content-2" style="height: 375px; width: 735px; margin-top: -15px;">
 												<div tabindex="10" style="margin-top: 10px" id="swap-list"
 													data-bind="ntsSwapList: {
 														showSearchBox: { showLeft : true, showRight: true},

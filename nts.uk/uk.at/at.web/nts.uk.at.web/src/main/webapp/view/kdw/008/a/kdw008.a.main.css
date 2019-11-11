@@ -1,5 +1,5 @@
 #tab-panel {
-	margin: 20px 0px 0px 51px;
+	margin: 10px 0px 0px 45px;
 	display: inline-block;
 }
 
@@ -13,7 +13,7 @@
 }
 
 #currentName {
-	margin-left: 44px;
+	margin-left: 5px;
 }
 
 #label2, #label3, #label4, #label5, #checkbox1 {
@@ -47,8 +47,9 @@
 }
  */
 #messageSwaplist {
-	margin-left: 52%;
+	margin-left: 385px;
 	width: 48%;
+	margin-bottom: -10px;
 }
 
 #swap-list2_container, #swap-list_container {
@@ -83,4 +84,19 @@
 #swap-list-grid1_displayContainer, #swap-list-grid2_displayContainer,
 	#swap-list-grid1_scrollContainer, #swap-list-grid2_scrollContainer {
 	height: 293px !important;
+}
+html {
+	overflow: hidden;
+}
+#swap-list3-search-area {
+	margin-bottom: 0px;
+}
+#tab-3, #tab-2, #tab-1 {
+	margin-bottom: 10px;
+}
+#swap-list2-search-area {
+	margin-bottom: 0px;
+}
+.nts-searchbbox-wrapper {
+	margin-bottom: 0px;
 }
