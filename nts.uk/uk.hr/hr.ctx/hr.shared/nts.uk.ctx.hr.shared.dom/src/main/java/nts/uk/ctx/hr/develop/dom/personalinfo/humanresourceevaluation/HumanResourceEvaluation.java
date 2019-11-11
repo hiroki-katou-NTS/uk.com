@@ -7,8 +7,10 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
@@ -16,6 +18,8 @@ import nts.gul.collection.CollectionUtil;
 /**
  * @author anhdt 人事評価管理
  */
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Builder
 @Stateless
