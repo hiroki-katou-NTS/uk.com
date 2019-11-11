@@ -6,6 +6,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
 
+/**
+ * @author anhdt
+ * ストレスチェック
+ */
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor

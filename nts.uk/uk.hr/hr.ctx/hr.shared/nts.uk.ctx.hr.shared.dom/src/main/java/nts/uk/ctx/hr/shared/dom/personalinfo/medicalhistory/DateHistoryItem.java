@@ -1,4 +1,4 @@
-package nts.uk.ctx.hr.develop.dom.personalinfo.humanresourceevaluation;
+package nts.uk.ctx.hr.shared.dom.personalinfo.medicalhistory;
 
 import lombok.Getter;
 import nts.arc.time.GeneralDate;

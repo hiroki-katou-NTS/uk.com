@@ -1,4 +1,4 @@
-package nts.uk.ctx.hr.develop.dom.personalinfo.humanresourceevaluation;
+package nts.uk.ctx.hr.develop.dom.personalinfo.stresscheck;
 
 import java.util.List;
 
@@ -6,7 +6,7 @@ import lombok.Getter;
 import nts.arc.layer.dom.event.DomainEvent;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.hr.shared.dom.personalinfo.medicalhistory.DateHistoryItem;
-import nts.uk.shr.com.history.strategic.UnduplicatableHistory;
+import nts.uk.shr.com.history.History;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -14,8 +14,8 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  * 人事評価履歴
  */
 @Getter
-public class HumanResourcesEvaluationHistory extends DomainEvent
-		implements UnduplicatableHistory<DateHistoryItem, DatePeriod, GeneralDate> {
+public class StressCheckHistory extends DomainEvent
+		implements History<DateHistoryItem, DatePeriod, GeneralDate> {
 
 	/**
 	 * 会社ID
