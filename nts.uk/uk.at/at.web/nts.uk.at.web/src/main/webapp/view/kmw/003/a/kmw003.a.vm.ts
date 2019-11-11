@@ -228,18 +228,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             });
             
             $(window).on('resize', function() {
-            	$('.mgrid-fixed').height(window.innerHeight - 449);
-            	$('.mgrid-free').height(window.innerHeight - 449);
-            	$('.grid-container').height(window.innerHeight - 310);
-            	$('.mgrid-fixed-summaries').css({ top: window.innerHeight - 443 + 'px' });
-            	$('.mgrid-free-summaries').css({ top: window.innerHeight - 443 + 'px' });
-            	$('.mgrid-paging').css({ top: window.innerHeight - 396 + 'px' });
-            	$('.mgrid-sheet').css({ top: window.innerHeight - 350 + 'px' });
-            	$('.mgrid-free').width(window.innerWidth - 620);
-            	$('.mgrid-free.mgrid-header').width(window.innerWidth - 637);
-            	$('.mgrid-free-summaries').width(window.innerWidth - 637);
-            	$('.mgrid-paging').width($('.mgrid-fixed').width() + $('.mgrid-free.mgrid-header').width() + 19);
-            	$('.mgrid-sheet').width($('.mgrid-fixed').width() + $('.mgrid-free.mgrid-header').width() + 19);
+            	self.setScreenSize();
             });
 
         }
@@ -372,6 +361,9 @@ module nts.uk.at.view.kmw003.a.viewmodel {
         }
         
         setScreenSize() {
+        	if (window.innerHeight < 525) {
+        		return;
+        	}
         	$('.mgrid-fixed').height(window.innerHeight - 449);
         	$('.mgrid-free').height(window.innerHeight - 449);
         	$('.grid-container').height(window.innerHeight - 310);
