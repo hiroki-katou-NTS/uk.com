@@ -29,15 +29,17 @@ public class JpaForeignerResidenceRepository extends JpaRepository implements Fo
 					+ "and ((b.endDate is NULL) or (b.endDate >= : baseDate))");
 
 	@Override
-	public List<ForeignerResidenceHistoryInforItem> getListForeignerResidenceHistoryInforItem(List<String> listPID,
+	public List<ForeignerResidenceHistoryInforItem> getListForeignerResidenceHistoryInforItem(List<String> listpId,
 			GeneralDateTime baseDate) {
 
-		if (listPID.isEmpty() || baseDate == null) {
+		if (listpId.isEmpty() || baseDate == null) {
 			return new ArrayList<ForeignerResidenceHistoryInforItem>();
 		}
 
 		List<PpetdForeignerResidenceHisInfoItem> listEntity = this.queryProxy()
-				.query(SELECT_BY_LISTPID_AND_BASEDATE, PpetdForeignerResidenceHisInfoItem.class).getList();
+				.query(SELECT_BY_LISTPID_AND_BASEDATE, PpetdForeignerResidenceHisInfoItem.class)
+				.setParameter("listpId", listpId)
+				.setParameter("baseDate", baseDate).getList();
 
 		if (listEntity.isEmpty()) {
 			return new ArrayList<ForeignerResidenceHistoryInforItem>();

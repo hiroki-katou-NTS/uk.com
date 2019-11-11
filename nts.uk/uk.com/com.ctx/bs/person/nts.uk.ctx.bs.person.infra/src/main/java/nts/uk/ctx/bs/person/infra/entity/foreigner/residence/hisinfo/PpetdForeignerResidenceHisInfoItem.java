@@ -18,9 +18,6 @@ import nts.arc.layer.infra.data.entity.type.GeneralDateTimeToDBConverter;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
-/**
- *
- */
 @Getter
 @Setter
 @Entity

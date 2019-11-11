@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
@@ -21,6 +22,7 @@ import nts.arc.time.GeneralDateTime;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@Stateless
 public class ForeignerResidenceHistoryInforItem extends AggregateRoot {
 
 	@Inject
