@@ -289,12 +289,6 @@ public class DailyModifyRCommandFacade {
 
 			validatorDataDaily.checkVerConfirmApproval(dataParent.getApprovalConfirmCache(),
 					dataParent.getDataCheckSign(), dataParent.getDataCheckApproval(), dataParent.getItemValues());
-			// only insert check box
-			// insert sign
-			insertSign(dataParent.getDataCheckSign(), dailyEdits, dataParent.getDailyOlds(), updated);
-			// insert approval
-			Set<Pair<String, GeneralDate>> dataApprovalCheck = insertApproval(dataParent.getDataCheckApproval(),
-					updated);
 
 			if (dataParent.getSpr() != null) {
 				processor.insertStampSourceInfo(dataParent.getSpr().getEmployeeId(), dataParent.getSpr().getDate(),
@@ -314,6 +308,14 @@ public class DailyModifyRCommandFacade {
 				clearConfirmApprovalService.clearConfirmApproval(dataParent.getSpr().getEmployeeId(),
 						Arrays.asList(dataParent.getSpr().getDate()));
 			}
+			
+			// only insert check box
+			// insert sign
+			insertSign(dataParent.getDataCheckSign(), dailyEdits, dataParent.getDailyOlds(), updated);
+			// insert approval
+			Set<Pair<String, GeneralDate>> dataApprovalCheck = insertApproval(dataParent.getDataCheckApproval(),
+					updated);
+						
 			List<String> empList = updated.stream().map(x -> x.getLeft()).distinct().collect(Collectors.toList());
 			List<GeneralDate> empDate = updated.stream().map(x -> x.getRight()).sorted((x, y) -> x.compareTo(y))
 					.distinct().collect(Collectors.toList());
@@ -523,6 +525,13 @@ public class DailyModifyRCommandFacade {
 			dataParent.setDataCheckApproval(dataParent.getDataCheckApproval().stream()
 					.filter(x -> !rowRemoveInsert.contains(Pair.of(x.getEmployeeId(), x.getDate())))
 					.collect(Collectors.toList()));
+			
+			// SPR連携時の確認承認解除
+			if (dataParent.getSpr() != null) {
+				clearConfirmApprovalService.clearConfirmApproval(dataParent.getSpr().getEmployeeId(),
+						Arrays.asList(dataParent.getSpr().getDate()));
+			}
+			
 			// insert sign
 			// 日の本人確認を登録する
 			// TODO: neu ko goi xu ly ngay thi ko co domain loi cho ngay
@@ -531,11 +540,6 @@ public class DailyModifyRCommandFacade {
 			// 日の承認を登録する
 			insertApproval(dataParent.getDataCheckApproval(), updated);
 
-			// SPR連携時の確認承認解除
-			if (dataParent.getSpr() != null) {
-				clearConfirmApprovalService.clearConfirmApproval(dataParent.getSpr().getEmployeeId(),
-						Arrays.asList(dataParent.getSpr().getDate()));
-			}
 			if (dataParent.getSpr() != null && !lstResultReturnDailyError
 					.containsKey(Pair.of(dataParent.getSpr().getEmployeeId(), dataParent.getSpr().getDate()))) {
 				processor.insertStampSourceInfo(dataParent.getSpr().getEmployeeId(), dataParent.getSpr().getDate(),

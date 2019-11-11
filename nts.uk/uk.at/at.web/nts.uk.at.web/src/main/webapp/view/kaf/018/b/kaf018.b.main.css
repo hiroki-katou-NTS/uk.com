@@ -1,6 +1,6 @@
 #contents-area {
 	margin: 20px;
-	height: auto !important;
+	height: calc(100vh - 181px) !important;
 	margin-bottom: 0px !important;
 }
 #master-wrapper {
@@ -10,6 +10,9 @@
 #tbl-control {
 	width: 850px;
 	margin-bottom: 10px;
+}
+#gridB_container {
+	border: 1px solid #AAB7B8 !important;
 }
 
 .content-question {
@@ -39,4 +42,14 @@
 }
 #gridB tbody tr td:NTH-CHILD(6){
 	text-align: center;
+}
+
+#gridB_headers thead th:NTH-CHILD(7){
+	display: none;
+}
+#gridB tbody tr td:NTH-CHILD(7){
+	display: none;
+}
+html{
+	overflow: hidden;
 }

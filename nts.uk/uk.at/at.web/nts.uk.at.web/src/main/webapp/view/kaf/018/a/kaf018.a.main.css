@@ -1,8 +1,10 @@
 .content-area-right {
 	width: 483px;
 	height: 100px;
-	float: left;
 	margin-top:50px;
+	display: inline-block;
+    vertical-align: top;
+    white-space: normal;	
 }
 
 #wkp-list {
@@ -16,7 +18,7 @@
 .content-area-left {
 	margin-left: 20px;
 	margin-top: 10px;
-	float: left;
+	display: inline-block;
 }
 
 .fix-combobox {
@@ -70,4 +72,10 @@
 	margin-left: 5px;
     margin-top: 4px;
     position: absolute;
+}
+#contents-area {
+	white-space: nowrap;
+}
+html {
+	overflow: hidden;
 }

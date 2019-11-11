@@ -1,7 +1,15 @@
-.contents-area .container {
-	margin: 25px;
-	margin-bottom: 0px;
+html {
+	overflow: hidden;
+}
+.contents-area {
 	overflow: auto;
+	height: calc(100vh - 141px) !important;
+	width: 100%;
+}
+.contents-area > .container {
+	margin: 25px;
+	width: calc(100vw - 70px) !important;
+	white-space: nowrap;
 }
 
 .ntsControl .nts-input {

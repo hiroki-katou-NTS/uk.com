@@ -26,7 +26,7 @@
 		</ui:define>
 
 		<ui:define name="sidebar-content">
-			<div id="tabpanel-1" role="tabpanel">
+			<div id="tabpanel-1" role="tabpanel" style="min-width: 600px;">
 				<div class="sidebar-content-header">
 					<span tabindex="1" class="title">#{i18n.getText('CAS014_2')}</span>
 					<button tabindex="2" class="proceed" data-bind="click: register">#{i18n.getText('CAS014_11')}</button>
@@ -88,7 +88,7 @@
 					</div>
 				</div>
 			</div>
-			<div id="tabpanel-2" role="tabpanel" data-bind="with: viewmodelB">
+			<div id="tabpanel-2" role="tabpanel" data-bind="with: viewmodelB" style="min-width: 1150px;">
 				<ui:include src="../b/index.xhtml" />
 			</div>
 		</ui:define>

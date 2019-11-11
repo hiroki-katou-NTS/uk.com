@@ -343,3 +343,9 @@ div#g36 > label:NTH-CHILD(3) > span:NTH-CHILD(3) {
 .ui-widget.ui-tabs.vertical {
 	display: block !important;
 }
+.sidebar-content-header {
+    min-width: fit-content;
+}
+html {
+    overflow: hidden;
+}

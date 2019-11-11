@@ -112,14 +112,10 @@ module cmm045.a.viewmodel {
 
             window.onresize = function(event) {
                 if($('#grid1').length){//approval
-                    $("#grid1_scrollContainer").height(window.innerHeight - 330);
-                    $("#grid1_displayContainer").height(window.innerHeight - 330);
-                    $("#grid1_container").height(window.innerHeight - 330);
+                    $("#grid1").igGrid("option", "height", window.innerHeight - 350  + "px");
                 }
                 if($('#grid2').length){//application
-                    $("#grid2_scrollContainer").height(window.innerHeight - 250);
-                    $("#grid2_displayContainer").height(window.innerHeight - 250);
-                    $("#grid2_container").height(window.innerHeight - 250);    
+                    $("#grid2").igGrid("option", "height", window.innerHeight - 270  + "px");  
                 }
             }
         }

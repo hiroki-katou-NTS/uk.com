@@ -379,4 +379,5 @@
 }
 body {
 	-ms-overflow-y: hidden;
+	-ms-overflow-x: hidden;
 }
