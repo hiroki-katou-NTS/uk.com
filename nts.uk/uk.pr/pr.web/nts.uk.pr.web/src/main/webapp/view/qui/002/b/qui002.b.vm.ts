@@ -13,21 +13,22 @@ module nts.uk.pr.view.qui002.b.viewmodel {
 
         constructor() {
             var self = this;
-            //let params = getShared("QUI002_PARAMS_B");
+            let params = getShared("QUI002_PARAMS_B");
 
-            self.listEmp(self.createData());
-            /*if(nts.uk.util.isNullOrEmpty(params) || nts.uk.util.isNullOrEmpty(params.employeeList)) {
+            self.listEmp(self.createData(params.employeeList));
+            if(nts.uk.util.isNullOrEmpty(params) || nts.uk.util.isNullOrEmpty(params.employeeList)) {
                 close();
-            }*/
+            }
             self.loadGird();
         }
 
-        createData(){
+        createData(emplist: Array){
             let employeeList = [];
-            for (var i = 0; i < 20; i++) {
-                let employee = new Employee("000000001" + i,"000000001" + i,"000000001" + i , "000000001" + i, "2019/12/12");
+            _.each(emplist, (item) =>{
+                let employee = new Employee(item.id,item.code,item.name , item.name, "");
                 employeeList.push(employee);
-            }
+            });
+
             return employeeList;
         }
 
@@ -75,7 +76,8 @@ module nts.uk.pr.view.qui002.b.viewmodel {
         getListEmployee(emplist: Array){
             let listEmployee: any = [];
             _.each(emplist, (item) =>{
-                item.changeDate  = $('#item.employeeId').val();
+
+                item.changeDate  = $("#"+item.employeeId).val();
                 listEmployee.push(item);
             });
             return listEmployee;

@@ -180,13 +180,13 @@ module nts.uk.pr.view.qui002.a.viewmodel {
             let employList = self.getListEmpId(self.selectedCode(), self.employeeList());
             let data: any = {
                 empInsReportSettingExport: {
-                    submitNameAtr: self.empInsReportSetting().submitNameAtr,
-                    outputOrderAtr: self.empInsReportSetting().outputOrderAtr,
-                    officeClsAtr: self.empInsReportSetting().officeClsAtr,
-                    myNumberClsAtr: self.empInsReportSetting().myNumberClsAtr,
-                    nameChangeClsAtr: self.empInsReportSetting().nameChangeClsAtr
+                    submitNameAtr: self.empInsReportSetting().submitNameAtr(),
+                    outputOrderAtr: self.empInsReportSetting().outputOrderAtr(),
+                    officeClsAtr: self.empInsReportSetting().officeClsAtr(),
+                    myNumberClsAtr: self.empInsReportSetting().myNumberClsAtr(),
+                    nameChangeClsAtr: self.empInsReportSetting().nameChangeClsAtr()
                 },
-                empIds: employList,
+                empIdChangDate:  self.createListEmployyeeChangDate(getShared("QUI002_PARAMS_A"),employList),
                 fillingDate: moment.utc(self.filingDate(), "YYYY/MM/DD")
             };
             nts.uk.ui.block.grayout();
@@ -199,7 +199,17 @@ module nts.uk.pr.view.qui002.a.viewmodel {
 
 
         }
-
+        createListEmployyeeChangDate(params : Array,employList :Array){
+            let self = this;
+            let listEmployee: any = [];
+            _.each(employList, (item) => {
+                let emp = _.find(params, function (itemEmp) {
+                        return item == itemEmp.employeeId;
+                });
+                listEmployee.push(emp);
+            });
+            return listEmployee;
+        }
         openScreenB() {
             let self = this;
             let params = {
