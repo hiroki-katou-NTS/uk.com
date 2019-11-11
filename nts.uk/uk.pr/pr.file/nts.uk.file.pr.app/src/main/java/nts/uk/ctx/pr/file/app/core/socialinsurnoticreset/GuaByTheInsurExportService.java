@@ -5,6 +5,11 @@ import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.core.dom.adapter.company.CompanyInfor;
+import nts.uk.ctx.pr.core.dom.adapter.company.CompanyInforAdapter;
+import nts.uk.ctx.pr.core.dom.adapter.employee.employee.EmployeeInfoAdapter;
+import nts.uk.ctx.pr.core.dom.adapter.employee.employee.EmployeeInfoEx;
+import nts.uk.ctx.pr.core.dom.adapter.person.PersonExport;
+import nts.uk.ctx.pr.core.dom.adapter.person.PersonExportAdapter;
 import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsurancePrefectureInformation;
 import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsurancePrefectureInformationRepository;
 import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.OutputFormatClass;
@@ -14,10 +19,10 @@ import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.SocialInsurOutOrd
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.EmpWelfarePenInsQualiInforRepository;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmplHealInsurQualifiInforRepository;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.time.japanese.JapaneseErasAdapter;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -49,13 +54,16 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
     private EmplHealInsurQualifiInforRepository mEmplHealInsurQualifiInforRepository;
 
     @Inject
-    private NotificationOfLossInsExRepository notificationOfLossInsExRepository;
-
-    @Inject
     private GuaByTheInsurExportRepository guaByTheInsurExportRepository;
 
     @Inject
-    private JapaneseErasAdapter adapter;
+    private EmployeeInfoAdapter employeeInfoAdapter;
+
+    @Inject
+    private PersonExportAdapter personExportAdapter;
+
+    @Inject
+    private CompanyInforAdapter companyInforAdapter;
 
 
     @Override
@@ -66,7 +74,7 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
         List<PensionOfficeDataExport> pension = new ArrayList<>();
         List<PensionOfficeDataExport> healthInsAss = new ArrayList<>();
         List<EmpPenFundSubData> empPensionFund = new ArrayList<>();
-        CompanyInfor company = notificationOfLossInsExRepository.getCompanyInfor(AppContexts.user().companyId());
+        CompanyInfor company = companyInforAdapter.getCompanyNotAbolitionByCid(AppContexts.user().companyId());
         List<SocialInsurancePrefectureInformation> infor = prefectureInformation.findByHistory();
         SocialInsurNotiCreateSet ins = new SocialInsurNotiCreateSet(userId, cid,
                 exportServiceContext.getQuery().getSocialInsurNotiCreateSetQuery().getOfficeInformation(),
@@ -92,6 +100,18 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
                 if(pension.isEmpty()){
                     throw new BusinessException("Msg_37");
                 }
+                List<String> emplds = pension.stream().map(PensionOfficeDataExport::getSid).collect(Collectors.toList());
+                List<EmployeeInfoEx> employeeInfoList = employeeInfoAdapter.findBySIds(emplds);
+                List<PersonExport> personList = personExportAdapter.findByPids(employeeInfoList.stream().map(EmployeeInfoEx::getPId).collect(Collectors.toList()));
+                pension.forEach(item -> {
+                    PersonExport p = getPersonInfor(employeeInfoList, personList, item.getSid());
+                    item.setPersonName(p.getPersonNameGroup().getPersonName().getFullName());
+                    item.setPersonNameKana(p.getPersonNameGroup().getPersonName().getFullNameKana());
+                    item.setOldName(p.getPersonNameGroup().getTodokedeFullName().getFullName());
+                    item.setOldNameKana(p.getPersonNameGroup().getTodokedeFullName().getFullNameKana());
+                    item.setBirthDay(p.getBirthDate().toString("yyyy-MM-dd"));
+                    item.setGender(p.getGender());
+                });
             }
             if(ins.getOutputFormat().get() == OutputFormatClass.HEAL_INSUR_ASSO) {
                 healthInsAss = guaByTheInsurExportRepository.getDataHealthInsAss(exportServiceContext.getQuery().getEmpIds(), cid, userId,
@@ -99,6 +119,18 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
                 if(healthInsAss.isEmpty()){
                     throw new BusinessException("Msg_37");
                 }
+                List<String> emplds = healthInsAss.stream().map(PensionOfficeDataExport::getSid).collect(Collectors.toList());
+                List<EmployeeInfoEx> employeeInfoList = employeeInfoAdapter.findBySIds(emplds);
+                List<PersonExport> personList = personExportAdapter.findByPids(employeeInfoList.stream().map(EmployeeInfoEx::getPId).collect(Collectors.toList()));
+                healthInsAss.forEach(item -> {
+                    PersonExport p = getPersonInfor(employeeInfoList, personList, item.getSid());
+                    item.setPersonName(p.getPersonNameGroup().getPersonName().getFullName());
+                    item.setPersonNameKana(p.getPersonNameGroup().getPersonName().getFullNameKana());
+                    item.setOldNameKana(p.getPersonNameGroup().getTodokedeFullName().getFullNameKana());
+                    item.setOldName(p.getPersonNameGroup().getTodokedeFullName().getFullName());
+                    item.setBirthDay(p.getBirthDate().toString("yyyy-MM-dd"));
+                    item.setGender(p.getGender());
+                });
             }
             if(ins.getOutputFormat().get() == OutputFormatClass.THE_WELF_PEN) {
                 empPensionFund = guaByTheInsurExportRepository.getDataEmpPensionFund(exportServiceContext.getQuery().getEmpIds(), cid,
@@ -106,10 +138,22 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
                 if(empPensionFund.isEmpty()){
                     throw new BusinessException("Msg_37");
                 }
+                List<String> emplds = empPensionFund.stream().map(EmpPenFundSubData::getSid).collect(Collectors.toList());
+                List<EmployeeInfoEx> employeeInfoList = employeeInfoAdapter.findBySIds(emplds);
+                List<PersonExport> personList = personExportAdapter.findByPids(employeeInfoList.stream().map(EmployeeInfoEx::getPId).collect(Collectors.toList()));
+                empPensionFund.forEach(item -> {
+                    PersonExport p = getPersonInfor(employeeInfoList, personList, item.getSid());
+                    item.setGender(p.getGender());
+                    item.setPersonName(p.getPersonNameGroup().getPersonName().getFullName());
+                    item.setPersonNameKana(p.getPersonNameGroup().getPersonName().getFullNameKana());
+                    item.setOldNameKana(p.getPersonNameGroup().getTodokedeFullName().getFullNameKana());
+                    item.setOldName(p.getPersonNameGroup().getTodokedeFullName().getFullName());
+                    item.setBirthDay(p.getBirthDate().toString("yyyy-MM-dd"));
+                });
             }
         }
         List<GuaByTheInsurExportDto> dtoList = printInsuredQualifiNoti(exportServiceContext.getQuery().getEmpIds(),
-                exportServiceContext.getQuery().getStartDate(), exportServiceContext.getQuery().getEndDate());
+                exportServiceContext.getQuery().getStartDate(), exportServiceContext.getQuery().getEndDate(),company);
         if(ins.getOutputOrder() == SocialInsurOutOrder.EMPLOYEE_KANA_ORDER) {
             dtoList = orderBy(dtoList);
         }
@@ -133,12 +177,27 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
         }
     }
 
+    private PersonExport getPersonInfor(List<EmployeeInfoEx> employeeInfoList, List<PersonExport> personList, String empId){
+        PersonExport person = new PersonExport();
+        Optional<EmployeeInfoEx> employeeInfoEx = employeeInfoList.stream().filter(item -> item.getEmployeeId().equals(empId)).findFirst();
+        if(employeeInfoEx.isPresent()) {
+            Optional<PersonExport> personEx = personList.stream().filter(item -> item.getPersonId().equals(employeeInfoEx.get().getPId())).findFirst();
+            if (personEx.isPresent()){
+                person.setPersonId(personEx.get().getPersonId());
+                person.setPersonNameGroup(personEx.get().getPersonNameGroup());
+                person.setBirthDate(personEx.get().getBirthDate());
+                person.setGender(personEx.get().getGender());
+            }
+        }
+        return person;
+    }
+
     private List<GuaByTheInsurExportDto> orderBy(List<GuaByTheInsurExportDto> dtoList){
         return dtoList.stream().sorted(Comparator.comparing(GuaByTheInsurExportDto::getOfficeCd).thenComparing(GuaByTheInsurExportDto::getNameOfInsuredPerson1)).collect(Collectors.toList());
     }
 
-    private List<GuaByTheInsurExportDto> printInsuredQualifiNoti(List<String> employeeIds, GeneralDate startDate, GeneralDate endDate) {
-        return insurQualiNotiProcess(employeeIds, startDate, endDate);
+    private List<GuaByTheInsurExportDto> printInsuredQualifiNoti(List<String> employeeIds, GeneralDate startDate, GeneralDate endDate, CompanyInfor company) {
+        return insurQualiNotiProcess(employeeIds, startDate, endDate, company);
     }
 
     private void checkAcquiNotiInsurProcess(List<String> employeeIds, GeneralDate startDate, GeneralDate endDate) {
@@ -153,8 +212,31 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
 
     }
 
-    private List<GuaByTheInsurExportDto> insurQualiNotiProcess(List<String> employeeIds, GeneralDate startDate, GeneralDate endDate) {
-        final int Enum_SubNameClass_PERSONAL_NAME = 0;
+    private void getPersonInfor(List<EmployeeInfoEx> employeeInfoList, List<PersonExport> personList, GuaByTheInsurExportDto data, String empId, int personName){
+        Optional<EmployeeInfoEx> employeeInfoEx = employeeInfoList.stream().filter(item -> item.getEmployeeId().equals(empId)).findFirst();
+        if(employeeInfoEx.isPresent()) {
+            data.setEmployeeCd(employeeInfoEx.get().getEmployeeCode());
+            Optional<PersonExport> person = personList.stream().filter(item -> item.getPersonId().equals(employeeInfoEx.get().getPId())).findFirst();
+            if(person.isPresent() && personName == 0){
+                data.setNameOfInsuredPersonMr(person.get().getPersonNameGroup().getPersonName().getFullName());
+                data.setNameOfInsuredPerson(person.get().getPersonNameGroup().getPersonName().getFullName());
+                data.setNameOfInsuredPersonMrK(person.get().getPersonNameGroup().getPersonName().getFullNameKana());
+                data.setNameOfInsuredPerson1(person.get().getPersonNameGroup().getPersonName().getFullNameKana());
+            }
+            if(person.isPresent() && personName == 1){
+                data.setNameOfInsuredPersonMr(person.get().getPersonNameGroup().getTodokedeFullName().getFullName());
+                data.setNameOfInsuredPerson(person.get().getPersonNameGroup().getTodokedeFullName().getFullName());
+                data.setNameOfInsuredPersonMrK(person.get().getPersonNameGroup().getTodokedeFullName().getFullNameKana());
+                data.setNameOfInsuredPerson1(person.get().getPersonNameGroup().getTodokedeFullName().getFullNameKana());
+            }
+            if(person.isPresent()) {
+                data.setBrithDay(person.get().getBirthDate().toString("yyyy-MM-dd"));
+                data.setGender(person.get().getGender());
+            }
+        }
+    }
+
+    private List<GuaByTheInsurExportDto> insurQualiNotiProcess(List<String> employeeIds, GeneralDate startDate, GeneralDate endDate, CompanyInfor company) {
         final int Enum_BusinessDivision_OUTPUT_COMPANY_NAME = 0;
         final int Enum_BusinessDivision_OUTPUT_SIC_INSURES = 1;
         final int Enum_BussEsimateClass_HEAL_INSUR_OFF_ARR_SYMBOL = 0;
@@ -166,6 +248,10 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
         if(dataExport == null || dataExport.isEmpty()) {
             throw new BusinessException("Msg_37");
         }
+        List<String> emplds = dataExport.stream().map(i -> i[38].toString()).collect(Collectors.toList());
+        List<EmployeeInfoEx> employeeInfoList = employeeInfoAdapter.findBySIds(emplds);
+        List<PersonExport> personList = personExportAdapter.findByPids(employeeInfoList.stream().map(i -> i.getPId()).collect(Collectors.toList()));
+
         dataExport.forEach(element -> {
             GuaByTheInsurExportDto temp = new GuaByTheInsurExportDto();
 
@@ -174,41 +260,33 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
             switch (Integer.valueOf(element[0].toString())){
                 case Enum_BusinessDivision_OUTPUT_COMPANY_NAME :{
                     //C1_4
-                    temp.setOfficePostalCode(element[9] != null ? element[9].toString() : "");
+                    temp.setOfficePostalCode(company.getPostCd() != null ? company.getPostCd() : "");
                     //C1_5
-                    temp.setOfficeAddress1(element[3] != null ? element[3].toString() : "");
+                    temp.setOfficeAddress1(company.getAdd_1() !=null  ? company.getAdd_1() : "");
                     //C1_6
-                    temp.setOfficeAddress2(element[5] != null ? element[5].toString() : "");
+                    temp.setOfficeAddress2(company.getAdd_2() !=null  ? company.getAdd_2()  : "");
                     //C1_7
-                    temp.setBusinessName(element[1] != null ? element[1].toString() : "");
+                    temp.setBusinessName(company.getCompanyName() !=null  ? company.getCompanyName()  : "");
                     //C1_8
-                    temp.setBusinessName1(element[11] != null ? element[11].toString() : "");
+                    temp.setBusinessName1(company.getRepname() !=null  ? company.getRepname() : "");
                     //C1_9
-                    temp.setPhoneNumber(element[7] != null ? element[7].toString() : "");
-                    //C2_28
-                    temp.setStreetAddress(element[3] != null ? element[3].toString() : "");
-                    //C2_29
-                    temp.setAddressKana(element[5] != null ? element[5].toString() : "");
+                    temp.setPhoneNumber(company.getPhoneNum() !=null  ? company.getPhoneNum() : "");
                     break;
                 }
                 case Enum_BusinessDivision_OUTPUT_SIC_INSURES:{
                     //set data to file output
                     //C1_4
-                    temp.setOfficePostalCode(element[10] != null ? element[10].toString() : "");
+                    temp.setOfficePostalCode(element[5] != null ? element[5].toString() : "");
                     //C1_5
-                    temp.setOfficeAddress1(element[4] != null ? element[4].toString() : "");
+                    temp.setOfficeAddress1(element[2] != null ? element[2].toString() : "");
                     //C1_6
-                    temp.setOfficeAddress2(element[6] != null ? element[6].toString() : "");
+                    temp.setOfficeAddress2(element[3] != null ? element[3].toString() : "");
                     //C1_7
-                    temp.setBusinessName(element[2] != null ? element[2].toString() : "");
+                    temp.setBusinessName(element[1] != null ? element[1].toString() : "");
                     //C1_8
-                    temp.setBusinessName1(element[12] != null ? element[12].toString() : "");
+                    temp.setBusinessName1(element[6] != null ? element[6].toString() : "");
                     //C1_9
-                    temp.setPhoneNumber(element[8] != null ? element[8].toString() : "");
-                    //C2_28
-                    temp.setStreetAddress(element[4] != null ? element[4].toString() : "");
-                    //C2_29
-                    temp.setAddressKana(element[6] != null ? element[6].toString() : "");
+                    temp.setPhoneNumber(element[4] != null ? element[4].toString() : "");
                     break;
                 }
                 default:{
@@ -234,63 +312,34 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
             }
             if(Integer.valueOf(element[14].toString()) == Enum_BussEsimateClass_HEAL_INSUR_OFF_ARR_SYMBOL){
                 //C1_1
-                temp.setBusinessstablishmentbCode1(element[15] != null ? element[15].toString() : "");
+                temp.setBusinessstablishmentbCode1(element[9] != null ? element[9].toString() : "");
                 //C1_2
-                temp.setBusinessstablishmentbCode2(element[16] != null ? element[16].toString() : "");
+                temp.setBusinessstablishmentbCode2(element[10] != null ? element[10].toString() : "");
                 //C1_3
-                temp.setOfficeNumber(element[52] != null ? element[52].toString() : "");
+                temp.setOfficeNumber(element[35] != null ? element[35].toString() : "");
                 //C2_20
-                temp.setDateOfQualifiRyowa(element[34] != null ? element[34].toString() : "");
+                temp.setDateOfQualifiRyowa(element[17] != null ? element[17].toString() : "");
                 //C2_21
-                temp.setQualificationDate(element[36] != null ? element[36].toString() : "");
+                temp.setQualificationDate(element[19] != null ? element[19].toString() : "");
             }
             else{
                 //C1_1
-                temp.setBusinessstablishmentbCode1(element[17] != null ? element[17].toString() : "");
+                temp.setBusinessstablishmentbCode1(element[11] != null ? element[11].toString() : "");
                 //C1_2
-                temp.setBusinessstablishmentbCode2(element[18] != null ? element[18].toString() : "");
+                temp.setBusinessstablishmentbCode2(element[12] != null ? element[12].toString() : "");
                 //C1_3
-                temp.setOfficeNumber(element[53] != null ? element[53].toString() : "");
+                temp.setOfficeNumber(element[36] != null ? element[36].toString() : "");
                 //C2_20
-                temp.setDateOfQualifiRyowa(element[35] != null ? element[35].toString() : "");
+                temp.setDateOfQualifiRyowa(element[18] != null ? element[18].toString() : "");
                 //C2_21
-                temp.setQualificationDate(element[37] != null ? element[37].toString() : "");
+                temp.setQualificationDate(element[20] != null ? element[20].toString() : "");
             }
-            if(Integer.valueOf(element[13].toString()) == Enum_SubNameClass_PERSONAL_NAME){
-                //C2_2
-                temp.setNameOfInsuredPersonMr(element[19] != null ? element[19].toString() : "");
-                //C2_3
-                temp.setNameOfInsuredPerson(element[21] != null ? element[21].toString() : "");
-                //C2_4
-                temp.setNameOfInsuredPersonMrK(element[23] != null ? element[23].toString() : "");
-                //C2_5
-                temp.setNameOfInsuredPerson1(element[25] != null ? element[25].toString() : "");
-
-            }
-            else{
-                //C2_2
-                temp.setNameOfInsuredPersonMr(element[20] != null ? element[20].toString() : "");
-                //C2_3
-                temp.setNameOfInsuredPerson(element[22] != null ? element[22].toString() : "");
-                //C2_4
-                temp.setNameOfInsuredPersonMrK(element[24] != null ? element[24].toString() : "");
-                //C2_5
-                temp.setNameOfInsuredPerson1(element[26] != null ? element[26].toString() : "");
-            }
-            //C2_6 => covert to Date of birth (Showa)
-            temp.setBrithDayShowa(element[27] != null ? element[27].toString() : "");
-            //C2_7 => covert to Date of birth (Heisei)
-            temp.setBrithDayHeisei(element[27] != null ? element[27].toString() : "");
-            //C2_8
-            temp.setBrithDayRyowa(element[27] != null ? element[27].toString() : "");
-            //C2_9
-            temp.setBrithDay(element[27] != null ? element[27].toString() : "");
-
-            temp.setHisId(element[30] != null ? element[30].toString() : "");
+            this.getPersonInfor(employeeInfoList, personList, temp, element[38].toString(), ((BigDecimal)element[7]).intValue());
+            temp.setHisId(element[13] != null ? element[13].toString() : "");
             //Male(1), Female(2)
-            String hisId = element[30] != null ? element[30].toString() : "";
-            int gender = Integer.valueOf(element[29].toString());
-            int undergoundDivision = Integer.valueOf(element[31].toString());
+            String hisId = element[13] != null ? element[13].toString() : "";
+            int gender = temp.getGender();
+            int undergoundDivision = Integer.valueOf(element[14].toString());
             //C2_10
             temp.setTypeMale( gender == 1 && undergoundDivision == 0 && hisId.equals("") ? 0 : 1 );
             //C2_11
@@ -305,54 +354,45 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
             temp.setTypeMineWorkerFund(undergoundDivision == 1 && !hisId.equals("") ? 0 : 1 );
 
             //C2_16
-            temp.setAcquiCtgHealthInsurWelfare(element[32] != null ? Integer.valueOf(element[32].toString()) : 0);
+            temp.setAcquiCtgHealthInsurWelfare(element[15] != null ? Integer.valueOf(element[15].toString()) : 0);
             //C2_17
-            temp.setAcquiCtgMutualAidSeconded(element[32] != null ? Integer.valueOf(element[32].toString()) : 0);
+            temp.setAcquiCtgMutualAidSeconded(element[15] != null ? Integer.valueOf(element[15].toString()) : 0);
             //C2_18
-            temp.setAcquiCtgShipTransfer(element[32] != null ? Integer.valueOf(element[32].toString()) : 0);
+            temp.setAcquiCtgShipTransfer(element[15] != null ? Integer.valueOf(element[15].toString()) : 0);
             //C2_19
-            temp.setPersonalNumber(element[33] != null ? element[33].toString() : "");
+            temp.setPersonalNumber(element[16] != null ? element[16].toString() : "");
 
             //C2_22
-            temp.setDependentNo(element[38] != null ? Integer.valueOf( element[38].toString()) : 0);
+            temp.setDependentNo(element[21] != null ? Integer.valueOf( element[21].toString()) : 0);
             //C2_23
-            temp.setDependentYes(element[38] != null ? Integer.valueOf( element[38].toString()) : 0);
+            temp.setDependentYes(element[21] != null ? Integer.valueOf( element[21].toString()) : 0);
             //C2_24
-            temp.setMonRemunerationAmountInCurrency(element[39] != null ? Integer.valueOf( element[39].toString()) : 0);
+            temp.setMonRemunerationAmountInCurrency(element[22] != null ? Integer.valueOf( element[22].toString()) : 0);
             //C2_25
-            temp.setMonRemunerationAmountOfActualItem(element[40] != null ? Integer.valueOf( element[40].toString()) : 0);
+            temp.setMonRemunerationAmountOfActualItem(element[23] != null ? Integer.valueOf( element[23].toString()) : 0);
             //C2_26
-            temp.setCompenMonthlyAamountTotal(element[41] != null ? element[41].toString() : "");
-            //C2_27
-            temp.setPostalCode(element[9] != null ? element[9].toString() : "");
+            temp.setCompenMonthlyAamountTotal(element[24] != null ? element[24].toString() : "");
 
             //C2_30
-            temp.setRemarks70OldAndOverEmployees(element[42] != null  ? Integer.valueOf(element[42].toString()):0);
+            temp.setRemarks70OldAndOverEmployees(element[25] != null  ? Integer.valueOf(element[25].toString()):0);
             //C2_31
-            temp.setRemarksTwoOrMoreOfficeWorkers(element[43] != null ? Integer.valueOf(element[43].toString()) : 0);
+            temp.setRemarksTwoOrMoreOfficeWorkers(element[26] != null ? Integer.valueOf(element[26].toString()) : 0);
             //C2_32
-            temp.setRemarksShortTimeWorkers(element[44] != null  ? Integer.valueOf(element[44].toString()): 0);
+            temp.setRemarksShortTimeWorkers(element[27] != null  ? Integer.valueOf(element[27].toString()): 0);
             //C2_33
-            temp.setRemarksContReemAfterRetirement(element[45] != null ? Integer.valueOf(element[45].toString()) : 0);
+            temp.setRemarksContReemAfterRetirement(element[28] != null ? Integer.valueOf(element[28].toString()) : 0);
             //C2_34
-            temp.setRemarksOther(element[46] != null  ? Integer.valueOf(element[46].toString()) : 0);
+            temp.setRemarksOther(element[29] != null  ? Integer.valueOf(element[29].toString()) : 0);
             //C2_35
-            temp.setRemarksOtherContent(element[47] != null ? element[47].toString() : "");
+            temp.setRemarksOtherContent(element[30] != null ? element[30].toString() : "");
 
             //C2_36
-            temp.setReasonResidentAbroad(element[48] != null ? Integer.valueOf(element[48].toString()) : 0 );
-//            //C2_37
-//            temp.setReasonShortTermResidence(element[49] != null ? Integer.valueOf(element[49].toString())  == 2 ? 0 : 1 : 1);
-//            //C2_38
-//            temp.setReasonOther(element[50] != null ? Integer.valueOf(element[50].toString())  == 3 ? 0 : 1 : 1);
-//
-//            temp.setShortStay(element[50] != null ? Integer.valueOf(element[50].toString())  == 0 ? 0 : 1 : 1);
-
+            temp.setReasonResidentAbroad(element[31] != null ? Integer.valueOf(element[31].toString()) : 0 );
 
             //C2_39
-            temp.setReasonOtherContent(element[51] != null ? element[51].toString() : "");
-            temp.setOfficeCd(element[54] != null ? element[54].toString() : "");
-            temp.setUndergoundDivision(element[31] != null ? Integer.valueOf(element[31].toString()) : 1);
+            temp.setReasonOtherContent(element[34] != null ? element[34].toString() : "");
+            temp.setOfficeCd(element[37] != null ? element[37].toString() : "");
+            temp.setUndergoundDivision(element[14] != null ? Integer.valueOf(element[14].toString()) : 1);
             data.add(temp);
         });
 

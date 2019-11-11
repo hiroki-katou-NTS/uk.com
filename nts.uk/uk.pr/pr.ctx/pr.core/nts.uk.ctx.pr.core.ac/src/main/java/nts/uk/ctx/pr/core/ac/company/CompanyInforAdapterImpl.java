@@ -30,12 +30,12 @@ public class CompanyInforAdapterImpl implements CompanyInforAdapter {
                     e.getShortComName(),
                     e.getTaxNo(),
                     e.getAddInfo().getFaxNum(),
-                    e.getAddInfo().getAdd_1(),
-                    e.getAddInfo().getAdd_2(),
+                    e.getAddInfo().getAdd_1() == null ? "" :e.getAddInfo().getAdd_1(),
+                    e.getAddInfo().getAdd_2() == null ? "" :e.getAddInfo().getAdd_2(),
                     e.getAddInfo().getAddKana_1(),
                     e.getAddInfo().getAddKana_2(),
-                    e.getAddInfo().getPostCd(),
-                    e.getAddInfo().getPhoneNum()
+                    e.getAddInfo().getPostCd() == null ? "" : e.getAddInfo().getPostCd(),
+                    e.getAddInfo().getPhoneNum() == null ? "" : e.getAddInfo().getPhoneNum()
             );
         }).get();
     }

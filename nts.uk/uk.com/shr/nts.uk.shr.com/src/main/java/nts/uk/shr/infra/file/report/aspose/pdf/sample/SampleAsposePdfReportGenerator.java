@@ -46,12 +46,24 @@ public class SampleAsposePdfReportGenerator extends AsposePdfReportGenerator {
 											Arrays.asList("Railgun", "Misaka")));
 			
 			/********************************************/
-			
-			Table table = createTableWith(Arrays.asList(100, 200), 
+			paragraphs.add(createTableWith(Arrays.asList(100, 200), 
 											Arrays.asList("Header", "Value"), 
-											Arrays.asList("H*****", "xxx"));
-			table.setInNewPage(true);
-			paragraphs.add(table);
+											Arrays.asList("H*****", "xxx")));
+			
+			/********************************************/
+			paragraphs.add(createTableWith(Arrays.asList(100, 200), 
+											Arrays.asList("Header", "Value"), 
+											Arrays.asList("X*****", "yyy")));
+			
+			/********************************************/
+			paragraphs.add(createTableWith(Arrays.asList(100, 200), 
+											Arrays.asList("Header", "Value"), 
+											Arrays.asList("K*****", "zzz")));
+			
+			/********************************************/
+			paragraphs.add(createTableWith(Arrays.asList(100, 200), 
+											Arrays.asList("Header", "Value"), 
+											Arrays.asList("A*****", "aaa")));
 			
 			report.saveAsPdf(this.createNewFile(context, "outFile.pdf"));
 		} catch (Exception e) {
@@ -68,12 +80,13 @@ public class SampleAsposePdfReportGenerator extends AsposePdfReportGenerator {
 		header.setFixedRowHeight(20);
 		header.setDefaultCellBorder(new BorderInfo(BorderSide.Left | BorderSide.Top| BorderSide.Bottom | BorderSide.Right, 
 													1.25F, Color.getBlack()));
-		header.setVerticalAlignment(VerticalAlignment.Center);
+//		header.setVerticalAlignment(VerticalAlignment.Center);
 
 		headers.stream().forEach(h -> {
 			Cell c = header.getCells().add();
 			c.getParagraphs().add(new TextFragment(h));
 			c.setAlignment(HorizontalAlignment.Center);
+			c.setVerticalAlignment(HorizontalAlignment.Center);
 		});
 		
 		for (int i = 1; i <= 10; i++) {
@@ -81,15 +94,19 @@ public class SampleAsposePdfReportGenerator extends AsposePdfReportGenerator {
 			row.setFixedRowHeight(15);
 			row.setDefaultCellBorder(new BorderInfo(BorderSide.Left | BorderSide.Top| BorderSide.Bottom | BorderSide.Right, 
 					1.25F, Color.getBlack()));
-			row.setVerticalAlignment(VerticalAlignment.Center);
-			
+//			row.setVerticalAlignment(VerticalAlignment.Center);
+
 			for (int j = 0; j < headers.size(); j++) {
 				String text = defaultVal.size() > j ? defaultVal.get(j) : headers.get(j);
 				Cell cell = row.getCells().add();
 				cell.getParagraphs().add(new TextFragment(text + " - " + i));
 				cell.setAlignment(HorizontalAlignment.Center);
+				cell.setVerticalAlignment(VerticalAlignment.Center);
 			}
 		}
+		
+		table.setInNewPage(true);
+		
 		return table;
 	}
 

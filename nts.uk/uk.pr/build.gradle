@@ -580,6 +580,8 @@ project (':pr.file:nts.uk.file.pr.app') {
 		compile project(':pr.ctx:pr.retire:nts.uk.ctx.pr.retire.dom')
 		compile project(':pr.ctx:pr.retire:nts.uk.ctx.pr.retire.app')
 		compile(group: 'com.query', name: 'nts.uk.query.pub', version: version)
+ 	 	compile group: 'aspose', name: 'cells', version: '9.0.0'
+		compile group: 'aspose', name: 'aspose.pdf', version: '11.7.0'
 	}
 }
 
@@ -595,7 +597,7 @@ project (':pr.file:nts.uk.file.pr.infra') {
 		compile project(':pr.ctx:pr.retire:nts.uk.ctx.pr.retire.infra')
 		compile(group: 'com.query', name: 'nts.uk.query.pub', version: version)
 		compile group: 'aspose', name: 'cells', version: '9.0.0'
-		compile group: 'aspose', name: 'aspose.pdf', version: '19.10'
+		compile group: 'aspose', name: 'aspose.pdf', version: '11.7.0'
 	}
 }
 
@@ -612,9 +614,10 @@ project (':pr.web:nts.uk.pr.web') {
 	
 	dependencies {
 		compile group: 'com.shr', name: 'nts.uk.shr.find', version: version
+		compile group: 'com.shr', name: 'nts.uk.shr.com', version: '0.2.3'
+		runtime group: 'aspose', name: 'aspose.pdf', version: '11.7.0'
 		providedCompile group: 'com.sun.faces', name: 'jsf-api', version: '2.2.13'
 		compile group: 'aspose', name: 'cells', version: '9.0.0'
-		compile group: 'aspose', name: 'aspose.pdf', version: '19.10'
 
 		// https://mvnrepository.com/artifact/net.lingala.zip4j/zip4j
 		runtime group: 'net.lingala.zip4j', name: 'zip4j', version: '1.3.2'

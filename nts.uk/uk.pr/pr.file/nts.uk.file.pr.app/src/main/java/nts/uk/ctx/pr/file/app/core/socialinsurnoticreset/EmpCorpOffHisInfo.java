@@ -16,5 +16,5 @@ public class EmpCorpOffHisInfo {
     private String cid;
     private GeneralDate startDate;
     private GeneralDate endDate;
-    private Integer socialInsurOfficeCode;
+    private String socialInsurOfficeCode;
 }
