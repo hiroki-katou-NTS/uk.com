@@ -31,8 +31,41 @@ import { KdwS03CComponent } from 'views/kdw/s03/c';
     }
 })
 export class Kdws03AComponent extends Vue {
-    @Prop({ default: 0 })
-    public screenMode: number;
+
+    @Prop({ default: () => ({ 
+        screenMode: 0, 
+        closureID: 0, 
+        changePeriodAtr: true, 
+        displayFormat: 0, 
+        targetEmployee: '',
+        closureYM: 0,
+        dateTarget: null,
+        initClock: null,
+        transitionDesScreen: null,
+        errorRefStartAtr: true 
+    }) })
+    public readonly params: {
+        // 画面モード
+        screenMode: number, 
+        // 対象締め
+        closureID: number, 
+        // 期間を変更する
+        changePeriodAtr: boolean, 
+        // 表示形式
+        displayFormat: number, 
+        // 対象社員
+        targetEmployee: string,
+        // 対象年月
+        closureYM: number,
+        // 対象年月日
+        dateTarget: Date,
+        // 打刻初期値
+        initClock: any,
+        // 遷移元の画面
+        transitionDesScreen: any,
+        // エラー参照を起動する
+        errorRefStartAtr: boolean 
+    };
 
     public title: string = 'Kdws03A';
     public isFirstLoad: boolean = true;
@@ -165,7 +198,7 @@ export class Kdws03AComponent extends Vue {
             this.rowHeight = 42 + (window.innerHeight - 140 -  (this.rownum + 1) * 42) / (this.rownum + 1);
         }
         
-        if (this.screenMode == 0) {
+        if (this.params.screenMode == 0) {
             this.pgName = this.displayFormat == '0' ? 'name1' : 'name2';
         } else {
             this.pgName = this.displayFormat == '0' ? 'name3' : 'name4';
@@ -215,7 +248,7 @@ export class Kdws03AComponent extends Vue {
 
         let param = {
             changePeriodAtr: false,
-            screenMode: self.screenMode,
+            screenMode: self.params.screenMode,
             errorRefStartAtr: false,
             initDisplayDate: null,
             employeeID: self.selectedEmployee,
@@ -282,7 +315,7 @@ export class Kdws03AComponent extends Vue {
                     next();
                 });
                 storage.session.setItem('dailyCorrectionState', {
-                    screenMode: self.screenMode,
+                    screenMode: self.params.screenMode,
                     displayFormat: self.displayFormat,
                     selectedEmployee: self.selectedEmployee,
                     lstEmployee: self.lstEmployee,

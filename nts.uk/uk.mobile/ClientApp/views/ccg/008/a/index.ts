@@ -50,6 +50,8 @@ export class Ccg008AComponent extends Vue {
     public normalAgreementLst: Array<any> = [];
     public fullAgreementLst: Array<any> = [];
     public agreementButton: boolean = false;
+    public closureID: number = 0;
+    public closureYM: number = 0;
     
     public model = {
         date: moment(new Date()).format('YYYYMM')
@@ -71,7 +73,18 @@ export class Ccg008AComponent extends Vue {
                 
                 return;
             case 'CCGS08_14': 
-                self.$goto('kdws03a'); 
+                self.$goto('kdws03a', {
+                    screenMode: 0, 
+                    closureID: self.closureID, 
+                    changePeriodAtr: true, 
+                    displayFormat: 0, 
+                    targetEmployee: '',
+                    closureYM: self.closureYM,
+                    dateTarget: null,
+                    initClock: null,
+                    transitionDesScreen: null,
+                    errorRefStartAtr: true 
+                }); 
                 
                 return;
             default: 
@@ -90,6 +103,8 @@ export class Ccg008AComponent extends Vue {
             self.overtime.visible = visibleConfig.overtimeHoursDto ? visibleConfig.overtimeHoursDto.visible : false;
             self.timeStatus.visible = visibleConfig.ktg029 ? visibleConfig.ktg029.visible : false;
             self.displayNotifisVissible = visibleConfig.displayNotifiDto ? visibleConfig.displayNotifiDto.visible : false;
+            self.closureID = visibleConfig.closureID;
+            self.closureYM = visibleConfig.closureYearMonth;
         }).then( () => {
             self.loadData();
         });
