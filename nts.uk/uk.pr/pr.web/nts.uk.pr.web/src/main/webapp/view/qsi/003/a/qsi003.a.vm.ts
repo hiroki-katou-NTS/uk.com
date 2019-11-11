@@ -55,10 +55,9 @@ module nts.uk.pr.view.qsi003.a.viewmodel {
                     self.datePicker(" (" + nts.uk.time.dateInJapanEmpire(data) + ")");
                 }
             });
-            self.getProgramName();
             this.getRomajiNameNoti();
             let today = new Date();
-            let dd = today.getDate()
+            let dd = today.getDate();
             let ms = today.getMonth()+1;
             let yyyy = today.getFullYear();
             self.date(yyyy + "/" + ms + "/" + dd);
@@ -78,18 +77,6 @@ module nts.uk.pr.view.qsi003.a.viewmodel {
             setShared("QSI003_PARAMS_B", params);
             modal("/view/qsi/003/b/index.xhtml");
         }
-
-        getProgramName(){
-            var namePath = nts.uk.text.format("sys/portal/standardmenu/findProgramName/{0}/{1}", "QSI003", "A");
-            nts.uk.request.ajax("com", namePath).done((value) => {
-                if(!nts.uk.util.isNullOrEmpty(value)){
-                    $("#pg-name").text(value);
-                }else{
-                    $("#pg-name").text('');
-                }
-            });
-        }
-
 
         getRomajiNameNoti(){
             var self = this;

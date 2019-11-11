@@ -55,7 +55,7 @@ public class JpaEmpInsHistRepository extends JpaRepository implements EmpInsHist
         return this.queryProxy().query(SELECT_BY_KEY_HIS, QqsmtEmpInsHist.class)
                 .setParameter("sid", sid)
                 .setParameter("cid", cid)
-                .setParameter("hisId", hisId)
+                .setParameter("histId", hisId)
                 .getSingle(e ->{
                     return new EmpInsNumInfo(e.empInsHistPk.histId,e.empInsNumber);
                 });

@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.pr.core.dom.adapter.company.CompanyInfor;
 import nts.uk.ctx.pr.core.dom.laborinsurance.laborinsuranceoffice.LaborInsuranceOffice;
+import nts.uk.ctx.pr.report.dom.printconfig.empinsreportsetting.EmpInsReportSetting;
 import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.EmpInsHist;
 import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.EmpInsNumInfo;
 
@@ -48,6 +49,14 @@ public class EmpInsReportSettingExportData {
      */
     private String reportFullNameKana;
     /**
+     * 個人.個人名グループ.個人旧氏名.氏名
+     */
+    private String oldName;
+    /**
+     * 個人.個人名グループ.個人旧氏名.氏名カナ
+     */
+    private String oldNameKana;
+    /**
      * 個人.性別
      */
     private int gender;
@@ -73,4 +82,8 @@ public class EmpInsReportSettingExportData {
     private EmpInsNumInfo empInsNumInfo;
 
     private String employeeCode;
+
+    private EmpInsReportSetting empInsReportSetting;
+
+    private String fillingDate;
 }

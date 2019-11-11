@@ -1,7 +1,6 @@
 package nts.uk.ctx.pr.core.ac.person;
 
 import nts.uk.ctx.bs.person.pub.person.PersonPub;
-import nts.uk.ctx.pr.core.dom.adapter.employee.employee.EmployeeInfoAdapter;
 import nts.uk.ctx.pr.core.dom.adapter.person.FullNameSetExport;
 import nts.uk.ctx.pr.core.dom.adapter.person.PersonExport;
 import nts.uk.ctx.pr.core.dom.adapter.person.PersonExportAdapter;

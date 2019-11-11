@@ -18,8 +18,6 @@ public class RomajiNameNotification {
     GeneralDate date;
     String personTarget;
     CompanyInfor companyInfor;
-    PersonInfo personInfo;
-    FamilyMember familyMember;
     RomajiNameNotiCreSetting romajiNameNotiCreSetting;
     List<RomajiNameNotiCreSetExport> romajiNameNotiCreSetExportList;
 }

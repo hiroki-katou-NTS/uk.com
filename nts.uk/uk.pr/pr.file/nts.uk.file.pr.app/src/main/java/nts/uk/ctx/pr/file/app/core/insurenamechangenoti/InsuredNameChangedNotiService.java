@@ -4,20 +4,21 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.pr.core.dom.adapter.company.CompanyInfor;
+import nts.uk.ctx.pr.core.dom.adapter.company.CompanyInforAdapter;
+import nts.uk.ctx.pr.core.dom.adapter.employee.employee.EmployeeInfoAdapter;
+import nts.uk.ctx.pr.core.dom.adapter.employee.employee.EmployeeInfoEx;
+import nts.uk.ctx.pr.core.dom.adapter.person.PersonExport;
+import nts.uk.ctx.pr.core.dom.adapter.person.PersonExportAdapter;
 import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsuranceOffice;
 import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsuranceOfficeRepository;
-import nts.uk.ctx.pr.core.dom.adapter.company.CompanyInfor;
-import nts.uk.ctx.pr.file.app.core.socialinsurnoticreset.InsLossDataExport;
-import nts.uk.ctx.pr.file.app.core.socialinsurnoticreset.NotificationOfLossInsExRepository;
 import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.*;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.*;
-import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empcomofficehis.AffOfficeInformationRepository;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empcomofficehis.EmpCorpHealthOffHisRepository;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empfunmeminfor.EmPensionFundPartiPeriodInforRepository;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empfunmeminfor.FundMembership;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurassocinfor.HealInsurPortPerIntellRepository;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurassocinfor.HealthCarePortInfor;
-import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmpBasicPenNumInforRepository;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmplHealInsurQualifiInforRepository;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.HealInsurNumberInfor;
 import nts.uk.shr.com.context.AppContexts;
@@ -54,16 +55,7 @@ public class InsuredNameChangedNotiService extends ExportService<InsuredNameChan
     private EmPensionFundPartiPeriodInforRepository emPensionFundPartiPeriodInforRepository;
 
     @Inject
-    private EmpBasicPenNumInforRepository empBasicPenNumInforRepository;
-
-    @Inject
     private EmpCorpHealthOffHisRepository empCorpHealthOffHisRepository;
-
-    @Inject
-    private AffOfficeInformationRepository affOfficeInformationRepository;
-
-    @Inject
-    private EmpNameChangeNotiInforRepository empNameChangeNotiInforRepository;
 
     @Inject
     private WelfPenNumInformationRepository welfPenNumInformationRepository;
@@ -74,23 +66,25 @@ public class InsuredNameChangedNotiService extends ExportService<InsuredNameChan
     @Inject
     private HealInsurPortPerIntellRepository healInsurPortPerIntellRepository;
 
+    @Inject
+    private EmployeeInfoAdapter employeeInfoAdapter;
+
+    @Inject
+    private PersonExportAdapter personExportAdapter;
+
+    @Inject
+    private CompanyInforAdapter companyAdapter;
+
     private InsuredNameChangedNotiExportData data;
 
-    //get company infor
-    @Inject
-    private NotificationOfLossInsExRepository notificationOfLossInsExRepository;
-
-
     private List<SocialInsuranceOffice> listSocialInsuranceOffice = new ArrayList<SocialInsuranceOffice>();
-
-    private CompanyInfor companyInfor;
 
     @Override
     protected void handle(ExportServiceContext<InsuredNameChangedNotiQuery> exportServiceContext) {
         List<InsuredNameChangedNotiExportData> listData = new ArrayList<>();
-
         String cid = AppContexts.user().companyId();
         String userId = AppContexts.user().userId();
+        CompanyInfor company = companyAdapter.getCompanyNotAbolitionByCid(cid);
         InsuredNameChangedNotiQuery query = exportServiceContext.getQuery();
         SocialInsurNotiCreateSetDto socialInsurNotiCreateSetDto = query.getSocialInsurNotiCreateSetDto();
         SocialInsurNotiCreateSet socialInsurNotiCreateSet = this.toDomain(socialInsurNotiCreateSetDto,userId,cid);
@@ -108,20 +102,39 @@ public class InsuredNameChangedNotiService extends ExportService<InsuredNameChan
 
         }
         List<EmpWelfarePenInsQualiInfor> empWelfarePenInsQualiInfors = empWelfarePenInsQualiInforRepository.getEmpWelfarePenInsQualiInfor(cid, query.getDate(),query.getListEmpId());
+        List<String> emplds = empWelfarePenInsQualiInfors.stream().map(EmpWelfarePenInsQualiInfor::getEmployeeId).collect(Collectors.toList());
+        List<EmployeeInfoEx> employeeInfoList = employeeInfoAdapter.findBySIds(emplds);
+        List<PersonExport> personList = personExportAdapter.findByPids(employeeInfoList.stream().map(EmployeeInfoEx::getPId).collect(Collectors.toList()));
         empWelfarePenInsQualiInfors.forEach(x ->{
             InsuredNameChangedNotiExportData insuredNameChangedNotiExportData =  this.get(cid,listSocialInsuranceOffice,socialInsurNotiCreateSet,query.getDate(),x);
             insuredNameChangedNotiExportData.setSocialInsurOutOrder(query.getSocialInsurNotiCreateSetDto().getOutputOrder());
             if(insuredNameChangedNotiExportData.isProcessSate()){
+                insuredNameChangedNotiExportData.setPerson(getPersonInfor(employeeInfoList, personList, x.getEmployeeId()));
                 listData.add(insuredNameChangedNotiExportData);
             }
         });
 
         if(listData.size() > 0){
-            fileGenerator.generate(exportServiceContext.getGeneratorContext(),this.order(query.getSocialInsurNotiCreateSetDto().getOutputOrder(),listData, query.getSocialInsurNotiCreateSetDto().getInsuredNumber()),socialInsurNotiCreateSet);
+            fileGenerator.generate(exportServiceContext.getGeneratorContext(),this.order(query.getSocialInsurNotiCreateSetDto().getOutputOrder(),listData, query.getSocialInsurNotiCreateSetDto().getInsuredNumber()),socialInsurNotiCreateSet, company);
         }else{
             throw new BusinessException("Msg_37");
         }
 
+    }
+
+    public PersonExport getPersonInfor(List<EmployeeInfoEx> employeeInfoList, List<PersonExport> personList, String empId){
+        PersonExport person = new PersonExport();
+        Optional<EmployeeInfoEx> employeeInfoEx = employeeInfoList.stream().filter(item -> item.getEmployeeId().equals(empId)).findFirst();
+        if(employeeInfoEx.isPresent()) {
+            Optional<PersonExport> personEx = personList.stream().filter(item -> item.getPersonId().equals(employeeInfoEx.get().getPId())).findFirst();
+            if (personEx.isPresent()){
+                person.setBirthDate(personEx.get().getBirthDate());
+                person.setGender(personEx.get().getGender());
+                person.setPersonId(personEx.get().getPersonId());
+                person.setPersonNameGroup(personEx.get().getPersonNameGroup());
+            }
+        }
+        return person;
     }
 
     private List<InsuredNameChangedNotiExportData> order(int order, List<InsuredNameChangedNotiExportData> listData, int insuredNumber) {
@@ -231,7 +244,7 @@ public class InsuredNameChangedNotiService extends ExportService<InsuredNameChan
             Optional<String> socialInsuranceOfficeCd = empCorpHealthOffHisRepository.getSocialInsuranceOfficeCd(cid,empId,date);
             if(socialInsuranceOfficeCd.isPresent()){
                 Optional<SocialInsuranceOffice>  socialInsuranceOffice = listSocialInsuranceOffice.stream().filter(x -> x.getCode().v().equals(socialInsuranceOfficeCd.get())).findFirst();
-                data.setSocialInsuranceOffice(socialInsuranceOffice.isPresent() ? socialInsuranceOffice.get() : null);
+                data.setSocialInsuranceOffice(socialInsuranceOffice.orElse(null));
             }
         }
 

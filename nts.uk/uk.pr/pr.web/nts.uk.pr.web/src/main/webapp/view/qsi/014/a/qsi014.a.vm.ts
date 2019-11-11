@@ -137,7 +137,7 @@ module nts.uk.pr.view.qsi014.a.viewmodel {
 
         getStyle(){
             let self = this;
-            return self.startDateJp().length > 13 ?  "width:140px; display: inline-block;" : "width:140px; display:inline";
+            return self.startDateJp().length > 14 ?  "width:138px; display: inline-block;" : "width:138px; display:inline";
         }
 
         openBScreen() {
@@ -186,8 +186,7 @@ module nts.uk.pr.view.qsi014.a.viewmodel {
                 alreadySettingList: self.alreadySettingList,
                 isShowWorkPlaceName: self.isShowWorkPlaceName(),
                 isShowSelectAllButton: self.isShowSelectAllButton(),
-                disableSelection : self.disableSelection(),
-                maxRows: 14
+                disableSelection : self.disableSelection()
             };
             $('#component-items-list').ntsListComponent(self.listComponentOption);
         }
@@ -265,8 +264,8 @@ module nts.uk.pr.view.qsi014.a.viewmodel {
                 showEmployeeSelection: false,
                 showQuickSearchTab: true,
                 showAdvancedSearchTab: true,
-                showBaseDate: false,
-                showClosure: false,
+                showBaseDate: true,
+                showClosure: true,
                 showAllClosure: true,
                 showPeriod: false,
                 periodFormatYM: false,

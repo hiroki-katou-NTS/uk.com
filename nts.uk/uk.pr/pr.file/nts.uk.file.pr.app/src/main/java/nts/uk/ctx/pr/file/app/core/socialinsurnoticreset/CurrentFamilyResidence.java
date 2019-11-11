@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.pr.core.dom.adapter.person.family.FamilyMemberInfoEx;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +24,8 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 public class CurrentFamilyResidence {
+
+    private String personId;
 
     private Integer familyId;
 
@@ -73,19 +76,22 @@ public class CurrentFamilyResidence {
         this.address1 = "大阪府";
         this.address2 = "大阪市北区扇町1-1-21";
         this.isLivingSeparate = false;
-        this.birthDate = GeneralDate.fromString("1980/01/02","yyyy/MM/dd" );
-        this.nameKana = "ホン ギルトンノツマ";
-        this.name = "HONG　KILDONGS　WIFE";
         this.reportNameKana = "トドケデ　ダミー";
         this.reportName = "届出　ダミー";
+        this.nameKana = "シメイ　ダミー";
+        this.name = "氏名　ダミー";
+        this.birthDate = GeneralDate.fromString("2000/01/01","yyyy/MM/dd" );
         this.startDate = GeneralDate.fromString("2019/01/01","yyyy/MM/dd" );
         this.endDate = GeneralDate.fromString("2020/01/01","yyyy/MM/dd" );
     }
 
-    public static List<CurrentFamilyResidence> getListFamily(){
-        List<CurrentFamilyResidence> list = new ArrayList<>();
-        list.add(new CurrentFamilyResidence());
-        return list;
+    public static CurrentFamilyResidence getListFamily(/*List<FamilyMemberInfoEx> fList*/String personId ){
+            CurrentFamilyResidence c = new CurrentFamilyResidence();
+            c.setPersonId(personId);
+            /*c.setFamilyId(Integer.parseInt(fList.get(0).getFamilyId()));
+            c.setName(fList.get(0).getRomajiName().isPresent() ? fList.get(0).getRomajiName().get() : "");
+            c.setNameKana(fList.get(0).getRomajiNameKana().isPresent() ? fList.get(0).getRomajiNameKana().get() : "");
+            c.setBirthDate(fList.get(0).getBirthday() != null ? GeneralDate.fromString(fList.get(0).getBirthday(), "yyyy/MM/dd"): null);*/
+            return c;
     }
-
 }

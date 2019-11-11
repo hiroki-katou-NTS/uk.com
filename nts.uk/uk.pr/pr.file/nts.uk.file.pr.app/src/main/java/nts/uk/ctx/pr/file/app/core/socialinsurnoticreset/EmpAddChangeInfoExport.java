@@ -117,10 +117,10 @@ public class EmpAddChangeInfoExport {
     private GeneralDate startDateF;
 
     /**変更前住所*/
-    private String add1BeforeChange;
+    private String add1BeforeChangeF;
 
     /**変更前住所*/
-    private String add2BeforeChange;
+    private String add2BeforeChangeF;
 
     /**事業所住所 */
     private String address1;
@@ -162,7 +162,6 @@ public class EmpAddChangeInfoExport {
     private String businessEstCode2;
 
     public EmpAddChangeInfoExport(String empId) {
-        this.familyId = 11;
         this.empId = empId;
         this.healthInsurance = false;
         this.empPenInsurance = false;

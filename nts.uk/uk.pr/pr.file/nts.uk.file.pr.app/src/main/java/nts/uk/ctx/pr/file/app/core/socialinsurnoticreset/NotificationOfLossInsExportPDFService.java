@@ -5,7 +5,11 @@ import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.core.dom.adapter.company.CompanyInfor;
+import nts.uk.ctx.pr.core.dom.adapter.company.CompanyInforAdapter;
 import nts.uk.ctx.pr.core.dom.adapter.employee.employee.EmployeeInfoAdapter;
+import nts.uk.ctx.pr.core.dom.adapter.employee.employee.EmployeeInfoEx;
+import nts.uk.ctx.pr.core.dom.adapter.person.PersonExport;
+import nts.uk.ctx.pr.core.dom.adapter.person.PersonExportAdapter;
 import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsuranceOfficeRepository;
 import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.*;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.ReasonsForLossPensionIns;
@@ -16,6 +20,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Stateless
@@ -30,6 +35,14 @@ public class NotificationOfLossInsExportPDFService extends ExportService<Notific
 	@Inject
 	private NotificationOfLossInsExRepository socialInsurNotiCreateSetEx;
 
+    @Inject
+    private EmployeeInfoAdapter employeeInfoAdapter;
+
+    @Inject
+    private PersonExportAdapter personExportAdapter;
+
+	@Inject
+	private CompanyInforAdapter companyAdapter;
 
 	@Override
 	protected void handle(ExportServiceContext<NotificationOfLossInsExportQuery> exportServiceContext) {
@@ -37,7 +50,6 @@ public class NotificationOfLossInsExportPDFService extends ExportService<Notific
 		String cid = AppContexts.user().companyId();
         GeneralDate start = exportServiceContext.getQuery().getStartDate();
         GeneralDate end = exportServiceContext.getQuery().getEndDate();
-		//List<EmployeeInfoEx>  employee = employeeInfoAdapter.findBySIds(exportServiceContext.getQuery().getEmpIds());
 		NotificationOfLossInsExport socialInsurNotiCreateSet = exportServiceContext.getQuery().getSocialInsurNotiCreateSet();
 		SocialInsurNotiCreateSet domain = new SocialInsurNotiCreateSet(userId, cid,
 				socialInsurNotiCreateSet.getOfficeInformation(),
@@ -60,7 +72,18 @@ public class NotificationOfLossInsExportPDFService extends ExportService<Notific
 		if(healthInsLoss.isEmpty()) {
 			throw new BusinessException("Msg_37");
 		}
-		if(domain.getOutputOrder() == SocialInsurOutOrder.EMPLOYEE_KANA_ORDER) {
+        List<String> emplds = healthInsLoss.stream().map(InsLossDataExport::getEmpId).collect(Collectors.toList());
+        List<EmployeeInfoEx> employeeInfoList = employeeInfoAdapter.findBySIds(emplds);
+        List<PersonExport> personList = personExportAdapter.findByPids(employeeInfoList.stream().map(EmployeeInfoEx::getPId).collect(Collectors.toList()));
+        healthInsLoss.forEach(item -> {
+            PersonExport p = InsLossDataExport.getPersonInfor(employeeInfoList, personList, item.getEmpId());
+            item.setPersonName(p.getPersonNameGroup().getPersonName().getFullName());
+            item.setPersonNameKana(p.getPersonNameGroup().getPersonName().getFullNameKana());
+            item.setOldName(p.getPersonNameGroup().getTodokedeFullName().getFullName());
+            item.setOldNameKana(p.getPersonNameGroup().getTodokedeFullName().getFullNameKana());
+            item.setBirthDay(p.getBirthDate().toString("yyyy-MM-dd"));
+        });
+        if(domain.getOutputOrder() == SocialInsurOutOrder.EMPLOYEE_KANA_ORDER) {
 			healthInsLoss = healthInsLoss.stream().sorted(Comparator.comparing(InsLossDataExport::getOfficeCd).thenComparing(InsLossDataExport::getPersonNameKana)).collect(Collectors.toList());
 		}
 		if(domain.getOutputOrder() == SocialInsurOutOrder.HEAL_INSUR_NUMBER_ORDER) {
@@ -92,7 +115,7 @@ public class NotificationOfLossInsExportPDFService extends ExportService<Notific
 
 		List<InsLossDataExport> overSeventy = healthInsLoss.stream().filter(item -> (item.getCause2() != null && item.getCause2() == ReasonsForLossPensionIns.ONLY_PENSION_INSURANCE.value) ).collect(Collectors.toList());
 		List<InsLossDataExport> underSeventy = healthInsLoss.stream().filter(item -> (item.getCause2() != null && item.getCause2() != ReasonsForLossPensionIns.ONLY_PENSION_INSURANCE.value) || item.getCause2() == null).collect(Collectors.toList());
-		CompanyInfor company = socialInsurNotiCreateSetEx.getCompanyInfor(cid);
+		CompanyInfor company = companyAdapter.getCompanyNotAbolitionByCid(cid);
 		socialInsurNotiCreateSetFileGenerator.generate(exportServiceContext.getGeneratorContext(),
 				new LossNotificationInformation(underSeventy, overSeventy, null, domain, exportServiceContext.getQuery().getReference(), company, null));
 
