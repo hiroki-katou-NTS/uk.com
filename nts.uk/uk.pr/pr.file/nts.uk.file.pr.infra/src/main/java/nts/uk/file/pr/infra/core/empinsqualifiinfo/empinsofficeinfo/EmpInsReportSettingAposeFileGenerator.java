@@ -72,13 +72,13 @@ public class EmpInsReportSettingAposeFileGenerator extends AsposePdfReportGenera
                                 //A2_6
                                 paragraphs.add(setValue(112,290, element.getCompanyInfor().getCompanyName(),9));
                                 //A3_1
-                                paragraphs.add(setValue(150,186, element.getCompanyInfor().getPostCd(),16));
+                                paragraphs.add(setValue(150,186, element.getCompanyInfor().getPostCd(),9));
                                 //A3_2
-                                paragraphs.add(setValue(210,186, element.getCompanyInfor().getAdd_1()+  element.getCompanyInfor().getAdd_2(),16));
+                                paragraphs.add(setValue(210,186, element.getCompanyInfor().getAdd_1()+  element.getCompanyInfor().getAdd_2(),9));
                                 //A3_3
-                                paragraphs.add(setValue(150,160, element.getCompanyInfor().getRepname(),16));
+                                paragraphs.add(setValue(150,160, element.getCompanyInfor().getRepname(),9));
                                 //A3_4
-                                paragraphs.add(setValue(150,130,element.getCompanyInfor().getPhoneNum(),16));
+                                paragraphs.add(setValue(150,130,element.getCompanyInfor().getPhoneNum(),9));
                             }
                             break;
                         }
