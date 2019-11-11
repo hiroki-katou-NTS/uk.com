@@ -52,5 +52,14 @@
 .nts-searchbbox-wrapper.ntsSearchArea {
 	margin-bottom: -3px;
 }
+#G4_2_container {
+	height: 275px !important;
+}
+#up-down {
+	height: inherit;
+}
+.upDown-container {
+	height: inherit;
+}
 
 

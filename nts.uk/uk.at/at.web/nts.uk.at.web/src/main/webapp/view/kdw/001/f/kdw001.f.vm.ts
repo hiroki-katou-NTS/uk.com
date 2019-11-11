@@ -57,10 +57,10 @@ module nts.uk.at.view.kdw001.f {
                     { headerText: '', key: 'empCalAndSumExecLogID', width: 1, hidden: true},
                     
                     { headerText: getText('KDW001_74'), key: 'personCode', width: 120 },
-                    { headerText: getText('KDW001_75'), key: 'personName', width: 100 },
+                    { headerText: getText('KDW001_75'), key: 'personName', width: 120 },
                     { headerText: getText('KDW001_76'), key: 'processingMonthName', width: 150 },
                     //doi mau
-                    { headerText: getText('KDW001_77'), key: 'executedMenuName', width: 200,
+                    { headerText: getText('KDW001_77'), key: 'executedMenuName', width: 110,
                             formatter: function (executedMenuName, record) {
                                 if(record.isTextRed.toString() === "true"){
                                     return "<label style='color: red;'> " + executedMenuName + " </label>";       

@@ -470,3 +470,6 @@ table#employ_view tr{
 	padding-top: 0px;
     height: 42px;
 }
+body {
+	-ms-overflow-x: hidden;
+}
