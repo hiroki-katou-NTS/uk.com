@@ -110,19 +110,17 @@ public class EmpInsReportSettingPDFService extends ExportService<EmpInsReportSet
             temp.setEmpInsNumInfo(empInsNumInfo.isPresent() ? empInsNumInfo.get() : new EmpInsNumInfo(hisId,""));
             // dummy data thuật toán ドメインモデル「外国人在留履歴情報」を取得する
             Optional<PersonExport> person = personExports.stream().filter(dataPerson -> dataPerson.getPersonId().equals(e.getPId())).findFirst();
-            {
-                if(person.isPresent()){
-                    temp.setBrithDay(person.get().getBirthDate().toString());
-                    temp.setName(person.get().getPersonNameGroup().getPersonName().getFullName());
-                    temp.setNameKana(person.get().getPersonNameGroup().getPersonName().getFullNameKana());
-                    temp.setFullName(person.get().getPersonNameGroup().getPersonRomanji().getFullName());
-                    temp.setFullNameKana(person.get().getPersonNameGroup().getPersonRomanji().getFullNameKana());
-                    temp.setReportFullName(person.get().getPersonNameGroup().getTodokedeFullName().getFullName());
-                    temp.setReportFullNameKana(person.get().getPersonNameGroup().getTodokedeFullName().getFullNameKana());
-                    temp.setGender(person.get().getGender());
-                    temp.setOldName(person.get().getPersonNameGroup().getOldName().getFullName());
-                    temp.setOldNameKana(person.get().getPersonNameGroup().getOldName().getFullNameKana());
-                }
+            if(person.isPresent()){
+                temp.setBrithDay(person.get().getBirthDate().toString());
+                temp.setName(person.get().getPersonNameGroup().getPersonName().getFullName());
+                temp.setNameKana(person.get().getPersonNameGroup().getPersonName().getFullNameKana());
+                temp.setFullName(person.get().getPersonNameGroup().getPersonRomanji().getFullName());
+                temp.setFullNameKana(person.get().getPersonNameGroup().getPersonRomanji().getFullNameKana());
+                temp.setReportFullName(person.get().getPersonNameGroup().getTodokedeFullName().getFullName());
+                temp.setReportFullNameKana(person.get().getPersonNameGroup().getTodokedeFullName().getFullNameKana());
+                temp.setGender(person.get().getGender());
+                temp.setOldName(person.get().getPersonNameGroup().getOldName().getFullName());
+                temp.setOldNameKana(person.get().getPersonNameGroup().getOldName().getFullNameKana());
             }
             temp.setEmployeeCode(e.getEmployeeCode());
             listDataExport.add(temp);
