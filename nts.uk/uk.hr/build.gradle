@@ -69,7 +69,11 @@ subprojects {
 		':hr.ctx:hr.develop:nts.uk.ctx.hr.develop.app:upver',
 		':hr.ctx:hr.develop:nts.uk.ctx.hr.develop.dom:upver',
 		':hr.ctx:hr.develop:nts.uk.ctx.hr.develop.infra:upver',
-		':hr.ctx:hr.develop:nts.uk.ctx.hr.develop.pub:upver'
+		':hr.ctx:hr.develop:nts.uk.ctx.hr.develop.pub:upver',
+		':hr.ctx:hr.notice:nts.uk.ctx.hr.notice.app:upver',
+		':hr.ctx:hr.notice:nts.uk.ctx.hr.notice.dom:upver',
+		':hr.ctx:hr.notice:nts.uk.ctx.hr.notice.infra:upver',
+		':hr.ctx:hr.notice:nts.uk.ctx.hr.notice.pub:upver'
 	]) { }
 	
 	dependencies {
@@ -267,6 +271,56 @@ project (':hr.ctx:hr.develop:nts.uk.ctx.hr.develop.pubimp') {
 	}
 }
 
+//=========================hr:hr.notice==================================
+project (':hr.ctx:hr.notice:nts.uk.ctx.hr.notice.ws') {
+	dependencies {
+		compile project(':hr.ctx:hr.notice:nts.uk.ctx.hr.notice.app')
+	}
+}
+
+project (':hr.ctx:hr.notice:nts.uk.ctx.hr.notice.dom') {
+	dependencies {
+		compile project(':hr.ctx:hr.shared:nts.uk.ctx.hr.shared.dom')
+	}
+}
+
+project (':hr.ctx:hr.notice:nts.uk.ctx.hr.notice.app') {
+	dependencies {
+		compile group: 'com.shr', name: 'nts.uk.shr.find', version: version
+		compile project(':hr.ctx:hr.notice:nts.uk.ctx.hr.notice.dom')
+		compile project(':hr.ctx:hr.shared:nts.uk.ctx.hr.shared.dom')
+	}
+}
+
+project (':hr.ctx:hr.notice:nts.uk.ctx.hr.notice.infra') {
+	dependencies {
+		compile project(':hr.ctx:hr.notice:nts.uk.ctx.hr.notice.dom')
+		compile project(':hr.ctx:hr.shared:nts.uk.ctx.hr.shared.dom')
+	}
+}
+
+project (':hr.ctx:hr.notice:nts.uk.ctx.hr.notice.ac') {
+	dependencies {
+		compile project(':hr.ctx:hr.shared:nts.uk.ctx.hr.shared.dom')
+	}
+}
+
+project (':hr.ctx:hr.notice:nts.uk.ctx.hr.notice.pub') {
+	dependencies {
+		compile project(':hr.ctx:hr.notice:nts.uk.ctx.hr.notice.dom')
+		compile project(':hr.ctx:hr.shared:nts.uk.ctx.hr.shared.dom')
+	}
+}
+
+project (':hr.ctx:hr.notice:nts.uk.ctx.hr.notice.pubimp') {
+	dependencies {
+		compile project(':hr.ctx:hr.notice:nts.uk.ctx.hr.notice.pub')
+		compile project(':hr.ctx:hr.notice:nts.uk.ctx.hr.notice.dom')
+		compile project(':hr.ctx:hr.notice:nts.uk.ctx.hr.notice.app')
+		compile project(':hr.ctx:hr.shared:nts.uk.ctx.hr.shared.dom')
+	}
+}
+
 
 //=====================hr.screen=============================
 project (':hr.screen:nts.uk.screen.hr.ws') {
@@ -280,6 +334,8 @@ project (':hr.screen:nts.uk.screen.hr.app') {
 	dependencies {
 		compile project (':hr.ctx:hr.develop:nts.uk.ctx.hr.develop.app')
 		compile project (':hr.ctx:hr.develop:nts.uk.ctx.hr.develop.dom')
+		compile project (':hr.ctx:hr.notice:nts.uk.ctx.hr.notice.app')
+		compile project (':hr.ctx:hr.notice:nts.uk.ctx.hr.notice.dom')
 		compile(group: 'com.bs.company', name: 'nts.uk.ctx.bs.company.dom', version: version)
 		compile(group: 'com.bs.company', name: 'nts.uk.ctx.bs.company.app', version: version)
 		compile(group: 'com.bs.company', name: 'nts.uk.ctx.bs.company.pub', version: version)
@@ -390,6 +446,14 @@ project (':hr.web:nts.uk.hr.web') {
 		runtime project (':hr.ctx:hr.develop:nts.uk.ctx.hr.develop.pub')
 		runtime project (':hr.ctx:hr.develop:nts.uk.ctx.hr.develop.pubimp')
 		runtime project (':hr.ctx:hr.develop:nts.uk.ctx.hr.develop.ws')
+		
+		runtime project (':hr.ctx:hr.notice:nts.uk.ctx.hr.notice.ac')
+		runtime project (':hr.ctx:hr.notice:nts.uk.ctx.hr.notice.app')
+		runtime project (':hr.ctx:hr.notice:nts.uk.ctx.hr.notice.dom')
+		runtime project (':hr.ctx:hr.notice:nts.uk.ctx.hr.notice.infra')
+		runtime project (':hr.ctx:hr.notice:nts.uk.ctx.hr.notice.pub')
+		runtime project (':hr.ctx:hr.notice:nts.uk.ctx.hr.notice.pubimp')
+		runtime project (':hr.ctx:hr.notice:nts.uk.ctx.hr.notice.ws')
 
 		runtime project (':hr.screen:nts.uk.screen.hr.ws')
 		runtime project (':hr.screen:nts.uk.screen.hr.app')
