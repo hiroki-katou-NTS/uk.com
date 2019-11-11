@@ -43,9 +43,9 @@ module nts.uk.pr.view.qui002.b.viewmodel {
                 virtualizationMode: 'continuous',
                 columns: [
                     { headerText: '', key: 'employeeId', dataType: 'string', width: '100' , hidden: true},
-                    { headerText: getText('QUI002_17'), key: 'employeeCode', dataType: 'string', width: '120' },
-                    { headerText: getText('QUI002_18'), key: 'employeeName', dataType: 'string', width: '120' },
-                    { headerText: getText('QUI002_19'), key: 'employeeNameBefore', dataType: 'string', width: '120' },
+                    { headerText: getText('QUI002_17'), key: 'employeeCode', dataType: 'string', width: '150' },
+                    { headerText: getText('QUI002_18'), key: 'employeeName', dataType: 'string', width: '140' },
+                    { headerText: getText('QUI002_19'), key: 'employeeNameBefore', dataType: 'string', width: '140' },
                     { headerText: getText('QUI002_20'), key: 'changeDate', dataType: 'string',width: '120',template: template}
 
                 ],
@@ -76,8 +76,7 @@ module nts.uk.pr.view.qui002.b.viewmodel {
         getListEmployee(emplist: Array){
             let listEmployee: any = [];
             _.each(emplist, (item) =>{
-
-                item.changeDate  = $("#"+item.employeeId).val();
+                item.changeDate  = $("'#" + item.employeeId + "'" ).val();
                 listEmployee.push(item);
             });
             return listEmployee;
