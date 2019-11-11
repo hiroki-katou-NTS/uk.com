@@ -277,7 +277,7 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
             RomajiNameNotiCreSetPDFAposeFileGenerator.selectShapes(worksheet, empAddChangeInfoExport.getOtherAtr() , i, "A4_114" );
 
             worksheet.get(i).getTextBoxes().get("A1_15").setText(Objects.toString(empAddChangeInfoExport.getOtherAtr()!= null &&
-                    empAddChangeInfoExport.getOtherAtr() == 1 && empAddChangeInfoExport.getOtherReason() != null ? empAddChangeInfoExport.getOtherReason(): ""));
+                    empAddChangeInfoExport.getOtherAtr() == 1 && empAddChangeInfoExport.getOtherReason() != null ? "(" + empAddChangeInfoExport.getOtherReason() + ")": ""));
 
             this.fillEraItem(worksheet, i, empAddChangeInfoExport.getBirthDatePs(), "A1_51", "A1_52","A1_53");
             JapaneseDate bDayPs = this.toJapaneseDate(empAddChangeInfoExport.getBirthDatePs());
@@ -326,7 +326,7 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
             RomajiNameNotiCreSetPDFAposeFileGenerator.selectShapes(worksheet, empAddChangeInfoExport.getSpouseOtherAtr() , i, "A4_224" );
 
             worksheet.get(i).getTextBoxes().get("A2_19").setText(Objects.toString(empAddChangeInfoExport.getSpouseOtherAtr() != null &&
-                    empAddChangeInfoExport.getSpouseOtherAtr() == 1 && empAddChangeInfoExport.getSpouseOtherReason() != null ? empAddChangeInfoExport.getSpouseOtherReason(): ""));
+                    empAddChangeInfoExport.getSpouseOtherAtr() == 1 && empAddChangeInfoExport.getSpouseOtherReason() != null ? "("+ empAddChangeInfoExport.getSpouseOtherReason() + ")": ""));
 
             RomajiNameNotiCreSetPDFAposeFileGenerator.selectShapes(worksheet, empAddChangeInfoExport.isInsuredLivingTogether() ? 1 : 0, i, "A4_1111" );
 

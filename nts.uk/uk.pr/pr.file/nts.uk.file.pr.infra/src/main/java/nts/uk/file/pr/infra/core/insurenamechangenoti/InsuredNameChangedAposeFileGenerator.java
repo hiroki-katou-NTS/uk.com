@@ -80,17 +80,21 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
         String address = "";
         String phoneNumber = "";
         String healthInsuranceOfficeNumber1[];
+        String healthInsuranceOfficeNumber2[];
         String welfarePensionOfficeNumber1[];
 
         if (socialInsurNotiCreateSet.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL) {
+            if (data.getSocialInsuranceOffice() != null && data.getSocialInsuranceOffice().getInsuranceMasterInformation().getOfficeOrganizeNumber().getHealthInsuranceOfficeNumber2().isPresent()) {
+                healthInsuranceOfficeNumber2 = data.getSocialInsuranceOffice().getInsuranceMasterInformation().getOfficeOrganizeNumber().getHealthInsuranceOfficeNumber2().get().v().split("");
+                ws.getCells().get("E11").putValue(healthInsuranceOfficeNumber2.length > 0 ? healthInsuranceOfficeNumber2[0] : "");
+                ws.getCells().get("F11").putValue(healthInsuranceOfficeNumber2.length > 1 ? healthInsuranceOfficeNumber2[1] : "");
+            }
             if (data.getSocialInsuranceOffice() != null && data.getSocialInsuranceOffice().getInsuranceMasterInformation().getOfficeOrganizeNumber().getHealthInsuranceOfficeNumber1().isPresent()) {
                 healthInsuranceOfficeNumber1 = data.getSocialInsuranceOffice().getInsuranceMasterInformation().getOfficeOrganizeNumber().getHealthInsuranceOfficeNumber1().get().v().split("");
-                ws.getCells().get("E12").putValue(healthInsuranceOfficeNumber1.length > 0 ? healthInsuranceOfficeNumber1[0] : "");
-                ws.getCells().get("F12").putValue(healthInsuranceOfficeNumber1.length > 1 ? healthInsuranceOfficeNumber1[1] : "");
-                ws.getCells().get("G12").putValue(healthInsuranceOfficeNumber1.length > 2 ? healthInsuranceOfficeNumber1[2] : "");
-                ws.getCells().get("H12").putValue(healthInsuranceOfficeNumber1.length > 3 ? healthInsuranceOfficeNumber1[3] : "");
-                ws.getCells().get("I12").putValue(healthInsuranceOfficeNumber1.length > 4 ? healthInsuranceOfficeNumber1[4] : "");
-                ws.getCells().get("J12").putValue(healthInsuranceOfficeNumber1.length > 5 ? healthInsuranceOfficeNumber1[5] : "");
+                ws.getCells().get("G12").putValue(healthInsuranceOfficeNumber1.length > 0 ? healthInsuranceOfficeNumber1[0] : "");
+                ws.getCells().get("H12").putValue(healthInsuranceOfficeNumber1.length > 1 ? healthInsuranceOfficeNumber1[1] : "");
+                ws.getCells().get("I12").putValue(healthInsuranceOfficeNumber1.length > 2 ? healthInsuranceOfficeNumber1[2] : "");
+                ws.getCells().get("J12").putValue(healthInsuranceOfficeNumber1.length > 3 ? healthInsuranceOfficeNumber1[3] : "");
             }
 
         } else {
