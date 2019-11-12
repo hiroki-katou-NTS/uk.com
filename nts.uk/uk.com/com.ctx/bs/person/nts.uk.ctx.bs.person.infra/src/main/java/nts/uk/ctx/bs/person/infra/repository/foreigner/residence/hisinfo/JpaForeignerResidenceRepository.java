@@ -11,8 +11,10 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.person.dom.person.foreigner.residence.hisinfo.ForeignerResidenceHistoryInforItem;
 import nts.uk.ctx.bs.person.dom.person.foreigner.residence.hisinfo.ForeignerResidenceRepository;
 import nts.uk.ctx.bs.person.dom.person.foreigner.residence.hisinfo.PerUnqualifiedActivity;
@@ -21,12 +23,6 @@ import nts.uk.ctx.bs.person.infra.entity.foreigner.residence.hisinfo.PpetdForeig
 
 @Stateless
 public class JpaForeignerResidenceRepository extends JpaRepository implements ForeignerResidenceRepository {
-	
-	private static final String SELECT_BY_LISTPID_AND_BASEDATE = String
-			.join("SELECT a FROM PpetdForeignerResidenceHisInfoItem a "
-					+ "inner join PpetdForeignerResidenceHisInfo b on a.key.hisId = b.key.hisId "
-					+ "WHERE b.pId IN :listpId and b.startDate <= :baseDate "
-					+ "and ((b.endDate is NULL) or (b.endDate >= : baseDate))");
 
 	@Override
 	public List<ForeignerResidenceHistoryInforItem> getListForeignerResidenceHistoryInforItem(List<String> listpId,
@@ -35,12 +31,19 @@ public class JpaForeignerResidenceRepository extends JpaRepository implements Fo
 		if (listpId.isEmpty() || baseDate == null) {
 			return new ArrayList<ForeignerResidenceHistoryInforItem>();
 		}
-
-		List<PpetdForeignerResidenceHisInfoItem> listEntity = this.queryProxy()
-				.query(SELECT_BY_LISTPID_AND_BASEDATE, PpetdForeignerResidenceHisInfoItem.class)
-				.setParameter("listpId", listpId)
-				.setParameter("baseDate", baseDate).getList();
-
+		
+		String SELECT_BY_LISTPID_AND_BASEDATE = "SELECT a FROM PpetdForeignerResidenceHisInfoItem a "
+				+ "inner join PpetdForeignerResidenceHisInfo b on a.key.hisId = b.key.hisId "
+				+ "WHERE b.pId IN :listpId and b.startDate <= :baseDate "
+				+ "and ((b.endDate is NULL) or (b.endDate >= :baseDate))";
+		
+		List<PpetdForeignerResidenceHisInfoItem> listEntity = new ArrayList<>();
+		CollectionUtil.split(listpId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			listEntity.addAll(this.getEntityManager().createQuery(SELECT_BY_LISTPID_AND_BASEDATE,PpetdForeignerResidenceHisInfoItem.class)
+					.setParameter("baseDate", baseDate)				 
+					.setParameter("listpId", subList).getResultList());
+		});
+		
 		if (listEntity.isEmpty()) {
 			return new ArrayList<ForeignerResidenceHistoryInforItem>();
 		}

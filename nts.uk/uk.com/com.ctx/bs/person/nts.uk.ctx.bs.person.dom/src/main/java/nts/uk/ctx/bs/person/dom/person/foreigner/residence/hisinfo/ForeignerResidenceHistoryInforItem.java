@@ -13,6 +13,7 @@ import javax.inject.Inject;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDateTime;
 
@@ -20,6 +21,7 @@ import nts.arc.time.GeneralDateTime;
  * domain 外国人在留履歴情報
  */
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Stateless
@@ -77,7 +79,7 @@ public class ForeignerResidenceHistoryInforItem extends AggregateRoot {
 	ListForeignerResidence listForeignerResidence;
 	
 	// 外国人在留履歴情報をロードする
-	ListForeignerResidence getListForeignerResidenceHistoryInforItem(List<String> listPID, GeneralDateTime baseDate) {
+	public ListForeignerResidence getListForeignerResidenceHistoryInforItem(List<String> listPID, GeneralDateTime baseDate) {
 		// ドメイン [外国人在留履歴情報] を取得する(lấy domain[thông tin lịch sử cư trú của người
 		// nước ngoài])
 		List<ForeignerResidenceHistoryInforItem> listDomain = repo.getListForeignerResidenceHistoryInforItem(listPID,
@@ -89,7 +91,7 @@ public class ForeignerResidenceHistoryInforItem extends AggregateRoot {
 	}
 	
 	// 外国人在留履歴情報の取得
-	ForeignerResidenceHistoryInforItem getForeignerResidenceHistoryInforItem(String pId, GeneralDateTime baseDate) {
+	public ForeignerResidenceHistoryInforItem getForeignerResidenceHistoryInforItem(String pId, GeneralDateTime baseDate) {
 		Optional<ForeignerResidenceHistoryInforItem> domainOpt = this.listForeignerResidence.listForeignerResidenceHistoryInforItem
 																	   .stream().filter(e -> e.pid.equals(pId)).findFirst();
 		if (domainOpt.isPresent()) {
@@ -105,7 +107,7 @@ public class ForeignerResidenceHistoryInforItem extends AggregateRoot {
 	}
 
 	// 社員IDリストより外国人在留履歴情報をロードする
-	List<ForeignerResidenceHistoryInforItem> getListForeignerResidenceHistoryInforItem(List<String> listSID) {
+	public List<ForeignerResidenceHistoryInforItem> getListForeignerResidenceHistoryInforItem(List<String> listSID) {
 		
 		// 社員IDを個人IDへ変換する(chuyen employeID thanh PersonID)
 		//input
@@ -121,7 +123,7 @@ public class ForeignerResidenceHistoryInforItem extends AggregateRoot {
 	}
 
 	// 社員IDより外国人在留履歴情報を取得する
-	Optional<ForeignerResidenceHistoryInforItem> getListForeignerResidenceHistoryInforItem(String sid) {
+	public Optional<ForeignerResidenceHistoryInforItem> getListForeignerResidenceHistoryInforItem(String sid) {
 		// Đang chờ QA6
 		return null;
 	}
