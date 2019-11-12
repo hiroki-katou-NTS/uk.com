@@ -2,6 +2,7 @@ package nts.uk.ctx.hr.shared.infra.entity.medicalhistory;
 
 import java.io.Serializable;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
@@ -13,7 +14,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class PpedtMedicalHisPk implements Serializable {
 	private static final long serialVersionUID = 1L;
-
+	
+	
+	@Basic(optional = false)
 	@Column(name = "HIST_ID")
 	public String hisId;
 }

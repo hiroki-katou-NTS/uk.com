@@ -22,7 +22,8 @@ public class MedicalhistoryWS {
 	
 	@POST
 	@Path("/get") // test service
-	public void getGuideDispSetting(){
+	public void testDomain(){
+		
 		List<String> listSID = Arrays.asList("ae7fe82e-a7bd-4ce3-adeb-5cd403a9d570",
 											 "8f9edce4-e135-4a1e-8dca-ad96abe405d6",
 											 "9787c06b-3c71-4508-8e06-c70ad41f042a",
@@ -31,7 +32,14 @@ public class MedicalhistoryWS {
 											 "aeaa869d-fe62-4eb2-ac03-2dde53322cb5");
 		GeneralDateTime baseDate = GeneralDateTime.now();
 		ListMedicalhistory result =  domain.getListMedicalhistoryItem(listSID, baseDate);
-		System.out.println("helllo");
+		
+		domain.setListMedicalhistory(result);
+		
+		MedicalhistoryItem mItem1 = domain.getMedicalhistoryItem("ae7fe82e-a7bd-4ce3-adeb-5cd403a9d570", baseDate);
+		
+		MedicalhistoryItem mItem2 = domain.getMedicalhistoryItem("ae7fe82e-a7bd-4ce3-adeb-5cd403a9d599", baseDate);
+		
+		System.out.println("helllo" + mItem1 + mItem2);
 	}
 	
 	

@@ -9,8 +9,10 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.hr.shared.dom.personalinfo.medicalhistory.MedicalhistoryItem;
 import nts.uk.ctx.hr.shared.dom.personalinfo.medicalhistory.MedicalhistoryRepository;
 import nts.uk.ctx.hr.shared.infra.entity.medicalhistory.PpedtMedicalHisItem;
@@ -18,24 +20,25 @@ import nts.uk.ctx.hr.shared.infra.entity.medicalhistory.PpedtMedicalHisItem;
 @Stateless
 public class JpaMedicalHistoryRepository extends JpaRepository implements MedicalhistoryRepository {
 	
-	private static final String SELECT_BY_LISTPID_AND_BASEDATE = String
-			.join("SELECT a FROM PpedtMedicalHisItem a "
-					+ "inner join PpedtMedicalHis b on a.key.hisId = b.key.hisId "
-					+ "WHERE b.sId IN :listSId and b.startDate >= :baseDate " );
+	private static final String SELECT_BY_LISTPID_AND_BASEDATE = "SELECT a FROM PpedtMedicalHisItem a "
+																+ "inner join PpedtMedicalHis b on a.PpedtMedicalHisItemPk.hisId = b.ppedtMedicalHisPk.hisId "
+																+ "WHERE a.sid IN :listSId and b.startDate >= :baseDate ";
 
 	@Override
 	public List<MedicalhistoryItem> getListMedicalhistoryItem(List<String> listSId,
 			GeneralDateTime baseDate) {
-
+		
 		if (listSId.isEmpty() || baseDate == null) {
 			return new ArrayList<MedicalhistoryItem>();
 		}
-
-		List<PpedtMedicalHisItem> listEntity = this.queryProxy()
-				.query(SELECT_BY_LISTPID_AND_BASEDATE, PpedtMedicalHisItem.class)
-				.setParameter("listSId", listSId)
-				.setParameter("baseDate", baseDate).getList();
-
+		
+		List<PpedtMedicalHisItem> listEntity = new ArrayList<>();
+		CollectionUtil.split(listSId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			listEntity.addAll(this.getEntityManager().createQuery(SELECT_BY_LISTPID_AND_BASEDATE,PpedtMedicalHisItem.class)
+					.setParameter("baseDate", baseDate)				 
+					.setParameter("listSId", subList).getResultList());
+		});
+		
 		if (listEntity.isEmpty()) {
 			return new ArrayList<MedicalhistoryItem>();
 		}
@@ -46,7 +49,7 @@ public class JpaMedicalHistoryRepository extends JpaRepository implements Medica
 	}
 
 	private MedicalhistoryItem toDomain(PpedtMedicalHisItem entity) {
-		return new MedicalhistoryItem(entity.cid, entity.sid, entity.key.hisId,
+		return new MedicalhistoryItem(entity.cid, entity.sid, entity.PpedtMedicalHisItemPk.hisId,
 				entity.visitNote, entity.abnormIllness,
 				entity.consultationRemarks, entity.healthCheckupYear,
 				entity.pastAndPresent, entity.height, entity.weight,

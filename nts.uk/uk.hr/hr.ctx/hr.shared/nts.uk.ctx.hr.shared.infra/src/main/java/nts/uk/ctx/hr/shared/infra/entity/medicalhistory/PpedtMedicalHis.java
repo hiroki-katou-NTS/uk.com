@@ -23,7 +23,7 @@ public class PpedtMedicalHis extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public PpedtMedicalHisPk key;
+	public PpedtMedicalHisPk ppedtMedicalHisPk;
 	
 	@Column(name = "CID")
 	public String cId;
@@ -41,6 +41,6 @@ public class PpedtMedicalHis extends UkJpaEntity implements Serializable {
 
 	@Override
 	protected Object getKey() {
-		return key;
+		return ppedtMedicalHisPk;
 	}
 }
