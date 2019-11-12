@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -17,8 +18,8 @@ public class PpedtRetire extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	// 履歴ID
-	@Column(name = "HIST_ID")
-	public String historyID;
+	@EmbeddedId
+	public PeedtRetirePk key;
 	// 退職予定日
 	@Column(name = "J_OUT_PLANS_DATE")
 	@Convert(converter = GeneralDateToDBConverter.class)
@@ -121,7 +122,6 @@ public class PpedtRetire extends UkJpaEntity implements Serializable {
 
 	@Override
 	protected Object getKey() {
-		// TODO Auto-generated method stub
-		return null;
+		return key;
 	}
 }
