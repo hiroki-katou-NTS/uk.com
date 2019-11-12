@@ -8,8 +8,8 @@ import nts.arc.i18n.I18NText;
 
 public enum AcquisitionAtr {
 
-    NEW(0, I18NText.getText("")),
-    REHIRE(1, I18NText.getText(""));
+    NEW(0, I18NText.getText("QUI001_C222_5")),
+    REHIRE(1, I18NText.getText("QUI001_C222_6"));
 
     /**
      * The value.
