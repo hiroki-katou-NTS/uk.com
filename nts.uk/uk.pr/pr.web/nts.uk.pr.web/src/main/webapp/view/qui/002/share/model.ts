@@ -60,8 +60,8 @@ module nts.uk.pr.view.qsi013.share.model {
 
     export function getSubmitNameAtr(): Array<ItemModel> {
         return [
-            new ItemModel(0, getText('Enum_EmpSubNameClass_PERSONAL_NAME')),
-            new ItemModel(1, getText('Enum_EmpSubNameClass_REPORTED_NAME'))
+            new ItemModel(0, getText('QUI002_A222_18')),
+            new ItemModel(1, getText('QUI002_A222_19'))
         ];
     }
     export function getOfficeClsAtr(): Array<ItemModel> {

@@ -3,6 +3,7 @@ package nts.uk.file.pr.infra.core.empinsqualifiinfo.empinsofficeinfo;
 import com.aspose.pdf.*;
 import com.aspose.pdf.drawing.Circle;
 import com.aspose.pdf.drawing.Graph;
+import com.aspose.pdf.drawing.Line;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.file.app.core.empinsreportsetting.EmpInsReportSettingExFileGenerator;
@@ -50,43 +51,46 @@ public class EmpInsReportSettingAposeFileGenerator extends AsposePdfReportGenera
             }
             stylePage(doc);
             int indexPage =1;
+            //xóa
+
             for (int i = 0 ; i < data.size() ; i++){
 
                 Paragraphs paragraphs =  doc.getPages().get_Item(indexPage).getParagraphs();
                 EmpInsReportSettingExportData element = data.get(i);
+
                 // A1_2
-                paragraphs.add(setValue(114,757,"0"));
+                paragraphs.add(setValue(114,757,"0",16));
                 //A1_3
-                paragraphs.add(setValue(130,712,element.getEmpInsNumInfo() != null ? element.getEmpInsNumInfo().getEmpInsNumber().v() : ""));
+                paragraphs.add(setValue(130,711,element.getEmpInsNumInfo() != null ? element.getEmpInsNumInfo().getEmpInsNumber().v() : "",16));
                 //A1_4
                 {
                     switch (element.getEmpInsReportSetting().getOfficeClsAtr()){
                         case OUTPUT_COMPANY:{
                             if(element.getCompanyInfor() != null){
 //                                paragraphs.add(setValue(114,711, element.getCompanyInfor().getCompanyCode()));
-                                detachText(363,711,element.getCompanyInfor().getCompanyCode(),6,paragraphs);
+                                detachText(362,711,element.getCompanyInfor().getCompanyCode(),6,paragraphs);
                                 //A2_6
-                                paragraphs.add(setValue(120,290, element.getCompanyInfor().getCompanyName()));
+                                paragraphs.add(setValue(112,290, element.getCompanyInfor().getCompanyName(),9));
                                 //A3_1
-                                paragraphs.add(setValue(150,186, element.getCompanyInfor().getPostCd()));
+                                paragraphs.add(setValue(150,186, element.getCompanyInfor().getPostCd(),9));
                                 //A3_2
-                                paragraphs.add(setValue(220,186, element.getCompanyInfor().getAdd_1()+  element.getCompanyInfor().getAdd_2()));
+                                paragraphs.add(setValue(210,186, element.getCompanyInfor().getAdd_1()+  element.getCompanyInfor().getAdd_2(),9));
                                 //A3_3
-                                paragraphs.add(setValue(150,160, element.getCompanyInfor().getRepname()));
+                                paragraphs.add(setValue(150,160, element.getCompanyInfor().getRepname(),9));
                                 //A3_4
-                                paragraphs.add(setValue(150,130,element.getCompanyInfor().getPhoneNum()));
+                                paragraphs.add(setValue(150,130,element.getCompanyInfor().getPhoneNum(),9));
                             }
                             break;
                         }
                         case OUPUT_LABOR_OFFICE:{
                             if(element.getLaborInsuranceOffice() != null){
-                                detachText(360,711, element.getLaborInsuranceOffice().getLaborOfficeCode().v(),6,paragraphs);
+                                detachText(362,711, element.getLaborInsuranceOffice().getLaborOfficeCode().v(),6,paragraphs);
 //                                paragraphs.add(setValue());
                                 //A2_6
-                                paragraphs.add(setValue(120,290, element.getLaborInsuranceOffice().getLaborOfficeName().v()));
+                                paragraphs.add(setValue(112,290, element.getLaborInsuranceOffice().getLaborOfficeName().v(),9));
                                 //A3_1
                                 if( element.getLaborInsuranceOffice().getBasicInformation() != null ){
-                                    paragraphs.add(setValue(150,186, element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getPostalCode().isPresent() ? element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getPostalCode().get().v() : "" ));
+                                    paragraphs.add(setValue(150,190, element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getPostalCode().isPresent() ? element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getPostalCode().get().v() : "",9 ));
                                     //A3_2
                                     String addressLabor ;
                                     if(element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress1().isPresent() && element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress2().isPresent()){
@@ -100,11 +104,11 @@ public class EmpInsReportSettingAposeFileGenerator extends AsposePdfReportGenera
                                             addressLabor = element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress2().isPresent() ? element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress2().get().toString() : "";
                                         }
                                     }
-                                    paragraphs.add(setValue(220,186,addressLabor));
+                                    paragraphs.add(setValue(210,190,addressLabor,9));
                                     //A3_3
-                                    paragraphs.add(setValue(150,160, element.getLaborInsuranceOffice().getBasicInformation().getRepresentativeName().isPresent() ? element.getLaborInsuranceOffice().getBasicInformation().getRepresentativeName().get().v() : "" ));
+                                    paragraphs.add(setValue(150,160, element.getLaborInsuranceOffice().getBasicInformation().getRepresentativeName().isPresent() ? element.getLaborInsuranceOffice().getBasicInformation().getRepresentativeName().get().v() : "" ,9));
                                     //A3_4
-                                    paragraphs.add(setValue(150,130,element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getPhoneNumber().isPresent() ? element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getPhoneNumber().get().v() : "" ));
+                                    paragraphs.add(setValue(150,131,element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getPhoneNumber().isPresent() ? element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getPhoneNumber().get().v() : "",9 ));
 
                                 }
 
@@ -120,23 +124,23 @@ public class EmpInsReportSettingAposeFileGenerator extends AsposePdfReportGenera
                 }
                 //A1_5
                 JapaneseDate empInsHistStartDate = toJapaneseDate( GeneralDate.fromString(element.getEmpInsHist().getHistoryItem().get(0).start().toString().substring(0,10), "yyyy/MM/dd"));
-                paragraphs.add(setValue(45,677,findEra(empInsHistStartDate.era())));
+                paragraphs.add(setValue(45,677,findEra(empInsHistStartDate.era()),16));
                 //A1_6
                 {
-                    String value = empInsHistStartDate.year()+1+""+empInsHistStartDate.month()+""+empInsHistStartDate.day()+"";
+                    String value = (empInsHistStartDate.year()+1 < 10 ? "0"+(empInsHistStartDate.year()+1) : empInsHistStartDate.year()+1)+""+(empInsHistStartDate.month() < 10 ? "0"+empInsHistStartDate.month() : empInsHistStartDate.month())+""+(empInsHistStartDate.day() < 10 ? "0"+empInsHistStartDate.day() : empInsHistStartDate.day())+"";
                     detachText(79,677,value,6,paragraphs);
                 }
                 //A1_7
                 if(element.getEmpInsReportSetting().getSubmitNameAtr() == PERSONAL_NAME){
-                    paragraphs.add(setValue(45,586,element.getName() != null ? element.getName() : ""));
+                    paragraphs.add(setValue(45,586,element.getName() != null ? element.getName() : "",16));
                     //A1_8
                     detachText(180,586,element.getNameKana() != null ? element.getNameKana(): "" ,20,paragraphs);
 
                 }
                 else{
-                    paragraphs.add(setValue(45,586,element.getReportFullName() != null ? element.getReportFullName() : ""));
+                    paragraphs.add(setValue(45,586,element.getReportFullName() != null ? element.getReportFullName() : "",16));
                     //A1_8
-                    paragraphs.add(setValue(182,586,element.getReportFullNameKana() != null ? element.getReportFullNameKana() : ""));
+                    paragraphs.add(setValue(182,586,element.getReportFullNameKana() != null ? element.getReportFullNameKana() : "",16));
                 }
                 //A1_9
                 detachText(45,466,element.getFullName() != null ? element.getFullName() : "",28,paragraphs);
@@ -145,18 +149,22 @@ public class EmpInsReportSettingAposeFileGenerator extends AsposePdfReportGenera
                 detachText(45,434,element.getFullNameKana() != null ? element.getFullNameKana(): "",12,paragraphs);
 
                 //A2_1
-                paragraphs.add(setValue(112,353,element.getOldName() != null ? element.getOldName() : ""));
+                paragraphs.add(setValue(112,362,element.getOldName() != null ? element.getOldName() : "",9));
                 //A2_2
-                paragraphs.add(setValue(112,367,element.getOldNameKana() != null ? element.getOldNameKana() : "" ));
+                paragraphs.add(setValue(112,375,element.getOldNameKana() != null ? element.getOldNameKana() : "" ,9));
                 //A2_3
                 Graph graph = new Graph(50, 50);
+                // tạo line gạch chữ
+                Line line = new Line(new float[]{295,495,357,495});
+                graph.getShapes().add(line);
+                //
                 paragraphs.add(graph);
                 Circle rect = null;
                 if(element.getGender() == 1){
-                     rect = new Circle(317,45,8);
+                     rect = new Circle(317,38,8);
                 }
                 else {
-                    rect = new Circle(345,45,8);
+                    rect = new Circle(345,38,8);
                 }
                 rect.getGraphInfo().setLineWidth(1f);
                 rect.getGraphInfo().setColor(com.aspose.pdf.Color.getBlack());
@@ -192,19 +200,20 @@ public class EmpInsReportSettingAposeFileGenerator extends AsposePdfReportGenera
                   //A2_5
                 {
                     JapaneseDate birthDayJapanCla = toJapaneseDate( GeneralDate.fromString(element.getBrithDay().substring(0,10), "yyyy/MM/dd"));
-                    paragraphs.add(setValue(414,353,birthDayJapanCla.year()+""));
-                    paragraphs.add(setValue(450,353,birthDayJapanCla.month()+""));
-                    paragraphs.add(setValue(485,353,birthDayJapanCla.day()+""));
+                    paragraphs.add(setValue(418,357,(birthDayJapanCla.year()+1 < 10 ? "0"+(birthDayJapanCla.year()+1)+"" : birthDayJapanCla.year()+1+""),9));
+                    paragraphs.add(setValue(455,357,(birthDayJapanCla.month()< 10 ? "0"+birthDayJapanCla.month()+"" : birthDayJapanCla.month()+""),9));
+                    paragraphs.add(setValue(491,357,(birthDayJapanCla.day() < 10 ? "0"+birthDayJapanCla.day()+"" : birthDayJapanCla.day()+""),9));
                 }
                 //A2_7
-                {   JapaneseDate birthDayJapanCla = toJapaneseDate( GeneralDate.fromString(element.getBrithDay().substring(0,10), "yyyy/MM/dd"));
+                if(!element.getChangeDate().equals("")){
+                    JapaneseDate changeDate = toJapaneseDate( GeneralDate.fromString(element.getChangeDate().substring(0,10), "yyyy/MM/dd"));
                     //lấy ví dụ  element.getChangeDate()
-                    detachDate(441,280,birthDayJapanCla,paragraphs);
+                    detachDate(445,284,changeDate,paragraphs);
                 }
                 //A3_5
                 JapaneseDate fillingDate = toJapaneseDate( GeneralDate.fromString(element.getFillingDate().substring(0,10), "yyyy/MM/dd"));
 
-                detachDate(483,202,fillingDate,paragraphs);
+                detachDate(486,206,fillingDate,paragraphs);
                 //index page
                 indexPage = indexPage + 2;
             }
@@ -235,16 +244,16 @@ public class EmpInsReportSettingAposeFileGenerator extends AsposePdfReportGenera
         Optional<JapaneseEraName> era = this.adapter.getAllEras().eraOf(date);
         return new JapaneseDate(date, era.get());
     }
-    private TextFragment setValue(int x, int y, String value) {
+    private TextFragment setValue(int x, int y, String value,int textSize) {
         TextFragment textFragment = new TextFragment(value);
         textFragment.setPosition(new Position(x, y));
-        styleText(textFragment.getTextState());
+        styleText(textFragment.getTextState(),textSize);
         return textFragment;
     }
 
-    private void styleText(TextFragmentState textFragmentState) {
+    private void styleText(TextFragmentState textFragmentState,int textSize) {
         textFragmentState.setFont(FontRepository.findFont("MS-Gothic"));
-        textFragmentState.setFontSize(16);
+        textFragmentState.setFontSize(textSize);
         textFragmentState.setForegroundColor(Color.getBlack());
     }
     private void detachText(int xRoot,int yRoot,String value, int numCells,Paragraphs paragraphs){
@@ -257,7 +266,7 @@ public class EmpInsReportSettingAposeFileGenerator extends AsposePdfReportGenera
         });
         for(int i = 0 ; i < lstValue.size() ; i++){
             int pixel = xRoot + (17*i);
-            paragraphs.add(setValue(pixel, yRoot ,lstValue.get(i).toString()));
+            paragraphs.add(setValue(pixel, yRoot ,lstValue.get(i).toString(),16));
         }
 
     }
@@ -270,13 +279,8 @@ public class EmpInsReportSettingAposeFileGenerator extends AsposePdfReportGenera
         marginInfo.setBottom(0);
     }
     private void detachDate(int xRoot,int yRoot,JapaneseDate value,Paragraphs paragraphs){
-        paragraphs.add(setValue(xRoot,yRoot,value.year()+1+""));
-        paragraphs.add(setValue(xRoot+30,yRoot,value.month()+""));
-        paragraphs.add(setValue(xRoot+60,yRoot,value.day()+""));
-    }
-    private void createCircle(Circle rect,Graph graph){
-        rect.getGraphInfo().setLineWidth(1f);
-        rect.getGraphInfo().setColor(com.aspose.pdf.Color.getBlack());
-        graph.getShapes().add(rect);
+        paragraphs.add(setValue(xRoot,yRoot,(value.year()+1 < 10 ? "0"+(value.year()+1)+"" : value.year()+1+""),9));
+        paragraphs.add(setValue(xRoot+30,yRoot,(value.month()< 10 ? "0"+value.month()+"" : value.month()+""),9));
+        paragraphs.add(setValue(xRoot+60,yRoot,(value.day() < 10 ? "0"+value.day()+"" : value.day()+""),9));
     }
 }
