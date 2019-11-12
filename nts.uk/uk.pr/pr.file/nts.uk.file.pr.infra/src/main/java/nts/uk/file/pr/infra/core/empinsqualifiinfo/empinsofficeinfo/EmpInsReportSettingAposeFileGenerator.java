@@ -65,7 +65,7 @@ public class EmpInsReportSettingAposeFileGenerator extends AsposePdfReportGenera
                 if( element.getEmpInsNumInfo() != null && !element.getEmpInsNumInfo().getEmpInsNumber().v().equals("")  ){
                     detachText(45,711,emInsNumInfo.length() > 4 ? emInsNumInfo.substring(0,4): emInsNumInfo,4,paragraphs);
                     detachText(130,711,emInsNumInfo.length() > 8 ? emInsNumInfo.substring(4,10): "",6,paragraphs);
-                    detachText(150,711,emInsNumInfo.length() > 10 ? emInsNumInfo.substring(9,10): "",0,paragraphs);
+                    detachText(150,711,emInsNumInfo.length() > 10 ? emInsNumInfo.substring(10,11): "",0,paragraphs);
                 }
 
                 //A1_4
@@ -76,17 +76,18 @@ public class EmpInsReportSettingAposeFileGenerator extends AsposePdfReportGenera
                                 String companyCode = element.getCompanyInfor().getCompanyCode();
                                 detachText(362, 711,companyCode.length() > 4 ? companyCode.substring(0,4) : "", 4, paragraphs);
                                 detachText(400, 711, companyCode.length() > 8 ? companyCode.substring(4,10) : "", 6, paragraphs);
-                                detachText(450, 711, companyCode.length() > 11 ? companyCode.substring(9,10) : "", 0, paragraphs);
+                                detachText(450, 711, companyCode.length() > 11 ? companyCode.substring(10,11) : "", 0, paragraphs);
                                 //A2_6
                                 paragraphs.add(setValue(112, 290, element.getCompanyInfor().getCompanyName(), 9));
                                 //A3_1
-                                paragraphs.add(setValue(150, 186, element.getCompanyInfor().getPostCd(), 9));
+                                String postCd = element.getCompanyInfor().getPostCd();
+                                paragraphs.add(setValue(150, 186,formatPostalCode(postCd), 9));
                                 //A3_2
                                 paragraphs.add(setValue(210, 186, element.getCompanyInfor().getAdd_1() + element.getCompanyInfor().getAdd_2(), 9));
                                 //A3_3
                                 paragraphs.add(setValue(150, 160, element.getCompanyInfor().getRepname(), 9));
                                 //A3_4
-                                paragraphs.add(setValue(150, 130, element.getCompanyInfor().getPhoneNum(), 9));
+                                paragraphs.add(setValue(150, 130, formatPhoneNumber(element.getCompanyInfor().getPhoneNum()), 9));
                             }
                             break;
                         }
@@ -95,13 +96,14 @@ public class EmpInsReportSettingAposeFileGenerator extends AsposePdfReportGenera
                                 String laborOfficeCode =  element.getLaborInsuranceOffice().getLaborOfficeCode().v();
                                 detachText(276, 711,laborOfficeCode.length() > 4 ? laborOfficeCode.substring(0,4) : "", 4, paragraphs);
                                 detachText(362, 711, laborOfficeCode.length() > 8 ? laborOfficeCode.substring(4,10) : "", 6, paragraphs);
-                                detachText(450, 711, laborOfficeCode.length() > 11 ? laborOfficeCode.substring(9,10) : "", 0, paragraphs);
+                                detachText(450, 711, laborOfficeCode.length() > 11 ? laborOfficeCode.substring(10,11) : "", 0, paragraphs);
 
                                 //A2_6
                                 paragraphs.add(setValue(112, 290, element.getLaborInsuranceOffice().getLaborOfficeName().v(), 9));
                                 //A3_1
                                 if (element.getLaborInsuranceOffice().getBasicInformation() != null) {
-                                    paragraphs.add(setValue(150, 190, element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getPostalCode().isPresent() ? element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getPostalCode().get().v() : "", 9));
+                                    String postCd =  element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getPostalCode().isPresent() ? element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getPostalCode().get().v() : "";
+                                    paragraphs.add(setValue(150, 190,formatPostalCode(postCd), 9));
                                     //A3_2
                                     String addressLabor;
                                     if (element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress1().isPresent() && element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress2().isPresent()) {
@@ -117,7 +119,8 @@ public class EmpInsReportSettingAposeFileGenerator extends AsposePdfReportGenera
                                     //A3_3
                                     paragraphs.add(setValue(150, 160, element.getLaborInsuranceOffice().getBasicInformation().getRepresentativeName().isPresent() ? element.getLaborInsuranceOffice().getBasicInformation().getRepresentativeName().get().v() : "", 9));
                                     //A3_4
-                                    paragraphs.add(setValue(150, 131, element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getPhoneNumber().isPresent() ? element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getPhoneNumber().get().v() : "", 9));
+                                    String phoneNumber =  element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getPhoneNumber().isPresent() ? element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getPhoneNumber().get().v() : "";
+                                    paragraphs.add(setValue(150, 131,formatPhoneNumber(phoneNumber), 9));
 
                                 }
 
@@ -143,12 +146,12 @@ public class EmpInsReportSettingAposeFileGenerator extends AsposePdfReportGenera
                 if (element.getEmpInsReportSetting().getSubmitNameAtr() == PERSONAL_NAME) {
                     paragraphs.add(setValue(45, 586, element.getName() != null ? element.getName() : "", 16));
                     //A1_8
-                    detachText(180, 586, element.getNameKana() != null ? element.getNameKana() : "", 20, paragraphs);
+                    detachText(178, 586, element.getNameKana() != null ? element.getNameKana() : "", 20, paragraphs);
 
                 } else {
                     paragraphs.add(setValue(45, 586, element.getReportFullName() != null ? element.getReportFullName() : "", 16));
                     //A1_8
-                    detachText(182, 586, element.getReportFullNameKana() != null ? element.getReportFullNameKana() : "", 20, paragraphs);
+                    detachText(178, 586, element.getReportFullNameKana() != null ? element.getReportFullNameKana() : "", 20, paragraphs);
                 }
                 //A1_9
                 String fullName = element.getFullName() != null ? element.getFullName() : "";
@@ -167,7 +170,11 @@ public class EmpInsReportSettingAposeFileGenerator extends AsposePdfReportGenera
                 // tạo line gạch chữ
                 Line line = new Line(new float[]{295, 495, 357, 495});
                 graph.getShapes().add(line);
+                paragraphs.add(graph);
                 //
+                // tạo line gạch chữ
+                Line line2 = new Line(new float[]{295, 300, 357, 300});
+                graph.getShapes().add(line2);
                 paragraphs.add(graph);
                 Circle rect = null;
                 if (element.getGender() == 1) {
@@ -298,5 +305,58 @@ public class EmpInsReportSettingAposeFileGenerator extends AsposePdfReportGenera
         paragraphs.add(setValue(xRoot, yRoot, (value.year() + 1 < 10 ? "0" + (value.year() + 1) + "" : value.year() + 1 + ""), 9));
         paragraphs.add(setValue(xRoot + 30, yRoot, (value.month() < 10 ? "0" + value.month() + "" : value.month() + ""), 9));
         paragraphs.add(setValue(xRoot + 60, yRoot, (value.day() < 10 ? "0" + value.day() + "" : value.day() + ""), 9));
+    }
+    private String formatPhoneNumber(String number){
+        String numberPhone = "";
+        String[] numberSplit = number.split("-");
+        String[] temp = new String[3];
+
+        if(numberSplit.length == 2){
+
+            if(numberSplit[1].length() <= 3){
+                temp[0] = numberSplit[1].substring(0,numberSplit[1].length());
+                numberPhone = numberSplit[0] + "（   　" + temp[0] + "   　局）";
+            }else{
+                temp[0] = numberSplit[1].substring(0,3);
+                temp[1] = numberSplit[1].substring(3,numberSplit[1].length());
+                numberPhone = numberSplit[0] + "（   　" + temp[0] + "   　局）" + temp[1];
+            }
+
+        }else if(numberSplit.length >= 3){
+            numberPhone = numberSplit[0] + "（   　" + numberSplit[1] + "   　局）" + numberSplit[2];
+        }else if(numberSplit.length == 1){
+            if(number.length() <= 3){
+                temp[0] = number.substring(0,number.length());
+                numberPhone = temp[0];
+            }else if(number.length() > 3 && number.length() <=6){
+                temp[0] = number.substring(0,3);
+                temp[1] = number.substring(3,number.length());
+                numberPhone = temp[0] + "（   　" + temp[1] + "   　局）";
+            }else if(number.length() > 6){
+                temp[0] = number.substring(0,3);
+                temp[1] = number.substring(3,6);
+                temp[2] = number.substring(6,number.length());
+                numberPhone = temp[0] + "（   　" + temp[1] + "   　局）" + temp[2];
+            }
+
+        }
+
+        return numberPhone;
+    }
+    private String formatPostalCode(String number){
+        String postalCode = "";
+        String[] numberSplit = number.split("-");
+        String[] temp = new String[2];
+        if("".equals(number)) {
+            return number;
+        }
+        if(numberSplit.length > 1){
+            postalCode = "〒" + numberSplit[0] + "－" + numberSplit[1];
+        }else{
+            temp[0] = number.length() > 2 ? number.substring(0,3) : number;
+            temp[1] = number.length() > 3 ? number.substring(3,number.length()) : "";
+            postalCode = "〒" + temp[0] + "－" + temp[1];
+        }
+        return postalCode;
     }
 }
