@@ -35,7 +35,7 @@ public class EmpInsReportSettingFinder {
                 .userId(userId)
                 .submitNameAtr(0)
                 .outputOrderAtr(0)
-                .officeClsAtr(0)
+                .officeClsAtr(1)
                 .myNumberClsAtr(0)
                 .nameChangeClsAtr(0)
                 .build();
