@@ -654,7 +654,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 };
 
                 new nts.uk.ui.exTable.ExTable($("#extable"), {
-                    headerHeight: "60px", bodyRowHeight: "30px", bodyHeight: "0px",
+                    headerHeight: "60px", bodyRowHeight: "28px", bodyHeight: "0px",
                     horizontalSumHeaderHeight: "40px", horizontalSumBodyHeight: "75px",
                     horizontalSumBodyRowHeight: "20px",
                     areaResize: true,
@@ -693,9 +693,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 });
                 
                 $('#extable').css({
-                	'float': 'left';
-            		'top': '2px';
-            		'left': '80px';
+                	'float': 'left',
+            		'top': '2px',
+            		'left': '80px',
                 });
                 self.setWidth();
             });

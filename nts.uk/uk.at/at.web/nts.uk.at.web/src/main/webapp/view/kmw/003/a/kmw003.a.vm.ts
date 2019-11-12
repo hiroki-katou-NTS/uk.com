@@ -466,7 +466,6 @@ module nts.uk.at.view.kmw003.a.viewmodel {
 //                    self.showButton().enable_A1_2(data.showRegisterButton);
 //                    self.showButton.valueHasMutated();
 //                }
-                self.setScreenSize();
                 nts.uk.ui.block.clear();
                 dfd.resolve(data.processDate, data.selectedClosure);
             }).fail(function(error) {
@@ -1056,6 +1055,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             }).create();
             self.showHeaderNumber.valueHasMutated();
             self.displayNumberZero1();
+            self.setScreenSize();
         };
         /**********************************
         * Grid Data Setting 
