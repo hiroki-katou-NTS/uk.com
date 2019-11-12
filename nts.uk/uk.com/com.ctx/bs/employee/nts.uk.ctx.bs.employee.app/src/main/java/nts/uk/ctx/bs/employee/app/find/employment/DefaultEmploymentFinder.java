@@ -38,6 +38,8 @@ public class DefaultEmploymentFinder implements EmploymentFinder {
 	@Inject
 	private IGroupCommonMaster groupCommonMaster;
 	
+	
+	
 	/* (non-Javadoc)
 	 * @see nts.uk.shr.find.employment.EmploymentFinder#findAll()
 	 */
@@ -78,8 +80,7 @@ public class DefaultEmploymentFinder implements EmploymentFinder {
 		dto.setName(employment.get().getEmploymentName().v());
 		dto.setEmpExternalCode(employment.get().getEmpExternalCode());
 		dto.setMemo(employment.get().getMemo());
-		dto.setempCommonMasterId(employment.get().getEmpCommonMasterId().get());
-		dto.setempCommonMasterItemId(employment.get().getEmpCommonMasterItemId().get());
+		
 		int x = 1;
 		if( x == 0){
 			dto.setShowsGroupCompany(false);
@@ -87,11 +88,20 @@ public class DefaultEmploymentFinder implements EmploymentFinder {
 		}
 		else {	
 			//アルゴリズム「使用している共通マスタの取得」を実行する  --- (thực hiện thuật toán [lấy CommonMaster đang sử dụng])
-			GroupCommonMaster data =groupCommonMaster.getGroupCommonMasterEnableItem(contractCd, employment.get().getEmpCommonMasterId().get(), companyId, GeneralDate.today());
+			/*[Input]
+					・契約コード//(contract code)
+					・共通マスタID = M000031//(common master ID=M000031)
+					・会社ID//(company ID)
+					・基準日 = システム日付//(baseDate= System Date)
+			 		*/			
+			GroupCommonMaster data =groupCommonMaster.getGroupCommonMasterEnableItem(contractCd, "M000031", companyId, GeneralDate.today());
 			if (data.getCommonMasterItems().isEmpty()){
 				throw new BusinessException("Msg_1580");
 			}
 			dto.setShowsGroupCompany(true);
+			dto.setCommonMasterName(data.getCommonMasterName().v());
+			dto.setCommonMasterItems(data.getCommonMasterItems());
+			
 			return dto;
 
 		}
