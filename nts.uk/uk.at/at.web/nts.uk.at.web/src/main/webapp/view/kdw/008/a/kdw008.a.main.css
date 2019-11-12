@@ -27,6 +27,7 @@
 
 #contents-area {
 	padding-left: 20px;
+	height: calc(100vh - 170px) !important;
 }
 
 /* #functions-area {
