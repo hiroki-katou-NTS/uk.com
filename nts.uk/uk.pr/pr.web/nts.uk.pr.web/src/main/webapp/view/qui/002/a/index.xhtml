@@ -27,9 +27,9 @@
 	<ui:define name="content">
 		<div id="functions-area">
 			<button id="A1_1" tabindex="1" class="proceed" style="margin-left: 75px;"
-					data-bind="enable: selectedCode().length > 0 &amp;&amp; $root.errors.isEmpty, click:  function(){ exportFile(); }">#{i18n.getText('QUI002_1')}</button>
+					data-bind="enable: selectedCode().length > 0 &amp;&amp; $root.errors.isEmpty, click:  function(){ exportFile(); }">#{i18n.getText('QUI002_A1_1')}</button>
 			<button id="A1_2" tabindex="2"
-					data-bind="enable: false, click:  function(){ openScreenB(); }">#{i18n.getText('QUI002_2')}</button>
+					data-bind="enable: false, click:  function(){ openScreenB(); }">#{i18n.getText('QUI002_A1_2')}</button>
 
 		</div>
 		<div id="contents-area" class="fixed-flex-layout">
@@ -37,47 +37,22 @@
 			<div tabindex="5" id="com-ccg001" ></div>
 
 			<div class="fixed-flex-layout-left" style="margin-left: 25px;margin-right: 10px;">
-				<div class="panel panel-frame" style="margin-left: 45px; width: 665px;">
-						<div class="valign-center control-group ">
-							<span class="label with-image">
-								<i id="img-calendar" class="image image-calendar" style="margin-left: 0px; margin-right: 0px"/>
-								<span id="A222_3">#{i18n.getText('QUI002_3')}</span>
-							</span>
-							<div id = "A2_4" data-bind="ntsDatePicker: {
-																name: '#{i18n.getText('QUI002_4')}',
-																value: startDate,
-																dateFormat: 'YYYY/MM/DD',
-																valueFormat: 'YYYYMMDD',
-																required: true
-																}" tabindex="3"></div>
-							<span data-bind = "attr: {style: getStyle() }, text: startDateJp" class="limited-label"></span>
-							<span id="A222_6">#{i18n.getText('QUI002_5')}</span>
-							<div id = "A2_7" data-bind="ntsDatePicker: {
-																name: '#{i18n.getText('QUI002_6')}',
-																value: endDate,
-																dateFormat: 'YYYY/MM/DD',
-																valueFormat: 'YYYYMMDD',
-																required: true
-																}" tabindex="4"></div>
-							<span class="limited-label" style="width: 140px;" data-bind = "text: endDateJp" ></span>
-						</div>
-				</div>
-				<div class = "bottom" style="margin-top: 15px;margin-left: 45px;">
+				<div  style="margin-left: 45px;">
                     <div class="panel panel-frame">
-                        <div id="component-items-list" tabindex="6" style="margin-left: 40px;"></div>
+                        <div id="component-items-list" tabindex="6"></div>
                     </div>
 				</div>
 			</div>
 			<div class="fixed-flex-layout-right" data-bind="with: empInsReportSetting">
-				<div class="panel panel-frame " style="width: 460px; height: 450px;">
+				<div class="panel panel-frame " style="width: 445px; height: 359px;">
 					<!--A222_12-->
-					<div id="A222_12" class = "label"> #{i18n.getText('QUI002_7')}</div>
+					<div id="A222_12" class = "label"> #{i18n.getText('QUI002_A222_12')}</div>
 					<!--A222_13-->
 					<div class = "valign-center control-group">
-						<div id="A222_13" class="column-first" data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('QUI002_8')}</div>
+						<div id="A222_13" class="column-first" data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('QUI002_A222_13')}</div>
 						<!--A222_14-->
 						<div id = "A222_14"  data-bind="ntsDatePicker: {
-																name: '#{i18n.getText('QUI002_8')}',
+																name: '#{i18n.getText('QUI002_A222_14')}',
 																value: $parent.filingDate,
 																dateFormat: 'YYYY/MM/DD',
 																valueFormat: 'YYYYMMDD',
@@ -89,10 +64,10 @@
 
 					<div class="valign-center control-group">
 						<!--A222_16-->
-						<div  id="A222_16" class="column-first" data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('QUI002_9')}</div>
+						<div  id="A222_16" class="column-first" data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('QUI002_A222_16')}</div>
 						<!--A222_17-->
 							<div id="A222_17" tabindex="8" data-bind="ntsSwitchButton: {
-                                name: '#{i18n.getText('QUI002_9')}',
+                                name: '#{i18n.getText('QUI002_A222_17')}',
                                 options: $parent.submitNameAtrs,
                                 optionsValue: 'code',
                                 optionsText: 'name',
@@ -105,10 +80,10 @@
 					<!-- A4-->
 					<div class="valign-center control-group ">
 						<!--A222_21-->
-						<div id="A222_21" class="column-first" data-bind="ntsFormLabel: {constrant: '', required:true}">#{i18n.getText('QUI002_12')}</div>
+						<div id="A222_21" class="column-first" data-bind="ntsFormLabel: {constrant: '', required:true}">#{i18n.getText('QUI002_A222_21')}</div>
 						<!--A222_22-->
 						<div id="A222_22" style=" width: 300px;" tabindex="10" data-bind="ntsComboBox: {
-                        name: '#{i18n.getText('QUI002_12')}',
+                        name: '#{i18n.getText('QUI002_A222_22')}',
                         options: $parent.outputOrders,
                         optionsValue: 'code',
                         visibleItemsCount: 5,
@@ -123,10 +98,10 @@
 
 					<div class="valign-center control-group">
 						<!--A222_24-->
-						<div id="A222_24" class="column-first" data-bind="ntsFormLabel: {constrant: '', required:true}">#{i18n.getText('QUI002_13')}</div>
+						<div id="A222_24" class="column-first" data-bind="ntsFormLabel: {constrant: '', required:true}">#{i18n.getText('QUI002_A222_24')}</div>
 						<!--A222_25-->
 						<div id="A222_25" style=" width: 300px;" tabindex="11" data-bind="ntsComboBox: {
-                        name: '#{i18n.getText('QUI002_13')}',
+                        name: '#{i18n.getText('QUI002_A222_25')}',
                         options: $parent.officeClsAtrs,
                         optionsValue: 'code',
                         visibleItemsCount: 5,
@@ -141,10 +116,10 @@
 
 					<div class="valign-center control-group">
 						<!--A222_27-->
-						<div id="A222_27" class="column-first" data-bind="ntsFormLabel: {constrant: '', required:true}">#{i18n.getText('QUI002_14')}</div>
+						<div id="A222_27" class="column-first" data-bind="ntsFormLabel: {constrant: '', required:true}">#{i18n.getText('QUI002_A222_27')}</div>
 						<!--A222_28-->
 						<button id="A222_28" tabindex="12"
-								data-bind="enable: $parent.selectedCode().length > 0 &amp;&amp; $root.errors.isEmpty, click:  function(){ $parent.openScreenB(); }">#{i18n.getText('QUI001_15')}</button>
+								data-bind="enable: true, click:  function(){ $parent.openScreenB(); }">#{i18n.getText('QUI002_A222_28')}</button>
 
 
 					</div>

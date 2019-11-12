@@ -8,6 +8,6 @@ import java.util.List;
 @Data
 public class EmpInsReportSettingExportQuery {
     private EmpInsReportSettingExport empInsReportSettingExport;
-    private List<String> empIds;
+    private List<EmployeeChangeDate> empIdChangDate;
     private GeneralDate fillingDate;
 }
