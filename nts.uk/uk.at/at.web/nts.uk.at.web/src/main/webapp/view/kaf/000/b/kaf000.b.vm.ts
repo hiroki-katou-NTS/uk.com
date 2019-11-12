@@ -79,6 +79,8 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         user: number = 0;
         reflectPerState: number  = 0;
         errorEmpty: KnockoutObservable<boolean> = ko.observable(true);
+        messFullDisp: KnockoutObservable<boolean> = ko.observable(false);
+        messDealineFullDisp: KnockoutObservable<boolean> = ko.observable(false);
 
         constructor(listAppMetadata: Array<shrvm.model.ApplicationMetadata>, currentApp: shrvm.model.ApplicationMetadata) {
             let self = this;
@@ -157,8 +159,14 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 if (!nts.uk.text.isNullOrEmpty(deadlineMsg.message)) {
                     self.reasonOutputMessFull(self.reasonOutputMess + deadlineMsg.message);
                 }
+                if(!_.isEmpty(self.reasonOutputMessFull())){
+                    self.messFullDisp(true);    
+                }
                 if (!nts.uk.text.isNullOrEmpty(deadlineMsg.deadline)) {
                     self.reasonOutputMessDealineFull(self.reasonOutputMessDealine + deadlineMsg.deadline);
+                }
+                if(!_.isEmpty(self.reasonOutputMessDealineFull())){
+                    self.messDealineFullDisp(true);    
                 }
                 self.messageArea(deadlineMsg.chkShow);
                 self.getDetailCheck(self.inputDetail());
