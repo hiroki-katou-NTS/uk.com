@@ -42,7 +42,7 @@ public class StressCheckManagement extends AggregateRoot {
 	 * @param employeeID
 	 * @return List<PersonnelAssessment>
 	 */
-	public List<StressCheck> acquisitionPersonnelAssessment(String employeeID) {
+	public List<StressCheck> acquisitionStreetCheck(String employeeID) {
 		return getStressChecks().stream().filter(p -> p.getEmployeeID().equalsIgnoreCase(employeeID))
 				.collect(Collectors.toList());
 	}
@@ -75,7 +75,7 @@ public class StressCheckManagement extends AggregateRoot {
 		// 「ロード済み社員IDリスト」
 		// に社員IDが存在するか？(Ở biến số member[LoadedEmployeeIDList] có tồn tại
 		// EmployeeID ko?)
-		results = acquisitionPersonnelAssessment(employeeId);
+		results = acquisitionStreetCheck(employeeId);
 		if (!CollectionUtil.isEmpty(results)) {
 			return results;
 		}
